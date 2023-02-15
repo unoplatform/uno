@@ -13,7 +13,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBuffer BarcodeScannerReport.ScanData is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IBuffer BarcodeScannerReport.ScanData is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IBuffer%20BarcodeScannerReport.ScanData");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBuffer BarcodeScannerReport.ScanDataLabel is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IBuffer BarcodeScannerReport.ScanDataLabel is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IBuffer%20BarcodeScannerReport.ScanDataLabel");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeScannerReport.ScanDataType is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeScannerReport.ScanDataType is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BarcodeScannerReport.ScanDataType");
 			}
 		}
 		#endif

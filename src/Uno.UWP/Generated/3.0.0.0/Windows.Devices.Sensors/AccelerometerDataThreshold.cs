@@ -13,7 +13,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double AccelerometerDataThreshold.ZAxisInGForce is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double AccelerometerDataThreshold.ZAxisInGForce is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20AccelerometerDataThreshold.ZAxisInGForce");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double AccelerometerDataThreshold.YAxisInGForce is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double AccelerometerDataThreshold.YAxisInGForce is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20AccelerometerDataThreshold.YAxisInGForce");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double AccelerometerDataThreshold.XAxisInGForce is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double AccelerometerDataThreshold.XAxisInGForce is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20AccelerometerDataThreshold.XAxisInGForce");
 			}
 			set
 			{

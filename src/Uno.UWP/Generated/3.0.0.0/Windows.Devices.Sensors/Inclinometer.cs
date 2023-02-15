@@ -13,7 +13,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint Inclinometer.ReportInterval is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint Inclinometer.ReportInterval is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20Inclinometer.ReportInterval");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint Inclinometer.MinimumReportInterval is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint Inclinometer.MinimumReportInterval is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20Inclinometer.MinimumReportInterval");
 			}
 		}
 		#endif
@@ -37,7 +37,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DisplayOrientations Inclinometer.ReadingTransform is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DisplayOrientations Inclinometer.ReadingTransform is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DisplayOrientations%20Inclinometer.ReadingTransform");
 			}
 			set
 			{
@@ -51,7 +51,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SensorReadingType Inclinometer.ReadingType is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SensorReadingType Inclinometer.ReadingType is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SensorReadingType%20Inclinometer.ReadingType");
 			}
 		}
 		#endif
@@ -61,7 +61,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint Inclinometer.ReportLatency is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint Inclinometer.ReportLatency is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20Inclinometer.ReportLatency");
 			}
 			set
 			{
@@ -75,7 +75,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint Inclinometer.MaxBatchSize is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint Inclinometer.MaxBatchSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20Inclinometer.MaxBatchSize");
 			}
 		}
 		#endif
@@ -85,7 +85,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member InclinometerDataThreshold Inclinometer.ReportThreshold is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member InclinometerDataThreshold Inclinometer.ReportThreshold is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=InclinometerDataThreshold%20Inclinometer.ReportThreshold");
 			}
 		}
 		#endif
@@ -95,7 +95,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string Inclinometer.DeviceId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string Inclinometer.DeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20Inclinometer.DeviceId");
 			}
 		}
 		#endif
@@ -103,7 +103,7 @@ namespace Windows.Devices.Sensors
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Devices.Sensors.InclinometerReading GetCurrentReading()
 		{
-			throw new global::System.NotImplementedException("The member InclinometerReading Inclinometer.GetCurrentReading() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member InclinometerReading Inclinometer.GetCurrentReading() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=InclinometerReading%20Inclinometer.GetCurrentReading%28%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Devices.Sensors.Inclinometer.MinimumReportInterval.get
@@ -123,35 +123,35 @@ namespace Windows.Devices.Sensors
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static string GetDeviceSelector( global::Windows.Devices.Sensors.SensorReadingType readingType)
 		{
-			throw new global::System.NotImplementedException("The member string Inclinometer.GetDeviceSelector(SensorReadingType readingType) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member string Inclinometer.GetDeviceSelector(SensorReadingType readingType) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20Inclinometer.GetDeviceSelector%28SensorReadingType%20readingType%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Sensors.Inclinometer> FromIdAsync( string deviceId)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<Inclinometer> Inclinometer.FromIdAsync(string deviceId) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<Inclinometer> Inclinometer.FromIdAsync(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CInclinometer%3E%20Inclinometer.FromIdAsync%28string%20deviceId%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Devices.Sensors.Inclinometer GetDefault( global::Windows.Devices.Sensors.SensorReadingType sensorReadingtype)
 		{
-			throw new global::System.NotImplementedException("The member Inclinometer Inclinometer.GetDefault(SensorReadingType sensorReadingtype) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member Inclinometer Inclinometer.GetDefault(SensorReadingType sensorReadingtype) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Inclinometer%20Inclinometer.GetDefault%28SensorReadingType%20sensorReadingtype%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Devices.Sensors.Inclinometer GetDefaultForRelativeReadings()
 		{
-			throw new global::System.NotImplementedException("The member Inclinometer Inclinometer.GetDefaultForRelativeReadings() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member Inclinometer Inclinometer.GetDefaultForRelativeReadings() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Inclinometer%20Inclinometer.GetDefaultForRelativeReadings%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Devices.Sensors.Inclinometer GetDefault()
 		{
-			throw new global::System.NotImplementedException("The member Inclinometer Inclinometer.GetDefault() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member Inclinometer Inclinometer.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Inclinometer%20Inclinometer.GetDefault%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

@@ -18,7 +18,7 @@ namespace Windows.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ApplicationHighContrastAdjustment Application.HighContrastAdjustment is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ApplicationHighContrastAdjustment Application.HighContrastAdjustment is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ApplicationHighContrastAdjustment%20Application.HighContrastAdjustment");
 			}
 			set
 			{

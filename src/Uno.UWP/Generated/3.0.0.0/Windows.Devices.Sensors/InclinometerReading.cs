@@ -13,7 +13,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float InclinometerReading.PitchDegrees is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float InclinometerReading.PitchDegrees is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20InclinometerReading.PitchDegrees");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float InclinometerReading.RollDegrees is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float InclinometerReading.RollDegrees is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20InclinometerReading.RollDegrees");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset InclinometerReading.Timestamp is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DateTimeOffset InclinometerReading.Timestamp is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DateTimeOffset%20InclinometerReading.Timestamp");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float InclinometerReading.YawDegrees is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float InclinometerReading.YawDegrees is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20InclinometerReading.YawDegrees");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan? InclinometerReading.PerformanceCount is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan? InclinometerReading.PerformanceCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%3F%20InclinometerReading.PerformanceCount");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyDictionary<string, object> InclinometerReading.Properties is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyDictionary<string, object> InclinometerReading.Properties is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyDictionary%3Cstring%2C%20object%3E%20InclinometerReading.Properties");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MagnetometerAccuracy InclinometerReading.YawAccuracy is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MagnetometerAccuracy InclinometerReading.YawAccuracy is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MagnetometerAccuracy%20InclinometerReading.YawAccuracy");
 			}
 		}
 		#endif

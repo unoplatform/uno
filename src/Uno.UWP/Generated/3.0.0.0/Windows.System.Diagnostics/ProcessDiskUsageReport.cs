@@ -13,7 +13,7 @@ namespace Windows.System.Diagnostics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member long ProcessDiskUsageReport.BytesReadCount is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member long ProcessDiskUsageReport.BytesReadCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=long%20ProcessDiskUsageReport.BytesReadCount");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.System.Diagnostics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member long ProcessDiskUsageReport.BytesWrittenCount is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member long ProcessDiskUsageReport.BytesWrittenCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=long%20ProcessDiskUsageReport.BytesWrittenCount");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.System.Diagnostics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member long ProcessDiskUsageReport.OtherBytesCount is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member long ProcessDiskUsageReport.OtherBytesCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=long%20ProcessDiskUsageReport.OtherBytesCount");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.System.Diagnostics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member long ProcessDiskUsageReport.OtherOperationCount is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member long ProcessDiskUsageReport.OtherOperationCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=long%20ProcessDiskUsageReport.OtherOperationCount");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.System.Diagnostics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member long ProcessDiskUsageReport.ReadOperationCount is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member long ProcessDiskUsageReport.ReadOperationCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=long%20ProcessDiskUsageReport.ReadOperationCount");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.System.Diagnostics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member long ProcessDiskUsageReport.WriteOperationCount is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member long ProcessDiskUsageReport.WriteOperationCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=long%20ProcessDiskUsageReport.WriteOperationCount");
 			}
 		}
 		#endif

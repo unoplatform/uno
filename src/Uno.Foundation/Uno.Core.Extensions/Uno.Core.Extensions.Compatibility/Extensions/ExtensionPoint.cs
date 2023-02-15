@@ -18,39 +18,39 @@ using System;
 
 namespace Uno.Extensions
 {
-    internal class ExtensionPoint<T> : IExtensionPoint<T>
-    {
-        private readonly Type type;
-        private readonly T value;
+	internal class ExtensionPoint<T> : IExtensionPoint<T>
+	{
+		private readonly Type type;
+		private readonly T value;
 
-        public ExtensionPoint(T value)
-        {
-            this.value = value;
-        }
+		public ExtensionPoint(T value)
+		{
+			this.value = value;
+		}
 
-        public ExtensionPoint(Type type)
-        {
-            this.type = type;
-        }
+		public ExtensionPoint(Type type)
+		{
+			this.type = type;
+		}
 
-        #region IExtensionPoint<T> Members
+		#region IExtensionPoint<T> Members
 
-        public T ExtendedValue
-        {
-            get { return value; }
-        }
+		public T ExtendedValue
+		{
+			get { return value; }
+		}
 
-        object IExtensionPoint.ExtendedValue
-        {
-            get { return value; }
-        }
+		object IExtensionPoint.ExtendedValue
+		{
+			get { return value; }
+		}
 
-        public Type ExtendedType
-        {
-            // TODO: value might not be null
-            get { return type ?? (value == null ? typeof (T) : value.GetType()); }
-        }
+		public Type ExtendedType
+		{
+			// TODO: value might not be null
+			get { return type ?? (value == null ? typeof(T) : value.GetType()); }
+		}
 
-        #endregion
-    }
+		#endregion
+	}
 }

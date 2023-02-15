@@ -57,7 +57,6 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-
 		partial void OnOpacityChanged(DependencyPropertyChangedEventArgs args)
 		{
 			UpdateOpacity();
@@ -318,9 +317,10 @@ namespace Windows.UI.Xaml
 		{
 			var roundedRect = LayoutRound(rect);
 
-			Visual.Offset = new Vector3((float)roundedRect.X, (float)roundedRect.Y, 0);
-			Visual.Size = new Vector2((float)roundedRect.Width, (float)roundedRect.Height);
-			Visual.CenterPoint = new Vector3((float)RenderTransformOrigin.X, (float)RenderTransformOrigin.Y, 0);
+			var visual = Visual;
+			visual.Offset = new Vector3((float)roundedRect.X, (float)roundedRect.Y, 0) + _translation;
+			visual.Size = new Vector2((float)roundedRect.Width, (float)roundedRect.Height);
+			visual.CenterPoint = new Vector3((float)RenderTransformOrigin.X, (float)RenderTransformOrigin.Y, 0);
 
 			ApplyNativeClip(clip ?? Rect.Empty);
 		}

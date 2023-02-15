@@ -89,12 +89,6 @@
 		<GenerateLibraryLayout>true</GenerateLibraryLayout>
 	</PropertyGroup>
 
-	<ItemGroup Condition=" ($(IsAndroid) or $(IsIOS)) and '$(ExtrasIsReferenceAssembly)'!='' ">
-		<!-- remove files included by msbuild extras -->
-		<Page Remove="@(Page)" />
-		<Page Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml" />
-	</ItemGroup>
-
 	<Target Name="GetBuiltProjectOutputRecursive" Condition=" '$(TargetFramework)' == 'xamarinios10' " />
 
 	<Target Name="_DisplayTargets" BeforeTargets="BeforeBuild">
@@ -137,6 +131,10 @@
 	<Target Name="CommonOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!='' and '$(UseCommonOverridePackage)'!=''">
 		<PropertyGroup>
 			<_OverrideTargetFramework>$(TargetFramework)</_OverrideTargetFramework>
+
+			<!-- Current nuget publishing uses netX.0-android30.0 -->
+			<_OverrideTargetFramework Condition="$(_OverrideTargetFramework.EndsWith('.0-android'))">$(_OverrideTargetFramework)30.0</_OverrideTargetFramework>
+			
 			<_baseNugetPath Condition="'$(USERPROFILE)'!=''">$(USERPROFILE)</_baseNugetPath>
 			<_baseNugetPath Condition="'$(HOME)'!=''">$(HOME)</_baseNugetPath>
 			<CommonOverridePackageId Condition="'$(CommonOverridePackageId)'==''">$(AssemblyName)</CommonOverridePackageId>

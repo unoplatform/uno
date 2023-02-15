@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaFailedRoutedEventArgs.ErrorTrace is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MediaFailedRoutedEventArgs.ErrorTrace is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MediaFailedRoutedEventArgs.ErrorTrace");
 			}
 		}
 		#endif

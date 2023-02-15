@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool RcsEndUserMessageAvailableEventArgs.IsMessageAvailable is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool RcsEndUserMessageAvailableEventArgs.IsMessageAvailable is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20RcsEndUserMessageAvailableEventArgs.IsMessageAvailable");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.ApplicationModel.Chat
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member RcsEndUserMessage RcsEndUserMessageAvailableEventArgs.Message is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member RcsEndUserMessage RcsEndUserMessageAvailableEventArgs.Message is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=RcsEndUserMessage%20RcsEndUserMessageAvailableEventArgs.Message");
 			}
 		}
 		#endif

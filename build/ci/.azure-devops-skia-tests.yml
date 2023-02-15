@@ -5,7 +5,7 @@ parameters:
 
 jobs:
 - job: Skia_Tests_Build
-  displayName: 'Skia Samples App Build'
+  displayName: 'Build Skia Samples App UI Tests'
   timeoutInMinutes: 60
 
   pool:
@@ -76,7 +76,7 @@ jobs:
 ##
 
 - job: Skia_Gtk_Screenshot_Tests
-  displayName: 'Skia GTK Snapshot Tests'
+  displayName: 'Run Skia GTK Snapshot Tests'
   timeoutInMinutes: 60
 
   pool:
@@ -108,7 +108,7 @@ jobs:
       ArtifactType: Container
 
 - job: Skia_Gtk_Runtime_Tests_Build
-  displayName: 'Skia GTK Runtime Tests'
+  displayName: 'Run Skia GTK Runtime Tests'
   timeoutInMinutes: 60
 
   pool:
@@ -144,7 +144,7 @@ jobs:
 ##
 
 - job: Skia_Wpf_Screenshot_Tests
-  displayName: 'Skia WPF Snapshot Tests'
+  displayName: 'Run Skia WPF Snapshot Tests'
   timeoutInMinutes: 60
 
   pool:
@@ -175,7 +175,7 @@ jobs:
       ArtifactType: Container
 
 - job: Skia_Wpf_Runtime_Tests_Build
-  displayName: 'Skia WPF Runtime Tests'
+  displayName: 'Run Skia WPF Runtime Tests'
   timeoutInMinutes: 60
 
   pool:

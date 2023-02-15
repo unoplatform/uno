@@ -13,7 +13,7 @@ namespace Windows.System.RemoteSystems
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member RemoteSystemDiscoveryType RemoteSystemDiscoveryTypeFilter.RemoteSystemDiscoveryType is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member RemoteSystemDiscoveryType RemoteSystemDiscoveryTypeFilter.RemoteSystemDiscoveryType is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=RemoteSystemDiscoveryType%20RemoteSystemDiscoveryTypeFilter.RemoteSystemDiscoveryType");
 			}
 		}
 		#endif

@@ -4,6 +4,7 @@
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
     <HasSharedItems>true</HasSharedItems>
     <SharedGUID>beb0ab3a-16a7-49cf-ad5e-f4a53b985afe</SharedGUID>
+    <EnableAutomaticXamlPageInclusion>false</EnableAutomaticXamlPageInclusion>
   </PropertyGroup>
   <PropertyGroup Label="Configuration">
     <Import_RootNamespace>UITests</Import_RootNamespace>
@@ -4337,6 +4338,18 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\ThemeShadowTests\ThemeShadow_Basic.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\ThemeShadowTests\ThemeShadow_CornerRadius.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\ThemeShadowTests\ThemeShadow_Overlap.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ImageTests\EmptyImageFixedWidth.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -7571,6 +7584,15 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\ImageBrushTests\RectangleStretchFill.xaml.cs">
       <DependentUpon>RectangleStretchFill.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\ThemeShadowTests\ThemeShadow_Basic.xaml.cs">
+      <DependentUpon>ThemeShadow_Basic.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\ThemeShadowTests\ThemeShadow_CornerRadius.xaml.cs">
+      <DependentUpon>ThemeShadow_CornerRadius.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\ThemeShadowTests\ThemeShadow_Overlap.xaml.cs">
+      <DependentUpon>ThemeShadow_Overlap.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ImageTests\EmptyImageFixedWidth.xaml.cs">
       <DependentUpon>EmptyImageFixedWidth.xaml</DependentUpon>

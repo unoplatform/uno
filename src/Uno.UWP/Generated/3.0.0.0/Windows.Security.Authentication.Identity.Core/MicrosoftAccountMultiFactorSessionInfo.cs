@@ -13,7 +13,7 @@ namespace Windows.Security.Authentication.Identity.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MicrosoftAccountMultiFactorSessionApprovalStatus MicrosoftAccountMultiFactorSessionInfo.ApprovalStatus is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MicrosoftAccountMultiFactorSessionApprovalStatus MicrosoftAccountMultiFactorSessionInfo.ApprovalStatus is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MicrosoftAccountMultiFactorSessionApprovalStatus%20MicrosoftAccountMultiFactorSessionInfo.ApprovalStatus");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Security.Authentication.Identity.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MicrosoftAccountMultiFactorAuthenticationType MicrosoftAccountMultiFactorSessionInfo.AuthenticationType is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MicrosoftAccountMultiFactorAuthenticationType MicrosoftAccountMultiFactorSessionInfo.AuthenticationType is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MicrosoftAccountMultiFactorAuthenticationType%20MicrosoftAccountMultiFactorSessionInfo.AuthenticationType");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Security.Authentication.Identity.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MicrosoftAccountMultiFactorSessionInfo.DisplaySessionId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MicrosoftAccountMultiFactorSessionInfo.DisplaySessionId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MicrosoftAccountMultiFactorSessionInfo.DisplaySessionId");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Security.Authentication.Identity.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset MicrosoftAccountMultiFactorSessionInfo.ExpirationTime is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DateTimeOffset MicrosoftAccountMultiFactorSessionInfo.ExpirationTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DateTimeOffset%20MicrosoftAccountMultiFactorSessionInfo.ExpirationTime");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Security.Authentication.Identity.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset MicrosoftAccountMultiFactorSessionInfo.RequestTime is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DateTimeOffset MicrosoftAccountMultiFactorSessionInfo.RequestTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DateTimeOffset%20MicrosoftAccountMultiFactorSessionInfo.RequestTime");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Security.Authentication.Identity.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MicrosoftAccountMultiFactorSessionInfo.SessionId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MicrosoftAccountMultiFactorSessionInfo.SessionId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MicrosoftAccountMultiFactorSessionInfo.SessionId");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.Security.Authentication.Identity.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MicrosoftAccountMultiFactorSessionInfo.UserAccountId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MicrosoftAccountMultiFactorSessionInfo.UserAccountId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MicrosoftAccountMultiFactorSessionInfo.UserAccountId");
 			}
 		}
 		#endif

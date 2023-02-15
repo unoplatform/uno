@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool EmailIrmInfo.CanRemoveIrmOnResponse is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool EmailIrmInfo.CanRemoveIrmOnResponse is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20EmailIrmInfo.CanRemoveIrmOnResponse");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool EmailIrmInfo.CanPrintData is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool EmailIrmInfo.CanPrintData is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20EmailIrmInfo.CanPrintData");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool EmailIrmInfo.CanModifyRecipientsOnResponse is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool EmailIrmInfo.CanModifyRecipientsOnResponse is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20EmailIrmInfo.CanModifyRecipientsOnResponse");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool EmailIrmInfo.CanForward is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool EmailIrmInfo.CanForward is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20EmailIrmInfo.CanForward");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool EmailIrmInfo.CanExtractData is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool EmailIrmInfo.CanExtractData is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20EmailIrmInfo.CanExtractData");
 			}
 			set
 			{
@@ -83,7 +83,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool EmailIrmInfo.CanReply is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool EmailIrmInfo.CanReply is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20EmailIrmInfo.CanReply");
 			}
 			set
 			{
@@ -97,7 +97,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool EmailIrmInfo.CanEdit is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool EmailIrmInfo.CanEdit is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20EmailIrmInfo.CanEdit");
 			}
 			set
 			{
@@ -111,7 +111,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member EmailIrmTemplate EmailIrmInfo.Template is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member EmailIrmTemplate EmailIrmInfo.Template is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=EmailIrmTemplate%20EmailIrmInfo.Template");
 			}
 			set
 			{
@@ -125,7 +125,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool EmailIrmInfo.IsProgramaticAccessAllowed is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool EmailIrmInfo.IsProgramaticAccessAllowed is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20EmailIrmInfo.IsProgramaticAccessAllowed");
 			}
 			set
 			{
@@ -139,7 +139,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool EmailIrmInfo.IsIrmOriginator is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool EmailIrmInfo.IsIrmOriginator is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20EmailIrmInfo.IsIrmOriginator");
 			}
 			set
 			{
@@ -153,7 +153,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset EmailIrmInfo.ExpirationDate is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DateTimeOffset EmailIrmInfo.ExpirationDate is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DateTimeOffset%20EmailIrmInfo.ExpirationDate");
 			}
 			set
 			{
@@ -167,7 +167,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool EmailIrmInfo.CanReplyAll is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool EmailIrmInfo.CanReplyAll is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20EmailIrmInfo.CanReplyAll");
 			}
 			set
 			{

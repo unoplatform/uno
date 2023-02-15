@@ -13,7 +13,7 @@ namespace Windows.Devices.SerialCommunication
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SerialError ErrorReceivedEventArgs.Error is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SerialError ErrorReceivedEventArgs.Error is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SerialError%20ErrorReceivedEventArgs.Error");
 			}
 		}
 		#endif

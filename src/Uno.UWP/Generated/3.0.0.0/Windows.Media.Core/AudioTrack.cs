@@ -13,7 +13,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AudioTrack.Name is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string AudioTrack.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20AudioTrack.Name");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaPlaybackItem AudioTrack.PlaybackItem is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MediaPlaybackItem AudioTrack.PlaybackItem is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaPlaybackItem%20AudioTrack.PlaybackItem");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AudioTrackSupportInfo AudioTrack.SupportInfo is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AudioTrackSupportInfo AudioTrack.SupportInfo is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AudioTrackSupportInfo%20AudioTrack.SupportInfo");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AudioTrack.Label is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string AudioTrack.Label is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20AudioTrack.Label");
 			}
 			set
 			{
@@ -57,7 +57,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AudioTrack.Id is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string AudioTrack.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20AudioTrack.Id");
 			}
 		}
 		#endif
@@ -67,7 +67,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AudioTrack.Language is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string AudioTrack.Language is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20AudioTrack.Language");
 			}
 		}
 		#endif
@@ -77,7 +77,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaTrackKind AudioTrack.TrackKind is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MediaTrackKind AudioTrack.TrackKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaTrackKind%20AudioTrack.TrackKind");
 			}
 		}
 		#endif
@@ -92,7 +92,7 @@ namespace Windows.Media.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Media.MediaProperties.AudioEncodingProperties GetEncodingProperties()
 		{
-			throw new global::System.NotImplementedException("The member AudioEncodingProperties AudioTrack.GetEncodingProperties() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member AudioEncodingProperties AudioTrack.GetEncodingProperties() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AudioEncodingProperties%20AudioTrack.GetEncodingProperties%28%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Media.Core.AudioTrack.PlaybackItem.get

@@ -13,7 +13,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CompositionGraphicsDevice RenderingDeviceReplacedEventArgs.GraphicsDevice is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member CompositionGraphicsDevice RenderingDeviceReplacedEventArgs.GraphicsDevice is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CompositionGraphicsDevice%20RenderingDeviceReplacedEventArgs.GraphicsDevice");
 			}
 		}
 		#endif

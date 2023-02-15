@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CreateDefaultValueCallback PropertyMetadata.CreateDefaultValueCallback is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member CreateDefaultValueCallback PropertyMetadata.CreateDefaultValueCallback is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CreateDefaultValueCallback%20PropertyMetadata.CreateDefaultValueCallback");
 			}
 		}
 		#endif
@@ -28,28 +28,28 @@ namespace Windows.UI.Xaml
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.PropertyMetadata Create( object defaultValue)
 		{
-			throw new global::System.NotImplementedException("The member PropertyMetadata PropertyMetadata.Create(object defaultValue) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member PropertyMetadata PropertyMetadata.Create(object defaultValue) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PropertyMetadata%20PropertyMetadata.Create%28object%20defaultValue%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.PropertyMetadata Create( object defaultValue,  global::Windows.UI.Xaml.PropertyChangedCallback propertyChangedCallback)
 		{
-			throw new global::System.NotImplementedException("The member PropertyMetadata PropertyMetadata.Create(object defaultValue, PropertyChangedCallback propertyChangedCallback) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member PropertyMetadata PropertyMetadata.Create(object defaultValue, PropertyChangedCallback propertyChangedCallback) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PropertyMetadata%20PropertyMetadata.Create%28object%20defaultValue%2C%20PropertyChangedCallback%20propertyChangedCallback%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.PropertyMetadata Create( global::Windows.UI.Xaml.CreateDefaultValueCallback createDefaultValueCallback)
 		{
-			throw new global::System.NotImplementedException("The member PropertyMetadata PropertyMetadata.Create(CreateDefaultValueCallback createDefaultValueCallback) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member PropertyMetadata PropertyMetadata.Create(CreateDefaultValueCallback createDefaultValueCallback) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PropertyMetadata%20PropertyMetadata.Create%28CreateDefaultValueCallback%20createDefaultValueCallback%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.PropertyMetadata Create( global::Windows.UI.Xaml.CreateDefaultValueCallback createDefaultValueCallback,  global::Windows.UI.Xaml.PropertyChangedCallback propertyChangedCallback)
 		{
-			throw new global::System.NotImplementedException("The member PropertyMetadata PropertyMetadata.Create(CreateDefaultValueCallback createDefaultValueCallback, PropertyChangedCallback propertyChangedCallback) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member PropertyMetadata PropertyMetadata.Create(CreateDefaultValueCallback createDefaultValueCallback, PropertyChangedCallback propertyChangedCallback) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PropertyMetadata%20PropertyMetadata.Create%28CreateDefaultValueCallback%20createDefaultValueCallback%2C%20PropertyChangedCallback%20propertyChangedCallback%29");
 		}
 		#endif
 	}

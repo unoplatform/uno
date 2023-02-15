@@ -13,7 +13,7 @@ namespace Windows.Foundation.Diagnostics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid LoggingChannelOptions.Group is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Guid LoggingChannelOptions.Group is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Guid%20LoggingChannelOptions.Group");
 			}
 			set
 			{

@@ -47,7 +47,7 @@ namespace Windows.UI.Xaml.Documents
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TextPointer TextElement.ContentEnd is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TextPointer TextElement.ContentEnd is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TextPointer%20TextElement.ContentEnd");
 			}
 		}
 		#endif
@@ -57,7 +57,7 @@ namespace Windows.UI.Xaml.Documents
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TextPointer TextElement.ContentStart is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TextPointer TextElement.ContentStart is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TextPointer%20TextElement.ContentStart");
 			}
 		}
 		#endif
@@ -67,7 +67,7 @@ namespace Windows.UI.Xaml.Documents
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TextPointer TextElement.ElementEnd is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TextPointer TextElement.ElementEnd is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TextPointer%20TextElement.ElementEnd");
 			}
 		}
 		#endif
@@ -77,7 +77,7 @@ namespace Windows.UI.Xaml.Documents
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TextPointer TextElement.ElementStart is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TextPointer TextElement.ElementStart is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TextPointer%20TextElement.ElementStart");
 			}
 		}
 		#endif
@@ -196,20 +196,7 @@ namespace Windows.UI.Xaml.Documents
 			}
 		}
 		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.XamlRoot XamlRoot
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member XamlRoot TextElement.XamlRoot is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Documents.TextElement", "XamlRoot TextElement.XamlRoot");
-			}
-		}
-		#endif
+		// Skipping already declared property XamlRoot
 		// Skipping already declared property CharacterSpacingProperty
 		// Skipping already declared property FontFamilyProperty
 		// Skipping already declared property FontSizeProperty
@@ -323,7 +310,7 @@ namespace Windows.UI.Xaml.Documents
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  object FindName( string name)
 		{
-			throw new global::System.NotImplementedException("The member object TextElement.FindName(string name) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member object TextElement.FindName(string name) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=object%20TextElement.FindName%28string%20name%29");
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Documents.TextElement.IsTextScaleFactorEnabled.get

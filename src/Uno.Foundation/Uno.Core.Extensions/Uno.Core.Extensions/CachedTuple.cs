@@ -28,7 +28,7 @@ namespace Uno
 	/// A tuple implementation that caches the GetHashCode value for faster lookup performance.
 	/// </summary>
 	internal class CachedTuple
-    {
+	{
 		/// <summary>
 		/// Creates a tuple with two values.
 		/// </summary>
@@ -136,8 +136,8 @@ namespace Uno
 			Item2 = item2;
 			Item3 = item3;
 
-			_cachedHashCode = 
-				item1?.GetHashCode() ?? 0 
+			_cachedHashCode =
+				item1?.GetHashCode() ?? 0
 				^ item2?.GetHashCode() ?? 0
 				^ item3?.GetHashCode() ?? 0;
 		}
@@ -200,7 +200,7 @@ namespace Uno
 			Item3 = item3;
 			Item4 = item4;
 
-			_cachedHashCode = item1?.GetHashCode() ?? 0 
+			_cachedHashCode = item1?.GetHashCode() ?? 0
 				^ item2?.GetHashCode() ?? 0
 				^ item3?.GetHashCode() ?? 0
 				^ item4?.GetHashCode() ?? 0;

@@ -13,7 +13,7 @@ namespace Windows.Data.Xml.Dom
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool XmlLoadSettings.ValidateOnParse is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool XmlLoadSettings.ValidateOnParse is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20XmlLoadSettings.ValidateOnParse");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Data.Xml.Dom
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool XmlLoadSettings.ResolveExternals is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool XmlLoadSettings.ResolveExternals is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20XmlLoadSettings.ResolveExternals");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Data.Xml.Dom
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool XmlLoadSettings.ProhibitDtd is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool XmlLoadSettings.ProhibitDtd is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20XmlLoadSettings.ProhibitDtd");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.Data.Xml.Dom
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint XmlLoadSettings.MaxElementDepth is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint XmlLoadSettings.MaxElementDepth is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20XmlLoadSettings.MaxElementDepth");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.Data.Xml.Dom
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool XmlLoadSettings.ElementContentWhiteSpace is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool XmlLoadSettings.ElementContentWhiteSpace is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20XmlLoadSettings.ElementContentWhiteSpace");
 			}
 			set
 			{

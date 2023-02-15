@@ -13,7 +13,7 @@ namespace Windows.Media.Miracast
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Exception MiracastReceiverApplySettingsResult.ExtendedError is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Exception MiracastReceiverApplySettingsResult.ExtendedError is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Exception%20MiracastReceiverApplySettingsResult.ExtendedError");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.Miracast
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MiracastReceiverApplySettingsStatus MiracastReceiverApplySettingsResult.Status is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MiracastReceiverApplySettingsStatus MiracastReceiverApplySettingsResult.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MiracastReceiverApplySettingsStatus%20MiracastReceiverApplySettingsResult.Status");
 			}
 		}
 		#endif

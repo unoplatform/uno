@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EmailAttachment.FileName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string EmailAttachment.FileName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20EmailAttachment.FileName");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IRandomAccessStreamReference EmailAttachment.Data is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IRandomAccessStreamReference EmailAttachment.Data is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IRandomAccessStreamReference%20EmailAttachment.Data");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EmailAttachment.MimeType is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string EmailAttachment.MimeType is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20EmailAttachment.MimeType");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool EmailAttachment.IsInline is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool EmailAttachment.IsInline is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20EmailAttachment.IsInline");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong EmailAttachment.EstimatedDownloadSizeInBytes is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ulong EmailAttachment.EstimatedDownloadSizeInBytes is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ulong%20EmailAttachment.EstimatedDownloadSizeInBytes");
 			}
 			set
 			{
@@ -83,7 +83,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member EmailAttachmentDownloadState EmailAttachment.DownloadState is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member EmailAttachmentDownloadState EmailAttachment.DownloadState is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=EmailAttachmentDownloadState%20EmailAttachment.DownloadState");
 			}
 			set
 			{
@@ -97,7 +97,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EmailAttachment.ContentLocation is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string EmailAttachment.ContentLocation is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20EmailAttachment.ContentLocation");
 			}
 			set
 			{
@@ -111,7 +111,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EmailAttachment.ContentId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string EmailAttachment.ContentId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20EmailAttachment.ContentId");
 			}
 			set
 			{
@@ -125,7 +125,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EmailAttachment.Id is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string EmailAttachment.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20EmailAttachment.Id");
 			}
 		}
 		#endif
@@ -135,7 +135,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool EmailAttachment.IsFromBaseMessage is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool EmailAttachment.IsFromBaseMessage is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20EmailAttachment.IsFromBaseMessage");
 			}
 		}
 		#endif

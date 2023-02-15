@@ -13,7 +13,7 @@ namespace Windows.Storage.Pickers.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string FileSavePickerUI.Title is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string FileSavePickerUI.Title is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20FileSavePickerUI.Title");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Storage.Pickers.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<string> FileSavePickerUI.AllowedFileTypes is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<string> FileSavePickerUI.AllowedFileTypes is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3Cstring%3E%20FileSavePickerUI.AllowedFileTypes");
 			}
 		}
 		#endif
@@ -37,7 +37,7 @@ namespace Windows.Storage.Pickers.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string FileSavePickerUI.FileName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string FileSavePickerUI.FileName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20FileSavePickerUI.FileName");
 			}
 		}
 		#endif
@@ -47,7 +47,7 @@ namespace Windows.Storage.Pickers.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string FileSavePickerUI.SettingsIdentifier is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string FileSavePickerUI.SettingsIdentifier is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20FileSavePickerUI.SettingsIdentifier");
 			}
 		}
 		#endif
@@ -60,7 +60,7 @@ namespace Windows.Storage.Pickers.Provider
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Storage.Pickers.Provider.SetFileNameResult TrySetFileName( string value)
 		{
-			throw new global::System.NotImplementedException("The member SetFileNameResult FileSavePickerUI.TrySetFileName(string value) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member SetFileNameResult FileSavePickerUI.TrySetFileName(string value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SetFileNameResult%20FileSavePickerUI.TrySetFileName%28string%20value%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Storage.Pickers.Provider.FileSavePickerUI.FileNameChanged.add

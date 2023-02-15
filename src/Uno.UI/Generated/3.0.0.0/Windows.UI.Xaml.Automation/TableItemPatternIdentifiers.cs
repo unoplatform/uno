@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Automation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AutomationProperty TableItemPatternIdentifiers.ColumnHeaderItemsProperty is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AutomationProperty TableItemPatternIdentifiers.ColumnHeaderItemsProperty is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AutomationProperty%20TableItemPatternIdentifiers.ColumnHeaderItemsProperty");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.Xaml.Automation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AutomationProperty TableItemPatternIdentifiers.RowHeaderItemsProperty is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AutomationProperty TableItemPatternIdentifiers.RowHeaderItemsProperty is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AutomationProperty%20TableItemPatternIdentifiers.RowHeaderItemsProperty");
 			}
 		}
 		#endif

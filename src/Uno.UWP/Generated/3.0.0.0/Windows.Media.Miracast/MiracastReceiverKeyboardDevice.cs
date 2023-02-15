@@ -13,7 +13,7 @@ namespace Windows.Media.Miracast
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MiracastReceiverKeyboardDevice.TransmitInput is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool MiracastReceiverKeyboardDevice.TransmitInput is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20MiracastReceiverKeyboardDevice.TransmitInput");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Media.Miracast
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MiracastReceiverKeyboardDevice.IsRequestedByTransmitter is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool MiracastReceiverKeyboardDevice.IsRequestedByTransmitter is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20MiracastReceiverKeyboardDevice.IsRequestedByTransmitter");
 			}
 		}
 		#endif
@@ -37,7 +37,7 @@ namespace Windows.Media.Miracast
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MiracastReceiverKeyboardDevice.IsTransmittingInput is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool MiracastReceiverKeyboardDevice.IsTransmittingInput is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20MiracastReceiverKeyboardDevice.IsTransmittingInput");
 			}
 		}
 		#endif

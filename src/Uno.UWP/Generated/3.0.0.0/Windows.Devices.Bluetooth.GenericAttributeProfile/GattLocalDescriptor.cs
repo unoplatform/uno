@@ -13,7 +13,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GattProtectionLevel GattLocalDescriptor.ReadProtectionLevel is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member GattProtectionLevel GattLocalDescriptor.ReadProtectionLevel is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=GattProtectionLevel%20GattLocalDescriptor.ReadProtectionLevel");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBuffer GattLocalDescriptor.StaticValue is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IBuffer GattLocalDescriptor.StaticValue is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IBuffer%20GattLocalDescriptor.StaticValue");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid GattLocalDescriptor.Uuid is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Guid GattLocalDescriptor.Uuid is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Guid%20GattLocalDescriptor.Uuid");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GattProtectionLevel GattLocalDescriptor.WriteProtectionLevel is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member GattProtectionLevel GattLocalDescriptor.WriteProtectionLevel is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=GattProtectionLevel%20GattLocalDescriptor.WriteProtectionLevel");
 			}
 		}
 		#endif

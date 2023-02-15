@@ -49,6 +49,8 @@
 
 		<!-- Disabled because of LinkerDefinitionMergerTask performance issues https://github.com/unoplatform/uno/issues/9632 -->
 		<!--<UnoXamlResourcesTrimming Condition="'$(Configuration)'!='Debug'">true</UnoXamlResourcesTrimming>-->
+
+		<PageExclusions>Themes\WinUI\Resources\**\*.xaml</PageExclusions>
 	</PropertyGroup>
 
 	<Import Project="..\Uno.CrossTargetting.props" />
@@ -59,30 +61,9 @@
 		<UpToDateCheckInput Include="**\*.tt" Exclude="bin\**\*.tt;obj\**\*.tt;" Visible="False" />
 	</ItemGroup>
 
-	<Choose>
-		<When Condition="'$(TargetFramework)'=='net461'">
-			<ItemGroup>
-				<Page Include="$(MSBuildThisFileDirectory)**/*.xaml" Exclude="bin/**/*.xaml;obj/**/*.xaml;Themes\WinUI\Resources\**\*.xaml;" />
-			</ItemGroup>
-		</When>
-		<When Condition="'$(TargetFramework)'=='netstandard2.0'">
-			<ItemGroup>
-				<None Include="$(MSBuildThisFileDirectory)**/*.xaml" Exclude="bin/**/*.xaml;obj/**/*.xaml;Themes\WinUI\Resources\**\*.xaml;" />
-
-				<!-- Remove all xaml files as netstandard2.0 is the reference target and won't be used at runtime -->
-				<Page Remove="@(Page)" />
-			</ItemGroup>
-		</When>
-		<Otherwise>
-			<ItemGroup>
-				<None Include="$(MSBuildThisFileDirectory)**/*.xaml" Exclude="bin/**/*.xaml;obj/**/*.xaml;Themes\WinUI\Resources\**\*.xaml;" />
-
-				<!-- remove files included by msbuild extras -->
-				<Page Remove="@(Page)" />
-				<Page Include="$(MSBuildThisFileDirectory)**/*.xaml" Exclude="bin/**/*.xaml;obj/**/*.xaml;Themes\WinUI\Resources\**\*.xaml;" />
-			</ItemGroup>
-		</Otherwise>
-	</Choose>
+	<PropertyGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
+		<EnableAutomaticXamlPageInclusion>false</EnableAutomaticXamlPageInclusion>
+	</PropertyGroup>
 
 	<ItemGroup>
 		<None Include="Extensions\CGSizeExtensions.iOSmacOS.cs" />

@@ -13,7 +13,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float SpotLight.QuadraticAttenuation is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float SpotLight.QuadraticAttenuation is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20SpotLight.QuadraticAttenuation");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color SpotLight.OuterConeColor is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Color SpotLight.OuterConeColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Color%20SpotLight.OuterConeColor");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float SpotLight.OuterConeAngleInDegrees is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float SpotLight.OuterConeAngleInDegrees is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20SpotLight.OuterConeAngleInDegrees");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float SpotLight.OuterConeAngle is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float SpotLight.OuterConeAngle is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20SpotLight.OuterConeAngle");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector3 SpotLight.Offset is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Vector3 SpotLight.Offset is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Vector3%20SpotLight.Offset");
 			}
 			set
 			{
@@ -83,7 +83,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float SpotLight.LinearAttenuation is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float SpotLight.LinearAttenuation is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20SpotLight.LinearAttenuation");
 			}
 			set
 			{
@@ -97,7 +97,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color SpotLight.InnerConeColor is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Color SpotLight.InnerConeColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Color%20SpotLight.InnerConeColor");
 			}
 			set
 			{
@@ -111,7 +111,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float SpotLight.InnerConeAngleInDegrees is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float SpotLight.InnerConeAngleInDegrees is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20SpotLight.InnerConeAngleInDegrees");
 			}
 			set
 			{
@@ -125,7 +125,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float SpotLight.InnerConeAngle is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float SpotLight.InnerConeAngle is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20SpotLight.InnerConeAngle");
 			}
 			set
 			{
@@ -139,7 +139,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector3 SpotLight.Direction is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Vector3 SpotLight.Direction is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Vector3%20SpotLight.Direction");
 			}
 			set
 			{
@@ -153,7 +153,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Visual SpotLight.CoordinateSpace is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Visual SpotLight.CoordinateSpace is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Visual%20SpotLight.CoordinateSpace");
 			}
 			set
 			{
@@ -167,7 +167,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float SpotLight.ConstantAttenuation is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float SpotLight.ConstantAttenuation is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20SpotLight.ConstantAttenuation");
 			}
 			set
 			{
@@ -181,7 +181,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float SpotLight.OuterConeIntensity is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float SpotLight.OuterConeIntensity is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20SpotLight.OuterConeIntensity");
 			}
 			set
 			{
@@ -195,7 +195,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float SpotLight.InnerConeIntensity is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float SpotLight.InnerConeIntensity is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20SpotLight.InnerConeIntensity");
 			}
 			set
 			{
@@ -209,7 +209,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float SpotLight.MinAttenuationCutoff is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float SpotLight.MinAttenuationCutoff is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20SpotLight.MinAttenuationCutoff");
 			}
 			set
 			{
@@ -223,7 +223,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float SpotLight.MaxAttenuationCutoff is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float SpotLight.MaxAttenuationCutoff is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20SpotLight.MaxAttenuationCutoff");
 			}
 			set
 			{

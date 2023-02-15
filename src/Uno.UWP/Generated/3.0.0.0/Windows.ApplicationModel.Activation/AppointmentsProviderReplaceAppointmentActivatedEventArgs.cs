@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ActivationKind AppointmentsProviderReplaceAppointmentActivatedEventArgs.Kind is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ActivationKind AppointmentsProviderReplaceAppointmentActivatedEventArgs.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ActivationKind%20AppointmentsProviderReplaceAppointmentActivatedEventArgs.Kind");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ApplicationExecutionState AppointmentsProviderReplaceAppointmentActivatedEventArgs.PreviousExecutionState is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ApplicationExecutionState AppointmentsProviderReplaceAppointmentActivatedEventArgs.PreviousExecutionState is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ApplicationExecutionState%20AppointmentsProviderReplaceAppointmentActivatedEventArgs.PreviousExecutionState");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SplashScreen AppointmentsProviderReplaceAppointmentActivatedEventArgs.SplashScreen is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SplashScreen AppointmentsProviderReplaceAppointmentActivatedEventArgs.SplashScreen is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SplashScreen%20AppointmentsProviderReplaceAppointmentActivatedEventArgs.SplashScreen");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member User AppointmentsProviderReplaceAppointmentActivatedEventArgs.User is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member User AppointmentsProviderReplaceAppointmentActivatedEventArgs.User is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=User%20AppointmentsProviderReplaceAppointmentActivatedEventArgs.User");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppointmentsProviderReplaceAppointmentActivatedEventArgs.Verb is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string AppointmentsProviderReplaceAppointmentActivatedEventArgs.Verb is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20AppointmentsProviderReplaceAppointmentActivatedEventArgs.Verb");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ReplaceAppointmentOperation AppointmentsProviderReplaceAppointmentActivatedEventArgs.ReplaceAppointmentOperation is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ReplaceAppointmentOperation AppointmentsProviderReplaceAppointmentActivatedEventArgs.ReplaceAppointmentOperation is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ReplaceAppointmentOperation%20AppointmentsProviderReplaceAppointmentActivatedEventArgs.ReplaceAppointmentOperation");
 			}
 		}
 		#endif

@@ -175,7 +175,7 @@ namespace Windows.UI.Xaml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TriggerCollection FrameworkElement.Triggers is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TriggerCollection FrameworkElement.Triggers is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TriggerCollection%20FrameworkElement.Triggers");
 			}
 		}
 		#endif

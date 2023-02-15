@@ -18,32 +18,32 @@ using System;
 
 namespace Uno
 {
-    /// <summary>
-    /// An empty implementation of the IDisposable class.
-    /// </summary>
-    internal class NullDisposable : IDisposable
-    {
-        /// <summary>
-        /// Provider for a instance of the NullDisposable
-        /// </summary>
-        public static readonly IDisposable Instance = new NullDisposable();
+	/// <summary>
+	/// An empty implementation of the IDisposable class.
+	/// </summary>
+	internal class NullDisposable : IDisposable
+	{
+		/// <summary>
+		/// Provider for a instance of the NullDisposable
+		/// </summary>
+		public static readonly IDisposable Instance = new NullDisposable();
 
-        /// <summary>
-        /// Private constructor, use Instance.
-        /// </summary>
-        private NullDisposable()
-        {
-        }
+		/// <summary>
+		/// Private constructor, use Instance.
+		/// </summary>
+		private NullDisposable()
+		{
+		}
 
-        #region IDisposable Members
+		#region IDisposable Members
 
-        /// <summary>
-        /// See IDisposable.
-        /// </summary>
-        public void Dispose()
-        {
-        }
+		/// <summary>
+		/// See IDisposable.
+		/// </summary>
+		public void Dispose()
+		{
+		}
 
-        #endregion
-    }
+		#endregion
+	}
 }

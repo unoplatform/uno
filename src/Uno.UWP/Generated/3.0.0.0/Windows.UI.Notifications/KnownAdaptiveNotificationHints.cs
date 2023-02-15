@@ -13,7 +13,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownAdaptiveNotificationHints.Align is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownAdaptiveNotificationHints.Align is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownAdaptiveNotificationHints.Align");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownAdaptiveNotificationHints.MaxLines is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownAdaptiveNotificationHints.MaxLines is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownAdaptiveNotificationHints.MaxLines");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownAdaptiveNotificationHints.MinLines is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownAdaptiveNotificationHints.MinLines is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownAdaptiveNotificationHints.MinLines");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownAdaptiveNotificationHints.Style is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownAdaptiveNotificationHints.Style is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownAdaptiveNotificationHints.Style");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownAdaptiveNotificationHints.TextStacking is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownAdaptiveNotificationHints.TextStacking is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownAdaptiveNotificationHints.TextStacking");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownAdaptiveNotificationHints.Wrap is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownAdaptiveNotificationHints.Wrap is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownAdaptiveNotificationHints.Wrap");
 			}
 		}
 		#endif

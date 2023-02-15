@@ -18,7 +18,7 @@ namespace Windows.UI.Xaml.Hosting
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.UIElement GetAppWindowContent( global::Windows.UI.WindowManagement.AppWindow appWindow)
 		{
-			throw new global::System.NotImplementedException("The member UIElement ElementCompositionPreview.GetAppWindowContent(AppWindow appWindow) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member UIElement ElementCompositionPreview.GetAppWindowContent(AppWindow appWindow) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=UIElement%20ElementCompositionPreview.GetAppWindowContent%28AppWindow%20appWindow%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -46,7 +46,7 @@ namespace Windows.UI.Xaml.Hosting
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Composition.CompositionPropertySet GetPointerPositionPropertySet( global::Windows.UI.Xaml.UIElement targetElement)
 		{
-			throw new global::System.NotImplementedException("The member CompositionPropertySet ElementCompositionPreview.GetPointerPositionPropertySet(UIElement targetElement) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member CompositionPropertySet ElementCompositionPreview.GetPointerPositionPropertySet(UIElement targetElement) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CompositionPropertySet%20ElementCompositionPreview.GetPointerPositionPropertySet%28UIElement%20targetElement%29");
 		}
 		#endif
 		// Skipping already declared method Windows.UI.Xaml.Hosting.ElementCompositionPreview.GetElementVisual(Windows.UI.Xaml.UIElement)
@@ -54,7 +54,7 @@ namespace Windows.UI.Xaml.Hosting
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Composition.Visual GetElementChildVisual( global::Windows.UI.Xaml.UIElement element)
 		{
-			throw new global::System.NotImplementedException("The member Visual ElementCompositionPreview.GetElementChildVisual(UIElement element) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member Visual ElementCompositionPreview.GetElementChildVisual(UIElement element) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Visual%20ElementCompositionPreview.GetElementChildVisual%28UIElement%20element%29");
 		}
 		#endif
 		// Skipping already declared method Windows.UI.Xaml.Hosting.ElementCompositionPreview.SetElementChildVisual(Windows.UI.Xaml.UIElement, Windows.UI.Composition.Visual)
@@ -62,7 +62,7 @@ namespace Windows.UI.Xaml.Hosting
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Composition.CompositionPropertySet GetScrollViewerManipulationPropertySet( global::Windows.UI.Xaml.Controls.ScrollViewer scrollViewer)
 		{
-			throw new global::System.NotImplementedException("The member CompositionPropertySet ElementCompositionPreview.GetScrollViewerManipulationPropertySet(ScrollViewer scrollViewer) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member CompositionPropertySet ElementCompositionPreview.GetScrollViewerManipulationPropertySet(ScrollViewer scrollViewer) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CompositionPropertySet%20ElementCompositionPreview.GetScrollViewerManipulationPropertySet%28ScrollViewer%20scrollViewer%29");
 		}
 		#endif
 	}

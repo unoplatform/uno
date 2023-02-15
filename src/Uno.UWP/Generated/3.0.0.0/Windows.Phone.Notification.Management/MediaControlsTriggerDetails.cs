@@ -13,7 +13,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MediaControlsTriggerDetails.StartedProcessing is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool MediaControlsTriggerDetails.StartedProcessing is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20MediaControlsTriggerDetails.StartedProcessing");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AccessoryNotificationType MediaControlsTriggerDetails.AccessoryNotificationType is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AccessoryNotificationType MediaControlsTriggerDetails.AccessoryNotificationType is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AccessoryNotificationType%20MediaControlsTriggerDetails.AccessoryNotificationType");
 			}
 		}
 		#endif
@@ -37,7 +37,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaControlsTriggerDetails.AppDisplayName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MediaControlsTriggerDetails.AppDisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MediaControlsTriggerDetails.AppDisplayName");
 			}
 		}
 		#endif
@@ -47,7 +47,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaControlsTriggerDetails.AppId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MediaControlsTriggerDetails.AppId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MediaControlsTriggerDetails.AppId");
 			}
 		}
 		#endif
@@ -57,7 +57,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset MediaControlsTriggerDetails.TimeCreated is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DateTimeOffset MediaControlsTriggerDetails.TimeCreated is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DateTimeOffset%20MediaControlsTriggerDetails.TimeCreated");
 			}
 		}
 		#endif
@@ -67,7 +67,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaMetadata MediaControlsTriggerDetails.MediaMetadata is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MediaMetadata MediaControlsTriggerDetails.MediaMetadata is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaMetadata%20MediaControlsTriggerDetails.MediaMetadata");
 			}
 		}
 		#endif
@@ -77,7 +77,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PlaybackStatus MediaControlsTriggerDetails.PlaybackStatus is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PlaybackStatus MediaControlsTriggerDetails.PlaybackStatus is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PlaybackStatus%20MediaControlsTriggerDetails.PlaybackStatus");
 			}
 		}
 		#endif

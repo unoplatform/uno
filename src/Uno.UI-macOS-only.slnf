@@ -4,7 +4,7 @@
     "projects": [
       "AddIns\\Uno.UI.Lottie\\Uno.UI.Lottie.csproj",
       "AddIns\\Uno.UI.MSAL\\Uno.UI.MSAL.csproj",
-      "SamplesApp\\SamplesApp.Shared\\SamplesApp.Shared.shproj",     
+      "SamplesApp\\SamplesApp.Shared\\SamplesApp.Shared.shproj",
       "SamplesApp\\SamplesApp.UITests\\SamplesApp.UITests.csproj",
       "SamplesApp\\SamplesApp.UITests.Generator\\Uno.Samples.UITest.Generator.csproj",
       "SamplesApp\\SamplesApp.UnitTests.Shared\\SamplesApp.UnitTests.Shared.shproj",
@@ -18,7 +18,6 @@
       "Uno.Foundation.Logging\\Uno.Foundation.Logging.csproj",
       "Uno.Foundation\\Uno.Foundation.csproj",
       "Uno.UI.Adapter.Microsoft.Extensions.Logging\\Uno.UI.Adapter.Microsoft.Extensions.Logging.csproj",
-      "Uno.UI.BindingHelper.Android\\Uno.UI.BindingHelper.Android.csproj",
       "Uno.UI.FluentTheme\\Uno.UI.FluentTheme.csproj",
       "Uno.UI.FluentTheme.v1\\Uno.UI.FluentTheme.v1.csproj",
       "Uno.UI.FluentTheme.v2\\Uno.UI.FluentTheme.v2.csproj",
@@ -30,7 +29,7 @@
       "Uno.UI.RemoteControl\\Uno.UI.RemoteControl.csproj",
       "Uno.UI.RuntimeTests\\Uno.UI.RuntimeTests.csproj",
       "Uno.UI.Toolkit\\Uno.UI.Toolkit.csproj",
-      "Uno.UI\\Uno.UI.csproj",      
+      "Uno.UI\\Uno.UI.csproj",
       "Uno.UI.RemoteControl.Server.Processors\\Uno.UI.RemoteControl.Server.Processors.csproj",
       "Uno.UI.RemoteControl.Server\\Uno.UI.RemoteControl.Server.csproj",
       "Uno.UWP\\Uno.csproj"

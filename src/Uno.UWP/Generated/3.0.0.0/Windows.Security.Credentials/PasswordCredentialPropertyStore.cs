@@ -13,7 +13,7 @@ namespace Windows.Security.Credentials
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint PasswordCredentialPropertyStore.Size is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint PasswordCredentialPropertyStore.Size is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20PasswordCredentialPropertyStore.Size");
 			}
 		}
 		#endif

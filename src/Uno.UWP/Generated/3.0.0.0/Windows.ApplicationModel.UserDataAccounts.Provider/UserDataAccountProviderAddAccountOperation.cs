@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UserDataAccountContentKinds UserDataAccountProviderAddAccountOperation.ContentKinds is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member UserDataAccountContentKinds UserDataAccountProviderAddAccountOperation.ContentKinds is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=UserDataAccountContentKinds%20UserDataAccountProviderAddAccountOperation.ContentKinds");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<UserDataAccountPartnerAccountInfo> UserDataAccountProviderAddAccountOperation.PartnerAccountInfos is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<UserDataAccountPartnerAccountInfo> UserDataAccountProviderAddAccountOperation.PartnerAccountInfos is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CUserDataAccountPartnerAccountInfo%3E%20UserDataAccountProviderAddAccountOperation.PartnerAccountInfos");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UserDataAccountProviderOperationKind UserDataAccountProviderAddAccountOperation.Kind is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member UserDataAccountProviderOperationKind UserDataAccountProviderAddAccountOperation.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=UserDataAccountProviderOperationKind%20UserDataAccountProviderAddAccountOperation.Kind");
 			}
 		}
 		#endif

@@ -361,7 +361,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			var sut = new Border
 			{
 				Background = new SolidColorBrush(Color.FromArgb(0xFF, 0x00, 0x80, 0x18)),
-				Clip = new RectangleGeometry{Rect = new Rect(50,50,100,100)}
+				Clip = new RectangleGeometry { Rect = new Rect(50, 50, 100, 100) }
 			};
 			using var vp = VP(sut);
 
@@ -762,7 +762,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 					Content = new Grid
 					{
 						Height = 1024,
-						Clip = new RectangleGeometry{Rect = new Rect(50,50,100,100)},
+						Clip = new RectangleGeometry { Rect = new Rect(50, 50, 100, 100) },
 						Children =
 						{
 							(sut = new Border
@@ -806,10 +806,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		{
 			/*
 			<local:HeadedContent Header="With transform" Background="#008018">
-				<Border 
-					EffectiveViewportChanged="ShowEVP" 
-					Style="{StaticResource EVPContainer}" 
-					Width="100" 
+				<Border
+					EffectiveViewportChanged="ShowEVP"
+					Style="{StaticResource EVPContainer}"
+					Width="100"
 					Height="100"
 					HorizontalAlignment="Left"
 					VerticalAlignment="Top">
@@ -835,7 +835,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 					Margin = new Thickness(x, y, 0, 0),
 					HorizontalAlignment = HorizontalAlignment.Left,
 					VerticalAlignment = VerticalAlignment.Top,
-					RenderTransform = new TranslateTransform{ X = 50, Y = 25}
+					RenderTransform = new TranslateTransform { X = 50, Y = 25 }
 				}
 			};
 
@@ -859,10 +859,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			<local:HeadedContent Header="With transform in SV" Background="#0000F9">
 				<ScrollViewer>
 					<Grid Height="1024">
-						<Border 
-							EffectiveViewportChanged="ShowEVP" 
-							Style="{StaticResource EVPContainer}" 
-							Width="100" 
+						<Border
+							EffectiveViewportChanged="ShowEVP"
+							Style="{StaticResource EVPContainer}"
+							Width="100"
 							Height="100"
 							HorizontalAlignment="Left"
 							VerticalAlignment="Top">
@@ -896,7 +896,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 					{
 						Height = 1024,
 						Children =
-						{ 
+						{
 							(sut = new Border
 							{
 								HorizontalAlignment = HorizontalAlignment.Left,
@@ -940,10 +940,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			<local:HeadedContent Header="Transform with scaling in SV" Background="#86007D">
 				<ScrollViewer>
 					<Grid Height="1024">
-						<Border 
-							EffectiveViewportChanged="ShowEVP" 
-							Style="{StaticResource EVPContainer}" 
-							Width="100" 
+						<Border
+							EffectiveViewportChanged="ShowEVP"
+							Style="{StaticResource EVPContainer}"
+							Width="100"
 							Height="100"
 							HorizontalAlignment="Left"
 							VerticalAlignment="Top">
@@ -1016,7 +1016,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[RequiresFullWindow]
 #if !__IOS__
 		[Ignore("This test native only element and is not supported on this platform")]
-		public void EVP_When_NativeOnlyElement_Then_PassThrough() {}
+		public void EVP_When_NativeOnlyElement_Then_PassThrough() { }
 #else
 		public async Task EVP_When_NativeOnlyElement_Then_PassThrough()
 		{
@@ -1189,7 +1189,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 						return;
 					}
 
-					if (VisualTreeHelper.GetParent(elt as DependencyObject) is {} parent)
+					if (VisualTreeHelper.GetParent(elt as DependencyObject) is { } parent)
 					{
 						Subscribe(parent);
 					}

@@ -13,7 +13,7 @@ namespace Windows.Devices.WiFi
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<WiFiAvailableNetwork> WiFiNetworkReport.AvailableNetworks is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<WiFiAvailableNetwork> WiFiNetworkReport.AvailableNetworks is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CWiFiAvailableNetwork%3E%20WiFiNetworkReport.AvailableNetworks");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.WiFi
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset WiFiNetworkReport.Timestamp is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DateTimeOffset WiFiNetworkReport.Timestamp is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DateTimeOffset%20WiFiNetworkReport.Timestamp");
 			}
 		}
 		#endif

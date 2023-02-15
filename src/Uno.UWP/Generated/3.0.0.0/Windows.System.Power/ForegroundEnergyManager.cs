@@ -13,7 +13,7 @@ namespace Windows.System.Power
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint ForegroundEnergyManager.ExcessiveUsageLevel is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint ForegroundEnergyManager.ExcessiveUsageLevel is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20ForegroundEnergyManager.ExcessiveUsageLevel");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.System.Power
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint ForegroundEnergyManager.LowUsageLevel is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint ForegroundEnergyManager.LowUsageLevel is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20ForegroundEnergyManager.LowUsageLevel");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.System.Power
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint ForegroundEnergyManager.MaxAcceptableUsageLevel is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint ForegroundEnergyManager.MaxAcceptableUsageLevel is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20ForegroundEnergyManager.MaxAcceptableUsageLevel");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.System.Power
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint ForegroundEnergyManager.NearMaxAcceptableUsageLevel is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint ForegroundEnergyManager.NearMaxAcceptableUsageLevel is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20ForegroundEnergyManager.NearMaxAcceptableUsageLevel");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.System.Power
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint ForegroundEnergyManager.RecentEnergyUsage is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint ForegroundEnergyManager.RecentEnergyUsage is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20ForegroundEnergyManager.RecentEnergyUsage");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.System.Power
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint ForegroundEnergyManager.RecentEnergyUsageLevel is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint ForegroundEnergyManager.RecentEnergyUsageLevel is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20ForegroundEnergyManager.RecentEnergyUsageLevel");
 			}
 		}
 		#endif

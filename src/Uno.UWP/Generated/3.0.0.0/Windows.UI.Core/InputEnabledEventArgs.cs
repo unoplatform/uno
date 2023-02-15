@@ -13,7 +13,7 @@ namespace Windows.UI.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool InputEnabledEventArgs.Handled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool InputEnabledEventArgs.Handled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20InputEnabledEventArgs.Handled");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.UI.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool InputEnabledEventArgs.InputEnabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool InputEnabledEventArgs.InputEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20InputEnabledEventArgs.InputEnabled");
 			}
 		}
 		#endif

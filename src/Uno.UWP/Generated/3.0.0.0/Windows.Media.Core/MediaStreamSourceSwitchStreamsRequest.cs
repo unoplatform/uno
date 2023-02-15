@@ -13,7 +13,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IMediaStreamDescriptor MediaStreamSourceSwitchStreamsRequest.NewStreamDescriptor is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IMediaStreamDescriptor MediaStreamSourceSwitchStreamsRequest.NewStreamDescriptor is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IMediaStreamDescriptor%20MediaStreamSourceSwitchStreamsRequest.NewStreamDescriptor");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IMediaStreamDescriptor MediaStreamSourceSwitchStreamsRequest.OldStreamDescriptor is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IMediaStreamDescriptor MediaStreamSourceSwitchStreamsRequest.OldStreamDescriptor is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IMediaStreamDescriptor%20MediaStreamSourceSwitchStreamsRequest.OldStreamDescriptor");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Media.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Media.Core.MediaStreamSourceSwitchStreamsRequestDeferral GetDeferral()
 		{
-			throw new global::System.NotImplementedException("The member MediaStreamSourceSwitchStreamsRequestDeferral MediaStreamSourceSwitchStreamsRequest.GetDeferral() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member MediaStreamSourceSwitchStreamsRequestDeferral MediaStreamSourceSwitchStreamsRequest.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaStreamSourceSwitchStreamsRequestDeferral%20MediaStreamSourceSwitchStreamsRequest.GetDeferral%28%29");
 		}
 		#endif
 	}

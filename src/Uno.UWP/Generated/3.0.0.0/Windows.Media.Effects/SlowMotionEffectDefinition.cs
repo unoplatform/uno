@@ -13,7 +13,7 @@ namespace Windows.Media.Effects
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double SlowMotionEffectDefinition.TimeStretchRate is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double SlowMotionEffectDefinition.TimeStretchRate is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20SlowMotionEffectDefinition.TimeStretchRate");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Media.Effects
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SlowMotionEffectDefinition.ActivatableClassId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SlowMotionEffectDefinition.ActivatableClassId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SlowMotionEffectDefinition.ActivatableClassId");
 			}
 		}
 		#endif
@@ -37,7 +37,7 @@ namespace Windows.Media.Effects
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IPropertySet SlowMotionEffectDefinition.Properties is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IPropertySet SlowMotionEffectDefinition.Properties is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IPropertySet%20SlowMotionEffectDefinition.Properties");
 			}
 		}
 		#endif

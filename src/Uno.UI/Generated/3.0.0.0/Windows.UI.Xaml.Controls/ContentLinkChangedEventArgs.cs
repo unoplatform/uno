@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ContentLinkChangeKind ContentLinkChangedEventArgs.ChangeKind is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ContentLinkChangeKind ContentLinkChangedEventArgs.ChangeKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ContentLinkChangeKind%20ContentLinkChangedEventArgs.ChangeKind");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ContentLinkInfo ContentLinkChangedEventArgs.ContentLinkInfo is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ContentLinkInfo ContentLinkChangedEventArgs.ContentLinkInfo is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ContentLinkInfo%20ContentLinkChangedEventArgs.ContentLinkInfo");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TextRange ContentLinkChangedEventArgs.TextRange is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TextRange ContentLinkChangedEventArgs.TextRange is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TextRange%20ContentLinkChangedEventArgs.TextRange");
 			}
 		}
 		#endif

@@ -41,7 +41,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IRandomAccessStreamReference MapBillboard.Image is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IRandomAccessStreamReference MapBillboard.Image is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IRandomAccessStreamReference%20MapBillboard.Image");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MapCamera MapBillboard.ReferenceCamera is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MapCamera MapBillboard.ReferenceCamera is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MapCamera%20MapBillboard.ReferenceCamera");
 			}
 		}
 		#endif

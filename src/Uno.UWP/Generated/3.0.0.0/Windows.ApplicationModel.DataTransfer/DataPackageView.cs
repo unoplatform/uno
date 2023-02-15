@@ -21,7 +21,7 @@ namespace Windows.ApplicationModel.DataTransfer
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<string> GetTextAsync( string formatId)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<string> DataPackageView.GetTextAsync(string formatId) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<string> DataPackageView.GetTextAsync(string formatId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3Cstring%3E%20DataPackageView.GetTextAsync%28string%20formatId%29");
 		}
 		#endif
 		// Skipping already declared method Windows.ApplicationModel.DataTransfer.DataPackageView.GetUriAsync()
@@ -36,21 +36,21 @@ namespace Windows.ApplicationModel.DataTransfer
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Security.EnterpriseData.ProtectionPolicyEvaluationResult> RequestAccessAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<ProtectionPolicyEvaluationResult> DataPackageView.RequestAccessAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<ProtectionPolicyEvaluationResult> DataPackageView.RequestAccessAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CProtectionPolicyEvaluationResult%3E%20DataPackageView.RequestAccessAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Security.EnterpriseData.ProtectionPolicyEvaluationResult> RequestAccessAsync( string enterpriseId)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<ProtectionPolicyEvaluationResult> DataPackageView.RequestAccessAsync(string enterpriseId) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<ProtectionPolicyEvaluationResult> DataPackageView.RequestAccessAsync(string enterpriseId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CProtectionPolicyEvaluationResult%3E%20DataPackageView.RequestAccessAsync%28string%20enterpriseId%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Security.EnterpriseData.ProtectionPolicyEvaluationResult UnlockAndAssumeEnterpriseIdentity()
 		{
-			throw new global::System.NotImplementedException("The member ProtectionPolicyEvaluationResult DataPackageView.UnlockAndAssumeEnterpriseIdentity() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member ProtectionPolicyEvaluationResult DataPackageView.UnlockAndAssumeEnterpriseIdentity() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ProtectionPolicyEvaluationResult%20DataPackageView.UnlockAndAssumeEnterpriseIdentity%28%29");
 		}
 		#endif
 		// Skipping already declared method Windows.ApplicationModel.DataTransfer.DataPackageView.SetAcceptedFormatId(string)

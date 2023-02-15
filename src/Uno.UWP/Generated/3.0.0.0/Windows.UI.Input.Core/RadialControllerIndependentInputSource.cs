@@ -13,7 +13,7 @@ namespace Windows.UI.Input.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member RadialController RadialControllerIndependentInputSource.Controller is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member RadialController RadialControllerIndependentInputSource.Controller is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=RadialController%20RadialControllerIndependentInputSource.Controller");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.Input.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CoreDispatcher RadialControllerIndependentInputSource.Dispatcher is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member CoreDispatcher RadialControllerIndependentInputSource.Dispatcher is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CoreDispatcher%20RadialControllerIndependentInputSource.Dispatcher");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.UI.Input.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DispatcherQueue RadialControllerIndependentInputSource.DispatcherQueue is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DispatcherQueue RadialControllerIndependentInputSource.DispatcherQueue is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DispatcherQueue%20RadialControllerIndependentInputSource.DispatcherQueue");
 			}
 		}
 		#endif
@@ -44,7 +44,7 @@ namespace Windows.UI.Input.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Input.Core.RadialControllerIndependentInputSource CreateForView( global::Windows.ApplicationModel.Core.CoreApplicationView view)
 		{
-			throw new global::System.NotImplementedException("The member RadialControllerIndependentInputSource RadialControllerIndependentInputSource.CreateForView(CoreApplicationView view) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member RadialControllerIndependentInputSource RadialControllerIndependentInputSource.CreateForView(CoreApplicationView view) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=RadialControllerIndependentInputSource%20RadialControllerIndependentInputSource.CreateForView%28CoreApplicationView%20view%29");
 		}
 		#endif
 	}

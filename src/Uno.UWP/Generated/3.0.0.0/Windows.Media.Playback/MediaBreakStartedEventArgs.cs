@@ -13,7 +13,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaBreak MediaBreakStartedEventArgs.MediaBreak is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MediaBreak MediaBreakStartedEventArgs.MediaBreak is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaBreak%20MediaBreakStartedEventArgs.MediaBreak");
 			}
 		}
 		#endif

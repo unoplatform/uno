@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PaymentItem.Pending is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool PaymentItem.Pending is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20PaymentItem.Pending");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PaymentItem.Label is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PaymentItem.Label is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PaymentItem.Label");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PaymentCurrencyAmount PaymentItem.Amount is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PaymentCurrencyAmount PaymentItem.Amount is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PaymentCurrencyAmount%20PaymentItem.Amount");
 			}
 			set
 			{

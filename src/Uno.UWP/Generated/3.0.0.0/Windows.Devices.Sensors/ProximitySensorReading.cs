@@ -13,7 +13,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint? ProximitySensorReading.DistanceInMillimeters is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint? ProximitySensorReading.DistanceInMillimeters is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%3F%20ProximitySensorReading.DistanceInMillimeters");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ProximitySensorReading.IsDetected is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ProximitySensorReading.IsDetected is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ProximitySensorReading.IsDetected");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset ProximitySensorReading.Timestamp is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DateTimeOffset ProximitySensorReading.Timestamp is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DateTimeOffset%20ProximitySensorReading.Timestamp");
 			}
 		}
 		#endif

@@ -13,7 +13,7 @@ namespace Windows.Media.Core.Preview
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SoundLevel SoundLevelBroker.SoundLevel is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SoundLevel SoundLevelBroker.SoundLevel is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SoundLevel%20SoundLevelBroker.SoundLevel");
 			}
 		}
 		#endif

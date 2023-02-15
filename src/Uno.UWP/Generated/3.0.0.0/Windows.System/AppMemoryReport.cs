@@ -13,7 +13,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong AppMemoryReport.PeakPrivateCommitUsage is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ulong AppMemoryReport.PeakPrivateCommitUsage is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ulong%20AppMemoryReport.PeakPrivateCommitUsage");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong AppMemoryReport.PrivateCommitUsage is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ulong AppMemoryReport.PrivateCommitUsage is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ulong%20AppMemoryReport.PrivateCommitUsage");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong AppMemoryReport.TotalCommitLimit is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ulong AppMemoryReport.TotalCommitLimit is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ulong%20AppMemoryReport.TotalCommitLimit");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong AppMemoryReport.TotalCommitUsage is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ulong AppMemoryReport.TotalCommitUsage is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ulong%20AppMemoryReport.TotalCommitUsage");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong AppMemoryReport.ExpectedTotalCommitLimit is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ulong AppMemoryReport.ExpectedTotalCommitLimit is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ulong%20AppMemoryReport.ExpectedTotalCommitLimit");
 			}
 		}
 		#endif

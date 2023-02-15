@@ -1,5 +1,5 @@
 ﻿namespace Uno.UI.Runtime.Skia.Native
-{ 
+{
 	enum libinput_pointer_axis_source
 	{
 		/**

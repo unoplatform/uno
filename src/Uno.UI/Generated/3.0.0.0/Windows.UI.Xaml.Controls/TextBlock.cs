@@ -51,7 +51,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TextPointer TextBlock.SelectionEnd is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TextPointer TextBlock.SelectionEnd is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TextPointer%20TextBlock.SelectionEnd");
 			}
 		}
 		#endif
@@ -61,7 +61,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TextPointer TextBlock.SelectionStart is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TextPointer TextBlock.SelectionStart is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TextPointer%20TextBlock.SelectionStart");
 			}
 		}
 		#endif
@@ -71,7 +71,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double TextBlock.BaselineOffset is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double TextBlock.BaselineOffset is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20TextBlock.BaselineOffset");
 			}
 		}
 		#endif
@@ -81,7 +81,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TextPointer TextBlock.ContentEnd is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TextPointer TextBlock.ContentEnd is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TextPointer%20TextBlock.ContentEnd");
 			}
 		}
 		#endif
@@ -91,7 +91,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TextPointer TextBlock.ContentStart is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TextPointer TextBlock.ContentStart is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TextPointer%20TextBlock.ContentStart");
 			}
 		}
 		#endif
@@ -199,7 +199,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<TextHighlighter> TextBlock.TextHighlighters is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<TextHighlighter> TextBlock.TextHighlighters is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3CTextHighlighter%3E%20TextBlock.TextHighlighters");
 			}
 		}
 		#endif
@@ -390,7 +390,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Composition.CompositionBrush GetAlphaMask()
 		{
-			throw new global::System.NotImplementedException("The member CompositionBrush TextBlock.GetAlphaMask() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member CompositionBrush TextBlock.GetAlphaMask() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CompositionBrush%20TextBlock.GetAlphaMask%28%29");
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Controls.TextBlock.TextDecorations.get

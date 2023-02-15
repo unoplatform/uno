@@ -13,7 +13,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BluetoothError GattServiceProviderAdvertisementStatusChangedEventArgs.Error is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member BluetoothError GattServiceProviderAdvertisementStatusChangedEventArgs.Error is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=BluetoothError%20GattServiceProviderAdvertisementStatusChangedEventArgs.Error");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GattServiceProviderAdvertisementStatus GattServiceProviderAdvertisementStatusChangedEventArgs.Status is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member GattServiceProviderAdvertisementStatus GattServiceProviderAdvertisementStatusChangedEventArgs.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=GattServiceProviderAdvertisementStatus%20GattServiceProviderAdvertisementStatusChangedEventArgs.Status");
 			}
 		}
 		#endif

@@ -13,7 +13,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppMemoryUsageLevel AppResourceGroupMemoryReport.CommitUsageLevel is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AppMemoryUsageLevel AppResourceGroupMemoryReport.CommitUsageLevel is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AppMemoryUsageLevel%20AppResourceGroupMemoryReport.CommitUsageLevel");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong AppResourceGroupMemoryReport.CommitUsageLimit is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ulong AppResourceGroupMemoryReport.CommitUsageLimit is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ulong%20AppResourceGroupMemoryReport.CommitUsageLimit");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong AppResourceGroupMemoryReport.PrivateCommitUsage is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ulong AppResourceGroupMemoryReport.PrivateCommitUsage is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ulong%20AppResourceGroupMemoryReport.PrivateCommitUsage");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong AppResourceGroupMemoryReport.TotalCommitUsage is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ulong AppResourceGroupMemoryReport.TotalCommitUsage is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ulong%20AppResourceGroupMemoryReport.TotalCommitUsage");
 			}
 		}
 		#endif

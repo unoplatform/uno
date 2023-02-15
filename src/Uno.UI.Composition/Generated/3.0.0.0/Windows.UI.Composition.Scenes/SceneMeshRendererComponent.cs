@@ -13,7 +13,7 @@ namespace Windows.UI.Composition.Scenes
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SceneMesh SceneMeshRendererComponent.Mesh is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SceneMesh SceneMeshRendererComponent.Mesh is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SceneMesh%20SceneMeshRendererComponent.Mesh");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.UI.Composition.Scenes
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SceneMaterial SceneMeshRendererComponent.Material is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SceneMaterial SceneMeshRendererComponent.Material is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SceneMaterial%20SceneMeshRendererComponent.Material");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.UI.Composition.Scenes
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SceneMeshMaterialAttributeMap SceneMeshRendererComponent.UVMappings is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SceneMeshMaterialAttributeMap SceneMeshRendererComponent.UVMappings is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SceneMeshMaterialAttributeMap%20SceneMeshRendererComponent.UVMappings");
 			}
 		}
 		#endif
@@ -54,7 +54,7 @@ namespace Windows.UI.Composition.Scenes
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Composition.Scenes.SceneMeshRendererComponent Create( global::Windows.UI.Composition.Compositor compositor)
 		{
-			throw new global::System.NotImplementedException("The member SceneMeshRendererComponent SceneMeshRendererComponent.Create(Compositor compositor) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member SceneMeshRendererComponent SceneMeshRendererComponent.Create(Compositor compositor) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SceneMeshRendererComponent%20SceneMeshRendererComponent.Create%28Compositor%20compositor%29");
 		}
 		#endif
 	}

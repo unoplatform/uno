@@ -42,7 +42,7 @@ namespace Uno.UI.Composition
 
 			_activity.Window!.TakeSurface(this);
 		}
-		
+
 		void ISurfaceHolderCallback.SurfaceCreated(ISurfaceHolder? holder)
 		{
 			_hwRender = new HardwareRenderer();
@@ -106,7 +106,7 @@ namespace Uno.UI.Composition
 
 		private void Start()
 		{
-			if (_thread is {})
+			if (_thread is { })
 			{
 				if (this.Log().IsEnabled(LogLevel.Warning))
 				{

@@ -13,7 +13,7 @@ namespace Windows.Perception.People
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector3 HeadPose.ForwardDirection is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Vector3 HeadPose.ForwardDirection is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Vector3%20HeadPose.ForwardDirection");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Perception.People
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector3 HeadPose.Position is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Vector3 HeadPose.Position is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Vector3%20HeadPose.Position");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Perception.People
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector3 HeadPose.UpDirection is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Vector3 HeadPose.UpDirection is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Vector3%20HeadPose.UpDirection");
 			}
 		}
 		#endif

@@ -13,7 +13,7 @@ namespace Windows.Security.Authentication.Web.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<WebAccount> FindAllAccountsResult.Accounts is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<WebAccount> FindAllAccountsResult.Accounts is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CWebAccount%3E%20FindAllAccountsResult.Accounts");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Security.Authentication.Web.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WebProviderError FindAllAccountsResult.ProviderError is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member WebProviderError FindAllAccountsResult.ProviderError is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=WebProviderError%20FindAllAccountsResult.ProviderError");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Security.Authentication.Web.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member FindAllWebAccountsStatus FindAllAccountsResult.Status is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member FindAllWebAccountsStatus FindAllAccountsResult.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=FindAllWebAccountsStatus%20FindAllAccountsResult.Status");
 			}
 		}
 		#endif

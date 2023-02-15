@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Appointment AppointmentException.Appointment is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Appointment AppointmentException.Appointment is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Appointment%20AppointmentException.Appointment");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<string> AppointmentException.ExceptionProperties is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<string> AppointmentException.ExceptionProperties is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3Cstring%3E%20AppointmentException.ExceptionProperties");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.ApplicationModel.Appointments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppointmentException.IsDeleted is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool AppointmentException.IsDeleted is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20AppointmentException.IsDeleted");
 			}
 		}
 		#endif

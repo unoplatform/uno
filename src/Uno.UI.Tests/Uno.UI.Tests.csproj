@@ -64,9 +64,6 @@
 		<EmbeddedResource Include="$(MSBuildThisFileDirectory)..\Uno.Net.Shared\Resources\**\*.resx">
 			<Link>Resources\%(RecursiveDir)%(FileName)%(Extension)</Link>
 		</EmbeddedResource>
-
-		<!-- This has to be after all the shared projects imports -->
-		<Page Remove="@(Page)" />
 	</ItemGroup>
 
 	<PropertyGroup>
@@ -94,15 +91,6 @@
 		<PRIResource Include="**\*.resw" />
 	</ItemGroup>
 	<ItemGroup>
-		<Page Include="Windows_UI_Xaml\**\*.xaml" />
-		<Page Include="Windows_UI_Xaml_Data\**\*.xaml" />
-		<Page Include="Windows_UI_Xaml_Controls\**\*.xaml" />
-		<Page Include="ResourceLoader\Controls\**\*.xaml" />
-		<Page Include="Windows_UI_Xaml_Markup\**\*.xaml" />
-		<Page Include="HotReload\Windows_UI_Xaml\**\*.xaml" />
-		<Page Include="App\**\*.xaml" />
-		<None Remove="Lottie\animation.json" />
-		<None Remove="Windows_UI_Xaml_Markup\XamlReaderTests\When_CustomResource.xamltest" />
 		<Page Include="..\SamplesApp\UITests.Shared\Windows_UI_Xaml\Resources\Test_Dictionary_Linked.xaml" Link="App/Linked/Test_Dictionary_Linked.xaml" />
 	</ItemGroup>
 	<ItemGroup>

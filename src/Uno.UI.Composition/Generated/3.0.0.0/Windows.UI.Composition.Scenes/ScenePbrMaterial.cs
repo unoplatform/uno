@@ -13,7 +13,7 @@ namespace Windows.UI.Composition.Scenes
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float ScenePbrMaterial.OcclusionStrength is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float ScenePbrMaterial.OcclusionStrength is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20ScenePbrMaterial.OcclusionStrength");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.UI.Composition.Scenes
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SceneMaterialInput ScenePbrMaterial.OcclusionInput is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SceneMaterialInput ScenePbrMaterial.OcclusionInput is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SceneMaterialInput%20ScenePbrMaterial.OcclusionInput");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.UI.Composition.Scenes
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float ScenePbrMaterial.NormalScale is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float ScenePbrMaterial.NormalScale is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20ScenePbrMaterial.NormalScale");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.UI.Composition.Scenes
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SceneMaterialInput ScenePbrMaterial.NormalInput is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SceneMaterialInput ScenePbrMaterial.NormalInput is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SceneMaterialInput%20ScenePbrMaterial.NormalInput");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.UI.Composition.Scenes
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ScenePbrMaterial.IsDoubleSided is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ScenePbrMaterial.IsDoubleSided is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ScenePbrMaterial.IsDoubleSided");
 			}
 			set
 			{
@@ -83,7 +83,7 @@ namespace Windows.UI.Composition.Scenes
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SceneMaterialInput ScenePbrMaterial.EmissiveInput is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SceneMaterialInput ScenePbrMaterial.EmissiveInput is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SceneMaterialInput%20ScenePbrMaterial.EmissiveInput");
 			}
 			set
 			{
@@ -97,7 +97,7 @@ namespace Windows.UI.Composition.Scenes
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector3 ScenePbrMaterial.EmissiveFactor is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Vector3 ScenePbrMaterial.EmissiveFactor is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Vector3%20ScenePbrMaterial.EmissiveFactor");
 			}
 			set
 			{
@@ -111,7 +111,7 @@ namespace Windows.UI.Composition.Scenes
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SceneAlphaMode ScenePbrMaterial.AlphaMode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SceneAlphaMode ScenePbrMaterial.AlphaMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SceneAlphaMode%20ScenePbrMaterial.AlphaMode");
 			}
 			set
 			{
@@ -125,7 +125,7 @@ namespace Windows.UI.Composition.Scenes
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float ScenePbrMaterial.AlphaCutoff is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float ScenePbrMaterial.AlphaCutoff is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20ScenePbrMaterial.AlphaCutoff");
 			}
 			set
 			{

@@ -13,7 +13,7 @@ namespace Windows.UI.ViewManagement.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan CoreFrameworkInputViewAnimationStartingEventArgs.AnimationDuration is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan CoreFrameworkInputViewAnimationStartingEventArgs.AnimationDuration is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20CoreFrameworkInputViewAnimationStartingEventArgs.AnimationDuration");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.ViewManagement.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CoreFrameworkInputViewAnimationStartingEventArgs.FrameworkAnimationRecommended is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool CoreFrameworkInputViewAnimationStartingEventArgs.FrameworkAnimationRecommended is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20CoreFrameworkInputViewAnimationStartingEventArgs.FrameworkAnimationRecommended");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.UI.ViewManagement.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<CoreInputViewOcclusion> CoreFrameworkInputViewAnimationStartingEventArgs.Occlusions is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<CoreInputViewOcclusion> CoreFrameworkInputViewAnimationStartingEventArgs.Occlusions is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CCoreInputViewOcclusion%3E%20CoreFrameworkInputViewAnimationStartingEventArgs.Occlusions");
 			}
 		}
 		#endif

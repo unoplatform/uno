@@ -13,7 +13,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SourceSuspensionChangedEventArgs.IsAudioSuspended is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool SourceSuspensionChangedEventArgs.IsAudioSuspended is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20SourceSuspensionChangedEventArgs.IsAudioSuspended");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.Capture
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SourceSuspensionChangedEventArgs.IsVideoSuspended is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool SourceSuspensionChangedEventArgs.IsVideoSuspended is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20SourceSuspensionChangedEventArgs.IsVideoSuspended");
 			}
 		}
 		#endif

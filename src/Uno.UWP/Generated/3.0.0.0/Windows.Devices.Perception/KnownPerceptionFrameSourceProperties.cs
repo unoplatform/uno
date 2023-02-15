@@ -13,7 +13,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownPerceptionFrameSourceProperties.DeviceModelVersion is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownPerceptionFrameSourceProperties.DeviceModelVersion is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownPerceptionFrameSourceProperties.DeviceModelVersion");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownPerceptionFrameSourceProperties.EnclosureLocation is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownPerceptionFrameSourceProperties.EnclosureLocation is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownPerceptionFrameSourceProperties.EnclosureLocation");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownPerceptionFrameSourceProperties.FrameKind is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownPerceptionFrameSourceProperties.FrameKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownPerceptionFrameSourceProperties.FrameKind");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownPerceptionFrameSourceProperties.Id is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownPerceptionFrameSourceProperties.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownPerceptionFrameSourceProperties.Id");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownPerceptionFrameSourceProperties.PhysicalDeviceIds is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownPerceptionFrameSourceProperties.PhysicalDeviceIds is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownPerceptionFrameSourceProperties.PhysicalDeviceIds");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownPerceptionFrameSourceProperties.DeviceId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownPerceptionFrameSourceProperties.DeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownPerceptionFrameSourceProperties.DeviceId");
 			}
 		}
 		#endif

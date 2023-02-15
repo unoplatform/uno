@@ -13,7 +13,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KeyDerivationAlgorithmNames.Pbkdf2Sha256 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KeyDerivationAlgorithmNames.Pbkdf2Sha256 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KeyDerivationAlgorithmNames.Pbkdf2Sha256");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KeyDerivationAlgorithmNames.Pbkdf2Md5 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KeyDerivationAlgorithmNames.Pbkdf2Md5 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KeyDerivationAlgorithmNames.Pbkdf2Md5");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KeyDerivationAlgorithmNames.Pbkdf2Sha1 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KeyDerivationAlgorithmNames.Pbkdf2Sha1 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KeyDerivationAlgorithmNames.Pbkdf2Sha1");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KeyDerivationAlgorithmNames.Sp800108CtrHmacSha512 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KeyDerivationAlgorithmNames.Sp800108CtrHmacSha512 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KeyDerivationAlgorithmNames.Sp800108CtrHmacSha512");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KeyDerivationAlgorithmNames.Pbkdf2Sha384 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KeyDerivationAlgorithmNames.Pbkdf2Sha384 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KeyDerivationAlgorithmNames.Pbkdf2Sha384");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KeyDerivationAlgorithmNames.Pbkdf2Sha512 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KeyDerivationAlgorithmNames.Pbkdf2Sha512 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KeyDerivationAlgorithmNames.Pbkdf2Sha512");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KeyDerivationAlgorithmNames.Sp800108CtrHmacMd5 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KeyDerivationAlgorithmNames.Sp800108CtrHmacMd5 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KeyDerivationAlgorithmNames.Sp800108CtrHmacMd5");
 			}
 		}
 		#endif
@@ -83,7 +83,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KeyDerivationAlgorithmNames.Sp800108CtrHmacSha1 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KeyDerivationAlgorithmNames.Sp800108CtrHmacSha1 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KeyDerivationAlgorithmNames.Sp800108CtrHmacSha1");
 			}
 		}
 		#endif
@@ -93,7 +93,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KeyDerivationAlgorithmNames.Sp800108CtrHmacSha256 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KeyDerivationAlgorithmNames.Sp800108CtrHmacSha256 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KeyDerivationAlgorithmNames.Sp800108CtrHmacSha256");
 			}
 		}
 		#endif
@@ -103,7 +103,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KeyDerivationAlgorithmNames.Sp800108CtrHmacSha384 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KeyDerivationAlgorithmNames.Sp800108CtrHmacSha384 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KeyDerivationAlgorithmNames.Sp800108CtrHmacSha384");
 			}
 		}
 		#endif
@@ -113,7 +113,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KeyDerivationAlgorithmNames.Sp80056aConcatMd5 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KeyDerivationAlgorithmNames.Sp80056aConcatMd5 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KeyDerivationAlgorithmNames.Sp80056aConcatMd5");
 			}
 		}
 		#endif
@@ -123,7 +123,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KeyDerivationAlgorithmNames.Sp80056aConcatSha1 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KeyDerivationAlgorithmNames.Sp80056aConcatSha1 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KeyDerivationAlgorithmNames.Sp80056aConcatSha1");
 			}
 		}
 		#endif
@@ -133,7 +133,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KeyDerivationAlgorithmNames.Sp80056aConcatSha256 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KeyDerivationAlgorithmNames.Sp80056aConcatSha256 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KeyDerivationAlgorithmNames.Sp80056aConcatSha256");
 			}
 		}
 		#endif
@@ -143,7 +143,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KeyDerivationAlgorithmNames.Sp80056aConcatSha384 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KeyDerivationAlgorithmNames.Sp80056aConcatSha384 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KeyDerivationAlgorithmNames.Sp80056aConcatSha384");
 			}
 		}
 		#endif
@@ -153,7 +153,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KeyDerivationAlgorithmNames.Sp80056aConcatSha512 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KeyDerivationAlgorithmNames.Sp80056aConcatSha512 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KeyDerivationAlgorithmNames.Sp80056aConcatSha512");
 			}
 		}
 		#endif
@@ -163,7 +163,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KeyDerivationAlgorithmNames.CapiKdfSha1 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KeyDerivationAlgorithmNames.CapiKdfSha1 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KeyDerivationAlgorithmNames.CapiKdfSha1");
 			}
 		}
 		#endif
@@ -173,7 +173,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KeyDerivationAlgorithmNames.CapiKdfSha256 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KeyDerivationAlgorithmNames.CapiKdfSha256 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KeyDerivationAlgorithmNames.CapiKdfSha256");
 			}
 		}
 		#endif
@@ -183,7 +183,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KeyDerivationAlgorithmNames.CapiKdfSha384 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KeyDerivationAlgorithmNames.CapiKdfSha384 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KeyDerivationAlgorithmNames.CapiKdfSha384");
 			}
 		}
 		#endif
@@ -193,7 +193,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KeyDerivationAlgorithmNames.CapiKdfSha512 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KeyDerivationAlgorithmNames.CapiKdfSha512 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KeyDerivationAlgorithmNames.CapiKdfSha512");
 			}
 		}
 		#endif
@@ -203,7 +203,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KeyDerivationAlgorithmNames.CapiKdfMd5 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KeyDerivationAlgorithmNames.CapiKdfMd5 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KeyDerivationAlgorithmNames.CapiKdfMd5");
 			}
 		}
 		#endif

@@ -17,7 +17,7 @@ namespace Windows.UI.Composition
 		public Vector2 Radius
 		{
 			get => _radius;
-			set => SetProperty(ref _radius, value); 
+			set => SetProperty(ref _radius, value);
 		}
 
 		public Vector2 Center

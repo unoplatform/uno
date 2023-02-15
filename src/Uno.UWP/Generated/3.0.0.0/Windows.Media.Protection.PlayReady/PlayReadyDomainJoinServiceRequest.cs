@@ -13,7 +13,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid PlayReadyDomainJoinServiceRequest.ProtectionSystem is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Guid PlayReadyDomainJoinServiceRequest.ProtectionSystem is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Guid%20PlayReadyDomainJoinServiceRequest.ProtectionSystem");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid PlayReadyDomainJoinServiceRequest.Type is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Guid PlayReadyDomainJoinServiceRequest.Type is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Guid%20PlayReadyDomainJoinServiceRequest.Type");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid PlayReadyDomainJoinServiceRequest.DomainServiceId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Guid PlayReadyDomainJoinServiceRequest.DomainServiceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Guid%20PlayReadyDomainJoinServiceRequest.DomainServiceId");
 			}
 			set
 			{
@@ -47,7 +47,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PlayReadyDomainJoinServiceRequest.DomainFriendlyName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PlayReadyDomainJoinServiceRequest.DomainFriendlyName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PlayReadyDomainJoinServiceRequest.DomainFriendlyName");
 			}
 			set
 			{
@@ -61,7 +61,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid PlayReadyDomainJoinServiceRequest.DomainAccountId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Guid PlayReadyDomainJoinServiceRequest.DomainAccountId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Guid%20PlayReadyDomainJoinServiceRequest.DomainAccountId");
 			}
 			set
 			{
@@ -75,7 +75,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri PlayReadyDomainJoinServiceRequest.Uri is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Uri PlayReadyDomainJoinServiceRequest.Uri is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Uri%20PlayReadyDomainJoinServiceRequest.Uri");
 			}
 			set
 			{
@@ -89,7 +89,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PlayReadyDomainJoinServiceRequest.ChallengeCustomData is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PlayReadyDomainJoinServiceRequest.ChallengeCustomData is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PlayReadyDomainJoinServiceRequest.ChallengeCustomData");
 			}
 			set
 			{
@@ -103,7 +103,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PlayReadyDomainJoinServiceRequest.ResponseCustomData is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PlayReadyDomainJoinServiceRequest.ResponseCustomData is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PlayReadyDomainJoinServiceRequest.ResponseCustomData");
 			}
 		}
 		#endif
@@ -130,28 +130,28 @@ namespace Windows.Media.Protection.PlayReady
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction BeginServiceRequest()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction PlayReadyDomainJoinServiceRequest.BeginServiceRequest() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction PlayReadyDomainJoinServiceRequest.BeginServiceRequest() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20PlayReadyDomainJoinServiceRequest.BeginServiceRequest%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Media.Protection.PlayReady.IPlayReadyServiceRequest NextServiceRequest()
 		{
-			throw new global::System.NotImplementedException("The member IPlayReadyServiceRequest PlayReadyDomainJoinServiceRequest.NextServiceRequest() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IPlayReadyServiceRequest PlayReadyDomainJoinServiceRequest.NextServiceRequest() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IPlayReadyServiceRequest%20PlayReadyDomainJoinServiceRequest.NextServiceRequest%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Media.Protection.PlayReady.PlayReadySoapMessage GenerateManualEnablingChallenge()
 		{
-			throw new global::System.NotImplementedException("The member PlayReadySoapMessage PlayReadyDomainJoinServiceRequest.GenerateManualEnablingChallenge() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member PlayReadySoapMessage PlayReadyDomainJoinServiceRequest.GenerateManualEnablingChallenge() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PlayReadySoapMessage%20PlayReadyDomainJoinServiceRequest.GenerateManualEnablingChallenge%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::System.Exception ProcessManualEnablingResponse( byte[] responseBytes)
 		{
-			throw new global::System.NotImplementedException("The member Exception PlayReadyDomainJoinServiceRequest.ProcessManualEnablingResponse(byte[] responseBytes) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member Exception PlayReadyDomainJoinServiceRequest.ProcessManualEnablingResponse(byte[] responseBytes) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Exception%20PlayReadyDomainJoinServiceRequest.ProcessManualEnablingResponse%28byte%5B%5D%20responseBytes%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyDomainJoinServiceRequest.ProtectionSystem.get

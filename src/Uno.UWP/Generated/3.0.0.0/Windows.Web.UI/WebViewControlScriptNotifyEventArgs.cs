@@ -13,7 +13,7 @@ namespace Windows.Web.UI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri WebViewControlScriptNotifyEventArgs.Uri is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Uri WebViewControlScriptNotifyEventArgs.Uri is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Uri%20WebViewControlScriptNotifyEventArgs.Uri");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Web.UI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string WebViewControlScriptNotifyEventArgs.Value is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string WebViewControlScriptNotifyEventArgs.Value is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20WebViewControlScriptNotifyEventArgs.Value");
 			}
 		}
 		#endif

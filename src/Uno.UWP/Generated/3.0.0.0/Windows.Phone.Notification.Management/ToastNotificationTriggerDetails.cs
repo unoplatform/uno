@@ -13,7 +13,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ToastNotificationTriggerDetails.StartedProcessing is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ToastNotificationTriggerDetails.StartedProcessing is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ToastNotificationTriggerDetails.StartedProcessing");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AccessoryNotificationType ToastNotificationTriggerDetails.AccessoryNotificationType is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AccessoryNotificationType ToastNotificationTriggerDetails.AccessoryNotificationType is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AccessoryNotificationType%20ToastNotificationTriggerDetails.AccessoryNotificationType");
 			}
 		}
 		#endif
@@ -37,7 +37,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ToastNotificationTriggerDetails.AppDisplayName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ToastNotificationTriggerDetails.AppDisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ToastNotificationTriggerDetails.AppDisplayName");
 			}
 		}
 		#endif
@@ -47,7 +47,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ToastNotificationTriggerDetails.AppId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ToastNotificationTriggerDetails.AppId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ToastNotificationTriggerDetails.AppId");
 			}
 		}
 		#endif
@@ -57,7 +57,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset ToastNotificationTriggerDetails.TimeCreated is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DateTimeOffset ToastNotificationTriggerDetails.TimeCreated is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DateTimeOffset%20ToastNotificationTriggerDetails.TimeCreated");
 			}
 		}
 		#endif
@@ -67,7 +67,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ToastNotificationTriggerDetails.SuppressPopup is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ToastNotificationTriggerDetails.SuppressPopup is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ToastNotificationTriggerDetails.SuppressPopup");
 			}
 		}
 		#endif
@@ -77,7 +77,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ToastNotificationTriggerDetails.Text1 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ToastNotificationTriggerDetails.Text1 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ToastNotificationTriggerDetails.Text1");
 			}
 		}
 		#endif
@@ -87,7 +87,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ToastNotificationTriggerDetails.Text2 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ToastNotificationTriggerDetails.Text2 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ToastNotificationTriggerDetails.Text2");
 			}
 		}
 		#endif
@@ -97,7 +97,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ToastNotificationTriggerDetails.Text3 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ToastNotificationTriggerDetails.Text3 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ToastNotificationTriggerDetails.Text3");
 			}
 		}
 		#endif
@@ -107,7 +107,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ToastNotificationTriggerDetails.Text4 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ToastNotificationTriggerDetails.Text4 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ToastNotificationTriggerDetails.Text4");
 			}
 		}
 		#endif
@@ -117,7 +117,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ToastNotificationTriggerDetails.InstanceId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ToastNotificationTriggerDetails.InstanceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ToastNotificationTriggerDetails.InstanceId");
 			}
 		}
 		#endif

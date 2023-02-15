@@ -13,7 +13,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PlaybackMediaMarker.MediaMarkerType is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PlaybackMediaMarker.MediaMarkerType is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PlaybackMediaMarker.MediaMarkerType");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PlaybackMediaMarker.Text is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PlaybackMediaMarker.Text is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PlaybackMediaMarker.Text");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan PlaybackMediaMarker.Time is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan PlaybackMediaMarker.Time is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20PlaybackMediaMarker.Time");
 			}
 		}
 		#endif

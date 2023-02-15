@@ -593,6 +593,7 @@ namespace Windows.UI.Xaml.Controls
 					Refresh();
 					break;
 				case NotifyCollectionChangedAction.Reset:
+					CleanUpAllContainers();
 					Refresh();
 					break;
 			}
@@ -678,6 +679,16 @@ namespace Windows.UI.Xaml.Controls
 				containerPair.Key.SetValue(ItemsControl.IndexForItemContainerProperty, containerPair.Value);
 			}
 			_containersForIndexRepair.Clear();
+		}
+
+		private void CleanUpAllContainers()
+		{
+			if (ShouldItemsControlManageChildren) return;
+
+			foreach (var container in MaterializedContainers)
+			{
+				CleanUpContainer(container);
+			}
 		}
 
 		private void CleanUpContainers(int startingIndex, int length)

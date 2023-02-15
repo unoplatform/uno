@@ -33,7 +33,7 @@ namespace Windows.UI
 
 		public byte R { get => _r; set => _r = value; }
 
-		internal bool IsTransparent => A == 0;
+		internal bool IsTransparent => _a == 0;
 
 		public static Color FromArgb(byte a, byte r, byte g, byte b) => new Color(a, r, g, b);
 
@@ -73,14 +73,14 @@ namespace Windows.UI
 		/// Returns value indicating color's luminance.
 		/// Values lower than 0.5 mean dark color, above 0.5 light color.
 		/// </summary>
-		internal double Luminance => (0.299 * R + 0.587 * G + 0.114 * B) / 255;
+		internal double Luminance => (0.299 * _r + 0.587 * _g + 0.114 * _b) / 255;
 
-		internal Color WithOpacity(double opacity) => new Color((byte)(A * opacity), R, G, B);
+		internal Color WithOpacity(double opacity) => new Color((byte)(_a * opacity), _r, _g, _b);
 
 		internal uint AsUInt32() => _color;
 
 		string IFormattable.ToString(string format, IFormatProvider formatProvider) => ToString(format, formatProvider);
 
-		private string ToString(string format, IFormatProvider formatProvider) => string.Format(formatProvider, "#{0:X2}{1:X2}{2:X2}{3:X2}", A, R, G, B);
+		private string ToString(string format, IFormatProvider formatProvider) => string.Format(formatProvider, "#{0:X2}{1:X2}{2:X2}{3:X2}", _a, _r, _g, _b);
 	}
 }

@@ -27,7 +27,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member InkToolbarMenuKind InkToolbarMenuButton.MenuKind is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member InkToolbarMenuKind InkToolbarMenuButton.MenuKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=InkToolbarMenuKind%20InkToolbarMenuButton.MenuKind");
 			}
 		}
 		#endif

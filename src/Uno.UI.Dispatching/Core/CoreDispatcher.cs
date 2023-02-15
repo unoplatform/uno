@@ -136,7 +136,8 @@ namespace Uno.UI.Dispatching
 		public CoreDispatcherPriority CurrentPriority
 		{
 			get => _currentPriority;
-			[Uno.NotImplemented] set { } // Drop the set done by external code
+			[Uno.NotImplemented]
+			set { } // Drop the set done by external code
 		}
 
 		/// <summary>

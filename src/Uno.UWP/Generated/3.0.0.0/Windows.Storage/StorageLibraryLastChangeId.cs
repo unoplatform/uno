@@ -13,7 +13,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong StorageLibraryLastChangeId.Unknown is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ulong StorageLibraryLastChangeId.Unknown is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ulong%20StorageLibraryLastChangeId.Unknown");
 			}
 		}
 		#endif

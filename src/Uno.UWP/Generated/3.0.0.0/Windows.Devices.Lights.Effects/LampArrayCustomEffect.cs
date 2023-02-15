@@ -13,7 +13,7 @@ namespace Windows.Devices.Lights.Effects
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan LampArrayCustomEffect.UpdateInterval is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan LampArrayCustomEffect.UpdateInterval is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20LampArrayCustomEffect.UpdateInterval");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Devices.Lights.Effects
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan LampArrayCustomEffect.Duration is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan LampArrayCustomEffect.Duration is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20LampArrayCustomEffect.Duration");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Devices.Lights.Effects
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int LampArrayCustomEffect.ZIndex is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int LampArrayCustomEffect.ZIndex is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20LampArrayCustomEffect.ZIndex");
 			}
 			set
 			{

@@ -4,7 +4,7 @@ parameters:
 jobs:
 - job: wasm_package_build
   displayName: 'Build WebAssembly Package Binaries'
-  
+
   dependsOn: winui_convert_tree
 
   pool:
@@ -70,5 +70,5 @@ jobs:
     retryCountOnTaskFailure: 3
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
-      ArtifactName: NugetPackages-Artifacts-wasm
+      ArtifactName: NugetPackages-Artifacts-wasm-$(XAML_FLAVOR_BUILD)
       ArtifactType: Container

@@ -27,14 +27,14 @@ namespace Windows.UI.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool ShouldYield()
 		{
-			throw new global::System.NotImplementedException("The member bool CoreDispatcher.ShouldYield() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member bool CoreDispatcher.ShouldYield() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20CoreDispatcher.ShouldYield%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool ShouldYield( global::Windows.UI.Core.CoreDispatcherPriority priority)
 		{
-			throw new global::System.NotImplementedException("The member bool CoreDispatcher.ShouldYield(CoreDispatcherPriority priority) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member bool CoreDispatcher.ShouldYield(CoreDispatcherPriority priority) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20CoreDispatcher.ShouldYield%28CoreDispatcherPriority%20priority%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -48,14 +48,14 @@ namespace Windows.UI.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<bool> TryRunAsync( global::Windows.UI.Core.CoreDispatcherPriority priority,  global::Windows.UI.Core.DispatchedHandler agileCallback)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> CoreDispatcher.TryRunAsync(CoreDispatcherPriority priority, DispatchedHandler agileCallback) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> CoreDispatcher.TryRunAsync(CoreDispatcherPriority priority, DispatchedHandler agileCallback) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3Cbool%3E%20CoreDispatcher.TryRunAsync%28CoreDispatcherPriority%20priority%2C%20DispatchedHandler%20agileCallback%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<bool> TryRunIdleAsync( global::Windows.UI.Core.IdleDispatchedHandler agileCallback)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> CoreDispatcher.TryRunIdleAsync(IdleDispatchedHandler agileCallback) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> CoreDispatcher.TryRunIdleAsync(IdleDispatchedHandler agileCallback) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3Cbool%3E%20CoreDispatcher.TryRunIdleAsync%28IdleDispatchedHandler%20agileCallback%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

@@ -22,7 +22,6 @@ namespace Uno.UI.SourceGenerators.NativeCtor
 	{
 		public void Initialize(GeneratorInitializationContext context)
 		{
-			DependenciesInitializer.Init();
 		}
 
 		public void Execute(GeneratorExecutionContext context)

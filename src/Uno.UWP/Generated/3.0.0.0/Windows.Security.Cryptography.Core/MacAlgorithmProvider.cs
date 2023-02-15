@@ -13,7 +13,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MacAlgorithmProvider.AlgorithmName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MacAlgorithmProvider.AlgorithmName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MacAlgorithmProvider.AlgorithmName");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint MacAlgorithmProvider.MacLength is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint MacAlgorithmProvider.MacLength is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20MacAlgorithmProvider.MacLength");
 			}
 		}
 		#endif
@@ -33,21 +33,21 @@ namespace Windows.Security.Cryptography.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Security.Cryptography.Core.CryptographicKey CreateKey( global::Windows.Storage.Streams.IBuffer keyMaterial)
 		{
-			throw new global::System.NotImplementedException("The member CryptographicKey MacAlgorithmProvider.CreateKey(IBuffer keyMaterial) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member CryptographicKey MacAlgorithmProvider.CreateKey(IBuffer keyMaterial) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CryptographicKey%20MacAlgorithmProvider.CreateKey%28IBuffer%20keyMaterial%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Security.Cryptography.Core.CryptographicHash CreateHash( global::Windows.Storage.Streams.IBuffer keyMaterial)
 		{
-			throw new global::System.NotImplementedException("The member CryptographicHash MacAlgorithmProvider.CreateHash(IBuffer keyMaterial) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member CryptographicHash MacAlgorithmProvider.CreateHash(IBuffer keyMaterial) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CryptographicHash%20MacAlgorithmProvider.CreateHash%28IBuffer%20keyMaterial%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Security.Cryptography.Core.MacAlgorithmProvider OpenAlgorithm( string algorithm)
 		{
-			throw new global::System.NotImplementedException("The member MacAlgorithmProvider MacAlgorithmProvider.OpenAlgorithm(string algorithm) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member MacAlgorithmProvider MacAlgorithmProvider.OpenAlgorithm(string algorithm) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MacAlgorithmProvider%20MacAlgorithmProvider.OpenAlgorithm%28string%20algorithm%29");
 		}
 		#endif
 	}

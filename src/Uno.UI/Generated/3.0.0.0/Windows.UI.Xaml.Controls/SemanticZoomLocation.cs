@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member object SemanticZoomLocation.Item is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member object SemanticZoomLocation.Item is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=object%20SemanticZoomLocation.Item");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Rect SemanticZoomLocation.Bounds is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Rect SemanticZoomLocation.Bounds is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Rect%20SemanticZoomLocation.Bounds");
 			}
 			set
 			{

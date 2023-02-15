@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ActivationKind StartupTaskActivatedEventArgs.Kind is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ActivationKind StartupTaskActivatedEventArgs.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ActivationKind%20StartupTaskActivatedEventArgs.Kind");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ApplicationExecutionState StartupTaskActivatedEventArgs.PreviousExecutionState is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ApplicationExecutionState StartupTaskActivatedEventArgs.PreviousExecutionState is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ApplicationExecutionState%20StartupTaskActivatedEventArgs.PreviousExecutionState");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SplashScreen StartupTaskActivatedEventArgs.SplashScreen is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SplashScreen StartupTaskActivatedEventArgs.SplashScreen is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SplashScreen%20StartupTaskActivatedEventArgs.SplashScreen");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member User StartupTaskActivatedEventArgs.User is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member User StartupTaskActivatedEventArgs.User is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=User%20StartupTaskActivatedEventArgs.User");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StartupTaskActivatedEventArgs.TaskId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string StartupTaskActivatedEventArgs.TaskId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20StartupTaskActivatedEventArgs.TaskId");
 			}
 		}
 		#endif

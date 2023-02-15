@@ -13,7 +13,7 @@ namespace Windows.Perception.Spatial.Surfaces
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SpatialCoordinateSystem SpatialSurfaceMesh.CoordinateSystem is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SpatialCoordinateSystem SpatialSurfaceMesh.CoordinateSystem is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SpatialCoordinateSystem%20SpatialSurfaceMesh.CoordinateSystem");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Perception.Spatial.Surfaces
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SpatialSurfaceInfo SpatialSurfaceMesh.SurfaceInfo is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SpatialSurfaceInfo SpatialSurfaceMesh.SurfaceInfo is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SpatialSurfaceInfo%20SpatialSurfaceMesh.SurfaceInfo");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Perception.Spatial.Surfaces
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SpatialSurfaceMeshBuffer SpatialSurfaceMesh.TriangleIndices is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SpatialSurfaceMeshBuffer SpatialSurfaceMesh.TriangleIndices is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SpatialSurfaceMeshBuffer%20SpatialSurfaceMesh.TriangleIndices");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Perception.Spatial.Surfaces
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SpatialSurfaceMeshBuffer SpatialSurfaceMesh.VertexNormals is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SpatialSurfaceMeshBuffer SpatialSurfaceMesh.VertexNormals is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SpatialSurfaceMeshBuffer%20SpatialSurfaceMesh.VertexNormals");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Perception.Spatial.Surfaces
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector3 SpatialSurfaceMesh.VertexPositionScale is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Vector3 SpatialSurfaceMesh.VertexPositionScale is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Vector3%20SpatialSurfaceMesh.VertexPositionScale");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Perception.Spatial.Surfaces
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SpatialSurfaceMeshBuffer SpatialSurfaceMesh.VertexPositions is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SpatialSurfaceMeshBuffer SpatialSurfaceMesh.VertexPositions is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SpatialSurfaceMeshBuffer%20SpatialSurfaceMesh.VertexPositions");
 			}
 		}
 		#endif

@@ -13,7 +13,7 @@ namespace Windows.Devices.Bluetooth
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan? BluetoothSignalStrengthFilter.SamplingInterval is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan? BluetoothSignalStrengthFilter.SamplingInterval is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%3F%20BluetoothSignalStrengthFilter.SamplingInterval");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Devices.Bluetooth
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan? BluetoothSignalStrengthFilter.OutOfRangeTimeout is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan? BluetoothSignalStrengthFilter.OutOfRangeTimeout is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%3F%20BluetoothSignalStrengthFilter.OutOfRangeTimeout");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Devices.Bluetooth
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member short? BluetoothSignalStrengthFilter.OutOfRangeThresholdInDBm is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member short? BluetoothSignalStrengthFilter.OutOfRangeThresholdInDBm is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=short%3F%20BluetoothSignalStrengthFilter.OutOfRangeThresholdInDBm");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.Devices.Bluetooth
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member short? BluetoothSignalStrengthFilter.InRangeThresholdInDBm is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member short? BluetoothSignalStrengthFilter.InRangeThresholdInDBm is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=short%3F%20BluetoothSignalStrengthFilter.InRangeThresholdInDBm");
 			}
 			set
 			{

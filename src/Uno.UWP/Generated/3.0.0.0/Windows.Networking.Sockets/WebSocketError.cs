@@ -11,7 +11,7 @@ namespace Windows.Networking.Sockets
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Web.WebErrorStatus GetStatus( int hresult)
 		{
-			throw new global::System.NotImplementedException("The member WebErrorStatus WebSocketError.GetStatus(int hresult) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member WebErrorStatus WebSocketError.GetStatus(int hresult) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=WebErrorStatus%20WebSocketError.GetStatus%28int%20hresult%29");
 		}
 		#endif
 	}

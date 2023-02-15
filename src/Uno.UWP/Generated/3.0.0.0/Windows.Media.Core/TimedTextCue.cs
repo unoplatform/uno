@@ -13,7 +13,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan TimedTextCue.StartTime is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan TimedTextCue.StartTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20TimedTextCue.StartTime");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string TimedTextCue.Id is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string TimedTextCue.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20TimedTextCue.Id");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan TimedTextCue.Duration is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan TimedTextCue.Duration is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20TimedTextCue.Duration");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimedTextStyle TimedTextCue.CueStyle is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimedTextStyle TimedTextCue.CueStyle is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimedTextStyle%20TimedTextCue.CueStyle");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimedTextRegion TimedTextCue.CueRegion is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimedTextRegion TimedTextCue.CueRegion is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimedTextRegion%20TimedTextCue.CueRegion");
 			}
 			set
 			{
@@ -83,7 +83,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<TimedTextLine> TimedTextCue.Lines is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<TimedTextLine> TimedTextCue.Lines is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3CTimedTextLine%3E%20TimedTextCue.Lines");
 			}
 		}
 		#endif

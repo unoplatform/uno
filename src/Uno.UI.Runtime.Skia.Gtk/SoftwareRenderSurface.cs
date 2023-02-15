@@ -93,7 +93,7 @@ namespace Uno.UI.Runtime.Skia
 			// reset the surfaces (skia/cairo) and bitmap if the size has changed
 			if (_surface == null || scaledWidth != _bwidth || scaledHeight != _bheight)
 			{
-				_gtkSurface?.Dispose ();
+				_gtkSurface?.Dispose();
 				_surface?.Dispose();
 				_bitmap?.Dispose();
 

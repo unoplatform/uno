@@ -13,7 +13,7 @@ namespace Windows.Gaming.Input.ForceFeedback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ConditionForceEffectKind ConditionForceEffect.Kind is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ConditionForceEffectKind ConditionForceEffect.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ConditionForceEffectKind%20ConditionForceEffect.Kind");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Gaming.Input.ForceFeedback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double ConditionForceEffect.Gain is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double ConditionForceEffect.Gain is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20ConditionForceEffect.Gain");
 			}
 			set
 			{
@@ -37,7 +37,7 @@ namespace Windows.Gaming.Input.ForceFeedback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ForceFeedbackEffectState ConditionForceEffect.State is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ForceFeedbackEffectState ConditionForceEffect.State is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ForceFeedbackEffectState%20ConditionForceEffect.State");
 			}
 		}
 		#endif

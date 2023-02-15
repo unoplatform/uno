@@ -7,11 +7,12 @@ The complete sample code can be found here: [NativeFrameNav](https://github.com/
 1. Create a new Uno Platform application, following the instructions [here](../get-started.md).
 2. Add two more pages (`BlankPage1` and `BlankPage2`) to the `Your_Project_Name` project
 
-    Right-click on the `Your_Project_Name` project -> `Add` -> `New Item...` -> `Blank Page`
+    Right-click on the `Your_Project_Name` project -> `Add` -> `New Item...` -> `Page (Uno Platform Windows App SDK)`
     Repeat once
 3. Modify the content of each page to:
    - `MainPage.xaml`, `BlankPage1.xaml`, `BlankPage2.xaml`:
-        > note: Add `xmlns:toolkit="using:Uno.UI.Toolkit"` to the `<Page>` element.
+        > [!NOTE]
+        > Add `xmlns:toolkit="using:Uno.UI.Toolkit"` to the `<Page>` element.
         ```xml
         <Grid toolkit:VisibleBoundsPadding.PaddingMask="Top">
             <Grid.RowDefinitions>

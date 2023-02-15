@@ -13,7 +13,7 @@ namespace Windows.UI.StartScreen
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VisualElementsRequest VisualElementsRequestedEventArgs.Request is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member VisualElementsRequest VisualElementsRequestedEventArgs.Request is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=VisualElementsRequest%20VisualElementsRequestedEventArgs.Request");
 			}
 		}
 		#endif

@@ -13,7 +13,7 @@ namespace Windows.System.RemoteSystems
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string RemoteSystemSessionInfo.ControllerDisplayName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string RemoteSystemSessionInfo.ControllerDisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20RemoteSystemSessionInfo.ControllerDisplayName");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.System.RemoteSystems
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string RemoteSystemSessionInfo.DisplayName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string RemoteSystemSessionInfo.DisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20RemoteSystemSessionInfo.DisplayName");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.System.RemoteSystems
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.System.RemoteSystems.RemoteSystemSessionJoinResult> JoinAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<RemoteSystemSessionJoinResult> RemoteSystemSessionInfo.JoinAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<RemoteSystemSessionJoinResult> RemoteSystemSessionInfo.JoinAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CRemoteSystemSessionJoinResult%3E%20RemoteSystemSessionInfo.JoinAsync%28%29");
 		}
 		#endif
 	}

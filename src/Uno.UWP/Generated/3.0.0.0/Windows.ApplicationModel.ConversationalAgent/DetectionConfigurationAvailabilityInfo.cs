@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.ConversationalAgent
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DetectionConfigurationAvailabilityInfo.HasLockScreenPermission is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool DetectionConfigurationAvailabilityInfo.HasLockScreenPermission is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20DetectionConfigurationAvailabilityInfo.HasLockScreenPermission");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.ApplicationModel.ConversationalAgent
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DetectionConfigurationAvailabilityInfo.HasPermission is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool DetectionConfigurationAvailabilityInfo.HasPermission is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20DetectionConfigurationAvailabilityInfo.HasPermission");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.ApplicationModel.ConversationalAgent
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DetectionConfigurationAvailabilityInfo.HasSystemResourceAccess is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool DetectionConfigurationAvailabilityInfo.HasSystemResourceAccess is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20DetectionConfigurationAvailabilityInfo.HasSystemResourceAccess");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.ApplicationModel.ConversationalAgent
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DetectionConfigurationAvailabilityInfo.IsEnabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool DetectionConfigurationAvailabilityInfo.IsEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20DetectionConfigurationAvailabilityInfo.IsEnabled");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.ApplicationModel.ConversationalAgent
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<SignalDetectorResourceKind> DetectionConfigurationAvailabilityInfo.UnavailableSystemResources is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<SignalDetectorResourceKind> DetectionConfigurationAvailabilityInfo.UnavailableSystemResources is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CSignalDetectorResourceKind%3E%20DetectionConfigurationAvailabilityInfo.UnavailableSystemResources");
 			}
 		}
 		#endif

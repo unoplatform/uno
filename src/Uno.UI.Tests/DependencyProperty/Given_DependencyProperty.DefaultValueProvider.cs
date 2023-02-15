@@ -81,7 +81,7 @@ namespace Uno.UI.Tests.DependencyPropertyTests
 	{
 		public DefaultValueProviderSample()
 		{
-			
+
 		}
 
 		internal override bool GetDefaultValue2(DependencyProperty property, out object value)

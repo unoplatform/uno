@@ -13,7 +13,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string HttpCookiePairHeaderValue.Value is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string HttpCookiePairHeaderValue.Value is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20HttpCookiePairHeaderValue.Value");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string HttpCookiePairHeaderValue.Name is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string HttpCookiePairHeaderValue.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20HttpCookiePairHeaderValue.Name");
 			}
 		}
 		#endif
@@ -54,21 +54,21 @@ namespace Windows.Web.Http.Headers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public override string ToString()
 		{
-			throw new global::System.NotImplementedException("The member string HttpCookiePairHeaderValue.ToString() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member string HttpCookiePairHeaderValue.ToString() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20HttpCookiePairHeaderValue.ToString%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Web.Http.Headers.HttpCookiePairHeaderValue Parse( string input)
 		{
-			throw new global::System.NotImplementedException("The member HttpCookiePairHeaderValue HttpCookiePairHeaderValue.Parse(string input) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member HttpCookiePairHeaderValue HttpCookiePairHeaderValue.Parse(string input) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HttpCookiePairHeaderValue%20HttpCookiePairHeaderValue.Parse%28string%20input%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static bool TryParse( string input, out global::Windows.Web.Http.Headers.HttpCookiePairHeaderValue cookiePairHeaderValue)
 		{
-			throw new global::System.NotImplementedException("The member bool HttpCookiePairHeaderValue.TryParse(string input, out HttpCookiePairHeaderValue cookiePairHeaderValue) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member bool HttpCookiePairHeaderValue.TryParse(string input, out HttpCookiePairHeaderValue cookiePairHeaderValue) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20HttpCookiePairHeaderValue.TryParse%28string%20input%2C%20out%20HttpCookiePairHeaderValue%20cookiePairHeaderValue%29");
 		}
 		#endif
 	}

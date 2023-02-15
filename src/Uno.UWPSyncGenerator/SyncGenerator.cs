@@ -37,6 +37,7 @@ namespace Uno.UWPSyncGenerator
 				}
 			}
 		}
+
 		private void WriteType(INamedTypeSymbol type, IndentedStringBuilder b)
 		{
 			var kind = type.TypeKind;
@@ -51,11 +52,11 @@ namespace Uno.UWPSyncGenerator
 				return;
 			}
 
-			var writtenSymbols = new List<ISymbol>();
+			var writtenMethods = new List<IMethodSymbol>();
 
 			if (type.TypeKind == TypeKind.Delegate)
 			{
-				BuildDelegate(type, b, allSymbols, writtenSymbols);
+				BuildDelegate(type, b, allSymbols);
 			}
 			else
 			{
@@ -104,16 +105,16 @@ namespace Uno.UWPSyncGenerator
 				{
 					if (type.TypeKind != TypeKind.Enum)
 					{
-						BuildProperties(type, b, allSymbols, writtenSymbols);
-						BuildMethods(type, b, allSymbols, writtenSymbols);
-						BuildEvents(type, b, allSymbols, writtenSymbols);
+						BuildProperties(type, b, allSymbols);
+						BuildMethods(type, b, allSymbols, writtenMethods);
+						BuildEvents(type, b, allSymbols);
 					}
 
-					BuildFields(type, b, allSymbols, writtenSymbols);
+					BuildFields(type, b, allSymbols);
 
 					if (type.TypeKind != TypeKind.Enum)
 					{
-						BuildInterfaceImplementations(type, b, allSymbols, writtenSymbols);
+						BuildInterfaceImplementations(type, b, allSymbols, writtenMethods);
 					}
 				}
 

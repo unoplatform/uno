@@ -490,6 +490,8 @@ namespace Windows.UI.Xaml
 						OnDataContextChanged(value, newValue, precedence);
 					}
 
+					TryApplyDataContextOnPrecedenceChange(property, propertyDetails, previousValue, previousPrecedence, newValue, newPrecedence);
+
 					TryUpdateInheritedAttachedProperty(property, propertyDetails);
 
 					if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
@@ -516,6 +518,77 @@ namespace Windows.UI.Xaml
 				// The store has lost its current instance, renove it from its parent.
 				Parent = null;
 			}
+		}
+
+		/// <summary>
+		/// Tries to apply the DataContext to the new and previous values when DataContext Value is inherited
+		/// </summary>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private void TryApplyDataContextOnPrecedenceChange(
+			DependencyProperty property,
+			DependencyPropertyDetails propertyDetails,
+			object? previousValue,
+			DependencyPropertyValuePrecedences previousPrecedence,
+			object? newValue,
+			DependencyPropertyValuePrecedences newPrecedence)
+		{
+			if (property.IsUnoType
+				&& propertyDetails.HasValueInherits
+				&& !propertyDetails.HasValueDoesNotInherit)
+			{
+				// This block is used to synchronize the DataContext property of DependencyProperty values marked as
+				// being able to inherit the DataContext.
+				// When a DependencyProperty has a bindable default value instance (e.g. ContentControl.Foreground), and that the
+				// ContentControl has a DataContext, setting a local precedence value should clear the default value instance DataContext
+				// property. This avoid inaccessible DataContext instances to be strongly kept alive by a lower precedence that
+				// may never be used again.
+
+				// If a value is set with a higher precedence, the lower precedence DataContext must be cleared
+				if (newPrecedence < previousPrecedence)
+				{
+					if (previousValue is IDependencyObjectStoreProvider childProviderClear)
+					{
+						// Clears the DataContext of the previous precedence value
+						childProviderClear.Store.ClearInheritedDataContext();
+					}
+
+					if (newValue is IDependencyObjectStoreProvider childProviderClearNewValue
+						&& !ReferenceEquals(childProviderClearNewValue.Store.Parent, ActualInstance))
+					{
+						// Sets the DataContext of the new precedence value
+						childProviderClearNewValue.Store.RestoreInheritedDataContext(_properties.DataContextPropertyDetails.GetValue());
+					}
+				}
+
+				// If a value is set with a lower precedence, the higher precedence DataContext must be set to the current DataContext
+				if (newPrecedence > previousPrecedence)
+				{
+					if (newValue is IDependencyObjectStoreProvider childProviderSet
+						&& !ReferenceEquals(childProviderSet.Store.Parent, ActualInstance))
+					{
+						// Sets the DataContext of the new precedence value
+						childProviderSet.Store.RestoreInheritedDataContext(_properties.DataContextPropertyDetails.GetValue());
+					}
+
+					if (previousValue is IDependencyObjectStoreProvider childProviderSetNewValue)
+					{
+						// Clears the DataContext of the previous precedence value
+						childProviderSetNewValue.Store.ClearInheritedDataContext();
+					}
+				}
+			}
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private void ClearInheritedDataContext()
+		{
+			ClearValue(_dataContextProperty, DependencyPropertyValuePrecedences.Inheritance);
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private void RestoreInheritedDataContext(object? dataContext)
+		{
+			SetValue(_dataContextProperty, dataContext, DependencyPropertyValuePrecedences.Inheritance);
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1181,7 +1254,7 @@ namespace Windows.UI.Xaml
 				{
 					var propertyDetails = _properties.GetPropertyDetails(localProperty);
 
-					if (HasInherits(propertyDetails))
+					if (propertyDetails.HasInherits)
 					{
 						return (localProperty, propertyDetails);
 					}
@@ -1194,8 +1267,7 @@ namespace Windows.UI.Xaml
 				else if (
 					property.IsAttached
 					&& _properties.FindPropertyDetails(property) is DependencyPropertyDetails attachedDetails
-					&& HasInherits(attachedDetails)
-				)
+					&& attachedDetails.HasInherits)
 				{
 					return (property, attachedDetails);
 				}
@@ -1646,19 +1718,6 @@ namespace Windows.UI.Xaml
 			}
 
 			return isAncestor;
-		}
-
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		private bool HasInherits(DependencyPropertyDetails propertyDetails)
-		{
-			var metadata = propertyDetails.Metadata;
-
-			if (metadata is FrameworkPropertyMetadata frameworkMetadata)
-			{
-				return frameworkMetadata.Options.HasInherits();
-			}
-
-			return false;
 		}
 
 		public DependencyObject? ActualInstance

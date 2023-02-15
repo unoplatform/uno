@@ -65,11 +65,7 @@ namespace Windows.UI.Xaml
 
 						Rect finalRect;
 						var parent = Superview;
-						if (parent is UIElement
-							|| parent is ISetLayoutSlots
-							// In the case of ListViewItem inside native list, its parent's parent is ListViewBaseInternalContainer
-							|| parent?.Superview is ISetLayoutSlots
-						   )
+						if (parent is UIElement or ISetLayoutSlots)
 						{
 							finalRect = LayoutSlotWithMarginsAndAlignments;
 						}

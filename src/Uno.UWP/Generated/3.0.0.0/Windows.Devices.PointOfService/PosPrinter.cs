@@ -13,7 +13,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PosPrinterCapabilities PosPrinter.Capabilities is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PosPrinterCapabilities PosPrinter.Capabilities is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PosPrinterCapabilities%20PosPrinter.Capabilities");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PosPrinter.DeviceId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PosPrinter.DeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PosPrinter.DeviceId");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PosPrinterStatus PosPrinter.Status is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PosPrinterStatus PosPrinter.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PosPrinterStatus%20PosPrinter.Status");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<uint> PosPrinter.SupportedCharacterSets is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<uint> PosPrinter.SupportedCharacterSets is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3Cuint%3E%20PosPrinter.SupportedCharacterSets");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<string> PosPrinter.SupportedTypeFaces is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<string> PosPrinter.SupportedTypeFaces is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3Cstring%3E%20PosPrinter.SupportedTypeFaces");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<uint> PosPrinter.SupportedBarcodeSymbologies is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<uint> PosPrinter.SupportedBarcodeSymbologies is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3Cuint%3E%20PosPrinter.SupportedBarcodeSymbologies");
 			}
 		}
 		#endif
@@ -76,21 +76,21 @@ namespace Windows.Devices.PointOfService
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.PointOfService.ClaimedPosPrinter> ClaimPrinterAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<ClaimedPosPrinter> PosPrinter.ClaimPrinterAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<ClaimedPosPrinter> PosPrinter.ClaimPrinterAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CClaimedPosPrinter%3E%20PosPrinter.ClaimPrinterAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<string> CheckHealthAsync( global::Windows.Devices.PointOfService.UnifiedPosHealthCheckLevel level)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<string> PosPrinter.CheckHealthAsync(UnifiedPosHealthCheckLevel level) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<string> PosPrinter.CheckHealthAsync(UnifiedPosHealthCheckLevel level) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3Cstring%3E%20PosPrinter.CheckHealthAsync%28UnifiedPosHealthCheckLevel%20level%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<string> GetStatisticsAsync( global::System.Collections.Generic.IEnumerable<string> statisticsCategories)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<string> PosPrinter.GetStatisticsAsync(IEnumerable<string> statisticsCategories) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<string> PosPrinter.GetStatisticsAsync(IEnumerable<string> statisticsCategories) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3Cstring%3E%20PosPrinter.GetStatisticsAsync%28IEnumerable%3Cstring%3E%20statisticsCategories%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Devices.PointOfService.PosPrinter.StatusUpdated.add
@@ -100,7 +100,7 @@ namespace Windows.Devices.PointOfService
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Devices.PointOfService.PosPrinterFontProperty GetFontProperty( string typeface)
 		{
-			throw new global::System.NotImplementedException("The member PosPrinterFontProperty PosPrinter.GetFontProperty(string typeface) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member PosPrinterFontProperty PosPrinter.GetFontProperty(string typeface) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PosPrinterFontProperty%20PosPrinter.GetFontProperty%28string%20typeface%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -114,28 +114,28 @@ namespace Windows.Devices.PointOfService
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static string GetDeviceSelector( global::Windows.Devices.PointOfService.PosConnectionTypes connectionTypes)
 		{
-			throw new global::System.NotImplementedException("The member string PosPrinter.GetDeviceSelector(PosConnectionTypes connectionTypes) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member string PosPrinter.GetDeviceSelector(PosConnectionTypes connectionTypes) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PosPrinter.GetDeviceSelector%28PosConnectionTypes%20connectionTypes%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.PointOfService.PosPrinter> GetDefaultAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<PosPrinter> PosPrinter.GetDefaultAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<PosPrinter> PosPrinter.GetDefaultAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CPosPrinter%3E%20PosPrinter.GetDefaultAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.PointOfService.PosPrinter> FromIdAsync( string deviceId)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<PosPrinter> PosPrinter.FromIdAsync(string deviceId) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<PosPrinter> PosPrinter.FromIdAsync(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CPosPrinter%3E%20PosPrinter.FromIdAsync%28string%20deviceId%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static string GetDeviceSelector()
 		{
-			throw new global::System.NotImplementedException("The member string PosPrinter.GetDeviceSelector() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member string PosPrinter.GetDeviceSelector() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PosPrinter.GetDeviceSelector%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ActivationKind PhoneCallActivatedEventArgs.Kind is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ActivationKind PhoneCallActivatedEventArgs.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ActivationKind%20PhoneCallActivatedEventArgs.Kind");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ApplicationExecutionState PhoneCallActivatedEventArgs.PreviousExecutionState is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ApplicationExecutionState PhoneCallActivatedEventArgs.PreviousExecutionState is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ApplicationExecutionState%20PhoneCallActivatedEventArgs.PreviousExecutionState");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SplashScreen PhoneCallActivatedEventArgs.SplashScreen is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SplashScreen PhoneCallActivatedEventArgs.SplashScreen is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SplashScreen%20PhoneCallActivatedEventArgs.SplashScreen");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member User PhoneCallActivatedEventArgs.User is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member User PhoneCallActivatedEventArgs.User is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=User%20PhoneCallActivatedEventArgs.User");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid PhoneCallActivatedEventArgs.LineId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Guid PhoneCallActivatedEventArgs.LineId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Guid%20PhoneCallActivatedEventArgs.LineId");
 			}
 		}
 		#endif

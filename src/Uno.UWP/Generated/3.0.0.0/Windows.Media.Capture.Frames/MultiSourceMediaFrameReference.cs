@@ -11,7 +11,7 @@ namespace Windows.Media.Capture.Frames
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Media.Capture.Frames.MediaFrameReference TryGetFrameReferenceBySourceId( string sourceId)
 		{
-			throw new global::System.NotImplementedException("The member MediaFrameReference MultiSourceMediaFrameReference.TryGetFrameReferenceBySourceId(string sourceId) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member MediaFrameReference MultiSourceMediaFrameReference.TryGetFrameReferenceBySourceId(string sourceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaFrameReference%20MultiSourceMediaFrameReference.TryGetFrameReferenceBySourceId%28string%20sourceId%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

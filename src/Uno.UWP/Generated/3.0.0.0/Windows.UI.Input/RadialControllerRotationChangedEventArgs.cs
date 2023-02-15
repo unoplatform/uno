@@ -13,7 +13,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member RadialControllerScreenContact RadialControllerRotationChangedEventArgs.Contact is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member RadialControllerScreenContact RadialControllerRotationChangedEventArgs.Contact is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=RadialControllerScreenContact%20RadialControllerRotationChangedEventArgs.Contact");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double RadialControllerRotationChangedEventArgs.RotationDeltaInDegrees is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double RadialControllerRotationChangedEventArgs.RotationDeltaInDegrees is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20RadialControllerRotationChangedEventArgs.RotationDeltaInDegrees");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool RadialControllerRotationChangedEventArgs.IsButtonPressed is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool RadialControllerRotationChangedEventArgs.IsButtonPressed is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20RadialControllerRotationChangedEventArgs.IsButtonPressed");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SimpleHapticsController RadialControllerRotationChangedEventArgs.SimpleHapticsController is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SimpleHapticsController RadialControllerRotationChangedEventArgs.SimpleHapticsController is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SimpleHapticsController%20RadialControllerRotationChangedEventArgs.SimpleHapticsController");
 			}
 		}
 		#endif

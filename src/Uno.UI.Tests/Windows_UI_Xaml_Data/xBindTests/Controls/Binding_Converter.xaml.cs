@@ -44,7 +44,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls
 		{
 			return $"v:{value?.ToString()} p:{parameter?.ToString()}";
 		}
-		 
+
 		public object ConvertBack(object value, Type targetType, object parameter, string language)
 		{
 			return "Converted Back";

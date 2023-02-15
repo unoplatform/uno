@@ -11,7 +11,7 @@ namespace $ext_safeprojectname$;
 /// <summary>
 /// Provides application-specific behavior to supplement the default Application class.
 ///
-/// Your own code may be placed in the $ext_safeprojectname$/AppBase.cs class.
+/// Your own code may be placed in the $ext_safeprojectname$/App.cs class.
 /// </summary>
 public sealed partial class AppHead : App
 {

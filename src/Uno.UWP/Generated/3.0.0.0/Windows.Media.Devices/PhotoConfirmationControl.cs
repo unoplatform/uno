@@ -13,7 +13,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaPixelFormat PhotoConfirmationControl.PixelFormat is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MediaPixelFormat PhotoConfirmationControl.PixelFormat is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaPixelFormat%20PhotoConfirmationControl.PixelFormat");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PhotoConfirmationControl.Enabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool PhotoConfirmationControl.Enabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20PhotoConfirmationControl.Enabled");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PhotoConfirmationControl.Supported is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool PhotoConfirmationControl.Supported is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20PhotoConfirmationControl.Supported");
 			}
 		}
 		#endif

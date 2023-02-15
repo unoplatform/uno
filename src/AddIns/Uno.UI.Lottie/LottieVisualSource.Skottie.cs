@@ -315,7 +315,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 		private SKColor GetBackgroundColor()
 		{
-			if(_player?.Background is SolidColorBrush sb)
+			if (_player?.Background is SolidColorBrush sb)
 			{
 				return new SKColor(alpha: sb.ColorWithOpacity.A, red: sb.ColorWithOpacity.R, green: sb.ColorWithOpacity.G, blue: sb.ColorWithOpacity.B);
 			}

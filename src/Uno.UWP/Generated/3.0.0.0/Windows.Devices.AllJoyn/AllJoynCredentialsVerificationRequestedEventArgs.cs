@@ -13,7 +13,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AllJoynAuthenticationMechanism AllJoynCredentialsVerificationRequestedEventArgs.AuthenticationMechanism is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AllJoynAuthenticationMechanism AllJoynCredentialsVerificationRequestedEventArgs.AuthenticationMechanism is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AllJoynAuthenticationMechanism%20AllJoynCredentialsVerificationRequestedEventArgs.AuthenticationMechanism");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Certificate AllJoynCredentialsVerificationRequestedEventArgs.PeerCertificate is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Certificate AllJoynCredentialsVerificationRequestedEventArgs.PeerCertificate is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Certificate%20AllJoynCredentialsVerificationRequestedEventArgs.PeerCertificate");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SocketSslErrorSeverity AllJoynCredentialsVerificationRequestedEventArgs.PeerCertificateErrorSeverity is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SocketSslErrorSeverity AllJoynCredentialsVerificationRequestedEventArgs.PeerCertificateErrorSeverity is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SocketSslErrorSeverity%20AllJoynCredentialsVerificationRequestedEventArgs.PeerCertificateErrorSeverity");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<ChainValidationResult> AllJoynCredentialsVerificationRequestedEventArgs.PeerCertificateErrors is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<ChainValidationResult> AllJoynCredentialsVerificationRequestedEventArgs.PeerCertificateErrors is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CChainValidationResult%3E%20AllJoynCredentialsVerificationRequestedEventArgs.PeerCertificateErrors");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<Certificate> AllJoynCredentialsVerificationRequestedEventArgs.PeerIntermediateCertificates is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<Certificate> AllJoynCredentialsVerificationRequestedEventArgs.PeerIntermediateCertificates is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CCertificate%3E%20AllJoynCredentialsVerificationRequestedEventArgs.PeerIntermediateCertificates");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Devices.AllJoyn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AllJoynCredentialsVerificationRequestedEventArgs.PeerUniqueName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string AllJoynCredentialsVerificationRequestedEventArgs.PeerUniqueName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20AllJoynCredentialsVerificationRequestedEventArgs.PeerUniqueName");
 			}
 		}
 		#endif
@@ -84,7 +84,7 @@ namespace Windows.Devices.AllJoyn
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.Deferral GetDeferral()
 		{
-			throw new global::System.NotImplementedException("The member Deferral AllJoynCredentialsVerificationRequestedEventArgs.GetDeferral() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member Deferral AllJoynCredentialsVerificationRequestedEventArgs.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Deferral%20AllJoynCredentialsVerificationRequestedEventArgs.GetDeferral%28%29");
 		}
 		#endif
 	}

@@ -9,8 +9,8 @@ using Windows.UI.Xaml.Media;
 
 namespace MUXControlsTestApp.Utilities
 {
-    public partial class MUXTestPage : Page
-    {
+	public partial class MUXTestPage : Page
+	{
 		public static DependencyObject SearchVisualTree(DependencyObject root, string name)
 		{
 			int size = VisualTreeHelper.GetChildrenCount(root);

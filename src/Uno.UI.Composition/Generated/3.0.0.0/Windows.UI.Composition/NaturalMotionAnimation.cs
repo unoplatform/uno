@@ -13,7 +13,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AnimationStopBehavior NaturalMotionAnimation.StopBehavior is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AnimationStopBehavior NaturalMotionAnimation.StopBehavior is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AnimationStopBehavior%20NaturalMotionAnimation.StopBehavior");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan NaturalMotionAnimation.DelayTime is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan NaturalMotionAnimation.DelayTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20NaturalMotionAnimation.DelayTime");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AnimationDelayBehavior NaturalMotionAnimation.DelayBehavior is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AnimationDelayBehavior NaturalMotionAnimation.DelayBehavior is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AnimationDelayBehavior%20NaturalMotionAnimation.DelayBehavior");
 			}
 			set
 			{

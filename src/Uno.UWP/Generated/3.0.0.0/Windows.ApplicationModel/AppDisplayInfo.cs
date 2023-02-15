@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppDisplayInfo.Description is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string AppDisplayInfo.Description is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20AppDisplayInfo.Description");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.ApplicationModel
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppDisplayInfo.DisplayName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string AppDisplayInfo.DisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20AppDisplayInfo.DisplayName");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.ApplicationModel
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Storage.Streams.RandomAccessStreamReference GetLogo( global::Windows.Foundation.Size size)
 		{
-			throw new global::System.NotImplementedException("The member RandomAccessStreamReference AppDisplayInfo.GetLogo(Size size) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member RandomAccessStreamReference AppDisplayInfo.GetLogo(Size size) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=RandomAccessStreamReference%20AppDisplayInfo.GetLogo%28Size%20size%29");
 		}
 		#endif
 	}

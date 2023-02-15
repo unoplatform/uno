@@ -13,7 +13,7 @@ namespace Windows.Devices.Bluetooth.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member RfcommServiceId RfcommOutboundConnectionInformation.RemoteServiceId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member RfcommServiceId RfcommOutboundConnectionInformation.RemoteServiceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=RfcommServiceId%20RfcommOutboundConnectionInformation.RemoteServiceId");
 			}
 			set
 			{

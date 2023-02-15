@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UIElement AnchorRequestedEventArgs.Anchor is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member UIElement AnchorRequestedEventArgs.Anchor is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=UIElement%20AnchorRequestedEventArgs.Anchor");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<UIElement> AnchorRequestedEventArgs.AnchorCandidates is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<UIElement> AnchorRequestedEventArgs.AnchorCandidates is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3CUIElement%3E%20AnchorRequestedEventArgs.AnchorCandidates");
 			}
 		}
 		#endif

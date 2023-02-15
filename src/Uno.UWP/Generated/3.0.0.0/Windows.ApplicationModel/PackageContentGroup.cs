@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PackageContentGroup.IsRequired is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool PackageContentGroup.IsRequired is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20PackageContentGroup.IsRequired");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.ApplicationModel
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PackageContentGroup.Name is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PackageContentGroup.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PackageContentGroup.Name");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.ApplicationModel
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Package PackageContentGroup.Package is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Package PackageContentGroup.Package is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Package%20PackageContentGroup.Package");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.ApplicationModel
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PackageContentGroupState PackageContentGroup.State is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PackageContentGroupState PackageContentGroup.State is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PackageContentGroupState%20PackageContentGroup.State");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.ApplicationModel
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PackageContentGroup.RequiredGroupName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PackageContentGroup.RequiredGroupName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PackageContentGroup.RequiredGroupName");
 			}
 		}
 		#endif

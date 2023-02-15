@@ -13,7 +13,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color AmbientLight.Color is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Color AmbientLight.Color is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Color%20AmbientLight.Color");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float AmbientLight.Intensity is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float AmbientLight.Intensity is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20AmbientLight.Intensity");
 			}
 			set
 			{

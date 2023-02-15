@@ -125,7 +125,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<object> ListPickerFlyout.SelectedItems is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<object> ListPickerFlyout.SelectedItems is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3Cobject%3E%20ListPickerFlyout.SelectedItems");
 			}
 		}
 		#endif
@@ -218,7 +218,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<object>> ShowAtAsync( global::Windows.UI.Xaml.FrameworkElement target)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<object>> ListPickerFlyout.ShowAtAsync(FrameworkElement target) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<object>> ListPickerFlyout.ShowAtAsync(FrameworkElement target) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CIReadOnlyList%3Cobject%3E%3E%20ListPickerFlyout.ShowAtAsync%28FrameworkElement%20target%29");
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Controls.ListPickerFlyout.ItemsSourceProperty.get

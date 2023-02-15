@@ -13,7 +13,7 @@ namespace Windows.Gaming.Input.ForceFeedback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double PeriodicForceEffect.Gain is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double PeriodicForceEffect.Gain is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20PeriodicForceEffect.Gain");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Gaming.Input.ForceFeedback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ForceFeedbackEffectState PeriodicForceEffect.State is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ForceFeedbackEffectState PeriodicForceEffect.State is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ForceFeedbackEffectState%20PeriodicForceEffect.State");
 			}
 		}
 		#endif
@@ -37,7 +37,7 @@ namespace Windows.Gaming.Input.ForceFeedback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PeriodicForceEffectKind PeriodicForceEffect.Kind is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PeriodicForceEffectKind PeriodicForceEffect.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PeriodicForceEffectKind%20PeriodicForceEffect.Kind");
 			}
 		}
 		#endif

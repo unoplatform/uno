@@ -13,7 +13,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ActivationKind WebUIToastNotificationActivatedEventArgs.Kind is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ActivationKind WebUIToastNotificationActivatedEventArgs.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ActivationKind%20WebUIToastNotificationActivatedEventArgs.Kind");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ApplicationExecutionState WebUIToastNotificationActivatedEventArgs.PreviousExecutionState is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ApplicationExecutionState WebUIToastNotificationActivatedEventArgs.PreviousExecutionState is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ApplicationExecutionState%20WebUIToastNotificationActivatedEventArgs.PreviousExecutionState");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SplashScreen WebUIToastNotificationActivatedEventArgs.SplashScreen is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SplashScreen WebUIToastNotificationActivatedEventArgs.SplashScreen is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SplashScreen%20WebUIToastNotificationActivatedEventArgs.SplashScreen");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member User WebUIToastNotificationActivatedEventArgs.User is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member User WebUIToastNotificationActivatedEventArgs.User is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=User%20WebUIToastNotificationActivatedEventArgs.User");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string WebUIToastNotificationActivatedEventArgs.Argument is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string WebUIToastNotificationActivatedEventArgs.Argument is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20WebUIToastNotificationActivatedEventArgs.Argument");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ValueSet WebUIToastNotificationActivatedEventArgs.UserInput is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ValueSet WebUIToastNotificationActivatedEventArgs.UserInput is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ValueSet%20WebUIToastNotificationActivatedEventArgs.UserInput");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ActivatedOperation WebUIToastNotificationActivatedEventArgs.ActivatedOperation is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ActivatedOperation WebUIToastNotificationActivatedEventArgs.ActivatedOperation is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ActivatedOperation%20WebUIToastNotificationActivatedEventArgs.ActivatedOperation");
 			}
 		}
 		#endif

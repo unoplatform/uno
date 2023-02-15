@@ -13,7 +13,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PfxImportParameters.ReaderName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PfxImportParameters.ReaderName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PfxImportParameters.ReaderName");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PfxImportParameters.KeyStorageProviderName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PfxImportParameters.KeyStorageProviderName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PfxImportParameters.KeyStorageProviderName");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member KeyProtectionLevel PfxImportParameters.KeyProtectionLevel is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member KeyProtectionLevel PfxImportParameters.KeyProtectionLevel is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=KeyProtectionLevel%20PfxImportParameters.KeyProtectionLevel");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member InstallOptions PfxImportParameters.InstallOptions is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member InstallOptions PfxImportParameters.InstallOptions is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=InstallOptions%20PfxImportParameters.InstallOptions");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PfxImportParameters.FriendlyName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PfxImportParameters.FriendlyName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PfxImportParameters.FriendlyName");
 			}
 			set
 			{
@@ -83,7 +83,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ExportOption PfxImportParameters.Exportable is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ExportOption PfxImportParameters.Exportable is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ExportOption%20PfxImportParameters.Exportable");
 			}
 			set
 			{
@@ -97,7 +97,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PfxImportParameters.ContainerNamePrefix is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PfxImportParameters.ContainerNamePrefix is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PfxImportParameters.ContainerNamePrefix");
 			}
 			set
 			{

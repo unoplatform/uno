@@ -13,7 +13,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CompositionEasingFunctionMode ElasticEasingFunction.Mode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member CompositionEasingFunctionMode ElasticEasingFunction.Mode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CompositionEasingFunctionMode%20ElasticEasingFunction.Mode");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int ElasticEasingFunction.Oscillations is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int ElasticEasingFunction.Oscillations is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20ElasticEasingFunction.Oscillations");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float ElasticEasingFunction.Springiness is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float ElasticEasingFunction.Springiness is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20ElasticEasingFunction.Springiness");
 			}
 		}
 		#endif

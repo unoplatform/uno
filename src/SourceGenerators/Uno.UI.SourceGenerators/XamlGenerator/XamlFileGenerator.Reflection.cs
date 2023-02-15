@@ -970,16 +970,15 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private IEnumerable<(INamedTypeSymbol ownerType, string property)> FindLocalizableAttachedProperties(string uid)
 		{
-			foreach (var key in _resourceKeys.Where(k => k.StartsWith(uid + "/", StringComparison.Ordinal)))
+			foreach (var resource in _resourceDetailsCollection.FindByUId(uid))
 			{
 				// fullKey = $"{uidName}.[using:{ns}]{type}.{memberName}";
 				//
 				// Example:
 				// OpenVideosButton.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip
 
-				var firstDotIndex = key.IndexOf('/');
-
-				var propertyPath = key.Substring(firstDotIndex + 1);
+				var firstDotIndex = resource.Key.IndexOf('.');
+				var propertyPath = resource.Key.Substring(firstDotIndex + 1);
 
 				const string usingPattern = "[using:";
 
@@ -998,7 +997,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					}
 					else
 					{
-						throw new Exception($"Unable to find the type {typeName} in key {key}");
+						throw new Exception($"Unable to find the type {typeName} in key {resource.Key}");
 					}
 				}
 			}

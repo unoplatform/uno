@@ -13,7 +13,7 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan PlaybackPositionChangeRequestedEventArgs.RequestedPlaybackPosition is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan PlaybackPositionChangeRequestedEventArgs.RequestedPlaybackPosition is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20PlaybackPositionChangeRequestedEventArgs.RequestedPlaybackPosition");
 			}
 		}
 		#endif

@@ -13,7 +13,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string HttpLanguageRangeWithQualityHeaderValue.LanguageRange is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string HttpLanguageRangeWithQualityHeaderValue.LanguageRange is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20HttpLanguageRangeWithQualityHeaderValue.LanguageRange");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double? HttpLanguageRangeWithQualityHeaderValue.Quality is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double? HttpLanguageRangeWithQualityHeaderValue.Quality is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%3F%20HttpLanguageRangeWithQualityHeaderValue.Quality");
 			}
 		}
 		#endif
@@ -49,21 +49,21 @@ namespace Windows.Web.Http.Headers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public override string ToString()
 		{
-			throw new global::System.NotImplementedException("The member string HttpLanguageRangeWithQualityHeaderValue.ToString() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member string HttpLanguageRangeWithQualityHeaderValue.ToString() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20HttpLanguageRangeWithQualityHeaderValue.ToString%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Web.Http.Headers.HttpLanguageRangeWithQualityHeaderValue Parse( string input)
 		{
-			throw new global::System.NotImplementedException("The member HttpLanguageRangeWithQualityHeaderValue HttpLanguageRangeWithQualityHeaderValue.Parse(string input) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member HttpLanguageRangeWithQualityHeaderValue HttpLanguageRangeWithQualityHeaderValue.Parse(string input) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HttpLanguageRangeWithQualityHeaderValue%20HttpLanguageRangeWithQualityHeaderValue.Parse%28string%20input%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static bool TryParse( string input, out global::Windows.Web.Http.Headers.HttpLanguageRangeWithQualityHeaderValue languageRangeWithQualityHeaderValue)
 		{
-			throw new global::System.NotImplementedException("The member bool HttpLanguageRangeWithQualityHeaderValue.TryParse(string input, out HttpLanguageRangeWithQualityHeaderValue languageRangeWithQualityHeaderValue) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member bool HttpLanguageRangeWithQualityHeaderValue.TryParse(string input, out HttpLanguageRangeWithQualityHeaderValue languageRangeWithQualityHeaderValue) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20HttpLanguageRangeWithQualityHeaderValue.TryParse%28string%20input%2C%20out%20HttpLanguageRangeWithQualityHeaderValue%20languageRangeWithQualityHeaderValue%29");
 		}
 		#endif
 	}

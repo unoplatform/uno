@@ -13,7 +13,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MobileBroadbandAccount MobileBroadbandModem.CurrentAccount is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MobileBroadbandAccount MobileBroadbandModem.CurrentAccount is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MobileBroadbandAccount%20MobileBroadbandModem.CurrentAccount");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MobileBroadbandNetwork MobileBroadbandModem.CurrentNetwork is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MobileBroadbandNetwork MobileBroadbandModem.CurrentNetwork is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MobileBroadbandNetwork%20MobileBroadbandModem.CurrentNetwork");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MobileBroadbandDeviceInformation MobileBroadbandModem.DeviceInformation is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MobileBroadbandDeviceInformation MobileBroadbandModem.DeviceInformation is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MobileBroadbandDeviceInformation%20MobileBroadbandModem.DeviceInformation");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<MobileBroadbandDeviceServiceInformation> MobileBroadbandModem.DeviceServices is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<MobileBroadbandDeviceServiceInformation> MobileBroadbandModem.DeviceServices is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CMobileBroadbandDeviceServiceInformation%3E%20MobileBroadbandModem.DeviceServices");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MobileBroadbandModem.IsResetSupported is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool MobileBroadbandModem.IsResetSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20MobileBroadbandModem.IsResetSupported");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint MobileBroadbandModem.MaxDeviceServiceCommandSizeInBytes is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint MobileBroadbandModem.MaxDeviceServiceCommandSizeInBytes is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20MobileBroadbandModem.MaxDeviceServiceCommandSizeInBytes");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint MobileBroadbandModem.MaxDeviceServiceDataSizeInBytes is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint MobileBroadbandModem.MaxDeviceServiceDataSizeInBytes is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20MobileBroadbandModem.MaxDeviceServiceDataSizeInBytes");
 			}
 		}
 		#endif
@@ -83,7 +83,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MobileBroadbandModem.IsInEmergencyCallMode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool MobileBroadbandModem.IsInEmergencyCallMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20MobileBroadbandModem.IsInEmergencyCallMode");
 			}
 		}
 		#endif
@@ -96,7 +96,7 @@ namespace Windows.Networking.NetworkOperators
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Networking.NetworkOperators.MobileBroadbandDeviceService GetDeviceService( global::System.Guid deviceServiceId)
 		{
-			throw new global::System.NotImplementedException("The member MobileBroadbandDeviceService MobileBroadbandModem.GetDeviceService(Guid deviceServiceId) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member MobileBroadbandDeviceService MobileBroadbandModem.GetDeviceService(Guid deviceServiceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MobileBroadbandDeviceService%20MobileBroadbandModem.GetDeviceService%28Guid%20deviceServiceId%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandModem.IsResetSupported.get
@@ -104,14 +104,14 @@ namespace Windows.Networking.NetworkOperators
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction ResetAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction MobileBroadbandModem.ResetAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction MobileBroadbandModem.ResetAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20MobileBroadbandModem.ResetAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.NetworkOperators.MobileBroadbandModemConfiguration> GetCurrentConfigurationAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<MobileBroadbandModemConfiguration> MobileBroadbandModem.GetCurrentConfigurationAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<MobileBroadbandModemConfiguration> MobileBroadbandModem.GetCurrentConfigurationAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CMobileBroadbandModemConfiguration%3E%20MobileBroadbandModem.GetCurrentConfigurationAsync%28%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandModem.CurrentNetwork.get
@@ -119,21 +119,21 @@ namespace Windows.Networking.NetworkOperators
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<bool> GetIsPassthroughEnabledAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> MobileBroadbandModem.GetIsPassthroughEnabledAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> MobileBroadbandModem.GetIsPassthroughEnabledAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3Cbool%3E%20MobileBroadbandModem.GetIsPassthroughEnabledAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.NetworkOperators.MobileBroadbandModemStatus> SetIsPassthroughEnabledAsync( bool value)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<MobileBroadbandModemStatus> MobileBroadbandModem.SetIsPassthroughEnabledAsync(bool value) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<MobileBroadbandModemStatus> MobileBroadbandModem.SetIsPassthroughEnabledAsync(bool value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CMobileBroadbandModemStatus%3E%20MobileBroadbandModem.SetIsPassthroughEnabledAsync%28bool%20value%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.NetworkOperators.MobileBroadbandPco> TryGetPcoAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<MobileBroadbandPco> MobileBroadbandModem.TryGetPcoAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<MobileBroadbandPco> MobileBroadbandModem.TryGetPcoAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CMobileBroadbandPco%3E%20MobileBroadbandModem.TryGetPcoAsync%28%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandModem.IsInEmergencyCallMode.get
@@ -143,21 +143,21 @@ namespace Windows.Networking.NetworkOperators
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static string GetDeviceSelector()
 		{
-			throw new global::System.NotImplementedException("The member string MobileBroadbandModem.GetDeviceSelector() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member string MobileBroadbandModem.GetDeviceSelector() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MobileBroadbandModem.GetDeviceSelector%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Networking.NetworkOperators.MobileBroadbandModem FromId( string deviceId)
 		{
-			throw new global::System.NotImplementedException("The member MobileBroadbandModem MobileBroadbandModem.FromId(string deviceId) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member MobileBroadbandModem MobileBroadbandModem.FromId(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MobileBroadbandModem%20MobileBroadbandModem.FromId%28string%20deviceId%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Networking.NetworkOperators.MobileBroadbandModem GetDefault()
 		{
-			throw new global::System.NotImplementedException("The member MobileBroadbandModem MobileBroadbandModem.GetDefault() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member MobileBroadbandModem MobileBroadbandModem.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MobileBroadbandModem%20MobileBroadbandModem.GetDefault%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

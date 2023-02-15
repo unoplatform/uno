@@ -13,7 +13,7 @@ namespace Windows.Phone.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset Enterprise.EnrollmentValidFrom is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DateTimeOffset Enterprise.EnrollmentValidFrom is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DateTimeOffset%20Enterprise.EnrollmentValidFrom");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Phone.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset Enterprise.EnrollmentValidTo is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DateTimeOffset Enterprise.EnrollmentValidTo is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DateTimeOffset%20Enterprise.EnrollmentValidTo");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Phone.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid Enterprise.Id is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Guid Enterprise.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Guid%20Enterprise.Id");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Phone.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string Enterprise.Name is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string Enterprise.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20Enterprise.Name");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Phone.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member EnterpriseStatus Enterprise.Status is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member EnterpriseStatus Enterprise.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=EnterpriseStatus%20Enterprise.Status");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Phone.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int Enterprise.WorkplaceId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int Enterprise.WorkplaceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20Enterprise.WorkplaceId");
 			}
 		}
 		#endif

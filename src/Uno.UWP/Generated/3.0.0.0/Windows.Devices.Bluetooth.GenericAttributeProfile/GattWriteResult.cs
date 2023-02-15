@@ -13,7 +13,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte? GattWriteResult.ProtocolError is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member byte? GattWriteResult.ProtocolError is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=byte%3F%20GattWriteResult.ProtocolError");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GattCommunicationStatus GattWriteResult.Status is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member GattCommunicationStatus GattWriteResult.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=GattCommunicationStatus%20GattWriteResult.Status");
 			}
 		}
 		#endif

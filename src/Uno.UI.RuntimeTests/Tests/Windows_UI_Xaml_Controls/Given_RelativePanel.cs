@@ -16,7 +16,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	[Ignore("Currently fails on macOS, part of #9282! epic")]
 #endif
 	public class Given_RelativePanel
-    {
+	{
 		[TestMethod]
 		public async Task When_Child_Aligns_Horizontal_Center_With_Panel()
 		{

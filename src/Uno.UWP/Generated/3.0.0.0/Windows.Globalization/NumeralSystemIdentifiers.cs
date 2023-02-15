@@ -13,7 +13,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.FullWide is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.FullWide is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20NumeralSystemIdentifiers.FullWide");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.Arab is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.Arab is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20NumeralSystemIdentifiers.Arab");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.ArabExt is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.ArabExt is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20NumeralSystemIdentifiers.ArabExt");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.Bali is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.Bali is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20NumeralSystemIdentifiers.Bali");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.Beng is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.Beng is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20NumeralSystemIdentifiers.Beng");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.Cham is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.Cham is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20NumeralSystemIdentifiers.Cham");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.Deva is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.Deva is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20NumeralSystemIdentifiers.Deva");
 			}
 		}
 		#endif
@@ -83,7 +83,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.MymrShan is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.MymrShan is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20NumeralSystemIdentifiers.MymrShan");
 			}
 		}
 		#endif
@@ -93,7 +93,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.Gujr is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.Gujr is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20NumeralSystemIdentifiers.Gujr");
 			}
 		}
 		#endif
@@ -103,7 +103,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.Guru is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.Guru is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20NumeralSystemIdentifiers.Guru");
 			}
 		}
 		#endif
@@ -113,7 +113,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.HaniDec is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.HaniDec is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20NumeralSystemIdentifiers.HaniDec");
 			}
 		}
 		#endif
@@ -123,7 +123,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.Java is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.Java is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20NumeralSystemIdentifiers.Java");
 			}
 		}
 		#endif
@@ -133,7 +133,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.Kali is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.Kali is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20NumeralSystemIdentifiers.Kali");
 			}
 		}
 		#endif
@@ -143,7 +143,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.Khmr is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.Khmr is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20NumeralSystemIdentifiers.Khmr");
 			}
 		}
 		#endif
@@ -153,7 +153,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.Knda is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.Knda is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20NumeralSystemIdentifiers.Knda");
 			}
 		}
 		#endif
@@ -163,7 +163,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.Lana is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.Lana is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20NumeralSystemIdentifiers.Lana");
 			}
 		}
 		#endif
@@ -173,7 +173,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.LanaTham is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.LanaTham is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20NumeralSystemIdentifiers.LanaTham");
 			}
 		}
 		#endif
@@ -183,7 +183,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.Laoo is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.Laoo is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20NumeralSystemIdentifiers.Laoo");
 			}
 		}
 		#endif
@@ -193,7 +193,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.Latn is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.Latn is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20NumeralSystemIdentifiers.Latn");
 			}
 		}
 		#endif
@@ -203,7 +203,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.Lepc is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.Lepc is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20NumeralSystemIdentifiers.Lepc");
 			}
 		}
 		#endif
@@ -213,7 +213,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.Limb is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.Limb is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20NumeralSystemIdentifiers.Limb");
 			}
 		}
 		#endif
@@ -223,7 +223,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.Mlym is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.Mlym is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20NumeralSystemIdentifiers.Mlym");
 			}
 		}
 		#endif
@@ -233,7 +233,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.Mong is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.Mong is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20NumeralSystemIdentifiers.Mong");
 			}
 		}
 		#endif
@@ -243,7 +243,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.Mtei is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.Mtei is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20NumeralSystemIdentifiers.Mtei");
 			}
 		}
 		#endif
@@ -253,7 +253,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.Mymr is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.Mymr is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20NumeralSystemIdentifiers.Mymr");
 			}
 		}
 		#endif
@@ -263,7 +263,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.Nkoo is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.Nkoo is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20NumeralSystemIdentifiers.Nkoo");
 			}
 		}
 		#endif
@@ -273,7 +273,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.Olck is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.Olck is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20NumeralSystemIdentifiers.Olck");
 			}
 		}
 		#endif
@@ -283,7 +283,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.Orya is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.Orya is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20NumeralSystemIdentifiers.Orya");
 			}
 		}
 		#endif
@@ -293,7 +293,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.Saur is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.Saur is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20NumeralSystemIdentifiers.Saur");
 			}
 		}
 		#endif
@@ -303,7 +303,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.Sund is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.Sund is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20NumeralSystemIdentifiers.Sund");
 			}
 		}
 		#endif
@@ -313,7 +313,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.Talu is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.Talu is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20NumeralSystemIdentifiers.Talu");
 			}
 		}
 		#endif
@@ -323,7 +323,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.TamlDec is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.TamlDec is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20NumeralSystemIdentifiers.TamlDec");
 			}
 		}
 		#endif
@@ -333,7 +333,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.Telu is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.Telu is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20NumeralSystemIdentifiers.Telu");
 			}
 		}
 		#endif
@@ -343,7 +343,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.Thai is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.Thai is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20NumeralSystemIdentifiers.Thai");
 			}
 		}
 		#endif
@@ -353,7 +353,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.Tibt is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.Tibt is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20NumeralSystemIdentifiers.Tibt");
 			}
 		}
 		#endif
@@ -363,7 +363,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.Vaii is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.Vaii is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20NumeralSystemIdentifiers.Vaii");
 			}
 		}
 		#endif
@@ -373,7 +373,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.MathBold is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.MathBold is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20NumeralSystemIdentifiers.MathBold");
 			}
 		}
 		#endif
@@ -383,7 +383,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.MathDbl is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.MathDbl is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20NumeralSystemIdentifiers.MathDbl");
 			}
 		}
 		#endif
@@ -393,7 +393,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.MathMono is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.MathMono is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20NumeralSystemIdentifiers.MathMono");
 			}
 		}
 		#endif
@@ -403,7 +403,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.MathSanb is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.MathSanb is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20NumeralSystemIdentifiers.MathSanb");
 			}
 		}
 		#endif
@@ -413,7 +413,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.MathSans is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.MathSans is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20NumeralSystemIdentifiers.MathSans");
 			}
 		}
 		#endif
@@ -423,7 +423,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.Osma is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.Osma is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20NumeralSystemIdentifiers.Osma");
 			}
 		}
 		#endif
@@ -433,7 +433,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.ZmthBold is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.ZmthBold is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20NumeralSystemIdentifiers.ZmthBold");
 			}
 		}
 		#endif
@@ -443,7 +443,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.ZmthDbl is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.ZmthDbl is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20NumeralSystemIdentifiers.ZmthDbl");
 			}
 		}
 		#endif
@@ -453,7 +453,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.ZmthMono is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.ZmthMono is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20NumeralSystemIdentifiers.ZmthMono");
 			}
 		}
 		#endif
@@ -463,7 +463,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.ZmthSanb is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.ZmthSanb is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20NumeralSystemIdentifiers.ZmthSanb");
 			}
 		}
 		#endif
@@ -473,7 +473,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.ZmthSans is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.ZmthSans is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20NumeralSystemIdentifiers.ZmthSans");
 			}
 		}
 		#endif
@@ -483,7 +483,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.Brah is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string NumeralSystemIdentifiers.Brah is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20NumeralSystemIdentifiers.Brah");
 			}
 		}
 		#endif

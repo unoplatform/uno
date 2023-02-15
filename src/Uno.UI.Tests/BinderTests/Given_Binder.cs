@@ -1075,7 +1075,8 @@ namespace Uno.UI.Tests.BinderTests
 
 			SUT.RegisterPropertyChangedCallback(
 				MyControl.MyPropertyProperty,
-				(s, e) => {
+				(s, e) =>
+				{
 					myPropertyHistory.Add(SUT.MyProperty);
 				});
 

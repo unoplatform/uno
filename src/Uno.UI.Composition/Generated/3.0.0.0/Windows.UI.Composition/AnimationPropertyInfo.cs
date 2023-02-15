@@ -13,7 +13,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AnimationPropertyAccessMode AnimationPropertyInfo.AccessMode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AnimationPropertyAccessMode AnimationPropertyInfo.AccessMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AnimationPropertyAccessMode%20AnimationPropertyInfo.AccessMode");
 			}
 			set
 			{
@@ -27,14 +27,14 @@ namespace Windows.UI.Composition
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Composition.CompositionObject GetResolvedCompositionObject()
 		{
-			throw new global::System.NotImplementedException("The member CompositionObject AnimationPropertyInfo.GetResolvedCompositionObject() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member CompositionObject AnimationPropertyInfo.GetResolvedCompositionObject() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CompositionObject%20AnimationPropertyInfo.GetResolvedCompositionObject%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  string GetResolvedCompositionObjectProperty()
 		{
-			throw new global::System.NotImplementedException("The member string AnimationPropertyInfo.GetResolvedCompositionObjectProperty() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member string AnimationPropertyInfo.GetResolvedCompositionObjectProperty() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20AnimationPropertyInfo.GetResolvedCompositionObjectProperty%28%29");
 		}
 		#endif
 	}

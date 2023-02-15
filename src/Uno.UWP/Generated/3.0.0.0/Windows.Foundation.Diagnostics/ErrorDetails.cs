@@ -13,7 +13,7 @@ namespace Windows.Foundation.Diagnostics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ErrorDetails.Description is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ErrorDetails.Description is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ErrorDetails.Description");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Foundation.Diagnostics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri ErrorDetails.HelpUri is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Uri ErrorDetails.HelpUri is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Uri%20ErrorDetails.HelpUri");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Foundation.Diagnostics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ErrorDetails.LongDescription is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ErrorDetails.LongDescription is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ErrorDetails.LongDescription");
 			}
 		}
 		#endif
@@ -44,7 +44,7 @@ namespace Windows.Foundation.Diagnostics
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Foundation.Diagnostics.ErrorDetails> CreateFromHResultAsync( int errorCode)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<ErrorDetails> ErrorDetails.CreateFromHResultAsync(int errorCode) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<ErrorDetails> ErrorDetails.CreateFromHResultAsync(int errorCode) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CErrorDetails%3E%20ErrorDetails.CreateFromHResultAsync%28int%20errorCode%29");
 		}
 		#endif
 	}

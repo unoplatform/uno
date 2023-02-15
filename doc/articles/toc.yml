@@ -10,7 +10,7 @@
         href: get-started-vs-2022.md
       - name: VS Code
         href: get-started-vscode.md
-      - name: Visual Studio for Mac 2022
+      - name: Visual Studio 2022 for Mac
         href: get-started-vsmac.md
       - name: Rider
         href: get-started-rider.md
@@ -225,7 +225,7 @@
             - name: ProgressRing
               href: features/progressring.md
             - name: ScrollViewer
-              href: controls/ScrollViewer.md          
+              href: controls/ScrollViewer.md
             - name: TextBox
               href: controls/TextBox.md
             - name: TimePicker
@@ -239,17 +239,17 @@
             - name: App Actions
               href: features/windows-ui-startscreen.md
             - name: App Close Handler
-              href: features/app-close-handler.md          
+              href: features/app-close-handler.md
             - name: App Suspension
               href: features/windows-ui-xaml-application.md
             - name: Badge Notifications
               href: features/windows-ui-notifications.md
             - name: Barometer
-              href: features/barometer.md              
+              href: features/barometer.md
             - name: Bluetooth
               href: features/bluetoothdevice.md
             - name: Clipboard
-              href: features/clipboard.md              
+              href: features/clipboard.md
             - name: Contacts
               href: features/windows-applicationmodel-contacts.md
             - name: Credential Storage
@@ -269,7 +269,7 @@
             - name: Geolocation (GPS)
               href: features/windows-devices-geolocation.md
             - name: Gyrometer
-              href: features/gyrometer.md   
+              href: features/gyrometer.md
             - name: Haptics
               href: features/windows-devices-haptics.md
             - name: Keeping Screen On
@@ -277,13 +277,13 @@
             - name: Light Sensor
               href: features/lightsensor.md
             - name: Magnetometer
-              href: features/magnetometer.md   
+              href: features/magnetometer.md
             - name: MIDI
               href: features/windows-devices-midi.md
             - name: Network Information
               href: features/windows-networking.md
             - name: Orientation Sensor
-              href: features/orientation-sensor.md 
+              href: features/orientation-sensor.md
             - name: Package Information
               href: features/windows-applicationmodel.md
             - name: Personalization
@@ -297,11 +297,11 @@
             - name: SMS
               href: features/windows-applicationmodel-chat.md
             - name: Settings
-              href: features/settings.md               
+              href: features/settings.md
             - name: Speech Recognition
-              href: features/SpeechRecognition.md             
+              href: features/SpeechRecognition.md
             - name: Step Counter
-              href: features/step-counter.md 
+              href: features/step-counter.md
             - name: Title Bar Customization
               href: features/windows-ui-viewmanagement.md
             - name: URI Launcher
@@ -395,7 +395,7 @@
             - name: Creating a cross-targeted library
               href: cross-targeted-libraries.md
             - name: Faster Single Target App Builds
-              href: solution-building-single-targetframework.md
+              href: guides/solution-building-single-targetframework.md
             - name: Hosting a WebAssembly app
               href: how-to-host-a-webassembly-app.md
             - name: Updating to WinUI 3.0

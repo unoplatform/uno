@@ -20,6 +20,6 @@ namespace $rootnamespace$
 		public $safeitemname$()
 		{
 			this.InitializeComponent();
-}
-}
+		}
+	}
 }

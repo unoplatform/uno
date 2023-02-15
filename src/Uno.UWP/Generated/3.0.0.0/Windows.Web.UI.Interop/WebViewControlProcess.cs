@@ -13,7 +13,7 @@ namespace Windows.Web.UI.Interop
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string WebViewControlProcess.EnterpriseId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string WebViewControlProcess.EnterpriseId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20WebViewControlProcess.EnterpriseId");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Web.UI.Interop
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool WebViewControlProcess.IsPrivateNetworkClientServerCapabilityEnabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool WebViewControlProcess.IsPrivateNetworkClientServerCapabilityEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20WebViewControlProcess.IsPrivateNetworkClientServerCapabilityEnabled");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Web.UI.Interop
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint WebViewControlProcess.ProcessId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint WebViewControlProcess.ProcessId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20WebViewControlProcess.ProcessId");
 			}
 		}
 		#endif
@@ -60,14 +60,14 @@ namespace Windows.Web.UI.Interop
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Web.UI.Interop.WebViewControl> CreateWebViewControlAsync( long hostWindowHandle,  global::Windows.Foundation.Rect bounds)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<WebViewControl> WebViewControlProcess.CreateWebViewControlAsync(long hostWindowHandle, Rect bounds) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<WebViewControl> WebViewControlProcess.CreateWebViewControlAsync(long hostWindowHandle, Rect bounds) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CWebViewControl%3E%20WebViewControlProcess.CreateWebViewControlAsync%28long%20hostWindowHandle%2C%20Rect%20bounds%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.Web.UI.Interop.WebViewControl> GetWebViewControls()
 		{
-			throw new global::System.NotImplementedException("The member IReadOnlyList<WebViewControl> WebViewControlProcess.GetWebViewControls() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IReadOnlyList<WebViewControl> WebViewControlProcess.GetWebViewControls() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CWebViewControl%3E%20WebViewControlProcess.GetWebViewControls%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

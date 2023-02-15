@@ -54,7 +54,7 @@ public partial class SvgProvider : ISvgProvider
 	}
 
 	public event EventHandler? SourceLoaded;
-	
+
 #if !__NETSTD_REFERENCE__
 	internal event EventHandler? SourceUpdated;
 
@@ -93,10 +93,10 @@ public partial class SvgProvider : ISvgProvider
 #else
 		=> new SvgCanvas(_owner, this);
 #endif
-	
-	public 	
+
+	public
 #if !__NETSTD_REFERENCE__
-	async 
+	async
 #endif
 	Task<bool> TryLoadSvgDataAsync(byte[] svgBytes)
 	{
@@ -112,7 +112,7 @@ public partial class SvgProvider : ISvgProvider
 			{
 				_skSvg = skSvg;
 				_owner.RaiseImageOpened();
-				_skBitmap = null;				
+				_skBitmap = null;
 				UpdateBitmap();
 				SourceLoaded?.Invoke(this, EventArgs.Empty);
 				succeeded = true;
@@ -134,7 +134,7 @@ public partial class SvgProvider : ISvgProvider
 			CleanupSvg();
 			succeeded = false;
 		}
-		
+
 		return succeeded;
 #endif
 	}
@@ -159,8 +159,12 @@ public partial class SvgProvider : ISvgProvider
 				using var memoryStream = new MemoryStream(svgBytes);
 				skSvg.Load(memoryStream);
 			}
-			catch (Exception)
+			catch (Exception ex)
 			{
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().LogError("Failed to load SVG image.", ex);
+				}
 				skSvg.Dispose();
 				skSvg = null;
 			}
@@ -192,7 +196,8 @@ public partial class SvgProvider : ISvgProvider
 			canvas.DrawPicture(_skSvg.Picture, ref scaleMatrix);
 			_skBitmap = bitmap;
 			changed = true;
-		} else if (
+		}
+		else if (
 			double.IsNaN(_owner.RasterizePixelHeight) &&
 			double.IsNaN(_owner.RasterizePixelWidth) &&
 			_skBitmap is not null)

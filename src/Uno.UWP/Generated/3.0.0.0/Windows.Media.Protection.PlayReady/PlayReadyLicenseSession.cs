@@ -19,7 +19,7 @@ namespace Windows.Media.Protection.PlayReady
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Media.Protection.PlayReady.IPlayReadyLicenseAcquisitionServiceRequest CreateLAServiceRequest()
 		{
-			throw new global::System.NotImplementedException("The member IPlayReadyLicenseAcquisitionServiceRequest PlayReadyLicenseSession.CreateLAServiceRequest() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IPlayReadyLicenseAcquisitionServiceRequest PlayReadyLicenseSession.CreateLAServiceRequest() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IPlayReadyLicenseAcquisitionServiceRequest%20PlayReadyLicenseSession.CreateLAServiceRequest%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -33,7 +33,7 @@ namespace Windows.Media.Protection.PlayReady
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Media.Protection.PlayReady.PlayReadyLicenseIterable CreateLicenseIterable( global::Windows.Media.Protection.PlayReady.PlayReadyContentHeader contentHeader,  bool fullyEvaluated)
 		{
-			throw new global::System.NotImplementedException("The member PlayReadyLicenseIterable PlayReadyLicenseSession.CreateLicenseIterable(PlayReadyContentHeader contentHeader, bool fullyEvaluated) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member PlayReadyLicenseIterable PlayReadyLicenseSession.CreateLicenseIterable(PlayReadyContentHeader contentHeader, bool fullyEvaluated) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PlayReadyLicenseIterable%20PlayReadyLicenseSession.CreateLicenseIterable%28PlayReadyContentHeader%20contentHeader%2C%20bool%20fullyEvaluated%29");
 		}
 		#endif
 		// Processing: Windows.Media.Protection.PlayReady.IPlayReadyLicenseSession

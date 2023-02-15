@@ -13,7 +13,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool BarcodeSymbologyAttributes.IsCheckDigitValidationEnabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool BarcodeSymbologyAttributes.IsCheckDigitValidationEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20BarcodeSymbologyAttributes.IsCheckDigitValidationEnabled");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool BarcodeSymbologyAttributes.IsCheckDigitTransmissionEnabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool BarcodeSymbologyAttributes.IsCheckDigitTransmissionEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20BarcodeSymbologyAttributes.IsCheckDigitTransmissionEnabled");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BarcodeSymbologyDecodeLengthKind BarcodeSymbologyAttributes.DecodeLengthKind is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member BarcodeSymbologyDecodeLengthKind BarcodeSymbologyAttributes.DecodeLengthKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=BarcodeSymbologyDecodeLengthKind%20BarcodeSymbologyAttributes.DecodeLengthKind");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologyAttributes.DecodeLength2 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologyAttributes.DecodeLength2 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BarcodeSymbologyAttributes.DecodeLength2");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologyAttributes.DecodeLength1 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologyAttributes.DecodeLength1 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20BarcodeSymbologyAttributes.DecodeLength1");
 			}
 			set
 			{
@@ -83,7 +83,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool BarcodeSymbologyAttributes.IsCheckDigitTransmissionSupported is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool BarcodeSymbologyAttributes.IsCheckDigitTransmissionSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20BarcodeSymbologyAttributes.IsCheckDigitTransmissionSupported");
 			}
 		}
 		#endif
@@ -93,7 +93,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool BarcodeSymbologyAttributes.IsCheckDigitValidationSupported is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool BarcodeSymbologyAttributes.IsCheckDigitValidationSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20BarcodeSymbologyAttributes.IsCheckDigitValidationSupported");
 			}
 		}
 		#endif
@@ -103,7 +103,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool BarcodeSymbologyAttributes.IsDecodeLengthSupported is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool BarcodeSymbologyAttributes.IsDecodeLengthSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20BarcodeSymbologyAttributes.IsDecodeLengthSupported");
 			}
 		}
 		#endif

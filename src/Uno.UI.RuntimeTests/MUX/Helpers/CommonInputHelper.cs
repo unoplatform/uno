@@ -18,7 +18,7 @@ namespace Uno.UI.RuntimeTests.MUX.Helpers
 	{
 		internal static void Cancel(InputDevice device, UIElement element = null)
 		{
-			switch(device)
+			switch (device)
 			{
 				case InputDevice.Keyboard:
 					KeyboardHelper.Escape(element);

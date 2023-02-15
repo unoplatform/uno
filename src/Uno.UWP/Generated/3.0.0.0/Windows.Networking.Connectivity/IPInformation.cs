@@ -13,7 +13,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member NetworkAdapter IPInformation.NetworkAdapter is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member NetworkAdapter IPInformation.NetworkAdapter is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=NetworkAdapter%20IPInformation.NetworkAdapter");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte? IPInformation.PrefixLength is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member byte? IPInformation.PrefixLength is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=byte%3F%20IPInformation.PrefixLength");
 			}
 		}
 		#endif

@@ -63,6 +63,7 @@ $dotnetBuildNet6Configurations =
     @("Mobile", "-f:net7.0-maccatalyst", ""),
     # @("Mobile", "-f:net6.0-macos", ""),  # workaround for https://github.com/xamarin/xamarin-macios/issues/16401
     @("Wasm", "", ""),
+    @("Server", "", ""),
     @("Skia.Gtk", "", ""),
     @("Skia.Linux.FrameBuffer", "", ""),
     @("Skia.WPF", "", "")

@@ -86,8 +86,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 					PersonPicture personPicture = new PersonPicture();
 					Verify.IsNotNull(personPicture);
 
-				// Set properties and ensure that the AutomationName updates accordingly
-				personPicture.Initials = "AB";
+					// Set properties and ensure that the AutomationName updates accordingly
+					personPicture.Initials = "AB";
 					String automationName = AutomationProperties.GetName(personPicture);
 					Verify.AreEqual(automationName, "AB");
 

@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color MapRouteView.RouteColor is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Color MapRouteView.RouteColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Color%20MapRouteView.RouteColor");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color MapRouteView.OutlineColor is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Color MapRouteView.OutlineColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Color%20MapRouteView.OutlineColor");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MapRoute MapRouteView.Route is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MapRoute MapRouteView.Route is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MapRoute%20MapRouteView.Route");
 			}
 		}
 		#endif

@@ -11,7 +11,7 @@ namespace Windows.Devices.Input
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool IsSupported()
 		{
-			throw new global::System.NotImplementedException("The member bool PenButtonListener.IsSupported() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member bool PenButtonListener.IsSupported() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20PenButtonListener.IsSupported%28%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Devices.Input.PenButtonListener.IsSupportedChanged.add
@@ -26,7 +26,7 @@ namespace Windows.Devices.Input
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Devices.Input.PenButtonListener GetDefault()
 		{
-			throw new global::System.NotImplementedException("The member PenButtonListener PenButtonListener.GetDefault() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member PenButtonListener PenButtonListener.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PenButtonListener%20PenButtonListener.GetDefault%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

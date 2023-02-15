@@ -13,7 +13,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string NotificationVisual.Language is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string NotificationVisual.Language is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20NotificationVisual.Language");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<NotificationBinding> NotificationVisual.Bindings is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<NotificationBinding> NotificationVisual.Bindings is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3CNotificationBinding%3E%20NotificationVisual.Bindings");
 			}
 		}
 		#endif
@@ -38,7 +38,7 @@ namespace Windows.UI.Notifications
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Notifications.NotificationBinding GetBinding( string templateName)
 		{
-			throw new global::System.NotImplementedException("The member NotificationBinding NotificationVisual.GetBinding(string templateName) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member NotificationBinding NotificationVisual.GetBinding(string templateName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=NotificationBinding%20NotificationVisual.GetBinding%28string%20templateName%29");
 		}
 		#endif
 	}

@@ -11,7 +11,7 @@ namespace Uno.UI.Tests
 {
 	[TestClass]
 	public class Given_WeakReferencePool
-    {
+	{
 		[TestInitialize]
 		public void Initialize()
 		{

@@ -17,14 +17,14 @@ namespace Windows.Devices.Input.Preview
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Devices.Input.Preview.GazeInputSourcePreview GetForCurrentView()
 		{
-			throw new global::System.NotImplementedException("The member GazeInputSourcePreview GazeInputSourcePreview.GetForCurrentView() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member GazeInputSourcePreview GazeInputSourcePreview.GetForCurrentView() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=GazeInputSourcePreview%20GazeInputSourcePreview.GetForCurrentView%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Devices.Input.Preview.GazeDeviceWatcherPreview CreateWatcher()
 		{
-			throw new global::System.NotImplementedException("The member GazeDeviceWatcherPreview GazeInputSourcePreview.CreateWatcher() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member GazeDeviceWatcherPreview GazeInputSourcePreview.CreateWatcher() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=GazeDeviceWatcherPreview%20GazeInputSourcePreview.CreateWatcher%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

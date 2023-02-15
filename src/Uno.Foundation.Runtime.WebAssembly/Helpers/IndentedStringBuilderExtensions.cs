@@ -21,8 +21,8 @@ using System.Text;
 
 namespace Uno.Foundation.Runtime.WebAssembly.Helpers
 {
-    internal static class IndentedStringBuilderExtensions
-    {
+	internal static class IndentedStringBuilderExtensions
+	{
 		public static IndentedStringBuilder AsIndented(this StringBuilder builder)
 		{
 			return new IndentedStringBuilder(builder);

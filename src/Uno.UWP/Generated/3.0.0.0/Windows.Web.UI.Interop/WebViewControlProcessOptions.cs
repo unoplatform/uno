@@ -13,7 +13,7 @@ namespace Windows.Web.UI.Interop
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WebViewControlProcessCapabilityState WebViewControlProcessOptions.PrivateNetworkClientServerCapability is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member WebViewControlProcessCapabilityState WebViewControlProcessOptions.PrivateNetworkClientServerCapability is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=WebViewControlProcessCapabilityState%20WebViewControlProcessOptions.PrivateNetworkClientServerCapability");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Web.UI.Interop
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string WebViewControlProcessOptions.EnterpriseId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string WebViewControlProcessOptions.EnterpriseId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20WebViewControlProcessOptions.EnterpriseId");
 			}
 			set
 			{

@@ -6,6 +6,15 @@
 	<Product>$(AssemblyName) ($(TargetFramework) $(UnoRuntimeIdentifier))</Product>
   </PropertyGroup>
 
+  <ItemGroup Condition="$(EnableAutomaticXamlPageInclusion)">
+	<Page Include="**/*.xaml" Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder);$(PageExclusions)" />
+	<None Remove="**/*.xaml" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(XamlMergeOutputFile)'!=''">
+	  <XamlMergeInput Include="@(Page)" Exclude="@(_NonMergedXamlResources)" />
+  </ItemGroup>
+
 	<!--
 	Comment out this section if you need to update Resource.designer.cs files.
 	See DEVELOPMENT.md#Android for details.
@@ -67,7 +76,7 @@
 	<PackageReference Update="Uno.UITest.Selenium" Version="1.1.0-dev.24" />
 	<PackageReference Update="Uno.UITest.Xamarin" Version="1.1.0-dev.24" />
 	<PackageReference Update="Uno.UITest.Helpers" Version="1.1.0-dev.24" />
-	<PackageReference Update="Uno.Fonts.Fluent" Version="2.0.0-dev.20" />
+	<PackageReference Update="Uno.Fonts.Fluent" Version="2.0.0" />
 	<PackageReference Update="System.ValueTuple" Version="4.5.0" />
 	<PackageReference Update="Xamarin.DuoSdk" Version="0.0.3.4" />
 	<PackageReference Update="Xamarin.UITest" Version="4.1.0" />
@@ -138,14 +147,6 @@
 	<Error Condition="$(MSBuildThisFileDirectory.Contains(' '))"
 		 Text="The Uno.UI Solution cannot build with a space in the path. Consider changing to a path without spaces."/>
   </Target>
-
-  <PropertyGroup>
-	<!--
-	    Disable shared compilation for the override to take place
-	    https://github.com/dotnet/roslyn/blob/315c2e149ba7889b0937d872274c33fcbfe9af5f/src/NuGet/Microsoft.Net.Compilers/build/Microsoft.Net.Compilers.props#L36
-	-->
-    <UseSharedCompilation>false</UseSharedCompilation>
-  </PropertyGroup>
 
   <Target Name="WorkaroundMissingWinAppSDKDLL"
 				  BeforeTargets="BinPlaceBootstrapDll">

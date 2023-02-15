@@ -13,7 +13,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double AudioNodeEmitterConeProperties.InnerAngle is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double AudioNodeEmitterConeProperties.InnerAngle is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20AudioNodeEmitterConeProperties.InnerAngle");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double AudioNodeEmitterConeProperties.OuterAngle is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double AudioNodeEmitterConeProperties.OuterAngle is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20AudioNodeEmitterConeProperties.OuterAngle");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double AudioNodeEmitterConeProperties.OuterAngleGain is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double AudioNodeEmitterConeProperties.OuterAngleGain is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20AudioNodeEmitterConeProperties.OuterAngleGain");
 			}
 		}
 		#endif

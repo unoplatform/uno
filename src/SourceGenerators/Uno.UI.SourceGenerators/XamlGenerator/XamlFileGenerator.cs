@@ -23,6 +23,8 @@ using System.Diagnostics.CodeAnalysis;
 using Uno.UI.SourceGenerators.Helpers;
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using System.Text;
+
 
 #if NETFRAMEWORK
 using Uno.SourceGeneration;
@@ -69,7 +71,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly string _fileUniqueId;
 		private readonly DateTime _lastReferenceUpdateTime;
 		private readonly string[] _analyzerSuppressions;
-		private readonly ImmutableHashSet<string> _resourceKeys;
+		private readonly ResourceDetailsCollection _resourceDetailsCollection;
 		private int _applyIndex;
 		private int _collectionIndex;
 		private int _subclassIndex;
@@ -233,7 +235,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			string fileUniqueId,
 			DateTime lastReferenceUpdateTime,
 			string[] analyzerSuppressions,
-			ImmutableHashSet<string> resourceKeys,
+			ResourceDetailsCollection resourceDetailsCollection,
 			XamlGlobalStaticResourcesMap globalStaticResourcesMap,
 			bool isUiAutomationMappingEnabled,
 			Dictionary<string, string[]> uiAutomationMappings,
@@ -263,7 +265,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_fileUniqueId = fileUniqueId;
 			_lastReferenceUpdateTime = lastReferenceUpdateTime;
 			_analyzerSuppressions = analyzerSuppressions;
-			_resourceKeys = resourceKeys;
+			_resourceDetailsCollection = resourceDetailsCollection;
 			_globalStaticResourcesMap = globalStaticResourcesMap;
 			_isUiAutomationMappingEnabled = isUiAutomationMappingEnabled;
 			_uiAutomationMappings = uiAutomationMappings;
@@ -454,7 +456,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				_isTopLevelDictionary = true;
 
-				if (_generationRunFileInfo.RunInfo.Index == 0 || !_useXamlReaderHotReload)
+				if (_generationRunFileInfo.RunInfo.Manager.AllRuns.None() || !_useXamlReaderHotReload)
 				{
 					// On the first run, or if XamlReader hot reload is disabled, generate the full code.
 
@@ -477,7 +479,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				else
 				{
 					// if XamlReader hot reload is enabled, generate partial code
-					if (_generationRunFileInfo.RunInfo.Manager.PreviousRuns.FirstOrDefault(r => r.GetRunFileInfo(_fileUniqueId)?.ComponentCode != null) is { } runFileInfo)
+					if (_generationRunFileInfo.RunInfo.Manager.AllRuns.FirstOrDefault(r => r.GetRunFileInfo(_fileUniqueId)?.ComponentCode != null) is { } runFileInfo)
 					{
 						var generationRunFileInfo = runFileInfo.GetRunFileInfo(_fileUniqueId);
 
@@ -507,7 +509,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 						using (Scope(_xClassName.Namespace, _xClassName.ClassName))
 						{
-							if (_generationRunFileInfo.RunInfo.Index == 0 || !_useXamlReaderHotReload)
+							if (_generationRunFileInfo.RunInfo.Manager.AllRuns.None() || !_useXamlReaderHotReload)
 							{
 								var componentBuilder = new IndentedStringBuilder();
 
@@ -531,16 +533,19 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									BuildComponentFields(componentBuilder);
 
 									BuildCompiledBindings(componentBuilder);
-									
-									_generationRunFileInfo.SetAppliedTypes(_xamlAppliedTypes);
-									_generationRunFileInfo.ComponentCode = componentBuilder.ToString();
+
+									if (_useXamlReaderHotReload)
+									{
+										_generationRunFileInfo.SetAppliedTypes(_xamlAppliedTypes);
+										_generationRunFileInfo.ComponentCode = componentBuilder.ToString();
+									}
 								}
 
 								writer.AppendLineInvariantIndented("{0}", componentBuilder.ToString());
 							}
 							else
 							{
-								if (_generationRunFileInfo.RunInfo.Manager.PreviousRuns.FirstOrDefault(r => r.GetRunFileInfo(_fileUniqueId)?.ComponentCode != null) is { } runFileInfo)
+								if (_generationRunFileInfo.RunInfo.Manager.AllRuns.FirstOrDefault(r => r.GetRunFileInfo(_fileUniqueId)?.ComponentCode != null) is { } runFileInfo)
 								{
 									var generationRunFileInfo = runFileInfo.GetRunFileInfo(_fileUniqueId);
 
@@ -583,25 +588,28 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			using (writer.BlockInvariant($"private void InitializeComponent()"))
 			{
-				writer.AppendLineIndented($"InitializeComponent_{_generationRunFileInfo.RunInfo.Index}();");
+				writer.AppendLineIndented($"InitializeComponent_{_generationRunFileInfo.RunInfo.ToRunIdentifierString()}();");
 			}
 
-			for (int i = _generationRunFileInfo.RunInfo.Index - 1; i >= 0; i--)
+			if (_isHotReloadEnabled)
 			{
-				using (writer.BlockInvariant($"private void InitializeComponent_{i}()"))
+				foreach (var previousRun in _generationRunFileInfo.RunInfo.Manager.AllRuns.Except(_generationRunFileInfo.RunInfo))
 				{
-					if (!IsApplication(topLevelControl.Type))
+					using (writer.BlockInvariant($"private void InitializeComponent_{previousRun.ToRunIdentifierString()}()"))
 					{
-						// Error ENC0049 Ceasing to capture variable 'this' requires restarting the application.	CSHRTest01.Skia.Gtk C:\temp\net6 - test\CSHRTest01\CSHRTest01\CSHRTest01.Shared\CodeFile1.cs  53  Active
-						// Error   ENC0050 Deleting captured variable 'nameScope' requires restarting the application.	CSHRTest01.Skia.Gtk C:\temp\net6 - test\CSHRTest01\CSHRTest01\CSHRTest01.Shared\CodeFile1.cs  54  Active
+						if (!IsApplication(topLevelControl.Type))
+						{
+							// Error ENC0049 Ceasing to capture variable 'this' requires restarting the application.
+							// Error ENC0050 Deleting captured variable 'nameScope' requires restarting the application.
 
-						writer.AppendLineIndented("NameScope.SetNameScope(this, __nameScope);");
-						writer.AppendLineIndented("var __that = this;");
+							writer.AppendLineIndented("NameScope.SetNameScope(this, __nameScope);");
+							writer.AppendLineIndented("var __that = this;");
+						}
 					}
 				}
 			}
 
-			using (writer.BlockInvariant($"private void InitializeComponent_{_generationRunFileInfo.RunInfo.Index}()"))
+			using (writer.BlockInvariant($"private void InitializeComponent_{_generationRunFileInfo.RunInfo.ToRunIdentifierString()}()"))
 			{
 				if (IsApplication(topLevelControl.Type))
 				{
@@ -5164,53 +5172,49 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private string? BuildLocalizedResourceValue(INamedTypeSymbol? owner, string memberName, string objectUid)
 		{
-			// see: https://docs.microsoft.com/en-us/windows/uwp/app-resources/localize-strings-ui-manifest
-			// Valid formats:
-			// - MyUid
-			// - MyPrefix/MyUid
-			// - /ResourceFileName/MyUid
-			// - /ResourceFileName/MyPrefix/MyUid
-			// - /ResourceFilename/MyPrefix1/MyPrefix2/MyUid
-			// - /ResourceFilename/MyPrefix1/MyPrefix2/MyPrefix3/MyUid
-
-			(string? resourceFileName, string uidName) parseXUid()
-			{
-				if (objectUid.StartsWith("/", StringComparison.Ordinal))
-				{
-					var separator = objectUid.IndexOf('/', 1);
-
-					return (
-						objectUid.Substring(1, separator - 1),
-						objectUid.Substring(separator + 1)
-					);
-				}
-				else
-				{
-					return (null, objectUid);
-				}
-			}
-
-			var (resourceFileName, uidName) = parseXUid();
-
 			//windows 10 localization concat the xUid Value with the member value (Text, Content, Header etc...)
-			var fullKey = uidName + "/" + memberName;
+			string fullKey;
 
 			if (owner != null && IsAttachedProperty(owner, memberName))
 			{
 				var declaringType = owner;
 				var nsRaw = declaringType.ContainingNamespace.GetFullName();
 				var type = declaringType.Name;
-				fullKey = $"{uidName}/[using:{nsRaw}]{type}.{memberName}";
-			}
 
-			if (_resourceKeys.Contains(fullKey))
+				fullKey = $"{objectUid}.[using:{nsRaw}]{type}.{memberName}";
+			}
+			else
 			{
-				var resourceNameString = resourceFileName == null ? "null" : $"\"{resourceFileName}\"";
-
-				return $"global::Uno.UI.Helpers.MarkupHelper.GetResourceStringForXUid({resourceNameString}, \"{fullKey}\")";
+				fullKey = objectUid + "." + memberName;
 			}
 
-			return null;
+			if (_resourceDetailsCollection.FindByKey(fullKey) is { } resourceDetail)
+			{
+				var viewName = _isInsideMainAssembly
+					? resourceDetail.FileName
+					: resourceDetail.Assembly + "/" + resourceDetail.FileName;
+
+				return $"global::Uno.UI.Helpers.MarkupHelper.GetResourceStringForXUid(\"{viewName}\", \"{RewriteResourceKeyName(resourceDetail.Key)}\")";
+			}
+
+			return null; // $"null /*{fullKeyWithLibrary}*/";
+		}
+
+		private StringBuilder _keyRewriteBuilder = new();
+		private string RewriteResourceKeyName(string keyName)
+		{
+			var firstDotIndex = keyName.IndexOf('.');
+			if (firstDotIndex != -1)
+			{
+				_keyRewriteBuilder.Clear();
+				_keyRewriteBuilder.Append(keyName);
+
+				_keyRewriteBuilder[firstDotIndex] = '/';
+
+				return _keyRewriteBuilder.ToString();
+			}
+
+			return keyName;
 		}
 
 		private bool IsPropertyLocalized(XamlObjectDefinition obj, string propertyName)

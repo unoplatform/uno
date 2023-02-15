@@ -13,7 +13,7 @@ namespace Windows.UI.ViewManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ViewSizePreference ViewModePreferences.ViewSizePreference is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ViewSizePreference ViewModePreferences.ViewSizePreference is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ViewSizePreference%20ViewModePreferences.ViewSizePreference");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.UI.ViewManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Size ViewModePreferences.CustomSize is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Size ViewModePreferences.CustomSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Size%20ViewModePreferences.CustomSize");
 			}
 			set
 			{
@@ -43,7 +43,7 @@ namespace Windows.UI.ViewManagement
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.ViewManagement.ViewModePreferences CreateDefault( global::Windows.UI.ViewManagement.ApplicationViewMode mode)
 		{
-			throw new global::System.NotImplementedException("The member ViewModePreferences ViewModePreferences.CreateDefault(ApplicationViewMode mode) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member ViewModePreferences ViewModePreferences.CreateDefault(ApplicationViewMode mode) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ViewModePreferences%20ViewModePreferences.CreateDefault%28ApplicationViewMode%20mode%29");
 		}
 		#endif
 	}

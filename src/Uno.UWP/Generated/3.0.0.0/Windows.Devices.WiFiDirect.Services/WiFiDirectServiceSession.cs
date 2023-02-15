@@ -13,7 +13,7 @@ namespace Windows.Devices.WiFiDirect.Services
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint WiFiDirectServiceSession.AdvertisementId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint WiFiDirectServiceSession.AdvertisementId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20WiFiDirectServiceSession.AdvertisementId");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.WiFiDirect.Services
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WiFiDirectServiceSessionErrorStatus WiFiDirectServiceSession.ErrorStatus is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member WiFiDirectServiceSessionErrorStatus WiFiDirectServiceSession.ErrorStatus is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=WiFiDirectServiceSessionErrorStatus%20WiFiDirectServiceSession.ErrorStatus");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Devices.WiFiDirect.Services
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string WiFiDirectServiceSession.ServiceAddress is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string WiFiDirectServiceSession.ServiceAddress is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20WiFiDirectServiceSession.ServiceAddress");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Devices.WiFiDirect.Services
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string WiFiDirectServiceSession.ServiceName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string WiFiDirectServiceSession.ServiceName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20WiFiDirectServiceSession.ServiceName");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Devices.WiFiDirect.Services
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string WiFiDirectServiceSession.SessionAddress is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string WiFiDirectServiceSession.SessionAddress is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20WiFiDirectServiceSession.SessionAddress");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Devices.WiFiDirect.Services
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint WiFiDirectServiceSession.SessionId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint WiFiDirectServiceSession.SessionId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20WiFiDirectServiceSession.SessionId");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.Devices.WiFiDirect.Services
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WiFiDirectServiceSessionStatus WiFiDirectServiceSession.Status is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member WiFiDirectServiceSessionStatus WiFiDirectServiceSession.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=WiFiDirectServiceSessionStatus%20WiFiDirectServiceSession.Status");
 			}
 		}
 		#endif
@@ -88,7 +88,7 @@ namespace Windows.Devices.WiFiDirect.Services
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.Networking.EndpointPair> GetConnectionEndpointPairs()
 		{
-			throw new global::System.NotImplementedException("The member IReadOnlyList<EndpointPair> WiFiDirectServiceSession.GetConnectionEndpointPairs() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IReadOnlyList<EndpointPair> WiFiDirectServiceSession.GetConnectionEndpointPairs() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CEndpointPair%3E%20WiFiDirectServiceSession.GetConnectionEndpointPairs%28%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceSession.SessionStatusChanged.add
@@ -97,14 +97,14 @@ namespace Windows.Devices.WiFiDirect.Services
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction AddStreamSocketListenerAsync( global::Windows.Networking.Sockets.StreamSocketListener value)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction WiFiDirectServiceSession.AddStreamSocketListenerAsync(StreamSocketListener value) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction WiFiDirectServiceSession.AddStreamSocketListenerAsync(StreamSocketListener value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20WiFiDirectServiceSession.AddStreamSocketListenerAsync%28StreamSocketListener%20value%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction AddDatagramSocketAsync( global::Windows.Networking.Sockets.DatagramSocket value)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction WiFiDirectServiceSession.AddDatagramSocketAsync(DatagramSocket value) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction WiFiDirectServiceSession.AddDatagramSocketAsync(DatagramSocket value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20WiFiDirectServiceSession.AddDatagramSocketAsync%28DatagramSocket%20value%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceSession.RemotePortAdded.add

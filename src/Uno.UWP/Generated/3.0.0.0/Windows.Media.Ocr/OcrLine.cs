@@ -13,7 +13,7 @@ namespace Windows.Media.Ocr
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string OcrLine.Text is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string OcrLine.Text is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20OcrLine.Text");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.Ocr
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<OcrWord> OcrLine.Words is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<OcrWord> OcrLine.Words is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3COcrWord%3E%20OcrLine.Words");
 			}
 		}
 		#endif

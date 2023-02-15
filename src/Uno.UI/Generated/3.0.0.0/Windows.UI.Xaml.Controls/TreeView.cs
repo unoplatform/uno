@@ -27,7 +27,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<TreeViewNode> TreeView.RootNodes is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<TreeViewNode> TreeView.RootNodes is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3CTreeViewNode%3E%20TreeView.RootNodes");
 			}
 		}
 		#endif
@@ -37,7 +37,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<TreeViewNode> TreeView.SelectedNodes is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<TreeViewNode> TreeView.SelectedNodes is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3CTreeViewNode%3E%20TreeView.SelectedNodes");
 			}
 		}
 		#endif
@@ -262,28 +262,28 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Xaml.Controls.TreeViewNode NodeFromContainer( global::Windows.UI.Xaml.DependencyObject container)
 		{
-			throw new global::System.NotImplementedException("The member TreeViewNode TreeView.NodeFromContainer(DependencyObject container) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member TreeViewNode TreeView.NodeFromContainer(DependencyObject container) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TreeViewNode%20TreeView.NodeFromContainer%28DependencyObject%20container%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Xaml.DependencyObject ContainerFromNode( global::Windows.UI.Xaml.Controls.TreeViewNode node)
 		{
-			throw new global::System.NotImplementedException("The member DependencyObject TreeView.ContainerFromNode(TreeViewNode node) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member DependencyObject TreeView.ContainerFromNode(TreeViewNode node) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DependencyObject%20TreeView.ContainerFromNode%28TreeViewNode%20node%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  object ItemFromContainer( global::Windows.UI.Xaml.DependencyObject container)
 		{
-			throw new global::System.NotImplementedException("The member object TreeView.ItemFromContainer(DependencyObject container) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member object TreeView.ItemFromContainer(DependencyObject container) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=object%20TreeView.ItemFromContainer%28DependencyObject%20container%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Xaml.DependencyObject ContainerFromItem( object item)
 		{
-			throw new global::System.NotImplementedException("The member DependencyObject TreeView.ContainerFromItem(object item) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member DependencyObject TreeView.ContainerFromItem(object item) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DependencyObject%20TreeView.ContainerFromItem%28object%20item%29");
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Controls.TreeView.CanDragItems.get

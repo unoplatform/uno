@@ -11,7 +11,7 @@ namespace Windows.Devices.Display.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Devices.Display.Core.DisplayTask CreateTask()
 		{
-			throw new global::System.NotImplementedException("The member DisplayTask DisplayTaskPool.CreateTask() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member DisplayTask DisplayTaskPool.CreateTask() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DisplayTask%20DisplayTaskPool.CreateTask%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -25,7 +25,7 @@ namespace Windows.Devices.Display.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Devices.Display.Core.DisplayTaskResult TryExecuteTask( global::Windows.Devices.Display.Core.DisplayTask task)
 		{
-			throw new global::System.NotImplementedException("The member DisplayTaskResult DisplayTaskPool.TryExecuteTask(DisplayTask task) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member DisplayTaskResult DisplayTaskPool.TryExecuteTask(DisplayTask task) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DisplayTaskResult%20DisplayTaskPool.TryExecuteTask%28DisplayTask%20task%29");
 		}
 		#endif
 	}

@@ -18,7 +18,7 @@ namespace Windows.UI.Xaml.Hosting
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.Hosting.WindowsXamlManager InitializeForCurrentThread()
 		{
-			throw new global::System.NotImplementedException("The member WindowsXamlManager WindowsXamlManager.InitializeForCurrentThread() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member WindowsXamlManager WindowsXamlManager.InitializeForCurrentThread() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=WindowsXamlManager%20WindowsXamlManager.InitializeForCurrentThread%28%29");
 		}
 		#endif
 		// Processing: System.IDisposable

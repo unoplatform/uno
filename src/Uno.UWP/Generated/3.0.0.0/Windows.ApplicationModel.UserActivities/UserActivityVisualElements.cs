@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.UserActivities
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string UserActivityVisualElements.DisplayText is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string UserActivityVisualElements.DisplayText is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20UserActivityVisualElements.DisplayText");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.ApplicationModel.UserActivities
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string UserActivityVisualElements.Description is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string UserActivityVisualElements.Description is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20UserActivityVisualElements.Description");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.ApplicationModel.UserActivities
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IAdaptiveCard UserActivityVisualElements.Content is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IAdaptiveCard UserActivityVisualElements.Content is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAdaptiveCard%20UserActivityVisualElements.Content");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.ApplicationModel.UserActivities
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color UserActivityVisualElements.BackgroundColor is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Color UserActivityVisualElements.BackgroundColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Color%20UserActivityVisualElements.BackgroundColor");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.ApplicationModel.UserActivities
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UserActivityAttribution UserActivityVisualElements.Attribution is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member UserActivityAttribution UserActivityVisualElements.Attribution is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=UserActivityAttribution%20UserActivityVisualElements.Attribution");
 			}
 			set
 			{
@@ -83,7 +83,7 @@ namespace Windows.ApplicationModel.UserActivities
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string UserActivityVisualElements.AttributionDisplayText is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string UserActivityVisualElements.AttributionDisplayText is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20UserActivityVisualElements.AttributionDisplayText");
 			}
 			set
 			{

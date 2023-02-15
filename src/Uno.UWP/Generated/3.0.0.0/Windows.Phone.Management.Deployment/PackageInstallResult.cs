@@ -13,7 +13,7 @@ namespace Windows.Phone.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PackageInstallState PackageInstallResult.InstallState is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PackageInstallState PackageInstallResult.InstallState is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PackageInstallState%20PackageInstallResult.InstallState");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Phone.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PackageInstallResult.ProductId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PackageInstallResult.ProductId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PackageInstallResult.ProductId");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Phone.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PackageInstallResult.ErrorText is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PackageInstallResult.ErrorText is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PackageInstallResult.ErrorText");
 			}
 		}
 		#endif

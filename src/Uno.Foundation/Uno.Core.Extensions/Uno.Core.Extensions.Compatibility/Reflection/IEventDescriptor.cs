@@ -16,9 +16,9 @@
 // ******************************************************************
 namespace Uno.Reflection
 {
-    internal interface IEventDescriptor : IMemberDescriptor
-    {
-        IMethodDescriptor Add { get; }
-        IMethodDescriptor Remove { get; }
-    }
+	internal interface IEventDescriptor : IMemberDescriptor
+	{
+		IMethodDescriptor Add { get; }
+		IMethodDescriptor Remove { get; }
+	}
 }

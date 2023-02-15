@@ -41,7 +41,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double RichTextBlockOverflow.BaselineOffset is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double RichTextBlockOverflow.BaselineOffset is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20RichTextBlockOverflow.BaselineOffset");
 			}
 		}
 		#endif
@@ -51,7 +51,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TextPointer RichTextBlockOverflow.ContentEnd is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TextPointer RichTextBlockOverflow.ContentEnd is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TextPointer%20RichTextBlockOverflow.ContentEnd");
 			}
 		}
 		#endif
@@ -61,7 +61,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member RichTextBlock RichTextBlockOverflow.ContentSource is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member RichTextBlock RichTextBlockOverflow.ContentSource is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=RichTextBlock%20RichTextBlockOverflow.ContentSource");
 			}
 		}
 		#endif
@@ -71,7 +71,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TextPointer RichTextBlockOverflow.ContentStart is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TextPointer RichTextBlockOverflow.ContentStart is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TextPointer%20RichTextBlockOverflow.ContentStart");
 			}
 		}
 		#endif
@@ -164,14 +164,14 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Xaml.Documents.TextPointer GetPositionFromPoint( global::Windows.Foundation.Point point)
 		{
-			throw new global::System.NotImplementedException("The member TextPointer RichTextBlockOverflow.GetPositionFromPoint(Point point) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member TextPointer RichTextBlockOverflow.GetPositionFromPoint(Point point) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TextPointer%20RichTextBlockOverflow.GetPositionFromPoint%28Point%20point%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool Focus( global::Windows.UI.Xaml.FocusState value)
 		{
-			throw new global::System.NotImplementedException("The member bool RichTextBlockOverflow.Focus(FocusState value) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member bool RichTextBlockOverflow.Focus(FocusState value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20RichTextBlockOverflow.Focus%28FocusState%20value%29");
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Controls.RichTextBlockOverflow.MaxLines.get

@@ -13,7 +13,7 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaPlaybackAutoRepeatMode AutoRepeatModeChangeRequestedEventArgs.RequestedAutoRepeatMode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MediaPlaybackAutoRepeatMode AutoRepeatModeChangeRequestedEventArgs.RequestedAutoRepeatMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaPlaybackAutoRepeatMode%20AutoRepeatModeChangeRequestedEventArgs.RequestedAutoRepeatMode");
 			}
 		}
 		#endif

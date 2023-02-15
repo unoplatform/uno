@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Package PackageStatusChangedEventArgs.Package is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Package PackageStatusChangedEventArgs.Package is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Package%20PackageStatusChangedEventArgs.Package");
 			}
 		}
 		#endif

@@ -13,7 +13,7 @@ namespace Windows.UI.Text.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CoreTextLayoutRequest CoreTextLayoutRequestedEventArgs.Request is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member CoreTextLayoutRequest CoreTextLayoutRequestedEventArgs.Request is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CoreTextLayoutRequest%20CoreTextLayoutRequestedEventArgs.Request");
 			}
 		}
 		#endif

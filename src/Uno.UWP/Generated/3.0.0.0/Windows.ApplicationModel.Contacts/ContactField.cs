@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ContactFieldCategory ContactField.Category is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ContactFieldCategory ContactField.Category is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ContactFieldCategory%20ContactField.Category");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ContactField.Name is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ContactField.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ContactField.Name");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ContactFieldType ContactField.Type is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ContactFieldType ContactField.Type is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ContactFieldType%20ContactField.Type");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ContactField.Value is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ContactField.Value is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ContactField.Value");
 			}
 		}
 		#endif

@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.DataTransfer
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member object ShareProvider.Tag is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member object ShareProvider.Tag is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=object%20ShareProvider.Tag");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.ApplicationModel.DataTransfer
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color ShareProvider.BackgroundColor is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Color ShareProvider.BackgroundColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Color%20ShareProvider.BackgroundColor");
 			}
 		}
 		#endif
@@ -37,7 +37,7 @@ namespace Windows.ApplicationModel.DataTransfer
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member RandomAccessStreamReference ShareProvider.DisplayIcon is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member RandomAccessStreamReference ShareProvider.DisplayIcon is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=RandomAccessStreamReference%20ShareProvider.DisplayIcon");
 			}
 		}
 		#endif
@@ -47,7 +47,7 @@ namespace Windows.ApplicationModel.DataTransfer
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ShareProvider.Title is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ShareProvider.Title is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ShareProvider.Title");
 			}
 		}
 		#endif

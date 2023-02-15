@@ -122,9 +122,32 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Set the parent of the specified dependency object
 		/// </summary>
+		/// <remarks>
+		/// This method will create a weak attached DependencyObjectStore if the object is
+		/// not an <see cref="IDependencyObjectStoreProvider"/>
+		/// </remarks>
 		internal static void SetParent(this object dependencyObject, object parent)
+			=> GetStore(dependencyObject).Parent = parent;
+
+		/// <summary>
+		/// Set the parent of the specified dependency object
+		/// </summary>
+		internal static void SetParent(this IDependencyObjectStoreProvider storeProvider, object parent)
+			=> storeProvider.Store.Parent = parent;
+
+		/// <summary>
+		/// Tries to set the parent of the specified dependency object
+		/// </summary>
+		/// <returns>true if the parent could be set, otherwise false</returns>
+		internal static bool TrySetParent(this object dependencyObject, object parent)
 		{
-			GetStore(dependencyObject).Parent = parent;
+			if (dependencyObject is IDependencyObjectStoreProvider provider)
+			{
+				SetParent(provider, parent);
+				return true;
+			}
+
+			return false;
 		}
 
 		internal static void SetLogicalParent(this FrameworkElement element, DependencyObject logicalParent)

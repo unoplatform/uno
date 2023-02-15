@@ -13,7 +13,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ActivationKind VpnForegroundActivatedEventArgs.Kind is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ActivationKind VpnForegroundActivatedEventArgs.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ActivationKind%20VpnForegroundActivatedEventArgs.Kind");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ApplicationExecutionState VpnForegroundActivatedEventArgs.PreviousExecutionState is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ApplicationExecutionState VpnForegroundActivatedEventArgs.PreviousExecutionState is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ApplicationExecutionState%20VpnForegroundActivatedEventArgs.PreviousExecutionState");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SplashScreen VpnForegroundActivatedEventArgs.SplashScreen is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SplashScreen VpnForegroundActivatedEventArgs.SplashScreen is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SplashScreen%20VpnForegroundActivatedEventArgs.SplashScreen");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member User VpnForegroundActivatedEventArgs.User is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member User VpnForegroundActivatedEventArgs.User is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=User%20VpnForegroundActivatedEventArgs.User");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VpnForegroundActivationOperation VpnForegroundActivatedEventArgs.ActivationOperation is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member VpnForegroundActivationOperation VpnForegroundActivatedEventArgs.ActivationOperation is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=VpnForegroundActivationOperation%20VpnForegroundActivatedEventArgs.ActivationOperation");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string VpnForegroundActivatedEventArgs.ProfileName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string VpnForegroundActivatedEventArgs.ProfileName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20VpnForegroundActivatedEventArgs.ProfileName");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ValueSet VpnForegroundActivatedEventArgs.SharedContext is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ValueSet VpnForegroundActivatedEventArgs.SharedContext is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ValueSet%20VpnForegroundActivatedEventArgs.SharedContext");
 			}
 		}
 		#endif

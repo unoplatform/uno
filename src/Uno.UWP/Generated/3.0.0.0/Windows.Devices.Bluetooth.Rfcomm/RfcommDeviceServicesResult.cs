@@ -13,7 +13,7 @@ namespace Windows.Devices.Bluetooth.Rfcomm
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BluetoothError RfcommDeviceServicesResult.Error is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member BluetoothError RfcommDeviceServicesResult.Error is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=BluetoothError%20RfcommDeviceServicesResult.Error");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.Bluetooth.Rfcomm
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<RfcommDeviceService> RfcommDeviceServicesResult.Services is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<RfcommDeviceService> RfcommDeviceServicesResult.Services is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CRfcommDeviceService%3E%20RfcommDeviceServicesResult.Services");
 			}
 		}
 		#endif

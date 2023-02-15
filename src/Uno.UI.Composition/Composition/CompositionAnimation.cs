@@ -5,7 +5,7 @@ using Uno;
 
 namespace Windows.UI.Composition
 {
-	public  partial class CompositionAnimation
+	public partial class CompositionAnimation
 	{
 		internal CompositionAnimation() => throw new NotSupportedException("Use the ctor with Compositor");
 

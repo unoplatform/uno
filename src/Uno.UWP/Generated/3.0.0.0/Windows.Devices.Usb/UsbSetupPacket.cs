@@ -13,7 +13,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint UsbSetupPacket.Value is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint UsbSetupPacket.Value is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20UsbSetupPacket.Value");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UsbControlRequestType UsbSetupPacket.RequestType is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member UsbControlRequestType UsbSetupPacket.RequestType is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=UsbControlRequestType%20UsbSetupPacket.RequestType");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte UsbSetupPacket.Request is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member byte UsbSetupPacket.Request is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=byte%20UsbSetupPacket.Request");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint UsbSetupPacket.Length is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint UsbSetupPacket.Length is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20UsbSetupPacket.Length");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint UsbSetupPacket.Index is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint UsbSetupPacket.Index is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20UsbSetupPacket.Index");
 			}
 			set
 			{

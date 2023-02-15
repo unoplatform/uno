@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PurchaseResults.OfferId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PurchaseResults.OfferId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PurchaseResults.OfferId");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.ApplicationModel.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PurchaseResults.ReceiptXml is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PurchaseResults.ReceiptXml is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PurchaseResults.ReceiptXml");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.ApplicationModel.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ProductPurchaseStatus PurchaseResults.Status is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ProductPurchaseStatus PurchaseResults.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ProductPurchaseStatus%20PurchaseResults.Status");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.ApplicationModel.Store
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid PurchaseResults.TransactionId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Guid PurchaseResults.TransactionId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Guid%20PurchaseResults.TransactionId");
 			}
 		}
 		#endif

@@ -13,7 +13,7 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaPlaybackType SystemMediaTransportControlsDisplayUpdater.Type is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MediaPlaybackType SystemMediaTransportControlsDisplayUpdater.Type is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaPlaybackType%20SystemMediaTransportControlsDisplayUpdater.Type");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member RandomAccessStreamReference SystemMediaTransportControlsDisplayUpdater.Thumbnail is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member RandomAccessStreamReference SystemMediaTransportControlsDisplayUpdater.Thumbnail is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=RandomAccessStreamReference%20SystemMediaTransportControlsDisplayUpdater.Thumbnail");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SystemMediaTransportControlsDisplayUpdater.AppMediaId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SystemMediaTransportControlsDisplayUpdater.AppMediaId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SystemMediaTransportControlsDisplayUpdater.AppMediaId");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ImageDisplayProperties SystemMediaTransportControlsDisplayUpdater.ImageProperties is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ImageDisplayProperties SystemMediaTransportControlsDisplayUpdater.ImageProperties is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ImageDisplayProperties%20SystemMediaTransportControlsDisplayUpdater.ImageProperties");
 			}
 		}
 		#endif
@@ -65,7 +65,7 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MusicDisplayProperties SystemMediaTransportControlsDisplayUpdater.MusicProperties is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MusicDisplayProperties SystemMediaTransportControlsDisplayUpdater.MusicProperties is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MusicDisplayProperties%20SystemMediaTransportControlsDisplayUpdater.MusicProperties");
 			}
 		}
 		#endif
@@ -75,7 +75,7 @@ namespace Windows.Media
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VideoDisplayProperties SystemMediaTransportControlsDisplayUpdater.VideoProperties is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member VideoDisplayProperties SystemMediaTransportControlsDisplayUpdater.VideoProperties is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=VideoDisplayProperties%20SystemMediaTransportControlsDisplayUpdater.VideoProperties");
 			}
 		}
 		#endif
@@ -92,7 +92,7 @@ namespace Windows.Media
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<bool> CopyFromFileAsync( global::Windows.Media.MediaPlaybackType type,  global::Windows.Storage.StorageFile source)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> SystemMediaTransportControlsDisplayUpdater.CopyFromFileAsync(MediaPlaybackType type, StorageFile source) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> SystemMediaTransportControlsDisplayUpdater.CopyFromFileAsync(MediaPlaybackType type, StorageFile source) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3Cbool%3E%20SystemMediaTransportControlsDisplayUpdater.CopyFromFileAsync%28MediaPlaybackType%20type%2C%20StorageFile%20source%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

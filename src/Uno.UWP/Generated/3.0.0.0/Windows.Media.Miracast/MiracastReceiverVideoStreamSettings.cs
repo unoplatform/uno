@@ -13,7 +13,7 @@ namespace Windows.Media.Miracast
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SizeInt32 MiracastReceiverVideoStreamSettings.Size is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SizeInt32 MiracastReceiverVideoStreamSettings.Size is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SizeInt32%20MiracastReceiverVideoStreamSettings.Size");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Media.Miracast
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int MiracastReceiverVideoStreamSettings.Bitrate is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int MiracastReceiverVideoStreamSettings.Bitrate is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20MiracastReceiverVideoStreamSettings.Bitrate");
 			}
 			set
 			{

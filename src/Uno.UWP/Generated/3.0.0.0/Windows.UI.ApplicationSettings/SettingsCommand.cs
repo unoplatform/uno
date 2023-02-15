@@ -13,7 +13,7 @@ namespace Windows.UI.ApplicationSettings
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SettingsCommand.Label is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SettingsCommand.Label is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SettingsCommand.Label");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.UI.ApplicationSettings
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UICommandInvokedHandler SettingsCommand.Invoked is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member UICommandInvokedHandler SettingsCommand.Invoked is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=UICommandInvokedHandler%20SettingsCommand.Invoked");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.UI.ApplicationSettings
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member object SettingsCommand.Id is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member object SettingsCommand.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=object%20SettingsCommand.Id");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.UI.ApplicationSettings
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SettingsCommand SettingsCommand.AccountsCommand is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SettingsCommand SettingsCommand.AccountsCommand is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SettingsCommand%20SettingsCommand.AccountsCommand");
 			}
 		}
 		#endif

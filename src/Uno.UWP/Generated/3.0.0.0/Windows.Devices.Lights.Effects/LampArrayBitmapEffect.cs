@@ -13,7 +13,7 @@ namespace Windows.Devices.Lights.Effects
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan LampArrayBitmapEffect.UpdateInterval is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan LampArrayBitmapEffect.UpdateInterval is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20LampArrayBitmapEffect.UpdateInterval");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Devices.Lights.Effects
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan LampArrayBitmapEffect.StartDelay is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan LampArrayBitmapEffect.StartDelay is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20LampArrayBitmapEffect.StartDelay");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Devices.Lights.Effects
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan LampArrayBitmapEffect.Duration is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan LampArrayBitmapEffect.Duration is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20LampArrayBitmapEffect.Duration");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.Devices.Lights.Effects
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Size LampArrayBitmapEffect.SuggestedBitmapSize is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Size LampArrayBitmapEffect.SuggestedBitmapSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Size%20LampArrayBitmapEffect.SuggestedBitmapSize");
 			}
 		}
 		#endif
@@ -65,7 +65,7 @@ namespace Windows.Devices.Lights.Effects
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int LampArrayBitmapEffect.ZIndex is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int LampArrayBitmapEffect.ZIndex is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20LampArrayBitmapEffect.ZIndex");
 			}
 			set
 			{

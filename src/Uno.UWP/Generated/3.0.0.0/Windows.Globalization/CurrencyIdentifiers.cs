@@ -13,7 +13,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.HNL is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.HNL is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.HNL");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.AED is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.AED is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.AED");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.AFN is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.AFN is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.AFN");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.ALL is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.ALL is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.ALL");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.AMD is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.AMD is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.AMD");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.ANG is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.ANG is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.ANG");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.AOA is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.AOA is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.AOA");
 			}
 		}
 		#endif
@@ -83,7 +83,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.ARS is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.ARS is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.ARS");
 			}
 		}
 		#endif
@@ -93,7 +93,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.AUD is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.AUD is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.AUD");
 			}
 		}
 		#endif
@@ -103,7 +103,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.AWG is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.AWG is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.AWG");
 			}
 		}
 		#endif
@@ -113,7 +113,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.AZN is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.AZN is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.AZN");
 			}
 		}
 		#endif
@@ -123,7 +123,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.BAM is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.BAM is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.BAM");
 			}
 		}
 		#endif
@@ -133,7 +133,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.BBD is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.BBD is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.BBD");
 			}
 		}
 		#endif
@@ -143,7 +143,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.BDT is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.BDT is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.BDT");
 			}
 		}
 		#endif
@@ -153,7 +153,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.BGN is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.BGN is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.BGN");
 			}
 		}
 		#endif
@@ -163,7 +163,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.BHD is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.BHD is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.BHD");
 			}
 		}
 		#endif
@@ -173,7 +173,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.BIF is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.BIF is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.BIF");
 			}
 		}
 		#endif
@@ -183,7 +183,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.BMD is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.BMD is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.BMD");
 			}
 		}
 		#endif
@@ -193,7 +193,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.BND is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.BND is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.BND");
 			}
 		}
 		#endif
@@ -203,7 +203,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.BOB is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.BOB is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.BOB");
 			}
 		}
 		#endif
@@ -213,7 +213,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.BRL is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.BRL is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.BRL");
 			}
 		}
 		#endif
@@ -223,7 +223,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.BSD is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.BSD is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.BSD");
 			}
 		}
 		#endif
@@ -233,7 +233,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.BTN is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.BTN is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.BTN");
 			}
 		}
 		#endif
@@ -243,7 +243,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.BWP is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.BWP is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.BWP");
 			}
 		}
 		#endif
@@ -253,7 +253,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.BYR is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.BYR is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.BYR");
 			}
 		}
 		#endif
@@ -263,7 +263,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.BZD is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.BZD is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.BZD");
 			}
 		}
 		#endif
@@ -273,7 +273,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.CAD is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.CAD is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.CAD");
 			}
 		}
 		#endif
@@ -283,7 +283,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.CDF is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.CDF is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.CDF");
 			}
 		}
 		#endif
@@ -293,7 +293,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.CHF is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.CHF is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.CHF");
 			}
 		}
 		#endif
@@ -303,7 +303,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.CLP is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.CLP is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.CLP");
 			}
 		}
 		#endif
@@ -313,7 +313,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.CNY is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.CNY is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.CNY");
 			}
 		}
 		#endif
@@ -323,7 +323,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.COP is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.COP is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.COP");
 			}
 		}
 		#endif
@@ -333,7 +333,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.CRC is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.CRC is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.CRC");
 			}
 		}
 		#endif
@@ -343,7 +343,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.CUP is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.CUP is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.CUP");
 			}
 		}
 		#endif
@@ -353,7 +353,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.CVE is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.CVE is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.CVE");
 			}
 		}
 		#endif
@@ -363,7 +363,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.CZK is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.CZK is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.CZK");
 			}
 		}
 		#endif
@@ -373,7 +373,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.DJF is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.DJF is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.DJF");
 			}
 		}
 		#endif
@@ -383,7 +383,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.DKK is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.DKK is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.DKK");
 			}
 		}
 		#endif
@@ -393,7 +393,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.DOP is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.DOP is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.DOP");
 			}
 		}
 		#endif
@@ -403,7 +403,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.DZD is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.DZD is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.DZD");
 			}
 		}
 		#endif
@@ -413,7 +413,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.EGP is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.EGP is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.EGP");
 			}
 		}
 		#endif
@@ -423,7 +423,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.ERN is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.ERN is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.ERN");
 			}
 		}
 		#endif
@@ -433,7 +433,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.ETB is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.ETB is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.ETB");
 			}
 		}
 		#endif
@@ -443,7 +443,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.EUR is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.EUR is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.EUR");
 			}
 		}
 		#endif
@@ -453,7 +453,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.FJD is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.FJD is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.FJD");
 			}
 		}
 		#endif
@@ -463,7 +463,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.FKP is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.FKP is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.FKP");
 			}
 		}
 		#endif
@@ -473,7 +473,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.GBP is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.GBP is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.GBP");
 			}
 		}
 		#endif
@@ -483,7 +483,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.GEL is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.GEL is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.GEL");
 			}
 		}
 		#endif
@@ -493,7 +493,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.GHS is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.GHS is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.GHS");
 			}
 		}
 		#endif
@@ -503,7 +503,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.GIP is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.GIP is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.GIP");
 			}
 		}
 		#endif
@@ -513,7 +513,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.GMD is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.GMD is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.GMD");
 			}
 		}
 		#endif
@@ -523,7 +523,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.GNF is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.GNF is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.GNF");
 			}
 		}
 		#endif
@@ -533,7 +533,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.GTQ is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.GTQ is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.GTQ");
 			}
 		}
 		#endif
@@ -543,7 +543,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.GYD is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.GYD is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.GYD");
 			}
 		}
 		#endif
@@ -553,7 +553,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.HKD is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.HKD is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.HKD");
 			}
 		}
 		#endif
@@ -563,7 +563,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.RON is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.RON is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.RON");
 			}
 		}
 		#endif
@@ -573,7 +573,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.HRK is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.HRK is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.HRK");
 			}
 		}
 		#endif
@@ -583,7 +583,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.HTG is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.HTG is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.HTG");
 			}
 		}
 		#endif
@@ -593,7 +593,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.HUF is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.HUF is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.HUF");
 			}
 		}
 		#endif
@@ -603,7 +603,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.IDR is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.IDR is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.IDR");
 			}
 		}
 		#endif
@@ -613,7 +613,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.ILS is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.ILS is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.ILS");
 			}
 		}
 		#endif
@@ -623,7 +623,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.INR is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.INR is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.INR");
 			}
 		}
 		#endif
@@ -633,7 +633,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.IQD is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.IQD is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.IQD");
 			}
 		}
 		#endif
@@ -643,7 +643,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.IRR is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.IRR is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.IRR");
 			}
 		}
 		#endif
@@ -653,7 +653,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.ISK is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.ISK is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.ISK");
 			}
 		}
 		#endif
@@ -663,7 +663,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.JMD is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.JMD is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.JMD");
 			}
 		}
 		#endif
@@ -673,7 +673,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.JOD is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.JOD is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.JOD");
 			}
 		}
 		#endif
@@ -683,7 +683,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.JPY is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.JPY is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.JPY");
 			}
 		}
 		#endif
@@ -693,7 +693,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.KES is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.KES is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.KES");
 			}
 		}
 		#endif
@@ -703,7 +703,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.KGS is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.KGS is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.KGS");
 			}
 		}
 		#endif
@@ -713,7 +713,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.KHR is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.KHR is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.KHR");
 			}
 		}
 		#endif
@@ -723,7 +723,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.KMF is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.KMF is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.KMF");
 			}
 		}
 		#endif
@@ -733,7 +733,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.KPW is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.KPW is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.KPW");
 			}
 		}
 		#endif
@@ -743,7 +743,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.KRW is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.KRW is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.KRW");
 			}
 		}
 		#endif
@@ -753,7 +753,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.KWD is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.KWD is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.KWD");
 			}
 		}
 		#endif
@@ -763,7 +763,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.KYD is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.KYD is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.KYD");
 			}
 		}
 		#endif
@@ -773,7 +773,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.KZT is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.KZT is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.KZT");
 			}
 		}
 		#endif
@@ -783,7 +783,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.LAK is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.LAK is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.LAK");
 			}
 		}
 		#endif
@@ -793,7 +793,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.LBP is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.LBP is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.LBP");
 			}
 		}
 		#endif
@@ -803,7 +803,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.LKR is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.LKR is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.LKR");
 			}
 		}
 		#endif
@@ -813,7 +813,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.LRD is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.LRD is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.LRD");
 			}
 		}
 		#endif
@@ -823,7 +823,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.LSL is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.LSL is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.LSL");
 			}
 		}
 		#endif
@@ -833,7 +833,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.LTL is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.LTL is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.LTL");
 			}
 		}
 		#endif
@@ -843,7 +843,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.LVL is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.LVL is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.LVL");
 			}
 		}
 		#endif
@@ -853,7 +853,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.LYD is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.LYD is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.LYD");
 			}
 		}
 		#endif
@@ -863,7 +863,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.MAD is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.MAD is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.MAD");
 			}
 		}
 		#endif
@@ -873,7 +873,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.MDL is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.MDL is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.MDL");
 			}
 		}
 		#endif
@@ -883,7 +883,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.MGA is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.MGA is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.MGA");
 			}
 		}
 		#endif
@@ -893,7 +893,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.MKD is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.MKD is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.MKD");
 			}
 		}
 		#endif
@@ -903,7 +903,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.MMK is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.MMK is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.MMK");
 			}
 		}
 		#endif
@@ -913,7 +913,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.MNT is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.MNT is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.MNT");
 			}
 		}
 		#endif
@@ -923,7 +923,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.MOP is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.MOP is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.MOP");
 			}
 		}
 		#endif
@@ -933,7 +933,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.MRO is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.MRO is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.MRO");
 			}
 		}
 		#endif
@@ -943,7 +943,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.MUR is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.MUR is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.MUR");
 			}
 		}
 		#endif
@@ -953,7 +953,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.MVR is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.MVR is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.MVR");
 			}
 		}
 		#endif
@@ -963,7 +963,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.MWK is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.MWK is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.MWK");
 			}
 		}
 		#endif
@@ -973,7 +973,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.MXN is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.MXN is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.MXN");
 			}
 		}
 		#endif
@@ -983,7 +983,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.MYR is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.MYR is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.MYR");
 			}
 		}
 		#endif
@@ -993,7 +993,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.MZN is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.MZN is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.MZN");
 			}
 		}
 		#endif
@@ -1003,7 +1003,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.NAD is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.NAD is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.NAD");
 			}
 		}
 		#endif
@@ -1013,7 +1013,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.NGN is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.NGN is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.NGN");
 			}
 		}
 		#endif
@@ -1023,7 +1023,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.NIO is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.NIO is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.NIO");
 			}
 		}
 		#endif
@@ -1033,7 +1033,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.NOK is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.NOK is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.NOK");
 			}
 		}
 		#endif
@@ -1043,7 +1043,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.NPR is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.NPR is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.NPR");
 			}
 		}
 		#endif
@@ -1053,7 +1053,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.NZD is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.NZD is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.NZD");
 			}
 		}
 		#endif
@@ -1063,7 +1063,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.OMR is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.OMR is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.OMR");
 			}
 		}
 		#endif
@@ -1073,7 +1073,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.PAB is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.PAB is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.PAB");
 			}
 		}
 		#endif
@@ -1083,7 +1083,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.PEN is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.PEN is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.PEN");
 			}
 		}
 		#endif
@@ -1093,7 +1093,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.PGK is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.PGK is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.PGK");
 			}
 		}
 		#endif
@@ -1103,7 +1103,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.PHP is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.PHP is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.PHP");
 			}
 		}
 		#endif
@@ -1113,7 +1113,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.PKR is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.PKR is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.PKR");
 			}
 		}
 		#endif
@@ -1123,7 +1123,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.PLN is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.PLN is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.PLN");
 			}
 		}
 		#endif
@@ -1133,7 +1133,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.PYG is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.PYG is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.PYG");
 			}
 		}
 		#endif
@@ -1143,7 +1143,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.QAR is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.QAR is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.QAR");
 			}
 		}
 		#endif
@@ -1153,7 +1153,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.RSD is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.RSD is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.RSD");
 			}
 		}
 		#endif
@@ -1163,7 +1163,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.RUB is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.RUB is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.RUB");
 			}
 		}
 		#endif
@@ -1173,7 +1173,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.RWF is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.RWF is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.RWF");
 			}
 		}
 		#endif
@@ -1183,7 +1183,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.SAR is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.SAR is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.SAR");
 			}
 		}
 		#endif
@@ -1193,7 +1193,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.SBD is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.SBD is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.SBD");
 			}
 		}
 		#endif
@@ -1203,7 +1203,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.SCR is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.SCR is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.SCR");
 			}
 		}
 		#endif
@@ -1213,7 +1213,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.SDG is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.SDG is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.SDG");
 			}
 		}
 		#endif
@@ -1223,7 +1223,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.SEK is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.SEK is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.SEK");
 			}
 		}
 		#endif
@@ -1233,7 +1233,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.SGD is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.SGD is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.SGD");
 			}
 		}
 		#endif
@@ -1243,7 +1243,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.SHP is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.SHP is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.SHP");
 			}
 		}
 		#endif
@@ -1253,7 +1253,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.SLL is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.SLL is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.SLL");
 			}
 		}
 		#endif
@@ -1263,7 +1263,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.SOS is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.SOS is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.SOS");
 			}
 		}
 		#endif
@@ -1273,7 +1273,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.SRD is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.SRD is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.SRD");
 			}
 		}
 		#endif
@@ -1283,7 +1283,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.STD is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.STD is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.STD");
 			}
 		}
 		#endif
@@ -1293,7 +1293,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.SYP is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.SYP is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.SYP");
 			}
 		}
 		#endif
@@ -1303,7 +1303,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.SZL is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.SZL is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.SZL");
 			}
 		}
 		#endif
@@ -1313,7 +1313,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.THB is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.THB is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.THB");
 			}
 		}
 		#endif
@@ -1323,7 +1323,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.TJS is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.TJS is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.TJS");
 			}
 		}
 		#endif
@@ -1333,7 +1333,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.TMT is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.TMT is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.TMT");
 			}
 		}
 		#endif
@@ -1343,7 +1343,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.TND is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.TND is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.TND");
 			}
 		}
 		#endif
@@ -1353,7 +1353,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.TOP is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.TOP is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.TOP");
 			}
 		}
 		#endif
@@ -1363,7 +1363,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.TRY is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.TRY is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.TRY");
 			}
 		}
 		#endif
@@ -1373,7 +1373,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.TTD is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.TTD is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.TTD");
 			}
 		}
 		#endif
@@ -1383,7 +1383,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.TWD is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.TWD is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.TWD");
 			}
 		}
 		#endif
@@ -1393,7 +1393,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.TZS is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.TZS is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.TZS");
 			}
 		}
 		#endif
@@ -1403,7 +1403,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.UAH is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.UAH is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.UAH");
 			}
 		}
 		#endif
@@ -1413,7 +1413,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.UGX is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.UGX is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.UGX");
 			}
 		}
 		#endif
@@ -1423,7 +1423,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.USD is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.USD is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.USD");
 			}
 		}
 		#endif
@@ -1433,7 +1433,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.UYU is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.UYU is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.UYU");
 			}
 		}
 		#endif
@@ -1443,7 +1443,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.UZS is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.UZS is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.UZS");
 			}
 		}
 		#endif
@@ -1453,7 +1453,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.VEF is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.VEF is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.VEF");
 			}
 		}
 		#endif
@@ -1463,7 +1463,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.VND is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.VND is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.VND");
 			}
 		}
 		#endif
@@ -1473,7 +1473,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.VUV is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.VUV is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.VUV");
 			}
 		}
 		#endif
@@ -1483,7 +1483,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.WST is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.WST is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.WST");
 			}
 		}
 		#endif
@@ -1493,7 +1493,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.XAF is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.XAF is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.XAF");
 			}
 		}
 		#endif
@@ -1503,7 +1503,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.XCD is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.XCD is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.XCD");
 			}
 		}
 		#endif
@@ -1513,7 +1513,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.XOF is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.XOF is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.XOF");
 			}
 		}
 		#endif
@@ -1523,7 +1523,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.XPF is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.XPF is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.XPF");
 			}
 		}
 		#endif
@@ -1533,7 +1533,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.XXX is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.XXX is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.XXX");
 			}
 		}
 		#endif
@@ -1543,7 +1543,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.YER is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.YER is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.YER");
 			}
 		}
 		#endif
@@ -1553,7 +1553,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.ZAR is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.ZAR is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.ZAR");
 			}
 		}
 		#endif
@@ -1563,7 +1563,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.ZMW is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.ZMW is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.ZMW");
 			}
 		}
 		#endif
@@ -1573,7 +1573,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.ZWL is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.ZWL is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.ZWL");
 			}
 		}
 		#endif
@@ -1583,7 +1583,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.BYN is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.BYN is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.BYN");
 			}
 		}
 		#endif
@@ -1593,7 +1593,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.SSP is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.SSP is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.SSP");
 			}
 		}
 		#endif
@@ -1603,7 +1603,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.STN is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.STN is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.STN");
 			}
 		}
 		#endif
@@ -1613,7 +1613,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.VES is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.VES is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.VES");
 			}
 		}
 		#endif
@@ -1623,7 +1623,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.MRU is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CurrencyIdentifiers.MRU is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyIdentifiers.MRU");
 			}
 		}
 		#endif

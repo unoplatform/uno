@@ -9,8 +9,8 @@ using Windows.UI.Xaml.Documents;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 
-// To learn more about WinUI, the WinUI project structure,
-// and more about our project templates, see: http://aka.ms/winui-project-info.
+// To learn about building custom controls see 
+// https://learn.microsoft.com/windows/apps/winui/winui3/xaml-templated-controls-csharp-winui-3
 
 namespace $rootnamespace$
 {

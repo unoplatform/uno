@@ -13,7 +13,7 @@ namespace Windows.System.Diagnostics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Exception DiagnosticActionResult.ExtendedError is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Exception DiagnosticActionResult.ExtendedError is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Exception%20DiagnosticActionResult.ExtendedError");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.System.Diagnostics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ValueSet DiagnosticActionResult.Results is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ValueSet DiagnosticActionResult.Results is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ValueSet%20DiagnosticActionResult.Results");
 			}
 		}
 		#endif

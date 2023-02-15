@@ -53,7 +53,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 		[TestMethod]
 		public void VerifyNumberPanelButtonUIABehavior()
 		{
-			RunOnUIThread.Execute(() => {
+			RunOnUIThread.Execute(() =>
+			{
 				var pagerControl = new PagerControl();
 				pagerControl.NumberOfPages = 5;
 				pagerControl.DisplayMode = PagerControlDisplayMode.ButtonPanel;

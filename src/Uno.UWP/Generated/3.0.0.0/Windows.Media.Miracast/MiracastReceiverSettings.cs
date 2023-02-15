@@ -13,7 +13,7 @@ namespace Windows.Media.Miracast
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MiracastReceiverSettings.RequireAuthorizationFromKnownTransmitters is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool MiracastReceiverSettings.RequireAuthorizationFromKnownTransmitters is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20MiracastReceiverSettings.RequireAuthorizationFromKnownTransmitters");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Media.Miracast
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MiracastReceiverSettings.ModelNumber is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MiracastReceiverSettings.ModelNumber is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MiracastReceiverSettings.ModelNumber");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Media.Miracast
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MiracastReceiverSettings.ModelName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MiracastReceiverSettings.ModelName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MiracastReceiverSettings.ModelName");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.Media.Miracast
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MiracastReceiverSettings.FriendlyName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MiracastReceiverSettings.FriendlyName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MiracastReceiverSettings.FriendlyName");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.Media.Miracast
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MiracastReceiverAuthorizationMethod MiracastReceiverSettings.AuthorizationMethod is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MiracastReceiverAuthorizationMethod MiracastReceiverSettings.AuthorizationMethod is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MiracastReceiverAuthorizationMethod%20MiracastReceiverSettings.AuthorizationMethod");
 			}
 			set
 			{

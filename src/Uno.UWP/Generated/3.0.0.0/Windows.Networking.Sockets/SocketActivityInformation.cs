@@ -13,7 +13,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SocketActivityContext SocketActivityInformation.Context is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SocketActivityContext SocketActivityInformation.Context is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SocketActivityContext%20SocketActivityInformation.Context");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DatagramSocket SocketActivityInformation.DatagramSocket is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DatagramSocket SocketActivityInformation.DatagramSocket is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DatagramSocket%20SocketActivityInformation.DatagramSocket");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SocketActivityInformation.Id is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SocketActivityInformation.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SocketActivityInformation.Id");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SocketActivityKind SocketActivityInformation.SocketKind is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SocketActivityKind SocketActivityInformation.SocketKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SocketActivityKind%20SocketActivityInformation.SocketKind");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member StreamSocket SocketActivityInformation.StreamSocket is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member StreamSocket SocketActivityInformation.StreamSocket is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=StreamSocket%20SocketActivityInformation.StreamSocket");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member StreamSocketListener SocketActivityInformation.StreamSocketListener is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member StreamSocketListener SocketActivityInformation.StreamSocketListener is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=StreamSocketListener%20SocketActivityInformation.StreamSocketListener");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid SocketActivityInformation.TaskId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Guid SocketActivityInformation.TaskId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Guid%20SocketActivityInformation.TaskId");
 			}
 		}
 		#endif
@@ -83,7 +83,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyDictionary<string, SocketActivityInformation> SocketActivityInformation.AllSockets is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyDictionary<string, SocketActivityInformation> SocketActivityInformation.AllSockets is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyDictionary%3Cstring%2C%20SocketActivityInformation%3E%20SocketActivityInformation.AllSockets");
 			}
 		}
 		#endif

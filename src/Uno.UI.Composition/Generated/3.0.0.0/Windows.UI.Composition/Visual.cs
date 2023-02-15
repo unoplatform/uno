@@ -18,7 +18,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float Visual.RotationAngle is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float Visual.RotationAngle is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20Visual.RotationAngle");
 			}
 			set
 			{
@@ -32,7 +32,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Quaternion Visual.Orientation is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Quaternion Visual.Orientation is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Quaternion%20Visual.Orientation");
 			}
 			set
 			{
@@ -50,7 +50,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CompositionClip Visual.Clip is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member CompositionClip Visual.Clip is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CompositionClip%20Visual.Clip");
 			}
 			set
 			{
@@ -65,7 +65,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CompositionBorderMode Visual.BorderMode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member CompositionBorderMode Visual.BorderMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CompositionBorderMode%20Visual.BorderMode");
 			}
 			set
 			{
@@ -79,7 +79,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CompositionBackfaceVisibility Visual.BackfaceVisibility is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member CompositionBackfaceVisibility Visual.BackfaceVisibility is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CompositionBackfaceVisibility%20Visual.BackfaceVisibility");
 			}
 			set
 			{
@@ -93,7 +93,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector2 Visual.AnchorPoint is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Vector2 Visual.AnchorPoint is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Vector2%20Visual.AnchorPoint");
 			}
 			set
 			{
@@ -108,7 +108,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector2 Visual.RelativeSizeAdjustment is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Vector2 Visual.RelativeSizeAdjustment is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Vector2%20Visual.RelativeSizeAdjustment");
 			}
 			set
 			{
@@ -122,7 +122,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector3 Visual.RelativeOffsetAdjustment is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Vector3 Visual.RelativeOffsetAdjustment is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Vector3%20Visual.RelativeOffsetAdjustment");
 			}
 			set
 			{
@@ -136,7 +136,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Visual Visual.ParentForTransform is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Visual Visual.ParentForTransform is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Visual%20Visual.ParentForTransform");
 			}
 			set
 			{
@@ -150,7 +150,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool Visual.IsHitTestVisible is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool Visual.IsHitTestVisible is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20Visual.IsHitTestVisible");
 			}
 			set
 			{
@@ -164,7 +164,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool Visual.IsPixelSnappingEnabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool Visual.IsPixelSnappingEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20Visual.IsPixelSnappingEnabled");
 			}
 			set
 			{

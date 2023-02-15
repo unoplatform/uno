@@ -6,7 +6,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 {
 	[TestClass]
 	public class Given_FontFamily
-	{ 
+	{
 		[TestMethod]
 		public void With_Pure_Name()
 		{
@@ -28,7 +28,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 		public void With_Path_Without_Hash()
 		{
 			var fontName = "FontName";
-			var fontFamilyPath = $"/Assets/Data/Fonts/{fontName}.ttf";			
+			var fontFamilyPath = $"/Assets/Data/Fonts/{fontName}.ttf";
 			var fontFamily = new FontFamily(fontFamilyPath);
 			Assert.IsTrue(fontFamily.CssFontName.StartsWith("font"));
 		}

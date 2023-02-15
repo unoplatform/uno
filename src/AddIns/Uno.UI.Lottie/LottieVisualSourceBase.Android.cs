@@ -75,7 +75,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			async Task SetProperties()
 			{
 				var sourceUri = UriSource;
-				if(_lastSource == null || !_lastSource.Equals(sourceUri))
+				if (_lastSource == null || !_lastSource.Equals(sourceUri))
 				{
 					_lastSource = sourceUri;
 

@@ -13,7 +13,7 @@ namespace Windows.Media.SpeechRecognition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string VoiceCommandSet.Language is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string VoiceCommandSet.Language is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20VoiceCommandSet.Language");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.SpeechRecognition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string VoiceCommandSet.Name is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string VoiceCommandSet.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20VoiceCommandSet.Name");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Media.SpeechRecognition
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction SetPhraseListAsync( string phraseListName,  global::System.Collections.Generic.IEnumerable<string> phraseList)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction VoiceCommandSet.SetPhraseListAsync(string phraseListName, IEnumerable<string> phraseList) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction VoiceCommandSet.SetPhraseListAsync(string phraseListName, IEnumerable<string> phraseList) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20VoiceCommandSet.SetPhraseListAsync%28string%20phraseListName%2C%20IEnumerable%3Cstring%3E%20phraseList%29");
 		}
 		#endif
 	}

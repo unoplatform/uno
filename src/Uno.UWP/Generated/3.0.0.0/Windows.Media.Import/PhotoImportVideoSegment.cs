@@ -13,7 +13,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset PhotoImportVideoSegment.Date is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DateTimeOffset PhotoImportVideoSegment.Date is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DateTimeOffset%20PhotoImportVideoSegment.Date");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PhotoImportVideoSegment.Name is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PhotoImportVideoSegment.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PhotoImportVideoSegment.Name");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PhotoImportSidecar PhotoImportVideoSegment.Sibling is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PhotoImportSidecar PhotoImportVideoSegment.Sibling is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PhotoImportSidecar%20PhotoImportVideoSegment.Sibling");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<PhotoImportSidecar> PhotoImportVideoSegment.Sidecars is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<PhotoImportSidecar> PhotoImportVideoSegment.Sidecars is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CPhotoImportSidecar%3E%20PhotoImportVideoSegment.Sidecars");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong PhotoImportVideoSegment.SizeInBytes is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ulong PhotoImportVideoSegment.SizeInBytes is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ulong%20PhotoImportVideoSegment.SizeInBytes");
 			}
 		}
 		#endif

@@ -13,7 +13,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double AltimeterReading.AltitudeChangeInMeters is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double AltimeterReading.AltitudeChangeInMeters is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20AltimeterReading.AltitudeChangeInMeters");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset AltimeterReading.Timestamp is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DateTimeOffset AltimeterReading.Timestamp is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DateTimeOffset%20AltimeterReading.Timestamp");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan? AltimeterReading.PerformanceCount is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan? AltimeterReading.PerformanceCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%3F%20AltimeterReading.PerformanceCount");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyDictionary<string, object> AltimeterReading.Properties is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyDictionary<string, object> AltimeterReading.Properties is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyDictionary%3Cstring%2C%20object%3E%20AltimeterReading.Properties");
 			}
 		}
 		#endif

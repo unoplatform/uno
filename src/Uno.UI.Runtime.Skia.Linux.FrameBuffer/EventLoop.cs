@@ -83,7 +83,7 @@ namespace Uno.WinUI.Runtime.Skia.LinuxFB
 			lock (_gate)
 			{
 				_readyList.Enqueue(action);
-                _evt.Release();
+				_evt.Release();
 
 				EnsureThread();
 			}

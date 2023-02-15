@@ -13,7 +13,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong PhotoImportStorageMedium.AvailableSpaceInBytes is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ulong PhotoImportStorageMedium.AvailableSpaceInBytes is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ulong%20PhotoImportStorageMedium.AvailableSpaceInBytes");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong PhotoImportStorageMedium.CapacityInBytes is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ulong PhotoImportStorageMedium.CapacityInBytes is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ulong%20PhotoImportStorageMedium.CapacityInBytes");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PhotoImportStorageMedium.Description is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PhotoImportStorageMedium.Description is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PhotoImportStorageMedium.Description");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PhotoImportStorageMedium.Name is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PhotoImportStorageMedium.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PhotoImportStorageMedium.Name");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PhotoImportStorageMedium.SerialNumber is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PhotoImportStorageMedium.SerialNumber is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PhotoImportStorageMedium.SerialNumber");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PhotoImportStorageMediumType PhotoImportStorageMedium.StorageMediumType is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PhotoImportStorageMediumType PhotoImportStorageMedium.StorageMediumType is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PhotoImportStorageMediumType%20PhotoImportStorageMedium.StorageMediumType");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.Media.Import
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PhotoImportAccessMode PhotoImportStorageMedium.SupportedAccessMode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PhotoImportAccessMode PhotoImportStorageMedium.SupportedAccessMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PhotoImportAccessMode%20PhotoImportStorageMedium.SupportedAccessMode");
 			}
 		}
 		#endif

@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Automation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AutomationProperty GridPatternIdentifiers.ColumnCountProperty is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AutomationProperty GridPatternIdentifiers.ColumnCountProperty is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AutomationProperty%20GridPatternIdentifiers.ColumnCountProperty");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.Xaml.Automation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AutomationProperty GridPatternIdentifiers.RowCountProperty is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AutomationProperty GridPatternIdentifiers.RowCountProperty is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AutomationProperty%20GridPatternIdentifiers.RowCountProperty");
 			}
 		}
 		#endif

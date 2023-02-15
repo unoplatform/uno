@@ -13,7 +13,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UserWatcherStatus UserWatcher.Status is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member UserWatcherStatus UserWatcher.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=UserWatcherStatus%20UserWatcher.Status");
 			}
 		}
 		#endif

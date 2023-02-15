@@ -13,7 +13,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MobileBroadbandModemConfiguration.HomeProviderId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MobileBroadbandModemConfiguration.HomeProviderId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MobileBroadbandModemConfiguration.HomeProviderId");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MobileBroadbandModemConfiguration.HomeProviderName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MobileBroadbandModemConfiguration.HomeProviderName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MobileBroadbandModemConfiguration.HomeProviderName");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MobileBroadbandUicc MobileBroadbandModemConfiguration.Uicc is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MobileBroadbandUicc MobileBroadbandModemConfiguration.Uicc is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MobileBroadbandUicc%20MobileBroadbandModemConfiguration.Uicc");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MobileBroadbandSarManager MobileBroadbandModemConfiguration.SarManager is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MobileBroadbandSarManager MobileBroadbandModemConfiguration.SarManager is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MobileBroadbandSarManager%20MobileBroadbandModemConfiguration.SarManager");
 			}
 		}
 		#endif

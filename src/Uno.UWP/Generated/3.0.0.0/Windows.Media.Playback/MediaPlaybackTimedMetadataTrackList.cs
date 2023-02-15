@@ -13,7 +13,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint MediaPlaybackTimedMetadataTrackList.Size is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint MediaPlaybackTimedMetadataTrackList.Size is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20MediaPlaybackTimedMetadataTrackList.Size");
 			}
 		}
 		#endif
@@ -28,7 +28,7 @@ namespace Windows.Media.Playback
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Media.Playback.TimedMetadataTrackPresentationMode GetPresentationMode( uint index)
 		{
-			throw new global::System.NotImplementedException("The member TimedMetadataTrackPresentationMode MediaPlaybackTimedMetadataTrackList.GetPresentationMode(uint index) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member TimedMetadataTrackPresentationMode MediaPlaybackTimedMetadataTrackList.GetPresentationMode(uint index) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimedMetadataTrackPresentationMode%20MediaPlaybackTimedMetadataTrackList.GetPresentationMode%28uint%20index%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

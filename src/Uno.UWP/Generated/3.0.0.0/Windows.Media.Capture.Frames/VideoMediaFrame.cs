@@ -13,7 +13,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CameraIntrinsics VideoMediaFrame.CameraIntrinsics is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member CameraIntrinsics VideoMediaFrame.CameraIntrinsics is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CameraIntrinsics%20VideoMediaFrame.CameraIntrinsics");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DepthMediaFrame VideoMediaFrame.DepthMediaFrame is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DepthMediaFrame VideoMediaFrame.DepthMediaFrame is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DepthMediaFrame%20VideoMediaFrame.DepthMediaFrame");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IDirect3DSurface VideoMediaFrame.Direct3DSurface is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IDirect3DSurface VideoMediaFrame.Direct3DSurface is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IDirect3DSurface%20VideoMediaFrame.Direct3DSurface");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaFrameReference VideoMediaFrame.FrameReference is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MediaFrameReference VideoMediaFrame.FrameReference is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaFrameReference%20VideoMediaFrame.FrameReference");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member InfraredMediaFrame VideoMediaFrame.InfraredMediaFrame is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member InfraredMediaFrame VideoMediaFrame.InfraredMediaFrame is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=InfraredMediaFrame%20VideoMediaFrame.InfraredMediaFrame");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SoftwareBitmap VideoMediaFrame.SoftwareBitmap is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SoftwareBitmap VideoMediaFrame.SoftwareBitmap is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SoftwareBitmap%20VideoMediaFrame.SoftwareBitmap");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.Media.Capture.Frames
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VideoMediaFrameFormat VideoMediaFrame.VideoFormat is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member VideoMediaFrameFormat VideoMediaFrame.VideoFormat is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=VideoMediaFrameFormat%20VideoMediaFrame.VideoFormat");
 			}
 		}
 		#endif
@@ -88,7 +88,7 @@ namespace Windows.Media.Capture.Frames
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Media.VideoFrame GetVideoFrame()
 		{
-			throw new global::System.NotImplementedException("The member VideoFrame VideoMediaFrame.GetVideoFrame() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member VideoFrame VideoMediaFrame.GetVideoFrame() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=VideoFrame%20VideoMediaFrame.GetVideoFrame%28%29");
 		}
 		#endif
 	}

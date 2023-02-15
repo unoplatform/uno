@@ -19,28 +19,28 @@ namespace Windows.Media.Protection.PlayReady
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Protection.PlayReady.INDSendResult> SendRegistrationRequestAsync( byte[] sessionIDBytes,  byte[] challengeDataBytes)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<INDSendResult> NDTCPMessenger.SendRegistrationRequestAsync(byte[] sessionIDBytes, byte[] challengeDataBytes) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<INDSendResult> NDTCPMessenger.SendRegistrationRequestAsync(byte[] sessionIDBytes, byte[] challengeDataBytes) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CINDSendResult%3E%20NDTCPMessenger.SendRegistrationRequestAsync%28byte%5B%5D%20sessionIDBytes%2C%20byte%5B%5D%20challengeDataBytes%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Protection.PlayReady.INDSendResult> SendProximityDetectionStartAsync( global::Windows.Media.Protection.PlayReady.NDProximityDetectionType pdType,  byte[] transmitterChannelBytes,  byte[] sessionIDBytes,  byte[] challengeDataBytes)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<INDSendResult> NDTCPMessenger.SendProximityDetectionStartAsync(NDProximityDetectionType pdType, byte[] transmitterChannelBytes, byte[] sessionIDBytes, byte[] challengeDataBytes) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<INDSendResult> NDTCPMessenger.SendProximityDetectionStartAsync(NDProximityDetectionType pdType, byte[] transmitterChannelBytes, byte[] sessionIDBytes, byte[] challengeDataBytes) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CINDSendResult%3E%20NDTCPMessenger.SendProximityDetectionStartAsync%28NDProximityDetectionType%20pdType%2C%20byte%5B%5D%20transmitterChannelBytes%2C%20byte%5B%5D%20sessionIDBytes%2C%20byte%5B%5D%20challengeDataBytes%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Protection.PlayReady.INDSendResult> SendProximityDetectionResponseAsync( global::Windows.Media.Protection.PlayReady.NDProximityDetectionType pdType,  byte[] transmitterChannelBytes,  byte[] sessionIDBytes,  byte[] responseDataBytes)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<INDSendResult> NDTCPMessenger.SendProximityDetectionResponseAsync(NDProximityDetectionType pdType, byte[] transmitterChannelBytes, byte[] sessionIDBytes, byte[] responseDataBytes) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<INDSendResult> NDTCPMessenger.SendProximityDetectionResponseAsync(NDProximityDetectionType pdType, byte[] transmitterChannelBytes, byte[] sessionIDBytes, byte[] responseDataBytes) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CINDSendResult%3E%20NDTCPMessenger.SendProximityDetectionResponseAsync%28NDProximityDetectionType%20pdType%2C%20byte%5B%5D%20transmitterChannelBytes%2C%20byte%5B%5D%20sessionIDBytes%2C%20byte%5B%5D%20responseDataBytes%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Protection.PlayReady.INDSendResult> SendLicenseFetchRequestAsync( byte[] sessionIDBytes,  byte[] challengeDataBytes)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<INDSendResult> NDTCPMessenger.SendLicenseFetchRequestAsync(byte[] sessionIDBytes, byte[] challengeDataBytes) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<INDSendResult> NDTCPMessenger.SendLicenseFetchRequestAsync(byte[] sessionIDBytes, byte[] challengeDataBytes) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CINDSendResult%3E%20NDTCPMessenger.SendLicenseFetchRequestAsync%28byte%5B%5D%20sessionIDBytes%2C%20byte%5B%5D%20challengeDataBytes%29");
 		}
 		#endif
 		// Processing: Windows.Media.Protection.PlayReady.INDMessenger

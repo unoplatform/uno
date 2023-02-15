@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color ColorChangedEventArgs.NewColor is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Color ColorChangedEventArgs.NewColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Color%20ColorChangedEventArgs.NewColor");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color ColorChangedEventArgs.OldColor is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Color ColorChangedEventArgs.OldColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Color%20ColorChangedEventArgs.OldColor");
 			}
 		}
 		#endif

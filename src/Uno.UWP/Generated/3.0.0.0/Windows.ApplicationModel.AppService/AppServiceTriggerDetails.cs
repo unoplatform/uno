@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.AppService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppServiceConnection AppServiceTriggerDetails.AppServiceConnection is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AppServiceConnection AppServiceTriggerDetails.AppServiceConnection is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AppServiceConnection%20AppServiceTriggerDetails.AppServiceConnection");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.ApplicationModel.AppService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppServiceTriggerDetails.CallerPackageFamilyName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string AppServiceTriggerDetails.CallerPackageFamilyName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20AppServiceTriggerDetails.CallerPackageFamilyName");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.ApplicationModel.AppService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppServiceTriggerDetails.Name is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string AppServiceTriggerDetails.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20AppServiceTriggerDetails.Name");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.ApplicationModel.AppService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppServiceTriggerDetails.IsRemoteSystemConnection is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool AppServiceTriggerDetails.IsRemoteSystemConnection is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20AppServiceTriggerDetails.IsRemoteSystemConnection");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.ApplicationModel.AppService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppServiceTriggerDetails.CallerRemoteConnectionToken is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string AppServiceTriggerDetails.CallerRemoteConnectionToken is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20AppServiceTriggerDetails.CallerRemoteConnectionToken");
 			}
 		}
 		#endif
@@ -65,7 +65,7 @@ namespace Windows.ApplicationModel.AppService
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<bool> CheckCallerForCapabilityAsync( string capabilityName)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> AppServiceTriggerDetails.CheckCallerForCapabilityAsync(string capabilityName) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> AppServiceTriggerDetails.CheckCallerForCapabilityAsync(string capabilityName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3Cbool%3E%20AppServiceTriggerDetails.CheckCallerForCapabilityAsync%28string%20capabilityName%29");
 		}
 		#endif
 		// Forced skipping of method Windows.ApplicationModel.AppService.AppServiceTriggerDetails.CallerRemoteConnectionToken.get

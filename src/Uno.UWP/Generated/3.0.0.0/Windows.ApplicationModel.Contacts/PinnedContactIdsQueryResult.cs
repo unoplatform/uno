@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<string> PinnedContactIdsQueryResult.ContactIds is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<string> PinnedContactIdsQueryResult.ContactIds is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3Cstring%3E%20PinnedContactIdsQueryResult.ContactIds");
 			}
 		}
 		#endif

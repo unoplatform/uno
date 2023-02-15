@@ -13,7 +13,7 @@ namespace Windows.UI.Input.Preview.Injection
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int InjectedInputPenInfo.TiltY is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int InjectedInputPenInfo.TiltY is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20InjectedInputPenInfo.TiltY");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.UI.Input.Preview.Injection
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int InjectedInputPenInfo.TiltX is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int InjectedInputPenInfo.TiltX is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20InjectedInputPenInfo.TiltX");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.UI.Input.Preview.Injection
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double InjectedInputPenInfo.Rotation is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double InjectedInputPenInfo.Rotation is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20InjectedInputPenInfo.Rotation");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.UI.Input.Preview.Injection
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double InjectedInputPenInfo.Pressure is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double InjectedInputPenInfo.Pressure is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20InjectedInputPenInfo.Pressure");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.UI.Input.Preview.Injection
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member InjectedInputPointerInfo InjectedInputPenInfo.PointerInfo is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member InjectedInputPointerInfo InjectedInputPenInfo.PointerInfo is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=InjectedInputPointerInfo%20InjectedInputPenInfo.PointerInfo");
 			}
 			set
 			{
@@ -83,7 +83,7 @@ namespace Windows.UI.Input.Preview.Injection
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member InjectedInputPenParameters InjectedInputPenInfo.PenParameters is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member InjectedInputPenParameters InjectedInputPenInfo.PenParameters is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=InjectedInputPenParameters%20InjectedInputPenInfo.PenParameters");
 			}
 			set
 			{
@@ -97,7 +97,7 @@ namespace Windows.UI.Input.Preview.Injection
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member InjectedInputPenButtons InjectedInputPenInfo.PenButtons is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member InjectedInputPenButtons InjectedInputPenInfo.PenButtons is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=InjectedInputPenButtons%20InjectedInputPenInfo.PenButtons");
 			}
 			set
 			{

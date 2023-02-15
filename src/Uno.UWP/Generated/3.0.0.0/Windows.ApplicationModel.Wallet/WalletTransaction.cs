@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Wallet
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset? WalletTransaction.TransactionDate is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DateTimeOffset? WalletTransaction.TransactionDate is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DateTimeOffset%3F%20WalletTransaction.TransactionDate");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.ApplicationModel.Wallet
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool WalletTransaction.IsLaunchable is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool WalletTransaction.IsLaunchable is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20WalletTransaction.IsLaunchable");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.ApplicationModel.Wallet
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool WalletTransaction.IgnoreTimeOfDay is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool WalletTransaction.IgnoreTimeOfDay is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20WalletTransaction.IgnoreTimeOfDay");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.ApplicationModel.Wallet
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string WalletTransaction.DisplayLocation is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string WalletTransaction.DisplayLocation is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20WalletTransaction.DisplayLocation");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.ApplicationModel.Wallet
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string WalletTransaction.DisplayAmount is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string WalletTransaction.DisplayAmount is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20WalletTransaction.DisplayAmount");
 			}
 			set
 			{
@@ -83,7 +83,7 @@ namespace Windows.ApplicationModel.Wallet
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string WalletTransaction.Description is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string WalletTransaction.Description is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20WalletTransaction.Description");
 			}
 			set
 			{

@@ -13,7 +13,7 @@ namespace Windows.Devices.Enumeration
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DevicePickerAppearance DevicePicker.Appearance is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DevicePickerAppearance DevicePicker.Appearance is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DevicePickerAppearance%20DevicePicker.Appearance");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.Enumeration
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DevicePickerFilter DevicePicker.Filter is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DevicePickerFilter DevicePicker.Filter is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DevicePickerFilter%20DevicePicker.Filter");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Devices.Enumeration
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<string> DevicePicker.RequestedProperties is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<string> DevicePicker.RequestedProperties is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3Cstring%3E%20DevicePicker.RequestedProperties");
 			}
 		}
 		#endif
@@ -72,14 +72,14 @@ namespace Windows.Devices.Enumeration
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Enumeration.DeviceInformation> PickSingleDeviceAsync( global::Windows.Foundation.Rect selection)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<DeviceInformation> DevicePicker.PickSingleDeviceAsync(Rect selection) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<DeviceInformation> DevicePicker.PickSingleDeviceAsync(Rect selection) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CDeviceInformation%3E%20DevicePicker.PickSingleDeviceAsync%28Rect%20selection%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Enumeration.DeviceInformation> PickSingleDeviceAsync( global::Windows.Foundation.Rect selection,  global::Windows.UI.Popups.Placement placement)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<DeviceInformation> DevicePicker.PickSingleDeviceAsync(Rect selection, Placement placement) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<DeviceInformation> DevicePicker.PickSingleDeviceAsync(Rect selection, Placement placement) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CDeviceInformation%3E%20DevicePicker.PickSingleDeviceAsync%28Rect%20selection%2C%20Placement%20placement%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

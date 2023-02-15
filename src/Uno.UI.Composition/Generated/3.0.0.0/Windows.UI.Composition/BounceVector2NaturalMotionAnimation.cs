@@ -13,7 +13,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float BounceVector2NaturalMotionAnimation.Restitution is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float BounceVector2NaturalMotionAnimation.Restitution is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20BounceVector2NaturalMotionAnimation.Restitution");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float BounceVector2NaturalMotionAnimation.Acceleration is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float BounceVector2NaturalMotionAnimation.Acceleration is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20BounceVector2NaturalMotionAnimation.Acceleration");
 			}
 			set
 			{

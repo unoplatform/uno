@@ -19,7 +19,7 @@ namespace Windows.Perception.Spatial.Surfaces
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::System.Collections.Generic.IReadOnlyDictionary<global::System.Guid, global::Windows.Perception.Spatial.Surfaces.SpatialSurfaceInfo> GetObservedSurfaces()
 		{
-			throw new global::System.NotImplementedException("The member IReadOnlyDictionary<Guid, SpatialSurfaceInfo> SpatialSurfaceObserver.GetObservedSurfaces() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IReadOnlyDictionary<Guid, SpatialSurfaceInfo> SpatialSurfaceObserver.GetObservedSurfaces() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyDictionary%3CGuid%2C%20SpatialSurfaceInfo%3E%20SpatialSurfaceObserver.GetObservedSurfaces%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -42,14 +42,14 @@ namespace Windows.Perception.Spatial.Surfaces
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static bool IsSupported()
 		{
-			throw new global::System.NotImplementedException("The member bool SpatialSurfaceObserver.IsSupported() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member bool SpatialSurfaceObserver.IsSupported() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20SpatialSurfaceObserver.IsSupported%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Perception.Spatial.SpatialPerceptionAccessStatus> RequestAccessAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<SpatialPerceptionAccessStatus> SpatialSurfaceObserver.RequestAccessAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<SpatialPerceptionAccessStatus> SpatialSurfaceObserver.RequestAccessAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CSpatialPerceptionAccessStatus%3E%20SpatialSurfaceObserver.RequestAccessAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

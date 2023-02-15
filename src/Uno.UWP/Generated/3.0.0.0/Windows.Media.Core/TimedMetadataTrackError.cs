@@ -13,7 +13,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimedMetadataTrackErrorCode TimedMetadataTrackError.ErrorCode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimedMetadataTrackErrorCode TimedMetadataTrackError.ErrorCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimedMetadataTrackErrorCode%20TimedMetadataTrackError.ErrorCode");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Exception TimedMetadataTrackError.ExtendedError is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Exception TimedMetadataTrackError.ExtendedError is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Exception%20TimedMetadataTrackError.ExtendedError");
 			}
 		}
 		#endif

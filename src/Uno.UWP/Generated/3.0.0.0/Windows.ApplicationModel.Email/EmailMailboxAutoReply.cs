@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EmailMailboxAutoReply.Response is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string EmailMailboxAutoReply.Response is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20EmailMailboxAutoReply.Response");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool EmailMailboxAutoReply.IsEnabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool EmailMailboxAutoReply.IsEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20EmailMailboxAutoReply.IsEnabled");
 			}
 			set
 			{

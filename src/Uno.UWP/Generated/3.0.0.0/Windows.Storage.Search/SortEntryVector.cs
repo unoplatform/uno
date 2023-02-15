@@ -13,7 +13,7 @@ namespace Windows.Storage.Search
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint SortEntryVector.Size is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint SortEntryVector.Size is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20SortEntryVector.Size");
 			}
 		}
 		#endif

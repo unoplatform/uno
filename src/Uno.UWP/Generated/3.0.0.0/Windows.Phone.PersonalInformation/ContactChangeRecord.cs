@@ -13,7 +13,7 @@ namespace Windows.Phone.PersonalInformation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ContactChangeType ContactChangeRecord.ChangeType is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ContactChangeType ContactChangeRecord.ChangeType is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ContactChangeType%20ContactChangeRecord.ChangeType");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Phone.PersonalInformation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ContactChangeRecord.Id is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ContactChangeRecord.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ContactChangeRecord.Id");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Phone.PersonalInformation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ContactChangeRecord.RemoteId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ContactChangeRecord.RemoteId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ContactChangeRecord.RemoteId");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Phone.PersonalInformation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong ContactChangeRecord.RevisionNumber is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ulong ContactChangeRecord.RevisionNumber is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ulong%20ContactChangeRecord.RevisionNumber");
 			}
 		}
 		#endif

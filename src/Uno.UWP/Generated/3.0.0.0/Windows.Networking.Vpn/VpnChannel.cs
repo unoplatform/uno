@@ -13,7 +13,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member object VpnChannel.PlugInContext is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member object VpnChannel.PlugInContext is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=object%20VpnChannel.PlugInContext");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VpnChannelConfiguration VpnChannel.Configuration is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member VpnChannelConfiguration VpnChannel.Configuration is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=VpnChannelConfiguration%20VpnChannel.Configuration");
 			}
 		}
 		#endif
@@ -37,7 +37,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint VpnChannel.Id is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint VpnChannel.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20VpnChannel.Id");
 			}
 		}
 		#endif
@@ -47,7 +47,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VpnSystemHealth VpnChannel.SystemHealth is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member VpnSystemHealth VpnChannel.SystemHealth is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=VpnSystemHealth%20VpnChannel.SystemHealth");
 			}
 		}
 		#endif
@@ -57,7 +57,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member object VpnChannel.CurrentRequestTransportContext is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member object VpnChannel.CurrentRequestTransportContext is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=object%20VpnChannel.CurrentRequestTransportContext");
 			}
 		}
 		#endif
@@ -86,14 +86,14 @@ namespace Windows.Networking.Vpn
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Networking.Vpn.VpnPickedCredential RequestCredentials( global::Windows.Networking.Vpn.VpnCredentialType credType,  bool isRetry,  bool isSingleSignOnCredential,  global::Windows.Security.Cryptography.Certificates.Certificate certificate)
 		{
-			throw new global::System.NotImplementedException("The member VpnPickedCredential VpnChannel.RequestCredentials(VpnCredentialType credType, bool isRetry, bool isSingleSignOnCredential, Certificate certificate) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member VpnPickedCredential VpnChannel.RequestCredentials(VpnCredentialType credType, bool isRetry, bool isSingleSignOnCredential, Certificate certificate) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=VpnPickedCredential%20VpnChannel.RequestCredentials%28VpnCredentialType%20credType%2C%20bool%20isRetry%2C%20bool%20isSingleSignOnCredential%2C%20Certificate%20certificate%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  void RequestVpnPacketBuffer( global::Windows.Networking.Vpn.VpnDataPathType type, out global::Windows.Networking.Vpn.VpnPacketBuffer vpnPacketBuffer)
 		{
-			throw new global::System.NotImplementedException("The member void VpnChannel.RequestVpnPacketBuffer(VpnDataPathType type, out VpnPacketBuffer vpnPacketBuffer) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member void VpnChannel.RequestVpnPacketBuffer(VpnDataPathType type, out VpnPacketBuffer vpnPacketBuffer) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=void%20VpnChannel.RequestVpnPacketBuffer%28VpnDataPathType%20type%2C%20out%20VpnPacketBuffer%20vpnPacketBuffer%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -151,42 +151,42 @@ namespace Windows.Networking.Vpn
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Networking.Vpn.VpnPacketBuffer GetVpnSendPacketBuffer()
 		{
-			throw new global::System.NotImplementedException("The member VpnPacketBuffer VpnChannel.GetVpnSendPacketBuffer() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member VpnPacketBuffer VpnChannel.GetVpnSendPacketBuffer() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=VpnPacketBuffer%20VpnChannel.GetVpnSendPacketBuffer%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Networking.Vpn.VpnPacketBuffer GetVpnReceivePacketBuffer()
 		{
-			throw new global::System.NotImplementedException("The member VpnPacketBuffer VpnChannel.GetVpnReceivePacketBuffer() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member VpnPacketBuffer VpnChannel.GetVpnReceivePacketBuffer() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=VpnPacketBuffer%20VpnChannel.GetVpnReceivePacketBuffer%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction RequestCustomPromptAsync( global::System.Collections.Generic.IReadOnlyList<global::Windows.Networking.Vpn.IVpnCustomPromptElement> customPromptElement)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction VpnChannel.RequestCustomPromptAsync(IReadOnlyList<IVpnCustomPromptElement> customPromptElement) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction VpnChannel.RequestCustomPromptAsync(IReadOnlyList<IVpnCustomPromptElement> customPromptElement) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20VpnChannel.RequestCustomPromptAsync%28IReadOnlyList%3CIVpnCustomPromptElement%3E%20customPromptElement%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.Vpn.VpnCredential> RequestCredentialsAsync( global::Windows.Networking.Vpn.VpnCredentialType credType,  uint credOptions,  global::Windows.Security.Cryptography.Certificates.Certificate certificate)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<VpnCredential> VpnChannel.RequestCredentialsAsync(VpnCredentialType credType, uint credOptions, Certificate certificate) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<VpnCredential> VpnChannel.RequestCredentialsAsync(VpnCredentialType credType, uint credOptions, Certificate certificate) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CVpnCredential%3E%20VpnChannel.RequestCredentialsAsync%28VpnCredentialType%20credType%2C%20uint%20credOptions%2C%20Certificate%20certificate%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.Vpn.VpnCredential> RequestCredentialsAsync( global::Windows.Networking.Vpn.VpnCredentialType credType,  uint credOptions)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<VpnCredential> VpnChannel.RequestCredentialsAsync(VpnCredentialType credType, uint credOptions) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<VpnCredential> VpnChannel.RequestCredentialsAsync(VpnCredentialType credType, uint credOptions) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CVpnCredential%3E%20VpnChannel.RequestCredentialsAsync%28VpnCredentialType%20credType%2C%20uint%20credOptions%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.Vpn.VpnCredential> RequestCredentialsAsync( global::Windows.Networking.Vpn.VpnCredentialType credType)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<VpnCredential> VpnChannel.RequestCredentialsAsync(VpnCredentialType credType) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<VpnCredential> VpnChannel.RequestCredentialsAsync(VpnCredentialType credType) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CVpnCredential%3E%20VpnChannel.RequestCredentialsAsync%28VpnCredentialType%20credType%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -235,7 +235,7 @@ namespace Windows.Networking.Vpn
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Networking.Sockets.ControlChannelTriggerStatus GetSlotTypeForTransportContext( object context)
 		{
-			throw new global::System.NotImplementedException("The member ControlChannelTriggerStatus VpnChannel.GetSlotTypeForTransportContext(object context) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member ControlChannelTriggerStatus VpnChannel.GetSlotTypeForTransportContext(object context) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ControlChannelTriggerStatus%20VpnChannel.GetSlotTypeForTransportContext%28object%20context%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Networking.Vpn.VpnChannel.CurrentRequestTransportContext.get
@@ -271,7 +271,7 @@ namespace Windows.Networking.Vpn
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.Collections.ValueSet ActivateForeground( string packageRelativeAppId,  global::Windows.Foundation.Collections.ValueSet sharedContext)
 		{
-			throw new global::System.NotImplementedException("The member ValueSet VpnChannel.ActivateForeground(string packageRelativeAppId, ValueSet sharedContext) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member ValueSet VpnChannel.ActivateForeground(string packageRelativeAppId, ValueSet sharedContext) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ValueSet%20VpnChannel.ActivateForeground%28string%20packageRelativeAppId%2C%20ValueSet%20sharedContext%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

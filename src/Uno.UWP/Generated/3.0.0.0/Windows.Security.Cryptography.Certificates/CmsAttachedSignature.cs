@@ -13,7 +13,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<Certificate> CmsAttachedSignature.Certificates is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<Certificate> CmsAttachedSignature.Certificates is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CCertificate%3E%20CmsAttachedSignature.Certificates");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte[] CmsAttachedSignature.Content is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member byte[] CmsAttachedSignature.Content is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=byte%5B%5D%20CmsAttachedSignature.Content");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<CmsSignerInfo> CmsAttachedSignature.Signers is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<CmsSignerInfo> CmsAttachedSignature.Signers is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CCmsSignerInfo%3E%20CmsAttachedSignature.Signers");
 			}
 		}
 		#endif
@@ -52,14 +52,14 @@ namespace Windows.Security.Cryptography.Certificates
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Security.Cryptography.Certificates.SignatureValidationResult VerifySignature()
 		{
-			throw new global::System.NotImplementedException("The member SignatureValidationResult CmsAttachedSignature.VerifySignature() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member SignatureValidationResult CmsAttachedSignature.VerifySignature() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SignatureValidationResult%20CmsAttachedSignature.VerifySignature%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IBuffer> GenerateSignatureAsync( global::Windows.Storage.Streams.IBuffer data,  global::System.Collections.Generic.IEnumerable<global::Windows.Security.Cryptography.Certificates.CmsSignerInfo> signers,  global::System.Collections.Generic.IEnumerable<global::Windows.Security.Cryptography.Certificates.Certificate> certificates)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IBuffer> CmsAttachedSignature.GenerateSignatureAsync(IBuffer data, IEnumerable<CmsSignerInfo> signers, IEnumerable<Certificate> certificates) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<IBuffer> CmsAttachedSignature.GenerateSignatureAsync(IBuffer data, IEnumerable<CmsSignerInfo> signers, IEnumerable<Certificate> certificates) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CIBuffer%3E%20CmsAttachedSignature.GenerateSignatureAsync%28IBuffer%20data%2C%20IEnumerable%3CCmsSignerInfo%3E%20signers%2C%20IEnumerable%3CCertificate%3E%20certificates%29");
 		}
 		#endif
 	}

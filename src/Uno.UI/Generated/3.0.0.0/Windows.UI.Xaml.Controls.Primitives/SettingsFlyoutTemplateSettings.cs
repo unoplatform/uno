@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Brush SettingsFlyoutTemplateSettings.BorderBrush is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Brush SettingsFlyoutTemplateSettings.BorderBrush is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Brush%20SettingsFlyoutTemplateSettings.BorderBrush");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Thickness SettingsFlyoutTemplateSettings.BorderThickness is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Thickness SettingsFlyoutTemplateSettings.BorderThickness is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Thickness%20SettingsFlyoutTemplateSettings.BorderThickness");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TransitionCollection SettingsFlyoutTemplateSettings.ContentTransitions is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TransitionCollection SettingsFlyoutTemplateSettings.ContentTransitions is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TransitionCollection%20SettingsFlyoutTemplateSettings.ContentTransitions");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Brush SettingsFlyoutTemplateSettings.HeaderBackground is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Brush SettingsFlyoutTemplateSettings.HeaderBackground is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Brush%20SettingsFlyoutTemplateSettings.HeaderBackground");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Brush SettingsFlyoutTemplateSettings.HeaderForeground is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Brush SettingsFlyoutTemplateSettings.HeaderForeground is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Brush%20SettingsFlyoutTemplateSettings.HeaderForeground");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ImageSource SettingsFlyoutTemplateSettings.IconSource is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ImageSource SettingsFlyoutTemplateSettings.IconSource is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ImageSource%20SettingsFlyoutTemplateSettings.IconSource");
 			}
 		}
 		#endif

@@ -13,7 +13,7 @@ namespace Windows.Graphics.Printing.PrintTicket
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PrintTicketValue PrintTicketParameterInitializer.Value is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PrintTicketValue PrintTicketParameterInitializer.Value is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PrintTicketValue%20PrintTicketParameterInitializer.Value");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Graphics.Printing.PrintTicket
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PrintTicketParameterInitializer.Name is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PrintTicketParameterInitializer.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PrintTicketParameterInitializer.Name");
 			}
 		}
 		#endif
@@ -37,7 +37,7 @@ namespace Windows.Graphics.Printing.PrintTicket
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PrintTicketParameterInitializer.XmlNamespace is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PrintTicketParameterInitializer.XmlNamespace is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PrintTicketParameterInitializer.XmlNamespace");
 			}
 		}
 		#endif
@@ -47,7 +47,7 @@ namespace Windows.Graphics.Printing.PrintTicket
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IXmlNode PrintTicketParameterInitializer.XmlNode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IXmlNode PrintTicketParameterInitializer.XmlNode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IXmlNode%20PrintTicketParameterInitializer.XmlNode");
 			}
 		}
 		#endif

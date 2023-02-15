@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string LocalMapTileDataSource.UriFormatString is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string LocalMapTileDataSource.UriFormatString is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20LocalMapTileDataSource.UriFormatString");
 			}
 			set
 			{

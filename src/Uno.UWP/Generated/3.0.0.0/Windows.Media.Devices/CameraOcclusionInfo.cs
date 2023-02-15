@@ -11,14 +11,14 @@ namespace Windows.Media.Devices
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Media.Devices.CameraOcclusionState GetState()
 		{
-			throw new global::System.NotImplementedException("The member CameraOcclusionState CameraOcclusionInfo.GetState() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member CameraOcclusionState CameraOcclusionInfo.GetState() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CameraOcclusionState%20CameraOcclusionInfo.GetState%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool IsOcclusionKindSupported( global::Windows.Media.Devices.CameraOcclusionKind occlusionKind)
 		{
-			throw new global::System.NotImplementedException("The member bool CameraOcclusionInfo.IsOcclusionKindSupported(CameraOcclusionKind occlusionKind) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member bool CameraOcclusionInfo.IsOcclusionKindSupported(CameraOcclusionKind occlusionKind) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20CameraOcclusionInfo.IsOcclusionKindSupported%28CameraOcclusionKind%20occlusionKind%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Media.Devices.CameraOcclusionInfo.StateChanged.add

@@ -165,9 +165,9 @@ namespace Uno.Extensions
 						}
 
 						return (
-							addedInner ?? Enumerable.Empty<T>(), 
-							Enumerable.Empty<T>(), 
-							removedInner ?? Enumerable.Empty<T>(), 
+							addedInner ?? Enumerable.Empty<T>(),
+							Enumerable.Empty<T>(),
+							removedInner ?? Enumerable.Empty<T>(),
 							GetKeptItems(collection, array, comparer)
 						);
 					}

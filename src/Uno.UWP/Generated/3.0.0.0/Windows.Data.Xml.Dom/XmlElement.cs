@@ -42,7 +42,7 @@ namespace Windows.Data.Xml.Dom
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  string GetAttributeNS( object namespaceUri,  string localName)
 		{
-			throw new global::System.NotImplementedException("The member string XmlElement.GetAttributeNS(object namespaceUri, string localName) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member string XmlElement.GetAttributeNS(object namespaceUri, string localName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20XmlElement.GetAttributeNS%28object%20namespaceUri%2C%20string%20localName%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -56,14 +56,14 @@ namespace Windows.Data.Xml.Dom
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Data.Xml.Dom.XmlAttribute SetAttributeNodeNS( global::Windows.Data.Xml.Dom.XmlAttribute newAttribute)
 		{
-			throw new global::System.NotImplementedException("The member XmlAttribute XmlElement.SetAttributeNodeNS(XmlAttribute newAttribute) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member XmlAttribute XmlElement.SetAttributeNodeNS(XmlAttribute newAttribute) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=XmlAttribute%20XmlElement.SetAttributeNodeNS%28XmlAttribute%20newAttribute%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Data.Xml.Dom.XmlAttribute GetAttributeNodeNS( object namespaceUri,  string localName)
 		{
-			throw new global::System.NotImplementedException("The member XmlAttribute XmlElement.GetAttributeNodeNS(object namespaceUri, string localName) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member XmlAttribute XmlElement.GetAttributeNodeNS(object namespaceUri, string localName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=XmlAttribute%20XmlElement.GetAttributeNodeNS%28object%20namespaceUri%2C%20string%20localName%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Data.Xml.Dom.XmlElement.NodeValue.get
@@ -95,14 +95,14 @@ namespace Windows.Data.Xml.Dom
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Data.Xml.Dom.IXmlNode SelectSingleNodeNS( string xpath,  object namespaces)
 		{
-			throw new global::System.NotImplementedException("The member IXmlNode XmlElement.SelectSingleNodeNS(string xpath, object namespaces) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IXmlNode XmlElement.SelectSingleNodeNS(string xpath, object namespaces) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IXmlNode%20XmlElement.SelectSingleNodeNS%28string%20xpath%2C%20object%20namespaces%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Data.Xml.Dom.XmlNodeList SelectNodesNS( string xpath,  object namespaces)
 		{
-			throw new global::System.NotImplementedException("The member XmlNodeList XmlElement.SelectNodesNS(string xpath, object namespaces) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member XmlNodeList XmlElement.SelectNodesNS(string xpath, object namespaces) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=XmlNodeList%20XmlElement.SelectNodesNS%28string%20xpath%2C%20object%20namespaces%29");
 		}
 		#endif
 		// Skipping already declared method Windows.Data.Xml.Dom.XmlElement.GetXml()

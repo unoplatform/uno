@@ -13,7 +13,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CompassReading CompassReadingChangedEventArgs.Reading is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member CompassReading CompassReadingChangedEventArgs.Reading is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CompassReading%20CompassReadingChangedEventArgs.Reading");
 			}
 		}
 		#endif

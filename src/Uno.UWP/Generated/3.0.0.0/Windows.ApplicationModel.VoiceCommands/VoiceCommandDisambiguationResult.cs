@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.VoiceCommands
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VoiceCommandContentTile VoiceCommandDisambiguationResult.SelectedItem is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member VoiceCommandContentTile VoiceCommandDisambiguationResult.SelectedItem is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=VoiceCommandContentTile%20VoiceCommandDisambiguationResult.SelectedItem");
 			}
 		}
 		#endif

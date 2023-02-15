@@ -3,7 +3,7 @@ parameters:
 
 jobs:
 - job: Wasm_UITests_Build
-  displayName: 'Build WebAssembly UI Tests'
+  displayName: 'Build WebAssembly SamplesApp UI Tests'
   container: nv-bionic-wasm
 
   dependsOn: winui_convert_tree
@@ -36,8 +36,7 @@ jobs:
   - template: templates/nuget-cache.yml
     parameters:
       nugetPackages: $(NUGET_PACKAGES)
-    
-  - template: templates/optimize-roslyn-mono.yml
+
   - template: templates/dotnet-install.yml
 
   - bash: |
@@ -65,7 +64,7 @@ jobs:
 
 
 - job: Wasm_UITests_Snap
-  displayName: 'WebAssembly UI Tests (Snapshots Run)'
+  displayName: 'Run WebAssembly Snapshots Tests'
   dependsOn:
   - Wasm_UITests_Build
   - SamplesApp_UITests_Build
@@ -97,7 +96,6 @@ jobs:
         downloadPath: '$(build.sourcesdirectory)/build'
 
   - template: templates/dotnet-install.yml
-  - template: templates/optimize-roslyn-mono.yml
 
   - bash: |
       set -euo pipefail
@@ -138,7 +136,7 @@ jobs:
 
 
 - job: Wasm_UITests_Automated
-  displayName: 'WebAssembly UI Tests (Automated Run)'
+  displayName: 'Run WebAssembly Automated Test'
   dependsOn:
   - Wasm_UITests_Build
   - SamplesApp_UITests_Build
@@ -209,7 +207,6 @@ jobs:
     clean: true
 
   - template: templates/dotnet-install.yml
-  - template: templates/optimize-roslyn-mono.yml
 
   - template: templates/nuget-cache.yml
     parameters:

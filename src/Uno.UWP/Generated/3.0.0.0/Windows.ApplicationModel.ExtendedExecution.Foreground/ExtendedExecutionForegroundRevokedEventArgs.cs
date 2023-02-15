@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.ExtendedExecution.Foreground
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ExtendedExecutionForegroundRevokedReason ExtendedExecutionForegroundRevokedEventArgs.Reason is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ExtendedExecutionForegroundRevokedReason ExtendedExecutionForegroundRevokedEventArgs.Reason is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ExtendedExecutionForegroundRevokedReason%20ExtendedExecutionForegroundRevokedEventArgs.Reason");
 			}
 		}
 		#endif

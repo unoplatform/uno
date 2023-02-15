@@ -13,7 +13,7 @@ namespace Windows.Media.DialProtocol
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DialReceiverApp DialReceiverApp.Current is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DialReceiverApp DialReceiverApp.Current is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DialReceiverApp%20DialReceiverApp.Current");
 			}
 		}
 		#endif
@@ -21,21 +21,21 @@ namespace Windows.Media.DialProtocol
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IDictionary<string, string>> GetAdditionalDataAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IDictionary<string, string>> DialReceiverApp.GetAdditionalDataAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<IDictionary<string, string>> DialReceiverApp.GetAdditionalDataAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CIDictionary%3Cstring%2C%20string%3E%3E%20DialReceiverApp.GetAdditionalDataAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction SetAdditionalDataAsync( global::System.Collections.Generic.IEnumerable<global::System.Collections.Generic.KeyValuePair<string, string>> additionalData)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction DialReceiverApp.SetAdditionalDataAsync(IEnumerable<KeyValuePair<string, string>> additionalData) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction DialReceiverApp.SetAdditionalDataAsync(IEnumerable<KeyValuePair<string, string>> additionalData) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20DialReceiverApp.SetAdditionalDataAsync%28IEnumerable%3CKeyValuePair%3Cstring%2C%20string%3E%3E%20additionalData%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<string> GetUniqueDeviceNameAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<string> DialReceiverApp.GetUniqueDeviceNameAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<string> DialReceiverApp.GetUniqueDeviceNameAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3Cstring%3E%20DialReceiverApp.GetUniqueDeviceNameAsync%28%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Media.DialProtocol.DialReceiverApp.Current.get

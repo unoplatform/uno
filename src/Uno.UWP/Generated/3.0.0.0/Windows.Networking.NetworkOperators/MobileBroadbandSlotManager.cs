@@ -13,7 +13,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int MobileBroadbandSlotManager.CurrentSlotIndex is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int MobileBroadbandSlotManager.CurrentSlotIndex is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20MobileBroadbandSlotManager.CurrentSlotIndex");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<MobileBroadbandSlotInfo> MobileBroadbandSlotManager.SlotInfos is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<MobileBroadbandSlotInfo> MobileBroadbandSlotManager.SlotInfos is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CMobileBroadbandSlotInfo%3E%20MobileBroadbandSlotManager.SlotInfos");
 			}
 		}
 		#endif
@@ -33,14 +33,14 @@ namespace Windows.Networking.NetworkOperators
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Networking.NetworkOperators.MobileBroadbandModemStatus SetCurrentSlot( int slotIndex)
 		{
-			throw new global::System.NotImplementedException("The member MobileBroadbandModemStatus MobileBroadbandSlotManager.SetCurrentSlot(int slotIndex) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member MobileBroadbandModemStatus MobileBroadbandSlotManager.SetCurrentSlot(int slotIndex) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MobileBroadbandModemStatus%20MobileBroadbandSlotManager.SetCurrentSlot%28int%20slotIndex%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.NetworkOperators.MobileBroadbandModemStatus> SetCurrentSlotAsync( int slotIndex)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<MobileBroadbandModemStatus> MobileBroadbandSlotManager.SetCurrentSlotAsync(int slotIndex) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<MobileBroadbandModemStatus> MobileBroadbandSlotManager.SetCurrentSlotAsync(int slotIndex) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CMobileBroadbandModemStatus%3E%20MobileBroadbandSlotManager.SetCurrentSlotAsync%28int%20slotIndex%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandSlotManager.SlotInfoChanged.add

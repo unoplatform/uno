@@ -13,7 +13,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte? UsbDeviceClass.SubclassCode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member byte? UsbDeviceClass.SubclassCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=byte%3F%20UsbDeviceClass.SubclassCode");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte? UsbDeviceClass.ProtocolCode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member byte? UsbDeviceClass.ProtocolCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=byte%3F%20UsbDeviceClass.ProtocolCode");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte UsbDeviceClass.ClassCode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member byte UsbDeviceClass.ClassCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=byte%20UsbDeviceClass.ClassCode");
 			}
 			set
 			{

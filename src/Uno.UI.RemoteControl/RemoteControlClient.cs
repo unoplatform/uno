@@ -36,7 +36,7 @@ namespace Uno.UI.RemoteControl
 		{
 			AppType = appType;
 
-			if(appType.Assembly.GetCustomAttributes(typeof(ServerEndpointAttribute), false) is ServerEndpointAttribute[] endpoints)
+			if (appType.Assembly.GetCustomAttributes(typeof(ServerEndpointAttribute), false) is ServerEndpointAttribute[] endpoints)
 			{
 				IEnumerable<(string endpoint, int port)> GetAddresses()
 				{
@@ -132,7 +132,7 @@ namespace Uno.UI.RemoteControl
 					{
 						await s.ConnectAsync(serverUri, ct);
 					}
-					catch(Exception e)
+					catch (Exception e)
 					{
 						if (this.Log().IsEnabled(LogLevel.Trace))
 						{
@@ -254,12 +254,12 @@ namespace Uno.UI.RemoteControl
 					}
 				}
 			});
-		
+
 		private async Task ProcessMessages()
 		{
 			_ = InitializeServerProcessors();
 
-			foreach(var processor in _processors)
+			foreach (var processor in _processors)
 			{
 				await processor.Value.Initialize();
 			}
@@ -305,7 +305,8 @@ namespace Uno.UI.RemoteControl
 		{
 			KeepAliveMessage keepAlive = new();
 
-			_keepAliveTimer = new Timer(_ => {
+			_keepAliveTimer = new Timer(_ =>
+			{
 
 				try
 				{
@@ -316,7 +317,7 @@ namespace Uno.UI.RemoteControl
 
 					_ = SendMessage(keepAlive);
 				}
-				catch(Exception)
+				catch (Exception)
 				{
 					if (this.Log().IsEnabled(LogLevel.Trace))
 					{

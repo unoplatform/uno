@@ -13,7 +13,7 @@ namespace Windows.UI.Text.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CoreTextTextUpdatingResult CoreTextTextUpdatingEventArgs.Result is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member CoreTextTextUpdatingResult CoreTextTextUpdatingEventArgs.Result is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CoreTextTextUpdatingResult%20CoreTextTextUpdatingEventArgs.Result");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.UI.Text.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Language CoreTextTextUpdatingEventArgs.InputLanguage is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Language CoreTextTextUpdatingEventArgs.InputLanguage is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Language%20CoreTextTextUpdatingEventArgs.InputLanguage");
 			}
 		}
 		#endif
@@ -37,7 +37,7 @@ namespace Windows.UI.Text.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CoreTextTextUpdatingEventArgs.IsCanceled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool CoreTextTextUpdatingEventArgs.IsCanceled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20CoreTextTextUpdatingEventArgs.IsCanceled");
 			}
 		}
 		#endif
@@ -47,7 +47,7 @@ namespace Windows.UI.Text.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CoreTextRange CoreTextTextUpdatingEventArgs.NewSelection is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member CoreTextRange CoreTextTextUpdatingEventArgs.NewSelection is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CoreTextRange%20CoreTextTextUpdatingEventArgs.NewSelection");
 			}
 		}
 		#endif
@@ -57,7 +57,7 @@ namespace Windows.UI.Text.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CoreTextRange CoreTextTextUpdatingEventArgs.Range is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member CoreTextRange CoreTextTextUpdatingEventArgs.Range is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CoreTextRange%20CoreTextTextUpdatingEventArgs.Range");
 			}
 		}
 		#endif
@@ -67,7 +67,7 @@ namespace Windows.UI.Text.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CoreTextTextUpdatingEventArgs.Text is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CoreTextTextUpdatingEventArgs.Text is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CoreTextTextUpdatingEventArgs.Text");
 			}
 		}
 		#endif
@@ -82,7 +82,7 @@ namespace Windows.UI.Text.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.Deferral GetDeferral()
 		{
-			throw new global::System.NotImplementedException("The member Deferral CoreTextTextUpdatingEventArgs.GetDeferral() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member Deferral CoreTextTextUpdatingEventArgs.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Deferral%20CoreTextTextUpdatingEventArgs.GetDeferral%28%29");
 		}
 		#endif
 	}

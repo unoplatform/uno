@@ -61,13 +61,15 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 
 			RunOnUIThread.Execute(() =>
 			{
-				var repeater = new ItemsRepeater() {
+				var repeater = new ItemsRepeater()
+				{
 					Layout = GetMonitoringLayout(new Size(500, 600), realizationRects, layoutMeasured),
 					HorizontalCacheLength = 0.0,
 					VerticalCacheLength = 0.0
 				};
 
-				scrollViewer = new ScrollViewer {
+				scrollViewer = new ScrollViewer
+				{
 					Content = repeater,
 					Width = 200,
 					Height = 300,
@@ -339,8 +341,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 					MeasureLayoutFunc = (availableSize, context) =>
 					{
 						var ctx = (VirtualizingLayoutContext)context;
-						Log.Comment("MeasureLayout - Rect:" +  ctx.RealizationRect);
-						if(measureRealizationRects.Count == 0 || measureRealizationRects.Last() != ctx.RealizationRect)
+						Log.Comment("MeasureLayout - Rect:" + ctx.RealizationRect);
+						if (measureRealizationRects.Count == 0 || measureRealizationRects.Last() != ctx.RealizationRect)
 						{
 							measureRealizationRects.Add(ctx.RealizationRect);
 						}
@@ -351,8 +353,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 					ArrangeLayoutFunc = (finalSize, context) =>
 					{
 						var ctx = (VirtualizingLayoutContext)context;
-						Log.Comment("ArrangeLayout - Rect:" +  ctx.RealizationRect);
-						if(arrangeRealizationRects.Count == 0 || arrangeRealizationRects.Last() != ctx.RealizationRect)
+						Log.Comment("ArrangeLayout - Rect:" + ctx.RealizationRect);
+						if (arrangeRealizationRects.Count == 0 || arrangeRealizationRects.Last() != ctx.RealizationRect)
 						{
 							arrangeRealizationRects.Add(ctx.RealizationRect);
 						}
@@ -470,7 +472,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				{
 					Log.Comment("ViewChanged: " + scroller.VerticalOffset);
 					viewChangedOffsets.Add(scroller.VerticalOffset);
-					if(!e.IsIntermediate)
+					if (!e.IsIntermediate)
 					{
 						viewChangeCompletedEvent.Set();
 					}
@@ -552,7 +554,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 
 			Verify.IsTrue(viewChangeCompletedEvent.WaitOne(DefaultWaitTimeInMS));
 			IdleSynchronizer.Wait();
-			ValidateRealizedRange(repeater, 19, 26); 
+			ValidateRealizedRange(repeater, 19, 26);
 		}
 
 		private void ValidateRealizedRange(

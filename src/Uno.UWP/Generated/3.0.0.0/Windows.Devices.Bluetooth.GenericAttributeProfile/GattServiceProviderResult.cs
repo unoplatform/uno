@@ -13,7 +13,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BluetoothError GattServiceProviderResult.Error is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member BluetoothError GattServiceProviderResult.Error is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=BluetoothError%20GattServiceProviderResult.Error");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GattServiceProvider GattServiceProviderResult.ServiceProvider is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member GattServiceProvider GattServiceProviderResult.ServiceProvider is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=GattServiceProvider%20GattServiceProviderResult.ServiceProvider");
 			}
 		}
 		#endif

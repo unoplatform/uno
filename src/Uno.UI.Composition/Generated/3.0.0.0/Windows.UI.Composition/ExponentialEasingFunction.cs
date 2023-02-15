@@ -13,7 +13,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float ExponentialEasingFunction.Exponent is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float ExponentialEasingFunction.Exponent is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20ExponentialEasingFunction.Exponent");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CompositionEasingFunctionMode ExponentialEasingFunction.Mode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member CompositionEasingFunctionMode ExponentialEasingFunction.Mode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CompositionEasingFunctionMode%20ExponentialEasingFunction.Mode");
 			}
 		}
 		#endif

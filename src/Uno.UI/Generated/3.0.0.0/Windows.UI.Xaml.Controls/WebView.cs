@@ -105,7 +105,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<WebViewDeferredPermissionRequest> WebView.DeferredPermissionRequests is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<WebViewDeferredPermissionRequest> WebView.DeferredPermissionRequests is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3CWebViewDeferredPermissionRequest%3E%20WebView.DeferredPermissionRequests");
 			}
 		}
 		#endif
@@ -115,7 +115,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WebViewExecutionMode WebView.ExecutionMode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member WebViewExecutionMode WebView.ExecutionMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=WebViewExecutionMode%20WebView.ExecutionMode");
 			}
 		}
 		#endif
@@ -125,7 +125,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WebViewSettings WebView.Settings is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member WebViewSettings WebView.Settings is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=WebViewSettings%20WebView.Settings");
 			}
 		}
 		#endif
@@ -147,7 +147,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<Uri> WebView.AnyScriptNotifyUri is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<Uri> WebView.AnyScriptNotifyUri is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3CUri%3E%20WebView.AnyScriptNotifyUri");
 			}
 		}
 		#endif
@@ -213,7 +213,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WebViewExecutionMode WebView.DefaultExecutionMode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member WebViewExecutionMode WebView.DefaultExecutionMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=WebViewExecutionMode%20WebView.DefaultExecutionMode");
 			}
 		}
 		#endif
@@ -246,7 +246,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  string InvokeScript( string scriptName,  string[] arguments)
 		{
-			throw new global::System.NotImplementedException("The member string WebView.InvokeScript(string scriptName, string[] arguments) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member string WebView.InvokeScript(string scriptName, string[] arguments) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20WebView.InvokeScript%28string%20scriptName%2C%20string%5B%5D%20arguments%29");
 		}
 		#endif
 		#if false || false || NET461 || false || false || __NETSTD_REFERENCE__ || false
@@ -304,21 +304,21 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction CapturePreviewToStreamAsync( global::Windows.Storage.Streams.IRandomAccessStream stream)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction WebView.CapturePreviewToStreamAsync(IRandomAccessStream stream) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction WebView.CapturePreviewToStreamAsync(IRandomAccessStream stream) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20WebView.CapturePreviewToStreamAsync%28IRandomAccessStream%20stream%29");
 		}
 		#endif
 		#if false || false || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public  global::Windows.Foundation.IAsyncOperation<string> InvokeScriptAsync( string scriptName,  global::System.Collections.Generic.IEnumerable<string> arguments)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<string> WebView.InvokeScriptAsync(string scriptName, IEnumerable<string> arguments) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<string> WebView.InvokeScriptAsync(string scriptName, IEnumerable<string> arguments) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3Cstring%3E%20WebView.InvokeScriptAsync%28string%20scriptName%2C%20IEnumerable%3Cstring%3E%20arguments%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.DataTransfer.DataPackage> CaptureSelectedContentToDataPackageAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<DataPackage> WebView.CaptureSelectedContentToDataPackageAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<DataPackage> WebView.CaptureSelectedContentToDataPackageAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CDataPackage%3E%20WebView.CaptureSelectedContentToDataPackageAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -332,7 +332,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::System.Uri BuildLocalStreamUri( string contentIdentifier,  string relativePath)
 		{
-			throw new global::System.NotImplementedException("The member Uri WebView.BuildLocalStreamUri(string contentIdentifier, string relativePath) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member Uri WebView.BuildLocalStreamUri(string contentIdentifier, string relativePath) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Uri%20WebView.BuildLocalStreamUri%28string%20contentIdentifier%2C%20string%20relativePath%29");
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Controls.WebView.DefaultBackgroundColor.get
@@ -384,7 +384,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Xaml.Controls.WebViewDeferredPermissionRequest DeferredPermissionRequestById( uint id)
 		{
-			throw new global::System.NotImplementedException("The member WebViewDeferredPermissionRequest WebView.DeferredPermissionRequestById(uint id) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member WebViewDeferredPermissionRequest WebView.DeferredPermissionRequestById(uint id) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=WebViewDeferredPermissionRequest%20WebView.DeferredPermissionRequestById%28uint%20id%29");
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Controls.WebView.XYFocusLeft.get
@@ -408,7 +408,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Foundation.IAsyncAction ClearTemporaryWebDataAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction WebView.ClearTemporaryWebDataAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction WebView.ClearTemporaryWebDataAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20WebView.ClearTemporaryWebDataAsync%28%29");
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Controls.WebView.ContainsFullScreenElementProperty.get

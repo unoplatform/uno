@@ -13,7 +13,7 @@ namespace Windows.Devices.Bluetooth
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BluetoothLEPreferredConnectionParametersRequestStatus BluetoothLEPreferredConnectionParametersRequest.Status is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member BluetoothLEPreferredConnectionParametersRequestStatus BluetoothLEPreferredConnectionParametersRequest.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=BluetoothLEPreferredConnectionParametersRequestStatus%20BluetoothLEPreferredConnectionParametersRequest.Status");
 			}
 		}
 		#endif

@@ -33,7 +33,7 @@ namespace Uno.Collections
 		where TKey : class
 	{
 #if HAS_NO_CONCURRENT_COLLECTIONS && HAS_NO_CONCURRENT_DICT
-		private readonly ConditionalWeakTableSlow<TOwner, SynchronizedDictionary<TKey, object>> _instances = 
+		private readonly ConditionalWeakTableSlow<TOwner, SynchronizedDictionary<TKey, object>> _instances =
 			new ConditionalWeakTableSlow<TOwner, SynchronizedDictionary<TKey, object>>();
 
 		private static SynchronizedDictionary<TKey, object> CreateDictionary(TOwner key)
@@ -49,7 +49,7 @@ namespace Uno.Collections
 			return new SynchronizedDictionary<TKey, object>();
 		}
 #else
-		private readonly ConditionalWeakTable<TOwner, System.Collections.Concurrent.ConcurrentDictionary<TKey, object>> _instances = 
+		private readonly ConditionalWeakTable<TOwner, System.Collections.Concurrent.ConcurrentDictionary<TKey, object>> _instances =
 			new ConditionalWeakTable<TOwner, System.Collections.Concurrent.ConcurrentDictionary<TKey, object>>();
 
 		private static System.Collections.Concurrent.ConcurrentDictionary<TKey, object> CreateDictionary(TOwner key)

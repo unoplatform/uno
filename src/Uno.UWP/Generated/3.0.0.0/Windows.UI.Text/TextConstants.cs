@@ -13,7 +13,7 @@ namespace Windows.UI.Text
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color TextConstants.AutoColor is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Color TextConstants.AutoColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Color%20TextConstants.AutoColor");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.Text
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int TextConstants.MaxUnitCount is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int TextConstants.MaxUnitCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20TextConstants.MaxUnitCount");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.UI.Text
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int TextConstants.MinUnitCount is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int TextConstants.MinUnitCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20TextConstants.MinUnitCount");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.UI.Text
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color TextConstants.UndefinedColor is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Color TextConstants.UndefinedColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Color%20TextConstants.UndefinedColor");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.UI.Text
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float TextConstants.UndefinedFloatValue is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float TextConstants.UndefinedFloatValue is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20TextConstants.UndefinedFloatValue");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.UI.Text
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member FontStretch TextConstants.UndefinedFontStretch is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member FontStretch TextConstants.UndefinedFontStretch is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=FontStretch%20TextConstants.UndefinedFontStretch");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.UI.Text
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member FontStyle TextConstants.UndefinedFontStyle is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member FontStyle TextConstants.UndefinedFontStyle is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=FontStyle%20TextConstants.UndefinedFontStyle");
 			}
 		}
 		#endif
@@ -83,7 +83,7 @@ namespace Windows.UI.Text
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int TextConstants.UndefinedInt32Value is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int TextConstants.UndefinedInt32Value is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20TextConstants.UndefinedInt32Value");
 			}
 		}
 		#endif

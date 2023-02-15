@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid PackageUpdatingEventArgs.ActivityId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Guid PackageUpdatingEventArgs.ActivityId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Guid%20PackageUpdatingEventArgs.ActivityId");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.ApplicationModel
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Exception PackageUpdatingEventArgs.ErrorCode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Exception PackageUpdatingEventArgs.ErrorCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Exception%20PackageUpdatingEventArgs.ErrorCode");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.ApplicationModel
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PackageUpdatingEventArgs.IsComplete is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool PackageUpdatingEventArgs.IsComplete is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20PackageUpdatingEventArgs.IsComplete");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.ApplicationModel
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double PackageUpdatingEventArgs.Progress is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double PackageUpdatingEventArgs.Progress is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20PackageUpdatingEventArgs.Progress");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.ApplicationModel
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Package PackageUpdatingEventArgs.SourcePackage is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Package PackageUpdatingEventArgs.SourcePackage is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Package%20PackageUpdatingEventArgs.SourcePackage");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.ApplicationModel
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Package PackageUpdatingEventArgs.TargetPackage is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Package PackageUpdatingEventArgs.TargetPackage is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Package%20PackageUpdatingEventArgs.TargetPackage");
 			}
 		}
 		#endif

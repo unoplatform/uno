@@ -13,7 +13,7 @@ namespace Windows.Devices.Geolocation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CivicAddress.City is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CivicAddress.City is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CivicAddress.City");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.Geolocation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CivicAddress.Country is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CivicAddress.Country is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CivicAddress.Country");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Devices.Geolocation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CivicAddress.PostalCode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CivicAddress.PostalCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CivicAddress.PostalCode");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Devices.Geolocation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CivicAddress.State is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CivicAddress.State is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CivicAddress.State");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Devices.Geolocation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset CivicAddress.Timestamp is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DateTimeOffset CivicAddress.Timestamp is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DateTimeOffset%20CivicAddress.Timestamp");
 			}
 		}
 		#endif

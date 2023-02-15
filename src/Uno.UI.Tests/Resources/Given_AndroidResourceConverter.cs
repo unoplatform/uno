@@ -5,8 +5,8 @@ using Windows.ApplicationModel.Resources.Core;
 namespace Uno.UI.Tests.Resources
 {
 	[TestClass]
-    public class Given_AndroidResourceConverter
-    {
+	public class Given_AndroidResourceConverter
+	{
 		private const string DefaultLanguage = "en";
 
 		[DataRow(@"drawable-nodpi\logo.png", @"logo.png", null, null, null)]
@@ -47,7 +47,7 @@ namespace Uno.UI.Tests.Resources
 			var actualPath = AndroidResourceConverter.Convert(resourceCandidate, DefaultLanguage);
 			Assert.AreEqual(expectedPath, actualPath);
 		}
-    }
+	}
 
 	[TestClass]
 	public class Given_AndroidResourceNameEncoder

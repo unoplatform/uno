@@ -14,7 +14,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Rect PointerPointProperties.ContactRectRaw is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Rect PointerPointProperties.ContactRectRaw is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Rect%20PointerPointProperties.ContactRectRaw");
 			}
 		}
 		#endif
@@ -29,7 +29,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PointerPointProperties.IsInverted is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool PointerPointProperties.IsInverted is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20PointerPointProperties.IsInverted");
 			}
 		}
 		#endif
@@ -50,7 +50,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float PointerPointProperties.Twist is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float PointerPointProperties.Twist is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20PointerPointProperties.Twist");
 			}
 		}
 		#endif
@@ -62,7 +62,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float? PointerPointProperties.ZDistance is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float? PointerPointProperties.ZDistance is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%3F%20PointerPointProperties.ZDistance");
 			}
 		}
 		#endif
@@ -92,14 +92,14 @@ namespace Windows.UI.Input
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool HasUsage( uint usagePage,  uint usageId)
 		{
-			throw new global::System.NotImplementedException("The member bool PointerPointProperties.HasUsage(uint usagePage, uint usageId) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member bool PointerPointProperties.HasUsage(uint usagePage, uint usageId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20PointerPointProperties.HasUsage%28uint%20usagePage%2C%20uint%20usageId%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  int GetUsageValue( uint usagePage,  uint usageId)
 		{
-			throw new global::System.NotImplementedException("The member int PointerPointProperties.GetUsageValue(uint usagePage, uint usageId) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member int PointerPointProperties.GetUsageValue(uint usagePage, uint usageId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20PointerPointProperties.GetUsageValue%28uint%20usagePage%2C%20uint%20usageId%29");
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Input.PointerPointProperties.ZDistance.get

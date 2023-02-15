@@ -9,7 +9,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\AnalyzerSuppressions.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Helpers\DependenciesInitializer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\DesignTimeHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\GeneratorExecutionContextExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\HashBuilder.cs" />

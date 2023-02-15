@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IRandomAccessStreamReference MapTileBitmapRequest.PixelData is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IRandomAccessStreamReference MapTileBitmapRequest.PixelData is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IRandomAccessStreamReference%20MapTileBitmapRequest.PixelData");
 			}
 			set
 			{
@@ -35,7 +35,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Xaml.Controls.Maps.MapTileBitmapRequestDeferral GetDeferral()
 		{
-			throw new global::System.NotImplementedException("The member MapTileBitmapRequestDeferral MapTileBitmapRequest.GetDeferral() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member MapTileBitmapRequestDeferral MapTileBitmapRequest.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MapTileBitmapRequestDeferral%20MapTileBitmapRequest.GetDeferral%28%29");
 		}
 		#endif
 	}

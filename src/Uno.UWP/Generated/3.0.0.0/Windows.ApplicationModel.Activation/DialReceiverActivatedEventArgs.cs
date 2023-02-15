@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ActivationKind DialReceiverActivatedEventArgs.Kind is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ActivationKind DialReceiverActivatedEventArgs.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ActivationKind%20DialReceiverActivatedEventArgs.Kind");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ApplicationExecutionState DialReceiverActivatedEventArgs.PreviousExecutionState is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ApplicationExecutionState DialReceiverActivatedEventArgs.PreviousExecutionState is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ApplicationExecutionState%20DialReceiverActivatedEventArgs.PreviousExecutionState");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SplashScreen DialReceiverActivatedEventArgs.SplashScreen is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SplashScreen DialReceiverActivatedEventArgs.SplashScreen is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SplashScreen%20DialReceiverActivatedEventArgs.SplashScreen");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member User DialReceiverActivatedEventArgs.User is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member User DialReceiverActivatedEventArgs.User is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=User%20DialReceiverActivatedEventArgs.User");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int DialReceiverActivatedEventArgs.CurrentlyShownApplicationViewId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int DialReceiverActivatedEventArgs.CurrentlyShownApplicationViewId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20DialReceiverActivatedEventArgs.CurrentlyShownApplicationViewId");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string DialReceiverActivatedEventArgs.AppName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string DialReceiverActivatedEventArgs.AppName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20DialReceiverActivatedEventArgs.AppName");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string DialReceiverActivatedEventArgs.Arguments is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string DialReceiverActivatedEventArgs.Arguments is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20DialReceiverActivatedEventArgs.Arguments");
 			}
 		}
 		#endif
@@ -83,7 +83,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string DialReceiverActivatedEventArgs.TileId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string DialReceiverActivatedEventArgs.TileId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20DialReceiverActivatedEventArgs.TileId");
 			}
 		}
 		#endif
@@ -93,7 +93,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ActivationViewSwitcher DialReceiverActivatedEventArgs.ViewSwitcher is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ActivationViewSwitcher DialReceiverActivatedEventArgs.ViewSwitcher is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ActivationViewSwitcher%20DialReceiverActivatedEventArgs.ViewSwitcher");
 			}
 		}
 		#endif

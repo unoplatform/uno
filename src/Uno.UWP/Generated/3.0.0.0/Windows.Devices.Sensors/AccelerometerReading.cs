@@ -13,7 +13,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double AccelerometerReading.AccelerationX is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double AccelerometerReading.AccelerationX is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20AccelerometerReading.AccelerationX");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double AccelerometerReading.AccelerationY is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double AccelerometerReading.AccelerationY is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20AccelerometerReading.AccelerationY");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double AccelerometerReading.AccelerationZ is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double AccelerometerReading.AccelerationZ is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20AccelerometerReading.AccelerationZ");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset AccelerometerReading.Timestamp is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DateTimeOffset AccelerometerReading.Timestamp is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DateTimeOffset%20AccelerometerReading.Timestamp");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan? AccelerometerReading.PerformanceCount is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan? AccelerometerReading.PerformanceCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%3F%20AccelerometerReading.PerformanceCount");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyDictionary<string, object> AccelerometerReading.Properties is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyDictionary<string, object> AccelerometerReading.Properties is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyDictionary%3Cstring%2C%20object%3E%20AccelerometerReading.Properties");
 			}
 		}
 		#endif

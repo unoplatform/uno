@@ -13,7 +13,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CalendarChangedNotificationTriggerDetails.StartedProcessing is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool CalendarChangedNotificationTriggerDetails.StartedProcessing is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20CalendarChangedNotificationTriggerDetails.StartedProcessing");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AccessoryNotificationType CalendarChangedNotificationTriggerDetails.AccessoryNotificationType is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AccessoryNotificationType CalendarChangedNotificationTriggerDetails.AccessoryNotificationType is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AccessoryNotificationType%20CalendarChangedNotificationTriggerDetails.AccessoryNotificationType");
 			}
 		}
 		#endif
@@ -37,7 +37,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CalendarChangedNotificationTriggerDetails.AppDisplayName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CalendarChangedNotificationTriggerDetails.AppDisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CalendarChangedNotificationTriggerDetails.AppDisplayName");
 			}
 		}
 		#endif
@@ -47,7 +47,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CalendarChangedNotificationTriggerDetails.AppId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CalendarChangedNotificationTriggerDetails.AppId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CalendarChangedNotificationTriggerDetails.AppId");
 			}
 		}
 		#endif
@@ -57,7 +57,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset CalendarChangedNotificationTriggerDetails.TimeCreated is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DateTimeOffset CalendarChangedNotificationTriggerDetails.TimeCreated is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DateTimeOffset%20CalendarChangedNotificationTriggerDetails.TimeCreated");
 			}
 		}
 		#endif
@@ -67,7 +67,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CalendarChangedEvent CalendarChangedNotificationTriggerDetails.EventType is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member CalendarChangedEvent CalendarChangedNotificationTriggerDetails.EventType is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CalendarChangedEvent%20CalendarChangedNotificationTriggerDetails.EventType");
 			}
 		}
 		#endif
@@ -77,7 +77,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CalendarChangedNotificationTriggerDetails.ItemId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CalendarChangedNotificationTriggerDetails.ItemId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CalendarChangedNotificationTriggerDetails.ItemId");
 			}
 		}
 		#endif

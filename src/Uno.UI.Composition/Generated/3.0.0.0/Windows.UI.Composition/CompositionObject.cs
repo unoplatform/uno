@@ -15,7 +15,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CompositionPropertySet CompositionObject.Properties is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member CompositionPropertySet CompositionObject.Properties is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CompositionPropertySet%20CompositionObject.Properties");
 			}
 		}
 		#endif
@@ -25,7 +25,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ImplicitAnimationCollection CompositionObject.ImplicitAnimations is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ImplicitAnimationCollection CompositionObject.ImplicitAnimations is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ImplicitAnimationCollection%20CompositionObject.ImplicitAnimations");
 			}
 			set
 			{
@@ -40,7 +40,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DispatcherQueue CompositionObject.DispatcherQueue is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DispatcherQueue CompositionObject.DispatcherQueue is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DispatcherQueue%20CompositionObject.DispatcherQueue");
 			}
 		}
 		#endif
@@ -72,7 +72,7 @@ namespace Windows.UI.Composition
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Composition.AnimationController TryGetAnimationController( string propertyName)
 		{
-			throw new global::System.NotImplementedException("The member AnimationController CompositionObject.TryGetAnimationController(string propertyName) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member AnimationController CompositionObject.TryGetAnimationController(string propertyName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AnimationController%20CompositionObject.TryGetAnimationController%28string%20propertyName%29");
 		}
 		#endif
 		// Skipping already declared method Windows.UI.Composition.CompositionObject.Dispose()

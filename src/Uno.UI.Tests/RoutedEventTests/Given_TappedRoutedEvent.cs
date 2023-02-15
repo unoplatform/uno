@@ -48,7 +48,7 @@ namespace Uno.UI.Tests.RoutedEventTests
 
 			void OnTapped(object snd, TappedRoutedEventArgs evt) => events.Add((snd, evt));
 
-			root.AddHandler(UIElement.TappedEvent, (TappedEventHandler) OnTapped, false);
+			root.AddHandler(UIElement.TappedEvent, (TappedEventHandler)OnTapped, false);
 
 			var evt1 = new TappedRoutedEventArgs();
 			root.RaiseEvent(UIElement.TappedEvent, evt1).Should().BeFalse();

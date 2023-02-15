@@ -19,14 +19,14 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Xaml.Controls.GroupStyle SelectGroupStyle( object group,  uint level)
 		{
-			throw new global::System.NotImplementedException("The member GroupStyle GroupStyleSelector.SelectGroupStyle(object group, uint level) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member GroupStyle GroupStyleSelector.SelectGroupStyle(object group, uint level) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=GroupStyle%20GroupStyleSelector.SelectGroupStyle%28object%20group%2C%20uint%20level%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		protected virtual global::Windows.UI.Xaml.Controls.GroupStyle SelectGroupStyleCore( object group,  uint level)
 		{
-			throw new global::System.NotImplementedException("The member GroupStyle GroupStyleSelector.SelectGroupStyleCore(object group, uint level) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member GroupStyle GroupStyleSelector.SelectGroupStyleCore(object group, uint level) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=GroupStyle%20GroupStyleSelector.SelectGroupStyleCore%28object%20group%2C%20uint%20level%29");
 		}
 		#endif
 	}

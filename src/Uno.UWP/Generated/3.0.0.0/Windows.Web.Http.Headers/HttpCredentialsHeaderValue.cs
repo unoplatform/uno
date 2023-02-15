@@ -13,7 +13,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<HttpNameValueHeaderValue> HttpCredentialsHeaderValue.Parameters is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<HttpNameValueHeaderValue> HttpCredentialsHeaderValue.Parameters is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3CHttpNameValueHeaderValue%3E%20HttpCredentialsHeaderValue.Parameters");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string HttpCredentialsHeaderValue.Scheme is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string HttpCredentialsHeaderValue.Scheme is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20HttpCredentialsHeaderValue.Scheme");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string HttpCredentialsHeaderValue.Token is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string HttpCredentialsHeaderValue.Token is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20HttpCredentialsHeaderValue.Token");
 			}
 		}
 		#endif
@@ -60,21 +60,21 @@ namespace Windows.Web.Http.Headers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public override string ToString()
 		{
-			throw new global::System.NotImplementedException("The member string HttpCredentialsHeaderValue.ToString() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member string HttpCredentialsHeaderValue.ToString() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20HttpCredentialsHeaderValue.ToString%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Web.Http.Headers.HttpCredentialsHeaderValue Parse( string input)
 		{
-			throw new global::System.NotImplementedException("The member HttpCredentialsHeaderValue HttpCredentialsHeaderValue.Parse(string input) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member HttpCredentialsHeaderValue HttpCredentialsHeaderValue.Parse(string input) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HttpCredentialsHeaderValue%20HttpCredentialsHeaderValue.Parse%28string%20input%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static bool TryParse( string input, out global::Windows.Web.Http.Headers.HttpCredentialsHeaderValue credentialsHeaderValue)
 		{
-			throw new global::System.NotImplementedException("The member bool HttpCredentialsHeaderValue.TryParse(string input, out HttpCredentialsHeaderValue credentialsHeaderValue) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member bool HttpCredentialsHeaderValue.TryParse(string input, out HttpCredentialsHeaderValue credentialsHeaderValue) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20HttpCredentialsHeaderValue.TryParse%28string%20input%2C%20out%20HttpCredentialsHeaderValue%20credentialsHeaderValue%29");
 		}
 		#endif
 	}

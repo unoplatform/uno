@@ -21,7 +21,8 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Controls.xLoad
 			var subject = new ElementNameSubject(false, "test");
 			var stub = new ElementStub
 			{
-				ContentBuilder = () => {
+				ContentBuilder = () =>
+				{
 					innerGrid = new Grid() { Name = "test" };
 					subject.ElementInstance = innerGrid;
 					return innerGrid;
@@ -54,8 +55,10 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Controls.xLoad
 			var g = new Grid();
 			Grid innerGrid = null;
 			var subject = new ElementNameSubject(false, "test");
-			var stub = new ElementStub {
-				ContentBuilder = () => {
+			var stub = new ElementStub
+			{
+				ContentBuilder = () =>
+				{
 					innerGrid = new Grid() { Name = "test" };
 					subject.ElementInstance = innerGrid;
 					return innerGrid;
@@ -85,9 +88,11 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Controls.xLoad
 
 			var g = new Grid();
 			Border b1 = null;
-			var stub = new ElementStub {
+			var stub = new ElementStub
+			{
 				Name = "test",
-				ContentBuilder = () => {
+				ContentBuilder = () =>
+				{
 					b1 = new Border() { Name = "test" };
 					ens.ElementInstance = b1;
 					return b1;

@@ -13,7 +13,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool StreamWebSocketControl.NoDelay is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool StreamWebSocketControl.NoDelay is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20StreamWebSocketControl.NoDelay");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan StreamWebSocketControl.DesiredUnsolicitedPongInterval is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan StreamWebSocketControl.DesiredUnsolicitedPongInterval is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20StreamWebSocketControl.DesiredUnsolicitedPongInterval");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Certificate StreamWebSocketControl.ClientCertificate is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Certificate StreamWebSocketControl.ClientCertificate is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Certificate%20StreamWebSocketControl.ClientCertificate");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan StreamWebSocketControl.ActualUnsolicitedPongInterval is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan StreamWebSocketControl.ActualUnsolicitedPongInterval is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20StreamWebSocketControl.ActualUnsolicitedPongInterval");
 			}
 		}
 		#endif
@@ -65,7 +65,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PasswordCredential StreamWebSocketControl.ServerCredential is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PasswordCredential StreamWebSocketControl.ServerCredential is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PasswordCredential%20StreamWebSocketControl.ServerCredential");
 			}
 			set
 			{
@@ -79,7 +79,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PasswordCredential StreamWebSocketControl.ProxyCredential is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PasswordCredential StreamWebSocketControl.ProxyCredential is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PasswordCredential%20StreamWebSocketControl.ProxyCredential");
 			}
 			set
 			{
@@ -93,7 +93,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint StreamWebSocketControl.OutboundBufferSizeInBytes is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint StreamWebSocketControl.OutboundBufferSizeInBytes is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20StreamWebSocketControl.OutboundBufferSizeInBytes");
 			}
 			set
 			{
@@ -107,7 +107,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<string> StreamWebSocketControl.SupportedProtocols is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<string> StreamWebSocketControl.SupportedProtocols is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3Cstring%3E%20StreamWebSocketControl.SupportedProtocols");
 			}
 		}
 		#endif
@@ -117,7 +117,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<ChainValidationResult> StreamWebSocketControl.IgnorableServerCertificateErrors is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<ChainValidationResult> StreamWebSocketControl.IgnorableServerCertificateErrors is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3CChainValidationResult%3E%20StreamWebSocketControl.IgnorableServerCertificateErrors");
 			}
 		}
 		#endif

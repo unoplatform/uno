@@ -13,7 +13,7 @@ namespace Windows.UI.Composition.Effects
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SceneLightingEffect.Name is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SceneLightingEffect.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SceneLightingEffect.Name");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.UI.Composition.Effects
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float SceneLightingEffect.SpecularShine is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float SceneLightingEffect.SpecularShine is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20SceneLightingEffect.SpecularShine");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.UI.Composition.Effects
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float SceneLightingEffect.SpecularAmount is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float SceneLightingEffect.SpecularAmount is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20SceneLightingEffect.SpecularAmount");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.UI.Composition.Effects
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IGraphicsEffectSource SceneLightingEffect.NormalMapSource is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IGraphicsEffectSource SceneLightingEffect.NormalMapSource is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IGraphicsEffectSource%20SceneLightingEffect.NormalMapSource");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.UI.Composition.Effects
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float SceneLightingEffect.DiffuseAmount is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float SceneLightingEffect.DiffuseAmount is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20SceneLightingEffect.DiffuseAmount");
 			}
 			set
 			{
@@ -83,7 +83,7 @@ namespace Windows.UI.Composition.Effects
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float SceneLightingEffect.AmbientAmount is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float SceneLightingEffect.AmbientAmount is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20SceneLightingEffect.AmbientAmount");
 			}
 			set
 			{
@@ -97,7 +97,7 @@ namespace Windows.UI.Composition.Effects
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SceneLightingEffectReflectanceModel SceneLightingEffect.ReflectanceModel is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SceneLightingEffectReflectanceModel SceneLightingEffect.ReflectanceModel is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SceneLightingEffectReflectanceModel%20SceneLightingEffect.ReflectanceModel");
 			}
 			set
 			{

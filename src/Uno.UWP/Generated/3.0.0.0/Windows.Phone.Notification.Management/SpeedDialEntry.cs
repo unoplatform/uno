@@ -13,7 +13,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SpeedDialEntry.ContactName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SpeedDialEntry.ContactName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SpeedDialEntry.ContactName");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SpeedDialEntry.NumberType is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SpeedDialEntry.NumberType is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SpeedDialEntry.NumberType");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SpeedDialEntry.PhoneNumber is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SpeedDialEntry.PhoneNumber is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SpeedDialEntry.PhoneNumber");
 			}
 		}
 		#endif

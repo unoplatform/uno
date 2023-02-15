@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppInstallType AppInstallItem.InstallType is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AppInstallType AppInstallItem.InstallType is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AppInstallType%20AppInstallItem.InstallType");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppInstallItem.IsUserInitiated is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool AppInstallItem.IsUserInitiated is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20AppInstallItem.IsUserInitiated");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppInstallItem.PackageFamilyName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string AppInstallItem.PackageFamilyName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20AppInstallItem.PackageFamilyName");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppInstallItem.ProductId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string AppInstallItem.ProductId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20AppInstallItem.ProductId");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<AppInstallItem> AppInstallItem.Children is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<AppInstallItem> AppInstallItem.Children is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CAppInstallItem%3E%20AppInstallItem.Children");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppInstallItem.ItemOperationsMightAffectOtherItems is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool AppInstallItem.ItemOperationsMightAffectOtherItems is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20AppInstallItem.ItemOperationsMightAffectOtherItems");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppInstallItem.LaunchAfterInstall is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool AppInstallItem.LaunchAfterInstall is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20AppInstallItem.LaunchAfterInstall");
 			}
 			set
 			{
@@ -87,7 +87,7 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppInstallItem.PinToTaskbarAfterInstall is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool AppInstallItem.PinToTaskbarAfterInstall is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20AppInstallItem.PinToTaskbarAfterInstall");
 			}
 			set
 			{
@@ -101,7 +101,7 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppInstallItem.PinToStartAfterInstall is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool AppInstallItem.PinToStartAfterInstall is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20AppInstallItem.PinToStartAfterInstall");
 			}
 			set
 			{
@@ -115,7 +115,7 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppInstallItem.PinToDesktopAfterInstall is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool AppInstallItem.PinToDesktopAfterInstall is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20AppInstallItem.PinToDesktopAfterInstall");
 			}
 			set
 			{
@@ -129,7 +129,7 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppInstallationToastNotificationMode AppInstallItem.InstallInProgressToastNotificationMode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AppInstallationToastNotificationMode AppInstallItem.InstallInProgressToastNotificationMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AppInstallationToastNotificationMode%20AppInstallItem.InstallInProgressToastNotificationMode");
 			}
 			set
 			{
@@ -143,7 +143,7 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppInstallationToastNotificationMode AppInstallItem.CompletedInstallToastNotificationMode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AppInstallationToastNotificationMode AppInstallItem.CompletedInstallToastNotificationMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AppInstallationToastNotificationMode%20AppInstallItem.CompletedInstallToastNotificationMode");
 			}
 			set
 			{
@@ -159,7 +159,7 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.ApplicationModel.Store.Preview.InstallControl.AppInstallStatus GetCurrentStatus()
 		{
-			throw new global::System.NotImplementedException("The member AppInstallStatus AppInstallItem.GetCurrentStatus() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member AppInstallStatus AppInstallItem.GetCurrentStatus() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AppInstallStatus%20AppInstallItem.GetCurrentStatus%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

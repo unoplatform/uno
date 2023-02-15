@@ -13,7 +13,7 @@ namespace Windows.UI.WindowManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color? AppWindowTitleBar.InactiveForegroundColor is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Color? AppWindowTitleBar.InactiveForegroundColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Color%3F%20AppWindowTitleBar.InactiveForegroundColor");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.UI.WindowManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color? AppWindowTitleBar.InactiveBackgroundColor is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Color? AppWindowTitleBar.InactiveBackgroundColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Color%3F%20AppWindowTitleBar.InactiveBackgroundColor");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.UI.WindowManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color? AppWindowTitleBar.ForegroundColor is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Color? AppWindowTitleBar.ForegroundColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Color%3F%20AppWindowTitleBar.ForegroundColor");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.UI.WindowManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppWindowTitleBar.ExtendsContentIntoTitleBar is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool AppWindowTitleBar.ExtendsContentIntoTitleBar is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20AppWindowTitleBar.ExtendsContentIntoTitleBar");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.UI.WindowManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color? AppWindowTitleBar.ButtonPressedForegroundColor is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Color? AppWindowTitleBar.ButtonPressedForegroundColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Color%3F%20AppWindowTitleBar.ButtonPressedForegroundColor");
 			}
 			set
 			{
@@ -83,7 +83,7 @@ namespace Windows.UI.WindowManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color? AppWindowTitleBar.ButtonPressedBackgroundColor is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Color? AppWindowTitleBar.ButtonPressedBackgroundColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Color%3F%20AppWindowTitleBar.ButtonPressedBackgroundColor");
 			}
 			set
 			{
@@ -97,7 +97,7 @@ namespace Windows.UI.WindowManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color? AppWindowTitleBar.ButtonInactiveForegroundColor is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Color? AppWindowTitleBar.ButtonInactiveForegroundColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Color%3F%20AppWindowTitleBar.ButtonInactiveForegroundColor");
 			}
 			set
 			{
@@ -111,7 +111,7 @@ namespace Windows.UI.WindowManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color? AppWindowTitleBar.ButtonInactiveBackgroundColor is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Color? AppWindowTitleBar.ButtonInactiveBackgroundColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Color%3F%20AppWindowTitleBar.ButtonInactiveBackgroundColor");
 			}
 			set
 			{
@@ -125,7 +125,7 @@ namespace Windows.UI.WindowManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color? AppWindowTitleBar.ButtonHoverForegroundColor is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Color? AppWindowTitleBar.ButtonHoverForegroundColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Color%3F%20AppWindowTitleBar.ButtonHoverForegroundColor");
 			}
 			set
 			{
@@ -139,7 +139,7 @@ namespace Windows.UI.WindowManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color? AppWindowTitleBar.ButtonHoverBackgroundColor is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Color? AppWindowTitleBar.ButtonHoverBackgroundColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Color%3F%20AppWindowTitleBar.ButtonHoverBackgroundColor");
 			}
 			set
 			{
@@ -153,7 +153,7 @@ namespace Windows.UI.WindowManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color? AppWindowTitleBar.ButtonForegroundColor is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Color? AppWindowTitleBar.ButtonForegroundColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Color%3F%20AppWindowTitleBar.ButtonForegroundColor");
 			}
 			set
 			{
@@ -167,7 +167,7 @@ namespace Windows.UI.WindowManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color? AppWindowTitleBar.ButtonBackgroundColor is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Color? AppWindowTitleBar.ButtonBackgroundColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Color%3F%20AppWindowTitleBar.ButtonBackgroundColor");
 			}
 			set
 			{
@@ -181,7 +181,7 @@ namespace Windows.UI.WindowManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color? AppWindowTitleBar.BackgroundColor is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Color? AppWindowTitleBar.BackgroundColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Color%3F%20AppWindowTitleBar.BackgroundColor");
 			}
 			set
 			{
@@ -195,7 +195,7 @@ namespace Windows.UI.WindowManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AppWindowTitleBar.IsVisible is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool AppWindowTitleBar.IsVisible is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20AppWindowTitleBar.IsVisible");
 			}
 		}
 		#endif
@@ -203,7 +203,7 @@ namespace Windows.UI.WindowManagement
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.WindowManagement.AppWindowTitleBarVisibility GetPreferredVisibility()
 		{
-			throw new global::System.NotImplementedException("The member AppWindowTitleBarVisibility AppWindowTitleBar.GetPreferredVisibility() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member AppWindowTitleBarVisibility AppWindowTitleBar.GetPreferredVisibility() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AppWindowTitleBarVisibility%20AppWindowTitleBar.GetPreferredVisibility%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -244,7 +244,7 @@ namespace Windows.UI.WindowManagement
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.UI.WindowManagement.AppWindowTitleBarOcclusion> GetTitleBarOcclusions()
 		{
-			throw new global::System.NotImplementedException("The member IReadOnlyList<AppWindowTitleBarOcclusion> AppWindowTitleBar.GetTitleBarOcclusions() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IReadOnlyList<AppWindowTitleBarOcclusion> AppWindowTitleBar.GetTitleBarOcclusions() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CAppWindowTitleBarOcclusion%3E%20AppWindowTitleBar.GetTitleBarOcclusions%28%29");
 		}
 		#endif
 	}

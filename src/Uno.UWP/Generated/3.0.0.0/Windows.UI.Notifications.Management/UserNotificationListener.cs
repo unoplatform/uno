@@ -13,7 +13,7 @@ namespace Windows.UI.Notifications.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UserNotificationListener UserNotificationListener.Current is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member UserNotificationListener UserNotificationListener.Current is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=UserNotificationListener%20UserNotificationListener.Current");
 			}
 		}
 		#endif
@@ -21,14 +21,14 @@ namespace Windows.UI.Notifications.Management
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.UI.Notifications.Management.UserNotificationListenerAccessStatus> RequestAccessAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<UserNotificationListenerAccessStatus> UserNotificationListener.RequestAccessAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<UserNotificationListenerAccessStatus> UserNotificationListener.RequestAccessAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CUserNotificationListenerAccessStatus%3E%20UserNotificationListener.RequestAccessAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Notifications.Management.UserNotificationListenerAccessStatus GetAccessStatus()
 		{
-			throw new global::System.NotImplementedException("The member UserNotificationListenerAccessStatus UserNotificationListener.GetAccessStatus() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member UserNotificationListenerAccessStatus UserNotificationListener.GetAccessStatus() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=UserNotificationListenerAccessStatus%20UserNotificationListener.GetAccessStatus%28%29");
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Notifications.Management.UserNotificationListener.NotificationChanged.add
@@ -37,14 +37,14 @@ namespace Windows.UI.Notifications.Management
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.UI.Notifications.UserNotification>> GetNotificationsAsync( global::Windows.UI.Notifications.NotificationKinds kinds)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<UserNotification>> UserNotificationListener.GetNotificationsAsync(NotificationKinds kinds) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<UserNotification>> UserNotificationListener.GetNotificationsAsync(NotificationKinds kinds) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CIReadOnlyList%3CUserNotification%3E%3E%20UserNotificationListener.GetNotificationsAsync%28NotificationKinds%20kinds%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Notifications.UserNotification GetNotification( uint notificationId)
 		{
-			throw new global::System.NotImplementedException("The member UserNotification UserNotificationListener.GetNotification(uint notificationId) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member UserNotification UserNotificationListener.GetNotification(uint notificationId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=UserNotification%20UserNotificationListener.GetNotification%28uint%20notificationId%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

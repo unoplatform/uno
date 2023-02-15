@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ActivationKind FileSavePickerContinuationEventArgs.Kind is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ActivationKind FileSavePickerContinuationEventArgs.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ActivationKind%20FileSavePickerContinuationEventArgs.Kind");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ApplicationExecutionState FileSavePickerContinuationEventArgs.PreviousExecutionState is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ApplicationExecutionState FileSavePickerContinuationEventArgs.PreviousExecutionState is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ApplicationExecutionState%20FileSavePickerContinuationEventArgs.PreviousExecutionState");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SplashScreen FileSavePickerContinuationEventArgs.SplashScreen is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SplashScreen FileSavePickerContinuationEventArgs.SplashScreen is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SplashScreen%20FileSavePickerContinuationEventArgs.SplashScreen");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member User FileSavePickerContinuationEventArgs.User is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member User FileSavePickerContinuationEventArgs.User is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=User%20FileSavePickerContinuationEventArgs.User");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ValueSet FileSavePickerContinuationEventArgs.ContinuationData is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ValueSet FileSavePickerContinuationEventArgs.ContinuationData is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ValueSet%20FileSavePickerContinuationEventArgs.ContinuationData");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member StorageFile FileSavePickerContinuationEventArgs.File is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member StorageFile FileSavePickerContinuationEventArgs.File is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=StorageFile%20FileSavePickerContinuationEventArgs.File");
 			}
 		}
 		#endif

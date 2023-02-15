@@ -11,6 +11,7 @@ using Windows.UI.Xaml;
 using Windows.UI;
 using FluentAssertions;
 using MUXControlsTestApp.Utilities;
+using System.Runtime.InteropServices;
 #if NETFX_CORE
 using Uno.UI.Extensions;
 #elif __IOS__
@@ -492,5 +493,65 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(initialText, ((TextBlock)contentControl.Content).Text);
 		}
 #endif
+
+		[TestMethod]
+		public async Task When_Changes_In_TextChanged()
+		{
+			int update = 0;
+			var initialText = "Text";
+			string GetCurrentText() => initialText + update;
+			string GetNewText() => initialText + ++update;
+
+			var textBox = new TextBox
+			{
+				Text = "Waiting"
+			};
+
+			WindowHelper.WindowContent = textBox;
+			await WindowHelper.WaitForLoaded(textBox);
+
+			int textChangedInvokeCount = 0;
+			int textChangingInvokeCount = 0;
+
+			bool failedCheck = false;
+			bool finished = false;
+
+			void OnTextChanged(object sender, TextChangedEventArgs e)
+			{
+				textChangedInvokeCount++;
+				if (GetCurrentText() != textBox.Text)
+				{
+					failedCheck = true;
+					finished = true;
+				}
+				else if (update <= 4)
+				{
+					textBox.Text = GetNewText();
+				}
+				else
+				{
+					finished = true;
+				}
+			}
+
+			void OnTextChanging(object sender, TextBoxTextChangingEventArgs e) =>
+				textChangingInvokeCount++;
+
+			textBox.TextChanged += OnTextChanged;
+			textBox.TextChanging += OnTextChanging;
+
+			textBox.Text = GetNewText();
+
+			await WindowHelper.WaitFor(() => finished);
+
+			if (failedCheck)
+			{
+				Assert.Fail("Text changed to incorrect value. Expected: " + GetCurrentText() + ", Actual: " + textBox.Text);
+			}
+
+			Assert.AreEqual(5, textChangedInvokeCount);
+			Assert.AreEqual(5, textChangingInvokeCount);
+			Assert.AreEqual(initialText + "5", textBox.Text);
+		}
 	}
 }

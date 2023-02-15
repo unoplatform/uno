@@ -25,9 +25,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		public bool IsRunningCI =>
 			!Environment.GetEnvironmentVariable("TF_BUILD").IsNullOrEmpty() // https://docs.microsoft.com/en-us/azure/devops/pipelines/build/variables?tabs=yaml&view=azure-devops#system-variables
-			||	!Environment.GetEnvironmentVariable("TRAVIS").IsNullOrEmpty() // https://docs.travis-ci.com/user/environment-variables/#default-environment-variables
-			||	!Environment.GetEnvironmentVariable("JENKINS_URL").IsNullOrEmpty() // https://wiki.jenkins.io/display/JENKINS/Building+a+software+project#Buildingasoftwareproject-belowJenkinsSetEnvironmentVariables
-			||	!Environment.GetEnvironmentVariable("APPVEYOR").IsNullOrEmpty(); // https://www.appveyor.com/docs/environment-variables/
+			|| !Environment.GetEnvironmentVariable("TRAVIS").IsNullOrEmpty() // https://docs.travis-ci.com/user/environment-variables/#default-environment-variables
+			|| !Environment.GetEnvironmentVariable("JENKINS_URL").IsNullOrEmpty() // https://wiki.jenkins.io/display/JENKINS/Building+a+software+project#Buildingasoftwareproject-belowJenkinsSetEnvironmentVariables
+			|| !Environment.GetEnvironmentVariable("APPVEYOR").IsNullOrEmpty(); // https://www.appveyor.com/docs/environment-variables/
 
 		private void InitTelemetry(GeneratorExecutionContext context)
 		{

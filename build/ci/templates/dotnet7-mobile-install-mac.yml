@@ -1,44 +1,10 @@
 parameters:
-  DotNetVersion: '7.0.102'
   UnoCheck_Version: '1.11.0-dev.2'
   UnoCheck_Manifest: 'https://raw.githubusercontent.com/unoplatform/uno.check/146b0b4b23d866bef455494a12ad7ffd2f6f2d20/manifests/uno.ui.manifest.json'
-  Dotnet_Root: '/usr/local/share/dotnet/'
-  Dotnet_Tools: '~/.dotnet/tools'
 
 steps:
-  - task: UseDotNet@2
-    displayName: install .NET 5
-    retryCountOnTaskFailure: 3
-    inputs:
-      version: 5.x
-      installationPath: ${{ parameters.Dotnet_Root }}
 
-  - task: UseDotNet@2
-    displayName: install .NET 3.1
-    retryCountOnTaskFailure: 3
-    inputs:
-      version: 3.1.x
-      installationPath: ${{ parameters.Dotnet_Root }}
-
-  # Required until .NET 6 installs properly using UseDotnet
-  # using preview builds
-  #- bash: |
-  #    export PATH="${{ parameters.Dotnet_Root }}:${{ parameters.Dotnet_Tools }}:$PATH"
-  #    curl -L https://raw.githubusercontent.com/dotnet/install-scripts/11b4eebe23d871c074364940d301c3eb53e7c7ec/src/dotnet-install.sh > dotnet-install.sh
-  #    sh dotnet-install.sh --version ${{ parameters.DotNetVersion }} --install-dir $DOTNET_ROOT --verbose
-  #    dotnet --list-sdks
-  #    echo "##vso[task.setvariable variable=PATH]$PATH"
-  #  displayName: install .NET ${{ parameters.DotNetVersion }}
-  #  retryCountOnTaskFailure: 3
-
-  - task: UseDotNet@2
-    displayName: 'Use .NET Core SDK ${{ parameters.DotNetVersion }}'
-    retryCountOnTaskFailure: 3
-    condition: and(succeeded(), ne(variables.UnoDisableNet7Mobile, 'true'))
-    inputs:
-      packageType: sdk
-      version: ${{ parameters.DotNetVersion }}
-      includePreviewVersions: true
+  - template: dotnet-install.yml
 
   - template: jdk-setup.yml
 

@@ -13,7 +13,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CellularApnContext.UserName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CellularApnContext.UserName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CellularApnContext.UserName");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CellularApnContext.ProviderId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CellularApnContext.ProviderId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CellularApnContext.ProviderId");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CellularApnContext.Password is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CellularApnContext.Password is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CellularApnContext.Password");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CellularApnContext.IsCompressionEnabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool CellularApnContext.IsCompressionEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20CellularApnContext.IsCompressionEnabled");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CellularApnAuthenticationType CellularApnContext.AuthenticationType is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member CellularApnAuthenticationType CellularApnContext.AuthenticationType is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CellularApnAuthenticationType%20CellularApnContext.AuthenticationType");
 			}
 			set
 			{
@@ -83,7 +83,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CellularApnContext.AccessPointName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CellularApnContext.AccessPointName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CellularApnContext.AccessPointName");
 			}
 			set
 			{
@@ -97,7 +97,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CellularApnContext.ProfileName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CellularApnContext.ProfileName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CellularApnContext.ProfileName");
 			}
 			set
 			{

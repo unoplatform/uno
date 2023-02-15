@@ -21,14 +21,14 @@ namespace Windows.Media.Devices
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.Devices.AudioDeviceModule> FindAllById( string moduleId)
 		{
-			throw new global::System.NotImplementedException("The member IReadOnlyList<AudioDeviceModule> AudioDeviceModulesManager.FindAllById(string moduleId) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IReadOnlyList<AudioDeviceModule> AudioDeviceModulesManager.FindAllById(string moduleId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CAudioDeviceModule%3E%20AudioDeviceModulesManager.FindAllById%28string%20moduleId%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.Devices.AudioDeviceModule> FindAll()
 		{
-			throw new global::System.NotImplementedException("The member IReadOnlyList<AudioDeviceModule> AudioDeviceModulesManager.FindAll() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IReadOnlyList<AudioDeviceModule> AudioDeviceModulesManager.FindAll() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CAudioDeviceModule%3E%20AudioDeviceModulesManager.FindAll%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

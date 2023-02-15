@@ -13,7 +13,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IRandomAccessStreamReference MediaStreamSource.Thumbnail is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IRandomAccessStreamReference MediaStreamSource.Thumbnail is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IRandomAccessStreamReference%20MediaStreamSource.Thumbnail");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaProtectionManager MediaStreamSource.MediaProtectionManager is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MediaProtectionManager MediaStreamSource.MediaProtectionManager is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaProtectionManager%20MediaStreamSource.MediaProtectionManager");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan MediaStreamSource.Duration is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan MediaStreamSource.Duration is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20MediaStreamSource.Duration");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MediaStreamSource.CanSeek is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool MediaStreamSource.CanSeek is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20MediaStreamSource.CanSeek");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan MediaStreamSource.BufferTime is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan MediaStreamSource.BufferTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20MediaStreamSource.BufferTime");
 			}
 			set
 			{
@@ -83,7 +83,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MusicProperties MediaStreamSource.MusicProperties is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MusicProperties MediaStreamSource.MusicProperties is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MusicProperties%20MediaStreamSource.MusicProperties");
 			}
 		}
 		#endif
@@ -93,7 +93,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VideoProperties MediaStreamSource.VideoProperties is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member VideoProperties MediaStreamSource.VideoProperties is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=VideoProperties%20MediaStreamSource.VideoProperties");
 			}
 		}
 		#endif
@@ -103,7 +103,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double? MediaStreamSource.MaxSupportedPlaybackRate is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double? MediaStreamSource.MaxSupportedPlaybackRate is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%3F%20MediaStreamSource.MaxSupportedPlaybackRate");
 			}
 			set
 			{
@@ -117,7 +117,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MediaStreamSource.IsLive is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool MediaStreamSource.IsLive is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20MediaStreamSource.IsLive");
 			}
 			set
 			{

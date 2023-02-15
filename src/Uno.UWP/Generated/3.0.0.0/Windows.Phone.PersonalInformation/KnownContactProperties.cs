@@ -13,7 +13,7 @@ namespace Windows.Phone.PersonalInformation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownContactProperties.AdditionalName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownContactProperties.AdditionalName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownContactProperties.AdditionalName");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Phone.PersonalInformation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownContactProperties.Address is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownContactProperties.Address is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownContactProperties.Address");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Phone.PersonalInformation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownContactProperties.AlternateMobileTelephone is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownContactProperties.AlternateMobileTelephone is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownContactProperties.AlternateMobileTelephone");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Phone.PersonalInformation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownContactProperties.AlternateTelephone is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownContactProperties.AlternateTelephone is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownContactProperties.AlternateTelephone");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Phone.PersonalInformation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownContactProperties.AlternateWorkTelephone is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownContactProperties.AlternateWorkTelephone is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownContactProperties.AlternateWorkTelephone");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Phone.PersonalInformation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownContactProperties.Anniversary is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownContactProperties.Anniversary is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownContactProperties.Anniversary");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.Phone.PersonalInformation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownContactProperties.Birthdate is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownContactProperties.Birthdate is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownContactProperties.Birthdate");
 			}
 		}
 		#endif
@@ -83,7 +83,7 @@ namespace Windows.Phone.PersonalInformation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownContactProperties.Children is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownContactProperties.Children is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownContactProperties.Children");
 			}
 		}
 		#endif
@@ -93,7 +93,7 @@ namespace Windows.Phone.PersonalInformation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownContactProperties.CompanyName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownContactProperties.CompanyName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownContactProperties.CompanyName");
 			}
 		}
 		#endif
@@ -103,7 +103,7 @@ namespace Windows.Phone.PersonalInformation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownContactProperties.CompanyTelephone is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownContactProperties.CompanyTelephone is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownContactProperties.CompanyTelephone");
 			}
 		}
 		#endif
@@ -113,7 +113,7 @@ namespace Windows.Phone.PersonalInformation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownContactProperties.DisplayName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownContactProperties.DisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownContactProperties.DisplayName");
 			}
 		}
 		#endif
@@ -123,7 +123,7 @@ namespace Windows.Phone.PersonalInformation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownContactProperties.Email is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownContactProperties.Email is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownContactProperties.Email");
 			}
 		}
 		#endif
@@ -133,7 +133,7 @@ namespace Windows.Phone.PersonalInformation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownContactProperties.FamilyName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownContactProperties.FamilyName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownContactProperties.FamilyName");
 			}
 		}
 		#endif
@@ -143,7 +143,7 @@ namespace Windows.Phone.PersonalInformation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownContactProperties.GivenName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownContactProperties.GivenName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownContactProperties.GivenName");
 			}
 		}
 		#endif
@@ -153,7 +153,7 @@ namespace Windows.Phone.PersonalInformation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownContactProperties.HomeFax is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownContactProperties.HomeFax is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownContactProperties.HomeFax");
 			}
 		}
 		#endif
@@ -163,7 +163,7 @@ namespace Windows.Phone.PersonalInformation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownContactProperties.HonorificPrefix is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownContactProperties.HonorificPrefix is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownContactProperties.HonorificPrefix");
 			}
 		}
 		#endif
@@ -173,7 +173,7 @@ namespace Windows.Phone.PersonalInformation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownContactProperties.HonorificSuffix is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownContactProperties.HonorificSuffix is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownContactProperties.HonorificSuffix");
 			}
 		}
 		#endif
@@ -183,7 +183,7 @@ namespace Windows.Phone.PersonalInformation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownContactProperties.JobTitle is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownContactProperties.JobTitle is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownContactProperties.JobTitle");
 			}
 		}
 		#endif
@@ -193,7 +193,7 @@ namespace Windows.Phone.PersonalInformation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownContactProperties.Manager is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownContactProperties.Manager is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownContactProperties.Manager");
 			}
 		}
 		#endif
@@ -203,7 +203,7 @@ namespace Windows.Phone.PersonalInformation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownContactProperties.MobileTelephone is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownContactProperties.MobileTelephone is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownContactProperties.MobileTelephone");
 			}
 		}
 		#endif
@@ -213,7 +213,7 @@ namespace Windows.Phone.PersonalInformation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownContactProperties.Nickname is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownContactProperties.Nickname is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownContactProperties.Nickname");
 			}
 		}
 		#endif
@@ -223,7 +223,7 @@ namespace Windows.Phone.PersonalInformation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownContactProperties.Notes is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownContactProperties.Notes is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownContactProperties.Notes");
 			}
 		}
 		#endif
@@ -233,7 +233,7 @@ namespace Windows.Phone.PersonalInformation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownContactProperties.OfficeLocation is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownContactProperties.OfficeLocation is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownContactProperties.OfficeLocation");
 			}
 		}
 		#endif
@@ -243,7 +243,7 @@ namespace Windows.Phone.PersonalInformation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownContactProperties.OtherAddress is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownContactProperties.OtherAddress is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownContactProperties.OtherAddress");
 			}
 		}
 		#endif
@@ -253,7 +253,7 @@ namespace Windows.Phone.PersonalInformation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownContactProperties.OtherEmail is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownContactProperties.OtherEmail is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownContactProperties.OtherEmail");
 			}
 		}
 		#endif
@@ -263,7 +263,7 @@ namespace Windows.Phone.PersonalInformation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownContactProperties.SignificantOther is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownContactProperties.SignificantOther is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownContactProperties.SignificantOther");
 			}
 		}
 		#endif
@@ -273,7 +273,7 @@ namespace Windows.Phone.PersonalInformation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownContactProperties.Telephone is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownContactProperties.Telephone is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownContactProperties.Telephone");
 			}
 		}
 		#endif
@@ -283,7 +283,7 @@ namespace Windows.Phone.PersonalInformation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownContactProperties.Url is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownContactProperties.Url is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownContactProperties.Url");
 			}
 		}
 		#endif
@@ -293,7 +293,7 @@ namespace Windows.Phone.PersonalInformation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownContactProperties.WorkAddress is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownContactProperties.WorkAddress is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownContactProperties.WorkAddress");
 			}
 		}
 		#endif
@@ -303,7 +303,7 @@ namespace Windows.Phone.PersonalInformation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownContactProperties.WorkEmail is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownContactProperties.WorkEmail is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownContactProperties.WorkEmail");
 			}
 		}
 		#endif
@@ -313,7 +313,7 @@ namespace Windows.Phone.PersonalInformation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownContactProperties.WorkFax is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownContactProperties.WorkFax is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownContactProperties.WorkFax");
 			}
 		}
 		#endif
@@ -323,7 +323,7 @@ namespace Windows.Phone.PersonalInformation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownContactProperties.WorkTelephone is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownContactProperties.WorkTelephone is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownContactProperties.WorkTelephone");
 			}
 		}
 		#endif
@@ -333,7 +333,7 @@ namespace Windows.Phone.PersonalInformation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownContactProperties.YomiCompanyName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownContactProperties.YomiCompanyName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownContactProperties.YomiCompanyName");
 			}
 		}
 		#endif
@@ -343,7 +343,7 @@ namespace Windows.Phone.PersonalInformation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownContactProperties.YomiFamilyName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownContactProperties.YomiFamilyName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownContactProperties.YomiFamilyName");
 			}
 		}
 		#endif
@@ -353,7 +353,7 @@ namespace Windows.Phone.PersonalInformation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownContactProperties.YomiGivenName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownContactProperties.YomiGivenName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownContactProperties.YomiGivenName");
 			}
 		}
 		#endif

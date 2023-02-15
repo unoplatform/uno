@@ -13,7 +13,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Point InkStrokeRenderingSegment.BezierControlPoint1 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Point InkStrokeRenderingSegment.BezierControlPoint1 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Point%20InkStrokeRenderingSegment.BezierControlPoint1");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Point InkStrokeRenderingSegment.BezierControlPoint2 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Point InkStrokeRenderingSegment.BezierControlPoint2 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Point%20InkStrokeRenderingSegment.BezierControlPoint2");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Point InkStrokeRenderingSegment.Position is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Point InkStrokeRenderingSegment.Position is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Point%20InkStrokeRenderingSegment.Position");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float InkStrokeRenderingSegment.Pressure is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float InkStrokeRenderingSegment.Pressure is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20InkStrokeRenderingSegment.Pressure");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float InkStrokeRenderingSegment.TiltX is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float InkStrokeRenderingSegment.TiltX is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20InkStrokeRenderingSegment.TiltX");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float InkStrokeRenderingSegment.TiltY is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float InkStrokeRenderingSegment.TiltY is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20InkStrokeRenderingSegment.TiltY");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float InkStrokeRenderingSegment.Twist is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float InkStrokeRenderingSegment.Twist is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20InkStrokeRenderingSegment.Twist");
 			}
 		}
 		#endif

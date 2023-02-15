@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int PhoneVoicemail.MessageCount is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int PhoneVoicemail.MessageCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20PhoneVoicemail.MessageCount");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PhoneVoicemail.Number is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PhoneVoicemail.Number is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PhoneVoicemail.Number");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PhoneVoicemailType PhoneVoicemail.Type is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PhoneVoicemailType PhoneVoicemail.Type is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PhoneVoicemailType%20PhoneVoicemail.Type");
 			}
 		}
 		#endif
@@ -44,7 +44,7 @@ namespace Windows.ApplicationModel.Calls
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction DialVoicemailAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction PhoneVoicemail.DialVoicemailAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction PhoneVoicemail.DialVoicemailAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20PhoneVoicemail.DialVoicemailAsync%28%29");
 		}
 		#endif
 	}

@@ -4,7 +4,7 @@ parameters:
 jobs:
 - job: reference_package_build
   displayName: 'Build Reference Package Binaries'
-  
+
   dependsOn: winui_convert_tree
 
   pool:
@@ -65,5 +65,5 @@ jobs:
     retryCountOnTaskFailure: 3
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
-      ArtifactName: NugetPackages-Artifacts-reference
+      ArtifactName: NugetPackages-Artifacts-reference-$(XAML_FLAVOR_BUILD)
       ArtifactType: Container

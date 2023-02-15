@@ -13,7 +13,7 @@ namespace Windows.Media.Devices.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint? FrameIsoSpeedControl.Value is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint? FrameIsoSpeedControl.Value is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%3F%20FrameIsoSpeedControl.Value");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Media.Devices.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool FrameIsoSpeedControl.Auto is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool FrameIsoSpeedControl.Auto is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20FrameIsoSpeedControl.Auto");
 			}
 			set
 			{

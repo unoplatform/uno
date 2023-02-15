@@ -47,7 +47,7 @@ namespace Uno.UI.RuntimeTests.MUX.Helpers
 			}
 		}
 
-		public static T GetVisualChildByType<T>(UIElement parent) where T: UIElement
+		public static T GetVisualChildByType<T>(UIElement parent) where T : UIElement
 		{
 			T child = default;
 

@@ -13,7 +13,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<string> PackageAllUserProvisioningOptions.OptionalPackageFamilyNames is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<string> PackageAllUserProvisioningOptions.OptionalPackageFamilyNames is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3Cstring%3E%20PackageAllUserProvisioningOptions.OptionalPackageFamilyNames");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<string> PackageAllUserProvisioningOptions.ProjectionOrderPackageFamilyNames is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<string> PackageAllUserProvisioningOptions.ProjectionOrderPackageFamilyNames is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3Cstring%3E%20PackageAllUserProvisioningOptions.ProjectionOrderPackageFamilyNames");
 			}
 		}
 		#endif

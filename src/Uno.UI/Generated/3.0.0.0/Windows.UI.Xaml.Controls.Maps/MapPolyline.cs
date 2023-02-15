@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double MapPolyline.StrokeThickness is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double MapPolyline.StrokeThickness is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20MapPolyline.StrokeThickness");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color MapPolyline.StrokeColor is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Color MapPolyline.StrokeColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Color%20MapPolyline.StrokeColor");
 			}
 			set
 			{

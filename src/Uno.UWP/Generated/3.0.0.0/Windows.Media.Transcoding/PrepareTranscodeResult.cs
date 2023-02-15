@@ -13,7 +13,7 @@ namespace Windows.Media.Transcoding
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PrepareTranscodeResult.CanTranscode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool PrepareTranscodeResult.CanTranscode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20PrepareTranscodeResult.CanTranscode");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.Transcoding
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TranscodeFailureReason PrepareTranscodeResult.FailureReason is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TranscodeFailureReason PrepareTranscodeResult.FailureReason is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TranscodeFailureReason%20PrepareTranscodeResult.FailureReason");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Media.Transcoding
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncActionWithProgress<double> TranscodeAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncActionWithProgress<double> PrepareTranscodeResult.TranscodeAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncActionWithProgress<double> PrepareTranscodeResult.TranscodeAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncActionWithProgress%3Cdouble%3E%20PrepareTranscodeResult.TranscodeAsync%28%29");
 		}
 		#endif
 	}

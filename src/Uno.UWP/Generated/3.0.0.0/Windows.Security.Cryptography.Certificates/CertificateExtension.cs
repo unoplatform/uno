@@ -13,7 +13,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte[] CertificateExtension.Value is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member byte[] CertificateExtension.Value is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=byte%5B%5D%20CertificateExtension.Value");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CertificateExtension.ObjectId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string CertificateExtension.ObjectId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CertificateExtension.ObjectId");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Security.Cryptography.Certificates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CertificateExtension.IsCritical is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool CertificateExtension.IsCritical is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20CertificateExtension.IsCritical");
 			}
 			set
 			{
