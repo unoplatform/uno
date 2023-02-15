@@ -135,6 +135,7 @@ namespace Uno.UI.Toolkit
 
 #if !__IOS__ && !__MACOS__
 		private protected override void OnCornerRadiousChanged(DependencyPropertyChangedEventArgs args) => OnChanged(this, args);
+#endif
 
 		protected internal override void OnTemplatedParentChanged(DependencyPropertyChangedEventArgs e)
 		{
