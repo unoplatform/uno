@@ -14,12 +14,12 @@ public enum ThreadingModel
 	/// Single-threaded apartment.
 	/// </summary>
 	STA = 1,
-	
+
 	/// <summary>
 	/// Multithreaded apartment.
 	/// </summary>
 	MTA = 2,
-	
+
 	/// <summary>
 	/// Both single-threaded and multithreaded apartments.
 	/// </summary>

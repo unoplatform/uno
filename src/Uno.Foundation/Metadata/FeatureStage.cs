@@ -3,7 +3,7 @@ namespace Windows.Foundation.Metadata;
 /// <summary>
 /// Values that indicate if a Windows feature is enabled or disabled.
 /// </summary>
-public enum FeatureStage 
+public enum FeatureStage
 {
 	/// <summary>
 	/// The feature is always disabled.

@@ -3,7 +3,7 @@ namespace Windows.Foundation.Metadata;
 /// <summary>
 /// Specifies the marshaling type for the class.
 /// </summary>
-public enum MarshalingType 
+public enum MarshalingType
 {
 	/// <summary>
 	/// The class can't be marshaled.

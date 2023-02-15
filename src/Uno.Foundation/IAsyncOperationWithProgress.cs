@@ -12,7 +12,7 @@ public partial interface IAsyncOperationWithProgress<TResult, TProgress> : IAsyn
 	/// Gets or sets the method that handles the operation completed notification.
 	/// </summary>
 	AsyncOperationWithProgressCompletedHandler<TResult, TProgress> Completed { get; set; }
-	
+
 	/// <summary>
 	/// Gets or sets the method that handles progress notifications.
 	/// </summary>

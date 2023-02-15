@@ -16,7 +16,7 @@ public static class ICommandExtensions
 		try
 		{
 			if (command != null && command.CanExecute(parameter))
-			{					
+			{
 				command.Execute(parameter);
 			}
 		}

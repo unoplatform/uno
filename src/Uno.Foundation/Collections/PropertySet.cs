@@ -1,204 +1,167 @@
-//TODO
+using System.Collections;
+
 namespace Windows.Foundation.Collections;
 
 /// <summary>
 /// Represents a property set, which is a set of PropertyValue objects with string keys.
 /// </summary>
-public partial class PropertySet :
+public sealed partial class PropertySet :
 	IDictionary<string, object>,
 	IEnumerable<KeyValuePair<string, object>>,
 	IObservableMap<string, object>,
 	IPropertySet
 {
-	public uint Size
-	{
-		get
-		{
-			throw new NotImplementedException("The member uint PropertySet.Size is not implemented in Uno.");
-		}
-	}
+	private readonly Dictionary<string, object> _properties = new Dictionary<string, object>();
 
 	/// <summary>
 	/// Creates and initializes a new instance of the property set.
 	/// </summary>
 	public PropertySet()
 	{
-		Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Foundation.Collections.PropertySet", "PropertySet.PropertySet()");
 	}
-#endif
-	// Forced skipping of method Windows.Foundation.Collections.PropertySet.PropertySet()
-	// Forced skipping of method Windows.Foundation.Collections.PropertySet.MapChanged.add
-	// Forced skipping of method Windows.Foundation.Collections.PropertySet.MapChanged.remove
-	// Forced skipping of method Windows.Foundation.Collections.PropertySet.Lookup(string)
-	// Forced skipping of method Windows.Foundation.Collections.PropertySet.Size.get
-	// Forced skipping of method Windows.Foundation.Collections.PropertySet.HasKey(string)
-	// Forced skipping of method Windows.Foundation.Collections.PropertySet.GetView()
-	// Forced skipping of method Windows.Foundation.Collections.PropertySet.Insert(string, object)
-	// Forced skipping of method Windows.Foundation.Collections.PropertySet.Remove(string)
-	// Forced skipping of method Windows.Foundation.Collections.PropertySet.Clear()
-	// Forced skipping of method Windows.Foundation.Collections.PropertySet.First()
-#if false
-	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-	public event global::Windows.Foundation.Collections.MapChangedEventHandler<string, object> MapChanged
-	{
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		add
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Foundation.Collections.PropertySet", "event MapChangedEventHandler<string, object> PropertySet.MapChanged");
-		}
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		remove
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Foundation.Collections.PropertySet", "event MapChangedEventHandler<string, object> PropertySet.MapChanged");
-		}
-	}
-#endif
-	// Processing: Windows.Foundation.Collections.IPropertySet
-	// Processing: Windows.Foundation.Collections.IObservableMap<string, object>
-	// Processing: System.Collections.Generic.IDictionary<string, object>
-#if false
-	// DeclaringType: System.Collections.Generic.IDictionary<string, object>
-	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+
+	/// <summary>
+	/// Occurs when the observable map has changed.
+	/// </summary>
+	public event MapChangedEventHandler<string, object> MapChanged;
+
+	/// <summary>
+	/// Gets the number of items contained in the property set.
+	/// </summary>
+	public uint Size => (uint)_properties.Count;
+
+	/// <summary>
+	/// Gets teh number of items contained in the property set.
+	/// </summary>
+	public int Count => _properties.Count;
+
+	/// <summary>
+	/// Gets a value indicating whether the collection is read-only.
+	/// </summary>
+	public bool IsReadOnly => false;
+
+	/// <summary>
+	/// Adds an item to the property set.
+	/// </summary>
+	/// <param name="key">The key to insert.</param>
+	/// <param name="value">The value to insert.</param>
 	public void Add(string key, object value)
 	{
-		throw new global::System.NotSupportedException();
+		_properties.Add(key, value);
+		MapChanged?.Invoke(this, new MapChangedEventArgs(CollectionChange.ItemInserted, key));
 	}
-#endif
-#if false
-	// DeclaringType: System.Collections.Generic.IDictionary<string, object>
-	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-	public bool ContainsKey(string key)
-	{
-		throw new global::System.NotSupportedException();
-	}
-#endif
-#if false
-	// DeclaringType: System.Collections.Generic.IDictionary<string, object>
-	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+
+	/// <summary>
+	/// Indicates whether the property set has an item with the specified key.
+	/// </summary>
+	/// <param name="key">Key.</param>
+	/// <returns>True if found.</returns>
+	public bool ContainsKey(string key) => _properties.ContainsKey(key);
+
+	/// <summary>
+	/// Removes a key from the property set.
+	/// </summary>
+	/// <param name="key">The key to remove.</param>
+	/// <returns>True if the key was found.</returns>
 	public bool Remove(string key)
 	{
-		throw new global::System.NotSupportedException();
+		var result = _properties.Remove(key);
+		if (result)
+		{
+			MapChanged?.Invoke(this, new MapChangedEventArgs(CollectionChange.ItemRemoved, key));
+		}
+
+		return result;
 	}
-#endif
-#if false
-	// DeclaringType: System.Collections.Generic.IDictionary<string, object>
-	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-	public bool TryGetValue(string key, out object value)
-	{
-		throw new global::System.NotSupportedException();
-	}
-#endif
-#if false
-	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+
+	/// <summary>
+	/// Tries to get the value for the specified key.
+	/// </summary>
+	/// <param name="key">The key to retrieve.</param>
+	/// <param name="value">The value correspodning with the key.</param>
+	/// <returns>True if found.</returns>
+	public bool TryGetValue(string key, out object value) => _properties.TryGetValue(key, out value);
+
+	/// <summary>
+	/// Gets or sets a value for the specified key.
+	/// </summary>
+	/// <param name="key">The key.</param>
+	/// <returns>Value.</returns>
 	public object this[string key]
 	{
-		get
-		{
-			throw new global::System.NotSupportedException();
-		}
+		get => _properties[key];
 		set
 		{
-			throw new global::System.NotSupportedException();
+			// Add or update and raise map changed accrodingly			
+			if (_properties.TryGetValue(key, out var existingValue))
+			{
+				if (value != existingValue)
+				{
+					_properties[key] = value;
+					MapChanged?.Invoke(this, new MapChangedEventArgs(CollectionChange.ItemChanged, key));
+				}
+			}
+			else
+			{
+				_properties.Add(key, value);
+				MapChanged?.Invoke(this, new MapChangedEventArgs(CollectionChange.ItemInserted, key));
+			}
 		}
 	}
-#endif
-#if false
-	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-	public global::System.Collections.Generic.ICollection<string> Keys
+
+	/// <summary>
+	/// Returns all keys in the property set.
+	/// </summary>
+	public ICollection<string> Keys => _properties.Keys;
+
+	/// <summary>
+	/// Returns all values in the property set.
+	/// </summary>
+	public ICollection<object> Values => _properties.Values;
+
+	/// <summary>
+	/// Adds an item to the property set.
+	/// </summary>
+	/// <param name="item">Item to be added.</param>
+	public void Add(KeyValuePair<string, object> item) => Add(item.Key, item.Value);
+
+	/// <summary>
+	/// Clears the property set.
+	/// </summary>
+	public void Clear() => _properties.Clear();
+
+	/// <summary>
+	/// Checks if the property set contains the specified item.
+	/// </summary>
+	/// <param name="item">Item to check.</param>
+	/// <returns>True if found.</returns>
+	public bool Contains(KeyValuePair<string, object> item) => _properties.Contains(item);
+
+	/// <summary>
+	/// Copies the property set to an array.
+	/// </summary>
+	/// <param name="array">Array to copy to.</param>
+	/// <param name="arrayIndex">Index of the start of the copy.</param>
+	public void CopyTo(KeyValuePair<string, object>[] array, int arrayIndex)
 	{
-		get
+		foreach (var item in _properties)
 		{
-			throw new global::System.NotSupportedException();
+			array[arrayIndex++] = item;
 		}
 	}
-#endif
-#if false
-	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-	public global::System.Collections.Generic.ICollection<object> Values
-	{
-		get
-		{
-			throw new global::System.NotSupportedException();
-		}
-	}
-#endif
-	// Processing: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, object>>
-#if false
-	// DeclaringType: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, object>>
-	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-	public void Add(global::System.Collections.Generic.KeyValuePair<string, object> item)
-	{
-		throw new global::System.NotSupportedException();
-	}
-#endif
-#if false
-	// DeclaringType: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, object>>
-	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-	public void Clear()
-	{
-		throw new global::System.NotSupportedException();
-	}
-#endif
-#if false
-	// DeclaringType: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, object>>
-	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-	public bool Contains(global::System.Collections.Generic.KeyValuePair<string, object> item)
-	{
-		throw new global::System.NotSupportedException();
-	}
-#endif
-#if false
-	// DeclaringType: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, object>>
-	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-	public void CopyTo(global::System.Collections.Generic.KeyValuePair<string, object>[] array, int arrayIndex)
-	{
-		throw new global::System.NotSupportedException();
-	}
-#endif
-#if false
-	// DeclaringType: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, object>>
-	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-	public bool Remove(global::System.Collections.Generic.KeyValuePair<string, object> item)
-	{
-		throw new global::System.NotSupportedException();
-	}
-#endif
-#if false
-	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-	public int Count
-	{
-		get
-		{
-			throw new global::System.NotSupportedException();
-		}
-	}
-#endif
-#if false
-	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-	public bool IsReadOnly
-	{
-		get
-		{
-			throw new global::System.NotSupportedException();
-		}
-	}
-#endif
-	// Processing: System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, object>>
-#if false
-	// DeclaringType: System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, object>>
-	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-	public global::System.Collections.Generic.IEnumerator<global::System.Collections.Generic.KeyValuePair<string, object>> GetEnumerator()
-	{
-		throw new global::System.NotSupportedException();
-	}
-#endif
-	// Processing: System.Collections.IEnumerable
-#if false
-	// DeclaringType: System.Collections.IEnumerable
-	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-	global::System.Collections.IEnumerator global::System.Collections.IEnumerable.GetEnumerator()
-	{
-		throw new global::System.NotSupportedException();
-	}
-#endif
+
+	/// <summary>
+	/// Removes an item from the property set.
+	/// </summary>
+	/// <param name="item">Item to remove.</param>
+	/// <returns>True if found.</returns>
+	public bool Remove(KeyValuePair<string, object> item) => Remove(item.Key);
+
+	/// <summary>
+	/// Returns an enumerator for the property set.
+	/// </summary>
+	/// <returns>Enumerator.</returns>
+	public IEnumerator<KeyValuePair<string, object>> GetEnumerator() => _properties.GetEnumerator();
+
+	IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 }

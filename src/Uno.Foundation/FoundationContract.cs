@@ -1,5 +1,5 @@
 namespace Windows.Foundation;
 
-public partial struct FoundationContract 
+public partial struct FoundationContract
 {
 }

@@ -3,7 +3,7 @@ namespace Windows.Foundation.Metadata;
 /// <summary>
 /// Specifies the amount of memory for garbage collection.
 /// </summary>
-public enum GCPressureAmount 
+public enum GCPressureAmount
 {
 	/// <summary>
 	/// Less than 10k of memory pressure.
