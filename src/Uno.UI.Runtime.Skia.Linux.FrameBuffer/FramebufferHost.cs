@@ -30,16 +30,9 @@ namespace Uno.UI.Runtime.Skia
 		/// Creates a host for a Uno Skia FrameBuffer application.
 		/// </summary>
 		/// <param name="appBuilder">App builder.</param>
-		/// <param name="args">Deprecated, value ignored.</param>		
 		/// <remarks>
-		/// Args are obsolete and will be removed in the future. Environment.CommandLine is used instead
-		/// to fill LaunchEventArgs.Arguments.
+		/// Environment.CommandLine is used to fill LaunchEventArgs.Arguments.
 		/// </remarks>
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		public FrameBufferHost(Func<WUX.Application> appBuilder, string[] args) : this(appBuilder)
-		{
-		}
-
 		public FrameBufferHost(Func<WUX.Application> appBuilder)
 		{
 			_appBuilder = appBuilder;
@@ -77,7 +70,7 @@ namespace Uno.UI.Runtime.Skia
 				while (!_coreApplicationExtension!.ExitRequested)
 				{
 					// Read the console keys without showing them on screen.
-					// The keyboard input is handled by libinput. 
+					// The keyboard input is handled by libinput.
 					Console.ReadKey(true);
 				}
 
