@@ -5,10 +5,7 @@ namespace Windows.UI.Xaml.Controls;
 
 partial class Panel : IEnumerable
 {
-	protected virtual void OnChildrenChanged()
-	{
-		UpdateBorder();
-	}
+	protected virtual void OnChildrenChanged() => UpdateBorder();
 
 	public new IEnumerator GetEnumerator() => this.GetChildren().GetEnumerator();
 

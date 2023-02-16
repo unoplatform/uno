@@ -17,8 +17,6 @@ partial class Panel : IBorderInfoProvider
 
 	CornerRadius IBorderInfoProvider.CornerRadius => CornerRadiusInternal;
 
-	object? IBorderInfoProvider.BackgroundImage => null;
-
 #if __ANDROID__
 	Thickness IBorderInfoProvider.Padding => PaddingInternal;
 

@@ -10,10 +10,7 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class ContentPresenter
 	{
-		partial void SetUpdateTemplatePartial()
-		{
-			this.InvalidateMeasure();
-		}
+		partial void SetUpdateTemplatePartial() => this.InvalidateMeasure();
 
 		partial void RegisterContentTemplateRoot()
 		{
