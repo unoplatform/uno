@@ -22,13 +22,6 @@ namespace Windows.UI.Xaml.Controls
 	{
 		#region Left
 
-		public static double GetLeft(DependencyObject obj)
-			=> GetLeftValue(obj);
-
-		public static void SetLeft(DependencyObject obj, double value)
-			=> SetLeftValue(obj, value);
-
-
 		[GeneratedDependencyProperty(DefaultValue = 0.0d, AttachedBackingFieldOwner = typeof(UIElement), Attached = true, Options = FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsArrange)]
 		public static DependencyProperty LeftProperty { get; } = CreateLeftProperty();
 
@@ -51,12 +44,6 @@ namespace Windows.UI.Xaml.Controls
 
 		#region Top
 
-		public static double GetTop(DependencyObject obj)
-			=> GetTopValue(obj);
-
-		public static void SetTop(DependencyObject obj, double value)
-			=> SetTopValue(obj, value);
-
 		[GeneratedDependencyProperty(DefaultValue = 0.0d, AttachedBackingFieldOwner = typeof(UIElement), Attached = true, Options = FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsArrange)]
 		public static DependencyProperty TopProperty { get; } = CreateTopProperty();
 
@@ -78,12 +65,6 @@ namespace Windows.UI.Xaml.Controls
 		#endregion
 
 		#region ZIndex
-
-		public static double GetZIndex(DependencyObject obj)
-			=> GetZIndexValue(obj);
-
-		public static void SetZIndex(DependencyObject obj, double value)
-			=> SetZIndexValue(obj, value);
 
 		[GeneratedDependencyProperty(DefaultValue = 0.0d, AttachedBackingFieldOwner = typeof(UIElement), Attached = true, Options = FrameworkPropertyMetadataOptions.AutoConvert)]
 		public static DependencyProperty ZIndexProperty { get; } = CreateZIndexProperty();
@@ -111,16 +92,16 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void InitializePartial();
 
-		public static double GetLeft(global::Windows.UI.Xaml.UIElement element) => GetLeft((DependencyObject)element);
+		public static double GetLeft(global::Windows.UI.Xaml.UIElement element) => GetLeftValue(element);
 
-		public static void SetLeft(global::Windows.UI.Xaml.UIElement element, double length) => SetLeft((DependencyObject)element, length);
+		public static void SetLeft(global::Windows.UI.Xaml.UIElement element, double length) => SetLeftValue(element, length);
 
-		public static double GetTop(global::Windows.UI.Xaml.UIElement element) => GetTop((DependencyObject)element);
+		public static double GetTop(global::Windows.UI.Xaml.UIElement element) => GetTopValue(element);
 
-		public static void SetTop(global::Windows.UI.Xaml.UIElement element, double length) => SetTop((DependencyObject)element, length);
+		public static void SetTop(global::Windows.UI.Xaml.UIElement element, double length) => SetTopValue(element, length);
 
-		public static int GetZIndex(global::Windows.UI.Xaml.UIElement element) => (int)GetZIndex((DependencyObject)element);
+		public static int GetZIndex(global::Windows.UI.Xaml.UIElement element) => GetZIndexValue(element);
 
-		public static void SetZIndex(global::Windows.UI.Xaml.UIElement element, int value) => SetZIndex((DependencyObject)element, value);
+		public static void SetZIndex(global::Windows.UI.Xaml.UIElement element, int value) => SetZIndexValue(element, value);
 	}
 }

@@ -84,7 +84,7 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.CanvasTests
 			Assert.AreEqual(42d, SUT.GetValue(Canvas.TopProperty));
 
 			SUT.SetValue(Canvas.ZIndexProperty, "42");
-			Assert.AreEqual(42d, SUT.GetValue(Canvas.ZIndexProperty));
+			Assert.AreEqual(42, SUT.GetValue(Canvas.ZIndexProperty));
 		}
 	}
 }
