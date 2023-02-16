@@ -1,4 +1,6 @@
-﻿#if !NET461
+﻿#nullable enable
+
+#if !NET461
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -54,7 +56,7 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		private readonly Dictionary<int, FrameworkElement> _scrapCache = new Dictionary<int, FrameworkElement>();
 
-		private ItemsControl ItemsControl => _owner.ItemsControl;
+		private ItemsControl? ItemsControl => _owner.ItemsControl;
 
 		public VirtualizingPanelGenerator(_VirtualizingPanelLayout owner)
 		{
@@ -89,7 +91,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// Returns a container view bound to the item at <paramref name="index"/>, recycling an available view if possible, or creating a new container if not.
 		/// </summary>
-		public FrameworkElement DequeueViewForItem(int index)
+		public FrameworkElement? DequeueViewForItem(int index)
 		{
 			//Try scrap first to save rebinding view
 			var scrapped = TryGetScrappedContainer(index);
@@ -115,7 +117,7 @@ namespace Windows.UI.Xaml.Controls
 				{
 					this.Log().Debug($"DequeueViewForItem: Creating for index:{index}");
 				}
-				container = ItemsControl.GetContainerForIndex(index) as FrameworkElement;
+				container = ItemsControl?.GetContainerForIndex(index) as FrameworkElement;
 			}
 			else
 			{
@@ -125,7 +127,7 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 
-			ItemsControl.PrepareContainerForIndex(container, index);
+			ItemsControl?.PrepareContainerForIndex(container, index);
 
 			return container;
 		}
@@ -133,7 +135,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// Try to retrieve a cached container for a given template <paramref name="id"/>. Returns null if none is available.
 		/// </summary>
-		private FrameworkElement TryDequeueCachedContainer(int id)
+		private FrameworkElement? TryDequeueCachedContainer(int id)
 		{
 			if (id == IsOwnContainerItemId)
 			{
@@ -157,7 +159,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// Try to retrieve a temporarily-scrapped container for given item <paramref name="index"/>. Returns null if none is available.
 		/// </summary>
-		private FrameworkElement TryGetScrappedContainer(int index)
+		private FrameworkElement? TryGetScrappedContainer(int index)
 		{
 			if (_scrapCache.TryGetValue(index, out var container))
 			{
@@ -194,7 +196,7 @@ namespace Windows.UI.Xaml.Controls
 
 					if (clearContainer)
 					{
-						ItemsControl.CleanUpContainer(container);
+						ItemsControl?.CleanUpContainer(container);
 					}
 				}
 				else
@@ -225,7 +227,7 @@ namespace Windows.UI.Xaml.Controls
 			if (container.Parent is Panel parent)
 			{
 				// Clear the container's Content and DataContext
-				ItemsControl.CleanUpContainer(container);
+				ItemsControl?.CleanUpContainer(container);
 
 				parent.Children.Remove(container);
 			}
@@ -324,7 +326,7 @@ namespace Windows.UI.Xaml.Controls
 			return id;
 		}
 
-		private string GetMethodTag([CallerMemberName] string caller = null)
+		private string GetMethodTag([CallerMemberName] string? caller = null)
 			=> $"{nameof(VirtualizingPanelGenerator)}.{caller}()";
 
 		internal void ClearIdCache()
