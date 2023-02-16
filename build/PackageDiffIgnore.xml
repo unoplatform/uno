@@ -9139,6 +9139,8 @@
 			<Member fullName="Uno.Extensions.JavaObjectExtensions" reason="Only needed internally" />
 			<Member fullName="Uno.Client.ICommandExtensions" reason="Only needed internally" />
 			<Member fullName="Uno.Extensions.UriExtensions" reason="Not needed publicly" />
+			<Member fullName="Windows.UI.Xaml.Controls.PanelExtensions" reason="Not needed" />
+			<Member fullName="Microsoft.UI.Xaml.Controls.PanelExtensions" reason="Not needed" />
 			<Member fullName="Windows.UI.Xaml.FontFamilyHelper" reason="Only needed internally. The public facing type is Uno.UI.Xaml.Media.FontFamilyHelper" />
 		</Types>
 		<Events>
