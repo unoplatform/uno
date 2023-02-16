@@ -51,7 +51,7 @@ namespace Windows.UI.Xaml.Controls
 				Visibility = Visibility.Collapsed,
 				Background = SolidColorBrushHelper.Transparent,
 				AutoresizingMask = UIViewAutoresizing.All,
-				Frame = new CGRect(CGPoint.Empty, ViewHelper.GetScreenSize())
+				Frame = new CGRect(CGPoint.Empty, ViewHelper.GetMainWindowSize())
 			};
 		}
 
@@ -168,7 +168,7 @@ namespace Windows.UI.Xaml.Controls
 
 			_timeSelector?.Initialize();
 
-			//Gobbling pressed tap on the flyout header background so that it doesn't close the flyout popup. 
+			//Gobbling pressed tap on the flyout header background so that it doesn't close the flyout popup.
 			if (_headerUntapZone != null)
 			{
 				_headerUntapZone.PointerPressed += OnTap;
