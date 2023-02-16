@@ -11,13 +11,16 @@ using Uno.Disposables;
 using System.Text;
 using System.Threading.Tasks;
 using FluentAssertions;
-using View = Windows.UI.Xaml.FrameworkElement;
 
 namespace Uno.UI.Tests.Windows_UI_XAML_Controls.CanvasTests
 {
 	[TestClass]
-	public class Given_Canvas
+	public partial class Given_Canvas
 	{
+		private partial class View : FrameworkElement
+		{
+		}
+
 		[TestMethod]
 		public void When_Canvas_have_Fixed_size()
 		{
