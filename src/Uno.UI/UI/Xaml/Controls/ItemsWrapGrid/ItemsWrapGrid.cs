@@ -19,6 +19,16 @@ namespace Windows.UI.Xaml.Controls
 		public int LastCacheIndex => _layout.XamlParent.NativePanel.ViewCache.LastCacheIndex;
 #endif
 
+		partial void OnItemWidthChangedPartial(double oldItemWidth, double newItemWidth)
+		{
+			_layout?.Refresh();
+		}
+
+		partial void OnItemHeightChangedPartial(double oldItemHeight, double newItemHeight)
+		{
+			_layout?.Refresh();
+		}
+
 		public ItemsWrapGrid()
 		{
 			if (FeatureConfiguration.ListViewBase.DefaultCacheLength.HasValue)
