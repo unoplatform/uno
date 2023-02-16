@@ -28,22 +28,6 @@ namespace Uno.UI
 {
 	public static class ViewHelper
 	{
-#if __IOS__
-		// This return the value from the original screen. Use 'DisplayInformation.RawPixelsPerViewPixel' to get the value for the current screen.
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		public static readonly nfloat MainScreenScale = UIScreen.MainScreen.Scale;
-		// This return the value from the original screen. Use 'DisplayInformation.RawPixelsPerViewPixel > 1.0f' for the current screen.
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		public static readonly bool IsRetinaDisplay = MainScreenScale > 1.0f;
-#elif __MACOS__
-		// This return the value from the original screen. Use 'DisplayInformation.RawPixelsPerViewPixel' to get the value for the current screen.
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		public static readonly nfloat MainScreenScale = NSScreen.MainScreen.BackingScaleFactor;
-		// This return the value from the original screen. Use 'DisplayInformation.RawPixelsPerViewPixel > 1.0f' for the current screen.
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		public static readonly bool IsRetinaDisplay = MainScreenScale > 1.0f;
-#endif
-
 		/// <summary>
 		/// This is used to correct some errors when using Floor and Ceiling in LogicalToPhysicalPixels for CGRect.
 		/// </summary>
@@ -161,7 +145,7 @@ namespace Uno.UI
 		}
 
 		/// <summary>
-		/// if the value would be 0.01, result would be 0 instead of 1 
+		/// if the value would be 0.01, result would be 0 instead of 1
 		/// </summary>
 		private static double CeilingWithEpsilon(double value, double epsilon)
 		{
