@@ -17,8 +17,6 @@ public partial class Page : IBorderInfoProvider
 
 	CornerRadius IBorderInfoProvider.CornerRadius => CornerRadius.None;
 
-	object? IBorderInfoProvider.BackgroundImage => null;
-
 #if __ANDROID__
 	Thickness IBorderInfoProvider.Padding => Padding;
 
