@@ -23,7 +23,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.VisualStudio.TestTools.UnitTesting.Logging;
 #endif
 
-using PersonPicture = Windows.UI.Xaml.Controls.PersonPicture;
+using PersonPicture = Microsoft.UI.Xaml.Controls.PersonPicture;
 
 namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 {
