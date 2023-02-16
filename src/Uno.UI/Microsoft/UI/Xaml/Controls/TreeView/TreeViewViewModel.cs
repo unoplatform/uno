@@ -192,6 +192,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return IsContentMode ? node.Content : node;
 		}
 
+#if false
 		private object[] GetMany(int startIndex)
 		{
 			if (IsContentMode)
@@ -211,6 +212,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			return list.ToArray();
 		}
+#endif
 
 		internal TreeViewNode GetNodeAt(int index)
 		{
@@ -300,6 +302,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
+#if false
 		private void ReplaceAll(object[] items)
 		{
 			base.Clear();
@@ -308,6 +311,7 @@ namespace Microsoft.UI.Xaml.Controls
 				base.Add(item);
 			}
 		}
+#endif
 
 		// Helper function
 		internal void PrepareView(TreeViewNode originNode)

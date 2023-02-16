@@ -204,16 +204,6 @@ namespace Uno.UI.Helpers.WinUI
 			m_attachedData.RemoveAt(index);
 		}
 
-		void OnReplace(int index)
-		{
-			var splitVector = GetVectorForItem(index);
-			if (splitVector != null)
-			{
-				var value = GetAt(index);
-				splitVector.Replace(index, value);
-			}
-		}
-
 		void OnInsertAt(int index)
 		{
 			var vectorID = DefaultVectorIDOnInsert();

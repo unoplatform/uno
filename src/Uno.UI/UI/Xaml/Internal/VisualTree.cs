@@ -41,7 +41,6 @@ namespace Uno.UI.Xaml.Core
 		private const int ConnectedAnimationRootZIndex = VisualDiagnosticsRootZIndex - 1;
 		private const int PopupZIndex = ConnectedAnimationRootZIndex - 1;
 		private const int FullWindowMediaRootZIndex = PopupZIndex - 1;
-		private const int TransitionRootZIndex = FullWindowMediaRootZIndex - 1;
 
 		internal enum LookupOptions
 		{
@@ -70,7 +69,7 @@ namespace Uno.UI.Xaml.Core
 		/// </remarks>
 		public VisualTree(CoreServices coreServices, Color backgroundColor, UIElement? rootElement, ContentRoot contentRoot)
 		{
-			//TODO Uno: Adjust to match WinUI	
+			//TODO Uno: Adjust to match WinUI
 			_coreServices = coreServices ?? throw new ArgumentNullException(nameof(coreServices));
 			ContentRoot = contentRoot ?? throw new ArgumentNullException(nameof(contentRoot));
 
@@ -148,6 +147,7 @@ namespace Uno.UI.Xaml.Core
 			}
 		}
 
+#if !__MACOS__
 		/// <summary>
 		/// Replace the existing popup root (if any) with the provided one.
 		/// </summary>
@@ -159,6 +159,7 @@ namespace Uno.UI.Xaml.Core
 				Canvas.SetZIndex(PopupRoot, PopupZIndex);
 			}
 		}
+#endif
 
 		internal void SetPublicRootVisual(UIElement? publicRootVisual, ScrollViewer? rootScrollViewer, ContentPresenter? rootContentPresenter)
 		{
@@ -549,6 +550,7 @@ namespace Uno.UI.Xaml.Core
 			return false;
 		}
 
+#if false
 		/// <summary>
 		/// Removes the given root from the implicit root visual, and potentially 'Leave' it
 		/// from the tree.
@@ -558,7 +560,7 @@ namespace Uno.UI.Xaml.Core
 		/// A root leaves the tree if we can retrieve a namescope owner for it
 		/// using GetNamescopeOwnerForRoot.
 		/// A precondition of this function is that the root being entered is already set
-		/// in its corresponding member variable (e.g. m_popupRoot, m_publicRootVisual, etc.) 
+		/// in its corresponding member variable (e.g. m_popupRoot, m_publicRootVisual, etc.)
 		/// </remarks>
 		[NotImplemented]
 		private void RemoveRoot(UIElement root)
@@ -587,6 +589,7 @@ namespace Uno.UI.Xaml.Core
 			// itself is never live.
 			// publicRoot.LeavePCSceneRecursive();
 		}
+#endif
 
 		[NotImplemented]
 		private static UIElement? GetXamlIslandRootForElement(DependencyObject? pObject)

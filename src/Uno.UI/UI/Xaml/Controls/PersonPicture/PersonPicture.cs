@@ -48,10 +48,12 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		Ellipse m_badgingBackgroundEllipse;
 
+#pragma warning disable CS0649 // Field is never assigned to, and will always have its default value null
 		/// <summary>
 		/// The async operation object representing the loading and assignment of the Thumbnail.
 		/// </summary>
 		IAsyncOperation<IRandomAccessStreamWithContentType> m_profilePictureReadAsync;
+#pragma warning restore CS0649 // Field is never assigned to, and will always have its default value null
 
 		/// <summary>
 		/// The initials from the DisplayName property.
@@ -78,6 +80,7 @@ namespace Windows.UI.Xaml.Controls
 			SizeChanged += OnSizeChanged;
 		}
 
+#if false
 		Task<BitmapImage> LoadImageAsync(IRandomAccessStreamReference thumbStreamReference)
 		{
 			m_profilePictureReadAsync = null;
@@ -140,6 +143,7 @@ namespace Windows.UI.Xaml.Controls
 
 			//m_profilePictureReadAsync = operation;
 		}
+#endif
 
 		protected override AutomationPeer OnCreateAutomationPeer()
 		{

@@ -21,6 +21,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 #endif
 	public partial class RenderTargetBitmap : IDisposable
 	{
+#if !NOT_IMPLEMENTED
 		private static void Swap(ref byte a, ref byte b)
 		{
 			(a, b) = (b, a);
@@ -35,6 +36,8 @@ namespace Windows.UI.Xaml.Media.Imaging
 				Swap(ref buffer![i], ref buffer![i + 2]);
 			}
 		}
+#endif
+
 #if NOT_IMPLEMENTED
 		internal const bool IsImplemented = false;
 #else
@@ -144,6 +147,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 			=> throw new NotImplementedException("RenderTargetBitmap is not supported on this platform.");
 #endif
 
+#if !NOT_IMPLEMENTED
 		private static void EnsureBuffer(ref byte[]? buffer, int length)
 		{
 			if (buffer is null)
@@ -156,6 +160,8 @@ namespace Windows.UI.Xaml.Media.Imaging
 				buffer = ArrayPool<byte>.Shared.Rent(length);
 			}
 		}
+#endif
+
 		void IDisposable.Dispose()
 		{
 			if (_buffer is { })

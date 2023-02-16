@@ -756,6 +756,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return null;
 		}
 
+#if false
 		bool TryAddElement0(UIElement element)
 		{
 			if (m_elementManager.GetRealizedElementCount == 0)
@@ -766,6 +767,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			return false;
 		}
+#endif
 
 		bool IsVirtualizingContext
 		{

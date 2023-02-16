@@ -427,9 +427,6 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-
-		private void ConfigurePositionInertiaRestingValues() { }
-
 		private void IdleStateEntered(object @null, object @also_null) { }
 
 		private void UpdateTransforms()

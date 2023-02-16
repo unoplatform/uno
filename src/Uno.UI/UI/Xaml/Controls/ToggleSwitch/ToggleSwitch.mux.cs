@@ -355,10 +355,12 @@ namespace Windows.UI.Xaml.Controls
 			ElementSoundPlayerService.RequestInteractionSoundForElementStatic(ElementSoundKind.Invoke, this);
 		}
 
+#if false
 		private void AutomationToggleSwitchOnToggle()
 		{
 			Toggle();
 		}
+#endif
 
 		//private void
 		//AutomationGetClickablePoint(

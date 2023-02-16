@@ -110,6 +110,7 @@ namespace Windows.UI.Xaml.Controls
 				return;
 			}
 
+#if false
 			// Properties.
 			private bool CanSelectMultipleImpl
 			{
@@ -420,6 +421,7 @@ namespace Windows.UI.Xaml.Controls
 
 				return;
 			}
+#endif
 
 			internal void RaiseSelectionEvents(CalendarViewSelectedDatesChangedEventArgs pSelectionChangedEventArgs)
 			{

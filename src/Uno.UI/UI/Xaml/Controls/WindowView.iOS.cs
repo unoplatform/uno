@@ -103,6 +103,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+#if false
 		static nfloat StatusBarHeight
 		{
 			get
@@ -115,6 +116,7 @@ namespace Windows.UI.Xaml.Controls
 				return UIApplication.SharedApplication.StatusBarFrame.Height;
 			}
 		}
+#endif
 
 		public CGRect WindowBounds
 		{
@@ -152,11 +154,6 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			return angle;
-		}
-
-		static UIInterfaceOrientationMask UIInterfaceOrientationMaskFromOrientation(UIInterfaceOrientation orientation)
-		{
-			return (UIInterfaceOrientationMask)(1 << (int)orientation);
 		}
 	}
 }

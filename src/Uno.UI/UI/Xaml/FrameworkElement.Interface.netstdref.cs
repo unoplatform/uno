@@ -93,11 +93,5 @@ namespace Windows.UI.Xaml
 		}
 
 		public void ApplyBindingPhase(int phase) => throw new NotImplementedException();
-
-		private void OnGenericPropertyUpdated(DependencyPropertyChangedEventArgs args)
-		{
-			OnGenericPropertyUpdatedPartial(args);
-			this.InvalidateMeasure();
-		}
 	}
 }

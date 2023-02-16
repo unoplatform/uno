@@ -121,11 +121,6 @@ namespace Uno.UI.Controls
 			command.Execute(item);
 		}
 
-		private int GetItemWidth()
-		{
-			return GetChildAt(0).Width;
-		}
-
 		private void ScrollToItem()
 		{
 			if (_scrollToIndexChanged

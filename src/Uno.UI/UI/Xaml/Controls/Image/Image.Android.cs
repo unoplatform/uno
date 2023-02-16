@@ -11,6 +11,7 @@ using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.Xaml.Media;
 using Windows.Foundation;
+using Windows.UI.Core;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
 
@@ -254,6 +255,17 @@ namespace Windows.UI.Xaml.Controls
 		{
 			// If an image doesn't have fixed sizes and is Uniform or None, we must use its aspect ratio to measure it.
 			return (Stretch == Stretch.Uniform || Stretch == Stretch.None) && (double.IsNaN(Width) || double.IsNaN(Height));
+		}
+
+		private void Dispatch(Action<CancellationToken> handler, CancellationToken ct)
+		{
+			Dispatcher.RunAsync(
+				CoreDispatcherPriority.Normal,
+				() =>
+				{
+					handler(ct);
+				}
+			).AsTask(ct);
 		}
 
 		private async Task SetSourceUriOrStreamAsync(ImageSource newImageSource, CancellationToken token)

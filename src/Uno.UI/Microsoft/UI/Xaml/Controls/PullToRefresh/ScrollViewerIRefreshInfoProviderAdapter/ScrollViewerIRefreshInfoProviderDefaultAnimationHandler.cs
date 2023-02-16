@@ -20,7 +20,7 @@ namespace Microsoft.UI.Private.Controls;
 internal partial class ScrollViewerIRefreshInfoProviderDefaultAnimationHandler : IAdapterAnimationHandler
 {
 	private static readonly TimeSpan REFRESH_ANIMATION_DURATION = TimeSpan.FromMilliseconds(100);
-	private const double REFRESH_VISUALIZER_OVERPAN_RATIO = 0.4;
+	//private const double REFRESH_VISUALIZER_OVERPAN_RATIO = 0.4;
 
 	// Implementors of the IAdapterAnimationHandler interface are responsible for implementing the
 	// 3 well defined component level animations in a PTR scenario. The three animations involved 

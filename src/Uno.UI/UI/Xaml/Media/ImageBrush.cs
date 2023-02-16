@@ -15,8 +15,10 @@ namespace Windows.UI.Xaml.Media
 {
 	public partial class ImageBrush : Brush
 	{
+#pragma warning disable CS0067 // The event 'ImageBrush.ImageFailed' is never used
 		public event RoutedEventHandler ImageOpened;
 		public event ExceptionRoutedEventHandler ImageFailed;
+#pragma warning restore CS0067 // The event 'ImageBrush.ImageFailed' is never used
 
 		#region AlignmentX DP
 		public static DependencyProperty AlignmentXProperty { get; } =
@@ -146,6 +148,7 @@ namespace Windows.UI.Xaml.Media
 			return location;
 		}
 
+#if __ANDROID__ || __IOS__ || __MACOS__ || __NETSTD__
 		private void OnImageOpened()
 		{
 			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
@@ -165,5 +168,6 @@ namespace Windows.UI.Xaml.Media
 
 			ImageFailed?.Invoke(this, new ExceptionRoutedEventArgs(this, "Image failed to open"));
 		}
+#endif
 	}
 }

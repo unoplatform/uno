@@ -45,6 +45,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 		}
 
+#if false
 		private int GetElementIndexCore(UIElement element)
 		{
 			if (m_nonVirtualizingContext.TryGetTarget(out var context))
@@ -61,6 +62,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			return -1;
 		}
+#endif
 
 		protected override Rect RealizationRectCore() => new Rect(0, 0, double.PositiveInfinity, double.PositiveInfinity);
 

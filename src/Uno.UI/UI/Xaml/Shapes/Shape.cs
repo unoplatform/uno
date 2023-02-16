@@ -61,6 +61,7 @@ namespace Windows.UI.Xaml.Shapes
 		);
 		#endregion
 
+#if !LEGACY_SHAPE_MEASURE
 		private void InvalidateForBrushChanged()
 		{
 			// The try-catch here is primarily for the benefit of Android. This callback is raised when (say) the brush color changes,
@@ -90,6 +91,7 @@ namespace Windows.UI.Xaml.Shapes
 			}
 #endif
 		}
+#endif
 
 		#region Stroke Dependency Property
 		public Brush Stroke

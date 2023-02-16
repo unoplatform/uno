@@ -84,10 +84,10 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		// For a genuine tree view, we dont know which node is leaf until we 
-		// actually walk to it, so currently the tree builds up to the leaf. I don't 
-		// create a bunch of leaf node instances - instead i use the same instance m_leafNode to avoid 
-		// an explosion of node objects. However, I'm still creating the m_childrenNodes 
+		// For a genuine tree view, we dont know which node is leaf until we
+		// actually walk to it, so currently the tree builds up to the leaf. I don't
+		// create a bunch of leaf node instances - instead i use the same instance m_leafNode to avoid
+		// an explosion of node objects. However, I'm still creating the m_childrenNodes
 		// collection unfortunately.
 		internal SelectionNode GetAt(int index, bool realizeChild)
 		{
@@ -198,7 +198,7 @@ namespace Microsoft.UI.Xaml.Controls
 			MUX_ASSERT(index >= 0);
 
 			if (m_childrenNodes.Count == 0 || // no nodes realized
-				(int)(m_childrenNodes.Count) <= index || // target node is not realized 
+				(int)(m_childrenNodes.Count) <= index || // target node is not realized
 				m_childrenNodes[index] == null || // target node is not realized
 				m_childrenNodes[index] == m_manager.SharedLeafNode)  // target node is a leaf node.
 			{
@@ -207,8 +207,8 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			else
 			{
-				// targetNode is the node representing the index. This node is the parent. 
-				// targetNode is a non-leaf node, containing one or many children nodes. Evaluate 
+				// targetNode is the node representing the index. This node is the parent.
+				// targetNode is a non-leaf node, containing one or many children nodes. Evaluate
 				// based on children of targetNode.
 				var targetNode = m_childrenNodes[index];
 				selectionState = targetNode.EvaluateIsSelectedBasedOnChildrenNodes();
@@ -217,6 +217,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return ConvertToNullableBool(selectionState);
 		}
 
+#if false
 		private int SelectedIndex
 		{
 			get => SelectedCount > 0 ? SelectedIndices[0] : -1;
@@ -233,6 +234,7 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 			}
 		}
+#endif
 
 		internal IList<int> SelectedIndices
 		{
@@ -266,10 +268,12 @@ namespace Microsoft.UI.Xaml.Controls
 			return Select(index, select, true /* raiseOnSelectionChanged */);
 		}
 
+#if false
 		private bool ToggleSelect(int index)
 		{
 			return Select(index, !IsSelected(index));
 		}
+#endif
 
 		internal void SelectAll()
 		{

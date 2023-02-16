@@ -29,6 +29,8 @@ using System.Reflection;
 using Windows.UI.Core;
 using Uno.Helpers;
 
+#pragma warning disable CS0649 // TODO: Fix.
+
 namespace Uno.UI.Controls
 {
 	[Windows.UI.Xaml.Data.Bindable]
@@ -81,8 +83,8 @@ namespace Uno.UI.Controls
 		private int _previousMeasuredHeight, _previousMeasuredWidth;
 		private float _saveScale = 1f;
 
-		private ScaleGestureDetector _scaleDetector;
-		private GestureDetector _doubleTapDetector;
+		//private ScaleGestureDetector _scaleDetector;
+		//private GestureDetector _doubleTapDetector;
 
 		private static int DeltaClick = 3;
 		private Bitmap _currentBitmap;
@@ -463,24 +465,6 @@ namespace Uno.UI.Controls
 
 		#region Interaction methods
 
-		private void BuildImageInteractivity(Android.Content.Context context)
-		{
-			MinZoom = 1f;
-			MaxZoom = 3f;
-
-			_saveScale = 1f;
-
-			_scaleDetector = new ScaleGestureDetector(context, new ScaleListener(this));
-			_doubleTapDetector = new GestureDetector(context, new DoubleTapListener(this));
-
-			_matrix = new Matrix();
-			_m = new float[9];
-			ImageMatrix = _matrix;
-			SetScaleType(ImageView.ScaleType.Matrix);
-
-			SetOnTouchListener(this);
-		}
-
 		private void OnDrawableChanged()
 		{
 			if (_matrix != null && _saveScale == 1 && Width != 0 && Height != 0)
@@ -525,8 +509,8 @@ namespace Uno.UI.Controls
 		{
 			this.Parent.RequestDisallowInterceptTouchEvent(_saveScale != 1);
 
-			_scaleDetector.OnTouchEvent(e);
-			_doubleTapDetector.OnTouchEvent(e);
+			//_scaleDetector.OnTouchEvent(e);
+			//_doubleTapDetector.OnTouchEvent(e);
 
 			var currentPoint = new System.Drawing.PointF(e.GetX(), e.GetY());
 

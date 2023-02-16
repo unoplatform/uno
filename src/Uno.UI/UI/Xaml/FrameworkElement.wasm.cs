@@ -127,8 +127,6 @@ namespace Windows.UI.Xaml
 		internal void SetActualSize(Size size)
 			=> AssignedActualSize = size;
 
-		partial void OnGenericPropertyUpdatedPartial(DependencyPropertyChangedEventArgs args);
-
 		private event TypedEventHandler<FrameworkElement, object> _loading;
 		public event TypedEventHandler<FrameworkElement, object> Loading
 		{
@@ -394,6 +392,7 @@ namespace Windows.UI.Xaml
 		}
 		#endregion
 
+#if DEBUG
 		private void OnGenericPropertyUpdated(DependencyPropertyChangedEventArgs args)
 		{
 			if (FeatureConfiguration.UIElement.AssignDOMXamlProperties)
@@ -401,6 +400,7 @@ namespace Windows.UI.Xaml
 				UpdateDOMProperties();
 			}
 		}
+#endif
 
 		/// <summary>
 		/// If corresponding feature flag is enabled, set layout properties as DOM attributes to aid in debugging.

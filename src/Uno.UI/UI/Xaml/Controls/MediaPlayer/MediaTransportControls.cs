@@ -326,6 +326,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+#if !NET461
 		private static void OnIsCompactChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
 			VisualStateManager.GoToState((MediaTransportControls)dependencyObject, (bool)args.NewValue ? "CompactMode" : "NormalMode", false);
@@ -352,6 +353,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			VisualStateManager.GoToState(((MediaTransportControls)dependencyObject)._progressSlider, (bool)args.NewValue ? "Normal" : "Disabled", false);
 		}
+#endif
 	}
 }
 #endif

@@ -181,14 +181,4 @@ partial class SvgImageSource
 		return Task.FromResult(ImageData.Empty);
 #endif
 	}
-
-	private static string GetApplicationPath(string rawPath)
-	{
-		var originalLocalPath =
-			global::System.IO.Path.Combine(Windows.Application­Model.Package.Current.Installed­Location.Path,
-				 rawPath.TrimStart('/').Replace('/', global::System.IO.Path.DirectorySeparatorChar)
-			);
-
-		return originalLocalPath;
-	}
 }

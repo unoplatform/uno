@@ -120,6 +120,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 			}
 		}
 
+#if false
 		void
 			RealizeImpl()
 		{
@@ -131,6 +132,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 				spParent.RealizeItemAtIndex(_itemIndex);
 			}
 		}
+#endif
 
 		#region Method forwarders
 

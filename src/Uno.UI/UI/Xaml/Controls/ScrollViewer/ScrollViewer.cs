@@ -908,6 +908,7 @@ namespace Windows.UI.Xaml.Controls
 				&& visibility != ScrollBarVisibility.Disabled
 				&& mode != ScrollMode.Disabled;
 
+#if !UNO_HAS_MANAGED_SCROLL_PRESENTER
 		private ScrollBarVisibility ComputeNativeScrollBarVisibility(double scrollable, ScrollBarVisibility visibility, ScrollMode mode, ScrollBar? managedScrollbar)
 			=> (scrollable, visibility, mode, managedScrollbar) switch
 			{
@@ -917,6 +918,7 @@ namespace Windows.UI.Xaml.Controls
 				(_, ScrollBarVisibility.Disabled, _, _) => ScrollBarVisibility.Disabled,
 				_ => ScrollBarVisibility.Hidden // If a managed scroll bar was set in the template, native scroll bar has to stay Hidden
 			};
+#endif
 
 		/// <summary>
 		/// Sets the content of the ScrollViewer

@@ -18,7 +18,7 @@ namespace Windows.UI.Xaml.Media
 {
 	public partial class ImageSource
 	{
-		private const string DrawableUriPrefix = "drawable://";
+		//private const string DrawableUriPrefix = "drawable://";
 
 		private const string ContactUriPrefix = "content://com.android.contacts/";
 

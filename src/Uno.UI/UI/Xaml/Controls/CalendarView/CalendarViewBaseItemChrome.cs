@@ -23,12 +23,12 @@ namespace Windows.UI.Xaml.Controls
 {
 	partial class CalendarViewBaseItem
 	{
-		private const float InScopeDensityBarOpacity = 0.35f;
-		private const float OutOfScopeDensityBarOpacity = 0.10f;
-		private const float MaxDensityBarHeight = 5.0f;
+		//private const float InScopeDensityBarOpacity = 0.35f;
+		//private const float OutOfScopeDensityBarOpacity = 0.10f;
+		//private const float MaxDensityBarHeight = 5.0f;
 		private const float TodayBlackouTopacity = 0.40f;
-		private const float FocusBorderThickness = 2.0f;
-		private const float TodaySelectedInnerBorderThickness = 2.0f;
+		//private const float FocusBorderThickness = 2.0f;
+		//private const float TodaySelectedInnerBorderThickness = 2.0f;
 
 		private interface IContentRenderer
 		{
@@ -98,6 +98,7 @@ namespace Windows.UI.Xaml.Controls
 		//	return InsertChild(0, pUI);
 		//}
 
+#if false
 		private void RemoveTemplateChild()
 		{
 			UIElement pTemplateChild = GetFirstChildNoAddRef();
@@ -107,7 +108,7 @@ namespace Windows.UI.Xaml.Controls
 				RemoveChild(pTemplateChild);
 			}
 		}
-
+#endif
 
 		private UIElement GetFirstChildNoAddRef() => GetFirstChild();
 
@@ -200,6 +201,7 @@ namespace Windows.UI.Xaml.Controls
 		//	return;
 		//}
 
+#if false
 		private void GenerateContentBounds(
 			out Rect pBounds)
 		{
@@ -211,6 +213,7 @@ namespace Windows.UI.Xaml.Controls
 
 			return;
 		}
+#endif
 
 		protected override Size MeasureOverride(
 			Size availableSize)
@@ -370,6 +373,7 @@ namespace Windows.UI.Xaml.Controls
 			return pTextBlock == m_pLabelTextBlock;
 		}
 
+#if false
 		private void RenderChrome(
 			IContentRenderer pContentRenderer,
 			CalendarViewBaseItemChromeLayerPosition layer
@@ -443,6 +447,7 @@ namespace Windows.UI.Xaml.Controls
 
 			return;
 		}
+#endif
 
 		private bool ShouldUseLayoutRounding()
 		{
@@ -454,6 +459,7 @@ namespace Windows.UI.Xaml.Controls
 			return false;
 		}
 
+#if false
 		private uint GetIntValueOfColor(Color color)
 		{
 			return ((uint)color.A << 24) | ((uint)color.R << 16) | ((uint)color.G << 8) | (uint)color.B;
@@ -660,6 +666,7 @@ namespace Windows.UI.Xaml.Controls
 
 			return;
 		}
+#endif
 
 		private void SetOwner(CalendarView pOwner)
 		{
@@ -1111,6 +1118,7 @@ namespace Windows.UI.Xaml.Controls
 			return pBrush;
 		}
 
+#if false
 		// Focus Alternative border brush is same as the item background.
 		private Brush GetItemFocusAltBorderBrush()
 		{
@@ -1123,6 +1131,7 @@ namespace Windows.UI.Xaml.Controls
 
 			return pBrush;
 		}
+#endif
 
 		// for Selected+Today inner border.
 		private Brush GetItemInnerBorderBrush()
@@ -1220,6 +1229,7 @@ namespace Windows.UI.Xaml.Controls
 			return opacity;
 		}
 
+#if false
 		private void CustomizeFocusRectangle(FocusRectangleOptions options, out bool shouldDrawFocusRect)
 		{
 			bool shouldDrawDottedLines = false;
@@ -1264,6 +1274,7 @@ namespace Windows.UI.Xaml.Controls
 
 			return shouldDrawDottedLines;
 		}
+#endif
 
 		//month year item
 		private protected virtual bool GetTextBlockFontProperties(

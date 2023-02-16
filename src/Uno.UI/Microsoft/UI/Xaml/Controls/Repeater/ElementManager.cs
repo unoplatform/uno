@@ -159,7 +159,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			for (int i = 0; i < count; i++)
 			{
-				// Clear from the edges so that ItemsRepeater can optimize on maintaining 
+				// Clear from the edges so that ItemsRepeater can optimize on maintaining
 				// realized indices without walking through all the children every time.
 				int index = realizedIndex == 0 ? realizedIndex + i : (realizedIndex + count - 1) - i;
 				if (m_realizedElements.TryGetElementAt(index, out var elementRef))
@@ -368,6 +368,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
+#if false
 		int GetElementDataIndex(UIElement suggestedAnchor)
 		{
 			MUX_ASSERT(suggestedAnchor != null);
@@ -376,6 +377,7 @@ namespace Microsoft.UI.Xaml.Controls
 				? GetDataIndexFromRealizedRangeIndex(it)
 				: -1;
 		}
+#endif
 
 		public int GetDataIndexFromRealizedRangeIndex(int rangeIndex)
 		{
@@ -472,7 +474,7 @@ namespace Microsoft.UI.Xaml.Controls
 				int insertRangeStartIndex = newStartingIndex - m_firstRealizedDataIndex;
 				for (int i = 0; i < count; i++)
 				{
-					// Insert null (sentinel) here instead of an element, that way we dont 
+					// Insert null (sentinel) here instead of an element, that way we dont
 					// end up creating a lot of elements only to be thrown out in the next layout.
 					int insertRangeIndex = insertRangeStartIndex + i;
 					int dataIndex = newStartingIndex + i;

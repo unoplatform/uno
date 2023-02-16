@@ -22,26 +22,6 @@ namespace Windows.UI.Xaml
 {
 	partial class UIElement
 	{
-		private class TouchReRouter : Java.Lang.Object, View.IOnTouchListener
-		{
-			private readonly UIElement _target;
-
-			public TouchReRouter(IntPtr handle, JniHandleOwnership transfer)
-				: base(handle, transfer)
-			{
-			}
-
-			private TouchReRouter(UIElement target)
-				: base(IntPtr.Zero, JniHandleOwnership.DoNotRegister)
-			{
-				_target = target;
-			}
-
-			/// <inheritdoc />
-			public bool OnTouch(View view, MotionEvent nativeEvent)
-				=> _target.OnNativeMotionEvent(nativeEvent, view, true);
-		}
-
 		partial void InitializePointersPartial()
 		{
 			ArePointersEnabled = true;

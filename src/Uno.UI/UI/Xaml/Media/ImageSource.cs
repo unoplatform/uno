@@ -35,7 +35,6 @@ namespace Windows.UI.Xaml.Media
 		}
 
 		const string MsAppXScheme = "ms-appx";
-		const string MsAppDataScheme = "ms-appdata";
 
 		/// <summary>
 		/// The default downloader instance used by all the new instances of <see cref="ImageSource"/>.
@@ -47,6 +46,7 @@ namespace Windows.UI.Xaml.Media
 		/// </summary>
 		public IImageSourceDownloader Downloader;
 
+#if __ANDROID__ || __IOS__ || __MACOS__
 		/// <summary>
 		/// Initializes the Uno image downloader.
 		/// </summary>
@@ -54,6 +54,7 @@ namespace Windows.UI.Xaml.Media
 		{
 			Downloader = DefaultDownloader;
 		}
+#endif
 
 #if !(__NETSTD__)
 		internal Stream Stream { get; set; }

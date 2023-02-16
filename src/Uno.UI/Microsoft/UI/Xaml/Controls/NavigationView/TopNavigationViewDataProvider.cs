@@ -255,11 +255,13 @@ namespace Microsoft.UI.Xaml.Controls
 			set => m_overflowButtonCachedWidth = value;
 		}
 
+#if false
 		private bool IsItemSelectableInPrimaryList(object value)
 		{
 			int index = IndexOf(value);
 			return (index != -1);
 		}
+#endif
 
 		internal int IndexOf(object value, NavigationViewSplitVectorID vectorID)
 		{
@@ -362,6 +364,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return isContainerNavigationViewItem;
 		}
 
+#if false
 		private bool IsContainerNavigationViewHeader(int index)
 		{
 			bool isContainerNavigationViewHeader = false;
@@ -373,5 +376,6 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			return isContainerNavigationViewHeader;
 		}
+#endif
 	}
 }

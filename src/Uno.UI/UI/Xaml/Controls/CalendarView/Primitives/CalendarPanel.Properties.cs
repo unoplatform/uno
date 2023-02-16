@@ -113,6 +113,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			set { SetValue(RowsProperty, value); }
 		}
 
+#if false
 		private PanelScrollingDirection ScrollingDirection
 		{
 			get
@@ -122,6 +123,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				return ((CalendarPanel)(this)).ScrollingDirectionImpl;
 			}
 		}
+#endif
 
 		internal static readonly DependencyProperty StartIndexProperty = DependencyProperty.Register(
 			"StartIndex", typeof(int), typeof(CalendarPanel), new FrameworkPropertyMetadata(default(int)));

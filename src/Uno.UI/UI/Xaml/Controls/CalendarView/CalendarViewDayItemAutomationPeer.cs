@@ -73,6 +73,7 @@ namespace Windows.UI.Xaml.Controls
 				return pReturnValue;
 			}
 
+#if false
 			private void GetColumnHeaderItemsImpl(out uint pReturnValueCount, out IRawElementProviderSimple[] ppReturnValue)
 			{
 				pReturnValueCount = 0;
@@ -329,6 +330,7 @@ namespace Windows.UI.Xaml.Controls
 					return pValue;
 				}
 			}
+#endif
 		}
 	}
 }

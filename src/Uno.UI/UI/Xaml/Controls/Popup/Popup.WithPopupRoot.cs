@@ -31,7 +31,9 @@ public partial class Popup
 		PopupPanel = new PopupPanel(this);
 	}
 
+#if __ANDROID__
 	partial void InitializeNativePartial();
+#endif
 
 	partial void OnChildChangedPartialNative(UIElement oldChild, UIElement newChild)
 	{
@@ -60,7 +62,9 @@ public partial class Popup
 		}
 	}
 
+#if __ANDROID__
 	partial void OnIsLightDismissEnabledChangedNative(bool oldIsLightDismissEnabled, bool newIsLightDismissEnabled);
+#endif
 
 	partial void OnIsOpenChangedPartialNative(bool oldIsOpen, bool newIsOpen)
 	{
@@ -103,7 +107,9 @@ public partial class Popup
 		}
 	}
 
+#if __ANDROID__
 	partial void OnIsOpenChangedNative(bool oldIsOpen, bool newIsOpen);
+#endif
 
 	partial void OnPopupPanelChangedPartial(PopupPanel previousPanel, PopupPanel newPanel)
 	{
@@ -128,6 +134,8 @@ public partial class Popup
 		}
 	}
 
+#if __ANDROID__
 	partial void OnPopupPanelChangedPartialNative(PopupPanel previousPanel, PopupPanel newPanel);
+#endif
 }
 #endif

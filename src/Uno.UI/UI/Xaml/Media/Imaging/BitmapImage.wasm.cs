@@ -66,6 +66,14 @@ namespace Windows.UI.Xaml.Media.Imaging
 			return false;
 		}
 
+		private void RaiseDownloadProgress(int progress = 0)
+		{
+			if (DownloadProgress is { } evt)
+			{
+				evt?.Invoke(this, new DownloadProgressEventArgs { Progress = progress });
+			}
+		}
+
 		internal static class AssetResolver
 		{
 			private static readonly Lazy<Task<HashSet<string>>> _assets = new Lazy<Task<HashSet<string>>>(GetAssets);

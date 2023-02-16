@@ -53,11 +53,13 @@ namespace Windows.UI.Xaml.Controls
 				return returnValue;
 			}
 
+#if false
 			private int ColumnSpanImpl()
 			{
 				var pValue = 1;
 				return pValue;
 			}
+#endif
 
 			protected IRawElementProviderSimple ContainingGridImpl()
 			{
@@ -74,6 +76,7 @@ namespace Windows.UI.Xaml.Controls
 				return ppValue;
 			}
 
+#if false
 			private int RowSpanImpl()
 			{
 				var pValue = 1;
@@ -96,6 +99,7 @@ namespace Windows.UI.Xaml.Controls
 
 				return;
 			}
+#endif
 
 			private bool IsItemVisible()
 			{

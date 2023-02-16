@@ -135,6 +135,7 @@ public partial class SvgImageSource : ImageSource
 		Opened?.Invoke(this, new SvgImageSourceOpenedEventArgs());
 	}
 
+#if __ANDROID__ || __SKIA__
 	private async Task<ImageData> ReadFromStreamAsync(Stream stream, CancellationToken ct)
 	{
 		if (stream.CanSeek && stream.Position != 0)
@@ -147,6 +148,7 @@ public partial class SvgImageSource : ImageSource
 		var data = memoryStream.ToArray();
 		return ImageData.FromBytes(data);
 	}
+#endif
 
 	internal bool UseRasterized => !double.IsNaN(RasterizePixelWidth) && !double.IsNaN(RasterizePixelHeight);
 }

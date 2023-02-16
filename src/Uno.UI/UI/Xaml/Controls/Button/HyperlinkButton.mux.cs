@@ -15,7 +15,7 @@ namespace Windows.UI.Xaml.Controls
 	public partial class HyperlinkButton : ButtonBase
 	{
 		private const string ContentPresenterName = "ContentPresenter";
-		private const string ContentPresenterLegacyName = "Text";
+		//private const string ContentPresenterLegacyName = "Text";
 
 		private protected override void Initialize()
 		{

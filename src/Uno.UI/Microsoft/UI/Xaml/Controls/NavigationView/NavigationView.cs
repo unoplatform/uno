@@ -44,12 +44,12 @@ namespace Microsoft.UI.Xaml.Controls
 		private const string c_rootSplitViewName = "RootSplitView";
 		private const string c_menuItemsHost = "MenuItemsHost";
 		private const string c_footerMenuItemsHost = "FooterMenuItemsHost";
-		private const string c_selectionIndicatorName = "SelectionIndicator";
+		//private const string c_selectionIndicatorName = "SelectionIndicator";
 		private const string c_paneContentGridName = "PaneContentGrid";
 		private const string c_rootGridName = "RootGrid";
 		private const string c_contentGridName = "ContentGrid";
 		private const string c_searchButtonName = "PaneAutoSuggestButton";
-		private const string c_paneToggleButtonIconGridColumnName = "PaneToggleButtonIconWidthColumn";
+		//private const string c_paneToggleButtonIconGridColumnName = "PaneToggleButtonIconWidthColumn";
 		private const string c_togglePaneTopPadding = "TogglePaneTopPadding";
 		private const string c_contentPaneTopPadding = "ContentPaneTopPadding";
 		private const string c_contentLeftPadding = "ContentLeftPadding";
@@ -1450,7 +1450,7 @@ namespace Microsoft.UI.Xaml.Controls
 				if (nvib is NavigationViewItem nvi)
 				{
 					// Revoke all the events that we were listing to on the item
-					nvi.EventRevoker.Disposable = null;
+					ClearNavigationViewItemRevokers(nvi);
 				}
 			}
 		}
@@ -1876,7 +1876,7 @@ namespace Microsoft.UI.Xaml.Controls
 			try
 			{
 				m_isOpenPaneForInteraction = true;
-				IsPaneOpen = false; // the SplitView is two-way bound to this value 
+				IsPaneOpen = false; // the SplitView is two-way bound to this value
 			}
 			finally
 			{
@@ -2364,6 +2364,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
+#if !IS_UNO
 		private void PlayIndicatorNonSameLevelAnimations(UIElement indicator, bool isOutgoing, bool fromTop)
 		{
 			Visual visual = ElementCompositionPreview.GetElementVisual(indicator);
@@ -2388,7 +2389,6 @@ namespace Microsoft.UI.Xaml.Controls
 			visual.StartAnimation("Scale.Y", scaleAnim);
 		}
 
-
 		private void PlayIndicatorNonSameLevelTopPrimaryAnimation(UIElement indicator, bool isOutgoing)
 		{
 			Visual visual = ElementCompositionPreview.GetElementVisual(indicator);
@@ -2411,7 +2411,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 			visual.StartAnimation("Scale.X", scaleAnim);
 		}
-
 		private void PlayIndicatorAnimations(UIElement indicator, float from, float to, Size beginSize, Size endSize, bool isOutgoing)
 		{
 			Visual visual = ElementCompositionPreview.GetElementVisual(indicator);
@@ -2472,7 +2471,7 @@ namespace Microsoft.UI.Xaml.Controls
 				visual.StartAnimation("CenterPoint.Y", centerAnim);
 			}
 		}
-
+#endif
 		private void OnAnimationComplete(object sender, CompositionBatchCompletedEventArgs args)
 		{
 			var indicator = m_prevIndicator;
@@ -2693,7 +2692,7 @@ namespace Microsoft.UI.Xaml.Controls
 			var container = GetContainerForIndex(ip.GetAt(1), ip.GetAt(0) == c_footerMenuBlockIndex /*inFooter*/);
 			// first index is fo mainmenu or footer
 			// second is index of item in mainmenu or footer
-			// next in menuitem children 
+			// next in menuitem children
 			var index = 2;
 			while (container != null)
 			{
@@ -2783,7 +2782,7 @@ namespace Microsoft.UI.Xaml.Controls
 		//    TopNav . Minimal
 		//    PaneDisplayMode.Left || (PaneDisplayMode.Auto && DisplayMode.Expanded) . Expanded
 		//    PaneDisplayMode.LeftCompact || (PaneDisplayMode.Auto && DisplayMode.Compact) . Compact
-		//    Map others to Minimal or MinimalWithBackButton 
+		//    Map others to Minimal or MinimalWithBackButton
 		NavigationViewVisualStateDisplayMode GetVisualStateDisplayMode(NavigationViewDisplayMode displayMode)
 		{
 			var paneDisplayMode = PaneDisplayMode;
@@ -2806,7 +2805,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			// In minimal mode, when the NavView is closed, the HeaderContent doesn't have
-			// its own dedicated space, and must 'share' the top of the NavView with the 
+			// its own dedicated space, and must 'share' the top of the NavView with the
 			// pane toggle button ('hamburger' button) and the back button.
 			// When the NavView is open, the close button is taking space instead of the back button.
 			if (ShouldShowBackButton() || ShouldShowCloseButton())
@@ -3544,7 +3543,7 @@ namespace Microsoft.UI.Xaml.Controls
 			var container = NavigationViewItemOrSettingsContentFromData(item);
 			if (container != null)
 			{
-				// If we unselect an item, ListView doesn't tolerate setting the SelectedItem to null. 
+				// If we unselect an item, ListView doesn't tolerate setting the SelectedItem to null.
 				// Instead we remove IsSelected from the item itself, and it make ListView to unselect it.
 				// If we select an item, we follow the unselect to simplify the code.
 				container.IsSelected = selected;
@@ -3868,7 +3867,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 				var widthAtLeastToBeRemoved = desiredWidth + selectedOverflowItemWidth - actualWidth;
 
-				// calculate items to be removed from primary because a overflow item is selected. 
+				// calculate items to be removed from primary because a overflow item is selected.
 				// SelectedItem is assumed to be removed from primary first, then added it back if it should not be removed
 				var itemsToBeRemoved = FindMovableItemsToBeRemovedFromPrimaryList(widthAtLeastToBeRemoved, Array.Empty<int>() /*excludeItems*/);
 
@@ -4052,7 +4051,7 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 				i++;
 			}
-			// Keep at one item is not in primary list. Two possible reason: 
+			// Keep at one item is not in primary list. Two possible reason:
 			//  1, Most likely it's caused by m_topNavigationRecoveryGracePeriod
 			//  2, virtualization and it doesn't have cached width
 			if (i == size && toBeMoved.Count > 0)
@@ -4114,7 +4113,7 @@ namespace Microsoft.UI.Xaml.Controls
 							}
 							else
 							{
-								// item is virtualized but not realized.                    
+								// item is virtualized but not realized.
 							}
 						}
 
@@ -4676,8 +4675,8 @@ namespace Microsoft.UI.Xaml.Controls
 			// Ignore AlwaysShowHeader property in case DisplayMode is Minimal and it's not Top NavigationView
 			bool showHeader = AlwaysShowHeader || (!IsTopNavigationView() && displayMode == NavigationViewDisplayMode.Minimal);
 
-			// Like bug 17517627, Customer like WallPaper Studio 10 expects a HeaderContent visual even if Header() is null. 
-			// App crashes when they have dependency on that visual, but the crash is not directly state that it's a header problem.   
+			// Like bug 17517627, Customer like WallPaper Studio 10 expects a HeaderContent visual even if Header() is null.
+			// App crashes when they have dependency on that visual, but the crash is not directly state that it's a header problem.
 			// NavigationView doesn't use quirk, but we determine the version by themeresource.
 			// As a workaround, we 'quirk' it for RS4 or before release. if it's RS4 or before, HeaderVisible is not related to Header().
 			// If theme resource is RS5 or later, we will not show header if header is null.
@@ -5125,7 +5124,7 @@ namespace Microsoft.UI.Xaml.Controls
 			DisplayModeChanged?.Invoke(this, eventArgs);
 		}
 
-		// This method attaches the series of animations which are fired off dependent upon the amount 
+		// This method attaches the series of animations which are fired off dependent upon the amount
 		// of space give and the length of the strings involved. It occurs upon re-rendering.
 		internal static void CreateAndAttachHeaderAnimation(Visual visual)
 		{
@@ -5248,7 +5247,7 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 
 				// Shadow will get clipped if casting on the splitView.Content directly
-				// Creating a canvas with negative margins as receiver to allow shadow to be drawn outside the content grid 
+				// Creating a canvas with negative margins as receiver to allow shadow to be drawn outside the content grid
 				Thickness shadowReceiverMargin = new Thickness(0, -c_paneElevationTranslationZ, -c_paneElevationTranslationZ, -c_paneElevationTranslationZ);
 
 				// Ensuring shadow is aligned to the left
@@ -5462,7 +5461,7 @@ namespace Microsoft.UI.Xaml.Controls
 									var extension = CachedVisualTreeHelpers.GetDataTemplateComponent(nvi);
 									if (extension != null)
 									{
-										// Clear out old data. 
+										// Clear out old data.
 										extension.Recycle();
 										int nextPhase = VirtualizationInfo.PhaseReachedEnd;
 										// Run Phase 0
@@ -5727,7 +5726,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return false;
 		}
 
-		private ItemsRepeater LeftNavRepeater => m_leftNavRepeater;
+		//private ItemsRepeater LeftNavRepeater => m_leftNavRepeater;
 
 		internal NavigationViewItem GetSelectedContainer()
 		{
@@ -5859,6 +5858,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return nvi.MenuItemsSource;
 		}
 
+#if false
 		private ItemsRepeater GetChildRepeaterForIndexPath(IndexPath ip)
 		{
 			var container = GetContainerForIndexPath(ip) as NavigationViewItem;
@@ -5868,7 +5868,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			return null;
 		}
-
+#endif
 
 		private object GetChildrenForItemInIndexPath(IndexPath ip, bool forceRealize)
 		{
@@ -5937,7 +5937,7 @@ namespace Microsoft.UI.Xaml.Controls
 											var extension = CachedVisualTreeHelpers.GetDataTemplateComponent(nextContainer);
 											if (extension != null)
 											{
-												// Clear out old data. 
+												// Clear out old data.
 												extension.Recycle();
 												int nextPhase = VirtualizationInfo.PhaseReachedEnd;
 												// Run Phase 0

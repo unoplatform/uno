@@ -40,14 +40,6 @@ namespace Windows.UI.Xaml.Media.Animation
 		}
 
 		/// <summary>
-		/// Stop this instance.
-		/// </summary>
-		private void Stop()
-		{
-			this.Log().Error("NotSupportedAnimator.Stop");
-		}
-
-		/// <summary>
 		/// Sets the duration.
 		/// </summary>
 		/// <param name="duration">Duration.</param>

@@ -34,8 +34,10 @@ namespace Microsoft.UI.Xaml.Controls
 		FlowLayoutAlgorithm GetFlowAlgorithm(VirtualizingLayoutContext context)
 			=> GetAsStackState(context.LayoutState).FlowAlgorithm;
 
+#if false
 		private bool DoesRealizationWindowOverlapExtent(Rect realizationWindow, Rect extent)
 			=> MajorEnd(realizationWindow) >= MajorStart(extent) && MajorStart(realizationWindow) <= MajorEnd(extent);
+#endif
 
 		#region IVirtualizingLayoutOverrides
 		protected internal override void InitializeForContextCore(VirtualizingLayoutContext context)

@@ -91,6 +91,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 			}
 		}
 
+#if false
 		#region IItemsContainerProvider
 
 		void
@@ -212,6 +213,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 		}
 
 		#endregion
+#endif
 
 		~LoopingSelectorAutomationPeer()
 		{
@@ -298,12 +300,14 @@ namespace Windows.UI.Xaml.Automation.Peers
 			return spReturnValue;
 		}
 
+#if false
 		void GetClassNameCoreImpl(out string returnValue)
 		{
 			//if (returnValue == null) throw new ArgumentNullException();
 			//wrl_wrappers.Hstring("LoopingSelector").CopyTo(returnValue);
 			returnValue = "LoopingSelector";
 		}
+#endif
 
 		#endregion
 
@@ -490,6 +494,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 			}
 		}
 
+#if false
 		void FindStartIndex(
 			IRawElementProviderSimple pStartAfter,
 			IList<object> pItems,
@@ -542,7 +547,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 				pOwnerNoRef.AutomationTryScrollItemIntoView(pItem);
 			}
 		}
-
+#endif
 		#endregion
 	}
 }

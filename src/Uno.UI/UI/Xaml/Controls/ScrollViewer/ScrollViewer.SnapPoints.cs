@@ -7,7 +7,7 @@ namespace Windows.UI.Xaml.Controls
 {
 	partial class ScrollViewer
 	{
-		private const float ScrollViewerSnapPointLocationTolerance = 0.0001f;
+		//private const float ScrollViewerSnapPointLocationTolerance = 0.0001f;
 
 		private IScrollSnapPointsInfo _snapPointsInfo;
 

@@ -45,10 +45,12 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+#if false
 		private void SetDensityColorsImpl(IIterable<Color> pColors)
 		{
 			((CCalendarViewBaseItemChrome)(GetHandle())).SetDensityColors(pColors);
 		}
+#endif
 
 		internal CalendarViewDayItemChangingEventArgs GetBuildTreeArgs()
 		{

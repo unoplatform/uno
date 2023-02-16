@@ -39,9 +39,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		private bool _disableRaiseSelectionChanged;
 		//private int m_lastFocusedIndex;
 
-#pragma warning disable CS0649 // Field is never assigned to, and will always have its default value
-		private bool m_inCollectionChange;
-#pragma warning restore CS0649 // Field is never assigned to, and will always have its default value
+		//private bool m_inCollectionChange;
 
 		/// <summary>
 		/// This is always true for <see cref="FlipView"/> and <see cref="ComboBox"/>, and depends on the value of <see cref="ListViewBase.SelectionMode"/> for <see cref="ListViewBase"/>.
@@ -146,8 +144,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				}
 			}
 
-			// If SelectedIndex is -1 and SelectedItem is being changed from non-null to null, this indicates that we're desetting 
-			// SelectedItem, not setting a null inside the collection as selected. Little edge case there. (Note that this relies 
+			// If SelectedIndex is -1 and SelectedItem is being changed from non-null to null, this indicates that we're desetting
+			// SelectedItem, not setting a null inside the collection as selected. Little edge case there. (Note that this relies
 			// on user interactions setting SelectedIndex which then sets SelectedItem.)
 			if (SelectedIndex == -1 && selectedItem == null)
 			{
@@ -390,7 +388,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 			if (ItemsSource is ICollectionView collectionView && trackCurrentItem)
 			{
-				// This is a workaround to support the use of EventRegistrationTokenTable in consumer code. EventRegistrationTokenTable 
+				// This is a workaround to support the use of EventRegistrationTokenTable in consumer code. EventRegistrationTokenTable
 				// currently has a bug on Xamarin that prevents instance methods subscribed directly from ever being unsubscribed.
 				EventHandler<object> currentChangedHandler = OnCollectionViewCurrentChanged;
 				_collectionViewSubscription.Disposable = Disposable.Create(() => collectionView.CurrentChanged -= currentChangedHandler);
@@ -793,10 +791,12 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			//}
 		}
 
+#if false
 		private void ScrollIntoView(int index, bool isGroupItemIndex, bool isHeader, bool isFooter, bool isFromPublicAPI, bool ensureContainerRealized, bool animateIfBringIntoView, ScrollIntoViewAlignment @default)
 		{
 
 		}
+#endif
 
 		protected void SetFocusedItem(int index,
 									  bool shouldScrollIntoView,
@@ -835,6 +835,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		}
 
+#if false
 		bool CanScrollIntoView()
 		{
 			Panel spPanel;
@@ -856,6 +857,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 			return !isItemsHostInvalid && isInLiveTree && !m_skipScrollIntoView && !m_inCollectionChange;
 		}
+#endif
 
 		partial void RefreshPartial();
 

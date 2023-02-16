@@ -94,7 +94,7 @@ namespace Windows.UI.Xaml.Controls
 			base.OnApplyTemplate();
 
 			// Find selection indicator
-			// Retrieve pointers to stable controls 
+			// Retrieve pointers to stable controls
 			m_helper.Init(this);
 			m_navigationViewItemPresenter = GetTemplateChild(c_navigationViewItemPresenterName) as NavigationViewItemPresenter;
 
@@ -151,6 +151,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+#if false
 		void UpdateNavigationViewItemToolTip()
 		{
 			var toolTipContent = ToolTipService.GetToolTip(this);
@@ -168,6 +169,7 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 		}
+#endif
 
 		void SuggestedToolTipChanged(object newContent)
 		{
@@ -196,6 +198,7 @@ namespace Windows.UI.Xaml.Controls
 			m_suggestedToolTipContent = newToolTipContent;
 		}
 
+#if false
 		void OnPropertyChanged(DependencyPropertyChangedEventArgs args)
 		{
 			var property = args.Property;
@@ -204,6 +207,7 @@ namespace Windows.UI.Xaml.Controls
 				UpdateVisualStateNoTransition();
 			}
 		}
+#endif
 
 		void UpdateVisualStateForIconAndContent(bool showIcon, bool showContent)
 		{
@@ -222,7 +226,7 @@ namespace Windows.UI.Xaml.Controls
 #if !IS_UNO
 				if (SharedHelpers.IsRS4OrHigher() && Application.Current.FocusVisualKind == FocusVisualKind.Reveal)
 				{
-					// OnLeftNavigationReveal is introduced in RS6. 
+					// OnLeftNavigationReveal is introduced in RS6.
 					// Will fallback to stateName for the customer who re-template rs5 NavigationViewItem
 					if (VisualStateManager.GoToState(this, NavigationViewItemHelper.c_OnLeftNavigationReveal, false /*useTransitions*/))
 					{
@@ -325,11 +329,13 @@ namespace Windows.UI.Xaml.Controls
 			return Icon != null;
 		}
 
+#if !IS_UNO
 		bool ShouldEnableToolTip()
 		{
 			// We may enable Tooltip for IconOnly in the future, but not now
 			return IsOnLeftNav() && m_isClosedCompact;
 		}
+#endif
 
 		bool ShouldShowContent()
 		{
@@ -341,10 +347,12 @@ namespace Windows.UI.Xaml.Controls
 			return Position() == NavigationViewListPosition.LeftNav;
 		}
 
+#if false
 		bool IsOnTopPrimary()
 		{
 			return Position() == NavigationViewListPosition.TopPrimary;
 		}
+#endif
 
 		NavigationViewItemPresenter GetPresenter()
 		{
@@ -392,8 +400,8 @@ namespace Windows.UI.Xaml.Controls
 			var originalSource = e.OriginalSource as Control;
 			if (originalSource != null)
 			{
-				// It's used to support bluebar have difference appearance between focused and focused+selection. 
-				// For example, we can move the SelectionIndicator 3px up when focused and selected to make sure focus rectangle doesn't override SelectionIndicator. 
+				// It's used to support bluebar have difference appearance between focused and focused+selection.
+				// For example, we can move the SelectionIndicator 3px up when focused and selected to make sure focus rectangle doesn't override SelectionIndicator.
 				// If it's a pointer or programmatic, no focus rectangle, so no action
 				var focusState = originalSource.FocusState;
 				if (focusState == FocusState.Keyboard)

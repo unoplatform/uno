@@ -1050,6 +1050,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+#if !IS_UNO
 		void PlayIndicatorAnimations(UIElement indicator, float from, float to, bool isOutgoing)
 		{
 			Visual visual = ElementCompositionPreview.GetElementVisual(indicator);
@@ -1102,6 +1103,7 @@ namespace Windows.UI.Xaml.Controls
 				visual.StartAnimation("CenterPoint.Y", centerAnim);
 			}
 		}
+#endif
 
 		void OnAnimationComplete(object sender, CompositionBatchCompletedEventArgs args)
 		{
@@ -1650,6 +1652,7 @@ namespace Windows.UI.Xaml.Controls
 			return false;
 		}
 
+#if false
 		object MenuItemFromContainer(DependencyObject container)
 		{
 			var nvi = container;
@@ -1700,6 +1703,7 @@ namespace Windows.UI.Xaml.Controls
 
 			return null;
 		}
+#endif
 
 		void OnTopNavDataSourceChanged(NotifyCollectionChangedEventArgs args)
 		{
@@ -1732,6 +1736,7 @@ namespace Windows.UI.Xaml.Controls
 			m_itemsRemovedFromMenuFlyout.Clear();
 		}
 
+#if false
 		int GetNavigationViewItemCountInPrimaryList()
 		{
 			return m_topDataProvider.GetNavigationViewItemCountInPrimaryList();
@@ -1741,6 +1746,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			return m_topDataProvider.GetNavigationViewItemCountInTopNav();
 		}
+#endif
 
 		internal SplitView GetSplitView()
 		{
