@@ -334,7 +334,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			throw new global::System.NotImplementedException("The member Uri WebView.BuildLocalStreamUri(string contentIdentifier, string relativePath) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Uri%20WebView.BuildLocalStreamUri%28string%20contentIdentifier%2C%20string%20relativePath%29");
 		}
-		#endif
+#endif
 		// Forced skipping of method Windows.UI.Xaml.Controls.WebView.DefaultBackgroundColor.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.WebView.DefaultBackgroundColor.set
 		// Forced skipping of method Windows.UI.Xaml.Controls.WebView.NavigationCompleted.add
@@ -353,13 +353,7 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.WebView.UnsafeContentWarningDisplaying.remove
 		// Forced skipping of method Windows.UI.Xaml.Controls.WebView.UnviewableContentIdentified.add
 		// Forced skipping of method Windows.UI.Xaml.Controls.WebView.UnviewableContentIdentified.remove
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void NavigateWithHttpRequestMessage( global::Windows.Web.Http.HttpRequestMessage requestMessage)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.WebView", "void WebView.NavigateWithHttpRequestMessage(HttpRequestMessage requestMessage)");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.Controls.WebView.NavigateWithHttpRequestMessage(Windows.Web.Http.HttpRequestMessage)
 		// Skipping already declared method Windows.UI.Xaml.Controls.WebView.Focus(Windows.UI.Xaml.FocusState)
 		// Forced skipping of method Windows.UI.Xaml.Controls.WebView.ContainsFullScreenElement.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.WebView.ContainsFullScreenElementChanged.add
