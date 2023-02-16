@@ -24,7 +24,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			var webView = new WebView();
 			var uri = new Uri("https://bing.com");
-			webView.NavigateWithHttpRequestMessage(new System.Net.Http.HttpRequestMessage(System.Net.Http.HttpMethod.Get, uri));
+			webView.NavigateWithHttpRequestMessage(new Windows.Web.Http.HttpRequestMessage(Windows.Web.Http.HttpMethod.Get, uri));
 			Assert.IsNotNull(webView.Source);
 			Assert.AreEqual("https://bing.com/", webView.Source.OriginalString);
 			Assert.AreEqual("https://bing.com", uri.OriginalString);
