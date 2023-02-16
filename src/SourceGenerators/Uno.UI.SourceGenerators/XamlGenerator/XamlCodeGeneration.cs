@@ -973,10 +973,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						writer.AppendLineIndented($"static partial void RegisterDefaultStyles_{file}();");
 					}
 
-					writer.AppendLineIndented("[global::System.Obsolete(\"This method is provided for binary backward compatibility. It will always return null.\")]");
-					writer.AppendLineIndented("[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]");
-					writer.AppendLineIndented("public static object FindResource(string name) => null;");
-
 					writer.AppendLineIndented("");
 				}
 			}
