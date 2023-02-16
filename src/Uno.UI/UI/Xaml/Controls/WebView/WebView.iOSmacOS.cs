@@ -8,12 +8,12 @@ using Uno.UI.Extensions;
 using Windows.UI.Xaml;
 using Uno.UI.Web;
 using System.Globalization;
-using System.Net.Http;
 using System.Threading.Tasks;
 using System.Threading;
 using Windows.UI.Core;
 using Uno.Foundation.Logging;
 using Windows.Foundation;
+using Windows.Web.Http;
 
 #if XAMARIN_IOS_UNIFIED
 
@@ -93,7 +93,7 @@ namespace Windows.UI.Xaml.Controls
 
 			foreach (var header in requestMessage.Headers)
 			{
-				headerDictionnary.AddDistinct(new KeyValuePair<NSObject, NSObject>(NSObject.FromObject(header.Key), NSObject.FromObject(header.Value.JoinBy(", "))));
+				headerDictionnary.AddDistinct(new KeyValuePair<NSObject, NSObject>(NSObject.FromObject(header.Key), NSObject.FromObject(header.Value)));
 			}
 
 			urlRequest.Headers = headerDictionnary;

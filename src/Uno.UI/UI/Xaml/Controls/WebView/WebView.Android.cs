@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
 using Uno.Extensions;
 using System.Text;
 using Uno.UI.Extensions;
@@ -20,6 +19,7 @@ using Uno.UI;
 using Uno.Foundation.Logging;
 using Uno.Disposables;
 using Windows.Foundation;
+using Windows.Web.Http;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -115,12 +115,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			var uri = requestMessage.RequestUri;
-			var headers = requestMessage.Headers
-				.Safe()
-				.ToDictionary(
-					header => header.Key,
-					element => element.Value.JoinBy(", ")
-				);
+			var headers = requestMessage.Headers;
 
 			_wasLoadedFromString = false;
 			_webView.LoadUrl(uri.AbsoluteUri, headers);
