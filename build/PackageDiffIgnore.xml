@@ -9227,6 +9227,23 @@
 			<Member fullName="System.String Windows.UI.Xaml.Markup.ContentPropertyAttribute::Name()" reason="Property changed to field to match Windows" />
 			<Member fullName="Windows.UI.Xaml.DependencyProperty Uno.UI.Toolkit.ElevatedView::CornerRadiusProperty()" reason="Already exists in Control and ElevatedView should not shadow it" />
 			<Member fullName="Windows.UI.Xaml.CornerRadius Uno.UI.Toolkit.ElevatedView::CornerRadius()" reason="Already exists in Control and ElevatedView should not shadow it" />
+			<Member fullName="Windows.ApplicationModel.Contacts.Contact Windows.UI.Xaml.Controls.PersonPicture::Contact()" reason="Moved to MUXC" />
+			<Member fullName="System.String Windows.UI.Xaml.Controls.PersonPicture::BadgeText()" reason="Moved to MUXC" />
+			<Member fullName="System.Int32 Windows.UI.Xaml.Controls.PersonPicture::BadgeNumber()" reason="Moved to MUXC" />
+			<Member fullName="Windows.UI.Xaml.Media.ImageSource Windows.UI.Xaml.Controls.PersonPicture::BadgeImageSource()" reason="Moved to MUXC" />
+			<Member fullName="System.String Windows.UI.Xaml.Controls.PersonPicture::BadgeGlyph()" reason="Moved to MUXC" />
+			<Member fullName="Windows.UI.Xaml.Controls.PersonPictureTemplateSettings Windows.UI.Xaml.Controls.PersonPicture::TemplateSettings()" reason="Moved to MUXC" />
+			<Member fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.PersonPicture::BadgeGlyphProperty()" reason="Moved to MUXC" />
+			<Member fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.PersonPicture::BadgeImageSourceProperty()" reason="Moved to MUXC" />
+			<Member fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.PersonPicture::BadgeNumberProperty()" reason="Moved to MUXC" />
+			<Member fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.PersonPicture::BadgeTextProperty()" reason="Moved to MUXC" />
+			<Member fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.PersonPicture::ContactProperty()" reason="Moved to MUXC" />
+			<Member fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.PersonPicture::DisplayNameProperty()" reason="Moved to MUXC" />
+			<Member fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.PersonPicture::InitialsProperty()" reason="Moved to MUXC" />
+			<Member fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.PersonPicture::IsGroupProperty()" reason="Moved to MUXC" />
+			<Member fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.PersonPicture::PreferSmallImageProperty()" reason="Moved to MUXC" />
+			<Member fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.PersonPicture::ProfilePictureProperty()" reason="Moved to MUXC" />
+
 		</Properties>
 		<Methods>
 			<Member fullName="Microsoft.UI.Windowing.AppWindowConfiguration Microsoft.UI.Windowing.AppWindow.get_Configuration()" reason="Not present in WinAppSDK 1.2" />

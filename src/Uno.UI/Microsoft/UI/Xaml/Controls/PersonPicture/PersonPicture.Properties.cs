@@ -3,17 +3,19 @@
 #pragma warning disable 108 // new keyword hiding
 #pragma warning disable 114 // new keyword hiding
 using Windows.System.UserProfile;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using Windows.ApplicationModel.Contacts;
 using System;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class PersonPicture : Control
 	{
 		public ImageSource ProfilePicture
 		{
-			get => (Media.ImageSource)GetValue(ProfilePictureProperty);
+			get => (ImageSource)GetValue(ProfilePictureProperty);
 			set => SetValue(ProfilePictureProperty, value);
 		}
 
