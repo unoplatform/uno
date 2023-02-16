@@ -20,6 +20,7 @@ jobs:
       artifactName: NugetPackages
 
   - template: templates/gitversion.yml
+  - template: templates/dotnet-install.yml
   - template: templates/jdk-setup.yml
 
   - template: templates/install-windows-sdk.yml
@@ -51,11 +52,7 @@ jobs:
 
   - template: templates/gitversion.yml
 
-  # required to get the WinAppSdk build running, as it depends on
-  # msbuild (and not `dotnet`), and VS 17.3 only supports building for .NET 6.
-  - template: templates/dotnet-install.yml
-
-  - template: templates/dotnet7-mobile-install-windows.yml
+  - template: templates/dotnet-mobile-install-windows.yml
 
   - template: templates/install-windows-sdk.yml
     parameters:
@@ -92,10 +89,7 @@ jobs:
   - script: cp $(System.ArtifactsDirectory)/NugetPackages/vslatest/*.nupkg $(Build.SourcesDirectory)/src/PackageCache
     displayName: Copy Artifacts to PackageCache
 
-  - task: UseDotNet@2
-    inputs:
-      packageType: sdk
-      version: 5.0.102
+  - template: templates/dotnet-install.yml
 
   - script: dotnet new -i $(System.ArtifactsDirectory)/NugetPackages/vslatest/Uno.ProjectTemplates.Dotnet*.nupkg
     displayName: Install Project Templates

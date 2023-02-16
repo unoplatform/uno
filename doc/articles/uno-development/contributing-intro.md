@@ -28,7 +28,7 @@ See [Uno's code conventions and common patterns here](../contributing/guidelines
 
 ## Implementing a new feature
 
-See how to implement a new [feature here](../contributing/guidelines/implementing-a-new winui-winrt-feature.md).
+See how to implement a new [feature here](../contributing/guidelines/implementing-a-new%20winui-winrt-feature.md).
 
 ## Experimenting with Samples App
 

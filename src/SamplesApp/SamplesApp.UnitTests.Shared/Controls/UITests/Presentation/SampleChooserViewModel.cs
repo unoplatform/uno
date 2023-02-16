@@ -70,7 +70,6 @@ namespace SampleControl.Presentation
 
 		private Section _lastSection = Section.Library;
 		private readonly Stack<Section> _previousSections = new Stack<Section>();
-		private bool _isRecordAllTests = false;
 		private static readonly Windows.UI.Xaml.Media.SolidColorBrush _screenshotBackground =
 	new Windows.UI.Xaml.Media.SolidColorBrush(Windows.UI.Colors.White);
 
@@ -282,7 +281,7 @@ namespace SampleControl.Presentation
 		{
 			try
 			{
-				_isRecordAllTests = true;
+				IsRecordAllTests = true;
 				IsSplitVisible = false;
 
 				var folderName = Path.Combine(screenShotPath, "UITests-" + DateTime.Now.ToString("yyyyMMdd-hhmmssfff", CultureInfo.InvariantCulture));
@@ -299,7 +298,7 @@ namespace SampleControl.Presentation
 						}
 						finally
 						{
-							_isRecordAllTests = false;
+							IsRecordAllTests = false;
 						}
 					});
 			}

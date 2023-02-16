@@ -1,4 +1,6 @@
-﻿using Microsoft.CodeAnalysis.Testing;
+﻿using System.Text;
+using Microsoft.CodeAnalysis.Testing;
+using Microsoft.CodeAnalysis.Text;
 using Uno.UI.SourceGenerators.Tests.Verifiers;
 
 namespace Uno.UI.SourceGenerators.Tests.Windows_UI_Xaml_Data.BindingTests;

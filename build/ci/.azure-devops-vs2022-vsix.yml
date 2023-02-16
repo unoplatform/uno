@@ -23,6 +23,8 @@ jobs:
 
   - template: templates/gitversion.yml
 
+  - template: templates/dotnet-install.yml
+
   - template: templates/nuget-cache.yml
     parameters:
       nugetPackages: $(NUGET_PACKAGES)

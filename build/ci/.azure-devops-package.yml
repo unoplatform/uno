@@ -68,6 +68,8 @@ jobs:
       cleanDestinationFolder: false
       overwriteExistingFiles: true
 
+  - template: templates/dotnet-install.yml
+
   - task: MSBuild@1
     inputs:
       solution: Build/Uno.UI.Build.csproj
