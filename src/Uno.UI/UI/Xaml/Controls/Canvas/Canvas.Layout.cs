@@ -45,19 +45,19 @@ namespace Windows.UI.Xaml.Controls
 			{
 				if (child is _View childView)
 				{
-					var childAsDO = child as DependencyObject;
+					var childAsUIElement = child as UIElement;
 					var desiredSize = GetElementDesiredSize(childView);
 
 					var childRect = new Rect
 					{
-						X = GetLeft(childAsDO),
-						Y = GetTop(childAsDO),
+						X = GetLeft(childAsUIElement),
+						Y = GetTop(childAsUIElement),
 						Width = desiredSize.Width,
 						Height = desiredSize.Height,
 					};
 
 #if __IOS__
-					child.Layer.ZPosition = (nfloat)GetZIndex(childAsDO);
+					child.Layer.ZPosition = (nfloat)GetZIndex(childAsUIElement);
 #endif
 
 					ArrangeElement(child, childRect);
