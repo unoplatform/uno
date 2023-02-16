@@ -120,16 +120,16 @@ public partial class RelativePanel
 	/// <summary>
 	/// Gets the value of the RelativePanel.AlignBottomWithPanel XAML attached property for the target element.
 	/// </summary>
-	/// <param name="view">Target element.</param>
+	/// <param name="element">Target element.</param>
 	/// <returns>Value.</returns>
-	public static bool GetAlignBottomWithPanel(UIElement view) => (bool)view.GetValue(AlignBottomWithPanelProperty);
+	public static bool GetAlignBottomWithPanel(UIElement element) => (bool)element.GetValue(AlignBottomWithPanelProperty);
 
 	/// <summary>
 	/// Sets the value of the RelativePanel.AlignBottomWithPanel XAML attached property for the target element.
 	/// </summary>
-	/// <param name="view">Target element.</param>
+	/// <param name="element">Target element.</param>
 	/// <param name="value">Value.</param>
-	public static void SetAlignBottomWithPanel(UIElement view, bool value) => view.SetValue(AlignBottomWithPanelProperty, value);
+	public static void SetAlignBottomWithPanel(UIElement element, bool value) => element.SetValue(AlignBottomWithPanelProperty, value);
 
 	/// <summary>
 	/// Identifies the RelativePanel.AlignBottomWithPanelProperty XAML attached property.
@@ -140,16 +140,16 @@ public partial class RelativePanel
 	/// <summary>
 	/// Gets the value of the RelativePanel.AlignLeftWithPanel XAML attached property for the target element.
 	/// </summary>
-	/// <param name="view">Target element.</param>
+	/// <param name="element">Target element.</param>
 	/// <returns>Value.</returns>
-	public static bool GetAlignLeftWithPanel(UIElement view) => (bool)view.GetValue(AlignLeftWithPanelProperty);
+	public static bool GetAlignLeftWithPanel(UIElement element) => (bool)element.GetValue(AlignLeftWithPanelProperty);
 
 	/// <summary>
 	/// Sets the value of the RelativePanel.AlignLeftWithPanel XAML attached property for the target element.
 	/// </summary>
-	/// <param name="view">Target element.</param>
+	/// <param name="element">Target element.</param>
 	/// <param name="value">Value.</param>
-	public static void SetAlignLeftWithPanel(UIElement view, bool value) => view.SetValue(AlignLeftWithPanelProperty, value);
+	public static void SetAlignLeftWithPanel(UIElement element, bool value) => element.SetValue(AlignLeftWithPanelProperty, value);
 
 	/// <summary>
 	/// Identifies the RelativePanel.AlignLeftWithPanelProperty XAML attached property.
@@ -160,16 +160,16 @@ public partial class RelativePanel
 	/// <summary>
 	/// Gets the value of the RelativePanel.AlignRightWithPanel XAML attached property for the target element.
 	/// </summary>
-	/// <param name="view">Target element.</param>
+	/// <param name="element">Target element.</param>
 	/// <returns>Value.</returns>
-	public static bool GetAlignRightWithPanel(UIElement view) => (bool)view.GetValue(AlignRightWithPanelProperty);
+	public static bool GetAlignRightWithPanel(UIElement element) => (bool)element.GetValue(AlignRightWithPanelProperty);
 
 	/// <summary>
 	/// Sets the value of the RelativePanel.AlignRightWithPanel XAML attached property for the target element.
 	/// </summary>
-	/// <param name="view">Target element.</param>
+	/// <param name="element">Target element.</param>
 	/// <param name="value">Value.</param>
-	public static void SetAlignRightWithPanel(UIElement view, bool value) => view.SetValue(AlignRightWithPanelProperty, value);
+	public static void SetAlignRightWithPanel(UIElement element, bool value) => element.SetValue(AlignRightWithPanelProperty, value);
 
 	/// <summary>
 	/// Identifies the RelativePanel.AlignRightWithPanelProperty XAML attached property.
@@ -180,16 +180,16 @@ public partial class RelativePanel
 	/// <summary>
 	/// Gets the value of the RelativePanel.AlignTopWithPanel XAML attached property for the target element.
 	/// </summary>
-	/// <param name="view">Target element.</param>
+	/// <param name="element">Target element.</param>
 	/// <returns>Value.</returns>
-	public static bool GetAlignTopWithPanel(UIElement view) => (bool)view.GetValue(AlignTopWithPanelProperty);
+	public static bool GetAlignTopWithPanel(UIElement element) => (bool)element.GetValue(AlignTopWithPanelProperty);
 
 	/// <summary>
 	/// Sets the value of the RelativePanel.AlignTopWithPanel XAML attached property for the target element.
 	/// </summary>
-	/// <param name="view">Target element.</param>
+	/// <param name="element">Target element.</param>
 	/// <param name="value">Value.</param>
-	public static void SetAlignTopWithPanel(UIElement view, bool value) => view.SetValue(AlignTopWithPanelProperty, value);
+	public static void SetAlignTopWithPanel(UIElement element, bool value) => element.SetValue(AlignTopWithPanelProperty, value);
 
 	/// <summary>
 	/// Identifies the RelativePanel.AlignTopWithPanelProperty XAML attached property.
@@ -200,16 +200,16 @@ public partial class RelativePanel
 	/// <summary>
 	/// Gets the value of the RelativePanel.AlignHorizontalCenterWithPanel XAML attached property for the target element.
 	/// </summary>
-	/// <param name="view">Target element.</param>
+	/// <param name="element">Target element.</param>
 	/// <returns>Value.</returns>
-	public static bool GetAlignHorizontalCenterWithPanel(UIElement view) => (bool)view.GetValue(AlignHorizontalCenterWithPanelProperty);
+	public static bool GetAlignHorizontalCenterWithPanel(UIElement element) => (bool)element.GetValue(AlignHorizontalCenterWithPanelProperty);
 
 	/// <summary>
 	/// Sets the value of the RelativePanel.AlignHorizontalCenterWithPanel XAML attached property for the target element.
 	/// </summary>
-	/// <param name="view">Target element.</param>
+	/// <param name="element">Target element.</param>
 	/// <param name="value">Value.</param>
-	public static void SetAlignHorizontalCenterWithPanel(UIElement view, bool value) => view.SetValue(AlignHorizontalCenterWithPanelProperty, value);
+	public static void SetAlignHorizontalCenterWithPanel(UIElement element, bool value) => element.SetValue(AlignHorizontalCenterWithPanelProperty, value);
 
 	/// <summary>
 	/// Identifies the RelativePanel.AlignHorizontalCenterWithPanel XAML attached property.
@@ -220,16 +220,16 @@ public partial class RelativePanel
 	/// <summary>
 	/// Gets the value of the RelativePanel.AlignVerticalCenterWithPanel XAML attached property for the target element.
 	/// </summary>
-	/// <param name="view">Target element.</param>
+	/// <param name="element">Target element.</param>
 	/// <returns>Value.</returns>
-	public static bool GetAlignVerticalCenterWithPanel(UIElement view) => (bool)view.GetValue(AlignVerticalCenterWithPanelProperty);
+	public static bool GetAlignVerticalCenterWithPanel(UIElement element) => (bool)element.GetValue(AlignVerticalCenterWithPanelProperty);
 
 	/// <summary>
 	/// Sets the value of the RelativePanel.AlignVerticalCenterWithPanel XAML attached property for the target element.
 	/// </summary>
-	/// <param name="view">Target element.</param>
+	/// <param name="element">Target element.</param>
 	/// <param name="value">Value.</param>
-	public static void SetAlignVerticalCenterWithPanel(UIElement view, bool value) => view.SetValue(AlignVerticalCenterWithPanelProperty, value);
+	public static void SetAlignVerticalCenterWithPanel(UIElement element, bool value) => element.SetValue(AlignVerticalCenterWithPanelProperty, value);
 
 	/// <summary>
 	/// Identifies the RelativePanel.AlignVerticalCenterWithPanel XAML attached property.
@@ -244,16 +244,16 @@ public partial class RelativePanel
 	/// <summary>
 	/// Gets the value of the RelativePanel.AlignBottomWith XAML attached property for the target element.
 	/// </summary>
-	/// <param name="view">Target element.</param>
+	/// <param name="element">Target element.</param>
 	/// <returns>Value.</returns>
-	public static object GetAlignBottomWith(UIElement view) => view.GetValue(AlignBottomWithProperty);
+	public static object GetAlignBottomWith(UIElement element) => element.GetValue(AlignBottomWithProperty);
 
 	/// <summary>
 	/// Sets the value of the RelativePanel.AlignBottomWith XAML attached property for the target element.
 	/// </summary>
-	/// <param name="view">Target element.</param>
+	/// <param name="element">Target element.</param>
 	/// <param name="value">Value.</param>
-	public static void SetAlignBottomWith(UIElement view, object value) => view.SetValue(AlignBottomWithProperty, value);
+	public static void SetAlignBottomWith(UIElement element, object value) => element.SetValue(AlignBottomWithProperty, value);
 
 	/// <summary>
 	/// Identifies the RelativePanel.AlignBottomWith XAML attached property.
@@ -264,16 +264,16 @@ public partial class RelativePanel
 	/// <summary>
 	/// Gets the value of the RelativePanel.AlignLeftWith XAML attached property for the target element.
 	/// </summary>
-	/// <param name="view">Target element.</param>
+	/// <param name="element">Target element.</param>
 	/// <returns>Value.</returns>
-	public static object GetAlignLeftWith(UIElement view) => (object)view.GetValue(AlignLeftWithProperty);
+	public static object GetAlignLeftWith(UIElement element) => (object)element.GetValue(AlignLeftWithProperty);
 
 	/// <summary>
 	/// Sets the value of the RelativePanel.AlignLeftWith XAML attached property for the target element.
 	/// </summary>
-	/// <param name="view">Target element.</param>
+	/// <param name="element">Target element.</param>
 	/// <param name="value">Value.</param>
-	public static void SetAlignLeftWith(UIElement view, object value) => view.SetValue(AlignLeftWithProperty, value);
+	public static void SetAlignLeftWith(UIElement element, object value) => element.SetValue(AlignLeftWithProperty, value);
 
 	/// <summary>
 	/// Identifies the RelativePanel.AlignLeftWith XAML attached property.
@@ -284,16 +284,16 @@ public partial class RelativePanel
 	/// <summary>
 	/// Gets the value of the RelativePanel.AlignRightWith XAML attached property for the target element.
 	/// </summary>
-	/// <param name="view">Target element.</param>
+	/// <param name="element">Target element.</param>
 	/// <returns>Value.</returns>
-	public static object GetAlignRightWith(UIElement view) => (object)view.GetValue(AlignRightWithProperty);
+	public static object GetAlignRightWith(UIElement element) => (object)element.GetValue(AlignRightWithProperty);
 
 	/// <summary>
 	/// Sets the value of the RelativePanel.AlignRightWith XAML attached property for the target element.
 	/// </summary>
-	/// <param name="view">Target element.</param>
+	/// <param name="element">Target element.</param>
 	/// <param name="value">Value.</param>
-	public static void SetAlignRightWith(UIElement view, object value) => view.SetValue(AlignRightWithProperty, value);
+	public static void SetAlignRightWith(UIElement element, object value) => element.SetValue(AlignRightWithProperty, value);
 
 	/// <summary>
 	/// Identifies the RelativePanel.AlignRightWith XAML attached property.
@@ -304,16 +304,16 @@ public partial class RelativePanel
 	/// <summary>
 	/// Gets the value of the RelativePanel.AlignTopWith XAML attached property for the target element.
 	/// </summary>
-	/// <param name="view">Target element.</param>
+	/// <param name="element">Target element.</param>
 	/// <returns>Value.</returns>
-	public static object GetAlignTopWith(UIElement view) => (object)view.GetValue(AlignTopWithProperty);
+	public static object GetAlignTopWith(UIElement element) => (object)element.GetValue(AlignTopWithProperty);
 
 	/// <summary>
 	/// Sets the value of the RelativePanel.AlignTopWith XAML attached property for the target element.
 	/// </summary>
-	/// <param name="view">Target element.</param>
+	/// <param name="element">Target element.</param>
 	/// <param name="value">Value.</param>
-	public static void SetAlignTopWith(UIElement view, object value) => view.SetValue(AlignTopWithProperty, value);
+	public static void SetAlignTopWith(UIElement element, object value) => element.SetValue(AlignTopWithProperty, value);
 
 	/// <summary>
 	/// Identifies the RelativePanel.AlignTopWith XAML attached property.
@@ -324,16 +324,16 @@ public partial class RelativePanel
 	/// <summary>
 	/// Gets the value of the RelativePanel.AlignHorizontalCenterWith XAML attached property for the target element.
 	/// </summary>
-	/// <param name="view">Target element.</param>
+	/// <param name="element">Target element.</param>
 	/// <returns>Value.</returns>
-	public static object GetAlignHorizontalCenterWith(UIElement view) => (object)view.GetValue(AlignHorizontalCenterWithProperty);
+	public static object GetAlignHorizontalCenterWith(UIElement element) => (object)element.GetValue(AlignHorizontalCenterWithProperty);
 
 	/// <summary>
 	/// Sets the value of the RelativePanel.AlignHorizontalCenterWith XAML attached property for the target element.
 	/// </summary>
-	/// <param name="view">Target element.</param>
+	/// <param name="element">Target element.</param>
 	/// <param name="value">Value.</param>
-	public static void SetAlignHorizontalCenterWith(UIElement view, object value) => view.SetValue(AlignHorizontalCenterWithProperty, value);
+	public static void SetAlignHorizontalCenterWith(UIElement element, object value) => element.SetValue(AlignHorizontalCenterWithProperty, value);
 
 	/// <summary>
 	/// Identifies the RelativePanel.AlignHorizontalCenterWith XAML attached property.
@@ -344,16 +344,16 @@ public partial class RelativePanel
 	/// <summary>
 	/// Gets the value of the RelativePanel.AlignVerticalCenterWith XAML attached property for the target element.
 	/// </summary>
-	/// <param name="view">Target element.</param>
+	/// <param name="element">Target element.</param>
 	/// <returns>Value.</returns>
-	public static object GetAlignVerticalCenterWith(UIElement view) => (object)view.GetValue(AlignVerticalCenterWithProperty);
+	public static object GetAlignVerticalCenterWith(UIElement element) => (object)element.GetValue(AlignVerticalCenterWithProperty);
 
 	/// <summary>
 	/// Sets the value of the RelativePanel.AlignVerticalCenterWith XAML attached property for the target element.
 	/// </summary>
-	/// <param name="view">Target element.</param>
+	/// <param name="element">Target element.</param>
 	/// <param name="value">Value.</param>
-	public static void SetAlignVerticalCenterWith(UIElement view, object value) => view.SetValue(AlignVerticalCenterWithProperty, value);
+	public static void SetAlignVerticalCenterWith(UIElement element, object value) => element.SetValue(AlignVerticalCenterWithProperty, value);
 
 	/// <summary>
 	/// Identifies the RelativePanel.AlignVerticalCenterWith XAML attached property.
@@ -368,16 +368,16 @@ public partial class RelativePanel
 	/// <summary>
 	/// Gets the value of the RelativePanel.Above XAML attached property for the target element.
 	/// </summary>
-	/// <param name="view">Target element.</param>
+	/// <param name="element">Target element.</param>
 	/// <returns>Value.</returns>
-	public static object GetAbove(UIElement view) => (object)view.GetValue(AboveProperty);
+	public static object GetAbove(UIElement element) => (object)element.GetValue(AboveProperty);
 
 	/// <summary>
 	/// Sets the value of the RelativePanel.Above XAML attached property for the target element.
 	/// </summary>
-	/// <param name="view">Target element.</param>
+	/// <param name="element">Target element.</param>
 	/// <param name="value">Value.</param>
-	public static void SetAbove(UIElement view, object value) => view.SetValue(AboveProperty, value);
+	public static void SetAbove(UIElement element, object value) => element.SetValue(AboveProperty, value);
 
 	/// <summary>
 	/// Identifies the RelativePanel.Above XAML attached property.
@@ -388,16 +388,16 @@ public partial class RelativePanel
 	/// <summary>
 	/// Gets the value of the RelativePanel.Below XAML attached property for the target element.
 	/// </summary>
-	/// <param name="view">Target element.</param>
+	/// <param name="element">Target element.</param>
 	/// <returns>Value.</returns>
-	public static object GetBelow(UIElement view) => (object)view.GetValue(BelowProperty);
+	public static object GetBelow(UIElement element) => (object)element.GetValue(BelowProperty);
 
 	/// <summary>
 	/// Sets the value of the RelativePanel.Below XAML attached property for the target element.
 	/// </summary>
-	/// <param name="view">Target element.</param>
+	/// <param name="element">Target element.</param>
 	/// <param name="value">Value.</param>
-	public static void SetBelow(UIElement view, object value) => view.SetValue(BelowProperty, value);
+	public static void SetBelow(UIElement element, object value) => element.SetValue(BelowProperty, value);
 
 	/// <summary>
 	/// Identifies the RelativePanel.Below XAML attached property.
@@ -408,16 +408,16 @@ public partial class RelativePanel
 	/// <summary>
 	/// Gets the value of the RelativePanel.LeftOf XAML attached property for the target element.
 	/// </summary>
-	/// <param name="view">Target element.</param>
+	/// <param name="element">Target element.</param>
 	/// <returns>Value.</returns>
-	public static object GetLeftOf(UIElement view) => (object)view.GetValue(LeftOfProperty);
+	public static object GetLeftOf(UIElement element) => (object)element.GetValue(LeftOfProperty);
 
 	/// <summary>
 	/// Sets the value of the RelativePanel.LeftOf XAML attached property for the target element.
 	/// </summary>
-	/// <param name="view">Target element.</param>
+	/// <param name="element">Target element.</param>
 	/// <param name="value">Value.</param>
-	public static void SetLeftOf(UIElement view, object value) => view.SetValue(LeftOfProperty, value);
+	public static void SetLeftOf(UIElement element, object value) => element.SetValue(LeftOfProperty, value);
 
 	/// <summary>
 	/// Identifies the RelativePanel.LeftOf XAML attached property.
@@ -428,16 +428,16 @@ public partial class RelativePanel
 	/// <summary>
 	/// Gets the value of the RelativePanel.RightOf XAML attached property for the target element.
 	/// </summary>
-	/// <param name="view">Target element.</param>
+	/// <param name="element">Target element.</param>
 	/// <returns>Value.</returns>
-	public static object GetRightOf(UIElement view) => (object)view.GetValue(RightOfProperty);
+	public static object GetRightOf(UIElement element) => (object)element.GetValue(RightOfProperty);
 
 	/// <summary>
 	/// Sets the value of the RelativePanel.RightOf XAML attached property for the target element.
 	/// </summary>
-	/// <param name="view">Target element.</param>
+	/// <param name="element">Target element.</param>
 	/// <param name="value">Value.</param>
-	public static void SetRightOf(UIElement view, object value) => view.SetValue(RightOfProperty, value);
+	public static void SetRightOf(UIElement element, object value) => element.SetValue(RightOfProperty, value);
 
 	/// <summary>
 	/// Identifies the RelativePanel.RightOf XAML attached property.
