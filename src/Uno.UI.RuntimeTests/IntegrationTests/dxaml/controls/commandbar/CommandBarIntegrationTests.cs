@@ -2542,7 +2542,7 @@ namespace Windows.UI.Tests.Enterprise
 #if __IOS__
 			await RunOnUIThread(() =>
 			{
-				expectedCommandBarWidth = ViewHelper.GetScreenSize().Width;
+				expectedCommandBarWidth = ViewHelper.GetMainWindowSize().Width;
 			});
 #endif
 			double expectedCommandBarCompactClosedHeight = 40;
