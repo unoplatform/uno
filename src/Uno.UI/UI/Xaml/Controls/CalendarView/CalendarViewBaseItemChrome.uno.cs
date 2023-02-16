@@ -124,8 +124,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 		CornerRadius IBorderInfoProvider.CornerRadius => GetItemCornerRadius();
 
-		object IBorderInfoProvider.BackgroundImage => default;
-
 #if __ANDROID__
 		Thickness IBorderInfoProvider.Padding => Padding;
 

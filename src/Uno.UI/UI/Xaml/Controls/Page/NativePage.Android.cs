@@ -6,25 +6,25 @@ using Android.Views;
 using Uno.UI;
 using Uno.UI.Xaml.Controls;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls;
+
+public abstract class NativePage : BaseActivity
 {
-	public abstract class NativePage : BaseActivity
+	public NativePage(IntPtr ptr, Android.Runtime.JniHandleOwnership owner) : base(ptr, owner)
 	{
-		public NativePage(IntPtr ptr, Android.Runtime.JniHandleOwnership owner) : base(ptr, owner)
-		{
-		}
+	}
 
-		public NativePage()
-		{
-		}
+	public NativePage()
+	{
+	}
 
-		protected override void OnCreate(Bundle bundle)
-		{
-			base.OnCreate(bundle);
+	protected override void OnCreate(Bundle bundle)
+	{
+		base.OnCreate(bundle);
 
-			InitializeComponent();
+		InitializeComponent();
 
-			var decorView = (ContextHelper.Current as Android.App.Activity).Window.DecorView;
+		var decorView = (ContextHelper.Current as Android.App.Activity).Window.DecorView;
 
 #pragma warning disable 618
 #pragma warning disable CA1422 // Validate platform compatibility
@@ -32,29 +32,22 @@ namespace Microsoft.UI.Xaml.Controls
 			decorView.SetOnSystemUiVisibilityChangeListener(new OnSystemUiVisibilityChangeListener());
 #pragma warning restore CA1422 // Validate platform compatibility
 #pragma warning restore 618
-		}
+	}
 
-		protected override void OnDestroy()
-		{
-			base.OnDestroy();
+	protected override void OnDestroy()
+	{
+		base.OnDestroy();
 
-			// By detaching the ContentView after destroying the page,
-			// the same ContentView can be reused by other activities.
-			(ContentView?.Parent as ViewGroup)?.RemoveView(ContentView);
-		}
+		// By detaching the ContentView after destroying the page,
+		// the same ContentView can be reused by other activities.
+		(ContentView?.Parent as ViewGroup)?.RemoveView(ContentView);
+	}
 
-		protected abstract void InitializeComponent();
+	protected abstract void InitializeComponent();
 
-		public View Content
-		{
-			get
-			{
-				return ContentView;
-			}
-			set
-			{
-				SetContentView(value, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MatchParent, ViewGroup.LayoutParams.MatchParent));
-			}
-		}
+	public View Content
+	{
+		get => ContentView;
+		set => SetContentView(value, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MatchParent, ViewGroup.LayoutParams.MatchParent));
 	}
 }

@@ -15,8 +15,6 @@ partial class Border : IBorderInfoProvider
 
 	CornerRadius IBorderInfoProvider.CornerRadius => CornerRadius;
 
-	object IBorderInfoProvider.BackgroundImage => null;
-
 #if __ANDROID__
 	Thickness IBorderInfoProvider.Padding => Padding;
 

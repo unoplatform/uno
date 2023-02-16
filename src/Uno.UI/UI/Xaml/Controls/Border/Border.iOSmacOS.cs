@@ -23,60 +23,7 @@ namespace Microsoft.UI.Xaml.Controls
 		protected override void OnAfterArrange()
 		{
 			base.OnAfterArrange();
-			UpdateBorderLayer();
-		}
-
-		// MZ:TODO!!!
-		private void UpdateBorderLayer(_Image backgroundImage = null)
-		{
-			if (IsLoaded)
-			{
-				if (backgroundImage == null)
-				{
-					ImageData backgroundImageData = default;
-					if ((Background as ImageBrush)?.ImageSource?.TryOpenSync(out backgroundImageData) == true &&
-						backgroundImageData.Kind == Uno.UI.Xaml.Media.ImageDataKind.NativeImage)
-					{
-						backgroundImage = backgroundImageData.NativeImage;
-					}
-				}
-
-				if (_borderRenderer.UpdateLayer(Background, BackgroundSizing, BorderThickness, BorderBrush, CornerRadius, backgroundImage)
-					is CGPath updated) // UpdateLayer may return null if there is no update
-				{
-					BoundsPath = updated;
-					BoundsPathUpdated?.Invoke(this, default);
-				}
-			}
-
-			this.SetNeedsDisplay();
-		}
-
-		partial void OnBackgroundChangedPartial(DependencyPropertyChangedEventArgs args)
-		{
-			//TODO:MZ:
-			// Don't call base <-- THIS IS CURRENTLY NOT RIGHT AFTER?, we need to keep UIView.BackgroundColor set to transparent
-			// because we're overriding draw.
-
-			var old = args.OldValue as ImageBrush;
-			if (old != null)
-			{
-				old.ImageChanged -= OnBackgroundImageBrushChanged;
-			}
-			var imgBrush = args.NewValue as ImageBrush;
-			if (imgBrush != null)
-			{
-				imgBrush.ImageChanged += OnBackgroundImageBrushChanged;
-			}
-			else
-			{
-				UpdateBorderLayer();
-			}
-		}
-
-		private void OnBackgroundImageBrushChanged(_Image backgroundImage)
-		{
-			UpdateBorderLayer(backgroundImage);
+			UpdateBorder();
 		}
 
 		partial void OnChildChangedPartial(UIElement previousValue, UIElement newValue)
@@ -88,14 +35,15 @@ namespace Microsoft.UI.Xaml.Controls
 				AddSubview(newValue);
 			}
 
-			UpdateBorderLayer();
+			UpdateBorder();
 		}
+
+		internal event EventHandler BoundsPathUpdated;
+
+		internal CGPath BoundsPath { get; private set; }
 
 		bool ICustomClippingElement.AllowClippingToLayoutSlot => CornerRadius == CornerRadius.None && (!(Child is UIElement ue) || ue.RenderTransform == null);
 		bool ICustomClippingElement.ForceClippingToLayoutSlot => false;
-
-		internal event EventHandler BoundsPathUpdated;
-		internal CGPath BoundsPath { get; private set; }
 	}
 }
 #endif

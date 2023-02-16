@@ -44,10 +44,7 @@ namespace Microsoft.UI.Xaml.Controls
 			AdjustCornerRadius(canvas, CornerRadiusInternal);
 		}
 
-		protected virtual void OnChildrenChanged()
-		{
-			UpdateBorder();
-		}
+		protected virtual void OnChildrenChanged() => UpdateBorder();
 
 		protected override void OnBeforeArrange()
 		{

@@ -36,11 +36,6 @@ internal partial interface IBorderInfoProvider
 	/// </summary>
 	CornerRadius CornerRadius { get; }
 
-	/// <summary>
-	/// Gets the background image.
-	/// </summary>
-	object? BackgroundImage { get; }
-
 #if __ANDROID__
 	Thickness Padding { get; }
 

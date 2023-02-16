@@ -31,59 +31,9 @@ namespace Microsoft.UI.Xaml.Controls
 			InvalidateMeasure();
 		}
 
-		partial void OnPaddingChangedPartial(Thickness oldValue, Thickness newValue)
-		{
-			InvalidateMeasure();
-		}
+		partial void OnPaddingChangedPartial(Thickness oldValue, Thickness newValue) => InvalidateMeasure();
 
-		protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs args)
-		{
-			// Ignore the background changes provided from base, we're rendering it using the CALayer.
-			// base.OnBackgroundChanged(e);
-
-			var old = args.OldValue as ImageBrush;
-			if (old != null)
-			{
-				old.ImageChanged -= OnBackgroundImageBrushChanged;
-			}
-			var imgBrush = args.NewValue as ImageBrush;
-			if (imgBrush != null)
-			{
-				imgBrush.ImageChanged += OnBackgroundImageBrushChanged;
-			}
-			else
-			{
-				UpdateBackground();
-			}
-		}
-
-		private void OnBackgroundImageBrushChanged(NSImage backgroundImage)
-		{
-			UpdateBackground(backgroundImage);
-		}
-
-		private void UpdateBackground(NSImage backgroundImage = null)
-		{
-			// Checking for Window avoids re-creating the layer until it is actually used.
-			if (IsLoaded)
-			{
-				backgroundImage = backgroundImage ?? (Background as ImageBrush)?.ImageSource?.ImageData.NativeImage;
-
-				_borderRenderer.UpdateLayer(
-					Background,
-					InternalBackgroundSizing,
-					BorderThicknessInternal,
-					BorderBrushInternal,
-					CornerRadiusInternal,
-					backgroundImage
-				);
-			}
-		}
-
-		protected virtual void OnChildrenChanged()
-		{
-			InvalidateMeasure();
-		}
+		protected virtual void OnChildrenChanged() => InvalidateMeasure();
 
 		protected override void OnAfterArrange()
 		{
@@ -103,11 +53,7 @@ namespace Microsoft.UI.Xaml.Controls
 			UpdateBackground();
 		}
 
-		public bool HitTestOutsideFrame
-		{
-			get;
-			set;
-		}
+		public bool HitTestOutsideFrame { get; set; }
 
 		public override NSView HitTest(CGPoint point)
 		{

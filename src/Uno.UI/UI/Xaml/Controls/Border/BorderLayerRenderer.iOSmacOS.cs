@@ -31,6 +31,10 @@ namespace Windows.UI.Xaml.Controls
 {
 	internal partial class BorderLayerRenderer
 	{
+		// Creates a unique native CGColor for the transparent color, and make sure to keep a strong ref on it
+		// https://github.com/unoplatform/uno/issues/10283
+		private static readonly CGColor _transparent = Colors.Transparent;
+
 		private LayoutState _currentState;
 		// Creates a unique native CGColor for the transparent color, and make sure to keep a strong ref on it
 		// https://github.com/unoplatform/uno/issues/10283
@@ -38,30 +42,21 @@ namespace Windows.UI.Xaml.Controls
 		
 		private SerialDisposable _layerDisposable = new SerialDisposable();
 
-		/// <summary>
-		/// Updates or creates a sublayer to render a border-like shape.
-		/// </summary>
-		/// <param name="owner">The parent layer to apply the shape</param>
-		/// <param name="area">The rendering area</param>
-		/// <param name="background">The background brush</param>
-		/// <param name="borderThickness">The border thickness</param>
-		/// <param name="borderBrush">The border brush</param>
-		/// <param name="cornerRadius">The corner radius</param>
-		/// <param name="backgroundImage">The background image in case of a ImageBrush background</param>
-		/// <returns>An updated BoundsPath if the layer has been created or updated; null if there is no change.</returns>
-		public CGPath UpdateLayer(
-			Brush background,
-			BackgroundSizing backgroundSizing,
-			Thickness borderThickness,
-			Brush borderBrush,
-			CornerRadius cornerRadius,
-			_Image backgroundImage)
+		public CGPath BoundsPath { get; private set; }
+
+		partial void UpdateLayer()
 		{
 			// Bounds is captured to avoid calling twice calls below.
 			var bounds = _owner.Bounds;
 			var area = new CGRect(0, 0, bounds.Width, bounds.Height);
 
-			var newState = new LayoutState(area, background, backgroundSizing, borderThickness, borderBrush, cornerRadius, backgroundImage);
+			var newState = new LayoutState(
+				area,
+				_borderInfoProvider.Background,
+				_borderInfoProvider.BackgroundSizing,
+				_borderInfoProvider.BorderThickness,
+				_borderInfoProvider.BorderBrush,
+				_borderInfoProvider.CornerRadius);
 			var previousLayoutState = _currentState;
 
 			if (!newState.Equals(previousLayoutState))
@@ -76,13 +71,13 @@ namespace Windows.UI.Xaml.Controls
 				_currentState = newState;
 			}
 
-			return newState.BoundsPath; // Will be null if not updated !!!
+			BoundsPath = newState.BoundsPath; // Will be null if not updated !!!
 		}
 
 		/// <summary>
 		/// Removes the added layers during a call to <see cref="UpdateLayer" />.
 		/// </summary>
-		internal void Clear()
+		partial void ClearLayer()
 		{
 			_layerDisposable.Disposable = null;
 			_currentState = null;
@@ -607,7 +602,6 @@ namespace Windows.UI.Xaml.Controls
 			public readonly Brush BorderBrush;
 			public readonly Thickness BorderThickness;
 			public readonly CornerRadius CornerRadius;
-			public readonly _Image BackgroundImage;
 
 			internal CGPath BoundsPath { get; set; }
 
@@ -617,8 +611,7 @@ namespace Windows.UI.Xaml.Controls
 				BackgroundSizing backgroundSizing,
 				Thickness borderThickness,
 				Brush borderBrush,
-				CornerRadius cornerRadius,
-				_Image backgroundImage)
+				CornerRadius cornerRadius)
 			{
 				Area = area;
 				Background = background;
@@ -626,7 +619,6 @@ namespace Windows.UI.Xaml.Controls
 				BorderBrush = borderBrush;
 				CornerRadius = cornerRadius;
 				BorderThickness = borderThickness;
-				BackgroundImage = backgroundImage;
 			}
 
 			public override int GetHashCode()
@@ -641,8 +633,7 @@ namespace Windows.UI.Xaml.Controls
 				&& other.BackgroundSizing == BackgroundSizing
 				&& (other.BorderBrush?.Equals(BorderBrush) ?? false)
 				&& other.BorderThickness == BorderThickness
-				&& other.CornerRadius == CornerRadius
-				&& ReferenceEquals(other.BackgroundImage, BackgroundImage);
+				&& other.CornerRadius == CornerRadius;
 		}
 	}
 }

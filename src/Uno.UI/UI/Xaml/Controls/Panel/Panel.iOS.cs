@@ -19,70 +19,11 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		partial void OnBorderThicknessChangedPartial(Thickness oldValue, Thickness newValue)
-		{
-			SetNeedsLayout();
-		}
+		partial void OnBorderThicknessChangedPartial(Thickness oldValue, Thickness newValue) => SetNeedsLayout();
 
-		partial void OnPaddingChangedPartial(Thickness oldValue, Thickness newValue)
-		{
-			SetNeedsLayout();
-		}
+		partial void OnPaddingChangedPartial(Thickness oldValue, Thickness newValue) => SetNeedsLayout();
 
-		protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs args)
-		{
-			// TODO:MZ!!!!!
-			// Ignore the background changes provided from base, we're rendering it using the CALayer.
-			// base.OnBackgroundChanged(e);
-
-			var old = args.OldValue as ImageBrush;
-			if (old != null)
-			{
-				old.ImageChanged -= OnBackgroundImageBrushChanged;
-			}
-			var imgBrush = args.NewValue as ImageBrush;
-			if (imgBrush != null)
-			{
-				imgBrush.ImageChanged += OnBackgroundImageBrushChanged;
-			}
-		}
-
-		private void OnBackgroundImageBrushChanged(UIImage backgroundImage)
-		{
-			UpdateBorder(backgroundImage);
-		}
-
-		private void UpdateBorder(UIImage backgroundImage = null)
-		{
-			// Checking for Window avoids re-creating the layer until it is actually used.
-			if (IsLoaded)
-			{
-				if (backgroundImage == null)
-				{
-					ImageData backgroundImageData = default;
-					(Background as ImageBrush)?.ImageSource?.TryOpenSync(out backgroundImageData);
-
-					if (backgroundImageData.Kind == ImageDataKind.NativeImage)
-					{
-						backgroundImage = backgroundImageData.NativeImage;
-					}
-				}
-
-				_borderRenderer.UpdateLayer(
-					Background,
-					InternalBackgroundSizing,
-					BorderThicknessInternal,
-					BorderBrushInternal,
-					CornerRadiusInternal,
-					backgroundImage
-				);
-			}
-		}
-
-		protected virtual void OnChildrenChanged()
-		{
-			SetNeedsLayout();
-		}
+		protected virtual void OnChildrenChanged() => SetNeedsLayout();
 
 		protected override void OnAfterArrange()
 		{
@@ -99,7 +40,7 @@ namespace Microsoft.UI.Xaml.Controls
 			//We set childrens position for the animations before the arrange
 			_transitionHelper?.SetInitialChildrenPositions();
 
-			UpdateBackground();
+			UpdateBorder();
 		}
 
 		public bool HitTestOutsideFrame

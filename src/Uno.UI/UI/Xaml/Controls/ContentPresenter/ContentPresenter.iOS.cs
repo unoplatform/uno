@@ -11,10 +11,7 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class ContentPresenter
 	{
-		partial void SetUpdateTemplatePartial()
-		{
-			SetNeedsLayout();
-		}
+		partial void SetUpdateTemplatePartial() => SetNeedsLayout();
 
 		partial void RegisterContentTemplateRoot()
 		{
