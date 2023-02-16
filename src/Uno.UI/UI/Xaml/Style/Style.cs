@@ -175,31 +175,6 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		public static void RegisterDefaultStyleForType(Type type, StyleProviderHandler styleProvider) => RegisterDefaultStyleForType(type, styleProvider, isNative: false);
-
-		/// <summary>
-		/// Register lazy default style provider for the nominated type.
-		/// </summary>
-		/// <param name="type">The type to which the style applies</param>
-		/// <param name="styleProvider">Function which generates the style. This will be called once when first used, then cached.</param>
-		/// <param name="isNative">True if it is the native default style, false if it is the UWP default style.</param>
-		/// <remarks>
-		/// This is public for backward compatibility, but isn't called from Xaml-generated code any longer. 
-		/// </remarks>
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		public static void RegisterDefaultStyleForType(Type type, StyleProviderHandler styleProvider, bool isNative)
-		{
-			if (isNative)
-			{
-				_nativeLookup[type] = styleProvider;
-			}
-			else
-			{
-				_lookup[type] = styleProvider;
-			}
-		}
-
 		/// <summary>
 		///  Register lazy default style provider for the nominated type.
 		/// </summary>
@@ -210,7 +185,14 @@ namespace Windows.UI.Xaml
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static void RegisterDefaultStyleForType(Type type, IXamlResourceDictionaryProvider dictionaryProvider, bool isNative)
 		{
-			RegisterDefaultStyleForType(type, ProvideStyle, isNative);
+			if (isNative)
+			{
+				_nativeLookup[type] = ProvideStyle;
+			}
+			else
+			{
+				_lookup[type] = ProvideStyle;
+			}
 
 			Style ProvideStyle()
 			{
@@ -225,7 +207,7 @@ namespace Windows.UI.Xaml
 		}
 
 		/// <summary>
-		/// Returns the default Style for given type. 
+		/// Returns the default Style for given type.
 		/// </summary>
 		internal static Style? GetDefaultStyleForType(Type type) => GetDefaultStyleForType(type, ShouldUseUWPDefaultStyle(type));
 
