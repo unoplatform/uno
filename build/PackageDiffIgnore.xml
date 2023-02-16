@@ -9494,6 +9494,12 @@
 			<Member fullName="System.Void Windows.UI.Xaml.Controls.WebView.NavigateWithHttpRequestMessage(System.Net.Http.HttpRequestMessage requestMessage)" reason="Api alignments" />
 			<Member fullName="System.Boolean Uno.Devices.Sensors.INativeDualScreenProvider.get_IsDualScreen()" reason="Api alignments" />
 			<Member fullName="System.Boolean Windows.UI.Xaml.Controls.WebView.MustUseWebKitWebView()" reason="Api alignments" />
+			<Member fullName="System.Double Windows.UI.Xaml.Controls.Canvas.GetLeft(Windows.UI.Xaml.DependencyObject obj)" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.Canvas.SetLeft(Windows.UI.Xaml.DependencyObject obj, System.Double value)" reason="Api alignments" />
+			<Member fullName="System.Double Windows.UI.Xaml.Controls.Canvas.GetTop(Windows.UI.Xaml.DependencyObject obj)" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.Canvas.SetTop(Windows.UI.Xaml.DependencyObject obj, System.Double value)" reason="Api alignments" />
+			<Member fullName="System.Double Windows.UI.Xaml.Controls.Canvas.GetZIndex(Windows.UI.Xaml.DependencyObject obj)" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.Canvas.SetZIndex(Windows.UI.Xaml.DependencyObject obj, System.Double value)" reason="Api alignments" />
 		</Methods>
 	</IgnoreSet>
 

@@ -31,7 +31,7 @@ namespace Windows.UI.Xaml.Controls
 
 				var sorted = Children
 					.Select((view, childrenIndex) => (view, childrenIndex))
-					.OrderBy(tpl => tpl.view is DependencyObject obj ? Canvas.GetZIndex(obj) : 0); // Note: this has to be a stable sort
+					.OrderBy(tpl => tpl.view is UIElement obj ? Canvas.GetZIndex(obj) : 0); // Note: this has to be a stable sort
 
 				var drawOrder = 0;
 				foreach (var tpl in sorted)
