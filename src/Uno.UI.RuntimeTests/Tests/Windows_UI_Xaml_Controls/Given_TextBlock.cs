@@ -1,11 +1,16 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Uno.UI.RuntimeTests.Helpers;
 using Windows.Foundation;
+using Windows.Foundation.Metadata;
+using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Documents;
 using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Imaging;
 using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
@@ -206,6 +211,34 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 
 			Assert.AreNotEqual(originalSize, SUT.DesiredSize);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_SolidColorBrush_With_Opacity()
+		{
+			if (!ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			{
+				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
+			}
+
+#if __MACOS__
+			Assert.Inconclusive();
+#endif
+			var SUT = new TextBlock
+			{
+				Text = "••••••••",
+				FontSize = 24,
+				Foreground = new SolidColorBrush(Colors.Red) { Opacity = 0.5 },
+			};
+
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForIdle();
+
+			var renderer = new RenderTargetBitmap();
+			await renderer.RenderAsync(SUT);
+			var bitmap = await RawBitmap.From(renderer, SUT);
+			ImageAssert.HasColorInRectangle(bitmap, new System.Drawing.Rectangle(0, 0, bitmap.Width, bitmap.Height), Color.FromArgb(127, 127, 0, 0));
 		}
 	}
 }
