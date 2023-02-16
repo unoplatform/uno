@@ -4,14 +4,16 @@ using Windows.UI.Xaml.Controls;
 using Windows.Foundation;
 using FluentAssertions;
 using FluentAssertions.Execution;
-using View = Windows.UI.Xaml.FrameworkElement;
-
 
 namespace Uno.UI.Tests.GridTests
 {
 	[TestClass]
-	public class GivenGrid_And_Margin : Context
+	public partial class GivenGrid_And_Margin : Context
 	{
+		private partial class View : FrameworkElement
+		{
+		}
+
 		[TestMethod]
 		public void When_One_Child_With_Margin_5()
 		{

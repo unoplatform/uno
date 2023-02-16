@@ -10,7 +10,6 @@ using System.Linq;
 using Uno.Disposables;
 using System.Text;
 using System.Threading.Tasks;
-using View = Windows.UI.Xaml.FrameworkElement;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.Foundation;
 using FluentAssertions;
@@ -22,8 +21,12 @@ namespace Uno.UI.Tests.BorderTests
 #if !NET461
 	[RuntimeTests.RunsOnUIThread]
 #endif
-	public class Given_Border : Context
+	public partial class Given_Border : Context
 	{
+		private partial class View : FrameworkElement
+		{
+		}
+
 		[TestMethod]
 		public void When_Border_Has_Fixed_Size()
 		{

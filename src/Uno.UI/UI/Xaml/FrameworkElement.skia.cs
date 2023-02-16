@@ -21,7 +21,7 @@ namespace Windows.UI.Xaml
 	{
 		private readonly static Thickness _thicknessCache = Thickness.Empty;
 
-		public FrameworkElement()
+		protected FrameworkElement()
 		{
 			Initialize();
 		}
