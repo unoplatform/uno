@@ -2,7 +2,7 @@
 
 using System.Reflection;
 using Uno.Foundation.Logging;
-//TODO
+
 namespace Windows.Foundation.Metadata;
 
 /// <summary>

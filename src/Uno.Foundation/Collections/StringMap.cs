@@ -1,3 +1,5 @@
+#nullable enable
+
 using System.Collections;
 
 namespace Windows.Foundation.Collections;
@@ -6,11 +8,11 @@ namespace Windows.Foundation.Collections;
 /// An associative collection, also known as a map or a dictionary.
 /// </summary>
 public sealed partial class StringMap :
-	IDictionary<string, string>,
-	IEnumerable<KeyValuePair<string, string>>,
-	IObservableMap<string, string>
+	IDictionary<string, string?>,
+	IEnumerable<KeyValuePair<string, string?>>,
+	IObservableMap<string, string?>
 {
-	private readonly Dictionary<string, string> _strings = new Dictionary<string, string>();
+	private readonly Dictionary<string, string?> _strings = new Dictionary<string, string?>();
 
 	/// <summary>
 	/// Creates and initializes a new instance of the string map.
@@ -22,7 +24,7 @@ public sealed partial class StringMap :
 	/// <summary>
 	/// Occurs when the observable map has changed.
 	/// </summary>
-	public event MapChangedEventHandler<string, string> MapChanged;
+	public event MapChangedEventHandler<string, string?>? MapChanged;
 
 	/// <summary>
 	/// Gets the number of items contained in the string map.
@@ -44,7 +46,7 @@ public sealed partial class StringMap :
 	/// </summary>
 	/// <param name="key">The key to insert.</param>
 	/// <param name="value">The value to insert.</param>
-	public void Add(string key, string value)
+	public void Add(string key, string? value)
 	{
 		_strings.Add(key, value);
 		MapChanged?.Invoke(this, new MapChangedEventArgs(CollectionChange.ItemInserted, key));
@@ -79,14 +81,14 @@ public sealed partial class StringMap :
 	/// <param name="key">The key to retrieve.</param>
 	/// <param name="value">The value correspodning with the key.</param>
 	/// <returns>True if found.</returns>
-	public bool TryGetValue(string key, out string value) => _strings.TryGetValue(key, out value);
+	public bool TryGetValue(string key, out string? value) => _strings.TryGetValue(key, out value);
 
 	/// <summary>
 	/// Gets or sets a value for the specified key.
 	/// </summary>
 	/// <param name="key">The key.</param>
 	/// <returns>Value.</returns>
-	public string this[string key]
+	public string? this[string key]
 	{
 		get => _strings[key];
 		set
@@ -116,13 +118,13 @@ public sealed partial class StringMap :
 	/// <summary>
 	/// Returns all values in the string map.
 	/// </summary>
-	public ICollection<string> Values => _strings.Values;
+	public ICollection<string?> Values => _strings.Values;
 
 	/// <summary>
 	/// Adds an item to the string map.
 	/// </summary>
 	/// <param name="item">Item to be added.</param>
-	public void Add(KeyValuePair<string, string> item) => Add(item.Key, item.Value);
+	public void Add(KeyValuePair<string, string?> item) => Add(item.Key, item.Value);
 
 	/// <summary>
 	/// Clears the string map.
@@ -134,7 +136,7 @@ public sealed partial class StringMap :
 	/// </summary>
 	/// <param name="item">Item to check.</param>
 	/// <returns>True if found.</returns>
-	public bool Contains(KeyValuePair<string, string> item) =>
+	public bool Contains(KeyValuePair<string, string?> item) =>
 		TryGetValue(item.Key, out var val) && Equals(item.Value, val);
 
 	/// <summary>
@@ -142,7 +144,7 @@ public sealed partial class StringMap :
 	/// </summary>
 	/// <param name="array">Array to copy to.</param>
 	/// <param name="arrayIndex">Index of the start of the copy.</param>
-	public void CopyTo(KeyValuePair<string, string>[] array, int arrayIndex)
+	public void CopyTo(KeyValuePair<string, string?>[] array, int arrayIndex)
 	{
 		foreach (var item in _strings)
 		{
@@ -155,14 +157,14 @@ public sealed partial class StringMap :
 	/// </summary>
 	/// <param name="item">Item to remove.</param>
 	/// <returns>True if found.</returns>
-	public bool Remove(KeyValuePair<string, string> item) =>
+	public bool Remove(KeyValuePair<string, string?> item) =>
 		Contains(item) && Remove(item.Key);
 
 	/// <summary>
 	/// Returns an enumerator for the string map.
 	/// </summary>
 	/// <returns>Enumerator.</returns>
-	public IEnumerator<KeyValuePair<string, string>> GetEnumerator() => _strings.GetEnumerator();
+	public IEnumerator<KeyValuePair<string, string?>> GetEnumerator() => _strings.GetEnumerator();
 
 	IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 }
