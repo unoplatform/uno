@@ -70,16 +70,9 @@ namespace Uno.UI.Runtime.Skia
 		/// Creates a host for a Uno Skia GTK application.
 		/// </summary>
 		/// <param name="appBuilder">App builder.</param>
-		/// <param name="args">Deprecated, value ignored.</param>
 		/// <remarks>
-		/// Args are obsolete and will be removed in the future. Environment.CommandLine is used instead
-		/// to fill LaunchEventArgs.Arguments.
+		/// Environment.CommandLine is used to fill LaunchEventArgs.Arguments.
 		/// </remarks>
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		public GtkHost(Func<WUX.Application> appBuilder, string[] args) : this(appBuilder)
-		{
-		}
-
 		public GtkHost(Func<WUX.Application> appBuilder)
 		{
 			_appBuilder = appBuilder;
