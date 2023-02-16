@@ -1,4 +1,6 @@
-﻿namespace Uno.UI;
+﻿using Foundation;
+
+namespace Uno.UI;
 
 /// <summary>
 /// An index to an entry in a grouped items source.
