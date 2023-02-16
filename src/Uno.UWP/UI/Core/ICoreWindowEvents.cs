@@ -1,10 +1,8 @@
 #if UNO_HAS_MANAGED_POINTERS
-using System;
-using System.Linq;
 
 namespace Windows.UI.Core;
 
-public interface ICoreWindowEvents
+internal interface ICoreWindowEvents
 {
 	void RaisePointerEntered(PointerEventArgs args);
 	void RaisePointerExited(PointerEventArgs args);
