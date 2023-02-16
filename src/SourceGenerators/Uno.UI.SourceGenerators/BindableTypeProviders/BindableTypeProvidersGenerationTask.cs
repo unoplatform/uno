@@ -196,7 +196,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 					GenerateTypeTable(writer);
 
 					writer.AppendLineIndented(@"#if DEBUG && !UNO_DISABLE_KNOWN_MISSING_TYPES");
-					writer.AppendLineIndented(@"private global::System.Collections.Generic.List<global::System.Type> _knownMissingTypes = new global::System.Collections.Generic.List<global::System.Type>();");
+					writer.AppendLineIndented(@"private global::System.Collections.Generic.HashSet<global::System.Type> _knownMissingTypes = new global::System.Collections.Generic.HashSet<global::System.Type>();");
 					writer.AppendLineIndented(@"#endif");
 				}
 			}
@@ -605,11 +605,11 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 					writer.AppendLineIndented(@"var bindableType = GetBindableTypeByFullName(type.FullName);");
 
 					writer.AppendLineIndented(@"#if DEBUG && !UNO_DISABLE_KNOWN_MISSING_TYPES");
-					using (writer.BlockInvariant(@"lock(_knownMissingTypes)"))
+					using (writer.BlockInvariant(@"if(bindableType == null && !type.IsGenericType && !type.IsAbstract)"))
 					{
-						using (writer.BlockInvariant(@"if(bindableType == null && !_knownMissingTypes.Contains(type) && !type.IsGenericType && !type.IsAbstract)"))
+						using (writer.BlockInvariant(@"lock(_knownMissingTypes)"))
+						using (writer.BlockInvariant(@"if (_knownMissingTypes.Add(type))"))
 						{
-							writer.AppendLineIndented(@"_knownMissingTypes.Add(type);");
 							writer.AppendLineIndented(@"Debug.WriteLine($""The Bindable attribute is missing and the type [{type.FullName}] is not known by the MetadataProvider. Reflection was used instead of the binding engine and generated static metadata. Add the Bindable attribute to prevent this message and performance issues."");");
 						}
 					}
