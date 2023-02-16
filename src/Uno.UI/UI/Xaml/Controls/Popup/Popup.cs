@@ -218,7 +218,7 @@ public partial class Popup
 			)
 		);
 
-	protected virtual void OnHorizontalOffsetChanged(double oldHorizontalOffset, double newHorizontalOffset)
+	private void OnHorizontalOffsetChanged(double oldHorizontalOffset, double newHorizontalOffset)
 	{
 		OnHorizontalOffsetChangedPartial(oldHorizontalOffset, newHorizontalOffset);
 		OnHorizontalOffsetChangedPartialNative(oldHorizontalOffset, newHorizontalOffset);
@@ -251,7 +251,7 @@ public partial class Popup
 			)
 		);
 
-	protected virtual void OnVerticalOffsetChanged(double oldVerticalOffset, double newVerticalOffset)
+	private void OnVerticalOffsetChanged(double oldVerticalOffset, double newVerticalOffset)
 	{
 		OnVerticalOffsetChangedPartial(oldVerticalOffset, newVerticalOffset);
 		OnVerticalOffsetChangedPartialNative(oldVerticalOffset, newVerticalOffset);
