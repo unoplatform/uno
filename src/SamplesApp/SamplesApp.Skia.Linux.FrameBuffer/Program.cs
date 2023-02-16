@@ -29,7 +29,7 @@ namespace SkiaSharpExample
 					};
 
 					return new SamplesApp.App();
-				}, args);
+				});
 				host.Run();
 			}
 			finally
