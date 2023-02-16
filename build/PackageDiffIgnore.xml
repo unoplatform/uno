@@ -9438,6 +9438,9 @@
 			<Member fullName="System.Object Uno.UI.GlobalStaticResources.FindResource(System.String name)" reason="Method that does nothing" />
 			<Member fullName="System.Threading.Tasks.Task`1&lt;System.Collections.Generic.IList`1&lt;Windows.Devices.Geolocation.Geoposition&gt;&gt; Windows.Devices.Geolocation.Geolocator.GetGeopositionHistoryAsync(System.DateTime startTime)" reason="Not in Windows and not implemented properly" />
 			<Member fullName="System.Threading.Tasks.Task`1&lt;System.Collections.Generic.IList`1&lt;Windows.Devices.Geolocation.Geoposition&gt;&gt; Windows.Devices.Geolocation.Geolocator.GetGeopositionHistoryAsync(System.DateTime startTime, System.TimeSpan duration)" reason="Not in Windows and not implemented properly" />
+			<Member fullName="System.Void Windows.UI.Xaml.Style.RegisterDefaultStyleForType(System.Type type, Windows.UI.Xaml.Style/StyleProviderHandler styleProvider)" reason="Was used by Xaml generated code but no longer used." />
+			<Member fullName="System.Void Windows.UI.Xaml.Style.RegisterDefaultStyleForType(System.Type type, Windows.UI.Xaml.Style/StyleProviderHandler styleProvider, System.Boolean isNative)" reason="Was used by Xaml generated code but no longer used." />
+
 			<Member fullName="System.Void Windows.ApplicationModel.SuspendingDeferral..ctor(System.Action deferralDone)" reason="This constructor does not exist in Windows" />
 		</Methods>
 	</IgnoreSet>
