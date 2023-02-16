@@ -326,7 +326,7 @@ namespace Windows.UI.Xaml.Controls
 			return id;
 		}
 
-		private string GetMethodTag([CallerMemberName] string? caller = null)
+		private string GetMethodTag([CallerMemberName] string caller = "")
 			=> $"{nameof(VirtualizingPanelGenerator)}.{caller}()";
 
 		internal void ClearIdCache()
