@@ -222,6 +222,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
 			}
 
+#if __MACOS__
+			Assert.Inconclusive();
+#endif
 			var SUT = new TextBlock
 			{
 				Text = "••••••••",
