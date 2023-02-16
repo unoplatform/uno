@@ -69,7 +69,7 @@ namespace Windows.UI
 						"darkorchid" => 0xFF9932CC,
 						"darkred" => 0xFF8B0000,
 						"darksalmon" => 0xFFE9967A,
-						"darkseagreen" => 0xFF8FBC8B,
+						"darkseagreen" => 0xFF8FBC8F,
 						"darkslateblue" => 0xFF483D8B,
 						"darkslategray" => 0xFF2F4F4F,
 						"darkturquoise" => 0xFF00CED1,
