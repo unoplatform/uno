@@ -64,4 +64,28 @@
 
 	</Target>
 
+	<Target Name="_FindInvalidWinAppSDKUnoPlatformReference"
+			BeforeTargets="ResolveAssemblyReferences"
+			Condition="'$(UnoDisableUNOB0002Validation)'==''">
+
+		<PropertyGroup>
+			<_UnoPlatformProperty>_IsUnoPlatform=true</_UnoPlatformProperty>
+		</PropertyGroup>
+
+		<!--
+		Determine if any ProjectReference contains AdditionalProperties which contains _IsUnoPlatform, a property
+		defined only when WinAppSDK is not included.
+
+		This scenario can happen when a WinAppSDK project is referencing a net7.0-only project which contains a reference to
+		Uno.WinUI, which is not compatible with WinAppSDK. Fixing this requires adding a netX.0-windows10.x target to the project.
+		-->
+		<Error Code="UNOB0002"
+			   HelpLink="https://aka.platform.uno/UNOB0002"
+			   Text="Project %(TargetPathWithTargetPlatformMoniker.MSBuildSourceProjectFile) contains a reference to Uno Platform but does not contain a WinAppSDK compatible target framework. https://aka.platform.uno/UNOB0002"
+			   Condition="
+				'%(TargetPathWithTargetPlatformMoniker.MSBuildSourceProjectFile)'!=''
+				and '%(TargetPathWithTargetPlatformMoniker.AdditionalPropertiesFromProject)'!='' 
+				and '%(TargetPathWithTargetPlatformMoniker.AdditionalPropertiesFromProject)'!='%(TargetPathWithTargetPlatformMoniker.AdditionalPropertiesFromProject.Replace($(_UnoPlatformProperty),))'" />
+	</Target>
+
 </Project>
