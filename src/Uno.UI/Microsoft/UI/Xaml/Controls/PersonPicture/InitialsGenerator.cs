@@ -12,13 +12,11 @@ using Windows.ApplicationModel.Contacts;
 using Windows.ApplicationModel.Resources;
 using Windows.Foundation;
 using Windows.Storage.Streams;
-using Windows.UI.Xaml.Automation;
-using Windows.UI.Xaml.Automation.Peers;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Imaging;
-using Windows.UI.Xaml.Shapes;
+using Microsoft.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Media;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	/// <summary>
 	/// Value indicating the general character set for a given character.
@@ -134,7 +132,7 @@ namespace Windows.UI.Xaml.Controls
 				else if (words.Length > 1)
 				{
 					// If there's at least two words, we'll show two initials.
-					// 
+					//
 					// NOTE: Based on current implementation, we could be showing punctuation.
 					// For example, "John -Smith" would be "J-".
 					string firstWord = words.First();
@@ -294,7 +292,7 @@ namespace Windows.UI.Xaml.Controls
 						}
 						break;
 					default:
-						// Preserve result's current state (if we never got data other 
+						// Preserve result's current state (if we never got data other
 						// than "Other", it'll be set to other anyway).
 						break;
 				}
@@ -436,7 +434,7 @@ namespace Windows.UI.Xaml.Controls
 				return CharacterType.Symbolic;
 			}
 
-			// CJK Unified Ideographs Extension 
+			// CJK Unified Ideographs Extension
 			if ((character >= 0x3400) && (character <= 0x4DBF))
 			{
 				return CharacterType.Symbolic;
