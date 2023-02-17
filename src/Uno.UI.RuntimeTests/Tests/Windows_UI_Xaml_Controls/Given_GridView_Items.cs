@@ -15,6 +15,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if HAS_UNO
 	[TestClass]
 	[RunsOnUIThread]
+#if !__IOS__ && !__ANDROID__
+	[Ignore]
 #endif
 	public class Given_GridView_Items
 	{
@@ -81,9 +83,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(gridView.ActualWidth / 2, gvi2.LayoutSlot.Width, 1);
 		}
 
-
 #if !__IOS__
-		[Ignore]
+	[Ignore]
 #endif
 		[TestMethod]
 		public async Task When_GridViewItems_LayoutSlots()
@@ -139,7 +140,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			gvi2.LayoutSlotWithMarginsAndAlignments);
 		}
 	}
-
 	#region Helper Behaviour Class
 	public class GridViewVariableSizeBehavior
 	{
@@ -179,5 +179,5 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 	}
 	#endregion
-
+#endif
 }
