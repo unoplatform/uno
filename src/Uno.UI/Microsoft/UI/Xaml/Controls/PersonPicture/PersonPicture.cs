@@ -145,7 +145,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		protected override AutomationPeer OnCreateAutomationPeer()
 		{
-			return new PersonPictureAutomationPeer(this);
+			return new Microsoft.UI.Xaml.Automation.Peers.PersonPictureAutomationPeer(this);
 		}
 
 		protected override void OnApplyTemplate()
