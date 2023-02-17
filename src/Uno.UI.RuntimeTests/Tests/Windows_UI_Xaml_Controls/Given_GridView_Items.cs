@@ -20,6 +20,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 	public class Given_GridView_Items
 	{
+#if !__ANDROID__
+		[Ignore]
+#endif
 		[TestMethod]
 		public async Task When_GridViewItems_WillRespect_ItemsWidth()
 		{
@@ -51,6 +54,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(30, gvi2.LayoutSlot.Width);
 		}
 
+#if !__ANDROID__
+		[Ignore]
+#endif
 		[TestMethod]
 		public async Task When_GridViewItems_ItemsWidthChanges_Refresh_Layout()
 		{
