@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Project>
   <PropertyGroup>
-	  <_Uno_XamlMerge_Task_Version>1.24.0-dev.34</_Uno_XamlMerge_Task_Version>
+	  <_Uno_XamlMerge_Task_Version>1.25.0-dev.38</_Uno_XamlMerge_Task_Version>
   </PropertyGroup>
 
   <ItemGroup>
