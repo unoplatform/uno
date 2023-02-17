@@ -84,7 +84,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 #if !__IOS__
-	[Ignore]
+		[Ignore]
 #endif
 		[TestMethod]
 		public async Task When_GridViewItems_LayoutSlots()
