@@ -19,6 +19,7 @@ namespace Windows.UI.Xaml
 {
 	partial class ResourceDictionary
 	{
+#if DEBUG && DEBUG_SET_RESOURCE_SOURCE
 		private void TryApplySource(object value, in ResourceKey resourceKey)
 		{
 			if (value is DependencyObject dependencyObject && GetResourceSource(dependencyObject) == null)
@@ -26,6 +27,7 @@ namespace Windows.UI.Xaml
 				SetResourceSource(dependencyObject, new DebugResourceSource(resourceKey, this));
 			}
 		}
+#endif
 
 		/// <summary>
 		/// Get the theme associated with this dictionary, if it's part of <see cref="ThemeDictionaries"/> of another dictionary
