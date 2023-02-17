@@ -43,6 +43,7 @@ namespace Windows.UI.Xaml
 		private event TypedEventHandler<_This, EffectiveViewportChangedEventArgs>? _effectiveViewportChanged;
 		private bool _hasNewHandler;
 		private List<IFrameworkElement_EffectiveViewport>? _childrenInterestedInViewportUpdates;
+		private bool _isEnumeratingChildrenInterestedInViewportUpdates;
 		private IDisposable? _parentViewportUpdatesSubscription;
 		private ViewportInfo _parentViewport = ViewportInfo.Empty; // WARNING: Stored in parent's coordinates space, use GetParentViewport()
 		private ViewportInfo _lastEffectiveViewport;
@@ -153,12 +154,21 @@ namespace Windows.UI.Xaml
 				Uno.UI.Extensions.DependencyObjectExtensions.GetChildren(this).OfType<IFrameworkElement_EffectiveViewport>().Contains(child)
 				|| (child as _View)?.FindFirstAncestor<IFrameworkElement_EffectiveViewport>() == this);
 
-			(_childrenInterestedInViewportUpdates ??= new()).Add(child);
+			var childrenInterestedInViewportUpdates = _childrenInterestedInViewportUpdates switch
+			{
+				null => (_childrenInterestedInViewportUpdates = new()),
+				_ when _isEnumeratingChildrenInterestedInViewportUpdates => (_childrenInterestedInViewportUpdates = new(_childrenInterestedInViewportUpdates)),
+				_ => _childrenInterestedInViewportUpdates,
+			};
+			childrenInterestedInViewportUpdates.Add(child);
 			ReconfigureViewportPropagation(isInternalUpdate, child);
 
 			return Disposable.Create(() =>
 			{
-				_childrenInterestedInViewportUpdates!.Remove(child);
+				var childrenInterestedInViewportUpdates = _isEnumeratingChildrenInterestedInViewportUpdates
+						? (_childrenInterestedInViewportUpdates = new(_childrenInterestedInViewportUpdates))
+						: _childrenInterestedInViewportUpdates!;
+				childrenInterestedInViewportUpdates.Remove(child);
 				ReconfigureViewportPropagation();
 			});
 		}
@@ -351,9 +361,19 @@ namespace Windows.UI.Xaml
 
 			if (_childrenInterestedInViewportUpdates is { Count: > 0 } && (isInitial || viewportUpdated))
 			{
-				foreach (var child in _childrenInterestedInViewportUpdates)
+				_isEnumeratingChildrenInterestedInViewportUpdates = true;
+				var enumerator = _childrenInterestedInViewportUpdates.GetEnumerator();
+				try
 				{
-					child.OnParentViewportChanged(isInitial, isInternal, this, viewport);
+					while (enumerator.MoveNext())
+					{
+						enumerator.Current!.OnParentViewportChanged(isInitial, isInternal, this, viewport);
+					}
+				}
+				finally
+				{
+					_isEnumeratingChildrenInterestedInViewportUpdates = false;
+					enumerator.Dispose();
 				}
 			}
 		}

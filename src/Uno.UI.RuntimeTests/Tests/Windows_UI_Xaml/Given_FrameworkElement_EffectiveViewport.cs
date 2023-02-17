@@ -1056,6 +1056,80 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		}
 #endif
 
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task EVP_When_RemoveHandlerWhileRaisingEvent()
+		{
+			const bool canHorizontallyScroll = true, canVerticallyScroll = true;
+			Border sut;
+			ScrollViewer sv;
+			var root = new Border
+			{
+				HorizontalAlignment = HorizontalAlignment.Left,
+				VerticalAlignment = VerticalAlignment.Top,
+				Child = sv = new ScrollViewer
+				{
+					Width = 512,
+					Height = 512,
+					HorizontalAlignment = HorizontalAlignment.Left,
+					VerticalAlignment = VerticalAlignment.Top,
+					HorizontalScrollBarVisibility = canHorizontallyScroll ? ScrollBarVisibility.Auto : ScrollBarVisibility.Disabled,
+					VerticalScrollBarVisibility = canVerticallyScroll ? ScrollBarVisibility.Auto : ScrollBarVisibility.Disabled,
+					HorizontalScrollMode = canHorizontallyScroll ? ScrollMode.Enabled : ScrollMode.Disabled,
+					VerticalScrollMode = canVerticallyScroll ? ScrollMode.Enabled : ScrollMode.Disabled,
+					Content = new Grid
+					{
+						Height = 1024,
+						Children =
+						{
+							(sut = new Border
+							{
+								HorizontalAlignment = HorizontalAlignment.Left,
+								VerticalAlignment = VerticalAlignment.Top,
+								Background = new SolidColorBrush(Color.FromArgb(0xFF, 0x00, 0x00, 0xF9)),
+								Width = 100,
+								Height = 100,
+								RenderTransform = new CompositeTransform { TranslateX = 50, TranslateY = 25, ScaleY = 2 }
+							})
+						}
+					}
+				}
+			};
+
+			var result = new TaskCompletionSource<object?>();
+			var allowDetach = false;
+			sut.EffectiveViewportChanged += OnSutEVPChanged;
+
+			WindowContent = root;
+
+			// First make sure to be loaded (and actually ignore them)
+			await WaitForIdle();
+			allowDetach = true;
+
+			// Then cause a layout update
+			sv.ChangeView(null, 512, null, disableAnimation: true);
+
+			await result.Task;
+
+			void OnSutEVPChanged(FrameworkElement sender, EffectiveViewportChangedEventArgs args)
+			{
+				try
+				{
+					if (!allowDetach)
+					{
+						return;
+					}
+
+					sut.EffectiveViewportChanged -= OnSutEVPChanged;
+					result.TrySetResult(default);
+				}
+				catch (Exception e)
+				{
+					result.TrySetException(e);
+				}
+			}
+		}
+
 		private async Task RetryAssert(Action assertion)
 		{
 			var attempt = 0;
