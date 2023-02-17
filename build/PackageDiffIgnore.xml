@@ -9140,6 +9140,7 @@
 			<Member fullName="Uno.Extensions.UriExtensions" reason="Not needed publicly" />
 			<Member fullName="Windows.UI.Xaml.FontFamilyHelper" reason="Only needed internally. The public facing type is Uno.UI.Xaml.Media.FontFamilyHelper" />
 			<Member fullName="Windows.UI.Xaml.SolidColorBrushHelper" reason="Not needed publicly and not present in Windows." />
+			<Member fullName="Windows.UI.Xaml.Controls.PersonPictureTemplateSettings" reason="Moved to MUXC" />
 		</Types>
 		<Events>
 			<Member fullName="Windows.Foundation.TypedEventHandler`2&lt;Microsoft.UI.Xaml.Controls.IInputValidationControl,Microsoft.UI.Xaml.Controls.HasValidationErrorsChangedEventArgs&gt; Microsoft.UI.Xaml.Controls.AutoSuggestBox::HasValidationErrorsChanged" reason="Not present in WinAppSDK 1.2" />
@@ -9243,7 +9244,11 @@
 			<Member fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.PersonPicture::IsGroupProperty()" reason="Moved to MUXC" />
 			<Member fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.PersonPicture::PreferSmallImageProperty()" reason="Moved to MUXC" />
 			<Member fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.PersonPicture::ProfilePictureProperty()" reason="Moved to MUXC" />
-
+			<Member fullName="Windows.UI.Xaml.Media.ImageSource Windows.UI.Xaml.Controls.PersonPicture::ProfilePicture()" reason="Moved to MUXC" />
+			<Member fullName="System.Boolean Windows.UI.Xaml.Controls.PersonPicture::PreferSmallImage()" reason="Moved to MUXC" />
+			<Member fullName="System.Boolean Windows.UI.Xaml.Controls.PersonPicture::IsGroup()" reason="Moved to MUXC" />
+			<Member fullName="System.String Windows.UI.Xaml.Controls.PersonPicture::Initials()" reason="Moved to MUXC" />
+			<Member fullName="System.String Windows.UI.Xaml.Controls.PersonPicture::DisplayName()" reason="Moved to MUXC" />
 		</Properties>
 		<Methods>
 			<Member fullName="Microsoft.UI.Windowing.AppWindowConfiguration Microsoft.UI.Windowing.AppWindow.get_Configuration()" reason="Not present in WinAppSDK 1.2" />
@@ -9424,6 +9429,37 @@
 			<Member fullName="System.Threading.Tasks.Task`1&lt;System.Collections.Generic.IList`1&lt;Windows.Devices.Geolocation.Geoposition&gt;&gt; Windows.Devices.Geolocation.Geolocator.GetGeopositionHistoryAsync(System.DateTime startTime)" reason="Not in Windows and not implemented properly" />
 			<Member fullName="System.Threading.Tasks.Task`1&lt;System.Collections.Generic.IList`1&lt;Windows.Devices.Geolocation.Geoposition&gt;&gt; Windows.Devices.Geolocation.Geolocator.GetGeopositionHistoryAsync(System.DateTime startTime, System.TimeSpan duration)" reason="Not in Windows and not implemented properly" />
 			<Member fullName="System.Void Windows.ApplicationModel.SuspendingDeferral..ctor(System.Action deferralDone)" reason="This constructor does not exist in Windows" />
+			<Member fullName="Windows.UI.Xaml.Media.ImageSource Windows.UI.Xaml.Controls.PersonPicture.get_ProfilePicture()" reason="Moved to MUXC" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.PersonPicture.set_ProfilePicture(Windows.UI.Xaml.Media.ImageSource value)" reason="Moved to MUXC" />
+			<Member fullName="System.Boolean Windows.UI.Xaml.Controls.PersonPicture.get_PreferSmallImage()" reason="Moved to MUXC" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.PersonPicture.set_PreferSmallImage(System.Boolean value)" reason="Moved to MUXC" />
+			<Member fullName="System.Boolean Windows.UI.Xaml.Controls.PersonPicture.get_IsGroup()" reason="Moved to MUXC" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.PersonPicture.set_IsGroup(System.Boolean value)" reason="Moved to MUXC" />
+			<Member fullName="System.String Windows.UI.Xaml.Controls.PersonPicture.get_Initials()" reason="Moved to MUXC" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.PersonPicture.set_Initials(System.String value)" reason="Moved to MUXC" />
+			<Member fullName="System.String Windows.UI.Xaml.Controls.PersonPicture.get_DisplayName()" reason="Moved to MUXC" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.PersonPicture.set_DisplayName(System.String value)" reason="Moved to MUXC" />
+			<Member fullName="Windows.ApplicationModel.Contacts.Contact Windows.UI.Xaml.Controls.PersonPicture.get_Contact()" reason="Moved to MUXC" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.PersonPicture.set_Contact(Windows.ApplicationModel.Contacts.Contact value)" reason="Moved to MUXC" />
+			<Member fullName="System.String Windows.UI.Xaml.Controls.PersonPicture.get_BadgeText()" reason="Moved to MUXC" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.PersonPicture.set_BadgeText(System.String value)" reason="Moved to MUXC" />
+			<Member fullName="System.Int32 Windows.UI.Xaml.Controls.PersonPicture.get_BadgeNumber()" reason="Moved to MUXC" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.PersonPicture.set_BadgeNumber(System.Int32 value)" reason="Moved to MUXC" />
+			<Member fullName="Windows.UI.Xaml.Media.ImageSource Windows.UI.Xaml.Controls.PersonPicture.get_BadgeImageSource()" reason="Moved to MUXC" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.PersonPicture.set_BadgeImageSource(Windows.UI.Xaml.Media.ImageSource value)" reason="Moved to MUXC" />
+			<Member fullName="System.String Windows.UI.Xaml.Controls.PersonPicture.get_BadgeGlyph()" reason="Moved to MUXC" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.PersonPicture.set_BadgeGlyph(System.String value)" reason="Moved to MUXC" />
+			<Member fullName="Windows.UI.Xaml.Controls.PersonPictureTemplateSettings Windows.UI.Xaml.Controls.PersonPicture.get_TemplateSettings()" reason="Moved to MUXC" />
+			<Member fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.PersonPicture.get_BadgeGlyphProperty()" reason="Moved to MUXC" />
+			<Member fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.PersonPicture.get_BadgeImageSourceProperty()" reason="Moved to MUXC" />
+			<Member fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.PersonPicture.get_BadgeNumberProperty()" reason="Moved to MUXC" />
+			<Member fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.PersonPicture.get_BadgeTextProperty()" reason="Moved to MUXC" />
+			<Member fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.PersonPicture.get_ContactProperty()" reason="Moved to MUXC" />
+			<Member fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.PersonPicture.get_DisplayNameProperty()" reason="Moved to MUXC" />
+			<Member fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.PersonPicture.get_InitialsProperty()" reason="Moved to MUXC" />
+			<Member fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.PersonPicture.get_IsGroupProperty()" reason="Moved to MUXC" />
+			<Member fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.PersonPicture.get_PreferSmallImageProperty()" reason="Moved to MUXC" />
+			<Member fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.PersonPicture.get_ProfilePictureProperty()" reason="Moved to MUXC" />
 		</Methods>
 	</IgnoreSet>
 
