@@ -12,7 +12,7 @@ public sealed partial class StringMap :
 	IEnumerable<KeyValuePair<string, string?>>,
 	IObservableMap<string, string?>
 {
-	private readonly Dictionary<string, string?> _strings = new Dictionary<string, string?>();
+	private readonly Dictionary<string, string?> _dictionary = new Dictionary<string, string?>();
 
 	/// <summary>
 	/// Creates and initializes a new instance of the string map.
@@ -29,12 +29,12 @@ public sealed partial class StringMap :
 	/// <summary>
 	/// Gets the number of items contained in the string map.
 	/// </summary>
-	public uint Size => (uint)_strings.Count;
+	public uint Size => (uint)_dictionary.Count;
 
 	/// <summary>
 	/// Gets teh number of items contained in the string map.
 	/// </summary>
-	public int Count => _strings.Count;
+	public int Count => _dictionary.Count;
 
 	/// <summary>
 	/// Gets a value indicating whether the collection is read-only.
@@ -48,7 +48,7 @@ public sealed partial class StringMap :
 	/// <param name="value">The value to insert.</param>
 	public void Add(string key, string? value)
 	{
-		_strings.Add(key, value);
+		_dictionary.Add(key, value);
 		MapChanged?.Invoke(this, new MapChangedEventArgs(CollectionChange.ItemInserted, key));
 	}
 
@@ -57,7 +57,7 @@ public sealed partial class StringMap :
 	/// </summary>
 	/// <param name="key">Key.</param>
 	/// <returns>True if found.</returns>
-	public bool ContainsKey(string key) => _strings.ContainsKey(key);
+	public bool ContainsKey(string key) => _dictionary.ContainsKey(key);
 
 	/// <summary>
 	/// Removes a key from the string map.
@@ -66,7 +66,7 @@ public sealed partial class StringMap :
 	/// <returns>True if the key was found.</returns>
 	public bool Remove(string key)
 	{
-		var result = _strings.Remove(key);
+		var result = _dictionary.Remove(key);
 		if (result)
 		{
 			MapChanged?.Invoke(this, new MapChangedEventArgs(CollectionChange.ItemRemoved, key));
@@ -81,7 +81,14 @@ public sealed partial class StringMap :
 	/// <param name="key">The key to retrieve.</param>
 	/// <param name="value">The value correspodning with the key.</param>
 	/// <returns>True if found.</returns>
-	public bool TryGetValue(string key, out string? value) => _strings.TryGetValue(key, out value);
+	public bool TryGetValue(string key, out string? value)
+	{
+		if (key is null)
+		{
+			throw new ArgumentNullException(nameof(key));
+		}
+		return _dictionary.TryGetValue(key, out value);
+	}
 
 	/// <summary>
 	/// Gets or sets a value for the specified key.
@@ -90,21 +97,21 @@ public sealed partial class StringMap :
 	/// <returns>Value.</returns>
 	public string? this[string key]
 	{
-		get => _strings[key];
+		get => _dictionary[key];
 		set
 		{
 			// Add or update and raise map changed accrodingly			
-			if (_strings.TryGetValue(key, out var existingValue))
+			if (_dictionary.TryGetValue(key, out var existingValue))
 			{
 				if (value != existingValue)
 				{
-					_strings[key] = value;
+					_dictionary[key] = value;
 					MapChanged?.Invoke(this, new MapChangedEventArgs(CollectionChange.ItemChanged, key));
 				}
 			}
 			else
 			{
-				_strings.Add(key, value);
+				_dictionary.Add(key, value);
 				MapChanged?.Invoke(this, new MapChangedEventArgs(CollectionChange.ItemInserted, key));
 			}
 		}
@@ -113,12 +120,12 @@ public sealed partial class StringMap :
 	/// <summary>
 	/// Returns all keys in the string map.
 	/// </summary>
-	public ICollection<string> Keys => _strings.Keys;
+	public ICollection<string> Keys => _dictionary.Keys;
 
 	/// <summary>
 	/// Returns all values in the string map.
 	/// </summary>
-	public ICollection<string?> Values => _strings.Values;
+	public ICollection<string?> Values => _dictionary.Values;
 
 	/// <summary>
 	/// Adds an item to the string map.
@@ -129,7 +136,11 @@ public sealed partial class StringMap :
 	/// <summary>
 	/// Clears the string map.
 	/// </summary>
-	public void Clear() => _strings.Clear();
+	public void Clear()
+	{
+		_dictionary.Clear();
+		MapChanged?.Invoke(this, new MapChangedEventArgs(CollectionChange.Reset, null));
+	}
 
 	/// <summary>
 	/// Checks if the string map contains the specified item.
@@ -146,7 +157,23 @@ public sealed partial class StringMap :
 	/// <param name="arrayIndex">Index of the start of the copy.</param>
 	public void CopyTo(KeyValuePair<string, string?>[] array, int arrayIndex)
 	{
-		foreach (var item in _strings)
+		if (array == null)
+		{
+			throw new ArgumentNullException(nameof(array));
+		}
+
+		if (arrayIndex < 0 || arrayIndex >= array.Length)
+		{
+			throw new ArgumentOutOfRangeException(nameof(arrayIndex), "The specified index is out of bounds of the specified array.");
+		}
+
+		// Check now, before starting to copy elements
+		if (array.Length - arrayIndex < Count)
+		{
+			throw new ArgumentException(nameof(array), "The specified space is not sufficient to copy the elements from this Collection.");
+		}
+
+		foreach (var item in _dictionary)
 		{
 			array[arrayIndex++] = item;
 		}
@@ -164,7 +191,7 @@ public sealed partial class StringMap :
 	/// Returns an enumerator for the string map.
 	/// </summary>
 	/// <returns>Enumerator.</returns>
-	public IEnumerator<KeyValuePair<string, string?>> GetEnumerator() => _strings.GetEnumerator();
+	public IEnumerator<KeyValuePair<string, string?>> GetEnumerator() => _dictionary.GetEnumerator();
 
 	IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 }

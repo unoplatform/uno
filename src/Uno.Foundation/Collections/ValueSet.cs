@@ -82,7 +82,14 @@ public sealed partial class ValueSet :
 	/// <param name="key">The key to retrieve.</param>
 	/// <param name="value">The value correspodning with the key.</param>
 	/// <returns>True if found.</returns>
-	public bool TryGetValue(string key, out object? value) => _dictionary.TryGetValue(key, out value);
+	public bool TryGetValue(string key, out object? value)
+	{
+		if (key is null)
+		{
+			throw new ArgumentNullException(nameof(key));
+		}
+		return _dictionary.TryGetValue(key, out value);
+	}
 
 	/// <summary>
 	/// Gets or sets a value for the specified key.
@@ -130,7 +137,11 @@ public sealed partial class ValueSet :
 	/// <summary>
 	/// Clears the value set.
 	/// </summary>
-	public void Clear() => _dictionary.Clear();
+	public void Clear()
+	{
+		_dictionary.Clear();
+		MapChanged?.Invoke(this, new MapChangedEventArgs(CollectionChange.Reset, null));
+	}
 
 	/// <summary>
 	/// Checks if the value set contains the specified item.
@@ -147,6 +158,22 @@ public sealed partial class ValueSet :
 	/// <param name="arrayIndex">Index of the start of the copy.</param>
 	public void CopyTo(KeyValuePair<string, object?>[] array, int arrayIndex)
 	{
+		if (array == null)
+		{
+			throw new ArgumentNullException(nameof(array));
+		}
+
+		if (arrayIndex < 0 || arrayIndex >= array.Length)
+		{
+			throw new ArgumentOutOfRangeException(nameof(arrayIndex), "The specified index is out of bounds of the specified array.");
+		}
+
+		// Check now, before starting to copy elements
+		if (array.Length - arrayIndex < Count)
+		{
+			throw new ArgumentException(nameof(array), "The specified space is not sufficient to copy the elements from this Collection.");
+		}
+
 		foreach (var item in _dictionary)
 		{
 			array[arrayIndex++] = item;
