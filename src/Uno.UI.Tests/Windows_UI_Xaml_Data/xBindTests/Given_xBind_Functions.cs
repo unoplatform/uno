@@ -18,6 +18,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 			Assert.AreEqual(string.Empty, SUT._InstanceDP.Text);
 			Assert.AreEqual(string.Empty, SUT._InnerProperty.Text);
 			Assert.AreEqual(string.Empty, SUT._StaticClass_PublicStaticProperty.Text);
+			Assert.AreEqual(string.Empty, SUT.StaticPropertyDeepNestingOnNonStaticClass.Text);
 			Assert.AreEqual(string.Empty, SUT._InstanceFunction_OneParam.Text);
 			Assert.AreEqual(string.Empty, SUT._InstanceFunction_OneParam_DP_Update_OneTime.Text);
 			Assert.AreEqual(string.Empty, SUT._InstanceFunction_OneParam_DP_Update_OneWay.Text);
@@ -43,6 +44,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 			Assert.AreEqual("-1", SUT._InstanceDP.Text);
 			Assert.AreEqual("Initial", SUT._InnerProperty.Text);
 			Assert.AreEqual("47", SUT._StaticClass_PublicStaticProperty.Text);
+			Assert.AreEqual("Hello world!", SUT.StaticPropertyDeepNestingOnNonStaticClass.Text);
 			Assert.AreEqual("52", SUT._InstanceFunction_OneParam.Text);
 			Assert.AreEqual("9", SUT._InstanceFunction_OneParam_DP_Update_OneWay.Text);
 			Assert.AreEqual("9", SUT._InstanceFunction_OneParam_DP_Update_OneTime.Text);
