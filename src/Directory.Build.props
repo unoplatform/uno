@@ -82,6 +82,7 @@
   </ItemGroup>
 
   <PropertyGroup>
+    <!-- When updating this in the future, please also update CSharpLangVersion constant in src\Uno.UWPSyncGenerator\Generator.cs -->
     <LangVersion>11.0</LangVersion>
 
     <!-- Roslyn generation is enabled by default for all uno projects (inside uno.ui only) -->

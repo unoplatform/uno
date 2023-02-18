@@ -13,6 +13,8 @@ namespace Uno.UWPSyncGenerator
 {
 	abstract class Generator
 	{
+		private const string CSharpLangVersion = "11.0";
+
 		private const string net461Define = "NET461";
 		private const string AndroidDefine = "__ANDROID__";
 		private const string iOSDefine = "__IOS__";
@@ -1755,7 +1757,7 @@ namespace Uno.UWPSyncGenerator
 								//{ "BuildingInsideVisualStudio", "true" },
 								{ "SkipUnoResourceGeneration", "true" }, // Required to avoid loading a non-existent task
 								{ "DocsGeneration", "true" }, // Detect that source generation is running
-								{ "LangVersion", "8.0" },
+								{ "LangVersion", CSharpLangVersion },
 								//{ "DesignTimeBuild", "true" },
 								//{ "UseHostCompilerIfAvailable", "false" },
 								//{ "UseSharedCompilation", "false" },
