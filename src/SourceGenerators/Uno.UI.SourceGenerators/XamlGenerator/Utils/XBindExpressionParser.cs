@@ -52,6 +52,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 
 			public Rewriter(string contextName)
 			{
+				if (string.IsNullOrEmpty(contextName))
+				{
+					throw new ArgumentException($"'{contextName}' cannot be null or empty", nameof(contextName));
+				}
+
 				_contextName = contextName;
 			}
 
@@ -60,17 +65,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 				var e = (InvocationExpressionSyntax)base.VisitInvocationExpression(node)!;
 
 				var methodName = e.Expression.ToFullString();
-				var contextBuilder = ContextBuilder;
-				if (contextBuilder.Length > 0 && !methodName.StartsWith("global::", StringComparison.Ordinal) && !Helpers.IsAttachedPropertySyntax(node.Expression).result)
+				if (!methodName.StartsWith("global::", StringComparison.Ordinal) && !Helpers.IsAttachedPropertySyntax(node.Expression).result)
 				{
-					return e.WithExpression(SyntaxFactory.ParseExpression($"{contextBuilder}{methodName}"));
+					return e.WithExpression(SyntaxFactory.ParseExpression($"{_contextName}.{methodName}"));
 				}
 
 				return e;
 			}
-
-			private string ContextBuilder
-				=> string.IsNullOrEmpty(_contextName) ? "" : _contextName + ".";
 
 			public override SyntaxNode? VisitMemberAccessExpression(MemberAccessExpressionSyntax node)
 			{
@@ -91,15 +92,19 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 					var isInsideAttachedPropertySyntax = Helpers.IsInsideAttachedPropertySyntax(node);
 					if (isInsideAttachedPropertySyntax.result)
 					{
-						var contextBuilder = ContextBuilder;
-						return Helpers.ParseMethodBody($"{contextBuilder}{isInsideAttachedPropertySyntax.expression?.Expression.ToString().TrimEnd('.')}");
+						return Helpers.ParseMethodBody($"{_contextName}.{isInsideAttachedPropertySyntax.expression?.Expression.ToString().TrimEnd('.')}");
 					}
 					else
 					{
 						var expression = e.ToFullString();
-						var contextBuilder = expression.StartsWith("global::", StringComparison.Ordinal) ? "" : ContextBuilder;
-
-						return Helpers.ParseMethodBody($"{contextBuilder}{expression}");
+						if (expression.StartsWith("global::", StringComparison.Ordinal))
+						{
+							return e;
+						}
+						else
+						{
+							return Helpers.ParseMethodBody($"{_contextName}.{expression}");
+						}
 					}
 				}
 
@@ -140,7 +145,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 
 					var rawFunction = string.IsNullOrWhiteSpace(newIdentifier)
 						? _contextName
-						: $"{ContextBuilder}{newIdentifier}";
+						: $"{_contextName}.{newIdentifier}";
 
 					return Helpers.ParseMethodBody(rawFunction);
 

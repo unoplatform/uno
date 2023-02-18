@@ -47,19 +47,6 @@ namespace Uno.UI.SourceGenerators.Tests
 		[DataRow("ctx", "MyFunction((global::System.Int32)MyProperty)", "ctx.MyFunction((global::System.Int32)ctx.MyProperty)")]
 		[DataRow("ctx", "MyFunction((global::System.Int32)MyProperty.Inner)", "ctx.MyFunction((global::System.Int32)ctx.MyProperty.Inner)")]
 		[DataRow("ctx", "((MyClass)MyProperty).Test", "((MyClass)ctx.MyProperty).Test")]
-
-		// Main class (without context)
-		[DataRow("", "MyProperty.A", "MyProperty.A")]
-		[DataRow("", "MyProperty", "MyProperty")]
-		[DataRow("", "MyProperty.A.ToLower()", "MyProperty.A.ToLower()")]
-		[DataRow("", "System.String.Format('{0:X8}', a.Value)", "System.String.Format('{0:X8}', a.Value)")]
-		[DataRow("", "Static.MyFunction(42.0)", "Static.MyFunction(42.0)")]
-		[DataRow("", "Static.MyFunction(true)", "Static.MyFunction(true)")]
-		[DataRow("", "Static.MyFunction(MyProperty)", "Static.MyFunction(MyProperty)")]
-		[DataRow("", "MyNameSpace.Static2.MyFunction(MyProperty)", "MyNameSpace.Static2.MyFunction(MyProperty)")]
-		[DataRow("", "MyFunction(MyProperty)", "MyFunction(MyProperty)")]
-		[DataRow("", "(FontFamily)MyProperty", "(FontFamily)MyProperty")]
-		[DataRow("", "(FontFamily)MyProperty.A", "(FontFamily)MyProperty.A")]
 		public void When_PathRewrite(string contextName, string inputExpression, string expectedOutput)
 		{
 			var output = XBindExpressionParser.Rewrite(contextName, inputExpression);
