@@ -30,7 +30,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 		{
 			SyntaxNode expression = ParseExpression(rawFunction);
 
-			var csuRewritten = new Rewriter(contextName).Visit(csu);
+			expression = new Rewriter(contextName).Visit(expression);
 
 			return expression.ToFullString();
 		}
