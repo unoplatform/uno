@@ -17,11 +17,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 			if (!string.IsNullOrEmpty(rawFunction))
 			{
 				var expression = ParseExpression(rawFunction);
-					var v = new Visitor(isStaticMethod);
+				var v = new Visitor(isStaticMethod);
 				v.Visit(expression);
 
-					return (v.IdentifierNames.ToArray(), v.HasMethodInvocation);
-				}
+				return (v.IdentifierNames.ToArray(), v.HasMethodInvocation);
+			}
 
 			return (Array.Empty<string>(), false);
 		}
