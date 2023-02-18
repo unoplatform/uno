@@ -5,7 +5,9 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Text;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
@@ -26,16 +28,29 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 			return (Array.Empty<string>(), false);
 		}
 
-		internal static string Rewrite(string contextName, string rawFunction)
+		// TODO: isRValue feels like a hack so that we generate compilable code when bindings are generated as LValue.
+		// However, we could be incorrectly throwing NRE. This should be handled properly.
+		internal static string Rewrite(string contextName, string rawFunction, INamedTypeSymbol? contextTypeSymbol, bool isRValue)
 		{
 			SyntaxNode expression = ParseExpression(rawFunction);
 
 			expression = new Rewriter(contextName).Visit(expression);
+			if (isRValue && contextTypeSymbol is not null)
+			{
+				var nullabilityRewriter = new NullabilityRewriter(contextName, contextTypeSymbol);
+				nullabilityRewriter.Visit(expression);
+				if (!nullabilityRewriter.Failed)
+				{
+					return nullabilityRewriter.HasNullable ?
+						nullabilityRewriter.Result + " ?? global::Windows.UI.Xaml.DependencyProperty.UnsetValue" :
+						nullabilityRewriter.Result;
+				}
+			}
 
 			return expression.ToFullString();
 		}
 
-		class Rewriter : CSharpSyntaxRewriter
+		private class Rewriter : CSharpSyntaxRewriter
 		{
 			private readonly string _contextName;
 
@@ -141,6 +156,169 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 				}
 
 				return base.VisitIdentifierName(node);
+			}
+		}
+
+		private class NullabilityRewriter : CSharpSyntaxWalker
+		{
+			private readonly string _contextName;
+			private readonly INamedTypeSymbol _contextTypeSymbol;
+			private readonly INamespaceSymbol _globalNamespace;
+			private readonly StringBuilder _builder = new();
+
+			private ISymbol? _lastAccessedMember;
+			private bool _lastAccessedIsTopLevelContext;
+
+			public bool Failed { get; private set; }
+
+			public bool HasNullable { get; private set; }
+
+			public string Result => _builder.ToString();
+
+			public NullabilityRewriter(string contextName, INamedTypeSymbol contextTypeSymbol)
+			{
+				_contextName = contextName;
+				_contextTypeSymbol = contextTypeSymbol;
+				_globalNamespace = _contextTypeSymbol.ContainingNamespace;
+				while (!_globalNamespace.IsGlobalNamespace)
+				{
+					_globalNamespace = _globalNamespace.ContainingNamespace;
+				}
+			}
+
+			public override void DefaultVisit(SyntaxNode node)
+			{
+				if (Failed)
+				{
+					return;
+				}
+
+				base.DefaultVisit(node);
+			}
+
+			public override void VisitCastExpression(CastExpressionSyntax node)
+			{
+				if (Failed)
+				{
+					return;
+				}
+
+				_builder.Append($"({node.Type.ToFullString()})");
+				_lastAccessedMember = null;
+				Visit(node.Expression);
+			}
+
+			public override void VisitLiteralExpression(LiteralExpressionSyntax node)
+			{
+				_builder.Append(node.ToString());
+			}
+
+			public override void VisitArgumentList(ArgumentListSyntax node)
+			{
+				if (Failed)
+				{
+					return;
+				}
+
+				for (int i = 0; i < node.Arguments.Count; i++)
+				{
+					_lastAccessedMember = null;
+					var argument = node.Arguments[i];
+					VisitArgument(argument);
+					if (i < node.Arguments.Count - 1)
+					{
+						_builder.Append(", ");
+					}
+				}
+			}
+
+			public override void VisitInvocationExpression(InvocationExpressionSyntax node)
+			{
+				if (Failed)
+				{
+					return;
+				}
+
+				Visit(node.Expression);
+				_builder.Append('(');
+				Visit(node.ArgumentList);
+				_builder.Append(')');
+			}
+
+			public override void VisitIdentifierName(IdentifierNameSyntax node)
+			{
+				if (Failed)
+				{
+					return;
+				}
+
+				if (node.Parent is AliasQualifiedNameSyntax aliasQualifiedName && node == aliasQualifiedName.Alias && node.Identifier.IsKind(SyntaxKind.GlobalKeyword))
+				{
+					_lastAccessedMember = _globalNamespace;
+					_builder.Append("global::");
+					return;
+				}
+
+				if (_lastAccessedMember is null && node.Identifier.ValueText == _contextName)
+				{
+					_lastAccessedMember = _contextTypeSymbol;
+					_lastAccessedIsTopLevelContext = true;
+					_builder.Append(_contextName);
+					return;
+				}
+
+				if (_lastAccessedMember is not (IPropertySymbol or IFieldSymbol or INamespaceOrTypeSymbol))
+				{
+					// TODO: Handle attached properties, for `myBtn.(Grid.Row)`, we don't currently have semantic information about "Grid".
+					// TODO: Make sure `myBtn.(Grid.Row).ToString()` works as well.
+					//Debugger.Launch();
+					Failed = true;
+					return;
+				}
+
+				(INamespaceOrTypeSymbol previousType, bool mayBeNullAccessed) = _lastAccessedMember switch
+				{
+					IPropertySymbol property => (property.Type, true),
+					IFieldSymbol field => (field.Type, true),
+					INamespaceOrTypeSymbol namespaceOrType => (namespaceOrType, false),
+					_ => throw new Exception($"Unexpected _lastAccessedMember '{_lastAccessedMember?.Kind}'."),
+				};
+
+				// TODO: Base type properties...
+				var member = previousType.GetMembers(node.Identifier.ValueText).FirstOrDefault();
+				if (member is null)
+				{
+					Failed = true;
+					return;
+				}
+
+				if (member is INamespaceOrTypeSymbol)
+				{
+					if (_lastAccessedMember is INamespaceSymbol { IsGlobalNamespace: true })
+					{
+						_builder.Append(member.Name);
+					}
+					else
+					{
+						_builder.Append($".{member.Name}");
+					}
+
+					_lastAccessedMember = member;
+					return;
+				}
+
+				if (!mayBeNullAccessed || _lastAccessedIsTopLevelContext || previousType is not ITypeSymbol { IsReferenceType: true })
+				{
+					_builder.Append('.');
+				}
+				else
+				{
+					HasNullable = true;
+					_builder.Append("?.");
+				}
+
+				_builder.Append(member.Name);
+				_lastAccessedMember = member;
 			}
 		}
 

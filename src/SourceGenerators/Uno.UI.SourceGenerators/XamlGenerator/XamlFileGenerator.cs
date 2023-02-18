@@ -4386,8 +4386,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 
 				var dataType = RewriteNamespaces(dataTypeObject.Value.ToString() ?? "");
-
-				var contextFunction = XBindExpressionParser.Rewrite("___tctx", rawFunction);
+				var dataTypeSymbol = GetType(dataType);
 
 				string buildBindBack()
 				{
@@ -4397,19 +4396,20 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						{
 							if (!string.IsNullOrWhiteSpace(rawBindBack))
 							{
-								var targetPropertyType = GetXBindPropertyPathType(propertyPaths.properties[0], GetType(dataType)).ToDisplayString(NullableFlowState.None);
+								var targetPropertyType = GetXBindPropertyPathType(propertyPaths.properties[0], dataTypeSymbol).ToDisplayString(NullableFlowState.None);
 								return $"(___ctx, __value) => {{ if(___ctx is {dataType} ___tctx) {{ ___tctx.{rawBindBack}(({propertyType})__value); }} }}";
 							}
 							else
 							{
-								throw new NotSupportedException($"Expected BindBack for {contextFunction}");
+								throw new NotSupportedException($"Expected BindBack for {rawFunction}");
 							}
 						}
 						else
 						{
 							if (propertyPaths.properties.Length == 1)
 							{
-								var targetPropertyType = GetXBindPropertyPathType(propertyPaths.properties[0], GetType(dataType)).ToDisplayString(NullableFlowState.None);
+								var targetPropertyType = GetXBindPropertyPathType(propertyPaths.properties[0], dataTypeSymbol).ToDisplayString(NullableFlowState.None);
+								var contextFunction = XBindExpressionParser.Rewrite("___tctx", rawFunction, dataTypeSymbol, isRValue: false);
 								return $"(___ctx, __value) => {{ if(___ctx is {dataType} ___tctx) {{ {contextFunction} = ({targetPropertyType})global::Windows.UI.Xaml.Markup.XamlBindingHelper.ConvertValue(typeof({targetPropertyType}), __value); }} }}";
 							}
 							else
@@ -4424,14 +4424,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					}
 				}
 
+				var contextFunction = XBindExpressionParser.Rewrite("___tctx", rawFunction, dataTypeSymbol, isRValue: true);
 				return $".BindingApply({applyBindingParameters} => /*defaultBindMode{GetDefaultBindMode()}*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, null, ___ctx => ___ctx is {GetType(dataType)} ___tctx ? (object)({contextFunction}) : null, {buildBindBack()} {pathsArray}))";
 			}
 			else
 			{
 				EnsureXClassName();
 
-				var originalRawFunction = rawFunction;
-				rawFunction = string.IsNullOrEmpty(rawFunction) ? "___ctx" : XBindExpressionParser.Rewrite("___tctx", rawFunction);
+				var rewrittenRValue = string.IsNullOrEmpty(rawFunction) ? "___ctx" : XBindExpressionParser.Rewrite("___tctx", rawFunction, _xClassName.Symbol, isRValue: true);
 
 				string buildBindBack()
 				{
@@ -4452,10 +4452,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						{
 							if (propertyPaths.properties.Length == 1)
 							{
+								var rewrittenLValue = string.IsNullOrEmpty(rawFunction) ? "___ctx" : XBindExpressionParser.Rewrite("___tctx", rawFunction, _xClassName.Symbol, isRValue: false);
 								var targetPropertyType = GetXBindPropertyPathType(propertyPaths.properties[0]).ToDisplayString(NullableFlowState.None);
 								return $"(___ctx, __value) => {{ " +
 									$"if(___ctx is {_xClassName} ___tctx) " +
-									$"{rawFunction} = ({targetPropertyType})global::Windows.UI.Xaml.Markup.XamlBindingHelper.ConvertValue(typeof({targetPropertyType}), __value);" +
+									$"{rewrittenLValue} = ({targetPropertyType})global::Windows.UI.Xaml.Markup.XamlBindingHelper.ConvertValue(typeof({targetPropertyType}), __value);" +
 									$" }}";
 							}
 							else
@@ -4470,8 +4471,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					}
 				}
 
-				var bindFunction = $"___ctx is {_xClassName} ___tctx ? (object)({rawFunction}) : null";
-				return $".BindingApply({applyBindingParameters} =>  /*defaultBindMode{GetDefaultBindMode()} {originalRawFunction}*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, __that, ___ctx => {bindFunction}, {buildBindBack()} {pathsArray}))";
+				var bindFunction = $"___ctx is {_xClassName} ___tctx ? (object)({rewrittenRValue}) : null";
+				return $".BindingApply({applyBindingParameters} =>  /*defaultBindMode{GetDefaultBindMode()} {rawFunction}*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, __that, ___ctx => {bindFunction}, {buildBindBack()} {pathsArray}))";
 			}
 		}
 

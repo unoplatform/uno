@@ -49,7 +49,8 @@ namespace Uno.UI.SourceGenerators.Tests
 		[DataRow("ctx", "((MyClass)MyProperty).Test", "((MyClass)ctx.MyProperty).Test")]
 		public void When_PathRewrite(string contextName, string inputExpression, string expectedOutput)
 		{
-			var output = XBindExpressionParser.Rewrite(contextName, inputExpression);
+			// TODO: Write this test properly (ie, pass correct context symbol instead of null).
+			var output = XBindExpressionParser.Rewrite(contextName, inputExpression, null, isRValue: true);
 
 			Assert.AreEqual(expectedOutput, output);
 		}

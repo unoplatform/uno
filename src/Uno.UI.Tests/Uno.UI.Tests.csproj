@@ -7,6 +7,8 @@
 		<ImportFrameworkWinFXTargets>false</ImportFrameworkWinFXTargets>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<UnoForceHotReloadCodeGen>true</UnoForceHotReloadCodeGen>
+		<!--<EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+		<CompilerGeneratedFilesOutputPath>Generated</CompilerGeneratedFilesOutputPath>-->
 	</PropertyGroup>
 	<!--
 	Uncomment to troubleshoot source generation
