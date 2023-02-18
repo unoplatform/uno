@@ -30,7 +30,7 @@
 			<ColumnDefinition Width="auto" />
 			<ColumnDefinition />
 		</Grid.ColumnDefinitions>
-				   
+
 		<TextBlock Text="test test"
 				   Width="{Binding test}"
 				   Height="42"
@@ -39,17 +39,17 @@
 				   Grid.Row="1"
 				   Grid.RowSpan="1"
 				   />
-		
+
 		<ios:UILabel x:Name="iOSUILabel"
 					 Text="test test"
 				     BaselineAdjustment="AlignCenters"
 					 LineBreakMode="TailTruncation"
 				   />
-		
+
 		<android:TextView x:Name="AndroidTextView"
 					 Text="test test"
 				   />
-		
+
 		<TextBlock Text="{x:Null}" />
 
 		<TextBlock>
@@ -68,12 +68,12 @@
 				<x:Double>NaN</x:Double>
 			</Border.Width>
 		</Border>
-		
+
 		<Border Height="float.NaN">
 			<Border.Background>
 				<LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
 					<GradientStop Color="Transparent" Offset="0" />
-					<GradientStop x:Name="GradientStopEffect" 
+					<GradientStop x:Name="GradientStopEffect"
 									Color="Blue"
 									Offset="1" />
 				</LinearGradientBrush>

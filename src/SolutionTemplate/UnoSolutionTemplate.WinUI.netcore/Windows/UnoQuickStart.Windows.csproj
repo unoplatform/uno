@@ -32,7 +32,7 @@
 	<ItemGroup>
 		<!--
 		If you encounter this error message:
-		
+
 			error NETSDK1148: A referenced assembly was compiled using a newer version of Microsoft.Windows.SDK.NET.dll. Please update to a newer .NET SDK in order to reference this assembly.
 
 		This means that the two packages below must be aligned with the "build" version number of
@@ -42,10 +42,10 @@
 		<FrameworkReference Update="Microsoft.Windows.SDK.NET.Ref" RuntimeFrameworkVersion="10.0.22000.27" />
 		<FrameworkReference Update="Microsoft.Windows.SDK.NET.Ref" TargetingPackVersion="10.0.22000.27" />
 	</ItemGroup>
-	
+
 	<ItemGroup>
 		<ProjectReference Include="..\$ext_safeprojectname$\$ext_safeprojectname$.csproj" />
 	</ItemGroup>
-	
+
 	<Import Project ="..\$ext_safeprojectname$.Base\base.props"/>
 </Project>

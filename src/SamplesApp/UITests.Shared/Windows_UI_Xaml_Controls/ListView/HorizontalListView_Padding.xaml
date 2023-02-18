@@ -25,13 +25,13 @@
 												Height="50"
 												Width="250"
 												Background="Green">
-						<HorizontalListView.ItemTemplate>
+						<android:HorizontalListView.ItemTemplate>
 							<DataTemplate>
 								<Image Source="{Binding Uri}"
 									   Height="50"
 									   Width="100" />
 							</DataTemplate>
-						</HorizontalListView.ItemTemplate>
+						</android:HorizontalListView.ItemTemplate>
 					</android:HorizontalListView>
 				</Border>
 			</DataTemplate>

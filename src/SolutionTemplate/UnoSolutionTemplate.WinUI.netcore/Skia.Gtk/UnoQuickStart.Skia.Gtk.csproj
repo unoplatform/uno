@@ -20,7 +20,7 @@
 		<PackageReference Include="SkiaSharp.Views.Uno.WinUI" Version="2.88.3" />
 		<PackageReference Include="SkiaSharp.Skottie" Version="2.88.3" />
 	</ItemGroup>
-	
+
 	<ItemGroup>
 		<ProjectReference Include="..\$ext_safeprojectname$\$ext_safeprojectname$.csproj" />
 	</ItemGroup>

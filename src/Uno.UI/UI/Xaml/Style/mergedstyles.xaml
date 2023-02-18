@@ -13798,7 +13798,7 @@
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="ProgressRing">
-          <NativeProgressRing />
+          <android:NativeProgressRing />
         </ControlTemplate>
       </Setter.Value>
     </Setter>
@@ -13807,7 +13807,7 @@
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="ProgressRing">
-          <NativeProgressRing />
+          <ios:NativeProgressRing />
         </ControlTemplate>
       </Setter.Value>
     </Setter>

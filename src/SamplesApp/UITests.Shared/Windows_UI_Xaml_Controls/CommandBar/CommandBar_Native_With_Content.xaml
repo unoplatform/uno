@@ -22,7 +22,7 @@
 			<Setter Property="Template">
 				<Setter.Value>
 					<ControlTemplate TargetType="CommandBar">
-						<NativeCommandBarPresenter Height="44" />
+						<android:NativeCommandBarPresenter Height="44" />
 					</ControlTemplate>
 				</Setter.Value>
 			</Setter>

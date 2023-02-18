@@ -24,6 +24,6 @@
 	<ItemGroup>
 		<ProjectReference Include="..\$ext_safeprojectname$\$ext_safeprojectname$.csproj" />
 	</ItemGroup>
-	
+
 	<Import Project ="..\$ext_safeprojectname$.Base\base.props"/>
 </Project>

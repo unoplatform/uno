@@ -33,7 +33,7 @@
 												IsItemClickEnabled="true"
 												behaviors:ListViewBaseCommand.Command="{Binding [DoSomething]}"
 												Height="200">
-						<HorizontalListView.ItemTemplate>
+						<android:HorizontalListView.ItemTemplate>
 							<DataTemplate>
 								<StackPanel>
 									<TextBlock Text="{Binding [Item]}"
@@ -44,7 +44,7 @@
 											Visibility="{Binding [IsVisible], Converter={StaticResource boolToVisibility}}" />
 								</StackPanel>
 							</DataTemplate>
-						</HorizontalListView.ItemTemplate>
+						</android:HorizontalListView.ItemTemplate>
 					</android:HorizontalListView>
 
 					<android:TextBlock Text="List View" />

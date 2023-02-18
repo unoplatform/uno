@@ -9,7 +9,6 @@
 		Disabled because of https://github.com/xamarin/xamarin-macios/issues/16401
 		<TargetFrameworks>$(TargetFrameworks);$basetargetframework$-macos</TargetFrameworks>
 		-->$endif$
-
   	</PropertyGroup>
 
   	<PropertyGroup>
@@ -108,10 +107,10 @@
 			</PropertyGroup>
 		</When>$endif$
 	</Choose>
-	
+
 	<ItemGroup>
 		<ProjectReference Include="..\$ext_safeprojectname$\$ext_safeprojectname$.csproj" />
 	</ItemGroup>
-	
+
 	<Import Project ="..\$ext_safeprojectname$.Base\base.props"/>
 </Project>

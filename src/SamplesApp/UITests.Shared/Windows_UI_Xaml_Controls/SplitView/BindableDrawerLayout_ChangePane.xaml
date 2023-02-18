@@ -13,7 +13,7 @@
 			<!-- mimic LeftDrawerSplitViewStyle -->
 			<android:SplitView.Template>
 				<ControlTemplate TargetType="SplitView">
-					<BindableDrawerLayout LeftPaneOpenLength="{TemplateBinding OpenPaneLength}"
+					<android:BindableDrawerLayout LeftPaneOpenLength="{TemplateBinding OpenPaneLength}"
 										  LeftPane="{TemplateBinding Pane}"
 										  LeftPaneBackground="{TemplateBinding PaneBackground}"
 										  IsLeftPaneOpen="{TemplateBinding IsPaneOpen, Mode=TwoWay}"
@@ -21,7 +21,7 @@
 										  Content="{TemplateBinding Content}" />
 				</ControlTemplate>
 			</android:SplitView.Template>
-			
+
 			<SplitView.Content>
 				<Grid>
 					<TextBlock TextWrapping="WrapWholeWords">

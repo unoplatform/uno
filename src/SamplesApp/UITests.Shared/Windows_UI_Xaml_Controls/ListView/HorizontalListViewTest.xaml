@@ -26,11 +26,11 @@
 						  IsItemClickEnabled="true"
 						  uBehaviors:ListViewBaseCommand.Command="{Binding [DoSomething]}"
 						  Height="50">
-					<HorizontalListView.ItemTemplate>
+					<android:HorizontalListView.ItemTemplate>
 						<DataTemplate>
 							<TextBlock Text="{Binding}" Height="20"/>
 						</DataTemplate>
-					</HorizontalListView.ItemTemplate>
+					</android:HorizontalListView.ItemTemplate>
 				</android:HorizontalListView>
 			</DataTemplate>
 		</controls:SampleControl.SampleContent>
