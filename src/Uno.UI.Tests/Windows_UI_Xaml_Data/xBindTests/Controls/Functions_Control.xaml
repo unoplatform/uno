@@ -14,13 +14,13 @@
 				   Text="{x:Bind InstanceProperty}" />
 		<TextBlock x:Name="_StaticProperty"
 				   x:FieldModifier="public"
-				   Text="{x:Bind StaticProperty}" />
+				   Text="{x:Bind local:Functions_Control.StaticProperty}" />
 		<TextBlock x:Name="_StaticPrivateProperty"
 				   x:FieldModifier="public"
-				   Text="{x:Bind StaticPrivateProperty}" />
+				   Text="{x:Bind local:Functions_Control.StaticPrivateProperty}" />
 		<TextBlock x:Name="_StaticPrivateReadonlyField"
 				   x:FieldModifier="public"
-				   Text="{x:Bind StaticPrivateReadonlyField}" />
+				   Text="{x:Bind local:Functions_Control.StaticPrivateReadonlyField}" />
 		<TextBlock x:Name="_InstanceDP"
 				   x:FieldModifier="public"
 				   Text="{x:Bind InstanceDP, Mode=OneWay}" />
@@ -40,7 +40,7 @@
 		<!-- const fields -->
 		<TextBlock x:Name="_StaticPrivateConstField"
 		   x:FieldModifier="public"
-		   Text="{x:Bind PrivateConstField}" />
+		   Text="{x:Bind local:Functions_Control.PrivateConstField}" />
 		
 		<TextBlock x:Name="_StaticClass_PublicConstField"
 		   x:FieldModifier="public"
@@ -65,7 +65,7 @@
 
 		<TextBlock x:Name="_InstanceFunction_TwoParam"
 				   x:FieldModifier="public"
-				   Text="{x:Bind Add(InstanceProperty, StaticProperty)}" />
+				   Text="{x:Bind Add(InstanceProperty, local:Functions_Control.StaticProperty)}" />
 
 		<TextBlock x:Name="_InstanceFunction_TwoParam_WithConstant"
 				   x:FieldModifier="public"
@@ -81,11 +81,11 @@
 
 		<TextBlock x:Name="_System_Function"
 				   x:FieldModifier="public"
-				   Text="{x:Bind sys:String.Format('{0}, {1}', InstanceProperty, StaticProperty)}" />
+				   Text="{x:Bind sys:String.Format('{0}, {1}', InstanceProperty, local:Functions_Control.StaticProperty)}" />
 
 		<TextBlock x:Name="_System_Function_with_Quote"
 				   x:FieldModifier="public"
-				   Text="{x:Bind sys:String.Format('{0}, ^'{1}^'', InstanceProperty, StaticProperty)}" />
+				   Text="{x:Bind sys:String.Format('{0}, ^'{1}^'', InstanceProperty, local:Functions_Control.StaticProperty)}" />
 
 		<TextBlock x:Name="_InstanceFunction_OneParam_DP_Update_OneTime"
 				   x:FieldModifier="public"

@@ -5,7 +5,6 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
@@ -32,12 +31,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 			return (Array.Empty<string>(), false);
 		}
 
-		internal static string Rewrite(string contextName, string rawFunction, Func<string, bool> isStaticMethod)
+		internal static string Rewrite(string contextName, string rawFunction)
 		{
 			var csu = ParseCompilationUnit(
 				$"class __Temp {{ private Func<object> __prop => {rawFunction}; }}");
 
-			var csuRewritten = new Rewriter(contextName, isStaticMethod).Visit(csu);
+			var csuRewritten = new Rewriter(contextName).Visit(csu);
 
 			return csuRewritten
 				.DescendantNodes()
@@ -50,12 +49,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 		class Rewriter : CSharpSyntaxRewriter
 		{
 			private readonly string _contextName;
-			private readonly Func<string, bool> _isStaticMember;
 
-			public Rewriter(string contextName, Func<string, bool> isStaticMember)
+			public Rewriter(string contextName)
 			{
 				_contextName = contextName;
-				_isStaticMember = isStaticMember;
 			}
 
 			public override SyntaxNode? VisitInvocationExpression(InvocationExpressionSyntax node)
@@ -79,13 +76,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 			{
 				var e = (MemberAccessExpressionSyntax)base.VisitMemberAccessExpression(node)!;
 				var isValidParent = !Helpers.IsInsideMethod(node).result && !Helpers.IsInsideMemberAccessExpression(node).result;
-				var isParentMemberStatic = node.Expression is MemberAccessExpressionSyntax m && _isStaticMember(m.ToFullString());
 
 				var isParenthesizedExpression = node.Expression is ParenthesizedExpressionSyntax;
-
 				if (isValidParent
-					&& !_isStaticMember(node.Expression.ToFullString())
-					&& !isParentMemberStatic
 					&& !isParenthesizedExpression
 					)
 				{
@@ -141,7 +134,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 					|| Helpers.IsInsideCastAsArrowClause(node).result
 					|| Helpers.IsInsideCastAsMethodArgument(node).result;
 
-				if (isValidParent && !_isStaticMember(node.ToFullString()))
+				if (isValidParent)
 				{
 					var newIdentifier = node.ToFullString();
 
@@ -152,10 +145,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 					return Helpers.ParseMethodBody(rawFunction);
 
 				}
-				else
-				{
-					return base.VisitIdentifierName(node);
-				}
+
+				return base.VisitIdentifierName(node);
 			}
 		}
 

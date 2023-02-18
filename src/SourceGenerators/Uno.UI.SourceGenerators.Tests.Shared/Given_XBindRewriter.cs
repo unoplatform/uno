@@ -62,22 +62,7 @@ namespace Uno.UI.SourceGenerators.Tests
 		[DataRow("", "(FontFamily)MyProperty.A", "(FontFamily)MyProperty.A")]
 		public void When_PathRewrite(string contextName, string inputExpression, string expectedOutput)
 		{
-			static bool IsStaticMethod(string name) =>
-				name switch
-				{
-					"MyStaticProperty" => true,
-					"MyStaticMethod" => true,
-					"Static.MyFunction" => true,
-					"System.String.Format" => true,
-					"Grid.GetRow" => true,
-					"MyNamespace.FrameworkElementExtensions.GetActualWidth" => true,
-					"MyNameSpace.Static2.MyFunction" => true,
-					"MyNameSpace.Static2.MyProperty" => true,
-					"MyNameSpace.Static2.MyEnum" => true,
-					_ => false,
-				};
-
-			var output = XBindExpressionParser.Rewrite(contextName, inputExpression, IsStaticMethod);
+			var output = XBindExpressionParser.Rewrite(contextName, inputExpression);
 
 			Assert.AreEqual(expectedOutput, output);
 		}

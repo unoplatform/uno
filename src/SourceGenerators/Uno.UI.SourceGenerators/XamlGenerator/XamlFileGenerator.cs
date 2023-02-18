@@ -4456,7 +4456,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				var dataType = RewriteNamespaces(dataTypeObject.Value.ToString() ?? "");
 
-				var contextFunction = XBindExpressionParser.Rewrite("___tctx", rawFunction, IsStaticMember);
+				var contextFunction = XBindExpressionParser.Rewrite("___tctx", rawFunction);
 
 				string buildBindBack()
 				{
@@ -4500,7 +4500,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				EnsureXClassName();
 
 				var originalRawFunction = rawFunction;
-				rawFunction = string.IsNullOrEmpty(rawFunction) ? "___ctx" : XBindExpressionParser.Rewrite("___tctx", rawFunction, IsStaticMember);
+				rawFunction = string.IsNullOrEmpty(rawFunction) ? "___ctx" : XBindExpressionParser.Rewrite("___tctx", rawFunction);
 
 				string buildBindBack()
 				{
