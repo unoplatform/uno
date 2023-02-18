@@ -14,7 +14,7 @@ namespace Uno.UI.SourceGenerators.Tests
 		// DataTemplates (with context)
 		[DataRow("ctx", "MyProperty.A", "ctx.MyProperty.A")]
 		[DataRow("ctx", "MyProperty", "ctx.MyProperty")]
-		[DataRow("ctx", "MyStaticProperty", "MyStaticProperty")]
+		[DataRow("ctx", "MyStaticProperty", "ctx.MyStaticProperty")]
 		[DataRow("ctx", "MyStaticMethod()", "ctx.MyStaticMethod()")]
 		[DataRow("ctx", "MyProperty.A.ToLower()", "ctx.MyProperty.A.ToLower()")]
 		[DataRow("ctx", "global::System.String.Format('{0:X8}', a.Value)", "global::System.String.Format('{0:X8}', ctx.a.Value)")]
@@ -22,7 +22,7 @@ namespace Uno.UI.SourceGenerators.Tests
 		[DataRow("ctx", "Static.MyFunction(true)", "ctx.Static.MyFunction(true)")]
 		[DataRow("ctx", "Static.MyFunction(MyProperty)", "ctx.Static.MyFunction(ctx.MyProperty)")]
 		[DataRow("ctx", "MyNameSpace.Static2.MyProperty", "ctx.MyNameSpace.Static2.MyProperty")]
-		[DataRow("ctx", "MyNameSpace.Static2.MyEnum.EnumMember", "MyNameSpace.Static2.MyEnum.EnumMember")]
+		[DataRow("ctx", "MyNameSpace.Static2.MyEnum.EnumMember", "ctx.MyNameSpace.Static2.MyEnum.EnumMember")]
 		[DataRow("ctx", "MyNameSpace.Static2.MyProperty.ToArray()", "ctx.MyNameSpace.Static2.MyProperty.ToArray()")]
 		[DataRow("ctx", "MyNameSpace.Static2.MyFunction(MyProperty)", "ctx.MyNameSpace.Static2.MyFunction(ctx.MyProperty)")]
 		[DataRow("ctx", "MyFunction(MyProperty)", "ctx.MyFunction(ctx.MyProperty)")]
