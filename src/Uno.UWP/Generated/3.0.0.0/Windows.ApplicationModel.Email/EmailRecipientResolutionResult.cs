@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member EmailRecipientResolutionStatus EmailRecipientResolutionResult.Status is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member EmailRecipientResolutionStatus EmailRecipientResolutionResult.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=EmailRecipientResolutionStatus%20EmailRecipientResolutionResult.Status");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<Certificate> EmailRecipientResolutionResult.PublicKeys is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<Certificate> EmailRecipientResolutionResult.PublicKeys is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CCertificate%3E%20EmailRecipientResolutionResult.PublicKeys");
 			}
 		}
 		#endif

@@ -17,7 +17,7 @@ namespace Windows.UI.Xaml
 
 		public static void LoadComponent(object component, Uri resourceLocator)
 		{
-			if(Current._loadableComponents.TryGetValue(resourceLocator.OriginalString, out var document))
+			if (Current._loadableComponents.TryGetValue(resourceLocator.OriginalString, out var document))
 			{
 				XamlReader.LoadUsingComponent(document, component);
 			}

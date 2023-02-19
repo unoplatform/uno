@@ -56,7 +56,7 @@ namespace Windows.UI.Xaml.Controls
 			if (items != null)
 			{
 
-				if(platformItem.Submenu == null)
+				if (platformItem.Submenu == null)
 				{
 					platformItem.Submenu = new NSMenu();
 				}
@@ -73,7 +73,7 @@ namespace Windows.UI.Xaml.Controls
 
 						case MenuFlyoutItem flyoutItem:
 							var subPlatformItem2 = new NSMenuItem(flyoutItem.Text, (s, e) => OnItemActivated(flyoutItem)) { Enabled = true };
-							flyoutItem.InvokeClick(); 
+							flyoutItem.InvokeClick();
 							platformItem.Submenu.AddItem(subPlatformItem2);
 							break;
 

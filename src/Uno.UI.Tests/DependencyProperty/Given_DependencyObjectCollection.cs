@@ -45,7 +45,7 @@ namespace Uno.UI.Tests.BinderTests
 
 			Assert.AreEqual(0, o1.MyProperty);
 
-			SUT.Add(o1); 
+			SUT.Add(o1);
 
 			Assert.AreEqual(42, o1.MyProperty);
 		}
@@ -155,7 +155,7 @@ namespace Uno.UI.Tests.BinderTests
 				new MyDependencyObject(),
 				new MyDependencyObject()
 			};
-			
+
 			Assert.AreEqual(3, SUT.CollectionChangedCount);
 		}
 

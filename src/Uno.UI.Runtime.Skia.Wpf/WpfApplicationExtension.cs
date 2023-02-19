@@ -36,7 +36,7 @@ namespace Uno.UI.Runtime.Skia.Wpf
 			var newTheme = _themeHelper.GetSystemTheme();
 
 			if (newTheme != _currentTheme)
-            {
+			{
 				_currentTheme = newTheme;
 				SystemThemeChanged?.Invoke(this, EventArgs.Empty);
 			}

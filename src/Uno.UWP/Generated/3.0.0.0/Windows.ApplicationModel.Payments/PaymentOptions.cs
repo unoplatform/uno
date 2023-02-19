@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PaymentShippingType PaymentOptions.ShippingType is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PaymentShippingType PaymentOptions.ShippingType is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PaymentShippingType%20PaymentOptions.ShippingType");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PaymentOptions.RequestShipping is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool PaymentOptions.RequestShipping is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20PaymentOptions.RequestShipping");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PaymentOptionPresence PaymentOptions.RequestPayerPhoneNumber is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PaymentOptionPresence PaymentOptions.RequestPayerPhoneNumber is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PaymentOptionPresence%20PaymentOptions.RequestPayerPhoneNumber");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PaymentOptionPresence PaymentOptions.RequestPayerName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PaymentOptionPresence PaymentOptions.RequestPayerName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PaymentOptionPresence%20PaymentOptions.RequestPayerName");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PaymentOptionPresence PaymentOptions.RequestPayerEmail is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PaymentOptionPresence PaymentOptions.RequestPayerEmail is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PaymentOptionPresence%20PaymentOptions.RequestPayerEmail");
 			}
 			set
 			{

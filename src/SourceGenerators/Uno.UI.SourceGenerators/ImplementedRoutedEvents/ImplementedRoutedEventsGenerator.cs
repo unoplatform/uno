@@ -20,8 +20,6 @@ namespace Uno.UI.SourceGenerators.ImplementedRoutedEvents;
 [Generator]
 public class ImplementedRoutedEventsGenerator : ISourceGenerator
 {
-	internal static bool IsUnitTest { get; set; }
-
 	public void Initialize(GeneratorInitializationContext context)
 	{
 		// No initialization required.
@@ -29,9 +27,7 @@ public class ImplementedRoutedEventsGenerator : ISourceGenerator
 
 	public void Execute(GeneratorExecutionContext context)
 	{
-		if (
-			IsUnitTest
-			|| (!DesignTimeHelper.IsDesignTime(context) && PlatformHelper.IsValidPlatform(context)))
+		if (!DesignTimeHelper.IsDesignTime(context) && PlatformHelper.IsValidPlatform(context))
 		{
 			var uiElementSymbol = context.Compilation.GetTypeByMetadataName(XamlConstants.Types.UIElement);
 			if (uiElementSymbol is null)
@@ -224,7 +220,7 @@ public class ImplementedRoutedEventsGenerator : ISourceGenerator
 
 			// Keep containing namespace here to avoid controls defined in both WUXC and MUXC from one overwriting the other.
 			var generatedSource = builder.ToString();
-			var generatedFileName = $"{GetFullMetadataNameForFileName(type)}_ImplementedRoutedEvents.g.cs";
+			var generatedFileName = $"{type.GetFullMetadataNameForFileName()}_ImplementedRoutedEvents.g.cs";
 			_context.AddSource(generatedFileName, generatedSource);
 		}
 
@@ -239,12 +235,6 @@ public class ImplementedRoutedEventsGenerator : ISourceGenerator
 			}
 
 			builder.AppendLineIndented(");");
-		}
-
-		// Taken from https://github.com/CommunityToolkit/dotnet/blob/58762429501b4d7cb8c11013ca26e488fbcff592/CommunityToolkit.Mvvm.SourceGenerators/Extensions/INamedTypeSymbolExtensions.cs
-		private static string GetFullMetadataNameForFileName(INamedTypeSymbol symbol)
-		{
-			return symbol.GetFullMetadataName().Replace('`', '-').Replace('+', '.');
 		}
 	}
 }

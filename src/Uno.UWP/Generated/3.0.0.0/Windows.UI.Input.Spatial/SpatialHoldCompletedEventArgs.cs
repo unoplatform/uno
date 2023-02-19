@@ -13,7 +13,7 @@ namespace Windows.UI.Input.Spatial
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SpatialInteractionSourceKind SpatialHoldCompletedEventArgs.InteractionSourceKind is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SpatialInteractionSourceKind SpatialHoldCompletedEventArgs.InteractionSourceKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SpatialInteractionSourceKind%20SpatialHoldCompletedEventArgs.InteractionSourceKind");
 			}
 		}
 		#endif

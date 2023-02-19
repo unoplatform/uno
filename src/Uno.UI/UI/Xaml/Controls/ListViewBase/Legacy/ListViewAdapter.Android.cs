@@ -36,7 +36,7 @@ namespace Uno.UI.Controls.Legacy
 		private const int NumberOfStaticViewTypes = 4;
 
 		// Make sure these IDs match the order in which view types are added in 'InitializeTemplates'
-		private const int DefaultViewType = 0; // no template
+		//private const int DefaultViewType = 0; // no template
 		private const int HeaderViewType = 1;
 		private const int FooterViewType = 2;
 		private const int GroupHeaderViewType = 3;
@@ -190,7 +190,7 @@ namespace Uno.UI.Controls.Legacy
 
 			if (view == null)
 			{
-				// A single item may be mapped multiple times because of the recycling, and 
+				// A single item may be mapped multiple times because of the recycling, and
 				// we may not be able to know which one is actually displayed.
 				SecondaryPool?.GetAllViews()
 					.OfType<ItemContainerHolder>()

@@ -94,7 +94,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 			var last5Recorded = values.Skip(values.Count - 5).ToArray();
 			var deltas = last5Recorded.Zip(last5Recorded.Skip(1), (a, b) => Math.Abs(a - b));
 			var closeEnough = Comparer<double>.Create((x, y) => // allows for +-1 to be equal
-				Math.Abs(x - y) < 1 ? 0 : (x > y ? 1: -1)
+				Math.Abs(x - y) < 1 ? 0 : (x > y ? 1 : -1)
 			);
 
 			Assert.IsTrue(deltas.Any(x => x > SignificantChangePer100MS), "animated values (last half) should be changing: " + string.Join(", ", last5Recorded));

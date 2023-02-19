@@ -5,7 +5,7 @@ parameters:
 
 jobs:
 - job: Skia_Tests_Build
-  displayName: 'Skia Samples App Build'
+  displayName: 'Build Skia Samples App UI Tests'
   timeoutInMinutes: 60
 
   pool:
@@ -34,6 +34,7 @@ jobs:
     displayName: Build GTK Head
 
   - task: PublishBuildArtifacts@1
+    retryCountOnTaskFailure: 3
     condition: always()
     inputs:
       PathtoPublish: $(Build.SourcesDirectory)\src\SamplesApp\SamplesApp.Skia.Gtk\bin\Release\net7.0
@@ -44,13 +45,26 @@ jobs:
     displayName: Build WPF Head
 
   - task: PublishBuildArtifacts@1
+    retryCountOnTaskFailure: 3
     condition: always()
     inputs:
       PathtoPublish: $(Build.SourcesDirectory)\src\SamplesApp\SamplesApp.Skia.WPF\bin\Release\net7.0-windows
       ArtifactName: skia-wpf-samples-app
       ArtifactType: Container
 
+  - powershell: dotnet publish src/SamplesApp/SamplesApp.Skia.Linux.FrameBuffer/SamplesApp.Skia.Linux.FrameBuffer.csproj -c Release -f net7.0 /bl:$(build.artifactstagingdirectory)\build-framebuffer.binlog
+    displayName: Build Framebuffer Head
+
   - task: PublishBuildArtifacts@1
+    retryCountOnTaskFailure: 3
+    condition: always()
+    inputs:
+      PathtoPublish: $(Build.SourcesDirectory)\src\SamplesApp\SamplesApp.Skia.Linux.FrameBuffer\bin\Release\net7.0
+      ArtifactName: skia-framebuffer-samples-app
+      ArtifactType: Container
+
+  - task: PublishBuildArtifacts@1
+    retryCountOnTaskFailure: 3
     condition: always()
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
@@ -62,7 +76,7 @@ jobs:
 ##
 
 - job: Skia_Gtk_Screenshot_Tests
-  displayName: 'Skia GTK Snapshot Tests'
+  displayName: 'Run Skia GTK Snapshot Tests'
   timeoutInMinutes: 60
 
   pool:
@@ -87,13 +101,14 @@ jobs:
 
   - task: PublishBuildArtifacts@1
     condition: always()
+    retryCountOnTaskFailure: 3
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
       ArtifactName: uitests-results
       ArtifactType: Container
 
 - job: Skia_Gtk_Runtime_Tests_Build
-  displayName: 'Skia GTK Runtime Tests'
+  displayName: 'Run Skia GTK Runtime Tests'
   timeoutInMinutes: 60
 
   pool:
@@ -129,7 +144,7 @@ jobs:
 ##
 
 - job: Skia_Wpf_Screenshot_Tests
-  displayName: 'Skia WPF Snapshot Tests'
+  displayName: 'Run Skia WPF Snapshot Tests'
   timeoutInMinutes: 60
 
   pool:
@@ -153,13 +168,14 @@ jobs:
 
   - task: PublishBuildArtifacts@1
     condition: always()
+    retryCountOnTaskFailure: 3
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
       ArtifactName: uitests-results
       ArtifactType: Container
 
 - job: Skia_Wpf_Runtime_Tests_Build
-  displayName: 'Skia WPF Runtime Tests'
+  displayName: 'Run Skia WPF Runtime Tests'
   timeoutInMinutes: 60
 
   pool:

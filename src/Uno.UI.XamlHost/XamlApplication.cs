@@ -15,7 +15,7 @@ public class XamlApplication : Application, IXamlMetadataProvider, IXamlMetadata
 	public XamlApplication()
 	{
 	}
-	
+
 	public XamlApplication(List<IXamlMetadataProvider> providers)
 	{
 		MetadataProviders = providers;
@@ -26,7 +26,7 @@ public class XamlApplication : Application, IXamlMetadataProvider, IXamlMetadata
 	public IXamlType GetXamlType(Type type) => throw new NotImplementedException();
 
 	public IXamlType GetXamlType(string fullName) => throw new NotImplementedException();
-	
+
 	public XmlnsDefinition[] GetXmlnsDefinitions() => throw new NotImplementedException();
 
 	public

@@ -13,7 +13,7 @@ namespace Windows.Foundation.Diagnostics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member StorageFile LogFileGeneratedEventArgs.File is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member StorageFile LogFileGeneratedEventArgs.File is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=StorageFile%20LogFileGeneratedEventArgs.File");
 			}
 		}
 		#endif

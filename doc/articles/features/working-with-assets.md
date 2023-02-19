@@ -6,7 +6,7 @@ In a standard Xamarin project, you must duplicate, rename, and manually add your
 
 We still recommend using the above technique for platform-specific icons and splash screens in Uno.UI projects.
 
-For most other assets, Uno.UI uses custom build tasks to lets you include assets once in shared projects and automatically use them on all platforms. The rest of this document will cover those particular features.
+For most other assets, Uno.UI processes assets once in your app's **Class Library Project** and automatically uses them on all platforms. The rest of this document will cover those particular features.
 
 ## Supported asset types
 
@@ -16,10 +16,10 @@ At the moment, only the following image file types are supported:
 | ----------- | :------------: | :---: | :-----------: | :-----------------: | :--: | :---: | :--: | :--: |
 | Windows UWP |       ✔️        |   ✔️   |       ❌       |          ✔️          |  ✔️   |   ✔️   |  ❌   |  ✔️   |
 | Android 10  |       ✔️        |  ✔️‡   |       ✔️       |          ✔️          |  ✔️   |   ✔️   |  ✔️   |  ✔️   |
-| iOS 13      |       ✔️        |  ✔️‡   |       ✔️       |          ✔️          |  ✔️   |   ❌   |  ❌   |  ❌   |
+| iOS 13      |       ✔️        |  ✔️‡   |       ✔️       |          ✔️          |  ✔️   |   ❌   |  ❌   |  ✔️   |
 | macOS       |       ✔️        |  ✔️‡   |       ✔️       |          ✔️          |  ✔️   |   ❌   |  ✔️   |  ❌   |
 | Wasm†       |       ✔️        |  ✔️‡   |      ❌†       |          ✔️          |  ✔️   |  ❌†   |  ❌†  |  ✔️   |
-| Skia WPF    |       ✔️        |  ✔️‡   |       ❌       |          ✔️          |  ✔️   |   ✔️   |  ❌   |  ❌   |
+| Skia WPF    |       ✔️        |  ✔️‡   |       ❌       |          ✔️          |  ✔️   |   ✔️   |  ❌   |  ✔️   |
 
 * † Actual **Wasm image format support** is browser dependent. For example, `.webp` is not working on Safari on macOS, but works on Chromium-based browsers. Check-marks (✔️) indicates a format that can safely expected to work on all browsers able to run Wasm applications.
 * ‡ **Gif animation support**:
@@ -33,6 +33,18 @@ This is just like adding an asset to any UWP project. Just make sure to add the 
 
 1. Add the image file to the `Assets` directory of a shared project.
 2. Set the build action to `Content`.
+
+Using the asset is done through the `ms-appx:///` scheme. 
+
+Here are a few examples:
+```xml
+<!-- Relative path without a leading '/' uses assets from the library where the XAML is located -->
+<Image Source="Assets/MyImage.png" />
+<!-- Explicitly qualify the asset, when used from multiple project libraries -->
+<Image Source="ms-appx:///[MyApp]/Assets/MyImage.png" />
+```
+
+You can also get assets directly using [StorageFile.GetFileFromApplicationUriAsync](file-management.md).
 
 ## Qualify an asset
 
@@ -111,7 +123,7 @@ A theme qualifier can be specified for the image loader to use an asset based on
 
 ### Custom (platform)
 
-Sometimes, you might want to use a different asset depending on the platform. Because there is no `platform` qualifier on UWP, we had to use the `custom` qualifier.
+Sometimes, you might want to use a different asset depending on the platform. Because there is no `platform` qualifier on UWP, Uno Platform provides the `custom` qualifier.
 
 | Platform | Qualifier value |
 |----------|-----------------|
@@ -123,7 +135,7 @@ Because the `custom` qualifier doesn't have any special meaning on UWP, we have 
 
 On iOS and Android, Uno.UI's `RetargetAssets` task automatically interprets these values and excludes unsupported platforms.
 
-On UWP, you must add the following code to your `App.xaml.cs` constructor:
+On UWP, you must add the following code to your `App.cs` or `App.xaml.cs` constructor:
 
 ```csharp
 #if WINDOWS_UWP

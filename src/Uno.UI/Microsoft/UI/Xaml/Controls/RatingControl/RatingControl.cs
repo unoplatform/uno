@@ -71,9 +71,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 		//~RatingControl()
 		//{
-			// We only need to use safe_get in the deruction loop
-			// We don't need to unload events
-			// RecycleEvents(true /* useSafeGet */);
+		// We only need to use safe_get in the deruction loop
+		// We don't need to unload events
+		// RecycleEvents(true /* useSafeGet */);
 		//}
 
 		private float RenderingRatingFontSize()
@@ -135,7 +135,7 @@ namespace Microsoft.UI.Xaml.Controls
 			if (backgroundStackPanel != null)
 			{
 				m_backgroundStackPanel = backgroundStackPanel;
-				
+
 				backgroundStackPanel.PointerCanceled += OnPointerCancelledBackgroundStackPanel;
 				backgroundStackPanel.PointerCaptureLost += OnPointerCaptureLostBackgroundStackPanel;
 				backgroundStackPanel.PointerMoved += OnPointerMovedOverBackgroundStackPanel;

@@ -32,7 +32,7 @@ namespace Uno.UI.Samples.Content.UITests.Animations
 			_sut = _myControl.FindFirstChild<Border>(b => b.Name == "StateTwoContent");
 			_output = _myControl.FindFirstChild<TextBlock>(t => t.Name == "PullingOutput");
 
-			var timer = new DispatcherTimer {Interval = TimeSpan.FromMilliseconds(100)};
+			var timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(100) };
 			timer.Tick += (snd, args) =>
 			{
 				_output.Text = _sut.Opacity.ToString("F2");

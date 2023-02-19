@@ -81,7 +81,7 @@ namespace Windows.UI.Xaml.Controls
 				? _trace.WriteEventActivity(
 					FrameworkElement.TraceProvider.FrameworkElement_MeasureStart,
 					FrameworkElement.TraceProvider.FrameworkElement_MeasureStop,
-					new object[] {LoggingOwnerTypeName, Panel.GetDependencyObjectId()}
+					new object[] { LoggingOwnerTypeName, Panel.GetDependencyObjectId() }
 				)
 				: null;
 
@@ -177,7 +177,7 @@ namespace Windows.UI.Xaml.Controls
 				? _trace.WriteEventActivity(
 					FrameworkElement.TraceProvider.FrameworkElement_ArrangeStart,
 					FrameworkElement.TraceProvider.FrameworkElement_ArrangeStop,
-					new object[] {LoggingOwnerTypeName, Panel.GetDependencyObjectId()}
+					new object[] { LoggingOwnerTypeName, Panel.GetDependencyObjectId() }
 				)
 				: null;
 
@@ -476,6 +476,7 @@ namespace Windows.UI.Xaml.Controls
 			ArrangeChildOverride(view, finalFrame);
 		}
 
+#if __ANDROID__ || __IOS__ || __MACOS__
 		private void LogArrange(View view, Rect frame)
 		{
 			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
@@ -487,6 +488,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 		}
+#endif
 
 		protected Thickness MarginChild(View view)
 		{

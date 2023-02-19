@@ -121,16 +121,7 @@
 		<When Condition="'$(UNO_UWP_BUILD)'=='false'">
 			<ItemGroup>
 				<PackageReference Include="Microsoft.WindowsAppSDK">
-					<Version>1.1.3</Version>
-				</PackageReference>
-				<PackageReference Include="Microsoft.WindowsAppSDK.WinUI">
-					<Version>1.0.0-experimental1</Version>
-				</PackageReference>
-				<PackageReference Include="Microsoft.WindowsAppSDK.Foundation">
-					<Version>1.0.0-experimental1</Version>
-				</PackageReference>
-				<PackageReference Include="Microsoft.WindowsAppSDK.InteractiveExperiences">
-					<Version>1.0.0-experimental1</Version>
+					<Version>1.2.221209.1</Version>
 				</PackageReference>
 			</ItemGroup>
 		</When>

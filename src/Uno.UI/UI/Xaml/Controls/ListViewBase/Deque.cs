@@ -894,6 +894,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			_offset = 0;
 			Count = 0;
+			Array.Clear(_buffer, 0, _buffer.Length);
 		}
 
 		/// <summary>

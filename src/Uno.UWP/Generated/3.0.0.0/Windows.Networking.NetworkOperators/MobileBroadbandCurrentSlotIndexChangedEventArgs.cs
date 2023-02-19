@@ -13,7 +13,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int MobileBroadbandCurrentSlotIndexChangedEventArgs.CurrentSlotIndex is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int MobileBroadbandCurrentSlotIndexChangedEventArgs.CurrentSlotIndex is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20MobileBroadbandCurrentSlotIndexChangedEventArgs.CurrentSlotIndex");
 			}
 		}
 		#endif

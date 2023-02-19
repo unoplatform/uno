@@ -13,7 +13,7 @@ namespace Windows.Media.PlayTo
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset PlayToSourceRequest.Deadline is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DateTimeOffset PlayToSourceRequest.Deadline is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DateTimeOffset%20PlayToSourceRequest.Deadline");
 			}
 		}
 		#endif
@@ -29,7 +29,7 @@ namespace Windows.Media.PlayTo
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Media.PlayTo.PlayToSourceDeferral GetDeferral()
 		{
-			throw new global::System.NotImplementedException("The member PlayToSourceDeferral PlayToSourceRequest.GetDeferral() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member PlayToSourceDeferral PlayToSourceRequest.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PlayToSourceDeferral%20PlayToSourceRequest.GetDeferral%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

@@ -24,16 +24,16 @@ namespace Uno.UI.Controls
 		private bool _scrollToIndexChanged;
 
 		public BindableHorizontalListView(Android.Content.Context context, IAttributeSet attrs)
-            : this(context, attrs, new BindableListAdapter(context))
-        {
+			: this(context, attrs, new BindableListAdapter(context))
+		{
 
-        }
+		}
 
 		public BindableHorizontalListView(Android.Content.Context context, IAttributeSet attrs, BindableListAdapter adapter)
-            : base(context, attrs)
-        {
-            Adapter = adapter;
-            SetupItemClickListeners();
+			: base(context, attrs)
+		{
+			Adapter = adapter;
+			SetupItemClickListeners();
 		}
 
 		protected override void OnLayout(bool changed, int left, int top, int right, int bottom)
@@ -43,14 +43,15 @@ namespace Uno.UI.Controls
 
 		protected override void OnDraw(global::Android.Graphics.Canvas canvas)
 		{
-			base.OnDraw(canvas);			
+			base.OnDraw(canvas);
 			ScrollToItem();
 		}
 
 		public IEnumerable ItemsSource
 		{
 			get { return BindableAdapter.ItemsSource; }
-			set { 
+			set
+			{
 				BindableAdapter.ItemsSource = value;
 			}
 		}
@@ -74,25 +75,25 @@ namespace Uno.UI.Controls
 			}
 		}
 
-        private ICommand _itemClickCommand;
-        public ICommand ItemClickCommand
-        {
-            get
-            {
-                return _itemClickCommand;
-            }
-            set
-            {
-                _itemClickCommand = value;
+		private ICommand _itemClickCommand;
+		public ICommand ItemClickCommand
+		{
+			get
+			{
+				return _itemClickCommand;
+			}
+			set
+			{
+				_itemClickCommand = value;
 
-                if (BindableAdapter != null)
-                {
-                    BindableAdapter.ItemClickCommand = value;
-                }
-            }
-        }
+				if (BindableAdapter != null)
+				{
+					BindableAdapter.ItemClickCommand = value;
+				}
+			}
+		}
 
-        public ICommand ItemLongClickCommand { get; set; }
+		public ICommand ItemLongClickCommand { get; set; }
 
 		protected BindableListAdapter BindableAdapter
 		{
@@ -120,15 +121,10 @@ namespace Uno.UI.Controls
 			command.Execute(item);
 		}
 
-		private int GetItemWidth()
-		{
-			return GetChildAt(0).Width;
-		}
-
 		private void ScrollToItem()
 		{
-			if (_scrollToIndexChanged 
-				&& _scrollToIndex >= 0 
+			if (_scrollToIndexChanged
+				&& _scrollToIndex >= 0
 				&& _scrollToIndex < BindableAdapter.Count)
 			{
 				_scrollToIndexChanged = false;
@@ -136,5 +132,5 @@ namespace Uno.UI.Controls
 				SetSelection(_scrollToIndex);
 			}
 		}
-    }
+	}
 }

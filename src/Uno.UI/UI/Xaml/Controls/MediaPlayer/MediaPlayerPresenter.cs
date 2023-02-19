@@ -1,4 +1,4 @@
-#if !HAS_UNO_WINUI && (__ANDROID__ || __IOS__ || __MACOS__)
+#if __ANDROID__ || __IOS__ || __MACOS__
 using System;
 using Windows.Foundation;
 using Windows.Media.Playback;
@@ -145,7 +145,7 @@ namespace Windows.UI.Xaml.Controls
 				availableSize.Width = Width;
 				availableSize.Height = Width / _currentRatio;
 			}
-			
+
 			base.MeasureOverride(availableSize);
 
 			return availableSize;

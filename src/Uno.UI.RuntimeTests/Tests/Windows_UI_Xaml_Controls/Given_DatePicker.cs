@@ -131,10 +131,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			var textBlock = MUXControlsTestApp.Utilities.VisualTreeUtils.FindVisualChildByName(datePicker, id) as TextBlock;
 			textBlock.Should().NotBeNull($"TextBlock {id} not found");
-			if(textBlock != null)
+			if (textBlock != null)
 			{
 				var v = textBlock.GetValue(Grid.ColumnProperty);
-				((int) v).Should().Be(expectedColumn, $"{id} column property");
+				((int)v).Should().Be(expectedColumn, $"{id} column property");
 			}
 		}
 	}

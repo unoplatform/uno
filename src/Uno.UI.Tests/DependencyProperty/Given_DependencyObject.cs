@@ -164,6 +164,6 @@ namespace Uno.UI.Tests
 
 	public partial class MyProvider : DependencyObject
 	{
-			
+
 	}
 }

@@ -18,6 +18,7 @@ using FluentAssertions.Execution;
 using Private.Infrastructure;
 using MUXControlsTestApp.Utilities;
 using Windows.UI.Xaml.Automation;
+using Uno.Extensions;
 #if __IOS__
 using UIKit;
 #endif
@@ -76,12 +77,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			using var _ = new AssertionScope();
 
-			var sut1 = new ContentControl {Tag = w};
+			var sut1 = new ContentControl { Tag = w };
 
 			// Bind sut1.Width to sut1.Tag
 			sut1.SetBinding(
 				FrameworkElement.WidthProperty,
-				new Binding {Source = sut1, Path = new PropertyPath("Tag")});
+				new Binding { Source = sut1, Path = new PropertyPath("Tag") });
 
 			sut1.Width.Should().Be(expectedW, "sut1: Width bound after setting value");
 
@@ -90,19 +91,19 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// Bind sut2.Width to sut2.Tag
 			sut2.SetBinding(
 				FrameworkElement.WidthProperty,
-				new Binding {Source = sut2, Path = new PropertyPath("Tag")});
+				new Binding { Source = sut2, Path = new PropertyPath("Tag") });
 
 			// Set sut2.Tag AFTER the binding
 			sut2.Tag = w;
 
 			sut2.Width.Should().Be(expectedW, "sut2: Width bound before setting value");
 
-			var sut3 = new ContentControl {Tag = h};
+			var sut3 = new ContentControl { Tag = h };
 
 			// Bind sut3.Height to sut3.Tag
 			sut3.SetBinding(
 				FrameworkElement.HeightProperty,
-				new Binding {Source = sut3, Path = new PropertyPath("Tag")});
+				new Binding { Source = sut3, Path = new PropertyPath("Tag") });
 
 			sut3.Height.Should().Be(expectedH, "sut3: Height bound after setting value");
 
@@ -111,7 +112,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// Bind sut4.Height to sut4.Tag
 			sut4.SetBinding(
 				FrameworkElement.HeightProperty,
-				new Binding {Source = sut4, Path = new PropertyPath("Tag")});
+				new Binding { Source = sut4, Path = new PropertyPath("Tag") });
 
 			// Set sut4.Tag AFTER the binding
 			sut4.Tag = h;
@@ -208,6 +209,58 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreEqual(2, count);
 		}
+
+#if !WINDOWS_UWP
+		[TestMethod]
+		[RunsOnUIThread]
+		[RequiresFullWindow]
+		public async Task When_InvalidateDuringArrange_Then_DoesNotInvalidateParents()
+		{
+			var sut = new Grid
+			{
+				Margin = new Thickness(0, 100, 0, 0),
+				BorderBrush = new SolidColorBrush(Windows.UI.Colors.DeepPink),
+				BorderThickness = new Thickness(5),
+				MinWidth = 100,
+				MinHeight = 100,
+				RowDefinitions =
+				{
+					new RowDefinition{Height = 75},
+					new RowDefinition(),
+					//new RowDefinition{Height = 75}, // Not working on iOS when the line below is commented
+				},
+				Children =
+				{
+					new TextBlock{Text = "Hello world"},
+					new Microsoft.UI.Xaml.Controls.ItemsRepeater
+						{
+							ItemsSource="0123456789",
+							ItemTemplate = new DataTemplate(() => new Border
+							{
+								BorderBrush= new SolidColorBrush(Windows.UI.Colors.Red),
+								Margin= new Thickness(5),
+								BorderThickness=new Thickness(5),
+								Width=300,
+								Child = new TextBlock
+								{
+									TextWrapping= TextWrapping.Wrap,
+									Foreground = new SolidColorBrush(Windows.UI.Colors.Chartreuse)
+								}.Apply(tb => tb.SetBinding(TextBlock.TextProperty, new Binding()))
+							}),
+							Layout = new Microsoft.UI.Xaml.Controls.StackLayout{Orientation = Orientation.Horizontal}
+						}
+						.Apply(ir => Grid.SetRow(ir, 1))
+				}
+			};
+
+			TestServices.WindowHelper.WindowContent = sut;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			sut.IsArrangeDirty.Should().BeFalse();
+
+			TestServices.WindowHelper.WindowContent = null;
+		}
+#endif
 
 		[TestMethod]
 		public Task MeasureWithNan() =>
@@ -590,7 +643,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var dpName = SUT.GetValue(FrameworkElement.NameProperty);
 			Assert.AreEqual("Test", dpName);
 		}
-		
+
 		[TestMethod]
 		[RunsOnUIThread]
 		public void When_Set_NameProperty()
@@ -606,7 +659,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		public async Task When_Add_Element_Then_Unload_Raised()
 		{
 			var sut = new Border();
-			var hostPanel = new Grid {Children = {sut}};
+			var hostPanel = new Grid { Children = { sut } };
 
 			TestServices.WindowHelper.WindowContent = hostPanel;
 			await TestServices.WindowHelper.WaitForIdle();
@@ -620,6 +673,17 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if UNO_REFERENCE_API
 			Assert.IsFalse(hostPanel._children.Contains(sut));
 #endif
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public void When_BaseUri()
+		{
+			var sut = new Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.ButtonUserControl();
+
+			Assert.AreEqual(
+				new Uri("ms-appx:///Uno.UI.RuntimeTests/Tests/Windows_UI_Xaml/Controls/ButtonUserControl.xaml"),
+				sut.BaseUri);
 		}
 
 #if UNO_REFERENCE_API
@@ -733,7 +797,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 	public partial class ObservableLayoutingControl : FrameworkElement
 	{
-		public event TypedEventHandler<ObservableLayoutingControl, Size> OnMeasure;
+		public
+#if __ANDROID__
+		new
+#endif
+		event TypedEventHandler<ObservableLayoutingControl, Size> OnMeasure;
 
 		public event TypedEventHandler<ObservableLayoutingControl, Size> OnArrange;
 

@@ -13,7 +13,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<MobileBroadbandNetworkRegistrationStateChange> MobileBroadbandNetworkRegistrationStateChangeTriggerDetails.NetworkRegistrationStateChanges is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<MobileBroadbandNetworkRegistrationStateChange> MobileBroadbandNetworkRegistrationStateChangeTriggerDetails.NetworkRegistrationStateChanges is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CMobileBroadbandNetworkRegistrationStateChange%3E%20MobileBroadbandNetworkRegistrationStateChangeTriggerDetails.NetworkRegistrationStateChanges");
 			}
 		}
 		#endif

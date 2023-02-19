@@ -7,12 +7,12 @@ using System.Text;
 
 namespace Windows.UI.Xaml.Media.Animation
 {
-    /// <summary>
-    /// TransitionCollection : Based on WinRT TransitionCollection
-    /// (https://msdn.microsoft.com/en-us/library/windows/apps/windows.ui.xaml.media.animation.transitioncollection.aspx)
-    /// </summary>
+	/// <summary>
+	/// TransitionCollection : Based on WinRT TransitionCollection
+	/// (https://msdn.microsoft.com/en-us/library/windows/apps/windows.ui.xaml.media.animation.transitioncollection.aspx)
+	/// </summary>
 	public partial class TransitionCollection : List<Transition>, IList<Transition>, IEnumerable<Transition>
-    {
-      
-    }
+	{
+
+	}
 }

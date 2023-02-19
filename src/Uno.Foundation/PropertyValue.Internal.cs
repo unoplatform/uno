@@ -64,7 +64,7 @@ namespace Windows.Foundation
 
 						_ => CompareOtherType(),
 					};
-					
+
 					// case wf::PropertyType_OtherType:
 					bool CompareOtherType()
 					{
@@ -90,10 +90,10 @@ namespace Windows.Foundation
 									byte oldValueAsByte => oldValueAsByte == (byte)newValue,
 									sbyte oldValueAsSByte => oldValueAsSByte == (sbyte)newValue,
 									short oldValueAsShort => oldValueAsShort == (short)newValue,
-									ushort oldValueAsUShort=> oldValueAsUShort == (ushort)newValue,
+									ushort oldValueAsUShort => oldValueAsUShort == (ushort)newValue,
 									int oldValueAsInt => oldValueAsInt == (int)newValue,
 									uint oldValueAsUInt => oldValueAsUInt == (uint)newValue,
-									long oldValueAsLong=> oldValueAsLong == (long)newValue,
+									long oldValueAsLong => oldValueAsLong == (long)newValue,
 									ulong oldValueAsULong => oldValueAsULong == (ulong)newValue,
 
 									// CS1008 Type byte, sbyte, short, ushort, int, uint, long, or ulong expected

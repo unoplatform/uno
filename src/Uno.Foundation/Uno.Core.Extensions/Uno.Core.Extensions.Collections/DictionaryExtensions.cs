@@ -69,7 +69,7 @@ namespace Uno.Extensions
 			{
 				TValue value;
 				return dictionary.TryGetValue(key, out value)
-					? value 
+					? value
 					: defaultValue;
 			}
 		}

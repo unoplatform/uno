@@ -3,7 +3,7 @@
 
 jobs:
 - job: VS2022_VSIX
-  displayName: 'VS 2022 VSIX build'
+  displayName: 'Build VS 2022 VSIX'
 
   pool:
     vmImage: ${{ parameters.vmImage }}
@@ -23,6 +23,8 @@ jobs:
 
   - template: templates/gitversion.yml
 
+  - template: templates/dotnet-install.yml
+
   - template: templates/nuget-cache.yml
     parameters:
       nugetPackages: $(NUGET_PACKAGES)
@@ -39,6 +41,7 @@ jobs:
 
   - task: PublishBuildArtifacts@1
     condition: always()
+    retryCountOnTaskFailure: 3
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
       ArtifactName: NugetPackages

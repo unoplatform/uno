@@ -13,7 +13,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SensorQuaternion OrientationSensorReading.Quaternion is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SensorQuaternion OrientationSensorReading.Quaternion is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SensorQuaternion%20OrientationSensorReading.Quaternion");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SensorRotationMatrix OrientationSensorReading.RotationMatrix is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SensorRotationMatrix OrientationSensorReading.RotationMatrix is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SensorRotationMatrix%20OrientationSensorReading.RotationMatrix");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset OrientationSensorReading.Timestamp is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DateTimeOffset OrientationSensorReading.Timestamp is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DateTimeOffset%20OrientationSensorReading.Timestamp");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan? OrientationSensorReading.PerformanceCount is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan? OrientationSensorReading.PerformanceCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%3F%20OrientationSensorReading.PerformanceCount");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyDictionary<string, object> OrientationSensorReading.Properties is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyDictionary<string, object> OrientationSensorReading.Properties is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyDictionary%3Cstring%2C%20object%3E%20OrientationSensorReading.Properties");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MagnetometerAccuracy OrientationSensorReading.YawAccuracy is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MagnetometerAccuracy OrientationSensorReading.YawAccuracy is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MagnetometerAccuracy%20OrientationSensorReading.YawAccuracy");
 			}
 		}
 		#endif

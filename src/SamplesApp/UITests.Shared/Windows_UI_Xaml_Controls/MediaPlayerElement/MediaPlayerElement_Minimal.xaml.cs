@@ -20,10 +20,10 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.MediaPlayerElement
 {
 	[SampleControlInfo("MediaPlayerElement", "Mini player", description: "MediaPlayerElement with minimal controls")]
 	public sealed partial class MediaPlayerElement_Minimal : UserControl
-    {
-        public MediaPlayerElement_Minimal()
-        {
-            this.InitializeComponent();
-        }
-    }
+	{
+		public MediaPlayerElement_Minimal()
+		{
+			this.InitializeComponent();
+		}
+	}
 }

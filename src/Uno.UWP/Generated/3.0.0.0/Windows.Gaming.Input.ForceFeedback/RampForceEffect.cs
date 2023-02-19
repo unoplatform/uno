@@ -13,7 +13,7 @@ namespace Windows.Gaming.Input.ForceFeedback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double RampForceEffect.Gain is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double RampForceEffect.Gain is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20RampForceEffect.Gain");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Gaming.Input.ForceFeedback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ForceFeedbackEffectState RampForceEffect.State is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ForceFeedbackEffectState RampForceEffect.State is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ForceFeedbackEffectState%20RampForceEffect.State");
 			}
 		}
 		#endif

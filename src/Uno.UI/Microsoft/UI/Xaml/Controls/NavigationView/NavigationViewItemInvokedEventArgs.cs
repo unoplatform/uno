@@ -10,7 +10,7 @@ namespace Microsoft.UI.Xaml.Controls
 	/// Provides event data for the NavigationView.ItemInvoked event.
 	/// </summary>
 	public partial class NavigationViewItemInvokedEventArgs
-    {
+	{
 		/// <summary>
 		/// Initializes a new instance of the NavigationViewItemInvokedEventArgs class.
 		/// </summary>

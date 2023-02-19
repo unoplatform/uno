@@ -13,7 +13,7 @@ namespace Windows.UI.StartScreen
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri JumpListItem.Logo is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Uri JumpListItem.Logo is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Uri%20JumpListItem.Logo");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.UI.StartScreen
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string JumpListItem.GroupName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string JumpListItem.GroupName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20JumpListItem.GroupName");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.UI.StartScreen
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string JumpListItem.DisplayName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string JumpListItem.DisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20JumpListItem.DisplayName");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.UI.StartScreen
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string JumpListItem.Description is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string JumpListItem.Description is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20JumpListItem.Description");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.UI.StartScreen
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string JumpListItem.Arguments is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string JumpListItem.Arguments is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20JumpListItem.Arguments");
 			}
 		}
 		#endif
@@ -79,7 +79,7 @@ namespace Windows.UI.StartScreen
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member JumpListItemKind JumpListItem.Kind is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member JumpListItemKind JumpListItem.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=JumpListItemKind%20JumpListItem.Kind");
 			}
 		}
 		#endif
@@ -89,7 +89,7 @@ namespace Windows.UI.StartScreen
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool JumpListItem.RemovedByUser is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool JumpListItem.RemovedByUser is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20JumpListItem.RemovedByUser");
 			}
 		}
 		#endif
@@ -108,14 +108,14 @@ namespace Windows.UI.StartScreen
 		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.StartScreen.JumpListItem CreateWithArguments( string arguments,  string displayName)
 		{
-			throw new global::System.NotImplementedException("The member JumpListItem JumpListItem.CreateWithArguments(string arguments, string displayName) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member JumpListItem JumpListItem.CreateWithArguments(string arguments, string displayName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=JumpListItem%20JumpListItem.CreateWithArguments%28string%20arguments%2C%20string%20displayName%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.StartScreen.JumpListItem CreateSeparator()
 		{
-			throw new global::System.NotImplementedException("The member JumpListItem JumpListItem.CreateSeparator() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member JumpListItem JumpListItem.CreateSeparator() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=JumpListItem%20JumpListItem.CreateSeparator%28%29");
 		}
 		#endif
 	}

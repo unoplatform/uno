@@ -4,7 +4,8 @@ namespace Windows.UI.Xaml.Controls
 {
 	internal interface ISelector : IItemsControl
 	{
-		object SelectedItem { 
+		object SelectedItem
+		{
 			get;
 			set;
 		}
@@ -22,7 +23,7 @@ namespace Windows.UI.Xaml.Controls
 		event SelectionChangedEventHandler SelectionChanged;
 	}
 	//
-	public delegate void SelectionChangedEventHandler (object sender, SelectionChangedEventArgs e);
+	public delegate void SelectionChangedEventHandler(object sender, SelectionChangedEventArgs e);
 	//
 	public partial class SelectionChangedEventArgs : RoutedEventArgs
 	{
@@ -39,12 +40,14 @@ namespace Windows.UI.Xaml.Controls
 			AddedItems = addedItems;
 		}
 
-		public IList<object> RemovedItems { 
+		public IList<object> RemovedItems
+		{
 			get;
 			private set;
 		}
 
-		public IList<object> AddedItems { 
+		public IList<object> AddedItems
+		{
 			get;
 			private set;
 		}

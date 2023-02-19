@@ -13,7 +13,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SystemMediaProperties.Duration is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SystemMediaProperties.Duration is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SystemMediaProperties.Duration");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SystemMediaProperties.Producer is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SystemMediaProperties.Producer is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SystemMediaProperties.Producer");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SystemMediaProperties.Publisher is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SystemMediaProperties.Publisher is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SystemMediaProperties.Publisher");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SystemMediaProperties.SubTitle is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SystemMediaProperties.SubTitle is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SystemMediaProperties.SubTitle");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SystemMediaProperties.Writer is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SystemMediaProperties.Writer is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SystemMediaProperties.Writer");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SystemMediaProperties.Year is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SystemMediaProperties.Year is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SystemMediaProperties.Year");
 			}
 		}
 		#endif

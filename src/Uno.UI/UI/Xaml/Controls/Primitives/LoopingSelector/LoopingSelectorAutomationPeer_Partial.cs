@@ -91,6 +91,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 			}
 		}
 
+#if false
 		#region IItemsContainerProvider
 
 		void
@@ -173,28 +174,28 @@ namespace Windows.UI.Xaml.Automation.Peers
 							breakOnPeer = true;
 							break;
 						case AutomationHelper.AutomationPropertyEnum.NameProperty:
-						{
-							AutomationPeer spAutomationPeer;
-							//spItemDataAP.As(spAutomationPeer);
-							spAutomationPeer = spItemDataAP;
-							string strNameToCompare;
-							strNameToCompare = spAutomationPeer.GetName();
-							if (strNameToCompare == strNameToFind)
 							{
-								breakOnPeer = true;
+								AutomationPeer spAutomationPeer;
+								//spItemDataAP.As(spAutomationPeer);
+								spAutomationPeer = spItemDataAP;
+								string strNameToCompare;
+								strNameToCompare = spAutomationPeer.GetName();
+								if (strNameToCompare == strNameToFind)
+								{
+									breakOnPeer = true;
+								}
 							}
-						}
 							break;
 						case AutomationHelper.AutomationPropertyEnum.IsSelectedProperty:
-						{
-							DependencyObject spItem;
-							((LoopingSelectorItemDataAutomationPeer)spItemDataAP).GetItem(out spItem);
-							if (isSelected && spSelectedItem == spItem ||
-							    !isSelected && spSelectedItem != spItem)
 							{
-								breakOnPeer = true;
+								DependencyObject spItem;
+								((LoopingSelectorItemDataAutomationPeer)spItemDataAP).GetItem(out spItem);
+								if (isSelected && spSelectedItem == spItem ||
+									!isSelected && spSelectedItem != spItem)
+								{
+									breakOnPeer = true;
+								}
 							}
-						}
 							break;
 					}
 
@@ -212,6 +213,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 		}
 
 		#endregion
+#endif
 
 		~LoopingSelectorAutomationPeer()
 		{
@@ -224,8 +226,8 @@ namespace Windows.UI.Xaml.Automation.Peers
 		protected override object GetPatternCore(PatternInterface patternInterface)
 		{
 			if (patternInterface == PatternInterface.Scroll ||
-			    patternInterface == PatternInterface.Selection ||
-			    patternInterface == PatternInterface.ItemContainer)
+				patternInterface == PatternInterface.Selection ||
+				patternInterface == PatternInterface.ItemContainer)
 			{
 				//returnValue = this;
 				//AddRef();
@@ -298,12 +300,14 @@ namespace Windows.UI.Xaml.Automation.Peers
 			return spReturnValue;
 		}
 
+#if false
 		void GetClassNameCoreImpl(out string returnValue)
 		{
 			//if (returnValue == null) throw new ArgumentNullException();
 			//wrl_wrappers.Hstring("LoopingSelector").CopyTo(returnValue);
 			returnValue = "LoopingSelector";
 		}
+#endif
 
 		#endregion
 
@@ -446,7 +450,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 			//PeerMap.iterator peerIter;
 
 			//peerIter = _peerMap.find(pItem);
-			if(!_peerMap.TryGetValue(pItem, out var peerIter))
+			if (!_peerMap.TryGetValue(pItem, out var peerIter))
 			{
 				ppPeer = default;
 				return;
@@ -490,6 +494,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 			}
 		}
 
+#if false
 		void FindStartIndex(
 			IRawElementProviderSimple pStartAfter,
 			IList<object> pItems,
@@ -542,7 +547,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 				pOwnerNoRef.AutomationTryScrollItemIntoView(pItem);
 			}
 		}
-
+#endif
 		#endregion
 	}
 }

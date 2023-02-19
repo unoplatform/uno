@@ -170,7 +170,7 @@ namespace Windows.UI.Xaml
 			{
 				DefaultValue = baseMetadata.DefaultValue;
 			}
-			
+
 			// Merge PropertyChangedCallback delegates
 			PropertyChangedCallback = baseMetadata.PropertyChangedCallback + PropertyChangedCallback;
 			BackingFieldUpdateCallback = baseMetadata.BackingFieldUpdateCallback + BackingFieldUpdateCallback;

@@ -94,7 +94,7 @@ namespace Uno.Roslyn
 
 		public ITypeSymbol[] FindTypesByName(string name)
 		{
-			if (name.HasValue())
+			if (!name.IsNullOrEmpty())
 			{
 				return _findTypesByName(name);
 			}
@@ -106,14 +106,14 @@ namespace Uno.Roslyn
 		{
 			var legacyType = _legacyTypes.UnoGetValueOrDefault(name);
 
-			if (name.HasValue())
+			if (!name.IsNullOrEmpty())
 			{
 				// This validation ensure that the project has been loaded.
 				Compilation.Validation().NotNull("Compilation");
 
 				var results = Compilation.GetSymbolsWithName(name, SymbolFilter.Type).OfType<INamedTypeSymbol>();
 
-				if(_namedSymbolsLookup.TryGetValue(name, out var metadataResults))
+				if (_namedSymbolsLookup.TryGetValue(name, out var metadataResults))
 				{
 					results = results.Concat(metadataResults);
 				}

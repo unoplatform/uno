@@ -5,10 +5,6 @@
 		<UpdateAssemblyInfo>false</UpdateAssemblyInfo>
 	</PropertyGroup>
 
-	<ItemGroup>
-		<Content Include="..\src\global.json" Link="global.json" />
-	</ItemGroup>
-
 	<PropertyGroup Condition="'$(BuildingInsideVisualStudio)'==''">
 		<AppVersion>$(GITVERSION_SemVer)</AppVersion>
 
@@ -516,7 +512,7 @@
 		<Exec Command="$(NuGetBin) pack Uno.UI.Adapter.Microsoft.Extensions.Logging.nuspec -Verbosity Detailed -Version &quot;$(GITVERSION_SemVer)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
 	</Target>
 
-	<Target Name="ValidatePackage" AfterTargets="BuildNuGetPackage" Condition="'$(BuildingInsideVisualStudio)'=='' and '$(UNO_UWP_BUILD)'=='true'">
+	<Target Name="ValidatePackage" AfterTargets="BuildNuGetPackage" Condition="'$(BuildingInsideVisualStudio)'==''">
 		<PropertyGroup>
 			<PackageNamePrefix>Uno.WinUI</PackageNamePrefix>
 			<PackageNamePrefix Condition="'$(UNO_UWP_BUILD)'=='true'">Uno.UI</PackageNamePrefix>

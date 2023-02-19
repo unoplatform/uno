@@ -86,7 +86,7 @@ namespace Uno.UI
 					: NSUnderlineStyle.None,
 				StrikethroughStyle = (tuple.textDecorations & TextDecorations.Strikethrough) == TextDecorations.Strikethrough
 					? NSUnderlineStyle.Single
-					: NSUnderlineStyle.None,			
+					: NSUnderlineStyle.None,
 			};
 
 			if (tuple.characterSpacing != 0f)

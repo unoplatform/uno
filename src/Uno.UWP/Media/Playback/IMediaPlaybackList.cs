@@ -2,7 +2,7 @@
 
 namespace Windows.Media.Playback
 {
-	public partial interface IMediaPlaybackList 
+	public partial interface IMediaPlaybackList
 	{
 	}
 }

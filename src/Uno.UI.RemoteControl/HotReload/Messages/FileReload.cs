@@ -25,6 +25,6 @@ namespace Uno.UI.RemoteControl.HotReload.Messages
 
 		[MemberNotNullWhen(true, nameof(FilePath), nameof(Content))]
 		public bool IsValid()
-			=> FilePath.HasValue() && Content is not null;
+			=> !FilePath.IsNullOrEmpty() && Content is not null;
 	}
 }

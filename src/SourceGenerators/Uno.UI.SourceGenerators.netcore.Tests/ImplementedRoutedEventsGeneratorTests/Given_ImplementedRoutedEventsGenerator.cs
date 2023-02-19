@@ -29,18 +29,6 @@ namespace Uno.UI.SourceGenerators.Tests.ImplementedRoutedEventsGeneratorTests
 			await test.RunAsync();
 		}
 
-		[TestInitialize]
-		public void Initialize()
-		{
-			ImplementedRoutedEventsGenerator.IsUnitTest = true;
-		}
-
-		[TestCleanup]
-		public void Cleanup()
-		{
-			ImplementedRoutedEventsGenerator.IsUnitTest = false;
-		}
-
 		[TestMethod]
 		public async Task Given_NonGeneric_Control_In_Global_Namespace()
 		{
@@ -91,7 +79,7 @@ partial class MyAwesomeControl<T>
 			await TestGeneratorAsync(
 				inputSource,
 				new GeneratedFile(
-					@"Uno.UI.SourceGenerators\Uno.UI.SourceGenerators.ImplementedRoutedEvents.ImplementedRoutedEventsGenerator\MyAwesomeControl-1[MyAwesomeControl-1.T]_ImplementedRoutedEvents.g.cs",
+					@"Uno.UI.SourceGenerators\Uno.UI.SourceGenerators.ImplementedRoutedEvents.ImplementedRoutedEventsGenerator\MyAwesomeControl-1_ImplementedRoutedEvents.g.cs",
 					expectedCode));
 		}
 
@@ -124,7 +112,7 @@ namespace MyControls.Test
 			await TestGeneratorAsync(
 				inputSource,
 				new GeneratedFile(
-					@"Uno.UI.SourceGenerators\Uno.UI.SourceGenerators.ImplementedRoutedEvents.ImplementedRoutedEventsGenerator\MyControls.Test.MyAwesomeControl-1[MyControls.Test.MyAwesomeControl-1.T]_ImplementedRoutedEvents.g.cs",
+					@"Uno.UI.SourceGenerators\Uno.UI.SourceGenerators.ImplementedRoutedEvents.ImplementedRoutedEventsGenerator\MyControls.Test.MyAwesomeControl-1_ImplementedRoutedEvents.g.cs",
 					expectedCode));
 		}
 	}

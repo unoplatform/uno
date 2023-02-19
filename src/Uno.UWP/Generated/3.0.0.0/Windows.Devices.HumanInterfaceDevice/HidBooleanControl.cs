@@ -13,7 +13,7 @@ namespace Windows.Devices.HumanInterfaceDevice
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool HidBooleanControl.IsActive is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool HidBooleanControl.IsActive is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20HidBooleanControl.IsActive");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Devices.HumanInterfaceDevice
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HidBooleanControlDescription HidBooleanControl.ControlDescription is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member HidBooleanControlDescription HidBooleanControl.ControlDescription is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HidBooleanControlDescription%20HidBooleanControl.ControlDescription");
 			}
 		}
 		#endif
@@ -37,7 +37,7 @@ namespace Windows.Devices.HumanInterfaceDevice
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint HidBooleanControl.Id is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint HidBooleanControl.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20HidBooleanControl.Id");
 			}
 		}
 		#endif
@@ -47,7 +47,7 @@ namespace Windows.Devices.HumanInterfaceDevice
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ushort HidBooleanControl.UsageId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ushort HidBooleanControl.UsageId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ushort%20HidBooleanControl.UsageId");
 			}
 		}
 		#endif
@@ -57,7 +57,7 @@ namespace Windows.Devices.HumanInterfaceDevice
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ushort HidBooleanControl.UsagePage is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ushort HidBooleanControl.UsagePage is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ushort%20HidBooleanControl.UsagePage");
 			}
 		}
 		#endif

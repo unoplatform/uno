@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset? EmailMailboxAutoReplySettings.StartTime is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DateTimeOffset? EmailMailboxAutoReplySettings.StartTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DateTimeOffset%3F%20EmailMailboxAutoReplySettings.StartTime");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member EmailMailboxAutoReplyMessageResponseKind EmailMailboxAutoReplySettings.ResponseKind is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member EmailMailboxAutoReplyMessageResponseKind EmailMailboxAutoReplySettings.ResponseKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=EmailMailboxAutoReplyMessageResponseKind%20EmailMailboxAutoReplySettings.ResponseKind");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool EmailMailboxAutoReplySettings.IsEnabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool EmailMailboxAutoReplySettings.IsEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20EmailMailboxAutoReplySettings.IsEnabled");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset? EmailMailboxAutoReplySettings.EndTime is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DateTimeOffset? EmailMailboxAutoReplySettings.EndTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DateTimeOffset%3F%20EmailMailboxAutoReplySettings.EndTime");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member EmailMailboxAutoReply EmailMailboxAutoReplySettings.InternalReply is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member EmailMailboxAutoReply EmailMailboxAutoReplySettings.InternalReply is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=EmailMailboxAutoReply%20EmailMailboxAutoReplySettings.InternalReply");
 			}
 		}
 		#endif
@@ -79,7 +79,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member EmailMailboxAutoReply EmailMailboxAutoReplySettings.KnownExternalReply is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member EmailMailboxAutoReply EmailMailboxAutoReplySettings.KnownExternalReply is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=EmailMailboxAutoReply%20EmailMailboxAutoReplySettings.KnownExternalReply");
 			}
 		}
 		#endif
@@ -89,7 +89,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member EmailMailboxAutoReply EmailMailboxAutoReplySettings.UnknownExternalReply is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member EmailMailboxAutoReply EmailMailboxAutoReplySettings.UnknownExternalReply is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=EmailMailboxAutoReply%20EmailMailboxAutoReplySettings.UnknownExternalReply");
 			}
 		}
 		#endif

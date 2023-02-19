@@ -13,7 +13,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string HotspotAuthenticationEventDetails.EventToken is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string HotspotAuthenticationEventDetails.EventToken is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20HotspotAuthenticationEventDetails.EventToken");
 			}
 		}
 		#endif

@@ -2,10 +2,10 @@
 namespace Windows.Devices.Midi
 {
 	public partial class MidiOutPort
-    {
+	{
 		private MidiOutPort()
 		{
 		}
-    }
+	}
 }
 #endif

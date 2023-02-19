@@ -14,8 +14,7 @@ namespace Windows.ApplicationModel
 		public string DisplayName =>
 			Application.Context.ApplicationInfo.LoadLabel(Application.Context.PackageManager);
 
-		private string GetInstalledLocation()
-			=> "assets://" + ContextHelper.Current.PackageCodePath;
+		private string GetInstalledPath() => "assets://" + ContextHelper.Current.PackageCodePath;
 
 		private bool GetInnerIsDevelopmentMode()
 		{
@@ -26,9 +25,9 @@ namespace Windows.ApplicationModel
 				var installer = ContextHelper.Current.PackageManager.GetInstallerPackageName(ContextHelper.Current.PackageName);
 #pragma warning restore CA1422 // Validate platform compatibility
 #pragma warning restore CS0618 // Type or member is obsolete
-				return !installer.HasValue();
+				return installer.IsNullOrEmpty();
 			}
-			catch(Exception)
+			catch (Exception)
 			{
 				return false;
 			}

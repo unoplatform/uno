@@ -13,7 +13,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member FaceDetectionEffectFrame FaceDetectedEventArgs.ResultFrame is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member FaceDetectionEffectFrame FaceDetectedEventArgs.ResultFrame is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=FaceDetectionEffectFrame%20FaceDetectedEventArgs.ResultFrame");
 			}
 		}
 		#endif

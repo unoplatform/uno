@@ -26,12 +26,12 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		internal void EnsureElementSize(
-			Size availableSize, 
-			VirtualizingLayoutContext context, 
-			double layoutItemWidth, 
-			double LayoutItemHeight, 
-			UniformGridLayoutItemsStretch stretch, 
-			Orientation orientation, 
+			Size availableSize,
+			VirtualizingLayoutContext context,
+			double layoutItemWidth,
+			double LayoutItemHeight,
+			UniformGridLayoutItemsStretch stretch,
+			Orientation orientation,
 			double minRowSpacing,
 			double minColumnSpacing,
 			uint maxItemsPerLine)
@@ -68,12 +68,12 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		void SetSize(
-			Size desiredItemSize, 
-			double layoutItemWidth, 
-			double LayoutItemHeight, 
-			Size availableSize, 
-			UniformGridLayoutItemsStretch stretch, 
-			Orientation orientation, 
+			Size desiredItemSize,
+			double layoutItemWidth,
+			double LayoutItemHeight,
+			Size availableSize,
+			UniformGridLayoutItemsStretch stretch,
+			Orientation orientation,
 			double minRowSpacing,
 			double minColumnSpacing,
 			uint maxItemsPerLine)

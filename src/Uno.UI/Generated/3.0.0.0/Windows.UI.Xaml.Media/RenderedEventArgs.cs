@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Media
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan RenderedEventArgs.FrameDuration is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan RenderedEventArgs.FrameDuration is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20RenderedEventArgs.FrameDuration");
 			}
 		}
 		#endif

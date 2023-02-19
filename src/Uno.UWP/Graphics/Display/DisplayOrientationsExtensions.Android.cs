@@ -6,31 +6,31 @@ using Android.Content.PM;
 
 namespace Windows.Graphics.Display
 {
-    internal static class DisplayOrientationsExtensions
-    {
-	    public static ScreenOrientation ToScreenOrientation(this DisplayOrientations orientation)
-	    {
-		    switch (orientation)
-		    {
+	internal static class DisplayOrientationsExtensions
+	{
+		public static ScreenOrientation ToScreenOrientation(this DisplayOrientations orientation)
+		{
+			switch (orientation)
+			{
 				case DisplayOrientations.Landscape:
-				    return ScreenOrientation.Landscape;
+					return ScreenOrientation.Landscape;
 				case DisplayOrientations.LandscapeFlipped:
-				    return ScreenOrientation.ReverseLandscape;
+					return ScreenOrientation.ReverseLandscape;
 				case DisplayOrientations.Portrait:
-				    return ScreenOrientation.Portrait;
+					return ScreenOrientation.Portrait;
 				case DisplayOrientations.PortraitFlipped:
-				    return ScreenOrientation.ReversePortrait;
+					return ScreenOrientation.ReversePortrait;
 				case DisplayOrientations.Portrait | DisplayOrientations.PortraitFlipped:
-				    return ScreenOrientation.SensorPortrait;
+					return ScreenOrientation.SensorPortrait;
 				case DisplayOrientations.Landscape | DisplayOrientations.LandscapeFlipped:
-				    return ScreenOrientation.SensorLandscape;
+					return ScreenOrientation.SensorLandscape;
 				case DisplayOrientations.Portrait | DisplayOrientations.PortraitFlipped | DisplayOrientations.Landscape | DisplayOrientations.LandscapeFlipped:
-				    return ScreenOrientation.FullSensor;
+					return ScreenOrientation.FullSensor;
 				case DisplayOrientations.None:
 				default:
 					return ScreenOrientation.Unspecified;
 			}
-	    }
-    }
+		}
+	}
 }
 #endif

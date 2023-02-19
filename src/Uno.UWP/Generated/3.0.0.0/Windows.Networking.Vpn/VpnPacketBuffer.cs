@@ -13,7 +13,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint VpnPacketBuffer.TransportAffinity is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint VpnPacketBuffer.TransportAffinity is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20VpnPacketBuffer.TransportAffinity");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VpnPacketBufferStatus VpnPacketBuffer.Status is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member VpnPacketBufferStatus VpnPacketBuffer.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=VpnPacketBufferStatus%20VpnPacketBuffer.Status");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Buffer VpnPacketBuffer.Buffer is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Buffer VpnPacketBuffer.Buffer is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Buffer%20VpnPacketBuffer.Buffer");
 			}
 		}
 		#endif
@@ -51,7 +51,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VpnAppId VpnPacketBuffer.AppId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member VpnAppId VpnPacketBuffer.AppId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=VpnAppId%20VpnPacketBuffer.AppId");
 			}
 		}
 		#endif
@@ -61,7 +61,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member object VpnPacketBuffer.TransportContext is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member object VpnPacketBuffer.TransportContext is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=object%20VpnPacketBuffer.TransportContext");
 			}
 			set
 			{

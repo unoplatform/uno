@@ -31,8 +31,6 @@ namespace UITests.Shared.Windows_Devices.Midi
 		{
 			InitializeComponent();
 
-			rootGrid.DataContext = this;
-
 			// Start with a clean slate
 			ClearAllDeviceValues();
 
@@ -343,6 +341,6 @@ namespace UITests.Shared.Windows_Devices.Midi
 		private void NotifyUser(string message)
 		{
 			statusBlock.Text = message;
-		}		
+		}
 	}
 }

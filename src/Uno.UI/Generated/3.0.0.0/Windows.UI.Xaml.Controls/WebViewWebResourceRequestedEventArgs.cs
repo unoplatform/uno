@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HttpResponseMessage WebViewWebResourceRequestedEventArgs.Response is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member HttpResponseMessage WebViewWebResourceRequestedEventArgs.Response is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HttpResponseMessage%20WebViewWebResourceRequestedEventArgs.Response");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HttpRequestMessage WebViewWebResourceRequestedEventArgs.Request is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member HttpRequestMessage WebViewWebResourceRequestedEventArgs.Request is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HttpRequestMessage%20WebViewWebResourceRequestedEventArgs.Request");
 			}
 		}
 		#endif
@@ -38,7 +38,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.Deferral GetDeferral()
 		{
-			throw new global::System.NotImplementedException("The member Deferral WebViewWebResourceRequestedEventArgs.GetDeferral() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member Deferral WebViewWebResourceRequestedEventArgs.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Deferral%20WebViewWebResourceRequestedEventArgs.GetDeferral%28%29");
 		}
 		#endif
 	}

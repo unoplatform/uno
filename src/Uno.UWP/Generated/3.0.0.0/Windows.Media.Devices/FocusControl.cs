@@ -13,7 +13,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint FocusControl.Max is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint FocusControl.Max is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20FocusControl.Max");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint FocusControl.Min is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint FocusControl.Min is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20FocusControl.Min");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member FocusPreset FocusControl.Preset is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member FocusPreset FocusControl.Preset is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=FocusPreset%20FocusControl.Preset");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint FocusControl.Step is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint FocusControl.Step is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20FocusControl.Step");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool FocusControl.Supported is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool FocusControl.Supported is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20FocusControl.Supported");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<FocusPreset> FocusControl.SupportedPresets is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<FocusPreset> FocusControl.SupportedPresets is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CFocusPreset%3E%20FocusControl.SupportedPresets");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint FocusControl.Value is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint FocusControl.Value is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20FocusControl.Value");
 			}
 		}
 		#endif
@@ -83,7 +83,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool FocusControl.FocusChangedSupported is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool FocusControl.FocusChangedSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20FocusControl.FocusChangedSupported");
 			}
 		}
 		#endif
@@ -93,7 +93,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaCaptureFocusState FocusControl.FocusState is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MediaCaptureFocusState FocusControl.FocusState is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaCaptureFocusState%20FocusControl.FocusState");
 			}
 		}
 		#endif
@@ -103,7 +103,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member FocusMode FocusControl.Mode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member FocusMode FocusControl.Mode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=FocusMode%20FocusControl.Mode");
 			}
 		}
 		#endif
@@ -113,7 +113,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<ManualFocusDistance> FocusControl.SupportedFocusDistances is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<ManualFocusDistance> FocusControl.SupportedFocusDistances is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CManualFocusDistance%3E%20FocusControl.SupportedFocusDistances");
 			}
 		}
 		#endif
@@ -123,7 +123,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<FocusMode> FocusControl.SupportedFocusModes is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<FocusMode> FocusControl.SupportedFocusModes is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CFocusMode%3E%20FocusControl.SupportedFocusModes");
 			}
 		}
 		#endif
@@ -133,7 +133,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<AutoFocusRange> FocusControl.SupportedFocusRanges is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<AutoFocusRange> FocusControl.SupportedFocusRanges is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CAutoFocusRange%3E%20FocusControl.SupportedFocusRanges");
 			}
 		}
 		#endif
@@ -143,7 +143,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool FocusControl.WaitForFocusSupported is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool FocusControl.WaitForFocusSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20FocusControl.WaitForFocusSupported");
 			}
 		}
 		#endif
@@ -154,14 +154,14 @@ namespace Windows.Media.Devices
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction SetPresetAsync( global::Windows.Media.Devices.FocusPreset preset)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction FocusControl.SetPresetAsync(FocusPreset preset) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction FocusControl.SetPresetAsync(FocusPreset preset) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20FocusControl.SetPresetAsync%28FocusPreset%20preset%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction SetPresetAsync( global::Windows.Media.Devices.FocusPreset preset,  bool completeBeforeFocus)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction FocusControl.SetPresetAsync(FocusPreset preset, bool completeBeforeFocus) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction FocusControl.SetPresetAsync(FocusPreset preset, bool completeBeforeFocus) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20FocusControl.SetPresetAsync%28FocusPreset%20preset%2C%20bool%20completeBeforeFocus%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Media.Devices.FocusControl.Min.get
@@ -172,14 +172,14 @@ namespace Windows.Media.Devices
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction SetValueAsync( uint focus)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction FocusControl.SetValueAsync(uint focus) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction FocusControl.SetValueAsync(uint focus) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20FocusControl.SetValueAsync%28uint%20focus%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction FocusAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction FocusControl.FocusAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction FocusControl.FocusAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20FocusControl.FocusAsync%28%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Media.Devices.FocusControl.FocusChangedSupported.get
@@ -193,14 +193,14 @@ namespace Windows.Media.Devices
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction UnlockAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction FocusControl.UnlockAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction FocusControl.UnlockAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20FocusControl.UnlockAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction LockAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction FocusControl.LockAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction FocusControl.LockAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20FocusControl.LockAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

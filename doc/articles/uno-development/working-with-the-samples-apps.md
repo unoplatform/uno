@@ -13,7 +13,7 @@ For instructions on working with automated UI tests, [go here](creating-ui-tests
 
 ## Running SamplesApp
 
-The SamplesApp from latest master branch for WebAssembly is available online: https://unoui-sampleapp-unoui-sampleapp-staging.azurewebsites.net
+The SamplesApp from latest master branch for WebAssembly is available online: https://aka.platform.uno/wasm-samples-app
 
 To run the SamplesApp locally:
 

@@ -1,5 +1,4 @@
-﻿#if __ANDROID__
-using System;
+﻿using System;
 using System.Runtime.CompilerServices;
 using Android.App;
 using Android.Views;
@@ -110,7 +109,7 @@ namespace Windows.UI.ViewManagement
 		}
 
 
-		private Activity GetCurrentActivity([CallerMemberName]string propertyName = null)
+		private Activity GetCurrentActivity([CallerMemberName] string propertyName = null)
 		{
 			if (!(ContextHelper.Current is Activity activity))
 			{
@@ -119,6 +118,11 @@ namespace Windows.UI.ViewManagement
 
 			return activity;
 		}
+
+		private void Initialize()
+		{
+			_instance = this;
+		}
 	}
 }
-#endif
+

@@ -4,7 +4,6 @@
 		<AssemblyName>Uno.UI.SourceGenerators.Internal</AssemblyName>
 		<AppendTargetFrameworkToOutputPath>true</AppendTargetFrameworkToOutputPath>
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 
 		<!-- This target must always be built, regardless of the CI override -->
 		<TargetFrameworksOverrideInvariant>netstandard2.0</TargetFrameworksOverrideInvariant>

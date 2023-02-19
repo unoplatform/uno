@@ -14,7 +14,6 @@
 		<AssemblyName>Uno.UI.XamlHost</AssemblyName>
 		<RootNamespace>Uno.UI.XamlHost</RootNamespace>
 		<DefineConstants>$(DefineConstants);XAMARIN;IS_UNO;IS_UNO_UI_XamlHost_PROJECT</DefineConstants>
-		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 
 		<!-- Ensures the .xr.xml files are generated in a proper layout folder -->
 		<GenerateLibraryLayout>true</GenerateLibraryLayout>

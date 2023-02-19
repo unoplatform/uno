@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Store.Preview
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StoreHardwareManufacturerInfo.HardwareManufacturerId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string StoreHardwareManufacturerInfo.HardwareManufacturerId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20StoreHardwareManufacturerInfo.HardwareManufacturerId");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.ApplicationModel.Store.Preview
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StoreHardwareManufacturerInfo.ManufacturerName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string StoreHardwareManufacturerInfo.ManufacturerName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20StoreHardwareManufacturerInfo.ManufacturerName");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.ApplicationModel.Store.Preview
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StoreHardwareManufacturerInfo.ModelName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string StoreHardwareManufacturerInfo.ModelName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20StoreHardwareManufacturerInfo.ModelName");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.ApplicationModel.Store.Preview
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StoreHardwareManufacturerInfo.StoreContentModifierId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string StoreHardwareManufacturerInfo.StoreContentModifierId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20StoreHardwareManufacturerInfo.StoreContentModifierId");
 			}
 		}
 		#endif

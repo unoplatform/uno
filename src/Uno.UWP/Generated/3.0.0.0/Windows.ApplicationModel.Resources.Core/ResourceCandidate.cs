@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Resources.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ResourceCandidate.IsDefault is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ResourceCandidate.IsDefault is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ResourceCandidate.IsDefault");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.ApplicationModel.Resources.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ResourceCandidate.IsMatch is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ResourceCandidate.IsMatch is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ResourceCandidate.IsMatch");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.ApplicationModel.Resources.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ResourceCandidate.IsMatchAsDefault is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ResourceCandidate.IsMatchAsDefault is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ResourceCandidate.IsMatchAsDefault");
 			}
 		}
 		#endif
@@ -45,7 +45,7 @@ namespace Windows.ApplicationModel.Resources.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ResourceCandidateKind ResourceCandidate.Kind is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ResourceCandidateKind ResourceCandidate.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ResourceCandidateKind%20ResourceCandidate.Kind");
 			}
 		}
 		#endif
@@ -58,7 +58,7 @@ namespace Windows.ApplicationModel.Resources.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFile> GetValueAsFileAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageFile> ResourceCandidate.GetValueAsFileAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageFile> ResourceCandidate.GetValueAsFileAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CStorageFile%3E%20ResourceCandidate.GetValueAsFileAsync%28%29");
 		}
 		#endif
 		// Skipping already declared method Windows.ApplicationModel.Resources.Core.ResourceCandidate.GetQualifierValue(string)
@@ -66,7 +66,7 @@ namespace Windows.ApplicationModel.Resources.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IRandomAccessStream> GetValueAsStreamAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IRandomAccessStream> ResourceCandidate.GetValueAsStreamAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<IRandomAccessStream> ResourceCandidate.GetValueAsStreamAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CIRandomAccessStream%3E%20ResourceCandidate.GetValueAsStreamAsync%28%29");
 		}
 		#endif
 		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceCandidate.Kind.get

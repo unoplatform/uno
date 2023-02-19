@@ -163,7 +163,7 @@ namespace Windows.UI.Xaml.Input
 #if false // WI_IS_FEATURE_PRESENT(Feature_CommandingImprovements)
 			ctl::ComPtr<CommandingContainer> focusedCommandingContainer;
 			IFC_RETURN(GetFocusedCommandingContainer(&focusedCommandingContainer));
-    
+
 			if (focusedCommandingContainer)
 			{
 				IFC_RETURN(args->put_CommandTarget(focusedCommandingContainer->GetCommandTargetNoRef()));
@@ -200,7 +200,7 @@ namespace Windows.UI.Xaml.Input
 #if false // WI_IS_FEATURE_PRESENT(Feature_CommandingImprovements)
 			ctl::ComPtr<CommandingContainer> focusedCommandingContainer;
 			IFC_RETURN(GetFocusedCommandingContainer(&focusedCommandingContainer));
-    
+
 			if (focusedCommandingContainer)
 			{
 				IFC_RETURN(args->put_CommandTarget(focusedCommandingContainer->GetCommandTargetNoRef()));

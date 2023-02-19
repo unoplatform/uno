@@ -52,14 +52,27 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_metadataHelper = roslynMetadataHelper;
 		}
 
-		public XamlFileDefinition[] ParseFiles(Uno.Roslyn.MSBuildItem[] xamlSourceFiles, CancellationToken cancellationToken)
+		public XamlFileDefinition[] ParseFiles(Uno.Roslyn.MSBuildItem[] xamlSourceFiles, string projectDirectory, CancellationToken cancellationToken)
 		{
 			return xamlSourceFiles
 				.AsParallel()
 				.WithCancellation(cancellationToken)
-				.Select(f => ParseFile(f.File, cancellationToken))
+				.Select(f => InnerParseFile(f, cancellationToken))
 				.Where(f => f != null)
 				.ToArray()!;
+
+			XamlFileDefinition? InnerParseFile(MSBuildItem fileItem, CancellationToken cancellationToken)
+			{
+				// Generate an actual TargetPath to be used with BaseUri, so that
+				// it maps to the actual path in the app package.
+				var targetFilePath = fileItem.GetMetadataValue("TargetPath") is { Length: > 0 } targetPath
+					? targetPath
+					: fileItem.GetMetadataValue("Link") is { Length: > 0 } link
+						? link
+						: fileItem.GetMetadataValue("Identity").Replace(projectDirectory, "");
+
+				return ParseFile(fileItem.File, targetFilePath.Replace("\\", "/"), cancellationToken);
+			}
 		}
 
 		private static void ScavengeCache()
@@ -67,7 +80,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_cachedFiles.Remove(kvp => DateTimeOffset.Now - kvp.Value.LastTimeUsed > _cacheEntryLifetime);
 		}
 
-		private XamlFileDefinition? ParseFile(AdditionalText file, CancellationToken cancellationToken)
+		private XamlFileDefinition? ParseFile(AdditionalText file, string targetFilePath, CancellationToken cancellationToken)
 		{
 			try
 			{
@@ -107,7 +120,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					{
 						cancellationToken.ThrowIfCancellationRequested();
 
-						var xamlFileDefinition = Visit(reader, file.Path);
+						var xamlFileDefinition = Visit(reader, file.Path, targetFilePath);
 						if (!disableCaching)
 						{
 							_cachedFiles[cachedFileKey] = new CachedFile(DateTimeOffset.Now, xamlFileDefinition);
@@ -164,7 +177,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			var newIgnored = ignoredNs
 				.Except(_includeXamlNamespaces)
-				.Concat(_excludeXamlNamespaces.Where(n => document.DocumentElement?.GetNamespaceOfPrefix(n).HasValue() ?? false))
+				.Concat(_excludeXamlNamespaces.Where(n => document.DocumentElement is { } documentElement && !documentElement.GetNamespaceOfPrefix(n).IsNullOrEmpty()))
 				.Concat(conditionals.ExcludedConditionals.Select(a => a.LocalName))
 				.ToArray();
 			var newIgnoredFlat = newIgnored.JoinBy(" ");
@@ -294,7 +307,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			var excludeNamespaces = _excludeXamlNamespaces
 				.Select(n => new { Name = n, Namespace = document.DocumentElement?.GetNamespaceOfPrefix(n) })
-				.Where(n => n.Namespace.HasValue());
+				.Where(n => !n.Namespace.IsNullOrEmpty());
 
 			var shouldCreateIgnorable = false;
 
@@ -391,11 +404,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return (included, excluded, disableCaching);
 		}
 
-		private XamlFileDefinition Visit(XamlXmlReader reader, string file)
+		private XamlFileDefinition Visit(XamlXmlReader reader, string file, string targetFilePath)
 		{
 			WriteState(reader);
 
-			var xamlFile = new XamlFileDefinition(file);
+			var xamlFile = new XamlFileDefinition(file, targetFilePath);
 
 			do
 			{
@@ -474,7 +487,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private XamlMemberDefinition VisitMember(XamlXmlReader reader, XamlObjectDefinition owner)
 		{
 			var member = new XamlMemberDefinition(reader.Member, reader.LineNumber, reader.LinePosition, owner);
-
+			var lastWasLiteralInline = false;
+			var lastWasTrimSurroundingWhiteSpace = false;
 			while (reader.Read())
 			{
 				WriteState(reader);
@@ -488,11 +502,15 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					case XamlNodeType.Value:
 						if (IsLiteralInlineText(reader.Value, member, owner))
 						{
-							var run = ConvertLiteralInlineTextToRun(reader);
+							var run = ConvertLiteralInlineTextToRun(reader, trimStart: !reader.PreserveWhitespace && lastWasTrimSurroundingWhiteSpace);
 							member.Objects.Add(run);
+							lastWasLiteralInline = true;
+							lastWasTrimSurroundingWhiteSpace = false;
 						}
 						else
 						{
+							lastWasLiteralInline = false;
+							lastWasTrimSurroundingWhiteSpace = false;
 							if (member.Value is string s)
 							{
 								member.Value += ", " + reader.Value;
@@ -506,14 +524,30 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 					case XamlNodeType.StartObject:
 						_depth++;
-						member.Objects.Add(VisitObject(reader, owner));
+						var obj = VisitObject(reader, owner);
+						if (!reader.PreserveWhitespace &&
+							lastWasLiteralInline &&
+							obj.Type.TrimSurroundingWhitespace &&
+							member.Objects.Count > 0 &&
+							member.Objects[member.Objects.Count - 1].Members.Single() is { Value: string previousValue } runDefinition)
+						{
+							runDefinition.Value = previousValue.TrimEnd();
+						}
+
+						lastWasLiteralInline = false;
+						lastWasTrimSurroundingWhiteSpace = obj.Type.TrimSurroundingWhitespace;
+						member.Objects.Add(obj);
 						break;
 
 					case XamlNodeType.EndObject:
+						lastWasLiteralInline = false;
+						lastWasTrimSurroundingWhiteSpace = false;
 						_depth--;
 						break;
 
 					case XamlNodeType.NamespaceDeclaration:
+						lastWasLiteralInline = false;
+						lastWasTrimSurroundingWhiteSpace = false;
 						// Skip
 						break;
 
@@ -540,7 +574,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				&& (member.Member.Name == "_UnknownContent" || member.Member.Name == "Inlines");
 		}
 
-		private XamlObjectDefinition ConvertLiteralInlineTextToRun(XamlXmlReader reader)
+		private XamlObjectDefinition ConvertLiteralInlineTextToRun(XamlXmlReader reader, bool trimStart)
 		{
 			var runType = new XamlType(
 				XamlConstants.PresentationXamlXmlNamespace,
@@ -557,7 +591,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					new XamlMemberDefinition(textMember, reader.LineNumber, reader.LinePosition)
 					{
-						Value = reader.Value
+						Value = trimStart ? ((string)reader.Value).TrimStart() : reader.Value
 					}
 				}
 			};

@@ -3,7 +3,7 @@ parameters:
 
 jobs:
 - job: UAP_Build
-  displayName: 'UWP Samples App'
+  displayName: 'Build UWP Samples App UI Tests'
 
   pool:
     vmImage: ${{ parameters.vmImage }}
@@ -25,6 +25,7 @@ jobs:
       nugetPackages: $(NUGET_PACKAGES)
 
   - template: templates/gitversion.yml
+  - template: templates/dotnet-install.yml
 
   # Required until Uno.Xaml can build without all targets enabled
   - template: templates/jdk-setup.yml
@@ -56,6 +57,7 @@ jobs:
 
   - task: PublishBuildArtifacts@1
     condition: always()
+    retryCountOnTaskFailure: 3
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
       ArtifactName: UWP-Package

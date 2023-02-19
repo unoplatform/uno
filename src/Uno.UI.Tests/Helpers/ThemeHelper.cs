@@ -11,7 +11,7 @@ namespace Uno.UI.Tests.Helpers
 	internal static class ThemeHelper
 	{
 		internal static
-#if NETFX_CORE		
+#if NETFX_CORE
 		async
 #endif
 		Task<bool> SwapSystemTheme()

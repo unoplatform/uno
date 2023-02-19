@@ -13,7 +13,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AudioDeviceModule AudioDeviceModuleNotificationEventArgs.Module is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AudioDeviceModule AudioDeviceModuleNotificationEventArgs.Module is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AudioDeviceModule%20AudioDeviceModuleNotificationEventArgs.Module");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBuffer AudioDeviceModuleNotificationEventArgs.NotificationData is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IBuffer AudioDeviceModuleNotificationEventArgs.NotificationData is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IBuffer%20AudioDeviceModuleNotificationEventArgs.NotificationData");
 			}
 		}
 		#endif

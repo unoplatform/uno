@@ -247,7 +247,7 @@ namespace Windows.UI.Xaml.Controls
 			float? zoomFactor,
 			bool disableAnimation,
 			bool isIntermediate)
-			=> throw new NotImplementedException(); 
+			=> throw new NotImplementedException();
 		#endregion
 
 		#region Native to managed
@@ -266,7 +266,7 @@ namespace Windows.UI.Xaml.Controls
 		protected override void OnZoomScaleChanged(float p0, float p1)
 		{
 			ScrollOwner?.Presenter?.OnNativeZoom(p1);
-		} 
+		}
 		#endregion
 
 		private Thickness _childMargin;

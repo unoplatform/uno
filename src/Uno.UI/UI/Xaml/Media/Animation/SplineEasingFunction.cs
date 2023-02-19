@@ -12,7 +12,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		public SplineEasingFunction(KeySpline keySpline)
 		{
 			KeySpline = keySpline;
-        }
+		}
 
 		public double Ease(double currentTime, double startValue, double finalValue, double duration)
 		{

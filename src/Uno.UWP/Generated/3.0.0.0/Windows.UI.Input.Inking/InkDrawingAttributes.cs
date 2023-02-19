@@ -13,7 +13,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Size InkDrawingAttributes.Size is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Size InkDrawingAttributes.Size is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Size%20InkDrawingAttributes.Size");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PenTipShape InkDrawingAttributes.PenTip is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PenTipShape InkDrawingAttributes.PenTip is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PenTipShape%20InkDrawingAttributes.PenTip");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool InkDrawingAttributes.IgnorePressure is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool InkDrawingAttributes.IgnorePressure is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20InkDrawingAttributes.IgnorePressure");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool InkDrawingAttributes.FitToCurve is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool InkDrawingAttributes.FitToCurve is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20InkDrawingAttributes.FitToCurve");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color InkDrawingAttributes.Color is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Color InkDrawingAttributes.Color is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Color%20InkDrawingAttributes.Color");
 			}
 			set
 			{
@@ -83,7 +83,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Matrix3x2 InkDrawingAttributes.PenTipTransform is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Matrix3x2 InkDrawingAttributes.PenTipTransform is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Matrix3x2%20InkDrawingAttributes.PenTipTransform");
 			}
 			set
 			{
@@ -97,7 +97,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool InkDrawingAttributes.DrawAsHighlighter is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool InkDrawingAttributes.DrawAsHighlighter is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20InkDrawingAttributes.DrawAsHighlighter");
 			}
 			set
 			{
@@ -111,7 +111,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member InkDrawingAttributesKind InkDrawingAttributes.Kind is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member InkDrawingAttributesKind InkDrawingAttributes.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=InkDrawingAttributesKind%20InkDrawingAttributes.Kind");
 			}
 		}
 		#endif
@@ -121,7 +121,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member InkDrawingAttributesPencilProperties InkDrawingAttributes.PencilProperties is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member InkDrawingAttributesPencilProperties InkDrawingAttributes.PencilProperties is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=InkDrawingAttributesPencilProperties%20InkDrawingAttributes.PencilProperties");
 			}
 		}
 		#endif
@@ -131,7 +131,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool InkDrawingAttributes.IgnoreTilt is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool InkDrawingAttributes.IgnoreTilt is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20InkDrawingAttributes.IgnoreTilt");
 			}
 			set
 			{
@@ -145,7 +145,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member InkModelerAttributes InkDrawingAttributes.ModelerAttributes is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member InkModelerAttributes InkDrawingAttributes.ModelerAttributes is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=InkModelerAttributes%20InkDrawingAttributes.ModelerAttributes");
 			}
 		}
 		#endif
@@ -180,7 +180,7 @@ namespace Windows.UI.Input.Inking
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Input.Inking.InkDrawingAttributes CreateForPencil()
 		{
-			throw new global::System.NotImplementedException("The member InkDrawingAttributes InkDrawingAttributes.CreateForPencil() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member InkDrawingAttributes InkDrawingAttributes.CreateForPencil() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=InkDrawingAttributes%20InkDrawingAttributes.CreateForPencil%28%29");
 		}
 		#endif
 	}

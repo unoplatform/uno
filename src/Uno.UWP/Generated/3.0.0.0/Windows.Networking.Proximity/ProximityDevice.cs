@@ -13,7 +13,7 @@ namespace Windows.Networking.Proximity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong ProximityDevice.BitsPerSecond is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ulong ProximityDevice.BitsPerSecond is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ulong%20ProximityDevice.BitsPerSecond");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Networking.Proximity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ProximityDevice.DeviceId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ProximityDevice.DeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ProximityDevice.DeviceId");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Networking.Proximity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint ProximityDevice.MaxMessageBytes is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint ProximityDevice.MaxMessageBytes is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20ProximityDevice.MaxMessageBytes");
 			}
 		}
 		#endif
@@ -41,49 +41,49 @@ namespace Windows.Networking.Proximity
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  long SubscribeForMessage( string messageType,  global::Windows.Networking.Proximity.MessageReceivedHandler messageReceivedHandler)
 		{
-			throw new global::System.NotImplementedException("The member long ProximityDevice.SubscribeForMessage(string messageType, MessageReceivedHandler messageReceivedHandler) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member long ProximityDevice.SubscribeForMessage(string messageType, MessageReceivedHandler messageReceivedHandler) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=long%20ProximityDevice.SubscribeForMessage%28string%20messageType%2C%20MessageReceivedHandler%20messageReceivedHandler%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  long PublishMessage( string messageType,  string message)
 		{
-			throw new global::System.NotImplementedException("The member long ProximityDevice.PublishMessage(string messageType, string message) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member long ProximityDevice.PublishMessage(string messageType, string message) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=long%20ProximityDevice.PublishMessage%28string%20messageType%2C%20string%20message%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  long PublishMessage( string messageType,  string message,  global::Windows.Networking.Proximity.MessageTransmittedHandler messageTransmittedHandler)
 		{
-			throw new global::System.NotImplementedException("The member long ProximityDevice.PublishMessage(string messageType, string message, MessageTransmittedHandler messageTransmittedHandler) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member long ProximityDevice.PublishMessage(string messageType, string message, MessageTransmittedHandler messageTransmittedHandler) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=long%20ProximityDevice.PublishMessage%28string%20messageType%2C%20string%20message%2C%20MessageTransmittedHandler%20messageTransmittedHandler%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  long PublishBinaryMessage( string messageType,  global::Windows.Storage.Streams.IBuffer message)
 		{
-			throw new global::System.NotImplementedException("The member long ProximityDevice.PublishBinaryMessage(string messageType, IBuffer message) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member long ProximityDevice.PublishBinaryMessage(string messageType, IBuffer message) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=long%20ProximityDevice.PublishBinaryMessage%28string%20messageType%2C%20IBuffer%20message%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  long PublishBinaryMessage( string messageType,  global::Windows.Storage.Streams.IBuffer message,  global::Windows.Networking.Proximity.MessageTransmittedHandler messageTransmittedHandler)
 		{
-			throw new global::System.NotImplementedException("The member long ProximityDevice.PublishBinaryMessage(string messageType, IBuffer message, MessageTransmittedHandler messageTransmittedHandler) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member long ProximityDevice.PublishBinaryMessage(string messageType, IBuffer message, MessageTransmittedHandler messageTransmittedHandler) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=long%20ProximityDevice.PublishBinaryMessage%28string%20messageType%2C%20IBuffer%20message%2C%20MessageTransmittedHandler%20messageTransmittedHandler%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  long PublishUriMessage( global::System.Uri message)
 		{
-			throw new global::System.NotImplementedException("The member long ProximityDevice.PublishUriMessage(Uri message) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member long ProximityDevice.PublishUriMessage(Uri message) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=long%20ProximityDevice.PublishUriMessage%28Uri%20message%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  long PublishUriMessage( global::System.Uri message,  global::Windows.Networking.Proximity.MessageTransmittedHandler messageTransmittedHandler)
 		{
-			throw new global::System.NotImplementedException("The member long ProximityDevice.PublishUriMessage(Uri message, MessageTransmittedHandler messageTransmittedHandler) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member long ProximityDevice.PublishUriMessage(Uri message, MessageTransmittedHandler messageTransmittedHandler) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=long%20ProximityDevice.PublishUriMessage%28Uri%20message%2C%20MessageTransmittedHandler%20messageTransmittedHandler%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -111,21 +111,21 @@ namespace Windows.Networking.Proximity
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static string GetDeviceSelector()
 		{
-			throw new global::System.NotImplementedException("The member string ProximityDevice.GetDeviceSelector() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member string ProximityDevice.GetDeviceSelector() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ProximityDevice.GetDeviceSelector%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Networking.Proximity.ProximityDevice GetDefault()
 		{
-			throw new global::System.NotImplementedException("The member ProximityDevice ProximityDevice.GetDefault() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member ProximityDevice ProximityDevice.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ProximityDevice%20ProximityDevice.GetDefault%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Networking.Proximity.ProximityDevice FromId( string deviceId)
 		{
-			throw new global::System.NotImplementedException("The member ProximityDevice ProximityDevice.FromId(string deviceId) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member ProximityDevice ProximityDevice.FromId(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ProximityDevice%20ProximityDevice.FromId%28string%20deviceId%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

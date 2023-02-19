@@ -201,7 +201,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				var child2 = new Button();
 				parent1.Children.Add(child1);
 				parent1.Children.Add(child2);
-				
+
 				pool.PutElement(child1, key1);
 				pool.PutElement(child2, key2);
 

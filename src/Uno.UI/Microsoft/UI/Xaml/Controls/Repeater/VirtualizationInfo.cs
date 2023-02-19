@@ -13,7 +13,7 @@ namespace Microsoft.UI.Xaml.Controls
 		public const int PhaseNotSpecified = int.MinValue;
 		public const int PhaseReachedEnd = -1;
 
-		private uint m_pinCounter ;
+		private uint m_pinCounter;
 		private int m_index = -1;
 		private string m_uniqueId;
 		private ElementOwner m_owner = ElementOwner.ElementFactory;
@@ -77,7 +77,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public IDataTemplateComponent DataTemplateComponent => m_dataTemplateComponent?.GetTarget();
 
-		public void UpdatePhasingInfo(int phase,  object data, IDataTemplateComponent component)
+		public void UpdatePhasingInfo(int phase, object data, IDataTemplateComponent component)
 		{
 			m_phase = phase;
 			m_data = new WeakReference<object>(data);

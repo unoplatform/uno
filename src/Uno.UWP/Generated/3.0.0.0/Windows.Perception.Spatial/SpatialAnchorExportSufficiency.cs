@@ -13,7 +13,7 @@ namespace Windows.Perception.Spatial
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SpatialAnchorExportSufficiency.IsMinimallySufficient is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool SpatialAnchorExportSufficiency.IsMinimallySufficient is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20SpatialAnchorExportSufficiency.IsMinimallySufficient");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Perception.Spatial
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double SpatialAnchorExportSufficiency.RecommendedSufficiencyLevel is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double SpatialAnchorExportSufficiency.RecommendedSufficiencyLevel is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20SpatialAnchorExportSufficiency.RecommendedSufficiencyLevel");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Perception.Spatial
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double SpatialAnchorExportSufficiency.SufficiencyLevel is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double SpatialAnchorExportSufficiency.SufficiencyLevel is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20SpatialAnchorExportSufficiency.SufficiencyLevel");
 			}
 		}
 		#endif

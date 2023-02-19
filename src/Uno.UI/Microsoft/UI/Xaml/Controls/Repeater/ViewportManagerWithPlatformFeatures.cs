@@ -39,7 +39,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private Rect m_layoutExtent;
 		// This is the expected shift by the layout.
 		private Point m_expectedViewportShift;
-		// This is what is pending and not been accounted for. 
+		// This is what is pending and not been accounted for.
 		// Sometimes the scrolling surface cannot service a shift (for example
 		// it is already at the top and cannot shift anymore.)
 		private Point m_pendingViewportShift;
@@ -151,6 +151,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public override Point GetOrigin() => new Point(m_layoutExtent.X, m_layoutExtent.Y);
 
+#if false
 		Rect GetLayoutVisibleWindowDiscardAnchor()
 		{
 			var visibleWindow = m_visibleWindow;
@@ -163,6 +164,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			return visibleWindow;
 		}
+#endif
 
 		public override Rect GetLayoutVisibleWindow()
 		{
@@ -227,10 +229,10 @@ namespace Microsoft.UI.Xaml.Controls
 				// There are cases where we might be expecting a shift but not get it. We will
 				// be waiting for the effective viewport event but if the scroll viewer is not able
 				// to perform the shift (perhaps because it cannot scroll in negative offset),
-				// then we will end up not realizing elements in the visible 
-				// window. To avoid this, we register to layout updated for this layout pass. If we 
+				// then we will end up not realizing elements in the visible
+				// window. To avoid this, we register to layout updated for this layout pass. If we
 				// get an effective viewport, we know we have a new viewport and we unregister from
-				// layout updated. If we get the layout updated handler, then we know that the 
+				// layout updated. If we get the layout updated handler, then we know that the
 				// scroller was unable to perform the shift and we invalidate measure and unregister
 				// from the layout updated event.
 				if (m_layoutUpdatedRevoker == null)
@@ -297,7 +299,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public override void OnOwnerMeasuring()
 		{
-			// This is because of a bug that causes effective viewport to not 
+			// This is because of a bug that causes effective viewport to not
 			// fire if you register during arrange.
 			// Bug 17411076: EffectiveViewport: registering for effective viewport in arrange should invalidate viewport
 			EnsureScroller();
@@ -312,7 +314,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (!m_managingViewportDisabled)
 			{
-				// This is because of a bug that causes effective viewport to not 
+				// This is because of a bug that causes effective viewport to not
 				// fire if you register during arrange.
 				// Bug 17411076: EffectiveViewport: registering for effective viewport in arrange should invalidate viewport
 				// EnsureScroller();
@@ -495,7 +497,7 @@ namespace Microsoft.UI.Xaml.Controls
 				m_layoutExtent = default;
 			}
 
-			// We got a new viewport, we dont need to wait for layout updated anymore to 
+			// We got a new viewport, we dont need to wait for layout updated anymore to
 			// see if our request for a pending shift was handled.
 			m_layoutUpdatedRevoker?.Dispose();
 		}
@@ -569,7 +571,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				REPEATER_TRACE_INFO("%ls: \tViewport is invalid. visible window cleared. \n", GetLayoutId());
 				// We got cleared.
-				m_visibleWindow =  default;
+				m_visibleWindow = default;
 			}
 			else
 			{

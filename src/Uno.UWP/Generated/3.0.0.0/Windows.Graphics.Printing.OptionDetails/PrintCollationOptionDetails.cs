@@ -13,7 +13,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PrintCollationOptionDetails.WarningText is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PrintCollationOptionDetails.WarningText is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PrintCollationOptionDetails.WarningText");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PrintCollationOptionDetails.Description is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PrintCollationOptionDetails.Description is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PrintCollationOptionDetails.Description");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<object> PrintCollationOptionDetails.Items is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<object> PrintCollationOptionDetails.Items is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3Cobject%3E%20PrintCollationOptionDetails.Items");
 			}
 		}
 		#endif
@@ -51,7 +51,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PrintOptionStates PrintCollationOptionDetails.State is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PrintOptionStates PrintCollationOptionDetails.State is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PrintOptionStates%20PrintCollationOptionDetails.State");
 			}
 			set
 			{
@@ -65,7 +65,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PrintCollationOptionDetails.ErrorText is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PrintCollationOptionDetails.ErrorText is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PrintCollationOptionDetails.ErrorText");
 			}
 			set
 			{
@@ -79,7 +79,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PrintCollationOptionDetails.OptionId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PrintCollationOptionDetails.OptionId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PrintCollationOptionDetails.OptionId");
 			}
 		}
 		#endif
@@ -89,7 +89,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PrintOptionType PrintCollationOptionDetails.OptionType is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PrintOptionType PrintCollationOptionDetails.OptionType is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PrintOptionType%20PrintCollationOptionDetails.OptionType");
 			}
 		}
 		#endif
@@ -99,7 +99,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member object PrintCollationOptionDetails.Value is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member object PrintCollationOptionDetails.Value is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=object%20PrintCollationOptionDetails.Value");
 			}
 		}
 		#endif
@@ -114,7 +114,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool TrySetValue( object value)
 		{
-			throw new global::System.NotImplementedException("The member bool PrintCollationOptionDetails.TrySetValue(object value) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member bool PrintCollationOptionDetails.TrySetValue(object value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20PrintCollationOptionDetails.TrySetValue%28object%20value%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCollationOptionDetails.Items.get

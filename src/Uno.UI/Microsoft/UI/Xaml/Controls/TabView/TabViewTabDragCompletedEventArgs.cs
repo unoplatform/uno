@@ -11,7 +11,7 @@ namespace Microsoft.UI.Xaml.Controls
 	/// Provides data for the TabDragCompleted event.
 	/// </summary>
 	public sealed partial class TabViewTabDragCompletedEventArgs
-    {
+	{
 		private readonly DragItemsCompletedEventArgs _args;
 
 		internal TabViewTabDragCompletedEventArgs(DragItemsCompletedEventArgs args, object item, TabViewItem tab)

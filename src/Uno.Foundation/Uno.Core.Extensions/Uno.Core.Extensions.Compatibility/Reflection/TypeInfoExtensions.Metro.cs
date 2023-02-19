@@ -25,95 +25,95 @@ using Uno.Extensions;
 namespace Uno.Extensions
 {
 #if HAS_TYPEINFO || WINDOWS_UWP
-    internal static class TypeInfoExtensions
-    {
+	internal static class TypeInfoExtensions
+	{
 #if !HAS_TYPEINFO_EXTENSIONS
-        public static MemberInfo FindMemberInfo(this Type type, string memberName)
-        {
+		public static MemberInfo FindMemberInfo(this Type type, string memberName)
+		{
 			return type.GetTypeInfo().DeclaredMembers.FirstOrDefault(m => m.Name == memberName);
-        }
+		}
 
 		public static bool IsAssignableFrom(this Type type, Type memberName)
-        {
-            return type.GetTypeInfo().IsAssignableFrom(memberName.GetTypeInfo());
-        }
+		{
+			return type.GetTypeInfo().IsAssignableFrom(memberName.GetTypeInfo());
+		}
 #endif
 
-        public static IEnumerable<Attribute> GetCustomAttributes(this Type type, Type attributeType, bool includeInherited)
-        {
-            return CustomAttributeExtensions.GetCustomAttributes(type.GetTypeInfo(), attributeType, includeInherited);
-        }
+		public static IEnumerable<Attribute> GetCustomAttributes(this Type type, Type attributeType, bool includeInherited)
+		{
+			return CustomAttributeExtensions.GetCustomAttributes(type.GetTypeInfo(), attributeType, includeInherited);
+		}
 
 #if !HAS_TYPEINFO_EXTENSIONS
 		public static IEnumerable<Type> GetInterfaces(this Type type)
-        {
-            return type.GetTypeInfo().ImplementedInterfaces;
-        }
+		{
+			return type.GetTypeInfo().ImplementedInterfaces;
+		}
 
-        public static PropertyInfo GetProperty(this Type type, string name)
-        {
-            return type.GetTypeInfo().GetDeclaredProperty(name);
-        }
+		public static PropertyInfo GetProperty(this Type type, string name)
+		{
+			return type.GetTypeInfo().GetDeclaredProperty(name);
+		}
 
-        public static FieldInfo GetField(this Type type, string name)
-        {
-            return type.GetTypeInfo().GetDeclaredField(name);
-        }
- 
-        public static IEnumerable<FieldInfo> GetFields(this Type type)
-        {
-            return type.GetTypeInfo().DeclaredFields;
-        }
+		public static FieldInfo GetField(this Type type, string name)
+		{
+			return type.GetTypeInfo().GetDeclaredField(name);
+		}
 
-        public static ConstructorInfo GetConstructor(this Type t, Type[] parameters)
-        {
-            return t.GetTypeInfo()
-                       .DeclaredConstructors
-                       .FirstOrDefault(
-                            c => c.GetParameters()
-                                  .Select(p => p.ParameterType)
-                                  .Equality()
-                                  .Equal(parameters)
-                       );
-        }
+		public static IEnumerable<FieldInfo> GetFields(this Type type)
+		{
+			return type.GetTypeInfo().DeclaredFields;
+		}
 
-        public static MethodInfo GetAddMethod(this EventInfo info, bool throws = true)
-        {
-            return info.AddMethod;
-        }
+		public static ConstructorInfo GetConstructor(this Type t, Type[] parameters)
+		{
+			return t.GetTypeInfo()
+					   .DeclaredConstructors
+					   .FirstOrDefault(
+							c => c.GetParameters()
+								  .Select(p => p.ParameterType)
+								  .Equality()
+								  .Equal(parameters)
+					   );
+		}
 
-        public static MethodInfo GetRemoveMethod(this EventInfo info, bool throws = true)
-        {
-            return info.RemoveMethod;
-        }
+		public static MethodInfo GetAddMethod(this EventInfo info, bool throws = true)
+		{
+			return info.AddMethod;
+		}
 
-        public static MethodInfo GetGetMethod(this PropertyInfo info, bool throws = true)
-        {
-            return info.GetMethod;
-        }
+		public static MethodInfo GetRemoveMethod(this EventInfo info, bool throws = true)
+		{
+			return info.RemoveMethod;
+		}
 
-        public static MethodInfo GetSetMethod(this PropertyInfo info, bool throws = true)
-        {
-            return info.SetMethod;
-        }
+		public static MethodInfo GetGetMethod(this PropertyInfo info, bool throws = true)
+		{
+			return info.GetMethod;
+		}
+
+		public static MethodInfo GetSetMethod(this PropertyInfo info, bool throws = true)
+		{
+			return info.SetMethod;
+		}
 #endif
 
 		public static CustomAttributeData[] GetCustomAttributesData(this FieldInfo info)
-        {
-            return info.CustomAttributes.ToArray();
-        }
+		{
+			return info.CustomAttributes.ToArray();
+		}
 
 #if !HAS_TYPEINFO_EXTENSIONS
-        public static Type[] GetGenericArguments(this Type type)
-        {
-            return type.GetTypeInfo().GenericTypeArguments;
-        }
+		public static Type[] GetGenericArguments(this Type type)
+		{
+			return type.GetTypeInfo().GenericTypeArguments;
+		}
 
-        public static MethodInfo GetMethod(this Type type, string name)
-        {
-            return type.GetTypeInfo().GetDeclaredMethod(name);
-        }
-#endif
-    }
+		public static MethodInfo GetMethod(this Type type, string name)
+		{
+			return type.GetTypeInfo().GetDeclaredMethod(name);
+		}
 #endif
 	}
+#endif
+}

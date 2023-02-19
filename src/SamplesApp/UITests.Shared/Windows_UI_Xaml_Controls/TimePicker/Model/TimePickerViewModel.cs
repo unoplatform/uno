@@ -12,7 +12,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.TimePicker.Model
 	[Bindable]
 	internal class TimePickerViewModel : ViewModelBase
 	{
-		private TimeSpan _time = new TimeSpan(12,0,0);
+		private TimeSpan _time = new TimeSpan(12, 0, 0);
 
 		public TimePickerViewModel(CoreDispatcher dispatcher) : base(dispatcher)
 		{

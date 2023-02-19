@@ -3,7 +3,7 @@ using Windows.UI.Xaml.Controls;
 
 namespace Windows.UI.Xaml.Automation.Peers
 {
-	public  partial class ComboBoxAutomationPeer : SelectorAutomationPeer, Provider.IExpandCollapseProvider, Provider.IValueProvider, Provider.IWindowProvider
+	public partial class ComboBoxAutomationPeer : SelectorAutomationPeer, Provider.IExpandCollapseProvider, Provider.IValueProvider, Provider.IWindowProvider
 	{
 		[NotImplemented]
 		public ExpandCollapseState ExpandCollapseState
@@ -15,7 +15,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 		}
 
 		[NotImplemented]
-		public  bool IsReadOnly
+		public bool IsReadOnly
 		{
 			get
 			{
@@ -87,7 +87,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 		}
 
 		[NotImplemented]
-		public ComboBoxAutomationPeer( global::Windows.UI.Xaml.Controls.ComboBox owner) : base(owner)
+		public ComboBoxAutomationPeer(global::Windows.UI.Xaml.Controls.ComboBox owner) : base(owner)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Automation.Peers.ComboBoxAutomationPeer", "ComboBoxAutomationPeer.ComboBoxAutomationPeer(ComboBox owner)");
 		}
@@ -105,7 +105,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 		}
 
 		[NotImplemented]
-		public void SetValue( string value)
+		public void SetValue(string value)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Automation.Peers.ComboBoxAutomationPeer", "void ComboBoxAutomationPeer.SetValue(string value)");
 		}
@@ -117,13 +117,13 @@ namespace Windows.UI.Xaml.Automation.Peers
 		}
 
 		[NotImplemented]
-		public void SetVisualState( global::Windows.UI.Xaml.Automation.WindowVisualState state)
+		public void SetVisualState(global::Windows.UI.Xaml.Automation.WindowVisualState state)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Automation.Peers.ComboBoxAutomationPeer", "void ComboBoxAutomationPeer.SetVisualState(WindowVisualState state)");
 		}
 
 		[NotImplemented]
-		public bool WaitForInputIdle( int milliseconds)
+		public bool WaitForInputIdle(int milliseconds)
 		{
 			throw new global::System.NotImplementedException("The member bool ComboBoxAutomationPeer.WaitForInputIdle(int milliseconds) is not implemented in Uno.");
 		}

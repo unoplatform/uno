@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TreeViewNode TreeViewExpandingEventArgs.Node is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TreeViewNode TreeViewExpandingEventArgs.Node is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TreeViewNode%20TreeViewExpandingEventArgs.Node");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member object TreeViewExpandingEventArgs.Item is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member object TreeViewExpandingEventArgs.Item is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=object%20TreeViewExpandingEventArgs.Item");
 			}
 		}
 		#endif

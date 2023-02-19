@@ -55,7 +55,7 @@ namespace Windows.UI.Xaml.Controls
 			get => NativePanel?.Padding ?? default;
 			set
 			{
-				if (NativePanel is {} native)
+				if (NativePanel is { } native)
 				{
 					native.Padding = value;
 				}

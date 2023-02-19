@@ -1,6 +1,6 @@
 namespace Windows.UI.Xaml.Controls
 {
-	public enum NavigationViewDisplayMode 
+	public enum NavigationViewDisplayMode
 	{
 		Minimal,
 		Compact,

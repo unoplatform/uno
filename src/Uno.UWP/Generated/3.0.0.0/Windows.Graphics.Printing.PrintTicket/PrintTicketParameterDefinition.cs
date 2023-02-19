@@ -13,7 +13,7 @@ namespace Windows.Graphics.Printing.PrintTicket
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PrintTicketParameterDataType PrintTicketParameterDefinition.DataType is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PrintTicketParameterDataType PrintTicketParameterDefinition.DataType is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PrintTicketParameterDataType%20PrintTicketParameterDefinition.DataType");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Graphics.Printing.PrintTicket
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PrintTicketParameterDefinition.Name is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PrintTicketParameterDefinition.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PrintTicketParameterDefinition.Name");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Graphics.Printing.PrintTicket
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int PrintTicketParameterDefinition.RangeMax is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int PrintTicketParameterDefinition.RangeMax is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20PrintTicketParameterDefinition.RangeMax");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Graphics.Printing.PrintTicket
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int PrintTicketParameterDefinition.RangeMin is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int PrintTicketParameterDefinition.RangeMin is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20PrintTicketParameterDefinition.RangeMin");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Graphics.Printing.PrintTicket
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PrintTicketParameterDefinition.UnitType is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PrintTicketParameterDefinition.UnitType is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PrintTicketParameterDefinition.UnitType");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Graphics.Printing.PrintTicket
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PrintTicketParameterDefinition.XmlNamespace is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PrintTicketParameterDefinition.XmlNamespace is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PrintTicketParameterDefinition.XmlNamespace");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.Graphics.Printing.PrintTicket
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IXmlNode PrintTicketParameterDefinition.XmlNode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IXmlNode PrintTicketParameterDefinition.XmlNode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IXmlNode%20PrintTicketParameterDefinition.XmlNode");
 			}
 		}
 		#endif

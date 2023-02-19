@@ -13,7 +13,7 @@ namespace Windows.Devices.WiFiDirect.Services
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBuffer WiFiDirectServiceSessionDeferredEventArgs.DeferredSessionInfo is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IBuffer WiFiDirectServiceSessionDeferredEventArgs.DeferredSessionInfo is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IBuffer%20WiFiDirectServiceSessionDeferredEventArgs.DeferredSessionInfo");
 			}
 		}
 		#endif

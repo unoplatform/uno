@@ -74,7 +74,7 @@ namespace Windows.UI.Xaml.Input
 
 		private PointerDeviceType GetPointerDeviceType(UITouchType touchType) =>
 			touchType switch
-			{				
+			{
 				UITouchType.Stylus => PointerDeviceType.Pen,
 				UITouchType.IndirectPointer => PointerDeviceType.Mouse,
 				UITouchType.Indirect => PointerDeviceType.Mouse,
@@ -117,7 +117,7 @@ namespace Windows.UI.Xaml.Input
 
 			// When we cast, we are not overflowing but instead capping to uint.MaxValue.
 			// We use modulo to make sure to reset to 0 in that case (1.13 years of app run-time, but we prefer to be safe).
-			return (uint)(frameId % uint.MaxValue); 
+			return (uint)(frameId % uint.MaxValue);
 		}
 
 		private static UIElement FindOriginalSource(UITouch touch)

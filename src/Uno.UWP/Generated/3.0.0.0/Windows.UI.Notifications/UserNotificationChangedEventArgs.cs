@@ -13,7 +13,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UserNotificationChangedKind UserNotificationChangedEventArgs.ChangeKind is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member UserNotificationChangedKind UserNotificationChangedEventArgs.ChangeKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=UserNotificationChangedKind%20UserNotificationChangedEventArgs.ChangeKind");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint UserNotificationChangedEventArgs.UserNotificationId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint UserNotificationChangedEventArgs.UserNotificationId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20UserNotificationChangedEventArgs.UserNotificationId");
 			}
 		}
 		#endif

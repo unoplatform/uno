@@ -10,16 +10,16 @@ using Windows.UI.Xaml.Media;
 
 namespace UITests.Windows_UI_Xaml_Controls.CommandBar.BackButtonTitle
 {
-    public sealed partial class CommandBar_Page1 : Page
-    {
-        public CommandBar_Page1()
-        {
-            this.InitializeComponent();
-        }
-
-        public void OnButtonClicked(object sender, RoutedEventArgs e)
+	public sealed partial class CommandBar_Page1 : Page
+	{
+		public CommandBar_Page1()
 		{
-			Frame.Navigate(typeof(CommandBar_Page2));			
+			this.InitializeComponent();
+		}
+
+		public void OnButtonClicked(object sender, RoutedEventArgs e)
+		{
+			Frame.Navigate(typeof(CommandBar_Page2));
 		}
 	}
 }

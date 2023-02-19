@@ -13,7 +13,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double AudioNodeListener.SpeedOfSound is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double AudioNodeListener.SpeedOfSound is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20AudioNodeListener.SpeedOfSound");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector3 AudioNodeListener.Position is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Vector3 AudioNodeListener.Position is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Vector3%20AudioNodeListener.Position");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Quaternion AudioNodeListener.Orientation is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Quaternion AudioNodeListener.Orientation is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Quaternion%20AudioNodeListener.Orientation");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector3 AudioNodeListener.DopplerVelocity is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Vector3 AudioNodeListener.DopplerVelocity is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Vector3%20AudioNodeListener.DopplerVelocity");
 			}
 			set
 			{

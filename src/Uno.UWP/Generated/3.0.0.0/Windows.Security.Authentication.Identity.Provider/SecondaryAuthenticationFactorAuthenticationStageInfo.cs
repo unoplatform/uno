@@ -13,7 +13,7 @@ namespace Windows.Security.Authentication.Identity.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SecondaryAuthenticationFactorAuthenticationStageInfo.DeviceId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SecondaryAuthenticationFactorAuthenticationStageInfo.DeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SecondaryAuthenticationFactorAuthenticationStageInfo.DeviceId");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Security.Authentication.Identity.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SecondaryAuthenticationFactorAuthenticationScenario SecondaryAuthenticationFactorAuthenticationStageInfo.Scenario is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SecondaryAuthenticationFactorAuthenticationScenario SecondaryAuthenticationFactorAuthenticationStageInfo.Scenario is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SecondaryAuthenticationFactorAuthenticationScenario%20SecondaryAuthenticationFactorAuthenticationStageInfo.Scenario");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Security.Authentication.Identity.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SecondaryAuthenticationFactorAuthenticationStage SecondaryAuthenticationFactorAuthenticationStageInfo.Stage is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SecondaryAuthenticationFactorAuthenticationStage SecondaryAuthenticationFactorAuthenticationStageInfo.Stage is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SecondaryAuthenticationFactorAuthenticationStage%20SecondaryAuthenticationFactorAuthenticationStageInfo.Stage");
 			}
 		}
 		#endif

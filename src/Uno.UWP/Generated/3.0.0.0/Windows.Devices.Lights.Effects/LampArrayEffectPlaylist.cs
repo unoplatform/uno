@@ -13,7 +13,7 @@ namespace Windows.Devices.Lights.Effects
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member LampArrayRepetitionMode LampArrayEffectPlaylist.RepetitionMode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member LampArrayRepetitionMode LampArrayEffectPlaylist.RepetitionMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=LampArrayRepetitionMode%20LampArrayEffectPlaylist.RepetitionMode");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Devices.Lights.Effects
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int LampArrayEffectPlaylist.Occurrences is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int LampArrayEffectPlaylist.Occurrences is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20LampArrayEffectPlaylist.Occurrences");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Devices.Lights.Effects
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member LampArrayEffectStartMode LampArrayEffectPlaylist.EffectStartMode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member LampArrayEffectStartMode LampArrayEffectPlaylist.EffectStartMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=LampArrayEffectStartMode%20LampArrayEffectPlaylist.EffectStartMode");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.Devices.Lights.Effects
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint LampArrayEffectPlaylist.Size is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint LampArrayEffectPlaylist.Size is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20LampArrayEffectPlaylist.Size");
 			}
 		}
 		#endif

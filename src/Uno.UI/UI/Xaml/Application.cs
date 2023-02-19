@@ -124,7 +124,7 @@ namespace Windows.UI.Xaml
 		{
 			if (InternalRequestedTheme == null)
 			{
-				// just cache the theme, but do not notify about a change unnecessarily	
+				// just cache the theme, but do not notify about a change unnecessarily
 				InternalRequestedTheme = GetDefaultSystemTheme();
 			}
 		}
@@ -273,6 +273,7 @@ namespace Windows.UI.Xaml
 			SystemThemeHelper.SystemTheme == SystemTheme.Light ?
 				ApplicationTheme.Light : ApplicationTheme.Dark;
 
+#if __WASM__ || __SKIA__
 		private IDisposable WritePhaseEventTrace(int startEventId, int stopEventId)
 		{
 			if (_trace.IsEnabled)
@@ -288,6 +289,7 @@ namespace Windows.UI.Xaml
 				return null;
 			}
 		}
+#endif
 
 		internal void RaiseEnteredBackground(Action onComplete)
 		{
@@ -353,7 +355,7 @@ namespace Windows.UI.Xaml
 			var suspendingEventArgs = new SuspendingEventArgs(suspendingOperation);
 
 			Suspending?.Invoke(this, suspendingEventArgs);
-			CoreApplication.RaiseSuspending(suspendingEventArgs);			
+			CoreApplication.RaiseSuspending(suspendingEventArgs);
 			var completedSynchronously = suspendingOperation.DeferralManager.EventRaiseCompleted();
 
 #if !__IOS__ && !__ANDROID__
@@ -455,6 +457,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
+#if __MACOS__ || __SKIA__
 		private static string GetCommandLineArgsWithoutExecutable()
 		{
 			var args = Environment.GetCommandLineArgs();
@@ -484,5 +487,6 @@ namespace Windows.UI.Xaml
 			// in UWP is trimmed whereas the ending is not.
 			return rawCmd.TrimStart();
 		}
+#endif
 	}
 }

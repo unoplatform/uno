@@ -19,10 +19,10 @@ using Windows.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_UI_Xaml.FrameworkElementTests
 {
-	[SampleControlInfo("FrameworkElement", "XamlEvent_Leak", description: Description)]
+	[SampleControlInfo("FrameworkElement", "XamlEvent_Leak", description: SampleDescription)]
 	public sealed partial class XamlEvent_Leak : UserControl
 	{
-		private const string Description =
+		private const string SampleDescription =
 			"This sample provides a test for XAML provided event " +
 			"handlers, which must not make the declaring control leak. The counter " +
 			"should not grow and stay above a few instances, and go down back to zero " +

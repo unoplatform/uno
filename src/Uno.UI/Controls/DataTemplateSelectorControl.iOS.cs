@@ -14,12 +14,12 @@ namespace Uno.UI.Views.Controls
 	/// </summary>
 	public abstract partial class DataTemplateSelectorControl : ContentControl
 	{
-		protected override void OnContentChanged (object oldContent, object newContent)
+		protected override void OnContentChanged(object oldContent, object newContent)
 		{
-			base.OnContentChanged (oldContent, newContent);
-			ContentTemplate = SelectTemplateFactory (newContent);
+			base.OnContentChanged(oldContent, newContent);
+			ContentTemplate = SelectTemplateFactory(newContent);
 		}
 
-		protected abstract Func<UIView> SelectTemplateFactory (object item);
+		protected abstract Func<UIView> SelectTemplateFactory(object item);
 	}
 }

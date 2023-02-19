@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri MapTileUriRequest.Uri is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Uri MapTileUriRequest.Uri is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Uri%20MapTileUriRequest.Uri");
 			}
 			set
 			{
@@ -35,7 +35,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Xaml.Controls.Maps.MapTileUriRequestDeferral GetDeferral()
 		{
-			throw new global::System.NotImplementedException("The member MapTileUriRequestDeferral MapTileUriRequest.GetDeferral() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member MapTileUriRequestDeferral MapTileUriRequest.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MapTileUriRequestDeferral%20MapTileUriRequest.GetDeferral%28%29");
 		}
 		#endif
 	}

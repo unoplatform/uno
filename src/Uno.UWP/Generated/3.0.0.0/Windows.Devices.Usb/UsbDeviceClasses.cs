@@ -13,7 +13,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UsbDeviceClass UsbDeviceClasses.ActiveSync is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member UsbDeviceClass UsbDeviceClasses.ActiveSync is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=UsbDeviceClass%20UsbDeviceClasses.ActiveSync");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UsbDeviceClass UsbDeviceClasses.CdcControl is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member UsbDeviceClass UsbDeviceClasses.CdcControl is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=UsbDeviceClass%20UsbDeviceClasses.CdcControl");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UsbDeviceClass UsbDeviceClasses.DeviceFirmwareUpdate is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member UsbDeviceClass UsbDeviceClasses.DeviceFirmwareUpdate is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=UsbDeviceClass%20UsbDeviceClasses.DeviceFirmwareUpdate");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UsbDeviceClass UsbDeviceClasses.Irda is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member UsbDeviceClass UsbDeviceClasses.Irda is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=UsbDeviceClass%20UsbDeviceClasses.Irda");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UsbDeviceClass UsbDeviceClasses.Measurement is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member UsbDeviceClass UsbDeviceClasses.Measurement is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=UsbDeviceClass%20UsbDeviceClasses.Measurement");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UsbDeviceClass UsbDeviceClasses.PalmSync is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member UsbDeviceClass UsbDeviceClasses.PalmSync is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=UsbDeviceClass%20UsbDeviceClasses.PalmSync");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UsbDeviceClass UsbDeviceClasses.PersonalHealthcare is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member UsbDeviceClass UsbDeviceClasses.PersonalHealthcare is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=UsbDeviceClass%20UsbDeviceClasses.PersonalHealthcare");
 			}
 		}
 		#endif
@@ -83,7 +83,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UsbDeviceClass UsbDeviceClasses.Physical is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member UsbDeviceClass UsbDeviceClasses.Physical is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=UsbDeviceClass%20UsbDeviceClasses.Physical");
 			}
 		}
 		#endif
@@ -93,7 +93,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UsbDeviceClass UsbDeviceClasses.VendorSpecific is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member UsbDeviceClass UsbDeviceClasses.VendorSpecific is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=UsbDeviceClass%20UsbDeviceClasses.VendorSpecific");
 			}
 		}
 		#endif

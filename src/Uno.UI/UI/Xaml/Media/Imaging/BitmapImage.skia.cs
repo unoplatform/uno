@@ -35,8 +35,13 @@ namespace Windows.UI.Xaml.Media.Imaging
 
 			try
 			{
-				if (UriSource != null)
+				if (UriSource is not null)
 				{
+					if (!UriSource.IsAbsoluteUri)
+					{
+						return ImageData.FromError(new InvalidOperationException($"UriSource must be absolute"));
+					}
+
 					if (UriSource.Scheme.Equals("http", StringComparison.OrdinalIgnoreCase) ||
 						UriSource.Scheme.Equals("https", StringComparison.OrdinalIgnoreCase))
 					{
@@ -97,7 +102,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 
 		private protected override bool TryOpenSourceSync(int? targetWidth, int? targetHeight, out ImageData image)
 		{
-			if(_stream != null &&
+			if (_stream != null &&
 				targetWidth is { } width &&
 				targetHeight is { } height &&
 				height < MIN_DIMENSION_SYNC_LOADING &&
@@ -140,7 +145,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 			}
 
 			var originalLocalPath =
-				Path.Combine(Windows.Application­Model.Package.Current.Installed­Location.Path,
+				Path.Combine(Windows.Application­Model.Package.Current.InstalledPath,
 					 rawPath.TrimStart('/').Replace('/', global::System.IO.Path.DirectorySeparatorChar)
 				);
 
@@ -180,6 +185,6 @@ namespace Windows.UI.Xaml.Media.Imaging
 
 				return null;
 			}
-		}		
+		}
 	}
 }

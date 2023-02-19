@@ -617,11 +617,16 @@ namespace Windows.UI.Xaml.Controls
 				ContentTemplateRoot = null;
 			}
 
-			if (newValue != null)
+			if (newValue is not null)
 			{
 				TrySetDataContextFromContent(newValue);
 
 				SetUpdateTemplate();
+			}
+			else
+			{
+				// Restore the inherited data context as it may have been overridden by TrySetDataContextFromContent
+				this.ClearValue(DataContextProperty, DependencyPropertyValuePrecedences.Local);
 			}
 		}
 
@@ -1046,7 +1051,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			var horizontalAlignment = HorizontalContentAlignment;
 			var verticalAlignment = VerticalContentAlignment;
-			
+
 			if (horizontalAlignment == HorizontalAlignment.Stretch &&
 				contentSize.Width > availableSize.Width)
 			{

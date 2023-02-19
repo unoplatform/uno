@@ -55,7 +55,7 @@ namespace Uno.UI.DataBinding
 
 			List<Java.Lang.Object> properties = new List<Java.Lang.Object>();
 
-			foreach(var prop in _props)
+			foreach (var prop in _props)
 			{
 				var value = _owner.GetValue(prop);
 

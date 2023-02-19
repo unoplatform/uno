@@ -13,7 +13,7 @@ namespace Windows.Devices.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string DeviceServicingDetails.Arguments is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string DeviceServicingDetails.Arguments is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20DeviceServicingDetails.Arguments");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string DeviceServicingDetails.DeviceId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string DeviceServicingDetails.DeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20DeviceServicingDetails.DeviceId");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Devices.Background
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan DeviceServicingDetails.ExpectedDuration is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan DeviceServicingDetails.ExpectedDuration is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20DeviceServicingDetails.ExpectedDuration");
 			}
 		}
 		#endif

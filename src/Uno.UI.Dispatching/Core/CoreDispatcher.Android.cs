@@ -29,7 +29,7 @@ namespace Uno.UI.Dispatching
 		/// Defines the maximum time for which the queue can be processed. We're assuming 2/3rd 
 		/// of 60fps, to leave room for other operartions to be computed.
 		/// </summary>
-		private readonly TimeSpan MaxRenderSpan = TimeSpan.FromSeconds((1 / 60f) * (2/3f));
+		private readonly TimeSpan MaxRenderSpan = TimeSpan.FromSeconds((1 / 60f) * (2 / 3f));
 
 		partial void Initialize()
 		{

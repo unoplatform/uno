@@ -30,7 +30,5 @@ namespace Windows.UI.Xaml.Controls
 			DependencyProperty.Register("UseTouchAnimationsForAllNavigation", typeof(bool), typeof(FlipView), new FrameworkPropertyMetadata(true));
 
 		partial void InitializePartial();
-
-		partial void OnSelectedIndexChangedPartial(int oldValue, int newValue, bool animateChange);
 	}
 }

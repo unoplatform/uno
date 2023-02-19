@@ -27,7 +27,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 
 namespace Uno.UI.Samples.Content.UITests.GridView
 {
-    [Sample("GridView", ViewModelType = typeof(GridView_ComplexViewModel), IgnoreInSnapshotTests = true)]
+	[Sample("GridView", ViewModelType = typeof(GridView_ComplexViewModel), IgnoreInSnapshotTests = true)]
 	public sealed partial class GridView_ComplexItemTemplate : UserControl
 	{
 		public GridView_ComplexItemTemplate()

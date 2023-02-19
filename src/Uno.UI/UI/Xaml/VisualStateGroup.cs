@@ -243,7 +243,7 @@ namespace Windows.UI.Xaml
 				// This block is a manual enumeration to avoid the foreach pattern
 				// See https://github.com/dotnet/runtime/issues/56309 for details
 				var settersEnumerator = currentSetters.OfType<Setter>().GetEnumerator();
-				while(settersEnumerator.MoveNext())
+				while (settersEnumerator.MoveNext())
 				{
 					var setter = settersEnumerator.Current;
 
@@ -333,7 +333,7 @@ namespace Windows.UI.Xaml
 					// See https://github.com/dotnet/runtime/issues/56309 for details
 					var settersEnumerator = target.setters.OfType<Setter>().GetEnumerator();
 
-					while(settersEnumerator.MoveNext())
+					while (settersEnumerator.MoveNext())
 					{
 						settersEnumerator.Current.ApplyValue(DependencyPropertyValuePrecedences.Animations, element);
 					}
@@ -354,8 +354,8 @@ namespace Windows.UI.Xaml
 			// The most specific transition wins (i.e. with matching From and To),
 			// then we validate for transitions that have only From or To defined which match.
 
-			var hasOld = oldStateName.HasValue();
-			var hasNew = newStateName.HasValue();
+			var hasOld = !oldStateName.IsNullOrEmpty();
+			var hasNew = !newStateName.IsNullOrEmpty();
 
 			if (hasOld && hasNew && Transitions.FirstOrDefault(Match(oldStateName, newStateName)) is { } perfectMatch)
 			{

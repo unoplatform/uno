@@ -13,7 +13,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Quaternion MediaPlaybackSphericalVideoProjection.ViewOrientation is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Quaternion MediaPlaybackSphericalVideoProjection.ViewOrientation is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Quaternion%20MediaPlaybackSphericalVideoProjection.ViewOrientation");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SphericalVideoProjectionMode MediaPlaybackSphericalVideoProjection.ProjectionMode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SphericalVideoProjectionMode MediaPlaybackSphericalVideoProjection.ProjectionMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SphericalVideoProjectionMode%20MediaPlaybackSphericalVideoProjection.ProjectionMode");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MediaPlaybackSphericalVideoProjection.IsEnabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool MediaPlaybackSphericalVideoProjection.IsEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20MediaPlaybackSphericalVideoProjection.IsEnabled");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double MediaPlaybackSphericalVideoProjection.HorizontalFieldOfViewInDegrees is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double MediaPlaybackSphericalVideoProjection.HorizontalFieldOfViewInDegrees is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20MediaPlaybackSphericalVideoProjection.HorizontalFieldOfViewInDegrees");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SphericalVideoFrameFormat MediaPlaybackSphericalVideoProjection.FrameFormat is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SphericalVideoFrameFormat MediaPlaybackSphericalVideoProjection.FrameFormat is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SphericalVideoFrameFormat%20MediaPlaybackSphericalVideoProjection.FrameFormat");
 			}
 			set
 			{

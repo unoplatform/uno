@@ -13,7 +13,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppResourceGroupBackgroundTaskReport.EntryPoint is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string AppResourceGroupBackgroundTaskReport.EntryPoint is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20AppResourceGroupBackgroundTaskReport.EntryPoint");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppResourceGroupBackgroundTaskReport.Name is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string AppResourceGroupBackgroundTaskReport.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20AppResourceGroupBackgroundTaskReport.Name");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid AppResourceGroupBackgroundTaskReport.TaskId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Guid AppResourceGroupBackgroundTaskReport.TaskId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Guid%20AppResourceGroupBackgroundTaskReport.TaskId");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AppResourceGroupBackgroundTaskReport.Trigger is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string AppResourceGroupBackgroundTaskReport.Trigger is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20AppResourceGroupBackgroundTaskReport.Trigger");
 			}
 		}
 		#endif

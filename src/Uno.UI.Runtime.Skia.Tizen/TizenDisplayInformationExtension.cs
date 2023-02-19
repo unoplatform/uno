@@ -9,7 +9,7 @@ namespace Uno.UI.Runtime.Skia
 		private DisplayInformation _displayInformation;
 		private readonly string _profile;
 
-		private Window _window;		
+		private Window _window;
 		private int? _dpi;
 
 		public TizenDisplayInformationExtension(object owner, Window window)

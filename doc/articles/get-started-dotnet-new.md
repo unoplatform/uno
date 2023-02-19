@@ -3,9 +3,18 @@
 The Uno Platform provides a set of command-line templates to create cross-platform applications.
 
 To install the templates, type the following:
+
+# [**.NET 7**](#tab/net7)
+
 ```
 dotnet new install Uno.ProjectTemplates.Dotnet
 ```
+# [**.NET 6**](#tab/net6)
+
+```
+dotnet new -i Uno.ProjectTemplates.Dotnet
+```
+***
 
 If you need to determine the parameters available for a template use `dotnet new [templatename] -h`.
 
@@ -13,6 +22,9 @@ If you need to determine the parameters available for a template use `dotnet new
 > Installing the templates is done per dotnet CLI version. Meaning that the templates are installed for the version shown by `dotnet --version`. If you tried to use the templates with a version different than the one you used for installing, you'll get "No templates found matching: '<template-name>'." error.
 >
 > This is common when using `global.json` that alters the .NET CLI/SDK version. Specifically, it's common for the UI Test template.
+
+> [!NOTE]
+> When using .NET 6, use `dotnet new -i Uno.ProjectTemplates.Dotnet` instead.
 
 [!include[getting-help](use-uno-check-inline.md)]
 
@@ -22,15 +34,13 @@ This template can be used to create a blank multi-platform application for iOS, 
 
 This template uses a single project head for iOS, Android, macOS, and Mac Catalyst. It requires Visual Studio 2022.
 
-[**Find detailed instructions here.**](get-started-winui3.md)
-
 A basic example:
 ```
 dotnet new unoapp -o MyApp
 ```
 
 > [!NOTE]
-> It is possible to create a .NET 7 template by using `-f net7.0` parameter.
+> It is possible to create a .NET 6 template by using the `-f net6.0` parameter.
 
 More articles on WinUI 3:
 
@@ -70,8 +80,6 @@ More articles on WinUI 3:
 
 
 ## Uno Platform Blank Application (UWP, .NET 6)
-
-> .NET 6 Mobile support is currently in Preview, following Microsoft's support status. As of Uno 4.1, .NET 6 Mobile Preview 13 and above is supported with [Visual Studio 2022 17.2 Preview 1](https://visualstudio.microsoft.com/vs/preview). Previous releases of Visual Studio are not supported.
 
 This template can be used to create a blank multi-platform application for iOS, Android, WebAssembly, macOS, Mac Catalyst, Skia/GTK (Windows, Linux, macOS), and Skia/Wpf (Windows 7 and 10).
 

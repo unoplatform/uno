@@ -36,5 +36,5 @@ namespace Windows.UI.Xaml.Controls
 				throw new NotImplementedException();
 			}
 		}
-    }
+	}
 }

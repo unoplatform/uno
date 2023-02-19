@@ -19,21 +19,21 @@ using System.Reflection;
 
 namespace Uno.Reflection
 {
-    internal interface IMemberDescriptor
-    {
-        Type Type { get; }
+	internal interface IMemberDescriptor
+	{
+		Type Type { get; }
 
-        MemberInfo MemberInfo { get; }
+		MemberInfo MemberInfo { get; }
 
-        bool IsStatic { get; }
-        bool IsInstance { get; }
+		bool IsStatic { get; }
+		bool IsInstance { get; }
 
-        bool IsGeneric { get; }
+		bool IsGeneric { get; }
 
-        bool IsOpen { get; }
-        bool IsClosed { get; }
+		bool IsOpen { get; }
+		bool IsClosed { get; }
 
-        IMemberDescriptor Open();
-        IMemberDescriptor Close(params Type[] types);
-    }
+		IMemberDescriptor Open();
+		IMemberDescriptor Close(params Type[] types);
+	}
 }

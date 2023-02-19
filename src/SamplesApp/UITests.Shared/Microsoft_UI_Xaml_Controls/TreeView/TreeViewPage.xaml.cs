@@ -1064,7 +1064,7 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests
 				+ ";" + ((TestTreeView.SelectedItem as TreeViewNode).Content as string);
 		}
 
-#region Uno specific
+		#region Uno specific
 		public int GetItemsCount(TreeViewList listControl)
 		{
 #if !WINDOWS_UWP
@@ -1079,6 +1079,6 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests
 			NavFrameGrid.Visibility = Visibility.Visible;
 			return NavFrame;
 		}
-#endregion
+		#endregion
 	}
 }

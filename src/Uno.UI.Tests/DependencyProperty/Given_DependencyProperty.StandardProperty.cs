@@ -39,7 +39,8 @@ namespace Uno.UI.Tests.BinderTests_StandardProperty
 
 	public partial class MyObject : DependencyObject
 	{
-		public string Name {
+		public string Name
+		{
 			get => _name;
 			set => _name = value;
 		}

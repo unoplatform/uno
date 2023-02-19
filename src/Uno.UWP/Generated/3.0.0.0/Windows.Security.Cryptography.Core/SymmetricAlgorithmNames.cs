@@ -13,7 +13,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SymmetricAlgorithmNames.AesCbc is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SymmetricAlgorithmNames.AesCbc is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SymmetricAlgorithmNames.AesCbc");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SymmetricAlgorithmNames.AesCbcPkcs7 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SymmetricAlgorithmNames.AesCbcPkcs7 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SymmetricAlgorithmNames.AesCbcPkcs7");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SymmetricAlgorithmNames.AesCcm is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SymmetricAlgorithmNames.AesCcm is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SymmetricAlgorithmNames.AesCcm");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SymmetricAlgorithmNames.AesEcb is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SymmetricAlgorithmNames.AesEcb is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SymmetricAlgorithmNames.AesEcb");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SymmetricAlgorithmNames.AesEcbPkcs7 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SymmetricAlgorithmNames.AesEcbPkcs7 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SymmetricAlgorithmNames.AesEcbPkcs7");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SymmetricAlgorithmNames.AesGcm is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SymmetricAlgorithmNames.AesGcm is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SymmetricAlgorithmNames.AesGcm");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SymmetricAlgorithmNames.DesCbc is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SymmetricAlgorithmNames.DesCbc is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SymmetricAlgorithmNames.DesCbc");
 			}
 		}
 		#endif
@@ -83,7 +83,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SymmetricAlgorithmNames.DesCbcPkcs7 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SymmetricAlgorithmNames.DesCbcPkcs7 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SymmetricAlgorithmNames.DesCbcPkcs7");
 			}
 		}
 		#endif
@@ -93,7 +93,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SymmetricAlgorithmNames.DesEcb is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SymmetricAlgorithmNames.DesEcb is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SymmetricAlgorithmNames.DesEcb");
 			}
 		}
 		#endif
@@ -103,7 +103,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SymmetricAlgorithmNames.DesEcbPkcs7 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SymmetricAlgorithmNames.DesEcbPkcs7 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SymmetricAlgorithmNames.DesEcbPkcs7");
 			}
 		}
 		#endif
@@ -113,7 +113,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SymmetricAlgorithmNames.Rc2Cbc is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SymmetricAlgorithmNames.Rc2Cbc is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SymmetricAlgorithmNames.Rc2Cbc");
 			}
 		}
 		#endif
@@ -123,7 +123,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SymmetricAlgorithmNames.Rc2CbcPkcs7 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SymmetricAlgorithmNames.Rc2CbcPkcs7 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SymmetricAlgorithmNames.Rc2CbcPkcs7");
 			}
 		}
 		#endif
@@ -133,7 +133,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SymmetricAlgorithmNames.Rc2Ecb is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SymmetricAlgorithmNames.Rc2Ecb is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SymmetricAlgorithmNames.Rc2Ecb");
 			}
 		}
 		#endif
@@ -143,7 +143,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SymmetricAlgorithmNames.Rc2EcbPkcs7 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SymmetricAlgorithmNames.Rc2EcbPkcs7 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SymmetricAlgorithmNames.Rc2EcbPkcs7");
 			}
 		}
 		#endif
@@ -153,7 +153,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SymmetricAlgorithmNames.Rc4 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SymmetricAlgorithmNames.Rc4 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SymmetricAlgorithmNames.Rc4");
 			}
 		}
 		#endif
@@ -163,7 +163,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SymmetricAlgorithmNames.TripleDesCbc is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SymmetricAlgorithmNames.TripleDesCbc is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SymmetricAlgorithmNames.TripleDesCbc");
 			}
 		}
 		#endif
@@ -173,7 +173,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SymmetricAlgorithmNames.TripleDesCbcPkcs7 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SymmetricAlgorithmNames.TripleDesCbcPkcs7 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SymmetricAlgorithmNames.TripleDesCbcPkcs7");
 			}
 		}
 		#endif
@@ -183,7 +183,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SymmetricAlgorithmNames.TripleDesEcb is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SymmetricAlgorithmNames.TripleDesEcb is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SymmetricAlgorithmNames.TripleDesEcb");
 			}
 		}
 		#endif
@@ -193,7 +193,7 @@ namespace Windows.Security.Cryptography.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SymmetricAlgorithmNames.TripleDesEcbPkcs7 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SymmetricAlgorithmNames.TripleDesEcbPkcs7 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SymmetricAlgorithmNames.TripleDesEcbPkcs7");
 			}
 		}
 		#endif

@@ -14,12 +14,6 @@
 
 	<Import Project="../targetframework-override.props" />
 
-	<!--Workaround to prevent build to fail because the project has too many dependencies when checking support libraries versions.
-	(Introduced with support libraries 28.0.0.1) -->
-	<PropertyGroup>
-		<XamarinAndroidSupportSkipVerifyVersions>true</XamarinAndroidSupportSkipVerifyVersions>
-	</PropertyGroup>
-
 	<ItemGroup>
 		<PackageReference Include="FluentAssertions" />
 		<PackageReference Include="MSTest.TestFramework" />
@@ -92,15 +86,9 @@
 
 	<Import Project="..\Uno.CrossTargetting.props" />
 
-	<ItemGroup>
-		<!-- Remove already included XAML -->
-		<Page Remove="@(Page)" />
-		<Page Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml" />
-		<UpToDateCheckInput Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml" />
-	</ItemGroup>
-	<ItemGroup Condition="'$(TargetFramework)'=='uap10.0.18362'">
-		<Page Remove="$(MSBuildThisFileDirectory)MUX\Microsoft_UI_XAML_Controls\**\*.xaml" />
-	</ItemGroup>
+	<PropertyGroup Condition="'$(TargetFramework)'=='uap10.0.18362'">
+		<PageExclusions>$(MSBuildThisFileDirectory)MUX\Microsoft_UI_XAML_Controls\**\*.xaml</PageExclusions>
+	</PropertyGroup>
 
 	<ItemGroup>
 		<PRIResource Include="Resources\**\*.resw" />

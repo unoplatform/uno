@@ -44,13 +44,13 @@
 			</group>
 			<group targetFramework="MonoAndroid13.0">
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
-				<dependency id="Com.Airbnb.Android.Lottie" version="4.1.0" />
-				<dependency id="Newtonsoft.Json" version="9.0.1" />
+				<dependency id="Com.Airbnb.Android.Lottie" version="4.2.2" />
+				<dependency id="Newtonsoft.Json" version="13.0.2" />
 			</group>
 			<group targetFramework="MonoAndroid12.0">
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
-				<dependency id="Com.Airbnb.Android.Lottie" version="4.1.0" />
-				<dependency id="Newtonsoft.Json" version="9.0.1" />
+				<dependency id="Com.Airbnb.Android.Lottie" version="4.2.2" />
+				<dependency id="Newtonsoft.Json" version="13.0.2" />
 			</group>
 
 			<group targetFramework="net6.0-android">
@@ -59,7 +59,7 @@
 				<dependency id="SkiaSharp.NativeAssets.android" version="2.88.3" />
 
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
-				<dependency id="Newtonsoft.Json" version="9.0.1" />
+				<dependency id="Newtonsoft.Json" version="13.0.2" />
 			</group>
 			<group targetFramework="net6.0-ios">
 				<dependency id="SkiaSharp.Skottie" version="2.88.3" />
@@ -92,7 +92,7 @@
 				<dependency id="SkiaSharp.NativeAssets.android" version="2.88.1-preview.79" />
 
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
-				<dependency id="Newtonsoft.Json" version="9.0.1" />
+				<dependency id="Newtonsoft.Json" version="13.0.2" />
 			</group>
 			<group targetFramework="net7.0-ios">
 				<dependency id="SkiaSharp.Skottie" version="2.88.1-preview.79" />
@@ -178,7 +178,7 @@
 		<file src="..\src\AddIns\Uno.UI.Lottie\bin\Uno.UI.Lottie.netcoremobile\Release\net6.0-android\Uno.UI.Lottie.dll" target="lib\net6.0-android" />
 		<file src="..\src\AddIns\Uno.UI.Lottie\bin\Uno.UI.Lottie.netcoremobile\Release\net6.0-ios\Uno.UI.Lottie.dll" target="lib\net6.0-ios" />
 		<file src="..\src\AddIns\Uno.UI.Lottie\bin\Uno.UI.Lottie.netcoremobile\Release\net6.0-maccatalyst\Uno.UI.Lottie.dll" target="lib\net6.0-maccatalyst" />
-		
+
 		<file src="..\src\AddIns\Uno.UI.Lottie\bin\Uno.UI.Lottie.netcoremobile\Release\net7.0-android\Uno.UI.Lottie.dll" target="lib\net7.0-android" />
 		<file src="..\src\AddIns\Uno.UI.Lottie\bin\Uno.UI.Lottie.netcoremobile\Release\net7.0-ios\Uno.UI.Lottie.dll" target="lib\net7.0-ios" />
 		<file src="..\src\AddIns\Uno.UI.Lottie\bin\Uno.UI.Lottie.netcoremobile\Release\net7.0-maccatalyst\Uno.UI.Lottie.dll" target="lib\net7.0-maccatalyst" />

@@ -16,8 +16,6 @@ namespace Windows.UI.Xaml
 
 		internal T AddChild<T>(T child, int index) where T : View => throw new NotSupportedException("Reference assembly");
 
-		private void OnAddChild(View child) => throw new NotSupportedException("Reference assembly");
-
 		internal T RemoveChild<T>(T child) where T : View => throw new NotSupportedException("Reference assembly");
 
 		internal View FindFirstChild() => throw new NotSupportedException("Reference assembly");
@@ -26,15 +24,9 @@ namespace Windows.UI.Xaml
 
 		internal bool HasParent() => throw new NotSupportedException("Reference assembly");
 
-		partial void OnMeasurePartial(Size slotSize) => throw new NotSupportedException("Reference assembly");
-
 		internal void InternalArrange(Rect frame) => throw new NotSupportedException("Reference assembly");
 
-		partial void OnGenericPropertyUpdatedPartial(DependencyPropertyChangedEventArgs args);
-
 		internal void ForceLoaded() => throw new NotSupportedException("Reference assembly");
-
-		private void EnterTree() => throw new NotSupportedException("Reference assembly");
 
 		internal int InvalidateMeasureCallCount => throw new NotSupportedException("Reference assembly");
 
@@ -50,8 +42,6 @@ namespace Windows.UI.Xaml
 		public double ActualHeight => throw new NotSupportedException("Reference assembly");
 
 		internal Size UnclippedDesiredSize => throw new NotSupportedException("Reference assembly");
-
-		public global::System.Uri BaseUri { get; internal set; }
 
 #pragma warning disable 67
 		private event TypedEventHandler<FrameworkElement, object> _loading;

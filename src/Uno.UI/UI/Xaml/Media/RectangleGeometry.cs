@@ -68,7 +68,7 @@ namespace Windows.UI.Xaml.Media
 
 		private protected override Rect ComputeBounds()
 		{
-			if(Transform is { } transform)
+			if (Transform is { } transform)
 			{
 				return transform.TransformBounds(Rect);
 			}

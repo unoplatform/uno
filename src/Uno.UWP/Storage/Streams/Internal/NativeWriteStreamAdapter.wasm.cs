@@ -123,7 +123,7 @@ namespace Uno.Storage.Streams.Internal
 				// Close and dispose.
 				await WebAssemblyRuntime.InvokeAsync($"{JsType}.closeAsync('{_streamId}')");
 			}
-			catch(Exception e)
+			catch (Exception e)
 			{
 				this.Log().Warn("Failed to dispose NativeWriteStreamAdapter", e);
 			}

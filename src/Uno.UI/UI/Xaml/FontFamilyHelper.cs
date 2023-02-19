@@ -22,7 +22,7 @@ public partial class FontFamilyHelper
 #if XAMARIN_IOS
 	/// <summary>
 	/// This methods removes the font files extensions, typically .otf or .ttf because in iOS
-    /// you need to refer to a FontFamily via its name without extension and in Android you need the extension.
+	/// you need to refer to a FontFamily via its name without extension and in Android you need the extension.
 	/// </summary>
 	/// <param name="familyName"></param>
 	/// <returns></returns>
@@ -31,7 +31,7 @@ public partial class FontFamilyHelper
 		return familyName
 			.Replace(".otf", string.Empty)
 			.Replace(".ttf", string.Empty);
-        }
+	}
 #endif
 
 	public static string RemoveUri(string familyName)

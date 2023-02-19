@@ -13,7 +13,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid DeploymentResult.ActivityId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Guid DeploymentResult.ActivityId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Guid%20DeploymentResult.ActivityId");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string DeploymentResult.ErrorText is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string DeploymentResult.ErrorText is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20DeploymentResult.ErrorText");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Exception DeploymentResult.ExtendedErrorCode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Exception DeploymentResult.ExtendedErrorCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Exception%20DeploymentResult.ExtendedErrorCode");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DeploymentResult.IsRegistered is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool DeploymentResult.IsRegistered is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20DeploymentResult.IsRegistered");
 			}
 		}
 		#endif

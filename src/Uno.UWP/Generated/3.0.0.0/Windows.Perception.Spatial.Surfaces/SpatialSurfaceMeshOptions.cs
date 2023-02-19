@@ -13,7 +13,7 @@ namespace Windows.Perception.Spatial.Surfaces
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DirectXPixelFormat SpatialSurfaceMeshOptions.VertexPositionFormat is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DirectXPixelFormat SpatialSurfaceMeshOptions.VertexPositionFormat is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DirectXPixelFormat%20SpatialSurfaceMeshOptions.VertexPositionFormat");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Perception.Spatial.Surfaces
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DirectXPixelFormat SpatialSurfaceMeshOptions.VertexNormalFormat is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DirectXPixelFormat SpatialSurfaceMeshOptions.VertexNormalFormat is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DirectXPixelFormat%20SpatialSurfaceMeshOptions.VertexNormalFormat");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Perception.Spatial.Surfaces
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DirectXPixelFormat SpatialSurfaceMeshOptions.TriangleIndexFormat is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DirectXPixelFormat SpatialSurfaceMeshOptions.TriangleIndexFormat is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DirectXPixelFormat%20SpatialSurfaceMeshOptions.TriangleIndexFormat");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.Perception.Spatial.Surfaces
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SpatialSurfaceMeshOptions.IncludeVertexNormals is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool SpatialSurfaceMeshOptions.IncludeVertexNormals is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20SpatialSurfaceMeshOptions.IncludeVertexNormals");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.Perception.Spatial.Surfaces
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<DirectXPixelFormat> SpatialSurfaceMeshOptions.SupportedTriangleIndexFormats is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<DirectXPixelFormat> SpatialSurfaceMeshOptions.SupportedTriangleIndexFormats is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CDirectXPixelFormat%3E%20SpatialSurfaceMeshOptions.SupportedTriangleIndexFormats");
 			}
 		}
 		#endif
@@ -79,7 +79,7 @@ namespace Windows.Perception.Spatial.Surfaces
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<DirectXPixelFormat> SpatialSurfaceMeshOptions.SupportedVertexNormalFormats is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<DirectXPixelFormat> SpatialSurfaceMeshOptions.SupportedVertexNormalFormats is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CDirectXPixelFormat%3E%20SpatialSurfaceMeshOptions.SupportedVertexNormalFormats");
 			}
 		}
 		#endif
@@ -89,7 +89,7 @@ namespace Windows.Perception.Spatial.Surfaces
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<DirectXPixelFormat> SpatialSurfaceMeshOptions.SupportedVertexPositionFormats is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<DirectXPixelFormat> SpatialSurfaceMeshOptions.SupportedVertexPositionFormats is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CDirectXPixelFormat%3E%20SpatialSurfaceMeshOptions.SupportedVertexPositionFormats");
 			}
 		}
 		#endif

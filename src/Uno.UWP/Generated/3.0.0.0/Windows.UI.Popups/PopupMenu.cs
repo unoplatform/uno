@@ -13,7 +13,7 @@ namespace Windows.UI.Popups
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<IUICommand> PopupMenu.Commands is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<IUICommand> PopupMenu.Commands is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3CIUICommand%3E%20PopupMenu.Commands");
 			}
 		}
 		#endif
@@ -24,7 +24,7 @@ namespace Windows.UI.Popups
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.UI.Popups.IUICommand> ShowAsync( global::Windows.Foundation.Point invocationPoint)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IUICommand> PopupMenu.ShowAsync(Point invocationPoint) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<IUICommand> PopupMenu.ShowAsync(Point invocationPoint) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CIUICommand%3E%20PopupMenu.ShowAsync%28Point%20invocationPoint%29");
 		}
 		#endif
 		// Skipping already declared method Windows.UI.Popups.PopupMenu.ShowForSelectionAsync(Windows.Foundation.Rect)

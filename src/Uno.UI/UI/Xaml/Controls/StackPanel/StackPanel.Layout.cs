@@ -57,7 +57,7 @@ namespace Windows.UI.Xaml.Controls
 					desiredSize.Width += measuredSize.Width;
 					desiredSize.Height = Math.Max(desiredSize.Height, measuredSize.Height);
 
-					if(addSpacing)
+					if (addSpacing)
 					{
 						desiredSize.Width += spacing;
 					}
@@ -100,17 +100,17 @@ namespace Windows.UI.Xaml.Controls
 
 			var snapPointsChanged = snapPoints.Count != count;
 
-			if(snapPoints.Capacity < count)
+			if (snapPoints.Capacity < count)
 			{
 				snapPoints.Capacity = count;
 			}
 
-			while(snapPoints.Count < count)
+			while (snapPoints.Count < count)
 			{
 				snapPoints.Add(default);
 			}
 
-			while(snapPoints.Count > count)
+			while (snapPoints.Count > count)
 			{
 				snapPoints.RemoveAt(count);
 			}
@@ -163,9 +163,9 @@ namespace Windows.UI.Xaml.Controls
 
 			var finalSizeWithBorderAndPadding = arrangeSize.Add(borderAndPaddingSize);
 
-			if(snapPointsChanged)
+			if (snapPointsChanged)
 			{
-				if(isHorizontal)
+				if (isHorizontal)
 				{
 					HorizontalSnapPointsChanged?.Invoke(this, this);
 				}

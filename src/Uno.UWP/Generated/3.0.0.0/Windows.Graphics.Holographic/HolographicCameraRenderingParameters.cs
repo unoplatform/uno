@@ -13,7 +13,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IDirect3DSurface HolographicCameraRenderingParameters.Direct3D11BackBuffer is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IDirect3DSurface HolographicCameraRenderingParameters.Direct3D11BackBuffer is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IDirect3DSurface%20HolographicCameraRenderingParameters.Direct3D11BackBuffer");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IDirect3DDevice HolographicCameraRenderingParameters.Direct3D11Device is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IDirect3DDevice HolographicCameraRenderingParameters.Direct3D11Device is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IDirect3DDevice%20HolographicCameraRenderingParameters.Direct3D11Device");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HolographicReprojectionMode HolographicCameraRenderingParameters.ReprojectionMode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member HolographicReprojectionMode HolographicCameraRenderingParameters.ReprojectionMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HolographicReprojectionMode%20HolographicCameraRenderingParameters.ReprojectionMode");
 			}
 			set
 			{
@@ -47,7 +47,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool HolographicCameraRenderingParameters.IsContentProtectionEnabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool HolographicCameraRenderingParameters.IsContentProtectionEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20HolographicCameraRenderingParameters.IsContentProtectionEnabled");
 			}
 			set
 			{
@@ -61,7 +61,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HolographicDepthReprojectionMethod HolographicCameraRenderingParameters.DepthReprojectionMethod is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member HolographicDepthReprojectionMethod HolographicCameraRenderingParameters.DepthReprojectionMethod is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HolographicDepthReprojectionMethod%20HolographicCameraRenderingParameters.DepthReprojectionMethod");
 			}
 			set
 			{

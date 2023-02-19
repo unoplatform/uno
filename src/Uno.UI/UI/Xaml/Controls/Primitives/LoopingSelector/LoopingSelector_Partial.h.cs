@@ -11,7 +11,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 	public partial class LoopingSelector : Control
 	{
 
-	// public
+		// public
 		//public partial void OnPropertyChanged(
 		//	 xaml.IDependencyPropertyChangedEventArgs pArgs);
 
@@ -36,7 +36,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		//public partial void VisualIndexToItemIndex( uint visualIndex, out uint itemIndex);
 
-	// protected
+		// protected
 
 		// FrameworkElementOverrides
 		//protected partial void MeasureOverrideImpl(wf.Size availableSize, out wf.Size returnValue);
@@ -50,7 +50,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		// IControlOverrides
 		//protected partial void OnKeyDownImpl( xaml_input.IKeyRoutedEventArgs pEventArgs);
 
-	// private
+		// private
 		private enum ListEnd
 		{
 			Head,

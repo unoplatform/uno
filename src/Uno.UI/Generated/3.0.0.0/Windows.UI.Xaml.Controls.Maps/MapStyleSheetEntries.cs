@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.AdminDistrict is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.AdminDistrict is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MapStyleSheetEntries.AdminDistrict");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.AdminDistrictCapital is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.AdminDistrictCapital is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MapStyleSheetEntries.AdminDistrictCapital");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.Airport is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.Airport is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MapStyleSheetEntries.Airport");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.Area is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.Area is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MapStyleSheetEntries.Area");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.ArterialRoad is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.ArterialRoad is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MapStyleSheetEntries.ArterialRoad");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.Building is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.Building is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MapStyleSheetEntries.Building");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.Business is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.Business is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MapStyleSheetEntries.Business");
 			}
 		}
 		#endif
@@ -83,7 +83,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.Capital is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.Capital is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MapStyleSheetEntries.Capital");
 			}
 		}
 		#endif
@@ -93,7 +93,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.Cemetery is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.Cemetery is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MapStyleSheetEntries.Cemetery");
 			}
 		}
 		#endif
@@ -103,7 +103,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.Continent is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.Continent is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MapStyleSheetEntries.Continent");
 			}
 		}
 		#endif
@@ -113,7 +113,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.ControlledAccessHighway is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.ControlledAccessHighway is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MapStyleSheetEntries.ControlledAccessHighway");
 			}
 		}
 		#endif
@@ -123,7 +123,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.CountryRegion is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.CountryRegion is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MapStyleSheetEntries.CountryRegion");
 			}
 		}
 		#endif
@@ -133,7 +133,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.CountryRegionCapital is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.CountryRegionCapital is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MapStyleSheetEntries.CountryRegionCapital");
 			}
 		}
 		#endif
@@ -143,7 +143,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.District is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.District is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MapStyleSheetEntries.District");
 			}
 		}
 		#endif
@@ -153,7 +153,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.DrivingRoute is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.DrivingRoute is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MapStyleSheetEntries.DrivingRoute");
 			}
 		}
 		#endif
@@ -163,7 +163,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.Education is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.Education is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MapStyleSheetEntries.Education");
 			}
 		}
 		#endif
@@ -173,7 +173,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.EducationBuilding is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.EducationBuilding is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MapStyleSheetEntries.EducationBuilding");
 			}
 		}
 		#endif
@@ -183,7 +183,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.FoodPoint is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.FoodPoint is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MapStyleSheetEntries.FoodPoint");
 			}
 		}
 		#endif
@@ -193,7 +193,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.Forest is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.Forest is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MapStyleSheetEntries.Forest");
 			}
 		}
 		#endif
@@ -203,7 +203,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.GolfCourse is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.GolfCourse is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MapStyleSheetEntries.GolfCourse");
 			}
 		}
 		#endif
@@ -213,7 +213,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.HighSpeedRamp is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.HighSpeedRamp is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MapStyleSheetEntries.HighSpeedRamp");
 			}
 		}
 		#endif
@@ -223,7 +223,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.Highway is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.Highway is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MapStyleSheetEntries.Highway");
 			}
 		}
 		#endif
@@ -233,7 +233,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.IndigenousPeoplesReserve is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.IndigenousPeoplesReserve is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MapStyleSheetEntries.IndigenousPeoplesReserve");
 			}
 		}
 		#endif
@@ -243,7 +243,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.Island is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.Island is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MapStyleSheetEntries.Island");
 			}
 		}
 		#endif
@@ -253,7 +253,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.MajorRoad is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.MajorRoad is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MapStyleSheetEntries.MajorRoad");
 			}
 		}
 		#endif
@@ -263,7 +263,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.Medical is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.Medical is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MapStyleSheetEntries.Medical");
 			}
 		}
 		#endif
@@ -273,7 +273,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.MedicalBuilding is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.MedicalBuilding is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MapStyleSheetEntries.MedicalBuilding");
 			}
 		}
 		#endif
@@ -283,7 +283,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.Military is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.Military is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MapStyleSheetEntries.Military");
 			}
 		}
 		#endif
@@ -293,7 +293,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.NaturalPoint is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.NaturalPoint is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MapStyleSheetEntries.NaturalPoint");
 			}
 		}
 		#endif
@@ -303,7 +303,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.Nautical is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.Nautical is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MapStyleSheetEntries.Nautical");
 			}
 		}
 		#endif
@@ -313,7 +313,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.Neighborhood is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.Neighborhood is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MapStyleSheetEntries.Neighborhood");
 			}
 		}
 		#endif
@@ -323,7 +323,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.Park is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.Park is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MapStyleSheetEntries.Park");
 			}
 		}
 		#endif
@@ -333,7 +333,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.Peak is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.Peak is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MapStyleSheetEntries.Peak");
 			}
 		}
 		#endif
@@ -343,7 +343,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.PlayingField is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.PlayingField is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MapStyleSheetEntries.PlayingField");
 			}
 		}
 		#endif
@@ -353,7 +353,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.Point is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.Point is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MapStyleSheetEntries.Point");
 			}
 		}
 		#endif
@@ -363,7 +363,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.PointOfInterest is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.PointOfInterest is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MapStyleSheetEntries.PointOfInterest");
 			}
 		}
 		#endif
@@ -373,7 +373,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.Political is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.Political is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MapStyleSheetEntries.Political");
 			}
 		}
 		#endif
@@ -383,7 +383,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.PopulatedPlace is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.PopulatedPlace is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MapStyleSheetEntries.PopulatedPlace");
 			}
 		}
 		#endif
@@ -393,7 +393,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.Railway is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.Railway is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MapStyleSheetEntries.Railway");
 			}
 		}
 		#endif
@@ -403,7 +403,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.Ramp is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.Ramp is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MapStyleSheetEntries.Ramp");
 			}
 		}
 		#endif
@@ -413,7 +413,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.Reserve is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.Reserve is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MapStyleSheetEntries.Reserve");
 			}
 		}
 		#endif
@@ -423,7 +423,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.River is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.River is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MapStyleSheetEntries.River");
 			}
 		}
 		#endif
@@ -433,7 +433,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.Road is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.Road is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MapStyleSheetEntries.Road");
 			}
 		}
 		#endif
@@ -443,7 +443,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.RoadExit is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.RoadExit is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MapStyleSheetEntries.RoadExit");
 			}
 		}
 		#endif
@@ -453,7 +453,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.RoadShield is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.RoadShield is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MapStyleSheetEntries.RoadShield");
 			}
 		}
 		#endif
@@ -463,7 +463,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.RouteLine is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.RouteLine is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MapStyleSheetEntries.RouteLine");
 			}
 		}
 		#endif
@@ -473,7 +473,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.Runway is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.Runway is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MapStyleSheetEntries.Runway");
 			}
 		}
 		#endif
@@ -483,7 +483,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.Sand is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.Sand is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MapStyleSheetEntries.Sand");
 			}
 		}
 		#endif
@@ -493,7 +493,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.ShoppingCenter is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.ShoppingCenter is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MapStyleSheetEntries.ShoppingCenter");
 			}
 		}
 		#endif
@@ -503,7 +503,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.Stadium is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.Stadium is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MapStyleSheetEntries.Stadium");
 			}
 		}
 		#endif
@@ -513,7 +513,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.Street is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.Street is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MapStyleSheetEntries.Street");
 			}
 		}
 		#endif
@@ -523,7 +523,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.Structure is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.Structure is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MapStyleSheetEntries.Structure");
 			}
 		}
 		#endif
@@ -533,7 +533,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.TollRoad is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.TollRoad is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MapStyleSheetEntries.TollRoad");
 			}
 		}
 		#endif
@@ -543,7 +543,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.Trail is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.Trail is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MapStyleSheetEntries.Trail");
 			}
 		}
 		#endif
@@ -553,7 +553,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.Transit is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.Transit is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MapStyleSheetEntries.Transit");
 			}
 		}
 		#endif
@@ -563,7 +563,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.TransitBuilding is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.TransitBuilding is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MapStyleSheetEntries.TransitBuilding");
 			}
 		}
 		#endif
@@ -573,7 +573,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.Transportation is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.Transportation is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MapStyleSheetEntries.Transportation");
 			}
 		}
 		#endif
@@ -583,7 +583,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.UnpavedStreet is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.UnpavedStreet is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MapStyleSheetEntries.UnpavedStreet");
 			}
 		}
 		#endif
@@ -593,7 +593,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.Vegetation is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.Vegetation is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MapStyleSheetEntries.Vegetation");
 			}
 		}
 		#endif
@@ -603,7 +603,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.VolcanicPeak is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.VolcanicPeak is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MapStyleSheetEntries.VolcanicPeak");
 			}
 		}
 		#endif
@@ -613,7 +613,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.WalkingRoute is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.WalkingRoute is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MapStyleSheetEntries.WalkingRoute");
 			}
 		}
 		#endif
@@ -623,7 +623,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.Water is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.Water is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MapStyleSheetEntries.Water");
 			}
 		}
 		#endif
@@ -633,7 +633,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.WaterPoint is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.WaterPoint is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MapStyleSheetEntries.WaterPoint");
 			}
 		}
 		#endif
@@ -643,7 +643,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.WaterRoute is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MapStyleSheetEntries.WaterRoute is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MapStyleSheetEntries.WaterRoute");
 			}
 		}
 		#endif

@@ -13,7 +13,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<ESimDiscoverEvent> ESimDiscoverResult.Events is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<ESimDiscoverEvent> ESimDiscoverResult.Events is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CESimDiscoverEvent%3E%20ESimDiscoverResult.Events");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ESimDiscoverResultKind ESimDiscoverResult.Kind is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ESimDiscoverResultKind ESimDiscoverResult.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ESimDiscoverResultKind%20ESimDiscoverResult.Kind");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ESimProfileMetadata ESimDiscoverResult.ProfileMetadata is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ESimProfileMetadata ESimDiscoverResult.ProfileMetadata is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ESimProfileMetadata%20ESimDiscoverResult.ProfileMetadata");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ESimOperationResult ESimDiscoverResult.Result is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ESimOperationResult ESimDiscoverResult.Result is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ESimOperationResult%20ESimDiscoverResult.Result");
 			}
 		}
 		#endif

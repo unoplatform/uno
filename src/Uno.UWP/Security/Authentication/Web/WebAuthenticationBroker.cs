@@ -16,7 +16,7 @@ namespace Windows.Security.Authentication.Web
 			ApiExtensibility.CreateInstance(null, out _authenticationBrokerProvider);
 
 			// If no custom extension found, default to internal one.
-			if(_authenticationBrokerProvider == null)
+			if (_authenticationBrokerProvider == null)
 			{
 				_authenticationBrokerProvider = new WebAuthenticationBrokerProvider();
 			}

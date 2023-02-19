@@ -49,7 +49,7 @@ public static partial class CoreApplication
 	/// Occurs when the app is shutting down.
 	/// </summary>
 	public static event EventHandler<object> Exiting;
-	#endif
+#endif
 
 	/// <summary>
 	/// Raises the <see cref="Resuming"/> event.
@@ -76,7 +76,7 @@ public static partial class CoreApplication
 
 	public static CoreApplicationView GetCurrentView() => _currentView;
 
-	#if __ANDROID__ || __SKIA__ || __MACOS__
+#if __ANDROID__ || __SKIA__ || __MACOS__
 	/// <summary>
 	/// Shuts down the app.
 	/// </summary>
@@ -86,7 +86,7 @@ public static partial class CoreApplication
 
 		ExitPlatform();
 	}
-	#endif
+#endif
 
 	public static CoreApplicationView MainView => _currentView;
 

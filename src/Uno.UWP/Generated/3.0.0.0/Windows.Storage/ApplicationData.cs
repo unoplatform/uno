@@ -2,8 +2,8 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Storage
 {
-	#if false || false || false || false || false || false || false
-	[global::Uno.NotImplemented]
+	#if false || false || NET461 || false || false || false || false
+	[global::Uno.NotImplemented("NET461")]
 	#endif
 	public  partial class ApplicationData : global::System.IDisposable
 	{
@@ -13,7 +13,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member StorageFolder ApplicationData.LocalFolder is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member StorageFolder ApplicationData.LocalFolder is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=StorageFolder%20ApplicationData.LocalFolder");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ApplicationDataContainer ApplicationData.LocalSettings is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ApplicationDataContainer ApplicationData.LocalSettings is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ApplicationDataContainer%20ApplicationData.LocalSettings");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member StorageFolder ApplicationData.RoamingFolder is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member StorageFolder ApplicationData.RoamingFolder is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=StorageFolder%20ApplicationData.RoamingFolder");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ApplicationDataContainer ApplicationData.RoamingSettings is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ApplicationDataContainer ApplicationData.RoamingSettings is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ApplicationDataContainer%20ApplicationData.RoamingSettings");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong ApplicationData.RoamingStorageQuota is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ulong ApplicationData.RoamingStorageQuota is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ulong%20ApplicationData.RoamingStorageQuota");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member StorageFolder ApplicationData.TemporaryFolder is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member StorageFolder ApplicationData.TemporaryFolder is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=StorageFolder%20ApplicationData.TemporaryFolder");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint ApplicationData.Version is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint ApplicationData.Version is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20ApplicationData.Version");
 			}
 		}
 		#endif
@@ -83,7 +83,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member StorageFolder ApplicationData.LocalCacheFolder is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member StorageFolder ApplicationData.LocalCacheFolder is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=StorageFolder%20ApplicationData.LocalCacheFolder");
 			}
 		}
 		#endif
@@ -93,7 +93,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member StorageFolder ApplicationData.SharedLocalFolder is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member StorageFolder ApplicationData.SharedLocalFolder is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=StorageFolder%20ApplicationData.SharedLocalFolder");
 			}
 		}
 		#endif
@@ -103,7 +103,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ApplicationData ApplicationData.Current is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ApplicationData ApplicationData.Current is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ApplicationData%20ApplicationData.Current");
 			}
 		}
 		#endif
@@ -112,21 +112,21 @@ namespace Windows.Storage
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction SetVersionAsync( uint desiredVersion,  global::Windows.Storage.ApplicationDataSetVersionHandler handler)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction ApplicationData.SetVersionAsync(uint desiredVersion, ApplicationDataSetVersionHandler handler) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction ApplicationData.SetVersionAsync(uint desiredVersion, ApplicationDataSetVersionHandler handler) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20ApplicationData.SetVersionAsync%28uint%20desiredVersion%2C%20ApplicationDataSetVersionHandler%20handler%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction ClearAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction ApplicationData.ClearAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction ApplicationData.ClearAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20ApplicationData.ClearAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction ClearAsync( global::Windows.Storage.ApplicationDataLocality locality)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction ApplicationData.ClearAsync(ApplicationDataLocality locality) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction ApplicationData.ClearAsync(ApplicationDataLocality locality) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20ApplicationData.ClearAsync%28ApplicationDataLocality%20locality%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Storage.ApplicationData.LocalSettings.get
@@ -149,14 +149,14 @@ namespace Windows.Storage
 		[global::Uno.NotImplemented("NET461")]
 		public  global::Windows.Storage.StorageFolder GetPublisherCacheFolder( string folderName)
 		{
-			throw new global::System.NotImplementedException("The member StorageFolder ApplicationData.GetPublisherCacheFolder(string folderName) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member StorageFolder ApplicationData.GetPublisherCacheFolder(string folderName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=StorageFolder%20ApplicationData.GetPublisherCacheFolder%28string%20folderName%29");
 		}
 		#endif
 		#if false || false || NET461 || false || false || false || false
 		[global::Uno.NotImplemented("NET461")]
 		public  global::Windows.Foundation.IAsyncAction ClearPublisherCacheFolderAsync( string folderName)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction ApplicationData.ClearPublisherCacheFolderAsync(string folderName) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction ApplicationData.ClearPublisherCacheFolderAsync(string folderName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20ApplicationData.ClearPublisherCacheFolderAsync%28string%20folderName%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Storage.ApplicationData.SharedLocalFolder.get
@@ -171,7 +171,7 @@ namespace Windows.Storage
 		[global::Uno.NotImplemented("NET461")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.ApplicationData> GetForUserAsync( global::Windows.System.User user)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<ApplicationData> ApplicationData.GetForUserAsync(User user) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<ApplicationData> ApplicationData.GetForUserAsync(User user) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CApplicationData%3E%20ApplicationData.GetForUserAsync%28User%20user%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Storage.ApplicationData.Current.get

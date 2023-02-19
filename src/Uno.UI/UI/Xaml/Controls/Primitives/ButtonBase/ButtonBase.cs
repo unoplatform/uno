@@ -155,10 +155,12 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		partial void RegisterEvents();
 
+#if __ANDROID__ || __IOS__
 		private void OnCanExecuteChanged()
 		{
 			this.CoerceValue(IsEnabledProperty);
 		}
+#endif
 
 		private static object CoerceIsEnabled(DependencyObject dependencyObject, object baseValue)
 		{
@@ -205,12 +207,14 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			OnClick();
 		}
 
+#if false
 		private void OnClick(PointerRoutedEventArgs args = null)
 		{
 			Click?.Invoke(this, new RoutedEventArgs(args?.OriginalSource ?? this));
 
 			InvokeCommand();
 		}
+#endif
 
 		internal void InvokeCommand()
 		{

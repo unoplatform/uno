@@ -18,11 +18,11 @@ using Uno.Extensions;
 
 namespace Uno.Reflection
 {
-    internal interface IReflectionExtensionPoint : IExtensionPoint
-    {
-    }
+	internal interface IReflectionExtensionPoint : IExtensionPoint
+	{
+	}
 
-    internal interface IReflectionExtensionPoint<T> : IReflectionExtensionPoint
-    {
-    }
+	internal interface IReflectionExtensionPoint<T> : IReflectionExtensionPoint
+	{
+	}
 }

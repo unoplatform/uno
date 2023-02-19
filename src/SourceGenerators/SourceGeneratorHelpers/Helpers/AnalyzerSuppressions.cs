@@ -14,19 +14,19 @@ namespace Uno.UI.SourceGenerators
 		internal static void Generate(IIndentedStringBuilder writer, string[] analyzerSuppressions)
 		{
 			var suppresses = from suppress in analyzerSuppressions
-							let parts = suppress.Split('|','-')
-							where parts.Length == 2
-							let category = parts[0]
-							where category != "csharp"
-							let id = parts[1]
-							select "[global::System.Diagnostics.CodeAnalysis.SuppressMessage(\"{0}\", \"{1}\", Justification=\"Generated code\")]".InvariantCultureFormat(category, id);
+							 let parts = suppress.Split('|', '-')
+							 where parts.Length == 2
+							 let category = parts[0]
+							 where category != "csharp"
+							 let id = parts[1]
+							 select "[global::System.Diagnostics.CodeAnalysis.SuppressMessage(\"{0}\", \"{1}\", Justification=\"Generated code\")]".InvariantCultureFormat(category, id);
 
-			foreach(var suppress in suppresses)
+			foreach (var suppress in suppresses)
 			{
 				writer.AppendLineIndented(suppress);
 			}
 		}
-		
+
 		/// <summary>
 		/// Outputs #pragma warning disable statements using the provided <see cref="IndentedStringBuilder"/>, and a list of suppressions.
 		/// </summary>
@@ -42,7 +42,7 @@ namespace Uno.UI.SourceGenerators
 							 let id = parts[1]
 							 select $"#pragma warning disable {id}";
 
-			foreach(var suppress in suppresses)
+			foreach (var suppress in suppresses)
 			{
 				writer.AppendLineIndented(suppress);
 			}

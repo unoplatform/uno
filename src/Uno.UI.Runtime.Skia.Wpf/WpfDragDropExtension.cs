@@ -99,7 +99,7 @@ namespace Uno.UI.Skia.Platform
 				?? src.GetData(DataFormats.OemText) as string
 				?? src.GetData(DataFormats.StringFormat) as string;
 
-			if (text.HasValueTrimmed())
+			if (!text.IsNullOrWhiteSpace())
 			{
 				if (Uri.IsWellFormedUriString(text, UriKind.Absolute))
 				{
@@ -208,7 +208,7 @@ namespace Uno.UI.Skia.Platform
 				dstBitmap.CacheOption = BitmapCacheOption.OnLoad; // Required for the BitmapImage to internally cache the data (so we can dispose the tmp stream)
 				dstBitmap.StreamSource = tmp;
 				dstBitmap.EndInit();
-					
+
 				dst.SetData(DataFormats.Bitmap, dstBitmap, false);
 			}
 

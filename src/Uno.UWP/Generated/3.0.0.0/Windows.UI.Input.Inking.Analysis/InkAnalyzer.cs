@@ -13,7 +13,7 @@ namespace Windows.UI.Input.Inking.Analysis
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member InkAnalysisRoot InkAnalyzer.AnalysisRoot is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member InkAnalysisRoot InkAnalyzer.AnalysisRoot is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=InkAnalysisRoot%20InkAnalyzer.AnalysisRoot");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.Input.Inking.Analysis
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool InkAnalyzer.IsAnalyzing is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool InkAnalyzer.IsAnalyzing is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20InkAnalyzer.IsAnalyzing");
 			}
 		}
 		#endif
@@ -90,7 +90,7 @@ namespace Windows.UI.Input.Inking.Analysis
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.UI.Input.Inking.Analysis.InkAnalysisResult> AnalyzeAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<InkAnalysisResult> InkAnalyzer.AnalyzeAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<InkAnalysisResult> InkAnalyzer.AnalyzeAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CInkAnalysisResult%3E%20InkAnalyzer.AnalyzeAsync%28%29");
 		}
 		#endif
 	}

@@ -21,7 +21,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				Background = SolidColorBrushHelper.Transparent,
 			};
 		}
-		
+
 		internal PopupPanel GetPopupPanel() => _popup.PopupPanel;
 	}
 }

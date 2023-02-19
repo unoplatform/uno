@@ -4,7 +4,7 @@ using Uno.UI.Samples.Controls;
 
 namespace UITests.Windows_UI_Xaml_Controls.TextBox
 {
-	[Sample(IgnoreInSnapshotTests=true)]
+	[Sample(IgnoreInSnapshotTests = true)]
 	public sealed partial class TextBox_Bindings : Page
 	{
 		public TextBox_Bindings()

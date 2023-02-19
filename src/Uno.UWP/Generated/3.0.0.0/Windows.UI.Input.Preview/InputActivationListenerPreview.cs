@@ -11,7 +11,7 @@ namespace Windows.UI.Input.Preview
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Input.InputActivationListener CreateForApplicationWindow( global::Windows.UI.WindowManagement.AppWindow window)
 		{
-			throw new global::System.NotImplementedException("The member InputActivationListener InputActivationListenerPreview.CreateForApplicationWindow(AppWindow window) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member InputActivationListener InputActivationListenerPreview.CreateForApplicationWindow(AppWindow window) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=InputActivationListener%20InputActivationListenerPreview.CreateForApplicationWindow%28AppWindow%20window%29");
 		}
 		#endif
 	}

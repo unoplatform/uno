@@ -1003,7 +1003,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				var children = ItemsPanelRoot.Children;
 				var count = children.Count;
-				for (var i = startingIndex; i<count; i++)
+				for (var i = startingIndex; i < count; i++)
 				{
 					var container = children[i];
 					container.SetValue(IndexForItemContainerProperty, i);
@@ -1041,7 +1041,7 @@ namespace Windows.UI.Xaml.Controls
 				{
 					var index = args.NewStartingIndex;
 					ItemsPanelRoot.Children.Insert(index, (UIElement)LocalCreateContainer(index));
-					ReassignIndexes(index+1);
+					ReassignIndexes(index + 1);
 					RequestLayoutPartial();
 					return;
 				}
@@ -1121,6 +1121,9 @@ namespace Windows.UI.Xaml.Controls
 					break;
 
 			}
+
+			var isOwnContainer = ReferenceEquals(element, item);
+
 			ClearContainerForItemOverride(element, item);
 			ContainerClearedForItem(item, element as SelectorItem);
 
@@ -1141,6 +1144,12 @@ namespace Windows.UI.Xaml.Controls
 			else if (element is ContentControl contentControl)
 			{
 				contentControl.ClearValue(DataContextProperty);
+
+				if (!isOwnContainer)
+				{
+					// Clears value set in PrepareContainerForItemOverride
+					element.ClearValue(ContentControl.ContentProperty);
+				}
 
 				if (contentControl.ContentTemplate is { } ct && ct == ItemTemplate)
 				{

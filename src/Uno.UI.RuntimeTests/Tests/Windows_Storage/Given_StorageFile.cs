@@ -194,7 +194,7 @@ namespace Uno.UI.RuntimeTests.Tests
 				await folder.CreateFileAsync("test.txt");
 
 				var createdFile = await folder.CreateFileAsync("test.txt", CreationCollisionOption.GenerateUniqueName);
-				
+
 				Assert.AreEqual("test (2).txt", createdFile.Name);
 			}
 			finally
@@ -345,7 +345,7 @@ namespace Uno.UI.RuntimeTests.Tests
 #endif
 		public async Task When_Project_Transitive_Asset()
 		{
-			var uri = new Uri($"ms-appx://Uno.UI.RuntimeTests/Assets/TransientAsset01.txt");
+			var uri = new Uri($"ms-appx:///Uno.UI.RuntimeTests/Assets/TransientAsset01.txt");
 
 			try
 			{
@@ -368,7 +368,7 @@ namespace Uno.UI.RuntimeTests.Tests
 			Directory.CreateDirectory(path);
 			return path;
 		}
-		
+
 		public async Task<StorageFile> GetFile(string filePath)
 			=> await StorageFile.GetFileFromPathAsync(filePath);
 	}

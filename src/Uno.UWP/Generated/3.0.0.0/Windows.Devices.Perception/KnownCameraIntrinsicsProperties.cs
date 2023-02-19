@@ -13,7 +13,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownCameraIntrinsicsProperties.FocalLength is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownCameraIntrinsicsProperties.FocalLength is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownCameraIntrinsicsProperties.FocalLength");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownCameraIntrinsicsProperties.PrincipalPoint is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownCameraIntrinsicsProperties.PrincipalPoint is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownCameraIntrinsicsProperties.PrincipalPoint");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownCameraIntrinsicsProperties.RadialDistortion is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownCameraIntrinsicsProperties.RadialDistortion is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownCameraIntrinsicsProperties.RadialDistortion");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownCameraIntrinsicsProperties.TangentialDistortion is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string KnownCameraIntrinsicsProperties.TangentialDistortion is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownCameraIntrinsicsProperties.TangentialDistortion");
 			}
 		}
 		#endif

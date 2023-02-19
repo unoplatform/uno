@@ -65,7 +65,7 @@ public class Given_SystemFocusVisual
 
 			return currentPoint.Y < initialPoint.Y;
 		});
-		
+
 		await TestServices.WindowHelper.WaitForIdle();
 
 		transform = focusVisual.TransformToVisual(Windows.UI.Xaml.Window.Current.RootElement);

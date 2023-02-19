@@ -33,12 +33,13 @@ namespace UITests.Shared.Windows_UI_Xaml.UIElementTests
 		{
 			var _ = Dispatcher.RunAsync(
 				Windows.UI.Core.CoreDispatcherPriority.Normal,
-				async () => {
+				async () =>
+				{
 					var sw = Stopwatch.StartNew();
 
 					const int iterationCount = 1000;
 
-					for (int i = 0; i <iterationCount; i++)
+					for (int i = 0; i < iterationCount; i++)
 					{
 						test01Element.Arrange(new Rect(0, 0, i % 100, i % 100));
 						await Task.Yield();

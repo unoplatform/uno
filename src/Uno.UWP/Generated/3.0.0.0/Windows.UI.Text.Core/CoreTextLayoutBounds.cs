@@ -13,7 +13,7 @@ namespace Windows.UI.Text.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Rect CoreTextLayoutBounds.TextBounds is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Rect CoreTextLayoutBounds.TextBounds is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Rect%20CoreTextLayoutBounds.TextBounds");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.UI.Text.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Rect CoreTextLayoutBounds.ControlBounds is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Rect CoreTextLayoutBounds.ControlBounds is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Rect%20CoreTextLayoutBounds.ControlBounds");
 			}
 			set
 			{

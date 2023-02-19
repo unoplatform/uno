@@ -3,7 +3,7 @@ using Uno;
 
 namespace Microsoft.UI.Input
 {
-	public sealed class InputDesktopResourceCursor : InputCursor
+	public sealed partial class InputDesktopResourceCursor : InputCursor
 	{
 		private InputDesktopResourceCursor(string moduleName, uint resourceId)
 		{

@@ -34,7 +34,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 			using (ThemeHelper.UseDarkTheme())
 			{
 				await WindowHelper.WaitForIdle();
-				
+
 				Assert.AreEqual(Colors.Blue, (page.Rect3.Fill as SolidColorBrush).Color);
 			}
 		}
@@ -55,7 +55,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 			using (ThemeHelper.UseDarkTheme())
 			{
 				await WindowHelper.WaitForIdle();
-				
+
 				Assert.AreEqual(Colors.Blue, (page.Rect4.Fill as SolidColorBrush).Color);
 			}
 		}

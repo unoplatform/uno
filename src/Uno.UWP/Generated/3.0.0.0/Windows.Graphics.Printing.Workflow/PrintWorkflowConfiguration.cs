@@ -13,7 +13,7 @@ namespace Windows.Graphics.Printing.Workflow
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PrintWorkflowConfiguration.JobTitle is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PrintWorkflowConfiguration.JobTitle is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PrintWorkflowConfiguration.JobTitle");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Graphics.Printing.Workflow
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PrintWorkflowConfiguration.SessionId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PrintWorkflowConfiguration.SessionId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PrintWorkflowConfiguration.SessionId");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Graphics.Printing.Workflow
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PrintWorkflowConfiguration.SourceAppDisplayName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PrintWorkflowConfiguration.SourceAppDisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PrintWorkflowConfiguration.SourceAppDisplayName");
 			}
 		}
 		#endif

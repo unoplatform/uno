@@ -6,7 +6,7 @@ parameters:
     - "NugetPackages-Artifacts-reference"
     - "NugetPackages-Artifacts-skia"
     - "NugetPackages-Artifacts-wasm"
-    
+
 jobs:
 - job: Generate_Packages
   displayName: 'Pack NuGet'
@@ -24,11 +24,11 @@ jobs:
     matrix:
       UWP:
         UNO_UWP_BUILD: true
-        XAML_FLAVOR_BUILD: UWP 
+        XAML_FLAVOR_BUILD: UWP
 
       WinUI:
         UNO_UWP_BUILD: false
-        XAML_FLAVOR_BUILD: WinUI 
+        XAML_FLAVOR_BUILD: WinUI
 
   variables:
     CombinedConfiguration: Release|Any CPU
@@ -57,16 +57,18 @@ jobs:
       - task: DownloadBuildArtifacts@0
         displayName: Download build artifact ${{ artifact }}
         inputs:
-          artifactName: ${{ artifact }}
-          downloadPath: '$(Agent.WorkFolder)' 
+          artifactName: "${{ artifact }}-$(XAML_FLAVOR_BUILD)"
+          downloadPath: '$(Agent.WorkFolder)'
 
   - task: ExtractFiles@1
     displayName: Restore binaries structure
     inputs:
-      archiveFilePatterns: '$(Agent.WorkFolder)/NugetPackages-Artifacts*/*-bin-$(XAML_FLAVOR_BUILD).zip' 
+      archiveFilePatterns: '$(Agent.WorkFolder)/NugetPackages-Artifacts*/*-bin-$(XAML_FLAVOR_BUILD).zip'
       destinationFolder: $(build.sourcesdirectory)
       cleanDestinationFolder: false
       overwriteExistingFiles: true
+
+  - template: templates/dotnet-install.yml
 
   - task: MSBuild@1
     inputs:
@@ -118,6 +120,7 @@ jobs:
 
   - task: PublishBuildArtifacts@1
     condition: always()
+    retryCountOnTaskFailure: 3
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
       ArtifactName: NugetPackages

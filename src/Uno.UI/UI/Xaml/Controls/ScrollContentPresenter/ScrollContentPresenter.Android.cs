@@ -30,7 +30,7 @@ namespace Windows.UI.Xaml.Controls
 		#region SCP to Native SCP
 		private Thickness _oldNativePadding;
 		private Thickness _occludedRectPadding;
-		
+
 		internal IDisposable Pad(Rect occludedRect)
 		{
 			var viewPortPoint = UIElement.TransformToVisual(this, null).TransformPoint(new Point());

@@ -18,18 +18,6 @@ public class Given_DependencyObjectGenerator
 	private static readonly ReferenceAssemblies _Net60AndroidWithUno = ReferenceAssemblies.Net.Net60Android.AddPackages(_unoPackage);
 	private static readonly ReferenceAssemblies _Net60WithUno = ReferenceAssemblies.Net.Net60.AddPackages(_unoPackage);
 
-	[TestInitialize]
-	public void Initialize()
-	{
-		DependencyObjectGenerator.IsUnitTest = true;
-	}
-
-	[TestCleanup]
-	public void Cleanup()
-	{
-		DependencyObjectGenerator.IsUnitTest = false;
-	}
-
 	private async Task TestAndroid(string testCode, params DiagnosticResult[] expectedDiagnostics)
 	{
 		var test = new Verify.Test
@@ -87,7 +75,7 @@ public class Given_DependencyObjectGenerator
 			}
 			""";
 
-		await new CSharpSourceGeneratorTest<DependencyObjectGenerator, MSTestVerifier>()
+		await new Verify.Test
 		{
 			TestState =
 			{
@@ -197,7 +185,7 @@ public class Given_DependencyObjectGenerator
 	 		}
 	 		
 	 		private global::Uno.UI.DataBinding.ManagedWeakReference _selfWeakReference;
-	 		global::Uno.UI.DataBinding.ManagedWeakReference IWeakReferenceProvider.WeakReference 
+	 		global::Uno.UI.DataBinding.ManagedWeakReference IWeakReferenceProvider.WeakReference
 	 		{
 	 			get
 	 			{
@@ -205,7 +193,7 @@ public class Given_DependencyObjectGenerator
 	 				{
 	 					_selfWeakReference = global::Uno.UI.DataBinding.WeakReferencePool.RentSelfWeakReference(this);
 	 				}
-	 				
+	 		
 	 				return _selfWeakReference;
 	 			}
 	 		}
@@ -302,10 +290,10 @@ public class Given_DependencyObjectGenerator
 	 		public global::Windows.UI.Xaml.Data.BindingExpression GetBindingExpression(DependencyProperty dependencyProperty)
 	 			=>  __Store.GetBindingExpression(dependencyProperty);
 	 		
-	 		public void ResumeBindings() 
+	 		public void ResumeBindings()
 	 			=>__Store.ResumeBindings();
 	 		
-	 		public void SuspendBindings() => 
+	 		public void SuspendBindings() =>
 	 			__Store.SuspendBindings();
 	 						
 	 	}

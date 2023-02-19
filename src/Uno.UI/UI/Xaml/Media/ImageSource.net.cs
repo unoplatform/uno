@@ -20,7 +20,7 @@ using Uno.Web.Query.Cache;
 
 namespace Windows.UI.Xaml.Media
 {
-	partial class ImageSource 
+	partial class ImageSource
 	{
 		partial void InitFromResource(Uri uri)
 		{

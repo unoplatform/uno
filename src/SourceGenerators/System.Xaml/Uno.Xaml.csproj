@@ -13,6 +13,8 @@
 
 		<!-- This target must always be built, regardless of the override -->
 		<TargetFrameworksOverrideInvariant>netstandard2.0</TargetFrameworksOverrideInvariant>
+
+        <NoWarn>$(NoWarn);IDE0051</NoWarn>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">

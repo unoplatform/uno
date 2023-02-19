@@ -599,7 +599,7 @@ namespace Windows.UI.Xaml.Controls
 				{
 					container.Style = style;
 				}
-				
+
 				if (!container.IsContainerFromTemplateRoot)
 				{
 					container.ContentTemplate = dataTemplate;
@@ -743,18 +743,6 @@ namespace Windows.UI.Xaml.Controls
 
 					ContentView.AddSubview(value);
 
-					// Calling these methods: Layouter.ArrangeChild() and UpdateContentLayoutSlots()
-					// everytime we set the Content is required to fix an issue where the
-					// OS is not triggering the Callback LayoutSubViews() at times making the Children to render
-					// with the wrong size.
-					// Layouter.ArrangeChild() will skip if called with the same values.
-					Layouter.ArrangeChild(value, new Rect(0, 0, (float)Frame.Width, (float)Frame.Height));
-
-					// The item has to be arranged relative to this internal container (at 0,0),
-					// but doing this the LayoutSlot[WithMargins] has been updated,
-					// so we fakely re-inject the relative position of the item in its parent.
-					UpdateContentLayoutSlots(Frame);
-
 					ClearMeasuredSize();
 					_contentChangedDisposable.Disposable = value?.RegisterDisposablePropertyChangedCallback(ContentControl.ContentProperty, (_, __) => _measuredContentSize = null);
 				}
@@ -781,8 +769,6 @@ namespace Windows.UI.Xaml.Controls
 				try
 				{
 					base.Frame = value;
-					UpdateContentLayoutSlots(value);
-
 					UpdateContentViewFrame();
 				}
 				catch

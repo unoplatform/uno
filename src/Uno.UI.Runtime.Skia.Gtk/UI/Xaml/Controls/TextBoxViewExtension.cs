@@ -30,7 +30,7 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 		private readonly string _textBoxViewId = Guid.NewGuid().ToString();
 		private readonly TextBoxView _owner;
 		private readonly GtkWindow _window;
-		
+
 		private CssProvider? _foregroundCssProvider;
 		private ContentControl? _contentElement;
 		private Widget? _currentInputWidget;
@@ -110,7 +110,7 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls
 			}
 
 			_contentElement = null;
-			
+
 			if (_currentInputWidget != null)
 			{
 				var bounds = GetNativeSelectionBounds();

@@ -24,12 +24,12 @@ using Uno.Extensions;
 
 namespace Uno.Reflection
 {
-    internal class FieldDescriptor : ValueMemberDescriptor<FieldInfo>
-    {
-        public FieldDescriptor(FieldInfo fi)
-            : base(fi)
-        {
-        }
+	internal class FieldDescriptor : ValueMemberDescriptor<FieldInfo>
+	{
+		public FieldDescriptor(FieldInfo fi)
+			: base(fi)
+		{
+		}
 
 		public override Type Type => MemberInfo.FieldType;
 
@@ -70,47 +70,47 @@ namespace Uno.Reflection
 		/// parameter types before the call. Invalid parameters could result in unexpected behavior.
 		/// </remarks>
 		public static Action<object, object> ToCompiledSetValue(RuntimeTypeHandle typeHandle, RuntimeFieldHandle fieldHandle, bool strict)
-        {
+		{
 #if NET6_0_OR_GREATER
 			var fieldInfo = FieldInfo.GetFieldFromHandle(fieldHandle, typeHandle);
 
-            if (fieldInfo.IsStatic || fieldInfo.DeclaringType.IsValueType)
-            {
-                // Don't compile code for static fields
-                return fieldInfo.SetValue;
-            }
+			if (fieldInfo.IsStatic || fieldInfo.DeclaringType.IsValueType)
+			{
+				// Don't compile code for static fields
+				return fieldInfo.SetValue;
+			}
 
-            var name = "Set_{0}.{1}-{2}".InvariantCultureFormat(fieldInfo.DeclaringType.Name, fieldInfo.Name, Guid.NewGuid());
+			var name = "Set_{0}.{1}-{2}".InvariantCultureFormat(fieldInfo.DeclaringType.Name, fieldInfo.Name, Guid.NewGuid());
 
-            var method = new DynamicMethod(name, typeof(void), new[] { typeof(object), typeof(object) }, typeof(FieldDescriptor), true);
+			var method = new DynamicMethod(name, typeof(void), new[] { typeof(object), typeof(object) }, typeof(FieldDescriptor), true);
 
 			var il = method.GetILGenerator();
 
-            il.Emit(OpCodes.Ldarg_0);
+			il.Emit(OpCodes.Ldarg_0);
 
-            if (strict)
-            {
-                il.Emit(OpCodes.Castclass, fieldInfo.DeclaringType);
-            }
+			if (strict)
+			{
+				il.Emit(OpCodes.Castclass, fieldInfo.DeclaringType);
+			}
 
-            il.Emit(OpCodes.Ldarg_1);
+			il.Emit(OpCodes.Ldarg_1);
 
-            if (fieldInfo.FieldType.IsValueType)
-            {
-                il.Emit(OpCodes.Unbox_Any, fieldInfo.FieldType);
-            }
-            else
-            {
-                if (strict)
-                {
-                    il.Emit(OpCodes.Castclass, fieldInfo.FieldType);
-                }
-            }
+			if (fieldInfo.FieldType.IsValueType)
+			{
+				il.Emit(OpCodes.Unbox_Any, fieldInfo.FieldType);
+			}
+			else
+			{
+				if (strict)
+				{
+					il.Emit(OpCodes.Castclass, fieldInfo.FieldType);
+				}
+			}
 
-            il.Emit(OpCodes.Stfld, fieldInfo);
-            il.Emit(OpCodes.Ret);
+			il.Emit(OpCodes.Stfld, fieldInfo);
+			il.Emit(OpCodes.Ret);
 
-            return method.CreateDelegate(typeof(Action<object, object>)) as Action<object, object>;
+			return method.CreateDelegate(typeof(Action<object, object>)) as Action<object, object>;
 #else
 			throw new NotSupportedException($"ToCompiledSetValue is not supported on this platform");
 #endif
@@ -147,41 +147,41 @@ namespace Uno.Reflection
 		/// parameter types before the call. An invalid parameter could result in unexpected behavior.
 		/// </remarks>
 		public static Func<object, object> ToCompiledGetValue(RuntimeTypeHandle typeHandle, RuntimeFieldHandle fieldHandle, bool strict)
-        {
+		{
 #if NET6_0_OR_GREATER
-            var fieldInfo = FieldInfo.GetFieldFromHandle(fieldHandle, typeHandle);
+			var fieldInfo = FieldInfo.GetFieldFromHandle(fieldHandle, typeHandle);
 
-            if (fieldInfo.IsStatic || fieldInfo.DeclaringType.IsValueType)
-            {
-                // Don't compile code for static fields or fields from value types
-                return fieldInfo.GetValue;
-            }
+			if (fieldInfo.IsStatic || fieldInfo.DeclaringType.IsValueType)
+			{
+				// Don't compile code for static fields or fields from value types
+				return fieldInfo.GetValue;
+			}
 
-            var name = "Get_{0}.{1}-{2}".InvariantCultureFormat(fieldInfo.DeclaringType.Name, fieldInfo.Name, Guid.NewGuid());
+			var name = "Get_{0}.{1}-{2}".InvariantCultureFormat(fieldInfo.DeclaringType.Name, fieldInfo.Name, Guid.NewGuid());
 
 			var method = new DynamicMethod(name, typeof(object), new[] { typeof(object) }, typeof(FieldDescriptor), true);
 
 			var il = method.GetILGenerator();
 
-            il.DeclareLocal(typeof(object));
+			il.DeclareLocal(typeof(object));
 
-            il.Emit(OpCodes.Ldarg_0);
+			il.Emit(OpCodes.Ldarg_0);
 
-            if (strict)
-            {
-                il.Emit(OpCodes.Castclass, fieldInfo.DeclaringType);
-            }
+			if (strict)
+			{
+				il.Emit(OpCodes.Castclass, fieldInfo.DeclaringType);
+			}
 
-            il.Emit(OpCodes.Ldfld, fieldInfo);
+			il.Emit(OpCodes.Ldfld, fieldInfo);
 
-            if (fieldInfo.FieldType.IsValueType)
-            {
-                il.Emit(OpCodes.Box, fieldInfo.FieldType);
-            }
+			if (fieldInfo.FieldType.IsValueType)
+			{
+				il.Emit(OpCodes.Box, fieldInfo.FieldType);
+			}
 
-            il.Emit(OpCodes.Ret);
+			il.Emit(OpCodes.Ret);
 
-            return method.CreateDelegate(typeof(Func<object, object>)) as Func<object, object>;
+			return method.CreateDelegate(typeof(Func<object, object>)) as Func<object, object>;
 #else
 			throw new NotSupportedException($"ToCompiledSetValue is not supported on this platform");
 #endif

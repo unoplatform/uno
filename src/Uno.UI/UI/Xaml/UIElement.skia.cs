@@ -47,7 +47,7 @@ namespace Windows.UI.Xaml
 
 		private void OnPropertyChanged(ManagedWeakReference instance, DependencyProperty property, DependencyPropertyChangedEventArgs args)
 		{
-			if(property == Controls.Canvas.TopProperty)
+			if (property == Controls.Canvas.TopProperty)
 			{
 				_canvasTop = (double)args.NewValue;
 			}
@@ -56,7 +56,6 @@ namespace Windows.UI.Xaml
 				_canvasLeft = (double)args.NewValue;
 			}
 		}
-
 
 		partial void OnOpacityChanged(DependencyPropertyChangedEventArgs args)
 		{
@@ -75,7 +74,8 @@ namespace Windows.UI.Xaml
 
 		internal ContainerVisual Visual
 		{
-			get {
+			get
+			{
 
 				if (_visual == null)
 				{
@@ -85,7 +85,7 @@ namespace Windows.UI.Xaml
 
 				return _visual;
 			}
-		} 
+		}
 
 		internal bool ClippingIsSetByCornerRadius { get; set; }
 
@@ -270,10 +270,7 @@ namespace Windows.UI.Xaml
 
 		internal void ArrangeVisual(Rect finalRect, Rect? clippedFrame = default)
 		{
-			LayoutSlotWithMarginsAndAlignments =
-				VisualTreeHelper.GetParent(this) is UIElement parent and not RootVisual
-					? finalRect.DeflateBy(parent.GetBorderThickness())
-					: finalRect;
+			LayoutSlotWithMarginsAndAlignments = finalRect;
 
 			var oldFinalRect = _currentFinalRect;
 			_currentFinalRect = finalRect;
@@ -320,9 +317,10 @@ namespace Windows.UI.Xaml
 		{
 			var roundedRect = LayoutRound(rect);
 
-			Visual.Offset = new Vector3((float)roundedRect.X, (float)roundedRect.Y, 0);
-			Visual.Size = new Vector2((float)roundedRect.Width, (float)roundedRect.Height);
-			Visual.CenterPoint = new Vector3((float)RenderTransformOrigin.X, (float)RenderTransformOrigin.Y, 0);
+			var visual = Visual;
+			visual.Offset = new Vector3((float)roundedRect.X, (float)roundedRect.Y, 0) + _translation;
+			visual.Size = new Vector2((float)roundedRect.Width, (float)roundedRect.Height);
+			visual.CenterPoint = new Vector3((float)RenderTransformOrigin.X, (float)RenderTransformOrigin.Y, 0);
 
 			ApplyNativeClip(clip ?? Rect.Empty);
 		}

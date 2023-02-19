@@ -13,7 +13,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool VpnTrafficFilterAssignment.AllowOutbound is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool VpnTrafficFilterAssignment.AllowOutbound is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20VpnTrafficFilterAssignment.AllowOutbound");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool VpnTrafficFilterAssignment.AllowInbound is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool VpnTrafficFilterAssignment.AllowInbound is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20VpnTrafficFilterAssignment.AllowInbound");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<VpnTrafficFilter> VpnTrafficFilterAssignment.TrafficFilterList is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<VpnTrafficFilter> VpnTrafficFilterAssignment.TrafficFilterList is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3CVpnTrafficFilter%3E%20VpnTrafficFilterAssignment.TrafficFilterList");
 			}
 		}
 		#endif

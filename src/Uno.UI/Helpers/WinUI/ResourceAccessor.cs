@@ -20,10 +20,10 @@ namespace Uno.UI.Helpers.WinUI
 {
 	internal partial class ResourceAccessor
 	{
+#if !IS_UNO
 		public const string MUXCONTROLS_PACKAGE_NAME = "Microsoft.UI.Xaml.3.0";
 		private const string c_resourceLoc = "Microsoft.UI.Xaml/Resources";
 
-#if !IS_UNO
 		private static ResourceMap s_resourceMap = GetPackageResourceMap();
 		private static ResourceContext s_resourceContext = ResourceContext.GetForViewIndependentUse();
 
@@ -49,14 +49,17 @@ namespace Uno.UI.Helpers.WinUI
 		{
 			return s_resourceMap.GetSubtree(c_resourceLoc);
 		}
+#else
+		public const string MUXCONTROLS_PACKAGE_NAME = "Microsoft.UI.Xaml.3.0";
+		private const string c_resourceLoc = "Uno.UI/Resources";
 #endif
 
 		public static string GetLocalizedStringResource(string resourceName)
 		{
 #if !IS_UNO
-			return s_resourceMap.GetValue(resourceName, s_resourceContext).ToString ();
+			return s_resourceMap.GetValue(resourceName, s_resourceContext).ToString();
 #else
-			return Windows.ApplicationModel.Resources.ResourceLoader.GetForViewIndependentUse().GetString(resourceName);
+			return Windows.ApplicationModel.Resources.ResourceLoader.GetForViewIndependentUse(c_resourceLoc).GetString(resourceName);
 #endif
 		}
 

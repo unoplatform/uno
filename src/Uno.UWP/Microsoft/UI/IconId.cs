@@ -17,20 +17,13 @@ namespace Microsoft.UI
 			=> x.Value == y.Value;
 
 		public static bool operator !=(IconId x, IconId y)
-			=> !(x == y);
+			=> x.Value != y.Value;
 
 		public bool Equals(IconId other)
-			=> this == other;
+			=> Value == other.Value;
 
 		public override bool Equals(object obj)
-		{
-			if (obj is IconId)
-			{
-				IconId y = (IconId)obj;
-				return this == y;
-			}
-			return false;
-		}
+			=> (obj is IconId y) && Equals(y);
 
 		public override int GetHashCode()
 			=> Value.GetHashCode();

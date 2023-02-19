@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.UserDataTasks
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<UserDataTask> UserDataTaskBatch.Tasks is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<UserDataTask> UserDataTaskBatch.Tasks is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CUserDataTask%3E%20UserDataTaskBatch.Tasks");
 			}
 		}
 		#endif

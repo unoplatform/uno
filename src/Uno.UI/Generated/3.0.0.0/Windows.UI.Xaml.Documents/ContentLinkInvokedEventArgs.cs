@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Documents
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ContentLinkInvokedEventArgs.Handled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ContentLinkInvokedEventArgs.Handled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ContentLinkInvokedEventArgs.Handled");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.UI.Xaml.Documents
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ContentLinkInfo ContentLinkInvokedEventArgs.ContentLinkInfo is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ContentLinkInfo ContentLinkInvokedEventArgs.ContentLinkInfo is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ContentLinkInfo%20ContentLinkInvokedEventArgs.ContentLinkInfo");
 			}
 		}
 		#endif

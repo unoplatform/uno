@@ -41,7 +41,7 @@ namespace Windows.UI.Xaml.Automation
 				return AutomationPropertyEnum.EmptyProperty;
 			}
 
-			if(property == AutomationElementIdentifiers.NameProperty)
+			if (property == AutomationElementIdentifiers.NameProperty)
 			{
 				return AutomationPropertyEnum.NameProperty;
 			}
@@ -90,7 +90,7 @@ namespace Windows.UI.Xaml.Automation
 
 		public static string GetPlainText(DependencyObject obj)
 		{
-			if(obj is IStringable strignable)
+			if (obj is IStringable strignable)
 			{
 				return strignable.ToString();
 			}
@@ -100,7 +100,7 @@ namespace Windows.UI.Xaml.Automation
 				return ipv.GetString();
 			}
 
-			if(obj is ICustomPropertyProvider icpp)
+			if (obj is ICustomPropertyProvider icpp)
 			{
 				return icpp.GetStringRepresentation();
 			}

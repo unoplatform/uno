@@ -21,10 +21,10 @@ namespace Uno.UI.Extensions
 			{
 				null => "--null--",
 #if __WASM__
-				FrameworkElement fwElt when fwElt.Name.HasValue() => $"{fwElt.Name}-{fwElt.HtmlId}",
+				FrameworkElement fwElt when !fwElt.Name.IsNullOrEmpty() => $"{fwElt.Name}-{fwElt.HtmlId}",
 				UIElement uiElt => $"{elt.GetType().Name}-{uiElt.HtmlId}",
 #else
-				FrameworkElement fwElt when fwElt.Name.HasValue() => $"{fwElt.Name}-{elt.GetHashCode():X8}",
+				FrameworkElement fwElt when !fwElt.Name.IsNullOrEmpty() => $"{fwElt.Name}-{elt.GetHashCode():X8}",
 #endif
 				_ => $"{elt.GetType().Name}-{elt.GetHashCode():X8}",
 			};
@@ -107,7 +107,7 @@ namespace Uno.UI.Extensions
 #if NETSTANDARD
 				UIElement fwElt => fwElt.Depth,
 #endif
-				_ => elt.GetParent()?.GetDebugDepth() + 1?? 0,
+				_ => elt.GetParent()?.GetDebugDepth() + 1 ?? 0,
 			};
 
 		internal static CornerRadius GetCornerRadius(this UIElement uiElement)
@@ -123,7 +123,7 @@ namespace Uno.UI.Extensions
 
 		internal static Thickness GetPadding(this UIElement uiElement)
 		{
-			if(uiElement is FrameworkElement fe && fe.TryGetPadding(out var padding))
+			if (uiElement is FrameworkElement fe && fe.TryGetPadding(out var padding))
 			{
 				return padding;
 			}
@@ -151,7 +151,7 @@ namespace Uno.UI.Extensions
 			}
 
 			var property = uiElement.FindDependencyPropertyUsingReflection<Thickness>("PaddingProperty");
-			if(property != null)
+			if (property != null)
 			{
 				uiElement.SetValue(property, padding);
 				return true;

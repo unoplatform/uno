@@ -12,7 +12,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.UIElement GetLayoutExceptionElement( object dispatcher)
 		{
-			throw new global::System.NotImplementedException("The member UIElement LayoutInformation.GetLayoutExceptionElement(object dispatcher) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member UIElement LayoutInformation.GetLayoutExceptionElement(object dispatcher) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=UIElement%20LayoutInformation.GetLayoutExceptionElement%28object%20dispatcher%29");
 		}
 		#endif
 		// Skipping already declared method Windows.UI.Xaml.Controls.Primitives.LayoutInformation.GetLayoutSlot(Windows.UI.Xaml.FrameworkElement)

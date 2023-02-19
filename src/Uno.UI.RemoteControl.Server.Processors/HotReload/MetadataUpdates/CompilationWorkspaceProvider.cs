@@ -10,6 +10,7 @@ using System.Reflection;
 using Uno.Extensions;
 using Uno.UI.RemoteControl.Server.Processors.Helpers;
 using System.Collections.Generic;
+using Microsoft.Extensions.Logging;
 
 namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 {
@@ -32,15 +33,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 			string[] metadataUpdateCapabilities,
 			CancellationToken cancellationToken)
 		{
-			var intermediatePath = Path.Combine(Path.GetDirectoryName(projectPath) ?? "", "obj", "hr") + Path.DirectorySeparatorChar;
-
-			Directory.CreateDirectory(intermediatePath);
-
 			var globalProperties = new Dictionary<string, string> {
-				// Override the output path so custom compilation lists do not override the
-				// main compilation caches, which can invalidate incremental compilation.
-				{ "IntermediateOutputPath", intermediatePath },
-
 				// Mark this compilation as hot-reload capable, so generators can act accordingly
 				{ "IsHotReloadHost", "True" },
 			};
@@ -49,17 +42,10 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 
 			workspace.WorkspaceFailed += (_sender, diag) =>
 			{
-				if (diag.Diagnostic.Kind == WorkspaceDiagnosticKind.Warning)
-				{
-					reporter.Verbose($"MSBuildWorkspace warning: {diag.Diagnostic}");
-				}
-				else
-				{
-					if (!diag.Diagnostic.ToString().StartsWith("[Failure] Found invalid data while decoding", StringComparison.Ordinal))
-					{
-						taskCompletionSource.TrySetException(new InvalidOperationException($"Failed to create MSBuildWorkspace: {diag.Diagnostic}"));
-					}
-				}
+				// In some cases, load failures may be incorrectly reported such as this one:
+				// https://github.com/dotnet/roslyn/blob/fd45aeb5fbc97d09d4043cef9c9c5142f7638e5c/src/Workspaces/Core/MSBuild/MSBuild/MSBuildProjectLoader.Worker.cs#L245-L259
+				// Since the text may be localized we cannot rely on it, so we never fail the project loading for now.
+				reporter.Verbose($"MSBuildWorkspace {diag.Diagnostic}");
 			};
 
 			await workspace.OpenProjectAsync(projectPath, cancellationToken: cancellationToken);
@@ -86,6 +72,17 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 
 			MSBuildBasePath = BuildMSBuildPath();
 
+			var version = GetDotnetVersion();
+			if (version.Major != typeof(object).Assembly.GetName().Version?.Major)
+			{
+				if (typeof(CompilationWorkspaceProvider).Log().IsEnabled(LogLevel.Error))
+				{
+					typeof(CompilationWorkspaceProvider).Log().LogError($"Unable to start the Remote Control server because the application's TargetFramework version does not match the default runtime. Change the TargetFramework version to match net{version.Major}.0 in your project file.");
+				}
+
+				throw new InvalidOperationException($"Project TargetFramework version mismatch");
+			}
+
 			Environment.SetEnvironmentVariable("MSBuildSDKsPath", Path.Combine(MSBuildBasePath, "Sdks"));
 
 			var MSBuildExists = File.Exists(Path.Combine(MSBuildBasePath, "Microsoft.Build.dll"));
@@ -94,6 +91,23 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 			{
 				throw new InvalidOperationException($"Invalid dotnet installation installation (Cannot find Microsoft.Build.dll in [{MSBuildBasePath}])");
 			}
+		}
+
+		private static Version GetDotnetVersion()
+		{
+			var result = ProcessHelper.RunProcess("dotnet.exe", "--version");
+
+			if (result.exitCode == 0)
+			{
+				var reader = new StringReader(result.output);
+
+				if (Version.TryParse(reader.ReadLine()?.Split('-').FirstOrDefault(), out var version))
+				{
+					return version;
+				}
+			}
+
+			throw new InvalidOperationException("Failed to read dotnet version");
 		}
 
 		private static string BuildMSBuildPath()

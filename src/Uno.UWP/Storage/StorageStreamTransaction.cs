@@ -151,7 +151,7 @@ namespace Windows.Storage
 
 				base.Dispose(disposing);
 			}
-				
+
 
 			/// <inheritdoc />
 			public override void Flush()

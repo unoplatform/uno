@@ -292,7 +292,7 @@ namespace Uno.UI.Tests.BinderTests
 
 			public string Value
 			{
-				get => (string) this.GetValue(ValueProperty);
+				get => (string)this.GetValue(ValueProperty);
 				set => this.SetValue(ValueProperty, value);
 			}
 		}

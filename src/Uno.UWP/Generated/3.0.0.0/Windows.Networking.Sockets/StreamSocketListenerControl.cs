@@ -13,7 +13,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SocketQualityOfService StreamSocketListenerControl.QualityOfService is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SocketQualityOfService StreamSocketListenerControl.QualityOfService is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SocketQualityOfService%20StreamSocketListenerControl.QualityOfService");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte StreamSocketListenerControl.OutboundUnicastHopLimit is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member byte StreamSocketListenerControl.OutboundUnicastHopLimit is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=byte%20StreamSocketListenerControl.OutboundUnicastHopLimit");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint StreamSocketListenerControl.OutboundBufferSizeInBytes is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint StreamSocketListenerControl.OutboundBufferSizeInBytes is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20StreamSocketListenerControl.OutboundBufferSizeInBytes");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool StreamSocketListenerControl.NoDelay is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool StreamSocketListenerControl.NoDelay is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20StreamSocketListenerControl.NoDelay");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool StreamSocketListenerControl.KeepAlive is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool StreamSocketListenerControl.KeepAlive is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20StreamSocketListenerControl.KeepAlive");
 			}
 			set
 			{

@@ -32,7 +32,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 			var relativeToTarget = _app.Marked("WhenTappedThenArgsLocationIsValid_Result_RelativeToTarget").GetDependencyPropertyValue<string>("Text");
 
 			relativeToTarget.Should().Be($"({tapX:D},{tapY:D})");
-			relativeToRoot.Should().Be($"({tapX+targetToRoot.x:D},{tapY + targetToRoot.y:D})");
+			relativeToRoot.Should().Be($"({tapX + targetToRoot.x:D},{tapY + targetToRoot.y:D})");
 		}
 
 		[Test]

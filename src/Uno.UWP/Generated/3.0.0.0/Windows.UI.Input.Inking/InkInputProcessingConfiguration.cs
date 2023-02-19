@@ -13,7 +13,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member InkInputRightDragAction InkInputProcessingConfiguration.RightDragAction is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member InkInputRightDragAction InkInputProcessingConfiguration.RightDragAction is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=InkInputRightDragAction%20InkInputProcessingConfiguration.RightDragAction");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member InkInputProcessingMode InkInputProcessingConfiguration.Mode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member InkInputProcessingMode InkInputProcessingConfiguration.Mode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=InkInputProcessingMode%20InkInputProcessingConfiguration.Mode");
 			}
 			set
 			{

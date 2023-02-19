@@ -9,7 +9,7 @@ The [WinUI 2 library](https://docs.microsoft.com/en-us/windows/apps/winui/winui2
 
 1. In the `UWP` head project of your solution, install the [WinUI 2 NuGet package](https://www.nuget.org/packages/Microsoft.UI.Xaml).
 1. There's no extra package to install for non-Windows head projects - the WinUI 2 controls are already included in the `Uno.UI` NuGet package which is installed with the default Uno Platform template.
-1. Open the `App.xaml` file inside the shared project used by all platform heads. Add the `XamlControlsResources` resource dictionary to your application resources inside `App.xaml`.
+1. Open the `App.xaml` file inside one of the Head project used by all platform heads. Add the `XamlControlsResources` resource dictionary to your application resources inside `App.xaml`.
     ```xml
     	<Application>
     		<Application.Resources>

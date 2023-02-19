@@ -13,7 +13,7 @@ namespace Windows.Devices.Lights
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool LampArray.IsEnabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool LampArray.IsEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20LampArray.IsEnabled");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Devices.Lights
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double LampArray.BrightnessLevel is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double LampArray.BrightnessLevel is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20LampArray.BrightnessLevel");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Devices.Lights
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector3 LampArray.BoundingBox is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Vector3 LampArray.BoundingBox is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Vector3%20LampArray.BoundingBox");
 			}
 		}
 		#endif
@@ -51,7 +51,7 @@ namespace Windows.Devices.Lights
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string LampArray.DeviceId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string LampArray.DeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20LampArray.DeviceId");
 			}
 		}
 		#endif
@@ -61,7 +61,7 @@ namespace Windows.Devices.Lights
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ushort LampArray.HardwareProductId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ushort LampArray.HardwareProductId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ushort%20LampArray.HardwareProductId");
 			}
 		}
 		#endif
@@ -71,7 +71,7 @@ namespace Windows.Devices.Lights
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ushort LampArray.HardwareVendorId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ushort LampArray.HardwareVendorId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ushort%20LampArray.HardwareVendorId");
 			}
 		}
 		#endif
@@ -81,7 +81,7 @@ namespace Windows.Devices.Lights
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ushort LampArray.HardwareVersion is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ushort LampArray.HardwareVersion is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ushort%20LampArray.HardwareVersion");
 			}
 		}
 		#endif
@@ -91,7 +91,7 @@ namespace Windows.Devices.Lights
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool LampArray.IsConnected is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool LampArray.IsConnected is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20LampArray.IsConnected");
 			}
 		}
 		#endif
@@ -101,7 +101,7 @@ namespace Windows.Devices.Lights
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member LampArrayKind LampArray.LampArrayKind is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member LampArrayKind LampArray.LampArrayKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=LampArrayKind%20LampArray.LampArrayKind");
 			}
 		}
 		#endif
@@ -111,7 +111,7 @@ namespace Windows.Devices.Lights
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int LampArray.LampCount is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int LampArray.LampCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20LampArray.LampCount");
 			}
 		}
 		#endif
@@ -121,7 +121,7 @@ namespace Windows.Devices.Lights
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan LampArray.MinUpdateInterval is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan LampArray.MinUpdateInterval is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20LampArray.MinUpdateInterval");
 			}
 		}
 		#endif
@@ -131,7 +131,7 @@ namespace Windows.Devices.Lights
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool LampArray.SupportsVirtualKeys is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool LampArray.SupportsVirtualKeys is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20LampArray.SupportsVirtualKeys");
 			}
 		}
 		#endif
@@ -153,21 +153,21 @@ namespace Windows.Devices.Lights
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Devices.Lights.LampInfo GetLampInfo( int lampIndex)
 		{
-			throw new global::System.NotImplementedException("The member LampInfo LampArray.GetLampInfo(int lampIndex) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member LampInfo LampArray.GetLampInfo(int lampIndex) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=LampInfo%20LampArray.GetLampInfo%28int%20lampIndex%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  int[] GetIndicesForKey( global::Windows.System.VirtualKey key)
 		{
-			throw new global::System.NotImplementedException("The member int[] LampArray.GetIndicesForKey(VirtualKey key) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member int[] LampArray.GetIndicesForKey(VirtualKey key) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%5B%5D%20LampArray.GetIndicesForKey%28VirtualKey%20key%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  int[] GetIndicesForPurposes( global::Windows.Devices.Lights.LampPurposes purposes)
 		{
-			throw new global::System.NotImplementedException("The member int[] LampArray.GetIndicesForPurposes(LampPurposes purposes) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member int[] LampArray.GetIndicesForPurposes(LampPurposes purposes) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%5B%5D%20LampArray.GetIndicesForPurposes%28LampPurposes%20purposes%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -223,28 +223,28 @@ namespace Windows.Devices.Lights
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction SendMessageAsync( int messageId,  global::Windows.Storage.Streams.IBuffer message)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction LampArray.SendMessageAsync(int messageId, IBuffer message) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction LampArray.SendMessageAsync(int messageId, IBuffer message) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20LampArray.SendMessageAsync%28int%20messageId%2C%20IBuffer%20message%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IBuffer> RequestMessageAsync( int messageId)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IBuffer> LampArray.RequestMessageAsync(int messageId) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<IBuffer> LampArray.RequestMessageAsync(int messageId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CIBuffer%3E%20LampArray.RequestMessageAsync%28int%20messageId%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static string GetDeviceSelector()
 		{
-			throw new global::System.NotImplementedException("The member string LampArray.GetDeviceSelector() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member string LampArray.GetDeviceSelector() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20LampArray.GetDeviceSelector%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Lights.LampArray> FromIdAsync( string deviceId)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<LampArray> LampArray.FromIdAsync(string deviceId) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<LampArray> LampArray.FromIdAsync(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CLampArray%3E%20LampArray.FromIdAsync%28string%20deviceId%29");
 		}
 		#endif
 	}

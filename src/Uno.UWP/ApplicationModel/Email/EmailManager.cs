@@ -18,10 +18,12 @@ namespace Windows.ApplicationModel.Email
 #endif
 		}
 
+#if !__ANDROID__
 		private static async Task ComposeEmailWithMailtoUriAsync(EmailMessage message)
 		{
 			var uri = message.ToMailtoUri();
 			await Launcher.LaunchUriAsync(uri);
 		}
+#endif
 	}
 }

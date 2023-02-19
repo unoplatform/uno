@@ -13,7 +13,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SpatialAudioFormatSubtype.DTSHeadphoneX is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SpatialAudioFormatSubtype.DTSHeadphoneX is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SpatialAudioFormatSubtype.DTSHeadphoneX");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SpatialAudioFormatSubtype.DTSXUltra is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SpatialAudioFormatSubtype.DTSXUltra is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SpatialAudioFormatSubtype.DTSXUltra");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SpatialAudioFormatSubtype.DolbyAtmosForHeadphones is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SpatialAudioFormatSubtype.DolbyAtmosForHeadphones is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SpatialAudioFormatSubtype.DolbyAtmosForHeadphones");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SpatialAudioFormatSubtype.DolbyAtmosForHomeTheater is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SpatialAudioFormatSubtype.DolbyAtmosForHomeTheater is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SpatialAudioFormatSubtype.DolbyAtmosForHomeTheater");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SpatialAudioFormatSubtype.DolbyAtmosForSpeakers is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SpatialAudioFormatSubtype.DolbyAtmosForSpeakers is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SpatialAudioFormatSubtype.DolbyAtmosForSpeakers");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SpatialAudioFormatSubtype.WindowsSonic is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SpatialAudioFormatSubtype.WindowsSonic is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SpatialAudioFormatSubtype.WindowsSonic");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SpatialAudioFormatSubtype.DTSXForHomeTheater is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SpatialAudioFormatSubtype.DTSXForHomeTheater is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SpatialAudioFormatSubtype.DTSXForHomeTheater");
 			}
 		}
 		#endif

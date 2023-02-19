@@ -13,7 +13,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float SensorQuaternion.W is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float SensorQuaternion.W is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20SensorQuaternion.W");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float SensorQuaternion.X is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float SensorQuaternion.X is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20SensorQuaternion.X");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float SensorQuaternion.Y is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float SensorQuaternion.Y is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20SensorQuaternion.Y");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float SensorQuaternion.Z is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float SensorQuaternion.Z is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20SensorQuaternion.Z");
 			}
 		}
 		#endif

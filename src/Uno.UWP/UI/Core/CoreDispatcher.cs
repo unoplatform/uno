@@ -67,7 +67,8 @@ namespace Windows.UI.Core
 		public CoreDispatcherPriority CurrentPriority
 		{
 			get => (CoreDispatcherPriority)_inner.CurrentPriority;
-			[Uno.NotImplemented] set { } // Drop the set done by external code
+			[Uno.NotImplemented]
+			set { } // Drop the set done by external code
 		}
 
 		/// <summary>

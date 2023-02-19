@@ -175,7 +175,7 @@ namespace SamplesApp.UnitTests.TSBindings
 		{
 			var param = new When_ArrayOfStringsParams()
 			{
-				MyArray_Length = 0, 
+				MyArray_Length = 0,
 				MyArray = null
 			};
 

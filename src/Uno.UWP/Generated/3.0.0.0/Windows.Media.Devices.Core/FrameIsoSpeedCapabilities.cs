@@ -13,7 +13,7 @@ namespace Windows.Media.Devices.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint FrameIsoSpeedCapabilities.Max is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint FrameIsoSpeedCapabilities.Max is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20FrameIsoSpeedCapabilities.Max");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.Devices.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint FrameIsoSpeedCapabilities.Min is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint FrameIsoSpeedCapabilities.Min is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20FrameIsoSpeedCapabilities.Min");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Media.Devices.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint FrameIsoSpeedCapabilities.Step is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint FrameIsoSpeedCapabilities.Step is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20FrameIsoSpeedCapabilities.Step");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Media.Devices.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool FrameIsoSpeedCapabilities.Supported is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool FrameIsoSpeedCapabilities.Supported is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20FrameIsoSpeedCapabilities.Supported");
 			}
 		}
 		#endif

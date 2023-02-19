@@ -13,7 +13,7 @@ namespace Windows.Media.Miracast
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MiracastReceiverCursorImageChannel MiracastReceiverConnection.CursorImageChannel is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MiracastReceiverCursorImageChannel MiracastReceiverConnection.CursorImageChannel is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MiracastReceiverCursorImageChannel%20MiracastReceiverConnection.CursorImageChannel");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.Miracast
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MiracastReceiverInputDevices MiracastReceiverConnection.InputDevices is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MiracastReceiverInputDevices MiracastReceiverConnection.InputDevices is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MiracastReceiverInputDevices%20MiracastReceiverConnection.InputDevices");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Media.Miracast
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MiracastReceiverStreamControl MiracastReceiverConnection.StreamControl is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MiracastReceiverStreamControl MiracastReceiverConnection.StreamControl is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MiracastReceiverStreamControl%20MiracastReceiverConnection.StreamControl");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Media.Miracast
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MiracastTransmitter MiracastReceiverConnection.Transmitter is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MiracastTransmitter MiracastReceiverConnection.Transmitter is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MiracastTransmitter%20MiracastReceiverConnection.Transmitter");
 			}
 		}
 		#endif
@@ -72,7 +72,7 @@ namespace Windows.Media.Miracast
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction PauseAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction MiracastReceiverConnection.PauseAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction MiracastReceiverConnection.PauseAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20MiracastReceiverConnection.PauseAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -86,7 +86,7 @@ namespace Windows.Media.Miracast
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction ResumeAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction MiracastReceiverConnection.ResumeAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction MiracastReceiverConnection.ResumeAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20MiracastReceiverConnection.ResumeAsync%28%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverConnection.Transmitter.get

@@ -13,14 +13,14 @@ using Windows.UI.Xaml.Controls;
 namespace UITests.Windows_Storage.Pickers
 {
 	[Sample("Windows.Storage", IsManualTest = true, Description = "This sample is specifically suited for WASM, should trigger a download of a given file")]
-    public sealed partial class DownloadFileSavePickerTests : Page
-    {
-        public DownloadFileSavePickerTests()
-        {
-            this.InitializeComponent();
+	public sealed partial class DownloadFileSavePickerTests : Page
+	{
+		public DownloadFileSavePickerTests()
+		{
+			this.InitializeComponent();
 			this.Loaded += DownloadFileSavePickerTests_Loaded;
 			this.Unloaded += DownloadFileSavePickerTests_Unloaded;
-        }
+		}
 
 		private void DownloadFileSavePickerTests_Unloaded(object sender, RoutedEventArgs e)
 		{

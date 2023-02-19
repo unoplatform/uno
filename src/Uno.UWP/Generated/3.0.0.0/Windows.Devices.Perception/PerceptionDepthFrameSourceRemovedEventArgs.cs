@@ -13,7 +13,7 @@ namespace Windows.Devices.Perception
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PerceptionDepthFrameSource PerceptionDepthFrameSourceRemovedEventArgs.FrameSource is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PerceptionDepthFrameSource PerceptionDepthFrameSourceRemovedEventArgs.FrameSource is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PerceptionDepthFrameSource%20PerceptionDepthFrameSourceRemovedEventArgs.FrameSource");
 			}
 		}
 		#endif

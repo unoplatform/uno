@@ -13,7 +13,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<string> PrintTaskOptionDetails.DisplayedOptions is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<string> PrintTaskOptionDetails.DisplayedOptions is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3Cstring%3E%20PrintTaskOptionDetails.DisplayedOptions");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyDictionary<string, IPrintOptionDetails> PrintTaskOptionDetails.Options is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyDictionary<string, IPrintOptionDetails> PrintTaskOptionDetails.Options is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyDictionary%3Cstring%2C%20IPrintOptionDetails%3E%20PrintTaskOptionDetails.Options");
 			}
 		}
 		#endif
@@ -32,14 +32,14 @@ namespace Windows.Graphics.Printing.OptionDetails
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Graphics.Printing.OptionDetails.PrintCustomItemListOptionDetails CreateItemListOption( string optionId,  string displayName)
 		{
-			throw new global::System.NotImplementedException("The member PrintCustomItemListOptionDetails PrintTaskOptionDetails.CreateItemListOption(string optionId, string displayName) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member PrintCustomItemListOptionDetails PrintTaskOptionDetails.CreateItemListOption(string optionId, string displayName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PrintCustomItemListOptionDetails%20PrintTaskOptionDetails.CreateItemListOption%28string%20optionId%2C%20string%20displayName%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Graphics.Printing.OptionDetails.PrintCustomTextOptionDetails CreateTextOption( string optionId,  string displayName)
 		{
-			throw new global::System.NotImplementedException("The member PrintCustomTextOptionDetails PrintTaskOptionDetails.CreateTextOption(string optionId, string displayName) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member PrintCustomTextOptionDetails PrintTaskOptionDetails.CreateTextOption(string optionId, string displayName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PrintCustomTextOptionDetails%20PrintTaskOptionDetails.CreateTextOption%28string%20optionId%2C%20string%20displayName%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintTaskOptionDetails.OptionChanged.add
@@ -50,7 +50,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Graphics.Printing.PrintPageDescription GetPageDescription( uint jobPageNumber)
 		{
-			throw new global::System.NotImplementedException("The member PrintPageDescription PrintTaskOptionDetails.GetPageDescription(uint jobPageNumber) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member PrintPageDescription PrintTaskOptionDetails.GetPageDescription(uint jobPageNumber) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PrintPageDescription%20PrintTaskOptionDetails.GetPageDescription%28uint%20jobPageNumber%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintTaskOptionDetails.DisplayedOptions.get
@@ -58,14 +58,14 @@ namespace Windows.Graphics.Printing.OptionDetails
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Graphics.Printing.OptionDetails.PrintCustomToggleOptionDetails CreateToggleOption( string optionId,  string displayName)
 		{
-			throw new global::System.NotImplementedException("The member PrintCustomToggleOptionDetails PrintTaskOptionDetails.CreateToggleOption(string optionId, string displayName) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member PrintCustomToggleOptionDetails PrintTaskOptionDetails.CreateToggleOption(string optionId, string displayName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PrintCustomToggleOptionDetails%20PrintTaskOptionDetails.CreateToggleOption%28string%20optionId%2C%20string%20displayName%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Graphics.Printing.OptionDetails.PrintTaskOptionDetails GetFromPrintTaskOptions( global::Windows.Graphics.Printing.PrintTaskOptions printTaskOptions)
 		{
-			throw new global::System.NotImplementedException("The member PrintTaskOptionDetails PrintTaskOptionDetails.GetFromPrintTaskOptions(PrintTaskOptions printTaskOptions) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member PrintTaskOptionDetails PrintTaskOptionDetails.GetFromPrintTaskOptions(PrintTaskOptions printTaskOptions) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PrintTaskOptionDetails%20PrintTaskOptionDetails.GetFromPrintTaskOptions%28PrintTaskOptions%20printTaskOptions%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

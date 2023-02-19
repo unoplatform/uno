@@ -47,7 +47,7 @@ namespace Windows.ApplicationModel.DataTransfer
 		/// <remarks>
 		/// In UWP this property actually is a RandomAccessStreamReference even though the other properties use IRandomAccessStreamReference.
 		/// </remarks>
-		public RandomAccessStreamReference? Thumbnail => _propertySet.Thumbnail as RandomAccessStreamReference; 
+		public RandomAccessStreamReference? Thumbnail => _propertySet.Thumbnail as RandomAccessStreamReference;
 
 		/// <summary>
 		/// Gets the text that displays as a title for the contents of the DataPackagePropertySetView object.

@@ -25,7 +25,7 @@ namespace Windows.Devices.Enumeration
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.ApplicationModel.Background.DeviceWatcherTrigger GetBackgroundTrigger( global::System.Collections.Generic.IEnumerable<global::Windows.Devices.Enumeration.DeviceWatcherEventKind> requestedEventKinds)
 		{
-			throw new global::System.NotImplementedException("The member DeviceWatcherTrigger DeviceWatcher.GetBackgroundTrigger(IEnumerable<DeviceWatcherEventKind> requestedEventKinds) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member DeviceWatcherTrigger DeviceWatcher.GetBackgroundTrigger(IEnumerable<DeviceWatcherEventKind> requestedEventKinds) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DeviceWatcherTrigger%20DeviceWatcher.GetBackgroundTrigger%28IEnumerable%3CDeviceWatcherEventKind%3E%20requestedEventKinds%29");
 		}
 		#endif
 		// Skipping already declared event Windows.Devices.Enumeration.DeviceWatcher.Added

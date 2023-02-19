@@ -7,8 +7,6 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class TextBlock : FrameworkElement
 	{
-		private void InitializePartial() { }
-
 		private int GetCharacterIndexAtPoint(Point point) => -1;
 	}
 }

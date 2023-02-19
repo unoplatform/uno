@@ -105,7 +105,7 @@ namespace Uno.UI.SourceGenerators.Tests
 				builder.AppendLineIndented("// Comment");
 			}
 
-			
+
 			Assert.AreEqual("""
 				namespace A.B.C
 				{
@@ -163,7 +163,7 @@ namespace Uno.UI.SourceGenerators.Tests
 			{
 				builder.AppendLineIndented("// Comment");
 			}
-			
+
 			Assert.AreEqual("""
 				partial interface I<in T1, out T2, T3>
 				{

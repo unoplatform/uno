@@ -21,37 +21,37 @@ using System.Collections.Generic;
 
 namespace Uno.Reflection
 {
-    internal class EventDescriptor : MemberDescriptor<EventInfo>, IEventDescriptor
-    {
-        private Dictionary<string, IMethodDescriptor> descriptors = new Dictionary<string, IMethodDescriptor>();
+	internal class EventDescriptor : MemberDescriptor<EventInfo>, IEventDescriptor
+	{
+		private Dictionary<string, IMethodDescriptor> descriptors = new Dictionary<string, IMethodDescriptor>();
 
-        public EventDescriptor(EventInfo eventInfo)
-            : base(eventInfo)
-        {
-        }
+		public EventDescriptor(EventInfo eventInfo)
+			: base(eventInfo)
+		{
+		}
 
-        #region IEventDescriptor Members
+		#region IEventDescriptor Members
 
-        public override Type Type
-        {
-            get { return MemberInfo.EventHandlerType; }
-        }
+		public override Type Type
+		{
+			get { return MemberInfo.EventHandlerType; }
+		}
 
-        public override bool IsStatic
-        {
-            get { return Add.IsStatic; }
-        }
+		public override bool IsStatic
+		{
+			get { return Add.IsStatic; }
+		}
 
-        public IMethodDescriptor Add
-        {
-            get { return descriptors.FindOrCreate("Add", () => (IMethodDescriptor)MemberInfo.GetAddMethod(true).GetDescriptor()); }
-        }
+		public IMethodDescriptor Add
+		{
+			get { return descriptors.FindOrCreate("Add", () => (IMethodDescriptor)MemberInfo.GetAddMethod(true).GetDescriptor()); }
+		}
 
-        public IMethodDescriptor Remove
-        {
-            get { return descriptors.FindOrCreate("Remove", () => (IMethodDescriptor)MemberInfo.GetRemoveMethod(true).GetDescriptor()); }
-        }
+		public IMethodDescriptor Remove
+		{
+			get { return descriptors.FindOrCreate("Remove", () => (IMethodDescriptor)MemberInfo.GetRemoveMethod(true).GetDescriptor()); }
+		}
 
-        #endregion
-    }
+		#endregion
+	}
 }

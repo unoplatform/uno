@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool WebViewSettings.IsJavaScriptEnabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool WebViewSettings.IsJavaScriptEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20WebViewSettings.IsJavaScriptEnabled");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool WebViewSettings.IsIndexedDBEnabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool WebViewSettings.IsIndexedDBEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20WebViewSettings.IsIndexedDBEnabled");
 			}
 			set
 			{

@@ -338,10 +338,10 @@ namespace Uno.UI.Controls
 		/// Method invoked when a drag operation enters the <see cref="NSWindow"/>.
 		/// </summary>
 		/// <remarks>
-		/// 
+		///
 		/// While it is never documented directly, DraggingEntered can be added to NSWindow just like NSView.
 		/// Key docs telling this story include:
-		/// 
+		///
 		///  (1) NSWindow documentation does not include most NSView drag/drop methods
 		///      https://developer.apple.com/documentation/appkit/nswindow
 		///  (2) Since NSWindow documentation doesn't reference them, they also aren't included in Xamarin
@@ -354,11 +354,11 @@ namespace Uno.UI.Controls
 		///      https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/DragandDrop/Concepts/dragdestination.html#//apple_ref/doc/uid/20000977-BAJBJFBG
 		///  (5) Other macOS drag/drop articles and blogs refer to dragging/dropping directly from Window - although
 		///      give no examples.
-		/// 
+		///
 		/// The Export "method_name" attribute is fundamentally important to make this work, removing it will
 		/// break functionality and the method will never be called by macOS. Again, this seemingly is because
 		/// Xamarin.macOS is not aware of it.
-		/// 
+		///
 		/// </remarks>
 		/// <param name="info">Information about the dragging session from the sender.</param>
 		/// <returns>The accepted drag operation(s).</returns>
@@ -531,21 +531,6 @@ namespace Uno.UI.Controls
 				_attachedProperties.SetValue(view, NeedsKeyboardAttachedPropertyKey, (bool?)needsKeyboard);
 			}
 		}
-
-		private static bool GetNeedsKeyboard(NSView view)
-		{
-			var superViews = view.FindSuperviews().ToList();
-			superViews.Insert(0, view);
-
-			return superViews.Any(superView => _attachedProperties.GetValue(superView, NeedsKeyboardAttachedPropertyKey, () => default(bool?)).GetValueOrDefault());
-		}
-
-		private static bool NeedsKeyboard(NSView view)
-		{
-			return view is NSTextView
-				|| view is NSTextField
-				|| GetNeedsKeyboard(view);
-		}
 		#endregion
 
 		public BringIntoViewMode? FocusedViewBringIntoViewOnKeyboardOpensMode { get; set; }
@@ -645,9 +630,9 @@ namespace Uno.UI.Controls
 				if (!manager.HasConfirmedClose)
 				{
 					if (!manager.RequestAppClose())
-                    {
+					{
 						return false;
-                    }
+					}
 				}
 
 				// Closing should continue, perform suspension.

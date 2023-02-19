@@ -47,7 +47,7 @@ namespace Windows.Media.SpeechRecognition
 
 			_speechRecognizer.SetRecognitionListener(listener);
 			_speechRecognizer.StartListening(this.CreateSpeechIntent());
-			
+
 			OnStateChanged(SpeechRecognizerState.Capturing);
 
 			return tcs.Task.AsAsyncOperation();

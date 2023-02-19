@@ -23,7 +23,8 @@ namespace Uno.UI.RuntimeTests
 		{
 			Model = new Model();
 
-			Model.PropertyChanged += delegate {
+			Model.PropertyChanged += delegate
+			{
 				FindName("item1");
 			};
 

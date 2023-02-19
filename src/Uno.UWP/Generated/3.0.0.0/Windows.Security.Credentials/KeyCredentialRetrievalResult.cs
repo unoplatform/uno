@@ -13,7 +13,7 @@ namespace Windows.Security.Credentials
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member KeyCredential KeyCredentialRetrievalResult.Credential is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member KeyCredential KeyCredentialRetrievalResult.Credential is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=KeyCredential%20KeyCredentialRetrievalResult.Credential");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Security.Credentials
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member KeyCredentialStatus KeyCredentialRetrievalResult.Status is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member KeyCredentialStatus KeyCredentialRetrievalResult.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=KeyCredentialStatus%20KeyCredentialRetrievalResult.Status");
 			}
 		}
 		#endif

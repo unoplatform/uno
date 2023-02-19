@@ -13,7 +13,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ChapterCue.Title is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ChapterCue.Title is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ChapterCue.Title");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan ChapterCue.StartTime is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan ChapterCue.StartTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20ChapterCue.StartTime");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ChapterCue.Id is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ChapterCue.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ChapterCue.Id");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan ChapterCue.Duration is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan ChapterCue.Duration is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20ChapterCue.Duration");
 			}
 			set
 			{

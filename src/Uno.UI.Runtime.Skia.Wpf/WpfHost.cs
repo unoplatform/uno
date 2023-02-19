@@ -124,7 +124,7 @@ namespace Uno.UI.Skia.Platform
 		public WpfHost(global::System.Windows.Threading.Dispatcher dispatcher, Func<WinUI.Application> appBuilder, string[]? args = null) : this(dispatcher, appBuilder)
 		{
 		}
-		
+
 		public WpfHost(global::System.Windows.Threading.Dispatcher dispatcher, Func<WinUI.Application> appBuilder)
 		{
 			FocusVisualStyle = null;
@@ -160,7 +160,7 @@ namespace Uno.UI.Skia.Platform
 			if (Windows.ApplicationModel.Package.Current.Logo is Uri uri)
 			{
 				var basePath = uri.OriginalString.Replace('\\', Path.DirectorySeparatorChar);
-				var iconPath = Path.Combine(Windows.ApplicationModel.Package.Current.InstalledLocation.Path, basePath);
+				var iconPath = Path.Combine(Windows.ApplicationModel.Package.Current.InstalledPath, basePath);
 
 				if (File.Exists(iconPath))
 				{
@@ -318,7 +318,7 @@ namespace Uno.UI.Skia.Platform
 			if (Parent is WpfControl control)
 			{
 				control.FocusVisualStyle = null;
-			}				
+			}
 		}
 
 		private void WpfHost_SizeChanged(object sender, SizeChangedEventArgs e)

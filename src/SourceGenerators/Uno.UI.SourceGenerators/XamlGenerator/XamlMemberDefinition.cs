@@ -10,9 +10,9 @@ using Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection;
 namespace Uno.UI.SourceGenerators.XamlGenerator
 {
 #if DEBUG
-    [DebuggerDisplay("Type: {_xamlMember.Name} = {Value}")]
+	[DebuggerDisplay("Type: {_xamlMember.Name} = {Value}")]
 #endif
-    internal class XamlMemberDefinition
+	internal class XamlMemberDefinition
 	{
 		private XamlMember _xamlMember;
 

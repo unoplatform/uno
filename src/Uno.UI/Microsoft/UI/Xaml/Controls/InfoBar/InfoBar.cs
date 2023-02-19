@@ -26,7 +26,7 @@ public partial class InfoBar : Control
 {
 	private const string c_closeButtonName = "CloseButton";
 	private const string c_iconTextBlockName = "StandardIcon";
-	private const string c_contentRootName = "ContentRoot";
+	//private const string c_contentRootName = "ContentRoot";
 
 	private readonly long _foregroundChangedCallbackRegistration;
 
@@ -271,6 +271,7 @@ public partial class InfoBar : Control
 		VisualStateManager.GoToState(this, ReadLocalValue(Control.ForegroundProperty) == DependencyProperty.UnsetValue ? "ForegroundNotSet" : "ForegroundSet", false);
 	}
 
+#if false
 	private string GetSeverityLevelResourceName(InfoBarSeverity severity)
 	{
 		switch (severity)
@@ -281,6 +282,7 @@ public partial class InfoBar : Control
 		};
 		return "InfoBarSeverityInformationalName";
 	}
+#endif
 
 	private string GetIconSeverityLevelResourceName(InfoBarSeverity severity)
 	{

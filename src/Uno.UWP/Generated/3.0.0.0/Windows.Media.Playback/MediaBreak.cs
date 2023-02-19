@@ -13,7 +13,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MediaBreak.CanStart is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool MediaBreak.CanStart is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20MediaBreak.CanStart");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ValueSet MediaBreak.CustomProperties is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ValueSet MediaBreak.CustomProperties is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ValueSet%20MediaBreak.CustomProperties");
 			}
 		}
 		#endif
@@ -37,7 +37,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaBreakInsertionMethod MediaBreak.InsertionMethod is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MediaBreakInsertionMethod MediaBreak.InsertionMethod is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaBreakInsertionMethod%20MediaBreak.InsertionMethod");
 			}
 		}
 		#endif
@@ -47,7 +47,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaPlaybackList MediaBreak.PlaybackList is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MediaPlaybackList MediaBreak.PlaybackList is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaPlaybackList%20MediaBreak.PlaybackList");
 			}
 		}
 		#endif
@@ -57,7 +57,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan? MediaBreak.PresentationPosition is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan? MediaBreak.PresentationPosition is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%3F%20MediaBreak.PresentationPosition");
 			}
 		}
 		#endif

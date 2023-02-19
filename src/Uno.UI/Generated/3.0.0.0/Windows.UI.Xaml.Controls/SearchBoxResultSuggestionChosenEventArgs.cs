@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VirtualKeyModifiers SearchBoxResultSuggestionChosenEventArgs.KeyModifiers is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member VirtualKeyModifiers SearchBoxResultSuggestionChosenEventArgs.KeyModifiers is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=VirtualKeyModifiers%20SearchBoxResultSuggestionChosenEventArgs.KeyModifiers");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SearchBoxResultSuggestionChosenEventArgs.Tag is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SearchBoxResultSuggestionChosenEventArgs.Tag is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SearchBoxResultSuggestionChosenEventArgs.Tag");
 			}
 		}
 		#endif

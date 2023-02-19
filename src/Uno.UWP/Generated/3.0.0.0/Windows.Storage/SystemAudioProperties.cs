@@ -13,7 +13,7 @@ namespace Windows.Storage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SystemAudioProperties.EncodingBitrate is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SystemAudioProperties.EncodingBitrate is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SystemAudioProperties.EncodingBitrate");
 			}
 		}
 		#endif

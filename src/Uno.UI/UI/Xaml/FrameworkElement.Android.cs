@@ -19,6 +19,7 @@ namespace Windows.UI.Xaml
 	public partial class FrameworkElement
 	{
 		private Size? _lastLayoutSize;
+		private bool _constraintsChanged;
 
 		/// <summary>
 		/// The parent of the <see cref="FrameworkElement"/> in the visual tree, which may differ from its <see cref="Parent"/> (ie if it's a child of a native view).
@@ -183,7 +184,7 @@ namespace Windows.UI.Xaml
 		}
 
 		// Using a DependencyProperty as the backing store for StretchAffectsMeasure.  This enables animation, styling, binding, etc...
-		public static DependencyProperty StretchAffectsMeasureProperty { get ; } =
+		public static DependencyProperty StretchAffectsMeasureProperty { get; } =
 			DependencyProperty.Register("StretchAffectsMeasure", typeof(bool), typeof(FrameworkElement), new FrameworkPropertyMetadata(false));
 
 		#endregion
@@ -325,6 +326,43 @@ namespace Windows.UI.Xaml
 
 			_constraintsChanged = false;
 			return true;
+		}
+
+		private void OnGenericPropertyUpdatedPartial(DependencyPropertyChangedEventArgs args)
+		{
+			_constraintsChanged = true;
+		}
+
+		/// <summary>
+		/// Determines whether a measure/arrange invalidation on this element requires elements higher in the tree to be invalidated,
+		/// by determining recursively whether this element's dimensions are already constrained.
+		/// </summary>
+		/// <returns>True if a request should be elevated, false if only this view needs to be rearranged.</returns>
+		private bool ShouldPropagateLayoutRequest()
+		{
+			if (!UseConstraintOptimizations && !AreDimensionsConstrained.HasValue)
+			{
+				return true;
+			}
+
+			if (_constraintsChanged)
+			{
+				return true;
+			}
+			if (!IsLoaded)
+			{
+				//If the control isn't loaded, propagating the request won't do anything anyway
+				return true;
+			}
+
+			if (AreDimensionsConstrained.HasValue)
+			{
+				return !AreDimensionsConstrained.Value;
+			}
+
+			var iswidthConstrained = IsWidthConstrained(null);
+			var isHeightConstrained = IsHeightConstrained(null);
+			return !(iswidthConstrained && isHeightConstrained);
 		}
 
 		private bool IsTopLevelXamlView()

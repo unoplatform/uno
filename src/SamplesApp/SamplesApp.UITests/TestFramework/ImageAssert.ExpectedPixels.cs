@@ -25,7 +25,7 @@ namespace SamplesApp.UITests.TestFramework;
 
 public record struct ExpectedPixels
 {
-#region Fluent declaration
+	#region Fluent declaration
 	public static ExpectedPixels At(string name, float x, float y)
 		=> new() { Name = name, Location = new Point((int)x, (int)y) };
 
@@ -139,7 +139,7 @@ public record struct ExpectedPixels
 
 	public ExpectedPixels OrPixel(string alternativeColor)
 		=> Or(this with { Values = new[,] { { GetColorFromString(alternativeColor) } }, Alternatives = null });
-#endregion
+	#endregion
 
 	private ExpectedPixels(
 		string name,
@@ -201,7 +201,7 @@ public record struct ExpectedPixels
 
 public struct PixelTolerance
 {
-#region Fluent declaration
+	#region Fluent declaration
 	public static PixelTolerance None { get; } = new();
 
 	public static PixelTolerance Cummulative(int color)
@@ -223,7 +223,7 @@ public struct PixelTolerance
 		=> new(Color, ColorKind, Offset, offsetKind, DiscreteValidation);
 	public PixelTolerance Discrete(uint discreteValidation = 20)
 		=> new(Color, ColorKind, Offset, OffsetKind, (discreteValidation, discreteValidation));
-#endregion
+	#endregion
 
 	public PixelTolerance(byte color, ColorToleranceKind colorKind, (int x, int y) offset, LocationToleranceKind offsetKind, (uint x, uint y) discreteValidation)
 	{

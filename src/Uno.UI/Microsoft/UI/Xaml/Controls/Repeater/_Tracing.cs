@@ -21,7 +21,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				builder.Append('\t', indent);
 			}
-			
+
 			for (var textIndex = 0; textIndex < text.Length; textIndex++)
 			{
 				var c = text[textIndex];

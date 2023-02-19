@@ -11,35 +11,35 @@ namespace Windows.Media.Devices
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static string GetAudioCaptureSelector()
 		{
-			throw new global::System.NotImplementedException("The member string MediaDevice.GetAudioCaptureSelector() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member string MediaDevice.GetAudioCaptureSelector() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MediaDevice.GetAudioCaptureSelector%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static string GetAudioRenderSelector()
 		{
-			throw new global::System.NotImplementedException("The member string MediaDevice.GetAudioRenderSelector() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member string MediaDevice.GetAudioRenderSelector() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MediaDevice.GetAudioRenderSelector%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static string GetVideoCaptureSelector()
 		{
-			throw new global::System.NotImplementedException("The member string MediaDevice.GetVideoCaptureSelector() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member string MediaDevice.GetVideoCaptureSelector() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MediaDevice.GetVideoCaptureSelector%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static string GetDefaultAudioCaptureId( global::Windows.Media.Devices.AudioDeviceRole role)
 		{
-			throw new global::System.NotImplementedException("The member string MediaDevice.GetDefaultAudioCaptureId(AudioDeviceRole role) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member string MediaDevice.GetDefaultAudioCaptureId(AudioDeviceRole role) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MediaDevice.GetDefaultAudioCaptureId%28AudioDeviceRole%20role%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static string GetDefaultAudioRenderId( global::Windows.Media.Devices.AudioDeviceRole role)
 		{
-			throw new global::System.NotImplementedException("The member string MediaDevice.GetDefaultAudioRenderId(AudioDeviceRole role) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member string MediaDevice.GetDefaultAudioRenderId(AudioDeviceRole role) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MediaDevice.GetDefaultAudioRenderId%28AudioDeviceRole%20role%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Media.Devices.MediaDevice.DefaultAudioCaptureDeviceChanged.add

@@ -13,7 +13,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MobileBroadbandUiccAppOperationStatus MobileBroadbandUiccAppsResult.Status is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MobileBroadbandUiccAppOperationStatus MobileBroadbandUiccAppsResult.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MobileBroadbandUiccAppOperationStatus%20MobileBroadbandUiccAppsResult.Status");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<MobileBroadbandUiccApp> MobileBroadbandUiccAppsResult.UiccApps is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<MobileBroadbandUiccApp> MobileBroadbandUiccAppsResult.UiccApps is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CMobileBroadbandUiccApp%3E%20MobileBroadbandUiccAppsResult.UiccApps");
 			}
 		}
 		#endif

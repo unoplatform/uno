@@ -13,7 +13,7 @@ namespace Windows.Devices.WiFi
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WiFiConnectionStatus WiFiConnectionResult.ConnectionStatus is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member WiFiConnectionStatus WiFiConnectionResult.ConnectionStatus is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=WiFiConnectionStatus%20WiFiConnectionResult.ConnectionStatus");
 			}
 		}
 		#endif

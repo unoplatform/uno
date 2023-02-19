@@ -14,8 +14,8 @@ using Windows.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml.Controls
 {
-	[ContentProperty(Name="Items")]
-	public  partial class MenuBarItem : Control
+	[ContentProperty(Name = "Items")]
+	public partial class MenuBarItem : Control
 	{
 		private readonly SerialDisposable _registrations = new SerialDisposable();
 
@@ -23,7 +23,11 @@ namespace Windows.UI.Xaml.Controls
 		private MenuBarItemFlyout m_flyout;
 		private Button m_button;
 		private bool m_isFlyoutOpen;
+
+#pragma warning disable CS0649 // Field is never assigned to, and will always have its default value null
 		private DependencyObject m_passThroughElement;
+#pragma warning restore CS0649 // Field is never assigned to, and will always have its default value null
+
 		private CompositeDisposable _activeDisposables;
 
 		public MenuBarItem()
@@ -73,7 +77,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void SetFlyoutDataContext()
 		{
-			// This is present to force the dataContext to be passed to the popup of the flyout since it is not directly a child in the visual tree of the flyout. 
+			// This is present to force the dataContext to be passed to the popup of the flyout since it is not directly a child in the visual tree of the flyout.
 			m_flyout?.SetValue(
 				MenuFlyout.DataContextProperty,
 				this.DataContext,
@@ -115,7 +119,7 @@ namespace Windows.UI.Xaml.Controls
 
 			_activeDisposables = new CompositeDisposable();
 
-			if(m_button != null)
+			if (m_button != null)
 			{
 				_activeDisposables.Add(m_button.RegisterDisposablePropertyChangedCallback(ButtonBase.IsPressedProperty, OnVisualPropertyChanged));
 				_activeDisposables.Add(m_button.RegisterDisposablePropertyChangedCallback(ButtonBase.IsPointerOverProperty, OnVisualPropertyChanged));
@@ -126,7 +130,8 @@ namespace Windows.UI.Xaml.Controls
 				m_flyout.Closed += OnFlyoutClosed;
 				m_flyout.Opening += OnFlyoutOpening;
 
-				_activeDisposables.Add(() => {
+				_activeDisposables.Add(() =>
+				{
 					m_flyout.Closed -= OnFlyoutClosed;
 					m_flyout.Opening -= OnFlyoutOpening;
 				});
@@ -140,7 +145,8 @@ namespace Windows.UI.Xaml.Controls
 			var keyDownHandler = new KeyEventHandler(OnMenuBarItemKeyDown);
 			AddHandler(UIElement.KeyDownEvent, keyDownHandler, true);
 
-			_activeDisposables.Add(() => {
+			_activeDisposables.Add(() =>
+			{
 				RemoveHandler(UIElement.PointerPressedEvent, pointerPressHandler);
 				RemoveHandler(UIElement.KeyDownEvent, keyDownHandler);
 			});
@@ -156,7 +162,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (m_menuBar != null)
 			{
-				if  (m_menuBar.IsFlyoutOpen)
+				if (m_menuBar.IsFlyoutOpen)
 				{
 					ShowMenuFlyout();
 				}
@@ -264,7 +270,8 @@ namespace Windows.UI.Xaml.Controls
 				{
 					m_flyout.m_presenter.KeyDown += OnPresenterKeyDown;
 
-					_activeDisposables.Add(() => {
+					_activeDisposables.Add(() =>
+					{
 						m_flyout.m_presenter.KeyDown -= OnPresenterKeyDown;
 					});
 				}
@@ -293,10 +300,12 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+#if false
 		void AddPassThroughElement(DependencyObject element)
 		{
 			m_passThroughElement = element;
 		}
+#endif
 
 		public bool IsFlyoutOpen()
 		{

@@ -13,7 +13,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GattLocalDescriptor GattLocalDescriptorResult.Descriptor is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member GattLocalDescriptor GattLocalDescriptorResult.Descriptor is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=GattLocalDescriptor%20GattLocalDescriptorResult.Descriptor");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BluetoothError GattLocalDescriptorResult.Error is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member BluetoothError GattLocalDescriptorResult.Error is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=BluetoothError%20GattLocalDescriptorResult.Error");
 			}
 		}
 		#endif

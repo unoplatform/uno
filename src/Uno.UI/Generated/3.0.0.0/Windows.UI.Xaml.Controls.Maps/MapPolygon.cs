@@ -41,7 +41,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color MapPolygon.StrokeColor is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Color MapPolygon.StrokeColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Color%20MapPolygon.StrokeColor");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color MapPolygon.FillColor is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Color MapPolygon.FillColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Color%20MapPolygon.FillColor");
 			}
 			set
 			{
@@ -83,7 +83,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<Geopath> MapPolygon.Paths is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<Geopath> MapPolygon.Paths is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3CGeopath%3E%20MapPolygon.Paths");
 			}
 		}
 		#endif

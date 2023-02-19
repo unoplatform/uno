@@ -17,11 +17,11 @@ using Windows.UI.Xaml.Navigation;
 
 namespace XamlGenerationTests.Shared
 {
-    public sealed partial class ResourceDictionaryWithClass : ResourceDictionary
-    {
-        public ResourceDictionaryWithClass()
-        {
-            this.InitializeComponent();
-        }
-    }
+	public sealed partial class ResourceDictionaryWithClass : ResourceDictionary
+	{
+		public ResourceDictionaryWithClass()
+		{
+			this.InitializeComponent();
+		}
+	}
 }

@@ -13,7 +13,7 @@ namespace Windows.Foundation.Diagnostics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member short LoggingOptions.Task is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member short LoggingOptions.Task is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=short%20LoggingOptions.Task");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Foundation.Diagnostics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int LoggingOptions.Tags is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int LoggingOptions.Tags is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20LoggingOptions.Tags");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Foundation.Diagnostics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid LoggingOptions.RelatedActivityId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Guid LoggingOptions.RelatedActivityId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Guid%20LoggingOptions.RelatedActivityId");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.Foundation.Diagnostics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member LoggingOpcode LoggingOptions.Opcode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member LoggingOpcode LoggingOptions.Opcode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=LoggingOpcode%20LoggingOptions.Opcode");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.Foundation.Diagnostics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member long LoggingOptions.Keywords is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member long LoggingOptions.Keywords is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=long%20LoggingOptions.Keywords");
 			}
 			set
 			{
@@ -83,7 +83,7 @@ namespace Windows.Foundation.Diagnostics
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid LoggingOptions.ActivityId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Guid LoggingOptions.ActivityId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Guid%20LoggingOptions.ActivityId");
 			}
 			set
 			{

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Windows.UI.Xaml.Controls
 {
-    public partial class WrapPanel : Panel
+	public partial class WrapPanel : Panel
 	{
 		public WrapPanel()
 		{
@@ -25,5 +25,5 @@ namespace Windows.UI.Xaml.Controls
 		{
 			RequestLayout();
 		}
-    }
+	}
 }

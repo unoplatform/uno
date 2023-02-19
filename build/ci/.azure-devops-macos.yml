@@ -6,14 +6,14 @@ parameters:
 jobs:
 
 - job: macOS
-  displayName: 'macOS Samples App Build'
+  displayName: 'Build macOS Samples App UI Tests'
 
   variables:
     CI_Build: true
     SourceLinkEnabled: false
     NUGET_PACKAGES: $(build.sourcesdirectory)/.nuget
     XCODE_ROOT: /Applications/Xcode_10.3.app
-    
+
   dependsOn: Pipeline_Validations
 
   pool:
@@ -22,9 +22,8 @@ jobs:
   steps:
   - checkout: self
     clean: true
-    
+
   - template: templates/dotnet-install.yml
-  - template: templates/optimize-roslyn-mono.yml
 
   - template: templates/nuget-cache.yml
     parameters:
@@ -65,6 +64,7 @@ jobs:
 
   - task: PublishBuildArtifacts@1
     condition: always()
+    retryCountOnTaskFailure: 3
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
       ArtifactName: uno-macos-artifacts
@@ -72,13 +72,13 @@ jobs:
 
 - job: macOS_Runtime_Tests
   timeoutInMinutes: 90
-  displayName: macOS SamplesApp Runtime Tests
+  displayName: Run macOS Runtime Tests
 
   variables:
     CI_Build: true
     SourceLinkEnabled: false
     NUGET_PACKAGES: $(build.sourcesdirectory)/.nuget
-  
+
   dependsOn: macOS
 
   pool:
@@ -87,9 +87,6 @@ jobs:
   steps:
   - checkout: none
     clean: true
-    
-  - template: templates/dotnet-install.yml
-  - template: templates/optimize-roslyn-mono.yml
 
   - task: DownloadBuildArtifacts@0
     inputs:
@@ -102,18 +99,18 @@ jobs:
       targetType: inline
       script: |
         brew install coreutils
-  
+
   - script: |
         cd $(build.sourcesdirectory)/build/uno-macos-artifacts
         installer -pkg SamplesApp.macOS-1.0.pkg -target CurrentUserHomeDirectory
-    
+
     displayName: Install SamplesApp
 
   - script: |
       timeout 70m /Applications/SamplesApp.macOS.app/Contents/MacOS/SamplesApp.macOS --runtime-tests=$(build.sourcesdirectory)/build/macOS-runtime-tests-results.xml
 
     displayName: Run macOS Runtime Tests
-  
+
   - task: PublishTestResults@2
     displayName: Publish macOS Runtime Tests
     condition: always()
@@ -125,13 +122,13 @@ jobs:
 
 - job: macOS_Screenshot_Tests
   timeoutInMinutes: 100
-  displayName: macOS SamplesApp Screenshot Test
+  displayName: Run macOS Snapshot Test
 
   variables:
     CI_Build: true
     SourceLinkEnabled: false
     NUGET_PACKAGES: $(build.sourcesdirectory)/.nuget
-  
+
   dependsOn: macOS
 
   pool:
@@ -140,15 +137,12 @@ jobs:
   steps:
   - checkout: none
     clean: true
-    
-  - template: templates/dotnet-install.yml
-  - template: templates/optimize-roslyn-mono.yml
 
   - task: DownloadBuildArtifacts@0
     inputs:
         artifactName: uno-macos-artifacts
         downloadPath: '$(build.sourcesdirectory)/build'
-  
+
   - task: PowerShell@2
     displayName: 'Install coreutils'
     inputs:
@@ -159,7 +153,7 @@ jobs:
   - script: |
         cd $(build.sourcesdirectory)/build/uno-macos-artifacts
         installer -pkg SamplesApp.macOS-1.0.pkg -target CurrentUserHomeDirectory
-    
+
     displayName: Install SamplesApp
 
   - script: |
@@ -170,6 +164,7 @@ jobs:
   - task: PublishBuildArtifacts@1
     displayName: Publish macOS Screenshots
     condition: always()
+    retryCountOnTaskFailure: 3
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
       ArtifactName: uitests-results

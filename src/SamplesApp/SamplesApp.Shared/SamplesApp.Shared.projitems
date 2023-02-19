@@ -4,6 +4,7 @@
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
     <HasSharedItems>true</HasSharedItems>
     <SharedGUID>6279c845-92f8-4333-ab99-3d213163593c</SharedGUID>
+    <EnableAutomaticXamlPageInclusion>false</EnableAutomaticXamlPageInclusion>
   </PropertyGroup>
   <PropertyGroup Label="Configuration">
     <Import_RootNamespace>SamplesApp</Import_RootNamespace>
@@ -58,6 +59,7 @@
     <Content Include="$(MSBuildThisFileDirectory)Assets\nodpi-validationresource.jpeg" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\BackArrow.scale-300.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\Asset With Spaces.svg" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Embedded\SubFolder1\SubFolder2\SharedProjectEmbeddedFile.txt" />
   </ItemGroup>
   <ItemGroup>
     <PRIResource Include="$(MSBuildThisFileDirectory)Strings\en-US\Resources.resw" />
@@ -74,5 +76,8 @@
     <Compile Update="$(MSBuildThisFileDirectory)Samples\UnitTests\HttpUnitTests.xaml.cs">
       <DependentUpon>HttpUnitTests.xaml</DependentUpon>
     </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="$(MSBuildThisFileDirectory)Embedded\SubFolder1\SubFolder2\" />
   </ItemGroup>
 </Project>

@@ -36,8 +36,8 @@ namespace SamplesApp.UITests.Extensions
 			var scale = app.GetDisplayScreenScaling();
 
 			return new Point(
-				(int) (point.X * scale),
-				(int) (point.Y * scale)
+				(int)(point.X * scale),
+				(int)(point.Y * scale)
 			);
 		}
 

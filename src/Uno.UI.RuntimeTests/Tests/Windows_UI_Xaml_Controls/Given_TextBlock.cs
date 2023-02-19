@@ -1,10 +1,16 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Uno.UI.RuntimeTests.Helpers;
 using Windows.Foundation;
+using Windows.Foundation.Metadata;
+using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Documents;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Imaging;
 using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
@@ -108,6 +114,131 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				Assert.AreEqual(SUT.XamlRoot, inline.XamlRoot);
 			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_FontFamily_In_Separate_Assembly()
+		{
+			var SUT = new TextBlock { Text = "\xE102\xE102\xE102\xE102\xE102" };
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForIdle();
+
+			var size = new Size(1000, 1000);
+			SUT.Measure(size);
+
+			var originalSize = SUT.DesiredSize;
+
+			Assert.AreNotEqual(0, SUT.DesiredSize.Width);
+			Assert.AreNotEqual(0, SUT.DesiredSize.Height);
+
+			SUT.FontFamily = new Windows.UI.Xaml.Media.FontFamily("ms-appx:///Uno.UI.RuntimeTests/Assets/Fonts/uno-fluentui-assets-runtimetest01.ttf");
+
+			int counter = 3;
+
+			do
+			{
+				await WindowHelper.WaitForIdle();
+				await Task.Delay(100);
+
+				SUT.InvalidateMeasure();
+			}
+			while (SUT.DesiredSize == originalSize && counter-- > 0);
+
+			Assert.AreNotEqual(originalSize, SUT.DesiredSize);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_FontFamily_Default()
+		{
+			var SUT = new TextBlock { Text = "\xE102\xE102\xE102\xE102\xE102" };
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForIdle();
+
+			var size = new Size(1000, 1000);
+			SUT.Measure(size);
+
+			var originalSize = SUT.DesiredSize;
+
+			Assert.AreNotEqual(0, SUT.DesiredSize.Width);
+			Assert.AreNotEqual(0, SUT.DesiredSize.Height);
+
+			SUT.FontFamily = Application.Current.Resources["SymbolThemeFontFamily"] as FontFamily;
+
+			int counter = 3;
+
+			do
+			{
+				await WindowHelper.WaitForIdle();
+				await Task.Delay(100);
+
+				SUT.InvalidateMeasure();
+			}
+			while (SUT.DesiredSize == originalSize && counter-- > 0);
+
+			Assert.AreNotEqual(originalSize, SUT.DesiredSize);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if !__ANDROID__
+		[Ignore("Android-only test for AndroidAssets backward compatibility")]
+#endif
+		public async Task When_FontFamily_In_AndroidAsset()
+		{
+			var SUT = new TextBlock { Text = "\xE102\xE102\xE102\xE102\xE102" };
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForIdle();
+
+			var size = new Size(1000, 1000);
+			SUT.Measure(size);
+
+			var originalSize = SUT.DesiredSize;
+
+			Assert.AreNotEqual(0, SUT.DesiredSize.Width);
+			Assert.AreNotEqual(0, SUT.DesiredSize.Height);
+
+			SUT.FontFamily = new Windows.UI.Xaml.Media.FontFamily("ms-appx:///Assets/Fonts/SymbolsRuntimeTest02.ttf#SymbolsRuntimeTest02");
+
+			for (int i = 0; i < 3; i++)
+			{
+				await WindowHelper.WaitForIdle();
+				await Task.Delay(100);
+				SUT.InvalidateMeasure();
+
+				if (SUT.DesiredSize != originalSize) break;
+			}
+
+			Assert.AreNotEqual(originalSize, SUT.DesiredSize);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_SolidColorBrush_With_Opacity()
+		{
+			if (!ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			{
+				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
+			}
+
+#if __MACOS__
+			Assert.Inconclusive();
+#endif
+			var SUT = new TextBlock
+			{
+				Text = "••••••••",
+				FontSize = 24,
+				Foreground = new SolidColorBrush(Colors.Red) { Opacity = 0.5 },
+			};
+
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForIdle();
+
+			var renderer = new RenderTargetBitmap();
+			await renderer.RenderAsync(SUT);
+			var bitmap = await RawBitmap.From(renderer, SUT);
+			ImageAssert.HasColorInRectangle(bitmap, new System.Drawing.Rectangle(0, 0, bitmap.Width, bitmap.Height), Color.FromArgb(127, 127, 0, 0));
 		}
 	}
 }

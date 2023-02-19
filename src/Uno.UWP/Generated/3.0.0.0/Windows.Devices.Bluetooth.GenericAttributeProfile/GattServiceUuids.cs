@@ -13,7 +13,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid GattServiceUuids.Battery is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Guid GattServiceUuids.Battery is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Guid%20GattServiceUuids.Battery");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid GattServiceUuids.BloodPressure is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Guid GattServiceUuids.BloodPressure is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Guid%20GattServiceUuids.BloodPressure");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid GattServiceUuids.CyclingSpeedAndCadence is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Guid GattServiceUuids.CyclingSpeedAndCadence is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Guid%20GattServiceUuids.CyclingSpeedAndCadence");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid GattServiceUuids.GenericAccess is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Guid GattServiceUuids.GenericAccess is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Guid%20GattServiceUuids.GenericAccess");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid GattServiceUuids.GenericAttribute is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Guid GattServiceUuids.GenericAttribute is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Guid%20GattServiceUuids.GenericAttribute");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid GattServiceUuids.Glucose is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Guid GattServiceUuids.Glucose is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Guid%20GattServiceUuids.Glucose");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid GattServiceUuids.HealthThermometer is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Guid GattServiceUuids.HealthThermometer is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Guid%20GattServiceUuids.HealthThermometer");
 			}
 		}
 		#endif
@@ -83,7 +83,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid GattServiceUuids.HeartRate is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Guid GattServiceUuids.HeartRate is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Guid%20GattServiceUuids.HeartRate");
 			}
 		}
 		#endif
@@ -93,7 +93,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid GattServiceUuids.RunningSpeedAndCadence is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Guid GattServiceUuids.RunningSpeedAndCadence is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Guid%20GattServiceUuids.RunningSpeedAndCadence");
 			}
 		}
 		#endif
@@ -103,7 +103,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid GattServiceUuids.AlertNotification is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Guid GattServiceUuids.AlertNotification is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Guid%20GattServiceUuids.AlertNotification");
 			}
 		}
 		#endif
@@ -113,7 +113,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid GattServiceUuids.CurrentTime is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Guid GattServiceUuids.CurrentTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Guid%20GattServiceUuids.CurrentTime");
 			}
 		}
 		#endif
@@ -123,7 +123,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid GattServiceUuids.CyclingPower is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Guid GattServiceUuids.CyclingPower is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Guid%20GattServiceUuids.CyclingPower");
 			}
 		}
 		#endif
@@ -133,7 +133,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid GattServiceUuids.DeviceInformation is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Guid GattServiceUuids.DeviceInformation is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Guid%20GattServiceUuids.DeviceInformation");
 			}
 		}
 		#endif
@@ -143,7 +143,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid GattServiceUuids.HumanInterfaceDevice is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Guid GattServiceUuids.HumanInterfaceDevice is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Guid%20GattServiceUuids.HumanInterfaceDevice");
 			}
 		}
 		#endif
@@ -153,7 +153,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid GattServiceUuids.ImmediateAlert is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Guid GattServiceUuids.ImmediateAlert is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Guid%20GattServiceUuids.ImmediateAlert");
 			}
 		}
 		#endif
@@ -163,7 +163,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid GattServiceUuids.LinkLoss is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Guid GattServiceUuids.LinkLoss is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Guid%20GattServiceUuids.LinkLoss");
 			}
 		}
 		#endif
@@ -173,7 +173,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid GattServiceUuids.LocationAndNavigation is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Guid GattServiceUuids.LocationAndNavigation is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Guid%20GattServiceUuids.LocationAndNavigation");
 			}
 		}
 		#endif
@@ -183,7 +183,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid GattServiceUuids.NextDstChange is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Guid GattServiceUuids.NextDstChange is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Guid%20GattServiceUuids.NextDstChange");
 			}
 		}
 		#endif
@@ -193,7 +193,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid GattServiceUuids.PhoneAlertStatus is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Guid GattServiceUuids.PhoneAlertStatus is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Guid%20GattServiceUuids.PhoneAlertStatus");
 			}
 		}
 		#endif
@@ -203,7 +203,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid GattServiceUuids.ReferenceTimeUpdate is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Guid GattServiceUuids.ReferenceTimeUpdate is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Guid%20GattServiceUuids.ReferenceTimeUpdate");
 			}
 		}
 		#endif
@@ -213,7 +213,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid GattServiceUuids.ScanParameters is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Guid GattServiceUuids.ScanParameters is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Guid%20GattServiceUuids.ScanParameters");
 			}
 		}
 		#endif
@@ -223,7 +223,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid GattServiceUuids.TxPower is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Guid GattServiceUuids.TxPower is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Guid%20GattServiceUuids.TxPower");
 			}
 		}
 		#endif

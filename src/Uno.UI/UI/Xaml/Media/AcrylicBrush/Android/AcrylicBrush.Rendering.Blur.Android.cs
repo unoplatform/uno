@@ -43,20 +43,6 @@ namespace Windows.UI.Xaml.Media
 		private double CurrentBlurRadius =>
 			IsAndroidBlurPropertySet ? AndroidBlurRadius : StyledBlurRadius;
 
-		private void LayoutBlurView(AcrylicState state, ViewGroup view)
-		{
-			if (view.MeasuredWidth == 0 || view.MeasuredHeight == 0 || state.BlurView == null)
-			{
-				return;
-			}
-
-			int width = view.MeasuredWidth;
-			int height = view.MeasuredHeight;
-
-			state.BlurView.Measure(width, height);
-			state.BlurView.Layout(0, 0, width, height);
-		}
-
 		private void DestroyBlur(AcrylicState state)
 		{
 			if (!state.BlurView.IsNullOrDisposed())

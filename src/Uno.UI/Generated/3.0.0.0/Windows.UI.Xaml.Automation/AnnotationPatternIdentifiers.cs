@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Automation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AutomationProperty AnnotationPatternIdentifiers.AnnotationTypeIdProperty is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AutomationProperty AnnotationPatternIdentifiers.AnnotationTypeIdProperty is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AutomationProperty%20AnnotationPatternIdentifiers.AnnotationTypeIdProperty");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.Xaml.Automation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AutomationProperty AnnotationPatternIdentifiers.AnnotationTypeNameProperty is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AutomationProperty AnnotationPatternIdentifiers.AnnotationTypeNameProperty is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AutomationProperty%20AnnotationPatternIdentifiers.AnnotationTypeNameProperty");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.UI.Xaml.Automation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AutomationProperty AnnotationPatternIdentifiers.AuthorProperty is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AutomationProperty AnnotationPatternIdentifiers.AuthorProperty is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AutomationProperty%20AnnotationPatternIdentifiers.AuthorProperty");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.UI.Xaml.Automation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AutomationProperty AnnotationPatternIdentifiers.DateTimeProperty is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AutomationProperty AnnotationPatternIdentifiers.DateTimeProperty is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AutomationProperty%20AnnotationPatternIdentifiers.DateTimeProperty");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.UI.Xaml.Automation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AutomationProperty AnnotationPatternIdentifiers.TargetProperty is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AutomationProperty AnnotationPatternIdentifiers.TargetProperty is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AutomationProperty%20AnnotationPatternIdentifiers.TargetProperty");
 			}
 		}
 		#endif

@@ -6,7 +6,7 @@ jobs:
   displayName: 'WinUI Converted Tree Generation'
 
   pool: ${{ parameters.poolName }}
-  
+
   dependsOn: Pipeline_Validations
 
   variables:
@@ -17,7 +17,7 @@ jobs:
     NUGET_PACKAGES: $(Agent.WorkFolder)\.nuget
 
     UNO_UWP_BUILD: false
-    XAML_FLAVOR_BUILD: WinUI 
+    XAML_FLAVOR_BUILD: WinUI
 
   steps:
   - checkout: self
@@ -27,8 +27,7 @@ jobs:
     parameters:
       nugetPackages: $(NUGET_PACKAGES)
 
-  - template: templates/dotnet7-mobile-install-windows.yml
-  - template: templates/dotnet-install.yml
+  - template: templates/dotnet-mobile-install-windows.yml
   - template: templates/install-windows-sdk.yml
 
   - powershell: |
@@ -67,6 +66,7 @@ jobs:
 
   - task: PublishBuildArtifacts@1
     condition: always()
+    retryCountOnTaskFailure: 3
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
       ArtifactName: NugetPackages-Artifacts

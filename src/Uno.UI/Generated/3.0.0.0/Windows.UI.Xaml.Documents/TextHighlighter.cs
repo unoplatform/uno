@@ -41,7 +41,7 @@ namespace Windows.UI.Xaml.Documents
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<TextRange> TextHighlighter.Ranges is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<TextRange> TextHighlighter.Ranges is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3CTextRange%3E%20TextHighlighter.Ranges");
 			}
 		}
 		#endif

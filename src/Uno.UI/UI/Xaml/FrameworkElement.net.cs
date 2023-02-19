@@ -48,7 +48,7 @@ namespace Windows.UI.Xaml
 				fe.EnterTree();
 			}
 		}
-		
+
 		public T RemoveChild<T>(T child) where T : View
 		{
 			_children.Remove(child);
@@ -108,8 +108,6 @@ namespace Windows.UI.Xaml
 			_layouter.Arrange(frame);
 		}
 
-		partial void OnGenericPropertyUpdatedPartial(DependencyPropertyChangedEventArgs args);
-
 		public bool IsLoaded { get; private set; }
 
 		public void ForceLoaded()
@@ -148,8 +146,6 @@ namespace Windows.UI.Xaml
 		public double ActualHeight => Arranged.Height;
 
 		public Size UnclippedDesiredSize => _layouter._unclippedDesiredSize;
-
-		public global::System.Uri BaseUri { get; internal set; }
 
 		private protected override double GetActualWidth() => ActualWidth;
 		private protected override double GetActualHeight() => ActualHeight;

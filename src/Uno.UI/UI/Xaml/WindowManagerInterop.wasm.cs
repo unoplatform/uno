@@ -81,6 +81,9 @@ namespace Uno.UI.Xaml
 			}
 			else
 			{
+#if NET7_0_OR_GREATER
+				NativeMethods.CreateContent(htmlId, htmlTag, uiElementRegistrationId, isFocusable, htmlTagIsSvg);
+#else
 				var parms = new WindowManagerCreateContentParams
 				{
 					HtmlId = htmlId,
@@ -92,6 +95,7 @@ namespace Uno.UI.Xaml
 				};
 
 				TSInteropMarshaller.InvokeJS("Uno:createContentNative", parms);
+#endif
 			}
 		}
 
@@ -187,6 +191,9 @@ namespace Uno.UI.Xaml
 			}
 			else
 			{
+#if NET7_0_OR_GREATER
+				NativeMethods.SetElementTransform(htmlId, matrix.M11, matrix.M12, matrix.M21, matrix.M22, matrix.M31, matrix.M32);
+#else
 				var parms = new WindowManagerSetElementTransformParams
 				{
 					HtmlId = htmlId,
@@ -199,6 +206,7 @@ namespace Uno.UI.Xaml
 				};
 
 				TSInteropMarshaller.InvokeJS("Uno:setElementTransformNative", parms);
+#endif
 			}
 		}
 
@@ -231,6 +239,9 @@ namespace Uno.UI.Xaml
 			}
 			else
 			{
+#if NET7_0_OR_GREATER
+				NativeMethods.SetPointerEvents(htmlId, enabled);
+#else
 				var parms = new WindowManagerSetPointerEventsParams
 				{
 					HtmlId = htmlId,
@@ -238,6 +249,7 @@ namespace Uno.UI.Xaml
 				};
 
 				TSInteropMarshaller.InvokeJS("Uno:setPointerEventsNative", parms);
+#endif
 			}
 		}
 
@@ -274,7 +286,7 @@ namespace Uno.UI.Xaml
 			{
 #if NET7_0_OR_GREATER
 				using var pReturn = TSInteropMarshaller.AllocateBlittableStructure(typeof(WindowManagerMeasureViewReturn));
-				
+
 				NativeMethods.MeasureView(htmlId, availableSize.Width, availableSize.Height, measureContent, pReturn);
 
 				var result = TSInteropMarshaller.UnmarshalStructure<WindowManagerMeasureViewReturn>(pReturn);
@@ -858,6 +870,9 @@ namespace Uno.UI.Xaml
 			}
 			else
 			{
+#if NET7_0_OR_GREATER
+				NativeMethods.SetVisibility(htmlId, visible);
+#else
 				var parms = new WindowManagerSetVisibilityParams()
 				{
 					HtmlId = htmlId,
@@ -865,6 +880,7 @@ namespace Uno.UI.Xaml
 				};
 
 				TSInteropMarshaller.InvokeJS("Uno:setVisibilityNative", parms);
+#endif
 			}
 		}
 
@@ -899,7 +915,10 @@ namespace Uno.UI.Xaml
 					pairs[i * 2 + 1] = properties[i].value;
 				}
 
-				var parms = new WindowManagerSetAttributesParams()
+#if NET7_0_OR_GREATER
+				NativeMethods.SetProperties(htmlId, pairs);
+#else
+				var parms = new WindowManagerSetPropertyParams()
 				{
 					HtmlId = htmlId,
 					Pairs_Length = pairs.Length,
@@ -907,7 +926,7 @@ namespace Uno.UI.Xaml
 				};
 
 				TSInteropMarshaller.InvokeJS("Uno:setPropertyNative", parms);
-
+#endif
 			}
 		}
 
@@ -1069,12 +1088,16 @@ namespace Uno.UI.Xaml
 			}
 			else
 			{
+#if NET7_0_OR_GREATER
+				NativeMethods.DestroyView(htmlId);
+#else
 				var parms = new WindowManagerDestroyViewParams
 				{
 					HtmlId = htmlId
 				};
 
 				TSInteropMarshaller.InvokeJS("Uno:destroyViewNative", parms);
+#endif
 			}
 		}
 
@@ -1555,17 +1578,35 @@ namespace Uno.UI.Xaml
 				double clipBottom,
 				double clipRight);
 
+			[JSImport("globalThis.Uno.UI.WindowManager.current.createContentNativeFast")]
+			internal static partial void CreateContent(IntPtr htmlId, string tagName, int uiElementRegistrationId, bool isFocusable, bool isSvg);
+
+			[JSImport("globalThis.Uno.UI.WindowManager.current.destroyViewNativeFast")]
+			internal static partial void DestroyView(IntPtr htmlId);
+
 			[JSImport("globalThis.Uno.UI.WindowManager.current.measureViewNativeFast")]
 			internal static partial void MeasureView(IntPtr htmlId, double availableWidth, double availableHeight, bool measureContent, IntPtr pReturn);
 
 			[JSImport("globalThis.Uno.UI.WindowManager.current.setAttributesNativeFast")]
 			internal static partial void SetAttributes(IntPtr htmlId, string[] pairs);
 
+			[JSImport("globalThis.Uno.UI.WindowManager.current.setElementTransformNativeFast")]
+			internal static partial void SetElementTransform(IntPtr htmlId, float m11, float m12, float m21, float m22, float m31, float m32);
+
+			[JSImport("globalThis.Uno.UI.WindowManager.current.setPointerEventsNativeFast")]
+			internal static partial void SetPointerEvents(IntPtr htmlId, bool enabled);
+
+			[JSImport("globalThis.Uno.UI.WindowManager.current.setPropertyNativeFast")]
+			internal static partial void SetProperties(IntPtr htmlId, string[] pairs);
+
 			[JSImport("globalThis.Uno.UI.WindowManager.current.setStyleStringNativeFast")]
 			internal static partial void SetStyleString(IntPtr htmlId, string name, string value);
 
 			[JSImport("globalThis.Uno.UI.WindowManager.current.setStyleNativeFast")]
 			internal static partial void SetStyles(IntPtr htmlId, string[] pairs);
+
+			[JSImport("globalThis.Uno.UI.WindowManager.current.setVisibilityNativeFast")]
+			internal static partial void SetVisibility(IntPtr htmlId, bool visible);
 		}
 #endif
 	}

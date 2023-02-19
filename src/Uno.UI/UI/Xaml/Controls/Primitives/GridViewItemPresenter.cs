@@ -6,8 +6,8 @@ using Windows.UI.Xaml.Controls;
 
 namespace Windows.UI.Xaml.Controls.Primitives
 {
-    public partial class GridViewItemPresenter : ContentPresenter
-    {
+	public partial class GridViewItemPresenter : ContentPresenter
+	{
 
 	}
 }

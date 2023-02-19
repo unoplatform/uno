@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Wallet
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WalletBarcodeSymbology WalletBarcode.Symbology is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member WalletBarcodeSymbology WalletBarcode.Symbology is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=WalletBarcodeSymbology%20WalletBarcode.Symbology");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.ApplicationModel.Wallet
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string WalletBarcode.Value is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string WalletBarcode.Value is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20WalletBarcode.Value");
 			}
 		}
 		#endif
@@ -49,7 +49,7 @@ namespace Windows.ApplicationModel.Wallet
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IRandomAccessStreamReference> GetImageAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IRandomAccessStreamReference> WalletBarcode.GetImageAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<IRandomAccessStreamReference> WalletBarcode.GetImageAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CIRandomAccessStreamReference%3E%20WalletBarcode.GetImageAsync%28%29");
 		}
 		#endif
 	}

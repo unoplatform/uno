@@ -1,13 +1,13 @@
-#if !HAS_UNO_WINUI && (__ANDROID__ || __IOS__ || __MACOS__)
+#if __ANDROID__ || __IOS__ || __MACOS__
 namespace Windows.UI.Xaml.Controls
 {
-	public partial class MediaTransportControlsHelper 
+	public partial class MediaTransportControlsHelper
 	{
-		public static DependencyProperty DropoutOrderProperty { get; } = 
+		public static DependencyProperty DropoutOrderProperty { get; } =
 			DependencyProperty.RegisterAttached(
 				"DropoutOrder",
-				typeof(int?), 
-				typeof(MediaTransportControlsHelper), 
+				typeof(int?),
+				typeof(MediaTransportControlsHelper),
 				new FrameworkPropertyMetadata(default(int?)));
 
 		public static int? GetDropoutOrder(UIElement element)

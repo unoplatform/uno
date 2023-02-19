@@ -21,6 +21,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using System.Collections.Concurrent;
 using System.Collections.Immutable;
+using Uno.UI.SourceGenerators.Helpers;
 
 #if NETFRAMEWORK
 using Microsoft.Build.Execution;
@@ -50,6 +51,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly Dictionary<string, string[]> _uiAutomationMappings;
 		private readonly string _configuration;
 		private readonly bool _isDebug;
+		private readonly bool _useXamlReaderHotReload;
 		/// <summary>
 		/// Should hot reload-related calls be generated? By default this is true iff building in debug, but it can be forced to always true or false using the "UnoForceHotReloadCodeGen" project flag.
 		/// </summary>
@@ -57,6 +59,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly string _projectDirectory;
 		private readonly string _projectFullPath;
 		private readonly bool _xamlResourcesTrimming;
+		private readonly bool _isUnoHead;
 		private bool _shouldWriteErrorOnInvalidXaml;
 		private readonly RoslynMetadataHelper _metadataHelper;
 
@@ -88,10 +91,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private const string WinUIThemeResourcePathSuffixFormatString = "themeresources_v{0}.xaml";
 		private static string WinUICompactPathSuffix = Path.Combine("DensityStyles", "Compact.xaml");
-
-#pragma warning disable 649 // Unused member
-		private readonly bool _forceGeneration;
-#pragma warning restore 649 // Unused member
 
 		public XamlCodeGeneration(GeneratorExecutionContext context)
 		{
@@ -180,6 +179,16 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				_xamlResourcesTrimming = xamlResourcesTrimming;
 			}
 
+			if (bool.TryParse(context.GetMSBuildPropertyValue("IsUnoHead"), out var isUnoHead))
+			{
+				_isUnoHead = isUnoHead;
+			}
+
+			if (bool.TryParse(context.GetMSBuildPropertyValue("UnoUseXamlReaderHotReload"), out var useXamlReaderHotReload))
+			{
+				_useXamlReaderHotReload = useXamlReaderHotReload;
+			}
+
 			if (bool.TryParse(context.GetMSBuildPropertyValue("UnoForceHotReloadCodeGen"), out var isHotReloadEnabled))
 			{
 				_isHotReloadEnabled = isHotReloadEnabled;
@@ -203,7 +212,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					Value = i.GetMetadataValue("Mappings")
 						?.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
 						.Select(m => m.Trim())
-						.Where(m => m.HasValueTrimmed())
+						.Where(m => !m.IsNullOrWhiteSpace())
 				})
 				.GroupBy(p => p.Key)
 				.ToDictionary(p => p.Key, p => p.SelectMany(x => x.Value.Safe()).ToArray());
@@ -275,11 +284,20 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				Console.WriteLine("Xaml Source Generation is using the {0} Xaml Parser", XamlRedirection.XamlConfig.IsUnoXaml ? "Uno.UI" : "System");
 #endif
 
-				var lastBinaryUpdateTime = _forceGeneration ? DateTime.MaxValue : GetLastBinaryUpdateTime();
+				var lastBinaryUpdateTime = GetLastBinaryUpdateTime();
+				var isInsideMainAssembly =
+					_isUnoHead
 
-				var resourceKeys = GetResourceKeys(_generatorContext.CancellationToken);
+					// Handle legacy Xamarin targets which do not define IsUnoHead.
+					|| PlatformHelper.IsXamariniOS(_generatorContext)
+					|| PlatformHelper.IsXamarinMacOs(_generatorContext)
+					|| PlatformHelper.IsAndroid(_generatorContext);
+
+				var resourceDetailsCollection = BuildResourceDetails(_generatorContext.CancellationToken);
+				TryGenerateUnoResourcesKeyAttribute(resourceDetailsCollection);
+
 				var filesFull = new XamlFileParser(_excludeXamlNamespaces, _includeXamlNamespaces, _metadataHelper)
-					.ParseFiles(_xamlSourceFiles, _generatorContext.CancellationToken);
+					.ParseFiles(_xamlSourceFiles, _projectDirectory, _generatorContext.CancellationToken);
 
 				var xamlTypeToXamlTypeBaseMap = new ConcurrentDictionary<INamedTypeSymbol, XamlRedirection.XamlType>();
 				Parallel.ForEach(filesFull, file =>
@@ -330,7 +348,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									lastReferenceUpdateTime: lastBinaryUpdateTime,
 									analyzerSuppressions: _analyzerSuppressions,
 									globalStaticResourcesMap: globalStaticResourcesMap,
-									resourceKeys: resourceKeys,
+									resourceDetailsCollection: resourceDetailsCollection,
 									isUiAutomationMappingEnabled: _isUiAutomationMappingEnabled,
 									uiAutomationMappings: _uiAutomationMappings,
 									defaultLanguage: _defaultLanguage,
@@ -338,6 +356,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									isWasm: _isWasm,
 									isDebug: _isDebug,
 									isHotReloadEnabled: _isHotReloadEnabled,
+									isInsideMainAssembly: isInsideMainAssembly,
+									useXamlReaderHotReload: _useXamlReaderHotReload,
 									isDesignTimeBuild: _isDesignTimeBuild,
 									skipUserControlsInVisualTree: _skipUserControlsInVisualTree,
 									shouldAnnotateGeneratedXaml: _shouldAnnotateGeneratedXaml,
@@ -382,6 +402,19 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
+		private void TryGenerateUnoResourcesKeyAttribute(ResourceDetailsCollection resourceDetailsCollection)
+		{
+			var hasResources = resourceDetailsCollection.HasLocalResources;
+
+			_generatorContext.AddSource(
+				"LocalizationResources",
+				$"""
+				// <auto-generated />
+				[assembly: global::System.Reflection.AssemblyMetadata("UnoHasLocalizationResources", "{hasResources.ToString(CultureInfo.InvariantCulture)}")]
+				""");
+		}
+
+#if !NETFRAMEWORK
 		private List<KeyValuePair<string, string>> ProcessParsingException(Exception e)
 		{
 			IEnumerable<Exception> Flatten(Exception ex)
@@ -449,6 +482,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			return null;
 		}
+#endif
 
 		private XamlGlobalStaticResourcesMap BuildAssemblyGlobalStaticResourcesMap(XamlFileDefinition[] files, XamlFileDefinition[] filesFull, string[] links, CancellationToken ct)
 		{
@@ -475,7 +509,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			var query = from sym in assembliesQuery
 						from module in sym.Modules
 
-						// Only consider assemblies that reference Uno.UI
+							// Only consider assemblies that reference Uno.UI
 						where module.ReferencedAssemblies.Any(r => r.Name == "Uno.UI") || sym.Name == "Uno.UI"
 
 						// Don't consider Uno.UI.FluentTheme assemblies, as they manage their own initialization
@@ -582,13 +616,25 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
-		//get keys of localized strings
-		private ImmutableHashSet<string> GetResourceKeys(CancellationToken ct)
+		// Get keys of localized strings
+		private ResourceDetailsCollection BuildResourceDetails(CancellationToken ct)
 		{
-			ImmutableHashSet<string> resourceKeys = _resourceFiles
+			var localResources = BuildLocalResourceDetails(ct);
+
+			var collection = new ResourceDetailsCollection(_metadataHelper.AssemblyName);
+
+			collection.AddRange(localResources);
+
+			return collection;
+		}
+
+		private ResourceDetails[] BuildLocalResourceDetails(CancellationToken ct)
+		{
+			var resourceKeys = _resourceFiles
 				.AsParallel()
 				.WithCancellation(ct)
-				.SelectMany(file => {
+				.SelectMany(file =>
+				{
 #if DEBUG
 					Console.WriteLine("Parse resource file : " + file.Identity);
 #endif
@@ -596,6 +642,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					{
 						var sourceText = file.File.GetText(ct)!;
 						var cachedFileKey = new ResourceCacheKey(file.Identity, sourceText.GetChecksum());
+						var resourceFileName = Path.GetFileNameWithoutExtension(file.Identity);
+
 						if (_cachedResources.TryGetValue(cachedFileKey, out var cachedResource))
 						{
 							_cachedResources[cachedFileKey] = cachedResource.WithUpdatedLastTimeUsed();
@@ -609,15 +657,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						var doc = new XmlDocument();
 						doc.LoadXml(sourceText.ToString());
 
-						var rewriterBuilder = new StringBuilder();
 
 						//extract all localization keys from Win10 resource file
 						// https://docs.microsoft.com/en-us/dotnet/standard/data/xml/compiled-xpath-expressions?redirectedfrom=MSDN#higher-performance-xpath-expressions
 						// Per this documentation, /root/data should be more performant than //data
 						var keys = doc.SelectNodes("/root/data")
 							?.Cast<XmlElement>()
-							.Select(node => RewriteResourceKeyName(rewriterBuilder, node.GetAttribute("name")))
-							.ToArray() ?? Array.Empty<string>();
+							.Select(node => new ResourceDetails(_metadataHelper.AssemblyName, resourceFileName, node.GetAttribute("name")))
+							.ToArray() ?? Array.Empty<ResourceDetails>();
 						_cachedResources[cachedFileKey] = new CachedResource(DateTimeOffset.Now, keys);
 						return keys;
 					}
@@ -626,42 +673,26 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						var message = $"Unable to parse resource file [{file.Identity}], make sure it is a valid resw file. ({e.Message})";
 
 #if NETSTANDARD
-							var diagnostic = Diagnostic.Create(
-								XamlCodeGenerationDiagnostics.ResourceParsingFailureRule,
-								null,
-								message);
+						var diagnostic = Diagnostic.Create(
+							XamlCodeGenerationDiagnostics.ResourceParsingFailureRule,
+							null,
+							message);
 
-							_generatorContext.ReportDiagnostic(diagnostic);
+						_generatorContext.ReportDiagnostic(diagnostic);
 
-							return Array.Empty<string>();
+						return Array.Empty<ResourceDetails>();
 #else
 						throw new InvalidOperationException(message, e);
 #endif
 					}
 				})
 				.Distinct()
-				.ToImmutableHashSet();
+				.ToArray();
 
 #if DEBUG
-			Console.WriteLine(resourceKeys.Count + " localization keys found");
+			Console.WriteLine(resourceKeys.Length + " localization keys found");
 #endif
 			return resourceKeys;
-		}
-
-		private string RewriteResourceKeyName(StringBuilder builder, string keyName)
-		{
-			var firstDotIndex = keyName.IndexOf('.');
-			if (firstDotIndex != -1)
-			{
-				builder.Clear();
-				builder.Append(keyName);
-
-				builder[firstDotIndex] = '/';
-
-				return builder.ToString();
-			}
-
-			return keyName;
 		}
 
 		private DateTime GetLastBinaryUpdateTime()
@@ -677,28 +708,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private string GenerateGlobalResources(IEnumerable<XamlFileDefinition> files, XamlGlobalStaticResourcesMap map)
 		{
-			var outputFile = Path.Combine(_targetPath, "GlobalStaticResources.g.cs");
-
 			var writer = new IndentedStringBuilder();
 
 			writer.AppendLineIndented("// <autogenerated />");
 			AnalyzerSuppressionsGenerator.GenerateCSharpPragmaSupressions(writer, _analyzerSuppressions);
-			writer.AppendLineIndented("using System;");
-			writer.AppendLineIndented("using System.Linq;");
-			writer.AppendLineIndented("using System.Collections.Generic;");
-			writer.AppendLineIndented("using Uno.Extensions;");
-			writer.AppendLineIndented("using Uno;");
-			writer.AppendLineIndented("using System.Diagnostics;");
-
-			//TODO Determine the list of namespaces to use
-			writer.AppendLineIndented($"using {XamlConstants.BaseXamlNamespace};");
-			writer.AppendLineIndented($"using {XamlConstants.Namespaces.Controls};");
-			writer.AppendLineIndented($"using {XamlConstants.Namespaces.Data};");
-			writer.AppendLineIndented($"using {XamlConstants.Namespaces.Documents};");
-			writer.AppendLineIndented($"using {XamlConstants.Namespaces.Media};");
-			writer.AppendLineIndented($"using {XamlConstants.Namespaces.MediaAnimation};");
-			writer.AppendLineIndented($"using {_defaultNamespace};");
-			writer.AppendLineIndented("");
 
 			// If a failure happens here, this means that the _isWasm was not properly set as the DefineConstants msbuild property
 			// was not populated. This can happen when the property is set through a target with the "CreateProperty" task, and the
@@ -859,7 +872,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					{
 						// Declare master dictionary
 						writer.AppendLine();
-						writer.AppendLineIndented("internal static ResourceDictionary MasterDictionary {get; } = new ResourceDictionary();");
+						writer.AppendLineIndented("internal static global::Windows.UI.Xaml.ResourceDictionary MasterDictionary { get; } = new global::Windows.UI.Xaml.ResourceDictionary();");
 					}
 
 					// Generate all the partial methods, even if they don't exist. That avoids

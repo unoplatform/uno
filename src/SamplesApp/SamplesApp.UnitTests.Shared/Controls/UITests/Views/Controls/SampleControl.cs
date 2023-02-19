@@ -37,9 +37,9 @@ namespace Uno.UI.Samples.Controls
 			set { this.SetValue(SampleDescriptionProperty, value); }
 		}
 
-		public static DependencyProperty SampleDescriptionProperty { get ; } =
+		public static DependencyProperty SampleDescriptionProperty { get; } =
 			DependencyProperty.Register("SampleDescription", typeof(string), typeof(SampleControl), new PropertyMetadata(""));
-		
+
 		// This only exists as a proxy to ContentTemplate
 		public DataTemplate SampleContent
 		{
@@ -47,7 +47,7 @@ namespace Uno.UI.Samples.Controls
 			set { SetValue(SampleContentProperty, value); }
 		}
 
-		public static DependencyProperty SampleContentProperty { get ; } =
+		public static DependencyProperty SampleContentProperty { get; } =
 			DependencyProperty.Register("SampleContent", typeof(DataTemplate), typeof(SampleControl), new PropertyMetadata(null, OnSampleContentChanged));
 
 		private static void OnSampleContentChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)

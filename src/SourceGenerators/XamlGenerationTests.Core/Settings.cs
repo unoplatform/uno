@@ -16,16 +16,16 @@ using Windows.UI.Xaml.Media;
 namespace XamlGenerationTests.Shared.Controls
 {
 	public sealed partial class Settings : Control
-    {
-        public Settings()
-        {
-        }
-
-        public int MyCustomProperty2
+	{
+		public Settings()
 		{
-            get;
-            set;
-        }
+		}
+
+		public int MyCustomProperty2
+		{
+			get;
+			set;
+		}
 
 		public int MyCustomProperty
 		{

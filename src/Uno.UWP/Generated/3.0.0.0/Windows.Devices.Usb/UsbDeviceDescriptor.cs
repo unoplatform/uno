@@ -13,7 +13,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint UsbDeviceDescriptor.BcdDeviceRevision is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint UsbDeviceDescriptor.BcdDeviceRevision is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20UsbDeviceDescriptor.BcdDeviceRevision");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint UsbDeviceDescriptor.BcdUsb is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint UsbDeviceDescriptor.BcdUsb is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20UsbDeviceDescriptor.BcdUsb");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte UsbDeviceDescriptor.MaxPacketSize0 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member byte UsbDeviceDescriptor.MaxPacketSize0 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=byte%20UsbDeviceDescriptor.MaxPacketSize0");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte UsbDeviceDescriptor.NumberOfConfigurations is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member byte UsbDeviceDescriptor.NumberOfConfigurations is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=byte%20UsbDeviceDescriptor.NumberOfConfigurations");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint UsbDeviceDescriptor.ProductId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint UsbDeviceDescriptor.ProductId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20UsbDeviceDescriptor.ProductId");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint UsbDeviceDescriptor.VendorId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint UsbDeviceDescriptor.VendorId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20UsbDeviceDescriptor.VendorId");
 			}
 		}
 		#endif

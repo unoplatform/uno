@@ -301,7 +301,7 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 				"text/uri-list" => // https://datatracker.ietf.org/doc/html/rfc2483#section-5
 					(StandardDataFormats.WebLink,
 					async ct => new Uri((await RetrieveText(ct, id))
-						.Split(new[]{'\r','\n'}, StringSplitOptions.RemoveEmptyEntries)
+						.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
 						.Where(line => !line.StartsWith("#", StringComparison.Ordinal))
 						.First())),
 				"text/plain" => (StandardDataFormats.Text, async ct => await RetrieveText(ct, id)),
@@ -348,7 +348,7 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 		private static string ToNativeOperation(DataPackageOperation acceptedOperation)
 		{
 			// If multiple flags set (which should not!), the UWP precedence is Link > Copy > Move
-			// This is the same logic used in the DragView.ToGlyph 
+			// This is the same logic used in the DragView.ToGlyph
 			if (acceptedOperation.HasFlag(DataPackageOperation.Link))
 			{
 				return "link";
@@ -468,7 +468,7 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 					+ $" | modifiers: {string.Join(", ", GetModifiers(this))}"
 					+ $" | allowed: {allowedOperations} ({ToDataPackageOperation(allowedOperations)})"
 					+ $" | accepted: {acceptedOperation}"
-					+ $" | entries: {dataItems} ({(dataItems.HasValueTrimmed() ? string.Join(", ", JsonHelper.Deserialize<DataEntry[]>(dataItems)) : "")})";
+					+ $" | entries: {dataItems} ({(!dataItems.IsNullOrWhiteSpace() ? string.Join(", ", JsonHelper.Deserialize<DataEntry[]>(dataItems)) : "")})";
 
 				IEnumerable<string> GetModifiers(DragDropExtensionEventArgs that)
 				{

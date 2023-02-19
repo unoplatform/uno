@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.ConversationalAgent
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ConversationalAgentState ConversationalAgentSession.AgentState is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ConversationalAgentState ConversationalAgentSession.AgentState is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ConversationalAgentState%20ConversationalAgentSession.AgentState");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.ApplicationModel.ConversationalAgent
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ConversationalAgentSession.IsIndicatorLightAvailable is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ConversationalAgentSession.IsIndicatorLightAvailable is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ConversationalAgentSession.IsIndicatorLightAvailable");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.ApplicationModel.ConversationalAgent
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ConversationalAgentSession.IsInterrupted is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ConversationalAgentSession.IsInterrupted is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ConversationalAgentSession.IsInterrupted");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.ApplicationModel.ConversationalAgent
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ConversationalAgentSession.IsInterruptible is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ConversationalAgentSession.IsInterruptible is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ConversationalAgentSession.IsInterruptible");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.ApplicationModel.ConversationalAgent
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ConversationalAgentSession.IsScreenAvailable is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ConversationalAgentSession.IsScreenAvailable is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ConversationalAgentSession.IsScreenAvailable");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.ApplicationModel.ConversationalAgent
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ConversationalAgentSession.IsUserAuthenticated is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ConversationalAgentSession.IsUserAuthenticated is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ConversationalAgentSession.IsUserAuthenticated");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.ApplicationModel.ConversationalAgent
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ConversationalAgentSession.IsVoiceActivationAvailable is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ConversationalAgentSession.IsVoiceActivationAvailable is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ConversationalAgentSession.IsVoiceActivationAvailable");
 			}
 		}
 		#endif
@@ -83,7 +83,7 @@ namespace Windows.ApplicationModel.ConversationalAgent
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ConversationalAgentSignal ConversationalAgentSession.Signal is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ConversationalAgentSignal ConversationalAgentSession.Signal is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ConversationalAgentSignal%20ConversationalAgentSession.Signal");
 			}
 		}
 		#endif
@@ -105,161 +105,161 @@ namespace Windows.ApplicationModel.ConversationalAgent
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSessionUpdateResponse> RequestInterruptibleAsync( bool interruptible)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<ConversationalAgentSessionUpdateResponse> ConversationalAgentSession.RequestInterruptibleAsync(bool interruptible) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<ConversationalAgentSessionUpdateResponse> ConversationalAgentSession.RequestInterruptibleAsync(bool interruptible) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CConversationalAgentSessionUpdateResponse%3E%20ConversationalAgentSession.RequestInterruptibleAsync%28bool%20interruptible%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSessionUpdateResponse RequestInterruptible( bool interruptible)
 		{
-			throw new global::System.NotImplementedException("The member ConversationalAgentSessionUpdateResponse ConversationalAgentSession.RequestInterruptible(bool interruptible) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member ConversationalAgentSessionUpdateResponse ConversationalAgentSession.RequestInterruptible(bool interruptible) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ConversationalAgentSessionUpdateResponse%20ConversationalAgentSession.RequestInterruptible%28bool%20interruptible%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSessionUpdateResponse> RequestAgentStateChangeAsync( global::Windows.ApplicationModel.ConversationalAgent.ConversationalAgentState state)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<ConversationalAgentSessionUpdateResponse> ConversationalAgentSession.RequestAgentStateChangeAsync(ConversationalAgentState state) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<ConversationalAgentSessionUpdateResponse> ConversationalAgentSession.RequestAgentStateChangeAsync(ConversationalAgentState state) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CConversationalAgentSessionUpdateResponse%3E%20ConversationalAgentSession.RequestAgentStateChangeAsync%28ConversationalAgentState%20state%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSessionUpdateResponse RequestAgentStateChange( global::Windows.ApplicationModel.ConversationalAgent.ConversationalAgentState state)
 		{
-			throw new global::System.NotImplementedException("The member ConversationalAgentSessionUpdateResponse ConversationalAgentSession.RequestAgentStateChange(ConversationalAgentState state) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member ConversationalAgentSessionUpdateResponse ConversationalAgentSession.RequestAgentStateChange(ConversationalAgentState state) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ConversationalAgentSessionUpdateResponse%20ConversationalAgentSession.RequestAgentStateChange%28ConversationalAgentState%20state%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSessionUpdateResponse> RequestForegroundActivationAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<ConversationalAgentSessionUpdateResponse> ConversationalAgentSession.RequestForegroundActivationAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<ConversationalAgentSessionUpdateResponse> ConversationalAgentSession.RequestForegroundActivationAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CConversationalAgentSessionUpdateResponse%3E%20ConversationalAgentSession.RequestForegroundActivationAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSessionUpdateResponse RequestForegroundActivation()
 		{
-			throw new global::System.NotImplementedException("The member ConversationalAgentSessionUpdateResponse ConversationalAgentSession.RequestForegroundActivation() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member ConversationalAgentSessionUpdateResponse ConversationalAgentSession.RequestForegroundActivation() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ConversationalAgentSessionUpdateResponse%20ConversationalAgentSession.RequestForegroundActivation%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<object> GetAudioClientAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<object> ConversationalAgentSession.GetAudioClientAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<object> ConversationalAgentSession.GetAudioClientAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3Cobject%3E%20ConversationalAgentSession.GetAudioClientAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  object GetAudioClient()
 		{
-			throw new global::System.NotImplementedException("The member object ConversationalAgentSession.GetAudioClient() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member object ConversationalAgentSession.GetAudioClient() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=object%20ConversationalAgentSession.GetAudioClient%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Audio.AudioDeviceInputNode> CreateAudioDeviceInputNodeAsync( global::Windows.Media.Audio.AudioGraph graph)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<AudioDeviceInputNode> ConversationalAgentSession.CreateAudioDeviceInputNodeAsync(AudioGraph graph) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<AudioDeviceInputNode> ConversationalAgentSession.CreateAudioDeviceInputNodeAsync(AudioGraph graph) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CAudioDeviceInputNode%3E%20ConversationalAgentSession.CreateAudioDeviceInputNodeAsync%28AudioGraph%20graph%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Media.Audio.AudioDeviceInputNode CreateAudioDeviceInputNode( global::Windows.Media.Audio.AudioGraph graph)
 		{
-			throw new global::System.NotImplementedException("The member AudioDeviceInputNode ConversationalAgentSession.CreateAudioDeviceInputNode(AudioGraph graph) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member AudioDeviceInputNode ConversationalAgentSession.CreateAudioDeviceInputNode(AudioGraph graph) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AudioDeviceInputNode%20ConversationalAgentSession.CreateAudioDeviceInputNode%28AudioGraph%20graph%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<string> GetAudioCaptureDeviceIdAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<string> ConversationalAgentSession.GetAudioCaptureDeviceIdAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<string> ConversationalAgentSession.GetAudioCaptureDeviceIdAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3Cstring%3E%20ConversationalAgentSession.GetAudioCaptureDeviceIdAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  string GetAudioCaptureDeviceId()
 		{
-			throw new global::System.NotImplementedException("The member string ConversationalAgentSession.GetAudioCaptureDeviceId() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member string ConversationalAgentSession.GetAudioCaptureDeviceId() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ConversationalAgentSession.GetAudioCaptureDeviceId%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<string> GetAudioRenderDeviceIdAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<string> ConversationalAgentSession.GetAudioRenderDeviceIdAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<string> ConversationalAgentSession.GetAudioRenderDeviceIdAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3Cstring%3E%20ConversationalAgentSession.GetAudioRenderDeviceIdAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  string GetAudioRenderDeviceId()
 		{
-			throw new global::System.NotImplementedException("The member string ConversationalAgentSession.GetAudioRenderDeviceId() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member string ConversationalAgentSession.GetAudioRenderDeviceId() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ConversationalAgentSession.GetAudioRenderDeviceId%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<uint> GetSignalModelIdAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<uint> ConversationalAgentSession.GetSignalModelIdAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<uint> ConversationalAgentSession.GetSignalModelIdAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3Cuint%3E%20ConversationalAgentSession.GetSignalModelIdAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  uint GetSignalModelId()
 		{
-			throw new global::System.NotImplementedException("The member uint ConversationalAgentSession.GetSignalModelId() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member uint ConversationalAgentSession.GetSignalModelId() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20ConversationalAgentSession.GetSignalModelId%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<bool> SetSignalModelIdAsync( uint signalModelId)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> ConversationalAgentSession.SetSignalModelIdAsync(uint signalModelId) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> ConversationalAgentSession.SetSignalModelIdAsync(uint signalModelId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3Cbool%3E%20ConversationalAgentSession.SetSignalModelIdAsync%28uint%20signalModelId%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool SetSignalModelId( uint signalModelId)
 		{
-			throw new global::System.NotImplementedException("The member bool ConversationalAgentSession.SetSignalModelId(uint signalModelId) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member bool ConversationalAgentSession.SetSignalModelId(uint signalModelId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ConversationalAgentSession.SetSignalModelId%28uint%20signalModelId%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<uint>> GetSupportedSignalModelIdsAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<uint>> ConversationalAgentSession.GetSupportedSignalModelIdsAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<uint>> ConversationalAgentSession.GetSupportedSignalModelIdsAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CIReadOnlyList%3Cuint%3E%3E%20ConversationalAgentSession.GetSupportedSignalModelIdsAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::System.Collections.Generic.IReadOnlyList<uint> GetSupportedSignalModelIds()
 		{
-			throw new global::System.NotImplementedException("The member IReadOnlyList<uint> ConversationalAgentSession.GetSupportedSignalModelIds() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IReadOnlyList<uint> ConversationalAgentSession.GetSupportedSignalModelIds() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3Cuint%3E%20ConversationalAgentSession.GetSupportedSignalModelIds%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.ConversationalAgent.ConversationalAgentActivationResult> RequestActivationAsync( global::Windows.ApplicationModel.ConversationalAgent.ConversationalAgentActivationKind activationKind)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<ConversationalAgentActivationResult> ConversationalAgentSession.RequestActivationAsync(ConversationalAgentActivationKind activationKind) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<ConversationalAgentActivationResult> ConversationalAgentSession.RequestActivationAsync(ConversationalAgentActivationKind activationKind) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CConversationalAgentActivationResult%3E%20ConversationalAgentSession.RequestActivationAsync%28ConversationalAgentActivationKind%20activationKind%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.ApplicationModel.ConversationalAgent.ConversationalAgentActivationResult RequestActivation( global::Windows.ApplicationModel.ConversationalAgent.ConversationalAgentActivationKind activationKind)
 		{
-			throw new global::System.NotImplementedException("The member ConversationalAgentActivationResult ConversationalAgentSession.RequestActivation(ConversationalAgentActivationKind activationKind) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member ConversationalAgentActivationResult ConversationalAgentSession.RequestActivation(ConversationalAgentActivationKind activationKind) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ConversationalAgentActivationResult%20ConversationalAgentSession.RequestActivation%28ConversationalAgentActivationKind%20activationKind%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction SetSupportLockScreenActivationAsync( bool lockScreenActivationSupported)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction ConversationalAgentSession.SetSupportLockScreenActivationAsync(bool lockScreenActivationSupported) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction ConversationalAgentSession.SetSupportLockScreenActivationAsync(bool lockScreenActivationSupported) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20ConversationalAgentSession.SetSupportLockScreenActivationAsync%28bool%20lockScreenActivationSupported%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -273,14 +273,14 @@ namespace Windows.ApplicationModel.ConversationalAgent
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.ConversationalAgent.ConversationalAgentVoiceActivationPrerequisiteKind> GetMissingPrerequisites()
 		{
-			throw new global::System.NotImplementedException("The member IReadOnlyList<ConversationalAgentVoiceActivationPrerequisiteKind> ConversationalAgentSession.GetMissingPrerequisites() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IReadOnlyList<ConversationalAgentVoiceActivationPrerequisiteKind> ConversationalAgentSession.GetMissingPrerequisites() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CConversationalAgentVoiceActivationPrerequisiteKind%3E%20ConversationalAgentSession.GetMissingPrerequisites%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.ConversationalAgent.ConversationalAgentVoiceActivationPrerequisiteKind>> GetMissingPrerequisitesAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<ConversationalAgentVoiceActivationPrerequisiteKind>> ConversationalAgentSession.GetMissingPrerequisitesAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<ConversationalAgentVoiceActivationPrerequisiteKind>> ConversationalAgentSession.GetMissingPrerequisitesAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CIReadOnlyList%3CConversationalAgentVoiceActivationPrerequisiteKind%3E%3E%20ConversationalAgentSession.GetMissingPrerequisitesAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -294,14 +294,14 @@ namespace Windows.ApplicationModel.ConversationalAgent
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSession> GetCurrentSessionAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<ConversationalAgentSession> ConversationalAgentSession.GetCurrentSessionAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<ConversationalAgentSession> ConversationalAgentSession.GetCurrentSessionAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CConversationalAgentSession%3E%20ConversationalAgentSession.GetCurrentSessionAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSession GetCurrentSessionSync()
 		{
-			throw new global::System.NotImplementedException("The member ConversationalAgentSession ConversationalAgentSession.GetCurrentSessionSync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member ConversationalAgentSession ConversationalAgentSession.GetCurrentSessionSync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ConversationalAgentSession%20ConversationalAgentSession.GetCurrentSessionSync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

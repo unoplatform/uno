@@ -13,7 +13,7 @@ namespace Windows.UI.Input.Spatial
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SpatialGestureSettings SpatialGestureRecognizer.GestureSettings is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SpatialGestureSettings SpatialGestureRecognizer.GestureSettings is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SpatialGestureSettings%20SpatialGestureRecognizer.GestureSettings");
 			}
 		}
 		#endif
@@ -71,7 +71,7 @@ namespace Windows.UI.Input.Spatial
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool TrySetGestureSettings( global::Windows.UI.Input.Spatial.SpatialGestureSettings settings)
 		{
-			throw new global::System.NotImplementedException("The member bool SpatialGestureRecognizer.TrySetGestureSettings(SpatialGestureSettings settings) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member bool SpatialGestureRecognizer.TrySetGestureSettings(SpatialGestureSettings settings) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20SpatialGestureRecognizer.TrySetGestureSettings%28SpatialGestureSettings%20settings%29");
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.GestureSettings.get

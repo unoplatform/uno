@@ -13,7 +13,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaDecoderStatus AudioTrackSupportInfo.DecoderStatus is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MediaDecoderStatus AudioTrackSupportInfo.DecoderStatus is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaDecoderStatus%20AudioTrackSupportInfo.DecoderStatus");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AudioDecoderDegradation AudioTrackSupportInfo.Degradation is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AudioDecoderDegradation AudioTrackSupportInfo.Degradation is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AudioDecoderDegradation%20AudioTrackSupportInfo.Degradation");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AudioDecoderDegradationReason AudioTrackSupportInfo.DegradationReason is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AudioDecoderDegradationReason AudioTrackSupportInfo.DegradationReason is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AudioDecoderDegradationReason%20AudioTrackSupportInfo.DegradationReason");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaSourceStatus AudioTrackSupportInfo.MediaSourceStatus is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MediaSourceStatus AudioTrackSupportInfo.MediaSourceStatus is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaSourceStatus%20AudioTrackSupportInfo.MediaSourceStatus");
 			}
 		}
 		#endif

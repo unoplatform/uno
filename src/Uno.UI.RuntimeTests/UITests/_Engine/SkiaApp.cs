@@ -214,7 +214,7 @@ public partial class SkiaApp : IApp
 						};
 					}
 
-					yield return new ()
+					yield return new()
 					{
 						PointerInfo = new()
 						{

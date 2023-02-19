@@ -22,7 +22,6 @@ using Point = System.Drawing.Point;
 using Windows.UI.Xaml.Markup;
 using _Bitmap = Uno.UI.RuntimeTests.Helpers.RawBitmap;
 using SamplesApp.UITests;
-using Windows.UI.Xaml.Markup;
 using Windows.UI.Xaml;
 using SamplesApp.UITests.TestFramework;
 
@@ -165,7 +164,7 @@ public static partial class ImageAssert
 
 		return false;
 	}
-#endregion
+	#endregion
 
 	private static Rectangle Normalize(Rectangle rect, Size size)
 		=> new(

@@ -15,9 +15,9 @@ namespace Windows.Devices.Bluetooth
 			return _deviceSelectorPrefix + "(System.Devices.Aep.IsPaired:=System.StructuredQueryType.Boolean#True OR " + _deviceSelectorIssueInquiry + "#False)";
 		}
 
-		public static string GetDeviceSelectorFromPairingState( bool pairingState)
+		public static string GetDeviceSelectorFromPairingState(bool pairingState)
 		{
-			if(pairingState )
+			if (pairingState)
 			{
 				return _deviceSelectorPrefix + "(System.Devices.Aep.IsPaired:=System.StructuredQueryType.Boolean#True OR " + _deviceSelectorIssueInquiry + "#False)";
 			}
@@ -27,9 +27,9 @@ namespace Windows.Devices.Bluetooth
 			}
 		}
 
-		public static string GetDeviceSelectorFromConnectionStatus( BluetoothConnectionStatus connectionStatus)
+		public static string GetDeviceSelectorFromConnectionStatus(BluetoothConnectionStatus connectionStatus)
 		{
-			if(connectionStatus == BluetoothConnectionStatus.Connected )
+			if (connectionStatus == BluetoothConnectionStatus.Connected)
 			{
 				return _deviceSelectorPrefix + "(System.Devices.Aep.IsConnected:=System.StructuredQueryType.Boolean#True OR " + _deviceSelectorIssueInquiry + "#False)";
 			}
@@ -39,13 +39,13 @@ namespace Windows.Devices.Bluetooth
 			}
 		}
 
-		public static string GetDeviceSelectorFromDeviceName( string deviceName)
+		public static string GetDeviceSelectorFromDeviceName(string deviceName)
 		{
 			return _deviceSelectorPrefix + "(System.ItemNameDisplay:=\"" + deviceName + "\" OR " + _deviceSelectorIssueInquiry + "#True)";
 		}
 
-		public static string GetDeviceSelectorFromBluetoothAddress( ulong bluetoothAddress)
-		{ 
+		public static string GetDeviceSelectorFromBluetoothAddress(ulong bluetoothAddress)
+		{
 			string macAddr = string.Format(CultureInfo.InvariantCulture, "{0:x12}", bluetoothAddress);
 			return _deviceSelectorPrefix + "(System.DeviceInterface.Bluetooth.DeviceAddress:=\"" + macAddr + "\" OR " + _deviceSelectorIssueInquiry + "#True)";
 		}

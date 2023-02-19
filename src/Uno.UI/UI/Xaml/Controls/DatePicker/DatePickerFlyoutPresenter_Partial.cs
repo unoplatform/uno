@@ -19,15 +19,15 @@ namespace Windows.UI.Xaml.Controls
 		const bool PICKER_SHOULD_LOOP = true;
 
 		const int DATEPICKER_RTL_CHARACTER_CODE = 8207;
-		const int DATEPICKER_MIN_MAX_YEAR_DEAFULT_OFFSET = 100;
+		//const int DATEPICKER_MIN_MAX_YEAR_DEAFULT_OFFSET = 100;
 		const int DATEPICKER_SENTINELTIME_HOUR = 12;
 		const int DATEPICKER_SENTINELTIME_MINUTE = 0;
 		const int DATEPICKER_SENTINELTIME_SECOND = 0;
 		const int DATEPICKER_WRAP_AROUND_MONTHS_FIRST_INDEX = 1;
 
-		const string _dayLoopingSelectorAutomationId = "DayLoopingSelector";
-		const string _monthLoopingSelectorAutomationId = "MonthLoopingSelector";
-		const string _yearLoopingSelectorAutomationId = "YearLoopingSelector";
+		//const string _dayLoopingSelectorAutomationId = "DayLoopingSelector";
+		//const string _monthLoopingSelectorAutomationId = "MonthLoopingSelector";
+		//const string _yearLoopingSelectorAutomationId = "YearLoopingSelector";
 
 		const string _firstPickerHostName = "FirstPickerHost";
 		const string _secondPickerHostName = "SecondPickerHost";
@@ -116,18 +116,18 @@ namespace Windows.UI.Xaml.Controls
 				_tpYearPicker.SelectionChanged -= OnSelectorSelectionChanged;
 			}
 
-			_tpBackgroundBorder= null;
-			_tpTitlePresenter= null;
-			_tpDayPicker= null;
-			_tpMonthPicker= null;
-			_tpYearPicker= null;
-			_tpFirstPickerHost= null;
-			_tpSecondPickerHost= null;
-			_tpThirdPickerHost= null;
-			_tpContentPanel= null;
-			_tpAcceptDismissHostGrid= null;
-			_tpAcceptButton= null;
-			_tpDismissButton= null;
+			_tpBackgroundBorder = null;
+			_tpTitlePresenter = null;
+			_tpDayPicker = null;
+			_tpMonthPicker = null;
+			_tpYearPicker = null;
+			_tpFirstPickerHost = null;
+			_tpSecondPickerHost = null;
+			_tpThirdPickerHost = null;
+			_tpContentPanel = null;
+			_tpAcceptDismissHostGrid = null;
+			_tpAcceptButton = null;
+			_tpDismissButton = null;
 
 			//QueryInterface(__uuidof(xaml_controls.IControlProtected), &spControlProtected);
 			//DatePickerFlyoutPresenterGenerated.OnApplyTemplateImpl();
@@ -253,7 +253,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			int itemHeight;
-			if(Application.Current.Resources.TryGetValue("DatePickerFlyoutPresenterItemHeight", out var oItemHeightFromMarkup) &&
+			if (Application.Current.Resources.TryGetValue("DatePickerFlyoutPresenterItemHeight", out var oItemHeightFromMarkup) &&
 			   oItemHeightFromMarkup is double itemHeightFromMarkup)
 			{
 				itemHeight = (int)(itemHeightFromMarkup);
@@ -265,7 +265,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			if (!(Application.Current.Resources.TryGetValue("DatePickerFlyoutPresenterItemPadding", out var oItemPadding) &&
-			    oItemPadding is Thickness itemPadding))
+				oItemPadding is Thickness itemPadding))
 			{
 				itemPadding = new Thickness(
 					0, 3, 0, 5
@@ -273,7 +273,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			if (!(Application.Current.Resources.TryGetValue("DatePickerFlyoutPresenterMonthPadding", out var oMonthPadding) &&
-			      oMonthPadding is Thickness monthPadding))
+				  oMonthPadding is Thickness monthPadding))
 			{
 				monthPadding = new Thickness(
 					9, 3, 0, 5
@@ -289,7 +289,7 @@ namespace Windows.UI.Xaml.Controls
 				LoopingSelector spMonthPicker;
 
 				//wrl.MakeAndInitialize<xaml_primitives.LoopingSelector>(spMonthPicker);
-				spMonthPicker = new LoopingSelector() {ShouldLoop = PICKER_SHOULD_LOOP };
+				spMonthPicker = new LoopingSelector() { ShouldLoop = PICKER_SHOULD_LOOP };
 				_tpMonthPicker = spMonthPicker;
 				//spMonthPicker.As(spLSAsUI);
 				//spMonthPicker.As(spLSAsFE);
@@ -305,7 +305,7 @@ namespace Windows.UI.Xaml.Controls
 					//_tpFirstPickerHost.Child = spLSAsUI;
 					_tpFirstPickerHost.Child = spMonthPicker;
 				}
-				else if(spPickerHostGridChildren != null) //_tpPickerHostGrid != null
+				else if (spPickerHostGridChildren != null) //_tpPickerHostGrid != null
 				{
 					//spPickerHostGridChildren.Append(spLSAsUI);
 					spPickerHostGridChildren.Add(spMonthPicker);
@@ -336,7 +336,7 @@ namespace Windows.UI.Xaml.Controls
 					//_tpSecondPickerHost.Child = spLSAsUI;
 					_tpSecondPickerHost.Child = spDayPicker;
 				}
-				else if(spPickerHostGridChildren != null) //_tpPickerHostGrid != null
+				else if (spPickerHostGridChildren != null) //_tpPickerHostGrid != null
 				{
 					//spPickerHostGridChildren.Append(spLSAsUI);
 					spPickerHostGridChildren.Add(spDayPicker);
@@ -367,7 +367,7 @@ namespace Windows.UI.Xaml.Controls
 				{
 					_tpThirdPickerHost.Child = spYearPicker;
 				}
-				else if(spPickerHostGridChildren != null) //_tpPickerHostGrid != null
+				else if (spPickerHostGridChildren != null) //_tpPickerHostGrid != null
 				{
 					spPickerHostGridChildren.Add(spYearPicker);
 				}
@@ -528,7 +528,7 @@ namespace Windows.UI.Xaml.Controls
 
 			int calendarIDCompareResult = 0;
 			string oldCalendarID;
-			oldCalendarID =  _calendarIdentifier; // copies the string
+			oldCalendarID = _calendarIdentifier; // copies the string
 
 			//spOwner.As(spOwnerAsDO);
 			//(wf.GetActivationFactory(
@@ -604,19 +604,19 @@ namespace Windows.UI.Xaml.Controls
 			if (dayFormatChanged)
 			{
 				// The cached formatters are no longer valid. They will be regenerated via RefreshSetup
-				_tpPrimaryDayFormatter= null;
+				_tpPrimaryDayFormatter = null;
 			}
 
 			if (monthFormatChanged)
 			{
 				// The cached formatters are no longer valid. They will be regenerated via RefreshSetup
-				_tpPrimaryMonthFormatter= null;
+				_tpPrimaryMonthFormatter = null;
 			}
 
 			if (yearFormatChanged)
 			{
 				// The cached formatters are no longer valid. They will be regenerated via RefreshSetup
-				_tpPrimaryYearFormatter= null;
+				_tpPrimaryYearFormatter = null;
 			}
 
 			if (haveYearLimitsChanged || dayFormatChanged || monthFormatChanged || yearFormatChanged)
@@ -685,11 +685,13 @@ namespace Windows.UI.Xaml.Controls
 			return;
 		}
 
+#if false
 		void OnKeyDownImpl(KeyRoutedEventArgs pEventArgs)
 		{
 			DateTimePickerFlyoutHelper.OnKeyDownImpl(pEventArgs, _tpFirstPickerAsControl,
 				_tpSecondPickerAsControl, _tpThirdPickerAsControl, _tpContentPanel);
 		}
+#endif
 
 		//DependencyObject GetDefaultIsDefaultShadowEnabled()
 		//{
@@ -866,7 +868,7 @@ namespace Windows.UI.Xaml.Controls
 				dateTime = _tpCalendar.GetDateTime();
 				//wrl.MakeAndInitialize<DatePickerFlyoutItem>(spItem);
 				spItem = (oldList.Count > yearOffset ? oldList[yearOffset] as DatePickerFlyoutItem : null)
-				         ?? new DatePickerFlyoutItem();
+						 ?? new DatePickerFlyoutItem();
 				strYear = spPrimaryFormatter.Format(dateTime);
 				spItem.PrimaryText = strYear;
 				spItem.SecondaryText = "";
@@ -911,7 +913,7 @@ namespace Windows.UI.Xaml.Controls
 				dateTime = _tpCalendar.GetDateTime();
 				//wrl.MakeAndInitialize<DatePickerFlyoutItem>(spItem);
 				spItem = (oldList.Count > monthOffset ? oldList[monthOffset] as DatePickerFlyoutItem : null)
-				         ?? new DatePickerFlyoutItem();
+						 ?? new DatePickerFlyoutItem();
 				strMonth = spPrimaryFormatter.Format(dateTime);
 				spItem.PrimaryText = strMonth;
 				//spItem.As(spInspectable);
@@ -927,7 +929,7 @@ namespace Windows.UI.Xaml.Controls
 		void GenerateDays(
 				int yearOffset,
 				int monthOffset)
-		 {
+		{
 
 			string strDay;
 			DateTimeFormatter spPrimaryFormatter;
@@ -962,7 +964,7 @@ namespace Windows.UI.Xaml.Controls
 				dateTime = _tpCalendar.GetDateTime();
 				//wrl.MakeAndInitialize<DatePickerFlyoutItem>(spItem);
 				spItem = (oldList.Count > dayOffset ? oldList[dayOffset] as DatePickerFlyoutItem : null)
-				         ?? new DatePickerFlyoutItem();
+						 ?? new DatePickerFlyoutItem();
 				strDay = spPrimaryFormatter.Format(dateTime);
 				spItem.PrimaryText = strDay;
 				//spItem.As(spInspectable);
@@ -1205,7 +1207,7 @@ namespace Windows.UI.Xaml.Controls
 				// with its identifying info.
 				DateTimeFormatter spFormatter;
 
-				_tpPrimaryYearFormatter= null;
+				_tpPrimaryYearFormatter = null;
 
 				spFormatter = CreateNewFormatter(_yearFormat, strCalendarIdentifier);
 				_tpPrimaryYearFormatter = spFormatter;
@@ -1289,7 +1291,7 @@ namespace Windows.UI.Xaml.Controls
 
 			//spFormatterFactory.CreateDateTimeFormatter(strFormat, spFormatter);
 			spFormatter = new DateTimeFormatter(strFormat);
-			
+
 			//spFormatter.get_GeographicRegion(strGeographicRegion);
 			//spFormatter.get_Languages(spLanguages);
 			//spFormatter.get_Clock(strClock);
@@ -1533,9 +1535,9 @@ namespace Windows.UI.Xaml.Controls
 			Control secondPickerAsControl = default;
 			Control thirdPickerAsControl = default;
 
-			_tpFirstPickerAsControl= null;
-			_tpSecondPickerAsControl= null;
-			_tpThirdPickerAsControl= null;
+			_tpFirstPickerAsControl = null;
+			_tpSecondPickerAsControl = null;
+			_tpThirdPickerAsControl = null;
 
 			//(wf.GetActivationFactory(
 			//	wrl_wrappers.Hstring(RuntimeClass_Microsoft_UI_Xaml_Controls_Grid),

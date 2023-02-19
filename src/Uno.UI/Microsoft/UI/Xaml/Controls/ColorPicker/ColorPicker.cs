@@ -1280,88 +1280,88 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				case ColorSpectrumComponents.HueValue:
 				case ColorSpectrumComponents.ValueHue:
-				{
-					int minSaturation = this.MinSaturation;
-					int maxSaturation = this.MaxSaturation;
-
-					thirdDimensionSlider.Minimum = minSaturation;
-					thirdDimensionSlider.Maximum = maxSaturation;
-					thirdDimensionSlider.Value = m_currentHsv.S * 100;
-
-					// If MinSaturation >= MaxSaturation, then by convention MinSaturation is the only value
-					// that the slider can take.
-					if (minSaturation >= maxSaturation)
 					{
-						maxSaturation = minSaturation;
-					}
+						int minSaturation = this.MinSaturation;
+						int maxSaturation = this.MaxSaturation;
 
-					AddGradientStop(thirdDimensionSliderGradientBrush, 0.0, new Hsv(m_currentHsv.H, minSaturation / 100.0, 1.0), 1.0);
-					AddGradientStop(thirdDimensionSliderGradientBrush, 1.0, new Hsv(m_currentHsv.H, maxSaturation / 100.0, 1.0), 1.0);
-				}
-				break;
+						thirdDimensionSlider.Minimum = minSaturation;
+						thirdDimensionSlider.Maximum = maxSaturation;
+						thirdDimensionSlider.Value = m_currentHsv.S * 100;
+
+						// If MinSaturation >= MaxSaturation, then by convention MinSaturation is the only value
+						// that the slider can take.
+						if (minSaturation >= maxSaturation)
+						{
+							maxSaturation = minSaturation;
+						}
+
+						AddGradientStop(thirdDimensionSliderGradientBrush, 0.0, new Hsv(m_currentHsv.H, minSaturation / 100.0, 1.0), 1.0);
+						AddGradientStop(thirdDimensionSliderGradientBrush, 1.0, new Hsv(m_currentHsv.H, maxSaturation / 100.0, 1.0), 1.0);
+					}
+					break;
 
 				case ColorSpectrumComponents.HueSaturation:
 				case ColorSpectrumComponents.SaturationHue:
-				{
-					int minValue = this.MinValue;
-					int maxValue = this.MaxValue;
-
-					thirdDimensionSlider.Minimum = minValue;
-					thirdDimensionSlider.Maximum = maxValue;
-					thirdDimensionSlider.Value = m_currentHsv.V * 100;
-
-					// If MinValue >= MaxValue, then by convention MinValue is the only value
-					// that the slider can take.
-					if (minValue >= maxValue)
 					{
-						maxValue = minValue;
-					}
+						int minValue = this.MinValue;
+						int maxValue = this.MaxValue;
 
-					AddGradientStop(thirdDimensionSliderGradientBrush, 0.0, new Hsv(m_currentHsv.H, m_currentHsv.S, minValue / 100.0), 1.0);
-					AddGradientStop(thirdDimensionSliderGradientBrush, 1.0, new Hsv(m_currentHsv.H, m_currentHsv.S, maxValue / 100.0), 1.0);
-				}
-				break;
+						thirdDimensionSlider.Minimum = minValue;
+						thirdDimensionSlider.Maximum = maxValue;
+						thirdDimensionSlider.Value = m_currentHsv.V * 100;
+
+						// If MinValue >= MaxValue, then by convention MinValue is the only value
+						// that the slider can take.
+						if (minValue >= maxValue)
+						{
+							maxValue = minValue;
+						}
+
+						AddGradientStop(thirdDimensionSliderGradientBrush, 0.0, new Hsv(m_currentHsv.H, m_currentHsv.S, minValue / 100.0), 1.0);
+						AddGradientStop(thirdDimensionSliderGradientBrush, 1.0, new Hsv(m_currentHsv.H, m_currentHsv.S, maxValue / 100.0), 1.0);
+					}
+					break;
 
 				case ColorSpectrumComponents.ValueSaturation:
 				case ColorSpectrumComponents.SaturationValue:
-				{
-					int minHue = this.MinHue;
-					int maxHue = this.MaxHue;
-
-					thirdDimensionSlider.Minimum = minHue;
-					thirdDimensionSlider.Maximum = maxHue;
-					thirdDimensionSlider.Value = m_currentHsv.H;
-
-					// If MinHue >= MaxHue, then by convention MinHue is the only value
-					// that the slider can take.
-					if (minHue >= maxHue)
 					{
-						maxHue = minHue;
-					}
+						int minHue = this.MinHue;
+						int maxHue = this.MaxHue;
 
-					double minOffset = minHue / 359.0;
-					double maxOffset = maxHue / 359.0;
+						thirdDimensionSlider.Minimum = minHue;
+						thirdDimensionSlider.Maximum = maxHue;
+						thirdDimensionSlider.Value = m_currentHsv.H;
 
-					// With unclamped hue values, we have six different gradient stops, corresponding to red, yellow, green, cyan, blue, and purple.
-					// However, with clamped hue values, we may not need all of those gradient stops.
-					// We know we need a gradient stop at the start and end corresponding to the min and max values for hue,
-					// and then in the middle, we'll add any gradient stops corresponding to the hue of those six pure colors that exist
-					// between the min and max hue.
-					AddGradientStop(thirdDimensionSliderGradientBrush, 0.0, new Hsv((double)minHue, 1.0, 1.0), 1.0);
-
-					for (int sextant = 1; sextant <= 5; sextant++)
-					{
-						double offset = sextant / 6.0;
-
-						if (minOffset < offset && maxOffset > offset)
+						// If MinHue >= MaxHue, then by convention MinHue is the only value
+						// that the slider can take.
+						if (minHue >= maxHue)
 						{
-							AddGradientStop(thirdDimensionSliderGradientBrush, (offset - minOffset) / (maxOffset - minOffset), new Hsv(60.0 * sextant, 1.0, 1.0), 1.0);
+							maxHue = minHue;
 						}
-					}
 
-					AddGradientStop(thirdDimensionSliderGradientBrush, 1.0, new Hsv((double)maxHue, 1.0, 1.0), 1.0);
-				}
-				break;
+						double minOffset = minHue / 359.0;
+						double maxOffset = maxHue / 359.0;
+
+						// With unclamped hue values, we have six different gradient stops, corresponding to red, yellow, green, cyan, blue, and purple.
+						// However, with clamped hue values, we may not need all of those gradient stops.
+						// We know we need a gradient stop at the start and end corresponding to the min and max values for hue,
+						// and then in the middle, we'll add any gradient stops corresponding to the hue of those six pure colors that exist
+						// between the min and max hue.
+						AddGradientStop(thirdDimensionSliderGradientBrush, 0.0, new Hsv((double)minHue, 1.0, 1.0), 1.0);
+
+						for (int sextant = 1; sextant <= 5; sextant++)
+						{
+							double offset = sextant / 6.0;
+
+							if (minOffset < offset && maxOffset > offset)
+							{
+								AddGradientStop(thirdDimensionSliderGradientBrush, (offset - minOffset) / (maxOffset - minOffset), new Hsv(60.0 * sextant, 1.0, 1.0), 1.0);
+							}
+						}
+
+						AddGradientStop(thirdDimensionSliderGradientBrush, 1.0, new Hsv((double)maxHue, 1.0, 1.0), 1.0);
+					}
+					break;
 			}
 		}
 

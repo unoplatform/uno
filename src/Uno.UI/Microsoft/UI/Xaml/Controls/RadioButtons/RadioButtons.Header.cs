@@ -31,6 +31,6 @@
 		private bool m_testHooksEnabled = false;
 
 		private const string s_repeaterName = "InnerRepeater";
-		private const string s_childHandlersPropertyName = "ChildHandlers";
+		//private const string s_childHandlersPropertyName = "ChildHandlers";
 	}
 }

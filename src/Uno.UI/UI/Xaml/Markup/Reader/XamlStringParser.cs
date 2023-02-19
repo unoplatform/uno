@@ -24,10 +24,10 @@ namespace Windows.UI.Xaml.Markup.Reader
 		{
 			var document = XmlReader.Create(new StringReader(content));
 
-            // Initialize the reader using an empty context, because when the tasl
-            // is run under the BeforeCompile in VS IDE, the loaded assemblies are used 
-            // to interpret the meaning of objects, which is not correct in Uno.UI context.
-            var context = new XamlSchemaContext(Enumerable.Empty<Assembly>());
+			// Initialize the reader using an empty context, because when the tasl
+			// is run under the BeforeCompile in VS IDE, the loaded assemblies are used 
+			// to interpret the meaning of objects, which is not correct in Uno.UI context.
+			var context = new XamlSchemaContext(Enumerable.Empty<Assembly>());
 
 			// Force the line info, otherwise it will be enabled only when the debugger is attached.
 			var settings = new XamlXmlReaderSettings() { ProvideLineInfo = true };
@@ -126,7 +126,8 @@ namespace Windows.UI.Xaml.Markup.Reader
 		private XamlMemberDefinition VisitMember(XamlXmlReader reader, XamlObjectDefinition owner)
 		{
 			var member = new XamlMemberDefinition(reader.Member, reader.LineNumber, reader.LinePosition, owner);
-
+			var lastWasLiteralInline = false;
+			var lastWasTrimSurroundingWhiteSpace = false;
 			while (reader.Read())
 			{
 				WriteState(reader);
@@ -140,25 +141,45 @@ namespace Windows.UI.Xaml.Markup.Reader
 					case XamlNodeType.Value:
 						if (IsLiteralInlineText(reader.Value, member, owner))
 						{
-							var run = ConvertLiteralInlineTextToRun(reader);
+							var run = ConvertLiteralInlineTextToRun(reader, trimStart: !reader.PreserveWhitespace && lastWasTrimSurroundingWhiteSpace);
 							member.Objects.Add(run);
+							lastWasLiteralInline = true;
+							lastWasTrimSurroundingWhiteSpace = false;
 						}
 						else
 						{
+							lastWasLiteralInline = false;
+							lastWasTrimSurroundingWhiteSpace = false;
 							member.Value = reader.Value;
 						}
 						break;
 
 					case XamlNodeType.StartObject:
 						_depth++;
-						member.Objects.Add(VisitObject(reader, owner));
+						var obj = VisitObject(reader, owner);
+						if (!reader.PreserveWhitespace &&
+							lastWasLiteralInline &&
+							obj.Type.TrimSurroundingWhitespace &&
+							member.Objects.Count > 0 &&
+							member.Objects[member.Objects.Count - 1].Members.Single() is { Value: string previousValue } runDefinition)
+						{
+							runDefinition.Value = previousValue.TrimEnd();
+						}
+
+						lastWasLiteralInline = false;
+						lastWasTrimSurroundingWhiteSpace = obj.Type.TrimSurroundingWhitespace;
+						member.Objects.Add(obj);
 						break;
 
 					case XamlNodeType.EndObject:
+						lastWasLiteralInline = false;
+						lastWasTrimSurroundingWhiteSpace = false;
 						_depth--;
 						break;
 
 					case XamlNodeType.NamespaceDeclaration:
+						lastWasLiteralInline = false;
+						lastWasTrimSurroundingWhiteSpace = false;
 						// Skip
 						break;
 
@@ -184,13 +205,13 @@ namespace Windows.UI.Xaml.Markup.Reader
 				)
 				&& (member.Member.Name == "_UnknownContent" || member.Member.Name == "Inlines");
 		}
-		
-		private XamlObjectDefinition ConvertLiteralInlineTextToRun(XamlXmlReader reader)
+
+		private XamlObjectDefinition ConvertLiteralInlineTextToRun(XamlXmlReader reader, bool trimStart)
 		{
 			var runType = new XamlType(
 				XamlConstants.PresentationXamlXmlNamespace,
 				"Run",
-				new List<XamlType>(), 
+				new List<XamlType>(),
 				new XamlSchemaContext()
 			);
 
@@ -202,7 +223,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 				{
 					new XamlMemberDefinition(textMember, reader.LineNumber, reader.LinePosition)
 					{
-						Value = reader.Value
+						Value = trimStart ? ((string)reader.Value).TrimStart() : reader.Value
 					}
 				}
 			};

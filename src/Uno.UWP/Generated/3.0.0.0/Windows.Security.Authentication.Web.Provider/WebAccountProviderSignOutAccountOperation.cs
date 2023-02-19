@@ -13,7 +13,7 @@ namespace Windows.Security.Authentication.Web.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WebAccountProviderOperationKind WebAccountProviderSignOutAccountOperation.Kind is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member WebAccountProviderOperationKind WebAccountProviderSignOutAccountOperation.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=WebAccountProviderOperationKind%20WebAccountProviderSignOutAccountOperation.Kind");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Security.Authentication.Web.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri WebAccountProviderSignOutAccountOperation.ApplicationCallbackUri is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Uri WebAccountProviderSignOutAccountOperation.ApplicationCallbackUri is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Uri%20WebAccountProviderSignOutAccountOperation.ApplicationCallbackUri");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Security.Authentication.Web.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string WebAccountProviderSignOutAccountOperation.ClientId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string WebAccountProviderSignOutAccountOperation.ClientId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20WebAccountProviderSignOutAccountOperation.ClientId");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Security.Authentication.Web.Provider
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WebAccount WebAccountProviderSignOutAccountOperation.WebAccount is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member WebAccount WebAccountProviderSignOutAccountOperation.WebAccount is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=WebAccount%20WebAccountProviderSignOutAccountOperation.WebAccount");
 			}
 		}
 		#endif

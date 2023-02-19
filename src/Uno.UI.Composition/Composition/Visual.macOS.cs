@@ -5,8 +5,8 @@ using System;
 
 namespace Windows.UI.Composition
 {
-    public partial class Visual : global::Windows.UI.Composition.CompositionObject
-    {
+	public partial class Visual : global::Windows.UI.Composition.CompositionObject
+	{
 		internal object? NativeOwner { get; set; }
-    }
+	}
 }

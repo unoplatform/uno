@@ -23,7 +23,6 @@ namespace Uno.UI.SourceGenerators.RemoteControl
 	{
 		public void Initialize(GeneratorInitializationContext context)
 		{
-			DependenciesInitializer.Init();
 		}
 
 		public void Execute(GeneratorExecutionContext context)
@@ -50,9 +49,18 @@ namespace Uno.UI.SourceGenerators.RemoteControl
 				BuildEndPointAttribute(context, sb);
 				BuildSearchPaths(context, sb);
 				BuildServerProcessorsPaths(context, sb);
+				BuildXamlReaderHotReloadConfiguration(context, sb);
 
 				context.AddSource("RemoteControl", sb.ToString());
 			}
+		}
+
+		private void BuildXamlReaderHotReloadConfiguration(GeneratorExecutionContext context, IndentedStringBuilder sb)
+		{
+			sb.AppendLineIndented(
+				$"[assembly: global::System.Reflection.AssemblyMetadata(" +
+				$"\"UnoUseXamlReaderHotReload\", " +
+				$"\"{context.GetMSBuildPropertyValue("UnoUseXamlReaderHotReload")}\")]");
 		}
 
 		private void BuildServerProcessorsPaths(GeneratorExecutionContext context, IndentedStringBuilder sb)
@@ -109,14 +117,14 @@ namespace Uno.UI.SourceGenerators.RemoteControl
 				var addresses = NetworkInterface.GetAllNetworkInterfaces()
 					.SelectMany(x => x.GetIPProperties().UnicastAddresses)
 					.Where(x => !IPAddress.IsLoopback(x.Address));
-					//This is not supported on linux yet: .Where(x => x.DuplicateAddressDetectionState == DuplicateAddressDetectionState.Preferred);
+				//This is not supported on linux yet: .Where(x => x.DuplicateAddressDetectionState == DuplicateAddressDetectionState.Preferred);
 
 				foreach (var addressInfo in addresses)
 				{
 					var address = addressInfo.Address;
 
 					string addressStr;
-					if(address.AddressFamily == AddressFamily.InterNetworkV6)
+					if (address.AddressFamily == AddressFamily.InterNetworkV6)
 					{
 						address.ScopeId = 0; // remove annoying "%xx" on IPv6 addresses
 						addressStr = $"[{address}]";

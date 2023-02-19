@@ -3,7 +3,7 @@ parameters:
 
 jobs:
 - job: Wasm_UITests_Build
-  displayName: 'Build WebAssembly UI Tests'
+  displayName: 'Build WebAssembly SamplesApp UI Tests'
   container: nv-bionic-wasm
 
   dependsOn: winui_convert_tree
@@ -36,8 +36,7 @@ jobs:
   - template: templates/nuget-cache.yml
     parameters:
       nugetPackages: $(NUGET_PACKAGES)
-    
-  - template: templates/optimize-roslyn-mono.yml
+
   - template: templates/dotnet-install.yml
 
   - bash: |
@@ -57,6 +56,7 @@ jobs:
 
   - task: PublishBuildArtifacts@1
     condition: always()
+    retryCountOnTaskFailure: 3
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
       ArtifactName: wasm-uitest-binaries
@@ -64,7 +64,7 @@ jobs:
 
 
 - job: Wasm_UITests_Snap
-  displayName: 'WebAssembly UI Tests (Snapshots Run)'
+  displayName: 'Run WebAssembly Snapshots Tests'
   dependsOn:
   - Wasm_UITests_Build
   - SamplesApp_UITests_Build
@@ -96,7 +96,6 @@ jobs:
         downloadPath: '$(build.sourcesdirectory)/build'
 
   - template: templates/dotnet-install.yml
-  - template: templates/optimize-roslyn-mono.yml
 
   - bash: |
       set -euo pipefail
@@ -129,6 +128,7 @@ jobs:
       flattenFolders: false
 
   - task: PublishBuildArtifacts@1
+    retryCountOnTaskFailure: 3
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
       ArtifactName: uitests-results
@@ -136,7 +136,7 @@ jobs:
 
 
 - job: Wasm_UITests_Automated
-  displayName: 'WebAssembly UI Tests (Automated Run)'
+  displayName: 'Run WebAssembly Automated Test'
   dependsOn:
   - Wasm_UITests_Build
   - SamplesApp_UITests_Build
@@ -207,7 +207,6 @@ jobs:
     clean: true
 
   - template: templates/dotnet-install.yml
-  - template: templates/optimize-roslyn-mono.yml
 
   - template: templates/nuget-cache.yml
     parameters:
@@ -285,6 +284,7 @@ jobs:
 
   - task: PublishBuildArtifacts@1
     condition: always()
+    retryCountOnTaskFailure: 3
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
       ArtifactName: uitests-results
@@ -292,6 +292,7 @@ jobs:
 
   - task: PublishBuildArtifacts@1
     condition: always()
+    retryCountOnTaskFailure: 3
     inputs:
       PathtoPublish: $(build.sourcesdirectory)/build/uitests-failure-results
       ArtifactName: uitests-failure-results

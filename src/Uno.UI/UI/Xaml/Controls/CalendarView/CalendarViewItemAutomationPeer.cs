@@ -46,6 +46,7 @@ namespace Windows.UI.Xaml.Controls
 				return pReturnValue;
 			}
 
+#if false
 			private void InvokeImpl()
 			{
 				UIElement spOwner;
@@ -71,7 +72,7 @@ namespace Windows.UI.Xaml.Controls
 				pParent.GetActiveGeneratorHost(out spHost);
 
 				CalendarPanel pCalendarPanel = spHost.Panel;
-				if (pCalendarPanel is {})
+				if (pCalendarPanel is { })
 				{
 					int itemIndex = 0;
 					itemIndex = spHost.CalculateOffsetFromMinDate(date);
@@ -107,7 +108,7 @@ namespace Windows.UI.Xaml.Controls
 				pParent.GetActiveGeneratorHost(out spHost);
 
 				CalendarPanel pCalendarPanel = spHost.Panel;
-				if (pCalendarPanel is {})
+				if (pCalendarPanel is { })
 				{
 					int itemIndex = 0;
 					itemIndex = spHost.CalculateOffsetFromMinDate(date);
@@ -152,6 +153,7 @@ namespace Windows.UI.Xaml.Controls
 
 				return;
 			}
+#endif
 		}
 	}
 }

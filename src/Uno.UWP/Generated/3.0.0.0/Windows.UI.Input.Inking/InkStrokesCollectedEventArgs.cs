@@ -13,7 +13,7 @@ namespace Windows.UI.Input.Inking
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<InkStroke> InkStrokesCollectedEventArgs.Strokes is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<InkStroke> InkStrokesCollectedEventArgs.Strokes is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CInkStroke%3E%20InkStrokesCollectedEventArgs.Strokes");
 			}
 		}
 		#endif

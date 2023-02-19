@@ -2,7 +2,7 @@
 
 namespace Windows.UI.Input.Preview.Injection;
 
-public partial struct InjectedInputPoint 
+public partial struct InjectedInputPoint
 {
 	public int PositionX;
 

@@ -54,7 +54,7 @@ namespace UITests.Windows_UI_Xaml_Controls.DatePicker
 				return dto.ToString("R");
 			}
 
-			if(o is DateTime dt)
+			if (o is DateTime dt)
 			{
 				return dt.ToString("R");
 			}

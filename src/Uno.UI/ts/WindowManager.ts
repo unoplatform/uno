@@ -252,6 +252,23 @@ namespace Uno.UI {
 			return true;
 		}
 
+		public createContentNativeFast(
+			htmlId: number,
+			tagName: string,
+			uiElementRegistrationId: number,
+			isFocusable: boolean,
+			isSvg: boolean) {
+
+			this.createContentInternal({
+				id: this.handleToString(htmlId),
+				handle: htmlId, /* handle is htmlId */
+				tagName: tagName,
+				uiElementRegistrationId: uiElementRegistrationId,
+				isFocusable: isFocusable,
+				isSvg: isSvg
+			});
+		}
+
 		private createContentInternal(contentDefinition: IContentDefinition): void {
 			// Create the HTML element
 			const element =
@@ -390,6 +407,11 @@ namespace Uno.UI {
 			return true;
 		}
 
+		public setVisibilityNativeFast(htmlId: number, visible: boolean) {
+
+			this.setVisibilityInternal(htmlId, visible);
+		}
+
 		private setVisibilityInternal(elementId: number, visible: boolean): void {
 			const element = this.getView(elementId);
 
@@ -514,22 +536,32 @@ namespace Uno.UI {
 		public setPropertyNative(pParams: number): boolean {
 
 			const params = WindowManagerSetPropertyParams.unmarshal(pParams);
-			const element = this.getView(params.HtmlId);
 
-			for (let i = 0; i < params.Pairs_Length; i += 2) {
-				const setVal = params.Pairs[i + 1];
-				if (setVal === "true") {
-					(element as any)[params.Pairs[i]] = true;
-				}
-				else if (setVal === "false") {
-					(element as any)[params.Pairs[i]] = false;
-				}
-				else {
-					(element as any)[params.Pairs[i]] = setVal;
-				}
-			}
+			this.setPropertyNativeFast(params.HtmlId, params.Pairs);
 
 			return true;
+		}
+
+		public setPropertyNativeFast(htmlId: number, pairs: string[]) {
+
+			const element = this.getView(htmlId);
+
+			const length = pairs.length;
+
+			for (let i = 0; i < length; i += 2) {
+
+				const setVal = pairs[i + 1];
+
+				if (setVal === "true") {
+					(element as any)[pairs[i]] = true;
+				}
+				else if (setVal === "false") {
+					(element as any)[pairs[i]] = false;
+				}
+				else {
+					(element as any)[pairs[i]] = setVal;
+				}
+			}
 		}
 
 		/**
@@ -895,16 +927,26 @@ namespace Uno.UI {
 		public setElementTransformNative(pParams: number): boolean {
 
 			const params = WindowManagerSetElementTransformParams.unmarshal(pParams);
-			const element = this.getView(params.HtmlId);
 
-			const style = element.style;
-
-			const matrix = `matrix(${params.M11},${params.M12},${params.M21},${params.M22},${params.M31},${params.M32})`;
-			style.transform = matrix;
-
-			this.setAsArranged(element);
+			this.setElementTransformNativeFast(params.HtmlId, params.M11, params.M12, params.M21, params.M22, params.M31, params.M32);
 
 			return true;
+		}
+
+		public setElementTransformNativeFast(
+			htmlId: number,
+			m11: number,
+			m12: number,
+			m21: number,
+			m22: number,
+			m31: number,
+			m32: number) {
+
+			const element = this.getView(htmlId);
+
+			element.style.transform = `matrix(${m11},${m12},${m21},${m22},${m31},${m32})`;
+
+			this.setAsArranged(element);
 		}
 
 		private setPointerEvents(htmlId: number, enabled: boolean) {
@@ -917,6 +959,10 @@ namespace Uno.UI {
 			this.setPointerEvents(params.HtmlId, params.Enabled);
 
 			return true;
+		}
+
+		public setPointerEventsNativeFast(htmlId: number, enabled: boolean) {
+			this.getView(htmlId).style.pointerEvents = enabled ? "auto" : "none";
 		}
 
 		/**
@@ -1273,6 +1319,11 @@ namespace Uno.UI {
 			const params = WindowManagerDestroyViewParams.unmarshal(pParams);
 			this.destroyViewInternal(params.HtmlId);
 			return true;
+		}
+
+		public destroyViewNativeFast(htmlId: number) {
+
+			this.destroyViewInternal(htmlId);
 		}
 
 		private destroyViewInternal(elementId: number): void {

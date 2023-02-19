@@ -18,6 +18,8 @@
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 
 		<UnoRuntimeIdentifier>Reference</UnoRuntimeIdentifier>
+
+		<NoWarn>$(NoWarn);IDE0051</NoWarn>
 	</PropertyGroup>
 
 	<PropertyGroup>

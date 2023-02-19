@@ -31,6 +31,8 @@ namespace Uno.UI.Tasks.Assets
 
 		public string AndroidAssetsPrefix { get; set; }
 
+		public string IosAppManifest { get; set; }
+
 		[Required]
 		public string DefaultLanguage { get; set; }
 
@@ -52,7 +54,7 @@ namespace Uno.UI.Tasks.Assets
 
 			Func<ResourceCandidate, string> resourceToTargetPath;
 			Func<string, string> pathEncoder;
-			
+
 			switch (TargetPlatform)
 			{
 				case "ios":
@@ -169,7 +171,7 @@ namespace Uno.UI.Tasks.Assets
 			}
 
 			RetargetedAssets = retargetdAssets.ToArray();
-			PartialAppManifests = GenerateFontPartialManifest(fontAssets);
+			PartialAppManifests = GenerateFontPartialManifest(fontAssets, IosAppManifest);
 		}
 
 

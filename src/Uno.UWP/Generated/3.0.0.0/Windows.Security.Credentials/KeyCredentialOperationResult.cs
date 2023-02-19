@@ -13,7 +13,7 @@ namespace Windows.Security.Credentials
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBuffer KeyCredentialOperationResult.Result is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IBuffer KeyCredentialOperationResult.Result is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IBuffer%20KeyCredentialOperationResult.Result");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Security.Credentials
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member KeyCredentialStatus KeyCredentialOperationResult.Status is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member KeyCredentialStatus KeyCredentialOperationResult.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=KeyCredentialStatus%20KeyCredentialOperationResult.Status");
 			}
 		}
 		#endif

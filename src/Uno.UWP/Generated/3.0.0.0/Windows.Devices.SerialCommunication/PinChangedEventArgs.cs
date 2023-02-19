@@ -13,7 +13,7 @@ namespace Windows.Devices.SerialCommunication
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SerialPinChange PinChangedEventArgs.PinChange is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SerialPinChange PinChangedEventArgs.PinChange is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SerialPinChange%20PinChangedEventArgs.PinChange");
 			}
 		}
 		#endif

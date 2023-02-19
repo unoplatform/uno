@@ -153,8 +153,8 @@ namespace Windows.UI.Composition
 			if (_isDiscrete)
 			{
 				var discreteAnim = CAKeyFrameAnimation.FromKeyPath(_property);
-				discreteAnim.KeyTimes = new NSNumber[] {new NSNumber(0.0), new NSNumber(1.0)};
-				discreteAnim.Values = new NSObject[] {_nsValueConversion(to)};
+				discreteAnim.KeyTimes = new NSNumber[] { new NSNumber(0.0), new NSNumber(1.0) };
+				discreteAnim.Values = new NSObject[] { _nsValueConversion(to) };
 
 				discreteAnim.CalculationMode
 #if NET6_0_OR_GREATER
@@ -221,7 +221,7 @@ namespace Windows.UI.Composition
 		private EventHandler OnAnimationStarted(CAAnimation animation)
 		{
 			EventHandler? handler = default;
-			handler= Handler;
+			handler = Handler;
 
 			return handler;
 

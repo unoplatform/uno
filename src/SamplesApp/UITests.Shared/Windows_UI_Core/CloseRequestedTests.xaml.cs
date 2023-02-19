@@ -9,11 +9,11 @@ namespace UITests.Windows_UI_Core
 {
 	[SampleControlInfo("Windows.UI.Core")]
 	public sealed partial class CloseRequestedTests : Page
-    {
-        public CloseRequestedTests()
-        {
-            this.InitializeComponent();
-        }
+	{
+		public CloseRequestedTests()
+		{
+			this.InitializeComponent();
+		}
 
 		private void AddHandler_Click(object sender, RoutedEventArgs args)
 		{

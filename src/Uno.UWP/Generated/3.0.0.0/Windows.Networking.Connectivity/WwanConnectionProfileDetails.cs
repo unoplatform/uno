@@ -13,7 +13,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string WwanConnectionProfileDetails.AccessPointName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string WwanConnectionProfileDetails.AccessPointName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20WwanConnectionProfileDetails.AccessPointName");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string WwanConnectionProfileDetails.HomeProviderId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string WwanConnectionProfileDetails.HomeProviderId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20WwanConnectionProfileDetails.HomeProviderId");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WwanNetworkIPKind WwanConnectionProfileDetails.IPKind is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member WwanNetworkIPKind WwanConnectionProfileDetails.IPKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=WwanNetworkIPKind%20WwanConnectionProfileDetails.IPKind");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<Guid> WwanConnectionProfileDetails.PurposeGuids is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<Guid> WwanConnectionProfileDetails.PurposeGuids is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CGuid%3E%20WwanConnectionProfileDetails.PurposeGuids");
 			}
 		}
 		#endif
@@ -53,14 +53,14 @@ namespace Windows.Networking.Connectivity
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Networking.Connectivity.WwanNetworkRegistrationState GetNetworkRegistrationState()
 		{
-			throw new global::System.NotImplementedException("The member WwanNetworkRegistrationState WwanConnectionProfileDetails.GetNetworkRegistrationState() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member WwanNetworkRegistrationState WwanConnectionProfileDetails.GetNetworkRegistrationState() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=WwanNetworkRegistrationState%20WwanConnectionProfileDetails.GetNetworkRegistrationState%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Networking.Connectivity.WwanDataClass GetCurrentDataClass()
 		{
-			throw new global::System.NotImplementedException("The member WwanDataClass WwanConnectionProfileDetails.GetCurrentDataClass() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member WwanDataClass WwanConnectionProfileDetails.GetCurrentDataClass() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=WwanDataClass%20WwanConnectionProfileDetails.GetCurrentDataClass%28%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Networking.Connectivity.WwanConnectionProfileDetails.IPKind.get

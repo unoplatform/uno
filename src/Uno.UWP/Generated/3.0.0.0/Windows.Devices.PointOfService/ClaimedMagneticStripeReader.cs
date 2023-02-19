@@ -13,7 +13,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MagneticStripeReaderTrackIds ClaimedMagneticStripeReader.TracksToRead is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MagneticStripeReaderTrackIds ClaimedMagneticStripeReader.TracksToRead is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MagneticStripeReaderTrackIds%20ClaimedMagneticStripeReader.TracksToRead");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ClaimedMagneticStripeReader.IsTransmitSentinelsEnabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ClaimedMagneticStripeReader.IsTransmitSentinelsEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ClaimedMagneticStripeReader.IsTransmitSentinelsEnabled");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ClaimedMagneticStripeReader.IsDisabledOnDataReceived is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ClaimedMagneticStripeReader.IsDisabledOnDataReceived is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ClaimedMagneticStripeReader.IsDisabledOnDataReceived");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ClaimedMagneticStripeReader.IsDecodeDataEnabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ClaimedMagneticStripeReader.IsDecodeDataEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ClaimedMagneticStripeReader.IsDecodeDataEnabled");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint ClaimedMagneticStripeReader.DataEncryptionAlgorithm is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint ClaimedMagneticStripeReader.DataEncryptionAlgorithm is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20ClaimedMagneticStripeReader.DataEncryptionAlgorithm");
 			}
 			set
 			{
@@ -83,7 +83,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ClaimedMagneticStripeReader.DeviceId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ClaimedMagneticStripeReader.DeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ClaimedMagneticStripeReader.DeviceId");
 			}
 		}
 		#endif
@@ -93,7 +93,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ClaimedMagneticStripeReader.IsDeviceAuthenticated is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ClaimedMagneticStripeReader.IsDeviceAuthenticated is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ClaimedMagneticStripeReader.IsDeviceAuthenticated");
 			}
 		}
 		#endif
@@ -103,7 +103,7 @@ namespace Windows.Devices.PointOfService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ClaimedMagneticStripeReader.IsEnabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ClaimedMagneticStripeReader.IsEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ClaimedMagneticStripeReader.IsEnabled");
 			}
 		}
 		#endif
@@ -124,14 +124,14 @@ namespace Windows.Devices.PointOfService
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction EnableAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction ClaimedMagneticStripeReader.EnableAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction ClaimedMagneticStripeReader.EnableAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20ClaimedMagneticStripeReader.EnableAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction DisableAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction ClaimedMagneticStripeReader.DisableAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction ClaimedMagneticStripeReader.DisableAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20ClaimedMagneticStripeReader.DisableAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -152,42 +152,42 @@ namespace Windows.Devices.PointOfService
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IBuffer> RetrieveDeviceAuthenticationDataAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IBuffer> ClaimedMagneticStripeReader.RetrieveDeviceAuthenticationDataAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<IBuffer> ClaimedMagneticStripeReader.RetrieveDeviceAuthenticationDataAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CIBuffer%3E%20ClaimedMagneticStripeReader.RetrieveDeviceAuthenticationDataAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction AuthenticateDeviceAsync( byte[] responseToken)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction ClaimedMagneticStripeReader.AuthenticateDeviceAsync(byte[] responseToken) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction ClaimedMagneticStripeReader.AuthenticateDeviceAsync(byte[] responseToken) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20ClaimedMagneticStripeReader.AuthenticateDeviceAsync%28byte%5B%5D%20responseToken%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction DeAuthenticateDeviceAsync( byte[] responseToken)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction ClaimedMagneticStripeReader.DeAuthenticateDeviceAsync(byte[] responseToken) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction ClaimedMagneticStripeReader.DeAuthenticateDeviceAsync(byte[] responseToken) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20ClaimedMagneticStripeReader.DeAuthenticateDeviceAsync%28byte%5B%5D%20responseToken%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction UpdateKeyAsync( string key,  string keyName)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction ClaimedMagneticStripeReader.UpdateKeyAsync(string key, string keyName) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction ClaimedMagneticStripeReader.UpdateKeyAsync(string key, string keyName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20ClaimedMagneticStripeReader.UpdateKeyAsync%28string%20key%2C%20string%20keyName%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction ResetStatisticsAsync( global::System.Collections.Generic.IEnumerable<string> statisticsCategories)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction ClaimedMagneticStripeReader.ResetStatisticsAsync(IEnumerable<string> statisticsCategories) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction ClaimedMagneticStripeReader.ResetStatisticsAsync(IEnumerable<string> statisticsCategories) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20ClaimedMagneticStripeReader.ResetStatisticsAsync%28IEnumerable%3Cstring%3E%20statisticsCategories%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction UpdateStatisticsAsync( global::System.Collections.Generic.IEnumerable<global::System.Collections.Generic.KeyValuePair<string, string>> statistics)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction ClaimedMagneticStripeReader.UpdateStatisticsAsync(IEnumerable<KeyValuePair<string, string>> statistics) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction ClaimedMagneticStripeReader.UpdateStatisticsAsync(IEnumerable<KeyValuePair<string, string>> statistics) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20ClaimedMagneticStripeReader.UpdateStatisticsAsync%28IEnumerable%3CKeyValuePair%3Cstring%2C%20string%3E%3E%20statistics%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Devices.PointOfService.ClaimedMagneticStripeReader.BankCardDataReceived.add

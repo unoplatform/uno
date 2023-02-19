@@ -3,7 +3,7 @@
 namespace Windows.UI.Xaml.Automation
 {
 	[global::Uno.NotImplemented]
-	public  partial class ScrollPatternIdentifiers 
+	public partial class ScrollPatternIdentifiers
 	{
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.Automation.AutomationProperty HorizontalScrollPercentProperty { get; }

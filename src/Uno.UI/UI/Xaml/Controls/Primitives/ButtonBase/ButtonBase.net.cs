@@ -25,18 +25,5 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			_isEnabledSubscription.Disposable = null;
 			_touchSubscription.Disposable = null;
 		}
-
-		/// <summary>
-		/// Gets the native UI Control, if any.
-		/// </summary>
-		private View GetUIControl()
-		{
-			return
-				// Check for non-templated ContentControl root (ContentPresenter bypass)
-				ContentTemplateRoot
-
-				// Finally check for templated ContentControl root
-				?? TemplatedRoot;
-		}
 	}
 }

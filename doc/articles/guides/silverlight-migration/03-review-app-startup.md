@@ -35,9 +35,9 @@ Earlier application platforms had a simple lifecycle - once launched, they conti
 > * [App Lifecycle](https://docs.microsoft.com/windows/uwp/launch-resume/app-lifecycle)
 > * [Application Class](https://docs.microsoft.com/uwp/api/windows.ui.xaml.application?view=winrt-19041)
 
-The Uno template generates a basic **App.xaml.cs** file that satisfies the minimum needs for app startup and suspension, and then configures the app to use a **Frame** control as the equivalent of the the Silverlight RootVisual, and then navigates to the **MainPage**, which displays "Hello, World!".
+The Uno template generates a basic `App.cs` and `App.xaml.cs` file that satisfies the minimum needs for app startup and suspension, and then configures the app to use a **Frame** control as the equivalent of the Silverlight RootVisual, and then navigates to the **MainPage**, which displays "Hello, World!".
 
-Briefly reviewing the **App.xaml.cs** will reveal the following structure:
+Briefly reviewing the `App.cs` and `App.xaml.cs` files will reveal the following structure:
 
 * **Constructor** - as well as initializing the application component, the app logging configuration method **ConfigureFilters** is called, and a subscription to the **Suspending** event is added.
 * **OnLaunched** - this method is called if the application is launched by the user - other methods (not implemented in this template) are called for other scenarios (see resources above). The current window is retrieved and the content is checked to see if a **Frame** is already instantiated (see note below). If not, a new frame is configured and set as the window content. The code then checks to see if the app has been prelaunched (see note below) - if not, and the root frame isn't already showing content, it is navigated to the **MainPage**. Finally the window is activated, which brings it to the foreground and applying input focus.
@@ -62,7 +62,7 @@ In order to better align with the behavior of the Silverlight version of the app
 
 1. Return to the **TimeEntryUno** solution.
 
-1. In the **Shared** project, open the **App.xaml.cs** file
+1. In the **[MyApp]** project, open the **App.cs** file
 
 1. Locate the **OnLaunched** method and replace it with the following code:
 
@@ -93,7 +93,7 @@ In order to better align with the behavior of the Silverlight version of the app
 
 ### Adding navigation to MainPage
 
-1. In the **Shared** project, open the **MainPage.xaml** file
+1. In the **[MyApp]** project, open the **MainPage.xaml** file
 
    The current XAML should look similar to:
 
@@ -182,7 +182,7 @@ In order to better align with the behavior of the Silverlight version of the app
 
 ### Adding a class to help with navigation synchronization
 
-1. To create location for all helpers, add a new folder, **Helpers**, to the **Shared** project.
+1. To create a location for all helpers, add a new folder, **Helpers**, to the **[MyApp]** project.
 
 1. Add a new class, **NavigationSyncHelper**, to the **Helpers** folder.
 

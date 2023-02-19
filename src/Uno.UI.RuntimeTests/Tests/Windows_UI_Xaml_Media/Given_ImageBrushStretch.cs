@@ -21,9 +21,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 	{
 		[DataRow(Stretch.Fill)]
 		[DataRow(Stretch.UniformToFill)]
-		#if !__SKIA__ //Stretch.Uniform create a Mosaic in Skia. See https://github.com/unoplatform/uno/issues/10021
+#if !__SKIA__ //Stretch.Uniform create a Mosaic in Skia. See https://github.com/unoplatform/uno/issues/10021
 		[DataRow(Stretch.Uniform)]
-		#endif
+#endif
 		[DataRow(Stretch.None)]
 		[TestMethod]
 		public async Task When_Stretch(Stretch stretch)
@@ -32,9 +32,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 			const string Yellowish = "#FFFEF200";
 			const string Greenish = "#FF0ED145";
 			const string White = "#FFFFFFFF";
-			#if __MACOS__
-				Assert.Inconclusive(); // Colors are not interpreted the same way on MacOS
-			#endif
+#if __MACOS__
+			Assert.Inconclusive(); // Colors are not interpreted the same way on MacOS
+#endif
 			if (!ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
 			{
 				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;

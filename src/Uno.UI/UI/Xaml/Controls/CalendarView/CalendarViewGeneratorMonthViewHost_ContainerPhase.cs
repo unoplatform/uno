@@ -37,7 +37,7 @@ namespace Windows.UI.Xaml.Controls
 
 			spContainer = (CalendarViewDayItem)pContainer;
 
-			if (spContainer is {})
+			if (spContainer is { })
 			{
 				// is this a new style container? We can know by looking at the virtualizationInformation struct which is
 				// a ModernCollectionBase concept
@@ -45,7 +45,7 @@ namespace Windows.UI.Xaml.Controls
 
 				pVirtualizationInformation = (spContainer as UIElement).GetVirtualizationInformation();
 
-				global::System.Diagnostics.Debug.Assert(pVirtualizationInformation is {});
+				global::System.Diagnostics.Debug.Assert(pVirtualizationInformation is { });
 
 				spArgs = (spContainer as CalendarViewDayItem).GetBuildTreeArgs();
 				spArgsConcrete = spArgs as CalendarViewDayItemChangingEventArgs;
@@ -69,7 +69,7 @@ namespace Windows.UI.Xaml.Controls
 
 			// raise the event. This is the synchronous version. we will raise it 'async' as well when we have time
 			// but we guarantee calling it after prepare
-			
+
 			CalendarViewDayItemChangingEventSourceType? pEventSource = null;
 
 			Owner.GetCalendarViewDayItemChangingEventSourceNoRef(out pEventSource);
@@ -87,6 +87,7 @@ namespace Windows.UI.Xaml.Controls
 
 		}
 
+#if false
 		private void RegisterWorkForContainer(
 			UIElement pContainer)
 		{
@@ -98,12 +99,13 @@ namespace Windows.UI.Xaml.Controls
 
 			RegisterWorkFromCICArgs(spArgs);
 		}
+#endif
 
 		private void RemoveToBeClearedContainer(CalendarViewDayItem pContainer)
 		{
 			// we might have been inserted into the list for deferred clear container calls.
 			// the fact that we are now being prepared, means that we don't have to perform that clear call.
-			// yay! that means we are going to not perform work that has quite a bit of perf overhead. 
+			// yay! that means we are going to not perform work that has quite a bit of perf overhead.
 			// ---
 			// we happen to know that the clear will have been pushed to the back of the vector, so optimize
 			// the panning scenario by checking in reverse order
@@ -173,15 +175,15 @@ namespace Windows.UI.Xaml.Controls
 			{
 				var pCalendarPanel = Panel;
 
-				if (pCalendarPanel is {})
+				if (pCalendarPanel is { })
 				{
 					// we are going to do different types of work:
 					// 1. process incremental visualization
-					// 2. process deferred clear container work 
+					// 2. process deferred clear container work
 					// 3. process extra cache
 
 					// at this point, cache indices are set correctly
-					// We might be going several passes over the containers. Currently we are not keeping those containers 
+					// We might be going several passes over the containers. Currently we are not keeping those containers
 					// in a particular datastructure, but we are re-using the children collection on our moderncollectionbasepanel
 					// We also have a nice hint (m_lowestPhaseInQueue) that tells us what phase to look out for. While we are doing our
 					// walk, we're going to build up a structure that allows us to do the second walks much faster.
@@ -249,7 +251,7 @@ namespace Windows.UI.Xaml.Controls
 						// there was nothing registered
 						m_lowestPhaseInQueue = phaseArgs;
 
-						// that means we need to register ourselves with the buildtreeservice so that 
+						// that means we need to register ourselves with the buildtreeservice so that
 						// we can get called back to do some work
 						if (!m_isRegisteredForCallbacks)
 						{
@@ -279,15 +281,15 @@ namespace Windows.UI.Xaml.Controls
 			{
 				int timeElapsedInMS = 0;
 				IItemContainerMapping spMapping;
-				// A block structure has been considered, but we do expect to continuously mutate the phase on containers, which would have 
+				// A block structure has been considered, but we do expect to continuously mutate the phase on containers, which would have
 				// cost us perf while reflecting that in the blocks. Instead, I keep an array of the size of the amount of containers i'm interested in.
 				// The idea is that walking through that multiple times is still pretty darn fast.
 
 				PanelScrollingDirection direction = PanelScrollingDirection.None;
 
 				// the following four indices will be fetched from the panel
-				// notice how they are not guaranteed not to be stale: one scenario in which they are 
-				// plain and simply wrong is when you collapse/remove a panel from the tree and start 
+				// notice how they are not guaranteed not to be stale: one scenario in which they are
+				// plain and simply wrong is when you collapse/remove a panel from the tree and start
 				// mutating the collection. Arrange will not get a chance to run after the mutation and
 				// if we are still registered to do work, we will not be able to fetch the container.
 				int cacheStart = -1;
@@ -319,7 +321,7 @@ namespace Windows.UI.Xaml.Controls
 				}
 				else
 				{
-					// well, nothing to do, 
+					// well, nothing to do,
 					m_lowestPhaseInQueue = -1;
 				}
 
@@ -401,7 +403,7 @@ namespace Windows.UI.Xaml.Controls
 						if (increasePhase)
 						{
 							processingPhase = nextLowest;
-							// when increasing, signal using max() that we can stop after this iteration. 
+							// when increasing, signal using max() that we can stop after this iteration.
 							// this will be undone by the loop, resetting it to the actual value
 							nextLowest = long.MaxValue;
 						}
@@ -442,14 +444,14 @@ namespace Windows.UI.Xaml.Controls
 						spContainer = spMapping.ContainerFromIndex(cacheStart + currentPositionInVector);
 						if (spContainer is null)
 						{
-							// this is possible when mutations have occurred to the collection but we 
+							// this is possible when mutations have occurred to the collection but we
 							// cannot be reached through layout. This is very hard to figure out, so we just harden
 							// the code here to deal with nulls.
 							ProcessCurrentPosition();
 							continue;
 						}
 
-						spContainerAsCalendarViewDayItem = (CalendarViewDayItem) spContainer;
+						spContainerAsCalendarViewDayItem = (CalendarViewDayItem)spContainer;
 
 						pVirtualizationInformation = (spContainer as UIElement)?.GetVirtualizationInformation();
 						spArgs = (spContainerAsCalendarViewDayItem as CalendarViewDayItem).GetBuildTreeArgs();
@@ -465,7 +467,7 @@ namespace Windows.UI.Xaml.Controls
 						// we might have skipped getting the args, let's do that now.
 						spContainer = spMapping.ContainerFromIndex(cacheStart + currentPositionInVector);
 
-						spContainerAsCalendarViewDayItem = (CalendarViewDayItem) spContainer;
+						spContainerAsCalendarViewDayItem = (CalendarViewDayItem)spContainer;
 						pVirtualizationInformation = (spContainer as UIElement)?.GetVirtualizationInformation();
 
 						spArgs = (spContainerAsCalendarViewDayItem as CalendarViewDayItem).GetBuildTreeArgs();
@@ -484,7 +486,7 @@ namespace Windows.UI.Xaml.Controls
 
 						// guaranteed to have pVirtualizationInformation by now
 
-						global::System.Diagnostics.Debug.Assert(pVirtualizationInformation is {});
+						global::System.Diagnostics.Debug.Assert(pVirtualizationInformation is { });
 
 						measureSize = pVirtualizationInformation!.MeasureSize;
 
@@ -492,7 +494,7 @@ namespace Windows.UI.Xaml.Controls
 						spCallback = spArgsConcrete.Callback;
 
 						// raise event
-						if (spCallback is {})
+						if (spCallback is { })
 						{
 							spArgsConcrete.WantsCallBack = false;
 							// clear out the delegate
@@ -622,7 +624,7 @@ namespace Windows.UI.Xaml.Controls
 				m_toBeClearedContainers.RemoveAtEnd();
 
 				// execute the deferred work
-				// apparently we were not going to reuse this container immediately again, so 
+				// apparently we were not going to reuse this container immediately again, so
 				// let's do the work now
 
 				// we don't need the spItem because 1. we didn't save this information, 2. CalendarViewGeneratorHost.ClearContainerForItem is no-op for now
@@ -630,7 +632,7 @@ namespace Windows.UI.Xaml.Controls
 				ClearContainerForItem(spContainer as CalendarViewDayItem, null /* spItem */);
 
 				// potentially raise the event
-				if (spContainer is {})
+				if (spContainer is { })
 				{
 					RaiseContainerContentChangingOnRecycle(spContainer as UIElement, null);
 				}
@@ -644,13 +646,14 @@ namespace Windows.UI.Xaml.Controls
 
 		}
 
+#if false
 		private void ShutDownDeferredWork()
 		{
 			IItemContainerMapping spMapping;
 
 			var pCalendarPanel = Panel;
 
-			if (pCalendarPanel is {})
+			if (pCalendarPanel is { })
 			{
 				// go through everyone that might have work registered for a prepare
 				int cacheStart, cacheEnd = 0;
@@ -678,6 +681,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 		}
+#endif
 
 		private void RegisterWorkFromCICArgs(
 			CalendarViewDayItemChangingEventArgs pArgs)
@@ -704,7 +708,7 @@ namespace Windows.UI.Xaml.Controls
 					// there was nothing registered
 					m_lowestPhaseInQueue = phase;
 
-					// that means we need to register ourselves with the buildtreeservice so that 
+					// that means we need to register ourselves with the buildtreeservice so that
 					// we can get called back to do some work
 					if (!m_isRegisteredForCallbacks)
 					{

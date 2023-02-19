@@ -13,7 +13,7 @@ namespace Windows.Devices.Usb
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBuffer UsbInterruptInEventArgs.InterruptData is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IBuffer UsbInterruptInEventArgs.InterruptData is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IBuffer%20UsbInterruptInEventArgs.InterruptData");
 			}
 		}
 		#endif

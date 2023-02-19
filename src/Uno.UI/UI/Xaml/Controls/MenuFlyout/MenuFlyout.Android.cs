@@ -42,8 +42,8 @@ namespace Windows.UI.Xaml.Controls
 					.Where(item => item.Visibility == Visibility.Visible)
 					.ForEach((index, item) =>
 					{
-					// Using index as ID
-					_menu.Menu.Add(0, index, index, item.Text);
+						// Using index as ID
+						_menu.Menu.Add(0, index, index, item.Text);
 					});
 
 				_menu.Show();
@@ -82,7 +82,7 @@ namespace Windows.UI.Xaml.Controls
 			var items = Items.OfType<MenuFlyoutItem>().Where(i => i.Visibility == Visibility.Visible).ToArray();
 			var item = items[e.Item.ItemId];
 
-			item.InvokeClick(); 
+			item.InvokeClick();
 		}
 
 		private View GetActualTarget()

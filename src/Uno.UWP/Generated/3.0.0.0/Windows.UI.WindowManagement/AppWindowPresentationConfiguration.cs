@@ -13,7 +13,7 @@ namespace Windows.UI.WindowManagement
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppWindowPresentationKind AppWindowPresentationConfiguration.Kind is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AppWindowPresentationKind AppWindowPresentationConfiguration.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AppWindowPresentationKind%20AppWindowPresentationConfiguration.Kind");
 			}
 		}
 		#endif

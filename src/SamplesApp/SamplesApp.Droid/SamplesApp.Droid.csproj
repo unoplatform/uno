@@ -20,8 +20,6 @@
     <AndroidUseIntermediateDesignerFile>True</AndroidUseIntermediateDesignerFile>
     <ResourcesDirectory>..\SamplesApp.Shared\Strings</ResourcesDirectory>
     <AndroidUseAapt2>true</AndroidUseAapt2>
-    <!-- Workaround for https://github.com/xamarin/xamarin-android/issues/6480 -->
-    <AndroidUseAssemblyStore>false</AndroidUseAssemblyStore>
   </PropertyGroup>
   <PropertyGroup>
     <IsUiAutomationMappingEnabled>true</IsUiAutomationMappingEnabled>
@@ -92,7 +90,7 @@
     </PackageReference>
     <PackageReference Include="Uno.UniversalImageLoader" Version="1.9.36" />
     <PackageReference Include="Xamarin.AndroidX.AppCompat.AppCompatResources">
-      <Version>1.3.1.3</Version>
+      <Version>1.5.1</Version>
     </PackageReference>
     <PackageReference Include="Xamarin.AndroidX.Browser" Version="1.0.0" />
   </ItemGroup>
@@ -107,6 +105,7 @@
     <PackageReference Include="Uno.BenchmarkDotNet" Version="0.11.7-develop" />
     <PackageReference Include="Uno.BenchmarkDotNet.Annotations" Version="0.11.7-develop" />
     <PackageReference Include="Uno.Core.Extensions.Logging.Singleton" Version="4.0.0-dev.7" />
+    <PackageReference Include="Uno.Fonts.Fluent" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\AddIns\Uno.UI.Lottie\Uno.UI.Lottie.csproj">
@@ -191,13 +190,13 @@
     <Compile Include="Main.cs" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidAsset Include="Assets\Fonts\uno-fluentui-assets.ttf" />
     <AndroidEnvironment Include="environment.conf" />
     <AndroidAsset Include="Assets\Lottie\4770-lady-and-dove.json" />
     <AndroidAsset Include="Assets\Lottie\4930-checkbox-animation.json" />
     <AndroidAsset Include="Assets\Lottie\lottie-logo.json" />
     <AndroidAsset Include="Assets\Lottie\uno.json" />
     <AndroidAsset Include="Assets\Lottie\LightBulb.json" />
+    <AndroidAsset Include="Assets\Fonts\SymbolsRuntimeTest02.ttf" />
     <None Include="Resources\AboutResources.txt" />
     <None Include="Assets\AboutAssets.txt" />
   </ItemGroup>
@@ -218,7 +217,7 @@
   <ItemGroup>
     <AndroidAsset Include="Assets\sound.mp3" />
   </ItemGroup>
-  <Import Project="..\SamplesApp.Shared\SamplesApp.Shared.projitems" Label="Shared" Condition="Exists('..\SamplesApp.Shared\SamplesApp.Shared.projitems')" />
+  <Import Project="..\SamplesApp.Shared\SamplesApp.Shared.projitems" Label="Shared" />
   <Import Project="..\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.Shared.projitems" Label="Shared" />
   <Import Project="..\UITests.Shared\UITests.Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />

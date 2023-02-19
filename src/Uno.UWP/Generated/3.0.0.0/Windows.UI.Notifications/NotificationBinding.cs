@@ -13,7 +13,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string NotificationBinding.Template is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string NotificationBinding.Template is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20NotificationBinding.Template");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string NotificationBinding.Language is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string NotificationBinding.Language is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20NotificationBinding.Language");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.UI.Notifications
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IDictionary<string, string> NotificationBinding.Hints is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IDictionary<string, string> NotificationBinding.Hints is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IDictionary%3Cstring%2C%20string%3E%20NotificationBinding.Hints");
 			}
 		}
 		#endif
@@ -54,7 +54,7 @@ namespace Windows.UI.Notifications
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.UI.Notifications.AdaptiveNotificationText> GetTextElements()
 		{
-			throw new global::System.NotImplementedException("The member IReadOnlyList<AdaptiveNotificationText> NotificationBinding.GetTextElements() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IReadOnlyList<AdaptiveNotificationText> NotificationBinding.GetTextElements() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CAdaptiveNotificationText%3E%20NotificationBinding.GetTextElements%28%29");
 		}
 		#endif
 	}

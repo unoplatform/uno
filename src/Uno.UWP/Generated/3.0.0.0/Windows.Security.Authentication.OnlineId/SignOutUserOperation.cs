@@ -13,7 +13,7 @@ namespace Windows.Security.Authentication.OnlineId
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Exception SignOutUserOperation.ErrorCode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Exception SignOutUserOperation.ErrorCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Exception%20SignOutUserOperation.ErrorCode");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Security.Authentication.OnlineId
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint SignOutUserOperation.Id is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint SignOutUserOperation.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20SignOutUserOperation.Id");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Security.Authentication.OnlineId
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AsyncStatus SignOutUserOperation.Status is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AsyncStatus SignOutUserOperation.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AsyncStatus%20SignOutUserOperation.Status");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Security.Authentication.OnlineId
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AsyncActionCompletedHandler SignOutUserOperation.Completed is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AsyncActionCompletedHandler SignOutUserOperation.Completed is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AsyncActionCompletedHandler%20SignOutUserOperation.Completed");
 			}
 			set
 			{

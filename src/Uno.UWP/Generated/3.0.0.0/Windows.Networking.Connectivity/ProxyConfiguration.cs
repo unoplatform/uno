@@ -13,7 +13,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ProxyConfiguration.CanConnectDirectly is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ProxyConfiguration.CanConnectDirectly is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ProxyConfiguration.CanConnectDirectly");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Networking.Connectivity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<Uri> ProxyConfiguration.ProxyUris is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<Uri> ProxyConfiguration.ProxyUris is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CUri%3E%20ProxyConfiguration.ProxyUris");
 			}
 		}
 		#endif

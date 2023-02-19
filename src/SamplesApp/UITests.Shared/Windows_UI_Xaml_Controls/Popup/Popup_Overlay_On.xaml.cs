@@ -18,7 +18,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.Popup
 {
-	[SampleControlInfo(description:"Popup with light-dismiss and overlay enabled")]
+	[SampleControlInfo(description: "Popup with light-dismiss and overlay enabled")]
 	public sealed partial class Popup_Overlay_On : UserControl
 	{
 		public Popup_Overlay_On()

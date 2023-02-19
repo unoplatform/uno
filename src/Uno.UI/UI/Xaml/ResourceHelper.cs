@@ -10,8 +10,8 @@ using Windows.ApplicationModel.Resources;
 
 namespace Windows.UI.Xaml
 {
-    public static class ResourceHelper
-    {
+	public static class ResourceHelper
+	{
 		static ResourceHelper()
 		{
 			ResourceLoader.GetStringInternal = key => ResourcesService.Get(key);
@@ -20,7 +20,7 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Provides a global registry, similar to the Application.Current.Resources in WinRT.
 		/// </summary>
-		public static Uno.Presentation.Resources.IResourceRegistry Registry 
+		public static Uno.Presentation.Resources.IResourceRegistry Registry
 		{
 			get; set;
 		}
@@ -74,5 +74,5 @@ namespace Windows.UI.Xaml
 
 			return converter;
 		}
-    }
+	}
 }

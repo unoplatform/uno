@@ -34,7 +34,7 @@ Let's create an app to integrate a Syntax Highlighter named [`PrismJS`](https://
 
 🎯  In this section, a control named `PrismJsView` is created in code and used in the XAML page (`MainPage.xaml`) to present it.
 
-1. From the `.Shared` project, create a new class file named `PrismJsView.cs`. and copy the following code:
+1. From the `[MyApp]` project, create a new class file named `PrismJsView.cs`. and copy the following code:
    ```csharp
    using System;
    using System.Collections.Generic;

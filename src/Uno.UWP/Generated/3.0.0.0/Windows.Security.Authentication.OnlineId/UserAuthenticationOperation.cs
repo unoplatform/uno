@@ -13,7 +13,7 @@ namespace Windows.Security.Authentication.OnlineId
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Exception UserAuthenticationOperation.ErrorCode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Exception UserAuthenticationOperation.ErrorCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Exception%20UserAuthenticationOperation.ErrorCode");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Security.Authentication.OnlineId
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint UserAuthenticationOperation.Id is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint UserAuthenticationOperation.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20UserAuthenticationOperation.Id");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Security.Authentication.OnlineId
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AsyncStatus UserAuthenticationOperation.Status is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AsyncStatus UserAuthenticationOperation.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AsyncStatus%20UserAuthenticationOperation.Status");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Security.Authentication.OnlineId
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AsyncOperationCompletedHandler<UserIdentity> UserAuthenticationOperation.Completed is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AsyncOperationCompletedHandler<UserIdentity> UserAuthenticationOperation.Completed is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AsyncOperationCompletedHandler%3CUserIdentity%3E%20UserAuthenticationOperation.Completed");
 			}
 			set
 			{
@@ -57,7 +57,7 @@ namespace Windows.Security.Authentication.OnlineId
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Security.Authentication.OnlineId.UserIdentity GetResults()
 		{
-			throw new global::System.NotImplementedException("The member UserIdentity UserAuthenticationOperation.GetResults() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member UserIdentity UserAuthenticationOperation.GetResults() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=UserIdentity%20UserAuthenticationOperation.GetResults%28%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Security.Authentication.OnlineId.UserAuthenticationOperation.Id.get

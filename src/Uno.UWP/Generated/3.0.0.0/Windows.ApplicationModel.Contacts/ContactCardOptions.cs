@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ContactCardTabKind ContactCardOptions.InitialTabKind is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ContactCardTabKind ContactCardOptions.InitialTabKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ContactCardTabKind%20ContactCardOptions.InitialTabKind");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ContactCardHeaderKind ContactCardOptions.HeaderKind is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ContactCardHeaderKind ContactCardOptions.HeaderKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ContactCardHeaderKind%20ContactCardOptions.HeaderKind");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.ApplicationModel.Contacts
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<string> ContactCardOptions.ServerSearchContactListIds is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<string> ContactCardOptions.ServerSearchContactListIds is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3Cstring%3E%20ContactCardOptions.ServerSearchContactListIds");
 			}
 		}
 		#endif

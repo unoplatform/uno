@@ -2,7 +2,6 @@
 
 Uno Platform, like WinUI and UWP, supports Control Libraries. Control Libraries are a way to reuse UI components across multiple projects, either inside the solution or by using NuGet to distribute to other projects.
 
-
 Creating such a library will make UI Controls compatible with all Uno Platform targets as well as WinUI or UWP.
 
 > [!NOTE]
@@ -13,8 +12,7 @@ You can find the [full sample code](https://github.com/unoplatform/Uno.Samples/b
 ## Create a Control Library
 
 1. In your solution, create a new **Uno Platform Library**, name it `XamlControlLibrary`
-1. In each of your platform projects, add a reference to your new library.
-   > [!NOTE] The shared project cannot contain project or packages references, see [Uno Platform App structure](../uno-app-solution-structure.md) for more details.
+1. In your app's existing Class Library project, add a reference to your new library.
 
 ## Create the Control
 1. Right-click on the project library, then **Add**, **New Item**
@@ -57,7 +55,10 @@ You can find the [full sample code](https://github.com/unoplatform/Uno.Samples/b
 
 ## Library assets
 
-WinUI 3 and Uno Platform (4.6 and later) Libraries support the inclusion of content assets to be used with [`StorageFile.GetFileFromApplicationUriAsync`](../features/file-management.md#support-for-storagefilegetfilefromapplicationuriasync), as well as with the `ms-appx://[libraryname]/[assetname_file_name]` format.
+WinUI 3 and Uno Platform (4.6 and later) Libraries support the inclusion of content assets to be used with [`StorageFile.GetFileFromApplicationUriAsync`](../features/file-management.md#support-for-storagefilegetfilefromapplicationuriasync), as well as with the `ms-appx:///[libraryname]/[assetname_file_name]` format.
+
+> [!IMPORTANT]
+> When using library assets with non-WinAppSDK targets, the library name should also be lower cased.
 
 Library assets can be of any type.
 

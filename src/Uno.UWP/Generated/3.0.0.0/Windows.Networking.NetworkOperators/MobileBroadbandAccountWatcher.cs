@@ -13,7 +13,7 @@ namespace Windows.Networking.NetworkOperators
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MobileBroadbandAccountWatcherStatus MobileBroadbandAccountWatcher.Status is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MobileBroadbandAccountWatcherStatus MobileBroadbandAccountWatcher.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MobileBroadbandAccountWatcherStatus%20MobileBroadbandAccountWatcher.Status");
 			}
 		}
 		#endif

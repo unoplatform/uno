@@ -11,6 +11,7 @@ using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.Xaml.Media;
 using Windows.Foundation;
+using Windows.UI.Core;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
 
@@ -136,7 +137,7 @@ namespace Windows.UI.Xaml.Controls
 
 			if (imageSource != null && imageSource.UseTargetSize)
 			{
-				// If the ImageSource has the UseTargetSize set, the image 
+				// If the ImageSource has the UseTargetSize set, the image
 				// must not be loaded until the first layout has been done.
 				if (!IsLoaded)
 				{
@@ -192,11 +193,11 @@ namespace Windows.UI.Xaml.Controls
 					{
 						Execute(ct => SetSourceUriOrStreamAsync(imageSource, ct));
 					}
-					else if (imageSource.FilePath.HasValue() || imageSource.AbsoluteUri != null || imageSource.Stream != null)
+					else if (!imageSource.FilePath.IsNullOrEmpty() || imageSource.AbsoluteUri != null || imageSource.Stream != null)
 					{
-						// We can't open the image until we have the proper target size, which is 
+						// We can't open the image until we have the proper target size, which is
 						// being computed after the layout has been completed.
-						// However, if we have already determined that the Image has non-finite bounds (eg because it 
+						// However, if we have already determined that the Image has non-finite bounds (eg because it
 						// has no set Width/Height and is inside control that permits infinite space), then we will never
 						// be able to set a targetSize and must load the image without one.
 						if (imageSource.UseTargetSize && _targetWidth == null && _targetHeight == null && (_hasFiniteBounds ?? true) && !MustOpenImageToMeasure())
@@ -256,6 +257,17 @@ namespace Windows.UI.Xaml.Controls
 			return (Stretch == Stretch.Uniform || Stretch == Stretch.None) && (double.IsNaN(Width) || double.IsNaN(Height));
 		}
 
+		private void Dispatch(Action<CancellationToken> handler, CancellationToken ct)
+		{
+			Dispatcher.RunAsync(
+				CoreDispatcherPriority.Normal,
+				() =>
+				{
+					handler(ct);
+				}
+			).AsTask(ct);
+		}
+
 		private async Task SetSourceUriOrStreamAsync(ImageSource newImageSource, CancellationToken token)
 		{
 			// The Jupiter behavior is to reset the visual right away, displaying nothing
@@ -269,7 +281,7 @@ namespace Windows.UI.Xaml.Controls
 
 				if (newImageSource.IsImageLoadedToUiDirectly)
 				{
-					// The image may have already been set by the 
+					// The image may have already been set by the
 					// external loader (Universal Image Loader, most of the time)
 					OnImageOpened(newImageSource);
 				}
@@ -427,8 +439,8 @@ namespace Windows.UI.Xaml.Controls
 
 		/// <summary>
 		/// If the image control does not have finite bounds, or if finite bounds have not yet been computed, then it must go through
-		/// another measure/arrange pass after the image is set. 
-		/// This is not guaranteed to happen if RequestLayout is called from within a layout pass, so we must set the image on the dispatcher 
+		/// another measure/arrange pass after the image is set.
+		/// This is not guaranteed to happen if RequestLayout is called from within a layout pass, so we must set the image on the dispatcher
 		/// even if we wouldn't otherwise.
 		/// </summary>
 		/// <returns></returns>
@@ -439,7 +451,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void ResetSource()
 		{
-			// Internally, SetImageBitmap calls SetImageDrawable but creates a new BitmapDrawable. 
+			// Internally, SetImageBitmap calls SetImageDrawable but creates a new BitmapDrawable.
 			// So it's better to use SetImageDrawable.
 			_nativeImageView?.SetImageDrawable(null);
 		}

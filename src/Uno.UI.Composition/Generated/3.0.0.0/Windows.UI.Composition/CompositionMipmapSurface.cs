@@ -13,7 +13,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DirectXAlphaMode CompositionMipmapSurface.AlphaMode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DirectXAlphaMode CompositionMipmapSurface.AlphaMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DirectXAlphaMode%20CompositionMipmapSurface.AlphaMode");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint CompositionMipmapSurface.LevelCount is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint CompositionMipmapSurface.LevelCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20CompositionMipmapSurface.LevelCount");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DirectXPixelFormat CompositionMipmapSurface.PixelFormat is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DirectXPixelFormat CompositionMipmapSurface.PixelFormat is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DirectXPixelFormat%20CompositionMipmapSurface.PixelFormat");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SizeInt32 CompositionMipmapSurface.SizeInt32 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SizeInt32 CompositionMipmapSurface.SizeInt32 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SizeInt32%20CompositionMipmapSurface.SizeInt32");
 			}
 		}
 		#endif
@@ -55,7 +55,7 @@ namespace Windows.UI.Composition
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Composition.CompositionDrawingSurface GetDrawingSurfaceForLevel( uint level)
 		{
-			throw new global::System.NotImplementedException("The member CompositionDrawingSurface CompositionMipmapSurface.GetDrawingSurfaceForLevel(uint level) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member CompositionDrawingSurface CompositionMipmapSurface.GetDrawingSurfaceForLevel(uint level) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CompositionDrawingSurface%20CompositionMipmapSurface.GetDrawingSurfaceForLevel%28uint%20level%29");
 		}
 		#endif
 		// Processing: Windows.UI.Composition.ICompositionSurface

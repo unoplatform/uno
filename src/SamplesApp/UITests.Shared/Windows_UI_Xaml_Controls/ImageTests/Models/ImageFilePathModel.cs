@@ -48,7 +48,7 @@ namespace Uno.UI.Samples.UITests.ImageTests.Models
 #pragma warning restore CS0109
 
 #if HAS_UNO
-		private static readonly Size ImageSize = new Size(200, 200); 
+		private static readonly Size ImageSize = new Size(200, 200);
 #endif
 		private static readonly _Color ShapeColor = Colors.Tomato;
 		private const string StoredFolderName = "SampleImages";
@@ -58,7 +58,8 @@ namespace Uno.UI.Samples.UITests.ImageTests.Models
 
 		public ImageFilePathModel(CoreDispatcher dispatcher) : base(dispatcher)
 		{
-			var unused = dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () => {
+			var unused = dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
+			{
 				FilePath = await GetAndCreateFilePath(CancellationToken.None);
 			});
 		}

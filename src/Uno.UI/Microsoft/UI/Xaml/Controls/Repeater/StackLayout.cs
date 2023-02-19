@@ -34,8 +34,10 @@ namespace Microsoft.UI.Xaml.Controls
 		FlowLayoutAlgorithm GetFlowAlgorithm(VirtualizingLayoutContext context)
 			=> GetAsStackState(context.LayoutState).FlowAlgorithm;
 
+#if false
 		private bool DoesRealizationWindowOverlapExtent(Rect realizationWindow, Rect extent)
 			=> MajorEnd(realizationWindow) >= MajorStart(extent) && MajorStart(realizationWindow) <= MajorEnd(extent);
+#endif
 
 		#region IVirtualizingLayoutOverrides
 		protected internal override void InitializeForContextCore(VirtualizingLayoutContext context)
@@ -72,7 +74,8 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			GetAsStackState(context.LayoutState).OnMeasureStart();
 
-			var desiredSize = GetFlowAlgorithm(context).Measure(
+			var algo = GetFlowAlgorithm(context);
+			var desiredSize = algo.Measure(
 				availableSize,
 				context,
 				false, /* isWrapping*/
@@ -82,6 +85,10 @@ namespace Microsoft.UI.Xaml.Controls
 				ScrollOrientation,
 				DisableVirtualization,
 				LayoutId);
+
+			// Uno workaround [BEGIN]: Keep track of realized items count for viewport invalidation optimization
+			_uno_lastKnownRealizedElementsCount = algo.RealizedElementCount;
+			// Uno workaround [END]
 
 			return desiredSize;
 		}
@@ -223,8 +230,8 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			var measureSizeMinor = Minor(measureSize);
 			return MinorMajorSize(
-				(float) (measureSizeMinor.IsFinite() ? Math.Max(measureSizeMinor, Minor(desiredSize)) : Minor(desiredSize)),
-				(float) Major(desiredSize));
+				(float)(measureSizeMinor.IsFinite() ? Math.Max(measureSizeMinor, Minor(desiredSize)) : Minor(desiredSize)),
+				(float)Major(desiredSize));
 		}
 
 		bool IFlowLayoutAlgorithmDelegates.Algorithm_ShouldBreakLine(int index, double remainingSpace)
@@ -350,6 +357,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#region Uno workaround
 		private double _uno_lastKnownAverageElementSize;
+		private double _uno_lastKnownRealizedElementsCount;
 
 		/// <inheritdoc />
 		protected internal override bool IsSignificantViewportChange(Rect oldViewport, Rect newViewport)
@@ -360,9 +368,30 @@ namespace Microsoft.UI.Xaml.Controls
 				return base.IsSignificantViewportChange(oldViewport, newViewport);
 			}
 
+			if (_uno_lastKnownRealizedElementsCount <= 1)
+			{
+				// Only the first item has been measured so far, this might be because the IR is within a SV and not visible yet.
+				// Note: In that case we have to make sure to not only validate the Major axis since the parent SV could be vertical while local layout itself is horizontal.
+				// Note2: Depending of the platform (Android), we might be invoked with empty viewport, make sure to consider out-of-bound in such case.
+				// Test case: When_NestedInSVAndOutOfViewportOnInitialLoad_Then_MaterializedEvenWhenScrollingOnMinorAxis
+				const int threshold = 100; // Allows 100px above and after to trigger loading even before IR is visible.
+				var wasOutOfBounds = oldViewport is { Width: 0 } or { Height: 0 }
+					|| MajorEnd(oldViewport) < -threshold
+					|| MajorStart(oldViewport) > MajorSize(oldViewport) + threshold
+					|| MinorEnd(oldViewport) < -threshold
+					|| MinorStart(oldViewport) > MinorSize(oldViewport) + threshold;
+				var isOutOfBounds = newViewport is { Width: 0 } or { Height: 0 }
+					|| MinorEnd(newViewport) < -threshold
+					|| MinorStart(newViewport) > MinorSize(newViewport) + threshold
+					|| MajorEnd(newViewport) < -threshold
+					|| MajorStart(newViewport) > MajorSize(newViewport) + threshold;
+
+				return wasOutOfBounds && !isOutOfBounds;
+			}
+
 			var size = Math.Max(MajorSize(oldViewport), MajorSize(newViewport));
 			var minDelta = Math.Min(elementSize * 5, size);
-			
+
 			return Math.Abs(MajorStart(oldViewport) - MajorStart(newViewport)) > minDelta
 				|| Math.Abs(MajorEnd(oldViewport) - MajorEnd(newViewport)) > minDelta;
 		}

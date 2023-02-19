@@ -13,7 +13,7 @@ namespace Windows.Perception.Spatial
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SpatialLocatorPositionalTrackingDeactivatingEventArgs.Canceled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool SpatialLocatorPositionalTrackingDeactivatingEventArgs.Canceled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20SpatialLocatorPositionalTrackingDeactivatingEventArgs.Canceled");
 			}
 			set
 			{

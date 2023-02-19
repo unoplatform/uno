@@ -7,15 +7,15 @@ using Windows.UI.Xaml.Input;
 namespace UITests.Windows_UI_Xaml_Input.RoutedEvents
 {
 	[Sample("Routed Events", Name = "IsEnabled")]
-    public sealed partial class RoutedEvent_IsEnabled : Page
-    {
-        public RoutedEvent_IsEnabled()
-        {
-            this.InitializeComponent();
+	public sealed partial class RoutedEvent_IsEnabled : Page
+	{
+		public RoutedEvent_IsEnabled()
+		{
+			this.InitializeComponent();
 			DisabledButton.RoutedEventTriggered += (s, e) => EventInfoTextBlock.Text = e;
 			DisabledButton.Click += (s, e) => EventInfoTextBlock.Text = "Clicked";
 		}
-    }
+	}
 
 	public partial class CustomButton : Button
 	{

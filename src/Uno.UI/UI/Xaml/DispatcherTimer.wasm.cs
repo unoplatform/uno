@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml
 
 		private void StartNative(TimeSpan interval)
 		{
-			if(_timer == null)
+			if (_timer == null)
 			{
 				_timer = new Timer(_ => RaiseTick());
 			}

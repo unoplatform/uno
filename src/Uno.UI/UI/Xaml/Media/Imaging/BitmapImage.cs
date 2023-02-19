@@ -7,11 +7,11 @@ namespace Windows.UI.Xaml.Media.Imaging
 {
 	public sealed partial class BitmapImage : BitmapSource
 	{
+#pragma warning disable CS0067 // The event is never used
 		public event DownloadProgressEventHandler DownloadProgress;
-
 		public event ExceptionRoutedEventHandler ImageFailed;
-
 		public event RoutedEventHandler ImageOpened;
+#pragma warning restore CS0067 // The event is never used
 
 		#region UriSource DependencyProperty
 
@@ -22,7 +22,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 		}
 
 		// Using a DependencyProperty as the backing store for UriSource.  This enables animation, styling, binding, etc...
-		public static DependencyProperty UriSourceProperty { get ; } =
+		public static DependencyProperty UriSourceProperty { get; } =
 			DependencyProperty.Register("UriSource", typeof(Uri), typeof(BitmapImage), new FrameworkPropertyMetadata(null, (s, e) => ((BitmapImage)s)?.OnUriSourceChanged(e)));
 
 		private void OnUriSourceChanged(DependencyPropertyChangedEventArgs e)
@@ -48,7 +48,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 		}
 
 		// Using a DependencyProperty as the backing store for DecodePixelType.  This enables animation, styling, binding, etc...
-		public static DependencyProperty DecodePixelTypeProperty { get ; } =
+		public static DependencyProperty DecodePixelTypeProperty { get; } =
 			DependencyProperty.Register("DecodePixelType", typeof(DecodePixelType), typeof(BitmapImage), new FrameworkPropertyMetadata(DecodePixelType.Physical, (s, e) => ((BitmapImage)s)?.OnDecodePixelTypeChanged(e)));
 
 
@@ -67,7 +67,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 		}
 
 		// Using a DependencyProperty as the backing store for DecodePixelWidth.  This enables animation, styling, binding, etc...
-		public static DependencyProperty DecodePixelWidthProperty { get ; } =
+		public static DependencyProperty DecodePixelWidthProperty { get; } =
 			DependencyProperty.Register("DecodePixelWidth", typeof(int), typeof(BitmapImage), new FrameworkPropertyMetadata(0, (s, e) => ((BitmapImage)s)?.OnDecodePixelWidthChanged(e)));
 
 
@@ -87,7 +87,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 		}
 
 		// Using a DependencyProperty as the backing store for DecodePixelHeight.  This enables animation, styling, binding, etc...
-		public static DependencyProperty DecodePixelHeightProperty { get ; } =
+		public static DependencyProperty DecodePixelHeightProperty { get; } =
 			DependencyProperty.Register("DecodePixelHeight", typeof(int), typeof(BitmapImage), new FrameworkPropertyMetadata(0, (s, e) => ((BitmapImage)s)?.OnDecodePixelHeightChanged(e)));
 
 
@@ -106,7 +106,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 		}
 
 		// Using a DependencyProperty as the backing store for CreateOptions.  This enables animation, styling, binding, etc...
-		public static DependencyProperty CreateOptionsProperty { get ; } =
+		public static DependencyProperty CreateOptionsProperty { get; } =
 			DependencyProperty.Register("CreateOptions", typeof(BitmapCreateOptions), typeof(BitmapImage), new FrameworkPropertyMetadata(BitmapCreateOptions.None, (s, e) => ((BitmapImage)s)?.OnCreateOptionsChanged(e)));
 
 
@@ -128,23 +128,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 
 		public BitmapImage() { }
 
-		private void RaiseDownloadProgress(int progress = 0)
-		{
-			if (DownloadProgress is { } evt)
-			{
-				evt?.Invoke(this, new DownloadProgressEventArgs {Progress = progress});
-
-			}
-		}
-
-		private void RaiseImageFailed(ExceptionRoutedEventArgs args)
-		{
-			if (ImageFailed is { } evt)
-			{
-				evt?.Invoke(this, args);
-			}
-		}
-
+#if __SKIA__ || __WASM__
 		private void RaiseImageFailed(Exception ex)
 		{
 			if (ImageFailed is { } evt)
@@ -160,5 +144,6 @@ namespace Windows.UI.Xaml.Media.Imaging
 				evt?.Invoke(this, new RoutedEventArgs(this));
 			}
 		}
+#endif
 	}
 }

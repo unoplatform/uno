@@ -22,6 +22,7 @@ namespace Windows.UI.Xaml.Documents
 		private readonly IFocusable _focusableHelper;
 #pragma warning restore CS0649 // error CS0649: Field '_focusableHelper' is never assigned to, and will always have its default value null
 
+#if !__WASM__
 		#region Static
 		private static Brush _defaultForeground;
 		private static Brush DefaultForeground
@@ -41,7 +42,8 @@ namespace Windows.UI.Xaml.Documents
 			}
 		}
 
-#endregion
+		#endregion
+#endif
 
 		public
 #if __WASM__
@@ -60,7 +62,7 @@ namespace Windows.UI.Xaml.Documents
 			Hyperlink coreHyperlink = this;
 			if (coreHyperlink == null)
 			{
-				// Focus may be called on a disconnected element (when the framework 
+				// Focus may be called on a disconnected element (when the framework
 				// peer has been disassociated from its core peer).  If the core peer
 				// has already been disassociated, return 'unfocusable'.
 				return false;
@@ -114,7 +116,7 @@ namespace Windows.UI.Xaml.Documents
 		}
 #endif
 
-#region NavigateUri
+		#region NavigateUri
 
 		public Uri NavigateUri
 		{
@@ -135,9 +137,9 @@ namespace Windows.UI.Xaml.Documents
 			);
 		partial void OnNavigateUriChangedPartial(Uri newNavigateUri);
 
-#endregion
+		#endregion
 
-#region UnderlineStyle
+		#region UnderlineStyle
 
 		public UnderlineStyle UnderlineStyle
 		{
@@ -164,9 +166,9 @@ namespace Windows.UI.Xaml.Documents
 				: Windows.UI.Text.TextDecorations.None;
 		}
 
-#endregion
+		#endregion
 
-#region Click
+		#region Click
 		private Pointer _pressedPointer;
 		internal void SetPointerPressed(Pointer pointer)
 		{
@@ -231,7 +233,7 @@ namespace Windows.UI.Xaml.Documents
 			return null;
 #endif
 		}
-#endregion
+		#endregion
 
 #if !__WASM__
 		public FocusState FocusState

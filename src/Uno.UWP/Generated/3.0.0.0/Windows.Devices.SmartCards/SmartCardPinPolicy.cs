@@ -13,7 +13,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SmartCardPinCharacterPolicyOption SmartCardPinPolicy.UppercaseLetters is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SmartCardPinCharacterPolicyOption SmartCardPinPolicy.UppercaseLetters is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SmartCardPinCharacterPolicyOption%20SmartCardPinPolicy.UppercaseLetters");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SmartCardPinCharacterPolicyOption SmartCardPinPolicy.SpecialCharacters is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SmartCardPinCharacterPolicyOption SmartCardPinPolicy.SpecialCharacters is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SmartCardPinCharacterPolicyOption%20SmartCardPinPolicy.SpecialCharacters");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint SmartCardPinPolicy.MinLength is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint SmartCardPinPolicy.MinLength is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20SmartCardPinPolicy.MinLength");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint SmartCardPinPolicy.MaxLength is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint SmartCardPinPolicy.MaxLength is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20SmartCardPinPolicy.MaxLength");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SmartCardPinCharacterPolicyOption SmartCardPinPolicy.LowercaseLetters is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SmartCardPinCharacterPolicyOption SmartCardPinPolicy.LowercaseLetters is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SmartCardPinCharacterPolicyOption%20SmartCardPinPolicy.LowercaseLetters");
 			}
 			set
 			{
@@ -83,7 +83,7 @@ namespace Windows.Devices.SmartCards
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SmartCardPinCharacterPolicyOption SmartCardPinPolicy.Digits is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SmartCardPinCharacterPolicyOption SmartCardPinPolicy.Digits is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SmartCardPinCharacterPolicyOption%20SmartCardPinPolicy.Digits");
 			}
 			set
 			{

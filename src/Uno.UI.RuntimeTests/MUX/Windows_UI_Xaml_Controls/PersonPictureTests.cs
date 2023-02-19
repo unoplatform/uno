@@ -86,8 +86,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 					PersonPicture personPicture = new PersonPicture();
 					Verify.IsNotNull(personPicture);
 
-				// Set properties and ensure that the AutomationName updates accordingly
-				personPicture.Initials = "AB";
+					// Set properties and ensure that the AutomationName updates accordingly
+					personPicture.Initials = "AB";
 					String automationName = AutomationProperties.GetName(personPicture);
 					Verify.AreEqual(automationName, "AB");
 
@@ -183,10 +183,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 			TextBlock initialsTextBlock = null;
 #if WINDOWS_UWP
 			string symbolsFontName = "Segoe MDL2 Assets";
-#elif __ANDROID__ || __SKIA__
-			string symbolsFontName = "ms-appx:///Assets/Fonts/uno-fluentui-assets.ttf#Symbols";
 #else
-			string symbolsFontName = "Symbols";
+			string symbolsFontName = "ms-appx:///Uno.Fonts.Fluent/Fonts/uno-fluentui-assets.ttf";
 #endif
 			await RunOnUIThread.ExecuteAsync(() =>
 			{

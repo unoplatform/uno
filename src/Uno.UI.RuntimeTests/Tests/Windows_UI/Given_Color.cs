@@ -69,7 +69,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Core
 		{
 			var _uiSettings = new Windows.UI.ViewManagement.UISettings();
 
-		  	Color SUT_1 = _uiSettings.GetColorValue(Windows.UI.ViewManagement.UIColorType.Accent);
+			Color SUT_1 = _uiSettings.GetColorValue(Windows.UI.ViewManagement.UIColorType.Accent);
 			Color SUT_2 = _uiSettings.GetColorValue(Windows.UI.ViewManagement.UIColorType.Background);
 
 			var accent = new Windows.UI.Xaml.Media.SolidColorBrush(AppKit.NSColor.ControlAccent).Color;

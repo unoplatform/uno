@@ -22,7 +22,6 @@ namespace Uno.UI.SourceGenerators.NativeCtor
 	{
 		public void Initialize(GeneratorInitializationContext context)
 		{
-			DependenciesInitializer.Init();
 		}
 
 		public void Execute(GeneratorExecutionContext context)
@@ -36,8 +35,8 @@ namespace Uno.UI.SourceGenerators.NativeCtor
 		}
 
 		private class SerializationMethodsGenerator : SymbolVisitor
-		{ 
-			private readonly GeneratorExecutionContext _context; 
+		{
+			private readonly GeneratorExecutionContext _context;
 			private readonly INamedTypeSymbol? _iosViewSymbol;
 			private readonly INamedTypeSymbol? _objcNativeHandleSymbol;
 			private readonly INamedTypeSymbol? _macosViewSymbol;

@@ -13,7 +13,7 @@ namespace Windows.Graphics.Display
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DisplayEnhancementOverrideCapabilities.IsBrightnessControlSupported is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool DisplayEnhancementOverrideCapabilities.IsBrightnessControlSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20DisplayEnhancementOverrideCapabilities.IsBrightnessControlSupported");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Graphics.Display
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DisplayEnhancementOverrideCapabilities.IsBrightnessNitsControlSupported is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool DisplayEnhancementOverrideCapabilities.IsBrightnessNitsControlSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20DisplayEnhancementOverrideCapabilities.IsBrightnessNitsControlSupported");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Graphics.Display
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.Graphics.Display.NitRange> GetSupportedNitRanges()
 		{
-			throw new global::System.NotImplementedException("The member IReadOnlyList<NitRange> DisplayEnhancementOverrideCapabilities.GetSupportedNitRanges() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IReadOnlyList<NitRange> DisplayEnhancementOverrideCapabilities.GetSupportedNitRanges() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CNitRange%3E%20DisplayEnhancementOverrideCapabilities.GetSupportedNitRanges%28%29");
 		}
 		#endif
 	}

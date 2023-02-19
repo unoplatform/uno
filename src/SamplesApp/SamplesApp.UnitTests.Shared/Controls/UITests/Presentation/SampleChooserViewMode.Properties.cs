@@ -56,6 +56,7 @@ namespace SampleControl.Presentation
 		private SampleChooserContent _selectedSearchSample;
 		private List<SampleChooserContent> _filteredSamples;
 		private XamlControlsResources _fluentResources;
+		private bool _isRecordAllTests = false;
 
 		private void RaisePropertyChanged([System.Runtime.CompilerServices.CallerMemberName] string propertyName = "")
 		{
@@ -422,5 +423,18 @@ namespace SampleControl.Presentation
 		}
 
 		public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+
+		public bool IsRecordAllTests
+		{
+			get => _isRecordAllTests;
+			set
+			{
+				if (value != _isRecordAllTests)
+				{
+					_isRecordAllTests = value;
+					RaisePropertyChanged();
+				}
+			}
+		}
 	}
 }

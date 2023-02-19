@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Media
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimelineMarker TimelineMarkerRoutedEventArgs.Marker is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimelineMarker TimelineMarkerRoutedEventArgs.Marker is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimelineMarker%20TimelineMarkerRoutedEventArgs.Marker");
 			}
 			set
 			{

@@ -19,8 +19,9 @@ namespace Windows.UI.Xaml.Media.Imaging
 #if NOT_IMPLEMENTED
 	[global::Uno.NotImplemented("NET461", "__WASM__", "__NETSTD_REFERENCE__")]
 #endif
-	public partial class RenderTargetBitmap: IDisposable
+	public partial class RenderTargetBitmap : IDisposable
 	{
+#if !NOT_IMPLEMENTED
 		private static void Swap(ref byte a, ref byte b)
 		{
 			(a, b) = (b, a);
@@ -35,6 +36,8 @@ namespace Windows.UI.Xaml.Media.Imaging
 				Swap(ref buffer![i], ref buffer![i + 2]);
 			}
 		}
+#endif
+
 #if NOT_IMPLEMENTED
 		internal const bool IsImplemented = false;
 #else
@@ -136,14 +139,15 @@ namespace Windows.UI.Xaml.Media.Imaging
 				{
 					return Task.FromResult<IBuffer>(new Buffer(Array.Empty<byte>()));
 				}
-				return Task.FromResult<IBuffer>(new Buffer(_buffer.AsMemory().Slice(0,_bufferSize)));
+				return Task.FromResult<IBuffer>(new Buffer(_buffer.AsMemory().Slice(0, _bufferSize)));
 			});
 
 #if NOT_IMPLEMENTED
-		private (int ByteCount,int Width, int Height) RenderAsBgra8_Premul(UIElement element, ref byte[]? buffer, Size? scaledSize = null)
+		private (int ByteCount, int Width, int Height) RenderAsBgra8_Premul(UIElement element, ref byte[]? buffer, Size? scaledSize = null)
 			=> throw new NotImplementedException("RenderTargetBitmap is not supported on this platform.");
 #endif
 
+#if !NOT_IMPLEMENTED
 		private static void EnsureBuffer(ref byte[]? buffer, int length)
 		{
 			if (buffer is null)
@@ -156,6 +160,8 @@ namespace Windows.UI.Xaml.Media.Imaging
 				buffer = ArrayPool<byte>.Shared.Rent(length);
 			}
 		}
+#endif
+
 		void IDisposable.Dispose()
 		{
 			if (_buffer is { })

@@ -13,7 +13,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VideoTemporalDenoisingMode VideoTemporalDenoisingControl.Mode is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member VideoTemporalDenoisingMode VideoTemporalDenoisingControl.Mode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=VideoTemporalDenoisingMode%20VideoTemporalDenoisingControl.Mode");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool VideoTemporalDenoisingControl.Supported is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool VideoTemporalDenoisingControl.Supported is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20VideoTemporalDenoisingControl.Supported");
 			}
 		}
 		#endif
@@ -37,7 +37,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<VideoTemporalDenoisingMode> VideoTemporalDenoisingControl.SupportedModes is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<VideoTemporalDenoisingMode> VideoTemporalDenoisingControl.SupportedModes is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CVideoTemporalDenoisingMode%3E%20VideoTemporalDenoisingControl.SupportedModes");
 			}
 		}
 		#endif

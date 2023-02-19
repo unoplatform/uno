@@ -13,7 +13,7 @@ namespace Windows.Security.Credentials
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WebAccountState WebAccount.State is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member WebAccountState WebAccount.State is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=WebAccountState%20WebAccount.State");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Security.Credentials
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string WebAccount.UserName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string WebAccount.UserName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20WebAccount.UserName");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Security.Credentials
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WebAccountProvider WebAccount.WebAccountProvider is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member WebAccountProvider WebAccount.WebAccountProvider is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=WebAccountProvider%20WebAccount.WebAccountProvider");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Security.Credentials
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string WebAccount.Id is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string WebAccount.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20WebAccount.Id");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Security.Credentials
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyDictionary<string, string> WebAccount.Properties is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyDictionary<string, string> WebAccount.Properties is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyDictionary%3Cstring%2C%20string%3E%20WebAccount.Properties");
 			}
 		}
 		#endif
@@ -74,21 +74,21 @@ namespace Windows.Security.Credentials
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IRandomAccessStream> GetPictureAsync( global::Windows.Security.Credentials.WebAccountPictureSize desizedSize)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IRandomAccessStream> WebAccount.GetPictureAsync(WebAccountPictureSize desizedSize) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<IRandomAccessStream> WebAccount.GetPictureAsync(WebAccountPictureSize desizedSize) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CIRandomAccessStream%3E%20WebAccount.GetPictureAsync%28WebAccountPictureSize%20desizedSize%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction SignOutAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction WebAccount.SignOutAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction WebAccount.SignOutAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20WebAccount.SignOutAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction SignOutAsync( string clientId)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction WebAccount.SignOutAsync(string clientId) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction WebAccount.SignOutAsync(string clientId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20WebAccount.SignOutAsync%28string%20clientId%29");
 		}
 		#endif
 		// Processing: Windows.Security.Credentials.IWebAccount

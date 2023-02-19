@@ -72,7 +72,7 @@ namespace Windows.Media.Playback
 		#region Events
 
 		public event TypedEventHandler<MediaPlayer, object> SourceChanged;
-		
+
 		public event TypedEventHandler<MediaPlayer, object> IsMutedChanged;
 
 		public event TypedEventHandler<MediaPlayer, object> VolumeChanged;

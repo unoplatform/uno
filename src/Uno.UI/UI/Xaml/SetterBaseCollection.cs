@@ -16,7 +16,7 @@ namespace Windows.UI.Xaml
 
 		}
 
-		internal SetterBaseCollection(DependencyObject parent, bool isAutoPropertyInheritanceEnabled) 
+		internal SetterBaseCollection(DependencyObject parent, bool isAutoPropertyInheritanceEnabled)
 			: base(parent, isAutoPropertyInheritanceEnabled: false)
 		{
 		}
@@ -40,7 +40,7 @@ namespace Windows.UI.Xaml
 		{
 			base.OnAdded(setterBase);
 
-			if(setterBase is Setter setter && setter.Target is null)
+			if (setterBase is Setter setter && setter.Target is null)
 			{
 				setterBase.Seal();
 			}

@@ -79,7 +79,7 @@ namespace SamplesApp.Samples.NavigationViewSample
 			{
 				contentFrame.Navigate(typeof(SettingsPage));
 			}
-			else if(args.InvokedItemContainer is NavigationViewItem item)
+			else if (args.InvokedItemContainer is NavigationViewItem item)
 			{
 				switch (item.Tag)
 				{

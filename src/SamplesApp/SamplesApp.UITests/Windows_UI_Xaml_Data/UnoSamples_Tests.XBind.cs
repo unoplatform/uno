@@ -20,10 +20,10 @@ namespace SamplesApp.UITests
 			Run("Uno.UI.Samples.Content.UITests.XBind.XBind_Simple");
 
 			{
-                // Wait for the first textblock value, the rest of the values are set 
-                // synchronously in the test
+				// Wait for the first textblock value, the rest of the values are set 
+				// synchronously in the test
 				var tb = _app.Marked("textBlock1");
-                _app.WaitFor(() => tb.GetDependencyPropertyValue("Text")?.ToString() != null);
+				_app.WaitFor(() => tb.GetDependencyPropertyValue("Text")?.ToString() != null);
 
 				Assert.AreEqual("42", tb.GetDependencyPropertyValue("Text")?.ToString());
 			}

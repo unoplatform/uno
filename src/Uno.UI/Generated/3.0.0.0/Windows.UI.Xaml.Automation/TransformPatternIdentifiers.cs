@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Automation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AutomationProperty TransformPatternIdentifiers.CanMoveProperty is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AutomationProperty TransformPatternIdentifiers.CanMoveProperty is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AutomationProperty%20TransformPatternIdentifiers.CanMoveProperty");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.Xaml.Automation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AutomationProperty TransformPatternIdentifiers.CanResizeProperty is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AutomationProperty TransformPatternIdentifiers.CanResizeProperty is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AutomationProperty%20TransformPatternIdentifiers.CanResizeProperty");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.UI.Xaml.Automation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AutomationProperty TransformPatternIdentifiers.CanRotateProperty is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AutomationProperty TransformPatternIdentifiers.CanRotateProperty is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AutomationProperty%20TransformPatternIdentifiers.CanRotateProperty");
 			}
 		}
 		#endif

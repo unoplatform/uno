@@ -13,7 +13,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid PlayReadySecureStopServiceRequest.ProtectionSystem is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Guid PlayReadySecureStopServiceRequest.ProtectionSystem is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Guid%20PlayReadySecureStopServiceRequest.ProtectionSystem");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid PlayReadySecureStopServiceRequest.Type is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Guid PlayReadySecureStopServiceRequest.Type is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Guid%20PlayReadySecureStopServiceRequest.Type");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte[] PlayReadySecureStopServiceRequest.PublisherCertificate is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member byte[] PlayReadySecureStopServiceRequest.PublisherCertificate is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=byte%5B%5D%20PlayReadySecureStopServiceRequest.PublisherCertificate");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid PlayReadySecureStopServiceRequest.SessionID is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Guid PlayReadySecureStopServiceRequest.SessionID is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Guid%20PlayReadySecureStopServiceRequest.SessionID");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset PlayReadySecureStopServiceRequest.StartTime is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DateTimeOffset PlayReadySecureStopServiceRequest.StartTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DateTimeOffset%20PlayReadySecureStopServiceRequest.StartTime");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PlayReadySecureStopServiceRequest.Stopped is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool PlayReadySecureStopServiceRequest.Stopped is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20PlayReadySecureStopServiceRequest.Stopped");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset PlayReadySecureStopServiceRequest.UpdateTime is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DateTimeOffset PlayReadySecureStopServiceRequest.UpdateTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DateTimeOffset%20PlayReadySecureStopServiceRequest.UpdateTime");
 			}
 		}
 		#endif
@@ -83,7 +83,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri PlayReadySecureStopServiceRequest.Uri is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Uri PlayReadySecureStopServiceRequest.Uri is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Uri%20PlayReadySecureStopServiceRequest.Uri");
 			}
 			set
 			{
@@ -97,7 +97,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PlayReadySecureStopServiceRequest.ChallengeCustomData is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PlayReadySecureStopServiceRequest.ChallengeCustomData is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PlayReadySecureStopServiceRequest.ChallengeCustomData");
 			}
 			set
 			{
@@ -111,7 +111,7 @@ namespace Windows.Media.Protection.PlayReady
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PlayReadySecureStopServiceRequest.ResponseCustomData is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PlayReadySecureStopServiceRequest.ResponseCustomData is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PlayReadySecureStopServiceRequest.ResponseCustomData");
 			}
 		}
 		#endif
@@ -145,28 +145,28 @@ namespace Windows.Media.Protection.PlayReady
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction BeginServiceRequest()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction PlayReadySecureStopServiceRequest.BeginServiceRequest() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction PlayReadySecureStopServiceRequest.BeginServiceRequest() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20PlayReadySecureStopServiceRequest.BeginServiceRequest%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Media.Protection.PlayReady.IPlayReadyServiceRequest NextServiceRequest()
 		{
-			throw new global::System.NotImplementedException("The member IPlayReadyServiceRequest PlayReadySecureStopServiceRequest.NextServiceRequest() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IPlayReadyServiceRequest PlayReadySecureStopServiceRequest.NextServiceRequest() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IPlayReadyServiceRequest%20PlayReadySecureStopServiceRequest.NextServiceRequest%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Media.Protection.PlayReady.PlayReadySoapMessage GenerateManualEnablingChallenge()
 		{
-			throw new global::System.NotImplementedException("The member PlayReadySoapMessage PlayReadySecureStopServiceRequest.GenerateManualEnablingChallenge() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member PlayReadySoapMessage PlayReadySecureStopServiceRequest.GenerateManualEnablingChallenge() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PlayReadySoapMessage%20PlayReadySecureStopServiceRequest.GenerateManualEnablingChallenge%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::System.Exception ProcessManualEnablingResponse( byte[] responseBytes)
 		{
-			throw new global::System.NotImplementedException("The member Exception PlayReadySecureStopServiceRequest.ProcessManualEnablingResponse(byte[] responseBytes) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member Exception PlayReadySecureStopServiceRequest.ProcessManualEnablingResponse(byte[] responseBytes) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Exception%20PlayReadySecureStopServiceRequest.ProcessManualEnablingResponse%28byte%5B%5D%20responseBytes%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadySecureStopServiceRequest.ProtectionSystem.get

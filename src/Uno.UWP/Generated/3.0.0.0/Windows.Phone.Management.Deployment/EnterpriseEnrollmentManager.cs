@@ -13,7 +13,7 @@ namespace Windows.Phone.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Enterprise EnterpriseEnrollmentManager.CurrentEnterprise is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Enterprise EnterpriseEnrollmentManager.CurrentEnterprise is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Enterprise%20EnterpriseEnrollmentManager.CurrentEnterprise");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Phone.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<Enterprise> EnterpriseEnrollmentManager.EnrolledEnterprises is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<Enterprise> EnterpriseEnrollmentManager.EnrolledEnterprises is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CEnterprise%3E%20EnterpriseEnrollmentManager.EnrolledEnterprises");
 			}
 		}
 		#endif
@@ -33,21 +33,21 @@ namespace Windows.Phone.Management.Deployment
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Foundation.IAsyncAction ValidateEnterprisesAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction EnterpriseEnrollmentManager.ValidateEnterprisesAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction EnterpriseEnrollmentManager.ValidateEnterprisesAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20EnterpriseEnrollmentManager.ValidateEnterprisesAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Phone.Management.Deployment.EnterpriseEnrollmentResult> RequestEnrollmentAsync( string enrollmentToken)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<EnterpriseEnrollmentResult> EnterpriseEnrollmentManager.RequestEnrollmentAsync(string enrollmentToken) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<EnterpriseEnrollmentResult> EnterpriseEnrollmentManager.RequestEnrollmentAsync(string enrollmentToken) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CEnterpriseEnrollmentResult%3E%20EnterpriseEnrollmentManager.RequestEnrollmentAsync%28string%20enrollmentToken%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Foundation.IAsyncOperation<bool> RequestUnenrollmentAsync( global::Windows.Phone.Management.Deployment.Enterprise enterprise)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> EnterpriseEnrollmentManager.RequestUnenrollmentAsync(Enterprise enterprise) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> EnterpriseEnrollmentManager.RequestUnenrollmentAsync(Enterprise enterprise) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3Cbool%3E%20EnterpriseEnrollmentManager.RequestUnenrollmentAsync%28Enterprise%20enterprise%29");
 		}
 		#endif
 	}

@@ -8,7 +8,7 @@ namespace Microsoft.UI.Input
 namespace Windows.UI.Input
 #endif
 {
-	public partial class HoldingEventArgs 
+	public partial class HoldingEventArgs
 	{
 		internal HoldingEventArgs(uint pointerId, PointerDeviceType type, Point position, HoldingState state)
 		{

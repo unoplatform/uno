@@ -13,7 +13,7 @@ namespace Windows.System.UserProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<string> GlobalizationPreferences.Calendars is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<string> GlobalizationPreferences.Calendars is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3Cstring%3E%20GlobalizationPreferences.Calendars");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.System.UserProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<string> GlobalizationPreferences.Clocks is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<string> GlobalizationPreferences.Clocks is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3Cstring%3E%20GlobalizationPreferences.Clocks");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.System.UserProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<string> GlobalizationPreferences.Currencies is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<string> GlobalizationPreferences.Currencies is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3Cstring%3E%20GlobalizationPreferences.Currencies");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.System.UserProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string GlobalizationPreferences.HomeGeographicRegion is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string GlobalizationPreferences.HomeGeographicRegion is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20GlobalizationPreferences.HomeGeographicRegion");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.System.UserProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<string> GlobalizationPreferences.Languages is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<string> GlobalizationPreferences.Languages is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3Cstring%3E%20GlobalizationPreferences.Languages");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.System.UserProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DayOfWeek GlobalizationPreferences.WeekStartsOn is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DayOfWeek GlobalizationPreferences.WeekStartsOn is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DayOfWeek%20GlobalizationPreferences.WeekStartsOn");
 			}
 		}
 		#endif
@@ -71,21 +71,21 @@ namespace Windows.System.UserProfile
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.System.UserProfile.GlobalizationPreferencesForUser GetForUser( global::Windows.System.User user)
 		{
-			throw new global::System.NotImplementedException("The member GlobalizationPreferencesForUser GlobalizationPreferences.GetForUser(User user) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member GlobalizationPreferencesForUser GlobalizationPreferences.GetForUser(User user) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=GlobalizationPreferencesForUser%20GlobalizationPreferences.GetForUser%28User%20user%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static bool TrySetHomeGeographicRegion( string region)
 		{
-			throw new global::System.NotImplementedException("The member bool GlobalizationPreferences.TrySetHomeGeographicRegion(string region) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member bool GlobalizationPreferences.TrySetHomeGeographicRegion(string region) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20GlobalizationPreferences.TrySetHomeGeographicRegion%28string%20region%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static bool TrySetLanguages( global::System.Collections.Generic.IEnumerable<string> languageTags)
 		{
-			throw new global::System.NotImplementedException("The member bool GlobalizationPreferences.TrySetLanguages(IEnumerable<string> languageTags) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member bool GlobalizationPreferences.TrySetLanguages(IEnumerable<string> languageTags) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20GlobalizationPreferences.TrySetLanguages%28IEnumerable%3Cstring%3E%20languageTags%29");
 		}
 		#endif
 		// Forced skipping of method Windows.System.UserProfile.GlobalizationPreferences.Calendars.get

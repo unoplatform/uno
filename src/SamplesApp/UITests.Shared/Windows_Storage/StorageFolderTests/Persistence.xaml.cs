@@ -87,7 +87,7 @@ namespace UITests.Shared.Windows_Storage.StorageFolderTests
 				using (var stream = await folder.OpenStreamForWriteAsync("uno-samples-persistence.txt", CreationCollisionOption.OpenIfExists))
 				{
 					stream.Seek(0, SeekOrigin.End);
-					using (var writer = new StreamWriter(stream){AutoFlush = true})
+					using (var writer = new StreamWriter(stream) { AutoFlush = true })
 					{
 						await writer.WriteLineAsync(text);
 					}

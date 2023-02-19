@@ -3,9 +3,9 @@ parameters:
 
 jobs:
 - job: generic_win_build
-  displayName: 'Build Generic Binaries'
+  displayName: 'Build Generic Package Binaries'
   timeoutInMinutes: 90
-  
+
   dependsOn: winui_convert_tree
 
   pool: ${{ parameters.poolName }}
@@ -14,11 +14,11 @@ jobs:
     matrix:
       UWP:
         UNO_UWP_BUILD: true
-        XAML_FLAVOR_BUILD: UWP 
+        XAML_FLAVOR_BUILD: UWP
 
       WinUI:
         UNO_UWP_BUILD: false
-        XAML_FLAVOR_BUILD: WinUI 
+        XAML_FLAVOR_BUILD: WinUI
 
   variables:
     CombinedConfiguration: Release|Any CPU
@@ -42,24 +42,17 @@ jobs:
       nugetPackages: $(NUGET_PACKAGES)
 
   - template: templates/gitversion.yml
-   
+
   - task: NuGetToolInstaller@0
     inputs:
       versionSpec: 4.9.1
       checkLatest: false
 
-  # Required to run the api comparison tool
-  - task: UseDotNet@2
-    displayName: 'Use .Net Core runtime 2.2.x'
-    inputs:
-      packageType: runtime
-      version: 2.2.x
-
   - template: templates/dotnet-install.yml
 
   - powershell: .\build\Install-WindowsSdkISO.ps1 18362
     displayName: Insider SDK
-    
+
   # Required for the Wasm uitests project
   - task: NodeTool@0
 
@@ -112,13 +105,15 @@ jobs:
 
   - task: PublishBuildArtifacts@1
     condition: always()
+    retryCountOnTaskFailure: 3
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
-      ArtifactName: NugetPackages-Artifacts-generic
+      ArtifactName: NugetPackages-Artifacts-generic-$(XAML_FLAVOR_BUILD)
       ArtifactType: Container
-  
+
   # - task: PublishBuildArtifacts@1
   #   displayName: Publish Tizen Artifacts
+  #   retryCountOnTaskFailure: 3
   #   condition: always()
   #   inputs:
   #     PathtoPublish: $(build.sourcesdirectory)\src\SamplesApp\SamplesApp.Skia.Tizen\bin\Release\tizen50

@@ -527,8 +527,8 @@ namespace Windows.UI.Tests.Enterprise
 
 			var page = await SetupTopBottomInlineAppBarsPage();
 
-			AppBar topAppBar = null;
-			AppBar bottomAppBar = null;
+			//AppBar topAppBar = null;
+			//AppBar bottomAppBar = null;
 			AppBar inlineAppBar = null;
 
 			await RunOnUIThread(() =>
@@ -594,7 +594,7 @@ namespace Windows.UI.Tests.Enterprise
 		{
 			TestCleanupWrapper cleanup;
 
-			AppBar appBar = null;
+			//AppBar appBar = null;
 			Page page = null;
 			Button button = null;
 
@@ -1658,7 +1658,7 @@ namespace Windows.UI.Tests.Enterprise
 				var rootPanel = (StackPanel)XamlReader.Load(@"
 					<StackPanel xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation""
 								xmlns:x=""http://schemas.microsoft.com/winfx/2006/xaml""
-								
+
 								Width=""400""
 								Height=""600"">
                         <AppBar x:Name=""appBarCompactClosed"" IsOpen=""False"" ClosedDisplayMode=""Compact""/>
@@ -2091,13 +2091,13 @@ namespace Windows.UI.Tests.Enterprise
 		//	{
 		//		var root = (FrameworkElement)XamlReader.Load(@"
 		//			<Grid xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation""  xmlns:x=""http://schemas.microsoft.com/winfx/2006/xaml""
-  //                      Background=""LightBlue"" Width=""400"" Height=""400"">
-  //                      <StackPanel>
-  //                          <AppBar  x:Name=""appBar"">
-  //                              <AppBarButton x:Name=""appBarButton"" Icon=""Add"" Label=""Add""/>
-  //                          </AppBar>
-  //                      </StackPanel>
-  //                  </Grid>
+		//                      Background=""LightBlue"" Width=""400"" Height=""400"">
+		//                      <StackPanel>
+		//                          <AppBar  x:Name=""appBar"">
+		//                              <AppBarButton x:Name=""appBarButton"" Icon=""Add"" Label=""Add""/>
+		//                          </AppBar>
+		//                      </StackPanel>
+		//                  </Grid>
 		//		");
 
 		//		appBar = (AppBar)root.FindName("appBar");

@@ -17,11 +17,11 @@ using Windows.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.ContentDialogTests
 {
-    public sealed partial class ComboBoxContentDialog : UserControl
-    {
-        public ComboBoxContentDialog()
-        {
-            this.InitializeComponent();
-        }
-    }
+	public sealed partial class ComboBoxContentDialog : UserControl
+	{
+		public ComboBoxContentDialog()
+		{
+			this.InitializeComponent();
+		}
+	}
 }

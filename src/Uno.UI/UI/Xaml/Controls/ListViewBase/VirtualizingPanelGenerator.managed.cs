@@ -1,4 +1,6 @@
-﻿#if !NET461
+﻿#nullable enable
+
+#if !NET461
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -54,7 +56,7 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		private readonly Dictionary<int, FrameworkElement> _scrapCache = new Dictionary<int, FrameworkElement>();
 
-		private ItemsControl ItemsControl => _owner.ItemsControl;
+		private ItemsControl? ItemsControl => _owner.ItemsControl;
 
 		public VirtualizingPanelGenerator(_VirtualizingPanelLayout owner)
 		{
@@ -89,7 +91,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// Returns a container view bound to the item at <paramref name="index"/>, recycling an available view if possible, or creating a new container if not.
 		/// </summary>
-		public FrameworkElement DequeueViewForItem(int index)
+		public FrameworkElement? DequeueViewForItem(int index)
 		{
 			//Try scrap first to save rebinding view
 			var scrapped = TryGetScrappedContainer(index);
@@ -115,7 +117,7 @@ namespace Windows.UI.Xaml.Controls
 				{
 					this.Log().Debug($"DequeueViewForItem: Creating for index:{index}");
 				}
-				container = ItemsControl.GetContainerForIndex(index) as FrameworkElement;
+				container = ItemsControl?.GetContainerForIndex(index) as FrameworkElement;
 			}
 			else
 			{
@@ -125,7 +127,7 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 
-			ItemsControl.PrepareContainerForIndex(container, index);
+			ItemsControl?.PrepareContainerForIndex(container, index);
 
 			return container;
 		}
@@ -133,7 +135,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// Try to retrieve a cached container for a given template <paramref name="id"/>. Returns null if none is available.
 		/// </summary>
-		private FrameworkElement TryDequeueCachedContainer(int id)
+		private FrameworkElement? TryDequeueCachedContainer(int id)
 		{
 			if (id == IsOwnContainerItemId)
 			{
@@ -157,7 +159,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// Try to retrieve a temporarily-scrapped container for given item <paramref name="index"/>. Returns null if none is available.
 		/// </summary>
-		private FrameworkElement TryGetScrappedContainer(int index)
+		private FrameworkElement? TryGetScrappedContainer(int index)
 		{
 			if (_scrapCache.TryGetValue(index, out var container))
 			{
@@ -174,7 +176,8 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		/// <param name="container">The item container to recycle.</param>
 		/// <param name="index">The item index that the container was being used for.</param>
-		public void RecycleViewForItem(FrameworkElement container, int index)
+		/// <param name="clearContainer">Clears the container DataContext, used when the container is associated when an item is removed</param>
+		public void RecycleViewForItem(FrameworkElement container, int index, bool clearContainer)
 		{
 			var id = GetItemId(index);
 
@@ -190,6 +193,11 @@ namespace Windows.UI.Xaml.Controls
 				if (cache.Count < CacheLimit)
 				{
 					cache.Push(container);
+
+					if (clearContainer)
+					{
+						ItemsControl?.CleanUpContainer(container);
+					}
 				}
 				else
 				{
@@ -214,10 +222,13 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// Completely remove an item container that will not be reused again.
 		/// </summary>
-		private static void DiscardContainer(FrameworkElement container)
+		private void DiscardContainer(FrameworkElement container)
 		{
 			if (container.Parent is Panel parent)
 			{
+				// Clear the container's Content and DataContext
+				ItemsControl?.CleanUpContainer(container);
+
 				parent.Children.Remove(container);
 			}
 		}
@@ -239,7 +250,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			foreach (var kvp in _scrapCache)
 			{
-				RecycleViewForItem(kvp.Value, kvp.Key);
+				RecycleViewForItem(kvp.Value, kvp.Key, clearContainer: false);
 			}
 
 			_scrapCache.Clear();
@@ -279,7 +290,8 @@ namespace Windows.UI.Xaml.Controls
 				{
 					// Item has been removed, take out container from scrap so that we don't reuse it without rebinding.
 					// Note: we update scrap before _idCache, so we can access the correct, cached template id in RecycleViewForItem()
-					RecycleViewForItem(kvp.Value, kvp.Key);
+					// We also ensure that the container is cleared up so that we don't leak references
+					RecycleViewForItem(kvp.Value, kvp.Key, clearContainer: true);
 				}
 			}
 
@@ -314,7 +326,7 @@ namespace Windows.UI.Xaml.Controls
 			return id;
 		}
 
-		private string GetMethodTag([CallerMemberName] string caller = null)
+		private string GetMethodTag([CallerMemberName] string caller = "")
 			=> $"{nameof(VirtualizingPanelGenerator)}.{caller}()";
 
 		internal void ClearIdCache()

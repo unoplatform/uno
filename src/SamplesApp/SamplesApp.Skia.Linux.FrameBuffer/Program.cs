@@ -13,7 +13,7 @@ namespace SkiaSharpExample
 		[STAThread]
 		public static void Main(string[] args)
 		{
-			try 
+			try
 			{
 				SamplesApp.App.ConfigureFilters(); // Enable tracing of the host
 

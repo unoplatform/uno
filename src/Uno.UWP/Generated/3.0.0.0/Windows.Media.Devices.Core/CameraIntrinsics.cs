@@ -13,7 +13,7 @@ namespace Windows.Media.Devices.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector2 CameraIntrinsics.FocalLength is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Vector2 CameraIntrinsics.FocalLength is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Vector2%20CameraIntrinsics.FocalLength");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.Devices.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint CameraIntrinsics.ImageHeight is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint CameraIntrinsics.ImageHeight is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20CameraIntrinsics.ImageHeight");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Media.Devices.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint CameraIntrinsics.ImageWidth is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint CameraIntrinsics.ImageWidth is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20CameraIntrinsics.ImageWidth");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Media.Devices.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector2 CameraIntrinsics.PrincipalPoint is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Vector2 CameraIntrinsics.PrincipalPoint is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Vector2%20CameraIntrinsics.PrincipalPoint");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Media.Devices.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector3 CameraIntrinsics.RadialDistortion is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Vector3 CameraIntrinsics.RadialDistortion is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Vector3%20CameraIntrinsics.RadialDistortion");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Media.Devices.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector2 CameraIntrinsics.TangentialDistortion is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Vector2 CameraIntrinsics.TangentialDistortion is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Vector2%20CameraIntrinsics.TangentialDistortion");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.Media.Devices.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Matrix4x4 CameraIntrinsics.UndistortedProjectionTransform is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Matrix4x4 CameraIntrinsics.UndistortedProjectionTransform is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Matrix4x4%20CameraIntrinsics.UndistortedProjectionTransform");
 			}
 		}
 		#endif
@@ -95,14 +95,14 @@ namespace Windows.Media.Devices.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.Point ProjectOntoFrame( global::System.Numerics.Vector3 coordinate)
 		{
-			throw new global::System.NotImplementedException("The member Point CameraIntrinsics.ProjectOntoFrame(Vector3 coordinate) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member Point CameraIntrinsics.ProjectOntoFrame(Vector3 coordinate) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Point%20CameraIntrinsics.ProjectOntoFrame%28Vector3%20coordinate%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::System.Numerics.Vector2 UnprojectAtUnitDepth( global::Windows.Foundation.Point pixelCoordinate)
 		{
-			throw new global::System.NotImplementedException("The member Vector2 CameraIntrinsics.UnprojectAtUnitDepth(Point pixelCoordinate) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member Vector2 CameraIntrinsics.UnprojectAtUnitDepth(Point pixelCoordinate) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Vector2%20CameraIntrinsics.UnprojectAtUnitDepth%28Point%20pixelCoordinate%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -124,7 +124,7 @@ namespace Windows.Media.Devices.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.Point DistortPoint( global::Windows.Foundation.Point input)
 		{
-			throw new global::System.NotImplementedException("The member Point CameraIntrinsics.DistortPoint(Point input) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member Point CameraIntrinsics.DistortPoint(Point input) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Point%20CameraIntrinsics.DistortPoint%28Point%20input%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -138,7 +138,7 @@ namespace Windows.Media.Devices.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.Point UndistortPoint( global::Windows.Foundation.Point input)
 		{
-			throw new global::System.NotImplementedException("The member Point CameraIntrinsics.UndistortPoint(Point input) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member Point CameraIntrinsics.UndistortPoint(Point input) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Point%20CameraIntrinsics.UndistortPoint%28Point%20input%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

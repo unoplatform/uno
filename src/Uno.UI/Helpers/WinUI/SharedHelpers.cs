@@ -264,7 +264,8 @@ namespace Uno.UI.Helpers.WinUI
 		static bool? s_isBringIntoViewOptionsVerticalAlignmentRatioAvailable;
 		public static bool IsBringIntoViewOptionsVerticalAlignmentRatioAvailable()
 		{
-			if (s_isBringIntoViewOptionsVerticalAlignmentRatioAvailable == null) {
+			if (s_isBringIntoViewOptionsVerticalAlignmentRatioAvailable == null)
+			{
 				s_isBringIntoViewOptionsVerticalAlignmentRatioAvailable =
 					IsRS4OrHigher() ||
 					ApiInformation.IsPropertyPresent("Windows.UI.Xaml.BringIntoViewOptions", "VerticalAlignmentRatio");
@@ -607,12 +608,6 @@ namespace Uno.UI.Helpers.WinUI
 				(rect2.Y <= rect1.Y + rect1.Height) &&
 				(rect2.Y + rect2.Height >= rect1.Y);
 			return doIntersect;
-		}
-
-		object FindResourceOrNull(string resource, ResourceDictionary resources)
-		{
-			object boxedResource = resource;
-			return resources.HasKey(boxedResource) ? resources.Lookup(boxedResource) : null;
 		}
 
 		// When checkVisibility is True, IsAncestor additionally checks if any UIElement from the 'child'

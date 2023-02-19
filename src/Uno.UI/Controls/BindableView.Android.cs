@@ -112,6 +112,8 @@ namespace Uno.UI.Controls
 		/// observer.</remarks>
 		public new virtual void AddView(View view)
 		{
+			view.TrySetParent(this);
+
 			_childrenShadow.Add(view);
 			base.AddViewFast(view);
 			OnChildViewAdded(view);
@@ -125,6 +127,8 @@ namespace Uno.UI.Controls
 		/// observer.</remarks>
 		public new virtual void AddView(View view, int index)
 		{
+			view.TrySetParent(this);
+
 			_childrenShadow.Insert(index, view);
 			base.AddViewFast(view, index);
 			OnChildViewAdded(view);
@@ -144,6 +148,7 @@ namespace Uno.UI.Controls
 				{
 					fe.IsManagedLoaded = false;
 					fe.PerformOnUnloaded();
+					fe.SetParent(null);
 				}
 			}
 
@@ -169,6 +174,7 @@ namespace Uno.UI.Controls
 				{
 					fe.IsManagedLoaded = false;
 					fe.PerformOnUnloaded();
+					fe.SetParent(null);
 				}
 			}
 

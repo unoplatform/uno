@@ -13,7 +13,7 @@ namespace Windows.Foundation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint WwwFormUrlDecoder.Size is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint WwwFormUrlDecoder.Size is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20WwwFormUrlDecoder.Size");
 			}
 		}
 		#endif
@@ -29,7 +29,7 @@ namespace Windows.Foundation
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  string GetFirstValueByName( string name)
 		{
-			throw new global::System.NotImplementedException("The member string WwwFormUrlDecoder.GetFirstValueByName(string name) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member string WwwFormUrlDecoder.GetFirstValueByName(string name) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20WwwFormUrlDecoder.GetFirstValueByName%28string%20name%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Foundation.WwwFormUrlDecoder.First()

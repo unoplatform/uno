@@ -20,11 +20,11 @@ namespace Windows.UI.Xaml.Media
 
 		public static DependencyProperty FillRuleProperty { get; } =
 			DependencyProperty.Register(
-				"FillRule", 
+				"FillRule",
 				typeof(FillRule),
 				typeof(PathGeometry),
 				new FrameworkPropertyMetadata(
-					defaultValue: FillRule.EvenOdd, 
+					defaultValue: FillRule.EvenOdd,
 					options: FrameworkPropertyMetadataOptions.AffectsRender
 				)
 			);
@@ -47,7 +47,7 @@ namespace Windows.UI.Xaml.Media
 
 		public static DependencyProperty FiguresProperty { get; } =
 			DependencyProperty.Register(
-				"Figures", 
+				"Figures",
 				typeof(PathFigureCollection),
 				typeof(PathGeometry),
 				new FrameworkPropertyMetadata(

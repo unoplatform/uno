@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.LockScreen
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string LockScreenBadge.AutomationName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string LockScreenBadge.AutomationName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20LockScreenBadge.AutomationName");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.ApplicationModel.LockScreen
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IRandomAccessStream LockScreenBadge.Glyph is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IRandomAccessStream LockScreenBadge.Glyph is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IRandomAccessStream%20LockScreenBadge.Glyph");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.ApplicationModel.LockScreen
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IRandomAccessStream LockScreenBadge.Logo is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IRandomAccessStream LockScreenBadge.Logo is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IRandomAccessStream%20LockScreenBadge.Logo");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.ApplicationModel.LockScreen
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint? LockScreenBadge.Number is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint? LockScreenBadge.Number is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%3F%20LockScreenBadge.Number");
 			}
 		}
 		#endif

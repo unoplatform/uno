@@ -52,9 +52,9 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-        public DependencyPropertyCallbackManager CallbackManager => _callbackManager ??= new DependencyPropertyCallbackManager();
+		public DependencyPropertyCallbackManager CallbackManager => _callbackManager ??= new DependencyPropertyCallbackManager();
 
-        public DependencyProperty Property { get; }
+		public DependencyProperty Property { get; }
 
 		public PropertyMetadata Metadata => _metadata ??= Property.GetMetadata(_dependencyObjectType);
 
@@ -62,15 +62,15 @@ namespace Windows.UI.Xaml
 		/// Constructor
 		/// </summary>
 		/// <param name="defaultValue">The default value of the Dependency Property</param>
-		internal DependencyPropertyDetails(DependencyProperty property, Type dependencyObjectType)
+		internal DependencyPropertyDetails(DependencyProperty property, Type dependencyObjectType, bool hasInherits, bool hasValueInherits, bool hasValueDoesNotInherits)
 		{
 			Property = property;
 			_dependencyObjectType = dependencyObjectType;
 
-			if (property.HasWeakStorage)
-			{
-				_flags |= Flags.WeakStorage;
-			}
+			_flags |= property.HasWeakStorage ? Flags.WeakStorage : Flags.None;
+			_flags |= hasValueInherits ? Flags.ValueInherits : Flags.None;
+			_flags |= hasValueDoesNotInherits ? Flags.ValueDoesNotInherit : Flags.None;
+			_flags |= hasInherits ? Flags.Inherits : Flags.None;
 		}
 
 		private object? GetDefaultValue()
@@ -242,7 +242,7 @@ namespace Windows.UI.Xaml
 		{
 			if (_stack == null)
 			{
-				if(_highestPrecedence == DependencyPropertyValuePrecedences.Local)
+				if (_highestPrecedence == DependencyPropertyValuePrecedences.Local)
 				{
 					return (Unwrap(_fastLocalValue), DependencyPropertyValuePrecedences.Local);
 				}
@@ -318,6 +318,15 @@ namespace Windows.UI.Xaml
 		private bool HasDefaultValueSet
 			=> (_flags & Flags.DefaultValueSet) != 0;
 
+		internal bool HasValueInherits
+			=> (_flags & Flags.ValueInherits) != 0;
+
+		internal bool HasValueDoesNotInherit
+			=> (_flags & Flags.ValueDoesNotInherit) != 0;
+
+		internal bool HasInherits
+			=> (_flags & Flags.Inherits) != 0;
+
 		private object?[] Stack
 		{
 			get
@@ -367,6 +376,11 @@ namespace Windows.UI.Xaml
 		enum Flags
 		{
 			/// <summary>
+			/// No flag is being set
+			/// </summary>
+			None = 0,
+
+			/// <summary>
 			/// This dependency property uses weak storage for its values
 			/// </summary>
 			WeakStorage = 1 << 0,
@@ -375,6 +389,21 @@ namespace Windows.UI.Xaml
 			/// Determines if the default value has been populated
 			/// </summary>
 			DefaultValueSet = 1 << 1,
+
+			/// <summary>
+			/// Determines if the property inherits DataContext from its parent
+			/// </summary>
+			ValueInherits = 1 << 2,
+
+			/// <summary>
+			/// Determines if the property must not inherit DataContext from its parent
+			/// </summary>
+			ValueDoesNotInherit = 1 << 3,
+
+			/// <summary>
+			/// Determines if the property inherits Value from its parent
+			/// </summary>
+			Inherits = 1 << 4,
 		}
 	}
 }

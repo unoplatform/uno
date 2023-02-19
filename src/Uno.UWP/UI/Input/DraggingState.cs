@@ -4,7 +4,7 @@ namespace Microsoft.UI.Input
 namespace Windows.UI.Input
 #endif
 {
-	public enum DraggingState 
+	public enum DraggingState
 	{
 		Started,
 		Continuing,

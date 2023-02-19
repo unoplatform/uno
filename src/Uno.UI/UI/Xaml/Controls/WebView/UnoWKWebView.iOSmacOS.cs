@@ -18,6 +18,8 @@ using Uno.UI.Services;
 using Windows.ApplicationModel.Resources;
 using Uno.UI;
 using System.Globalization;
+using Uno.UI.Helpers.WinUI;
+
 #if __IOS__
 using UIKit;
 #else
@@ -28,7 +30,7 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class UnoWKWebView : WKWebView, INativeWebView
 #if __MACOS__
-		,IHasSizeThatFits
+		, IHasSizeThatFits
 #endif
 	{
 		private WebView _parentWebView;
@@ -42,9 +44,8 @@ namespace Windows.UI.Xaml.Controls
 
 		public UnoWKWebView() : base(CGRect.Empty, new WebKit.WKWebViewConfiguration())
 		{
-			var resourceLoader = ResourceLoader.GetForCurrentView();
-			var ok = resourceLoader.GetString("OkResourceKey");
-			var cancel = resourceLoader.GetString("CancelResourceKey");
+			var ok = ResourceAccessor.GetLocalizedStringResource("OkResourceKey");
+			var cancel = ResourceAccessor.GetLocalizedStringResource("CancelResourceKey");
 
 			if (NSLocale.CurrentLocale.LanguageCode == "en")
 			{
@@ -76,7 +77,7 @@ namespace Windows.UI.Xaml.Controls
 			var height = Math.Min(availableSize.Height, FittingSize.Height);
 			var width = Math.Min(availableSize.Width, FittingSize.Width);
 			return new CGSize(width, height);
-		} 
+		}
 #endif
 
 		public void RegisterNavigationEvents(WebView xamlWebView)
@@ -255,7 +256,8 @@ namespace Windows.UI.Xaml.Controls
 			};
 			alert.AddButton(OkString);
 			alert.AddButton(CancelString);
-			alert.BeginSheetForResponse(webview.Window, (result) => {
+			alert.BeginSheetForResponse(webview.Window, (result) =>
+			{
 				var okButtonClicked = result == 1000;
 				completionHandler(okButtonClicked);
 			});
@@ -300,7 +302,8 @@ namespace Windows.UI.Xaml.Controls
 			alert.AccessoryView = textField;
 			alert.AddButton(OkString);
 			alert.AddButton(CancelString);
-			alert.BeginSheetForResponse(webview.Window, (result) => {
+			alert.BeginSheetForResponse(webview.Window, (result) =>
+			{
 				var okButtonClicked = result == 1000;
 				completionHandler(okButtonClicked ? textField.StringValue : null);
 			});

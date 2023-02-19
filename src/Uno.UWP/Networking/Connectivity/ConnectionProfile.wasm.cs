@@ -3,7 +3,7 @@
 namespace Windows.Networking.Connectivity
 {
 	public partial class ConnectionProfile
-    {
+	{
 		private const string JsType = "Windows.Networking.Connectivity.ConnectionProfile";
 
 		internal static ConnectionProfile GetInternetConnectionProfile() =>

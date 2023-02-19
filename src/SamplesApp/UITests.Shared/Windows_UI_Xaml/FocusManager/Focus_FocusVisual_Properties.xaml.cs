@@ -11,13 +11,13 @@ namespace UITests.Windows_UI_Xaml.FocusTests
 {
 	[Sample("Focus", ViewModelType = typeof(FocusVisualPropertiesViewModel))]
 	public sealed partial class Focus_FocusVisual_Properties : Page
-    {
+	{
 		private readonly Button[] _buttons;
 		private Button _currentFocusButton;
 
-        public Focus_FocusVisual_Properties()
-        {
-            InitializeComponent();
+		public Focus_FocusVisual_Properties()
+		{
+			InitializeComponent();
 			DataContextChanged += OnDataContextChanged;
 			_buttons = FocusPanel.Children.OfType<Button>().ToArray();
 		}

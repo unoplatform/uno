@@ -13,7 +13,7 @@ namespace Windows.Devices.Enumeration
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DeviceInformation DeviceWatcherEvent.DeviceInformation is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DeviceInformation DeviceWatcherEvent.DeviceInformation is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DeviceInformation%20DeviceWatcherEvent.DeviceInformation");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.Enumeration
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DeviceInformationUpdate DeviceWatcherEvent.DeviceInformationUpdate is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DeviceInformationUpdate DeviceWatcherEvent.DeviceInformationUpdate is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DeviceInformationUpdate%20DeviceWatcherEvent.DeviceInformationUpdate");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Devices.Enumeration
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DeviceWatcherEventKind DeviceWatcherEvent.Kind is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DeviceWatcherEventKind DeviceWatcherEvent.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DeviceWatcherEventKind%20DeviceWatcherEvent.Kind");
 			}
 		}
 		#endif

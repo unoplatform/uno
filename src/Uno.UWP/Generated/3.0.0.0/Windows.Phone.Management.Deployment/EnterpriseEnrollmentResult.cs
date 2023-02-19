@@ -13,7 +13,7 @@ namespace Windows.Phone.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Enterprise EnterpriseEnrollmentResult.EnrolledEnterprise is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Enterprise EnterpriseEnrollmentResult.EnrolledEnterprise is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Enterprise%20EnterpriseEnrollmentResult.EnrolledEnterprise");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Phone.Management.Deployment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member EnterpriseEnrollmentStatus EnterpriseEnrollmentResult.Status is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member EnterpriseEnrollmentStatus EnterpriseEnrollmentResult.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=EnterpriseEnrollmentStatus%20EnterpriseEnrollmentResult.Status");
 			}
 		}
 		#endif

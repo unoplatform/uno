@@ -20,16 +20,16 @@ namespace Uno.UI.Behaviors
 {
 	public class TextBoxBehavior
 	{
-#region Attached property: NextControl
+		#region Attached property: NextControl
 
 		public static object GetNextControl(TextBox obj)
 		{
 			return obj.GetValue(NextControlProperty);
 		}
-		
-		public static DependencyProperty NextControlProperty { get ; } =
+
+		public static DependencyProperty NextControlProperty { get; } =
 			DependencyProperty.RegisterAttached("NextControl", typeof(object), typeof(TextBoxBehavior),
-			new FrameworkPropertyMetadata( null,  new PropertyChangedCallback(OnNextControlChanged)));
+			new FrameworkPropertyMetadata(null, new PropertyChangedCallback(OnNextControlChanged)));
 
 		private static void OnNextControlChanged(object sender, DependencyPropertyChangedEventArgs e)
 		{
@@ -85,24 +85,24 @@ namespace Uno.UI.Behaviors
 			}
 		}
 
-#endregion
+		#endregion
 
-#region Attached property: Text
+		#region Attached property: Text
 
-		public static DependencyProperty TextProperty { get ; } =
+		public static DependencyProperty TextProperty { get; } =
 			DependencyProperty.RegisterAttached("Text", typeof(string), typeof(TextBoxBehavior), new FrameworkPropertyMetadata(default(string), OnTextChanged));
 
 		private static void OnTextChanged(object d, DependencyPropertyChangedEventArgs e)
 		{
 			var textBox = d as TextBox;
-			
+
 			var newValueAsString = (string)e.NewValue;
 
 			if (newValueAsString != null)
 				textBox.Text = newValueAsString;
-		} 
+		}
 
-#endregion
+		#endregion
 	}
 }
 #endif

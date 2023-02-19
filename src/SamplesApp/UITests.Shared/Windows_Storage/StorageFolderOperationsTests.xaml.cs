@@ -99,7 +99,7 @@ namespace UITests.Windows_Storage
 				};
 				PickedFolder = await picker.PickSingleFolderAsync();
 			}
-			catch(Exception ex)
+			catch (Exception ex)
 			{
 				ErrorMessage = "Can't pick folder: " + ex;
 			}
@@ -147,7 +147,7 @@ namespace UITests.Windows_Storage
 				var folders = await _pickedFolder.GetFoldersAsync();
 				StorageItemList = new ObservableCollection<IStorageItem>(folders);
 			}
-			catch(Exception ex)
+			catch (Exception ex)
 			{
 				ErrorMessage = "Can't list folders: " + ex;
 			}

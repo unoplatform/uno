@@ -103,12 +103,12 @@ namespace Uno.Collections
 		{
 			var length = Count;
 
-			if(length == 0)
+			if (length == 0)
 			{
 				return false;
 			}
 
-			last = ref  _inner.Span[length - 1];
+			last = ref _inner.Span[length - 1];
 			return true;
 		}
 
@@ -116,7 +116,7 @@ namespace Uno.Collections
 		{
 			get
 			{
-				if(index < 0 || index >= Count)
+				if (index < 0 || index >= Count)
 				{
 					throw new ArgumentOutOfRangeException(nameof(index));
 				}

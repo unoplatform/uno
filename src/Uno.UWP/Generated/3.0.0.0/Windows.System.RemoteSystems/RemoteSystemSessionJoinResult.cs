@@ -13,7 +13,7 @@ namespace Windows.System.RemoteSystems
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member RemoteSystemSession RemoteSystemSessionJoinResult.Session is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member RemoteSystemSession RemoteSystemSessionJoinResult.Session is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=RemoteSystemSession%20RemoteSystemSessionJoinResult.Session");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.System.RemoteSystems
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member RemoteSystemSessionJoinStatus RemoteSystemSessionJoinResult.Status is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member RemoteSystemSessionJoinStatus RemoteSystemSessionJoinResult.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=RemoteSystemSessionJoinStatus%20RemoteSystemSessionJoinResult.Status");
 			}
 		}
 		#endif

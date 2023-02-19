@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.AppService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ValueSet AppServiceResponse.Message is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ValueSet AppServiceResponse.Message is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ValueSet%20AppServiceResponse.Message");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.ApplicationModel.AppService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppServiceResponseStatus AppServiceResponse.Status is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AppServiceResponseStatus AppServiceResponse.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AppServiceResponseStatus%20AppServiceResponse.Status");
 			}
 		}
 		#endif

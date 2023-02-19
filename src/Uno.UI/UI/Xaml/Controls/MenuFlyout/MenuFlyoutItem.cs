@@ -19,10 +19,10 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class MenuFlyoutItem : MenuFlyoutItemBase
 	{
-		// Whether the pointer is currently over the 
+		// Whether the pointer is currently over the
 		bool m_bIsPointerOver = true;
 
-		// Whether the pointer is currently pressed over the 
+		// Whether the pointer is currently pressed over the
 		internal bool m_bIsPressed = true;
 
 		// Whether the pointer's left button is currently down.
@@ -164,7 +164,7 @@ namespace Windows.UI.Xaml.Controls
 			this.RegisterDisposablePropertyChangedCallback((s, e, args) => OnPropertyChanged2(args));
 		}
 
-		// Apply a template to the 
+		// Apply a template to the
 
 		protected override void OnApplyTemplate()
 		{
@@ -234,6 +234,7 @@ namespace Windows.UI.Xaml.Controls
 						pArgs.Handled = true;
 						PerformPointerUpAction();
 					}
+				}
 #else
 				PerformPointerUpAction();
 #endif
@@ -260,7 +261,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		// Performs appropriate actions upon a mouse/keyboard invocation of a 
+		// Performs appropriate actions upon a mouse/keyboard invocation of a
 		internal virtual void Invoke()
 		{
 			RoutedEventArgs spArgs;
@@ -613,7 +614,7 @@ namespace Windows.UI.Xaml.Controls
 			SuppressIsEnabled(!canExecute);
 		}
 
-		// Change to the correct visual state for the 
+		// Change to the correct visual state for the
 		private protected override void ChangeVisualState(
 			 // true to use transitions when updating the visual state, false
 			 // to snap directly to the new visual state.
@@ -734,7 +735,7 @@ namespace Windows.UI.Xaml.Controls
 			UpdateVisualState();
 		}
 
-		// Create MenuFlyoutItemAutomationPeer to represent the 
+		// Create MenuFlyoutItemAutomationPeer to represent the
 		protected override AutomationPeer OnCreateAutomationPeer()
 		{
 			return new MenuFlyoutItemAutomationPeer(this);

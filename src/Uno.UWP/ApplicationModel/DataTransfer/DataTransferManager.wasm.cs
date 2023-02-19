@@ -9,7 +9,7 @@ namespace Windows.ApplicationModel.DataTransfer
 	public partial class DataTransferManager
 	{
 		private const string JsType = "Windows.ApplicationModel.DataTransfer.DataTransferManager";
-		
+
 		public static bool IsSupported() => bool.TryParse(WebAssemblyRuntime.InvokeJS($"{JsType}.isSupported()"), out var result) && result;
 
 		private static async Task<bool> ShowShareUIAsync(ShareUIOptions options, DataPackage dataPackage)

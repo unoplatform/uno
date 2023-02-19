@@ -49,7 +49,7 @@ namespace Windows.UI.Xaml.Controls
 			Rect windowConstraint,
 			out Rect pReturnValue) /*override*/
 		{
-			pReturnValue =  default;
+			pReturnValue = default;
 			pReturnValue = _layoutStrategyImpl.GetElementBounds(
 				elementType,
 				elementIndex,
@@ -105,12 +105,13 @@ namespace Windows.UI.Xaml.Controls
 		#endregion
 
 		#region Estimation and virtualization related methods.
-
+#if false
 		private void GetVirtualizationDirectionImpl(
 			out Orientation pReturnValue)
 		{
 			pReturnValue = _layoutStrategyImpl.VirtualizationDirection;
 		}
+#endif
 
 		internal void EstimateElementIndex(
 			ElementType elementType,
@@ -167,8 +168,8 @@ namespace Windows.UI.Xaml.Controls
 
 		#endregion
 
+#if false
 		#region IItemLookupPanel related
-
 		// Estimates the index or the insertion index closest to the given point.
 		private void EstimateIndexFromPointImpl(
 			bool requestingInsertionIndex,
@@ -216,7 +217,6 @@ namespace Windows.UI.Xaml.Controls
 		{
 			throw new NotImplementedException();
 		}
-
 		#endregion
 
 		#region Snap points related
@@ -268,7 +268,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			throw new NotImplementedException();
 		}
-
+#endif
 
 		#region Special elements methods
 		internal bool NeedsSpecialItem()

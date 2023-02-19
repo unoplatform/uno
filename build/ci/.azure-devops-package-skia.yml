@@ -5,7 +5,7 @@ jobs:
 - job: skia_package_build
   displayName: 'Build Skia Package Binaries'
   container: nv-bionic-wasm
- 
+
   dependsOn: winui_convert_tree
 
   pool:
@@ -72,7 +72,8 @@ jobs:
 
   - task: PublishBuildArtifacts@1
     condition: always()
+    retryCountOnTaskFailure: 3
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
-      ArtifactName: NugetPackages-Artifacts-skia
+      ArtifactName: NugetPackages-Artifacts-skia-$(XAML_FLAVOR_BUILD)
       ArtifactType: Container

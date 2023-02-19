@@ -13,7 +13,7 @@ namespace Windows.Media.SpeechRecognition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SpeechRecognitionVoiceCommandDefinitionConstraint.Tag is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string SpeechRecognitionVoiceCommandDefinitionConstraint.Tag is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20SpeechRecognitionVoiceCommandDefinitionConstraint.Tag");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Media.SpeechRecognition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SpeechRecognitionConstraintProbability SpeechRecognitionVoiceCommandDefinitionConstraint.Probability is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SpeechRecognitionConstraintProbability SpeechRecognitionVoiceCommandDefinitionConstraint.Probability is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SpeechRecognitionConstraintProbability%20SpeechRecognitionVoiceCommandDefinitionConstraint.Probability");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Media.SpeechRecognition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SpeechRecognitionVoiceCommandDefinitionConstraint.IsEnabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool SpeechRecognitionVoiceCommandDefinitionConstraint.IsEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20SpeechRecognitionVoiceCommandDefinitionConstraint.IsEnabled");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.Media.SpeechRecognition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SpeechRecognitionConstraintType SpeechRecognitionVoiceCommandDefinitionConstraint.Type is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SpeechRecognitionConstraintType SpeechRecognitionVoiceCommandDefinitionConstraint.Type is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SpeechRecognitionConstraintType%20SpeechRecognitionVoiceCommandDefinitionConstraint.Type");
 			}
 		}
 		#endif

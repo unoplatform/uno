@@ -45,7 +45,7 @@ namespace Windows.System
 					}
 				}
 			}
-			catch(Exception e)
+			catch (Exception e)
 			{
 				if (typeof(MemoryManager).Log().IsEnabled(LogLevel.Warning))
 				{

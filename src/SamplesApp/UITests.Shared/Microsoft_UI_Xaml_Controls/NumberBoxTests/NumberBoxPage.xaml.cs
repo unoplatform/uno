@@ -15,7 +15,7 @@ using Windows.UI.Xaml.Markup;
 
 namespace UITests.Shared.Microsoft_UI_Xaml_Controls.NumberBoxTests
 {
-	[Sample("MUX", Name= "NumberBox")]
+	[Sample("MUX", Name = "NumberBox")]
 	public sealed partial class NumberBoxPage : UserControl
 	{
 		public DataModelWithINPC DataModelWithINPC { get; set; } = new DataModelWithINPC();
@@ -136,22 +136,21 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.NumberBoxTests
 			}
 		}
 
-		private void CustomFormatterCheckBox_CheckChanged(object sender, RoutedEventArgs e)
+		private void CustomFormatterButton_Click(object sender, RoutedEventArgs e)
 		{
-			if (CustomFormatterCheckBox.IsChecked.GetValueOrDefault())
-			{
-				DecimalFormatter formatter = new DecimalFormatter();
-				formatter.IntegerDigits = 1;
-				formatter.FractionDigits = 2;
-				formatter.NumeralSystem = "ArabExt";
-				formatter.NumberRounder = new IncrementNumberRounder { Increment = 0.25 };
+			// Uno specific: This constructor is not implemented. Use parameterless constructor for now.
+			//List<string> languages = new List<string>() { "fr-FR" };
+			//DecimalFormatter formatter = new DecimalFormatter(languages, "FR");
+			DecimalFormatter formatter = new();
 
-				TestNumberBox.NumberFormatter = formatter;
-			}
-			else
-			{
-				TestNumberBox.NumberFormatter = null;
-			}
+			formatter.IntegerDigits = 1;
+			formatter.FractionDigits = 2;
+
+			// Uno specific: Workaround DecimalFormatter behavior in Uno which doesn't match Windows.
+			// new DecimalFormatter().ParseDouble("۱٫۷") works in Windows but not Uno. Setting NumeralSystem works around that.
+			formatter.NumeralSystem = "ArabExt";
+
+			TestNumberBox.NumberFormatter = formatter;
 		}
 
 		private void SetTextButton_Click(object sender, RoutedEventArgs e)

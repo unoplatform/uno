@@ -153,7 +153,7 @@ namespace Windows.UI.Xaml.Documents
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ContentLinkInfo ContentLink.Info is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ContentLinkInfo ContentLink.Info is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ContentLinkInfo%20ContentLink.Info");
 			}
 			set
 			{
@@ -372,7 +372,7 @@ namespace Windows.UI.Xaml.Documents
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool Focus( global::Windows.UI.Xaml.FocusState value)
 		{
-			throw new global::System.NotImplementedException("The member bool ContentLink.Focus(FocusState value) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member bool ContentLink.Focus(FocusState value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ContentLink.Focus%28FocusState%20value%29");
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Documents.ContentLink.BackgroundProperty.get

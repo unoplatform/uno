@@ -4,7 +4,7 @@ using Uno;
 
 namespace Microsoft.UI.Input
 {
-	public sealed class PointerEventArgs
+	public sealed partial class PointerEventArgs
 	{
 		internal PointerEventArgs(PointerPoint currentPoint)
 		{

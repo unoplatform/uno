@@ -104,7 +104,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage.Streams
 		[TestMethod]
 		public void When_GetByteGreaterThanLength()
 		{
-			var sut = new Buffer(42) {Length = 21};
+			var sut = new Buffer(42) { Length = 21 };
 
 			sut.GetByte(41); // We only assert this won't fail
 		}
@@ -162,7 +162,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage.Streams
 		public void When_ToArrayWithCount_Then_ResultLengthIsCount()
 		{
 			// Buffer's length equals
-			Assert.AreEqual(42, new Buffer(42){Length = 42}.ToArray(0, 42).Length);
+			Assert.AreEqual(42, new Buffer(42) { Length = 42 }.ToArray(0, 42).Length);
 
 			// Buffer's length lower
 			Assert.AreEqual(42, new Buffer(42) { Length = 21 }.ToArray(0, 42).Length);

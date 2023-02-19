@@ -67,11 +67,11 @@ namespace Uno.UI.Samples.UITests.Helpers
 			}
 		}
 
-		private readonly Dictionary<string, Command> _commands = new Dictionary<string,Command>();
+		private readonly Dictionary<string, Command> _commands = new Dictionary<string, Command>();
 
 		protected Command GetOrCreateCommand<T>(Action<T> action, [CallerMemberName] string commandName = null)
 		{
-			if(!_commands.TryGetValue(commandName, out var command))
+			if (!_commands.TryGetValue(commandName, out var command))
 			{
 				_commands[commandName] = command = new Command(x => action((T)x));
 			}

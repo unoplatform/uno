@@ -181,7 +181,7 @@ namespace Windows.UI.Xaml.Controls
 
 		internal void Cancel()
 		{
-			if (_initialValue is {} initialDate)
+			if (_initialValue is { } initialDate)
 			{
 				_picker?.SetDate(initialDate, false);
 			}

@@ -13,7 +13,7 @@ namespace Windows.Devices.Bluetooth
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string BluetoothDeviceId.Id is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string BluetoothDeviceId.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20BluetoothDeviceId.Id");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Devices.Bluetooth
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool BluetoothDeviceId.IsClassicDevice is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool BluetoothDeviceId.IsClassicDevice is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20BluetoothDeviceId.IsClassicDevice");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Devices.Bluetooth
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool BluetoothDeviceId.IsLowEnergyDevice is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool BluetoothDeviceId.IsLowEnergyDevice is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20BluetoothDeviceId.IsLowEnergyDevice");
 			}
 		}
 		#endif
@@ -44,7 +44,7 @@ namespace Windows.Devices.Bluetooth
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Devices.Bluetooth.BluetoothDeviceId FromId( string deviceId)
 		{
-			throw new global::System.NotImplementedException("The member BluetoothDeviceId BluetoothDeviceId.FromId(string deviceId) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member BluetoothDeviceId BluetoothDeviceId.FromId(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=BluetoothDeviceId%20BluetoothDeviceId.FromId%28string%20deviceId%29");
 		}
 		#endif
 	}

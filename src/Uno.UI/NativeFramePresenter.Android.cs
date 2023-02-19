@@ -170,7 +170,7 @@ namespace Uno.UI.Controls
 					{
 						// Remove pages from the grid that may have been removed from the BackStack list
 						// Those items are not removed on BackStack list changes to avoid interfering with the GoBack method's behavior.
-						for (var pageIndex = _pageStack.Children.Count-1; pageIndex >= 0; pageIndex--)
+						for (var pageIndex = _pageStack.Children.Count - 1; pageIndex >= 0; pageIndex--)
 						{
 							var page = _pageStack.Children[pageIndex];
 							if (page == newPage)

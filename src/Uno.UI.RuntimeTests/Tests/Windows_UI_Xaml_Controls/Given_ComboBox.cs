@@ -427,6 +427,58 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
+		[TestMethod]
+		public async Task When_Binding_Change()
+		{
+			var SUT = new ComboBox();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+
+				var c = new ObservableCollection<string>();
+				c.Add("One");
+				c.Add("Two");
+				c.Add("Three");
+				c.Add("Four");
+				c.Add("Five");
+				c.Add("Six");
+				c.Add("2-One");
+				c.Add("2-Two");
+				c.Add("2-Three");
+				c.Add("2-Four");
+				c.Add("2-Five");
+				c.Add("2-Six");
+
+				SUT.SetBinding(ComboBox.ItemsSourceProperty, new Windows.UI.Xaml.Data.Binding() { Path = new("MySource") });
+				SUT.SetBinding(ComboBox.SelectedItemProperty, new Windows.UI.Xaml.Data.Binding() { Path = new("SelectedItem"), Mode = Windows.UI.Xaml.Data.BindingMode.TwoWay });
+
+				SUT.DataContext = new { MySource = c, SelectedItem = "One" };
+
+				await WindowHelper.WaitForIdle();
+
+				SUT.IsDropDownOpen = true;
+
+				await Task.Delay(100);
+
+				WindowHelper.WindowContent = null;
+
+				await Task.Delay(100);
+
+				SUT.DataContext = null;
+
+				await WindowHelper.WaitForIdle();
+
+				WindowHelper.WindowContent = SUT;
+				SUT.DataContext = new { MySource = c, SelectedItem = "Two" };
+
+				Assert.AreEqual(SUT.Items.Count, 12);
+			}
+			finally
+			{
+				SUT.IsDropDownOpen = false;
+			}
+		}
+
 #if HAS_UNO
 		[TestMethod]
 #if __MACOS__
@@ -435,7 +487,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		public async Task When_Full_Collection_Reset()
 		{
 			var SUT = new ComboBox();
-			SUT.ItemTemplate = new DataTemplate(() => {
+			SUT.ItemTemplate = new DataTemplate(() =>
+			{
 
 				var tb = new TextBlock();
 				tb.SetBinding(TextBlock.TextProperty, new Windows.UI.Xaml.Data.Binding { Path = "Text" });

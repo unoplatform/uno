@@ -13,7 +13,7 @@ namespace Windows.Media.Protection
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string RevocationAndRenewalItem.HeaderHash is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string RevocationAndRenewalItem.HeaderHash is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20RevocationAndRenewalItem.HeaderHash");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.Protection
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string RevocationAndRenewalItem.Name is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string RevocationAndRenewalItem.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20RevocationAndRenewalItem.Name");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Media.Protection
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string RevocationAndRenewalItem.PublicKeyHash is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string RevocationAndRenewalItem.PublicKeyHash is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20RevocationAndRenewalItem.PublicKeyHash");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Media.Protection
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member RevocationAndRenewalReasons RevocationAndRenewalItem.Reasons is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member RevocationAndRenewalReasons RevocationAndRenewalItem.Reasons is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=RevocationAndRenewalReasons%20RevocationAndRenewalItem.Reasons");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Media.Protection
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string RevocationAndRenewalItem.RenewalId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string RevocationAndRenewalItem.RenewalId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20RevocationAndRenewalItem.RenewalId");
 			}
 		}
 		#endif

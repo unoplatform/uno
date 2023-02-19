@@ -12,7 +12,6 @@
 	<PropertyGroup>
 		<AssemblyName>Uno.Foundation</AssemblyName>
 		<RootNamespace>Windows.Foundation</RootNamespace>
-		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>
@@ -30,6 +29,10 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\Uno.Foundation.Logging\Uno.Foundation.Logging.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Include="..\SourceGenerators\SourceGeneratorHelpers\Helpers\Nullable.cs" Link="Extensions\Nullable.cs" />
 	</ItemGroup>
 
 	<Import Project="..\Uno.CrossTargetting.props" />

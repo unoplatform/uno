@@ -19,7 +19,7 @@ namespace UITests.Windows_UI_Xaml_Shapes.PathTestsControl
 	{
 		public object Convert(object value, Type targetType, object parameter, string language)
 		{
-			if(targetType == typeof(Point))
+			if (targetType == typeof(Point))
 			{
 				return new Point(System.Convert.ToDouble(value), System.Convert.ToDouble(parameter));
 			}

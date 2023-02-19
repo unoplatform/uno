@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyDictionary<string, object> PhoneLineConfiguration.ExtendedProperties is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyDictionary<string, object> PhoneLineConfiguration.ExtendedProperties is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyDictionary%3Cstring%2C%20object%3E%20PhoneLineConfiguration.ExtendedProperties");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PhoneLineConfiguration.IsVideoCallingEnabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool PhoneLineConfiguration.IsVideoCallingEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20PhoneLineConfiguration.IsVideoCallingEnabled");
 			}
 		}
 		#endif

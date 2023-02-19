@@ -61,7 +61,8 @@ namespace Uno.UI.Tests.BinderTests.DependencyPropertyPath
 			public string MyProperty
 			{
 				get { return _myProperty; }
-				set {
+				set
+				{
 					_myProperty = value;
 
 					SetBindingValue(value);

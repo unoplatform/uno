@@ -9,7 +9,7 @@ namespace Windows.System
 	public static partial class Launcher
 	{
 		private const string MicrosoftSettingsUri = "ms-settings";
-		
+
 		private static bool CanHandleSpecialUri(Uri uri)
 		{
 			switch (uri.Scheme.ToLowerInvariant())

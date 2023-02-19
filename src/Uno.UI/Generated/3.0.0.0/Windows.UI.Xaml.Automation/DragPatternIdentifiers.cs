@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Automation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AutomationProperty DragPatternIdentifiers.DropEffectProperty is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AutomationProperty DragPatternIdentifiers.DropEffectProperty is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AutomationProperty%20DragPatternIdentifiers.DropEffectProperty");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.Xaml.Automation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AutomationProperty DragPatternIdentifiers.DropEffectsProperty is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AutomationProperty DragPatternIdentifiers.DropEffectsProperty is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AutomationProperty%20DragPatternIdentifiers.DropEffectsProperty");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.UI.Xaml.Automation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AutomationProperty DragPatternIdentifiers.GrabbedItemsProperty is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AutomationProperty DragPatternIdentifiers.GrabbedItemsProperty is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AutomationProperty%20DragPatternIdentifiers.GrabbedItemsProperty");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.UI.Xaml.Automation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AutomationProperty DragPatternIdentifiers.IsGrabbedProperty is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AutomationProperty DragPatternIdentifiers.IsGrabbedProperty is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AutomationProperty%20DragPatternIdentifiers.IsGrabbedProperty");
 			}
 		}
 		#endif

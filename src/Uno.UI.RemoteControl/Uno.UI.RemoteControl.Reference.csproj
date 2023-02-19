@@ -14,15 +14,12 @@
 		<AssemblyName>Uno.UI.RemoteControl</AssemblyName>
 		<RootNamespace>Uno.UI.RemoteControl</RootNamespace>
 
-		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-
 		<NoWarn>$(NoWarn);NU1701</NoWarn>
 
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>
 
 		<Nullable>enable</Nullable>
-		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 
 		<PackageId>Uno.UI.RemoteControl</PackageId>
 		<PackageId Condition="'$(UNO_UWP_BUILD)'=='false'">Uno.WinUI.RemoteControl</PackageId>
@@ -37,10 +34,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Compile Include="..\SourceGenerators\SourceGeneratorHelpers\Helpers\Nullable.cs" Link="Helpers\Nullable.cs" />
-	</ItemGroup>
-
-	<ItemGroup>
 	  <Content Include="buildTransitive\Uno.UI.RemoteControl.targets">
 	    <PackagePath>build</PackagePath>
 	    <Pack>true</Pack>
@@ -48,8 +41,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-		<PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="2.2.0" />
+		<PackageReference Include="Newtonsoft.Json" />
+		<PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="2.3.1" />
 	</ItemGroup>
 
 	<ItemGroup>

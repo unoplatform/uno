@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EmailIrmTemplate.Name is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string EmailIrmTemplate.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20EmailIrmTemplate.Name");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EmailIrmTemplate.Id is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string EmailIrmTemplate.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20EmailIrmTemplate.Id");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.ApplicationModel.Email
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EmailIrmTemplate.Description is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string EmailIrmTemplate.Description is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20EmailIrmTemplate.Description");
 			}
 			set
 			{

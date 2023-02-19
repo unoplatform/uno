@@ -13,7 +13,7 @@ namespace Windows.Gaming.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string Headset.CaptureDeviceId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string Headset.CaptureDeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20Headset.CaptureDeviceId");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Gaming.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string Headset.RenderDeviceId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string Headset.RenderDeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20Headset.RenderDeviceId");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Gaming.Input
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Devices.Power.BatteryReport TryGetBatteryReport()
 		{
-			throw new global::System.NotImplementedException("The member BatteryReport Headset.TryGetBatteryReport() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member BatteryReport Headset.TryGetBatteryReport() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=BatteryReport%20Headset.TryGetBatteryReport%28%29");
 		}
 		#endif
 		// Processing: Windows.Gaming.Input.IGameControllerBatteryInfo

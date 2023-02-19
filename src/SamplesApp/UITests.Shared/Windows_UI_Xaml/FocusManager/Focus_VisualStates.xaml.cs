@@ -8,8 +8,8 @@ using Windows.UI.Xaml.Controls;
 namespace UITests.Windows_UI_Xaml.FocusTests
 {
 	[Sample("Focus")]
-    public sealed partial class Focus_VisualStates : Page
-    {
+	public sealed partial class Focus_VisualStates : Page
+	{
 		public Focus_VisualStates() => InitializeComponent();
 
 		private void FocusPointer(object sender, RoutedEventArgs e)

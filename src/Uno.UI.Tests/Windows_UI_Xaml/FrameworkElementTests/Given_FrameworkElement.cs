@@ -94,7 +94,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.FrameworkElementTests
 
 			grid.Children.Add(SUT);
 
-			for(var i=0; i == 0 || (SUT.IsMeasureDirtyOrMeasureDirtyPath && i < 10); i++)
+			for (var i = 0; i == 0 || (SUT.IsMeasureDirtyOrMeasureDirtyPath && i < 10); i++)
 			{
 				grid.Measure(new Size(1000, 1000));
 			}

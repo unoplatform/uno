@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.DataTransfer
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StandardDataFormats.Bitmap is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string StandardDataFormats.Bitmap is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20StandardDataFormats.Bitmap");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.ApplicationModel.DataTransfer
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StandardDataFormats.Html is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string StandardDataFormats.Html is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20StandardDataFormats.Html");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.ApplicationModel.DataTransfer
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StandardDataFormats.Rtf is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string StandardDataFormats.Rtf is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20StandardDataFormats.Rtf");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.ApplicationModel.DataTransfer
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StandardDataFormats.StorageItems is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string StandardDataFormats.StorageItems is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20StandardDataFormats.StorageItems");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.ApplicationModel.DataTransfer
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StandardDataFormats.Text is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string StandardDataFormats.Text is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20StandardDataFormats.Text");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.ApplicationModel.DataTransfer
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StandardDataFormats.Uri is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string StandardDataFormats.Uri is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20StandardDataFormats.Uri");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.ApplicationModel.DataTransfer
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StandardDataFormats.ApplicationLink is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string StandardDataFormats.ApplicationLink is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20StandardDataFormats.ApplicationLink");
 			}
 		}
 		#endif
@@ -83,7 +83,7 @@ namespace Windows.ApplicationModel.DataTransfer
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StandardDataFormats.WebLink is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string StandardDataFormats.WebLink is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20StandardDataFormats.WebLink");
 			}
 		}
 		#endif
@@ -93,7 +93,7 @@ namespace Windows.ApplicationModel.DataTransfer
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string StandardDataFormats.UserActivityJsonArray is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string StandardDataFormats.UserActivityJsonArray is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20StandardDataFormats.UserActivityJsonArray");
 			}
 		}
 		#endif

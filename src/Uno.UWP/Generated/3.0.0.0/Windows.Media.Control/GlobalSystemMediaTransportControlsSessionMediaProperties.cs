@@ -13,7 +13,7 @@ namespace Windows.Media.Control
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string GlobalSystemMediaTransportControlsSessionMediaProperties.AlbumArtist is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string GlobalSystemMediaTransportControlsSessionMediaProperties.AlbumArtist is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20GlobalSystemMediaTransportControlsSessionMediaProperties.AlbumArtist");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.Control
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string GlobalSystemMediaTransportControlsSessionMediaProperties.AlbumTitle is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string GlobalSystemMediaTransportControlsSessionMediaProperties.AlbumTitle is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20GlobalSystemMediaTransportControlsSessionMediaProperties.AlbumTitle");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Media.Control
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int GlobalSystemMediaTransportControlsSessionMediaProperties.AlbumTrackCount is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int GlobalSystemMediaTransportControlsSessionMediaProperties.AlbumTrackCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20GlobalSystemMediaTransportControlsSessionMediaProperties.AlbumTrackCount");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Media.Control
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string GlobalSystemMediaTransportControlsSessionMediaProperties.Artist is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string GlobalSystemMediaTransportControlsSessionMediaProperties.Artist is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20GlobalSystemMediaTransportControlsSessionMediaProperties.Artist");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Media.Control
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<string> GlobalSystemMediaTransportControlsSessionMediaProperties.Genres is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<string> GlobalSystemMediaTransportControlsSessionMediaProperties.Genres is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3Cstring%3E%20GlobalSystemMediaTransportControlsSessionMediaProperties.Genres");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Media.Control
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaPlaybackType? GlobalSystemMediaTransportControlsSessionMediaProperties.PlaybackType is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MediaPlaybackType? GlobalSystemMediaTransportControlsSessionMediaProperties.PlaybackType is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaPlaybackType%3F%20GlobalSystemMediaTransportControlsSessionMediaProperties.PlaybackType");
 			}
 		}
 		#endif
@@ -73,7 +73,7 @@ namespace Windows.Media.Control
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string GlobalSystemMediaTransportControlsSessionMediaProperties.Subtitle is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string GlobalSystemMediaTransportControlsSessionMediaProperties.Subtitle is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20GlobalSystemMediaTransportControlsSessionMediaProperties.Subtitle");
 			}
 		}
 		#endif
@@ -83,7 +83,7 @@ namespace Windows.Media.Control
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IRandomAccessStreamReference GlobalSystemMediaTransportControlsSessionMediaProperties.Thumbnail is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IRandomAccessStreamReference GlobalSystemMediaTransportControlsSessionMediaProperties.Thumbnail is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IRandomAccessStreamReference%20GlobalSystemMediaTransportControlsSessionMediaProperties.Thumbnail");
 			}
 		}
 		#endif
@@ -93,7 +93,7 @@ namespace Windows.Media.Control
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string GlobalSystemMediaTransportControlsSessionMediaProperties.Title is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string GlobalSystemMediaTransportControlsSessionMediaProperties.Title is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20GlobalSystemMediaTransportControlsSessionMediaProperties.Title");
 			}
 		}
 		#endif
@@ -103,7 +103,7 @@ namespace Windows.Media.Control
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int GlobalSystemMediaTransportControlsSessionMediaProperties.TrackNumber is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int GlobalSystemMediaTransportControlsSessionMediaProperties.TrackNumber is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20GlobalSystemMediaTransportControlsSessionMediaProperties.TrackNumber");
 			}
 		}
 		#endif

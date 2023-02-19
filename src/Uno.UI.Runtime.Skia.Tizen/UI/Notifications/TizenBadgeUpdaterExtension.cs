@@ -15,7 +15,7 @@ namespace Uno.UI.Runtime.Skia.Tizen.UI.Notifications
 		public void SetBadge(int? value)
 		{
 			var appId = Application.Current.ApplicationInfo.ApplicationId;
-			
+
 			try
 			{
 				BadgeControl.Remove(appId);

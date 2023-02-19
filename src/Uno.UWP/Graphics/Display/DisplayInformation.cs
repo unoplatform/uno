@@ -14,8 +14,10 @@ namespace Windows.Graphics.Display
 	{
 		internal const float BaseDpi = 96.0f;
 
+#if __ANDROID__ || __IOS__ || __MACOS__ || __WASM__
 		private float _lastKnownDpi;
 		private DisplayOrientations _lastKnownOrientation;
+#endif
 
 		private static readonly object _syncLock = new object();
 
@@ -37,7 +39,7 @@ namespace Windows.Graphics.Display
 				_autoRotationPreferences = value;
 				SetOrientationPartial(_autoRotationPreferences);
 			}
-		}		
+		}
 
 		public bool StereoEnabled { get; private set; }
 
@@ -111,10 +113,11 @@ namespace Windows.Graphics.Display
 		}
 #pragma warning restore CS0067
 
-		private void OnOrientationChanged() => _orientationChanged?.Invoke(this, null);
-
+#if __ANDROID__ || __IOS__ || __MACOS__ || __WASM__ || __SKIA__
 		private void OnDpiChanged() => _dpiChanged?.Invoke(this, null);
+#endif
 
+#if __ANDROID__ || __IOS__ || __MACOS__ || __WASM__
 		private void OnDisplayMetricsChanged()
 		{
 			var newOrientation = CurrentOrientation;
@@ -130,5 +133,8 @@ namespace Windows.Graphics.Display
 				_lastKnownDpi = newDpi;
 			}
 		}
+
+		private void OnOrientationChanged() => _orientationChanged?.Invoke(this, null);
+#endif
 	}
 }

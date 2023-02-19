@@ -69,7 +69,7 @@ Works according to Windows docs, see [Microsoft Docs](https://docs.microsoft.com
 
 ## Handling protocol activation
 
-Custom URI activation can be handled by overriding the `OnActivated` method in `App.xaml.cs`:
+Custom URI activation can be handled by overriding the `OnActivated` method in `App.cs` or `App.xaml.cs`:
 
 ```
 protected override void OnActivated(IActivatedEventArgs e)

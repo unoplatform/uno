@@ -13,7 +13,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool VpnCustomEditBox.NoEcho is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool VpnCustomEditBox.NoEcho is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20VpnCustomEditBox.NoEcho");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string VpnCustomEditBox.DefaultText is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string VpnCustomEditBox.DefaultText is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20VpnCustomEditBox.DefaultText");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string VpnCustomEditBox.Text is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string VpnCustomEditBox.Text is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20VpnCustomEditBox.Text");
 			}
 		}
 		#endif
@@ -51,7 +51,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string VpnCustomEditBox.Label is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string VpnCustomEditBox.Label is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20VpnCustomEditBox.Label");
 			}
 			set
 			{
@@ -65,7 +65,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool VpnCustomEditBox.Compulsory is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool VpnCustomEditBox.Compulsory is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20VpnCustomEditBox.Compulsory");
 			}
 			set
 			{
@@ -79,7 +79,7 @@ namespace Windows.Networking.Vpn
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool VpnCustomEditBox.Bordered is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool VpnCustomEditBox.Bordered is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20VpnCustomEditBox.Bordered");
 			}
 			set
 			{

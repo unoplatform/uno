@@ -22,14 +22,18 @@ namespace Microsoft.UI.Xaml.Controls;
 /// </summary>
 public partial class RefreshVisualizer : Control, IRefreshVisualizerPrivate
 {
+#if !HAS_UNO
 	//The Opacity of the progress indicator in the non-pending non-executing states
 	private const float MINIMUM_INDICATOR_OPACITY = 0.4f;
+#endif
 
 	//The size of the default progress indicator
 	private const int DEFAULT_INDICATOR_SIZE = 30;
 
+#if !HAS_UNO
 	//The position the progress indicator parallax animation places the indicator during manipulation
 	private const float PARALLAX_POSITION_RATIO = 0.5f;
+#endif
 
 	~RefreshVisualizer()
 	{
@@ -243,7 +247,7 @@ public partial class RefreshVisualizer : Control, IRefreshVisualizerPrivate
 		if (m_root != null)
 		{
 			// There is a slight parallax animation of the progress indicator as the IRefreshInfoProvider updates
-			// the interaction ratio. Unfortunately, this composition animation would be clobbered by setting the alignment 
+			// the interaction ratio. Unfortunately, this composition animation would be clobbered by setting the alignment
 			// properties of the visual's Xaml object. To get around this we wrap the indicator in a container and set the
 			// container's alignment properties instead. On RS2+ we can instead animate the Translation XAML property, if
 			// the progress Indicator is a Framework Element and has the Vertical/Horizontal Alignment properties.
@@ -454,10 +458,10 @@ public partial class RefreshVisualizer : Control, IRefreshVisualizerPrivate
 		}
 	}
 
+#if !HAS_UNO
 	private void ExecuteInteractingAnimations()
 	{
 		//PTR_TRACE_INFO(null, TRACE_MSG_METH, METH_NAME, this);
-#if !HAS_UNO
 		if (m_content != null && m_refreshInfoProvider != null)
 		{
 			Visual contentVisual = ElementCompositionPreview.GetElementVisual(m_content);
@@ -550,15 +554,11 @@ public partial class RefreshVisualizer : Control, IRefreshVisualizerPrivate
 				}
 			}
 		}
-#else
-
-#endif
 	}
 
 	private void ExecuteScaleUpAnimation()
 	{
 		//PTR_TRACE_INFO(null, TRACE_MSG_METH, METH_NAME, this);
-#if !HAS_UNO
 		if (m_content != null)
 		{
 			Visual contentVisual = ElementCompositionPreview.GetElementVisual(m_content);
@@ -577,15 +577,11 @@ public partial class RefreshVisualizer : Control, IRefreshVisualizerPrivate
 
 			contentVisual.StartAnimation("Scale.XY", contentScaleAnimation);
 		}
-#else
-
-#endif
 	}
 
 	private void ExecuteExecutingRotationAnimation()
 	{
 		//PTR_TRACE_INFO(null, TRACE_MSG_METH, METH_NAME, this);
-#if !HAS_UNO
 		if (m_content != null)
 		{
 			Visual contentVisual = ElementCompositionPreview.GetElementVisual(m_content);
@@ -605,10 +601,8 @@ public partial class RefreshVisualizer : Control, IRefreshVisualizerPrivate
 
 			contentVisual.StartAnimation("RotationAngle", contentExecutionRotationAnimation);
 		}
-#else
-
-#endif
 	}
+#endif
 
 	private void UpdateRefreshState(RefreshVisualizerState newState)
 	{
@@ -705,7 +699,7 @@ public partial class RefreshVisualizer : Control, IRefreshVisualizerPrivate
 				}
 				else if (m_interactionRatio > 0.0f)
 				{
-					// TODO: IRefreshInfoProvider does not raise InteractionRatioChanged yet when DManip is overpanning. Thus we do not yet 
+					// TODO: IRefreshInfoProvider does not raise InteractionRatioChanged yet when DManip is overpanning. Thus we do not yet
 					// enter the Peeking state when DManip overpans in inertia.
 					UpdateRefreshState(RefreshVisualizerState.Peeking);
 				}
@@ -751,6 +745,7 @@ public partial class RefreshVisualizer : Control, IRefreshVisualizerPrivate
 		}
 	}
 
+#if !HAS_UNO
 	private bool IsPullDirectionVertical()
 	{
 		return m_pullDirection == RefreshPullDirection.TopToBottom || m_pullDirection == RefreshPullDirection.BottomToTop;
@@ -760,4 +755,5 @@ public partial class RefreshVisualizer : Control, IRefreshVisualizerPrivate
 	{
 		return m_pullDirection == RefreshPullDirection.BottomToTop || m_pullDirection == RefreshPullDirection.RightToLeft;
 	}
+#endif
 }

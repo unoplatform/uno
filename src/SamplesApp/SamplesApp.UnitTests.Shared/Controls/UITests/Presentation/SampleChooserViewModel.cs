@@ -70,7 +70,6 @@ namespace SampleControl.Presentation
 
 		private Section _lastSection = Section.Library;
 		private readonly Stack<Section> _previousSections = new Stack<Section>();
-		private bool _isRecordAllTests = false;
 		private static readonly Windows.UI.Xaml.Media.SolidColorBrush _screenshotBackground =
 	new Windows.UI.Xaml.Media.SolidColorBrush(Windows.UI.Colors.White);
 
@@ -248,7 +247,7 @@ namespace SampleControl.Presentation
 
 			private bool Matches(string category, string sampleName)
 			{
-				return category.HasValue() &&
+				return !category.IsNullOrEmpty() &&
 						Category.Category.Equals(category, StringComparison.OrdinalIgnoreCase) &&
 						(sampleName.IsNullOrEmpty() || (Sample?.ControlName?.Equals(sampleName, StringComparison.OrdinalIgnoreCase) ?? false));
 			}
@@ -282,7 +281,7 @@ namespace SampleControl.Presentation
 		{
 			try
 			{
-				_isRecordAllTests = true;
+				IsRecordAllTests = true;
 				IsSplitVisible = false;
 
 				var folderName = Path.Combine(screenShotPath, "UITests-" + DateTime.Now.ToString("yyyyMMdd-hhmmssfff", CultureInfo.InvariantCulture));
@@ -293,11 +292,13 @@ namespace SampleControl.Presentation
 					CoreDispatcherPriority.Normal,
 					async () =>
 					{
-						try {
+						try
+						{
 							await RecordAllTestsInner(folderName, ct, doneAction);
 						}
-						finally {
-							_isRecordAllTests = false;
+						finally
+						{
+							IsRecordAllTests = false;
 						}
 					});
 			}
@@ -340,7 +341,7 @@ namespace SampleControl.Presentation
 				);
 
 				var tests = testQuery
-					.SkipWhile(testInfo => _firstTargetToRun.HasValue() && !testInfo.Matches(_firstTargetToRun))
+					.SkipWhile(testInfo => !_firstTargetToRun.IsNullOrEmpty() && !testInfo.Matches(_firstTargetToRun))
 					.Where(testInfo => _targetsToSkip.None(testInfo.Matches))
 					.ToArray();
 
@@ -860,12 +861,12 @@ description: {sample.Description}";
 			SampleChanging?.Invoke(this, EventArgs.Empty);
 
 			FrameworkElement container = null;
-			
+
 			var frameRequested =
 				newContent.UsesFrame &&
 				typeof(Page).IsAssignableFrom(newContent.ControlType);
 			if (frameRequested)
-			{				
+			{
 				var frame = new Frame();
 				frame.Navigate(newContent.ControlType);
 				container = frame;
@@ -1103,7 +1104,7 @@ description: {sample.Description}";
 				}
 			}
 
-			if (json.HasValueTrimmed())
+			if (!json.IsNullOrWhiteSpace())
 			{
 				try
 				{

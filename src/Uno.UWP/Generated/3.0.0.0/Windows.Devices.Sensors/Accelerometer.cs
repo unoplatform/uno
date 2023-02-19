@@ -13,7 +13,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint Accelerometer.ReportInterval is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint Accelerometer.ReportInterval is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20Accelerometer.ReportInterval");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint Accelerometer.MinimumReportInterval is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint Accelerometer.MinimumReportInterval is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20Accelerometer.MinimumReportInterval");
 			}
 		}
 		#endif
@@ -37,7 +37,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DisplayOrientations Accelerometer.ReadingTransform is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DisplayOrientations Accelerometer.ReadingTransform is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DisplayOrientations%20Accelerometer.ReadingTransform");
 			}
 			set
 			{
@@ -51,7 +51,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint Accelerometer.ReportLatency is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint Accelerometer.ReportLatency is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20Accelerometer.ReportLatency");
 			}
 			set
 			{
@@ -65,7 +65,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint Accelerometer.MaxBatchSize is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint Accelerometer.MaxBatchSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20Accelerometer.MaxBatchSize");
 			}
 		}
 		#endif
@@ -75,7 +75,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AccelerometerReadingType Accelerometer.ReadingType is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AccelerometerReadingType Accelerometer.ReadingType is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AccelerometerReadingType%20Accelerometer.ReadingType");
 			}
 		}
 		#endif
@@ -85,7 +85,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AccelerometerDataThreshold Accelerometer.ReportThreshold is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AccelerometerDataThreshold Accelerometer.ReportThreshold is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AccelerometerDataThreshold%20Accelerometer.ReportThreshold");
 			}
 		}
 		#endif
@@ -95,7 +95,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string Accelerometer.DeviceId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string Accelerometer.DeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20Accelerometer.DeviceId");
 			}
 		}
 		#endif
@@ -103,7 +103,7 @@ namespace Windows.Devices.Sensors
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Devices.Sensors.AccelerometerReading GetCurrentReading()
 		{
-			throw new global::System.NotImplementedException("The member AccelerometerReading Accelerometer.GetCurrentReading() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member AccelerometerReading Accelerometer.GetCurrentReading() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AccelerometerReading%20Accelerometer.GetCurrentReading%28%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Devices.Sensors.Accelerometer.MinimumReportInterval.get
@@ -125,28 +125,28 @@ namespace Windows.Devices.Sensors
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Sensors.Accelerometer> FromIdAsync( string deviceId)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<Accelerometer> Accelerometer.FromIdAsync(string deviceId) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<Accelerometer> Accelerometer.FromIdAsync(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CAccelerometer%3E%20Accelerometer.FromIdAsync%28string%20deviceId%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static string GetDeviceSelector( global::Windows.Devices.Sensors.AccelerometerReadingType readingType)
 		{
-			throw new global::System.NotImplementedException("The member string Accelerometer.GetDeviceSelector(AccelerometerReadingType readingType) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member string Accelerometer.GetDeviceSelector(AccelerometerReadingType readingType) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20Accelerometer.GetDeviceSelector%28AccelerometerReadingType%20readingType%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Devices.Sensors.Accelerometer GetDefault( global::Windows.Devices.Sensors.AccelerometerReadingType readingType)
 		{
-			throw new global::System.NotImplementedException("The member Accelerometer Accelerometer.GetDefault(AccelerometerReadingType readingType) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member Accelerometer Accelerometer.GetDefault(AccelerometerReadingType readingType) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Accelerometer%20Accelerometer.GetDefault%28AccelerometerReadingType%20readingType%29");
 		}
 		#endif
 		#if false || false || false || false || __SKIA__ || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Devices.Sensors.Accelerometer GetDefault()
 		{
-			throw new global::System.NotImplementedException("The member Accelerometer Accelerometer.GetDefault() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member Accelerometer Accelerometer.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Accelerometer%20Accelerometer.GetDefault%28%29");
 		}
 		#endif
 		#if false || false || NET461 || false || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

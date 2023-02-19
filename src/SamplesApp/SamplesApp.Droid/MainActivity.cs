@@ -15,7 +15,7 @@ using Android.OS;
 namespace SamplesApp.Droid
 {
 	[Activity(
-#if DEBUG	// Disabled because of https://github.com/xamarin/xamarin-android/issues/6463
+#if DEBUG // Disabled because of https://github.com/xamarin/xamarin-android/issues/6463                                                                                
 			Exported = true,
 #endif
 			MainLauncher = true,
@@ -48,7 +48,7 @@ namespace SamplesApp.Droid
 
 		protected override void OnStart()
 		{
-			if(!_onCreateEventInvoked)
+			if (!_onCreateEventInvoked)
 			{
 				throw new InvalidOperationException($"Invalid startup sequence to initialize BaseActivityEvents");
 			}

@@ -10,9 +10,9 @@ namespace Windows.UI.Xaml.Hosting;
 /// </summary>
 public partial class ElementCompositionPreview
 {
+#if __SKIA__
 	private const string ChildVisualName = "childVisual";
-
-#if !__SKIA__
+#else
 	static readonly Compositor _compositor = new Compositor();
 #endif
 
@@ -38,9 +38,9 @@ public partial class ElementCompositionPreview
 	public static void SetElementChildVisual(UIElement element, Visual visual)
 	{
 #if __IOS__
-            element.Layer.AddSublayer(visual.NativeLayer);
-            visual.NativeOwner = element;
-            element.ClipsToBounds = false;
+		element.Layer.AddSublayer(visual.NativeLayer);
+		visual.NativeOwner = element;
+		element.ClipsToBounds = false;
 
 		if (element is FrameworkElement fe)
 		{

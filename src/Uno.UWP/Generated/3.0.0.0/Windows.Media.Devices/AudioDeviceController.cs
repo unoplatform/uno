@@ -13,7 +13,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float AudioDeviceController.VolumePercent is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float AudioDeviceController.VolumePercent is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20AudioDeviceController.VolumePercent");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool AudioDeviceController.Muted is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool AudioDeviceController.Muted is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20AudioDeviceController.Muted");
 			}
 			set
 			{
@@ -43,21 +43,21 @@ namespace Windows.Media.Devices
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.MediaProperties.IMediaEncodingProperties> GetAvailableMediaStreamProperties( global::Windows.Media.Capture.MediaStreamType mediaStreamType)
 		{
-			throw new global::System.NotImplementedException("The member IReadOnlyList<IMediaEncodingProperties> AudioDeviceController.GetAvailableMediaStreamProperties(MediaStreamType mediaStreamType) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IReadOnlyList<IMediaEncodingProperties> AudioDeviceController.GetAvailableMediaStreamProperties(MediaStreamType mediaStreamType) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CIMediaEncodingProperties%3E%20AudioDeviceController.GetAvailableMediaStreamProperties%28MediaStreamType%20mediaStreamType%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Media.MediaProperties.IMediaEncodingProperties GetMediaStreamProperties( global::Windows.Media.Capture.MediaStreamType mediaStreamType)
 		{
-			throw new global::System.NotImplementedException("The member IMediaEncodingProperties AudioDeviceController.GetMediaStreamProperties(MediaStreamType mediaStreamType) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IMediaEncodingProperties AudioDeviceController.GetMediaStreamProperties(MediaStreamType mediaStreamType) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IMediaEncodingProperties%20AudioDeviceController.GetMediaStreamProperties%28MediaStreamType%20mediaStreamType%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction SetMediaStreamPropertiesAsync( global::Windows.Media.Capture.MediaStreamType mediaStreamType,  global::Windows.Media.MediaProperties.IMediaEncodingProperties mediaEncodingProperties)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction AudioDeviceController.SetMediaStreamPropertiesAsync(MediaStreamType mediaStreamType, IMediaEncodingProperties mediaEncodingProperties) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction AudioDeviceController.SetMediaStreamPropertiesAsync(MediaStreamType mediaStreamType, IMediaEncodingProperties mediaEncodingProperties) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20AudioDeviceController.SetMediaStreamPropertiesAsync%28MediaStreamType%20mediaStreamType%2C%20IMediaEncodingProperties%20mediaEncodingProperties%29");
 		}
 		#endif
 		// Processing: Windows.Media.Devices.IMediaDeviceController

@@ -3,7 +3,7 @@ parameters:
 
 jobs:
 - job: Documentation
-  displayName: 'Documentation WebSite'
+  displayName: 'Build Documentation WebSite'
   dependsOn: Pipeline_Validations
 
   pool: ${{ parameters.poolName }}
@@ -45,9 +45,8 @@ jobs:
       createLogFile: false
 
   - task: PublishBuildArtifacts@1
-    # https://developercommunity.visualstudio.com/content/problem/284991/public-vsts-previouw-cant-set-build-number-of-pr-b.html
-    condition: eq(variables['System.PullRequest.IsFork'], 'False')
+    retryCountOnTaskFailure: 3
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
-      ArtifactName: NugetPackages
+      ArtifactName: DocumentationArtifacts
       ArtifactType: Container

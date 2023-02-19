@@ -69,7 +69,7 @@ namespace Windows.Globalization
 
 		private static string GetClock(string clock)
 		{
-			switch(clock)
+			switch (clock)
 			{
 				case ClockIdentifiers.TwelveHourValue:
 				case ClockIdentifiers.TwentyFourHourValue:
@@ -156,8 +156,10 @@ namespace Windows.Globalization
 		#region Read / Write settings (_languages, _calendar, _clock, _timeZone)
 		public string NumeralSystem
 		{
-			[NotImplemented] get => throw new global::System.NotImplementedException("The member string Calendar.NumeralSystem is not implemented in Uno.");
-			[NotImplemented] set => global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Globalization.Calendar", "string Calendar.NumeralSystem");
+			[NotImplemented]
+			get => throw new global::System.NotImplementedException("The member string Calendar.NumeralSystem is not implemented in Uno.");
+			[NotImplemented]
+			set => global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Globalization.Calendar", "string Calendar.NumeralSystem");
 		}
 
 		public IReadOnlyList<string> Languages => _languages;
@@ -189,7 +191,8 @@ namespace Windows.Globalization
 		public int Era
 		{
 			get => _calendar.GetEra(_time.UtcDateTime);
-			[NotImplemented] set => global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Globalization.Calendar", "int Calendar.Era");
+			[NotImplemented]
+			set => global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Globalization.Calendar", "int Calendar.Era");
 		}
 
 		public int Year
@@ -218,7 +221,7 @@ namespace Windows.Globalization
 			{
 				var hour = _calendar.GetHour(_time.UtcDateTime);
 
-				if(hour < 12 || _clock == ClockIdentifiers.TwentyFourHour)
+				if (hour < 12 || _clock == ClockIdentifiers.TwentyFourHour)
 				{
 					return hour;
 				}
@@ -248,7 +251,7 @@ namespace Windows.Globalization
 			get => _clock == ClockIdentifiers.TwentyFourHour || _time.Hour < 12 ? 1 : 2;
 			set
 			{
-				switch(value)
+				switch (value)
 				{
 					case 1 when _clock == ClockIdentifiers.TwentyFourHour:
 						break;

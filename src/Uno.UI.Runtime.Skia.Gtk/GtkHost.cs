@@ -64,16 +64,16 @@ namespace Uno.UI.Runtime.Skia
 		/// <remarks>If <c>null</c>, the host will try to determine the most compatible mode.</remarks>
 		public RenderSurfaceType? RenderSurfaceType { get; set; }
 
-        /// <summary>
-        /// Creates a host for a Uno Skia GTK application.
-        /// </summary>
-        /// <param name="appBuilder">App builder.</param>
-        /// <param name="args">Deprecated, value ignored.</param>
-        /// <remarks>
-        /// Args are obsolete and will be removed in the future. Environment.CommandLine is used instead
-        /// to fill LaunchEventArgs.Arguments.
-        /// </remarks>
-        [EditorBrowsable(EditorBrowsableState.Never)]
+		/// <summary>
+		/// Creates a host for a Uno Skia GTK application.
+		/// </summary>
+		/// <param name="appBuilder">App builder.</param>
+		/// <param name="args">Deprecated, value ignored.</param>
+		/// <remarks>
+		/// Args are obsolete and will be removed in the future. Environment.CommandLine is used instead
+		/// to fill LaunchEventArgs.Arguments.
+		/// </remarks>
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public GtkHost(Func<WUX.Application> appBuilder, string[] args) : this(appBuilder)
 		{
 		}
@@ -87,7 +87,11 @@ namespace Uno.UI.Runtime.Skia
 		{
 			Windows.UI.Xaml.Documents.Inline.ApplyHarfbuzzWorkaround();
 
-			Gtk.Application.Init();
+			if (!InitializeGtk())
+			{
+				return;
+			}
+
 			SetupTheme();
 
 			ApiExtensibility.Register(typeof(Uno.ApplicationModel.Core.ICoreApplicationExtension), o => new CoreApplicationExtension(o));
@@ -126,7 +130,7 @@ namespace Uno.UI.Runtime.Skia
 
 			_window.DeleteEvent += WindowClosing;
 
-			Windows.UI.Core.CoreDispatcher.DispatchOverride = DispatchNative;
+			Windows.UI.Core.CoreDispatcher.DispatchOverride = DispatchNativeSingle;
 			Windows.UI.Core.CoreDispatcher.HasThreadAccessOverride = () => _isDispatcherThread;
 
 			_window.WindowStateEvent += OnWindowStateChanged;
@@ -137,14 +141,21 @@ namespace Uno.UI.Runtime.Skia
 			Gtk.Application.Run();
 		}
 
-		void DispatchNative(System.Action d)
+		private bool InitializeGtk()
 		{
-			if (Gtk.Application.EventsPending())
+			try
 			{
-				Gtk.Application.RunIteration(false);
+				Gtk.Application.Init();
+				return true;
 			}
-
-			DispatchNativeSingle(d);
+			catch (TypeInitializationException e)
+			{
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().Error("Unable to initialize Gtk, visit https://aka.platform.uno/gtk-install for more information.", e);
+				}
+				return false;
+			}
 		}
 
 		private void DispatchNativeSingle(System.Action d)
@@ -171,7 +182,7 @@ namespace Uno.UI.Runtime.Skia
 		{
 			TryReadRenderSurfaceTypeEnvironment();
 
-			if(!OpenGLRenderSurface.IsSupported && !OpenGLESRenderSurface.IsSupported)
+			if (!OpenGLRenderSurface.IsSupported && !OpenGLESRenderSurface.IsSupported)
 			{
 				// Pre-validation is required to avoid initializing OpenGL on macOS
 				// where the whole app may get visually corrupted even if OpenGL is not
@@ -325,7 +336,7 @@ namespace Uno.UI.Runtime.Skia
 				_registrations.Add(WUX.Window.Current.RegisterBackgroundChangedEvent((s, e) => Update()));
 			}
 		}
-		
+
 		private void OnCoreWindowContentRootSet(object sender, object e)
 		{
 			var xamlRoot = CoreServices.Instance
@@ -398,9 +409,9 @@ namespace Uno.UI.Runtime.Skia
 
 		private void ReplayPendingWindowStateChanges()
 		{
-			if(_pendingWindowStateChanged is not null)
+			if (_pendingWindowStateChanged is not null)
 			{
-				foreach(var state in _pendingWindowStateChanged)
+				foreach (var state in _pendingWindowStateChanged)
 				{
 					ProcessWindowStateChanged(state.newState, state.changedMask);
 				}
@@ -454,7 +465,7 @@ namespace Uno.UI.Runtime.Skia
 			if (Windows.ApplicationModel.Package.Current.Logo is Uri uri)
 			{
 				var basePath = uri.OriginalString.Replace('\\', Path.DirectorySeparatorChar);
-				var iconPath = Path.Combine(Windows.ApplicationModel.Package.Current.InstalledLocation.Path, basePath);
+				var iconPath = Path.Combine(Windows.ApplicationModel.Package.Current.InstalledPath, basePath);
 
 				if (File.Exists(iconPath))
 				{

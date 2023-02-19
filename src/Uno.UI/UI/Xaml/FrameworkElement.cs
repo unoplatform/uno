@@ -70,10 +70,15 @@ namespace Windows.UI.Xaml
 		private readonly static IEventProvider _trace = Tracing.Get(FrameworkElement.TraceProvider.Id);
 #endif
 
-		private bool _constraintsChanged;
 		private bool _suppressIsEnabled;
 
 		private bool _defaultStyleApplied;
+
+		private static readonly Uri DefaultBaseUri = new Uri("ms-appx://local");
+
+		private string _baseUriFromParser;
+		private Uri _baseUri;
+
 		private protected bool IsDefaultStyleApplied => _defaultStyleApplied;
 
 		/// <summary>
@@ -178,6 +183,18 @@ namespace Windows.UI.Xaml
 #endif
 			((IDependencyObjectStoreProvider)this).Store.Parent as DependencyObject;
 
+		public global::System.Uri BaseUri
+		{
+			get
+			{
+				if (_baseUri is null)
+				{
+					_baseUri = _baseUriFromParser is null ? DefaultBaseUri : new Uri(_baseUriFromParser);
+				}
+
+				return _baseUri;
+			}
+		}
 
 #if UNO_HAS_MANAGED_POINTERS || __WASM__
 		/// <summary>
@@ -275,7 +292,9 @@ namespace Windows.UI.Xaml
 			}
 
 			_layouter.Measure(availableSize);
+#if NET461
 			OnMeasurePartial(availableSize);
+#endif
 		}
 
 		/// <summary>
@@ -290,7 +309,9 @@ namespace Windows.UI.Xaml
 		}
 #endif
 
+#if NET461
 		partial void OnMeasurePartial(Size slotSize);
+#endif
 
 		/// <summary>
 		/// Measures an native element, in the same way <see cref="Measure"/> would do.
@@ -636,7 +657,7 @@ namespace Windows.UI.Xaml
 		internal
 #if __ANDROID__
 			new
-#endif 
+#endif
 			bool HasFocus()
 		{
 			var focusManager = VisualTree.GetFocusManagerForElement(this);
@@ -694,11 +715,6 @@ namespace Windows.UI.Xaml
 
 		protected virtual void OnApplyTemplate()
 		{
-		}
-
-		partial void OnGenericPropertyUpdatedPartial(DependencyPropertyChangedEventArgs args)
-		{
-			_constraintsChanged = true;
 		}
 
 		#region IsEnabled DependencyProperty
@@ -764,38 +780,6 @@ namespace Windows.UI.Xaml
 		private object CoerceIsEnabled(object baseValue)
 		{
 			return _suppressIsEnabled ? false : baseValue;
-		}
-
-		/// <summary>
-		/// Determines whether a measure/arrange invalidation on this element requires elements higher in the tree to be invalidated,
-		/// by determining recursively whether this element's dimensions are already constrained.
-		/// </summary>
-		/// <returns>True if a request should be elevated, false if only this view needs to be rearranged.</returns>
-		private bool ShouldPropagateLayoutRequest()
-		{
-			if (!UseConstraintOptimizations && !AreDimensionsConstrained.HasValue)
-			{
-				return true;
-			}
-
-			if (_constraintsChanged)
-			{
-				return true;
-			}
-			if (!IsLoaded)
-			{
-				//If the control isn't loaded, propagating the request won't do anything anyway
-				return true;
-			}
-
-			if (AreDimensionsConstrained.HasValue)
-			{
-				return !AreDimensionsConstrained.Value;
-			}
-
-			var iswidthConstrained = IsWidthConstrained(null);
-			var isHeightConstrained = IsHeightConstrained(null);
-			return !(iswidthConstrained && isHeightConstrained);
 		}
 
 		bool ILayoutConstraints.IsWidthConstrained(View requester) => IsWidthConstrained(requester);
@@ -954,7 +938,7 @@ namespace Windows.UI.Xaml
 #endif
 
 		/// <summary>
-		/// Update ThemeResource references. 
+		/// Update ThemeResource references.
 		/// </summary>
 		internal virtual void UpdateThemeBindings(ResourceUpdateReason updateReason)
 		{

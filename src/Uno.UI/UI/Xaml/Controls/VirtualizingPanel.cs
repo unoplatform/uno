@@ -3,7 +3,7 @@ using System;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public  partial class VirtualizingPanel : Panel, IVirtualizingPanel
+	public partial class VirtualizingPanel : Panel, IVirtualizingPanel
 	{
 		public VirtualizingPanel()
 		{

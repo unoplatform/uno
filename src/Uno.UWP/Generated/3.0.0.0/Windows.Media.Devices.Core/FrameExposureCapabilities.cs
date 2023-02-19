@@ -13,7 +13,7 @@ namespace Windows.Media.Devices.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan FrameExposureCapabilities.Max is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan FrameExposureCapabilities.Max is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20FrameExposureCapabilities.Max");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.Devices.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan FrameExposureCapabilities.Min is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan FrameExposureCapabilities.Min is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20FrameExposureCapabilities.Min");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Media.Devices.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan FrameExposureCapabilities.Step is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan FrameExposureCapabilities.Step is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20FrameExposureCapabilities.Step");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Media.Devices.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool FrameExposureCapabilities.Supported is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool FrameExposureCapabilities.Supported is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20FrameExposureCapabilities.Supported");
 			}
 		}
 		#endif

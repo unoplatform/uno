@@ -30,7 +30,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ComboBoxTests
 			var rawOutput = output.GetDependencyPropertyValue<string>("Text");
 			var outputParser = new Regex(@"\[(?<event>\w+)\]\s+(?<params>\|\s*(?<key>\w+)\s*=\s*(?<value>[\w\d]+))*");
 			var parsedOutput = rawOutput
-				.Split(new[] {'\r', '\n'}, StringSplitOptions.RemoveEmptyEntries)
+				.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
 				.Select(outputLine => outputParser.Match(outputLine))
 				.Where(match => match.Success)
 				.Select(match =>

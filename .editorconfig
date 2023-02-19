@@ -398,3 +398,9 @@ dotnet_diagnostic.CA1309.severity = none
 
 # CA2101: Specify marshalling for P/Invoke string arguments
 dotnet_diagnostic.CA2101.severity = none
+
+# IDE0055: Fix formatting
+dotnet_diagnostic.IDE0055.severity = error
+
+# IDE0051: Remove unused private member
+dotnet_diagnostic.IDE0051.severity = warning

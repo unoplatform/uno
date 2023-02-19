@@ -13,11 +13,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 {
 	internal class XamlFileDefinition : IEquatable<XamlFileDefinition>
 	{
-		public XamlFileDefinition(string file)
+		public XamlFileDefinition(string file, string targetFilePath)
 		{
 			Namespaces = new List<NamespaceDeclaration>();
 			Objects = new List<XamlObjectDefinition>();
 			FilePath = file;
+			TargetFilePath = targetFilePath;
 
 			UniqueID = SanitizedFileName + "_" + HashBuilder.Build(FilePath);
 		}
@@ -31,6 +32,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		public List<XamlObjectDefinition> Objects { get; private set; }
 
 		public string FilePath { get; private set; }
+
+		/// <summary>
+		/// Provides the path to the file using an actual target path in the project
+		/// </summary>
+		public string TargetFilePath { get; }
 
 		/// <summary>
 		/// Unique and human-readable file ID, used to name generated file.

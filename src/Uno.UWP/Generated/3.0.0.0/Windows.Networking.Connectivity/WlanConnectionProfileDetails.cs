@@ -11,7 +11,7 @@ namespace Windows.Networking.Connectivity
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  string GetConnectedSsid()
 		{
-			throw new global::System.NotImplementedException("The member string WlanConnectionProfileDetails.GetConnectedSsid() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member string WlanConnectionProfileDetails.GetConnectedSsid() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20WlanConnectionProfileDetails.GetConnectedSsid%28%29");
 		}
 		#endif
 	}

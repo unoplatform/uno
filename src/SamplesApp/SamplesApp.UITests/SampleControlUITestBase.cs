@@ -71,9 +71,9 @@ namespace SamplesApp.UITests
 
 		public void ValidateAppMode()
 		{
-			if(GetCurrentFixtureAttributes<TestAppModeAttribute>().FirstOrDefault() is TestAppModeAttribute testAppMode)
+			if (GetCurrentFixtureAttributes<TestAppModeAttribute>().FirstOrDefault() is TestAppModeAttribute testAppMode)
 			{
-				if(
+				if (
 					_totalTestFixtureCount != 0
 					&& testAppMode.CleanEnvironment
 					&& testAppMode.Platform == AppInitializer.GetLocalPlatform()
@@ -194,8 +194,11 @@ namespace SamplesApp.UITests
 			var fileNameWithoutExt = Path.GetFileNameWithoutExtension(fileInfo.Name);
 			if (fileNameWithoutExt != title)
 			{
+				var outputPath = string.IsNullOrEmpty(_screenShotPath)
+					? Path.GetDirectoryName(fileInfo.FullName)
+					: _screenShotPath;
 				var destFileName = Path
-					.Combine(Path.GetDirectoryName(fileInfo.FullName), title + Path.GetExtension(fileInfo.Name))
+					.Combine(outputPath, title + Path.GetExtension(fileInfo.Name))
 					.GetNormalizedLongPath();
 
 				if (File.Exists(destFileName))
@@ -311,8 +314,8 @@ namespace SamplesApp.UITests
 					var testMethodInfo = classType.GetMethod(currentTest.MethodName);
 
 					if (testMethodInfo is { } mi &&
-					    mi.GetCustomAttributes(typeof(ActivePlatformsAttribute), false) is
-						    ActivePlatformsAttribute[] methodAttributes)
+						mi.GetCustomAttributes(typeof(ActivePlatformsAttribute), false) is
+							ActivePlatformsAttribute[] methodAttributes)
 					{
 						foreach (var attr in methodAttributes)
 						{

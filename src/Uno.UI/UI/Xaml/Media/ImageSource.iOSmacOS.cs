@@ -37,11 +37,6 @@ public partial class ImageSource
 			// UWP supports backward slash in path for directory separators.
 			.Replace("\\", "/");
 
-		if (uri.Host is { Length: > 0 } host)
-		{
-			path = host.ToLowerInvariant() + "/" + path.TrimStart("/");
-		}
-
 		BundlePath = path;
 
 		BundleName = uri != null
@@ -61,7 +56,7 @@ public partial class ImageSource
 
 		_imageData = ImageData.Empty;
 	}
-	
+
 	/// <summary>
 	/// Similar to Dispose, but the ImageSource can still be used in the future.
 	/// </summary>
@@ -88,7 +83,7 @@ public partial class ImageSource
 		return IsSourceReady
 			|| Stream != null
 			|| AbsoluteUri != null
-			|| FilePath.HasValueTrimmed()
+			|| !FilePath.IsNullOrWhiteSpace()
 			|| _imageData.HasData
 			|| HasBundle;
 	}
@@ -96,10 +91,10 @@ public partial class ImageSource
 	/// <summary>
 	/// Determines if the current instance references a local bundle resource.
 	/// </summary>
-	public bool HasBundle => BundlePath.HasValueTrimmed() || BundleName.HasValueTrimmed();
+	public bool HasBundle => !BundlePath.IsNullOrWhiteSpace() || !BundleName.IsNullOrWhiteSpace();
 
 	/// <summary>
-	/// Open bundle is using either the name of the bundle (for 
+	/// Open bundle is using either the name of the bundle (for
 	/// android compatibility), or the path to the bundle for Windows compatibility.
 	/// </summary>
 	internal ImageData OpenBundle()
@@ -205,7 +200,7 @@ public partial class ImageSource
 				return OpenImageDataFromStream();
 			}
 
-			if (FilePath.HasValue())
+			if (!FilePath.IsNullOrEmpty())
 			{
 				return await OpenImageDataFromFilePathAsync();
 			}

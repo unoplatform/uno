@@ -13,7 +13,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IActivatedEventArgs NewWebUIViewCreatedEventArgs.ActivatedEventArgs is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IActivatedEventArgs NewWebUIViewCreatedEventArgs.ActivatedEventArgs is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IActivatedEventArgs%20NewWebUIViewCreatedEventArgs.ActivatedEventArgs");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool NewWebUIViewCreatedEventArgs.HasPendingNavigate is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool NewWebUIViewCreatedEventArgs.HasPendingNavigate is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20NewWebUIViewCreatedEventArgs.HasPendingNavigate");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.UI.WebUI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WebUIView NewWebUIViewCreatedEventArgs.WebUIView is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member WebUIView NewWebUIViewCreatedEventArgs.WebUIView is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=WebUIView%20NewWebUIViewCreatedEventArgs.WebUIView");
 			}
 		}
 		#endif
@@ -44,7 +44,7 @@ namespace Windows.UI.WebUI
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.Deferral GetDeferral()
 		{
-			throw new global::System.NotImplementedException("The member Deferral NewWebUIViewCreatedEventArgs.GetDeferral() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member Deferral NewWebUIViewCreatedEventArgs.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Deferral%20NewWebUIViewCreatedEventArgs.GetDeferral%28%29");
 		}
 		#endif
 	}

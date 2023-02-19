@@ -10,7 +10,7 @@ using Uno.Extensions.Specialized;
 
 namespace Windows.UI.Input.Preview.Injection;
 
-public partial class InputInjector 
+public partial class InputInjector
 {
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__NETSTD_REFERENCE__", "__MACOS__")]
 	public static InputInjector? TryCreate()
@@ -20,8 +20,6 @@ public partial class InputInjector
 		=> null;
 #endif
 
-	private readonly CoreWindow _window;
-
 	private readonly InjectedInputState _mouse = new(PointerDeviceType.Mouse);
 	private (InjectedInputState state, bool isAdded)? _touch;
 
@@ -30,10 +28,18 @@ public partial class InputInjector
 	/// </summary>
 	internal InjectedInputState Mouse => _mouse;
 
+#if UNO_HAS_MANAGED_POINTERS
+	private readonly CoreWindow _window;
+
 	private InputInjector(CoreWindow window)
 	{
 		_window = window;
 	}
+#else
+	private InputInjector()
+	{
+	}
+#endif
 
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__NETSTD_REFERENCE__", "__MACOS__")]
 	public void InitializeTouchInjection(InjectedInputVisualizationMode visualMode)

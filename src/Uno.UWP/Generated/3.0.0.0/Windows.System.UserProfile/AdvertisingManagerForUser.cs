@@ -13,7 +13,7 @@ namespace Windows.System.UserProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string AdvertisingManagerForUser.AdvertisingId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string AdvertisingManagerForUser.AdvertisingId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20AdvertisingManagerForUser.AdvertisingId");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.System.UserProfile
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member User AdvertisingManagerForUser.User is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member User AdvertisingManagerForUser.User is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=User%20AdvertisingManagerForUser.User");
 			}
 		}
 		#endif

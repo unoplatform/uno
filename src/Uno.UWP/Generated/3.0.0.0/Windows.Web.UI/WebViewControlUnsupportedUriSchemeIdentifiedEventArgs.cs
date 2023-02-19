@@ -13,7 +13,7 @@ namespace Windows.Web.UI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool WebViewControlUnsupportedUriSchemeIdentifiedEventArgs.Handled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool WebViewControlUnsupportedUriSchemeIdentifiedEventArgs.Handled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20WebViewControlUnsupportedUriSchemeIdentifiedEventArgs.Handled");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Web.UI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri WebViewControlUnsupportedUriSchemeIdentifiedEventArgs.Uri is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Uri WebViewControlUnsupportedUriSchemeIdentifiedEventArgs.Uri is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Uri%20WebViewControlUnsupportedUriSchemeIdentifiedEventArgs.Uri");
 			}
 		}
 		#endif

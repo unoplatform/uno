@@ -23,31 +23,31 @@ namespace Uno.UI.Views.Controls
 {
 	public partial class BindableUIScrollView : UIScrollView, DependencyObject
 	{
-		public BindableUIScrollView (NativeHandle handle)
-			: base (handle)
+		public BindableUIScrollView(NativeHandle handle)
+			: base(handle)
 		{
 			InitializeBinder();
 		}
 
-		public BindableUIScrollView (NSCoder coder)
-			: base (coder)
+		public BindableUIScrollView(NSCoder coder)
+			: base(coder)
 		{
 			InitializeBinder();
 		}
 
-		public BindableUIScrollView (NSObjectFlag t)
-			: base (t)
+		public BindableUIScrollView(NSObjectFlag t)
+			: base(t)
 		{
 			InitializeBinder();
 		}
 
-		public BindableUIScrollView (RectangleF frame)
-			: base (frame)
+		public BindableUIScrollView(RectangleF frame)
+			: base(frame)
 		{
 			InitializeBinder();
 		}
 
-		public BindableUIScrollView ()
+		public BindableUIScrollView()
 		{
 			InitializeBinder();
 		}

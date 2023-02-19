@@ -36,7 +36,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				throw new Exception("A Xaml control may not contain more than one child.");
 			}
-			 
+
 			ContentTemplateRoot.Frame = Bounds;
 			ContentTemplateRoot.AutoresizingMask = NSViewResizingMask.HeightSizable | NSViewResizingMask.WidthSizable;
 			AddSubview(ContentTemplateRoot);

@@ -215,6 +215,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 			/// <inheritdoc />
 			public override bool Equals(object obj)
 				=> obj is Expected expected ? Equals(expected) : base.Equals(obj);
+
+			public override int GetHashCode()
+				=> Element.GetHashCode() ^ Event.GetHashCode();
 		}
 
 		private class Expected : PointerEventInfo

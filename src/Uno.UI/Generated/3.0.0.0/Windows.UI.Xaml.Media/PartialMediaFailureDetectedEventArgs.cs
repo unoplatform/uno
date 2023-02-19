@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Media
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member FailedMediaStreamKind PartialMediaFailureDetectedEventArgs.StreamKind is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member FailedMediaStreamKind PartialMediaFailureDetectedEventArgs.StreamKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=FailedMediaStreamKind%20PartialMediaFailureDetectedEventArgs.StreamKind");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.Xaml.Media
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Exception PartialMediaFailureDetectedEventArgs.ExtendedError is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Exception PartialMediaFailureDetectedEventArgs.ExtendedError is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Exception%20PartialMediaFailureDetectedEventArgs.ExtendedError");
 			}
 		}
 		#endif

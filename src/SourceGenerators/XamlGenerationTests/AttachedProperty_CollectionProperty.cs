@@ -12,7 +12,7 @@ using NativeDependencyObject = Windows.UI.Xaml.DependencyObject;
 
 namespace XamlGenerationTests.Shared
 {
-    public static class AttachedProperty_CollectionProperty_Data
+	public static class AttachedProperty_CollectionProperty_Data
 	{
 		public static UIElementCollection GetMyProperty(NativeDependencyObject obj)
 		{

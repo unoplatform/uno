@@ -4,6 +4,7 @@
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
     <HasSharedItems>true</HasSharedItems>
     <SharedGUID>f4581f51-40d6-4035-8a1d-65cc6917d0a9</SharedGUID>
+    <EnableAutomaticXamlPageInclusion>false</EnableAutomaticXamlPageInclusion>
   </PropertyGroup>
   <PropertyGroup Label="Configuration">
     <Import_RootNamespace>SamplesApp.Benchmarks</Import_RootNamespace>

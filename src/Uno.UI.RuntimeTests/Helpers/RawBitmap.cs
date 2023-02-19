@@ -8,7 +8,6 @@ using Windows.UI.Xaml.Media.Imaging;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Windows.UI.Xaml.Controls;
-using System.Runtime.InteropServices.WindowsRuntime;
 
 using Rectangle = System.Drawing.Rectangle;
 using Size = System.Drawing.Size;

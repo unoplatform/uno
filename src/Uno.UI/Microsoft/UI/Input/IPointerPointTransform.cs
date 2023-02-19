@@ -2,7 +2,7 @@
 
 namespace Microsoft.UI.Input
 {
-	public interface IPointerPointTransform
+	public partial interface IPointerPointTransform
 	{
 		IPointerPointTransform Inverse
 		{

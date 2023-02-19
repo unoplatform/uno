@@ -1,6 +1,6 @@
 namespace Windows.Globalization
 {
-	public partial class CalendarIdentifiers 
+	public partial class CalendarIdentifiers
 	{
 		internal const string JulianValue = "JulianCalendar";
 		public static string Julian => JulianValue;

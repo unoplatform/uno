@@ -27,12 +27,6 @@
 		<!--<UnoXamlResourcesTrimming Condition="'$(Configuration)'!='Debug'">true</UnoXamlResourcesTrimming>-->
 	</PropertyGroup>
 
-	<!--Workaround to prevent build to fail because the project has too many dependencies when checking support libraries versions.
-	(Introduced with support libraries 28.0.0.1) -->
-	<PropertyGroup>
-		<XamarinAndroidSupportSkipVerifyVersions>true</XamarinAndroidSupportSkipVerifyVersions>
-	</PropertyGroup>
-
 	<Import Project="..\Uno.CrossTargetting.props" />
 
 	<ItemGroup>
@@ -66,11 +60,6 @@
 			<Project>{58332380-4302-4259-8f36-af572c53827f}</Project>
 			<Name>Uno.UI.BindingHelper.Android</Name>
 		</ProjectReference>
-	</ItemGroup>
-
-	<ItemGroup>
-		<Page Remove="Themes\Generic.xaml" />
-		<Page Include="Themes\Generic.xaml" />
 	</ItemGroup>
 
 	<ItemGroup>

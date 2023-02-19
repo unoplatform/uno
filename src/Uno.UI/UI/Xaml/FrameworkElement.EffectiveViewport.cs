@@ -22,10 +22,17 @@ using Uno.UI;
 using Uno.UI.Extensions;
 using Windows.UI.Xaml;
 using _This = Windows.UI.Xaml.FrameworkElement;
+
 #if __IOS__
 using UIKit;
+using _View = UIKit.UIView;
 #elif __MACOS__
 using AppKit;
+using _View = AppKit.NSView;
+#elif __ANDROID__
+using _View = Android.Views.View;
+#else
+using _View = Windows.UI.Xaml.DependencyObject;
 #endif
 
 namespace Windows.UI.Xaml
@@ -35,7 +42,8 @@ namespace Windows.UI.Xaml
 		private static readonly RoutedEventHandler ReconfigureViewportPropagationOnLoad = (snd, e) => ((_This)snd).ReconfigureViewportPropagation();
 		private event TypedEventHandler<_This, EffectiveViewportChangedEventArgs>? _effectiveViewportChanged;
 		private bool _hasNewHandler;
-		private int _childrenInterestedInViewportUpdates;
+		private List<IFrameworkElement_EffectiveViewport>? _childrenInterestedInViewportUpdates;
+		private bool _isEnumeratingChildrenInterestedInViewportUpdates;
 		private IDisposable? _parentViewportUpdatesSubscription;
 		private ViewportInfo _parentViewport = ViewportInfo.Empty; // WARNING: Stored in parent's coordinates space, use GetParentViewport()
 		private ViewportInfo _lastEffectiveViewport;
@@ -68,7 +76,7 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Indicates if the effective viewport should/will be propagated to/by this element
 		/// </summary>
-		private bool IsEffectiveViewportEnabled => _childrenInterestedInViewportUpdates > 0 || _effectiveViewportChanged != null;
+		private bool IsEffectiveViewportEnabled => _childrenInterestedInViewportUpdates is { Count: > 0 } || _effectiveViewportChanged != null;
 
 		/// <summary>
 		/// Make sure to request or disable effective viewport changes from the parent
@@ -88,18 +96,18 @@ namespace Windows.UI.Xaml
 				{
 					TRACE_EFFECTIVE_VIEWPORT("Enabling effective viewport propagation.");
 
-					var parent = this.GetVisualTreeParent();
-					if (parent is IFrameworkElement_EffectiveViewport parentFwElt)
-					{
-						_parentViewportUpdatesSubscription = parentFwElt.RequestViewportUpdates(isInternal, this);
-					}
-					else
+					var parent = this.FindFirstAncestor<IFrameworkElement_EffectiveViewport>();
+					if (parent is null)
 					{
 						global::System.Diagnostics.Debug.Assert(IsVisualTreeRoot);
 
 						// We are the root of the visual tree, we update the effective viewport
 						// in order to initialize the _parentViewport of children.
 						PropagateEffectiveViewportChange(isInitial: true, isInternal: isInternal);
+					}
+					else
+					{
+						_parentViewportUpdatesSubscription = parent.RequestViewportUpdates(isInternal, this);
 					}
 				}
 				else if (child != null)
@@ -140,16 +148,27 @@ namespace Windows.UI.Xaml
 		/// Used by a child of this element, in order to subscribe to viewport updates
 		/// (so the OnParentViewportChanged will be invoked on this given child)
 		/// </summary>
-		IDisposable IFrameworkElement_EffectiveViewport.RequestViewportUpdates(bool isInternalUpdate, IFrameworkElement_EffectiveViewport? child)
+		IDisposable IFrameworkElement_EffectiveViewport.RequestViewportUpdates(bool isInternalUpdate, IFrameworkElement_EffectiveViewport child)
 		{
-			global::System.Diagnostics.Debug.Assert(Uno.UI.Extensions.DependencyObjectExtensions.GetChildren(this).OfType<IFrameworkElement_EffectiveViewport>().Contains(child));
+			global::System.Diagnostics.Debug.Assert(
+				Uno.UI.Extensions.DependencyObjectExtensions.GetChildren(this).OfType<IFrameworkElement_EffectiveViewport>().Contains(child)
+				|| (child as _View)?.FindFirstAncestor<IFrameworkElement_EffectiveViewport>() == this);
 
-			_childrenInterestedInViewportUpdates++;
+			var childrenInterestedInViewportUpdates = _childrenInterestedInViewportUpdates switch
+			{
+				null => (_childrenInterestedInViewportUpdates = new()),
+				_ when _isEnumeratingChildrenInterestedInViewportUpdates => (_childrenInterestedInViewportUpdates = new(_childrenInterestedInViewportUpdates)),
+				_ => _childrenInterestedInViewportUpdates,
+			};
+			childrenInterestedInViewportUpdates.Add(child);
 			ReconfigureViewportPropagation(isInternalUpdate, child);
 
 			return Disposable.Create(() =>
 			{
-				_childrenInterestedInViewportUpdates--;
+				var childrenInterestedInViewportUpdates = _isEnumeratingChildrenInterestedInViewportUpdates
+						? (_childrenInterestedInViewportUpdates = new(_childrenInterestedInViewportUpdates))
+						: _childrenInterestedInViewportUpdates!;
+				childrenInterestedInViewportUpdates.Remove(child);
 				ReconfigureViewportPropagation();
 			});
 		}
@@ -290,7 +309,8 @@ namespace Windows.UI.Xaml
 			bool isInitial = false,
 			bool isInternal = false
 #if TRACE_EFFECTIVE_VIEWPORT
-			, [CallerMemberName] string? caller = null) {
+			, [CallerMemberName] string? caller = null)
+		{
 #else
 			)
 		{
@@ -324,7 +344,7 @@ namespace Windows.UI.Xaml
 				+ $"| parent: {parentViewport} "
 				+ $"| scroll: {(IsScrollPort ? $"{ScrollOffsets.ToDebugString()}" : "--none--")} "
 				+ $"| reason: {caller} "
-				+ $"| children: {_childrenInterestedInViewportUpdates}");
+				+ $"| children: {_childrenInterestedInViewportUpdates?.Count ?? 0}");
 
 			if (viewportUpdated
 				&& (
@@ -339,15 +359,21 @@ namespace Windows.UI.Xaml
 				_effectiveViewportChanged?.Invoke(this, new EffectiveViewportChangedEventArgs(parentViewport.Effective));
 			}
 
-			if (_childrenInterestedInViewportUpdates > 0 && (isInitial || viewportUpdated))
+			if (_childrenInterestedInViewportUpdates is { Count: > 0 } && (isInitial || viewportUpdated))
 			{
-				var children = Uno.UI.Extensions.DependencyObjectExtensions.GetChildren(this);
-				foreach (var child in children)
+				_isEnumeratingChildrenInterestedInViewportUpdates = true;
+				var enumerator = _childrenInterestedInViewportUpdates.GetEnumerator();
+				try
 				{
-					if (child is IFrameworkElement_EffectiveViewport childFwElt)
+					while (enumerator.MoveNext())
 					{
-						childFwElt.OnParentViewportChanged(isInitial, isInternal, this, viewport);
+						enumerator.Current!.OnParentViewportChanged(isInitial, isInternal, this, viewport);
 					}
+				}
+				finally
+				{
+					_isEnumeratingChildrenInterestedInViewportUpdates = false;
+					enumerator.Dispose();
 				}
 			}
 		}

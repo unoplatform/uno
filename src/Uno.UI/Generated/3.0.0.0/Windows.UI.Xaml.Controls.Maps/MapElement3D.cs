@@ -55,7 +55,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MapModel3D MapElement3D.Model is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MapModel3D MapElement3D.Model is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MapModel3D%20MapElement3D.Model");
 			}
 			set
 			{

@@ -23,39 +23,39 @@ namespace Uno.UI.Views.Controls
 {
 	public partial class BindableUIAlertView : UIAlertView, DependencyObject
 	{
-		public BindableUIAlertView (string title, string message, UIAlertViewDelegate del, string cancelButtonTitle, params string[] otherButtons)
+		public BindableUIAlertView(string title, string message, UIAlertViewDelegate del, string cancelButtonTitle, params string[] otherButtons)
 #pragma warning disable CS0618 // Type or member is obsolete
-			: base (title, message, del, cancelButtonTitle, otherButtons)
+			: base(title, message, del, cancelButtonTitle, otherButtons)
 #pragma warning restore CS0618 // Type or member is obsolete
 		{
 			InitializeBinder();
 		}
 
-		public BindableUIAlertView (NSCoder coder) 
-			: base (coder)
+		public BindableUIAlertView(NSCoder coder)
+			: base(coder)
 		{
 			InitializeBinder();
 		}
 
-		public BindableUIAlertView (RectangleF frame) 
-			: base (frame)
+		public BindableUIAlertView(RectangleF frame)
+			: base(frame)
 		{
 			InitializeBinder();
 		}
 
-		public BindableUIAlertView (NativeHandle handle) 
-			: base (handle)
+		public BindableUIAlertView(NativeHandle handle)
+			: base(handle)
 		{
 			InitializeBinder();
 		}
 
-		public BindableUIAlertView (NSObjectFlag t) 
-			: base (t)
+		public BindableUIAlertView(NSObjectFlag t)
+			: base(t)
 		{
 			InitializeBinder();
 		}
 
-		public BindableUIAlertView ()
+		public BindableUIAlertView()
 		{
 			InitializeBinder();
 		}

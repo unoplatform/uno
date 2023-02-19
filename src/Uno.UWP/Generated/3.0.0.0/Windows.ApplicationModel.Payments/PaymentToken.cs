@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PaymentToken.JsonDetails is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PaymentToken.JsonDetails is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PaymentToken.JsonDetails");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.ApplicationModel.Payments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string PaymentToken.PaymentMethodId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string PaymentToken.PaymentMethodId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20PaymentToken.PaymentMethodId");
 			}
 		}
 		#endif

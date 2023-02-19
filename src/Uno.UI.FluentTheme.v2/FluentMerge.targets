@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Project>
   <PropertyGroup>
-	<ThemesExclusion>$(MSBuildThisFileDirectory)Resources\**\*.xaml</ThemesExclusion>
+	<PageExclusions>$(MSBuildThisFileDirectory)Resources\**\*.xaml</PageExclusions>
   </PropertyGroup>
-  
+
   <UsingTask TaskName="BatchMergeXaml" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" />
 
   <!-- This task is temporarily placed in debug configuration to avoid parallel build concurrency issues -->
@@ -34,31 +34,9 @@
     <Message Text="Theme resources XAML file was generated" />
   </Target>
 
-  <Choose>
-	<When Condition="'$(TargetFramework)'=='net461'">
-	  <ItemGroup>
-		<Page Include="$(MSBuildThisFileDirectory)**/*.xaml" Exclude="bin/**/*.xaml;obj/**/*.xaml;$(ThemesExclusion)" />
-	  </ItemGroup>
-	</When>
-	<When Condition="'$(TargetFramework)'=='netstandard2.0' and '$(UnoRuntimeIdentifier)'=='Reference'">
-	  <ItemGroup>
-		<None Include="$(MSBuildThisFileDirectory)**/*.xaml" Exclude="bin/**/*.xaml;obj/**/*.xaml;$(ThemesExclusion)" />
-
-		<!-- Remove all xaml files as netstandard2.0 is the reference target and won't be used at runtime -->
-		<Page Remove="@(Page)" />
-	  </ItemGroup>
-	</When>
-	<Otherwise>
-	  <ItemGroup>
-		<None Include="$(MSBuildThisFileDirectory)**/*.xaml" Exclude="bin/**/*.xaml;obj/**/*.xaml;$(ThemesExclusion)" />
-
-		<!-- remove files included by msbuild extras -->
-		<Page Remove="@(Page)" />
-		<Page Include="$(MSBuildThisFileDirectory)**/*.xaml" Exclude="bin/**/*.xaml;obj/**/*.xaml;$(ThemesExclusion)" />
-	  </ItemGroup>
-	</Otherwise>
-  </Choose>
-
+  <PropertyGroup Condition="'$(TargetFramework)'=='netstandard2.0' and '$(UnoRuntimeIdentifier)'=='Reference'">
+    <EnableAutomaticXamlPageInclusion>false</EnableAutomaticXamlPageInclusion>
+  </PropertyGroup>
 
   <PropertyGroup>
 	<UnoUIMSBuildTasksPath>$(MSBuildThisFileDirectory)..\SourceGenerators\Uno.UI.Tasks\bin\$(Configuration)_Shadow</UnoUIMSBuildTasksPath>

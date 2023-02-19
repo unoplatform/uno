@@ -13,7 +13,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UserAuthenticationStatus UserAuthenticationStatusChangingEventArgs.CurrentStatus is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member UserAuthenticationStatus UserAuthenticationStatusChangingEventArgs.CurrentStatus is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=UserAuthenticationStatus%20UserAuthenticationStatusChangingEventArgs.CurrentStatus");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UserAuthenticationStatus UserAuthenticationStatusChangingEventArgs.NewStatus is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member UserAuthenticationStatus UserAuthenticationStatusChangingEventArgs.NewStatus is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=UserAuthenticationStatus%20UserAuthenticationStatusChangingEventArgs.NewStatus");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.System
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member User UserAuthenticationStatusChangingEventArgs.User is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member User UserAuthenticationStatusChangingEventArgs.User is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=User%20UserAuthenticationStatusChangingEventArgs.User");
 			}
 		}
 		#endif
@@ -41,7 +41,7 @@ namespace Windows.System
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.System.UserAuthenticationStatusChangeDeferral GetDeferral()
 		{
-			throw new global::System.NotImplementedException("The member UserAuthenticationStatusChangeDeferral UserAuthenticationStatusChangingEventArgs.GetDeferral() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member UserAuthenticationStatusChangeDeferral UserAuthenticationStatusChangingEventArgs.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=UserAuthenticationStatusChangeDeferral%20UserAuthenticationStatusChangingEventArgs.GetDeferral%28%29");
 		}
 		#endif
 		// Forced skipping of method Windows.System.UserAuthenticationStatusChangingEventArgs.User.get

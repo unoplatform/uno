@@ -66,7 +66,7 @@ namespace Windows.UI.Xaml.Controls
 			set => this.SetValue(QueryIconProperty, value);
 		}
 
-		public 
+		public
 #if __IOS__ || __MACOS__
 		new
 #endif

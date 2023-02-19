@@ -17,11 +17,11 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace $rootnamespace$
 {
-    public sealed partial class $safeitemname$ : UserControl
-    {
-        public $safeitemname$()
-        {
-            this.InitializeComponent();
-        }
-    }
+	public sealed partial class $safeitemname$ : UserControl
+	{
+		public $safeitemname$()
+		{
+			this.InitializeComponent();
+		}
+	}
 }

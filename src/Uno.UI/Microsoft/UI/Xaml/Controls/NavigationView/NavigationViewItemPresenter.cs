@@ -22,7 +22,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		private const string c_expandCollapseRotateExpandedStoryboard = "ExpandCollapseRotateExpandedStoryboard";
 		private const string c_expandCollapseRotateCollapsedStoryboard = "ExpandCollapseRotateCollapsedStoryboard";
 
-		private const string c_iconBoxColumnDefinitionName = "IconColumn";
+		//private const string c_iconBoxColumnDefinitionName = "IconColumn";
 
 		public NavigationViewItemPresenter()
 		{

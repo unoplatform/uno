@@ -7,12 +7,7 @@ using System.Text;
 namespace Windows.UI.Xaml.Controls
 {
 	public partial class IconElement
-    {
-		partial void UnregisterSubView()
-		{
-			ClearChildren();
-		}
-
+	{
 		partial void RegisterSubView(UIElement child)
 		{
 			AddChild(child);

@@ -133,7 +133,7 @@ This control will create an easily organized grid that will allow you to create 
 
 ## Referencing the Windows Community Toolkit from a Cross-Targeted Library
 
-The Uno Platform build of the Windows Community toolkit is not needed when running on UWP, which is why you'll need to make some small changes to the project.
+The Uno Platform build of the Windows Community toolkit is not needed when running on WinAppSDK or UWP, which is why you'll need to make some small changes to the project.
 
 Adding the Uno version of the community toolkit to a Uno Platform cross-targeted library can cause build errors like this one:
 
@@ -143,30 +143,31 @@ Type universe cannot resolve assembly: Uno.UI, Version=255.255.255.255,
 Culture=neutral, PublicKeyToken=null.
 ```
 
-To fix this, instead of adding the Uno version of the toolkit like the code below:
+To fix this, instead of adding the Uno version of the toolkit like the code below.
 
 # [WinUI / WinAppSDK](#tab/tabid-winui)
 
+Replace:
 ```xml
 <ItemGroup>
   <PackageReference Include="Uno.CommunityToolkit.WinUI.UI.Controls" Version="7.1.100" />
 </ItemGroup>
 ```
 
-Add a conditional reference:
+With a conditional reference:
 
 ```xml
-<ItemGroup Condition="'$(TargetFramework)' == 'net6.0-windows10.0.18362.0'">
+<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
   <PackageReference Include="CommunityToolkit.WinUI.UI.Controls" Version="7.1.2" />
 </ItemGroup>
-<ItemGroup Condition="'$(TargetFramework)' != 'net6.0-windows10.0.18362.0'">
+<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) != 'windows'">
   <PackageReference Include="Uno.CommunityToolkit.WinUI.UI.Controls" Version="7.1.100" />
 </ItemGroup>
 ```
 
-You may need to replace `net6.0-windows10.0.18362.0` with the version defined in the `TargetFrameworks` node at the top of the csproj file.
-
 # [UWP](#tab/tabid-uwp)
+
+Replace:
 
 ```xml
 <ItemGroup>

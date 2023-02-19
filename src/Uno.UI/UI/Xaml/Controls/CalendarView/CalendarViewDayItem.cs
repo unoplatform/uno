@@ -37,7 +37,7 @@ namespace Windows.UI.Xaml.Controls
 				if (isBlackout)
 				{
 					CalendarView spParentCalendarView = GetParentCalendarView();
-					if (spParentCalendarView is {})
+					if (spParentCalendarView is { })
 					{
 						spParentCalendarView.OnDayItemBlackoutChanged(this, isBlackout);
 					}
@@ -45,10 +45,12 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+#if false
 		private void SetDensityColorsImpl(IIterable<Color> pColors)
 		{
 			((CCalendarViewBaseItemChrome)(GetHandle())).SetDensityColors(pColors);
 		}
+#endif
 
 		internal CalendarViewDayItemChangingEventArgs GetBuildTreeArgs()
 		{
@@ -85,7 +87,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				CalendarView spParentCalendarView = GetParentCalendarView();
 
-				if (spParentCalendarView is {})
+				if (spParentCalendarView is { })
 				{
 					bool ignored = false;
 					ignored = FocusSelfOrChild(FocusState.Pointer);
@@ -114,7 +116,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				CalendarView spParentCalendarView = GetParentCalendarView();
 
-				if (spParentCalendarView is {})
+				if (spParentCalendarView is { })
 				{
 					VirtualKey key = VirtualKey.None;
 					key = pArgs.Key;
@@ -139,10 +141,10 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 #if DEBUG && false
-		private void put_Date( DateTime value)
+		private void put_Date(DateTime value)
 		{
-		    SetDateForDebug(value);
-		    CalendarViewDayItemGenerated.Date = value;
+			SetDateForDebug(value);
+			CalendarViewDayItemGenerated.Date = value;
 
 		}
 #endif

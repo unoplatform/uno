@@ -83,7 +83,7 @@ namespace Uno.UI.Controls
 		private PointF? _downPoint;
 		public override bool OnInterceptTouchEvent(MotionEvent ev)
 		{
-			if(ev.Action == MotionEventActions.Down)
+			if (ev.Action == MotionEventActions.Down)
 			{
 				_downPoint = new PointF(ev.RawX, ev.RawY);
 			}

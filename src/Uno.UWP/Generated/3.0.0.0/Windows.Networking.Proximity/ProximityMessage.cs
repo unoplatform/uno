@@ -13,7 +13,7 @@ namespace Windows.Networking.Proximity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IBuffer ProximityMessage.Data is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IBuffer ProximityMessage.Data is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IBuffer%20ProximityMessage.Data");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Networking.Proximity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ProximityMessage.DataAsString is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ProximityMessage.DataAsString is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ProximityMessage.DataAsString");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Networking.Proximity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ProximityMessage.MessageType is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ProximityMessage.MessageType is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ProximityMessage.MessageType");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Networking.Proximity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member long ProximityMessage.SubscriptionId is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member long ProximityMessage.SubscriptionId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=long%20ProximityMessage.SubscriptionId");
 			}
 		}
 		#endif

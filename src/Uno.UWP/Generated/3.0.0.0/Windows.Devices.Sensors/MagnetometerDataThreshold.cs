@@ -13,7 +13,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float MagnetometerDataThreshold.ZAxisMicroteslas is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float MagnetometerDataThreshold.ZAxisMicroteslas is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20MagnetometerDataThreshold.ZAxisMicroteslas");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float MagnetometerDataThreshold.YAxisMicroteslas is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float MagnetometerDataThreshold.YAxisMicroteslas is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20MagnetometerDataThreshold.YAxisMicroteslas");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Devices.Sensors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float MagnetometerDataThreshold.XAxisMicroteslas is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member float MagnetometerDataThreshold.XAxisMicroteslas is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20MagnetometerDataThreshold.XAxisMicroteslas");
 			}
 			set
 			{

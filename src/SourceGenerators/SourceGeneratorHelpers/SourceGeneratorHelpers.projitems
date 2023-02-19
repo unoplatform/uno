@@ -1,7 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <MSBuildAllProjects Condition="'$(MSBuildVersion)' == '' Or '$(MSBuildVersion)' &lt; '16.0'">$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
     <HasSharedItems>true</HasSharedItems>
     <SharedGUID>69ea1cb5-bb31-414a-9e0b-74c72ff7775f</SharedGUID>
   </PropertyGroup>
@@ -11,7 +10,6 @@
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\AnalyzerSuppressions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\CompilationExtensions.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Helpers\DependenciesInitializer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\DesignTimeHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\GeneratorExecutionContextExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\HashBuilder.cs" />

@@ -130,7 +130,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 			void ParseShape(JObject shapeElement)
 			{
-				var typeValue = shapeElement.GetValue("ty");
+				var typeValue = shapeElement.GetValue("ty")!;
 				if (typeValue.Type != JTokenType.String)
 				{
 					return; // potentially invalid lottie file
@@ -158,14 +158,14 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 					return;
 				}
 
-				var nameProperty = shapeElement.GetValue("nm");
+				var nameProperty = shapeElement.GetValue("nm")!;
 
 				if (nameProperty.Type != JTokenType.String)
 				{
 					return; // No name
 				}
 
-				var name = nameProperty.Value<string>();
+				var name = nameProperty.Value<string>()!;
 
 				if (!string.IsNullOrWhiteSpace(name))
 				{

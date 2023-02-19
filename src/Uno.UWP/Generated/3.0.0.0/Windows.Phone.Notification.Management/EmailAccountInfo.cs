@@ -13,7 +13,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EmailAccountInfo.DisplayName is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string EmailAccountInfo.DisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20EmailAccountInfo.DisplayName");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Phone.Notification.Management
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool EmailAccountInfo.IsNotificationEnabled is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool EmailAccountInfo.IsNotificationEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20EmailAccountInfo.IsNotificationEnabled");
 			}
 		}
 		#endif

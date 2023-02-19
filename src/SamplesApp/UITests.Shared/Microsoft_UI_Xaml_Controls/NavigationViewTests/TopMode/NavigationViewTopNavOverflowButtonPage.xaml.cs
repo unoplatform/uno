@@ -10,37 +10,37 @@ using NavigationViewItem = Microsoft.UI.Xaml.Controls.NavigationViewItem;
 namespace MUXControlsTestApp
 {
 	[Sample("NavigationView", "MUX")]
-    public sealed partial class NavigationViewTopNavOverflowButtonPage : TestPage
+	public sealed partial class NavigationViewTopNavOverflowButtonPage : TestPage
 	{
-        public NavigationViewTopNavOverflowButtonPage()
-        {
-            this.InitializeComponent();
-        }
+		public NavigationViewTopNavOverflowButtonPage()
+		{
+			this.InitializeComponent();
+		}
 
-        private void AddItem4Button_Click(object sender, RoutedEventArgs e)
-        {
-            var menuItem = new NavigationViewItem 
-            {
-                Content = $"Menu Item 4",
-            };
+		private void AddItem4Button_Click(object sender, RoutedEventArgs e)
+		{
+			var menuItem = new NavigationViewItem
+			{
+				Content = $"Menu Item 4",
+			};
 
-            this.NavView.MenuItems.Add(menuItem);
-        }
+			this.NavView.MenuItems.Add(menuItem);
+		}
 
-        private void RemoveFirstItemButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (NavView.MenuItems.Count > 0)
-            {
-                NavView.MenuItems.RemoveAt(0);
-            }
-        }
+		private void RemoveFirstItemButton_Click(object sender, RoutedEventArgs e)
+		{
+			if (NavView.MenuItems.Count > 0)
+			{
+				NavView.MenuItems.RemoveAt(0);
+			}
+		}
 
-        private void RemoveLastItemButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (NavView.MenuItems.Count > 0)
-            {
-                NavView.MenuItems.RemoveAt(NavView.MenuItems.Count - 1);
-            }
-        }
-    }
+		private void RemoveLastItemButton_Click(object sender, RoutedEventArgs e)
+		{
+			if (NavView.MenuItems.Count > 0)
+			{
+				NavView.MenuItems.RemoveAt(NavView.MenuItems.Count - 1);
+			}
+		}
+	}
 }

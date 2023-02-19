@@ -16,7 +16,8 @@ namespace Uno.UI.Samples.Presentation.SamplePages
 		{
 			var _ = dispatcher.RunAsync(
 				CoreDispatcherPriority.Normal,
-				async () => {
+				async () =>
+				{
 					await Task.Delay(3000);
 					LateVisibility = Visibility.Visible;
 				}

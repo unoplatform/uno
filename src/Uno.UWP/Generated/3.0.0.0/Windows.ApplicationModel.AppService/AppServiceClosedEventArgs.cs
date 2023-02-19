@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.AppService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppServiceClosedStatus AppServiceClosedEventArgs.Status is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AppServiceClosedStatus AppServiceClosedEventArgs.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AppServiceClosedStatus%20AppServiceClosedEventArgs.Status");
 			}
 		}
 		#endif

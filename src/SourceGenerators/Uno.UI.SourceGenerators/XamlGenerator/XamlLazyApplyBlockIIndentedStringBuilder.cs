@@ -46,13 +46,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				IDisposable blockDisposable;
 
-				var delegateString = _delegateType.HasValue() ? "(" + _delegateType + ")" : "";
+				var delegateString = !_delegateType.IsNullOrEmpty() ? "(" + _delegateType + ")" : "";
 
 				if (_applyPrefix != null)
 				{
 					blockDisposable = _source.BlockInvariant(".{0}_XamlApply({2}({1} => ", _applyPrefix, _closureName, delegateString);
 				}
-				else if(_exposeContext)
+				else if (_exposeContext)
 				{
 					// This syntax is used to avoid closing on __that and __namescope when running in HotReload.
 					blockDisposable = _source.BlockInvariant(".GenericApply(__that, __nameScope, {1}(({0}, __that, __nameScope) => ", _closureName, delegateString);

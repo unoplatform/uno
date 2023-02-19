@@ -17,7 +17,7 @@ namespace Uno.UI.Toolkit
 #endif
 	public static class MenuFlyoutItemExtensions
 	{
-#region IsDestructive
+		#region IsDestructive
 
 		public static DependencyProperty IsDestructiveProperty { get; } =
 			DependencyProperty.RegisterAttached(
@@ -37,6 +37,6 @@ namespace Uno.UI.Toolkit
 			return (bool)menuFlyoutItem.GetValue(IsDestructiveProperty);
 		}
 
-#endregion
+		#endregion
 	}
 }

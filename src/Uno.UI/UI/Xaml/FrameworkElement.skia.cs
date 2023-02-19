@@ -42,10 +42,6 @@ namespace Windows.UI.Xaml
 
 		public double ActualHeight => GetActualHeight();
 
-		partial void OnMeasurePartial(Size slotSize)
-		{
-		}
-
 		public int InvalidateMeasureCallCount { get; private set; }
 
 		private bool IsTopLevelXamlView() => false;
@@ -223,12 +219,11 @@ namespace Windows.UI.Xaml
 		}
 		#endregion
 
-		partial void OnGenericPropertyUpdatedPartial(DependencyPropertyChangedEventArgs args);
-
+#if DEBUG
 		private void OnGenericPropertyUpdated(DependencyPropertyChangedEventArgs args)
 		{
-			OnGenericPropertyUpdatedPartial(args);
 		}
+#endif
 
 		private event TypedEventHandler<FrameworkElement, object> _loading;
 		public event TypedEventHandler<FrameworkElement, object> Loading

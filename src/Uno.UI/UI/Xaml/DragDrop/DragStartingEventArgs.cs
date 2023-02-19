@@ -1,4 +1,4 @@
-#nullable  enable
+#nullable enable
 
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;

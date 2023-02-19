@@ -18,13 +18,13 @@ namespace Uno.UI.Samples.Content.UITests.ContentPresenter
 {
 	[SampleControlInfo("ContentPresenter", "ContentPresenter_LocalOverride")]
 	public sealed partial class ContentPresenter_LocalOverride : UserControl
-    {
-        public ContentPresenter_LocalOverride()
-        {
+	{
+		public ContentPresenter_LocalOverride()
+		{
 #if HAS_UNO
 			FeatureConfiguration.ContentPresenter.UseImplicitContentFromTemplatedParent = false;
 #endif
-            this.InitializeComponent();
-        }
-    }
+			this.InitializeComponent();
+		}
+	}
 }

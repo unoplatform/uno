@@ -10,7 +10,6 @@
 
 	<PropertyGroup>
 		<NoWarn>$(NoWarn);Uno0001</NoWarn>
-		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		<Deterministic>true</Deterministic>
 		<Nullable>enable</Nullable>
 		<AssemblyName>Uno.UI.Lottie</AssemblyName>
@@ -43,7 +42,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
+		<PackageReference Include="Newtonsoft.Json" />
 
 		<PackageReference Include="SkiaSharp.Skottie" />
 

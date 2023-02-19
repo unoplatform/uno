@@ -13,7 +13,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int FrameInputNodeQuantumStartedEventArgs.RequiredSamples is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int FrameInputNodeQuantumStartedEventArgs.RequiredSamples is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20FrameInputNodeQuantumStartedEventArgs.RequiredSamples");
 			}
 		}
 		#endif

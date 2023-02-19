@@ -18,7 +18,7 @@ namespace Uno.Analyzers
 	public class UnoNotImplementedAnalyzer : DiagnosticAnalyzer
 	{
 		internal const string Title = "Uno type or member is not implemented";
-		internal const string MessageFormat = "{0} is not implemented in Uno";
+		internal const string MessageFormat = "{0} is not implemented in Uno (https://aka.platform.uno/notimplemented?m={0})";
 		internal const string Description = "This member or type is not implemented and will fail when invoked.";
 		internal const string Category = "Compatibility";
 
@@ -29,7 +29,8 @@ namespace Uno.Analyzers
 			Category,
 			DiagnosticSeverity.Warning,
 			isEnabledByDefault: true,
-			description: Description
+			description: Description,
+			helpLinkUri: "https://aka.platform.uno/notimplemented"
 		);
 
 		public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(Rule);
@@ -78,7 +79,7 @@ namespace Uno.Analyzers
 
 		private ISymbol? GetUnoSymbolFromOperation(IOperation operation)
 		{
-			
+
 			ISymbol symbol = operation switch
 			{
 				IInvocationOperation invocationOperation => invocationOperation.TargetMethod,

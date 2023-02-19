@@ -37,7 +37,7 @@ namespace Uno.UI.Samples.Presentation.SamplePages
 
 			public override string ToString()
 			{
-				return "ListItem: "+ColourString;
+				return "ListItem: " + ColourString;
 			}
 		}
 

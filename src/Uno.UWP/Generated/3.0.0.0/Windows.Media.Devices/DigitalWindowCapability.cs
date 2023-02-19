@@ -13,7 +13,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int DigitalWindowCapability.Height is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int DigitalWindowCapability.Height is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20DigitalWindowCapability.Height");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double DigitalWindowCapability.MaxScaleValue is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double DigitalWindowCapability.MaxScaleValue is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20DigitalWindowCapability.MaxScaleValue");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double DigitalWindowCapability.MinScaleValue is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double DigitalWindowCapability.MinScaleValue is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20DigitalWindowCapability.MinScaleValue");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double DigitalWindowCapability.MinScaleValueWithoutUpsampling is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double DigitalWindowCapability.MinScaleValueWithoutUpsampling is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20DigitalWindowCapability.MinScaleValueWithoutUpsampling");
 			}
 		}
 		#endif
@@ -53,7 +53,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Rect DigitalWindowCapability.NormalizedFieldOfViewLimit is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Rect DigitalWindowCapability.NormalizedFieldOfViewLimit is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Rect%20DigitalWindowCapability.NormalizedFieldOfViewLimit");
 			}
 		}
 		#endif
@@ -63,7 +63,7 @@ namespace Windows.Media.Devices
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int DigitalWindowCapability.Width is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member int DigitalWindowCapability.Width is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20DigitalWindowCapability.Width");
 			}
 		}
 		#endif

@@ -64,7 +64,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// These are also not truly first / last because they are a lower / upper bound on the known realized range.
 		// For example, if we didn't have the optimization in ElementManager.cpp, m_lastRealizedElementIndexHeldByLayout 
 		// will not be accurate. Rather, it will be an upper bound on what we think is the last realized index.
-		int m_firstRealizedElementIndexHeldByLayout =  FirstRealizedElementIndexDefault;
+		int m_firstRealizedElementIndexHeldByLayout = FirstRealizedElementIndexDefault;
 		int m_lastRealizedElementIndexHeldByLayout = LastRealizedElementIndexDefault;
 		const int FirstRealizedElementIndexDefault = int.MaxValue;
 		const int LastRealizedElementIndexDefault = int.MinValue;
@@ -387,81 +387,108 @@ namespace Microsoft.UI.Xaml.Controls
 			switch (args.Action)
 			{
 				case NotifyCollectionChangedAction.Add:
-				{
-					var newIndex = args.NewStartingIndex;
-					var newCount = args.NewItems.Count;
-					EnsureFirstLastRealizedIndices();
-					if (newIndex <= m_lastRealizedElementIndexHeldByLayout)
 					{
-						m_lastRealizedElementIndexHeldByLayout += newCount;
-						var children = m_owner.Children;
-						var childCount = children.Count;
-						for (int i = 0; i < childCount; ++i)
+						var newIndex = args.NewStartingIndex;
+						var newCount = args.NewItems.Count;
+						EnsureFirstLastRealizedIndices();
+						if (newIndex <= m_lastRealizedElementIndexHeldByLayout)
 						{
-							var element = children[i];
-							var virtInfo = ItemsRepeater.GetVirtualizationInfo(element);
-							var dataIndex = virtInfo.Index;
-
-							if (virtInfo.IsRealized && dataIndex >= newIndex)
+							m_lastRealizedElementIndexHeldByLayout += newCount;
+							var children = m_owner.Children;
+							var childCount = children.Count;
+							for (int i = 0; i < childCount; ++i)
 							{
-								UpdateElementIndex(element, virtInfo, dataIndex + newCount);
+								var element = children[i];
+								var virtInfo = ItemsRepeater.GetVirtualizationInfo(element);
+								var dataIndex = virtInfo.Index;
+
+								if (virtInfo.IsRealized && dataIndex >= newIndex)
+								{
+									UpdateElementIndex(element, virtInfo, dataIndex + newCount);
+								}
 							}
 						}
-					}
-					else
-					{
-						// Indices held by layout are not affected
-						// We could still have items in the pinned elements that need updates. This is usually a very small vector.
-						for (int i = 0; i < m_pinnedPool.Count; ++i)
+						else
 						{
-							var elementInfo = m_pinnedPool[i];
-							var virtInfo = elementInfo.VirtualizationInfo;
-							var dataIndex = virtInfo.Index;
-
-							if (virtInfo.IsRealized && dataIndex >= newIndex)
+							// Indices held by layout are not affected
+							// We could still have items in the pinned elements that need updates. This is usually a very small vector.
+							for (int i = 0; i < m_pinnedPool.Count; ++i)
 							{
-								var element = elementInfo.PinnedElement;
-								UpdateElementIndex(element, virtInfo, dataIndex + newCount);
+								var elementInfo = m_pinnedPool[i];
+								var virtInfo = elementInfo.VirtualizationInfo;
+								var dataIndex = virtInfo.Index;
+
+								if (virtInfo.IsRealized && dataIndex >= newIndex)
+								{
+									var element = elementInfo.PinnedElement;
+									UpdateElementIndex(element, virtInfo, dataIndex + newCount);
+								}
 							}
 						}
-					}
 
-					break;
-				}
+						break;
+					}
 
 				case NotifyCollectionChangedAction.Replace:
-				{
-					// Requirement: oldStartIndex == newStartIndex. It is not a replace if this is not true.
-					// Two cases here
-					// case 1: oldCount == newCount 
-					//         indices are not affected. nothing to do here.  
-					// case 2: oldCount != newCount
-					//         Replaced with less or more items. This is like an insert or remove
-					//         depending on the counts.
-					var oldStartIndex = args.OldStartingIndex;
-					var newStartingIndex = args.NewStartingIndex;
-					var oldCount = (int)(args.OldItems.Count);
-					var newCount = (int)(args.NewItems.Count);
-					if (oldStartIndex != newStartingIndex)
 					{
-						throw new InvalidOperationException("Replace is only allowed with OldStartingIndex equals to NewStartingIndex.");
+						// Requirement: oldStartIndex == newStartIndex. It is not a replace if this is not true.
+						// Two cases here
+						// case 1: oldCount == newCount 
+						//         indices are not affected. nothing to do here.  
+						// case 2: oldCount != newCount
+						//         Replaced with less or more items. This is like an insert or remove
+						//         depending on the counts.
+						var oldStartIndex = args.OldStartingIndex;
+						var newStartingIndex = args.NewStartingIndex;
+						var oldCount = (int)(args.OldItems.Count);
+						var newCount = (int)(args.NewItems.Count);
+						if (oldStartIndex != newStartingIndex)
+						{
+							throw new InvalidOperationException("Replace is only allowed with OldStartingIndex equals to NewStartingIndex.");
+						}
+
+						if (oldCount == 0)
+						{
+							throw new InvalidOperationException("Replace notification with args.OldItemsCount value of 0 is not allowed. Use Insert action instead.");
+						}
+
+						if (newCount == 0)
+						{
+							throw new InvalidOperationException("Replace notification with args.NewItemCount value of 0 is not allowed. Use Remove action instead.");
+						}
+
+						int countChange = newCount - oldCount;
+						if (countChange != 0)
+						{
+							// countChange > 0 : countChange items were added
+							// countChange < 0 : -countChange  items were removed
+							var children = m_owner.Children;
+							for (int i = 0; i < children.Count; ++i)
+							{
+								var element = children[i];
+								var virtInfo = ItemsRepeater.GetVirtualizationInfo(element);
+								var dataIndex = virtInfo.Index;
+
+								if (virtInfo.IsRealized)
+								{
+									if (dataIndex >= oldStartIndex + oldCount)
+									{
+										UpdateElementIndex(element, virtInfo, dataIndex + countChange);
+									}
+								}
+							}
+
+							EnsureFirstLastRealizedIndices();
+							m_lastRealizedElementIndexHeldByLayout += countChange;
+						}
+
+						break;
 					}
 
-					if (oldCount == 0)
+				case NotifyCollectionChangedAction.Remove:
 					{
-						throw new InvalidOperationException("Replace notification with args.OldItemsCount value of 0 is not allowed. Use Insert action instead.");
-					}
-
-					if (newCount == 0)
-					{
-						throw new InvalidOperationException("Replace notification with args.NewItemCount value of 0 is not allowed. Use Remove action instead.");
-					}
-
-					int countChange = newCount - oldCount;
-					if (countChange != 0)
-					{
-						// countChange > 0 : countChange items were added
-						// countChange < 0 : -countChange  items were removed
+						var oldStartIndex = args.OldStartingIndex;
+						var oldCount = (int)(args.OldItems.Count);
 						var children = m_owner.Children;
 						for (int i = 0; i < children.Count; ++i)
 						{
@@ -471,48 +498,21 @@ namespace Microsoft.UI.Xaml.Controls
 
 							if (virtInfo.IsRealized)
 							{
-								if (dataIndex >= oldStartIndex + oldCount)
+								if (virtInfo.AutoRecycleCandidate && oldStartIndex <= dataIndex && dataIndex < oldStartIndex + oldCount)
 								{
-									UpdateElementIndex(element, virtInfo, dataIndex + countChange);
+									// If we are doing the mapping, remove the element who's data was removed.
+									m_owner.ClearElementImpl(element);
+								}
+								else if (dataIndex >= (oldStartIndex + oldCount))
+								{
+									UpdateElementIndex(element, virtInfo, dataIndex - oldCount);
 								}
 							}
 						}
 
-						EnsureFirstLastRealizedIndices();
-						m_lastRealizedElementIndexHeldByLayout += countChange;
+						InvalidateRealizedIndicesHeldByLayout();
+						break;
 					}
-
-					break;
-				}
-
-				case NotifyCollectionChangedAction.Remove:
-				{
-					var oldStartIndex = args.OldStartingIndex;
-					var oldCount = (int)(args.OldItems.Count);
-					var children = m_owner.Children;
-					for (int i = 0; i < children.Count; ++i)
-					{
-						var element = children[i];
-						var virtInfo = ItemsRepeater.GetVirtualizationInfo(element);
-						var dataIndex = virtInfo.Index;
-
-						if (virtInfo.IsRealized)
-						{
-							if (virtInfo.AutoRecycleCandidate && oldStartIndex <= dataIndex && dataIndex < oldStartIndex + oldCount)
-							{
-								// If we are doing the mapping, remove the element who's data was removed.
-								m_owner.ClearElementImpl(element);
-							}
-							else if (dataIndex >= (oldStartIndex + oldCount))
-							{
-								UpdateElementIndex(element, virtInfo, dataIndex - oldCount);
-							}
-						}
-					}
-
-					InvalidateRealizedIndicesHeldByLayout();
-					break;
-				}
 
 				case NotifyCollectionChangedAction.Reset:
 					// If we get multiple resets back to back before
@@ -588,7 +588,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-#region GetElement providers
+		#region GetElement providers
 
 		// We optimize for the case where index is not realized to return null as quickly as we can.
 		// Flow layouts manage containers on their own and will never ask for an index that is already realized.
@@ -706,7 +706,7 @@ namespace Microsoft.UI.Xaml.Controls
 		UIElement GetElementFromElementFactory(int index)
 		{
 			// The view generator is the provider of last resort.
-			var  data = m_owner.ItemsSourceView.GetAt(index);
+			var data = m_owner.ItemsSourceView.GetAt(index);
 
 			UIElement GetElement()
 			{
@@ -848,9 +848,9 @@ namespace Microsoft.UI.Xaml.Controls
 			return element;
 		}
 
-#endregion
+		#endregion
 
-#region ClearElement handlers
+		#region ClearElement handlers
 
 		bool ClearElementToUniqueIdResetPool(UIElement element, VirtualizationInfo virtInfo)
 		{
@@ -904,7 +904,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return moveToPinnedPool;
 		}
 
-#endregion
+		#endregion
 
 		void UpdateFocusedElement()
 		{

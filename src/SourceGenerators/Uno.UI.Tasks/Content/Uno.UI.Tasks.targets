@@ -3,6 +3,9 @@
 	<PropertyGroup>
 		<UnoUIMSBuildTasksPath Condition="'$(UnoUIMSBuildTasksPath)'==''">Uno.UI.Tasks</UnoUIMSBuildTasksPath>
 		<UmbrellaMSBuildTasksImported>true</UmbrellaMSBuildTasksImported>
+		
+		<_IsXamlTrimmingAvailable>true</_IsXamlTrimmingAvailable>
+		<_IsXamlTrimmingAvailable Condition="'$(MSBuildRuntimeType)'!='Core' and !$([MSBuild]::IsOSPlatform('windows'))">false</_IsXamlTrimmingAvailable>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -26,6 +29,16 @@
 			<DefaultLanguage Condition="'$(DefaultLanguage)'==''">en</DefaultLanguage>
 		</PropertyGroup>
 	</Target>
+
+	<PropertyGroup>
+		<!--
+		Ensures that AssignLinkMetadata runs before AssignTargetPaths.
+		Otherwise, AssignTargetPath will generate a rooted path and will break embedded sources
+		LogicalName metadata's behavior.
+		-->
+		<AssignTargetPathsDependsOn>$(AssignTargetPathsDependsOn);AssignLinkMetadata</AssignTargetPathsDependsOn>
+	</PropertyGroup>
+
 	<!--
 	  This task transforms all the Content files and PRIResources into resources files compatible for each platform.
 
@@ -39,9 +52,13 @@
 
 		<CheckForDevenv Condition="'$(SolutionFileName)'=='Uno.UI.sln' and '$(MSBuildRuntimeType)'!='Core'" />
 
-		<!-- String resources -->
 		<PropertyGroup>
+			<!-- String resources -->
 			<XamarinProjectType Condition="'$(UnoForceProcessPRIResource)'!=''"></XamarinProjectType>
+
+			<!-- Determine UnoHead (with xamarin heads detection) -->
+			<_IsUnoHead>false</_IsUnoHead>
+			<_IsUnoHead Condition="'$(IsUnoHead)'=='true' or '$(AndroidApplication)'=='true' or '$(ProjectTypeGuids)'!=''">true</_IsUnoHead>
 		</PropertyGroup>
 
 		<ItemGroup>
@@ -72,6 +89,8 @@
 									 TargetPlatform="$(XamarinProjectType)"
 									 IntermediateOutputPath="$(IntermediateOutputPath)"
 									 DefaultLanguage="$(DefaultLanguage)"
+									 IsUnoHead="$(_IsUnoHead)"
+									 ProjectName="$(AssemblyName)"
 									 EnableTraceLogging="$(UnoResourcesGenerationEnableTraceLogging)">
 			<Output TaskParameter="GeneratedFiles"
 							ItemName="GeneratedFiles" />
@@ -108,13 +127,20 @@
 		<!-- Assets -->
 		<PropertyGroup>
 			<UseHighDPIResources Condition="'$(UseHighDPIResources)'==''">True</UseHighDPIResources>
+			
+			<_UnoIosAppManifest>$(AppBundleManifest)</_UnoIosAppManifest>
+
+			<!-- Required for older Xamarin versions -->
+			<_UnoIosAppManifest Condition="'$(_UnoIosAppManifest)'==''">$(_AppManifest)</_UnoIosAppManifest>
 		</PropertyGroup>
+		
 		<RetargetAssets_v0 UseHighDPIResources="$(UseHighDPIResources)"
 							TargetPlatform="$(XamarinProjectType)"
 							DefaultLanguage="$(DefaultLanguage)"
 							IntermediateOutputPath="$(IntermediateOutputPath)"
 							ContentItems="@(Content);@(_SourceItemsToCopyToOutputDirectory)"
 							AndroidAssetsPrefix="$(MonoAndroidAssetsPrefix)"
+							IosAppManifest="$(_UnoIosAppManifest)"
 							Condition="'$(XamarinProjectType)'!=''">
 			<Output TaskParameter="Assets"
 							ItemName="Assets" />
@@ -137,7 +163,7 @@
 	</Target>
 
 	<!--
-	  XAML ResouTrimming
+	  XAML Resources Trimming
 	  -->
 
 	<Target Name="_UnoLinkerHintsSubstitutionsMerge"
@@ -145,7 +171,8 @@
 		'$(DesignTimeBuild)' != 'true'
 		and '$(BuildingInsideUnoSourceGenerator)' == ''
 		and '$(SkipCompilerExecution)' == ''
-		and '$(UnoXamlResourcesTrimming)'=='true'"
+		and '$(UnoXamlResourcesTrimming)'=='true'
+		and $(_IsXamlTrimmingAvailable)"
 		AfterTargets="CoreCompile">
 
 		<ItemGroup>
@@ -174,7 +201,8 @@
 		'$(DesignTimeBuild)' != 'true'
 		and '$(BuildingInsideUnoSourceGenerator)' == ''
 		and '$(SkipCompilerExecution)' == ''
-		and ('$(UnoXamlResourcesTrimming)'=='true' or '$(UnoRewriteEmbeddedResources)'=='true')"
+		and ('$(UnoXamlResourcesTrimming)'=='true' or '$(UnoRewriteEmbeddedResources)'=='true')
+		and $(_IsXamlTrimmingAvailable)"
 		AfterTargets="@(_UnoEmbeddedResourcesInjectionAfterTargets)">
 
 		<ItemGroup>
@@ -192,7 +220,10 @@
 	</Target>
 
 	<Target Name="_UnoLinkerHintsPass1"
-		  Condition="'$(IsUnoHead)'=='true' and '$(UnoXamlResourcesTrimming)'=='true'"
+		  Condition="
+			'$(IsUnoHead)'=='true'
+			and '$(UnoXamlResourcesTrimming)'=='true'
+			and $(_IsXamlTrimmingAvailable)"
 		  BeforeTargets="BuildDist;PrepareForILLink">
 
 		<ItemGroup>

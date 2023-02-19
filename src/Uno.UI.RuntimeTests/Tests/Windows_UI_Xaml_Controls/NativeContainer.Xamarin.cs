@@ -18,7 +18,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		// Using a DependencyProperty as the backing store for Content.  This enables animation, styling, binding, etc...
 		public static readonly DependencyProperty ContentProperty =
-			DependencyProperty.Register("Content", typeof(UIElement), typeof(NativeContainer), new PropertyMetadata(null, (o,e)=>((NativeContainer)o).OnContentChanged((UIElement)e.OldValue, (UIElement)e.NewValue)));
+			DependencyProperty.Register("Content", typeof(UIElement), typeof(NativeContainer), new PropertyMetadata(null, (o, e) => ((NativeContainer)o).OnContentChanged((UIElement)e.OldValue, (UIElement)e.NewValue)));
 	}
 }
 

@@ -13,7 +13,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaStreamSample MediaStreamSourceSampleRequest.Sample is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member MediaStreamSample MediaStreamSourceSampleRequest.Sample is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaStreamSample%20MediaStreamSourceSampleRequest.Sample");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IMediaStreamDescriptor MediaStreamSourceSampleRequest.StreamDescriptor is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IMediaStreamDescriptor MediaStreamSourceSampleRequest.StreamDescriptor is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IMediaStreamDescriptor%20MediaStreamSourceSampleRequest.StreamDescriptor");
 			}
 		}
 		#endif
@@ -36,7 +36,7 @@ namespace Windows.Media.Core
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Media.Core.MediaStreamSourceSampleRequestDeferral GetDeferral()
 		{
-			throw new global::System.NotImplementedException("The member MediaStreamSourceSampleRequestDeferral MediaStreamSourceSampleRequest.GetDeferral() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member MediaStreamSourceSampleRequestDeferral MediaStreamSourceSampleRequest.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaStreamSourceSampleRequestDeferral%20MediaStreamSourceSampleRequest.GetDeferral%28%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Media.Core.MediaStreamSourceSampleRequest.Sample.set

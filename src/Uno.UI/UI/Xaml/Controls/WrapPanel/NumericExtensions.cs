@@ -108,7 +108,7 @@ namespace Windows.UI.Xaml.Controls
 			/// <summary>
 			/// Floating point representation of the union.
 			/// </summary>
-			[SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields", Justification="Intentional aliasing")]
+			[SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields", Justification = "Intentional aliasing")]
 			[FieldOffset(0)]
 			internal double FloatingValue;
 

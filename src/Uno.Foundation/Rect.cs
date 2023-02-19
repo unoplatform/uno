@@ -131,7 +131,7 @@ namespace Windows.Foundation
 				.Split(new[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries)
 				.SelectToArray(s => double.Parse(s, NumberFormatInfo.InvariantInfo));
 
-			if(parts.Length != 4)
+			if (parts.Length != 4)
 			{
 				throw new ArgumentException(
 					"Cannot create a Rect from " + text + ": needs 4 parts separated by a comma or a space.");

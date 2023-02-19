@@ -8,5 +8,5 @@ namespace Windows.UI.Xaml;
 
 public sealed partial class XamlRoot
 {
-	
+
 }

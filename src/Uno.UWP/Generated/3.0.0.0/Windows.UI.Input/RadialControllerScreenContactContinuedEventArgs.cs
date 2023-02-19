@@ -13,7 +13,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member RadialControllerScreenContact RadialControllerScreenContactContinuedEventArgs.Contact is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member RadialControllerScreenContact RadialControllerScreenContactContinuedEventArgs.Contact is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=RadialControllerScreenContact%20RadialControllerScreenContactContinuedEventArgs.Contact");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool RadialControllerScreenContactContinuedEventArgs.IsButtonPressed is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool RadialControllerScreenContactContinuedEventArgs.IsButtonPressed is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20RadialControllerScreenContactContinuedEventArgs.IsButtonPressed");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.UI.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SimpleHapticsController RadialControllerScreenContactContinuedEventArgs.SimpleHapticsController is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SimpleHapticsController RadialControllerScreenContactContinuedEventArgs.SimpleHapticsController is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SimpleHapticsController%20RadialControllerScreenContactContinuedEventArgs.SimpleHapticsController");
 			}
 		}
 		#endif

@@ -29,9 +29,9 @@ using UIKit;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 {
-	#if NET6_0_OR_GREATER && __ANDROID__
+#if NET6_0_OR_GREATER && __ANDROID__
 	[Ignore("Disabled until https://github.com/dotnet/runtime/pull/55681 is released. See https://github.com/unoplatform/uno/issues/5873")]
-	#endif
+#endif
 
 	[TestClass]
 	[RunsOnUIThread]
@@ -71,7 +71,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[DataRow(typeof(CommandBar), 15)]
 		[DataRow(typeof(Border), 15)]
 		[DataRow(typeof(ContentControl), 15)]
-		[DataRow(typeof(ContentDialog), 15)]		
+		[DataRow(typeof(ContentDialog), 15)]
 		[DataRow(typeof(RelativePanel), 15)]
 		[DataRow(typeof(FlipView), 15)]
 		[DataRow(typeof(DatePicker), 15)]
@@ -128,8 +128,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		public async Task When_Add_Remove(object controlTypeRaw, int count)
 		{
 #if TRACK_REFS
-				var initialInactiveStats = Uno.UI.DataBinding.BinderReferenceHolder.GetInactiveViewReferencesStats();
-				var initialActiveStats = Uno.UI.DataBinding.BinderReferenceHolder.GetReferenceStats();
+			var initialInactiveStats = Uno.UI.DataBinding.BinderReferenceHolder.GetInactiveViewReferencesStats();
+			var initialActiveStats = Uno.UI.DataBinding.BinderReferenceHolder.GetReferenceStats();
 #endif
 
 			Type GetType(string s)
@@ -191,7 +191,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				// DispatcherConditionalDisposable to be executed
 				await TestServices.WindowHelper.WaitForIdle();
 
-				if(lastActiveControls != activeControls)
+				if (lastActiveControls != activeControls)
 				{
 					// Expand the timeout if the count has changed, as the
 					// GC may still be processing levels of the hierarcy on iOS
@@ -202,8 +202,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			}
 
 #if TRACK_REFS
-				Uno.UI.DataBinding.BinderReferenceHolder.LogInactiveViewReferencesStatsDiff(initialInactiveStats);
-				Uno.UI.DataBinding.BinderReferenceHolder.LogActiveViewReferencesStatsDiff(initialActiveStats);
+			Uno.UI.DataBinding.BinderReferenceHolder.LogInactiveViewReferencesStatsDiff(initialInactiveStats);
+			Uno.UI.DataBinding.BinderReferenceHolder.LogActiveViewReferencesStatsDiff(initialActiveStats);
 #endif
 
 			var retainedMessage = "";
@@ -231,7 +231,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 #if NET5_0 || __IOS__ || __ANDROID__
 			static string? ExtractTargetName(KeyValuePair<DependencyObject, Holder> p)
 			{
-				if(p.Key is FrameworkElement fe)
+				if (p.Key is FrameworkElement fe)
 				{
 					return $"{fe}/{fe.Name}";
 				}

@@ -42,10 +42,5 @@ namespace Windows.UI.Xaml.Media.Animation
 				Storyboard.SetTarget(this, depObj);
 			}
 		}
-
-		private static void OnTargetNameChanged(DependencyObject dependencyobject, DependencyPropertyChangedEventArgs args)
-		{
-			Storyboard.SetTargetName(dependencyobject as Timeline, args.NewValue as string);
-		}
 	}
 }

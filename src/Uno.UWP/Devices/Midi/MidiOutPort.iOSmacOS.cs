@@ -73,7 +73,7 @@ namespace Windows.Devices.Midi
 			var packet = new MidiPacket(0, data, 0, data.Length);
 			var packets = new MidiPacket[] { packet };
 
-#pragma warning disable BI1234 
+#pragma warning disable BI1234
 			_port.Send(_endpoint, packets);
 #pragma warning restore BI1234
 		}

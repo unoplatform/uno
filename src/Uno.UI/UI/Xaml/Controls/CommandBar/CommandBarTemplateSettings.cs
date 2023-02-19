@@ -3,7 +3,7 @@ using Windows.UI.Xaml;
 
 namespace Windows.UI.Xaml.Controls.Primitives
 {
-    public partial class CommandBarTemplateSettings : DependencyObject
+	public partial class CommandBarTemplateSettings : DependencyObject
 	{
 		internal CommandBarTemplateSettings()
 		{

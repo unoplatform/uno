@@ -13,7 +13,7 @@ namespace Windows.Gaming.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Headset UINavigationController.Headset is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Headset UINavigationController.Headset is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Headset%20UINavigationController.Headset");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Gaming.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool UINavigationController.IsWireless is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool UINavigationController.IsWireless is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20UINavigationController.IsWireless");
 			}
 		}
 		#endif
@@ -33,7 +33,7 @@ namespace Windows.Gaming.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member User UINavigationController.User is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member User UINavigationController.User is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=User%20UINavigationController.User");
 			}
 		}
 		#endif
@@ -43,7 +43,7 @@ namespace Windows.Gaming.Input
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<UINavigationController> UINavigationController.UINavigationControllers is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<UINavigationController> UINavigationController.UINavigationControllers is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CUINavigationController%3E%20UINavigationController.UINavigationControllers");
 			}
 		}
 		#endif
@@ -51,21 +51,21 @@ namespace Windows.Gaming.Input
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Gaming.Input.UINavigationReading GetCurrentReading()
 		{
-			throw new global::System.NotImplementedException("The member UINavigationReading UINavigationController.GetCurrentReading() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member UINavigationReading UINavigationController.GetCurrentReading() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=UINavigationReading%20UINavigationController.GetCurrentReading%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Gaming.Input.GameControllerButtonLabel GetOptionalButtonLabel( global::Windows.Gaming.Input.OptionalUINavigationButtons button)
 		{
-			throw new global::System.NotImplementedException("The member GameControllerButtonLabel UINavigationController.GetOptionalButtonLabel(OptionalUINavigationButtons button) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member GameControllerButtonLabel UINavigationController.GetOptionalButtonLabel(OptionalUINavigationButtons button) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=GameControllerButtonLabel%20UINavigationController.GetOptionalButtonLabel%28OptionalUINavigationButtons%20button%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Gaming.Input.GameControllerButtonLabel GetRequiredButtonLabel( global::Windows.Gaming.Input.RequiredUINavigationButtons button)
 		{
-			throw new global::System.NotImplementedException("The member GameControllerButtonLabel UINavigationController.GetRequiredButtonLabel(RequiredUINavigationButtons button) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member GameControllerButtonLabel UINavigationController.GetRequiredButtonLabel(RequiredUINavigationButtons button) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=GameControllerButtonLabel%20UINavigationController.GetRequiredButtonLabel%28RequiredUINavigationButtons%20button%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Gaming.Input.UINavigationController.HeadsetConnected.add
@@ -81,14 +81,14 @@ namespace Windows.Gaming.Input
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Devices.Power.BatteryReport TryGetBatteryReport()
 		{
-			throw new global::System.NotImplementedException("The member BatteryReport UINavigationController.TryGetBatteryReport() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member BatteryReport UINavigationController.TryGetBatteryReport() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=BatteryReport%20UINavigationController.TryGetBatteryReport%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Gaming.Input.UINavigationController FromGameController( global::Windows.Gaming.Input.IGameController gameController)
 		{
-			throw new global::System.NotImplementedException("The member UINavigationController UINavigationController.FromGameController(IGameController gameController) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member UINavigationController UINavigationController.FromGameController(IGameController gameController) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=UINavigationController%20UINavigationController.FromGameController%28IGameController%20gameController%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Gaming.Input.UINavigationController.UINavigationControllerAdded.add

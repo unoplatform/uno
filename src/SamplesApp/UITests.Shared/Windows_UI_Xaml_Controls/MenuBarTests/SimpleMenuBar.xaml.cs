@@ -32,7 +32,8 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.MenuBarTests
 
 		public ICommand MyCommand => new DelegateCommand<object>(param => result.Text = $"command param:{param}");
 
-		public ICommand MyXamlUICommand => new XamlUICommand {
+		public ICommand MyXamlUICommand => new XamlUICommand
+		{
 			Label = "XamlCommand",
 			Description = "My XamlCommand Description",
 			Command = new DelegateCommand<object>(param => result.Text = $"xamluicommand param:{param}")

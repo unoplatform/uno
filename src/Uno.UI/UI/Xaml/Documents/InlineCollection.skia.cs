@@ -180,7 +180,7 @@ namespace Windows.UI.Xaml.Documents
 							length = 1;
 							width = GetGlyphWidthWithSpacing(segment.Glyphs[start], characterSpacing);
 
-							while ( start + length < segment.Glyphs.Count
+							while (start + length < segment.Glyphs.Count
 								&& (width + GetGlyphWidthWithSpacing(segment.Glyphs[start + length], characterSpacing)) is var newWidth
 								&& newWidth < remainingWidth)
 							{
@@ -322,7 +322,7 @@ namespace Windows.UI.Xaml.Documents
 							red: scb.Color.R,
 							green: scb.Color.G,
 							blue: scb.Color.B,
-							alpha: (byte)(scb.Color.A * compositor.CurrentOpacity));
+							alpha: (byte)(scb.Color.A * scb.Opacity * compositor.CurrentOpacity));
 					}
 
 					var decorations = segment.Inline.TextDecorations;
@@ -414,7 +414,7 @@ namespace Windows.UI.Xaml.Documents
 				canvas.DrawLine(x, y, x + width, y, paint);
 				paint.IsStroke = false;
 			}
-        }
+		}
 
 		internal RenderLine? GetRenderLineAt(double y, bool extendedSelection)
 		{

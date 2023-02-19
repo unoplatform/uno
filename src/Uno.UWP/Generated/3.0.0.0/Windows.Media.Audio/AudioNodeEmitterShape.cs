@@ -13,7 +13,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AudioNodeEmitterConeProperties AudioNodeEmitterShape.ConeProperties is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AudioNodeEmitterConeProperties AudioNodeEmitterShape.ConeProperties is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AudioNodeEmitterConeProperties%20AudioNodeEmitterShape.ConeProperties");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.Audio
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AudioNodeEmitterShapeKind AudioNodeEmitterShape.Kind is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member AudioNodeEmitterShapeKind AudioNodeEmitterShape.Kind is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AudioNodeEmitterShapeKind%20AudioNodeEmitterShape.Kind");
 			}
 		}
 		#endif
@@ -33,14 +33,14 @@ namespace Windows.Media.Audio
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Media.Audio.AudioNodeEmitterShape CreateCone( double innerAngle,  double outerAngle,  double outerAngleGain)
 		{
-			throw new global::System.NotImplementedException("The member AudioNodeEmitterShape AudioNodeEmitterShape.CreateCone(double innerAngle, double outerAngle, double outerAngleGain) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member AudioNodeEmitterShape AudioNodeEmitterShape.CreateCone(double innerAngle, double outerAngle, double outerAngleGain) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AudioNodeEmitterShape%20AudioNodeEmitterShape.CreateCone%28double%20innerAngle%2C%20double%20outerAngle%2C%20double%20outerAngleGain%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Media.Audio.AudioNodeEmitterShape CreateOmnidirectional()
 		{
-			throw new global::System.NotImplementedException("The member AudioNodeEmitterShape AudioNodeEmitterShape.CreateOmnidirectional() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member AudioNodeEmitterShape AudioNodeEmitterShape.CreateOmnidirectional() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AudioNodeEmitterShape%20AudioNodeEmitterShape.CreateOmnidirectional%28%29");
 		}
 		#endif
 	}

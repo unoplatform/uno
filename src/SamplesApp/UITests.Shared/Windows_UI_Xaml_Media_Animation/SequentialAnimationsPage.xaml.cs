@@ -28,10 +28,18 @@ namespace SamplesApp.Windows_UI_Xaml_Media.Animation
 		internal void TranslateY(UIElement element, double to)
 			=> Animate(element, "(UIElement.RenderTransform).(TranslateTransform.Y)", to);
 
-		internal void ScaleX(UIElement element, double to)
+		internal
+#if __ANDROID__
+		new
+#endif
+		void ScaleX(UIElement element, double to)
 			=> Animate(element, "(UIElement.RenderTransform).(ScaleTransform.ScaleX)", to);
 
-		internal void ScaleY(UIElement element, double to)
+		internal
+#if __ANDROID__
+		new
+#endif
+		void ScaleY(UIElement element, double to)
 			=> Animate(element, "(UIElement.RenderTransform).(ScaleTransform.ScaleY)", to);
 
 		internal void Rotate(UIElement element, double to)

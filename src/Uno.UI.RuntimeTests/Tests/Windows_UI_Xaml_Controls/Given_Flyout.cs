@@ -106,7 +106,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			flyout.Hide();
 
-	}
+		}
 #endif
 
 		[TestMethod]
@@ -793,7 +793,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				var host = new Button() { Content = "Asd" };
 				flyout.Content = new Button() { Content = "Test" };
-				
+
 				TestServices.WindowHelper.WindowContent = host;
 				await TestServices.WindowHelper.WaitForIdle();
 				await TestServices.WindowHelper.WaitForLoaded(host);
@@ -829,7 +829,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				TestServices.WindowHelper.WindowContent = host;
 				await TestServices.WindowHelper.WaitForIdle();
 				await TestServices.WindowHelper.WaitForLoaded(host);
-				
+
 				Assert.IsNull(flyout.XamlRoot);
 				FlyoutBase.ShowAttachedFlyout(host);
 
@@ -846,6 +846,44 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				flyout.Hide();
 			}
 		}
+
+#if __IOS__
+		[TestMethod]
+		[RequiresFullWindow]
+		public async Task When_Native_DatePickerFlyout_Placement()
+		{
+			var flyout = new NativeDatePickerFlyout();
+			try
+			{
+				var grid = new Grid();
+				var host = new Button() { Content = "Asd", Margin = new Thickness(30, 0) };
+				grid.Children.Add(host);
+				flyout.Content = new Button() { Content = "Test" };
+				FlyoutBase.SetAttachedFlyout(host, flyout);
+
+				TestServices.WindowHelper.WindowContent = grid;
+				await TestServices.WindowHelper.WaitForIdle();
+				await TestServices.WindowHelper.WaitForLoaded(grid);
+
+				FlyoutBase.ShowAttachedFlyout(host);
+
+				await TestServices.WindowHelper.WaitForIdle();
+				await TestServices.WindowHelper.WaitForIdle();
+
+				var popups = VisualTreeHelper.GetOpenPopupsForXamlRoot(host.XamlRoot);
+				var popupPanel = popups[0].PopupPanel;
+				var child = popupPanel.Children[0];
+				var transform = child.TransformToVisual(grid);
+				var topLeft = transform.TransformPoint(default);
+				Assert.AreEqual(0, topLeft.X); // Positioned on the left edge of the screen
+				Assert.IsTrue(topLeft.Y > 100); // Positioned lower on the screen
+			}
+			finally
+			{
+				flyout.Hide();
+			}
+		}
+#endif
 
 		private static void VerifyRelativeContentPosition(HorizontalPosition horizontalPosition, VerticalPosition verticalPosition, FrameworkElement content, double minimumTargetOffset, FrameworkElement target)
 		{

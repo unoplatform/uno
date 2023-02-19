@@ -36,7 +36,7 @@ namespace Uno.UI.RemoteControl
 		{
 			AppType = appType;
 
-			if(appType.Assembly.GetCustomAttributes(typeof(ServerEndpointAttribute), false) is ServerEndpointAttribute[] endpoints)
+			if (appType.Assembly.GetCustomAttributes(typeof(ServerEndpointAttribute), false) is ServerEndpointAttribute[] endpoints)
 			{
 				IEnumerable<(string endpoint, int port)> GetAddresses()
 				{
@@ -132,7 +132,7 @@ namespace Uno.UI.RemoteControl
 					{
 						await s.ConnectAsync(serverUri, ct);
 					}
-					catch(Exception e)
+					catch (Exception e)
 					{
 						if (this.Log().IsEnabled(LogLevel.Trace))
 						{
@@ -154,7 +154,7 @@ namespace Uno.UI.RemoteControl
 							var cts = new CancellationTokenSource();
 							var task = Connect(s.endpoint, s.port, cts.Token);
 
-							return (task, cts);
+							return (task: task, cts: cts);
 						})
 						.ToArray();
 
@@ -189,6 +189,8 @@ namespace Uno.UI.RemoteControl
 							_ = connection.task.Result.socket.CloseAsync(WebSocketCloseStatus.NormalClosure, "", CancellationToken.None);
 						}
 					}
+
+					CleanupConnections(connections.Select(c => c.task));
 
 					if (completed == timeout)
 					{
@@ -234,11 +236,30 @@ namespace Uno.UI.RemoteControl
 			}
 		}
 
+		/// <summary>
+		/// Cleanup connections to avoid tasks raising UnobservedTaskException.
+		/// </summary>
+		private static void CleanupConnections(IEnumerable<Task> connections)
+			=> _ = Task.Run(async () =>
+			{
+				foreach (var connection in connections)
+				{
+					try
+					{
+						await connection;
+					}
+					catch
+					{
+						// Exceptions are not used here.
+					}
+				}
+			});
+
 		private async Task ProcessMessages()
 		{
 			_ = InitializeServerProcessors();
 
-			foreach(var processor in _processors)
+			foreach (var processor in _processors)
 			{
 				await processor.Value.Initialize();
 			}
@@ -284,7 +305,8 @@ namespace Uno.UI.RemoteControl
 		{
 			KeepAliveMessage keepAlive = new();
 
-			_keepAliveTimer = new Timer(_ => {
+			_keepAliveTimer = new Timer(_ =>
+			{
 
 				try
 				{
@@ -295,7 +317,7 @@ namespace Uno.UI.RemoteControl
 
 					_ = SendMessage(keepAlive);
 				}
-				catch(Exception)
+				catch (Exception)
 				{
 					if (this.Log().IsEnabled(LogLevel.Trace))
 					{

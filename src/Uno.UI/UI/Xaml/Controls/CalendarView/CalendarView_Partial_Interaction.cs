@@ -26,7 +26,7 @@ namespace Windows.UI.Xaml.Controls
 			base.OnKeyDown(pArgs);
 
 			// Check if this keydown events comes from CalendarItem.
-			 m_wrKeyDownEventArgsFromCalendarItem.TryGetTarget(out spKeyDownArgsFromCalendarItem);
+			m_wrKeyDownEventArgsFromCalendarItem.TryGetTarget(out spKeyDownArgsFromCalendarItem);
 
 			if (spKeyDownArgsFromCalendarItem is null)
 			{
@@ -72,13 +72,13 @@ namespace Windows.UI.Xaml.Controls
 					case VirtualKey.Right:
 					case VirtualKey.Up:
 					case VirtualKey.Down:
-					{
-						VirtualKey originalKey = VirtualKey.None;
-						originalKey = pArgs.OriginalKey;
+						{
+							VirtualKey originalKey = VirtualKey.None;
+							originalKey = pArgs.OriginalKey;
 
-						handled = OnKeyboardNavigation(key, originalKey);
-						break;
-					}
+							handled = OnKeyboardNavigation(key, originalKey);
+							break;
+						}
 					default:
 						break;
 				}
@@ -90,53 +90,53 @@ namespace Windows.UI.Xaml.Controls
 				{
 					case VirtualKey.Up:
 					case VirtualKey.Down:
-					{
-						CalendarViewDisplayMode mode = CalendarViewDisplayMode.Month;
-
-						mode = DisplayMode;
-
-						CalendarViewDisplayMode newMode = mode;
-						switch (mode)
 						{
-							case CalendarViewDisplayMode.Month:
-								if (key == VirtualKey.Up)
-								{
-									newMode = CalendarViewDisplayMode.Year;
-								}
+							CalendarViewDisplayMode mode = CalendarViewDisplayMode.Month;
 
-								break;
-							case CalendarViewDisplayMode.Year:
-								if (key == VirtualKey.Up)
-								{
-									newMode = CalendarViewDisplayMode.Decade;
-								}
-								else
-								{
-									newMode = CalendarViewDisplayMode.Month;
-								}
+							mode = DisplayMode;
 
-								break;
-							case CalendarViewDisplayMode.Decade:
-								if (key == VirtualKey.Down)
-								{
-									newMode = CalendarViewDisplayMode.Year;
-								}
+							CalendarViewDisplayMode newMode = mode;
+							switch (mode)
+							{
+								case CalendarViewDisplayMode.Month:
+									if (key == VirtualKey.Up)
+									{
+										newMode = CalendarViewDisplayMode.Year;
+									}
 
-								break;
-							default:
-								global::System.Diagnostics.Debug.Assert(false);
-								break;
+									break;
+								case CalendarViewDisplayMode.Year:
+									if (key == VirtualKey.Up)
+									{
+										newMode = CalendarViewDisplayMode.Decade;
+									}
+									else
+									{
+										newMode = CalendarViewDisplayMode.Month;
+									}
+
+									break;
+								case CalendarViewDisplayMode.Decade:
+									if (key == VirtualKey.Down)
+									{
+										newMode = CalendarViewDisplayMode.Year;
+									}
+
+									break;
+								default:
+									global::System.Diagnostics.Debug.Assert(false);
+									break;
+							}
+
+							if (newMode != mode)
+							{
+								handled = true;
+								// after display mode changed, we want the new item to be focused by keyboard.
+								m_focusItemAfterDisplayModeChanged = true;
+								m_focusStateAfterDisplayModeChanged = FocusState.Keyboard;
+								DisplayMode = newMode;
+							}
 						}
-
-						if (newMode != mode)
-						{
-							handled = true;
-							// after display mode changed, we want the new item to be focused by keyboard.
-							m_focusItemAfterDisplayModeChanged = true;
-							m_focusStateAfterDisplayModeChanged = FocusState.Keyboard;
-							DisplayMode = newMode;
-						}
-					}
 						break;
 					default:
 						break;
@@ -161,7 +161,7 @@ namespace Windows.UI.Xaml.Controls
 			var pHandled = false;
 
 			var pPanel = spHost.Panel;
-			if (pPanel is {})
+			if (pPanel is { })
 			{
 				int lastFocusedIndex = -1;
 
@@ -174,73 +174,73 @@ namespace Windows.UI.Xaml.Controls
 					// Home/End goes to the first/last date in current scope.
 					case VirtualKey.Home:
 					case VirtualKey.End:
-					{
-						var newFocusedDate = key == VirtualKey.Home ? spHost.GetMinDateOfCurrentScope() : spHost.GetMaxDateOfCurrentScope();
-						newFocusedIndex = spHost.CalculateOffsetFromMinDate(newFocusedDate);
-						global::System.Diagnostics.Debug.Assert(newFocusedIndex >= 0);
-					}
+						{
+							var newFocusedDate = key == VirtualKey.Home ? spHost.GetMinDateOfCurrentScope() : spHost.GetMaxDateOfCurrentScope();
+							newFocusedIndex = spHost.CalculateOffsetFromMinDate(newFocusedDate);
+							global::System.Diagnostics.Debug.Assert(newFocusedIndex >= 0);
+						}
 						break;
 					// PageUp/PageDown goes to the previous/next scope
 					case VirtualKey.PageUp:
 					case VirtualKey.PageDown:
-					{
-						var newFocusedDate = m_lastDisplayedDate;
-						try
 						{
-							spHost.AddScopes(newFocusedDate, key == VirtualKey.PageUp ? -1 : 1);
-							// probably beyond {min, max}, let's make sure.
-							CoerceDate(ref newFocusedDate);
-							newFocusedIndex = spHost.CalculateOffsetFromMinDate(newFocusedDate);
-							global::System.Diagnostics.Debug.Assert(newFocusedIndex >= 0);
+							var newFocusedDate = m_lastDisplayedDate;
+							try
+							{
+								spHost.AddScopes(newFocusedDate, key == VirtualKey.PageUp ? -1 : 1);
+								// probably beyond {min, max}, let's make sure.
+								CoerceDate(ref newFocusedDate);
+								newFocusedIndex = spHost.CalculateOffsetFromMinDate(newFocusedDate);
+								global::System.Diagnostics.Debug.Assert(newFocusedIndex >= 0);
 
-						}
-						catch
-						{
-							// beyond calendar's limit, fall back to min/max date, i.e. the first/last item.
-							if (key == VirtualKey.PageUp)
-							{
-								newFocusedIndex = 0;
 							}
-							else
+							catch
 							{
-								uint size = 0;
-								size = spHost.Size();
-								newFocusedIndex = (int)(size - 1);
+								// beyond calendar's limit, fall back to min/max date, i.e. the first/last item.
+								if (key == VirtualKey.PageUp)
+								{
+									newFocusedIndex = 0;
+								}
+								else
+								{
+									uint size = 0;
+									size = spHost.Size();
+									newFocusedIndex = (int)(size - 1);
+								}
 							}
 						}
-					}
 						break;
 					// Arrow keys: use the panel's default behavior.
 					case VirtualKey.Left:
 					case VirtualKey.Up:
 					case VirtualKey.Right:
 					case VirtualKey.Down:
-					{
-						KeyNavigationAction action = KeyNavigationAction.Up;
-						uint newFocusedIndexUint = 0;
-						var newFocusedType = ElementType.ItemContainer;
-						bool isValidKey = false;
-						bool actionValidForSourceIndex = false;
-
-						TranslateKeyToKeyNavigationAction(key, out action, out isValidKey);
-						global::System.Diagnostics.Debug.Assert(isValidKey);
-						pPanel.GetTargetIndexFromNavigationAction(
-							lastFocusedIndex,
-							ElementType.ItemContainer,
-							action,
-							false, // !XboxUtility.IsGamepadNavigationDirection(originalKey),  /* allowWrap */
-							-1,  /* itemIndexHintForHeaderNavigation */
-							out newFocusedIndexUint,
-							out newFocusedType,
-							out actionValidForSourceIndex);
-
-						global::System.Diagnostics.Debug.Assert(newFocusedType == ElementType.ItemContainer);
-
-						if (actionValidForSourceIndex)
 						{
-							newFocusedIndex = (int)(newFocusedIndexUint);
+							KeyNavigationAction action = KeyNavigationAction.Up;
+							uint newFocusedIndexUint = 0;
+							var newFocusedType = ElementType.ItemContainer;
+							bool isValidKey = false;
+							bool actionValidForSourceIndex = false;
+
+							TranslateKeyToKeyNavigationAction(key, out action, out isValidKey);
+							global::System.Diagnostics.Debug.Assert(isValidKey);
+							pPanel.GetTargetIndexFromNavigationAction(
+								lastFocusedIndex,
+								ElementType.ItemContainer,
+								action,
+								false, // !XboxUtility.IsGamepadNavigationDirection(originalKey),  /* allowWrap */
+								-1,  /* itemIndexHintForHeaderNavigation */
+								out newFocusedIndexUint,
+								out newFocusedType,
+								out actionValidForSourceIndex);
+
+							global::System.Diagnostics.Debug.Assert(newFocusedType == ElementType.ItemContainer);
+
+							if (actionValidForSourceIndex)
+							{
+								newFocusedIndex = (int)(newFocusedIndexUint);
+							}
 						}
-					}
 						break;
 					default:
 						global::System.Diagnostics.Debug.Assert(false);
@@ -270,7 +270,7 @@ namespace Windows.UI.Xaml.Controls
 			pIsValidKey = false;
 			pNavAction = KeyNavigationAction.Up;
 
-			if (m_tpViewsGrid is {})
+			if (m_tpViewsGrid is { })
 			{
 				flowDirection = (m_tpViewsGrid as Grid).FlowDirection;
 			}
@@ -360,14 +360,15 @@ namespace Windows.UI.Xaml.Controls
 				return;
 			}
 
-			global::System.Diagnostics.Debug.Assert(spItemAsI is {});
-			spItem = (CalendarViewBaseItem) spItemAsI;
+			global::System.Diagnostics.Debug.Assert(spItemAsI is { });
+			spItem = (CalendarViewBaseItem)spItemAsI;
 
 			pFocused = spItem.FocusSelfOrChild(focusState);
 
 			return;
 		}
 
+#if false
 		// UIElement override for getting next tab stop on path from focus candidate element to root.
 		private void ProcessCandidateTabStopOverride(
 			DependencyObject pFocusedElement,
@@ -390,7 +391,7 @@ namespace Windows.UI.Xaml.Controls
 			// However the candidate is the first (or last if we shift+Tab) realized item in the Panel, we should use the last
 			// focused item to override the candidate (and ignore isBackward, i.e. Shift).
 
-			if (spCandidateAsCalendarViewBaseItem is {})
+			if (spCandidateAsCalendarViewBaseItem is { })
 			{
 				CalendarViewBaseItem spFocusedAsCalendarViewBaseItem = pFocusedElement as CalendarViewBaseItem;
 				if (spFocusedAsCalendarViewBaseItem is null)
@@ -399,7 +400,7 @@ namespace Windows.UI.Xaml.Controls
 					GetActiveGeneratorHost(out spHost);
 
 					var pScrollViewer = spHost.ScrollViewer;
-					if (pScrollViewer is {})
+					if (pScrollViewer is { })
 					{
 						KeyboardNavigationMode mode = KeyboardNavigationMode.Local;
 
@@ -418,7 +419,7 @@ namespace Windows.UI.Xaml.Controls
 							if (isAncestor)
 							{
 								var pPanel = spHost.Panel;
-								if (pPanel is {})
+								if (pPanel is { })
 								{
 									int index = -1;
 									DependencyObject spContainer;
@@ -437,7 +438,7 @@ namespace Windows.UI.Xaml.Controls
 
 									spContainer = pPanel.ContainerFromIndex(index);
 
-									global::System.Diagnostics.Debug.Assert(spContainer is {});
+									global::System.Diagnostics.Debug.Assert(spContainer is { });
 
 									ppNewTabStop = spContainer;
 									pIsCandidateTabStopOverridden = true;
@@ -449,6 +450,6 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 		}
-
+#endif
 	}
 }

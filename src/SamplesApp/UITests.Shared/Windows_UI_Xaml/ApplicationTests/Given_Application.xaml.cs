@@ -32,7 +32,7 @@ public sealed partial class Given_Application : Page
 	{
 		this.Log().LogInformation("Exiting event was triggered");
 	}
-	
+
 	public void OnForceExit()
 	{
 		CoreApplication.Exiting += CoreApplication_Exiting;

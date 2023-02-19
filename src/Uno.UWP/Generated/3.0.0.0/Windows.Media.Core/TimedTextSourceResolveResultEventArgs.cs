@@ -13,7 +13,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimedMetadataTrackError TimedTextSourceResolveResultEventArgs.Error is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimedMetadataTrackError TimedTextSourceResolveResultEventArgs.Error is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimedMetadataTrackError%20TimedTextSourceResolveResultEventArgs.Error");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<TimedMetadataTrack> TimedTextSourceResolveResultEventArgs.Tracks is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<TimedMetadataTrack> TimedTextSourceResolveResultEventArgs.Tracks is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CTimedMetadataTrack%3E%20TimedTextSourceResolveResultEventArgs.Tracks");
 			}
 		}
 		#endif

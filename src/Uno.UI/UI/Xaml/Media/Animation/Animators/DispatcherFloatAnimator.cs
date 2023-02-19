@@ -22,7 +22,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		protected override void DisableFrameReporting() => _timer.Stop();
 
 		protected override void SetStartFrameDelay(long delayMs) => _timer.Interval = TimeSpan.FromMilliseconds(delayMs);
-		protected override void SetAnimationFramesInterval() =>_timer.Interval = TimeSpan.FromSeconds(1d / _frameRate);
+		protected override void SetAnimationFramesInterval() => _timer.Interval = TimeSpan.FromSeconds(1d / _frameRate);
 
 		protected override float GetUpdatedValue(long frame, float from, float to) => (float)_easing.Ease(frame, from, to, Duration);
 	}

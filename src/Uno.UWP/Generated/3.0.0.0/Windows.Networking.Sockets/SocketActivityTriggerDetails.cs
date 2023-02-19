@@ -13,7 +13,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SocketActivityTriggerReason SocketActivityTriggerDetails.Reason is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SocketActivityTriggerReason SocketActivityTriggerDetails.Reason is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SocketActivityTriggerReason%20SocketActivityTriggerDetails.Reason");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Networking.Sockets
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SocketActivityInformation SocketActivityTriggerDetails.SocketInformation is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member SocketActivityInformation SocketActivityTriggerDetails.SocketInformation is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SocketActivityInformation%20SocketActivityTriggerDetails.SocketInformation");
 			}
 		}
 		#endif

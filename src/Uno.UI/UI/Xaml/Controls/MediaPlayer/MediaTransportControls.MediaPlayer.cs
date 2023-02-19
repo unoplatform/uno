@@ -1,4 +1,4 @@
-#if !HAS_UNO_WINUI && (__ANDROID__ || __IOS__ || NET461 || __MACOS__)
+#if __ANDROID__ || __IOS__ || NET461 || __MACOS__
 
 using System;
 using System.Timers;
@@ -17,7 +17,7 @@ namespace Windows.UI.Xaml.Controls
 		private Windows.Media.Playback.MediaPlayer _mediaPlayer;
 		private bool _isScrubbing;
 		private SerialDisposable _subscriptions = new SerialDisposable();
-		
+
 		internal void SetMediaPlayer(Windows.Media.Playback.MediaPlayer mediaPlayer)
 		{
 			UnbindMediaPlayer();
@@ -91,7 +91,7 @@ namespace Windows.UI.Xaml.Controls
 		private void OnPlaybackStateChanged(MediaPlaybackSession sender, object args)
 		{
 			var state = (MediaPlaybackState)args;
-			
+
 			switch (state)
 			{
 				case MediaPlaybackState.Opening:

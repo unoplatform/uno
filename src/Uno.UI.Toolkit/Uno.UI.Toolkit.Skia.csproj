@@ -14,7 +14,6 @@
 		<RootNamespace>Uno.UI.Toolkit</RootNamespace>
 		<Product>$(AssemblyName) ($(TargetFramework))</Product>
 		<DefaultLanguage>en-US</DefaultLanguage>
-		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>
@@ -51,11 +50,6 @@
 		</ProjectReference>
 		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Skia.csproj">
 		</ProjectReference>
-	</ItemGroup>
-
-	<ItemGroup>
-		<Page Remove="Themes\Generic.xaml" />
-		<Page Include="Themes\Generic.xaml" />
 	</ItemGroup>
 
 	<!-- Override existing target, this project cannot be published -->

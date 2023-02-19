@@ -13,7 +13,7 @@ namespace Windows.Media.SpeechRecognition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan SpeechContinuousRecognitionSession.AutoStopSilenceTimeout is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan SpeechContinuousRecognitionSession.AutoStopSilenceTimeout is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20SpeechContinuousRecognitionSession.AutoStopSilenceTimeout");
 			}
 			set
 			{
@@ -27,35 +27,35 @@ namespace Windows.Media.SpeechRecognition
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction StartAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction SpeechContinuousRecognitionSession.StartAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction SpeechContinuousRecognitionSession.StartAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20SpeechContinuousRecognitionSession.StartAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction StartAsync( global::Windows.Media.SpeechRecognition.SpeechContinuousRecognitionMode mode)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction SpeechContinuousRecognitionSession.StartAsync(SpeechContinuousRecognitionMode mode) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction SpeechContinuousRecognitionSession.StartAsync(SpeechContinuousRecognitionMode mode) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20SpeechContinuousRecognitionSession.StartAsync%28SpeechContinuousRecognitionMode%20mode%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction StopAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction SpeechContinuousRecognitionSession.StopAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction SpeechContinuousRecognitionSession.StopAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20SpeechContinuousRecognitionSession.StopAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction CancelAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction SpeechContinuousRecognitionSession.CancelAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction SpeechContinuousRecognitionSession.CancelAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20SpeechContinuousRecognitionSession.CancelAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction PauseAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction SpeechContinuousRecognitionSession.PauseAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction SpeechContinuousRecognitionSession.PauseAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20SpeechContinuousRecognitionSession.PauseAsync%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

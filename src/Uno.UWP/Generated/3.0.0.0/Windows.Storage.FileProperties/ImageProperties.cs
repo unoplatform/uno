@@ -13,7 +13,7 @@ namespace Windows.Storage.FileProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ImageProperties.Title is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ImageProperties.Title is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ImageProperties.Title");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Storage.FileProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint ImageProperties.Rating is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint ImageProperties.Rating is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20ImageProperties.Rating");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.Storage.FileProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset ImageProperties.DateTaken is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DateTimeOffset ImageProperties.DateTaken is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DateTimeOffset%20ImageProperties.DateTaken");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.Storage.FileProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ImageProperties.CameraModel is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ImageProperties.CameraModel is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ImageProperties.CameraModel");
 			}
 			set
 			{
@@ -69,7 +69,7 @@ namespace Windows.Storage.FileProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ImageProperties.CameraManufacturer is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string ImageProperties.CameraManufacturer is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ImageProperties.CameraManufacturer");
 			}
 			set
 			{
@@ -83,7 +83,7 @@ namespace Windows.Storage.FileProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint ImageProperties.Height is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint ImageProperties.Height is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20ImageProperties.Height");
 			}
 		}
 		#endif
@@ -93,7 +93,7 @@ namespace Windows.Storage.FileProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<string> ImageProperties.Keywords is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<string> ImageProperties.Keywords is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3Cstring%3E%20ImageProperties.Keywords");
 			}
 		}
 		#endif
@@ -103,7 +103,7 @@ namespace Windows.Storage.FileProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double? ImageProperties.Latitude is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double? ImageProperties.Latitude is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%3F%20ImageProperties.Latitude");
 			}
 		}
 		#endif
@@ -113,7 +113,7 @@ namespace Windows.Storage.FileProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double? ImageProperties.Longitude is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member double? ImageProperties.Longitude is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%3F%20ImageProperties.Longitude");
 			}
 		}
 		#endif
@@ -123,7 +123,7 @@ namespace Windows.Storage.FileProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PhotoOrientation ImageProperties.Orientation is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member PhotoOrientation ImageProperties.Orientation is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PhotoOrientation%20ImageProperties.Orientation");
 			}
 		}
 		#endif
@@ -133,7 +133,7 @@ namespace Windows.Storage.FileProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<string> ImageProperties.PeopleNames is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<string> ImageProperties.PeopleNames is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3Cstring%3E%20ImageProperties.PeopleNames");
 			}
 		}
 		#endif
@@ -143,7 +143,7 @@ namespace Windows.Storage.FileProperties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint ImageProperties.Width is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint ImageProperties.Width is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20ImageProperties.Width");
 			}
 		}
 		#endif
@@ -168,21 +168,21 @@ namespace Windows.Storage.FileProperties
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IDictionary<string, object>> RetrievePropertiesAsync( global::System.Collections.Generic.IEnumerable<string> propertiesToRetrieve)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<IDictionary<string, object>> ImageProperties.RetrievePropertiesAsync(IEnumerable<string> propertiesToRetrieve) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<IDictionary<string, object>> ImageProperties.RetrievePropertiesAsync(IEnumerable<string> propertiesToRetrieve) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CIDictionary%3Cstring%2C%20object%3E%3E%20ImageProperties.RetrievePropertiesAsync%28IEnumerable%3Cstring%3E%20propertiesToRetrieve%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction SavePropertiesAsync( global::System.Collections.Generic.IEnumerable<global::System.Collections.Generic.KeyValuePair<string, object>> propertiesToSave)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction ImageProperties.SavePropertiesAsync(IEnumerable<KeyValuePair<string, object>> propertiesToSave) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction ImageProperties.SavePropertiesAsync(IEnumerable<KeyValuePair<string, object>> propertiesToSave) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20ImageProperties.SavePropertiesAsync%28IEnumerable%3CKeyValuePair%3Cstring%2C%20object%3E%3E%20propertiesToSave%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction SavePropertiesAsync()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncAction ImageProperties.SavePropertiesAsync() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member IAsyncAction ImageProperties.SavePropertiesAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20ImageProperties.SavePropertiesAsync%28%29");
 		}
 		#endif
 		// Processing: Windows.Storage.FileProperties.IStorageItemExtraProperties

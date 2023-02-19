@@ -13,7 +13,7 @@ namespace Windows.Media.Core
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<MseSourceBuffer> MseSourceBufferList.Buffers is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<MseSourceBuffer> MseSourceBufferList.Buffers is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CMseSourceBuffer%3E%20MseSourceBufferList.Buffers");
 			}
 		}
 		#endif

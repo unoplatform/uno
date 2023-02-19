@@ -109,7 +109,7 @@ namespace UITests.Shared.Windows_Graphics_Display
 		}
 
 		private void RefreshDisplayInformation()
-		{			
+		{
 			var info = DisplayInfo.GetForCurrentView();
 			var properties = new PropertyInformation[]
 			{

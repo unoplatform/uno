@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.DataTransfer.ShareTarget
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string QuickLink.Title is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string QuickLink.Title is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20QuickLink.Title");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.ApplicationModel.DataTransfer.ShareTarget
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member RandomAccessStreamReference QuickLink.Thumbnail is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member RandomAccessStreamReference QuickLink.Thumbnail is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=RandomAccessStreamReference%20QuickLink.Thumbnail");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.ApplicationModel.DataTransfer.ShareTarget
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string QuickLink.Id is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string QuickLink.Id is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20QuickLink.Id");
 			}
 			set
 			{
@@ -55,7 +55,7 @@ namespace Windows.ApplicationModel.DataTransfer.ShareTarget
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<string> QuickLink.SupportedDataFormats is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<string> QuickLink.SupportedDataFormats is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3Cstring%3E%20QuickLink.SupportedDataFormats");
 			}
 		}
 		#endif
@@ -65,7 +65,7 @@ namespace Windows.ApplicationModel.DataTransfer.ShareTarget
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<string> QuickLink.SupportedFileTypes is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member IList<string> QuickLink.SupportedFileTypes is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3Cstring%3E%20QuickLink.SupportedFileTypes");
 			}
 		}
 		#endif

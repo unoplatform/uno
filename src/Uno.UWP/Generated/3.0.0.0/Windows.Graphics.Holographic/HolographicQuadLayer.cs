@@ -13,7 +13,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DirectXPixelFormat HolographicQuadLayer.PixelFormat is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DirectXPixelFormat HolographicQuadLayer.PixelFormat is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DirectXPixelFormat%20HolographicQuadLayer.PixelFormat");
 			}
 		}
 		#endif
@@ -23,7 +23,7 @@ namespace Windows.Graphics.Holographic
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Size HolographicQuadLayer.Size is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Size HolographicQuadLayer.Size is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Size%20HolographicQuadLayer.Size");
 			}
 		}
 		#endif

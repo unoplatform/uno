@@ -13,7 +13,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector2 Vector2NaturalMotionAnimation.InitialVelocity is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Vector2 Vector2NaturalMotionAnimation.InitialVelocity is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Vector2%20Vector2NaturalMotionAnimation.InitialVelocity");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector2? Vector2NaturalMotionAnimation.InitialValue is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Vector2? Vector2NaturalMotionAnimation.InitialValue is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Vector2%3F%20Vector2NaturalMotionAnimation.InitialValue");
 			}
 			set
 			{
@@ -41,7 +41,7 @@ namespace Windows.UI.Composition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector2? Vector2NaturalMotionAnimation.FinalValue is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Vector2? Vector2NaturalMotionAnimation.FinalValue is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Vector2%3F%20Vector2NaturalMotionAnimation.FinalValue");
 			}
 			set
 			{

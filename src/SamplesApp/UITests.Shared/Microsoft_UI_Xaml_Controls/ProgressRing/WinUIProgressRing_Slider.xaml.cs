@@ -23,10 +23,10 @@ namespace UITests.Microsoft_UI_Xaml_Controls.ProgressRing
 	/// </summary>
 	[Sample("Progress", "MUX")]
 	public sealed partial class WinUIProgressRing_Slider : Page
-    {
-        public WinUIProgressRing_Slider()
-        {
-            this.InitializeComponent();
-        }
-    }
+	{
+		public WinUIProgressRing_Slider()
+		{
+			this.InitializeComponent();
+		}
+	}
 }

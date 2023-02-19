@@ -112,7 +112,7 @@ namespace Microsoft.UI.Xaml.Controls
 			base.OnApplyTemplate();
 
 			// Find selection indicator
-			// Retrieve pointers to stable controls 
+			// Retrieve pointers to stable controls
 			//IControlProtected controlProtected = this;
 			m_helper.Init(this);
 
@@ -144,7 +144,7 @@ namespace Microsoft.UI.Xaml.Controls
 			else
 			{
 				// If the NVI is not prepared in an ItemPresenter, it will not have reference to SplitView. So check OnLoaded
-				// if it the reference has been manually set in NavigationViewItemBase::OnLoaded(). 
+				// if it the reference has been manually set in NavigationViewItemBase::OnLoaded().
 				Loaded -= OnLoaded;
 				Loaded += OnLoaded;
 			}
@@ -370,6 +370,7 @@ namespace Microsoft.UI.Xaml.Controls
 			UpdateVisualStateForChevron();
 		}
 
+#if false
 		private void ShowSelectionIndicator(bool visible)
 		{
 			var selectionIndicator = GetSelectionIndicator();
@@ -378,6 +379,7 @@ namespace Microsoft.UI.Xaml.Controls
 				selectionIndicator.Opacity = visible ? 1.0 : 0.0;
 			}
 		}
+#endif
 
 		private void UpdateVisualStateForIconAndContent(bool showIcon, bool showContent)
 		{
@@ -918,8 +920,8 @@ namespace Microsoft.UI.Xaml.Controls
 			var originalSource = e.OriginalSource as Control;
 			if (originalSource != null)
 			{
-				// It's used to support bluebar have difference appearance between focused and focused+selection. 
-				// For example, we can move the SelectionIndicator 3px up when focused and selected to make sure focus rectange doesn't override SelectionIndicator. 
+				// It's used to support bluebar have difference appearance between focused and focused+selection.
+				// For example, we can move the SelectionIndicator 3px up when focused and selected to make sure focus rectange doesn't override SelectionIndicator.
 				// If it's a pointer or programatic, no focus rectangle, so no action
 				var focusState = originalSource.FocusState;
 				if (focusState == FocusState.Keyboard)

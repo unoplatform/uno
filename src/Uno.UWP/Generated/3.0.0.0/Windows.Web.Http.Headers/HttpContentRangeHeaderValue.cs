@@ -13,7 +13,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string HttpContentRangeHeaderValue.Unit is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string HttpContentRangeHeaderValue.Unit is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20HttpContentRangeHeaderValue.Unit");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong? HttpContentRangeHeaderValue.FirstBytePosition is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ulong? HttpContentRangeHeaderValue.FirstBytePosition is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ulong%3F%20HttpContentRangeHeaderValue.FirstBytePosition");
 			}
 		}
 		#endif
@@ -37,7 +37,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong? HttpContentRangeHeaderValue.LastBytePosition is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ulong? HttpContentRangeHeaderValue.LastBytePosition is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ulong%3F%20HttpContentRangeHeaderValue.LastBytePosition");
 			}
 		}
 		#endif
@@ -47,7 +47,7 @@ namespace Windows.Web.Http.Headers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong? HttpContentRangeHeaderValue.Length is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ulong? HttpContentRangeHeaderValue.Length is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ulong%3F%20HttpContentRangeHeaderValue.Length");
 			}
 		}
 		#endif
@@ -84,21 +84,21 @@ namespace Windows.Web.Http.Headers
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public override string ToString()
 		{
-			throw new global::System.NotImplementedException("The member string HttpContentRangeHeaderValue.ToString() is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member string HttpContentRangeHeaderValue.ToString() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20HttpContentRangeHeaderValue.ToString%28%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Web.Http.Headers.HttpContentRangeHeaderValue Parse( string input)
 		{
-			throw new global::System.NotImplementedException("The member HttpContentRangeHeaderValue HttpContentRangeHeaderValue.Parse(string input) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member HttpContentRangeHeaderValue HttpContentRangeHeaderValue.Parse(string input) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=HttpContentRangeHeaderValue%20HttpContentRangeHeaderValue.Parse%28string%20input%29");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static bool TryParse( string input, out global::Windows.Web.Http.Headers.HttpContentRangeHeaderValue contentRangeHeaderValue)
 		{
-			throw new global::System.NotImplementedException("The member bool HttpContentRangeHeaderValue.TryParse(string input, out HttpContentRangeHeaderValue contentRangeHeaderValue) is not implemented in Uno.");
+			throw new global::System.NotImplementedException("The member bool HttpContentRangeHeaderValue.TryParse(string input, out HttpContentRangeHeaderValue contentRangeHeaderValue) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20HttpContentRangeHeaderValue.TryParse%28string%20input%2C%20out%20HttpContentRangeHeaderValue%20contentRangeHeaderValue%29");
 		}
 		#endif
 	}

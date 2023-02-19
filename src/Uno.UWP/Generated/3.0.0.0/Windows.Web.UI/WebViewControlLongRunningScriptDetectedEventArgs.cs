@@ -13,7 +13,7 @@ namespace Windows.Web.UI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool WebViewControlLongRunningScriptDetectedEventArgs.StopPageScriptExecution is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool WebViewControlLongRunningScriptDetectedEventArgs.StopPageScriptExecution is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20WebViewControlLongRunningScriptDetectedEventArgs.StopPageScriptExecution");
 			}
 			set
 			{
@@ -27,7 +27,7 @@ namespace Windows.Web.UI
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan WebViewControlLongRunningScriptDetectedEventArgs.ExecutionTime is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member TimeSpan WebViewControlLongRunningScriptDetectedEventArgs.ExecutionTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20WebViewControlLongRunningScriptDetectedEventArgs.ExecutionTime");
 			}
 		}
 		#endif
