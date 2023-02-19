@@ -726,7 +726,7 @@ namespace Uno.UWPSyncGenerator
 				var allProperties = GetAllMatchingPropertyMember(types, property);
 
 				if (ownerType.GetMembers(property.Name).OfType<IPropertySymbol>().Any(p =>
-					   p.Type.ToDisplayString() == property.Type.ToDisplayString()
+					   p.Type.ToDisplayString(NullableFlowState.None) == property.Type.ToDisplayString(NullableFlowState.None)
 					)
 					|| !IsNotUWPMapping(ownerType, property))
 				{
@@ -771,7 +771,7 @@ namespace Uno.UWPSyncGenerator
 		{
 			return GetNonGeneratedMembers(androidType, property.Name)
 								.OfType<IPropertySymbol>()
-								.Where(prop => prop.Parameters.Select(p => p.Type.ToDisplayString()).SequenceEqual(property.Parameters.Select(p => p.Type.ToDisplayString())) && prop.Type.ToDisplayString() == property.Type.ToDisplayString())
+								.Where(prop => prop.Parameters.Select(p => p.Type.ToDisplayString(NullableFlowState.None)).SequenceEqual(property.Parameters.Select(p => p.Type.ToDisplayString(NullableFlowState.None))) && prop.Type.ToDisplayString(NullableFlowState.None) == property.Type.ToDisplayString(NullableFlowState.None))
 								.FirstOrDefault();
 		}
 
