@@ -13,7 +13,7 @@ namespace Uno.UWPSyncGenerator
 {
 	abstract class Generator
 	{
-		private const string CSharpLangVersion = "11.0";
+		internal const string CSharpLangVersion = "11.0";
 
 		private const string net461Define = "NET461";
 		private const string AndroidDefine = "__ANDROID__";
