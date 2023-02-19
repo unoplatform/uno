@@ -107,7 +107,7 @@ namespace Uno.SourceGeneration.Host
 			var hostServices = new Microsoft.Build.Execution.HostServices();
 
 			// connect the host "callback" object with the host services, so we get called back with the exact inputs to the compiler task.
-			hostServices.RegisterHostObject(loadedProject.FullPath, "CoreCompile", "Csc", null);
+			hostServices.RegisterHostObject(loadedProject.FullPath, "CoreCompile", "Csc", hostObject: null);
 
 			var buildParameters = new Microsoft.Build.Execution.BuildParameters(loadedProject.ProjectCollection);
 
