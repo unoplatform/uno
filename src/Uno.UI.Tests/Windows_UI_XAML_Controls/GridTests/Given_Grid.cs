@@ -6,14 +6,17 @@ using System.Linq;
 using Windows.Foundation;
 using FluentAssertions;
 using FluentAssertions.Execution;
-using View = Windows.UI.Xaml.FrameworkElement;
 using Uno.UI.Tests.Windows_UI_XAML_Controls.GridTests.Controls;
 
 namespace Uno.UI.Tests.GridTests
 {
 	[TestClass]
-	public class Given_Grid : Context
+	public partial class Given_Grid : Context
 	{
+		private partial class View : FrameworkElement
+		{
+		}
+
 		[TestMethod]
 		public void When_Empty_And_MeasuredEmpty()
 		{

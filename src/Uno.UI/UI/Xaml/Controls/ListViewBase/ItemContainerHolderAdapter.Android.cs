@@ -36,7 +36,7 @@ namespace Uno.UI.Controls
 				var viewGroup = wrapper as ViewGroup;
 				if (viewGroup != null)
 				{
-					// This is here to avoid disabling the ItemClick event when an Item Template has a button 
+					// This is here to avoid disabling the ItemClick event when an Item Template has a button
 					// as any of its children.
 					viewGroup.DescendantFocusability = Android.Views.DescendantFocusability.BlockDescendants;
 				}
@@ -57,7 +57,7 @@ namespace Uno.UI.Controls
 			{
 				Windows.UI.Xaml.Application.Current.RaiseRecoverableUnhandledExceptionOrLog(e, this);
 
-				return new Windows.UI.Xaml.FrameworkElement();
+				return new Grid();
 			}
 		}
 

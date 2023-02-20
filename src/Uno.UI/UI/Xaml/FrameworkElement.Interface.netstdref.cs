@@ -32,7 +32,7 @@ namespace Windows.UI.Xaml
 
 		partial void Initialize();
 
-		public FrameworkElement()
+		protected FrameworkElement()
 		{
 			Initialize();
 		}

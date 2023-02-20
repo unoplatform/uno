@@ -4,14 +4,16 @@ using Windows.UI.Xaml.Controls;
 using System.Linq;
 using Windows.Foundation;
 using FluentAssertions;
-using View = Windows.UI.Xaml.FrameworkElement;
-using System;
 
 namespace Uno.UI.Tests.GridTests
 {
 	[TestClass]
-	public class GivenGrid_And_Alignment : Context
+	public partial class GivenGrid_And_Alignment : Context
 	{
+		private partial class View : FrameworkElement
+		{
+		}
+
 		[TestMethod]
 		public void When_One_Child_With_VerticalTopAlignment_and_Fixed_Height()
 		{
