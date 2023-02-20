@@ -9498,6 +9498,23 @@
 			<Member fullName="System.Void Windows.UI.Xaml.Controls.RelativePanel.SetAlignVerticalCenterWithPanel(Windows.UI.Xaml.UIElement view, System.Boolean value)" reason="Api alignments" />
 			<Member fullName="System.Object Windows.UI.Xaml.Controls.RelativePanel.GetAlignBottomWith(Windows.UI.Xaml.UIElement view)" reason="Api alignments" />
 			<Member fullName="System.Void Windows.UI.Xaml.Controls.RelativePanel.SetAlignBottomWith(Windows.UI.Xaml.UIElement view, System.Object value)" reason="Api alignments" />
+			<Member fullName="System.Object Windows.UI.Xaml.Controls.RelativePanel.GetAlignLeftWith(Windows.UI.Xaml.UIElement view)" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.RelativePanel.SetAlignLeftWith(Windows.UI.Xaml.UIElement view, System.Object value)" reason="Api alignments" />
+			<Member fullName="System.Object Windows.UI.Xaml.Controls.RelativePanel.GetAlignRightWith(Windows.UI.Xaml.UIElement view)" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.RelativePanel.SetAlignRightWith(Windows.UI.Xaml.UIElement view, System.Object value)" reason="Api alignments" />
+			<Member fullName="System.Object Windows.UI.Xaml.Controls.RelativePanel.GetAlignTopWith(Windows.UI.Xaml.UIElement view)" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.RelativePanel.SetAlignTopWith(Windows.UI.Xaml.UIElement view, System.Object value)" reason="Api alignments" />
+			<Member fullName="System.Object Windows.UI.Xaml.Controls.RelativePanel.GetAlignHorizontalCenterWith(Windows.UI.Xaml.UIElement view)" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.RelativePanel.SetAlignHorizontalCenterWith(Windows.UI.Xaml.UIElement view, System.Object value)" reason="Api alignments" />
+			<Member fullName="System.Object Windows.UI.Xaml.Controls.RelativePanel.GetAlignVerticalCenterWith(Windows.UI.Xaml.UIElement view)" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.RelativePanel.SetAlignVerticalCenterWith(Windows.UI.Xaml.UIElement view, System.Object value)" reason="Api alignments" />
+			<Member fullName="System.Object Windows.UI.Xaml.Controls.RelativePanel.GetAbove(Windows.UI.Xaml.UIElement view)" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.RelativePanel.SetAbove(Windows.UI.Xaml.UIElement view, System.Object value)" reason="Api alignments" />
+			<Member fullName="System.Object Windows.UI.Xaml.Controls.RelativePanel.GetBelow(Windows.UI.Xaml.UIElement view)" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.RelativePanel.SetBelow(Windows.UI.Xaml.UIElement view, System.Object value)" reason="Api alignments" />
+			<Member fullName="System.Object Windows.UI.Xaml.Controls.RelativePanel.GetLeftOf(Windows.UI.Xaml.UIElement view)" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.RelativePanel.SetLeftOf(Windows.UI.Xaml.UIElement view, System.Object value)" reason="Api alignments" />
+			<Member fullName="System.Object Windows.UI.Xaml.Controls.RelativePanel.GetRightOf(Windows.UI.Xaml.UIElement view)" reason="Api alignments" />
 		</Methods>
 	</IgnoreSet>
 
