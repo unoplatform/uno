@@ -1079,7 +1079,7 @@ namespace Windows.UI.Xaml
 		// Keep a list of inherited properties that have been updated so they can be reset.
 		HashSet<DependencyProperty> _updatedProperties = new HashSet<DependencyProperty>(DependencyPropertyComparer.Default);
 
-		private void OnParentPropertyChangedCallback(ManagedWeakReference sourceInstance, DependencyProperty parentProperty, DependencyPropertyChangedEventArgs args)
+		private void OnParentPropertyChangedCallback(ManagedWeakReference sourceInstance, DependencyProperty parentProperty, object? newValue)
 		{
 			var (localProperty, propertyDetails) = GetLocalPropertyDetails(parentProperty);
 
@@ -1096,7 +1096,7 @@ namespace Windows.UI.Xaml
 					_updatedProperties.Add(localProperty);
 				}
 
-				SetValue(localProperty, args.NewValue, DependencyPropertyValuePrecedences.Inheritance, propertyDetails);
+				SetValue(localProperty, newValue, DependencyPropertyValuePrecedences.Inheritance, propertyDetails);
 			}
 			else
 			{
@@ -1108,7 +1108,7 @@ namespace Windows.UI.Xaml
 				for (var storeIndex = 0; storeIndex < _childrenStores.Count; storeIndex++)
 				{
 					var child = _childrenStores[storeIndex];
-					child.OnParentPropertyChangedCallback(sourceInstance, parentProperty, args);
+					child.OnParentPropertyChangedCallback(sourceInstance, parentProperty, newValue);
 				}
 			}
 		}
@@ -1558,13 +1558,7 @@ namespace Windows.UI.Xaml
 				{
 					var prop = props[propertyIndex];
 
-					store.OnParentPropertyChangedCallback(instanceRef, prop, new DependencyPropertyChangedEventArgs(
-						prop,
-						null,
-						DependencyPropertyValuePrecedences.DefaultValue,
-						GetValue(prop),
-						DependencyPropertyValuePrecedences.Inheritance
-					));
+					store.OnParentPropertyChangedCallback(instanceRef, prop, GetValue(prop));
 				}
 			}
 
@@ -1618,15 +1612,9 @@ namespace Windows.UI.Xaml
 						store.OnParentPropertyChangedCallback(
 							sourceInstanceProperties.Value,
 							sourceInstanceProperties.Key,
-							new DependencyPropertyChangedEventArgs(
-								sourceInstanceProperties.Key,
-								null,
-								DependencyPropertyValuePrecedences.DefaultValue,
 
-								// Get the value from the parent that holds the master value
-								(sourceInstanceProperties.Value.Target as DependencyObject)?.GetValue(sourceInstanceProperties.Key),
-								DependencyPropertyValuePrecedences.Inheritance
-							)
+							// Get the value from the parent that holds the master value
+							(sourceInstanceProperties.Value.Target as DependencyObject)?.GetValue(sourceInstanceProperties.Key)
 						);
 					}
 
@@ -1938,7 +1926,8 @@ namespace Windows.UI.Xaml
 				{
 					childStore._parentUnregisteringInheritedProperties = true;
 				}
-				childStore.OnParentPropertyChangedCallback(instanceRef, property, eventArgs);
+
+				childStore.OnParentPropertyChangedCallback(instanceRef, property, eventArgs.NewValue);
 			}
 #if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
 			finally
