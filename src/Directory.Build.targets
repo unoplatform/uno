@@ -79,7 +79,7 @@
 	<PackageReference Update="Uno.Fonts.Fluent" Version="2.0.0" />
 	<PackageReference Update="System.ValueTuple" Version="4.5.0" />
 	<PackageReference Update="Xamarin.DuoSdk" Version="0.0.3.4" />
-	<PackageReference Update="Xamarin.UITest" Version="4.1.0" />
+	<PackageReference Update="Xamarin.UITest" Version="4.1.1" />
 	<PackageReference Update="System.Numerics.Vectors" Version="4.5.0" />
 
 	<PackageReference Update="SkiaSharp.Views" Version="2.88.3" />
