@@ -9159,7 +9159,10 @@
 			<Member fullName="Windows.Foundation.TypedEventHandler`2&lt;Microsoft.UI.Xaml.FrameworkElement,Microsoft.UI.Xaml.DataContextChangedEventArgs&gt; Microsoft.UI.Xaml.Controls.ElementFactory::DataContextChanged" reason="Not present in WinAppSDK 1.2" />
 			<Member fullName="Windows.Foundation.TypedEventHandler`2&lt;Windows.UI.Xaml.Controls.CalendarDatePicker,Windows.UI.Xaml.Controls.CalendarDatePickerDateChangedEventArgs&gt; Windows.UI.Xaml.Controls.CalendarDatePicker::_dateChanged" reason="Not in Windows" />
 		</Events>
-		<Fields />
+		<Fields>
+			<Member fullName="System.Runtime.InteropServices.NFloat Uno.UI.ViewHelper::MainScreenScale" reason="Api alignments" />
+			<Member fullName="System.Boolean Uno.UI.ViewHelper::IsRetinaDisplay" reason="Api alignments" />
+		</Fields>
 		<Properties>
 			<Member fullName="Microsoft.UI.Windowing.AppWindowConfiguration Microsoft.UI.Windowing.AppWindow::Configuration()" reason="Not present in WinAppSDK 1.2" />
 			<Member fullName="System.Boolean Microsoft.UI.Windowing.AppWindowPresenter::DoNotActivateWindow()" reason="Not present in WinAppSDK 1.2" />
@@ -9481,6 +9484,20 @@
 			<Member fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.PersonPicture.get_IsGroupProperty()" reason="Moved to MUXC" />
 			<Member fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.PersonPicture.get_PreferSmallImageProperty()" reason="Moved to MUXC" />
 			<Member fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Controls.PersonPicture.get_ProfilePictureProperty()" reason="Moved to MUXC" />
+			<Member fullName="System.Boolean Windows.UI.Xaml.Controls.RelativePanel.GetAlignBottomWithPanel(Windows.UI.Xaml.UIElement view)" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.RelativePanel.SetAlignBottomWithPanel(Windows.UI.Xaml.UIElement view, System.Boolean value)" reason="Api alignments" />
+			<Member fullName="System.Boolean Windows.UI.Xaml.Controls.RelativePanel.GetAlignLeftWithPanel(Windows.UI.Xaml.UIElement view)" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.RelativePanel.SetAlignLeftWithPanel(Windows.UI.Xaml.UIElement view, System.Boolean value)" reason="Api alignments" />
+			<Member fullName="System.Boolean Windows.UI.Xaml.Controls.RelativePanel.GetAlignRightWithPanel(Windows.UI.Xaml.UIElement view)" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.RelativePanel.SetAlignRightWithPanel(Windows.UI.Xaml.UIElement view, System.Boolean value)" reason="Api alignments" />
+			<Member fullName="System.Boolean Windows.UI.Xaml.Controls.RelativePanel.GetAlignTopWithPanel(Windows.UI.Xaml.UIElement view)" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.RelativePanel.SetAlignTopWithPanel(Windows.UI.Xaml.UIElement view, System.Boolean value)" reason="Api alignments" />
+			<Member fullName="System.Boolean Windows.UI.Xaml.Controls.RelativePanel.GetAlignHorizontalCenterWithPanel(Windows.UI.Xaml.UIElement view)" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.RelativePanel.SetAlignHorizontalCenterWithPanel(Windows.UI.Xaml.UIElement view, System.Boolean value)" reason="Api alignments" />
+			<Member fullName="System.Boolean Windows.UI.Xaml.Controls.RelativePanel.GetAlignVerticalCenterWithPanel(Windows.UI.Xaml.UIElement view)" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.RelativePanel.SetAlignVerticalCenterWithPanel(Windows.UI.Xaml.UIElement view, System.Boolean value)" reason="Api alignments" />
+			<Member fullName="System.Object Windows.UI.Xaml.Controls.RelativePanel.GetAlignBottomWith(Windows.UI.Xaml.UIElement view)" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.RelativePanel.SetAlignBottomWith(Windows.UI.Xaml.UIElement view, System.Object value)" reason="Api alignments" />
 		</Methods>
 	</IgnoreSet>
 
