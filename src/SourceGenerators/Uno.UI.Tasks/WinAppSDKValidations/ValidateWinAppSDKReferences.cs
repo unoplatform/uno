@@ -35,29 +35,32 @@ public class ValidateWinAppSDKReferences_v0 : Microsoft.Build.Utilities.Task
 
 			Dictionary<string, string> projectAdditionalProperties = new(StringComparer.OrdinalIgnoreCase);
 
-			foreach (var propertyElement in targetFrameworkElement.Elements())
+			if (targetFrameworkElement is not null)
 			{
-				projectAdditionalProperties[propertyElement.Name.LocalName] = propertyElement.Value;
-			}
+				foreach (var propertyElement in targetFrameworkElement.Elements())
+				{
+					projectAdditionalProperties[propertyElement.Name.LocalName] = propertyElement.Value;
+				}
 
-			if (projectAdditionalProperties.TryGetValue("_IsUnoPlatform", out var isUnoPlatformValue)
-				&& bool.TryParse(isUnoPlatformValue, out bool isUnoPlatform)
-				&& isUnoPlatform)
-			{
-				Log.LogError(
-					subcategory: null,
-					errorCode: "UNOB0002",
-					helpKeyword: null,
-					file: null,
-					lineNumber: 0,
-					columnNumber: 0,
-					endLineNumber: 0,
-					endColumnNumber: 0,
-					message: "Project {0} contains a reference to Uno Platform but does not contain a WinAppSDK compatible target framework. https://aka.platform.uno/UNOB0002",
-					messageArgs: project.ItemSpec
-				);
+				if (projectAdditionalProperties.TryGetValue("_IsUnoPlatform", out var isUnoPlatformValue)
+					&& bool.TryParse(isUnoPlatformValue, out bool isUnoPlatform)
+					&& isUnoPlatform)
+				{
+					Log.LogError(
+						subcategory: null,
+						errorCode: "UNOB0002",
+						helpKeyword: null,
+						file: null,
+						lineNumber: 0,
+						columnNumber: 0,
+						endLineNumber: 0,
+						endColumnNumber: 0,
+						message: "Project {0} contains a reference to Uno Platform but does not contain a WinAppSDK compatible target framework. https://aka.platform.uno/UNOB0002",
+						messageArgs: project.ItemSpec
+					);
 
-				return false;
+					return false;
+				}
 			}
 		}
 
