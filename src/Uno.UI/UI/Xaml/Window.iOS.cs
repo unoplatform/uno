@@ -54,26 +54,26 @@ namespace Windows.UI.Xaml
 			_orientationRegistration = UIApplication
 				.Notifications
 				.ObserveDidChangeStatusBarOrientation(
-					(sender, args) => RaiseNativeSizeChanged(ViewHelper.GetScreenSize())
+					(sender, args) => RaiseNativeSizeChanged(ViewHelper.GetMainWindowSize())
 				);
 
 			_orientationRegistration = UIApplication
 				.Notifications
 				.ObserveDidChangeStatusBarFrame(
-					(sender, args) => RaiseNativeSizeChanged(ViewHelper.GetScreenSize())
+					(sender, args) => RaiseNativeSizeChanged(ViewHelper.GetMainWindowSize())
 				);
 
 			_nativeWindow.FrameChanged +=
-				() => RaiseNativeSizeChanged(ViewHelper.GetScreenSize());
+				() => RaiseNativeSizeChanged(ViewHelper.GetMainWindowSize());
 
 			_mainController.VisibleBoundsChanged +=
-				() => RaiseNativeSizeChanged(ViewHelper.GetScreenSize());
+				() => RaiseNativeSizeChanged(ViewHelper.GetMainWindowSize());
 
 			var statusBar = StatusBar.GetForCurrentView();
-			statusBar.Showing += (o, e) => RaiseNativeSizeChanged(ViewHelper.GetScreenSize());
-			statusBar.Hiding += (o, e) => RaiseNativeSizeChanged(ViewHelper.GetScreenSize());
+			statusBar.Showing += (o, e) => RaiseNativeSizeChanged(ViewHelper.GetMainWindowSize());
+			statusBar.Hiding += (o, e) => RaiseNativeSizeChanged(ViewHelper.GetMainWindowSize());
 
-			RaiseNativeSizeChanged(ViewHelper.GetScreenSizeInternal(this));
+			RaiseNativeSizeChanged(ViewHelper.GetWindowSize(this));
 		}
 
 		partial void InternalActivate()
