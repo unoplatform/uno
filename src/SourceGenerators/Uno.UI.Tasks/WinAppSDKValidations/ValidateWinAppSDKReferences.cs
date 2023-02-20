@@ -14,14 +14,6 @@ namespace Uno.UI.Tasks.WinAppSDKValidations;
 /// </summary>
 public class ValidateWinAppSDKReferences_v0 : Microsoft.Build.Utilities.Task
 {
-	private const MessageImportance DefaultLogMessageLevel
-
-#if DEBUG
-		= MessageImportance.High;
-#else
-		= MessageImportance.Low;
-#endif
-
 	[Required]
 	public ITaskItem[] ReferencedProjects { get; set; } = Array.Empty<ITaskItem>();
 
