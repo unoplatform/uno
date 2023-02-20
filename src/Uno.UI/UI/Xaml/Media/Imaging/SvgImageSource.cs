@@ -112,7 +112,7 @@ public partial class SvgImageSource : ImageSource
 #endif
 		}
 
-		return Foundation.AsyncOperation.FromTask(SetSourceAsync);
+		return AsyncOperation.FromTask(SetSourceAsync);
 	}
 
 #if !__NETSTD__
