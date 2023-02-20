@@ -7,7 +7,7 @@ uid: Build.Solution.error-codes
 
 This error code means that a project has determined what both `Uno.WinUI` and `Uno.UI` packages are referenced.
 
-To fix this issue, you may be explicitly referencing `Uno.UI` and `Uno.WinUI` in your `csproj`, or you may be referencing a NuGet package which is incompatible with your current project's configuration.
+To fix this issue, you may be explicitly referencing `Uno.UI` and `Uno.WinUI` in your `csproj`, or you may be referencing a NuGet package that is incompatible with your current project's configuration.
 
 For instance, if your project references `Uno.WinUI`, and you try to reference `SkiaSharp.View.Uno`, you will get this error. To fix it, you'll need to reference `SkiaSharp.View.Uno.WinUI` instead.
 
