@@ -518,7 +518,7 @@ namespace Uno.Xaml
 							atts.Add (r.LocalName, r.Value);
 							continue;
 						}
-						if (r.NamespaceURI.StartsWith("using:", StringComparison.Ordinal)) {
+						if (r.NamespaceURI.StartsWith("using:", StringComparison.Ordinal) || r.NamespaceURI.StartsWith("#using:", StringComparison.Ordinal)) {
 							atts.Add (r.Name, r.Value);
 							continue;
 						}
@@ -573,7 +573,7 @@ namespace Uno.Xaml
 					}
 					else
 					{
-						sti.Members.Add(new Pair(XamlMember.FromUnknown(p.Key, r.NamespaceURI, xt), p.Value));
+						sti.Members.Add(new Pair(XamlMember.FromUnknown(aname, r.NamespaceURI, xt), p.Value));
 					}
 				}
 			}
