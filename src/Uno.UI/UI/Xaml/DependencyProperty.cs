@@ -226,7 +226,7 @@ namespace Windows.UI.Xaml
 
 				ForceInitializeTypeConstructor(forType);
 
-				metadata = _metadata.FindOrCreate(forType, () => GetMetadata(baseType));
+				metadata = _metadata.FindOrCreate(forType, baseType, this);
 			}
 
 			return metadata;
