@@ -2,10 +2,9 @@
 
 using System;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
+using System.Linq;
 using System.Xml.Linq;
 using Microsoft.Build.Framework;
-using Microsoft.Build.Tasks;
 
 namespace Uno.UI.Tasks.WinAppSDKValidations;
 
@@ -31,7 +30,12 @@ public class ValidateWinAppSDKReferences_v0 : Microsoft.Build.Utilities.Task
 			}
 
 			var additionalPropertiesXml = XElement.Parse(project.GetMetadata("AdditionalPropertiesFromProject"));
-			var targetFrameworkElement = additionalPropertiesXml.Element(nearestTargetFramework);
+
+			XElement targetFrameworkElement =
+				additionalPropertiesXml
+					.Elements()
+					.Where(el => el.HasAttributes && el.FirstAttribute.Value.Equals(nearestTargetFramework))
+					.Single();
 
 			Dictionary<string, string> projectAdditionalProperties = new(StringComparer.OrdinalIgnoreCase);
 
