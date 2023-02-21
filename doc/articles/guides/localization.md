@@ -76,7 +76,7 @@ This guide will walk you through the necessary steps to localize an Uno Platform
         {
             var culture = new System.Globalization.CultureInfo("fr");
 
-            Windows.Globalization.ApplicationLanguages.PrimaryLanguageOverride = culture.IetfLanguageTag;
+            Windows.Globalization.ApplicationLanguages.PrimaryLanguageOverride = culture.TwoLetterISOLanguageName;
         }
         ```
 
