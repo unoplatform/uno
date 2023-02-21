@@ -71,7 +71,6 @@ namespace Windows.UI.Core
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreIndependentInputSourceController", "void CoreIndependentInputSourceController.Dispose()");
 		}
 		#endif
-
 		// These methods are commented out as they reference Composition namespace which would cause circular reference.
 		/*
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
