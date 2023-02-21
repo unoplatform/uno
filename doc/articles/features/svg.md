@@ -20,7 +20,8 @@ To use SVG, install the following packages into the iOS, macOS, Mac Catalyst, An
 > [!NOTE]
 > The `Uno.[UI|WinUI].Svg` package is not needed for WebAssembly.
 
-When installed, you can display any SVG image in `Image` by referencing it from the source property. For example:
+Add the SVG Image into the shared project and make sure that the build action is set to Content.
+Now, you can display the SVG image in `Image` by referencing it from the source property. For example:
 
 ```xml
 <Image Source="ms-appx:///Assets/test.svg" Stretch="UniformToFill" Width="100" Height="100" />
