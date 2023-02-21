@@ -295,6 +295,7 @@
 		<Task>
 			<Reference Include="System.Xml" />
 			<Using Namespace="System" />
+			<Using Namespace="System.Text" />
 			<Using Namespace="System.Text.RegularExpressions" />
 			<Using Namespace="System.Linq" />
 			<Using Namespace="System.IO" />
@@ -384,7 +385,7 @@
 							}
 						}
 
-						File.WriteAllText(file, s);
+						File.WriteAllText(file, s, Encoding.UTF8);
 
 					}
 
@@ -435,7 +436,7 @@
 						var filePath = Path.GetDirectoryName(file);
 						var updatedFileName = fileName.Replace(SourceName, TargetName);
 
-						File.WriteAllText(file, s);
+						File.WriteAllText(file, s, Encoding.UTF8);
 
 						if(updatedFileName != fileName)
 						{
