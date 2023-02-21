@@ -92,7 +92,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			// Attributes
 			public const string ContentPropertyAttribute = Markup + ".ContentPropertyAttribute";
 			public const string CreateFromStringAttribute = Metadata + ".CreateFromStringAttribute";
-			public const string BindableAttribute = Namespaces.Data + ".BindableAttribute";
 			public const string NotImplementedAttribute = "Uno.NotImplementedAttribute";
 
 			// Text

@@ -39,7 +39,6 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 
 			private readonly Dictionary<INamedTypeSymbol, GeneratedTypeInfo> _typeMap = new Dictionary<INamedTypeSymbol, GeneratedTypeInfo>();
 			private readonly Dictionary<string, (string type, List<string> members)> _substitutions = new Dictionary<string, (string type, List<string> members)>();
-			private INamedTypeSymbol? _bindableAttributeSymbol;
 			private ITypeSymbol? _dependencyPropertySymbol;
 			private INamedTypeSymbol? _dependencyObjectSymbol;
 			private INamedTypeSymbol? _javaObjectSymbol;
@@ -85,7 +84,6 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 
 						_defaultNamespace = context.GetMSBuildPropertyValue("RootNamespace");
 
-						_bindableAttributeSymbol = context.Compilation.GetTypeByMetadataName(XamlConstants.Types.BindableAttribute);
 						_dependencyPropertySymbol = context.Compilation.GetTypeByMetadataName(XamlConstants.Types.DependencyProperty);
 						_dependencyObjectSymbol = context.Compilation.GetTypeByMetadataName(XamlConstants.Types.DependencyObject);
 
@@ -141,7 +139,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 						where
 							!type.IsGenericType
 							&& !type.IsAbstract
-							&& type.FindAttributeFlattened(_bindableAttributeSymbol) != null
+							&& type.GetAllAttributes().Any(a => a.AttributeClass?.Name == "BindableAttribute")
 							&& IsValidProvider(type)
 						select type;
 
