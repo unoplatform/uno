@@ -27,6 +27,25 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls
 		public int AddIntCallCount;
 		public int AddDoubleCallCount;
 
+		internal static readonly Class Class;
+
+		static Functions_Control()
+		{
+			Class = new Class()
+			{
+				SubClass1 = new SubClass1()
+				{
+					SubClass2 = new SubClass2()
+					{
+						SubClass3 = new SubClass3()
+						{
+							Message = "Hello world!"
+						}
+					}
+				}
+			};
+		}
+
 		public Functions_Control()
 		{
 			this.InitializeComponent();
@@ -109,5 +128,22 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls
 		public static int PublicStaticProperty => 47;
 
 		public const int PublicConstField = 48;
+	}
+
+	internal class Class
+	{
+		public SubClass1 SubClass1 { get; set; }
+	}
+	internal class SubClass1
+	{
+		public SubClass2 SubClass2 { get; set; }
+	}
+	internal class SubClass2
+	{
+		public SubClass3 SubClass3 { get; set; }
+	}
+	internal class SubClass3
+	{
+		public string Message { get; set; }
 	}
 }
