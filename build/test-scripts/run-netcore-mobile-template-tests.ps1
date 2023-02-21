@@ -128,5 +128,5 @@ $assetsCount = Get-ChildItem MyUnoLib2Extract\ -Filter MyTestAsset01.txt -Recurs
 #if ($assetsCount -ne 6) # Restore when mobile validation is available
 if ($assetsCount -ne 2)
 {
-    throw "Not enough assets in the package."
+    throw "Not enough assets in the package. Found: " + $assetsCount
 }
