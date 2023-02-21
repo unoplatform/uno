@@ -465,20 +465,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Numerics.Vector3 Translation
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Vector3 UIElement.Translation is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Vector3%20UIElement.Translation");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.UIElement", "Vector3 UIElement.Translation");
-			}
-		}
-		#endif
+		// Skipping already declared property Translation
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::System.Numerics.Vector3 CenterPoint
