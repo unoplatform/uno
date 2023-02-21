@@ -72,7 +72,7 @@ namespace Uno.UI.Skia.Platform
 		}
 
 		private static bool _extensionsRegistered;
-		private UnoWpfRenderer _renderer;
+		private IWpfRenderer? _renderer;
 		private HostPointerHandler? _hostPointerHandler;
 
 		internal static void RegisterExtensions()
@@ -109,6 +109,12 @@ namespace Uno.UI.Skia.Platform
 
 		public static WpfHost? Current => _current;
 
+		/// <summary>
+		/// Gets or sets the current Skia Render surface type.
+		/// </summary>
+		/// <remarks>If <c>null</c>, the host will try to determine the most compatible mode.</remarks>
+		public RenderSurfaceType? RenderSurfaceType { get; set; }
+
 		internal WpfCanvas? NativeOverlayLayer => _nativeOverlayLayer;
 
 		/// <summary>
@@ -134,7 +140,8 @@ namespace Uno.UI.Skia.Platform
 
 			Windows.UI.Core.CoreDispatcher.DispatchOverride = d => dispatcher.BeginInvoke(d);
 			Windows.UI.Core.CoreDispatcher.HasThreadAccessOverride = dispatcher.CheckAccess;
-			_renderer = new UnoWpfRenderer(this);
+
+			InitializeRenderer();
 
 			WpfApplication.Current.Activated += Current_Activated;
 			WpfApplication.Current.Deactivated += Current_Deactivated;
@@ -153,6 +160,26 @@ namespace Uno.UI.Skia.Platform
 
 			CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRootSet += OnCoreWindowContentRootSet;
 			RegisterForBackgroundColor();
+		}
+
+		private void InitializeRenderer()
+		{
+			if (RenderSurfaceType is null)
+			{
+				RenderSurfaceType = Skia.RenderSurfaceType.OpenGL;
+			}
+
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().Info($"Using {RenderSurfaceType}");
+			}
+
+			_renderer = RenderSurfaceType switch
+			{
+				Skia.RenderSurfaceType.Software => new SoftwareWpfRenderer(this),
+				Skia.RenderSurfaceType.OpenGL => new OpenGLWpfRenderer(this),
+				_ => throw new InvalidOperationException($"Render Surface type {RenderSurfaceType} is not supported")
+			};
 		}
 
 		private void UpdateWindowPropertiesFromPackage()
@@ -198,7 +225,10 @@ namespace Uno.UI.Skia.Platform
 			{
 				if (WinUI.Window.Current.Background is WinUI.Media.SolidColorBrush brush)
 				{
-					_renderer.BackgroundColor = brush.Color;
+					if (_renderer is not null)
+					{
+						_renderer.BackgroundColor = brush.Color;
+					}
 				}
 				else
 				{
@@ -312,6 +342,8 @@ namespace Uno.UI.Skia.Platform
 
 		private void WpfHost_Loaded(object sender, RoutedEventArgs e)
 		{
+			_renderer?.Initialize();
+
 			WinUI.Window.Current.OnNativeSizeChanged(new Windows.Foundation.Size(ActualWidth, ActualHeight));
 
 			// Avoid dotted border on focus.
@@ -342,13 +374,14 @@ namespace Uno.UI.Skia.Platform
 		}
 
 		[Obsolete("It will be removed in the next major release.")]
-		public SKSize CanvasSize => _renderer.CanvasSize;
+		public SKSize CanvasSize
+			=> _renderer?.CanvasSize ?? SKSize.Empty;
 
 		protected override void OnRender(DrawingContext drawingContext)
 		{
 			base.OnRender(drawingContext);
 
-			_renderer.Render(drawingContext);
+			_renderer?.Render(drawingContext);
 		}
 
 		private void InvalidateOverlays()
