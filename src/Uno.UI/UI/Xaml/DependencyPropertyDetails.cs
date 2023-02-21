@@ -42,7 +42,7 @@ namespace Windows.UI.Xaml
 
 		public void Dispose()
 		{
-			CallbackManager.Dispose();
+			_callbackManager?.Dispose();
 
 			if (_stack != null)
 			{
