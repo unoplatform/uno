@@ -8,6 +8,7 @@ using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.DataBinding;
+using Uno.UI.Xaml.Core;
 using Windows.Foundation;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -57,6 +58,12 @@ namespace Windows.UI.Xaml.Controls
 
 		private Size CalculateDialogAvailableSize(Size availableSize)
 		{
+			// Skip calculation if in the context of Uno Islands.
+			if (CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRoot is null)
+			{
+				return availableSize;
+			}
+
 			var visibleBounds = ApplicationView.GetForCurrentView().TrueVisibleBounds;
 
 			if (availableSize.Width > visibleBounds.Width)
@@ -73,7 +80,15 @@ namespace Windows.UI.Xaml.Controls
 
 		private Rect CalculateDialogPlacement(Size desiredSize, Size finalSize)
 		{
-			var visibleBounds = ApplicationView.GetForCurrentView().TrueVisibleBounds;
+			Rect visibleBounds;
+			if (CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRoot is null)
+			{
+				visibleBounds = XamlRoot?.Bounds ?? new Rect(0, 0, finalSize.Width, finalSize.Height);
+			}
+			else
+			{
+				visibleBounds = ApplicationView.GetForCurrentView().TrueVisibleBounds;
+			}
 
 			var maximumWidth = Math.Min(visibleBounds.Width, finalSize.Width);
 			var maximumHeight = Math.Min(visibleBounds.Height, finalSize.Height);

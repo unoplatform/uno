@@ -85,7 +85,7 @@ public partial class Popup
 			{
 #if !HAS_UNO_WINUI
 				// In UWP, XamlRoot is set automatically to CoreWindow XamlRoot if not set beforehand.
-				if (XamlRoot is null)
+				if (XamlRoot is null && Child.XamlRoot is null)
 				{
 					XamlRoot = CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRoot.XamlRoot;
 				}
@@ -94,7 +94,7 @@ public partial class Popup
 #if !__SKIA__ // The OpenPopup method should be moved out of Window in general https://github.com/unoplatform/uno/issues/8978
 				_closePopup.Disposable = Window.Current.OpenPopup(this);
 #else
-				var currentXamlRoot = XamlRoot ?? CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRoot.XamlRoot;
+				var currentXamlRoot = XamlRoot ?? Child.XamlRoot ?? CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRoot.XamlRoot;
 				_closePopup.Disposable = currentXamlRoot?.OpenPopup(this);
 #endif
 				PopupPanel.Visibility = Visibility.Visible;
