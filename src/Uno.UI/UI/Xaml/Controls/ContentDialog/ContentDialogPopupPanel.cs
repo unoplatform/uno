@@ -3,16 +3,15 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.DataBinding;
-using Uno.UI.Xaml.Core;
 using Windows.Foundation;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Media;
+using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -59,7 +58,7 @@ namespace Windows.UI.Xaml.Controls
 		private Size CalculateDialogAvailableSize(Size availableSize)
 		{
 			// Skip calculation if in the context of Uno Islands.
-			if (CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRoot is null)
+			if (WinUICoreServices.Instance.ContentRootCoordinator.CoreWindowContentRoot is null)
 			{
 				return availableSize;
 			}
@@ -81,7 +80,7 @@ namespace Windows.UI.Xaml.Controls
 		private Rect CalculateDialogPlacement(Size desiredSize, Size finalSize)
 		{
 			Rect visibleBounds;
-			if (CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRoot is null)
+			if (WinUICoreServices.Instance.ContentRootCoordinator.CoreWindowContentRoot is null)
 			{
 				visibleBounds = XamlRoot?.Bounds ?? new Rect(0, 0, finalSize.Width, finalSize.Height);
 			}
