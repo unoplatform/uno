@@ -160,23 +160,5 @@ namespace Windows.UI.Xaml.Documents
 
 			return new(skTypeFace, hbFont, hbFace);
 		}
-
-		/// <summary>
-		/// Apply a workaround for https://github.com/mono/SkiaSharp/issues/2113
-		/// </summary>
-		public static void ApplyHarfbuzzWorkaround()
-		{
-			// HarfBuzzSharp.Font.SetFunctionsOpenType() needs to be initialized before GtkSharp is initialized
-			// to avoid libHarfBuzzSharp's own static library to hook onto
-			// the system implementation of libHarfBuzzSharp.
-			var font = GetFont(null, FontWeights.Normal, FontStretch.Normal, FontStyle.Normal);
-
-			using HarfBuzzSharp.Buffer buffer = new();
-			buffer.ContentType = ContentType.Unicode;
-			buffer.GuessSegmentProperties();
-
-			// Force a font loading by shaping a buffer.
-			font.Font.Shape(buffer);
-		}
 	}
 }

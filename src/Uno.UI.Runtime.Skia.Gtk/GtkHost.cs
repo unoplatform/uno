@@ -33,10 +33,12 @@ using Uno.Disposables;
 using System.Collections.Generic;
 using Uno.Extensions.ApplicationModel.Core;
 using Windows.ApplicationModel;
+using System.Runtime.InteropServices;
+using System.Reflection;
 
 namespace Uno.UI.Runtime.Skia
 {
-	public class GtkHost : ISkiaHost
+	public partial class GtkHost : ISkiaHost
 	{
 		private const int UnoThemePriority = 800;
 
@@ -85,7 +87,7 @@ namespace Uno.UI.Runtime.Skia
 
 		public void Run()
 		{
-			Windows.UI.Xaml.Documents.Inline.ApplyHarfbuzzWorkaround();
+			PreloadHarfBuzz();
 
 			if (!InitializeGtk())
 			{
@@ -140,6 +142,7 @@ namespace Uno.UI.Runtime.Skia
 
 			Gtk.Application.Run();
 		}
+
 
 		private bool InitializeGtk()
 		{
