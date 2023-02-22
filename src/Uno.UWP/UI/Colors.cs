@@ -453,7 +453,7 @@ namespace Windows.UI
 		public static Color DarkOrchid => _darkOrchid ??= FromInteger(unchecked((int)0xFF9932CC));
 		public static Color DarkRed => _darkRed ??= FromInteger(unchecked((int)0xFF8B0000));
 		public static Color DarkSalmon => _darkSalmon ??= FromInteger(unchecked((int)0xFFE9967A));
-		public static Color DarkSeaGreen => _darkSeaGreen ??= FromInteger(unchecked((int)0xFF8FBC8B));
+		public static Color DarkSeaGreen => _darkSeaGreen ??= FromInteger(unchecked((int)0xFF8FBC8F));
 		public static Color DarkSlateBlue => _darkSlateBlue ??= FromInteger(unchecked((int)0xFF483D8B));
 		public static Color DarkSlateGray => _darkSlateGray ??= FromInteger(unchecked((int)0xFF2F4F4F));
 		public static Color DarkTurquoise => _darkTurquoise ??= FromInteger(unchecked((int)0xFF00CED1));
