@@ -171,7 +171,7 @@ namespace Uno.UI.Skia.Platform
 
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
-				this.Log().Info($"Using {RenderSurfaceType}");
+				this.Log().Debug($"Using {RenderSurfaceType} rendering");
 			}
 
 			_renderer = RenderSurfaceType switch
@@ -342,7 +342,21 @@ namespace Uno.UI.Skia.Platform
 
 		private void WpfHost_Loaded(object sender, RoutedEventArgs e)
 		{
-			_renderer?.Initialize();
+			if (_renderer is not null && !_renderer.Initialize())
+			{
+				// OpenGL initialization failed, fallback to software rendering
+				// This may happen on headless systems or containers.
+
+				if (this.Log().IsEnabled(LogLevel.Warning))
+				{
+					this.Log().Warn($"OpenGL failed to initialize, using software rendering");
+				}
+
+				RenderSurfaceType = Skia.RenderSurfaceType.Software;
+				InitializeRenderer();
+
+				_renderer.Initialize();
+			}
 
 			WinUI.Window.Current.OnNativeSizeChanged(new Windows.Foundation.Size(ActualWidth, ActualHeight));
 

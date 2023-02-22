@@ -9,7 +9,7 @@ internal interface IWpfRenderer : IDisposable
 	SKColor BackgroundColor { get; set; }
 
 	void Render(DrawingContext drawingContext);
-	void Initialize();
+	bool Initialize();
 
 	SKSize CanvasSize { get; }
 }

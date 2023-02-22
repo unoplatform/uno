@@ -36,7 +36,7 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 		_host = host;
 	}
 
-	public void Initialize()
+	public bool Initialize()
 	{
 		// Get the window from the wpf control
 		_hwnd = new WindowInteropHelper(Window.GetWindow(_hostControl)).Handle;
@@ -63,13 +63,23 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 
 		if (pixelFormat == 0)
 		{
-			throw new Exception("ChoosePixelFormat failed!");
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().Debug($"ChoosePixelFormat failed");
+			}
+
+			return false;
 		}
 
 		// Set the pixel format for the device context
 		if (NativeMethods.SetPixelFormat(_hdc, pixelFormat, ref pfd) == 0)
 		{
-			throw new Exception("SetPixelFormat failed!");
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().Debug($"SetPixelFormat failed");
+			}
+
+			return false;
 		}
 
 		// Create the OpenGL context
@@ -77,7 +87,12 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 
 		if (_glContext == IntPtr.Zero)
 		{
-			throw new Exception("wglCreateContext failed!");
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().Debug($"wglCreateContext failed");
+			}
+
+			return false;
 		}
 
 		NativeMethods.wglMakeCurrent(_hdc, _glContext);
@@ -88,6 +103,8 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 		{
 			this.Log().Trace($"OpenGL Version: {version}");
 		}
+
+		return true;
 	}
 
 	public void Render(DrawingContext drawingContext)
