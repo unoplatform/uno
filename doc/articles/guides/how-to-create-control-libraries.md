@@ -1,3 +1,6 @@
+---
+uid: Guide.HowTo.Create-Control-Library
+---
 # How to Create Control Libraries
 
 Uno Platform, like WinUI and UWP, supports Control Libraries. Control Libraries are a way to reuse UI components across multiple projects, either inside the solution or by using NuGet to distribute to other projects.

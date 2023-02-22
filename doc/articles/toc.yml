@@ -406,6 +406,8 @@
           items:
             - name: Troubleshooting build errors
               href: uno-builds-troubleshooting.md
+            - name: Build error codes
+              href: uno-build-error-codes.md
             - name: 'Debugging C# on WASM'
               href: debugging-wasm.md
             - name: XAML Hot Reload

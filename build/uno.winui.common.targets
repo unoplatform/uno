@@ -26,6 +26,16 @@
 			   Condition="'$(PkgUno_UI)'!='' and '$(PkgUno_WinUI)'!=''" />
 	</Target>
 
+	<!--
+	Include a marker for _FindInvalidWinAppSDKUnoPlatformReference to determine if a net7.0-only project is referenced
+	from a WinAppSDK project.
+	-->
+	<Target Name="_UnoUpdateAdditionalProperties" BeforeTargets="GetTargetFrameworksWithPlatformForSingleTargetFramework">
+		<ItemGroup>
+			<AdditionalTargetFrameworkInfoProperty Include="_IsUnoPlatform" />
+		</ItemGroup>
+	</Target>
+	
 	<Import Project="$(SourceGeneratorBasePath)Uno.UI.SourceGenerators.props" />
 	<Import Project="$(UnoUIMSBuildTasksTargetPath)Uno.UI.Tasks.targets" />
 

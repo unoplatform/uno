@@ -194,6 +194,7 @@
 
 		<ItemGroup>
 			<_Sha1Replace Include="..\src\SourceGenerators\Uno.UI.Tasks\**\*.cs" />
+			<_Sha1Replace Include="..\build\uno.winui.winappsdk.targets" />
 			<_Sha1Replace Include="..\src\SourceGenerators\Uno.UI.Tasks\Uno.UI.Tasks.csproj" />
 			<_Sha1Replace Include="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks*.*" />
 		</ItemGroup>
