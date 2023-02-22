@@ -138,7 +138,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			UpdateVisualState();
 
 			// Uno specific
-			OnIsEnabledChangedPartial(e);
+			OnIsEnabledChangedPartial(newValue);
 		}
 
 		partial void OnIsEnabledChangedPartial(bool newValue);
