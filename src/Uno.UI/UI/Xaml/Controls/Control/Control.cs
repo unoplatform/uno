@@ -74,7 +74,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			// this is defined in the FrameworkElement mixin, and must not be used in Control.
 			// When setting the background color in a Control, the property is simply used as a placeholder
-			// for children controls, applied by inheritance. 
+			// for children controls, applied by inheritance.
 
 			// base.OnBackgroundChanged(e);
 		}
@@ -439,7 +439,7 @@ namespace Windows.UI.Xaml.Controls
 		/// no parent view has been set. This is used for the ListView control (and other virtualizing controls)
 		/// to measure items properly. These controls set the size of the view based on the size reported
 		/// immediately after the BaseAdapter.GetView method returns, but the parent still has not been set.
-		/// 
+		///
 		/// The Content control uses this delayed creation as an optimization technique for layout creation, when controls
 		/// are created but not yet used.
 		/// </remarks>
@@ -769,9 +769,9 @@ namespace Windows.UI.Xaml.Controls
 		{
 		}
 
-		private protected override void OnIsEnabledChanged(IsEnabledChangedEventArgs e)
+		private protected override void OnIsEnabledChanged(bool newValue)
 		{
-			base.OnIsEnabledChanged(e);
+			base.OnIsEnabledChanged(newValue);
 			OnIsFocusableChanged();
 
 			// Part of logic from MUX Control.cpp Enabled method.
@@ -1138,7 +1138,7 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		/// <remarks>
 		/// Note: Although this is usually called as 'SetDefaultStyleKey(this)' (per WinUI C++ code), we actually only use the compile-time
-		///  TDerived type and ignore the runtime derivedControl parameter, preserving the expected behaviour that DefaultStyleKey is 'fixed' 
+		///  TDerived type and ignore the runtime derivedControl parameter, preserving the expected behaviour that DefaultStyleKey is 'fixed'
 		/// under inheritance unless explicitly changed by an inheriting type.
 		/// </remarks>
 		private protected void SetDefaultStyleKey<TDerived>(TDerived derivedControl) where TDerived : Control

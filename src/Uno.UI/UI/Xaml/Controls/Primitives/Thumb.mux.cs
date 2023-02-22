@@ -89,7 +89,7 @@ public sealed partial class Thumb
 		UpdateVisualState();
 	}
 
-	private protected override void OnIsEnabledChanged(IsEnabledChangedEventArgs e)
+	private protected override void OnIsEnabledChanged(bool newValue)
 	{
 		var isEnabled = IsEnabled;
 		if (!isEnabled)

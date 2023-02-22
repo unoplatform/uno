@@ -603,18 +603,14 @@ namespace <#= mixin.NamespaceName #>
 			set => SetIsEnabledValue(value);
 		}
 
-#if <#= mixin.IsFrameworkElement #> // IsFrameworkElement
-		private static readonly IsEnabledChangedEventArgs _isEnabledChangedEventArgs = new IsEnabledChangedEventArgs();
-#endif
 		private void OnIsEnabledChanged(DependencyPropertyChangedEventArgs e)
 		{
+			var newValue = (bool)e.NewValue;
 #if <#= mixin.IsFrameworkElement #> // IsFrameworkElement
 			// Calling the internal override (WinUI compatibility) -- See FrameworkElement.cs
-			_isEnabledChangedEventArgs.SourceEvent = e;
-			OnIsEnabledChanged(_isEnabledChangedEventArgs);
+			OnIsEnabledChanged(newValue);
 #endif
 
-			var newValue = (bool)e.NewValue;
 			UserInteractionEnabled = newValue; // Set iOS native equivalent
 
 			IsEnabledChanged?.Invoke(this, e);

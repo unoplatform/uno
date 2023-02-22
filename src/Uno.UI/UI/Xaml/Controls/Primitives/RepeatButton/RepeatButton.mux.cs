@@ -132,9 +132,9 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		/// Called when the IsEnabled property changes.
 		/// </summary>
 		/// <param name="e">Event args.</param>
-		private protected override void OnIsEnabledChanged(IsEnabledChangedEventArgs e)
+		private protected override void OnIsEnabledChanged(bool newValue)
 		{
-			base.OnIsEnabledChanged(e);
+			base.OnIsEnabledChanged(newValue);
 
 			_keyboardCausingRepeat = false;
 			_pointerCausingRepeat = false;
@@ -235,11 +235,11 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		/// <param name="args">Event args.</param>
 		protected override void OnPointerMoved(PointerRoutedEventArgs args)
 		{
-			// The reason this function does not call the base 
-			// OnPointerMove is that the ButtonBase class sometimes 
-			// sets IsPressed to false based on mouse position. This 
+			// The reason this function does not call the base
+			// OnPointerMove is that the ButtonBase class sometimes
+			// sets IsPressed to false based on mouse position. This
 			// interferes with the RepeatButton functionality, which
-			// relies on IsPressed being True in Hover mode incorrectly.						
+			// relies on IsPressed being True in Hover mode incorrectly.
 		}
 
 		/// <summary>

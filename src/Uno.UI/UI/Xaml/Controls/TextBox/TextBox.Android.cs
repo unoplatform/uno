@@ -413,11 +413,11 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		partial void OnIsEnabledChangedPartial(IsEnabledChangedEventArgs e)
+		partial void OnIsEnabledChangedPartial(bool newValue)
 		{
 			if (_textBoxView != null)
 			{
-				_textBoxView.Enabled = e.NewValue;
+				_textBoxView.Enabled = newValue;
 			}
 		}
 

@@ -35,9 +35,9 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			_isEnabledSubscription.Disposable = null;
 		}
 
-		partial void OnIsEnabledChangedPartial(IsEnabledChangedEventArgs e)
+		partial void OnIsEnabledChangedPartial(bool newValue)
 		{
-			Clickable = e.NewValue;
+			Clickable = newValue;
 		}
 
 		partial void RegisterEvents()

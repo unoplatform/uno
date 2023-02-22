@@ -420,9 +420,9 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private protected override void OnIsEnabledChanged(IsEnabledChangedEventArgs e)
+		private protected override void OnIsEnabledChanged(bool newValue)
 		{
-			base.OnIsEnabledChanged(e);
+			base.OnIsEnabledChanged(newValue);
 
 			UpdateCommonStates();
 		}

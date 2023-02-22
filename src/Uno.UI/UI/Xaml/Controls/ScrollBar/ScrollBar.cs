@@ -517,11 +517,11 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			=> GetTemplateChild(childName) as T;
 
 		// IsEnabled property changed handler.
-		private protected override void OnIsEnabledChanged(IsEnabledChangedEventArgs e)
+		private protected override void OnIsEnabledChanged(bool newValue)
 		{
-			base.OnIsEnabledChanged(e);
+			base.OnIsEnabledChanged(newValue);
 
-			if (!e.NewValue)
+			if (!newValue)
 			{
 				m_isPointerOver = false;
 			}

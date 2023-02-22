@@ -2655,7 +2655,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Called when the IsEnabled property changes.
-		private protected override void OnIsEnabledChanged(IsEnabledChangedEventArgs pArgs)
+		private protected override void OnIsEnabledChanged(bool newValue)
 		{
 			UpdateVisualState();
 		}

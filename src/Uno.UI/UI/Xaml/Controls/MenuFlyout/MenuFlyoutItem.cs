@@ -418,9 +418,9 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Called when the IsEnabled property changes.
-		private protected override void OnIsEnabledChanged(IsEnabledChangedEventArgs e)
+		private protected override void OnIsEnabledChanged(bool newValue)
 		{
-			if (!e.NewValue)
+			if (!newValue)
 			{
 				ClearStateFlags();
 			}
@@ -429,7 +429,7 @@ namespace Windows.UI.Xaml.Controls
 				UpdateVisualState();
 			}
 
-			base.OnIsEnabledChanged(e);
+			base.OnIsEnabledChanged(newValue);
 		}
 
 		// Called when the control got focus.

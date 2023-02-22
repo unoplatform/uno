@@ -205,7 +205,7 @@ namespace Windows.UI.Xaml.Controls
 					m_tpFlyout.LightDismissOverlayMode = overlayMode;
 
 					// TODO UNO
-					//m_epFlyoutOpenedHandler.AttachEventHandler(m_tpFlyout.Cast<FlyoutBase>(), 
+					//m_epFlyoutOpenedHandler.AttachEventHandler(m_tpFlyout.Cast<FlyoutBase>(),
 					//	[this](IInspectable * pSender, IInspectable * pArgs)
 					//{
 					//	OpenedEventSourceType* pEventSource = null;
@@ -215,7 +215,7 @@ namespace Windows.UI.Xaml.Controls
 					//}));
 					m_tpFlyout.Opened += OnFlyoutOpened;
 
-					//m_epFlyoutClosedHandler.AttachEventHandler(m_tpFlyout.Cast<FlyoutBase>(), 
+					//m_epFlyoutClosedHandler.AttachEventHandler(m_tpFlyout.Cast<FlyoutBase>(),
 					//	[this](IInspectable * pSender, IInspectable * pArgs)
 					//{
 					//	OpenedEventSourceType* pEventSource = null;
@@ -233,7 +233,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				// TODO UNO
 				//// Forward CalendarViewDayItemChanging event from CalendarView to CalendarDatePicker
-				//m_epCalendarViewCalendarViewDayItemChangingHandler.AttachEventHandler(m_tpCalendarView.Cast<CalendarView>(), 
+				//m_epCalendarViewCalendarViewDayItemChangingHandler.AttachEventHandler(m_tpCalendarView.Cast<CalendarView>(),
 				//	[this](ICalendarView * pSender, ICalendarViewDayItemChangingEventArgs * pArgs)
 				//{
 				//	CalendarViewDayItemChangingEventSourceType* pEventSource = null;
@@ -244,7 +244,7 @@ namespace Windows.UI.Xaml.Controls
 				m_tpCalendarView.CalendarViewDayItemChanging += OnCalendarViewDayChanging;
 
 				//// handle SelectedDatesChanged event
-				//m_epCalendarViewSelectedDatesChangedHandler.AttachEventHandler(m_tpCalendarView.Cast<CalendarView>(), 
+				//m_epCalendarViewSelectedDatesChangedHandler.AttachEventHandler(m_tpCalendarView.Cast<CalendarView>(),
 				//	[this](ICalendarView * pSender, ICalendarViewSelectedDatesChangedEventArgs * pArgs)
 				//{
 				//	return OnSelectedDatesChanged(pSender, pArgs);
@@ -934,7 +934,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Called when the IsEnabled property changes.
-		private protected override void OnIsEnabledChanged(IsEnabledChangedEventArgs pArgs)
+		private protected override void OnIsEnabledChanged(bool newValue)
 		{
 			UpdateVisualState();
 		}

@@ -157,9 +157,9 @@ public partial class Slider
 	}
 
 	// IsEnabled property changed handler.
-	private protected override void OnIsEnabledChanged(IsEnabledChangedEventArgs args)
+	private protected override void OnIsEnabledChanged(bool newValue)
 	{
-		base.OnIsEnabledChanged(args);
+		base.OnIsEnabledChanged(newValue);
 
 		var isEnabled = IsEnabled;
 		if (!isEnabled)

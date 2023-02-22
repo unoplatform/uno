@@ -45,13 +45,13 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		private static readonly Stopwatch _chronometer = Stopwatch.StartNew();
 
 		/// <summary>
-		/// Delay time before setting the pressed state of an item to false, to allow time for the Pressed visual state to be drawn and perceived. 
+		/// Delay time before setting the pressed state of an item to false, to allow time for the Pressed visual state to be drawn and perceived.
 		/// </summary>
 		private static readonly TimeSpan MinTimeBetweenPressStates = TimeSpan.FromMilliseconds(100);
 
 		/// <summary>
-		/// Whether the SelectorItem will handle touches. This can be set to false for compatibility with controls where the parent 
-		/// handles touches (ComboBox-Android, legacy ListView/GridView). 
+		/// Whether the SelectorItem will handle touches. This can be set to false for compatibility with controls where the parent
+		/// handles touches (ComboBox-Android, legacy ListView/GridView).
 		/// </summary>
 		internal bool ShouldHandlePressed { get; set; } = true;
 
@@ -93,12 +93,12 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			}
 		}
 
-		private protected override void OnIsEnabledChanged(IsEnabledChangedEventArgs e)
+		private protected override void OnIsEnabledChanged(bool newValue)
 		{
-			var disabledStates = e.NewValue ? DisabledStates.Enabled : DisabledStates.Disabled;
+			var disabledStates = newValue ? DisabledStates.Enabled : DisabledStates.Disabled;
 			VisualStateManager.GoToState(this, disabledStates, true);
 
-			base.OnIsEnabledChanged(e);
+			base.OnIsEnabledChanged(newValue);
 		}
 
 		/// <summary>

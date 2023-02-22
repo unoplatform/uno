@@ -149,7 +149,7 @@ namespace Windows.UI.Xaml.Controls
 			return;
 		}
 
-		private protected override void OnIsEnabledChanged(IsEnabledChangedEventArgs pArgs)
+		private protected override void OnIsEnabledChanged(bool newValue)
 		{
 			UpdateTextBlockForeground();
 		}

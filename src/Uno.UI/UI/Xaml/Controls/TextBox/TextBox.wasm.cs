@@ -128,9 +128,9 @@ namespace Windows.UI.Xaml.Controls
 			_textBoxView?.SetAttribute("spellcheck", IsSpellCheckEnabled.ToString());
 		}
 
-		partial void OnIsEnabledChangedPartial(IsEnabledChangedEventArgs e)
+		partial void OnIsEnabledChangedPartial(bool newValue)
 		{
-			ApplyEnabled(e.NewValue);
+			ApplyEnabled(newValue);
 		}
 
 		partial void OnIsReadonlyChangedPartial(DependencyPropertyChangedEventArgs e) => UpdateTextBoxViewIsReadOnly();

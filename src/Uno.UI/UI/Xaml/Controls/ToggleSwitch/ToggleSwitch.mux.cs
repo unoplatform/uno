@@ -680,9 +680,9 @@ namespace Windows.UI.Xaml.Controls
 		/// Called when the IsEnabled property changes.
 		/// </summary>
 		/// <param name="e">Event args.</param>
-		private protected override void OnIsEnabledChanged(IsEnabledChangedEventArgs e)
+		private protected override void OnIsEnabledChanged(bool newValue)
 		{
-			base.OnIsEnabledChanged(e);
+			base.OnIsEnabledChanged(newValue);
 
 			var isEnabled = IsEnabled;
 			if (!isEnabled)

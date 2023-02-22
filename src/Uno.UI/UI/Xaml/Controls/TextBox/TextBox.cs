@@ -1158,14 +1158,14 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void UpdateKeyboardThemePartial();
 
-		private protected override void OnIsEnabledChanged(IsEnabledChangedEventArgs e)
+		private protected override void OnIsEnabledChanged(bool newValue)
 		{
-			base.OnIsEnabledChanged(e);
+			base.OnIsEnabledChanged(newValue);
 			UpdateVisualState();
-			OnIsEnabledChangedPartial(e);
+			OnIsEnabledChangedPartial(newValue);
 		}
 
-		partial void OnIsEnabledChangedPartial(IsEnabledChangedEventArgs e);
+		partial void OnIsEnabledChangedPartial(bool newValue);
 
 		private bool ShouldFocusOnPointerPressed(PointerRoutedEventArgs args) =>
 			// For mouse and pen, the TextBox should focus on pointer press

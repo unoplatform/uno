@@ -126,9 +126,9 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		/// Called when the IsEnabled property changes.
 		/// </summary>
 		/// <param name="e">Enabled changed event args.</param>
-		private protected override void OnIsEnabledChanged(IsEnabledChangedEventArgs e)
+		private protected override void OnIsEnabledChanged(bool newValue)
 		{
-			base.OnIsEnabledChanged(e);
+			base.OnIsEnabledChanged(newValue);
 
 			if (!IsEnabled)
 			{
@@ -141,7 +141,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			OnIsEnabledChangedPartial(e);
 		}
 
-		partial void OnIsEnabledChangedPartial(IsEnabledChangedEventArgs e);
+		partial void OnIsEnabledChangedPartial(bool newValue);
 
 		/// <summary>
 		/// Called when the element enters the tree. Attaches event handler to Command.CanExecuteChanged.
@@ -504,7 +504,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			var pointerPoint = args.GetCurrentPoint(this);
 			_pointerPosition = pointerPoint.Position;
 
-			// Determine if the button is still pressed near the pointer's position			
+			// Determine if the button is still pressed near the pointer's position
 			if (_isPointerLeftButtonDown &&
 				IsEnabled &&
 				ClickMode != ClickMode.Hover &&
