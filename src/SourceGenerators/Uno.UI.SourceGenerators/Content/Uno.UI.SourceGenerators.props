@@ -106,7 +106,7 @@
 		<CompilerVisibleProperty Include="ExcludeXamlNamespacesProperty" />
 		<CompilerVisibleProperty Include="IncludeXamlNamespacesProperty" />
 		<CompilerVisibleProperty Include="XamlGeneratorAnalyzerSuppressionsProperty" />
-		<CompilerVisibleProperty Include="LegacyTypesProperty" />
+		<CompilerVisibleProperty Include="UnoEnableXamlFuzzyMatching" />
 		<CompilerVisibleProperty Include="UnoXamlResourcesTrimming"/>
 		<CompilerVisibleProperty Include="BaseIntermediateOutputPath"/>
 		<CompilerVisibleProperty Include="AssemblyName"/>
@@ -344,29 +344,6 @@
 		</CustomUiAutomationMemberMapping>
 	</ItemGroup>
 
-	<!-- ListView -->
-	<ItemGroup Condition="$(DefineConstants.Contains('LEGACY_LISTVIEW'))">
-		<!-- All -->
-		<LegacyTypes Include="Uno.UI.Controls.Legacy.GridView" />
-		<LegacyTypes Include="Uno.UI.Controls.Legacy.ListView" />
-		<!-- iOS -->
-		<LegacyTypes Condition="'$(XamarinProjectType)'=='ios'" Include="Uno.UI.Controls.Legacy.GridViewSource" />
-		<LegacyTypes Condition="'$(XamarinProjectType)'=='ios'" Include="Uno.UI.Controls.Legacy.GridViewWrapGridLayout" />
-		<LegacyTypes Condition="'$(XamarinProjectType)'=='ios'" Include="Uno.UI.Controls.Legacy.ListViewBase" />
-		<LegacyTypes Condition="'$(XamarinProjectType)'=='ios'" Include="Uno.UI.Controls.Legacy.ListViewBaseLayout" />
-		<LegacyTypes Condition="'$(XamarinProjectType)'=='ios'" Include="Uno.UI.Controls.Legacy.ListViewBaseLayoutTemplate" />
-		<LegacyTypes Condition="'$(XamarinProjectType)'=='ios'" Include="Uno.UI.Controls.Legacy.ListViewBaseSource" />
-		<LegacyTypes Condition="'$(XamarinProjectType)'=='ios'" Include="Uno.UI.Controls.Legacy.ListViewLayout" />
-		<LegacyTypes Condition="'$(XamarinProjectType)'=='ios'" Include="Uno.UI.Controls.Legacy.ListViewSource" />
-		<!-- Android -->
-		<LegacyTypes Condition="'$(XamarinProjectType)'=='android'" Include="Uno.UI.Controls.Legacy.HorizontalGridView" />
-		<LegacyTypes Condition="'$(XamarinProjectType)'=='android'" Include="Uno.UI.Controls.Legacy.HorizontalListView" />
-		<!-- Umbrella -->
-		<LegacyTypes Include="nVentive.Umbrella.Views.Behaviors.Legacy.ActiveListViewBaseBehavior" />
-		<LegacyTypes Include="nVentive.Umbrella.Views.Behaviors.Legacy.GroupedCollectionBehavior" />
-		<LegacyTypes Include="nVentive.Umbrella.Views.Behaviors.Legacy.ListViewBringIntoViewSelectedItemBehavior" />
-	</ItemGroup>
-
 	<Target Name="_IncludeXamlFiles" BeforeTargets="_UnoSourceGenerator" DependsOnTargets="_FillSourceGeneratorItemGroups">
 		<!--
 		This group is created as part of a target to ensure the
@@ -381,7 +358,6 @@
 		<UnoSourceGeneratorAdditionalProperty Include="ExcludeXamlNamespacesProperty" />
 		<UnoSourceGeneratorAdditionalProperty Include="IncludeXamlNamespacesProperty" />
 		<UnoSourceGeneratorAdditionalProperty Include="XamlGeneratorAnalyzerSuppressionsProperty" />
-		<UnoSourceGeneratorAdditionalProperty Include="LegacyTypesProperty" />
 		<UnoSourceGeneratorAdditionalProperty Include="UnoUIUseRoslynSourceGenerators" />
 		<UnoSourceGeneratorAdditionalProperty Include="ProjectTypeGuidsProperty" />
 		<UnoSourceGeneratorAdditionalProperty Include="DefineConstantsProperty" />
@@ -412,12 +388,6 @@
 			<Output
 					TaskParameter="Value"
 					PropertyName="XamlGeneratorAnalyzerSuppressionsProperty" />
-		</CreateProperty>
-
-		<CreateProperty Value="@(LegacyTypes, ',')">
-			<Output
-					TaskParameter="Value"
-					PropertyName="LegacyTypesProperty" />
 		</CreateProperty>
 
 		<CreateProperty Value="$(ProjectTypeGuids.Replace(';',','))">

@@ -105,6 +105,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// </summary>
 		private readonly bool _isLazyVisualStateManagerEnabled;
 
+		private readonly bool _enableFuzzyMatching;
+
 		/// <summary>
 		/// True if XAML resource trimming is enabled
 		/// </summary>
@@ -250,6 +252,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			bool isUnoAssembly,
 			bool isUnoFluentAssembly,
 			bool isLazyVisualStateManagerEnabled,
+			bool enableFuzzyMatching,
 			GeneratorExecutionContext generatorContext,
 			bool xamlResourcesTrimming,
 			GenerationRunFileInfo generationRunFileInfo,
@@ -275,6 +278,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_skipUserControlsInVisualTree = skipUserControlsInVisualTree;
 			_shouldAnnotateGeneratedXaml = shouldAnnotateGeneratedXaml;
 			_isLazyVisualStateManagerEnabled = isLazyVisualStateManagerEnabled;
+			_enableFuzzyMatching = enableFuzzyMatching;
 			_generatorContext = generatorContext;
 			_xamlResourcesTrimming = xamlResourcesTrimming;
 			_generationRunFileInfo = generationRunFileInfo;
@@ -1922,11 +1926,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				fullTargetType = foundFullTargetType;
 			}
 
-			var propertyType = FindPropertyTypeByFullName(fullTargetType, property);
+			var targetType = _metadataHelper.FindTypeByFullName(fullTargetType) as INamedTypeSymbol;
+			var propertyType = FindPropertyTypeByOwnerSymbol(targetType, property);
 
 			if (propertyType != null)
 			{
-				bool isDependencyProperty = IsDependencyProperty(_metadataHelper.FindTypeByFullName(fullTargetType) as INamedTypeSymbol, property);
+				bool isDependencyProperty = IsDependencyProperty(targetType, property);
 
 				if (valueNode.Objects.None())
 				{

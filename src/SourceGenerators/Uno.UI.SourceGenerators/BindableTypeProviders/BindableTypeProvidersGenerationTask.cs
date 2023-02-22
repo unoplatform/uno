@@ -39,7 +39,6 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 
 			private readonly Dictionary<INamedTypeSymbol, GeneratedTypeInfo> _typeMap = new Dictionary<INamedTypeSymbol, GeneratedTypeInfo>();
 			private readonly Dictionary<string, (string type, List<string> members)> _substitutions = new Dictionary<string, (string type, List<string> members)>();
-			private INamedTypeSymbol[]? _bindableAttributeSymbol;
 			private ITypeSymbol? _dependencyPropertySymbol;
 			private INamedTypeSymbol? _dependencyObjectSymbol;
 			private INamedTypeSymbol? _javaObjectSymbol;
@@ -47,7 +46,6 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 			private INamedTypeSymbol? _nonBindableSymbol;
 			private INamedTypeSymbol? _resourceDictionarySymbol;
 			private IModuleSymbol? _currentModule;
-			private IReadOnlyDictionary<string, INamedTypeSymbol[]>? _namedSymbolsLookup;
 			private string? _projectFullPath;
 			private string? _projectDirectory;
 			private string? _intermediateOutputPath;
@@ -85,9 +83,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 						_assemblyName = context.GetMSBuildPropertyValue("AssemblyName");
 
 						_defaultNamespace = context.GetMSBuildPropertyValue("RootNamespace");
-						_namedSymbolsLookup = context.Compilation.GetSymbolNameLookup();
 
-						_bindableAttributeSymbol = FindBindableAttributes();
 						_dependencyPropertySymbol = context.Compilation.GetTypeByMetadataName(XamlConstants.Types.DependencyProperty);
 						_dependencyObjectSymbol = context.Compilation.GetTypeByMetadataName(XamlConstants.Types.DependencyObject);
 
@@ -136,19 +132,15 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 				}
 			}
 
-			private INamedTypeSymbol[] FindBindableAttributes() =>
-				_namedSymbolsLookup!.TryGetValue("BindableAttribute", out var types) ? types : Array.Empty<INamedTypeSymbol>();
-
 			private string GenerateTypeProviders(IEnumerable<IModuleSymbol> modules)
 			{
 				var q = from module in modules
 						from type in module.GlobalNamespace.GetNamespaceTypes()
-						where (
-							(_bindableAttributeSymbol?.Any(s => type.FindAttributeFlattened(s) != null) ?? false)
-							&& !type.IsGenericType
+						where
+							!type.IsGenericType
 							&& !type.IsAbstract
+							&& type.GetAllAttributes().Any(a => a.AttributeClass?.Name == "BindableAttribute")
 							&& IsValidProvider(type)
-						)
 						select type;
 
 				q = q.ToArray();
@@ -172,7 +164,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 				using (writer.BlockInvariant("namespace {0}", _defaultNamespace))
 				{
 					GenerateMetadata(writer, q);
-					GenerateProviderTable(q, writer);
+					GenerateProviderTable(writer);
 				}
 
 				return writer.ToString();
@@ -185,7 +177,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 				// Those are not databound, so there's no need to generate providers for them.
 				&& !type.Is(_resourceDictionarySymbol);
 
-			private void GenerateProviderTable(IEnumerable<INamedTypeSymbol> q, IndentedStringBuilder writer)
+			private void GenerateProviderTable(IndentedStringBuilder writer)
 			{
 				writer.AppendLineIndented("[System.Runtime.CompilerServices.CompilerGeneratedAttribute]");
 				writer.AppendLineIndented("[System.Diagnostics.CodeAnalysis.SuppressMessage(\"Microsoft.Maintainability\", \"CA1502:AvoidExcessiveComplexity\", Justification=\"Must be ignored even if generated code is checked.\")]");
