@@ -2,11 +2,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Web.Http.Headers
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class HttpRequestHeaderCollection : global::System.Collections.Generic.IDictionary<string, string>,global::System.Collections.Generic.IEnumerable<global::System.Collections.Generic.KeyValuePair<string, string>>,global::Windows.Foundation.IStringable
 	{
+		// Skipping already declared property Size
+		// Skipping already declared property Referer
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Web.Http.Headers.HttpCredentialsHeaderValue ProxyAuthorization
@@ -21,6 +23,9 @@ namespace Windows.Web.Http.Headers
 			}
 		}
 		#endif
+		// Skipping already declared property MaxForwards
+		// Skipping already declared property IfUnmodifiedSince
+		// Skipping already declared property IfModifiedSince
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Networking.HostName Host
@@ -35,6 +40,8 @@ namespace Windows.Web.Http.Headers
 			}
 		}
 		#endif
+		// Skipping already declared property From
+		// Skipping already declared property Date
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Web.Http.Headers.HttpCredentialsHeaderValue Authorization
@@ -188,13 +195,7 @@ namespace Windows.Web.Http.Headers
 		// Forced skipping of method Windows.Web.Http.Headers.HttpRequestHeaderCollection.Remove(string)
 		// Forced skipping of method Windows.Web.Http.Headers.HttpRequestHeaderCollection.Clear()
 		// Forced skipping of method Windows.Web.Http.Headers.HttpRequestHeaderCollection.First()
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public override string ToString()
-		{
-			throw new global::System.NotImplementedException("The member string HttpRequestHeaderCollection.ToString() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20HttpRequestHeaderCollection.ToString%28%29");
-		}
-		#endif
+		// Skipping already declared method Windows.Web.Http.Headers.HttpRequestHeaderCollection.ToString()
 		// Processing: System.Collections.Generic.IDictionary<string, string>
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.IDictionary<string, string>
@@ -204,6 +205,7 @@ namespace Windows.Web.Http.Headers
 			throw new global::System.NotSupportedException();
 		}
 		#endif
+		// Skipping already implement System.Collections.Generic.IDictionary<string, string>.this[string]
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::System.Collections.Generic.ICollection<string> Keys
@@ -249,6 +251,8 @@ namespace Windows.Web.Http.Headers
 			throw new global::System.NotSupportedException();
 		}
 		#endif
+		// Skipping already implement System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, string>>.Count
+		// Skipping already implement System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, string>>.IsReadOnly
 		// Processing: System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, string>>
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, string>>
