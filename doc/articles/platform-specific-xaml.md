@@ -149,7 +149,22 @@ In cases where it is needed (fonts are one example) then the XAML files must be 
 
 ### Specifying namespaces
 
-Platform-specific namespaces are defined with a uri `http://uno.ui/PLATFORM`, which doesn't specify any C# namespaces for the lookup to happen. This used to work since Uno Platform does fuzzy matching. Fuzzy matching will be removed in Uno 5 and you have to specify the namespace similar to `xmlns:android="http://uno.ui/android#using:NS1;NS2"` which will lookup for types in `NS1`, `NS2`, and also the default namespaces that are searched by `http://schemas.microsoft.com/winfx/2006/xaml/presentation`.
+Specifying CLR namespaces in platform specific XAML namespace can be done as follows:
+
+```xml
+<Page x:Class="HelloWorld.MainPage"
+	  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	  ...
+	  xmlns:android="http://uno.ui/android#using:My.Custom.Namespace1;My.Custom.Namespace2"
+	  ...
+	  mc:Ignorable="d android">
+	<android:MyCustomType />
+```
+
+In this example, types prefixed in the `android` XAML namespace will be looked up in `My.Custom.Namespace1`, `MyCustomNamespace2` then in all the namespaces defined in default namespace `http://schemas.microsoft.com/winfx/2006/xaml/presentation`.
+
+> [!NOTE]
+> When using Uno Platform 4.x and in the absence of CLR namespace specification (using the `#using:` prefix), type matching is done through partial name based matching, without using the namespace information. In Uno Platform 4.8, this partial matching can be controlled by the `UnoEnableXamlFuzzyMatching` msbuild property. Uno Platform 5.0 and later will be setting `UnoEnableXamlFuzzyMatching` to `false` by default and will force explicit type matching.
 
 ## XAML Conditional Methods
 
