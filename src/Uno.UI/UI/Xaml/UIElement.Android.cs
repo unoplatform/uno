@@ -185,8 +185,9 @@ namespace Windows.UI.Xaml
 		}
 
 		private bool _renderTransformRegisteredParentChanged;
-		private static void RenderTransformOnParentChanged(object dependencyObject, object _, DependencyObjectParentChangedEventArgs args)
-			=> ((UIElement)dependencyObject)._renderTransform?.UpdateParent(args.PreviousParent, args.NewParent);
+		private static void RenderTransformOnParentChanged(object dependencyObject, object _, object previousParent, object newParent)
+			=> ((UIElement)dependencyObject)._renderTransform?.UpdateParent(previousParent, newParent);
+
 		partial void OnRenderTransformSet()
 		{
 			// On first Transform set, we register to the parent changed, so we can enable or disable the static transformations on it

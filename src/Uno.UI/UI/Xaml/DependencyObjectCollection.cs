@@ -60,7 +60,7 @@ namespace Windows.UI.Xaml
 		private void Initialize()
 		{
 			((IDependencyObjectStoreProvider)this).Store.RegisterSelfParentChangedCallback(
-				(instance, k, handler) => UpdateParent(handler.NewParent)
+				(instance, k, _, newParent) => UpdateParent(newParent)
 			);
 
 			VectorChanged += (s, e) => OnCollectionChanged();
@@ -79,7 +79,7 @@ namespace Windows.UI.Xaml
 			{
 				var item = _list[i];
 
-				// Because parent propagation doesn't currently support all cases, 
+				// Because parent propagation doesn't currently support all cases,
 				// we can't assume that the DependencyObjectCollection will have a parent.
 				// To preserve DataContext propagation, we fallback to self if no parent is set.
 				item.SetParent(actualParent);
@@ -206,7 +206,7 @@ namespace Windows.UI.Xaml
 
 		private protected virtual void OnAdded(T d)
 		{
-			// Because parent propagation doesn't currently support all cases, 
+			// Because parent propagation doesn't currently support all cases,
 			// we can't assume that the DependencyObjectCollection will have a parent.
 			// To preserve DataContext propagation, we fallback to self if no parent is set.
 			d.SetParent(this.GetParent() ?? this);

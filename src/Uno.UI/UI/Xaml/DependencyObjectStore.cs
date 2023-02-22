@@ -40,8 +40,9 @@ namespace Windows.UI.Xaml
 	/// </summary>
 	/// <param name="instance">The DependencyObject instance being updated</param>
 	/// <param name="key">An optional key passed as a parameter to <see cref="DependencyObject.RegisterParentChangedCallback(object, ParentChangedCallback)"/>.</param>
-	/// <param name="args">The arguments of the change</param>
-	internal delegate void ParentChangedCallback(object instance, object? key, DependencyObjectParentChangedEventArgs args);
+	/// <param name="previousParent">The previous parent of the DependencyObject being updated</param>
+	/// <param name="newParent">The previous parent of the DependencyObject being updated</param>
+	internal delegate void ParentChangedCallback(object instance, object? key, object? previousParent, object? newParent);
 
 	/// <summary>
 	/// Defines a Dependency Object
@@ -875,7 +876,6 @@ namespace Windows.UI.Xaml
 			private ExplicitPropertyChangedCallback _weakCallback;
 			private WeakReferenceReturnDisposable _weakCallbackRelease;
 			private ManagedWeakReference _instanceRef;
-			private ExplicitPropertyChangedCallback _callback;
 
 			public RegisterPropertyChangedCallbackConditionalDisposable(
 				ExplicitPropertyChangedCallback weakCallback,
@@ -887,7 +887,6 @@ namespace Windows.UI.Xaml
 				_weakCallback = weakCallback;
 				_weakCallbackRelease = weakCallbackRelease;
 				_instanceRef = instanceRef;
-				_callback = callback;
 			}
 
 			protected override void DispatchedTargetFinalized()
@@ -902,10 +901,6 @@ namespace Windows.UI.Xaml
 				}
 
 				_weakCallbackRelease.Dispose();
-
-				// Force a closure on the callback, to make its lifetime as long
-				// as the subscription being held by the callee.
-				_callback = null!;
 			}
 		}
 
@@ -993,7 +988,7 @@ namespace Windows.UI.Xaml
 				var weakCallbackRef = WeakReferencePool.RentWeakReference(this, callback);
 
 				ParentChangedCallback weakCallback =
-					(s, _, e) => (weakCallbackRef.Target as ParentChangedCallback)?.Invoke(s, key, e);
+					(s, _, previousParent, newParent) => (weakCallbackRef.Target as ParentChangedCallback)?.Invoke(s, key, previousParent, newParent);
 
 				_parentChangedCallbacks = _parentChangedCallbacks.Add(weakCallback);
 
@@ -1023,7 +1018,6 @@ namespace Windows.UI.Xaml
 			private ManagedWeakReference _doStoreRef;
 			private ManagedWeakReference _weakCallbackRef;
 			private ParentChangedCallback _weakCallback;
-			private ParentChangedCallback _callback;
 
 			public RegisterParentChangedCallbackConditionalDisposable(
 				WeakReference conditionSource,
@@ -1035,7 +1029,6 @@ namespace Windows.UI.Xaml
 				_doStoreRef = doStoreRef;
 				_weakCallbackRef = weakCallbackRef;
 				_weakCallback = weakCallback;
-				_callback = callback;
 			}
 
 			protected override void DispatchedTargetFinalized()
@@ -1049,10 +1042,6 @@ namespace Windows.UI.Xaml
 				}
 
 				WeakReferencePool.ReturnWeakReference(that, _weakCallbackRef);
-
-				// Force a closure on the callback, to make its lifetime as long
-				// as the subscription being held by the callee.
-				_callback = null!;
 			}
 		}
 
@@ -1062,7 +1051,7 @@ namespace Windows.UI.Xaml
 		/// <param name="key">A key to be passed to the callback parameter.</param>
 		/// <param name="callback">A callback to be called</param>
 		internal void RegisterParentChangedCallbackStrong(object key, ParentChangedCallback callback)
-			=> _parentChangedCallbacks = _parentChangedCallbacks.Add((s, _, e) => callback(s, key, e));
+			=> _parentChangedCallbacks = _parentChangedCallbacks.Add((s, _, oldParent, newParent) => callback(s, key, oldParent, newParent));
 
 		internal (object? value, DependencyPropertyValuePrecedences precedence) GetValueUnderPrecedence(DependencyProperty property, DependencyPropertyValuePrecedences precedence)
 		{
@@ -2015,12 +2004,10 @@ namespace Windows.UI.Xaml
 
 				if (actualInstanceAlias != null)
 				{
-					var args = new DependencyObjectParentChangedEventArgs(previousParent, value);
-
 					for (var parentCallbackIndex = 0; parentCallbackIndex < _parentChangedCallbacks.Data.Length; parentCallbackIndex++)
 					{
 						var handler = _parentChangedCallbacks.Data[parentCallbackIndex];
-						handler.Invoke(actualInstanceAlias, null, args);
+						handler.Invoke(actualInstanceAlias, null, previousParent, value);
 					}
 				}
 			}

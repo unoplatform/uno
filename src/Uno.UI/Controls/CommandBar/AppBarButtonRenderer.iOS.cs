@@ -29,13 +29,13 @@ namespace Uno.UI.Controls
 			element.RegisterParentChangedCallback(this, OnElementParentChanged);
 		}
 
-		private void OnElementParentChanged(object instance, object? key, DependencyObjectParentChangedEventArgs args)
+		private void OnElementParentChanged(object instance, object? key, object? previousParent, object? newParent)
 		{
-			if (ReferenceEquals(args.NewParent, _appBarButtonWrapper))
+			if (ReferenceEquals(newParent, _appBarButtonWrapper))
 			{
 				// if the new Parent is the wrapper, restore it to
 				// its original value.
-				Element?.SetParent(args.PreviousParent);
+				Element?.SetParent(previousParent);
 			}
 		}
 

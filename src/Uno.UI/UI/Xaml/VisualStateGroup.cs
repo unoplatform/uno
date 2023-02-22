@@ -141,7 +141,7 @@ namespace Windows.UI.Xaml
 			RefreshStateTriggers();
 		}
 
-		private void OnParentChanged(object instance, object key, DependencyObjectParentChangedEventArgs args)
+		private void OnParentChanged(object instance, object key, object previousParent, object newParent)
 		{
 			RefreshStateTriggers(force: true);
 		}

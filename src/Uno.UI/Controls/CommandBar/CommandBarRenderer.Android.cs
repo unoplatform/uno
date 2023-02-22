@@ -137,14 +137,14 @@ namespace Uno.UI.Controls
 			);
 		}
 
-		private void OnContentContainerParentChanged(object instance, object key, DependencyObjectParentChangedEventArgs args)
+		private void OnContentContainerParentChanged(object instance, object key, object previousParent, object newParent)
 		{
 			// Even though we set the CommandBar as the parent of the _contentContainer,
 			// it will change to the native control when the view is added.
 			// This control is the visual parent but is not a DependencyObject and will not propagate the DataContext.
 			// In order to ensure the DataContext is propagated properly, we restore the CommandBar
 			// parent that can propagate the DataContext.
-			if (args.NewParent != Element)
+			if (newParent != Element)
 			{
 				_contentContainer.SetParent(Element);
 			}
@@ -216,7 +216,7 @@ namespace Uno.UI.Controls
 						var renderer = command.GetRenderer(() => new AppBarButtonRenderer(command));
 						renderer.Native = menuItem;
 
-						// This ensures that Behaviors expecting this button to be in the logical tree work. 
+						// This ensures that Behaviors expecting this button to be in the logical tree work.
 						command.SetParent(element);
 					}
 				}
@@ -235,7 +235,7 @@ namespace Uno.UI.Controls
 				var renderer = navigationCommand.GetRenderer(() => new NavigationAppBarButtonRenderer(navigationCommand));
 				renderer.Native = native;
 
-				// This ensures that Behaviors expecting this button to be in the logical tree work. 
+				// This ensures that Behaviors expecting this button to be in the logical tree work.
 				navigationCommand.SetParent(element);
 			}
 			// CommandBarExtensions.BackButtonVisibility

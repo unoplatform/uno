@@ -136,9 +136,9 @@ namespace Windows.UI.Xaml.Controls
 			Unloaded += DetachScrollBars;
 			Unloaded += ResetScrollIndicator;
 
-			this.RegisterParentChangedCallback(this, (_, _, args) =>
+			this.RegisterParentChangedCallback(this, (_, _, _, newParent) =>
 			{
-				if (args.NewParent is null)
+				if (newParent is null)
 				{
 					ClearContentTemplatedParent(Content);
 				}

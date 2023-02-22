@@ -119,7 +119,7 @@ namespace Windows.UI.Xaml.Controls
 			UpdateButtonStates();
 		}
 
-		private void OnParentChanged(object instance, object key, DependencyObjectParentChangedEventArgs args) => UpdateFontPartial();
+		private void OnParentChanged(object instance, object key, object previousParent, object newParent) => UpdateFontPartial();
 
 		private void InitializeProperties()
 		{

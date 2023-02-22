@@ -24,13 +24,13 @@ namespace Uno.UI.Controls
 			element.RegisterParentChangedCallback(this, OnElementParentChanged);
 		}
 
-		private void OnElementParentChanged(object instance, object key, DependencyObjectParentChangedEventArgs args)
+		private void OnElementParentChanged(object instance, object key, object previousParent, object newParent)
 		{
-			if (args.NewParent == _appBarButtonWrapper)
+			if (newParent == _appBarButtonWrapper)
 			{
 				// if the new Parent is the wrapper, restore it to
 				// its original value.
-				Element?.SetParent(args.PreviousParent);
+				Element?.SetParent(previousParent);
 			}
 		}
 
@@ -144,7 +144,7 @@ namespace Uno.UI.Controls
 			// - Light background: 38%
 			// - Dark background: 50%
 			// Source: https://material.io/guidelines/style/icons.html
-			// For lack of a reliable way to identify whether the background is light or dark, 
+			// For lack of a reliable way to identify whether the background is light or dark,
 			// we'll go with 50% opacity until this no longer satisfies projects requirements.
 			var isEnabledOpacity = (element.IsEnabled ? 1.0 : 0.5);
 
@@ -184,7 +184,7 @@ namespace Uno.UI.Controls
 
 	internal partial class AppBarButtonWrapper : Border
 	{
-		// By default, the custom view of a MenuItem fills up the whole available area unless you 
+		// By default, the custom view of a MenuItem fills up the whole available area unless you
 		// explicitly collapse it by calling Native.CollapseActionView or calling SetShowAsAction with the extra flag
 		// ShowAsAction.CollapseActionView. This is for instance the case of the search view used in a lot of scenarios.
 		// To avoid this use case, we must explicitly set the size of the action view based on the real size of its content.

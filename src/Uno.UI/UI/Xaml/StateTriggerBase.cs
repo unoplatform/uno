@@ -17,7 +17,7 @@ namespace Windows.UI.Xaml
 
 			this.RegisterParentChangedCallbackStrong(
 				key: this,
-				handler: (instance, key, handler)
+				handler: (instance, key, previousParent, newParent)
 					=> OnOwnerChanged()
 			);
 		}

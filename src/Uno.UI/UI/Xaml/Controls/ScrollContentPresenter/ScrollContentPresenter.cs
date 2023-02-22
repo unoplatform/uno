@@ -90,11 +90,11 @@ namespace Windows.UI.Xaml.Controls
 			this.RegisterParentChangedCallbackStrong(this, OnParentChanged);
 		}
 
-		private void OnParentChanged(object instance, object key, DependencyObjectParentChangedEventArgs args)
+		private void OnParentChanged(object instance, object key, object previousParent, object newParent)
 		{
 			// Set Content to null when we are removed from TemplatedParent. Otherwise Content.RemoveFromSuperview() may
 			// be called when it is attached to a different view.
-			if (args.NewParent == null)
+			if (newParent == null)
 			{
 				Content = null;
 			}
