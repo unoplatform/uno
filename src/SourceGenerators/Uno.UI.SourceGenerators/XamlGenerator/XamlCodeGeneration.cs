@@ -493,14 +493,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		{
 			var map = new XamlGlobalStaticResourcesMap();
 
-			BuildLocalProjectResources(files, map, ct);
-			BuildAmbientResources(map, ct);
+			BuildAmbientResources();
 			map.BuildResourceDictionaryMap(filesFull, links);
 
 			return map;
 		}
 
-		private void BuildAmbientResources(XamlGlobalStaticResourcesMap map, CancellationToken ct)
+		private void BuildAmbientResources()
 		{
 			// Lookup for GlobalStaticResources classes in external assembly
 			// references only, and in Uno.UI itself for generic.xaml-like resources.
@@ -525,100 +524,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						select typeName;
 
 			_ambientGlobalResources = query.Distinct().ToArray();
-
-			foreach (var ambientResources in _ambientGlobalResources)
-			{
-				ct.ThrowIfCancellationRequested();
-
-				var publicProperties = from member in ambientResources.GetAllProperties()
-									   where member.DeclaredAccessibility == Microsoft.CodeAnalysis.Accessibility.Public
-									   select member;
-
-				foreach (var member in publicProperties)
-				{
-					map.Add(member.Name, ambientResources.ContainingNamespace.ToDisplayString(), XamlGlobalStaticResourcesMap.ResourcePrecedence.System);
-				}
-			}
-		}
-
-		private void BuildLocalProjectResources(XamlFileDefinition[] files, XamlGlobalStaticResourcesMap map, CancellationToken ct)
-		{
-			foreach (var file in files)
-			{
-				ct.ThrowIfCancellationRequested();
-
-				var topLevelControl = file.Objects.FirstOrDefault();
-
-				if (topLevelControl?.Type.Name == "ResourceDictionary")
-				{
-					BuildResourceMap(topLevelControl, map);
-
-					var themeDictionaries = topLevelControl.Members.FirstOrDefault(m => m.Member.Name == "ThemeDictionaries");
-
-					if (themeDictionaries != null)
-					{
-						// We extract all distinct keys of all themed resource dictionaries defined and add them to global map
-
-						IEnumerable<string> GetResources(XamlObjectDefinition themeDictionary)
-						{
-							if (!(themeDictionary.Members
-								.FirstOrDefault(x => x.Member.Name.Equals("Key"))
-								?.Value is string))
-							{
-								yield break;
-							}
-
-							var resources = themeDictionary.Members
-								.FirstOrDefault(x => x.Member.Name.Equals("_UnknownContent"))
-								?.Objects;
-
-							if (resources != null)
-							{
-								foreach (var resource in resources)
-								{
-									if (resource.Members.FirstOrDefault(x => x.Member.Name.Equals("Key"))
-										?.Value is string resourceKey)
-									{
-										yield return resourceKey;
-									}
-								}
-							}
-						}
-
-						var themeResources = themeDictionaries
-							.Objects
-							.SelectMany(GetResources)
-							.Distinct();
-
-						foreach (var themeResource in themeResources)
-						{
-							map.Add(themeResource, _defaultNamespace, XamlGlobalStaticResourcesMap.ResourcePrecedence.Local);
-						}
-					}
-				}
-			}
-		}
-
-		private void BuildResourceMap(XamlObjectDefinition parentNode, XamlGlobalStaticResourcesMap map)
-		{
-			var contentNode = parentNode.Members.FirstOrDefault(m => m.Member.Name == "_UnknownContent");
-
-			if (contentNode != null)
-			{
-				foreach (var resource in contentNode.Objects)
-				{
-					var key = resource.Members.FirstOrDefault(m => m.Member.Name == "Key");
-
-					if (
-						key != null
-						&& key.Value?.ToString() is { } value
-						&& resource.Type.Name != "StaticResource"
-					)
-					{
-						map.Add(value, _defaultNamespace, XamlGlobalStaticResourcesMap.ResourcePrecedence.Local);
-					}
-				}
-			}
 		}
 
 		// Get keys of localized strings
