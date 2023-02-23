@@ -206,14 +206,6 @@ namespace Uno.UI
 
 		public static class FrameworkElement
 		{
-			[Obsolete("This flag is no longer used.")]
-			[EditorBrowsable(EditorBrowsableState.Never)]
-			public static bool UseLegacyApplyStylePhase { get; set; }
-
-			[Obsolete("This flag is no longer used.")]
-			[EditorBrowsable(EditorBrowsableState.Never)]
-			public static bool ClearPreviousOnStyleChange { get; set; }
-
 #if __ANDROID__
 			/// <summary>
 			/// Controls the propagation of <see cref="Windows.UI.Xaml.FrameworkElement.Loaded"/> and
@@ -668,16 +660,6 @@ namespace Uno.UI
 
 		public static class Xaml
 		{
-			/// <summary>
-			/// Maximal "BasedOn" recursive resolution depth.
-			/// </summary>
-			/// <remarks>
-			/// This is a mechanism to prevent hard-to-diagnose stack overflow when a resource name is not found.
-			/// </remarks>
-			[Obsolete("This flag is no longer used.")]
-			[EditorBrowsable(EditorBrowsableState.Never)]
-			public static int MaxRecursiveResolvingDepth { get; set; } = 12;
-
 			/// <summary>
 			/// By default, XAML hot reload will be enabled when building in debug. Setting this flag to 'true' will force it to be disabled.
 			/// </summary>

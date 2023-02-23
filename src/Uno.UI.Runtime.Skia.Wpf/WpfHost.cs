@@ -117,20 +117,6 @@ namespace Uno.UI.Skia.Platform
 
 		internal WpfCanvas? NativeOverlayLayer => _nativeOverlayLayer;
 
-		/// <summary>
-		/// Creates a WpfHost element to host a Uno-Skia into a WPF application.
-		/// </summary>
-		/// <param name="appBuilder">App builder.</param>
-		/// <param name="args">Deprecated, value ignored.</param>		
-		/// <remarks>
-		/// Args are obsolete and will be removed in the future. Environment.CommandLine is used instead
-		/// to fill LaunchEventArgs.Arguments.
-		/// </remarks>
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		public WpfHost(global::System.Windows.Threading.Dispatcher dispatcher, Func<WinUI.Application> appBuilder, string[]? args = null) : this(dispatcher, appBuilder)
-		{
-		}
-
 		public WpfHost(global::System.Windows.Threading.Dispatcher dispatcher, Func<WinUI.Application> appBuilder)
 		{
 			FocusVisualStyle = null;
@@ -386,10 +372,6 @@ namespace Uno.UI.Skia.Platform
 				InvalidateVisual();
 			}
 		}
-
-		[Obsolete("It will be removed in the next major release.")]
-		public SKSize CanvasSize
-			=> _renderer?.CanvasSize ?? SKSize.Empty;
 
 		protected override void OnRender(DrawingContext drawingContext)
 		{
