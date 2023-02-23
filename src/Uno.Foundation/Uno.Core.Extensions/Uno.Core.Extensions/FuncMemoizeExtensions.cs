@@ -15,15 +15,12 @@
 //
 // ******************************************************************
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-
-#if !HAS_NO_CONCURRENT_DICT
-using System.Collections.Concurrent;
-#endif
 
 #if IS_UNO_FOUNDATION_RUNTIME_WEBASSEMBLY_PROJECT
 namespace Uno.Foundation.Runtime.WebAssembly.Helpers
@@ -230,40 +227,9 @@ namespace Uno.Extensions
 		/// <returns>A memoized value</returns>
 		public static Func<TKey, TResult> AsLockedMemoized<TKey, TResult>(this Func<TKey, TResult> func)
 		{
-#if XAMARIN
-			// On Xamarin.iOS, the SynchronizedDictionary type costs a lot in terms of 
-			// generic delegates, where trampolines are used a lot. As simple lock will not create that
-			// much contention for now.
-
-			var values = new Dictionary<TKey, TResult>();
-
-			return (key) =>
-			{
-				lock (values)
-				{
-					return values.FindOrCreate(key, () => func(key));
-				}
-			};
-
-#elif !HAS_NO_CONCURRENT_DICT
 			var values = new ConcurrentDictionary<TKey, TResult>();
 
 			return (key) => values.GetOrAdd(key, func);
-#else
-			var values = new SynchronizedDictionary<TKey, TResult>();
-
-			return (key) =>
-			{
-				TResult value = default(TResult);
-
-				values.Lock.Write(
-					v => v.TryGetValue(key, out value),
-					v => value = values[key] = func(key)
-				);
-
-				return value;
-			};
-#endif
 		}
 
 		/// <summary>
@@ -274,26 +240,6 @@ namespace Uno.Extensions
 		/// <returns>A memoized value</returns>
 		public static Func<TArg1, TArg2, TResult> AsLockedMemoized<TArg1, TArg2, TResult>(this Func<TArg1, TArg2, TResult> func)
 		{
-#if XAMARIN
-			// On Xamarin.iOS, the SynchronizedDictionary type costs a lot in terms of 
-			// generic delegates, where trampolines are used a lot. As simple lock will not create that
-			// much contention for now.
-
-			var values = new Dictionary<CachedTuple<TArg1, TArg2>, TResult>(CachedTuple<TArg1, TArg2>.Comparer);
-
-			return (arg1, arg2) =>
-			{
-				var tuple = CachedTuple.Create(arg1, arg2);
-
-				lock (values)
-				{
-					return values.FindOrCreate(
-						tuple,
-						() => func(tuple.Item1, tuple.Item2)
-					);
-				}
-			};
-#elif !HAS_NO_CONCURRENT_DICT
 			var values = new ConcurrentDictionary<CachedTuple<TArg1, TArg2>, TResult>(CachedTuple<TArg1, TArg2>.Comparer);
 
 			return (arg1, arg2) =>
@@ -307,26 +253,8 @@ namespace Uno.Extensions
 					k => func(k.Item1, k.Item2)
 				);
 			};
-#else
-			var values = new SynchronizedDictionary<Tuple<TArg1, TArg2>, TResult>();
-
-			return (arg1, arg2) =>
-			{
-				TResult value = default(TResult);
-
-				var tuple = Tuple.Create(arg1, arg2);
-
-				values.Lock.Write(
-					v => v.TryGetValue(tuple, out value),
-					v => value = values[tuple] = func(arg1, arg2)
-				);
-
-				return value;
-			};
-#endif
 		}
 
-#if !HAS_NO_EXTENDED_TUPLE
 		/// <summary>
 		/// Memoizer with three parameters, used to perform a lazy-cached evaluation. (see http://en.wikipedia.org/wiki/Memoization)
 		/// </summary>
@@ -352,8 +280,7 @@ namespace Uno.Extensions
 					);
 				}
 			};
-
-#elif !HAS_NO_CONCURRENT_DICT
+#else
 			var values = new ConcurrentDictionary<CachedTuple<TArg1, TArg2, TArg3>, TResult>(CachedTuple<TArg1, TArg2, TArg3>.Comparer);
 
 			return (arg1, arg2, arg3) =>
@@ -367,28 +294,9 @@ namespace Uno.Extensions
 					k => func(k.Item1, k.Item2, k.Item3)
 				);
 			};
-#else
-
-			var values = new SynchronizedDictionary<Tuple<TArg1, TArg2, TArg3>, TResult>();
-
-			return (arg1, arg2, arg3) =>
-			{
-				TResult value = default(TResult);
-
-				var tuple = new Tuple<TArg1, TArg2, TArg3>(arg1,arg2, arg3);
-
-				values.Lock.Write(
-					v => v.TryGetValue(tuple, out value),
-					v => value = values[tuple] = func(arg1, arg2, arg3)
-				);
-
-				return value;
-			};
 #endif
 		}
-#endif
 
-#if !HAS_NO_EXTENDED_TUPLE
 		/// <summary>
 		/// Memoizer with four parameters, used to perform a lazy-cached evaluation. (see http://en.wikipedia.org/wiki/Memoization)
 		/// </summary>
@@ -414,8 +322,7 @@ namespace Uno.Extensions
 					);
 				}
 			};
-
-#elif !HAS_NO_CONCURRENT_DICT
+#else
 			var values = new ConcurrentDictionary<CachedTuple<TArg1, TArg2, TArg3, TArg4>, TResult>(CachedTuple<TArg1, TArg2, TArg3, TArg4>.Comparer);
 
 			return (arg1, arg2, arg3, arg4) =>
@@ -429,25 +336,7 @@ namespace Uno.Extensions
 					k => func(k.Item1, k.Item2, k.Item3, k.Item4)
 				);
 			};
-#else
-
-			var values = new SynchronizedDictionary<Tuple<TArg1, TArg2, TArg3, TArg4>, TResult>();
-
-			return (arg1, arg2, arg3, arg4) =>
-			{
-				TResult value = default(TResult);
-
-				var tuple = new Tuple<TArg1, TArg2, TArg3, TArg4>(arg1, arg2, arg3, arg4);
-
-				values.Lock.Write(
-					v => v.TryGetValue(tuple, out value),
-					v => value = values[tuple] = func(arg1, arg2, arg3, arg4)
-				);
-
-				return value;
-			};
 #endif
 		}
-#endif
 	}
 }
