@@ -206,7 +206,7 @@ namespace Windows.UI.Xaml.Controls
 			double xOffset = 0;
 			double yOffset = 0;
 
-			var windowBounds = Xaml.Window.Current.Bounds;
+			var xamlRootSize = XamlRoot?.Size ?? Xaml.Window.Current.Bounds.Size;
 
 			var flowDirection = FlowDirection;
 
@@ -216,13 +216,13 @@ namespace Windows.UI.Xaml.Controls
 
 			if (m_placementMode == PlacementMode.EntireControlInPopup)
 			{
-				Height = windowBounds.Height;
-				Width = windowBounds.Width;
+				Height = xamlRootSize.Height;
+				Width = xamlRootSize.Width;
 			}
 			else if (m_tpLayoutRootPart != null)
 			{
-				m_tpLayoutRootPart.Height = windowBounds.Height;
-				m_tpLayoutRootPart.Width = windowBounds.Width;
+				m_tpLayoutRootPart.Height = xamlRootSize.Height;
+				m_tpLayoutRootPart.Width = xamlRootSize.Width;
 			}
 
 			// Uno - omitted code related to display regions, which aren't currently supported

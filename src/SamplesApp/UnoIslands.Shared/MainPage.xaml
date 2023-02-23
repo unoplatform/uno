@@ -25,5 +25,6 @@
 			<TextBlock Text="{Binding Phone}" />
 			<TextBox Text="{Binding Note, Mode=TwoWay}" PlaceholderText="Enter a note..." />
 		</StackPanel>
+		<Button Click="Button_Click">Test dialog</Button>
 	</Grid>
 </Page>
