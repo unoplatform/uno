@@ -2,10 +2,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
-using System.Linq;
-using System.Security.Cryptography;
 using Uno.UI.SourceGenerators.Helpers;
 using Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection;
 

@@ -327,7 +327,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				TrackStartGeneration(files);
 
-				var globalStaticResourcesMap = BuildAssemblyGlobalStaticResourcesMap(files, filesFull, _xamlSourceLinks, _generatorContext.CancellationToken);
+				var globalStaticResourcesMap = BuildAssemblyGlobalStaticResourcesMap(filesFull, _xamlSourceLinks);
 
 				var filesToProcess = files.AsParallel();
 
@@ -489,7 +489,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		}
 #endif
 
-		private XamlGlobalStaticResourcesMap BuildAssemblyGlobalStaticResourcesMap(XamlFileDefinition[] files, XamlFileDefinition[] filesFull, string[] links, CancellationToken ct)
+		private XamlGlobalStaticResourcesMap BuildAssemblyGlobalStaticResourcesMap(XamlFileDefinition[] filesFull, string[] links)
 		{
 			var map = new XamlGlobalStaticResourcesMap();
 
