@@ -1,4 +1,5 @@
-﻿#nullable enable
+﻿
+#nullable enable
 
 using System;
 using System.Runtime.InteropServices;
@@ -39,7 +40,23 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 	public bool Initialize()
 	{
 		// Get the window from the wpf control
-		_hwnd = new WindowInteropHelper(Window.GetWindow(_hostControl)).Handle;
+		var hwnd = new WindowInteropHelper(Window.GetWindow(_hostControl)).Handle;
+
+		if (hwnd != 0 && hwnd == _hwnd)
+		{
+			if (this.Log().IsEnabled(LogLevel.Trace))
+			{
+				this.Log().Trace($"Surface already initialized on the same window");
+			}
+
+			return true;
+		}
+		else
+		{
+			Release();
+		}
+
+		_hwnd = hwnd;
 
 		// Get the device context for the window
 		_hdc = NativeMethods.GetDC(_hwnd);
@@ -228,20 +245,42 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 
 	internal static GRContext CreateGRGLContext()
 	{
-		var glInterface = GRGlInterface.Create()
-			?? throw new NotSupportedException($"OpenGL is not supported in this system");
+		throw new NotSupportedException($"OpenGL is not supported in this system");
 
-		var context = GRContext.CreateGl(glInterface)
-			?? throw new NotSupportedException($"OpenGL is not supported in this system (failed to create context)");
+		//var glInterface = GRGlInterface.Create()
+		//	?? throw new NotSupportedException($"OpenGL is not supported in this system");
 
-		return context;
+		//var context = GRContext.CreateGl(glInterface)
+		//	?? throw new NotSupportedException($"OpenGL is not supported in this system (failed to create context)");
+
+		//return context;
 	}
 
 	public void Dispose()
 	{
+		Release();
+	}
+
+	private void Release()
+	{
 		// Cleanup resources
 		NativeMethods.wglDeleteContext(_glContext);
 		NativeMethods.ReleaseDC(_hwnd, _hdc);
+
+		_glContext = 0;
+		_hwnd = 0;
+		_hdc = IntPtr.Zero;
+
+		_grContext?.Dispose();
+		_grContext = null;
+
+		_renderTarget?.Dispose();
+		_renderTarget = null;
+
+		_surface?.Dispose();
+		_surface = null;
+
+		_backBuffer = null;
 	}
 
 	public SKSize CanvasSize
