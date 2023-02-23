@@ -4,6 +4,9 @@
 		<TargetFrameworksCI>MonoAndroid13.0;MonoAndroid12.0;xamarinios10;netstandard2.0</TargetFrameworksCI>
 		<!-- {0} does not explicitly define the {1} base type in code behind. -->
 		<NoWarn>$(NoWarn);UXAML0002;CS1030</NoWarn>
+
+		<!-- We have a test that explicitly verifies backward compatibility when a namespace is not found and fuzzy matching should be used. -->
+		<UnoEnableXamlFuzzyMatching>true</UnoEnableXamlFuzzyMatching>
 	</PropertyGroup>
 
 	<PropertyGroup>
