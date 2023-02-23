@@ -2281,7 +2281,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private bool IsXamlTypeConverter(INamedTypeSymbol? symbol)
 		{
-			return symbol?.GetAttributes().Any(a => a.AttributeClass?.Equals(_createFromStringAttributeSymbol) == true) == true;
+			return symbol?.GetAttributes().Any(a => a.AttributeClass?.Equals(_createFromStringAttributeSymbol, SymbolEqualityComparer.Default) == true) == true;
 		}
 
 		private string BuildXamlTypeConverterLiteralValue(INamedTypeSymbol? symbol, string memberValue, bool includeQuotations)
