@@ -815,7 +815,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				if (ns is null)
 				{
 					// The given namespace is not found. We can't resolve a symbol.
-					return null;
+					// We should be returning null here, but we fallback to fuzzy matching if enabled.
+					return SearchWithFuzzyMatching(fields[1]);
 				}
 				else if (ns.Namespace.Equals("http://schemas.microsoft.com/winfx/2006/xaml/presentation", StringComparison.Ordinal))
 				{
@@ -825,6 +826,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					// We are dealing with a namespace on the form `xmlns:android="http://platform.uno/android#using:TestNS;TestNS2"`
 					// In this case, we search both the default namespaces and the user-specified namespaces.
+					// This code path is about the new "#using" syntax, so we never fallback to fuzzy matching here.
 					var firstResult = SearchClrNamespaces(fields[1]);
 					if (firstResult is not null)
 					{
@@ -870,7 +872,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					return namedTypeSymbol3;
 				}
 
-				return null;
+				return SearchWithFuzzyMatching(fields[1]);
 			}
 
 			// In this path, we are dealing with a simple name (not containing colon :)
@@ -879,12 +881,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				return namedTypeSymbol4;
 			}
 
-			if (_enableFuzzyMatching)
-			{
-				return SearchWithFuzzyMatching(name);
-			}
-
-			return null;
+			return SearchWithFuzzyMatching(name);
 
 			INamedTypeSymbol? SearchClrNamespaces(string name)
 			{
@@ -905,6 +902,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			INamedTypeSymbol? SearchWithFuzzyMatching(string name)
 			{
+				if (!_enableFuzzyMatching)
+				{
+					return null;
+				}
+
 				var symbol = _metadataHelper.Compilation.GetSymbolsWithName(name, SymbolFilter.Type).OfType<INamedTypeSymbol>().FirstOrDefault();
 				if (symbol is not null)
 				{
