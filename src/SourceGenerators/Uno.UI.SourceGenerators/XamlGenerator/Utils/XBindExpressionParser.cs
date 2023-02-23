@@ -30,11 +30,15 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 
 		// TODO: isRValue feels like a hack so that we generate compilable code when bindings are generated as LValue.
 		// However, we could be incorrectly throwing NRE. This should be handled properly.
-		internal static string Rewrite(string contextName, string rawFunction, INamedTypeSymbol? contextTypeSymbol, bool isRValue)
+		internal static string Rewrite(string contextName, string rawFunction, INamedTypeSymbol? contextTypeSymbol, bool isRValue, Func<string, INamedTypeSymbol?> findType)
 		{
 			SyntaxNode expression = ParseExpression(rawFunction);
 
-			expression = new Rewriter(contextName).Visit(expression);
+			expression = new Rewriter(contextName, findType).Visit(expression);
+			if (contextTypeSymbol is null)
+			{
+				throw new Exception("Null context symbol!");
+			}
 			if (isRValue && contextTypeSymbol is not null)
 			{
 				var nullabilityRewriter = new NullabilityRewriter(contextName, contextTypeSymbol);
@@ -45,6 +49,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 						nullabilityRewriter.Result + " ?? global::Windows.UI.Xaml.DependencyProperty.UnsetValue" :
 						nullabilityRewriter.Result;
 				}
+				else
+				{
+					//throw new Exception(rawFunction);
+				}
 			}
 
 			return expression.ToFullString();
@@ -53,8 +61,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 		private class Rewriter : CSharpSyntaxRewriter
 		{
 			private readonly string _contextName;
+			private readonly Func<string, INamedTypeSymbol?> _findType;
 
-			public Rewriter(string contextName)
+			public Rewriter(string contextName, Func<string, INamedTypeSymbol?> findType)
 			{
 				if (string.IsNullOrEmpty(contextName))
 				{
@@ -62,6 +71,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 				}
 
 				_contextName = contextName;
+				_findType = findType;
 			}
 
 			public override SyntaxNode? VisitInvocationExpression(InvocationExpressionSyntax node)
@@ -122,12 +132,23 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 							&& property.Expression is MemberAccessExpressionSyntax memberAccessExpression
 							)
 						{
-							return ParseExpression($"{memberAccessExpression.Expression}.Get{memberAccessExpression.Name}");
+							return ParseExpression($"{GetGlobalizedTypeName(memberAccessExpression.Expression.ToString())}.Get{memberAccessExpression.Name}");
 						}
 					}
 				}
 
 				return e;
+			}
+
+			private string GetGlobalizedTypeName(string typeName)
+			{
+				var typeSymbol = _findType(typeName);
+				if (typeSymbol is null)
+				{
+					return typeName;
+				}
+
+				return typeSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
 			}
 
 			public override SyntaxNode? VisitIdentifierName(IdentifierNameSyntax node)
