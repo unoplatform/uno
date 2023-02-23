@@ -16,7 +16,6 @@ namespace Uno.Roslyn
 	{
 		private readonly INamedTypeSymbol _nullableSymbol;
 		private readonly Func<string, ITypeSymbol> _findTypeByFullName;
-		private readonly Func<INamedTypeSymbol, INamedTypeSymbol[]> _getAllTypesAttributedWith;
 
 		public Compilation Compilation { get; }
 
@@ -27,7 +26,6 @@ namespace Uno.Roslyn
 			Compilation = context.Compilation;
 
 			_findTypeByFullName = Funcs.Create<string, ITypeSymbol>(SourceFindTypeByFullName).AsLockedMemoized();
-			_getAllTypesAttributedWith = Funcs.Create<INamedTypeSymbol, INamedTypeSymbol[]>(SourceGetAllTypesAttributedWith).AsLockedMemoized();
 			_nullableSymbol = Compilation.GetSpecialType(SpecialType.System_Nullable_T);
 		}
 
@@ -47,7 +45,7 @@ namespace Uno.Roslyn
 
 			if (symbol == null)
 			{
-				// This type resolution is required because there is no way (yet) to get a type 
+				// This type resolution is required because there is no way (yet) to get a type
 				// symbol from a string for types that are not "simple", like generic types or arrays.
 
 				// We then use a temporary documents that contains all the known
@@ -88,11 +86,5 @@ namespace Uno.Roslyn
 
 			return symbol;
 		}
-
-		public INamedTypeSymbol[] GetAllTypesAttributedWith(INamedTypeSymbol attributeClass)
-			=> _getAllTypesAttributedWith(attributeClass);
-
-		private INamedTypeSymbol[] SourceGetAllTypesAttributedWith(INamedTypeSymbol attributeClass)
-			=> Compilation.GlobalNamespace.GetNamespaceTypes().Where(t => t.FindAttribute(attributeClass) is { }).ToArray();
 	}
 }

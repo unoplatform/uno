@@ -176,8 +176,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly INamedTypeSymbol _styleSymbol;
 		private readonly INamedTypeSymbol _setterSymbol;
 		private readonly INamedTypeSymbol _colorSymbol;
-
-		private readonly List<INamedTypeSymbol> _xamlConversionTypes;
+		private readonly INamedTypeSymbol? _createFromStringAttributeSymbol;
 
 		private readonly bool _isWasm;
 
@@ -310,11 +309,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_dataBindingSymbol = (INamedTypeSymbol)_metadataHelper.GetTypeByFullName("Windows.UI.Xaml.Data.Binding");
 			_styleSymbol = (INamedTypeSymbol)_metadataHelper.GetTypeByFullName(XamlConstants.Types.Style);
 			_colorSymbol = (INamedTypeSymbol)_metadataHelper.GetTypeByFullName(XamlConstants.Types.Color);
+			_createFromStringAttributeSymbol = _metadataHelper.GetTypeByFullName(XamlConstants.Types.CreateFromStringAttribute) as INamedTypeSymbol;
 			_androidContentContextSymbol = _metadataHelper.FindTypeByFullName("Android.Content.Context") as INamedTypeSymbol;
 			_androidViewSymbol = _metadataHelper.FindTypeByFullName("Android.Views.View") as INamedTypeSymbol;
 			_iOSViewSymbol = _metadataHelper.FindTypeByFullName("UIKit.UIView") as INamedTypeSymbol;
 			_appKitViewSymbol = _metadataHelper.FindTypeByFullName("AppKit.NSView") as INamedTypeSymbol;
-			_xamlConversionTypes = _metadataHelper.GetAllTypesAttributedWith((INamedTypeSymbol)_metadataHelper.GetTypeByFullName(XamlConstants.Types.CreateFromStringAttribute)).ToList();
 			ShouldWriteErrorOnInvalidXaml = shouldWriteErrorOnInvalidXaml;
 
 			_isWasm = isWasm;
@@ -2282,7 +2281,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private bool IsXamlTypeConverter(INamedTypeSymbol? symbol)
 		{
-			return _xamlConversionTypes.Any(ns => SymbolEqualityComparer.Default.Equals(ns, symbol));
+			return symbol?.GetAttributes().Any(a => a.AttributeClass?.Equals(_createFromStringAttributeSymbol) == true) == true;
 		}
 
 		private string BuildXamlTypeConverterLiteralValue(INamedTypeSymbol? symbol, string memberValue, bool includeQuotations)
