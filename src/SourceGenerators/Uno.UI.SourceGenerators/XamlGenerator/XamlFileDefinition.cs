@@ -33,6 +33,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		public string FilePath { get; private set; }
 
+		public string? SourceLink { get; internal set; }
+
 		/// <summary>
 		/// Provides the path to the file using an actual target path in the project
 		/// </summary>

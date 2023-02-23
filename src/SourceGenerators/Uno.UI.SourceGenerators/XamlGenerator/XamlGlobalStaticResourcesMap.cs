@@ -45,7 +45,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// </summary>
 		internal string GetSourceLink(XamlFileDefinition xamlFileDefinition)
 		{
-			return _rdMap.FirstOrDefault(kvp => kvp.Value == xamlFileDefinition).Key; //TODO: this is O(n), is it an actual perf issue?
+			return xamlFileDefinition.SourceLink!;
 		}
 
 		private string ConvertIdToResourceDictionaryProperty(string id) => "{0}_ResourceDictionary".InvariantCultureFormat(id);
@@ -57,7 +57,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		{
 			for (int i = 0; i < files.Length; i++)
 			{
-				_rdMap[links[i].Replace('\\', '/')] = files[i];
+				var sourceLink = links[i].Replace('\\', '/');
+				_rdMap[sourceLink] = files[i];
+				files[i].SourceLink = sourceLink;
 			}
 		}
 	}
