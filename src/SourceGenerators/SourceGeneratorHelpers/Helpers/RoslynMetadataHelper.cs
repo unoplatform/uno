@@ -14,12 +14,9 @@ namespace Uno.Roslyn
 {
 	internal class RoslynMetadataHelper
 	{
-		private const string AdditionalTypesFileName = "additionalTypes.cs";
-
 		private readonly INamedTypeSymbol _nullableSymbol;
 		private readonly Func<string, ITypeSymbol> _findTypeByFullName;
 		private readonly Func<INamedTypeSymbol, INamedTypeSymbol[]> _getAllTypesAttributedWith;
-		private readonly Dictionary<string, INamedTypeSymbol> _additionalTypesMap;
 
 		public Compilation Compilation { get; }
 
@@ -28,50 +25,10 @@ namespace Uno.Roslyn
 		public RoslynMetadataHelper(GeneratorExecutionContext context)
 		{
 			Compilation = context.Compilation;
-			_additionalTypesMap = GenerateAdditionalTypesMap();
 
 			_findTypeByFullName = Funcs.Create<string, ITypeSymbol>(SourceFindTypeByFullName).AsLockedMemoized();
 			_getAllTypesAttributedWith = Funcs.Create<INamedTypeSymbol, INamedTypeSymbol[]>(SourceGetAllTypesAttributedWith).AsLockedMemoized();
 			_nullableSymbol = Compilation.GetSpecialType(SpecialType.System_Nullable_T);
-		}
-
-		private Dictionary<string, INamedTypeSymbol> GenerateAdditionalTypesMap()
-		{
-			var tree = Compilation.SyntaxTrees.FirstOrDefault(s => s.FilePath == AdditionalTypesFileName);
-
-			if (tree != null)
-			{
-				var additionalTypesTree = Compilation.GetSemanticModel(tree);
-
-				INamedTypeSymbol GetFieldSymbol(FieldDeclarationSyntax fieldSyntax)
-				{
-					var info = additionalTypesTree.GetSymbolInfo(fieldSyntax.Declaration.Type);
-
-					if (info.Symbol != null && info.Symbol.Kind != SymbolKind.ErrorType)
-					{
-						return info.Symbol as INamedTypeSymbol;
-					}
-
-					var declaredSymbol = additionalTypesTree.GetDeclaredSymbol(fieldSyntax.Declaration.Type);
-
-					if (declaredSymbol != null && declaredSymbol.Kind != SymbolKind.ErrorType)
-					{
-						return declaredSymbol as INamedTypeSymbol;
-					}
-
-					return null;
-				}
-
-				return tree
-					.GetRoot()
-					.DescendantNodesAndSelf()
-					.OfType<FieldDeclarationSyntax>()
-					.ToDictionary(s => s.Declaration.Type.ToString(), GetFieldSymbol);
-			}
-			else
-			{
-				return new Dictionary<string, INamedTypeSymbol>();
-			}
 		}
 
 		public ITypeSymbol FindTypeByFullName(string fullName)
@@ -114,11 +71,6 @@ namespace Uno.Roslyn
 					{
 						return _nullableSymbol.Construct(type);
 					}
-				}
-
-				if (_additionalTypesMap.TryGetValue(fullName, out var additionalType))
-				{
-					return additionalType;
 				}
 			}
 
