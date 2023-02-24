@@ -9164,6 +9164,23 @@
 			<Member fullName="System.Runtime.InteropServices.NFloat Uno.UI.ViewHelper::MainScreenScale" reason="Api alignments" />
 			<Member fullName="System.Boolean Uno.UI.ViewHelper::IsRetinaDisplay" reason="Api alignments" />
 			<Member fullName="System.nfloat Uno.UI.ViewHelper::MainScreenScale" reason="Api alignments" />
+			<Member fullName="Windows.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.StackLayout::SpacingProperty" reason="Api alignments" />
+			<Member fullName="Windows.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.StackLayout::DisableVirtualizationProperty" reason="Api alignments" />
+			<Member fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Documents.TextElement::BaseLineAlignmentProperty" reason="Api alignments" />
+			<Member fullName="Windows.UI.Xaml.DependencyProperty Uno.UI.Controls.BindableDrawerLayout::IsEnabledProperty" reason="Api alignments" />
+			<Member fullName="Windows.UI.Xaml.DependencyProperty Uno.UI.Controls.BindableDrawerLayout::ContentProperty" reason="Api alignments" />
+			<Member fullName="Windows.UI.Xaml.DependencyProperty Uno.UI.Controls.BindableDrawerLayout::RightPaneProperty" reason="Api alignments" />
+			<Member fullName="Windows.UI.Xaml.DependencyProperty Uno.UI.Controls.BindableDrawerLayout::RightPaneOpenLengthProperty" reason="Api alignments" />
+			<Member fullName="Windows.UI.Xaml.DependencyProperty Uno.UI.Controls.BindableDrawerLayout::IsRightPaneOpenProperty" reason="Api alignments" />
+			<Member fullName="Windows.UI.Xaml.DependencyProperty Uno.UI.Controls.BindableDrawerLayout::RightPaneBackgroundProperty" reason="Api alignments" />
+			<Member fullName="Windows.UI.Xaml.DependencyProperty Uno.UI.Controls.BindableDrawerLayout::LeftPaneProperty" reason="Api alignments" />
+			<Member fullName="Windows.UI.Xaml.DependencyProperty Uno.UI.Controls.BindableDrawerLayout::LeftPaneOpenLengthProperty" reason="Api alignments" />
+			<Member fullName="Windows.UI.Xaml.DependencyProperty Uno.UI.Controls.BindableDrawerLayout::IsLeftPaneOpenProperty" reason="Api alignments" />
+			<Member fullName="Windows.UI.Xaml.DependencyProperty Uno.UI.Controls.BindableDrawerLayout::LeftPaneBackgroundProperty" reason="Api alignments" />
+			<Member fullName="Windows.UI.Xaml.DependencyProperty Uno.UI.Controls.Legacy.GridView::PaddingProperty" reason="Api alignments" />
+			<Member fullName="Windows.UI.Xaml.DependencyProperty Uno.UI.Controls.Legacy.GridView::ItemContainerStyleProperty" reason="Api alignments" />
+			<Member fullName="Foundation.NSString Windows.Media.Playback.MediaPlayer::RateObservationContext" reason="Api alignments" />
+			<Member fullName="UIKit.UIInterfaceOrientationMask[] Windows.Graphics.Display.DisplayInformation::PreferredOrientations" reason="Api alignments" />
 		</Fields>
 		<Properties>
 			<Member fullName="Microsoft.UI.Windowing.AppWindowConfiguration Microsoft.UI.Windowing.AppWindow::Configuration()" reason="Not present in WinAppSDK 1.2" />

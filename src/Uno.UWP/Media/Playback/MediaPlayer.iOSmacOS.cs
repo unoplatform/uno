@@ -117,7 +117,7 @@ namespace Windows.Media.Playback
 		private NSObject _playbackStalledNotification;
 		private NSObject _didPlayToEndTimeNotification;
 
-		public static NSString RateObservationContext = new NSString("AVCustomEditPlayerViewControllerRateObservationContext");
+		private static readonly NSString _rateObservationContext = new NSString("AVCustomEditPlayerViewControllerRateObservationContext");
 
 		const string MsAppXScheme = "ms-appx";
 
@@ -142,7 +142,7 @@ namespace Windows.Media.Playback
 					_player.CurrentItem?.RemoveObserver(_observer, new NSString("loadedTimeRanges"), _player.Handle);
 					_player.CurrentItem?.RemoveObserver(_observer, new NSString("status"), _player.Handle);
 					_player.CurrentItem?.RemoveObserver(_observer, new NSString("duration"), _player.Handle);
-					_player.RemoveObserver(_observer, new NSString("rate"), RateObservationContext.Handle);
+					_player.RemoveObserver(_observer, new NSString("rate"), _rateObservationContext.Handle);
 					_player.RemoveTimeObserver(_periodicTimeObserverObject);
 					_player.RemoveAllItems();
 				}
@@ -180,7 +180,7 @@ namespace Windows.Media.Playback
 			}
 #endif
 			_videoLayer.AddObserver(_observer, new NSString("videoRect"), NSKeyValueObservingOptions.New | NSKeyValueObservingOptions.Initial, _videoLayer.Handle);
-			_player.AddObserver(_observer, new NSString("rate"), NSKeyValueObservingOptions.New | NSKeyValueObservingOptions.Initial, RateObservationContext.Handle);
+			_player.AddObserver(_observer, new NSString("rate"), NSKeyValueObservingOptions.New | NSKeyValueObservingOptions.Initial, _rateObservationContext.Handle);
 
 			_itemFailedToPlayToEndTimeNotification = AVPlayerItem.Notifications.ObserveItemFailedToPlayToEndTime(_observer.OnMediaFailed);
 			_playbackStalledNotification = AVPlayerItem.Notifications.ObservePlaybackStalled(_observer.OnMediaStalled);

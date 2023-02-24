@@ -4,12 +4,12 @@ namespace Windows.UI.Xaml;
 
 public partial class UIElement
 {
-	public static float ShadowOffsetMax = 150;
-	public static float ShadowAlphaFallback = 0.5f;
-	public static float ShadowAlphaMultiplier = 0.18f;
-	public static float ShadowOffsetAlphaModifier = 1f / 650f;
-	public static float ShadowSigmaXModifier = 1f / 5f;
-	public static float ShadowSigmaYModifier = 1f / 3.5f;
+	private const float ShadowOffsetMax = 150;
+	private const float ShadowAlphaFallback = 0.5f;
+	private const float ShadowAlphaMultiplier = 0.18f;
+	private const float ShadowOffsetAlphaModifier = 1f / 650f;
+	private const float ShadowSigmaXModifier = 1f / 5f;
+	private const float ShadowSigmaYModifier = 1f / 3.5f;
 
 	partial void UnsetShadow()
 	{

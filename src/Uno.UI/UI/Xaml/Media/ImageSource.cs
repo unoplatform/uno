@@ -37,6 +37,7 @@ namespace Windows.UI.Xaml.Media
 		const string MsAppXScheme = "ms-appx";
 		const string MsAppDataScheme = "ms-appdata";
 
+#pragma warning disable CA2211
 		/// <summary>
 		/// The default downloader instance used by all the new instances of <see cref="ImageSource"/>.
 		/// </summary>
@@ -46,6 +47,7 @@ namespace Windows.UI.Xaml.Media
 		/// The image downloader for the current instance.
 		/// </summary>
 		public IImageSourceDownloader Downloader;
+#pragma warning restore CA2211
 
 		/// <summary>
 		/// Initializes the Uno image downloader.
