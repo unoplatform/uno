@@ -779,13 +779,13 @@ namespace Windows.UI.Xaml
 
 			if (ReferenceEquals(callback.Target, ActualInstance))
 			{
-				return propertyDetails.CallbackManager.RegisterCallback(callback);
+				return propertyDetails.RegisterCallback(callback);
 			}
 			else
 			{
 				CreateWeakDelegate(callback, out var weakCallback, out var weakDelegateRelease);
 
-				var cookie = propertyDetails.CallbackManager.RegisterCallback(weakCallback);
+				var cookie = propertyDetails.RegisterCallback(weakCallback);
 
 				return new RegisterPropertyChangedCallbackForPropertyConditionalDisposable(
 					callback,
@@ -1905,7 +1905,7 @@ namespace Windows.UI.Xaml
 			}
 
 			// Raise the changes for the callbacks register through RegisterPropertyChangedCallback.
-			propertyDetails.CallbackManager.RaisePropertyChanged(actualInstanceAlias, eventArgs);
+			propertyDetails.RaisePropertyChanged(actualInstanceAlias, eventArgs);
 
 			// Raise the property change for generic handlers
 			for (var callbackIndex = 0; callbackIndex < _genericCallbacks.Data.Length; callbackIndex++)
