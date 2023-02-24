@@ -508,12 +508,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			writer.AppendLineIndented($"global::Uno.Helpers.DrawableHelper.SetDrawableResolver(global::{_xClassName?.Namespace}.{_xClassName?.ClassName}.DrawableResourcesIdResolver.Resolve);");
 			writer.AppendLineIndented($"#endif");
 
-			if (_isWasm)
-			{
-				writer.AppendLineIndented($"// Workaround for https://github.com/dotnet/runtime/issues/44269");
-				writer.AppendLineIndented($"typeof(global::Uno.UI.Runtime.WebAssembly.HtmlElementAttribute).GetHashCode();");
-			}
-
 			RegisterAndBuildResources(writer, topLevelControl, isInInitializer: false);
 			BuildProperties(writer, topLevelControl, isInline: false);
 
