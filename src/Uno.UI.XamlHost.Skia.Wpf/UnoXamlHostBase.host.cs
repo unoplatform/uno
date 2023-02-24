@@ -62,16 +62,30 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 
 			_designMode = DesignerProperties.GetIsInDesignMode(this);
 
-			InitializeRenderer();
+			SetupRenderer();
 			_hostPointerHandler = new HostPointerHandler(this);
+
+			Loaded += UnoXamlHostBase_Loaded;
+			Unloaded += UnoXamlHostBase_Unloaded;
 		}
 
-		private void InitializeRenderer()
+		private void UnoXamlHostBase_Unloaded(object sender, RoutedEventArgs e)
 		{
-			if (RenderSurfaceType is null)
+		}
+
+		private void UnoXamlHostBase_Loaded(object sender, RoutedEventArgs e)
+		{
+			if (!(_renderer?.Initialize() ?? false))
 			{
-				RenderSurfaceType = Uno.UI.Skia.RenderSurfaceType.OpenGL;
+				RenderSurfaceType = Uno.UI.Skia.RenderSurfaceType.Software;
+				SetupRenderer();
+				_renderer?.Initialize();
 			}
+		}
+
+		private void SetupRenderer()
+		{
+			RenderSurfaceType ??= Uno.UI.Skia.RenderSurfaceType.OpenGL;
 
 			_renderer = RenderSurfaceType switch
 			{
