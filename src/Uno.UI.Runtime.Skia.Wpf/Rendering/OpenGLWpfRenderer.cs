@@ -42,7 +42,7 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 		// Get the window from the wpf control
 		var hwnd = new WindowInteropHelper(Window.GetWindow(_hostControl)).Handle;
 
-		if (hwnd != 0 && hwnd == _hwnd)
+		if (hwnd != IntPtr.Zero && hwnd == _hwnd)
 		{
 			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
@@ -245,15 +245,13 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 
 	internal static GRContext CreateGRGLContext()
 	{
-		throw new NotSupportedException($"OpenGL is not supported in this system");
+		var glInterface = GRGlInterface.Create()
+			?? throw new NotSupportedException($"OpenGL is not supported in this system");
 
-		//var glInterface = GRGlInterface.Create()
-		//	?? throw new NotSupportedException($"OpenGL is not supported in this system");
+		var context = GRContext.CreateGl(glInterface)
+			?? throw new NotSupportedException($"OpenGL is not supported in this system (failed to create context)");
 
-		//var context = GRContext.CreateGl(glInterface)
-		//	?? throw new NotSupportedException($"OpenGL is not supported in this system (failed to create context)");
-
-		//return context;
+		return context;
 	}
 
 	public void Dispose()
