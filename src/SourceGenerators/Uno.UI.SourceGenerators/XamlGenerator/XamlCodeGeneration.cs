@@ -33,7 +33,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private readonly Uno.Roslyn.MSBuildItem[] _xamlSourceFiles;
 		private readonly string[] _xamlSourceLinks;
-		private readonly string _targetPath;
 		private readonly string _defaultLanguage;
 		private readonly bool _isWasm;
 		private readonly bool _isDesignTimeBuild;
@@ -235,11 +234,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				_enableFuzzyMatching = true;
 			}
 
-			_targetPath = Path.Combine(
-				_projectDirectory,
-				context.GetMSBuildPropertyValue("IntermediateOutputPath")
-			);
-
 			_defaultLanguage = context.GetMSBuildPropertyValue("DefaultLanguage");
 
 			_uiAutomationMappings = context.GetMSBuildItemsWithAdditionalFiles("CustomUiAutomationMemberMappingAdjusted")
@@ -426,7 +420,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					new XamlFileGenerator(
 						this,
 						file: file,
-						targetPath: _targetPath,
 						defaultNamespace: _defaultNamespace,
 						metadataHelper: _metadataHelper,
 						fileUniqueId: file.UniqueID,

@@ -60,7 +60,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private int _resourceOwner;
 		private readonly XamlFileDefinition _fileDefinition;
 		private readonly NamespaceDeclaration _defaultXmlNamespace;
-		private readonly string _targetPath;
 		private readonly string _defaultNamespace;
 		private readonly RoslynMetadataHelper _metadataHelper;
 		private readonly string _fileUniqueId;
@@ -81,7 +80,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly bool _isHotReloadEnabled;
 		private readonly bool _isInsideMainAssembly;
 		private readonly bool _isDesignTimeBuild;
-		private readonly string _relativePath;
 		private readonly bool _useXamlReaderHotReload;
 
 		/// <summary>
@@ -191,7 +189,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		public XamlFileGenerator(
 			XamlCodeGeneration generation,
 			XamlFileDefinition file,
-			string targetPath,
 			string defaultNamespace,
 			RoslynMetadataHelper metadataHelper,
 			string fileUniqueId,
@@ -222,7 +219,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		{
 			Generation = generation;
 			_fileDefinition = file;
-			_targetPath = targetPath;
 			_defaultNamespace = defaultNamespace;
 			_metadataHelper = metadataHelper;
 			_fileUniqueId = fileUniqueId;
@@ -249,7 +245,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			InitCaches();
 
-			_relativePath = PathHelper.GetRelativePath(_targetPath, _fileDefinition.FilePath);
 			ShouldWriteErrorOnInvalidXaml = shouldWriteErrorOnInvalidXaml;
 
 			_isWasm = isWasm;
@@ -271,35 +266,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 #if DEBUG
 			Console.WriteLine("Processing file {0}".InvariantCultureFormat(_fileDefinition.FilePath));
 #endif
-
-			// Check for the Roslyn generator's output location
-			var outputFile = Path.Combine(
-				_targetPath,
-				$@"g\{typeof(XamlCodeGenerator).Name}\{_fileDefinition.UniqueID}.g.cs"
-				);
-
-			if (File.Exists(outputFile))
-			{
-				var outputInfo = new FileInfo(outputFile);
-				var inputInfo = new FileInfo(_fileDefinition.FilePath);
-
-				if (
-					outputInfo.LastWriteTime >= inputInfo.LastWriteTime
-
-					// Check for the references update time. If the file has been generated before the last write time
-					// on the references, regenerate the output.
-					&& outputInfo.LastWriteTime > _lastReferenceUpdateTime
-
-					// Empty files should be regenerated
-					&& outputInfo.Length != 0
-				)
-				{
-#if DEBUG
-					Console.WriteLine("Skipping unmodified file {0}".InvariantCultureFormat(_fileDefinition.FilePath));
-#endif
-					return SourceText.From(File.ReadAllText(outputFile), Encoding.UTF8);
-				}
-			}
 
 			try
 			{
@@ -663,7 +629,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					blockWriter.AppendLineInvariantIndented(
 						"// Source {0} (Line {1}:{2})",
-						_relativePath,
+						_fileDefinition.TargetFilePath,
 						topLevelControl.LineNumber,
 						topLevelControl.LinePosition
 					);
@@ -862,7 +828,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					blockWriter.AppendLineInvariantIndented(
 						"// Source {0} (Line {1}:{2})",
-						_relativePath,
+						_fileDefinition.TargetFilePath,
 						topLevelControl.LineNumber,
 						topLevelControl.LinePosition
 					);
@@ -1685,7 +1651,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			TryAnnotateWithGeneratorSource(writer);
 			writer.AppendLineInvariantIndented(
 				"// Source {0} (Line {1}:{2})",
-					_relativePath,
+					_fileDefinition.TargetFilePath,
 				definition.LineNumber,
 				definition.LinePosition
 			);
