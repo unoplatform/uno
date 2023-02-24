@@ -121,7 +121,10 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 			this.Log().Trace($"OpenGL Version: {version}");
 		}
 
-		return true;
+
+		NativeMethods.wglMakeCurrent(_hdc, _glContext);
+
+		return TryCreateGRGLContext(out _grContext);
 	}
 
 	public void Render(DrawingContext drawingContext)
@@ -134,7 +137,8 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 				|| double.IsInfinity(_hostControl.ActualHeight)
 				|| _hostControl.Visibility != Visibility.Visible
 				|| _hdc == 0
-				|| _glContext == 0)
+				|| _glContext == 0
+				|| _grContext is null)
 		{
 			return;
 		}
@@ -161,9 +165,6 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 		}
 
 		NativeMethods.wglMakeCurrent(_hdc, _glContext);
-
-		// create the contexts if not done already
-		_grContext ??= TryBuildGRContext();
 
 		if (_renderTarget == null || _surface == null || _renderTarget.Width != width || _renderTarget.Height != height)
 		{
@@ -240,18 +241,35 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 		return (framebuffer, stencil, samples);
 	}
 
-	private GRContext TryBuildGRContext()
-		=> CreateGRGLContext();
-
-	internal static GRContext CreateGRGLContext()
+	internal bool TryCreateGRGLContext(out GRContext? context)
 	{
-		var glInterface = GRGlInterface.Create()
-			?? throw new NotSupportedException($"OpenGL is not supported in this system");
+		context = null;
 
-		var context = GRContext.CreateGl(glInterface)
-			?? throw new NotSupportedException($"OpenGL is not supported in this system (failed to create context)");
+		var glInterface = GRGlInterface.Create();
 
-		return context;
+		if (glInterface is null)
+		{
+			if (this.Log().IsEnabled(LogLevel.Trace))
+			{
+				this.Log().Trace("OpenGL is not supported in this system (Cannot create GRGlInterface)");
+			}
+
+			return false;
+		}
+
+		context = GRContext.CreateGl(glInterface);
+
+		if (context is null)
+		{
+			if (this.Log().IsEnabled(LogLevel.Trace))
+			{
+				this.Log().Trace($"OpenGL is not supported in this system (failed to create GRContext)");
+			}
+
+			return false;
+		}
+
+		return true;
 	}
 
 	public void Dispose()
