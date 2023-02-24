@@ -55,7 +55,7 @@ public partial interface IPropertyValue
 	/// Returns the array of date and time values stored as a property value.
 	/// </summary>
 	/// <param name="value">The array of values.</param>
-	void GetDateTimeArray(out DateTime[] value);
+	void GetDateTimeArray(out DateTimeOffset[] value);
 
 	/// <summary>
 	/// Returns the floating-point value stored as a property value.
