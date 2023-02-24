@@ -58,7 +58,7 @@ You can find the [full sample code](https://github.com/unoplatform/Uno.Samples/b
 
 ## Moving the control style in a separate resource dictionary
 
-Placing XAML styles  in different files can be useful to make the XAML more readable and easier to browse.
+Placing XAML styles in different files can be useful to make the XAML more readable and easier to browse.
 
 Considering the example above:
 1. Right click on the project library again, then **Add**, **New Folder**, call it `Styles` (case sentitive)
