@@ -10,14 +10,15 @@ namespace Windows.UI.Xaml.Media.Animation
 	{
 		public static RepeatBehavior Forever => new RepeatBehavior() { Type = RepeatBehaviorType.Forever };
 
-		private static readonly string __forever = "Forever";
-		private static readonly string __count = "Count";
+		private const string ForeverLiteral = "Forever";
 
 		public RepeatBehavior(double count)
 		{
-			if (count <= 0)
+			if (double.IsInfinity(count) ||
+				double.IsNaN(count) ||
+				count < 0)
 			{
-				throw new ArgumentOutOfRangeException("count", "Count must be greater than zero.");
+				throw new ArgumentOutOfRangeException(nameof(count), count, "The count must be a positive number, and not infinity or NaN.");
 			}
 
 			Type = RepeatBehaviorType.Count;
@@ -27,6 +28,11 @@ namespace Windows.UI.Xaml.Media.Animation
 
 		public RepeatBehavior(TimeSpan duration)
 		{
+			if (duration < TimeSpan.Zero)
+			{
+				throw new ArgumentOutOfRangeException(nameof(duration), duration, "The duration must be positive.");
+			}
+
 			Type = RepeatBehaviorType.Duration;
 			Duration = duration;
 			Count = 0;
@@ -48,6 +54,7 @@ namespace Windows.UI.Xaml.Media.Animation
 				RepeatBehaviorType.Count when !double.IsNaN(Count) => Count > count, // will return true if NaN (which is weird but a value accepted by UWP for a RepeatBehavior)
 				RepeatBehaviorType.Duration => Duration > elapsed,
 				RepeatBehaviorType.Forever => true,
+
 				_ => false
 			};
 
@@ -79,25 +86,45 @@ namespace Windows.UI.Xaml.Media.Animation
 		public string ToString(IFormatProvider provider)
 			=> Type switch
 			{
-				RepeatBehaviorType.Count => Count.ToString(provider),
+				RepeatBehaviorType.Count => Count.ToString(provider) + "x",
 				RepeatBehaviorType.Duration => Duration.ToXamlString(provider),
-				RepeatBehaviorType.Forever => __forever,
-				_ => throw new NotSupportedException("this RepeatBehavior type is not supported.")
+				RepeatBehaviorType.Forever => ForeverLiteral,
+
+				_ => throw new NotSupportedException("This RepeatBehavior type is not supported.")
 			};
 
 		public static implicit operator RepeatBehavior(string str)
 		{
-			var type = RepeatBehaviorType.Duration;
+			// TODO: move this part from runtime, to compile time in XamlCodeGenerator
 
-			if (string.Equals(str, __forever, StringComparison.InvariantCultureIgnoreCase))
+			// valid syntax: // the 'Forever' and 'x' are case insensitive here
+			// <object property="Forever"/>
+			// <object property="iterationsx"/>
+			// <object property="[days.]hours:minutes:seconds[.fractionalSeconds]"/>
+
+			if (str is null || str.Length == 0)
 			{
-				type = RepeatBehaviorType.Forever;
 			}
-			else if (string.Equals(str, __count, StringComparison.InvariantCultureIgnoreCase))
+			else if (string.Equals(str, ForeverLiteral, StringComparison.InvariantCultureIgnoreCase))
 			{
-				type = RepeatBehaviorType.Count;
+				return Forever;
 			}
-			return new RepeatBehavior { Type = type };
+			else if (str.EndsWith("x", StringComparison.InvariantCultureIgnoreCase))
+			{
+				if (double.TryParse(str.Substring(0, str.Length - 1), NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var count))
+				{
+					return new RepeatBehavior(count);
+				}
+			}
+			else if (TimeSpan.TryParse(str, CultureInfo.InvariantCulture, out var duration)
+				// uwp: negative time is acceptable at compilation, but will crash on Storyboard::Begin().
+				// lets throw it early here?
+				&& duration > TimeSpan.Zero)
+			{
+				return new RepeatBehavior(duration);
+			}
+
+			throw new FormatException($"Failed to create a '{typeof(RepeatBehavior).FullName}' from the text '{str}'.");
 		}
 	}
 }
