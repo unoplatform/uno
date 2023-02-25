@@ -9478,15 +9478,12 @@
 			<Member fullName="System.Object Windows.UI.Xaml.Controls.RelativePanel.GetLeftOf(Windows.UI.Xaml.UIElement view)" reason="Api alignments" />
 			<Member fullName="System.Void Windows.UI.Xaml.Controls.RelativePanel.SetLeftOf(Windows.UI.Xaml.UIElement view, System.Object value)" reason="Api alignments" />
 			<Member fullName="System.Object Windows.UI.Xaml.Controls.RelativePanel.GetRightOf(Windows.UI.Xaml.UIElement view)" reason="Api alignments" />
-<<<<<<< HEAD
 			<Member fullName="System.Void Windows.UI.Xaml.Controls.Primitives.Popup.OnHorizontalOffsetChanged(System.Double oldHorizontalOffset, System.Double newHorizontalOffset)" reason="Api alignments" />
 			<Member fullName="System.Void Windows.UI.Xaml.Controls.Primitives.Popup.OnVerticalOffsetChanged(System.Double oldVerticalOffset, System.Double newVerticalOffset)" reason="Api alignments" />
 			<Member fullName="System.Void Windows.UI.Xaml.Controls.RelativePanel.SetRightOf(Windows.UI.Xaml.UIElement view, System.Object value)" reason="Api alignments" />
 			<Member fullName="System.Void Windows.UI.Xaml.Controls.WebView.NavigateWithHttpRequestMessage(System.Net.Http.HttpRequestMessage requestMessage)" reason="Api alignments" />
-=======
 			<Member fullName="System.Boolean Uno.Devices.Sensors.INativeDualScreenProvider.get_IsDualScreen()" reason="Api alignments" />
 			<Member fullName="System.Boolean Windows.UI.Xaml.Controls.WebView.MustUseWebKitWebView()" reason="Api alignments" />
->>>>>>> 01bea8f084 (chore: Update PackageDiffIgnore)
 		</Methods>
 	</IgnoreSet>
 
