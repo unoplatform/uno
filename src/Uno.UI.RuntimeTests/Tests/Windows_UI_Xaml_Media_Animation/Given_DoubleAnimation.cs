@@ -46,7 +46,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 #if __ANDROID__
 		[Ignore("In this scenario, droid doesnt ReportEachFrame(), so we won't be able to read the animated values to evaluate this test.")]
 #endif
-		public async Task When_RepeatForever_WithoutFrom_Asd()
+		public async Task When_RepeatForever_WithoutFrom()
 		{
 			// droid: The fix is still valid for android, because it will now be reading from non-animated value as well.
 			// However, that doesnt change anything (it worked before), because the animated was never commited into the property details.
