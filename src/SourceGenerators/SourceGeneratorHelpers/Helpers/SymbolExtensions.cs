@@ -258,6 +258,27 @@ namespace Microsoft.CodeAnalysis
 			}
 		}
 
+		public static ISymbol? GetMemberInlcudingBaseTypes(this INamespaceOrTypeSymbol symbol, string memberName)
+		{
+			if (symbol is INamespaceSymbol)
+			{
+				return symbol.GetMembers(memberName).FirstOrDefault();
+			}
+
+			var typeSymbol = (INamedTypeSymbol?)symbol;
+			while (typeSymbol is not null)
+			{
+				if (typeSymbol.GetMembers(memberName).FirstOrDefault() is { } member)
+				{
+					return member;
+				}
+
+				typeSymbol = typeSymbol.BaseType;
+			}
+
+			return null;
+		}
+
 		public static bool IsNullable(this ITypeSymbol type)
 		{
 			return ((type as INamedTypeSymbol)?.IsGenericType ?? false)

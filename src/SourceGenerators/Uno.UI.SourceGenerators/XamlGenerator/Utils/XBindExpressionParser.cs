@@ -290,9 +290,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 
 				if (_lastAccessedMember is not (IPropertySymbol or IFieldSymbol or INamespaceOrTypeSymbol))
 				{
-					// TODO: Handle attached properties, for `myBtn.(Grid.Row)`, we don't currently have semantic information about "Grid".
-					// TODO: Make sure `myBtn.(Grid.Row).ToString()` works as well.
-					//Debugger.Launch();
 					Failed = true;
 					return;
 				}
@@ -305,8 +302,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 					_ => throw new Exception($"Unexpected _lastAccessedMember '{_lastAccessedMember?.Kind}'."),
 				};
 
-				// TODO: Base type properties...
-				var member = previousType.GetMembers(node.Identifier.ValueText).FirstOrDefault();
+				var member = previousType.GetMemberInlcudingBaseTypes(node.Identifier.ValueText);
 				if (member is null)
 				{
 					Failed = true;
