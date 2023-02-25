@@ -1,15 +1,14 @@
 
 using System;
 using System.Collections.Specialized;
-using System.Collections.Generic;
 using System.Linq;
-using Uno.Extensions;
 using Uno.Extensions.Specialized;
 using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.DataBinding;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.UI.ViewManagement;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
@@ -32,6 +31,7 @@ namespace Windows.UI.Xaml.Controls
 		private AutoSuggestionBoxTextChangeReason _textChangeReason = AutoSuggestionBoxTextChangeReason.ProgrammaticChange;
 		private string userInput;
 		private BindingPath _textBoxBinding;
+		private FrameworkElement _suggestionsContainer;
 
 		public AutoSuggestBox() : base()
 		{
@@ -48,6 +48,7 @@ namespace Windows.UI.Xaml.Controls
 			_popup = GetTemplateChild("SuggestionsPopup") as Popup;
 			_layoutRoot = GetTemplateChild("LayoutRoot") as Grid;
 			_suggestionsList = GetTemplateChild("SuggestionsList") as ListView;
+			_suggestionsContainer = GetTemplateChild("SuggestionsContainer") as FrameworkElement;
 			_queryButton = GetTemplateChild("QueryButton") as Button;
 
 			// Uno specific: If the user enabled the legacy behavior for popup light dismiss default
@@ -153,73 +154,97 @@ namespace Windows.UI.Xaml.Controls
 
 		private void LayoutPopup()
 		{
-			if (
-				_popup != null
-				&& _popup.IsOpen
-				&& _popup.Child is FrameworkElement popupChild
-			)
+			if (_popup is Popup popup &&
+				popup.IsOpen &&
+				popup.Child is FrameworkElement popupChild &&
+				_suggestionsContainer is not null &&
+				_layoutRoot is not null)
 			{
-				if (_popup is Popup popup)
+				// Reset popup offsets (Windows seems to do that)
+				popup.VerticalOffset = 0;
+				popup.HorizontalOffset = 0;
+
+				// Inject layouting constraints
+				popupChild.MinHeight = _layoutRoot.ActualHeight;
+				popupChild.MinWidth = _layoutRoot.ActualWidth;
+				popupChild.MaxHeight = MaxSuggestionListHeight;
+
+				var windowRect = ApplicationView.GetForCurrentView().VisibleBounds;
+				var inputPaneRect = InputPane.GetForCurrentView().OccludedRect;
+
+				if (inputPaneRect.Height > 0)
 				{
-					if (_layoutRoot is FrameworkElement background)
-					{
-						// Reset popup offsets (Windows seems to do that)
-						popup.VerticalOffset = 0;
-						popup.HorizontalOffset = 0;
+					windowRect.Height -= inputPaneRect.Height;
+				}
 
-						// Inject layouting constraints
-						popupChild.MinHeight = background.ActualHeight;
-						popupChild.MinWidth = background.ActualWidth;
-						popupChild.MaxHeight = MaxSuggestionListHeight;
+				var popupTransform = (MatrixTransform)popup.TransformToVisual(Xaml.Window.Current.Content);
+				var popupRect = new Rect(popupTransform.Matrix.OffsetX, popupTransform.Matrix.OffsetY, popup.ActualWidth, popup.ActualHeight);
 
-						var windowRect = Xaml.Window.Current.Bounds;
+				var containerTransform = (MatrixTransform)_layoutRoot.TransformToVisual(Xaml.Window.Current.Content);
+				var containerRect = new Rect(containerTransform.Matrix.OffsetX, containerTransform.Matrix.OffsetY, _layoutRoot.ActualWidth, _layoutRoot.ActualHeight);
+				var textBoxHeight = _layoutRoot.ActualHeight;
 
-						var popupTransform = (MatrixTransform)popup.TransformToVisual(Xaml.Window.Current.Content);
-						var popupRect = new Rect(popupTransform.Matrix.OffsetX, popupTransform.Matrix.OffsetY, popup.ActualWidth, popup.ActualHeight);
+				// Because Popup.Child is not part of the visual tree until Popup.IsOpen,
+				// some descendant Controls may never have loaded and materialized their templates.
+				// We force the materialization of all templates to ensure that Measure works properly.
+				foreach (var control in popupChild.EnumerateAllChildren().OfType<Control>())
+				{
+					control.ApplyTemplate();
+				}
 
-						var backgroundTransform = (MatrixTransform)background.TransformToVisual(Xaml.Window.Current.Content);
-						var backgroundRect = new Rect(backgroundTransform.Matrix.OffsetX, backgroundTransform.Matrix.OffsetY + background.ActualHeight, background.ActualWidth, background.ActualHeight);
+				popupChild.Measure(windowRect.Size);
+				var popupChildRect = new Rect(new Point(), popupChild.DesiredSize);
 
-						// Because Popup.Child is not part of the visual tree until Popup.IsOpen,
-						// some descendant Controls may never have loaded and materialized their templates.
-						// We force the materialization of all templates to ensure that Measure works properly.
-						foreach (var control in popupChild.EnumerateAllChildren().OfType<Control>())
-						{
-							control.ApplyTemplate();
-						}
+				// Align left of popup with left of background 
+				double targetX = containerRect.Left;
+				if (popupChildRect.Right > windowRect.Right) // popup overflows at right
+				{
+					// Align right of popup with right of background
+					targetX = containerRect.Right - popupChildRect.Width;
+				}
+				if (popupChildRect.Left < windowRect.Left) // popup overflows at left
+				{
+					// Align center of popup with center of window
+					targetX = (windowRect.Width - popupChildRect.Width) / 2.0;
+				}
 
-						popupChild.Measure(windowRect.Size);
-						var popupChildRect = new Rect(new Point(), popupChild.DesiredSize);
+				// Calculates the maximum available popup height for a given target rect
+				double targetY;
+				double? targetHeight = null;
 
-						// Align left of popup with left of background 
-						popupChildRect.X = backgroundRect.Left;
-						if (popupChildRect.Right > windowRect.Right) // popup overflows at right
-						{
-							// Align right of popup with right of background
-							popupChildRect.X = backgroundRect.Right - popupChildRect.Width;
-						}
-						if (popupChildRect.Left < windowRect.Left) // popup overflows at left
-						{
-							// Align center of popup with center of window
-							popupChildRect.X = (windowRect.Width - popupChildRect.Width) / 2.0;
-						}
+				// Try to align popup below TextBox
+				var availableHeightBelow = windowRect.Bottom - containerRect.Top + textBoxHeight;
+				var availableHeightAbove = containerRect.Top - windowRect.Top;
 
-						// Align top of popup with top of background
-						popupChildRect.Y = backgroundRect.Top;
-						if (popupChildRect.Bottom > windowRect.Bottom) // popup overflows at bottom
-						{
-							// Align bottom of popup with bottom of background
-							popupChildRect.Y = backgroundRect.Bottom - popupChildRect.Height;
-						}
-						if (popupChildRect.Top < windowRect.Top) // popup overflows at top
-						{
-							// Align center of popup with center of window
-							popupChildRect.Y = (windowRect.Height - popupChildRect.Height) / 2.0;
-						}
+				// Find to position the popup in this order:
+				//  1. Below text box completely
+				//  2. Above text box completely
+				//  3. To the position where is more space available
+				if (availableHeightBelow >= popupChild.DesiredSize.Height)
+				{
+					targetY = containerRect.Top + textBoxHeight;
+				}
+				else if (availableHeightAbove >= popupChild.DesiredSize.Height)
+				{
+					targetY = containerRect.Top - popupChild.DesiredSize.Height;
+				}
+				else if (availableHeightBelow > availableHeightAbove)
+				{
+					targetY = containerRect.Top + textBoxHeight;
+					targetHeight = availableHeightBelow;
+				}
+				else
+				{
+					targetY = containerRect.Top - availableHeightAbove;
+					targetHeight = availableHeightAbove;
+				}
 
-						popup.HorizontalOffset = popupChildRect.X - popupRect.X;
-						popup.VerticalOffset = popupChildRect.Y - popupRect.Y;
-					}
+				popup.HorizontalOffset = targetX - popupRect.X;
+				popup.VerticalOffset = targetY - popupRect.Y;
+
+				if (targetHeight is double requestedHeight)
+				{
+					_suggestionsContainer.MaxHeight = requestedHeight;
 				}
 			}
 		}
