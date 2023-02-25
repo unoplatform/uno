@@ -212,8 +212,10 @@ namespace Windows.UI.Xaml.Controls
 				double targetY;
 				double? targetHeight = null;
 
+				var yBelow = containerRect.Top + textBoxHeight;
+
 				// Try to align popup below TextBox
-				var availableHeightBelow = windowRect.Bottom - containerRect.Top + textBoxHeight;
+				var availableHeightBelow = windowRect.Bottom - yBelow;
 				var availableHeightAbove = containerRect.Top - windowRect.Top;
 
 				// Find to position the popup in this order:
@@ -222,7 +224,7 @@ namespace Windows.UI.Xaml.Controls
 				//  3. To the position where is more space available
 				if (availableHeightBelow >= popupChild.DesiredSize.Height)
 				{
-					targetY = containerRect.Top + textBoxHeight;
+					targetY = yBelow;
 				}
 				else if (availableHeightAbove >= popupChild.DesiredSize.Height)
 				{
