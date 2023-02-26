@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿#nullable enable
+
+using System;
 using System.Linq;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Uno.Extensions;
 
 #if NETFRAMEWORK
@@ -15,28 +14,28 @@ namespace Uno.Roslyn
 	internal class RoslynMetadataHelper
 	{
 		private readonly INamedTypeSymbol _nullableSymbol;
-		private readonly Func<string, ITypeSymbol> _findTypeByFullName;
+		private readonly Func<string, ITypeSymbol?> _findTypeByFullName;
 		private readonly Func<INamedTypeSymbol, INamedTypeSymbol[]> _getAllTypesAttributedWith;
 
 		public Compilation Compilation { get; }
 
-		public string AssemblyName => Compilation.AssemblyName;
+		public string AssemblyName => Compilation.AssemblyName!;
 
 		public RoslynMetadataHelper(GeneratorExecutionContext context)
 		{
 			Compilation = context.Compilation;
 
-			_findTypeByFullName = Funcs.Create<string, ITypeSymbol>(SourceFindTypeByFullName).AsLockedMemoized();
+			_findTypeByFullName = Funcs.Create<string, ITypeSymbol?>(SourceFindTypeByFullName).AsLockedMemoized();
 			_getAllTypesAttributedWith = Funcs.Create<INamedTypeSymbol, INamedTypeSymbol[]>(SourceGetAllTypesAttributedWith).AsLockedMemoized();
 			_nullableSymbol = Compilation.GetSpecialType(SpecialType.System_Nullable_T);
 		}
 
-		public ITypeSymbol FindTypeByFullName(string fullName)
+		public ITypeSymbol? FindTypeByFullName(string fullName)
 		{
 			return _findTypeByFullName(fullName);
 		}
 
-		private ITypeSymbol SourceFindTypeByFullName(string fullName)
+		private ITypeSymbol? SourceFindTypeByFullName(string fullName)
 		{
 			var symbol = Compilation.GetTypeByMetadataName(fullName);
 
