@@ -6419,9 +6419,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									var xamlObjectDef = new XamlObjectDefinition(elementStubType, 0, 0, definition);
 									xamlObjectDef.Members.AddRange(members);
 
-									// Add the element stub as a strong reference, so that the
-									// stub can be brought back if the loaded state changes.
-									AddComponentForParentScope(xamlObjectDef, isWeak: false);
+									AddComponentForParentScope(xamlObjectDef);
 
 									var componentName = CurrentScope.Components.Last().MemberName;
 									writer.AppendLineIndented($"__that.{componentName} = {closureName};");
@@ -6829,9 +6827,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return componentDefinition;
 		}
 
-		private void AddComponentForParentScope(XamlObjectDefinition objectDefinition, bool isWeak)
+		private void AddComponentForParentScope(XamlObjectDefinition objectDefinition)
 		{
-			CurrentScope.Components.Add(new ComponentDefinition(objectDefinition, isWeak, $"_component_{CurrentScope.ComponentCount}"));
+			// Add the element stub as a strong reference, so that the
+			// stub can be brought back if the loaded state changes.
+			CurrentScope.Components.Add(new ComponentDefinition(objectDefinition, IsWeakReference: false, $"_component_{CurrentScope.ComponentCount}"));
 
 			if (_xLoadScopeStack.Count > 1)
 			{
