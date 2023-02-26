@@ -674,11 +674,11 @@
       <StaticResource x:Key="AppBarEllipsisButtonRevealBorderBrushDisabled" ResourceKey="SystemControlTransparentBrush" />
       <StaticResource x:Key="AppBarButtonRevealBackground" ResourceKey="SystemControlTransparentRevealBackgroundBrush" />
       <StaticResource x:Key="AppBarButtonRevealBackgroundPointerOver" ResourceKey="SystemControlHighlightListLowRevealBackgroundBrush" />
-      <RevealBackgroundBrush x:Key="SystemControlHighlightListMediumRevealListLowBackgroundBrush" TargetTheme="Dark" Color="{StaticResource SystemRevealListLowColor}" FallbackColor="{StaticResource SystemListMediumColor}" />
+      <RevealBackgroundBrush x:Key="SystemControlHighlightListMediumRevealListLowBackgroundBrush" not_mux:TargetTheme="Dark" Color="{StaticResource SystemRevealListLowColor}" FallbackColor="{StaticResource SystemListMediumColor}" />
       <StaticResource x:Key="AppBarButtonRevealBackgroundPressed" ResourceKey="SystemControlHighlightListMediumRevealListLowBackgroundBrush" />
       <StaticResource x:Key="AppBarButtonRevealBackgroundDisabled" ResourceKey="SystemControlTransparentBrush" />
       <StaticResource x:Key="AppBarButtonRevealBorderBrush" ResourceKey="SystemControlBackgroundTransparentRevealBorderBrush" />
-      <RevealBorderBrush x:Key="SystemControlTransparentRevealListLowBorderBrush" TargetTheme="Dark" Color="{StaticResource SystemRevealListLowColor}" FallbackColor="Transparent" />
+      <RevealBorderBrush x:Key="SystemControlTransparentRevealListLowBorderBrush" not_mux:TargetTheme="Dark" Color="{StaticResource SystemRevealListLowColor}" FallbackColor="Transparent" />
       <StaticResource x:Key="AppBarButtonRevealBorderBrushPointerOver" ResourceKey="SystemControlTransparentRevealListLowBorderBrush" />
       <StaticResource x:Key="AppBarButtonRevealBorderBrushPressed" ResourceKey="SystemControlTransparentRevealListLowBorderBrush" />
       <StaticResource x:Key="AppBarButtonRevealBorderBrushDisabled" ResourceKey="SystemControlTransparentBrush" />
@@ -1580,11 +1580,11 @@
       <StaticResource x:Key="AppBarEllipsisButtonRevealBorderBrushDisabled" ResourceKey="SystemControlTransparentBrush" />
       <StaticResource x:Key="AppBarButtonRevealBackground" ResourceKey="SystemControlTransparentRevealBackgroundBrush" />
       <StaticResource x:Key="AppBarButtonRevealBackgroundPointerOver" ResourceKey="SystemControlHighlightListLowRevealBackgroundBrush" />
-      <RevealBackgroundBrush x:Key="SystemControlHighlightListMediumRevealListLowBackgroundBrush" TargetTheme="Light" Color="{StaticResource SystemRevealListLowColor}" FallbackColor="{StaticResource SystemListMediumColor}" />
+      <RevealBackgroundBrush x:Key="SystemControlHighlightListMediumRevealListLowBackgroundBrush" not_mux:TargetTheme="Light" Color="{StaticResource SystemRevealListLowColor}" FallbackColor="{StaticResource SystemListMediumColor}" />
       <StaticResource x:Key="AppBarButtonRevealBackgroundPressed" ResourceKey="SystemControlHighlightListMediumRevealListLowBackgroundBrush" />
       <StaticResource x:Key="AppBarButtonRevealBackgroundDisabled" ResourceKey="SystemControlTransparentBrush" />
       <StaticResource x:Key="AppBarButtonRevealBorderBrush" ResourceKey="SystemControlBackgroundTransparentRevealBorderBrush" />
-      <RevealBorderBrush x:Key="SystemControlTransparentRevealListLowBorderBrush" TargetTheme="Light" Color="{StaticResource SystemRevealListLowColor}" FallbackColor="Transparent" />
+      <RevealBorderBrush x:Key="SystemControlTransparentRevealListLowBorderBrush" not_mux:TargetTheme="Light" Color="{StaticResource SystemRevealListLowColor}" FallbackColor="Transparent" />
       <StaticResource x:Key="AppBarButtonRevealBorderBrushPointerOver" ResourceKey="SystemControlTransparentRevealListLowBorderBrush" />
       <StaticResource x:Key="AppBarButtonRevealBorderBrushPressed" ResourceKey="SystemControlTransparentRevealListLowBorderBrush" />
       <StaticResource x:Key="AppBarButtonRevealBorderBrushDisabled" ResourceKey="SystemControlTransparentBrush" />
@@ -6701,7 +6701,7 @@
     <Setter Property="FocusVisualMargin" Value="0" />
     <Setter Property="Content" Value="{StaticResource PipsPagerNormalGlyph}" />
     <Setter Property="FontSize" Value="{StaticResource PipsPagerNormalGlyphFontSize}" />
-    <Setter Property="contract7Present:CornerRadius" Value="{StaticResource ControlCornerRadius}" />
+    <contract7Present:Setter Property="CornerRadius" Value="{StaticResource ControlCornerRadius}" />
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="Button">
