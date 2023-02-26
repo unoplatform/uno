@@ -524,7 +524,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 #endif
 									TryBuildElementStubHolders(componentBuilder);
 
-									BuildPartials(componentBuilder, isStatic: false);
+									BuildPartials(componentBuilder);
 
 									BuildBackingFields(componentBuilder);
 
@@ -961,12 +961,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			writer.AppendLineIndented("OnInitializeCompleted();");
 		}
 
-		private void BuildPartials(IIndentedStringBuilder writer, bool isStatic)
+		private void BuildPartials(IIndentedStringBuilder writer)
 		{
 			TryAnnotateWithGeneratorSource(writer);
 			foreach (var partialDefinition in _partials)
 			{
-				writer.AppendLineInvariantIndented("{0}partial " + partialDefinition + ";", isStatic ? "static " : "");
+				writer.AppendLineIndented($"partial {partialDefinition};");
 			}
 		}
 
