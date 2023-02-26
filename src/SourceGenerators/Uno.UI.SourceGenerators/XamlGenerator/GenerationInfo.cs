@@ -1,8 +1,6 @@
 ﻿#nullable enable
 
-using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Globalization;
 
 namespace Uno.UI.SourceGenerators.XamlGenerator

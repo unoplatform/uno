@@ -145,7 +145,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// <summary>
 		/// Information about types used in .Apply() scenarios
 		/// </summary>
-		private readonly Dictionary<INamedTypeSymbol, int> _xamlAppliedTypes = new Dictionary<INamedTypeSymbol, int>();
+		/// <remarks>
+		/// The key of the dictionary is the globalized fully qualified name.
+		/// </remarks>
+		private readonly Dictionary<string, int> _xamlAppliedTypes = new();
 
 		private readonly INamedTypeSymbol _assemblyMetadataSymbol;
 
@@ -655,11 +658,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					{
 						foreach (var typeInfo in _xamlAppliedTypes)
 						{
-							writer.AppendLineIndented($"public delegate void XamlApplyHandler{typeInfo.Value}({GetGlobalizedTypeName(typeInfo.Key.ToString())} instance);");
+							writer.AppendLineIndented($"public delegate void XamlApplyHandler{typeInfo.Value}({typeInfo.Key} instance);");
 
 							writer.AppendLineIndented($"[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]");
 							using (writer.BlockInvariant(
-								$"public static {GetGlobalizedTypeName(typeInfo.Key.ToString())} {_fileUniqueId}_XamlApply(this {GetGlobalizedTypeName(typeInfo.Key.ToString())} instance, XamlApplyHandler{typeInfo.Value} handler)"
+								$"public static {typeInfo.Key} {_fileUniqueId}_XamlApply(this {typeInfo.Key} instance, XamlApplyHandler{typeInfo.Value} handler)"
 							))
 							{
 								writer.AppendLineIndented($"handler(instance);");
@@ -4169,10 +4172,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			if (appliedType != null)
 			{
-				if (!_xamlAppliedTypes.TryGetValue(appliedType, out var appliedTypeIndex))
+				var globalizedFullyQualifiedAppliedType = GetGlobalizedTypeName(appliedType.ToString());
+				if (!_xamlAppliedTypes.TryGetValue(globalizedFullyQualifiedAppliedType, out var appliedTypeIndex))
 				{
 					appliedTypeIndex = _xamlAppliedTypes.Count;
-					_xamlAppliedTypes.Add(appliedType, _xamlAppliedTypes.Count);
+					_xamlAppliedTypes.Add(globalizedFullyQualifiedAppliedType, _xamlAppliedTypes.Count);
 				}
 
 				if (_isHotReloadEnabled)
