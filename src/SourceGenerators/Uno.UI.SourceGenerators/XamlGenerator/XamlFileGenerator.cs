@@ -5318,11 +5318,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			if (fontWeights.GetProperties().Any(p => p.Name.Equals(memberValue, StringComparison.OrdinalIgnoreCase)))
 			{
-				return $"global::{fontWeights.ToDisplayString()}." + memberValue;
+				return $"global::{XamlConstants.Types.FontWeights}." + memberValue;
 			}
 			else
 			{
-				return $"global::{fontWeights.ToDisplayString()}.Normal /* Warning {memberValue} is not supported on this platform */";
+				return $"global::{XamlConstants.Types.FontWeights}.Normal /* Warning {memberValue} is not supported on this platform */";
 			}
 		}
 
