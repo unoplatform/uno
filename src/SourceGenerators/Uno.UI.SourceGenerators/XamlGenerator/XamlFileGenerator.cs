@@ -466,15 +466,16 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					{
 						BuildResourceDictionaryBackingClass(componentBuilder, topLevelControl);
 						BuildTopLevelResourceDictionary(componentBuilder, topLevelControl);
-
-						if (_useXamlReaderHotReload)
-						{
-							_generationRunFileInfo.SetAppliedTypes(_xamlAppliedTypes);
-							_generationRunFileInfo.ComponentCode = componentBuilder.ToString();
-						}
 					}
 
-					writer.AppendLineInvariantIndented("{0}", componentBuilder.ToString());
+					var componentCode = componentBuilder.ToString();
+					if (_useXamlReaderHotReload)
+					{
+						_generationRunFileInfo.SetAppliedTypes(_xamlAppliedTypes);
+						_generationRunFileInfo.ComponentCode = componentCode;
+					}
+
+					writer.AppendLineIndented(componentCode);
 				}
 				else
 				{
@@ -483,7 +484,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					{
 						var generationRunFileInfo = runFileInfo.GetRunFileInfo(_fileUniqueId);
 
-						writer.AppendLineInvariantIndented("{0}", generationRunFileInfo.ComponentCode);
+						writer.AppendLineIndented(generationRunFileInfo.ComponentCode);
 
 						foreach (var type in generationRunFileInfo.AppliedTypes)
 						{
@@ -533,15 +534,17 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									BuildComponentFields(componentBuilder);
 
 									BuildCompiledBindings(componentBuilder);
-
-									if (_useXamlReaderHotReload)
-									{
-										_generationRunFileInfo.SetAppliedTypes(_xamlAppliedTypes);
-										_generationRunFileInfo.ComponentCode = componentBuilder.ToString();
-									}
 								}
 
-								writer.AppendLineInvariantIndented("{0}", componentBuilder.ToString());
+								var componentCode = componentBuilder.ToString();
+
+								if (_useXamlReaderHotReload)
+								{
+									_generationRunFileInfo.SetAppliedTypes(_xamlAppliedTypes);
+									_generationRunFileInfo.ComponentCode = componentCode;
+								}
+
+								writer.AppendLineIndented(componentCode);
 							}
 							else
 							{
