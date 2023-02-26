@@ -6630,7 +6630,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			writer.AppendLineIndented($"new {namespacePrefix}{subclassName}().Build(__owner)");
 		}
 
-		private string GenerateConstructorParameters(INamedTypeSymbol type)
+		private string GenerateConstructorParameters(INamedTypeSymbol? type)
 		{
 			if (IsType(type, _androidViewSymbol))
 			{
