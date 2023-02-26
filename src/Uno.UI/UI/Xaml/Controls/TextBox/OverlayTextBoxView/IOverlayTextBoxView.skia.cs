@@ -14,6 +14,11 @@ internal interface IOverlayTextBoxView
 
 	(int start, int length) Selection { get; set; }
 
+	/// <summary>
+	/// Returns a value indicating whether this TextBoxView is compatible with the given TextBox state.
+	/// </summary>
+	/// <param name="textBox">TextBox.</param>
+	/// <returns>True if compatible.</returns>
 	bool IsCompatible(TextBox textBox);
 
 	void SetFocus(bool isFocused);

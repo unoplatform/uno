@@ -57,21 +57,16 @@ namespace Windows.UI.Xaml.Controls
 
 		public bool PreventKeyboardDisplayOnProgrammaticFocus
 		{
-			get
-			{
-				return (bool)this.GetValue(PreventKeyboardDisplayOnProgrammaticFocusProperty);
-			}
-			set
-			{
-				this.SetValue(PreventKeyboardDisplayOnProgrammaticFocusProperty, value);
-			}
+			get => (bool)GetValue(PreventKeyboardDisplayOnProgrammaticFocusProperty);
+			set => SetValue(PreventKeyboardDisplayOnProgrammaticFocusProperty, value);
 		}
 
 		public static DependencyProperty PreventKeyboardDisplayOnProgrammaticFocusProperty { get; } =
-		DependencyProperty.Register(
-			"PreventKeyboardDisplayOnProgrammaticFocus", typeof(bool),
-			typeof(TextBox),
-			new FrameworkPropertyMetadata(false));
+			DependencyProperty.Register(
+				nameof(PreventKeyboardDisplayOnProgrammaticFocus),
+				typeof(bool),
+				typeof(TextBox),
+				new FrameworkPropertyMetadata(false));
 
 		private protected override void OnUnloaded()
 		{

@@ -25,7 +25,7 @@ internal abstract class OverlayTextBoxViewExtension : IOverlayTextBoxViewExtensi
 	private int? _selectionStartCache;
 	private int? _selectionLengthCache;
 
-	public OverlayTextBoxViewExtension(TextBoxView owner, Func<TextBox, IOverlayTextBoxView> textBoxViewFactory)
+	protected OverlayTextBoxViewExtension(TextBoxView owner, Func<TextBox, IOverlayTextBoxView> textBoxViewFactory)
 	{
 		_owner = owner ?? throw new ArgumentNullException(nameof(owner));
 		_textBoxViewFactory = textBoxViewFactory ?? throw new ArgumentNullException(nameof(textBoxViewFactory));
@@ -35,8 +35,7 @@ internal abstract class OverlayTextBoxViewExtension : IOverlayTextBoxViewExtensi
 
 	public void StartEntry()
 	{
-		if (_owner.TextBox is not { } textBox ||
-			_owner.TextBox.XamlRoot is not { } xamlRoot)
+		if (_owner.TextBox is not { XamlRoot: { } xamlRoot } textBox)
 		{
 			// The parent TextBox must exist as source of properties.
 			return;
@@ -144,9 +143,7 @@ internal abstract class OverlayTextBoxViewExtension : IOverlayTextBoxViewExtensi
 
 	public void UpdatePosition()
 	{
-		if (_contentElement == null ||
-			_textBoxView == null ||
-			!_textBoxView.IsDisplayed)
+		if (_contentElement is null || _textBoxView is not { IsDisplayed: true })
 		{
 			return;
 		}
@@ -214,7 +211,9 @@ internal abstract class OverlayTextBoxViewExtension : IOverlayTextBoxViewExtensi
 		if (_textBoxView is null ||
 			!_textBoxView.IsCompatible(textBox))
 		{
-			var inputText = GetNativeText();
+			// The current TextBoxView is not compatible with the given TextBox state.
+			// We need to create a new TextBoxView.
+			var inputText = GetNativeText() ?? textBox.Text;
 			_textBoxView = _textBoxViewFactory(textBox);
 			SetNativeText(inputText ?? string.Empty);
 		}

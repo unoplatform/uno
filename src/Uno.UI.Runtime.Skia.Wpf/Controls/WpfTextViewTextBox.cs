@@ -3,7 +3,7 @@ using WpfFrameworkPropertyMetadata = System.Windows.FrameworkPropertyMetadata;
 
 namespace Uno.UI.Runtime.Skia.Wpf.Controls;
 
-public class WpfTextViewTextBox : TextBox
+internal class WpfTextViewTextBox : TextBox
 {
 	static WpfTextViewTextBox()
 	{

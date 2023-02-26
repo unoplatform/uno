@@ -14,7 +14,7 @@ namespace Uno.UI.Runtime.Skia.Wpf.Extensions.UI.Xaml.Controls;
 
 internal abstract class WpfTextBoxView : IOverlayTextBoxView
 {
-	public WpfTextBoxView()
+	protected WpfTextBoxView()
 	{
 	}
 

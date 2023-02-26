@@ -28,7 +28,7 @@ internal abstract class GtkTextBoxView : IOverlayTextBoxView
 	private CssProvider? _foregroundCssProvider;
 	private Windows.UI.Color? _lastForegroundColor;
 
-	public GtkTextBoxView()
+	protected GtkTextBoxView()
 	{
 		InputWidget.StyleContext.AddClass(TextBoxViewCssClass);
 	}
