@@ -752,7 +752,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					&& type.Name == "Bind"
 				   )
 				{
-					return _metadataHelper.FindTypeByFullName(XamlConstants.Namespaces.Data + ".Binding") as INamedTypeSymbol;
+					return Generation.DataBindingSymbol.Value;
 				}
 
 				var isKnownNamespace = ns?.Prefix is { Length: > 0 };
