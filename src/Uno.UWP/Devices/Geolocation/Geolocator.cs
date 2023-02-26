@@ -166,7 +166,7 @@ namespace Windows.Devices.Geolocation
 
 		private void StartStatusChanged() => _statusChangedSubscriptions.TryAdd(this, 0);
 
-		private void StopStatusChanged() => _statusChangedSubscriptions.TryRemove(this, out var _);
+		private void StopStatusChanged() => _statusChangedSubscriptions?.TryRemove(this, out var _);
 
 		partial void StartPositionChanged();
 
