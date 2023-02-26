@@ -6129,20 +6129,19 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 					if (hasCustomInitalizer)
 					{
-						var propertyType = FindType(xamlObjectDefinition.Type);
 						var implicitContent = FindImplicitContentMember(xamlObjectDefinition);
 						if (implicitContent == null)
 						{
 							throw new InvalidOperationException($"Unable to find content value on {xamlObjectDefinition}");
 						}
 
-						writer.AppendIndented(BuildLiteralValue(implicitContent, propertyType, owner));
+						writer.AppendIndented(BuildLiteralValue(implicitContent, knownType, owner));
 					}
 					else
 					{
 						using (TryGenerateDeferedLoadStrategy(writer, knownType, xamlObjectDefinition))
 						{
-							using (writer.BlockInvariant("new {0}{1}", GetGlobalizedTypeName(fullTypeName), GenerateConstructorParameters(xamlObjectDefinition.Type)))
+							using (writer.BlockInvariant("new {0}{1}", GetGlobalizedTypeName(fullTypeName), GenerateConstructorParameters(knownType)))
 							{
 								TrySetParsing(writer, xamlObjectDefinition, isInitializer: true);
 								RegisterAndBuildResources(writer, xamlObjectDefinition, isInInitializer: true);
@@ -6631,29 +6630,18 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			writer.AppendLineIndented($"new {namespacePrefix}{subclassName}().Build(__owner)");
 		}
 
-		private string GenerateConstructorParameters(XamlType xamlType)
+		private string GenerateConstructorParameters(INamedTypeSymbol type)
 		{
-			if (IsType(xamlType, _androidViewSymbol))
+			if (IsType(type, _androidViewSymbol))
 			{
 				// For android, all native control must take a context as their first parameters
 				// To be able to use this control from the Xaml, we need to generate a constructor
 				// call that takes the ContextHelper.Current as the first parameter.
+				var hasContextConstructor = type.Constructors.Any(c => c.Parameters.Length == 1 && SymbolEqualityComparer.Default.Equals(c.Parameters[0].Type, _androidContentContextSymbol));
 
-				var type = FindType(xamlType);
-
-				if (type != null)
+				if (hasContextConstructor)
 				{
-					var q = from m in type.Constructors
-							where m.Parameters.Length == 1
-							where SymbolEqualityComparer.Default.Equals(m.Parameters.First().Type, _androidContentContextSymbol)
-							select m;
-
-					var hasContextConstructor = q.Any();
-
-					if (hasContextConstructor)
-					{
-						return "(global::Uno.UI.ContextHelper.Current)";
-					}
+					return "(global::Uno.UI.ContextHelper.Current)";
 				}
 			}
 
