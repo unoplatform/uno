@@ -78,18 +78,9 @@ public sealed partial class Geolocator : Java.Lang.Object, ILocationListener
 		}
 	}
 
-	// This override prevents the following ObjectDisposedException crash from happening:
-	// ------------------------------------------------------------
-	// 0x29 in Java.Interop.JniPeerMembers.AssertSelf at /Users/runner/work/1/s/xamarin-android/external/Java.Interop/src/Java.Interop/Java.Interop/JniPeerMembers.cs:153,5 C#
-	// 0x1 in Java.Interop.JniPeerMembers.JniInstanceMethods.InvokeVirtualInt32Method at /Users/runner/work/1/s/xamarin-android/external/Java.Interop/src/Java.Interop/Java.Interop/JniPeerMembers.JniInstanceMethods_Invoke.cs:502,5 C#
-	// 0x12 in Java.Lang.Object.GetHashCode at /Users/runner/work/1/s/xamarin-android/src/Mono.Android/obj/Release/monoandroid10/android-31/mcw/Java.Lang.Object.cs:167,5 C#
-	// 0x12 in System.Collections.Generic.ObjectEqualityComparer<Windows.Devices.Geolocation.Geolocator>.GetHashCode at /Users/builder/jenkins/workspace/archive-mono/2020-02/android/release/mcs/class/referencesource/mscorlib/system/collections/generic/equalitycomparer.cs:305,13 C#
-	// 0x7 in System.Collections.Concurrent.ConcurrentDictionary<Windows.Devices.Geolocation.Geolocator, byte>.TryRemoveInternal at /Users/builder/jenkins/workspace/archive-mono/2020-02/android/release/external/corefx/src/System.Collections.Concurrent/src/System/Collections/Concurrent/ConcurrentDictionary.cs:370,13 C#
-	// 0x1A in System.Collections.Concurrent.ConcurrentDictionary<Windows.Devices.Geolocation.Geolocator, byte>.TryRemove at /Users/builder/jenkins/workspace/archive-mono/2020-02/android/release/external/corefx/src/System.Collections.Concurrent/src/System/Collections/Concurrent/ConcurrentDictionary.cs:355,13 C#
-	// 0x8 in Windows.Devices.Geolocation.Geolocator.StopStatusChanged at C:\a\1\s\src\Uno.UWP\Devices\Geolocation\Geolocator.cs:169,39 C#
-	// 0x1 in Windows.Devices.Geolocation.Geolocator.Finalize at C:\a\1\s\src\Uno.UWP\Devices\Geolocation\Geolocator.cs:52,4 C#
-	// ------------------------------------------------------------
-	// It is unclear why it happens, but since it involves Java.Lang.Object.GetHashCode, we override GetHashCode to avoid this problematic code path.
+	// This override prevents `ObjectDisposedException` crash from happening.
+	// See https://github.com/unoplatform/uno/issues/11480
+	// It is unclear why it happens, but since it happens in Java.Lang.Object.GetHashCode, we override GetHashCode to avoid this problematic code path.
 	public override int GetHashCode()
 		=> RuntimeHelpers.GetHashCode(this);
 
