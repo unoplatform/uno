@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using Windows.Foundation;
@@ -128,7 +129,7 @@ namespace Windows.UI.Xaml.Media
 			var values = fields
 				.SelectToArray(strVal =>
 				{
-					successfulConversion &= float.TryParse(strVal, out var v);
+					successfulConversion &= float.TryParse(strVal, NumberStyles.Float, NumberFormatInfo.InvariantInfo, out var v);
 					return v;
 				});
 
