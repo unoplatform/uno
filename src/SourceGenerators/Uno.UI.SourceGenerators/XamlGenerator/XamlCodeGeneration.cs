@@ -721,9 +721,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			// If a failure happens here, this means that the _isWasm was not properly set as the DefineConstants msbuild property
 			// was not populated. This can happen when the property is set through a target with the "CreateProperty" task, and the
 			// Uno.SourceGeneration tasks do not execute this task properly.
-			writer.AppendLineIndented("#if __WASM__");
-			writer.AppendLineIndented(_isWasm ? "" : "#error invalid internal source generator state. The __WASM__ DefineConstant was not propagated properly.");
-			writer.AppendLineIndented("#endif");
+			if (!_isWasm)
+			{
+				writer.AppendLineIndented("#if __WASM__");
+				writer.AppendLineIndented("#error invalid internal source generator state. The __WASM__ DefineConstant was not propagated properly.");
+				writer.AppendLineIndented("#endif");
+			}
 
 			using (writer.BlockInvariant("namespace {0}", _defaultNamespace))
 			{
