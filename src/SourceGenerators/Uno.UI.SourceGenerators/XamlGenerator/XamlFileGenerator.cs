@@ -5315,10 +5315,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private string BuildFontWeight(string memberValue)
 		{
 			var fontWeights = (INamedTypeSymbol)_metadataHelper.GetTypeByFullName(XamlConstants.Types.FontWeights);
-
-			if (fontWeights.GetProperties().Any(p => p.Name.Equals(memberValue, StringComparison.OrdinalIgnoreCase)))
+			var fontWeight = fontWeights.GetProperties().FirstOrDefault(p => p.Name.Equals(memberValue, StringComparison.OrdinalIgnoreCase))?.Name;
+			if (fontWeight is not null)
 			{
-				return $"global::{XamlConstants.Types.FontWeights}." + memberValue;
+				return $"global::{XamlConstants.Types.FontWeights}.{fontWeight}";
 			}
 			else
 			{
