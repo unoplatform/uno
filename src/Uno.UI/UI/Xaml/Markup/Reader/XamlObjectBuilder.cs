@@ -1251,14 +1251,14 @@ namespace Windows.UI.Xaml.Markup.Reader
 
 		private void ApplyPostActions(object? instance)
 		{
-			if (instance is FrameworkElement fe)
-			{
-				ResolveElementNames(fe);
-			}
-
 			while (_postActions.Count != 0)
 			{
 				_postActions.Dequeue()();
+			}
+
+			if (instance is FrameworkElement fe)
+			{
+				ResolveElementNames(fe);
 			}
 		}
 
