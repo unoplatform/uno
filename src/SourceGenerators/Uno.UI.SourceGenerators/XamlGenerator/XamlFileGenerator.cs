@@ -1179,7 +1179,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				var propertySyntax = _isHotReloadEnabled ? "{ get; set; }" : "";
 				writer.AppendLineIndented($"private global::Windows.UI.Xaml.Markup.ComponentHolder {componentName}_Holder {propertySyntax} = new global::Windows.UI.Xaml.Markup.ComponentHolder(isWeak: {isWeak});");
 
-				using (writer.BlockInvariant($"private {GetType(current.XamlObject.Type).ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)} {componentName}"))
+				using (writer.BlockInvariant($"private {typeName} {componentName}"))
 				{
 					using (writer.BlockInvariant("get"))
 					{
@@ -5264,14 +5264,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private string BuildFontWeight(string memberValue)
 		{
 			var fontWeights = (INamedTypeSymbol)_metadataHelper.GetTypeByFullName(XamlConstants.Types.FontWeights);
-
-			if (fontWeights.GetProperties().Any(p => p.Name.Equals(memberValue, StringComparison.OrdinalIgnoreCase)))
+			var fontWeight = fontWeights.GetProperties().FirstOrDefault(p => p.Name.Equals(memberValue, StringComparison.OrdinalIgnoreCase))?.Name;
+			if (fontWeight is not null)
 			{
-				return $"global::{fontWeights.ToDisplayString()}." + memberValue;
+				return $"global::{XamlConstants.Types.FontWeights}.{fontWeight}";
 			}
 			else
 			{
-				return $"global::{fontWeights.ToDisplayString()}.Normal /* Warning {memberValue} is not supported on this platform */";
+				return $"global::{XamlConstants.Types.FontWeights}.Normal /* Warning {memberValue} is not supported on this platform */";
 			}
 		}
 
@@ -6754,7 +6754,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private string ValidatePropertyType(INamedTypeSymbol propertyType, XamlMemberDefinition? owner)
 		{
-			if (IsDouble(propertyType.ToDisplayString()) &&
+			var displayString = propertyType.ToDisplayString();
+			if (IsDouble(displayString) &&
 				owner != null && (
 				owner.Member.Name == "Width" ||
 				owner.Member.Name == "Height" ||
@@ -6767,7 +6768,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				return "float";
 			}
 
-			return propertyType.ToDisplayString();
+			return displayString;
 		}
 
 		private bool IsDirectUserControlSubType(XamlObjectDefinition objectDefinition)
