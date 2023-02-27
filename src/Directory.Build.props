@@ -69,7 +69,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <MicrosoftNetCompilersToolsetVersion>4.5.0-2.final</MicrosoftNetCompilersToolsetVersion>
+    <MicrosoftNetCompilersToolsetVersion>4.5.0</MicrosoftNetCompilersToolsetVersion>
   </PropertyGroup>
 
   <ItemGroup>

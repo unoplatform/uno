@@ -242,29 +242,29 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private bool IsFrameworkElement(XamlType xamlType)
 		{
-			return IsType(xamlType, _frameworkElementSymbol);
+			return IsType(xamlType, Generation.FrameworkElementSymbol.Value);
 		}
 
 		private bool IsAndroidView(XamlType xamlType)
 		{
-			return IsType(xamlType, _androidViewSymbol);
+			return IsType(xamlType, Generation.AndroidViewSymbol.Value);
 		}
 
 		private bool IsIOSUIView(XamlType xamlType)
 		{
-			return IsType(xamlType, _iOSViewSymbol);
+			return IsType(xamlType, Generation.IOSViewSymbol.Value);
 		}
 
 		private bool IsMacOSNSView(XamlType xamlType)
 		{
-			return IsType(xamlType, _appKitViewSymbol);
+			return IsType(xamlType, Generation.AppKitViewSymbol.Value);
 		}
 
 		private bool IsDependencyObject(XamlObjectDefinition component)
-			=> GetType(component.Type).GetAllInterfaces().Any(i => SymbolEqualityComparer.Default.Equals(i, _dependencyObjectSymbol));
+			=> GetType(component.Type).GetAllInterfaces().Any(i => SymbolEqualityComparer.Default.Equals(i, Generation.DependencyObjectSymbol.Value));
 
 		private bool IsUIElement(XamlObjectDefinition component)
-			=> IsType(component.Type, _uiElementSymbol);
+			=> IsType(component.Type, Generation.UIElementSymbol.Value);
 
 		/// <summary>
 		/// Is the type derived from the native view type on a Xamarin platform?
@@ -275,7 +275,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// Is the type one of the base view types in WinUI? (UIElement is most commonly used to mean 'any WinUI view type,' but
 		/// FrameworkElement is valid too)
 		/// </summary>
-		private bool IsManagedViewBaseType(INamedTypeSymbol? targetType) => SymbolEqualityComparer.Default.Equals(targetType, _uiElementSymbol) || SymbolEqualityComparer.Default.Equals(targetType, _frameworkElementSymbol);
+		private bool IsManagedViewBaseType(INamedTypeSymbol? targetType) => SymbolEqualityComparer.Default.Equals(targetType, Generation.UIElementSymbol.Value) || SymbolEqualityComparer.Default.Equals(targetType, Generation.FrameworkElementSymbol.Value);
 
 		private bool IsDependencyProperty(XamlMember member)
 		{
@@ -302,12 +302,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private bool HasIsParsing(XamlType xamlType)
 		{
-			return IsImplementingInterface(FindType(xamlType), _dependencyObjectParseSymbol);
+			return IsImplementingInterface(FindType(xamlType), Generation.DependencyObjectParseSymbol.Value);
 		}
 
 		private bool HasIsParsing(INamedTypeSymbol? type)
 		{
-			return IsImplementingInterface(type, _dependencyObjectParseSymbol);
+			return IsImplementingInterface(type, Generation.DependencyObjectParseSymbol.Value);
 		}
 
 		private Accessibility FindObjectFieldAccessibility(XamlObjectDefinition objectDefinition)
@@ -615,25 +615,25 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// Returns true if the type implements either ICollection, IList or one of their generics
 		/// </summary>
 		private bool IsCollectionOrListType(INamedTypeSymbol? propertyType)
-			=> IsImplementingInterface(propertyType, _iCollectionSymbol)
-			|| IsImplementingInterface(propertyType, _iCollectionOfTSymbol)
-			|| IsImplementingInterface(propertyType, _iListSymbol)
-			|| IsImplementingInterface(propertyType, _iListOfTSymbol);
+			=> IsImplementingInterface(propertyType, Generation.ICollectionSymbol.Value)
+			|| IsImplementingInterface(propertyType, Generation.ICollectionOfTSymbol.Value)
+			|| IsImplementingInterface(propertyType, Generation.IListSymbol.Value)
+			|| IsImplementingInterface(propertyType, Generation.IListOfTSymbol.Value);
 
 		/// <summary>
 		/// Returns true if the type implements <see cref="IDictionary{TKey, TValue}"/>
 		/// </summary>
 		private bool IsDictionary(INamedTypeSymbol? propertyType)
-			=> IsImplementingInterface(propertyType, _iDictionaryOfTKeySymbol);
+			=> IsImplementingInterface(propertyType, Generation.IDictionaryOfTKeySymbol.Value);
 
 		/// <summary>
 		/// Returns true if the type exactly implements either ICollection, IList or one of their generics
 		/// </summary>
 		private bool IsExactlyCollectionOrListType(INamedTypeSymbol type)
 		{
-			return SymbolEqualityComparer.Default.Equals(type, _iCollectionSymbol)
+			return SymbolEqualityComparer.Default.Equals(type, Generation.ICollectionSymbol.Value)
 				|| type.OriginalDefinition.SpecialType == SpecialType.System_Collections_Generic_ICollection_T
-				|| SymbolEqualityComparer.Default.Equals(type, _iListSymbol)
+				|| SymbolEqualityComparer.Default.Equals(type, Generation.IListSymbol.Value)
 				|| type.OriginalDefinition.SpecialType == SpecialType.System_Collections_Generic_IList_T;
 		}
 
@@ -653,8 +653,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				return false;
 			}
 
-			return IsImplementingInterface(type, _iCollectionSymbol)
-				|| IsImplementingInterface(type, _iCollectionOfTSymbol);
+			return IsImplementingInterface(type, Generation.ICollectionSymbol.Value)
+				|| IsImplementingInterface(type, Generation.ICollectionOfTSymbol.Value);
 		}
 
 		/// <summary>
@@ -753,7 +753,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					&& type.Name == "Bind"
 				   )
 				{
-					return _metadataHelper.FindTypeByFullName(XamlConstants.Namespaces.Data + ".Binding") as INamedTypeSymbol;
+					return Generation.DataBindingSymbol.Value;
 				}
 
 				var isKnownNamespace = ns?.Prefix is { Length: > 0 };
