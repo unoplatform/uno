@@ -43,7 +43,8 @@
 		<ApplicationDefinition Include="App.xaml" Condition="exists('App.xaml')" />
 		<Compile Update="**\*.xaml.cs">
 			<DependentUpon>%(Filename)</DependentUpon>
-		</Compile>
+		</Compile>		
+		<PriResource Include="**\*.resw" />
 	</ItemGroup>
 	<ItemGroup>
 		<UpToDateCheckInput Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml" />
