@@ -2213,7 +2213,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private bool IsXamlTypeConverter(INamedTypeSymbol? symbol)
 		{
-			return symbol?.GetAttributes().Any(a => a.AttributeClass?.Equals(_createFromStringAttributeSymbol, SymbolEqualityComparer.Default) == true) == true;
+			return symbol?.GetAttributes().Any(a => a.AttributeClass?.Equals(Generation.CreateFromStringAttributeSymbol.Value, SymbolEqualityComparer.Default) == true) == true;
 		}
 
 		private string BuildXamlTypeConverterLiteralValue(INamedTypeSymbol? symbol, string memberValue, bool includeQuotations)
@@ -5235,7 +5235,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private string BuildFontWeight(string memberValue)
 		{
-			var fontWeights = (INamedTypeSymbol)_metadataHelper.GetTypeByFullName(XamlConstants.Types.FontWeights);
+			var fontWeights = Generation.FontWeightsSymbol.Value;
 			var fontWeight = fontWeights.GetProperties().FirstOrDefault(p => p.Name.Equals(memberValue, StringComparison.OrdinalIgnoreCase))?.Name;
 			if (fontWeight is not null)
 			{
@@ -5249,7 +5249,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private string BuildBrush(string memberValue)
 		{
-			var colorHelper = (INamedTypeSymbol)_metadataHelper.GetTypeByFullName(XamlConstants.Types.SolidColorBrushHelper);
+			var colorHelper = Generation.SolidColorBrushHelperSymbol.Value;
 
 			// This ensures that a memberValue "DarkGoldenRod" gets converted to colorName "DarkGoldenrod" (notice the lowercase 'r')
 			var colorName = colorHelper.GetProperties().FirstOrDefault(m => m.Name.Equals(memberValue, StringComparison.OrdinalIgnoreCase))?.Name;
@@ -5309,7 +5309,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private string BuildColor(string memberValue)
 		{
-			var colorsSymbol = (INamedTypeSymbol)_metadataHelper.GetTypeByFullName(XamlConstants.Types.Colors);
+			var colorsSymbol = Generation.ColorsSymbol.Value;
 
 			if (colorsSymbol.GetProperties().FirstOrDefault(p =>
 				SymbolEqualityComparer.Default.Equals(p.Type, Generation.ColorSymbol.Value) &&
