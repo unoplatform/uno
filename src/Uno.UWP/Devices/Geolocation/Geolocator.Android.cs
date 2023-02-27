@@ -392,7 +392,10 @@ public sealed partial class Geolocator
 			return;
 		}
 
-		_locationManager?.RemoveUpdates(_locationListener);
+		if (_locationManager is not null && _locationListener.Handle != IntPtr.Zero)
+		{
+			_locationManager.RemoveUpdates(_locationListener);
+		}
 	}
 
 	private void RequestUpdates()
