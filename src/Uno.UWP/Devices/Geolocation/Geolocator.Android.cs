@@ -392,7 +392,9 @@ public sealed partial class Geolocator
 			return;
 		}
 
-		if (_locationManager is not null && _locationListener.Handle != IntPtr.Zero)
+		if (_locationManager is not null 
+		// RemoveUpdates may be invoked from the finalizer and _locationListener may already have been collected.
+		&& _locationListener.Handle != IntPtr.Zero)
 		{
 			_locationManager.RemoveUpdates(_locationListener);
 		}
