@@ -1,26 +1,19 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Uno;
-using Uno.Extensions;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Uno.Disposables;
-using System.Text;
-using System.Threading.Tasks;
-using View = Windows.UI.Xaml.FrameworkElement;
-using Windows.UI.Xaml.Media;
+using System.Text.RegularExpressions;
+using FluentAssertions;
+using FluentAssertions.Execution;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Uno.Extensions;
+using Windows.UI;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Documents;
-using FluentAssertions;
-using Windows.UI.Xaml.Controls.Primitives;
-using Microsoft.Extensions.Logging;
-using Microsoft.UI;
-using Windows.UI;
-using System.Text.RegularExpressions;
-using FluentAssertions.Execution;
-using System.Globalization;
+using Windows.UI.Xaml.Markup;
+using Windows.UI.Xaml.Media;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 {
@@ -1582,6 +1575,27 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 			Assert.AreEqual("\n   You can construct URLs and access their parts. For URLs that represent local files, you can also manipulate properties of those files directly.\n", ((Run)SUT.Inlines[2]).Text);
 			Assert.IsInstanceOfType(SUT.Inlines[3], typeof(LineBreak));
 			Assert.AreEqual("\n   AfterLineBreak \n", ((Run)SUT.Inlines[4]).Text);
+		}
+
+		[TestMethod]
+		public void When_Binding_Converter_StaticResource()
+		{
+			var root = (StackPanel)XamlReader.Load(
+				@"<StackPanel xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' 
+                        xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'
+                        xmlns:primitives='using:Microsoft.UI.Xaml.Controls.Primitives'> 
+                    <StackPanel.Resources>
+                        <primitives:CornerRadiusFilterConverter x:Key='RightCornerRadiusFilterConverter' Filter='Right'/>
+                    </StackPanel.Resources>
+					<Grid x:Name='SourceGrid' CornerRadius='6,6,6,6' />
+                    <Grid x:Name='RightRadiusGrid'
+                        CornerRadius='{Binding ElementName=SourceGrid, Path=CornerRadius, Converter={StaticResource RightCornerRadiusFilterConverter}}'>
+                    </Grid>
+                </StackPanel>");
+
+			var rightRadiusGrid = (Grid)root.FindName("RightRadiusGrid");
+
+			Assert.AreEqual(new CornerRadius(0, 6, 6, 0), rightRadiusGrid.CornerRadius);
 		}
 
 		/// <summary>
