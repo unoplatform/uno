@@ -464,7 +464,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 								using (componentBuilder.Indent(writer.CurrentLevel))
 								{
-									BuildInitializeComponent(componentBuilder, topLevelControl, controlBaseType, false);
+									BuildInitializeComponent(componentBuilder, topLevelControl, controlBaseType);
 #if NETSTANDARD
 									if (IsApplication(topLevelControl.Type) && PlatformHelper.IsAndroid(_generatorContext))
 									{
@@ -473,7 +473,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 #endif
 									TryBuildElementStubHolders(componentBuilder);
 
-									BuildPartials(componentBuilder, isStatic: false);
+									BuildPartials(componentBuilder);
 
 									BuildBackingFields(componentBuilder);
 
@@ -533,7 +533,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			writer.AppendLineInvariantIndented($"private const string __baseUri_{_fileUniqueId} = \"ms-appx:///{assembly}{_fileDefinition.TargetFilePath.TrimStart("/")}\";");
 		}
 
-		private void BuildInitializeComponent(IndentedStringBuilder writer, XamlObjectDefinition topLevelControl, INamedTypeSymbol controlBaseType, bool isDirectUserControlChild)
+		private void BuildInitializeComponent(IndentedStringBuilder writer, XamlObjectDefinition topLevelControl, INamedTypeSymbol controlBaseType)
 		{
 			writer.AppendLineIndented("global::Windows.UI.Xaml.NameScope __nameScope = new global::Windows.UI.Xaml.NameScope();");
 
@@ -580,17 +580,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						}
 					}
 
-					BuildGenericControlInitializerBody(writer, topLevelControl, isDirectUserControlChild);
+					BuildGenericControlInitializerBody(writer, topLevelControl);
 					BuildNamedResources(writer, _namedResources);
 				}
 
 				EnsureXClassName();
 				BuildCompiledBindingsInitializer(writer, controlBaseType);
-
-				if (isDirectUserControlChild)
-				{
-					writer.AppendLineIndented("return content;");
-				}
 			}
 		}
 
@@ -661,7 +656,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 
 			RegisterAndBuildResources(writer, topLevelControl, isInInitializer: false);
-			BuildProperties(writer, topLevelControl, isInline: false, returnsContent: false);
+			BuildProperties(writer, topLevelControl, isInline: false);
 
 			ApplyFontsOverride(writer);
 
@@ -873,7 +868,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// <param name="writer">String builder</param>
 		/// <param name="topLevelControl">The top-level xaml object</param>
 		/// <param name="isDirectUserControlChild">True if the defined control directly inherits from UserControl.</param>
-		private void BuildGenericControlInitializerBody(IndentedStringBuilder writer, XamlObjectDefinition topLevelControl, bool isDirectUserControlChild)
+		private void BuildGenericControlInitializerBody(IndentedStringBuilder writer, XamlObjectDefinition topLevelControl)
 		{
 			TryAnnotateWithGeneratorSource(writer);
 			// OnInitializeCompleted() seems to be used by some older code as a substitute for the constructor for UserControls, which are optimized out of the visual tree.
@@ -886,12 +881,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			using (TrySetDefaultBindMode(topLevelControl))
 			{
 				RegisterAndBuildResources(writer, topLevelControl, isInInitializer: false);
-				BuildProperties(writer, topLevelControl, isInline: false, returnsContent: isDirectUserControlChild, useBase: true);
+				BuildProperties(writer, topLevelControl, isInline: false, useBase: true);
 
 				writer.AppendLineIndented(";");
 
 				writer.AppendLineIndented("");
-				writer.AppendLineIndented(isDirectUserControlChild ? "content" : "this");
+				writer.AppendLineIndented("this");
 
 
 				using (var blockWriter = CreateApplyBlock(writer, null, out var closure))
@@ -908,26 +903,21 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				if (IsDependencyObject(topLevelControl))
 				{
-					BuildExtendedProperties(writer, topLevelControl, isDirectUserControlChild, useGenericApply: true);
+					BuildExtendedProperties(writer, topLevelControl, useGenericApply: true);
 				}
 			}
 
 			writer.AppendLineIndented(";");
 
 			writer.AppendLineIndented("OnInitializeCompleted();");
-			if (isDirectUserControlChild)
-			{
-				// For user controls, the Apply block is applied to the content, so we call CreationComplete() here
-				writer.AppendLineIndented("CreationComplete();");
-			}
 		}
 
-		private void BuildPartials(IIndentedStringBuilder writer, bool isStatic)
+		private void BuildPartials(IIndentedStringBuilder writer)
 		{
 			TryAnnotateWithGeneratorSource(writer);
 			foreach (var partialDefinition in _partials)
 			{
-				writer.AppendLineInvariantIndented("{0}partial " + partialDefinition + ";", isStatic ? "static " : "");
+				writer.AppendLineIndented($"partial {partialDefinition};");
 			}
 		}
 
@@ -1273,13 +1263,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					using (writer.BlockInvariant($"void {bindingsInterfaceName}.StopTracking()")) { }
 				}
 			}
-		}
-
-		private string GetImplicitChildTypeDisplayString(XamlObjectDefinition topLevelControl)
-		{
-			var contentType = FindImplicitContentMember(topLevelControl)?.Objects.FirstOrDefault()?.Type;
-
-			return contentType == null ? XamlConstants.Types.FrameworkElement : FindType(contentType)?.ToDisplayString() ?? XamlConstants.Types.FrameworkElement;
 		}
 
 		/// <summary>
@@ -2348,7 +2331,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
-		private bool BuildProperties(IIndentedStringBuilder writer, XamlObjectDefinition topLevelControl, bool isInline = true, bool returnsContent = false, string? closureName = null, bool useBase = false)
+		private bool BuildProperties(IIndentedStringBuilder writer, XamlObjectDefinition topLevelControl, bool isInline = true, string? closureName = null, bool useBase = false)
 		{
 			TryAnnotateWithGeneratorSource(writer);
 			try
@@ -2439,8 +2422,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								var elementType = GetType(topLevelControl.Type);
 								var contentProperty = FindContentProperty(elementType);
 
-								writer.AppendLineInvariantIndented(returnsContent ? "{0} content = " : "{1}{2} = ",
-									GetType(firstChild.Type).ToDisplayString(),
+								writer.AppendLineInvariantIndented("{0}{1} = ",
 									setterPrefix,
 									contentProperty != null ? contentProperty.Name : "Content"
 								);
@@ -2676,10 +2658,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						}
 
 						return true;
-					}
-					else if (returnsContent && _skipUserControlsInVisualTree && IsUserControl(topLevelControl.Type))
-					{
-						writer.AppendIndented(XamlConstants.Types.FrameworkElement + " content = null");
 					}
 				}
 
@@ -3248,7 +3226,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				.ToArray());
 		}
 
-		private void BuildExtendedProperties(IIndentedStringBuilder outerwriter, XamlObjectDefinition objectDefinition, bool useChildTypeForNamedElement = false, bool useGenericApply = false)
+		private void BuildExtendedProperties(IIndentedStringBuilder outerwriter, XamlObjectDefinition objectDefinition, bool useGenericApply = false)
 		{
 			_generatorContext.CancellationToken.ThrowIfCancellationRequested();
 
@@ -3488,9 +3466,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							{
 								nameMember = member;
 
-								var type = useChildTypeForNamedElement ?
-									GetImplicitChildTypeDisplayString(objectDefinition) :
-									FindType(objectDefinition.Type)?.ToDisplayString();
+								var type = FindType(objectDefinition.Type)?.ToDisplayString();
 
 								if (type == null)
 								{
@@ -3697,10 +3673,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 					BuildStatementLocalizedProperties(writer, objectDefinition, closureName);
 
-					if (hasIsParsing
-							// If true then this apply block will be applied to the content of a UserControl, which will already have had CreationComplete() called in its own apply block.
-							&& !useChildTypeForNamedElement
-						)
+					if (hasIsParsing)
 					{
 						// This should always be the last thing called when an element is parsed.
 						writer.AppendLineInvariantIndented("{0}.CreationComplete();", closureName);
@@ -6399,9 +6372,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									var xamlObjectDef = new XamlObjectDefinition(elementStubType, 0, 0, definition);
 									xamlObjectDef.Members.AddRange(members);
 
-									// Add the element stub as a strong reference, so that the
-									// stub can be brought back if the loaded state changes.
-									AddComponentForParentScope(xamlObjectDef, isWeak: false);
+									AddComponentForParentScope(xamlObjectDef);
 
 									var componentName = CurrentScope.Components.Last().MemberName;
 									writer.AppendLineIndented($"__that.{componentName} = {closureName};");
@@ -6810,9 +6781,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return componentDefinition;
 		}
 
-		private void AddComponentForParentScope(XamlObjectDefinition objectDefinition, bool isWeak)
+		private void AddComponentForParentScope(XamlObjectDefinition objectDefinition)
 		{
-			CurrentScope.Components.Add(new ComponentDefinition(objectDefinition, isWeak, $"_component_{CurrentScope.ComponentCount}"));
+			// Add the element stub as a strong reference, so that the
+			// stub can be brought back if the loaded state changes.
+			CurrentScope.Components.Add(new ComponentDefinition(objectDefinition, IsWeakReference: false, $"_component_{CurrentScope.ComponentCount}"));
 
 			if (_xLoadScopeStack.Count > 1)
 			{
