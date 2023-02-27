@@ -113,7 +113,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				// Ensure we have a correct size before layouting ToolTip, otherwise it may appear under mouse, steal focus and dismiss itself
 				ApplyTemplate();
-				Measure(Windows.UI.Xaml.Window.Current.Bounds.Size);
+				Measure(XamlRoot?.Size ?? (_owner as FrameworkElement)?.XamlRoot?.Size ?? Xaml.Window.Current.Bounds.Size);
 			}
 
 			return DesiredSize;
@@ -262,8 +262,9 @@ namespace Windows.UI.Xaml.Controls
 			var toolTipRect = default(Rect);
 			var intersectionRect = default(Rect);
 
-			screenWidth = Windows.UI.Xaml.Window.Current.Bounds.Width;
-			screenHeight = Windows.UI.Xaml.Window.Current.Bounds.Height;
+			var bounds = XamlRoot?.Bounds ?? Target?.XamlRoot?.Bounds ?? Xaml.Window.Current.Bounds;
+			screenWidth = bounds.Width;
+			screenHeight = bounds.Height;
 
 			var spTarget = Target;
 
@@ -433,10 +434,10 @@ namespace Windows.UI.Xaml.Controls
 				return;
 			}
 
-			var visibleRect = Windows.UI.Xaml.Window.Current.Bounds;
+			var visibleRect = XamlRoot?.Bounds ?? spTarget?.XamlRoot?.Bounds ?? Xaml.Window.Current.Bounds;
 			var constraint = visibleRect;
 
-			var windowRect = Windows.UI.Xaml.Window.Current.Bounds;
+			var windowRect = XamlRoot?.Bounds ?? spTarget?.XamlRoot?.Bounds ?? Xaml.Window.Current.Bounds;
 			origin.X = windowRect.X;
 			origin.Y = windowRect.Y;
 
