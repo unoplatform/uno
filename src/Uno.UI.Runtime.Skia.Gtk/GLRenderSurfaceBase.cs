@@ -25,12 +25,6 @@ namespace Uno.UI.Runtime.Skia
 		private const SKColorType colorType = SKColorType.Rgba8888;
 		private const GRSurfaceOrigin surfaceOrigin = GRSurfaceOrigin.BottomLeft;
 
-		/// <summary>
-		/// Include a guard band for the creation of the OpenGL surface to avoid
-		/// incorrect renders when the surface is exactly the size of the GLArea.
-		/// </summary>
-		private const int GuardBand = 32;
-
 		private readonly DisplayInformation _displayInformation;
 		private FocusManager? _focusManager;
 
@@ -93,10 +87,9 @@ namespace Uno.UI.Runtime.Skia
 			}
 
 			var scale = _scale ?? 1f;
-			var scaledGuardBand = (int)(GuardBand * scale);
 
-			var w = (int)Math.Max(0, AllocatedWidth * scale + scaledGuardBand);
-			var h = (int)Math.Max(0, AllocatedHeight * scale + scaledGuardBand);
+			var w = (int)Math.Max(0, AllocatedWidth * scale);
+			var h = (int)Math.Max(0, AllocatedHeight * scale);
 
 			if (_renderTarget == null || _surface == null || _renderTarget.Width != w || _renderTarget.Height != h)
 			{
@@ -137,8 +130,6 @@ namespace Uno.UI.Runtime.Skia
 				{
 					canvas.Scale(scale);
 				}
-
-				canvas.Translate(new SKPoint(0, GuardBand));
 
 				WUX.Window.Current.Compositor.Render(_surface);
 			}

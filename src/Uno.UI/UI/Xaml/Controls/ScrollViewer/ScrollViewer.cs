@@ -1282,6 +1282,7 @@ namespace Windows.UI.Xaml.Controls
 			if (isIntermediate && UpdatesMode != Uno.UI.Xaml.Controls.ScrollViewerUpdatesMode.Synchronous)
 			{
 				RequestUpdate();
+				_snapPointsTimer?.Stop();
 			}
 			else
 			{

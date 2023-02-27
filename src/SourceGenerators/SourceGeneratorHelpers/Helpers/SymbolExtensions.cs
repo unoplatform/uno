@@ -400,21 +400,6 @@ namespace Microsoft.CodeAnalysis
 				}
 			}
 		}
-		private static readonly Dictionary<string, string?> _fullNamesMaping = new Dictionary<string, string?>(StringComparer.OrdinalIgnoreCase)
-		{
-			{"string",     typeof(string).ToString()},
-			{"long",       typeof(long).ToString()},
-			{"int",        typeof(int).ToString()},
-			{"short",      typeof(short).ToString()},
-			{"ulong",      typeof(ulong).ToString()},
-			{"uint",       typeof(uint).ToString()},
-			{"ushort",     typeof(ushort).ToString()},
-			{"byte",       typeof(byte).ToString()},
-			{"double",     typeof(double).ToString()},
-			{"float",      typeof(float).ToString()},
-			{"decimal",    typeof(decimal).ToString()},
-			{"bool",       typeof(bool).ToString()},
-		};
 
 		// https://github.com/CommunityToolkit/dotnet/blob/e6257d8c65126f2f977f2dcbce3fe6045086f270/CommunityToolkit.Mvvm.SourceGenerators/Extensions/INamedTypeSymbolExtensions.cs#L16-L44
 		/// <summary>
@@ -458,9 +443,7 @@ namespace Microsoft.CodeAnalysis
 				return $"System.Nullable`1[{t.GetFullName()}]";
 			}
 
-			var name = type?.ToDisplayString();
-
-			return _fullNamesMaping.UnoGetValueOrDefault(name!, name);
+			return type?.ToDisplayString();
 		}
 
 		public static string GetFullMetadataName(this INamespaceOrTypeSymbol symbol)

@@ -97,6 +97,34 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private const string WinUIThemeResourcePathSuffixFormatString = "themeresources_v{0}.xaml";
 		private static string WinUICompactPathSuffix = Path.Combine("DensityStyles", "Compact.xaml");
 
+		internal Lazy<INamedTypeSymbol?> AssemblyMetadataSymbol { get; }
+		internal Lazy<INamedTypeSymbol> ElementStubSymbol { get; }
+		internal Lazy<INamedTypeSymbol> ContentPresenterSymbol { get; }
+		internal Lazy<INamedTypeSymbol> StringSymbol { get; }
+		internal Lazy<INamedTypeSymbol> ObjectSymbol { get; }
+		internal Lazy<INamedTypeSymbol> FrameworkElementSymbol { get; }
+		internal Lazy<INamedTypeSymbol> UIElementSymbol { get; }
+		internal Lazy<INamedTypeSymbol> DependencyObjectSymbol { get; }
+		internal Lazy<INamedTypeSymbol> MarkupExtensionSymbol { get; }
+		internal Lazy<INamedTypeSymbol> BrushSymbol { get; }
+		internal Lazy<INamedTypeSymbol> ImageSourceSymbol { get; }
+		internal Lazy<INamedTypeSymbol> ImageSymbol { get; }
+		internal Lazy<INamedTypeSymbol> DependencyObjectParseSymbol { get; }
+		internal Lazy<INamedTypeSymbol?> AndroidContentContextSymbol { get; }
+		internal Lazy<INamedTypeSymbol?> AndroidViewSymbol { get; }
+		internal Lazy<INamedTypeSymbol?> IOSViewSymbol { get; }
+		internal Lazy<INamedTypeSymbol?> AppKitViewSymbol { get; }
+		internal Lazy<INamedTypeSymbol> ICollectionSymbol { get; }
+		internal Lazy<INamedTypeSymbol> ICollectionOfTSymbol { get; }
+		internal Lazy<INamedTypeSymbol> IConvertibleSymbol { get; }
+		internal Lazy<INamedTypeSymbol> IListSymbol { get; }
+		internal Lazy<INamedTypeSymbol> IListOfTSymbol { get; }
+		internal Lazy<INamedTypeSymbol> IDictionaryOfTKeySymbol { get; }
+		internal Lazy<INamedTypeSymbol> DataBindingSymbol { get; }
+		internal Lazy<INamedTypeSymbol> StyleSymbol { get; }
+		internal Lazy<INamedTypeSymbol> SetterSymbol { get; }
+		internal Lazy<INamedTypeSymbol> ColorSymbol { get; }
+
 		public XamlCodeGeneration(GeneratorExecutionContext context)
 		{
 			// To easily debug XAML code generation:
@@ -225,6 +253,43 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			_isWasm = context.GetMSBuildPropertyValue("DefineConstantsProperty")?.Contains("__WASM__") ?? false;
 			_isDesignTimeBuild = Helpers.DesignTimeHelper.IsDesignTime(context);
+
+			StringSymbol = GetSpecialTypeSymbolAsLazy(SpecialType.System_String);
+			ObjectSymbol = GetSpecialTypeSymbolAsLazy(SpecialType.System_Object);
+			AssemblyMetadataSymbol = GetOptionalSymbolAsLazy("System.Reflection.AssemblyMetadataAttribute");
+			ElementStubSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.ElementStub);
+			SetterSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.Setter);
+			ContentPresenterSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.ContentPresenter);
+			FrameworkElementSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.FrameworkElement);
+			UIElementSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.UIElement);
+			ImageSourceSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.ImageSource);
+			ImageSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.Image);
+			DependencyObjectSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.DependencyObject);
+			MarkupExtensionSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.MarkupExtension);
+			BrushSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.Brush);
+			DependencyObjectParseSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.IDependencyObjectParse);
+			ICollectionSymbol = GetMandatorySymbolAsLazy("System.Collections.ICollection");
+			ICollectionOfTSymbol = GetSpecialTypeSymbolAsLazy(SpecialType.System_Collections_Generic_ICollection_T);
+			IConvertibleSymbol = GetMandatorySymbolAsLazy("System.IConvertible");
+			IListSymbol = GetMandatorySymbolAsLazy("System.Collections.IList");
+			IListOfTSymbol = GetSpecialTypeSymbolAsLazy(SpecialType.System_Collections_Generic_IList_T);
+			IDictionaryOfTKeySymbol = GetMandatorySymbolAsLazy("System.Collections.Generic.IDictionary`2");
+			DataBindingSymbol = GetMandatorySymbolAsLazy("Windows.UI.Xaml.Data.Binding");
+			StyleSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.Style);
+			ColorSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.Color);
+			AndroidContentContextSymbol = GetOptionalSymbolAsLazy("Android.Content.Context");
+			AndroidViewSymbol = GetOptionalSymbolAsLazy("Android.Views.View");
+			IOSViewSymbol = GetOptionalSymbolAsLazy("UIKit.UIView");
+			AppKitViewSymbol = GetOptionalSymbolAsLazy("AppKit.NSView");
+
+			Lazy<INamedTypeSymbol> GetMandatorySymbolAsLazy(string fullyQualifiedName)
+				=> new(() => context.Compilation.GetTypeByMetadataName(fullyQualifiedName) ?? throw new InvalidOperationException($"Unable to find type {fullyQualifiedName}"));
+
+			Lazy<INamedTypeSymbol?> GetOptionalSymbolAsLazy(string fullyQualifiedName)
+				=> new(() => context.Compilation.GetTypeByMetadataName(fullyQualifiedName));
+
+			Lazy<INamedTypeSymbol> GetSpecialTypeSymbolAsLazy(SpecialType specialType)
+				=> new(() => context.Compilation.GetSpecialType(specialType));
 		}
 
 		private static bool IsWinUIItem(Uno.Roslyn.MSBuildItem item)
@@ -341,44 +406,40 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 
 				var outputFiles = filesToProcess.Select(file => new KeyValuePair<string, string>(
-
-							file.UniqueID,
-							new XamlFileGenerator(
-									file: file,
-									targetPath: _targetPath,
-									defaultNamespace: _defaultNamespace,
-									metadataHelper: _metadataHelper,
-									fileUniqueId: file.UniqueID,
-									lastReferenceUpdateTime: lastBinaryUpdateTime,
-									analyzerSuppressions: _analyzerSuppressions,
-									globalStaticResourcesMap: globalStaticResourcesMap,
-									resourceDetailsCollection: resourceDetailsCollection,
-									isUiAutomationMappingEnabled: _isUiAutomationMappingEnabled,
-									uiAutomationMappings: _uiAutomationMappings,
-									defaultLanguage: _defaultLanguage,
-									shouldWriteErrorOnInvalidXaml: _shouldWriteErrorOnInvalidXaml,
-									isWasm: _isWasm,
-									isDebug: _isDebug,
-									isHotReloadEnabled: _isHotReloadEnabled,
-									isInsideMainAssembly: isInsideMainAssembly,
-									useXamlReaderHotReload: _useXamlReaderHotReload,
-									isDesignTimeBuild: _isDesignTimeBuild,
-									skipUserControlsInVisualTree: _skipUserControlsInVisualTree,
-									shouldAnnotateGeneratedXaml: _shouldAnnotateGeneratedXaml,
-									isUnoAssembly: IsUnoAssembly,
-									isUnoFluentAssembly: IsUnoFluentAssembly,
-									isLazyVisualStateManagerEnabled: _isLazyVisualStateManagerEnabled,
-									enableFuzzyMatching: _enableFuzzyMatching,
-									generatorContext: _generatorContext,
-									xamlResourcesTrimming: _xamlResourcesTrimming,
-									generationRunFileInfo: generationRunInfo.GetRunFileInfo(file.UniqueID),
-									xamlTypeToXamlTypeBaseMap: xamlTypeToXamlTypeBaseMap
-								)
-								.GenerateFile()
-						)
-					)
-					.ToList();
-
+					file.UniqueID,
+					new XamlFileGenerator(
+						this,
+						file: file,
+						targetPath: _targetPath,
+						defaultNamespace: _defaultNamespace,
+						metadataHelper: _metadataHelper,
+						fileUniqueId: file.UniqueID,
+						lastReferenceUpdateTime: lastBinaryUpdateTime,
+						analyzerSuppressions: _analyzerSuppressions,
+						globalStaticResourcesMap: globalStaticResourcesMap,
+						resourceDetailsCollection: resourceDetailsCollection,
+						isUiAutomationMappingEnabled: _isUiAutomationMappingEnabled,
+						uiAutomationMappings: _uiAutomationMappings,
+						defaultLanguage: _defaultLanguage,
+						shouldWriteErrorOnInvalidXaml: _shouldWriteErrorOnInvalidXaml,
+						isWasm: _isWasm,
+						isDebug: _isDebug,
+						isHotReloadEnabled: _isHotReloadEnabled,
+						isInsideMainAssembly: isInsideMainAssembly,
+						useXamlReaderHotReload: _useXamlReaderHotReload,
+						isDesignTimeBuild: _isDesignTimeBuild,
+						skipUserControlsInVisualTree: _skipUserControlsInVisualTree,
+						shouldAnnotateGeneratedXaml: _shouldAnnotateGeneratedXaml,
+						isUnoAssembly: IsUnoAssembly,
+						isUnoFluentAssembly: IsUnoFluentAssembly,
+						isLazyVisualStateManagerEnabled: _isLazyVisualStateManagerEnabled,
+						enableFuzzyMatching: _enableFuzzyMatching,
+						generatorContext: _generatorContext,
+						xamlResourcesTrimming: _xamlResourcesTrimming,
+						generationRunFileInfo: generationRunInfo.GetRunFileInfo(file.UniqueID),
+						xamlTypeToXamlTypeBaseMap: xamlTypeToXamlTypeBaseMap
+					).GenerateFile()
+				)).ToList();
 
 				outputFiles.Add(new KeyValuePair<string, string>("GlobalStaticResources", GenerateGlobalResources(files, globalStaticResourcesMap)));
 
@@ -721,9 +782,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			// If a failure happens here, this means that the _isWasm was not properly set as the DefineConstants msbuild property
 			// was not populated. This can happen when the property is set through a target with the "CreateProperty" task, and the
 			// Uno.SourceGeneration tasks do not execute this task properly.
-			writer.AppendLineIndented("#if __WASM__");
-			writer.AppendLineIndented(_isWasm ? "" : "#error invalid internal source generator state. The __WASM__ DefineConstant was not propagated properly.");
-			writer.AppendLineIndented("#endif");
+			if (!_isWasm)
+			{
+				writer.AppendLineIndented("#if __WASM__");
+				writer.AppendLineIndented("#error invalid internal source generator state. The __WASM__ DefineConstant was not propagated properly.");
+				writer.AppendLineIndented("#endif");
+			}
 
 			using (writer.BlockInvariant("namespace {0}", _defaultNamespace))
 			{

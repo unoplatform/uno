@@ -20,7 +20,18 @@
 		</ListView>
 
 		<Grid x:Name="DetailsPane" DataContext="{Binding SelectedItem}" Grid.Column="1">
-			<xamlHost:UnoXamlHost InitialTypeName="UnoIslands.MainPage" />
+			<Grid.RowDefinitions>
+				<RowDefinition Height="auto" />
+				<RowDefinition Height="*" />
+			</Grid.RowDefinitions>
+			<CheckBox x:Name="contentLoaded"
+					  IsChecked="true"
+					  Content="UnoXamlHost Loaded ?"
+					  Checked="contentLoaded_Checked"
+					  Unchecked="contentLoaded_Unchecked" />
+			<ContentControl Grid.Row="1" x:Name="hostContainer">
+				<xamlHost:UnoXamlHost x:Name="xamlHost" InitialTypeName="UnoIslands.MainPage" />
+			</ContentControl>
 		</Grid>
 	</Grid>
 </Window>

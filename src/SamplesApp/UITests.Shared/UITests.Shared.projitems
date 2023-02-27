@@ -1562,6 +1562,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ListView\ListView_Snap_Rubberband.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\PasswordBoxTests\PasswordBox_AutoFill.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -5538,6 +5542,9 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ImageTests\Image_Source_Nullify.xaml.cs">
       <DependentUpon>Image_Source_Nullify.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ListView\ListView_Snap_Rubberband.xaml.cs">
+      <DependentUpon>ListView_Snap_Rubberband.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBox\TextBox_PlaceholderForeground.xaml.cs">
       <DependentUpon>TextBox_PlaceholderForeground.xaml</DependentUpon>
