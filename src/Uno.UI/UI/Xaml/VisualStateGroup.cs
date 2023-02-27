@@ -432,8 +432,7 @@ namespace Windows.UI.Xaml
 			// If there are multiple active triggers at a time that have a conflict in scoring(i.e.two active custom
 			// triggers), then the first one declared in the markup file takes precedence.
 
-			var winningPrecedence2 = default(VisualState);
-			var winningPrecedence3 = default(VisualState);
+			(VisualState State, double MinWidth, double MinHeight) adaptiveCandidate = (default, -1, -1);
 
 			for (var stateIndex = 0; stateIndex < States.Count; stateIndex++)
 			{
@@ -442,36 +441,40 @@ namespace Windows.UI.Xaml
 				{
 					var trigger = state.StateTriggers[triggerIndex];
 
+					// the first active CustomTrigger is an automatic winner.
 					if (trigger.CurrentPrecedence == StateTriggerPrecedence.CustomTrigger)
 					{
-						return state; // we have a winner!
+						return state;
 					}
-					if (trigger.CurrentPrecedence == StateTriggerPrecedence.MinWidthTrigger && winningPrecedence2 == null)
-					{
-						winningPrecedence2 = state;
-						if (winningPrecedence3 != null)
-						{
-							break;
-						}
-					}
-					else if (trigger.CurrentPrecedence == StateTriggerPrecedence.MinHeightTrigger && winningPrecedence3 == null)
-					{
-						winningPrecedence3 = state;
-						if (winningPrecedence2 != null)
-						{
-							break;
-						}
-					}
-				}
 
-				if (winningPrecedence2 != null && winningPrecedence3 != null)
-				{
-					break;
+					// between AdaptiveTriggers, they are ranked by MinWindowWidth (descending),
+					// then by MinWindowHeight (descending), and finally in the declaration order.
+					if (trigger.CurrentPrecedence == StateTriggerPrecedence.AdaptiveTrigger &&
+						trigger is AdaptiveTrigger adaptiveTrigger)
+					{
+						var minWidth = adaptiveTrigger.MinWindowWidth;
+						var minHeight = adaptiveTrigger.MinWindowHeight;
+
+						// compare by MinWindowWidth first
+						if (minWidth > adaptiveCandidate.MinWidth)
+						{
+							adaptiveCandidate = (state, minWidth, minHeight);
+							break;
+						}
+						// compare by MinWindowHeight only if MinWindowWidth are equal
+						if (minWidth == adaptiveCandidate.MinWidth &&
+							minHeight > adaptiveCandidate.MinHeight)
+						{
+							adaptiveCandidate = (state, minWidth, minHeight);
+							break;
+						}
+						// if MinWindowWidth and MinWindowHeight are both equal,
+						// then previous candidate wins for being declared first.
+					}
 				}
 			}
 
-			var winnerState = winningPrecedence2 ?? winningPrecedence3;
-			return winnerState;
+			return adaptiveCandidate.State;
 		}
 
 		public override string ToString()
