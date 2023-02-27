@@ -456,42 +456,15 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				_isTopLevelDictionary = true;
 
-				if (_generationRunFileInfo.RunInfo.Manager.AllRuns.None() || !_useXamlReaderHotReload)
+				var componentBuilder = new IndentedStringBuilder();
+
+				using (componentBuilder.Indent(writer.CurrentLevel))
 				{
-					// On the first run, or if XamlReader hot reload is disabled, generate the full code.
-
-					var componentBuilder = new IndentedStringBuilder();
-
-					using (componentBuilder.Indent(writer.CurrentLevel))
-					{
-						BuildResourceDictionaryBackingClass(componentBuilder, topLevelControl);
-						BuildTopLevelResourceDictionary(componentBuilder, topLevelControl);
-					}
-
-					var componentCode = componentBuilder.ToString();
-					if (_useXamlReaderHotReload)
-					{
-						_generationRunFileInfo.SetAppliedTypes(_xamlAppliedTypes);
-						_generationRunFileInfo.ComponentCode = componentCode;
-					}
-
-					writer.AppendLineIndented(componentCode);
+					BuildResourceDictionaryBackingClass(componentBuilder, topLevelControl);
+					BuildTopLevelResourceDictionary(componentBuilder, topLevelControl);
 				}
-				else
-				{
-					// if XamlReader hot reload is enabled, generate partial code
-					if (_generationRunFileInfo.RunInfo.Manager.AllRuns.FirstOrDefault(r => r.GetRunFileInfo(_fileUniqueId)?.ComponentCode != null) is { } runFileInfo)
-					{
-						var generationRunFileInfo = runFileInfo.GetRunFileInfo(_fileUniqueId);
 
-						writer.AppendLineIndented(generationRunFileInfo.ComponentCode);
-
-						foreach (var type in generationRunFileInfo.AppliedTypes)
-						{
-							_xamlAppliedTypes.Add(type.Key, type.Value);
-						}
-					}
-				}
+				writer.AppendLineInvariantIndented("{0}", componentBuilder.ToString());
 			}
 			else
 			{
@@ -510,56 +483,31 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 						using (Scope(_xClassName.Namespace, _xClassName.ClassName))
 						{
-							if (_generationRunFileInfo.RunInfo.Manager.AllRuns.None() || !_useXamlReaderHotReload)
-							{
-								var componentBuilder = new IndentedStringBuilder();
+							var componentBuilder = new IndentedStringBuilder();
 
-								using (componentBuilder.Indent(writer.CurrentLevel))
-								{
-									BuildInitializeComponent(componentBuilder, topLevelControl, controlBaseType, false);
+							using (componentBuilder.Indent(writer.CurrentLevel))
+							{
+								BuildInitializeComponent(componentBuilder, topLevelControl, controlBaseType, false);
 #if NETSTANDARD
-									if (IsApplication(topLevelControl.Type) && PlatformHelper.IsAndroid(_generatorContext))
-									{
-										BuildDrawableResourcesIdResolver(componentBuilder);
-									}
+								if (IsApplication(topLevelControl.Type) && PlatformHelper.IsAndroid(_generatorContext))
+								{
+									BuildDrawableResourcesIdResolver(componentBuilder);
+								}
 #endif
-									TryBuildElementStubHolders(componentBuilder);
+								TryBuildElementStubHolders(componentBuilder);
 
-									BuildPartials(componentBuilder, isStatic: false);
+								BuildPartials(componentBuilder, isStatic: false);
 
-									BuildBackingFields(componentBuilder);
+								BuildBackingFields(componentBuilder);
 
-									BuildChildSubclasses(componentBuilder);
+								BuildChildSubclasses(componentBuilder);
 
-									BuildComponentFields(componentBuilder);
+								BuildComponentFields(componentBuilder);
 
-									BuildCompiledBindings(componentBuilder);
-								}
-
-								var componentCode = componentBuilder.ToString();
-
-								if (_useXamlReaderHotReload)
-								{
-									_generationRunFileInfo.SetAppliedTypes(_xamlAppliedTypes);
-									_generationRunFileInfo.ComponentCode = componentCode;
-								}
-
-								writer.AppendLineIndented(componentCode);
+								BuildCompiledBindings(componentBuilder);
 							}
-							else
-							{
-								if (_generationRunFileInfo.RunInfo.Manager.AllRuns.FirstOrDefault(r => r.GetRunFileInfo(_fileUniqueId)?.ComponentCode != null) is { } runFileInfo)
-								{
-									var generationRunFileInfo = runFileInfo.GetRunFileInfo(_fileUniqueId);
 
-									writer.AppendLineInvariantIndented("{0}", generationRunFileInfo.ComponentCode);
-
-									foreach (var type in generationRunFileInfo.AppliedTypes)
-									{
-										_xamlAppliedTypes.Add(type.Key, type.Value);
-									}
-								}
-							}
+							writer.AppendLineInvariantIndented("{0}", componentBuilder.ToString());
 						}
 					}
 				}
