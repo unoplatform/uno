@@ -34,17 +34,6 @@ namespace Windows.UI.Xaml
 			return element;
 		}
 
-		public static T Binding<T>(this T element, string property, string propertyPath, string converter) where T : IDependencyObjectStoreProvider
-		{
-			var dependencyProperty = GetDependencyProperty(element, property);
-			var path = new PropertyPath(propertyPath.Replace("].[", "]["));
-			var binding = new Windows.UI.Xaml.Data.Binding { Path = path, Converter = ResourceHelper.FindConverter(converter) };
-
-			(element as IDependencyObjectStoreProvider).Store.SetBinding(dependencyProperty, binding);
-
-			return element;
-		}
-
 		public static T Binding<T>(this T element, string property, string propertyPath, object source, BindingMode mode) where T : DependencyObject
 		{
 			return element.Binding(property,
