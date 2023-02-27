@@ -37,9 +37,30 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 		{
 			//TODO: These lines should be set in a different location, possibly in a more general way (for multi-window support) https://github.com/unoplatform/uno/issues/8978
 			Windows.UI.Core.CoreDispatcher.DispatchOverride = d =>
-				global::System.Windows.Application.Current.Dispatcher.BeginInvoke(d);
-			Windows.UI.Core.CoreDispatcher.HasThreadAccessOverride =
-				global::System.Windows.Application.Current.Dispatcher.CheckAccess;
+			{
+				if (global::System.Windows.Application.Current is { } app)
+				{
+					app.Dispatcher.BeginInvoke(d);
+				}
+				else
+				{
+					// The Application instance may not yet have been initialized, or may have already been disposed.
+				}
+			};
+
+			Windows.UI.Core.CoreDispatcher.HasThreadAccessOverride = () =>
+			{
+				if (global::System.Windows.Application.Current is { } app)
+				{
+					return app.Dispatcher.CheckAccess();
+				}
+				else
+				{
+					// The Application instance may not yet have been initialized, or may have already been disposed.
+					return false;
+				}
+			};
+
 			if (MetadataProviderDiscovery.MetadataProviderFactory is null)
 			{
 				MetadataProviderDiscovery.MetadataProviderFactory = type =>
