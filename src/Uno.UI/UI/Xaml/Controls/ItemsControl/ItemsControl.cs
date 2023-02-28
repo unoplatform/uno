@@ -1107,22 +1107,24 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		internal void CleanUpContainer(global::Windows.UI.Xaml.DependencyObject element)
 		{
+			// Determine the item characteristics manually, as the item
+			// does not exist anymore in the Items or ItemsSource.
 			object item;
+			bool isOwnContainer = false;
 			switch (element)
 			{
 				case ContentPresenter cp when cp is ContentPresenter:
 					item = cp.Content;
+					isOwnContainer = cp.IsOwnContainer;
 					break;
 				case ContentControl cc when cc is ContentControl:
 					item = cc.Content;
+					isOwnContainer = cc.IsOwnContainer;
 					break;
 				default:
 					item = element;
 					break;
-
 			}
-
-			var isOwnContainer = ReferenceEquals(element, item);
 
 			ClearContainerForItemOverride(element, item);
 			ContainerClearedForItem(item, element as SelectorItem);
@@ -1213,6 +1215,8 @@ namespace Windows.UI.Xaml.Controls
 			//Prepare ContentPresenter
 			if (element is ContentPresenter containerAsContentPresenter)
 			{
+				containerAsContentPresenter.IsOwnContainer = isOwnContainer;
+
 				containerAsContentPresenter.ContentTemplate = ItemTemplate;
 				containerAsContentPresenter.ContentTemplateSelector = ItemTemplateSelector;
 
@@ -1223,6 +1227,8 @@ namespace Windows.UI.Xaml.Controls
 			}
 			else if (element is ContentControl containerAsContentControl)
 			{
+				containerAsContentControl.IsOwnContainer = isOwnContainer;
+
 				if (!containerAsContentControl.IsContainerFromTemplateRoot)
 				{
 					containerAsContentControl.ContentTemplate = ItemTemplate;

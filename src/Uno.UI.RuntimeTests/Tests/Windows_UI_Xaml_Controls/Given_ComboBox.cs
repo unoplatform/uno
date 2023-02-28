@@ -545,6 +545,72 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 #endif
 
+#if HAS_UNO
+		[TestMethod]
+		public async Task When_Recycling_Explicit_Items()
+		{
+			var SUT = new ComboBox();
+			SUT.ItemTemplate = new DataTemplate(() =>
+			{
+
+				var tb = new TextBlock();
+				tb.SetBinding(TextBlock.TextProperty, new Windows.UI.Xaml.Data.Binding { Path = "Text" });
+				tb.SetBinding(TextBlock.NameProperty, new Windows.UI.Xaml.Data.Binding { Path = "Text" });
+
+				return tb;
+			});
+
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+
+				var c = new MyObservableCollection<ComboBoxItem>();
+				c.Add(new ComboBoxItem { Content = "One" });
+				c.Add(new ComboBoxItem { Content = "Two" });
+				c.Add(new ComboBoxItem { Content = "Three" });
+
+				SUT.ItemsSource = c;
+
+				await WindowHelper.WaitForIdle();
+				SUT.IsDropDownOpen = true;
+
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual(3, SUT.Items.Count);
+				Assert.IsNotNull(SUT.ContainerFromItem(c[0]));
+				Assert.IsNotNull(SUT.ContainerFromItem(c[1]));
+				Assert.IsNotNull(SUT.ContainerFromItem(c[2]));
+				Assert.AreEqual("One", c[0].Content);
+				Assert.AreEqual("Two", c[1].Content);
+				Assert.AreEqual("Three", c[2].Content);
+
+				await WindowHelper.WaitForIdle();
+
+				SUT.IsDropDownOpen = false;
+
+				await WindowHelper.WaitForIdle();
+
+				// Open again to ensure that the items are recycled
+				SUT.IsDropDownOpen = true;
+
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual(3, SUT.Items.Count);
+				Assert.IsNotNull(SUT.ContainerFromItem(c[0]));
+				Assert.IsNotNull(SUT.ContainerFromItem(c[1]));
+				Assert.IsNotNull(SUT.ContainerFromItem(c[2]));
+				Assert.AreEqual("One", c[0].Content);
+				Assert.AreEqual("Two", c[1].Content);
+				Assert.AreEqual("Three", c[2].Content);
+
+			}
+			finally
+			{
+				SUT.IsDropDownOpen = false;
+			}
+		}
+#endif
+
 		public class ItemModel
 		{
 			public string Text { get; set; }

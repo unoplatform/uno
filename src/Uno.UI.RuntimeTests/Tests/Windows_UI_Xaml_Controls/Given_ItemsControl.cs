@@ -360,6 +360,46 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		public async Task When_ContainerRecycled_And_Explicit_Item()
+		{
+			var source = new[]
+			{
+				new ContentControl { Content = "First"},
+				new ContentControl { Content = "Second"},
+				new ContentControl { Content = "Third"},
+			};
+
+			var SUT = new ItemsControl()
+			{
+				ItemsSource = source,
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+
+			ContentControl first = null;
+			await WindowHelper.WaitFor(() => (first = SUT.ContainerFromItem(source[0]) as ContentControl) != null);
+
+			ContentControl second = null;
+			await WindowHelper.WaitFor(() => (second = SUT.ContainerFromItem(source[1]) as ContentControl) != null);
+
+			ContentControl third = null;
+			await WindowHelper.WaitFor(() => (third = SUT.ContainerFromItem(source[2]) as ContentControl) != null);
+
+			Assert.IsNotNull(first);
+			Assert.IsNotNull(second);
+			Assert.IsNotNull(third);
+
+			SUT.ItemsSource = null;
+
+			Assert.AreEqual("First", source[0].Content);
+			Assert.AreEqual("Second", source[1].Content);
+			Assert.AreEqual("Third", source[2].Content);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
 #if __MACOS__
 		[Ignore("Currently fails on macOS, part of #9282 epic")]
 #endif
