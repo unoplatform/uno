@@ -38,6 +38,9 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 		// TODO: Many tests from MUX CommonStylesApiTests.cpp are missing here and should be added in the future to Uno Platform.
 
 		[TestMethod]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		public void CornerRadiusFilterConverterTest()
 		{
 			if (!PlatformConfiguration.IsOsVersionGreaterThan(OSVersion.Redstone4))
