@@ -9,6 +9,7 @@ using Uno.Extensions;
 using Windows.UI.Xaml;
 using Uno.UI.Common;
 using Microsoft.UI.Xaml.Controls;
+using Uno.UI.Samples.Controls;
 
 #if XAMARIN || UNO_REFERENCE_API
 using Windows.UI.Xaml.Controls;
@@ -414,7 +415,7 @@ namespace SampleControl.Presentation
 			set
 			{
 				_useDarkTheme = value;
-				if (Windows.UI.Xaml.Window.Current.Content is FrameworkElement root)
+				if (Owner.XamlRoot.Content is FrameworkElement root)
 				{
 					root.RequestedTheme = _useDarkTheme ? ElementTheme.Dark : ElementTheme.Light;
 				}

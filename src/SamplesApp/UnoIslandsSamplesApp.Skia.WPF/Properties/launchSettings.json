@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "UnoIslandsSamplesApp.Skia.WPF": {
+      "commandName": "Project",
+      "commandLineArgs": ""
+    }
+  }
+}
