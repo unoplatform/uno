@@ -24,6 +24,7 @@ using Uno.UI.SourceGenerators.Helpers;
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.Text;
+using Microsoft.CodeAnalysis.Text;
 
 
 #if NETFRAMEWORK
@@ -279,7 +280,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// <remarks>Initial behavior is to write // Warning, hence the default value to false, but we suggest setting this to true.</remarks>
 		public bool ShouldWriteErrorOnInvalidXaml { get; }
 
-		public string GenerateFile()
+		public SourceText GenerateFile()
 		{
 #if DEBUG
 			Console.WriteLine("Processing file {0}".InvariantCultureFormat(_fileDefinition.FilePath));
@@ -310,7 +311,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 #if DEBUG
 					Console.WriteLine("Skipping unmodified file {0}".InvariantCultureFormat(_fileDefinition.FilePath));
 #endif
-					return File.ReadAllText(outputFile);
+					return SourceText.From(File.ReadAllText(outputFile), Encoding.UTF8);
 				}
 			}
 
@@ -353,7 +354,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
-		private string InnerGenerateFile()
+		private SourceText InnerGenerateFile()
 		{
 			var writer = new IndentedStringBuilder();
 
@@ -516,7 +517,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			BuildXamlApplyBlocks(writer);
 
 			// var formattedCode = ReformatCode(writer.ToString());
-			return writer.ToString();
+			return new StringBuilderBasedSourceText(writer.Builder);
 		}
 
 		/// <summary>

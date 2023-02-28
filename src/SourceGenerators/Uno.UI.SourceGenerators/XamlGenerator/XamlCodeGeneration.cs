@@ -22,6 +22,7 @@ using System.Threading;
 using System.Collections.Concurrent;
 using System.Collections.Immutable;
 using Uno.UI.SourceGenerators.Helpers;
+using Uno.UI.SourceGenerators.XamlGenerator.Utils;
 
 #if NETFRAMEWORK
 using Microsoft.Build.Execution;
@@ -343,7 +344,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return link;
 		}
 
-		public List<KeyValuePair<string, string>> Generate(GenerationRunInfo generationRunInfo)
+		public List<KeyValuePair<string, SourceText>> Generate(GenerationRunInfo generationRunInfo)
 		{
 			var stopwatch = Stopwatch.StartNew();
 
@@ -405,7 +406,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						.WithDegreeOfParallelism(1);
 				}
 
-				var outputFiles = filesToProcess.Select(file => new KeyValuePair<string, string>(
+				var outputFiles = filesToProcess.Select(file => new KeyValuePair<string, SourceText>(
 					file.UniqueID,
 					new XamlFileGenerator(
 						this,
@@ -441,7 +442,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					).GenerateFile()
 				)).ToList();
 
-				outputFiles.Add(new KeyValuePair<string, string>("GlobalStaticResources", GenerateGlobalResources(files, globalStaticResourcesMap)));
+				outputFiles.Add(new KeyValuePair<string, SourceText>("GlobalStaticResources", GenerateGlobalResources(files, globalStaticResourcesMap)));
 
 				TrackGenerationDone(stopwatch.Elapsed);
 
@@ -481,7 +482,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		}
 
 #if !NETFRAMEWORK
-		private List<KeyValuePair<string, string>> ProcessParsingException(Exception e)
+		private List<KeyValuePair<string, SourceText>> ProcessParsingException(Exception e)
 		{
 			IEnumerable<Exception> Flatten(Exception ex)
 			{
@@ -519,7 +520,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				_generatorContext.ReportDiagnostic(diagnostic);
 			}
 
-			return new List<KeyValuePair<string, string>>();
+			return new List<KeyValuePair<string, SourceText>>();
 		}
 
 		private Location? GetExceptionFileLocation(Exception exception)
@@ -772,7 +773,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				.Max();
 		}
 
-		private string GenerateGlobalResources(IEnumerable<XamlFileDefinition> files, XamlGlobalStaticResourcesMap map)
+		private SourceText GenerateGlobalResources(IEnumerable<XamlFileDefinition> files, XamlGlobalStaticResourcesMap map)
 		{
 			var writer = new IndentedStringBuilder();
 
@@ -959,7 +960,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 			}
 
-			return writer.ToString();
+			Debugger.Launch();
+			return new StringBuilderBasedSourceText(writer.Builder);
 		}
 
 		private static bool IsResourceDictionary(XamlFileDefinition fileDefinition) => fileDefinition.Objects.FirstOrDefault()?.Type.Name == "ResourceDictionary";
