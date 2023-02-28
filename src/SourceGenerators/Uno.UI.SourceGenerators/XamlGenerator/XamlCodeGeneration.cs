@@ -960,7 +960,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 			}
 
-			Debugger.Launch();
 			return new StringBuilderBasedSourceText(writer.Builder);
 		}
 
