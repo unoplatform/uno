@@ -57,7 +57,7 @@ namespace Windows.UI.Xaml
 				_flags &= ~flag;
 			}
 		}
-		
+
 		[Flags]
 		private enum Flags
 		{
