@@ -150,6 +150,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 			}
 		}
 
+#if !__IOS__ && !__MACOS__
 		[global::System.Runtime.CompilerServices.MethodImpl(global::System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
 		private static void SwapRB(ref byte[] buffer, int byteCount)
 		{
@@ -164,6 +165,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 			(a, b) = (b, a);
 		}
 #endif
-		#endregion
+#endif
+#endregion
 	}
 }

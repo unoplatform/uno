@@ -272,7 +272,7 @@ namespace Windows.UI.Xaml.Controls
 					try
 					{
 						base.DeleteItems(indexPaths);
-						}
+					}
 #if NET6_0_OR_GREATER
 					catch (Exception e)
 #else

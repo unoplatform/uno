@@ -1599,7 +1599,7 @@ namespace Windows.UI.Xaml.Controls
 				// This is primarily an optimization for ICollectionView, which implements IList<object> but might not implement non-generic IList
 				return list.Count > index ? list[index] : default;
 			}
-			
+
 			return items?.ElementAtOrDefault(index);
 		}
 
