@@ -740,13 +740,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					}
 				}
 
-				// Then use fuzzy lookup
-				var ns = _fileDefinition
-					.Namespaces
-					// Ensure that prefixless declaration (generally xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation") is considered first, otherwise PreferredXamlNamespace matching can go awry
-					.OrderByDescending(n => n.Prefix.IsNullOrEmpty())
-					.FirstOrDefault(n => n.Namespace == type.PreferredXamlNamespace);
-
 				if (
 					type.PreferredXamlNamespace == XamlConstants.XamlXmlNamespace
 					&& type.Name == "Bind"
@@ -755,18 +748,21 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					return Generation.DataBindingSymbol.Value;
 				}
 
-				var isKnownNamespace = ns?.Prefix is { Length: > 0 };
-
-				if (strictSearch)
+				var nsName = GetTrimmedNamespace(trimmedNamespace);
+				if (_metadataHelper.FindTypeByFullName(nsName + "." + type.Name) is INamedTypeSymbol namedType)
 				{
-					if (isKnownNamespace && ns != null)
-					{
-						var nsName = GetTrimmedNamespace(ns.Namespace);
-						return _metadataHelper.FindTypeByFullName(nsName + "." + type.Name) as INamedTypeSymbol;
-					}
+					return namedType;
 				}
-				else
+
+				if (!strictSearch)
 				{
+					// Then use fuzzy lookup
+					var ns = _fileDefinition
+						.Namespaces
+						// Ensure that prefixless declaration (generally xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation") is considered first, otherwise PreferredXamlNamespace matching can go awry
+						.OrderByDescending(n => n.Prefix.IsNullOrEmpty())
+						.FirstOrDefault(n => n.Namespace == type.PreferredXamlNamespace);
+					var isKnownNamespace = ns?.Prefix is { Length: > 0 };
 					var fullName = isKnownNamespace && ns != null ? ns.Prefix + ":" + type.Name : type.Name;
 
 					return _findType!(fullName);
