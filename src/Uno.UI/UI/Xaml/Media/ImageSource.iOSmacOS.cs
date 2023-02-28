@@ -127,7 +127,7 @@ public partial class ImageSource
 	/// Override to provide the capability of concrete ImageSource to open synchronously.
 	/// </summary>
 	/// <param name="image">Returned image data.</param>
-	/// <returns>True if opening synchronosly is possible.</returns>
+	/// <returns>True if opening synchronously is possible.</returns>
 	private protected virtual bool TryOpenSourceSync([NotNullWhen(true)] out ImageData image)
 	{
 		image = default;
@@ -138,7 +138,7 @@ public partial class ImageSource
 	/// Override to provide the capability of concrete ImageSource to open asynchronously.
 	/// </summary>
 	/// <param name="image">Async task for image data retrieval.</param>
-	/// <returns>True if opening synchronosly is possible.</returns>
+	/// <returns>True if opening asynchronously is possible.</returns>
 	private protected virtual bool TryOpenSourceAsync(CancellationToken ct, [NotNullWhen(true)] out Task<ImageData> asyncImage)
 	{
 		asyncImage = default;

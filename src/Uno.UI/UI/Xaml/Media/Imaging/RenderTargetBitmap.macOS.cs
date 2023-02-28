@@ -14,6 +14,10 @@ namespace Windows.UI.Xaml.Media.Imaging
 {
 	partial class RenderTargetBitmap
 	{
+		private const int _bitsPerPixel = 32;
+		private const int _bitsPerComponent = 8;
+		private const int _bytesPerPixel = _bitsPerPixel / _bitsPerComponent;
+
 		/// <inheritdoc />
 		private protected override bool IsSourceReady => _buffer != null;
 
@@ -21,35 +25,31 @@ namespace Windows.UI.Xaml.Media.Imaging
 		private protected override bool TryOpenSourceSync([NotNullWhen(true)] out ImageData image)
 		{
 			image = default;
-			if (_buffer is null)
+
+			var width = PixelWidth;
+			var height = PixelHeight;
+
+			if (_buffer is null || _bufferSize <= 0 || width <= 0 || height <= 0)
 			{
 				return false;
 			}
-			NSData? data;
-			if (_bufferSize == 0)
+
+			using var colorSpace = CGColorSpace.CreateDeviceRGB();
+			using var context = new CGBitmapContext(
+				_buffer,
+				width,
+				height,
+				_bitsPerComponent,
+				width * _bytesPerPixel,
+				colorSpace,
+				CGBitmapFlags.ByteOrder32Little | CGBitmapFlags.PremultipliedFirst);
+
+			using var cgImage = context.ToImage();
+			if (cgImage is not null)
 			{
-				data = NSData.FromBytes(IntPtr.Zero, 0);
-			}
-			else
-			{
-				unsafe
-				{
-					fixed (byte* ptr = &_buffer[0])
-					{
-						data = NSData.FromBytes((IntPtr)ptr, (nuint)_bufferSize);
-					}
-				}
+				image = ImageData.FromNative(new UIImage(cgImage));
 			}
 
-			NSImage? nativeImage = null;
-			if (data is { })
-			{
-				nativeImage = new NSImage(data);
-			}
-			if (nativeImage is not null)
-			{
-				image = ImageData.FromNative(nativeImage);
-			}
 			return image.HasData;
 		}
 
@@ -61,61 +61,55 @@ namespace Windows.UI.Xaml.Media.Imaging
 			{
 				return (0, 0, 0);
 			}
-			NSImage? img = default;
+			NSImage? nsImage = default;
 			try
 			{
-				img = new NSImage(size);
-				img.LockFocusFlipped(element.IsFlipped);
+				nsImage = new NSImage(size);
+				nsImage.LockFocusFlipped(element.IsFlipped);
 				var ctx = NSGraphicsContext.CurrentContext!.GraphicsPort;
 				ctx.SetFillColor(Colors.Transparent); // This is only for pixels not used, but the bitmap as the same size of the element. We keep it only for safety!
 				element.Layer!.RenderInContext(ctx);
 			}
 			finally
 			{
-				img?.UnlockFocus();
+				nsImage?.UnlockFocus();
 			}
 
 			if (scaledSize.HasValue)
 			{
-				using var unscaled = img;
-				img = new NSImage(scaledSize.Value);
-				img.LockFocus();
+				using var unscaled = nsImage;
+				nsImage = new NSImage(scaledSize.Value);
+				nsImage.LockFocus();
 				var ctx = NSGraphicsContext.CurrentContext!.GraphicsPort;
 				ctx.SetFillColor(Colors.Transparent);
 				ctx.DrawImage(new CGRect(0, 0, scaledSize.Value.Width, scaledSize.Value.Height), unscaled.CGImage);
-				img.UnlockFocus();
+				nsImage.UnlockFocus();
 			}
 
-			using (img)
+			using (nsImage)
 			{
-				var imageRef = img.CGImage!;
-				var width = imageRef.Width;
-				var height = imageRef.Height;
-				var bitsPerPixel = 32;
-				var bitsPerComponent = 8;
-				var bytesPerPixel = bitsPerPixel / bitsPerComponent;
+				var cgImage = nsImage.CGImage!;
+				var width = cgImage.Width;
+				var height = cgImage.Height;
+				var bytesPerRow = width * _bytesPerPixel;
+				var bufferLength = (int)(bytesPerRow * height);
 
-				var bytesPerRow = width * bytesPerPixel;
-				var bufferLength = bytesPerRow * height;
-				byte[] bitmapData = new byte[bufferLength];
-				var byteCount = (int)bufferLength;
+				EnsureBuffer(ref buffer, bufferLength);
 
 				using var colorSpace = CGColorSpace.CreateDeviceRGB();
-
-				using var context = new CGBitmapContext(bitmapData
-				, width
-				, height
-				, bitsPerComponent
-				, bytesPerRow
-				, colorSpace
-				, CGImageAlphaInfo.PremultipliedLast); // RGBA8
+				using var context = new CGBitmapContext(
+					buffer,
+					width,
+					height,
+					_bitsPerComponent,
+					bytesPerRow,
+					colorSpace,
+					CGBitmapFlags.ByteOrder32Little | CGBitmapFlags.PremultipliedFirst); // BGRA8
 
 				var rect = new CGRect(0, 0, width, height);
-				context.DrawImage(rect, imageRef);
-				EnsureBuffer(ref buffer, byteCount);
-				global::System.Array.Copy(bitmapData, buffer!, bufferLength);
-				SwapRB(ref buffer!, byteCount);
-				return (byteCount, (int)width, (int)height);
+				context.DrawImage(rect, cgImage);
+
+				return (bufferLength, (int)width, (int)height);
 			}
 		}
 	}

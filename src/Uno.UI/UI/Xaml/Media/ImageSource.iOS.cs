@@ -191,69 +191,69 @@ namespace Windows.UI.Xaml.Media
 				return;
 			}
 
-			using (var url = new NSUrl(AbsoluteUri.AbsoluteUri))
+			if (AbsoluteUri is null)
 			{
-				using (var request = NSUrlRequest.FromUrl(url))
+				return;
+			}
+
+			using var url = new NSUrl(AbsoluteUri.AbsoluteUri);
+			using var request = NSUrlRequest.FromUrl(url);
+
+			NSUrlSessionDataTask task;
+			var awaitable = DefaultSession.CreateDataTaskAsync(request, out task);
+			ct.Register(OnCancel);
+
+			try
+			{
+				task.Resume(); // We need to call this manually https://bugzilla.xamarin.com/show_bug.cgi?id=28425#c3
+				var result = await awaitable;
+				task = null;
+				var response = result.Response as NSHttpUrlResponse;
+
+				if (ct.IsCancellationRequested)
 				{
-					NSUrlSessionDataTask task;
-					var awaitable = DefaultSession.CreateDataTaskAsync(request, out task);
-					ct.Register(OnCancel);
-					try
+					return;
+				}
+				else if (!IsSuccessful(response.StatusCode))
+				{
+					if (this.Log().IsEnabled(LogLevel.Error))
 					{
-						task.Resume(); // We need to call this manually https://bugzilla.xamarin.com/show_bug.cgi?id=28425#c3
-						var result = await awaitable;
-						task = null;
-						var response = result.Response as NSHttpUrlResponse;
-
-						if (ct.IsCancellationRequested)
-						{
-							return;
-						}
-						else if (!IsSuccessful(response.StatusCode))
-						{
-							if (this.Log().IsEnabled(LogLevel.Error))
-							{
-								this.Log().LogError(NSHttpUrlResponse.LocalizedStringForStatusCode(response.StatusCode));
-							}
-						}
-						else
-						{
-							var image = UIImage.LoadFromData(result.Data);
-							if (image is not null)
-							{
-								_imageData = ImageData.FromNative(image);
-							}
-							else
-							{
-								_imageData = ImageData.Empty;
-							}
-						}
+						this.Log().LogError(NSHttpUrlResponse.LocalizedStringForStatusCode(response.StatusCode));
 					}
-					catch (NSErrorException e)
+				}
+				else
+				{
+					var image = UIImage.LoadFromData(result.Data);
+					if (image is not null)
 					{
-						// This can occur for various reasons: download was cancelled, NSAppTransportSecurity blocks download, host couldn't be resolved...
-						if (ct.IsCancellationRequested)
-						{
-							if (this.Log().IsEnabled(LogLevel.Debug))
-							{
-								this.Log().LogDebug(e.ToString());
-							}
-						}
-						else if (this.Log().IsEnabled(LogLevel.Error))
-						{
-							this.Log().LogError(e.ToString());
-						}
+						_imageData = ImageData.FromNative(image);
 					}
-
-					void OnCancel()
+					else
 					{
-						// Cancel the current download
-						task?.Cancel();
+						_imageData = ImageData.Empty;
 					}
-
-					bool IsSuccessful(nint status) => status < 300;
 				}
 			}
+			catch (NSErrorException e)
+			{
+				// This can occur for various reasons: download was cancelled, NSAppTransportSecurity blocks download, host couldn't be resolved...
+				if (ct.IsCancellationRequested)
+				{
+					if (this.Log().IsEnabled(LogLevel.Debug))
+					{
+						this.Log().LogDebug(e.ToString());
+					}
+				}
+				else if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().LogError(e.ToString());
+				}
+			}
+
+			// Cancel the current download
+			void OnCancel() => task?.Cancel();
+
+			bool IsSuccessful(nint status) => status < 300;
 		}
 	}
 }

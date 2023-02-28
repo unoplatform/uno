@@ -21,23 +21,6 @@ namespace Windows.UI.Xaml.Media.Imaging
 #endif
 	public partial class RenderTargetBitmap : IDisposable
 	{
-#if !NOT_IMPLEMENTED
-		private static void Swap(ref byte a, ref byte b)
-		{
-			(a, b) = (b, a);
-		}
-
-		[global::System.Runtime.CompilerServices.MethodImpl(global::System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		private static void SwapRB(ref byte[] buffer, int byteCount)
-		{
-			for (int i = 0; i < byteCount; i += 4)
-			{
-				//Swap R and B chanal
-				Swap(ref buffer![i], ref buffer![i + 2]);
-			}
-		}
-#endif
-
 #if NOT_IMPLEMENTED
 		internal const bool IsImplemented = false;
 #else
@@ -90,9 +73,8 @@ namespace Windows.UI.Xaml.Media.Imaging
 			{
 				try
 				{
-					UIElement elementToRender = element
-						?? Window.Current.Content;
-					(_bufferSize, PixelWidth, PixelHeight) = RenderAsBgra8_Premul(elementToRender, ref _buffer, new Size(scaledWidth, scaledHeight));
+					element ??= Window.Current.Content;
+					(_bufferSize, PixelWidth, PixelHeight) = RenderAsBgra8_Premul(element, ref _buffer, new Size(scaledWidth, scaledHeight));
 #if __WASM__ || __SKIA__
 					InvalidateSource();
 #endif
@@ -113,10 +95,8 @@ namespace Windows.UI.Xaml.Media.Imaging
 			{
 				try
 				{
-					UIElement elementToRender = element
-						?? Window.Current.Content;
-
-					(_bufferSize, PixelWidth, PixelHeight) = RenderAsBgra8_Premul(elementToRender, ref _buffer);
+					element ??= Window.Current.Content;
+					(_bufferSize, PixelWidth, PixelHeight) = RenderAsBgra8_Premul(element, ref _buffer);
 #if __WASM__ || __SKIA__
 					InvalidateSource();
 #endif
@@ -147,6 +127,15 @@ namespace Windows.UI.Xaml.Media.Imaging
 			=> throw new NotImplementedException("RenderTargetBitmap is not supported on this platform.");
 #endif
 
+		void IDisposable.Dispose()
+		{
+			if (_buffer is { })
+			{
+				ArrayPool<byte>.Shared.Return(_buffer);
+			}
+		}
+
+		#region Misc static helpers
 #if !NOT_IMPLEMENTED
 		private static void EnsureBuffer(ref byte[]? buffer, int length)
 		{
@@ -160,14 +149,21 @@ namespace Windows.UI.Xaml.Media.Imaging
 				buffer = ArrayPool<byte>.Shared.Rent(length);
 			}
 		}
-#endif
 
-		void IDisposable.Dispose()
+		[global::System.Runtime.CompilerServices.MethodImpl(global::System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+		private static void SwapRB(ref byte[] buffer, int byteCount)
 		{
-			if (_buffer is { })
+			for (var i = 0; i < byteCount; i += 4)
 			{
-				ArrayPool<byte>.Shared.Return(_buffer);
+				//Swap R and B chanal
+				Swap(ref buffer![i], ref buffer![i + 2]);
 			}
 		}
+		private static void Swap(ref byte a, ref byte b)
+		{
+			(a, b) = (b, a);
+		}
+#endif
+		#endregion
 	}
 }
