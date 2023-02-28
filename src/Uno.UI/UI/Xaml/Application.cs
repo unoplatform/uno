@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using Uno;
 using Uno.UI;
 using Uno.Diagnostics.Eventing;
@@ -8,6 +9,7 @@ using Windows.Foundation.Metadata;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.ApplicationModel.Core;
 using Windows.ApplicationModel;
+using Windows.Globalization;
 using Uno.Helpers.Theming;
 using Windows.UI.ViewManagement;
 using Uno.Extensions;
@@ -247,6 +249,7 @@ namespace Windows.UI.Xaml
 
 		public static void Start(global::Windows.UI.Xaml.ApplicationInitializationCallback callback)
 		{
+			ApplicationLanguages.Initialize();
 			StartPartial(callback);
 		}
 
