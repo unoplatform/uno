@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Uno.UI;
 using Uno.UI.XamlHost;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
@@ -33,6 +34,8 @@ namespace UnoIslands
 			InitializeLogging();
 
 			this.InitializeComponent();
+
+			FeatureConfiguration.ToolTip.UseToolTips = true;
 		}
 
 		/// <summary>
