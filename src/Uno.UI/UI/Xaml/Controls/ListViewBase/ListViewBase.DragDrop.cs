@@ -383,10 +383,8 @@ namespace Windows.UI.Xaml.Controls
 
 		#region Helpers
 		private static bool IsObservableCollection(object src)
-		{
-			var srcType = src.GetType();
-			return srcType.IsGenericType && srcType.GetGenericTypeDefinition() == typeof(ObservableCollection<>);
-		}
+			=> src.GetType() is { IsGenericType: true } srcType
+				&& srcType.GetGenericTypeDefinition() == typeof(ObservableCollection<>);
 
 		private static void DoMove(ItemCollection items, int oldIndex, int newIndex)
 		{
