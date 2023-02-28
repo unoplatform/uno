@@ -1,29 +1,57 @@
 ﻿using System;
 using System.Globalization;
 using System.Linq;
-using System.Reflection;
 using System.Text.RegularExpressions;
-using Uno.Foundation.Logging;
+using Windows.Storage;
 using Uno.UI;
 
 namespace Windows.Globalization
 {
 	public static partial class ApplicationLanguages
 	{
-		private static string _primaryLanguageOverride;
+		private static string _primaryLanguageOverride = string.Empty;
+		private const string PrimaryLanguageOverrideSettingKey = "__Uno.PrimaryLanguageOverride";
 
 		static ApplicationLanguages()
 		{
 			ApplyLanguages();
 		}
 
+		internal static void Initialize()
+		{
+			var primaryLanguageOverride = ApplicationLanguages.PrimaryLanguageOverride;
+			if (primaryLanguageOverride.Length > 0)
+			{
+				var culture = CreateCulture(primaryLanguageOverride);
+				CultureInfo.CurrentCulture = culture;
+				CultureInfo.CurrentUICulture = culture;
+			}
+		}
+
 		public static string PrimaryLanguageOverride
 		{
-			get => _primaryLanguageOverride;
+			get
+			{
+				if (_primaryLanguageOverride.Length == 0 &&
+					ApplicationData.Current.LocalSettings.Values.TryGetValue(PrimaryLanguageOverrideSettingKey, out var savedValue) &&
+					savedValue is string stringSavedValue)
+				{
+					_primaryLanguageOverride = stringSavedValue;
+				}
+
+				return _primaryLanguageOverride;
+			}
 			set
 			{
+				if (value is null)
+				{
+					throw new ArgumentNullException(nameof(value), "Value cannot be null.");
+				}
+
 				_primaryLanguageOverride = value;
 				ApplyLanguages();
+
+				ApplicationData.Current.LocalSettings.Values[PrimaryLanguageOverrideSettingKey] = _primaryLanguageOverride;
 			}
 		}
 
@@ -79,29 +107,6 @@ namespace Windows.Globalization
 
 				Languages = languages.Distinct().ToArray();
 			}
-
-			var primaryLanguage = Languages.Count > 0 ? Languages[0] : null;
-
-			if (primaryLanguage is not null)
-			{
-				if (typeof(ApplicationLanguages).Log().IsEnabled(LogLevel.Debug))
-				{
-					typeof(ApplicationLanguages).Log().Debug($"Using {primaryLanguage} as primary language");
-				}
-
-				var primaryCulture = CreateCulture(primaryLanguage);
-
-				CultureInfo.CurrentCulture = primaryCulture;
-				CultureInfo.CurrentUICulture = primaryCulture;
-			}
-			else
-			{
-				if (typeof(ApplicationLanguages).Log().IsEnabled(LogLevel.Warning))
-				{
-					typeof(ApplicationLanguages).Log().Warn($"Unable to determine the default culture, using invariant culture");
-				}
-			}
-
 		}
 
 		private static Regex _cultureFormatRegex;
