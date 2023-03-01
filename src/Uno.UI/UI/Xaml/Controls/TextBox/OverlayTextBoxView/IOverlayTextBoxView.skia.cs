@@ -21,7 +21,7 @@ internal interface IOverlayTextBoxView
 	/// <returns>True if compatible.</returns>
 	bool IsCompatible(TextBox textBox);
 
-	void SetFocus(bool isFocused);
+	void SetFocus();
 
 	void SetPasswordRevealState(PasswordRevealState passwordRevealState);
 

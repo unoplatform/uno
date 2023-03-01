@@ -33,7 +33,7 @@ internal class TextTextBoxView : WpfTextBoxView
 		set => (_textBox.SelectionStart, _textBox.SelectionLength) = value;
 	}
 
-	public override void SetFocus(bool isFocused) => _textBox.Focus();
+	public override void SetFocus() => _textBox.Focus();
 
 	public override bool IsCompatible(Windows.UI.Xaml.Controls.TextBox textBox) => textBox is not PasswordBox;
 

@@ -21,7 +21,7 @@ internal abstract class OverlayTextBoxViewExtension : IOverlayTextBoxViewExtensi
 	private bool _processingTextChanged;
 	private Point _lastPosition = new(-1, -1);
 	private Size _lastSize = new(-1, -1);
-
+	private PasswordRevealState _currentPasswordRevealState;
 	private int? _selectionStartCache;
 	private int? _selectionLengthCache;
 
@@ -52,7 +52,9 @@ internal abstract class OverlayTextBoxViewExtension : IOverlayTextBoxViewExtensi
 
 		_textBoxView!.AddToTextInputLayer(xamlRoot);
 		InvalidateLayout();
-		_textBoxView.SetFocus(true);
+		SetPasswordRevealState(_currentPasswordRevealState);
+
+		_textBoxView.SetFocus();
 
 		// Selection is now handled by native control
 		if (_selectionStartCache != null && _selectionLengthCache != null)
@@ -160,7 +162,11 @@ internal abstract class OverlayTextBoxViewExtension : IOverlayTextBoxViewExtensi
 		}
 	}
 
-	public void SetPasswordRevealState(PasswordRevealState revealState) => _textBoxView?.SetPasswordRevealState(revealState);
+	public void SetPasswordRevealState(PasswordRevealState revealState)
+	{
+		_textBoxView?.SetPasswordRevealState(revealState);
+		_currentPasswordRevealState = revealState;
+	}
 
 	public void Select(int start, int length)
 	{

@@ -24,11 +24,7 @@ internal class SinglelineTextBoxView : GtkTextBoxView
 
 	public override string Text
 	{
-		get
-		{
-			return _entry.Text;
-		}
-
+		get => _entry.Text;
 		set => _entry.Text = value;
 	}
 

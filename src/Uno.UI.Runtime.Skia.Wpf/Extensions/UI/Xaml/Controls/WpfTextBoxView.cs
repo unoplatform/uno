@@ -6,9 +6,10 @@ using Uno.UI.XamlHost.Skia.Wpf.Hosting;
 using Windows.UI.Xaml;
 using WpfCanvas = System.Windows.Controls.Canvas;
 using WpfControl = System.Windows.Controls.Control;
-using WpfTextBox = System.Windows.Controls.TextBox;
 using WpfElement = System.Windows.FrameworkElement;
 using WpfFontWeight = System.Windows.FontWeight;
+using WpfPasswordBox = System.Windows.Controls.PasswordBox;
+using WpfTextBox = System.Windows.Controls.TextBox;
 
 namespace Uno.UI.Runtime.Skia.Wpf.Extensions.UI.Xaml.Controls;
 
@@ -77,7 +78,7 @@ internal abstract class WpfTextBoxView : IOverlayTextBoxView
 	//	_currentPasswordBoxInputWidget.MaxLength = textBox.MaxLength;
 	//}
 
-	public abstract void SetFocus(bool isFocused);
+	public abstract void SetFocus();
 
 	public void SetSize(double width, double height)
 	{
@@ -130,6 +131,7 @@ internal abstract class WpfTextBoxView : IOverlayTextBoxView
 	protected void SetTextBoxProperties(WpfTextBox wpfTextBox, Windows.UI.Xaml.Controls.TextBox source)
 	{
 		wpfTextBox.IsReadOnly = source.IsReadOnly || !source.IsTabStop;
+		wpfTextBox.MaxLength = source.MaxLength;
 		wpfTextBox.AcceptsReturn = source.AcceptsReturn;
 		wpfTextBox.TextAlignment = source.TextAlignment switch
 		{
@@ -148,5 +150,11 @@ internal abstract class WpfTextBoxView : IOverlayTextBoxView
 		};
 	}
 
-	public void SetPasswordRevealState(Windows.UI.Xaml.Controls.PasswordRevealState passwordRevealState) => throw new NotImplementedException();
+	protected void SetPasswordBoxProperties(WpfPasswordBox wpfPasswordBox, Windows.UI.Xaml.Controls.TextBox source)
+	{
+		wpfPasswordBox.IsTabStop = source.IsReadOnly || !source.IsTabStop;
+		wpfPasswordBox.MaxLength = source.MaxLength;
+	}
+
+	public virtual void SetPasswordRevealState(Windows.UI.Xaml.Controls.PasswordRevealState passwordRevealState) { }
 }
