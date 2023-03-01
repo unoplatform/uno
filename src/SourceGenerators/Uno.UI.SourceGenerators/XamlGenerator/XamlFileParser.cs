@@ -289,7 +289,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				adjusted = new(XBindExpressionParser.RewriteDocumentPaths(adjusted.ToString()));
 			}
 
-			return (XmlReader.Create(new StringReader(adjusted.ToString().TrimEnd("\r\n"))), conditionals.DisableCaching);
+			return (XmlReader.Create(new StringReader(adjusted.ToString())), conditionals.DisableCaching);
 		}
 
 		private static StringBuilder ReplaceFirst(string targetString, string oldValue, string newValue)
