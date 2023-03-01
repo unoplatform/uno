@@ -5,7 +5,7 @@ using Windows.UI.Xaml.Controls;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.PasswordBoxTests
 {
-	[Sample("PasswordBox")]
+	[Sample("TextBox")]
 
 	public sealed partial class PasswordBoxPage : Page
 	{
