@@ -108,7 +108,7 @@ internal abstract class WpfTextBoxView : IOverlayTextBoxView
 		var foregroundBrush = source.Foreground.ToWpfBrush();
 		var selectionHighlightBrush = source.SelectionHighlightColor.ToWpfBrush();
 		wpfControl.Foreground = foregroundBrush;
-		if (wpfControl is System.Windows.Controls.TextBox textBox)
+		if (wpfControl is WpfTextBox textBox)
 		{
 			textBox.CaretBrush = foregroundBrush;
 			textBox.SelectionBrush = selectionHighlightBrush;
@@ -120,13 +120,33 @@ internal abstract class WpfTextBoxView : IOverlayTextBoxView
 		}
 	}
 
-	protected void SetCommonProperties(WpfControl wpfControl, Windows.UI.Xaml.Controls.TextBox source)
+	protected void SetControlProperties(WpfControl wpfControl, Windows.UI.Xaml.Controls.TextBox source)
 	{
 		wpfControl.Opacity = source.Opacity;
+		SetFont(wpfControl, source);
+		SetForegroundAndHighlightColor(wpfControl, source);
 	}
 
-	protected void SetWpfTextBoxProperties(WpfTextBox wpfTextBox, Windows.UI.Xaml.Controls.TextBox source)
+	protected void SetTextBoxProperties(WpfTextBox wpfTextBox, Windows.UI.Xaml.Controls.TextBox source)
 	{
 		wpfTextBox.IsReadOnly = source.IsReadOnly || !source.IsTabStop;
+		wpfTextBox.AcceptsReturn = source.AcceptsReturn;
+		wpfTextBox.TextAlignment = source.TextAlignment switch
+		{
+			Windows.UI.Xaml.TextAlignment.Center => System.Windows.TextAlignment.Center,
+			Windows.UI.Xaml.TextAlignment.Left => System.Windows.TextAlignment.Left,
+			Windows.UI.Xaml.TextAlignment.Right => System.Windows.TextAlignment.Right,
+			Windows.UI.Xaml.TextAlignment.Justify => System.Windows.TextAlignment.Justify,
+			_ => System.Windows.TextAlignment.Left
+		};
+		wpfTextBox.TextWrapping = source.TextWrapping switch
+		{
+			Windows.UI.Xaml.TextWrapping.NoWrap => System.Windows.TextWrapping.NoWrap,
+			Windows.UI.Xaml.TextWrapping.Wrap => System.Windows.TextWrapping.Wrap,
+			Windows.UI.Xaml.TextWrapping.WrapWholeWords => System.Windows.TextWrapping.WrapWithOverflow,
+			_ => System.Windows.TextWrapping.NoWrap
+		};
 	}
+
+	public void SetPasswordRevealState(Windows.UI.Xaml.Controls.PasswordRevealState passwordRevealState) => throw new NotImplementedException();
 }

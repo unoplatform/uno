@@ -57,15 +57,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			// TODO: Inheritance hierarchy is wrong in Uno. PasswordBox shouldn't inherit TextBox.
 			// This needs to be moved to PasswordBox if it's separated from TextBox.
-			if (_isPasswordBox && !_isPasswordRevealed)
-			{
-				// TODO: PasswordChar isn't currently implemented. It should be used here when implemented.
-				DisplayBlock.Text = new string('•', text.Length);
-			}
-			else
-			{
-				DisplayBlock.Text = text;
-			}
+			SetDisplayBlockText(text);
 
 			_textBoxExtension?.SetText(text);
 		}
@@ -122,7 +114,7 @@ namespace Windows.UI.Xaml.Controls
 			if (textBox != null)
 			{
 				var text = textBox.ProcessTextInput(newText);
-				DisplayBlock.Text = text;
+				SetDisplayBlockText(text);
 				if (text != newText)
 				{
 					SetTextNative(text);
@@ -131,5 +123,18 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public void UpdateMaxLength() => _textBoxExtension?.UpdateNativeView();
+
+		private void SetDisplayBlockText(string text)
+		{
+			if (_isPasswordBox && !_isPasswordRevealed)
+			{
+				// TODO: PasswordChar isn't currently implemented. It should be used here when implemented.
+				DisplayBlock.Text = new string('•', text.Length);
+			}
+			else
+			{
+				DisplayBlock.Text = text;
+			}
+		}
 	}
 }
