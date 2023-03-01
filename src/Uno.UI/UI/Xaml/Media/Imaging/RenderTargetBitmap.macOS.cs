@@ -47,7 +47,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 			using var cgImage = context.ToImage();
 			if (cgImage is not null)
 			{
-				image = ImageData.FromNative(new UIImage(cgImage));
+				image = ImageData.FromNative(new NSImage(cgImage, new CGSize(width, height)));
 			}
 
 			return image.HasData;

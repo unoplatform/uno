@@ -166,6 +166,6 @@ namespace Windows.UI.Xaml.Media.Imaging
 		}
 #endif
 #endif
-#endregion
+		#endregion
 	}
 }
