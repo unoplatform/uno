@@ -134,6 +134,13 @@ namespace Windows.UI.Xaml.Controls
 
 				Opened?.Invoke(this, new RoutedEventArgs(this));
 				GoToElementState("Opened", useTransitions: true);
+
+				if (_owner is FrameworkElement fe)
+				{
+					// Propagate the DC once, the inheritance
+					// will update the rest on DC changes.
+					this.SetValue(DataContextProperty, fe.DataContext, DependencyPropertyValuePrecedences.Inheritance);
+				}
 			}
 			else
 			{
