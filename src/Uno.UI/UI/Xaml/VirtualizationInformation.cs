@@ -61,10 +61,10 @@ namespace Windows.UI.Xaml
 		[Flags]
 		private enum Flags
 		{
-			None,
-			IsGeneratedContainer,
-			IsContainerFromTemplateRoot,
-			IsOwnContainer
+			None = 0,
+			IsGeneratedContainer = 1 << 0,
+			IsContainerFromTemplateRoot = 1 << 1,
+			IsOwnContainer = 1 << 2,
 		}
 	}
 }

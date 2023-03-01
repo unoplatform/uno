@@ -360,13 +360,22 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-		public async Task When_ContainerRecycled_And_Explicit_Item()
+		public async Task When_ContentControl_ContainerRecycled_And_Explicit_Item()
 		{
+			var dataTemplate = (DataTemplate)XamlReader.Load(
+				"""
+				<DataTemplate xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'>
+					<TextBlock Text="{Binding}"/>
+				</DataTemplate>
+				""");
+
+			var selector = new TestTemplateSelector();
+
 			var source = new[]
 			{
-				new ContentControl { Content = "First"},
-				new ContentControl { Content = "Second"},
-				new ContentControl { Content = "Third"},
+				new ContentControl { Content = "First", ContentTemplate = dataTemplate, ContentTemplateSelector = selector },
+				new ContentControl { Content = "Second", ContentTemplate = dataTemplate, ContentTemplateSelector = selector },
+				new ContentControl { Content = "Third", ContentTemplate = dataTemplate, ContentTemplateSelector = selector },
 			};
 
 			var SUT = new ItemsControl()
@@ -390,12 +399,85 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsNotNull(first);
 			Assert.IsNotNull(second);
 			Assert.IsNotNull(third);
+			Assert.IsNotNull(first.ContentTemplate);
+			Assert.IsNotNull(second.ContentTemplate);
+			Assert.IsNotNull(third.ContentTemplate);
+			Assert.IsNotNull(first.ContentTemplateSelector);
+			Assert.IsNotNull(second.ContentTemplateSelector);
+			Assert.IsNotNull(third.ContentTemplateSelector);
 
 			SUT.ItemsSource = null;
 
 			Assert.AreEqual("First", source[0].Content);
 			Assert.AreEqual("Second", source[1].Content);
 			Assert.AreEqual("Third", source[2].Content);
+			Assert.IsNotNull(first.ContentTemplate);
+			Assert.IsNotNull(second.ContentTemplate);
+			Assert.IsNotNull(third.ContentTemplate);
+			Assert.IsNotNull(first.ContentTemplateSelector);
+			Assert.IsNotNull(second.ContentTemplateSelector);
+			Assert.IsNotNull(third.ContentTemplateSelector);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_ContentPresenter_ContainerRecycled_And_Explicit_Item()
+		{
+			var dataTemplate = (DataTemplate)XamlReader.Load(
+				"""
+				<DataTemplate xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'>
+					<TextBlock Text="{Binding}"/>
+				</DataTemplate>
+				""");
+
+			var selector = new TestTemplateSelector();
+
+			var source = new[]
+			{
+				new ContentPresenter { Content = "First", ContentTemplate = dataTemplate, ContentTemplateSelector = selector },
+				new ContentPresenter { Content = "Second", ContentTemplate = dataTemplate, ContentTemplateSelector = selector },
+				new ContentPresenter { Content = "Third", ContentTemplate = dataTemplate, ContentTemplateSelector = selector },
+			};
+
+			var SUT = new ItemsControl()
+			{
+				ItemsSource = source,
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+
+			ContentPresenter first = null;
+			await WindowHelper.WaitFor(() => (first = SUT.ContainerFromItem(source[0]) as ContentPresenter) != null);
+
+			ContentPresenter second = null;
+			await WindowHelper.WaitFor(() => (second = SUT.ContainerFromItem(source[1]) as ContentPresenter) != null);
+
+			ContentPresenter third = null;
+			await WindowHelper.WaitFor(() => (third = SUT.ContainerFromItem(source[2]) as ContentPresenter) != null);
+
+			Assert.IsNotNull(first);
+			Assert.IsNotNull(second);
+			Assert.IsNotNull(third);
+			Assert.IsNotNull(first.ContentTemplate);
+			Assert.IsNotNull(second.ContentTemplate);
+			Assert.IsNotNull(third.ContentTemplate);
+			Assert.IsNotNull(first.ContentTemplateSelector);
+			Assert.IsNotNull(second.ContentTemplateSelector);
+			Assert.IsNotNull(third.ContentTemplateSelector);
+
+			SUT.ItemsSource = null;
+
+			Assert.AreEqual("First", source[0].Content);
+			Assert.AreEqual("Second", source[1].Content);
+			Assert.AreEqual("Third", source[2].Content);
+			Assert.IsNotNull(first.ContentTemplate);
+			Assert.IsNotNull(second.ContentTemplate);
+			Assert.IsNotNull(third.ContentTemplate);
+			Assert.IsNotNull(first.ContentTemplateSelector);
+			Assert.IsNotNull(second.ContentTemplateSelector);
+			Assert.IsNotNull(third.ContentTemplateSelector);
 		}
 
 		[TestMethod]
@@ -445,5 +527,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	internal partial class ContentControlItemsControl : ItemsControl
 	{
 		protected override DependencyObject GetContainerForItemOverride() => new ContentControl();
+	}
+
+	internal class TestTemplateSelector : DataTemplateSelector
+	{
+		public DataTemplate Template { get; set; }
+
+		protected override DataTemplate SelectTemplateCore(object item, DependencyObject container) => Template;
 	}
 }
