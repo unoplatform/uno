@@ -242,7 +242,7 @@ jobs:
   - task: PublishTestResults@2
     condition: always()
     inputs:
-      testRunTitle: 'Skia WPF Runtime Tests'
+      testRunTitle: 'Uno Islands Skia WPF Runtime Tests'
       testResultsFormat: 'NUnit'
       testResultsFiles: '$(build.sourcesdirectory)/build/uno-islands-skia-wpf-runtime-tests-results.xml'
       failTaskOnFailedTests: true
