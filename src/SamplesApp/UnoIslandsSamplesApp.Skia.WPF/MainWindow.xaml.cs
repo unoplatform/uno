@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace UnoIslandsSamplesApp.Skia.WPF
+namespace UnoIslandsSamplesApp.Skia.Wpf
 {
 	public partial class MainWindow : Window
 	{

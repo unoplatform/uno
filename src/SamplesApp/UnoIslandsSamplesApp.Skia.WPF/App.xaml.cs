@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace UnoIslandsSamplesApp.Skia.WPF
+namespace UnoIslandsSamplesApp.Skia.Wpf
 {
 	/// <summary>
 	/// Interaction logic for App.xaml

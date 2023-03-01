@@ -11,7 +11,7 @@ namespace UnoIslands.Skia.Wpf
 
 		public MainWindowViewModel()
 		{
-			using var stream = typeof(MainWindowViewModel).Assembly.GetManifestResourceStream("UnoIslands.Skia.WPF.TestData.json");
+			using var stream = typeof(MainWindowViewModel).Assembly.GetManifestResourceStream("UnoIslands.Skia.Wpf.TestData.json");
 			using var textStream = new StreamReader(stream);
 			Data = JsonConvert.DeserializeObject<PersonViewModel[]>(textStream.ReadToEnd());
 		}

@@ -350,9 +350,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Uno.UI.RemoteControl.Messag
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnoIslandsSamplesApp.Skia", "SamplesApp\UnoIslandsSamplesApp.Skia\UnoIslandsSamplesApp.Skia.csproj", "{FD82DC75-AE70-4B2B-8F09-F79D510939C6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnoIslands.Skia.WPF", "SamplesApp\UnoIslands.Skia.WPF\UnoIslands.Skia.WPF.csproj", "{9F45520A-3D81-495C-9746-B90055D05D4B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnoIslands.Skia.WPF", "SamplesApp\UnoIslands.Skia.WPF\UnoIslands.Skia.Wpf.csproj", "{9F45520A-3D81-495C-9746-B90055D05D4B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnoIslandsSamplesApp.Skia.WPF", "SamplesApp\UnoIslandsSamplesApp.Skia.WPF\UnoIslandsSamplesApp.Skia.WPF.csproj", "{7E36437C-908E-423B-A615-9F0E55B1EB44}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnoIslandsSamplesApp.Skia.WPF", "SamplesApp\UnoIslandsSamplesApp.Skia.WPF\UnoIslandsSamplesApp.Skia.Wpf.csproj", "{7E36437C-908E-423B-A615-9F0E55B1EB44}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

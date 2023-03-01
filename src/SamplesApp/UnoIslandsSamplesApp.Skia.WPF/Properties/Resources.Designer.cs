@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace UnoIslandsSamplesApp.Skia.WPF.Properties {
+namespace UnoIslandsSamplesApp.Skia.Wpf.Properties {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace UnoIslandsSamplesApp.Skia.WPF.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("UnoIslandsSamplesApp.Skia.WPF.Properties.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("UnoIslandsSamplesApp.Skia.Wpf.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

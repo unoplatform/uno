@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace UnoIslandsSamplesApp.Skia.WPF.Properties {
+namespace UnoIslandsSamplesApp.Skia.Wpf.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
