@@ -1887,7 +1887,9 @@ namespace Windows.UI.Xaml.Controls
 #if DEBUG
 		UICollectionViewLayoutAttributes[] AllItemLayoutAttributes => _itemLayoutInfos?.SelectMany(kvp => kvp.Value.Values).ToArray();
 
+#pragma warning disable IDE0051 // Remove unused private members
 		CGRect[] AllItemFrames => AllItemLayoutAttributes?.Select(l => l.Frame).ToArray();
+#pragma warning restore IDE0051 // Remove unused private members
 #endif
 	}
 }
