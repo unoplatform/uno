@@ -838,7 +838,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									{
 										if (ambientResource.GetFirstMethodWithName("Initialize") is not null)
 										{
-											writer.AppendLineIndented($"global::{ambientResource.GetFullName()}.Initialize();");
+											writer.AppendLineIndented($"{ambientResource.GetFullyQualifiedTypeIncludingGlobal()}.Initialize();");
 										}
 									}
 
@@ -847,7 +847,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 										// Note: we do *not* call RegisterDefaultStyles for the current assembly, because those styles are treated as implicit styles, not default styles
 										if (ambientResource.GetFirstMethodWithName("RegisterDefaultStyles") is not null)
 										{
-											writer.AppendLineIndented($"global::{ambientResource.GetFullName()}.RegisterDefaultStyles();");
+											writer.AppendLineIndented($"{ambientResource.GetFullyQualifiedTypeIncludingGlobal()}.RegisterDefaultStyles();");
 										}
 									}
 
@@ -855,7 +855,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									{
 										if (ambientResource.GetFirstMethodWithName("RegisterResourceDictionariesBySource") is not null)
 										{
-											writer.AppendLineIndented($"global::{ambientResource.GetFullName()}.RegisterResourceDictionariesBySource();");
+											writer.AppendLineIndented($"{ambientResource.GetFullyQualifiedTypeIncludingGlobal()}.RegisterResourceDictionariesBySource();");
 										}
 									}
 								}

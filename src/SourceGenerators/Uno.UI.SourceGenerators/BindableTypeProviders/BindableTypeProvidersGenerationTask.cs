@@ -293,7 +293,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 				}
 
 				writer.AppendLineIndented("/// <summary>");
-				writer.AppendLineInvariantIndented("/// Builder for {0}", ownerType.GetFullName());
+				writer.AppendLineInvariantIndented("/// Builder for {0}", ownerType.GetFullyQualifiedTypeExcludingGlobal());
 				writer.AppendLineIndented("/// </summary>");
 				writer.AppendLineIndented("[System.Runtime.CompilerServices.CompilerGeneratedAttribute]");
 				writer.AppendLineIndented("[System.Diagnostics.CodeAnalysis.SuppressMessage(\"Microsoft.Maintainability\", \"CA1502:AvoidExcessiveComplexity\", Justification=\"Must be ignored even if generated code is checked.\")]");
@@ -351,7 +351,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 
 						foreach (var property in properties)
 						{
-							var propertyTypeName = property.Type.GetFullyQualifiedType();
+							var propertyTypeName = property.Type.GetFullyQualifiedTypeIncludingGlobal();
 							var propertyName = property.Name;
 
 							if (IsStringIndexer(property))
@@ -471,7 +471,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 				}
 				else
 				{
-					return GetGlobalQualifier(ownerType) + ownerType.GetFullName();
+					return ownerType.GetFullyQualifiedTypeIncludingGlobal();
 				}
 			}
 
