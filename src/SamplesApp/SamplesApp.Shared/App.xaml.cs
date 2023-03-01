@@ -193,15 +193,17 @@ namespace SamplesApp
 			return false;
 		}
 
-		private static
+		private static Task<bool> HandleSkiaRuntimeTests(LaunchActivatedEventArgs e) => HandleSkiaRuntimeTests(e.Arguments);
+
+		public static
 #if __SKIA__ || __MACOS__
 			async
 #endif
-			Task<bool> HandleSkiaRuntimeTests(LaunchActivatedEventArgs e)
+			Task<bool> HandleSkiaRuntimeTests(string args)
 		{
 #if __SKIA__ || __MACOS__
 			var runRuntimeTestsResultsParam =
-			e.Arguments.Split(';').FirstOrDefault(a => a.StartsWith("--runtime-tests"));
+				args.Split(';').FirstOrDefault(a => a.StartsWith("--runtime-tests"));
 
 			var runtimeTestResultFilePath = runRuntimeTestsResultsParam?.Split('=').LastOrDefault();
 

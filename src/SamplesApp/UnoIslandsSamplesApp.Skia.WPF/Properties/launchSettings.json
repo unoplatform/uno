@@ -2,7 +2,7 @@
   "profiles": {
     "UnoIslandsSamplesApp.Skia.WPF": {
       "commandName": "Project",
-      "commandLineArgs": ""
+      "commandLineArgs": "--runtime-tests=C:/Dev/Throwaway/UnoIslandsRuntimeTests/skia-gtk-runtime-tests-results.xml"
     }
   }
 }
