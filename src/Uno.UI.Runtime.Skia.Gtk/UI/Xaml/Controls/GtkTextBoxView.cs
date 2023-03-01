@@ -85,7 +85,7 @@ internal abstract class GtkTextBoxView : IOverlayTextBoxView
 		RootWidget.Opacity = textBox.Opacity;
 	}
 
-	public void SetFocus(bool isFocused) => InputWidget.HasFocus = isFocused;
+	public void SetFocus() => InputWidget.HasFocus = true;
 
 	public void SetSize(double width, double height)
 	{
