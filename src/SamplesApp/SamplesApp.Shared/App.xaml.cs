@@ -47,12 +47,20 @@ using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
 using LaunchActivatedEventArgs = Windows.ApplicationModel.Activation.LaunchActivatedEventArgs;
 #endif
 
+#if UNO_ISLANDS
+using Windows.UI.Xaml.Markup;
+using Uno.UI.XamlHost;
+#endif
+
 namespace SamplesApp
 {
 	/// <summary>
 	/// Provides application-specific behavior to supplement the default Application class.
 	/// </summary>
 	sealed public partial class App : Application
+#if UNO_ISLANDS
+	, IXamlMetadataProvider, IXamlMetadataContainer, IDisposable
+#endif
 	{
 #if HAS_UNO
 		private static Uno.Foundation.Logging.Logger _log;
