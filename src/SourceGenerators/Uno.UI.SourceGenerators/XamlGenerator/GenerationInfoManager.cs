@@ -140,8 +140,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				&& !Process.GetCurrentProcess().ProcessName.Equals("devenv", StringComparison.InvariantCultureIgnoreCase))
 			{
 				// Design-time builds need to clear runs for the x:Name values to be regenerated, in the context of OmniSharp.
-				// In the context of HotReload, we need to skip this, as the HotReload service sets DesignTimeBuild to build
-				// to true, preventing existing runs to be kept active.
+				// In the context of HotReload, we need to skip this, as the HotReload service sets DesignTimeBuild to true,
+				// preventing existing runs to be kept active.
 				//
 				// Devenv is also added to the conditions as there's no explicit way
 				// for knowing that we're in a hot-reload session.
