@@ -57,10 +57,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task When_ToggleButton_DataContext_Set_On_ToolTip_Owner_After()
 		{
-			if(!FeatureConfiguration.ToolTip.UseToolTips)
+#if HAS_UNO
+			if (!FeatureConfiguration.ToolTip.UseToolTips)
 			{
 				Assert.Inconclusive();
 			}
+#endif
 
 			try
 			{
@@ -107,11 +109,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task When_ToggleButton_DataContext_Set_On_ToolTip_Owner_Before()
 		{
+#if HAS_UNO
 			if (!FeatureConfiguration.ToolTip.UseToolTips)
 			{
 				Assert.Inconclusive();
 			}
-			
+#endif
+
 			try
 			{
 				var toggleButton = new ToggleButton();
@@ -174,10 +178,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task When_ToggleButton_DataContext_Set_On_ToolTip_Owner_Nested()
 		{
+#if HAS_UNO
 			if (!FeatureConfiguration.ToolTip.UseToolTips)
 			{
 				Assert.Inconclusive();
 			}
+#endif
 
 			try
 			{
