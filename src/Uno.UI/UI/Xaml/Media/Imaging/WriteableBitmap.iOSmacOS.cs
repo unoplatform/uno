@@ -15,7 +15,7 @@ partial class WriteableBitmap
 {
 	private protected override bool IsSourceReady => true;
 
-	private protected override bool TryOpenSourceSync(out ImageData imageData)
+	private protected override bool TryOpenSourceSync(int? targetWidth, int? targetHeight, out ImageData imageData)
 	{
 		imageData = default;
 
