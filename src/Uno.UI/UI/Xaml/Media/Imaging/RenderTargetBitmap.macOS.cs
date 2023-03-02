@@ -21,22 +21,11 @@ namespace Windows.UI.Xaml.Media.Imaging
 		/// <inheritdoc />
 		private protected override bool IsSourceReady => _buffer != null;
 
-		/// <inheritdoc />
-		private protected override bool TryOpenSourceSync([NotNullWhen(true)] out ImageData image)
+		private static ImageData Open(byte[] buffer, int bufferLength, int width, int height)
 		{
-			image = default;
-
-			var width = PixelWidth;
-			var height = PixelHeight;
-
-			if (_buffer is null || _bufferSize <= 0 || width <= 0 || height <= 0)
-			{
-				return false;
-			}
-
 			using var colorSpace = CGColorSpace.CreateDeviceRGB();
 			using var context = new CGBitmapContext(
-				_buffer,
+				buffer,
 				width,
 				height,
 				_bitsPerComponent,
@@ -47,10 +36,10 @@ namespace Windows.UI.Xaml.Media.Imaging
 			using var cgImage = context.ToImage();
 			if (cgImage is not null)
 			{
-				image = ImageData.FromNative(new NSImage(cgImage, new CGSize(width, height)));
+				return ImageData.FromNative(new NSImage(cgImage, new CGSize(width, height)));
 			}
 
-			return image.HasData;
+			return default;
 		}
 
 		private static (int ByteCount, int Width, int Height) RenderAsBgra8_Premul(UIElement element, ref byte[]? buffer, Size? scaledSize = null)

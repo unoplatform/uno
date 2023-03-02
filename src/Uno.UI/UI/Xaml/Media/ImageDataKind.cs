@@ -23,15 +23,17 @@ internal enum ImageDataKind
 	/// </summary>
 	ByteArray,
 
-	/// <summary>
-	/// A native image.
-	/// </summary>
-	NativeImage,
-
+#if __SKIA__
 	/// <summary>
 	/// Skia composition surface.
 	/// </summary>
 	CompositionSurface,
+#else
+	/// <summary>
+	/// A native image.
+	/// </summary>
+	NativeImage,
+#endif
 
 	/// <summary>
 	/// The image failed to load (cf. The Error property)

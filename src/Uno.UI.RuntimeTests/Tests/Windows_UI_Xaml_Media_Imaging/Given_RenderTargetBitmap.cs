@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -7,6 +8,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Imaging;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading;
 using Uno.UI.RuntimeTests.Helpers;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
@@ -106,14 +108,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 			await sut.RenderAsync(border);
 
 			var onCanvasReady = new TaskCompletionSource<object>();
+			var onCanvasTimeout = new CancellationTokenSource(TimeSpan.FromSeconds(Debugger.IsAttached ? 300 : 1));
 			var onCanvas = new Image
 			{
-				Source = sut,
 				Width = 10,
 				Height = 10
 			};
+			onCanvasTimeout.Token.Register(() => onCanvasReady.TrySetException(new TimeoutException("Image didn't render")));
 			onCanvas.ImageOpened += (snd, e) => onCanvasReady.TrySetResult(default);
 			onCanvas.ImageFailed += (snd, e) => onCanvasReady.TrySetException(new InvalidOperationException(e.ErrorMessage));
+			onCanvas.Source = sut;
 
 			TestServices.WindowHelper.WindowContent = onCanvas;
 

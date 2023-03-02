@@ -11,6 +11,7 @@ using Windows.Foundation;
 using Windows.Storage.Streams;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
+using Uno.UI.Xaml.Media;
 using Buffer = Windows.Storage.Streams.Buffer;
 using System.Buffers;
 
@@ -19,7 +20,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 #if NOT_IMPLEMENTED
 	[global::Uno.NotImplemented("NET461", "__WASM__", "__NETSTD_REFERENCE__")]
 #endif
-	public partial class RenderTargetBitmap : IDisposable
+	public partial class RenderTargetBitmap : ImageSource, IDisposable
 	{
 #if NOT_IMPLEMENTED
 		internal const bool IsImplemented = false;
@@ -64,6 +65,27 @@ namespace Windows.UI.Xaml.Media.Imaging
 
 		private byte[]? _buffer;
 		private int _bufferSize;
+
+		/// <inheritdoc />
+		private protected override bool TryOpenSourceSync(int? targetWidth, int? targetHeight, out ImageData image)
+		{
+			var width = PixelWidth;
+			var height = PixelHeight;
+
+			if (_buffer is null || _bufferSize <= 0 || width <= 0 || height <= 0)
+			{
+				image = default;
+				return false;
+			}
+
+			image = Open(_buffer, _bufferSize, width, height);
+			return image.HasData;
+		}
+
+#if NOT_IMPLEMENTED
+		private static ImageData Open(byte[] buffer, int bufferLength, int width, int height)
+			=> default;
+#endif
 
 #if NOT_IMPLEMENTED
 		[global::Uno.NotImplemented("NET461", "__WASM__", "__NETSTD_REFERENCE__")]
@@ -160,6 +182,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 				Swap(ref buffer![i], ref buffer![i + 2]);
 			}
 		}
+
 		private static void Swap(ref byte a, ref byte b)
 		{
 			(a, b) = (b, a);

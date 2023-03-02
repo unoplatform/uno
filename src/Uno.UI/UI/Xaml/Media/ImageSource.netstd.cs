@@ -144,8 +144,6 @@ namespace Windows.UI.Xaml.Media
 			}
 
 			var listeners = _subscriptions.ToList();
-
-
 			foreach (var listener in listeners)
 			{
 				listener(data);
