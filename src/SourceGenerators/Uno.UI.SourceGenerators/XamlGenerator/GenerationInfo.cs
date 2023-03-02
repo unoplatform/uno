@@ -7,7 +7,7 @@ using System.Globalization;
 
 namespace Uno.UI.SourceGenerators.XamlGenerator
 {
-	internal record GenerationRunInfo(GenerationRunInfoManager Manager, int AdditionalFilesHash)
+	internal record GenerationRunInfo(GenerationRunInfoManager Manager, string ProjectFile, string TargetFramework, int AdditionalFilesHash)
 	{
 		private ConcurrentDictionary<string, GenerationRunFileInfo> _fileInfo = new();
 
