@@ -6,7 +6,7 @@ using Uno.UI;
 using Uno.Extensions;
 using Uno.UI.Extensions;
 using Windows.UI.Xaml;
-using Uno.UI.Web;
+using Windows.Web;
 using System.Globalization;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -54,15 +54,9 @@ namespace Windows.UI.Xaml.Controls
 			UpdateFromInternalSource();
 		}
 
-		partial void GoBackPartial()
-		{
-			_nativeWebView.GoBack();
-		}
+		partial void GoBackPartial() => _nativeWebView.GoBack();
 
-		partial void GoForwardPartial()
-		{
-			_nativeWebView.GoForward();
-		}
+		partial void GoForwardPartial() => _nativeWebView.GoForward();
 
 		//This should be IAsyncOperation<string> instead of Task<string> but we use an extension method to enable the same signature in Win.
 		//IAsyncOperation is not available in Xamarin.

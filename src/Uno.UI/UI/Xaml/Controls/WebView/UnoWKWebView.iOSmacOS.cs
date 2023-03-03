@@ -10,7 +10,7 @@ using ObjCRuntime;
 using Uno.Extensions;
 using Uno.UI.Extensions;
 using Uno.Foundation.Logging;
-using Uno.UI.Web;
+using Windows.Web;
 using System.IO;
 using System.Linq;
 using Uno.UI.Services;
