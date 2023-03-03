@@ -331,7 +331,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 					return;
 				}
 
-				if (!mayBeNullAccessed || _lastAccessedIsTopLevelContext || previousType is not ITypeSymbol { IsReferenceType: true })
+				if (!mayBeNullAccessed || _lastAccessedIsTopLevelContext || !IsReferenceTypeOrNullableValueType((ITypeSymbol)previousType))
 				{
 					_builder.Append('.');
 				}
@@ -343,6 +343,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 
 				_builder.Append(member.Name);
 				_lastAccessedMember = member;
+			}
+
+			private static bool IsReferenceTypeOrNullableValueType(ITypeSymbol symbol)
+			{
+				return symbol.IsReferenceType || symbol.IsNullable();
 			}
 		}
 
