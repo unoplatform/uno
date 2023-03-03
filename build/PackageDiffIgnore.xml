@@ -9147,6 +9147,8 @@
 			<Member fullName="Windows.UI.Xaml.SolidColorBrushHelper" reason="Not needed publicly and not present in Windows." />
 			<Member fullName="Windows.UI.Xaml.Controls.PersonPictureTemplateSettings" reason="Moved to MUXC" />
 			<Member fullName="Windows.UI.Xaml.VisiblityExtensions" reason="Api alignments" />
+			<Member fullName="Uno.Presentation.Resources.IResourceRegistry" reason="Api alignments" />
+			<Member fullName="Uno.Presentation.Resources.ResourceRegistry" reason="Api alignments" />
 		</Types>
 		<Events>
 			<Member fullName="Windows.Foundation.TypedEventHandler`2&lt;Microsoft.UI.Xaml.Controls.IInputValidationControl,Microsoft.UI.Xaml.Controls.HasValidationErrorsChangedEventArgs&gt; Microsoft.UI.Xaml.Controls.AutoSuggestBox::HasValidationErrorsChanged" reason="Not present in WinAppSDK 1.2" />
@@ -9257,6 +9259,7 @@
 			<Member fullName="Windows.UI.Xaml.CornerRadius Uno.UI.Toolkit.ElevatedView::CornerRadius()" reason="Already exists in Control and ElevatedView should not shadow it" />
 			<Member fullName="Windows.UI.Xaml.Controls.PersonPictureTemplateSettings Windows.UI.Xaml.Controls.PersonPicture::TemplateSettings()" reason="Moved to MUXC" />
 			<Member fullName="System.Boolean Uno.Devices.Sensors.INativeDualScreenProvider::IsDualScreen()" reason="Api alignments" />
+			<Member fullName="Uno.Presentation.Resources.IResourceRegistry Windows.UI.Xaml.ResourceHelper::Registry()" reason="Api alignments" />
 		</Properties>
 		<Methods>
 			<Member fullName="Microsoft.UI.Windowing.AppWindowConfiguration Microsoft.UI.Windowing.AppWindow.get_Configuration()" reason="Not present in WinAppSDK 1.2" />
@@ -9490,6 +9493,10 @@
 			<Member fullName="System.Void Windows.UI.Xaml.Controls.Canvas.SetTop(Windows.UI.Xaml.DependencyObject obj, System.Double value)" reason="Api alignments" />
 			<Member fullName="System.Double Windows.UI.Xaml.Controls.Canvas.GetZIndex(Windows.UI.Xaml.DependencyObject obj)" reason="Api alignments" />
 			<Member fullName="System.Void Windows.UI.Xaml.Controls.Canvas.SetZIndex(Windows.UI.Xaml.DependencyObject obj, System.Double value)" reason="Api alignments" />
+			<Member fullName="Uno.Presentation.Resources.IResourceRegistry Windows.UI.Xaml.ResourceHelper.get_Registry()" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.ResourceHelper.set_Registry(Uno.Presentation.Resources.IResourceRegistry value)" reason="Api alignments" />
+			<Member fullName="System.Object Windows.UI.Xaml.ResourceHelper.FindResource(System.String resourceName)" reason="Api alignments" />
+			<Member fullName="Windows.UI.Xaml.Data.IValueConverter Windows.UI.Xaml.ResourceHelper.FindConverter(System.String converterName)" reason="Api alignments" />
 		</Methods>
 	</IgnoreSet>
 
