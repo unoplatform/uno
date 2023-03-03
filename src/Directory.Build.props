@@ -199,6 +199,21 @@
 		or '$(TargetFramework)'=='net6.0-macos'
 		or '$(TargetFramework)'=='net7.0-macos'
 		">true</IsMacOS>
+
+	<IsCatalyst>false</IsCatalyst>
+	<IsCatalyst Condition="'$(TargetFramework)'=='net6.0-maccatalyst' or '$(TargetFramework)'=='net7.0-maccatalyst'">true</IsCatalyst>
+
+	<IsIOSOrCatalyst>false</IsIOSOrCatalyst>
+	<IsIOSOrCatalyst Condition="$(IsIOS) or $(IsCatalyst)">true</IsIOSOrCatalyst>
+
+	<_IsNet>false</_IsNet>
+	<_IsNet Condition="'$(TargetFramework)'=='net461'">true</_IsNet>
+
+	<_IsNetCore>false</_IsNetCore>
+	<_IsNetCore Condition="'$(TargetFramework)'=='net5.0' or '$(TargetFramework)'=='net6.0' or '$(TargetFramework)'=='net7.0'">true</_IsNetCore>
+
+	<_IsNetStd>false</_IsNetStd>
+	<_IsNetStd Condition="'$(TargetFramework)'=='netstandard2.0' or $(_IsNetCore)">true</_IsNetStd>
   </PropertyGroup>
 
   <PropertyGroup>
