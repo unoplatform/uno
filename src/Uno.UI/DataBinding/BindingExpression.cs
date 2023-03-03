@@ -542,8 +542,8 @@ namespace Windows.UI.Xaml.Data
 		{
 			void SetTargetValue()
 			{
-				var (foundNullInMiddleOfPath, value) = ParentBinding.XBindSelector(DataContext);
-				var canSetTarget = !foundNullInMiddleOfPath && (_updateSources?.None(s => s.ValueType == null) ?? true);
+				var (isResolved, value) = ParentBinding.XBindSelector(DataContext);
+				var canSetTarget = isResolved && (_updateSources?.None(s => s.ValueType == null) ?? true);
 
 				if (canSetTarget)
 				{
