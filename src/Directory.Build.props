@@ -190,11 +190,6 @@
     <DefaultItemExcludes>$(DefaultItemExcludes);obj/**;bin/**</DefaultItemExcludes>
   </PropertyGroup>
 
-  <PropertyGroup>
-    <!-- Workaround for android build using the Uno Source Generators: https://github.com/unoplatform/uno.SourceGeneration/issues/109 -->
-    <JavaSdkDirectory Condition="'$(JavaSdkDirectory)'=='' and '$(JAVA_HOME_8_X64)'!=''">$(JAVA_HOME_8_X64)</JavaSdkDirectory>
-  </PropertyGroup>
-
   <ItemGroup Condition="('$(TargetFramework)'=='net461' or '$(TargetFramework)'=='net472' or '$(TargetFramework)'=='') and '$(AndroidManifest)'==''">
 	<!--
 	Include the reference assemblies to ensure that hard links don't use system files (workaround for same disk restriction)
