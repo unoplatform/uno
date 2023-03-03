@@ -1170,7 +1170,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				var isWeak = current.IsWeakReference ? "true" : "false";
 
 				// As of C# 7.0, C# Hot Reload does not support the renaming fields.
-				var propertySyntax = _isHotReloadEnabled ? "{ get; set; }" : "";
+				var propertySyntax = _isHotReloadEnabled ? "{ get; }" : "";
 				writer.AppendLineIndented($"private global::Windows.UI.Xaml.Markup.ComponentHolder {componentName}_Holder {propertySyntax} = new global::Windows.UI.Xaml.Markup.ComponentHolder(isWeak: {isWeak});");
 
 				using (writer.BlockInvariant($"private {typeName} {componentName}"))
