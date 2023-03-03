@@ -4425,7 +4425,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 
 				var contextFunction = XBindExpressionParser.Rewrite("___tctx", rawFunction, dataTypeSymbol, _metadataHelper.Compilation.GlobalNamespace, isRValue: true, FindType);
-				return $".BindingApply({applyBindingParameters} => /*defaultBindMode{GetDefaultBindMode()}*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, null, ___ctx => ___ctx is {GetType(dataType)} ___tctx ? ({contextFunction}) : (false, null), {buildBindBack()} {pathsArray}))";
+				return $".BindingApply({applyBindingParameters} => /*defaultBindMode{GetDefaultBindMode()}*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, null, ___ctx => ___ctx is {GetType(dataType)} ___tctx ? ({contextFunction}) : (false, default), {buildBindBack()} {pathsArray}))";
 			}
 			else
 			{
@@ -4471,7 +4471,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					}
 				}
 
-				var bindFunction = $"___ctx is {_xClassName} ___tctx ? ({rewrittenRValue}) : (false, null)";
+				var bindFunction = $"___ctx is {_xClassName} ___tctx ? ({rewrittenRValue}) : (false, default)";
 				return $".BindingApply({applyBindingParameters} =>  /*defaultBindMode{GetDefaultBindMode()} {rawFunction}*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, __that, ___ctx => {bindFunction}, {buildBindBack()} {pathsArray}))";
 			}
 		}
