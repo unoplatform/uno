@@ -37,6 +37,8 @@ jobs:
       versionSpec: 4.9.1
       checkLatest: false
 
+  - template: templates/dotnet-install.yml
+
   - task: MSBuild@1
     inputs:
       solution: src/Uno.UI.TestComparer/Uno.UI.TestComparer.csproj
