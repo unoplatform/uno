@@ -8886,8 +8886,8 @@
   <Style x:Key="DefaultRichEditBoxStyle" TargetType="RichEditBox">
     <Setter Property="Foreground" Value="{ThemeResource TextControlForeground}" />
     <Setter Property="Background" Value="{ThemeResource TextControlBackground}" />
-    <contract7Present:Setter Property="ContentLinkForegroundColor" Value="{ThemeResource ContentLinkForegroundColor}" />
-    <contract7Present:Setter Property="ContentLinkBackgroundColor" Value="{ThemeResource ContentLinkBackgroundColor}" />
+    <not_mux:Setter Property="ContentLinkForegroundColor" Value="{ThemeResource ContentLinkForegroundColor}" />
+    <not_mux:Setter Property="ContentLinkBackgroundColor" Value="{ThemeResource ContentLinkBackgroundColor}" />
     <Setter Property="SelectionHighlightColor" Value="{ThemeResource TextControlSelectionHighlightColor}" />
     <Setter Property="BorderBrush" Value="{ThemeResource TextControlBorderBrush}" />
     <Setter Property="BorderThickness" Value="{ThemeResource TextControlBorderThemeThickness}" />
