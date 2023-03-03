@@ -203,7 +203,7 @@ namespace Windows.UI.Xaml.Data
 		/// Provides the method used in the context of x:Bind expressions to
 		/// get the resulting value.
 		/// </summary>
-		internal Func<object, object> XBindSelector
+		internal Func<object, (bool, object)> XBindSelector
 		{ get; private set; }
 
 		/// <summary>
@@ -217,7 +217,7 @@ namespace Windows.UI.Xaml.Data
 		/// </summary>
 		internal string[] XBindPropertyPaths { get; private set; }
 
-		internal void SetBindingXBindProvider(object compiledSource, Func<object, object> xBindSelector, Action<object, object> xBindBack, string[] propertyPaths = null)
+		internal void SetBindingXBindProvider(object compiledSource, Func<object, (bool, object)> xBindSelector, Action<object, object> xBindBack, string[] propertyPaths = null)
 		{
 			CompiledSource = compiledSource;
 			XBindSelector = xBindSelector;

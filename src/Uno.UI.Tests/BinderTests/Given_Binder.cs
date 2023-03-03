@@ -687,7 +687,7 @@ namespace Uno.UI.Tests.BinderTests
 			};
 			binding.SetBindingXBindProvider(
 					source,
-					(a) => "Test",
+					(a) => (true, "Test"),
 					null,
 					new[] { "MyField" });
 

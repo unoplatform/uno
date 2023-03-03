@@ -30,29 +30,34 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 
 		// TODO: isRValue feels like a hack so that we generate compilable code when bindings are generated as LValue.
 		// However, we could be incorrectly throwing NRE. This should be handled properly.
-		internal static string Rewrite(string contextName, string rawFunction, INamedTypeSymbol? contextTypeSymbol, bool isRValue, Func<string, INamedTypeSymbol?> findType)
+		internal static string Rewrite(string contextName, string rawFunction, INamedTypeSymbol? contextTypeSymbol, INamespaceSymbol globalNamespace, bool isRValue, Func<string, INamedTypeSymbol?> findType)
 		{
 			SyntaxNode expression = ParseExpression(rawFunction);
 
 			expression = new Rewriter(contextName, findType).Visit(expression);
-			if (contextTypeSymbol is null)
-			{
-				throw new Exception("Null context symbol!");
-			}
 			if (isRValue && contextTypeSymbol is not null)
 			{
-				var nullabilityRewriter = new NullabilityRewriter(contextName, contextTypeSymbol);
+				var nullabilityRewriter = new NullabilityRewriter(contextName, contextTypeSymbol, globalNamespace);
 				nullabilityRewriter.Visit(expression);
 				if (!nullabilityRewriter.Failed)
 				{
-					return nullabilityRewriter.HasNullable ?
-						nullabilityRewriter.Result + " ?? global::Windows.UI.Xaml.DependencyProperty.UnsetValue" :
-						nullabilityRewriter.Result;
+					var result = nullabilityRewriter.Result;
+					if (nullabilityRewriter.HasNullable)
+					{
+						// If we have something like A.B.C?.D?.E.F,
+						// we re-write it to:
+						// A.B.C?.D is { } __tctx_ ? (true, __tctx_.E.F) : (false, null)
+						const string NullAccessOperator = "?.";
+						var lastIndexOfNullAccess = result.LastIndexOf(NullAccessOperator, StringComparison.Ordinal);
+						var firstPart = result.Substring(0, lastIndexOfNullAccess);
+						var secondPart = result.Substring(lastIndexOfNullAccess + NullAccessOperator.Length);
+						return $"{firstPart} is {{ }} {contextName}_ ? (true, {contextName}_.{secondPart}) : (false, null)";
+					}
+
+					return $"(true, {result})";
 				}
-				else
-				{
-					//throw new Exception(rawFunction);
-				}
+
+				return $"(true, {expression.ToFullString()})";
 			}
 
 			return expression.ToFullString();
@@ -196,15 +201,17 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 
 			public string Result => _builder.ToString();
 
-			public NullabilityRewriter(string contextName, INamedTypeSymbol contextTypeSymbol)
+			public NullabilityRewriter(string contextName, INamedTypeSymbol contextTypeSymbol, INamespaceSymbol globalNamespace)
 			{
 				_contextName = contextName;
 				_contextTypeSymbol = contextTypeSymbol;
-				_globalNamespace = _contextTypeSymbol.ContainingNamespace;
-				while (!_globalNamespace.IsGlobalNamespace)
-				{
-					_globalNamespace = _globalNamespace.ContainingNamespace;
-				}
+
+				// We need to take globalNamespace from the compilation itself.
+				// Walking ContainingNamespaces from contextTypeSymbol or
+				// accessing contextTypeSymbol.ContainingModule.GlobalNamespace doesn't work because
+				// the INamespaceSymbol we get has NamespaceKind == NamespaceKind.Module and it doesn't have access
+				// to all members.
+				_globalNamespace = globalNamespace;
 			}
 
 			public override void DefaultVisit(SyntaxNode node)

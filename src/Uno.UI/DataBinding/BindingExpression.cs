@@ -542,11 +542,12 @@ namespace Windows.UI.Xaml.Data
 		{
 			void SetTargetValue()
 			{
-				var canSetTarget = _updateSources?.None(s => s.ValueType == null) ?? true;
+				var (foundNullInMiddleOfPath, value) = ParentBinding.XBindSelector(DataContext);
+				var canSetTarget = !foundNullInMiddleOfPath && (_updateSources?.None(s => s.ValueType == null) ?? true);
 
 				if (canSetTarget)
 				{
-					SetTargetValueSafe(ParentBinding.XBindSelector(DataContext));
+					SetTargetValueSafe(value);
 				}
 				else
 				{

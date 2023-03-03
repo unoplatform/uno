@@ -12,6 +12,5 @@
     <Compile Include="$(MSBuildThisFileDirectory)Given_SymbolExtension.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Given_XBindParser.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Given_xBindPathParser.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Given_XBindRewriter.cs" />
   </ItemGroup>
 </Project>
