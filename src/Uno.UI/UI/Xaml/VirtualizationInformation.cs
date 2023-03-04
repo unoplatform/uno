@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Windows.Foundation;
 using Uno;
+using System.Runtime.CompilerServices;
 
 namespace Windows.UI.Xaml
 {
@@ -46,6 +47,7 @@ namespace Windows.UI.Xaml
 
 		public Size MeasureSize { get; set; }
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private void SetFlag(Flags flag, bool value)
 		{
 			if (value)
