@@ -137,7 +137,7 @@
   <ItemGroup>
     <PackageReference Include="EnvDTE100" version="10.0.3" />
     <PackageReference Include="Microsoft.Build">
-      <Version>15.9.20</Version>
+      <Version>15.4.8</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Build.Tasks.Core">
       <Version>15.9.20</Version>

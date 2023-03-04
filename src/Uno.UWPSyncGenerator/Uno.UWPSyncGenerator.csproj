@@ -11,7 +11,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="ManagedEsent" Version="1.9.4" />
-		<PackageReference Include="Microsoft.Build" Version="15.8.166" ExcludeAssets="runtime" />
+		<PackageReference Include="Microsoft.Build" Version="15.4.8" ExcludeAssets="runtime" />
 		<PackageReference Include="Microsoft.Build.Framework" Version="15.8.166" ExcludeAssets="runtime" />
 		<PackageReference Include="Microsoft.Build.Tasks.Core" Version="15.8.166" ExcludeAssets="runtime" />
 		<PackageReference Include="Microsoft.Build.Utilities.Core" Version="15.8.166" ExcludeAssets="runtime" />
