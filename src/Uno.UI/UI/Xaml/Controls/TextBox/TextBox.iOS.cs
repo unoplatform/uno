@@ -62,7 +62,7 @@ namespace Windows.UI.Xaml.Controls
 			UpdateTextBoxView();
 		}
 
-		partial void OnTextWrappingChangedPartial(TextWrapping newValue)
+		partial void OnTextWrappingChangedPartial()
 		{
 			UpdateTextBoxView();
 		}
@@ -167,7 +167,7 @@ namespace Windows.UI.Xaml.Controls
 			//support by MultilineTextBoxDelegate and SinglelineTextBoxDelegate
 		}
 
-		partial void OnIsReadonlyChangedPartial(bool newValue)
+		partial void OnIsReadonlyChangedPartial()
 		{
 			//support by MultilineTextBoxDelegate and SinglelineTextBoxDelegate
 		}

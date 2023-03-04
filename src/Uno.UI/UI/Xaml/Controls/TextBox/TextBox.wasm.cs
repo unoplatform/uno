@@ -88,7 +88,7 @@ namespace Windows.UI.Xaml.Controls
 			_textBoxView.SetFontFamily(FontFamily);
 		}
 
-		partial void OnTextWrappingChangedPartial(TextWrapping newValue)
+		partial void OnTextWrappingChangedPartial()
 		{
 			_textBoxView?.SetTextWrappingAndTrimming(textWrapping: TextWrapping, textTrimming: null);
 		}
@@ -133,7 +133,7 @@ namespace Windows.UI.Xaml.Controls
 			ApplyEnabled(e.NewValue);
 		}
 
-		partial void OnIsReadonlyChangedPartial(bool newValue) => UpdateTextBoxViewIsReadOnly();
+		partial void OnIsReadonlyChangedPartial() => UpdateTextBoxViewIsReadOnly();
 
 		partial void OnIsTabStopChangedPartial() => UpdateTextBoxViewIsReadOnly();
 

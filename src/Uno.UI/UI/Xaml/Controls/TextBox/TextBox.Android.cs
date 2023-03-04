@@ -390,7 +390,7 @@ namespace Windows.UI.Xaml.Controls
 			UpdateInputScope(InputScope);
 		}
 
-		partial void OnTextWrappingChangedPartial(TextWrapping newValue)
+		partial void OnTextWrappingChangedPartial()
 		{
 			_textBoxView?.UpdateSingleLineMode();
 		}
@@ -415,7 +415,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		partial void OnIsReadonlyChangedPartial(bool newValue) => UpdateTextBoxViewReadOnly();
+		partial void OnIsReadonlyChangedPartial() => UpdateTextBoxViewReadOnly();
 
 		partial void OnIsTabStopChangedPartial() => UpdateTextBoxViewReadOnly();
 

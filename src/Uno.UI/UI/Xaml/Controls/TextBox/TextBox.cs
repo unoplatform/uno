@@ -128,7 +128,7 @@ namespace Windows.UI.Xaml.Controls
 			OnInputScopeChanged(InputScope);
 			OnMaxLengthChanged(MaxLength);
 			OnAcceptsReturnChanged(AcceptsReturn);
-			OnIsReadonlyChanged(IsReadOnly);
+			OnIsReadonlyChanged();
 			OnForegroundColorChanged(null, Foreground);
 			UpdateFontPartial();
 			OnHeaderChanged();
@@ -136,7 +136,7 @@ namespace Windows.UI.Xaml.Controls
 			OnSelectionHighlightColorChanged(SelectionHighlightColor);
 			OnIsSpellCheckEnabledChanged(IsSpellCheckEnabled);
 			OnTextAlignmentChanged(TextAlignment);
-			OnTextWrappingChanged(TextWrapping);
+			OnTextWrappingChanged();
 			OnFocusStateChanged((FocusState)FocusStateProperty.GetMetadata(GetType()).DefaultValue, FocusState, initial: true);
 			OnVerticalContentAlignmentChanged(VerticalAlignment.Top, VerticalContentAlignment);
 			OnTextCharacterCasingChanged(CharacterCasing);
@@ -616,16 +616,16 @@ namespace Windows.UI.Xaml.Controls
 				typeof(TextBox),
 				new FrameworkPropertyMetadata(
 					defaultValue: TextWrapping.NoWrap,
-					propertyChangedCallback: (s, e) => ((TextBox)s)?.OnTextWrappingChanged((TextWrapping)e.NewValue))
+					propertyChangedCallback: (s, e) => ((TextBox)s)?.OnTextWrappingChanged())
 				);
 
-		private void OnTextWrappingChanged(TextWrapping newValue)
+		private void OnTextWrappingChanged()
 		{
-			OnTextWrappingChangedPartial(newValue);
+			OnTextWrappingChangedPartial();
 			UpdateButtonStates();
 		}
 
-		partial void OnTextWrappingChangedPartial(TextWrapping newValue);
+		partial void OnTextWrappingChangedPartial();
 
 		#endregion
 
@@ -673,17 +673,17 @@ namespace Windows.UI.Xaml.Controls
 				typeof(TextBox),
 				new FrameworkPropertyMetadata(
 					false,
-					propertyChangedCallback: (s, e) => ((TextBox)s)?.OnIsReadonlyChanged((bool)e.NewValue)
+					propertyChangedCallback: (s, e) => ((TextBox)s)?.OnIsReadonlyChanged()
 				)
 			);
 
-		private void OnIsReadonlyChanged(bool newValue)
+		private void OnIsReadonlyChanged()
 		{
-			OnIsReadonlyChangedPartial(newValue);
+			OnIsReadonlyChangedPartial();
 			UpdateButtonStates();
 		}
 
-		partial void OnIsReadonlyChangedPartial(bool newValue);
+		partial void OnIsReadonlyChangedPartial();
 
 		#endregion
 
