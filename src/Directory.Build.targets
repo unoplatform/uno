@@ -107,7 +107,10 @@
 	<PackageReference Update="Microsoft.Extensions.Logging.Filter" Version="1.1.2" />
 	<PackageReference Update="Uno.Extensions.Logging.WebAssembly.Console" Version="1.4.0" />
 	<PackageReference Update="Uno.Extensions.Logging.WebAssembly.OSLog" Version="1.4.0" />
-	<PackageReference Update="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" />
+	<PackageReference Update="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" />
+	<PackageReference Update="Microsoft.NETFramework.ReferenceAssemblies.net48" Version="1.0.3" />
+	<PackageReference Update="Microsoft.NETFramework.ReferenceAssemblies.net472" Version="1.0.3" />
+	<PackageReference Update="Microsoft.NETFramework.ReferenceAssemblies.net461" Version="1.0.3" />
 	<PackageReference Update="Newtonsoft.Json" Version="13.0.2" />
   </ItemGroup>
 
