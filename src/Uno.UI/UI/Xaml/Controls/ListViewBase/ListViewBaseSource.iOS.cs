@@ -702,7 +702,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		/// <summary>
-		/// Determines if the cell is currently displayed in the collection
+		/// Indicates if the cell is currently displayed in the collection.
 		/// </summary>
 		internal bool IsDisplayed { get; set; }
 
