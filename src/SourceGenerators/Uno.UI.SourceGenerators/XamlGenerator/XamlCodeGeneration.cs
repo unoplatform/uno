@@ -129,6 +129,17 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		internal Lazy<INamedTypeSymbol> FontWeightsSymbol { get; }
 		internal Lazy<INamedTypeSymbol> SolidColorBrushHelperSymbol { get; }
 		internal Lazy<INamedTypeSymbol> CreateFromStringAttributeSymbol { get; }
+		internal Lazy<INamedTypeSymbol> UserControlSymbol { get; }
+		internal Lazy<INamedTypeSymbol?> NativePageSymbol { get; }
+		internal Lazy<INamedTypeSymbol> ApplicationSymbol { get; }
+		internal Lazy<INamedTypeSymbol> ResourceDictionarySymbol { get; }
+		internal Lazy<INamedTypeSymbol> TextBlockSymbol { get; }
+		internal Lazy<INamedTypeSymbol> RunSymbol { get; }
+		internal Lazy<INamedTypeSymbol> SpanSymbol { get; }
+		internal Lazy<INamedTypeSymbol> BorderSymbol { get; }
+		internal Lazy<INamedTypeSymbol> SolidColorBrushSymbol { get; }
+		internal Lazy<INamedTypeSymbol> RowDefinitionSymbol { get; }
+		internal Lazy<INamedTypeSymbol> ColumnDefinitionSymbol { get; }
 
 		public XamlCodeGeneration(GeneratorExecutionContext context)
 		{
@@ -290,6 +301,17 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			IOSViewSymbol = GetOptionalSymbolAsLazy("UIKit.UIView");
 			AppKitViewSymbol = GetOptionalSymbolAsLazy("AppKit.NSView");
 			CreateFromStringAttributeSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.CreateFromStringAttribute);
+			UserControlSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.UserControl);
+			NativePageSymbol = GetOptionalSymbolAsLazy(XamlConstants.Types.NativePage);
+			ApplicationSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.Application);
+			ResourceDictionarySymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.ResourceDictionary);
+			TextBlockSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.TextBlock);
+			RunSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.Run);
+			SpanSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.Span);
+			BorderSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.Border);
+			SolidColorBrushSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.SolidColorBrush);
+			RowDefinitionSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.RowDefinition);
+			ColumnDefinitionSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.ColumnDefinition);
 
 			Lazy<INamedTypeSymbol> GetMandatorySymbolAsLazy(string fullyQualifiedName)
 				=> new(() => context.Compilation.GetTypeByMetadataName(fullyQualifiedName) ?? throw new InvalidOperationException($"Unable to find type {fullyQualifiedName}"));
