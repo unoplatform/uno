@@ -533,7 +533,7 @@ namespace Windows.UI.Xaml.Controls
 				)
 			);
 
-		protected void OnInputScopeChanged(InputScope newValue) => OnInputScopeChangedPartial(newValue);
+		private void OnInputScopeChanged(InputScope newValue) => OnInputScopeChangedPartial(newValue);
 		partial void OnInputScopeChangedPartial(InputScope newValue);
 
 		#endregion
@@ -752,7 +752,7 @@ namespace Windows.UI.Xaml.Controls
 				)
 			);
 
-		protected virtual void OnIsSpellCheckEnabledChanged(bool newValue) => OnIsSpellCheckEnabledChangedPartial(newValue);
+		private void OnIsSpellCheckEnabledChanged(bool newValue) => OnIsSpellCheckEnabledChangedPartial(newValue);
 
 		partial void OnIsSpellCheckEnabledChangedPartial(bool newValue);
 
@@ -779,7 +779,7 @@ namespace Windows.UI.Xaml.Controls
 				)
 			);
 
-		protected virtual void OnIsTextPredictionEnabledChanged(bool newValue) => OnIsTextPredictionEnabledChangedPartial(newValue);
+		private void OnIsTextPredictionEnabledChanged(bool newValue) => OnIsTextPredictionEnabledChangedPartial(newValue);
 
 		partial void OnIsTextPredictionEnabledChangedPartial(bool newValue);
 
@@ -801,7 +801,7 @@ namespace Windows.UI.Xaml.Controls
 			DependencyProperty.Register("TextAlignment", typeof(TextAlignment), typeof(TextBox), new FrameworkPropertyMetadata(TextAlignment.Left, (s, e) => ((TextBox)s)?.OnTextAlignmentChanged((TextAlignment)e.NewValue)));
 
 
-		protected virtual void OnTextAlignmentChanged(TextAlignment newValue) => OnTextAlignmentChangedPartial(newValue);
+		private void OnTextAlignmentChanged(TextAlignment newValue) => OnTextAlignmentChangedPartial(newValue);
 
 		partial void OnTextAlignmentChangedPartial(TextAlignment newValue);
 
