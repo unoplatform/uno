@@ -14,7 +14,6 @@ namespace Uno.Roslyn
 	internal class RoslynMetadataHelper
 	{
 		private readonly Func<string, ITypeSymbol?> _findTypeByFullName;
-		private readonly Func<INamedTypeSymbol, INamedTypeSymbol[]> _getAllTypesAttributedWith;
 
 		public Compilation Compilation { get; }
 
@@ -25,7 +24,6 @@ namespace Uno.Roslyn
 			Compilation = context.Compilation;
 
 			_findTypeByFullName = Funcs.Create<string, ITypeSymbol?>(SourceFindTypeByFullName).AsLockedMemoized();
-			_getAllTypesAttributedWith = Funcs.Create<INamedTypeSymbol, INamedTypeSymbol[]>(SourceGetAllTypesAttributedWith).AsLockedMemoized();
 		}
 
 		public ITypeSymbol? FindTypeByFullName(string fullName)
@@ -56,11 +54,5 @@ namespace Uno.Roslyn
 
 			return symbol;
 		}
-
-		public INamedTypeSymbol[] GetAllTypesAttributedWith(INamedTypeSymbol attributeClass)
-			=> _getAllTypesAttributedWith(attributeClass);
-
-		private INamedTypeSymbol[] SourceGetAllTypesAttributedWith(INamedTypeSymbol attributeClass)
-			=> Compilation.GlobalNamespace.GetNamespaceTypes().Where(t => t.FindAttribute(attributeClass) is { }).ToArray();
 	}
 }

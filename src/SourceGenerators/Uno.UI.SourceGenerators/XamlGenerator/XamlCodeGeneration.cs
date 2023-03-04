@@ -125,6 +125,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		internal Lazy<INamedTypeSymbol> StyleSymbol { get; }
 		internal Lazy<INamedTypeSymbol> SetterSymbol { get; }
 		internal Lazy<INamedTypeSymbol> ColorSymbol { get; }
+		internal Lazy<INamedTypeSymbol> ColorsSymbol { get; }
+		internal Lazy<INamedTypeSymbol> FontWeightsSymbol { get; }
+		internal Lazy<INamedTypeSymbol> SolidColorBrushHelperSymbol { get; }
+		internal Lazy<INamedTypeSymbol> CreateFromStringAttributeSymbol { get; }
 
 		public XamlCodeGeneration(GeneratorExecutionContext context)
 		{
@@ -278,10 +282,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			DataBindingSymbol = GetMandatorySymbolAsLazy("Windows.UI.Xaml.Data.Binding");
 			StyleSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.Style);
 			ColorSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.Color);
+			ColorsSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.Colors);
+			FontWeightsSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.FontWeights);
+			SolidColorBrushHelperSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.SolidColorBrushHelper);
 			AndroidContentContextSymbol = GetOptionalSymbolAsLazy("Android.Content.Context");
 			AndroidViewSymbol = GetOptionalSymbolAsLazy("Android.Views.View");
 			IOSViewSymbol = GetOptionalSymbolAsLazy("UIKit.UIView");
 			AppKitViewSymbol = GetOptionalSymbolAsLazy("AppKit.NSView");
+			CreateFromStringAttributeSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.CreateFromStringAttribute);
 
 			Lazy<INamedTypeSymbol> GetMandatorySymbolAsLazy(string fullyQualifiedName)
 				=> new(() => context.Compilation.GetTypeByMetadataName(fullyQualifiedName) ?? throw new InvalidOperationException($"Unable to find type {fullyQualifiedName}"));
