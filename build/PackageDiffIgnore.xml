@@ -9389,6 +9389,8 @@
 			<Member fullName="System.Void Windows.UI.Xaml.Controls.TextBox.OnIsSpellCheckEnabledChanged(Windows.UI.Xaml.DependencyPropertyChangedEventArgs e)" reason="Changed parameter type and made private." />
 			<Member fullName="System.Void Windows.UI.Xaml.Controls.TextBox.OnIsTextPredictionEnabledChanged(Windows.UI.Xaml.DependencyPropertyChangedEventArgs e)" reason="Changed parameter type and made private." />
 			<Member fullName="System.Void Windows.UI.Xaml.Controls.TextBox.OnTextAlignmentChanged(Windows.UI.Xaml.DependencyPropertyChangedEventArgs e)" reason="Changed parameter type and made private." />
+			<Member fullName="Windows.UI.Xaml.Data.Binding Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(Windows.UI.Xaml.Data.Binding binding, System.Object compiledSource, System.Func`2&lt;System.Object,System.Object&gt; xBindSelector, System.String[] propertyPaths)" reason="Adjusted signature for Xaml generator x:Bind bug fix" />
+			<Member fullName="Windows.UI.Xaml.Data.Binding Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(Windows.UI.Xaml.Data.Binding binding, System.Object compiledSource, System.Func`2&lt;System.Object,System.Object&gt; xBindSelector, System.Action`2&lt;System.Object,System.Object&gt; xBindBack, System.String[] propertyPaths)" reason="Adjusted signature for Xaml generator x:Bind bug fix" />
 		</Methods>
 	</IgnoreSet>
 
