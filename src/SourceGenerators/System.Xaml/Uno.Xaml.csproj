@@ -1,7 +1,7 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
 	<PropertyGroup>
-		<TargetFrameworks>xamarinmac20;net461;xamarinios10;MonoAndroid12.0;netstandard2.0</TargetFrameworks>
-		<TargetFrameworksCI>net461;MonoAndroid13.0;MonoAndroid12.0;xamarinios10;netstandard2.0;xamarinmac20</TargetFrameworksCI>
+		<TargetFrameworks>xamarinmac20;xamarinios10;MonoAndroid12.0;netstandard2.0</TargetFrameworks>
+		<TargetFrameworksCI>MonoAndroid13.0;MonoAndroid12.0;xamarinios10;netstandard2.0;xamarinmac20</TargetFrameworksCI>
 
 		<DisableBuildTargetFramework>true</DisableBuildTargetFramework>
 
@@ -15,13 +15,12 @@
 		<TargetFrameworksOverrideInvariant>netstandard2.0</TargetFrameworksOverrideInvariant>
 
         <NoWarn>$(NoWarn);IDE0051</NoWarn>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<DebugType>portable</DebugType>
+		<DebugSymbols>true</DebugSymbols>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
-		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
-		<TargetFrameworks Condition="!$(TargetFrameworks.Contains('net461'))">$(UnoTargetFrameworkOverride);net461</TargetFrameworks>
-		<TargetFrameworks Condition="!$(TargetFrameworks.Contains('netstandard2.0'))">$(UnoTargetFrameworkOverride);netstandard2.0</TargetFrameworks>
-	</PropertyGroup>
+	<Import Project="../../targetframework-override.props" />
 
 	<PropertyGroup Condition="'$(MSBuildRuntimeType)' == 'Core'">
 		<!--
@@ -32,19 +31,5 @@
 		<TargetFrameworks>netstandard2.0</TargetFrameworks>
 	</PropertyGroup>
 
-	<Import Project="../../netcore-build.props"/>
-
-	<PropertyGroup>
-		<DefineConstants>$(DefineConstants);NET_4_0;NET_4_5;NET_4_6;MONO;WIN_PLATFORM;MULTIPLEX_OS</DefineConstants>
-		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-		<DebugType>portable</DebugType>
-		<DebugSymbols>true</DebugSymbols>
-	</PropertyGroup>
-
-	<ItemGroup Condition="'$(TargetFramework)'=='net461'">
-		<Reference Remove="System.Xaml" />
-	</ItemGroup>
-
 	<Import Project="$(MSBuildSDKExtrasTargets)" Condition="Exists('$(MSBuildSDKExtrasTargets)')" />
-
 </Project>

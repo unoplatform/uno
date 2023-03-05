@@ -19,7 +19,7 @@
 		<NoWarn>$(NoWarn);0105</NoWarn>
 	</PropertyGroup>
 
-	<Import Project="uno.mobile-cross-targeting-disable.props" Condition="'$(_UnoMobileCrossTargetingWasImported)'!='true'" />
+	<Import Project="uno.mobile-cross-targeting-disable.props" />
 
 	<!--
   List of known constants:
@@ -134,7 +134,7 @@
 
 			<!-- Current nuget publishing uses netX.0-android30.0 -->
 			<_OverrideTargetFramework Condition="$(_OverrideTargetFramework.EndsWith('.0-android'))">$(_OverrideTargetFramework)30.0</_OverrideTargetFramework>
-			
+
 			<_baseNugetPath Condition="'$(USERPROFILE)'!=''">$(USERPROFILE)</_baseNugetPath>
 			<_baseNugetPath Condition="'$(HOME)'!=''">$(HOME)</_baseNugetPath>
 			<CommonOverridePackageId Condition="'$(CommonOverridePackageId)'==''">$(AssemblyName)</CommonOverridePackageId>
