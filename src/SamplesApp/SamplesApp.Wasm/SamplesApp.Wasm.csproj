@@ -1,14 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk.Web">
-	<PropertyGroup Condition="'$(MSBuildRuntimeType)'!='Core'">
-		<TargetFramework>net6.0</TargetFramework>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(MSBuildRuntimeType)'=='Core' or '$(BuildingInsideVisualStudio)'=='true'">
-		<TargetFramework>net7.0</TargetFramework>
-	</PropertyGroup>
-
 	<PropertyGroup>
+		<TargetFramework>net7.0</TargetFramework>
 		<OutputType>Exe</OutputType>
 		<DefineConstants>$(DefineConstants);__WASM__;HAS_UNO;UNO_REFERENCE_API</DefineConstants>
 		<NoWarn>$(NoWarn);NU1701;CS1998;NU1504;UXAML0002</NoWarn>

@@ -1,15 +1,13 @@
-﻿<Project Sdk="MSBuild.Sdk.Extras">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFrameworks>net6.0-windows</TargetFrameworks>
+		<TargetFrameworks>net7.0-windows</TargetFrameworks>
+		<OutputType>Exe</OutputType>
+		<UseWPF>true</UseWPF>
 		<!--
 		Enable implicit dotnet runtime forward rolling, as the specifed target framework
 		project may run with only a later version of the .NET runtime installed.
 		-->
 		<RollForward>Major</RollForward>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(MSBuildRuntimeType)'=='Core' or '$(BuildingInsideVisualStudio)'=='true'">
-		<TargetFrameworks>net7.0-windows</TargetFrameworks>
 	</PropertyGroup>
 
 	<ItemGroup Label="AssemblyInfo">
@@ -24,46 +22,13 @@
 		</AssemblyAttribute>
 	</ItemGroup>
 
-	<Import Project="../../targetframework-override.props" />
-
-	<Import Project="../../netcore-build-windows.props"/>
-
-	<PropertyGroup>
-		<OutputType>Exe</OutputType>
-		<UseWPF>true</UseWPF>
-
-		<!-- Ignore NU5104 for net7.0 System.Drawing.Common -->
-		<NoWarn>$(NoWarn);NU5104</NoWarn>
-	</PropertyGroup>
-
-	<ItemGroup Condition="'$(TargetFramework)'=='net472'">
-		<Reference Include="System" />
-		<Reference Include="System.Data" />
-		<Reference Include="System.Xml" />
-		<Reference Include="Microsoft.CSharp" />
-		<Reference Include="System.Core" />
-		<Reference Include="System.Xml.Linq" />
-		<Reference Include="System.Data.DataSetExtensions" />
-		<Reference Include="System.Net.Http" />
-		<Reference Include="System.Xaml">
-			<RequiredTargetFramework>4.0</RequiredTargetFramework>
-		</Reference>
-		<Reference Include="WindowsBase" />
-		<Reference Include="PresentationCore" />
-		<Reference Include="PresentationFramework" />
-	</ItemGroup>
-
 	<ItemGroup>
 		<PackageReference Include="MSTest.TestFramework" Version="2.1.2" />
 		<PackageReference Include="SkiaSharp.Views.WPF" Version="2.88.3" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)'=='net6.0-windows'">
-		<PackageReference Include="System.Drawing.Common" Version="6.0.0" />
-	</ItemGroup>
-
 	<ItemGroup Condition="'$(TargetFramework)'=='net7.0-windows'">
-		<PackageReference Include="System.Drawing.Common" Version="7.0.0-rc.1.22426.10" />
+		<PackageReference Include="System.Drawing.Common" Version="7.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>
