@@ -19,7 +19,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private Func<INamedTypeSymbol?, string, INamedTypeSymbol?>? _findPropertyTypeByOwnerSymbol;
 		private Func<XamlMember, INamedTypeSymbol?>? _findPropertyTypeByXamlMember;
 		private Func<XamlMember, IEventSymbol?>? _findEventType;
-		private Func<INamedTypeSymbol, Dictionary<string, IEventSymbol>>? _getEventsForType;
 		private Func<INamedTypeSymbol, string[]>? _findLocalizableDeclaredProperties;
 		private XClassName? _xClassName;
 		private string[]? _clrNamespaces;
@@ -42,7 +41,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_findEventType = Funcs.Create<XamlMember, IEventSymbol?>(SourceFindEventType).AsLockedMemoized();
 			_findPropertyTypeByOwnerSymbol = Funcs.Create<INamedTypeSymbol?, string, INamedTypeSymbol?>(SourceFindPropertyTypeByOwnerSymbol).AsLockedMemoized();
 			_findTypeByXamlType = Funcs.Create<XamlType, bool, INamedTypeSymbol?>(SourceFindTypeByXamlType).AsLockedMemoized();
-			_getEventsForType = Funcs.Create<INamedTypeSymbol, Dictionary<string, IEventSymbol>>(SourceGetEventsForType).AsLockedMemoized();
 			_findLocalizableDeclaredProperties = Funcs.Create<INamedTypeSymbol, string[]>(SourceFindLocalizableDeclaredProperties).AsLockedMemoized();
 
 			var defaultXmlNamespace = _fileDefinition
@@ -409,31 +407,24 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				ThrowOnErrorSymbol(ownerType);
 
-				if (GetEventsForType(ownerType).TryGetValue(xamlMember.Name, out var eventSymbol))
+				do
 				{
-					return eventSymbol;
-				}
+					foreach (var member in ownerType.GetMembers(xamlMember.Name).OfType<IEventSymbol>())
+					{
+						return member;
+					}
+
+					ownerType = ownerType.BaseType;
+
+					if (ownerType == null)
+					{
+						break;
+					}
+
+				} while (ownerType.SpecialType != SpecialType.System_Object);
 			}
 
 			return null;
-		}
-
-		private Dictionary<string, IEventSymbol> GetEventsForType(INamedTypeSymbol symbol)
-			=> _getEventsForType!(symbol);
-
-		private Dictionary<string, IEventSymbol> SourceGetEventsForType(INamedTypeSymbol symbol)
-		{
-			var output = new Dictionary<string, IEventSymbol>();
-
-			foreach (var evt in symbol.GetAllEvents())
-			{
-				if (!output.ContainsKey(evt.Name))
-				{
-					output.Add(evt.Name, evt);
-				}
-			}
-
-			return output;
 		}
 
 		private bool IsAttachedProperty(XamlMemberDefinition member)
@@ -916,10 +907,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return nsName;
 		}
 
-		private IEnumerable<string> FindLocalizableProperties(XamlType xamlType)
+		private IEnumerable<string> FindLocalizableProperties(INamedTypeSymbol? type)
 		{
-			var type = GetType(xamlType);
-
 			while (type != null)
 			{
 				foreach (var prop in FindLocalizableDeclaredProperties(type))

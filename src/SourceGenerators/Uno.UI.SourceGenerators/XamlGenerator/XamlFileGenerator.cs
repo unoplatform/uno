@@ -2222,7 +2222,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private string BuildXamlTypeConverterLiteralValue(INamedTypeSymbol? symbol, string memberValue, bool includeQuotations)
 		{
-			var attributeData = symbol.FindAttribute(XamlConstants.Types.CreateFromStringAttribute);
+			var attributeData = symbol.FindAttribute(Generation.CreateFromStringAttributeSymbol.Value);
 			var targetMethod = attributeData?.NamedArguments.FirstOrDefault(kvp => kvp.Key == "MethodName").Value.Value?.ToString();
 
 			if (targetMethod == null)
@@ -3349,7 +3349,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							{
 								var ownerType = GetType(member.Member.DeclaringType!);
 
-								var propertyType = GetPropertyType(member.Member);
+								var propertyType = GetPropertyTypeByOwnerSymbol(ownerType, member.Member.Name);
 
 								if (IsExactlyCollectionOrListType(propertyType))
 								{
@@ -3572,14 +3572,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							else
 							{
 								IEventSymbol? eventSymbol = null;
-
+								var declaringTypeSymbol = FindType(member.Member.DeclaringType);
 								if (
-									!IsType(member.Member.DeclaringType!, objectDefinitionType)
+									!IsType(declaringTypeSymbol, objectDefinitionType)
 									|| IsAttachedProperty(member)
 									|| (eventSymbol = FindEventType(member.Member)) != null
 								)
 								{
-									if (FindPropertyType(member.Member) != null)
+									if (FindPropertyTypeByOwnerSymbol(declaringTypeSymbol, member.Member.Name) != null)
 									{
 										BuildSetAttachedProperty(writer, closureName, member, objectUid ?? "", isCustomMarkupExtension: false);
 									}
@@ -3944,14 +3944,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// <summary>
 		/// Build localized properties which have not been set in the xaml.
 		/// </summary>
-		private void BuildInlineLocalizedProperties(IIndentedStringBuilder writer, XamlObjectDefinition objectDefinition)
+		private void BuildInlineLocalizedProperties(IIndentedStringBuilder writer, XamlObjectDefinition objectDefinition, INamedTypeSymbol? objectDefinitionType)
 		{
 			TryAnnotateWithGeneratorSource(writer);
 			var objectUid = GetObjectUid(objectDefinition);
 
 			if (objectUid != null)
 			{
-				var candidateProperties = FindLocalizableProperties(objectDefinition.Type)
+				var candidateProperties = FindLocalizableProperties(objectDefinitionType)
 					.Except(objectDefinition.Members.Select(m => m.Member.Name));
 				foreach (var prop in candidateProperties)
 				{
@@ -5589,13 +5589,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 										var propertyName = member.Member.Name == "ColumnDefinitions"
 											? "Width"
 											: "Height";
-										var definitionType = new XamlType(
-											unknownTypeNamespace: XamlConstants.PresentationXamlXmlNamespace,
-											unknownTypeName: member.Member.Name == "ColumnDefinitions"
-												? "ColumnDefinition"
-												: "RowDefinition",
-											list: new List<XamlType>(),
-											xamlSchemaContext: new XamlSchemaContext());
 
 										var values = definitions
 											.Split(',')
@@ -5604,7 +5597,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 										foreach (var value in values)
 										{
-											using (writer.BlockInvariant("new {0}", GetGlobalizedTypeName(definitionType)))
+											using (writer.BlockInvariant($"new global::{(member.Member.Name == "ColumnDefinitions" ? XamlConstants.Types.ColumnDefinition : XamlConstants.Types.RowDefinition)}"))
 											{
 												writer.AppendLineInvariantIndented("{0} = {1}", propertyName, BuildGridLength(value));
 											}
@@ -6067,7 +6060,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								RegisterAndBuildResources(writer, xamlObjectDefinition, isInInitializer: true);
 								BuildLiteralProperties(writer, xamlObjectDefinition);
 								BuildProperties(writer, xamlObjectDefinition);
-								BuildInlineLocalizedProperties(writer, xamlObjectDefinition);
+								BuildInlineLocalizedProperties(writer, xamlObjectDefinition, knownType);
 							}
 
 							BuildExtendedProperties(writer, xamlObjectDefinition);
