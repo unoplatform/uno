@@ -5,10 +5,8 @@
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(MSBuildRuntimeType)'=='Core'">
-		<TargetFrameworks>netstandard2.0;net7.0</TargetFrameworks>
+		<TargetFrameworks>netstandard2.0</TargetFrameworks>
 	</PropertyGroup>
-
-	<Import Project="../targetframework-override.props"/>
 
 	<PropertyGroup>
 		<NoWarn>$(NoWarn);NU1701</NoWarn>
