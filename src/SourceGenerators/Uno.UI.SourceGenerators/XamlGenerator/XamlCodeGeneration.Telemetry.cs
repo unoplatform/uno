@@ -113,7 +113,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					_telemetry.TrackEvent(
 						"generate-xaml",
 						new[] {
-							("UnoXaml", XamlRedirection.XamlConfig.IsUnoXaml.ToString()),
 							("IsWasm", _isWasm.ToString()),
 							("IsDebug", _isDebug.ToString()),
 							("TargetFramework",  _generatorContext.GetMSBuildPropertyValue("TargetFramework")?.ToString()),

@@ -14,7 +14,7 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnSelectionHighlightColorChangedPartial(SolidColorBrush brush) => TextBoxView?.OnSelectionHighlightColorChanged(brush);
 
-		partial void OnMaxLengthChangedPartial(DependencyPropertyChangedEventArgs e) => TextBoxView?.UpdateMaxLength();
+		partial void OnMaxLengthChangedPartial(int newValue) => TextBoxView?.UpdateMaxLength();
 
 		private void UpdateTextBoxView()
 		{

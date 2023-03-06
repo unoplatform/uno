@@ -127,47 +127,6 @@ namespace Microsoft.CodeAnalysis
 
 		public static IEnumerable<IPropertySymbol> GetPropertiesWithName(this INamedTypeSymbol symbol, string name) => symbol.GetMembers(name).OfType<IPropertySymbol>();
 
-		public static IEnumerable<IEventSymbol> GetAllEvents(this INamedTypeSymbol? symbol)
-		{
-			do
-			{
-				foreach (var member in GetEvents(symbol))
-				{
-					yield return member;
-				}
-
-				symbol = symbol?.BaseType;
-
-				if (symbol == null)
-				{
-					break;
-				}
-
-			} while (symbol.SpecialType != SpecialType.System_Object);
-		}
-
-		public static IEnumerable<ISymbol> GetAllMembers(this ITypeSymbol? symbol)
-		{
-			do
-			{
-				if (symbol != null)
-				{
-					foreach (var member in symbol.GetMembers())
-					{
-						yield return member;
-					}
-				}
-
-				symbol = symbol?.BaseType;
-
-				if (symbol == null)
-				{
-					break;
-				}
-
-			} while (symbol.SpecialType != SpecialType.System_Object);
-		}
-
 		public static IEnumerable<ISymbol> GetAllMembersWithName(this ITypeSymbol? symbol, string name)
 		{
 			do
@@ -189,9 +148,6 @@ namespace Microsoft.CodeAnalysis
 
 			} while (symbol.SpecialType != SpecialType.System_Object);
 		}
-
-		public static IEnumerable<IEventSymbol> GetEvents(INamedTypeSymbol? symbol)
-			=> symbol?.GetMembers().OfType<IEventSymbol>() ?? Enumerable.Empty<IEventSymbol>();
 
 		/// <summary>
 		/// Determines if the symbol inherits from the specified type.
@@ -219,8 +175,6 @@ namespace Microsoft.CodeAnalysis
 			return false;
 		}
 
-		public static bool IsPublic(this ISymbol symbol) => symbol.DeclaredAccessibility == Accessibility.Public;
-
 		/// <summary>
 		/// Returns true if the symbol can be accessed from the current module
 		/// </summary>
@@ -233,9 +187,6 @@ namespace Microsoft.CodeAnalysis
 				symbol.Locations.Any(l => SymbolEqualityComparer.Default.Equals(l.MetadataModule, currentSymbol))
 				&& symbol.DeclaredAccessibility == Accessibility.Internal
 			);
-
-		public static IEnumerable<IMethodSymbol> GetMethods(this ITypeSymbol resolvedType)
-			=> resolvedType.GetMembers().OfType<IMethodSymbol>();
 
 		public static IEnumerable<IMethodSymbol> GetMethodsWithName(this ITypeSymbol resolvedType, string name)
 			=> resolvedType.GetMembers(name).OfType<IMethodSymbol>();
@@ -266,24 +217,6 @@ namespace Microsoft.CodeAnalysis
 		/// </summary>
 		/// <param name="symbol"></param>
 		/// <returns></returns>
-		public static IEnumerable<IFieldSymbol> GetAllFields(this INamedTypeSymbol? symbol)
-		{
-			while (symbol != null)
-			{
-				foreach (var property in symbol.GetMembers().OfType<IFieldSymbol>())
-				{
-					yield return property;
-				}
-
-				symbol = symbol?.BaseType;
-			}
-		}
-
-		/// <summary>
-		/// Return fields of the current type and all of its ancestors
-		/// </summary>
-		/// <param name="symbol"></param>
-		/// <returns></returns>
 		public static IEnumerable<IFieldSymbol> GetAllFieldsWithName(this INamedTypeSymbol? symbol, string name)
 		{
 			while (symbol != null)
@@ -295,11 +228,6 @@ namespace Microsoft.CodeAnalysis
 
 				symbol = symbol?.BaseType;
 			}
-		}
-
-		public static AttributeData? FindAttribute(this ISymbol? property, string attributeClassFullName)
-		{
-			return property?.GetAttributes().FirstOrDefault(a => a.AttributeClass?.ToDisplayString() == attributeClassFullName);
 		}
 
 		public static AttributeData? FindAttribute(this ISymbol? property, INamedTypeSymbol? attributeClassSymbol)
@@ -505,11 +433,6 @@ namespace Microsoft.CodeAnalysis
 
 				symbol = symbol.BaseType;
 			}
-		}
-
-		public static IFieldSymbol? FindField(this INamedTypeSymbol symbol, INamedTypeSymbol fieldType, string fieldName, StringComparison comparison = default)
-		{
-			return symbol.GetFields().FirstOrDefault(x => SymbolEqualityComparer.Default.Equals(x.Type, fieldType) && x.Name.Equals(fieldName, comparison));
 		}
 
 		/// <summary>
