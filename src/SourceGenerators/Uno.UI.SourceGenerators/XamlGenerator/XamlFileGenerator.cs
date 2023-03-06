@@ -5184,9 +5184,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					if (propertyType != null)
 					{
 						var s = BuildLiteralValue(propertyType, memberValue, owner ?? member, member.Member.Name, objectUid);
-						// TODO: Consider moving this /* */ inside BuildLiteralValue to avoid re-calculating fully qualified type.
+#if DEBUG
 						s += $"/* {propertyType.GetFullyQualifiedTypeExcludingGlobal()}/{originalType?.GetFullyQualifiedTypeExcludingGlobal()}, {memberValue}, {member?.Member?.DeclaringType?.Name}/{member?.Member?.Name} */";
-
+#endif
 						return s;
 					}
 					else
