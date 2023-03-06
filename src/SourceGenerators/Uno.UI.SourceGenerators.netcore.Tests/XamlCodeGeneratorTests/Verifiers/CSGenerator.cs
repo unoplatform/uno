@@ -1,4 +1,9 @@
-﻿using System.Collections.Immutable;
+﻿// Uncomment the following line to write expected files to disk
+//#define WRITE_EXPECTED
+
+using System.Collections.Immutable;
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -26,7 +31,7 @@ namespace Uno.UI.SourceGenerators.Tests.Verifiers
 
 	public static partial class XamlSourceGeneratorVerifier
 	{
-		public static async Task AssertXamlGeneratorDiagnostics(TestSetup testSetup)
+		public static async Task AssertXamlGenerator(TestSetup testSetup, [CallerFilePath] string testFilePath = "", [CallerMemberName] string testMethodName = "")
 		{
 			var projectFolder = Path.GetFullPath(Path.Combine("..", "..", ".."));
 			var solutionFolder = Path.GetFullPath(Path.Combine(projectFolder, "..", ".."));
@@ -34,14 +39,14 @@ namespace Uno.UI.SourceGenerators.Tests.Verifiers
 			var xaml = File.ReadAllText(Path.Combine(folder, testSetup.XamlFileName));
 			var cs = File.ReadAllText(Path.Combine(folder, testSetup.XamlFileName + ".cs"));
 
-			var test = new Test(new XamlFile(testSetup.XamlFileName, xaml))
+			var test = new Test(new XamlFile(testSetup.XamlFileName, xaml), testFilePath, testMethodName)
 			{
 				TestState =
 				{
 					Sources = { cs },
 				},
 				PreprocessorSymbols = testSetup.PreprocessorSymbols,
-			};
+			}.AddGeneratedSources();
 			test.ExpectedDiagnostics.AddRange(testSetup.ExpectedDiagnostics);
 
 			await test.RunAsync();
@@ -49,13 +54,20 @@ namespace Uno.UI.SourceGenerators.Tests.Verifiers
 
 		public class Test : CSharpSourceGeneratorVerifier<XamlCodeGenerator>.Test
 		{
-			public Test(XamlFile xamlFile, string globalConfig = "")
-				: this(new[] { xamlFile }, globalConfig)
+			private readonly string _testFilePath;
+			private readonly string _testMethodName;
+			private const string TestOutputFolderName = "TestOutput";
+
+			public Test(XamlFile xamlFile, [CallerFilePath] string testFilePath = "", [CallerMemberName] string testMethodName = "")
+				: this(new[] { xamlFile }, testFilePath, testMethodName)
 			{
 			}
 
-			public Test(XamlFile[] xamlFiles, string globalConfig = "")
+			public Test(XamlFile[] xamlFiles, [CallerFilePath] string testFilePath = "", [CallerMemberName] string testMethodName = "")
 			{
+				_testFilePath = testFilePath;
+				_testMethodName = testMethodName;
+
 				var globalConfigBuilder = new StringBuilder("""
 					is_global = true
 					# For now, there is no need to customize these for each test.
@@ -63,7 +75,6 @@ namespace Uno.UI.SourceGenerators.Tests.Verifiers
 					build_property.RootNamespace = MyProject
 					build_property.UnoForceHotReloadCodeGen = false
 					""");
-				globalConfigBuilder.AppendLine(globalConfig);
 
 				foreach (var xamlFile in xamlFiles)
 				{
@@ -81,7 +92,9 @@ build_metadata.AdditionalFiles.SourceItemGroup = Page
 							"7.0.0"),
 						Path.Combine("ref", "net7.0"));
 
-				TestBehaviors = TestBehaviors.SkipGeneratedSourcesCheck;
+#if WRITE_EXPECTED
+				TestBehaviors |= TestBehaviors.SkipGeneratedSourcesCheck;
+#endif
 			}
 
 			public IEnumerable<string> PreprocessorSymbols { get; set; } = ImmutableArray<string>.Empty;
@@ -90,7 +103,6 @@ build_metadata.AdditionalFiles.SourceItemGroup = Page
 			{
 				var options = (CSharpParseOptions)base.CreateParseOptions();
 				return options.WithPreprocessorSymbols(PreprocessorSymbols);
-
 			}
 
 			protected override Project ApplyCompilationOptions(Project project)
@@ -100,13 +112,80 @@ build_metadata.AdditionalFiles.SourceItemGroup = Page
 				return base.ApplyCompilationOptions(p);
 			}
 
+			protected override async Task<Compilation> GetProjectCompilationAsync(Project project, IVerifier verifier, CancellationToken cancellationToken)
+			{
+				var resourceDirectory = Path.Combine(Path.GetDirectoryName(_testFilePath)!, TestOutputFolderName, _testMethodName);
+
+				var compilation = await base.GetProjectCompilationAsync(project, verifier, cancellationToken);
+				var expectedNames = new HashSet<string>();
+				foreach (var tree in compilation.SyntaxTrees.Skip(project.DocumentIds.Count))
+				{
+					WriteTreeToDiskIfNecessary(tree, resourceDirectory);
+					expectedNames.Add(Path.GetFileName(tree.FilePath));
+				}
+
+				var currentTestPrefix = $"Uno.UI.SourceGenerators.netcore.Tests.XamlCodeGeneratorTests.{TestOutputFolderName}.{_testMethodName}.";
+				foreach (var name in GetType().Assembly.GetManifestResourceNames())
+				{
+					if (!name.StartsWith(currentTestPrefix))
+					{
+						continue;
+					}
+
+					if (!expectedNames.Contains(name.Substring(currentTestPrefix.Length)))
+					{
+						throw new InvalidOperationException($"Unexpected test resource: {name.Substring(currentTestPrefix.Length)}");
+					}
+				}
+
+				return compilation;
+			}
+
+			public Test AddGeneratedSources()
+			{
+				var expectedPrefix = $"Uno.UI.SourceGenerators.netcore.Tests.XamlCodeGeneratorTests.{TestOutputFolderName}.{_testMethodName}.";
+				foreach (var resourceName in typeof(Test).Assembly.GetManifestResourceNames().OrderBy(x => x.Contains("LocalizationResources") ? 0 : (x.Contains("GlobalStaticResources") ? 2 : 1)))
+				{
+					if (!resourceName.StartsWith(expectedPrefix))
+					{
+						continue;
+					}
+
+					using var resourceStream = GetType().Assembly.GetManifestResourceStream(resourceName);
+					if (resourceStream is null)
+					{
+						throw new InvalidOperationException();
+					}
+
+					using var reader = new StreamReader(resourceStream, Encoding.UTF8, detectEncodingFromByteOrderMarks: true, bufferSize: 4096, leaveOpen: true);
+					var name = resourceName.Substring(expectedPrefix.Length);
+					TestState.GeneratedSources.Add((typeof(XamlCodeGenerator), name, reader.ReadToEnd()));
+				}
+
+				return this;
+			}
+
+			[Conditional("WRITE_EXPECTED")]
+			private static void WriteTreeToDiskIfNecessary(SyntaxTree tree, string resourceDirectory)
+			{
+				if (tree.Encoding is null)
+				{
+					throw new ArgumentException("Syntax tree encoding was not specified");
+				}
+
+				var name = Path.GetFileName(tree.FilePath);
+				var filePath = Path.Combine(resourceDirectory, name);
+				Directory.CreateDirectory(resourceDirectory);
+				File.WriteAllText(filePath, tree.GetText().ToString(), tree.Encoding);
+			}
+
 			private static MetadataReference[] BuildUnoReferences()
 			{
 				const string configuration =
 #if DEBUG
 					"Debug";
 #else
-			"Release";
+					"Release";
 #endif
 
 				var availableTargets = new[] {

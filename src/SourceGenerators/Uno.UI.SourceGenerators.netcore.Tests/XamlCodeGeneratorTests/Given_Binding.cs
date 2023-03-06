@@ -14,14 +14,14 @@ public class Given_Binding
 	public async Task When_Xaml_Object_With_Common_Properties()
 	{
 		var test = new TestSetup(xamlFileName: "Binding_Xaml_Object_With_Common_Properties.xaml", subFolder: Path.Combine("Uno.UI.Tests", "Windows_UI_Xaml_Data", "BindingTests", "Controls"));
-		await Verify.AssertXamlGeneratorDiagnostics(test);
+		await Verify.AssertXamlGenerator(test);
 	}
 
 	[TestMethod]
 	public async Task When_Xaml_Object_With_Xaml_Object_Properties()
 	{
 		var test = new TestSetup(xamlFileName: "Binding_Xaml_Object_With_Xaml_Object_Properties.xaml", subFolder: Path.Combine("Uno.UI.Tests", "Windows_UI_Xaml_Data", "BindingTests", "Controls"));
-		await Verify.AssertXamlGeneratorDiagnostics(test);
+		await Verify.AssertXamlGenerator(test);
 	}
 
 	[TestMethod]
@@ -34,7 +34,7 @@ public class Given_Binding
 				"UNO_REFERENCE_API",
 			},
 		};
-		await Verify.AssertXamlGeneratorDiagnostics(test);
+		await Verify.AssertXamlGenerator(test);
 	}
 
 	[TestMethod]
@@ -111,7 +111,7 @@ public class Given_Binding
 					"""
 				}
 			}
-		};
+		}.AddGeneratedSources();
 		test.ExpectedDiagnostics.Add(
 			// /0/Test0.cs(3,30): warning UXAML0002: TestRepro.UserControl1 does not explicitly define the Windows.UI.Xaml.Controls.UserControl base type in code behind.
 			DiagnosticResult.CompilerWarning("UXAML0002").WithSpan(3, 30, 3, 42).WithArguments("TestRepro.UserControl1 does not explicitly define the Windows.UI.Xaml.Controls.UserControl base type in code behind.")
