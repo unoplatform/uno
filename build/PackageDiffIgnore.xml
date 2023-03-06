@@ -9383,6 +9383,7 @@
 			<Member fullName="System.Void Windows.Devices.Geolocation.Geolocator.OnProviderDisabled(System.String provider)" reason="Not present in Windows" />
 			<Member fullName="System.Void Windows.Devices.Geolocation.Geolocator.OnProviderEnabled(System.String provider)" reason="Not present in Windows" />
 			<Member fullName="System.Void Windows.Devices.Geolocation.Geolocator.OnStatusChanged(System.String provider, Android.Locations.Availability status, Android.OS.Bundle extras)" reason="Not present in Windows" />
+			<Member fullName="System.Void Windows.Devices.Lights.Lamp..ctor()" reason="Not present in Windows" />
 		</Methods>
 	</IgnoreSet>
 
