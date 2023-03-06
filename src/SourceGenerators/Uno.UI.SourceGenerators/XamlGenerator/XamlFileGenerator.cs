@@ -679,7 +679,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					blockWriter.AppendLineInvariantIndented(
 						"// Source {0} (Line {1}:{2})",
-						_fileDefinition.FilePath,
+						_relativePath,
 						topLevelControl.LineNumber,
 						topLevelControl.LinePosition
 					);
@@ -893,7 +893,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					blockWriter.AppendLineInvariantIndented(
 						"// Source {0} (Line {1}:{2})",
-						_fileDefinition.FilePath,
+						_relativePath,
 						topLevelControl.LineNumber,
 						topLevelControl.LinePosition
 					);

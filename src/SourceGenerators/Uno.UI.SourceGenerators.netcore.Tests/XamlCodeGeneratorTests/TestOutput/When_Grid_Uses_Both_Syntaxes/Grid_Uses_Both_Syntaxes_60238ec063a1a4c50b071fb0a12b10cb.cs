@@ -197,7 +197,7 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.GridTests.Controls
 			this
 			.GenericApply(((c11) => 
 			{
-				// Source /0/Grid_Uses_Both_Syntaxes.xaml (Line 1:2)
+				// Source ..\0\Grid_Uses_Both_Syntaxes.xaml (Line 1:2)
 				
 				// WARNING Property c11.base does not exist on {http://schemas.microsoft.com/winfx/2006/xaml/presentation}Page, the namespace is http://www.w3.org/XML/1998/namespace. This error was considered irrelevant by the XamlFileGenerator
 			}

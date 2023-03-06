@@ -1,4 +1,5 @@
 ﻿// Uncomment the following line to write expected files to disk
+// Don't commit this line uncommented.
 //#define WRITE_EXPECTED
 
 using System.Collections.Immutable;

@@ -106,7 +106,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 			this
 			.GenericApply(((c2) => 
 			{
-				// Source /0/Binding_Xaml_Object_With_Xaml_Object_Properties.xaml (Line 1:2)
+				// Source ..\0\Binding_Xaml_Object_With_Xaml_Object_Properties.xaml (Line 1:2)
 				
 				// WARNING Property c2.base does not exist on {http://schemas.microsoft.com/winfx/2006/xaml/presentation}Page, the namespace is http://www.w3.org/XML/1998/namespace. This error was considered irrelevant by the XamlFileGenerator
 			}
