@@ -192,9 +192,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				_skipUserControlsInVisualTree = skipUserControlsInVisualTree;
 			}
 
-			if (bool.TryParse(context.GetMSBuildPropertyValue("ShouldWriteErrorOnInvalidXaml"), out var shouldWriteErrorOnInvalidXaml))
+			if (!bool.TryParse(context.GetMSBuildPropertyValue("ShouldWriteErrorOnInvalidXaml"), out _shouldWriteErrorOnInvalidXaml))
 			{
-				_shouldWriteErrorOnInvalidXaml = shouldWriteErrorOnInvalidXaml;
+				_shouldWriteErrorOnInvalidXaml = true;
 			}
 
 			if (!bool.TryParse(context.GetMSBuildPropertyValue("IsUiAutomationMappingEnabled") ?? "", out _isUiAutomationMappingEnabled))
