@@ -36,7 +36,7 @@ namespace Uno.UI.Xaml.Core
 		/// <summary>
 		/// Initialization type.
 		/// </summary>
-		public InitializationType InitializationType { get; private set; } = InitializationType.MainView;
+		public InitializationType InitializationType { get; internal set; } = InitializationType.MainView;
 
 		public RootVisual? MainRootVisual => _mainVisualTree?.RootVisual;
 

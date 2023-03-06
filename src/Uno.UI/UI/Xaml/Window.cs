@@ -106,6 +106,12 @@ namespace Windows.UI.Xaml
 			get => InternalGetContent();
 			set
 			{
+				if (CoreServices.Instance.InitializationType == InitializationType.IslandsOnly)
+				{
+					// Ignore setter, in line with XAML Islands behavior.
+					return;
+				}
+
 				if (Content == value)
 				{
 					// Content already set, ignore.

@@ -5,6 +5,7 @@
 
 using System;
 using System.Linq;
+using Uno.UI.Xaml.Core;
 using WUX = Windows.UI.Xaml;
 
 namespace Uno.UI.XamlHost;
@@ -42,6 +43,8 @@ public static partial class XamlApplicationExtensions
 	/// <returns>The instance of <seealso cref="XamlApplication"/></returns>
 	public static IXamlMetadataContainer GetOrCreateXamlMetadataContainer()
 	{
+		CoreServices.Instance.InitializationType = InitializationType.IslandsOnly;
+
 		// Instantiation of the application object must occur before creating the DesktopWindowXamlSource instance.
 		// DesktopWindowXamlSource will create a generic Application object unable to load custom UWP XAML metadata.
 		if (_metadataContainer == null && !_initialized)
