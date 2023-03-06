@@ -187,11 +187,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			_resourceFiles = context.GetMSBuildItemsWithAdditionalFiles("PRIResource").ToArray();
 
-			if (bool.TryParse(context.GetMSBuildPropertyValue("UseUnoXamlParser"), out var useUnoXamlParser) && useUnoXamlParser)
-			{
-				XamlRedirection.XamlConfig.IsUnoXaml = useUnoXamlParser || XamlRedirection.XamlConfig.IsMono;
-			}
-
 			if (bool.TryParse(context.GetMSBuildPropertyValue("UnoSkipUserControlsInVisualTree"), out var skipUserControlsInVisualTree))
 			{
 				_skipUserControlsInVisualTree = skipUserControlsInVisualTree;
@@ -380,10 +375,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			try
 			{
-#if DEBUG
-				Console.WriteLine("Xaml Source Generation is using the {0} Xaml Parser", XamlRedirection.XamlConfig.IsUnoXaml ? "Uno.UI" : "System");
-#endif
-
 				var lastBinaryUpdateTime = GetLastBinaryUpdateTime();
 				var isInsideMainAssembly =
 					_isUnoHead
