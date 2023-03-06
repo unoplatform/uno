@@ -79,7 +79,7 @@ namespace Uno.UI.Toolkit
 #if __IOS__ || __MACOS__
 			if (_border != null)
 			{
-				_border.BoundsPathUpdated += (s, e) => UpdateElevation();
+				_border.BorderRenderer.BoundsPathUpdated += (s, e) => UpdateElevation();
 			}
 #endif
 
@@ -186,7 +186,7 @@ namespace Uno.UI.Toolkit
 				// Note that the brush will not be used if we pass zero thickness, so we pass null instead of wasting time reading the dependency property.
 				this.SetBorder(default, null, CornerRadius);
 #elif __IOS__ || __MACOS__
-				this.SetElevationInternal(Elevation, ShadowColor, _border.BoundsPath);
+				this.SetElevationInternal(Elevation, ShadowColor, _border.BorderRenderer.BoundsPath);
 #elif __ANDROID__
 				_invalidateShadow = true;
 				((ViewGroup)this).Invalidate();

@@ -1,15 +1,11 @@
-﻿using Uno.UI.Views.Controls;
-using Uno.Disposables;
-using Uno.Extensions;
-using System;
-using Uno.UI;
+#if XAMARIN_IOS_UNIFIED
 using UIKit;
 
 namespace Windows.UI.Xaml.Controls;
 
 public abstract class NativePage : UIViewController
 {
-	private	UIView _content;
+	private UIView _content;
 
 	public NativePage()
 	{

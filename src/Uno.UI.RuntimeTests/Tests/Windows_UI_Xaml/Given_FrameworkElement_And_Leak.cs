@@ -385,7 +385,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			var store = ((IDependencyObjectStoreProvider)testBrush).Store;
 			var property = store.GetPropertyDetails(SolidColorBrush.ColorProperty);
-			var originalCount = property.CallbackManager.CallbacksCount;
+			var originalCount = property.CallbackManager?.CallbacksCount ?? 0;
 			for (int i = 0; i < 15; i++)
 			{
 				var button = new Button()
@@ -407,6 +407,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			await TestServices.WindowHelper.WaitForLoaded(lastButton);
 			await TestServices.WindowHelper.WaitForIdle();
 
+			Assert.IsNotNull(property.CallbackManager);
 
 			Assert.AreEqual(originalCount, property.CallbackManager.CallbacksCount);
 		}

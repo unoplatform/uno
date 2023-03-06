@@ -38,10 +38,6 @@ namespace Microsoft.UI.Xaml.Controls
 			UpdateBorder();
 		}
 
-		internal event EventHandler BoundsPathUpdated;
-
-		internal CGPath BoundsPath { get; private set; }
-
 		bool ICustomClippingElement.AllowClippingToLayoutSlot => CornerRadius == CornerRadius.None && (!(Child is UIElement ue) || ue.RenderTransform == null);
 		bool ICustomClippingElement.ForceClippingToLayoutSlot => false;
 	}
