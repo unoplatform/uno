@@ -41,6 +41,8 @@ namespace Windows.UI.Xaml
 			}
 		}
 
+		internal DependencyPropertyCallbackManager? CallbackManager => _callbackManager;
+
 		public void Dispose()
 		{
 			_callbackManager?.Dispose();
