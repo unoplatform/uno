@@ -24,5 +24,10 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls
 		{
 			this.InitializeComponent();
 		}
+
+		private string MyFunction(string p) => p;
+		private string MyFunction2(string p1, string p2) => $"{p1}-{p2}";
+
+		public static explicit operator string(xBind_PathLessCasting p) => $"ExplicitConversion_{p}";
 	}
 }

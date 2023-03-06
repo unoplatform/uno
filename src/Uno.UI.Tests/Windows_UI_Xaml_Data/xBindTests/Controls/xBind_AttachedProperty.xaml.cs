@@ -25,4 +25,23 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls
 			this.InitializeComponent();
 		}
 	}
+
+	public partial class CustomDO : DependencyObject
+	{
+		public static object GetTag(DependencyObject obj)
+		{
+			return ((FrameworkElement)obj).Tag;
+		}
+
+		public static void SetTag(DependencyObject obj, object value)
+		{
+			obj.SetValue(TagProperty, value);
+		}
+
+		// Using a DependencyProperty as the backing store for Tag.  This enables animation, styling, binding, etc...
+		public static readonly DependencyProperty TagProperty =
+			DependencyProperty.RegisterAttached("Tag", typeof(object), typeof(CustomDO), new PropertyMetadata(0));
+
+
+	}
 }
