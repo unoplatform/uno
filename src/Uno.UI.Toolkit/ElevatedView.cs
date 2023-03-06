@@ -69,6 +69,10 @@ namespace Uno.UI.Toolkit
 			RenderTransform = new CompositeTransform();
 #endif
 			SizeChanged += (snd, evt) => UpdateElevation();
+
+#if __IOS__ || __MACOS__
+			this.RegisterPropertyChangedCallback(Control.CornerRadiusProperty, OnChanged);
+#endif
 		}
 
 		protected override void OnApplyTemplate()
@@ -135,9 +139,13 @@ namespace Uno.UI.Toolkit
 			set => SetValue(BackgroundProperty, value);
 		}
 
-#if !__IOS__ && !__MACOS__
-		private protected override void OnCornerRadiousChanged(DependencyPropertyChangedEventArgs args) => OnChanged(this, args);
-#endif
+		public new static DependencyProperty CornerRadiusProperty { get; } = Control.CornerRadiusProperty;
+
+		public new CornerRadius CornerRadius
+		{
+			get => base.CornerRadius;
+			set => base.CornerRadius = value;
+		}
 
 		protected internal override void OnTemplatedParentChanged(DependencyPropertyChangedEventArgs e)
 		{
