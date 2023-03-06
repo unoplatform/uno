@@ -227,15 +227,13 @@ namespace Windows.UI.Xaml.Controls
 		{
 		}
 
-		partial void OnInputScopeChangedPartial(DependencyPropertyChangedEventArgs e)
+		partial void OnInputScopeChangedPartial(InputScope newValue)
 		{
 			this.CoerceValue(ImeOptionsProperty);
 
-			if (e.NewValue != null)
+			if (newValue != null)
 			{
-				var inputScope = (InputScope)e.NewValue;
-
-				UpdateInputScope(inputScope);
+				UpdateInputScope(newValue);
 			}
 		}
 
@@ -376,7 +374,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		partial void OnIsSpellCheckEnabledChangedPartial(DependencyPropertyChangedEventArgs e)
+		partial void OnIsSpellCheckEnabledChangedPartial(bool newValue)
 		{
 			if (_textBoxView != null)
 			{
@@ -384,21 +382,17 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		partial void OnAcceptsReturnChangedPartial(DependencyPropertyChangedEventArgs e)
+		partial void OnAcceptsReturnChangedPartial(bool newValue)
 		{
-			var acceptsReturn = (bool)e.NewValue;
-			_textBoxView?.SetHorizontallyScrolling(!acceptsReturn);
+			_textBoxView?.SetHorizontallyScrolling(!newValue);
 			_textBoxView?.UpdateSingleLineMode();
 
 			UpdateInputScope(InputScope);
 		}
 
-		partial void OnTextWrappingChangedPartial(DependencyPropertyChangedEventArgs e)
+		partial void OnTextWrappingChangedPartial()
 		{
-			if (_textBoxView != null && e.NewValue is TextWrapping textWrapping)
-			{
-				_textBoxView.UpdateSingleLineMode();
-			}
+			_textBoxView?.UpdateSingleLineMode();
 		}
 
 		partial void UpdateFontPartial()
@@ -421,7 +415,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		partial void OnIsReadonlyChangedPartial(DependencyPropertyChangedEventArgs e) => UpdateTextBoxViewReadOnly();
+		partial void OnIsReadonlyChangedPartial() => UpdateTextBoxViewReadOnly();
 
 		partial void OnIsTabStopChangedPartial() => UpdateTextBoxViewReadOnly();
 
@@ -527,17 +521,15 @@ namespace Windows.UI.Xaml.Controls
 				);
 		}
 
-		partial void OnTextAlignmentChangedPartial(DependencyPropertyChangedEventArgs e)
+		partial void OnTextAlignmentChangedPartial(TextAlignment newValue)
 		{
 			if (_textBoxView == null)
 			{
 				return;
 			}
 
-			var textAlignment = (TextAlignment)e.NewValue;
-
 			// Only works if text direction is left-to-right
-			switch (textAlignment)
+			switch (newValue)
 			{
 				case TextAlignment.Center:
 					_textBoxView.Gravity = GravityFlags.CenterHorizontal;
@@ -551,7 +543,7 @@ namespace Windows.UI.Xaml.Controls
 				case TextAlignment.Justify:
 				case TextAlignment.DetectFromContent:
 				default:
-					this.Log().Warn($"TextBox doesn't support TextAlignment.{textAlignment}");
+					this.Log().Warn($"TextBox doesn't support TextAlignment.{newValue}");
 					_textBoxView.Gravity = GravityFlags.Start; // Defaulting to Left
 					break;
 			}
@@ -569,16 +561,14 @@ namespace Windows.UI.Xaml.Controls
 			return actionId != ImeAction.ImeNull;
 		}
 
-		partial void OnTextCharacterCasingChangedPartial(DependencyPropertyChangedEventArgs e)
+		partial void OnTextCharacterCasingChangedPartial(CharacterCasing newValue)
 		{
 			if (_textBoxView == null)
 			{
 				return;
 			}
 
-			var casing = (CharacterCasing)e.NewValue;
-
-			UpdateCasing(casing);
+			UpdateCasing(newValue);
 		}
 
 		private void UpdateCasing(CharacterCasing characterCasing)
