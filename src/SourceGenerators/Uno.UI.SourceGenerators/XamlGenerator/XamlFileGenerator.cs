@@ -63,7 +63,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly Dictionary<(string? Theme, string ResourceKey), string> _topLevelQualifiedKeys = new Dictionary<(string?, string), string>();
 		private readonly Stack<NameScope> _scopeStack = new Stack<NameScope>();
 		private readonly Stack<XLoadScope> _xLoadScopeStack = new Stack<XLoadScope>();
-		private readonly Stack<ResourceOwner> _resourceOwnerStack = new Stack<ResourceOwner>();
+		private int _resourceOwner;
 		private readonly XamlFileDefinition _fileDefinition;
 		private readonly NamespaceDeclaration _defaultXmlNamespace;
 		private readonly string _targetPath;
@@ -1006,7 +1006,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								{
 									writer.AppendLineIndented("global::Windows.UI.Xaml.NameScope __nameScope = new global::Windows.UI.Xaml.NameScope();");
 
-									using (writer.BlockInvariant($"public {kvp.Value.ReturnType} Build(object {CurrentResourceOwner?.Name})"))
+									using (writer.BlockInvariant($"public {kvp.Value.ReturnType} Build(object {CurrentResourceOwner})"))
 									{
 										writer.AppendLineIndented($"{kvp.Value.ReturnType} __rootInstance = null;");
 										writer.AppendLineIndented($"var __that = this;");
@@ -1689,7 +1689,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			TryAnnotateWithGeneratorSource(writer);
 			using (ResourceOwnerScope())
 			{
-				writer.AppendLineIndented($"private object {initializerName}(object {CurrentResourceOwner?.Name}) =>");
+				writer.AppendLineIndented($"private object {initializerName}(object {CurrentResourceOwner}) =>");
 				using (writer.Indent())
 				{
 					propertyBodyBuilder();
@@ -1956,12 +1956,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						{
 							if (CurrentResourceOwner != null)
 							{
-								var currentOwnerName = CurrentResourceOwner.Name;
+								var currentOwnerName = CurrentResourceOwner;
 
 								currentResourceOwner = ResourceOwnerScope();
 
 								writer.AppendLineIndented(
-									$"new global::Windows.UI.Xaml.Setter({GetGlobalizedTypeName(fullTargetType)}.{property}Property, {currentOwnerName}, {CurrentResourceOwner.Name} => ({propertyType})"
+									$"new global::Windows.UI.Xaml.Setter({GetGlobalizedTypeName(fullTargetType)}.{property}Property, {currentOwnerName}, {CurrentResourceOwner} => ({propertyType})"
 								);
 							}
 							else
@@ -3008,7 +3008,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			var currentScope = CurrentResourceOwnerName;
 			var resourceOwnerScope = ResourceOwnerScope();
 
-			writer.AppendLineIndented($"new global::Uno.UI.Xaml.WeakResourceInitializer({currentScope}, {CurrentResourceOwner?.Name} => ");
+			writer.AppendLineIndented($"new global::Uno.UI.Xaml.WeakResourceInitializer({currentScope}, {CurrentResourceOwner} => ");
 
 			var indent = writer.Indent();
 
@@ -3939,7 +3939,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 			else if (_xClassName?.ClassName != null)
 			{
-				writeEvent(CurrentResourceOwner?.Name);
+				writeEvent(CurrentResourceOwner);
 			}
 			else
 			{
@@ -6814,11 +6814,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return new DisposableAction(() => _xLoadScopeStack.Pop());
 		}
 
-		private ResourceOwner? CurrentResourceOwner
-			=> _resourceOwnerStack.Count != 0 ? _resourceOwnerStack.Peek() : null;
+		private string? CurrentResourceOwner
+			=> _resourceOwner != 0 ? $"__ResourceOwner_{_resourceOwner.ToString(CultureInfo.InvariantCulture)}" : null;
 
 		private string CurrentResourceOwnerName
-			=> CurrentResourceOwner?.Name ?? "this";
+			=> CurrentResourceOwner ?? "this";
 
 		public bool HasImplicitViewPinning
 			=> Generation.IOSViewSymbol.Value is not null || Generation.AppKitViewSymbol.Value is not null;
@@ -6833,9 +6833,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// </remarks>
 		private IDisposable ResourceOwnerScope()
 		{
-			_resourceOwnerStack.Push(new ResourceOwner());
+			_resourceOwner++;
 
-			return new DisposableAction(() => _resourceOwnerStack.Pop());
+			return new DisposableAction(() => _resourceOwner--);
 		}
 
 		/// <summary>
