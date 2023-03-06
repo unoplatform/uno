@@ -12,6 +12,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[RunsOnUIThread]
 		public async Task When_Loaded_Matches_Window_Root()
 		{
+			if (TestServices.WindowHelper.IsXamlIsland)
+			{
+				return;
+			}
+
 			var border = new Border();
 			var completionSource = new TaskCompletionSource<XamlRoot>();
 			border.Loaded += (s, e) =>

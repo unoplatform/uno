@@ -656,6 +656,10 @@ namespace SamplesApp
 		public void AssertIssue8641NativeOverlayInitialized()
 		{
 #if __SKIA__
+			if (Uno.UI.Xaml.Core.CoreServices.Instance.InitializationType == Uno.UI.Xaml.Core.InitializationType.IslandsOnly)
+			{
+				return;
+			}
 			// Temporarily add a TextBox to the current page's content to verify native overlay is available
 			Frame rootFrame = Windows.UI.Xaml.Window.Current.Content as Frame;
 			var textBox = new TextBox();

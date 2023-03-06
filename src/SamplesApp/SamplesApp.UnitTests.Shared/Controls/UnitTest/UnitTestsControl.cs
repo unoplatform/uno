@@ -87,6 +87,13 @@ namespace Uno.UI.Samples.Tests
 			Private.Infrastructure.TestServices.WindowHelper.CurrentTestWindow =
 				Windows.UI.Xaml.Window.Current;
 
+			Private.Infrastructure.TestServices.WindowHelper.IsXamlIsland =
+#if HAS_UNO
+				Uno.UI.Xaml.Core.CoreServices.Instance.InitializationType == Xaml.Core.InitializationType.IslandsOnly;
+#else
+				false;
+#endif
+
 			DataContext = null;
 
 			SampleChooserViewModel.Instance.SampleChanging += OnSampleChanging;
