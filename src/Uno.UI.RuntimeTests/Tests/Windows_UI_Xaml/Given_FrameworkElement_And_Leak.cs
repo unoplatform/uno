@@ -124,6 +124,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 #endif
 #if !__IOS__ // Disabled - #10344
 		[DataRow(typeof(TextBox_Focus_Leak), 15)]
+		[DataRow(typeof(PasswordBox_Focus_Leak), 15)]
 #endif
 		public async Task When_Add_Remove(object controlTypeRaw, int count)
 		{

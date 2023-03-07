@@ -9,6 +9,8 @@ namespace Windows.UI.Xaml.Controls
 	{
 		private TextBoxView _textBoxView;
 
+		internal TextBoxView TextBoxView => _textBoxView;
+
 		protected override bool IsDelegatingFocusToTemplateChild() => true; // _textBoxView
 		partial void OnDeleteButtonClickPartial() => FocusTextView();
 		internal bool FocusTextView() => FocusManager.FocusNative(_textBoxView);
@@ -60,14 +62,6 @@ namespace Windows.UI.Xaml.Controls
 		private void OnHeaderClick(object sender, object args)
 		{
 			FocusTextView();
-		}
-
-		protected void SetIsPassword(bool isPassword)
-		{
-			if (_textBoxView != null)
-			{
-				_textBoxView.SetIsPassword(isPassword);
-			}
 		}
 
 		partial void OnForegroundColorChangedPartial(Brush newValue)
