@@ -19,25 +19,25 @@ partial class BorderLayerRenderer
 
 	partial void UpdateLayer()
 	{
-		if (_background != background && element is FrameworkElement fwElt)
+		if (_background != _borderInfoProvider.Background)
 		{
-			_background = background;
+			_background = _borderInfoProvider.Background;
 			var subscription = _backgroundSubscription ??= new SerialDisposable();
 
 			subscription.Disposable = null;
-			subscription.Disposable = SetAndObserveBackgroundBrush(fwElt, background);
+			subscription.Disposable = SetAndObserveBackgroundBrush(fwElt, _borderInfoProvider.Background);
 		}
 
-		if (_border != (borderBrush, borderThickness))
+		if (_border != (_borderInfoProvider.BorderBrush, _borderInfoProvider.BorderThickness))
 		{
-			_border = (borderBrush, borderThickness);
-			SetBorder(element, borderThickness, borderBrush);
+			_border = (_borderInfoProvider.BorderBrush, _borderInfoProvider.BorderThickness);
+			SetBorder(_owner, _borderInfoProvider.BorderThickness, _borderInfoProvider.BorderBrush);
 		}
 
-		if (_cornerRadius != cornerRadius)
+		if (_cornerRadius != _borderInfoProvider.CornerRadius)
 		{
-			_cornerRadius = cornerRadius;
-			SetCornerRadius(element, cornerRadius);
+			_cornerRadius = _borderInfoProvider.CornerRadius;
+			SetCornerRadius(_owner, _borderInfoProvider.CornerRadius);
 		}
 	}
 
