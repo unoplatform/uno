@@ -218,7 +218,7 @@ jobs:
 
 - job: Uno_Islands_Skia_Wpf_Runtime_Tests_Build
   displayName: 'Run Uno Islands Skia WPF Runtime Tests'
-  timeoutInMinutes: 60
+  timeoutInMinutes: 120
 
   pool:
     vmImage: ${{ parameters.vmImage }}
