@@ -480,6 +480,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsNotNull(third.ContentTemplateSelector);
 		}
 
+#if HAS_UNO
 		[TestMethod]
 		[RunsOnUIThread]
 		public async Task When_ContentPresenter_ContainerRecycled_And_ContentControl_Template()
@@ -559,6 +560,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Assert.IsNotNull(secondInnerContent.GetBindingExpression(ContentControl.ContentProperty));
 			}
 		}
+#endif
 
 		[TestMethod]
 		[RunsOnUIThread]
