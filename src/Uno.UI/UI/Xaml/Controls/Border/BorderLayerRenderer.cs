@@ -1,6 +1,8 @@
 ﻿#nullable enable
 
 using System;
+using Uno.Disposables;
+using Uno.UI.DataBinding;
 using Uno.UI.Xaml.Controls;
 
 namespace Windows.UI.Xaml.Controls;
@@ -11,7 +13,11 @@ namespace Windows.UI.Xaml.Controls;
 internal partial class BorderLayerRenderer
 {
 	private readonly FrameworkElement _owner;
-	private readonly IBorderInfoProvider? _borderInfoProvider;
+	private readonly IBorderInfoProvider _borderInfoProvider;
+	private readonly SerialDisposable _borderBrushSubscription = new();
+	private readonly SerialDisposable _backgroundBrushSubscription = new();
+
+	private BorderLayerState _lastState;
 
 	public BorderLayerRenderer(FrameworkElement owner)
 	{
@@ -31,12 +37,50 @@ internal partial class BorderLayerRenderer
 	/// <summary>
 	/// Updates the border.
 	/// </summary>
-	internal void Update() => UpdateLayer();
+	internal void Update()
+	{
+		// Subscribe to brushes to observe their changes.
+		if (_lastState.BorderBrush != _borderInfoProvider.BorderBrush)
+		{
+			_borderBrushSubscription.Disposable = null;
+			_lastState.BorderBrush = null;
+			_borderBrushSubscription.Disposable = _borderInfoProvider.BorderBrush.RegisterDisposablePropertyChangedCallback(OnBorderBrushChanged);
+		}
+
+		if (_lastState.Background != _borderInfoProvider.Background)
+		{
+			_backgroundBrushSubscription.Disposable = null;
+			_lastState.Background = null;
+			_backgroundBrushSubscription.Disposable = _borderInfoProvider.BorderBrush.RegisterDisposablePropertyChangedCallback(OnBackgroundBrushChanged);
+		}
+
+		if (_owner.IsLoaded)
+		{
+			UpdateLayer();
+		}
+	}
+
+	private void OnBorderBrushChanged(ManagedWeakReference instance, DependencyProperty property, DependencyPropertyChangedEventArgs args)
+	{
+		_lastState.BorderBrush = null;
+		Update();
+	}
+
+	private void OnBackgroundBrushChanged(ManagedWeakReference instance, DependencyProperty property, DependencyPropertyChangedEventArgs args)
+	{
+		_lastState.Background = null;
+		Update();
+	}
 
 	/// <summary>
 	/// Removes added layers and subscriptions.
 	/// </summary>
-	internal void Clear() => ClearLayer();
+	internal void Clear()
+	{
+		_borderBrushSubscription.Disposable = null;
+		_backgroundBrushSubscription.Disposable = null;
+		ClearLayer();
+	}
 
 	partial void UpdateLayer();
 
