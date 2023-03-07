@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata minClientVersion="5.0">
 	<id>Uno.UI</id>
@@ -15,6 +15,13 @@
 	<repository type="git" url="https://github.com/unoplatform/uno.git" branch="$branch$" commit="$commitid$" />
 
 	<dependencies>
+
+	  <!-- net5.0-windows10.0.18362.0 -->
+	  <group targetFramework="$winuitargetpath$">
+		<!-- References from Uno.UI.Toolkit -->
+		<dependency id="Microsoft.WindowsAppSDK" version="1.0.0" />
+		<dependency id="Microsoft.Windows.SDK.BuildTools" version="10.0.22000.196" />
+	  </group>
 
 	  <!-- net7.0-android30.0 -->
 	  <group targetFramework="net7.0-android30.0">
