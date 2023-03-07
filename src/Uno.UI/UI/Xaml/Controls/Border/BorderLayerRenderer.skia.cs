@@ -15,8 +15,6 @@ partial class BorderLayerRenderer
 	private readonly static SKPoint[] _outerRadiiStore = new SKPoint[4];
 	private readonly static SKPoint[] _innerRadiiStore = new SKPoint[4];
 
-	private LayoutState _currentState;
-
 	private SerialDisposable _layerDisposable = new SerialDisposable();
 
 	/// <summary>
@@ -27,16 +25,15 @@ partial class BorderLayerRenderer
 		// Bounds is captured to avoid calling twice calls below.
 		var area = new Rect(0, 0, _owner.ActualWidth, _owner.ActualHeight);
 
-		var newState = new LayoutState(
+		var newState = new BorderLayerState(
 			area,
 			_borderInfoProvider.Background,
 			_borderInfoProvider.BackgroundSizing,
-			_borderInfoProvider.BorderThickness,
 			_borderInfoProvider.BorderBrush,
-			_borderInfoProvider.CornerRadius,
-			_borderInfoProvider.BackgroundImage);
+			_borderInfoProvider.BorderThickness,
+			_borderInfoProvider.CornerRadius);
 
-		var previousLayoutState = _currentState;
+		var previousLayoutState = _lastState;
 
 		if (!newState.Equals(previousLayoutState))
 		{
@@ -55,17 +52,17 @@ partial class BorderLayerRenderer
 				_layerDisposable.Disposable = null;
 			}
 
-			_currentState = newState;
+			_lastState = newState;
 		}
 	}
 
 	partial void ClearLayer()
 	{
 		_layerDisposable.Disposable = null;
-		_currentState = null;
+		_lastState = default;
 	}
 
-	private static IDisposable InnerCreateLayer(UIElement owner, LayoutState state)
+	private static IDisposable InnerCreateLayer(UIElement owner, BorderLayerState state)
 	{
 		var area = owner.LayoutRound(state.Area);
 
@@ -339,40 +336,5 @@ partial class BorderLayerRenderer
 		geometrySource.Geometry.FillType = SKPathFillType.EvenOdd;
 
 		return new CompositionPath(geometrySource);
-	}
-
-	private class LayoutState : IEquatable<LayoutState>
-	{
-		public readonly Rect Area;
-		public readonly Brush Background;
-		public readonly BackgroundSizing BackgroundSizing;
-		public readonly Brush BorderBrush;
-		public readonly Thickness BorderThickness;
-		public readonly CornerRadius CornerRadius;
-		public readonly object BackgroundImage;
-
-		public LayoutState(Rect area, Brush background, BackgroundSizing backgroundSizing,
-			Thickness borderThickness, Brush borderBrush, CornerRadius cornerRadius, object backgroundImage)
-		{
-			Area = area;
-			Background = background;
-			BackgroundSizing = backgroundSizing;
-			BorderBrush = borderBrush;
-			CornerRadius = cornerRadius;
-			BorderThickness = borderThickness;
-			BackgroundImage = backgroundImage;
-		}
-
-		public bool Equals(LayoutState other)
-		{
-			return other != null
-				&& other.Area == Area
-				&& other.Background == Background
-				&& other.BackgroundSizing == BackgroundSizing
-				&& other.BorderBrush == BorderBrush
-				&& other.BorderThickness == BorderThickness
-				&& other.CornerRadius == CornerRadius
-				&& other.BackgroundImage == BackgroundImage;
-		}
 	}
 }
