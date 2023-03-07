@@ -708,7 +708,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			return list
 				.GetItemsPanelChildren()
 				.OfType<ContentControl>()
-				.Where(c => c.Content is not null)
+				// iOS does not seem to provide to exclude the recycled items, so we mark
+				// then using IsDisplayed.
+				.Where(c => c.Superview?.Superview is ListViewBaseInternalContainer container && container.IsDisplayed)
 				.ToArray();
 #else
 			return list.ItemsPanelRoot

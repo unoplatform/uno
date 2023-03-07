@@ -20,7 +20,7 @@
 		<PackageReference Include="System.Reactive" Version="5.0.0" />
 		<PackageReference Include="Unity" Version="5.11.10" />
 		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" Version="4.0.0-dev.5" />
-		<PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="2.3.1" />
+		<PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="2.3.2" />
 	</ItemGroup>
 
 	<ItemGroup>

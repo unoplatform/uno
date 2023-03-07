@@ -48,7 +48,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Newtonsoft.Json" />
-		<PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="2.3.1" />
+		<PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="2.3.2" />
 	</ItemGroup>
 
 	<ItemGroup>

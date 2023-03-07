@@ -9,6 +9,8 @@ namespace Windows.UI.Xaml.Controls
 	{
 		private TextBoxView _textBoxView;
 
+		internal TextBoxView TextBoxView => _textBoxView;
+
 		protected override bool IsDelegatingFocusToTemplateChild() => true; // _textBoxView
 		partial void OnDeleteButtonClickPartial() => FocusTextView();
 		internal bool FocusTextView() => FocusManager.FocusNative(_textBoxView);
@@ -62,14 +64,6 @@ namespace Windows.UI.Xaml.Controls
 			FocusTextView();
 		}
 
-		protected void SetIsPassword(bool isPassword)
-		{
-			if (_textBoxView != null)
-			{
-				_textBoxView.SetIsPassword(isPassword);
-			}
-		}
-
 		partial void OnForegroundColorChangedPartial(Brush newValue)
 		{
 			_textBoxView?.SetForeground(newValue);
@@ -88,12 +82,12 @@ namespace Windows.UI.Xaml.Controls
 			_textBoxView.SetFontFamily(FontFamily);
 		}
 
-		partial void OnTextWrappingChangedPartial(DependencyPropertyChangedEventArgs e)
+		partial void OnTextWrappingChangedPartial()
 		{
 			_textBoxView?.SetTextWrappingAndTrimming(textWrapping: TextWrapping, textTrimming: null);
 		}
 
-		partial void OnTextAlignmentChangedPartial(DependencyPropertyChangedEventArgs e)
+		partial void OnTextAlignmentChangedPartial(TextAlignment newValue)
 		{
 			_textBoxView?.SetTextAlignment(TextAlignment);
 		}
@@ -123,7 +117,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		partial void OnIsSpellCheckEnabledChangedPartial(DependencyPropertyChangedEventArgs e)
+		partial void OnIsSpellCheckEnabledChangedPartial(bool newValue)
 		{
 			_textBoxView?.SetAttribute("spellcheck", IsSpellCheckEnabled.ToString());
 		}
@@ -133,7 +127,7 @@ namespace Windows.UI.Xaml.Controls
 			ApplyEnabled(e.NewValue);
 		}
 
-		partial void OnIsReadonlyChangedPartial(DependencyPropertyChangedEventArgs e) => UpdateTextBoxViewIsReadOnly();
+		partial void OnIsReadonlyChangedPartial() => UpdateTextBoxViewIsReadOnly();
 
 		partial void OnIsTabStopChangedPartial() => UpdateTextBoxViewIsReadOnly();
 
@@ -143,12 +137,9 @@ namespace Windows.UI.Xaml.Controls
 			_textBoxView?.SetIsReadOnly(isNativeReadOnly);
 		}
 
-		partial void OnInputScopeChangedPartial(DependencyPropertyChangedEventArgs e)
+		partial void OnInputScopeChangedPartial(InputScope newValue)
 		{
-			if (e.NewValue is InputScope scope)
-			{
-				ApplyInputScope(scope);
-			}
+			ApplyInputScope(newValue);
 		}
 
 		private void ApplyEnabled(bool? isEnabled = null) => _textBoxView?.SetEnabled(isEnabled ?? IsEnabled);

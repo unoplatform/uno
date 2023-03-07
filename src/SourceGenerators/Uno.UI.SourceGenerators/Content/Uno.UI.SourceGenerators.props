@@ -98,7 +98,6 @@
 		<CompilerVisibleProperty Include="UnoRemoteControlPort" />
 		<CompilerVisibleProperty Include="UnoRemoteControlHost" />
 		<CompilerVisibleProperty Include="UnoRemoteControlProcessorsPath" />
-		<CompilerVisibleProperty Include="UseUnoXamlParser" />
 		<CompilerVisibleProperty Include="UnoSkipUserControlsInVisualTree" />
 		<CompilerVisibleProperty Include="ShouldWriteErrorOnInvalidXaml" />
 		<CompilerVisibleProperty Include="IsUiAutomationMappingEnabled" />
@@ -429,7 +428,7 @@
 		<Message Importance="low"
 			   Condition="'$(UnoUIUseRoslynSourceGenerators)'==''"
 			   Text="Uno.UI is using Uno.SourceGenerators" />
-		
+
 		<WriteLinesToFile File="$(IntermediateOutputPath)\build-time-generator.touch" />
 	</Target>
 

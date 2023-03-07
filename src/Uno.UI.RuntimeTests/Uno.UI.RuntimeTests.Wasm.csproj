@@ -67,7 +67,7 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)'=='uap10.0.18362'">
-		<PackageReference Include="System.Numerics.Vectors" Version="4.3.0" />
+		<PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
 	</ItemGroup>
 	<PropertyGroup Condition="'$(TargetFramework)'=='uap10.0.18362'">
 		<DefineConstants>$(DefineConstants);WINDOWS_UWP</DefineConstants>

@@ -5,6 +5,9 @@ using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -42,6 +45,186 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				Assert.AreEqual("DataContext2", textBlock.DataContext);
 				Assert.AreEqual("DataContext2", SUT.DataContext);
+			}
+			finally
+			{
+#if HAS_UNO
+				Windows.UI.Xaml.Media.VisualTreeHelper.CloseAllPopups();
+#endif
+			}
+		}
+
+		[TestMethod]
+		public async Task When_ToggleButton_DataContext_Set_On_ToolTip_Owner_After()
+		{
+#if HAS_UNO
+			if (!FeatureConfiguration.ToolTip.UseToolTips)
+			{
+				Assert.Inconclusive();
+			}
+#endif
+
+			try
+			{
+				var toggleButton = new ToggleButton();
+
+				var textBlock = new TextBlock();
+				textBlock.SetBinding(TextBlock.TextProperty, new Binding { Path = new(".") });
+
+				var SUT = new ToolTip() { Content = textBlock };
+				ToolTipService.SetToolTip(toggleButton, SUT);
+
+				var stackPanel = new StackPanel
+				{
+					Children =
+					{
+						toggleButton,
+					}
+				};
+
+				TestServices.WindowHelper.WindowContent = stackPanel;
+				await TestServices.WindowHelper.WaitForIdle();
+
+				stackPanel.DataContext = "DataContext1";
+
+				Assert.AreEqual("DataContext1", toggleButton.DataContext);
+				Assert.AreEqual("DataContext1", SUT.DataContext);
+
+				SUT.IsOpen = true;
+
+				stackPanel.DataContext = "DataContext2";
+
+				Assert.AreEqual("DataContext2", toggleButton.DataContext);
+				Assert.AreEqual("DataContext2", SUT.DataContext);
+				Assert.AreEqual("DataContext2", textBlock.DataContext);
+			}
+			finally
+			{
+#if HAS_UNO
+				Windows.UI.Xaml.Media.VisualTreeHelper.CloseAllPopups();
+#endif
+			}
+		}
+
+		[TestMethod]
+		public async Task When_ToggleButton_DataContext_Set_On_ToolTip_Owner_Before()
+		{
+#if HAS_UNO
+			if (!FeatureConfiguration.ToolTip.UseToolTips)
+			{
+				Assert.Inconclusive();
+			}
+#endif
+
+			try
+			{
+				var toggleButton = new ToggleButton();
+
+				var textBlock = new TextBlock();
+				textBlock.SetBinding(TextBlock.TextProperty, new Binding { Path = new(".") });
+
+				var SUT = new ToolTip() { Content = textBlock };
+				ToolTipService.SetToolTip(toggleButton, SUT);
+
+				var stackPanel = new StackPanel
+				{
+					Children =
+					{
+						toggleButton,
+					}
+				};
+
+				TestServices.WindowHelper.WindowContent = stackPanel;
+				await TestServices.WindowHelper.WaitForIdle();
+
+				stackPanel.DataContext = "DataContext1";
+
+				Assert.AreEqual("DataContext1", toggleButton.DataContext);
+				Assert.AreEqual("DataContext1", SUT.DataContext);
+
+				// Set the datacontext before opening
+				stackPanel.DataContext = "DataContext2";
+
+				SUT.IsOpen = true;
+
+				Assert.AreEqual("DataContext2", toggleButton.DataContext);
+				Assert.AreEqual("DataContext2", SUT.DataContext);
+				Assert.AreEqual("DataContext2", textBlock.DataContext);
+
+				stackPanel.DataContext = "DataContext3";
+
+				Assert.AreEqual("DataContext3", toggleButton.DataContext);
+				Assert.AreEqual("DataContext3", SUT.DataContext);
+				Assert.AreEqual("DataContext3", textBlock.DataContext);
+
+				SUT.IsOpen = false;
+
+				stackPanel.DataContext = "DataContext4";
+
+				SUT.IsOpen = true;
+
+				Assert.AreEqual("DataContext4", toggleButton.DataContext);
+				Assert.AreEqual("DataContext4", SUT.DataContext);
+				Assert.AreEqual("DataContext4", textBlock.DataContext);
+			}
+			finally
+			{
+#if HAS_UNO
+				Windows.UI.Xaml.Media.VisualTreeHelper.CloseAllPopups();
+#endif
+			}
+		}
+
+		[TestMethod]
+		public async Task When_ToggleButton_DataContext_Set_On_ToolTip_Owner_Nested()
+		{
+#if HAS_UNO
+			if (!FeatureConfiguration.ToolTip.UseToolTips)
+			{
+				Assert.Inconclusive();
+			}
+#endif
+
+			try
+			{
+				var toggleButton = new ToggleButton();
+
+				var textBlock = new TextBlock();
+				textBlock.SetBinding(TextBlock.TextProperty, new Binding { Path = new(".") });
+
+				var innerStackPanel = new StackPanel();
+				innerStackPanel.Children.Add(textBlock);
+
+				var SUT = new ToolTip() { Content = innerStackPanel };
+				ToolTipService.SetToolTip(toggleButton, SUT);
+
+				var stackPanel = new StackPanel
+				{
+					Children =
+					{
+						toggleButton,
+					}
+				};
+
+				TestServices.WindowHelper.WindowContent = stackPanel;
+				await TestServices.WindowHelper.WaitForIdle();
+
+				SUT.DataContextChanged += (s, e) =>
+				{
+				};
+
+				stackPanel.DataContext = "DataContext1";
+
+				Assert.AreEqual("DataContext1", toggleButton.DataContext);
+				Assert.AreEqual("DataContext1", SUT.DataContext);
+
+				SUT.IsOpen = true;
+
+				stackPanel.DataContext = "DataContext2";
+
+				Assert.AreEqual("DataContext2", toggleButton.DataContext);
+				Assert.AreEqual("DataContext2", SUT.DataContext);
+				Assert.AreEqual("DataContext2", textBlock.DataContext);
 			}
 			finally
 			{

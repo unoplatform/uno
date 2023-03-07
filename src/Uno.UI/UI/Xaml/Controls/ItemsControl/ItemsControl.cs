@@ -1107,22 +1107,24 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		internal void CleanUpContainer(global::Windows.UI.Xaml.DependencyObject element)
 		{
+			// Determine the item characteristics manually, as the item
+			// does not exist anymore in the Items or ItemsSource.
 			object item;
+			bool isOwnContainer = false;
 			switch (element)
 			{
 				case ContentPresenter cp when cp is ContentPresenter:
 					item = cp.Content;
+					isOwnContainer = cp.IsOwnContainer;
 					break;
 				case ContentControl cc when cc is ContentControl:
 					item = cc.Content;
+					isOwnContainer = cc.IsOwnContainer;
 					break;
 				default:
 					item = element;
 					break;
-
 			}
-
-			var isOwnContainer = ReferenceEquals(element, item);
 
 			ClearContainerForItemOverride(element, item);
 			ContainerClearedForItem(item, element as SelectorItem);
@@ -1134,12 +1136,15 @@ namespace Windows.UI.Xaml.Controls
 				)
 			)
 			{
-				// Clear the Content property first, in order to avoid creating a text placeholder when
-				// the ContentTemplate is removed.
-				presenter.ClearValue(ContentPresenter.ContentProperty);
+				if (!isOwnContainer)
+				{
+					// Clear the Content property first, in order to avoid creating a text placeholder when
+					// the ContentTemplate is removed.
+					presenter.ClearValue(ContentPresenter.ContentProperty);
 
-				presenter.ClearValue(ContentPresenter.ContentTemplateProperty);
-				presenter.ClearValue(ContentPresenter.ContentTemplateSelectorProperty);
+					presenter.ClearValue(ContentPresenter.ContentTemplateProperty);
+					presenter.ClearValue(ContentPresenter.ContentTemplateSelectorProperty);
+				}
 			}
 			else if (element is ContentControl contentControl)
 			{
@@ -1149,15 +1154,15 @@ namespace Windows.UI.Xaml.Controls
 				{
 					// Clears value set in PrepareContainerForItemOverride
 					element.ClearValue(ContentControl.ContentProperty);
-				}
 
-				if (contentControl.ContentTemplate is { } ct && ct == ItemTemplate)
-				{
-					contentControl.ClearValue(ContentControl.ContentTemplateProperty);
-				}
-				else if (contentControl.ContentTemplateSelector is { } cts && cts == ItemTemplateSelector)
-				{
-					contentControl.ClearValue(ContentControl.ContentTemplateSelectorProperty);
+					if (contentControl.ContentTemplate is { } ct && ct == ItemTemplate)
+					{
+						contentControl.ClearValue(ContentControl.ContentTemplateProperty);
+					}
+					else if (contentControl.ContentTemplateSelector is { } cts && cts == ItemTemplateSelector)
+					{
+						contentControl.ClearValue(ContentControl.ContentTemplateSelectorProperty);
+					}
 				}
 			}
 		}
@@ -1213,24 +1218,28 @@ namespace Windows.UI.Xaml.Controls
 			//Prepare ContentPresenter
 			if (element is ContentPresenter containerAsContentPresenter)
 			{
-				containerAsContentPresenter.ContentTemplate = ItemTemplate;
-				containerAsContentPresenter.ContentTemplateSelector = ItemTemplateSelector;
+				containerAsContentPresenter.IsOwnContainer = isOwnContainer;
 
 				if (!isOwnContainer)
 				{
+					containerAsContentPresenter.ContentTemplate = ItemTemplate;
+					containerAsContentPresenter.ContentTemplateSelector = ItemTemplateSelector;
+
 					SetContent(containerAsContentPresenter, ContentPresenter.ContentProperty);
 				}
 			}
 			else if (element is ContentControl containerAsContentControl)
 			{
-				if (!containerAsContentControl.IsContainerFromTemplateRoot)
-				{
-					containerAsContentControl.ContentTemplate = ItemTemplate;
-					containerAsContentControl.ContentTemplateSelector = ItemTemplateSelector;
-				}
+				containerAsContentControl.IsOwnContainer = isOwnContainer;
 
 				if (!isOwnContainer)
 				{
+					if (!containerAsContentControl.IsContainerFromTemplateRoot)
+					{
+						containerAsContentControl.ContentTemplate = ItemTemplate;
+						containerAsContentControl.ContentTemplateSelector = ItemTemplateSelector;
+					}
+
 					TryRepairContentConnection(containerAsContentControl, item);
 
 					// Set the datacontext first, then the binding.

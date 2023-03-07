@@ -336,7 +336,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 							writer.AppendLineInvariantIndented(@"MetadataBuilder_{0:000}.Build(bindableType); // {1}", baseTypeMapped.Index, ExpandType(baseType));
 						}
 
-						var ctor = ownerType.GetMethods().FirstOrDefault(m => m.MethodKind == MethodKind.Constructor && !m.Parameters.Any() && m.IsLocallyPublic(_currentModule!));
+						var ctor = ownerType.InstanceConstructors.FirstOrDefault(m => m.Parameters.Length == 0 && m.IsLocallyPublic(_currentModule!));
 
 						if (ctor != null && IsCreateable(ownerType))
 						{
@@ -494,14 +494,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 			private bool IsCreateable(INamedTypeSymbol type)
 			{
 				return !type.IsAbstract
-					&& type
-						.GetMethods()
-						.Safe()
-						.Any(m =>
-							m.MethodKind == MethodKind.Constructor
-							&& m.IsLocallyPublic(_currentModule!)
-							&& m.Parameters.Safe().None()
-						);
+					&& type.InstanceConstructors.Any(m => m.Parameters.Length == 0 && m.IsLocallyPublic(_currentModule!));
 			}
 
 			private INamedTypeSymbol? GetBaseType(INamedTypeSymbol type)

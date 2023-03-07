@@ -116,13 +116,13 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override Size MeasureOverride(Size availableSize) => MeasureView(availableSize);
 
-		internal void SetIsPassword(bool isPassword)
+		internal void SetPasswordRevealState(PasswordRevealState revealState)
 		{
 			if (IsMultiline)
 			{
 				throw new NotSupportedException("A PasswordBox cannot have multiple lines.");
 			}
-			SetAttribute("type", isPassword ? "password" : "text");
+			SetAttribute("type", revealState == PasswordRevealState.Obscured ? "password" : "text");
 		}
 
 		internal void SetEnabled(bool newValue) => SetProperty("disabled", newValue ? "false" : "true");

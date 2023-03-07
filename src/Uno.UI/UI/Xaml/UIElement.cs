@@ -284,6 +284,16 @@ namespace Windows.UI.Xaml
 			get => _virtualizationInformation?.IsContainerFromTemplateRoot ?? false;
 			set => GetVirtualizationInformation().IsContainerFromTemplateRoot = value;
 		}
+
+		/// <summary>
+		/// Marks this as a container defined in the root of an ItemTemplate, so that it can be handled appropriately when cleared.
+		/// </summary>
+		internal bool IsOwnContainer
+		{
+			get => _virtualizationInformation?.IsOwnContainer ?? false;
+			set => GetVirtualizationInformation().IsOwnContainer = value;
+		}
+
 		#endregion
 
 		#region Clip DependencyProperty
