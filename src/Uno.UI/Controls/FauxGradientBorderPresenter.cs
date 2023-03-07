@@ -10,6 +10,15 @@ using Windows.UI.Xaml.Media;
 
 namespace Uno.UI.FluentTheme.Controls;
 
+/// <summary>
+/// This presenter provides a way to display "fake" LinearGradientBrush on element border for
+/// cases which are unsupported by WebAssembly, iOS and macOS.
+/// </summary>
+/// <remarks>
+/// WASM - the presenter will be used in case the element has CornerRadius applied.
+/// iOS and macOS - the presenter will be used in case the element has LinearGradientBrush with a transform applied.
+/// All other cases - the presenter is not visible.
+/// </remarks>
 public partial class FauxGradientBorderPresenter : ContentControl
 {
 #if __WASM__ || __IOS__ || __MACOS__
@@ -27,12 +36,18 @@ public partial class FauxGradientBorderPresenter : ContentControl
 #endif
 	}
 
+	/// <summary>
+	/// Gets or sets the border brush that is supposed to be displayed.
+	/// </summary>
 	public Brush RequestedBorderBrush
 	{
 		get => (Brush)GetValue(RequestedBorderBrushProperty);
 		set => SetValue(RequestedBorderBrushProperty, value);
 	}
 
+	/// <summary>
+	/// Identifies the RequestedBorderBrush dependency property.
+	/// </summary>
 	public static DependencyProperty RequestedBorderBrushProperty { get; } =
 		DependencyProperty.Register(
 			nameof(RequestedBorderBrush),
@@ -40,12 +55,18 @@ public partial class FauxGradientBorderPresenter : ContentControl
 			typeof(FauxGradientBorderPresenter),
 			new FrameworkPropertyMetadata(null, propertyChangedCallback: (s, args) => (s as FauxGradientBorderPresenter)?.OnBorderChanged()));
 
+	/// <summary>
+	/// Gets or sets the thickness of the border that is supposed to be displayed.
+	/// </summary>
 	public Thickness RequestedBorderThickness
 	{
 		get => (Thickness)GetValue(RequestedBorderThicknessProperty);
 		set => SetValue(RequestedBorderThicknessProperty, value);
 	}
 
+	/// <summary>
+	/// Identifies the RequestedBorderThickness dependency property.
+	/// </summary>
 	public static DependencyProperty RequestedBorderThicknessProperty { get; } =
 		DependencyProperty.Register(
 			nameof(RequestedBorderThickness),
