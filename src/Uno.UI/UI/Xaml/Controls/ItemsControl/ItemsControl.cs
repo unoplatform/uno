@@ -1157,7 +1157,7 @@ namespace Windows.UI.Xaml.Controls
 						// We must not clear the properties for the container if a binding expession
 						// is defined. This is a use-case present for TreeView, which generally uses TreeViewItem
 						// at the root of hierarchical templates.
-						if (target.GetBindingExpression(property) == null)
+						if (target.GetBindingExpression(property) is null)
 						{
 							target.ClearValue(property);
 						}
