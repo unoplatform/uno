@@ -12,23 +12,17 @@ using System.Drawing;
 using View = Microsoft.UI.Xaml.UIElement;
 
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls;
+
+public partial class Panel : FrameworkElement
 {
-	public partial class Panel : FrameworkElement
+	protected virtual void OnChildrenChanged()
 	{
-
-		public Panel()
-		{
-			Initialize();
-		}
-
-		partial void Initialize();
-
-		protected virtual void OnChildrenChanged()
-		{
-		}
-
-		public override IEnumerable<View> GetChildren()
-			=> Children.OfType<View>().ToArray<View>();
 	}
+
+	public override IEnumerable<View> GetChildren()
+		=> Children.OfType<View>().ToArray<View>();
+
+	bool ICustomClippingElement.AllowClippingToLayoutSlot => false;
+	bool ICustomClippingElement.ForceClippingToLayoutSlot => CornerRadiusInternal != CornerRadius.None;
 }

@@ -66,12 +66,14 @@ internal partial class BorderLayerRenderer
 
 	private void OnBorderBrushChanged(ManagedWeakReference instance, DependencyProperty property, DependencyPropertyChangedEventArgs args)
 	{
+		// Force the border to be recreated during update.
 		_lastState.BorderBrush = null;
 		Update();
 	}
 
 	private void OnBackgroundBrushChanged(ManagedWeakReference instance, DependencyProperty property, DependencyPropertyChangedEventArgs args)
 	{
+		// Force the background to be recreated during update.
 		_lastState.Background = null;
 		Update();
 	}
