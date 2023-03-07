@@ -9133,7 +9133,6 @@
 			<Member fullName="Microsoft.UI.Xaml.Automation.Peers.ScrollPresenterAutomationPeer" reason="Not present in WinAppSDK 1.2" />
 			<Member fullName="Microsoft.UI.Xaml.Media.RevealBrushState" reason="Not present in WinAppSDK 1.2" />
 			<Member fullName="Windows.Foundation.IClosable" reason="Shouldn't be visible in .NET and shows as IDisposable instead." />
-			<Member fullName="Windows.Storage.Streams.InMemoryBuffer reason="Windows.Storage.Streams.Buffer should be used." />
 			<Member fullName="Windows.UI.Xaml.Media.TransformExtensions" reason="Moved to RuntimeTests project as it is only used there." />
 			<Member fullName="Uno.UI.Extensions.FragmentManagerExtensions" reason="Legacy class that is no longer needed" />
 			<Member fullName="Uno.UI.BaseFragment" reason="Legacy class that is no longer needed" />
