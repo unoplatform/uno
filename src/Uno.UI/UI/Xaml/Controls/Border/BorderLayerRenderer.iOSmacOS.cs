@@ -701,12 +701,5 @@ namespace Windows.UI.Xaml.Controls
 			layer.InsertSublayer(gradientContainerLayer, insertionIndex++);
 			sublayers.Add(gradientContainerLayer);
 		}
-
-		private record LayoutState(
-			CGRect Area,
-			Brush BorderBrush, Thickness BorderThickness, CornerRadius CornerRadius,
-			Brush Background, BackgroundSizing BackgroundSizing)
-		{
-		}
 	}
 }

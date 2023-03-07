@@ -25,7 +25,7 @@ partial class BorderLayerRenderer
 			var subscription = _backgroundSubscription ??= new SerialDisposable();
 
 			subscription.Disposable = null;
-			subscription.Disposable = SetAndObserveBackgroundBrush(fwElt, _borderInfoProvider.Background);
+			subscription.Disposable = SetAndObserveBackgroundBrush(_owner, _borderInfoProvider.Background);
 		}
 
 		if (_border != (_borderInfoProvider.BorderBrush, _borderInfoProvider.BorderThickness))
