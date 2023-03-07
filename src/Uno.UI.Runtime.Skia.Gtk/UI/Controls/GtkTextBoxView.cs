@@ -1,7 +1,6 @@
 ﻿#nullable enable
 
 using System;
-using System.Linq;
 using Gtk;
 using Pango;
 using Uno.Foundation.Logging;
