@@ -17,12 +17,7 @@ internal class MultilineTextBoxView : GtkTextBoxView
 	public MultilineTextBoxView()
 	{
 		_scrolledWindow.Add(_textView);
-		_scrolledWindow.TouchEvent += _scrolledWindow_TouchEvent;
 		_scrolledWindow.StyleContext.AddClass(MultilineHostCssClass);
-	}
-
-	private void _scrolledWindow_TouchEvent(object o, TouchEventArgs args)
-	{
 	}
 
 	protected override Widget RootWidget => _scrolledWindow;

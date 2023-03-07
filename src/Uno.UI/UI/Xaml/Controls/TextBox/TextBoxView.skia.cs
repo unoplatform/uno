@@ -55,8 +55,6 @@ namespace Windows.UI.Xaml.Controls
 
 		internal void SetTextNative(string text)
 		{
-			// TODO: Inheritance hierarchy is wrong in Uno. PasswordBox shouldn't inherit TextBox.
-			// This needs to be moved to PasswordBox if it's separated from TextBox.
 			SetDisplayBlockText(text);
 
 			_textBoxExtension?.SetText(text);
@@ -126,6 +124,8 @@ namespace Windows.UI.Xaml.Controls
 
 		private void SetDisplayBlockText(string text)
 		{
+			// TODO: Inheritance hierarchy is wrong in Uno. PasswordBox shouldn't inherit TextBox.
+			// This needs to be moved to PasswordBox if it's separated from TextBox.
 			if (_isPasswordBox && !_isPasswordRevealed)
 			{
 				// TODO: PasswordChar isn't currently implemented. It should be used here when implemented.

@@ -16,6 +16,7 @@ internal class PasswordTextBoxView : WpfTextBoxView
 	private readonly WpfTextViewTextBox _textBox = new();
 	private readonly WpfPasswordBox _passwordBox = new();
 	private readonly WpfGrid _grid = new();
+	private readonly SerialDisposable _visibleControlTextChangedSubscription = new();
 	private EventHandler? _textChangedWatcher;
 
 	public PasswordTextBoxView()
@@ -49,35 +50,7 @@ internal class PasswordTextBoxView : WpfTextBoxView
 
 	public override bool IsCompatible(Windows.UI.Xaml.Controls.TextBox textBox) => textBox is Windows.UI.Xaml.Controls.PasswordBox;
 
-	public override void SetFocus() => GetDisplayedElement()?.Focus();
-
-	//public void SetIsPassword(bool isPassword)
-	//{
-	//	_isPasswordRevealed = !isPassword;
-	//	if (_owner.TextBox is { } textBox)
-	//	{
-	//		if (_currentTextBoxInputWidget is not null)
-	//		{
-	//			_currentTextBoxInputWidget.Visibility = isPassword ? Visibility.Collapsed : Visibility.Visible;
-	//			if (_currentPasswordBoxInputWidget is not null)
-	//			{
-	//				_currentPasswordBoxInputWidget.Visibility = isPassword ? Visibility.Visible : Visibility.Collapsed;
-	//			}
-
-	//		}
-	//	}
-
-
-
-	//	// Display
-
-	//	if (_isPasswordBox)
-	//	{
-	//		textInputLayer.Children.Add(_currentPasswordBoxInputWidget!);
-	//		_currentPasswordBoxInputWidget!.Visibility = _isPasswordRevealed ? Visibility.Collapsed : Visibility.Visible;
-	//		_currentTextBoxInputWidget!.Visibility = _isPasswordRevealed ? Visibility.Visible : Visibility.Collapsed;
-	//	}
-	//}
+	public override void SetFocus() => GetDisplayedElement().Focus();
 
 	public override IDisposable ObserveTextChanges(EventHandler onChanged)
 	{
@@ -122,8 +95,11 @@ internal class PasswordTextBoxView : WpfTextBoxView
 
 	private void ObserveVisibleControlTextChanges()
 	{
+		_visibleControlTextChangedSubscription.Disposable = null;
+
 		void OnTextChanged(object sender, System.Windows.Controls.TextChangedEventArgs args) => OnCommonTextChanged();
 		void OnPasswordChanged(object sender, EventArgs args) => OnCommonTextChanged();
+
 		IDisposable disposable;
 		if (_textBox.Visibility == Visibility.Visible)
 		{
@@ -135,23 +111,11 @@ internal class PasswordTextBoxView : WpfTextBoxView
 			_passwordBox.PasswordChanged += OnPasswordChanged;
 			disposable = Disposable.Create(() => _passwordBox.PasswordChanged -= OnPasswordChanged);
 		}
+
+		_visibleControlTextChangedSubscription.Disposable = disposable;
 	}
 
 	private void OnCommonTextChanged() => _textChangedWatcher?.Invoke(this, EventArgs.Empty);
 
-	private WpfElement? GetDisplayedElement()
-	{
-		if (_textBox.Visibility == Visibility.Visible)
-		{
-			return _textBox;
-		}
-		else if (_passwordBox.Visibility == Visibility.Visible)
-		{
-			return _passwordBox;
-		}
-		else
-		{
-			return null;
-		}
-	}
+	private WpfElement GetDisplayedElement() => _textBox.Visibility == Visibility.Visible ? _textBox : _passwordBox;
 }

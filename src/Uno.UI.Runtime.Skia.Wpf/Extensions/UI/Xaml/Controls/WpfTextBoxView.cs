@@ -19,16 +19,16 @@ internal abstract class WpfTextBoxView : IOverlayTextBoxView
 	{
 	}
 
-	/// <summary>
-	/// Represents the root element of the input layout.
-	/// </summary>
-	protected abstract WpfElement RootElement { get; }
-
 	public abstract string Text { get; set; }
 
 	public bool IsDisplayed => RootElement.Parent is not null;
 
 	public abstract (int start, int length) Selection { get; set; }
+
+	/// <summary>
+	/// Represents the root element of the input layout.
+	/// </summary>
+	protected abstract WpfElement RootElement { get; }
 
 	public static IOverlayTextBoxView Create(Windows.UI.Xaml.Controls.TextBox textBox) =>
 		textBox is not Windows.UI.Xaml.Controls.PasswordBox ?
@@ -56,27 +56,6 @@ internal abstract class WpfTextBoxView : IOverlayTextBoxView
 	public abstract IDisposable ObserveTextChanges(EventHandler onChanged);
 
 	public abstract void UpdateProperties(Windows.UI.Xaml.Controls.TextBox textBox);
-	//SetFont(textBox.FontWeight, textBox.FontSize);
-	//SetForeground(textBox.Foreground);
-	//SetSelectionHighlightColor(textBox.SelectionHighlightColor);
-
-	//if (_currentTextBoxInputWidget is not null)
-	//{
-	//	_currentTextBoxInputWidget.AcceptsReturn = textBox.AcceptsReturn;
-	//	_currentTextBoxInputWidget.TextWrapping = textBox.TextWrapping switch
-	//	{
-	//		Windows.UI.Xaml.TextWrapping.Wrap => TextWrapping.WrapWithOverflow,
-	//		Windows.UI.Xaml.TextWrapping.WrapWholeWords => TextWrapping.Wrap,
-	//		_ => TextWrapping.NoWrap,
-	//	};
-	//	_currentTextBoxInputWidget.MaxLength = textBox.MaxLength;
-	//	_currentTextBoxInputWidget.IsReadOnly = textBox.IsReadOnly;
-	//}
-
-	//if (_currentPasswordBoxInputWidget is not null)
-	//{
-	//	_currentPasswordBoxInputWidget.MaxLength = textBox.MaxLength;
-	//}
 
 	public abstract void SetFocus();
 
@@ -91,6 +70,8 @@ internal abstract class WpfTextBoxView : IOverlayTextBoxView
 		WpfCanvas.SetLeft(RootElement, x);
 		WpfCanvas.SetTop(RootElement, y);
 	}
+
+	public virtual void SetPasswordRevealState(Windows.UI.Xaml.Controls.PasswordRevealState passwordRevealState) { }
 
 	internal static WpfCanvas? GetOverlayLayer(XamlRoot xamlRoot) =>
 		XamlRootMap.GetHostForRoot(xamlRoot)?.NativeOverlayLayer;
@@ -155,6 +136,4 @@ internal abstract class WpfTextBoxView : IOverlayTextBoxView
 		wpfPasswordBox.IsTabStop = source.IsReadOnly || !source.IsTabStop;
 		wpfPasswordBox.MaxLength = source.MaxLength;
 	}
-
-	public virtual void SetPasswordRevealState(Windows.UI.Xaml.Controls.PasswordRevealState passwordRevealState) { }
 }
