@@ -37,12 +37,8 @@ namespace Windows.UI.Xaml.Input
 			}
 		}
 
-		private static bool InIslandsMode()
-		{
-			//TODO Uno: Islands mode should be applied for "WinUI" mode as it limits some APIs for
-			//multi-window use. For now choosing not limiting.
-			return false;
-		}
+		// TODO Uno: This should probably apply to multi-window as well #8341.
+		private static bool InIslandsMode() => CoreServices.Instance.InitializationType == InitializationType.IslandsOnly;
 
 		private static object? FindNextFocus(
 			FocusNavigationDirection focusNavigationDirection,
@@ -54,7 +50,7 @@ namespace Windows.UI.Xaml.Input
 			}
 
 			var core = DXamlCore.Current;
-			if (core == null)
+			if (core is null)
 			{
 				throw new InvalidOperationException("XamlCore is not set.");
 			}
@@ -77,7 +73,7 @@ namespace Windows.UI.Xaml.Input
 				var contentRootCoordinator = core.GetHandle().ContentRootCoordinator;
 				var contentRoot = contentRootCoordinator?.CoreWindowContentRoot;
 
-				if (contentRoot == null)
+				if (contentRoot is null)
 				{
 					return null;
 				}
@@ -85,7 +81,7 @@ namespace Windows.UI.Xaml.Input
 				focusManager = contentRoot.FocusManager;
 			}
 
-			if (focusManager == null)
+			if (focusManager is null)
 			{
 				return null;
 			}

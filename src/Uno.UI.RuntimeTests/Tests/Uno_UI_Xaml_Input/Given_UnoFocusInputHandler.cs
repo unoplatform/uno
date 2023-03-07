@@ -47,7 +47,7 @@ public class Given_UnoFocusInputHandler
 
 		centerButton.Focus(FocusState.Programmatic);
 
-		var inputHandler = new UnoFocusInputHandler(VisualTree.GetRootForElement(centerButton));
+		var inputHandler = new UnoFocusInputHandler(VisualTree.GetRootOrIslandForElement(centerButton));
 		var result = inputHandler.TryHandleDirectionalFocus(key);
 
 		Assert.AreEqual(shouldSucceed, result);
