@@ -364,54 +364,185 @@ namespace Uno.UI.DataBinding
 		{
 			if (outputType != typeof(Windows.UI.Xaml.Input.InputScope)) return false;
 
-			var nameValue = input.ToLowerInvariant().Trim() switch
+			var trimmed = input.AsSpan().Trim();
+			Windows.UI.Xaml.Input.InputScopeNameValue nameValue;
+			if (trimmed.Equals("0", StringComparison.OrdinalIgnoreCase) || trimmed.Equals("default", StringComparison.OrdinalIgnoreCase))
 			{
-				"0" or "default" => Windows.UI.Xaml.Input.InputScopeNameValue.Default,
-				"1" or "url" => Windows.UI.Xaml.Input.InputScopeNameValue.Url,
-				"5" or "emailsmtpaddress" => Windows.UI.Xaml.Input.InputScopeNameValue.EmailSmtpAddress,
-				"7" or "personalfullname" => Windows.UI.Xaml.Input.InputScopeNameValue.PersonalFullName,
-				"20" or "currencyamountandsymbol" => Windows.UI.Xaml.Input.InputScopeNameValue.CurrencyAmountAndSymbol,
-				"21" or "currencyamount" => Windows.UI.Xaml.Input.InputScopeNameValue.CurrencyAmount,
-				"23" or "datemonthnumber" => Windows.UI.Xaml.Input.InputScopeNameValue.DateMonthNumber,
-				"24" or "datedaynumber" => Windows.UI.Xaml.Input.InputScopeNameValue.DateDayNumber,
-				"25" or "dateyear" => Windows.UI.Xaml.Input.InputScopeNameValue.DateYear,
-				"28" or "digits" => Windows.UI.Xaml.Input.InputScopeNameValue.Digits,
-				"29" or "number" => Windows.UI.Xaml.Input.InputScopeNameValue.Number,
-				"31" or "password" => Windows.UI.Xaml.Input.InputScopeNameValue.Password,
-				"32" or "telephonenumber" => Windows.UI.Xaml.Input.InputScopeNameValue.TelephoneNumber,
-				"33" or "telephonecountrycode" => Windows.UI.Xaml.Input.InputScopeNameValue.TelephoneCountryCode,
-				"34" or "telephoneareacode" => Windows.UI.Xaml.Input.InputScopeNameValue.TelephoneAreaCode,
-				"35" or "telephonelocalnumber" => Windows.UI.Xaml.Input.InputScopeNameValue.TelephoneLocalNumber,
-				"37" or "timehour" => Windows.UI.Xaml.Input.InputScopeNameValue.TimeHour,
-				"38" or "timeminutesorseconds" => Windows.UI.Xaml.Input.InputScopeNameValue.TimeMinutesOrSeconds,
-				"39" or "numberfullwidth" => Windows.UI.Xaml.Input.InputScopeNameValue.NumberFullWidth,
-				"40" or "alphanumerichalfwidth" => Windows.UI.Xaml.Input.InputScopeNameValue.AlphanumericHalfWidth,
-				"41" or "alphanumericfullwidth" => Windows.UI.Xaml.Input.InputScopeNameValue.AlphanumericFullWidth,
-				"44" or "hiragana" => Windows.UI.Xaml.Input.InputScopeNameValue.Hiragana,
-				"45" or "katakanahalfwidth" => Windows.UI.Xaml.Input.InputScopeNameValue.KatakanaHalfWidth,
-				"46" or "katakanafullwidth" => Windows.UI.Xaml.Input.InputScopeNameValue.KatakanaFullWidth,
-				"47" or "hanja" => Windows.UI.Xaml.Input.InputScopeNameValue.Hanja,
-				"48" or "hangulhalfwidth" => Windows.UI.Xaml.Input.InputScopeNameValue.HangulHalfWidth,
-				"49" or "hangulfullwidth" => Windows.UI.Xaml.Input.InputScopeNameValue.HangulFullWidth,
-				"50" or "search" => Windows.UI.Xaml.Input.InputScopeNameValue.Search,
-				"51" or "formula" => Windows.UI.Xaml.Input.InputScopeNameValue.Formula,
-				"52" or "searchincremental" => Windows.UI.Xaml.Input.InputScopeNameValue.SearchIncremental,
-				"53" or "chinesehalfwidth" => Windows.UI.Xaml.Input.InputScopeNameValue.ChineseHalfWidth,
-				"54" or "chinesefullwidth" => Windows.UI.Xaml.Input.InputScopeNameValue.ChineseFullWidth,
-				"55" or "nativescript" => Windows.UI.Xaml.Input.InputScopeNameValue.NativeScript,
-				"57" or "text" => Windows.UI.Xaml.Input.InputScopeNameValue.Text,
-				"58" or "chat" => Windows.UI.Xaml.Input.InputScopeNameValue.Chat,
-				"59" or "nameorphonenumber" => Windows.UI.Xaml.Input.InputScopeNameValue.NameOrPhoneNumber,
-				"60" or "emailnameoraddress" => Windows.UI.Xaml.Input.InputScopeNameValue.EmailNameOrAddress,
-				"62" or "maps" => Windows.UI.Xaml.Input.InputScopeNameValue.Maps,
-				"63" or "numericpassword" => Windows.UI.Xaml.Input.InputScopeNameValue.NumericPassword,
-				"64" or "numericpin" => Windows.UI.Xaml.Input.InputScopeNameValue.NumericPin,
-				"65" or "alphanumericpin" => Windows.UI.Xaml.Input.InputScopeNameValue.AlphanumericPin,
-				"67" or "formulanumber" => Windows.UI.Xaml.Input.InputScopeNameValue.FormulaNumber,
-				"68" or "chatwithoutemoji" => Windows.UI.Xaml.Input.InputScopeNameValue.ChatWithoutEmoji,
+				nameValue = Windows.UI.Xaml.Input.InputScopeNameValue.Default;
+			}
+			else if (trimmed.Equals("1", StringComparison.OrdinalIgnoreCase) || trimmed.Equals("url", StringComparison.OrdinalIgnoreCase))
+			{
+				nameValue = Windows.UI.Xaml.Input.InputScopeNameValue.Url;
+			}
+			else if (trimmed.Equals("5", StringComparison.OrdinalIgnoreCase) || trimmed.Equals("emailsmtpaddress", StringComparison.OrdinalIgnoreCase))
+			{
+				nameValue = Windows.UI.Xaml.Input.InputScopeNameValue.EmailSmtpAddress;
+			}
+			else if (trimmed.Equals("7", StringComparison.OrdinalIgnoreCase) || trimmed.Equals("personalfullname", StringComparison.OrdinalIgnoreCase))
+			{
+				nameValue = Windows.UI.Xaml.Input.InputScopeNameValue.PersonalFullName;
+			}
+			else if (trimmed.Equals("20", StringComparison.OrdinalIgnoreCase) || trimmed.Equals("currencyamountandsymbol", StringComparison.OrdinalIgnoreCase))
+			{
+				nameValue = Windows.UI.Xaml.Input.InputScopeNameValue.CurrencyAmountAndSymbol;
+			}
+			else if (trimmed.Equals("21", StringComparison.OrdinalIgnoreCase) || trimmed.Equals("currencyamount", StringComparison.OrdinalIgnoreCase))
+			{
+				nameValue = Windows.UI.Xaml.Input.InputScopeNameValue.CurrencyAmount;
+			}
+			else if (trimmed.Equals("23", StringComparison.OrdinalIgnoreCase) || trimmed.Equals("datemonthnumber", StringComparison.OrdinalIgnoreCase))
+			{
+				nameValue = Windows.UI.Xaml.Input.InputScopeNameValue.DateMonthNumber;
+			}
+			else if (trimmed.Equals("24", StringComparison.OrdinalIgnoreCase) || trimmed.Equals("datedaynumber", StringComparison.OrdinalIgnoreCase))
+			{
+				nameValue = Windows.UI.Xaml.Input.InputScopeNameValue.DateDayNumber;
+			}
+			else if (trimmed.Equals("25", StringComparison.OrdinalIgnoreCase) || trimmed.Equals("dateyear", StringComparison.OrdinalIgnoreCase))
+			{
+				nameValue = Windows.UI.Xaml.Input.InputScopeNameValue.DateYear;
+			}
+			else if (trimmed.Equals("28", StringComparison.OrdinalIgnoreCase) || trimmed.Equals("digits", StringComparison.OrdinalIgnoreCase))
+			{
+				nameValue = Windows.UI.Xaml.Input.InputScopeNameValue.Digits;
+			}
+			else if (trimmed.Equals("29", StringComparison.OrdinalIgnoreCase) || trimmed.Equals("number", StringComparison.OrdinalIgnoreCase))
+			{
+				nameValue = Windows.UI.Xaml.Input.InputScopeNameValue.Number;
+			}
+			else if (trimmed.Equals("31", StringComparison.OrdinalIgnoreCase) || trimmed.Equals("password", StringComparison.OrdinalIgnoreCase))
+			{
+				nameValue = Windows.UI.Xaml.Input.InputScopeNameValue.Password;
+			}
+			else if (trimmed.Equals("32", StringComparison.OrdinalIgnoreCase) || trimmed.Equals("telephonenumber", StringComparison.OrdinalIgnoreCase))
+			{
+				nameValue = Windows.UI.Xaml.Input.InputScopeNameValue.TelephoneNumber;
+			}
+			else if (trimmed.Equals("33", StringComparison.OrdinalIgnoreCase) || trimmed.Equals("telephonecountrycode", StringComparison.OrdinalIgnoreCase))
+			{
+				nameValue = Windows.UI.Xaml.Input.InputScopeNameValue.TelephoneCountryCode;
+			}
+			else if (trimmed.Equals("34", StringComparison.OrdinalIgnoreCase) || trimmed.Equals("telephoneareacode", StringComparison.OrdinalIgnoreCase))
+			{
+				nameValue = Windows.UI.Xaml.Input.InputScopeNameValue.TelephoneAreaCode;
+			}
+			else if (trimmed.Equals("35", StringComparison.OrdinalIgnoreCase) || trimmed.Equals("telephonelocalnumber", StringComparison.OrdinalIgnoreCase))
+			{
+				nameValue = Windows.UI.Xaml.Input.InputScopeNameValue.TelephoneLocalNumber;
+			}
+			else if (trimmed.Equals("37", StringComparison.OrdinalIgnoreCase) || trimmed.Equals("timehour", StringComparison.OrdinalIgnoreCase))
+			{
+				nameValue = Windows.UI.Xaml.Input.InputScopeNameValue.TimeHour;
+			}
+			else if (trimmed.Equals("38", StringComparison.OrdinalIgnoreCase) || trimmed.Equals("timeminutesorseconds", StringComparison.OrdinalIgnoreCase))
+			{
+				nameValue = Windows.UI.Xaml.Input.InputScopeNameValue.TimeMinutesOrSeconds;
+			}
+			else if (trimmed.Equals("39", StringComparison.OrdinalIgnoreCase) || trimmed.Equals("numberfullwidth", StringComparison.OrdinalIgnoreCase))
+			{
+				nameValue = Windows.UI.Xaml.Input.InputScopeNameValue.NumberFullWidth;
+			}
+			else if (trimmed.Equals("40", StringComparison.OrdinalIgnoreCase) || trimmed.Equals("alphanumerichalfwidth", StringComparison.OrdinalIgnoreCase))
+			{
+				nameValue = Windows.UI.Xaml.Input.InputScopeNameValue.AlphanumericHalfWidth;
+			}
+			else if (trimmed.Equals("41", StringComparison.OrdinalIgnoreCase) || trimmed.Equals("alphanumericfullwidth", StringComparison.OrdinalIgnoreCase))
+			{
+				nameValue = Windows.UI.Xaml.Input.InputScopeNameValue.AlphanumericFullWidth;
+			}
+			else if (trimmed.Equals("44", StringComparison.OrdinalIgnoreCase) || trimmed.Equals("hiragana", StringComparison.OrdinalIgnoreCase))
+			{
+				nameValue = Windows.UI.Xaml.Input.InputScopeNameValue.Hiragana;
+			}
+			else if (trimmed.Equals("45", StringComparison.OrdinalIgnoreCase) || trimmed.Equals("katakanahalfwidth", StringComparison.OrdinalIgnoreCase))
+			{
+				nameValue = Windows.UI.Xaml.Input.InputScopeNameValue.KatakanaHalfWidth;
+			}
+			else if (trimmed.Equals("46", StringComparison.OrdinalIgnoreCase) || trimmed.Equals("katakanafullwidth", StringComparison.OrdinalIgnoreCase))
+			{
+				nameValue = Windows.UI.Xaml.Input.InputScopeNameValue.KatakanaFullWidth;
+			}
+			else if (trimmed.Equals("47", StringComparison.OrdinalIgnoreCase) || trimmed.Equals("hanja", StringComparison.OrdinalIgnoreCase))
+			{
+				nameValue = Windows.UI.Xaml.Input.InputScopeNameValue.Hanja;
+			}
+			else if (trimmed.Equals("48", StringComparison.OrdinalIgnoreCase) || trimmed.Equals("hangulhalfwidth", StringComparison.OrdinalIgnoreCase))
+			{
+				nameValue = Windows.UI.Xaml.Input.InputScopeNameValue.HangulHalfWidth;
+			}
+			else if (trimmed.Equals("49", StringComparison.OrdinalIgnoreCase) || trimmed.Equals("hangulfullwidth", StringComparison.OrdinalIgnoreCase))
+			{
+				nameValue = Windows.UI.Xaml.Input.InputScopeNameValue.HangulFullWidth;
+			}
+			else if (trimmed.Equals("50", StringComparison.OrdinalIgnoreCase) || trimmed.Equals("search", StringComparison.OrdinalIgnoreCase))
+			{
+				nameValue = Windows.UI.Xaml.Input.InputScopeNameValue.Search;
+			}
+			else if (trimmed.Equals("51", StringComparison.OrdinalIgnoreCase) || trimmed.Equals("formula", StringComparison.OrdinalIgnoreCase))
+			{
+				nameValue = Windows.UI.Xaml.Input.InputScopeNameValue.Formula;
+			}
+			else if (trimmed.Equals("52", StringComparison.OrdinalIgnoreCase) || trimmed.Equals("searchincremental", StringComparison.OrdinalIgnoreCase))
+			{
+				nameValue = Windows.UI.Xaml.Input.InputScopeNameValue.SearchIncremental;
+			}
+			else if (trimmed.Equals("53", StringComparison.OrdinalIgnoreCase) || trimmed.Equals("chinesehalfwidth", StringComparison.OrdinalIgnoreCase))
+			{
+				nameValue = Windows.UI.Xaml.Input.InputScopeNameValue.ChineseHalfWidth;
+			}
+			else if (trimmed.Equals("54", StringComparison.OrdinalIgnoreCase) || trimmed.Equals("chinesefullwidth", StringComparison.OrdinalIgnoreCase))
+			{
+				nameValue = Windows.UI.Xaml.Input.InputScopeNameValue.ChineseFullWidth;
+			}
+			else if (trimmed.Equals("55", StringComparison.OrdinalIgnoreCase) || trimmed.Equals("nativescript", StringComparison.OrdinalIgnoreCase))
+			{
+				nameValue = Windows.UI.Xaml.Input.InputScopeNameValue.NativeScript;
+			}
+			else if (trimmed.Equals("57", StringComparison.OrdinalIgnoreCase) || trimmed.Equals("text", StringComparison.OrdinalIgnoreCase))
+			{
+				nameValue = Windows.UI.Xaml.Input.InputScopeNameValue.Text;
+			}
+			else if (trimmed.Equals("58", StringComparison.OrdinalIgnoreCase) || trimmed.Equals("chat", StringComparison.OrdinalIgnoreCase))
+			{
+				nameValue = Windows.UI.Xaml.Input.InputScopeNameValue.Chat;
+			}
+			else if (trimmed.Equals("59", StringComparison.OrdinalIgnoreCase) || trimmed.Equals("nameorphonenumber", StringComparison.OrdinalIgnoreCase))
+			{
+				nameValue = Windows.UI.Xaml.Input.InputScopeNameValue.NameOrPhoneNumber;
+			}
+			else if (trimmed.Equals("60", StringComparison.OrdinalIgnoreCase) || trimmed.Equals("emailnameoraddress", StringComparison.OrdinalIgnoreCase))
+			{
+				nameValue = Windows.UI.Xaml.Input.InputScopeNameValue.EmailNameOrAddress;
+			}
+			else if (trimmed.Equals("62", StringComparison.OrdinalIgnoreCase) || trimmed.Equals("maps", StringComparison.OrdinalIgnoreCase))
+			{
+				nameValue = Windows.UI.Xaml.Input.InputScopeNameValue.Maps;
+			}
+			else if (trimmed.Equals("63", StringComparison.OrdinalIgnoreCase) || trimmed.Equals("numericpassword", StringComparison.OrdinalIgnoreCase))
+			{
+				nameValue = Windows.UI.Xaml.Input.InputScopeNameValue.NumericPassword;
+			}
+			else if (trimmed.Equals("64", StringComparison.OrdinalIgnoreCase) || trimmed.Equals("numericpin", StringComparison.OrdinalIgnoreCase))
+			{
+				nameValue = Windows.UI.Xaml.Input.InputScopeNameValue.NumericPin;
+			}
+			else if (trimmed.Equals("65", StringComparison.OrdinalIgnoreCase) || trimmed.Equals("alphanumericpin", StringComparison.OrdinalIgnoreCase))
+			{
+				nameValue = Windows.UI.Xaml.Input.InputScopeNameValue.AlphanumericPin;
+			}
+			else if (trimmed.Equals("67", StringComparison.OrdinalIgnoreCase) || trimmed.Equals("formulanumber", StringComparison.OrdinalIgnoreCase))
+			{
+				nameValue = Windows.UI.Xaml.Input.InputScopeNameValue.FormulaNumber;
+			}
+			else if (trimmed.Equals("68", StringComparison.OrdinalIgnoreCase) || trimmed.Equals("chatwithoutemoji", StringComparison.OrdinalIgnoreCase))
+			{
+				nameValue = Windows.UI.Xaml.Input.InputScopeNameValue.ChatWithoutEmoji;
+			}
+			else
+			{
+				throw new InvalidOperationException($"Failed to create a '{outputType.FullName}' from the text '{input}'.");
+			}
 
-				_ => throw new InvalidOperationException($"Failed to create a '{outputType.FullName}' from the text '{input}'."),
-			};
 			output = new Windows.UI.Xaml.Input.InputScope
 			{
 				Names =
@@ -630,16 +761,31 @@ namespace Uno.UI.DataBinding
 		{
 			if (outputType != typeof(TextAlignment)) return false;
 
-			output = input.ToLowerInvariant().Trim() switch
+			var trimmed = input.AsSpan().Trim();
+			if (trimmed.Equals("0", StringComparison.OrdinalIgnoreCase) || trimmed.Equals("center", StringComparison.OrdinalIgnoreCase))
 			{
-				"0" or "center" => TextAlignment.Center,
-				"1" or "left" or "start" => TextAlignment.Left,
-				"2" or "right" or "end" => TextAlignment.Right,
-				"3" or "justify" => TextAlignment.Justify,
-				"4" or "detectfromcontent" => TextAlignment.DetectFromContent,
-
-				_ => throw new InvalidOperationException($"Failed to create a '{outputType.FullName}' from the text '{input}'."),
-			};
+				output = TextAlignment.Center;
+			}
+			else if (trimmed.Equals("1", StringComparison.OrdinalIgnoreCase) || trimmed.Equals("left", StringComparison.OrdinalIgnoreCase) || trimmed.Equals("start", StringComparison.OrdinalIgnoreCase))
+			{
+				output = TextAlignment.Left;
+			}
+			else if (trimmed.Equals("2", StringComparison.OrdinalIgnoreCase) || trimmed.Equals("right", StringComparison.OrdinalIgnoreCase) || trimmed.Equals("end", StringComparison.OrdinalIgnoreCase))
+			{
+				output = TextAlignment.Right;
+			}
+			else if (trimmed.Equals("3", StringComparison.OrdinalIgnoreCase) || trimmed.Equals("justify", StringComparison.OrdinalIgnoreCase))
+			{
+				output = TextAlignment.Justify;
+			}
+			else if (trimmed.Equals("4", StringComparison.OrdinalIgnoreCase) || trimmed.Equals("detectfromcontent", StringComparison.OrdinalIgnoreCase))
+			{
+				output = TextAlignment.DetectFromContent;
+			}
+			else
+			{
+				throw new InvalidOperationException($"Failed to create a '{outputType.FullName}' from the text '{input}'.");
+			}
 
 			return true;
 		}
@@ -686,33 +832,35 @@ namespace Uno.UI.DataBinding
 
 				var trimmed = IgnoreStartingFromFirstSpaceIgnoreLeading(input);
 
-				if (trimmed == "0" || trimmed.Length == 0) // Fast path for zero / empty values (means zero in XAML)
+				if (trimmed.Equals("0", StringComparison.OrdinalIgnoreCase) || trimmed.Length == 0) // Fast path for zero / empty values (means zero in XAML)
 				{
 					output = 0d;
 					return true;
 				}
 
-				trimmed = trimmed.ToLowerInvariant();
-
-				if (trimmed == "nan" || trimmed == "auto")
+				if (trimmed.Equals("nan", StringComparison.OrdinalIgnoreCase) || trimmed.Equals("auto", StringComparison.OrdinalIgnoreCase))
 				{
 					output = double.NaN;
 					return true;
 				}
 
-				if (trimmed == "-infinity")
+				if (trimmed.Equals("-infinity", StringComparison.OrdinalIgnoreCase))
 				{
 					output = double.NegativeInfinity;
 					return true;
 				}
 
-				if (trimmed == "infinity")
+				if (trimmed.Equals("infinity", StringComparison.OrdinalIgnoreCase))
 				{
 					output = double.PositiveInfinity;
 					return true;
 				}
 
+#if NET6_0_OR_GREATER
 				if (double.TryParse(trimmed, numberStyles, NumberFormatInfo.InvariantInfo, out var d))
+#else
+				if (double.TryParse(trimmed.ToString(), numberStyles, NumberFormatInfo.InvariantInfo, out var d))
+#endif
 				{
 					output = d;
 					return true;
@@ -745,35 +893,36 @@ namespace Uno.UI.DataBinding
 					}
 				}
 
-				var trimmed = input.Trim();
+				var trimmed = input.AsSpan().Trim();
 
-				if (trimmed == "0" || trimmed == "") // Fast path for zero / empty values (means zero in XAML)
+				if (trimmed.Equals("0", StringComparison.OrdinalIgnoreCase) || trimmed.Length == 0) // Fast path for zero / empty values (means zero in XAML)
 				{
 					output = 0f;
 					return true;
 				}
 
-				trimmed = trimmed.ToLowerInvariant();
-
-				if (trimmed == "nan") // "Auto" is for sizes, which are only of type double
+				if (trimmed.Equals("nan", StringComparison.OrdinalIgnoreCase)) // "Auto" is for sizes, which are only of type double
 				{
 					output = float.NaN;
 					return true;
 				}
 
-				if (trimmed == "-infinity")
+				if (trimmed.Equals("-infinity", StringComparison.OrdinalIgnoreCase))
 				{
 					output = float.NegativeInfinity;
 					return true;
 				}
 
-				if (trimmed == "infinity")
+				if (trimmed.Equals("infinity", StringComparison.OrdinalIgnoreCase))
 				{
 					output = float.PositiveInfinity;
 					return true;
 				}
-
+#if NET6_0_OR_GREATER
 				if (float.TryParse(trimmed, numberStyles, NumberFormatInfo.InvariantInfo, out var f))
+#else
+				if (float.TryParse(trimmed.ToString(), numberStyles, NumberFormatInfo.InvariantInfo, out var f))
+#endif
 				{
 					output = f;
 					return true;
@@ -802,13 +951,17 @@ namespace Uno.UI.DataBinding
 
 				var trimmed = IgnoreStartingFromFirstSpaceIgnoreLeading(input);
 
-				if (trimmed == "0" || trimmed.Length == 0) // Fast path for zero / empty values (means zero in XAML)
+				if (trimmed.Equals("0", StringComparison.OrdinalIgnoreCase) || trimmed.Length == 0) // Fast path for zero / empty values (means zero in XAML)
 				{
 					output = 0;
 					return true;
 				}
 
+#if NET6_0_OR_GREATER
 				if (int.TryParse(trimmed, numberStyles, NumberFormatInfo.InvariantInfo, out var i))
+#else
+				if (int.TryParse(trimmed.ToString(), numberStyles, NumberFormatInfo.InvariantInfo, out var i))
+#endif
 				{
 					output = i;
 					return true;
@@ -822,14 +975,19 @@ namespace Uno.UI.DataBinding
 		{
 			if (outputType != typeof(Windows.UI.Xaml.Controls.Orientation)) return false;
 
-			var lowered = input.ToLowerInvariant();
-			output = input.ToLowerInvariant().Trim() switch
+			var trimmed = input.AsSpan().Trim();
+			if (trimmed.Equals("0", StringComparison.OrdinalIgnoreCase) || trimmed.Equals("vertical", StringComparison.OrdinalIgnoreCase))
 			{
-				"0" or "vertical" => Windows.UI.Xaml.Controls.Orientation.Vertical,
-				"1" or "horizontal" => Windows.UI.Xaml.Controls.Orientation.Horizontal,
-
-				_ => throw new InvalidOperationException($"Failed to create a '{outputType.FullName}' from the text '{input}'."),
-			};
+				output = Windows.UI.Xaml.Controls.Orientation.Vertical;
+			}
+			else if (trimmed.Equals("1", StringComparison.OrdinalIgnoreCase) || trimmed.Equals("horizontal", StringComparison.OrdinalIgnoreCase))
+			{
+				output = Windows.UI.Xaml.Controls.Orientation.Horizontal;
+			}
+			else
+			{
+				throw new InvalidOperationException($"Failed to create a '{outputType.FullName}' from the text '{input}'.");
+			}
 
 			return true;
 		}
@@ -848,16 +1006,27 @@ namespace Uno.UI.DataBinding
 		private static bool FastStringToVerticalAlignmentConvert(Type outputType, string input, ref object output)
 		{
 			if (outputType != typeof(VerticalAlignment)) return false;
-
-			output = input.ToLowerInvariant().Trim() switch
+			var trimmed = input.AsSpan().Trim();
+			if (trimmed.Equals("0", StringComparison.OrdinalIgnoreCase) || trimmed.Equals("top", StringComparison.OrdinalIgnoreCase))
 			{
-				"0" or "top" => VerticalAlignment.Top,
-				"1" or "center" => VerticalAlignment.Center,
-				"2" or "bottom" => VerticalAlignment.Bottom,
-				"3" or "stretch" => VerticalAlignment.Stretch,
-
-				_ => throw new InvalidOperationException($"Failed to create a '{outputType.FullName}' from the text '{input}'."),
-			};
+				output = VerticalAlignment.Top;
+			}
+			else if (trimmed.Equals("1", StringComparison.OrdinalIgnoreCase) || trimmed.Equals("center", StringComparison.OrdinalIgnoreCase))
+			{
+				output = VerticalAlignment.Center;
+			}
+			else if (trimmed.Equals("2", StringComparison.OrdinalIgnoreCase) || trimmed.Equals("bottom", StringComparison.OrdinalIgnoreCase))
+			{
+				output = VerticalAlignment.Bottom;
+			}
+			else if (trimmed.Equals("3", StringComparison.OrdinalIgnoreCase) || trimmed.Equals("stretch", StringComparison.OrdinalIgnoreCase))
+			{
+				output = VerticalAlignment.Stretch;
+			}
+			else
+			{
+				throw new InvalidOperationException($"Failed to create a '{outputType.FullName}' from the text '{input}'.");
+			}
 
 			return true;
 		}
@@ -866,15 +1035,27 @@ namespace Uno.UI.DataBinding
 		{
 			if (outputType != typeof(HorizontalAlignment)) return false;
 
-			output = input.ToLowerInvariant().Trim() switch
+			var trimmed = input.AsSpan().Trim();
+			if (trimmed.Equals("0", StringComparison.OrdinalIgnoreCase) || trimmed.Equals("left", StringComparison.OrdinalIgnoreCase))
 			{
-				"0" or "left" => HorizontalAlignment.Left,
-				"1" or "center" => HorizontalAlignment.Center,
-				"2" or "right" => HorizontalAlignment.Right,
-				"3" or "stretch" => HorizontalAlignment.Stretch,
-
-				_ => throw new InvalidOperationException($"Failed to create a '{outputType.FullName}' from the text '{input}'."),
-			};
+				output = HorizontalAlignment.Left;
+			}
+			else if (trimmed.Equals("1", StringComparison.OrdinalIgnoreCase) || trimmed.Equals("center", StringComparison.OrdinalIgnoreCase))
+			{
+				output = HorizontalAlignment.Center;
+			}
+			else if (trimmed.Equals("2", StringComparison.OrdinalIgnoreCase) || trimmed.Equals("right", StringComparison.OrdinalIgnoreCase))
+			{
+				output = HorizontalAlignment.Right;
+			}
+			else if (trimmed.Equals("3", StringComparison.OrdinalIgnoreCase) || trimmed.Equals("stretch", StringComparison.OrdinalIgnoreCase))
+			{
+				output = HorizontalAlignment.Stretch;
+			}
+			else
+			{
+				throw new InvalidOperationException($"Failed to create a '{outputType.FullName}' from the text '{input}'.");
+			}
 
 			return true;
 		}
@@ -883,13 +1064,19 @@ namespace Uno.UI.DataBinding
 		{
 			if (outputType != typeof(Visibility)) return false;
 
-			output = input.ToLowerInvariant().Trim() switch
+			var trimmed = input.AsSpan().Trim();
+			if (trimmed.Equals("0", StringComparison.OrdinalIgnoreCase) || trimmed.Equals("visible", StringComparison.OrdinalIgnoreCase))
 			{
-				"0" or "visible" => Visibility.Visible,
-				"1" or "collapsed" => Visibility.Collapsed,
-
-				_ => throw new InvalidOperationException($"Failed to create a '{outputType.FullName}' from the text '{input}'."),
-			};
+				output = Visibility.Visible;
+			}
+			else if (trimmed.Equals("1", StringComparison.OrdinalIgnoreCase) || trimmed.Equals("collapsed", StringComparison.OrdinalIgnoreCase))
+			{
+				output = Visibility.Collapsed;
+			}
+			else
+			{
+				throw new InvalidOperationException($"Failed to create a '{outputType.FullName}' from the text '{input}'.");
+			}
 
 			return true;
 		}
@@ -899,30 +1086,80 @@ namespace Uno.UI.DataBinding
 			if (outputType != typeof(FontWeight)) return false;
 
 			// Note that list is hard coded to avoid the cold path cost of reflection.
-			output = input.ToLowerInvariant().Trim() switch
+			var trimmed = input.AsSpan().Trim();
+			if (trimmed.Equals("100", StringComparison.OrdinalIgnoreCase) || trimmed.Equals("thin", StringComparison.OrdinalIgnoreCase))
 			{
-				"100" or "thin" => FontWeights.Thin,
-				"200" or "extralight" => FontWeights.ExtraLight,
-				"250" or "semilight" => FontWeights.SemiLight,
-				"300" or "light" => FontWeights.Light,
-				"400" or "normal" => FontWeights.Normal,
-				"500" or "medium" => FontWeights.Medium,
-				"600" or "semibold" => FontWeights.SemiBold,
-				"700" or "bold" => FontWeights.Bold,
-				"800" or "extrabold" => FontWeights.ExtraBold,
-				"900" or "black" => FontWeights.Black,
-				"950" or "extrablack" => FontWeights.ExtraBlack,
-
-				// legacy wpf aliases
-				"ultralight" => FontWeights.UltraLight, // 200 ExtraLight
-				"regular" => FontWeights.Regular, // 400 Normal
-				"demibold" => FontWeights.DemiBold, // 600 SemiBold
-				"ultrabold" => FontWeights.UltraBold, // 800 ExtraBold
-				"heavy" => FontWeights.Heavy, // 900 Black
-				"ultrablack" => FontWeights.UltraBlack, // 950 ExtraBlack
-
-				_ => throw new InvalidOperationException($"Failed to create a '{outputType.FullName}' from the text '{input}'."),
-			};
+				output = FontWeights.Thin;
+			}
+			else if (trimmed.Equals("200", StringComparison.OrdinalIgnoreCase) || trimmed.Equals("extralight", StringComparison.OrdinalIgnoreCase))
+			{
+				output = FontWeights.ExtraLight;
+			}
+			else if (trimmed.Equals("250", StringComparison.OrdinalIgnoreCase) || trimmed.Equals("semilight", StringComparison.OrdinalIgnoreCase))
+			{
+				output = FontWeights.SemiLight;
+			}
+			else if (trimmed.Equals("300", StringComparison.OrdinalIgnoreCase) || trimmed.Equals("light", StringComparison.OrdinalIgnoreCase))
+			{
+				output = FontWeights.Light;
+			}
+			else if (trimmed.Equals("400", StringComparison.OrdinalIgnoreCase) || trimmed.Equals("normal", StringComparison.OrdinalIgnoreCase))
+			{
+				output = FontWeights.Normal;
+			}
+			else if (trimmed.Equals("500", StringComparison.OrdinalIgnoreCase) || trimmed.Equals("medium", StringComparison.OrdinalIgnoreCase))
+			{
+				output = FontWeights.Medium;
+			}
+			else if (trimmed.Equals("600", StringComparison.OrdinalIgnoreCase) || trimmed.Equals("semibold", StringComparison.OrdinalIgnoreCase))
+			{
+				output = FontWeights.SemiBold;
+			}
+			else if (trimmed.Equals("700", StringComparison.OrdinalIgnoreCase) || trimmed.Equals("bold", StringComparison.OrdinalIgnoreCase))
+			{
+				output = FontWeights.Bold;
+			}
+			else if (trimmed.Equals("800", StringComparison.OrdinalIgnoreCase) || trimmed.Equals("extrabold", StringComparison.OrdinalIgnoreCase))
+			{
+				output = FontWeights.ExtraBold;
+			}
+			else if (trimmed.Equals("900", StringComparison.OrdinalIgnoreCase) || trimmed.Equals("black", StringComparison.OrdinalIgnoreCase))
+			{
+				output = FontWeights.Black;
+			}
+			else if (trimmed.Equals("950", StringComparison.OrdinalIgnoreCase) || trimmed.Equals("extrablack", StringComparison.OrdinalIgnoreCase))
+			{
+				output = FontWeights.ExtraBlack;
+			}
+			// legacy wpf aliases
+			else if (trimmed.Equals("ultralight", StringComparison.OrdinalIgnoreCase))
+			{
+				output = FontWeights.UltraLight; // 200 ExtraLight
+			}
+			else if (trimmed.Equals("regular", StringComparison.OrdinalIgnoreCase))
+			{
+				output = FontWeights.Regular; // 400 Normal
+			}
+			else if (trimmed.Equals("demibold", StringComparison.OrdinalIgnoreCase))
+			{
+				output = FontWeights.DemiBold; // 600 SemiBold
+			}
+			else if (trimmed.Equals("ultrabold", StringComparison.OrdinalIgnoreCase))
+			{
+				output = FontWeights.UltraBold; // 800 ExtraBold
+			}
+			else if (trimmed.Equals("heavy", StringComparison.OrdinalIgnoreCase))
+			{
+				output = FontWeights.Heavy; // 900 Black
+			}
+			else if (trimmed.Equals("ultrablack", StringComparison.OrdinalIgnoreCase))
+			{
+				output = FontWeights.UltraBlack; // 950 ExtraBlack
+			}
+			else
+			{
+				throw new InvalidOperationException($"Failed to create a '{outputType.FullName}' from the text '{input}'.");
+			}
 
 			return true;
 		}
@@ -1036,7 +1273,7 @@ namespace Uno.UI.DataBinding
 			return i;
 		}
 
-		private static string IgnoreStartingFromFirstSpaceIgnoreLeading(string value)
+		private static ReadOnlySpan<char> IgnoreStartingFromFirstSpaceIgnoreLeading(string value)
 		{
 			var span = value.AsSpan().TrimStart();
 
@@ -1051,8 +1288,8 @@ namespace Uno.UI.DataBinding
 			}
 
 			return firstWhitespace == -1
-				? value
-				: span.Slice(0, firstWhitespace).ToString();
+				? value.AsSpan()
+				: span.Slice(0, firstWhitespace);
 		}
 	}
 }

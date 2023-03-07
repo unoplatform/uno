@@ -54,7 +54,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		public override int GetHashCode()
 			=> Count.GetHashCode()
 				^ Duration.GetHashCode()
-				^ Type.GetHashCode();
+				^ ((int)Type).GetHashCode();
 
 		public override bool Equals(object value)
 			=> value is RepeatBehavior other && Equals(this, other);

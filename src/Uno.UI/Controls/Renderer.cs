@@ -104,13 +104,12 @@ namespace Uno.UI.Controls
 	{
 		private static readonly WeakAttachedDictionary<DependencyObject, Type> _renderers = new WeakAttachedDictionary<DependencyObject, Type>();
 
-		public static TRenderer GetRenderer<TElement, TRenderer>(this TElement element, Func<TRenderer> rendererFactory)
-			where TElement : DependencyObject
+		public static TRenderer GetRenderer<TRenderer>(this DependencyObject element, Func<TRenderer> rendererFactory)
 		{
 			return _renderers.GetValue(element, typeof(TRenderer), rendererFactory);
 		}
-		public static TRenderer ResetRenderer<TElement, TRenderer>(this TElement element, Func<TRenderer> rendererFactory)
-			where TElement : DependencyObject
+
+		public static TRenderer ResetRenderer<TRenderer>(this DependencyObject element, Func<TRenderer> rendererFactory)
 		{
 			return _renderers.GetValue(element, typeof(TRenderer), rendererFactory);
 		}

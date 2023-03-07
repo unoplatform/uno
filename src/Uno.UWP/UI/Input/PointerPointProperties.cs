@@ -153,7 +153,7 @@ namespace Windows.UI.Input
 
 			// Misc
 			builder.Append('(');
-			builder.Append(PointerUpdateKind);
+			builder.Append(PointerUpdateKind.ToString());
 			builder.Append(')');
 
 			return builder.ToString();

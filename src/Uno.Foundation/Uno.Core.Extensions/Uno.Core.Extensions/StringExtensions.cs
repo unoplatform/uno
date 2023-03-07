@@ -22,6 +22,7 @@ using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
 
 #endregion
 
@@ -87,6 +88,13 @@ namespace Uno.Extensions
 		{
 			return new LineSplitEnumerator(instance);
 		}
+
+#if !NET6_0_OR_GREATER
+		public static bool Equals(this ReadOnlySpan<char> span, string other, StringComparison comparison)
+		{
+			return span.Equals(other.AsSpan(), comparison);
+		}
+#endif
 
 		public static bool IsNullOrEmpty([NotNullWhen(false)] this string instance)
 		{
