@@ -43,7 +43,7 @@ namespace Windows.UI.Xaml.Controls
 		// https://github.com/unoplatform/uno/issues/10283
 		private static readonly CGColor _transparent = Colors.Transparent;
 
-		private LayoutState _previousLayoutState;
+		private BorderLayerState _lastState;
 
 		private SerialDisposable _layerDisposable = new SerialDisposable();
 
@@ -53,15 +53,15 @@ namespace Windows.UI.Xaml.Controls
 			var bounds = _owner.Bounds;
 			var area = new CGRect(0, 0, bounds.Width, bounds.Height);
 
-			var newState = new LayoutState(
+			var newState = new BorderLayerState(
 				area,
+				_borderInfoProvider.Background,
+				_borderInfoProvider.BackgroundSizing,
 				_borderInfoProvider.BorderBrush,
 				_borderInfoProvider.BorderThickness,
-				_borderInfoProvider.CornerRadius,
-				_borderInfoProvider.Background,
-				_borderInfoProvider.BackgroundSizing);
+				_borderInfoProvider.CornerRadius);
 
-			if (!newState.Equals(_previousLayoutState))
+			if (!newState.Equals(_lastState))
 			{
 #if __MACOS__
 				_owner.WantsLayer = true;
@@ -70,7 +70,7 @@ namespace Windows.UI.Xaml.Controls
 				_layerDisposable.Disposable = null;
 				_layerDisposable.Disposable = InnerCreateLayer(_owner as UIElement, _owner.Layer, newState, out var updatedBoundsPath);
 
-				_previousLayoutState = newState;
+				_lastState = newState;
 
 				BoundsPath = updatedBoundsPath;
 			}
@@ -97,7 +97,7 @@ namespace Windows.UI.Xaml.Controls
 		partial void ClearLayer()
 		{
 			_layerDisposable.Disposable = null;
-			_previousLayoutState = null;
+			_lastState = null;
 		}
 
 		public enum Corner { TopLeft, TopRight, BottomRight, BottomLeft }
@@ -137,7 +137,7 @@ namespace Windows.UI.Xaml.Controls
 			return new(x, y);
 		}
 
-		private static IDisposable InnerCreateLayer(UIElement owner, CALayer parent, LayoutState state, out CGPath updatedBoundsPath)
+		private static IDisposable InnerCreateLayer(UIElement owner, CALayer parent, BorderLayerState state, out CGPath updatedBoundsPath)
 		{
 			updatedBoundsPath = null;
 
