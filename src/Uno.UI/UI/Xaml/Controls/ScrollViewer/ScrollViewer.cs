@@ -1282,6 +1282,7 @@ namespace Windows.UI.Xaml.Controls
 			if (isIntermediate && UpdatesMode != Uno.UI.Xaml.Controls.ScrollViewerUpdatesMode.Synchronous)
 			{
 				RequestUpdate();
+				_snapPointsTimer?.Stop();
 			}
 			else
 			{
@@ -1300,7 +1301,7 @@ namespace Windows.UI.Xaml.Controls
 						{
 							_snapPointsTimer = Windows.System.DispatcherQueue.GetForCurrentThread().CreateTimer();
 							_snapPointsTimer.IsRepeating = false;
-							_snapPointsTimer.Interval = TimeSpan.FromMilliseconds(250);
+							_snapPointsTimer.Interval = FeatureConfiguration.ScrollViewer.SnapDelay;
 							_snapPointsTimer.Tick += (snd, evt) => DelayedMoveToSnapPoint();
 						}
 

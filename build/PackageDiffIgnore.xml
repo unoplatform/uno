@@ -9132,6 +9132,7 @@
 			<Member fullName="Microsoft.UI.Xaml.Controls.Primitives.ZoomSnapPointBase" reason="Not present in WinAppSDK 1.2" />
 			<Member fullName="Microsoft.UI.Xaml.Automation.Peers.ScrollPresenterAutomationPeer" reason="Not present in WinAppSDK 1.2" />
 			<Member fullName="Microsoft.UI.Xaml.Media.RevealBrushState" reason="Not present in WinAppSDK 1.2" />
+			<Member fullName="Windows.UI.Xaml.Media.TransformExtensions" reason="Moved to RuntimeTests project as it is only used there." />
 		</Types>
 		<Events>
 			<Member fullName="Windows.Foundation.TypedEventHandler`2&lt;Microsoft.UI.Xaml.Controls.IInputValidationControl,Microsoft.UI.Xaml.Controls.HasValidationErrorsChangedEventArgs&gt; Microsoft.UI.Xaml.Controls.AutoSuggestBox::HasValidationErrorsChanged" reason="Not present in WinAppSDK 1.2" />
@@ -9379,8 +9380,15 @@
 			<Member fullName="System.Void Microsoft.UI.Xaml.Media.RevealBrush.SetState(Microsoft.UI.Xaml.UIElement element, Microsoft.UI.Xaml.Media.RevealBrushState value)" reason="Not present in WinAppSDK 1.2" />
 			<Member fullName="Microsoft.UI.Xaml.Media.RevealBrushState Microsoft.UI.Xaml.Media.RevealBrush.GetState(Microsoft.UI.Xaml.UIElement element)" reason="Not present in WinAppSDK 1.2" />
 			<Member fullName="System.Void Windows.Web.Http.Headers.HttpRequestHeaderCollection..ctor()" reason="Not in Windows and must not be instantiated by user." />
-
 			<Member fullName="System.Void Windows.Foundation.IPropertyValue.GetDateTimeArray(System.DateTime[]&amp; value)" reason="Not in Windows" />
+			<Member fullName="System.Void Windows.Devices.Geolocation.Geolocator.OnLocationChanged(Android.Locations.Location location)" reason="Not present in Windows" />
+			<Member fullName="System.Void Windows.Devices.Geolocation.Geolocator.OnProviderDisabled(System.String provider)" reason="Not present in Windows" />
+			<Member fullName="System.Void Windows.Devices.Geolocation.Geolocator.OnProviderEnabled(System.String provider)" reason="Not present in Windows" />
+			<Member fullName="System.Void Windows.Devices.Geolocation.Geolocator.OnStatusChanged(System.String provider, Android.Locations.Availability status, Android.OS.Bundle extras)" reason="Not present in Windows" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.TextBox.OnInputScopeChanged(Windows.UI.Xaml.DependencyPropertyChangedEventArgs e)" reason="Changed parameter type and made private." />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.TextBox.OnIsSpellCheckEnabledChanged(Windows.UI.Xaml.DependencyPropertyChangedEventArgs e)" reason="Changed parameter type and made private." />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.TextBox.OnIsTextPredictionEnabledChanged(Windows.UI.Xaml.DependencyPropertyChangedEventArgs e)" reason="Changed parameter type and made private." />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.TextBox.OnTextAlignmentChanged(Windows.UI.Xaml.DependencyPropertyChangedEventArgs e)" reason="Changed parameter type and made private." />
 		</Methods>
 	</IgnoreSet>
 

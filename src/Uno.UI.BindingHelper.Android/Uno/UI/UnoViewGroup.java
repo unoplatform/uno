@@ -47,7 +47,7 @@ public abstract class UnoViewGroup
 		Method[] methods = viewClass.getDeclaredMethods();
 
 		for(int i=0; i < methods.length; i++) {
-			if(methods[i].getName() == "setFrame" && methods[i].getParameterTypes().length == 4) {
+			if(methods[i].getName().equals("setFrame") && methods[i].getParameterTypes().length == 4) {
 				_setFrameMethod = methods[i];
 				_setFrameMethod.setAccessible(true);
 			}

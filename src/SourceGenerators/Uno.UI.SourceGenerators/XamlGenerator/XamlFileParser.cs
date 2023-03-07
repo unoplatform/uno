@@ -8,15 +8,15 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 using System.Xml;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.Text;
 using Uno.Extensions;
 using Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection;
 using Uno.UI.SourceGenerators.XamlGenerator.Utils;
 using Uno.Roslyn;
 using Windows.Foundation.Metadata;
-using System.Threading;
-using Microsoft.CodeAnalysis.Text;
 
 #if NETFRAMEWORK
 using GeneratorExecutionContext = Uno.SourceGeneration.GeneratorExecutionContext;
@@ -247,13 +247,23 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				if (document.DocumentElement != null)
 				{
 					var originalPrefix = document.DocumentElement.GetNamespaceOfPrefix(n);
-
-					if (!originalPrefix.StartsWith("using:", StringComparison.Ordinal))
+					var indexOfUsingColon = originalPrefix.IndexOf("using:", StringComparison.Ordinal);
+					if (indexOfUsingColon == -1)
 					{
+						// There is no "using:" in the namespace. So assume the default namespace
 						adjusted
 							.Replace(
-								"xmlns:{0}=\"{1}\"".InvariantCultureFormat(n, document.DocumentElement.GetNamespaceOfPrefix(n)),
+								"xmlns:{0}=\"{1}\"".InvariantCultureFormat(n, originalPrefix),
 								"xmlns:{0}=\"{1}\"".InvariantCultureFormat(n, document.DocumentElement.GetNamespaceOfPrefix(""))
+							);
+					}
+					else if (indexOfUsingColon > 0 && originalPrefix[indexOfUsingColon - 1] == '#')
+					{
+						// We have "#using:", we want to keep it.
+						adjusted
+							.Replace(
+								"xmlns:{0}=\"{1}\"".InvariantCultureFormat(n, originalPrefix),
+								"xmlns:{0}=\"{1}\"".InvariantCultureFormat(n, originalPrefix.Substring(indexOfUsingColon - 1))
 							);
 					}
 				}
@@ -279,7 +289,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				adjusted = new(XBindExpressionParser.RewriteDocumentPaths(adjusted.ToString()));
 			}
 
-			return (XmlReader.Create(new StringReader(adjusted.ToString().TrimEnd("\r\n"))), conditionals.DisableCaching);
+			return (XmlReader.Create(new StringReader(adjusted.ToString())), conditionals.DisableCaching);
 		}
 
 		private static StringBuilder ReplaceFirst(string targetString, string oldValue, string newValue)

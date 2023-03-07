@@ -539,6 +539,11 @@ namespace Uno.UI
 			/// </summary>
 			public static TimeSpan? AndroidScrollbarFadeDelay { get; set; }
 #endif
+
+			/// <summary>
+			/// Defines the delay of after which the ScrollViewer starts to move to snap points. The default value is 250ms.
+			/// </summary>
+			public static TimeSpan SnapDelay { get; set; } = TimeSpan.FromMilliseconds(250);
 		}
 
 		public static class ThemeAnimation

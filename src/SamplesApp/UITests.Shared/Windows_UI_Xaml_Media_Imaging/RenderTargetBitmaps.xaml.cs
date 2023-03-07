@@ -24,7 +24,7 @@ namespace UITests.Windows_UI_Xaml_Media_Imaging
 	/// <summary>
 	/// An empty page that can be used on its own or navigated to within a Frame.
 	/// </summary>
-	[Sample("Imaging", IgnoreInSnapshotTests = false)]
+	[Sample("Windows.UI.Xaml.Media", IgnoreInSnapshotTests = false)]
 	public sealed partial class RenderTargetBitmaps : Page
 	{
 		public static DependencyProperty RunTestProperty { get; } =

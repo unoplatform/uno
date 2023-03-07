@@ -298,7 +298,7 @@ namespace Uno.UI.DataBinding
 					if (IsIndexerFormat(property))
 					{
 						// Fallback on reflection-based lookup
-						var indexerInfo = GetPropertyInfo(type, "Item", allowPrivateMembers: false);
+						var indexerInfo = GetIndexerInfo(type, null, allowPrivateMembers: false);
 
 						if (indexerInfo != null)
 						{
@@ -378,6 +378,59 @@ namespace Uno.UI.DataBinding
 					| (allowPrivateMembers ? BindingFlags.NonPublic : BindingFlags.Default)
 					| BindingFlags.DeclaredOnly
 				);
+
+				if (info != null)
+				{
+					return info;
+				}
+
+				type = type.BaseType!;
+			}
+			while (type != null);
+
+			return null;
+		}
+
+		/// <summary>
+		/// Finds the specified property info by name.
+		/// </summary>
+		/// <param name="type">The type to search</param>
+		/// <param name="name">The name of the property</param>
+		/// <returns>A <see cref="PropertyInfo"/> instance.</returns>
+		/// <remarks>
+		/// This method is required when searching in types that
+		/// include "new" non-virtual overridden members. In Mono 4.0 and
+		/// earlier, the highest match would be returned, but the .NET core 
+		/// implementation found in Mono 4.2+ throws an ambiguous match exception.
+		/// This requires a recursive search using the <see cref="BindingFlags.DeclaredOnly"/> flag.
+		///
+		/// The private members lookup is present to enable the binding to
+		/// x:Name elements in x:Bind operations.
+		/// </remarks>
+		private static PropertyInfo? GetIndexerInfo(Type type, Type? parameterType, bool allowPrivateMembers)
+		{
+			var parameterTypes = parameterType is not null
+				? new[] { parameterType }
+				: null;
+
+			var bindingFlags = BindingFlags.Instance
+					| BindingFlags.Static
+					| BindingFlags.Public
+					| (allowPrivateMembers ? BindingFlags.NonPublic : BindingFlags.Default)
+					| BindingFlags.DeclaredOnly;
+
+			do
+			{
+				var info = parameterTypes is not null
+					? type.GetProperty(
+						name: "Item"
+						, bindingAttr: bindingFlags
+						, binder: null
+						, returnType: null
+						, types: parameterTypes
+						, modifiers: null
+					)
+					: type.GetProperty(name: "Item", bindingAttr: bindingFlags);
 
 				if (info != null)
 				{
@@ -478,7 +531,7 @@ namespace Uno.UI.DataBinding
 				{
 					int index;
 
-					if (Int32.TryParse(indexerString, out index))
+					if (int.TryParse(indexerString, NumberStyles.Integer, CultureInfo.InvariantCulture, out index))
 					{
 						return obj =>
 						{
@@ -502,7 +555,7 @@ namespace Uno.UI.DataBinding
 				{
 					int index;
 
-					if (Int32.TryParse(indexerString, out index))
+					if (int.TryParse(indexerString, NumberStyles.Integer, CultureInfo.InvariantCulture, out index))
 					{
 						return obj =>
 						{
@@ -553,9 +606,17 @@ namespace Uno.UI.DataBinding
 						_log.Debug($"GetValueGetter({type}, {property}) [Reflection]");
 					}
 
-					var indexerInfo = GetPropertyInfo(type, "Item", allowPrivateMembers);
+					var indexerPropertyType = int.TryParse(indexerString, NumberStyles.Integer, CultureInfo.InvariantCulture, out _)
+						? typeof(int)
+						: typeof(string);
 
-					if (indexerInfo != null)
+					// Try explicitly with known types
+					var indexerInfo = GetIndexerInfo(type, indexerPropertyType, allowPrivateMembers);
+
+					// Then if search fails, search by name only
+					indexerInfo ??= GetIndexerInfo(type, null, allowPrivateMembers);
+
+					if (indexerInfo is not null)
 					{
 						// This is an indexer
 						var method = indexerInfo.GetGetMethod();
@@ -784,17 +845,44 @@ namespace Uno.UI.DataBinding
 			if (IsIndexerFormat(property))
 			{
 				// This is an indexer
-				var indexerName = property.Substring(1, property.Length - 2);
+				var indexerRawParameter = property.Substring(1, property.Length - 2);
+				object indexerParameter =
+					int.TryParse(indexerRawParameter, NumberStyles.Integer, CultureInfo.InvariantCulture, out var indexerIndex)
+						? indexerIndex
+						: indexerRawParameter;
 
 				// The fastest path uses the generated bindable metadata, which does not require
 				// the property info, unless there is an actual conversion to perform.
 				// So we just close over the property.
-				var indexerInfo = Uno.Funcs.CreateMemoized(() => GetPropertyInfo(type, "Item", allowPrivateMembers: false));
+				var indexerInfo = Uno.Funcs.CreateMemoized(() =>
+				{
+					var paramType = indexerParameter is int ? typeof(int) : typeof(string);
+
+					// Search for the explicit parameter type
+					if (GetIndexerInfo(type, paramType, allowPrivateMembers: false) is { } withParamResult)
+					{
+						return withParamResult;
+					}
+					// Search for a string parameter
+					else if (GetIndexerInfo(type, typeof(string), allowPrivateMembers: false) is { } withStringParamResult)
+					{
+						return withStringParamResult;
+					}
+					// If not found, search for any matching type
+					else if (paramType is not null)
+					{
+						return GetIndexerInfo(type, null, allowPrivateMembers: false);
+					}
+
+					return null;
+				});
 				var indexerType = Uno.Funcs.CreateMemoized(() => indexerInfo()?.PropertyType);
 
 
 				// Start by using the provider, to avoid reflection
-				if (IsValidMetadataProviderType(type) && BindableMetadataProvider != null)
+				if (IsValidMetadataProviderType(type)
+					&& BindableMetadataProvider != null
+					&& indexerParameter is string)
 				{
 #if PROFILE
 					using (Performance.Measure("GetValueSetter.BindableMetadataProvider"))
@@ -808,7 +896,7 @@ namespace Uno.UI.DataBinding
 
 							if (indexerMethod != null)
 							{
-								return (instance, value) => indexerMethod(instance, indexerName, convertSelector(indexerType, value));
+								return (instance, value) => indexerMethod(instance, indexerRawParameter, convertSelector(indexerType, value));
 							}
 							else
 							{
@@ -840,7 +928,13 @@ namespace Uno.UI.DataBinding
 						{
 							var handler = MethodInvokerBuilder(method);
 
-							return (instance, value) => handler(instance, new object?[] { indexerName, convertSelector(indexerType, value) });
+							if (method.GetParameters() is { Length: 2 } indexerMethodParams
+								&& indexerMethodParams[0].ParameterType == typeof(string))
+							{
+								indexerParameter = indexerRawParameter;
+							}
+
+							return (instance, value) => handler(instance, new object?[] { indexerParameter, convertSelector(indexerType, value) });
 						}
 						else
 						{

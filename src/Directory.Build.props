@@ -58,6 +58,8 @@
 
     <DisableImplicitNamespaceImports>true</DisableImplicitNamespaceImports>
 
+    <UnoEnableXamlFuzzyMatching>false</UnoEnableXamlFuzzyMatching>
+
 	<!-- Enable ShouldWriteErrorOnInvalidXaml for all the sample and test projects of this solution -->
 	<ShouldWriteErrorOnInvalidXaml>True</ShouldWriteErrorOnInvalidXaml>
 
@@ -67,7 +69,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <MicrosoftNetCompilersToolsetVersion>4.5.0-2.final</MicrosoftNetCompilersToolsetVersion>
+    <MicrosoftNetCompilersToolsetVersion>4.5.0</MicrosoftNetCompilersToolsetVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -188,19 +190,14 @@
     <DefaultItemExcludes>$(DefaultItemExcludes);obj/**;bin/**</DefaultItemExcludes>
   </PropertyGroup>
 
-  <PropertyGroup>
-    <!-- Workaround for android build using the Uno Source Generators: https://github.com/unoplatform/uno.SourceGeneration/issues/109 -->
-    <JavaSdkDirectory Condition="'$(JavaSdkDirectory)'=='' and '$(JAVA_HOME_8_X64)'!=''">$(JAVA_HOME_8_X64)</JavaSdkDirectory>
-  </PropertyGroup>
-
   <ItemGroup Condition="('$(TargetFramework)'=='net461' or '$(TargetFramework)'=='net472' or '$(TargetFramework)'=='') and '$(AndroidManifest)'==''">
 	<!--
 	Include the reference assemblies to ensure that hard links don't use system files (workaround for same disk restriction)
 	Make sure to include on the versions that are needed to avoid growing the nuget cache unnecessarily.
 	-->
-	<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net48" Version="1.0.2" PrivateAssets="All" />
-	<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net472" Version="1.0.2" PrivateAssets="All" />
-	<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net461" Version="1.0.2" PrivateAssets="All" />
+	<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net48" PrivateAssets="All" />
+	<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net472" PrivateAssets="All" />
+	<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net461" PrivateAssets="All" />
   </ItemGroup>
 
   <PropertyGroup>

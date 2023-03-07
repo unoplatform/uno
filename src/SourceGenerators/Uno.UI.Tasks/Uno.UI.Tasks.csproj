@@ -10,7 +10,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />
+		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" PrivateAssets="All" />
 		<PackageReference Include="Microsoft.Build" Version="15.4.8" ExcludeAssets="runtime" />
 		<PackageReference Include="Microsoft.Build.Framework" Version="15.4.8" ExcludeAssets="runtime" />
 		<PackageReference Include="Microsoft.Build.Tasks.Core" Version="15.4.8" ExcludeAssets="runtime" />

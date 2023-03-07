@@ -71,7 +71,7 @@
 		<PackageReference Include="Uno.Wasm.Bootstrap.DevServer" Version="7.0.11" />
 		<PackageReference Include="Uno.WinUI.Lottie" Version="4.5.9" />
 	</ItemGroup>
-	
+
 	<ItemGroup>
 		<ProjectReference Include="..\$ext_safeprojectname$\$ext_safeprojectname$.csproj" />
 	</ItemGroup>

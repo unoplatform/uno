@@ -16,7 +16,7 @@
 				</ResourceDictionary>
 				<ResourceDictionary x:Key="Light">
 					<x:Double x:Key="ThemedDoubleValueResource">5</x:Double>
-					<x:Thickness x:Key="DivergingThemedResource">0,1,3,8</x:Thickness>
+					<Thickness x:Key="DivergingThemedResource">0,1,3,8</Thickness>
 				</ResourceDictionary>
 			</ResourceDictionary.ThemeDictionaries>
 
@@ -27,7 +27,7 @@
 	<StackPanel>
 		<!-- #880: error CS0030: Cannot convert type 'double' to 'Windows.UI.Xaml.Thickness' -->
 		<Border BorderThickness="{StaticResource DoubleValueResource}"  />
-		
+
 		<Border BorderThickness="{ThemeResource  ThemedDoubleValueResource}" />
 		<Border BorderThickness="{ThemeResource  DivergingThemedResource}" />
 	</StackPanel>

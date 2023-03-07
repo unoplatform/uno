@@ -5,20 +5,20 @@
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 	</PropertyGroup>
 
-	<ItemGroup> 
+	<ItemGroup>
 		<PackageReference Include="FluentAssertions" />
 		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.4.1" />
 		<PackageReference Include="NUnit" />
-		<PackageReference Include="NUnit3TestAdapter" /> 
+		<PackageReference Include="NUnit3TestAdapter" />
 		<PackageReference Include="Xamarin.UITest" />
 		<PackageReference Include="Uno.UITest" />
 		<PackageReference Include="Uno.UITest.Selenium" />
 		<PackageReference Include="Uno.UITest.Xamarin" />
 		<PackageReference Include="Uno.UITest.Helpers" />
 		<PackageReference Include="Uno.SourceGenerationTasks" />
-		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />
+		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" PrivateAssets="All" />
 	</ItemGroup>
-	
+
 	<ItemGroup>
 		<CompilerVisibleProperty Include="MSBuildExtensionsPath" />
 		<CompilerVisibleProperty Include="RootNamespace" />

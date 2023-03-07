@@ -5,7 +5,7 @@
 
 		<!-- Disabled because of https://github.com/xamarin/xamarin-macios/issues/16401-->
 		<!-- <TargetFrameworks>$(TargetFrameworks);net6.0-macos</TargetFrameworks> -->
-		
+
 		<SingleProject>true</SingleProject>
 		<OutputType>Exe</OutputType>
 
@@ -53,7 +53,7 @@
 
 				<!-- See https://github.com/unoplatform/uno/issues/9430 for more details. -->
 				<MtouchExtraArgs>$(MtouchExtraArgs) --registrar:static</MtouchExtraArgs>
-								
+
 				<!-- https://github.com/xamarin/xamarin-macios/issues/14812 -->
 				<MtouchExtraArgs>$(MtouchExtraArgs) --marshal-objectivec-exceptions:disable</MtouchExtraArgs>
 			</PropertyGroup>

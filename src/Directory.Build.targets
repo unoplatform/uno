@@ -51,7 +51,7 @@
   </Target>
 
   <ItemGroup>
-	<PackageReference Update="Microsoft.NETCore.UniversalWindowsPlatform" Version="6.2.9" />
+	<PackageReference Update="Microsoft.NETCore.UniversalWindowsPlatform" Version="6.1.9" />
 	<!-- Keep aligned with MSBuild extras' default ExtrasUwpMetaPackageVersion -->
 	<PackageReference Update="Uno.SourceGenerationTasks" Version="4.2.0" />
 	<PackageReference Update="Uno.SourceGeneration" Version="4.2.0" />
@@ -71,7 +71,7 @@
 	<PackageReference Update="Uno.Wasm.WebSockets" Version="1.1.0" />
 	<PackageReference Update="Microsoft.TypeScript.MSBuild" Version="4.3.5" />
 	<PackageReference Update="NUnit" Version="3.13.3" />
-	<PackageReference Update="NUnit3TestAdapter" Version="4.3.1" />
+	<PackageReference Update="NUnit3TestAdapter" Version="4.4.2" />
 	<PackageReference Update="Uno.UITest" Version="1.1.0-dev.32" />
 	<PackageReference Update="Uno.UITest.Selenium" Version="1.1.0-dev.24" />
 	<PackageReference Update="Uno.UITest.Xamarin" Version="1.1.0-dev.24" />
@@ -79,7 +79,7 @@
 	<PackageReference Update="Uno.Fonts.Fluent" Version="2.0.0" />
 	<PackageReference Update="System.ValueTuple" Version="4.5.0" />
 	<PackageReference Update="Xamarin.DuoSdk" Version="0.0.3.4" />
-	<PackageReference Update="Xamarin.UITest" Version="4.1.0" />
+	<PackageReference Update="Xamarin.UITest" Version="4.1.2" />
 	<PackageReference Update="System.Numerics.Vectors" Version="4.5.0" />
 
 	<PackageReference Update="SkiaSharp.Views" Version="2.88.3" />
@@ -107,7 +107,10 @@
 	<PackageReference Update="Microsoft.Extensions.Logging.Filter" Version="1.1.2" />
 	<PackageReference Update="Uno.Extensions.Logging.WebAssembly.Console" Version="1.4.0" />
 	<PackageReference Update="Uno.Extensions.Logging.WebAssembly.OSLog" Version="1.4.0" />
-	<PackageReference Update="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" />
+	<PackageReference Update="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" />
+	<PackageReference Update="Microsoft.NETFramework.ReferenceAssemblies.net48" Version="1.0.3" />
+	<PackageReference Update="Microsoft.NETFramework.ReferenceAssemblies.net472" Version="1.0.3" />
+	<PackageReference Update="Microsoft.NETFramework.ReferenceAssemblies.net461" Version="1.0.3" />
 	<PackageReference Update="Newtonsoft.Json" Version="13.0.2" />
   </ItemGroup>
 

@@ -550,6 +550,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_Media\CameraCaptureUISample.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_Media\MediaPlayerTests.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -1555,6 +1559,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ImageTests\Image_Source_Nullify.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ListView\ListView_Snap_Rubberband.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -5336,6 +5344,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_Graphics_Display\DisplayInformationTests.xaml.cs">
       <DependentUpon>DisplayInformationTests.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_Media\CameraCaptureUISample.xaml.cs">
+      <DependentUpon>CameraCaptureUISample.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_Media\MediaPlayerTests.xaml.cs">
       <DependentUpon>MediaPlayerTests.xaml</DependentUpon>
     </Compile>
@@ -5531,6 +5542,9 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ImageTests\Image_Source_Nullify.xaml.cs">
       <DependentUpon>Image_Source_Nullify.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ListView\ListView_Snap_Rubberband.xaml.cs">
+      <DependentUpon>ListView_Snap_Rubberband.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBox\TextBox_PlaceholderForeground.xaml.cs">
       <DependentUpon>TextBox_PlaceholderForeground.xaml</DependentUpon>

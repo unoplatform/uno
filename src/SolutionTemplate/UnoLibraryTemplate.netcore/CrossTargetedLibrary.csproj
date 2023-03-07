@@ -23,6 +23,7 @@
 		<Compile Update="**\*.xaml.cs">
 			<DependentUpon>%(Filename)</DependentUpon>
 		</Compile>
+		<PriResource Include="**\*.resw" />
 	</ItemGroup>
 
 	<ItemGroup>

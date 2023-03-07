@@ -196,6 +196,14 @@ namespace Windows.ApplicationModel.Resources
 					}
 				}
 
+				if (culture == culture.Parent)
+				{
+					// On .NET Framework 4.8, culture may equal culture.Parent even if it's
+					// not equal to CultureInfo.InvariantCulture when reaching the end of the
+					// culture chain.
+					break;
+				}
+
 				culture = culture.Parent;
 			}
 

@@ -1,4 +1,4 @@
-<ResourceDictionary xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:controls="using:Microsoft.UI.Xaml.Controls" xmlns:contract7Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,7)" xmlns:contract7NotPresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,7)" xmlns:primitives="using:Microsoft.UI.Xaml.Controls.Primitives" xmlns:animatedvisuals="using:Microsoft.UI.Xaml.Controls.AnimatedVisuals" xmlns:media="using:Microsoft.UI.Xaml.Media" xmlns:contract4Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,4)" xmlns:contract4NotPresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,4)" xmlns:primitiveContract7Present="using:Microsoft.UI.Xaml.Controls.Primitives?IsApiContractPresent(Windows.Foundation.UniversalApiContract,7)" xmlns:contract5Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,5)" xmlns:contract5NotPresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,5)" xmlns:contract6Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,6)" xmlns:contract8Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,8)" xmlns:animation="clr-namespace:Windows.UI.Xaml.Media.Animation" xmlns:uno="using:Uno.UI.Xaml.Controls" xmlns:android="http://uno.ui/android" xmlns:not_android="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:ios="http://uno.ui/ios" xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:xamarin="http://uno.ui/xamarin" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:uBehaviors="using:Uno.UI.Behaviors" xmlns:local="using:Windows.UI.Xaml.Controls" xmlns:wasm="http://uno.ui/wasm" xmlns:automation="clr-namespace:Windows.UI.Xaml.Automation" mc:Ignorable="d xamarin ios android not_wasm wasm netstdref macos skia not_netstdref" xmlns:u="using:Uno.UI.Controls" xmlns:not_wasm="http://uno.ui/not_wasm" xmlns:localUIXC="using:Uno.UI.Xaml.Controls" xmlns:macos="http://uno.ui/macos" xmlns:not_macos="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:navViewLocal="using:Windows.UI.Xaml.Controls" xmlns:wuxPrimitives="using:Windows.UI.Xaml.Controls.Primitives" xmlns:legacy="using:Windows.UI.Xaml.Controls" xmlns:netstdref="http://uno.ui/netstdref" xmlns:skia="http://uno.ui/skia" xmlns:native="using:UIKit" xmlns:not_mux="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:not_netstdref="http://uno.ui/not_netstdref" xmlns:native_ios="using:UIKit" xmlns:native_android="using:Android.Widget" xmlns:itemswrapgridpresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsTypePresent(Windows.UI.Xaml.Controls.ItemsWrapGrid)" xmlns:itemswrapgridnotpresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsTypeNotPresent(Windows.UI.Xaml.Controls.ItemsWrapGrid)" xmlns:uwpOnly="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsTypeNotPresent(Microsoft.UI.Xaml.FrameworkElement)" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+<ResourceDictionary xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:controls="using:Microsoft.UI.Xaml.Controls" xmlns:contract7Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,7)" xmlns:contract7NotPresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,7)" xmlns:primitives="using:Microsoft.UI.Xaml.Controls.Primitives" xmlns:animatedvisuals="using:Microsoft.UI.Xaml.Controls.AnimatedVisuals" xmlns:media="using:Microsoft.UI.Xaml.Media" xmlns:contract4Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,4)" xmlns:contract4NotPresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,4)" xmlns:primitiveContract7Present="using:Microsoft.UI.Xaml.Controls.Primitives?IsApiContractPresent(Windows.Foundation.UniversalApiContract,7)" xmlns:contract5Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,5)" xmlns:contract5NotPresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,5)" xmlns:contract6Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,6)" xmlns:contract8Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,8)" xmlns:animation="clr-namespace:Windows.UI.Xaml.Media.Animation" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="android ios d wasm xamarin not_wasm macos netstdref skia not_netstdref" xmlns:uno="using:Uno.UI.Xaml.Controls" xmlns:android="http://uno.ui/android#using:Uno.UI.Controls.Legacy" xmlns:not_android="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:ios="http://uno.ui/ios#using:Uno.UI.Controls.Legacy" xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:xamarin="http://uno.ui/xamarin" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:uBehaviors="using:Uno.UI.Behaviors" xmlns:local="using:Windows.UI.Xaml.Controls" xmlns:wasm="http://uno.ui/wasm" xmlns:automation="clr-namespace:Windows.UI.Xaml.Automation" xmlns:u="using:Uno.UI.Controls" xmlns:not_wasm="http://uno.ui/not_wasm" xmlns:localUIXC="using:Uno.UI.Xaml.Controls" xmlns:macos="http://uno.ui/macos" xmlns:not_macos="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:navViewLocal="using:Windows.UI.Xaml.Controls" xmlns:wuxPrimitives="using:Windows.UI.Xaml.Controls.Primitives" xmlns:legacy="using:Windows.UI.Xaml.Controls" xmlns:netstdref="http://uno.ui/netstdref" xmlns:skia="http://uno.ui/skia" xmlns:native="using:UIKit" xmlns:not_mux="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:not_netstdref="http://uno.ui/not_netstdref" xmlns:native_ios="using:UIKit" xmlns:native_android="using:Android.Widget" xmlns:itemswrapgridpresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsTypePresent(Windows.UI.Xaml.Controls.ItemsWrapGrid)" xmlns:itemswrapgridnotpresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsTypeNotPresent(Windows.UI.Xaml.Controls.ItemsWrapGrid)" xmlns:uwpOnly="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsTypeNotPresent(Microsoft.UI.Xaml.FrameworkElement)" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
   <ResourceDictionary.ThemeDictionaries>
     <ResourceDictionary x:Key="Default">
       <x:String x:Key="BreadcrumbBarChevronLeftToRight">&#xE974;</x:String>
@@ -12267,7 +12267,7 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
               </Grid.ColumnDefinitions>
-              <FontIcon x:Name="CheckGlyph" FontFamily="{ThemeResource SymbolThemeFontFamily}" win:Glyph="&#xE001;" xamarin:Glyph="&#xE10B;" FontSize="16" Foreground="{ThemeResource ToggleMenuFlyoutItemCheckGlyphForeground}" Opacity="0" Width="16" Margin="0,0,12,0" />
+              <FontIcon x:Name="CheckGlyph" FontFamily="{ThemeResource SymbolThemeFontFamily}" win:Glyph="&#xE001;" FontSize="16" xamarin:Glyph="&#xE10B;" Foreground="{ThemeResource ToggleMenuFlyoutItemCheckGlyphForeground}" Opacity="0" Width="16" Margin="0,0,12,0" />
               <Viewbox x:Name="IconRoot" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" Width="16" Height="16" Visibility="Collapsed">
                 <ContentPresenter x:Name="IconContent" Content="{TemplateBinding Icon}" />
               </Viewbox>
@@ -13798,7 +13798,7 @@
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="ProgressRing">
-          <NativeProgressRing />
+          <android:NativeProgressRing />
         </ControlTemplate>
       </Setter.Value>
     </Setter>
@@ -13807,7 +13807,7 @@
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="ProgressRing">
-          <NativeProgressRing />
+          <ios:NativeProgressRing />
         </ControlTemplate>
       </Setter.Value>
     </Setter>
@@ -15168,7 +15168,7 @@
       <Setter.Value>
         <ControlTemplate TargetType="FlyoutPresenter">
           <Border Background="{TemplateBinding Background}" BackgroundSizing="OuterBorderEdge" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="{TemplateBinding CornerRadius}" Padding="{ThemeResource FlyoutBorderThemePadding}">
-            <ScrollViewer x:Name="ScrollViewer" xamarin:ZoomMode="Disabled" win:ZoomMode="{TemplateBinding ScrollViewer.ZoomMode}" HorizontalScrollMode="{TemplateBinding ScrollViewer.HorizontalScrollMode}" HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}" VerticalScrollMode="{TemplateBinding ScrollViewer.VerticalScrollMode}" VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}" AutomationProperties.AccessibilityView="Raw">
+            <ScrollViewer x:Name="ScrollViewer" win:ZoomMode="{TemplateBinding ScrollViewer.ZoomMode}" xamarin:ZoomMode="Disabled" HorizontalScrollMode="{TemplateBinding ScrollViewer.HorizontalScrollMode}" HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}" VerticalScrollMode="{TemplateBinding ScrollViewer.VerticalScrollMode}" VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}" AutomationProperties.AccessibilityView="Raw">
               <ContentPresenter Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" ContentTransitions="{TemplateBinding ContentTransitions}" Margin="{TemplateBinding Padding}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
             </ScrollViewer>
           </Border>
@@ -15949,7 +15949,7 @@
               <Grid.RenderTransform>
                 <TranslateTransform x:Name="ContentPresenterTranslateTransform" />
               </Grid.RenderTransform>
-              <ContentPresenter x:Name="ContentPresenter" ContentTransitions="{TemplateBinding ContentTransitions}" ContentTemplate="{TemplateBinding ContentTemplate}" xamarin:ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}" Content="{TemplateBinding Content}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" Margin="{TemplateBinding Padding}" />
+              <ContentPresenter x:Name="ContentPresenter" ContentTransitions="{TemplateBinding ContentTransitions}" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" xamarin:ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" Margin="{TemplateBinding Padding}" />
             </Grid>
             <!-- The 'Xg' text simulates the amount of space one line of text will occupy.
 						  In the DataPlaceholder state, the Content is not loaded yet so we
@@ -15968,7 +15968,7 @@
               <Border.RenderTransform>
                 <TranslateTransform x:Name="MultiSelectCheckBoxTransform" />
               </Border.RenderTransform>
-              <FontIcon x:Name="MultiSelectCheck" FontFamily="{ThemeResource SymbolThemeFontFamily}" win:Glyph="&#xE73E;" xamarin:Glyph="&#xE081;" FontSize="16" Foreground="{ThemeResource SystemControlForegroundBaseMediumHighBrush}" Visibility="Collapsed" Opacity="0" />
+              <FontIcon x:Name="MultiSelectCheck" FontFamily="{ThemeResource SymbolThemeFontFamily}" win:Glyph="&#xE73E;" FontSize="16" xamarin:Glyph="&#xE081;" Foreground="{ThemeResource SystemControlForegroundBaseMediumHighBrush}" Visibility="Collapsed" Opacity="0" />
             </Border>
             <TextBlock x:Name="MultiArrangeOverlayText" Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.DragItemsCount}" Foreground="{ThemeResource ListViewItemDragForegroundThemeBrush}" FontFamily="{ThemeResource ContentControlThemeFontFamily}" FontSize="26.667" IsHitTestVisible="False" Opacity="0" TextWrapping="Wrap" TextTrimming="WordEllipsis" Margin="18,9,0,0" AutomationProperties.AccessibilityView="Raw" Grid.ColumnSpan="2" />
           </Grid>
@@ -16212,7 +16212,7 @@
             <Rectangle x:Name="MultiArrangeOverlayBackground" IsHitTestVisible="False" Opacity="0" Fill="{ThemeResource ListViewItemDragBackgroundThemeBrush}" Grid.ColumnSpan="2" />
             <Rectangle x:Name="BorderRectangle" IsHitTestVisible="False" Stroke="{ThemeResource SystemControlHighlightListAccentLowBrush}" StrokeThickness="2" Opacity="0" />
             <Border x:Name="MultiSelectSquare" Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}" Width="20" Height="20" Margin="0,2,2,0" VerticalAlignment="Top" HorizontalAlignment="Right" Visibility="Collapsed">
-              <FontIcon x:Name="MultiSelectCheck" FontFamily="{ThemeResource SymbolThemeFontFamily}" win:Glyph="&#xE73E;" xamarin:Glyph="&#xE081;" FontSize="16" Foreground="{ThemeResource SystemControlForegroundBaseMediumHighBrush}" Opacity="0" />
+              <FontIcon x:Name="MultiSelectCheck" FontFamily="{ThemeResource SymbolThemeFontFamily}" win:Glyph="&#xE73E;" FontSize="16" xamarin:Glyph="&#xE081;" Foreground="{ThemeResource SystemControlForegroundBaseMediumHighBrush}" Opacity="0" />
             </Border>
             <Rectangle x:Name="FocusVisualWhite" IsHitTestVisible="False" Stroke="{ThemeResource SystemControlForegroundAltHighBrush}" StrokeEndLineCap="Square" StrokeDashArray="1.0,1.0" StrokeDashOffset="1.5" StrokeThickness="2" Opacity="0" />
             <Rectangle x:Name="FocusVisualBlack" IsHitTestVisible="False" Stroke="{ThemeResource SystemControlForegroundBaseHighBrush}" StrokeEndLineCap="Square" StrokeDashArray="1.0,1.0" StrokeDashOffset="0.5" StrokeThickness="2" Opacity="0" />
@@ -17781,7 +17781,7 @@
                             </VisualState>
                           </VisualStateGroup>
                         </VisualStateManager.VisualStateGroups>
-                        <TextBlock x:Name="GlyphElement" Foreground="{ThemeResource SystemControlForegroundChromeBlackMediumBrush}" VerticalAlignment="Center" HorizontalAlignment="Center" FontStyle="Normal" FontSize="16" win:Text="&#xE052;" xamarin:Text="&#xE18B;" FontFamily="{ThemeResource SymbolThemeFontFamily}" AutomationProperties.AccessibilityView="Raw" />
+                        <TextBlock x:Name="GlyphElement" Foreground="{ThemeResource SystemControlForegroundChromeBlackMediumBrush}" VerticalAlignment="Center" HorizontalAlignment="Center" FontStyle="Normal" FontSize="16" win:Text="&#xE052;" FontFamily="{ThemeResource SymbolThemeFontFamily}" xamarin:Text="&#xE18B;" AutomationProperties.AccessibilityView="Raw" />
                       </Grid>
                     </ControlTemplate>
                   </Setter.Value>
@@ -17905,7 +17905,7 @@
                 </VisualState>
               </VisualStateGroup>
             </VisualStateManager.VisualStateGroups>
-            <TextBlock x:Name="GlyphElement" Foreground="{ThemeResource SystemControlForegroundChromeBlackMediumBrush}" VerticalAlignment="Center" HorizontalAlignment="Center" FontStyle="Normal" FontSize="16" win:Text="&#xE052;" xamarin:Text="&#xE18B;" FontFamily="{ThemeResource SymbolThemeFontFamily}" AutomationProperties.AccessibilityView="Raw" />
+            <TextBlock x:Name="GlyphElement" Foreground="{ThemeResource SystemControlForegroundChromeBlackMediumBrush}" VerticalAlignment="Center" HorizontalAlignment="Center" FontStyle="Normal" FontSize="16" win:Text="&#xE052;" FontFamily="{ThemeResource SymbolThemeFontFamily}" xamarin:Text="&#xE18B;" AutomationProperties.AccessibilityView="Raw" />
           </Grid>
         </ControlTemplate>
       </Setter.Value>

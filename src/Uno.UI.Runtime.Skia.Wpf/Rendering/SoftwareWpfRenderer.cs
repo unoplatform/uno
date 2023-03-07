@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -9,14 +11,14 @@ using WpfControl = global::System.Windows.Controls.Control;
 
 namespace Uno.UI.Runtime.Skia.Wpf.Rendering
 {
-	internal class UnoWpfRenderer
+	internal class SoftwareWpfRenderer : IWpfRenderer
 	{
 		private WpfControl _hostControl;
-		private DisplayInformation _displayInformation;
-		private WriteableBitmap _bitmap;
+		private DisplayInformation? _displayInformation;
+		private WriteableBitmap? _bitmap;
 		private IWpfHost _host;
 
-		public UnoWpfRenderer(IWpfHost host)
+		public SoftwareWpfRenderer(IWpfHost host)
 		{
 			_hostControl = host as WpfControl ?? throw new InvalidOperationException("Host should be a WPF control");
 			_host = host;
@@ -84,7 +86,7 @@ namespace Uno.UI.Runtime.Skia.Wpf.Rendering
 				{
 					if (_host.RootElement?.Visual != null)
 					{
-						WinUI.Window.Current.Compositor.RenderVisual(surface, _host.RootElement?.Visual);
+						WinUI.Window.Current.Compositor.RenderVisual(surface, _host.RootElement?.Visual!);
 					}
 				}
 			}
@@ -94,6 +96,10 @@ namespace Uno.UI.Runtime.Skia.Wpf.Rendering
 			_bitmap.Unlock();
 			drawingContext.DrawImage(_bitmap, new Rect(0, 0, _hostControl.ActualWidth, _hostControl.ActualHeight));
 		}
+
+		public bool Initialize() => true;
+
+		public void Dispose() { }
 
 		public SKSize CanvasSize => _bitmap == null ? SKSize.Empty : new SKSize(_bitmap.PixelWidth, _bitmap.PixelHeight);
 	}

@@ -42,7 +42,7 @@ namespace Windows.UI.Xaml
 
 		public void Dispose()
 		{
-			CallbackManager.Dispose();
+			_callbackManager?.Dispose();
 
 			if (_stack != null)
 			{
@@ -51,8 +51,6 @@ namespace Windows.UI.Xaml
 				_pool.Return(_stack, clearArray: true);
 			}
 		}
-
-		public DependencyPropertyCallbackManager CallbackManager => _callbackManager ??= new DependencyPropertyCallbackManager();
 
 		public DependencyProperty Property { get; }
 
@@ -371,6 +369,12 @@ namespace Windows.UI.Xaml
 		{
 			return $"DependencyPropertyDetails({Property.Name})";
 		}
+
+		internal IDisposable RegisterCallback(PropertyChangedCallback callback)
+			=> (_callbackManager ??= new DependencyPropertyCallbackManager()).RegisterCallback(callback);
+
+		internal void RaisePropertyChanged(DependencyObject actualInstanceAlias, DependencyPropertyChangedEventArgs eventArgs)
+			=> _callbackManager?.RaisePropertyChanged(actualInstanceAlias, eventArgs);
 
 		[Flags]
 		enum Flags

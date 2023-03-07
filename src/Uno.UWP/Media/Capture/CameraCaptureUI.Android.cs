@@ -24,7 +24,6 @@ namespace Windows.Media.Capture
 	{
 		private const int CameraRequestCode = 2;
 
-
 		private async Task<StorageFile> CaptureFile(CancellationToken ct, CameraCaptureUIMode mode)
 		{
 			await ValidateRequiredPermissions(ct);
@@ -54,7 +53,7 @@ namespace Windows.Media.Capture
 
 			return await CreateTempImage(
 				ContextHelper.Current.ContentResolver.OpenInputStream(photoUri),
-				Path.GetExtension(new Uri(photoUri.Path, UriKind.RelativeOrAbsolute).LocalPath)
+				Path.GetExtension(photoUri.Path)
 			);
 		}
 

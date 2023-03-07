@@ -167,12 +167,15 @@ namespace Windows.UI.Xaml.Controls
 
 		public override void CellDisplayingEnded(UICollectionView collectionView, UICollectionViewCell cell, NSIndexPath indexPath)
 		{
-			var key = cell as ListViewBaseInternalContainer;
-
-			if (_onRecycled.TryGetValue(key, out var actions))
+			if (cell is ListViewBaseInternalContainer key)
 			{
-				foreach (var a in actions) { a(); }
-				_onRecycled.Remove(key);
+				key.IsDisplayed = false;
+
+				if (_onRecycled.TryGetValue(key, out var actions))
+				{
+					foreach (var a in actions) { a(); }
+					_onRecycled.Remove(key);
+				}
 			}
 
 			if (this.Log().IsEnabled(LogLevel.Debug))
@@ -252,6 +255,8 @@ namespace Windows.UI.Xaml.Controls
 				}
 
 				Owner?.XamlParent?.TryLoadMoreItems(index);
+
+				cell.IsDisplayed = true;
 
 				return cell;
 			}
@@ -695,6 +700,11 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 		}
+
+		/// <summary>
+		/// Indicates if the cell is currently displayed in the collection.
+		/// </summary>
+		internal bool IsDisplayed { get; set; }
 
 		private Orientation ScrollOrientation => Owner.NativeLayout.ScrollOrientation;
 		private bool SupportsDynamicItemSizes => Owner.NativeLayout.SupportsDynamicItemSizes;

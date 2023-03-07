@@ -35,20 +35,7 @@ namespace Windows.UI.Xaml
 
 			var isActive = w >= mw && h >= mh;
 
-			if (isActive && mw >= 0)
-			{
-				// If we have 'mw' and 'mh' we activate using the 'MinWidthTrigger' as it's higher ranked by 'ViusalStateGroup.GetActiveTrigger()'
-				SetActivePrecedence(StateTriggerPrecedence.MinWidthTrigger);
-			}
-			else if (isActive)
-			{
-				// We don't validate that 'mh > 0' so we are able to activate trigger with 'MinWindowWidth = 0' and 'MinWindowHeight = 0'
-				SetActivePrecedence(StateTriggerPrecedence.MinHeightTrigger);
-			}
-			else
-			{
-				SetActivePrecedence(StateTriggerPrecedence.Inactive);
-			}
+			SetActivePrecedence(isActive ? StateTriggerPrecedence.AdaptiveTrigger : StateTriggerPrecedence.Inactive);
 		}
 
 		#region MinWindowHeight DependencyProperty

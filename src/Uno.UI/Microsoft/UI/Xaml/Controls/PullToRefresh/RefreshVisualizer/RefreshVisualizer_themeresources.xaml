@@ -2,8 +2,10 @@
 <ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:android="http://uno.ui/android"
-	xmlns:not_android="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+    xmlns:android="http://uno.ui/android"
+    xmlns:not_android="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="android">
 
     <ResourceDictionary.ThemeDictionaries>
         <ResourceDictionary x:Key="Default">

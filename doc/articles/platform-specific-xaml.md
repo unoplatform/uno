@@ -1,6 +1,6 @@
 # Platform-specific XAML markup in Uno
 
-Uno allows you to reuse views and business logic across platforms. Sometimes though you may want to write different code per platform, either because you need to access platform-specific native APIs and 3rd-party libraries, or because you want your app to look and behave differently depending on the platform. 
+Uno allows you to reuse views and business logic across platforms. Sometimes though you may want to write different code per platform, either because you need to access platform-specific native APIs and 3rd-party libraries, or because you want your app to look and behave differently depending on the platform.
 
 This guide covers multiple approaches to managing per-platform markup in XAML. See [this guide for managing per-platform C#](platform-specific-csharp.md).
 
@@ -9,7 +9,7 @@ This guide covers multiple approaches to managing per-platform markup in XAML. S
 There are two ways to restrict code or XAML markup to be used only on a specific platform:
  * Use conditionals within a shared file
  * Place the code in a file which is only included in the desired platform head.
- 
+
  The structure of an Uno app created with the default [Visual Studio template](https://marketplace.visualstudio.com/items?itemName=nventivecorp.uno-platform-addin) is [explained in more detail here](uno-app-solution-structure.md). The key point to understand is that files in a shared project referenced from a platform head **are treated in exactly the same way** as files included directly under the head, and are compiled together into a single assembly.
 
 ## XAML conditional prefixes
@@ -56,7 +56,7 @@ Results in:
 ![Visual output](Assets/platform-specific-xaml.png)
 
 In this example note how the properties `FontSize` and `Foreground` are selectively used based on platform. The `TextBlock` property `Text` also has two different values based on whether or not the app is running in Android. Finally, an entire `TextBlock` is added if the app is running in iOS. This shows:
- 
+
  1. How certain properties can be used based on the platform
  2. How the values of certain properties can be changed based on the platform
  3. How entire controls can be added or removed for certain platforms
@@ -114,7 +114,7 @@ The pre-defined prefixes are listed below:
 
 More visually, platform support for the pre-defined prefixes is shown in the below table:
 
-| Prefix        |  Win  | Droid |  iOS  |  Web  | macOS | Skia  | 
+| Prefix        |  Win  | Droid |  iOS  |  Web  | macOS | Skia  |
 |---------------|-------|-------|-------|-------|-------|-------|
 | `win`         | ✔ | ✖ | ✖ | ✖ | ✖ | ✖ |
 | `android`     | ✖ | ✔ | ✖ | ✖ | ✖ | ✖ |
@@ -138,7 +138,7 @@ Where:
 
 For Uno 3.0 and above, XAML prefixes behave differently in class libraries than when used directly in application code. Specifically, it isn't possible to distinguish Skia and Wasm in a library, since both platforms use the .NET Standard 2.0 target. The `wasm` and `skia` prefixes will always evaluate to false inside of a library.
 
-The prefix `netstdref` is available and will include the objects or properties in both Skia and Wasm build. A prefix `not_nestdref` can also be used to exclude them. Since Skia and Wasm are similar, it is often not necessary to make the distinction. 
+The prefix `netstdref` is available and will include the objects or properties in both Skia and Wasm build. A prefix `not_nestdref` can also be used to exclude them. Since Skia and Wasm are similar, it is often not necessary to make the distinction.
 
 In cases where it is needed (fonts are one example) then the XAML files must be placed directly in the platform-specific project or a Class Library project.
 
@@ -146,6 +146,25 @@ In cases where it is needed (fonts are one example) then the XAML files must be 
 |-----------------|-------------------------------------------------------------|------------------------|
 | `netstdref`     | `http://uno.ui/netstdref`                                   | yes                    |
 | `not_netstdref` | `http://uno.ui/not_netstdref`                               | yes                    |
+
+### Specifying namespaces
+
+Specifying CLR namespaces in platform specific XAML namespace can be done as follows:
+
+```xml
+<Page x:Class="HelloWorld.MainPage"
+	  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	  ...
+	  xmlns:android="http://uno.ui/android#using:My.Custom.Namespace1;My.Custom.Namespace2"
+	  ...
+	  mc:Ignorable="d android">
+	<android:MyCustomType />
+```
+
+In this example, types prefixed in the `android` XAML namespace will be looked up in `My.Custom.Namespace1`, `MyCustomNamespace2` then in all the namespaces defined in default namespace `http://schemas.microsoft.com/winfx/2006/xaml/presentation`.
+
+> [!NOTE]
+> When using Uno Platform 4.x and in the absence of CLR namespace specification (using the `#using:` prefix), type matching is done through partial name based matching, without using the namespace information. In Uno Platform 4.8, this partial matching can be controlled by the `UnoEnableXamlFuzzyMatching` msbuild property. Uno Platform 5.0 and later will be setting `UnoEnableXamlFuzzyMatching` to `false` by default and will force explicit type matching.
 
 ## XAML Conditional Methods
 

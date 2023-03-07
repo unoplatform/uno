@@ -8,13 +8,13 @@
 					xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 					xmlns:u="using:Uno.UI.Controls"
 					xmlns:xamarin="http://uno.ui/xamarin"
-					xmlns:ios="http://uno.ui/ios"
-					xmlns:android="http://uno.ui/android"
+					xmlns:ios="http://uno.ui/ios#using:Uno.UI.Views.Controls;Uno.UI.Controls;UIKit"
+					xmlns:android="http://uno.ui/android#using:Uno.UI.Controls"
 					xmlns:native_ios="using:UIKit"
 					xmlns:native_android="using:Android.Widget"
 					xmlns:toolkit="using:Uno.UI.Toolkit"
 					mc:Ignorable="d android">
-	
+
     <!-- Default native Button styles -->
 	<android:Style x:Key="NativeDefaultButton"
 				   TargetType="Button">
@@ -23,7 +23,7 @@
 				<ControlTemplate TargetType="Button">
 					<BindableButtonEx Text="{TemplateBinding Content}"
 									  IsEnabled="{TemplateBinding IsEnabled}"
-									  Foreground="{TemplateBinding Foreground}" 
+									  Foreground="{TemplateBinding Foreground}"
 									  ForegroundColor="White"
 									  DisableWhenNoCommand="false" />
 				</ControlTemplate>
@@ -37,7 +37,7 @@
 		    <Setter Property="Template">
 			    <Setter.Value>
 				    <ControlTemplate TargetType="Button">
-					    <BindableUIButton Text="{TemplateBinding Content}"
+					    <ios:BindableUIButton Text="{TemplateBinding Content}"
 									      IsEnabled="{TemplateBinding IsEnabled}"
 									      Foreground="{TemplateBinding Foreground}" />
 				    </ControlTemplate>
@@ -45,7 +45,7 @@
 		    </Setter>
     </ios:Style>
     <ios:Style x:Key="iOSButtonStyle" BasedOn="{StaticResource NativeDefaultButton}" TargetType="Button" />
-    
+
     <xamarin:Style BasedOn="{StaticResource NativeDefaultButton}" TargetType="Button" />
 
     <!-- Default native CheckBox styles -->
@@ -68,11 +68,11 @@
             <Setter.Value>
                 <ControlTemplate TargetType="CheckBox">
                     <toto Orientation="Horizontal">
-                        <BindableUISwitch IsOn="{TemplateBinding IsChecked, Mode=TwoWay}"
+                        <ios:BindableUISwitch IsOn="{TemplateBinding IsChecked, Mode=TwoWay}"
 									    Enabled="{TemplateBinding IsEnabled}"
 									    Background="{TemplateBinding Background}"
 									    Foreground="{TemplateBinding Foreground}"  />
-                        <ContentPresenter Content="{TemplateBinding Content}" 
+                        <ContentPresenter Content="{TemplateBinding Content}"
                                           ContentTemplate="{TemplateBinding ContentTemplate}" />
                     </toto>
                 </ControlTemplate>
@@ -101,8 +101,8 @@
             <Setter.Value>
                 <ControlTemplate TargetType="ToggleSwitch">
                     <StackPanel>
-                        <ContentPresenter Content="{TemplateBinding Content}" 
-                                          ContentTemplate="{TemplateBinding ContentTemplate}" 
+                        <ContentPresenter Content="{TemplateBinding Content}"
+                                          ContentTemplate="{TemplateBinding ContentTemplate}"
                                           ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"/>
                         <ios:BindableUISwitch IsOn="{TemplateBinding IsOn, Mode=TwoWay}"
                                               Enabled="{TemplateBinding IsEnabled}"
@@ -113,7 +113,7 @@
             </Setter.Value>
         </Setter>
     </ios:Style>
-    
+
     <android:Style x:Key="NativeDefaultToggleSwitch" TargetType="ToggleSwitch">
         <Setter Property="Template">
             <Setter.Value>
@@ -129,7 +129,7 @@
             </Setter.Value>
         </Setter>
     </android:Style>
-    
+
     <xamarin:Style BasedOn="{StaticResource NativeDefaultToggleSwitch}" TargetType="ToggleSwitch" />
 
     <!-- Default native Slider styles -->
@@ -138,7 +138,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="Slider">
                     <!-- Value must be defined last, as UISlider's default MinValue is 0 and MaxValue is 1 -->
-                    <BindableUISlider MinValue="{TemplateBinding Minimum}" 
+                    <ios:BindableUISlider MinValue="{TemplateBinding Minimum}"
                                       MaxValue="{TemplateBinding Maximum}"
                                       Value="{TemplateBinding Value, Mode=TwoWay}"
                                       />
@@ -151,7 +151,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="Slider">
                     <!-- Value must be defined last, as UISlider's default MinValue is 0 and MaxValue is 1 -->
-                    <BindableSeekBar Maximum="{TemplateBinding Maximum}" 
+                    <android:BindableSeekBar Maximum="{TemplateBinding Maximum}"
                                      Minimum="{TemplateBinding Minimum}"
                                      Value="{TemplateBinding Value, Mode=TwoWay}"
                                      />
@@ -162,7 +162,7 @@
     <xamarin:Style BasedOn="{StaticResource NativeDefaultSlider}" TargetType="Slider" />
 
     <converters:UnoNativeDefaultProgressBarReverseBoolConverter x:Key="nativeDefaultProgressBarReverseBool" />
-    
+
     <!-- Default native ProgressBar styles -->
     <ios:Style x:Key="NativeDefaultProgressBar" TargetType="ProgressBar">
         <Setter Property="Template">
@@ -174,7 +174,7 @@
                         <ProgressRing IsActive="{TemplateBinding IsIndeterminate}"
                                   Foreground="{TemplateBinding Foreground}"
                                   Hidden="{TemplateBinding IsIndeterminate, Converter={StaticResource nativeDefaultProgressBarReverseBool}}"/>
-                        <BindableUIProgressView IsActive="{TemplateBinding IsIndeterminate}"
+                        <ios:BindableUIProgressView IsActive="{TemplateBinding IsIndeterminate}"
                                   Progress="{TemplateBinding ActualValue}"
                                   Foreground="{TemplateBinding Foreground}"/>
                     </Grid>
@@ -187,7 +187,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="ProgressBar">
                     <Grid>
-                        <BindableProgressBar
+                        <android:BindableProgressBar
                                   Indeterminate="{TemplateBinding IsIndeterminate}"
                                   Progress="{TemplateBinding ActualValue}"
                                   Max="{TemplateBinding Max}"
@@ -231,7 +231,7 @@
         </Setter>
     </xamarin:Style>
     <xamarin:Style BasedOn="{StaticResource NativeDefaultTextBox}" TargetType="TextBox" />
-    
+
     <!-- Default native Pivot styles -->
     <ios:Style x:Key="NativeDefaultPivot" TargetType="Pivot">
         <Setter Property="Template">
@@ -243,7 +243,7 @@
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
                         <Grid x:Name="PART_Content" Grid.Row="0" />
-                        <UITabBar Grid.Row="1" />
+                        <ios:UITabBar Grid.Row="1" />
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>
@@ -261,7 +261,7 @@
             </Setter.Value>
         </Setter>
     </android:Style>
-    
+
     <xamarin:Style BasedOn="{StaticResource NativeDefaultPivot}" TargetType="Pivot" />
 
 	<ios:Style x:Key="NativeDefaultCommandBar"
@@ -277,11 +277,11 @@
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="CommandBar">
-					<!-- We use BorderBrush instead of Background to ensure that semi-transparent background of Grid and NativeCommandBarPresenter don't add up --> 
+					<!-- We use BorderBrush instead of Background to ensure that semi-transparent background of Grid and NativeCommandBarPresenter don't add up -->
 					<Border BorderBrush="{TemplateBinding Background}"
-						    BorderThickness="{TemplateBinding Padding}">						
+						    BorderThickness="{TemplateBinding Padding}">
 						<!-- TODO: 1px line -->
-						<NativeCommandBarPresenter />
+						<ios:NativeCommandBarPresenter />
 					</Border>
 				</ControlTemplate>
 			</Setter.Value>
@@ -301,12 +301,12 @@
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="CommandBar">
-					<NativeCommandBarPresenter />
+					<android:NativeCommandBarPresenter />
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
 	</android:Style>
-	
+
 	<xamarin:Style TargetType="CommandBar"
 				   BasedOn="{StaticResource NativeDefaultCommandBar}" />
 
@@ -328,46 +328,46 @@
 
 	<xamarin:Style TargetType="AppBarButton"
 				   BasedOn="{StaticResource NativeDefaultAppBarButton}" />
-	
+
 	<!-- Default native Frame styles -->
     <ios:Style x:Key="NativeDefaultFrame" TargetType="Frame">
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Frame">
-                    <NativeFramePresenter NavigationBarHidden="False" />
+                    <ios:NativeFramePresenter NavigationBarHidden="False" />
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
     </ios:Style>
-		
-					
+
+
 	<!-- Default native Frame styles -->
     <android:Style x:Key="NativeDefaultFrame" TargetType="Frame">
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Frame">
-                    <NativeFramePresenter />
+                    <android:NativeFramePresenter />
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
     </android:Style>
-				
+
     <xamarin:Style BasedOn="{StaticResource NativeDefaultFrame}" TargetType="Frame" />
 
 	<!--
-		Official recommendation: 
+		Official recommendation:
 		"Side nav width: Equal to the screen width minus the height of the action bar."
 		Source: https://material.io/guidelines/patterns/navigation-drawer.html#navigation-drawer-specs
-				
+
 		Current approximation:
 		- Most small devices sold now have a screen width of 360dp.
 		- The action bar has a height of 56dp on most phones.
 		Value: 360 - 56 = 304
-				
+
 		TODO: Calculate programmatically.
 	-->
 	<android:Double x:Key="NativeDefaultSplitViewOpenPaneLength">304</android:Double>
-				
+
 	<android:Style x:Key="LeftDrawerSplitViewStyle"
 				   TargetType="SplitView">
 		<Setter Property="OpenPaneLength"
@@ -377,7 +377,7 @@
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="SplitView">
-					<BindableDrawerLayout LeftPaneOpenLength="{TemplateBinding OpenPaneLength}"
+					<android:BindableDrawerLayout LeftPaneOpenLength="{TemplateBinding OpenPaneLength}"
 										  LeftPane="{TemplateBinding Pane}"
 										  LeftPaneBackground="{TemplateBinding PaneBackground}"
 										  IsLeftPaneOpen="{TemplateBinding IsPaneOpen, Mode=TwoWay}"
@@ -397,7 +397,7 @@
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="SplitView">
-					<BindableDrawerLayout RightPaneOpenLength="{TemplateBinding OpenPaneLength}"
+					<android:BindableDrawerLayout RightPaneOpenLength="{TemplateBinding OpenPaneLength}"
 										  RightPane="{TemplateBinding Pane}"
 										  RightPaneBackground="{TemplateBinding PaneBackground}"
 										  IsRightPaneOpen="{TemplateBinding IsPaneOpen, Mode=TwoWay}"
@@ -407,5 +407,5 @@
 			</Setter.Value>
 		</Setter>
 	</android:Style>
-				
+
 </ResourceDictionary>
