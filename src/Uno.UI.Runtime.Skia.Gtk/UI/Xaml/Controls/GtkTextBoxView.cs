@@ -1,20 +1,16 @@
 ﻿#nullable enable
 
 using System;
-using System.Linq;
 using Gtk;
 using Pango;
 using Uno.Foundation.Logging;
 using Uno.UI.Runtime.Skia.GTK.UI.Text;
 using Uno.UI.Xaml.Controls.Extensions;
 using Uno.UI.XamlHost.Skia.Gtk.Hosting;
-using Windows.UI.Text;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using Uno.UI.Runtime.Skia.GTK.Extensions;
-using static Windows.UI.Xaml.Shapes.BorderLayerRenderer;
-using GtkWindow = Gtk.Window;
 
 namespace Uno.UI.Runtime.Skia.UI.Xaml.Controls;
 

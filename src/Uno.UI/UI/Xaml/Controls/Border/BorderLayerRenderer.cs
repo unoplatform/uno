@@ -43,15 +43,19 @@ internal partial class BorderLayerRenderer
 		if (_lastState.BorderBrush != _borderInfoProvider.BorderBrush)
 		{
 			_borderBrushSubscription.Disposable = null;
-			_lastState.BorderBrush = null;
-			_borderBrushSubscription.Disposable = _borderInfoProvider.BorderBrush.RegisterDisposablePropertyChangedCallback(OnBorderBrushChanged);
+			if (_borderInfoProvider.BorderBrush is { } brush)
+			{
+				_borderBrushSubscription.Disposable = brush.RegisterDisposablePropertyChangedCallback(OnBorderBrushChanged);
+			}
 		}
 
 		if (_lastState.Background != _borderInfoProvider.Background)
 		{
 			_backgroundBrushSubscription.Disposable = null;
-			_lastState.Background = null;
-			_backgroundBrushSubscription.Disposable = _borderInfoProvider.BorderBrush.RegisterDisposablePropertyChangedCallback(OnBackgroundBrushChanged);
+			if (_borderInfoProvider.Background is { } background)
+			{
+				_backgroundBrushSubscription.Disposable = background.RegisterDisposablePropertyChangedCallback(OnBackgroundBrushChanged);
+			}
 		}
 
 		if (_owner.IsLoaded)
