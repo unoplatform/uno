@@ -246,58 +246,7 @@ namespace Microsoft.UI.Xaml.Controls
 		[GeneratedDependencyProperty(ChangedCallback = true, Options = FrameworkPropertyMetadataOptions.ValueInheritsDataContext)]
 		public static DependencyProperty BorderBrushProperty { get; } = CreateBorderBrushProperty();
 
-		protected virtual void OnBorderBrushChanged(Brush oldValue, Brush newValue)
-		{
-			if (newValue is SolidColorBrush colorBrush)
-			{
-				_borderBrushColorChanged.Disposable = colorBrush.RegisterDisposablePropertyChangedCallback(
-					SolidColorBrush.ColorProperty,
-					(s, colorArg) => UpdateBorder()
-				);
-				_borderBrushOpacityChanged.Disposable = colorBrush.RegisterDisposablePropertyChangedCallback(
-					SolidColorBrush.OpacityProperty,
-					(s, _) => UpdateBorder()
-				);
-			}
-			else if (newValue is GradientBrush gb)
-			{
-				_borderBrushColorChanged.Disposable = gb.RegisterDisposablePropertyChangedCallback(
-					GradientBrush.FallbackColorProperty,
-					(s, colorArg) => UpdateBorder()
-				);
-				_borderBrushOpacityChanged.Disposable = gb.RegisterDisposablePropertyChangedCallback(
-					GradientBrush.OpacityProperty,
-					(s, _) => UpdateBorder()
-				);
-			}
-			else if (newValue is RadialGradientBrush rgb)
-			{
-				_borderBrushColorChanged.Disposable = rgb.RegisterDisposablePropertyChangedCallback(
-					RadialGradientBrush.FallbackColorProperty,
-					(s, colorArg) => OnBorderBrushChangedPartial()
-				);
-				_borderBrushOpacityChanged.Disposable = rgb.RegisterDisposablePropertyChangedCallback(
-					RadialGradientBrush.OpacityProperty,
-					(s, _) => OnBorderBrushChangedPartial()
-				);
-			}
-			else if (newValue is AcrylicBrush ab)
-			{
-				_borderBrushColorChanged.Disposable = ab.RegisterDisposablePropertyChangedCallback(
-					AcrylicBrush.FallbackColorProperty,
-					(s, colorArg) => UpdateBorder());
-				_borderBrushOpacityChanged.Disposable = ab.RegisterDisposablePropertyChangedCallback(
-					AcrylicBrush.OpacityProperty,
-					(s, arg) => UpdateBorder());
-			}
-			else
-			{
-				_borderBrushColorChanged.Disposable = null;
-				_borderBrushOpacityChanged.Disposable = null;
-			}
-
-			UpdateBorder();
-		}
+		protected virtual void OnBorderBrushChanged(Brush oldValue, Brush newValue) => UpdateBorder();
 
 		#endregion
 

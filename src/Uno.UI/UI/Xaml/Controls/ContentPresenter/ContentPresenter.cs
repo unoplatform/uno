@@ -552,18 +552,7 @@ namespace Microsoft.UI.Xaml.Controls
 				)
 			);
 
-		private void OnBorderBrushChanged(Brush oldValue, Brush newValue)
-		{
-#if __WASM__
-			if (((oldValue is null) ^ (newValue is null)) && BorderThickness != default)
-			{
-				// The transition from null to non-null (and vice-versa) affects child arrange on Wasm when non-zero BorderThickness is specified.
-				(Content as UIElement)?.InvalidateArrange();
-			}
-#endif
-			UpdateBorder();
-		}
-
+		private void OnBorderBrushChanged(Brush oldValue, Brush newValue) => UpdateBorder();
 
 		#endregion
 

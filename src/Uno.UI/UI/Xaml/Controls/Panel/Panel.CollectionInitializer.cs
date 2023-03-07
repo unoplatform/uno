@@ -24,7 +24,7 @@ partial class Panel
 	/// </summary>
 	/// <param name="view"></param>
 	public
-#if !__ANDROID__
+#if __IOS__
 		new
 #endif
 		void Add(View view)

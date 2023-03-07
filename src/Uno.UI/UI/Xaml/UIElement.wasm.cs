@@ -157,7 +157,7 @@ namespace Windows.UI.Xaml
 
 		internal void SetGradientBorder(string borderImage, string borderWidth) =>
 			Uno.UI.Xaml.WindowManagerInterop.SetGradientBorder(HtmlId, borderImage, borderWidth);
-			
+
 		internal void SetSelectionHighlight(Color backgroundColor, Color foregroundColor)
 		{
 			Uno.UI.Xaml.WindowManagerInterop.SetSelectionHighlight(HtmlId, backgroundColor, foregroundColor);
