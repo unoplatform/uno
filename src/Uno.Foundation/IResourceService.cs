@@ -1,7 +1,9 @@
-﻿namespace Uno.UI
+﻿using System.ComponentModel;
+
+namespace Uno.UI;
+
+[EditorBrowsable(EditorBrowsableState.Never)]
+public interface IResourcesService
 {
-	public interface IResourcesService
-	{
-		string Get(string id);
-	}
+	string Get(string id);
 }

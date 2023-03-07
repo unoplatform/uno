@@ -133,7 +133,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 		[global::Uno.NotImplemented("NET461", "__WASM__", "__NETSTD_REFERENCE__")]
 #endif
 		public IAsyncOperation<IBuffer> GetPixelsAsync()
-			=> AsyncOperation<IBuffer>.FromTask((op, ct) =>
+			=> AsyncOperation.FromTask(ct =>
 			{
 				if (_buffer is null)
 				{

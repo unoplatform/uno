@@ -7,23 +7,25 @@
 
 		<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
 		<GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
+		<SyncGeneratorCodeAnalysisVersion>4.4.0</SyncGeneratorCodeAnalysisVersion>
+		<NoWarn>$(NoWarn);RS1024</NoWarn> <!-- RS1024: Use SymbolEqualityComparer -->
 	</PropertyGroup>
 
 	<ItemGroup>
 		<PackageReference Include="ManagedEsent" Version="1.9.4" />
-		<PackageReference Include="Microsoft.Build" Version="15.8.166" ExcludeAssets="runtime" />
-		<PackageReference Include="Microsoft.Build.Framework" Version="15.8.166" ExcludeAssets="runtime" />
-		<PackageReference Include="Microsoft.Build.Tasks.Core" Version="15.8.166" ExcludeAssets="runtime" />
-		<PackageReference Include="Microsoft.Build.Utilities.Core" Version="15.8.166" ExcludeAssets="runtime" />
-		<PackageReference Include="Microsoft.CodeAnalysis" Version="3.6.0" />
-		<PackageReference Include="Microsoft.CodeAnalysis.Common" Version="3.6.0" />
-		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.6.0" />
-		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="3.6.0" />
-		<PackageReference Include="Microsoft.CodeAnalysis.VisualBasic" Version="3.6.0" />
-		<PackageReference Include="Microsoft.CodeAnalysis.VisualBasic.Workspaces" Version="3.6.0" />
-		<PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="3.6.0" />
+		<PackageReference Include="Microsoft.Build" Version="16.5.0" ExcludeAssets="runtime" />
+		<PackageReference Include="Microsoft.Build.Framework" Version="16.5.0" ExcludeAssets="runtime" />
+		<PackageReference Include="Microsoft.Build.Tasks.Core" Version="16.5.0" ExcludeAssets="runtime" />
+		<PackageReference Include="Microsoft.Build.Utilities.Core" Version="16.5.0" ExcludeAssets="runtime" />
+		<PackageReference Include="Microsoft.CodeAnalysis" Version="$(SyncGeneratorCodeAnalysisVersion)" />
+		<PackageReference Include="Microsoft.CodeAnalysis.Common" Version="$(SyncGeneratorCodeAnalysisVersion)" />
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="$(SyncGeneratorCodeAnalysisVersion)" />
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="$(SyncGeneratorCodeAnalysisVersion)" />
+		<PackageReference Include="Microsoft.CodeAnalysis.VisualBasic" Version="$(SyncGeneratorCodeAnalysisVersion)" />
+		<PackageReference Include="Microsoft.CodeAnalysis.VisualBasic.Workspaces" Version="$(SyncGeneratorCodeAnalysisVersion)" />
+		<PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="$(SyncGeneratorCodeAnalysisVersion)" />
 		<PackageReference Include="System.Memory" Version="4.5.5" />
-		<PackageReference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="3.6.0" />
+		<PackageReference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="$(SyncGeneratorCodeAnalysisVersion)" />
 		<PackageReference Include="Microsoft.Tpl.Dataflow" Version="4.5.24" />
 		<PackageReference Include="Uno.Core.Extensions" />
 		<PackageReference Include="Uno.Core.Extensions.Compatibility" />

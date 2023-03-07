@@ -29,7 +29,7 @@ namespace Windows.Graphics.Imaging
 		}
 
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Graphics.Imaging.BitmapEncoder> CreateAsync(global::System.Guid encoderId, global::Windows.Storage.Streams.IRandomAccessStream stream) =>
-			AsyncOperation<BitmapEncoder>.FromTask((ct, _) =>
+			AsyncOperation.FromTask<BitmapEncoder>(ct =>
 			{
 				if (!_encoderMap.TryGetValue(encoderId, out var imageFormat))
 				{

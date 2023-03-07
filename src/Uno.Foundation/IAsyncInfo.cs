@@ -1,18 +1,34 @@
-using System;
-using System.Threading.Tasks;
+namespace Windows.Foundation;
 
-namespace Windows.Foundation
+/// <summary>
+/// Supports asynchronous actions and operations. IAsyncInfo is a base interface for <see cref="IAsyncAction"/>,
+/// <see cref="IAsyncActionWithProgress{TProgress}"/>, <see cref="IAsyncOperation{TResult}"/> and <see cref="IAsyncOperationWithProgress{TResult, TProgress}"/>,
+/// each of which support combinations of return type and progress for an asynchronous method.
+/// </summary>
+public partial interface IAsyncInfo
 {
-	public partial interface IAsyncInfo
-	{
-		Exception ErrorCode { get; }
+	/// <summary>
+	/// Gets a string that describes an error condition of the asynchronous operation.
+	/// </summary>
+	Exception ErrorCode { get; }
 
-		uint Id { get; }
+	/// <summary>
+	/// Gets the handle of the asynchronous operation.
+	/// </summary>
+	uint Id { get; }
 
-		AsyncStatus Status { get; }
+	/// <summary>
+	/// Gets a value that indicates the status of the asynchronous operation.
+	/// </summary>
+	AsyncStatus Status { get; }
 
-		void Cancel();
+	/// <summary>
+	/// Cancels the asynchronous operation.
+	/// </summary>
+	void Cancel();
 
-		void Close();
-	}
+	/// <summary>
+	/// Closes the asynchronous operation.	
+	/// </summary>
+	void Close();
 }

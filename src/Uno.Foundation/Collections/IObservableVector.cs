@@ -1,22 +1,13 @@
-﻿namespace Windows.Foundation.Collections
+﻿namespace Windows.Foundation.Collections;
+
+/// <summary>
+/// Notifies listeners of changes to the vector.
+/// </summary>
+/// <typeparam name="T">Item type.</typeparam>
+public partial interface IObservableVector<T> : IList<T>
 {
-	internal interface IObservableVector
-	{
-		/// <summary>
-		/// Occurs when the vector changes.
-		/// </summary>
-		event VectorChangedEventHandler UntypedVectorChanged;
-
-		object this[int index] { get; }
-
-		int Count { get; }
-
-		int IndexOf(object item);
-
-		void Add(object item);
-
-		void Insert(int index, object item);
-
-		void RemoveAt(int index);
-	}
+	/// <summary>
+	/// Occurs when the vector changes.
+	/// </summary>
+	event VectorChangedEventHandler<T> VectorChanged;
 }

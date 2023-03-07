@@ -7,13 +7,13 @@ namespace Windows.Foundation.Collections
 	#endif
 	public  partial interface IIterator<T> 
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		T Current
 		{
 			get;
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		bool HasCurrent
 		{
 			get;
@@ -21,10 +21,10 @@ namespace Windows.Foundation.Collections
 		#endif
 		// Forced skipping of method Windows.Foundation.Collections.IIterator<T>.Current.get
 		// Forced skipping of method Windows.Foundation.Collections.IIterator<T>.HasCurrent.get
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		bool MoveNext();
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		uint GetMany( T[] items);
 		#endif
 	}

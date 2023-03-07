@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -78,9 +77,7 @@ public partial class SvgImageSource : ImageSource
 #if __NETSTD__
 		async
 #endif
-		Task<SvgImageSourceLoadStatus> SetSourceAsync(
-			CancellationToken ct,
-			AsyncOperation<SvgImageSourceLoadStatus> _)
+		Task<SvgImageSourceLoadStatus> SetSourceAsync(CancellationToken ct)
 		{
 			if (streamSource == null)
 			{
@@ -114,7 +111,7 @@ public partial class SvgImageSource : ImageSource
 #endif
 		}
 
-		return AsyncOperation<SvgImageSourceLoadStatus>.FromTask(SetSourceAsync);
+		return AsyncOperation.FromTask(SetSourceAsync);
 	}
 
 #if !__NETSTD__
