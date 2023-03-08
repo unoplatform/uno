@@ -7,6 +7,7 @@ using Windows.Foundation;
 using Windows.UI.Composition;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
+using Uno.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -71,6 +72,15 @@ namespace Windows.UI.Xaml.Controls
 				_surfaceBrush = Visual.Compositor.CreateSurfaceBrush(_currentSurface);
 				_imageSprite.Brush = _surfaceBrush;
 				InvalidateMeasure();
+
+				if (img is not { Kind: ImageDataKind.Error })
+				{
+					ImageOpened?.Invoke(this, new RoutedEventArgs(this));
+				}
+				else
+				{
+					ImageFailed?.Invoke(this, new ExceptionRoutedEventArgs(this, img.Error?.Message ?? "Unknown error"));
+				}
 			});
 		}
 

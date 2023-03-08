@@ -1597,7 +1597,7 @@ namespace Windows.UI.Xaml.Controls
 			if (items is IList<object> list)
 			{
 				// This is primarily an optimization for ICollectionView, which implements IList<object> but might not implement non-generic IList
-				return list[index];
+				return list.Count > index ? list[index] : default;
 			}
 
 			return items?.ElementAtOrDefault(index);

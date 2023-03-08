@@ -778,6 +778,56 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		#region Touches
+		private UIElement _touchTarget;
+
+		/// <inheritdoc />
+		public override void TouchesBegan(NSSet touches, UIEvent evt)
+		{
+			base.TouchesBegan(touches, evt);
+
+			// We wait for the first touches to get the parent so we don't have to track Loaded/UnLoaded
+			// Like native dispatch on iOS, we do "implicit captures" of the target.
+			if (this.GetParent() is UIElement parent)
+			{
+				// canBubbleNatively: true => We let native bubbling occur properly as it's never swallowed by the system
+				//							  but blocking it would be breaking in a lot of aspects
+				//							  (e.g. it would prevent all subsequent events for the given pointer).
+
+				_touchTarget = parent;
+				_touchTarget.TouchesBegan(touches, evt, canBubbleNatively: true);
+			}
+		}
+
+		/// <inheritdoc />
+		public override void TouchesMoved(NSSet touches, UIEvent evt)
+		{
+			base.TouchesMoved(touches, evt);
+
+			// canBubbleNatively: false => The system might silently swallow pointers after a few moves so we prefer to bubble in managed.
+			_touchTarget?.TouchesMoved(touches, evt, canBubbleNatively: false);
+		}
+
+		/// <inheritdoc />
+		public override void TouchesEnded(NSSet touches, UIEvent evt)
+		{
+			base.TouchesEnded(touches, evt);
+
+			// canBubbleNatively: false => system might silently swallow the pointer after a few moves so we prefer to bubble in managed.
+			_touchTarget?.TouchesEnded(touches, evt, canBubbleNatively: false);
+			_touchTarget = null;
+		}
+
+		/// <inheritdoc />
+		public override void TouchesCancelled(NSSet touches, UIEvent evt)
+		{
+			base.TouchesCancelled(touches, evt);
+
+			// canBubbleNatively: false => system might silently swallow the pointer after a few moves so we prefer to bubble in managed.
+			_touchTarget?.TouchesCancelled(touches, evt, canBubbleNatively: false);
+			_touchTarget = null;
+		}
+
+
 		private TouchesManager _touchesManager;
 
 		internal TouchesManager TouchesManager => _touchesManager ??= new NativeListViewBaseTouchesManager(this);
