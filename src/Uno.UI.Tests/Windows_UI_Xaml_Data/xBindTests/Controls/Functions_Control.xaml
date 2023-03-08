@@ -28,7 +28,20 @@
 				   x:FieldModifier="public"
 				   Text="{x:Bind MyxBindClassInstance.MyProperty, Mode=OneWay}" />
 
-		 <!-- Static class members --> 
+		<local:MyTextBox x:Name="_ThrowingWithoutFallback"
+				   x:FieldModifier="public"
+				   Text="{x:Bind NullTestClass.NullString}" />
+		<local:MyTextBox x:Name="_ThrowingWithFallback"
+				   x:FieldModifier="public"
+				   Text="{x:Bind NullTestClass.NullString, FallbackValue=MyFallbackValue}" />
+		<local:MyTextBox x:Name="_NotThrowingWithoutFallback"
+				   x:FieldModifier="public"
+				   Text="{x:Bind NotNullTestClass.NullString}" />
+		<local:MyTextBox x:Name="_NotThrowingWithFallback"
+				   x:FieldModifier="public"
+				   Text="{x:Bind NotNullTestClass.NullString, FallbackValue=MyFallbackValue}" />
+
+		<!-- Static class members --> 
 		<TextBlock x:Name="_StaticClass_PublicStaticProperty"
 				   x:FieldModifier="public"
 				   Text="{x:Bind local:StaticClass.PublicStaticProperty}" />

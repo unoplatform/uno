@@ -33,7 +33,10 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 			Assert.AreEqual(string.Empty, SUT._StaticClass_PublicConstField.Text);
 			Assert.AreEqual(string.Empty, SUT._StaticPrivateConstField.Text);
 			Assert.AreEqual(string.Empty, SUT._InnerConstField.Text);
-
+			Assert.AreEqual("DefaultTextBoxText", SUT._ThrowingWithoutFallback.Text);
+			Assert.AreEqual("DefaultTextBoxText", SUT._ThrowingWithFallback.Text);
+			Assert.AreEqual("DefaultTextBoxText", SUT._NotThrowingWithoutFallback.Text);
+			Assert.AreEqual("DefaultTextBoxText", SUT._NotThrowingWithFallback.Text);
 
 			SUT.ForceLoaded();
 
@@ -59,7 +62,10 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 			Assert.AreEqual("48", SUT._StaticClass_PublicConstField.Text);
 			Assert.AreEqual("46", SUT._StaticPrivateConstField.Text);
 			Assert.AreEqual("-5", SUT._InnerConstField.Text);
-
+			Assert.AreEqual("DefaultTextBoxText", SUT._ThrowingWithoutFallback.Text);
+			Assert.AreEqual("MyFallbackValue", SUT._ThrowingWithFallback.Text);
+			Assert.AreEqual("", SUT._NotThrowingWithoutFallback.Text);
+			Assert.AreEqual("", SUT._NotThrowingWithFallback.Text);
 
 			Assert.AreEqual(1, SUT.AddDoubleCallCount);
 			Assert.AreEqual(2, SUT.AddIntCallCount);

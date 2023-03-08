@@ -11,6 +11,17 @@ namespace Uno.UI.Xaml
 	public static class BindingHelper
 	{
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static Binding SetBindingXBindProvider(Binding binding, object compiledSource, Func<object, object> xBindSelector, string[]? propertyPaths = null)
+			=> SetBindingXBindProvider(binding, compiledSource, xBindSelector, null, propertyPaths);
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static Binding SetBindingXBindProvider(Binding binding, object compiledSource, Func<object, object> xBindSelector, Action<object, object>? xBindBack, string[]? propertyPaths = null)
+		{
+			binding.SetBindingXBindProvider(compiledSource, o => (true, xBindSelector(o)), xBindBack, propertyPaths);
+			return binding;
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static Binding SetBindingXBindProvider(Binding binding, object compiledSource, Func<object, (bool, object)> xBindSelector, Action<object, object>? xBindBack, string[]? propertyPaths = null)
 		{
 			binding.SetBindingXBindProvider(compiledSource, xBindSelector, xBindBack, propertyPaths);
