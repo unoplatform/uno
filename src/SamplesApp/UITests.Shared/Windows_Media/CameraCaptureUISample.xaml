@@ -11,8 +11,10 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <StackPanel>
-		<android:Button Content="Capture Image" Click="CaptureButton_Click" />
-		<ios:Button Content="Capture Image" Click="CaptureButton_Click" />
+		<android:Button Content="Capture Image" Click="CaptureImage_Click" />
+		<android:Button Content="Capture Video" Click="CaptureVideo_Click" />
+		<ios:Button Content="Capture Image" Click="CaptureImage_Click" />
+		<ios:Button Content="Capture Video" Click="CaptureVideo_Click" />
 		<Image x:Name="ImageControl" />
 	</StackPanel>
 </Page>
