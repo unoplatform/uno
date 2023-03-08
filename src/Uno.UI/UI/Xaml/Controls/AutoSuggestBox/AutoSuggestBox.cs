@@ -12,6 +12,7 @@ using Windows.UI.ViewManagement;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
+using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
 #if __IOS__
 using UIKit;
@@ -169,7 +170,16 @@ namespace Windows.UI.Xaml.Controls
 				popupChild.MinWidth = _layoutRoot.ActualWidth;
 				popupChild.MaxHeight = MaxSuggestionListHeight;
 
-				var windowRect = ApplicationView.GetForCurrentView().VisibleBounds;
+				Rect windowRect;
+				if (WinUICoreServices.Instance.InitializationType == Uno.UI.Xaml.Core.InitializationType.IslandsOnly)
+				{
+					windowRect = XamlRoot.Bounds;
+				}
+				else
+				{
+					windowRect = ApplicationView.GetForCurrentView().VisibleBounds;
+				}
+
 				var inputPaneRect = InputPane.GetForCurrentView().OccludedRect;
 
 				if (inputPaneRect.Height > 0)
@@ -177,10 +187,10 @@ namespace Windows.UI.Xaml.Controls
 					windowRect.Height -= inputPaneRect.Height;
 				}
 
-				var popupTransform = (MatrixTransform)popup.TransformToVisual(Xaml.Window.Current.Content);
+				var popupTransform = (MatrixTransform)popup.TransformToVisual(XamlRoot.Content);
 				var popupRect = new Rect(popupTransform.Matrix.OffsetX, popupTransform.Matrix.OffsetY, popup.ActualWidth, popup.ActualHeight);
 
-				var containerTransform = (MatrixTransform)_layoutRoot.TransformToVisual(Xaml.Window.Current.Content);
+				var containerTransform = (MatrixTransform)_layoutRoot.TransformToVisual(XamlRoot.Content);
 				var containerRect = new Rect(containerTransform.Matrix.OffsetX, containerTransform.Matrix.OffsetY, _layoutRoot.ActualWidth, _layoutRoot.ActualHeight);
 				var textBoxHeight = _layoutRoot.ActualHeight;
 
