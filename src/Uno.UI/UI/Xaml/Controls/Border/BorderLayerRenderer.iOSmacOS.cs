@@ -92,7 +92,7 @@ namespace Windows.UI.Xaml.Controls
 		partial void ClearLayer()
 		{
 			_layerDisposable.Disposable = null;
-			_lastState = null;
+			_lastState = default;
 		}
 
 		public enum Corner { TopLeft, TopRight, BottomRight, BottomLeft }

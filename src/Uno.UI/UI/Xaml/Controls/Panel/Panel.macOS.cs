@@ -26,10 +26,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		partial void OnBorderThicknessChangedPartial(Thickness oldValue, Thickness newValue)
-		{
-			InvalidateMeasure();
-		}
+		partial void OnBorderThicknessChangedPartial(Thickness oldValue, Thickness newValue) => InvalidateMeasure();
 
 		partial void OnPaddingChangedPartial(Thickness oldValue, Thickness newValue) => InvalidateMeasure();
 
@@ -50,7 +47,7 @@ namespace Microsoft.UI.Xaml.Controls
 			//We set childrens position for the animations before the arrange
 			_transitionHelper?.SetInitialChildrenPositions();
 
-			UpdateBackground();
+			UpdateBorder();
 		}
 
 		public bool HitTestOutsideFrame { get; set; }
