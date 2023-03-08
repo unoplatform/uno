@@ -363,12 +363,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 				var lastIndexOfNullAccess = LastIndexOfNullAccess();
 				if (lastIndexOfNullAccess == -1)
 				{
-					_activeSubexpression.InstanceSubexpression1 = _builder.ToString();
+					_activeSubexpression.ExpressionBeforeLastNullAccess = _builder.ToString();
 				}
 				else
 				{
-					_activeSubexpression.InstanceSubexpression1 = _builder.ToString(0, lastIndexOfNullAccess);
-					_activeSubexpression.InstanceSubexpression2 = _builder.ToString(lastIndexOfNullAccess + "?.".Length, _builder.Length - (lastIndexOfNullAccess + "?.".Length));
+					_activeSubexpression.ExpressionBeforeLastNullAccess = _builder.ToString(0, lastIndexOfNullAccess);
+					_activeSubexpression.ExpressionAfterLastNullAccess = _builder.ToString(lastIndexOfNullAccess + "?.".Length, _builder.Length - (lastIndexOfNullAccess + "?.".Length));
 				}
 
 				_builder.Clear();

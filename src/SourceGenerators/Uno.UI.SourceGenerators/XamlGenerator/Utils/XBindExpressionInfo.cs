@@ -21,23 +21,23 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 
 		/// <summary>
 		/// For an x:Bind that is semantically equivalent to `A.B?.C?.D.E`,
-		/// InstanceSubexpression1 is A.B?.C?.D (ie, stop on last null access).
+		/// ExpressionBeforeLastNullAccess is A.B?.C?.D (ie, stop on last null access).
 		/// This will be the whole expression if there are no nulls involved in the expression.
 		/// </summary>
 		/// <remarks>
-		/// InstanceSubexpression1 can include method names for invocations.
+		/// ExpressionBeforeLastNullAccess can include method names for invocations.
 		/// </remarks>
-		public string InstanceSubexpression1 { get; set; } = null!;
+		public string ExpressionBeforeLastNullAccess { get; set; } = null!;
 
 		/// <summary>
 		/// For an x:Bind that is semantically equivalent to `A.B?.C?.D.E`,
-		/// InstanceSubexpression2 will be `E`.
+		/// ExpressionAfterLastNullAccess will be `E`.
 		/// This property will be null if there are no nulls involved in the expression.
 		/// </summary>
 		/// <remarks>
-		/// InstanceSubexpression2 can include method names for invocations.
+		/// ExpressionAfterLastNullAccess can include method names for invocations.
 		/// </remarks>
-		public string? InstanceSubexpression2 { get; set; }
+		public string? ExpressionAfterLastNullAccess { get; set; }
 
 		/// <summary>
 		/// If the x:Bind expression represents an invocation, this will represent the arguments.
@@ -54,21 +54,21 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 			builder.AppendLine("{");
 			builder.AppendLine("	o = null;");
 
-			if (InstanceSubexpression2 is not null)
+			if (ExpressionAfterLastNullAccess is not null)
 			{
-				builder.AppendLine($"	var sub1 = {InstanceSubexpression1};");
+				builder.AppendLine($"	var sub1 = {ExpressionBeforeLastNullAccess};");
 				builder.AppendLine("	if (sub1 == null) return false;");
 			}
 
 			if (Arguments is null)
 			{
-				if (InstanceSubexpression2 is null)
+				if (ExpressionAfterLastNullAccess is null)
 				{
-					builder.AppendLine($"	o = {InstanceSubexpression1};");
+					builder.AppendLine($"	o = {ExpressionBeforeLastNullAccess};");
 				}
 				else
 				{
-					builder.AppendLine($"	o = sub1.{InstanceSubexpression2};");
+					builder.AppendLine($"	o = sub1.{ExpressionAfterLastNullAccess};");
 				}
 
 				builder.AppendLine("	return true;");
@@ -78,33 +78,33 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 				for (int i = 0; i < Arguments.Count; i++)
 				{
 					var arg = Arguments[i];
-					if (arg.InstanceSubexpression2 is null)
+					if (arg.ExpressionAfterLastNullAccess is null)
 					{
-						if (!arg.InstanceSubexpression1.Equals("null", StringComparison.Ordinal))
+						if (!arg.ExpressionBeforeLastNullAccess.Equals("null", StringComparison.Ordinal))
 						{
-							builder.AppendLine($"	var arg{i} = {arg.InstanceSubexpression1};");
+							builder.AppendLine($"	var arg{i} = {arg.ExpressionBeforeLastNullAccess};");
 						}
 					}
 					else
 					{
-						builder.AppendLine($"	var arg{i}_sub = {arg.InstanceSubexpression1};");
+						builder.AppendLine($"	var arg{i}_sub = {arg.ExpressionBeforeLastNullAccess};");
 						builder.AppendLine($"	if (arg{i}_sub == null) return false;");
-						builder.AppendLine($"	var arg{i} = arg{i}_sub.{arg.InstanceSubexpression2};");
+						builder.AppendLine($"	var arg{i} = arg{i}_sub.{arg.ExpressionAfterLastNullAccess};");
 					}
 				}
 
-				if (InstanceSubexpression2 is null)
+				if (ExpressionAfterLastNullAccess is null)
 				{
-					builder.Append($"	o = {InstanceSubexpression1}(");
+					builder.Append($"	o = {ExpressionBeforeLastNullAccess}(");
 				}
 				else
 				{
-					builder.Append($"	o = sub1.{InstanceSubexpression2}(");
+					builder.Append($"	o = sub1.{ExpressionAfterLastNullAccess}(");
 				}
 
 				for (int i = 0; i < Arguments.Count; i++)
 				{
-					if (Arguments[i].InstanceSubexpression1.Equals("null", StringComparison.Ordinal) && Arguments[i].InstanceSubexpression2 is null)
+					if (Arguments[i].ExpressionBeforeLastNullAccess.Equals("null", StringComparison.Ordinal) && Arguments[i].ExpressionAfterLastNullAccess is null)
 					{
 						builder.Append("null");
 					}
