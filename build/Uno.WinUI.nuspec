@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata minClientVersion="5.0">
 	<id>Uno.UI</id>
@@ -199,7 +199,7 @@
 		<reference file="Uno.UI.FluentTheme.v1.dll" />
 		<reference file="Uno.UI.FluentTheme.v2.dll" />
 	  </group>
-		
+
 	  <!-- .NET 7.0 Reference -->
 	  <group targetFramework="net7.0">
 		<reference file="Uno.Xaml.dll" />
@@ -306,7 +306,7 @@
 		<reference file="Uno.UI.FluentTheme.v1.dll" />
 		<reference file="Uno.UI.FluentTheme.v2.dll" />
 	  </group>
-		
+
 	  <!-- net6.0-android30.0 -->
 	  <group targetFramework="net6.0-android30.0">
 		<reference file="Uno.UI.BindingHelper.Android.dll" />
@@ -367,7 +367,7 @@
 		<reference file="Uno.UI.FluentTheme.v1.dll" />
 		<reference file="Uno.UI.FluentTheme.v2.dll" />
 	  </group>
-		
+
 	  <!-- net7.0-android30.0 -->
 	  <group targetFramework="net7.0-android30.0">
 		<reference file="Uno.UI.BindingHelper.Android.dll" />
@@ -585,7 +585,7 @@
 	<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.netcoremobile\Release\net6.0-android\Uno.UI.FluentTheme.v2.pdb" target="lib\net6.0-android30.0" />
 	<file src="..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.netcoremobile\Release\net6.0-android\Uno.UI.Toolkit.dll" target="lib\net6.0-android30.0" />
 	<file src="..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.netcoremobile\Release\net6.0-android\Uno.UI.Toolkit.pdb" target="lib\net6.0-android30.0" />
-	  
+
 	<!-- net7.0-ios -->
 	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net7.0-ios\Uno.dll" target="lib\net7.0-ios" />
 	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net7.0-ios\Uno.pdb" target="lib\net7.0-ios" />
@@ -688,7 +688,7 @@
 	<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.netcoremobile\Release\net7.0-android\Uno.UI.FluentTheme.v2.pdb" target="lib\net7.0-android30.0" />
 	<file src="..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.netcoremobile\Release\net7.0-android\Uno.UI.Toolkit.dll" target="lib\net7.0-android30.0" />
 	<file src="..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.netcoremobile\Release\net7.0-android\Uno.UI.Toolkit.pdb" target="lib\net7.0-android30.0" />
-	  
+
 	<!-- macOS -->
 	<file src="..\src\Uno.UI\Bin\Release\xamarinmac20\Uno.dll" target="lib\xamarinmac20" />
 	<file src="..\src\Uno.UI\Bin\Release\xamarinmac20\Uno.pdb" target="lib\xamarinmac20" />
