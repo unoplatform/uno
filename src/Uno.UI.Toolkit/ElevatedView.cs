@@ -71,7 +71,10 @@ namespace Uno.UI.Toolkit
 			SizeChanged += (snd, evt) => UpdateElevation();
 
 #if __IOS__ || __MACOS__
-			this.RegisterPropertyChangedCallback(Control.CornerRadiusProperty, OnChanged);
+			void OnCornerRadiusChanged(DependencyObject sender, DependencyProperty dp) =>
+				((ElevatedView)sender).UpdateElevation();
+
+			this.RegisterPropertyChangedCallback(Control.CornerRadiusProperty, OnCornerRadiusChanged);
 #endif
 		}
 
