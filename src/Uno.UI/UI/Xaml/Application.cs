@@ -18,6 +18,7 @@ using Uno.Foundation.Extensibility;
 using Windows.UI.Popups.Internal;
 using Windows.UI.Popups;
 using Uno.UI.WinRT.Extensions.UI.Popups;
+using CoreServices = Uno.UI.Xaml.Core.CoreServices;
 
 #if HAS_UNO_WINUI
 using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
@@ -65,7 +66,7 @@ namespace Windows.UI.Xaml
 			ApiInformation.RegisterAssembly(typeof(Windows.UI.Composition.Compositor).Assembly);
 
 			Uno.Helpers.DispatcherTimerProxy.SetDispatcherTimerGetter(() => new DispatcherTimer());
-			Uno.Helpers.VisualTreeHelperProxy.SetCloseAllFlyoutsAction(() => Media.VisualTreeHelper.CloseAllFlyouts());
+			Uno.Helpers.VisualTreeHelperProxy.SetCloseAllFlyoutsAction(() => Media.VisualTreeHelper.CloseAllFlyouts(CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRoot.XamlRoot));
 
 			RegisterExtensions();
 

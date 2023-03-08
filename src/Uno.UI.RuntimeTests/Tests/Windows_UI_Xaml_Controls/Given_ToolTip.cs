@@ -49,7 +49,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			finally
 			{
 #if HAS_UNO
-				Windows.UI.Xaml.Media.VisualTreeHelper.CloseAllPopups();
+				Windows.UI.Xaml.Media.VisualTreeHelper.CloseAllPopups(TestServices.WindowHelper.XamlRoot);
 #endif
 			}
 		}
@@ -297,7 +297,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			finally
 			{
 #if HAS_UNO
-				VisualTreeHelper.CloseAllPopups();
+				VisualTreeHelper.CloseAllPopups(TestServices.WindowHelper.XamlRoot);
 				Uno.UI.FeatureConfiguration.ToolTip.UseToolTips = originalToolTipsSetting;
 #endif
 			}
