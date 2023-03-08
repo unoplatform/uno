@@ -101,7 +101,7 @@ jobs:
       Contents: |
         NugetPackages-Artifacts*/vslatest*/*.nupkg
         NugetPackages-Artifacts*/vslatest*/*.vsix
-        !NugetPackages-Artifacts*/vslatest*/Uno.ProjectTemplates.Dotnet.nupkg
+        !NugetPackages-Artifacts*/vslatest*/Uno.ProjectTemplates.Dotnet*.nupkg
       TargetFolder: $(build.artifactstagingdirectory)/vslatest
       CleanTargetFolder: false
       OverWrite: false
@@ -133,7 +133,7 @@ jobs:
     inputs:
       SourceFolder: $(Agent.WorkFolder)/
       Contents: |
-        NugetPackages-Artifacts*/vslatest*/Uno.ProjectTemplates.Dotnet.nupkg
+        NugetPackages-Artifacts*/vslatest*/Uno.ProjectTemplates.Dotnet*.nupkg
       TargetFolder: $(build.sourcesdirectory)/Build/private-templates
       CleanTargetFolder: false
       OverWrite: false
