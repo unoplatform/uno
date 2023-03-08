@@ -5,8 +5,6 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Text;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
@@ -30,37 +28,29 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 
 		// TODO: isRValue feels like a hack so that we generate compilable code when bindings are generated as LValue.
 		// However, we could be incorrectly throwing NRE. This should be handled properly.
-		internal static string Rewrite(string contextName, string rawFunction, INamedTypeSymbol? contextTypeSymbol, INamespaceSymbol globalNamespace, bool isRValue, Func<string, INamedTypeSymbol?> findType)
+		internal static (string? MethodDeclaration, string Expression) Rewrite(string contextName, string rawFunction, INamedTypeSymbol? contextTypeSymbol, INamespaceSymbol globalNamespace, bool isRValue, int xBindCounter, Func<string, INamedTypeSymbol?> findType)
 		{
 			SyntaxNode expression = ParseExpression(rawFunction);
 
 			expression = new Rewriter(contextName, findType).Visit(expression);
 			if (isRValue && contextTypeSymbol is not null)
 			{
-				var nullabilityRewriter = new NullabilityRewriter(contextName, contextTypeSymbol, globalNamespace);
+				var nullabilityRewriter = new NullabilityRewriter(contextName, contextTypeSymbol, globalNamespace, xBindCounter);
 				nullabilityRewriter.Visit(expression);
+				nullabilityRewriter.SetActiveExpressionPropertiesThenCleanup();
 				if (!nullabilityRewriter.Failed)
 				{
-					var result = nullabilityRewriter.Result;
-					if (nullabilityRewriter.HasNullable)
-					{
-						// If we have something like A.B.C?.D?.E.F,
-						// we re-write it to:
-						// A.B.C?.D is { } __tctx_ ? (true, __tctx_.E.F) : (false, null)
-						const string NullAccessOperator = "?.";
-						var lastIndexOfNullAccess = result.LastIndexOf(NullAccessOperator, StringComparison.Ordinal);
-						var firstPart = result.Substring(0, lastIndexOfNullAccess);
-						var secondPart = result.Substring(lastIndexOfNullAccess + NullAccessOperator.Length);
-						return $"{firstPart} is {{ }} {contextName}_ ? (true, {contextName}_.{secondPart}) : (false, null)";
-					}
-
-					return $"(true, {result})";
+					var methodDeclaration = nullabilityRewriter.MainExpression.ToString();
+					return (methodDeclaration, $"TryGetInstance_xBind_{xBindCounter}({contextName}, out var bindResult{xBindCounter}) ? (true, bindResult{xBindCounter}) : (false, default)");
 				}
-
-				return $"(true, {expression.ToFullString()})";
 			}
 
-			return expression.ToFullString();
+			if (isRValue)
+			{
+				return (null, $"(true, {expression.ToFullString()})");
+			}
+
+			return (null, expression.ToFullString());
 		}
 
 		private class Rewriter : CSharpSyntaxRewriter
@@ -189,22 +179,26 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 		{
 			private readonly string _contextName;
 			private readonly INamedTypeSymbol _contextTypeSymbol;
+			private readonly string _contextTypeString;
 			private readonly INamespaceSymbol _globalNamespace;
+			private readonly int _xBindCounter;
 			private readonly StringBuilder _builder = new();
+			private XBindExpressionInfo _activeSubexpression;
 
-			private ISymbol? _lastAccessedMember;
-			private bool _lastAccessedIsTopLevelContext;
+			private (ISymbol? Symbol, bool IsTopLevelContext) _lastAccessed;
 
 			public bool Failed { get; private set; }
 
 			public bool HasNullable { get; private set; }
 
-			public string Result => _builder.ToString();
+			public XBindExpressionInfo MainExpression { get; }
 
-			public NullabilityRewriter(string contextName, INamedTypeSymbol contextTypeSymbol, INamespaceSymbol globalNamespace)
+			public NullabilityRewriter(string contextName, INamedTypeSymbol contextTypeSymbol, INamespaceSymbol globalNamespace, int xBindCounter)
 			{
 				_contextName = contextName;
 				_contextTypeSymbol = contextTypeSymbol;
+				// TODO: Modify after https://github.com/unoplatform/uno/pull/11531 is merged.
+				_contextTypeString = contextTypeSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
 
 				// We need to take globalNamespace from the compilation itself.
 				// Walking ContainingNamespaces from contextTypeSymbol or
@@ -212,6 +206,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 				// the INamespaceSymbol we get has NamespaceKind == NamespaceKind.Module and it doesn't have access
 				// to all members.
 				_globalNamespace = globalNamespace;
+				_xBindCounter = xBindCounter;
+				_activeSubexpression = new(xBindCounter, _contextTypeString, contextName);
+				MainExpression = _activeSubexpression;
 			}
 
 			public override void DefaultVisit(SyntaxNode node)
@@ -231,9 +228,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 					return;
 				}
 
-				_builder.Append($"({node.Type.ToFullString()})");
-				_lastAccessedMember = null;
+				_builder.Append($"(({node.Type.ToFullString()})");
+				_lastAccessed = (null, false);
 				Visit(node.Expression);
+				_builder.Append(')');
 			}
 
 			public override void VisitLiteralExpression(LiteralExpressionSyntax node)
@@ -248,15 +246,20 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 					return;
 				}
 
+				MainExpression.Arguments = new();
+
 				for (int i = 0; i < node.Arguments.Count; i++)
 				{
-					_lastAccessedMember = null;
+					_lastAccessed = (null, false);
 					var argument = node.Arguments[i];
+
+					var argumentExpression = new XBindExpressionInfo(_xBindCounter, _contextTypeString, _contextName);
+					MainExpression.Arguments.Add(argumentExpression);
+					_activeSubexpression = argumentExpression;
+
 					VisitArgument(argument);
-					if (i < node.Arguments.Count - 1)
-					{
-						_builder.Append(", ");
-					}
+
+					SetActiveExpressionPropertiesThenCleanup();
 				}
 			}
 
@@ -268,9 +271,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 				}
 
 				Visit(node.Expression);
-				_builder.Append('(');
+
+				SetActiveExpressionPropertiesThenCleanup();
+
 				Visit(node.ArgumentList);
-				_builder.Append(')');
 			}
 
 			public override void VisitIdentifierName(IdentifierNameSyntax node)
@@ -282,31 +286,30 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 
 				if (node.Parent is AliasQualifiedNameSyntax aliasQualifiedName && node == aliasQualifiedName.Alias && node.Identifier.IsKind(SyntaxKind.GlobalKeyword))
 				{
-					_lastAccessedMember = _globalNamespace;
+					_lastAccessed = (_globalNamespace, false);
 					_builder.Append("global::");
 					return;
 				}
 
-				if (_lastAccessedMember is null && node.Identifier.ValueText == _contextName)
+				if (_lastAccessed.Symbol is null && node.Identifier.ValueText == _contextName)
 				{
-					_lastAccessedMember = _contextTypeSymbol;
-					_lastAccessedIsTopLevelContext = true;
+					_lastAccessed = (_contextTypeSymbol, true);
 					_builder.Append(_contextName);
 					return;
 				}
 
-				if (_lastAccessedMember is not (IPropertySymbol or IFieldSymbol or INamespaceOrTypeSymbol))
+				if (_lastAccessed.Symbol is not (IPropertySymbol or IFieldSymbol or INamespaceOrTypeSymbol))
 				{
 					Failed = true;
 					return;
 				}
 
-				(INamespaceOrTypeSymbol previousType, bool mayBeNullAccessed) = _lastAccessedMember switch
+				(INamespaceOrTypeSymbol previousType, bool mayBeNullAccessed) = _lastAccessed.Symbol switch
 				{
 					IPropertySymbol property => (property.Type, true),
 					IFieldSymbol field => (field.Type, true),
 					INamespaceOrTypeSymbol namespaceOrType => (namespaceOrType, false),
-					_ => throw new Exception($"Unexpected _lastAccessedMember '{_lastAccessedMember?.Kind}'."),
+					_ => throw new Exception($"Unexpected _lastAccessed symbol '{_lastAccessed.Symbol?.Kind}'."),
 				};
 
 				var member = previousType.GetMemberInlcudingBaseTypes(node.Identifier.ValueText);
@@ -318,7 +321,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 
 				if (member is INamespaceOrTypeSymbol)
 				{
-					if (_lastAccessedMember is INamespaceSymbol { IsGlobalNamespace: true })
+					if (_lastAccessed.Symbol is INamespaceSymbol { IsGlobalNamespace: true })
 					{
 						_builder.Append(member.Name);
 					}
@@ -327,11 +330,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 						_builder.Append($".{member.Name}");
 					}
 
-					_lastAccessedMember = member;
+					_lastAccessed = (member, false);
 					return;
 				}
 
-				if (!mayBeNullAccessed || _lastAccessedIsTopLevelContext || !IsReferenceTypeOrNullableValueType((ITypeSymbol)previousType))
+				if (!mayBeNullAccessed || _lastAccessed.IsTopLevelContext || !IsReferenceTypeOrNullableValueType((ITypeSymbol)previousType))
 				{
 					_builder.Append('.');
 				}
@@ -342,12 +345,46 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 				}
 
 				_builder.Append(member.Name);
-				_lastAccessedMember = member;
+				_lastAccessed = (member, false);
 			}
 
 			private static bool IsReferenceTypeOrNullableValueType(ITypeSymbol symbol)
 			{
 				return symbol.IsReferenceType || symbol.IsNullable();
+			}
+
+			internal void SetActiveExpressionPropertiesThenCleanup()
+			{
+				if (_builder.Length == 0)
+				{
+					return;
+				}
+
+				var lastIndexOfNullAccess = LastIndexOfNullAccess();
+				if (lastIndexOfNullAccess == -1)
+				{
+					_activeSubexpression.InstanceSubexpression1 = _builder.ToString();
+				}
+				else
+				{
+					_activeSubexpression.InstanceSubexpression1 = _builder.ToString(0, lastIndexOfNullAccess);
+					_activeSubexpression.InstanceSubexpression2 = _builder.ToString(lastIndexOfNullAccess + "?.".Length, _builder.Length - (lastIndexOfNullAccess + "?.".Length));
+				}
+
+				_builder.Clear();
+			}
+
+			private int LastIndexOfNullAccess()
+			{
+				for (int i = _builder.Length - 1; i >= 1; i--)
+				{
+					if (_builder[i] == '.' && _builder[i - 1] == '?')
+					{
+						return i - 1;
+					}
+				}
+
+				return -1;
 			}
 		}
 

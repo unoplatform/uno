@@ -41,6 +41,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		public List<XamlObjectDefinition> XBindExpressions { get; } = new List<XamlObjectDefinition>();
 
+		public List<string> XBindTryGetMethodDeclarations { get; } = new List<string>();
+
 		public int ComponentCount => Components.Count;
 	}
 }

@@ -57,6 +57,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private readonly Dictionary<string, XamlObjectDefinition> _namedResources = new Dictionary<string, XamlObjectDefinition>();
 		private readonly List<string> _partials = new List<string>();
+
 		/// <summary>
 		/// Names of disambiguated keys associated with resource definitions. These are created for top-level ResourceDictionary declarations only.
 		/// </summary>
@@ -77,6 +78,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private int _collectionIndex;
 		private int _subclassIndex;
 		private int _dictionaryPropertyIndex;
+		private int _xBindCounter;
 		private string? _themeDictionaryCurrentlyBuilding;
 		private readonly XamlGlobalStaticResourcesMap _globalStaticResourcesMap;
 		private readonly bool _isUiAutomationMappingEnabled;
@@ -482,6 +484,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									BuildComponentFields(componentBuilder);
 
 									BuildCompiledBindings(componentBuilder);
+
+									BuildXBindTryGetDeclarations(componentBuilder);
 								}
 
 								var componentCode = componentBuilder.ToString();
@@ -921,6 +925,18 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
+		private void BuildXBindTryGetDeclarations(IIndentedStringBuilder writer)
+		{
+			if (_fileDefinition.FilePath.Contains("When_xLoad_DataTemplate_In_ResDict_Global", StringComparison.Ordinal))
+			{
+				//Debugger.Launch();
+			}
+			foreach (var xBindMethodDeclaration in CurrentScope.XBindTryGetMethodDeclarations)
+			{
+				writer.AppendMultiLineIndented(xBindMethodDeclaration);
+			}
+		}
+
 		private void BuildBackingFields(IIndentedStringBuilder writer)
 		{
 			TryAnnotateWithGeneratorSource(writer);
@@ -1041,6 +1057,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								BuildBackingFields(writer);
 
 								BuildChildSubclasses(writer);
+
+								BuildXBindTryGetDeclarations(writer);
 							}
 						}
 					}
@@ -1367,6 +1385,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						{
 							writer.AppendLineInvariantIndented("static partial void RegisterDefaultStyles_{0}() => {1}.Instance.RegisterDefaultStyles_{0}();", _fileUniqueId, SingletonClassName);
 						}
+
+						BuildXBindTryGetDeclarations(writer);
 					}
 				}
 
@@ -1675,6 +1695,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							writer.AppendLine();
 
 							BuildChildSubclasses(writer);
+							BuildXBindTryGetDeclarations(writer);
 						}
 					}
 				}
@@ -4121,6 +4142,15 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_partials.Add(format.InvariantCultureFormat(values));
 		}
 
+		private void RegisterXBindTryGetDeclaration(string declaration)
+		{
+			if (_fileDefinition.FilePath.Contains("When_xLoad_DataTemplate_In_ResDict_Global", StringComparison.Ordinal))
+			{
+				//Debugger.Launch();
+			}
+			CurrentScope.XBindTryGetMethodDeclarations.Add(declaration);
+		}
+
 		private void RegisterBackingField(string type, string name, Accessibility accessibility)
 		{
 			CurrentScope.BackingFields.Add(new BackingFieldDefinition(type, name, accessibility));
@@ -4332,6 +4362,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private string BuildXBindEvalFunction(XamlMemberDefinition member, XamlObjectDefinition bindNode)
 		{
+			_xBindCounter++;
 			CurrentScope.XBindExpressions.Add(bindNode);
 
 			// If a binding is inside a DataTemplate, the binding root in the case of an x:Bind is
@@ -4409,8 +4440,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							if (propertyPaths.properties.Length == 1)
 							{
 								var targetPropertyType = GetXBindPropertyPathType(propertyPaths.properties[0], dataTypeSymbol).ToDisplayString(NullableFlowState.None);
-								var contextFunction = XBindExpressionParser.Rewrite("___tctx", rawFunction, dataTypeSymbol, _metadataHelper.Compilation.GlobalNamespace, isRValue: false, FindType);
-								return $"(___ctx, __value) => {{ if(___ctx is {dataType} ___tctx) {{ {contextFunction} = ({targetPropertyType})global::Windows.UI.Xaml.Markup.XamlBindingHelper.ConvertValue(typeof({targetPropertyType}), __value); }} }}";
+								var contextFunction = XBindExpressionParser.Rewrite("___tctx", rawFunction, dataTypeSymbol, _metadataHelper.Compilation.GlobalNamespace, isRValue: false, _xBindCounter, FindType);
+								// There is no "TryGet*" method declaration for LValue usages.
+								Debug.Assert(contextFunction.MethodDeclaration is null);
+								return $"(___ctx, __value) => {{ if(___ctx is {dataType} ___tctx) {{ {contextFunction.Expression} = ({targetPropertyType})global::Windows.UI.Xaml.Markup.XamlBindingHelper.ConvertValue(typeof({targetPropertyType}), __value); }} }}";
 							}
 							else
 							{
@@ -4424,14 +4457,26 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					}
 				}
 
-				var contextFunction = XBindExpressionParser.Rewrite("___tctx", rawFunction, dataTypeSymbol, _metadataHelper.Compilation.GlobalNamespace, isRValue: true, FindType);
-				return $".BindingApply({applyBindingParameters} => /*defaultBindMode{GetDefaultBindMode()}*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, null, ___ctx => ___ctx is {GetType(dataType)} ___tctx ? ({contextFunction}) : (false, default), {buildBindBack()} {pathsArray}))";
+				var contextFunction = XBindExpressionParser.Rewrite("___tctx", rawFunction, dataTypeSymbol, _metadataHelper.Compilation.GlobalNamespace, isRValue: true, _xBindCounter, FindType);
+				if (_fileDefinition.FilePath.Contains("When_xLoad_DataTemplate_In_ResDict_Global", StringComparison.Ordinal))
+				{
+					//Debugger.Launch();
+				}
+				if (contextFunction.MethodDeclaration is not null)
+				{
+					RegisterXBindTryGetDeclaration(contextFunction.MethodDeclaration);
+				}
+				return $".BindingApply({applyBindingParameters} => /*defaultBindMode{GetDefaultBindMode()}*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, null, ___ctx => ___ctx is {GetType(dataType)} ___tctx ? ({contextFunction.Expression}) : (false, default), {buildBindBack()} {pathsArray}))";
 			}
 			else
 			{
 				EnsureXClassName();
 
-				var rewrittenRValue = string.IsNullOrEmpty(rawFunction) ? "(true, ___ctx)" : XBindExpressionParser.Rewrite("___tctx", rawFunction, _xClassName.Symbol, _metadataHelper.Compilation.GlobalNamespace, isRValue: true, FindType);
+				var rewrittenRValue = string.IsNullOrEmpty(rawFunction) ? (MethodDeclaration: null, Expression: "(true, ___ctx)") : XBindExpressionParser.Rewrite("___tctx", rawFunction, _xClassName.Symbol, _metadataHelper.Compilation.GlobalNamespace, isRValue: true, _xBindCounter, FindType);
+				if (rewrittenRValue.MethodDeclaration is not null)
+				{
+					RegisterXBindTryGetDeclaration(rewrittenRValue.MethodDeclaration);
+				}
 
 				string buildBindBack()
 				{
@@ -4452,7 +4497,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						{
 							if (propertyPaths.properties.Length == 1)
 							{
-								var rewrittenLValue = string.IsNullOrEmpty(rawFunction) ? "___ctx" : XBindExpressionParser.Rewrite("___tctx", rawFunction, _xClassName.Symbol, _metadataHelper.Compilation.GlobalNamespace, isRValue: false, FindType);
+								var rewrittenLValue = string.IsNullOrEmpty(rawFunction) ? "___ctx" : XBindExpressionParser.Rewrite("___tctx", rawFunction, _xClassName.Symbol, _metadataHelper.Compilation.GlobalNamespace, isRValue: false, _xBindCounter, FindType).Expression;
 								var targetPropertyType = GetXBindPropertyPathType(propertyPaths.properties[0]).ToDisplayString(NullableFlowState.None);
 								return $"(___ctx, __value) => {{ " +
 									$"if(___ctx is {_xClassName} ___tctx) " +
@@ -4471,7 +4516,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					}
 				}
 
-				var bindFunction = $"___ctx is {_xClassName} ___tctx ? ({rewrittenRValue}) : (false, default)";
+				var bindFunction = $"___ctx is {_xClassName} ___tctx ? ({rewrittenRValue.Expression}) : (false, default)";
 				return $".BindingApply({applyBindingParameters} =>  /*defaultBindMode{GetDefaultBindMode()} {rawFunction}*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, __that, ___ctx => {bindFunction}, {buildBindBack()} {pathsArray}))";
 			}
 		}
