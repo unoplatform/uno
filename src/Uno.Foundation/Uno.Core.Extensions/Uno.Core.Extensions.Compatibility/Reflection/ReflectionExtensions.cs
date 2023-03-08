@@ -178,12 +178,6 @@ namespace Uno.Extensions
 			return Extensions.Reflection(instance);
 		}
 
-		public static IDisposable Observe(this IEventDescriptor descriptor, object publisher, object observer,
-										  string methodName)
-		{
-			return Extensions.Observe(descriptor, publisher, observer, methodName);
-		}
-
 		public static IMemberDescriptor GetDescriptor(this MemberInfo mi)
 		{
 			return Extensions.GetDescriptor(mi);

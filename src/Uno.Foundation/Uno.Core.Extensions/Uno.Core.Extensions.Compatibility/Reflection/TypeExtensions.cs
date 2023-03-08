@@ -18,7 +18,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Uno.Extensions.ValueType;
 using Uno.Reflection;
 using System.Linq.Expressions;
 
@@ -96,7 +95,7 @@ namespace Uno.Extensions
 			var mi = FindInheritedMember(type, memberName, contract);
 
 			if (mi == null &&
-				contract.Behavior.ContainsAll(BindingBehavior.Interface))
+				(contract.Behavior & BindingBehavior.Interface) == BindingBehavior.Interface)
 			{
 				foreach (var interfaceType in type.GetInterfaces())
 				{
@@ -121,7 +120,7 @@ namespace Uno.Extensions
 				mi = FindMember(type, memberName, contract);
 
 				if (mi != null ||
-					!contract.Behavior.ContainsAll(BindingBehavior.Inherited))
+					(contract.Behavior & BindingBehavior.Inherited) != BindingBehavior.Inherited)
 				{
 					break;
 				}
@@ -140,7 +139,7 @@ namespace Uno.Extensions
 		{
 			MemberInfo memberInfo;
 
-			if (contract.MemberType.ContainsAll(MemberTypes.Property))
+			if ((contract.MemberType & MemberTypes.Property) == MemberTypes.Property)
 			{
 #if !WINDOWS_UWP && !HAS_CRIPPLEDREFLECTION
 				memberInfo = type.GetProperty(memberName, contract.BindingFlags, null, contract.ReturnType,
@@ -157,7 +156,7 @@ namespace Uno.Extensions
 				}
 			}
 
-			if (contract.MemberType.ContainsAll(MemberTypes.Event))
+			if ((contract.MemberType & MemberTypes.Event) == MemberTypes.Event)
 			{
 #if !WINDOWS_UWP && !HAS_CRIPPLEDREFLECTION
 				memberInfo = type.GetEvent(memberName, contract.BindingFlags);
@@ -171,7 +170,7 @@ namespace Uno.Extensions
 				}
 			}
 
-			if (contract.MemberType.ContainsAll(MemberTypes.Field))
+			if ((contract.MemberType & MemberTypes.Field) == MemberTypes.Field)
 			{
 #if !WINDOWS_UWP && !HAS_CRIPPLEDREFLECTION
 				memberInfo = type.GetField(memberName, contract.BindingFlags);
@@ -185,7 +184,7 @@ namespace Uno.Extensions
 				}
 			}
 
-			if (contract.MemberType.ContainsAll(MemberTypes.Method))
+			if ((contract.MemberType & MemberTypes.Method) == MemberTypes.Method)
 			{
 #if !WINDOWS_UWP && !HAS_CRIPPLEDREFLECTION
 				memberInfo = contract.Types == null
@@ -210,7 +209,7 @@ namespace Uno.Extensions
 				}
 			}
 
-			if (contract.MemberType.ContainsAll(MemberTypes.NestedType))
+			if ((contract.MemberType & MemberTypes.NestedType) == MemberTypes.NestedType)
 			{
 #if !WINDOWS_UWP
 				memberInfo = type.GetNestedType(memberName, contract.BindingFlags);

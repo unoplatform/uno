@@ -28,7 +28,10 @@ namespace Windows.UI.StartScreen
 		{
 			var shortcuts = _manager.DynamicShortcuts.ToArray();
 			Items.Clear();
-			Items.AddRange(shortcuts.Select(s => s.ToJumpListItem()));
+			foreach (var shortcut in shortcuts)
+			{
+				Items.Add(shortcut.ToJumpListItem());
+			}
 		}
 
 		private IAsyncAction InternalSaveAsync()

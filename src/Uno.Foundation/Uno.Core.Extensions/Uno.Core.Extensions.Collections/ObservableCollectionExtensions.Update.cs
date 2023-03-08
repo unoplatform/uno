@@ -62,52 +62,6 @@ namespace Uno.Extensions
 		}
 
 		/// <summary>
-		/// Updates an ObservableCollection using the provided enumerable, resulting in equal sequences. For any item that was
-		/// kept for an equal new instance, UpdateAsync is called if it implements IUpdatable.
-		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <param name="collection"></param>
-		/// <param name="ct"></param>
-		/// <param name="updated"></param>
-		/// <param name="tryDispose"></param>
-		/// <param name="comparer"></param>
-		/// <returns></returns>
-		public static Task UpdateAsync<T>(this IList<T> collection, CancellationToken ct, IEnumerable<T> updated, bool tryDispose = false, IEqualityComparer<T> comparer = null)
-		{
-			var updatables = collection
-				.InternalUpdate(updated, tryDispose, true, comparer)
-				.kept
-				.Select(info => new { Updatable = info.OldItem as IUpdatable<T>, Update = info.NewItem })
-				.ToArray();
-
-			// Avoid "if" inside.
-			var tasks = tryDispose
-				? updatables
-					.Select(async updateInfo =>
-						{
-							if (updateInfo.Updatable != null)
-							{
-								await updateInfo.Updatable.UpdateAsync(ct, updateInfo.Update);
-							}
-
-							TryDispose(updateInfo.Update);
-						})
-					.ToArray()
-				: updatables
-					.Select(async updateInfo =>
-						{
-							if (updateInfo.Updatable != null)
-							{
-								await updateInfo.Updatable.UpdateAsync(ct, updateInfo.Update);
-							}
-						})
-					.ToArray();
-
-			return Task.WhenAll(tasks);
-		}
-
-
-		/// <summary>
 		/// Private version for having a single implementation of adds, removes and updates, but be able to plug async IUpdatable.UpdateAsync call.
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
@@ -311,17 +265,6 @@ namespace Uno.Extensions
 			public T NewItem { get; set; }
 			public int OldIndex { get; set; }
 			public int NewIndex { get; set; }
-		}
-
-		private static bool TryDispose(object maybeDisposableObject)
-		{
-			var disposable = maybeDisposableObject as IDisposable;
-			if (disposable != null)
-			{
-				disposable.Dispose();
-				return true;
-			}
-			return false;
 		}
 	}
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using FluentAssertions;
@@ -1613,7 +1614,10 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 			// "Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests.BasicReader.xamltest"
 			using (var stream = assembly.GetManifestResourceStream(name))
 			{
-				return stream.ReadToEnd();
+				using (var streamReader = new StreamReader(stream))
+				{
+					return streamReader.ReadToEnd();
+				}
 			}
 		}
 

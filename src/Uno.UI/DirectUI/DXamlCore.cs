@@ -6,7 +6,6 @@
 
 using System;
 using System.Collections.Generic;
-using Uno.Foundation.Collections;
 using Uno.UI.Helpers.WinUI;
 using Uno.UI.Xaml.Controls;
 using Uno.UI.Xaml.Core;

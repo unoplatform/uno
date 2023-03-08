@@ -11,7 +11,7 @@ namespace Windows.Foundation.Collections;
 [Android.Runtime.Preserve(AllMembers = true)]
 #endif
 #endif
-internal class ObservableVectorWrapper
+internal abstract class ObservableVectorWrapper
 {
 	public event VectorChangedEventHandler<object> VectorChanged;
 
