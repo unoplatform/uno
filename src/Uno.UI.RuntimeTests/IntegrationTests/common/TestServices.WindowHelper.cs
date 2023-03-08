@@ -29,7 +29,7 @@ namespace Private.Infrastructure
 			private static UIElement _originalWindowContent;
 
 			public static XamlRoot XamlRoot { get; set; }
-			
+
 			public static bool IsXamlIsland { get; set; }
 
 			public static Windows.UI.Xaml.Window CurrentTestWindow

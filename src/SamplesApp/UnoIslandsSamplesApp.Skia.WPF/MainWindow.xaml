@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 		xmlns:xamlHost="clr-namespace:Uno.UI.XamlHost.Skia.Wpf;assembly=Uno.UI.XamlHost.Skia.Wpf"
         mc:Ignorable="d"
-        Title="Uno Islands Sample" Height="450" Width="800">
+        Title="Uno Islands Sample" Height="768" Width="1024">
 	<Border BorderThickness="20" BorderBrush="Red" Background="White">
 		<Grid>
 			<ContentControl Grid.Row="1" x:Name="hostContainer">

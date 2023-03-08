@@ -44,7 +44,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-
+		[RequiresFullWindow]
 		public async Task When_Verify_Canvas_With_Outer_Clip()
 		{
 #if __MACOS__ //Color are not interpreted the same way in Mac
@@ -74,6 +74,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[RequiresFullWindow]
 		public async Task When_Verify_Canvas_ZIndex()
 		{
 #if __MACOS__
