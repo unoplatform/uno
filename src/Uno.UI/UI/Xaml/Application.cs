@@ -45,6 +45,7 @@ using AppKit;
 #else
 using View = Windows.UI.Xaml.UIElement;
 using ViewGroup = Windows.UI.Xaml.UIElement;
+using Uno.UI.Xaml.Core;
 #endif
 
 namespace Windows.UI.Xaml
@@ -408,28 +409,31 @@ namespace Windows.UI.Xaml
 
 		private void OnResourcesChanged(ResourceUpdateReason updateReason)
 		{
-			if (GetTreeRoot() is { } root)
+			foreach (var contentRoot in WinUICoreServices.Instance.ContentRootCoordinator.ContentRoots)
 			{
-				// Update theme bindings in application resources
-				Resources?.UpdateThemeBindings(updateReason);
-
-				// Update theme bindings in system resources
-				ResourceResolver.UpdateSystemThemeBindings(updateReason);
-
-				PropagateResourcesChanged(root, updateReason);
-			}
-
-			// Start from the real root, which may not be a FrameworkElement on some platforms
-			View GetTreeRoot()
-			{
-				View current = Windows.UI.Xaml.Window.Current.Content;
-				var parent = current?.GetVisualTreeParent();
-				while (parent != null)
+				if (GetTreeRoot(contentRoot) is { } root)
 				{
-					current = parent;
-					parent = current?.GetVisualTreeParent();
+					// Update theme bindings in application resources
+					Resources?.UpdateThemeBindings(updateReason);
+
+					// Update theme bindings in system resources
+					ResourceResolver.UpdateSystemThemeBindings(updateReason);
+
+					PropagateResourcesChanged(root, updateReason);
 				}
-				return current;
+
+				// Start from the real root, which may not be a FrameworkElement on some platforms
+				View GetTreeRoot(ContentRoot contentRoot)
+				{
+					View current = contentRoot.XamlRoot.Content;
+					var parent = current?.GetVisualTreeParent();
+					while (parent != null)
+					{
+						current = parent;
+						parent = current?.GetVisualTreeParent();
+					}
+					return current;
+				}
 			}
 		}
 

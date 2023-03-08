@@ -7,7 +7,6 @@ using System.Runtime.CompilerServices;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Tests.Enterprise;
 using Windows.UI.Core;
-using Uno.Helpers;
 using MUXControlsTestApp.Utilities;
 #if NETFX_CORE
 using Uno.UI.Extensions;
