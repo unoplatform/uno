@@ -5,8 +5,8 @@
       "..\\build\\Uno.UI.Build.csproj",
       "AddIns\\Uno.UI.Lottie\\Uno.UI.Lottie.csproj",
       "AddIns\\Uno.UI.MSAL\\Uno.UI.MSAL.csproj",
-      "AddIns\\Uno.UI.Svg\\Uno.UI.Svg.csproj",
       "AddIns\\Uno.UI.Svg\\Uno.UI.Svg.Skia.csproj",
+      "AddIns\\Uno.UI.Svg\\Uno.UI.Svg.csproj",
       "SolutionTemplate\\Uno.ProjectTemplates.Dotnet\\Uno.ProjectTemplates.Dotnet.csproj",
       "SolutionTemplate\\UnoLibraryTemplate\\UnoLibraryTemplate.csproj",
       "SolutionTemplate\\UnoSolutionTemplate\\UnoSolutionTemplate.csproj",
@@ -15,8 +15,8 @@
       "SourceGenerators\\System.Xaml.Tests\\Uno.Xaml.Tests.csproj",
       "SourceGenerators\\System.Xaml\\Uno.Xaml.csproj",
       "SourceGenerators\\Uno.UI.SourceGenerators.Internal\\Uno.UI.SourceGenerators.Internal.csproj",
-      "SourceGenerators\\Uno.UI.SourceGenerators.Tests\\Uno.UI.SourceGenerators.Tests.csproj",
       "SourceGenerators\\Uno.UI.SourceGenerators.Tests.Shared\\Uno.UI.SourceGenerators.Tests.Shared.shproj",
+      "SourceGenerators\\Uno.UI.SourceGenerators.Tests\\Uno.UI.SourceGenerators.Tests.csproj",
       "SourceGenerators\\Uno.UI.SourceGenerators\\Uno.UI.SourceGenerators.csproj",
       "SourceGenerators\\Uno.UI.Tasks\\Uno.UI.Tasks.csproj",
       "SourceGenerators\\XamlGenerationTests.Core\\XamlGenerationTests.Core.csproj",
@@ -34,9 +34,8 @@
       "Uno.UI.Dispatching\\Uno.UI.Dispatching.csproj",
       "Uno.UI.FluentTheme.v1\\Uno.UI.FluentTheme.v1.csproj",
       "Uno.UI.FluentTheme.v2\\Uno.UI.FluentTheme.v2.csproj",
-      "Uno.UI.Foldable\\Uno.UI.Foldable.csproj",
       "Uno.UI.FluentTheme\\Uno.UI.FluentTheme.csproj",
-      "Uno.UI.XamlHost\\Uno.UI.XamlHost.csproj",
+      "Uno.UI.Foldable\\Uno.UI.Foldable.csproj",
       "Uno.UI.Maps\\Uno.UI.Maps.csproj",
       "Uno.UI.RemoteControl.Host\\Uno.UI.RemoteControl.Host.csproj",
       "Uno.UI.RemoteControl.VS\\Uno.UI.RemoteControl.VS.csproj",
@@ -50,12 +49,12 @@
       "Uno.UI.Tests.ViewLibrary\\Uno.UI.Tests.ViewLibrary.csproj",
       "Uno.UI.Tests\\Uno.UI.Tests.csproj",
       "Uno.UI.Toolkit\\Uno.UI.Toolkit.csproj",
+      "Uno.UI.XamlHost\\Uno.UI.XamlHost.csproj",
       "Uno.UI\\Uno.UI.csproj",
       "Uno.UWPSyncGenerator.Reference\\Uno.UWPSyncGenerator.Reference.csproj",
       "Uno.UWPSyncGenerator\\Uno.UWPSyncGenerator.csproj",
       "Uno.UWP\\Uno.csproj",
-      "Uno.WinUIRevert\\Uno.WinUIRevert.csproj",
-      "UnoItemTemplate\\UnoItemTemplate.csproj"
+      "Uno.WinUIRevert\\Uno.WinUIRevert.csproj"
     ]
   }
 }
