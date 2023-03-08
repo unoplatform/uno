@@ -18,7 +18,7 @@
 
 	  <!-- References from Uno.UI.Toolkit -->
 	  <!-- BEGIN WinUI-specific
-	  <group targetFramework=""net5.0-windows10.0.18362.0"">
+	  <group targetFramework="net5.0-windows10.0.18362.0">
 		<dependency id="Microsoft.WindowsAppSDK" version="1.0.0" />
 		<dependency id="Microsoft.Windows.SDK.BuildTools" version="10.0.22000.196" />
 	  </group>
