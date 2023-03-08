@@ -3,14 +3,16 @@ using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using FluentAssertions.Execution;
+using Windows.Foundation;
 using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Shapes;
-using Windows.Foundation;
+using Windows.UI.ViewManagement;
 using static Private.Infrastructure.TestServices;
+using Uno.Disposables;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -432,5 +434,152 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(0, outerScrollViewer.HorizontalOffset);
 			Assert.AreEqual(320, outerScrollViewer.VerticalOffset);
 		}
+
+#if __ANDROID__
+		[TestMethod]
+		[RunsOnUIThread]
+		[RequiresFullWindow]
+		public async Task When_NonNested_BringIntoView()
+		{
+			if (ContextHelper.Current is not Android.App.Activity activity)
+			{
+				Assert.Inconclusive("The current android activity is not accessible.");
+				return;
+			}
+
+			// set AdjustNothing mode and prepare for cleanup
+			var oldMode = activity.Window.Attributes.SoftInputMode;
+			activity.Window.SetSoftInputMode(oldMode & ~Android.Views.SoftInput.MaskAdjust | Android.Views.SoftInput.AdjustNothing);
+			using var cleanup = Disposable.Create(() => activity.Window.SetSoftInputMode(oldMode));
+
+			// load a tmp textbox to ...
+			var tmpTextbox = new TextBox();
+			WindowHelper.WindowContent = tmpTextbox;
+			await WindowHelper.WaitForLoaded(tmpTextbox);
+			await WindowHelper.WaitForIdle();
+			tmpTextbox.Focus(FocusState.Programmatic);
+
+			// ... measure keyboard height
+			var kb = InputPane.GetForCurrentView();
+			await WindowHelper.WaitFor(() => kb.Visible, message: "Failed to summon keyboard via Focus(FocusState.Programmatic).");
+			await WindowHelper.WaitFor(() => kb.OccludedRect.Height > 0, message: "Failed to summon keyboard via Focus(FocusState.Programmatic).");
+			var kbHeight = kb.OccludedRect.Height;
+			kb.Visible = false;
+
+			// load actual test setup
+			// ScrollViewer's viewport is set to be 50px taller than the keyboard.
+			// There is a 200px tall filler Rectangle above the TextBox, guaranteeing the latter will be hidden behind keyboard.
+			var SUT = new TextBox();
+			var panel = new StackPanel()
+			{
+				Spacing = 5,
+				Children =
+				{
+					new Windows.UI.Xaml.Shapes.Rectangle() { Height = 200, Fill = SolidColorBrushHelper.SkyBlue },
+					SUT,
+				},
+			};
+			var sv = new ScrollViewer()
+			{
+				Height = kbHeight + 50,
+				Content = panel,
+				VerticalAlignment = VerticalAlignment.Bottom
+			};
+			var container = new Border() { Child = sv };
+
+			WindowHelper.WindowContent = container;
+			await WindowHelper.WaitForLoaded(container);
+			await WindowHelper.WaitForIdle();
+
+			// when the TextBox is focused, we expect BringIntoView to push the TextBox above the keyboard
+			// note: This test can be flaky, as it would randomly close the keyboard right after opening it.
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitFor(() => kb.Visible, message: "Failed to summon keyboard via Focus(FocusState.Programmatic).");
+			Assert.IsTrue(SUT.ActualHeight < 50, $"TextBox should be no taller than 50px. (ActualHeight = {SUT.ActualHeight})");
+
+			var minOffset = 200 - (50 - SUT.ActualHeight); // tbox sticks to the top of viewport
+			var maxOffset = 205; // tbox sticks to the bottom of viewport
+			await WindowHelper.WaitFor<double>(
+				() => sv.VerticalOffset,
+				default, // unused, since are we doing between comparison
+				value => $"Failed to make keyboard appear above keyboard. (sv.VOffset = {value})",
+				comparer: (value, _) => minOffset <= value && value <= maxOffset);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[RequiresFullWindow]
+		public async Task When_DoublyNested_BringIntoView()
+		{
+			// note: Compared to When_NonNested_BringIntoView, we are using 2 SVs here, one nesting another.
+			// Other than that, the expected result should still be the same, as in the outer SV should be the one
+			// being padded and scrolled by the same amount, AND NOT the inner one.
+			if (ContextHelper.Current is not Android.App.Activity activity)
+			{
+				Assert.Inconclusive("The current android activity is not accessible.");
+				return;
+			}
+
+			// set AdjustNothing mode and prepare for cleanup
+			var oldMode = activity.Window.Attributes.SoftInputMode;
+			activity.Window.SetSoftInputMode(oldMode & ~Android.Views.SoftInput.MaskAdjust | Android.Views.SoftInput.AdjustNothing);
+			using var cleanup = Disposable.Create(() => activity.Window.SetSoftInputMode(oldMode));
+
+			// load a tmp textbox to ...
+			var tmpTextbox = new TextBox();
+			WindowHelper.WindowContent = tmpTextbox;
+			await WindowHelper.WaitForLoaded(tmpTextbox);
+			await WindowHelper.WaitForIdle();
+			tmpTextbox.Focus(FocusState.Programmatic);
+
+			// ... measure keyboard height
+			var kb = InputPane.GetForCurrentView();
+			await WindowHelper.WaitFor(() => kb.Visible, message: "Failed to summon keyboard via Focus(FocusState.Programmatic).");
+			await WindowHelper.WaitFor(() => kb.OccludedRect.Height > 0, message: "Failed to summon keyboard via Focus(FocusState.Programmatic).");
+			var kbHeight = kb.OccludedRect.Height;
+			kb.Visible = false;
+
+			// load actual test setup
+			// ScrollViewer's viewport is set to be 50px taller than the keyboard.
+			// There is a 200px tall filler Rectangle above the TextBox, guaranteeing the latter will be hidden behind keyboard.
+			var SUT = new TextBox();
+			var panel = new StackPanel()
+			{
+				Spacing = 5,
+				Children =
+				{
+					new Windows.UI.Xaml.Shapes.Rectangle() { Height = 200, Fill = SolidColorBrushHelper.SkyBlue },
+					SUT,
+				},
+			};
+			var innerSV = new ScrollViewer() { Content = panel };
+			var outerSV = new ScrollViewer()
+			{
+				Height = kbHeight + 50,
+				Content = innerSV,
+				VerticalAlignment = VerticalAlignment.Bottom
+			};
+			var container = new Border() { Child = outerSV };
+
+			WindowHelper.WindowContent = container;
+			await WindowHelper.WaitForLoaded(container);
+			await WindowHelper.WaitForIdle();
+
+			// when the TextBox is focused, we expect BringIntoView to push the TextBox above the keyboard
+			// note: This test can be flaky, as it would randomly close the keyboard right after opening it.
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitFor(() => kb.Visible, message: "Failed to summon keyboard via Focus(FocusState.Programmatic).");
+			Assert.IsTrue(SUT.ActualHeight < 50, $"TextBox should be no taller than 50px. (ActualHeight = {SUT.ActualHeight})");
+
+			var minOffset = 200 - (50 - SUT.ActualHeight); // tbox sticks to the top of viewport
+			var maxOffset = 205; // tbox sticks to the bottom of viewport
+			await WindowHelper.WaitFor<double>(
+				() => outerSV.VerticalOffset,
+				default, // unused, since are we doing between comparison
+				value => $"Failed to make keyboard appear above keyboard. (sv.VOffset = {value})",
+				comparer: (value, _) => minOffset <= value && value <= maxOffset);
+		}
+
+#endif
 	}
 }
