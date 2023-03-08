@@ -21,6 +21,7 @@ using Uno.UI.Extensions;
 using Windows.UI.Xaml.Controls.Primitives;
 using Uno.UI.Xaml.Core;
 using Uno.UI.DataBinding;
+using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
 #if __IOS__
 using UIKit;
@@ -134,7 +135,7 @@ namespace Windows.UI.Xaml.Media
 		{
 			if (window == Window.Current)
 			{
-				var mainVisualTree = CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRoot.VisualTree;
+				var mainVisualTree = WinUICoreServices.Instance.ContentRootCoordinator.CoreWindowContentRoot.VisualTree;
 				return GetOpenPopups(mainVisualTree);
 			}
 
