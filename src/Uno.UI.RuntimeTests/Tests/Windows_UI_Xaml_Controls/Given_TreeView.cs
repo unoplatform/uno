@@ -57,12 +57,16 @@ public class Given_TreeView
 		rootNode.IsExpanded = true;
 		await TestServices.WindowHelper.WaitForIdle();
 
-		var child1NodeAfter = (TreeViewItem)SUT.myTree.ContainerFromItem(child1);
+		await TestServices.WindowHelper.WaitFor(() => (SUT.myTree.ContainerFromItem(child1) as TreeViewItem)?.Content?.ToString() == child1.Name);
+		await TestServices.WindowHelper.WaitFor(() => (SUT.myTree.ContainerFromItem(child2) as TreeViewItem)?.Content?.ToString() == child2.Name);
+
+		TreeViewItem child1NodeAfter = (TreeViewItem)SUT.myTree.ContainerFromItem(child1);
 		Assert.IsNotNull(child1NodeAfter);
 
 		Assert.AreEqual("Child 1", child1NodeAfter.Content);
 
 		var child2NodeAfter = (TreeViewItem)SUT.myTree.ContainerFromItem(child2);
+		await TestServices.WindowHelper.WaitForLoaded(child2NodeAfter);
 		Assert.IsNotNull(child2NodeAfter);
 
 		Assert.AreEqual("Child 2", child2NodeAfter.Content);
