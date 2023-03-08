@@ -139,6 +139,8 @@ namespace UnoWinUIRevert
 			//ReplaceInFile(Path.Combine(basePath, @"src\Uno.UI\UI\Xaml\Media\RadialGradientBrush.cs"), "namespace Windows.UI.Xaml.Controls", "namespace Windows.UI.Xaml.Controls");
 			//ReplaceInFile(Path.Combine(basePath, @"src\Uno.UI\UI\Xaml\Media\RadialGradientBrush.iOSmacOS.cs"), "namespace Windows.UI.Xaml.Controls", "namespace Windows.UI.Xaml.Controls");
 			//ReplaceInFile(Path.Combine(basePath, @"src\Uno.UI\UI\Xaml\Media\RadialGradientBrush.wasm.cs"), "namespace Windows.UI.Xaml.Controls", "namespace Windows.UI.Xaml.Controls");
+
+			AddWindowsDependencyGroup(Path.Combine(basePath, "build", "Uno.WinUI.nuspec"));
 		}
 
 		static string[] _exclusions = new string[] {
@@ -215,6 +217,14 @@ namespace UnoWinUIRevert
 					File.Delete(filePath);
 				}
 			}
+		}
+
+		private static void AddWindowsDependencyGroup(string nuspecPath)
+		{
+			var contents = File.ReadAllText(nuspecPath);
+			contents = Regex.Replace(contents, @"<!-- <group targetFramework=""net5.0-windows10.0.18362.0"">", @"<group targetFramework=""net5.0-windows10.0.18362.0"">");
+			contents = Regex.Replace(contents, @"</group> -->", @"</group>");
+			File.WriteAllText(nuspecPath, contents);
 		}
 	}
 }
