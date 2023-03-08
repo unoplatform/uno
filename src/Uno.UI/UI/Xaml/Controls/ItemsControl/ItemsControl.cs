@@ -1154,7 +1154,7 @@ namespace Windows.UI.Xaml.Controls
 				{
 					static void ClearPropertyWhenNoExpression(ContentControl target, DependencyProperty property)
 					{
-						// We must not clear the properties for the container if a binding expession
+						// We must not clear the properties of the container if a binding expression
 						// is defined. This is a use-case present for TreeView, which generally uses TreeViewItem
 						// at the root of hierarchical templates.
 						if (target.GetBindingExpression(property) is null)

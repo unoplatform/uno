@@ -22,7 +22,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 [RunsOnUIThread]
 public class Given_TreeView
 {
-	// Test method that create a tree of three nested items from a itemssource and that will open and close a single treeview item twice and validate that the container is still containing the same property values
+	// Test method that creates a tree of three nested items from an itemssource and that will open and close a single treeview item twice and validate that the container is still containing the same property values
 	[TestMethod]
 	public async Task When_Open_Close_Twice()
 	{
