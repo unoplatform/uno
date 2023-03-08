@@ -229,14 +229,6 @@
 		</ItemGroup>
 	</Target>
 
-	<Target Name="AlignVsConfig" BeforeTargets="Build;Pack">
-		<!-- The master file for the .vsconfig is located in the wizard project -->
-		<Copy SkipUnchangedFiles="true" SourceFiles="..\UnoSolutionTemplate.Wizard.2022\.vsconfig.vs16" DestinationFiles="content/unoapp-uwp/.vsconfig" />
-
-		<Copy SkipUnchangedFiles="true" SourceFiles="..\UnoSolutionTemplate.Wizard.2022\.vsconfig.vs17" DestinationFiles="content/unoapp-uwp-net6/.vsconfig" />
-		<Copy SkipUnchangedFiles="true" SourceFiles="..\UnoSolutionTemplate.Wizard.2022\.vsconfig.vs17" DestinationFiles="content/unoapp-winui/.vsconfig" />
-	</Target>
-
 	<UsingTask TaskName="ReplaceContent" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
 		<ParameterGroup>
 			<SourcePath ParameterType="System.String" Required="True" Output="False" />
