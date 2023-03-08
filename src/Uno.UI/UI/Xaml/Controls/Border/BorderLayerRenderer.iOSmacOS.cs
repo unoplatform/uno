@@ -40,8 +40,6 @@ namespace Windows.UI.Xaml.Controls
 		// https://github.com/unoplatform/uno/issues/10283
 		private static readonly CGColor _transparent = Colors.Transparent;
 
-		private BorderLayerState _lastState;
-
 		private SerialDisposable _layerDisposable = new SerialDisposable();
 
 		partial void UpdateLayer()

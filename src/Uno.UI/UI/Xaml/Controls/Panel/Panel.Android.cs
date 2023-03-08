@@ -30,8 +30,6 @@ namespace Microsoft.UI.Xaml.Controls
 			base.OnChildViewAdded(child);
 		}
 
-		partial void Initialize();
-
 		protected override void OnLayoutCore(bool changed, int left, int top, int right, int bottom, bool localIsLayoutRequested)
 		{
 			base.OnLayoutCore(changed, left, top, right, bottom, localIsLayoutRequested);
