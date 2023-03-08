@@ -44,10 +44,17 @@ namespace Windows.UI.ViewManagement
 
 			if (Visible && FocusManager.GetFocusedElement() is UIElement focusedElement)
 			{
-				var scrollContentViewer = focusedElement.FindFirstParent<ScrollContentPresenter>();
-				if (scrollContentViewer != null)
+				if (focusedElement.FindFirstParent<ScrollContentPresenter>() is { } scp)
 				{
-					_padScrollContentPresenter = scrollContentViewer.Pad(OccludedRect);
+					// ScrollViewer can be nested, but the outer-most SV isn't necessarily the one to handle this "padded" scroll.
+					// Only the first SV that is constrained would be the one, as unconstrained SV can just expand freely.
+					while (double.IsPositiveInfinity(scp.LastAvailableSize.Height)
+						&& scp.FindFirstParent<ScrollContentPresenter>(includeCurrent: false) is { } outerScv)
+					{
+						scp = outerScv;
+					}
+
+					_padScrollContentPresenter = scp.Pad(OccludedRect);
 				}
 				focusedElement.StartBringIntoView();
 			}
