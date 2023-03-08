@@ -1234,7 +1234,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 		[TestMethod]
 		public void When_Collection_Implicit_Add_Item()
 		{
-			var SUT = LoadXaml<SwipeItems>("""
+			var SUT = XamlHelper.LoadXaml<SwipeItems>("""
 				<SwipeItems>
 					<SwipeItem Text="asd" />
 				</SwipeItems>
@@ -1247,7 +1247,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 		[TestMethod]
 		public void When_Collection_Property_Nest_Collection()
 		{
-			var SUT = LoadXaml<SwipeControl>("""
+			var SUT = XamlHelper.LoadXaml<SwipeControl>("""
 				<SwipeControl>
 					<SwipeControl.LeftItems>
 						<SwipeItems Mode="Execute">
@@ -1266,7 +1266,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 		[TestMethod]
 		public void When_Collection_Property_Nest_Multiple_Collections()
 		{
-			var SUT = LoadXaml<SwipeControl>("""
+			var SUT = XamlHelper.LoadXaml<SwipeControl>("""
 				<SwipeControl>
 					<SwipeControl.LeftItems>
 						<!-- This is actually allowed, however only the last will be kept -->
@@ -1505,6 +1505,14 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 		}
 
 		[TestMethod]
+		public void When_RectangleGeometry()
+		{
+			var sut = XamlHelper.LoadXaml<RectangleGeometry>("<RectangleGeometry Rect='0 1 2 3' />");
+
+			Assert.AreEqual(new Windows.Foundation.Rect(0, 1, 2, 3), sut.Rect);
+		}
+
+		[TestMethod]
 		public void When_ThemeResource_With_StaticResource()
 		{
 			var s = GetContent(nameof(When_ThemeResource_With_StaticResource));
@@ -1598,35 +1606,6 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 			Assert.AreEqual(new CornerRadius(0, 6, 6, 0), rightRadiusGrid.CornerRadius);
 		}
 
-		/// <summary>
-		/// XamlReader.Load the xaml and type-check result.
-		/// </summary>
-		/// <param name="sanitizedXaml">Xaml with single or double quots</param>
-		/// <param name="defaultXmlns">The default xmlns to inject; use null to not inject one.</param>
-		private T LoadXaml<T>(string sanitizedXaml, string defaultXmlns = "http://schemas.microsoft.com/winfx/2006/xaml/presentation") where T : class =>
-			LoadXaml<T>(sanitizedXaml, new Dictionary<string, string> { [string.Empty] = defaultXmlns });
-
-		/// <summary>
-		/// XamlReader.Load the xaml and type-check result.
-		/// </summary>
-		/// <param name="sanitizedXaml">Xaml with single or double quots</param>
-		/// <param name="xmlnses">Xmlns to inject; use string.Empty for the default xmlns' key</param>
-		private T LoadXaml<T>(string xaml, Dictionary<string, string> xmlnses) where T : class
-		{
-			var injection = " " + string.Join(" ", xmlnses
-				.Where(x => x.Value != null)
-				.Select(x => $"xmlns{(string.IsNullOrEmpty(x.Key) ? "" : $":{x.Key}")}=\"{x.Value}\"")
-			);
-
-			xaml = new Regex(@"(?=\\?>)").Replace(xaml, injection, 1);
-
-			var result = Windows.UI.Xaml.Markup.XamlReader.Load(xaml);
-			Assert.IsNotNull(result, "XamlReader.Load returned null");
-			Assert.IsInstanceOfType(result, typeof(T), "XamlReader.Load did not return the expected type");
-
-			return (T)result;
-		}
-
 		private string GetContent(string testName)
 		{
 			var assembly = this.GetType().Assembly;
@@ -1635,6 +1614,77 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 			using (var stream = assembly.GetManifestResourceStream(name))
 			{
 				return stream.ReadToEnd();
+			}
+		}
+
+		private static class XamlHelper
+		{
+			/// <summary>
+			/// Matches right before the &gt; or \&gt; tail of any tag.
+			/// </summary>
+			/// <remarks>
+			/// It will match an opening or closing or self-closing tag.
+			/// </remarks>
+			private static readonly Regex EndOfTagRegex = new Regex(@"(?=( ?/)?>)");
+
+			/// <summary>
+			/// Matches any tag without xmlns prefix.
+			/// </summary>
+			private static readonly Regex NonXmlnsTagRegex = new Regex(@"<\w+[ />]");
+
+			private static readonly IReadOnlyDictionary<string, string> KnownXmlnses = new Dictionary<string, string>
+			{
+				[string.Empty] = "http://schemas.microsoft.com/winfx/2006/xaml/presentation",
+				["x"] = "http://schemas.microsoft.com/winfx/2006/xaml",
+				["local"] = "Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests",
+				["toolkit"] = "using:Uno.UI.Toolkit",
+				["muxc"] = "using:Microsoft.UI.Xaml.Controls",
+			};
+
+			/// <summary>
+			/// XamlReader.Load the xaml and type-check result.
+			/// </summary>
+			/// <param name="xaml">Xaml with single or double quotes</param>
+			/// <param name="autoInjectXmlns">Toggle automatic detection of xmlns required and inject to the xaml</param>
+			public static T LoadXaml<T>(string xaml, bool autoInjectXmlns = true) where T : class
+			{
+				var xmlnses = new Dictionary<string, string>();
+
+				if (autoInjectXmlns)
+				{
+					foreach (var xmlns in KnownXmlnses)
+					{
+						var match = xmlns.Key == string.Empty
+							? NonXmlnsTagRegex.IsMatch(xaml)
+							: xaml.Contains($"<{xmlns.Key}:");
+						if (match)
+						{
+							xmlnses.Add(xmlns.Key, xmlns.Value);
+						}
+					}
+				}
+
+				return LoadXaml<T>(xaml, xmlnses);
+			}
+
+			/// <summary>
+			/// XamlReader.Load the xaml and type-check result.
+			/// </summary>
+			/// <param name="xaml">Xaml with single or double quotes</param>
+			/// <param name="xmlnses">Xmlns to inject; use string.Empty for the default xmlns' key</param>
+			public static T LoadXaml<T>(string xaml, Dictionary<string, string> xmlnses) where T : class
+			{
+				var injection = " " + string.Join(" ", xmlnses
+					.Select(x => $"xmlns{(string.IsNullOrEmpty(x.Key) ? "" : $":{x.Key}")}=\"{x.Value}\"")
+				);
+
+				xaml = EndOfTagRegex.Replace(xaml, injection.TrimEnd(), 1);
+
+				var result = Windows.UI.Xaml.Markup.XamlReader.Load(xaml);
+				Assert.IsNotNull(result, "XamlReader.Load returned null");
+				Assert.IsInstanceOfType(result, typeof(T), "XamlReader.Load did not return the expected type");
+
+				return (T)result;
 			}
 		}
 	}
