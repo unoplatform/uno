@@ -927,10 +927,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private void BuildXBindTryGetDeclarations(IIndentedStringBuilder writer)
 		{
-			if (_fileDefinition.FilePath.Contains("When_xLoad_DataTemplate_In_ResDict_Global", StringComparison.Ordinal))
-			{
-				//Debugger.Launch();
-			}
 			foreach (var xBindMethodDeclaration in CurrentScope.XBindTryGetMethodDeclarations)
 			{
 				writer.AppendMultiLineIndented(xBindMethodDeclaration);
@@ -4144,10 +4140,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private void RegisterXBindTryGetDeclaration(string declaration)
 		{
-			if (_fileDefinition.FilePath.Contains("When_xLoad_DataTemplate_In_ResDict_Global", StringComparison.Ordinal))
-			{
-				//Debugger.Launch();
-			}
 			CurrentScope.XBindTryGetMethodDeclarations.Add(declaration);
 		}
 
@@ -4458,10 +4450,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 
 				var contextFunction = XBindExpressionParser.Rewrite("___tctx", rawFunction, dataTypeSymbol, _metadataHelper.Compilation.GlobalNamespace, isRValue: true, _xBindCounter, FindType);
-				if (_fileDefinition.FilePath.Contains("When_xLoad_DataTemplate_In_ResDict_Global", StringComparison.Ordinal))
-				{
-					//Debugger.Launch();
-				}
 				if (contextFunction.MethodDeclaration is not null)
 				{
 					RegisterXBindTryGetDeclaration(contextFunction.MethodDeclaration);
