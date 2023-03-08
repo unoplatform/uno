@@ -33,7 +33,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 			try
 			{
 				// Note: We use the FromPixelCopy which will create a clone of the buffer, so we are ready to be re-used to render another UIElement.
-				// (It's needed also for if we swapped the buffer since we are not maintaining a ref on the swappedBuffer)
+				// (It's needed also if we swapped the buffer since we are not maintaining a ref on the swappedBuffer)
 				var bytesPerRow = width * _bytesPerPixel;
 				var info = new SKImageInfo(width, height, SKColorType.Bgra8888, SKAlphaType.Premul);
 				var image = SKImage.FromPixelCopy(info, bufferHandle.AddrOfPinnedObject(), bytesPerRow);

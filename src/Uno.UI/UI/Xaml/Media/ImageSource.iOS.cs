@@ -236,7 +236,7 @@ namespace Windows.UI.Xaml.Media
 			}
 			catch (NSErrorException e)
 			{
-				// This can occur for various reasons: download was cancelled, NSAppTransportSecurity blocks download, host couldn't be resolved...
+				// This can occur for various reasons: download was canceled, NSAppTransportSecurity blocks download, the host couldn't be resolved...
 				if (ct.IsCancellationRequested)
 				{
 					if (this.Log().IsEnabled(LogLevel.Debug))

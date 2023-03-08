@@ -786,12 +786,12 @@ namespace Windows.UI.Xaml.Controls
 			base.TouchesBegan(touches, evt);
 
 			// We wait for the first touches to get the parent so we don't have to track Loaded/UnLoaded
-			// Like native dispatch on iOS, we do "implicit captures" the target.
+			// Like native dispatch on iOS, we do "implicit captures" of the target.
 			if (this.GetParent() is UIElement parent)
 			{
-				// canBubbleNatively: true => We let native bubbling occur properly as it's never swallowed by system
-				//							  but blocking it would be breaking in lot of aspects
-				//							  (e.g. it would prevent all sub-sequent events for the given pointer).
+				// canBubbleNatively: true => We let native bubbling occur properly as it's never swallowed by the system
+				//							  but blocking it would be breaking in a lot of aspects
+				//							  (e.g. it would prevent all subsequent events for the given pointer).
 
 				_touchTarget = parent;
 				_touchTarget.TouchesBegan(touches, evt, canBubbleNatively: true);
@@ -812,7 +812,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			base.TouchesEnded(touches, evt);
 
-			// canBubbleNatively: false => system might silently swallow pointer after few moves so we prefer to bubble in managed.
+			// canBubbleNatively: false => system might silently swallow the pointer after a few moves so we prefer to bubble in managed.
 			_touchTarget?.TouchesEnded(touches, evt, canBubbleNatively: false);
 			_touchTarget = null;
 		}
@@ -822,7 +822,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			base.TouchesCancelled(touches, evt);
 
-			// canBubbleNatively: false => system might silently swallow pointer after few moves so we prefer to bubble in managed.
+			// canBubbleNatively: false => system might silently swallow the pointer after a few moves so we prefer to bubble in managed.
 			_touchTarget?.TouchesCancelled(touches, evt, canBubbleNatively: false);
 			_touchTarget = null;
 		}

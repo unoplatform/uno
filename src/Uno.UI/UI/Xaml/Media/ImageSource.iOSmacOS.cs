@@ -143,7 +143,7 @@ public partial class ImageSource
 	/// <returns>True if opening asynchronously is possible.</returns>
 	/// <remarks>
 	/// <paramref name="targetWidth"/> and <paramref name="targetHeight"/> can be used to improve performance by fetching / decoding only the required size.
-	/// Depending of stretching, only of each can be provided.
+	/// Depending on stretching, only one of each can be provided.
 	/// </remarks>
 	private protected virtual bool TryOpenSourceAsync(CancellationToken ct, int? targetWidth, int? targetHeight, [NotNullWhen(true)] out Task<ImageData> asyncImage)
 	{
