@@ -45,46 +45,18 @@
 	<Target Name="BuildGeneric" AfterTargets="Build" Condition="'$(BuildingInsideVisualStudio)'==''">
 
 		<CallTarget Targets="BuildCI" Condition="'$(Configuration)'=='Release' and $(_isWindows)" />
-
-		<CallTarget Targets="PublishVSIX2019" Condition="'$(Configuration)'=='Release' and $(_isWindows)" />
 	</Target>
 
 	<Target Name="GeneratePackages" AfterTargets="Build" DependsOnTargets="PrepareBuildAssets" Condition="'$(BuildingInsideVisualStudio)'==''">
 		<CallTarget Targets="BuildNuGetPackage" Condition="'$(Configuration)'=='Release'" />
 	</Target>
 
-	<Target Name="Build2022VSIX" Condition="'$(BuildingInsideVisualStudio)'==''">
-		<CallTarget Targets="UpdateFileVersions" Condition="$(_isWindows)" />
-
-		<MSBuild Properties="Configuration=Release"
-             Projects="..\src\SolutionTemplate\UnoSolutionTemplate.VSIX.2022\UnoSolutionTemplate.VSIX.2022.csproj"
-             Targets="Restore;Build"
-             RebaseOutputs="false"
-             BuildInParallel="true" />
-
-		<CallTarget Targets="PublishVSIX2022" Condition="'$(Configuration)'=='Release' and $(_isWindows)" />
-	</Target>
-
 	<Target Name="UpdateFileVersions">
 		<PropertyGroup>
-			<VSXNamespace>
-				<Namespace Prefix="x" Uri="http://schemas.microsoft.com/developer/vsx-schema/2011"/>
-			</VSXNamespace>
 			<MSBuildDeveloperNamespace>
 				<Namespace Prefix="x" Uri="http://schemas.microsoft.com/developer/msbuild/2003"/>
 			</MSBuildDeveloperNamespace>
 		</PropertyGroup>
-
-		<ItemGroup>
-			<_VSIXInput Include="..\src\SolutionTemplate\UnoSolutionTemplate.VSIX.2019\source.extension.vsixmanifest" />
-			<_VSIXInput Include="..\src\SolutionTemplate\UnoSolutionTemplate.VSIX.2022\source.extension.vsixmanifest" />
-		</ItemGroup>
-
-		<XmlPoke XmlInputPath="%(_VSIXInput.Identity)"
-							 Query="/x:PackageManifest/x:Metadata/x:Identity/@Version"
-							 Value="$(GITVERSION_MajorMinorPatch).$(GITVERSION_CommitsSinceVersionSource)"
-							 Namespaces="$(VSXNamespace)"
-							 />
 
 		<ItemGroup>
 			<_PackageToUpdate Include="Uno.UI" />
@@ -294,16 +266,6 @@
 	<Target Name="RunAPISyncTool" DependsOnTargets="BuildSyncGenerator">
 
 		<Exec Command="..\src\Uno.UWPSyncGenerator\Bin\Release\Uno.UWPSyncGenerator.exe &quot;sync&quot;" />
-	</Target>
-
-	<Target Name="PublishVSIX2019" Condition="'$(UNO_UWP_BUILD)'=='true'">
-		<Copy SourceFiles="..\src\SolutionTemplate\UnoSolutionTemplate.VSIX.2019\bin\Release\UnoSolutionTemplate.VSIX.vsix"
-					DestinationFiles="$(OutputDir)\vslatest-generic\UnoPlatform-$(GITVERSION_SemVer).x86.vsix" />
-	</Target>
-
-	<Target Name="PublishVSIX2022">
-		<Copy SourceFiles="..\src\SolutionTemplate\UnoSolutionTemplate.VSIX.2022\bin\Release\UnoSolutionTemplate.VSIX.2022.vsix"
-					DestinationFiles="$(OutputDir)\vslatest\UnoPlatform-$(GITVERSION_SemVer).x64.vsix" />
 	</Target>
 
 	<Target Name="PrepareNuGetPackage">

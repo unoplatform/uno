@@ -36,25 +36,9 @@
 
 	<ItemGroup>
 		<Compile Remove="content/**/*.cs" />
-		<Compile Remove="content\uno-prism-app\UnoQuickStart.macOS\**" />
-		<EmbeddedResource Remove="content\uno-prism-app\UnoQuickStart.macOS\**" />
-		<None Remove="content\uno-prism-app\UnoQuickStart.macOS\**" />
-		<UpToDateCheckInput Remove="content\uno-prism-app\UnoQuickStart.macOS\**" />
-		<Content Include="content/xamarinforms-wasm/nuget.config">
-			<Pack>true</Pack>
-			<PackagePath>content/xamarinforms-wasm</PackagePath>
-		</Content>
 		<Content Include="content\unoapp-uitest\**\*">
 			<PackagePath>content\unoapp-uitest</PackagePath>
 			<Pack>true</Pack>
-		</Content>
-		<Content Include="content/xamarinforms-wasm/UnoXFQuickStart.Wasm/**/*.*">
-			<Pack>true</Pack>
-			<PackagePath>content/xamarinforms-wasm/UnoXFQuickStart.Wasm</PackagePath>
-		</Content>
-		<Content Include="content/xamarinforms-wasm/.template.config/*.*">
-			<Pack>true</Pack>
-			<PackagePath>content/xamarinforms-wasm/.template.config</PackagePath>
 		</Content>
 		<Content Include="content\unoapp-uwp\**">
 			<PackagePath>content\unoapp-uwp</PackagePath>
@@ -68,20 +52,12 @@
 			<PackagePath>content\unolib</PackagePath>
 			<Pack>true</Pack>
 		</Content>
-		<Content Include="content\unoapp-prism\**">
-			<PackagePath>content\unoapp-prism</PackagePath>
+		<Content Include="content\unoapp-winui\**">
+			<PackagePath>content\unoapp-winui</PackagePath>
 			<Pack>true</Pack>
 		</Content>
-		<Content Include="content\unoapp-winui-xamarin\**">
-			<PackagePath>content\unoapp-winui-xamarin</PackagePath>
-			<Pack>true</Pack>
-		</Content>
-		<Content Include="content\unoapp\**">
-			<PackagePath>content\unoapp</PackagePath>
-			<Pack>true</Pack>
-		</Content>
-		<Content Include="content\unoapp\UnoWinUIQuickStart\**">
-			<PackagePath>content\unoapp</PackagePath>
+		<Content Include="content\unoapp-winui\UnoWinUIQuickStart\**">
+			<PackagePath>content\unoapp-winui</PackagePath>
 			<Pack>true</Pack>
 		</Content>
 		<Content Include="content\unolib-crossruntime\**" Exclude="content\unolib-crossruntime\**\bin\**;content\unolib-crossruntime\**\obj\**">
@@ -152,11 +128,8 @@
 	  <Content Update="content\unoapp-uwp-net6\UnoQuickStart-vsmac.slnf">
 	    <PackagePath>content\unoapp-uwp-net6</PackagePath>
 	  </Content>
-	  <Content Update="content\unoapp\UnoWinUIQuickStart-vsmac.slnf">
-	    <PackagePath>content\unoapp</PackagePath>
-	  </Content>
-	  <Content Update="content\unoapp-winui-xamarin\UnoWinUIQuickStart-vsmac.slnf">
-	    <PackagePath>content\unoapp-winui-xamarin</PackagePath>
+	  <Content Update="content\unoapp-winui\UnoWinUIQuickStart-vsmac.slnf">
+	    <PackagePath>content\unoapp-winui</PackagePath>
 	  </Content>
 	</ItemGroup>
 
@@ -236,26 +209,6 @@
 		</ItemGroup>
 	</Target>
 
-	<Target Name="CopyUnoAppWinUITemplate" BeforeTargets="Build">
-		<PropertyGroup>
-			<IntermediateTemplatePath>$(IntermediateOutputPath)\unoapp-winui-xamarin</IntermediateTemplatePath>
-		</PropertyGroup>
-
-		<RemoveDir Directories="$(IntermediateTemplatePath)" />
-
-		<Copy SourceFiles="@(_UnoAppTemplateFiles)" DestinationFolder="$(IntermediateTemplatePath)\%(RecursiveDir)" />
-
-		<ReplaceContent SourcePath="$(IntermediateTemplatePath)" SafeProjectName="UnoQuickStart" IsWinUI="True" />
-		<RenameSolution SourcePath="$(IntermediateTemplatePath)" SourceName="UnoQuickStart" TargetName="UnoWinUIQuickStart" />
-
-		<ItemGroup>
-			<Content Include="$(IntermediateTemplatePath)/**/*.*">
-				<Pack>true</Pack>
-				<PackagePath>content/unoapp-winui-xamarin</PackagePath>
-			</Content>
-		</ItemGroup>
-	</Target>
-
 	<Target Name="CopyUnoAppWinUINet6Template" BeforeTargets="Build">
 		<PropertyGroup>
 			<IntermediateTemplatePath>$(IntermediateOutputPath)\unoapp</IntermediateTemplatePath>
@@ -271,7 +224,7 @@
 		<ItemGroup>
 			<Content Include="$(IntermediateTemplatePath)/**/*.*">
 				<Pack>true</Pack>
-				<PackagePath>content/unoapp</PackagePath>
+				<PackagePath>content/unoapp-winui</PackagePath>
 			</Content>
 		</ItemGroup>
 	</Target>
@@ -279,11 +232,9 @@
 	<Target Name="AlignVsConfig" BeforeTargets="Build;Pack">
 		<!-- The master file for the .vsconfig is located in the wizard project -->
 		<Copy SkipUnchangedFiles="true" SourceFiles="..\UnoSolutionTemplate.Wizard.2022\.vsconfig.vs16" DestinationFiles="content/unoapp-uwp/.vsconfig" />
-		<Copy SkipUnchangedFiles="true" SourceFiles="..\UnoSolutionTemplate.Wizard.2022\.vsconfig.vs16" DestinationFiles="content/unoapp-prism/.vsconfig" />
-		<Copy SkipUnchangedFiles="true" SourceFiles="..\UnoSolutionTemplate.Wizard.2022\.vsconfig.vs16" DestinationFiles="content/unoapp-winui-xamarin/.vsconfig" />
 
 		<Copy SkipUnchangedFiles="true" SourceFiles="..\UnoSolutionTemplate.Wizard.2022\.vsconfig.vs17" DestinationFiles="content/unoapp-uwp-net6/.vsconfig" />
-		<Copy SkipUnchangedFiles="true" SourceFiles="..\UnoSolutionTemplate.Wizard.2022\.vsconfig.vs17" DestinationFiles="content/unoapp/.vsconfig" />
+		<Copy SkipUnchangedFiles="true" SourceFiles="..\UnoSolutionTemplate.Wizard.2022\.vsconfig.vs17" DestinationFiles="content/unoapp-winui/.vsconfig" />
 	</Target>
 
 	<UsingTask TaskName="ReplaceContent" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
