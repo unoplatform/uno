@@ -8,14 +8,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
 using System.Threading.Tasks;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
 using Uno.Extensions;
-using Uno.UI.Extensions;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls;
 using Windows.UI;
 using Windows.UI.Core;
@@ -371,9 +366,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			await TestServices.WindowHelper.WaitForLoaded(lastButton);
 			await TestServices.WindowHelper.WaitForIdle();
 
-			Assert.IsNotNull(property.CallbackManager);
-
-			Assert.AreEqual(originalCount, property.CallbackManager.CallbacksCount);
+			Assert.AreEqual(originalCount, property.CallbackManager?.CallbacksCount ?? 0);
 		}
 
 		private class Holder

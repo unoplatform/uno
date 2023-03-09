@@ -176,11 +176,8 @@ namespace <#= mixin.NamespaceName #>
 			set => SetBackgroundValue(value);
 		}
 
-		SerialDisposable _brushChanged = new SerialDisposable();
-
 		protected virtual void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
 		{
-			_brushChanged.Disposable = Brush.AssignAndObserveBrush(e.NewValue as Brush, SetBackgroundColor);
 		}
 		#endregion
 
