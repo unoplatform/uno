@@ -15,7 +15,6 @@ using TreeView = Microsoft.UI.Xaml.Controls.TreeView;
 using TreeViewItem = Microsoft.UI.Xaml.Controls.TreeViewItem;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.TreeViewTests;
 using System.Collections.Generic;
-using Uno.Foundation.Logging;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 
