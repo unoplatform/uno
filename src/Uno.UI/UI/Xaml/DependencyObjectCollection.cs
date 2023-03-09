@@ -201,6 +201,9 @@ namespace Windows.UI.Xaml
 		IEnumerator IEnumerable.GetEnumerator()
 			=> _list.GetEnumerator();
 
+		internal List<T>.Enumerator GetEnumeratorFast()
+			=> _list.GetEnumerator();
+
 		private void RaiseVectorChanged(CollectionChange change, int index)
 			=> VectorChanged?.Invoke(this, new VectorChangedEventArgs(change, (uint)index));
 

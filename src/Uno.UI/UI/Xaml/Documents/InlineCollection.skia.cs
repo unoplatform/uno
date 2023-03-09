@@ -51,7 +51,7 @@ namespace Windows.UI.Xaml.Documents
 			float x = 0;
 			float height = 0;
 
-			foreach (var inline in _collection.SelectMany(InlineExtensions.Enumerate))
+			foreach (var inline in PreorderTree)
 			{
 				if (inline is LineBreak lineBreak)
 				{

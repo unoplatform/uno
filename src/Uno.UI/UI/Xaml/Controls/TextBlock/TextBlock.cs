@@ -908,7 +908,7 @@ namespace Windows.UI.Xaml.Controls
 			_hyperlinks.Clear();
 
 			var start = 0;
-			foreach (var inline in Inlines.SelectMany(InlineExtensions.Enumerate))
+			foreach (var inline in Inlines.PreorderTree)
 			{
 				switch (inline)
 				{
