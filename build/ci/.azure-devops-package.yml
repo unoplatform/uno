@@ -129,7 +129,7 @@ jobs:
 
   - task: CopyFiles@2
     displayName: Copy private templates package
-    condition: always()
+    condition: eq(variables['UNO_UWP_BUILD'], 'true')
     inputs:
       SourceFolder: $(Agent.WorkFolder)/
       Contents: |
@@ -140,7 +140,7 @@ jobs:
       flattenFolders: true
 
   - task: PublishBuildArtifacts@1
-    condition: always()
+    condition: eq(variables['UNO_UWP_BUILD'], 'true')
     retryCountOnTaskFailure: 3
     inputs:
       PathtoPublish: $(build.sourcesdirectory)/Build/private-templates
