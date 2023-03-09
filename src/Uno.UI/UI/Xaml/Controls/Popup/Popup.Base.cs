@@ -5,6 +5,8 @@ using Uno.UI.Xaml.Core;
 using Windows.Foundation;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
+using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
+
 #if XAMARIN_IOS
 using CoreGraphics;
 using UIKit;
@@ -77,7 +79,12 @@ public partial class Popup : FrameworkElement, IPopup
 	{
 		if (newIsOpen)
 		{
-			_openPopupRegistration = XamlRoot.VisualTree.PopupRoot.RegisterOpenPopup(this);
+			XamlRoot xamlRoot = XamlRoot ?? Child?.XamlRoot ?? WinUICoreServices.Instance.ContentRootCoordinator.CoreWindowContentRoot.XamlRoot;
+
+			if (xamlRoot is not null)
+			{
+				_openPopupRegistration = xamlRoot.VisualTree.PopupRoot.RegisterOpenPopup(this);
+			}
 
 			if (IsLightDismissEnabled)
 			{
