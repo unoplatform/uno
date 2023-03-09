@@ -1,4 +1,4 @@
-#if __ANDROID__ || __IOS__ || __MACOS__
+#if __ANDROID__ || __IOS__ || __MACOS__ || __WASM__
 using System;
 using Windows.Foundation;
 using Windows.Media.Playback;
@@ -40,7 +40,11 @@ namespace Windows.UI.Xaml.Controls
 				{
 					newPlayer.VideoRatioChanged += presenter.OnVideoRatioChanged;
 					newPlayer.MediaFailed += presenter.OnMediaFailed;
+#if __WASM__
+					presenter.SetVideoSurface(newPlayer.Player);
+#else
 					presenter.SetVideoSurface(newPlayer.RenderSurface);
+#endif
 				}
 			}
 		}

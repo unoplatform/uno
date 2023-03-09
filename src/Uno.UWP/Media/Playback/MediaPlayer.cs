@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using Windows.Foundation;
 
 namespace Windows.Media.Playback
@@ -81,7 +82,6 @@ namespace Windows.Media.Playback
 		public MediaPlayer()
 		{
 			PlaybackSession = new MediaPlaybackSession(this);
-
 			Initialize();
 		}
 	}

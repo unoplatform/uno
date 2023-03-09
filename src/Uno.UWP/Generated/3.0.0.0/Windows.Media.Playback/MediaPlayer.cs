@@ -2,8 +2,8 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Media.Playback
 {
-	#if false || false || false || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false
-	[global::Uno.NotImplemented("__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	#if false || false || false || __SKIA__ || __NETSTD_REFERENCE__ || false
+	[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
 	#endif
 	public  partial class MediaPlayer : global::System.IDisposable
 	{
