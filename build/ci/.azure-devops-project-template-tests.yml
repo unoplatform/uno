@@ -104,7 +104,7 @@ jobs:
 
   - template: templates/gitversion.yml
 
-  - script: copy $(System.ArtifactsDirectory)\NugetPackages\vslatest\*.nupkg $(Build.SourcesDirectory)\src\PackageCache
+  - script: cp $(System.ArtifactsDirectory)/NugetPackages/vslatest/*.nupkg $(Build.SourcesDirectory)/src/PackageCache
     displayName: Copy Artifacts to PackageCache
 
   - script: cp $(System.ArtifactsDirectory)/private-templates/vslatest/*.nupkg $(Build.SourcesDirectory)/src/PackageCache
@@ -139,7 +139,7 @@ jobs:
 
   - template: templates/gitversion.yml
   
-  - script: copy $(System.ArtifactsDirectory)\NugetPackages\vslatest\*.nupkg $(Build.SourcesDirectory)\src\PackageCache
+  - script: cp $(System.ArtifactsDirectory)/NugetPackages/vslatest/*.nupkg $(Build.SourcesDirectory)/src/PackageCache
     displayName: Copy Artifacts to PackageCache
 
   - script: cp $(System.ArtifactsDirectory)/private-templates/vslatest/*.nupkg $(Build.SourcesDirectory)/src/PackageCache

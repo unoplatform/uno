@@ -22,7 +22,7 @@
 		"language": "C#",
 		"type": "project"
 	},
-	"shortName": "unoapp",
+	"shortName": "unoapp-winui",
 	"sourceName": "UnoWinUIQuickStart",
 	"defaultName": "UnoApp",
 	"placeholderFilename": "template-ignore",
