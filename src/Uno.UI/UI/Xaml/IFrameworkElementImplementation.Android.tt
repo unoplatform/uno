@@ -180,13 +180,8 @@ namespace <#= mixin.NamespaceName #>
 			set => SetBackgroundValue(value);
 		}
 
-		Action _brushChanged;
-
 		protected virtual void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
 		{
-			var oldValue = e.OldValue as Brush;
-			var newValue = e.NewValue as Brush;
-			Brush.SetupBrushChanged(oldValue, newValue, ref _brushChanged, () => SetBackgroundColor(Brush.GetFallbackColor(newValue)));
 		}
 		#endregion
 
