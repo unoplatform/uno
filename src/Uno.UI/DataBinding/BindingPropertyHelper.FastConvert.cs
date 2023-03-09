@@ -278,6 +278,11 @@ namespace Uno.UI.DataBinding
 				return true;
 			}
 
+			if (FastStringToRect(outputType, input, ref output))
+			{
+				return true;
+			}
+
 			if (FastStringToMatrix(outputType, input, ref output))
 			{
 				return true;
@@ -585,6 +590,22 @@ namespace Uno.UI.DataBinding
 				if (fields.Count == 1)
 				{
 					output = new Windows.Foundation.Point(fields[0], fields[0]);
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		private static bool FastStringToRect(Type outputType, string input, ref object output)
+		{
+			if (outputType == typeof(Windows.Foundation.Rect))
+			{
+				var fields = GetDoubleValues(input);
+
+				if (fields.Count == 4)
+				{
+					output = new Windows.Foundation.Rect(fields[0], fields[1], fields[2], fields[3]);
 					return true;
 				}
 			}
