@@ -16,4 +16,8 @@
 			<Link>UITests\%(RecursiveDir)%(FileName)%(Extension)</Link>
 		</Compile>
 	</ItemGroup>
+
+	<ItemGroup>
+		<Content Include="$(MSBuildThisFileDirectory)..\SamplesApp\UITests.Shared\Assets\colors300.png" Link="Assets\TransitiveTest\colors300.png" />
+	</ItemGroup>
 </Project>
