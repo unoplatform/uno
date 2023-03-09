@@ -107,12 +107,12 @@ jobs:
   - script: cp $(System.ArtifactsDirectory)/NugetPackages/vslatest/*.nupkg $(Build.SourcesDirectory)/src/PackageCache
     displayName: Copy Artifacts to PackageCache
 
-  - script: cp $(System.ArtifactsDirectory)/private-templates/vslatest/*.nupkg $(Build.SourcesDirectory)/src/PackageCache
+  - script: cp $(System.ArtifactsDirectory)/private-templates/*.nupkg $(Build.SourcesDirectory)/src/PackageCache
     displayName: Copy Private Artifacts to PackageCache
 
   - template: templates/dotnet-install.yml
 
-  - script: dotnet new -i $(System.ArtifactsDirectory)/private-templates/vslatest/Uno.ProjectTemplates.Dotnet*.nupkg
+  - script: dotnet new -i $(Build.SourcesDirectory)/src/PackageCache/Uno.ProjectTemplates.Dotnet*.nupkg
     displayName: Install Project Templates
 
   - pwsh: build/test-scripts/run-template-tests-linux.ps1
@@ -142,12 +142,12 @@ jobs:
   - script: cp $(System.ArtifactsDirectory)/NugetPackages/vslatest/*.nupkg $(Build.SourcesDirectory)/src/PackageCache
     displayName: Copy Artifacts to PackageCache
 
-  - script: cp $(System.ArtifactsDirectory)/private-templates/vslatest/*.nupkg $(Build.SourcesDirectory)/src/PackageCache
+  - script: cp $(System.ArtifactsDirectory)/private-templates/*.nupkg $(Build.SourcesDirectory)/src/PackageCache
     displayName: Copy Private Artifacts to PackageCache
 
   - template: templates/dotnet-install.yml
 
-  - script: dotnet new -i $(System.ArtifactsDirectory)/private-templates/vslatest/Uno.ProjectTemplates.Dotnet*.nupkg
+  - script: dotnet new -i $(Build.SourcesDirectory)/src/PackageCache/Uno.ProjectTemplates.Dotnet*.nupkg
     displayName: Install Project Templates
 
   - pwsh: build/test-scripts/run-net7-template-linux.ps1
