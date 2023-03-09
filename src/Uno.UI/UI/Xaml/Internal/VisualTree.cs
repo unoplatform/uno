@@ -266,39 +266,37 @@ namespace Uno.UI.Xaml.Core
 		/// </summary>
 		/// <param name="dependencyObject">Dependency object.</param>
 		/// <returns></returns>
-		[NotImplemented]
 		public static PopupRoot? GetPopupRootForElement(DependencyObject dependencyObject)
 		{
-			//TODO Uno: Implement when popups are properly working
-			return null;
-			//if (dependencyObject is null)
-			//{
-			//	throw new ArgumentNullException(nameof(dependencyObject));
-			//}
+			if (dependencyObject is null)
+			{
+				throw new ArgumentNullException(nameof(dependencyObject));
+			}
 
-			//CoreServices core = pObject.GetContext();
+			CoreServices core = CoreServices.Instance;
 
-			//var popup = dependencyObject as Popup;
-			//if (popup != null)
-			//{
-			//	// The PopupRoot may be disconnected from its parent by this point.
-			//	if (popup.Child is UIElement child)
-			//	{
-			//		if (child.GetParentInternal(false /*publicParentOnly*/) is PopupRoot parentPopupRoot)
-			//		{
-			//			return parentPopupRoot;
-			//		}
-			//	}
-			//}
+			var popup = dependencyObject as Popup;
+			if (popup != null)
+			{
+				// The PopupRoot may be disconnected from its parent by this point.
+				if (popup.Child is UIElement child)
+				{
+					if (child.GetParentInternal(false /*publicParentOnly*/) is PopupRoot parentPopupRoot)
+					{
+						return parentPopupRoot;
+					}
+				}
+			}
 
-			//if (GetForElement(dependencyObject) is VisualTree visualTree)
-			//{
-			//	if (visualTree.GetPopupRoot() is PopupRoot visualTreePopupRoot)
-			//	{
-			//		*ppPopupRoot = popupRoot;
-			//		return S_OK;
-			//	}
-			//}
+			if (GetForElement(dependencyObject) is VisualTree visualTree)
+			{
+				if (visualTree.PopupRoot is PopupRoot visualTreePopupRoot)
+				{
+					return visualTreePopupRoot;
+				}
+			}
+
+			// TODO Uno: Add proper support for XamlIslandRootCollection #8978.
 
 			//if (popup != null)
 			//{
@@ -309,7 +307,7 @@ namespace Uno.UI.Xaml.Core
 
 			//	if (mainVisualTree != null)
 			//	{
-			//		CXamlIslandRootCollection* xamlIslandRootCollection = mainVisualTree->GetXamlIslandRootCollection();
+			//		XamlIslandRootCollection xamlIslandRootCollection = mainVisualTree.GetXamlIslandRootCollection();
 
 			//		if (xamlIslandRootCollection != null)
 			//		{
@@ -345,9 +343,7 @@ namespace Uno.UI.Xaml.Core
 			//	return S_OK;
 			//}
 
-			//*ppPopupRoot = core.GetMainPopupRoot();
-
-			//return S_OK; // RRETURN_REMOVAL
+			return core.MainPopupRoot;
 		}
 
 		/// <summary>

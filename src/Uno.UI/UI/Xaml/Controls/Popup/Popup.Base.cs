@@ -19,6 +19,7 @@ public partial class Popup : FrameworkElement, IPopup
 {
 	private ManagedWeakReference _lastFocusedElement;
 	private FocusState _lastFocusState = FocusState.Unfocused;
+	private IDisposable _openPopupRegistration;
 
 	private bool _childHasOwnDataContext;
 
@@ -76,6 +77,8 @@ public partial class Popup : FrameworkElement, IPopup
 	{
 		if (newIsOpen)
 		{
+			_openPopupRegistration = XamlRoot.VisualTree.PopupRoot.RegisterOpenPopup(this);
+
 			if (IsLightDismissEnabled)
 			{
 				// Store last focused element
@@ -99,6 +102,7 @@ public partial class Popup : FrameworkElement, IPopup
 		}
 		else
 		{
+			_openPopupRegistration?.Dispose();
 			if (IsLightDismissEnabled)
 			{
 				if (_lastFocusedElement != null && _lastFocusedElement.Target is UIElement target)

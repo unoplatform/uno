@@ -78,7 +78,7 @@ internal partial class PopupRoot : Panel
 		});
 	}
 
-	private IDisposable RegisterOpenPopup(IPopup popup)
+	internal IDisposable RegisterOpenPopup(IPopup popup)
 	{
 		CleanupPopupReferences();
 
