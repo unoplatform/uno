@@ -2,8 +2,8 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Media.Core
 {
-	#if false || false || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false
-	[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	#if false || false || NET461 || __SKIA__ || __NETSTD_REFERENCE__ || false
+	[global::Uno.NotImplemented("NET461", "__SKIA__", "__NETSTD_REFERENCE__")]
 	#endif
 	public  partial class MediaSource : global::System.IDisposable,global::Windows.Media.Playback.IMediaPlaybackSource
 	{
@@ -97,8 +97,8 @@ namespace Windows.Media.Core
 			}
 		}
 		#endif
-		#if false || false || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		#if false || false || NET461 || __SKIA__ || __NETSTD_REFERENCE__ || false
+		[global::Uno.NotImplemented("NET461", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public  global::System.Uri Uri
 		{
 			get
@@ -124,8 +124,8 @@ namespace Windows.Media.Core
 		// Forced skipping of method Windows.Media.Core.MediaSource.IsOpen.get
 		// Forced skipping of method Windows.Media.Core.MediaSource.ExternalTimedTextSources.get
 		// Forced skipping of method Windows.Media.Core.MediaSource.ExternalTimedMetadataTracks.get
-		#if false || false || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		#if false || false || NET461 || __SKIA__ || __NETSTD_REFERENCE__ || false
+		[global::Uno.NotImplemented("NET461", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public  void Dispose()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MediaSource", "void MediaSource.Dispose()");
@@ -223,8 +223,8 @@ namespace Windows.Media.Core
 			throw new global::System.NotImplementedException("The member MediaSource MediaSource.CreateFromStreamReference(IRandomAccessStreamReference stream, string contentType) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaSource%20MediaSource.CreateFromStreamReference%28IRandomAccessStreamReference%20stream%2C%20string%20contentType%29");
 		}
 		#endif
-		#if false || false || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		#if false || false || NET461 || __SKIA__ || __NETSTD_REFERENCE__ || false
+		[global::Uno.NotImplemented("NET461", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Media.Core.MediaSource CreateFromUri( global::System.Uri uri)
 		{
 			throw new global::System.NotImplementedException("The member MediaSource MediaSource.CreateFromUri(Uri uri) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaSource%20MediaSource.CreateFromUri%28Uri%20uri%29");

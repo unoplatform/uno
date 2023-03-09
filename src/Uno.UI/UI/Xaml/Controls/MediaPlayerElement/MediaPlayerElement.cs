@@ -1,4 +1,4 @@
-#if __IOS__ || __ANDROID__ || __MACOS__
+#if __IOS__ || __ANDROID__ || __MACOS__ || __WASM__
 using System;
 using Uno.Extensions;
 using Windows.Media.Playback;
@@ -157,13 +157,20 @@ namespace Windows.UI.Xaml.Controls
 					_layoutRoot.RemoveFromSuperview();
 #endif
 
+#if __WASM__
+					_mediaPlayer?.RequestFullScreen();
+#else
 					Windows.UI.Xaml.Window.Current.DisplayFullscreen(_layoutRoot);
+#endif
 				}
 				else
 				{
 					ApplicationView.GetForCurrentView().ExitFullScreenMode();
-
+#if __WASM__
+					_mediaPlayer?.ExitFullScreen();
+#else
 					Windows.UI.Xaml.Window.Current.DisplayFullscreen(null);
+#endif
 
 #if __ANDROID__
 					this.AddView(_layoutRoot);
@@ -290,7 +297,11 @@ namespace Windows.UI.Xaml.Controls
 			TransportControls = new MediaTransportControls();
 
 			DefaultStyleKey = typeof(MediaPlayerElement);
+
+			Initialize();
 		}
+
+		partial void Initialize();
 
 		private protected override void OnLoaded()
 		{
@@ -338,7 +349,11 @@ namespace Windows.UI.Xaml.Controls
 
 			if (MediaPlayer == null)
 			{
+#if __WASM__
+				MediaPlayer = new Windows.Media.Playback.MediaPlayer() { Player = _mediaPlayer };
+#else
 				MediaPlayer = new Windows.Media.Playback.MediaPlayer();
+#endif
 				_mediaPlayerPresenter?.ApplyStretch();
 			}
 
