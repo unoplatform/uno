@@ -44,6 +44,7 @@
 
 	<Import Project="UnitTestsImport.props" />
 	<Import Project="UITestsImport.props" />
+	<Import Project="Common.props" />
 
 	<ItemGroup>
 		<EmbeddedResource Include="Assets\Border_Snapshot.bgra8" />
