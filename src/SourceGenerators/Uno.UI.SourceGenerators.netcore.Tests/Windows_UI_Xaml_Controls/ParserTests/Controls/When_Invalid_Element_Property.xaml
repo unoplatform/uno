@@ -1,0 +1,23 @@
+﻿<Page x:Class="Uno.UI.Tests.Windows_UI_Xaml_Controls.ParserTests.Controls.When_Invalid_Element_Property"
+	  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	  xmlns:local="using:Uno.UI.Tests.Windows_UI_XAML_Controls.GridTests.Controls"
+	  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	  mc:Ignorable="d">
+
+	<Grid>
+		
+		<NavigationView IsBackButtonVisible="Collapsed"
+						IsPaneToggleButtonVisible="False"
+						IsSettingsVisible="False"
+						PaneDisplayMode="Left">
+
+			<NavigationView.PaneTitle FontSize="16"
+									  FontWeight="Bold"
+									  Text="PaneTitle" />
+
+		</NavigationView>
+		
+	</Grid>
+</Page>

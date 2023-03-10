@@ -745,15 +745,24 @@ namespace Uno.Xaml
 			}
 			else
 			{
-
-				if (r.Name.Contains(".") && r.IsEmptyElement && !r.HasAttributes)
+				if (r.Name.Contains(".") && r.IsEmptyElement)
 				{
-					// This case is present to handle self closing attached property nodes.
+					if (!r.HasAttributes)
+					{
+						// This case is present to handle self closing attached property nodes.
 
-					yield return Node(XamlNodeType.StartMember, xm);
-					yield return Node(XamlNodeType.EndMember, xm);
-					r.Read();
-					yield break;
+						yield return Node(XamlNodeType.StartMember, xm);
+						yield return Node(XamlNodeType.EndMember, xm);
+						r.Read();
+						yield break;
+					}
+					else
+					{
+						throw new XamlParseException(
+							string.Format(
+								CultureInfo.InvariantCulture,
+								"Member '{0}' cannot have properties", xm.Name)) { LineNumber = this.LineNumber, LinePosition = this.LinePosition };
+					}
 				}
 				else
 				{ 
