@@ -7,6 +7,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Uno.UI.RuntimeTests.Extensions;
+using System.Collections.ObjectModel;
 #if NETFX_CORE
 using Uno.UI.Extensions;
 #elif __IOS__
@@ -312,6 +313,47 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(HeightOfTwoItems - MaxPossibleScroll, rectScrollFinal.Y, 1);
 		}
 
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_ItemsSource_INCC_StartEmpty_AddOne()
+		{
+			var source = new ObservableCollection<string>();
+			var SUT = new ListView
+			{
+				ItemContainerStyle = NoSpaceContainerStyle,
+				ItemTemplate = FixedSizeItemTemplate, // height = 29
+				ItemsSource = source,
+			};
+
+			WindowHelper.WindowContent = SUT;
+			// cant use WaitForLoaded here, as the ListView is empty
+			await WindowHelper.WaitForNonNull(() => SUT.FindFirstChild<ItemsPresenter>());
+			await WindowHelper.WaitForIdle();
+
+			source.Add("Apple");
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitFor(() => SUT.ActualHeight, 29, value => $"ListView failed to grow from adding item: (ActualHeight: {value})");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_ItemsSource_INCC_StartTwo_RemoveOne()
+		{
+			var source = new ObservableCollection<string>(new[] { "Apple", "Banana" });
+			var SUT = new ListView
+			{
+				ItemContainerStyle = NoSpaceContainerStyle,
+				ItemTemplate = FixedSizeItemTemplate, // height = 29
+				ItemsSource = source,
+			};
+
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			source.RemoveAt(source.Count - 1);
+			await WindowHelper.WaitFor(() => SUT.ActualHeight, 29, value => $"ListView failed to shrink from removing item: (ActualHeight: {value})");
+		}
 
 		// Works around ScrollIntoView() not implemented for all platforms
 		private static void ScrollBy(ListViewBase listViewBase, double scrollBy)
