@@ -469,6 +469,20 @@ namespace Windows.UI.Xaml.Controls
 
 			if (dependencyObject is AutoSuggestBox tb)
 			{
+				// On some platforms, the TextChangeReason is not updated
+				// as KeyDown is not triggered (e.g. Android)
+				if (tb._textChangeReason != AutoSuggestionBoxTextChangeReason.SuggestionChosen)
+				{
+					if (tb._textBox.IsUserModifying)
+					{
+						tb._textChangeReason = AutoSuggestionBoxTextChangeReason.UserInput;
+					}
+					else
+					{
+						tb._textChangeReason = AutoSuggestionBoxTextChangeReason.ProgrammaticChange;
+					}
+				}
+
 				tb.UpdateTextBox();
 				tb.UpdateSuggestionList();
 
@@ -482,6 +496,9 @@ namespace Windows.UI.Xaml.Controls
 					Reason = tb._textChangeReason,
 					Owner = tb
 				});
+
+				// Reset the default - otherwise SuggestionChosen could remain set.
+				tb._textChangeReason = AutoSuggestionBoxTextChangeReason.ProgrammaticChange;
 			}
 		}
 

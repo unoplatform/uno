@@ -74,6 +74,10 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		private bool _isInputModifyingText;
 		/// <summary>
+		/// Set when the <see cref="Text"/> property is being cleared via delete button.
+		/// </summary>
+		private bool _isInputClearingText;
+		/// <summary>
 		/// Set when <see cref="RaiseTextChanged"/> has been dispatched but not yet called.
 		/// </summary>
 		private bool _isTextChangedPending;
@@ -94,6 +98,8 @@ namespace Windows.UI.Xaml.Controls
 			Loaded += TextBox_Loaded;
 			Unloaded += TextBox_Unloaded;
 		}
+
+		internal bool IsUserModifying => _isInputModifyingText || _isInputClearingText;
 
 		private void TextBox_Loaded(object sender, RoutedEventArgs e)
 		{
@@ -1017,8 +1023,19 @@ namespace Windows.UI.Xaml.Controls
 
 		private void DeleteButtonClick()
 		{
-			Text = string.Empty;
-			OnDeleteButtonClickPartial();
+#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
+			try
+#endif
+			{
+				_isInputClearingText = true;
+
+				Text = string.Empty;
+				OnDeleteButtonClickPartial();
+			}
+			finally
+			{
+				_isInputClearingText = false;
+			}
 		}
 
 		partial void OnDeleteButtonClickPartial();
