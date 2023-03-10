@@ -46,7 +46,6 @@
 	</ItemGroup>
 
 	<Import Project="UnitTestsImport.props" />
-	<Import Project="Common.props" />
 
 	<ItemGroup>
 		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.netcoremobile.csproj" />
