@@ -147,7 +147,6 @@ namespace Uno.UI.Xaml.Core
 			}
 		}
 
-#if !__MACOS__
 		/// <summary>
 		/// Replace the existing popup root (if any) with the provided one.
 		/// </summary>
@@ -159,7 +158,6 @@ namespace Uno.UI.Xaml.Core
 				Canvas.SetZIndex(PopupRoot, PopupZIndex);
 			}
 		}
-#endif
 
 		internal void SetPublicRootVisual(UIElement? publicRootVisual, ScrollViewer? rootScrollViewer, ContentPresenter? rootContentPresenter)
 		{
@@ -184,9 +182,8 @@ namespace Uno.UI.Xaml.Core
 			//EnsureVisualDiagnosticsRoot();
 			//EnsureXamlIslandRootCollection();
 			//EnsureConnectedAnimationRoot();
-#if !__MACOS__
+
 			EnsurePopupRoot();
-#endif
 
 			//TODO Uno specific: We require some additional layers on top
 			EnsureFocusVisualRoot();
@@ -241,7 +238,9 @@ namespace Uno.UI.Xaml.Core
 			//AddRoot(_connectedAnimationRoot));
 			AddRoot(FullWindowMediaRoot);
 
+#if !__MACOS__
 			AddRoot(PopupRoot);
+#endif
 
 			//AddRoot(_printRoot));
 			//AddRoot(_transitionRoot));
