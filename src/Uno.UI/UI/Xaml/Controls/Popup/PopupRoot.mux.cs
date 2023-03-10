@@ -6,6 +6,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Uno;
 using Uno.UI.Xaml.Core;
 
@@ -119,57 +120,13 @@ internal partial class PopupRoot
 		//return popupChildrenDuringEngagement;
 	}
 
-	[NotImplemented]
-	internal Popup[] GetOpenPopups()
-	{
-		// TODO Uno: Implement
-		return Array.Empty<Popup>();
-		//	CXcpList<Popup>::XCPListNode* pNode = null;
-		//	XINT32 count = 0;
-		//	Popup** ppResults = null;
-
-		//	if (!m_pOpenPopups)
-		//	{
-		//		// no open popups, nothing to do here.
-		//		pnCount = 0;
-		//		*pppPopups = null;
-		//		goto Cleanup;
-		//	}
-
-		//	pNode = m_pOpenPopups.GetHead();
-
-		//	// get count
-		//	while (pNode && count < XINT32_MAX)
-		//	{
-		//		if (!pNode.m_pData.IsUnloading())
-		//		{
-		//			count++;
-		//		}
-
-		//		pNode = pNode.m_pNext;
-		//	}
-
-		//	if (count > 0)
-		//	{
-		//		pNode = m_pOpenPopups.GetHead();
-		//		ppResults = new Popup[count];
-
-		//		for (XINT32 i = 0; i < count && pNode; pNode = pNode.m_pNext)
-		//		{
-		//			if (!pNode.m_pData.IsUnloading())
-		//			{
-		//				ppResults[i] = pNode.m_pData;
-		//				AddRefInterface(pNode.m_pData);
-		//				i++;
-		//			}
-		//		}
-		//	}
-
-		//	*pnCount = count;
-		//	*pppPopups = ppResults;
-		//	ppResults = null;
-		//Cleanup:
-		//	delete[] ppResults;
-		//	RRETURN(hr);
-	}
+	// TODO Uno: Implementation is currently simplified compared to MUX.
+	internal IReadOnlyList<Popup> GetOpenPopups() =>
+		_openPopups
+			.Where(p => !p.IsDisposed)
+			.Select(p => p.Target)
+			.OfType<Popup>()
+			.Distinct()
+			.ToList()
+			.AsReadOnly();
 }
