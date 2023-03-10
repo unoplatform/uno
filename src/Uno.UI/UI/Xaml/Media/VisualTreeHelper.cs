@@ -278,6 +278,15 @@ namespace Windows.UI.Xaml.Media
 			view.AddSubview(child);
 #elif UNO_REFERENCE_API
 			view.AddChild(child);
+#elif NET461
+			if (view is FrameworkElement fe)
+			{
+				fe.AddChild(child);
+			}
+			else
+			{
+				throw new NotImplementedException("AddChild on UIElement is not implemented on NET461.");
+			}
 #else
 			throw new NotImplementedException("AddChild not implemented on this platform.");
 #endif
