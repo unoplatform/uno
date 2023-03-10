@@ -113,11 +113,6 @@ dotnet new unolib-crossruntime -n MyCrossRuntimeLib
 & $msbuild $debug /t:Pack MyCrossRuntimeLib\MyCrossRuntimeLib.sln
 Assert-ExitCodeIsZero
 
-# WinUI - Default
-dotnet new unoapp-winui-xamarin -n UnoAppWinUI
-& $msbuild $debug UnoAppWinUI\UnoAppWinUI.sln
-Assert-ExitCodeIsZero
-
 # UI Tests template
 dotnet new unoapp-uitest -o UnoUITests01
 & $msbuild $debug UnoUITests01\UnoUITests01.csproj

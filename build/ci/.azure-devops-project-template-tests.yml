@@ -19,6 +19,10 @@ jobs:
     inputs:
       artifactName: NugetPackages
 
+  - task: DownloadBuildArtifacts@0
+    inputs:
+      artifactName: private-templates
+
   - template: templates/gitversion.yml
   - template: templates/dotnet-install.yml
   - template: templates/jdk-setup.yml
@@ -30,7 +34,10 @@ jobs:
   - script: copy $(System.ArtifactsDirectory)\NugetPackages\vslatest\*.nupkg $(Build.SourcesDirectory)\src\PackageCache
     displayName: Copy Artifacts to PackageCache
 
-  - script: dotnet new -i $(System.ArtifactsDirectory)\NugetPackages\vslatest\Uno.ProjectTemplates.Dotnet*.nupkg
+  - script: copy $(System.ArtifactsDirectory)\private-templates\*.nupkg $(Build.SourcesDirectory)\src\PackageCache
+    displayName: Copy Private Artifacts to PackageCache
+
+  - script: dotnet new -i $(System.ArtifactsDirectory)\private-templates\Uno.ProjectTemplates.Dotnet*.nupkg
     displayName: Install Project Templates
 
   - powershell: build\test-scripts\run-template-tests.ps1
@@ -50,6 +57,10 @@ jobs:
     inputs:
       artifactName: NugetPackages
 
+  - task: DownloadBuildArtifacts@0
+    inputs:
+      artifactName: private-templates
+
   - template: templates/gitversion.yml
 
   - template: templates/dotnet-mobile-install-windows.yml
@@ -61,7 +72,10 @@ jobs:
   - script: copy $(System.ArtifactsDirectory)\NugetPackages\vslatest\*.nupkg $(Build.SourcesDirectory)\src\PackageCache
     displayName: Copy Artifacts to PackageCache
 
-  - script: dotnet new -i $(System.ArtifactsDirectory)\NugetPackages\vslatest\Uno.ProjectTemplates.Dotnet*.nupkg
+  - script: copy $(System.ArtifactsDirectory)\private-templates\*.nupkg $(Build.SourcesDirectory)\src\PackageCache
+    displayName: Copy Private Artifacts to PackageCache
+
+  - script: dotnet new -i $(System.ArtifactsDirectory)\private-templates\Uno.ProjectTemplates.Dotnet*.nupkg
     displayName: Install Project Templates
 
   - powershell: build\test-scripts\run-netcore-mobile-template-tests.ps1
@@ -84,14 +98,21 @@ jobs:
     inputs:
       artifactName: NugetPackages
 
+  - task: DownloadBuildArtifacts@0
+    inputs:
+      artifactName: private-templates
+
   - template: templates/gitversion.yml
 
   - script: cp $(System.ArtifactsDirectory)/NugetPackages/vslatest/*.nupkg $(Build.SourcesDirectory)/src/PackageCache
     displayName: Copy Artifacts to PackageCache
 
+  - script: cp $(System.ArtifactsDirectory)/private-templates/*.nupkg $(Build.SourcesDirectory)/src/PackageCache
+    displayName: Copy Private Artifacts to PackageCache
+
   - template: templates/dotnet-install.yml
 
-  - script: dotnet new -i $(System.ArtifactsDirectory)/NugetPackages/vslatest/Uno.ProjectTemplates.Dotnet*.nupkg
+  - script: dotnet new -i $(Build.SourcesDirectory)/src/PackageCache/Uno.ProjectTemplates.Dotnet*.nupkg
     displayName: Install Project Templates
 
   - pwsh: build/test-scripts/run-template-tests-linux.ps1
@@ -112,14 +133,21 @@ jobs:
     inputs:
       artifactName: NugetPackages
 
-  - template: templates/gitversion.yml
+  - task: DownloadBuildArtifacts@0
+    inputs:
+      artifactName: private-templates
 
+  - template: templates/gitversion.yml
+  
   - script: cp $(System.ArtifactsDirectory)/NugetPackages/vslatest/*.nupkg $(Build.SourcesDirectory)/src/PackageCache
     displayName: Copy Artifacts to PackageCache
 
+  - script: cp $(System.ArtifactsDirectory)/private-templates/*.nupkg $(Build.SourcesDirectory)/src/PackageCache
+    displayName: Copy Private Artifacts to PackageCache
+
   - template: templates/dotnet-install.yml
 
-  - script: dotnet new -i $(System.ArtifactsDirectory)/NugetPackages/vslatest/Uno.ProjectTemplates.Dotnet*.nupkg
+  - script: dotnet new -i $(Build.SourcesDirectory)/src/PackageCache/Uno.ProjectTemplates.Dotnet*.nupkg
     displayName: Install Project Templates
 
   - pwsh: build/test-scripts/run-net7-template-linux.ps1
