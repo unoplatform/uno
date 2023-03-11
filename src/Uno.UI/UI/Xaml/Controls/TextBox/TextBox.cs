@@ -1032,7 +1032,9 @@ namespace Windows.UI.Xaml.Controls
 				Text = string.Empty;
 				OnDeleteButtonClickPartial();
 			}
+#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
 			finally
+#endif
 			{
 				_isInputClearingText = false;
 			}
