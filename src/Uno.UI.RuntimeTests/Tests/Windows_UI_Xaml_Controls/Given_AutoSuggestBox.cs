@@ -58,6 +58,115 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.Text = "a";
 			SUT.IsSuggestionListOpen.Should().BeTrue();
 		}
+
+		[TestMethod]
+		public async Task When_Text_Changed_UserInput()
+		{
+			var SUT = new AutoSuggestBox();
+			SUT.ItemsSource = new List<string>() { "ab", "abc", "abcde" };
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForIdle();
+			bool eventRaised = false;
+			AutoSuggestionBoxTextChangeReason? reason = null;
+			SUT.TextChanged += (s, e) =>
+			{
+				reason = e.Reason;
+				eventRaised = true;
+			};
+			var textBox = (TextBox)SUT.GetTemplateChild("TextBox");
+			SUT.Focus(FocusState.Programmatic);
+			textBox.ProcessTextInput("something");
+
+			await WindowHelper.WaitFor(() => eventRaised);
+			Assert.AreEqual(AutoSuggestionBoxTextChangeReason.UserInput, reason);
+		}
+
+		[TestMethod]
+		public async Task When_Text_Changed_Programmatic()
+		{
+			var SUT = new AutoSuggestBox();
+			SUT.ItemsSource = new List<string>() { "ab", "abc", "abcde" };
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForIdle();
+			bool eventRaised = false;
+			AutoSuggestionBoxTextChangeReason? reason = null;
+			SUT.TextChanged += (s, e) =>
+			{
+				reason = e.Reason;
+				eventRaised = true;
+			};
+			var textBox = (TextBox)SUT.GetTemplateChild("TextBox");
+			SUT.Focus(FocusState.Programmatic);
+			textBox.Text = "stuff";
+
+			await WindowHelper.WaitFor(() => eventRaised);
+			Assert.AreEqual(AutoSuggestionBoxTextChangeReason.ProgrammaticChange, reason);
+		}
+
+		[TestMethod]
+		public async Task When_Text_Changed_SuggestionChosen()
+		{
+			var SUT = new AutoSuggestBox();
+			SUT.ItemsSource = new List<string>() { "ab", "abc", "abcde" };
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForIdle();
+			bool eventRaised = false;
+			AutoSuggestionBoxTextChangeReason? reason = null;
+			SUT.TextChanged += (s, e) =>
+			{
+				reason = e.Reason;
+				eventRaised = true;
+			};
+			var textBox = (TextBox)SUT.GetTemplateChild("TextBox");
+			SUT.Focus(FocusState.Programmatic);
+			SUT.ChoseItem("ab");
+
+			await WindowHelper.WaitFor(() => eventRaised);
+			Assert.AreEqual(AutoSuggestionBoxTextChangeReason.SuggestionChosen, reason);
+		}
+
+
+		[TestMethod]
+		public async Task When_Text_Changed_Sequence()
+		{
+			var SUT = new AutoSuggestBox();
+			SUT.ItemsSource = new List<string>() { "ab", "abc", "abcde" };
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForIdle();
+			bool eventRaised = false;
+			var reasons = new List<AutoSuggestionBoxTextChangeReason>();
+			var counter = 0;
+			SUT.TextChanged += (s, e) =>
+			{
+				reasons.Add(e.Reason);
+				if (++counter == 7)
+				{
+					eventRaised = true;
+				}
+			};
+			var textBox = (TextBox)SUT.GetTemplateChild("TextBox");
+			SUT.Focus(FocusState.Programmatic);
+			SUT.ChoseItem("ab");
+			SUT.Text = "other";
+			textBox.ProcessTextInput("manual");
+			SUT.ChoseItem("ab");
+			textBox.ProcessTextInput("manual");
+			SUT.Text = "other";
+			SUT.ChoseItem("ab");
+
+			await WindowHelper.WaitFor(() => eventRaised);
+			CollectionAssert.AreEquivalent(
+				new[] {
+					AutoSuggestionBoxTextChangeReason.SuggestionChosen,
+					AutoSuggestionBoxTextChangeReason.ProgrammaticChange,
+					AutoSuggestionBoxTextChangeReason.UserInput,
+					AutoSuggestionBoxTextChangeReason.SuggestionChosen,
+					AutoSuggestionBoxTextChangeReason.UserInput,
+					AutoSuggestionBoxTextChangeReason.ProgrammaticChange,
+					AutoSuggestionBoxTextChangeReason.SuggestionChosen
+				},
+				reasons);
+		}
 #endif
 
 		[TestMethod]
