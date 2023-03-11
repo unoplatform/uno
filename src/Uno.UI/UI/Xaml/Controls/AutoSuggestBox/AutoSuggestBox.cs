@@ -427,7 +427,7 @@ namespace Windows.UI.Xaml.Controls
 			ChoseItem(_suggestionsList.SelectedItem);
 		}
 
-		private void ChoseItem(Object o)
+		internal void ChoseItem(Object o)
 		{
 			if (UpdateTextOnSelect)
 			{
@@ -471,7 +471,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				// On some platforms, the TextChangeReason is not updated
 				// as KeyDown is not triggered (e.g. Android)
-				if (tb._textChangeReason != AutoSuggestionBoxTextChangeReason.SuggestionChosen)
+				if (tb._textChangeReason != AutoSuggestionBoxTextChangeReason.SuggestionChosen && tb._textBox is not null)
 				{
 					if (tb._textBox.IsUserModifying)
 					{
