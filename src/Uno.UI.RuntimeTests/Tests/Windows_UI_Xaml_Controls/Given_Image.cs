@@ -301,6 +301,76 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				ExpectedPixels.At(centerX, centerY).Named("center without image").Pixel(Colors.White));
 		}
 
+		[TestMethod]
+		[RunsOnUIThread]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282! epic")]
+#endif
+		public async Task When_Image_Is_Monochromatic()
+		{
+			if (!ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			{
+				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
+			}
+
+			var red = Colors.Red;
+
+			var parent = new Border()
+			{
+				Width = 100,
+				Height = 150,
+				Background = new SolidColorBrush(Colors.Blue)
+			};
+
+			var SUT = new Image()
+			{
+				Width = 100,
+				Height = 150,
+				Source = new BitmapImage(new Uri("ms-appx:///Assets/test_image_100_150.png")),
+				Stretch = Stretch.UniformToFill,
+				MonochromeColor = Colors.Red
+			};
+
+			parent.Child = SUT;
+
+			TestServices.WindowHelper.WindowContent = parent;
+			await WindowHelper.WaitForLoaded(parent);
+
+			var snapshot = await TakeScreenshot(parent);
+
+			var sample = SUT.GetRelativeCoords(parent);
+			var centerX = sample.X + sample.Width / 2;
+			var centerY = sample.Y + sample.Height / 2;
+
+			ImageAssert.HasPixels(
+				snapshot,
+				ExpectedPixels
+					.At(centerX, centerY)
+					.Named("center")
+					.WithPixelTolerance(1, 1)
+					.Pixel(red),
+				ExpectedPixels
+					.At(sample.X, sample.Y)
+					.Named("top-left")
+					.WithPixelTolerance(1, 1)
+					.Pixel(red),
+				ExpectedPixels
+					.At(sample.X + sample.Width - 1f, sample.Y)
+					.Named("top-right")
+					.WithPixelTolerance(1, 1)
+					.Pixel(red),
+				ExpectedPixels
+					.At(sample.X, sample.Y + sample.Height - 1f)
+					.Named("bottom-left")
+					.WithPixelTolerance(1, 1)
+					.Pixel(red),
+				ExpectedPixels
+					.At(sample.X + sample.Width - 1f, sample.Y + sample.Height - 1f)
+					.Named("bottom-right")
+					.WithPixelTolerance(1, 1)
+					.Pixel(red));
+		}
+
 		private async Task<RawBitmap> TakeScreenshot(FrameworkElement SUT)
 		{
 			var renderer = new RenderTargetBitmap();
