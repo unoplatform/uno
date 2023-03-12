@@ -843,7 +843,6 @@ namespace Uno.UI.DataBinding
 		{
 			if (outputType != typeof(Windows.UI.Xaml.Controls.Orientation)) return false;
 
-			var lowered = input.ToLowerInvariant();
 			output = input.ToLowerInvariant().Trim() switch
 			{
 				"0" or "vertical" => Windows.UI.Xaml.Controls.Orientation.Vertical,
