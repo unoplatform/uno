@@ -322,13 +322,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Background = new SolidColorBrush(Colors.Blue)
 			};
 
-			var SUT = new Image()
+			var SUT = new BitmapIcon()
 			{
 				Width = 100,
 				Height = 150,
-				Source = new BitmapImage(new Uri("ms-appx:///Assets/test_image_100_150.png")),
-				Stretch = Stretch.UniformToFill,
-				MonochromeColor = Colors.Red
+				UriSource = new Uri("ms-appx:///Assets/test_image_100_150.png"),
+				Foreground = Colors.Red
 			};
 
 			parent.Child = SUT;
