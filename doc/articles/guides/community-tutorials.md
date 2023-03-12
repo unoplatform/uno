@@ -3,7 +3,7 @@
 This page lists links to our community provided tutorials.
 
 > [!NOTE]
-> Please use this page to submit links to your blogs, articles, and other resources as contribution to Uno Platform advocacy for Hacktoberfest 2022.
+> Please use this page to submit links to your blogs, articles, and other resources as community contribution to Uno Platform Advocacy.
 
 - [A Quick Look at Uno Platform Development](https://jamesmccaffrey.wordpress.com/2021/05/31/a-quick-look-at-uno-platform-development/), by James D. McCaffrey.
 - [Why I wrote (and you should buy) a book about Uno Platform when there are free resources available](https://www.mrlacey.com/2022/02/why-i-wrote-and-you-should-buy-book.html), by Matt Lacey
