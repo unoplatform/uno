@@ -314,9 +314,11 @@ namespace Windows.UI.Xaml.Documents
 					}
 
 					var segment = segmentSpan.Segment;
-					var paint = segment.Inline.Paint;
+					var inline = segment.Inline;
+					var fontInfo = inline.FontInfo;
+					var paint = inline.Paint;
 
-					if (segment.Inline.Foreground is SolidColorBrush scb)
+					if (inline.Foreground is SolidColorBrush scb)
 					{
 						paint.Color = new SKColor(
 							red: scb.Color.R,
@@ -325,12 +327,12 @@ namespace Windows.UI.Xaml.Documents
 							alpha: (byte)(scb.Color.A * scb.Opacity * compositor.CurrentOpacity));
 					}
 
-					var decorations = segment.Inline.TextDecorations;
+					var decorations = inline.TextDecorations;
 					const TextDecorations allDecorations = TextDecorations.Underline | TextDecorations.Strikethrough;
 
 					if ((decorations & allDecorations) != 0)
 					{
-						var metrics = paint.FontMetrics;
+						var metrics = fontInfo.SKFontMetrics;
 						float width = s == line.RenderOrderedSegmentSpans.Count - 1 ? segmentSpan.WidthWithoutTrailingSpaces : segmentSpan.Width;
 
 						if ((decorations & TextDecorations.Underline) != 0)
@@ -343,13 +345,13 @@ namespace Windows.UI.Xaml.Documents
 						if ((decorations & TextDecorations.Strikethrough) != 0)
 						{
 							// TODO: what should default thickness/position be if metrics does not contain it?
-							float yPos = y + baselineOffsetY + (metrics.StrikeoutPosition ?? paint.TextSize / -2);
+							float yPos = y + baselineOffsetY + (metrics.StrikeoutPosition ?? fontInfo.SKFontSize / -2);
 							DrawDecoration(canvas, x, yPos, width, metrics.StrikeoutThickness ?? 1, paint);
 						}
 					}
 
 					using var textBlobBuilder = new SKTextBlobBuilder();
-					var run = textBlobBuilder.AllocatePositionedRun(paint.ToFont(), segmentSpan.GlyphsLength);
+					var run = textBlobBuilder.AllocatePositionedRun(fontInfo.SKFont, segmentSpan.GlyphsLength);
 					var glyphs = run.GetGlyphSpan();
 					var positions = run.GetPositionSpan();
 
