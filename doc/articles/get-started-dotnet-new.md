@@ -86,7 +86,7 @@ dotnet new unoapp-uwp-net6 -o MyApp --Mobile=false
 
 Uno Platform provides an enhanced template to build your application with less effort.
 
-See [this documentation](external/uno.extensions/doc/Overview/ExtensionsOverviewAndGettingStarted.md) for more information.
+See [this documentation](xref:Overview.Features) for more information.
 
 ## Uno Platform Blank library
 
