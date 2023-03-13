@@ -1,3 +1,7 @@
+---
+uid: Uno.GetStarted.vs2022
+---
+
 # Get Started on Visual Studio 2022
 
 This getting started will guide you through the creation of an Uno Platform App using C# and .NET, based in the WinUI 3 XAML.
@@ -37,7 +41,7 @@ To create Uno Platform applications you will need [**Visual Studio 2022 17.4 or 
 
     ![](Assets/tutorial01/manage-extensions.png)
 
-2. In the Extension Manager expand the **Online** node and search for `Uno`, install the `Uno Platform Solution Templates` extension or download it from the [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=unoplatform.uno-platform-addin-2022), then restart Visual Studio.
+2. In the Extension Manager expand the **Online** node and search for `Uno`, install the `Uno Platform` extension or download it from the [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=unoplatform.uno-platform-addin-2022), then restart Visual Studio.
 
     ![](Assets/tutorial01/uno-extensions.PNG)
 
@@ -45,12 +49,14 @@ To create Uno Platform applications you will need [**Visual Studio 2022 17.4 or 
 
 To create an Uno Platform app:
 1. Create a new C# solution using the **Uno Platform App** template, from Visual Studio's **Start Page**
-1. Choose the list of targets platforms you want to be generated
+1. Choose the base template to build your application
+   
+    ![visual-studio-installer-web](Assets/quick-start/vsix-new-project-options.png)
+
+1. You can either choose to customize your app, or click the create button
 
     > [!TIP] 
     > You still can [add additional platforms](guides/how-to-add-platforms-existing-project.md) later.
-   
-    ![visual-studio-installer-web](Assets/quick-start/vsix-new-project-options.png)
 
 1. Wait for the projects to be created, and their dependencies to be restored
 
