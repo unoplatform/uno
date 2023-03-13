@@ -373,7 +373,7 @@ namespace Microsoft.UI.Xaml.Controls
 			var neededElementsCountToFillNewViewport = Math.Min(_uno_lastKnownItemsCount, MajorSize(newViewport) / _uno_lastKnownAverageElementSize);
 			if (_uno_lastKnownRealizedElementsCount < neededElementsCountToFillNewViewport)
 			{
-				// Only few first items have been measured so far (usually 1 or 2), this might be because the IR is within a SV and not visible yet.
+				// Only a few first items have been measured so far (usually 1 or 2), this might be because the IR is within a SV and not visible yet.
 				// Note: In that case we have to make sure to not only validate the Major axis since the parent SV could be vertical while local layout itself is horizontal.
 				// Note2: Depending of the platform (Android), we might be invoked with empty viewport, make sure to consider out-of-bound in such case.
 				// Test case: When_NestedInSVAndOutOfViewportOnInitialLoad_Then_MaterializedEvenWhenScrollingOnMinorAxis
