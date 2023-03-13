@@ -134,7 +134,7 @@ namespace Uno.UI.Xaml.Input
 			{
 				info.ShouldBubble = false;
 			}
-			else if (mode == XYFocusKeyboardNavigationMode.Enabled)
+			else // TODO:MZ: Handle Android TV vs normal keyboard case - Auto should never happen!
 			{
 				info.DirectionalFocusEnabled = true;
 				var xyFocusOptions = XYFocusOptions.Default;

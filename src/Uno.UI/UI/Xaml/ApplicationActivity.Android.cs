@@ -7,8 +7,6 @@ using Android.Graphics;
 using Android.OS;
 using Android.Views;
 using Android.Views.InputMethods;
-using Uno.AuthenticationBroker;
-using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.Gaming.Input.Internal;
 using Uno.Helpers.Theming;
@@ -103,7 +101,7 @@ namespace Windows.UI.Xaml
 		public override bool DispatchKeyEvent(KeyEvent e)
 		{
 			var handled = false;
-			
+
 			var virtualKey = VirtualKeyHelper.FromKeyCode(e.KeyCode);
 
 			var args = new KeyEventArgs(
@@ -139,7 +137,7 @@ namespace Windows.UI.Xaml
 						RoutedEvent routedEvent = e.Action == KeyEventActions.Down ?
 							UIElement.KeyDownEvent :
 							UIElement.KeyUpEvent;
-							
+
 						element?.RaiseEvent(routedEvent, routedArgs);
 					}
 
@@ -150,7 +148,7 @@ namespace Windows.UI.Xaml
 			{
 				Windows.UI.Xaml.Application.Current.RaiseRecoverableUnhandledException(ex);
 			}
-			
+
 			if (Uno.WinRTFeatureConfiguration.Focus.EnableExperimentalKeyboardFocus)
 			{
 				var focusHandler = Uno.UI.Xaml.Core.CoreServices.Instance.MainRootVisual.AssociatedVisualTree.UnoFocusInputHandler;
