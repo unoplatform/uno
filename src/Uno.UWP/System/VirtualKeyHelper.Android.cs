@@ -76,14 +76,14 @@ internal static class VirtualKeyHelper
 			// Modifiers
 			Keycode.Escape => VirtualKey.Escape,
 			Keycode.MetaLeft => VirtualKey.LeftWindows, // Command
-			//Keycode.KeyboardRightGui => VirtualKey.RightWindows, // Command
-			//Keycode.KeyboardLeftShift => VirtualKey.Shift, // Left Shift
-			//Keycode.KeyboardCapsLock => VirtualKey.CapitalLock,
-			//Keycode.KeyboardLeftAlt => VirtualKey.LeftMenu,
-			//Keycode.KeyboardLeftControl => VirtualKey.Control, // Left control
-			//Keycode.KeyboardRightShift => VirtualKey.RightShift,
-			//Keycode.KeyboardRightAlt => VirtualKey.RightMenu, // Right option, a.k.a. Right Alt
-			//Keycode.KeyboardRightControl => VirtualKey.RightControl,
+														//Keycode.KeyboardRightGui => VirtualKey.RightWindows, // Command
+														//Keycode.KeyboardLeftShift => VirtualKey.Shift, // Left Shift
+														//Keycode.KeyboardCapsLock => VirtualKey.CapitalLock,
+														//Keycode.KeyboardLeftAlt => VirtualKey.LeftMenu,
+														//Keycode.KeyboardLeftControl => VirtualKey.Control, // Left control
+														//Keycode.KeyboardRightShift => VirtualKey.RightShift,
+														//Keycode.KeyboardRightAlt => VirtualKey.RightMenu, // Right option, a.k.a. Right Alt
+														//Keycode.KeyboardRightControl => VirtualKey.RightControl,
 
 			// Functions
 			Keycode.F1 => VirtualKey.F1,

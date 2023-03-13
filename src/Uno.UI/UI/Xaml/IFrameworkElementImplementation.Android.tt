@@ -351,98 +351,6 @@ namespace <#= mixin.NamespaceName #>
 		#endregion
 #endif
 
-		#region KeyPress
-		private KeyEventHandler _keyUpHandlers;
-		private KeyEventHandler _keyDownHandlers;
-
-		private bool HasKeyEventRegistrations => _keyUpHandlers != null || _keyDownHandlers != null;
-
-		private SerialDisposable _nativeKeyPressRegistration = new SerialDisposable();
-
-		protected void OnKeyPress(object sender, KeyEventArgs e)
-		{
-			e.Handled = false;
-			if (e.Event == null)
-			{
-				return;
-			}
-
-			var keyRoutedEventArgs = new KeyRoutedEventArgs(this, e.Event.KeyCode.ToVirtualKey());
-			if (e.Event.Action == KeyEventActions.Up)
-			{
-				_keyUpHandlers?.Invoke(this, keyRoutedEventArgs);
-			}
-			else if (e.Event.Action == KeyEventActions.Down)
-			{
-				_keyDownHandlers?.Invoke(this, keyRoutedEventArgs);
-			}
-
-			e.Handled = keyRoutedEventArgs.Handled;
-		}
-
-		/// <summary>
-		/// Lazily creates an event registration to the native KeyPress event, so that
-		/// the cost of observing a key is only paid when there is a registation to
-		/// either KeyUp or KeyDown events.
-		/// </summary>
-		private void TryCreateKeyRegistration()
-		{
-			if(
-				HasKeyEventRegistrations
-				&& _nativeKeyPressRegistration.Disposable == null
-			)
-			{
-				_nativeKeyPressRegistration.Disposable =
-					Disposable.Create(() => KeyPress -= OnKeyPress);
-
-				KeyPress += OnKeyPress;
-			}
-		}
-
-		private void TryRemoveKeyRegistration(bool forceRemove)
-		{
-			if(forceRemove || !HasKeyEventRegistrations)
-			{
-				_nativeKeyPressRegistration.Disposable = null;
-			}
-		}
-
-		/// <summary>
-		/// An event raised when a keyboard key has gone up.
-		/// </summary>
-		public event KeyEventHandler KeyUp
-		{
-			add
-			{
-				_keyUpHandlers += value;
-				TryCreateKeyRegistration();
-			}
-			remove
-			{
-				_keyUpHandlers -= value;
-				TryRemoveKeyRegistration(forceRemove: false);
-			}
-		}
-
-		/// <summary>
-		/// An event raised when a keyboard key has gone down.
-		/// </summary>
-		public event KeyEventHandler KeyDown
-		{
-			add
-			{
-				_keyDownHandlers += value;
-				TryCreateKeyRegistration();
-			}
-			remove
-			{
-				_keyDownHandlers -= value;
-				TryRemoveKeyRegistration(forceRemove: false);
-			}
-		}
-
-		#endregion
-
 #if !<#= mixin.IsFrameworkElement #> // IsFrameworkElement
 		#region Visibility Dependency Property
 
@@ -770,8 +678,6 @@ namespace <#= mixin.NamespaceName #>
 			OnLoadedPartial();
 
 			Loaded?.Invoke(this, new RoutedEventArgs(this));
-
-			TryCreateKeyRegistration();
 		}
 
 		partial void OnLoadedPartial();
@@ -783,8 +689,6 @@ namespace <#= mixin.NamespaceName #>
 			OnUnloadedPartial();
 
 			Unloaded?.Invoke(this, new RoutedEventArgs(this));
-
-			TryRemoveKeyRegistration(forceRemove: true);
 		}
 
 		partial void OnUnloadedPartial();
