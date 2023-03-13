@@ -52,6 +52,10 @@ namespace Windows.ApplicationModel.Resources
 			{
 				_resources = existingLoader._resources;
 			}
+			else
+			{
+				_loaders[name] = this;
+			}
 		}
 
 		internal string LoaderName { get; }
