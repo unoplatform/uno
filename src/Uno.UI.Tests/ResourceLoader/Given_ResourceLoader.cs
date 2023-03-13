@@ -93,7 +93,7 @@ namespace Uno.UI.Tests.ResourceLoaderTests
 		}
 
 		[TestMethod]
-		public void When_Constructor_Used()
+		public void When_String_Constructor_Used()
 		{
 			_ResourceLoader.DefaultLanguage = "en";
 			var SUT = new _ResourceLoader(UITestResources);
