@@ -1,5 +1,5 @@
 ---
-uid: GetStarted.dotnet-new
+uid: Uno.GetStarted.dotnet-new
 ---
 # dotnet new templates for Uno Platform
 
@@ -10,16 +10,16 @@ To install the templates, type the following:
 # [**.NET 7**](#tab/net7)
 
 ```
-dotnet new install Uno.ProjectTemplates.Dotnet
+dotnet new install Uno.Templates
 ```
 # [**.NET 6**](#tab/net6)
 
 ```
-dotnet new -i Uno.ProjectTemplates.Dotnet
+dotnet new -i Uno.Templates
 ```
 ***
 
-If you need to determine the parameters available for a template use `dotnet new [templatename] -h`.
+To determine all parameters available for a template use `dotnet new [templatename] -h`.
 
 > [!IMPORTANT]
 > Installing the templates is done per dotnet CLI version. Meaning that the templates are installed for the version shown by `dotnet --version`. If you tried to use the templates with a version different than the one you used for installing, you'll get "No templates found matching: '<template-name>'." error.
@@ -27,19 +27,24 @@ If you need to determine the parameters available for a template use `dotnet new
 > This is common when using `global.json` that alters the .NET CLI/SDK version. Specifically, it's common for the UI Test template.
 
 > [!NOTE]
-> When using .NET 6, use `dotnet new -i Uno.ProjectTemplates.Dotnet` instead.
+> When using .NET 6, use `dotnet new -i Uno.Templates` instead.
 
 [!include[getting-help](use-uno-check-inline.md)]
 
-## Uno Platform Blank Application for WinAppSDK - WinUI 3
+## Uno Platform Application
 
-This template can be used to create a blank multi-platform application for iOS, Android, WebAssembly, macOS, Mac Catalyst, Linux, and Win32 Desktop which uses the new WinUI 3 APIs.
+This template can be used to create a multi-platform application for iOS, Android, WebAssembly, Mac Catalyst, Linux, and Win32 Desktop which uses the new WinUI 3 APIs.
 
-This template uses a single project head for iOS, Android, macOS, and Mac Catalyst. It requires Visual Studio 2022.
+If comes with the **Blank** and **Recommended** presets.
 
-A basic example:
+To create a blank template, using minimal dependencies:
 ```
-dotnet new unoapp -o MyApp
+dotnet new dotnet new unoapp -preset=blank -o test
+```
+
+To create a recommended template template, using [Uno.Extensions](xref:Overview.Extensions):
+```
+dotnet new dotnet new unoapp -preset=recommended -o test
 ```
 
 > [!NOTE]

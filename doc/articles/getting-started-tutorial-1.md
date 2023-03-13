@@ -31,9 +31,12 @@ If you haven't prepared your dev environment for Uno Platform app development ye
 
 1. Name your app then click `Next`.
 
-1. Choose a list of platforms, including **WebAssembly** and **WinUI**
-
-    ![](Assets/tutorial01/newproject4.PNG)
+1. In the project Wizard:
+    1. Choose the **Blank template**, then **Customize**
+    1. In **Framework**, choose **.NET 7.0**
+    1. In **Platforms**, choose your own list including **WebAssembly** and **Windows**
+    1. In **Presentation**, choose the MVVM Presentation
+    1. In **Extensions**, choose the **Frame** navigation and **Console** logging
 
 1. After a few seconds, a banner may appear at the top of the editor asking to reload projects. Click **Reload projects**.
 
