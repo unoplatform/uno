@@ -35,6 +35,13 @@ namespace Windows.ApplicationModel.Resources
 		public ResourceLoader(string name)
 		{
 			LoaderName = name;
+
+			// If there is already a loader with the same name,
+			// they should share the same resources.
+			if (_loaders.TryGetValue(name, out var existingLoader))
+			{
+				_resources = existingLoader._resources;
+			}
 		}
 
 		internal string LoaderName { get; }
