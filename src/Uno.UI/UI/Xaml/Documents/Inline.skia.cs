@@ -140,9 +140,9 @@ namespace Windows.UI.Xaml.Documents
 					return null;
 				}
 
-				var data = Marshal.AllocCoTaskMem(size);
+				var data = Marshal.AllocHGlobal(size);
 
-				var releaseDelegate = new ReleaseDelegate(() => Marshal.FreeCoTaskMem(data));
+				var releaseDelegate = new ReleaseDelegate(() => Marshal.FreeHGlobal(data));
 
 				var value = skTypeFace.TryGetTableData(tag, 0, size, data) ?
 					new Blob(data, size, MemoryMode.Writeable, releaseDelegate) : null;
