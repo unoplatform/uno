@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Xml.Linq;
 using Uno;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
@@ -32,8 +33,17 @@ namespace Windows.ApplicationModel.Resources
 
 		private readonly Dictionary<string, Dictionary<string, string>> _resources = new Dictionary<string, Dictionary<string, string>>(StringComparer.OrdinalIgnoreCase);
 
+		public ResourceLoader() : this(DefaultResourceLoaderName)
+		{
+		}
+
 		public ResourceLoader(string name)
 		{
+			if (_log.IsEnabled(LogLevel.Debug))
+			{
+				_log.LogDebug($"Initializing ResourceLoader {name} (CurrentUICulture: {CultureInfo.CurrentUICulture})");
+			}
+
 			LoaderName = name;
 
 			// If there is already a loader with the same name,
@@ -45,14 +55,6 @@ namespace Windows.ApplicationModel.Resources
 		}
 
 		internal string LoaderName { get; }
-
-		public ResourceLoader()
-		{
-			if (_log.IsEnabled(LogLevel.Debug))
-			{
-				_log.LogDebug($"Initializing ResourceLoader (CurrentUICulture: {CultureInfo.CurrentUICulture})");
-			}
-		}
 
 		public string GetString(string resource)
 		{
