@@ -87,6 +87,7 @@ namespace Microsoft.UI.Xaml.Controls
 				LayoutId);
 
 			// Uno workaround [BEGIN]: Keep track of realized items count for viewport invalidation optimization
+			_uno_lastKnownItemsCount = context.ItemCount;
 			_uno_lastKnownRealizedElementsCount = algo.RealizedElementCount;
 			// Uno workaround [END]
 
@@ -357,7 +358,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#region Uno workaround
 		private double _uno_lastKnownAverageElementSize;
-		private double _uno_lastKnownRealizedElementsCount;
+		private int _uno_lastKnownRealizedElementsCount;
+		private int _uno_lastKnownItemsCount;
 
 		/// <inheritdoc />
 		protected internal override bool IsSignificantViewportChange(Rect oldViewport, Rect newViewport)
@@ -368,9 +370,10 @@ namespace Microsoft.UI.Xaml.Controls
 				return base.IsSignificantViewportChange(oldViewport, newViewport);
 			}
 
-			if (_uno_lastKnownRealizedElementsCount <= 1)
+			var neededElementsCountToFillNewViewport = Math.Min(_uno_lastKnownItemsCount, MajorSize(newViewport) / _uno_lastKnownAverageElementSize);
+			if (_uno_lastKnownRealizedElementsCount < neededElementsCountToFillNewViewport)
 			{
-				// Only the first item has been measured so far, this might be because the IR is within a SV and not visible yet.
+				// Only few first items have been measured so far (usually 1 or 2), this might be because the IR is within a SV and not visible yet.
 				// Note: In that case we have to make sure to not only validate the Major axis since the parent SV could be vertical while local layout itself is horizontal.
 				// Note2: Depending of the platform (Android), we might be invoked with empty viewport, make sure to consider out-of-bound in such case.
 				// Test case: When_NestedInSVAndOutOfViewportOnInitialLoad_Then_MaterializedEvenWhenScrollingOnMinorAxis
