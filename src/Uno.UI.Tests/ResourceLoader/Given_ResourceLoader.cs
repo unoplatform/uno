@@ -91,5 +91,14 @@ namespace Uno.UI.Tests.ResourceLoaderTests
 
 			Assert.AreEqual(@"Header in 'en'", SUT.rb.Header);
 		}
+
+		[TestMethod]
+		public void When_Constructor_Used()
+		{
+			_ResourceLoader.DefaultLanguage = "en";
+			var SUT = new _ResourceLoader(UITestResources);
+
+			Assert.AreEqual("App70-en", SUT.GetString("ApplicationName"));
+		}
 	}
 }
