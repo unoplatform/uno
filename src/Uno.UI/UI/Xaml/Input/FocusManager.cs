@@ -245,7 +245,7 @@ namespace Windows.UI.Xaml.Input
 				throw new ArgumentNullException(nameof(focusNavigationOptions));
 			}
 
-			return TryMoveFocusImpl(focusNavigationDirection);
+			return TryMoveFocusWithOptionsImpl(focusNavigationDirection, focusNavigationOptions);
 		}
 
 		/// <summary>
@@ -296,7 +296,7 @@ namespace Windows.UI.Xaml.Input
 				throw new ArgumentNullException(nameof(focusNavigationOptions));
 			}
 
-			return TryMoveFocusAsyncImpl(focusNavigationDirection);
+			return TryMoveFocusWithOptionsAsyncImpl(focusNavigationDirection, focusNavigationOptions);
 		}
 	}
 }
