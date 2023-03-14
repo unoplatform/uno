@@ -50,10 +50,12 @@ namespace Windows.UI.Xaml.Controls
 		[Uno.UnoOnly]
 		public bool ShouldForceDisableSpellCheck { get; set; } = true;
 
+		internal TextBoxView TextBoxView => _textBoxView;
+
 		/// <summary>
-		/// Both IsReadOnly = true and IsTabStop = false make the control not receive any input.
+		/// Both IsReadOnly = true and IsTabStop = false make the native TextBoxView read-only.
 		/// </summary>
-		internal bool IsNativeReadOnly => IsReadOnly || !IsTabStop;
+		internal bool IsNativeViewReadOnly => IsReadOnly || !IsTabStop;
 
 		public bool PreventKeyboardDisplayOnProgrammaticFocus
 		{
@@ -421,24 +423,24 @@ namespace Windows.UI.Xaml.Controls
 				return;
 			}
 
-			_textBoxView.Focusable = IsTabStop;
-			_textBoxView.FocusableInTouchMode = IsTabStop;
-			_textBoxView.Clickable = !IsNativeReadOnly;
-			_textBoxView.LongClickable = !IsTabStop;
-			_textBoxView.SetCursorVisible(!IsNativeReadOnly);
-
-			if (IsNativeReadOnly)
+			if (IsNativeViewReadOnly)
 			{
-				_listener = _textBoxView.KeyListener;
-				_textBoxView.KeyListener = null;
-			}
-			else
-			{
-				if (_listener != null)
+				if (_textBoxView.KeyListener is not null)
 				{
-					_textBoxView.KeyListener = _listener;
+					_listener = _textBoxView.KeyListener;
+					_textBoxView.KeyListener = null;
 				}
 			}
+			else if (_listener is not null)
+			{
+				_textBoxView.KeyListener = _listener;
+			}
+
+			_textBoxView.Focusable = IsTabStop;
+			_textBoxView.FocusableInTouchMode = IsTabStop;
+			_textBoxView.Clickable = IsTabStop;
+			_textBoxView.LongClickable = IsTabStop;
+			_textBoxView.SetCursorVisible(!IsNativeViewReadOnly);
 		}
 
 		private void SetupTextBoxView()
