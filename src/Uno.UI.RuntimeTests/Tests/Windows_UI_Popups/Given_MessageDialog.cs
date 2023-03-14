@@ -11,6 +11,7 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Media;
 using static Private.Infrastructure.TestServices;
 using System.Linq;
+using Private.Infrastructure;
 #if HAS_UNO
 using Uno.UI.WinRT.Extensions.UI.Popups;
 #endif
@@ -87,7 +88,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Popups
 
 		private int GetNonMessageDialogPopupsCount()
 		{
-			var popups = VisualTreeHelper.GetOpenPopups(Window.Current);
+			var popups = VisualTreeHelper.GetOpenPopupsForXamlRoot(TestServices.WindowHelper.XamlRoot);
 #if HAS_UNO
 			return popups.Count(p => p.Child is not MessageDialogContentDialog);
 #else
