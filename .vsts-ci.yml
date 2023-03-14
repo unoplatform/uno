@@ -16,6 +16,7 @@ trigger:
     - doc/*
     - '**/*.md'
     - '*.md'
+    - 'build/cSpell.json'
     
 pr: 
   branches:
@@ -35,6 +36,7 @@ pr:
     - doc/*
     - '**/*.md'
     - '*.md'
+    - 'build/cSpell.json'
 
 resources:
   containers:
