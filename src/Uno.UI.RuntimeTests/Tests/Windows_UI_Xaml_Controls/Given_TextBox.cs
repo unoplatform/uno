@@ -553,5 +553,82 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(5, textChangingInvokeCount);
 			Assert.AreEqual(initialText + "5", textBox.Text);
 		}
+
+#if __ANDROID__
+		[TestMethod]
+		public async Task When_ReadOnly_TextBoxView()
+		{
+			var textBox = new TextBox
+			{
+				Text = "Text",
+				IsReadOnly = true
+			};
+
+			WindowHelper.WindowContent = textBox;
+			await WindowHelper.WaitForLoaded(textBox);
+
+			Assert.IsTrue(textBox.TextBoxView.Focusable);
+			Assert.IsTrue(textBox.TextBoxView.FocusableInTouchMode);
+			Assert.IsTrue(textBox.TextBoxView.Clickable);
+			Assert.IsTrue(textBox.TextBoxView.LongClickable);
+		}
+
+		[TestMethod]
+		public async Task When_NotTabStop_TextBoxView()
+		{
+			var textBox = new TextBox
+			{
+				Text = "Text",
+				IsTabStop = false
+			};
+
+			WindowHelper.WindowContent = textBox;
+			await WindowHelper.WaitForLoaded(textBox);
+
+			Assert.IsFalse(textBox.TextBoxView.Focusable);
+			Assert.IsFalse(textBox.TextBoxView.FocusableInTouchMode);
+			Assert.IsFalse(textBox.TextBoxView.Clickable);
+			Assert.IsFalse(textBox.TextBoxView.LongClickable);
+		}
+
+		[TestMethod]
+		public async Task When_ReadOnly_NotTabStop_TextBoxView()
+		{
+			var textBox = new TextBox
+			{
+				Text = "Text",
+				IsTabStop = false,
+				IsReadOnly = true
+			};
+
+			WindowHelper.WindowContent = textBox;
+			await WindowHelper.WaitForLoaded(textBox);
+
+			Assert.IsFalse(textBox.TextBoxView.Focusable);
+			Assert.IsFalse(textBox.TextBoxView.FocusableInTouchMode);
+			Assert.IsFalse(textBox.TextBoxView.Clickable);
+			Assert.IsFalse(textBox.TextBoxView.LongClickable);
+		}
+
+
+		[TestMethod]
+		public async Task When_ReadOnly_Update_Text()
+		{
+			var textBox = new TextBox
+			{
+				Text = "Text",
+				IsReadOnly = true,
+				IsTabStop = false
+			};
+
+			WindowHelper.WindowContent = textBox;
+			await WindowHelper.WaitForLoaded(textBox);
+
+			textBox.Text = "Something";
+
+			Assert.AreEqual("Something", textBox.Text);
+			Assert.AreEqual("Something", textBox.TextBoxView.Text);
+		}
+#endif
 	}
 }
