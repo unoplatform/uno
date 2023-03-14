@@ -41,6 +41,10 @@ public partial class ScrollContentPresenter
 		var viewportHeight = ViewportHeight;
 		var zoomFactor = Scroller.ZoomFactor;
 
+#if __ANDROID__ // Adjust for region blocked by keyboard.
+		viewportHeight -= _occludedRectPadding.Bottom;
+#endif
+
 		// Compute the target offsets based on the provided BringIntoViewRequestedEventArgs.
 		ComputeBringIntoViewTargetOffsets(
 			content,
@@ -129,6 +133,11 @@ public partial class ScrollContentPresenter
 		var viewportWidth = ViewportWidth;
 		var viewportHeight = ViewportHeight;
 		var zoomFactor = Scroller.ZoomFactor;
+
+#if __ANDROID__ // Adjust for region blocked by keyboard.
+		viewportHeight -= _occludedRectPadding.Bottom;
+#endif
+
 		if (!double.IsNaN(requestEventArgs.HorizontalAlignmentRatio))
 		{
 			// Account for the horizontal alignment ratio
@@ -166,6 +175,10 @@ public partial class ScrollContentPresenter
 
 		double scrollableWidth = Scroller.ScrollableWidth;
 		double scrollableHeight = Scroller.ScrollableHeight;
+
+#if __ANDROID__ // Adjust for region blocked by keyboard.
+		scrollableHeight += _occludedRectPadding.Bottom;
+#endif
 
 		targetZoomedHorizontalOffsetTmp = targetZoomedHorizontalOffsetTmp.Clamp(0.0, scrollableWidth);
 		targetZoomedVerticalOffsetTmp = targetZoomedVerticalOffsetTmp.Clamp(0.0, scrollableHeight);
