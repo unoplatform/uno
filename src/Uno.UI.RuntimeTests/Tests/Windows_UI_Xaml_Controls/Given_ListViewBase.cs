@@ -2458,7 +2458,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var success = FocusManager.TryMoveFocus(FocusNavigationDirection.Next);
 			Assert.IsTrue(success);
 
-			var focused = FocusManager.GetFocusedElement();
+			var focused = FocusManager.GetFocusedElement(TestServices.WindowHelper.XamlRoot);
 			Assert.AreEqual(item2, focused);
 		}
 
@@ -2493,7 +2493,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var success = FocusManager.TryMoveFocus(FocusNavigationDirection.Previous);
 			Assert.IsTrue(success);
 
-			var focused = FocusManager.GetFocusedElement();
+			var focused = FocusManager.GetFocusedElement(TestServices.WindowHelper.XamlRoot);
 			Assert.AreEqual(item1, focused);
 		}
 
