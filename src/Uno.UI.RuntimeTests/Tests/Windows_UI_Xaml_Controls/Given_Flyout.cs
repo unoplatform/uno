@@ -602,7 +602,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			FlyoutBase.SetAttachedFlyout(button, flyout);
 			button.Focus(FocusState.Pointer);
 
-			Assert.AreEqual(button, FocusManager.GetFocusedElement());
+			Assert.AreEqual(button, FocusManager.GetFocusedElement(TestServices.WindowHelper.XamlRoot));
 
 			FlyoutBase.ShowAttachedFlyout(button);
 			await TestServices.WindowHelper.WaitForIdle();
