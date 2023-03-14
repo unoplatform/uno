@@ -612,6 +612,25 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 
 		[TestMethod]
+		public async Task When_ReadOnly_Update_Text_Native_View()
+		{
+			var textBox = new TextBox
+			{
+				Text = "Text",
+				IsReadOnly = true,
+				IsTabStop = false
+			};
+
+			WindowHelper.WindowContent = textBox;
+			await WindowHelper.WaitForLoaded(textBox);
+
+			textBox.Text = "Something";
+
+			Assert.AreEqual("Something", textBox.TextBoxView.Text);
+		}
+#endif
+
+		[TestMethod]
 		public async Task When_ReadOnly_Update_Text()
 		{
 			var textBox = new TextBox
@@ -627,8 +646,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			textBox.Text = "Something";
 
 			Assert.AreEqual("Something", textBox.Text);
-			Assert.AreEqual("Something", textBox.TextBoxView.Text);
 		}
-#endif
 	}
 }
