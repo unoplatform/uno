@@ -69,8 +69,14 @@ namespace Windows.UI.Xaml
 			ApiInformation.RegisterAssembly(typeof(Windows.UI.Composition.Compositor).Assembly);
 
 			Uno.Helpers.DispatcherTimerProxy.SetDispatcherTimerGetter(() => new DispatcherTimer());
-			Uno.Helpers.VisualTreeHelperProxy.SetCloseAllFlyoutsAction(() => Media.VisualTreeHelper.CloseAllFlyouts(
-				WinUICoreServices.Instance.ContentRootCoordinator.CoreWindowContentRoot.XamlRoot));
+			Uno.Helpers.VisualTreeHelperProxy.SetCloseAllFlyoutsAction(() =>
+			{
+				var contentRoots = WinUICoreServices.Instance.ContentRootCoordinator.ContentRoots;
+				foreach (var contentRoot in contentRoots)
+				{
+					Media.VisualTreeHelper.CloseAllFlyouts(contentRoot.XamlRoot);
+				}
+			});
 
 			RegisterExtensions();
 
