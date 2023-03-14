@@ -4,7 +4,7 @@ $if$($UseWebAssembly$ == True)
 using Uno.Wasm.Bootstrap.Server;
 $endif$
 
-namespace UnoQuickStart
+namespace $ext_safeprojectname$.Server
 {
 	public sealed class Program
 	{

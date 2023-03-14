@@ -1163,8 +1163,11 @@ namespace Windows.UI.Xaml.Controls
 						}
 					}
 
-					// Clears value set in PrepareContainerForItemOverride
-					ClearPropertyWhenNoExpression(contentControl, ContentControl.ContentProperty);
+					if (!contentControl.IsContainerFromTemplateRoot)
+					{
+						// Clears value set in PrepareContainerForItemOverride
+						ClearPropertyWhenNoExpression(contentControl, ContentControl.ContentProperty);
+					}
 
 					if (contentControl.ContentTemplate is { } ct && ct == ItemTemplate)
 					{

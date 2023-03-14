@@ -156,6 +156,22 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		public async Task When_Transitive_Asset_With_Link_Loaded()
+		{
+			string url = "ms-appx:///Uno.UI.RuntimeTests/Assets/TransitiveTest/colors300.png";
+			var img = new Image();
+			var SUT = new BitmapImage(new Uri(url));
+			img.Source = SUT;
+
+			TestServices.WindowHelper.WindowContent = img;
+			await TestServices.WindowHelper.WaitForIdle();
+			await TestServices.WindowHelper.WaitFor(() => img.ActualHeight > 0, 3000);
+
+			Assert.IsTrue(img.ActualHeight > 0);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
 #if __MACOS__
 		[Ignore("Fails on macOS for resising and assets locations https://github.com/unoplatform/uno/issues/6261")]
 #endif

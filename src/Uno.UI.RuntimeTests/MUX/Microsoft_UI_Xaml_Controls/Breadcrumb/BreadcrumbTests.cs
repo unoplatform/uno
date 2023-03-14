@@ -329,7 +329,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 			{
 				await RunOnUIThread.ExecuteAsync(() =>
 				{
-					VisualTreeHelper.CloseAllFlyouts();
+					VisualTreeHelper.CloseAllFlyouts(TestServices.WindowHelper.XamlRoot);
 				});
 			}
 		}
@@ -411,7 +411,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 			{
 				await RunOnUIThread.ExecuteAsync(() =>
 				{
-					VisualTreeHelper.CloseAllFlyouts();
+					VisualTreeHelper.CloseAllFlyouts(TestServices.WindowHelper.XamlRoot);
 				});
 			}
 		}

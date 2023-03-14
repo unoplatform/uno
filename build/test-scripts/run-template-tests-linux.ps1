@@ -66,24 +66,3 @@ Assert-ExitCodeIsZero
 
 dotnet build $release UnoApp/UnoApp.Skia.Linux.FrameBuffer/UnoApp.Skia.Linux.FrameBuffer.csproj
 Assert-ExitCodeIsZero
-
-# WinUI
-dotnet new unoapp-winui-xamarin -n UnoAppWinUI (Get-TemplateConfiguration -wasm 1 -wasmVsCode 1 -skiaGtk 1 -skiaLinuxFB 1)
-
-dotnet build $debug UnoAppWinUI/UnoAppWinUI.Wasm/UnoAppWinUI.Wasm.csproj
-Assert-ExitCodeIsZero
-
-dotnet build $release UnoAppWinUI/UnoAppWinUI.Wasm/UnoAppWinUI.Wasm.csproj
-Assert-ExitCodeIsZero
-
-dotnet build $debug UnoAppWinUI/UnoAppWinUI.Skia.Gtk/UnoAppWinUI.Skia.Gtk.csproj
-Assert-ExitCodeIsZero
-
-dotnet build $release UnoAppWinUI/UnoAppWinUI.Skia.Gtk/UnoAppWinUI.Skia.Gtk.csproj
-Assert-ExitCodeIsZero
-
-dotnet build $debug UnoAppWinUI/UnoAppWinUI.Skia.Linux.FrameBuffer/UnoAppWinUI.Skia.Linux.FrameBuffer.csproj
-Assert-ExitCodeIsZero
-
-dotnet build $release UnoAppWinUI/UnoAppWinUI.Skia.Linux.FrameBuffer/UnoAppWinUI.Skia.Linux.FrameBuffer.csproj
-Assert-ExitCodeIsZero

@@ -2,18 +2,9 @@
 
 The uno platform project contains multiple types of templates:
 - `dotnet new` templates
-- Visual Studio (2019/2022) Extensions templates (vsix)
+- Visual Studio (2022) Extensions templates (vsix)
 
 Some of the templates are reusing the same sources. For example the full solution template is defined in the vsix project, and building the `dotnet new` template creates a transformed version of the vsix template.
-
-## VSIX Templates
-
-VSIX templates are using the Visual Studio extensibility model, and run with a specific project type.
-
-To make modifications to those templates and test the result:
-- In Visual Studio, open the solution using the [Uno.UI-SolutionTemplates.slnf](building-uno-ui.md) filter
-- Right click on the `UnoSolutionTemplate.VSIX.2022` or `UnoSolutionTemplate.VSIX.2019` project then debug
-- A new isolated testing instance of visual studio will open, allowing you to create projects using modified templates
 
 ## dotnet new templates
 

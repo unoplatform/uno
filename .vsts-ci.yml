@@ -150,7 +150,3 @@ jobs:
 - template: build/ci/.azure-devops-screenshot-compare.yml
   parameters:
     vmImage: '$(windows2022HostedVMImage)'
-
-- template: build/ci/.azure-devops-vs2022-vsix.yml
-  parameters:
-    vmImage: '$(windows2022HostedVMImage)'

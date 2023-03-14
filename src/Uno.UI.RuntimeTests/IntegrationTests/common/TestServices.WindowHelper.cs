@@ -26,6 +26,8 @@ namespace Private.Infrastructure
 			private static Windows.UI.Xaml.Window _currentTestWindow;
 			private static UIElement _originalWindowContent;
 
+			public static XamlRoot XamlRoot { get; set; }
+
 			public static Windows.UI.Xaml.Window CurrentTestWindow
 			{
 				get

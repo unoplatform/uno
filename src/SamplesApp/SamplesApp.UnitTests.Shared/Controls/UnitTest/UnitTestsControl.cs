@@ -72,6 +72,7 @@ namespace Uno.UI.Samples.Tests
 		public UnitTestsControl()
 		{
 			this.InitializeComponent();
+			this.Loaded += OnLoaded;
 
 			Private.Infrastructure.TestServices.WindowHelper.EmbeddedTestRoot =
 			(
@@ -93,6 +94,11 @@ namespace Uno.UI.Samples.Tests
 			OverrideDebugProviderAsserts();
 
 			_applicationView = ApplicationView.GetForCurrentView();
+		}
+
+		private void OnLoaded(object sender, RoutedEventArgs args)
+		{
+			Private.Infrastructure.TestServices.WindowHelper.XamlRoot = XamlRoot;
 		}
 
 		private static void OverrideDebugProviderAsserts()

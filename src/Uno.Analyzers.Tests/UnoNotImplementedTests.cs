@@ -2,6 +2,7 @@
 using Microsoft.CodeAnalysis.Testing;
 using Uno.Analyzers.Tests.Verifiers;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace Uno.Analyzers.Tests
 {
@@ -27,6 +28,16 @@ namespace Uno.Analyzers.Tests
 					public string[]? Platforms { get; }
 				}
 		}";
+
+		private static async Task TestWithPreprocessorDirective(string testCode, IEnumerable<string> preprocessorSymbols)
+		{
+			await new Verify.Test
+			{
+				TestCode = testCode,
+				FixedCode = testCode,
+				PreprocessorSymbols = preprocessorSymbols,
+			}.RunAsync();
+		}
 
 		[TestMethod]
 		public async Task Nothing()
@@ -72,278 +83,251 @@ namespace Uno.Analyzers.Tests
 		[TestMethod]
 		public async Task When_SinglePlatform_Included()
 		{
-			var test = @"
-                #define __WASM__
-
+			var test = """
 				using System;
 
 				namespace Uno
 				{
-					[NotImplemented(""__WASM__"")]
+					[NotImplemented("__WASM__")]
 					public class TestClass { }
 				}
 
-                namespace ConsoleApplication1
-                {
-                    class TypeName
-                    {
-                        public TypeName()
-                        {
-                           var a = [|new Uno.TestClass()|];
-                        }
-                    }
-                }
-
-			" + UnoNotImplementedAtribute;
-			await Verify.VerifyAnalyzerAsync(test);
+				namespace ConsoleApplication1
+				{
+					class TypeName
+					{
+						public TypeName()
+						{
+							var a = [|new Uno.TestClass()|];
+						}
+					}
+				}
+				""" + UnoNotImplementedAtribute;
+			await TestWithPreprocessorDirective(test, new[] { "__WASM__" });
 		}
 
 		[TestMethod]
 		public async Task When_SinglePlatform_Excluded()
 		{
-			var test = @"
-                #define __WASM__
-
+			var test = """
 				using System;
 
 				namespace Uno
 				{
-					[NotImplemented(""__SKIA__"")]
+					[NotImplemented("__SKIA__")]
 					public class TestClass { }
 				}
 
-                namespace ConsoleApplication1
-                {
-                    class TypeName
-                    {
-                        public TypeName()
-                        {
-                           var a = new Uno.TestClass();
-                        }
-                    }
-                }
+				namespace ConsoleApplication1
+				{
+					class TypeName
+					{
+						public TypeName()
+						{
+							var a = new Uno.TestClass();
+						}
+					}
+				}
+				""" + UnoNotImplementedAtribute;
 
-			" + UnoNotImplementedAtribute;
-
-			await Verify.VerifyAnalyzerAsync(test);
+			await TestWithPreprocessorDirective(test, new[] { "__WASM__" });
 		}
 
 		[TestMethod]
 		public async Task When_TwoPlatforms_Excluded()
 		{
-			var test = @"
-                #define __WASM__
-
+			var test = """
 				using System;
 
 				namespace Uno
 				{
-					[NotImplemented(""__SKIA__"", ""__IOS__"")]
+					[NotImplemented("__SKIA__", "__IOS__")]
 					public class TestClass { }
 				}
 
-                namespace ConsoleApplication1
-                {
-                    class TypeName
-                    {
-                        public TypeName()
-                        {
-                           var a = new Uno.TestClass();
-                        }
-                    }
-                }
+				namespace ConsoleApplication1
+				{
+					class TypeName
+					{
+						public TypeName()
+						{
+							var a = new Uno.TestClass();
+						}
+					}
+				}
+				""" + UnoNotImplementedAtribute;
 
-			" + UnoNotImplementedAtribute;
-
-			await Verify.VerifyAnalyzerAsync(test);
+			await TestWithPreprocessorDirective(test, new[] { "__WASM__" });
 		}
 
 		[TestMethod]
 		public async Task When_Generic_Excluded()
 		{
-			var test = @"
-                #define UNO_REFERENCE_API
-
+			var test = """
 				using System;
 
 				namespace Uno
 				{
-					[NotImplemented(""__IOS__"")]
+					[NotImplemented("__IOS__")]
 					public class TestClass { }
 				}
 
-                namespace ConsoleApplication1
-                {
-                    class TypeName
-                    {
-                        public TypeName()
-                        {
-                           var a = new Uno.TestClass();
-                        }
-                    }
-                }
+				namespace ConsoleApplication1
+				{
+					class TypeName
+					{
+						public TypeName()
+						{
+							var a = new Uno.TestClass();
+						}
+					}
+				}
+				""" + UnoNotImplementedAtribute;
 
-			" + UnoNotImplementedAtribute;
-
-			await Verify.VerifyAnalyzerAsync(test);
+			await TestWithPreprocessorDirective(test, new[] { "UNO_REFERENCE_API" });
 		}
 
 		[TestMethod]
 		public async Task When_Generic_Partial_Excluded()
 		{
-			var test = @"
-                #define UNO_REFERENCE_API
-
+			var test = """
 				using System;
 
 				namespace Uno
 				{
-					[NotImplemented(""__SKIA__"", ""__IOS__"")]
+					[NotImplemented("__SKIA__", "__IOS__")]
 					public class TestClass { }
 				}
 
-                namespace ConsoleApplication1
-                {
-                    class TypeName
-                    {
-                        public TypeName()
-                        {
-                           var a = new Uno.TestClass();
-                        }
-                    }
-                }
+				namespace ConsoleApplication1
+				{
+					class TypeName
+					{
+						public TypeName()
+						{
+							var a = new Uno.TestClass();
+						}
+					}
+				}
+				""" + UnoNotImplementedAtribute;
 
-			" + UnoNotImplementedAtribute;
-
-			await Verify.VerifyAnalyzerAsync(test);
+			await TestWithPreprocessorDirective(test, new[] { "UNO_REFERENCE_API" });
 		}
 
 		[TestMethod]
 		public async Task When_Generic_Included()
 		{
-			var test = @"
-                #define UNO_REFERENCE_API
-
+			var test = """
 				using System;
 
 				namespace Uno
 				{
-					[NotImplemented(""__SKIA__"", ""__IOS__"", ""__WASM__"")]
+					[NotImplemented("__SKIA__", "__IOS__", "__WASM__")]
 					public class TestClass { }
 				}
 
-                namespace ConsoleApplication1
-                {
-                    class TypeName
-                    {
-                        public TypeName()
-                        {
-                           var a = [|new Uno.TestClass()|];
-                        }
-                    }
-                }
+				namespace ConsoleApplication1
+				{
+					class TypeName
+					{
+						public TypeName()
+						{
+							var a = [|new Uno.TestClass()|];
+						}
+					}
+				}
+				""" + UnoNotImplementedAtribute;
 
-			" + UnoNotImplementedAtribute;
-
-			await Verify.VerifyAnalyzerAsync(test);
+			await TestWithPreprocessorDirective(test, new[] { "UNO_REFERENCE_API" });
 		}
 
 
 		[TestMethod]
 		public async Task When_Generic_Member_Included()
 		{
-			var test = @"
-                #define UNO_REFERENCE_API
-
+			var test = """
 				using System;
 
 				namespace Uno
 				{
 					public class TestClass {
-						[NotImplemented(""__SKIA__"", ""__IOS__"", ""__WASM__"")]
+						[NotImplemented("__SKIA__", "__IOS__", "__WASM__")]
 						public int Test { get; }
 					}
 				}
 
-                namespace ConsoleApplication1
-                {
-                    class TypeName
-                    {
-                        public TypeName()
-                        {
-                           var a = [|new Uno.TestClass().Test|];
-                           var b = new Uno.TestClass()?[|.Test|];
-                        }
-                    }
-                }
+				namespace ConsoleApplication1
+				{
+					class TypeName
+					{
+						public TypeName()
+						{
+							var a = [|new Uno.TestClass().Test|];
+							var b = new Uno.TestClass()?[|.Test|];
+						}
+					}
+				}
+				""" + UnoNotImplementedAtribute;
 
-			" + UnoNotImplementedAtribute;
-
-			await Verify.VerifyAnalyzerAsync(test);
+			await TestWithPreprocessorDirective(test, new[] { "UNO_REFERENCE_API" });
 		}
 
 		[TestMethod]
 		public async Task When_Generic_Member_Partial_Excluded()
 		{
-			var test = @"
-                #define UNO_REFERENCE_API
-
+			var test = """
 				using System;
 
 				namespace Uno
 				{
 					public class TestClass {
-						[NotImplemented(""__IOS__"", ""__WASM__"")]
+						[NotImplemented("__IOS__", "__WASM__")]
 						public int Test { get; }
 					}
 				}
 
-                namespace ConsoleApplication1
-                {
-                    class TypeName
-                    {
-                        public TypeName()
-                        {
-                           var a = new Uno.TestClass().Test;
-                        }
-                    }
-                }
+				namespace ConsoleApplication1
+				{
+					class TypeName
+					{
+						public TypeName()
+						{
+							var a = new Uno.TestClass().Test;
+						}
+					}
+				}
+				""" + UnoNotImplementedAtribute;
 
-			" + UnoNotImplementedAtribute;
-
-			await Verify.VerifyAnalyzerAsync(test);
+			await TestWithPreprocessorDirective(test, new[] { "UNO_REFERENCE_API" });
 		}
 
 		[TestMethod]
 		public async Task When_Using_Object_Initializer_Syntax_Included()
 		{
-			var test = @"
-                #define UNO_REFERENCE_API
-
+			var test = """
 				using System;
 
 				namespace Uno
 				{
 					public class TestClass {
-						[NotImplemented(""__SKIA__"", ""__IOS__"", ""__WASM__"")]
+						[NotImplemented("__SKIA__", "__IOS__", "__WASM__")]
 						public int Test { get; set; }
 					}
 				}
 
-                namespace ConsoleApplication1
-                {
-                    class TypeName
-                    {
-                        public TypeName()
-                        {
-                           var x = new Uno.TestClass { [|Test|] = 0 };
-                        }
-                    }
-                }
+				namespace ConsoleApplication1
+				{
+					class TypeName
+					{
+						public TypeName()
+						{
+							var x = new Uno.TestClass { [|Test|] = 0 };
+						}
+					}
+				}
+				""" + UnoNotImplementedAtribute;
 
-			" + UnoNotImplementedAtribute;
-
-			await Verify.VerifyAnalyzerAsync(test);
+			await TestWithPreprocessorDirective(test, new[] { "UNO_REFERENCE_API" });
 		}
 	}
 }

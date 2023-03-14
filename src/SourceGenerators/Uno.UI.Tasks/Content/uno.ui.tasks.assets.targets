@@ -168,6 +168,8 @@
 
 		<ItemGroup>
 			<_AllChildProjectItemsWithTargetPath Include="@(ContentFilesProjectOutputGroupOutput)">
+				<!-- Update link metadata only if available, prefer TargetPath otherwise -->
+				<Link Condition="'%(ContentFilesProjectOutputGroupOutput.Link)' != ''">$(UnoPriInitialPath)$(_UnoDirectorySeparator)%(ContentFilesProjectOutputGroupOutput.Link)</Link>
 				<TargetPath Condition="'$(UnoPriInitialPath)' != ''">$(UnoPriInitialPath)$(_UnoDirectorySeparator)%(ContentFilesProjectOutputGroupOutput.TargetPath)</TargetPath>
 				<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 			</_AllChildProjectItemsWithTargetPath>

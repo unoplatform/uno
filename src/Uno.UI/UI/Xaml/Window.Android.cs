@@ -335,36 +335,6 @@ namespace Windows.UI.Xaml
 				|| flags.HasFlag(WindowManagerFlags.LayoutNoLimits);
 		}
 		#endregion
-
-		internal IDisposable OpenPopup(Controls.Primitives.Popup popup)
-		{
-			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
-			{
-				this.Log().Debug($"Creating popup");
-			}
-
-			if (PopupRoot == null)
-			{
-				throw new InvalidOperationException("PopupRoot is not initialized yet.");
-			}
-
-			var popupPanel = popup.PopupPanel;
-			PopupRoot.Children.Add(popupPanel);
-
-			return new CompositeDisposable(
-				Disposable.Create(() =>
-				{
-
-					if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
-					{
-						this.Log().Debug($"Closing popup");
-					}
-
-					PopupRoot.Children.Remove(popupPanel);
-				}),
-				VisualTreeHelper.RegisterOpenPopup(popup)
-			);
-		}
 	}
 }
 #endif

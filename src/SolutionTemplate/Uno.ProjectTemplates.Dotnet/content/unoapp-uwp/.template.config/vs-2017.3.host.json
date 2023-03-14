@@ -12,11 +12,6 @@
   "uiFilters": [
     "oneaspnet"
   ],
-  "unsupportedHosts": [
-    {
-      "id": "vs"
-    }
-  ],
   "additionalWizardParameters": {
     "$isMultiProjectTemplate$": "true"
   },

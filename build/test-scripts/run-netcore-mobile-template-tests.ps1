@@ -70,7 +70,7 @@ $dotnetBuildNet6Configurations =
 )
 
 # WinUI - Default
-dotnet new unoapp -n UnoAppWinUI
+dotnet new unoapp-winui -n UnoAppWinUI
 
 pushd UnoAppWinUI
 for($i = 0; $i -lt $dotnetBuildNet6Configurations.Length; $i++)

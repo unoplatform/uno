@@ -70,23 +70,6 @@ A more advanced example that will not generate the android and macOS heads:
 dotnet new unoapp-uwp -o MyApp -android=false -macos=false
 ```
 
-## Uno Platform Blank Application (WinAppSDK - WinUI 3, Xamarin)
-
-This template can be used to create a blank multi-platform application for iOS, Android, WebAssembly, macOS, Linux, and Win32 Desktop which uses the new WinUI 3 APIs.
-
-[**Find detailed instructions here.**](get-started-winui3.md)
-
-A basic example:
-```
-dotnet new unoapp-winui-xamarin -o MyApp
-```
-
-More articles on WinUI 3:
-
- * [WinUI 3, UWP, and Uno Platform.](uwp-vs-winui3.md)
- * [Updating from UWP to WinUI 3.](updating-to-winui3.md)
-
-
 ## Uno Platform Blank Application (UWP, .NET 6)
 
 This template can be used to create a blank multi-platform application for iOS, Android, WebAssembly, macOS, Mac Catalyst, Skia/GTK (Windows, Linux, macOS), and Skia/Wpf (Windows 7 and 10).
@@ -128,21 +111,6 @@ A basic example:
 dotnet new unolib-crossruntime -o MyCrossRuntimeLibrary
 ```
 
-## Uno Platform Blank Prism Application
-
-This template is specializing in the creation of a [Prism Library](https://github.com/PrismLibrary/Prism) enabled blank application.
-
-A basic example:
-```
-dotnet new unoapp-prism -o MyApp
-```
-
-A more advanced example which will not generate the android and macOS heads:
-
-```
-dotnet new unoapp -o MyApp -android=false -macos=false
-```
-
 ## Uno Platform Uno.UITest library
 This templates creates a project for creating and running UI Tests based on [Uno.UITest](https://github.com/unoplatform/Uno.UITest).
 
@@ -156,24 +124,6 @@ To create a UI Tests library:
 This will automatically add the new project to the existing solution.
 
 For additional information about UI Tests creation, visit the [Uno.UITest](https://github.com/unoplatform/Uno.UITest) documentation.
-
-## Uno Platform WebAssembly support for Xamarin.Forms
-
-This template is built to enhance an existing Xamarin.Forms application with the [Uno Platform WebAssembly support](https://github.com/unoplatform/Uno.Xamarin.Forms.Platform).
-
-To use it:
-
-1. Create a Xamarin.Forms project 
-    1. Check **Place project and solution in the same directory**
-    1. Check **Windows (UWP)**
-1. Using a **VS Developer Command Prompt**, navigate to the folder containing the solution
-    ```
-    dotnet new wasmxfhead
-    ```
-1. Open or Reload the solution in Visual Studio 
-1. Set the Wasm project as the startup project 
-1. Open the **Nuget Package manager** for the Wasm project and update the `Uno.Xamarin.Forms.Platform` project to the latest **stable** package 
-1. Run the app using **F5** (with the Visual Studio debugger), and you are good to go!
 
 ### Uninstalling the templates
 

@@ -7,7 +7,6 @@ using Android.Graphics;
 using Android.OS;
 using Android.Views;
 using Android.Views.InputMethods;
-
 using Uno.AuthenticationBroker;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
@@ -21,6 +20,8 @@ using Windows.Storage.Pickers;
 using Windows.System;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml.Media;
+using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
+
 
 namespace Windows.UI.Xaml
 {
@@ -257,7 +258,8 @@ namespace Windows.UI.Xaml
 		{
 			base.OnPause();
 
-			VisualTreeHelper.CloseAllPopups();
+			// TODO Uno: When we support multi-window, this should close popups for the appropriate XamlRoot #8341.
+			VisualTreeHelper.CloseAllPopups(WinUICoreServices.Instance.ContentRootCoordinator.CoreWindowContentRoot.XamlRoot);
 
 			DismissKeyboard();
 		}

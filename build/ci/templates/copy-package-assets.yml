@@ -12,7 +12,6 @@ steps:
         **/bin/**/*.xaml
         **/bin/**/*.pri
         **/bin/**/*.aar
-        **/bin/**/*.vsix
         **/bin/**/*.json
         **/bin/**/*.config
       TargetFolder: $(build.sourcesdirectory)/build-artifacts/bin-$(XAML_FLAVOR_BUILD)

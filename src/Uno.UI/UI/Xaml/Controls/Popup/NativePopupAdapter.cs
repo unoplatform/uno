@@ -15,7 +15,6 @@ internal class NativePopupAdapter<T> : IPopup
 	private readonly Action<T> _open;
 	private readonly Action<T> _close;
 
-	private IDisposable _openPopupRegistration;
 	private bool _isOpen;
 
 	public event EventHandler<object> Opened;
@@ -54,13 +53,11 @@ internal class NativePopupAdapter<T> : IPopup
 			if (value)
 			{
 				_open(_nativePopup);
-				_openPopupRegistration = VisualTreeHelper.RegisterOpenPopup(this);
 				Opened?.Invoke(this, EventArgs.Empty);
 			}
 			else
 			{
 				_close(_nativePopup);
-				_openPopupRegistration?.Dispose();
 				Closed?.Invoke(this, EventArgs.Empty);
 			}
 		}
