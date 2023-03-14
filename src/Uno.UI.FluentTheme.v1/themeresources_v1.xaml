@@ -13984,8 +13984,8 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <not_mux:Style TargetType="MediaTransportControls" BasedOn="{StaticResource DefaultMediaTransportControlsStyle}" />
-  <not_mux:Style x:Key="DefaultMediaTransportControlsStyle" TargetType="MediaTransportControls">
+  <Style TargetType="MediaTransportControls" BasedOn="{StaticResource DefaultMediaTransportControlsStyle}" />
+  <Style x:Key="DefaultMediaTransportControlsStyle" TargetType="MediaTransportControls">
     <Setter Property="IsTabStop" Value="False" />
     <Setter Property="Background" Value="Transparent" />
     <Setter Property="FlowDirection" Value="LeftToRight" />
@@ -14764,7 +14764,7 @@
         </ControlTemplate>
       </Setter.Value>
     </Setter>
-  </not_mux:Style>
+  </Style>
   <Style TargetType="controls:MenuBar" BasedOn="{StaticResource DefaultMenuBarStyle}" />
   <Style x:Key="DefaultMenuBarStyle" TargetType="controls:MenuBar">
     <Setter Property="Background" Value="{ThemeResource MenuBarBackground}" />
