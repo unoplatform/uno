@@ -1,7 +1,6 @@
 <Project ToolsVersion="15.0">
     <!--
-        This file is used to control the platforms compiled by visual studio, and
-            allow for a faster build when testing for a single platform.
+        This file is used to control the platforms compiled by visual studio, and allow for a faster build when testing for a single platform.
 
             Instructions:
             1) Copy this file and remove the ".sample" name
@@ -10,6 +9,11 @@
     -->
 
   <PropertyGroup>
+
+    <!--<UnoTargetFrameworkOverride>netstandard2.0</UnoTargetFrameworkOverride>-->
+    <!--<UnoNugetOverrideVersion>2.23.2-dev.667</UnoNugetOverrideVersion>-->
+    <!-- <OptimizeImplicitlyTriggeredBuild>true</OptimizeImplicitlyTriggeredBuild> -->
+
     <!--
         This property controls the platform built by Visual Studio.
 
@@ -42,21 +46,18 @@
         Always close the solution before changing or activating this property.
         *** WARNING ***
     -->
-    <!--<UnoTargetFrameworkOverride>netstandard2.0</UnoTargetFrameworkOverride>-->
-
+    
     <!--
     This property allows the override of the nuget local cache.
     Set it to the version you want to override, used in another app.
     You will see the override path in the build output.
     The packages are located under this directory: "%USERPROFILE%\.nuget\packages".
     -->
-    <!--<UnoNugetOverrideVersion>2.23.2-dev.667</UnoNugetOverrideVersion>-->
 
     <!--
     Uncomment this line if you're iterating quickly in your builds. This 
     will disable most of the C# analyzers, and you'll need to comment that property
     before making your pull request.
     -->
-    <!-- <OptimizeImplicitlyTriggeredBuild>true</OptimizeImplicitlyTriggeredBuild> -->
   </PropertyGroup>
 </Project>
