@@ -5,6 +5,7 @@ using Windows.UI.ViewManagement;
 using Uno.UI;
 using Uno.Foundation.Logging;
 using System.Linq;
+using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
 
 #if HAS_UNO_WINUI
@@ -91,7 +92,7 @@ partial class PopupPanel
 
 			if (Flyout?.IsTargetPositionSet ?? false)
 			{
-				rect = Flyout.UpdateTargetPosition(ApplicationView.GetForCurrentView().VisibleBounds, desiredSize, rect);
+				rect = Flyout.UpdateTargetPosition(GetVisibleBounds(), desiredSize, rect);
 			}
 
 			child.Arrange(rect);
@@ -116,7 +117,7 @@ partial class PopupPanel
 	{
 		var anchorRect = GetAnchorRect(popup);
 
-		var visibleBounds = ApplicationView.GetForCurrentView().VisibleBounds;
+		var visibleBounds = GetVisibleBounds();
 
 		// Make sure the desiredSize fits in the panel
 		desiredSize.Width = Math.Min(desiredSize.Width, visibleBounds.Width);
@@ -376,4 +377,8 @@ partial class PopupPanel
 
 		return fits;
 	}
+
+	private Rect GetVisibleBounds() =>
+		WinUICoreServices.Instance.InitializationType == Uno.UI.Xaml.Core.InitializationType.IslandsOnly ?
+			XamlRoot.Bounds : ApplicationView.GetForCurrentView().VisibleBounds;
 }
