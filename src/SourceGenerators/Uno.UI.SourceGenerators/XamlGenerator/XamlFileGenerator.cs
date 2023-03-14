@@ -4909,12 +4909,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						return $"typeof({GetGlobalizedTypeName(GetType(GetMemberValue()).ToDisplayString())})";
 
 					case XamlConstants.Types.Geometry:
-						if (_isWasm)
-						{
-							return $"@\"{memberValue}\"";
-						}
-						var generated = Parsers.ParseGeometry(memberValue, CultureInfo.InvariantCulture);
-						return generated;
+						return $"@\"{memberValue}\"";
 
 					case XamlConstants.Types.KeyTime:
 						return ParseTimeSpan(GetMemberValue());
