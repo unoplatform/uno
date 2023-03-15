@@ -54,7 +54,7 @@ To create an Uno Platform app:
     ![visual-studio-installer-web](Assets/quick-start/vsix-new-project-options.png)
 
 1. You can optionally choose to customize your app based on the sections on the left side:
-    - **Framework** allows to choose wich `TargetFramework` your app will use. [.NET 7.0](https://dotnet.microsoft.com/en-us/download/dotnet/7.0) is a commonly appropriate choice.
+    - **Framework** allows to choose which `TargetFramework` your app will use. [.NET 7.0](https://dotnet.microsoft.com/en-us/download/dotnet/7.0) is a commonly appropriate choice.
     - **Platforms** provides a list of platforms your application will support. You still can [add additional platforms](xref:Uno.Guides.AddAdditionalPlatforms) later.
     - **Presentation** gives a choice about using MVVM (e.g. [MVVM Toolkit](https://learn.microsoft.com/en-us/dotnet/communitytoolkit/mvvm/)) or [Uno Platform's MVUX and Feeds](xref:Overview.Reactive.Concept)
     - **Projects** gives the ability to add a Server project for APIs and hosting for the WebAssembly project
