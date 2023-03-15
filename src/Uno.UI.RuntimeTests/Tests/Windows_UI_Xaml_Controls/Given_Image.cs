@@ -303,8 +303,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282! epic")]
+#if NET461 || __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282! epic and Monochromatic Image not supported for NET461")]
 #endif
 		public async Task When_Image_Is_Monochromatic()
 		{
@@ -322,12 +322,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Background = new SolidColorBrush(Colors.Blue)
 			};
 
-			var SUT = new BitmapIcon()
+			var SUT = new Image()
 			{
 				Width = 100,
 				Height = 150,
-				UriSource = new Uri("ms-appx:///Assets/test_image_100_150.png"),
-				Foreground = Colors.Red
+				Source = new BitmapImage(new Uri("ms-appx:///Assets/test_image_100_150.png")),
+				Stretch = Stretch.UniformToFill,
+				MonochromeColor = Colors.Red
 			};
 
 			parent.Child = SUT;
