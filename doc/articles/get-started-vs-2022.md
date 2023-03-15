@@ -64,7 +64,7 @@ To create an Uno Platform app:
     - **Projects** gives the ability to add a Server project for APIs and hosting for the WebAssembly project
     - **Testing** provides Unit Testing and [UI Testing projects](https://github.com/unoplatform/Uno.UITest)
     - **Features** provides support for WebAssembly PWA and optional [VS Code support](xref:Uno.GetStarted.vscode) files
-    - **Extensions** allows to choose for [additional Uno.Extensions](xref:Overview.Features)
+    - **Extensions** allows to choose for [additional Uno.Extensions](xref:Overview.Features) to kickstart your app faster
     - **Application** sets the App ID for relevant platforms, used when publishing on various app stores.
     - **Theme** gives the ability to change between [Fluent](xref:uno.themes.fluent.getstarted) and [Material](xref:uno.themes.material.getstarted)
     
