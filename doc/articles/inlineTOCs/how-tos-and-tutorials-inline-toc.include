@@ -24,9 +24,9 @@
 
  * [How to deploy a WebAssembly app on Azure Static Web Apps](../guides/azure-static-webapps.md)
 
- * [How to integrate Uno.Material](../guides/uno-material-walkthrough.md)
+ * [How to integrate Uno.Material](../external/uno.themes/doc/material-getting-started.md)
 
- * [How to integrate Uno.Cupertino](../guides/uno-cupertino-walkthrough.md)
+ * [How to integrate Uno.Cupertino](../external/uno.themes/doc/cupertino-getting-started.md)
 
 ## Tutorials
 

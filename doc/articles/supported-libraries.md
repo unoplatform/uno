@@ -19,8 +19,8 @@ This article lists some of the 3rd-party libraries supported by Uno Platform.
 
 ## Design and theming
 
- * [Uno.Material](features/uno-material.md)
- * [Uno.Cupertino](features/uno-cupertino.md)
+ * [Uno.Material](external/uno.themes/doc/material-getting-started.md)
+ * [Uno.Cupertino](external/uno.themes/doc/cupertino-getting-started.md)
 
 ## Other libraries
 
