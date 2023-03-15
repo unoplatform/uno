@@ -35,16 +35,16 @@ To determine all parameters available for a template use `dotnet new [templatena
 
 This template can be used to create a multi-platform application for iOS, Android, WebAssembly, Mac Catalyst, Linux, and Win32 Desktop which uses the new WinUI 3 APIs.
 
-If comes with the **Blank** and **Recommended** presets.
+It comes with the **Blank** and **Recommended** presets.
 
 To create a blank template, using minimal dependencies:
 ```
-dotnet new dotnet new unoapp -preset=blank -o test
+dotnet new unoapp -preset=blank -o test
 ```
 
-To create a recommended template template, using [Uno.Extensions](xref:Overview.Extensions):
+To create from a recommended template, using [Uno.Extensions](xref:Overview.Extensions):
 ```
-dotnet new dotnet new unoapp -preset=recommended -o test
+dotnet new unoapp -preset=recommended -o test
 ```
 
 > [!NOTE]
