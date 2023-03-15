@@ -26,6 +26,7 @@
 		<ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
 		<ApplicationVersion>1</ApplicationVersion>
 
+		<AndroidManifest>Android\AndroidManifest.xml</AndroidManifest>
 		<IsUnoHead>true</IsUnoHead>
 
 		<SupportedOSPlatformVersion Condition="'$(TargetFramework)' == '$basetargetframework$-ios'">14.2</SupportedOSPlatformVersion>
