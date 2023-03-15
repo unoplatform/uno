@@ -157,7 +157,7 @@ public abstract class UnoViewGroup
 	 * Implemented in java to avoid the interop cost of android-only APIs from managed code.
 	 */
 	public static void tryFastRequestLayout(View view, boolean needsForceLayout) {
-		
+
 		if (needsForceLayout) {
 			// Bypass Android cache, to ensure the Child's Measure() is actually invoked.
 			view.forceLayout();
@@ -540,8 +540,38 @@ public abstract class UnoViewGroup
 		return true;
 	}
 
-	public /* hidden to C# */ int getChildrenRenderTransformCount() { return _childrenTransformations.size(); }
-	public /* hidden to C# */ Matrix findChildRenderTransform(View child) { return _childrenTransformations.get(child); }
+	public /* hidden to C# */ int getChildrenRenderTransformCount() {
+		int count = 0;
+		count += _childrenTransformations.size();
+		int childCount = this.getChildCount();
+		for (int i = 0; i < childCount; i++) {
+			View child = this.getChildAt(i);
+			if (child instanceof UnoViewGroup) {
+				count += ((UnoViewGroup)child)._childrenTransformations.size();
+			}
+		}
+
+		return count;
+	}
+	public /* hidden to C# */ Matrix findChildRenderTransform(View child) {
+		Matrix transform = _childrenTransformations.get(child);
+		if (transform != null) {
+			return transform;
+		}
+
+		int childCount = this.getChildCount();
+		for (int i = 0; i < childCount; i++) {
+			View currentChild = this.getChildAt(i);
+			if (currentChild instanceof UnoViewGroup) {
+				transform = ((UnoViewGroup)currentChild).findChildRenderTransform(child);
+				if (transform != null) {
+					return transform;
+				}
+			}
+		}
+
+		return null;
+	}
 
 
 	@Override
@@ -576,8 +606,8 @@ public abstract class UnoViewGroup
 			outLocation[0]-=(int)points[0];
 			outLocation[1]-=(int)points[1];
 		}
-	}	
-	
+	}
+
 	// Allows UI automation operations to look for a single 'Text' property for both ViewGroup and TextView elements.
 	// Is mapped to the UIAutomationText property
 	public String getText() {

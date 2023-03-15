@@ -354,8 +354,6 @@ import android.view.ViewParent;
 
 				adapter.setCurrentTarget(child); // (try to) cache the child for future events
 				return true; // Stop at the first child which is able to handle the event
-			} else {
-				// Log.i(LOGTAG, _indent + "Custom dispatch tried child #" + i + " (" + child.toString() + ") but dispatch return false.");
 			}
 		}
 
@@ -376,8 +374,15 @@ import android.view.ViewParent;
 
 		final ViewGroup view = adapter.asViewGroup();
 		final Matrix transform = adapter.asMotionTarget().findChildRenderTransform(child);
-		final float offsetX = view.getScrollX() - child.getLeft();
-		final float offsetY = view.getScrollY() - child.getTop();
+		float offsetX = view.getScrollX();
+		float offsetY = view.getScaleY();
+		View currentView = child;
+		while (currentView != view) {
+			offsetX -= currentView.getX();
+			offsetY -= currentView.getY();
+
+			currentView = (View)currentView.getParent();
+		}
 
 		boolean handled = false;
 		if (transform == null || transform.isIdentity()) {
@@ -403,6 +408,13 @@ import android.view.ViewParent;
 			handled = dispatchStaticTransformedMotionEventCore(adapter, child, transformedEvent, isSequenceContinuation);
 
 			transformedEvent.recycle();
+		}
+
+		if (!handled && child instanceof ViewGroup) {
+			ViewGroup childAsViewGroup = (ViewGroup)child;
+			for (int i = childAsViewGroup.getChildCount() - 1; i >= 0; i--) {
+				handled |= dispatchStaticTransformedMotionEvent(adapter, childAsViewGroup.getChildAt(i), isSequenceContinuation, event);
+			}
 		}
 
 		return handled;
