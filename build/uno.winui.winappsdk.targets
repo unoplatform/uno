@@ -84,8 +84,12 @@
 		<ValidateWinAppSDKReferences_v0 ReferencedProjects="@(TargetPathWithTargetPlatformMoniker)" />
 	</Target>
 
+	<PropertyGroup Condition=" '$(_ExtrasSdkHasDesktopAppSupport)'==''">
+		<TargetsForTfmSpecificContentInPackage>$(TargetsForTfmSpecificContentInPackage);_UnoSdkIncludeWindowsLibraryLayoutItems</TargetsForTfmSpecificContentInPackage>
+	</PropertyGroup>
+
 	<!-- source https://github.com/novotnyllc/MSBuildSdkExtras/blob/b58e1d25b530e02ce4d1b937ccf99082019cdc47/Source/MSBuild.Sdk.Extras/Build/Workarounds.targets#L89 -->
-	<Target Name="_SdkIncludeWindowsLibraryLayoutItems"
+	<Target Name="_UnoSdkIncludeWindowsLibraryLayoutItems"
 		DependsOnTargets="PrepareLibraryLayout"
 		Condition="'$(GenerateLibraryLayout)' == 'true' AND '$(SDKIdentifier)' == 'Windows' AND '$(_ExtrasSdkHasDesktopAppSupport)'==''">
 		<ItemGroup>
