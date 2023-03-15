@@ -2,21 +2,21 @@
   "$schema": "http://json.schemastore.org/template",
   "author": "Uno Platform",
   "classifications": [
-    "Cross-platform",
+    "Multi-platform",
     "Uno Platform",
-    "Library",
     "Android",
     "iOS",
-    "Windows",
     "macOS",
+    "Mac Catalyst",
+    "Windows",
     "Linux",
     "WebAssembly",
-    "dotnet-new"
+    "WinUI"
   ],
-  "name": "Cross-Runtime Library (Xamarin, UWP)",
+  "name": "Cross-Runtime Library (WinUI)",
   "identity": "Uno.Platform.UnoCrossRuntimeLib",
   "groupIdentity": "Uno.Platform.BlankCrossRuntimeLib",
-  "description": "Solution template for creating a cross-runtime Uno Platform library that targets UWP, Android, iOS, macOS, Linux and WebAssembly.",
+  "description": "Solution template for creating a cross-runtime Uno Platform library that targets WinUI, Android, iOS, MacCatalyst, Gtk, Linux Framebuffer, Wpf, and WebAssembly.",
   "precedence": "6001",
   "tags": {
     "language": "C#",
@@ -27,14 +27,9 @@
   "placeholderFilename": "template-ignore",
   "preferNameDirectory": true,
   "guids": [
-    "4C26868E-5E7C-458D-82E3-040509D0C71F", // Solution file (SLN)
-    "99E19497-29A6-4B77-B773-BEC55F9B55DC", // .NET Standard Library
-    "8D9F8CF0-E178-402D-8D40-A88B7B5F3D42", // Android
-    "91D74A40-E440-42AD-B51F-C2D641C49384", // iOS
-    "B445DF73-AC9E-4276-9FBA-7CB5AD5D2518",
-    "3EA9E612-E717-4E55-9034-DE653429FEFD", // WPF
-    "3EA9E612-E717-4E55-9034-C415CD62AF9A", // UWP
-    "2B1FDFB6-C93C-4CA1-A6AB-528C4B3654B9" // UWP
+    "B5A2AA5D-4248-48D9-81D9-9DCE3287CBF2", // UnoCrossRuntimeLib
+    "F5655605-6DCD-4911-B8C5-233870CDC1FD", // UnoCrossRuntimeLib.Skia
+    "3DDC01D0-8546-4FF6-8EFB-2E8D6B175A5B"  // UnoCrossRuntimeLib.Wasm
   ],
   "symbols": {
   },
@@ -43,11 +38,9 @@
       "path": "UnoCrossRuntimeLib\\UnoCrossRuntimeLib.csproj"
     },
     {
-      "condition": "WebAssembly",
       "path": "UnoCrossRuntimeLib\\UnoCrossRuntimeLib.Wasm.csproj"
     },
     {
-      "condition": "Skia",
       "path": "UnoCrossRuntimeLib\\UnoCrossRuntimeLib.Skia.csproj"
     }
   ],
