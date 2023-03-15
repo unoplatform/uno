@@ -8,7 +8,7 @@ $external_docs =
     @("https://github.com/unoplatform/uno.check", "uno.check", "e1b260c2e112b7dd92ed77ff46020dd265cd6b90"),
     @("https://github.com/unoplatform/uno.xamlmerge.task", "uno.xamlmerge.task", "a6d2efa69e24e8280c38300b5c1b7a8f2033f9f9"),
     @("https://github.com/unoplatform/figma-docs", "figma-docs", "a740582020509f9947fbf991628075a4717bff0a"),
-    @("https://github.com/unoplatform/uno.extensions", "uno.extensions", "fedd58366a66fb30d38c3e9676f9947b055836e6")
+    @("https://github.com/unoplatform/uno.extensions", "uno.extensions", "b9c1b66ff45776b0bc9c5a2cb588fe3451046d1e")
 )
 
 $ErrorActionPreference = 'Stop'
@@ -18,7 +18,7 @@ function Assert-ExitCodeIsZero()
     if ($LASTEXITCODE -ne 0)
     {
         throw "Exit code must be zero."
-	}
+    }
 }
 
 mkdir articles\external -ErrorAction Continue
@@ -28,7 +28,7 @@ pushd articles\external
 git config --global core.longpaths true
 
 # Heads - Release
-for($i = 0; $i -lt $external_docs.Length; $i++)
+for ($i = 0; $i -lt $external_docs.Length; $i++)
 {
     $repoUrl=$external_docs[$i][0]
     $repoPath=$external_docs[$i][1]
