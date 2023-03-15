@@ -4510,6 +4510,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\Transform\Border_With_TranslateTransform_Clickable.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\Transform\Grid_With_RotateTransform_And_Button.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -7722,6 +7726,9 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\Transform\Border_With_TranslateTransform.xaml.cs">
       <DependentUpon>Border_With_TranslateTransform.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\Transform\Border_With_TranslateTransform_Clickable.xaml.cs">
+      <DependentUpon>Border_With_TranslateTransform_Clickable.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\Transform\Grid_With_RotateTransform_And_Button.xaml.cs">
       <DependentUpon>Grid_With_RotateTransform_And_Button.xaml</DependentUpon>
