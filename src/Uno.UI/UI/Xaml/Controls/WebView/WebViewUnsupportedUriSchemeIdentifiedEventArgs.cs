@@ -13,7 +13,7 @@ public sealed partial class WebViewUnsupportedUriSchemeIdentifiedEventArgs
 	/// Gets or sets a value that marks the routed event as handled. A true value
 	/// for Handled prevents other handlers along the event route from handling the same event again.
 	/// </summary>
-	public bool Handled { get; set;	}
+	public bool Handled { get; set; }
 
 	/// <summary>
 	/// Gets the Uniform Resource Identifier (URI) of the content the WebView attempted to navigate to.

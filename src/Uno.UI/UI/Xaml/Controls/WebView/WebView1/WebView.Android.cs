@@ -15,6 +15,7 @@ using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.Extensions;
 using Windows.Foundation;
+using Windows.Web;
 
 namespace Windows.UI.Xaml.Controls;
 
@@ -454,5 +455,4 @@ public partial class WebView : Control, ICustomClippingElement
 
 	// Force clipping, otherwise native WebView may exceed its bounds in some circumstances (eg when Xaml WebView is animated)
 	bool ICustomClippingElement.ForceClippingToLayoutSlot => true;
-}
 }

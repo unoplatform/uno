@@ -15,6 +15,11 @@ using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.Extensions;
 using Windows.Foundation;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml;
+using Windows.Web;
+using Microsoft.Web.WebView2.Core;
+using System.Net;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -212,15 +217,17 @@ public partial class WebView2 : Control, ICustomClippingElement
 		}
 	}
 
-	partial void OnScrollEnabledChangedPartial(bool scrollingEnabled)
-	{
-		_webView.HorizontalScrollBarEnabled = scrollingEnabled;
-		_webView.VerticalScrollBarEnabled = scrollingEnabled;
-	}
+	// TODO:MZ:
+	//partial void OnScrollEnabledChangedPartial(bool scrollingEnabled)
+	//{
+	//	_webView.HorizontalScrollBarEnabled = scrollingEnabled;
+	//	_webView.VerticalScrollBarEnabled = scrollingEnabled;
+	//}
 
 	internal void OnNewWindowRequested(WebViewNewWindowRequestedEventArgs args)
 	{
-		NewWindowRequested?.Invoke(this, args);
+		//TODO:MZ:
+		//NewWindowRequested?.Invoke(this, args);
 	}
 
 	public void Refresh()
@@ -245,12 +252,14 @@ public partial class WebView2 : Control, ICustomClippingElement
 
 	private class InternalClient : Android.Webkit.WebViewClient
 	{
-		private readonly WebView _webView;
+		private readonly WebView2 _webView;
 		//This is because we go through onReceivedError() and OnPageFinished() when the call fail.
 		private bool _webViewSuccess = true;
+
+		private HttpStatusCode _httpStatusCode;
 		//This is to not have duplicate event call
-		private WebErrorStatus _webErrorStatus = WebErrorStatus.Unknown;
-		public InternalClient(WebView webView)
+		private CoreWebView2WebErrorStatus _webErrorStatus = CoreWebView2WebErrorStatus.Unknown;
+		public InternalClient(WebView2 webView)
 		{
 			_webView = webView;
 
@@ -274,7 +283,7 @@ public partial class WebView2 : Control, ICustomClippingElement
 				return true;
 			}
 
-			var args = new WebViewNavigationStartingEventArgs()
+			var args = new CoreWebView2NavigationStartingEventArgs()
 			{
 				Uri = new Uri(url)
 			};
@@ -295,6 +304,7 @@ public partial class WebView2 : Control, ICustomClippingElement
 		public override void OnReceivedError(Android.Webkit.WebView view, [GeneratedEnum] ClientError errorCode, string description, string failingUrl)
 		{
 			_webViewSuccess = false;
+
 			_webErrorStatus = ConvertClientError(errorCode);
 
 			base.OnReceivedError(view, errorCode, description, failingUrl);
@@ -303,18 +313,17 @@ public partial class WebView2 : Control, ICustomClippingElement
 
 		public override void OnPageFinished(Android.Webkit.WebView view, string url)
 		{
-			_webView.DocumentTitle = view.Title;
+			//TODO:MZ:
+			//_webView.DocumentTitle = view.Title;
 
 			_webView.OnNavigationHistoryChanged();
 
-			var args = new WebViewNavigationCompletedEventArgs()
-			{
-				IsSuccess = _webViewSuccess,
-				WebErrorStatus = _webErrorStatus
-			};
+			//TODO:MZ: Send proper HTTP status code and ID.
+			var args = new CoreWebView2NavigationCompletedEventArgs(200, _webViewSuccess, 0, _webErrorStatus);
 			if (!_webView._wasLoadedFromString && !string.IsNullOrEmpty(url))
 			{
-				args.Uri = new Uri(url);
+				//TODO:MZ: There is no URI here
+				//args.Uri = new Uri(url);
 			}
 
 			_webView.NavigationCompleted?.Invoke(_webView, args);
@@ -324,43 +333,45 @@ public partial class WebView2 : Control, ICustomClippingElement
 		//Matched using these two sources
 		//http://developer.xamarin.com/api/type/Android.Webkit.ClientError/
 		//https://msdn.microsoft.com/en-ca/library/windows/apps/windows.web.weberrorstatus
-		private WebErrorStatus ConvertClientError(ClientError clientError)
+		private (HttpStatusCode, CoreWebView2WebErrorStatus) ConvertClientError(ClientError clientError)
 		{
-			switch (clientError)
-			{
-				case ClientError.Authentication:
-					return WebErrorStatus.Unauthorized;
-				case ClientError.BadUrl:
-					return WebErrorStatus.BadRequest;
-				case ClientError.Connect:
-					return WebErrorStatus.CannotConnect;
-				case ClientError.FailedSslHandshake:
-					return WebErrorStatus.UnexpectedClientError;
-				case ClientError.File:
-					return WebErrorStatus.UnexpectedClientError;
-				case ClientError.FileNotFound:
-					return WebErrorStatus.NotFound;
-				case ClientError.HostLookup:
-					return WebErrorStatus.HostNameNotResolved;
-				case ClientError.Io:
-					return WebErrorStatus.InternalServerError;
-				case ClientError.ProxyAuthentication:
-					return WebErrorStatus.ProxyAuthenticationRequired;
-				case ClientError.RedirectLoop:
-					return WebErrorStatus.RedirectFailed;
-				case ClientError.Timeout:
-					return WebErrorStatus.Timeout;
-				case ClientError.TooManyRequests:
-					return WebErrorStatus.UnexpectedClientError;
-				case ClientError.Unknown:
-					return WebErrorStatus.Unknown;
-				case ClientError.UnsupportedAuthScheme:
-					return WebErrorStatus.Unauthorized;
-				case ClientError.UnsupportedScheme:
-					return WebErrorStatus.UnexpectedClientError;
-				default:
-					return WebErrorStatus.UnexpectedClientError;
-			}
+			//TODO:MZ:
+			return (HttpStatusCode.OK, CoreWebView2WebErrorStatus.Unknown);
+			//switch (clientError)
+			//{
+			//	case ClientError.Authentication:
+			//		return (HttpStatusCode.Unauthorized, CoreWebView2WebErrorStatus.UnexpectedError);
+			//	case ClientError.BadUrl:
+			//		return CoreWebView2WebErrorStatus.BadRequest;
+			//	case ClientError.Connect:
+			//		return CoreWebView2WebErrorStatus.CannotConnect;
+			//	case ClientError.FailedSslHandshake:
+			//		return CoreWebView2WebErrorStatus.UnexpectedError;
+			//	case ClientError.File:
+			//		return CoreWebView2WebErrorStatus.UnexpectedError;
+			//	case ClientError.FileNotFound:
+			//		return CoreWebView2WebErrorStatus.NotFound;
+			//	case ClientError.HostLookup:
+			//		return CoreWebView2WebErrorStatus.HostNameNotResolved;
+			//	case ClientError.Io:
+			//		return CoreWebView2WebErrorStatus.InternalServerError;
+			//	case ClientError.ProxyAuthentication:
+			//		return CoreWebView2WebErrorStatus.ProxyAuthenticationRequired;
+			//	case ClientError.RedirectLoop:
+			//		return CoreWebView2WebErrorStatus.RedirectFailed;
+			//	case ClientError.Timeout:
+			//		return CoreWebView2WebErrorStatus.Timeout;
+			//	case ClientError.TooManyRequests:
+			//		return CoreWebView2WebErrorStatus.UnexpectedError;
+			//	case ClientError.Unknown:
+			//		return CoreWebView2WebErrorStatus.Unknown;
+			//	case ClientError.UnsupportedAuthScheme:
+			//		return (HttpStatusCode.Unauthorized, CoreWebView2WebErrorStatus.UnexpectedError);
+			//	case ClientError.UnsupportedScheme:
+			//		return CoreWebView2WebErrorStatus.UnexpectedError;
+			//	default:
+			//		return CoreWebView2WebErrorStatus.UnexpectedError;
+			//}
 		}
 	}
 
@@ -454,5 +465,4 @@ public partial class WebView2 : Control, ICustomClippingElement
 
 	// Force clipping, otherwise native WebView may exceed its bounds in some circumstances (eg when Xaml WebView is animated)
 	bool ICustomClippingElement.ForceClippingToLayoutSlot => true;
-}
 }
