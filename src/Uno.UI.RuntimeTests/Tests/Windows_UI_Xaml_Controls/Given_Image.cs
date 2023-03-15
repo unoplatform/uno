@@ -301,6 +301,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				ExpectedPixels.At(centerX, centerY).Named("center without image").Pixel(Colors.White));
 		}
 
+#if !WINDOWS_UWP
 		[TestMethod]
 		[RunsOnUIThread]
 #if NET461 || __MACOS__
@@ -370,6 +371,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 					.WithPixelTolerance(1, 1)
 					.Pixel(red));
 		}
+#endif
 
 		private async Task<RawBitmap> TakeScreenshot(FrameworkElement SUT)
 		{
