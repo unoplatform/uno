@@ -3,7 +3,7 @@ Set-PSDebug -Trace 1
 $external_docs =
 @(
     @("https://github.com/unoplatform/uno.wasm.bootstrap", "uno.wasm.bootstrap", "4abadfc93ffeddc82420cc28af04cd7f6b2693ab"),
-    @("https://github.com/unoplatform/uno.themes", "uno.themes", "1d825c6fb599aeaffc52229d102949a3b7452b94"),
+    @("https://github.com/unoplatform/uno.themes", "uno.themes", "3763223a6337c318743879cda31eb9c226327e7f"),
     @("https://github.com/unoplatform/uno.toolkit.ui", "uno.toolkit.ui", "3edaf9fb29e95a8c4a24b5b43d273dd85bc1fa57"),
     @("https://github.com/unoplatform/uno.check", "uno.check", "e1b260c2e112b7dd92ed77ff46020dd265cd6b90"),
     @("https://github.com/unoplatform/uno.xamlmerge.task", "uno.xamlmerge.task", "a6d2efa69e24e8280c38300b5c1b7a8f2033f9f9"),
