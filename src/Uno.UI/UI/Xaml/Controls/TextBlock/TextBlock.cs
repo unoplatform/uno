@@ -36,6 +36,7 @@ namespace Windows.UI.Xaml.Controls
 		private string _inlinesText; // Text derived from the content of Inlines
 		private readonly SerialDisposable _foregroundChanged = new SerialDisposable();
 
+		private Run _reusableRun;
 		private bool _skipInlinesChangedTextSetter;
 
 #if !UNO_REFERENCE_API
@@ -728,10 +729,24 @@ namespace Windows.UI.Xaml.Controls
 			{
 				// Inlines must be updated
 				_skipInlinesChangedTextSetter = true;
-				Inlines.Clear();
-				ClearTextPartial();
-				_skipInlinesChangedTextSetter = true;
-				Inlines.Add(new Run { Text = text });
+
+				if (Inlines.Count == 1 && Inlines[0] is Run run)
+				{
+					run.Text = text;
+				}
+				else
+				{
+					if (Inlines.Count > 0)
+					{
+						Inlines.Clear();
+						ClearTextPartial();
+					}
+
+					(_reusableRun ??= new Run()).Text = text;
+
+					Inlines.Add(_reusableRun);
+				}
+
 				_skipInlinesChangedTextSetter = false;
 			}
 		}
@@ -893,7 +908,7 @@ namespace Windows.UI.Xaml.Controls
 			_hyperlinks.Clear();
 
 			var start = 0;
-			foreach (var inline in Inlines.SelectMany(InlineExtensions.Enumerate))
+			foreach (var inline in Inlines.PreorderTree)
 			{
 				switch (inline)
 				{
