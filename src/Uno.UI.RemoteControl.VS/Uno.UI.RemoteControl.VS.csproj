@@ -46,7 +46,9 @@
 
 	<Target Name="_UnoToolkitOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">
 		<PropertyGroup>
-			<_TargetNugetFolder>$(USERPROFILE)\.nuget\packages\Uno.UI.RemoteControl\$(UnoNugetOverrideVersion)\tools\rc</_TargetNugetFolder>
+			<_UnoOverrideTargetVSVersion>16.0</_UnoOverrideTargetVSVersion>
+			<_UnoOverrideTargetVSVersion Condition="'$(TargetFramework)'=='net48'">17.0</_UnoOverrideTargetVSVersion>
+			<_TargetNugetFolder>$(USERPROFILE)\.nuget\packages\Uno.UI.RemoteControl\$(UnoNugetOverrideVersion)\tools\rc\$(_UnoOverrideTargetVSVersion)</_TargetNugetFolder>
 		</PropertyGroup>
 		<ItemGroup>
 			<_OutputFiles Include="$(TargetDir)*.*" />
