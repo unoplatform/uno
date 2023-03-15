@@ -157,7 +157,7 @@ An example showing how to set up the [`Uno.Cupertino`](https://github.com/unopla
 
 [Browse source](https://github.com/unoplatform/Uno.Samples/tree/master/UI/UnoCupertinoSample)
 
-[Follow the tutorial](https://platform.uno/docs/articles/guides/uno-cupertino-walkthrough.html)
+[Follow the tutorial](https://platform.uno/docs/articles/external/uno.themes/doc/cupertino-getting-started.html)
 
 ### Uno+Ethereum+Blockchain sample
 
@@ -170,7 +170,7 @@ An example showing how to set up the [`Uno.Material`](https://github.com/unoplat
 
 [Browse source](https://github.com/unoplatform/Uno.Samples/tree/master/UI/UnoMaterialSample)
 
-[Follow the tutorial](https://platform.uno/docs/articles/guides/uno-material-walkthrough.html)
+[Follow the tutorial](https://platform.uno/docs/articles/external/uno.themes/doc/material-getting-started.html)
 
 ### WCT DataGrid  
 A dynamic grid view ported from the Windows Community Toolkit that allows for x:Bind. 
