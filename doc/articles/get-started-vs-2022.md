@@ -53,10 +53,18 @@ To create an Uno Platform app:
    
     ![visual-studio-installer-web](Assets/quick-start/vsix-new-project-options.png)
 
-1. You can either choose to customize your app, or click the create button
-
-    > [!TIP] 
-    > You still can [add additional platforms](guides/how-to-add-platforms-existing-project.md) later.
+1. You can optionally choose to customize your app based on the sections on the left side:
+    - **Framework** allows to choose wich `TargetFramework` your app will use. [.NET 7.0](https://dotnet.microsoft.com/en-us/download/dotnet/7.0) is a commonly appropriate choice.
+    - **Platforms** provides a list of platforms your application will support. You still can [add additional platforms](xref:Uno.Guides.AddAdditionalPlatforms) later.
+    - **Presentation** gives a choice about using MVVM (e.g. [MVVM Toolkit](https://learn.microsoft.com/en-us/dotnet/communitytoolkit/mvvm/)) or [Uno Platform's MVUX and Feeds](xref:Overview.Reactive.Concept)
+    - **Projects** gives the ability to add a Server project for APIs and hosting for the WebAssembly project
+    - **Testing** provides Unit Testing and [UI Testing projects](https://github.com/unoplatform/Uno.UITest)
+    - **Features** provides support for WebAssembly PWA and optional [VS Code support](xref:Uno.GetStarted.vscode) files
+    - **Extensions** allows to choose for [additional Uno.Extensions](xref:Overview.Features)
+    - **Application** sets the App ID for relevant platforms, used when publishing on various app stores.
+    - **Theme** gives the ability to change between [Fluent](xref:uno.themes.fluent.getstarted) and [Material](xref:uno.themes.material.getstarted)
+    
+1. Click the create button
 
 1. Wait for the projects to be created, and their dependencies to be restored
 
