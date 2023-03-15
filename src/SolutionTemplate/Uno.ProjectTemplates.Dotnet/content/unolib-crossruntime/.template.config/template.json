@@ -20,7 +20,8 @@
   "precedence": "6001",
   "tags": {
     "language": "C#",
-    "type": "project"
+    "type": "solution",
+    "editorTreatAs": "solution"
   },
   "shortName": "unolib-crossruntime",
   "sourceName": "UnoCrossRuntimeLib",
