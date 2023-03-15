@@ -109,6 +109,11 @@ dotnet new unolib -n MyUnoLib
 & $msbuild $debug /t:pack MyUnoLib\MyUnoLib.csproj "/p:TargetFrameworks=`"net7.0-windows10.0.18362;net7.0`""
 Assert-ExitCodeIsZero
 
+# Uno Cross-Runtime Library
+dotnet new unolib-crossruntime -n MyCrossRuntimeLib
+& $msbuild $debug /t:Pack MyCrossRuntimeLib\MyCrossRuntimeLib.sln
+Assert-ExitCodeIsZero
+
 #
 # Uno Library with assets, Validate assets count
 #
