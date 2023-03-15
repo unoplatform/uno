@@ -9,7 +9,7 @@ using SamplesApp.UITests.TestFramework;
 namespace SamplesApp.UITests.Windows_UI_Xaml_Media_Animation
 {
 	[TestFixture]
-	public class TranslateTransformClickability : SampleControlUITestBase
+	public partial class TranslateTransformClickability : SampleControlUITestBase
 	{
 		[Test]
 		[AutoRetry]
