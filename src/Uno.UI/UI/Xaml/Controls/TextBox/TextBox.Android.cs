@@ -35,7 +35,6 @@ namespace Windows.UI.Xaml.Controls
 		private TextBoxView _textBoxView;
 		private readonly SerialDisposable _keyboardDisposable = new SerialDisposable();
 		private Factory _editableFactory;
-		private IKeyListener _listener;
 
 		/// <summary>
 		/// If true, and <see cref="IsSpellCheckEnabled"/> is false, take vigorous measures to ensure that spell-check (ie predictive text) is
@@ -423,24 +422,12 @@ namespace Windows.UI.Xaml.Controls
 				return;
 			}
 
-			if (IsNativeViewReadOnly)
-			{
-				if (_textBoxView.KeyListener is not null)
-				{
-					_listener = _textBoxView.KeyListener;
-					_textBoxView.KeyListener = null;
-				}
-			}
-			else if (_listener is not null)
-			{
-				_textBoxView.KeyListener = _listener;
-			}
-
 			_textBoxView.Focusable = IsTabStop;
 			_textBoxView.FocusableInTouchMode = IsTabStop;
 			_textBoxView.Clickable = IsTabStop;
 			_textBoxView.LongClickable = IsTabStop;
 			_textBoxView.SetCursorVisible(!IsNativeViewReadOnly);
+			_textBoxView.IsReadOnly = IsNativeViewReadOnly;
 		}
 
 		private void SetupTextBoxView()

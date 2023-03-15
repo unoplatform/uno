@@ -30,6 +30,8 @@ namespace Windows.UI.Xaml.Controls
 	{
 		private bool _isRunningTextChanged;
 		private bool _isInitialized;
+		private bool _isReadOnly;
+		private (InputTypes InputType, InputTypes RawInputType) _inputTypes;
 
 		private readonly ManagedWeakReference? _ownerRef;
 		internal TextBox? Owner => _ownerRef?.Target as TextBox;
@@ -61,6 +63,41 @@ namespace Windows.UI.Xaml.Controls
 				 Android.Views.ViewGroup.LayoutParams.WrapContent,
 				 Android.Views.ViewGroup.LayoutParams.WrapContent
 			);
+		}
+
+		internal bool IsReadOnly
+		{
+			get => _isReadOnly;
+			set
+			{
+				if (_isReadOnly != value)
+				{
+					_isReadOnly = value;
+					if (_isReadOnly)
+					{
+						// Force null input scope
+						InputType = InputTypes.Null;
+						SetRawInputType(InputTypes.Null);
+					}
+					else
+					{
+						var cachedInputTypes = _inputTypes;
+						InputType = cachedInputTypes.InputType;
+						SetRawInputType(cachedInputTypes.RawInputType);
+					}
+					Invalidate();
+				}
+			}
+		}
+
+		internal void SetInputTypes(InputTypes inputType, InputTypes rawInputType)
+		{
+			_inputTypes = (inputType, rawInputType);
+			if (!_isReadOnly)
+			{
+				InputType = inputType;
+				SetRawInputType(rawInputType);
+			}
 		}
 
 		internal void UpdateSingleLineMode()
