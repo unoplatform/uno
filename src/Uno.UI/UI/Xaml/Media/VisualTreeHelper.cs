@@ -190,7 +190,7 @@ namespace Windows.UI.Xaml.Media
 
 		internal static void CloseLightDismissPopups(XamlRoot xamlRoot)
 		{
-			foreach (var popup in GetOpenPopups(xamlRoot.VisualTree).Where(p => p.IsLightDismissEnabled).ToArray())
+			foreach (var popup in GetOpenPopups(xamlRoot.VisualTree).Where(p => p.IsLightDismissEnabled))
 			{
 				popup.IsOpen = false;
 			}
