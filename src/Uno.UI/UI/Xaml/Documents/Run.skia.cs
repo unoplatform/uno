@@ -28,11 +28,11 @@ namespace Windows.UI.Xaml.Documents
 			List<Segment> segments = new();
 			using HarfBuzzSharp.Buffer buffer = new();
 			var font = FontInfo.Font;
-			var paint = Paint;
+			var fontInfo = FontInfo;
 
 			font.GetScale(out int fontScale, out _);
-			float textSizeY = paint.TextSize / fontScale;
-			float textSizeX = textSizeY * paint.TextScaleX;
+			float textSizeY = fontInfo.SKFontSize / fontScale;
+			float textSizeX = textSizeY * fontInfo.SKFontScaleX;
 
 			var text = Text.AsSpan();
 			int s = 0;
