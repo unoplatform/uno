@@ -8,6 +8,8 @@
 	<BaseOutputPath>bin\$(MSBuildProjectName)</BaseOutputPath>
 	<BaseIntermediateOutputPath>obj\$(MSBuildProjectName)</BaseIntermediateOutputPath>
 	<DefaultItemExcludes>$(DefaultItemExcludes);obj/**;bin/**</DefaultItemExcludes>
+	<!-- Ensures the .xr.xml files are generated in a proper layout folder -->
+	<GenerateLibraryLayout>true</GenerateLibraryLayout>
   </PropertyGroup>
 
 </Project>
