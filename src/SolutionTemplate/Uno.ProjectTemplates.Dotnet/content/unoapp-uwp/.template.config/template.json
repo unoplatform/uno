@@ -10,8 +10,7 @@
     "macOS",
     "Linux",
     "Tizen",
-    "WebAssembly",
-    "dotnet-new"
+    "WebAssembly"
   ],
   "name": "Multi-Platform App (Xamarin, UWP)",
   "identity": "Uno.Platform.UnoApp.Uwp",
