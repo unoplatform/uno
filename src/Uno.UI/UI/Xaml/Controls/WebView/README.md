@@ -24,6 +24,8 @@ To make the shared implementation between `WebView` and `WebView2` as large as p
 use the `CoreWebView2` for most of the logic. The public members of both controls will then act as a proxy to the
 `CoreWebView2` implementations.
 
+Most of the native logic is provided by the native web view controls - e.g. `WKWebView` on iOS, `WebView` on Android.
+
 ## Navigation event order
 
 Both `WebView` and `WebView2` have the same navigation event order:
