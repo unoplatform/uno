@@ -259,7 +259,7 @@ namespace Windows.UI.Xaml
 			base.OnPause();
 
 			// TODO Uno: When we support multi-window, this should close popups for the appropriate XamlRoot #8341.
-			VisualTreeHelper.CloseAllPopups(WinUICoreServices.Instance.ContentRootCoordinator.CoreWindowContentRoot.XamlRoot);
+			VisualTreeHelper.CloseLightDismissPopups(WinUICoreServices.Instance.ContentRootCoordinator.CoreWindowContentRoot.XamlRoot);
 
 			DismissKeyboard();
 		}
