@@ -8,23 +8,21 @@ namespace Microsoft.Web.WebView2.Core;
 public class CoreWebView2NavigationCompletedEventArgs : EventArgs
 {
 	internal CoreWebView2NavigationCompletedEventArgs(
-		int httpStatusCode,
-		bool isSuccess,
 		ulong navigationId,
+		bool isSuccess,
+		int httpStatusCode,
 		CoreWebView2WebErrorStatus webErrorStatus)
 	{
-		HttpStatusCode = httpStatusCode;
-		IsSuccess = isSuccess;
 		NavigationId = navigationId;
+		IsSuccess = isSuccess;
+		HttpStatusCode = httpStatusCode;
 		WebErrorStatus = webErrorStatus;
 	}
 
 	/// <summary>
-	/// The HTTP status code of the navigation if it involved an HTTP request. For instance, 
-	/// this will usually be 200 if the request was successful, 404 if a page was not found, etc. 
-	/// See https://developer.mozilla.org/docs/Web/HTTP/Status for a list of common status codes.
+	/// Gets the ID of the navigation.
 	/// </summary>
-	public int HttpStatusCode { get; }
+	public ulong NavigationId { get; }
 
 	/// <summary>
 	/// true when the navigation is successful; false for a navigation that ended up in an error page 
@@ -39,9 +37,11 @@ public class CoreWebView2NavigationCompletedEventArgs : EventArgs
 	public bool IsSuccess { get; }
 
 	/// <summary>
-	/// Gets the ID of the navigation.
+	/// The HTTP status code of the navigation if it involved an HTTP request. For instance, 
+	/// this will usually be 200 if the request was successful, 404 if a page was not found, etc. 
+	/// See https://developer.mozilla.org/docs/Web/HTTP/Status for a list of common status codes.
 	/// </summary>
-	public ulong NavigationId { get; }
+	public int HttpStatusCode { get; }
 
 	/// <summary>
 	/// Gets the error code if the navigation failed.

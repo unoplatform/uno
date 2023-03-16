@@ -4,33 +4,53 @@ using Windows.Foundation;
 using Windows.UI.Xaml;
 
 namespace Microsoft.UI.Xaml.Controls;
+
 #pragma warning disable CS0067 //TODO:MZ:Undo
+
 public partial class WebView2
 {
+	/// <summary>
+	/// Gets or sets a value that indicates whether backward navigation is possible.
+	/// </summary>
 	public bool CanGoBack
 	{
 		get => (bool)GetValue(CanGoBackProperty);
 		set => SetValue(CanGoBackProperty, value);
 	}
 
+	/// <summary>
+	/// Identifies the CanGoBack dependency property.
+	/// </summary>
 	public static DependencyProperty CanGoBackProperty { get; } =
 		DependencyProperty.Register(nameof(CanGoBack), typeof(bool), typeof(WebView2), new FrameworkPropertyMetadata(false));
 
+	/// <summary>
+	/// Gets or sets a value that indicates whether forward navigation is possible.
+	/// </summary>
 	public bool CanGoForward
 	{
 		get => (bool)GetValue(CanGoForwardProperty);
 		set => SetValue(CanGoForwardProperty, value);
 	}
 
+	/// <summary>
+	/// Identifies the CanGoForward dependency property.
+	/// </summary>
 	public static DependencyProperty CanGoForwardProperty { get; } =
 		DependencyProperty.Register(nameof(CanGoForward), typeof(bool), typeof(WebView2), new FrameworkPropertyMetadata(false));
 
+	/// <summary>
+	/// Gets or sets the URI of the current top level document.
+	/// </summary>
 	public Uri Source
 	{
 		get => (Uri)GetValue(SourceProperty);
 		set => SetValue(SourceProperty, value);
 	}
 
+	/// <summary>
+	/// Identifies the Source dependency property.
+	/// </summary>
 	public static DependencyProperty SourceProperty { get; } =
 		DependencyProperty.Register(nameof(Source), typeof(Uri), typeof(WebView2), new FrameworkPropertyMetadata(null,
 			(s, e) => ((WebView2)s)?.Navigate((Uri)e.NewValue)));

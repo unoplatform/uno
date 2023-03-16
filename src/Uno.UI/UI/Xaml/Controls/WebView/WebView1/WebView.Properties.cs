@@ -5,30 +5,48 @@ namespace Windows.UI.Xaml.Controls;
 
 public partial class WebView : Control
 {
+	/// <summary>
+	/// Gets or sets a value that indicates whether backward navigation is possible.
+	/// </summary>
 	public bool CanGoBack
 	{
 		get => (bool)GetValue(CanGoBackProperty);
 		private set => SetValue(CanGoBackProperty, value);
 	}
 
+	/// <summary>
+	/// Identifies the CanGoBack dependency property.
+	/// </summary>
 	public static DependencyProperty CanGoBackProperty { get; } =
 		DependencyProperty.Register(nameof(CanGoBack), typeof(bool), typeof(WebView), new FrameworkPropertyMetadata(false));
 
+	/// <summary>
+	/// Gets or sets a value that indicates whether forward navigation is possible.
+	/// </summary>
 	public bool CanGoForward
 	{
 		get => (bool)GetValue(CanGoForwardProperty);
 		private set => SetValue(CanGoForwardProperty, value);
 	}
 
+	/// <summary>
+	/// Identifies the CanGoForward dependency property.
+	/// </summary>
 	public static DependencyProperty CanGoForwardProperty { get; } =
 		DependencyProperty.Register(nameof(CanGoForward), typeof(bool), typeof(WebView), new FrameworkPropertyMetadata(false));
 
+	/// <summary>
+	/// Gets or sets the URI of the current top level document.
+	/// </summary>
 	public Uri Source
 	{
 		get => (Uri)GetValue(SourceProperty);
 		set => SetValue(SourceProperty, value);
 	}
 
+	/// <summary>
+	/// Identifies the Source dependency property.
+	/// </summary>
 	public static DependencyProperty SourceProperty { get; } =
 		DependencyProperty.Register(nameof(Source), typeof(Uri), typeof(WebView), new FrameworkPropertyMetadata(null,
 			(s, e) => ((WebView)s)?.Navigate((Uri)e.NewValue)));
@@ -63,6 +81,16 @@ public partial class WebView : Control
 	public event TypedEventHandler<WebView, WebViewNavigationStartingEventArgs> NavigationStarting;
 
 	/// <summary>
+	/// Occurs when the WebView has started loading new content.
+	/// </summary>
+	public event TypedEventHandler<WebView, WebViewContentLoadingEventArgs> ContentLoading;
+
+	/// <summary>
+	/// Occurs when the WebView has finished parsing the current HTML content.
+	/// </summary>
+	public event TypedEventHandler<WebView, WebViewDOMContentLoadedEventArgs> DOMContentLoaded;
+
+	/// <summary>
 	/// Occurs when the WebView has finished loading the current content or if navigation has failed.
 	/// </summary>
 	public event TypedEventHandler<WebView, WebViewNavigationCompletedEventArgs> NavigationCompleted;
@@ -81,16 +109,5 @@ public partial class WebView : Control
 	/// Occurs when an attempt is made to navigate to a Uniform Resource Identifier (URI) using a scheme that WebView doesn't support.
 	/// </summary>
 	public event TypedEventHandler<WebView, WebViewUnsupportedUriSchemeIdentifiedEventArgs> UnsupportedUriSchemeIdentified;
-
-	/// <summary>
-	/// Occurs when the WebView has started loading new content.
-	/// </summary>
-	public event TypedEventHandler<WebView, WebViewContentLoadingEventArgs> ContentLoading;
-
-	/// <summary>
-	/// Occurs when the WebView has finished parsing the current HTML content.
-	/// </summary>
-	public event TypedEventHandler<WebView, WebViewDOMContentLoadedEventArgs> DOMContentLoaded;
-#endif
 #pragma warning restore 67
 }
