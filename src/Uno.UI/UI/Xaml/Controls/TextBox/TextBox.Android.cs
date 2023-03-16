@@ -424,6 +424,10 @@ namespace Windows.UI.Xaml.Controls
 				return;
 			}
 
+			// If read only state actually changes, we need to set or unset
+			// the KeyListener to prevent the user from typing in the TextBox.
+			// We also need to reset the InputTypes afterwards, as the KeyListener
+			// will have changed them.
 			if (IsNativeViewReadOnly && _textBoxView.KeyListener is not null)
 			{
 				_listener = _textBoxView.KeyListener;
