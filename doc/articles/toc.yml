@@ -428,6 +428,8 @@
               href: external/uno.check/doc/toc.yml
             - name: Xaml Merging
               href: external/uno.xamlmerge.task/doc/toc.yml
+            - name: Uno Resizetizer
+              href: external/uno.resizetizer/doc/toc.yml
 
     - name: Reference
       items:

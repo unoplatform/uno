@@ -76,7 +76,8 @@
 	"UWP's",
 	"VSIX",
 	"walkthrough",
-	"WEBASSEMBLY"
+	"WEBASSEMBLY",
+	"Resizetizer"
   ],
   "ignoreWords": [
 	"ADAL",
