@@ -17,16 +17,16 @@ public sealed partial class WebViewNewWindowRequestedEventArgs
 	/// Gets or sets a value that marks the routed event as handled. A true value
 	/// for Handled prevents other handlers along the event route from handling the same event again.
 	/// </summary>
-	public bool Handled { get; set; }
+	public Uri Referrer { get; }
+
+	/// <summary>
+	/// Gets the Uniform Resource Identifier (URI) of the content the WebView is attempting to navigate to.
+	/// </summary>
+	public Uri Uri { get; }
 
 	/// <summary>
 	/// Gets or sets a value that marks the routed event as handled. A true value
 	/// for Handled prevents other handlers along the event route from handling the same event again.
 	/// </summary>
-	public Uri Referrer { get; private set; }
-
-	/// <summary>
-	/// Gets the Uniform Resource Identifier (URI) of the content the WebView is attempting to navigate to.
-	/// </summary>
-	public Uri Uri { get; private set; }
+	public bool Handled { get; set; }
 }

@@ -81,5 +81,16 @@ public partial class WebView : Control
 	/// Occurs when an attempt is made to navigate to a Uniform Resource Identifier (URI) using a scheme that WebView doesn't support.
 	/// </summary>
 	public event TypedEventHandler<WebView, WebViewUnsupportedUriSchemeIdentifiedEventArgs> UnsupportedUriSchemeIdentified;
+
+	/// <summary>
+	/// Occurs when the WebView has started loading new content.
+	/// </summary>
+	public event TypedEventHandler<WebView, WebViewContentLoadingEventArgs> ContentLoading;
+
+	/// <summary>
+	/// Occurs when the WebView has finished parsing the current HTML content.
+	/// </summary>
+	public event TypedEventHandler<WebView, WebViewDOMContentLoadedEventArgs> DOMContentLoaded;
+#endif
 #pragma warning restore 67
 }

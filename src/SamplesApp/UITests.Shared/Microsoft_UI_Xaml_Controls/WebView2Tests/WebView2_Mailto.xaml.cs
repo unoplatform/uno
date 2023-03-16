@@ -3,7 +3,7 @@ using Windows.UI.Xaml.Controls;
 
 namespace SamplesApp.Microsoft_UI_Xaml_Controls.WebView2Tests
 {
-	[SampleControlInfo("WebView", "WebView2_Mailto", description:"This sample will open a mailto: link")]
+	[SampleControlInfo("WebView", "WebView2_Mailto", description: "This sample will open a mailto: link")]
 	public sealed partial class WebView2_Mailto : UserControl
 	{
 		public WebView2_Mailto()

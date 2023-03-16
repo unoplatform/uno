@@ -7,7 +7,8 @@ namespace Windows.UI.Xaml.Controls;
 /// </summary>
 public sealed partial class WebViewUnsupportedUriSchemeIdentifiedEventArgs
 {
-	internal WebViewUnsupportedUriSchemeIdentifiedEventArgs(Uri uri) => Uri = uri;
+	internal WebViewUnsupportedUriSchemeIdentifiedEventArgs(Uri uri) =>
+		Uri = uri;
 
 	/// <summary>
 	/// Gets or sets a value that marks the routed event as handled. A true value
@@ -18,5 +19,5 @@ public sealed partial class WebViewUnsupportedUriSchemeIdentifiedEventArgs
 	/// <summary>
 	/// Gets the Uniform Resource Identifier (URI) of the content the WebView attempted to navigate to.
 	/// </summary>
-	public Uri Uri { get; private set; }
+	public Uri Uri { get; }
 }

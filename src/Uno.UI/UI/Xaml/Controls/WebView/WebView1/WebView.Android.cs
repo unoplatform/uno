@@ -275,10 +275,7 @@ public partial class WebView : Control, ICustomClippingElement
 				return true;
 			}
 
-			var args = new WebViewNavigationStartingEventArgs()
-			{
-				Uri = new Uri(url)
-			};
+			var args = new WebViewNavigationStartingEventArgs(new Uri(url));
 
 			_webView.NavigationStarting?.Invoke(_webView, args);
 
@@ -308,15 +305,8 @@ public partial class WebView : Control, ICustomClippingElement
 
 			_webView.OnNavigationHistoryChanged();
 
-			var args = new WebViewNavigationCompletedEventArgs()
-			{
-				IsSuccess = _webViewSuccess,
-				WebErrorStatus = _webErrorStatus
-			};
-			if (!_webView._wasLoadedFromString && !string.IsNullOrEmpty(url))
-			{
-				args.Uri = new Uri(url);
-			}
+			var uri = !_webView._wasLoadedFromString && !string.IsNullOrEmpty(url) ? new Uri(url) : null;
+			var args = new WebViewNavigationCompletedEventArgs(_webViewSuccess, uri, _webErrorStatus);
 
 			_webView.NavigationCompleted?.Invoke(_webView, args);
 			base.OnPageFinished(view, url);

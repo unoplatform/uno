@@ -14,7 +14,7 @@ using System.Threading;
 using Windows.UI.Core;
 using Uno.Foundation.Logging;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls;
 {
 	public partial class WebView2
 	{

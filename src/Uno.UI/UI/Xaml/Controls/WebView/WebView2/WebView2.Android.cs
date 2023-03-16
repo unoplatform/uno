@@ -259,6 +259,7 @@ public partial class WebView2 : Control, ICustomClippingElement
 		private HttpStatusCode _httpStatusCode;
 		//This is to not have duplicate event call
 		private CoreWebView2WebErrorStatus _webErrorStatus = CoreWebView2WebErrorStatus.Unknown;
+
 		public InternalClient(WebView2 webView)
 		{
 			_webView = webView;
@@ -305,7 +306,9 @@ public partial class WebView2 : Control, ICustomClippingElement
 		{
 			_webViewSuccess = false;
 
-			_webErrorStatus = ConvertClientError(errorCode);
+			var result = ConvertClientError(errorCode);
+			_httpStatusCode = result.Item1;
+			_webErrorStatus = result.Item2;
 
 			base.OnReceivedError(view, errorCode, description, failingUrl);
 		}

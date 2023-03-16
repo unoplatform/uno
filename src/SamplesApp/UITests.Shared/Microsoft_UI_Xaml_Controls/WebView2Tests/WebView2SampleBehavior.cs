@@ -16,8 +16,8 @@ namespace SamplesApp.Microsoft_UI_Xaml_Controls.WebView2Tests
 		{
 			obj.SetValue(SourceUriProperty, value);
 		}
-		
-		public static DependencyProperty SourceUriProperty { get ; } =
+
+		public static DependencyProperty SourceUriProperty { get; } =
 			DependencyProperty.RegisterAttached("SourceUri", typeof(string), typeof(WebView2SampleBehavior), new PropertyMetadata("", OnSourceUriChanged));
 
 		private static void OnSourceUriChanged(object d, DependencyPropertyChangedEventArgs e)

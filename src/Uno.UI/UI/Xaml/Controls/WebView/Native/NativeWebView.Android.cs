@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Uno.UI;
+﻿using Uno.UI;
 
 namespace Windows.UI.Xaml.Controls;
 
