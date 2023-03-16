@@ -30,7 +30,6 @@ namespace Windows.UI.Xaml.Controls
 	{
 		private bool _isRunningTextChanged;
 		private bool _isInitialized;
-		private bool _isReadOnly;
 		private (InputTypes InputType, InputTypes RawInputType) _inputTypes;
 
 		private readonly ManagedWeakReference? _ownerRef;

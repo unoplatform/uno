@@ -647,5 +647,32 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreEqual("Something", textBox.Text);
 		}
+
+		[TestMethod]
+		public async Task When_ReadOnly_Toggled_Repeatedly()
+		{
+			var textBox = new TextBox
+			{
+				Text = "Text",
+				IsReadOnly = true,
+			};
+
+			WindowHelper.WindowContent = textBox;
+			await WindowHelper.WaitForLoaded(textBox);
+			textBox.Focus(FocusState.Programmatic);
+
+			textBox.Text = "Something";
+
+			textBox.IsReadOnly = false;
+
+			var updatedText = "Something else";
+			textBox.Text = updatedText;
+
+			textBox.IsReadOnly = true;
+
+			textBox.SelectAll();
+
+			Assert.AreEqual(updatedText.Length, textBox.SelectionLength);
+		}
 	}
 }
