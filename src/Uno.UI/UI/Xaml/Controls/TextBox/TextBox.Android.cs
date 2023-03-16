@@ -237,8 +237,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (_textBoxView != null)
 			{
-				_textBoxView.InputType = types;
-				_textBoxView.SetRawInputType(types);
+				_textBoxView.SetInputTypes(types, types);
 
 				if (!types.HasPasswordFlag())
 				{
@@ -355,8 +354,8 @@ namespace Windows.UI.Xaml.Controls
 					// InputScopes like multi-line works on Android only for InputType property, not SetRawInputType.
 					// For CurrencyAmount (and others), both works but there is a behavioral difference documented in UseLegacyInputScope.
 					// The behavior that matches UWP is achieved by SetRawInputType.
-					_textBoxView.InputType = AdjustInputTypes(InputTypes.ClassText, inputScope);
-					_textBoxView.SetRawInputType(inputType);
+					var rawInputType = AdjustInputTypes(InputTypes.ClassText, inputScope);
+					_textBoxView.SetInputTypes(inputType, rawInputType);
 				}
 			}
 		}
@@ -415,6 +414,9 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnIsTabStopChangedPartial() => UpdateTextBoxViewReadOnly();
 
+
+		private IKeyListener _listener;
+
 		private void UpdateTextBoxViewReadOnly()
 		{
 			if (_textBoxView == null)
@@ -422,12 +424,23 @@ namespace Windows.UI.Xaml.Controls
 				return;
 			}
 
+			if (IsNativeViewReadOnly && _textBoxView.KeyListener is not null)
+			{
+				_listener = _textBoxView.KeyListener;
+				_textBoxView.KeyListener = null;
+				_textBoxView.ResetInputTypes();
+			}
+			else if (!IsNativeViewReadOnly && _textBoxView.KeyListener is null)
+			{
+				_textBoxView.KeyListener = _listener;
+				_textBoxView.ResetInputTypes();
+			}
+
 			_textBoxView.Focusable = IsTabStop;
 			_textBoxView.FocusableInTouchMode = IsTabStop;
 			_textBoxView.Clickable = IsTabStop;
 			_textBoxView.LongClickable = IsTabStop;
-			_textBoxView.SetCursorVisible(!IsNativeViewReadOnly);
-			_textBoxView.IsReadOnly = IsNativeViewReadOnly;
+			_textBoxView.Invalidate();
 		}
 
 		private void SetupTextBoxView()

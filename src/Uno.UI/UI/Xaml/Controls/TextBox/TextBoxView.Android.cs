@@ -63,41 +63,20 @@ namespace Windows.UI.Xaml.Controls
 				 Android.Views.ViewGroup.LayoutParams.WrapContent,
 				 Android.Views.ViewGroup.LayoutParams.WrapContent
 			);
-		}
 
-		internal bool IsReadOnly
-		{
-			get => _isReadOnly;
-			set
-			{
-				if (_isReadOnly != value)
-				{
-					_isReadOnly = value;
-					if (_isReadOnly)
-					{
-						// Force null input scope
-						InputType = InputTypes.Null;
-						SetRawInputType(InputTypes.Null);
-					}
-					else
-					{
-						var cachedInputTypes = _inputTypes;
-						InputType = cachedInputTypes.InputType;
-						SetRawInputType(cachedInputTypes.RawInputType);
-					}
-					Invalidate();
-				}
-			}
+			_inputTypes = (InputType, InputType);
 		}
 
 		internal void SetInputTypes(InputTypes inputType, InputTypes rawInputType)
 		{
 			_inputTypes = (inputType, rawInputType);
-			if (!_isReadOnly)
-			{
-				InputType = inputType;
-				SetRawInputType(rawInputType);
-			}
+			ResetInputTypes();
+		}
+
+		internal void ResetInputTypes()
+		{
+			InputType = _inputTypes.InputType;
+			SetRawInputType(_inputTypes.RawInputType);
 		}
 
 		internal void UpdateSingleLineMode()
