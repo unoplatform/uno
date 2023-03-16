@@ -9,8 +9,7 @@
     "Windows",
     "macOS",
     "Linux",
-    "WebAssembly",
-    "dotnet-new"
+    "WebAssembly"
   ],
   "name": "Multi-Platform App (.NET 6, UWP)",
   "identity": "Uno.Platform.UnoApp.UWP.netcoremobile",
