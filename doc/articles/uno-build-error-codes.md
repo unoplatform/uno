@@ -17,4 +17,4 @@ This error code means that a WinAppSDK project is referencing a project in your 
 
 This can happen if a project contains only a `net7.0` TargetFramework and has a NuGet reference to `Uno.WinUI`.
 
-To fix this, it is best to start from a `Cross Platform Library` project template provided by the Uno Platform [visual studio extension](xref:Guide.HowTo.Create-Control-Library), or using [`dotnet new`](xref:GetStarted.dotnet-new).
+To fix this, it is best to start from a `Cross Platform Library` project template provided by the Uno Platform [visual studio extension](xref:Guide.HowTo.Create-Control-Library), or using [`dotnet new`](xref:Uno.GetStarted.dotnet-new).
