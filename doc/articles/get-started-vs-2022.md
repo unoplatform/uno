@@ -45,14 +45,6 @@ To create Uno Platform applications you will need [**Visual Studio 2022 17.4 or 
 
 To create an Uno Platform app:
 1. Create a new C# solution using the **Uno Platform App** template, from Visual Studio's **Start Page**
-<<<<<<< HEAD
-1. Choose the list of targets platforms you want to be generated
-
-    > [!TIP] 
-    > You still can [add additional platforms](guides/how-to-add-platforms-existing-project.md) later.
-   
-    ![visual-studio-installer-web](Assets/quick-start/vsix-new-project-options.png)
-=======
 1. Choose the base template to build your application
    
     ![visual-studio-installer-web](Assets/quick-start/vsix-new-project-options.png)
@@ -69,7 +61,6 @@ To create an Uno Platform app:
     - **Theme** gives the ability to change between [Fluent](xref:uno.themes.fluent.getstarted) and [Material](xref:uno.themes.material.getstarted)
     
 1. Click the create button
->>>>>>> f4af9b7a08 (docs: Update getting started)
 
 1. Wait for the projects to be created, and their dependencies to be restored
 
