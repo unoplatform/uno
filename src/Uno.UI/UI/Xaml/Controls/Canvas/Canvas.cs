@@ -76,12 +76,12 @@ namespace Windows.UI.Xaml.Controls
 #endif
 			if (dependencyObject is UIElement element)
 			{
-				var zindex = args.NewValue is double d ? (double?)d : null;
+				var zindex = args.NewValue is int d ? (int?)d : null;
 				OnZIndexChangedPartial(element, zindex);
 			}
 		}
 
-		static partial void OnZIndexChangedPartial(UIElement element, double? zindex);
+		static partial void OnZIndexChangedPartial(UIElement element, int? zindex);
 
 		#endregion
 
