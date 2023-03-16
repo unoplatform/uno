@@ -1,5 +1,5 @@
 ﻿{
-  "$schema": "http://json.schemastore.org/vs-2017.3.host",
+  "$schema": "http://json.schemastore.org/ide.host",
   "name": {
     "text": "Cross-Platform UI Tests"
   },
@@ -14,10 +14,5 @@
   ],
   "additionalWizardParameters": {
     "$isMultiProjectTemplate$": "true"
-  },
-  "unsupportedHosts": [
-    {
-      "id": "vs"
-    }
-  ]
+  }
 }
