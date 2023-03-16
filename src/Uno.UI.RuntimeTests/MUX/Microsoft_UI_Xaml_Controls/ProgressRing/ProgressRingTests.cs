@@ -25,8 +25,13 @@ public class ProgressRingTests
 
 			await TestServices.WindowHelper.WaitForLoaded(progressRing);
 
+#if __MACOS__
+			Assert.AreEqual(16, progressRing.ActualHeight);
+			Assert.AreEqual(16, progressRing.ActualWidth);
+#else
 			Assert.AreEqual(32, progressRing.ActualHeight);
 			Assert.AreEqual(32, progressRing.ActualWidth);
+#endif
 		}
 	}
 }
