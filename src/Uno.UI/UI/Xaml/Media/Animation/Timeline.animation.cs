@@ -260,7 +260,6 @@ namespace Windows.UI.Xaml.Media.Animation
 				}
 
 				OnEnd();
-				_startingValue = null;
 			}
 
 			private void OnAnimatorAnimationEndFrame(object sender, EventArgs e) => OnFrame();
@@ -326,13 +325,14 @@ namespace Windows.UI.Xaml.Media.Animation
 			}
 
 			/// <summary>
-			/// Replays the Animation if required, Sets the final state, Raises the Completed event. 
+			/// Replays the Animation if required, Sets the final state, Raises the Completed event.
 			/// </summary>
 			private void OnEnd()
 			{
 				_animator?.Dispose();
 
 				// If the animation was GPU based, remove the animated value
+
 				if (NeedsRepeat(_activeDuration, _replayCount))
 				{
 					Replay(); // replay the animation
@@ -363,6 +363,7 @@ namespace Windows.UI.Xaml.Media.Animation
 				}
 
 				_owner.OnCompleted();
+				_startingValue = null;
 			}
 
 			/// <summary>
