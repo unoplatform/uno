@@ -55,7 +55,7 @@ public partial class WebView : Control
 	public string DocumentTitle
 	{
 		get => (string)GetValue(DocumentTitleProperty);
-		internal set => SetValue(DocumentTitleProperty, value);
+		private set => SetValue(DocumentTitleProperty, value);
 	}
 
 	public static DependencyProperty DocumentTitleProperty { get; } =

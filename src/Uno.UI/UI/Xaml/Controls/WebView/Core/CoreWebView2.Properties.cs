@@ -1,7 +1,7 @@
 ﻿using Windows.Foundation;
 
 namespace Microsoft.Web.WebView2.Core;
-
+#pragma warning disable CS0067 // TODO:MZ: Undo this
 public partial class CoreWebView2
 {
 	/// <summary>

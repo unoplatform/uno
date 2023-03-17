@@ -20,6 +20,7 @@
 					xmlns:itemswrapgridnotpresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsTypeNotPresent(Windows.UI.Xaml.Controls.ItemsWrapGrid)"
 					xmlns:uwpOnly="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsTypeNotPresent(Microsoft.UI.Xaml.FrameworkElement)"
 					xmlns:uBehaviors="using:Uno.UI.Behaviors"
+					xmlns:mux="using:Microsoft.UI.Xaml.Controls"
 					mc:Ignorable="d xamarin ios android not_wasm wasm netstdref not_netstdref macos skia">
 
 	<!-- TODO: ItemsControl should inject ItemsPresenter directly if no template is found. (Change this once template is materialized on Measure) -->
@@ -7598,6 +7599,16 @@
 	</not_netstdref:Style>
 
 	<not_netstdref:Style TargetType="WebView">
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate>
+					<NativeWebView />
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</not_netstdref:Style>
+
+	<not_netstdref:Style TargetType="mux:WebView2">
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate>

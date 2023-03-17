@@ -7,15 +7,18 @@ namespace Microsoft.Web.WebView2.Core;
 /// </summary>
 public partial class CoreWebView2NavigationStartingEventArgs : EventArgs
 {
-	/// <summary>
-	/// Gets the URI of the requested navigation.
-	/// </summary>
-	public Uri Uri { get; }
+	public CoreWebView2NavigationStartingEventArgs(ulong navigationId, Uri uri) =>
+		(NavigationId, Uri) = (navigationId, uri);
 
 	/// <summary>
 	/// Gets the ID of the navigation.
 	/// </summary>
-	public string NavigationId { get; }
+	public ulong NavigationId { get; }
+
+	/// <summary>
+	/// Gets the URI of the requested navigation.
+	/// </summary>
+	public Uri Uri { get; }
 
 	/// <summary>
 	/// Gets the HTTP request headers for the navigation.

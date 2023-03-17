@@ -1,3 +1,5 @@
+using System;
+
 using Windows.Foundation;
 
 namespace Microsoft.Web.WebView2.Core;

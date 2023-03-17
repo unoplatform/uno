@@ -284,10 +284,7 @@ public partial class WebView2 : Control, ICustomClippingElement
 				return true;
 			}
 
-			var args = new CoreWebView2NavigationStartingEventArgs()
-			{
-				Uri = new Uri(url)
-			};
+			var args = new CoreWebView2NavigationStartingEventArgs(1, new Uri(url));
 
 			_webView.NavigationStarting?.Invoke(_webView, args);
 
