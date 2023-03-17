@@ -4,12 +4,17 @@ using System.Diagnostics;
 using System.Linq;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
+using Android.OS;
 using Android.Runtime;
 using Android.Views;
 
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
+using Windows.UI.Core;
+using Windows.UI.Xaml.Extensions;
+using Uno.UI;
+using Windows.Foundation;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
@@ -43,124 +48,220 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		protected sealed override bool OnNativeMotionEvent(MotionEvent nativeEvent, View originalSource, bool isInView)
+		protected sealed override bool OnNativeMotionEvent(MotionEvent nativeEvent)
 		{
 			if (!ArePointersEnabled)
 			{
 				return false;
 			}
 
-			if (!(originalSource is UIElement srcElement))
+			var ownerEvents = (ICoreWindowEvents)CoreWindow.GetForCurrentThread()!;
+			switch (nativeEvent.ActionMasked)
 			{
-				this.Log().Error("Invalid OriginalSource in OnNativeMotionEvent, fall-backing to the receiver");
-				srcElement = this;
+				// TODO: STYLUS_WITH_BARREL_DOWN, STYLUS_WITH_BARREL_MOVE, STYLUS_WITH_BARREL_UP ?
+				case MotionEventActions.Down:
+				case MotionEventActions.PointerDown:
+					ownerEvents.RaisePointerPressed(BuildPointerArgs(nativeEvent));
+					break;
+
+				case MotionEventActions.Move:
+				case MotionEventActions.HoverMove:
+					ownerEvents.RaisePointerMoved(BuildPointerArgs(nativeEvent));
+					break;
+
+				case MotionEventActions.Up:
+				case MotionEventActions.PointerUp:
+					ownerEvents.RaisePointerReleased(BuildPointerArgs(nativeEvent));
+					break;
+
+				case MotionEventActions.Cancel:
+					ownerEvents.RaisePointerCancelled(BuildPointerArgs(nativeEvent));
+					break;
+
+				case MotionEventActions.HoverEnter:
+					ownerEvents.RaisePointerEntered(BuildPointerArgs(nativeEvent));
+					break;
+
+				case MotionEventActions.HoverExit:
+					ownerEvents.RaisePointerExited(BuildPointerArgs(nativeEvent));
+					break;
 			}
 
-			var pointerCount = nativeEvent.PointerCount;
-			var action = nativeEvent.Action;
-			var actionMasked = action & MotionEventActions.Mask;
-			if (pointerCount > 1 && actionMasked == MotionEventActions.Move)
+			return false;
+		}
+
+		private const int _pointerIdsCount = (int)MotionEventActions.PointerIndexMask >> (int)MotionEventActions.PointerIndexShift; // 0xff
+		private const int _pointerIdsShift = 31 - (int)MotionEventActions.PointerIndexShift; // 23
+
+
+		private PointerEventArgs BuildPointerArgs(MotionEvent nativeEvent)
+		{
+			var pointerIndex = nativeEvent.ActionIndex;
+			var pointerType = nativeEvent.GetToolType(pointerIndex).ToPointerDeviceType();
+
+			var device = Windows.Devices.Input.PointerDevice.For((Windows.Devices.Input.PointerDeviceType)pointerType);
+			var pointerId = ((uint)nativeEvent.GetPointerId(pointerIndex) & _pointerIdsCount) << _pointerIdsShift | (uint)nativeEvent.DeviceId;
+			var phyX = nativeEvent.GetX(pointerIndex);
+			var phyY = nativeEvent.GetY(pointerIndex);
+			var position = new Point(phyX, phyY).PhysicalToLogicalPixels();
+			var isInContact = IsInContact(nativeEvent, pointerType);
+			var currentPoint = new PointerPoint(
+				frameId: (uint)nativeEvent.EventTime,
+				timestamp: ToTimeStamp(nativeEvent.EventTime),
+				device,
+				pointerId,
+				// TODO: Confirm position calculation.
+				rawPosition: position,
+				position: position,
+				isInContact,
+				GetProperties(nativeEvent.GetToolType(pointerIndex), nativeEvent, isInContact)
+				);
+			return new PointerEventArgs(currentPoint, nativeEvent.MetaState.ToVirtualKeyModifiers());
+		}
+
+		private static bool IsInContact(MotionEvent nativeEvent, PointerDeviceType pointerType)
+		{
+			switch (pointerType)
 			{
-				// When we get a move, we make sure to raise the move for all pointers.
-				// Note: We could probably also raise a move for pointers other than ActionIndex for other actions
-				//		 but as multi touch is only for fingers, we get a lot of events (due to the approx.) and it's
-				//		 safer to not try to over-interpret events.
+				case PointerDeviceType.Mouse:
+					// For mouse, we cannot only rely on action: We will get a "HoverExit" when we press the left button.
+					return nativeEvent.ButtonState != 0;
+				case PointerDeviceType.Pen:
+					return nativeEvent.GetAxisValue(Axis.Distance, nativeEvent.ActionIndex) == 0;
+				default:
+				case PointerDeviceType.Touch:
+					var action = nativeEvent.Action;
+					// WARNING: MotionEventActions.Down == 0, so action.HasFlag(MotionEventActions.Up) is always true!
+					return !action.HasFlag(MotionEventActions.Up)
+						&& !action.HasFlag(MotionEventActions.PointerUp)
+						&& !action.HasFlag(MotionEventActions.Cancel);
+			}
+		}
 
-				var handled = false;
-				for (var pointerIndex = 0; pointerIndex < pointerCount; pointerIndex++)
-				{
-					var args = new PointerRoutedEventArgs(nativeEvent, pointerIndex, srcElement, this);
-					var argsAction = MotionEventActions.Move;
+		/// <summary>
+		/// The stylus is pressed while holding the barrel button
+		/// </summary>
+		internal const MotionEventActions StylusWithBarrelDown = (MotionEventActions)211;
+		/// <summary>
+		/// The stylus is moved after having been pressed while holding the barrel button
+		/// </summary>
+		internal const MotionEventActions StylusWithBarrelMove = (MotionEventActions)213;
+		/// <summary>
+		/// The stylus is released after having been pressed while holding the barrel button
+		/// </summary>
+		internal const MotionEventActions StylusWithBarrelUp = (MotionEventActions)212;
 
-					handled |= OnNativeMotionEvent(nativeEvent, args, argsAction, isInView);
-				}
 
-				return handled;
+		private static readonly Dictionary<MotionEventButtonState, PointerUpdateKind> _none = new(0);
+		private static readonly Dictionary<MotionEventButtonState, PointerUpdateKind> _fingerDownUpdates = new()
+		{
+			{ 0, PointerUpdateKind.LeftButtonPressed },
+			{ MotionEventButtonState.Primary, PointerUpdateKind.LeftButtonPressed }
+		};
+		private static readonly Dictionary<MotionEventButtonState, PointerUpdateKind> _fingerUpUpdates = new()
+		{
+			{ 0, PointerUpdateKind.LeftButtonReleased },
+			{ MotionEventButtonState.Primary, PointerUpdateKind.LeftButtonReleased }
+		};
+		private static readonly Dictionary<MotionEventButtonState, PointerUpdateKind> _mouseDownUpdates = new()
+		{
+			{ MotionEventButtonState.Primary, PointerUpdateKind.LeftButtonPressed },
+			{ MotionEventButtonState.Tertiary, PointerUpdateKind.MiddleButtonPressed },
+			{ MotionEventButtonState.Secondary, PointerUpdateKind.RightButtonPressed }
+		};
+		private static readonly Dictionary<MotionEventButtonState, PointerUpdateKind> _mouseUpUpdates = new()
+		{
+			{ MotionEventButtonState.Primary, PointerUpdateKind.LeftButtonReleased },
+			{ MotionEventButtonState.Tertiary, PointerUpdateKind.MiddleButtonReleased },
+			{ MotionEventButtonState.Secondary, PointerUpdateKind.RightButtonReleased }
+		};
+
+		private PointerPointProperties GetProperties(MotionEventToolType type, MotionEvent nativeEvent, bool isInContact)
+		{
+			var props = new PointerPointProperties
+			{
+				IsPrimary = true,
+				IsInRange = true,
+			};
+
+			var action = nativeEvent.Action;
+			var buttons = nativeEvent.ButtonState;
+			var pointerIndex = nativeEvent.ActionIndex;
+			var isDown = action == /* 0 = */ MotionEventActions.Down || action.HasFlag(MotionEventActions.PointerDown);
+			var isUp = action.HasFlag(MotionEventActions.Up) || action.HasFlag(MotionEventActions.PointerUp);
+			var updates = _none;
+			switch (type)
+			{
+				case MotionEventToolType.Finger:
+				case MotionEventToolType.Unknown: // used by Xamarin.UITest
+					props.IsLeftButtonPressed = isInContact;
+					updates = isDown ? _fingerDownUpdates : isUp ? _fingerUpUpdates : _none;
+					// Pressure = .5f => Keeps default as UWP returns .5 for fingers.
+					break;
+
+				case MotionEventToolType.Mouse:
+					props.IsLeftButtonPressed = buttons.HasFlag(MotionEventButtonState.Primary);
+					props.IsMiddleButtonPressed = buttons.HasFlag(MotionEventButtonState.Tertiary);
+					props.IsRightButtonPressed = buttons.HasFlag(MotionEventButtonState.Secondary);
+					updates = isDown ? _mouseDownUpdates : isUp ? _mouseUpUpdates : _none;
+					// Pressure = .5f => Keeps default as UWP returns .5 for Mouse no matter is button is pressed or not (Android return 1.0 while pressing a button, but 0 otherwise).
+					break;
+
+				// Note: On UWP, if you touch screen while already holding the barrel button, you will get a right + barrel,
+				//		 ** BUT ** if you touch screen and THEN press the barrel button props will be left + barrel until released.
+				//		 On Android this distinction seems to be flagged by the "1101 ****" action flag (i.e. "StylusWithBarrel***" actions),
+				//		 so here we set the Is<Left|Right>ButtonPressed based on the action and we don't try to link it to the barrel button state.
+				case MotionEventToolType.Stylus when action == StylusWithBarrelDown:
+				case MotionEventToolType.Stylus when action == StylusWithBarrelMove:
+				case MotionEventToolType.Stylus when action == StylusWithBarrelUp:
+					// Note: We still validate the "IsButtonPressed(StylusPrimary)" as the user might release the button while pressed.
+					//		 In that case we will still receive moves and up with the "StylusWithBarrel***" actions.
+					props.IsBarrelButtonPressed = buttons.HasFlag(MotionEventButtonState.StylusPrimary);
+					props.IsRightButtonPressed = isInContact;
+					props.Pressure = Math.Min(1f, nativeEvent.GetPressure(pointerIndex)); // Might exceed 1.0 on Android
+					break;
+				case MotionEventToolType.Stylus:
+					props.IsBarrelButtonPressed = buttons.HasFlag(MotionEventButtonState.StylusPrimary);
+					props.IsLeftButtonPressed = isInContact;
+					props.Pressure = Math.Min(1f, nativeEvent.GetPressure(pointerIndex)); // Might exceed 1.0 on Android
+					break;
+				case MotionEventToolType.Eraser:
+					props.IsEraser = true;
+					props.Pressure = Math.Min(1f, nativeEvent.GetPressure(pointerIndex)); // Might exceed 1.0 on Android
+					break;
+
+				default:
+					break;
+			}
+
+			if (Android.OS.Build.VERSION.SdkInt >= BuildVersionCodes.M // ActionButton was introduced with API 23 (https://developer.android.com/reference/android/view/MotionEvent.html#getActionButton())
+				&& updates.TryGetValue(nativeEvent.ActionButton, out var update))
+			{
+				props.PointerUpdateKind = update;
+			}
+
+			return props;
+		}
+
+		private static readonly ulong _unixEpochMs = (ulong)(new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc) - new DateTime()).TotalMilliseconds;
+
+		private static ulong ToTimeStamp(long uptimeMillis)
+		{
+			if (FeatureConfiguration.PointerRoutedEventArgs.AllowRelativeTimeStamp)
+			{
+				return (ulong)(TimeSpan.TicksPerMillisecond * uptimeMillis);
 			}
 			else
 			{
-				var args = new PointerRoutedEventArgs(nativeEvent, nativeEvent.ActionIndex, srcElement, this);
-				var argsAction = actionMasked;
-
-				return OnNativeMotionEvent(nativeEvent, args, argsAction, isInView);
+				// We cannot cache the "bootTime" as the "uptimeMillis" is frozen while in deep sleep
+				// (cf. https://developer.android.com/reference/android/os/SystemClock)
+				var sleepTime = Android.OS.SystemClock.ElapsedRealtime() - Android.OS.SystemClock.UptimeMillis();
+				var realUptime = (ulong)(uptimeMillis + sleepTime);
+				var timestamp = TimeSpan.TicksPerMillisecond * (_unixEpochMs + realUptime);
+				return timestamp;
 			}
 		}
 
-		private bool OnNativeMotionEvent(MotionEvent nativeEvent, PointerRoutedEventArgs args, MotionEventActions action, bool isInView)
-		{
-			// Warning: MotionEvent of other kinds are filtered out in native code (UnoMotionHelper.java)
-			switch (action)
-			{
-				case MotionEventActions.HoverEnter:
-					return OnNativePointerEnter(args);
-				case MotionEventActions.HoverExit when !args.Pointer.IsInContact:
-					// When a mouse button is pressed or pen touches the screen (a.k.a. becomes in contact), we receive an HoverExit before the Down.
-					// We validate here if pointer 'isInContact' (which is the case for HoverExit when mouse button pressed / pen touched the screen)
-					// and we ignore them (as on UWP Exit is raised only when pointer moves out of bounds of the control, no matter the pressed state).
-					// As a side effect we will have to update the hover state on each Move in order to handle the case of press -> move out -> release.
-					return OnNativePointerExited(args);
-				case MotionEventActions.HoverExit:
-					return false; // avoid useless logging
-
-				case MotionEventActions.Down when args.Pointer.PointerDeviceType == PointerDeviceType.Touch:
-				case MotionEventActions.PointerDown when args.Pointer.PointerDeviceType == PointerDeviceType.Touch:
-					// We don't have any enter / exit on Android for touches, so we explicitly generate one on down / up.
-					// That event args is requested to bubble in managed code only (args.CanBubbleNatively = false),
-					// so we follow the same sequence as UWP (the whole tree gets entered before the pressed),
-					// and we make sure that the event will bubble through the whole tree, no matter if the Pressed event is handle or not.
-					// Note: Parents will also try to raise the "Enter" but they will be silent since the pointer is already considered as pressed.
-					args.CanBubbleNatively = false;
-					OnNativePointerEnter(args);
-					return OnNativePointerDown(args.Reset());
-				case PointerRoutedEventArgs.StylusWithBarrelDown:
-				case MotionEventActions.Down:
-				case MotionEventActions.PointerDown:
-					return OnNativePointerDown(args);
-				case MotionEventActions.Up when args.Pointer.PointerDeviceType == PointerDeviceType.Touch:
-				case MotionEventActions.PointerUp when args.Pointer.PointerDeviceType == PointerDeviceType.Touch:
-					// For touch pointer, in the RootVisual we will redispatch this event to raise exit,
-					// but if the event has been handled, we need to raise it after the 'up' has been processed.
-					if (OnNativePointerUp(args))
-					{
-						Uno.UI.Xaml.Core.RootVisual.ProcessPointerUp(args, isAfterHandledUp: true);
-						return true;
-					}
-					else
-					{
-						return false;
-					}
-				case PointerRoutedEventArgs.StylusWithBarrelUp:
-				case MotionEventActions.Up:
-				case MotionEventActions.PointerUp:
-					return OnNativePointerUp(args);
-
-				// We get ACTION_DOWN and ACTION_UP only for "left" button, and instead we get a HOVER_MOVE when pressing/releasing the right button of the mouse.
-				// So on each POINTER_MOVE we make sure to update the pressed state if it does not match.
-				// Note: We can also have HOVER_MOVE with barrel button pressed, so we make sure to "PointerDown" only for Mouse.
-				case MotionEventActions.HoverMove when args.Pointer.PointerDeviceType == PointerDeviceType.Mouse && args.HasPressedButton && !IsPressed(args.Pointer):
-					return OnNativePointerDown(args) | OnNativePointerMoveWithOverCheck(args.Reset(), isInView);
-				case MotionEventActions.HoverMove when !args.HasPressedButton && IsPressed(args.Pointer):
-					return OnNativePointerUp(args) | OnNativePointerMoveWithOverCheck(args.Reset(), isInView);
-
-				case PointerRoutedEventArgs.StylusWithBarrelMove:
-				case MotionEventActions.Move:
-				case MotionEventActions.HoverMove:
-					// Note: We use the OnNativePointerMove**WithOverCheck** in order to update the over state in case of press -> move out -> release
-					//		 where Android won't raise the HoverExit (as it has raised it on press, but we have ignored it cf. HoverExit case.)
-					return OnNativePointerMoveWithOverCheck(args, isInView);
-
-				case MotionEventActions.Cancel:
-					return OnNativePointerCancel(args, isSwallowedBySystem: true);
-
-				default:
-					if (this.Log().IsEnabled(LogLevel.Warning))
-					{
-						this.Log().Warn($"We receive a native motion event of '{action}', but this is not supported and should have been filtered out in native code.");
-					}
-
-					return false;
-			}
-		}
 
 		/// <summary>
 		/// Used by the VisualRoot to redispatch a pointer exit on pointer up

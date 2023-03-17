@@ -1,5 +1,5 @@
-﻿#if __WASM__ || __SKIA__
-// On iOS and Android, pointers are implicitly captured, so we will receive the "irrelevant" (i.e. !isOverOrCaptured)
+﻿#if __WASM__ || __SKIA__ || __ANDROID__
+// On iOS, pointers are implicitly captured, so we will receive the "irrelevant" (i.e. !isOverOrCaptured)
 // pointer moves and we can use them for manipulation. But on WASM and SKIA we have to explicitly request to get those events
 // (expect on FF where they are also implicitly captured ... but we still capture them anyway).
 #define NEEDS_IMPLICIT_CAPTURE
@@ -242,7 +242,7 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		internal HitTestability GetHitTestVisibility()
 		{
-#if __WASM__ || __SKIA__ || __MACOS__
+#if __WASM__ || __SKIA__ || __MACOS__ || __ANDROID__
 			return HitTestVisibility;
 #else
 			// This is a coalesced HitTestVisible and should be unified with it

@@ -144,6 +144,11 @@ namespace Windows.UI.Xaml
 			TransientArrangeFinalRect = null;
 		}
 
+		internal static void RootElementLoaded(UIElement visualTreeRoot)
+		{
+			visualTreeRoot.SetHitTestVisibilityForRoot();
+		}
+
 		partial void ApplyNativeClip(Rect rect)
 		{
 			if (rect.IsEmpty)

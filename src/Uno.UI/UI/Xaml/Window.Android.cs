@@ -52,6 +52,8 @@ namespace Windows.UI.Xaml
 				}
 
 				ApplicationActivity.Instance?.SetContentView(_rootVisual);
+
+				UIElement.RootElementLoaded(_rootVisual);
 			}
 			_rootBorder.Child = _content = value;
 		}

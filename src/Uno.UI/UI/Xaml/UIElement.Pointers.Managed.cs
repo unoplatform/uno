@@ -71,7 +71,7 @@ namespace Windows.UI.Xaml
 
 			// If we're not locally hit-test visible, visible, or enabled, we should be collapsed. Our children will be collapsed as well.
 			if (
-#if !__MACOS__
+#if !__MACOS__ && !__ANDROID__
 				!IsLoaded ||
 #endif
 				!IsHitTestVisible || Visibility != Visibility.Visible || !IsEnabledOverride())
