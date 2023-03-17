@@ -10,8 +10,7 @@
     "macOS",
     "Linux",
     "Tizen",
-    "WebAssembly",
-    "dotnet-new"
+    "WebAssembly"
   ],
   "name": "Multi-Platform App (Xamarin, UWP)",
   "identity": "Uno.Platform.UnoApp.Uwp",
@@ -20,7 +19,8 @@
   "precedence": "6001",
   "tags": {
     "language": "C#",
-    "type": "project"
+    "type": "solution",
+    "editorTreatAs": "solution"
   },
   "shortName": "unoapp-uwp",
   "sourceName": "UnoQuickStart",
