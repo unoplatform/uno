@@ -8,13 +8,13 @@ Uno Platform, like WinUI/WinAppSDK and UWP, supports Control Libraries. Control 
 Creating such a library will make UI Controls compatible with all Uno Platform targets as well as WinUI or UWP.
 
 > [!NOTE]
-> Control libraries are different from "normal" libraries as they reference WinAppSDK, Uno.UI or Uno.WinUI. Those libraries are special because they have explicit dependencies on platform-specific features. "Normal" libraries (e.g. Newtonsoft.Json) do not need any special treatment to work with Uno.
+> Control libraries are different from "normal" libraries as they reference WinAppSDK, Uno.WinUI or Uno.UI. Those libraries are special because they have explicit dependencies on platform-specific features. "Normal" libraries (e.g. Newtonsoft.Json) do not need any special treatment to work with Uno.
 
 You can find the [full sample code](https://github.com/unoplatform/Uno.Samples/blob/master/UI/ControlLibrary) for this how-to in our samples repository.
 
 ## Create a Control Library
 
-1. In your solution, create a new **Cross-Platform Library**, name it `XamlControlLibrary`
+1. In your solution, create a new **Uno Platform Library**, name it `XamlControlLibrary`
 1. In your app's existing Class Library project, add a reference to your new library.
 
 ## Create the Control
