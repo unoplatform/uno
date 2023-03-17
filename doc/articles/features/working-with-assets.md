@@ -1,27 +1,25 @@
 # Assets and image display
 
-In a standard Xamarin project, you must duplicate, rename, and manually add your assets to each target project (UWP, iOS, Android).
+Uno Platform automatically processes assets from your app's **Class Library Project** and makes them available on all platforms.
 
-[Xamarin: Working with Images](https://developer.xamarin.com/samples/xamarin-forms/WorkingWithImages/)
+Support for automatic generation of assets multiple resolutions from SVG or PNG is also provided using [Uno.Resizetizer](xref:Uno.Resizetizer.GettingStarted).
 
-We still recommend using the above technique for platform-specific icons and splash screens in Uno.UI projects.
-
-For most other assets, Uno.UI processes assets once in your app's **Class Library Project** and automatically uses them on all platforms. The rest of this document will cover those particular features.
+Platform specific assets such as [`BundleResource`](https://learn.microsoft.com/en-us/xamarin/ios/user-interface/controls/image) and [`AndroidAssets`](https://learn.microsoft.com/en-us/xamarin/android/app-fundamentals/resources-in-android/android-assets) are also supported on the heads, when required.
 
 ## Supported asset types
 
-At the moment, only the following image file types are supported:
+At the moment, the following image file types are supported as `Content` assets:
 
 |             | `.bmp` (Win BMP) | `.gif`‡ | `.heic` (Apple) | `.jpg` & `.jpeg` (JFIF) | `.png` | `.webp` | `.pdf` | `.svg` |
-| ----------- | :------------: | :---: | :-----------: | :-----------------: | :--: | :---: | :--: | :--: |
-| Windows UWP |       ✔️        |   ✔️   |       ❌       |          ✔️          |  ✔️   |   ✔️   |  ❌   |  ✔️   |
+| ----------- | :-------------: | :---: | :-----------: | :-----------------: | :--: | :---: | :--: | :--: |
+| WinUI       |       ✔️        |   ✔️   |       ❌       |          ✔️          |  ✔️   |   ✔️   |  ❌   |  ✔️   |
 | Android 10  |       ✔️        |  ✔️‡   |       ✔️       |          ✔️          |  ✔️   |   ✔️   |  ✔️   |  ✔️   |
 | iOS 13      |       ✔️        |  ✔️‡   |       ✔️       |          ✔️          |  ✔️   |   ❌   |  ❌   |  ✔️   |
 | macOS       |       ✔️        |  ✔️‡   |       ✔️       |          ✔️          |  ✔️   |   ❌   |  ✔️   |  ❌   |
-| Wasm†       |       ✔️        |  ✔️‡   |      ❌†       |          ✔️          |  ✔️   |  ❌†   |  ❌†  |  ✔️   |
+| WebAssembly†       |       ✔️        |  ✔️‡   |      ❌†       |          ✔️          |  ✔️   |  ❌†   |  ❌†  |  ✔️   |
 | Skia WPF    |       ✔️        |  ✔️‡   |       ❌       |          ✔️          |  ✔️   |   ✔️   |  ❌   |  ✔️   |
 
-* † Actual **Wasm image format support** is browser dependent. For example, `.webp` is not working on Safari on macOS, but works on Chromium-based browsers. Check-marks (✔️) indicates a format that can safely expected to work on all browsers able to run Wasm applications.
+* † Actual WebAssembly image format support is browser dependent. For example, `.webp` is not working on Safari on macOS, but works on Chromium-based browsers. Check-marks (✔️) indicates a format that can safely expected to work on all browsers able to run Wasm applications.
 * ‡ **Gif animation support**:
   * Play/Pause not implemented in Uno yet
   * Always animated on Wasm
