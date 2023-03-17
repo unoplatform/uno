@@ -272,15 +272,6 @@ namespace Windows.UI.Xaml.Controls
 
 		#endregion
 
-		#region Hyperlinks
-
-		internal override bool IsViewHit()
-		{
-			return true;
-		}
-
-		#endregion
-
 		private void UpdateTypography()
 		{
 			_attributedString = GetAttributedText();

@@ -73,11 +73,11 @@ namespace Windows.UI.Core
 			set => _pointerPosition = value;
 		}
 
-#if !__WASM__ && !__MACOS__ && !__SKIA__
+#if !__WASM__ && !__MACOS__ && !__SKIA__ && !__ANDROID__
 		/// <summary>
 		/// Gets or sets the cursor used by the app.
 		/// </summary>
-		[Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__NETSTD_REFERENCE__")]
+		[Uno.NotImplemented("__IOS__", "NET461", "__NETSTD_REFERENCE__")]
 		public CoreCursor PointerCursor { get; set; } = new CoreCursor(CoreCursorType.Arrow, 0);
 #endif
 

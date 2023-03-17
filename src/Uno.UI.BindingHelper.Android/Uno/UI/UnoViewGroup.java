@@ -368,7 +368,7 @@ public abstract class UnoViewGroup
 	@Override public /* protected in C# */ final boolean getIsNativeMotionEventsEnabled(){ return _isNativeMotionEventsEnabled; }
 	public /* protected in C# */ final void setIsNativeMotionEventsEnabled(boolean isNativeMotionEventsEnabled){ _isNativeMotionEventsEnabled = isNativeMotionEventsEnabled; }
 
-	@Override public /* protected in C# */ boolean onNativeMotionEvent(MotionEvent event, View originalSource, boolean isInView) {
+	@Override public /* protected in C# */ boolean onNativeMotionEvent(MotionEvent event) {
 		return false;
 	}
 

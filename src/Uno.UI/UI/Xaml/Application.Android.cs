@@ -2,11 +2,13 @@
 using System;
 using Android.Content.Res;
 using Android.OS;
+using Uno.Foundation.Extensibility;
 using Uno.UI.Extensions;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
+using Windows.UI.Core;
 using Windows.UI.Xaml.Controls.Primitives;
 
 #if HAS_UNO_WINUI
@@ -24,6 +26,11 @@ namespace Windows.UI.Xaml
 			Window.Current.ToString();
 			Current = this;
 			PermissionsHelper.Initialize();
+		}
+
+		static partial void InitializePartialStatic()
+		{
+			ApiExtensibility.Register(typeof(Windows.UI.Core.ICoreWindowExtension), o => new CoreWindowExtension());
 		}
 
 		static partial void StartPartial(ApplicationInitializationCallback callback)
