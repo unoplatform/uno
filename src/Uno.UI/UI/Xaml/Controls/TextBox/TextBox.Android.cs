@@ -354,8 +354,8 @@ namespace Windows.UI.Xaml.Controls
 					// InputScopes like multi-line works on Android only for InputType property, not SetRawInputType.
 					// For CurrencyAmount (and others), both works but there is a behavioral difference documented in UseLegacyInputScope.
 					// The behavior that matches UWP is achieved by SetRawInputType.
-					var rawInputType = AdjustInputTypes(InputTypes.ClassText, inputScope);
-					_textBoxView.SetInputTypes(inputType, rawInputType);
+					var adjustedInputType = AdjustInputTypes(InputTypes.ClassText, inputScope);
+					_textBoxView.SetInputTypes(adjustedInputType, inputType);
 				}
 			}
 		}
