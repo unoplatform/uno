@@ -9,6 +9,7 @@ $external_docs =
     @("https://github.com/unoplatform/uno.xamlmerge.task", "uno.xamlmerge.task", "7e8ffef206e87dfea90c53805c45e93a7d8c0b46"),
     @("https://github.com/unoplatform/figma-docs", "figma-docs", "a740582020509f9947fbf991628075a4717bff0a"),
     @("https://github.com/unoplatform/uno.resizetizer", "uno.resizetizer", "7340a072e8c296ddb596fe1efe667d916e278ac7"),
+    @("https://github.com/unoplatform/uno.uitest", "uno.uitest", "555453c2985ef2745fe44503c5809a6168d063c2"),
     @("https://github.com/unoplatform/uno.extensions", "uno.extensions", "b9c1b66ff45776b0bc9c5a2cb588fe3451046d1e")
 )
 

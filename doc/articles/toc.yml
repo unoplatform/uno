@@ -420,6 +420,7 @@
               href: Uno-UI-Performance.md
             - name: How to profile applications
               href: guides/profiling-applications.md
+              
         - name: Tooling
           items:
             - name: Uno WebAssembly Bootstrapper
@@ -430,6 +431,8 @@
               href: external/uno.xamlmerge.task/doc/toc.yml
             - name: Uno Resizetizer
               href: external/uno.resizetizer/doc/toc.yml
+            - name: Uno.UITest
+              href: external/uno.uitest/doc/toc.yml
 
     - name: Reference
       items:
