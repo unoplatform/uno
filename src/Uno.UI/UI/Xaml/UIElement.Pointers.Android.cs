@@ -19,6 +19,8 @@ using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
+// Avoids ambiguity between Windows.UI.Core.PointerEventArgs and Microsoft.UI.Input.PointerEventArgs
+using PointerEventArgs = Windows.UI.Core.PointerEventArgs;
 #else
 using Windows.UI.Input;
 using Windows.Devices.Input;
@@ -339,6 +341,7 @@ namespace Windows.UI.Xaml
 
 		partial void OnIsHitTestVisibleChangedPartial(bool oldValue, bool newValue)
 		{
+			UpdateHitTest();
 			base.SetNativeIsHitTestVisible(newValue);
 		}
 
