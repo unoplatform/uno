@@ -72,7 +72,7 @@
 	</PropertyGroup>
 
 	<PropertyGroup Condition="$(IsAndroid)">
-		<DefineConstants>$(DefineConstants);__ANDROID__;XAMARIN;XAMARIN_ANDROID;UNO_HAS_MANAGED_POINTERS</DefineConstants>
+		<DefineConstants>$(DefineConstants);__ANDROID__;XAMARIN;XAMARIN_ANDROID;UNO_HAS_MANAGED_POINTERS;UNO_HAS_ENHANCED_HIT_TEST_PROPERTY</DefineConstants>
 		<SupportedOSPlatformVersion>21.0</SupportedOSPlatformVersion>
 	</PropertyGroup>
 
