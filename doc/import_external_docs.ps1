@@ -3,12 +3,12 @@ Set-PSDebug -Trace 1
 $external_docs =
 @(
     @("https://github.com/unoplatform/uno.wasm.bootstrap", "uno.wasm.bootstrap", "4abadfc93ffeddc82420cc28af04cd7f6b2693ab"),
-    @("https://github.com/unoplatform/uno.themes", "uno.themes", "3763223a6337c318743879cda31eb9c226327e7f"),
+    @("https://github.com/unoplatform/uno.themes", "uno.themes", "3d12f341f3ce9ecd7738e163a3a0904e9b94466f"),
     @("https://github.com/unoplatform/uno.toolkit.ui", "uno.toolkit.ui", "e6bd3390e8b21ab649294ee591d7f134f8d56197"),
     @("https://github.com/unoplatform/uno.check", "uno.check", "5dec33b3cb4c26f578c8d6bd7a84000bf265a14e"),
     @("https://github.com/unoplatform/uno.xamlmerge.task", "uno.xamlmerge.task", "7e8ffef206e87dfea90c53805c45e93a7d8c0b46"),
     @("https://github.com/unoplatform/figma-docs", "figma-docs", "a740582020509f9947fbf991628075a4717bff0a"),
-    @("https://github.com/unoplatform/uno.resizetizer", "uno.resizetizer", "7340a072e8c296ddb596fe1efe667d916e278ac7"),
+    @("https://github.com/unoplatform/uno.resizetizer", "uno.resizetizer", "f650e844cb66a7dafa084a7e778f14f4fd3ce8a2"),
     @("https://github.com/unoplatform/uno.uitest", "uno.uitest", "555453c2985ef2745fe44503c5809a6168d063c2"),
     @("https://github.com/unoplatform/uno.extensions", "uno.extensions", "b9c1b66ff45776b0bc9c5a2cb588fe3451046d1e")
 )
