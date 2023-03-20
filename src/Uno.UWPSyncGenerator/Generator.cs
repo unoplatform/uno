@@ -606,6 +606,8 @@ namespace Uno.UWPSyncGenerator
 #else
 				case "Microsoft.UI.Xaml.Automation.Peers.AnimatedVisualPlayerAutomationPeer":
 				case "Microsoft.UI.Xaml.Automation.Peers.PersonPictureAutomationPeer":
+				case "Microsoft.UI.Xaml.Automation.Peers.MenuBarAutomationPeer":
+				case "Microsoft.UI.Xaml.Automation.Peers.MenuBarItemAutomationPeer":
 				case "Microsoft.UI.Xaml.Controls.AnimatedVisuals.AnimatedAcceptVisualSource":
 				case "Microsoft.UI.Xaml.Controls.AnimatedVisuals.AnimatedBackVisualSource":
 				case "Microsoft.UI.Xaml.Controls.AnimatedVisuals.AnimatedChevronDownSmallVisualSource":
