@@ -87,12 +87,10 @@ namespace Uno.UWPSyncGenerator
 			BaseXamlNamespace + ".Controls.Primitives.CarouselPanel",
 			BaseXamlNamespace + ".Controls.MediaPlayerPresenter",
 			BaseXamlNamespace + ".Controls.NavigationViewItemBase",
-
-#if HAS_UNO_WINUI
+			"Microsoft.UI.Xaml.Media.RadialGradientBrush",
 			// Mismatching public inheritance hierarchy because RadioMenuFlyoutItem has a double inheritance in WinUI.
 			// Remove this and update RadioMenuFlyoutItem if WinUI 3 removed the double inheritance.
-			BaseXamlNamespace + ".Controls.RadioMenuFlyoutItem",
-#endif
+			"Microsoft.UI.Xaml.Controls.RadioMenuFlyoutItem",
 		};
 
 		private Compilation _iOSCompilation;
@@ -1461,7 +1459,7 @@ namespace Uno.UWPSyncGenerator
 								}
 
 								b.AppendLineInvariant($"\ttypeof({property.ContainingType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}), ");
-								b.AppendLineInvariant($"\tnew FrameworkPropertyMetadata(default({propertyDisplayType})));");
+								b.AppendLineInvariant($"\tnew {BaseXamlNamespace}.FrameworkPropertyMetadata(default({propertyDisplayType})));");
 							}
 							else
 							{
