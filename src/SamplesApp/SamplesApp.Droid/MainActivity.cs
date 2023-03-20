@@ -28,7 +28,8 @@ namespace SamplesApp.Droid
 		},
 		Categories = new[] {
 			Android.Content.Intent.CategoryDefault,
-			Android.Content.Intent.CategoryBrowsable
+			Android.Content.Intent.CategoryBrowsable,
+			Android.Content.Intent.CategoryLeanbackLauncher
 		},
 		DataScheme = "uno-samples-test")]
 	public class MainActivity : Windows.UI.Xaml.ApplicationActivity
