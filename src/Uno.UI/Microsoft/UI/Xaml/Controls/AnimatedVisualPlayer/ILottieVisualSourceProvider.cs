@@ -9,6 +9,6 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		IAnimatedVisualSource CreateFromLottieAsset(Uri sourceFile);
 		IThemableAnimatedVisualSource CreateTheamableFromLottieAsset(Uri sourceFile);
-		public bool TryCreateThemableFromAnimatedVisualSource(IAnimatedVisualSource animatedVisualSource, out IThemableAnimatedVisualSource themableAnimatedVisualSource);
+		public bool TryCreateThemableFromAnimatedVisualSource(Windows.UI.Xaml.Controls.IAnimatedVisualSource animatedVisualSource, out IThemableAnimatedVisualSource themableAnimatedVisualSource);
 	}
 }
