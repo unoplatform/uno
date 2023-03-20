@@ -13,7 +13,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		Windows.UI.Xaml.DependencyProperty.RegisterAttached(
 			"KeepInteriorCornersSquare", typeof(bool), 
 			typeof(global::Microsoft.UI.Xaml.Controls.Primitives.ComboBoxHelper), 
-			new FrameworkPropertyMetadata(default(bool)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 		#endif
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ComboBoxHelper.KeepInteriorCornersSquareProperty.get
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

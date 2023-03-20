@@ -48,7 +48,7 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(LightDismissOverlayMode), typeof(global::Windows.UI.Xaml.Controls.LightDismissOverlayMode), 
 			typeof(global::Windows.UI.Xaml.Controls.AutoSuggestBox), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.LightDismissOverlayMode)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.LightDismissOverlayMode)));
 		#endif
 		// Skipping already declared property DescriptionProperty
 		// Skipping already declared method Windows.UI.Xaml.Controls.AutoSuggestBox.AutoSuggestBox()

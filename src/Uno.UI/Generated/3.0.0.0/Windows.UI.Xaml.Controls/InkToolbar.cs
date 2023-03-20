@@ -145,7 +145,7 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(ActiveTool), typeof(global::Windows.UI.Xaml.Controls.InkToolbarToolButton), 
 			typeof(global::Windows.UI.Xaml.Controls.InkToolbar), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.InkToolbarToolButton)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.InkToolbarToolButton)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -153,7 +153,7 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(Children), typeof(global::Windows.UI.Xaml.DependencyObjectCollection), 
 			typeof(global::Windows.UI.Xaml.Controls.InkToolbar), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DependencyObjectCollection)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DependencyObjectCollection)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -161,7 +161,7 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(InitialControls), typeof(global::Windows.UI.Xaml.Controls.InkToolbarInitialControls), 
 			typeof(global::Windows.UI.Xaml.Controls.InkToolbar), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.InkToolbarInitialControls)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.InkToolbarInitialControls)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -169,7 +169,7 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(InkDrawingAttributes), typeof(global::Windows.UI.Input.Inking.InkDrawingAttributes), 
 			typeof(global::Windows.UI.Xaml.Controls.InkToolbar), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Input.Inking.InkDrawingAttributes)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Input.Inking.InkDrawingAttributes)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -177,7 +177,7 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(IsRulerButtonChecked), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.InkToolbar), 
-			new FrameworkPropertyMetadata(default(bool)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -185,7 +185,7 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(TargetInkCanvas), typeof(global::Windows.UI.Xaml.Controls.InkCanvas), 
 			typeof(global::Windows.UI.Xaml.Controls.InkToolbar), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.InkCanvas)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.InkCanvas)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -193,7 +193,7 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(ButtonFlyoutPlacement), typeof(global::Windows.UI.Xaml.Controls.InkToolbarButtonFlyoutPlacement), 
 			typeof(global::Windows.UI.Xaml.Controls.InkToolbar), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.InkToolbarButtonFlyoutPlacement)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.InkToolbarButtonFlyoutPlacement)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -201,7 +201,7 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(IsStencilButtonChecked), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.InkToolbar), 
-			new FrameworkPropertyMetadata(default(bool)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -209,7 +209,7 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(Orientation), typeof(global::Windows.UI.Xaml.Controls.Orientation), 
 			typeof(global::Windows.UI.Xaml.Controls.InkToolbar), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.Orientation)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.Orientation)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -217,7 +217,7 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(TargetInkPresenter), typeof(global::Windows.UI.Input.Inking.InkPresenter), 
 			typeof(global::Windows.UI.Xaml.Controls.InkToolbar), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Input.Inking.InkPresenter)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Input.Inking.InkPresenter)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]

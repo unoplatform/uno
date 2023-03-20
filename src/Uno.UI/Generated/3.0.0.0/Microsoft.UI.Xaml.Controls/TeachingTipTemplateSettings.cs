@@ -55,7 +55,7 @@ namespace Microsoft.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(IconElement), typeof(global::Windows.UI.Xaml.Controls.IconElement), 
 			typeof(global::Microsoft.UI.Xaml.Controls.TeachingTipTemplateSettings), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.IconElement)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.IconElement)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -63,7 +63,7 @@ namespace Microsoft.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(TopLeftHighlightMargin), typeof(global::Windows.UI.Xaml.Thickness), 
 			typeof(global::Microsoft.UI.Xaml.Controls.TeachingTipTemplateSettings), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Thickness)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Thickness)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -71,7 +71,7 @@ namespace Microsoft.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(TopRightHighlightMargin), typeof(global::Windows.UI.Xaml.Thickness), 
 			typeof(global::Microsoft.UI.Xaml.Controls.TeachingTipTemplateSettings), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Thickness)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Thickness)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]

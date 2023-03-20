@@ -147,7 +147,7 @@ namespace Microsoft.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(AutoPlay), typeof(bool), 
 			typeof(global::Microsoft.UI.Xaml.Controls.AnimatedVisualPlayer), 
-			new FrameworkPropertyMetadata(default(bool)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -155,7 +155,7 @@ namespace Microsoft.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(Diagnostics), typeof(object), 
 			typeof(global::Microsoft.UI.Xaml.Controls.AnimatedVisualPlayer), 
-			new FrameworkPropertyMetadata(default(object)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(object)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -163,7 +163,7 @@ namespace Microsoft.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(Duration), typeof(global::System.TimeSpan), 
 			typeof(global::Microsoft.UI.Xaml.Controls.AnimatedVisualPlayer), 
-			new FrameworkPropertyMetadata(default(global::System.TimeSpan)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::System.TimeSpan)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -171,7 +171,7 @@ namespace Microsoft.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(FallbackContent), typeof(global::Windows.UI.Xaml.DataTemplate), 
 			typeof(global::Microsoft.UI.Xaml.Controls.AnimatedVisualPlayer), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DataTemplate)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DataTemplate)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -179,7 +179,7 @@ namespace Microsoft.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(IsAnimatedVisualLoaded), typeof(bool), 
 			typeof(global::Microsoft.UI.Xaml.Controls.AnimatedVisualPlayer), 
-			new FrameworkPropertyMetadata(default(bool)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -187,7 +187,7 @@ namespace Microsoft.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(IsPlaying), typeof(bool), 
 			typeof(global::Microsoft.UI.Xaml.Controls.AnimatedVisualPlayer), 
-			new FrameworkPropertyMetadata(default(bool)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -195,7 +195,7 @@ namespace Microsoft.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(PlaybackRate), typeof(double), 
 			typeof(global::Microsoft.UI.Xaml.Controls.AnimatedVisualPlayer), 
-			new FrameworkPropertyMetadata(default(double)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -203,7 +203,7 @@ namespace Microsoft.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(Source), typeof(global::Microsoft.UI.Xaml.Controls.IAnimatedVisualSource), 
 			typeof(global::Microsoft.UI.Xaml.Controls.AnimatedVisualPlayer), 
-			new FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Controls.IAnimatedVisualSource)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Controls.IAnimatedVisualSource)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -211,7 +211,7 @@ namespace Microsoft.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(Stretch), typeof(global::Windows.UI.Xaml.Media.Stretch), 
 			typeof(global::Microsoft.UI.Xaml.Controls.AnimatedVisualPlayer), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Stretch)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Stretch)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -219,7 +219,7 @@ namespace Microsoft.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(AnimationOptimization), typeof(global::Microsoft.UI.Xaml.Controls.PlayerAnimationOptimization), 
 			typeof(global::Microsoft.UI.Xaml.Controls.AnimatedVisualPlayer), 
-			new FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Controls.PlayerAnimationOptimization)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Controls.PlayerAnimationOptimization)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]

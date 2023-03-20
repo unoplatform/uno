@@ -209,7 +209,7 @@ namespace Microsoft.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(Child), typeof(global::Windows.UI.Xaml.UIElement), 
 			typeof(global::Microsoft.UI.Xaml.Controls.ParallaxView), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.UIElement)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.UIElement)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -217,7 +217,7 @@ namespace Microsoft.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(HorizontalShift), typeof(double), 
 			typeof(global::Microsoft.UI.Xaml.Controls.ParallaxView), 
-			new FrameworkPropertyMetadata(default(double)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -225,7 +225,7 @@ namespace Microsoft.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(HorizontalSourceEndOffset), typeof(double), 
 			typeof(global::Microsoft.UI.Xaml.Controls.ParallaxView), 
-			new FrameworkPropertyMetadata(default(double)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -233,7 +233,7 @@ namespace Microsoft.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(HorizontalSourceOffsetKind), typeof(global::Microsoft.UI.Xaml.Controls.ParallaxSourceOffsetKind), 
 			typeof(global::Microsoft.UI.Xaml.Controls.ParallaxView), 
-			new FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Controls.ParallaxSourceOffsetKind)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Controls.ParallaxSourceOffsetKind)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -241,7 +241,7 @@ namespace Microsoft.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(HorizontalSourceStartOffset), typeof(double), 
 			typeof(global::Microsoft.UI.Xaml.Controls.ParallaxView), 
-			new FrameworkPropertyMetadata(default(double)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -249,7 +249,7 @@ namespace Microsoft.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(IsHorizontalShiftClamped), typeof(bool), 
 			typeof(global::Microsoft.UI.Xaml.Controls.ParallaxView), 
-			new FrameworkPropertyMetadata(default(bool)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -257,7 +257,7 @@ namespace Microsoft.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(IsVerticalShiftClamped), typeof(bool), 
 			typeof(global::Microsoft.UI.Xaml.Controls.ParallaxView), 
-			new FrameworkPropertyMetadata(default(bool)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -265,7 +265,7 @@ namespace Microsoft.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(MaxHorizontalShiftRatio), typeof(double), 
 			typeof(global::Microsoft.UI.Xaml.Controls.ParallaxView), 
-			new FrameworkPropertyMetadata(default(double)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -273,7 +273,7 @@ namespace Microsoft.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(MaxVerticalShiftRatio), typeof(double), 
 			typeof(global::Microsoft.UI.Xaml.Controls.ParallaxView), 
-			new FrameworkPropertyMetadata(default(double)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -281,7 +281,7 @@ namespace Microsoft.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(Source), typeof(global::Windows.UI.Xaml.UIElement), 
 			typeof(global::Microsoft.UI.Xaml.Controls.ParallaxView), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.UIElement)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.UIElement)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -289,7 +289,7 @@ namespace Microsoft.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(VerticalShift), typeof(double), 
 			typeof(global::Microsoft.UI.Xaml.Controls.ParallaxView), 
-			new FrameworkPropertyMetadata(default(double)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -297,7 +297,7 @@ namespace Microsoft.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(VerticalSourceEndOffset), typeof(double), 
 			typeof(global::Microsoft.UI.Xaml.Controls.ParallaxView), 
-			new FrameworkPropertyMetadata(default(double)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -305,7 +305,7 @@ namespace Microsoft.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(VerticalSourceOffsetKind), typeof(global::Microsoft.UI.Xaml.Controls.ParallaxSourceOffsetKind), 
 			typeof(global::Microsoft.UI.Xaml.Controls.ParallaxView), 
-			new FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Controls.ParallaxSourceOffsetKind)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Controls.ParallaxSourceOffsetKind)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -313,7 +313,7 @@ namespace Microsoft.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(VerticalSourceStartOffset), typeof(double), 
 			typeof(global::Microsoft.UI.Xaml.Controls.ParallaxView), 
-			new FrameworkPropertyMetadata(default(double)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]

@@ -501,7 +501,7 @@ namespace Windows.UI.Xaml
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(IsDoubleTapEnabled), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.UIElement), 
-			new FrameworkPropertyMetadata(default(bool)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -509,7 +509,7 @@ namespace Windows.UI.Xaml
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(IsHoldingEnabled), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.UIElement), 
-			new FrameworkPropertyMetadata(default(bool)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -517,7 +517,7 @@ namespace Windows.UI.Xaml
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(IsRightTapEnabled), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.UIElement), 
-			new FrameworkPropertyMetadata(default(bool)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 		#endif
 		// Skipping already declared property KeyDownEvent
 		// Skipping already declared property KeyUpEvent
@@ -529,7 +529,7 @@ namespace Windows.UI.Xaml
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(IsTapEnabled), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.UIElement), 
-			new FrameworkPropertyMetadata(default(bool)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 		#endif
 		// Skipping already declared property ManipulationInertiaStartingEvent
 		// Skipping already declared property ManipulationModeProperty
@@ -549,7 +549,7 @@ namespace Windows.UI.Xaml
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(Projection), typeof(global::Windows.UI.Xaml.Media.Projection), 
 			typeof(global::Windows.UI.Xaml.UIElement), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Projection)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Projection)));
 		#endif
 		// Skipping already declared property RightTappedEvent
 		// Skipping already declared property DragEnterEvent
@@ -560,7 +560,7 @@ namespace Windows.UI.Xaml
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(UseLayoutRounding), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.UIElement), 
-			new FrameworkPropertyMetadata(default(bool)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 		#endif
 		// Skipping already declared property AllowDropProperty
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -569,7 +569,7 @@ namespace Windows.UI.Xaml
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(CacheMode), typeof(global::Windows.UI.Xaml.Media.CacheMode), 
 			typeof(global::Windows.UI.Xaml.UIElement), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.CacheMode)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.CacheMode)));
 		#endif
 		// Skipping already declared property ClipProperty
 		// Skipping already declared property DoubleTappedEvent
@@ -584,7 +584,7 @@ namespace Windows.UI.Xaml
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(CompositeMode), typeof(global::Windows.UI.Xaml.Media.ElementCompositeMode), 
 			typeof(global::Windows.UI.Xaml.UIElement), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.ElementCompositeMode)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.ElementCompositeMode)));
 		#endif
 		// Skipping already declared property CanDragProperty
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -593,7 +593,7 @@ namespace Windows.UI.Xaml
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(Transform3D), typeof(global::Windows.UI.Xaml.Media.Media3D.Transform3D), 
 			typeof(global::Windows.UI.Xaml.UIElement), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Media3D.Transform3D)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Media3D.Transform3D)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -601,7 +601,7 @@ namespace Windows.UI.Xaml
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(AccessKey), typeof(string), 
 			typeof(global::Windows.UI.Xaml.UIElement), 
-			new FrameworkPropertyMetadata(default(string)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(string)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -609,7 +609,7 @@ namespace Windows.UI.Xaml
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(AccessKeyScopeOwner), typeof(global::Windows.UI.Xaml.DependencyObject), 
 			typeof(global::Windows.UI.Xaml.UIElement), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DependencyObject)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DependencyObject)));
 		#endif
 		// Skipping already declared property ContextFlyoutProperty
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -618,7 +618,7 @@ namespace Windows.UI.Xaml
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(IsAccessKeyScope), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.UIElement), 
-			new FrameworkPropertyMetadata(default(bool)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -626,7 +626,7 @@ namespace Windows.UI.Xaml
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(ExitDisplayModeOnAccessKeyInvoked), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.UIElement), 
-			new FrameworkPropertyMetadata(default(bool)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -634,7 +634,7 @@ namespace Windows.UI.Xaml
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(HighContrastAdjustment), typeof(global::Windows.UI.Xaml.ElementHighContrastAdjustment), 
 			typeof(global::Windows.UI.Xaml.UIElement), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.ElementHighContrastAdjustment)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.ElementHighContrastAdjustment)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -642,7 +642,7 @@ namespace Windows.UI.Xaml
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(KeyTipHorizontalOffset), typeof(double), 
 			typeof(global::Windows.UI.Xaml.UIElement), 
-			new FrameworkPropertyMetadata(default(double)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -650,7 +650,7 @@ namespace Windows.UI.Xaml
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(KeyTipPlacementMode), typeof(global::Windows.UI.Xaml.Input.KeyTipPlacementMode), 
 			typeof(global::Windows.UI.Xaml.UIElement), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Input.KeyTipPlacementMode)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Input.KeyTipPlacementMode)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -658,7 +658,7 @@ namespace Windows.UI.Xaml
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(KeyTipVerticalOffset), typeof(double), 
 			typeof(global::Windows.UI.Xaml.UIElement), 
-			new FrameworkPropertyMetadata(default(double)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -666,7 +666,7 @@ namespace Windows.UI.Xaml
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(Lights), typeof(global::System.Collections.Generic.IList<global::Windows.UI.Xaml.Media.XamlLight>), 
 			typeof(global::Windows.UI.Xaml.UIElement), 
-			new FrameworkPropertyMetadata(default(global::System.Collections.Generic.IList<global::Windows.UI.Xaml.Media.XamlLight>)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::System.Collections.Generic.IList<global::Windows.UI.Xaml.Media.XamlLight>)));
 		#endif
 		// Skipping already declared property XYFocusDownNavigationStrategyProperty
 		// Skipping already declared property XYFocusKeyboardNavigationProperty
@@ -724,7 +724,7 @@ namespace Windows.UI.Xaml
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(KeyTipTarget), typeof(global::Windows.UI.Xaml.DependencyObject), 
 			typeof(global::Windows.UI.Xaml.UIElement), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DependencyObject)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DependencyObject)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -732,7 +732,7 @@ namespace Windows.UI.Xaml
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(KeyboardAcceleratorPlacementMode), typeof(global::Windows.UI.Xaml.Input.KeyboardAcceleratorPlacementMode), 
 			typeof(global::Windows.UI.Xaml.UIElement), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Input.KeyboardAcceleratorPlacementMode)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Input.KeyboardAcceleratorPlacementMode)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -740,7 +740,7 @@ namespace Windows.UI.Xaml
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(KeyboardAcceleratorPlacementTarget), typeof(global::Windows.UI.Xaml.DependencyObject), 
 			typeof(global::Windows.UI.Xaml.UIElement), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DependencyObject)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DependencyObject)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -748,7 +748,7 @@ namespace Windows.UI.Xaml
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(CanBeScrollAnchor), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.UIElement), 
-			new FrameworkPropertyMetadata(default(bool)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.UIElement.DesiredSize.get
 		// Forced skipping of method Windows.UI.Xaml.UIElement.AllowDrop.get

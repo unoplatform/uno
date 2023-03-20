@@ -59,7 +59,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(AutoReverse), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Media.Animation.Timeline), 
-			new FrameworkPropertyMetadata(default(bool)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 		#endif
 		// Skipping already declared property BeginTimeProperty
 		// Skipping already declared property DurationProperty
@@ -71,7 +71,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(SpeedRatio), typeof(double), 
 			typeof(global::Windows.UI.Xaml.Media.Animation.Timeline), 
-			new FrameworkPropertyMetadata(default(double)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 		#endif
 		// Skipping already declared method Windows.UI.Xaml.Media.Animation.Timeline.Timeline()
 		// Forced skipping of method Windows.UI.Xaml.Media.Animation.Timeline.Timeline()

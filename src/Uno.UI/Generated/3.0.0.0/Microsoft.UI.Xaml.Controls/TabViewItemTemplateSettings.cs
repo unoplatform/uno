@@ -29,7 +29,7 @@ namespace Microsoft.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(TabGeometry), typeof(global::Windows.UI.Xaml.Media.Geometry), 
 			typeof(global::Microsoft.UI.Xaml.Controls.TabViewItemTemplateSettings), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Geometry)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Geometry)));
 		#endif
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.TabViewItemTemplateSettings.TabViewItemTemplateSettings()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewItemTemplateSettings.TabViewItemTemplateSettings()

@@ -135,7 +135,7 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(DisplayMemberPath), typeof(string), 
 			typeof(global::Windows.UI.Xaml.Controls.ListPickerFlyout), 
-			new FrameworkPropertyMetadata(default(string)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(string)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -143,7 +143,7 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(ItemTemplate), typeof(global::Windows.UI.Xaml.DataTemplate), 
 			typeof(global::Windows.UI.Xaml.Controls.ListPickerFlyout), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DataTemplate)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DataTemplate)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -151,7 +151,7 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(ItemsSource), typeof(object), 
 			typeof(global::Windows.UI.Xaml.Controls.ListPickerFlyout), 
-			new FrameworkPropertyMetadata(default(object)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(object)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -159,7 +159,7 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(SelectedIndex), typeof(int), 
 			typeof(global::Windows.UI.Xaml.Controls.ListPickerFlyout), 
-			new FrameworkPropertyMetadata(default(int)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(int)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -167,7 +167,7 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(SelectedItem), typeof(object), 
 			typeof(global::Windows.UI.Xaml.Controls.ListPickerFlyout), 
-			new FrameworkPropertyMetadata(default(object)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(object)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -175,7 +175,7 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(SelectedValuePath), typeof(string), 
 			typeof(global::Windows.UI.Xaml.Controls.ListPickerFlyout), 
-			new FrameworkPropertyMetadata(default(string)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(string)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -183,7 +183,7 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(SelectedValue), typeof(object), 
 			typeof(global::Windows.UI.Xaml.Controls.ListPickerFlyout), 
-			new FrameworkPropertyMetadata(default(object)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(object)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -191,7 +191,7 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(SelectionMode), typeof(global::Windows.UI.Xaml.Controls.ListPickerFlyoutSelectionMode), 
 			typeof(global::Windows.UI.Xaml.Controls.ListPickerFlyout), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.ListPickerFlyoutSelectionMode)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.ListPickerFlyoutSelectionMode)));
 		#endif
 		// Skipping already declared method Windows.UI.Xaml.Controls.ListPickerFlyout.ListPickerFlyout()
 		// Forced skipping of method Windows.UI.Xaml.Controls.ListPickerFlyout.ListPickerFlyout()

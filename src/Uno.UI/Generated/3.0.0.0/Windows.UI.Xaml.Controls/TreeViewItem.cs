@@ -135,7 +135,7 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(CollapsedGlyph), typeof(string), 
 			typeof(global::Windows.UI.Xaml.Controls.TreeViewItem), 
-			new FrameworkPropertyMetadata(default(string)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(string)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -143,7 +143,7 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(ExpandedGlyph), typeof(string), 
 			typeof(global::Windows.UI.Xaml.Controls.TreeViewItem), 
-			new FrameworkPropertyMetadata(default(string)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(string)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -151,7 +151,7 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(GlyphBrush), typeof(global::Windows.UI.Xaml.Media.Brush), 
 			typeof(global::Windows.UI.Xaml.Controls.TreeViewItem), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -159,7 +159,7 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(GlyphOpacity), typeof(double), 
 			typeof(global::Windows.UI.Xaml.Controls.TreeViewItem), 
-			new FrameworkPropertyMetadata(default(double)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -167,7 +167,7 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(GlyphSize), typeof(double), 
 			typeof(global::Windows.UI.Xaml.Controls.TreeViewItem), 
-			new FrameworkPropertyMetadata(default(double)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -175,7 +175,7 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(IsExpanded), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.TreeViewItem), 
-			new FrameworkPropertyMetadata(default(bool)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -183,7 +183,7 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(TreeViewItemTemplateSettings), typeof(global::Windows.UI.Xaml.Controls.TreeViewItemTemplateSettings), 
 			typeof(global::Windows.UI.Xaml.Controls.TreeViewItem), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.TreeViewItemTemplateSettings)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.TreeViewItemTemplateSettings)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -191,7 +191,7 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(HasUnrealizedChildren), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.TreeViewItem), 
-			new FrameworkPropertyMetadata(default(bool)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -199,7 +199,7 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(ItemsSource), typeof(object), 
 			typeof(global::Windows.UI.Xaml.Controls.TreeViewItem), 
-			new FrameworkPropertyMetadata(default(object)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(object)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]

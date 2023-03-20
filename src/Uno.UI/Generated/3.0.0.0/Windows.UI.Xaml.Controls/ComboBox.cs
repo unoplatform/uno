@@ -140,7 +140,7 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(IsTextSearchEnabled), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.ComboBox), 
-			new FrameworkPropertyMetadata(default(bool)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 		#endif
 		// Skipping already declared property LightDismissOverlayModeProperty
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -149,7 +149,7 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(SelectionChangedTrigger), typeof(global::Windows.UI.Xaml.Controls.ComboBoxSelectionChangedTrigger), 
 			typeof(global::Windows.UI.Xaml.Controls.ComboBox), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.ComboBoxSelectionChangedTrigger)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.ComboBoxSelectionChangedTrigger)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -157,7 +157,7 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(PlaceholderForeground), typeof(global::Windows.UI.Xaml.Media.Brush), 
 			typeof(global::Windows.UI.Xaml.Controls.ComboBox), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
 		#endif
 		// Skipping already declared property DescriptionProperty
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -166,7 +166,7 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(IsEditable), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.ComboBox), 
-			new FrameworkPropertyMetadata(default(bool)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -174,7 +174,7 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(TextBoxStyle), typeof(global::Windows.UI.Xaml.Style), 
 			typeof(global::Windows.UI.Xaml.Controls.ComboBox), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Style)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Style)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -182,7 +182,7 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(Text), typeof(string), 
 			typeof(global::Windows.UI.Xaml.Controls.ComboBox), 
-			new FrameworkPropertyMetadata(default(string)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(string)));
 		#endif
 		// Skipping already declared method Windows.UI.Xaml.Controls.ComboBox.ComboBox()
 		// Forced skipping of method Windows.UI.Xaml.Controls.ComboBox.ComboBox()

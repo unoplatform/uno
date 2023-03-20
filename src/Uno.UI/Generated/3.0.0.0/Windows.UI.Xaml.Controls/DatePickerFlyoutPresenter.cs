@@ -27,7 +27,7 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(IsDefaultShadowEnabled), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.DatePickerFlyoutPresenter), 
-			new FrameworkPropertyMetadata(default(bool)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Controls.DatePickerFlyoutPresenter.IsDefaultShadowEnabled.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.DatePickerFlyoutPresenter.IsDefaultShadowEnabled.set

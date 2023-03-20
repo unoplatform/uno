@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Automation
 		Windows.UI.Xaml.DependencyProperty.RegisterAttached(
 			"AcceleratorKey", typeof(string), 
 			typeof(global::Windows.UI.Xaml.Automation.AutomationProperties), 
-			new FrameworkPropertyMetadata(default(string)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(string)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -21,7 +21,7 @@ namespace Windows.UI.Xaml.Automation
 		Windows.UI.Xaml.DependencyProperty.RegisterAttached(
 			"AccessKey", typeof(string), 
 			typeof(global::Windows.UI.Xaml.Automation.AutomationProperties), 
-			new FrameworkPropertyMetadata(default(string)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(string)));
 		#endif
 		// Skipping already declared property AutomationIdProperty
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -30,7 +30,7 @@ namespace Windows.UI.Xaml.Automation
 		Windows.UI.Xaml.DependencyProperty.RegisterAttached(
 			"HelpText", typeof(string), 
 			typeof(global::Windows.UI.Xaml.Automation.AutomationProperties), 
-			new FrameworkPropertyMetadata(default(string)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(string)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -38,7 +38,7 @@ namespace Windows.UI.Xaml.Automation
 		Windows.UI.Xaml.DependencyProperty.RegisterAttached(
 			"IsRequiredForForm", typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Automation.AutomationProperties), 
-			new FrameworkPropertyMetadata(default(bool)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -46,7 +46,7 @@ namespace Windows.UI.Xaml.Automation
 		Windows.UI.Xaml.DependencyProperty.RegisterAttached(
 			"ItemStatus", typeof(string), 
 			typeof(global::Windows.UI.Xaml.Automation.AutomationProperties), 
-			new FrameworkPropertyMetadata(default(string)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(string)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -54,7 +54,7 @@ namespace Windows.UI.Xaml.Automation
 		Windows.UI.Xaml.DependencyProperty.RegisterAttached(
 			"ItemType", typeof(string), 
 			typeof(global::Windows.UI.Xaml.Automation.AutomationProperties), 
-			new FrameworkPropertyMetadata(default(string)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(string)));
 		#endif
 		// Skipping already declared property LabeledByProperty
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -63,7 +63,7 @@ namespace Windows.UI.Xaml.Automation
 		Windows.UI.Xaml.DependencyProperty.RegisterAttached(
 			"LiveSetting", typeof(global::Windows.UI.Xaml.Automation.Peers.AutomationLiveSetting), 
 			typeof(global::Windows.UI.Xaml.Automation.AutomationProperties), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Automation.Peers.AutomationLiveSetting)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Automation.Peers.AutomationLiveSetting)));
 		#endif
 		// Skipping already declared property NameProperty
 		// Skipping already declared property AccessibilityViewProperty
@@ -73,7 +73,7 @@ namespace Windows.UI.Xaml.Automation
 		Windows.UI.Xaml.DependencyProperty.RegisterAttached(
 			"ControlledPeers", typeof(global::System.Collections.Generic.IList<global::Windows.UI.Xaml.UIElement>), 
 			typeof(global::Windows.UI.Xaml.Automation.AutomationProperties), 
-			new FrameworkPropertyMetadata(default(global::System.Collections.Generic.IList<global::Windows.UI.Xaml.UIElement>)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::System.Collections.Generic.IList<global::Windows.UI.Xaml.UIElement>)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -81,7 +81,7 @@ namespace Windows.UI.Xaml.Automation
 		Windows.UI.Xaml.DependencyProperty.RegisterAttached(
 			"Annotations", typeof(global::System.Collections.Generic.IList<global::Windows.UI.Xaml.Automation.AutomationAnnotation>), 
 			typeof(global::Windows.UI.Xaml.Automation.AutomationProperties), 
-			new FrameworkPropertyMetadata(default(global::System.Collections.Generic.IList<global::Windows.UI.Xaml.Automation.AutomationAnnotation>)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::System.Collections.Generic.IList<global::Windows.UI.Xaml.Automation.AutomationAnnotation>)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -89,7 +89,7 @@ namespace Windows.UI.Xaml.Automation
 		Windows.UI.Xaml.DependencyProperty.RegisterAttached(
 			"Level", typeof(int), 
 			typeof(global::Windows.UI.Xaml.Automation.AutomationProperties), 
-			new FrameworkPropertyMetadata(default(int)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(int)));
 		#endif
 		// Skipping already declared property PositionInSetProperty
 		// Skipping already declared property SizeOfSetProperty
@@ -100,7 +100,7 @@ namespace Windows.UI.Xaml.Automation
 		Windows.UI.Xaml.DependencyProperty.RegisterAttached(
 			"LocalizedLandmarkType", typeof(string), 
 			typeof(global::Windows.UI.Xaml.Automation.AutomationProperties), 
-			new FrameworkPropertyMetadata(default(string)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(string)));
 		#endif
 		// Skipping already declared property DescribedByProperty
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -109,7 +109,7 @@ namespace Windows.UI.Xaml.Automation
 		Windows.UI.Xaml.DependencyProperty.RegisterAttached(
 			"FlowsFrom", typeof(global::System.Collections.Generic.IList<global::Windows.UI.Xaml.DependencyObject>), 
 			typeof(global::Windows.UI.Xaml.Automation.AutomationProperties), 
-			new FrameworkPropertyMetadata(default(global::System.Collections.Generic.IList<global::Windows.UI.Xaml.DependencyObject>)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::System.Collections.Generic.IList<global::Windows.UI.Xaml.DependencyObject>)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -117,7 +117,7 @@ namespace Windows.UI.Xaml.Automation
 		Windows.UI.Xaml.DependencyProperty.RegisterAttached(
 			"FlowsTo", typeof(global::System.Collections.Generic.IList<global::Windows.UI.Xaml.DependencyObject>), 
 			typeof(global::Windows.UI.Xaml.Automation.AutomationProperties), 
-			new FrameworkPropertyMetadata(default(global::System.Collections.Generic.IList<global::Windows.UI.Xaml.DependencyObject>)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::System.Collections.Generic.IList<global::Windows.UI.Xaml.DependencyObject>)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -125,7 +125,7 @@ namespace Windows.UI.Xaml.Automation
 		Windows.UI.Xaml.DependencyProperty.RegisterAttached(
 			"FullDescription", typeof(string), 
 			typeof(global::Windows.UI.Xaml.Automation.AutomationProperties), 
-			new FrameworkPropertyMetadata(default(string)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(string)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -133,7 +133,7 @@ namespace Windows.UI.Xaml.Automation
 		Windows.UI.Xaml.DependencyProperty.RegisterAttached(
 			"IsDataValidForForm", typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Automation.AutomationProperties), 
-			new FrameworkPropertyMetadata(default(bool)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -141,7 +141,7 @@ namespace Windows.UI.Xaml.Automation
 		Windows.UI.Xaml.DependencyProperty.RegisterAttached(
 			"IsPeripheral", typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Automation.AutomationProperties), 
-			new FrameworkPropertyMetadata(default(bool)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 		#endif
 		// Skipping already declared property LocalizedControlTypeProperty
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -150,7 +150,7 @@ namespace Windows.UI.Xaml.Automation
 		Windows.UI.Xaml.DependencyProperty.RegisterAttached(
 			"Culture", typeof(int), 
 			typeof(global::Windows.UI.Xaml.Automation.AutomationProperties), 
-			new FrameworkPropertyMetadata(default(int)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(int)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -158,7 +158,7 @@ namespace Windows.UI.Xaml.Automation
 		Windows.UI.Xaml.DependencyProperty.RegisterAttached(
 			"HeadingLevel", typeof(global::Windows.UI.Xaml.Automation.Peers.AutomationHeadingLevel), 
 			typeof(global::Windows.UI.Xaml.Automation.AutomationProperties), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Automation.Peers.AutomationHeadingLevel)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Automation.Peers.AutomationHeadingLevel)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -166,7 +166,7 @@ namespace Windows.UI.Xaml.Automation
 		Windows.UI.Xaml.DependencyProperty.RegisterAttached(
 			"IsDialog", typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Automation.AutomationProperties), 
-			new FrameworkPropertyMetadata(default(bool)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -174,7 +174,7 @@ namespace Windows.UI.Xaml.Automation
 		Windows.UI.Xaml.DependencyProperty.RegisterAttached(
 			"AutomationControlType", typeof(global::Windows.UI.Xaml.Automation.Peers.AutomationControlType), 
 			typeof(global::Windows.UI.Xaml.Automation.AutomationProperties), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Automation.Peers.AutomationControlType)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Automation.Peers.AutomationControlType)));
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Automation.AutomationProperties.AutomationControlTypeProperty.get
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

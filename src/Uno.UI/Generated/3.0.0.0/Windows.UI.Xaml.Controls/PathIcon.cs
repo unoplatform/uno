@@ -27,7 +27,7 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(Data), typeof(global::Windows.UI.Xaml.Media.Geometry), 
 			typeof(global::Windows.UI.Xaml.Controls.PathIcon), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Geometry)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Geometry)));
 		#endif
 		#if false || false || false || false || false || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]

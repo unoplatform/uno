@@ -39,7 +39,7 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(MirroredWhenRightToLeft), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.FontIcon), 
-			new FrameworkPropertyMetadata(default(bool)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 		#endif
 		// Skipping already declared method Windows.UI.Xaml.Controls.FontIcon.FontIcon()
 		// Forced skipping of method Windows.UI.Xaml.Controls.FontIcon.FontIcon()

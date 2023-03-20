@@ -23,7 +23,7 @@ namespace Windows.UI.Xaml.Printing
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(DocumentSource), typeof(global::Windows.Graphics.Printing.IPrintDocumentSource), 
 			typeof(global::Windows.UI.Xaml.Printing.PrintDocument), 
-			new FrameworkPropertyMetadata(default(global::Windows.Graphics.Printing.IPrintDocumentSource)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.Graphics.Printing.IPrintDocumentSource)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]

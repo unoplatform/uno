@@ -61,7 +61,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(ChildTransitions), typeof(global::Windows.UI.Xaml.Media.Animation.TransitionCollection), 
 			typeof(global::Windows.UI.Xaml.Controls.Primitives.Popup), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Animation.TransitionCollection)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Animation.TransitionCollection)));
 		#endif
 		// Skipping already declared property HorizontalOffsetProperty
 		// Skipping already declared property IsLightDismissEnabledProperty
@@ -74,7 +74,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(ShouldConstrainToRootBounds), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.Primitives.Popup), 
-			new FrameworkPropertyMetadata(default(bool)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 		#endif
 		// Skipping already declared property DesiredPlacementProperty
 		// Skipping already declared property PlacementTargetProperty

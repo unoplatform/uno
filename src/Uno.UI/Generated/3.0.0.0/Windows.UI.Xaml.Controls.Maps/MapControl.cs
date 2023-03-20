@@ -128,7 +128,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(CanTiltUp), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.Maps.MapControl), 
-			new FrameworkPropertyMetadata(default(bool)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -136,7 +136,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(CanZoomIn), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.Maps.MapControl), 
-			new FrameworkPropertyMetadata(default(bool)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -144,7 +144,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(CanZoomOut), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.Maps.MapControl), 
-			new FrameworkPropertyMetadata(default(bool)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -152,7 +152,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(CanTiltDown), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.Maps.MapControl), 
-			new FrameworkPropertyMetadata(default(bool)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 		#endif
 		// Skipping already declared method Windows.UI.Xaml.Controls.Maps.MapControl.MapControl()
 		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.MapControl.MapControl()

@@ -13,7 +13,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		Windows.UI.Xaml.DependencyProperty.RegisterAttached(
 			"ControlType", typeof(global::Windows.UI.Xaml.Automation.Peers.AutomationControlType), 
 			typeof(global::Microsoft.UI.Xaml.Controls.Primitives.CommandBarFlyoutCommandBarAutomationProperties), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Automation.Peers.AutomationControlType)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Automation.Peers.AutomationControlType)));
 		#endif
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CommandBarFlyoutCommandBarAutomationProperties.ControlTypeProperty.get
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

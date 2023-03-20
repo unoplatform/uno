@@ -139,7 +139,7 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(AllowedScriptNotifyUris), typeof(global::System.Collections.Generic.IList<global::System.Uri>), 
 			typeof(global::Windows.UI.Xaml.Controls.WebView), 
-			new FrameworkPropertyMetadata(default(global::System.Collections.Generic.IList<global::System.Uri>)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::System.Collections.Generic.IList<global::System.Uri>)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -157,7 +157,7 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(DataTransferPackage), typeof(global::Windows.ApplicationModel.DataTransfer.DataPackage), 
 			typeof(global::Windows.UI.Xaml.Controls.WebView), 
-			new FrameworkPropertyMetadata(default(global::Windows.ApplicationModel.DataTransfer.DataPackage)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.ApplicationModel.DataTransfer.DataPackage)));
 		#endif
 		#if false || false || NET461 || false || false || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("NET461", "__NETSTD_REFERENCE__")]
@@ -165,7 +165,7 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(Source), typeof(global::System.Uri), 
 			typeof(global::Windows.UI.Xaml.Controls.WebView), 
-			new FrameworkPropertyMetadata(default(global::System.Uri)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::System.Uri)));
 		#endif
 		#if false || false || NET461 || false || false || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("NET461", "__NETSTD_REFERENCE__")]
@@ -173,7 +173,7 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(CanGoBack), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.WebView), 
-			new FrameworkPropertyMetadata(default(bool)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 		#endif
 		#if false || false || NET461 || false || false || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("NET461", "__NETSTD_REFERENCE__")]
@@ -181,7 +181,7 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(CanGoForward), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.WebView), 
-			new FrameworkPropertyMetadata(default(bool)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -189,7 +189,7 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(DefaultBackgroundColor), typeof(global::Windows.UI.Color), 
 			typeof(global::Windows.UI.Xaml.Controls.WebView), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Color)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Color)));
 		#endif
 		#if false || false || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
@@ -197,7 +197,7 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(DocumentTitle), typeof(string), 
 			typeof(global::Windows.UI.Xaml.Controls.WebView), 
-			new FrameworkPropertyMetadata(default(string)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(string)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -205,7 +205,7 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(ContainsFullScreenElement), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.WebView), 
-			new FrameworkPropertyMetadata(default(bool)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]

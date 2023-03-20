@@ -206,7 +206,7 @@ namespace Windows.UI.Xaml.Documents
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(FontStretch), typeof(global::Windows.UI.Text.FontStretch), 
 			typeof(global::Windows.UI.Xaml.Documents.TextElement), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Text.FontStretch)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Text.FontStretch)));
 		#endif
 		// Skipping already declared property FontStyleProperty
 		// Skipping already declared property FontWeightProperty
@@ -217,7 +217,7 @@ namespace Windows.UI.Xaml.Documents
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(Language), typeof(string), 
 			typeof(global::Windows.UI.Xaml.Documents.TextElement), 
-			new FrameworkPropertyMetadata(default(string)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(string)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -225,7 +225,7 @@ namespace Windows.UI.Xaml.Documents
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(IsTextScaleFactorEnabled), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Documents.TextElement), 
-			new FrameworkPropertyMetadata(default(bool)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -233,7 +233,7 @@ namespace Windows.UI.Xaml.Documents
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(AccessKey), typeof(string), 
 			typeof(global::Windows.UI.Xaml.Documents.TextElement), 
-			new FrameworkPropertyMetadata(default(string)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(string)));
 		#endif
 		// Skipping already declared property AllowFocusOnInteractionProperty
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -242,7 +242,7 @@ namespace Windows.UI.Xaml.Documents
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(ExitDisplayModeOnAccessKeyInvoked), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Documents.TextElement), 
-			new FrameworkPropertyMetadata(default(bool)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -250,7 +250,7 @@ namespace Windows.UI.Xaml.Documents
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(AccessKeyScopeOwner), typeof(global::Windows.UI.Xaml.DependencyObject), 
 			typeof(global::Windows.UI.Xaml.Documents.TextElement), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DependencyObject)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DependencyObject)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -258,7 +258,7 @@ namespace Windows.UI.Xaml.Documents
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(IsAccessKeyScope), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Documents.TextElement), 
-			new FrameworkPropertyMetadata(default(bool)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -266,7 +266,7 @@ namespace Windows.UI.Xaml.Documents
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(KeyTipHorizontalOffset), typeof(double), 
 			typeof(global::Windows.UI.Xaml.Documents.TextElement), 
-			new FrameworkPropertyMetadata(default(double)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -274,7 +274,7 @@ namespace Windows.UI.Xaml.Documents
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(KeyTipPlacementMode), typeof(global::Windows.UI.Xaml.Input.KeyTipPlacementMode), 
 			typeof(global::Windows.UI.Xaml.Documents.TextElement), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Input.KeyTipPlacementMode)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Input.KeyTipPlacementMode)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -282,7 +282,7 @@ namespace Windows.UI.Xaml.Documents
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(KeyTipVerticalOffset), typeof(double), 
 			typeof(global::Windows.UI.Xaml.Documents.TextElement), 
-			new FrameworkPropertyMetadata(default(double)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 		#endif
 		// Skipping already declared property TextDecorationsProperty
 		// Forced skipping of method Windows.UI.Xaml.Documents.TextElement.Name.get

@@ -41,7 +41,7 @@ namespace Microsoft.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(OpenPaneLength), typeof(double), 
 			typeof(global::Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings), 
-			new FrameworkPropertyMetadata(default(double)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 		#endif
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings.NavigationViewTemplateSettings()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings.NavigationViewTemplateSettings()

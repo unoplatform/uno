@@ -63,7 +63,7 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(GroupStyleSelector), typeof(global::Windows.UI.Xaml.Controls.GroupStyleSelector), 
 			typeof(global::Windows.UI.Xaml.Controls.ItemsControl), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.GroupStyleSelector)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.GroupStyleSelector)));
 		#endif
 		// Skipping already declared property IsGroupingProperty
 		// Skipping already declared property ItemContainerStyleProperty
@@ -74,7 +74,7 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(ItemContainerTransitions), typeof(global::Windows.UI.Xaml.Media.Animation.TransitionCollection), 
 			typeof(global::Windows.UI.Xaml.Controls.ItemsControl), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Animation.TransitionCollection)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Animation.TransitionCollection)));
 		#endif
 		// Skipping already declared property ItemTemplateProperty
 		// Skipping already declared property ItemTemplateSelectorProperty

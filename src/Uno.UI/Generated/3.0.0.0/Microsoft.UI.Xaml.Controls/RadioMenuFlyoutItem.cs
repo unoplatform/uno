@@ -5,7 +5,7 @@ namespace Microsoft.UI.Xaml.Controls
 	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
-	public  partial class RadioMenuFlyoutItem : global::Windows.UI.Xaml.Controls.MenuFlyoutItem
+	public  partial class RadioMenuFlyoutItem 
 	{
 		// Skipping already declared property IsChecked
 		// Skipping already declared property GroupName

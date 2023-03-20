@@ -41,7 +41,7 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(PullDirection), typeof(global::Windows.UI.Xaml.Controls.RefreshPullDirection), 
 			typeof(global::Windows.UI.Xaml.Controls.RefreshContainer), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.RefreshPullDirection)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.RefreshPullDirection)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -49,7 +49,7 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(Visualizer), typeof(global::Windows.UI.Xaml.Controls.RefreshVisualizer), 
 			typeof(global::Windows.UI.Xaml.Controls.RefreshContainer), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.RefreshVisualizer)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.RefreshVisualizer)));
 		#endif
 		// Skipping already declared method Windows.UI.Xaml.Controls.RefreshContainer.RefreshContainer()
 		// Forced skipping of method Windows.UI.Xaml.Controls.RefreshContainer.RefreshContainer()

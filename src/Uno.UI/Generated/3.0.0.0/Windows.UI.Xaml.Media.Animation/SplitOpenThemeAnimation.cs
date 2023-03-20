@@ -167,7 +167,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(ClosedLength), typeof(double), 
 			typeof(global::Windows.UI.Xaml.Media.Animation.SplitOpenThemeAnimation), 
-			new FrameworkPropertyMetadata(default(double)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -175,7 +175,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(ClosedTargetName), typeof(string), 
 			typeof(global::Windows.UI.Xaml.Media.Animation.SplitOpenThemeAnimation), 
-			new FrameworkPropertyMetadata(default(string)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(string)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -183,7 +183,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(ClosedTarget), typeof(global::Windows.UI.Xaml.DependencyObject), 
 			typeof(global::Windows.UI.Xaml.Media.Animation.SplitOpenThemeAnimation), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DependencyObject)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DependencyObject)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -191,7 +191,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(ContentTargetName), typeof(string), 
 			typeof(global::Windows.UI.Xaml.Media.Animation.SplitOpenThemeAnimation), 
-			new FrameworkPropertyMetadata(default(string)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(string)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -199,7 +199,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(ContentTarget), typeof(global::Windows.UI.Xaml.DependencyObject), 
 			typeof(global::Windows.UI.Xaml.Media.Animation.SplitOpenThemeAnimation), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DependencyObject)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DependencyObject)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -207,7 +207,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(ContentTranslationDirection), typeof(global::Windows.UI.Xaml.Controls.Primitives.AnimationDirection), 
 			typeof(global::Windows.UI.Xaml.Media.Animation.SplitOpenThemeAnimation), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.Primitives.AnimationDirection)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.Primitives.AnimationDirection)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -215,7 +215,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(ContentTranslationOffset), typeof(double), 
 			typeof(global::Windows.UI.Xaml.Media.Animation.SplitOpenThemeAnimation), 
-			new FrameworkPropertyMetadata(default(double)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -223,7 +223,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(OffsetFromCenter), typeof(double), 
 			typeof(global::Windows.UI.Xaml.Media.Animation.SplitOpenThemeAnimation), 
-			new FrameworkPropertyMetadata(default(double)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -231,7 +231,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(OpenedLength), typeof(double), 
 			typeof(global::Windows.UI.Xaml.Media.Animation.SplitOpenThemeAnimation), 
-			new FrameworkPropertyMetadata(default(double)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -239,7 +239,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(OpenedTargetName), typeof(string), 
 			typeof(global::Windows.UI.Xaml.Media.Animation.SplitOpenThemeAnimation), 
-			new FrameworkPropertyMetadata(default(string)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(string)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -247,7 +247,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(OpenedTarget), typeof(global::Windows.UI.Xaml.DependencyObject), 
 			typeof(global::Windows.UI.Xaml.Media.Animation.SplitOpenThemeAnimation), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DependencyObject)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DependencyObject)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]

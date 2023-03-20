@@ -27,7 +27,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(EasingFunction), typeof(global::Windows.UI.Xaml.Media.Animation.EasingFunctionBase), 
 			typeof(global::Windows.UI.Xaml.Media.Animation.EasingPointKeyFrame), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Animation.EasingFunctionBase)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Animation.EasingFunctionBase)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]

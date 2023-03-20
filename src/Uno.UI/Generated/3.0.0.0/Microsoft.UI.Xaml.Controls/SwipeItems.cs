@@ -37,7 +37,7 @@ namespace Microsoft.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(Mode), typeof(global::Microsoft.UI.Xaml.Controls.SwipeMode), 
 			typeof(global::Microsoft.UI.Xaml.Controls.SwipeItems), 
-			new FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Controls.SwipeMode)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Controls.SwipeMode)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]

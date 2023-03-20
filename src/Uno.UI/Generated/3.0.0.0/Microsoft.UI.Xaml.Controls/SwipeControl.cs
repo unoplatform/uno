@@ -69,7 +69,7 @@ namespace Microsoft.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(BottomItems), typeof(global::Microsoft.UI.Xaml.Controls.SwipeItems), 
 			typeof(global::Microsoft.UI.Xaml.Controls.SwipeControl), 
-			new FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Controls.SwipeItems)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Controls.SwipeItems)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -77,7 +77,7 @@ namespace Microsoft.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(LeftItems), typeof(global::Microsoft.UI.Xaml.Controls.SwipeItems), 
 			typeof(global::Microsoft.UI.Xaml.Controls.SwipeControl), 
-			new FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Controls.SwipeItems)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Controls.SwipeItems)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -85,7 +85,7 @@ namespace Microsoft.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(RightItems), typeof(global::Microsoft.UI.Xaml.Controls.SwipeItems), 
 			typeof(global::Microsoft.UI.Xaml.Controls.SwipeControl), 
-			new FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Controls.SwipeItems)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Controls.SwipeItems)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -93,7 +93,7 @@ namespace Microsoft.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(TopItems), typeof(global::Microsoft.UI.Xaml.Controls.SwipeItems), 
 			typeof(global::Microsoft.UI.Xaml.Controls.SwipeControl), 
-			new FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Controls.SwipeItems)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Controls.SwipeItems)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]

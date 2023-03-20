@@ -115,7 +115,7 @@ namespace Windows.UI.Xaml.Shapes
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(StrokeDashCap), typeof(global::Windows.UI.Xaml.Media.PenLineCap), 
 			typeof(global::Windows.UI.Xaml.Shapes.Shape), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.PenLineCap)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.PenLineCap)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -123,7 +123,7 @@ namespace Windows.UI.Xaml.Shapes
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(StrokeDashOffset), typeof(double), 
 			typeof(global::Windows.UI.Xaml.Shapes.Shape), 
-			new FrameworkPropertyMetadata(default(double)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -131,7 +131,7 @@ namespace Windows.UI.Xaml.Shapes
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(StrokeEndLineCap), typeof(global::Windows.UI.Xaml.Media.PenLineCap), 
 			typeof(global::Windows.UI.Xaml.Shapes.Shape), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.PenLineCap)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.PenLineCap)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -139,7 +139,7 @@ namespace Windows.UI.Xaml.Shapes
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(StrokeLineJoin), typeof(global::Windows.UI.Xaml.Media.PenLineJoin), 
 			typeof(global::Windows.UI.Xaml.Shapes.Shape), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.PenLineJoin)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.PenLineJoin)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -147,7 +147,7 @@ namespace Windows.UI.Xaml.Shapes
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(StrokeMiterLimit), typeof(double), 
 			typeof(global::Windows.UI.Xaml.Shapes.Shape), 
-			new FrameworkPropertyMetadata(default(double)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 		#endif
 		// Skipping already declared property StrokeProperty
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -156,7 +156,7 @@ namespace Windows.UI.Xaml.Shapes
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(StrokeStartLineCap), typeof(global::Windows.UI.Xaml.Media.PenLineCap), 
 			typeof(global::Windows.UI.Xaml.Shapes.Shape), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.PenLineCap)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.PenLineCap)));
 		#endif
 		// Skipping already declared property StrokeThicknessProperty
 		// Skipping already declared method Windows.UI.Xaml.Shapes.Shape.Shape()

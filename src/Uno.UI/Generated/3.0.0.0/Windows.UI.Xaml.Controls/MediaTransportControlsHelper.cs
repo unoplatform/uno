@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.RegisterAttached(
 			"DropoutOrder", typeof(int?), 
 			typeof(global::Windows.UI.Xaml.Controls.MediaTransportControlsHelper), 
-			new FrameworkPropertyMetadata(default(int?)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(int?)));
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Controls.MediaTransportControlsHelper.DropoutOrderProperty.get
 		#if false || false || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false
