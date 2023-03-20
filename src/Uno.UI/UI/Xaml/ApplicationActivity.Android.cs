@@ -149,43 +149,6 @@ namespace Windows.UI.Xaml
 				Windows.UI.Xaml.Application.Current.RaiseRecoverableUnhandledException(ex);
 			}
 
-			if (Uno.WinRTFeatureConfiguration.Focus.EnableExperimentalKeyboardFocus)
-			{
-				var focusHandler = Uno.UI.Xaml.Core.CoreServices.Instance.MainRootVisual.AssociatedVisualTree.UnoFocusInputHandler;
-				if (focusHandler != null && e.Action == KeyEventActions.Down)
-				{
-					if (e.KeyCode == Keycode.Tab)
-					{
-						var shift = e.Modifiers.HasFlag(MetaKeyStates.ShiftLeftOn) || e.Modifiers.HasFlag(MetaKeyStates.ShiftRightOn) || e.Modifiers.HasFlag(MetaKeyStates.ShiftOn);
-						handled = focusHandler.TryHandleTabFocus(shift);
-					}
-					else if (
-						e.KeyCode == Keycode.DpadUp ||
-						e.KeyCode == Keycode.SystemNavigationUp)
-					{
-						handled = focusHandler.TryHandleDirectionalFocus(VirtualKey.Up);
-					}
-					else if (
-						e.KeyCode == Keycode.DpadDown ||
-						e.KeyCode == Keycode.SystemNavigationDown)
-					{
-						handled = focusHandler.TryHandleDirectionalFocus(VirtualKey.Down);
-					}
-					else if (
-						e.KeyCode == Keycode.DpadRight ||
-						e.KeyCode == Keycode.SystemNavigationRight)
-					{
-						handled = focusHandler.TryHandleDirectionalFocus(VirtualKey.Right);
-					}
-					else if (
-						e.KeyCode == Keycode.DpadLeft ||
-						e.KeyCode == Keycode.SystemNavigationLeft)
-					{
-						handled = focusHandler.TryHandleDirectionalFocus(VirtualKey.Left);
-					}
-				}
-			}
-
 			if (Gamepad.TryHandleKeyEvent(e))
 			{
 				return true;

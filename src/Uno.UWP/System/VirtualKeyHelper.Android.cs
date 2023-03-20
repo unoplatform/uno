@@ -109,6 +109,20 @@ internal static class VirtualKeyHelper
 			//Keycode.RightArrow => VirtualKey.Right,
 			//Keycode.DownArrow => VirtualKey.Down,
 			//Keycode.UpArrow => VirtualKey.Up,
+
+			Keycode.ShiftLeft => VirtualKey.LeftShift,
+			Keycode.ShiftRight => VirtualKey.RightShift,
+
+			Keycode.SystemNavigationUp => VirtualKey.Up,
+			Keycode.SystemNavigationDown => VirtualKey.Down,
+			Keycode.SystemNavigationLeft => VirtualKey.Left,
+			Keycode.SystemNavigationRight => VirtualKey.Right,
+
+			Keycode.DpadUp => VirtualKey.GamepadDPadUp,
+			Keycode.DpadDown => VirtualKey.GamepadDPadDown,
+			Keycode.DpadLeft => VirtualKey.GamepadDPadLeft,
+			Keycode.DpadRight => VirtualKey.GamepadDPadRight,
+
 			_ => VirtualKey.None
 		};
 }
