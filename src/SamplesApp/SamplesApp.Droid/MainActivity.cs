@@ -23,13 +23,15 @@ namespace SamplesApp.Droid
 			WindowSoftInputMode = SoftInput.AdjustPan | SoftInput.StateHidden
 		)]
 	[IntentFilter(
+		new[] { Android.Content.Intent.ActionMain },
+		Categories = new[] { Android.Content.Intent.CategoryLauncher, Android.Content.Intent.CategoryLeanbackLauncher })]
+	[IntentFilter(
 		new[] {
 			Android.Content.Intent.ActionView
 		},
 		Categories = new[] {
 			Android.Content.Intent.CategoryDefault,
 			Android.Content.Intent.CategoryBrowsable,
-			Android.Content.Intent.CategoryLeanbackLauncher
 		},
 		DataScheme = "uno-samples-test")]
 	public class MainActivity : Windows.UI.Xaml.ApplicationActivity

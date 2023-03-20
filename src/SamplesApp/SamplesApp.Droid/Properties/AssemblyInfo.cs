@@ -43,3 +43,6 @@ using Android.App;
 [assembly: UsesPermission("android.permission.WRITE_EXTERNAL_STORAGE")]
 [assembly: UsesPermission("android.permission.CAMERA")]
 [assembly: UsesPermission("android.permission.RECORD_AUDIO")]
+
+[assembly: UsesFeature("android.software.leanback", Required = false)]
+[assembly: UsesFeature("android.hardware.touchscreen", Required = false)]
