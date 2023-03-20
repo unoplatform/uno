@@ -5,7 +5,7 @@ namespace Microsoft.Web.WebView2.Core;
 /// <summary>
 /// Event args for the NavigationCompleted event.
 /// </summary>
-public class CoreWebView2NavigationCompletedEventArgs : EventArgs
+public partial class CoreWebView2NavigationCompletedEventArgs : EventArgs
 {
 	internal CoreWebView2NavigationCompletedEventArgs(
 		ulong navigationId,

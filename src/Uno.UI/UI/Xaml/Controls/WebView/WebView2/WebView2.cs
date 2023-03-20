@@ -30,6 +30,8 @@ namespace Microsoft.UI.Xaml.Controls;
 #endif
 public partial class WebView2 : Control, IWebView
 {
+	private bool _coreWebView2Initialized;
+
 	/// <summary>
 	/// Initializes a new instance of the WebView2 class.
 	/// </summary>
@@ -45,6 +47,22 @@ public partial class WebView2 : Control, IWebView
 	protected override void OnApplyTemplate() => CoreWebView2.OnOwnerApplyTemplate();
 
 	private void WebView2_Loaded(object sender, Windows.UI.Xaml.RoutedEventArgs e) =>
-		CoreWebView2Initialized?.Invoke(this, new());
+		EnsureCoreWebView2();
+
+	public IAsyncAction EnsureCoreWebView2Async() =>
+		AsyncAction.FromTask(ct =>
+		{
+			EnsureCoreWebView2();
+			return Task.CompletedTask;
+		});
+
+	private void EnsureCoreWebView2()
+	{
+		if (!_coreWebView2Initialized)
+		{
+			CoreWebView2Initialized?.Invoke(this, new());
+			_coreWebView2Initialized = true;
+		}
+	}
 }
 #endif

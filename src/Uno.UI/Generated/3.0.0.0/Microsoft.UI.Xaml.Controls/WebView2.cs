@@ -16,8 +16,8 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.WebView2.WebView2()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.WebView2.WebView2()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.WebView2.CoreWebView2.get
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		#if false || false || NET461 || false || false || __NETSTD_REFERENCE__ || false
+		[global::Uno.NotImplemented("NET461", "__NETSTD_REFERENCE__")]
 		public  global::Windows.Foundation.IAsyncAction EnsureCoreWebView2Async()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction WebView2.EnsureCoreWebView2Async() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20WebView2.EnsureCoreWebView2Async%28%29");
