@@ -102,11 +102,10 @@ namespace Windows.UI.Xaml.Documents
 							&& char.IsSurrogate(text[i])
 							&& char.IsSurrogatePair(text[i], text[i + 1]))
 						{
-							var lang = LanguageTagCache.GetLanguageTag(this);
 							var fontManager = SKFontManager.Default;
 							var codepoint = (int)((text[i] - 0xD800) * 0x400 + (text[i + 1] - 0xDC00) + 0x10000);
 							symbolTypeface = fontManager
-								.MatchCharacter(null, SKFontStyle.Normal, lang, codepoint);
+								.MatchCharacter(codepoint);
 							surrogate = symbolTypeface is { };
 							break;
 						}
