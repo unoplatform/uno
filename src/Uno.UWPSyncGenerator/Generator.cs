@@ -118,6 +118,8 @@ namespace Uno.UWPSyncGenerator
 			"Windows.UI.Xaml",
 			"Windows.UI.Composition",
 			"Windows.UI.Dispatching",
+			"Microsoft.UI.Xaml",
+			"Microsoft.Web",
 #if HAS_UNO_WINUI
 			"Microsoft.Foundation",
 			"Microsoft.UI.Xaml",
@@ -313,6 +315,7 @@ namespace Uno.UWPSyncGenerator
 #endif
 			else if (containingNamespaceName.StartsWith("Windows.UI.Xaml", StringComparison.Ordinal)
 				|| containingNamespaceName.StartsWith("Microsoft.UI.Xaml", StringComparison.Ordinal)
+				|| containingNamespaceName.StartsWith("Microsoft.Web", StringComparison.Ordinal)
 #if HAS_UNO_WINUI
 				|| containingNamespaceName.StartsWith("Microsoft.System", StringComparison.Ordinal)
 				|| containingNamespaceName.StartsWith("Microsoft.UI.Composition", StringComparison.Ordinal)
