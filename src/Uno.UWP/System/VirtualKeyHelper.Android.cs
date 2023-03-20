@@ -110,6 +110,8 @@ internal static class VirtualKeyHelper
 			//Keycode.DownArrow => VirtualKey.Down,
 			//Keycode.UpArrow => VirtualKey.Up,
 
+			Keycode.Back => VirtualKey.Back, //TODO:MZ: Should be GoBack?
+
 			Keycode.ShiftLeft => VirtualKey.LeftShift,
 			Keycode.ShiftRight => VirtualKey.RightShift,
 
