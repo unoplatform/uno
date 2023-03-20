@@ -7,26 +7,12 @@ namespace Windows.Foundation
 	#endif
 	public  partial interface IAsyncOperationWithProgress<TResult, TProgress> : global::Windows.Foundation.IAsyncInfo
 	{
-		#if false
-		global::Windows.Foundation.AsyncOperationProgressHandler<TResult, TProgress> Progress
-		{
-			get;
-			set;
-		}
-		#endif
-		#if false
-		global::Windows.Foundation.AsyncOperationWithProgressCompletedHandler<TResult, TProgress> Completed
-		{
-			get;
-			set;
-		}
-		#endif
+		// Skipping already declared property Progress
+		// Skipping already declared property Completed
 		// Forced skipping of method Windows.Foundation.IAsyncOperationWithProgress<TResult, TProgress>.Progress.set
 		// Forced skipping of method Windows.Foundation.IAsyncOperationWithProgress<TResult, TProgress>.Progress.get
 		// Forced skipping of method Windows.Foundation.IAsyncOperationWithProgress<TResult, TProgress>.Completed.set
 		// Forced skipping of method Windows.Foundation.IAsyncOperationWithProgress<TResult, TProgress>.Completed.get
-		#if false
-		TResult GetResults();
-		#endif
+		// Skipping already declared method Windows.Foundation.IAsyncOperationWithProgress<TResult, TProgress>.GetResults()
 	}
 }

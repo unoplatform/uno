@@ -2,18 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Foundation.Metadata
 {
-	#if false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class MarshalingBehaviorAttribute : global::System.Attribute
 	{
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public MarshalingBehaviorAttribute( global::Windows.Foundation.Metadata.MarshalingType behavior) : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Foundation.Metadata.MarshalingBehaviorAttribute", "MarshalingBehaviorAttribute.MarshalingBehaviorAttribute(MarshalingType behavior)");
-		}
-		#endif
+		// Skipping already declared method Windows.Foundation.Metadata.MarshalingBehaviorAttribute.MarshalingBehaviorAttribute(Windows.Foundation.Metadata.MarshalingType)
 		// Forced skipping of method Windows.Foundation.Metadata.MarshalingBehaviorAttribute.MarshalingBehaviorAttribute(Windows.Foundation.Metadata.MarshalingType)
 	}
 }

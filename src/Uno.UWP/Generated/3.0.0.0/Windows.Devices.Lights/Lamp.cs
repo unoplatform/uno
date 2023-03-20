@@ -2,8 +2,8 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Lights
 {
-	#if false || false || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+	#if false || false || false || false || false || false || false
+	[global::Uno.NotImplemented]
 	#endif
 	public  partial class Lamp : global::System.IDisposable
 	{
@@ -100,13 +100,7 @@ namespace Windows.Devices.Lights
 			throw new global::System.NotImplementedException("The member IAsyncOperation<Lamp> Lamp.FromIdAsync(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CLamp%3E%20Lamp.FromIdAsync%28string%20deviceId%29");
 		}
 		#endif
-		#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Lights.Lamp> GetDefaultAsync()
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<Lamp> Lamp.GetDefaultAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CLamp%3E%20Lamp.GetDefaultAsync%28%29");
-		}
-		#endif
+		// Skipping already declared method Windows.Devices.Lights.Lamp.GetDefaultAsync()
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Lights.Lamp, global::Windows.Devices.Lights.LampAvailabilityChangedEventArgs> AvailabilityChanged

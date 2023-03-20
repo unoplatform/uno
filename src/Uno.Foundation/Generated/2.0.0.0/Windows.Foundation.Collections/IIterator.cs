@@ -7,25 +7,11 @@ namespace Windows.Foundation.Collections
 	#endif
 	public  partial interface IIterator<T> 
 	{
-		#if false
-		T Current
-		{
-			get;
-		}
-		#endif
-		#if false
-		bool HasCurrent
-		{
-			get;
-		}
-		#endif
+		// Skipping already declared property Current
+		// Skipping already declared property HasCurrent
 		// Forced skipping of method Windows.Foundation.Collections.IIterator<T>.Current.get
 		// Forced skipping of method Windows.Foundation.Collections.IIterator<T>.HasCurrent.get
-		#if false
-		bool MoveNext();
-		#endif
-		#if false
-		uint GetMany( T[] items);
-		#endif
+		// Skipping already declared method Windows.Foundation.Collections.IIterator<T>.MoveNext()
+		// Skipping already declared method Windows.Foundation.Collections.IIterator<T>.GetMany(T[])
 	}
 }

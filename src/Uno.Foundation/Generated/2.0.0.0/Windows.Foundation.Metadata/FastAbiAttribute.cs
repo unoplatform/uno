@@ -2,34 +2,16 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Foundation.Metadata
 {
-	#if false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class FastAbiAttribute : global::System.Attribute
 	{
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public FastAbiAttribute( uint version) : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Foundation.Metadata.FastAbiAttribute", "FastAbiAttribute.FastAbiAttribute(uint version)");
-		}
-		#endif
+		// Skipping already declared method Windows.Foundation.Metadata.FastAbiAttribute.FastAbiAttribute(uint)
 		// Forced skipping of method Windows.Foundation.Metadata.FastAbiAttribute.FastAbiAttribute(uint)
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public FastAbiAttribute( uint version,  global::Windows.Foundation.Metadata.Platform platform) : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Foundation.Metadata.FastAbiAttribute", "FastAbiAttribute.FastAbiAttribute(uint version, Platform platform)");
-		}
-		#endif
+		// Skipping already declared method Windows.Foundation.Metadata.FastAbiAttribute.FastAbiAttribute(uint, Windows.Foundation.Metadata.Platform)
 		// Forced skipping of method Windows.Foundation.Metadata.FastAbiAttribute.FastAbiAttribute(uint, Windows.Foundation.Metadata.Platform)
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public FastAbiAttribute( uint version,  string contractName) : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Foundation.Metadata.FastAbiAttribute", "FastAbiAttribute.FastAbiAttribute(uint version, string contractName)");
-		}
-		#endif
+		// Skipping already declared method Windows.Foundation.Metadata.FastAbiAttribute.FastAbiAttribute(uint, string)
 		// Forced skipping of method Windows.Foundation.Metadata.FastAbiAttribute.FastAbiAttribute(uint, string)
 	}
 }

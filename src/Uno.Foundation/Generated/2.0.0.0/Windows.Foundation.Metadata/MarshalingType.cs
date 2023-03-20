@@ -2,21 +2,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Foundation.Metadata
 {
-	#if false
+	#if false || false || false || false || false || false || false
 	public   enum MarshalingType 
 	{
-		#if false
-		None = 1,
-		#endif
-		#if false
-		Agile = 2,
-		#endif
-		#if false
-		Standard = 3,
-		#endif
-		#if false
-		InvalidMarshaling = 0,
-		#endif
+		// Skipping already declared field Windows.Foundation.Metadata.MarshalingType.None
+		// Skipping already declared field Windows.Foundation.Metadata.MarshalingType.Agile
+		// Skipping already declared field Windows.Foundation.Metadata.MarshalingType.Standard
+		// Skipping already declared field Windows.Foundation.Metadata.MarshalingType.InvalidMarshaling
 	}
 	#endif
 }
