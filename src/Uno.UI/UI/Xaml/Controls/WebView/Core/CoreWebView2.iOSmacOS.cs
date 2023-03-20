@@ -36,20 +36,18 @@ namespace Windows.UI.Xaml.Controls
 		// A version-dependent webView. WKWebView should be used where available (8.0+) to avoid memory leaks, UIWebView is used on older versions
 		private INativeWebView _nativeWebView;
 
-		protected override void OnApplyTemplate()
+		internal void OnOwnerApplyTemplate()
 		{
-			base.OnApplyTemplate();
-
-			_nativeWebView = this
+			_nativeWebView = _owner
 				.FindSubviewsOfType<INativeWebView>()
 				.FirstOrDefault();
 
 			if (_nativeWebView == null)
 			{
-				this.Log().Error($"No view of type {nameof(UnoWKWebView)} found in children, are you missing one of these types in a template ? ");
+				_owner.Log().Error($"No view of type {nameof(UnoWKWebView)} found in children, are you missing one of these types in a template ? ");
 			}
 
-			_nativeWebView?.RegisterNavigationEvents(this);
+			_nativeWebView?.RegisterNavigationEvents(_owner);
 
 			UpdateFromInternalSource();
 		}
@@ -58,7 +56,7 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void GoForwardPartial() => _nativeWebView.GoForward();
 
-		//This should be IAsyncOperation<string> instead of Task<string> but we use an extension method to enable the same signature in Win.
+		//_owner should be IAsyncOperation<string> instead of Task<string> but we use an extension method to enable the same signature in Win.
 		//IAsyncOperation is not available in Xamarin.
 		public async Task<string> InvokeScriptAsync(CancellationToken ct, string script, string[] arguments)
 		{
@@ -73,11 +71,11 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (requestMessage == null)
 			{
-				this.Log().Warn("HttpRequestMessage is null. Please make sure the http request is complete.");
+				_owner.Log().Warn("HttpRequestMessage is null. Please make sure the http request is complete.");
 				return;
 			}
 
-			if (!this.VerifyNativeWebViewAvailability())
+			if (!_owner.VerifyNativeWebViewAvailability())
 			{
 				return;
 			}
@@ -97,7 +95,7 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void NavigateToStringPartial(string text)
 		{
-			if (!this.VerifyNativeWebViewAvailability())
+			if (!_owner.VerifyNativeWebViewAvailability())
 			{
 				return;
 			}
@@ -107,7 +105,7 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void NavigatePartial(Uri uri)
 		{
-			if (!this.VerifyNativeWebViewAvailability())
+			if (!_owner.VerifyNativeWebViewAvailability())
 			{
 				return;
 			}
@@ -147,7 +145,7 @@ namespace Windows.UI.Xaml.Controls
 			CanGoBack = _nativeWebView.CanGoBack;
 			CanGoForward = _nativeWebView.CanGoForward;
 
-			NavigationCompleted?.Invoke(this, args);
+			NavigationCompleted?.Invoke(_owner, args);
 		}
 
 		partial void StopPartial()
@@ -164,8 +162,8 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (args.Uri == null)
 			{
-				//This case should not happen when navigating normally using http requests.
-				//This is to stop a scenario where the webview is initialized without having a source
+				//_owner case should not happen when navigating normally using http requests.
+				//_owner is to stop a scenario where the webview is initialized without having a source
 				args.Cancel = true;
 				return;
 			}
@@ -181,7 +179,7 @@ namespace Windows.UI.Xaml.Controls
 				return;
 			}
 
-			NavigationStarting?.Invoke(this, args);
+			NavigationStarting?.Invoke(_owner, args);
 		}
 
 #if __IOS__
@@ -238,9 +236,9 @@ namespace Windows.UI.Xaml.Controls
 
 					catch (Exception e)
 					{
-						if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Error))
+						if (_owner.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Error))
 						{
-							this.Log().Error("Unable to launch mailto", e);
+							_owner.Log().Error("Unable to launch mailto", e);
 						}
 					}
 				});
@@ -298,12 +296,12 @@ namespace Windows.UI.Xaml.Controls
 
 		internal void OnNewWindowRequested(WebViewNewWindowRequestedEventArgs args)
 		{
-			NewWindowRequested?.Invoke(this, args);
+			NewWindowRequested?.Invoke(_owner, args);
 		}
 
 		internal void OnNavigationFailed(WebViewNavigationFailedEventArgs args)
 		{
-			NavigationFailed?.Invoke(this, args);
+			NavigationFailed?.Invoke(_owner, args);
 		}
 
 
@@ -321,7 +319,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				if (_isLoaded)
 				{
-					this.Log().Warn("This WebView control instance does not have a native web view child, a Control template may be missing.");
+					_owner.Log().Warn("_owner WebView control instance does not have a native web view child, a Control template may be missing.");
 				}
 
 				return false;
