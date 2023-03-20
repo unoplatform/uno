@@ -603,6 +603,35 @@ namespace Uno.UWPSyncGenerator
 				case "Windows.UI.Colors":
 					// Skipped because the type not present WinAppSDK projection
 					return true;
+#else
+				case "Microsoft.UI.Xaml.Automation.Peers.AnimatedVisualPlayerAutomationPeer":
+				case "Microsoft.UI.Xaml.Automation.Peers.PersonPictureAutomationPeer":
+				case "Microsoft.UI.Xaml.Controls.AnimatedVisuals.AnimatedAcceptVisualSource":
+				case "Microsoft.UI.Xaml.Controls.AnimatedVisuals.AnimatedBackVisualSource":
+				case "Microsoft.UI.Xaml.Controls.AnimatedVisuals.AnimatedChevronDownSmallVisualSource":
+				case "Microsoft.UI.Xaml.Controls.AnimatedVisuals.AnimatedChevronRightDownSmallVisualSource":
+				case "Microsoft.UI.Xaml.Controls.AnimatedVisuals.AnimatedChevronUpDownSmallVisualSource":
+				case "Microsoft.UI.Xaml.Controls.AnimatedVisuals.AnimatedFindVisualSource":
+				case "Microsoft.UI.Xaml.Controls.AnimatedVisuals.AnimatedGlobalNavigationButtonVisualSource":
+				case "Microsoft.UI.Xaml.Controls.AnimatedVisuals.AnimatedSettingsVisualSource":
+				case "Microsoft.UI.Xaml.Controls.AnimatedVisualPlayer":
+				case "Microsoft.UI.Xaml.Controls.ControlsResourcesVersion":
+				case "Microsoft.UI.Xaml.Controls.IAnimatedVisualSource":
+				case "Microsoft.UI.Xaml.Controls.IAnimatedVisualSource2":
+				case "Microsoft.UI.Xaml.Controls.IDynamicAnimatedVisualSource":
+				case "Microsoft.UI.Xaml.Controls.MenuBar":
+				case "Microsoft.UI.Xaml.Controls.MenuBarItem":
+				case "Microsoft.UI.Xaml.Controls.MenuBarItemFlyout":
+				case "Microsoft.UI.Xaml.Controls.PersonPicture":
+				case "Microsoft.UI.Xaml.Controls.PersonPictureTemplateSettings":
+				case "Microsoft.UI.Xaml.Controls.SwipeBehaviorOnInvoked":
+				case "Microsoft.UI.Xaml.Controls.SwipeControl":
+				case "Microsoft.UI.Xaml.Controls.SwipeItem":
+				case "Microsoft.UI.Xaml.Controls.SwipeItemInvokedEventArgs":
+				case "Microsoft.UI.Xaml.Controls.SwipeItems":
+				case "Microsoft.UI.Xaml.Controls.SwipeMode":
+					// Skipped because the implementation is currently incorrectly placed in WUX namespace
+					return true;
 #endif
 			}
 
