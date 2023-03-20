@@ -2,174 +2,68 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Web
 {
-	#if false
+	#if false || false || false || false || false || false || false
 	public   enum WebErrorStatus 
 	{
-		#if false
-		Unknown = 0,
-		#endif
-		#if false
-		CertificateCommonNameIsIncorrect = 1,
-		#endif
-		#if false
-		CertificateExpired = 2,
-		#endif
-		#if false
-		CertificateContainsErrors = 3,
-		#endif
-		#if false
-		CertificateRevoked = 4,
-		#endif
-		#if false
-		CertificateIsInvalid = 5,
-		#endif
-		#if false
-		ServerUnreachable = 6,
-		#endif
-		#if false
-		Timeout = 7,
-		#endif
-		#if false
-		ErrorHttpInvalidServerResponse = 8,
-		#endif
-		#if false
-		ConnectionAborted = 9,
-		#endif
-		#if false
-		ConnectionReset = 10,
-		#endif
-		#if false
-		Disconnected = 11,
-		#endif
-		#if false
-		HttpToHttpsOnRedirection = 12,
-		#endif
-		#if false
-		HttpsToHttpOnRedirection = 13,
-		#endif
-		#if false
-		CannotConnect = 14,
-		#endif
-		#if false
-		HostNameNotResolved = 15,
-		#endif
-		#if false
-		OperationCanceled = 16,
-		#endif
-		#if false
-		RedirectFailed = 17,
-		#endif
-		#if false
-		UnexpectedStatusCode = 18,
-		#endif
-		#if false
-		UnexpectedRedirection = 19,
-		#endif
-		#if false
-		UnexpectedClientError = 20,
-		#endif
-		#if false
-		UnexpectedServerError = 21,
-		#endif
-		#if false
+		// Skipping already declared field Windows.Web.WebErrorStatus.Unknown
+		// Skipping already declared field Windows.Web.WebErrorStatus.CertificateCommonNameIsIncorrect
+		// Skipping already declared field Windows.Web.WebErrorStatus.CertificateExpired
+		// Skipping already declared field Windows.Web.WebErrorStatus.CertificateContainsErrors
+		// Skipping already declared field Windows.Web.WebErrorStatus.CertificateRevoked
+		// Skipping already declared field Windows.Web.WebErrorStatus.CertificateIsInvalid
+		// Skipping already declared field Windows.Web.WebErrorStatus.ServerUnreachable
+		// Skipping already declared field Windows.Web.WebErrorStatus.Timeout
+		// Skipping already declared field Windows.Web.WebErrorStatus.ErrorHttpInvalidServerResponse
+		// Skipping already declared field Windows.Web.WebErrorStatus.ConnectionAborted
+		// Skipping already declared field Windows.Web.WebErrorStatus.ConnectionReset
+		// Skipping already declared field Windows.Web.WebErrorStatus.Disconnected
+		// Skipping already declared field Windows.Web.WebErrorStatus.HttpToHttpsOnRedirection
+		// Skipping already declared field Windows.Web.WebErrorStatus.HttpsToHttpOnRedirection
+		// Skipping already declared field Windows.Web.WebErrorStatus.CannotConnect
+		// Skipping already declared field Windows.Web.WebErrorStatus.HostNameNotResolved
+		// Skipping already declared field Windows.Web.WebErrorStatus.OperationCanceled
+		// Skipping already declared field Windows.Web.WebErrorStatus.RedirectFailed
+		// Skipping already declared field Windows.Web.WebErrorStatus.UnexpectedStatusCode
+		// Skipping already declared field Windows.Web.WebErrorStatus.UnexpectedRedirection
+		// Skipping already declared field Windows.Web.WebErrorStatus.UnexpectedClientError
+		// Skipping already declared field Windows.Web.WebErrorStatus.UnexpectedServerError
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		InsufficientRangeSupport = 22,
 		#endif
-		#if false
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		MissingContentLengthSupport = 23,
 		#endif
-		#if false
-		MultipleChoices = 300,
-		#endif
-		#if false
-		MovedPermanently = 301,
-		#endif
-		#if false
-		Found = 302,
-		#endif
-		#if false
-		SeeOther = 303,
-		#endif
-		#if false
-		NotModified = 304,
-		#endif
-		#if false
-		UseProxy = 305,
-		#endif
-		#if false
-		TemporaryRedirect = 307,
-		#endif
-		#if false
-		BadRequest = 400,
-		#endif
-		#if false
-		Unauthorized = 401,
-		#endif
-		#if false
-		PaymentRequired = 402,
-		#endif
-		#if false
-		Forbidden = 403,
-		#endif
-		#if false
-		NotFound = 404,
-		#endif
-		#if false
-		MethodNotAllowed = 405,
-		#endif
-		#if false
-		NotAcceptable = 406,
-		#endif
-		#if false
-		ProxyAuthenticationRequired = 407,
-		#endif
-		#if false
-		RequestTimeout = 408,
-		#endif
-		#if false
-		Conflict = 409,
-		#endif
-		#if false
-		Gone = 410,
-		#endif
-		#if false
-		LengthRequired = 411,
-		#endif
-		#if false
-		PreconditionFailed = 412,
-		#endif
-		#if false
-		RequestEntityTooLarge = 413,
-		#endif
-		#if false
-		RequestUriTooLong = 414,
-		#endif
-		#if false
-		UnsupportedMediaType = 415,
-		#endif
-		#if false
-		RequestedRangeNotSatisfiable = 416,
-		#endif
-		#if false
-		ExpectationFailed = 417,
-		#endif
-		#if false
-		InternalServerError = 500,
-		#endif
-		#if false
-		NotImplemented = 501,
-		#endif
-		#if false
-		BadGateway = 502,
-		#endif
-		#if false
-		ServiceUnavailable = 503,
-		#endif
-		#if false
-		GatewayTimeout = 504,
-		#endif
-		#if false
-		HttpVersionNotSupported = 505,
-		#endif
+		// Skipping already declared field Windows.Web.WebErrorStatus.MultipleChoices
+		// Skipping already declared field Windows.Web.WebErrorStatus.MovedPermanently
+		// Skipping already declared field Windows.Web.WebErrorStatus.Found
+		// Skipping already declared field Windows.Web.WebErrorStatus.SeeOther
+		// Skipping already declared field Windows.Web.WebErrorStatus.NotModified
+		// Skipping already declared field Windows.Web.WebErrorStatus.UseProxy
+		// Skipping already declared field Windows.Web.WebErrorStatus.TemporaryRedirect
+		// Skipping already declared field Windows.Web.WebErrorStatus.BadRequest
+		// Skipping already declared field Windows.Web.WebErrorStatus.Unauthorized
+		// Skipping already declared field Windows.Web.WebErrorStatus.PaymentRequired
+		// Skipping already declared field Windows.Web.WebErrorStatus.Forbidden
+		// Skipping already declared field Windows.Web.WebErrorStatus.NotFound
+		// Skipping already declared field Windows.Web.WebErrorStatus.MethodNotAllowed
+		// Skipping already declared field Windows.Web.WebErrorStatus.NotAcceptable
+		// Skipping already declared field Windows.Web.WebErrorStatus.ProxyAuthenticationRequired
+		// Skipping already declared field Windows.Web.WebErrorStatus.RequestTimeout
+		// Skipping already declared field Windows.Web.WebErrorStatus.Conflict
+		// Skipping already declared field Windows.Web.WebErrorStatus.Gone
+		// Skipping already declared field Windows.Web.WebErrorStatus.LengthRequired
+		// Skipping already declared field Windows.Web.WebErrorStatus.PreconditionFailed
+		// Skipping already declared field Windows.Web.WebErrorStatus.RequestEntityTooLarge
+		// Skipping already declared field Windows.Web.WebErrorStatus.RequestUriTooLong
+		// Skipping already declared field Windows.Web.WebErrorStatus.UnsupportedMediaType
+		// Skipping already declared field Windows.Web.WebErrorStatus.RequestedRangeNotSatisfiable
+		// Skipping already declared field Windows.Web.WebErrorStatus.ExpectationFailed
+		// Skipping already declared field Windows.Web.WebErrorStatus.InternalServerError
+		// Skipping already declared field Windows.Web.WebErrorStatus.NotImplemented
+		// Skipping already declared field Windows.Web.WebErrorStatus.BadGateway
+		// Skipping already declared field Windows.Web.WebErrorStatus.ServiceUnavailable
+		// Skipping already declared field Windows.Web.WebErrorStatus.GatewayTimeout
+		// Skipping already declared field Windows.Web.WebErrorStatus.HttpVersionNotSupported
 	}
 	#endif
 }

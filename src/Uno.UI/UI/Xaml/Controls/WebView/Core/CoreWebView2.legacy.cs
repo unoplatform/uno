@@ -45,7 +45,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public void Navigate(Uri uri)
 		{
-			this.SetInternalSource(uri ?? BlankUri);
+			_owner.SetInternalSource(uri ?? BlankUri);
 		}
 
 		//
@@ -57,7 +57,7 @@ namespace Windows.UI.Xaml.Controls
 		//     The HTML content to display in the WebView control.
 		public void NavigateToString(string text)
 		{
-			this.SetInternalSource(text ?? "");
+			_owner.SetInternalSource(text ?? "");
 		}
 
 		public void NavigateWithHttpRequestMessage(HttpRequestMessage requestMessage)
@@ -93,7 +93,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			_internalSource = source;
 
-			this.UpdateFromInternalSource();
+			_owner.UpdateFromInternalSource();
 		}
 
 		private void UpdateFromInternalSource()
@@ -131,7 +131,7 @@ namespace Windows.UI.Xaml.Controls
 
 		internal void OnUnsupportedUriSchemeIdentified(WebViewUnsupportedUriSchemeIdentifiedEventArgs args)
 		{
-			UnsupportedUriSchemeIdentified?.Invoke(this, args);
+			UnsupportedUriSchemeIdentified?.Invoke(_owner, args);
 		}
 
 		internal bool GetIsHistoryEntryValid(string url) => !url.IsNullOrWhiteSpace() && !url.Equals(BlankUrl, StringComparison.OrdinalIgnoreCase);

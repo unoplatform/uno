@@ -2,21 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	#if false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class WebViewDOMContentLoadedEventArgs 
 	{
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Uri Uri
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Uri WebViewDOMContentLoadedEventArgs.Uri is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Uri%20WebViewDOMContentLoadedEventArgs.Uri");
-			}
-		}
-		#endif
+		// Skipping already declared property Uri
 		// Forced skipping of method Windows.UI.Xaml.Controls.WebViewDOMContentLoadedEventArgs.Uri.get
 	}
 }
