@@ -118,7 +118,7 @@ namespace Windows.UI.Xaml
 				isInContact,
 				GetProperties(nativeEvent.GetToolType(pointerIndex), nativeEvent, isInContact)
 				);
-			return new PointerEventArgs(currentPoint, nativeEvent.MetaState.ToVirtualKeyModifiers());
+			return new PointerEventArgs(currentPoint, nativeEvent.MetaState.ToVirtualKeyModifiers(), nativeEvent);
 		}
 
 		private static bool IsInContact(MotionEvent nativeEvent, PointerDeviceType pointerType)

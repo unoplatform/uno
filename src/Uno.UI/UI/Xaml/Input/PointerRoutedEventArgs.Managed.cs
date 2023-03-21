@@ -42,6 +42,10 @@ namespace Windows.UI.Xaml.Input
 			OriginalSource = source;
 		}
 
+#if __ANDROID__
+		public Android.Views.MotionEvent MotionEvent => _pointerEventArgs.MotionEvent;
+#endif
+
 		public PointerPoint GetCurrentPoint(UIElement relativeTo)
 		{
 			if (relativeTo is null)
