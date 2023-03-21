@@ -56,6 +56,14 @@ public partial class WebView2 : Control, IWebView
 			return Task.CompletedTask;
 		});
 
+	public void Reload() => CoreWebView2.Reload();
+
+	public void GoForward() => CoreWebView2.GoForward();
+
+	public void GoBack() => CoreWebView2.GoBack();
+
+	public void NavigateToString(string htmlContent) => CoreWebView2.NavigateToString(htmlContent);
+
 	private void EnsureCoreWebView2()
 	{
 		if (!_coreWebView2Initialized)

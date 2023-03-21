@@ -27,4 +27,16 @@ public partial class WebView : Control, IWebView
 	internal CoreWebView2 CoreWebView2 { get; }
 
 	protected override void OnApplyTemplate() => CoreWebView2.OnOwnerApplyTemplate();
+
+	public void Navigate(global::System.Uri source) => CoreWebView2.Navigate(source.ToString());
+
+	public void NavigateToString(string text) => CoreWebView2.NavigateToString(text);
+
+	public void GoForward() => CoreWebView2.GoForward();
+
+	public void GoBack() => CoreWebView2.GoBack();
+
+	public void Refresh() => CoreWebView2.Reload();
+
+	public void Stop() => CoreWebView2.Stop();
 }

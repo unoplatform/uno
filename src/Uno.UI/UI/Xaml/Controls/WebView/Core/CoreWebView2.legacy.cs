@@ -75,13 +75,6 @@
 //			StopPartial();
 //		}
 
-//		partial void GoBackPartial();
-//		partial void GoForwardPartial();
-//		partial void NavigatePartial(Uri uri);
-//		partial void NavigateToStringPartial(string text);
-//		partial void NavigateWithHttpRequestMessagePartial(HttpRequestMessage requestMessage);
-//		partial void StopPartial();
-
 //		private protected override void OnLoaded()
 //		{
 //			base.OnLoaded();
@@ -96,27 +89,7 @@
 //			_owner.UpdateFromInternalSource();
 //		}
 
-//		private void UpdateFromInternalSource()
-//		{
-//			var uri = _internalSource as Uri;
-//			if (uri != null)
-//			{
-//				NavigatePartial(uri);
-//				return;
-//			}
 
-//			var html = _internalSource as string;
-//			if (html != null)
-//			{
-//				NavigateToStringPartial(html);
-//			}
-
-//			var message = _internalSource as HttpRequestMessage;
-//			if (message != null)
-//			{
-//				NavigateWithHttpRequestMessagePartial(message);
-//			}
-//		}
 
 //		private static string ConcatenateJavascriptArguments(string[] arguments)
 //		{

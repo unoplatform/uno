@@ -110,14 +110,14 @@ namespace Microsoft.Web.WebView2.Core
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2.WebResourceRequested.remove
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2.WindowCloseRequested.add
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2.WindowCloseRequested.remove
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  void Navigate( string uri)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "void CoreWebView2.Navigate(string uri)");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  void NavigateToString( string htmlContent)
 		{
@@ -152,7 +152,7 @@ namespace Microsoft.Web.WebView2.Core
 			throw new global::System.NotImplementedException("The member IAsyncAction CoreWebView2.CapturePreviewAsync(CoreWebView2CapturePreviewImageFormat imageFormat, IRandomAccessStream imageStream) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20CoreWebView2.CapturePreviewAsync%28CoreWebView2CapturePreviewImageFormat%20imageFormat%2C%20IRandomAccessStream%20imageStream%29");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  void Reload()
 		{
@@ -180,14 +180,14 @@ namespace Microsoft.Web.WebView2.Core
 			throw new global::System.NotImplementedException("The member IAsyncOperation<string> CoreWebView2.CallDevToolsProtocolMethodAsync(string methodName, string parametersAsJson) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3Cstring%3E%20CoreWebView2.CallDevToolsProtocolMethodAsync%28string%20methodName%2C%20string%20parametersAsJson%29");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  void GoBack()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "void CoreWebView2.GoBack()");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  void GoForward()
 		{
@@ -201,7 +201,7 @@ namespace Microsoft.Web.WebView2.Core
 			throw new global::System.NotImplementedException("The member CoreWebView2DevToolsProtocolEventReceiver CoreWebView2.GetDevToolsProtocolEventReceiver(string eventName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CoreWebView2DevToolsProtocolEventReceiver%20CoreWebView2.GetDevToolsProtocolEventReceiver%28string%20eventName%29");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  void Stop()
 		{

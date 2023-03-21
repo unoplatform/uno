@@ -29,28 +29,29 @@
 //using CoreGraphics;
 //#endif
 
-//namespace Windows.UI.Xaml.Controls
-//{
-//	internal partial class WebView
-//	{
-//		// A version-dependent webView. WKWebView should be used where available (8.0+) to avoid memory leaks, UIWebView is used on older versions
-//		private INativeWebView _nativeWebView;
+namespace Microsoft.Web.WebView2.Core;
 
-//		internal void OnOwnerApplyTemplate()
-//		{
-//			_nativeWebView = _owner
-//				.FindSubviewsOfType<INativeWebView>()
-//				.FirstOrDefault();
+public partial class CoreWebView2
+{
 
-//			if (_nativeWebView == null)
-//			{
-//				_owner.Log().Error($"No view of type {nameof(UnoWKWebView)} found in children, are you missing one of these types in a template ? ");
-//			}
+	//		// A version-dependent webView. WKWebView should be used where available (8.0+) to avoid memory leaks, UIWebView is used on older versions
+	//		private INativeWebView _nativeWebView;
 
-//			_nativeWebView?.RegisterNavigationEvents(_owner);
+	internal void OnOwnerApplyTemplate()
+		{
+			_nativeWebView = _owner
+				.FindSubviewsOfType<INativeWebView>()
+				.FirstOrDefault();
 
-//			UpdateFromInternalSource();
-//		}
+			if (_nativeWebView == null)
+			{
+				_owner.Log().Error($"No view of type {nameof(UnoWKWebView)} found in children, are you missing one of these types in a template ? ");
+			}
+
+			_nativeWebView?.RegisterNavigationEvents(_owner);
+
+			UpdateFromInternalSource();
+		}
 
 //		partial void GoBackPartial() => _nativeWebView.GoBack();
 
