@@ -58,5 +58,12 @@
     before making your pull request.
     -->
     <!-- <OptimizeImplicitlyTriggeredBuild>true</OptimizeImplicitlyTriggeredBuild> -->
+
+    <!-- 
+    Uncomment this line to increase build performance further by using reference 
+    assemblies builds.
+    See for more details: https://github.com/dotnet/project-system/blob/main/docs/build-acceleration.md#build-acceleration
+    -->
+    <!-- <AccelerateBuildsInVisualStudio>true</AccelerateBuildsInVisualStudio> -->
   </PropertyGroup>
 </Project>
