@@ -724,6 +724,17 @@ namespace Windows.UI.Xaml
 #else
 			var parent = this.GetParent() as UIElement;
 #endif
+
+#if __ANDROID__
+			if (this.Parent is not UIElement &&
+				this.Parent is Android.Views.View viewParent &&
+				args is PointerRoutedEventArgs { MotionEvent: { } motionEvent }
+				)
+			{
+				viewParent.OnTouchEvent(motionEvent);
+			}
+#endif
+
 			// [11] A parent is defined?
 			if (parent == null)
 			{

@@ -12,6 +12,16 @@ namespace Windows.UI.Core
 			KeyModifiers = keyModifiers;
 		}
 
+#if __ANDROID__
+		internal PointerEventArgs(PointerPoint currentPoint, VirtualKeyModifiers keyModifiers, Android.Views.MotionEvent motionEvent)
+			: this(currentPoint, keyModifiers)
+		{
+			MotionEvent = motionEvent;
+		}
+
+		public Android.Views.MotionEvent MotionEvent { get; }
+#endif
+
 		public bool Handled { get; set; }
 
 		public PointerPoint CurrentPoint { get; }
