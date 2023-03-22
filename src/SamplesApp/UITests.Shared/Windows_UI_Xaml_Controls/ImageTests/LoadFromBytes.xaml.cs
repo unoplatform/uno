@@ -42,13 +42,7 @@ namespace Uno.UI.Samples.UITests.ImageTestsControl
 			}
 
 			var image = new BitmapImage();
-
-#if WINDOWS_UWP
 			await image.SetSourceAsync(stream.AsRandomAccessStream()).AsTask();
-#else
-			var copy = stream.ToMemoryStream();
-			await image.SetSourceAsync(copy);
-#endif
 			return image;
 		}
 	}

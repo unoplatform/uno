@@ -72,11 +72,7 @@ namespace UITests.Msal
 				using (var stream = await client.Me.Photo.Content.Request().GetAsync())
 				{
 					var bitmap = new BitmapImage();
-#if HAS_UNO
-					bitmap.SetSource(new MemoryStream(stream.ReadBytes()));
-#else
 					await bitmap.SetSourceAsync(stream.AsRandomAccessStream());
-#endif
 					thumbnail.Source = bitmap;
 				}
 			}
