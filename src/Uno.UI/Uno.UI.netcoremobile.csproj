@@ -106,7 +106,7 @@
 		<ProjectReference Include="..\Uno.UWP\Uno.netcoremobile.csproj">
 			<TreatAsPackageReference>false</TreatAsPackageReference>
 		</ProjectReference>
-		<ProjectReference Include="..\SourceGenerators\System.Xaml\Uno.Xaml.netcoremobile.csproj" />
+		<ProjectReference Include="..\SourceGenerators\System.Xaml\Uno.Xaml.csproj" />
 		<ProjectReference Include="..\Uno.UI.BindingHelper.Android\Uno.UI.BindingHelper.Android.netcoremobile.csproj" Condition="'$(TargetPlatformIdentifier)' == 'android'">
 			<TreatAsPackageReference>false</TreatAsPackageReference>
 		</ProjectReference>
