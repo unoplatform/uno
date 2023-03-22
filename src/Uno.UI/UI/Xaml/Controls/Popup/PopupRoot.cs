@@ -1,13 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Uno.Disposables;
+using Uno.Foundation.Logging;
+using Uno.UI.Xaml.Core;
+using Uno.UI.Xaml.Islands;
+using Uno.UI.DataBinding;
 using Windows.Foundation;
-using Windows.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml.Controls.Primitives;
 
 internal partial class PopupRoot : Panel
 {
+	private readonly List<ManagedWeakReference> _openPopups = new();
+
 	public PopupRoot()
 	{
 	}
@@ -46,5 +52,57 @@ internal partial class PopupRoot : Panel
 		}
 
 		return finalSize;
+	}
+
+	internal IDisposable OpenPopup(Popup popup)
+	{
+		if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
+		{
+			this.Log().Debug($"Opening popup");
+		}
+
+		var popupPanel = popup.PopupPanel;
+		Children.Add(popupPanel);
+		var disposable = RegisterOpenPopup(popup);
+
+		return Disposable.Create(() =>
+		{
+			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
+			{
+				this.Log().Debug($"Closing popup");
+			}
+
+			Children.Remove(popupPanel);
+
+			disposable.Dispose();
+		});
+	}
+
+	internal IDisposable RegisterOpenPopup(IPopup popup)
+	{
+		CleanupPopupReferences();
+
+		var popupRegistration = _openPopups.FirstOrDefault(
+			p => !p.IsDisposed && p.Target == popup);
+
+		if (popupRegistration is null)
+		{
+			popupRegistration = WeakReferencePool.RentWeakReference(popup, popup);
+
+			_openPopups.Add(popupRegistration);
+		}
+
+		return Disposable.Create(() => _openPopups.Remove(popupRegistration));
+	}
+
+	private void CleanupPopupReferences()
+	{
+		for (int i = _openPopups.Count - 1; i >= 0; i--)
+		{
+			if (_openPopups[i].IsDisposed || _openPopups[i].Target is null)
+			{
+				_openPopups.RemoveAt(i);
+			}
+		}
 	}
 }

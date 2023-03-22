@@ -38,12 +38,5 @@ namespace Uno.Extensions
 
 			return result;
 		}
-
-		public static T DequeueOrDefault<T>(this Queue<T> queue)
-		{
-			return queue.Count > 0
-				? queue.Dequeue()
-				: default(T);
-		}
 	}
 }

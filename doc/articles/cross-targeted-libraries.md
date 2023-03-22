@@ -1,14 +1,15 @@
 # Working with cross-targeted class libraries
 
-Using cross-targeted library projects allows the same code to be compiled for multiple platforms from a single project, and offers advantages over older project formats, such as not having to explicitly include every file. However, certain operations are not yet well-supported for cross-target projects in Visual Studio. This article details how to perform common operations with cross-target library projects, like adding references.
+Using cross-targeted library projects allows the same code to be compiled for multiple platforms from a single project, and offers advantages over older project formats, such as not having to explicitly include every file.
 
-*(Improved IDE support for cross-targeted projects is expected in the .NET 6 timeframe.)*
+Uno Platform provides a template which uses this project format. See [this documentation](xref:Guide.HowTo.Create-Control-Library) on how to use it.
 
 ## The .csproj format
 
-Cross-targeted libraries use the new 'SDK-style' [project file format](https://docs.microsoft.com/en-us/dotnet/core/tools/csproj). This format is considerably cleaner than older-style `.csproj` files.
+Cross-targeted libraries use the 'SDK-style' [project file format](https://docs.microsoft.com/en-us/dotnet/core/tools/csproj). This format is considerably cleaner than older-style `.csproj` files.
 
-Note that you can edit new-style `.csproj` files directly without needing to unload the project first. 
+> [!NOTE] 
+> Visual Studio provides easy edition of new-style `.csproj` files directly without needing to unload the project first. 
 
 ### Platform-conditional settings
 

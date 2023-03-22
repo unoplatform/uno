@@ -651,8 +651,8 @@ namespace SamplesApp
 			var textBox = new TextBox();
 			textBox.XamlRoot = rootFrame.XamlRoot;
 			var textBoxView = new TextBoxView(textBox);
-			ApiExtensibility.CreateInstance<ITextBoxViewExtension>(textBoxView, out var textBoxViewExtension);
-			Assert.IsTrue(textBoxViewExtension.IsNativeOverlayLayerInitialized);
+			ApiExtensibility.CreateInstance<IOverlayTextBoxViewExtension>(textBoxView, out var textBoxViewExtension);
+			Assert.IsTrue(textBoxViewExtension.IsOverlayLayerInitialized(rootFrame.XamlRoot));
 #endif
 		}
 	}

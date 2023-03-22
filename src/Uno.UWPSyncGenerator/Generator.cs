@@ -13,7 +13,7 @@ namespace Uno.UWPSyncGenerator
 {
 	abstract class Generator
 	{
-		private const string CSharpLangVersion = "11.0";
+		internal const string CSharpLangVersion = "11.0";
 
 		private const string net461Define = "NET461";
 		private const string AndroidDefine = "__ANDROID__";
@@ -678,8 +678,8 @@ namespace Uno.UWPSyncGenerator
 
 				var isDefinedInClass = ownerType.GetMembers(method.Name).OfType<IMethodSymbol>().Any(m =>
 						m.DeclaredAccessibility == Accessibility.Public
-						&& m.Parameters.Select(p => p.Type.ToDisplayString(NullableFlowState.None)).SequenceEqual(method.Parameters.Select(p2 => p2.Type.ToDisplayString(NullableFlowState.None)))
-						&& m.ReturnType.ToDisplayString(NullableFlowState.None) == method.ReturnType.ToDisplayString(NullableFlowState.None)
+						&& m.Parameters.Select(p => p.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)).SequenceEqual(method.Parameters.Select(p2 => p2.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)))
+						&& m.ReturnType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat) == method.ReturnType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)
 					);
 				if (isDefinedInClass)
 				{
@@ -688,8 +688,8 @@ namespace Uno.UWPSyncGenerator
 
 				var isAlreadyGenerated = writtenMethods.Any(m => m.Name == method.Name
 						&& m.DeclaredAccessibility == Accessibility.Public
-						&& m.Parameters.Select(p => p.Type.ToDisplayString(NullableFlowState.None)).SequenceEqual(method.Parameters.Select(p2 => p2.Type.ToDisplayString(NullableFlowState.None)))
-						&& m.ReturnType.ToDisplayString(NullableFlowState.None) == method.ReturnType.ToDisplayString(NullableFlowState.None)
+						&& m.Parameters.Select(p => p.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)).SequenceEqual(method.Parameters.Select(p2 => p2.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)))
+						&& m.ReturnType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat) == method.ReturnType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)
 					);
 
 				if (isAlreadyGenerated || !IsNotUWPMapping(ownerType, method))
@@ -726,7 +726,7 @@ namespace Uno.UWPSyncGenerator
 				var allProperties = GetAllMatchingPropertyMember(types, property);
 
 				if (ownerType.GetMembers(property.Name).OfType<IPropertySymbol>().Any(p =>
-					   p.Type.ToDisplayString() == property.Type.ToDisplayString()
+					   p.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat) == property.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)
 					)
 					|| !IsNotUWPMapping(ownerType, property))
 				{
@@ -771,7 +771,7 @@ namespace Uno.UWPSyncGenerator
 		{
 			return GetNonGeneratedMembers(androidType, property.Name)
 								.OfType<IPropertySymbol>()
-								.Where(prop => prop.Parameters.Select(p => p.Type.ToDisplayString()).SequenceEqual(property.Parameters.Select(p => p.Type.ToDisplayString())) && prop.Type.ToDisplayString() == property.Type.ToDisplayString())
+								.Where(prop => prop.Parameters.Select(p => p.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)).SequenceEqual(property.Parameters.Select(p => p.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat))) && prop.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat) == property.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat))
 								.FirstOrDefault();
 		}
 
@@ -1720,10 +1720,10 @@ namespace Uno.UWPSyncGenerator
 					{
 						var sourceParams = sourceMethod
 							.Parameters
-							.Select(p => p.Type.ToDisplayString(NullableFlowState.None));
+							.Select(p => p.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat));
 						var targetParams = m
 								.Parameters
-								.Select(p => p.Type.ToDisplayString(NullableFlowState.None));
+								.Select(p => p.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat));
 						return sourceParams.SequenceEqual(targetParams);
 					}
 					);

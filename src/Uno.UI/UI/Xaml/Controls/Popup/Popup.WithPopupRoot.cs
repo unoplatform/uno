@@ -92,12 +92,9 @@ public partial class Popup
 				}
 #endif
 
-#if !__SKIA__ // The OpenPopup method should be moved out of Window in general https://github.com/unoplatform/uno/issues/8978
-				_closePopup.Disposable = Window.Current.OpenPopup(this);
-#else
 				var currentXamlRoot = XamlRoot ?? Child?.XamlRoot ?? CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRoot.XamlRoot;
 				_closePopup.Disposable = currentXamlRoot?.OpenPopup(this);
-#endif
+
 				PopupPanel.Visibility = Visibility.Visible;
 			}
 			else

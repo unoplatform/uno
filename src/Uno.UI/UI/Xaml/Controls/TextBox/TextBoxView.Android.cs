@@ -30,6 +30,7 @@ namespace Windows.UI.Xaml.Controls
 	{
 		private bool _isRunningTextChanged;
 		private bool _isInitialized;
+		private (InputTypes InputType, InputTypes RawInputType) _inputTypes;
 
 		private readonly ManagedWeakReference? _ownerRef;
 		internal TextBox? Owner => _ownerRef?.Target as TextBox;
@@ -61,6 +62,20 @@ namespace Windows.UI.Xaml.Controls
 				 Android.Views.ViewGroup.LayoutParams.WrapContent,
 				 Android.Views.ViewGroup.LayoutParams.WrapContent
 			);
+
+			_inputTypes = (InputType, InputType);
+		}
+
+		internal void SetInputTypes(InputTypes inputType, InputTypes rawInputType)
+		{
+			_inputTypes = (inputType, rawInputType);
+			ResetInputTypes();
+		}
+
+		internal void ResetInputTypes()
+		{
+			InputType = _inputTypes.InputType;
+			SetRawInputType(_inputTypes.RawInputType);
 		}
 
 		internal void UpdateSingleLineMode()

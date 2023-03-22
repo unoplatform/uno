@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Text;
+﻿using System.Collections.Specialized;
 using Windows.Foundation.Collections;
 
 namespace Uno.Extensions;

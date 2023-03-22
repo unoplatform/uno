@@ -11,7 +11,7 @@
         <Setter Property="BorderThickness" Value="{ThemeResource MenuBarItemBorderThickness}"/>
         <Setter Property="BorderBrush" Value="{ThemeResource MenuBarItemBorderBrush}"/>
         <Setter Property="Margin" Value="{ThemeResource MenuBarItemMargin}"/>
-        <Setter Property="contract7Present:CornerRadius" Value="{ThemeResource ControlCornerRadius}"/>
+        <contract7Present:Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}"/>
         <Setter Property="Title" Value="Item"/>
         <Setter Property="IsTabStop" Value="True"/>
         <Setter Property="ExitDisplayModeOnAccessKeyInvoked" Value="False"/>

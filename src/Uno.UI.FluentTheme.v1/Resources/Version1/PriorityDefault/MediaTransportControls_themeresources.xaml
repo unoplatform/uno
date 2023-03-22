@@ -21,9 +21,9 @@
         </ResourceDictionary>
     </ResourceDictionary.ThemeDictionaries>
 
-	<not_mux:Style TargetType="MediaTransportControls" BasedOn="{StaticResource DefaultMediaTransportControlsStyle}" />
+	<Style TargetType="MediaTransportControls" BasedOn="{StaticResource DefaultMediaTransportControlsStyle}" />
 
-	<not_mux:Style x:Key="DefaultMediaTransportControlsStyle" TargetType="MediaTransportControls">
+	<Style x:Key="DefaultMediaTransportControlsStyle" TargetType="MediaTransportControls">
         <Setter Property="IsTabStop" Value="False" />
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="FlowDirection" Value="LeftToRight" />
@@ -878,5 +878,5 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
-    </not_mux:Style>
+    </Style>
 </ResourceDictionary>

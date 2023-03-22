@@ -1,3 +1,7 @@
+---
+uid: Uno.GetStarted.vs2022
+---
+
 # Get Started on Visual Studio 2022
 
 This getting started will guide you through the creation of an Uno Platform App using C# and .NET, based in the WinUI 3 XAML.
@@ -37,7 +41,7 @@ To create Uno Platform applications you will need [**Visual Studio 2022 17.4 or 
 
     ![](Assets/tutorial01/manage-extensions.png)
 
-2. In the Extension Manager expand the **Online** node and search for `Uno`, install the `Uno Platform Solution Templates` extension or download it from the [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=unoplatform.uno-platform-addin-2022), then restart Visual Studio.
+2. In the Extension Manager expand the **Online** node and search for `Uno`, install the `Uno Platform` extension or download it from the [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=unoplatform.uno-platform-addin-2022), then restart Visual Studio.
 
     ![](Assets/tutorial01/uno-extensions.PNG)
 
@@ -45,12 +49,22 @@ To create Uno Platform applications you will need [**Visual Studio 2022 17.4 or 
 
 To create an Uno Platform app:
 1. Create a new C# solution using the **Uno Platform App** template, from Visual Studio's **Start Page**
-1. Choose the list of targets platforms you want to be generated
-
-    > [!TIP] 
-    > You still can [add additional platforms](guides/how-to-add-platforms-existing-project.md) later.
+1. Choose the base template to build your application
    
     ![visual-studio-installer-web](Assets/quick-start/vsix-new-project-options.png)
+
+1. You can optionally choose to customize your app based on the sections on the left side:
+    - **Framework** allows to choose which `TargetFramework` your app will use. [.NET 7.0](https://dotnet.microsoft.com/en-us/download/dotnet/7.0) is a commonly appropriate choice.
+    - **Platforms** provides a list of platforms your application will support. You still can [add additional platforms](xref:Uno.Guides.AddAdditionalPlatforms) later.
+    - **Presentation** gives a choice about using MVVM (e.g. [MVVM Toolkit](https://learn.microsoft.com/en-us/dotnet/communitytoolkit/mvvm/)) or [Uno Platform's MVUX and Feeds](xref:Overview.Reactive.Concept)
+    - **Projects** gives the ability to add a Server project for APIs and hosting for the WebAssembly project
+    - **Testing** provides Unit Testing and [UI Testing projects](https://github.com/unoplatform/Uno.UITest)
+    - **Features** provides support for WebAssembly PWA and optional [VS Code support](xref:Uno.GetStarted.vscode) files
+    - **Extensions** allows to choose for [additional Uno.Extensions](xref:Overview.Features) to kickstart your app faster
+    - **Application** sets the App ID for relevant platforms, used when publishing on various app stores.
+    - **Theme** gives the ability to change between [Fluent](xref:uno.themes.fluent.getstarted) and [Material](xref:uno.themes.material.getstarted)
+    
+1. Click the create button
 
 1. Wait for the projects to be created, and their dependencies to be restored
 

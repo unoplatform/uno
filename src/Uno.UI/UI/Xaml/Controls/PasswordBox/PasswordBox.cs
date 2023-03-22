@@ -67,12 +67,12 @@ namespace Windows.UI.Xaml.Controls
 
 		private void BeginReveal(object sender, PointerRoutedEventArgs e)
 		{
-			SetPasswordScope(false);
+			SetPasswordRevealState(PasswordRevealState.Revealed);
 		}
 
 		private void EndReveal(object sender, PointerRoutedEventArgs e)
 		{
-			SetPasswordScope(true);
+			SetPasswordRevealState(PasswordRevealState.Obscured);
 			EndRevealPartial();
 		}
 
@@ -84,7 +84,7 @@ namespace Windows.UI.Xaml.Controls
 			_revealButtonSubscription.Disposable = null;
 		}
 
-		partial void SetPasswordScope(bool shouldHideText);
+		partial void SetPasswordRevealState(PasswordRevealState state);
 
 		#region Password DependencyProperty
 
@@ -232,19 +232,19 @@ namespace Windows.UI.Xaml.Controls
 			// Only use IsPasswordRevealButtonEnabled if it is set and PasswordRevealMode is not
 			if (UseIsPasswordEnabledProperty)
 			{
-				SetPasswordScope(true);
+				SetPasswordRevealState(PasswordRevealState.Obscured);
 			}
 			else
 			{
 				switch (PasswordRevealMode)
 				{
 					case PasswordRevealMode.Visible:
-						SetPasswordScope(false);
+						SetPasswordRevealState(PasswordRevealState.Revealed);
 						break;
 					case PasswordRevealMode.Hidden:
 					case PasswordRevealMode.Peek:
 					default:
-						SetPasswordScope(true);
+						SetPasswordRevealState(PasswordRevealState.Obscured);
 						break;
 				}
 			}

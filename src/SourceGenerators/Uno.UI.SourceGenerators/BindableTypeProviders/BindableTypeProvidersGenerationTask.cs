@@ -293,7 +293,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 				}
 
 				writer.AppendLineIndented("/// <summary>");
-				writer.AppendLineInvariantIndented("/// Builder for {0}", ownerType.GetFullName());
+				writer.AppendLineInvariantIndented("/// Builder for {0}", ownerType.GetFullyQualifiedTypeExcludingGlobal());
 				writer.AppendLineIndented("/// </summary>");
 				writer.AppendLineIndented("[System.Runtime.CompilerServices.CompilerGeneratedAttribute]");
 				writer.AppendLineIndented("[System.Diagnostics.CodeAnalysis.SuppressMessage(\"Microsoft.Maintainability\", \"CA1502:AvoidExcessiveComplexity\", Justification=\"Must be ignored even if generated code is checked.\")]");
@@ -336,9 +336,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 							writer.AppendLineInvariantIndented(@"MetadataBuilder_{0:000}.Build(bindableType); // {1}", baseTypeMapped.Index, ExpandType(baseType));
 						}
 
-						var ctor = ownerType.GetMethods().FirstOrDefault(m => m.MethodKind == MethodKind.Constructor && !m.Parameters.Any() && m.IsLocallyPublic(_currentModule!));
-
-						if (ctor != null && IsCreateable(ownerType))
+						if (IsCreateable(ownerType))
 						{
 							using (writer.BlockInvariant("if(parent == null)"))
 							{
@@ -351,7 +349,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 
 						foreach (var property in properties)
 						{
-							var propertyTypeName = property.Type.GetFullyQualifiedType();
+							var propertyTypeName = property.Type.GetFullyQualifiedTypeIncludingGlobal();
 							var propertyName = property.Name;
 
 							if (IsStringIndexer(property))
@@ -471,7 +469,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 				}
 				else
 				{
-					return GetGlobalQualifier(ownerType) + ownerType.GetFullName();
+					return ownerType.GetFullyQualifiedTypeIncludingGlobal();
 				}
 			}
 
@@ -494,14 +492,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 			private bool IsCreateable(INamedTypeSymbol type)
 			{
 				return !type.IsAbstract
-					&& type
-						.GetMethods()
-						.Safe()
-						.Any(m =>
-							m.MethodKind == MethodKind.Constructor
-							&& m.IsLocallyPublic(_currentModule!)
-							&& m.Parameters.Safe().None()
-						);
+					&& type.InstanceConstructors.Any(m => m.Parameters.Length == 0 && m.IsLocallyPublic(_currentModule!));
 			}
 
 			private INamedTypeSymbol? GetBaseType(INamedTypeSymbol type)

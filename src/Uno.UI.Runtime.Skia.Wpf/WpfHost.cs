@@ -25,7 +25,6 @@ using Uno.UI.Runtime.Skia.Wpf;
 using Uno.UI.Runtime.Skia.Wpf.Extensions.UI.Xaml.Input;
 using Uno.UI.Runtime.Skia.Wpf.Rendering;
 using Uno.UI.Runtime.Skia.Wpf.WPF.Extensions.Helper.Theming;
-using Uno.UI.Runtime.Skia.WPF.Extensions.UI.Xaml.Controls;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Controls.Extensions;
 using Uno.UI.Xaml.Core;
@@ -46,6 +45,7 @@ using WpfApplication = System.Windows.Application;
 using WpfCanvas = System.Windows.Controls.Canvas;
 using WpfControl = System.Windows.Controls.Control;
 using WpfFrameworkPropertyMetadata = System.Windows.FrameworkPropertyMetadata;
+using Uno.UI.Runtime.Skia.Wpf.Extensions.UI.Xaml.Controls;
 
 namespace Uno.UI.Skia.Platform
 {
@@ -93,7 +93,7 @@ namespace Uno.UI.Skia.Platform
 			ApiExtensibility.Register<FolderPicker>(typeof(IFolderPickerExtension), o => new FolderPickerExtension(o));
 			ApiExtensibility.Register(typeof(IFileSavePickerExtension), o => new FileSavePickerExtension(o));
 			ApiExtensibility.Register(typeof(IConnectionProfileExtension), o => new WindowsConnectionProfileExtension(o));
-			ApiExtensibility.Register<TextBoxView>(typeof(ITextBoxViewExtension), o => new TextBoxViewExtension(o));
+			ApiExtensibility.Register<TextBoxView>(typeof(IOverlayTextBoxViewExtension), o => new TextBoxViewExtension(o));
 			ApiExtensibility.Register(typeof(ILauncherExtension), o => new LauncherExtension(o));
 			ApiExtensibility.Register(typeof(IClipboardExtension), o => new ClipboardExtensions(o));
 			ApiExtensibility.Register(typeof(IAnalyticsInfoExtension), o => new AnalyticsInfoExtension());

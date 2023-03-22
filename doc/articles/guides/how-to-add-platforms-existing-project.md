@@ -1,3 +1,7 @@
+---
+uid: Uno.Guides.AddAdditionalPlatforms
+---
+
 # Adding Platforms to an Existing Project
 
 If you have an existing Uno Platform project, and you have not selected all the platforms you need when creating the project, this guide will show you how to add new ones.

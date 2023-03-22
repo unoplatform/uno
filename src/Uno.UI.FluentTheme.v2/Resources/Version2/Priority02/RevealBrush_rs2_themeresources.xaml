@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Microsoft.UI.Xaml.Media"
     xmlns:controls="using:Microsoft.UI.Xaml.Controls"
+    xmlns:not_mux="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:contract7Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,7)"
     xmlns:contract7NotPresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,7)"
     >
@@ -22,7 +23,7 @@
             <Thickness x:Key="ComboBoxItemRevealThemePadding">10,4,10,6</Thickness>
             <Thickness x:Key="ComboBoxItemRevealThemeTouchPadding">10,10,10,12</Thickness>
             <Thickness x:Key="ComboBoxItemRevealThemeGameControllerPadding">10,10,10,12</Thickness>
-            
+
             <!-- These values are copied from generic.xaml and adjusted by 5% -->
             <Color x:Key="SystemRevealAltHighColor">#F2000000</Color>
             <Color x:Key="SystemRevealAltLowColor">#30000000</Color>
@@ -51,189 +52,189 @@
             <!-- Background Brushes -->
             <local:RevealBackgroundBrush
                 x:Key="SystemControlBackgroundBaseLowRevealBackgroundBrush"
-                TargetTheme="Dark"
+                not_mux:TargetTheme="Dark"
                 Color="{StaticResource SystemRevealBaseLowColor}"
                 FallbackColor="{StaticResource SystemBaseLowColor}"/>
             <local:RevealBackgroundBrush
                 x:Key="SystemControlTransparentRevealBackgroundBrush"
-                TargetTheme="Dark"
+                not_mux:TargetTheme="Dark"
                 Color="Transparent"
                 FallbackColor="Transparent"/>
             <local:RevealBackgroundBrush
                 x:Key="SystemControlBackgroundAltHighRevealBackgroundBrush"
-                TargetTheme="Dark" 
-                Color="{StaticResource SystemAltHighColor}" 
+                not_mux:TargetTheme="Dark"
+                Color="{StaticResource SystemAltHighColor}"
                 FallbackColor="{StaticResource SystemAltHighColor}" />
             <local:RevealBackgroundBrush
                 x:Key="SystemControlHighlightAccentRevealBackgroundBrush"
-                TargetTheme="Dark"
+                not_mux:TargetTheme="Dark"
                 Color="{ThemeResource SystemAccentColor}"
                 FallbackColor="{ThemeResource SystemAccentColor}"/>
              <local:RevealBackgroundBrush
                 x:Key="SystemControlHighlightAccent3RevealBackgroundBrush"
-                TargetTheme="Dark"
+                not_mux:TargetTheme="Dark"
                 Color="{ThemeResource SystemAccentColorDark3}"
                 FallbackColor="{ThemeResource SystemAccentColorDark3}"/>
             <local:RevealBackgroundBrush
                 x:Key="SystemControlHighlightAccent2RevealBackgroundBrush"
-                TargetTheme="Dark"
+                not_mux:TargetTheme="Dark"
                 Color="{ThemeResource SystemAccentColorDark2}"
                 FallbackColor="{ThemeResource SystemAccentColorDark2}"/>
             <local:RevealBackgroundBrush
                 x:Key="SystemControlHighlightListMediumRevealBackgroundBrush"
-                TargetTheme="Dark"
+                not_mux:TargetTheme="Dark"
                 Color="{StaticResource SystemRevealListMediumColor}"
                 FallbackColor="{StaticResource SystemListMediumColor}"/>
             <local:RevealBackgroundBrush
                 x:Key="SystemControlHighlightListLowRevealBackgroundBrush"
-                TargetTheme="Dark"
+                not_mux:TargetTheme="Dark"
                 Color="{StaticResource SystemRevealListLowColor}"
                 FallbackColor="{StaticResource SystemListLowColor}"/>
             <local:RevealBackgroundBrush
                 x:Key="SystemControlBackgroundBaseMediumLowRevealBaseLowBackgroundBrush"
-                TargetTheme="Dark"
+                not_mux:TargetTheme="Dark"
                 Color="{StaticResource SystemRevealBaseLowColor}"
                 FallbackColor="{StaticResource SystemBaseMediumLowColor}"/>
             <local:RevealBackgroundBrush
                 x:Key="SystemControlHighlightBaseMediumLowRevealAccentBackgroundBrush"
-                TargetTheme="Dark"
+                not_mux:TargetTheme="Dark"
                 Color="{ThemeResource SystemAccentColor}"
                 FallbackColor="{StaticResource SystemBaseMediumLowColor}"/>
             <local:RevealBackgroundBrush
                 x:Key="SystemControlHighlightListMediumRevealListLowBackgroundBrush"
-                TargetTheme="Dark"
+                not_mux:TargetTheme="Dark"
                 Color="{StaticResource SystemRevealListLowColor}"
                 FallbackColor="{StaticResource SystemListMediumColor}"/>
             <local:RevealBackgroundBrush
                 x:Key="SystemControlHighlightAccent3RevealAccent2BackgroundBrush"
-                TargetTheme="Dark"
+                not_mux:TargetTheme="Dark"
                 Color="{ThemeResource SystemAccentColorDark2}"
                 FallbackColor="{ThemeResource SystemAccentColorDark3}"/>
 
             <!-- Border Brushes -->
             <local:RevealBorderBrush
                 x:Key="SystemControlBackgroundAccentRevealBorderBrush"
-                TargetTheme="Dark"
+                not_mux:TargetTheme="Dark"
                 Color="{ThemeResource SystemAccentColor}"
                 FallbackColor="{ThemeResource SystemAccentColor}"/>
             <local:RevealBorderBrush
                 x:Key="SystemControlBackgroundBaseHighRevealBorderBrush"
-                TargetTheme="Dark"
+                not_mux:TargetTheme="Dark"
                 Color="{StaticResource SystemRevealBaseHighColor}"
                 FallbackColor="{StaticResource SystemBaseHighColor}"/>
             <local:RevealBorderBrush
                 x:Key="SystemControlBackgroundBaseLowRevealBorderBrush"
-                TargetTheme="Dark"
+                not_mux:TargetTheme="Dark"
                 Color="{StaticResource SystemRevealBaseLowColor}"
                 FallbackColor="{StaticResource SystemBaseLowColor}"/>
             <local:RevealBorderBrush
                 x:Key="SystemControlBackgroundBaseMediumRevealBorderBrush"
-                TargetTheme="Dark"
+                not_mux:TargetTheme="Dark"
                 Color="{StaticResource SystemRevealBaseMediumColor}"
                 FallbackColor="{StaticResource SystemBaseMediumColor}"/>
             <local:RevealBorderBrush
                 x:Key="SystemControlBackgroundBaseMediumHighRevealBorderBrush"
-                TargetTheme="Dark"
+                not_mux:TargetTheme="Dark"
                 Color="{StaticResource SystemRevealBaseMediumHighColor}"
                 FallbackColor="{StaticResource SystemBaseMediumHighColor}"/>
             <local:RevealBorderBrush
                 x:Key="SystemControlBackgroundBaseMediumLowRevealBorderBrush"
-                TargetTheme="Dark"
+                not_mux:TargetTheme="Dark"
                 Color="{StaticResource SystemRevealBaseMediumLowColor}"
                 FallbackColor="{StaticResource SystemBaseMediumLowColor}"/>
             <local:RevealBorderBrush
                 x:Key="SystemControlBackgroundChromeBlackHighRevealBorderBrush"
-                TargetTheme="Dark"
+                not_mux:TargetTheme="Dark"
                 Color="{StaticResource SystemRevealChromeBlackHighColor}"
                 FallbackColor="{StaticResource SystemChromeBlackHighColor}"/>
             <local:RevealBorderBrush
                 x:Key="SystemControlBackgroundChromeBlackMediumRevealChromeBorderBrush"
-                TargetTheme="Dark"
+                not_mux:TargetTheme="Dark"
                 Color="{StaticResource SystemRevealChromeBlackMediumColor}"
                 FallbackColor="{StaticResource SystemChromeBlackMediumColor}"/>
             <local:RevealBorderBrush
                 x:Key="SystemControlBackgroundChromeMediumRevealBorderBrush"
-                TargetTheme="Dark"
+                not_mux:TargetTheme="Dark"
                 Color="{StaticResource SystemRevealChromeMediumColor}"
                 FallbackColor="{StaticResource SystemChromeMediumColor}"/>
             <local:RevealBorderBrush
                 x:Key="SystemControlBackgroundChromeMediumLowRevealBorderBrush"
-                TargetTheme="Dark"
+                not_mux:TargetTheme="Dark"
                 Color="{StaticResource SystemRevealChromeMediumLowColor}"
                 FallbackColor="{StaticResource SystemChromeMediumLowColor}"/>
             <local:RevealBorderBrush
                 x:Key="SystemControlBackgroundChromeWhiteRevealBorderBrush"
-                TargetTheme="Dark"
+                not_mux:TargetTheme="Dark"
                 Color="{StaticResource SystemRevealChromeWhiteColor}"
                 FallbackColor="{StaticResource SystemChromeWhiteColor}"/>
             <local:RevealBorderBrush
                 x:Key="SystemControlTransparentRevealListLowBorderBrush"
-                TargetTheme="Dark"
+                not_mux:TargetTheme="Dark"
                 Color="{StaticResource SystemRevealListLowColor}"
                 FallbackColor="Transparent"/>
             <local:RevealBorderBrush
                 x:Key="SystemControlBackgroundListLowRevealBorderBrush"
-                TargetTheme="Dark"
+                not_mux:TargetTheme="Dark"
                 Color="{StaticResource SystemRevealListLowColor}"
                 FallbackColor="{StaticResource SystemListLowColor}"/>
             <local:RevealBorderBrush
                 x:Key="SystemControlBackgroundListMediumRevealBorderBrush"
-                TargetTheme="Dark"
+                not_mux:TargetTheme="Dark"
                 Color="{StaticResource SystemRevealListMediumColor}"
                 FallbackColor="{StaticResource SystemListMediumColor}"/>
             <local:RevealBorderBrush
                 x:Key="SystemControlTransparentRevealBorderBrush"
-                TargetTheme="Dark"
+                not_mux:TargetTheme="Dark"
                 Color="Transparent"
                 FallbackColor="Transparent"/>
             <local:RevealBorderBrush
                 x:Key="SystemControlForegroundRevealTransparentBorderBrush"
-                TargetTheme="Dark"
+                not_mux:TargetTheme="Dark"
                 Color="Transparent"
                 FallbackColor="Transparent"/>
             <local:RevealBorderBrush
                 x:Key="SystemControlBackgroundTransparentRevealBorderBrush"
-                TargetTheme="Dark"
+                not_mux:TargetTheme="Dark"
                 Color="Transparent"
                 FallbackColor="Transparent"/>
             <local:RevealBorderBrush
                 x:Key="SystemControlHighlightTransparentRevealBorderBrush"
-                TargetTheme="Dark"
+                not_mux:TargetTheme="Dark"
                 Color="Transparent"
                 FallbackColor="Transparent"/>
             <local:RevealBorderBrush
                 x:Key="SystemControlHighlightAltTransparentRevealBorderBrush"
-                TargetTheme="Dark"
+                not_mux:TargetTheme="Dark"
                 Color="Transparent"
                 FallbackColor="Transparent"/>
             <local:RevealBorderBrush
                 x:Key="SystemControlHighlightAccentRevealBorderBrush"
-                TargetTheme="Dark"
+                not_mux:TargetTheme="Dark"
                 Color="{ThemeResource SystemAccentColor}"
                 FallbackColor="{ThemeResource SystemAccentColor}"/>
             <local:RevealBorderBrush
                 x:Key="SystemControlHighlightBaseHighRevealBorderBrush"
-                TargetTheme="Dark"
+                not_mux:TargetTheme="Dark"
                 Color="{StaticResource SystemRevealBaseHighColor}"
                 FallbackColor="{StaticResource SystemBaseHighColor}"/>
             <local:RevealBorderBrush
                 x:Key="SystemControlHighlightBaseLowRevealBorderBrush"
-                TargetTheme="Dark"
+                not_mux:TargetTheme="Dark"
                 Color="{StaticResource SystemRevealBaseLowColor}"
                 FallbackColor="{StaticResource SystemBaseLowColor}"/>
             <local:RevealBorderBrush
                 x:Key="SystemControlHighlightBaseMediumRevealBorderBrush"
-                TargetTheme="Dark"
+                not_mux:TargetTheme="Dark"
                 Color="{StaticResource SystemRevealBaseMediumColor}"
                 FallbackColor="{StaticResource SystemBaseMediumColor}"/>
             <local:RevealBorderBrush
                 x:Key="SystemControlHighlightBaseMediumHighRevealBorderBrush"
-                TargetTheme="Dark"
+                not_mux:TargetTheme="Dark"
                 Color="{StaticResource SystemRevealBaseMediumHighColor}"
                 FallbackColor="{StaticResource SystemBaseMediumHighColor}"/>
             <local:RevealBorderBrush
                 x:Key="SystemControlHighlightBaseMediumLowRevealBorderBrush"
-                TargetTheme="Dark"
+                not_mux:TargetTheme="Dark"
                 Color="{StaticResource SystemRevealBaseMediumLowColor}"
                 FallbackColor="{StaticResource SystemBaseMediumLowColor}"/>
 
@@ -371,7 +372,7 @@
             <Thickness x:Key="ComboBoxItemRevealThemePadding">10,4,10,6</Thickness>
             <Thickness x:Key="ComboBoxItemRevealThemeTouchPadding">10,10,10,12</Thickness>
             <Thickness x:Key="ComboBoxItemRevealThemeGameControllerPadding">10,10,10,12</Thickness>
-            
+
             <!-- These values are copied from generic.xaml and adjusted by 10% -->
             <Color x:Key="SystemRevealAltHighColor">#E6FFFFFF</Color>
             <Color x:Key="SystemRevealAltLowColor">#2EFFFFFF</Color>
@@ -400,189 +401,189 @@
             <!-- Background Brushes -->
             <local:RevealBackgroundBrush
                 x:Key="SystemControlBackgroundBaseLowRevealBackgroundBrush"
-                TargetTheme="Light"
+                not_mux:TargetTheme="Light"
                 Color="{StaticResource SystemRevealBaseLowColor}"
                 FallbackColor="{StaticResource SystemBaseLowColor}"/>
             <local:RevealBackgroundBrush
                 x:Key="SystemControlTransparentRevealBackgroundBrush"
-                TargetTheme="Light"
+                not_mux:TargetTheme="Light"
                 Color="Transparent"
                 FallbackColor="Transparent"/>
             <local:RevealBackgroundBrush
                 x:Key="SystemControlBackgroundAltHighRevealBackgroundBrush"
-                TargetTheme="Light" 
-                Color="{StaticResource SystemAltHighColor}" 
+                not_mux:TargetTheme="Light"
+                Color="{StaticResource SystemAltHighColor}"
                 FallbackColor="{StaticResource SystemAltHighColor}" />
             <local:RevealBackgroundBrush
                 x:Key="SystemControlHighlightAccentRevealBackgroundBrush"
-                TargetTheme="Light"
+                not_mux:TargetTheme="Light"
                 Color="{ThemeResource SystemAccentColor}"
                 FallbackColor="{ThemeResource SystemAccentColor}"/>
             <local:RevealBackgroundBrush
                 x:Key="SystemControlHighlightAccent3RevealBackgroundBrush"
-                TargetTheme="Light"
+                not_mux:TargetTheme="Light"
                 Color="{ThemeResource SystemAccentColorLight3}"
                 FallbackColor="{ThemeResource SystemAccentColorLight3}"/>
             <local:RevealBackgroundBrush
                 x:Key="SystemControlHighlightAccent2RevealBackgroundBrush"
-                TargetTheme="Light"
+                not_mux:TargetTheme="Light"
                 Color="{ThemeResource SystemAccentColorLight2}"
                 FallbackColor="{ThemeResource SystemAccentColorLight2}"/>
             <local:RevealBackgroundBrush
                 x:Key="SystemControlHighlightListMediumRevealBackgroundBrush"
-                TargetTheme="Light"
+                not_mux:TargetTheme="Light"
                 Color="{StaticResource SystemRevealListMediumColor}"
                 FallbackColor="{StaticResource SystemListMediumColor}"/>
             <local:RevealBackgroundBrush
                 x:Key="SystemControlHighlightListLowRevealBackgroundBrush"
-                TargetTheme="Light"
+                not_mux:TargetTheme="Light"
                 Color="{StaticResource SystemRevealListLowColor}"
                 FallbackColor="{StaticResource SystemListLowColor}"/>
             <local:RevealBackgroundBrush
                 x:Key="SystemControlBackgroundBaseMediumLowRevealBaseLowBackgroundBrush"
-                TargetTheme="Light"
+                not_mux:TargetTheme="Light"
                 Color="{StaticResource SystemRevealBaseLowColor}"
                 FallbackColor="{StaticResource SystemBaseMediumLowColor}"/>
             <local:RevealBackgroundBrush
                 x:Key="SystemControlHighlightBaseMediumLowRevealAccentBackgroundBrush"
-                TargetTheme="Light"
+                not_mux:TargetTheme="Light"
                 Color="{ThemeResource SystemAccentColor}"
                 FallbackColor="{StaticResource SystemBaseMediumLowColor}"/>
             <local:RevealBackgroundBrush
                 x:Key="SystemControlHighlightListMediumRevealListLowBackgroundBrush"
-                TargetTheme="Light"
+                not_mux:TargetTheme="Light"
                 Color="{StaticResource SystemRevealListLowColor}"
                 FallbackColor="{StaticResource SystemListMediumColor}"/>
             <local:RevealBackgroundBrush
                 x:Key="SystemControlHighlightAccent3RevealAccent2BackgroundBrush"
-                TargetTheme="Light"
+                not_mux:TargetTheme="Light"
                 Color="{ThemeResource SystemAccentColorLight2}"
                 FallbackColor="{ThemeResource SystemAccentColorLight3}"/>
 
             <!-- Border Brushes -->
             <local:RevealBorderBrush
                 x:Key="SystemControlBackgroundAccentRevealBorderBrush"
-                TargetTheme="Light"
+                not_mux:TargetTheme="Light"
                 Color="{ThemeResource SystemAccentColor}"
                 FallbackColor="{ThemeResource SystemAccentColor}"/>
             <local:RevealBorderBrush
                 x:Key="SystemControlBackgroundBaseHighRevealBorderBrush"
-                TargetTheme="Light"
+                not_mux:TargetTheme="Light"
                 Color="{StaticResource SystemRevealBaseHighColor}"
                 FallbackColor="{StaticResource SystemBaseHighColor}"/>
             <local:RevealBorderBrush
                 x:Key="SystemControlBackgroundBaseLowRevealBorderBrush"
-                TargetTheme="Light"
+                not_mux:TargetTheme="Light"
                 Color="{StaticResource SystemRevealBaseLowColor}"
                 FallbackColor="{StaticResource SystemBaseLowColor}"/>
             <local:RevealBorderBrush
                 x:Key="SystemControlBackgroundBaseMediumRevealBorderBrush"
-                TargetTheme="Light"
+                not_mux:TargetTheme="Light"
                 Color="{StaticResource SystemRevealBaseMediumColor}"
                 FallbackColor="{StaticResource SystemBaseMediumColor}"/>
             <local:RevealBorderBrush
                 x:Key="SystemControlBackgroundBaseMediumHighRevealBorderBrush"
-                TargetTheme="Light"
+                not_mux:TargetTheme="Light"
                 Color="{StaticResource SystemRevealBaseMediumHighColor}"
                 FallbackColor="{StaticResource SystemBaseMediumHighColor}"/>
             <local:RevealBorderBrush
                 x:Key="SystemControlBackgroundBaseMediumLowRevealBorderBrush"
-                TargetTheme="Light"
+                not_mux:TargetTheme="Light"
                 Color="{StaticResource SystemRevealBaseMediumLowColor}"
                 FallbackColor="{StaticResource SystemBaseMediumLowColor}"/>
             <local:RevealBorderBrush
                 x:Key="SystemControlBackgroundChromeBlackHighRevealBorderBrush"
-                TargetTheme="Light"
+                not_mux:TargetTheme="Light"
                 Color="{StaticResource SystemRevealChromeBlackHighColor}"
                 FallbackColor="{StaticResource SystemChromeBlackHighColor}"/>
             <local:RevealBorderBrush
                 x:Key="SystemControlBackgroundChromeBlackMediumRevealChromeBorderBrush"
-                TargetTheme="Light"
+                not_mux:TargetTheme="Light"
                 Color="{StaticResource SystemRevealChromeBlackMediumColor}"
                 FallbackColor="{StaticResource SystemChromeBlackMediumColor}"/>
             <local:RevealBorderBrush
                 x:Key="SystemControlBackgroundChromeMediumRevealBorderBrush"
-                TargetTheme="Light"
+                not_mux:TargetTheme="Light"
                 Color="{StaticResource SystemRevealChromeMediumColor}"
                 FallbackColor="{StaticResource SystemChromeMediumColor}"/>
             <local:RevealBorderBrush
                 x:Key="SystemControlBackgroundChromeMediumLowRevealBorderBrush"
-                TargetTheme="Light"
+                not_mux:TargetTheme="Light"
                 Color="{StaticResource SystemRevealChromeMediumLowColor}"
                 FallbackColor="{StaticResource SystemChromeMediumLowColor}"/>
             <local:RevealBorderBrush
                 x:Key="SystemControlBackgroundChromeWhiteRevealBorderBrush"
-                TargetTheme="Light"
+                not_mux:TargetTheme="Light"
                 Color="{StaticResource SystemRevealChromeWhiteColor}"
                 FallbackColor="{StaticResource SystemChromeWhiteColor}"/>
             <local:RevealBorderBrush
                 x:Key="SystemControlTransparentRevealListLowBorderBrush"
-                TargetTheme="Light"
+                not_mux:TargetTheme="Light"
                 Color="{StaticResource SystemRevealListLowColor}"
                 FallbackColor="Transparent"/>
             <local:RevealBorderBrush
                 x:Key="SystemControlBackgroundListLowRevealBorderBrush"
-                TargetTheme="Light"
+                not_mux:TargetTheme="Light"
                 Color="{StaticResource SystemRevealListLowColor}"
                 FallbackColor="{StaticResource SystemListLowColor}"/>
             <local:RevealBorderBrush
                 x:Key="SystemControlBackgroundListMediumRevealBorderBrush"
-                TargetTheme="Light"
+                not_mux:TargetTheme="Light"
                 Color="{StaticResource SystemRevealListMediumColor}"
                 FallbackColor="{StaticResource SystemListMediumColor}"/>
             <local:RevealBorderBrush
                 x:Key="SystemControlTransparentRevealBorderBrush"
-                TargetTheme="Light"
+                not_mux:TargetTheme="Light"
                 Color="Transparent"
                 FallbackColor="Transparent"/>
             <local:RevealBorderBrush
                 x:Key="SystemControlForegroundRevealTransparentBorderBrush"
-                TargetTheme="Light"
+                not_mux:TargetTheme="Light"
                 Color="Transparent"
                 FallbackColor="Transparent"/>
             <local:RevealBorderBrush
                 x:Key="SystemControlBackgroundTransparentRevealBorderBrush"
-                TargetTheme="Light"
+                not_mux:TargetTheme="Light"
                 Color="Transparent"
                 FallbackColor="Transparent"/>
             <local:RevealBorderBrush
                 x:Key="SystemControlHighlightTransparentRevealBorderBrush"
-                TargetTheme="Light"
+                not_mux:TargetTheme="Light"
                 Color="Transparent"
                 FallbackColor="Transparent"/>
             <local:RevealBorderBrush
                 x:Key="SystemControlHighlightAltTransparentRevealBorderBrush"
-                TargetTheme="Light"
+                not_mux:TargetTheme="Light"
                 Color="Transparent"
                 FallbackColor="Transparent"/>
             <local:RevealBorderBrush
                 x:Key="SystemControlHighlightAccentRevealBorderBrush"
-                TargetTheme="Light"
+                not_mux:TargetTheme="Light"
                 Color="{ThemeResource SystemAccentColor}"
                 FallbackColor="{ThemeResource SystemAccentColor}"/>
             <local:RevealBorderBrush
                 x:Key="SystemControlHighlightBaseHighRevealBorderBrush"
-                TargetTheme="Light"
+                not_mux:TargetTheme="Light"
                 Color="{StaticResource SystemRevealBaseHighColor}"
                 FallbackColor="{StaticResource SystemBaseHighColor}"/>
             <local:RevealBorderBrush
                 x:Key="SystemControlHighlightBaseLowRevealBorderBrush"
-                TargetTheme="Light"
+                not_mux:TargetTheme="Light"
                 Color="{StaticResource SystemRevealBaseLowColor}"
                 FallbackColor="{StaticResource SystemBaseLowColor}"/>
             <local:RevealBorderBrush
                 x:Key="SystemControlHighlightBaseMediumRevealBorderBrush"
-                TargetTheme="Light"
+                not_mux:TargetTheme="Light"
                 Color="{StaticResource SystemRevealBaseMediumColor}"
                 FallbackColor="{StaticResource SystemBaseMediumColor}"/>
             <local:RevealBorderBrush
                 x:Key="SystemControlHighlightBaseMediumHighRevealBorderBrush"
-                TargetTheme="Light"
+                not_mux:TargetTheme="Light"
                 Color="{StaticResource SystemRevealBaseMediumHighColor}"
                 FallbackColor="{StaticResource SystemBaseMediumHighColor}"/>
             <local:RevealBorderBrush
                 x:Key="SystemControlHighlightBaseMediumLowRevealBorderBrush"
-                TargetTheme="Light"
+                not_mux:TargetTheme="Light"
                 Color="{StaticResource SystemRevealBaseMediumLowColor}"
                 FallbackColor="{StaticResource SystemBaseMediumLowColor}"/>
 
@@ -720,7 +721,7 @@
             <Thickness x:Key="ComboBoxItemRevealThemePadding">10,4,10,6</Thickness>
             <Thickness x:Key="ComboBoxItemRevealThemeTouchPadding">10,10,10,12</Thickness>
             <Thickness x:Key="ComboBoxItemRevealThemeGameControllerPadding">10,10,10,12</Thickness>
-            
+
             <!-- These values are copied from generic.xaml -->
             <Color x:Key="SystemRevealAltHighColor">#FF000000</Color>
             <Color x:Key="SystemRevealAltLowColor">#33000000</Color>
@@ -2213,26 +2214,26 @@
 
                                 <VisualState x:Name="Reordering">
                                     <Storyboard>
-                                        <DoubleAnimation Storyboard.TargetName="ContentBorder"  
-                                            Storyboard.TargetProperty="Opacity"  
-                                            Duration="0:0:0.240"  
+                                        <DoubleAnimation Storyboard.TargetName="ContentBorder"
+                                            Storyboard.TargetProperty="Opacity"
+                                            Duration="0:0:0.240"
                                             To="{ThemeResource ListViewItemReorderThemeOpacity}" />
                                     </Storyboard>
                                 </VisualState>
 
                                 <VisualState x:Name="ReorderingTarget">
                                     <Storyboard>
-                                        <DoubleAnimation Storyboard.TargetName="ContentBorder"  
-                                            Storyboard.TargetProperty="Opacity"  
-                                            Duration="0:0:0.240"  
+                                        <DoubleAnimation Storyboard.TargetName="ContentBorder"
+                                            Storyboard.TargetProperty="Opacity"
+                                            Duration="0:0:0.240"
                                             To="{ThemeResource ListViewItemReorderTargetThemeOpacity}" />
-                                        <DoubleAnimation Storyboard.TargetName="ContentBorderScale"  
-                                            Storyboard.TargetProperty="ScaleX"  
-                                            Duration="0:0:0.240"  
+                                        <DoubleAnimation Storyboard.TargetName="ContentBorderScale"
+                                            Storyboard.TargetProperty="ScaleX"
+                                            Duration="0:0:0.240"
                                             To="{ThemeResource ListViewItemReorderTargetThemeScale}" />
-                                        <DoubleAnimation Storyboard.TargetName="ContentBorderScale"  
-                                            Storyboard.TargetProperty="ScaleY"  
-                                            Duration="0:0:0.240"  
+                                        <DoubleAnimation Storyboard.TargetName="ContentBorderScale"
+                                            Storyboard.TargetProperty="ScaleY"
+                                            Duration="0:0:0.240"
                                             To="{ThemeResource ListViewItemReorderTargetThemeScale}" />
                                     </Storyboard>
                                 </VisualState>
@@ -2246,9 +2247,9 @@
                                     </VisualState.Setters>
 
                                     <Storyboard>
-                                        <DoubleAnimation Storyboard.TargetName="ContentBorder"  
-                                            Storyboard.TargetProperty="Opacity"  
-                                            Duration="0:0:0.240"  
+                                        <DoubleAnimation Storyboard.TargetName="ContentBorder"
+                                            Storyboard.TargetProperty="Opacity"
+                                            Duration="0:0:0.240"
                                             To="{ThemeResource ListViewItemDragThemeOpacity}" />
                                         <FadeInThemeAnimation TargetName="MultiArrangeOverlayText" />
                                         <FadeInThemeAnimation TargetName="MultiArrangeOverlayTextBorder" />
@@ -2277,59 +2278,59 @@
                             <ScaleTransform x:Name="ContentBorderScale" />
                         </Grid.RenderTransform>
 
-                        <ContentPresenter x:Name="ContentPresenter"  
-                            ContentTransitions="{TemplateBinding ContentTransitions}"  
-                            HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"  
-                            VerticalAlignment="{TemplateBinding VerticalContentAlignment}"  
+                        <ContentPresenter x:Name="ContentPresenter"
+                            ContentTransitions="{TemplateBinding ContentTransitions}"
+                            HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                            VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
                             Margin="{TemplateBinding Padding}" />
-                        <!-- The 'Xg' text simulates the amount of space one line of text will occupy.  
-                             In the DataPlaceholder state, the Content is not loaded yet so we  
+                        <!-- The 'Xg' text simulates the amount of space one line of text will occupy.
+                             In the DataPlaceholder state, the Content is not loaded yet so we
                              approximate the size of the item using placeholder text. -->
-                        <TextBlock x:Name="PlaceholderTextBlock"  
-                            Visibility="Collapsed"  
-                            Text="Xg"  
-                            Foreground="{x:Null}"  
-                            Margin="{TemplateBinding Padding}"  
-                            IsHitTestVisible="False"  
+                        <TextBlock x:Name="PlaceholderTextBlock"
+                            Visibility="Collapsed"
+                            Text="Xg"
+                            Foreground="{x:Null}"
+                            Margin="{TemplateBinding Padding}"
+                            IsHitTestVisible="False"
                             AutomationProperties.AccessibilityView="Raw" />
                         <Rectangle x:Name="PlaceholderRect" Visibility="Collapsed" Fill="{ThemeResource GridViewItemRevealPlaceholderBackground}" />
-                        <Rectangle x:Name="BorderRectangle"  
-                            IsHitTestVisible="False"  
-                            Stroke="{ThemeResource SubtleFillColorTertiaryBrush}"  
-                            StrokeThickness="2"  
+                        <Rectangle x:Name="BorderRectangle"
+                            IsHitTestVisible="False"
+                            Stroke="{ThemeResource SubtleFillColorTertiaryBrush}"
+                            StrokeThickness="2"
                             Visibility="Collapsed"/>
-                        <Border x:Name="MultiSelectSquare"  
-                            Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}"  
-                            Width="20"  
-                            Height="20"  
-                            Margin="0,2,2,0"  
-                            VerticalAlignment="Top"  
-                            HorizontalAlignment="Right"  
+                        <Border x:Name="MultiSelectSquare"
+                            Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}"
+                            Width="20"
+                            Height="20"
+                            Margin="0,2,2,0"
+                            VerticalAlignment="Top"
+                            HorizontalAlignment="Right"
                             Visibility="Collapsed">
-                            <FontIcon x:Name="MultiSelectCheck"  
-                                FontFamily="{ThemeResource SymbolThemeFontFamily}"  
-                                Glyph="&#xE73E;"  
-                                FontSize="16"  
-                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"  
+                            <FontIcon x:Name="MultiSelectCheck"
+                                FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                                Glyph="&#xE73E;"
+                                FontSize="16"
+                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                                 Visibility="Collapsed" />
                         </Border>
-                        <Border x:Name="MultiArrangeOverlayTextBorder"  
-                            Visibility="Collapsed"  
-                            IsHitTestVisible="False"  
-                            MinWidth="20"  
-                            Height="20"  
-                            VerticalAlignment="Center"  
-                            HorizontalAlignment="Center"  
-                            Background="{ThemeResource AccentFillColorDefaultBrush}"  
-                            BorderThickness="2"  
+                        <Border x:Name="MultiArrangeOverlayTextBorder"
+                            Visibility="Collapsed"
+                            IsHitTestVisible="False"
+                            MinWidth="20"
+                            Height="20"
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Center"
+                            Background="{ThemeResource AccentFillColorDefaultBrush}"
+                            BorderThickness="2"
                             BorderBrush="{ThemeResource TextOnAccentFillColorPrimaryBrush}">
-                            <TextBlock x:Name="MultiArrangeOverlayText"  
-                                Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.DragItemsCount}"  
-                                Style="{ThemeResource CaptionTextBlockStyle}"  
-                                IsHitTestVisible="False"  
-                                Visibility="Collapsed"  
-                                VerticalAlignment="Center"  
-                                HorizontalAlignment="Center"  
+                            <TextBlock x:Name="MultiArrangeOverlayText"
+                                Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.DragItemsCount}"
+                                Style="{ThemeResource CaptionTextBlockStyle}"
+                                IsHitTestVisible="False"
+                                Visibility="Collapsed"
+                                VerticalAlignment="Center"
+                                HorizontalAlignment="Center"
                                 AutomationProperties.AccessibilityView="Raw" />
                         </Border>
                     </Grid>

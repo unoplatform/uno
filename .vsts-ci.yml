@@ -16,6 +16,7 @@ trigger:
     - doc/*
     - '**/*.md'
     - '*.md'
+    - 'build/cSpell.json'
     
 pr: 
   branches:
@@ -35,6 +36,7 @@ pr:
     - doc/*
     - '**/*.md'
     - '*.md'
+    - 'build/cSpell.json'
 
 resources:
   containers:
@@ -148,9 +150,5 @@ jobs:
     XamarinSDKVersionTest: '$(XamarinSDKVersion_iOS_UITests)'
 
 - template: build/ci/.azure-devops-screenshot-compare.yml
-  parameters:
-    vmImage: '$(windows2022HostedVMImage)'
-
-- template: build/ci/.azure-devops-vs2022-vsix.yml
   parameters:
     vmImage: '$(windows2022HostedVMImage)'

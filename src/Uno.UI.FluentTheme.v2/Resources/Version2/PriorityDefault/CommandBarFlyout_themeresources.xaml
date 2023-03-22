@@ -13,7 +13,7 @@
     xmlns:contract12Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,12)"
     xmlns:contract14NotPresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,14)"
     xmlns:contract14Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,14)">
-    
+
     <ResourceDictionary.ThemeDictionaries>
         <ResourceDictionary x:Key="Default">
             <contract7NotPresent:StaticResource x:Key="CommandBarFlyoutBackground" ResourceKey="SystemControlBackgroundChromeMediumLowBrush"/>
@@ -45,7 +45,7 @@
             <StaticResource x:Key="CommandBarFlyoutAppBarButtonForegroundCheckedPressed" ResourceKey="TextOnAccentFillColorSecondaryBrush"/>
             <StaticResource x:Key="CommandBarFlyoutAppBarButtonForegroundCheckedDisabled" ResourceKey="TextOnAccentFillColorDisabledBrush"/>
             <StaticResource x:Key="CommandBarFlyoutAppBarButtonBorderBrush" ResourceKey="SubtleFillColorTransparentBrush"/>
-                        
+
             <Thickness x:Key="CommandBarFlyoutBorderThemeThickness">1</Thickness>
             <Thickness x:Key="CommandBarFlyoutBorderUpThemeThickness">1,1,1,0</Thickness>
             <Thickness x:Key="CommandBarFlyoutBorderDownThemeThickness">1,0,1,1</Thickness>
@@ -81,7 +81,7 @@
             <StaticResource x:Key="CommandBarFlyoutAppBarButtonForegroundCheckedPressed" ResourceKey="TextOnAccentFillColorSecondaryBrush"/>
             <StaticResource x:Key="CommandBarFlyoutAppBarButtonForegroundCheckedDisabled" ResourceKey="TextOnAccentFillColorDisabledBrush"/>
             <StaticResource x:Key="CommandBarFlyoutAppBarButtonBorderBrush" ResourceKey="SubtleFillColorTransparentBrush"/>
-            
+
             <Thickness x:Key="CommandBarFlyoutBorderThemeThickness">1</Thickness>
             <Thickness x:Key="CommandBarFlyoutBorderUpThemeThickness">1,1,1,0</Thickness>
             <Thickness x:Key="CommandBarFlyoutBorderDownThemeThickness">1,0,1,1</Thickness>
@@ -116,7 +116,7 @@
             <StaticResource x:Key="CommandBarFlyoutAppBarButtonForegroundCheckedPressed" ResourceKey="SystemControlHighlightAltChromeWhiteBrush"/>
             <StaticResource x:Key="CommandBarFlyoutAppBarButtonForegroundCheckedDisabled" ResourceKey="SystemControlDisabledBaseMediumLowBrush"/>
             <StaticResource x:Key="CommandBarFlyoutAppBarButtonBorderBrush" ResourceKey="SystemControlForegroundTransparentBrush"/>
-            
+
             <Thickness x:Key="CommandBarFlyoutBorderThemeThickness">1</Thickness>
             <Thickness x:Key="CommandBarFlyoutBorderUpThemeThickness">1,1,1,0</Thickness>
             <Thickness x:Key="CommandBarFlyoutBorderDownThemeThickness">1,0,1,1</Thickness>
@@ -141,14 +141,15 @@
         <Setter Property="UseSystemFocusVisuals" Value="{StaticResource UseSystemFocusVisuals}" />
         <Setter Property="AllowFocusOnInteraction" Value="False" />
         <contract7Present:Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}" />
-        <Setter Property="local:CommandBarFlyoutCommandBarAutomationProperties.ControlType" Value="MenuItem" />
+        <!-- TODO: We don't have CommandBarFlyoutCommandBarAutomationProperties yet. -->
+        <!-- <Setter Property="local:CommandBarFlyoutCommandBarAutomationProperties.ControlType" Value="MenuItem" /> -->
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="AppBarButton">
                     <Grid x:Name="Root"
                         MinWidth="{TemplateBinding MinWidth}"
                         MaxWidth="{TemplateBinding MaxWidth}">
-                        
+
                         <VisualStateManager.VisualStateGroups>
                             <VisualStateGroup x:Name="ApplicationViewStates">
                                 <VisualState x:Name="FullSize" />
@@ -371,14 +372,15 @@
         <Setter Property="Width" Value="NaN" />
         <Setter Property="UseSystemFocusVisuals" Value="{StaticResource UseSystemFocusVisuals}" />
         <Setter Property="AllowFocusOnInteraction" Value="False" />
-        <Setter Property="local:CommandBarFlyoutCommandBarAutomationProperties.ControlType" Value="MenuItem" />
+        <!-- TODO: We don't have CommandBarFlyoutCommandBarAutomationProperties yet. -->
+        <!-- <Setter Property="local:CommandBarFlyoutCommandBarAutomationProperties.ControlType" Value="MenuItem" /> -->
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="AppBarToggleButton">
                     <Grid x:Name="Root"
                         MinWidth="{TemplateBinding MinWidth}"
                         MaxWidth="{TemplateBinding MaxWidth}">
-                        
+
                         <VisualStateManager.VisualStateGroups>
                             <VisualStateGroup x:Name="ApplicationViewStates">
                                 <VisualState x:Name="FullSize" />
@@ -540,7 +542,7 @@
                                 <contract7Present:BrushTransition Duration="0:0:0.083" />
                             </contract7Present:Border.BackgroundTransition>
                         </Border>
-                        
+
                         <Grid x:Name="ContentRoot" Width="40">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
@@ -783,7 +785,8 @@
         <contract7Present:Setter Property="CommandBarOverflowPresenterStyle" Value="{StaticResource CommandBarFlyoutCommandBarOverflowPresenterStyle}" />
         <contract7NotPresent:Setter Property="CommandBarOverflowPresenterStyle" Value="{StaticResource CommandBarFlyoutCommandBarOverflowPresenterStyleRS4}" />
         <contract7Present:Setter Property="CornerRadius" Value="{ThemeResource OverlayCornerRadius}" />
-        <Setter Property="local:CommandBarFlyoutCommandBarAutomationProperties.ControlType" Value="Menu" />
+        <!-- TODO: We don't have CommandBarFlyoutCommandBarAutomationProperties yet. -->
+        <!-- <Setter Property="local:CommandBarFlyoutCommandBarAutomationProperties.ControlType" Value="Menu" /> -->
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="local:CommandBarFlyoutCommandBar">
@@ -1256,7 +1259,7 @@
                                              <!-- If you have a value set by a binding and then animate that value,
                                                  the animation will clear the binding.  Because of that, we need to have
                                                  two translate transforms - one that we bind to a property,
-                                                 and another that we can animate. --> 
+                                                 and another that we can animate. -->
                                             <TransformGroup>
                                                 <TranslateTransform X="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=FlyoutTemplateSettings.WidthExpansionDelta}" />
                                                 <TranslateTransform x:Name="ContentRootClipTransform" />
@@ -1365,7 +1368,8 @@
                                                         <Setter Property="UseSystemFocusVisuals" Value="{StaticResource UseSystemFocusVisuals}" />
                                                         <Setter Property="AllowFocusOnInteraction" Value="False" />
                                                         <contract7Present:Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}" />
-                                                        <Setter Property="local:CommandBarFlyoutCommandBarAutomationProperties.ControlType" Value="MenuItem" />
+                                                        <!-- TODO: We don't have CommandBarFlyoutCommandBarAutomationProperties yet. -->
+                                                        <!-- <Setter Property="local:CommandBarFlyoutCommandBarAutomationProperties.ControlType" Value="MenuItem" /> -->
                                                     </Style>
                                                 </contract9NotPresent:CommandBarOverflowPresenter.ItemContainerStyle>
                                             </CommandBarOverflowPresenter>

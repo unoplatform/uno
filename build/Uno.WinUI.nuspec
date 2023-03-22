@@ -16,6 +16,14 @@
 
 	<dependencies>
 
+	  <!-- References from Uno.UI.Toolkit -->
+	  <!-- BEGIN WinUI-specific
+	  <group targetFramework="net5.0-windows10.0.18362.0">
+		<dependency id="Microsoft.WindowsAppSDK" version="1.0.0" />
+		<dependency id="Microsoft.Windows.SDK.BuildTools" version="10.0.22000.196" />
+	  </group>
+	  END WinUI-specific -->
+
 	  <!-- net7.0-android30.0 -->
 	  <group targetFramework="net7.0-android30.0">
 		<dependency id="Xamarin.AndroidX.Legacy.Support.V4" version="1.0.0.10" />
@@ -191,7 +199,7 @@
 		<reference file="Uno.UI.FluentTheme.v1.dll" />
 		<reference file="Uno.UI.FluentTheme.v2.dll" />
 	  </group>
-		
+
 	  <!-- .NET 7.0 Reference -->
 	  <group targetFramework="net7.0">
 		<reference file="Uno.Xaml.dll" />
@@ -298,7 +306,7 @@
 		<reference file="Uno.UI.FluentTheme.v1.dll" />
 		<reference file="Uno.UI.FluentTheme.v2.dll" />
 	  </group>
-		
+
 	  <!-- net6.0-android30.0 -->
 	  <group targetFramework="net6.0-android30.0">
 		<reference file="Uno.UI.BindingHelper.Android.dll" />
@@ -359,7 +367,7 @@
 		<reference file="Uno.UI.FluentTheme.v1.dll" />
 		<reference file="Uno.UI.FluentTheme.v2.dll" />
 	  </group>
-		
+
 	  <!-- net7.0-android30.0 -->
 	  <group targetFramework="net7.0-android30.0">
 		<reference file="Uno.UI.BindingHelper.Android.dll" />
@@ -577,7 +585,7 @@
 	<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.netcoremobile\Release\net6.0-android\Uno.UI.FluentTheme.v2.pdb" target="lib\net6.0-android30.0" />
 	<file src="..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.netcoremobile\Release\net6.0-android\Uno.UI.Toolkit.dll" target="lib\net6.0-android30.0" />
 	<file src="..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.netcoremobile\Release\net6.0-android\Uno.UI.Toolkit.pdb" target="lib\net6.0-android30.0" />
-	  
+
 	<!-- net7.0-ios -->
 	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net7.0-ios\Uno.dll" target="lib\net7.0-ios" />
 	<file src="..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net7.0-ios\Uno.pdb" target="lib\net7.0-ios" />
@@ -680,7 +688,7 @@
 	<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.netcoremobile\Release\net7.0-android\Uno.UI.FluentTheme.v2.pdb" target="lib\net7.0-android30.0" />
 	<file src="..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.netcoremobile\Release\net7.0-android\Uno.UI.Toolkit.dll" target="lib\net7.0-android30.0" />
 	<file src="..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.netcoremobile\Release\net7.0-android\Uno.UI.Toolkit.pdb" target="lib\net7.0-android30.0" />
-	  
+
 	<!-- macOS -->
 	<file src="..\src\Uno.UI\Bin\Release\xamarinmac20\Uno.dll" target="lib\xamarinmac20" />
 	<file src="..\src\Uno.UI\Bin\Release\xamarinmac20\Uno.pdb" target="lib\xamarinmac20" />
@@ -889,7 +897,6 @@
 	<file src="uno.winui.cross-runtime.targets" target="buildTransitive" />
 	<file src="uno.winui.common.targets" target="buildTransitive" />
 	<file src="uno.winui.single-project.targets" target="buildTransitive" />
-	<file src="uno.winui.single-location-project.targets" target="buildTransitive" />
 	<file src="uno.winui.runtime-replace.targets" target="buildTransitive" />
 	<file src="uno.winui.winappsdk.targets" target="buildTransitive" />
 	<file src="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks*" target="buildTransitive" />

@@ -30,8 +30,15 @@ namespace Windows.Media.Capture
 
 			var mediaPickerActivity = await StartMediaPickerActivity(ct);
 
-			// An intent to take a picture
-			var takePictureIntent = new Intent(MediaStore.ActionImageCapture);
+			// An intent to take a picture/video
+			var action = mode switch
+			{
+				CameraCaptureUIMode.Photo => MediaStore.ActionImageCapture,
+				CameraCaptureUIMode.Video => MediaStore.ActionVideoCapture,
+				_ => MediaStore.ActionImageCapture,
+			};
+
+			var takePictureIntent = new Intent(action);
 
 			// On some device (like nexus phone), we need to add extra to the intent to be able to get the Uri of the image
 			// http://stackoverflow.com/questions/9890757/android-camera-data-intent-returns-null

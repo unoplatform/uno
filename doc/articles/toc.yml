@@ -62,9 +62,9 @@
             - name: How to deploy a WebAssembly app on Azure Static Web Apps
               href: guides/azure-static-webapps.md
             - name: How to integrate Uno.Material
-              href: guides/uno-material-walkthrough.md
+              href: external/uno.themes/doc/material-getting-started.md
             - name: How to integrate Uno.Cupertino
-              href: guides/uno-cupertino-walkthrough.md
+              href: external/uno.themes/doc/cupertino-getting-started.md
             - name: How to use Windows Community Toolkit
               href: uno-community-toolkit.md
             - name: How to add a splash screen
@@ -319,21 +319,21 @@
                 - name: ElevatedView
                   href: features/ElevatedView.md
                 - name: AdaptiveTrigger
-                - href: features/AdaptiveTrigger.md
+                  href: features/AdaptiveTrigger.md
                 - name: Other features
                   href: Uno.UI.Toolkit.md
             - name: Uno Material
-              topicHref: features/uno-material.md
+              topicHref: external/uno.themes/doc/material-getting-started.md
               items:
                 - name: Overview
-                  href: features/uno-material.md
+                  href: external/uno.themes/doc/material-getting-started.md
                 - name: Controls extra setup
-                  href: features/uno-material-controls-extra-setup.md
+                  href: external/uno.themes/doc/material-getting-started.md
             - name: Uno Cupertino
-              topicHref: features/uno-cupertino.md
+              topicHref: external/uno.themes/doc/cupertino-getting-started.md
               items:
                 - name: Overview
-                  href: features/uno-cupertino.md
+                  href: external/uno.themes/doc/cupertino-getting-started.md
             - name: Uno Islands
               href: guides/uno-islands.md
             - name: Working with the Skia+GTK head
@@ -420,6 +420,7 @@
               href: Uno-UI-Performance.md
             - name: How to profile applications
               href: guides/profiling-applications.md
+              
         - name: Tooling
           items:
             - name: Uno WebAssembly Bootstrapper
@@ -428,6 +429,10 @@
               href: external/uno.check/doc/toc.yml
             - name: Xaml Merging
               href: external/uno.xamlmerge.task/doc/toc.yml
+            - name: Uno Resizetizer
+              href: external/uno.resizetizer/doc/toc.yml
+            - name: Uno.UITest
+              href: external/uno.uitest/doc/toc.yml
 
     - name: Reference
       items:
@@ -529,7 +534,7 @@
             href: uno-development/Uno-UI-XAML-ResourceTrimming.md
 
 - name: Extensions
-  topicHref: external/uno.extensions/doc/Overview/ExtensionsOverviewAndGettingStarted.html
+  topicHref: external/uno.extensions/doc/ExtensionsOverview.md
   href: external/uno.extensions/doc/toc.yml
 - name: Themes
   topicHref: external/uno.themes/doc/themes-overview.html

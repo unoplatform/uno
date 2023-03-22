@@ -18,6 +18,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\PlatformHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\RoslynMetadataHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\SymbolExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\UnoNamedTypeSymbolDisplayVisitor.cs" />
   </ItemGroup>
   <Import Project="..\..\Uno.Foundation\Uno.Core.Extensions\Uno.Core.Extensions.props" />
 </Project>

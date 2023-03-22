@@ -139,4 +139,14 @@ public sealed partial class XamlRoot
 			element.SetVisualTree(newRoot.VisualTree);
 		}
 	}
+
+	internal IDisposable OpenPopup(Windows.UI.Xaml.Controls.Primitives.Popup popup)
+	{
+		if (VisualTree.PopupRoot == null)
+		{
+			throw new InvalidOperationException("PopupRoot is not initialized yet.");
+		}
+
+		return VisualTree.PopupRoot.OpenPopup(popup);
+	}
 }

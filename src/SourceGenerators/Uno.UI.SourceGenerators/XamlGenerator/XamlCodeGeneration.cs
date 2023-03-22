@@ -129,6 +129,17 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		internal Lazy<INamedTypeSymbol> FontWeightsSymbol { get; }
 		internal Lazy<INamedTypeSymbol> SolidColorBrushHelperSymbol { get; }
 		internal Lazy<INamedTypeSymbol> CreateFromStringAttributeSymbol { get; }
+		internal Lazy<INamedTypeSymbol> UserControlSymbol { get; }
+		internal Lazy<INamedTypeSymbol?> NativePageSymbol { get; }
+		internal Lazy<INamedTypeSymbol> ApplicationSymbol { get; }
+		internal Lazy<INamedTypeSymbol> ResourceDictionarySymbol { get; }
+		internal Lazy<INamedTypeSymbol> TextBlockSymbol { get; }
+		internal Lazy<INamedTypeSymbol> RunSymbol { get; }
+		internal Lazy<INamedTypeSymbol> SpanSymbol { get; }
+		internal Lazy<INamedTypeSymbol> BorderSymbol { get; }
+		internal Lazy<INamedTypeSymbol> SolidColorBrushSymbol { get; }
+		internal Lazy<INamedTypeSymbol> RowDefinitionSymbol { get; }
+		internal Lazy<INamedTypeSymbol> ColumnDefinitionSymbol { get; }
 
 		public XamlCodeGeneration(GeneratorExecutionContext context)
 		{
@@ -175,11 +186,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_analyzerSuppressions = context.GetMSBuildPropertyValue("XamlGeneratorAnalyzerSuppressionsProperty").Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
 
 			_resourceFiles = context.GetMSBuildItemsWithAdditionalFiles("PRIResource").ToArray();
-
-			if (bool.TryParse(context.GetMSBuildPropertyValue("UseUnoXamlParser"), out var useUnoXamlParser) && useUnoXamlParser)
-			{
-				XamlRedirection.XamlConfig.IsUnoXaml = useUnoXamlParser || XamlRedirection.XamlConfig.IsMono;
-			}
 
 			if (bool.TryParse(context.GetMSBuildPropertyValue("UnoSkipUserControlsInVisualTree"), out var skipUserControlsInVisualTree))
 			{
@@ -290,6 +296,17 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			IOSViewSymbol = GetOptionalSymbolAsLazy("UIKit.UIView");
 			AppKitViewSymbol = GetOptionalSymbolAsLazy("AppKit.NSView");
 			CreateFromStringAttributeSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.CreateFromStringAttribute);
+			UserControlSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.UserControl);
+			NativePageSymbol = GetOptionalSymbolAsLazy(XamlConstants.Types.NativePage);
+			ApplicationSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.Application);
+			ResourceDictionarySymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.ResourceDictionary);
+			TextBlockSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.TextBlock);
+			RunSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.Run);
+			SpanSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.Span);
+			BorderSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.Border);
+			SolidColorBrushSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.SolidColorBrush);
+			RowDefinitionSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.RowDefinition);
+			ColumnDefinitionSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.ColumnDefinition);
 
 			Lazy<INamedTypeSymbol> GetMandatorySymbolAsLazy(string fullyQualifiedName)
 				=> new(() => context.Compilation.GetTypeByMetadataName(fullyQualifiedName) ?? throw new InvalidOperationException($"Unable to find type {fullyQualifiedName}"));
@@ -358,10 +375,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			try
 			{
-#if DEBUG
-				Console.WriteLine("Xaml Source Generation is using the {0} Xaml Parser", XamlRedirection.XamlConfig.IsUnoXaml ? "Uno.UI" : "System");
-#endif
-
 				var lastBinaryUpdateTime = GetLastBinaryUpdateTime();
 				var isInsideMainAssembly =
 					_isUnoHead
@@ -838,7 +851,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									{
 										if (ambientResource.GetFirstMethodWithName("Initialize") is not null)
 										{
-											writer.AppendLineIndented($"global::{ambientResource.GetFullName()}.Initialize();");
+											writer.AppendLineIndented($"{ambientResource.GetFullyQualifiedTypeIncludingGlobal()}.Initialize();");
 										}
 									}
 
@@ -847,7 +860,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 										// Note: we do *not* call RegisterDefaultStyles for the current assembly, because those styles are treated as implicit styles, not default styles
 										if (ambientResource.GetFirstMethodWithName("RegisterDefaultStyles") is not null)
 										{
-											writer.AppendLineIndented($"global::{ambientResource.GetFullName()}.RegisterDefaultStyles();");
+											writer.AppendLineIndented($"{ambientResource.GetFullyQualifiedTypeIncludingGlobal()}.RegisterDefaultStyles();");
 										}
 									}
 
@@ -855,7 +868,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									{
 										if (ambientResource.GetFirstMethodWithName("RegisterResourceDictionariesBySource") is not null)
 										{
-											writer.AppendLineIndented($"global::{ambientResource.GetFullName()}.RegisterResourceDictionariesBySource();");
+											writer.AppendLineIndented($"{ambientResource.GetFullyQualifiedTypeIncludingGlobal()}.RegisterResourceDictionariesBySource();");
 										}
 									}
 								}

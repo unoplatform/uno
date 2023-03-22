@@ -173,22 +173,6 @@ namespace Uno.Reflection
 			return new ReflectionExtensionPoint<T>(instance);
 		}
 
-		public virtual IDisposable Observe(IEventDescriptor descriptor, object publisher, object observer,
-										   string methodName)
-		{
-#if !WINDOWS_UWP && !HAS_CRIPPLEDREFLECTION
-			var callback = Delegate.CreateDelegate(descriptor.Type, observer, methodName);
-
-			descriptor.Add.Invoke(publisher, callback);
-
-			Action dispose = () => descriptor.Remove.Invoke(publisher, callback);
-
-			return dispose.ToDisposable();
-#else
-            throw new NotImplementedException();
-#endif
-		}
-
 		public virtual IMemberDescriptor GetDescriptor(MemberInfo mi)
 		{
 			var descriptor = FindDescriptor(mi);

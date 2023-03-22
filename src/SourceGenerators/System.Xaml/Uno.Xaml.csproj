@@ -14,7 +14,10 @@
 		<!-- This target must always be built, regardless of the override -->
 		<TargetFrameworksOverrideInvariant>netstandard2.0</TargetFrameworksOverrideInvariant>
 
-        <NoWarn>$(NoWarn);IDE0051</NoWarn>
+		<NoWarn>$(NoWarn);IDE0051</NoWarn>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<DebugType>portable</DebugType>
+		<DebugSymbols>true</DebugSymbols>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
@@ -32,19 +35,5 @@
 		<TargetFrameworks>netstandard2.0</TargetFrameworks>
 	</PropertyGroup>
 
-	<Import Project="../../netcore-build.props"/>
-
-	<PropertyGroup>
-		<DefineConstants>$(DefineConstants);NET_4_0;NET_4_5;NET_4_6;MONO;WIN_PLATFORM;MULTIPLEX_OS</DefineConstants>
-		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-		<DebugType>portable</DebugType>
-		<DebugSymbols>true</DebugSymbols>
-	</PropertyGroup>
-
-	<ItemGroup Condition="'$(TargetFramework)'=='net461'">
-		<Reference Remove="System.Xaml" />
-	</ItemGroup>
-
 	<Import Project="$(MSBuildSDKExtrasTargets)" Condition="Exists('$(MSBuildSDKExtrasTargets)')" />
-
 </Project>

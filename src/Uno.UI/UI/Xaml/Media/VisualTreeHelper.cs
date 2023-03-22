@@ -21,6 +21,7 @@ using Uno.UI.Extensions;
 using Windows.UI.Xaml.Controls.Primitives;
 using Uno.UI.Xaml.Core;
 using Uno.UI.DataBinding;
+using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
 #if __IOS__
 using UIKit;
@@ -42,36 +43,6 @@ namespace Windows.UI.Xaml.Media
 {
 	public partial class VisualTreeHelper
 	{
-		private static readonly List<ManagedWeakReference> _openPopups = new();
-
-		internal static IDisposable RegisterOpenPopup(IPopup popup)
-		{
-			CleanupPopupReferences();
-
-			var popupRegistration = _openPopups.FirstOrDefault(
-				p => !p.IsDisposed && p.Target == popup);
-
-			if (popupRegistration is null)
-			{
-				popupRegistration = WeakReferencePool.RentWeakReference(popup, popup);
-
-				_openPopups.Add(popupRegistration);
-			}
-
-			return Disposable.Create(() => _openPopups.Remove(popupRegistration));
-		}
-
-		private static void CleanupPopupReferences()
-		{
-			for (int i = _openPopups.Count - 1; i >= 0; i--)
-			{
-				if (_openPopups[i].IsDisposed || _openPopups[i].Target is null)
-				{
-					_openPopups.RemoveAt(i);
-				}
-			}
-		}
-
 		[Uno.NotImplemented]
 		public static void DisconnectChildrenRecursive(UIElement element)
 		{
@@ -162,40 +133,34 @@ namespace Windows.UI.Xaml.Media
 
 		public static IReadOnlyList<Popup> GetOpenPopups(Window window)
 		{
-			CleanupPopupReferences();
-
-			return _openPopups
-				.Where(p => !p.IsDisposed)
-				.Select(p => p.Target)
-				.OfType<Popup>()
-				.Distinct()
-				.ToList()
-				.AsReadOnly();
-		}
-
-		private static IReadOnlyList<Popup> GetOpenFlyoutPopups()
-		{
-			CleanupPopupReferences();
-
-			return _openPopups
-				.Where(p => !p.IsDisposed)
-				.Select(p => p.Target)
-				.OfType<Popup>()
-				.Distinct()
-				.Where(p => p.IsForFlyout)
-				.ToList().AsReadOnly();
-		}
-
-		public static IReadOnlyList<Popup> GetOpenPopupsForXamlRoot(XamlRoot xamlRoot)
-		{
-			if (xamlRoot == Window.Current.RootElement.XamlRoot)
+			if (window == Window.Current)
 			{
-				return GetOpenPopups(Window.Current);
+				var mainVisualTree = WinUICoreServices.Instance.ContentRootCoordinator.CoreWindowContentRoot.VisualTree;
+				return GetOpenPopups(mainVisualTree);
 			}
 
-			return Array.Empty<Popup>();
+			// TODO Uno: Multi-window support #8341.
+			throw new InvalidOperationException("Using multiple windows is not supported on this platform yet.");
 		}
 
+		private static IReadOnlyList<Popup> GetOpenFlyoutPopups(XamlRoot xamlRoot) =>
+			GetOpenPopups(xamlRoot.VisualTree)
+				.Where(p => p.IsForFlyout)
+				.ToList()
+				.AsReadOnly();
+
+		public static IReadOnlyList<Popup> GetOpenPopupsForXamlRoot(XamlRoot xamlRoot) =>
+			GetOpenPopups(xamlRoot.VisualTree);
+
+		private static IReadOnlyList<Popup> GetOpenPopups(VisualTree visualTree)
+		{
+			if (visualTree?.PopupRoot is not { } popupRoot)
+			{
+				return Array.Empty<Popup>();
+			}
+
+			return popupRoot.GetOpenPopups();
+		}
 
 		public static DependencyObject/* ? */ GetParent(DependencyObject reference)
 		{
@@ -215,17 +180,25 @@ namespace Windows.UI.Xaml.Media
 			return realParent;
 		}
 
-		internal static void CloseAllPopups()
+		internal static void CloseAllPopups(XamlRoot xamlRoot)
 		{
-			foreach (var popup in GetOpenPopups(Window.Current))
+			foreach (var popup in GetOpenPopups(xamlRoot.VisualTree))
 			{
 				popup.IsOpen = false;
 			}
 		}
 
-		internal static void CloseAllFlyouts()
+		internal static void CloseLightDismissPopups(XamlRoot xamlRoot)
 		{
-			foreach (var popup in GetOpenFlyoutPopups())
+			foreach (var popup in GetOpenPopups(xamlRoot.VisualTree).Where(p => p.IsLightDismissEnabled))
+			{
+				popup.IsOpen = false;
+			}
+		}
+
+		internal static void CloseAllFlyouts(XamlRoot xamlRoot)
+		{
+			foreach (var popup in GetOpenFlyoutPopups(xamlRoot))
 			{
 				popup.IsOpen = false;
 			}
@@ -313,6 +286,15 @@ namespace Windows.UI.Xaml.Media
 			view.AddSubview(child);
 #elif UNO_REFERENCE_API
 			view.AddChild(child);
+#elif NET461
+			if (view is FrameworkElement fe)
+			{
+				fe.AddChild(child);
+			}
+			else
+			{
+				throw new NotImplementedException("AddChild on UIElement is not implemented on NET461.");
+			}
 #else
 			throw new NotImplementedException("AddChild not implemented on this platform.");
 #endif

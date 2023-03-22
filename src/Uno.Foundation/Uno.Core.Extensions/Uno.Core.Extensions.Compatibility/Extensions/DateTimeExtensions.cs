@@ -15,7 +15,6 @@
 //
 // ******************************************************************
 using System;
-using Uno.Extensions.ValueType;
 
 namespace Uno.Extensions
 {

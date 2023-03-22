@@ -278,6 +278,11 @@ namespace Uno.UI.DataBinding
 				return true;
 			}
 
+			if (FastStringToRect(outputType, input, ref output))
+			{
+				return true;
+			}
+
 			if (FastStringToMatrix(outputType, input, ref output))
 			{
 				return true;
@@ -592,6 +597,22 @@ namespace Uno.UI.DataBinding
 			return false;
 		}
 
+		private static bool FastStringToRect(Type outputType, string input, ref object output)
+		{
+			if (outputType == typeof(Windows.Foundation.Rect))
+			{
+				var fields = GetDoubleValues(input);
+
+				if (fields.Count == 4)
+				{
+					output = new Windows.Foundation.Rect(fields[0], fields[1], fields[2], fields[3]);
+					return true;
+				}
+			}
+
+			return false;
+		}
+
 		private static bool FastStringToBrushConvert(Type outputType, string input, ref object output)
 		{
 			if (outputType == typeof(Brush))
@@ -822,7 +843,6 @@ namespace Uno.UI.DataBinding
 		{
 			if (outputType != typeof(Windows.UI.Xaml.Controls.Orientation)) return false;
 
-			var lowered = input.ToLowerInvariant();
 			output = input.ToLowerInvariant().Trim() switch
 			{
 				"0" or "vertical" => Windows.UI.Xaml.Controls.Orientation.Vertical,
