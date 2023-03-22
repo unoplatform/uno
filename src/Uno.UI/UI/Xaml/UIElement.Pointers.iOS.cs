@@ -9,7 +9,6 @@ using Windows.UI.Xaml.Input;
 using Foundation;
 using UIKit;
 using Uno.Extensions;
-using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml.Core;
 
