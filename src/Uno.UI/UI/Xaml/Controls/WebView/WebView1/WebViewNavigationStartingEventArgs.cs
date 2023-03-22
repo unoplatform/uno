@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 
 namespace Windows.UI.Xaml.Controls;
 
@@ -7,13 +9,13 @@ namespace Windows.UI.Xaml.Controls;
 /// </summary>
 public sealed partial class WebViewNavigationStartingEventArgs
 {
-	internal WebViewNavigationStartingEventArgs(Uri uri) =>
+	internal WebViewNavigationStartingEventArgs(Uri? uri) =>
 		Uri = uri;
 
 	/// <summary>
 	/// Gets the Uniform Resource Identifier (URI) of the content the WebView is loading.
 	/// </summary>
-	public Uri Uri { get; }
+	public Uri? Uri { get; }
 
 	/// <summary>
 	/// Gets or sets a value indicating whether to cancel the WebView navigation.

@@ -73,4 +73,9 @@ public partial class CoreWebView2
 	{
 		NavigationStarting?.Invoke(this, new CoreWebView2NavigationStartingEventArgs(0, null));//TODO:MZ:
 	}
+
+	internal void RaiseNewWindowRequested()
+	{
+		NewWindowRequested?.Invoke(this, new());//TODO:MZ:
+	}
 }

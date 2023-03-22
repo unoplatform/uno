@@ -198,11 +198,6 @@ internal class NativeWebViewWrapper : INativeWebView
 		_webView.VerticalScrollBarEnabled = scrollingEnabled;
 	}
 
-	internal void OnNewWindowRequested(WebViewNewWindowRequestedEventArgs args)
-	{
-		NewWindowRequested?.Invoke(_owner, args);
-	}
-
 	private bool VerifyWebViewAvailability()
 	{
 		if (_webView == null)

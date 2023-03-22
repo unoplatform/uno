@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using Windows.Web;
 
 namespace Windows.UI.Xaml.Controls;
@@ -8,7 +10,10 @@ namespace Windows.UI.Xaml.Controls;
 /// </summary>
 public sealed partial class WebViewNavigationCompletedEventArgs
 {
-	internal WebViewNavigationCompletedEventArgs(bool isSuccess, Uri uri, WebErrorStatus webErrorStatus) =>
+	internal WebViewNavigationCompletedEventArgs(
+		bool isSuccess,
+		Uri? uri,
+		WebErrorStatus webErrorStatus) =>
 		(IsSuccess, Uri, WebErrorStatus) = (isSuccess, uri, webErrorStatus);
 
 	/// <summary>
@@ -19,7 +24,7 @@ public sealed partial class WebViewNavigationCompletedEventArgs
 	/// <summary>
 	/// Gets the Uniform Resource Identifier (URI) of the WebView content.
 	/// </summary>
-	public Uri Uri { get; }
+	public Uri? Uri { get; }
 
 	/// <summary>
 	/// If the navigation was unsuccessful, gets a value that indicates why.

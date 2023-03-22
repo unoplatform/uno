@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 
 namespace Microsoft.Web.WebView2.Core;
 
@@ -9,11 +11,13 @@ public partial class CoreWebView2NavigationCompletedEventArgs : EventArgs
 {
 	internal CoreWebView2NavigationCompletedEventArgs(
 		ulong navigationId,
+		Uri? uri,
 		bool isSuccess,
 		int httpStatusCode,
 		CoreWebView2WebErrorStatus webErrorStatus)
 	{
 		NavigationId = navigationId;
+		Uri = uri;
 		IsSuccess = isSuccess;
 		HttpStatusCode = httpStatusCode;
 		WebErrorStatus = webErrorStatus;
@@ -47,4 +51,6 @@ public partial class CoreWebView2NavigationCompletedEventArgs : EventArgs
 	/// Gets the error code if the navigation failed.
 	/// </summary>
 	public CoreWebView2WebErrorStatus WebErrorStatus { get; }
+
+	internal Uri? Uri { get; }
 }

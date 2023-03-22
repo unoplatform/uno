@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 
 namespace Microsoft.Web.WebView2.Core;
 
@@ -7,7 +9,7 @@ namespace Microsoft.Web.WebView2.Core;
 /// </summary>
 public partial class CoreWebView2NavigationStartingEventArgs : EventArgs
 {
-	public CoreWebView2NavigationStartingEventArgs(ulong navigationId, Uri uri) =>
+	public CoreWebView2NavigationStartingEventArgs(ulong navigationId, Uri? uri) =>
 		(NavigationId, Uri) = (navigationId, uri);
 
 	/// <summary>
@@ -18,7 +20,7 @@ public partial class CoreWebView2NavigationStartingEventArgs : EventArgs
 	/// <summary>
 	/// Gets the URI of the requested navigation.
 	/// </summary>
-	public Uri Uri { get; }
+	public Uri? Uri { get; }
 
 	/// <summary>
 	/// Gets the HTTP request headers for the navigation.

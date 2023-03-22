@@ -1,3 +1,7 @@
+#nullable enable
+
+using System;
+
 namespace Microsoft.Web.WebView2.Core;
 
 /// <summary>
@@ -5,8 +9,8 @@ namespace Microsoft.Web.WebView2.Core;
 /// </summary>
 public partial class CoreWebView2ContentLoadingEventArgs
 {
-	internal CoreWebView2ContentLoadingEventArgs(ulong navigationId, bool isErrorPage) =>
-		(NavigationId, IsErrorPage) = (navigationId, isErrorPage);
+	internal CoreWebView2ContentLoadingEventArgs(ulong navigationId, Uri? uri, bool isErrorPage) =>
+		(NavigationId, Uri, IsErrorPage) = (navigationId, uri, isErrorPage);
 
 	/// <summary>
 	/// Gets the ID of the navigation.
@@ -17,4 +21,6 @@ public partial class CoreWebView2ContentLoadingEventArgs
 	/// True if the loaded content is an error page.
 	/// </summary>
 	public bool IsErrorPage { get; }
+
+	internal Uri? Uri { get; }
 }
