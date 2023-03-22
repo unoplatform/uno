@@ -376,7 +376,8 @@
         <Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}" />
         <Setter Property="FontSize" Value="{ThemeResource ControlContentThemeFontSize}" />
         <Setter Property="UseSystemFocusVisuals" Value="{ThemeResource IsApplicationFocusVisualKindReveal}" />
-        <Setter Property="primitives:ComboBoxHelper.KeepInteriorCornersSquare" Value="true"/>
+        <!-- TODO: We don't have KeepInteriorCornersSquare yet. -->
+        <!-- <Setter Property="primitives:ComboBoxHelper.KeepInteriorCornersSquare" Value="true"/> -->
         <Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}" />
         <Setter Property="ItemsPanel">
             <Setter.Value>
