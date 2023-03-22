@@ -1,27 +1,20 @@
 ﻿using CoreGraphics;
 using Foundation;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using WebKit;
 using System.Threading;
 using System.Threading.Tasks;
-using ObjCRuntime;
 using Uno.Extensions;
 using Uno.UI.Extensions;
 using Uno.Foundation.Logging;
 using Windows.Web;
 using System.IO;
 using System.Linq;
-using Uno.UI.Services;
 using Windows.ApplicationModel.Resources;
-using Uno.UI;
 using Uno.UI.Xaml.Controls;
-using System.Globalization;
-using Uno.UI.Helpers.WinUI;
 using System.Net.Http;
-using WebKit;
 using Microsoft.Web.WebView2.Core;
+using Uno.UI.Extensions;
 
 #if __IOS__
 using UIKit;
@@ -36,7 +29,7 @@ public partial class UnoWKWebView : WKWebView, INativeWebView
 	,IHasSizeThatFits
 #endif
 {
-	private CoreWebView2 _parentWebView;
+	private CoreWebView2 _coreWebView;
 	private bool _isCancelling;
 
 	private const string OkResourceKey = "WebView_Ok";
@@ -91,9 +84,9 @@ public partial class UnoWKWebView : WKWebView, INativeWebView
 	public void ProcessNavigation(string html) => throw new NotImplementedException();
 	public void ProcessNavigation(HttpRequestMessage httpRequestMessage) => throw new NotImplementedException();
 
-	public void RegisterNavigationEvents(WebView xamlWebView)
+	public void RegisterNavigationEvents(CoreWebView2 coreWebView)
 	{
-		_parentWebView = xamlWebView;
+		_coreWebView = coreWebView;
 
 		this.Configuration.Preferences.JavaScriptCanOpenWindowsAutomatically = true;
 		this.Configuration.Preferences.JavaScriptEnabled = true;
@@ -118,7 +111,7 @@ public partial class UnoWKWebView : WKWebView, INativeWebView
 
 		var args = new WebViewUnsupportedUriSchemeIdentifiedEventArgs(targetUri);
 
-		_parentWebView.RaiseUnsupportedUriSchemeIdentified(args);
+		_coreWebView.RaiseUnsupportedUriSchemeIdentified(args);
 
 		return args.Handled;
 	}
@@ -136,8 +129,8 @@ public partial class UnoWKWebView : WKWebView, INativeWebView
 			this.Log().DebugFormat("OnNavigationFinished: {0}", destinationUrl);
 		}
 
-		_parentWebView.DocumentTitle = Title;
-		_parentWebView.OnComplete(destinationUrl, isSuccessful: true, status: WebErrorStatus.Unknown);
+		_coreWebView.DocumentTitle = Title;
+		_coreWebView.OnComplete(destinationUrl, isSuccessful: true, status: WebErrorStatus.Unknown);
 		_urlLastNavigation = destinationUrl;
 	}
 
@@ -159,7 +152,7 @@ public partial class UnoWKWebView : WKWebView, INativeWebView
 		//	uri: target
 		//);
 
-		_parentWebView.RaiseNewWindowRequested(); //TODO:MZ:
+		_coreWebView.RaiseNewWindowRequested(); //TODO:MZ:
 
 		if (args.Handled)
 		{
@@ -173,7 +166,7 @@ public partial class UnoWKWebView : WKWebView, INativeWebView
 			//	Uri = target
 			//};
 
-			_parentWebView.RaiseNavigationStarting(); //TODO:MZ:
+			_coreWebView.RaiseNavigationStarting(); //TODO:MZ:
 
 			if (!navigationArgs.Cancel)
 			{
@@ -181,18 +174,18 @@ public partial class UnoWKWebView : WKWebView, INativeWebView
 				if (UIKit.UIApplication.SharedApplication.CanOpenUrl(target))
 				{
 					UIKit.UIApplication.SharedApplication.OpenUrl(target);
-					_parentWebView.OnComplete(target, isSuccessful: true, status: WebErrorStatus.Unknown);
+					_coreWebView.OnComplete(target, isSuccessful: true, status: WebErrorStatus.Unknown);
 				}
 #else
 				if (target != null && NSWorkspace.SharedWorkspace.UrlForApplication(new NSUrl(target.AbsoluteUri)) != null)
 				{
 					NSWorkspace.SharedWorkspace.OpenUrl(target);
-					_parentWebView.OnComplete(target, isSuccessful: true, status: WebErrorStatus.Unknown);
+					_coreWebView.OnComplete(target, isSuccessful: true, status: WebErrorStatus.Unknown);
 				}
 #endif
 				else
 				{
-					_parentWebView.OnNavigationFailed(new WebViewNavigationFailedEventArgs()
+					_coreWebView.OnNavigationFailed(new WebViewNavigationFailedEventArgs()
 					{
 						Uri = target,
 						WebErrorStatus = WebErrorStatus.Unknown
@@ -339,10 +332,10 @@ public partial class UnoWKWebView : WKWebView, INativeWebView
 		//var args = new WebViewNavigationStartingEventArgs()
 		//{
 		//	Cancel = false,
-		//	Uri = targetUrl ?? _parentWebView.Source
+		//	Uri = targetUrl ?? _coreWebView.Source
 		//};
 
-		_parentWebView.RaiseNavigationStarting(); //TODO:MZ:
+		_coreWebView.RaiseNavigationStarting(); //TODO:MZ:
 
 		if (args.Cancel)
 		{
@@ -380,16 +373,16 @@ public partial class UnoWKWebView : WKWebView, INativeWebView
 			}
 			else
 			{
-				uri = webView.Url?.ToUri() ?? _parentWebView.Source;
+				uri = webView.Url?.ToUri() ?? _coreWebView.Source;
 			}
 
-			_parentWebView.OnNavigationFailed(new WebViewNavigationFailedEventArgs()
+			_coreWebView.OnNavigationFailed(new WebViewNavigationFailedEventArgs()
 			{
 				Uri = uri,
 				WebErrorStatus = status
 			});
 
-			_parentWebView.OnComplete(uri, false, status);
+			_coreWebView.OnComplete(uri, false, status);
 		}
 
 		_isCancelling = false;
@@ -479,7 +472,7 @@ public partial class UnoWKWebView : WKWebView, INativeWebView
 				this.Log().Error($"The uri [{uri}] is invalid.");
 			}
 
-			_parentWebView.RaiseNavigationFailed(new WebViewNavigationFailedEventArgs()
+			_coreWebView.RaiseNavigationFailed(new WebViewNavigationFailedEventArgs()
 			{
 				Uri = uri,
 				WebErrorStatus = WebErrorStatus.UnexpectedClientError
@@ -505,7 +498,7 @@ public partial class UnoWKWebView : WKWebView, INativeWebView
 	private WKBackForwardListItem GetNearestValidHistoryItem(int direction)
 	{
 		var navList = direction == 1 ? BackForwardList.ForwardList : BackForwardList.BackList.Reverse();
-		return navList.FirstOrDefault(item => _parentWebView.GetIsHistoryEntryValid(item.InitialUrl.AbsoluteString));
+		return navList.FirstOrDefault(item => _coreWebView.GetIsHistoryEntryValid(item.InitialUrl.AbsoluteString));
 	}
 
 	private static string GetBestFolderPath(Uri fileUri)

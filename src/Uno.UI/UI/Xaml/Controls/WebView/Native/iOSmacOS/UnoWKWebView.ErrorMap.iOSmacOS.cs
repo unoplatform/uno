@@ -1,19 +1,12 @@
-﻿using CoreGraphics;
-using Foundation;
-using System;
+﻿using Foundation;
 using System.Collections.Generic;
-using System.Text;
-using WebKit;
-using System.Threading;
-using System.Threading.Tasks;
-using ObjCRuntime;
 using Windows.Web;
 
 namespace Windows.UI.Xaml.Controls;
 
 partial class UnoWKWebView
 {
-	private Dictionary<NSUrlError, WebErrorStatus> _errorMap = new Dictionary<NSUrlError, WebErrorStatus>
+	private Dictionary<NSUrlError, WebErrorStatus> _errorMap = new()
 	{
 		[NSUrlError.DownloadDecodingFailedToComplete] = WebErrorStatus.UnexpectedClientError,
 		[NSUrlError.DownloadDecodingFailedMidStream] = WebErrorStatus.UnexpectedClientError,
