@@ -45,7 +45,7 @@ public partial class CoreWebView2
 			return null;
 		}
 
-		_nativeWebViewWrapper = new NativeWebViewWrapper(webView);
+		_nativeWebViewWrapper = new NativeWebViewWrapper(webView, this);
 
 		return _nativeWebViewWrapper;
 	}

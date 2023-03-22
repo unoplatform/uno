@@ -4,20 +4,57 @@ namespace Microsoft.Web.WebView2.Core;
 #pragma warning disable CS0067 // TODO:MZ: Undo this
 public partial class CoreWebView2
 {
+	private bool _canGoBack;
+	private bool _canGoForward;
+	private string _documentTitle = "";
+
 	/// <summary>
 	/// True if the WebView is able to navigate to a previous page in the navigation history.
 	/// </summary>
-	public bool CanGoBack { get; }
+	public bool CanGoBack
+	{
+		get => _canGoBack;
+		set
+		{
+			if (_canGoBack != value)
+			{
+				_canGoBack = value;
+				HistoryChanged?.Invoke(this, null);
+			}
+		}
+	}
 
 	/// <summary>
 	/// True if the WebView is able to navigate to a next page in the navigation history.
 	/// </summary>
-	public bool CanGoForward { get; }
+	public bool CanGoForward
+	{
+		get => _canGoForward;
+		set
+		{
+			if (_canGoForward != value)
+			{
+				_canGoForward = value;
+				HistoryChanged?.Invoke(this, null);
+			}
+		}
+	}
 
 	/// <summary>
 	/// Gets the title for the current top-level document.
 	/// </summary>
-	public string DocumentTitle { get; }
+	public string DocumentTitle
+	{
+		get => _documentTitle;
+		set
+		{
+			if (_documentTitle != value)
+			{
+				_documentTitle = value;
+				DocumentTitleChanged?.Invoke(this, null);
+			}
+		}
+	}
 
 	/// <summary>
 	/// Gets the URI of the current top level document.
@@ -55,6 +92,11 @@ public partial class CoreWebView2
 	/// before or after the CoreWebView2.NavigationCompleted event.
 	/// </summary>
 	public event TypedEventHandler<CoreWebView2, object> DocumentTitleChanged;
+
+	/// <summary>
+	/// HistoryChanged is raised for changes to joint session history, which consists of top-level and manual frame navigations.
+	/// </summary>
+	public event TypedEventHandler<CoreWebView2, object> HistoryChanged;
 
 	/// <summary>
 	/// SourceChanged is raised when the CoreWebView2.Source property changes. SourceChanged is raised when

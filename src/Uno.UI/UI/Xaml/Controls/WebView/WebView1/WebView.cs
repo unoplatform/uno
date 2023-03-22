@@ -22,6 +22,8 @@ public partial class WebView : Control, IWebView
 		DefaultStyleKey = typeof(WebView);
 
 		CoreWebView2 = new CoreWebView2(this);
+		CoreWebView2.DocumentTitleChanged += CoreWebView2_DocumentTitleChanged;
+		CoreWebView2.HistoryChanged += CoreWebView2_HistoryChanged;
 	}
 
 	internal CoreWebView2 CoreWebView2 { get; }
@@ -39,4 +41,10 @@ public partial class WebView : Control, IWebView
 	public void Refresh() => CoreWebView2.Reload();
 
 	public void Stop() => CoreWebView2.Stop();
+
+	private void CoreWebView2_DocumentTitleChanged(CoreWebView2 sender, object args) =>
+		DocumentTitle = sender.DocumentTitle;
+
+	private void CoreWebView2_HistoryChanged(CoreWebView2 sender, object args) =>
+		(CanGoBack, CanGoForward) = (sender.CanGoBack, sender.CanGoForward);
 }

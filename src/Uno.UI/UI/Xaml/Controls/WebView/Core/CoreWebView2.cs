@@ -68,4 +68,9 @@ public partial class CoreWebView2
 			ProcessNavigation(message);
 		}
 	}
+
+	internal void RaiseNavigationStarting()
+	{
+		NavigationStarting?.Invoke(this, new CoreWebView2NavigationStartingEventArgs(0, null));//TODO:MZ:
+	}
 }

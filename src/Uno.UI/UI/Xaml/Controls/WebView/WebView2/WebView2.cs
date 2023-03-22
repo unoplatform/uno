@@ -38,7 +38,10 @@ public partial class WebView2 : Control, IWebView
 	public WebView2()
 	{
 		DefaultStyleKey = typeof(WebView2);
+
 		CoreWebView2 = new CoreWebView2(this);
+		CoreWebView2.HistoryChanged += CoreWebView2_HistoryChanged;
+
 		Loaded += WebView2_Loaded;
 	}
 
@@ -72,5 +75,11 @@ public partial class WebView2 : Control, IWebView
 			_coreWebView2Initialized = true;
 		}
 	}
+
+	private void CoreWebView2_DocumentTitleChanged(CoreWebView2 sender, object args) =>
+		DocumentTitle = sender.DocumentTitle;
+
+	private void CoreWebView2_HistoryChanged(CoreWebView2 sender, object args) =>
+		(CanGoBack, CanGoForward) = (sender.CanGoBack, sender.CanGoForward);
 }
 #endif

@@ -10,24 +10,27 @@ using Android.Content;
 using Uno.Extensions;
 using Windows.Foundation;
 using System.Collections.Generic;
+using Microsoft.Web.WebView2.Core;
 
 namespace Uno.UI.Xaml.Controls;
 
 internal class NativeWebViewWrapper : INativeWebView
 {
 	private readonly WebView _webView;
+	private readonly CoreWebView2 _coreWebView;
 	private bool _wasLoadedFromString;
 
-	public NativeWebViewWrapper(WebView webView)
+	public NativeWebViewWrapper(WebView webView, CoreWebView2 coreWebView)
 	{
 		_webView = webView;
+		_coreWebView = coreWebView;
 
 		// For some reason, the native WebView requires this internal registration
 		// to avoid launching an external task, out of context of the current activity.
 		//
 		// this will still be used to handle extra activity with the native control.
 
-		_webView.SetWebViewClient(new InternalClient(this));
+		_webView.SetWebViewClient(new InternalClient(_coreWebView, this));
 		_webView.SetWebChromeClient(new InternalWebChromeClient());
 		_webView.Settings.JavaScriptEnabled = true;
 		_webView.Settings.DomStorageEnabled = true;
@@ -45,8 +48,8 @@ internal class NativeWebViewWrapper : INativeWebView
 
 		// The native webview control requires to have LayoutParameters to function properly.
 		_webView.LayoutParameters = new ViewGroup.LayoutParams(
-			_webView.LayoutParams.MatchParent,
-			_webView.LayoutParams.MatchParent);
+			ViewGroup.LayoutParams.MatchParent,
+			ViewGroup.LayoutParams.MatchParent);
 	}
 
 	internal WebView WebView => _webView;

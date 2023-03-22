@@ -4,6 +4,7 @@ using Android.Graphics;
 using Android.Runtime;
 using Android.Views;
 using Android.Webkit;
+using Microsoft.Web.WebView2.Core;
 using Windows.UI.Xaml.Controls;
 using Windows.Web;
 
@@ -11,15 +12,17 @@ namespace Uno.UI.Xaml.Controls;
 
 internal class InternalClient : Android.Webkit.WebViewClient
 {
-	private readonly NativeWebViewWrapper _webViewWrapper;
+	private readonly CoreWebView2 _coreWebView;
+	private readonly NativeWebViewWrapper _nativeWebViewWrapper;
+
 	//_owner is because we go through onReceivedError() and OnPageFinished() when the call fail.
-	private bool _webViewSuccess = true;
+	private bool _coreWebViewSuccess = true;
 	//_owner is to not have duplicate event call
 	private WebErrorStatus _webErrorStatus = WebErrorStatus.Unknown;
 
-	internal InternalClient(NativeWebViewWrapper webViewWrapper)
+	internal InternalClient(CoreWebView2 coreWebView, NativeWebViewWrapper webViewWrapper)
 	{
-		_webViewWrapper = webViewWrapper;
+		_coreWebView = coreWebView;
 
 		if (FeatureConfiguration.WebView.ForceSoftwareRendering)
 		{
@@ -27,7 +30,7 @@ internal class InternalClient : Android.Webkit.WebViewClient
 			//_owner is required to remove glitching issues particularly when having a keyboard pop-up with a webview present.
 			//http://developer.android.com/guide/topics/graphics/hardware-accel.html
 			//http://stackoverflow.com/questions/27172217/android-systemui-glitches-in-lollipop
-			_webViewWrapper.WebView.SetLayerType(LayerType.Software, null);
+			_nativeWebViewWrapper.WebView.SetLayerType(LayerType.Software, null);
 		}
 	}
 
@@ -43,7 +46,7 @@ internal class InternalClient : Android.Webkit.WebViewClient
 
 		var args = new WebViewNavigationStartingEventArgs(new Uri(url));
 
-		_webView.NavigationStarting?.Invoke(_webViewWrapper.WebView, args);
+		_coreWebView.RaiseNavigationStarting();
 
 		return args.Cancel;
 	}
@@ -52,13 +55,13 @@ internal class InternalClient : Android.Webkit.WebViewClient
 	{
 		base.OnPageStarted(view, url, favicon);
 		//Reset Webview Success on page started so that if we have successful navigation we don't send an webView error if a previous error happened.
-		_webViewSuccess = true;
+		_coreWebViewSuccess = true;
 	}
 
 #pragma warning disable 0672, 618
 	public override void OnReceivedError(Android.Webkit.WebView view, [GeneratedEnum] ClientError errorCode, string description, string failingUrl)
 	{
-		_webViewSuccess = false;
+		_coreWebViewSuccess = false;
 		_webErrorStatus = ConvertClientError(errorCode);
 
 		base.OnReceivedError(view, errorCode, description, failingUrl);
@@ -67,14 +70,14 @@ internal class InternalClient : Android.Webkit.WebViewClient
 
 	public override void OnPageFinished(Android.Webkit.WebView view, string url)
 	{
-		_webView.DocumentTitle = view.Title;
+		_coreWebView.DocumentTitle = view.Title;
 
-		_webView.OnNavigationHistoryChanged();
+		_coreWebView.OnNavigationHistoryChanged();
 
-		var uri = !_webView._wasLoadedFromString && !string.IsNullOrEmpty(url) ? new Uri(url) : null;
-		var args = new WebViewNavigationCompletedEventArgs(_webViewSuccess, uri, _webErrorStatus);
+		var uri = !_coreWebView._wasLoadedFromString && !string.IsNullOrEmpty(url) ? new Uri(url) : null;
+		var args = new WebViewNavigationCompletedEventArgs(_coreWebViewSuccess, uri, _webErrorStatus);
 
-		_webView.NavigationCompleted?.Invoke(_webView, args);
+		_coreWebView.NavigationCompleted?.Invoke(_coreWebView, args);
 		base.OnPageFinished(view, url);
 	}
 
