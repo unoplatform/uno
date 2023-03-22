@@ -21,6 +21,7 @@ using Windows.UI.Popups.Internal;
 using Windows.UI.Popups;
 using Uno.UI.WinRT.Extensions.UI.Popups;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
+using Uno.UI.Xaml.Core;
 
 #if HAS_UNO_WINUI
 using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
@@ -45,7 +46,6 @@ using AppKit;
 #else
 using View = Windows.UI.Xaml.UIElement;
 using ViewGroup = Windows.UI.Xaml.UIElement;
-using Uno.UI.Xaml.Core;
 #endif
 
 namespace Windows.UI.Xaml

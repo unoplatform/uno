@@ -13,6 +13,7 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Core;
 using Windows.UI.Xaml.Media;
+using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
 namespace Windows.UI.Xaml
 {
@@ -106,7 +107,7 @@ namespace Windows.UI.Xaml
 			get => InternalGetContent();
 			set
 			{
-				if (CoreServices.Instance.InitializationType == InitializationType.IslandsOnly)
+				if (WinUICoreServices.Instance.InitializationType == InitializationType.IslandsOnly)
 				{
 					// Ignore setter, in line with XAML Islands behavior.
 					return;
