@@ -1,6 +1,7 @@
 ﻿using System;
 using WebKit;
 using Uno.Foundation.Logging;
+using Uno.UI.Extensions;
 
 namespace Windows.UI.Xaml.Controls;
 

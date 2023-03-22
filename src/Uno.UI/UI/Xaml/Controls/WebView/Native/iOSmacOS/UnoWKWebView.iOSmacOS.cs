@@ -14,13 +14,14 @@ using Windows.Web;
 using System.IO;
 using System.Linq;
 using Uno.UI.Services;
-
 using Windows.ApplicationModel.Resources;
 using Uno.UI;
 using Uno.UI.Xaml.Controls;
 using System.Globalization;
 using Uno.UI.Helpers.WinUI;
 using System.Net.Http;
+using WebKit;
+using Microsoft.Web.WebView2.Core;
 
 #if __IOS__
 using UIKit;
@@ -153,12 +154,12 @@ public partial class UnoWKWebView : WKWebView, INativeWebView
 			target = action.Request.Url.ToUri();
 		}
 
-		var args = new WebViewNewWindowRequestedEventArgs(
-			referrer: action.SourceFrame?.Request?.Url?.ToUri(),
-			uri: target
-		);
+		//var args = new WebViewNewWindowRequestedEventArgs(
+		//	referrer: action.SourceFrame?.Request?.Url?.ToUri(),
+		//	uri: target
+		//);
 
-		_parentWebView.OnNewWindowRequested(args);
+		_parentWebView.RaiseNewWindowRequested(); //TODO:MZ:
 
 		if (args.Handled)
 		{
@@ -166,13 +167,13 @@ public partial class UnoWKWebView : WKWebView, INativeWebView
 		}
 		else
 		{
-			var navigationArgs = new WebViewNavigationStartingEventArgs()
-			{
-				Cancel = false,
-				Uri = target
-			};
+			//var navigationArgs = new WebViewNavigationStartingEventArgs()
+			//{
+			//	Cancel = false,
+			//	Uri = target
+			//};
 
-			_parentWebView.OnNavigationStarting(navigationArgs);
+			_parentWebView.RaiseNavigationStarting(); //TODO:MZ:
 
 			if (!navigationArgs.Cancel)
 			{
@@ -335,13 +336,13 @@ public partial class UnoWKWebView : WKWebView, INativeWebView
 
 		_isCancelling = false;
 
-		var args = new WebViewNavigationStartingEventArgs()
-		{
-			Cancel = false,
-			Uri = targetUrl ?? _parentWebView.Source
-		};
+		//var args = new WebViewNavigationStartingEventArgs()
+		//{
+		//	Cancel = false,
+		//	Uri = targetUrl ?? _parentWebView.Source
+		//};
 
-		_parentWebView.OnNavigationStarting(args);
+		_parentWebView.RaiseNavigationStarting(); //TODO:MZ:
 
 		if (args.Cancel)
 		{
@@ -499,10 +500,7 @@ public partial class UnoWKWebView : WKWebView, INativeWebView
 #endif
 	}
 
-	void INativeWebView.Reload()
-	{
-		Reload();
-	}
+	void INativeWebView.Reload() => Reload();
 
 	private WKBackForwardListItem GetNearestValidHistoryItem(int direction)
 	{

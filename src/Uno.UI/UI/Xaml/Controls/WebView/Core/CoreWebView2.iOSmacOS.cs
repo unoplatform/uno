@@ -13,18 +13,20 @@ public partial class CoreWebView2
 {
 	internal INativeWebView? GetNativeWebViewFromTemplate()
 	{
-		_nativeWebView = (_owner as UIView)
+		var nativeWebView = (_owner as UIView)
 			.FindSubviewsOfType<INativeWebView>()
 			.FirstOrDefault();
 
-		if (_nativeWebView == null)
+		if (nativeWebView == null)
 		{
 			_owner.Log().Error(
 				$"No view of type {nameof(NativeWebView)} found in children, " +
 				$"are you missing one of these types in a template? ");
 		}
 
-		_nativeWebView?.RegisterNavigationEvents(this);
+		nativeWebView?.SetOwner(this);
+
+		return nativeWebView;
 	}
 }
 

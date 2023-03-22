@@ -55,6 +55,30 @@ public partial class CoreWebView2
 		UpdateFromInternalSource();
 	}
 
+	internal void RaiseNavigationStarting()
+	{
+		NavigationStarting?.Invoke(this, new CoreWebView2NavigationStartingEventArgs(0, null));//TODO:MZ:
+	}
+
+	internal void RaiseNewWindowRequested()
+	{
+		NewWindowRequested?.Invoke(this, new());//TODO:MZ:
+	}
+
+	internal void RaiseNavigationCompleted()
+	{
+		NavigationCompleted?.Invoke(this, new CoreWebView2NavigationCompletedEventArgs(0, null, true, 200, CoreWebView2WebErrorStatus.Unknown));//TODO:MZ:
+	}
+
+	internal void RaiseHistoryChanged() => HistoryChanged?.Invoke(this, null);
+
+	internal void SetHistoryProperties(bool canGoBack, bool canGoForward)
+	{
+		CanGoBack = canGoBack;
+		CanGoForward = canGoForward;
+		RaiseHistoryChanged();
+	}
+
 	private bool VerifyWebViewAvailability()
 	{
 		if (_nativeWebView == null)
@@ -91,29 +115,5 @@ public partial class CoreWebView2
 		{
 			_nativeWebView.ProcessNavigation(httpRequestMessage);
 		}
-	}
-
-	internal void RaiseNavigationStarting()
-	{
-		NavigationStarting?.Invoke(this, new CoreWebView2NavigationStartingEventArgs(0, null));//TODO:MZ:
-	}
-
-	internal void RaiseNewWindowRequested()
-	{
-		NewWindowRequested?.Invoke(this, new());//TODO:MZ:
-	}
-
-	internal void RaiseNavigationCompleted()
-	{
-		NavigationCompleted?.Invoke(this, new CoreWebView2NavigationCompletedEventArgs(0, null, true, 200, CoreWebView2WebErrorStatus.Unknown));//TODO:MZ:
-	}
-
-	internal void RaiseHistoryChanged() => HistoryChanged?.Invoke(this, null);
-
-	internal void SetHistoryProperties(bool canGoBack, bool canGoForward)
-	{
-		CanGoBack = canGoBack;
-		CanGoForward = canGoForward;
-		RaiseHistoryChanged();
 	}
 }
