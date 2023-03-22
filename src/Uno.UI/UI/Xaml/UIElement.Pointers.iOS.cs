@@ -263,7 +263,7 @@ namespace Windows.UI.Xaml
 						// (in order to ensure the "up" has been fully processed, including gesture recognition).
 						// In that case we need to sent it by our-own directly from teh element that has handled the event.
 
-						RootVisual.ProcessPointerUp(args, isAfterHandledUp: true);
+						VisualTree.GetRootForElement(this)?.ProcessPointerUp(args, isAfterHandledUp: true);
 					}
 
 					pt.Release(this);

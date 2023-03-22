@@ -10,6 +10,7 @@ using Android.Views;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
+using Uno.UI.Xaml.Core;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
@@ -122,7 +123,7 @@ namespace Windows.UI.Xaml
 					// but if the event has been handled, we need to raise it after the 'up' has been processed.
 					if (OnNativePointerUp(args))
 					{
-						Uno.UI.Xaml.Core.RootVisual.ProcessPointerUp(args, isAfterHandledUp: true);
+						VisualTree.GetRootForElement(this)?.ProcessPointerUp(args, isAfterHandledUp: true);
 						return true;
 					}
 					else
