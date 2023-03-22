@@ -90,7 +90,10 @@ namespace Windows.UI.Xaml.Controls
 				return false;
 			}
 
-			var focusedContainer = FocusManager.GetFocusedElement() as SelectorItem;
+			var focusedElement = XamlRoot is null ?
+				FocusManager.GetFocusedElement() :
+				FocusManager.GetFocusedElement(XamlRoot);
+			var focusedContainer = focusedElement as SelectorItem;
 
 			if (args.Key == VirtualKey.Enter ||
 				args.Key == VirtualKey.Space)
@@ -150,7 +153,10 @@ namespace Windows.UI.Xaml.Controls
 
 		private int GetFocusedItemIndex()
 		{
-			var focusedItem = FocusManager.GetFocusedElement() as SelectorItem;
+			var focusedElement = XamlRoot is null ?
+				FocusManager.GetFocusedElement() :
+				FocusManager.GetFocusedElement(XamlRoot);
+			var focusedItem = focusedElement as SelectorItem;
 			if (focusedItem != null)
 			{
 				return IndexFromContainer(focusedItem);

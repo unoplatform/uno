@@ -504,7 +504,9 @@ public partial class BreadcrumbBar : Control
 	{
 		if (m_itemsRepeater is { } itemsRepeater)
 		{
-			var focusedElem = FocusManager.GetFocusedElement();
+			var focusedElem = XamlRoot is null ?
+				FocusManager.GetFocusedElement() :
+				FocusManager.GetFocusedElement(XamlRoot);
 
 			if (focusedElem is UIElement focusedElement)
 			{

@@ -152,7 +152,7 @@ namespace Uno.UI.Xaml.Core
 		}
 #endif
 
-		internal static void ProcessPointerUp(PointerRoutedEventArgs args, bool isAfterHandledUp = false)
+		internal void ProcessPointerUp(PointerRoutedEventArgs args, bool isAfterHandledUp = false)
 		{
 			// We don't want handled events raised on RootVisual,
 			// instead we wait for the element that handled it to directly forward it to us,
@@ -183,11 +183,14 @@ namespace Uno.UI.Xaml.Core
 			// Uno specific: To ensure focus is properly lost when clicking "outside" app's content,
 			// we set focus here. In case UWP, focus is set to the root ScrollViewer instead,
 			// but Uno does not have it on all targets yet.
+			var focusedElement = XamlRoot is null ?
+				FocusManager.GetFocusedElement() :
+				FocusManager.GetFocusedElement(XamlRoot);
 			if (!isHandled // so isAfterHandledUp is false!
 				&& _canUnFocusOnNextLeftPointerRelease
 				&& args.GetCurrentPoint(null).Properties.PointerUpdateKind is PointerUpdateKind.LeftButtonReleased
 				&& !PointerCapture.TryGet(args.Pointer, out _)
-				&& FocusManager.GetFocusedElement() is UIElement uiElement)
+				&& focusedElement is UIElement uiElement)
 			{
 				uiElement.Unfocus();
 				args.Handled = true;

@@ -280,7 +280,10 @@ namespace Windows.UI.Xaml.Controls
 			{
 				// Re-focus the currently focused item to propagate focusState (the item might be focused
 				// under a different FocusState value).
-				spItemToFocus = FocusManager.GetFocusedElement() as DependencyObject;
+				var focusedElement = XamlRoot is null ?
+					FocusManager.GetFocusedElement() :
+					FocusManager.GetFocusedElement(XamlRoot);
+				spItemToFocus = focusedElement as DependencyObject;
 			}
 			else
 			{
