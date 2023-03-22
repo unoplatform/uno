@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Android.Webkit;
 using Uno.Disposables;
+using Uno.Foundation.Logging;
 
 namespace Uno.UI.Xaml.Controls;
 
@@ -11,7 +13,10 @@ internal class InternalWebChromeClient : WebChromeClient
 
 	readonly SerialDisposable _fileChooserTaskDisposable = new SerialDisposable();
 
-	internal override bool OnShowFileChooser(Android.Webkit.WebView webView, IValueCallback filePathCallback, FileChooserParams fileChooserParams)
+	public override bool OnShowFileChooser(
+		Android.Webkit.WebView webView,
+		IValueCallback filePathCallback,
+		FileChooserParams fileChooserParams)
 	{
 		_filePathCallback = filePathCallback;
 
@@ -26,28 +31,14 @@ internal class InternalWebChromeClient : WebChromeClient
 			}
 			catch (Exception e)
 			{
-				_owner.Log().Error(e.Message, e);
+				this.Log().Error(e.Message, e);
 			}
 		});
 
 		return true;
 	}
 
-	private async Task StartFileChooser(CancellationToken ct, FileChooserParams fileChooserParams)
-	{
-		var intent = fileChooserParams.CreateIntent();
-		//Get an invisible (Transparent) Activity to handle the Intent
-		var delegateActivity = await StartActivity<DelegateActivity>(ct);
-
-		var result = await delegateActivity.GetActivityResult(ct, intent);
-
-		_filePathCallback.OnReceiveValue(FileChooserParams.ParseResult((int)result.ResultCode, result.Intent));
-	}
-
-	internal override void OnPermissionRequest(PermissionRequest request)
-	{
-		request.Grant(request.GetResources());
-	}
+	public override void OnPermissionRequest(PermissionRequest request) => request.Grant(request.GetResources());
 
 	/// <summary>
 	/// Uses the Activity Tracker to start, then return an Activity
@@ -88,5 +79,16 @@ internal class InternalWebChromeClient : WebChromeClient
 		}
 
 		return null;
+	}
+
+	private async Task StartFileChooser(CancellationToken ct, FileChooserParams fileChooserParams)
+	{
+		var intent = fileChooserParams.CreateIntent();
+		//Get an invisible (Transparent) Activity to handle the Intent
+		var delegateActivity = await StartActivity<DelegateActivity>(ct);
+
+		var result = await delegateActivity.GetActivityResult(ct, intent);
+
+		_filePathCallback.OnReceiveValue(FileChooserParams.ParseResult((int)result.ResultCode, result.Intent));
 	}
 }

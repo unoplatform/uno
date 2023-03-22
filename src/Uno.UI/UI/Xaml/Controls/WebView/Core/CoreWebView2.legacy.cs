@@ -107,7 +107,6 @@
 //			UnsupportedUriSchemeIdentified?.Invoke(_owner, args);
 //		}
 
-//		internal bool GetIsHistoryEntryValid(string url) => !url.IsNullOrWhiteSpace() && !url.Equals(BlankUrl, StringComparison.OrdinalIgnoreCase);
 //	}
 //}
 //#endif

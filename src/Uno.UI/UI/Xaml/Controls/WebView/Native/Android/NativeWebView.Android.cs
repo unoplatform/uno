@@ -1,4 +1,5 @@
-﻿using Uno.UI.Xaml.Controls;
+﻿using Uno.UI;
+using Uno.UI.Xaml.Controls;
 
 namespace Windows.UI.Xaml.Controls;
 

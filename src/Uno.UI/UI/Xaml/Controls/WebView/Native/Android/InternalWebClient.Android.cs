@@ -1,20 +1,25 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Globalization;
+using Android.Graphics;
+using Android.Runtime;
+using Android.Views;
+using Android.Webkit;
+using Windows.UI.Xaml.Controls;
+using Windows.Web;
 
 namespace Uno.UI.Xaml.Controls;
 
 internal class InternalClient : Android.Webkit.WebViewClient
 {
-	private readonly WebView _webView;
+	private readonly NativeWebViewWrapper _webViewWrapper;
 	//_owner is because we go through onReceivedError() and OnPageFinished() when the call fail.
 	private bool _webViewSuccess = true;
 	//_owner is to not have duplicate event call
 	private WebErrorStatus _webErrorStatus = WebErrorStatus.Unknown;
 
-	internal InternalClient(WebView webView)
+	internal InternalClient(NativeWebViewWrapper webViewWrapper)
 	{
-		_webView = webView;
+		_webViewWrapper = webViewWrapper;
 
 		if (FeatureConfiguration.WebView.ForceSoftwareRendering)
 		{
@@ -22,28 +27,28 @@ internal class InternalClient : Android.Webkit.WebViewClient
 			//_owner is required to remove glitching issues particularly when having a keyboard pop-up with a webview present.
 			//http://developer.android.com/guide/topics/graphics/hardware-accel.html
 			//http://stackoverflow.com/questions/27172217/android-systemui-glitches-in-lollipop
-			_webView.SetLayerType(LayerType.Software, null);
+			_webViewWrapper.WebView.SetLayerType(LayerType.Software, null);
 		}
 	}
 
 #pragma warning disable CS0672 // Member overrides obsolete member
-	internal override bool ShouldOverrideUrlLoading(Android.Webkit.WebView view, string url)
+	public override bool ShouldOverrideUrlLoading(Android.Webkit.WebView view, string url)
 #pragma warning restore CS0672 // Member overrides obsolete member
 	{
 		if (url.StartsWith(Uri.UriSchemeMailto, true, CultureInfo.InvariantCulture))
 		{
-			_webView.CreateAndLaunchMailtoIntent(view.Context, url);
+			CreateAndLaunchMailtoIntent(view.Context, url);
 			return true;
 		}
 
 		var args = new WebViewNavigationStartingEventArgs(new Uri(url));
 
-		_webView.NavigationStarting?.Invoke(_webView, args);
+		_webView.NavigationStarting?.Invoke(_webViewWrapper.WebView, args);
 
 		return args.Cancel;
 	}
 
-	internal override void OnPageStarted(Android.Webkit.WebView view, string url, Bitmap favicon)
+	public override void OnPageStarted(Android.Webkit.WebView view, string url, Bitmap favicon)
 	{
 		base.OnPageStarted(view, url, favicon);
 		//Reset Webview Success on page started so that if we have successful navigation we don't send an webView error if a previous error happened.
@@ -51,7 +56,7 @@ internal class InternalClient : Android.Webkit.WebViewClient
 	}
 
 #pragma warning disable 0672, 618
-	internal override void OnReceivedError(Android.Webkit.WebView view, [GeneratedEnum] ClientError errorCode, string description, string failingUrl)
+	public override void OnReceivedError(Android.Webkit.WebView view, [GeneratedEnum] ClientError errorCode, string description, string failingUrl)
 	{
 		_webViewSuccess = false;
 		_webErrorStatus = ConvertClientError(errorCode);
@@ -60,7 +65,7 @@ internal class InternalClient : Android.Webkit.WebViewClient
 	}
 #pragma warning restore 0672, 618
 
-	internal override void OnPageFinished(Android.Webkit.WebView view, string url)
+	public override void OnPageFinished(Android.Webkit.WebView view, string url)
 	{
 		_webView.DocumentTitle = view.Title;
 
@@ -71,6 +76,22 @@ internal class InternalClient : Android.Webkit.WebViewClient
 
 		_webView.NavigationCompleted?.Invoke(_webView, args);
 		base.OnPageFinished(view, url);
+	}
+
+	private void CreateAndLaunchMailtoIntent(Android.Content.Context context, string url)
+	{
+		var mailto = Android.Net.MailTo.Parse(url);
+
+		var email = new global::Android.Content.Intent(global::Android.Content.Intent.ActionSendto);
+
+		//Set the data with the mailto: uri to ensure only mail apps will show up as options for the user
+		email.SetData(global::Android.Net.Uri.Parse("mailto:"));
+		email.PutExtra(global::Android.Content.Intent.ExtraEmail, mailto.To);
+		email.PutExtra(global::Android.Content.Intent.ExtraCc, mailto.Cc);
+		email.PutExtra(global::Android.Content.Intent.ExtraSubject, mailto.Subject);
+		email.PutExtra(global::Android.Content.Intent.ExtraText, mailto.Body);
+
+		context.StartActivity(email);
 	}
 
 	//Matched using these two sources
