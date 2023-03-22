@@ -34,7 +34,6 @@ using Microsoft.UI.Input;
 #else
 using Windows.UI.Input;
 using Windows.Devices.Input;
-using Uno.UI.Xaml.Core;
 #endif
 
 namespace Windows.UI.Xaml
