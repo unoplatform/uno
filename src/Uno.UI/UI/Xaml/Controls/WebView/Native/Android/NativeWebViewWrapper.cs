@@ -86,7 +86,23 @@ internal class NativeWebViewWrapper : INativeWebView
 
 	internal bool GetIsHistoryEntryValid(string url) =>
 		!url.IsNullOrWhiteSpace() &&
-		!url.Equals(BlankUrl, StringComparison.OrdinalIgnoreCase);
+		!url.Equals(CoreWebView2.BlankUrl, StringComparison.OrdinalIgnoreCase);
+
+	internal void CreateAndLaunchMailtoIntent(Android.Content.Context context, string url)
+	{
+		var mailto = Android.Net.MailTo.Parse(url);
+
+		var email = new global::Android.Content.Intent(global::Android.Content.Intent.ActionSendto);
+
+		//Set the data with the mailto: uri to ensure only mail apps will show up as options for the user
+		email.SetData(global::Android.Net.Uri.Parse("mailto:"));
+		email.PutExtra(global::Android.Content.Intent.ExtraEmail, mailto.To);
+		email.PutExtra(global::Android.Content.Intent.ExtraCc, mailto.Cc);
+		email.PutExtra(global::Android.Content.Intent.ExtraSubject, mailto.Subject);
+		email.PutExtra(global::Android.Content.Intent.ExtraText, mailto.Body);
+
+		context.StartActivity(email);
+	}
 
 	internal void NavigatePartial(Uri uri)
 	{
@@ -173,8 +189,8 @@ internal class NativeWebViewWrapper : INativeWebView
 	private void OnNavigationHistoryChanged()
 	{
 		// A non-zero number of steps to the nearest valid history entry means that navigation in the given direction is allowed
-		CanGoBack = GetStepsToNearestValidHistoryEntry(direction: -1 /* backward */) != 0;
-		CanGoForward = GetStepsToNearestValidHistoryEntry(direction: 1 /* forward */) != 0;
+		_coreWebView.CanGoBack = GetStepsToNearestValidHistoryEntry(direction: -1 /* backward */) != 0;
+		_coreWebView.CanGoForward = GetStepsToNearestValidHistoryEntry(direction: 1 /* forward */) != 0;
 	}
 
 	private class ScriptResponse : Java.Lang.Object, IValueCallback
@@ -196,21 +212,6 @@ internal class NativeWebViewWrapper : INativeWebView
 	{
 		_webView.HorizontalScrollBarEnabled = scrollingEnabled;
 		_webView.VerticalScrollBarEnabled = scrollingEnabled;
-	}
-
-	private bool VerifyWebViewAvailability()
-	{
-		if (_webView == null)
-		{
-			if (_isLoaded)
-			{
-				_owner.Log().Warn("_owner WebView control instance does not have a UIViewView child, a Control template may be missing.");
-			}
-
-			return false;
-		}
-
-		return true;
 	}
 }
 

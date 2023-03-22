@@ -81,22 +81,6 @@ internal class InternalClient : Android.Webkit.WebViewClient
 		base.OnPageFinished(view, url);
 	}
 
-	private void CreateAndLaunchMailtoIntent(Android.Content.Context context, string url)
-	{
-		var mailto = Android.Net.MailTo.Parse(url);
-
-		var email = new global::Android.Content.Intent(global::Android.Content.Intent.ActionSendto);
-
-		//Set the data with the mailto: uri to ensure only mail apps will show up as options for the user
-		email.SetData(global::Android.Net.Uri.Parse("mailto:"));
-		email.PutExtra(global::Android.Content.Intent.ExtraEmail, mailto.To);
-		email.PutExtra(global::Android.Content.Intent.ExtraCc, mailto.Cc);
-		email.PutExtra(global::Android.Content.Intent.ExtraSubject, mailto.Subject);
-		email.PutExtra(global::Android.Content.Intent.ExtraText, mailto.Body);
-
-		context.StartActivity(email);
-	}
-
 	//Matched using these two sources
 	//http://developer.xamarin.com/api/type/Android.Webkit.ClientError/
 	//https://msdn.microsoft.com/en-ca/library/windows/apps/windows.web.weberrorstatus

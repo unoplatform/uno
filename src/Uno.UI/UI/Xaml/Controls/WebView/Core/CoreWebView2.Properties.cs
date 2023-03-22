@@ -11,34 +11,12 @@ public partial class CoreWebView2
 	/// <summary>
 	/// True if the WebView is able to navigate to a previous page in the navigation history.
 	/// </summary>
-	public bool CanGoBack
-	{
-		get => _canGoBack;
-		set
-		{
-			if (_canGoBack != value)
-			{
-				_canGoBack = value;
-				HistoryChanged?.Invoke(this, null);
-			}
-		}
-	}
+	public bool CanGoBack { get; private set; }
 
 	/// <summary>
 	/// True if the WebView is able to navigate to a next page in the navigation history.
 	/// </summary>
-	public bool CanGoForward
-	{
-		get => _canGoForward;
-		set
-		{
-			if (_canGoForward != value)
-			{
-				_canGoForward = value;
-				HistoryChanged?.Invoke(this, null);
-			}
-		}
-	}
+	public bool CanGoForward { get; private set; }
 
 	/// <summary>
 	/// Gets the title for the current top-level document.

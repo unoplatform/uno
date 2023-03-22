@@ -2,4 +2,5 @@
 
 internal interface IWebView
 {
+	bool IsLoaded { get; }
 }

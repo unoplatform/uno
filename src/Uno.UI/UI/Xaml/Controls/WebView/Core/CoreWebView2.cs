@@ -1,4 +1,6 @@
 using System;
+using Uno.Extensions;
+using Uno.Foundation.Logging;
 using System.Net.Http;
 using Uno.UI.Xaml.Controls;
 
@@ -6,6 +8,9 @@ namespace Microsoft.Web.WebView2.Core;
 
 public partial class CoreWebView2
 {
+	internal const string BlankUrl = "about:blank";
+	internal static readonly Uri BlankUri = new Uri(BlankUrl);
+
 	private readonly IWebView _owner;
 	private readonly INativeWebView _nativeWebView;
 
@@ -50,6 +55,23 @@ public partial class CoreWebView2
 		_owner.UpdateFromInternalSource();
 	}
 
+	private bool VerifyWebViewAvailability()
+	{
+		if (_nativeWebView == null)
+		{
+			if (_owner.IsLoaded)
+			{
+				_owner.Log().Warn(
+					"This WebView control instance does not have a native WebView child, " +
+					"the control template may be missing.");
+			}
+
+			return false;
+		}
+
+		return true;
+	}
+
 	private void UpdateFromInternalSource()
 	{
 		if (_source is Uri uri)
@@ -77,5 +99,12 @@ public partial class CoreWebView2
 	internal void RaiseNewWindowRequested()
 	{
 		NewWindowRequested?.Invoke(this, new());//TODO:MZ:
+	}
+
+	internal void SetHistoryProperties(bool canGoBack, bool canGoForward)
+	{
+		CanGoBack = canGoBack;
+		CanGoForward = canGoForward;
+		HistoryChanged?.Invoke(this, null);
 	}
 }
