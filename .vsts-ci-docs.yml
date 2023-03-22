@@ -27,6 +27,6 @@ jobs:
   parameters:
     vmImage: '$(linuxVMImage)'
 
-- template: build/ci/.azure-devops-docs.yml
-  parameters:
-    vmImage: '$(windows2022HostedVMImage)'
+# - template: build/ci/.azure-devops-docs.yml
+#   parameters:
+#     vmImage: '$(windows2022HostedVMImage)'
