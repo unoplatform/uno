@@ -5,8 +5,8 @@ namespace Windows.UI.Core;
 
 internal sealed partial class CoreWindowExtension : ICoreWindowExtension
 {
-	public CoreCursor PointerCursor { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+	public CoreCursor PointerCursor { get; set; } = new CoreCursor(CoreCursorType.Arrow, 0);
 
-	public void ReleasePointerCapture(PointerIdentifier pointer) => throw new NotImplementedException();
-	public void SetPointerCapture(PointerIdentifier pointer) => throw new NotImplementedException();
+	public void ReleasePointerCapture(PointerIdentifier pointer) { }
+	public void SetPointerCapture(PointerIdentifier pointer) { }
 }

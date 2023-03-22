@@ -19,7 +19,7 @@ namespace Windows.UI.Core
 			MotionEvent = motionEvent;
 		}
 
-		public Android.Views.MotionEvent MotionEvent { get; }
+		internal Android.Views.MotionEvent MotionEvent { get; }
 #endif
 
 		public bool Handled { get; set; }

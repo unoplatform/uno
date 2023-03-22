@@ -33,6 +33,7 @@ using Microsoft.UI.Input;
 #else
 using Windows.UI.Input;
 using Windows.Devices.Input;
+using Uno.UI.Xaml.Core;
 #endif
 
 namespace Windows.UI.Xaml
@@ -768,6 +769,19 @@ namespace Windows.UI.Xaml
 		partial void PrepareManagedPointerEventBubbling(RoutedEvent routedEvent, ref RoutedEventArgs args, ref BubblingMode bubblingMode)
 		{
 			var ptArgs = (PointerRoutedEventArgs)args;
+
+#if __ANDROID__
+			if (this is not RootVisual &&
+				this.Parent is not UIElement &&
+				this.Parent is Android.Views.View viewParent &&
+				ptArgs.MotionEvent is { } motionEvent
+				)
+			{
+				// bubblingMode = BubblingMode.NoBubbling;
+				viewParent.OnTouchEvent(motionEvent);
+			}
+#endif
+
 			switch (routedEvent.Flag)
 			{
 				case RoutedEventFlag.PointerEntered:
@@ -811,7 +825,7 @@ namespace Windows.UI.Xaml
 					// On iOS all pointers are handled just like if they were touches by the platform and there isn't any notion of "over".
 					// So we can consider pointer over as soon as is touching the screen while being within element bounds.
 					var isOver = ptArgs.Pointer.IsInContact && ptArgs.IsPointCoordinatesOver(this);
-#else // __WASM__ || __ANDROID__
+#else // __WASM__
 					// On WASM the pointer 'exit' is raise by the platform for all pointer types,
 					// while on Android they are raised only for mouses and pens (i.e. not for touch).
 					// (For touch on Android we are "re-dispatching exit" in managed code only (i.e. we will pass here)
