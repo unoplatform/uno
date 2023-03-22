@@ -771,14 +771,19 @@ namespace Windows.UI.Xaml
 			var ptArgs = (PointerRoutedEventArgs)args;
 
 #if __ANDROID__
-			if (this is not RootVisual &&
-				this.Parent is not UIElement &&
-				this.Parent is Android.Views.View viewParent &&
-				ptArgs.MotionEvent is { } motionEvent
-				)
+			if (ptArgs.MotionEvent is { } motionEvent)
 			{
-				// bubblingMode = BubblingMode.NoBubbling;
-				viewParent.OnTouchEvent(motionEvent);
+				var parent = this.Parent;
+				while (parent is not UIElement && parent is Android.Views.View viewParent)
+				{
+					var transformedEvent = Android.Views.MotionEvent.Obtain(motionEvent);
+					transformedEvent.OffsetLocation(0 /*TODO*/, viewParent.ScrollY);
+
+					viewParent.OnTouchEvent(transformedEvent);
+
+					transformedEvent.Recycle();
+					parent = parent.Parent;
+				}
 			}
 #endif
 
