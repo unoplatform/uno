@@ -23,25 +23,9 @@
 //#endif
 //	internal partial class WebView : Control
 //	{
-//		private const string BlankUrl = "about:blank";
-//		private static readonly Uri BlankUri = new Uri(BlankUrl);
 
 //		private object _internalSource;
 //		private string _invokeScriptResponse = string.Empty;
-
-//#pragma warning disable CS0414 // not used in skia
-//		private bool _isLoaded;
-//#pragma warning restore CS0414
-
-//		internal void GoBack()
-//		{
-//			GoBackPartial();
-//		}
-
-//		internal void GoForward()
-//		{
-//			GoForwardPartial();
-//		}
 
 //		internal void Navigate(Uri uri)
 //		{
@@ -54,7 +38,7 @@
 //		//
 //		// Parameters:
 //		//   text:
-//		//     The HTML content to display in the WebView control.
+//		//     The HTML content to display in t he WebView control.
 //		internal void NavigateToString(string text)
 //		{
 //			_owner.SetInternalSource(text ?? "");
@@ -70,18 +54,6 @@
 //			SetInternalSource(requestMessage);
 //		}
 
-//		internal void Stop()
-//		{
-//			StopPartial();
-//		}
-
-//		private protected override void OnLoaded()
-//		{
-//			base.OnLoaded();
-
-//			_isLoaded = true;
-//		}
-
 //		private void SetInternalSource(object source)
 //		{
 //			_internalSource = source;
@@ -91,16 +63,7 @@
 
 
 
-//		private static string ConcatenateJavascriptArguments(string[] arguments)
-//		{
-//			var argument = string.Empty;
-//			if (arguments != null && arguments.Any())
-//			{
-//				argument = string.Join(",", arguments);
-//			}
 
-//			return argument;
-//		}
 
 //		internal void OnUnsupportedUriSchemeIdentified(WebViewUnsupportedUriSchemeIdentifiedEventArgs args)
 //		{

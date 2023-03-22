@@ -1,4 +1,7 @@
-﻿namespace Uno.UI.Xaml.Controls;
+﻿using System;
+using System.Net.Http;
+
+namespace Uno.UI.Xaml.Controls;
 
 internal interface INativeWebView
 {
@@ -6,4 +9,10 @@ internal interface INativeWebView
 	void GoForward();
 	void Stop();
 	void Reload();
+
+	void ProcessNavigation(Uri uri);
+
+	void ProcessNavigation(string html);
+
+	void ProcessNavigation(HttpRequestMessage httpRequestMessage);
 }

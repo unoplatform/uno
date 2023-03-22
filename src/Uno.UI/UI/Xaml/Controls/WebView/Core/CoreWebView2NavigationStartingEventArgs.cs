@@ -23,11 +23,6 @@ public partial class CoreWebView2NavigationStartingEventArgs : EventArgs
 	public Uri? Uri { get; }
 
 	/// <summary>
-	/// Gets the HTTP request headers for the navigation.
-	/// </summary>
-	public string RequestHeaders { get; }
-
-	/// <summary>
 	/// Determines whether to cancel the navigation.
 	/// </summary>
 	public bool Cancel { get; set; }

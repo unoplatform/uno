@@ -14,7 +14,7 @@ internal class InternalClient : Android.Webkit.WebViewClient
 {
 	private readonly CoreWebView2 _coreWebView;
 	private readonly NativeWebViewWrapper _nativeWebViewWrapper;
-
+#pragma warning disable CS0414 //TODO:MZ:
 	//_owner is because we go through onReceivedError() and OnPageFinished() when the call fail.
 	private bool _coreWebViewSuccess = true;
 	//_owner is to not have duplicate event call
@@ -23,15 +23,7 @@ internal class InternalClient : Android.Webkit.WebViewClient
 	internal InternalClient(CoreWebView2 coreWebView, NativeWebViewWrapper webViewWrapper)
 	{
 		_coreWebView = coreWebView;
-
-		if (FeatureConfiguration.WebView.ForceSoftwareRendering)
-		{
-			//SetLayerType disables hardware acceleration for a single view.
-			//_owner is required to remove glitching issues particularly when having a keyboard pop-up with a webview present.
-			//http://developer.android.com/guide/topics/graphics/hardware-accel.html
-			//http://stackoverflow.com/questions/27172217/android-systemui-glitches-in-lollipop
-			_nativeWebViewWrapper.WebView.SetLayerType(LayerType.Software, null);
-		}
+		_nativeWebViewWrapper = webViewWrapper;
 	}
 
 #pragma warning disable CS0672 // Member overrides obsolete member
@@ -40,7 +32,7 @@ internal class InternalClient : Android.Webkit.WebViewClient
 	{
 		if (url.StartsWith(Uri.UriSchemeMailto, true, CultureInfo.InvariantCulture))
 		{
-			CreateAndLaunchMailtoIntent(view.Context, url);
+			_nativeWebViewWrapper.CreateAndLaunchMailtoIntent(view.Context, url);
 			return true;
 		}
 
@@ -72,12 +64,12 @@ internal class InternalClient : Android.Webkit.WebViewClient
 	{
 		_coreWebView.DocumentTitle = view.Title;
 
-		_coreWebView.OnNavigationHistoryChanged();
+		_coreWebView.RaiseHistoryChanged();
 
-		var uri = !_coreWebView._wasLoadedFromString && !string.IsNullOrEmpty(url) ? new Uri(url) : null;
-		var args = new WebViewNavigationCompletedEventArgs(_coreWebViewSuccess, uri, _webErrorStatus);
+		//TODO:MZ:
+		//var uri = !_nativeWebViewWrapper._wasLoadedFromString && !string.IsNullOrEmpty(url) ? new Uri(url) : null;
 
-		_coreWebView.NavigationCompleted?.Invoke(_coreWebView, args);
+		_coreWebView.RaiseNavigationCompleted();
 		base.OnPageFinished(view, url);
 	}
 

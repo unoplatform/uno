@@ -18,7 +18,8 @@ internal class NativeWebViewWrapper : INativeWebView
 {
 	private readonly WebView _webView;
 	private readonly CoreWebView2 _coreWebView;
-	private bool _wasLoadedFromString;
+
+	internal bool _wasLoadedFromString;
 
 	public NativeWebViewWrapper(WebView webView, CoreWebView2 coreWebView)
 	{
@@ -50,6 +51,15 @@ internal class NativeWebViewWrapper : INativeWebView
 		_webView.LayoutParameters = new ViewGroup.LayoutParams(
 			ViewGroup.LayoutParams.MatchParent,
 			ViewGroup.LayoutParams.MatchParent);
+
+		if (FeatureConfiguration.WebView.ForceSoftwareRendering)
+		{
+			//SetLayerType disables hardware acceleration for a single view.
+			//_owner is required to remove glitching issues particularly when having a keyboard pop-up with a webview present.
+			//http://developer.android.com/guide/topics/graphics/hardware-accel.html
+			//http://stackoverflow.com/questions/27172217/android-systemui-glitches-in-lollipop
+			_webView.SetLayerType(LayerType.Software, null);
+		}
 	}
 
 	internal WebView WebView => _webView;
@@ -104,13 +114,8 @@ internal class NativeWebViewWrapper : INativeWebView
 		context.StartActivity(email);
 	}
 
-	internal void NavigatePartial(Uri uri)
+	public void ProcessNavigation(Uri uri)
 	{
-		if (!VerifyWebViewAvailability())
-		{
-			return;
-		}
-
 		_wasLoadedFromString = false;
 		if (uri.Scheme.Equals("local", StringComparison.OrdinalIgnoreCase))
 		{
@@ -130,14 +135,8 @@ internal class NativeWebViewWrapper : INativeWebView
 		_webView.LoadUrl(uri.AbsoluteUri.Replace("file://", "file:///"));
 	}
 
-
-	private void NavigateWithHttpRequestMessagePartial(HttpRequestMessage requestMessage)
+	public void ProcessNavigation(HttpRequestMessage requestMessage)
 	{
-		if (!VerifyWebViewAvailability())
-		{
-			return;
-		}
-
 		var uri = requestMessage.RequestUri;
 		var headers = requestMessage.Headers
 			.Safe()
@@ -150,16 +149,11 @@ internal class NativeWebViewWrapper : INativeWebView
 		_webView.LoadUrl(uri.AbsoluteUri, headers);
 	}
 
-	private void NavigateToStringPartial(string text)
+	public void ProcessNavigation(string html)
 	{
-		if (!VerifyWebViewAvailability())
-		{
-			return;
-		}
-
 		_wasLoadedFromString = true;
 		//Note : _webView.LoadData does not work properly on Android 10 even when we encode to base64.
-		_webView.LoadDataWithBaseURL(null, text, "text/html; charset=utf-8", "utf-8", null);
+		_webView.LoadDataWithBaseURL(null, html, "text/html; charset=utf-8", "utf-8", null);
 	}
 
 	//_owner should be IAsyncOperation<string> instead of Task<string> but we use an extension method to enable the same signature in Win.
@@ -178,6 +172,17 @@ internal class NativeWebViewWrapper : INativeWebView
 		return await tcs.Task;
 	}
 
+	private static string ConcatenateJavascriptArguments(string[] arguments)
+	{
+		var argument = string.Empty;
+		if (arguments != null && arguments.Any())
+		{
+			argument = string.Join(",", arguments);
+		}
+
+		return argument;
+	}
+
 	internal IAsyncOperation<string> InvokeScriptAsync(string scriptName, IEnumerable<string> arguments) =>
 		AsyncOperation.FromTask(ct => InvokeScriptAsync(ct, scriptName, arguments?.ToArray()));
 
@@ -189,8 +194,9 @@ internal class NativeWebViewWrapper : INativeWebView
 	private void OnNavigationHistoryChanged()
 	{
 		// A non-zero number of steps to the nearest valid history entry means that navigation in the given direction is allowed
-		_coreWebView.CanGoBack = GetStepsToNearestValidHistoryEntry(direction: -1 /* backward */) != 0;
-		_coreWebView.CanGoForward = GetStepsToNearestValidHistoryEntry(direction: 1 /* forward */) != 0;
+		var canGoBack = GetStepsToNearestValidHistoryEntry(direction: -1 /* backward */) != 0;
+		var canGoForward = GetStepsToNearestValidHistoryEntry(direction: 1 /* forward */) != 0;
+		_coreWebView.SetHistoryProperties(canGoBack, canGoForward);
 	}
 
 	private class ScriptResponse : Java.Lang.Object, IValueCallback

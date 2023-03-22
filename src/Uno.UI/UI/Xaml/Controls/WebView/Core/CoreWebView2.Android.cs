@@ -18,20 +18,19 @@ using Uno.UI;
 using Uno.UI.Extensions;
 using Windows.Foundation;
 using Windows.Web;
-
-using Uno.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls;
+using Uno.UI.Xaml.Controls;
+using Windows.UI.Xaml;
 
 namespace Microsoft.Web.WebView2.Core;
 
 public partial class CoreWebView2
 {
 	private NativeWebViewWrapper _nativeWebViewWrapper;
-	private bool _wasLoadedFromString;
 
 	internal INativeWebView? GetNativeWebViewFromTemplate()
 	{
-		var webView = _owner
+		var webView = (_owner as ViewGroup)?
 			.GetChildren(v => v is Android.Webkit.WebView)
 			.FirstOrDefault() as Android.Webkit.WebView;
 

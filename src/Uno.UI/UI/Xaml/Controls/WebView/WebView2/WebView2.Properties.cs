@@ -53,7 +53,7 @@ public partial class WebView2
 	/// </summary>
 	public static DependencyProperty SourceProperty { get; } =
 		DependencyProperty.Register(nameof(Source), typeof(Uri), typeof(WebView2), new FrameworkPropertyMetadata(null,
-			(s, e) => ((WebView2)s)?.Navigate((Uri)e.NewValue)));
+			(s, e) => ((WebView2)s)?.CoreWebView2.Navigate(((Uri)e.NewValue)?.ToString())));
 
 	/// <summary>
 	/// Occurs when the core WebView2 process fails.

@@ -41,11 +41,8 @@ public partial class WebView2 : Control, IWebView
 
 		CoreWebView2 = new CoreWebView2(this);
 		CoreWebView2.HistoryChanged += CoreWebView2_HistoryChanged;
-		CoreWebView2.ContentLoading += CoreWebView2_ContentLoading;
-		CoreWebView2.DOMContentLoaded += CoreWebView2_DOMContentLoaded;
 		CoreWebView2.NavigationStarting += CoreWebView2_NavigationStarting;
 		CoreWebView2.NavigationCompleted += CoreWebView2_NavigationCompleted;
-		CoreWebView2.NewWindowRequested += CoreWebView2_NewWindowRequested;
 
 		Loaded += WebView2_Loaded;
 	}

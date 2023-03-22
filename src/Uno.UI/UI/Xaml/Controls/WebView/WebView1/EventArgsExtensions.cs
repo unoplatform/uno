@@ -14,7 +14,7 @@ internal static class EventArgsExtensions
 		new WebViewNavigationStartingEventArgs(args.Uri);
 
 	public static WebViewNavigationCompletedEventArgs ToWebViewArgs(this CoreWebView2NavigationCompletedEventArgs args) =>
-		new WebViewNavigationCompletedEventArgs(args.Uri);
+		new WebViewNavigationCompletedEventArgs(args.IsSuccess, args.Uri, Web.WebErrorStatus.Unknown); //TODO:MZ:
 
 	public static WebViewNewWindowRequestedEventArgs ToWebViewArgs(this CoreWebView2NewWindowRequestedEventArgs args) =>
 		new WebViewNewWindowRequestedEventArgs(null, null); //TODO:MZ:

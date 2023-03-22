@@ -12,8 +12,8 @@ public partial class CoreWebView2
 	internal static readonly Uri BlankUri = new Uri(BlankUrl);
 
 	private readonly IWebView _owner;
-	private readonly INativeWebView _nativeWebView;
 
+	private INativeWebView _nativeWebView;
 	private object _source;
 
 	internal CoreWebView2(IWebView owner)
@@ -29,13 +29,13 @@ public partial class CoreWebView2
 		}
 
 		_source = actualUri;
-		ProcessNavigation(actualUri);
+		_nativeWebView.ProcessNavigation(actualUri);
 	}
 
 	public void NavigateToString(string htmlContent)
 	{
 		_source = htmlContent;
-		ProcessNavigation(htmlContent);
+		_nativeWebView.ProcessNavigation(htmlContent);
 	}
 
 	public void GoBack() => _nativeWebView.GoBack();
@@ -52,7 +52,7 @@ public partial class CoreWebView2
 
 		//The nativate WebView already navigate to a blank page if no source is set.
 		//Avoid a bug where invoke GoBack() on WebView do nothing in Android 4.4
-		_owner.UpdateFromInternalSource();
+		UpdateFromInternalSource();
 	}
 
 	private bool VerifyWebViewAvailability()
@@ -74,20 +74,22 @@ public partial class CoreWebView2
 
 	private void UpdateFromInternalSource()
 	{
+		VerifyWebViewAvailability();
+
 		if (_source is Uri uri)
 		{
-			ProcessNavigation(uri);
+			_nativeWebView.ProcessNavigation(uri);
 			return;
 		}
 
 		if (_source is string html)
 		{
-			ProcessNavigation(html);
+			_nativeWebView.ProcessNavigation(html);
 		}
 
 		if (_source is HttpRequestMessage httpRequestMessage)
 		{
-			ProcessNavigation(message);
+			_nativeWebView.ProcessNavigation(httpRequestMessage);
 		}
 	}
 
@@ -101,10 +103,17 @@ public partial class CoreWebView2
 		NewWindowRequested?.Invoke(this, new());//TODO:MZ:
 	}
 
+	internal void RaiseNavigationCompleted()
+	{
+		NavigationCompleted?.Invoke(this, new CoreWebView2NavigationCompletedEventArgs(0, null, true, 200, CoreWebView2WebErrorStatus.Unknown));//TODO:MZ:
+	}
+
+	internal void RaiseHistoryChanged() => HistoryChanged?.Invoke(this, null);
+
 	internal void SetHistoryProperties(bool canGoBack, bool canGoForward)
 	{
 		CanGoBack = canGoBack;
 		CanGoForward = canGoForward;
-		HistoryChanged?.Invoke(this, null);
+		RaiseHistoryChanged();
 	}
 }
