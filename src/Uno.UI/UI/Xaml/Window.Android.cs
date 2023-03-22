@@ -16,7 +16,6 @@ using Windows.UI.ViewManagement;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Media;
-using Uno.Extensions.ValueType;
 using Uno.UI.Extensions;
 
 namespace Windows.UI.Xaml

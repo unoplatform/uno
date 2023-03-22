@@ -83,22 +83,5 @@ namespace Uno.Collections
 
 			values[key] = value;
 		}
-
-
-		/// <summary>
-		/// Copies all values from one owner to another.
-		/// </summary>
-		/// <param name="existingOwner">The <typeparamref name="TOwner"/> to take values from.</param>
-		/// <param name="newOwner">The <typeparamref name="TOwner"/> to assign values to.</param>
-		public void CopyValues(TOwner existingOwner, TOwner newOwner)
-		{
-			var existingValues = _instances.GetValue(existingOwner, CreateDictionary);
-			var newValues = _instances.GetValue(newOwner, CreateDictionary);
-
-			foreach (var key in existingValues.Keys)
-			{
-				newValues[key] = existingValues[key];
-			}
-		}
 	}
 }

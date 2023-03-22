@@ -39,13 +39,6 @@ namespace Uno.Extensions
 			disposable.Maybe(d => d.Dispose());
 		}
 
-		public static IDisposable Using<T>(this ExtensionPoint<T> extensionPoint)
-		{
-			var disposable = extensionPoint.ExtendedValue as IDisposable;
-
-			return disposable ?? NullDisposable.Instance;
-		}
-
 		public static void Maybe<TInstance>(this TInstance instance, Action action)
 		{
 			if (instance != null)
