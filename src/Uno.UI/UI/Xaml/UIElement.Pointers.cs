@@ -27,13 +27,13 @@ using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml;
+using Uno.UI.Xaml.Core;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
 #else
 using Windows.UI.Input;
 using Windows.Devices.Input;
-using Uno.UI.Xaml.Core;
 #endif
 
 namespace Windows.UI.Xaml

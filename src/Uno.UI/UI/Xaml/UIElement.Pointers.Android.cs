@@ -108,7 +108,7 @@ namespace Windows.UI.Xaml
 			var phyX = nativeEvent.GetX(pointerIndex);
 			var phyY = nativeEvent.GetY(pointerIndex);
 			var position = new Point(phyX, phyY).PhysicalToLogicalPixels();
-			var isInContact = IsInContact(nativeEvent, pointerType);
+			var isInContact = IsInContact(nativeEvent, (PointerDeviceType)pointerType);
 			var currentPoint = new PointerPoint(
 				frameId: (uint)nativeEvent.EventTime,
 				timestamp: ToTimeStamp(nativeEvent.EventTime),
