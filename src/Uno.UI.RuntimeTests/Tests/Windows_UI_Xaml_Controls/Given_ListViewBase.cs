@@ -57,6 +57,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		private DataTemplate SelfHostingItemTemplate => _testsResources["SelfHostingItemTemplate"] as DataTemplate;
 
+		/// <summary>
+		/// Size = 152w x 29h
+		/// </summary>
 		private DataTemplate FixedSizeItemTemplate => _testsResources["FixedSizeItemTemplate"] as DataTemplate;
 
 		private DataTemplate NV286_Template => _testsResources["NV286_Template"] as DataTemplate;

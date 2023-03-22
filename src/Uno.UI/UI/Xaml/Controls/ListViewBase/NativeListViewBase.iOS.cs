@@ -227,6 +227,10 @@ namespace Windows.UI.Xaml.Controls
 					}
 				}
 			}
+			else
+			{
+				NativeLayout?.NeedsRelayout();
+			}
 		}
 
 		public override void InsertSections(NSIndexSet sections)
