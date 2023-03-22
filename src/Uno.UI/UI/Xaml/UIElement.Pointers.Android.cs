@@ -51,8 +51,9 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		protected sealed override bool OnNativeMotionEvent(MotionEvent nativeEvent)
+		protected override bool OnNativeMotionEvent(MotionEvent nativeEvent)
 		{
+			// TODO: Is this reachable?
 			if (!ArePointersEnabled)
 			{
 				return false;
@@ -64,40 +65,41 @@ namespace Windows.UI.Xaml
 				// TODO: STYLUS_WITH_BARREL_DOWN, STYLUS_WITH_BARREL_MOVE, STYLUS_WITH_BARREL_UP ?
 				case MotionEventActions.Down:
 				case MotionEventActions.PointerDown:
-					ownerEvents.RaisePointerPressed(BuildPointerArgs(nativeEvent));
+					OnPointerDown(new PointerRoutedEventArgs(BuildPointerArgs(nativeEvent), this));
 					break;
 
 				case MotionEventActions.Move:
 				case MotionEventActions.HoverMove:
-					ownerEvents.RaisePointerMoved(BuildPointerArgs(nativeEvent));
+					OnPointerMove(new PointerRoutedEventArgs(BuildPointerArgs(nativeEvent), this));
 					break;
 
 				case MotionEventActions.Up:
 				case MotionEventActions.PointerUp:
-					ownerEvents.RaisePointerReleased(BuildPointerArgs(nativeEvent));
+					OnPointerUp(new PointerRoutedEventArgs(BuildPointerArgs(nativeEvent), this));
 					break;
 
 				case MotionEventActions.Cancel:
-					ownerEvents.RaisePointerCancelled(BuildPointerArgs(nativeEvent));
+					OnPointerCancel(new PointerRoutedEventArgs(BuildPointerArgs(nativeEvent), this));
 					break;
 
 				case MotionEventActions.HoverEnter:
-					ownerEvents.RaisePointerEntered(BuildPointerArgs(nativeEvent));
+					OnPointerEnter(new PointerRoutedEventArgs(BuildPointerArgs(nativeEvent), this));
 					break;
 
 				case MotionEventActions.HoverExit:
-					ownerEvents.RaisePointerExited(BuildPointerArgs(nativeEvent));
+					OnPointerExited(new PointerRoutedEventArgs(BuildPointerArgs(nativeEvent), this));
 					break;
 			}
 
 			return false;
 		}
 
+		private static readonly ulong _unixEpochMs = (ulong)(new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc) - new DateTime()).TotalMilliseconds;
+
 		private const int _pointerIdsCount = (int)MotionEventActions.PointerIndexMask >> (int)MotionEventActions.PointerIndexShift; // 0xff
 		private const int _pointerIdsShift = 31 - (int)MotionEventActions.PointerIndexShift; // 23
 
-
-		private PointerEventArgs BuildPointerArgs(MotionEvent nativeEvent)
+		private protected PointerEventArgs BuildPointerArgs(MotionEvent nativeEvent)
 		{
 			var pointerIndex = nativeEvent.ActionIndex;
 			var pointerType = nativeEvent.GetToolType(pointerIndex).ToPointerDeviceType();
@@ -140,7 +142,6 @@ namespace Windows.UI.Xaml
 						&& !action.HasFlag(MotionEventActions.Cancel);
 			}
 		}
-
 		/// <summary>
 		/// The stylus is pressed while holding the barrel button
 		/// </summary>
@@ -246,8 +247,6 @@ namespace Windows.UI.Xaml
 			return props;
 		}
 
-		private static readonly ulong _unixEpochMs = (ulong)(new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc) - new DateTime()).TotalMilliseconds;
-
 		private static ulong ToTimeStamp(long uptimeMillis)
 		{
 			if (FeatureConfiguration.PointerRoutedEventArgs.AllowRelativeTimeStamp)
@@ -264,7 +263,6 @@ namespace Windows.UI.Xaml
 				return timestamp;
 			}
 		}
-
 
 		/// <summary>
 		/// Used by the VisualRoot to redispatch a pointer exit on pointer up
