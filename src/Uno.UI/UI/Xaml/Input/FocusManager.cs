@@ -206,6 +206,13 @@ namespace Windows.UI.Xaml.Input
 					"Undefined focus navigation direction was used.");
 			}
 
+			if (focusNavigationDirection == FocusNavigationDirection.None)
+			{
+				throw new ArgumentOutOfRangeException(
+					"Focus navigation direction None is not supported in TryMoveFocus",
+					nameof(focusNavigationDirection));
+			}
+
 			return TryMoveFocusImpl(focusNavigationDirection);
 		}
 
@@ -231,12 +238,10 @@ namespace Windows.UI.Xaml.Input
 					"Invalid value of focus navigation direction was used.");
 			}
 
-			if (focusNavigationDirection == FocusNavigationDirection.Next ||
-				focusNavigationDirection == FocusNavigationDirection.Previous ||
-				focusNavigationDirection == FocusNavigationDirection.None)
+			if (focusNavigationDirection == FocusNavigationDirection.None)
 			{
 				throw new ArgumentOutOfRangeException(
-					"Focus navigation directions Next, Previous, and None are not supported when using FindNextElementOptions",
+					"Focus navigation direction None is not supported in TryMoveFocus",
 					nameof(focusNavigationDirection));
 			}
 
@@ -263,6 +268,13 @@ namespace Windows.UI.Xaml.Input
 					"Undefined focus navigation direction was used.");
 			}
 
+			if (focusNavigationDirection == FocusNavigationDirection.None)
+			{
+				throw new ArgumentOutOfRangeException(
+					"Focus navigation direction None is not supported in TryMoveFocusAsync",
+					nameof(focusNavigationDirection));
+			}
+
 			return TryMoveFocusAsyncImpl(focusNavigationDirection);
 		}
 
@@ -282,12 +294,10 @@ namespace Windows.UI.Xaml.Input
 					"Invalid value of focus navigation direction was used.");
 			}
 
-			if (focusNavigationDirection == FocusNavigationDirection.Next ||
-				focusNavigationDirection == FocusNavigationDirection.Previous ||
-				focusNavigationDirection == FocusNavigationDirection.None)
+			if (focusNavigationDirection == FocusNavigationDirection.None)
 			{
 				throw new ArgumentOutOfRangeException(
-					"Focus navigation directions Next, Previous, and None are not supported when using FindNextElementOptions",
+					"Focus navigation direction None is not supported in TryMoveFocusAsync",
 					nameof(focusNavigationDirection));
 			}
 
