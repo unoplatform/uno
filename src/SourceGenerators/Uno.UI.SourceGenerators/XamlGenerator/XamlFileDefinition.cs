@@ -2,10 +2,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
-using System.Linq;
-using System.Security.Cryptography;
 using Uno.UI.SourceGenerators.Helpers;
 using Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection;
 
@@ -32,6 +29,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		public List<XamlObjectDefinition> Objects { get; private set; }
 
 		public string FilePath { get; private set; }
+
+		public string? SourceLink { get; internal set; }
 
 		/// <summary>
 		/// Provides the path to the file using an actual target path in the project
