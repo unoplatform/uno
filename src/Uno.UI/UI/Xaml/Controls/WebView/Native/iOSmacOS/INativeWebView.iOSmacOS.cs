@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Web.WebView2.Core;
 
 namespace Uno.UI.Xaml.Controls;
 
@@ -12,13 +13,9 @@ namespace Uno.UI.Xaml.Controls;
 /// </summary>
 internal partial interface INativeWebView
 {
-	bool CanGoBack { get; }
-	bool CanGoForward { get; }
+	void SetOwner(CoreWebView2 xamlWebView);
 
-	void LoadRequest(NSUrlRequest request);	
-	void LoadHtmlString(string s, NSUrl baseUrl);
 	void SetScrollingEnabled(bool isScrollingEnabled);
 
-	void RegisterNavigationEvents(WebView xamlWebView);
 	Task<string> EvaluateJavascriptAsync(CancellationToken ct, string javascript);
 }

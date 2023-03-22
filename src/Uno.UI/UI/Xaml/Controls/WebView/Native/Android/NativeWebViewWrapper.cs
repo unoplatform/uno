@@ -191,7 +191,7 @@ internal class NativeWebViewWrapper : INativeWebView
 	// Because Android doesn't let you modify the navigation history, 
 	// we need CanGoBack, CanGoForward, GoBack and GoForward to take the above condition into consideration.
 
-	private void OnNavigationHistoryChanged()
+	internal void OnNavigationHistoryChanged()
 	{
 		// A non-zero number of steps to the nearest valid history entry means that navigation in the given direction is allowed
 		var canGoBack = GetStepsToNearestValidHistoryEntry(direction: -1 /* backward */) != 0;
@@ -214,7 +214,7 @@ internal class NativeWebViewWrapper : INativeWebView
 		}
 	}
 
-	private void OnScrollEnabledChangedPartial(bool scrollingEnabled)
+	internal void OnScrollEnabledChangedPartial(bool scrollingEnabled)
 	{
 		_webView.HorizontalScrollBarEnabled = scrollingEnabled;
 		_webView.VerticalScrollBarEnabled = scrollingEnabled;
