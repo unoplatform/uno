@@ -141,12 +141,12 @@ namespace Windows.UI.Xaml
 		/// <param name="name">The name of the property.</param>
 		/// <param name="propertyType">The type of the property</param>
 		/// <param name="ownerType">The owner type of the property</param>
-		/// <param name="typeMetadata">The metadata to use when creating the property</param>
+		/// <param name="defaultMetadata">The metadata to use when creating the property</param>
 		/// <returns>A dependency property instance</returns>
 		/// <exception cref="InvalidOperationException">A property with the same name has already been declared for the ownerType</exception>
-		public static DependencyProperty RegisterAttached(string name, Type propertyType, Type ownerType, PropertyMetadata typeMetadata)
+		public static DependencyProperty RegisterAttached(string name, Type propertyType, Type ownerType, PropertyMetadata defaultMetadata)
 		{
-			var newProperty = new DependencyProperty(name, propertyType, ownerType, typeMetadata, attached: true);
+			var newProperty = new DependencyProperty(name, propertyType, ownerType, defaultMetadata, attached: true);
 
 			try
 			{
@@ -512,7 +512,7 @@ namespace Windows.UI.Xaml
 			IsTypeNullable = (1 << 1),
 
 			/// <summary>
-			/// Set when the <see cref="_propertyType"/> is a <see cref="DependencyObjectCollection"/> 
+			/// Set when the <see cref="_propertyType"/> is a <see cref="DependencyObjectCollection"/>
 			/// </summary>
 			IsDependencyObjectCollection = (1 << 2),
 
