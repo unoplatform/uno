@@ -38,6 +38,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 		public void OpenPopups_Popups_Unique()
 		{
 			var popup = new Popup();
+			popup.XamlRoot = WindowHelper.XamlRoot;
 			Assert.AreEqual(0, VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).Count);
 			popup.IsOpen = true;
 			Assert.AreEqual(1, VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).Count);
@@ -49,6 +50,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 		public void OpenPopups_Popups_Include_Instance()
 		{
 			var popup = new Popup();
+			popup.XamlRoot = WindowHelper.XamlRoot;
 			popup.IsOpen = true;
 			CollectionAssert.Contains(VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).ToArray(), popup);
 			popup.IsOpen = false;

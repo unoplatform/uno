@@ -446,13 +446,17 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 
 			textBox1.Focus(FocusState.Programmatic);
 
-			var moved = FocusManager.TryMoveFocus(FocusNavigationDirection.Next);
+			var moved = FocusManager.TryMoveFocus(
+				FocusNavigationDirection.Next,
+				new FindNextElementOptions() { SearchRoot = TestServices.WindowHelper.XamlRoot.Content });
 			var focused = FocusManager.GetFocusedElement(TestServices.WindowHelper.XamlRoot);
 
 			Assert.IsTrue(moved);
 			Assert.AreEqual(textBox2, focused);
 
-			moved = FocusManager.TryMoveFocus(FocusNavigationDirection.Next);
+			moved = FocusManager.TryMoveFocus(
+				FocusNavigationDirection.Next,
+				new FindNextElementOptions() { SearchRoot = TestServices.WindowHelper.XamlRoot.Content });
 			focused = FocusManager.GetFocusedElement(TestServices.WindowHelper.XamlRoot);
 
 			Assert.IsTrue(moved);

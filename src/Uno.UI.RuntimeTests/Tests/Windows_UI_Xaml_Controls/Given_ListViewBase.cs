@@ -2455,7 +2455,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 			item1.Focus(FocusState.Keyboard);
-			var success = FocusManager.TryMoveFocus(FocusNavigationDirection.Next);
+			var success = FocusManager.TryMoveFocus(
+				FocusNavigationDirection.Next,
+				new FindNextElementOptions() { SearchRoot = TestServices.WindowHelper.XamlRoot.Content });
 			Assert.IsTrue(success);
 
 			var focused = FocusManager.GetFocusedElement(TestServices.WindowHelper.XamlRoot);
@@ -2490,7 +2492,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 			item2.Focus(FocusState.Keyboard);
-			var success = FocusManager.TryMoveFocus(FocusNavigationDirection.Previous);
+			var success = FocusManager.TryMoveFocus(
+				FocusNavigationDirection.Previous,
+				new FindNextElementOptions() { SearchRoot = TestServices.WindowHelper.XamlRoot.Content });
 			Assert.IsTrue(success);
 
 			var focused = FocusManager.GetFocusedElement(TestServices.WindowHelper.XamlRoot);
