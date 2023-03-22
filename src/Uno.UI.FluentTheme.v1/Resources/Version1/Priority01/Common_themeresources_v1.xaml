@@ -35,20 +35,9 @@
             <Thickness x:Key="TextControlThemePadding">10,6,6,5</Thickness>
         </ResourceDictionary>
     </ResourceDictionary.ThemeDictionaries>
-   
+
     <!-- DateTimeFlyoutBorderPadding is defined since RS5. set it here to ensure it's always defined. -->
     <Thickness x:Key="DateTimeFlyoutBorderPadding">0</Thickness>
-
-    <!-- Default DataTemplate used for the IInputValidationControl.ErrorTemplate property -->
-    <DataTemplate x:Key="DefaultInputValidationErrorTemplate">
-        <ItemsControl ItemsSource="{Binding ValidationErrors}">
-            <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <TextBlock Text="{Binding ErrorMessage}" />
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
-    </DataTemplate>
 
     <!-- Default DataTemplate used for the compact presentation of errors -->
     <DataTemplate x:Key="DefaultCompactErrorIconTemplate">
@@ -58,6 +47,6 @@
             </ToolTipService.ToolTip>
         </FontIcon>
     </DataTemplate>
-    
+
     <x:String x:Key="RequiredHeaderContent">*</x:String>
 </ResourceDictionary>
