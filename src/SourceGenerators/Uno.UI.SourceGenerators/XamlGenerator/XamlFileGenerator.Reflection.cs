@@ -146,27 +146,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		public bool HasProperty(XamlType xamlType, string propertyName)
 		{
 			var type = FindType(xamlType);
-
-			if (type != null)
-			{
-				do
-				{
-					if (type.GetAllPropertiesWithName(propertyName).Any())
-					{
-						return true;
-					}
-
-					type = type.BaseType;
-
-					if (type == null)
-					{
-						break;
-					}
-
-				} while (type.SpecialType != SpecialType.System_Object);
-			}
-
-			return false;
+			return type.GetPropertyWithName(propertyName) is not null;
 		}
 
 		private bool IsRun(INamedTypeSymbol? symbol)
@@ -257,17 +237,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private static bool IsDependencyProperty(INamedTypeSymbol? propertyOwner, string name)
 		{
-			if (propertyOwner != null)
-			{
-				var propertyDependencyPropertyQuery = propertyOwner.GetAllPropertiesWithName(name + "Property");
-				var fieldDependencyPropertyQuery = propertyOwner.GetAllFieldsWithName(name + "Property");
-
-				return propertyDependencyPropertyQuery.Any() || fieldDependencyPropertyQuery.Any();
-			}
-			else
-			{
-				return false;
-			}
+			return propertyOwner.GetPropertyWithName(name + "Property") is not null ||
+				propertyOwner.GetFieldWithName(name + "Property") is not null;
 		}
 
 		private bool HasIsParsing(XamlType xamlType)
@@ -355,7 +326,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 					var resolvedType = type;
 
-					var property = resolvedType.GetAllPropertiesWithName(propertyName).FirstOrDefault();
+					var property = resolvedType.GetPropertyWithName(propertyName);
 					var setMethod = resolvedType.GetFirstMethodWithName("Set" + propertyName);
 
 					if (property != null)
@@ -466,7 +437,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		{
 			do
 			{
-				var property = type.GetAllPropertiesWithName(name).FirstOrDefault();
+				var property = type.GetPropertyWithName(name);
 				if (property?.GetMethod?.IsStatic ?? false)
 				{
 					return true;
@@ -620,7 +591,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private IPropertySymbol? GetPropertyWithName(XamlType declaringType, string propertyName)
 		{
 			var type = FindType(declaringType);
-			return type?.GetAllPropertiesWithName(propertyName).FirstOrDefault();
+			return type.GetPropertyWithName(propertyName);
 		}
 
 		private static bool IsDouble(string typeName)

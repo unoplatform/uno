@@ -209,27 +209,6 @@ namespace Microsoft.CodeAnalysis
 		public static IEnumerable<IFieldSymbol> GetFields(this ITypeSymbol resolvedType)
 			=> resolvedType.GetMembers().OfType<IFieldSymbol>();
 
-		public static IEnumerable<IFieldSymbol> GetFieldsWithName(this ITypeSymbol resolvedType, string name)
-			=> resolvedType.GetMembers(name).OfType<IFieldSymbol>();
-
-		/// <summary>
-		/// Return fields of the current type and all of its ancestors
-		/// </summary>
-		/// <param name="symbol"></param>
-		/// <returns></returns>
-		public static IEnumerable<IFieldSymbol> GetAllFieldsWithName(this INamedTypeSymbol? symbol, string name)
-		{
-			while (symbol != null)
-			{
-				foreach (var property in symbol.GetMembers(name).OfType<IFieldSymbol>())
-				{
-					yield return property;
-				}
-
-				symbol = symbol?.BaseType;
-			}
-		}
-
 		public static AttributeData? FindAttribute(this ISymbol? property, INamedTypeSymbol? attributeClassSymbol)
 		{
 			return property?.GetAttributes().FirstOrDefault(a => SymbolEqualityComparer.Default.Equals(a.AttributeClass, attributeClassSymbol));
@@ -418,21 +397,51 @@ namespace Microsoft.CodeAnalysis
 		}
 
 		/// <summary>
-		/// Return properties of the current type and all of its ancestors
+		/// Return property with specific name of the current type and all of its ancestors.
 		/// </summary>
-		/// <param name="symbol"></param>
-		/// <returns></returns>
-		public static IEnumerable<IPropertySymbol> GetAllPropertiesWithName(this INamedTypeSymbol? symbol, string name)
+		/// <param name="symbol">The type to look property in (lookup includes base types)</param>
+		/// <param name="name">The property name to lookup.</param>
+		/// <returns>The found property symbol or not if not found.</returns>
+		public static IPropertySymbol? GetPropertyWithName(this INamedTypeSymbol? symbol, string name)
 		{
 			while (symbol != null)
 			{
-				foreach (var property in symbol.GetMembers(name).OfType<IPropertySymbol>())
+				foreach (var property in symbol.GetMembers(name))
 				{
-					yield return property;
+					if (property.Kind == SymbolKind.Property)
+					{
+						return (IPropertySymbol)property;
+					}
 				}
 
 				symbol = symbol.BaseType;
 			}
+
+			return null;
+		}
+
+		/// <summary>
+		/// Return field with specific name of the current type and all of its ancestors.
+		/// </summary>
+		/// <param name="symbol">The type to look field in (lookup includes base types)</param>
+		/// <param name="name">The field name to lookup.</param>
+		/// <returns>The found field symbol or not if not found.</returns>
+		public static IFieldSymbol? GetFieldWithName(this INamedTypeSymbol? symbol, string name)
+		{
+			while (symbol != null)
+			{
+				foreach (var field in symbol.GetMembers(name))
+				{
+					if (field.Kind == SymbolKind.Field)
+					{
+						return (IFieldSymbol)field;
+					}
+				}
+
+				symbol = symbol.BaseType;
+			}
+
+			return null;
 		}
 
 		/// <summary>

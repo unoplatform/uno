@@ -2703,7 +2703,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					var name = nameProperty.Value.Value.ToString() ?? "";
 
-					return elementType?.GetAllPropertiesWithName(name).FirstOrDefault();
+					return elementType.GetPropertyWithName(name);
 				}
 			}
 
@@ -4546,12 +4546,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			if (typeSymbol is not null)
 			{
-				var isStaticMethod = typeSymbol.GetMethodsWithName(memberName).Any(m => m.IsStatic);
-				var isStaticProperty = typeSymbol.GetPropertiesWithName(memberName).Any(m => m.IsStatic);
-				var isStaticField = typeSymbol.GetFieldsWithName(memberName).Any(m => m.IsStatic);
 				var isEnum = typeSymbol.TypeKind == TypeKind.Enum;
 
-				return isStaticMethod || isStaticProperty || isStaticField || (!isTopLevelMember && isEnum);
+				return (!isTopLevelMember && isEnum) ||
+					typeSymbol.GetMembers(memberName).Any(m => m.IsStatic && m.Kind is SymbolKind.Method or SymbolKind.Property or SymbolKind.Field);
 			}
 
 			return false;
@@ -4630,8 +4628,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				.Members
 				.Select(m =>
 				{
-					var propertyType = markupType.GetAllPropertiesWithName(m.Member.Name)?
-					 .FirstOrDefault()?.Type as INamedTypeSymbol;
+					var propertyType = markupType.GetPropertyWithName(m.Member.Name)?.Type as INamedTypeSymbol;
 					var resourceName = GetSimpleStaticResourceRetrieval(m, propertyType);
 					var value = resourceName ?? BuildLiteralValue(m, propertyType: propertyType, owner: member);
 
