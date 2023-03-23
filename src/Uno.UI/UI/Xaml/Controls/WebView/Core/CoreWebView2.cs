@@ -38,6 +38,17 @@ public partial class CoreWebView2
 		_nativeWebView.ProcessNavigation(htmlContent);
 	}
 
+	internal void NavigateWithHttpRequestMessage(HttpRequestMessage requestMessage)
+	{
+		if (requestMessage?.RequestUri == null)
+		{
+			throw new ArgumentException("Invalid request message. It does not have a RequestUri.");
+		}
+
+		_source = requestMessage;
+		_nativeWebView.ProcessNavigation(requestMessage);
+	}
+
 	public void GoBack() => _nativeWebView.GoBack();
 
 	public void GoForward() => _nativeWebView.GoForward();

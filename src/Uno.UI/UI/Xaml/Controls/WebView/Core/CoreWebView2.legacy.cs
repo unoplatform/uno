@@ -44,15 +44,7 @@
 //			_owner.SetInternalSource(text ?? "");
 //		}
 
-//		internal void NavigateWithHttpRequestMessage(HttpRequestMessage requestMessage)
-//		{
-//			if (requestMessage?.RequestUri == null)
-//			{
-//				throw new ArgumentException("Invalid request message. It does not have a RequestUri.");
-//			}
 
-//			SetInternalSource(requestMessage);
-//		}
 
 //		private void SetInternalSource(object source)
 //		{

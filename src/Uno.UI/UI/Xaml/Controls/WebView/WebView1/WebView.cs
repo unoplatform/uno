@@ -4,6 +4,7 @@
 #pragma warning disable CS0067, CS0414
 #endif
 
+using System.Net.Http;
 using Microsoft.Web.WebView2.Core;
 using Uno.UI.Xaml.Controls;
 
@@ -47,6 +48,9 @@ public partial class WebView : Control, IWebView
 	public void Refresh() => CoreWebView2.Reload();
 
 	public void Stop() => CoreWebView2.Stop();
+
+	internal void NavigateWithHttpRequestMessage(HttpRequestMessage requestMessage) =>
+		CoreWebView2.NavigateWithHttpRequestMessage(requestMessage);
 
 	private void CoreWebView2_DocumentTitleChanged(CoreWebView2 sender, object args) =>
 		DocumentTitle = sender.DocumentTitle;
