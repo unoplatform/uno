@@ -13,6 +13,7 @@ namespace Windows.UI.Core
 
 		void SetPointerCapture(PointerIdentifier pointer);
 
+#if UNO_SUPPORTS_NATIVEHOST
 		bool IsNativeElement(object content);
 
 		void AttachNativeElement(object owner, object content);
@@ -22,5 +23,6 @@ namespace Windows.UI.Core
 		void ArrangeNativeElement(object owner, object content, Rect arrangeRect);
 
 		Size MeasureNativeElement(object owner, object content, Size size);
+#endif
 	}
 }
