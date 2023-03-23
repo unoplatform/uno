@@ -1152,6 +1152,6 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// Arranges the native element in the native shell
 		/// </summary>
-		partial void ArrangeNativeElement(Rect arrangeRect);
+		partial void ArrangeNativeElement(Windows.Foundation.Rect arrangeRect);
 	}
 }
