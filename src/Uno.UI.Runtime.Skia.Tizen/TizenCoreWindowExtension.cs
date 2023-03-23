@@ -186,5 +186,13 @@ namespace Uno.UI.Runtime.Skia
 				IsPrimary = true,
 				IsInRange = true,
 			};
+
+		public bool IsNativeElement(object content)
+			=> false;
+		public void AttachNativeElement(object owner, object content) { }
+		public void DetachNativeElement(object owner, object content) { }
+		public void ArrangeNativeElement(object owner, object content, Rect arrangeRect) { }
+		public Size MeasureNativeElement(object owner, object content, Size size)
+			=> size;
 	}
 }
