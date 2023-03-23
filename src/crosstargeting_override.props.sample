@@ -10,7 +10,17 @@
     -->
 
   <PropertyGroup>
-    <!--
+    <!-- See documentation for each property below -->
+
+    <!--<UnoTargetFrameworkOverride>net7.0</UnoTargetFrameworkOverride>-->
+    <!--<AccelerateBuildsInVisualStudio>true</AccelerateBuildsInVisualStudio>-->
+    <!--<OptimizeImplicitlyTriggeredBuild>true</OptimizeImplicitlyTriggeredBuild>-->
+    <!--<UnoNugetOverrideVersion>4.9.0-dev.153</UnoNugetOverrideVersion>-->
+
+    <!-- 
+        
+      ### UnoTargetFrameworkOverride ###
+
         This property controls the platform built by Visual Studio.
 
         Available build targets and corresponding solution filters:
@@ -41,22 +51,27 @@
 
         Always close the solution before changing or activating this property.
         *** WARNING ***
-    -->
-    <!--<UnoTargetFrameworkOverride>netstandard2.0</UnoTargetFrameworkOverride>-->
 
-    <!--
-    This property allows the override of the nuget local cache.
-    Set it to the version you want to override, used in another app.
-    You will see the override path in the build output.
-    The packages are located under this directory: "%USERPROFILE%\.nuget\packages".
-    -->
-    <!--<UnoNugetOverrideVersion>2.23.2-dev.667</UnoNugetOverrideVersion>-->
+      ### UnoNugetOverrideVersion ###
+      
+        This property allows the override of the nuget local cache.
+        Set it to the version you want to override, used in another app.
+        You will see the override path in the build output.
+        The packages are located under this directory: "%USERPROFILE%\.nuget\packages".
 
-    <!--
-    Uncomment this line if you're iterating quickly in your builds. This 
-    will disable most of the C# analyzers, and you'll need to comment that property
-    before making your pull request.
+      ### AccelerateBuildsInVisualStudio ###
+
+        Uncomment this line to increase build performance further by using reference 
+        assemblies builds.
+        See for more details: https://github.com/dotnet/project-system/blob/main/docs/build-acceleration.md#build-acceleration
+    
+      ### OptimizeImplicitlyTriggeredBuild ###
+    
+        Uncomment this line if you're iterating quickly in your builds. This 
+        will disable most of the C# analyzers, and you'll need to comment that property
+        before making your pull request.
+
     -->
-    <!-- <OptimizeImplicitlyTriggeredBuild>true</OptimizeImplicitlyTriggeredBuild> -->
+
   </PropertyGroup>
 </Project>

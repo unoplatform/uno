@@ -142,22 +142,6 @@ namespace Uno.Extensions
 		}
 
 		/// <summary>
-		/// Add an item who will be enumerated first before the real enumeration
-		/// </summary>
-		/// <remarks>
-		/// Use .Concat() to inject at the end of the enumeration
-		/// </remarks>
-		public static IEnumerable<T> PrependEx<T>(this IEnumerable<T> items, T item)
-		{
-			yield return item;
-
-			foreach (var x in items)
-			{
-				yield return x;
-			}
-		}
-
-		/// <summary>
 		/// Exclude some items from an enumeration
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
@@ -209,56 +193,11 @@ namespace Uno.Extensions
 			return -1;
 		}
 
-		/// <summary>
-		/// Check if all element in the enumeration are disctinct.
-		/// </summary>
-		public static bool AreDistinct<T>(this IEnumerable<T> items)
-		{
-			int unfilteredCount = 0, filteredCount = 0;
-
-			// This code enumerate once
-			items
-				.TakeWhile(_ => unfilteredCount++ == filteredCount)
-				.Distinct()
-				.ForEach((T _) => filteredCount++);
-
-			return unfilteredCount == filteredCount;
-		}
-
-		/// <summary>
-		/// Check if all element in the enumeration are distinct.
-		/// </summary>
-		/// <typeparam name="T">Type of the items</typeparam>
-		public static bool AreDistinct<T>(this IEnumerable<T> items, IEqualityComparer<T> comparer)
-		{
-			int unfilteredCount = 0, filteredCount = 0;
-
-			// This code enumerates once
-			items
-				.TakeWhile(_ => unfilteredCount++ == filteredCount)
-				.Distinct(comparer)
-				.ForEach((T _) => filteredCount++);
-
-			return unfilteredCount == filteredCount;
-		}
-
 		public static TResult SingleOrDefault<T, TResult>(this IEnumerable<T> items, Func<T, TResult> selector)
 		{
 			T result = items.SingleOrDefault();
 
 			return Equals(result, default(T)) ? default(TResult) : selector(result);
-		}
-
-		public static T MinOrDefault<T>(this IEnumerable<T> items)
-		{
-			if (items.Any())
-			{
-				return items.Min();
-			}
-			else
-			{
-				return default(T);
-			}
 		}
 
 		public static T MaxOrDefault<T>(this IEnumerable<T> items)
@@ -408,37 +347,6 @@ namespace Uno.Extensions
 				.Select(item => item.Value);
 		}
 
-#if !XAMARIN
-		/// <summary>
-		/// Create an ObservableCollection for an enumeration.
-		/// </summary>
-		/// <remarks>
-		/// The copy is done synchronously, before this method returns.
-		/// </remarks>
-		public static ObservableCollection<T> ToObservableCollection<T>(this IEnumerable<T> enumerableList)
-		{
-			if (enumerableList != null)
-			{
-#if WINDOWS_PHONE
-				//create an emtpy observable collection object
-				var observableCollection = new ObservableCollection<T>();
-
-				//loop through all the records and add to observable collection object
-				foreach (var item in enumerableList)
-				{
-					observableCollection.Add(item);
-				}
-
-				//return the populated observable collection
-				return observableCollection;
-#else
-				return new ObservableCollection<T>(enumerableList);
-#endif
-			}
-			return null;
-		}
-#endif
-
 		/// <summary>
 		/// Prevent null enumeration.
 		/// When null, it's replaced with an empty enumeration of the same type.
@@ -446,31 +354,6 @@ namespace Uno.Extensions
 		public static IEnumerable<T> Safe<T>(this IEnumerable<T> items)
 		{
 			return items ?? Enumerable.Empty<T>();
-		}
-
-		/// <summary>
-		/// Calculate a Standard Deviation over an enumerator of values.
-		/// </summary>
-		public static double StdDev(this IEnumerable<double> values)
-		{
-			// ref: http://warrenseen.com/blog/2006/03/13/how-to-calculate-standard-deviation/ 
-			double mean = 0.0;
-			double sum = 0.0;
-			double stdDev = 0.0;
-			int n = 0;
-
-			foreach (double val in values)
-			{
-				n++;
-				double delta = val - mean;
-				mean += delta / n;
-				sum += delta * (val - mean);
-			}
-
-			if (1 < n)
-				stdDev = Math.Sqrt(sum / (n - 1));
-
-			return stdDev;
 		}
 
 		public static IEnumerable<T> Flatten<T>(this IEnumerable<T> enumerable, Func<T, IEnumerable<T>> predicate)
@@ -519,174 +402,11 @@ namespace Uno.Extensions
 		}
 
 		/// <summary>
-		/// Check if all items of an enumerable are equals, using an optional comparer
-		/// </summary>
-		public static bool AllEquals<T>(this IEnumerable<T> items, IEqualityComparer<T> comparer = null)
-		{
-			comparer = comparer ?? EqualityComparer<T>.Default;
-
-			T first = default(T);
-			bool isFirst = true;
-			foreach (var item in items)
-			{
-				if (isFirst)
-				{
-					first = item;
-					isFirst = false;
-					continue;
-				}
-				if (!comparer.Equals(first, item))
-				{
-					return false;
-				}
-			}
-			return true;
-		}
-
-		/// <summary>
 		/// Determines whether all elements of a sequence are true.
 		/// </summary>
 		public static bool AllTrue(this IEnumerable<bool> source)
 		{
 			return source?.All(b => b) ?? true;
-		}
-
-		/// <summary>
-		/// Determines whether all elements of a sequence are true.
-		/// </summary>
-		/// <param name="defaultValue">Default value if source is null or empty</param>
-		public static bool AllTrueOrDefault(this IEnumerable<bool> source, bool defaultValue)
-		{
-			if (source == null)
-			{
-				return defaultValue;
-			}
-
-			var hasValue = false;
-			foreach (var b in source)
-			{
-				hasValue = true;
-				if (!b)
-				{
-					return false;
-				}
-			}
-
-			return hasValue ? true : defaultValue;
-		}
-
-		/// <summary>
-		/// Determines whether any element of a sequence is true.
-		/// </summary>
-		public static bool AnyTrue(this IEnumerable<bool> source)
-		{
-			return source?.Any(b => b) ?? false;
-		}
-
-		/// <summary>
-		/// Determines whether any element of a sequence satisfies a condition.
-		/// </summary>
-		/// <param name="defaultValue">Default value if source is null or empty</param>
-		public static bool AnyTrueOrDefault(this IEnumerable<bool> source, bool defaultValue)
-		{
-			if (source == null)
-			{
-				return defaultValue;
-			}
-
-			var hasValue = false;
-			foreach (var b in source)
-			{
-				hasValue = true;
-				if (b)
-				{
-					return true;
-				}
-			}
-
-			return hasValue ? false : defaultValue;
-		}
-
-		public static IEnumerable<T> GetPage<T>(this IEnumerable<T> source, int page, int perPage)
-		{
-			return source.Skip(page * perPage).Take(perPage);
-		}
-
-		public static bool SafeSequenceEqual<T>(this IEnumerable<T> obj, IEnumerable<T> other)
-			where T : class
-		{
-			return (obj ?? Enumerable.Empty<T>()).SequenceEqual(other ?? Enumerable.Empty<T>());
-		}
-
-#if WINDOWS_PHONE && !WINPRT
-#error WP7 NOT SUPPORTED ANYMORE - TO DELETE!
-		/// <summary>
-		/// Merges two sequences by using the specified predicate function.
-		/// </summary>
-		public static IEnumerable<TResult> Zip<TFirst, TSecond, TResult>(this IEnumerable<TFirst> first, IEnumerable<TSecond> second, Func<TFirst, TSecond, TResult> resultSelector)
-		{
-			if (first == null)
-			{
-				throw new ArgumentNullException("first");
-			}
-			if (second == null)
-			{
-				throw new ArgumentNullException("second");
-			}
-			if (resultSelector == null)
-			{
-				throw new ArgumentNullException("resultSelector");
-			}
-
-			return InnerZip(first, second, resultSelector);
-		}
-
-		private static IEnumerable<TResult> InnerZip<TFirst, TSecond, TResult>(IEnumerable<TFirst> first, IEnumerable<TSecond> second, Func<TFirst, TSecond, TResult> resultSelector)
-		{
-			using (var firstEnumerator = first.GetEnumerator())
-			{
-				using (var secondEnumerator = second.GetEnumerator())
-				{
-					while (firstEnumerator.MoveNext() && secondEnumerator.MoveNext())
-					{
-						yield return resultSelector(firstEnumerator.Current, secondEnumerator.Current);
-					}
-				}
-			}
-		}
-#endif
-
-		/// <summary>
-		/// Count number of consecutive equals values
-		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <param name="source"></param>
-		/// <returns></returns>
-		public static long ConsecutiveValueCount<T>(this IEnumerable<T> source)
-		{
-			var enumerator = source.GetEnumerator();
-			long count = 0;
-
-			// Skip if empty
-			if (enumerator.MoveNext())
-			{
-				var originalValue = enumerator.Current;
-				++count;
-
-				while (enumerator.MoveNext())
-				{
-					if (originalValue.Equals(enumerator.Current))
-					{
-						++count;
-					}
-					else
-					{
-						return count;
-					}
-				}
-			}
-
-			return count;
 		}
 
 		public static TResult MaxOrDefault<TSource, TResult>(IEnumerable<TSource> source, Func<TSource, TResult> selector, TResult defaultValue = default(TResult))
@@ -695,112 +415,6 @@ namespace Uno.Extensions
 			return src.Any()
 				? src.Max(selector)
 				: defaultValue;
-		}
-
-		/// <summary>
-		/// Creates a <see cref="Dictionary{TKey,TValue}"/> with unique keys from an <see cref="IEnumerable{TSource}"/> according to a specified key selector function, and an element selector function.
-		/// </summary>
-		/// <typeparam name="TSource">Type of the source enumerable</typeparam>
-		/// <typeparam name="TKey">Type of the keys of the result dictionary</typeparam>
-		/// <typeparam name="TValue">Type of the value of the result dictionary</typeparam>
-		/// <param name="source">Source enuemrable</param>
-		/// <param name="keySelector">A function to extract a key from each element.</param>
-		/// <param name="valueSelector">A transform function to produce a result element value from each element.</param>
-		/// <returns>A <see cref="Dictionary{TKey,TValue}"/> that contains values of type TElement selected from the input sequence.</returns>
-		public static Dictionary<TKey, TValue> ToDictionaryDistinct<TSource, TKey, TValue>(
-			this IEnumerable<TSource> source,
-			Func<TSource, TKey> keySelector,
-			Func<TSource, TValue> valueSelector)
-		{
-			var dictionary = new Dictionary<TKey, TValue>();
-			foreach (var item in source)
-			{
-				var key = keySelector(item);
-				if (!dictionary.ContainsKey(key))
-				{
-					dictionary.Add(key, valueSelector(item));
-				}
-			}
-			return dictionary;
-		}
-
-		/// <summary>
-		/// Creates a <see cref="Dictionary{TKey,TValue}"/> with unique keys from an <see cref="IEnumerable{TSource}"/> according to a specified key selector function, a comparer, and an element selector function.
-		/// </summary>
-		/// <typeparam name="TSource">Type of the source enumerable</typeparam>
-		/// <typeparam name="TKey">Type of the keys of the result dictionary</typeparam>
-		/// <typeparam name="TValue">Type of the value of the result dictionary</typeparam>
-		/// <param name="source">Source enuemrable</param>
-		/// <param name="keySelector">A function to extract a key from each element.</param>
-		/// <param name="valueSelector">A transform function to produce a result element value from each element.</param>
-		/// <param name="equalityComparer">An <see cref="IEqualityComparer{TKey}"/> to compare keys.</param>
-		/// <returns>A <see cref="Dictionary{TKey,TValue}"/> that contains values of type TElement selected from the input sequence.</returns>
-		public static Dictionary<TKey, TValue> ToDictionaryDistinct<TSource, TKey, TValue>(
-			this IEnumerable<TSource> source,
-			Func<TSource, TKey> keySelector,
-			Func<TSource, TValue> valueSelector,
-			IEqualityComparer<TKey> equalityComparer)
-		{
-			var dictionary = new Dictionary<TKey, TValue>(equalityComparer);
-			foreach (var item in source)
-			{
-				var key = keySelector(item);
-				if (!dictionary.ContainsKey(key))
-				{
-					dictionary.Add(key, valueSelector(item));
-				}
-			}
-			return dictionary;
-		}
-
-		/// <summary>
-		/// Creates a <see cref="Dictionary{TKey,TSource}"/> with unique keys from an <see cref="IEnumerable{TSource}"/> according to a specified key selector function.
-		/// </summary>
-		/// <typeparam name="TSource">Type of the source enumerable and values of the result dictionary</typeparam>
-		/// <typeparam name="TKey">Type of the keys of the result dictionary</typeparam>
-		/// <param name="source">Source enuemrable</param>
-		/// <param name="keySelector">A function to extract a key from each element.</param>
-		/// <returns>A <see cref="Dictionary{TKey,TSource}"/> that contains values of type TElement selected from the input sequence.</returns>
-		public static Dictionary<TKey, TSource> ToDictionaryDistinct<TSource, TKey>(
-			this IEnumerable<TSource> source,
-			Func<TSource, TKey> keySelector)
-		{
-			var dictionary = new Dictionary<TKey, TSource>();
-			foreach (var item in source)
-			{
-				var key = keySelector(item);
-				if (!dictionary.ContainsKey(key))
-				{
-					dictionary.Add(key, item);
-				}
-			}
-			return dictionary;
-		}
-
-		/// <summary>
-		/// Creates a <see cref="Dictionary{TKey,TSource}"/> with unique keys from an <see cref="IEnumerable{TSource}"/> according to a specified key selector function, and a comparer.
-		/// </summary>
-		/// <typeparam name="TSource">Type of the source enumerable and values of the result dictionary</typeparam>
-		/// <typeparam name="TKey">Type of the keys of the result dictionary</typeparam>
-		/// <param name="source">Source enuemrable</param>
-		/// <param name="keySelector">A function to extract a key from each element.</param>
-		/// <param name="equalityComparer">An <see cref="IEqualityComparer{TKey}"/> to compare keys.</param>
-		/// <returns>A <see cref="Dictionary{TKey,TSource}"/> that contains values of type TElement selected from the input sequence.</returns>
-		public static Dictionary<TKey, TSource> ToDictionaryDistinct<TSource, TKey>(
-			this IEnumerable<TSource> source,
-			Func<TSource, TKey> keySelector,
-			IEqualityComparer<TKey> equalityComparer)
-		{
-			var dictionary = new Dictionary<TKey, TSource>(equalityComparer);
-			foreach (var item in source)
-			{
-				var key = keySelector(item);
-				if (!dictionary.ContainsKey(key))
-				{
-					dictionary.Add(key, item);
-				}
-			}
-			return dictionary;
 		}
 
 		/// <summary>
@@ -822,68 +436,6 @@ namespace Uno.Extensions
 		public static Dictionary<TKey, IEnumerable<TValue>> ToDictionary<TKey, TValue>(this IEnumerable<IGrouping<TKey, TValue>> groups, IEqualityComparer<TKey> equalityComparer)
 		{
 			return groups.ToDictionary(g => g.Key, g => g.AsEnumerable(), equalityComparer);
-		}
-
-		/// <summary>
-		/// Correlates the elements of two sequences based on matching keys, including items without pair from both sides.
-		/// </summary>
-		/// <typeparam name="T1">The type of the elements of the first sequence.</typeparam>
-		/// <typeparam name="T2">The type of the elements of the second sequence.</typeparam>
-		/// <typeparam name="TKey">The type of the keys returned by the key selector functions.</typeparam>
-		/// <typeparam name="TResult">The type of the result elements.</typeparam>
-		/// <param name="left">The first sequence to join.</param>
-		/// <param name="right">The second sequence to join.</param>
-		/// <param name="leftKeySelector">A function to extract the join key from each element of the first sequence.</param>
-		/// <param name="rightKeySelector">A function to extract the join key from each element of the second sequence.</param>
-		/// <param name="projection">A function to create a result element from two elements.</param>
-		/// <param name="defaultLeft">The default value to use to invoke <paramref name="projection"/> when there is no matching element in first sequence.</param>
-		/// <param name="defaultRight">The default value to use to invoke <paramref name="projection"/> when there is no matching element in second sequence.</param>
-		/// <param name="keyComparer">An <see cref="IEqualityComparer{T}"/> to hash and compare keys.</param>
-		/// <returns>An <see cref="IEnumerable{T}"/> that has elements of type <typeparamref name="TResult"/> that are obtained by performing a full outer join on two sequences.</returns>
-		public static IEnumerable<TResult> FullOuterJoin<T1, T2, TKey, TResult>(
-			this IEnumerable<T1> left,
-			IEnumerable<T2> right,
-			Func<T1, TKey> leftKeySelector,
-			Func<T2, TKey> rightKeySelector,
-			Func<T1, T2, TResult> projection,
-			T1 defaultLeft = default(T1),
-			T2 defaultRight = default(T2),
-			IEqualityComparer<TKey> keyComparer = null)
-		{
-			keyComparer = keyComparer ?? EqualityComparer<TKey>.Default;
-
-			var leftKeys = new HashSet<TKey>(keyComparer);
-			var rightGroups = right.GroupBy(rightKeySelector, keyComparer).ToDictionary(keyComparer);
-
-			foreach (var leftItem in left)
-			{
-				var leftKey = leftKeySelector(leftItem);
-				leftKeys.Add(leftKey);
-
-				IEnumerable<T2> rightGroup;
-				if (rightGroups.TryGetValue(leftKey, out rightGroup))
-				{
-					foreach (var rightItem in rightGroup)
-					{
-						yield return projection(leftItem, rightItem);
-					}
-				}
-				else
-				{
-					yield return projection(leftItem, defaultRight);
-				}
-			}
-
-			foreach (var rightGroup in rightGroups)
-			{
-				if (!leftKeys.Contains(rightGroup.Key))
-				{
-					foreach (var rightItem in rightGroup.Value)
-					{
-						yield return projection(defaultLeft, rightItem);
-					}
-				}
-			}
 		}
 
 		/// <summary>

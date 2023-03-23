@@ -1,3 +1,7 @@
+---
+uid: Uno.GetStarted.vscode
+---
+
 # Get Started on VS Code
 
 This guide will walk you through the set-up process for building WebAssembly and Gtk+ apps with Uno under Windows, Linux, or macOS.

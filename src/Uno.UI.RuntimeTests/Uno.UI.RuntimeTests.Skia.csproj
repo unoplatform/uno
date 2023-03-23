@@ -81,12 +81,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Content Include="Assets\**"/>
+	  <Content Include="Assets\**" />
 	</ItemGroup>
 
-	<Target Name="ValidateLocalAssets"
-			AfterTargets="Build"
-			Condition="'$(TargetFramework)'!=''">
+	<Target Name="ValidateLocalAssets" AfterTargets="Build" Condition="'$(TargetFramework)'!=''">
 		<Message Text="Validating local assets" Importance="high" />
 		<Error Condition="!Exists('$(OutputPath)Uno.UI.RuntimeTests\Assets\TransientAsset01.txt')" Text="$(OutputPath)uno.ui.runtimetests\Assets\TransientAsset01.txt" />
 	</Target>

@@ -10,13 +10,12 @@
     "Windows",
     "macOS",
     "Linux",
-    "WebAssembly",
-    "dotnet-new"
+    "WebAssembly"
   ],
   "name": "Cross-Platform Library",
   "identity": "Uno.Platform.UnoLib",
   "groupIdentity": "Uno.Platform.BlankLibrary",
-  "description": "Template for creating a multi-platform library with the Uno Platform that targets UWP, WebAssembly, Android, iOS, macOS and Linux",
+  "description": "Template for creating a multi-platform library with the Uno Platform that targets WinUI, Android, iOS, MacCatalyst, WebAssembly and Skia",
   "precedence": "6001",
   "tags": {
     "language": "C#",

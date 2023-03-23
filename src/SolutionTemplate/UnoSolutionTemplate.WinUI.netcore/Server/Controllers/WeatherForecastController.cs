@@ -4,7 +4,7 @@ using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-namespace UnoQuickStart
+namespace $ext_safeprojectname$.Server.Controllers
 {
 	[ApiController]
 	[Route("[controller]")]

@@ -45,8 +45,8 @@ Uno Platform supports a number of non-visual APIs from Windows Runtime namespace
 
  * [VisibleBoundsPadding - manage 'safe' area on notched devices](features/VisibleBoundsPadding.md)
  * [ElevatedView - apply a shadow effect on all platforms](features/ElevatedView.md)
- * [Uno.Material - Material Design on all platforms](features/uno-material.md)
- * [Uno.Cupertino](features/uno-cupertino.md)
+ * [Uno.Material - Material Design on all platforms](external/uno.themes/doc/material-getting-started.md)
+ * [Uno.Cupertino](external/uno.themes/doc/cupertino-getting-started.md)
 
 ## Core functionality
 

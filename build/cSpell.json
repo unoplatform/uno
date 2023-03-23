@@ -76,7 +76,8 @@
 	"UWP's",
 	"VSIX",
 	"walkthrough",
-	"WEBASSEMBLY"
+	"WEBASSEMBLY",
+	"Resizetizer"
   ],
   "ignoreWords": [
 	"ADAL",
@@ -113,7 +114,8 @@
 	"Udemy",
 	"UNOB",
 	"winui",
-	"illinker"
+	"illinker",
+	"Onoh",
   ],
   "patterns": [
 	{

@@ -156,6 +156,22 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		public async Task When_Transitive_Asset_With_Link_Loaded()
+		{
+			string url = "ms-appx:///Uno.UI.RuntimeTests/Assets/TransitiveTest/colors300.png";
+			var img = new Image();
+			var SUT = new BitmapImage(new Uri(url));
+			img.Source = SUT;
+
+			TestServices.WindowHelper.WindowContent = img;
+			await TestServices.WindowHelper.WaitForIdle();
+			await TestServices.WindowHelper.WaitFor(() => img.ActualHeight > 0, 3000);
+
+			Assert.IsTrue(img.ActualHeight > 0);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
 #if __MACOS__
 		[Ignore("Fails on macOS for resising and assets locations https://github.com/unoplatform/uno/issues/6261")]
 #endif
@@ -300,6 +316,78 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				result,
 				ExpectedPixels.At(centerX, centerY).Named("center without image").Pixel(Colors.White));
 		}
+
+#if !WINDOWS_UWP
+		[TestMethod]
+		[RunsOnUIThread]
+#if NET461 || __MACOS__ || __SKIA__
+		[Ignore("Currently fails on macOS, part of #9282! epic and Monochromatic Image not supported for NET461 and SKIA")]
+#endif
+		public async Task When_Image_Is_Monochromatic()
+		{
+			if (!ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			{
+				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
+			}
+
+			var red = Colors.Red;
+
+			var parent = new Border()
+			{
+				Width = 100,
+				Height = 150,
+				Background = new SolidColorBrush(Colors.Blue)
+			};
+
+			var SUT = new Image()
+			{
+				Width = 100,
+				Height = 150,
+				Source = new BitmapImage(new Uri("ms-appx:///Assets/test_image_100_150.png")),
+				Stretch = Stretch.UniformToFill,
+				MonochromeColor = Colors.Red
+			};
+
+			parent.Child = SUT;
+
+			TestServices.WindowHelper.WindowContent = parent;
+			await WindowHelper.WaitForLoaded(parent);
+
+			var snapshot = await TakeScreenshot(parent);
+
+			var sample = SUT.GetRelativeCoords(parent);
+			var centerX = sample.X + sample.Width / 2;
+			var centerY = sample.Y + sample.Height / 2;
+
+			ImageAssert.HasPixels(
+				snapshot,
+				ExpectedPixels
+					.At(centerX, centerY)
+					.Named("center")
+					.WithPixelTolerance(1, 1)
+					.Pixel(red),
+				ExpectedPixels
+					.At(sample.X, sample.Y)
+					.Named("top-left")
+					.WithPixelTolerance(1, 1)
+					.Pixel(red),
+				ExpectedPixels
+					.At(sample.X + sample.Width - 1f, sample.Y)
+					.Named("top-right")
+					.WithPixelTolerance(1, 1)
+					.Pixel(red),
+				ExpectedPixels
+					.At(sample.X, sample.Y + sample.Height - 1f)
+					.Named("bottom-left")
+					.WithPixelTolerance(1, 1)
+					.Pixel(red),
+				ExpectedPixels
+					.At(sample.X + sample.Width - 1f, sample.Y + sample.Height - 1f)
+					.Named("bottom-right")
+					.WithPixelTolerance(1, 1)
+					.Pixel(red));
+		}
+#endif
 
 		private async Task<RawBitmap> TakeScreenshot(FrameworkElement SUT)
 		{

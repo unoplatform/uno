@@ -367,9 +367,9 @@
         <Setter Property="FontSize" Value="{ThemeResource ControlContentThemeFontSize}" />
         <Setter Property="TextBoxStyle" Value="{StaticResource AutoSuggestBoxTextBoxStyle}" />
         <Setter Property="UseSystemFocusVisuals" Value="{ThemeResource IsApplicationFocusVisualKindReveal}" />
-        <Setter Property="ErrorTemplate" Value="{StaticResource DefaultInputValidationErrorTemplate}" />
         <Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}" />
-        <Setter Property="primitives:AutoSuggestBoxHelper.KeepInteriorCornersSquare" Value="true"/>
+        <!-- TODO: We don't have KeepInteriorCornersSquare yet. -->
+        <!-- <Setter Property="primitives:AutoSuggestBoxHelper.KeepInteriorCornersSquare" Value="true"/> -->
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="AutoSuggestBox">
@@ -409,7 +409,6 @@
                             InputValidationMode="{TemplateBinding InputValidationMode}"
                             InputValidationKind="{TemplateBinding InputValidationKind}"
                             ValidationContext="{TemplateBinding ValidationContext}"
-                            ErrorTemplate="{TemplateBinding ErrorTemplate}"
                             CornerRadius="{TemplateBinding CornerRadius}"/>
 
                         <Popup x:Name="SuggestionsPopup">

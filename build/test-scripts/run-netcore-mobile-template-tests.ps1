@@ -70,7 +70,7 @@ $dotnetBuildNet6Configurations =
 )
 
 # WinUI - Default
-dotnet new unoapp -n UnoAppWinUI
+dotnet new unoapp-winui -n UnoAppWinUI
 
 pushd UnoAppWinUI
 for($i = 0; $i -lt $dotnetBuildNet6Configurations.Length; $i++)
@@ -107,6 +107,11 @@ popd
 dotnet new unolib -n MyUnoLib
 # Mobile is removed for now, until we can get net7 supported by msbuild/VS 17.4
 & $msbuild $debug /t:pack MyUnoLib\MyUnoLib.csproj "/p:TargetFrameworks=`"net7.0-windows10.0.18362;net7.0`""
+Assert-ExitCodeIsZero
+
+# Uno Cross-Runtime Library
+dotnet new unolib-crossruntime -n MyCrossRuntimeLib
+& $msbuild $debug /t:Pack MyCrossRuntimeLib\MyCrossRuntimeLib.sln
 Assert-ExitCodeIsZero
 
 #

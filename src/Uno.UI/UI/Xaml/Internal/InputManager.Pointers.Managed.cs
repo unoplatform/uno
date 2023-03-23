@@ -99,7 +99,7 @@ internal partial class InputManager
 			{
 				if (this.Log().IsEnabled(LogLevel.Trace))
 				{
-					this.Log().Trace($"CoreWindow_PointerPressed ({args.CurrentPoint.Position}) **undispatched**");
+					this.Log().Trace($"CoreWindow_PointerWheel ({args.CurrentPoint.Position}) **undispatched**");
 				}
 
 				return;
@@ -107,7 +107,7 @@ internal partial class InputManager
 
 			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
-				this.Log().Trace($"CoreWindow_PointerPressed [{originalSource.GetDebugName()}");
+				this.Log().Trace($"CoreWindow_PointerWheel [{originalSource.GetDebugName()}");
 			}
 
 			var routedArgs = new PointerRoutedEventArgs(args, originalSource);
@@ -187,7 +187,7 @@ internal partial class InputManager
 
 			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
-				this.Log().Trace($"CoreWindow_PointerPressed [{overBranchLeaf.GetDebugName()}");
+				this.Log().Trace($"CoreWindow_PointerExited [{overBranchLeaf.GetDebugName()}");
 			}
 
 			var routedArgs = new PointerRoutedEventArgs(args, originalSource);
@@ -246,7 +246,7 @@ internal partial class InputManager
 			{
 				if (this.Log().IsEnabled(LogLevel.Trace))
 				{
-					this.Log().Trace($"CoreWindow_PointerPressed ({args.CurrentPoint.Position}) **undispatched**");
+					this.Log().Trace($"CoreWindow_PointerReleased ({args.CurrentPoint.Position}) **undispatched**");
 				}
 
 				return;
@@ -254,7 +254,7 @@ internal partial class InputManager
 
 			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
-				this.Log().Trace($"CoreWindow_PointerPressed [{originalSource.GetDebugName()}");
+				this.Log().Trace($"CoreWindow_PointerReleased [{originalSource.GetDebugName()}");
 			}
 
 			var routedArgs = new PointerRoutedEventArgs(args, originalSource);

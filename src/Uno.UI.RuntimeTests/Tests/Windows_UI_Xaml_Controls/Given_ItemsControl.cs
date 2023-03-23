@@ -480,6 +480,88 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsNotNull(third.ContentTemplateSelector);
 		}
 
+#if HAS_UNO
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_ContentPresenter_ContainerRecycled_And_ContentControl_Template()
+		{
+			var dataTemplate = (DataTemplate)XamlReader.Load(
+				"""
+				<DataTemplate xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'>
+					<ContentControl Content="{Binding}"/>
+				</DataTemplate>
+				""");
+
+			var selector = new TestTemplateSelector();
+
+			var source = new[]
+			{
+				"First",
+				"Second",
+			};
+
+			var SUT = new ItemsControl()
+			{
+				ItemsSource = source,
+				ItemTemplate = dataTemplate
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+
+			{
+				ContentPresenter first = null;
+				await WindowHelper.WaitFor(() => (first = SUT.ContainerFromItem(source[0]) as ContentPresenter) != null);
+
+				ContentPresenter second = null;
+				await WindowHelper.WaitFor(() => (second = SUT.ContainerFromItem(source[1]) as ContentPresenter) != null);
+
+				Assert.IsNotNull(first);
+				Assert.IsNotNull(second);
+
+				Assert.IsNotNull(first.Content);
+				Assert.IsNotNull(second.Content);
+
+				var firstInnerContent = first.ContentTemplateRoot as ContentControl;
+				Assert.AreEqual(source[0], firstInnerContent?.Content);
+				Assert.IsNotNull(firstInnerContent.GetBindingExpression(ContentControl.ContentProperty));
+
+				var secondInnerContent = second.ContentTemplateRoot as ContentControl;
+				Assert.AreEqual(source[1], secondInnerContent.Content);
+				Assert.IsNotNull(secondInnerContent.GetBindingExpression(ContentControl.ContentProperty));
+			}
+
+			SUT.ItemsSource = null;
+			await WindowHelper.WaitForIdle();
+
+			SUT.ItemsSource = source;
+			await WindowHelper.WaitForIdle();
+
+			{
+				ContentPresenter first = null;
+				await WindowHelper.WaitFor(() => (first = SUT.ContainerFromItem(source[0]) as ContentPresenter) != null);
+
+				ContentPresenter second = null;
+				await WindowHelper.WaitFor(() => (second = SUT.ContainerFromItem(source[1]) as ContentPresenter) != null);
+
+				Assert.IsNotNull(first);
+				Assert.IsNotNull(second);
+
+				Assert.IsNotNull(first.Content);
+				Assert.IsNotNull(second.Content);
+
+				var firstInnerContent = first.ContentTemplateRoot as ContentControl;
+				Assert.AreEqual(source[0], firstInnerContent?.Content);
+				Assert.IsNotNull(firstInnerContent.GetBindingExpression(ContentControl.ContentProperty));
+
+				var secondInnerContent = second.ContentTemplateRoot as ContentControl;
+				Assert.AreEqual(source[1], secondInnerContent.Content);
+				Assert.IsNotNull(secondInnerContent.GetBindingExpression(ContentControl.ContentProperty));
+			}
+		}
+#endif
+
 		[TestMethod]
 		[RunsOnUIThread]
 #if __MACOS__

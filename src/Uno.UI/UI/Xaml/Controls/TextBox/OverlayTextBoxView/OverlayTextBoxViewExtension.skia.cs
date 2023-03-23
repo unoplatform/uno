@@ -52,6 +52,7 @@ internal abstract class OverlayTextBoxViewExtension : IOverlayTextBoxViewExtensi
 
 		_textBoxView!.AddToTextInputLayer(xamlRoot);
 		InvalidateLayout();
+
 		SetPasswordRevealState(_currentPasswordRevealState);
 
 		_textBoxView.SetFocus();
@@ -164,8 +165,11 @@ internal abstract class OverlayTextBoxViewExtension : IOverlayTextBoxViewExtensi
 
 	public void SetPasswordRevealState(PasswordRevealState revealState)
 	{
-		_textBoxView?.SetPasswordRevealState(revealState);
-		_currentPasswordRevealState = revealState;
+		if (_owner.TextBox is PasswordBox)
+		{
+			_textBoxView?.SetPasswordRevealState(revealState);
+			_currentPasswordRevealState = revealState;
+		}
 	}
 
 	public void Select(int start, int length)

@@ -1152,16 +1152,30 @@ namespace Windows.UI.Xaml.Controls
 
 				if (!isOwnContainer)
 				{
-					// Clears value set in PrepareContainerForItemOverride
-					element.ClearValue(ContentControl.ContentProperty);
+					static void ClearPropertyWhenNoExpression(ContentControl target, DependencyProperty property)
+					{
+						// We must not clear the properties of the container if a binding expression
+						// is defined. This is a use-case present for TreeView, which generally uses TreeViewItem
+						// at the root of hierarchical templates.
+						if (target.GetBindingExpression(property) is null)
+						{
+							target.ClearValue(property);
+						}
+					}
+
+					if (!contentControl.IsContainerFromTemplateRoot)
+					{
+						// Clears value set in PrepareContainerForItemOverride
+						ClearPropertyWhenNoExpression(contentControl, ContentControl.ContentProperty);
+					}
 
 					if (contentControl.ContentTemplate is { } ct && ct == ItemTemplate)
 					{
-						contentControl.ClearValue(ContentControl.ContentTemplateProperty);
+						ClearPropertyWhenNoExpression(contentControl, ContentControl.ContentTemplateProperty);
 					}
 					else if (contentControl.ContentTemplateSelector is { } cts && cts == ItemTemplateSelector)
 					{
-						contentControl.ClearValue(ContentControl.ContentTemplateSelectorProperty);
+						ClearPropertyWhenNoExpression(contentControl, ContentControl.ContentTemplateSelectorProperty);
 					}
 				}
 			}
@@ -1597,7 +1611,7 @@ namespace Windows.UI.Xaml.Controls
 			if (items is IList<object> list)
 			{
 				// This is primarily an optimization for ICollectionView, which implements IList<object> but might not implement non-generic IList
-				return list[index];
+				return list.Count > index ? list[index] : default;
 			}
 
 			return items?.ElementAtOrDefault(index);

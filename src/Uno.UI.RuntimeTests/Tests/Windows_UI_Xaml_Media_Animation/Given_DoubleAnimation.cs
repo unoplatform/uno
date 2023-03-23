@@ -4,9 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Windows.UI;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
+using Windows.UI.Xaml.Shapes;
 using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
@@ -44,7 +46,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 #if __ANDROID__
 		[Ignore("In this scenario, droid doesnt ReportEachFrame(), so we won't be able to read the animated values to evaluate this test.")]
 #endif
-		public async Task When_RepeatForever_WithoutFrom_Asd()
+		public async Task When_RepeatForever_WithoutFrom()
 		{
 			// droid: The fix is still valid for android, because it will now be reading from non-animated value as well.
 			// However, that doesnt change anything (it worked before), because the animated was never commited into the property details.
@@ -110,6 +112,55 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 				await Task.Delay(millisecondsDelay);
 				values.Add(transform.X);
 			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async void When_RepeatForever_ShouldLoop_AsdAsd()
+		{
+			var target = new Windows.UI.Xaml.Shapes.Rectangle
+			{
+				Stretch = Stretch.Fill,
+				Fill = new SolidColorBrush(Colors.SkyBlue),
+				Height = 50,
+			};
+			WindowHelper.WindowContent = target;
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(target);
+
+			var animation = new DoubleAnimation
+			{
+				EnableDependentAnimation = true,
+				From = 0,
+				To = 50,
+				RepeatBehavior = RepeatBehavior.Forever,
+				Duration = TimeSpan.FromMilliseconds(500),
+			};
+			Storyboard.SetTarget(animation, target);
+			Storyboard.SetTargetProperty(animation, nameof(Rectangle.Width));
+
+			var storyboard = new Storyboard { Children = { animation } };
+			storyboard.Begin();
+
+			var list = new List<double>();
+			for (int i = 0; i < 50; i++)
+			{
+				list.Add(target.Width);
+				await Task.Delay(100);
+			}
+
+			var delta = list.Zip(list.Skip(1), (a, b) => b - a).ToArray();
+			var averageIncrement = delta.Where(x => x > 0).Average();
+			var drops = delta.Select((x, i) => new { Delta = x, Index = i })
+				.Where(x => x.Delta < 0)
+				.Select(x => x.Index)
+				.ToArray();
+			var incrementSizes = drops.Zip(drops.Skip(1), (a, b) => b - a - 1).ToArray(); // -1 to exclude the drop itself
+
+			// This 500ms animation is expected to climb from 0 to 50, reset to 0 instantly, and repeat forever.
+			// Given that we are taking 5measurements per cycle, we can expect the followings:
+			Assert.AreEqual(10d, averageIncrement, 1.5, "an rough average of increment (exluding the drop) of 10 (+-15% error margin)");
+			Assert.IsTrue(incrementSizes.Count(x => x > 3) > 8, $"at least 10 (-2 error margin: might miss first and/or last) sets of continuous increments that size of 4 (+-1 error margin: sliding slot): {string.Join(",", incrementSizes)}");
 		}
 	}
 }

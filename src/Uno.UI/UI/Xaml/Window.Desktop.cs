@@ -15,6 +15,7 @@ namespace Windows.UI.Xaml
 {
 	public sealed partial class Window
 	{
+		private Border _rootBorder;
 		private bool _isActive;
 
 		partial void InitPlatform()
@@ -25,31 +26,37 @@ namespace Windows.UI.Xaml
 		partial void InternalActivate()
 		{
 			_isActive = true;
-			TryLoadContent();
+			TryLoadRootVisual();
 		}
 
-		private void InternalSetContent(UIElement value)
+		private void InternalSetContent(UIElement content)
 		{
-			_rootVisual = new RootVisual(CoreServices.Instance);
-			if (_content != null)
+			if (_rootVisual is null)
 			{
-				_content.IsWindowRoot = false;
-				_content.IsVisualTreeRoot = false;
+				_rootBorder = new Border();
+				var coreServices = Uno.UI.Xaml.Core.CoreServices.Instance;
+				coreServices.PutVisualRoot(_rootBorder);
+				_rootVisual = coreServices.MainRootVisual;
+
+				if (_rootVisual == null)
+				{
+					throw new InvalidOperationException("The root visual could not be created.");
+				}
+
+				TryLoadRootVisual();
 			}
 
-			_content = value;
-
-			_content.IsWindowRoot = true;
-			_content.IsVisualTreeRoot = true;
-
-			TryLoadContent();
+			if (_rootBorder != null)
+			{
+				_rootBorder.Child = _content = content;
+			}
 		}
 
-		private void TryLoadContent()
+		private void TryLoadRootVisual()
 		{
 			if (_isActive)
 			{
-				(_content as FrameworkElement)?.ForceLoaded();
+				(_rootVisual as FrameworkElement)?.ForceLoaded();
 			}
 		}
 

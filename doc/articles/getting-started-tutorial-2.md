@@ -37,9 +37,12 @@ The tutorial walks you through creating a cross platform application with Uno Pl
     > [!IMPORTANT]
     > The C# and XAML snippets in this tutorial requires that the solution is named **BugTracker**. Using a different name will result in build errors when you copy code from this tutorial into the solution.
 
-1. Choose a list of platforms, including **WebAssembly** and **WinUI**
-
-    ![](Assets/tutorial01/newproject4.PNG)
+1. In the project Wizard:
+    1. Choose the **Blank template**, then **Customize**
+    1. In **Framework**, choose **.NET 7.0**
+    1. In **Platforms**, choose your own list including **WebAssembly** and **Windows**
+    1. In **Presentation**, choose the MVVM Presentation
+    1. In **Extensions**, choose the **Frame** navigation and **Console** logging
 
 1. After a few seconds, a banner may appear at the top of the editor asking to reload projects. Click **Reload projects**.
 

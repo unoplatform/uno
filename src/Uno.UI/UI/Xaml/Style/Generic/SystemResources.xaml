@@ -1,10 +1,11 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 					xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					xmlns:not_mux="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 					xmlns:not_android="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 					xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 					xmlns:local="using:GenericApp.Views.Controls"
-					xmlns:localConverters="using:GenericApp.Views.Converters"					
+					xmlns:localConverters="using:GenericApp.Views.Converters"
 					xmlns:u="using:Uno.UI.Controls"
 					xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 					xmlns:xamarin="http://uno.ui/xamarin"
@@ -56,7 +57,7 @@
 
 			<x:Boolean x:Key="UseSystemFocusVisuals">true</x:Boolean>
 
-			<!-- 
+			<!--
 				The defaults styles map to symbol codes from this open-source font
 				https://github.com/Microsoft/fonts/tree/master/Symbols
 				-->
@@ -260,7 +261,7 @@
 			<StaticResource x:Key="SliderTickBarFillDisabled" ResourceKey="SystemControlDisabledBaseMediumLowBrush" />
 			<StaticResource x:Key="SliderInlineTickBarFill" ResourceKey="SystemControlBackgroundAltHighBrush" />
 
-			
+
             <!-- Resources for Windows.UI.Xaml.Controls.Primitives.ScrollBar -->
             <StaticResource x:Key="ScrollBarBackground" ResourceKey="SystemControlTransparentBrush" />
             <StaticResource x:Key="ScrollBarBackgroundPointerOver" ResourceKey="SystemControlTransparentBrush" />
@@ -307,7 +308,7 @@
             <x:Double x:Key="SmallScrollThumbScale">0.125</x:Double>
             <x:Double x:Key="SmallScrollThumbOffset">-2</x:Double>
             <x:Double x:Key="ScrollBarButtonArrowIconFontSize">8</x:Double>
-			
+
 			<x:String x:Key="ScrollViewerSeparatorExpandBeginTime">00:00:00.40</x:String>
 			<x:String x:Key="ScrollViewerSeparatorExpandDuration">00:00:00.1</x:String>
 			<x:String x:Key="ScrollViewerSeparatorContractBeginTime">00:00:02.00</x:String>
@@ -442,7 +443,7 @@
 			<SolidColorBrush x:Key="SystemControlPageTextChromeBlackMediumLowBrush" Color="{StaticResource SystemChromeBlackMediumLowColor}" />
 			<SolidColorBrush x:Key="SystemControlErrorTextForegroundBrush" Color="{StaticResource SystemErrorTextColor}" />
 
-			<!-- Legacy brushes -->			
+			<!-- Legacy brushes -->
 			<SolidColorBrush x:Key="AutoSuggestBackgroundThemeBrush" Color="#FFFFFFFF" />
 			<SolidColorBrush x:Key="ApplicationForegroundThemeBrush" Color="#DEFFFFFF" />
 			<SolidColorBrush x:Key="ApplicationHeaderForegroundThemeBrush" Color="#FFFFFFFF" />
@@ -569,7 +570,7 @@
 			<StaticResource x:Key="CheckBoxCheckGlyphForegroundIndeterminatePointerOver" ResourceKey="SystemControlForegroundBaseHighBrush" />
 			<StaticResource x:Key="CheckBoxCheckGlyphForegroundIndeterminatePressed" ResourceKey="SystemControlForegroundBaseMediumBrush" />
 			<StaticResource x:Key="CheckBoxCheckGlyphForegroundIndeterminateDisabled" ResourceKey="SystemControlDisabledBaseMediumLowBrush" />
-			
+
 			<SolidColorBrush x:Key="ComboBoxArrowDisabledForegroundThemeBrush" Color="#66FFFFFF" />
 			<SolidColorBrush x:Key="ComboBoxArrowForegroundThemeBrush" Color="#FF000000" />
 			<SolidColorBrush x:Key="ComboBoxArrowPressedForegroundThemeBrush" Color="#FF000000" />
@@ -708,7 +709,7 @@
 			<SolidColorBrush x:Key="MenuFlyoutItemPressedBackgroundThemeBrush" Color="#FFFFFFFF" />
 			<SolidColorBrush x:Key="MenuFlyoutItemPressedForegroundThemeBrush" Color="#FF000000" />
 			<SolidColorBrush x:Key="MenuFlyoutSeparatorThemeBrush" Color="#FF7A7A7A" />
-			
+
             <!-- Resources for Windows.UI.Xaml.Controls.ToggleMenuFlyoutItem -->
             <StaticResource x:Key="ToggleMenuFlyoutItemBackground" ResourceKey="SystemControlTransparentBrush" />
             <StaticResource x:Key="ToggleMenuFlyoutItemBackgroundPointerOver" ResourceKey="SystemControlHighlightListLowBrush" />
@@ -1023,7 +1024,7 @@
 
 			<!--
         Resources for:
-                
+
         Windows.UI.Xaml.Controls.TextBox
         Windows.UI.Xaml.Controls.PasswordBox
         Windows.UI.Xaml.Controls.RichEditBox
@@ -1067,40 +1068,40 @@
 			<SolidColorBrush x:Key="SystemControlFocusVisualSecondaryBrush" Color="{ThemeResource SystemAltMediumColor}" />
 
 			<!-- SplitView, NavigationView -->
-			<win:RevealBackgroundBrush x:Key="SystemControlBackgroundBaseLowRevealBackgroundBrush" TargetTheme="Light" Color="{StaticResource SystemRevealBaseLowColor}" FallbackColor="{StaticResource SystemBaseLowColor}" />
+			<win:RevealBackgroundBrush x:Key="SystemControlBackgroundBaseLowRevealBackgroundBrush" not_mux:TargetTheme="Light" Color="{StaticResource SystemRevealBaseLowColor}" FallbackColor="{StaticResource SystemBaseLowColor}" />
 			<xamarin:SolidColorBrush x:Key="SystemControlBackgroundBaseLowRevealBackgroundBrush" Color="{StaticResource SystemBaseLowColor}" />
 
-			<win:RevealBackgroundBrush x:Key="SystemControlBackgroundBaseMediumLowRevealBaseLowBackgroundBrush" TargetTheme="Light" Color="{StaticResource SystemRevealBaseLowColor}" FallbackColor="{StaticResource SystemBaseMediumLowColor}" />
+			<win:RevealBackgroundBrush x:Key="SystemControlBackgroundBaseMediumLowRevealBaseLowBackgroundBrush" not_mux:TargetTheme="Light" Color="{StaticResource SystemRevealBaseLowColor}" FallbackColor="{StaticResource SystemBaseMediumLowColor}" />
 			<xamarin:SolidColorBrush x:Key="SystemControlBackgroundBaseMediumLowRevealBaseLowBackgroundBrush" Color="{StaticResource SystemBaseMediumLowColor}" />
 
-			<win:RevealBorderBrush x:Key="SystemControlBackgroundTransparentRevealBorderBrush" TargetTheme="Light" Color="Transparent" FallbackColor="Transparent" />
+			<win:RevealBorderBrush x:Key="SystemControlBackgroundTransparentRevealBorderBrush" not_mux:TargetTheme="Light" Color="Transparent" FallbackColor="Transparent" />
 			<xamarin:SolidColorBrush x:Key="SystemControlBackgroundTransparentRevealBorderBrush" Color="Transparent" />
 
-			<win:RevealBorderBrush x:Key="SystemControlHighlightBaseMediumLowRevealBorderBrush" TargetTheme="Light" Color="{StaticResource SystemRevealBaseMediumLowColor}" FallbackColor="{StaticResource SystemBaseMediumLowColor}" />
+			<win:RevealBorderBrush x:Key="SystemControlHighlightBaseMediumLowRevealBorderBrush" not_mux:TargetTheme="Light" Color="{StaticResource SystemRevealBaseMediumLowColor}" FallbackColor="{StaticResource SystemBaseMediumLowColor}" />
 			<xamarin:SolidColorBrush x:Key="SystemControlHighlightBaseMediumLowRevealBorderBrush" Color="{StaticResource SystemBaseMediumLowColor}" />
 
-			<win:RevealBorderBrush x:Key="SystemControlHighlightTransparentRevealBorderBrush" TargetTheme="Light" Color="Transparent" FallbackColor="Transparent" />
+			<win:RevealBorderBrush x:Key="SystemControlHighlightTransparentRevealBorderBrush" not_mux:TargetTheme="Light" Color="Transparent" FallbackColor="Transparent" />
 			<xamarin:SolidColorBrush x:Key="SystemControlHighlightTransparentRevealBorderBrush" Color="Transparent" />
 
-			<win:RevealBorderBrush x:Key="SystemControlTransparentRevealBorderBrush" TargetTheme="Light" Color="Transparent" FallbackColor="Transparent" />
+			<win:RevealBorderBrush x:Key="SystemControlTransparentRevealBorderBrush" not_mux:TargetTheme="Light" Color="Transparent" FallbackColor="Transparent" />
 			<xamarin:SolidColorBrush x:Key="SystemControlTransparentRevealBorderBrush" Color="Transparent" />
 
-			<win:RevealBorderBrush x:Key="SystemControlHighlightAltTransparentRevealBorderBrush" TargetTheme="Light" Color="Transparent" FallbackColor="Transparent" />
+			<win:RevealBorderBrush x:Key="SystemControlHighlightAltTransparentRevealBorderBrush" not_mux:TargetTheme="Light" Color="Transparent" FallbackColor="Transparent" />
 			<xamarin:SolidColorBrush x:Key="SystemControlHighlightAltTransparentRevealBorderBrush" Color="Transparent" />
 
-			<win:RevealBackgroundBrush x:Key="SystemControlHighlightBaseMediumLowRevealAccentBackgroundBrush" TargetTheme="Light" Color="{ThemeResource SystemAccentColor}" FallbackColor="{StaticResource SystemBaseMediumLowColor}" />
+			<win:RevealBackgroundBrush x:Key="SystemControlHighlightBaseMediumLowRevealAccentBackgroundBrush" not_mux:TargetTheme="Light" Color="{ThemeResource SystemAccentColor}" FallbackColor="{StaticResource SystemBaseMediumLowColor}" />
 			<xamarin:SolidColorBrush x:Key="SystemControlHighlightBaseMediumLowRevealAccentBackgroundBrush" Color="{StaticResource SystemBaseMediumLowColor}" />
 
-			<win:RevealBackgroundBrush x:Key="SystemControlHighlightAccent3RevealBackgroundBrush" TargetTheme="Dark" Color="{ThemeResource SystemAccentColorDark3}" FallbackColor="{ThemeResource SystemAccentColorDark3}" />
+			<win:RevealBackgroundBrush x:Key="SystemControlHighlightAccent3RevealBackgroundBrush" not_mux:TargetTheme="Dark" Color="{ThemeResource SystemAccentColorDark3}" FallbackColor="{ThemeResource SystemAccentColorDark3}" />
 			<xamarin:SolidColorBrush x:Key="SystemControlHighlightAccent3RevealBackgroundBrush" Color="{StaticResource SystemAccentColorDark3}" />
 
-			<win:RevealBackgroundBrush x:Key="SystemControlHighlightAccent2RevealBackgroundBrush" TargetTheme="Dark" Color="{ThemeResource SystemAccentColorDark2}" FallbackColor="{ThemeResource SystemAccentColorDark2}" />
+			<win:RevealBackgroundBrush x:Key="SystemControlHighlightAccent2RevealBackgroundBrush" not_mux:TargetTheme="Dark" Color="{ThemeResource SystemAccentColorDark2}" FallbackColor="{ThemeResource SystemAccentColorDark2}" />
 			<xamarin:SolidColorBrush x:Key="SystemControlHighlightAccent2RevealBackgroundBrush" Color="{StaticResource SystemAccentColorDark2}" />
 
-			<win:RevealBackgroundBrush x:Key="SystemControlHighlightAccentRevealBackgroundBrush" TargetTheme="Dark" Color="{ThemeResource SystemAccentColor}" FallbackColor="{ThemeResource SystemAccentColor}" />
+			<win:RevealBackgroundBrush x:Key="SystemControlHighlightAccentRevealBackgroundBrush" not_mux:TargetTheme="Dark" Color="{ThemeResource SystemAccentColor}" FallbackColor="{ThemeResource SystemAccentColor}" />
 			<xamarin:SolidColorBrush x:Key="SystemControlHighlightAccentRevealBackgroundBrush" Color="{StaticResource SystemAccentColor}" />
 
-			<win:RevealBackgroundBrush x:Key="SystemControlHighlightAccent3RevealAccent2BackgroundBrush" TargetTheme="Dark" Color="{ThemeResource SystemAccentColorDark2}" FallbackColor="{ThemeResource SystemAccentColorDark3}" />
+			<win:RevealBackgroundBrush x:Key="SystemControlHighlightAccent3RevealAccent2BackgroundBrush" not_mux:TargetTheme="Dark" Color="{ThemeResource SystemAccentColorDark2}" FallbackColor="{ThemeResource SystemAccentColorDark3}" />
 			<xamarin:SolidColorBrush x:Key="SystemControlHighlightAccent3RevealAccent2BackgroundBrush" Color="{StaticResource SystemAccentColorDark3}" />
 
 
@@ -1154,7 +1155,7 @@
 			<StaticResource x:Key="AccentButtonBorderBrushPointerOver" ResourceKey="SystemControlHighlightBaseMediumLowBrush" />
 			<StaticResource x:Key="AccentButtonBorderBrushPressed" ResourceKey="SystemControlHighlightTransparentBrush" />
 			<StaticResource x:Key="AccentButtonBorderBrushDisabled" ResourceKey="SystemControlDisabledTransparentBrush" />
-			
+
 			<!-- Light Dismiss Overlay Resources -->
 			<!--<StaticResource x:Key="AppBarLightDismissOverlayBackground" ResourceKey="SystemControlPageBackgroundMediumAltMediumBrush" />-->
 			<StaticResource x:Key="AutoSuggestBoxLightDismissOverlayBackground" ResourceKey="SystemControlPageBackgroundMediumAltMediumBrush" />
@@ -1192,7 +1193,7 @@
 			<Color x:Key="SystemRevealChromeGrayColor">#F2767676</Color>
 			<Color x:Key="SystemRevealListLowColor">#18FFFFFF</Color>
 			<Color x:Key="SystemRevealListMediumColor">#30FFFFFF</Color>
-			
+
 			<StaticResource x:Key="ComboBoxItemForeground" ResourceKey="SystemControlForegroundBaseHighBrush" />
 			<StaticResource x:Key="ComboBoxItemForegroundPressed" ResourceKey="SystemControlHighlightAltBaseHighBrush" />
 			<StaticResource x:Key="ComboBoxItemForegroundPointerOver" ResourceKey="SystemControlHighlightAltBaseHighBrush" />
@@ -1305,14 +1306,14 @@
 			<win:AcrylicBrush x:Key="SystemControlChromeMediumLowAcrylicElementMediumBrush" BackgroundSource="Backdrop" TintColor="{StaticResource SystemChromeAltHighColor}" TintOpacity="0.6" FallbackColor="{StaticResource SystemChromeMediumLowColor}" />
 			<xamarin:SolidColorBrush x:Key="SystemControlChromeMediumLowAcrylicElementMediumBrush" Color="{StaticResource SystemChromeMediumLowColor}" />
 			<Color x:Key="SystemChromeMediumHighColor">#FF323232</Color>
-	
+
 			<win:AcrylicBrush x:Key="SystemControlChromeMediumLowAcrylicWindowMediumBrush" BackgroundSource="HostBackdrop" TintColor="{StaticResource SystemChromeAltHighColor}" TintOpacity="0.6" FallbackColor="{StaticResource SystemChromeMediumLowColor}" />
 			<xamarin:SolidColorBrush x:Key="SystemControlChromeMediumLowAcrylicWindowMediumBrush" Color="{StaticResource SystemChromeMediumLowColor}" />
 
 			<!--
-			<RevealBackgroundBrush x:Key="SystemControlTransparentRevealBackgroundBrush" TargetTheme="Dark" Color="Transparent" FallbackColor="Transparent" />
-			<RevealBackgroundBrush x:Key="SystemControlHighlightListLowRevealBackgroundBrush" TargetTheme="Dark" Color="{StaticResource SystemRevealListLowColor}" FallbackColor="{StaticResource SystemListLowColor}" />
-			<RevealBackgroundBrush x:Key="SystemControlHighlightListMediumRevealBackgroundBrush" TargetTheme="Dark" Color="{StaticResource SystemRevealListMediumColor}" FallbackColor="{StaticResource SystemListMediumColor}" />
+			<RevealBackgroundBrush x:Key="SystemControlTransparentRevealBackgroundBrush" not_mux:TargetTheme="Dark" Color="Transparent" FallbackColor="Transparent" />
+			<RevealBackgroundBrush x:Key="SystemControlHighlightListLowRevealBackgroundBrush" not_mux:TargetTheme="Dark" Color="{StaticResource SystemRevealListLowColor}" FallbackColor="{StaticResource SystemListLowColor}" />
+			<RevealBackgroundBrush x:Key="SystemControlHighlightListMediumRevealBackgroundBrush" not_mux:TargetTheme="Dark" Color="{StaticResource SystemRevealListMediumColor}" FallbackColor="{StaticResource SystemListMediumColor}" />
 			-->
 
 			<SolidColorBrush x:Key="SystemControlTransparentRevealBackgroundBrush" Color="Transparent" />
@@ -1359,7 +1360,7 @@
 
 			<x:Boolean x:Key="UseSystemFocusVisuals">true</x:Boolean>
 
-			<!-- 
+			<!--
 	The defaults styles map to symbol codes from this open-source font
 	https://github.com/Microsoft/fonts/tree/master/Symbols
 	-->
@@ -1767,7 +1768,7 @@
 			<SolidColorBrush x:Key="ButtonPointerOverForegroundThemeBrush" Color="{ThemeResource SystemColorHighlightTextColor}" />
 			<SolidColorBrush x:Key="ButtonPressedBackgroundThemeBrush" Color="{ThemeResource SystemColorButtonTextColor}" />
 			<SolidColorBrush x:Key="ButtonPressedForegroundThemeBrush" Color="{ThemeResource SystemColorButtonFaceColor}" />
-		  
+
 			<SolidColorBrush x:Key="CheckBoxBackgroundThemeBrush" Color="{ThemeResource SystemColorButtonFaceColor}" />
 			<SolidColorBrush x:Key="CheckBoxBorderThemeBrush" Color="{ThemeResource SystemColorButtonTextColor}" />
 			<SolidColorBrush x:Key="CheckBoxContentDisabledForegroundThemeBrush" Color="{ThemeResource SystemColorGrayTextColor}" />
@@ -2010,7 +2011,7 @@
 			<SolidColorBrush x:Key="MenuFlyoutItemPressedForegroundThemeBrush" Color="{ThemeResource SystemColorButtonFaceColor}" />
 			<SolidColorBrush x:Key="MenuFlyoutSeparatorThemeBrush" Color="{ThemeResource SystemColorWindowTextColor}" />
 
-			
+
             <!-- Resources for Windows.UI.Xaml.Controls.ToggleMenuFlyoutItem -->
             <StaticResource x:Key="ToggleMenuFlyoutItemBackground" ResourceKey="SystemControlTransparentBrush" />
             <StaticResource x:Key="ToggleMenuFlyoutItemBackgroundPointerOver" ResourceKey="SystemControlHighlightListLowBrush" />
@@ -2325,7 +2326,7 @@
 
 			<!--
         Resources for:
-                
+
         Windows.UI.Xaml.Controls.TextBox
         Windows.UI.Xaml.Controls.PasswordBox
         Windows.UI.Xaml.Controls.RichEditBox
@@ -2385,7 +2386,7 @@
 
 			<SolidColorBrush x:Key="SystemControlHighlightBaseMediumLowRevealAccentBackgroundBrush" Color="{ThemeResource SystemColorHighlightColor}" />
 
-			<SolidColorBrush x:Key="SystemControlHighlightAccent3RevealBackgroundBrush" Color="{ThemeResource SystemColorHighlightColor}" />			
+			<SolidColorBrush x:Key="SystemControlHighlightAccent3RevealBackgroundBrush" Color="{ThemeResource SystemColorHighlightColor}" />
 
 			<SolidColorBrush x:Key="SystemControlHighlightAccent2RevealBackgroundBrush" Color="{ThemeResource SystemColorHighlightColor}" />
 
@@ -2444,8 +2445,8 @@
 			<StaticResource x:Key="AccentButtonBorderBrushPointerOver" ResourceKey="SystemControlHighlightBaseMediumLowBrush" />
 			<StaticResource x:Key="AccentButtonBorderBrushPressed" ResourceKey="SystemControlHighlightTransparentBrush" />
 			<StaticResource x:Key="AccentButtonBorderBrushDisabled" ResourceKey="SystemControlDisabledTransparentBrush" />
-			
-			
+
+
 			<!-- Light Dismiss Overlay Resources -->
 			<!--<StaticResource x:Key="AppBarLightDismissOverlayBackground" ResourceKey="SystemControlPageBackgroundMediumAltMediumBrush" />-->
 			<StaticResource x:Key="AutoSuggestBoxLightDismissOverlayBackground" ResourceKey="SystemControlPageBackgroundMediumAltMediumBrush" />
@@ -2459,7 +2460,7 @@
 			<StaticResource x:Key="PopupLightDismissOverlayBackground" ResourceKey="SystemControlPageBackgroundMediumAltMediumBrush" />
 			<StaticResource x:Key="SplitViewLightDismissOverlayBackground" ResourceKey="SystemControlPageBackgroundMediumAltMediumBrush" />
 			<StaticResource x:Key="TimePickerLightDismissOverlayBackground" ResourceKey="SystemControlPageBackgroundMediumAltMediumBrush" />
-			
+
 			<Color x:Key="SystemRevealAltHighColor">#FF000000</Color>
 			<Color x:Key="SystemRevealAltLowColor">#33000000</Color>
 			<Color x:Key="SystemRevealAltMediumColor">#99000000</Color>
@@ -2483,7 +2484,7 @@
 			<Color x:Key="SystemRevealChromeGrayColor">#FF767676</Color>
 			<Color x:Key="SystemRevealListLowColor">#19FFFFFF</Color>
 			<Color x:Key="SystemRevealListMediumColor">#33FFFFFF</Color>
-			
+
 			<StaticResource x:Key="ComboBoxItemForeground" ResourceKey="SystemControlForegroundBaseHighBrush" />
 			<StaticResource x:Key="ComboBoxItemForegroundPressed" ResourceKey="SystemControlHighlightAltBaseHighBrush" />
 			<StaticResource x:Key="ComboBoxItemForegroundPointerOver" ResourceKey="SystemControlHighlightAltBaseHighBrush" />
@@ -2596,14 +2597,14 @@
 			<win:AcrylicBrush x:Key="SystemControlChromeMediumLowAcrylicElementMediumBrush" BackgroundSource="Backdrop" TintColor="{StaticResource SystemChromeAltHighColor}" TintOpacity="0.6" FallbackColor="{StaticResource SystemChromeMediumLowColor}" />
 			<xamarin:SolidColorBrush x:Key="SystemControlChromeMediumLowAcrylicElementMediumBrush" Color="{StaticResource SystemChromeMediumLowColor}" />
 			<Color x:Key="SystemChromeMediumHighColor">#FF323232</Color>
-	
+
 			<win:AcrylicBrush x:Key="SystemControlChromeMediumLowAcrylicWindowMediumBrush" BackgroundSource="HostBackdrop" TintColor="{StaticResource SystemChromeAltHighColor}" TintOpacity="0.6" FallbackColor="{StaticResource SystemChromeMediumLowColor}" />
 			<xamarin:SolidColorBrush x:Key="SystemControlChromeMediumLowAcrylicWindowMediumBrush" Color="{StaticResource SystemChromeMediumLowColor}" />
 
 			<!--
-			<RevealBackgroundBrush x:Key="SystemControlTransparentRevealBackgroundBrush" TargetTheme="Dark" Color="Transparent" FallbackColor="Transparent" />
-			<RevealBackgroundBrush x:Key="SystemControlHighlightListLowRevealBackgroundBrush" TargetTheme="Dark" Color="{StaticResource SystemRevealListLowColor}" FallbackColor="{StaticResource SystemListLowColor}" />
-			<RevealBackgroundBrush x:Key="SystemControlHighlightListMediumRevealBackgroundBrush" TargetTheme="Dark" Color="{StaticResource SystemRevealListMediumColor}" FallbackColor="{StaticResource SystemListMediumColor}" />
+			<RevealBackgroundBrush x:Key="SystemControlTransparentRevealBackgroundBrush" not_mux:TargetTheme="Dark" Color="Transparent" FallbackColor="Transparent" />
+			<RevealBackgroundBrush x:Key="SystemControlHighlightListLowRevealBackgroundBrush" not_mux:TargetTheme="Dark" Color="{StaticResource SystemRevealListLowColor}" FallbackColor="{StaticResource SystemListLowColor}" />
+			<RevealBackgroundBrush x:Key="SystemControlHighlightListMediumRevealBackgroundBrush" not_mux:TargetTheme="Dark" Color="{StaticResource SystemRevealListMediumColor}" FallbackColor="{StaticResource SystemListMediumColor}" />
 			-->
 
 			<SolidColorBrush x:Key="SystemControlTransparentRevealBackgroundBrush" Color="Transparent" />
@@ -2650,7 +2651,7 @@
 
 			<x:Boolean x:Key="UseSystemFocusVisuals">true</x:Boolean>
 
-			<!-- 
+			<!--
 			The defaults styles map to symbol codes from this open-source font
 			https://github.com/Microsoft/fonts/tree/master/Symbols
 			-->
@@ -2900,7 +2901,7 @@
             <x:Double x:Key="SmallScrollThumbScale">0.125</x:Double>
             <x:Double x:Key="SmallScrollThumbOffset">-2</x:Double>
             <x:Double x:Key="ScrollBarButtonArrowIconFontSize">8</x:Double>
-			
+
 			<x:String x:Key="ScrollViewerSeparatorExpandBeginTime">00:00:00.40</x:String>
 			<x:String x:Key="ScrollViewerSeparatorExpandDuration">00:00:00.1</x:String>
 			<x:String x:Key="ScrollViewerSeparatorContractBeginTime">00:00:02.00</x:String>
@@ -3057,7 +3058,7 @@
 			<SolidColorBrush x:Key="ButtonPointerOverForegroundThemeBrush" Color="#FF000000" />
 			<SolidColorBrush x:Key="ButtonPressedBackgroundThemeBrush" Color="#FF000000" />
 			<SolidColorBrush x:Key="ButtonPressedForegroundThemeBrush" Color="#FFFFFFFF" />
-		  
+
 			<SolidColorBrush x:Key="CheckBoxBackgroundThemeBrush" Color="#CCFFFFFF" />
 			<SolidColorBrush x:Key="CheckBoxBorderThemeBrush" Color="#45000000" />
 			<SolidColorBrush x:Key="CheckBoxContentDisabledForegroundThemeBrush" Color="#66000000" />
@@ -3613,7 +3614,7 @@
 
 			<!--
         Resources for:
-                
+
         Windows.UI.Xaml.Controls.TextBox
         Windows.UI.Xaml.Controls.PasswordBox
         Windows.UI.Xaml.Controls.RichEditBox
@@ -3657,40 +3658,40 @@
 			<SolidColorBrush x:Key="SystemControlFocusVisualSecondaryBrush" Color="{ThemeResource SystemAltMediumColor}" />
 
 			<!-- SplitView, NavigationView -->
-			<win:RevealBackgroundBrush x:Key="SystemControlBackgroundBaseLowRevealBackgroundBrush" TargetTheme="Light" Color="{StaticResource SystemRevealBaseLowColor}" FallbackColor="{StaticResource SystemBaseLowColor}" />
+			<win:RevealBackgroundBrush x:Key="SystemControlBackgroundBaseLowRevealBackgroundBrush" not_mux:TargetTheme="Light" Color="{StaticResource SystemRevealBaseLowColor}" FallbackColor="{StaticResource SystemBaseLowColor}" />
 			<xamarin:SolidColorBrush x:Key="SystemControlBackgroundBaseLowRevealBackgroundBrush" Color="{StaticResource SystemBaseLowColor}" />
 
-			<win:RevealBackgroundBrush x:Key="SystemControlBackgroundBaseMediumLowRevealBaseLowBackgroundBrush" TargetTheme="Light" Color="{StaticResource SystemRevealBaseLowColor}" FallbackColor="{StaticResource SystemBaseMediumLowColor}" />
+			<win:RevealBackgroundBrush x:Key="SystemControlBackgroundBaseMediumLowRevealBaseLowBackgroundBrush" not_mux:TargetTheme="Light" Color="{StaticResource SystemRevealBaseLowColor}" FallbackColor="{StaticResource SystemBaseMediumLowColor}" />
 			<xamarin:SolidColorBrush x:Key="SystemControlBackgroundBaseMediumLowRevealBaseLowBackgroundBrush" Color="{StaticResource SystemBaseMediumLowColor}" />
 
-			<win:RevealBorderBrush x:Key="SystemControlBackgroundTransparentRevealBorderBrush" TargetTheme="Light" Color="Transparent" FallbackColor="Transparent" />
+			<win:RevealBorderBrush x:Key="SystemControlBackgroundTransparentRevealBorderBrush" not_mux:TargetTheme="Light" Color="Transparent" FallbackColor="Transparent" />
 			<xamarin:SolidColorBrush x:Key="SystemControlBackgroundTransparentRevealBorderBrush" Color="Transparent" />
 
-			<win:RevealBorderBrush x:Key="SystemControlHighlightBaseMediumLowRevealBorderBrush" TargetTheme="Light" Color="{StaticResource SystemRevealBaseMediumLowColor}" FallbackColor="{StaticResource SystemBaseMediumLowColor}" />
+			<win:RevealBorderBrush x:Key="SystemControlHighlightBaseMediumLowRevealBorderBrush" not_mux:TargetTheme="Light" Color="{StaticResource SystemRevealBaseMediumLowColor}" FallbackColor="{StaticResource SystemBaseMediumLowColor}" />
 			<xamarin:SolidColorBrush x:Key="SystemControlHighlightBaseMediumLowRevealBorderBrush" Color="{StaticResource SystemBaseMediumLowColor}" />
 
-			<win:RevealBorderBrush x:Key="SystemControlHighlightTransparentRevealBorderBrush" TargetTheme="Light" Color="Transparent" FallbackColor="Transparent" />
+			<win:RevealBorderBrush x:Key="SystemControlHighlightTransparentRevealBorderBrush" not_mux:TargetTheme="Light" Color="Transparent" FallbackColor="Transparent" />
 			<xamarin:SolidColorBrush x:Key="SystemControlHighlightTransparentRevealBorderBrush" Color="Transparent" />
 
-			<win:RevealBorderBrush x:Key="SystemControlTransparentRevealBorderBrush" TargetTheme="Light" Color="Transparent" FallbackColor="Transparent" />
+			<win:RevealBorderBrush x:Key="SystemControlTransparentRevealBorderBrush" not_mux:TargetTheme="Light" Color="Transparent" FallbackColor="Transparent" />
 			<xamarin:SolidColorBrush x:Key="SystemControlTransparentRevealBorderBrush" Color="Transparent" />
 
-			<win:RevealBorderBrush x:Key="SystemControlHighlightAltTransparentRevealBorderBrush" TargetTheme="Light" Color="Transparent" FallbackColor="Transparent" />
+			<win:RevealBorderBrush x:Key="SystemControlHighlightAltTransparentRevealBorderBrush" not_mux:TargetTheme="Light" Color="Transparent" FallbackColor="Transparent" />
 			<xamarin:SolidColorBrush x:Key="SystemControlHighlightAltTransparentRevealBorderBrush" Color="Transparent" />
 
-			<win:RevealBackgroundBrush x:Key="SystemControlHighlightBaseMediumLowRevealAccentBackgroundBrush" TargetTheme="Light" Color="{ThemeResource SystemAccentColor}" FallbackColor="{StaticResource SystemBaseMediumLowColor}" />
+			<win:RevealBackgroundBrush x:Key="SystemControlHighlightBaseMediumLowRevealAccentBackgroundBrush" not_mux:TargetTheme="Light" Color="{ThemeResource SystemAccentColor}" FallbackColor="{StaticResource SystemBaseMediumLowColor}" />
 			<xamarin:SolidColorBrush x:Key="SystemControlHighlightBaseMediumLowRevealAccentBackgroundBrush" Color="{StaticResource SystemBaseMediumLowColor}" />
 
-			<win:RevealBackgroundBrush x:Key="SystemControlHighlightAccent3RevealBackgroundBrush" TargetTheme="Light" Color="{ThemeResource SystemAccentColorLight3}" FallbackColor="{ThemeResource SystemAccentColorLight3}" />
+			<win:RevealBackgroundBrush x:Key="SystemControlHighlightAccent3RevealBackgroundBrush" not_mux:TargetTheme="Light" Color="{ThemeResource SystemAccentColorLight3}" FallbackColor="{ThemeResource SystemAccentColorLight3}" />
 			<xamarin:SolidColorBrush x:Key="SystemControlHighlightAccent3RevealBackgroundBrush" Color="{StaticResource SystemAccentColorLight3}" />
 
-			<win:RevealBackgroundBrush x:Key="SystemControlHighlightAccent2RevealBackgroundBrush" TargetTheme="Light" Color="{ThemeResource SystemAccentColorLight2}" FallbackColor="{ThemeResource SystemAccentColorLight2}" />
+			<win:RevealBackgroundBrush x:Key="SystemControlHighlightAccent2RevealBackgroundBrush" not_mux:TargetTheme="Light" Color="{ThemeResource SystemAccentColorLight2}" FallbackColor="{ThemeResource SystemAccentColorLight2}" />
 			<xamarin:SolidColorBrush x:Key="SystemControlHighlightAccent2RevealBackgroundBrush" Color="{StaticResource SystemAccentColorLight2}" />
 
-			<win:RevealBackgroundBrush x:Key="SystemControlHighlightAccentRevealBackgroundBrush" TargetTheme="Light" Color="{ThemeResource SystemAccentColor}" FallbackColor="{ThemeResource SystemAccentColor}" />
+			<win:RevealBackgroundBrush x:Key="SystemControlHighlightAccentRevealBackgroundBrush" not_mux:TargetTheme="Light" Color="{ThemeResource SystemAccentColor}" FallbackColor="{ThemeResource SystemAccentColor}" />
 			<xamarin:SolidColorBrush x:Key="SystemControlHighlightAccentRevealBackgroundBrush" Color="{StaticResource SystemAccentColor}" />
 
-			<win:RevealBackgroundBrush x:Key="SystemControlHighlightAccent3RevealAccent2BackgroundBrush" TargetTheme="Light" Color="{ThemeResource SystemAccentColorLight2}" FallbackColor="{ThemeResource SystemAccentColorLight3}" />
+			<win:RevealBackgroundBrush x:Key="SystemControlHighlightAccent3RevealAccent2BackgroundBrush" not_mux:TargetTheme="Light" Color="{ThemeResource SystemAccentColorLight2}" FallbackColor="{ThemeResource SystemAccentColorLight3}" />
 			<xamarin:SolidColorBrush x:Key="SystemControlHighlightAccent3RevealAccent2BackgroundBrush" Color="{StaticResource SystemAccentColorLight3}" />
 
 
@@ -3716,7 +3717,7 @@
 			<xamarin:StaticResource x:Key="HyperlinkButtonBorderBrushPointerOver" ResourceKey="SystemControlTransparentBrush" />
 			<xamarin:StaticResource x:Key="HyperlinkButtonBorderBrushPressed" ResourceKey="SystemControlTransparentBrush" />
 			<xamarin:StaticResource x:Key="HyperlinkButtonBorderBrushDisabled" ResourceKey="SystemControlTransparentBrush" />
-		  
+
 			<!-- Resources for Windows.UI.Xaml.Controls.Primitives.RepeatButton -->
 			<StaticResource x:Key="RepeatButtonBackground" ResourceKey="SystemControlBackgroundBaseLowBrush" />
 			<StaticResource x:Key="RepeatButtonBackgroundPointerOver" ResourceKey="SystemControlBackgroundBaseLowBrush" />
@@ -3744,8 +3745,8 @@
 			<StaticResource x:Key="AccentButtonBorderBrushPointerOver" ResourceKey="SystemControlHighlightBaseMediumLowBrush" />
 			<StaticResource x:Key="AccentButtonBorderBrushPressed" ResourceKey="SystemControlHighlightTransparentBrush" />
 			<StaticResource x:Key="AccentButtonBorderBrushDisabled" ResourceKey="SystemControlDisabledTransparentBrush" />
-			
-			
+
+
 			<!-- Light Dismiss Overlay Resources -->
 			<!--<StaticResource x:Key="AppBarLightDismissOverlayBackground" ResourceKey="SystemControlPageBackgroundMediumAltMediumBrush" />-->
 			<StaticResource x:Key="AutoSuggestBoxLightDismissOverlayBackground" ResourceKey="SystemControlPageBackgroundMediumAltMediumBrush" />
@@ -3896,14 +3897,14 @@
 			<win:AcrylicBrush x:Key="SystemControlChromeMediumLowAcrylicElementMediumBrush" BackgroundSource="Backdrop" TintColor="{StaticResource SystemChromeAltHighColor}" TintOpacity="0.6" FallbackColor="{StaticResource SystemChromeMediumLowColor}" />
 			<xamarin:SolidColorBrush x:Key="SystemControlChromeMediumLowAcrylicElementMediumBrush" Color="{StaticResource SystemChromeMediumLowColor}" />
 			<Color x:Key="SystemChromeMediumHighColor">#FFE6E6E6</Color>
-	
+
 			<win:AcrylicBrush x:Key="SystemControlChromeMediumLowAcrylicWindowMediumBrush" BackgroundSource="HostBackdrop" TintColor="{StaticResource SystemChromeAltHighColor}" TintOpacity="0.6" FallbackColor="{StaticResource SystemChromeMediumLowColor}" />
 			<xamarin:SolidColorBrush x:Key="SystemControlChromeMediumLowAcrylicWindowMediumBrush" Color="{StaticResource SystemChromeMediumLowColor}" />
 
 			<!--
-			<RevealBackgroundBrush x:Key="SystemControlTransparentRevealBackgroundBrush" TargetTheme="Dark" Color="Transparent" FallbackColor="Transparent" />
-			<RevealBackgroundBrush x:Key="SystemControlHighlightListLowRevealBackgroundBrush" TargetTheme="Dark" Color="{StaticResource SystemRevealListLowColor}" FallbackColor="{StaticResource SystemListLowColor}" />
-			<RevealBackgroundBrush x:Key="SystemControlHighlightListMediumRevealBackgroundBrush" TargetTheme="Dark" Color="{StaticResource SystemRevealListMediumColor}" FallbackColor="{StaticResource SystemListMediumColor}" />
+			<RevealBackgroundBrush x:Key="SystemControlTransparentRevealBackgroundBrush" not_mux:TargetTheme="Dark" Color="Transparent" FallbackColor="Transparent" />
+			<RevealBackgroundBrush x:Key="SystemControlHighlightListLowRevealBackgroundBrush" not_mux:TargetTheme="Dark" Color="{StaticResource SystemRevealListLowColor}" FallbackColor="{StaticResource SystemListLowColor}" />
+			<RevealBackgroundBrush x:Key="SystemControlHighlightListMediumRevealBackgroundBrush" not_mux:TargetTheme="Dark" Color="{StaticResource SystemRevealListMediumColor}" FallbackColor="{StaticResource SystemListMediumColor}" />
 			-->
 
 			<SolidColorBrush x:Key="SystemControlTransparentRevealBackgroundBrush" Color="Transparent" />
@@ -3973,5 +3974,5 @@
 
 	<!-- These resources don't exist on UWP, we add them to support using the WinUI ColorPicker style when the rest of the Fluent style package isn't present -->
 	<x:Double x:Key="SliderHorizontalThumbHeight">24</x:Double>
-	<x:Double x:Key="SliderHorizontalThumbWidth">8</x:Double>	
+	<x:Double x:Key="SliderHorizontalThumbWidth">8</x:Double>
 </ResourceDictionary>

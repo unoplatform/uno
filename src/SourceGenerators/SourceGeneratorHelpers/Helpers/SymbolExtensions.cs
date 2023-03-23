@@ -6,6 +6,8 @@ using System.Linq;
 using System.Text;
 using Uno.Extensions;
 using Uno;
+using Uno.Roslyn;
+using Microsoft.CodeAnalysis.PooledObjects;
 
 namespace Microsoft.CodeAnalysis
 {
@@ -35,10 +37,6 @@ namespace Microsoft.CodeAnalysis
 				SymbolDisplayMiscellaneousOptions.EscapeKeywordIdentifiers |
 				SymbolDisplayMiscellaneousOptions.UseSpecialTypes |
 				SymbolDisplayMiscellaneousOptions.IncludeNullableReferenceTypeModifier);
-
-		private static bool IsRoslyn34OrEalier { get; }
-			= typeof(INamedTypeSymbol).Assembly.GetVersionNumber() <= new Version("3.4");
-
 
 		/// <summary>
 		/// Given an <see cref="INamedTypeSymbol"/>, add the symbol declaration (including parent classes/namespaces) to the given <see cref="IIndentedStringBuilder"/>.
@@ -211,27 +209,6 @@ namespace Microsoft.CodeAnalysis
 		public static IEnumerable<IFieldSymbol> GetFields(this ITypeSymbol resolvedType)
 			=> resolvedType.GetMembers().OfType<IFieldSymbol>();
 
-		public static IEnumerable<IFieldSymbol> GetFieldsWithName(this ITypeSymbol resolvedType, string name)
-			=> resolvedType.GetMembers(name).OfType<IFieldSymbol>();
-
-		/// <summary>
-		/// Return fields of the current type and all of its ancestors
-		/// </summary>
-		/// <param name="symbol"></param>
-		/// <returns></returns>
-		public static IEnumerable<IFieldSymbol> GetAllFieldsWithName(this INamedTypeSymbol? symbol, string name)
-		{
-			while (symbol != null)
-			{
-				foreach (var property in symbol.GetMembers(name).OfType<IFieldSymbol>())
-				{
-					yield return property;
-				}
-
-				symbol = symbol?.BaseType;
-			}
-		}
-
 		public static AttributeData? FindAttribute(this ISymbol? property, INamedTypeSymbol? attributeClassSymbol)
 		{
 			return property?.GetAttributes().FirstOrDefault(a => SymbolEqualityComparer.Default.Equals(a.AttributeClass, attributeClassSymbol));
@@ -345,7 +322,7 @@ namespace Microsoft.CodeAnalysis
 			return BuildFrom(symbol, new StringBuilder(256)).Replace('`', '-').Replace('+', '.').ToString();
 		}
 
-		public static string? GetFullName(this INamespaceOrTypeSymbol? type)
+		private static string? GetFullName(this ITypeSymbol? type)
 		{
 			if (type is IArrayTypeSymbol arrayType)
 			{
@@ -357,10 +334,10 @@ namespace Microsoft.CodeAnalysis
 				return $"System.Nullable`1[{t.GetFullName()}]";
 			}
 
-			return type?.ToDisplayString();
+			return type?.GetFullyQualifiedTypeExcludingGlobal();
 		}
 
-		public static string GetFullMetadataName(this INamespaceOrTypeSymbol symbol)
+		public static string GetFullMetadataName(this ITypeSymbol symbol)
 		{
 			ISymbol s = symbol;
 			var sb = new StringBuilder(s.MetadataName);
@@ -441,43 +418,75 @@ namespace Microsoft.CodeAnalysis
 		}
 
 		/// <summary>
-		/// Return properties of the current type and all of its ancestors
+		/// Return property with specific name of the current type and all of its ancestors.
 		/// </summary>
-		/// <param name="symbol"></param>
-		/// <returns></returns>
-		public static IEnumerable<IPropertySymbol> GetAllPropertiesWithName(this INamedTypeSymbol? symbol, string name)
+		/// <param name="symbol">The type to look property in (lookup includes base types)</param>
+		/// <param name="name">The property name to lookup.</param>
+		/// <returns>The found property symbol or not if not found.</returns>
+		public static IPropertySymbol? GetPropertyWithName(this INamedTypeSymbol? symbol, string name)
 		{
 			while (symbol != null)
 			{
-				foreach (var property in symbol.GetMembers(name).OfType<IPropertySymbol>())
+				foreach (var property in symbol.GetMembers(name))
 				{
-					yield return property;
+					if (property.Kind == SymbolKind.Property)
+					{
+						return (IPropertySymbol)property;
+					}
 				}
 
 				symbol = symbol.BaseType;
 			}
+
+			return null;
 		}
 
 		/// <summary>
-		/// Builds a fully qualified type string, including generic types.
+		/// Return field with specific name of the current type and all of its ancestors.
 		/// </summary>
-		public static string GetFullyQualifiedType(this ITypeSymbol type)
+		/// <param name="symbol">The type to look field in (lookup includes base types)</param>
+		/// <param name="name">The field name to lookup.</param>
+		/// <returns>The found field symbol or not if not found.</returns>
+		public static IFieldSymbol? GetFieldWithName(this INamedTypeSymbol? symbol, string name)
 		{
-			if (IsRoslyn34OrEalier && type is INamedTypeSymbol namedTypeSymbol)
+			while (symbol != null)
 			{
-				if (namedTypeSymbol.IsGenericType && !namedTypeSymbol.IsNullable())
+				foreach (var field in symbol.GetMembers(name))
 				{
-					var typeName = Microsoft.CodeAnalysis.CSharp.SymbolDisplay.ToDisplayString(type, format: new SymbolDisplayFormat(
-											globalNamespaceStyle: SymbolDisplayGlobalNamespaceStyle.Included,
-											typeQualificationStyle: SymbolDisplayTypeQualificationStyle.NameAndContainingTypesAndNamespaces,
-											genericsOptions: SymbolDisplayGenericsOptions.None,
-											miscellaneousOptions: SymbolDisplayMiscellaneousOptions.EscapeKeywordIdentifiers));
-
-					return typeName + "<" + string.Join(", ", namedTypeSymbol.TypeArguments.Select(GetFullyQualifiedType)) + ">";
+					if (field.Kind == SymbolKind.Field)
+					{
+						return (IFieldSymbol)field;
+					}
 				}
+
+				symbol = symbol.BaseType;
 			}
 
-			return type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+			return null;
+		}
+
+		/// <summary>
+		/// Builds a fully qualified type string, including generic types and global:: prefix.
+		/// </summary>
+		public static string GetFullyQualifiedTypeIncludingGlobal(this ITypeSymbol type)
+		{
+			return type.GetFullyQualifiedType(includeGlobalNamespace: true);
+		}
+
+		/// <summary>
+		/// Builds a fully qualified type string, including generic types and global:: prefix.
+		/// </summary>
+		public static string GetFullyQualifiedTypeExcludingGlobal(this ITypeSymbol type)
+		{
+			return type.GetFullyQualifiedType(includeGlobalNamespace: false);
+		}
+
+		private static string GetFullyQualifiedType(this ITypeSymbol type, bool includeGlobalNamespace)
+		{
+			var pool = PooledStringBuilder.GetInstance();
+			var visitor = new UnoNamedTypeSymbolDisplayVisitor(pool.Builder, includeGlobalNamespace);
+			type.Accept(visitor);
+			return pool.ToStringAndFree();
 		}
 
 		public static TypedConstant? FindNamedArg(this AttributeData attribute, string argName)

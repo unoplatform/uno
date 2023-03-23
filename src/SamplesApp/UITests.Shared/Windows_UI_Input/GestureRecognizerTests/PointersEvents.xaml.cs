@@ -14,7 +14,6 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Documents;
 using Uno.Extensions;
-using Uno.Extensions.ValueType;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;

@@ -7,7 +7,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 {
 	internal record GenerationRunInfo(GenerationRunInfoManager Manager, string ProjectFile, string TargetFramework, int AdditionalFilesHash)
 	{
-		private ConcurrentDictionary<string, GenerationRunFileInfo> _fileInfo = new();
+		private readonly ConcurrentDictionary<string, GenerationRunFileInfo> _fileInfo = new();
 
 		internal GenerationRunFileInfo GetRunFileInfo(string fileId)
 			=> _fileInfo.GetOrAdd(fileId, f => new GenerationRunFileInfo(this, f));

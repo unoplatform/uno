@@ -20,6 +20,8 @@ namespace Uno.UI.Runtime.Skia.UI.Xaml.Controls;
 
 internal abstract class GtkTextBoxView : IOverlayTextBoxView
 {
+	private const string TextBoxViewCssClass = "textboxview";
+
 	private static bool _warnedAboutSelectionColorChanges;
 
 	private readonly string _textBoxViewId = Guid.NewGuid().ToString();
@@ -28,6 +30,8 @@ internal abstract class GtkTextBoxView : IOverlayTextBoxView
 
 	protected GtkTextBoxView()
 	{
+		// Applies themes from Theming/UnoGtk.css
+		InputWidget.StyleContext.AddClass(TextBoxViewCssClass);
 	}
 
 	/// <summary>

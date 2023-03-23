@@ -21,49 +21,44 @@ namespace Windows.UI.Xaml.Documents
 		// makes here but it affects subpixel rendering accuracy. Performance does not seem to be affected by changing this value.
 		private const int FontScale = 512;
 
-		private static readonly Func<string?, FontWeight, FontStretch, FontStyle, FontDetails> _getFont =
-			Funcs.CreateMemoized<string?, FontWeight, FontStretch, FontStyle, FontDetails>(
-				(nm, wt, wh, sl) => GetFont(nm, wt, wh, sl));
+		private static readonly Func<string?, float, FontWeight, FontStyle, FontDetails> _getFont =
+			Funcs.CreateMemoized<string?, float, FontWeight, FontStyle, FontDetails>(
+				(nm, sz, wt, sl) => GetFont(nm, sz, wt, sl));
 
 		private FontDetails? _fontInfo;
 		private SKPaint? _paint;
 
-		internal record FontDetails(SKTypeface Typeface, Font Font, Face Face);
+		internal record FontDetails(SKFont SKFont, float SKFontSize, float SKFontScaleX, SKFontMetrics SKFontMetrics, SKTypeface SKTypeface, Font Font, Face Face);
 
 		internal SKPaint Paint
 		{
 			get
 			{
-				var paint = _paint ??= new SKPaint
+				var paint = _paint ??= new SKPaint(FontInfo.SKFont)
 				{
 					TextEncoding = SKTextEncoding.Utf16,
 					IsStroke = false,
 					IsAntialias = true,
-					LcdRenderText = true,
-					SubpixelText = true,
 				};
-
-				paint.Typeface = FontInfo.Typeface;
-				paint.TextSize = (float)FontSize;
 
 				return paint;
 			}
 		}
 
-		internal FontDetails FontInfo => _fontInfo ??= _getFont(FontFamily?.Source, FontWeight, FontStretch, FontStyle);
+		internal FontDetails FontInfo => _fontInfo ??= _getFont(FontFamily?.Source, (float)FontSize, FontWeight, FontStyle);
 
 		internal float LineHeight
 		{
 			get
 			{
-				var metrics = Paint.FontMetrics;
+				var metrics = FontInfo.SKFontMetrics;
 				return metrics.Descent - metrics.Ascent;
 			}
 		}
 
-		internal float AboveBaselineHeight => -Paint.FontMetrics.Ascent;
+		internal float AboveBaselineHeight => -FontInfo.SKFontMetrics.Ascent;
 
-		internal float BelowBaselineHeight => Paint.FontMetrics.Descent;
+		internal float BelowBaselineHeight => FontInfo.SKFontMetrics.Descent;
 
 		protected override void OnFontFamilyChanged()
 		{
@@ -83,12 +78,18 @@ namespace Windows.UI.Xaml.Documents
 			InvalidateFontInfo();
 		}
 
+		protected override void OnFontSizeChanged()
+		{
+			base.OnFontSizeChanged();
+			InvalidateFontInfo();
+		}
+
 		private void InvalidateFontInfo() => _fontInfo = null;
 
 		private static FontDetails GetFont(
 			string? name,
+			float fontSize,
 			FontWeight weight,
-			FontStretch stretch,
 			FontStyle style)
 		{
 			var skWeight = weight.ToSkiaWeight();
@@ -140,9 +141,9 @@ namespace Windows.UI.Xaml.Documents
 					return null;
 				}
 
-				var data = Marshal.AllocCoTaskMem(size);
+				var data = Marshal.AllocHGlobal(size);
 
-				var releaseDelegate = new ReleaseDelegate(() => Marshal.FreeCoTaskMem(data));
+				var releaseDelegate = new ReleaseDelegate(() => Marshal.FreeHGlobal(data));
 
 				var value = skTypeFace.TryGetTableData(tag, 0, size, data) ?
 					new Blob(data, size, MemoryMode.Writeable, releaseDelegate) : null;
@@ -150,15 +151,18 @@ namespace Windows.UI.Xaml.Documents
 				return value;
 			}
 
-			var hbFace = new Face(GetTable);
+			var skFont = new SKFont(skTypeFace, fontSize);
+			skFont.Edging = SKFontEdging.SubpixelAntialias;
+			skFont.Subpixel = true;
 
+			var hbFace = new Face(GetTable);
 			hbFace.UnitsPerEm = skTypeFace.UnitsPerEm;
 
 			var hbFont = new Font(hbFace);
 			hbFont.SetScale(FontScale, FontScale);
 			hbFont.SetFunctionsOpenType();
 
-			return new(skTypeFace, hbFont, hbFace);
+			return new(skFont, skFont.Size, skFont.ScaleX, skFont.Metrics, skTypeFace, hbFont, hbFace);
 		}
 	}
 }

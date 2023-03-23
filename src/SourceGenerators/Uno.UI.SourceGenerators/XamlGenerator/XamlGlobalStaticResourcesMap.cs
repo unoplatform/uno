@@ -4,35 +4,13 @@ using Uno.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.IO;
 using static Uno.UI.Xaml.XamlFilePathHelper;
 
 namespace Uno.UI.SourceGenerators.XamlGenerator
 {
 	internal class XamlGlobalStaticResourcesMap
 	{
-		private readonly Dictionary<string, List<StaticResourceDefinition>> _map = new Dictionary<string, List<StaticResourceDefinition>>();
 		private readonly Dictionary<string, XamlFileDefinition> _rdMap = new Dictionary<string, XamlFileDefinition>(StringComparer.CurrentCultureIgnoreCase);
-
-		public XamlGlobalStaticResourcesMap()
-		{
-		}
-
-		internal StaticResourceDefinition? FindResource(string resourceKey)
-		{
-			var list = GetListForKey(resourceKey);
-
-			return list.OrderBy(k => k.Precedence).FirstOrDefault();
-		}
-
-		internal void Add(string staticResourceKey, string ns, ResourcePrecedence precedence)
-		{
-			var list = GetListForKey(staticResourceKey);
-
-			list.Add(new StaticResourceDefinition(staticResourceKey, ns, precedence));
-		}
 
 		/// <summary>
 		/// Gets the names of all GlobalStaticResources properties associated with a top-level ResourceDictionary.
@@ -67,7 +45,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// </summary>
 		internal string GetSourceLink(XamlFileDefinition xamlFileDefinition)
 		{
-			return _rdMap.FirstOrDefault(kvp => kvp.Value == xamlFileDefinition).Key; //TODO: this is O(n), is it an actual perf issue?
+			return xamlFileDefinition.SourceLink!;
 		}
 
 		private string ConvertIdToResourceDictionaryProperty(string id) => "{0}_ResourceDictionary".InvariantCultureFormat(id);
@@ -79,36 +57,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		{
 			for (int i = 0; i < files.Length; i++)
 			{
-				_rdMap[links[i].Replace('\\', '/')] = files[i];
+				var sourceLink = links[i].Replace('\\', '/');
+				_rdMap[sourceLink] = files[i];
+				files[i].SourceLink = sourceLink;
 			}
-		}
-
-		private List<StaticResourceDefinition> GetListForKey(string staticResourceKey)
-		{
-			return _map.FindOrCreate(staticResourceKey, () => new List<StaticResourceDefinition>());
-		}
-
-		public enum ResourcePrecedence : int
-		{
-			Local = 0,
-			Library,
-			System,
-		}
-
-		public class StaticResourceDefinition
-		{
-			public StaticResourceDefinition(string staticResourceKey, string ns, ResourcePrecedence precedence)
-			{
-				Name = staticResourceKey;
-				Namespace = ns;
-				Precedence = precedence;
-			}
-
-			public string Name { get; }
-
-			public string Namespace { get; }
-
-			public ResourcePrecedence Precedence { get; }
 		}
 	}
 }

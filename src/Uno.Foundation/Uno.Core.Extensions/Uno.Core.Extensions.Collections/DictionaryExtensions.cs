@@ -86,17 +86,5 @@ namespace Uno.Extensions
 				dictionnary[item.Key] = item.Value;
 			}
 		}
-
-		public static TValue GetValueOrDefaultAndRemove<TKey, TValue>(this IDictionary<TKey, TValue> items, TKey key)
-		{
-			TValue value;
-
-			if (items.TryGetValue(key, out value))
-			{
-				items.Remove(key);
-			}
-
-			return value;
-		}
 	}
 }

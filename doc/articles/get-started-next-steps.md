@@ -12,7 +12,7 @@ Some additional resources:
 
 Uno.Extensions is a series of NuGet packages designed to encapsulate common developer tasks associated with building multi-platform mobile, desktop, and web applications using the Uno platform.
 
-Visit [the documentation](external/uno.extensions/doc/Overview/ExtensionsOverviewAndGettingStarted.md) to know more.
+Visit [the documentation](xref:Overview.Features) to know more.
 
 ## Free & paid tutorials, courses, and guided pathways for getting started with Uno Platform
 

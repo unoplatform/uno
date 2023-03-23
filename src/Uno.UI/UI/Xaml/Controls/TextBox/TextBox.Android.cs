@@ -35,7 +35,6 @@ namespace Windows.UI.Xaml.Controls
 		private TextBoxView _textBoxView;
 		private readonly SerialDisposable _keyboardDisposable = new SerialDisposable();
 		private Factory _editableFactory;
-		private IKeyListener _listener;
 
 		/// <summary>
 		/// If true, and <see cref="IsSpellCheckEnabled"/> is false, take vigorous measures to ensure that spell-check (ie predictive text) is
@@ -50,10 +49,12 @@ namespace Windows.UI.Xaml.Controls
 		[Uno.UnoOnly]
 		public bool ShouldForceDisableSpellCheck { get; set; } = true;
 
+		internal TextBoxView TextBoxView => _textBoxView;
+
 		/// <summary>
-		/// Both IsReadOnly = true and IsTabStop = false make the control not receive any input.
+		/// Both IsReadOnly = true and IsTabStop = false make the native TextBoxView read-only.
 		/// </summary>
-		internal bool IsNativeReadOnly => IsReadOnly || !IsTabStop;
+		internal bool IsNativeViewReadOnly => IsReadOnly || !IsTabStop;
 
 		public bool PreventKeyboardDisplayOnProgrammaticFocus
 		{
@@ -236,8 +237,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (_textBoxView != null)
 			{
-				_textBoxView.InputType = types;
-				_textBoxView.SetRawInputType(types);
+				_textBoxView.SetInputTypes(types, types);
 
 				if (!types.HasPasswordFlag())
 				{
@@ -354,8 +354,8 @@ namespace Windows.UI.Xaml.Controls
 					// InputScopes like multi-line works on Android only for InputType property, not SetRawInputType.
 					// For CurrencyAmount (and others), both works but there is a behavioral difference documented in UseLegacyInputScope.
 					// The behavior that matches UWP is achieved by SetRawInputType.
-					_textBoxView.InputType = AdjustInputTypes(InputTypes.ClassText, inputScope);
-					_textBoxView.SetRawInputType(inputType);
+					var adjustedInputType = AdjustInputTypes(InputTypes.ClassText, inputScope);
+					_textBoxView.SetInputTypes(adjustedInputType, inputType);
 				}
 			}
 		}
@@ -414,6 +414,9 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnIsTabStopChangedPartial() => UpdateTextBoxViewReadOnly();
 
+
+		private IKeyListener _listener;
+
 		private void UpdateTextBoxViewReadOnly()
 		{
 			if (_textBoxView == null)
@@ -421,24 +424,27 @@ namespace Windows.UI.Xaml.Controls
 				return;
 			}
 
-			_textBoxView.Focusable = IsTabStop;
-			_textBoxView.FocusableInTouchMode = IsTabStop;
-			_textBoxView.Clickable = !IsNativeReadOnly;
-			_textBoxView.LongClickable = !IsTabStop;
-			_textBoxView.SetCursorVisible(!IsNativeReadOnly);
-
-			if (IsNativeReadOnly)
+			// If read only state actually changes, we need to set or unset
+			// the KeyListener to prevent the user from typing in the TextBox.
+			// We also need to reset the InputTypes afterwards, as the KeyListener
+			// will have changed them.
+			if (IsNativeViewReadOnly && _textBoxView.KeyListener is not null)
 			{
 				_listener = _textBoxView.KeyListener;
 				_textBoxView.KeyListener = null;
+				_textBoxView.ResetInputTypes();
 			}
-			else
+			else if (!IsNativeViewReadOnly && _textBoxView.KeyListener is null)
 			{
-				if (_listener != null)
-				{
-					_textBoxView.KeyListener = _listener;
-				}
+				_textBoxView.KeyListener = _listener;
+				_textBoxView.ResetInputTypes();
 			}
+
+			_textBoxView.Focusable = IsTabStop;
+			_textBoxView.FocusableInTouchMode = IsTabStop;
+			_textBoxView.Clickable = IsTabStop;
+			_textBoxView.LongClickable = IsTabStop;
+			_textBoxView.Invalidate();
 		}
 
 		private void SetupTextBoxView()

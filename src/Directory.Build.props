@@ -5,12 +5,6 @@
   <Import Project="$(MSBuildSDKExtrasTargets)" Condition="Exists('$(MSBuildSDKExtrasTargets)')" />
 
   <PropertyGroup>
-    <NoWarn>$(NoWarn);CA1416</NoWarn> <!-- Disable warning about cross platform call sites -->
-    <NoWarn>$(NoWarn);MSB4011</NoWarn> <!-- Disable duplicate msbuild files imports message -->
-    <NoWarn>$(NoWarn);NU1505</NoWarn> <!-- Disable: Duplicate 'PackageDownload' items found. Remove the duplicate items or use the Update functionality to ensure a consistent restore behavior. The duplicate 'PackageDownload' items are: Microsoft.NETCore.App.Host.win-x64 [3.1.25], Microsoft.NETCore.App.Host.win-x64 [3.1.25], Microsoft.NETCore.App.Host.win-x64 [3.1.25], Microsoft.NETCore.App.Host.win-x64 [3.1.25]. -->
-
-	<NoWarn Condition="'$(OS)' != 'Windows_NT'">$(NoWarn);IDE0055</NoWarn>
-
     <DebugType>portable</DebugType>
     <DebugSymbols>True</DebugSymbols>
     <RepositoryUrl>$(BUILD_REPOSITORY_URI)</RepositoryUrl>
@@ -148,14 +142,9 @@
     <_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.FluentTheme.v2.netcoremobile.csproj</_AdjustedOutputProjects>
     <_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.FluentTheme.v2.Reference.csproj</_AdjustedOutputProjects>
 
-	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.Xaml.netcoremobile.csproj</_AdjustedOutputProjects>
-	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.Xaml.Reference.csproj</_AdjustedOutputProjects>
-
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Adapter.Microsoft.Extensions.Logging.csproj</_AdjustedOutputProjects>
-	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Adapter.Microsoft.Extensions.Logging.netcoremobile.csproj</_AdjustedOutputProjects>
 
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.Foundation.Logging.csproj</_AdjustedOutputProjects>
-	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.Foundation.Logging.netcoremobile.csproj</_AdjustedOutputProjects>
 
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Dispatching.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Dispatching.netcoremobile.csproj</_AdjustedOutputProjects>
@@ -229,6 +218,11 @@
     <IsSampleProject>$(MSBuildProjectName.Contains('Sample'))</IsSampleProject>
     <IsSampleProject Condition="'$(IsSampleProject)'=='false'">$(MSBuildProjectName.Contains('UnoIslands'))</IsSampleProject>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+	<WarningsNotAsErrors Condition="'$(Configuration)' == 'Debug'">$(WarningsNotAsErrors);IDE0051;IDE0055</WarningsNotAsErrors>
+	<NoWarn>$(NoWarn);CA1416</NoWarn> <!-- Disable warning about cross platform call sites -->
+    <NoWarn>$(NoWarn);MSB4011</NoWarn> <!-- Disable duplicate msbuild files imports message -->
+    <NoWarn>$(NoWarn);NU1505</NoWarn> <!-- Disable: Duplicate 'PackageDownload' items found. Remove the duplicate items or use the Update functionality to ensure a consistent restore behavior. The duplicate 'PackageDownload' items are: Microsoft.NETCore.App.Host.win-x64 [3.1.25], Microsoft.NETCore.App.Host.win-x64 [3.1.25], Microsoft.NETCore.App.Host.win-x64 [3.1.25], Microsoft.NETCore.App.Host.win-x64 [3.1.25]. -->
+	<NoWarn Condition="'$(OS)' != 'Windows_NT'">$(NoWarn);IDE0055</NoWarn>
   </PropertyGroup>
 
   <PropertyGroup>

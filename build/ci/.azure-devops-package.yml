@@ -101,6 +101,7 @@ jobs:
       Contents: |
         NugetPackages-Artifacts*/vslatest*/*.nupkg
         NugetPackages-Artifacts*/vslatest*/*.vsix
+        !NugetPackages-Artifacts*/vslatest*/Uno.ProjectTemplates.Dotnet*.nupkg
       TargetFolder: $(build.artifactstagingdirectory)/vslatest
       CleanTargetFolder: false
       OverWrite: false
@@ -124,4 +125,24 @@ jobs:
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
       ArtifactName: NugetPackages
+      ArtifactType: Container
+
+  - task: CopyFiles@2
+    displayName: Copy private templates package
+    condition: eq(variables['UNO_UWP_BUILD'], 'true')
+    inputs:
+      SourceFolder: $(Agent.WorkFolder)/
+      Contents: |
+        NugetPackages-Artifacts*/vslatest*/Uno.ProjectTemplates.Dotnet*.nupkg
+      TargetFolder: $(build.sourcesdirectory)/Build/private-templates
+      CleanTargetFolder: false
+      OverWrite: false
+      flattenFolders: true
+
+  - task: PublishBuildArtifacts@1
+    condition: eq(variables['UNO_UWP_BUILD'], 'true')
+    retryCountOnTaskFailure: 3
+    inputs:
+      PathtoPublish: $(build.sourcesdirectory)/Build/private-templates
+      ArtifactName: private-templates
       ArtifactType: Container

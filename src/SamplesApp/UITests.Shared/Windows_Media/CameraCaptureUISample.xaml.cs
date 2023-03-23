@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Uno.UI.Samples.Controls;
 using Windows.Media.Capture;
 using Windows.UI.Xaml;
@@ -16,7 +17,7 @@ public sealed partial class CameraCaptureUISample : Page
 	}
 
 #if __ANDROID__ || __IOS__
-	private async void CaptureButton_Click(object sender, RoutedEventArgs e)
+	private async void CaptureImage_Click(object sender, RoutedEventArgs e)
 	{
 		try
 		{
@@ -40,6 +41,13 @@ public sealed partial class CameraCaptureUISample : Page
 		{
 			System.Diagnostics.Debug.WriteLine(ex);
 		}
+	}
+
+	private async void CaptureVideo_Click(object sender, RoutedEventArgs e)
+	{
+		var captureUI = new CameraCaptureUI();
+
+		_ = await captureUI.CaptureFileAsync(CameraCaptureUIMode.Video);
 	}
 #endif
 }
