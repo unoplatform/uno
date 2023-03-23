@@ -22,40 +22,26 @@ namespace Uno.UI.Xaml
 	/// <summary>
 	/// An interop layer to invoke methods found in the WindowManager.ts file.
 	/// </summary>
-	/// <remarks>Slow methods are present for the WPF hosting mode, for which memory sharing is not available</remarks>
 	internal partial class WindowManagerInterop
 	{
 		//When users set double.MaxValue to scroll to the end of the page Javascript doesn't scroll.
 		private const double MAX_SCROLLING_OFFSET = 1_000_000_000_000_000_000;
 
-		private static bool UseJavascriptEval { get; } =
-			!WebAssemblyRuntime.IsWebAssembly || FeatureConfiguration.Interop.ForceJavascriptInterop;
-
 		#region Init
-		internal static void Init(bool isHostedMode, bool isLoadEventsEnabled)
+		internal static void Init(bool isLoadEventsEnabled)
 		{
-			if (UseJavascriptEval)
+			var parms = new WindowManagerInitParams
 			{
-				WebAssemblyRuntime.InvokeJS($"Uno.UI.WindowManager.init({isHostedMode.ToString().ToLowerInvariant()}, {isLoadEventsEnabled.ToString().ToLowerInvariant()});");
-			}
-			else
-			{
-				var parms = new WindowManagerInitParams
-				{
-					IsHostedMode = isHostedMode,
-					IsLoadEventsEnabled = isLoadEventsEnabled
-				};
+				IsLoadEventsEnabled = isLoadEventsEnabled
+			};
 
-				TSInteropMarshaller.InvokeJS("UnoStatic:initNative", parms);
-			}
+			TSInteropMarshaller.InvokeJS("UnoStatic:initNative", parms);
 		}
 
 		[TSInteropMessage]
 		[StructLayout(LayoutKind.Sequential, Pack = 4)]
 		private struct WindowManagerInitParams
 		{
-			public bool IsHostedMode;
-
 			public bool IsLoadEventsEnabled;
 		}
 
@@ -64,39 +50,21 @@ namespace Uno.UI.Xaml
 		#region CreateContent
 		internal static void CreateContent(IntPtr htmlId, string htmlTag, IntPtr handle, int uiElementRegistrationId, bool htmlTagIsSvg, bool isFocusable)
 		{
-			if (UseJavascriptEval)
-			{
-				var isSvgStr = htmlTagIsSvg ? "true" : "false";
-				var isFocusableStr = isFocusable ? "true" : "false"; // by default all control are not focusable, it has to be change latter by the control itself
-
-				WebAssemblyRuntime.InvokeJS(
-					"Uno.UI.WindowManager.current.createContent({" +
-					"id:\"" + htmlId + "\"," +
-					"tagName:\"" + htmlTag + "\", " +
-					"handle:" + handle + ", " +
-					"uiElementRegistrationId: " + uiElementRegistrationId + ", " +
-					"isSvg:" + isSvgStr + ", " +
-					"isFocusable:" + isFocusableStr +
-					"});");
-			}
-			else
-			{
 #if NET7_0_OR_GREATER
-				NativeMethods.CreateContent(htmlId, htmlTag, uiElementRegistrationId, isFocusable, htmlTagIsSvg);
+			NativeMethods.CreateContent(htmlId, htmlTag, uiElementRegistrationId, isFocusable, htmlTagIsSvg);
 #else
-				var parms = new WindowManagerCreateContentParams
-				{
-					HtmlId = htmlId,
-					TagName = htmlTag,
-					Handle = handle,
-					UIElementRegistrationId = uiElementRegistrationId,
-					IsSvg = htmlTagIsSvg,
-					IsFocusable = isFocusable
-				};
+			var parms = new WindowManagerCreateContentParams
+			{
+				HtmlId = htmlId,
+				TagName = htmlTag,
+				Handle = handle,
+				UIElementRegistrationId = uiElementRegistrationId,
+				IsSvg = htmlTagIsSvg,
+				IsFocusable = isFocusable
+			};
 
-				TSInteropMarshaller.InvokeJS("Uno:createContentNative", parms);
+			TSInteropMarshaller.InvokeJS("Uno:createContentNative", parms);
 #endif
-			}
 		}
 
 		[TSInteropMessage]
@@ -121,33 +89,17 @@ namespace Uno.UI.Xaml
 		#region CreateContent
 		internal static int RegisterUIElement(string typeName, string[] classNames, bool isFrameworkElement)
 		{
-			if (UseJavascriptEval)
+			var parms = new WindowManagerRegisterUIElementParams
 			{
-				var isFrameworkElementStr = isFrameworkElement ? "true" : "false";
-				var classesParam = classNames.Select(c => $"\"{c}\"").JoinBy(",");
+				TypeName = typeName,
+				IsFrameworkElement = isFrameworkElement,
+				Classes_Length = classNames.Length,
+				Classes = classNames,
+			};
 
-				var ret = WebAssemblyRuntime.InvokeJS(
-					"Uno.UI.WindowManager.current.registerUIElement({" +
-					"typeName:\"" + typeName + "\"," +
-					"isFrameworkElement:" + isFrameworkElementStr + ", " +
-					"classes:[" + classesParam + "]" +
-					"});");
+			var ret = (WindowManagerRegisterUIElementReturn)TSInteropMarshaller.InvokeJS("Uno:registerUIElementNative", parms, typeof(WindowManagerRegisterUIElementReturn));
 
-				return int.Parse(ret, CultureInfo.InvariantCulture);
-			}
-			else
-			{
-				var parms = new WindowManagerRegisterUIElementParams
-				{
-					TypeName = typeName,
-					IsFrameworkElement = isFrameworkElement,
-					Classes_Length = classNames.Length,
-					Classes = classNames,
-				};
-
-				var ret = (WindowManagerRegisterUIElementReturn)TSInteropMarshaller.InvokeJS("Uno:registerUIElementNative", parms, typeof(WindowManagerRegisterUIElementReturn));
-				return ret.RegistrationId;
-			}
+			return ret.RegistrationId;
 		}
 
 		[TSInteropMessage]
@@ -178,36 +130,22 @@ namespace Uno.UI.Xaml
 
 		internal static void SetElementTransform(IntPtr htmlId, Matrix3x2 matrix)
 		{
-			if (UseJavascriptEval)
-			{
-				FormattableString native = $"matrix({matrix.M11},{matrix.M12},{matrix.M21},{matrix.M22},{matrix.M31},{matrix.M32})";
-
-				SetStyles(
-					htmlId,
-					new[] { ("transform", native.ToStringInvariant()) }
-				);
-
-				SetArrangeProperties(htmlId);
-			}
-			else
-			{
 #if NET7_0_OR_GREATER
-				NativeMethods.SetElementTransform(htmlId, matrix.M11, matrix.M12, matrix.M21, matrix.M22, matrix.M31, matrix.M32);
+			NativeMethods.SetElementTransform(htmlId, matrix.M11, matrix.M12, matrix.M21, matrix.M22, matrix.M31, matrix.M32);
 #else
-				var parms = new WindowManagerSetElementTransformParams
-				{
-					HtmlId = htmlId,
-					M11 = matrix.M11,
-					M12 = matrix.M12,
-					M21 = matrix.M21,
-					M22 = matrix.M22,
-					M31 = matrix.M31,
-					M32 = matrix.M32,
-				};
+			var parms = new WindowManagerSetElementTransformParams
+			{
+				HtmlId = htmlId,
+				M11 = matrix.M11,
+				M12 = matrix.M12,
+				M21 = matrix.M21,
+				M22 = matrix.M22,
+				M31 = matrix.M31,
+				M32 = matrix.M32,
+			};
 
-				TSInteropMarshaller.InvokeJS("Uno:setElementTransformNative", parms);
+			TSInteropMarshaller.InvokeJS("Uno:setElementTransformNative", parms);
 #endif
-			}
 		}
 
 		[TSInteropMessage]
@@ -230,27 +168,17 @@ namespace Uno.UI.Xaml
 
 		internal static void SetPointerEvents(IntPtr htmlId, bool enabled)
 		{
-			if (UseJavascriptEval)
-			{
-				var enabledString = enabled ? "true" : "false";
-
-				var command = "Uno.UI.WindowManager.current.setPointerEvents(" + htmlId + ", " + enabledString + ");";
-				WebAssemblyRuntime.InvokeJS(command);
-			}
-			else
-			{
 #if NET7_0_OR_GREATER
-				NativeMethods.SetPointerEvents(htmlId, enabled);
+			NativeMethods.SetPointerEvents(htmlId, enabled);
 #else
-				var parms = new WindowManagerSetPointerEventsParams
-				{
-					HtmlId = htmlId,
-					Enabled = enabled
-				};
+			var parms = new WindowManagerSetPointerEventsParams
+			{
+				HtmlId = htmlId,
+				Enabled = enabled
+			};
 
-				TSInteropMarshaller.InvokeJS("Uno:setPointerEventsNative", parms);
+			TSInteropMarshaller.InvokeJS("Uno:setPointerEventsNative", parms);
 #endif
-			}
 		}
 
 		[TSInteropMessage]
@@ -267,45 +195,27 @@ namespace Uno.UI.Xaml
 		#region MeasureView
 		internal static Size MeasureView(IntPtr htmlId, Size availableSize, bool measureContent)
 		{
-			if (UseJavascriptEval)
-			{
-				var w = double.IsInfinity(availableSize.Width) ? "null" : availableSize.Width.ToStringInvariant();
-				var h = double.IsInfinity(availableSize.Height) ? "null" : availableSize.Height.ToStringInvariant();
-				var mc = measureContent ? "true" : "false";
-
-				var command = "Uno.UI.WindowManager.current.measureView(" + htmlId + ", \"" + w + "\", \"" + h + "\", " + mc + ");";
-				var result = WebAssemblyRuntime.InvokeJS(command);
-
-				var parts = result.Split(';');
-
-				return new Size(
-					double.Parse(parts[0], CultureInfo.InvariantCulture),
-					double.Parse(parts[1], CultureInfo.InvariantCulture));
-			}
-			else
-			{
 #if NET7_0_OR_GREATER
-				using var pReturn = TSInteropMarshaller.AllocateBlittableStructure(typeof(WindowManagerMeasureViewReturn));
+			using var pReturn = TSInteropMarshaller.AllocateBlittableStructure(typeof(WindowManagerMeasureViewReturn));
 
-				NativeMethods.MeasureView(htmlId, availableSize.Width, availableSize.Height, measureContent, pReturn);
+			NativeMethods.MeasureView(htmlId, availableSize.Width, availableSize.Height, measureContent, pReturn);
 
-				var result = TSInteropMarshaller.UnmarshalStructure<WindowManagerMeasureViewReturn>(pReturn);
+			var result = TSInteropMarshaller.UnmarshalStructure<WindowManagerMeasureViewReturn>(pReturn);
 
-				return new Size(result.DesiredWidth, result.DesiredHeight);
+			return new Size(result.DesiredWidth, result.DesiredHeight);
 #else
-				var parms = new WindowManagerMeasureViewParams
-				{
-					HtmlId = htmlId,
-					AvailableWidth = availableSize.Width,
-					AvailableHeight = availableSize.Height,
-					MeasureContent = measureContent
-				};
+			var parms = new WindowManagerMeasureViewParams
+			{
+				HtmlId = htmlId,
+				AvailableWidth = availableSize.Width,
+				AvailableHeight = availableSize.Height,
+				MeasureContent = measureContent
+			};
 
-				var ret = (WindowManagerMeasureViewReturn)TSInteropMarshaller.InvokeJS("Uno:measureViewNative", parms, typeof(WindowManagerMeasureViewReturn));
+			var ret = (WindowManagerMeasureViewReturn)TSInteropMarshaller.InvokeJS("Uno:measureViewNative", parms, typeof(WindowManagerMeasureViewReturn));
 
-				return new Size(ret.DesiredWidth, ret.DesiredHeight);
+			return new Size(ret.DesiredWidth, ret.DesiredHeight);
 #endif
-			}
 		}
 
 		[TSInteropMessage]
@@ -333,21 +243,14 @@ namespace Uno.UI.Xaml
 		#region SetStyleDouble
 		internal static void SetStyleDouble(IntPtr htmlId, string name, double value)
 		{
-			if (UseJavascriptEval)
+			var parms = new WindowManagerSetStyleDoubleParams
 			{
-				SetStyles(htmlId, new[] { (name, value.ToString(CultureInfo.InvariantCulture)) });
-			}
-			else
-			{
-				var parms = new WindowManagerSetStyleDoubleParams
-				{
-					HtmlId = htmlId,
-					Name = name,
-					Value = value
-				};
+				HtmlId = htmlId,
+				Name = name,
+				Value = value
+			};
 
-				TSInteropMarshaller.InvokeJS("Uno:setStyleDoubleNative", parms);
-			}
+			TSInteropMarshaller.InvokeJS("Uno:setStyleDoubleNative", parms);
 		}
 
 		[TSInteropMessage]
@@ -367,25 +270,18 @@ namespace Uno.UI.Xaml
 
 		internal static void SetStyleString(IntPtr htmlId, string name, string value)
 		{
-			if (UseJavascriptEval)
-			{
-				WebAssemblyRuntime.InvokeJS($@"Uno.UI.WindowManager.current.setStyleString({htmlId}, ""{name}"", ""{WebAssemblyRuntime.EscapeJs(value)}"");");
-			}
-			else
-			{
 #if NET7_0_OR_GREATER
-				NativeMethods.SetStyleString(htmlId, name, value);
+			NativeMethods.SetStyleString(htmlId, name, value);
 #else
-				var parms = new WindowManagerSetStyleStringParams
-				{
-					HtmlId = htmlId,
-					Name = name,
-					Value = value
-				};
+			var parms = new WindowManagerSetStyleStringParams
+			{
+				HtmlId = htmlId,
+				Name = name,
+				Value = value
+			};
 
-				TSInteropMarshaller.InvokeJS("Uno:setStyleStringNative", parms);
+			TSInteropMarshaller.InvokeJS("Uno:setStyleStringNative", parms);
 #endif
-			}
 		}
 
 		[TSInteropMessage]
@@ -405,31 +301,16 @@ namespace Uno.UI.Xaml
 
 		internal static void SetSvgElementRect(IntPtr htmlId, Rect rect)
 		{
-			if (UseJavascriptEval)
+			var parms = new WindowManagerSetSvgElementRectParams
 			{
-				SetAttributes(
-					htmlId,
-					new[]{
-						("x", rect.X.ToStringInvariant()),
-						("y", rect.Y.ToStringInvariant()),
-						("width", rect.Width.ToStringInvariant()),
-						("height", rect.Height.ToStringInvariant())
-					}
-				);
-			}
-			else
-			{
-				var parms = new WindowManagerSetSvgElementRectParams
-				{
-					HtmlId = htmlId,
-					X = rect.X,
-					Y = rect.Y,
-					Width = rect.Width,
-					Height = rect.Height,
-				};
+				HtmlId = htmlId,
+				X = rect.X,
+				Y = rect.Y,
+				Width = rect.Width,
+				Height = rect.Height,
+			};
 
-				TSInteropMarshaller.InvokeJS("Uno:setSvgElementRect", parms);
-			}
+			TSInteropMarshaller.InvokeJS("Uno:setSvgElementRect", parms);
 		}
 
 		[TSInteropMessage]
@@ -450,36 +331,26 @@ namespace Uno.UI.Xaml
 
 		internal static void SetStyles(IntPtr htmlId, (string name, string value)[] styles)
 		{
-			if (UseJavascriptEval)
-			{
-				var stylesStr = string.Join(", ", styles.Select(s => "\"" + s.name + "\": \"" + WebAssemblyRuntime.EscapeJs(s.value) + "\""));
-				var command = "Uno.UI.WindowManager.current.setStyle(\"" + htmlId + "\", {" + stylesStr + "}); ";
+			var pairs = new string[styles.Length * 2];
 
-				WebAssemblyRuntime.InvokeJS(command);
+			for (int i = 0; i < styles.Length; i++)
+			{
+				pairs[i * 2 + 0] = styles[i].name;
+				pairs[i * 2 + 1] = styles[i].value;
 			}
-			else
-			{
-				var pairs = new string[styles.Length * 2];
-
-				for (int i = 0; i < styles.Length; i++)
-				{
-					pairs[i * 2 + 0] = styles[i].name;
-					pairs[i * 2 + 1] = styles[i].value;
-				}
 
 #if NET7_0_OR_GREATER
-				NativeMethods.SetStyles(htmlId, pairs);
+			NativeMethods.SetStyles(htmlId, pairs);
 #else
-				var parms = new WindowManagerSetStylesParams
-				{
-					HtmlId = htmlId,
-					Pairs_Length = pairs.Length,
-					Pairs = pairs,
-				};
+			var parms = new WindowManagerSetStylesParams
+			{
+				HtmlId = htmlId,
+				Pairs_Length = pairs.Length,
+				Pairs = pairs,
+			};
 
-				TSInteropMarshaller.InvokeJS("Uno:setStyleNative", parms);
+			TSInteropMarshaller.InvokeJS("Uno:setStyleNative", parms);
 #endif
-			}
 		}
 
 		[TSInteropMessage]
@@ -498,13 +369,6 @@ namespace Uno.UI.Xaml
 
 		#region IsCssFeatureSupported
 
-		internal static bool IsCssFeatureSupported(string propertyName, string value)
-		{
-			var command = $"Uno.UI.WindowManager.current.isCssPropertySupported(\"{propertyName}\", \"{WebAssemblyRuntime.EscapeJs(value)}\")";
-			var result = WebAssemblyRuntime.InvokeJS(command);
-			return bool.Parse(result);
-		}
-
 		internal static bool IsCssFeatureSupported(string supportCondition)
 		{
 			var command = $"Uno.UI.WindowManager.current.isCssConditionSupported(\"{WebAssemblyRuntime.EscapeJs(supportCondition)}\")";
@@ -514,55 +378,19 @@ namespace Uno.UI.Xaml
 
 		#endregion
 
-		private static void SetArrangeProperties(IntPtr htmlId)
-		{
-			if (!UseJavascriptEval)
-			{
-				throw new InvalidOperationException("This should only be called when UseJavascriptEval flag is set");
-			}
-
-			var command = "Uno.UI.WindowManager.current.setArrangeProperties(\"" + htmlId + "\"); ";
-
-			WebAssemblyRuntime.InvokeJS(command);
-		}
-
 		#region SetUnsetCssClasses
 		internal static void SetUnsetCssClasses(IntPtr htmlId, string[] cssClassesToSet, string[] cssClassesToUnset)
 		{
-			if (UseJavascriptEval)
+			var parms = new WindowManagerSetUnsetClassesParams
 			{
-				var setClasses =
-					cssClassesToSet == null
-						? "null"
-						: "[" +
-						  string.Join(", ", cssClassesToSet
-							  .Select(WebAssemblyRuntime.EscapeJs)
-							  .Select(s => "\"" + s + "\""))
-						  + "]";
-				var unsetClasses =
-					cssClassesToUnset == null
-						? "null"
-						: "[" +
-						  string.Join(", ", cssClassesToUnset
-							  .Select(WebAssemblyRuntime.EscapeJs)
-							  .Select(s => "\"" + s + "\""))
-						  + "]";
-				var command = "Uno.UI.WindowManager.current.setUnsetClasses(" + htmlId + ", " + setClasses + ", " + unsetClasses + ");";
-				WebAssemblyRuntime.InvokeJS(command);
-			}
-			else
-			{
-				var parms = new WindowManagerSetUnsetClassesParams
-				{
-					HtmlId = htmlId,
-					CssClassesToSet = cssClassesToSet,
-					CssClassesToSet_Length = cssClassesToSet?.Length ?? 0,
-					CssClassesToUnset = cssClassesToUnset,
-					CssClassesToUnset_Length = cssClassesToUnset?.Length ?? 0
-				};
+				HtmlId = htmlId,
+				CssClassesToSet = cssClassesToSet,
+				CssClassesToSet_Length = cssClassesToSet?.Length ?? 0,
+				CssClassesToUnset = cssClassesToUnset,
+				CssClassesToUnset_Length = cssClassesToUnset?.Length ?? 0
+			};
 
-				TSInteropMarshaller.InvokeJS("Uno:setUnsetClassesNative", parms);
-			}
+			TSInteropMarshaller.InvokeJS("Uno:setUnsetClassesNative", parms);
 		}
 
 		[TSInteropMessage]
@@ -587,24 +415,15 @@ namespace Uno.UI.Xaml
 
 		internal static void SetClasses(IntPtr htmlId, string[] cssClasses, int index)
 		{
-			if (UseJavascriptEval)
+			var parms = new WindowManagerSetClassesParams
 			{
-				var classes = string.Join(", ", cssClasses.Select(s => "\"" + s + "\""));
-				var command = "Uno.UI.WindowManager.current.setClasses(" + htmlId + ", [" + classes + "], " + index + ");";
-				WebAssemblyRuntime.InvokeJS(command);
-			}
-			else
-			{
-				var parms = new WindowManagerSetClassesParams
-				{
-					HtmlId = htmlId,
-					CssClasses = cssClasses,
-					CssClasses_Length = cssClasses.Length,
-					Index = index
-				};
+				HtmlId = htmlId,
+				CssClasses = cssClasses,
+				CssClasses_Length = cssClasses.Length,
+				Index = index
+			};
 
-				TSInteropMarshaller.InvokeJS("Uno:setClassesNative", parms);
-			}
+			TSInteropMarshaller.InvokeJS("Uno:setClassesNative", parms);
 		}
 
 		[TSInteropMessage]
@@ -627,30 +446,14 @@ namespace Uno.UI.Xaml
 
 		internal static void AddView(IntPtr htmlId, IntPtr child, int? index = null)
 		{
-			if (UseJavascriptEval)
+			var parms = new WindowManagerAddViewParams
 			{
-				if (index != null)
-				{
-					var command = "Uno.UI.WindowManager.current.addView(" + htmlId + ", " + child + ", " + index.Value + ");";
-					WebAssemblyRuntime.InvokeJS(command);
-				}
-				else
-				{
-					var command = "Uno.UI.WindowManager.current.addView(" + htmlId + ", " + child + ");";
-					WebAssemblyRuntime.InvokeJS(command);
-				}
-			}
-			else
-			{
-				var parms = new WindowManagerAddViewParams
-				{
-					HtmlId = htmlId,
-					ChildView = child,
-					Index = index ?? -1,
-				};
+				HtmlId = htmlId,
+				ChildView = child,
+				Index = index ?? -1,
+			};
 
-				TSInteropMarshaller.InvokeJS("Uno:addViewNative", parms);
-			}
+			TSInteropMarshaller.InvokeJS("Uno:addViewNative", parms);
 		}
 
 		[TSInteropMessage]
@@ -668,38 +471,27 @@ namespace Uno.UI.Xaml
 
 		internal static void SetAttributes(IntPtr htmlId, (string name, string value)[] attributes)
 		{
-			if (UseJavascriptEval)
-			{
-				var attributesStr = string.Join(", ", attributes.Select(s => "\"" + s.name + "\": \"" + WebAssemblyRuntime.EscapeJs(s.value) + "\""));
-				var command = "Uno.UI.WindowManager.current.setAttributes(\"" + htmlId + "\", {" + attributesStr + "});";
+			var pairs = new string[attributes.Length * 2];
 
-				WebAssemblyRuntime.InvokeJS(command);
+			for (int i = 0; i < attributes.Length; i++)
+			{
+				pairs[i * 2 + 0] = attributes[i].name;
+				pairs[i * 2 + 1] = attributes[i].value;
 			}
-			else
-			{
-				var pairs = new string[attributes.Length * 2];
-
-				for (int i = 0; i < attributes.Length; i++)
-				{
-					pairs[i * 2 + 0] = attributes[i].name;
-					pairs[i * 2 + 1] = attributes[i].value;
-				}
 
 #if NET7_0_OR_GREATER
-				NativeMethods.SetAttributes(htmlId, pairs);
+			NativeMethods.SetAttributes(htmlId, pairs);
 #else
-				var parms = new WindowManagerSetAttributesParams()
-				{
-					HtmlId = htmlId,
-					Pairs_Length = pairs.Length,
-					Pairs = pairs,
-				};
+			var parms = new WindowManagerSetAttributesParams()
+			{
+				HtmlId = htmlId,
+				Pairs_Length = pairs.Length,
+				Pairs = pairs,
+			};
 
-				TSInteropMarshaller.InvokeJS("Uno:setAttributesNative", parms);
+			TSInteropMarshaller.InvokeJS("Uno:setAttributesNative", parms);
 #endif
-			}
 		}
-
 
 		[TSInteropMessage]
 		[StructLayout(LayoutKind.Sequential, Pack = 4)]
@@ -718,26 +510,15 @@ namespace Uno.UI.Xaml
 		#region SetAttribute
 		internal static void SetAttribute(IntPtr htmlId, string name, string value)
 		{
-			if (UseJavascriptEval)
+			var parms = new WindowManagerSetAttributeParams()
 			{
-				var attributesStr = "\"" + name + "\": \"" + WebAssemblyRuntime.EscapeJs(value) + "\"";
-				var command = "Uno.UI.WindowManager.current.setAttributes(\"" + htmlId + "\", {" + attributesStr + "});";
+				HtmlId = htmlId,
+				Name = name,
+				Value = value,
+			};
 
-				WebAssemblyRuntime.InvokeJS(command);
-			}
-			else
-			{
-				var parms = new WindowManagerSetAttributeParams()
-				{
-					HtmlId = htmlId,
-					Name = name,
-					Value = value,
-				};
-
-				TSInteropMarshaller.InvokeJS("Uno:setAttributeNative", parms);
-			}
+			TSInteropMarshaller.InvokeJS("Uno:setAttributeNative", parms);
 		}
-
 
 		[TSInteropMessage]
 		[StructLayout(LayoutKind.Sequential, Pack = 4)]
@@ -766,21 +547,13 @@ namespace Uno.UI.Xaml
 		#region ClearAttribute
 		internal static void RemoveAttribute(IntPtr htmlId, string name)
 		{
-			if (UseJavascriptEval)
+			var parms = new WindowManagerRemoveAttributeParams()
 			{
-				var command = "Uno.UI.WindowManager.current.removeAttribute(\"" + htmlId + "\", \"" + name + "\");";
-				WebAssemblyRuntime.InvokeJS(command);
-			}
-			else
-			{
-				var parms = new WindowManagerRemoveAttributeParams()
-				{
-					HtmlId = htmlId,
-					Name = name,
-				};
+				HtmlId = htmlId,
+				Name = name,
+			};
 
-				TSInteropMarshaller.InvokeJS("Uno:removeAttributeNative", parms);
-			}
+			TSInteropMarshaller.InvokeJS("Uno:removeAttributeNative", parms);
 		}
 
 		[TSInteropMessage]
@@ -799,21 +572,13 @@ namespace Uno.UI.Xaml
 
 		internal static void SetName(IntPtr htmlId, string name)
 		{
-			if (UseJavascriptEval)
+			var parms = new WindowManagerSetNameParams()
 			{
-				var command = $"Uno.UI.WindowManager.current.setName(\"{htmlId}\", \"{name}\");";
-				WebAssemblyRuntime.InvokeJS(command);
-			}
-			else
-			{
-				var parms = new WindowManagerSetNameParams()
-				{
-					HtmlId = htmlId,
-					Name = name,
-				};
+				HtmlId = htmlId,
+				Name = name,
+			};
 
-				TSInteropMarshaller.InvokeJS("Uno:setNameNative", parms);
-			}
+			TSInteropMarshaller.InvokeJS("Uno:setNameNative", parms);
 		}
 
 		[TSInteropMessage]
@@ -831,21 +596,13 @@ namespace Uno.UI.Xaml
 
 		internal static void SetXUid(IntPtr htmlId, string name)
 		{
-			if (UseJavascriptEval)
+			var parms = new WindowManagerSetXUidParams()
 			{
-				var command = $"Uno.UI.WindowManager.current.setXUid(\"{htmlId}\", \"{name}\");";
-				WebAssemblyRuntime.InvokeJS(command);
-			}
-			else
-			{
-				var parms = new WindowManagerSetXUidParams()
-				{
-					HtmlId = htmlId,
-					Uid = name,
-				};
+				HtmlId = htmlId,
+				Uid = name,
+			};
 
-				TSInteropMarshaller.InvokeJS("Uno:setXUidNative", parms);
-			}
+			TSInteropMarshaller.InvokeJS("Uno:setXUidNative", parms);
 		}
 
 		[TSInteropMessage]
@@ -863,25 +620,17 @@ namespace Uno.UI.Xaml
 
 		internal static void SetVisibility(IntPtr htmlId, bool visible)
 		{
-			if (UseJavascriptEval)
-			{
-				var command = $"Uno.UI.WindowManager.current.setVisibility(\"{htmlId}\", {visible});";
-				WebAssemblyRuntime.InvokeJS(command);
-			}
-			else
-			{
 #if NET7_0_OR_GREATER
-				NativeMethods.SetVisibility(htmlId, visible);
+			NativeMethods.SetVisibility(htmlId, visible);
 #else
-				var parms = new WindowManagerSetVisibilityParams()
-				{
-					HtmlId = htmlId,
-					Visible = visible,
-				};
+			var parms = new WindowManagerSetVisibilityParams()
+			{
+				HtmlId = htmlId,
+				Visible = visible,
+			};
 
-				TSInteropMarshaller.InvokeJS("Uno:setVisibilityNative", parms);
+			TSInteropMarshaller.InvokeJS("Uno:setVisibilityNative", parms);
 #endif
-			}
 		}
 
 		[TSInteropMessage]
@@ -898,36 +647,26 @@ namespace Uno.UI.Xaml
 
 		internal static void SetProperty(IntPtr htmlId, (string name, string value)[] properties)
 		{
-			if (UseJavascriptEval)
-			{
-				var attributesStr = string.Join(", ", properties.Select(s => "\"" + s.name + "\": \"" + WebAssemblyRuntime.EscapeJs(s.value) + "\""));
-				var command = "Uno.UI.WindowManager.current.setProperty(\"" + htmlId + "\", {" + attributesStr + "});";
+			var pairs = new string[properties.Length * 2];
 
-				WebAssemblyRuntime.InvokeJS(command);
+			for (int i = 0; i < properties.Length; i++)
+			{
+				pairs[i * 2 + 0] = properties[i].name;
+				pairs[i * 2 + 1] = properties[i].value;
 			}
-			else
-			{
-				var pairs = new string[properties.Length * 2];
-
-				for (int i = 0; i < properties.Length; i++)
-				{
-					pairs[i * 2 + 0] = properties[i].name;
-					pairs[i * 2 + 1] = properties[i].value;
-				}
 
 #if NET7_0_OR_GREATER
-				NativeMethods.SetProperties(htmlId, pairs);
+			NativeMethods.SetProperties(htmlId, pairs);
 #else
-				var parms = new WindowManagerSetPropertyParams()
-				{
-					HtmlId = htmlId,
-					Pairs_Length = pairs.Length,
-					Pairs = pairs,
-				};
+			var parms = new WindowManagerSetPropertyParams()
+			{
+				HtmlId = htmlId,
+				Pairs_Length = pairs.Length,
+				Pairs = pairs,
+			};
 
-				TSInteropMarshaller.InvokeJS("Uno:setPropertyNative", parms);
+			TSInteropMarshaller.InvokeJS("Uno:setPropertyNative", parms);
 #endif
-			}
 		}
 
 		[TSInteropMessage]
@@ -950,21 +689,13 @@ namespace Uno.UI.Xaml
 		{
 			var colorAsInteger = color.ToCssInteger();
 
-			if (UseJavascriptEval)
+			var parms = new WindowManagerSetElementColorParams()
 			{
-				var command = $"Uno.UI.WindowManager.current.setElementColor(\"{htmlId}\", {color});";
-				WebAssemblyRuntime.InvokeJS(command);
-			}
-			else
-			{
-				var parms = new WindowManagerSetElementColorParams()
-				{
-					HtmlId = htmlId,
-					Color = colorAsInteger,
-				};
+				HtmlId = htmlId,
+				Color = colorAsInteger,
+			};
 
-				TSInteropMarshaller.InvokeJS("Uno:setElementColorNative", parms);
-			}
+			TSInteropMarshaller.InvokeJS("Uno:setElementColorNative", parms);
 		}
 
 		[TSInteropMessage]
@@ -984,22 +715,14 @@ namespace Uno.UI.Xaml
 			var backgroundAsInteger = backgroundColor.ToCssInteger();
 			var foregroundAsInteger = foregroundColor.ToCssInteger();
 
-			if (UseJavascriptEval)
+			var parms = new WindowManagerSetSelectionHighlightParams()
 			{
-				var command = $"Uno.UI.WindowManager.current.setSelectionHighlight(\"{htmlId}\", {backgroundAsInteger}, {foregroundAsInteger});";
-				WebAssemblyRuntime.InvokeJS(command);
-			}
-			else
-			{
-				var parms = new WindowManagerSetSelectionHighlightParams()
-				{
-					HtmlId = htmlId,
-					BackgroundColor = backgroundAsInteger,
-					ForegroundColor = foregroundAsInteger
-				};
+				HtmlId = htmlId,
+				BackgroundColor = backgroundAsInteger,
+				ForegroundColor = foregroundAsInteger
+			};
 
-				TSInteropMarshaller.InvokeJS("Uno:setSelectionHighlightNative", parms);
-			}
+			TSInteropMarshaller.InvokeJS("Uno:setSelectionHighlightNative", parms);
 		}
 
 		[TSInteropMessage]
@@ -1021,21 +744,13 @@ namespace Uno.UI.Xaml
 		{
 			var colorAsInteger = color.ToCssInteger();
 
-			if (UseJavascriptEval)
+			var parms = new WindowManagerSetElementFillParams()
 			{
-				var command = $"Uno.UI.WindowManager.current.setElementFill(\"{htmlId}\", {color});";
-				WebAssemblyRuntime.InvokeJS(command);
-			}
-			else
-			{
-				var parms = new WindowManagerSetElementFillParams()
-				{
-					HtmlId = htmlId,
-					Color = colorAsInteger,
-				};
+				HtmlId = htmlId,
+				Color = colorAsInteger,
+			};
 
-				TSInteropMarshaller.InvokeJS("Uno:setElementFillNative", parms);
-			}
+			TSInteropMarshaller.InvokeJS("Uno:setElementFillNative", parms);
 		}
 
 		[TSInteropMessage]
@@ -1051,21 +766,13 @@ namespace Uno.UI.Xaml
 		#region RemoveView
 		internal static void RemoveView(IntPtr htmlId, IntPtr childId)
 		{
-			if (UseJavascriptEval)
+			var parms = new WindowManagerRemoveViewParams
 			{
-				var command = "Uno.UI.WindowManager.current.removeView(" + htmlId + ", " + childId + ");";
-				WebAssemblyRuntime.InvokeJS(command);
-			}
-			else
-			{
-				var parms = new WindowManagerRemoveViewParams
-				{
-					HtmlId = htmlId,
-					ChildView = childId
-				};
+				HtmlId = htmlId,
+				ChildView = childId
+			};
 
-				TSInteropMarshaller.InvokeJS("Uno:removeViewNative", parms);
-			}
+			TSInteropMarshaller.InvokeJS("Uno:removeViewNative", parms);
 		}
 
 		[TSInteropMessage]
@@ -1081,24 +788,16 @@ namespace Uno.UI.Xaml
 		#region DestroyView
 		internal static void DestroyView(IntPtr htmlId)
 		{
-			if (UseJavascriptEval)
-			{
-				var command = "Uno.UI.WindowManager.current.destroyView(" + htmlId + ");";
-				WebAssemblyRuntime.InvokeJS(command);
-			}
-			else
-			{
 #if NET7_0_OR_GREATER
-				NativeMethods.DestroyView(htmlId);
+			NativeMethods.DestroyView(htmlId);
 #else
-				var parms = new WindowManagerDestroyViewParams
-				{
-					HtmlId = htmlId
-				};
+			var parms = new WindowManagerDestroyViewParams
+			{
+				HtmlId = htmlId
+			};
 
-				TSInteropMarshaller.InvokeJS("Uno:destroyViewNative", parms);
+			TSInteropMarshaller.InvokeJS("Uno:destroyViewNative", parms);
 #endif
-			}
 		}
 
 		[TSInteropMessage]
@@ -1118,32 +817,14 @@ namespace Uno.UI.Xaml
 				return;
 			}
 
-			if (UseJavascriptEval)
+			var parms = new WindowManagerResetStyleParams()
 			{
-				if (names.Length == 1)
-				{
-					var command = "Uno.UI.WindowManager.current.resetStyle(\"" + htmlId + "\", [\"" + names[0] + "\"]);";
-					WebAssemblyRuntime.InvokeJS(command);
-				}
-				else
-				{
-					var namesStr = string.Join(", ", names.Select(n => "\"" + n + "\""));
-					var command = "Uno.UI.WindowManager.current.resetStyle(\"" + htmlId + "\", [\"" + namesStr + "\"]);";
-					WebAssemblyRuntime.InvokeJS(command);
-				}
-			}
-			else
-			{
-				var parms = new WindowManagerResetStyleParams()
-				{
-					HtmlId = htmlId,
-					Styles = names,
-					Styles_Length = names.Length,
-				};
+				HtmlId = htmlId,
+				Styles = names,
+				Styles_Length = names.Length,
+			};
 
-				TSInteropMarshaller.InvokeJS("Uno:resetStyleNative", parms);
-
-			}
+			TSInteropMarshaller.InvokeJS("Uno:resetStyleNative", parms);
 		}
 
 		[TSInteropMessage]
@@ -1162,25 +843,15 @@ namespace Uno.UI.Xaml
 		#region RegisterEventOnView
 		internal static void RegisterEventOnView(IntPtr htmlId, string eventName, bool onCapturePhase, int eventExtractorId)
 		{
-			if (UseJavascriptEval)
+			var parms = new WindowManagerRegisterEventOnViewParams()
 			{
-				var onCapturePhaseStr = onCapturePhase ? "true" : "false";
-				var cmd = $"Uno.UI.WindowManager.current.registerEventOnView(\"{htmlId}\", \"{eventName}\", {onCapturePhaseStr}, {eventExtractorId});";
+				HtmlId = htmlId,
+				EventName = eventName,
+				OnCapturePhase = onCapturePhase,
+				EventExtractorId = eventExtractorId,
+			};
 
-				WebAssemblyRuntime.InvokeJS(cmd);
-			}
-			else
-			{
-				var parms = new WindowManagerRegisterEventOnViewParams()
-				{
-					HtmlId = htmlId,
-					EventName = eventName,
-					OnCapturePhase = onCapturePhase,
-					EventExtractorId = eventExtractorId,
-				};
-
-				TSInteropMarshaller.InvokeJS("Uno:registerEventOnViewNative", parms);
-			}
+			TSInteropMarshaller.InvokeJS("Uno:registerEventOnViewNative", parms);
 		}
 
 		[TSInteropMessage]
@@ -1221,23 +892,14 @@ namespace Uno.UI.Xaml
 
 		internal static Rect GetBBox(IntPtr htmlId)
 		{
-			if (UseJavascriptEval)
+			var parms = new WindowManagerGetBBoxParams
 			{
-				var sizeString = WebAssemblyRuntime.InvokeJS("Uno.UI.WindowManager.current.getBBox(" + htmlId + ");");
-				var sizeParts = sizeString.Split(';');
-				return new Rect(double.Parse(sizeParts[0], CultureInfo.InvariantCulture), double.Parse(sizeParts[1], CultureInfo.InvariantCulture), double.Parse(sizeParts[2], CultureInfo.InvariantCulture), double.Parse(sizeParts[3], CultureInfo.InvariantCulture));
-			}
-			else
-			{
-				var parms = new WindowManagerGetBBoxParams
-				{
-					HtmlId = htmlId
-				};
+				HtmlId = htmlId
+			};
 
-				var ret = (WindowManagerGetBBoxReturn)TSInteropMarshaller.InvokeJS("Uno:getBBoxNative", parms, typeof(WindowManagerGetBBoxReturn));
+			var ret = (WindowManagerGetBBoxReturn)TSInteropMarshaller.InvokeJS("Uno:getBBoxNative", parms, typeof(WindowManagerGetBBoxReturn));
 
-				return new Rect(ret.X, ret.Y, ret.Width, ret.Height);
-			}
+			return new Rect(ret.X, ret.Y, ret.Width, ret.Height);
 		}
 
 		[TSInteropMessage]
@@ -1264,23 +926,13 @@ namespace Uno.UI.Xaml
 
 		internal static void SetContentHtml(IntPtr htmlId, string html)
 		{
-			if (UseJavascriptEval)
+			var parms = new WindowManagerSetContentHtmlParams()
 			{
-				var escapedHtml = WebAssemblyRuntime.EscapeJs(html);
+				HtmlId = htmlId,
+				Html = html,
+			};
 
-				var command = "Uno.UI.WindowManager.current.setHtmlContent(" + htmlId + ", \"" + escapedHtml + "\");";
-				WebAssemblyRuntime.InvokeJS(command);
-			}
-			else
-			{
-				var parms = new WindowManagerSetContentHtmlParams()
-				{
-					HtmlId = htmlId,
-					Html = html,
-				};
-
-				TSInteropMarshaller.InvokeJS("Uno:setHtmlContentNative", parms);
-			}
+			TSInteropMarshaller.InvokeJS("Uno:setHtmlContentNative", parms);
 		}
 
 		[TSInteropMessage]
@@ -1299,71 +951,41 @@ namespace Uno.UI.Xaml
 
 		internal static void ArrangeElement(IntPtr htmlId, Rect rect, Rect? clipRect)
 		{
-			if (UseJavascriptEval)
-			{
-				var clipRect2 = clipRect != null
-					? string.Format(
-						CultureInfo.InvariantCulture,
-						"rect({0}px,{1}px,{2}px,{3}px",
-						clipRect.Value.Top,
-						clipRect.Value.Right,
-						clipRect.Value.Bottom,
-						clipRect.Value.Left
-					)
-					: "";
-
-				SetStyles(
-					htmlId,
-					new[] {
-						("position", "absolute"),
-						("top", rect.Top.ToString(CultureInfo.InvariantCulture) + "px"),
-						("left", rect.Left.ToString(CultureInfo.InvariantCulture) + "px"),
-						("width", rect.Width.ToString(CultureInfo.InvariantCulture) + "px"),
-						("height", rect.Height.ToString(CultureInfo.InvariantCulture) + "px"),
-						("clip", clipRect2)
-					}
-				);
-
-				SetArrangeProperties(htmlId);
-			}
-			else
-			{
 #if NET7_0_OR_GREATER
-				var clipRectValue = clipRect ?? default;
+			var clipRectValue = clipRect ?? default;
 
-				NativeMethods.ArrangeElement(
-					htmlId,
-					rect.Top,
-					rect.Left,
-					rect.Width,
-					rect.Height,
-					clipRect.HasValue,
-					clipRectValue.Top,
-					clipRectValue.Left,
-					clipRectValue.Bottom,
-					clipRectValue.Right);
+			NativeMethods.ArrangeElement(
+				htmlId,
+				rect.Top,
+				rect.Left,
+				rect.Width,
+				rect.Height,
+				clipRect.HasValue,
+				clipRectValue.Top,
+				clipRectValue.Left,
+				clipRectValue.Bottom,
+				clipRectValue.Right);
 #else
-				var parms = new WindowManagerArrangeElementParams()
-				{
-					HtmlId = htmlId,
-					Top = rect.Top,
-					Left = rect.Left,
-					Width = rect.Width,
-					Height = rect.Height,
-				};
+			var parms = new WindowManagerArrangeElementParams()
+			{
+				HtmlId = htmlId,
+				Top = rect.Top,
+				Left = rect.Left,
+				Width = rect.Width,
+				Height = rect.Height,
+			};
 
-				if (clipRect != null)
-				{
-					parms.Clip = true;
-					parms.ClipTop = clipRect.Value.Top;
-					parms.ClipLeft = clipRect.Value.Left;
-					parms.ClipBottom = clipRect.Value.Bottom;
-					parms.ClipRight = clipRect.Value.Right;
-				}
-
-				TSInteropMarshaller.InvokeJS("Uno:arrangeElementNative", parms);
-#endif
+			if (clipRect != null)
+			{
+				parms.Clip = true;
+				parms.ClipTop = clipRect.Value.Top;
+				parms.ClipLeft = clipRect.Value.Left;
+				parms.ClipBottom = clipRect.Value.Bottom;
+				parms.ClipRight = clipRect.Value.Right;
 			}
+
+			TSInteropMarshaller.InvokeJS("Uno:arrangeElementNative", parms);
+#endif
 		}
 
 		[TSInteropMessage]
@@ -1391,30 +1013,17 @@ namespace Uno.UI.Xaml
 
 		internal static (Size clientSize, Size offsetSize) GetClientViewSize(IntPtr htmlId)
 		{
-			if (UseJavascriptEval)
+			var parms = new WindowManagerGetClientViewSizeParams
 			{
-				var sizeString = WebAssemblyRuntime.InvokeJS("Uno.UI.WindowManager.current.getClientViewSize(" + htmlId + ");");
-				var sizeParts = sizeString.Split(';');
+				HtmlId = htmlId
+			};
 
-				return (
-					clientSize: new Size(double.Parse(sizeParts[0], CultureInfo.InvariantCulture), double.Parse(sizeParts[1], CultureInfo.InvariantCulture)),
-					offsetSize: new Size(double.Parse(sizeParts[2], CultureInfo.InvariantCulture), double.Parse(sizeParts[3], CultureInfo.InvariantCulture))
-				);
-			}
-			else
-			{
-				var parms = new WindowManagerGetClientViewSizeParams
-				{
-					HtmlId = htmlId
-				};
+			var ret = (WindowManagerGetClientViewSizeReturn)TSInteropMarshaller.InvokeJS("Uno:getClientViewSizeNative", parms, typeof(WindowManagerGetClientViewSizeReturn));
 
-				var ret = (WindowManagerGetClientViewSizeReturn)TSInteropMarshaller.InvokeJS("Uno:getClientViewSizeNative", parms, typeof(WindowManagerGetClientViewSizeReturn));
-
-				return (
-					clientSize: new Size(ret.ClientWidth, ret.ClientHeight),
-					offsetSize: new Size(ret.OffsetWidth, ret.OffsetHeight)
-				);
-			}
+			return (
+				clientSize: new Size(ret.ClientWidth, ret.ClientHeight),
+				offsetSize: new Size(ret.OffsetWidth, ret.OffsetHeight)
+			);
 		}
 
 		[TSInteropMessage]

@@ -84,9 +84,8 @@ namespace Windows.UI.Xaml
 		{
 			_startInvoked = true;
 
-			var isHostedMode = !WebAssemblyRuntime.IsWebAssembly;
 			var isLoadEventsEnabled = !FeatureConfiguration.FrameworkElement.WasmUseManagedLoadedUnloaded;
-			WindowManagerInterop.Init(isHostedMode, isLoadEventsEnabled);
+			WindowManagerInterop.Init(isLoadEventsEnabled);
 			Windows.Storage.ApplicationData.Init();
 
 			SynchronizationContext.SetSynchronizationContext(

@@ -6,17 +6,7 @@ namespace Uno.UI {
 	export class WindowManager {
 
 		public static current: WindowManager;
-		private static _isHosted: boolean = false;
 		private static _isLoadEventsEnabled: boolean = false;
-
-		/**
-		 * Defines if the WindowManager is running in hosted mode, and should skip the
-		 * initialization of WebAssembly, use this mode in conjunction with the Uno.UI.WpfHost
-		 * to improve debuggability.
-		 */
-		public static get isHosted(): boolean {
-			return WindowManager._isHosted;
-		}
 
 		/**
 		 * Defines if the WindowManager is responsible to raise the loading, loaded and unloaded events,
@@ -40,9 +30,8 @@ namespace Uno.UI {
 			* @param containerElementId The ID of the container element for the Xaml UI
 			* @param loadingElementId The ID of the loading element to remove once ready
 			*/
-		public static init(isHosted: boolean, isLoadEventsEnabled: boolean, containerElementId: string = "uno-body", loadingElementId: string = "uno-loading"): string {
+		public static init(isLoadEventsEnabled: boolean, containerElementId: string = "uno-body", loadingElementId: string = "uno-loading"): void {
 
-			WindowManager._isHosted = isHosted;
 			WindowManager._isLoadEventsEnabled = isLoadEventsEnabled;
 
 			Windows.UI.Core.CoreDispatcher.init(WindowManager.buildReadyPromise());
@@ -50,8 +39,6 @@ namespace Uno.UI {
 			this.current = new WindowManager(containerElementId, loadingElementId);
 			MonoSupport.jsCallDispatcher.registerScope("Uno", this.current);
 			this.current.init();
-
-			return "ok";
 		}
 
 		/**
@@ -134,7 +121,7 @@ namespace Uno.UI {
 
 			const params = WindowManagerInitParams.unmarshal(pParams);
 
-			WindowManager.init(params.IsHostedMode, params.IsLoadEventsEnabled);
+			WindowManager.init(params.IsLoadEventsEnabled);
 
 			return true;
 		}
@@ -216,17 +203,6 @@ namespace Uno.UI {
 
 				return "";
 			}
-		}
-
-		/**
-			* Create a html DOM element representing a Xaml element.
-			*
-			* You need to call addView to connect it to the DOM.
-			*/
-		public createContent(contentDefinition: IContentDefinition): string {
-			this.createContentInternal(contentDefinition);
-
-			return "ok";
 		}
 
 		/**
@@ -347,16 +323,6 @@ namespace Uno.UI {
 			*
 			* This is mostly for diagnostic purposes.
 			*/
-		public setName(elementId: number, name: string): string {
-			this.setNameInternal(elementId, name);
-			return "ok";
-		}
-
-		/**
-			* Set a name for an element.
-			*
-			* This is mostly for diagnostic purposes.
-			*/
 		public setNameNative(pParam: number): boolean {
 			const params = WindowManagerSetNameParams.unmarshal(pParam);
 			this.setNameInternal(params.HtmlId, params.Name);
@@ -365,17 +331,6 @@ namespace Uno.UI {
 
 		private setNameInternal(elementId: number, name: string): void {
 			this.getView(elementId).setAttribute("xamlname", name);
-		}
-
-
-		/**
-			* Set a name for an element.
-			*
-			* This is mostly for diagnostic purposes.
-			*/
-		public setXUid(elementId: number, name: string): string {
-			this.setXUidInternal(elementId, name);
-			return "ok";
 		}
 
 		/**
@@ -391,14 +346,6 @@ namespace Uno.UI {
 
 		private setXUidInternal(elementId: number, name: string): void {
 			this.getView(elementId).setAttribute("xuid", name);
-		}
-
-		/**
-			* Sets the visibility of the specified element
-			*/
-		public setVisibility(elementId: number, visible: boolean): string {
-			this.setVisibilityInternal(elementId, visible);
-			return "ok";
 		}
 
 		public setVisibilityNative(pParam: number): boolean {
@@ -421,21 +368,6 @@ namespace Uno.UI {
 			else {
 				element.classList.add(WindowManager.unoCollapsedClassName);
 			}
-		}
-
-		/**
-			* Set an attribute for an element.
-			*/
-		public setAttributes(elementId: number, attributes: { [name: string]: string }): string {
-			const element = this.getView(elementId);
-
-			for (const name in attributes) {
-				if (attributes.hasOwnProperty(name)) {
-					element.setAttribute(name, attributes[name]);
-				}
-			}
-
-			return "ok";
 		}
 
 		/**
@@ -479,16 +411,6 @@ namespace Uno.UI {
 		/**
 			* Removes an attribute for an element.
 			*/
-		public removeAttribute(elementId: number, name: string): string {
-			const element = this.getView(elementId);
-			element.removeAttribute(name);
-
-			return "ok";
-		}
-
-		/**
-			* Removes an attribute for an element.
-			*/
 		public removeAttributeNative(pParams: number): boolean {
 
 			const params = WindowManagerRemoveAttributeParams.unmarshal(pParams);
@@ -504,30 +426,6 @@ namespace Uno.UI {
 		public getAttribute(elementId: number, name: string): any {
 
 			return this.getView(elementId).getAttribute(name);
-		}
-
-		/**
-			* Set a property for an element.
-			*/
-		public setProperty(elementId: number, properties: { [name: string]: string }): string {
-			const element = this.getView(elementId);
-
-			for (const name in properties) {
-				if (properties.hasOwnProperty(name)) {
-					const setVal = properties[name];
-					if (setVal === "true") {
-						(element as any)[name] = true;
-					}
-					else if (setVal === "false") {
-						(element as any)[name] = false;
-					}
-					else {
-						(element as any)[name] = setVal;
-					}
-				}
-			}
-
-			return "ok";
 		}
 
 		/**
@@ -571,24 +469,6 @@ namespace Uno.UI {
 			const element = this.getView(elementId);
 
 			return (element as any)[name] || "";
-		}
-
-		/**
-			* Set the CSS style of a html element.
-			*
-			* To remove a value, set it to empty string.
-			* @param styles A dictionary of styles to apply on html element.
-			*/
-		public setStyle(elementId: number, styles: { [name: string]: string }): string {
-			const element = this.getView(elementId);
-
-			for (const style in styles) {
-				if (styles.hasOwnProperty(style)) {
-					element.style.setProperty(style, styles[style]);
-				}
-			}
-
-			return "ok";
 		}
 
 		/**
@@ -640,13 +520,6 @@ namespace Uno.UI {
 			return true;
 		}
 
-		public setStyleString(htmlId: number, name: string, value: string): string {
-
-			this.getView(htmlId).style.setProperty(name, value);
-
-			return "ok";
-		}
-
 		public setStyleStringNative(pParams: number): boolean {
 
 			const params = WindowManagerSetStyleStringParams.unmarshal(pParams);
@@ -659,22 +532,6 @@ namespace Uno.UI {
 		public setStyleStringNativeFast(htmlId: number, name: string, value: string) {
 
 			this.getView(htmlId).style.setProperty(name, value);
-		}
-
-		public setArrangeProperties(elementId: number): string {
-			const element = this.getView(elementId);
-
-			this.setAsArranged(element);
-
-			return "ok";
-		}
-
-		/**
-			* Remove the CSS style of a html element.
-			*/
-		public resetStyle(elementId: number, names: string[]): string {
-			this.resetStyleInternal(elementId, names);
-			return "ok";
 		}
 
 		/**
@@ -692,10 +549,6 @@ namespace Uno.UI {
 			for (const name of names) {
 				element.style.setProperty(name, "");
 			}
-		}
-
-		public isCssPropertySupported(propertyName: string, value: string): boolean {
-			return CSS.supports(propertyName, value);
 		}
 
 		public isCssConditionSupported(supportCondition: string): boolean {
@@ -820,11 +673,6 @@ namespace Uno.UI {
 		/**
 		* Sets the color property of the specified element
 		*/
-		public setElementColor(elementId: number, color: number): string {
-			this.setElementColorInternal(elementId, color);
-			return "ok";
-		}
-
 		public setElementColorNative(pParam: number): boolean {
 			const params = WindowManagerSetElementColorParams.unmarshal(pParam);
 			this.setElementColorInternal(params.HtmlId, params.Color);
@@ -857,11 +705,6 @@ namespace Uno.UI {
 		/**
 		* Sets the fill property of the specified element
 		*/
-		public setElementFill(elementId: number, color: number): string {
-			this.setElementColorInternal(elementId, color);
-			return "ok";
-		}
-
 		public setElementFillNative(pParam: number): boolean {
 			const params = WindowManagerSetElementFillParams.unmarshal(pParam);
 			this.setElementFillInternal(params.HtmlId, params.Color);
@@ -1002,22 +845,6 @@ namespace Uno.UI {
 			*/
 		public getWindowTitle(): string {
 			return document.title || UnoAppManifest.displayName;
-		}
-
-		/**
-			* Add an event handler to a html element.
-			*
-			* @param eventName The name of the event
-			* @param onCapturePhase true means "on trickle down" (going down to target), false means "on bubble up" (bubbling back to ancestors). Default is false.
-			*/
-		public registerEventOnView(
-			elementId: number,
-			eventName: string,
-			onCapturePhase: boolean = false,
-			eventExtractorId: number
-		): string {
-			this.registerEventOnViewInternal(elementId, eventName, onCapturePhase, eventExtractorId);
-			return "ok";
 		}
 
 		/**
@@ -1206,18 +1033,6 @@ namespace Uno.UI {
 			*
 			* "Loading" & "Loaded" events will be raised if necessary.
 			*
-			* @param index Position in children list. Appended at end if not specified.
-			*/
-		public addView(parentId: number, childId: number, index?: number): string {
-			this.addViewInternal(parentId, childId, index);
-			return "ok";
-		}
-
-		/**
-			* Set a view as a child of another one.
-			*
-			* "Loading" & "Loaded" events will be raised if necessary.
-			*
 			* @param pParams Pointer to a WindowManagerAddViewParams native structure.
 			*/
 		public addViewNative(pParams: number): boolean {
@@ -1264,16 +1079,6 @@ namespace Uno.UI {
 			*
 			* "Unloading" & "Unloaded" events will be raised if necessary.
 			*/
-		public removeView(parentId: number, childId: number): string {
-			this.removeViewInternal(parentId, childId);
-			return "ok";
-		}
-
-		/**
-			* Remove a child from a parent element.
-			*
-			* "Unloading" & "Unloaded" events will be raised if necessary.
-			*/
 		public removeViewNative(pParams: number): boolean {
 			const params = WindowManagerRemoveViewParams.unmarshal(pParams);
 			this.removeViewInternal(params.HtmlId, params.ChildView);
@@ -1296,17 +1101,6 @@ namespace Uno.UI {
 			if (shouldRaiseLoadEvents) {
 				this.dispatchEvent(childElement, "unloaded");
 			}
-		}
-
-		/**
-			* Destroy a html element.
-			*
-			* The element won't be available anymore. Usually indicate the managed
-			* version has been scavenged by the GC.
-			*/
-		public destroyView(elementId: number): string {
-			this.destroyViewInternal(elementId);
-			return "ok";
 		}
 
 		/**
@@ -1340,12 +1134,6 @@ namespace Uno.UI {
 
 			const bounds = (<any>this.getView(elementId)).getBoundingClientRect();
 			return `${bounds.left};${bounds.top};${bounds.right - bounds.left};${bounds.bottom - bounds.top}`;
-		}
-
-		public getBBox(elementId: number): string {
-			const bbox = this.getBBoxInternal(elementId);
-
-			return `${bbox.x};${bbox.y};${bbox.width};${bbox.height}`;
 		}
 
 		public getBBoxNative(pParams: number, pReturn: number): boolean {
@@ -1411,20 +1199,6 @@ namespace Uno.UI {
 			element.height.baseVal.value = params.Height;
 
 			return true;
-		}
-
-		/**
-			* Use the Html engine to measure the element using specified constraints.
-			*
-			* @param maxWidth string containing width in pixels. Empty string means infinite.
-			* @param maxHeight string containing height in pixels. Empty string means infinite.
-			* @param measureContent if we're interested by the content of the control (<img>'s image, <input>'s text...)
-			*/
-		public measureView(viewId: string, maxWidth: string, maxHeight: string, measureContent: boolean = true): string {
-
-			const ret = this.measureViewInternal(Number(viewId), maxWidth ? Number(maxWidth) : NaN, maxHeight ? Number(maxHeight) : NaN, measureContent);
-
-			return `${ret[0]};${ret[1]}`;
 		}
 
 		/**
@@ -1730,17 +1504,6 @@ namespace Uno.UI {
 			* Those html elements won't be available as XamlElement in managed code.
 			* WARNING: you should avoid mixing this and `addView` for the same element.
 			*/
-		public setHtmlContent(viewId: number, html: string): string {
-			this.setHtmlContentInternal(viewId, html);
-			return "ok";
-		}
-
-		/**
-			* Set the Html content for an element.
-			*
-			* Those html elements won't be available as XamlElement in managed code.
-			* WARNING: you should avoid mixing this and `addView` for the same element.
-			*/
 		public setHtmlContentNative(pParams: number): boolean {
 			const params = WindowManagerSetContentHtmlParams.unmarshal(pParams);
 
@@ -1751,18 +1514,6 @@ namespace Uno.UI {
 		private setHtmlContentInternal(viewId: number, html: string): void {
 
 			this.getView(viewId).innerHTML = html;
-		}
-
-		/**
-		 * Gets the Client and Offset size of the specified element
-		 *
-		 * This method is used to determine the size of the scroll bars, to
-		 * mask the events coming from that zone.
-		 */
-		public getClientViewSize(elementId: number): string {
-			const element = this.getView(elementId) as HTMLElement;
-
-			return `${element.clientWidth};${element.clientHeight};${element.offsetWidth};${element.offsetHeight}`;
 		}
 
 		/**
@@ -1842,25 +1593,20 @@ namespace Uno.UI {
 		}
 
 		private static initMethods() {
-			if (WindowManager.isHosted) {
-				console.debug("Hosted Mode: Skipping MonoRuntime initialization ");
+			if (!WindowManager.resizeMethod) {
+				WindowManager.resizeMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.Window:Resize");
 			}
-			else {
-				if (!WindowManager.resizeMethod) {
-					WindowManager.resizeMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.Window:Resize");
-				}
 
-				if (!WindowManager.dispatchEventMethod) {
-					WindowManager.dispatchEventMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.UIElement:DispatchEvent");
-				}
+			if (!WindowManager.dispatchEventMethod) {
+				WindowManager.dispatchEventMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.UIElement:DispatchEvent");
+			}
 
-				if (!WindowManager.focusInMethod) {
-					WindowManager.focusInMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.Input.FocusManager:ReceiveFocusNative");
-				}
+			if (!WindowManager.focusInMethod) {
+				WindowManager.focusInMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.Input.FocusManager:ReceiveFocusNative");
+			}
 
-				if (!WindowManager.dispatchSuspendingMethod) {
-					WindowManager.dispatchSuspendingMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.Application:DispatchSuspending");
-				}
+			if (!WindowManager.dispatchSuspendingMethod) {
+				WindowManager.dispatchSuspendingMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.Application:DispatchSuspending");
 			}
 		}
 
@@ -1900,35 +1646,19 @@ namespace Uno.UI {
 		}
 
 		private resize() {
-
-			if (WindowManager.isHosted) {
-				UnoDispatch.resize(`${document.documentElement.clientWidth};${document.documentElement.clientHeight}`);
-			}
-			else {
-				WindowManager.resizeMethod(document.documentElement.clientWidth, document.documentElement.clientHeight);
-			}
+			WindowManager.resizeMethod(document.documentElement.clientWidth, document.documentElement.clientHeight);
 		}
 
 		private onfocusin(event: Event) {
-			if (WindowManager.isHosted) {
-				console.warn("Focus not supported in hosted mode");
-			}
-			else {
-				const newFocus = event.target;
-				const handle = (newFocus as HTMLElement).getAttribute("XamlHandle");
-				const htmlId = handle ? Number(handle) : -1; // newFocus may not be an Uno element
-				WindowManager.focusInMethod(htmlId);
-			}
+			const newFocus = event.target;
+			const handle = (newFocus as HTMLElement).getAttribute("XamlHandle");
+			const htmlId = handle ? Number(handle) : -1; // newFocus may not be an Uno element
+			WindowManager.focusInMethod(htmlId);
 		}
 
 		private onWindowBlur() {
-			if (WindowManager.isHosted) {
-				console.warn("Focus not supported in hosted mode");
-			}
-			else {
-				// Unset managed focus when Window loses focus
-				WindowManager.focusInMethod(-1);
-			}
+			// Unset managed focus when Window loses focus
+			WindowManager.focusInMethod(-1);
 		}
 
 		private dispatchEvent(element: HTMLElement | SVGElement, eventName: string, eventPayload: string = null): HtmlEventDispatchResult {
@@ -1940,16 +1670,7 @@ namespace Uno.UI {
 				throw `No attribute XamlHandle on element ${element}. Can't raise event.`;
 			}
 
-			if (WindowManager.isHosted) {
-				// Dispatch to the C# backed UnoDispatch class. Events propagated
-				// this way always succeed because synchronous calls are not possible
-				// between the host and the browser, unlike wasm.
-				UnoDispatch.dispatch(this.handleToString(htmlId), eventName, eventPayload);
-				return HtmlEventDispatchResult.Ok;
-			}
-			else {
-				return WindowManager.dispatchEventMethod(htmlId, eventName, eventPayload || "");
-			}
+			return WindowManager.dispatchEventMethod(htmlId, eventName, eventPayload || "");
 		}
 
 		private getIsConnectedToRootElement(element: HTMLElement | SVGElement): boolean {
