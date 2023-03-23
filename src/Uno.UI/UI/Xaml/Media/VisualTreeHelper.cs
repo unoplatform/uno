@@ -376,6 +376,11 @@ namespace Windows.UI.Xaml.Media
 
 #if TRACE_HIT_TESTING
 			using var _ = SET_TRACE_SUBJECT(element);
+			if (element is TextBlock tb)
+			{
+				TRACE($"- TextBlock.Text: {tb.Text}");
+			}
+
 			TRACE($"- hit test visibility: {elementHitTestVisibility}");
 #endif
 
@@ -522,7 +527,7 @@ namespace Windows.UI.Xaml.Media
 					stale = new Branch(element, stale?.Leaf ?? element);
 				}
 
-				TRACE($"> NOT FOUND (HitTestability.Invisible or out of the **render** bounds) | stale branch: {stale?.ToString() ?? "-- none --"}");
+				TRACE($"> NOT FOUND (HitTestability: {elementHitTestVisibility}, renderingBounds: {renderingBounds}, posRelToElement: {posRelToElement}) | stale branch: {stale?.ToString() ?? "-- none --"}");
 				return (default, stale);
 			}
 		}
@@ -630,7 +635,7 @@ namespace Windows.UI.Xaml.Media
 				var previous = _traceSubject;
 				_traceSubject = element;
 
-				_trace.Append(new string('\t', _traceSubject.Depth - 1));
+				_trace.Append(new string('\t', _traceSubject.GetDebugDepth()));
 				_trace.Append($"[{element.GetDebugName()}]\r\n");
 
 				return Disposable.Create(() => _traceSubject = previous);
@@ -648,7 +653,7 @@ namespace Windows.UI.Xaml.Media
 #if TRACE_HIT_TESTING
 			if (_trace is { })
 			{
-				_trace.Append(new string('\t', _traceSubject?.Depth ?? 0));
+				_trace.Append(new string('\t', _traceSubject?.GetDebugDepth() ?? 0));
 				_trace.Append(msg.ToStringInvariant());
 				_trace.Append("\r\n");
 			}

@@ -15,10 +15,11 @@ using AndroidX.AppCompat.Widget;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Core;
 using Android.Views;
+using Uno.UI.Xaml.Core;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public partial class ListViewBase
+	public partial class ListViewBase : IWithNativeOnTouchOverride
 	{
 		private readonly SerialDisposable _collectionChangedSubscription = new SerialDisposable();
 		private readonly SerialDisposable _headerFooterSubscription = new SerialDisposable();
@@ -338,11 +339,11 @@ namespace Windows.UI.Xaml.Controls
 			});
 		}
 
-		public override bool DispatchTouchEvent(MotionEvent e)
+		public override bool OnTouchEvent(MotionEvent e)
 		{
 			NativePanel?.TrackMotionDirections(e);
 
-			return base.DispatchTouchEvent(e);
+			return base.OnTouchEvent(e);
 		}
 
 		protected internal override IEnumerable<DependencyObject> GetItemsPanelChildren()

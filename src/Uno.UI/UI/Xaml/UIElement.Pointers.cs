@@ -774,14 +774,10 @@ namespace Windows.UI.Xaml
 			if (ptArgs.MotionEvent is { } motionEvent)
 			{
 				var parent = this.Parent;
-				while (parent is not UIElement && parent is Android.Views.View viewParent)
+				while (parent is Android.Views.View viewParent &&
+					(parent is not UIElement || parent is IWithNativeOnTouchOverride))
 				{
-					var transformedEvent = Android.Views.MotionEvent.Obtain(motionEvent);
-					transformedEvent.OffsetLocation(0 /*TODO*/, viewParent.ScrollY);
-
-					viewParent.OnTouchEvent(transformedEvent);
-
-					transformedEvent.Recycle();
+					viewParent.OnTouchEvent(motionEvent);
 					parent = parent.Parent;
 				}
 			}
