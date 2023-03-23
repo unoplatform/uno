@@ -10,7 +10,7 @@ $external_docs =
     @("https://github.com/unoplatform/figma-docs", "figma-docs", "a740582020509f9947fbf991628075a4717bff0a"),
     @("https://github.com/unoplatform/uno.resizetizer", "uno.resizetizer", "f650e844cb66a7dafa084a7e778f14f4fd3ce8a2"),
     @("https://github.com/unoplatform/uno.uitest", "uno.uitest", "555453c2985ef2745fe44503c5809a6168d063c2"),
-    @("https://github.com/unoplatform/uno.extensions", "uno.extensions", "b9c8b0234bfb907527acb501e55cdcd16b7b9130")
+    @("https://github.com/unoplatform/uno.extensions", "uno.extensions", "767fe7eeb610eb2acadcd2e0f79bc55c43f59f70")
 )
 
 $ErrorActionPreference = 'Stop'
