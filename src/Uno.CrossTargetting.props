@@ -50,6 +50,7 @@
 
 	<PropertyGroup Condition="$(_IsNetStd) and '$(UnoRuntimeIdentifier)'=='Skia'">
 		<DefineConstants>$(DefineConstants);__SKIA__;UNO_REFERENCE_API;UNO_HAS_ENHANCED_HIT_TEST_PROPERTY;UNO_HAS_MANAGED_SCROLL_PRESENTER;UNO_HAS_MANAGED_POINTERS</DefineConstants>
+		<DefineConstants>$(DefineConstants);UNO_SUPPORTS_NATIVEHOST</DefineConstants>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="$(_IsNetStd) and '$(UnoRuntimeIdentifier)'=='Reference'">

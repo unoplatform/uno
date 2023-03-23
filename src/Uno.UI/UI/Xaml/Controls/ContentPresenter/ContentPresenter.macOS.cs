@@ -75,6 +75,11 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+		private void ClearBorder()
+		{
+			_borderRenderer.Clear();
+		}
+
 		bool ICustomClippingElement.AllowClippingToLayoutSlot => CornerRadius == CornerRadius.None;
 
 		bool ICustomClippingElement.ForceClippingToLayoutSlot => false;

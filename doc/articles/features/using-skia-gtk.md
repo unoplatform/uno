@@ -1,3 +1,7 @@
+---
+uid: Uno.Skia.Gtk
+---
+
 # Using the Skia+GTK head
 
 Uno supports running applications using Gtk+3 shell, using a Skia backend rendering. Gtk3+ is used to create a shell for the application to be used on various operating systems, such as Linux, Windows and macOS.
@@ -26,6 +30,12 @@ To do so, immediately before the line `host.Run()` in you `main.cs` file, add th
 ```
 host.RenderSurfaceType = RenderSurfaceType.Software;
 ```
+
+### Hosting Native GTK Controls
+
+Hosting native GTK controls is supported through `ContentPresenter` and `ContentControl`.
+
+See this documentation about [embedding native controls](using-skia-embed-native-controls.md).
 
 ### Linux considerations
 When running under Linux, GTK can use OpenGL for the UI rendering but some restrictions can apply depending on the environment and available hardware.

@@ -48,6 +48,10 @@ namespace Windows.UI.Xaml.Controls
 			SetAndObserveBackgroundBrush(Background);
 		}
 
+		private void ClearBorder()
+		{
+		}
+
 		partial void OnPaddingChangedPartial(Thickness oldValue, Thickness newValue)
 		{
 			UpdateBorder();

@@ -20,6 +20,9 @@ using Device = Gtk.Device;
 using Exception = System.Exception;
 using Windows.UI.Xaml;
 using Uno.UI.Xaml.Core;
+using Windows.Foundation;
+using Uno.UI.XamlHost.Skia.Gtk.Hosting;
+using Atk;
 
 namespace Uno.UI.Runtime.Skia
 {
@@ -83,6 +86,54 @@ namespace Uno.UI.Runtime.Skia
 		}
 
 		partial void InitializeKeyboard();
+
+		internal static Fixed? FindNativeOverlayLayer(Gtk.Window window)
+		{
+			var overlay = (Overlay)((EventBox)window.Child).Child;
+			return overlay.Children.OfType<Fixed>().FirstOrDefault();
+		}
+
+		internal static Fixed? GetOverlayLayer(XamlRoot xamlRoot) =>
+			XamlRootMap.GetHostForRoot(xamlRoot)?.NativeOverlayLayer;
+
+		public bool IsNativeElement(object content)
+			=> content is Widget;
+
+		public void AttachNativeElement(object owner, object content)
+		{
+			if (content is Widget widget
+				&& owner is XamlRoot xamlRoot
+				&& GetOverlayLayer(xamlRoot) is { } overlay)
+			{
+				widget.ShowAll();
+				overlay.Put(widget, 0, 0);
+			}
+		}
+
+		public void DetachNativeElement(object owner, object content)
+		{
+			if (content is Widget widget
+				&& owner is XamlRoot xamlRoot
+				&& GetOverlayLayer(xamlRoot) is { } overlay)
+			{
+				overlay.Remove(widget);
+			}
+		}
+
+		public void ArrangeNativeElement(object owner, object content, Windows.Foundation.Rect arrangeRect)
+		{
+			if (content is Widget widget
+				&& owner is XamlRoot xamlRoot
+				&& GetOverlayLayer(xamlRoot) is { } overlay)
+			{
+				overlay.Move(widget, (int)arrangeRect.X, (int)arrangeRect.Y);
+			}
+		}
+
+		public Windows.Foundation.Size MeasureNativeElement(object owner, object content, Windows.Foundation.Size size)
+		{
+			return size;
+		}
 
 		/// <inheritdoc />
 		public void SetPointerCapture(PointerIdentifier pointer)

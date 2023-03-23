@@ -55,7 +55,7 @@ internal abstract class GtkTextBoxView : IOverlayTextBoxView
 
 	public void AddToTextInputLayer(XamlRoot xamlRoot)
 	{
-		if (GetOverlayLayer(xamlRoot) is { } layer && RootWidget.Parent != layer)
+		if (GtkCoreWindowExtension.GetOverlayLayer(xamlRoot) is { } layer && RootWidget.Parent != layer)
 		{
 			layer.Put(RootWidget, 0, 0);
 			layer.ShowAll();
@@ -101,9 +101,6 @@ internal abstract class GtkTextBoxView : IOverlayTextBoxView
 			layer.Move(RootWidget, (int)x, (int)y);
 		}
 	}
-
-	internal static Fixed? GetOverlayLayer(XamlRoot xamlRoot) =>
-		XamlRootMap.GetHostForRoot(xamlRoot)?.NativeOverlayLayer;
 
 	private void SetFont(TextBox textBox)
 	{

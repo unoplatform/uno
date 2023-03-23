@@ -85,13 +85,7 @@ namespace Uno.UI.Runtime.Skia
 		internal static UnoEventBox EventBox => _eventBox;
 
 		internal Fixed NativeOverlayLayer
-		{
-			get
-			{
-				var overlay = (Overlay)((EventBox)_window.Child).Child;
-				return overlay.Children.OfType<Fixed>().FirstOrDefault();
-			}
-		}
+			=> GtkCoreWindowExtension.FindNativeOverlayLayer(_window);
 
 		internal IRenderSurface RenderSurface => _renderSurface;
 
