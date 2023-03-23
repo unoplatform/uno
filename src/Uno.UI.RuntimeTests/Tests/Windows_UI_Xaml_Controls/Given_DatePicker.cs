@@ -128,6 +128,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var defaultThreadCurrentCulture = CultureInfo.DefaultThreadCurrentCulture;
 			var defaultThreadCurrentUICulture = CultureInfo.DefaultThreadCurrentUICulture;
 			ApplicationLanguages.PrimaryLanguageOverride = language;
+			ApplicationLanguages.Initialize();
 			return Disposable.Create(() =>
 			{
 				ApplicationLanguages.PrimaryLanguageOverride = previousLanguage;
