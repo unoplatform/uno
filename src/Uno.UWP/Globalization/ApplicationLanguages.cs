@@ -14,6 +14,14 @@ namespace Windows.Globalization
 
 		static ApplicationLanguages()
 		{
+#if !NET461
+			if (ApplicationData.Current.LocalSettings.Values.TryGetValue(PrimaryLanguageOverrideSettingKey, out var savedValue)
+				&& savedValue is string stringSavedValue)
+			{
+				_primaryLanguageOverride = stringSavedValue;
+			}
+#endif
+
 			ApplyLanguages();
 		}
 
@@ -24,7 +32,9 @@ namespace Windows.Globalization
 			{
 				var culture = CreateCulture(primaryLanguageOverride);
 				CultureInfo.CurrentCulture = culture;
+				CultureInfo.DefaultThreadCurrentCulture = culture;
 				CultureInfo.CurrentUICulture = culture;
+				CultureInfo.DefaultThreadCurrentUICulture = culture;
 			}
 		}
 
@@ -32,13 +42,6 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				if (_primaryLanguageOverride.Length == 0 &&
-					ApplicationData.Current.LocalSettings.Values.TryGetValue(PrimaryLanguageOverrideSettingKey, out var savedValue) &&
-					savedValue is string stringSavedValue)
-				{
-					_primaryLanguageOverride = stringSavedValue;
-				}
-
 				return _primaryLanguageOverride;
 			}
 			set
