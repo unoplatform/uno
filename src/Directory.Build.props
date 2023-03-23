@@ -143,10 +143,8 @@
     <_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.FluentTheme.v2.Reference.csproj</_AdjustedOutputProjects>
 
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Adapter.Microsoft.Extensions.Logging.csproj</_AdjustedOutputProjects>
-	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Adapter.Microsoft.Extensions.Logging.netcoremobile.csproj</_AdjustedOutputProjects>
 
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.Foundation.Logging.csproj</_AdjustedOutputProjects>
-	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.Foundation.Logging.netcoremobile.csproj</_AdjustedOutputProjects>
 
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Dispatching.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Dispatching.netcoremobile.csproj</_AdjustedOutputProjects>
