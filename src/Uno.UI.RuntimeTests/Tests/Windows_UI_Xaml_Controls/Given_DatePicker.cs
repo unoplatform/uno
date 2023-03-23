@@ -123,8 +123,19 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		private static IDisposable SetAmbiantLanguage(string language)
 		{
 			var previousLanguage = ApplicationLanguages.PrimaryLanguageOverride;
+			var currentCulture = CultureInfo.CurrentCulture;
+			var currentUICulture = CultureInfo.CurrentUICulture;
+			var defaultThreadCurrentCulture = CultureInfo.DefaultThreadCurrentCulture;
+			var defaultThreadCurrentUICulture = CultureInfo.DefaultThreadCurrentUICulture;
 			ApplicationLanguages.PrimaryLanguageOverride = language;
-			return Disposable.Create(() => ApplicationLanguages.PrimaryLanguageOverride = previousLanguage);
+			return Disposable.Create(() =>
+			{
+				ApplicationLanguages.PrimaryLanguageOverride = previousLanguage;
+				CultureInfo.CurrentCulture = currentCulture;
+				CultureInfo.CurrentUICulture = currentUICulture;
+				CultureInfo.DefaultThreadCurrentCulture = defaultThreadCurrentCulture;
+				CultureInfo.DefaultThreadCurrentUICulture = defaultThreadCurrentUICulture;
+			});
 		}
 
 		private static void CheckDateTimeTextBlockPartPosition(DatePicker datePicker, string id, int expectedColumn)
