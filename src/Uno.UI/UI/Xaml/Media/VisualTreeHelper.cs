@@ -384,6 +384,11 @@ namespace Windows.UI.Xaml.Media
 
 #if TRACE_HIT_TESTING
 			using var _ = SET_TRACE_SUBJECT(element);
+			if (element is TextBlock tb)
+			{
+				TRACE($"- TextBlock.Text: {tb.Text}");
+			}
+
 			TRACE($"- hit test visibility: {elementHitTestVisibility}");
 #endif
 
@@ -575,7 +580,7 @@ namespace Windows.UI.Xaml.Media
 					stale = new Branch(element, stale?.Leaf ?? element);
 				}
 
-				TRACE($"> NOT FOUND (HitTestability.Invisible or out of the **render** bounds) | stale branch: {stale?.ToString() ?? "-- none --"}");
+				TRACE($"> NOT FOUND (HitTestability: {elementHitTestVisibility}, renderingBounds: {renderingBounds}, posRelToElement: {posRelToElement}) | stale branch: {stale?.ToString() ?? "-- none --"}");
 				return (default, stale);
 			}
 		}
