@@ -27,3 +27,9 @@ For instance, in a Skia.GTK app, you can add a control as follows:
 It is important to take into account platform specific limitations to the inclusion of such controls, particularly in libraries.
 
 Libraries in Uno Platform are compiled for all platforms, and therefore cannot include native controls that are not available on all platforms. For instance, a library cannot include a native GTK control built for `net7.0` only and you may need to use head-specific XAML to include such controls.
+
+## Limitations
+
+The current implementation does not support the following features:
+- Opacity changes to the `ContentControl` are not reflected to the native control
+- Visibility changes are reflected to the native control. For the native control to disapear, you will need to set the `Content` to `null`, or remove any of the parents from the visual tree. `x:Load` can also be used to acheive this behavior.
