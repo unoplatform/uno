@@ -538,9 +538,13 @@ namespace Uno.UI.Xaml
 		#region GetAttribute
 		internal static string GetAttribute(IntPtr htmlId, string name)
 		{
+#if NET7_0_OR_GREATER
+			return NativeMethods.GetAttribute(htmlId, name);
+#else
 			var command = "Uno.UI.WindowManager.current.getAttribute(\"" + htmlId + "\", \"" + name + "\");";
 
 			return WebAssemblyRuntime.InvokeJS(command);
+#endif
 		}
 		#endregion
 
@@ -1192,6 +1196,9 @@ namespace Uno.UI.Xaml
 
 			[JSImport("globalThis.Uno.UI.WindowManager.current.destroyViewNativeFast")]
 			internal static partial void DestroyView(IntPtr htmlId);
+
+			[JSImport("globalThis.Uno.UI.WindowManager.current.getAttribute")]
+			internal static partial string GetAttribute(IntPtr htmlId, string name);
 
 			[JSImport("globalThis.Uno.UI.WindowManager.current.measureViewNativeFast")]
 			internal static partial void MeasureView(IntPtr htmlId, double availableWidth, double availableHeight, bool measureContent, IntPtr pReturn);

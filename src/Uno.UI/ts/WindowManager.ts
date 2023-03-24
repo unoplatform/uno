@@ -423,7 +423,7 @@ namespace Uno.UI {
 		/**
 			* Get an attribute for an element.
 			*/
-		public getAttribute(elementId: number, name: string): any {
+		public getAttribute(elementId: number, name: string): string {
 
 			return this.getView(elementId).getAttribute(name);
 		}
