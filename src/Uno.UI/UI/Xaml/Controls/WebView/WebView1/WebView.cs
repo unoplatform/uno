@@ -7,6 +7,10 @@
 using System.Net.Http;
 using Microsoft.Web.WebView2.Core;
 using Uno.UI.Xaml.Controls;
+using System.Collections.Generic;
+using Windows.Foundation;
+using System.Globalization;
+using System.Linq;
 
 namespace Windows.UI.Xaml.Controls;
 
@@ -49,6 +53,13 @@ public partial class WebView : Control, IWebView
 
 	public void Stop() => CoreWebView2.Stop();
 
+	public IAsyncOperation<string> InvokeScriptAsync(string scriptName, IEnumerable<string> arguments)
+	{
+		var argumentString = ConcatenateJavascriptArguments(arguments);
+		var javaScript = string.Format(CultureInfo.InvariantCulture, "{0}(\"{1}\")", scriptName, argumentString);
+		return CoreWebView2.ExecuteScriptAsync(javaScript);
+	}
+
 	internal void NavigateWithHttpRequestMessage(HttpRequestMessage requestMessage) =>
 		CoreWebView2.NavigateWithHttpRequestMessage(requestMessage);
 
@@ -86,5 +97,16 @@ public partial class WebView : Control, IWebView
 	private void CoreWebView2_SourceChanged(CoreWebView2 sender, CoreWebView2SourceChangedEventArgs args)
 	{
 		// TODO:MZ:
+	}
+
+	private static string ConcatenateJavascriptArguments(IEnumerable<string> arguments)
+	{
+		var argument = string.Empty;
+		if (arguments != null && arguments.Any())
+		{
+			argument = string.Join(",", arguments);
+		}
+
+		return argument;
 	}
 }

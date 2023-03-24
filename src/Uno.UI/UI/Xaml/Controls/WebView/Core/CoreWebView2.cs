@@ -8,7 +8,9 @@ using Uno.UI.Xaml.Controls;
 using System.Linq;
 using System.Threading;
 using System.Globalization;
+using Windows.Foundation;
 using System.Diagnostics.CodeAnalysis;
+using System.Threading.Tasks;
 
 namespace Microsoft.Web.WebView2.Core;
 
@@ -80,6 +82,17 @@ public partial class CoreWebView2
 
 	public void Reload() => _nativeWebView?.Reload();
 
+	public IAsyncOperation<string> ExecuteScriptAsync(string javaScript) =>
+		AsyncOperation.FromTask(ct =>
+		{
+			if (_nativeWebView is null)
+			{
+				return Task.FromResult<string>(null);
+			}
+
+			return _nativeWebView.ExecuteScriptAsync(javaScript, ct);
+		});
+
 	internal void OnOwnerApplyTemplate()
 	{
 		_nativeWebView = GetNativeWebViewFromTemplate();
@@ -120,17 +133,6 @@ public partial class CoreWebView2
 	internal static bool GetIsHistoryEntryValid(string url) =>
 		!url.IsNullOrWhiteSpace() &&
 		!url.Equals(BlankUrl, StringComparison.OrdinalIgnoreCase);
-
-	internal static string ConcatenateJavascriptArguments(string[] arguments)
-	{
-		var argument = string.Empty;
-		if (arguments != null && arguments.Any())
-		{
-			argument = string.Join(",", arguments);
-		}
-
-		return argument;
-	}
 
 	[MemberNotNullWhen(true, nameof(_nativeWebView))]
 	private bool VerifyWebViewAvailability()

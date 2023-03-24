@@ -1,13 +1,19 @@
 ﻿using System;
 using System.Net.Http;
+using System.Threading;
+using System.Threading.Tasks;
+using Uno.Disposables;
 
 namespace Uno.UI.Xaml.Controls;
 
 internal partial interface INativeWebView
 {
 	void GoBack();
+
 	void GoForward();
+
 	void Stop();
+
 	void Reload();
 
 	void ProcessNavigation(Uri uri);
@@ -15,4 +21,6 @@ internal partial interface INativeWebView
 	void ProcessNavigation(string html);
 
 	void ProcessNavigation(HttpRequestMessage httpRequestMessage);
+
+	Task<string> ExecuteScriptAsync(string script, CancellationToken token);
 }

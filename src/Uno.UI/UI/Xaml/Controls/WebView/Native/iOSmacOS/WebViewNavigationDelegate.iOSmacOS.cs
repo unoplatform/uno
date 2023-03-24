@@ -95,9 +95,9 @@ internal class WebViewNavigationDelegate : WKNavigationDelegate
 
 				// To detect an anchor navigation, both the previous and new urls need to match on the left part of the anchor indicator ("#")
 				// AND the new url needs to have content on the right of the anchor indicator.
-				if (_lastNavigationData is Uri urlLastNavigation)
+				if (unoWKWebView._lastNavigationData is Uri urlLastNavigation)
 				{
-					var currentUrlParts = urlLastNavigation?.AbsoluteUrl?.ToString().Split(new string[] { "#" }, StringSplitOptions.None);
+					var currentUrlParts = urlLastNavigation?.AbsoluteUri?.ToString().Split(new string[] { "#" }, StringSplitOptions.None);
 					var newUrlParts = requestUrl?.AbsoluteUri?.ToString().Split(new string[] { "#" }, StringSplitOptions.None);
 
 					return currentUrlParts?.Length > 0
