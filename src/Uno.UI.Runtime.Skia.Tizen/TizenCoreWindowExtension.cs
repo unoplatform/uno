@@ -191,8 +191,8 @@ namespace Uno.UI.Runtime.Skia
 			=> false;
 		public void AttachNativeElement(object owner, object content) { }
 		public void DetachNativeElement(object owner, object content) { }
-		public void ArrangeNativeElement(object owner, object content, Rect arrangeRect) { }
-		public Size MeasureNativeElement(object owner, object content, Size size)
+		public void ArrangeNativeElement(object owner, object content, Windows.Foundation.Rect arrangeRect) { }
+		public Windows.Foundation.Size MeasureNativeElement(object owner, object content, Windows.Foundation.Size size)
 			=> size;
 	}
 }
