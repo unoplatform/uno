@@ -371,9 +371,13 @@ namespace Uno.UI.Xaml
 
 		internal static bool IsCssFeatureSupported(string supportCondition)
 		{
+#if NET7_0_OR_GREATER
+			return NativeMethods.CssSupports(supportCondition);
+#else
 			var command = $"Uno.UI.WindowManager.current.isCssConditionSupported(\"{WebAssemblyRuntime.EscapeJs(supportCondition)}\")";
 			var result = WebAssemblyRuntime.InvokeJS(command);
 			return bool.Parse(result);
+#endif
 		}
 
 		#endregion
@@ -1193,6 +1197,9 @@ namespace Uno.UI.Xaml
 
 			[JSImport("globalThis.Uno.UI.WindowManager.current.createContentNativeFast")]
 			internal static partial void CreateContent(IntPtr htmlId, string tagName, int uiElementRegistrationId, bool isFocusable, bool isSvg);
+
+			[JSImport("globalThis.CSS.supports")]
+			internal static partial bool CssSupports(string condition);
 
 			[JSImport("globalThis.Uno.UI.WindowManager.current.destroyViewNativeFast")]
 			internal static partial void DestroyView(IntPtr htmlId);
