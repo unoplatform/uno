@@ -14,6 +14,9 @@ using Uno.UI.Xaml.Controls;
 using System.Net.Http;
 using Microsoft.Web.WebView2.Core;
 using Uno.UI.Extensions;
+using System.Collections.Generic;
+using Windows.Foundation;
+using System.Globalization;
 
 #if __IOS__
 using UIKit;
@@ -223,88 +226,7 @@ internal class WebViewNavigationDelegate : WKNavigationDelegate
 		}
 	}
 
-	//_owner should be IAsyncOperation<string> instead of Task<string> but we use an extension method to enable the same signature in Win.
-	//IAsyncOperation is not available in Xamarin.
-	internal async Task<string> InvokeScriptAsync(CancellationToken ct, string script, string[] arguments)
-	{
-		var argumentString = ConcatenateJavascriptArguments(arguments);
-		return await _nativeWebView.EvaluateJavascriptAsync(ct, string.Format(CultureInfo.InvariantCulture, "javascript:{0}(\"{1}\")", script, argumentString));
-	}
 
-	internal IAsyncOperation<string> InvokeScriptAsync(string scriptName, IEnumerable<string> arguments) =>
-		AsyncOperation.FromTask(ct => InvokeScriptAsync(ct, scriptName, arguments?.ToArray()));
-
-	void INativeWebView.ProcessNavigation(HttpRequestMessage requestMessage)
-	{
-		if (requestMessage == null)
-		{
-			_owner.Log().Warn("HttpRequestMessage is null. Please make sure the http request is complete.");
-			return;
-		}
-
-		var urlRequest = new NSMutableUrlRequest(requestMessage.RequestUri);
-		var headerDictionnary = new NSMutableDictionary();
-
-		foreach (var header in requestMessage.Headers)
-		{
-			headerDictionnary.AddDistinct(new KeyValuePair<NSObject, NSObject>(NSObject.FromObject(header.Key), NSObject.FromObject(header.Value.JoinBy(", "))));
-		}
-
-		urlRequest.Headers = headerDictionnary;
-
-		ProcessNSUrlRequest(urlRequest);
-	}
-
-
-	private void ProcessNSUrlRequest(NSUrlRequest request)
-	{
-		if (request == null)
-		{
-			throw new ArgumentNullException(nameof(request));
-		}
-
-		var uri = request.Url?.ToUri();
-
-		if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
-		{
-			this.Log().Debug($"LoadRequest: {request.Url?.ToUri()}");
-		}
-
-		if (string.Equals(uri?.Scheme, "file", StringComparison.OrdinalIgnoreCase))
-		{
-			HandleFileNavigation(request);
-		}
-		else
-		{
-			LoadRequest(request);
-		}
-	}
-
-	void INativeWebView.ProcessNavigation(string html)
-	{
-		if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
-		{
-			this.Log().Debug($"LoadHtmlString: {html}");
-		}
-
-		LoadHtmlString(html, null);
-
-		_urlLastNavigation = null;
-	}
-
-	void INativeWebView.ProcessNavigation(Uri uri)
-	{
-		if (uri.Scheme.Equals("local", StringComparison.OrdinalIgnoreCase))
-		{
-			var path = $"{NSBundle.MainBundle.BundlePath}/{uri.PathAndQuery}";
-
-			ProcessNSUrlRequest(new NSUrlRequest(new NSUrl(path, false)));
-		}
-		else
-		{
-			ProcessNSUrlRequest(new NSUrlRequest(new NSUrl(uri.AbsoluteUri)));
-		}
-	}
 
 	private void OpenUrl(string url)
 	{

@@ -14,6 +14,7 @@ using Uno.UI.Xaml.Controls;
 using System.Net.Http;
 using Microsoft.Web.WebView2.Core;
 using Uno.UI.Extensions;
+using Intents;
 
 #if __IOS__
 using UIKit;
@@ -79,9 +80,52 @@ public partial class UnoWKWebView : WKWebView, INativeWebView
 
 	public void Stop() => StopLoading();
 
-	public void ProcessNavigation(Uri uri) => throw new NotImplementedException();
-	public void ProcessNavigation(string html) => throw new NotImplementedException();
-	public void ProcessNavigation(HttpRequestMessage httpRequestMessage) => throw new NotImplementedException();
+	void INativeWebView.ProcessNavigation(HttpRequestMessage requestMessage)
+	{
+		if (requestMessage == null)
+		{
+			_owner.Log().Warn("HttpRequestMessage is null. Please make sure the http request is complete.");
+			return;
+		}
+
+		var urlRequest = new NSMutableUrlRequest(requestMessage.RequestUri);
+		var headerDictionnary = new NSMutableDictionary();
+
+		foreach (var header in requestMessage.Headers)
+		{
+			headerDictionnary.AddDistinct(new KeyValuePair<NSObject, NSObject>(NSObject.FromObject(header.Key), NSObject.FromObject(header.Value.JoinBy(", "))));
+		}
+
+		urlRequest.Headers = headerDictionnary;
+
+		ProcessNSUrlRequest(urlRequest);
+	}
+
+	void INativeWebView.ProcessNavigation(string html)
+	{
+		if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
+		{
+			this.Log().Debug($"LoadHtmlString: {html}");
+		}
+
+		LoadHtmlString(html, null);
+
+		_urlLastNavigation = null;
+	}
+
+	void INativeWebView.ProcessNavigation(Uri uri)
+	{
+		if (uri.Scheme.Equals("local", StringComparison.OrdinalIgnoreCase))
+		{
+			var path = $"{NSBundle.MainBundle.BundlePath}/{uri.PathAndQuery}";
+
+			ProcessNSUrlRequest(new NSUrlRequest(new NSUrl(path, false)));
+		}
+		else
+		{
+			ProcessNSUrlRequest(new NSUrlRequest(new NSUrl(uri.AbsoluteUri)));
+		}
+	}
 
 	void INativeWebView.SetOwner(CoreWebView2 coreWebView)
 	{
@@ -101,7 +145,7 @@ public partial class UnoWKWebView : WKWebView, INativeWebView
 		);
 	}
 
-	private bool OnUnsupportedUriSchemeIdentified(Uri targetUri)
+	internal bool OnUnsupportedUriSchemeIdentified(Uri targetUri)
 	{
 		if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 		{
@@ -110,7 +154,8 @@ public partial class UnoWKWebView : WKWebView, INativeWebView
 
 		var args = new WebViewUnsupportedUriSchemeIdentifiedEventArgs(targetUri);
 
-		_coreWebView.RaiseUnsupportedUriSchemeIdentified(args);
+		// TODO:MZ:
+		//_coreWebView.RaiseUnsupportedUriSchemeIdentified(args);
 
 		return args.Handled;
 	}
@@ -119,9 +164,9 @@ public partial class UnoWKWebView : WKWebView, INativeWebView
 	/// Url of the last navigation ; is null if the last web page was displayed by other means,
 	/// such as raw HTML
 	/// </summary>
-	private NSUrl _urlLastNavigation;
+	internal NSUrl _urlLastNavigation;
 
-	private void OnNavigationFinished(Uri destinationUrl)
+	internal void OnNavigationFinished(Uri destinationUrl)
 	{
 		if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 		{
@@ -129,7 +174,7 @@ public partial class UnoWKWebView : WKWebView, INativeWebView
 		}
 
 		_coreWebView.DocumentTitle = Title;
-		_coreWebView.OnComplete(destinationUrl, isSuccessful: true, status: WebErrorStatus.Unknown);
+		_coreWebView.RaiseNavigationCompleted(); //TODO:MZ: (destinationUrl, isSuccessful: true, status: WebErrorStatus.Unknown);
 		_urlLastNavigation = destinationUrl;
 	}
 
@@ -146,6 +191,7 @@ public partial class UnoWKWebView : WKWebView, INativeWebView
 			target = action.Request.Url.ToUri();
 		}
 
+		//TODO:MZ:
 		//var args = new WebViewNewWindowRequestedEventArgs(
 		//	referrer: action.SourceFrame?.Request?.Url?.ToUri(),
 		//	uri: target
@@ -153,49 +199,50 @@ public partial class UnoWKWebView : WKWebView, INativeWebView
 
 		_coreWebView.RaiseNewWindowRequested(); //TODO:MZ:
 
-		if (args.Handled)
-		{
-			return null;
-		}
-		else
-		{
-			//var navigationArgs = new WebViewNavigationStartingEventArgs()
-			//{
-			//	Cancel = false,
-			//	Uri = target
-			//};
+		//TODO:MZ:
+//		if (args.Handled)
+//		{
+//			return null;
+//		}
+//		else
+//		{
+//			//var navigationArgs = new WebViewNavigationStartingEventArgs()
+//			//{
+//			//	Cancel = false,
+//			//	Uri = target
+//			//};
 
-			_coreWebView.RaiseNavigationStarting(); //TODO:MZ:
+//			_coreWebView.RaiseNavigationStarting(); //TODO:MZ:
 
-			if (!navigationArgs.Cancel)
-			{
-#if __IOS__
-				if (UIKit.UIApplication.SharedApplication.CanOpenUrl(target))
-				{
-					UIKit.UIApplication.SharedApplication.OpenUrl(target);
-					// TODO:MZ:
-					_coreWebView.RaiseNavigationCompleted();
-					//_coreWebView.OnComplete(target, isSuccessful: true, status: WebErrorStatus.Unknown);
-				}
-#else
-				if (target != null && NSWorkspace.SharedWorkspace.UrlForApplication(new NSUrl(target.AbsoluteUri)) != null)
-				{
-					NSWorkspace.SharedWorkspace.OpenUrl(target);
-					_coreWebView.OnComplete(target, isSuccessful: true, status: WebErrorStatus.Unknown);
-				}
-#endif
-				else
-				{
-					// TODO:MZ:
-					_coreWebView.RaiseNavigationCompleted();
-					//_coreWebView.OnNavigationFailed(new WebViewNavigationFailedEventArgs()
-					//{
-					//	Uri = target,
-					//	WebErrorStatus = WebErrorStatus.Unknown
-					//});
-				}
-			}
-		}
+//			if (!navigationArgs.Cancel)
+//			{
+//#if __IOS__
+//				if (UIKit.UIApplication.SharedApplication.CanOpenUrl(target))
+//				{
+//					UIKit.UIApplication.SharedApplication.OpenUrl(target);
+//					// TODO:MZ:
+//					_coreWebView.RaiseNavigationCompleted();
+//					//_coreWebView.OnComplete(target, isSuccessful: true, status: WebErrorStatus.Unknown);
+//				}
+//#else
+//				if (target != null && NSWorkspace.SharedWorkspace.UrlForApplication(new NSUrl(target.AbsoluteUri)) != null)
+//				{
+//					NSWorkspace.SharedWorkspace.OpenUrl(target);
+//					_coreWebView.OnComplete(target, isSuccessful: true, status: WebErrorStatus.Unknown);
+//				}
+//#endif
+//				else
+//				{
+//					// TODO:MZ:
+//					_coreWebView.RaiseNavigationCompleted();
+//					//_coreWebView.OnNavigationFailed(new WebViewNavigationFailedEventArgs()
+//					//{
+//					//	Uri = target,
+//					//	WebErrorStatus = WebErrorStatus.Unknown
+//					//});
+//				}
+//			}
+//		}
 
 		return null;
 	}
@@ -323,7 +370,7 @@ public partial class UnoWKWebView : WKWebView, INativeWebView
 	/// This parameter should be false when the <see cref="WKWebView"/> is not actually loading a request (like for anchors navigation).
 	/// </param>
 	/// <returns>True if the user cancelled the navigation, false otherwise.</returns>
-	private bool OnStarted(Uri targetUrl, bool stopLoadingOnCanceled = true)
+	internal bool OnStarted(Uri targetUrl, bool stopLoadingOnCanceled = true)
 	{
 		if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 		{
@@ -340,19 +387,21 @@ public partial class UnoWKWebView : WKWebView, INativeWebView
 
 		_coreWebView.RaiseNavigationStarting(); //TODO:MZ:
 
-		if (args.Cancel)
-		{
-			_isCancelling = true;
-			if (stopLoadingOnCanceled)
-			{
-				StopLoading();
-			}
-		}
+		//if (args.Cancel)
+		//{
+		//	_isCancelling = true;
+		//	if (stopLoadingOnCanceled)
+		//	{
+		//		StopLoading();
+		//	}
+		//}
 
-		return args.Cancel;
+		//return args.Cancel;
+
+		return false;
 	}
 
-	private void OnError(WKWebView webView, WKNavigation navigation, NSError error)
+	internal void OnError(WKWebView webView, WKNavigation navigation, NSError error)
 	{
 		if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Error))
 		{
@@ -444,6 +493,40 @@ public partial class UnoWKWebView : WKWebView, INativeWebView
 		}
 	}
 
+	//_owner should be IAsyncOperation<string> instead of Task<string> but we use an extension method to enable the same signature in Win.
+	//IAsyncOperation is not available in Xamarin.
+	internal async Task<string> InvokeScriptAsync(CancellationToken ct, string script, string[] arguments)
+	{
+		var argumentString = CoreWebView2.ConcatenateJavascriptArguments(arguments);
+		return await _unoWKWebView.EvaluateJavascriptAsync(ct, string.Format(CultureInfo.InvariantCulture, "javascript:{0}(\"{1}\")", script, argumentString));
+	}
+
+	internal IAsyncOperation<string> InvokeScriptAsync(string scriptName, IEnumerable<string> arguments) =>
+		AsyncOperation.FromTask(ct => InvokeScriptAsync(ct, scriptName, arguments?.ToArray()));
+
+	private void ProcessNSUrlRequest(NSUrlRequest request)
+	{
+		if (request == null)
+		{
+			throw new ArgumentNullException(nameof(request));
+		}
+
+		var uri = request.Url?.ToUri();
+
+		if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
+		{
+			this.Log().Debug($"LoadRequest: {request.Url?.ToUri()}");
+		}
+
+		if (string.Equals(uri?.Scheme, "file", StringComparison.OrdinalIgnoreCase))
+		{
+			HandleFileNavigation(request);
+		}
+		else
+		{
+			LoadRequest(request);
+		}
+	}
 
 	private void HandleFileNavigation(NSUrlRequest request)
 	{

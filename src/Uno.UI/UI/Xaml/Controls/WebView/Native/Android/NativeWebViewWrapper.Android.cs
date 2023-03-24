@@ -87,16 +87,12 @@ internal class NativeWebViewWrapper : INativeWebView
 
 		// Iterate through every next/previous (depending on direction) history entry until a valid one is found
 		for (int i = history.CurrentIndex + direction; 0 <= i && i < history.Size; i += direction)
-			if (GetIsHistoryEntryValid(history.GetItemAtIndex(i).Url))
+			if (_coreWebView.GetIsHistoryEntryValid(history.GetItemAtIndex(i).Url))
 				// return the absolute number of steps from the current entry to the nearest valid entry
 				return Math.Abs(i - history.CurrentIndex);
 
 		return 0; // no valid entry found
 	}
-
-	internal bool GetIsHistoryEntryValid(string url) =>
-		!url.IsNullOrWhiteSpace() &&
-		!url.Equals(CoreWebView2.BlankUrl, StringComparison.OrdinalIgnoreCase);
 
 	internal void CreateAndLaunchMailtoIntent(Android.Content.Context context, string url)
 	{
@@ -160,7 +156,7 @@ internal class NativeWebViewWrapper : INativeWebView
 	//IAsyncOperation is not available in Xamarin.
 	internal async Task<string> InvokeScriptAsync(CancellationToken ct, string script, string[] arguments)
 	{
-		var argumentString = ConcatenateJavascriptArguments(arguments);
+		var argumentString = CoreWebView2.ConcatenateJavascriptArguments(arguments);
 
 		TaskCompletionSource<string> tcs = new TaskCompletionSource<string>();
 		ct.Register(() => tcs.TrySetCanceled());
@@ -170,17 +166,6 @@ internal class NativeWebViewWrapper : INativeWebView
 			new ScriptResponse(value => tcs.SetResult(value)));
 
 		return await tcs.Task;
-	}
-
-	private static string ConcatenateJavascriptArguments(string[] arguments)
-	{
-		var argument = string.Empty;
-		if (arguments != null && arguments.Any())
-		{
-			argument = string.Join(",", arguments);
-		}
-
-		return argument;
 	}
 
 	internal IAsyncOperation<string> InvokeScriptAsync(string scriptName, IEnumerable<string> arguments) =>

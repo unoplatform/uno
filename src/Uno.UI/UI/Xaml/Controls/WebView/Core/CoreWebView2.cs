@@ -90,6 +90,21 @@ public partial class CoreWebView2
 		RaiseHistoryChanged();
 	}
 
+	internal static bool GetIsHistoryEntryValid(string url) =>
+		!url.IsNullOrWhiteSpace() &&
+		!url.Equals(BlankUrl, StringComparison.OrdinalIgnoreCase);
+
+	internal static string ConcatenateJavascriptArguments(string[] arguments)
+	{
+		var argument = string.Empty;
+		if (arguments != null && arguments.Any())
+		{
+			argument = string.Join(",", arguments);
+		}
+
+		return argument;
+	}
+
 	private bool VerifyWebViewAvailability()
 	{
 		if (_nativeWebView == null)
