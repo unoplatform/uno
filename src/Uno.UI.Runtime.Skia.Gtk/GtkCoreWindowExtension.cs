@@ -126,13 +126,21 @@ namespace Uno.UI.Runtime.Skia
 				&& owner is XamlRoot xamlRoot
 				&& GetOverlayLayer(xamlRoot) is { } overlay)
 			{
-				overlay.Move(widget, (int)arrangeRect.X, (int)arrangeRect.Y);
+				widget.SizeAllocate(new((int)arrangeRect.X, (int)arrangeRect.Y, (int)arrangeRect.Width, (int)arrangeRect.Height));
 			}
 		}
 
 		public Windows.Foundation.Size MeasureNativeElement(object owner, object content, Windows.Foundation.Size size)
 		{
-			return size;
+			if (content is Widget widget
+				&& owner is XamlRoot xamlRoot
+				&& GetOverlayLayer(xamlRoot) is { } overlay)
+			{
+				widget.GetPreferredSize(out var minimum_Size, out var naturalSize);
+				return new(naturalSize.Width, naturalSize.Height);
+			}
+
+			return new(0, 0);
 		}
 
 		/// <inheritdoc />
