@@ -7,6 +7,8 @@
 		<UnoRuntimeIdentifier Condition="'$(TargetFramework)'=='netstandard2.0'">Reference</UnoRuntimeIdentifier>
 
 		<DefineConstants>$(DefineConstants);IS_RUNTIME_UI_TESTS</DefineConstants>
+
+		<Platforms>AnyCPU;x86</Platforms>
 	</PropertyGroup>
 
 	<Import Project="../targetframework-override.props" />
@@ -64,7 +66,7 @@
 
 	<ItemGroup Condition="'$(TargetFramework)'=='uap10.0.18362'">
 		<PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
-		<PackageReference Include="Microsoft.UI.Xaml" Version="2.7.0-prerelease.210816001" />
+		<PackageReference Include="Microsoft.UI.Xaml" Version="2.8.2-prerelease.220830001" />
 
 		<PackageReference Include="Uno.Core.Extensions.Logging" />
 		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" />

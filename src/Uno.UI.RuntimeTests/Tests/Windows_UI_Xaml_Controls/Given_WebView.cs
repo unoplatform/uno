@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Threading.Tasks;
+using Private.Infrastructure;
 using Windows.UI.Xaml.Controls;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
@@ -44,5 +46,28 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsNull(webView.Source);
 		}
 #endif
+
+		[TestMethod]
+		public async Task When_InvokeScriptAsync()
+		{
+			var webView = new WebView();
+			webView.Width = 200;
+			webView.Height = 200;
+			TestServices.WindowHelper.WindowContent = webView;
+			bool navigated = false;
+			await TestServices.WindowHelper.WaitForLoaded(webView);
+			webView.NavigationCompleted += (sender, e) => navigated = true;
+			webView.NavigateToString("<html><body><div id='test' style='width: 100px; height: 100px; background-color: blue;' /></body></html>");
+			await TestServices.WindowHelper.WaitFor(() => navigated);
+
+			var color = await webView.InvokeScriptAsync("eval", new[] { "document.getElementById('test').style.backgroundColor.toString()" });
+			Assert.AreEqual("blue", color);
+
+			// Change color to red
+			await webView.InvokeScriptAsync("eval", new[] { "document.getElementById('test').style.backgroundColor = 'red'" });
+			color = await webView.InvokeScriptAsync("eval", new[] { "document.getElementById('test').style.backgroundColor.toString()" });
+
+			Assert.AreEqual("red", color);
+		}
 	}
 }
