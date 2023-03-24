@@ -14,7 +14,10 @@ using Uno.UI.Xaml.Controls;
 using System.Net.Http;
 using Microsoft.Web.WebView2.Core;
 using Uno.UI.Extensions;
-using Intents;
+using Windows.Foundation;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Net;
 
 #if __IOS__
 using UIKit;
@@ -63,7 +66,7 @@ public partial class UnoWKWebView : WKWebView, INativeWebView
 #if __IOS__
 		if (UIDevice.CurrentDevice.CheckSystemVersion(10, 3))
 		{
-			_errorMap.Add(NSUrlError.FileOutsideSafeArea, WebErrorStatus.UnexpectedServerError);
+			_errorMap.Add(NSUrlError.FileOutsideSafeArea, CoreWebView2WebErrorStatus.UnexpectedError);
 		}
 #endif
 	}
@@ -84,7 +87,7 @@ public partial class UnoWKWebView : WKWebView, INativeWebView
 	{
 		if (requestMessage == null)
 		{
-			_owner.Log().Warn("HttpRequestMessage is null. Please make sure the http request is complete.");
+			this.Log().Warn("HttpRequestMessage is null. Please make sure the http request is complete.");
 			return;
 		}
 
@@ -110,7 +113,7 @@ public partial class UnoWKWebView : WKWebView, INativeWebView
 
 		LoadHtmlString(html, null);
 
-		_urlLastNavigation = null;
+		_lastNavigationData = html;
 	}
 
 	void INativeWebView.ProcessNavigation(Uri uri)
@@ -164,7 +167,7 @@ public partial class UnoWKWebView : WKWebView, INativeWebView
 	/// Url of the last navigation ; is null if the last web page was displayed by other means,
 	/// such as raw HTML
 	/// </summary>
-	internal NSUrl _urlLastNavigation;
+	private object _lastNavigationData;
 
 	internal void OnNavigationFinished(Uri destinationUrl)
 	{
@@ -174,8 +177,8 @@ public partial class UnoWKWebView : WKWebView, INativeWebView
 		}
 
 		_coreWebView.DocumentTitle = Title;
-		_coreWebView.RaiseNavigationCompleted(); //TODO:MZ: (destinationUrl, isSuccessful: true, status: WebErrorStatus.Unknown);
-		_urlLastNavigation = destinationUrl;
+		_coreWebView.RaiseNavigationCompleted(destinationUrl, true, 200, CoreWebView2WebErrorStatus.Unknown);
+		_lastNavigationData = destinationUrl;
 	}
 
 	private WKWebView OnCreateWebView(WKWebView owner, WKWebViewConfiguration configuration, WKNavigationAction action, WKWindowFeatures windowFeatures)
@@ -379,26 +382,20 @@ public partial class UnoWKWebView : WKWebView, INativeWebView
 
 		_isCancelling = false;
 
-		//var args = new WebViewNavigationStartingEventArgs()
-		//{
-		//	Cancel = false,
-		//	Uri = targetUrl ?? _coreWebView.Source
-		//};
+		_coreWebView.RaiseNavigationStarting(targetUrl, out var cancel); //TODO:MZ: For HTML content 		var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(htmlContent);
+		//var base64String = System.Convert.ToBase64String(plainTextBytes);
+		//var htmlUri = new Uri(string.Format(CultureInfo.InvariantCulture, DataUriFormatString, base64String));
 
-		_coreWebView.RaiseNavigationStarting(); //TODO:MZ:
+		if (cancel)
+		{
+			_isCancelling = true;
+			if (stopLoadingOnCanceled)
+			{
+				StopLoading();
+			}
+		}
 
-		//if (args.Cancel)
-		//{
-		//	_isCancelling = true;
-		//	if (stopLoadingOnCanceled)
-		//	{
-		//		StopLoading();
-		//	}
-		//}
-
-		//return args.Cancel;
-
-		return false;
+		return cancel;
 	}
 
 	internal void OnError(WKWebView webView, WKNavigation navigation, NSError error)
@@ -408,12 +405,12 @@ public partial class UnoWKWebView : WKWebView, INativeWebView
 			this.Log().ErrorFormat("Could not navigate to web page: {0}", error.LocalizedDescription);
 		}
 
-		WebErrorStatus status = WebErrorStatus.OperationCanceled;
+		CoreWebView2WebErrorStatus status = CoreWebView2WebErrorStatus.OperationCanceled;
 
 		_errorMap.TryGetValue((NSUrlError)(int)error.Code, out status);
 
 		// We use the _isCancelling flag because the NSError caused by the StopLoading() doesn't always translate to WebErrorStatus.OperationCanceled.
-		if (status != WebErrorStatus.OperationCanceled && !_isCancelling)
+		if (status != CoreWebView2WebErrorStatus.OperationCanceled && !_isCancelling)
 		{
 			Uri uri;
 			//If the url which failed to load is available in the user info, use it because with the WKWebView the 
@@ -428,15 +425,7 @@ public partial class UnoWKWebView : WKWebView, INativeWebView
 				uri = webView.Url?.ToUri() ?? new Uri(_coreWebView.Source); // TODO:MZ: What if Source is invalid URI?
 			}
 
-			//TODO:MZ:
-			_coreWebView.RaiseNavigationCompleted();
-			//_coreWebView.OnNavigationFailed(new WebViewNavigationFailedEventArgs()
-			//{
-			//	Uri = uri,
-			//	WebErrorStatus = status
-			//});
-
-			//_coreWebView.OnComplete(uri, false, status);
+			_coreWebView.RaiseNavigationCompleted(uri, false, 0, status); // TODO:MZ: What HTTP Status code?
 		}
 
 		_isCancelling = false;
@@ -498,7 +487,7 @@ public partial class UnoWKWebView : WKWebView, INativeWebView
 	internal async Task<string> InvokeScriptAsync(CancellationToken ct, string script, string[] arguments)
 	{
 		var argumentString = CoreWebView2.ConcatenateJavascriptArguments(arguments);
-		return await _unoWKWebView.EvaluateJavascriptAsync(ct, string.Format(CultureInfo.InvariantCulture, "javascript:{0}(\"{1}\")", script, argumentString));
+		return await EvaluateJavascriptAsync(ct, string.Format(CultureInfo.InvariantCulture, "javascript:{0}(\"{1}\")", script, argumentString));
 	}
 
 	internal IAsyncOperation<string> InvokeScriptAsync(string scriptName, IEnumerable<string> arguments) =>
@@ -560,13 +549,7 @@ public partial class UnoWKWebView : WKWebView, INativeWebView
 				this.Log().Error($"The uri [{uri}] is invalid.");
 			}
 
-			// TODO:MZ:
-			_coreWebView.RaiseNavigationCompleted();
-			//_coreWebView.RaiseNavigationFailed(new WebViewNavigationFailedEventArgs()
-			//{
-			//	Uri = uri,
-			//	WebErrorStatus = WebErrorStatus.UnexpectedClientError
-			//});
+			_coreWebView.RaiseNavigationCompleted(uri, false, 404, CoreWebView2WebErrorStatus.UnexpectedError);
 		}
 	}
 
@@ -588,7 +571,7 @@ public partial class UnoWKWebView : WKWebView, INativeWebView
 	private WKBackForwardListItem GetNearestValidHistoryItem(int direction)
 	{
 		var navList = direction == 1 ? BackForwardList.ForwardList : BackForwardList.BackList.Reverse();
-		return navList.FirstOrDefault(item => _coreWebView.GetIsHistoryEntryValid(item.InitialUrl.AbsoluteString));
+		return navList.FirstOrDefault(item => CoreWebView2.GetIsHistoryEntryValid(item.InitialUrl.AbsoluteString));
 	}
 
 	private static string GetBestFolderPath(Uri fileUri)

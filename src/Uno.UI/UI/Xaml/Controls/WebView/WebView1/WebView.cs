@@ -64,11 +64,21 @@ public partial class WebView : Control, IWebView
 	private void CoreWebView2_DOMContentLoaded(CoreWebView2 sender, CoreWebView2DOMContentLoadedEventArgs args) =>
 		DOMContentLoaded?.Invoke(this, args.ToWebViewArgs());
 
-	private void CoreWebView2_NavigationStarting(CoreWebView2 sender, CoreWebView2NavigationStartingEventArgs args) =>
-		NavigationStarting?.Invoke(this, args.ToWebViewArgs());
+	private void CoreWebView2_NavigationStarting(CoreWebView2 sender, CoreWebView2NavigationStartingEventArgs args)
+	{
+		var webViewArgs = args.ToWebViewArgs();
+		NavigationStarting?.Invoke(this, webViewArgs);
+		args.Cancel = webViewArgs.Cancel;
+	}
 
-	private void CoreWebView2_NavigationCompleted(CoreWebView2 sender, CoreWebView2NavigationCompletedEventArgs args) =>
+	private void CoreWebView2_NavigationCompleted(CoreWebView2 sender, CoreWebView2NavigationCompletedEventArgs args)
+	{
 		NavigationCompleted?.Invoke(this, args.ToWebViewArgs());
+		if (!args.IsSuccess)
+		{
+			NavigationFailed?.Invoke(this, new WebViewNavigationFailedEventArgs(args.Uri, args.WebErrorStatus.ToWebErrorStatus()));
+		}
+	}
 
 	private void CoreWebView2_NewWindowRequested(CoreWebView2 sender, CoreWebView2NewWindowRequestedEventArgs args) =>
 		NewWindowRequested?.Invoke(this, args.ToWebViewArgs());

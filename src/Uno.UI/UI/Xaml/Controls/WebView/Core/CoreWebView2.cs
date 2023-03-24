@@ -1,20 +1,28 @@
+#nullable enable
+
 using System;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using System.Net.Http;
 using Uno.UI.Xaml.Controls;
+using System.Linq;
+using System.Threading;
+using System.Globalization;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Microsoft.Web.WebView2.Core;
 
 public partial class CoreWebView2
 {
 	internal const string BlankUrl = "about:blank";
+	internal const string DataUriFormatString = "data:text/html;charset=utf-8;base64,{0}";
 	internal static readonly Uri BlankUri = new Uri(BlankUrl);
 
 	private readonly IWebView _owner;
 
-	private INativeWebView _nativeWebView;
-	private object _source;
+	private INativeWebView? _nativeWebView;
+	internal long _navigationId;
+	private object _source = BlankUri;
 
 	internal CoreWebView2(IWebView owner)
 	{
@@ -23,6 +31,11 @@ public partial class CoreWebView2
 
 	public void Navigate(string uri)
 	{
+		if (!VerifyWebViewAvailability())
+		{
+			return;
+		}
+
 		if (!Uri.TryCreate(uri, UriKind.Absolute, out var actualUri))
 		{
 			throw new InvalidOperationException(); //TODO:MZ: What exception does UWP throw here?
@@ -34,12 +47,22 @@ public partial class CoreWebView2
 
 	public void NavigateToString(string htmlContent)
 	{
+		if (!VerifyWebViewAvailability())
+		{
+			return;
+		}
+
 		_source = htmlContent;
 		_nativeWebView.ProcessNavigation(htmlContent);
 	}
 
 	internal void NavigateWithHttpRequestMessage(HttpRequestMessage requestMessage)
 	{
+		if (!VerifyWebViewAvailability())
+		{
+			return;
+		}
+
 		if (requestMessage?.RequestUri == null)
 		{
 			throw new ArgumentException("Invalid request message. It does not have a RequestUri.");
@@ -49,13 +72,13 @@ public partial class CoreWebView2
 		_nativeWebView.ProcessNavigation(requestMessage);
 	}
 
-	public void GoBack() => _nativeWebView.GoBack();
+	public void GoBack() => _nativeWebView?.GoBack();
 
-	public void GoForward() => _nativeWebView.GoForward();
+	public void GoForward() => _nativeWebView?.GoForward();
 
-	public void Stop() => _nativeWebView.Stop();
+	public void Stop() => _nativeWebView?.Stop();
 
-	public void Reload() => _nativeWebView.Reload();
+	public void Reload() => _nativeWebView?.Reload();
 
 	internal void OnOwnerApplyTemplate()
 	{
@@ -66,9 +89,13 @@ public partial class CoreWebView2
 		UpdateFromInternalSource();
 	}
 
-	internal void RaiseNavigationStarting()
+	internal void RaiseNavigationStarting(string uri, out bool cancel)
 	{
-		NavigationStarting?.Invoke(this, new CoreWebView2NavigationStartingEventArgs(0, null));//TODO:MZ:
+		var newNavigationId = Interlocked.Increment(ref _navigationId);
+		var args = new CoreWebView2NavigationStartingEventArgs((ulong)newNavigationId, uri);
+		NavigationStarting?.Invoke(this, args);
+
+		cancel = args.Cancel;
 	}
 
 	internal void RaiseNewWindowRequested()
@@ -76,9 +103,9 @@ public partial class CoreWebView2
 		NewWindowRequested?.Invoke(this, new());//TODO:MZ:
 	}
 
-	internal void RaiseNavigationCompleted()
+	internal void RaiseNavigationCompleted(Uri? uri, bool isSuccess, int httpStatusCode, CoreWebView2WebErrorStatus errorStatus)
 	{
-		NavigationCompleted?.Invoke(this, new CoreWebView2NavigationCompletedEventArgs(0, null, true, 200, CoreWebView2WebErrorStatus.Unknown));//TODO:MZ:
+		NavigationCompleted?.Invoke(this, new CoreWebView2NavigationCompletedEventArgs((ulong)_navigationId, uri, isSuccess, httpStatusCode, errorStatus));
 	}
 
 	internal void RaiseHistoryChanged() => HistoryChanged?.Invoke(this, null);
@@ -105,6 +132,7 @@ public partial class CoreWebView2
 		return argument;
 	}
 
+	[MemberNotNullWhen(true, nameof(_nativeWebView))]
 	private bool VerifyWebViewAvailability()
 	{
 		if (_nativeWebView == null)
@@ -124,7 +152,10 @@ public partial class CoreWebView2
 
 	private void UpdateFromInternalSource()
 	{
-		VerifyWebViewAvailability();
+		if (!VerifyWebViewAvailability())
+		{
+			return;
+		}
 
 		if (_source is Uri uri)
 		{

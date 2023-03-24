@@ -22,7 +22,8 @@ which is a "native" controller, shared among different `WebView2` implementation
 
 To make the shared implementation between `WebView` and `WebView2` as large as possible, both controls will have
 use the `CoreWebView2` for most of the logic. The public members of both controls will then act as a proxy to the
-`CoreWebView2` implementations.
+`CoreWebView2`. However, the actual platform-specific logic is then in yet another layer - classes that implement
+the `INativeWebView` interface. This is the actual place where the platform-bound `WebViews` reside.
 
 Most of the native logic is provided by the native web view controls - e.g. `WKWebView` on iOS, `WebView` on Android.
 
@@ -38,3 +39,10 @@ At the end of the navigation, on `WebView` the either `NavigationCompleted` or `
 `WebView2` has only `NavigationCompleted`.
 
 In `WebView`, most the events include `Uri`, but `WebView2` uses a unique `NavigationId` instead.
+For details on `WebView2` event behavior see: https://learn.microsoft.com/en-us/microsoft-edge/webview2/concepts/navigation-events
+
+## Navigation ID
+
+As `WebView2` tracks each navigation via a unique identifier, we need to have a way to generate these IDs properly.
+
+On iOS and macOS we use the `WKNavigation` which is a unique identifier of the load request for a webpage.

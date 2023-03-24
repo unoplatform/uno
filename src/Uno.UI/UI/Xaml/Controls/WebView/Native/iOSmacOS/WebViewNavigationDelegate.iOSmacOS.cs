@@ -17,6 +17,11 @@ using Uno.UI.Extensions;
 using System.Collections.Generic;
 using Windows.Foundation;
 using System.Globalization;
+using Windows.UI.Core;
+
+#if !__MACCATALYST__
+using MessageUI;
+#endif
 
 #if __IOS__
 using UIKit;
@@ -90,12 +95,19 @@ internal class WebViewNavigationDelegate : WKNavigationDelegate
 
 				// To detect an anchor navigation, both the previous and new urls need to match on the left part of the anchor indicator ("#")
 				// AND the new url needs to have content on the right of the anchor indicator.
-				var currentUrlParts = unoWKWebView._urlLastNavigation?.AbsoluteUrl?.ToString().Split(new string[] { "#" }, StringSplitOptions.None);
-				var newUrlParts = requestUrl?.AbsoluteUri?.ToString().Split(new string[] { "#" }, StringSplitOptions.None);
+				if (_lastNavigationData is Uri urlLastNavigation)
+				{
+					var currentUrlParts = urlLastNavigation?.AbsoluteUrl?.ToString().Split(new string[] { "#" }, StringSplitOptions.None);
+					var newUrlParts = requestUrl?.AbsoluteUri?.ToString().Split(new string[] { "#" }, StringSplitOptions.None);
 
-				return currentUrlParts?.Length > 0
-					&& newUrlParts?.Length > 1
-					&& currentUrlParts[0].Equals(newUrlParts[0]);
+					return currentUrlParts?.Length > 0
+						&& newUrlParts?.Length > 1
+						&& currentUrlParts[0].Equals(newUrlParts[0]);
+				}
+				else
+				{
+					return false;
+				}
 			}
 		}
 		else
@@ -276,7 +288,8 @@ internal class WebViewNavigationDelegate : WKNavigationDelegate
 			return;
 		}
 
-		NavigationStarting?.Invoke(_owner, args);
+		//TODO:MZ:
+		//NavigationStarting?.Invoke(_owner, args);
 	}
 
 #if __IOS__
@@ -333,9 +346,9 @@ internal class WebViewNavigationDelegate : WKNavigationDelegate
 
 				catch (Exception e)
 				{
-					if (_owner.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Error))
+					if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Error))
 					{
-						_owner.Log().Error("Unable to launch mailto", e);
+						this.Log().Error("Unable to launch mailto", e);
 					}
 				}
 			});
@@ -393,12 +406,14 @@ internal class WebViewNavigationDelegate : WKNavigationDelegate
 
 	internal void OnNewWindowRequested(WebViewNewWindowRequestedEventArgs args)
 	{
-		NewWindowRequested?.Invoke(_owner, args);
+		//TODO:MZ:
+		//NewWindowRequested?.Invoke(_owner, args);
 	}
 
 	internal void OnNavigationFailed(WebViewNavigationFailedEventArgs args)
 	{
-		NavigationFailed?.Invoke(_owner, args);
+		//TODO:MZ:
+		//NavigationFailed?.Invoke(_owner, args);
 	}
 
 
@@ -407,7 +422,8 @@ internal class WebViewNavigationDelegate : WKNavigationDelegate
 
 	private void OnScrollEnabledChangedPartial(bool scrollingEnabled)
 	{
-		_nativeWebView.SetScrollingEnabled(scrollingEnabled);
+		//TODO:MZ:
+		//_nativeWebView.SetScrollingEnabled(scrollingEnabled);
 	}
 
 }
