@@ -219,7 +219,7 @@ namespace Windows.UI.Xaml.Documents
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(Background), typeof(global::Windows.UI.Xaml.Media.Brush), 
 			typeof(global::Windows.UI.Xaml.Documents.ContentLink), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -227,7 +227,7 @@ namespace Windows.UI.Xaml.Documents
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(Cursor), typeof(global::Windows.UI.Core.CoreCursorType), 
 			typeof(global::Windows.UI.Xaml.Documents.ContentLink), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Core.CoreCursorType)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Core.CoreCursorType)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -235,7 +235,7 @@ namespace Windows.UI.Xaml.Documents
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(ElementSoundMode), typeof(global::Windows.UI.Xaml.ElementSoundMode), 
 			typeof(global::Windows.UI.Xaml.Documents.ContentLink), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.ElementSoundMode)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.ElementSoundMode)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -243,7 +243,7 @@ namespace Windows.UI.Xaml.Documents
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(FocusState), typeof(global::Windows.UI.Xaml.FocusState), 
 			typeof(global::Windows.UI.Xaml.Documents.ContentLink), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.FocusState)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.FocusState)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -251,7 +251,7 @@ namespace Windows.UI.Xaml.Documents
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(IsTabStop), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Documents.ContentLink), 
-			new FrameworkPropertyMetadata(default(bool)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -259,7 +259,7 @@ namespace Windows.UI.Xaml.Documents
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(TabIndex), typeof(int), 
 			typeof(global::Windows.UI.Xaml.Documents.ContentLink), 
-			new FrameworkPropertyMetadata(default(int)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(int)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -267,7 +267,7 @@ namespace Windows.UI.Xaml.Documents
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(XYFocusDownNavigationStrategy), typeof(global::Windows.UI.Xaml.Input.XYFocusNavigationStrategy), 
 			typeof(global::Windows.UI.Xaml.Documents.ContentLink), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Input.XYFocusNavigationStrategy)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Input.XYFocusNavigationStrategy)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -275,7 +275,7 @@ namespace Windows.UI.Xaml.Documents
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(XYFocusDown), typeof(global::Windows.UI.Xaml.DependencyObject), 
 			typeof(global::Windows.UI.Xaml.Documents.ContentLink), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DependencyObject)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DependencyObject)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -283,7 +283,7 @@ namespace Windows.UI.Xaml.Documents
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(XYFocusLeftNavigationStrategy), typeof(global::Windows.UI.Xaml.Input.XYFocusNavigationStrategy), 
 			typeof(global::Windows.UI.Xaml.Documents.ContentLink), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Input.XYFocusNavigationStrategy)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Input.XYFocusNavigationStrategy)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -291,7 +291,7 @@ namespace Windows.UI.Xaml.Documents
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(XYFocusLeft), typeof(global::Windows.UI.Xaml.DependencyObject), 
 			typeof(global::Windows.UI.Xaml.Documents.ContentLink), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DependencyObject)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DependencyObject)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -299,7 +299,7 @@ namespace Windows.UI.Xaml.Documents
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(XYFocusRightNavigationStrategy), typeof(global::Windows.UI.Xaml.Input.XYFocusNavigationStrategy), 
 			typeof(global::Windows.UI.Xaml.Documents.ContentLink), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Input.XYFocusNavigationStrategy)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Input.XYFocusNavigationStrategy)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -307,7 +307,7 @@ namespace Windows.UI.Xaml.Documents
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(XYFocusRight), typeof(global::Windows.UI.Xaml.DependencyObject), 
 			typeof(global::Windows.UI.Xaml.Documents.ContentLink), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DependencyObject)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DependencyObject)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -315,7 +315,7 @@ namespace Windows.UI.Xaml.Documents
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(XYFocusUpNavigationStrategy), typeof(global::Windows.UI.Xaml.Input.XYFocusNavigationStrategy), 
 			typeof(global::Windows.UI.Xaml.Documents.ContentLink), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Input.XYFocusNavigationStrategy)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Input.XYFocusNavigationStrategy)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -323,7 +323,7 @@ namespace Windows.UI.Xaml.Documents
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(XYFocusUp), typeof(global::Windows.UI.Xaml.DependencyObject), 
 			typeof(global::Windows.UI.Xaml.Documents.ContentLink), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DependencyObject)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DependencyObject)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]

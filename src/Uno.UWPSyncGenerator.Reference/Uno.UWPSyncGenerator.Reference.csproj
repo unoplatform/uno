@@ -127,6 +127,7 @@
 		</When>
 		<Otherwise>
 			<ItemGroup>
+				<PackageReference Include="Microsoft.UI.Xaml" Version="2.8.2" />
 				<!-- Keep this until the project is effectively split in two to support the desktop build of WinUI -->
 				<PackageReference Include="Microsoft.ProjectReunion.WinUI">
 					<Version>0.5.6</Version>

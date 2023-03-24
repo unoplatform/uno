@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml
 		Windows.UI.Xaml.DependencyProperty.RegisterAttached(
 			"ExtensionInstance", typeof(global::Windows.UI.Xaml.IDataTemplateExtension), 
 			typeof(global::Windows.UI.Xaml.DataTemplate), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.IDataTemplateExtension)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.IDataTemplateExtension)));
 		#endif
 		// Skipping already declared method Windows.UI.Xaml.DataTemplate.DataTemplate()
 		// Forced skipping of method Windows.UI.Xaml.DataTemplate.DataTemplate()

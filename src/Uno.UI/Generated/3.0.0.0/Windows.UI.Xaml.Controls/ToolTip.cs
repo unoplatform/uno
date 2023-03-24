@@ -81,7 +81,7 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(HorizontalOffset), typeof(double), 
 			typeof(global::Windows.UI.Xaml.Controls.ToolTip), 
-			new FrameworkPropertyMetadata(default(double)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 		#endif
 		// Skipping already declared property IsOpenProperty
 		// Skipping already declared property PlacementProperty
@@ -91,7 +91,7 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(PlacementTarget), typeof(global::Windows.UI.Xaml.UIElement), 
 			typeof(global::Windows.UI.Xaml.Controls.ToolTip), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.UIElement)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.UIElement)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -99,7 +99,7 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(VerticalOffset), typeof(double), 
 			typeof(global::Windows.UI.Xaml.Controls.ToolTip), 
-			new FrameworkPropertyMetadata(default(double)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -107,7 +107,7 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(PlacementRect), typeof(global::Windows.Foundation.Rect?), 
 			typeof(global::Windows.UI.Xaml.Controls.ToolTip), 
-			new FrameworkPropertyMetadata(default(global::Windows.Foundation.Rect?)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.Foundation.Rect?)));
 		#endif
 		// Skipping already declared method Windows.UI.Xaml.Controls.ToolTip.ToolTip()
 		// Forced skipping of method Windows.UI.Xaml.Controls.ToolTip.ToolTip()

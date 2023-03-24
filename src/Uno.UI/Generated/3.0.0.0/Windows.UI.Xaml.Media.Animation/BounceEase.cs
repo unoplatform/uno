@@ -41,7 +41,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(Bounces), typeof(int), 
 			typeof(global::Windows.UI.Xaml.Media.Animation.BounceEase), 
-			new FrameworkPropertyMetadata(default(int)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(int)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -49,7 +49,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(Bounciness), typeof(double), 
 			typeof(global::Windows.UI.Xaml.Media.Animation.BounceEase), 
-			new FrameworkPropertyMetadata(default(double)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 		#endif
 		// Skipping already declared method Windows.UI.Xaml.Media.Animation.BounceEase.BounceEase()
 		// Forced skipping of method Windows.UI.Xaml.Media.Animation.BounceEase.BounceEase()

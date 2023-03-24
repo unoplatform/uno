@@ -57,7 +57,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(AutoPlay), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Media.Imaging.BitmapImage), 
-			new FrameworkPropertyMetadata(default(bool)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -65,7 +65,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(IsAnimatedBitmap), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Media.Imaging.BitmapImage), 
-			new FrameworkPropertyMetadata(default(bool)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -73,7 +73,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(IsPlaying), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Media.Imaging.BitmapImage), 
-			new FrameworkPropertyMetadata(default(bool)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 		#endif
 		// Skipping already declared method Windows.UI.Xaml.Media.Imaging.BitmapImage.BitmapImage(System.Uri)
 		// Forced skipping of method Windows.UI.Xaml.Media.Imaging.BitmapImage.BitmapImage(System.Uri)

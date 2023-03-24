@@ -2,21 +2,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Foundation.Metadata
 {
-	#if false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class GCPressureAttribute : global::System.Attribute
 	{
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public GCPressureAttribute() : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Foundation.Metadata.GCPressureAttribute", "GCPressureAttribute.GCPressureAttribute()");
-		}
-		#endif
+		// Skipping already declared method Windows.Foundation.Metadata.GCPressureAttribute.GCPressureAttribute()
 		// Forced skipping of method Windows.Foundation.Metadata.GCPressureAttribute.GCPressureAttribute()
-		#if false
-		public  global::Windows.Foundation.Metadata.GCPressureAmount amount;
-		#endif
+		// Skipping already declared field Windows.Foundation.Metadata.GCPressureAttribute.amount
 	}
 }

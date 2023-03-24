@@ -55,7 +55,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(MapTabIndex), typeof(int), 
 			typeof(global::Windows.UI.Xaml.Controls.Maps.MapLayer), 
-			new FrameworkPropertyMetadata(default(int)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(int)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -63,7 +63,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(Visible), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.Maps.MapLayer), 
-			new FrameworkPropertyMetadata(default(bool)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -71,7 +71,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(ZIndex), typeof(int), 
 			typeof(global::Windows.UI.Xaml.Controls.Maps.MapLayer), 
-			new FrameworkPropertyMetadata(default(int)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(int)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]

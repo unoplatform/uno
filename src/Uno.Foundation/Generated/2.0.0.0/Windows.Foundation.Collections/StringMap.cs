@@ -2,28 +2,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Foundation.Collections
 {
-	#if false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class StringMap : global::System.Collections.Generic.IDictionary<string, string>,global::System.Collections.Generic.IEnumerable<global::System.Collections.Generic.KeyValuePair<string, string>>,global::Windows.Foundation.Collections.IObservableMap<string, string>
 	{
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  uint Size
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint StringMap.Size is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20StringMap.Size");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public StringMap() 
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Foundation.Collections.StringMap", "StringMap.StringMap()");
-		}
-		#endif
+		// Skipping already declared property Size
+		// Skipping already declared method Windows.Foundation.Collections.StringMap.StringMap()
 		// Forced skipping of method Windows.Foundation.Collections.StringMap.StringMap()
 		// Forced skipping of method Windows.Foundation.Collections.StringMap.Lookup(string)
 		// Forced skipping of method Windows.Foundation.Collections.StringMap.Size.get
@@ -35,168 +20,16 @@ namespace Windows.Foundation.Collections
 		// Forced skipping of method Windows.Foundation.Collections.StringMap.First()
 		// Forced skipping of method Windows.Foundation.Collections.StringMap.MapChanged.add
 		// Forced skipping of method Windows.Foundation.Collections.StringMap.MapChanged.remove
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.Collections.MapChangedEventHandler<string, string> MapChanged
-		{
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Foundation.Collections.StringMap", "event MapChangedEventHandler<string, string> StringMap.MapChanged");
-			}
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Foundation.Collections.StringMap", "event MapChangedEventHandler<string, string> StringMap.MapChanged");
-			}
-		}
-		#endif
+		// Skipping already declared event Windows.Foundation.Collections.StringMap.MapChanged
 		// Processing: System.Collections.Generic.IDictionary<string, string>
-		#if false
-		// DeclaringType: System.Collections.Generic.IDictionary<string, string>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void Add( string key,  string value)
-		{
-			throw new global::System.NotSupportedException();
-		}
-		#endif
-		#if false
-		// DeclaringType: System.Collections.Generic.IDictionary<string, string>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool ContainsKey( string key)
-		{
-			throw new global::System.NotSupportedException();
-		}
-		#endif
-		#if false
-		// DeclaringType: System.Collections.Generic.IDictionary<string, string>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool Remove( string key)
-		{
-			throw new global::System.NotSupportedException();
-		}
-		#endif
-		#if false
-		// DeclaringType: System.Collections.Generic.IDictionary<string, string>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool TryGetValue( string key, out string value)
-		{
-			throw new global::System.NotSupportedException();
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public string this[string key]
-		{
-			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-			set
-			{
-				throw new global::System.NotSupportedException();
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::System.Collections.Generic.ICollection<string> Keys
-		{
-			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::System.Collections.Generic.ICollection<string> Values
-		{
-			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-		}
-		#endif
+		// Skipping already implement System.Collections.Generic.IDictionary<string, string>.this[string]
+		// Skipping already implement System.Collections.Generic.IDictionary<string, string>.Keys
+		// Skipping already implement System.Collections.Generic.IDictionary<string, string>.Values
 		// Processing: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, string>>
-		#if false
-		// DeclaringType: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, string>>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void Add( global::System.Collections.Generic.KeyValuePair<string, string> item)
-		{
-			throw new global::System.NotSupportedException();
-		}
-		#endif
-		#if false
-		// DeclaringType: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, string>>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void Clear()
-		{
-			throw new global::System.NotSupportedException();
-		}
-		#endif
-		#if false
-		// DeclaringType: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, string>>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool Contains( global::System.Collections.Generic.KeyValuePair<string, string> item)
-		{
-			throw new global::System.NotSupportedException();
-		}
-		#endif
-		#if false
-		// DeclaringType: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, string>>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void CopyTo( global::System.Collections.Generic.KeyValuePair<string, string>[] array,  int arrayIndex)
-		{
-			throw new global::System.NotSupportedException();
-		}
-		#endif
-		#if false
-		// DeclaringType: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, string>>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool Remove( global::System.Collections.Generic.KeyValuePair<string, string> item)
-		{
-			throw new global::System.NotSupportedException();
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public int Count
-		{
-			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool IsReadOnly
-		{
-			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-		}
-		#endif
+		// Skipping already implement System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, string>>.Count
+		// Skipping already implement System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, string>>.IsReadOnly
 		// Processing: System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, string>>
-		#if false
-		// DeclaringType: System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, string>>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::System.Collections.Generic.IEnumerator<global::System.Collections.Generic.KeyValuePair<string, string>> GetEnumerator()
-		{
-			throw new global::System.NotSupportedException();
-		}
-		#endif
 		// Processing: System.Collections.IEnumerable
-		#if false
-		// DeclaringType: System.Collections.IEnumerable
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		 global::System.Collections.IEnumerator global::System.Collections.IEnumerable.GetEnumerator()
-		{
-			throw new global::System.NotSupportedException();
-		}
-		#endif
 		// Processing: Windows.Foundation.Collections.IObservableMap<string, string>
 	}
 }

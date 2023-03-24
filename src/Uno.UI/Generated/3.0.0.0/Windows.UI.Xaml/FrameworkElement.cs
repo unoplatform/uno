@@ -195,7 +195,7 @@ namespace Windows.UI.Xaml
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(ActualHeight), typeof(double), 
 			typeof(global::Windows.UI.Xaml.FrameworkElement), 
-			new FrameworkPropertyMetadata(default(double)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -203,7 +203,7 @@ namespace Windows.UI.Xaml
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(ActualWidth), typeof(double), 
 			typeof(global::Windows.UI.Xaml.FrameworkElement), 
-			new FrameworkPropertyMetadata(default(double)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -211,7 +211,7 @@ namespace Windows.UI.Xaml
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(FlowDirection), typeof(global::Windows.UI.Xaml.FlowDirection), 
 			typeof(global::Windows.UI.Xaml.FrameworkElement), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.FlowDirection)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.FlowDirection)));
 		#endif
 		#if false || false || false || false || false || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
@@ -219,7 +219,7 @@ namespace Windows.UI.Xaml
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(Height), typeof(double), 
 			typeof(global::Windows.UI.Xaml.FrameworkElement), 
-			new FrameworkPropertyMetadata(default(double)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 		#endif
 		#if false || false || false || false || false || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
@@ -227,7 +227,7 @@ namespace Windows.UI.Xaml
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(HorizontalAlignment), typeof(global::Windows.UI.Xaml.HorizontalAlignment), 
 			typeof(global::Windows.UI.Xaml.FrameworkElement), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.HorizontalAlignment)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.HorizontalAlignment)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -235,7 +235,7 @@ namespace Windows.UI.Xaml
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(Language), typeof(string), 
 			typeof(global::Windows.UI.Xaml.FrameworkElement), 
-			new FrameworkPropertyMetadata(default(string)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(string)));
 		#endif
 		#if false || false || NET461 || false || false || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("NET461", "__NETSTD_REFERENCE__")]
@@ -243,7 +243,7 @@ namespace Windows.UI.Xaml
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(Margin), typeof(global::Windows.UI.Xaml.Thickness), 
 			typeof(global::Windows.UI.Xaml.FrameworkElement), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Thickness)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Thickness)));
 		#endif
 		#if false || false || false || false || false || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
@@ -251,7 +251,7 @@ namespace Windows.UI.Xaml
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(MaxHeight), typeof(double), 
 			typeof(global::Windows.UI.Xaml.FrameworkElement), 
-			new FrameworkPropertyMetadata(default(double)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 		#endif
 		#if false || false || false || false || false || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
@@ -259,7 +259,7 @@ namespace Windows.UI.Xaml
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(MaxWidth), typeof(double), 
 			typeof(global::Windows.UI.Xaml.FrameworkElement), 
-			new FrameworkPropertyMetadata(default(double)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 		#endif
 		#if false || false || false || false || false || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
@@ -267,7 +267,7 @@ namespace Windows.UI.Xaml
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(MinHeight), typeof(double), 
 			typeof(global::Windows.UI.Xaml.FrameworkElement), 
-			new FrameworkPropertyMetadata(default(double)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 		#endif
 		#if false || false || false || false || false || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
@@ -275,7 +275,7 @@ namespace Windows.UI.Xaml
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(MinWidth), typeof(double), 
 			typeof(global::Windows.UI.Xaml.FrameworkElement), 
-			new FrameworkPropertyMetadata(default(double)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 		#endif
 		#if false || false || NET461 || false || false || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("NET461", "__NETSTD_REFERENCE__")]
@@ -283,7 +283,7 @@ namespace Windows.UI.Xaml
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(Name), typeof(string), 
 			typeof(global::Windows.UI.Xaml.FrameworkElement), 
-			new FrameworkPropertyMetadata(default(string)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(string)));
 		#endif
 		// Skipping already declared property StyleProperty
 		// Skipping already declared property TagProperty
@@ -293,7 +293,7 @@ namespace Windows.UI.Xaml
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(VerticalAlignment), typeof(global::Windows.UI.Xaml.VerticalAlignment), 
 			typeof(global::Windows.UI.Xaml.FrameworkElement), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.VerticalAlignment)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.VerticalAlignment)));
 		#endif
 		#if false || false || false || false || false || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
@@ -301,7 +301,7 @@ namespace Windows.UI.Xaml
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(Width), typeof(double), 
 			typeof(global::Windows.UI.Xaml.FrameworkElement), 
-			new FrameworkPropertyMetadata(default(double)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 		#endif
 		// Skipping already declared property RequestedThemeProperty
 		// Skipping already declared property AllowFocusOnInteractionProperty
@@ -317,7 +317,7 @@ namespace Windows.UI.Xaml
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(ActualTheme), typeof(global::Windows.UI.Xaml.ElementTheme), 
 			typeof(global::Windows.UI.Xaml.FrameworkElement), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.ElementTheme)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.ElementTheme)));
 		#endif
 		// Skipping already declared method Windows.UI.Xaml.FrameworkElement.FrameworkElement()
 		// Forced skipping of method Windows.UI.Xaml.FrameworkElement.FrameworkElement()

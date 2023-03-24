@@ -27,7 +27,7 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(Symbol), typeof(global::Windows.UI.Xaml.Controls.Symbol), 
 			typeof(global::Windows.UI.Xaml.Controls.SymbolIcon), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.Symbol)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.Symbol)));
 		#endif
 		#if false || false || NET461 || false || false || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("NET461", "__NETSTD_REFERENCE__")]

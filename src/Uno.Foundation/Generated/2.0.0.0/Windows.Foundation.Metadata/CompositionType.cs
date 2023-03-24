@@ -2,15 +2,11 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Foundation.Metadata
 {
-	#if false
+	#if false || false || false || false || false || false || false
 	public   enum CompositionType 
 	{
-		#if false
-		Protected = 1,
-		#endif
-		#if false
-		Public = 2,
-		#endif
+		// Skipping already declared field Windows.Foundation.Metadata.CompositionType.Protected
+		// Skipping already declared field Windows.Foundation.Metadata.CompositionType.Public
 	}
 	#endif
 }

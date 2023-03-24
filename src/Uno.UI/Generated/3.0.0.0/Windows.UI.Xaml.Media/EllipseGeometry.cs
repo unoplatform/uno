@@ -55,7 +55,7 @@ namespace Windows.UI.Xaml.Media
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(Center), typeof(global::Windows.Foundation.Point), 
 			typeof(global::Windows.UI.Xaml.Media.EllipseGeometry), 
-			new FrameworkPropertyMetadata(default(global::Windows.Foundation.Point)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.Foundation.Point)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || false || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -63,7 +63,7 @@ namespace Windows.UI.Xaml.Media
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(RadiusX), typeof(double), 
 			typeof(global::Windows.UI.Xaml.Media.EllipseGeometry), 
-			new FrameworkPropertyMetadata(default(double)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || false || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -71,7 +71,7 @@ namespace Windows.UI.Xaml.Media
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(RadiusY), typeof(double), 
 			typeof(global::Windows.UI.Xaml.Media.EllipseGeometry), 
-			new FrameworkPropertyMetadata(default(double)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || false || false || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__NETSTD_REFERENCE__", "__MACOS__")]

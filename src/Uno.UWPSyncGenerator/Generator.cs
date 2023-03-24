@@ -87,12 +87,10 @@ namespace Uno.UWPSyncGenerator
 			BaseXamlNamespace + ".Controls.Primitives.CarouselPanel",
 			BaseXamlNamespace + ".Controls.MediaPlayerPresenter",
 			BaseXamlNamespace + ".Controls.NavigationViewItemBase",
-
-#if HAS_UNO_WINUI
+			"Microsoft.UI.Xaml.Media.RadialGradientBrush",
 			// Mismatching public inheritance hierarchy because RadioMenuFlyoutItem has a double inheritance in WinUI.
 			// Remove this and update RadioMenuFlyoutItem if WinUI 3 removed the double inheritance.
-			BaseXamlNamespace + ".Controls.RadioMenuFlyoutItem",
-#endif
+			"Microsoft.UI.Xaml.Controls.RadioMenuFlyoutItem",
 		};
 
 		private Compilation _iOSCompilation;
@@ -118,6 +116,8 @@ namespace Uno.UWPSyncGenerator
 			"Windows.UI.Xaml",
 			"Windows.UI.Composition",
 			"Windows.UI.Dispatching",
+			"Microsoft.UI.Xaml",
+			"Microsoft.Web",
 #if HAS_UNO_WINUI
 			"Microsoft.Foundation",
 			"Microsoft.UI.Xaml",
@@ -313,6 +313,7 @@ namespace Uno.UWPSyncGenerator
 #endif
 			else if (containingNamespaceName.StartsWith("Windows.UI.Xaml", StringComparison.Ordinal)
 				|| containingNamespaceName.StartsWith("Microsoft.UI.Xaml", StringComparison.Ordinal)
+				|| containingNamespaceName.StartsWith("Microsoft.Web", StringComparison.Ordinal)
 #if HAS_UNO_WINUI
 				|| containingNamespaceName.StartsWith("Microsoft.System", StringComparison.Ordinal)
 				|| containingNamespaceName.StartsWith("Microsoft.UI.Composition", StringComparison.Ordinal)
@@ -601,6 +602,37 @@ namespace Uno.UWPSyncGenerator
 
 				case "Windows.UI.Colors":
 					// Skipped because the type not present WinAppSDK projection
+					return true;
+#else
+				case "Microsoft.UI.Xaml.Automation.Peers.AnimatedVisualPlayerAutomationPeer":
+				case "Microsoft.UI.Xaml.Automation.Peers.PersonPictureAutomationPeer":
+				case "Microsoft.UI.Xaml.Automation.Peers.MenuBarAutomationPeer":
+				case "Microsoft.UI.Xaml.Automation.Peers.MenuBarItemAutomationPeer":
+				case "Microsoft.UI.Xaml.Controls.AnimatedVisuals.AnimatedAcceptVisualSource":
+				case "Microsoft.UI.Xaml.Controls.AnimatedVisuals.AnimatedBackVisualSource":
+				case "Microsoft.UI.Xaml.Controls.AnimatedVisuals.AnimatedChevronDownSmallVisualSource":
+				case "Microsoft.UI.Xaml.Controls.AnimatedVisuals.AnimatedChevronRightDownSmallVisualSource":
+				case "Microsoft.UI.Xaml.Controls.AnimatedVisuals.AnimatedChevronUpDownSmallVisualSource":
+				case "Microsoft.UI.Xaml.Controls.AnimatedVisuals.AnimatedFindVisualSource":
+				case "Microsoft.UI.Xaml.Controls.AnimatedVisuals.AnimatedGlobalNavigationButtonVisualSource":
+				case "Microsoft.UI.Xaml.Controls.AnimatedVisuals.AnimatedSettingsVisualSource":
+				case "Microsoft.UI.Xaml.Controls.AnimatedVisualPlayer":
+				case "Microsoft.UI.Xaml.Controls.ControlsResourcesVersion":
+				case "Microsoft.UI.Xaml.Controls.IAnimatedVisualSource":
+				case "Microsoft.UI.Xaml.Controls.IAnimatedVisualSource2":
+				case "Microsoft.UI.Xaml.Controls.IDynamicAnimatedVisualSource":
+				case "Microsoft.UI.Xaml.Controls.MenuBar":
+				case "Microsoft.UI.Xaml.Controls.MenuBarItem":
+				case "Microsoft.UI.Xaml.Controls.MenuBarItemFlyout":
+				case "Microsoft.UI.Xaml.Controls.PersonPicture":
+				case "Microsoft.UI.Xaml.Controls.PersonPictureTemplateSettings":
+				case "Microsoft.UI.Xaml.Controls.SwipeBehaviorOnInvoked":
+				case "Microsoft.UI.Xaml.Controls.SwipeControl":
+				case "Microsoft.UI.Xaml.Controls.SwipeItem":
+				case "Microsoft.UI.Xaml.Controls.SwipeItemInvokedEventArgs":
+				case "Microsoft.UI.Xaml.Controls.SwipeItems":
+				case "Microsoft.UI.Xaml.Controls.SwipeMode":
+					// Skipped because the implementation is currently incorrectly placed in WUX namespace
 					return true;
 #endif
 			}
@@ -1458,7 +1490,7 @@ namespace Uno.UWPSyncGenerator
 								}
 
 								b.AppendLineInvariant($"\ttypeof({property.ContainingType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}), ");
-								b.AppendLineInvariant($"\tnew FrameworkPropertyMetadata(default({propertyDisplayType})));");
+								b.AppendLineInvariant($"\tnew {BaseXamlNamespace}.FrameworkPropertyMetadata(default({propertyDisplayType})));");
 							}
 							else
 							{

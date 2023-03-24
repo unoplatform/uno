@@ -79,7 +79,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(CollisionBehaviorDesired), typeof(global::Windows.UI.Xaml.Controls.Maps.MapElementCollisionBehavior), 
 			typeof(global::Windows.UI.Xaml.Controls.Maps.MapBillboard), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.Maps.MapElementCollisionBehavior)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.Maps.MapElementCollisionBehavior)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -87,7 +87,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(Location), typeof(global::Windows.Devices.Geolocation.Geopoint), 
 			typeof(global::Windows.UI.Xaml.Controls.Maps.MapBillboard), 
-			new FrameworkPropertyMetadata(default(global::Windows.Devices.Geolocation.Geopoint)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.Devices.Geolocation.Geopoint)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -95,7 +95,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(NormalizedAnchorPoint), typeof(global::Windows.Foundation.Point), 
 			typeof(global::Windows.UI.Xaml.Controls.Maps.MapBillboard), 
-			new FrameworkPropertyMetadata(default(global::Windows.Foundation.Point)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.Foundation.Point)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]

@@ -2,18 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Foundation.Metadata
 {
-	#if false
+	#if false || false || false || false || false || false || false
 	public   enum GCPressureAmount 
 	{
-		#if false
-		Low = 0,
-		#endif
-		#if false
-		Medium = 1,
-		#endif
-		#if false
-		High = 2,
-		#endif
+		// Skipping already declared field Windows.Foundation.Metadata.GCPressureAmount.Low
+		// Skipping already declared field Windows.Foundation.Metadata.GCPressureAmount.Medium
+		// Skipping already declared field Windows.Foundation.Metadata.GCPressureAmount.High
 	}
 	#endif
 }

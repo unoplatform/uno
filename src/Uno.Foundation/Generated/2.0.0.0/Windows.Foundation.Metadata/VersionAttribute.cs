@@ -2,26 +2,14 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Foundation.Metadata
 {
-	#if false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class VersionAttribute : global::System.Attribute
 	{
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public VersionAttribute( uint version) : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Foundation.Metadata.VersionAttribute", "VersionAttribute.VersionAttribute(uint version)");
-		}
-		#endif
+		// Skipping already declared method Windows.Foundation.Metadata.VersionAttribute.VersionAttribute(uint)
 		// Forced skipping of method Windows.Foundation.Metadata.VersionAttribute.VersionAttribute(uint)
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public VersionAttribute( uint version,  global::Windows.Foundation.Metadata.Platform platform) : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Foundation.Metadata.VersionAttribute", "VersionAttribute.VersionAttribute(uint version, Platform platform)");
-		}
-		#endif
+		// Skipping already declared method Windows.Foundation.Metadata.VersionAttribute.VersionAttribute(uint, Windows.Foundation.Metadata.Platform)
 		// Forced skipping of method Windows.Foundation.Metadata.VersionAttribute.VersionAttribute(uint, Windows.Foundation.Metadata.Platform)
 	}
 }

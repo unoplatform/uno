@@ -41,7 +41,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(Peer), typeof(global::Windows.UI.Xaml.Automation.Peers.AutomationPeer), 
 			typeof(global::Windows.UI.Xaml.Automation.Peers.AutomationPeerAnnotation), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Automation.Peers.AutomationPeer)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Automation.Peers.AutomationPeer)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -49,7 +49,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(Type), typeof(global::Windows.UI.Xaml.Automation.AnnotationType), 
 			typeof(global::Windows.UI.Xaml.Automation.Peers.AutomationPeerAnnotation), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Automation.AnnotationType)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Automation.AnnotationType)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]

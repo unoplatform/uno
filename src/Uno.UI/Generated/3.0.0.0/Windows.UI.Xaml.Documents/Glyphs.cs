@@ -153,7 +153,7 @@ namespace Windows.UI.Xaml.Documents
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(Fill), typeof(global::Windows.UI.Xaml.Media.Brush), 
 			typeof(global::Windows.UI.Xaml.Documents.Glyphs), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -161,7 +161,7 @@ namespace Windows.UI.Xaml.Documents
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(FontRenderingEmSize), typeof(double), 
 			typeof(global::Windows.UI.Xaml.Documents.Glyphs), 
-			new FrameworkPropertyMetadata(default(double)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -169,7 +169,7 @@ namespace Windows.UI.Xaml.Documents
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(FontUri), typeof(global::System.Uri), 
 			typeof(global::Windows.UI.Xaml.Documents.Glyphs), 
-			new FrameworkPropertyMetadata(default(global::System.Uri)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::System.Uri)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -177,7 +177,7 @@ namespace Windows.UI.Xaml.Documents
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(Indices), typeof(string), 
 			typeof(global::Windows.UI.Xaml.Documents.Glyphs), 
-			new FrameworkPropertyMetadata(default(string)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(string)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -185,7 +185,7 @@ namespace Windows.UI.Xaml.Documents
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(OriginX), typeof(double), 
 			typeof(global::Windows.UI.Xaml.Documents.Glyphs), 
-			new FrameworkPropertyMetadata(default(double)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -193,7 +193,7 @@ namespace Windows.UI.Xaml.Documents
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(OriginY), typeof(double), 
 			typeof(global::Windows.UI.Xaml.Documents.Glyphs), 
-			new FrameworkPropertyMetadata(default(double)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -201,7 +201,7 @@ namespace Windows.UI.Xaml.Documents
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(StyleSimulations), typeof(global::Windows.UI.Xaml.Media.StyleSimulations), 
 			typeof(global::Windows.UI.Xaml.Documents.Glyphs), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.StyleSimulations)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.StyleSimulations)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -209,7 +209,7 @@ namespace Windows.UI.Xaml.Documents
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(UnicodeString), typeof(string), 
 			typeof(global::Windows.UI.Xaml.Documents.Glyphs), 
-			new FrameworkPropertyMetadata(default(string)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(string)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -217,7 +217,7 @@ namespace Windows.UI.Xaml.Documents
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(ColorFontPaletteIndex), typeof(int), 
 			typeof(global::Windows.UI.Xaml.Documents.Glyphs), 
-			new FrameworkPropertyMetadata(default(int)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(int)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -225,7 +225,7 @@ namespace Windows.UI.Xaml.Documents
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(IsColorFontEnabled), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Documents.Glyphs), 
-			new FrameworkPropertyMetadata(default(bool)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]

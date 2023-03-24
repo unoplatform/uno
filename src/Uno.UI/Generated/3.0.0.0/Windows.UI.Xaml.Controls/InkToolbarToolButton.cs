@@ -37,7 +37,7 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(IsExtensionGlyphShown), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.InkToolbarToolButton), 
-			new FrameworkPropertyMetadata(default(bool)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Controls.InkToolbarToolButton.ToolKind.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.InkToolbarToolButton.IsExtensionGlyphShown.get

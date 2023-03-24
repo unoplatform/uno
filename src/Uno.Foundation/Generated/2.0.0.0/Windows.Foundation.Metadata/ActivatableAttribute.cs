@@ -2,58 +2,22 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Foundation.Metadata
 {
-	#if false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class ActivatableAttribute : global::System.Attribute
 	{
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public ActivatableAttribute( uint version) : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Foundation.Metadata.ActivatableAttribute", "ActivatableAttribute.ActivatableAttribute(uint version)");
-		}
-		#endif
+		// Skipping already declared method Windows.Foundation.Metadata.ActivatableAttribute.ActivatableAttribute(uint)
 		// Forced skipping of method Windows.Foundation.Metadata.ActivatableAttribute.ActivatableAttribute(uint)
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public ActivatableAttribute( uint version,  string type) : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Foundation.Metadata.ActivatableAttribute", "ActivatableAttribute.ActivatableAttribute(uint version, string type)");
-		}
-		#endif
+		// Skipping already declared method Windows.Foundation.Metadata.ActivatableAttribute.ActivatableAttribute(uint, string)
 		// Forced skipping of method Windows.Foundation.Metadata.ActivatableAttribute.ActivatableAttribute(uint, string)
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public ActivatableAttribute( uint version,  global::Windows.Foundation.Metadata.Platform platform) : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Foundation.Metadata.ActivatableAttribute", "ActivatableAttribute.ActivatableAttribute(uint version, Platform platform)");
-		}
-		#endif
+		// Skipping already declared method Windows.Foundation.Metadata.ActivatableAttribute.ActivatableAttribute(uint, Windows.Foundation.Metadata.Platform)
 		// Forced skipping of method Windows.Foundation.Metadata.ActivatableAttribute.ActivatableAttribute(uint, Windows.Foundation.Metadata.Platform)
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public ActivatableAttribute( global::System.Type type,  uint version) : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Foundation.Metadata.ActivatableAttribute", "ActivatableAttribute.ActivatableAttribute(Type type, uint version)");
-		}
-		#endif
+		// Skipping already declared method Windows.Foundation.Metadata.ActivatableAttribute.ActivatableAttribute(System.Type, uint)
 		// Forced skipping of method Windows.Foundation.Metadata.ActivatableAttribute.ActivatableAttribute(System.Type, uint)
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public ActivatableAttribute( global::System.Type type,  uint version,  string contractName) : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Foundation.Metadata.ActivatableAttribute", "ActivatableAttribute.ActivatableAttribute(Type type, uint version, string contractName)");
-		}
-		#endif
+		// Skipping already declared method Windows.Foundation.Metadata.ActivatableAttribute.ActivatableAttribute(System.Type, uint, string)
 		// Forced skipping of method Windows.Foundation.Metadata.ActivatableAttribute.ActivatableAttribute(System.Type, uint, string)
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public ActivatableAttribute( global::System.Type type,  uint version,  global::Windows.Foundation.Metadata.Platform platform) : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Foundation.Metadata.ActivatableAttribute", "ActivatableAttribute.ActivatableAttribute(Type type, uint version, Platform platform)");
-		}
-		#endif
+		// Skipping already declared method Windows.Foundation.Metadata.ActivatableAttribute.ActivatableAttribute(System.Type, uint, Windows.Foundation.Metadata.Platform)
 		// Forced skipping of method Windows.Foundation.Metadata.ActivatableAttribute.ActivatableAttribute(System.Type, uint, Windows.Foundation.Metadata.Platform)
 	}
 }

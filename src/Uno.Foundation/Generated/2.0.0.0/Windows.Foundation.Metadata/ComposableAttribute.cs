@@ -2,34 +2,16 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Foundation.Metadata
 {
-	#if false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class ComposableAttribute : global::System.Attribute
 	{
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public ComposableAttribute( global::System.Type type,  global::Windows.Foundation.Metadata.CompositionType compositionType,  uint version) : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Foundation.Metadata.ComposableAttribute", "ComposableAttribute.ComposableAttribute(Type type, CompositionType compositionType, uint version)");
-		}
-		#endif
+		// Skipping already declared method Windows.Foundation.Metadata.ComposableAttribute.ComposableAttribute(System.Type, Windows.Foundation.Metadata.CompositionType, uint)
 		// Forced skipping of method Windows.Foundation.Metadata.ComposableAttribute.ComposableAttribute(System.Type, Windows.Foundation.Metadata.CompositionType, uint)
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public ComposableAttribute( global::System.Type type,  global::Windows.Foundation.Metadata.CompositionType compositionType,  uint version,  global::Windows.Foundation.Metadata.Platform platform) : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Foundation.Metadata.ComposableAttribute", "ComposableAttribute.ComposableAttribute(Type type, CompositionType compositionType, uint version, Platform platform)");
-		}
-		#endif
+		// Skipping already declared method Windows.Foundation.Metadata.ComposableAttribute.ComposableAttribute(System.Type, Windows.Foundation.Metadata.CompositionType, uint, Windows.Foundation.Metadata.Platform)
 		// Forced skipping of method Windows.Foundation.Metadata.ComposableAttribute.ComposableAttribute(System.Type, Windows.Foundation.Metadata.CompositionType, uint, Windows.Foundation.Metadata.Platform)
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public ComposableAttribute( global::System.Type type,  global::Windows.Foundation.Metadata.CompositionType compositionType,  uint version,  string contract) : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Foundation.Metadata.ComposableAttribute", "ComposableAttribute.ComposableAttribute(Type type, CompositionType compositionType, uint version, string contract)");
-		}
-		#endif
+		// Skipping already declared method Windows.Foundation.Metadata.ComposableAttribute.ComposableAttribute(System.Type, Windows.Foundation.Metadata.CompositionType, uint, string)
 		// Forced skipping of method Windows.Foundation.Metadata.ComposableAttribute.ComposableAttribute(System.Type, Windows.Foundation.Metadata.CompositionType, uint, string)
 	}
 }

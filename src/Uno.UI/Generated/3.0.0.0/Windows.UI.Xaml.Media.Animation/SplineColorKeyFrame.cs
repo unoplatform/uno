@@ -27,7 +27,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(KeySpline), typeof(global::Windows.UI.Xaml.Media.Animation.KeySpline), 
 			typeof(global::Windows.UI.Xaml.Media.Animation.SplineColorKeyFrame), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Animation.KeySpline)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Animation.KeySpline)));
 		#endif
 		// Skipping already declared method Windows.UI.Xaml.Media.Animation.SplineColorKeyFrame.SplineColorKeyFrame()
 		// Forced skipping of method Windows.UI.Xaml.Media.Animation.SplineColorKeyFrame.SplineColorKeyFrame()
