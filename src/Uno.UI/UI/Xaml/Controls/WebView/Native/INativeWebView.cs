@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -22,5 +24,5 @@ internal partial interface INativeWebView
 
 	void ProcessNavigation(HttpRequestMessage httpRequestMessage);
 
-	Task<string> ExecuteScriptAsync(string script, CancellationToken token);
+	Task<string?> ExecuteScriptAsync(string script, CancellationToken token);
 }

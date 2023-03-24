@@ -61,7 +61,7 @@ public partial class WebView2 : Control, IWebView
 			return Task.CompletedTask;
 		});
 
-	public IAsyncOperation<string> ExecuteScriptAsync(string javascriptCode) =>
+	public IAsyncOperation<string?> ExecuteScriptAsync(string javascriptCode) =>
 		CoreWebView2.ExecuteScriptAsync(javascriptCode);
 
 	public void Reload() => CoreWebView2.Reload();

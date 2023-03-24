@@ -53,7 +53,7 @@ public partial class WebView : Control, IWebView
 
 	public void Stop() => CoreWebView2.Stop();
 
-	public IAsyncOperation<string> InvokeScriptAsync(string scriptName, IEnumerable<string> arguments)
+	public IAsyncOperation<string?> InvokeScriptAsync(string scriptName, IEnumerable<string> arguments)
 	{
 		var argumentString = ConcatenateJavascriptArguments(arguments);
 		var javaScript = string.Format(CultureInfo.InvariantCulture, "{0}(\"{1}\")", scriptName, argumentString);

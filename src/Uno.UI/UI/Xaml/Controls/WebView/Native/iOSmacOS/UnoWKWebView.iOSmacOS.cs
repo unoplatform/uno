@@ -382,7 +382,7 @@ public partial class UnoWKWebView : WKWebView, INativeWebView
 
 		_isCancelling = false;
 
-		_coreWebView.RaiseNavigationStarting(null, out var cancel); //TODO:MZ: For HTML content 		var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(htmlContent);
+		_coreWebView.RaiseNavigationStarting(CoreWebView2.BlankUrl, out var cancel); //TODO:MZ: For HTML content 		var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(htmlContent);
 																	//var base64String = System.Convert.ToBase64String(plainTextBytes);
 																	//var htmlUri = new Uri(string.Format(CultureInfo.InvariantCulture, DataUriFormatString, base64String));
 
@@ -455,7 +455,7 @@ public partial class UnoWKWebView : WKWebView, INativeWebView
 		GoTo(GetNearestValidHistoryItem(direction: 1));
 	}
 
-	internal async Task<string> ExecuteScriptAsync(string script, CancellationToken token)
+	async Task<string> INativeWebView.ExecuteScriptAsync(string script, CancellationToken token)
 	{
 		var executedScript = string.Format(CultureInfo.InvariantCulture, "javascript:{0}", script);
 

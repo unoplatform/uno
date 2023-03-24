@@ -82,12 +82,12 @@ public partial class CoreWebView2
 
 	public void Reload() => _nativeWebView?.Reload();
 
-	public IAsyncOperation<string> ExecuteScriptAsync(string javaScript) =>
+	public IAsyncOperation<string?> ExecuteScriptAsync(string javaScript) =>
 		AsyncOperation.FromTask(ct =>
 		{
 			if (_nativeWebView is null)
 			{
-				return Task.FromResult<string>(null);
+				return Task.FromResult<string?>(null);
 			}
 
 			return _nativeWebView.ExecuteScriptAsync(javaScript, ct);

@@ -16,6 +16,4 @@ internal partial interface INativeWebView
 	void SetOwner(CoreWebView2 xamlWebView);
 
 	void SetScrollingEnabled(bool isScrollingEnabled);
-
-	Task<string> EvaluateJavascriptAsync(CancellationToken ct, string javascript);
 }
