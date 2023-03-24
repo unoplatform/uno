@@ -91,8 +91,23 @@ namespace Microsoft.UI.Xaml.Controls
 
 			public T this[int index]
 			{
-				get => (T)_inner[index];
-				set => _inner[index] = value;
+				get
+				{
+					if (index < 0 || index >= _inner.Count)
+					{
+						throw new ArgumentOutOfRangeException(nameof(index));
+					}
+					return (T)_inner[index];
+				}
+
+				set
+				{
+					if (index < 0 || index >= _inner.Count)
+					{
+						throw new ArgumentOutOfRangeException(nameof(index));
+					}
+					_inner[index] = value;
+				}
 			}
 			public int Count => _inner.Count;
 			public bool IsReadOnly => _inner.IsReadOnly;
