@@ -32,4 +32,4 @@ Libraries in Uno Platform are compiled for all platforms, and therefore cannot i
 
 The current implementation does not support the following features:
 - Opacity changes to the `ContentControl` are not reflected to the native control
-- Visibility changes are reflected to the native control. For the native control to disapear, you will need to set the `Content` to `null`, or remove any of the parents from the visual tree. `x:Load` can also be used to acheive this behavior.
+- Visibility changes are reflected to the native control. For the native control to disappear, you will need to set the `Content` to `null`, or remove any of the parents from the visual tree. `x:Load` can also be used to achieve this behavior.
