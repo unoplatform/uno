@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Android.App;
 using Android.Content;
 using Android.Content.PM;
+using Android.OS;
 using Android.Provider;
 using Android.Runtime;
 using AndroidX.Fragment.App;
@@ -90,14 +91,26 @@ namespace Windows.Media.Capture
 
 		private async Task ValidateRequiredPermissions(CancellationToken ct)
 		{
-			if (!await PermissionsHelper.TryGetWriteExternalStoragePermission(ct))
+			if (shouldCheckWriteExternalStoragePermission() &&
+				!await PermissionsHelper.TryGetWriteExternalStoragePermission(ct))
 			{
-				throw new UnauthorizedAccessException("Requires WRITE_EXTERNAL_STORAGE permission");
+				throw new UnauthorizedAccessException("Requires WRITE_EXTERNAL_STORAGE permission on Android 9 and lower.");
 			}
 
 			if (!await PermissionsHelper.TryGetCameraPermission(ct))
 			{
 				throw new UnauthorizedAccessException("Requires CAMERA permission");
+			}
+
+			static bool shouldCheckWriteExternalStoragePermission()
+			{
+				// https://developer.android.com/training/data-storage/shared/media#request-permissions
+				// On devices that run Android 10 or higher, you don't need any storage-related permissions to access and modify media files that your app owns
+				// If your app is used on a device that runs Android 9 or lower, or if your app has temporarily
+				// opted out of scoped storage, you must request the READ_EXTERNAL_STORAGE permission to access any media file.
+				// If you want to modify media files, you must request the WRITE_EXTERNAL_STORAGE permission, as well.
+				return (int)Build.VERSION.SdkInt <= (int)BuildVersionCodes.P ||
+					Android.OS.Environment.IsExternalStorageLegacy;
 			}
 		}
 
