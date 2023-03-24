@@ -1,11 +1,11 @@
-﻿using Uno.UI.Samples.Controls;
-using System;
-using Windows.UI.Xaml;
-using Windows.UI.Core;
+﻿using System;
 using System.Threading;
-using Windows.UI.Xaml.Controls;
 using System.Threading.Tasks;
 using SamplesApp.Microsoft_UI_Xaml_Controls.WebView2Tests;
+using Uno.UI.Samples.Controls;
+using Windows.UI.Core;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 
 namespace SamplesApp.Microsoft_UI_Xaml_Controls.WebView2Tests
 {
@@ -16,28 +16,30 @@ namespace SamplesApp.Microsoft_UI_Xaml_Controls.WebView2Tests
 		public WebView2_JavascriptInvoke()
 		{
 			this.InitializeComponent();
-			MyButton.Click += MyButton_OnClick;
+			//TODO:MZ:
+			//	MyButton.Click += MyButton_OnClick;
+			//}
+
+			//private void MyButton_OnClick(object sender, RoutedEventArgs e)
+			//{
+			//	var t = Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
+			//		async () => await InvokeScriptAsync(MyWebView2, CancellationToken.None, GetReloadJavascript(), new string[] { "" })
+			//	);
+			//}
+			//public static async Task<string> InvokeScriptAsync(Microsoft.UI.Xaml.Controls.WebView2 webView, CancellationToken ct, string script, string[] arguments)
+			//{
+			//	
+			//	//return await webView.CoreWebView2.ExecuteScriptAsync(script, arguments).AsTask(ct);
 		}
 
-		private void MyButton_OnClick(object sender, RoutedEventArgs e)
-		{
-			var t = Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
-				async () => await InvokeScriptAsync(MyWebView2, CancellationToken.None, GetReloadJavascript(), new string[] { "" })
-			);
-		}
-		public static async Task<string> InvokeScriptAsync(Microsoft.UI.Xaml.Controls.WebView2 webView, CancellationToken ct, string script, string[] arguments)
-		{
-			return await webView.InvokeScriptAsync(script, arguments).AsTask(ct);
-		}
-
-		private static string GetReloadJavascript()
-		{
-#if XAMARIN_IOS
-			return "location.reload(true);";
-#else
-			return "window.location.reload()";
-#endif
-		}
+		//		private static string GetReloadJavascript()
+		//		{
+		//#if XAMARIN_IOS
+		//			return "location.reload(true);";
+		//#else
+		//			return "window.location.reload()";
+		//#endif
+		//		}
 #endif
 	}
 }

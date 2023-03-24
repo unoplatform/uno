@@ -5,7 +5,6 @@ using WebKit;
 using System.Threading;
 using System.Threading.Tasks;
 using Uno.Extensions;
-using Uno.UI.Extensions;
 using Uno.Foundation.Logging;
 using Windows.Web;
 using System.IO;
@@ -84,7 +83,7 @@ public partial class UnoWKWebView : WKWebView, INativeWebView
 	public void ProcessNavigation(string html) => throw new NotImplementedException();
 	public void ProcessNavigation(HttpRequestMessage httpRequestMessage) => throw new NotImplementedException();
 
-	public void RegisterNavigationEvents(CoreWebView2 coreWebView)
+	void INativeWebView.SetOwner(CoreWebView2 coreWebView)
 	{
 		_coreWebView = coreWebView;
 
@@ -174,7 +173,9 @@ public partial class UnoWKWebView : WKWebView, INativeWebView
 				if (UIKit.UIApplication.SharedApplication.CanOpenUrl(target))
 				{
 					UIKit.UIApplication.SharedApplication.OpenUrl(target);
-					_coreWebView.OnComplete(target, isSuccessful: true, status: WebErrorStatus.Unknown);
+					// TODO:MZ:
+					_coreWebView.RaiseNavigationCompleted();
+					//_coreWebView.OnComplete(target, isSuccessful: true, status: WebErrorStatus.Unknown);
 				}
 #else
 				if (target != null && NSWorkspace.SharedWorkspace.UrlForApplication(new NSUrl(target.AbsoluteUri)) != null)
@@ -185,11 +186,13 @@ public partial class UnoWKWebView : WKWebView, INativeWebView
 #endif
 				else
 				{
-					_coreWebView.OnNavigationFailed(new WebViewNavigationFailedEventArgs()
-					{
-						Uri = target,
-						WebErrorStatus = WebErrorStatus.Unknown
-					});
+					// TODO:MZ:
+					_coreWebView.RaiseNavigationCompleted();
+					//_coreWebView.OnNavigationFailed(new WebViewNavigationFailedEventArgs()
+					//{
+					//	Uri = target,
+					//	WebErrorStatus = WebErrorStatus.Unknown
+					//});
 				}
 			}
 		}
@@ -373,16 +376,18 @@ public partial class UnoWKWebView : WKWebView, INativeWebView
 			}
 			else
 			{
-				uri = webView.Url?.ToUri() ?? _coreWebView.Source;
+				uri = webView.Url?.ToUri() ?? new Uri(_coreWebView.Source); // TODO:MZ: What if Source is invalid URI?
 			}
 
-			_coreWebView.OnNavigationFailed(new WebViewNavigationFailedEventArgs()
-			{
-				Uri = uri,
-				WebErrorStatus = status
-			});
+			//TODO:MZ:
+			_coreWebView.RaiseNavigationCompleted();
+			//_coreWebView.OnNavigationFailed(new WebViewNavigationFailedEventArgs()
+			//{
+			//	Uri = uri,
+			//	WebErrorStatus = status
+			//});
 
-			_coreWebView.OnComplete(uri, false, status);
+			//_coreWebView.OnComplete(uri, false, status);
 		}
 
 		_isCancelling = false;
@@ -472,11 +477,13 @@ public partial class UnoWKWebView : WKWebView, INativeWebView
 				this.Log().Error($"The uri [{uri}] is invalid.");
 			}
 
-			_coreWebView.RaiseNavigationFailed(new WebViewNavigationFailedEventArgs()
-			{
-				Uri = uri,
-				WebErrorStatus = WebErrorStatus.UnexpectedClientError
-			});
+			// TODO:MZ:
+			_coreWebView.RaiseNavigationCompleted();
+			//_coreWebView.RaiseNavigationFailed(new WebViewNavigationFailedEventArgs()
+			//{
+			//	Uri = uri,
+			//	WebErrorStatus = WebErrorStatus.UnexpectedClientError
+			//});
 		}
 	}
 

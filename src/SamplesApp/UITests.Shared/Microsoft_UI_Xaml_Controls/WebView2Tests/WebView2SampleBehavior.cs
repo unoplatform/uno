@@ -25,7 +25,7 @@ namespace SamplesApp.Microsoft_UI_Xaml_Controls.WebView2Tests
 			var uriString = e.NewValue?.ToString();
 			if (!string.IsNullOrEmpty(uriString))
 			{
-				(d as WebView2Uno).Navigate(new Uri(uriString, UriKind.Absolute));
+				((WebView2Uno)d).Source = new Uri(uriString, UriKind.Absolute);
 			}
 		}
 	}

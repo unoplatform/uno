@@ -28,7 +28,7 @@ namespace SamplesApp.Microsoft_UI_Xaml_Controls.WebView2Tests
 			};
 			request.Headers.Add("HELLO", "TESTTEST, TEST2");
 			request.Headers.Add("HELLO2", "TEST111");
-			MyWebView2.NavigateWithHttpRequestMessage(request);
+			MyWebView2.CoreWebView2.NavigateWithHttpRequestMessage(request);
 		}
 #endif
 	}

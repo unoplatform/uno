@@ -3,7 +3,7 @@ using System.Net.Http;
 
 namespace Uno.UI.Xaml.Controls;
 
-internal interface INativeWebView
+internal partial interface INativeWebView
 {
 	void GoBack();
 	void GoForward();

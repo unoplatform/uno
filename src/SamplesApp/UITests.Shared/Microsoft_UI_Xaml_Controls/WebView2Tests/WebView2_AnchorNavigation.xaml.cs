@@ -12,9 +12,10 @@ namespace SamplesApp.Microsoft_UI_Xaml_Controls.WebView2Tests
 			InitializeComponent();
 
 #if HAS_UNO
-			webView.Navigate(new Uri("https://nv-assets.azurewebsites.net/tests/docs/WebView2_NavigateToAnchor.html"));
-			webView.NavigationStarting += WebView2_NavigationStarting;
-			webView.NavigationCompleted += WebView2_NavigationCompleted;
+			//TODO:MZ:
+			//webView.Navigate(new Uri("https://nv-assets.azurewebsites.net/tests/docs/WebView2_NavigateToAnchor.html"));
+			//webView.NavigationStarting += WebView2_NavigationStarting;
+			//webView.NavigationCompleted += WebView2_NavigationCompleted;
 #endif
 		}
 

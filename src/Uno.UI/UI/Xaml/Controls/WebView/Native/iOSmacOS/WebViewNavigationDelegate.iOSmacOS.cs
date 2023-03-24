@@ -1,7 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using CoreGraphics;
+using Foundation;
+using System;
 using WebKit;
+using System.Threading;
+using System.Threading.Tasks;
+using Uno.Extensions;
 using Uno.Foundation.Logging;
+using Windows.Web;
+using System.IO;
+using System.Linq;
+using Windows.ApplicationModel.Resources;
+using Uno.UI.Xaml.Controls;
+using System.Net.Http;
+using Microsoft.Web.WebView2.Core;
+using Uno.UI.Extensions;
+
+#if __IOS__
+using UIKit;
+#else
+using AppKit;
+#endif
 
 namespace Windows.UI.Xaml.Controls;
 
@@ -299,20 +317,21 @@ internal class WebViewNavigationDelegate : WKNavigationDelegate
 #endif
 	}
 
-	internal void OnComplete(Uri uri, bool isSuccessful, WebErrorStatus status)
-	{
-		var args = new WebViewNavigationCompletedEventArgs()
-		{
-			IsSuccess = isSuccessful,
-			Uri = uri ?? Source,
-			WebErrorStatus = status
-		};
+	//internal void OnComplete(Uri uri, bool isSuccessful, WebErrorStatus status)
+	//{
+	//	// TODO:MZ:
+	//	//var args = new WebViewNavigationCompletedEventArgs()
+	//	//{
+	//	//	IsSuccess = isSuccessful,
+	//	//	Uri = uri ?? Source,
+	//	//	WebErrorStatus = status
+	//	//};
 
-		CanGoBack = _nativeWebView.CanGoBack;
-		CanGoForward = _nativeWebView.CanGoForward;
+	//	//CanGoBack = _nativeWebView.CanGoBack;
+	//	//CanGoForward = _nativeWebView.CanGoForward;
 
-		NavigationCompleted?.Invoke(_owner, args);
-	}
+	//	//NavigationCompleted?.Invoke(_owner, args);
+	//}
 
 	internal void OnNavigationStarting(WebViewNavigationStartingEventArgs args)
 	{
