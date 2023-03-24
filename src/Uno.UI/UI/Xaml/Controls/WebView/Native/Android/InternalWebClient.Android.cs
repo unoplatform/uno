@@ -36,11 +36,9 @@ internal class InternalClient : Android.Webkit.WebViewClient
 			return true;
 		}
 
-		var args = new WebViewNavigationStartingEventArgs(new Uri(url));
+		_coreWebView.RaiseNavigationStarting(url, out var cancel);
 
-		_coreWebView.RaiseNavigationStarting();
-
-		return args.Cancel;
+		return cancel;
 	}
 
 	public override void OnPageStarted(Android.Webkit.WebView view, string url, Bitmap favicon)
@@ -66,10 +64,9 @@ internal class InternalClient : Android.Webkit.WebViewClient
 
 		_coreWebView.RaiseHistoryChanged();
 
-		//TODO:MZ:
-		//var uri = !_nativeWebViewWrapper._wasLoadedFromString && !string.IsNullOrEmpty(url) ? new Uri(url) : null;
+		var uri = !_nativeWebViewWrapper._wasLoadedFromString && !string.IsNullOrEmpty(url) ? new Uri(url) : null;
 
-		_coreWebView.RaiseNavigationCompleted();
+		_coreWebView.RaiseNavigationCompleted(uri, true, 200, CoreWebView2WebErrorStatus.Unknown);
 		base.OnPageFinished(view, url);
 	}
 

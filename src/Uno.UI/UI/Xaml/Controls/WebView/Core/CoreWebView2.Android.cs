@@ -26,7 +26,7 @@ namespace Microsoft.Web.WebView2.Core;
 
 public partial class CoreWebView2
 {
-	private NativeWebViewWrapper _nativeWebViewWrapper;
+	private NativeWebViewWrapper? _nativeWebViewWrapper;
 
 	internal INativeWebView? GetNativeWebViewFromTemplate()
 	{

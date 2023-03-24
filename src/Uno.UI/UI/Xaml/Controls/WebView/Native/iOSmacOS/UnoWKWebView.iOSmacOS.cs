@@ -466,22 +466,21 @@ public partial class UnoWKWebView : WKWebView, INativeWebView
 
 		var tcs = new TaskCompletionSource<string>();
 
-		using (token.Register(() => tcs.TrySetCanceled()))
-		{
-			EvaluateJavaScript(executedScript, (result, error) =>
-			{
-				if (error != null)
-				{
-					tcs.TrySetException(new InvalidOperationException($"Failed to execute javascript {error.LocalizedDescription}, {error.LocalizedFailureReason}, {error.LocalizedRecoverySuggestion}"));
-				}
-				else
-				{
-					tcs.TrySetResult(result as NSString);
-				}
-			});
+		using var _ = token.Register(() => tcs.TrySetCanceled());
 
-			return await tcs.Task;
-		}
+		EvaluateJavaScript(executedScript, (result, error) =>
+		{
+			if (error != null)
+			{
+				tcs.TrySetException(new InvalidOperationException($"Failed to execute javascript {error.LocalizedDescription}, {error.LocalizedFailureReason}, {error.LocalizedRecoverySuggestion}"));
+			}
+			else
+			{
+				tcs.TrySetResult(result as NSString);
+			}
+		});
+
+		return await tcs.Task;
 	}
 
 	private void ProcessNSUrlRequest(NSUrlRequest request)

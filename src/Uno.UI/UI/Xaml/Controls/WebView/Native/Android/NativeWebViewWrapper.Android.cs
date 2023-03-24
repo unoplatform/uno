@@ -87,7 +87,7 @@ internal class NativeWebViewWrapper : INativeWebView
 
 		// Iterate through every next/previous (depending on direction) history entry until a valid one is found
 		for (int i = history.CurrentIndex + direction; 0 <= i && i < history.Size; i += direction)
-			if (_coreWebView.GetIsHistoryEntryValid(history.GetItemAtIndex(i).Url))
+			if (CoreWebView2.GetIsHistoryEntryValid(history.GetItemAtIndex(i).Url))
 				// return the absolute number of steps from the current entry to the nearest valid entry
 				return Math.Abs(i - history.CurrentIndex);
 
@@ -154,23 +154,18 @@ internal class NativeWebViewWrapper : INativeWebView
 
 	//_owner should be IAsyncOperation<string> instead of Task<string> but we use an extension method to enable the same signature in Win.
 	//IAsyncOperation is not available in Xamarin.
-	internal async Task<string> InvokeScriptAsync(CancellationToken ct, string script, string[] arguments)
+	async Task<string> INativeWebView.ExecuteScriptAsync(string script, CancellationToken token)
 	{
-		var argumentString = CoreWebView2.ConcatenateJavascriptArguments(arguments);
-
 		TaskCompletionSource<string> tcs = new TaskCompletionSource<string>();
-		ct.Register(() => tcs.TrySetCanceled());
+
+		using var _ = token.Register(() => tcs.TrySetCanceled());
 
 		_webView.EvaluateJavascript(
-			string.Format(CultureInfo.InvariantCulture, "javascript:{0}(\"{1}\");", script, argumentString),
+			string.Format(CultureInfo.InvariantCulture, "(function() { return {0} })()", script),
 			new ScriptResponse(value => tcs.SetResult(value)));
 
 		return await tcs.Task;
 	}
-
-	internal IAsyncOperation<string> InvokeScriptAsync(string scriptName, IEnumerable<string> arguments) =>
-		AsyncOperation.FromTask(ct => InvokeScriptAsync(ct, scriptName, arguments?.ToArray()));
-
 
 	// On Windows, the WebView ignores "about:blank" entries from its navigation history.
 	// Because Android doesn't let you modify the navigation history, 
