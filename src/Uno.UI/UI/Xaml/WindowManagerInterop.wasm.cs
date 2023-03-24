@@ -192,6 +192,16 @@ namespace Uno.UI.Xaml
 
 		#endregion
 
+		internal static void SetPointerCapture(IntPtr htmlId, uint pointerId)
+		{
+#if NET7_0_OR_GREATER
+			NativeMethods.SetPointerCapture(htmlId, pointerId);
+#else
+			var command = "Uno.UI.WindowManager.current.setPointerCapture(" + htmlId + ", " + pointerId + ");";
+			WebAssemblyRuntime.InvokeJS(command);
+#endif
+		}
+
 		#region MeasureView
 		internal static Size MeasureView(IntPtr htmlId, Size availableSize, bool measureContent)
 		{
@@ -1215,6 +1225,9 @@ namespace Uno.UI.Xaml
 
 			[JSImport("globalThis.Uno.UI.WindowManager.current.setElementTransformNativeFast")]
 			internal static partial void SetElementTransform(IntPtr htmlId, float m11, float m12, float m21, float m22, float m31, float m32);
+
+			[JSImport("globalThis.Uno.UI.WindowManager.current.setPointerCapture")]
+			internal static partial void SetPointerCapture(IntPtr htmlId, double pointerId);
 
 			[JSImport("globalThis.Uno.UI.WindowManager.current.setPointerEventsNativeFast")]
 			internal static partial void SetPointerEvents(IntPtr htmlId, bool enabled);

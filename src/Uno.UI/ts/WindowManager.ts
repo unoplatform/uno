@@ -1474,10 +1474,8 @@ namespace Uno.UI {
 			}
 		}
 
-		public setPointerCapture(viewId: number, pointerId: number): string {
+		public setPointerCapture(viewId: number, pointerId: number): void {
 			this.getView(viewId).setPointerCapture(pointerId);
-
-			return "ok";
 		}
 
 		public releasePointerCapture(viewId: number, pointerId: number): string {

@@ -343,8 +343,7 @@ public partial class UIElement : DependencyObject
 	#region Capture
 	partial void CapturePointerNative(Pointer pointer)
 	{
-		var command = "Uno.UI.WindowManager.current.setPointerCapture(" + HtmlId + ", " + pointer.PointerId + ");";
-		WebAssemblyRuntime.InvokeJS(command);
+		WindowManagerInterop.SetPointerCapture(HtmlId, pointer.PointerId);
 	}
 
 	partial void ReleasePointerNative(Pointer pointer)
