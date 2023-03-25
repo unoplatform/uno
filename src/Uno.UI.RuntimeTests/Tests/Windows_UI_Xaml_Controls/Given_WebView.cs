@@ -71,5 +71,33 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreEqual("red", color);
 		}
+
+		[TestMethod]
+		public async Task When_SendMessage()
+		{
+			var border = new Border();
+			var webView = new WebView();
+			webView.Width = 200;
+			webView.Height = 200;
+			border.Child = webView;
+			TestServices.WindowHelper.WindowContent = border;
+			bool navigated = false;
+			await TestServices.WindowHelper.WaitForLoaded(border);
+			webView.NavigationCompleted += (sender, e) => navigated = true;
+			webView.NavigateToString(
+				"<html><body><button onclick='send()'>Test</button><script type='text/javascript'>" +
+				"function send(){var message = { 'hello': ['world', 'of', 'uno'] }; " +
+				"if (window.chrome.webview) { window.chrome.webview.postMessage(message); }}</script></body></html>");
+			await TestServices.WindowHelper.WaitFor(() => navigated);
+
+			var color = await webView.InvokeScriptAsync("eval", new[] { "document.getElementById('test').style.backgroundColor.toString()" });
+			Assert.AreEqual("blue", color);
+
+			// Change color to red
+			await webView.InvokeScriptAsync("eval", new[] { "document.getElementById('test').style.backgroundColor = 'red'" });
+			color = await webView.InvokeScriptAsync("eval", new[] { "document.getElementById('test').style.backgroundColor.toString()" });
+
+			Assert.AreEqual("red", color);
+		}
 	}
 }

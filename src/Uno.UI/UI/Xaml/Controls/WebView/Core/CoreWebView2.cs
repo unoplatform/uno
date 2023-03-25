@@ -31,6 +31,12 @@ public partial class CoreWebView2
 		_owner = owner;
 	}
 
+	/// <summary>
+	/// Gets the CoreWebView2Settings object contains various modifiable
+	/// settings for the running WebView.
+	/// </summary>
+	public CoreWebView2Settings Settings = new();
+
 	public void Navigate(string uri)
 	{
 		if (!VerifyWebViewAvailability())

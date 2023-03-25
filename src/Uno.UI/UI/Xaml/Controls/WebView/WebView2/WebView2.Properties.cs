@@ -74,4 +74,9 @@ public partial class WebView2
 	/// Occurs when the main frame of the WebView2 navigates to a different URI.
 	/// </summary>
 	public event TypedEventHandler<WebView2, CoreWebView2NavigationStartingEventArgs> NavigationStarting;
+
+	/// <summary>
+	/// Dispatches after web content sends a message to the app host.
+	/// </summary>
+	public event TypedEventHandler<WebView2, CoreWebView2WebMessageReceivedEventArgs> WebMessageReceived;
 }

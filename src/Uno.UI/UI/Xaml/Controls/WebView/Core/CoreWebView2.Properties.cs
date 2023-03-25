@@ -79,4 +79,9 @@ public partial class CoreWebView2
 	/// navigating to a different site or fragment navigations.
 	/// </summary>
 	public event TypedEventHandler<CoreWebView2, CoreWebView2SourceChangedEventArgs> SourceChanged;
+
+	/// <summary>
+	/// Dispatches after web content sends a message to the app host.
+	/// </summary>
+	public event TypedEventHandler<CoreWebView2, CoreWebView2WebMessageReceivedEventArgs> WebMessageReceived;
 }

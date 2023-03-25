@@ -43,6 +43,8 @@ public partial class WebView2 : Control, IWebView
 		CoreWebView2.HistoryChanged += CoreWebView2_HistoryChanged;
 		CoreWebView2.NavigationStarting += CoreWebView2_NavigationStarting;
 		CoreWebView2.NavigationCompleted += CoreWebView2_NavigationCompleted;
+		CoreWebView2.SourceChanged += CoreWebView2_SourceChanged;
+		CoreWebView2.WebMessageReceived += CoreWebView2_WebMessageReceived;
 
 		Loaded += WebView2_Loaded;
 	}
@@ -89,5 +91,10 @@ public partial class WebView2 : Control, IWebView
 
 	private void CoreWebView2_HistoryChanged(CoreWebView2 sender, object args) =>
 		(CanGoBack, CanGoForward) = (sender.CanGoBack, sender.CanGoForward);
+
+	private void CoreWebView2_WebMessageReceived(CoreWebView2 sender, CoreWebView2WebMessageReceivedEventArgs args) =>
+		WebMessageReceived?.Invoke(this, args);
+
+	private void CoreWebView2_SourceChanged(CoreWebView2 sender, CoreWebView2SourceChangedEventArgs args) {}
 }
 #endif
