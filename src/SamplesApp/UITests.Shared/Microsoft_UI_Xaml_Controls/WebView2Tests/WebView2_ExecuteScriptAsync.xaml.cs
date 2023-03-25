@@ -33,7 +33,7 @@ namespace UITests.Microsoft_UI_Xaml_Controls.WebView2Tests
 
 		private async void ChangeColor()
 		{
-			await TestWebView.ExecuteScriptAsync("document.getElementById('test').style.backgrounddColor = 'red';");
+			await TestWebView.ExecuteScriptAsync("document.getElementById('test').style.backgroundColor = 'red';");
 		}
 
 		private async void GetColor()

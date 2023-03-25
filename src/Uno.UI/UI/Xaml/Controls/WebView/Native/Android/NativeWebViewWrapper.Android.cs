@@ -161,7 +161,7 @@ internal class NativeWebViewWrapper : INativeWebView
 		using var _ = token.Register(() => tcs.TrySetCanceled());
 
 		_webView.EvaluateJavascript(
-			string.Format(CultureInfo.InvariantCulture, "(function() { return {0} })()", script),
+			string.Format(CultureInfo.InvariantCulture, "javascript:{0}", script),
 			new ScriptResponse(value => tcs.SetResult(value)));
 
 		return await tcs.Task;

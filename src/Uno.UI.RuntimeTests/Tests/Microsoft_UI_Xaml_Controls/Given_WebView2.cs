@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml.Controls;
 using Private.Infrastructure;
+using Windows.UI.Xaml.Controls;
 
 namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls;
 
@@ -15,12 +16,14 @@ public class Given_WebView2
 	[TestMethod]
 	public async Task When_ExecuteScriptAsync()
 	{
+		var border = new Border();
 		var webView = new WebView2();
 		webView.Width = 200;
 		webView.Height = 200;
-		TestServices.WindowHelper.WindowContent = webView;
+		border.Child = webView;
+		TestServices.WindowHelper.WindowContent = border;
 		bool navigated = false;
-		await TestServices.WindowHelper.WaitForLoaded(webView);
+		await TestServices.WindowHelper.WaitForLoaded(border);
 		await webView.EnsureCoreWebView2Async();
 		webView.NavigationCompleted += (sender, e) => navigated = true;
 		webView.NavigateToString("<html><body><div id='test' style='width: 100px; height: 100px; background-color: blue;' /></body></html>");
