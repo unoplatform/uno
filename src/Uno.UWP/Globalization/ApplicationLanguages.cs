@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Windows.Storage;
+using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno;
 
@@ -26,12 +27,39 @@ namespace Windows.Globalization
 			ApplyLanguages();
 		}
 
-		internal static void Initialize()
+		internal static void ApplyCulture()
 		{
-			var primaryLanguageOverride = ApplicationLanguages.PrimaryLanguageOverride;
+			var primaryLanguageOverride = PrimaryLanguageOverride;
 			if (primaryLanguageOverride.Length > 0)
 			{
-				var culture = CreateCulture(primaryLanguageOverride);
+				if (typeof(ApplicationLanguages).Log().IsEnabled(LogLevel.Debug))
+				{
+					typeof(ApplicationLanguages).Log().Debug($"Using {primaryLanguageOverride} (from PrimaryLanguageOverride) as primary language");
+				}
+
+				setCulture(primaryLanguageOverride);
+			}
+			else if (Languages.Count > 0)
+			{
+				var language = Languages[0];
+				if (typeof(ApplicationLanguages).Log().IsEnabled(LogLevel.Debug))
+				{
+					typeof(ApplicationLanguages).Log().Debug($"Using {language} (from Languages) as primary language");
+				}
+
+				setCulture(language);
+			}
+			else
+			{
+				if (typeof(ApplicationLanguages).Log().IsEnabled(LogLevel.Warning))
+				{
+					typeof(ApplicationLanguages).Log().Warn($"Unable to determine the default culture, using invariant culture");
+				}
+			}
+
+			static void setCulture(string cultureId)
+			{
+				var culture = CreateCulture(cultureId);
 				CultureInfo.CurrentCulture = culture;
 				CultureInfo.DefaultThreadCurrentCulture = culture;
 				CultureInfo.CurrentUICulture = culture;
@@ -53,12 +81,11 @@ namespace Windows.Globalization
 				}
 
 				_primaryLanguageOverride = value;
+				ApplyLanguages();
 				if (WinRTFeatureConfiguration.ApplicationLanguages.UseLegacyPrimaryLanguageOverride)
 				{
-					Initialize();
+					ApplyCulture();
 				}
-
-				ApplyLanguages();
 
 				ApplicationData.Current.LocalSettings.Values[PrimaryLanguageOverrideSettingKey] = _primaryLanguageOverride;
 			}
