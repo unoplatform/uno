@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using Windows.Storage;
 using Uno.UI;
+using Uno;
 
 namespace Windows.Globalization
 {
@@ -52,6 +53,11 @@ namespace Windows.Globalization
 				}
 
 				_primaryLanguageOverride = value;
+				if (WinRTFeatureConfiguration.ApplicationLanguages.UseLegacyPrimaryLanguageOverride)
+				{
+					Initialize();
+				}
+
 				ApplyLanguages();
 
 				ApplicationData.Current.LocalSettings.Values[PrimaryLanguageOverrideSettingKey] = _primaryLanguageOverride;
