@@ -987,7 +987,7 @@ namespace Uno.UI {
 		/**
 			* Set or replace the root element.
 			*/
-		public setRootElement(elementId?: number): string {
+		public setRootElement(elementId?: number): void {
 			if (this.rootElement && Number(this.rootElement.id) === elementId) {
 				return null; // nothing to do
 			}
@@ -1024,8 +1024,6 @@ namespace Uno.UI {
 			this.setAsArranged(newRootElement); // patch because root is not measured/arranged
 
 			this.resize();
-
-			return "ok";
 		}
 
 		/**
@@ -1571,9 +1569,8 @@ namespace Uno.UI {
 			*
 			* In a future version it will also handle the splashscreen.
 			*/
-		public activate(): string {
+		public activate(): void {
 			this.removeLoading();
-			return "ok";
 		}
 
 		private init() {

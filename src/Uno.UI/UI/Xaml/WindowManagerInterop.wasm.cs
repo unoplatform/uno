@@ -1172,6 +1172,24 @@ namespace Uno.UI.Xaml
 		}
 		#endregion
 
+		internal static void SetRootElement(IntPtr htmlId)
+		{
+#if NET7_0_OR_GREATER
+			NativeMethods.SetRootElement(htmlId);
+#else
+			WebAssemblyRuntime.InvokeJS($"Uno.UI.WindowManager.current.setRootElement({htmlId});");
+#endif
+		}
+
+		internal static void WindowActivate()
+		{
+#if NET7_0_OR_GREATER
+			NativeMethods.WindowActivate();
+#else
+			WebAssemblyRuntime.InvokeJS("Uno.UI.WindowManager.current.activate();");
+#endif
+		}
+
 		#region Pointers
 		[Flags]
 		internal enum HtmlPointerButtonsState
@@ -1248,6 +1266,9 @@ namespace Uno.UI.Xaml
 			[JSImport("globalThis.Uno.UI.WindowManager.current.setPropertyNativeFast")]
 			internal static partial void SetProperties(IntPtr htmlId, string[] pairs);
 
+			[JSImport("globalThis.Uno.UI.WindowManager.current.setRootElement")]
+			internal static partial void SetRootElement(IntPtr htmlId);
+
 			[JSImport("globalThis.Uno.UI.WindowManager.current.setStyleStringNativeFast")]
 			internal static partial void SetStyleString(IntPtr htmlId, string name, string value);
 
@@ -1256,6 +1277,9 @@ namespace Uno.UI.Xaml
 
 			[JSImport("globalThis.Uno.UI.WindowManager.current.setVisibilityNativeFast")]
 			internal static partial void SetVisibility(IntPtr htmlId, bool visible);
+
+			[JSImport("globalThis.Uno.UI.WindowManager.current.activate")]
+			internal static partial void WindowActivate();
 		}
 #endif
 	}
