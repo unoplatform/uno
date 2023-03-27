@@ -59,7 +59,6 @@ namespace Windows.UI.Xaml
 				return false;
 			}
 
-			var ownerEvents = (ICoreWindowEvents)CoreWindow.GetForCurrentThread()!;
 			switch (nativeEvent.ActionMasked)
 			{
 				// TODO: STYLUS_WITH_BARREL_DOWN, STYLUS_WITH_BARREL_MOVE, STYLUS_WITH_BARREL_UP ?
