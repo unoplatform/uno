@@ -400,6 +400,15 @@ namespace Windows.UI.Xaml.Media
 			// The region where the element was arrange by its parent.
 			// This is expressed in parent coordinate space
 			var layoutSlot = element.LayoutSlotWithMarginsAndAlignments;
+#if __ANDROID__ // Workaround https://github.com/unoplatform/uno/issues/2754
+			if (element.Parent is NativeListViewBase nativeListView)
+			{
+				var scrollViewer = nativeListView.FindFirstParent<ScrollViewer>();
+				var offset = UIElement.GetPosition(element, relativeTo: scrollViewer);
+				layoutSlot.X = offset.X;
+				layoutSlot.Y = offset.Y;
+			}
+#endif
 
 			// The maximum region where the current element and its children might draw themselves
 			// This is expressed in element coordinate space.
@@ -427,7 +436,7 @@ namespace Windows.UI.Xaml.Media
 				renderingBounds = parentToElement.Transform(renderingBounds);
 			}
 
-#if !__MACOS__ // On macOS the SCP is using RenderTransforms for scrolling and zooming which has already been included.
+#if !__MACOS__ && !__ANDROID__ // On macOS the SCP is using RenderTransforms for scrolling and zooming which has already been included.
 			if (element is ScrollViewer sv)
 			{
 				// Note: We check only the zoom factor as scroll offsets are handled at SCP level using the IsScrollPort
