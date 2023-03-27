@@ -99,7 +99,7 @@ internal partial class InputManager
 			{
 				if (this.Log().IsEnabled(LogLevel.Trace))
 				{
-					this.Log().Trace($"CoreWindow_PointerPressed ({args.CurrentPoint.Position}) **undispatched**");
+					this.Log().Trace($"CoreWindow_PointerWheelChanged ({args.CurrentPoint.Position}) **undispatched**");
 				}
 
 				return;
@@ -107,7 +107,7 @@ internal partial class InputManager
 
 			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
-				this.Log().Trace($"CoreWindow_PointerPressed [{originalSource.GetDebugName()}");
+				this.Log().Trace($"CoreWindow_PointerWheelChanged [{originalSource.GetDebugName()}");
 			}
 
 			var routedArgs = new PointerRoutedEventArgs(args, originalSource);
@@ -187,7 +187,7 @@ internal partial class InputManager
 
 			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
-				this.Log().Trace($"CoreWindow_PointerPressed [{overBranchLeaf.GetDebugName()}");
+				this.Log().Trace($"CoreWindow_PointerExited [{overBranchLeaf.GetDebugName()}");
 			}
 
 			var routedArgs = new PointerRoutedEventArgs(args, originalSource);
@@ -246,7 +246,7 @@ internal partial class InputManager
 			{
 				if (this.Log().IsEnabled(LogLevel.Trace))
 				{
-					this.Log().Trace($"CoreWindow_PointerPressed ({args.CurrentPoint.Position}) **undispatched**");
+					this.Log().Trace($"CoreWindow_PointerReleased ({args.CurrentPoint.Position}) **undispatched**");
 				}
 
 				return;
@@ -254,11 +254,24 @@ internal partial class InputManager
 
 			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
-				this.Log().Trace($"CoreWindow_PointerPressed [{originalSource.GetDebugName()}");
+				this.Log().Trace($"CoreWindow_PointerReleased [{originalSource.GetDebugName()}");
 			}
 
 			var routedArgs = new PointerRoutedEventArgs(args, originalSource);
 
+			var overBranchLeaf = VisualTreeHelper.SearchDownForLeaf(originalSource, _isOver);
+
+			if (overBranchLeaf is not null)
+			{
+				if (this.Log().IsEnabled(LogLevel.Trace))
+				{
+					this.Log().Trace($"CoreWindow_PointerReleased [{overBranchLeaf.GetDebugName()}");
+				}
+
+				Raise(Leave, overBranchLeaf, routedArgs);
+			}
+
+			args.Handled = false;
 			RaiseUsingCaptures(Released, originalSource, routedArgs);
 			if (isOutOfWindow || (PointerDeviceType)args.CurrentPoint.Pointer.Type != PointerDeviceType.Touch)
 			{

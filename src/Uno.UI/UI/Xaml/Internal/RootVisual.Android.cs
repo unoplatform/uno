@@ -1,14 +1,7 @@
 ﻿#nullable enable
 
-using System;
-using System.Collections.Generic;
 using Android.Views;
-using Windows.Devices.Input;
-using Windows.Foundation;
 using Windows.UI.Core;
-using Windows.UI.Input;
-using Windows.UI.Xaml.Extensions;
-using PointerEventArgs = Windows.UI.Core.PointerEventArgs;
 
 namespace Uno.UI.Xaml.Core;
 
@@ -16,10 +9,10 @@ internal partial class RootVisual
 {
 	protected sealed override bool OnNativeMotionEvent(MotionEvent nativeEvent)
 	{
-		//if (!ArePointersEnabled)
-		//{
-		//	return false;
-		//}
+		if (!ArePointersEnabled)
+		{
+			return false;
+		}
 
 		var ownerEvents = (ICoreWindowEvents)CoreWindow.GetForCurrentThread()!;
 		switch (nativeEvent.ActionMasked)
