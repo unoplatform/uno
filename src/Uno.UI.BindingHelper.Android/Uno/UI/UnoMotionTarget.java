@@ -55,6 +55,6 @@ interface UnoMotionTarget {
 	 * @return true means that the managed event has been handled (in UWP terminology), so the
 	 * 		{@link #onNativeMotionEvent(MotionEvent, View)} won't be invoked by the parent Views
 	 */
-	/* protected */ boolean onNativeMotionEvent(MotionEvent event, View originalSource, boolean isInView);
+	/* protected */ boolean onNativeMotionEvent(MotionEvent event);
 }
 

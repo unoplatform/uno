@@ -20,8 +20,6 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnStretchChanged(Stretch newValue, Stretch oldValue) => InvalidateArrange();
 
-		internal override bool IsViewHit() => Source != null || base.IsViewHit();
-
 		bool ICustomClippingElement.AllowClippingToLayoutSlot => true;
 
 		bool ICustomClippingElement.ForceClippingToLayoutSlot => true;

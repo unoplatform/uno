@@ -724,6 +724,7 @@ namespace Windows.UI.Xaml
 #else
 			var parent = this.GetParent() as UIElement;
 #endif
+
 			// [11] A parent is defined?
 			if (parent == null)
 			{

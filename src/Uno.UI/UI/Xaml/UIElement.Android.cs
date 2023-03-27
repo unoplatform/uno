@@ -144,6 +144,11 @@ namespace Windows.UI.Xaml
 			TransientArrangeFinalRect = null;
 		}
 
+		internal static void RootElementLoaded(UIElement visualTreeRoot)
+		{
+			visualTreeRoot.SetHitTestVisibilityForRoot();
+		}
+
 		partial void ApplyNativeClip(Rect rect)
 		{
 			if (rect.IsEmpty)
@@ -310,6 +315,7 @@ namespace Windows.UI.Xaml
 
 		partial void OnVisibilityChangedPartial(Visibility oldValue, Visibility newValue)
 		{
+			UpdateHitTest();
 			var newNativeVisibility = newValue == Visibility.Visible ? Android.Views.ViewStates.Visible : Android.Views.ViewStates.Gone;
 
 			var bindableView = ((object)this) as Uno.UI.Controls.BindableView;

@@ -281,11 +281,6 @@ namespace Windows.UI.Xaml.Controls
 
 		#region Hyperlinks
 
-		internal override bool IsViewHit()
-		{
-			return true;
-		}
-
 		//public override void TouchesBegan(NSSet touches, UIEvent evt)
 		//{
 		//	var point = (touches.AnyObject as UITouch).LocationInView(this);

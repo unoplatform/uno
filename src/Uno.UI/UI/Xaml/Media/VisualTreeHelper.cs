@@ -384,6 +384,11 @@ namespace Windows.UI.Xaml.Media
 
 #if TRACE_HIT_TESTING
 			using var _ = SET_TRACE_SUBJECT(element);
+			if (element is TextBlock tb)
+			{
+				TRACE($"- TextBlock.Text: {tb.Text}");
+			}
+
 			TRACE($"- hit test visibility: {elementHitTestVisibility}");
 #endif
 
@@ -403,6 +408,15 @@ namespace Windows.UI.Xaml.Media
 			// The region where the element was arrange by its parent.
 			// This is expressed in parent coordinate space
 			var layoutSlot = element.LayoutSlotWithMarginsAndAlignments;
+#if __ANDROID__ // Workaround https://github.com/unoplatform/uno/issues/2754
+			if (element.Parent is NativeListViewBase nativeListView)
+			{
+				var scrollViewer = nativeListView.FindFirstParent<ScrollViewer>();
+				var offset = UIElement.GetPosition(element, relativeTo: scrollViewer);
+				layoutSlot.X = offset.X;
+				layoutSlot.Y = offset.Y;
+			}
+#endif
 
 			// The maximum region where the current element and its children might draw themselves
 			// This is expressed in element coordinate space.
@@ -430,7 +444,7 @@ namespace Windows.UI.Xaml.Media
 				renderingBounds = parentToElement.Transform(renderingBounds);
 			}
 
-#if !__MACOS__ // On macOS the SCP is using RenderTransforms for scrolling and zooming which has already been included.
+#if !__MACOS__ && !__ANDROID__ // On macOS the SCP is using RenderTransforms for scrolling and zooming which has already been included.
 			if (element is ScrollViewer sv)
 			{
 				// Note: We check only the zoom factor as scroll offsets are handled at SCP level using the IsScrollPort
@@ -530,7 +544,7 @@ namespace Windows.UI.Xaml.Media
 					stale = new Branch(element, stale?.Leaf ?? element);
 				}
 
-				TRACE($"> NOT FOUND (HitTestability.Invisible or out of the **render** bounds) | stale branch: {stale?.ToString() ?? "-- none --"}");
+				TRACE($"> NOT FOUND (HitTestability: {elementHitTestVisibility}, renderingBounds: {renderingBounds}, posRelToElement: {posRelToElement}) | stale branch: {stale?.ToString() ?? "-- none --"}");
 				return (default, stale);
 			}
 		}
@@ -638,7 +652,7 @@ namespace Windows.UI.Xaml.Media
 				var previous = _traceSubject;
 				_traceSubject = element;
 
-				_trace.Append(new string('\t', _traceSubject.Depth - 1));
+				_trace.Append(new string('\t', _traceSubject.GetDebugDepth()));
 				_trace.Append($"[{element.GetDebugName()}]\r\n");
 
 				return Disposable.Create(() => _traceSubject = previous);
@@ -656,7 +670,7 @@ namespace Windows.UI.Xaml.Media
 #if TRACE_HIT_TESTING
 			if (_trace is { })
 			{
-				_trace.Append(new string('\t', _traceSubject?.Depth ?? 0));
+				_trace.Append(new string('\t', _traceSubject?.GetDebugDepth() ?? 0));
 				_trace.Append(msg.ToStringInvariant());
 				_trace.Append("\r\n");
 			}
