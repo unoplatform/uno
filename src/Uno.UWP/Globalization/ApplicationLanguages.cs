@@ -87,7 +87,9 @@ namespace Windows.Globalization
 					ApplyCulture();
 				}
 
+#if !NET461
 				ApplicationData.Current.LocalSettings.Values[PrimaryLanguageOverrideSettingKey] = _primaryLanguageOverride;
+#endif
 			}
 		}
 
