@@ -1128,12 +1128,6 @@ namespace Uno.UI {
 			delete this.allActiveElementsById[elementId];
 		}
 
-		public getBoundingClientRect(elementId: number): string {
-
-			const bounds = (<any>this.getView(elementId)).getBoundingClientRect();
-			return `${bounds.left};${bounds.top};${bounds.right - bounds.left};${bounds.bottom - bounds.top}`;
-		}
-
 		public getBBoxNative(pParams: number, pReturn: number): boolean {
 
 			const params = WindowManagerGetBBoxParams.unmarshal(pParams);
