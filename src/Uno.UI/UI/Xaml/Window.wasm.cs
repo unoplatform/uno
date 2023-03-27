@@ -11,6 +11,7 @@ using Uno.Extensions;
 using Uno.Foundation;
 using Uno.Foundation.Logging;
 using Uno.UI;
+using Uno.UI.Xaml;
 using Uno.UI.Xaml.Core;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
@@ -132,7 +133,7 @@ namespace Windows.UI.Xaml
 
 		partial void InternalActivate()
 		{
-			WebAssemblyRuntime.InvokeJS("Uno.UI.WindowManager.current.activate();");
+			WindowManagerInterop.WindowActivate();
 		}
 
 		private void InternalSetContent(UIElement content)
@@ -164,7 +165,7 @@ namespace Windows.UI.Xaml
 					UIElement.LoadingRootElement(_rootVisual);
 				}
 
-				WebAssemblyRuntime.InvokeJS($"Uno.UI.WindowManager.current.setRootElement({_rootVisual.HtmlId});");
+				WindowManagerInterop.SetRootElement(_rootVisual.HtmlId);
 
 				if (FeatureConfiguration.FrameworkElement.WasmUseManagedLoadedUnloaded)
 				{
