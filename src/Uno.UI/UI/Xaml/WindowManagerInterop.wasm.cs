@@ -202,6 +202,16 @@ namespace Uno.UI.Xaml
 #endif
 		}
 
+		internal static void ReleasePointerCapture(IntPtr htmlId, uint pointerId)
+		{
+#if NET7_0_OR_GREATER
+			NativeMethods.ReleasePointerCapture(htmlId, pointerId);
+#else
+			var command = "Uno.UI.WindowManager.current.releasePointerCapture(" + htmlId + ", " + pointerId + ");";
+			WebAssemblyRuntime.InvokeJS(command);
+#endif
+		}
+
 		#region MeasureView
 		internal static Size MeasureView(IntPtr htmlId, Size availableSize, bool measureContent)
 		{
@@ -1219,6 +1229,9 @@ namespace Uno.UI.Xaml
 
 			[JSImport("globalThis.Uno.UI.WindowManager.current.measureViewNativeFast")]
 			internal static partial void MeasureView(IntPtr htmlId, double availableWidth, double availableHeight, bool measureContent, IntPtr pReturn);
+
+			[JSImport("globalThis.Uno.UI.WindowManager.current.releasePointerCapture")]
+			internal static partial void ReleasePointerCapture(IntPtr htmlId, double pointerId);
 
 			[JSImport("globalThis.Uno.UI.WindowManager.current.setAttributesNativeFast")]
 			internal static partial void SetAttributes(IntPtr htmlId, string[] pairs);

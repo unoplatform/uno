@@ -348,8 +348,7 @@ public partial class UIElement : DependencyObject
 
 	partial void ReleasePointerNative(Pointer pointer)
 	{
-		var command = "Uno.UI.WindowManager.current.releasePointerCapture(" + HtmlId + ", " + pointer.PointerId + ");";
-		WebAssemblyRuntime.InvokeJS(command);
+		WindowManagerInterop.ReleasePointerCapture(HtmlId, pointer.PointerId);
 	}
 	#endregion
 
