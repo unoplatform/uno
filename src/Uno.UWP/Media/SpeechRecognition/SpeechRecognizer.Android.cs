@@ -23,7 +23,7 @@ namespace Windows.Media.SpeechRecognition
 
 			if (!isPermissionGranted)
 			{
-				throw new Exception("The RECORD_AUDIO permission is either not present in your Manifest or was not accepted prior to attempting a speech recognition.");
+				throw new UnauthorizedAccessException("The RECORD_AUDIO permission is either not present in your Manifest or was not accepted prior to attempting a speech recognition.");
 			}
 
 			var tcs = new TaskCompletionSource<SpeechRecognitionResult>();
