@@ -12,7 +12,10 @@ namespace Windows.Globalization
 	public static partial class ApplicationLanguages
 	{
 		private static string _primaryLanguageOverride = string.Empty;
+
+#if !NET461
 		private const string PrimaryLanguageOverrideSettingKey = "__Uno.PrimaryLanguageOverride";
+#endif
 
 		static ApplicationLanguages()
 		{
