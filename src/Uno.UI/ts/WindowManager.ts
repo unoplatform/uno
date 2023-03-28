@@ -423,7 +423,7 @@ namespace Uno.UI {
 		/**
 			* Get an attribute for an element.
 			*/
-		public getAttribute(elementId: number, name: string): any {
+		public getAttribute(elementId: number, name: string): string {
 
 			return this.getView(elementId).getAttribute(name);
 		}
@@ -987,7 +987,7 @@ namespace Uno.UI {
 		/**
 			* Set or replace the root element.
 			*/
-		public setRootElement(elementId?: number): string {
+		public setRootElement(elementId?: number): void {
 			if (this.rootElement && Number(this.rootElement.id) === elementId) {
 				return null; // nothing to do
 			}
@@ -1024,8 +1024,6 @@ namespace Uno.UI {
 			this.setAsArranged(newRootElement); // patch because root is not measured/arranged
 
 			this.resize();
-
-			return "ok";
 		}
 
 		/**
@@ -1128,12 +1126,6 @@ namespace Uno.UI {
 			}
 
 			delete this.allActiveElementsById[elementId];
-		}
-
-		public getBoundingClientRect(elementId: number): string {
-
-			const bounds = (<any>this.getView(elementId)).getBoundingClientRect();
-			return `${bounds.left};${bounds.top};${bounds.right - bounds.left};${bounds.bottom - bounds.top}`;
 		}
 
 		public getBBoxNative(pParams: number, pReturn: number): boolean {
@@ -1474,16 +1466,12 @@ namespace Uno.UI {
 			}
 		}
 
-		public setPointerCapture(viewId: number, pointerId: number): string {
+		public setPointerCapture(viewId: number, pointerId: number): void {
 			this.getView(viewId).setPointerCapture(pointerId);
-
-			return "ok";
 		}
 
-		public releasePointerCapture(viewId: number, pointerId: number): string {
+		public releasePointerCapture(viewId: number, pointerId: number): void {
 			this.getView(viewId).releasePointerCapture(pointerId);
-
-			return "ok";
 		}
 
 		public focusView(elementId: number): string {
@@ -1575,9 +1563,8 @@ namespace Uno.UI {
 			*
 			* In a future version it will also handle the splashscreen.
 			*/
-		public activate(): string {
+		public activate(): void {
 			this.removeLoading();
-			return "ok";
 		}
 
 		private init() {

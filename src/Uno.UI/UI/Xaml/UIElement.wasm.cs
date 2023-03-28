@@ -126,13 +126,6 @@ namespace Windows.UI.Xaml
 			return Uno.UI.Xaml.WindowManagerInterop.GetBBox(HtmlId);
 		}
 
-		private Rect GetBoundingClientRect()
-		{
-			var sizeString = WebAssemblyRuntime.InvokeJS("Uno.UI.WindowManager.current.getBoundingClientRect(" + HtmlId + ");");
-			var sizeParts = sizeString.Split(';');
-			return new Rect(double.Parse(sizeParts[0], CultureInfo.InvariantCulture), double.Parse(sizeParts[1], CultureInfo.InvariantCulture), double.Parse(sizeParts[2], CultureInfo.InvariantCulture), double.Parse(sizeParts[3], CultureInfo.InvariantCulture));
-		}
-
 		protected internal void SetStyle(string name, string value)
 		{
 			Uno.UI.Xaml.WindowManagerInterop.SetStyleString(HtmlId, name, value);
@@ -282,8 +275,7 @@ namespace Windows.UI.Xaml
 
 		protected internal string GetAttribute(string name)
 		{
-			var command = "Uno.UI.WindowManager.current.getAttribute(" + HtmlId + ", \"" + name + "\");";
-			return WebAssemblyRuntime.InvokeJS(command);
+			return WindowManagerInterop.GetAttribute(HtmlId, name);
 		}
 
 		protected internal void SetProperty(string name, string value)

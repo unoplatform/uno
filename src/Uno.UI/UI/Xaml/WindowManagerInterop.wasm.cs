@@ -192,6 +192,26 @@ namespace Uno.UI.Xaml
 
 		#endregion
 
+		internal static void SetPointerCapture(IntPtr htmlId, uint pointerId)
+		{
+#if NET7_0_OR_GREATER
+			NativeMethods.SetPointerCapture(htmlId, pointerId);
+#else
+			var command = "Uno.UI.WindowManager.current.setPointerCapture(" + htmlId + ", " + pointerId + ");";
+			WebAssemblyRuntime.InvokeJS(command);
+#endif
+		}
+
+		internal static void ReleasePointerCapture(IntPtr htmlId, uint pointerId)
+		{
+#if NET7_0_OR_GREATER
+			NativeMethods.ReleasePointerCapture(htmlId, pointerId);
+#else
+			var command = "Uno.UI.WindowManager.current.releasePointerCapture(" + htmlId + ", " + pointerId + ");";
+			WebAssemblyRuntime.InvokeJS(command);
+#endif
+		}
+
 		#region MeasureView
 		internal static Size MeasureView(IntPtr htmlId, Size availableSize, bool measureContent)
 		{
@@ -371,9 +391,13 @@ namespace Uno.UI.Xaml
 
 		internal static bool IsCssFeatureSupported(string supportCondition)
 		{
+#if NET7_0_OR_GREATER
+			return NativeMethods.CssSupports(supportCondition);
+#else
 			var command = $"Uno.UI.WindowManager.current.isCssConditionSupported(\"{WebAssemblyRuntime.EscapeJs(supportCondition)}\")";
 			var result = WebAssemblyRuntime.InvokeJS(command);
 			return bool.Parse(result);
+#endif
 		}
 
 		#endregion
@@ -538,9 +562,13 @@ namespace Uno.UI.Xaml
 		#region GetAttribute
 		internal static string GetAttribute(IntPtr htmlId, string name)
 		{
+#if NET7_0_OR_GREATER
+			return NativeMethods.GetAttribute(htmlId, name);
+#else
 			var command = "Uno.UI.WindowManager.current.getAttribute(\"" + htmlId + "\", \"" + name + "\");";
 
 			return WebAssemblyRuntime.InvokeJS(command);
+#endif
 		}
 		#endregion
 
@@ -1144,6 +1172,24 @@ namespace Uno.UI.Xaml
 		}
 		#endregion
 
+		internal static void SetRootElement(IntPtr htmlId)
+		{
+#if NET7_0_OR_GREATER
+			NativeMethods.SetRootElement(htmlId);
+#else
+			WebAssemblyRuntime.InvokeJS($"Uno.UI.WindowManager.current.setRootElement({htmlId});");
+#endif
+		}
+
+		internal static void WindowActivate()
+		{
+#if NET7_0_OR_GREATER
+			NativeMethods.WindowActivate();
+#else
+			WebAssemblyRuntime.InvokeJS("Uno.UI.WindowManager.current.activate();");
+#endif
+		}
+
 		#region Pointers
 		[Flags]
 		internal enum HtmlPointerButtonsState
@@ -1190,11 +1236,20 @@ namespace Uno.UI.Xaml
 			[JSImport("globalThis.Uno.UI.WindowManager.current.createContentNativeFast")]
 			internal static partial void CreateContent(IntPtr htmlId, string tagName, int uiElementRegistrationId, bool isFocusable, bool isSvg);
 
+			[JSImport("globalThis.CSS.supports")]
+			internal static partial bool CssSupports(string condition);
+
 			[JSImport("globalThis.Uno.UI.WindowManager.current.destroyViewNativeFast")]
 			internal static partial void DestroyView(IntPtr htmlId);
 
+			[JSImport("globalThis.Uno.UI.WindowManager.current.getAttribute")]
+			internal static partial string GetAttribute(IntPtr htmlId, string name);
+
 			[JSImport("globalThis.Uno.UI.WindowManager.current.measureViewNativeFast")]
 			internal static partial void MeasureView(IntPtr htmlId, double availableWidth, double availableHeight, bool measureContent, IntPtr pReturn);
+
+			[JSImport("globalThis.Uno.UI.WindowManager.current.releasePointerCapture")]
+			internal static partial void ReleasePointerCapture(IntPtr htmlId, double pointerId);
 
 			[JSImport("globalThis.Uno.UI.WindowManager.current.setAttributesNativeFast")]
 			internal static partial void SetAttributes(IntPtr htmlId, string[] pairs);
@@ -1202,11 +1257,17 @@ namespace Uno.UI.Xaml
 			[JSImport("globalThis.Uno.UI.WindowManager.current.setElementTransformNativeFast")]
 			internal static partial void SetElementTransform(IntPtr htmlId, float m11, float m12, float m21, float m22, float m31, float m32);
 
+			[JSImport("globalThis.Uno.UI.WindowManager.current.setPointerCapture")]
+			internal static partial void SetPointerCapture(IntPtr htmlId, double pointerId);
+
 			[JSImport("globalThis.Uno.UI.WindowManager.current.setPointerEventsNativeFast")]
 			internal static partial void SetPointerEvents(IntPtr htmlId, bool enabled);
 
 			[JSImport("globalThis.Uno.UI.WindowManager.current.setPropertyNativeFast")]
 			internal static partial void SetProperties(IntPtr htmlId, string[] pairs);
+
+			[JSImport("globalThis.Uno.UI.WindowManager.current.setRootElement")]
+			internal static partial void SetRootElement(IntPtr htmlId);
 
 			[JSImport("globalThis.Uno.UI.WindowManager.current.setStyleStringNativeFast")]
 			internal static partial void SetStyleString(IntPtr htmlId, string name, string value);
@@ -1216,6 +1277,9 @@ namespace Uno.UI.Xaml
 
 			[JSImport("globalThis.Uno.UI.WindowManager.current.setVisibilityNativeFast")]
 			internal static partial void SetVisibility(IntPtr htmlId, bool visible);
+
+			[JSImport("globalThis.Uno.UI.WindowManager.current.activate")]
+			internal static partial void WindowActivate();
 		}
 #endif
 	}
