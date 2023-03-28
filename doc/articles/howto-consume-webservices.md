@@ -17,14 +17,14 @@ Throughout the how-to there will be notes on recommended practices and tips that
 
 ## Prerequisites
 
-* [Visual Studio 2019 16.3 or later](http://www.visualstudio.com/downloads/)
-  * **Universal Windows Platform** workload installed
-  * **Mobile Development with .NET (Xamarin)** workload installed
-  * **ASP**.**NET and web** workload installed
-  * [Uno Platform Extension](https://marketplace.visualstudio.com/items?itemName=nventivecorp.uno-platform-addin) installed
+* [Visual Studio 2022 17.4 or later](https://www.visualstudio.com/downloads/)
+    * **.NET Multi-platform App UI development** workload installed (for iOS, Android, Mac Catalyst development).
+    * **.NET desktop development** workload installed (for Gtk, Wpf, and Linux Framebuffer development)
+    * **ASP.NET** and **web development** workload installed (for WebAssembly development)
+    * [Uno Platform Extension](https://marketplace.visualstudio.com/items?itemName=unoplatform.uno-platform-addin-2022) installed
 
 > [!Tip]
-> For a step-by-step guide to installing the prerequisites, see [Getting started on Visual Studio](https://platform.uno/docs/articles/get-started-vs.html)
+> For a step-by-step guide to installing the prerequisites, see [Getting started on Visual Studio](https://platform.uno/docs/articles/get-started-vs-2022.html)
 
 ## Task 1 - Create a simple Uno application
 
