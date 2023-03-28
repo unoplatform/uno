@@ -27,7 +27,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<None Include="..\..\Common\uno.png" Pack="true" PackagePath="\" />
+		<None Include="..\..\Common\uno.png" Pack="true" PackagePath="\" /> 
 	</ItemGroup>
 
 	<ItemGroup>
@@ -38,7 +38,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.Identity.Client" Version="4.15.0" />
+		<PackageReference Include="Microsoft.Identity.Client" Version="4.47.0" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' != 'uap10.0.18362'">
