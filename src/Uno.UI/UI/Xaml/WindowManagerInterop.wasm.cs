@@ -47,6 +47,14 @@ namespace Uno.UI.Xaml
 
 		#endregion
 
+		internal static string FindLaunchArguments()
+			=>
+#if NET7_0_OR_GREATER
+				NativeMethods.FindLaunchArguments();
+#else
+				WebAssemblyRuntime.InvokeJS("Uno.UI.WindowManager.findLaunchArguments()");
+#endif
+
 		#region CreateContent
 		internal static void CreateContent(IntPtr htmlId, string htmlTag, IntPtr handle, int uiElementRegistrationId, bool htmlTagIsSvg, bool isFocusable)
 		{
@@ -1241,6 +1249,9 @@ namespace Uno.UI.Xaml
 
 			[JSImport("globalThis.Uno.UI.WindowManager.current.destroyViewNativeFast")]
 			internal static partial void DestroyView(IntPtr htmlId);
+
+			[JSImport("globalThis.Uno.UI.WindowManager.findLaunchArguments")]
+			internal static partial string FindLaunchArguments();
 
 			[JSImport("globalThis.Uno.UI.WindowManager.current.getAttribute")]
 			internal static partial string GetAttribute(IntPtr htmlId, string name);

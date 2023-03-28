@@ -115,7 +115,7 @@ namespace Windows.UI.Xaml
 				// Force init
 				Window.Current.ToString();
 
-				var arguments = WebAssemblyRuntime.InvokeJS("Uno.UI.WindowManager.findLaunchArguments()");
+				var arguments = WindowManagerInterop.FindLaunchArguments();
 
 				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
