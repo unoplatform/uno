@@ -1,29 +1,98 @@
 ﻿using System;
 using System.Globalization;
 using System.Linq;
-using System.Reflection;
 using System.Text.RegularExpressions;
+using Windows.Storage;
 using Uno.Foundation.Logging;
 using Uno.UI;
+using Uno;
 
 namespace Windows.Globalization
 {
 	public static partial class ApplicationLanguages
 	{
-		private static string _primaryLanguageOverride;
+		private static string _primaryLanguageOverride = string.Empty;
+
+#if !NET461
+		private const string PrimaryLanguageOverrideSettingKey = "__Uno.PrimaryLanguageOverride";
+#endif
 
 		static ApplicationLanguages()
 		{
+#if !NET461
+			if (ApplicationData.Current.LocalSettings.Values.TryGetValue(PrimaryLanguageOverrideSettingKey, out var savedValue)
+				&& savedValue is string stringSavedValue)
+			{
+				_primaryLanguageOverride = stringSavedValue;
+			}
+#endif
+
 			ApplyLanguages();
+		}
+
+		internal static void ApplyCulture()
+		{
+			var primaryLanguageOverride = PrimaryLanguageOverride;
+			if (primaryLanguageOverride.Length > 0)
+			{
+				if (typeof(ApplicationLanguages).Log().IsEnabled(LogLevel.Debug))
+				{
+					typeof(ApplicationLanguages).Log().Debug($"Using {primaryLanguageOverride} (from PrimaryLanguageOverride) as primary language");
+				}
+
+				setCulture(primaryLanguageOverride);
+			}
+			else if (Languages.Count > 0)
+			{
+				var language = Languages[0];
+				if (typeof(ApplicationLanguages).Log().IsEnabled(LogLevel.Debug))
+				{
+					typeof(ApplicationLanguages).Log().Debug($"Using {language} (from Languages) as primary language");
+				}
+
+				setCulture(language);
+			}
+			else
+			{
+				if (typeof(ApplicationLanguages).Log().IsEnabled(LogLevel.Warning))
+				{
+					typeof(ApplicationLanguages).Log().Warn($"Unable to determine the default culture, using invariant culture");
+				}
+			}
+
+			static void setCulture(string cultureId)
+			{
+				var culture = CreateCulture(cultureId);
+				CultureInfo.CurrentCulture = culture;
+				CultureInfo.DefaultThreadCurrentCulture = culture;
+				CultureInfo.CurrentUICulture = culture;
+				CultureInfo.DefaultThreadCurrentUICulture = culture;
+			}
 		}
 
 		public static string PrimaryLanguageOverride
 		{
-			get => _primaryLanguageOverride;
+			get
+			{
+				return _primaryLanguageOverride;
+			}
 			set
 			{
+				if (value is null)
+				{
+					throw new ArgumentNullException(nameof(value), "Value cannot be null.");
+				}
+
 				_primaryLanguageOverride = value;
 				ApplyLanguages();
+				if (WinRTFeatureConfiguration.ApplicationLanguages.UseLegacyPrimaryLanguageOverride)
+				{
+					ApplyCulture();
+				}
+
+#if !NET461
+				ApplicationData.Current.LocalSettings.Values[PrimaryLanguageOverrideSettingKey] = _primaryLanguageOverride;
+#endif
 			}
 		}
 
@@ -79,29 +148,6 @@ namespace Windows.Globalization
 
 				Languages = languages.Distinct().ToArray();
 			}
-
-			var primaryLanguage = Languages.Count > 0 ? Languages[0] : null;
-
-			if (primaryLanguage is not null)
-			{
-				if (typeof(ApplicationLanguages).Log().IsEnabled(LogLevel.Debug))
-				{
-					typeof(ApplicationLanguages).Log().Debug($"Using {primaryLanguage} as primary language");
-				}
-
-				var primaryCulture = CreateCulture(primaryLanguage);
-
-				CultureInfo.CurrentCulture = primaryCulture;
-				CultureInfo.CurrentUICulture = primaryCulture;
-			}
-			else
-			{
-				if (typeof(ApplicationLanguages).Log().IsEnabled(LogLevel.Warning))
-				{
-					typeof(ApplicationLanguages).Log().Warn($"Unable to determine the default culture, using invariant culture");
-				}
-			}
-
 		}
 
 		private static Regex _cultureFormatRegex;
