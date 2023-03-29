@@ -1,3 +1,7 @@
+---
+uid: Uno.Skia.Linux.Framebuffer
+---
+
 # Using the Linux Framebuffer and `libinput`
 
 Uno supports the [Linux Framebuffer](https://www.kernel.org/doc/html/latest/fb/framebuffer.html) and [libinput](https://github.com/wayland-project/libinput) as a target, in the case where your target device does not provide a Window Manager.

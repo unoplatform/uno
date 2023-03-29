@@ -20,6 +20,9 @@ using Device = Gtk.Device;
 using Exception = System.Exception;
 using Windows.UI.Xaml;
 using Uno.UI.Xaml.Core;
+using Windows.Foundation;
+using Uno.UI.XamlHost.Skia.Gtk.Hosting;
+using Atk;
 
 namespace Uno.UI.Runtime.Skia
 {
@@ -83,6 +86,90 @@ namespace Uno.UI.Runtime.Skia
 		}
 
 		partial void InitializeKeyboard();
+
+		internal static Fixed? FindNativeOverlayLayer(Gtk.Window window)
+		{
+			var overlay = (Overlay)((EventBox)window.Child).Child;
+			return overlay.Children.OfType<Fixed>().FirstOrDefault();
+		}
+
+		internal static Fixed? GetOverlayLayer(XamlRoot xamlRoot) =>
+			XamlRootMap.GetHostForRoot(xamlRoot)?.NativeOverlayLayer;
+
+		public bool IsNativeElement(object content)
+			=> content is Widget;
+
+		public void AttachNativeElement(object owner, object content)
+		{
+			if (content is Widget widget
+				&& owner is XamlRoot xamlRoot
+				&& GetOverlayLayer(xamlRoot) is { } overlay)
+			{
+				widget.ShowAll();
+				overlay.Put(widget, 0, 0);
+			}
+			else
+			{
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().Debug($"Unable to attach native element {content} to {owner}.");
+				}
+			}
+		}
+
+		public void DetachNativeElement(object owner, object content)
+		{
+			if (content is Widget widget
+				&& owner is XamlRoot xamlRoot
+				&& GetOverlayLayer(xamlRoot) is { } overlay)
+			{
+				overlay.Remove(widget);
+			}
+			else
+			{
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().LogDebug($"Unable to detach native element {content} from {owner}.");
+				}
+			}
+		}
+
+		public void ArrangeNativeElement(object owner, object content, Windows.Foundation.Rect arrangeRect)
+		{
+			if (content is Widget widget
+				&& owner is XamlRoot xamlRoot
+				&& GetOverlayLayer(xamlRoot) is { } overlay)
+			{
+				widget.SizeAllocate(new((int)arrangeRect.X, (int)arrangeRect.Y, (int)arrangeRect.Width, (int)arrangeRect.Height));
+			}
+			else
+			{
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().Debug($"Unable to arrange native element {content} in {owner}.");
+				}
+			}
+		}
+
+		public Windows.Foundation.Size MeasureNativeElement(object owner, object content, Windows.Foundation.Size size)
+		{
+			if (content is Widget widget
+				&& owner is XamlRoot xamlRoot
+				&& GetOverlayLayer(xamlRoot) is { } overlay)
+			{
+				widget.GetPreferredSize(out var minimum_Size, out var naturalSize);
+				return new(naturalSize.Width, naturalSize.Height);
+			}
+			else
+			{
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().Debug($"Unable to measure native element {content} in {owner}.");
+				}
+			}
+
+			return new(0, 0);
+		}
 
 		/// <inheritdoc />
 		public void SetPointerCapture(PointerIdentifier pointer)
