@@ -71,6 +71,9 @@
 	<DataTemplate x:Key="TextBlockItemTemplate">
 		<TextBlock Text="{Binding}" />
 	</DataTemplate>
+	<DataTemplate x:Key="WrappingTextBlockItemTemplate">
+		<TextBlock Text="{Binding}" TextWrapping="Wrap" />
+	</DataTemplate>
 	<DataTemplate x:Key="SelfHostingItemTemplate">
 		<ListViewItem Name="SelfHostingListViewItem">
 			<Border x:Name="SelfHostingBorder">
