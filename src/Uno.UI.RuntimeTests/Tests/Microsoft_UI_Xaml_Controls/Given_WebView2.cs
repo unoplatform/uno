@@ -59,7 +59,19 @@ public class Given_WebView2
 				<body>
 					<script type="text/javascript">
 						function sendMessage(){
-							chrome.webview.postMessage({"some": ['values',"in","json",1]});
+							try{
+								const message = {"some": ['values',"in","json",1]};
+										
+								if (typeof chrome !== 'undefined' &&
+									chrome?.webview?.postMessage){
+									chrome.webview.postMessage(message);
+								} else if (unoWebMessageHandler){
+									unoWebMessageHandler?.postMessage(JSON.stringify(message));
+								}
+							}
+							catch (ex){
+								alert("wtf" + ex);
+							}
 						}
 					</script>
 					<div id='test' style='width: 100px; height: 100px; background-color: blue;' />
