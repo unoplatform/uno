@@ -2,7 +2,6 @@
 
 using Uno.Extensions;
 using Uno.MsBuildTasks.Utils;
-using Uno.MsBuildTasks.Utils.XamlPathParser;
 using Uno.UI.SourceGenerators.XamlGenerator.Utils;
 using System;
 using System.Collections.Generic;
@@ -22,7 +21,6 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using Uno.UI.SourceGenerators.Helpers;
 using System.Collections.Immutable;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.Text;
 using Microsoft.CodeAnalysis.Text;
 
@@ -1108,7 +1106,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				using (writer.BlockInvariant($"Loading += (s, e) => "))
 				{
 					if (_isHotReloadEnabled && _xClassName.Symbol != null)
-
 					{
 						writer.AppendLineIndented($"var __that = global::Uno.UI.Helpers.MarkupHelper.GetElementProperty<{_xClassName.Symbol?.GetFullyQualifiedTypeIncludingGlobal()}>(s, \"owner\");");
 					}
@@ -3693,18 +3690,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 
 			// Local function used to build a property/value for any custom MarkupExtensions
-			void BuildCustomMarkupExtensionPropertyValue(IIndentedStringBuilder writer, XamlMemberDefinition member, string? closure = null)
+			void BuildCustomMarkupExtensionPropertyValue(IIndentedStringBuilder writer, XamlMemberDefinition member, string closure)
 			{
-				Func<string, string> formatLine = assignment => !closure.IsNullOrEmpty()
-					? $"{closure}.{assignment};\r\n"
-					: assignment;
-
 				var propertyValue = GetCustomMarkupExtensionValue(member, closure);
 				if (!propertyValue.IsNullOrEmpty())
 				{
-					var formatted = formatLine($"{member.Member.Name} = {propertyValue}");
-
-					writer.AppendIndented(formatted);
+					writer.AppendIndented($"{closure}.{member.Member.Name} = {propertyValue};\r\n");
 				}
 			}
 		}

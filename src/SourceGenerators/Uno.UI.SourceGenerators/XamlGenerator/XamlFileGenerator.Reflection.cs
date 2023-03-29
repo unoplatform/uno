@@ -30,8 +30,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		record XClassName(string Namespace, string ClassName, INamedTypeSymbol? Symbol)
 		{
 			public override string ToString()
-				=> Symbol?.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat.WithGlobalNamespaceStyle(SymbolDisplayGlobalNamespaceStyle.Included))
-				?? Namespace + "." + ClassName;
+				=> Symbol?.GetFullyQualifiedTypeIncludingGlobal() ?? Namespace + "." + ClassName;
 		}
 
 		private void InitCaches()
@@ -73,16 +72,16 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private string GetGlobalizedTypeName(XamlType type)
 		{
-			var fullTypeName = type.Name;
 			var knownType = FindType(type);
-			if (knownType == null && type.PreferredXamlNamespace.StartsWith("using:", StringComparison.Ordinal))
+			if (knownType is not null)
 			{
-				fullTypeName = type.PreferredXamlNamespace.TrimStart("using:") + "." + type.Name;
+				return knownType.GetFullyQualifiedTypeIncludingGlobal();
 			}
-			if (knownType != null)
+
+			var fullTypeName = type.Name;
+			if (type.PreferredXamlNamespace.StartsWith("using:", StringComparison.Ordinal))
 			{
-				// Override the using with the type that was found in the list of loaded assemblies
-				fullTypeName = knownType.ToDisplayString();
+				fullTypeName = type.PreferredXamlNamespace.Substring("using:".Length) + "." + type.Name;
 			}
 
 			return GetGlobalizedTypeName(fullTypeName);
@@ -444,7 +443,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 
 				var setMethod = type?.GetFirstMethodWithName("Set" + name);
-				if (setMethod is { IsStatic: true, Parameters: { Length: 2 } })
+				if (setMethod is { IsStatic: true, Parameters.Length: 2 })
 				{
 					return true;
 				}
@@ -944,6 +943,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private bool IsTypeImplemented(INamedTypeSymbol type) => _isTypeImplemented(type);
 
 		private static bool SourceIsTypeImplemented(INamedTypeSymbol type)
-			=> type.GetAttributes().None(a => a.AttributeClass?.ToDisplayString() == XamlConstants.Types.NotImplementedAttribute);
+			=> type.GetAttributes().None(a => a.AttributeClass?.GetFullyQualifiedTypeExcludingGlobal() == XamlConstants.Types.NotImplementedAttribute);
 	}
 }
