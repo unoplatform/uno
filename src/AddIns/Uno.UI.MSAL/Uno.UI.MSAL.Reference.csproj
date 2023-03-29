@@ -53,7 +53,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.Identity.Client" Version="4.15.0" />
+		<PackageReference Include="Microsoft.Identity.Client" Version="4.47.0" />
 	</ItemGroup>
 
 	<ItemGroup>
