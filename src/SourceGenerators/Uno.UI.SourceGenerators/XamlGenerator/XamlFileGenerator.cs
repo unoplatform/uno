@@ -677,6 +677,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				using (var blockWriter = CreateApplyBlock(writer, null, out var closure))
 				{
+					blockWriter.AppendLineInvariantIndented("// For debugging: DONT MERGE WITH THIS CHANGE");
+					blockWriter.AppendLineInvariantIndented($"// _targetPath: {_targetPath}");
+					blockWriter.AppendLineInvariantIndented($"// FilePath: {_fileDefinition.FilePath}");
 					blockWriter.AppendLineInvariantIndented(
 						"// Source {0} (Line {1}:{2})",
 						_relativePath,
@@ -891,6 +894,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				using (var blockWriter = CreateApplyBlock(writer, null, out var closure))
 				{
+					blockWriter.AppendLineInvariantIndented("// For debugging: DONT MERGE WITH THIS CHANGE");
+					blockWriter.AppendLineInvariantIndented($"// _targetPath: {_targetPath}");
+					blockWriter.AppendLineInvariantIndented($"// FilePath: {_fileDefinition.FilePath}");
 					blockWriter.AppendLineInvariantIndented(
 						"// Source {0} (Line {1}:{2})",
 						_relativePath,
@@ -1702,6 +1708,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private void BuildSourceLineInfo(IIndentedStringBuilder writer, XamlObjectDefinition definition)
 		{
 			TryAnnotateWithGeneratorSource(writer);
+			blockWriter.AppendLineInvariantIndented("// For debugging: DONT MERGE WITH THIS CHANGE");
+			blockWriter.AppendLineInvariantIndented($"// _targetPath: {_targetPath}");
+			blockWriter.AppendLineInvariantIndented($"// FilePath: {_fileDefinition.FilePath}");
 			writer.AppendLineInvariantIndented(
 				"// Source {0} (Line {1}:{2})",
 					_relativePath,
