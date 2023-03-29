@@ -15,6 +15,7 @@ using TreeView = Microsoft.UI.Xaml.Controls.TreeView;
 using TreeViewItem = Microsoft.UI.Xaml.Controls.TreeViewItem;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.TreeViewTests;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 
@@ -33,7 +34,6 @@ public class Given_TreeView
 
 		var root = new MyNode();
 		root.Name = "root";
-		root.Children = new List<MyNode>();
 		var child1 = new MyNode { Name = "Child 1" };
 		var child2 = new MyNode { Name = "Child 2" };
 		root.Children.Add(child1);
@@ -80,7 +80,6 @@ public class Given_TreeView
 		var root = new MyNode();
 		root.Name = "root 4";
 		root.IsDirectory = true;
-		root.Children = new List<MyNode>();
 		var child1 = new MyNode { Name = "Child 1" };
 		var child2 = new MyNode { Name = "Child 2" };
 		root.Children.Add(child1);
@@ -120,6 +119,89 @@ public class Given_TreeView
 
 		Assert.AreEqual(child2, child2NodeAfter.DataContext);
 	}
+
+	[TestMethod]
+	public async Task When_Open_Close_Root_Twice_Keep_State()
+	{
+		var container = new Grid();
+		container.Width = 500;
+		container.Height = 500;
+
+		var SUT = new When_Open_Close_Twice_Grid();
+
+		container.Children.Add(SUT);
+
+		TestServices.WindowHelper.WindowContent = container;
+
+		var root = new MyNode();
+		root.Name = "root 4";
+		root.IsDirectory = true;
+		var child1 = new MyNode { Name = "Child 1", IsDirectory = true };
+		var child2 = new MyNode { Name = "Child 2", IsDirectory = true };
+		var child3 = new MyNode { Name = "Child 3", IsDirectory = true };
+		root.Children.Add(child1);
+		root.Children.Add(child2);
+		root.Children.Add(child3);
+
+		var child11 = new MyNode { Name = "Child 11" };
+		var child12 = new MyNode { Name = "Child 12" };
+		child1.Children.Add(child11);
+		child1.Children.Add(child12);
+
+		var child21 = new MyNode { Name = "Child 21" };
+		var child22 = new MyNode { Name = "Child 22" };
+		child2.Children.Add(child21);
+		child2.Children.Add(child22);
+
+		var child31 = new MyNode { Name = "Child 31" };
+		var child32 = new MyNode { Name = "Child 32" };
+		child3.Children.Add(child31);
+		child3.Children.Add(child32);
+
+		SUT.myTree.ItemsSource = new[] { root };
+		await TestServices.WindowHelper.WaitForIdle();
+
+		var rootNode = (TreeViewItem)SUT.myTree.ContainerFromItem(root);
+		rootNode.IsExpanded = true;
+		await TestServices.WindowHelper.WaitForIdle();
+
+		var child2Node = (TreeViewItem)SUT.myTree.ContainerFromItem(child2);
+		child2Node.IsExpanded = true;
+		await TestServices.WindowHelper.WaitForIdle();
+
+		rootNode.IsExpanded = false;
+		await TestServices.WindowHelper.WaitForIdle();
+
+		rootNode.IsExpanded = true;
+		await TestServices.WindowHelper.WaitForIdle();
+
+		// Force refresh
+		container.Width = 700;
+		container.Height = 700;
+
+		await TestServices.WindowHelper.WaitForIdle();
+
+		var child1Node = (TreeViewItem)SUT.myTree.ContainerFromItem(child1);
+		Assert.IsNotNull(child1Node);
+		Assert.AreEqual(child1, child1Node.DataContext);
+
+		rootNode.IsExpanded = false;
+		await TestServices.WindowHelper.WaitForIdle();
+
+		rootNode.IsExpanded = true;
+		await TestServices.WindowHelper.WaitForIdle();
+
+		var child3Node = (TreeViewItem)SUT.myTree.ContainerFromItem(child3);
+
+		// When index mappings are incorrect, the third node is expanded because
+		// of recursive items removal in the TreeView control.
+		Assert.IsFalse(child3Node.IsExpanded);
+		child3Node.IsExpanded = false;
+		await TestServices.WindowHelper.WaitForIdle();
+
+		child3Node.IsExpanded = true;
+		await TestServices.WindowHelper.WaitForIdle();
+	}
 }
 
 public class MyNode
@@ -128,7 +210,7 @@ public class MyNode
 
 	public bool IsDirectory { get; set; }
 
-	public List<MyNode> Children { get; set; }
+	public ObservableCollection<MyNode> Children { get; } = new ObservableCollection<MyNode>();
 }
 
 public class FSObjectTemplateSelector : DataTemplateSelector
