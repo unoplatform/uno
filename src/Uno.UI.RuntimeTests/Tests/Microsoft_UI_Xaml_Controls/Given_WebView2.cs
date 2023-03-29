@@ -38,4 +38,44 @@ public class Given_WebView2
 
 		Assert.AreEqual("{\"color\":\"red\"}", color);
 	}
+
+
+	[TestMethod]
+	public async Task When_WebMessageReceived()
+	{
+		var border = new Border();
+		var webView = new WebView2();
+		webView.Width = 200;
+		webView.Height = 200;
+		border.Child = webView;
+		TestServices.WindowHelper.WindowContent = border;
+		bool navigated = false;
+		await TestServices.WindowHelper.WaitForLoaded(border);
+		await webView.EnsureCoreWebView2Async();
+		webView.NavigationCompleted += (sender, e) => navigated = true;
+		webView.NavigateToString(
+			"""
+			<html>
+				<body>
+					<script type="text/javascript">
+						function sendMessage(){
+							chrome.webview.postMessage({"some": ['values',"in","json",1]});
+						}
+					</script>
+					<div id='test' style='width: 100px; height: 100px; background-color: blue;' />
+				</body>
+			</html>
+			""");
+		await TestServices.WindowHelper.WaitFor(() => navigated);
+		string message = null;
+		webView.WebMessageReceived += (s, e) =>
+		{
+			message = e.WebMessageAsJson;
+		};
+		await webView.ExecuteScriptAsync("sendMessage()");
+
+		await TestServices.WindowHelper.WaitFor(() => message is not null);
+
+		Assert.AreEqual(@"{""some"":[""values"",""in"",""json"",1]}", message);
+	}
 }
