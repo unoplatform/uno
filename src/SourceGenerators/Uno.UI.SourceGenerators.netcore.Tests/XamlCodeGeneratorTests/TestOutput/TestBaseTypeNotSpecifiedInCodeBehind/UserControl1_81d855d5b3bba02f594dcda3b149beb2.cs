@@ -33,7 +33,7 @@ using _View = Windows.UI.Xaml.UIElement;
 
 namespace TestRepro
 {
-	partial class UserControl1 : Windows.UI.Xaml.Controls.UserControl
+	partial class UserControl1 : global::Windows.UI.Xaml.Controls.UserControl
 	{
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		private const string __baseUri_prefix_UserControl1_81d855d5b3bba02f594dcda3b149beb2 = "ms-appx:///TestProject/";

@@ -33,7 +33,7 @@ using _View = Windows.UI.Xaml.UIElement;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 {
-	partial class Binding_Xaml_Object_With_Common_Properties : Windows.UI.Xaml.Controls.Page
+	partial class Binding_Xaml_Object_With_Common_Properties : global::Windows.UI.Xaml.Controls.Page
 	{
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		private const string __baseUri_prefix_Binding_Xaml_Object_With_Common_Properties_4891310bc693a433ba9a8e9f5113f94f = "ms-appx:///TestProject/";
