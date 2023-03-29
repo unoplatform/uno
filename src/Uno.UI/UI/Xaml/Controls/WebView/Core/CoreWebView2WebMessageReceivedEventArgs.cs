@@ -5,7 +5,7 @@ namespace Microsoft.Web.WebView2.Core;
 /// </summary>
 public partial class CoreWebView2WebMessageReceivedEventArgs
 {
-	private CoreWebView2WebMessageReceivedEventArgs(string webMessageAsJson)
+	internal CoreWebView2WebMessageReceivedEventArgs(string webMessageAsJson)
 	{
 		WebMessageAsJson = webMessageAsJson;
 	}

@@ -40,6 +40,7 @@ internal class NativeWebViewWrapper : INativeWebView
 		_webView.Settings.SetSupportZoom(true);
 		_webView.Settings.LoadWithOverviewMode = true;
 		_webView.Settings.UseWideViewPort = true;
+		_webView.AddJavascriptInterface(new UnoWebMessageHandler(this), "unoWebMessageHandler");
 
 		//Allow ThirdPartyCookies by default only on Android 5.0 and UP
 		if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.Lollipop)
@@ -198,6 +199,14 @@ internal class NativeWebViewWrapper : INativeWebView
 	{
 		_webView.HorizontalScrollBarEnabled = scrollingEnabled;
 		_webView.VerticalScrollBarEnabled = scrollingEnabled;
+	}
+
+	internal void OnWebMessageReceived(string message)
+	{
+		if (_coreWebView.Settings.IsWebMessageEnabled)
+		{
+			_coreWebView.RaiseWebMessageReceived(message);
+		}
 	}
 }
 

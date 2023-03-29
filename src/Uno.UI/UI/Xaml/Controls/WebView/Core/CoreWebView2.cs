@@ -129,6 +129,8 @@ public partial class CoreWebView2
 
 	internal void RaiseHistoryChanged() => HistoryChanged?.Invoke(this, null);
 
+	internal void RaiseWebMessageReceived(string message) => WebMessageReceived?.Invoke(this, new(message));
+
 	internal void SetHistoryProperties(bool canGoBack, bool canGoForward)
 	{
 		CanGoBack = canGoBack;
