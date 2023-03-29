@@ -57,6 +57,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private readonly Dictionary<string, XamlObjectDefinition> _namedResources = new Dictionary<string, XamlObjectDefinition>();
 		private readonly List<string> _partials = new List<string>();
+
 		/// <summary>
 		/// Names of disambiguated keys associated with resource definitions. These are created for top-level ResourceDictionary declarations only.
 		/// </summary>
@@ -77,6 +78,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private int _collectionIndex;
 		private int _subclassIndex;
 		private int _dictionaryPropertyIndex;
+		private int _xBindCounter;
 		private string? _themeDictionaryCurrentlyBuilding;
 		private readonly XamlGlobalStaticResourcesMap _globalStaticResourcesMap;
 		private readonly bool _isUiAutomationMappingEnabled;
@@ -482,6 +484,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									BuildComponentFields(componentBuilder);
 
 									BuildCompiledBindings(componentBuilder);
+
+									BuildXBindTryGetDeclarations(componentBuilder);
 								}
 
 								var componentCode = componentBuilder.ToString();
@@ -921,6 +925,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
+		private void BuildXBindTryGetDeclarations(IIndentedStringBuilder writer)
+		{
+			foreach (var xBindMethodDeclaration in CurrentScope.XBindTryGetMethodDeclarations)
+			{
+				writer.AppendMultiLineIndented(xBindMethodDeclaration);
+			}
+		}
+
 		private void BuildBackingFields(IIndentedStringBuilder writer)
 		{
 			TryAnnotateWithGeneratorSource(writer);
@@ -1041,6 +1053,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								BuildBackingFields(writer);
 
 								BuildChildSubclasses(writer);
+
+								BuildXBindTryGetDeclarations(writer);
 							}
 						}
 					}
@@ -1367,6 +1381,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						{
 							writer.AppendLineInvariantIndented("static partial void RegisterDefaultStyles_{0}() => {1}.Instance.RegisterDefaultStyles_{0}();", _fileUniqueId, SingletonClassName);
 						}
+
+						BuildXBindTryGetDeclarations(writer);
 					}
 				}
 
@@ -1675,6 +1691,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							writer.AppendLine();
 
 							BuildChildSubclasses(writer);
+							BuildXBindTryGetDeclarations(writer);
 						}
 					}
 				}
@@ -4122,6 +4139,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_partials.Add(format.InvariantCultureFormat(values));
 		}
 
+		private void RegisterXBindTryGetDeclaration(string declaration)
+		{
+			CurrentScope.XBindTryGetMethodDeclarations.Add(declaration);
+		}
+
 		private void RegisterBackingField(string globalizedType, string name, Accessibility accessibility)
 		{
 			CurrentScope.BackingFields.Add(new BackingFieldDefinition(globalizedType, name, accessibility));
@@ -4333,6 +4355,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private string BuildXBindEvalFunction(XamlMemberDefinition member, XamlObjectDefinition bindNode)
 		{
+			_xBindCounter++;
 			CurrentScope.XBindExpressions.Add(bindNode);
 
 			// If a binding is inside a DataTemplate, the binding root in the case of an x:Bind is
@@ -4387,8 +4410,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 
 				var dataType = RewriteNamespaces(dataTypeObject.Value.ToString() ?? "");
-
-				var contextFunction = XBindExpressionParser.Rewrite("___tctx", rawFunction);
+				var dataTypeSymbol = GetType(dataType);
 
 				string buildBindBack()
 				{
@@ -4402,15 +4424,18 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							}
 							else
 							{
-								throw new NotSupportedException($"Expected BindBack for {contextFunction}");
+								throw new NotSupportedException($"Expected BindBack for {rawFunction}");
 							}
 						}
 						else
 						{
 							if (propertyPaths.properties.Length == 1)
 							{
-								var targetPropertyType = GetXBindPropertyPathType(propertyPaths.properties[0], GetType(dataType)).GetFullyQualifiedTypeIncludingGlobal();
-								return $"(___ctx, __value) => {{ if(___ctx is {dataType} ___tctx) {{ {contextFunction} = ({targetPropertyType})global::Windows.UI.Xaml.Markup.XamlBindingHelper.ConvertValue(typeof({targetPropertyType}), __value); }} }}";
+								var targetPropertyType = GetXBindPropertyPathType(propertyPaths.properties[0], dataTypeSymbol).GetFullyQualifiedTypeIncludingGlobal();
+								var contextFunction = XBindExpressionParser.Rewrite("___tctx", rawFunction, dataTypeSymbol, _metadataHelper.Compilation.GlobalNamespace, isRValue: false, _xBindCounter, FindType);
+								// There is no "TryGet*" method declaration for LValue usages.
+								Debug.Assert(contextFunction.MethodDeclaration is null);
+								return $"(___ctx, __value) => {{ if(___ctx is {dataType} ___tctx) {{ {contextFunction.Expression} = ({targetPropertyType})global::Windows.UI.Xaml.Markup.XamlBindingHelper.ConvertValue(typeof({targetPropertyType}), __value); }} }}";
 							}
 							else
 							{
@@ -4424,14 +4449,22 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					}
 				}
 
-				return $".BindingApply({applyBindingParameters} => /*defaultBindMode{GetDefaultBindMode()}*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, null, ___ctx => ___ctx is {GetType(dataType)} ___tctx ? (object)({contextFunction}) : null, {buildBindBack()} {pathsArray}))";
+				var contextFunction = XBindExpressionParser.Rewrite("___tctx", rawFunction, dataTypeSymbol, _metadataHelper.Compilation.GlobalNamespace, isRValue: true, _xBindCounter, FindType);
+				if (contextFunction.MethodDeclaration is not null)
+				{
+					RegisterXBindTryGetDeclaration(contextFunction.MethodDeclaration);
+				}
+				return $".BindingApply({applyBindingParameters} => /*defaultBindMode{GetDefaultBindMode()}*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, null, ___ctx => ___ctx is {GetType(dataType)} ___tctx ? ({contextFunction.Expression}) : (false, default), {buildBindBack()} {pathsArray}))";
 			}
 			else
 			{
 				EnsureXClassName();
 
-				var originalRawFunction = rawFunction;
-				rawFunction = string.IsNullOrEmpty(rawFunction) ? "___ctx" : XBindExpressionParser.Rewrite("___tctx", rawFunction);
+				var rewrittenRValue = string.IsNullOrEmpty(rawFunction) ? (MethodDeclaration: null, Expression: "(true, ___ctx)") : XBindExpressionParser.Rewrite("___tctx", rawFunction, _xClassName.Symbol, _metadataHelper.Compilation.GlobalNamespace, isRValue: true, _xBindCounter, FindType);
+				if (rewrittenRValue.MethodDeclaration is not null)
+				{
+					RegisterXBindTryGetDeclaration(rewrittenRValue.MethodDeclaration);
+				}
 
 				string buildBindBack()
 				{
@@ -4452,10 +4485,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						{
 							if (propertyPaths.properties.Length == 1)
 							{
+								var rewrittenLValue = string.IsNullOrEmpty(rawFunction) ? "___ctx" : XBindExpressionParser.Rewrite("___tctx", rawFunction, _xClassName.Symbol, _metadataHelper.Compilation.GlobalNamespace, isRValue: false, _xBindCounter, FindType).Expression;
 								var targetPropertyType = GetXBindPropertyPathType(propertyPaths.properties[0]).GetFullyQualifiedTypeIncludingGlobal();
 								return $"(___ctx, __value) => {{ " +
 									$"if(___ctx is {_xClassName} ___tctx) " +
-									$"{rawFunction} = ({targetPropertyType})global::Windows.UI.Xaml.Markup.XamlBindingHelper.ConvertValue(typeof({targetPropertyType}), __value);" +
+									$"{rewrittenLValue} = ({targetPropertyType})global::Windows.UI.Xaml.Markup.XamlBindingHelper.ConvertValue(typeof({targetPropertyType}), __value);" +
 									$" }}";
 							}
 							else
@@ -4470,8 +4504,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					}
 				}
 
-				var bindFunction = $"___ctx is {_xClassName} ___tctx ? (object)({rawFunction}) : null";
-				return $".BindingApply({applyBindingParameters} =>  /*defaultBindMode{GetDefaultBindMode()} {originalRawFunction}*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, __that, ___ctx => {bindFunction}, {buildBindBack()} {pathsArray}))";
+				var bindFunction = $"___ctx is {_xClassName} ___tctx ? ({rewrittenRValue.Expression}) : (false, default)";
+				return $".BindingApply({applyBindingParameters} =>  /*defaultBindMode{GetDefaultBindMode()} {rawFunction}*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, __that, ___ctx => {bindFunction}, {buildBindBack()} {pathsArray}))";
 			}
 		}
 

@@ -543,10 +543,19 @@ namespace Windows.UI.Xaml.Data
 			void SetTargetValue()
 			{
 				var canSetTarget = _updateSources?.None(s => s.ValueType == null) ?? true;
-
 				if (canSetTarget)
 				{
-					SetTargetValueSafe(ParentBinding.XBindSelector(DataContext));
+					var (isResolved, value) = ParentBinding.XBindSelector(DataContext);
+					if (isResolved)
+					{
+						SetTargetValueSafe(value);
+					}
+					else
+					{
+						// x:Bind failed bindings don't change the target value
+						// if no FallbackValue was specified.
+						ApplyFallbackValue(useTypeDefaultValue: false);
+					}
 				}
 				else
 				{

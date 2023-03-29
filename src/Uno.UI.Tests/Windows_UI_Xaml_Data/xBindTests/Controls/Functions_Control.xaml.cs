@@ -29,6 +29,9 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls
 
 		internal static readonly Class Class;
 
+		private TestClass NullTestClass = null;
+		private TestClass NotNullTestClass = new();
+
 		static Functions_Control()
 		{
 			Class = new Class()
@@ -145,5 +148,18 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls
 	internal class SubClass3
 	{
 		public string Message { get; set; }
+	}
+
+	public class TestClass
+	{
+		public string NullString { get; set; }
+	}
+
+	public class MyTextBox : TextBox
+	{
+		public MyTextBox()
+		{
+			Text = "DefaultTextBoxText";
+		}
 	}
 }

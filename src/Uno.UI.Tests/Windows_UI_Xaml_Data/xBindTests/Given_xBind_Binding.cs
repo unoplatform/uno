@@ -1307,8 +1307,10 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 			var SUT = new xBind_PathLessCasting();
 
 			SUT.ForceLoaded();
-
+			const string CastResult = "ExplicitConversion_Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls.xBind_PathLessCasting";
 			Assert.AreEqual(SUT, SUT.tb1.Tag);
+			Assert.AreEqual(CastResult, SUT.tb2.Text);
+			Assert.AreEqual($"{CastResult}-{CastResult}", SUT.tb3.Text);
 		}
 
 		[TestMethod]
@@ -1334,6 +1336,8 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 			SUT.ForceLoaded();
 
 			Assert.AreEqual(42, SUT.tb1.Tag);
+			Assert.AreEqual("TextBlockTag", SUT.tb3.Tag);
+			Assert.AreEqual("Formatted TextBlockTag", SUT.tb4.Tag);
 		}
 
 		[TestMethod]
