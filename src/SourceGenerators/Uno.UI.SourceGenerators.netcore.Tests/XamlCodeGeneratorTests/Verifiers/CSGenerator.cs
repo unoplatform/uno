@@ -79,10 +79,10 @@ namespace Uno.UI.SourceGenerators.Tests.Verifiers
 
 				foreach (var xamlFile in xamlFiles)
 				{
-					globalConfigBuilder.Append($@"[/0/{xamlFile.FileName}]
+					globalConfigBuilder.Append($@"[C:/Project/0/{xamlFile.FileName}]
 build_metadata.AdditionalFiles.SourceItemGroup = Page
 ");
-					TestState.AdditionalFiles.Add(($"/0/{xamlFile.FileName}", xamlFile.Contents));
+					TestState.AdditionalFiles.Add(($"C:/Project/0/{xamlFile.FileName}", xamlFile.Contents));
 				}
 				TestState.AnalyzerConfigFiles.Add(("/.globalconfig", globalConfigBuilder.ToString()));
 

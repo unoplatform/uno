@@ -37,7 +37,7 @@ namespace MyProject
 			if(!_stylesRegistered)
 			{
 				_stylesRegistered = true;
-				RegisterDefaultStyles_Binding_ElementName_In_Template_d67c044401b9d684621ebac9c7198610();
+				RegisterDefaultStyles_Binding_ElementName_In_Template_66bf0a54f1801c397a6fa4930a237eca();
 			}
 		}
 		// Register ResourceDictionaries using ms-appx:/// syntax, this is called for external resources
@@ -52,7 +52,7 @@ namespace MyProject
 		internal static void RegisterResourceDictionariesBySourceLocal()
 		{
 		}
-		static partial void RegisterDefaultStyles_Binding_ElementName_In_Template_d67c044401b9d684621ebac9c7198610();
+		static partial void RegisterDefaultStyles_Binding_ElementName_In_Template_66bf0a54f1801c397a6fa4930a237eca();
 		[global::System.Obsolete("This method is provided for binary backward compatibility. It will always return null.")]
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		public static object FindResource(string name) => null;
