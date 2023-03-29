@@ -204,6 +204,12 @@ public class Given_TreeView
 
 		child3Node.IsExpanded = true;
 		await TestServices.WindowHelper.WaitForIdle();
+
+#if HAS_UNO
+		Assert.AreEqual(
+			1,
+			SUT.myTree.FindChildren<TextBlock>().Count(c => c.Text == "Child 21"));
+#endif
 	}
 }
 
