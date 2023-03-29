@@ -108,6 +108,13 @@ namespace Uno.UI.Runtime.Skia
 				widget.ShowAll();
 				overlay.Put(widget, 0, 0);
 			}
+			else
+			{
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().Debug($"Unable to attach native element {content} to {owner}.");
+				}
+			}
 		}
 
 		public void DetachNativeElement(object owner, object content)
@@ -117,6 +124,13 @@ namespace Uno.UI.Runtime.Skia
 				&& GetOverlayLayer(xamlRoot) is { } overlay)
 			{
 				overlay.Remove(widget);
+			}
+			else
+			{
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().LogDebug($"Unable to detach native element {content} from {owner}.");
+				}
 			}
 		}
 
@@ -128,6 +142,13 @@ namespace Uno.UI.Runtime.Skia
 			{
 				widget.SizeAllocate(new((int)arrangeRect.X, (int)arrangeRect.Y, (int)arrangeRect.Width, (int)arrangeRect.Height));
 			}
+			else
+			{
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().Debug($"Unable to arrange native element {content} in {owner}.");
+				}
+			}
 		}
 
 		public Windows.Foundation.Size MeasureNativeElement(object owner, object content, Windows.Foundation.Size size)
@@ -138,6 +159,13 @@ namespace Uno.UI.Runtime.Skia
 			{
 				widget.GetPreferredSize(out var minimum_Size, out var naturalSize);
 				return new(naturalSize.Width, naturalSize.Height);
+			}
+			else
+			{
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().Debug($"Unable to measure native element {content} in {owner}.");
+				}
 			}
 
 			return new(0, 0);

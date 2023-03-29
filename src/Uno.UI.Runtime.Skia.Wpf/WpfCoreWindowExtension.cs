@@ -82,6 +82,13 @@ namespace Uno.UI.Skia.Platform
 			{
 				layer.Children.Add(contentAsFE);
 			}
+			else
+			{
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().Debug($"Unable to attach native element {content} in {owner}.");
+				}
+			}
 		}
 
 		public void DetachNativeElement(object owner, object content)
@@ -92,6 +99,13 @@ namespace Uno.UI.Skia.Platform
 				&& contentAsFE.Parent != layer)
 			{
 				layer.Children.Add(contentAsFE);
+			}
+			else
+			{
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().Debug($"Unable to detach native element {content} in {owner}.");
+				}
 			}
 		}
 
@@ -105,6 +119,13 @@ namespace Uno.UI.Skia.Platform
 				contentAsUIElement.Arrange(
 					new(0, 0, arrangeRect.Width, arrangeRect.Height)
 				);
+			}
+			else
+			{
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().Debug($"Unable to arrange native element {content} in {owner}.");
+				}
 			}
 		}
 
