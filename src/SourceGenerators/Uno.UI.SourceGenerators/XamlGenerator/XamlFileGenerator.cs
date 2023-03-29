@@ -837,28 +837,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						writer.AppendLineIndented(
 							$"global::Windows.ApplicationModel.Resources.ResourceLoader" +
 							$".AddLookupAssembly(typeof(global::{namedSymbol.GetFullyQualifiedTypeExcludingGlobal()}).Assembly);"
-#if DEBUG
-							+ $" /* {assembly.Name}, hasUnoHasLocalizationResourcesAttributeEnabled:{hasUnoHasLocalizationResourcesAttributeEnabled}, unoHasLocalizationResourcesAttributeDefined:{unoHasLocalizationResourcesAttributeDefined} */"
-#endif
 						);
-					}
-					else
-					{
-#if DEBUG
-						writer.AppendLineIndented($"/* No anchor type for reference {assembly.Name} */");
-#endif
 					}
 				}
 				else
 				{
 					writer.AppendLineIndented($"global::Windows.ApplicationModel.Resources.ResourceLoader.AddLookupAssembly(global::System.Reflection.Assembly.Load(\"{assembly.Name}\"));");
 				}
-			}
-			else
-			{
-#if DEBUG
-				writer.AppendLineIndented($"/* Assembly {assembly} does not contain UnoHasLocalizationResources */");
-#endif
 			}
 		}
 
@@ -5170,9 +5155,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					if (propertyType != null)
 					{
 						var s = BuildLiteralValue(propertyType, memberValue, owner ?? member, member.Member.Name, objectUid);
-#if DEBUG
-						s += $"/* {propertyType.GetFullyQualifiedTypeExcludingGlobal()}/{originalType?.GetFullyQualifiedTypeExcludingGlobal()}, {memberValue}, {member?.Member?.DeclaringType?.Name}/{member?.Member?.Name} */";
-#endif
 						return s;
 					}
 					else
