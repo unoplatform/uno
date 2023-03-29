@@ -60,9 +60,9 @@ namespace TestRepro
 					new global::Windows.UI.Xaml.Controls.TextBlock
 					{
 						IsParsing = true,
-						Text = "Hello, world!"/* string/, Hello, world!, TextBlock/Text */,
-						Margin = new global::Windows.UI.Xaml.Thickness(20)/* Windows.UI.Xaml.Thickness/, 20, TextBlock/Margin */,
-						FontSize = 30d/* double/, 30, TextBlock/FontSize */,
+						Text = "Hello, world!",
+						Margin = new global::Windows.UI.Xaml.Thickness(20),
+						FontSize = 30d,
 						// Source 0\MainPage.xaml (Line 12:4)
 					}
 					.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler0)(c0 => 
@@ -82,7 +82,7 @@ namespace TestRepro
 							"DataContext",
 							new Windows.UI.Xaml.Data.Binding()
 							{
-								Path = @"PreviewDropViewModel"/* Windows.UI.Xaml.PropertyPath/Windows.UI.Xaml.PropertyPath, PreviewDropViewModel, /_PositionalParameters */,
+								Path = @"PreviewDropViewModel",
 							}
 						);
 					}

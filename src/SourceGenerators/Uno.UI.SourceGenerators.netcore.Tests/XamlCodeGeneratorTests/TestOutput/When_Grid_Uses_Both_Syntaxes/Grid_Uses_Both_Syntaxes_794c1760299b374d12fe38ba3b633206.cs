@@ -117,31 +117,31 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.GridTests.Controls
 				{
 					new global::Windows.UI.Xaml.Controls.ColumnDefinition
 					{
-						Width = new global::Windows.UI.Xaml.GridLength(1f, global::Windows.UI.Xaml.GridUnitType.Star)/* Windows.UI.Xaml.GridLength/, 1*, ColumnDefinition/Width */,
+						Width = new global::Windows.UI.Xaml.GridLength(1f, global::Windows.UI.Xaml.GridUnitType.Star),
 						// Source 0\Grid_Uses_Both_Syntaxes.xaml (Line 18:14)
 					}
 					,
 					new global::Windows.UI.Xaml.Controls.ColumnDefinition
 					{
-						Width = new global::Windows.UI.Xaml.GridLength(2f, global::Windows.UI.Xaml.GridUnitType.Star)/* Windows.UI.Xaml.GridLength/, 2*, ColumnDefinition/Width */,
+						Width = new global::Windows.UI.Xaml.GridLength(2f, global::Windows.UI.Xaml.GridUnitType.Star),
 						// Source 0\Grid_Uses_Both_Syntaxes.xaml (Line 19:14)
 					}
 					,
 					new global::Windows.UI.Xaml.Controls.ColumnDefinition
 					{
-						Width = new global::Windows.UI.Xaml.GridLength(1f, global::Windows.UI.Xaml.GridUnitType.Auto)/* Windows.UI.Xaml.GridLength/, Auto, ColumnDefinition/Width */,
+						Width = new global::Windows.UI.Xaml.GridLength(1f, global::Windows.UI.Xaml.GridUnitType.Auto),
 						// Source 0\Grid_Uses_Both_Syntaxes.xaml (Line 20:14)
 					}
 					,
 					new global::Windows.UI.Xaml.Controls.ColumnDefinition
 					{
-						Width = new global::Windows.UI.Xaml.GridLength(1f, global::Windows.UI.Xaml.GridUnitType.Star)/* Windows.UI.Xaml.GridLength/, *, ColumnDefinition/Width */,
+						Width = new global::Windows.UI.Xaml.GridLength(1f, global::Windows.UI.Xaml.GridUnitType.Star),
 						// Source 0\Grid_Uses_Both_Syntaxes.xaml (Line 21:14)
 					}
 					,
 					new global::Windows.UI.Xaml.Controls.ColumnDefinition
 					{
-						Width = new global::Windows.UI.Xaml.GridLength(300f, global::Windows.UI.Xaml.GridUnitType.Pixel)/* Windows.UI.Xaml.GridLength/, 300, ColumnDefinition/Width */,
+						Width = new global::Windows.UI.Xaml.GridLength(300f, global::Windows.UI.Xaml.GridUnitType.Pixel),
 						// Source 0\Grid_Uses_Both_Syntaxes.xaml (Line 22:14)
 					}
 					,
@@ -151,31 +151,31 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.GridTests.Controls
 				{
 					new global::Windows.UI.Xaml.Controls.RowDefinition
 					{
-						Height = new global::Windows.UI.Xaml.GridLength(1f, global::Windows.UI.Xaml.GridUnitType.Star)/* Windows.UI.Xaml.GridLength/, 1*, RowDefinition/Height */,
+						Height = new global::Windows.UI.Xaml.GridLength(1f, global::Windows.UI.Xaml.GridUnitType.Star),
 						// Source 0\Grid_Uses_Both_Syntaxes.xaml (Line 25:14)
 					}
 					,
 					new global::Windows.UI.Xaml.Controls.RowDefinition
 					{
-						Height = new global::Windows.UI.Xaml.GridLength(1f, global::Windows.UI.Xaml.GridUnitType.Auto)/* Windows.UI.Xaml.GridLength/, Auto, RowDefinition/Height */,
+						Height = new global::Windows.UI.Xaml.GridLength(1f, global::Windows.UI.Xaml.GridUnitType.Auto),
 						// Source 0\Grid_Uses_Both_Syntaxes.xaml (Line 26:14)
 					}
 					,
 					new global::Windows.UI.Xaml.Controls.RowDefinition
 					{
-						Height = new global::Windows.UI.Xaml.GridLength(25f, global::Windows.UI.Xaml.GridUnitType.Pixel)/* Windows.UI.Xaml.GridLength/, 25, RowDefinition/Height */,
+						Height = new global::Windows.UI.Xaml.GridLength(25f, global::Windows.UI.Xaml.GridUnitType.Pixel),
 						// Source 0\Grid_Uses_Both_Syntaxes.xaml (Line 27:14)
 					}
 					,
 					new global::Windows.UI.Xaml.Controls.RowDefinition
 					{
-						Height = new global::Windows.UI.Xaml.GridLength(14f, global::Windows.UI.Xaml.GridUnitType.Pixel)/* Windows.UI.Xaml.GridLength/, 14, RowDefinition/Height */,
+						Height = new global::Windows.UI.Xaml.GridLength(14f, global::Windows.UI.Xaml.GridUnitType.Pixel),
 						// Source 0\Grid_Uses_Both_Syntaxes.xaml (Line 28:14)
 					}
 					,
 					new global::Windows.UI.Xaml.Controls.RowDefinition
 					{
-						Height = new global::Windows.UI.Xaml.GridLength(20f, global::Windows.UI.Xaml.GridUnitType.Pixel)/* Windows.UI.Xaml.GridLength/, 20, RowDefinition/Height */,
+						Height = new global::Windows.UI.Xaml.GridLength(20f, global::Windows.UI.Xaml.GridUnitType.Pixel),
 						// Source 0\Grid_Uses_Both_Syntaxes.xaml (Line 29:14)
 					}
 					,

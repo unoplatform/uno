@@ -69,7 +69,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 					{
 						IsParsing = true,
 						Name = "topLevel",
-						Tag = @"42"/* object/, 42, TextBlock/Tag */,
+						Tag = @"42",
 						// Source 0\Binding_Xaml_Object_With_Common_Properties.xaml (Line 14:10)
 					}
 					.Binding_Xaml_Object_With_Common_Properties_4891310bc693a433ba9a8e9f5113f94f_XamlApply((Binding_Xaml_Object_With_Common_Properties_4891310bc693a433ba9a8e9f5113f94fXamlApplyExtensions.XamlApplyHandler0)(c0 => 
@@ -83,17 +83,17 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 							global::Windows.UI.Xaml.Controls.TextBlock.TextProperty,
 							new Windows.UI.Xaml.Data.Binding()
 							{
-								Path = @"Tag"/* Windows.UI.Xaml.PropertyPath/Windows.UI.Xaml.PropertyPath, Tag, Binding/Path */,
+								Path = @"Tag",
 								ElementName = _topLevelSubject,
 								Converter = (global::Windows.UI.Xaml.Data.IValueConverter)global::Uno.UI.ResourceResolverSingleton.Instance.ResolveResourceStatic("Binding_Xaml_Object_With_Common_Properties_Return_Value_Converter", typeof(global::Windows.UI.Xaml.Data.IValueConverter), context: global::MyProject.GlobalStaticResources.__ParseContext_),
-								ConverterParameter = @"topLevel"/* Windows.UI.Xaml.Data.Binding/Windows.UI.Xaml.Data.Binding, topLevel, Binding/ConverterParameter */,
-								ConverterLanguage = "topLevel"/* string/string, topLevel, Binding/ConverterLanguage */,
-								UpdateSourceTrigger = global::Windows.UI.Xaml.Data.UpdateSourceTrigger.Default/* Windows.UI.Xaml.Data.UpdateSourceTrigger/Windows.UI.Xaml.Data.UpdateSourceTrigger, Default, Binding/UpdateSourceTrigger */,
-								TargetNullValue = @"TargetNullValue"/* Windows.UI.Xaml.Data.Binding/Windows.UI.Xaml.Data.Binding, TargetNullValue, Binding/TargetNullValue */,
-								FallbackValue = @"FallbackValue"/* Windows.UI.Xaml.Data.Binding/Windows.UI.Xaml.Data.Binding, FallbackValue, Binding/FallbackValue */,
-								Mode = global::Windows.UI.Xaml.Data.BindingMode.OneWay/* Windows.UI.Xaml.Data.BindingMode/Windows.UI.Xaml.Data.BindingMode, OneWay, Binding/Mode */,
+								ConverterParameter = @"topLevel",
+								ConverterLanguage = "topLevel",
+								UpdateSourceTrigger = global::Windows.UI.Xaml.Data.UpdateSourceTrigger.Default,
+								TargetNullValue = @"TargetNullValue",
+								FallbackValue = @"FallbackValue",
+								Mode = global::Windows.UI.Xaml.Data.BindingMode.OneWay,
 								RelativeSource = new RelativeSource(RelativeSourceMode.None),
-								Source = @"Source"/* Windows.UI.Xaml.Data.Binding/Windows.UI.Xaml.Data.Binding, Source, Binding/Source */,
+								Source = @"Source",
 							}
 						);
 						global::Uno.UI.FrameworkElementHelper.SetBaseUri(c0, __baseUri_Binding_Xaml_Object_With_Common_Properties_4891310bc693a433ba9a8e9f5113f94f);
