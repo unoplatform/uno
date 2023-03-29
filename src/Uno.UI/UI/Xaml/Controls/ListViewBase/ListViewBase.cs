@@ -577,6 +577,7 @@ namespace Windows.UI.Xaml.Controls
 					RemoveItems(args.OldStartingIndex, args.OldItems.Count, section);
 					CleanUpContainers(removedContainers);
 					RepairIndices();
+					CleanUpContainers(removedContainers);
 
 					break;
 				case NotifyCollectionChangedAction.Replace:
