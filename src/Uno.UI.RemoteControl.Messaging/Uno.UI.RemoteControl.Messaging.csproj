@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>netstandard2.0</TargetFramework>
+
+		<PackageId>Uno.UI.RemoteControl.Messaging</PackageId>
+		<PackageId Condition="'$(UNO_UWP_BUILD)'=='false'">Uno.WinUI.RemoteControl.Messaging</PackageId>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Compile Include="..\Uno.UI.RemoteControl.Server\IRemoteControlServer.cs" Link="IRemoteControlServer.cs" />
+		<Compile Include="..\Uno.UI.RemoteControl.Server\IServerProcessor.cs" Link="IServerProcessor.cs" />
+		<Compile Include="..\Uno.UI.RemoteControl\Messages\Frame.cs" Link="Messages\Frame" />
+		<Compile Include="..\Uno.UI.RemoteControl\Messages\IMessage.cs" Link="Messages\IMessage" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Newtonsoft.Json" />
+	</ItemGroup>
+
+</Project>
