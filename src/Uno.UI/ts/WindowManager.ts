@@ -465,10 +465,10 @@ namespace Uno.UI {
 		/**
 			* Get a property for an element.
 			*/
-		public getProperty(elementId: number, name: string): any {
-			const element = this.getView(elementId);
+		public getProperty(elementId: number, name: string): string {
+			const element = <any>this.getView(elementId);
 
-			return (element as any)[name] || "";
+			return (element[name] || "").toString();
 		}
 
 		/**

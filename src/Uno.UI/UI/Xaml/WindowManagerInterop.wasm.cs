@@ -679,6 +679,16 @@ namespace Uno.UI.Xaml
 		}
 		#endregion
 
+		internal static string GetProperty(IntPtr htmlId, string name)
+		{
+#if NET7_0_OR_GREATER
+			return NativeMethods.GetProperty(htmlId, name);
+#else
+			var command = "Uno.UI.WindowManager.current.getProperty(" + htmlId + ", \"" + name + "\");";
+			return WebAssemblyRuntime.InvokeJS(command);
+#endif
+		}
+
 		#region SetProperty
 
 		internal static void SetProperty(IntPtr htmlId, (string name, string value)[] properties)
@@ -1263,6 +1273,9 @@ namespace Uno.UI.Xaml
 
 			[JSImport("globalThis.Uno.UI.WindowManager.current.getAttribute")]
 			internal static partial string GetAttribute(IntPtr htmlId, string name);
+
+			[JSImport("globalThis.Uno.UI.WindowManager.current.getProperty")]
+			internal static partial string GetProperty(IntPtr htmlId, string name);
 
 			[JSImport("globalThis.Uno.UI.WindowManager.current.measureViewNativeFast")]
 			internal static partial void MeasureView(IntPtr htmlId, double availableWidth, double availableHeight, bool measureContent, IntPtr pReturn);
