@@ -140,6 +140,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		internal Lazy<INamedTypeSymbol> SolidColorBrushSymbol { get; }
 		internal Lazy<INamedTypeSymbol> RowDefinitionSymbol { get; }
 		internal Lazy<INamedTypeSymbol> ColumnDefinitionSymbol { get; }
+		internal Lazy<INamedTypeSymbol> TaskSymbol { get; }
+		internal Lazy<INamedTypeSymbol?> IRelayCommandSymbol { get; }
+		internal Lazy<INamedTypeSymbol?> IRelayCommandTSymbol { get; }
+		internal Lazy<INamedTypeSymbol?> IAsyncRelayCommandSymbol { get; }
+		internal Lazy<INamedTypeSymbol?> IAsyncRelayCommandTSymbol { get; }
 
 		public XamlCodeGeneration(GeneratorExecutionContext context)
 		{
@@ -307,6 +312,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			SolidColorBrushSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.SolidColorBrush);
 			RowDefinitionSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.RowDefinition);
 			ColumnDefinitionSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.ColumnDefinition);
+			TaskSymbol = GetMandatorySymbolAsLazy("System.Threading.Tasks");
+			IRelayCommandSymbol = GetOptionalSymbolAsLazy("CommunityToolkit.Mvvm.Input.IRelayCommand");
+			IRelayCommandTSymbol = GetOptionalSymbolAsLazy("CommunityToolkit.Mvvm.Input.IRelayCommand`1");
+			IAsyncRelayCommandSymbol = GetOptionalSymbolAsLazy("CommunityToolkit.Mvvm.Input.IAsyncRelayCommand");
+			IAsyncRelayCommandTSymbol = GetOptionalSymbolAsLazy("CommunityToolkit.Mvvm.Input.IAsyncRelayCommand`1");
 
 			Lazy<INamedTypeSymbol> GetMandatorySymbolAsLazy(string fullyQualifiedName)
 				=> new(() => context.Compilation.GetTypeByMetadataName(fullyQualifiedName) ?? throw new InvalidOperationException($"Unable to find type {fullyQualifiedName}"));
