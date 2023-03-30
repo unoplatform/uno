@@ -11,8 +11,12 @@ namespace Windows.UI.Composition
 		internal ContainerVisual(Compositor compositor) : base(compositor)
 		{
 			Children = new VisualCollection(compositor, this);
+			Children.CollectionChanged += Children_CollectionChanged;
 		}
 
 		public VisualCollection Children { get; }
+
+		private void Children_CollectionChanged(object? sender, EventArgs e) =>
+			IsChildrenRenderOrderDirty = true;
 	}
 }
