@@ -7,11 +7,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Uno.UI.RuntimeTests.Extensions;
-<<<<<<< HEAD
-=======
 using System.Collections.ObjectModel;
 using Windows.Foundation;
->>>>>>> 07e14bc32d (fix(ios): LVI is sometimes clipped)
 #if NETFX_CORE
 using Uno.UI.Extensions;
 #elif __IOS__
@@ -375,11 +372,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 #if NETFX_CORE
 				// For some reason on UWP the initial ChangeView may not work
-<<<<<<< HEAD
-				ScrollBy(SUT, 40); 
-=======
 				ScrollTo(SUT, 40);
->>>>>>> 07e14bc32d (fix(ios): LVI is sometimes clipped)
 #endif
 				return sv.VerticalOffset;
 			}

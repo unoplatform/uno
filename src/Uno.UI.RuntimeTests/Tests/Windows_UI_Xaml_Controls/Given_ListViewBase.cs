@@ -774,14 +774,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await WindowHelper.WaitFor(() => list.Items.Count == 19);
 
-<<<<<<< HEAD
-=======
 			// Force rebuild the layout so that TranslateTransform picks up
 			// the updated values
 			ScrollTo(list, 0); // Scroll to top
 			ScrollTo(list, 100000); // Scroll to end
 
->>>>>>> 07e14bc32d (fix(ios): LVI is sometimes clipped)
 			await WindowHelper.WaitForEqual(181, () => GetTop(list.ContainerFromItem(18) as ListViewItem, container), tolerance: 2);
 		}
 
