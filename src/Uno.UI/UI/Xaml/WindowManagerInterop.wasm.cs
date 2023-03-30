@@ -1198,6 +1198,14 @@ namespace Uno.UI.Xaml
 				WebAssemblyRuntime.InvokeJS("Uno.UI.WindowManager.current.rawPixelsToBase64EncodeImage(" + data + ", " + width + ", " + height + ");");
 #endif
 
+		internal static void SelectInputRange(IntPtr htmlId, int start, int length)
+			=>
+#if NET7_0_OR_GREATER
+				NativeMethods.SelectInputRange(htmlId, start, length);
+#else
+				WebAssemblyRuntime.InvokeJS($"Uno.UI.WindowManager.current.selectInputRange({htmlId}, {start}, {length})");
+#endif
+
 		internal static void SetRootElement(IntPtr htmlId)
 		{
 #if NET7_0_OR_GREATER
@@ -1285,6 +1293,9 @@ namespace Uno.UI.Xaml
 
 			[JSImport("globalThis.Uno.UI.WindowManager.current.releasePointerCapture")]
 			internal static partial void ReleasePointerCapture(IntPtr htmlId, double pointerId);
+
+			[JSImport("globalThis.Uno.UI.WindowManager.current.selectInputRange")]
+			internal static partial void SelectInputRange(IntPtr htmlId, int start, int length);
 
 			[JSImport("globalThis.Uno.UI.WindowManager.current.setAttributesNativeFast")]
 			internal static partial void SetAttributes(IntPtr htmlId, string[] pairs);
