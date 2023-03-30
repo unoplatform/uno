@@ -1,4 +1,4 @@
-﻿#if NET461 || __WASM__
+﻿#if IS_UNIT_TESTS || __WASM__
 #pragma warning disable CS0067
 #endif
 
@@ -1086,7 +1086,7 @@ namespace Windows.UI.Xaml
 
 #if HAS_UNO_WINUI
 		// Skipping already declared property ActualSize
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public UI.Input.InputCursor ProtectedCursor
 		{
 			get;

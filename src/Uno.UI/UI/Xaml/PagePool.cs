@@ -34,7 +34,7 @@ namespace Windows.UI.Xaml
 		{
 			_watch.Start();
 
-#if !NET461
+#if !IS_UNIT_TESTS
 			_ = CoreDispatcher.Main.RunIdleAsync(Scavenger);
 #endif
 		}

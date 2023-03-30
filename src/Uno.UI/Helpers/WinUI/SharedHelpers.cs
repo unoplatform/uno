@@ -31,7 +31,7 @@ namespace Uno.UI.Helpers.WinUI
 {
 	internal class SharedHelpers
 	{
-#if HAS_UNO && !(NET461 || __NETSTD_REFERENCE__)
+#if HAS_UNO && !(IS_UNIT_TESTS || __NETSTD_REFERENCE__)
 		private static bool s_isOnXboxInitialized;
 		private static bool s_isOnXbox;
 #endif
@@ -503,7 +503,7 @@ namespace Uno.UI.Helpers.WinUI
 
 		public static bool IsOnXbox()
 		{
-#if HAS_UNO && !(NET461 || __NETSTD_REFERENCE__)
+#if HAS_UNO && !(IS_UNIT_TESTS || __NETSTD_REFERENCE__)
 			if (!s_isOnXboxInitialized)
 			{
 				var deviceFamily = AnalyticsInfo.VersionInfo.DeviceFamily;

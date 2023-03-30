@@ -10,7 +10,7 @@ namespace Windows.UI.Xaml.Documents
 	{
 		internal void InvalidateInlines(bool updateText)
 		{
-#if !NET461
+#if !IS_UNIT_TESTS
 			switch (this.GetParent())
 			{
 				case Span span:

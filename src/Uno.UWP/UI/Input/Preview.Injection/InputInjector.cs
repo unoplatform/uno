@@ -12,7 +12,7 @@ namespace Windows.UI.Input.Preview.Injection;
 
 public partial class InputInjector
 {
-	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__NETSTD_REFERENCE__", "__MACOS__")]
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__", "__MACOS__")]
 	public static InputInjector? TryCreate()
 #if UNO_HAS_MANAGED_POINTERS
 		=> CoreWindow.GetForCurrentThread() is { } window ? new InputInjector(window) : null;
@@ -41,7 +41,7 @@ public partial class InputInjector
 	}
 #endif
 
-	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__NETSTD_REFERENCE__", "__MACOS__")]
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__", "__MACOS__")]
 	public void InitializeTouchInjection(InjectedInputVisualizationMode visualMode)
 	{
 		UninitializeTouchInjection();
@@ -49,7 +49,7 @@ public partial class InputInjector
 		_touch = (new InjectedInputState(PointerDeviceType.Touch), isAdded: false);
 	}
 
-	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__NETSTD_REFERENCE__", "__MACOS__")]
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__", "__MACOS__")]
 	public void UninitializeTouchInjection()
 	{
 		if (_touch is not null)
@@ -62,7 +62,7 @@ public partial class InputInjector
 		}
 	}
 
-	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__NETSTD_REFERENCE__", "__MACOS__")]
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__", "__MACOS__")]
 	public void InjectTouchInput(IEnumerable<InjectedInputTouchInfo> input)
 	{
 		if (_touch is null)
@@ -87,7 +87,7 @@ public partial class InputInjector
 		}
 	}
 
-	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__NETSTD_REFERENCE__", "__MACOS__")]
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__", "__MACOS__")]
 	public void InjectMouseInput(IEnumerable<InjectedInputMouseInfo> input)
 	{
 		foreach (var info in input)

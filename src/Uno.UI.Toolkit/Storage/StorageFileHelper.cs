@@ -18,7 +18,7 @@ public partial class StorageFileHelper
 	/// <returns>A task that will complete with a result of true if file exists, otherwise with a result of false.</returns>
 	public static async Task<bool> ExistsInPackage(string fileName) => await FileExistsInPackage(fileName);
 
-#if NET461 || __NETSTD_REFERENCE__
+#if IS_UNIT_TESTS || __NETSTD_REFERENCE__
 	private static Task<bool> FileExistsInPackage(string fileName)
 		=> throw new NotImplementedException();
 #endif

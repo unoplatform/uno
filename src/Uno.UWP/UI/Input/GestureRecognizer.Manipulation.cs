@@ -291,7 +291,7 @@ namespace Windows.UI.Input
 				}
 			}
 
-#if NET461
+#if IS_UNIT_TESTS
 			public void RunInertiaSync()
 				=> _inertia?.RunSync();
 #endif

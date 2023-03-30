@@ -153,7 +153,7 @@ namespace Uno.UI.DataBinding
 	}
 
 #if !__ANDROID__ && !__IOS__
-#if NET461
+#if IS_UNIT_TESTS
 	public
 #else
 	internal

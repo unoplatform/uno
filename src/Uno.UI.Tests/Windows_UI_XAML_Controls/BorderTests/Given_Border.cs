@@ -18,7 +18,7 @@ using FluentAssertions.Execution;
 namespace Uno.UI.Tests.BorderTests
 {
 	[TestClass]
-#if !NET461
+#if !IS_UNIT_TESTS
 	[RuntimeTests.RunsOnUIThread]
 #endif
 	public partial class Given_Border : Context
@@ -122,8 +122,8 @@ namespace Uno.UI.Tests.BorderTests
 		}
 
 		[TestMethod]
-#if NET461 || __IOS__ || __ANDROID__ || __MACOS__ // Broken on Android for now
-		[Ignore("Layout engine is incomplete on net461 for arrange, ios & macOS needs actual layout pass")]
+#if IS_UNIT_TESTS || __IOS__ || __ANDROID__ || __MACOS__ // Broken on Android for now
+		[Ignore("Layout engine is incomplete on IS_UNIT_TESTS for arrange, ios & macOS needs actual layout pass")]
 #endif
 		public void When_Top_Align_Nested_With_Margin()
 		{

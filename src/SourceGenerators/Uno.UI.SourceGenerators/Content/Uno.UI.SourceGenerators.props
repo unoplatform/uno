@@ -62,7 +62,7 @@
 							">android</XamarinProjectType>
 		<XamarinProjectType Condition="'$(UnoRuntimeIdentifier)'=='WebAssembly'">wasm</XamarinProjectType>
 		<XamarinProjectType Condition="'$(UnoRuntimeIdentifier)'=='Skia'">skia</XamarinProjectType>
-		<XamarinProjectType Condition="'$(TargetFramework)'=='net461'">net461</XamarinProjectType>
+		<XamarinProjectType Condition="'$(TargetFramework)'=='IS_UNIT_TESTS'">IS_UNIT_TESTS</XamarinProjectType>
 	</PropertyGroup>
 
   <ItemGroup Condition="'$(ShouldRunGenerator)'=='true'">
@@ -125,7 +125,7 @@
 		<Otherwise>
 			<PropertyGroup Condition="'$(UnoUIGeneratorsBinPath)'=='' and '$(ShouldRunGenerator)'=='true'">
 				<_UnoUIGeneratorsBinPathInPackage>$(MSBuildThisFileDirectory)..\tools\uno-sourcegen</_UnoUIGeneratorsBinPathInPackage>
-				<_UnoUIGeneratorsBinPathInSource>$(MSBuildThisFileDirectory)..\bin\$(Configuration)\net461</_UnoUIGeneratorsBinPathInSource>
+				<_UnoUIGeneratorsBinPathInSource>$(MSBuildThisFileDirectory)..\bin\$(Configuration)\IS_UNIT_TESTS</_UnoUIGeneratorsBinPathInSource>
 				<UnoUIGeneratorsBinPath Condition="exists('$(_UnoUIGeneratorsBinPathInPackage)')">$(_UnoUIGeneratorsBinPathInPackage)</UnoUIGeneratorsBinPath>
 				<UnoUIGeneratorsBinPath Condition="exists('$(_UnoUIGeneratorsBinPathInSource)')">$(_UnoUIGeneratorsBinPathInSource)</UnoUIGeneratorsBinPath>
 			</PropertyGroup>
@@ -227,14 +227,14 @@
 		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='skia'" Include="not_android" />
 		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='skia'" Include="not_macos" />
 		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='skia'" Include="not_wasm" />
-		<!-- NET461 -->
-		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='net461'" Include="net461" />
-		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='net461'" Include="not_ios" />
-		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='net461'" Include="not_android" />
-		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='net461'" Include="not_wasm" />
-		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='net461'" Include="not_macos" />
-		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='net461'" Include="not_skia" />
-		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='net461'" Include="not_netstdref" />
+		<!-- IS_UNIT_TESTS -->
+		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='IS_UNIT_TESTS'" Include="IS_UNIT_TESTS" />
+		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='IS_UNIT_TESTS'" Include="not_ios" />
+		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='IS_UNIT_TESTS'" Include="not_android" />
+		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='IS_UNIT_TESTS'" Include="not_wasm" />
+		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='IS_UNIT_TESTS'" Include="not_macos" />
+		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='IS_UNIT_TESTS'" Include="not_skia" />
+		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='IS_UNIT_TESTS'" Include="not_netstdref" />
 
 		<!--
 		A list of analyzer suppressions to include in every generated class.

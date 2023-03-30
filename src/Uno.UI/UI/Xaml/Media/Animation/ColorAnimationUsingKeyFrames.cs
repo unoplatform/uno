@@ -89,7 +89,7 @@ namespace Windows.UI.Xaml.Media.Animation
 				// WARNING: This does not allow us to bind ColorKeyFrame.Value with ViewModel properties.
 				_wasBeginScheduled = true;
 
-#if !NET461
+#if !IS_UNIT_TESTS
 #if __ANDROID__
 				_ = Dispatcher.RunAnimation(() =>
 #else
@@ -111,7 +111,7 @@ namespace Windows.UI.Xaml.Media.Animation
 					//Start the animation
 					Play();
 				}
-#if !NET461
+#if !IS_UNIT_TESTS
 				);
 #endif
 			}
@@ -416,7 +416,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		partial void UseHardware();
 		partial void HoldValue();
 
-#if NET461
+#if IS_UNIT_TESTS
 		private bool ReportEachFrame() => true;
 #endif
 	}
