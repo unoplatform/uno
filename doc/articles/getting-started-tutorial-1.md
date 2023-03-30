@@ -1,3 +1,7 @@
+---
+uid: Uno.GettingStarted.Tutorial1
+---
+
 # Create a Single Page App with Uno Platform
 
 [Download the complete sample](https://github.com/unoplatform/Uno.GettingStartedTutorial/tree/master/src/Getting-Started-Tutorial-1)  
@@ -16,7 +20,7 @@ Also, you will learn how to run your applications on all platforms supported by 
 
 <div class="NOTE alert alert-info">
 <h5>Before you start the tutorial</h5>
-If you haven't prepared your dev environment for Uno Platform app development yet, [the Setting up the Environment page](get-started.md) will guide you through installing all the prerequisites.
+If you haven't prepared your dev environment for Uno Platform app development yet, <a href="get-started.md">the Setting up the Environment page</a> will guide you through installing all the prerequisites.
 </div>
 
 ## Getting Started

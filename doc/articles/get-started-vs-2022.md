@@ -17,15 +17,15 @@ To create Uno Platform applications you will need [**Visual Studio 2022 17.4 or 
 
 1. **ASP.NET and web development** workload installed (for WebAssembly development)
 
-    ![visual-studio-installer-web](Assets/quick-start/vs-install-web.png)
+    ![Visual Studio Installer - ASP.NET and web development workload](Assets/quick-start/vs-install-web.png)
 
 1. **.NET Multi-platform App UI development** workload installed (for iOS, Android, Mac Catalyst development).
 
-    ![visual-studio-installer-dotnet-mobile](Assets/quick-start/vs-install-dotnet-mobile.png)
+    ![Visual Studio Installer - .NET Multi-platform App UI development workload](Assets/quick-start/vs-install-dotnet-mobile.png)
 
 1. **.NET desktop development** workload installed (for Gtk, Wpf, and Linux Framebuffer development)
 
-    ![visual-studio-installer-dotnet](Assets/quick-start/vs-install-dotnet.png)    
+    ![Visual Studio Installer - .NET desktop development workload](Assets/quick-start/vs-install-dotnet.png)    
 
 > [!IMPORTANT] 
 > To build Xamarin-based projects in Visual Studio 2022, in Visual Studio's installer `Individual components` tab, search for Xamarin and select `Xamarin` and `Xamarin Remoted Simulator`. See [this section on migrating Xamarin projects](migrating-from-xamarin-to-net6.md) to .NET 6.
@@ -39,19 +39,27 @@ To create Uno Platform applications you will need [**Visual Studio 2022 17.4 or 
 
 1. Launch Visual Studio 2022, then click `Continue without code`. Click `Extensions` -> `Manage Extensions` from the Menu Bar.
 
-    ![](Assets/tutorial01/manage-extensions.png)
+    ![Visual Studio - "Extensions" drop-down selecting "Manage Extensions"](Assets/tutorial01/manage-extensions.png)
 
 2. In the Extension Manager expand the **Online** node and search for `Uno`, install the `Uno Platform` extension or download it from the [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=unoplatform.uno-platform-addin-2022), then restart Visual Studio.
 
-    ![](Assets/tutorial01/uno-extensions.PNG)
+    ![Extension Manager - Uno Platform extension](Assets/tutorial01/uno-extensions.PNG)
 
 ## Create an application
 
 To create an Uno Platform app:
-1. Create a new C# solution using the **Uno Platform App** template, from Visual Studio's **Start Page**
+1. Create a new C# solution using the **Uno Platform App** template, from Visual Studio's **Start Page**, then click the **Next** button
+
+    ![Visual Studio - Get started - Selecting `create a new project` option](Assets/tutorial01/newproject1.PNG)
+    ![Visual Studio - Create a new project - Selecting `Uno Platform App` option](Assets/tutorial01/newproject2.PNG)
+
+1. Configure your new project by providing a project name and a location, then click the **Create** button
+
+    ![](Assets/tutorial01/configure-new-unoplatform-app.PNG)
+
 1. Choose the base template to build your application
    
-    ![visual-studio-installer-web](Assets/quick-start/vsix-new-project-options.png)
+    ![Visual Studio - Configure your new project](Assets/quick-start/vsix-new-project-options.png)
 
 1. You can optionally choose to customize your app based on the sections on the left side:
     - **Framework** allows to choose which `TargetFramework` your app will use. [.NET 7.0](https://dotnet.microsoft.com/en-us/download/dotnet/7.0) is a commonly appropriate choice.
@@ -69,7 +77,7 @@ To create an Uno Platform app:
 1. Wait for the projects to be created, and their dependencies to be restored
 
 1. A banner at the top of the editor may ask to reload projects, click **Reload projects**:
-    ![A banner indicating to reload projects](Assets/quick-start/vs2022-project-reload.png)
+    ![Visual Studio - A banner indicating to reload projects](Assets/quick-start/vs2022-project-reload.png)
 
 1. To debug the **Windows** head:
     - Right-click on the `MyApp.Windows` project, select **Set as startup project**
@@ -86,7 +94,7 @@ To create an Uno Platform app:
     - Right click on the `MyApp.Mobile` project, select **Set as startup project**
     - In the "Debug toolbar" drop-down, select framework `net7.0-ios`:
 
-      ![visual-studio-installer-web](Assets/quick-start/net7-ios-debug.png)
+      ![Visual Studio - "Debug toolbar" drop-down selecting the "net7.0-ios" framework](Assets/quick-start/net7-ios-debug.png)
       
     - Select an active device
 1. To debug the **Android** platform:
