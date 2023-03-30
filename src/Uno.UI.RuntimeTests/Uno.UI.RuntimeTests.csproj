@@ -7,8 +7,6 @@
 		<UnoRuntimeIdentifier Condition="'$(TargetFramework)'=='netstandard2.0'">Reference</UnoRuntimeIdentifier>
 
 		<DefineConstants>$(DefineConstants);IS_RUNTIME_UI_TESTS</DefineConstants>
-
-		<Platforms>AnyCPU;x86</Platforms>
 	</PropertyGroup>
 
 	<Import Project="../targetframework-override.props" />
@@ -81,6 +79,8 @@
 		<!--SkipMicrosoftUIXamlCheckTargetPlatformVersion is required for Microsoft.UI.Xaml as we only validate compilation on UAP-->
 		<SkipMicrosoftUIXamlCheckTargetPlatformVersion>true</SkipMicrosoftUIXamlCheckTargetPlatformVersion>
 		<DefineConstants>$(DefineConstants);WINDOWS_UWP</DefineConstants>
+
+		<Platforms>x86;x64;ARM64</Platforms>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(TargetFramework)'=='uap10.0.18362'">
