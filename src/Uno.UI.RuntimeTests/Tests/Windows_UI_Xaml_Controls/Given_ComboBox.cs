@@ -649,7 +649,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 
 		public class TwoWayBindingItem : System.ComponentModel.INotifyPropertyChanged
-        {
+		{
 			private int _selectedNumber;
 
 			public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
