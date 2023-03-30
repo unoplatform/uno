@@ -11,7 +11,7 @@
 	<license type="expression">Apache-2.0</license>
 	<icon>uno.png</icon>
 	<description>Remote Control module for Uno Platform projects, such as XAML Hot Reload.</description>
-	<copyright>Copyright (C) 2015-2019 nventive inc. - all rights reserved</copyright>
+	<copyright>Copyright (C) 2015-2023 nventive inc. - all rights reserved</copyright>
 	<repository type="git" url="https://github.com/unoplatform/uno.git" branch="$branch$" commit="$commitid$" />
 
 	<dependencies>
@@ -22,6 +22,6 @@
   <files>
 	<file src="..\src\Common\uno.png" target="/" />
 
-	  <file src="..\src\Uno.WinUI.RemoteControl.Messaging\bin\Release\netstandard2.0\Uno.UI.RemoteControl.Messaging.dll" target="lib\netstandard2.0" />
+	  <file src="..\src\Uno.UI.RemoteControl.Messaging\bin\Release\netstandard2.0\Uno.UI.RemoteControl.Messaging.dll" target="lib\netstandard2.0" />
   </files>
 </package>
