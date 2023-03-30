@@ -95,6 +95,6 @@ public partial class WebView2 : Control, IWebView
 	private void CoreWebView2_WebMessageReceived(CoreWebView2 sender, CoreWebView2WebMessageReceivedEventArgs args) =>
 		WebMessageReceived?.Invoke(this, args);
 
-	private void CoreWebView2_SourceChanged(CoreWebView2 sender, CoreWebView2SourceChangedEventArgs args) {}
+	private void CoreWebView2_SourceChanged(CoreWebView2 sender, CoreWebView2SourceChangedEventArgs args) { }
 }
 #endif

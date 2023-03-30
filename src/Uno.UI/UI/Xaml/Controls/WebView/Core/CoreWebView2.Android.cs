@@ -26,26 +26,17 @@ namespace Microsoft.Web.WebView2.Core;
 
 public partial class CoreWebView2
 {
-	private NativeWebViewWrapper? _nativeWebViewWrapper;
-
 	internal INativeWebView? GetNativeWebViewFromTemplate()
 	{
 		var webView = (_owner as ViewGroup)?
 			.GetChildren(v => v is Android.Webkit.WebView)
 			.FirstOrDefault() as Android.Webkit.WebView;
 
-		// TODO:MZ: This uses "Android.Webkit.WebView" directly instead of
-		// NativeWebView, so it is then wrapped in NativeWebViewWrapper.
-		// Should we allow "custom" webview here, or just scratch this
-		// and use our own NativeWebView instead?
-
 		if (webView is null)
 		{
 			return null;
 		}
 
-		_nativeWebViewWrapper = new NativeWebViewWrapper(webView, this);
-
-		return _nativeWebViewWrapper;
+		return new NativeWebViewWrapper(webView, this);
 	}
 }
