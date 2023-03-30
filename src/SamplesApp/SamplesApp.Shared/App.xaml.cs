@@ -130,7 +130,9 @@ namespace SamplesApp
 
 			AssertIssue8641NativeOverlayInitialized();
 
+			global::System.Diagnostics.Debug.WriteLine("Pre activate");
 			Windows.UI.Xaml.Window.Current.Activate();
+			global::System.Diagnostics.Debug.WriteLine("Post activate");
 
 			ApplicationView.GetForCurrentView().Title = "Uno Samples";
 #if __SKIA__ && DEBUG
@@ -301,25 +303,44 @@ namespace SamplesApp
 				rootFrame.NavigationFailed += OnNavigationFailed;
 
 				// Place the frame in the current Window
-				Windows.UI.Xaml.Window.Current.Content = rootFrame;
+				var border = new Border();
+				border.SizeChanged += Border_SizeChanged;
+				border.Loading += Border_Loading;
+				border.Loaded += Border_Loaded;
+				Windows.UI.Xaml.Window.Current.Content = border;
 				Console.WriteLine($"RootFrame: {rootFrame}");
 			}
 
-			if (rootFrame.Content == null)
-			{
-				// When the navigation stack isn't restored navigate to the first page,
-				// configuring the new page by passing required information as a navigation
-				// parameter
-				var startingPageType = typeof(MainPage);
-				if (arguments != null)
-				{
-					rootFrame.Navigate(startingPageType, arguments);
-				}
-				else
-				{
-					rootFrame.Navigate(startingPageType);
-				}
-			}
+			//if (rootFrame.Content == null)
+			//{
+			//	// When the navigation stack isn't restored navigate to the first page,
+			//	// configuring the new page by passing required information as a navigation
+			//	// parameter
+			//	var startingPageType = typeof(MainPage);
+			//	if (arguments != null)
+			//	{
+			//		rootFrame.Navigate(startingPageType, arguments);
+			//	}
+			//	else
+			//	{
+			//		rootFrame.Navigate(startingPageType);
+			//	}
+			//}
+		}
+
+		private void Border_Loaded(object sender, RoutedEventArgs e)
+		{
+			global::System.Diagnostics.Debug.WriteLine("Border Loaded");
+
+		}
+		private void Border_Loading(FrameworkElement sender, object args)
+		{
+			global::System.Diagnostics.Debug.WriteLine("Border Loading");
+
+		}
+		private void Border_SizeChanged(object sender, SizeChangedEventArgs args)
+		{
+			global::System.Diagnostics.Debug.WriteLine("Border SizeChanged");
 		}
 
 		private async void HandleLaunchArguments(LaunchActivatedEventArgs launchActivatedEventArgs)
@@ -647,12 +668,12 @@ namespace SamplesApp
 		{
 #if __SKIA__
 			// Temporarily add a TextBox to the current page's content to verify native overlay is available
-			Frame rootFrame = Windows.UI.Xaml.Window.Current.Content as Frame;
-			var textBox = new TextBox();
-			textBox.XamlRoot = rootFrame.XamlRoot;
-			var textBoxView = new TextBoxView(textBox);
-			ApiExtensibility.CreateInstance<IOverlayTextBoxViewExtension>(textBoxView, out var textBoxViewExtension);
-			Assert.IsTrue(textBoxViewExtension.IsOverlayLayerInitialized(rootFrame.XamlRoot));
+			//Frame rootFrame = Windows.UI.Xaml.Window.Current.Content as Frame;
+			//var textBox = new TextBox();
+			//textBox.XamlRoot = rootFrame.XamlRoot;
+			//var textBoxView = new TextBoxView(textBox);
+			//ApiExtensibility.CreateInstance<IOverlayTextBoxViewExtension>(textBoxView, out var textBoxViewExtension);
+			//Assert.IsTrue(textBoxViewExtension.IsOverlayLayerInitialized(rootFrame.XamlRoot));
 #endif
 		}
 	}

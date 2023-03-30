@@ -5,8 +5,7 @@
 			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			 xmlns:ios="http://nventive.com/ios"
 			 xmlns:toolkit="using:Uno.UI.Toolkit"
-			 mc:Ignorable="ios"
-			 RequestedTheme="Light">
+			 mc:Ignorable="ios">
 	<Application.Resources>
 		<ResourceDictionary>
 			<ResourceDictionary.ThemeDictionaries>
