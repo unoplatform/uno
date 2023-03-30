@@ -144,21 +144,21 @@ namespace Uno.UI {
 
 			if (UnoAppManifest && UnoAppManifest.splashScreenImage) {
 
-				const loading = document.getElementById("loading");
-
-				if (loading) {
-					loading.remove();
-				}
-
 				const unoBody = document.getElementById("uno-body");
 
 				if (unoBody) {
 					const unoLoading = document.createElement("div");
 					unoLoading.id = "uno-loading";
 
-					if (UnoAppManifest.splashScreenColor) {
-						const body = document.getElementsByTagName("body")[0];
-						body.style.backgroundColor = UnoAppManifest.splashScreenColor;
+					if (UnoAppManifest.lightThemeBackgroundColor) {
+						unoLoading.style.setProperty("--light-theme-bg-color", UnoAppManifest.lightThemeBackgroundColor);
+					}
+					if (UnoAppManifest.darkThemeBackgroundColor) {
+						unoLoading.style.setProperty("--dark-theme-bg-color", UnoAppManifest.darkThemeBackgroundColor);
+					}
+
+					if (UnoAppManifest.splashScreenColor && UnoAppManifest.splashScreenColor != 'transparent') {
+						unoLoading.style.backgroundColor = UnoAppManifest.splashScreenColor;
 					}
 
 					splashImage.id = "uno-loading-splash";
@@ -167,6 +167,12 @@ namespace Uno.UI {
 					unoLoading.appendChild(splashImage);
 
 					unoBody.appendChild(unoLoading);
+				}
+
+				const loading = document.getElementById("loading");
+
+				if (loading) {
+					loading.remove();
 				}
 			}
 		}
@@ -1617,10 +1623,6 @@ namespace Uno.UI {
 			if (element) {
 				element.parentElement.removeChild(element);
 			}
-
-			// UWP Window's default background is white.
-			const body = document.getElementsByTagName("body")[0];
-			body.style.backgroundColor = "#fff";
 		}
 
 		private resize() {

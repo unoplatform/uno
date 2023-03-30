@@ -222,6 +222,20 @@ embed.uno-frameworkelement.uno-unarranged {
     overflow-y: scroll;
   }
 
+#uno-loading {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  z-index: 1000;
+  background-color: var(--light-theme-bg-color, #F3F3F3);
+}
+
+@media (prefers-color-scheme: dark) {
+  #uno-loading {
+    background-color: var(--dark-theme-bg-color, #202020);
+  }
+}
+
 /* Splash image styling */
 .uno-splash {
   position: fixed;
