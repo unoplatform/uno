@@ -69,8 +69,6 @@
 		</ProjectReference>
 	</ItemGroup>
 
-	<Target Name="GetBuiltProjectOutputRecursive" Condition=" '$(TargetFramework)' == 'xamarinios10' " />
-
 	<Target Name="_UnoUIRemoteControlOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">
 
 		<PropertyGroup>

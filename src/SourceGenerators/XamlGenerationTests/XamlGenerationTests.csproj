@@ -1,7 +1,6 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
 	<PropertyGroup>
-		<TargetFrameworks>MonoAndroid12.0;xamarinios10;netstandard2.0</TargetFrameworks>
-		<TargetFrameworksCI>MonoAndroid13.0;MonoAndroid12.0;xamarinios10;netstandard2.0</TargetFrameworksCI>
+		<TargetFrameworks>net7.0-android;net7.0-ios;net7.0</TargetFrameworks>
 		<!-- {0} does not explicitly define the {1} base type in code behind. -->
 		<NoWarn>$(NoWarn);UXAML0002;CS1030</NoWarn>
 
@@ -24,21 +23,9 @@
 		<ImportFrameworkWinFXTargets>false</ImportFrameworkWinFXTargets>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
+	<PropertyGroup Condition="'$(TargetFramework)'=='net7.0'">
 		<DefineConstants>$(DefineConstants);UNO_REFERENCE_API</DefineConstants>
 	</PropertyGroup>
-
-	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid13.0'">
-		<PackageReference Include="Xamarin.AndroidX.Legacy.Support.v4" />
-		<PackageReference Include="Xamarin.AndroidX.AppCompat" />
-		<PackageReference Include="Xamarin.AndroidX.RecyclerView" />
-	</ItemGroup>
-
-	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid12.0'">
-		<PackageReference Include="Xamarin.AndroidX.Legacy.Support.v4" />
-		<PackageReference Include="Xamarin.AndroidX.AppCompat" />
-		<PackageReference Include="Xamarin.AndroidX.RecyclerView" />
-	</ItemGroup>
 
 	<ItemGroup>
 	  <PRIResource Include="Resources.resw" />
@@ -52,7 +39,7 @@
 		<ProjectReference Include="..\..\Uno.UI.BindingHelper.Android\Uno.UI.BindingHelper.Android.csproj" />
 	</ItemGroup>
 
-	<ItemGroup Condition="$(IsAndroid) or $(IsIOS) or '$(TargetFramework)'=='netstandard2.0' or '$(TargetFramework)'=='net461'">
+	<ItemGroup Condition="$(IsAndroid) or $(IsIOS) or '$(TargetFramework)'=='net7.0' or '$(TargetFramework)'=='net461'">
 		<ProjectReference Include="..\..\Uno.UI\Uno.UI.csproj" />
 		<ProjectReference Include="..\..\Uno.UWP\Uno.csproj" />
 		<ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.csproj" />
@@ -64,6 +51,6 @@
 		<ProjectReference Include="..\XamlGenerationTests.Core\XamlGenerationTests.Core.csproj" />
 	</ItemGroup>
 
-	<Import Project="..\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" Condition="$(IsAndroid) or $(IsIOS) or '$(TargetFramework)'=='netstandard2.0' or '$(TargetFramework)'=='net461'" />
+	<Import Project="..\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" Condition="$(IsAndroid) or $(IsIOS) or '$(TargetFramework)'=='net7.0' or '$(TargetFramework)'=='net461'" />
 
 </Project>

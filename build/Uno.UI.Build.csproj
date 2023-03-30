@@ -244,11 +244,11 @@
 		<MSBuild Properties="Configuration=Release" Projects="..\src\Uno.UWPSyncGenerator\Uno.UWPSyncGenerator.csproj" Targets="Restore;Build" />
 
 		<ItemGroup>
-			<MixinTargetFrameworks Include="xamarinios10" />
-			<MixinTargetFrameworks Include="MonoAndroid12.0" />
-			<MixinTargetFrameworks Include="xamarinmac20" />
+			<MixinTargetFrameworks Include="net7.0-ios" />
+			<MixinTargetFrameworks Include="net7.0-android" />
+			<MixinTargetFrameworks Include="net7.0-macos" />
 			<MixinTargetFrameworks Include="net461" />
-			<MixinTargetFrameworks Include="netstandard2.0" />
+			<MixinTargetFrameworks Include="net7.0" />
 		</ItemGroup>
 		<MSBuild Properties="Configuration=Release;InformationalVersion=$(GITVERSION_InformationalVersion);CI_Build=true;_IsCIBuild=true;TargetFramework=%(MixinTargetFrameworks.Identity)"
 						 Projects="..\src\Uno.UI\Uno.UI.csproj"
