@@ -131,7 +131,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		partial void InternalActivate()
+		partial void ActivatePartial()
 		{
 			WindowManagerInterop.WindowActivate();
 		}

@@ -218,15 +218,14 @@ namespace Windows.UI.Xaml
 			_current ??= this;
 			_wasEverActivated = true;
 
-			InternalActivate();
-
 			// Initialize visibility on first activation.
 			Visible = true;
-
 			OnActivated(CoreWindowActivationState.CodeActivated);
+
+			ActivatePartial();
 		}
 
-		partial void InternalActivate();
+		partial void ActivatePartial();
 
 		public void Close() { }
 
