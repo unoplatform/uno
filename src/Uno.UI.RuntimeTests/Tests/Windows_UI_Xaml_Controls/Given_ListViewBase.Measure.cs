@@ -7,11 +7,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Uno.UI.RuntimeTests.Extensions;
-<<<<<<< HEAD
-=======
 using System.Collections.ObjectModel;
 using Windows.Foundation;
->>>>>>> 07e14bc32d (fix(ios): LVI is sometimes clipped)
 #if NETFX_CORE
 using Uno.UI.Extensions;
 #elif __IOS__
