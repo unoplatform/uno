@@ -1472,7 +1472,7 @@ namespace Uno.UI {
 			this.getView(viewId).releasePointerCapture(pointerId);
 		}
 
-		public focusView(elementId: number): string {
+		public focusView(elementId: number): void {
 			const element = this.getView(elementId);
 
 			if (!(element instanceof HTMLElement)) {
@@ -1480,8 +1480,6 @@ namespace Uno.UI {
 			}
 
 			element.focus();
-
-			return "ok";
 		}
 
 		/**

@@ -1092,6 +1092,14 @@ namespace Uno.UI.Xaml
 
 		#endregion
 
+		internal static void FocusView(IntPtr htmlId)
+			=>
+#if NET7_0_OR_GREATER
+				NativeMethods.FocusView(htmlId);
+#else
+				WebAssemblyRuntime.InvokeJS($"Uno.UI.WindowManager.current.focusView({htmlId});");
+#endif
+
 		#region ScrollTo
 		internal static void ScrollTo(IntPtr htmlId, double? left, double? top, bool disableAnimation)
 		{
@@ -1285,6 +1293,9 @@ namespace Uno.UI.Xaml
 
 			[JSImport("globalThis.Uno.UI.WindowManager.findLaunchArguments")]
 			internal static partial string FindLaunchArguments();
+
+			[JSImport("globalThis.Uno.UI.WindowManager.current.focusView")]
+			internal static partial void FocusView(IntPtr htmlId);
 
 			[JSImport("globalThis.Uno.UI.WindowManager.current.getAttribute")]
 			internal static partial string GetAttribute(IntPtr htmlId, string name);
