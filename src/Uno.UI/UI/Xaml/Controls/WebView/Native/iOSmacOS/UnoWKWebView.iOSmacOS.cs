@@ -27,7 +27,7 @@ using AppKit;
 
 namespace Windows.UI.Xaml.Controls;
 
-public partial class UnoWKWebView : WKWebView, INativeWebView
+public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageHandler
 #if __MACOS__
 	,IHasSizeThatFits
 #endif
@@ -35,6 +35,7 @@ public partial class UnoWKWebView : WKWebView, INativeWebView
 	private CoreWebView2 _coreWebView;
 	private bool _isCancelling;
 
+	private const string WebMessageHandlerName = "unoWebView";
 	private const string OkResourceKey = "WebView_Ok";
 	private const string CancelResourceKey = "WebView_Cancel";
 
@@ -58,6 +59,8 @@ public partial class UnoWKWebView : WKWebView, INativeWebView
 				cancel = "Cancel";
 			}
 		}
+
+		Configuration.UserContentController.AddScriptMessageHandler(this, WebMessageHandlerName);
 
 		// Set strings with fallback to default English
 		OkString = !string.IsNullOrEmpty(ok) ? ok : "OK";
@@ -383,8 +386,8 @@ public partial class UnoWKWebView : WKWebView, INativeWebView
 		_isCancelling = false;
 
 		_coreWebView.RaiseNavigationStarting(CoreWebView2.BlankUrl, out var cancel); //TODO:MZ: For HTML content 		var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(htmlContent);
-																	//var base64String = System.Convert.ToBase64String(plainTextBytes);
-																	//var htmlUri = new Uri(string.Format(CultureInfo.InvariantCulture, DataUriFormatString, base64String));
+																					 //var base64String = System.Convert.ToBase64String(plainTextBytes);
+																					 //var htmlUri = new Uri(string.Format(CultureInfo.InvariantCulture, DataUriFormatString, base64String));
 
 		if (cancel)
 		{
@@ -595,4 +598,11 @@ public partial class UnoWKWebView : WKWebView, INativeWebView
 		}
 	}
 
+	public void DidReceiveScriptMessage(WKUserContentController userContentController, WKScriptMessage message)
+	{
+		if (message.Name == WebMessageHandlerName)
+		{
+			_coreWebView.RaiseWebMessageReceived((message.Body as NSString)?.ToString());
+		}
+	}
 }
