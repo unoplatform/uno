@@ -7,8 +7,7 @@ using System.Threading.Tasks;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml;
-using Uno.UI.Tests.App.Xaml;
-using System.Windows.Data;
+using Windows.UI.Xaml.Data;
 
 namespace Uno.UI.Tests.ComboBoxTests
 {

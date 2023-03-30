@@ -38,11 +38,11 @@ namespace Windows.UI.Xaml.Media
 
 		#endregion
 
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		[GeneratedDependencyProperty(DefaultValue = null)]
 		public static DependencyProperty TransformProperty { get; } = CreateTransformProperty();
 
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public Windows.UI.Xaml.Media.Transform Transform
 		{
 			get => GetTransformValue();

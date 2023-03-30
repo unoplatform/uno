@@ -30,8 +30,8 @@
 		<None Include="**\*.Xamarin.cs" Exclude="bin\**\*.Xamarin.cs;obj\**\*.Xamarin.cs" Condition="!$(IsAndroid) and !$(IsIOSOrCatalyst) and !$(IsMacOS)" />
 		<Compile Remove="**\*.Xamarin.cs" Condition="!$(IsAndroid) and !$(IsIOSOrCatalyst) and !$(IsMacOS)" />
 
-		<None Include="**\*.net.cs" Exclude="bin\**\*.net.cs;obj\**\*.net.cs" Condition="'$(TargetFramework)'!='net461'" />
-		<Compile Remove="**\*.net.cs" Condition="'$(TargetFramework)'!='net461'" />
+		<None Include="**\*.net.cs" Exclude="bin\**\*.net.cs;obj\**\*.net.cs" Condition="!$(_IsUnitTests)" />
+		<Compile Remove="**\*.net.cs" Condition="!$(_IsUnitTests)" />
 	</ItemGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='Release'">
@@ -73,6 +73,10 @@
 
 	<PropertyGroup Condition="$(_IsNetStd) and '$(UnoRuntimeIdentifier)'=='Reference'">
 		<DefineConstants>$(DefineConstants);__NETSTD_REFERENCE__;UNO_REFERENCE_API</DefineConstants>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="$(_IsUnitTests)">
+		<DefineConstants>$(DefineConstants);IS_UNIT_TESTS</DefineConstants>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="$(IsIOS)">

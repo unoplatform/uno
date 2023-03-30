@@ -138,7 +138,7 @@ namespace Windows.UI.Xaml.Controls
 				this.AddSubview(_itemsPanel);
 #elif XAMARIN_ANDROID
 				this.AddView(_itemsPanel);
-#elif UNO_REFERENCE_API || NET461
+#elif UNO_REFERENCE_API || IS_UNIT_TESTS
 				AddChild(_itemsPanel);
 #endif
 

@@ -138,7 +138,7 @@ namespace Windows.UI.Xaml
 
 		private FrameworkTemplatePool()
 		{
-#if !NET461
+#if !IS_UNIT_TESTS
 			_platformProvider.Schedule(Scavenger);
 #endif
 		}

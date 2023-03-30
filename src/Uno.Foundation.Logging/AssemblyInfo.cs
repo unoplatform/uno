@@ -9,6 +9,7 @@ using global::System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("Uno.Foundation")]
 [assembly: InternalsVisibleTo("Uno.Foundation.Wasm")]
 [assembly: InternalsVisibleTo("Uno.UI.Tests")]
+[assembly: InternalsVisibleTo("Uno.UI.Unit.Tests")]
 [assembly: InternalsVisibleTo("Uno.UI.Wasm.Tests")]
 [assembly: InternalsVisibleTo("Uno.Foundation.Runtime.WebAssembly")]
 [assembly: InternalsVisibleTo("Uno.UI.Toolkit")]

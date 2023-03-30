@@ -135,7 +135,7 @@ namespace Windows.UI.Input
 
 		internal void ProcessUpEvent(PointerPoint value, bool isRelevant)
 		{
-#if NET461 || UNO_REFERENCE_API
+#if IS_UNIT_TESTS || UNO_REFERENCE_API
 			if (_gestures.TryGetValue(value.PointerId, out var gesture))
 			{
 				_gestures.Remove(value.PointerId);
@@ -158,7 +158,7 @@ namespace Windows.UI.Input
 			_manipulation?.Remove(value);
 		}
 
-#if NET461
+#if IS_UNIT_TESTS
 		/// <summary>
 		/// For test purposes only!
 		/// </summary>

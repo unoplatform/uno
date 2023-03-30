@@ -82,36 +82,52 @@
   projects to stay in the same folder as the original referenced one.
   -->
   <PropertyGroup>
+	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.Foundation.Tests.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.Foundation.Skia.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.Foundation.Wasm.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.Foundation.netcoremobile.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.Foundation.Reference.csproj</_AdjustedOutputProjects>
+	  
+	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.Tests.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.Skia.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.Wasm.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.netcoremobile.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.Reference.csproj</_AdjustedOutputProjects>
+	  
+	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Tests.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Skia.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Wasm.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.netcoremobile.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Reference.csproj</_AdjustedOutputProjects>
+	  
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.RuntimeTests.Wasm.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.RuntimeTests.Skia.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.RuntimeTests.netcoremobile.csproj</_AdjustedOutputProjects>
+	  
+	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.MSAL.Tests.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.MSAL.Wasm.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.MSAL.Skia.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.MSAL.netcoremobile.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.MSAL.Reference.csproj</_AdjustedOutputProjects>
+	  
+	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Lottie.Tests.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Lottie.Wasm.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Lottie.Skia.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Lottie.netcoremobile.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Lottie.Reference.csproj</_AdjustedOutputProjects>
+	  
+	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Svg.Tests.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Svg.Skia.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Svg.netcoremobile.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Svg.Reference.csproj</_AdjustedOutputProjects>
+	  
+	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.RemoteControl.Tests.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.RemoteControl.Wasm.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.RemoteControl.Skia.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.RemoteControl.netcoremobile.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.RemoteControl.Reference.csproj</_AdjustedOutputProjects>
+	  
+	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Toolkit.Tests.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Toolkit.Wasm.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Toolkit.Skia.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Toolkit.netcoremobile.csproj</_AdjustedOutputProjects>
@@ -119,16 +135,19 @@
 
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Foldable.netcoremobile.csproj</_AdjustedOutputProjects>
 
+	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.FluentTheme.Tests.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.FluentTheme.Wasm.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.FluentTheme.Skia.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.FluentTheme.netcoremobile.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.FluentTheme.Reference.csproj</_AdjustedOutputProjects>
 
+    <_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.FluentTheme.v1.Tests.csproj</_AdjustedOutputProjects>
     <_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.FluentTheme.v1.Wasm.csproj</_AdjustedOutputProjects>
     <_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.FluentTheme.v1.Skia.csproj</_AdjustedOutputProjects>
     <_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.FluentTheme.v1.netcoremobile.csproj</_AdjustedOutputProjects>
     <_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.FluentTheme.v1.Reference.csproj</_AdjustedOutputProjects>
 
+    <_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.FluentTheme.v2.Tests.csproj</_AdjustedOutputProjects>
     <_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.FluentTheme.v2.Wasm.csproj</_AdjustedOutputProjects>
     <_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.FluentTheme.v2.Skia.csproj</_AdjustedOutputProjects>
     <_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.FluentTheme.v2.netcoremobile.csproj</_AdjustedOutputProjects>
@@ -138,19 +157,19 @@
 
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.Foundation.Logging.csproj</_AdjustedOutputProjects>
 
-	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Dispatching.csproj</_AdjustedOutputProjects>
+	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Dispatching.Tests.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Dispatching.netcoremobile.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Dispatching.Skia.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Dispatching.Wasm.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Dispatching.Reference.csproj</_AdjustedOutputProjects>
 
-	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Composition.csproj</_AdjustedOutputProjects>
+	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Composition.Tests.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Composition.netcoremobile.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Composition.Skia.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Composition.Wasm.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Composition.Reference.csproj</_AdjustedOutputProjects>
 
-	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.XamlHost.csproj</_AdjustedOutputProjects>
+	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.XamlHost.Tests.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.XamlHost.netcoremobile.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.XamlHost.Skia.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.XamlHost.Wasm.csproj</_AdjustedOutputProjects>
@@ -206,14 +225,14 @@
 	<IsIOSOrCatalyst>false</IsIOSOrCatalyst>
 	<IsIOSOrCatalyst Condition="$(IsIOS) or $(IsCatalyst)">true</IsIOSOrCatalyst>
 
-	<_IsNet>false</_IsNet>
-	<_IsNet Condition="'$(TargetFramework)'=='net461'">true</_IsNet>
+	<_IsUnitTests>false</_IsUnitTests>
+	<_IsUnitTests Condition="$(MSBuildProjectName.Contains('.Tests'))">true</_IsUnitTests>
 
 	<_IsNetCore>false</_IsNetCore>
-	<_IsNetCore Condition="'$(TargetFramework)'=='net5.0' or '$(TargetFramework)'=='net6.0' or '$(TargetFramework)'=='net7.0'">true</_IsNetCore>
+	<_IsNetCore Condition="'$(TargetFramework)'=='net5.0' or '$(TargetFramework)'=='net8.0' or '$(TargetFramework)'=='net7.0'">true</_IsNetCore>
 
 	<_IsNetStd>false</_IsNetStd>
-	<_IsNetStd Condition="'$(TargetFramework)'=='netstandard2.0' or $(_IsNetCore)">true</_IsNetStd>
+	<_IsNetStd Condition="$(_IsNetCore) and !$(_IsUnitTests)">true</_IsNetStd>
   </PropertyGroup>
 
   <PropertyGroup>

@@ -77,7 +77,7 @@ namespace Windows.UI.Core
 		/// <summary>
 		/// Gets or sets the cursor used by the app.
 		/// </summary>
-		[Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__NETSTD_REFERENCE__")]
+		[Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
 		public CoreCursor PointerCursor { get; set; } = new CoreCursor(CoreCursorType.Arrow, 0);
 #endif
 

@@ -7,6 +7,7 @@ using Windows.Foundation;
 
 namespace Uno.UI.Tests.Animations
 {
+#if false // requires WPF to run
 	[TestClass]
 	public class Given_KeySpline
 	{
@@ -59,4 +60,5 @@ namespace Uno.UI.Tests.Animations
 			return r;
 		}
 	}
+#endif
 }

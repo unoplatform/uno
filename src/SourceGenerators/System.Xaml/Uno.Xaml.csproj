@@ -1,6 +1,6 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
 	<PropertyGroup>
-		<TargetFrameworks>net7.0</TargetFrameworks>
+		<TargetFrameworks>netstandard2.0;net7.0</TargetFrameworks>
 
 		<DisableBuildTargetFramework>true</DisableBuildTargetFramework>
 
@@ -9,9 +9,6 @@
 		<OutputPath>bin\$(Configuration)\$(TargetFramework)\</OutputPath>
 		<IntermediateOutputPath>$(BaseIntermediateOutputPath)$(Configuration)\$(TargetFramework)\</IntermediateOutputPath>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-
-		<!-- This target must always be built, regardless of the override -->
-		<TargetFrameworksOverrideInvariant>netstandard2.0</TargetFrameworksOverrideInvariant>
 
 		<NoWarn>$(NoWarn);IDE0051</NoWarn>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>

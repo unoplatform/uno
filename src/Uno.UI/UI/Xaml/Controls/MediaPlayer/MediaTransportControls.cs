@@ -1,4 +1,4 @@
-#if __ANDROID__ || __IOS__ || NET461 || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __MACOS__
 using System;
 using System.Timers;
 using Uno.UI.Converters;
@@ -326,7 +326,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-#if !NET461
+#if !IS_UNIT_TESTS
 		private static void OnIsCompactChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
 			VisualStateManager.GoToState((MediaTransportControls)dependencyObject, (bool)args.NewValue ? "CompactMode" : "NormalMode", false);

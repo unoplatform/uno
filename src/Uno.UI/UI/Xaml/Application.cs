@@ -234,7 +234,7 @@ namespace Windows.UI.Xaml
 		}
 
 #if !__ANDROID__ && !__MACOS__ && !__SKIA__
-		[NotImplemented("__IOS__", "NET461", "__WASM__", "__NETSTD_REFERENCE__")]
+		[NotImplemented("__IOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
 		public void Exit()
 		{
 			if (this.Log().IsEnabled(LogLevel.Warning))

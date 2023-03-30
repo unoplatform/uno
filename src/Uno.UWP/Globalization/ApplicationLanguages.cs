@@ -13,13 +13,13 @@ namespace Windows.Globalization
 	{
 		private static string _primaryLanguageOverride = string.Empty;
 
-#if !NET461
+#if !IS_UNIT_TESTS
 		private const string PrimaryLanguageOverrideSettingKey = "__Uno.PrimaryLanguageOverride";
 #endif
 
 		static ApplicationLanguages()
 		{
-#if !NET461
+#if !IS_UNIT_TESTS
 			if (ApplicationData.Current.LocalSettings.Values.TryGetValue(PrimaryLanguageOverrideSettingKey, out var savedValue)
 				&& savedValue is string stringSavedValue)
 			{
@@ -90,7 +90,7 @@ namespace Windows.Globalization
 					ApplyCulture();
 				}
 
-#if !NET461
+#if !IS_UNIT_TESTS
 				ApplicationData.Current.LocalSettings.Values[PrimaryLanguageOverrideSettingKey] = _primaryLanguageOverride;
 #endif
 			}

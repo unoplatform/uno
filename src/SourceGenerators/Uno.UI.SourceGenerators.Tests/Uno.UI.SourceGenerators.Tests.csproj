@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net461</TargetFramework>
+		<TargetFramework>net7.0</TargetFramework>
 		<IsPackable>false</IsPackable>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
