@@ -17,11 +17,7 @@
   <files>
     <file src="..\src\Common\uno.png" target="/" />
 
-    <file src="..\src\Uno.Foundation.Logging\bin\Uno.Foundation.Logging\Release\netstandard2.0\*.*" target="lib\netstandard2.0" />
-    <file src="..\src\Uno.Foundation.Logging\bin\Uno.Foundation.Logging\Release\xamarinmac20\*.*" target="lib\xamarinmac20" />
-    <file src="..\src\Uno.Foundation.Logging\bin\Uno.Foundation.Logging\Release\xamarinios10\*.*" target="lib\xamarinios10" />
-    <file src="..\src\Uno.Foundation.Logging\bin\Uno.Foundation.Logging\Release\MonoAndroid12.0\*.*" target="lib\MonoAndroid12.0" />
-    <file src="..\src\Uno.Foundation.Logging\bin\Uno.Foundation.Logging\Release\MonoAndroid13.0\*.*" target="lib\MonoAndroid13.0" />
+    <file src="..\src\Uno.Foundation.Logging\bin\Uno.Foundation.Logging\Release\net7.0\*.*" target="lib\7.0" />
   </files>
 
 </package>

@@ -1,7 +1,6 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
 	<PropertyGroup>
-		<TargetFrameworks>MonoAndroid12.0;xamarinios10;netstandard2.0</TargetFrameworks>
-		<TargetFrameworksCI>MonoAndroid13.0;MonoAndroid12.0;xamarinios10;netstandard2.0</TargetFrameworksCI>
+		<TargetFrameworks>net7.0-android;net7.0-ios;net7.0</TargetFrameworks>
 	</PropertyGroup>
 
 	<PropertyGroup>

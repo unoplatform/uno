@@ -105,8 +105,6 @@
 		<DefineConstants>$(DefineConstants);NETFX_CORE</DefineConstants>
 	</PropertyGroup>
 
-	<Target Name="GetBuiltProjectOutputRecursive" Condition=" '$(TargetFramework)' == 'xamarinios10' " />
-
 	<Target Name="_DisplayTargets" BeforeTargets="BeforeBuild">
 		<Message Text="Building target framework: $(TargetFramework)" Importance="high" Condition="'$(TargetFramework)'!=''" />
 	</Target>

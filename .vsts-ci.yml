@@ -76,10 +76,6 @@ jobs:
   parameters:
     vmImage: '$(linuxVMImage)'
 
-- template: build/ci/.azure-devops-package-generic.yml
-  parameters:
-    poolName: '$(windowsScaledPool)'
-
 - template: build/ci/.azure-devops-package-net6-win.yml
   parameters:
     poolName: '$(windowsScaledPool)'
