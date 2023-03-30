@@ -16,6 +16,8 @@ using TreeViewItem = Microsoft.UI.Xaml.Controls.TreeViewItem;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.TreeViewTests;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using Uno.UI;
+using MUXControlsTestApp.Utilities;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 
@@ -205,7 +207,7 @@ public class Given_TreeView
 #if HAS_UNO
 		Assert.AreEqual(
 			1,
-			SUT.myTree.FindChildren<TextBlock>().Count(c => c.Text == "Child 21"));
+			MUXTestPage.FindVisualChildrenByType<TextBlock>(SUT.myTree).Count(c => c.Text == "Child 21"));
 #endif
 	}
 }
