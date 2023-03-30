@@ -13,8 +13,8 @@ namespace Windows.UI.Xaml.Documents
 		// Skipping already declared property XYFocusRight
 		// Skipping already declared property XYFocusLeft
 		// Skipping already declared property XYFocusDown
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Xaml.ElementSoundMode ElementSoundMode
 		{
 			get
@@ -36,8 +36,8 @@ namespace Windows.UI.Xaml.Documents
 		// Skipping already declared property IsTabStop
 		// Skipping already declared property NavigateUriProperty
 		// Skipping already declared property UnderlineStyleProperty
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.DependencyProperty ElementSoundModeProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(ElementSoundMode), typeof(global::Windows.UI.Xaml.ElementSoundMode), 

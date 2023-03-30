@@ -8,8 +8,8 @@ namespace Windows.UI.Xaml.Controls
 	public  partial class StackPanel : global::Windows.UI.Xaml.Controls.Panel,global::Windows.UI.Xaml.Controls.Primitives.IScrollSnapPointsInfo,global::Windows.UI.Xaml.Controls.IInsertionPanel
 	{
 		// Skipping already declared property Orientation
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool AreScrollSnapPointsRegular
 		{
 			get
@@ -64,8 +64,8 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.StackPanel.VerticalSnapPointsChanged.remove
 		// Skipping already declared method Windows.UI.Xaml.Controls.StackPanel.GetIrregularSnapPoints(Windows.UI.Xaml.Controls.Orientation, Windows.UI.Xaml.Controls.Primitives.SnapPointsAlignment)
 		// Skipping already declared method Windows.UI.Xaml.Controls.StackPanel.GetRegularSnapPoints(Windows.UI.Xaml.Controls.Orientation, Windows.UI.Xaml.Controls.Primitives.SnapPointsAlignment, out float)
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  void GetInsertionIndexes( global::Windows.Foundation.Point position, out int first, out int second)
 		{
 			throw new global::System.NotImplementedException("The member void StackPanel.GetInsertionIndexes(Point position, out int first, out int second) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=void%20StackPanel.GetInsertionIndexes%28Point%20position%2C%20out%20int%20first%2C%20out%20int%20second%29");

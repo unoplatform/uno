@@ -13,8 +13,8 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property FontSize
 		// Skipping already declared property FontFamily
 		// Skipping already declared property IsTextScaleFactorEnabled
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool MirroredWhenRightToLeft
 		{
 			get
@@ -33,8 +33,8 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property FontWeightProperty
 		// Skipping already declared property GlyphProperty
 		// Skipping already declared property IsTextScaleFactorEnabledProperty
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.DependencyProperty MirroredWhenRightToLeftProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(MirroredWhenRightToLeft), typeof(bool), 
