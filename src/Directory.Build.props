@@ -13,6 +13,9 @@
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
 
+	<!-- Ensures the .xr.xml files are generated in a proper layout folder -->
+	<GenerateLibraryLayout>true</GenerateLibraryLayout>
+
     <!-- Enables hard links for obj -> bin files (symlinks generally don't work there -->
     <CreateHardLinksForCopyFilesToOutputDirectoryIfPossible>true</CreateHardLinksForCopyFilesToOutputDirectoryIfPossible>
 
