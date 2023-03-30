@@ -143,7 +143,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 					return typeName;
 				}
 
-				return typeSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+				return typeSymbol.GetFullyQualifiedTypeIncludingGlobal();
 			}
 
 			public override SyntaxNode? VisitIdentifierName(IdentifierNameSyntax node)
@@ -197,8 +197,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 			{
 				_contextName = contextName;
 				_contextTypeSymbol = contextTypeSymbol;
-				// TODO: Modify after https://github.com/unoplatform/uno/pull/11531 is merged.
-				_contextTypeString = contextTypeSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+				_contextTypeString = contextTypeSymbol.GetFullyQualifiedTypeIncludingGlobal();
 
 				// We need to take globalNamespace from the compilation itself.
 				// Walking ContainingNamespaces from contextTypeSymbol or
