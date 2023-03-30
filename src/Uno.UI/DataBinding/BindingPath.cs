@@ -121,6 +121,16 @@ namespace Uno.UI.DataBinding
 			return _chain?.Flatten(i => i.Next!) ?? Array.Empty<BindingItem>();
 		}
 
+		public (object DataContext, string PropertyName) GetTargetContextAndPropertyName()
+		{
+			var info = GetPathItems().Last();
+			var propertyName = info.PropertyName
+				.Split(new[] { '.' }).Last()
+				.Replace("(", "").Replace(")", "");
+
+			return (info.DataContext, propertyName);
+		}
+
 		/// <summary>
 		/// Checks the property path for members which may be shared resources (<see cref="Brush"/>es and <see cref="Transform"/>s) and creates a
 		/// copy of them if need be (ie if not already copied). Intended to be used prior to animating the targeted property.

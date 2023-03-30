@@ -4,7 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Uno.UI.RuntimeTests.Extensions;
 using Windows.UI;
+using Windows.UI.Composition;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
@@ -116,7 +119,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 
 		[TestMethod]
 		[RunsOnUIThread]
-		public async void When_RepeatForever_ShouldLoop_AsdAsd()
+		public async Task When_RepeatForever_ShouldLoop()
 		{
 			var target = new Windows.UI.Xaml.Shapes.Rectangle
 			{
@@ -125,8 +128,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 				Height = 50,
 			};
 			WindowHelper.WindowContent = target;
-			await WindowHelper.WaitForIdle();
 			await WindowHelper.WaitForLoaded(target);
+			await WindowHelper.WaitForIdle();
 
 			var animation = new DoubleAnimation
 			{
@@ -162,5 +165,62 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 			Assert.AreEqual(10d, averageIncrement, 1.5, "an rough average of increment (exluding the drop) of 10 (+-15% error margin)");
 			Assert.IsTrue(incrementSizes.Count(x => x > 3) > 8, $"at least 10 (-2 error margin: might miss first and/or last) sets of continuous increments that size of 4 (+-1 error margin: sliding slot): {string.Join(",", incrementSizes)}");
 		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_StartingFrom_AnimatedValue()
+		{
+			var translate = new TranslateTransform();
+			var border = new Border()
+			{
+				Background = new SolidColorBrush(Colors.Pink),
+				Margin = new Thickness(0, 50, 0, 0),
+				Width = 50,
+				Height = 50,
+				RenderTransform = translate,
+			};
+			WindowHelper.WindowContent = border;
+			await WindowHelper.WaitForLoaded(border);
+			await WindowHelper.WaitForIdle();
+
+			// Start an animation. Its final value will serve as
+			// the inferred starting value for the next animation.
+			var animation0 = new DoubleAnimation
+			{
+				// From = should be 0
+				To = 50,
+				Duration = new Duration(TimeSpan.FromSeconds(2)),
+			}.BindTo(translate, nameof(translate.Y));
+			await animation0.RunAsync(timeout: animation0.Duration.TimeSpan + TimeSpan.FromSeconds(1));
+			await Task.Delay(1000);
+
+			// Start an second animation which should pick up from current animated value.
+			var animation1 = new DoubleAnimation
+			{
+				// From = should be 50 from animation #0
+				To = -50,
+				Duration = new Duration(TimeSpan.FromSeconds(5)),
+			}.BindTo(translate, nameof(translate.Y));
+			animation1.Begin();
+			await Task.Delay(125);
+
+			// ~125ms into a 5s animation where the value is animating from 50 to -50,
+			// the value should be still positive.
+			// note: On android, the value will be scaled by ViewHelper.Scale, but the assertion will still hold true.
+			var y = GetTranslateY(translate, isStillAnimating: true);
+			Assert.IsTrue(y > 0, $"Expecting Translate.Y to be still positive: {y}");
+		}
+
+		private double GetTranslateY(TranslateTransform translate, bool isStillAnimating = false) =>
+#if !__ANDROID__
+			translate.Y;
+#else
+			isStillAnimating
+				// On android, animation may target a native property implementing the behavior instead of the specified dependency property.
+				// We need to retrieve the value of that native property, as reading the dp value will just give the final value.
+				? (double)translate.View.TranslationY
+				// And, when the animation is completed, this native value is reset even for HoldEnd animation.
+				: translate.Y;
+#endif
 	}
 }

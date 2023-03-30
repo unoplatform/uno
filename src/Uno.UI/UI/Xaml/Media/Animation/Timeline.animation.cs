@@ -9,6 +9,7 @@ using Windows.UI.Core;
 using Uno.Foundation.Logging;
 using Uno.UI.DataBinding;
 using System.Diagnostics;
+using Uno.UI;
 
 namespace Windows.UI.Xaml.Media.Animation
 {
@@ -69,10 +70,13 @@ namespace Windows.UI.Xaml.Media.Animation
 			private BindingPath PropertyInfo => _owner?.PropertyInfo;
 
 			private string[] GetTraceProperties() => _owner?.GetTraceProperties();
+
 			private void ClearValue() => _owner?.ClearValue();
 			private void SetValue(object value) => _owner?.SetValue(value);
-			private bool NeedsRepeat(Stopwatch activeDuration, int replayCount) => _owner?.NeedsRepeat(activeDuration, replayCount) ?? false;
+			private object GetValue() => _owner?.GetValue();
 			private object GetNonAnimatedValue() => _owner?.GetNonAnimatedValue();
+
+			private bool NeedsRepeat(Stopwatch activeDuration, int replayCount) => _owner?.NeedsRepeat(activeDuration, replayCount) ?? false;
 
 			public void Begin()
 			{
@@ -431,8 +435,9 @@ namespace Windows.UI.Xaml.Media.Animation
 				}
 				else
 				{
-					var value = GetNonAnimatedValue();
-
+					var value = FeatureConfiguration.Timeline.DefaultsStartingValueFromAnimatedValue
+						? GetValueCore()
+						: GetNonAnimatedValue();
 					if (value != null)
 					{
 						return AnimationOwner.Convert(value);
@@ -440,6 +445,25 @@ namespace Windows.UI.Xaml.Media.Animation
 				}
 
 				return null;
+			}
+
+			private object GetValueCore()
+			{
+#if !__ANDROID__
+				return GetValue();
+#else
+				// On android, animation may target a native property implementing the behavior instead of the specified dependency property.
+				// When starting a new animation midst another, in order to continue from the current animated value,
+				// we need to retrieve the value of that native property, as reading the dp value will just give the final value.
+				if (AnimatorFactory.TryGetNativeAnimatedValue(_owner, out var value))
+				{
+					return value;
+				}
+				else
+				{
+					return GetValue();
+				}
+#endif
 			}
 
 			/// <summary>
