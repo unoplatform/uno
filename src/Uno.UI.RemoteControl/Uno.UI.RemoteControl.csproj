@@ -34,11 +34,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Compile Remove="Messages\Frame.cs" />
-	  <Compile Remove="Messages\IMessage.cs" />
-	</ItemGroup>
-
-	<ItemGroup>
 	  <None Remove="buildTransitive\Uno.UI.RemoteControl.targets" />
 	</ItemGroup>
 

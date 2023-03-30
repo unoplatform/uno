@@ -13,8 +13,6 @@
 	<ItemGroup>
 		<Compile Remove="..\Uno.UI.RemoteControl\Messages\Frame.cs" />
 		<Compile Remove="..\Uno.UI.RemoteControl\Messages\IMessage.cs" />
-		<Compile Remove="IRemoteControlServer.cs" />
-		<Compile Remove="IServerProcessor.cs" />
 	</ItemGroup>
 
 	<ItemGroup>

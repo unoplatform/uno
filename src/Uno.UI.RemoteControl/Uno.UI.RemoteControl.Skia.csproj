@@ -37,11 +37,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Compile Remove="Messages\Frame.cs" />
-	  <Compile Remove="Messages\IMessage.cs" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<EmbeddedResource Include="LinkerDefinition.Wasm.xml">
 			<LogicalName>$(AssemblyName).xml</LogicalName>
 		</EmbeddedResource>
