@@ -29,6 +29,7 @@ namespace Windows.UI.Xaml
 
 		private CoreWindowActivationState? _lastActivationState;
 		private Brush _background;
+		private bool _wasEverActivated;
 
 		private List<WeakEventHelper.GenericEventHandler> _sizeChangedHandlers = new List<WeakEventHelper.GenericEventHandler>();
 		private List<WeakEventHelper.GenericEventHandler> _backgroundChangedHandlers;
@@ -186,7 +187,22 @@ namespace Windows.UI.Xaml
 		public bool Visible
 		{
 			get => CoreWindow.Visible;
-			set => CoreWindow.Visible = value;
+			set
+			{
+				if (Visible != value)
+				{
+					if (this.Log().IsEnabled(LogLevel.Debug))
+					{
+						this.Log().LogDebug($"Window visibility changing to {value}");
+					}
+
+					CoreWindow.Visible = value;
+
+					var args = new VisibilityChangedEventArgs() { Visible = value };
+					CoreWindow.OnVisibilityChanged(args);
+					VisibilityChanged?.Invoke(this, args);
+				}
+			}
 		}
 
 		/// <summary>
@@ -200,13 +216,14 @@ namespace Windows.UI.Xaml
 			// for compatibility with WinUI we set the first activated
 			// as Current #8341
 			_current ??= this;
+			_wasEverActivated = true;
 
 			InternalActivate();
 
-			OnActivated(CoreWindowActivationState.CodeActivated);
-
 			// Initialize visibility on first activation.
 			Visible = true;
+
+			OnActivated(CoreWindowActivationState.CodeActivated);
 		}
 
 		partial void InternalActivate();
@@ -231,6 +248,11 @@ namespace Windows.UI.Xaml
 
 		internal void OnActivated(CoreWindowActivationState state)
 		{
+			if (!_wasEverActivated)
+			{
+				return;
+			}
+
 			if (_lastActivationState != state)
 			{
 				if (this.Log().IsEnabled(LogLevel.Debug))
@@ -255,19 +277,12 @@ namespace Windows.UI.Xaml
 
 		internal void OnVisibilityChanged(bool newVisibility)
 		{
-			if (Visible != newVisibility)
+			if (!_wasEverActivated)
 			{
-				if (this.Log().IsEnabled(LogLevel.Debug))
-				{
-					this.Log().LogDebug($"Window visibility changing to {newVisibility}");
-				}
-
-				Visible = newVisibility;
-
-				var args = new VisibilityChangedEventArgs() { Visible = newVisibility };
-				CoreWindow.OnVisibilityChanged(args);
-				VisibilityChanged?.Invoke(this, args);
+				return;
 			}
+
+			Visible = newVisibility;
 		}
 
 		private void RootSizeChanged(object sender, SizeChangedEventArgs args) => _rootVisual.XamlRoot.NotifyChanged();
