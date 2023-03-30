@@ -7,8 +7,8 @@ namespace Windows.UI.Xaml.Media.Animation
 	#endif
 	public  partial class TransitionCollection : global::System.Collections.Generic.IList<global::Windows.UI.Xaml.Media.Animation.Transition>,global::System.Collections.Generic.IEnumerable<global::Windows.UI.Xaml.Media.Animation.Transition>
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  uint Size
 		{
 			get
@@ -36,8 +36,8 @@ namespace Windows.UI.Xaml.Media.Animation
 		// Skipping already implement System.Collections.Generic.IList<Windows.UI.Xaml.Media.Animation.Transition>.this[int]
 		// Processing: System.Collections.Generic.ICollection<Windows.UI.Xaml.Media.Animation.Transition>
 		// Skipping already implement System.Collections.Generic.ICollection<Windows.UI.Xaml.Media.Animation.Transition>.Count
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public bool IsReadOnly
 		{
 			get
