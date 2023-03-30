@@ -1206,6 +1206,13 @@ namespace Uno.UI.Xaml
 				WebAssemblyRuntime.InvokeJS($"Uno.UI.WindowManager.current.selectInputRange({htmlId}, {start}, {length})");
 #endif
 
+		internal static void SetImageAsMonochrome(IntPtr htmlId, string url, string color)
+			=>
+#if NET7_0_OR_GREATER
+				NativeMethods.SetImageAsMonochrome(htmlId, url, color);
+#else
+				WebAssemblyRuntime.InvokeJS($"Uno.UI.WindowManager.current.setImageAsMonochrome({htmlId}, \"{url}\", \"{color}\");");
+#endif
 		internal static void SetRootElement(IntPtr htmlId)
 		{
 #if NET7_0_OR_GREATER
@@ -1302,6 +1309,9 @@ namespace Uno.UI.Xaml
 
 			[JSImport("globalThis.Uno.UI.WindowManager.current.setElementTransformNativeFast")]
 			internal static partial void SetElementTransform(IntPtr htmlId, float m11, float m12, float m21, float m22, float m31, float m32);
+
+			[JSImport("globalThis.Uno.UI.WindowManager.current.setImageAsMonochrome")]
+			internal static partial void SetImageAsMonochrome(IntPtr htmlId, string url, string color);
 
 			[JSImport("globalThis.Uno.UI.WindowManager.current.setPointerCapture")]
 			internal static partial void SetPointerCapture(IntPtr htmlId, double pointerId);

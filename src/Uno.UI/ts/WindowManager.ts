@@ -1431,7 +1431,7 @@ namespace Uno.UI {
 		 * @param url the source image
 		 * @param color the color to apply to the monochrome pixels
 		 */
-		public setImageAsMonochrome(viewId: number, url: string, color: string): string {
+		public setImageAsMonochrome(viewId: number, url: string, color: string): void {
 			const element = this.getView(viewId);
 
 			if (element.tagName.toUpperCase() === "IMG") {
@@ -1458,8 +1458,6 @@ namespace Uno.UI {
 
 					imgElement.src = c.toDataURL();
 				}
-
-				return "ok";
 			}
 			else {
 				throw `setImageAsMonochrome: Element id ${viewId} is not an Img.`;
