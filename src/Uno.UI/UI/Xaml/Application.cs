@@ -148,6 +148,8 @@ namespace Windows.UI.Xaml
 				_requestedTheme = value;
 				// Sync with core application's theme
 				CoreApplication.RequestedTheme = value == ApplicationTheme.Dark ? SystemTheme.Dark : SystemTheme.Light;
+
+				UpdateRootVisualBackground();
 				UpdateRequestedThemesForResources();
 			}
 		}
@@ -412,6 +414,12 @@ namespace Windows.UI.Xaml
 		internal void UpdateResourceBindingsForHotReload() => OnResourcesChanged(ResourceUpdateReason.HotReload);
 
 		internal void OnRequestedThemeChanged() => OnResourcesChanged(ResourceUpdateReason.ThemeResource);
+
+		private void UpdateRootVisualBackground()
+		{
+			var rootVisual = WinUICoreServices.Instance.MainRootVisual;
+			rootVisual?.SetBackgroundColor(ThemingHelper.GetRootVisualBackground());
+		}
 
 		private void OnResourcesChanged(ResourceUpdateReason updateReason)
 		{
