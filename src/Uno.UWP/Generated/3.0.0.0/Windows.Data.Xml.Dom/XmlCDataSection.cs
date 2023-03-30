@@ -24,8 +24,8 @@ namespace Windows.Data.Xml.Dom
 		// Skipping already declared property ParentNode
 		// Skipping already declared property PreviousSibling
 		// Skipping already declared property InnerText
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Data.Xml.Dom.IXmlText SplitText( uint offset)
 		{
 			throw new global::System.NotImplementedException("The member IXmlText XmlCDataSection.SplitText(uint offset) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IXmlText%20XmlCDataSection.SplitText%28uint%20offset%29");
@@ -64,15 +64,15 @@ namespace Windows.Data.Xml.Dom
 		// Forced skipping of method Windows.Data.Xml.Dom.XmlCDataSection.Prefix.set
 		// Skipping already declared method Windows.Data.Xml.Dom.XmlCDataSection.SelectSingleNode(string)
 		// Skipping already declared method Windows.Data.Xml.Dom.XmlCDataSection.SelectNodes(string)
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Data.Xml.Dom.IXmlNode SelectSingleNodeNS( string xpath,  object namespaces)
 		{
 			throw new global::System.NotImplementedException("The member IXmlNode XmlCDataSection.SelectSingleNodeNS(string xpath, object namespaces) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IXmlNode%20XmlCDataSection.SelectSingleNodeNS%28string%20xpath%2C%20object%20namespaces%29");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Data.Xml.Dom.XmlNodeList SelectNodesNS( string xpath,  object namespaces)
 		{
 			throw new global::System.NotImplementedException("The member XmlNodeList XmlCDataSection.SelectNodesNS(string xpath, object namespaces) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=XmlNodeList%20XmlCDataSection.SelectNodesNS%28string%20xpath%2C%20object%20namespaces%29");
