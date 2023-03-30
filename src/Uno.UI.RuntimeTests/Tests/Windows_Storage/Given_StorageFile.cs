@@ -343,19 +343,11 @@ namespace Uno.UI.RuntimeTests.Tests
 		public async Task When_Open_Multiple_Reads_Single_Write()
 		{
 			var uri = new Uri($"ms-appx:///Assets/Asset With Spaces.svg");
-
-			try
-			{
-				var file = await StorageFile.GetFileFromApplicationUriAsync(uri);
-				_ = await file.OpenStreamForReadAsync();
-				_ = await file.OpenStreamForReadAsync();
-				_ = await file.OpenStreamForWriteAsync();
-				_ = await file.OpenStreamForReadAsync();
-			}
-			catch (Exception ex)
-			{
-				Assert.Fail(ex.Message);
-			}
+			var file = await StorageFile.GetFileFromApplicationUriAsync(uri);
+			_ = await file.OpenStreamForReadAsync();
+			_ = await file.OpenStreamForReadAsync();
+			_ = await file.OpenStreamForWriteAsync();
+			_ = await file.OpenStreamForReadAsync();
 		}
 
 		[TestMethod]
