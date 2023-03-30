@@ -149,7 +149,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 				RepeatBehavior = RepeatBehavior.Forever,
 				Duration = TimeSpan.FromMilliseconds(500 * TimeResolutionScaling),
 			}.BindTo(target, nameof(Rectangle.Width));
-			animation.Begin();
+			animation.ToStoryboard().Begin();
 
 			// In an ideal world, the measurements would be [0 or 50,10,20,30,40] repeated 10 times.
 			var list = new List<double>();
@@ -185,7 +185,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 
 		[TestMethod]
 		[RunsOnUIThread]
-		public async Task When_StartingFrom_AnimatedValue()
+		public async Task When_StartingFrom_AnimatedValue() // value from completed(filling) animation
 		{
 			var translate = new TranslateTransform();
 			var border = new Border()
@@ -208,7 +208,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 				To = 50,
 				Duration = new Duration(TimeSpan.FromSeconds(2)),
 			}.BindTo(translate, nameof(translate.Y));
-			await animation0.RunAsync(timeout: animation0.Duration.TimeSpan + TimeSpan.FromSeconds(1));
+			await animation0.ToStoryboard().RunAsync(timeout: animation0.Duration.TimeSpan + TimeSpan.FromSeconds(1));
 			await Task.Delay(1000);
 
 			// Start an second animation which should pick up from current animated value.
@@ -218,24 +218,127 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 				To = -50,
 				Duration = new Duration(TimeSpan.FromSeconds(5)),
 			}.BindTo(translate, nameof(translate.Y));
-			animation1.Begin();
+			animation1.ToStoryboard().Begin();
 			await Task.Delay(125);
 
 			// ~125ms into a 5s animation where the value is animating from 50 to -50,
 			// the value should be still positive.
-			// note: On android, the value will be scaled by ViewHelper.Scale, but the assertion will still hold true.
 			var y = GetTranslateY(translate, isStillAnimating: true);
 			Assert.IsTrue(y > 0, $"Expecting Translate.Y to be still positive: {y}");
 		}
 
-		private double GetTranslateY(TranslateTransform translate, bool isStillAnimating = false) =>
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_StartingFrom_AnimatingValue() // value from mid animation
+		{
+			var translate = new TranslateTransform();
+			var border = new Border()
+			{
+				Background = new SolidColorBrush(Colors.Pink),
+				Margin = new Thickness(0, 50, 0, 0),
+				Width = 50,
+				Height = 50,
+				RenderTransform = translate,
+			};
+			WindowHelper.WindowContent = border;
+			await WindowHelper.WaitForLoaded(border);
+			await WindowHelper.WaitForIdle();
+
+			translate.Y = 50;
+			await WindowHelper.WaitForIdle();
+			await Task.Delay(1000);
+			var threshold = GetTranslateY(translate); // snapshot the value
+
+			// Start an animation. Its animating value will serve as
+			// the inferred starting value for the next animation.
+			var animation0 = new DoubleAnimation
+			{
+				From = 100,
+				To = 105,
+				Duration = new Duration(TimeSpan.FromSeconds(5)),
+			}.BindTo(translate, nameof(translate.Y));
+			animation0.ToStoryboard().Begin();
+			await Task.Delay(125);
+
+			// Start an second animation which should pick up from current animating value.
+			var animation1 = new DoubleAnimation
+			{
+				// From = should be around 100~105 from animation #0
+				To = 50,
+				Duration = new Duration(TimeSpan.FromSeconds(5)),
+			}.BindTo(translate, nameof(translate.Y));
+			animation1.ToStoryboard().Begin();
+			await Task.Delay(125);
+
+			var value = GetTranslateY(translate, isStillAnimating: true);
+			if (value is double y)
+			{
+				// Animation #1 should be animating from around[100~105] to 50, and not from 0 (unanimated Local value).
+				Assert.IsTrue(y > 50, $"Expecting Translate.Y to be still positive: {y}");
+			}
+			else
+			{
+				Assert.Fail($"Translate.Y is not a double: value={value}");
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public Task When_OverridingFillingValue_WithLocalValue() =>
+			When_OverridingFillingValue_WithLocalValue_Impl(skipToFill: false);
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public Task When_OverridingFillingValue_WithLocalValue_Skipped() =>
+			When_OverridingFillingValue_WithLocalValue_Impl(skipToFill: true);
+
+		public async Task When_OverridingFillingValue_WithLocalValue_Impl(bool skipToFill)
+		{
+			var translate = new TranslateTransform();
+			var border = new Border()
+			{
+				Background = new SolidColorBrush(Colors.Pink),
+				Margin = new Thickness(0, 50, 0, 0),
+				Width = 50,
+				Height = 50,
+				RenderTransform = translate,
+			};
+			WindowHelper.WindowContent = border;
+			await WindowHelper.WaitForLoaded(border);
+			await WindowHelper.WaitForIdle();
+
+			// Animate the value to fill.
+			var animation0 = new DoubleAnimation
+			{
+				To = 100,
+				Duration = new Duration(TimeSpan.FromSeconds(1)),
+			}.BindTo(translate, nameof(translate.Y));
+			if (skipToFill)
+			{
+				animation0.ToStoryboard().SkipToFill();
+			}
+			else
+			{
+				await animation0.ToStoryboard().RunAsync();
+			}
+			var beforeValue = translate.Y;
+
+			// Set a new local value
+			translate.Y = 312.0;
+			var afterValue = translate.Y;
+
+			Assert.AreEqual(beforeValue, 100.0, "before: Should be animated to 100");
+			Assert.AreEqual(afterValue, 312.0, "after: Should be set to 312");
+		}
+
+		private static double GetTranslateY(TranslateTransform translate, bool isStillAnimating = false) =>
 #if !__ANDROID__
 			translate.Y;
 #else
 			isStillAnimating
 				// On android, animation may target a native property implementing the behavior instead of the specified dependency property.
 				// We need to retrieve the value of that native property, as reading the dp value will just give the final value.
-				? (double)translate.View.TranslationY
+				? ViewHelper.PhysicalToLogicalPixels((double)translate.View.TranslationY)
 				// And, when the animation is completed, this native value is reset even for HoldEnd animation.
 				: translate.Y;
 #endif
