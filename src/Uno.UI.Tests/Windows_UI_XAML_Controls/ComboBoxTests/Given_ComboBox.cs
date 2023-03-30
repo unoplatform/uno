@@ -136,8 +136,8 @@ namespace Uno.UI.Tests.ComboBoxTests
 
 					comboBox.SetBinding(
 						ComboBox.ItemsSourceProperty,
-						new Binding { Path = new("Numbers")
-					});
+						new Binding { Path = new("Numbers") });
+
 					comboBox.SetBinding(
 						ComboBox.SelectedItemProperty,
 						new Binding { Path = new("SelectedNumber"), Mode = BindingMode.TwoWay });

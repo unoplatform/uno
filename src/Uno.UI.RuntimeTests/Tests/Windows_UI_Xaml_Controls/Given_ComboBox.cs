@@ -612,6 +612,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 #endif
 
+#if HAS_UNO
 		[TestMethod]
 		public void When_SelectedItem_TwoWay_Binding()
 		{
@@ -645,6 +646,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(3, test[0].SelectedNumber);
 			Assert.AreEqual(3, comboBox.SelectedItem);
 		}
+#endif
 
 		public class TwoWayBindingItem : System.ComponentModel.INotifyPropertyChanged
         {
