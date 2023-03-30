@@ -122,6 +122,9 @@ public class Given_TreeView
 		Assert.AreEqual(child2, child2NodeAfter.DataContext);
 	}
 
+#if __ANDROID__
+	[Ignore("Test is not operational on Android, items are not returned properly https://github.com/unoplatform/uno/issues/9080")]
+#endif
 	[TestMethod]
 	public async Task When_Open_Close_Root_Twice_Keep_State()
 	{
