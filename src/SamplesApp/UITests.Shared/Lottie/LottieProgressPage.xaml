@@ -28,7 +28,7 @@
 		</TextBlock>
 		<!--#endregion-->
 
-		<Border Grid.Row="1">
+		<Border x:Name="container" Grid.Row="1">
 			<!--  AnimatedVisualPlayer  -->
 			<winui:AnimatedVisualPlayer x:Name="Progress_Player"
 											AutoPlay="False">
@@ -44,6 +44,7 @@
 		<Grid Grid.Row="2" RowSpacing="10">
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition Width="Auto" />
+				<ColumnDefinition Width="Auto" />
 				<ColumnDefinition Width="*" />
 			</Grid.ColumnDefinitions>
 
@@ -55,8 +56,11 @@
 							  Toggled="LightToggle_Toggled">
 				Light Switch
 			</ToggleSwitch>
+			<Button Grid.Column="1"
+					Content="ReloadView"
+					Click="{x:Bind OnReloadView}" />
 			<!--  Progress Slider: Scrub animation frames  -->
-			<Grid Grid.Column="1">
+			<Grid Grid.Column="2">
 				<StackPanel>
 					<TextBlock Margin="40,20,0,5">Progress Slider</TextBlock>
 					<Slider x:Name="ProgressSlider"
