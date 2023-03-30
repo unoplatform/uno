@@ -292,7 +292,7 @@ namespace Windows.UI.Xaml
 			}
 
 			_layouter.Measure(availableSize);
-#if NET461
+#if IS_UNIT_TESTS
 			OnMeasurePartial(availableSize);
 #endif
 		}
@@ -309,7 +309,7 @@ namespace Windows.UI.Xaml
 		}
 #endif
 
-#if NET461
+#if IS_UNIT_TESTS
 		partial void OnMeasurePartial(Size slotSize);
 #endif
 

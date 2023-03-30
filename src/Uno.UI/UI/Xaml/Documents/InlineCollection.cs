@@ -20,7 +20,7 @@ namespace Windows.UI.Xaml.Documents
 
 		private void OnCollectionChanged()
 		{
-#if !NET461
+#if !IS_UNIT_TESTS
 			_preorderTree = null;
 
 			switch (_collection.GetParent())

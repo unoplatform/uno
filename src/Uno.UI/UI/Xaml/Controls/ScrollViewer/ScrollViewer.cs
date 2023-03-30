@@ -1,4 +1,4 @@
-﻿#if NET461
+﻿#if IS_UNIT_TESTS
 #pragma warning disable CS0067
 #endif
 
@@ -112,7 +112,7 @@ namespace Windows.UI.Xaml.Controls
 
 		static ScrollViewer()
 		{
-#if !NET461
+#if !IS_UNIT_TESTS
 			HorizontalContentAlignmentProperty.OverrideMetadata(
 				typeof(ScrollViewer),
 				new FrameworkPropertyMetadata(HorizontalAlignment.Stretch)
@@ -926,7 +926,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <param name="view"></param>
 		/// <remarks>Used in the context of member initialization</remarks>
 		public
-#if !UNO_REFERENCE_API && !__MACOS__ && !NET461
+#if !UNO_REFERENCE_API && !__MACOS__ && !IS_UNIT_TESTS
 			new
 #endif
 			void Add(View view)

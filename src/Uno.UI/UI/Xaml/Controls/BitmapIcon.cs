@@ -65,7 +65,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void UpdateImageMonochromeColor()
 		{
-#if !NET461
+#if !IS_UNIT_TESTS
 			if (_image != null)
 			{
 				_image.MonochromeColor = ShowAsMonochrome ? (Foreground as SolidColorBrush)?.Color : null;

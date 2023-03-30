@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFrameworks>net461;netstandard2.0</TargetFrameworks>
+		<TargetFramework>netstandard2.0</TargetFramework>
 		<AssemblyName>Uno.UI.SourceGenerators</AssemblyName>
 		<AppendTargetFrameworkToOutputPath>true</AppendTargetFrameworkToOutputPath>
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
@@ -13,16 +13,6 @@
 	<ItemGroup>
 		<PackageReference Include="Microsoft.ApplicationInsights" Version="2.20.0" />
 		<PackageReference Include="Microsoft.DotNet.PlatformAbstractions" Version="3.1.6" />
-	</ItemGroup>
-
-	<ItemGroup Condition="'$(TargetFramework)'=='net461'">
-		<PackageReference Include="Microsoft.Build" Version="15.4.8" ExcludeAssets="runtime" />
-		<PackageReference Include="Microsoft.Build.Engine" Version="15.4.8" ExcludeAssets="runtime" />
-		<PackageReference Include="Microsoft.Build.Tasks.Core" Version="15.4.8" ExcludeAssets="runtime" />
-		<PackageReference Include="Microsoft.CodeAnalysis" Version="3.3.1" ExcludeAssets="runtime" />
-		<PackageReference Include="Microsoft.CodeAnalysis.Common" Version="3.3.1" ExcludeAssets="runtime" />
-		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.3.1" ExcludeAssets="runtime" />
-		<PackageReference Include="Uno.SourceGeneration" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
@@ -96,7 +86,7 @@
 			<_OverridePackageId>Uno.UI</_OverridePackageId>
 			<_OverridePackageId Condition="'$(UNO_UWP_BUILD)'=='false'">Uno.WinUI</_OverridePackageId>
 
-			<_TargetNugetFolder Condition="'$(TargetFramework)'=='net461'">$(_baseNugetPath)\.nuget\packages\$(_OverridePackageId)\$(UnoNugetOverrideVersion)\tools\uno-sourcegen</_TargetNugetFolder>
+			<_TargetNugetFolder Condition="'$(TargetFramework)'=='IS_UNIT_TESTS'">$(_baseNugetPath)\.nuget\packages\$(_OverridePackageId)\$(UnoNugetOverrideVersion)\tools\uno-sourcegen</_TargetNugetFolder>
 			<_TargetNugetFolder Condition="'$(TargetFramework)'=='netstandard2.0'">$(_baseNugetPath)\.nuget\packages\$(_OverridePackageId)\$(UnoNugetOverrideVersion)\analyzers\dotnet\cs</_TargetNugetFolder>
 		</PropertyGroup>
 		<ItemGroup>

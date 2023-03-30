@@ -1,5 +1,5 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
-	<PropertyGroup Condition="'$(MSBuildRuntimeType)'!='Core'">
+	<PropertyGroup >
 		<TargetFrameworks>net7.0</TargetFrameworks>
 	</PropertyGroup>
 

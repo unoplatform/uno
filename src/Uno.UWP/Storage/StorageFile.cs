@@ -23,11 +23,11 @@ namespace Windows.Storage
 		internal static StorageFile GetFileFromPath(string path)
 			=> new StorageFile(new Local(path));
 
-		[NotImplemented("NET461", "__NETSTD_REFERENCE__")]
+		[NotImplemented("IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
 		public static IAsyncOperation<StorageFile> GetFileFromApplicationUriAsync(Uri uri)
 			=> AsyncOperation.FromTask(ct => GetFileFromApplicationUri(ct, uri));
 
-#if NET461 || __NETSTD_REFERENCE__
+#if IS_UNIT_TESTS || __NETSTD_REFERENCE__
 		private static Task<StorageFile> GetFileFromApplicationUri(CancellationToken ct, Uri uri)
 			=> throw new NotImplementedException();
 #endif

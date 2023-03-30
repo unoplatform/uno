@@ -15,7 +15,7 @@ using ObjCRuntime;
 #elif __MACOS__
 using _View = AppKit.NSView;
 using ObjCRuntime;
-#elif UNO_REFERENCE_API || NET461
+#elif UNO_REFERENCE_API || IS_UNIT_TESTS
 using _View = Windows.UI.Xaml.UIElement;
 #endif
 

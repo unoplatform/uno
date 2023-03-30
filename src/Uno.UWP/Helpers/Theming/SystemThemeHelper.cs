@@ -6,7 +6,7 @@ namespace Uno.Helpers.Theming
 	{
 		internal static SystemTheme SystemTheme => GetSystemTheme();
 
-#if NET461 || __NETSTD_REFERENCE__
+#if IS_UNIT_TESTS || __NETSTD_REFERENCE__
 		private static SystemTheme GetSystemTheme() => SystemTheme.Light;
 #endif
 

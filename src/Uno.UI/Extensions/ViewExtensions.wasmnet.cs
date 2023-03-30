@@ -1,4 +1,4 @@
-#if NET461 || UNO_REFERENCE_API
+#if IS_UNIT_TESTS || UNO_REFERENCE_API
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -26,7 +26,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 		protected override bool IsPayloadNeedsToBeUpdated => true;
 
-#if NETFRAMEWORK
+#if IS_UNIT_TESTS
 		public void LoadForTests(
 			IInputStream sourceJson,
 			string sourceCacheKey,
