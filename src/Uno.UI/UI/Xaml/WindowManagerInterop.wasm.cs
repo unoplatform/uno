@@ -1180,6 +1180,14 @@ namespace Uno.UI.Xaml
 		}
 		#endregion
 
+		internal static string RawPixelsToBase64EncodeImage(IntPtr data, int width, int height)
+			=>
+#if NET7_0_OR_GREATER
+				NativeMethods.RawPixelsToBase64EncodeImage(data, width, height);
+#else
+				WebAssemblyRuntime.InvokeJS("Uno.UI.WindowManager.current.rawPixelsToBase64EncodeImage(" + data + ", " + width + ", " + height + ");");
+#endif
+
 		internal static void SetRootElement(IntPtr htmlId)
 		{
 #if NET7_0_OR_GREATER
@@ -1258,6 +1266,9 @@ namespace Uno.UI.Xaml
 
 			[JSImport("globalThis.Uno.UI.WindowManager.current.measureViewNativeFast")]
 			internal static partial void MeasureView(IntPtr htmlId, double availableWidth, double availableHeight, bool measureContent, IntPtr pReturn);
+
+			[JSImport("globalThis.Uno.UI.WindowManager.current.rawPixelsToBase64EncodeImage")]
+			internal static partial string RawPixelsToBase64EncodeImage(IntPtr data, int width, int height);
 
 			[JSImport("globalThis.Uno.UI.WindowManager.current.releasePointerCapture")]
 			internal static partial void ReleasePointerCapture(IntPtr htmlId, double pointerId);
