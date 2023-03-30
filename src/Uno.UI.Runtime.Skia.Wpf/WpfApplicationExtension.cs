@@ -7,7 +7,7 @@ using Windows.UI.Xaml;
 
 namespace Uno.UI.Runtime.Skia.Wpf
 {
-	public class WpfApplicationExtension : IApplicationExtension, IDisposable
+	public class WpfApplicationExtension2 : IApplicationExtension, IDisposable
 	{
 		private readonly Application _owner;
 		private WpfSystemThemeHelperExtension _themeHelper;
@@ -15,7 +15,7 @@ namespace Uno.UI.Runtime.Skia.Wpf
 
 		private bool _disposedValue;
 
-		public WpfApplicationExtension(Application owner)
+		public WpfApplicationExtension2(Application owner)
 		{
 			_owner = owner ?? throw new ArgumentNullException(nameof(owner));
 
@@ -54,7 +54,7 @@ namespace Uno.UI.Runtime.Skia.Wpf
 			}
 		}
 
-		~WpfApplicationExtension()
+		~WpfApplicationExtension2()
 		{
 			// Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
 			Dispose(disposing: false);
