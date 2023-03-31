@@ -5,8 +5,6 @@ using Windows.UI.Xaml;
 
 namespace Microsoft.UI.Xaml.Controls;
 
-#pragma warning disable CS0067 //TODO:MZ:Undo
-
 public partial class WebView2
 {
 	/// <summary>
@@ -55,6 +53,7 @@ public partial class WebView2
 		DependencyProperty.Register(nameof(Source), typeof(Uri), typeof(WebView2), new FrameworkPropertyMetadata(null,
 			(s, e) => ((WebView2)s)?.CoreWebView2.Navigate(((Uri)e.NewValue)?.ToString())));
 
+#pragma warning disable 67
 	/// <summary>
 	/// Occurs when the core WebView2 process fails.
 	/// </summary>

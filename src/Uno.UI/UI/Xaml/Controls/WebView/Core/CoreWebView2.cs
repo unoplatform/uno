@@ -24,7 +24,7 @@ public partial class CoreWebView2
 
 	private INativeWebView? _nativeWebView;
 	internal long _navigationId;
-	private object _source = BlankUri;
+	private object _processedSource = BlankUri;
 
 	internal CoreWebView2(IWebView owner)
 	{
@@ -46,10 +46,10 @@ public partial class CoreWebView2
 
 		if (!Uri.TryCreate(uri, UriKind.Absolute, out var actualUri))
 		{
-			throw new InvalidOperationException(); //TODO:MZ: What exception does UWP throw here?
+			throw new ArgumentException("The passed in value is not an absolute URI", nameof(uri));
 		}
 
-		_source = actualUri;
+		_processedSource = actualUri;
 		_nativeWebView.ProcessNavigation(actualUri);
 	}
 
@@ -60,7 +60,7 @@ public partial class CoreWebView2
 			return;
 		}
 
-		_source = htmlContent;
+		_processedSource = htmlContent;
 		_nativeWebView.ProcessNavigation(htmlContent);
 	}
 
@@ -76,7 +76,7 @@ public partial class CoreWebView2
 			throw new ArgumentException("Invalid request message. It does not have a RequestUri.");
 		}
 
-		_source = requestMessage;
+		_processedSource = requestMessage;
 		_nativeWebView.ProcessNavigation(requestMessage);
 	}
 
@@ -117,13 +117,17 @@ public partial class CoreWebView2
 		cancel = args.Cancel;
 	}
 
-	internal void RaiseNewWindowRequested()
+	internal void RaiseNewWindowRequested(Uri target, Uri referer, out bool handled)
 	{
-		NewWindowRequested?.Invoke(this, new());//TODO:MZ:
+		var args = new CoreWebView2NewWindowRequestedEventArgs(target, referer);
+		NewWindowRequested?.Invoke(this, args);
+
+		handled = args.Handled;
 	}
 
 	internal void RaiseNavigationCompleted(Uri? uri, bool isSuccess, int httpStatusCode, CoreWebView2WebErrorStatus errorStatus)
 	{
+		Source = (uri ?? BlankUri).ToString();
 		NavigationCompleted?.Invoke(this, new CoreWebView2NavigationCompletedEventArgs((ulong)_navigationId, uri, isSuccess, httpStatusCode, errorStatus));
 	}
 
@@ -167,18 +171,18 @@ public partial class CoreWebView2
 			return;
 		}
 
-		if (_source is Uri uri)
+		if (_processedSource is Uri uri)
 		{
 			_nativeWebView.ProcessNavigation(uri);
 			return;
 		}
 
-		if (_source is string html)
+		if (_processedSource is string html)
 		{
 			_nativeWebView.ProcessNavigation(html);
 		}
 
-		if (_source is HttpRequestMessage httpRequestMessage)
+		if (_processedSource is HttpRequestMessage httpRequestMessage)
 		{
 			_nativeWebView.ProcessNavigation(httpRequestMessage);
 		}

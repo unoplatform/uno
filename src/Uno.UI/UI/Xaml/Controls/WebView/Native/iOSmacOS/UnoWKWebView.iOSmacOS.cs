@@ -197,58 +197,38 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 			target = action.Request.Url.ToUri();
 		}
 
-		//TODO:MZ:
-		//var args = new WebViewNewWindowRequestedEventArgs(
-		//	referrer: action.SourceFrame?.Request?.Url?.ToUri(),
-		//	uri: target
-		//);
+		_coreWebView.RaiseNewWindowRequested(target, action.SourceFrame?.Request?.Url?.ToUri(), out var handled);
 
-		_coreWebView.RaiseNewWindowRequested(); //TODO:MZ:
+		if (handled)
+		{
+			return null;
+		}
+		else
+		{
+			_coreWebView.RaiseNavigationStarting(target.ToString(), out var cancel);
 
-		//TODO:MZ:
-		//		if (args.Handled)
-		//		{
-		//			return null;
-		//		}
-		//		else
-		//		{
-		//			//var navigationArgs = new WebViewNavigationStartingEventArgs()
-		//			//{
-		//			//	Cancel = false,
-		//			//	Uri = target
-		//			//};
+			if (!cancel)
+			{
+#if __IOS__
+				if (UIKit.UIApplication.SharedApplication.CanOpenUrl(target))
+				{
+					UIKit.UIApplication.SharedApplication.OpenUrl(target);
 
-		//			_coreWebView.RaiseNavigationStarting(); //TODO:MZ:
-
-		//			if (!navigationArgs.Cancel)
-		//			{
-		//#if __IOS__
-		//				if (UIKit.UIApplication.SharedApplication.CanOpenUrl(target))
-		//				{
-		//					UIKit.UIApplication.SharedApplication.OpenUrl(target);
-		//					// TODO:MZ:
-		//					_coreWebView.RaiseNavigationCompleted();
-		//					//_coreWebView.OnComplete(target, isSuccessful: true, status: WebErrorStatus.Unknown);
-		//				}
-		//#else
-		//				if (target != null && NSWorkspace.SharedWorkspace.UrlForApplication(new NSUrl(target.AbsoluteUri)) != null)
-		//				{
-		//					NSWorkspace.SharedWorkspace.OpenUrl(target);
-		//					_coreWebView.OnComplete(target, isSuccessful: true, status: WebErrorStatus.Unknown);
-		//				}
-		//#endif
-		//				else
-		//				{
-		//					// TODO:MZ:
-		//					_coreWebView.RaiseNavigationCompleted();
-		//					//_coreWebView.OnNavigationFailed(new WebViewNavigationFailedEventArgs()
-		//					//{
-		//					//	Uri = target,
-		//					//	WebErrorStatus = WebErrorStatus.Unknown
-		//					//});
-		//				}
-		//			}
-		//		}
+					_coreWebView.RaiseNavigationCompleted(target, true, 200, CoreWebView2WebErrorStatus.Unknown);
+				}
+#else
+				if (target != null && NSWorkspace.SharedWorkspace.UrlForApplication(new NSUrl(target.AbsoluteUri)) != null)
+				{
+					NSWorkspace.SharedWorkspace.OpenUrl(target);
+					_coreWebView.RaiseNavigationCompleted(target, true, 200, CoreWebView2WebErrorStatus.Unknown);
+				}
+#endif
+				else
+				{
+					_coreWebView.RaiseNavigationCompleted(target, false, 400, CoreWebView2WebErrorStatus.Unknown);
+				}
+			}
+		}
 
 		return null;
 	}

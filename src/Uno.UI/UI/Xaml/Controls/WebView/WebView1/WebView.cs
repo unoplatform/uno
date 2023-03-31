@@ -4,6 +4,7 @@
 #pragma warning disable CS0067, CS0414
 #endif
 
+using System;
 using System.Net.Http;
 using Microsoft.Web.WebView2.Core;
 using Uno.UI.Xaml.Controls;
@@ -91,13 +92,15 @@ public partial class WebView : Control, IWebView
 		}
 	}
 
-	private void CoreWebView2_NewWindowRequested(CoreWebView2 sender, CoreWebView2NewWindowRequestedEventArgs args) =>
-		NewWindowRequested?.Invoke(this, args.ToWebViewArgs());
-
-	private void CoreWebView2_SourceChanged(CoreWebView2 sender, CoreWebView2SourceChangedEventArgs args)
+	private void CoreWebView2_NewWindowRequested(CoreWebView2 sender, CoreWebView2NewWindowRequestedEventArgs args)
 	{
-		// TODO:MZ:
+		var webViewArgs = args.ToWebViewArgs();
+		NewWindowRequested?.Invoke(this, webViewArgs);
+		args.Handled = webViewArgs.Handled;
 	}
+
+	private void CoreWebView2_SourceChanged(CoreWebView2 sender, CoreWebView2SourceChangedEventArgs args) =>
+		Source = Uri.TryCreate(sender.Source, UriKind.Absolute, out var uri) ? uri : CoreWebView2.BlankUri;
 
 	private static string ConcatenateJavascriptArguments(IEnumerable<string> arguments)
 	{

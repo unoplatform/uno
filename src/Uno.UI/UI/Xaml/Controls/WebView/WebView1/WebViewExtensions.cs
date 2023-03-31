@@ -12,13 +12,19 @@ internal static class WebViewExtensions
 		new WebViewDOMContentLoadedEventArgs(args.Uri);
 
 	public static WebViewNavigationStartingEventArgs ToWebViewArgs(this CoreWebView2NavigationStartingEventArgs args) =>
-		new WebViewNavigationStartingEventArgs(args.Uri.Length <= 2048 ? new global::System.Uri(args.Uri) : CoreWebView2.BlankUri);
+		new WebViewNavigationStartingEventArgs(args.Uri.Length <= 2048 ? new global::System.Uri(args.Uri) : CoreWebView2.BlankUri)
+		{
+			Cancel = args.Cancel
+		};
 
 	public static WebViewNavigationCompletedEventArgs ToWebViewArgs(this CoreWebView2NavigationCompletedEventArgs args) =>
 		new WebViewNavigationCompletedEventArgs(args.IsSuccess, args.Uri, args.WebErrorStatus.ToWebErrorStatus()); //TODO:MZ:
 
 	public static WebViewNewWindowRequestedEventArgs ToWebViewArgs(this CoreWebView2NewWindowRequestedEventArgs args) =>
-		new WebViewNewWindowRequestedEventArgs(null, null); //TODO:MZ:
+		new WebViewNewWindowRequestedEventArgs(null, args.Uri.Length <= 2048 ? new global::System.Uri(args.Uri) : CoreWebView2.BlankUri)
+		{
+			Handled = args.Handled
+		}; //TODO:MZ:
 
 	public static WebErrorStatus ToWebErrorStatus(this CoreWebView2WebErrorStatus coreWebView2WebErrorStatus) =>
 		coreWebView2WebErrorStatus switch

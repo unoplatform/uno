@@ -5,6 +5,7 @@ namespace Microsoft.Web.WebView2.Core;
 public partial class CoreWebView2
 {
 	private string _documentTitle = "";
+	private string _source = "";
 
 	/// <summary>
 	/// True if the WebView is able to navigate to a previous page in the navigation history.
@@ -35,7 +36,18 @@ public partial class CoreWebView2
 	/// <summary>
 	/// Gets the URI of the current top level document.
 	/// </summary>
-	public string Source { get; }
+	public string Source
+	{
+		get => _source;
+		private set
+		{
+			if (_source != value)
+			{
+				_source = value;
+				SourceChanged?.Invoke(this, new());
+			}
+		}
+	}
 
 	/// <summary>
 	/// NavigationStarting is raised when the WebView main frame is requesting permission to navigate to a different URI.

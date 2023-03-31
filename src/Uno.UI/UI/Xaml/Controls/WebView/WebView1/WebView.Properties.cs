@@ -49,7 +49,7 @@ public partial class WebView : Control
 	/// </summary>
 	public static DependencyProperty SourceProperty { get; } =
 		DependencyProperty.Register(nameof(Source), typeof(Uri), typeof(WebView), new FrameworkPropertyMetadata(null,
-			(s, e) => ((WebView)s)?.Navigate((Uri)e.NewValue)));
+			(s, e) => ((WebView)s)?.CoreWebView2.Navigate(((Uri)e.NewValue)?.ToString())));
 
 #if __ANDROID__ || __IOS__ || __MACOS__
 	public string DocumentTitle
