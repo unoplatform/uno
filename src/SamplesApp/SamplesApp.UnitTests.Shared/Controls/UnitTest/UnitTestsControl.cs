@@ -690,6 +690,8 @@ namespace Uno.UI.Samples.Tests
 			ReportTestClass(testClassInfo.Type.GetTypeInfo());
 			_ = ReportMessage($"Running {tests.Length} test methods");
 
+			var ignorePointerInjection = Private.Infrastructure.TestServices.WindowHelper.IsXamlIsland;
+
 			foreach (var test in tests)
 			{
 				var testName = test.Name;
@@ -700,7 +702,8 @@ namespace Uno.UI.Samples.Tests
 					return;
 				}
 
-				if (test.IsIgnored(out var ignoreMessage))
+				if (test.IsIgnored(out var ignoreMessage) ||
+					(test.UsesPointerInjection && ignorePointerInjection))
 				{
 					if (config.IsRunningIgnored)
 					{
