@@ -321,6 +321,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.UI.Toolkit.Tests", "Uno.UI.Toolkit\Uno.UI.Toolkit.Tests.csproj", "{F3365711-8B28-45EC-AF3D-FD7B851BD72E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.UI.RuntimeTests.Windows", "Uno.UI.RuntimeTests\Uno.UI.RuntimeTests.Windows.csproj", "{E064DF41-143F-4F03-9CDA-880060343C45}"
+	ProjectSection(ProjectDependencies) = postProject
+		{946D318B-305A-4264-81A4-31698DCC22F7} = {946D318B-305A-4264-81A4-31698DCC22F7}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.UI.Toolkit.Windows", "Uno.UI.Toolkit\Uno.UI.Toolkit.Windows.csproj", "{9C10FB5E-76EC-4552-B7B1-1C920E716410}"
 EndProject
