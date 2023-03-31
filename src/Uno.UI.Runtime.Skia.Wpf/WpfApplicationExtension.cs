@@ -15,7 +15,7 @@ namespace Uno.UI.Runtime.Skia.Wpf
 
 		private bool _disposedValue;
 
-		public WpfApplicationExtension2(Application owner)
+		public WpfApplicationExtension(Application owner)
 		{
 			_owner = owner ?? throw new ArgumentNullException(nameof(owner));
 
@@ -54,7 +54,7 @@ namespace Uno.UI.Runtime.Skia.Wpf
 			}
 		}
 
-		~WpfApplicationExtension2()
+		~WpfApplicationExtension()
 		{
 			// Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
 			Dispose(disposing: false);
