@@ -335,6 +335,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			};
 
 			var windowHeight = ApplicationView.GetForCurrentView().VisibleBounds.Height;
+			if (TestServices.WindowHelper.IsXamlIsland)
+			{
+				windowHeight = TestServices.WindowHelper.XamlRoot.Size.Height;
+			}
 
 			var flyoutContent = new Ellipse
 			{

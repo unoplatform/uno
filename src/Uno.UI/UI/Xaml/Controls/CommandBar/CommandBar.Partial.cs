@@ -36,6 +36,8 @@ using Uno.UI.Controls;
 using Android.Views;
 #endif
 
+using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
+
 namespace Windows.UI.Xaml.Controls
 {
 	partial class CommandBar : IMenu
@@ -1694,6 +1696,11 @@ namespace Windows.UI.Xaml.Controls
 
 				visibleBounds = Windows.UI.Xaml.Window.Current.Bounds;
 
+				if (WinUICoreServices.Instance.InitializationType == InitializationType.IslandsOnly)
+				{
+					visibleBounds = XamlRoot!.Bounds;
+				}
+
 				bool windowed = false;
 				//windowed = m_tpOverflowPopup && m_tpOverflowPopup.Cast<Popup>()->IsWindowed();
 				if (windowed)
@@ -1890,6 +1897,11 @@ namespace Windows.UI.Xaml.Controls
 		private bool GetShouldOverflowOpenInFullWidth()
 		{
 			var visibleBounds = Windows.UI.Xaml.Window.Current.Bounds;
+
+			if (WinUICoreServices.Instance.InitializationType == InitializationType.IslandsOnly)
+			{
+				visibleBounds = XamlRoot!.Bounds;
+			}
 			// IFC_RETURN(DXamlCore::GetCurrent()->GetVisibleContentBoundsForElement(GetHandle(), &visibleBounds));
 
 			return visibleBounds.Width <= m_overflowContentMaxWidth;

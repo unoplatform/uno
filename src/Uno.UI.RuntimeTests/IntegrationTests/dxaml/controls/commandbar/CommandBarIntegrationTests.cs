@@ -2534,6 +2534,10 @@ namespace Windows.UI.Tests.Enterprise
 			//double expectedCommandBarWidth = 500;
 
 			double expectedCommandBarWidth = Window.Current.Bounds.Width;
+			if (TestServices.WindowHelper.IsXamlIsland)
+			{
+				expectedCommandBarWidth = TestServices.WindowHelper.XamlRoot.Size.Width;
+			}
 
 #if __IOS__
 			await RunOnUIThread(() =>

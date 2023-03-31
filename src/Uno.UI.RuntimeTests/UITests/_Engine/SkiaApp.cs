@@ -46,7 +46,12 @@ public partial class SkiaApp : IApp
 
 	public async Task RunAsync(string metadataName)
 	{
-		if (Type.GetType(metadataName + ", SamplesApp.Skia") is { } sampleType
+		var assemblyName = "SamplesApp.Skia";
+		if (TestServices.WindowHelper.IsXamlIsland)
+		{
+			assemblyName = "UnoIslands" + assemblyName;
+		}
+		if (Type.GetType($"{metadataName}, {assemblyName}") is { } sampleType
 			&& Activator.CreateInstance(sampleType) is FrameworkElement sample)
 		{
 			var root = new Grid
