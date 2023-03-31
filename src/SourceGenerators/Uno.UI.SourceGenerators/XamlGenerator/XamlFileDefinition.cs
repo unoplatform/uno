@@ -28,7 +28,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		public List<NamespaceDeclaration> Namespaces { get; private set; }
 		public List<XamlObjectDefinition> Objects { get; private set; }
 
-		public string FilePath { get; private set; }
+		public string FilePath { get; }
 
 		public string? SourceLink { get; internal set; }
 

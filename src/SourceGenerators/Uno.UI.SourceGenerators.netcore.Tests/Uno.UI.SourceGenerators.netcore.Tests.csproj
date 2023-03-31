@@ -43,13 +43,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Update="Windows_UI_Xaml_Controls\GridTests\Controls\Grid_Uses_Both_Syntaxes.xaml">
-	    <SubType>Designer</SubType>
-	    <Generator>MSBuild:Compile</Generator>
-	  </None>
-	  <None Update="Windows_UI_Xaml_Controls\GridTests\Controls\Grid_Uses_Both_Syntaxes.xaml.cs">
-	    <DependentUpon>Grid_Uses_Both_Syntaxes.xaml</DependentUpon>
-	  </None>
+		<Compile Remove="XamlCodeGeneratorTests\TestOutput\**\*.cs" />
+		<EmbeddedResource Include="XamlCodeGeneratorTests\TestOutput\**\*.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
