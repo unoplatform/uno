@@ -19,10 +19,10 @@ $release = $default + '/p:Configuration=Release' + '/r'
 ## Configurations are split to work around UWP not building with .NET new
 $dotnetBuildConfigurations =
 @(
-    @("Mobile", "-f:net6.0-android", "-r:android-arm64"), # workaround for https://github.com/xamarin/xamarin-android/issues/7473
-    @("Mobile", "-f:net6.0-ios", ""),
-    @("Mobile", "-f:net6.0-maccatalyst", ""),
-    # @("Mobile", "-f:net6.0-macos", ""), # workaround for https://github.com/xamarin/xamarin-macios/issues/16401
+    @("Mobile", "-f:net7.0-android", ""), # workaround for https://github.com/xamarin/xamarin-android/issues/7473
+    @("Mobile", "-f:net7.0-ios", ""),
+    @("Mobile", "-f:net7.0-maccatalyst", ""),
+    # @("Mobile", "-f:net7.0-macos", ""), # workaround for https://github.com/xamarin/xamarin-macios/issues/16401
     @("Wasm", "", ""),
     @("Skia.Gtk", "", ""),
     @("Skia.Linux.FrameBuffer", "", ""),

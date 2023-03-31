@@ -43,7 +43,7 @@ jobs:
 
   - bash: |
       cd $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.netcoremobile
-      dotnet publish -f net6.0-android -c Release -p:UnoSampleAppRuntimeIdentifiers=android-x64 -p:UnoTargetFrameworkOverride=net7.0-android -p:UnoUIDisableNet7Build=true /bl:$(build.artifactstagingdirectory)/android-netcoremobile-sampleapp.binlog
+      dotnet publish -f net7.0-android -c Release -p:UnoSampleAppRuntimeIdentifiers=android-x64 -p:UnoTargetFrameworkOverride=net7.0-android -p:UnoUIDisableNet7Build=true /bl:$(build.artifactstagingdirectory)/android-netcoremobile-sampleapp.binlog
     displayName: Build Android samples app
 
   - task: CopyFiles@2
