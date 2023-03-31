@@ -1,12 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFrameworks>net47;netcoreapp3.1</TargetFrameworks>
-  </PropertyGroup>
-
-	<PropertyGroup Condition="'$(MSBuildRuntimeType)'=='Core' or '$(BuildingInsideVisualStudio)'=='true'">
-		<TargetFrameworks>$(TargetFrameworks);net7.0-windows</TargetFrameworks>
+	<PropertyGroup>
+		<TargetFrameworks>net7.0-windows</TargetFrameworks>
 	</PropertyGroup>
+
 
 	<Import Project="../netcore-build-windows.props" />
 
@@ -41,14 +38,10 @@
 		<PackageReference Include="System.Drawing.Common" Version="7.0.0-rc.1.22426.10" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)'=='netcoreapp3.1'">
-		<PackageReference Include="System.Drawing.Common" Version="4.7.3" />
-	</ItemGroup>
-
 	<ItemGroup>
-	  <ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Skia.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
-	  <ProjectReference Include="..\Uno.UI\Uno.UI.Skia.csproj" />
-	  <ProjectReference Include="..\Uno.UWP\Uno.Skia.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
+		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Skia.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
+		<ProjectReference Include="..\Uno.UI\Uno.UI.Skia.csproj" />
+		<ProjectReference Include="..\Uno.UWP\Uno.Skia.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
 	</ItemGroup>
 
 	<ItemGroup>
