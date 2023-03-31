@@ -115,9 +115,14 @@
 	"UNOB",
 	"winui",
 	"illinker",
-	"Onoh",
+	"Onoh"
   ],
   "patterns": [
+	{
+		"name": "Markdown uid",
+		"pattern": "^(?=uid:).*$",
+		"description": ""
+	},
 	{
 	  "name": "Markdown links",
 	  "pattern": "\\((.*)\\)",
@@ -154,6 +159,7 @@
 	}
   ],
   "ignoreRegExpList": [
+	"Markdown uid",
 	"Markdown links",
 	"Markdown code blocks",
 	"Inline code blocks",
