@@ -117,7 +117,7 @@ public partial class CoreWebView2
 		cancel = args.Cancel;
 	}
 
-	internal void RaiseNewWindowRequested(Uri target, Uri referer, out bool handled)
+	internal void RaiseNewWindowRequested(string target, Uri referer, out bool handled)
 	{
 		var args = new CoreWebView2NewWindowRequestedEventArgs(target, referer);
 		NewWindowRequested?.Invoke(this, args);

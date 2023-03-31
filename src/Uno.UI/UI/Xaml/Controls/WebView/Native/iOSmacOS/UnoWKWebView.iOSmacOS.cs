@@ -196,8 +196,9 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 		{
 			target = action.Request.Url.ToUri();
 		}
+		var targetString = target?.ToString();
 
-		_coreWebView.RaiseNewWindowRequested(target, action.SourceFrame?.Request?.Url?.ToUri(), out var handled);
+		_coreWebView.RaiseNewWindowRequested(targetString, action.SourceFrame?.Request?.Url?.ToUri(), out var handled);
 
 		if (handled)
 		{
@@ -205,7 +206,7 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 		}
 		else
 		{
-			_coreWebView.RaiseNavigationStarting(target.ToString(), out var cancel);
+			_coreWebView.RaiseNavigationStarting(targetString, out var cancel);
 
 			if (!cancel)
 			{

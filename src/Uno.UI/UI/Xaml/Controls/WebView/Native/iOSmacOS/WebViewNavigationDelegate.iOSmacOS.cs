@@ -19,7 +19,7 @@ using Windows.Foundation;
 using System.Globalization;
 using Windows.UI.Core;
 
-#if !__MACCATALYST__
+#if !__MACCATALYST__ // catalyst https://github.com/xamarin/xamarin-macios/issues/13935
 using MessageUI;
 #endif
 
@@ -238,34 +238,18 @@ internal class WebViewNavigationDelegate : WKNavigationDelegate
 		}
 	}
 
-
-
 	private void OpenUrl(string url)
 	{
+		//TODO: This should be used
+		//TODO: CanGoBack and CanGoForward should be refreshed after navigation completed on both Android and iOS
 		var nsUrl = new NSUrl(url);
 		//Opens the specified URL, launching the app that's registered to handle the scheme.
 #if __IOS__
 		UIApplication.SharedApplication.OpenUrl(nsUrl);
 #else
-					NSWorkspace.SharedWorkspace.OpenUrl(nsUrl);
+		NSWorkspace.SharedWorkspace.OpenUrl(nsUrl);
 #endif
 	}
-
-	//internal void OnComplete(Uri uri, bool isSuccessful, WebErrorStatus status)
-	//{
-	//	// TODO:MZ:
-	//	//var args = new WebViewNavigationCompletedEventArgs()
-	//	//{
-	//	//	IsSuccess = isSuccessful,
-	//	//	Uri = uri ?? Source,
-	//	//	WebErrorStatus = status
-	//	//};
-
-	//	//CanGoBack = _nativeWebView.CanGoBack;
-	//	//CanGoForward = _nativeWebView.CanGoForward;
-
-	//	//NavigationCompleted?.Invoke(_owner, args);
-	//}
 
 	internal void OnNavigationStarting(WebViewNavigationStartingEventArgs args)
 	{
@@ -399,7 +383,7 @@ internal class WebViewNavigationDelegate : WKNavigationDelegate
 				.AsTask(CancellationToken.None);
 		}
 #else
-					return Task.CompletedTask;
+		return Task.CompletedTask;
 #endif
 	}
 #endif
