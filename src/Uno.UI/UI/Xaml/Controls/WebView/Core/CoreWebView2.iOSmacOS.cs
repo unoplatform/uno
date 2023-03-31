@@ -2,10 +2,14 @@
 
 using System;
 using System.Linq;
-using UIKit;
 using Uno.UI.Xaml.Controls;
 using Uno.Foundation.Logging;
 using Windows.UI.Xaml.Controls;
+#if __IOS__
+using UIKit;
+#else
+using AppKit;
+#endif
 
 namespace Microsoft.Web.WebView2.Core;
 
