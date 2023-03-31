@@ -16,6 +16,7 @@ public class Given_RootVisual
 {
 #if HAS_UNO
 	[TestMethod]
+	[RunsOnUIThread]
 	public async Task When_Theme_Changes()
 	{
 		var rootVisual = Uno.UI.Xaml.Core.CoreServices.Instance.MainRootVisual;
