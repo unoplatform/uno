@@ -419,7 +419,7 @@ namespace Windows.Media.Playback
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlayer", "void MediaPlayer.Play()");
 		}
 		#endif
-		#if false || false || false || NET461 || false || false || false
+		#if false || false || false || false || false || false || false
 		[global::Uno.NotImplemented("NET461")]
 		public  void Pause()
 		{
