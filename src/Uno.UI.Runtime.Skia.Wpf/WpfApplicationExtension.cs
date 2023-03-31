@@ -7,7 +7,7 @@ using Windows.UI.Xaml;
 
 namespace Uno.UI.Runtime.Skia.Wpf
 {
-	public class WpfApplicationExtension2 : IApplicationExtension, IDisposable
+	public class WpfApplicationExtension : IApplicationExtension, IDisposable
 	{
 		private readonly Application _owner;
 		private WpfSystemThemeHelperExtension _themeHelper;
