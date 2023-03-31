@@ -203,19 +203,19 @@
   <PropertyGroup>
     <IsAndroid>false</IsAndroid>
     <IsAndroid Condition="
-		'$(TargetFramework)'=='net6.0-android'
+		'$(TargetFramework)'=='net8.0-android'
 		or '$(TargetFramework)'=='net7.0-android'
 		">true</IsAndroid>
 
     <IsIOS>false</IsIOS>
     <IsIOS Condition="
-		'$(TargetFramework)'=='net6.0-ios'
+		'$(TargetFramework)'=='net8.0-ios'
 		or '$(TargetFramework)'=='net7.0-ios'
 		">true</IsIOS>
 
     <IsMacOS>false</IsMacOS>
     <IsMacOS Condition="
-		'$(TargetFramework)'=='net6.0-macos'
+		'$(TargetFramework)'=='net8.0-macos'
 		or '$(TargetFramework)'=='net7.0-macos'
 		">true</IsMacOS>
 
@@ -229,7 +229,7 @@
 	<_IsUnitTests Condition="$(MSBuildProjectName.Contains('.Tests'))">true</_IsUnitTests>
 
 	<_IsNetCore>false</_IsNetCore>
-	<_IsNetCore Condition="'$(TargetFramework)'=='net5.0' or '$(TargetFramework)'=='net8.0' or '$(TargetFramework)'=='net7.0'">true</_IsNetCore>
+	<_IsNetCore Condition="'$(TargetFramework)'=='net8.0' or '$(TargetFramework)'=='net7.0'">true</_IsNetCore>
 
 	<_IsNetStd>false</_IsNetStd>
 	<_IsNetStd Condition="$(_IsNetCore) and !$(_IsUnitTests)">true</_IsNetStd>
