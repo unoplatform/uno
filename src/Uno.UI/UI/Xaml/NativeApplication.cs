@@ -12,6 +12,7 @@ using Uno.Extensions;
 using Windows.Foundation.Metadata;
 using System.ComponentModel;
 using Uno.Foundation.Logging;
+using Windows.UI.Core;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 using IOnPreDrawListener = Android.Views.ViewTreeObserver.IOnPreDrawListener;
 
@@ -143,7 +144,7 @@ namespace Windows.UI.Xaml
 			rootVisual.ViewTreeObserver.AddOnPreDrawListener(_activePreDrawListener);
 		}
 
-		private void Window_VisibilityChanged(object sender, Core.VisibilityChangedEventArgs e)
+		private void Window_VisibilityChanged(object sender, VisibilityChangedEventArgs e)
 		{
 			if (e.Visible)
 			{

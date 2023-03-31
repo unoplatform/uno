@@ -1,4 +1,6 @@
-﻿namespace Windows.UI.Xaml;
+﻿using Color = Windows.UI.Color;
+
+namespace Windows.UI.Xaml;
 
 internal static class ThemingHelper
 {
