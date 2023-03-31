@@ -1,10 +1,6 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
 	<PropertyGroup>
-		<TargetFrameworks>netstandard2.0</TargetFrameworks>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(MSBuildRuntimeType)'=='Core' or '$(BuildingInsideVisualStudio)'=='true'">
-		<TargetFrameworks>$(TargetFrameworks);net7.0</TargetFrameworks>
+		<TargetFrameworks>net7.0</TargetFrameworks>
 	</PropertyGroup>
 
 	<Import Project="../targetframework-override.props" />
@@ -13,7 +9,7 @@
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<AssemblyName>Uno.UI.XamlHost</AssemblyName>
 		<DefineConstants>$(DefineConstants);IS_UNO_UI_XamlHost_PROJECT</DefineConstants>
-  </PropertyGroup>
+	</PropertyGroup>
 
 	<PropertyGroup>
 		<RootNamespace>Uno.UI.XamlHost</RootNamespace>
