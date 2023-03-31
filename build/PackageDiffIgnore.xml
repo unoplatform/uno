@@ -9392,6 +9392,29 @@
       <Member fullName="System.Void Windows.Devices.Lights.Lamp..ctor()" reason="Not present in Windows" />
 		</Methods>
 	</IgnoreSet>
+	  
+	<IgnoreSet baseVersion="4.8">
+		<Types>
+		</Types>
+
+		<Events>
+		</Events>
+
+		<Fields>
+		</Fields>
+
+		<Properties>
+		</Properties>
+
+		<Methods>
+			<!-- BEGIN MediaPlayer updates -->
+			<Member fullName="System.Void Windows.Media.Playback.MediaPlayerFailedEventArgs..ctor()" reason="Not present in Windows" />
+			<Member fullName="System.Void Windows.Media.Playback.MediaPlayerRateChangedEventArgs..ctor()" reason="Not present in Windows" />
+			<Member fullName="System.Void Windows.Media.Playback.PlaybackMediaMarkerReachedEventArgs..ctor()" reason="Not present in Windows" />
+			<Member fullName="System.Void Windows.Media.Playback.MediaPlaybackSession..ctor()" reason="Not present in Windows" />
+			<!-- END MediaPlayer updates -->
+		</Methods>
+	</IgnoreSet>
 
 	  <!--
 	Supported nodes (please keep at the bottom of this file):

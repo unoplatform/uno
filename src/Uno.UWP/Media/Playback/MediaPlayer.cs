@@ -1,5 +1,3 @@
-#if __ANDROID__ || __IOS__ || __MACOS__
-
 using System;
 using Windows.Foundation;
 
@@ -12,10 +10,7 @@ namespace Windows.Media.Playback
 		private IMediaPlaybackSource _source;
 		public IMediaPlaybackSource Source
 		{
-			get
-			{
-				return _source;
-			}
+			get => _source;
 			set
 			{
 				Stop();
@@ -38,10 +33,7 @@ namespace Windows.Media.Playback
 		private bool _isMuted;
 		public bool IsMuted
 		{
-			get
-			{
-				return _isMuted;
-			}
+			get => _isMuted;
 			set
 			{
 				_isMuted = value;
@@ -53,10 +45,7 @@ namespace Windows.Media.Playback
 		private double _volume = 1d;
 		public double Volume
 		{
-			get
-			{
-				return _volume;
-			}
+			get => _volume;
 			set
 			{
 				_volume = value;
@@ -97,4 +86,3 @@ namespace Windows.Media.Playback
 		}
 	}
 }
-#endif
