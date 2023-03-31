@@ -42,11 +42,6 @@
 		<CallTarget Targets="PrepareNuGetPackage" />
 	</Target>
 
-	<Target Name="BuildGeneric" AfterTargets="Build" Condition="'$(BuildingInsideVisualStudio)'==''">
-
-		<CallTarget Targets="BuildCI" Condition="'$(Configuration)'=='Release' and $(_isWindows)" />
-	</Target>
-
 	<Target Name="GeneratePackages" AfterTargets="Build" DependsOnTargets="PrepareBuildAssets" Condition="'$(BuildingInsideVisualStudio)'==''">
 		<CallTarget Targets="BuildNuGetPackage" Condition="'$(Configuration)'=='Release'" />
 	</Target>
