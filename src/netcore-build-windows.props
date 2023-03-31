@@ -21,7 +21,7 @@
 	  <PropertyGroup>
 		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
 		<TargetFrameworks Condition="'$(TargetFrameworks)'=='net5.0'">$(TargetFrameworks)-windows</TargetFrameworks>
-		<TargetFrameworks Condition="'$(TargetFrameworks)'=='net6.0'">$(TargetFrameworks)-windows</TargetFrameworks>
+		<TargetFrameworks Condition="'$(TargetFrameworks)'=='net8.0'">$(TargetFrameworks)-windows</TargetFrameworks>
 		<TargetFrameworks Condition="'$(TargetFrameworks)'=='net7.0'">$(TargetFrameworks)-windows</TargetFrameworks>
 	  </PropertyGroup>
 	</When>
