@@ -173,14 +173,6 @@
 
 	</Target>
 
-	<Target Name="BuildCI">
-		<MSBuild Properties="Configuration=Release_NoSamples;InformationalVersion=$(GITVERSION_InformationalVersion);CI_Build=true;_IsCIBuild=true;PackageOutputPath=$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest-generic;PackageVersion=$(GITVERSION_SemVer)"
-             Projects="filters\Uno.UI-packages-no-netcoremobile.slnf"
-             Targets="Restore;Build"
-             RebaseOutputs="false"
-             BuildInParallel="true" />
-	</Target>
-
 	<Target Name="BuildCINet6">
 
 		<MSBuild Properties="Configuration=Release;InformationalVersion=$(GITVERSION_InformationalVersion);CI_Build=true;IS_NET6_BUILD=true;_IsCIBuild=true;PackageOutputPath=$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest-netcoremobile;PackageVersion=$(GITVERSION_SemVer)"
@@ -224,7 +216,7 @@
 	<Target Name="BuildSyncGenerator">
 		<!-- Restore the nuget packages for the whole solution -->
 		<MSBuild Properties="Configuration=Release;InformationalVersion=$(GITVERSION_InformationalVersion);CI_Build=true;_IsCIBuild=true;UnoUIDisableNet7Build=true"
-				 Projects="filters\Uno.UI-packages-no-netcoremobile.slnf;filters\Uno.UI-packages-wasm.slnf;filters\Uno.UI-packages-skia.slnf"
+				 Projects="..\Uno.UI-netcoremobile-only.slnf;..\Uno.UI-Reference-Only.slnf;..\Uno.UI-UnitTests-only.slnf;filters\Uno.UI-packages-wasm.slnf;filters\Uno.UI-packages-skia.slnf"
 				 Targets="Restore"
 				 RebaseOutputs="false"
 				 BuildInParallel="true" />
@@ -235,11 +227,10 @@
 			<MixinTargetFrameworks Include="net7.0-ios" />
 			<MixinTargetFrameworks Include="net7.0-android" />
 			<MixinTargetFrameworks Include="net7.0-macos" />
-			<MixinTargetFrameworks Include="net461" />
-			<MixinTargetFrameworks Include="net7.0" />
 		</ItemGroup>
+
 		<MSBuild Properties="Configuration=Release;InformationalVersion=$(GITVERSION_InformationalVersion);CI_Build=true;_IsCIBuild=true;TargetFramework=%(MixinTargetFrameworks.Identity)"
-						 Projects="..\src\Uno.UI\Uno.UI.csproj"
+						 Projects="..\src\Uno.UI\Uno.UI.netcoremobile.csproj"
 						 Targets="GenerateMixins"
 						 RebaseOutputs="false"
 						 BuildInParallel="true" />
