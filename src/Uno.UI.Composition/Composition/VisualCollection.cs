@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -19,6 +20,8 @@ namespace Windows.UI.Composition
 			_owner = owner;
 		}
 
+		internal event EventHandler CollectionChanged;
+
 		public int Count => _visuals.Count;
 
 		internal IList<Visual> InnerList => _visuals;
@@ -29,13 +32,18 @@ namespace Windows.UI.Composition
 			_visuals.Insert(index, newChild);
 
 			InsertAbovePartial(newChild, sibling);
+
+			CollectionChanged?.Invoke(this, EventArgs.Empty);
 		}
+
 		partial void InsertAbovePartial(Visual newChild, Visual sibling);
 
 		public void InsertAtBottom(Visual newChild)
 		{
 			_visuals.Insert(0, newChild);
 			InsertAtBottomPartial(newChild);
+
+			CollectionChanged?.Invoke(this, EventArgs.Empty);
 		}
 		partial void InsertAtBottomPartial(Visual newChild);
 
@@ -43,6 +51,8 @@ namespace Windows.UI.Composition
 		{
 			_visuals.Insert(_visuals.Count, newChild);
 			InsertAtTopPartial(newChild);
+
+			CollectionChanged?.Invoke(this, EventArgs.Empty);
 		}
 		partial void InsertAtTopPartial(Visual newChild);
 
@@ -51,6 +61,8 @@ namespace Windows.UI.Composition
 			var index = _visuals.IndexOf(sibling);
 			_visuals.Insert(index - 1, newChild);
 			InsertBelowPartial(newChild, sibling);
+
+			CollectionChanged?.Invoke(this, EventArgs.Empty);
 		}
 		partial void InsertBelowPartial(Visual newChild, Visual sibling);
 
@@ -58,6 +70,8 @@ namespace Windows.UI.Composition
 		{
 			_visuals.Remove(child);
 			RemovePartial(child);
+
+			CollectionChanged?.Invoke(this, EventArgs.Empty);
 		}
 		partial void RemovePartial(Visual child);
 
@@ -65,6 +79,8 @@ namespace Windows.UI.Composition
 		{
 			_visuals.Clear();
 			RemoveAllPartial();
+
+			CollectionChanged?.Invoke(this, EventArgs.Empty);
 		}
 		partial void RemoveAllPartial();
 

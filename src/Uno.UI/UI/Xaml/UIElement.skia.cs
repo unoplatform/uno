@@ -130,7 +130,6 @@ namespace Windows.UI.Xaml
 			}
 
 			OnChildAdded(child);
-			Visual.IsChildrenRenderOrderDirty = true;
 
 			// Reset to original (invalidated) state
 			child.ResetLayoutFlags();
@@ -209,7 +208,6 @@ namespace Windows.UI.Xaml
 			if (Visual != null)
 			{
 				Visual.Children.Remove(child.Visual);
-				Visual.IsChildrenRenderOrderDirty = true;
 			}
 			OnChildRemoved(child);
 		}
