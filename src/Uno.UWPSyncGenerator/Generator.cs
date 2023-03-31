@@ -292,7 +292,7 @@ namespace Uno.UWPSyncGenerator
 				throw new InvalidOperationException($"Unable to find dotnet SDK base path in:\n {result.output}");
 			}
 
-			throw new InvalidOperationException("Unable to find dotnet SDK base path");
+			throw new InvalidOperationException($"Unable to find dotnet SDK base path (Exit code: {result.exitCode})");
 		}
 
 		protected string GetNamespaceBasePath(INamedTypeSymbol type)
