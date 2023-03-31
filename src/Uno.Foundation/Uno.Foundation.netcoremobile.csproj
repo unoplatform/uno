@@ -36,10 +36,6 @@
 		</EmbeddedResource>
 	</ItemGroup>
 
-	<ItemGroup Condition="$(_IsNetStd) or $(_IsNet)">
-		<PackageReference Include="System.Memory" />
-	</ItemGroup>
-
 	<ItemGroup>
 		<UpToDateCheckInput Include="**\*.cs" Exclude="bin\**\*.cs;obj\**\*.cs;" Visible="False" />
 	</ItemGroup>
