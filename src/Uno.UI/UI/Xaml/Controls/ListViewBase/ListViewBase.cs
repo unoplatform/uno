@@ -575,7 +575,6 @@ namespace Windows.UI.Xaml.Controls
 					SaveContainersBeforeRemoveForIndexRepair(args.OldStartingIndex, args.OldItems.Count);
 					var removedContainers = CaptureContainers(args.OldStartingIndex, args.OldItems.Count);
 					RemoveItems(args.OldStartingIndex, args.OldItems.Count, section);
-					CleanUpContainers(removedContainers);
 					RepairIndices();
 					CleanUpContainers(removedContainers);
 
