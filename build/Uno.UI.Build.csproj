@@ -223,7 +223,7 @@
 	<Target Name="BuildSyncGenerator">
 		<!-- Restore the nuget packages for the whole solution -->
 		<MSBuild Properties="Configuration=Release;InformationalVersion=$(GITVERSION_InformationalVersion);CI_Build=true;_IsCIBuild=true;UnoUIDisableNet7Build=true"
-				 Projects="..\Uno.UI-netcoremobile-only.slnf;..\Uno.UI-Reference-Only.slnf;..\Uno.UI-UnitTests-only.slnf;filters\Uno.UI-packages-wasm.slnf;filters\Uno.UI-packages-skia.slnf"
+				 Projects="..\src\Uno.UI-netcoremobile-only.slnf;..\src\Uno.UI-Reference-Only.slnf;..\src\Uno.UI-UnitTests-only.slnf;filters\Uno.UI-packages-wasm.slnf;filters\Uno.UI-packages-skia.slnf"
 				 Targets="Restore"
 				 RebaseOutputs="false"
 				 BuildInParallel="true" />
