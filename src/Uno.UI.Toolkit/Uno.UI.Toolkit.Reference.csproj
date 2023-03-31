@@ -12,7 +12,6 @@
 	<PropertyGroup>
 		<AssemblyName>Uno.UI.Toolkit</AssemblyName>
 		<RootNamespace>Uno.UI.Toolkit</RootNamespace>
-		<Product>$(AssemblyName) ($(TargetFramework))</Product>
 		<DefaultLanguage>en-US</DefaultLanguage>
 
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
@@ -23,8 +22,6 @@
 
 		<UnoRuntimeIdentifier>Reference</UnoRuntimeIdentifier>
 	</PropertyGroup>
-
-	<Import Project="..\Uno.CrossTargetting.props" />
 
 	<ItemGroup>
 		<Compile Include="..\Uno.UI\Behaviors\VisibleBoundsPadding.cs" Link="VisibleBoundsPadding.cs" />

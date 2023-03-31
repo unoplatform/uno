@@ -1,25 +1,43 @@
 ﻿<Project ToolsVersion="15.0">
 
-	<Import Project="PlatformItemGroups.props" />
+	<ItemGroup>
+		<AndroidResource Include="Resources\**\*.xml" Condition="$(IsAndroid)" />
 
-	<PropertyGroup>
-		<Product>$(AssemblyName) ($(TargetFramework))</Product>
+		<None Include="**\*.netstd.cs" Exclude="bin\**\*.netstd.cs;obj\**\*.netstd.cs" Condition="!$(_IsNetStd)" />
+		<Compile Remove="**\*.netstd.cs" Condition="!$(_IsNetStd)" />
 
-		<NoWarn>$(NoWarn);VSX1000;NU1701</NoWarn>
-		<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-		<GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
-		<RepositoryUrl>$(BUILD_REPOSITORY_URI)</RepositoryUrl>
-		<Copyright>nventive</Copyright>
-		<Author>nventive</Author>
+		<None Include="**\*.wasm.cs" Exclude="bin\**\*.wasm.cs;obj\**\*.wasm.cs" Condition="'$(UnoRuntimeIdentifier)'!='WebAssembly'" />
+		<Compile Remove="**\*.wasm.cs" Condition="'$(UnoRuntimeIdentifier)'!='WebAssembly'" />
 
-	</PropertyGroup>
+		<None Include="**\*.skia.cs" Exclude="bin\**\*.skia.cs;obj\**\*.skia.cs" Condition="'$(UnoRuntimeIdentifier)'!='Skia'" />
+		<Compile Remove="**\*.skia.cs" Condition="'$(UnoRuntimeIdentifier)'!='Skia'" />
+
+		<None Include="**\*.netstdref.cs" Exclude="bin\**\*.netstdref.cs;obj\**\*.netstdref.cs" Condition="!$(_IsNetStd) or '$(UnoRuntimeIdentifier)'!='Reference'" />
+		<Compile Remove="**\*.netstdref.cs" Condition="!$(_IsNetStd) or '$(UnoRuntimeIdentifier)'!='Reference'" />
+
+		<None Include="**\*.iOS.cs" Exclude="bin\**\*.iOS.cs;obj\**\*.iOS.cs" Condition="!$(IsIOSOrCatalyst)" />
+		<Compile Remove="**\*.iOS.cs" Condition="!$(IsIOSOrCatalyst)" />
+
+		<None Include="**\*.macOS.cs" Exclude="bin\**\*.macOS.cs;obj\**\*.macOS.cs" Condition="!$(IsMacOS)" />
+		<Compile Remove="**\*.macOS.cs" Condition="!$(IsMacOS)" />
+
+		<None Include="**\*.iOSmacOS.cs" Exclude="bin\**\*.iOSmacOS.cs;obj\**\*.iOSmacOS.cs" Condition="!$(IsMacOS) and !$(IsIOSOrCatalyst)" />
+		<Compile Remove="**\*.iOSmacOS.cs" Condition="!$(IsMacOS) and !$(IsIOSOrCatalyst)" />
+
+		<None Include="**\*.Android.cs" Exclude="bin\**\*.Android.cs;obj\**\*.Android.cs" Condition="!$(IsAndroid)" />
+		<Compile Remove="**\*.Android.cs" Condition="!$(IsAndroid)" />
+
+		<None Include="**\*.Xamarin.cs" Exclude="bin\**\*.Xamarin.cs;obj\**\*.Xamarin.cs" Condition="!$(IsAndroid) and !$(IsIOSOrCatalyst) and !$(IsMacOS)" />
+		<Compile Remove="**\*.Xamarin.cs" Condition="!$(IsAndroid) and !$(IsIOSOrCatalyst) and !$(IsMacOS)" />
+
+		<None Include="**\*.net.cs" Exclude="bin\**\*.net.cs;obj\**\*.net.cs" Condition="'$(TargetFramework)'!='net461'" />
+		<Compile Remove="**\*.net.cs" Condition="'$(TargetFramework)'!='net461'" />
+	</ItemGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='Release'">
 		<!-- Add 0105 - WinUI build step tends to introduce duplicate usings where there were none in authored code -->
 		<NoWarn>$(NoWarn);0105</NoWarn>
 	</PropertyGroup>
-
-	<Import Project="uno.mobile-cross-targeting-disable.props" />
 
 	<!--
   List of known constants:
@@ -77,7 +95,7 @@
 		<SupportedOSPlatformVersion>21.0</SupportedOSPlatformVersion>
 	</PropertyGroup>
 
-	<PropertyGroup Condition=" '$(TargetFramework)' != 'uap10.0.18362' and '$(TargetFramework)'!='net5.0-windows10.0.18362.0' ">
+	<PropertyGroup Condition=" '$(TargetFramework)' != 'uap10.0.18362' and '$(TargetFramework)'!='net5.0-windows10.0.18362.0' and '$(TargetPlatformIdentifier)' != 'UAP'">
 		<DefineConstants>$(DefineConstants);HAS_UNO</DefineConstants>
 	</PropertyGroup>
 
@@ -85,9 +103,6 @@
 		<TargetPlatformVersion>10.0.18362.0</TargetPlatformVersion>
 		<TargetPlatformMinVersion>10.0.18362.0</TargetPlatformMinVersion>
 		<DefineConstants>$(DefineConstants);NETFX_CORE</DefineConstants>
-
-		<!-- Ensures the .xr.xml files are generated in a proper layout folder -->
-		<GenerateLibraryLayout>true</GenerateLibraryLayout>
 	</PropertyGroup>
 
 	<Target Name="GetBuiltProjectOutputRecursive" Condition=" '$(TargetFramework)' == 'xamarinios10' " />

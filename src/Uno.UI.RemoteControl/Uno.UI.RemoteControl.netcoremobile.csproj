@@ -14,9 +14,6 @@
 		<AssemblyName>Uno.UI.RemoteControl</AssemblyName>
 		<RootNamespace>Uno.UI.RemoteControl</RootNamespace>
 
-		<!-- Ensures the .xr.xml files are generated in a proper layout folder -->
-		<GenerateLibraryLayout>true</GenerateLibraryLayout>
-
 		<NoWarn>$(NoWarn);NU1701</NoWarn>
 
 		<Nullable>enable</Nullable>
@@ -27,8 +24,6 @@
 		<PackageId>Uno.UI.RemoteControl</PackageId>
 		<PackageId Condition="'$(UNO_UWP_BUILD)'=='false'">Uno.WinUI.RemoteControl</PackageId>
 	</PropertyGroup>
-
-	<Import Project="..\Uno.CrossTargetting.props" />
 
 	<ItemGroup>
 		<UpToDateCheckInput Include="**\*.cs" Exclude="bin\**\*.cs;obj\**\*.cs;" />

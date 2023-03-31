@@ -3,6 +3,16 @@
 	<PropertyGroup>
 		<TargetFramework>net48</TargetFramework>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+
+		<DefineConstants Condition="
+			$(UnoTargetFrameworkOverride.ToLowerInvariant().StartsWith('monoandroid'))
+			OR $(UnoTargetFrameworkOverride.ToLowerInvariant().EndsWith('-android'))
+			">$(DefineConstants);TARGET_FRAMEWORK_OVERRIDE_ANDROID</DefineConstants>
+
+		<DefineConstants Condition="
+			$(UnoTargetFrameworkOverride.ToLowerInvariant().StartsWith('xamarinios'))
+			OR $(UnoTargetFrameworkOverride.ToLowerInvariant().EndsWith('-ios'))
+			">$(DefineConstants);TARGET_FRAMEWORK_OVERRIDE_IOS</DefineConstants>
 	</PropertyGroup>
 
 	<ItemGroup>

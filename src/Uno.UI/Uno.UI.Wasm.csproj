@@ -99,8 +99,6 @@
 		<Folder Include="UI\Xaml\Maps\Presenters\" />
 	</ItemGroup>
 
-	<Import Project="..\Uno.CrossTargetting.props" />
-
 	<PropertyGroup>
 		<PageExclusions>$(PlatformItemsBasePath)Themes\WinUI\Resources\**\*.xaml</PageExclusions>
 		<UnoUIMSBuildTasksPath>$(MSBuildThisFileDirectory)..\SourceGenerators\Uno.UI.Tasks\bin\$(Configuration)_Shadow</UnoUIMSBuildTasksPath>

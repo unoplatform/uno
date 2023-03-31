@@ -54,8 +54,6 @@
 		<TransformFile Include="Transforms\EnumMethods.xml" />
 	</ItemGroup>
 
-	<Import Project="..\Uno.CrossTargetting.props" />
-
 	<!--
 		The dependency on _CleanJavaGenerated is required to avoid partial assembly
 		rebuild that create "missing UnoViewGroup" errors. This situation can happen

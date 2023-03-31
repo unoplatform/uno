@@ -16,9 +16,6 @@
 		<UnoRuntimeIdentifier>Skia</UnoRuntimeIdentifier>
 		<PlatformItemsBasePath>.\</PlatformItemsBasePath>
 		<DefineConstants>$(DefineConstants);IS_RUNTIME_UI_TESTS</DefineConstants>
-
-		<!-- Validation for project transient assets -->
-		<GenerateLibraryLayout>true</GenerateLibraryLayout>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -74,7 +71,6 @@
 
 	<Import Project="..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
 	<Import Project="..\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" Condition="'$(SkipUnoResourceGeneration)' == '' " />
-	<Import Project="..\Uno.CrossTargetting.props" />
 
 	<ItemGroup>
 	  <PRIResource Include="Resources\**\*.resw" />

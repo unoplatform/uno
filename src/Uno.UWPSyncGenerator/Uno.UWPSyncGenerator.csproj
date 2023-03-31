@@ -5,8 +5,6 @@
 		<TargetFramework>net472</TargetFramework>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 
-		<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-		<GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
 		<SyncGeneratorCodeAnalysisVersion>4.4.0</SyncGeneratorCodeAnalysisVersion>
 		<NoWarn>$(NoWarn);RS1024</NoWarn> <!-- RS1024: Use SymbolEqualityComparer -->
 	</PropertyGroup>
