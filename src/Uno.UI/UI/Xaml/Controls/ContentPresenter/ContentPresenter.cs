@@ -820,11 +820,18 @@ namespace Windows.UI.Xaml.Controls
 			{
 				_firstLoadResetDone = true;
 
-				// On first load UWP clears the local value of a ContentPresenter.
-				// The reason for this behavior is unknown.
-				this.ClearValue(DataContextProperty, DependencyPropertyValuePrecedences.Local);
+				// This test avoids the ContentPresenter from resetting
+				// the DataContext to null (or the inherited value) and then back to
+				// the content and have two-way bindings propagating the null value
+				// back to the source.
+				if (!ReferenceEquals(DataContext, Content))
+				{
+					// On first load UWP clears the local value of a ContentPresenter.
+					// The reason for this behavior is unknown.
+					this.ClearValue(DataContextProperty, DependencyPropertyValuePrecedences.Local);
 
-				TrySetDataContextFromContent(Content);
+					TrySetDataContextFromContent(Content);
+				}
 
 				return true;
 			}

@@ -12,6 +12,7 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using static Private.Infrastructure.TestServices;
 using System.Collections.ObjectModel;
+using Windows.UI.Xaml.Data;
 
 #if NETFX_CORE
 using Uno.UI.Extensions;
@@ -610,6 +611,70 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 #endif
+
+#if HAS_UNO
+		[TestMethod]
+		public void When_SelectedItem_TwoWay_Binding()
+		{
+			var itemsControl = new ItemsControl()
+			{
+				ItemsPanel = new ItemsPanelTemplate(() => new StackPanel()),
+				ItemTemplate = new DataTemplate(() =>
+				{
+					var comboBox = new ComboBox();
+					comboBox.Name = "combo";
+
+					comboBox.SetBinding(ComboBox.ItemsSourceProperty, new Binding { Path = new("Numbers") });
+					comboBox.SetBinding(
+						ComboBox.SelectedItemProperty,
+						new Binding { Path = new("SelectedNumber"), Mode = BindingMode.TwoWay });
+
+					return comboBox;
+				})
+			};
+
+			var test = new[] {
+				new TwoWayBindingItem()
+			};
+
+			WindowHelper.WindowContent = itemsControl;
+
+			itemsControl.ItemsSource = test;
+
+			var comboBox = itemsControl.FindName("combo") as ComboBox;
+
+			Assert.AreEqual(3, test[0].SelectedNumber);
+			Assert.AreEqual(3, comboBox.SelectedItem);
+		}
+#endif
+
+		public class TwoWayBindingItem : System.ComponentModel.INotifyPropertyChanged
+		{
+			private int _selectedNumber;
+
+			public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+
+			public TwoWayBindingItem()
+			{
+				Numbers = new List<int> { 1, 2, 3, 4 };
+				SelectedNumber = 3;
+			}
+
+			public List<int> Numbers { get; }
+
+			public int SelectedNumber
+			{
+				get
+				{
+					return _selectedNumber;
+				}
+				set
+				{
+					_selectedNumber = value;
+					PropertyChanged?.Invoke(this, new(nameof(Item)));
+				}
+			}
+		}
 
 		public class ItemModel
 		{
