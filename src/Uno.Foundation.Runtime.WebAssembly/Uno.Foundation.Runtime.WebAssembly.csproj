@@ -45,10 +45,6 @@
 		<ProjectReference Include="..\Uno.Foundation.Logging\Uno.Foundation.Logging.csproj" />
 	</ItemGroup>
 
-	<ItemGroup Condition="$(_IsNetStd) or $(_IsNet)">
-		<PackageReference Include="System.Memory" />
-	</ItemGroup>
-
 	<ItemGroup>
 		<EmbeddedResource Include="LinkerDefinition.Wasm.xml">
 			<LogicalName>$(AssemblyName).xml</LogicalName>

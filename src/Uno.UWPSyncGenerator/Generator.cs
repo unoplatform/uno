@@ -146,21 +146,23 @@ namespace Uno.UWPSyncGenerator
 
 			Console.WriteLine($"Generating for {baseName} {sourceAssembly}");
 
-			_referenceCompilation = LoadProject(@"..\..\..\Uno.UWPSyncGenerator.Reference\Uno.UWPSyncGenerator.Reference.csproj");
-			_iOSCompilation = LoadProject($@"{basePath}\{baseName}.csproj", "xamarinios10");
-			_androidCompilation = LoadProject($@"{basePath}\{baseName}.csproj", "MonoAndroid12.0");
-			_net461Compilation = LoadProject($@"{basePath}\{baseName}.csproj", "net461");
-			_macCompilation = LoadProject($@"{basePath}\{baseName}.csproj", "xamarinmac20");
+			_referenceCompilation = LoadUWPReferenceProject(@"..\..\..\Uno.UWPSyncGenerator.Reference\references.txt");
 
-			_netstdReferenceCompilation = LoadProject($@"{basePath}\{baseName}.csproj", "netstandard2.0");
-			_wasmCompilation = LoadProject($@"{basePath}\{baseName}.Wasm.csproj", "netstandard2.0");
-			_skiaCompilation = LoadProject($@"{basePath}\{baseName}.Skia.csproj", "netstandard2.0");
+			_dependencyPropertySymbol = _referenceCompilation.GetTypeByMetadataName(BaseXamlNamespace + ".DependencyProperty");
+
+			_iOSCompilation = LoadProject($@"{basePath}\{baseName}.netcoremobile.csproj", "net7.0-ios");
+			_androidCompilation = LoadProject($@"{basePath}\{baseName}.netcoremobile.csproj", "net7.0-android");
+			_net461Compilation = LoadProject($@"{basePath}\{baseName}.Tests.csproj", "net7.0");
+			_macCompilation = LoadProject($@"{basePath}\{baseName}.netcoremobile.csproj", "net7.0-macos");
+
+			_netstdReferenceCompilation = LoadProject($@"{basePath}\{baseName}.Reference.csproj", "net7.0");
+			_wasmCompilation = LoadProject($@"{basePath}\{baseName}.Wasm.csproj", "net7.0");
+			_skiaCompilation = LoadProject($@"{basePath}\{baseName}.Skia.csproj", "net7.0");
 
 			_iOSBaseSymbol = _iOSCompilation.GetTypeByMetadataName("UIKit.UIView");
 			_androidBaseSymbol = _androidCompilation.GetTypeByMetadataName("Android.Views.View");
 			_macOSBaseSymbol = _macCompilation.GetTypeByMetadataName("AppKit.NSView");
 
-			_dependencyPropertySymbol = _referenceCompilation.GetTypeByMetadataName(BaseXamlNamespace + ".DependencyProperty");
 			FlagsAttributeSymbol = _referenceCompilation.GetTypeByMetadataName("System.FlagsAttribute");
 			UIElementSymbol = _referenceCompilation.GetTypeByMetadataName(BaseXamlNamespace + ".UIElement");
 			var a = _referenceCompilation.GetTypeByMetadataName("Microsoft.UI.ViewManagement.StatusBar");
@@ -272,20 +274,25 @@ namespace Uno.UWPSyncGenerator
 
 		private static void SetupMSBuildLookupPath(string installPath)
 		{
-			Environment.SetEnvironmentVariable("VSINSTALLDIR", installPath);
+			var result = ProcessHelper.RunProcess("dotnet.exe", "--info");
 
-			bool MSBuildExists() => File.Exists(Path.Combine(MSBuildBasePath, "Microsoft.Build.dll"));
-
-			MSBuildBasePath = Path.Combine(installPath, "MSBuild\\15.0\\Bin");
-
-			if (!MSBuildExists())
+			if (result.exitCode == 0)
 			{
-				MSBuildBasePath = Path.Combine(installPath, "MSBuild\\Current\\Bin");
-				if (!MSBuildExists())
+				var reader = new StringReader(result.output);
+
+				while (reader.ReadLine() is string line)
 				{
-					throw new InvalidOperationException($"Invalid Visual studio installation (Cannot find Microsoft.Build.dll)");
+					if (line.Contains("Base Path:"))
+					{
+						MSBuildBasePath = line.Substring(line.IndexOf(':') + 1).Trim();
+						return;
+					}
 				}
+
+				throw new InvalidOperationException($"Unable to find dotnet SDK base path in:\n {result.output}");
 			}
+
+			throw new InvalidOperationException("Unable to find dotnet SDK base path");
 		}
 
 		protected string GetNamespaceBasePath(INamedTypeSymbol type)
@@ -1779,6 +1786,21 @@ namespace Uno.UWPSyncGenerator
 			return _projects[key] = InnerLoadProject(projectFile, targetFramework);
 		}
 
+		private static Compilation LoadUWPReferenceProject(string referencesFile)
+		{
+			var ws = new AdhocWorkspace();
+
+
+			var p = ws.AddProject("uwpref", LanguageNames.CSharp);
+
+			foreach (var reference in File.ReadAllLines(referencesFile))
+			{
+				p = p.AddMetadataReference(MetadataReference.CreateFromFile(reference));
+			}
+
+			return p.GetCompilationAsync().Result;
+		}
+
 		private static Compilation InnerLoadProject(string projectFile, string targetFramework = null)
 		{
 			Console.WriteLine($"Loading for {targetFramework}: {Path.GetFileName(projectFile)}");
@@ -1891,7 +1913,7 @@ namespace Uno.UWPSyncGenerator
 				}
 
 				var assembly = new AssemblyName(e.Name);
-				var basePath = Path.GetDirectoryName(new Uri(typeof(Generator).Assembly.CodeBase).LocalPath);
+				var basePath = Path.GetDirectoryName(new Uri(typeof(Generator).Assembly.Location).LocalPath);
 
 				Console.WriteLine($"Searching for [{assembly}] from [{basePath}]");
 
@@ -1921,7 +1943,7 @@ namespace Uno.UWPSyncGenerator
 
 					if (duplicates.Length != 0)
 					{
-						Console.WriteLine($"Selecting first occurrence of assembly [{e.Name}] which can be found at [{duplicates.Select(d => d.CodeBase).JoinBy("; ")}]");
+						Console.WriteLine($"Selecting first occurrence of assembly [{e.Name}] which can be found at [{duplicates.Select(d => d.Location).JoinBy("; ")}]");
 					}
 
 					return loadedAsm[0];
@@ -1939,7 +1961,7 @@ namespace Uno.UWPSyncGenerator
 						{
 							var output = Assembly.LoadFrom(filePath);
 
-							Console.WriteLine($"Loaded [{output.GetName()}] from [{output.CodeBase}]");
+							Console.WriteLine($"Loaded [{output.GetName()}] from [{output.Location}]");
 
 							return output;
 						}
