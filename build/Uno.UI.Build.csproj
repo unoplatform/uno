@@ -229,6 +229,7 @@
 				 BuildInParallel="true" />
 
 		<MSBuild Properties="Configuration=Release" Projects="..\src\Uno.UWPSyncGenerator\Uno.UWPSyncGenerator.csproj" Targets="Restore;Build" />
+		<MSBuild Properties="Configuration=Release" Projects="..\src\Uno.UWPSyncGenerator.Reference\Uno.UWPSyncGenerator.Reference.csproj" Targets="Restore;Build" />
 
 		<ItemGroup>
 			<MixinTargetFrameworks Include="net7.0-ios" />
