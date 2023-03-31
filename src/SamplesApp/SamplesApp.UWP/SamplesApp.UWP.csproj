@@ -126,15 +126,15 @@
     <Content Include="Properties\Default.rd.xml" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\AddIns\Uno.UI.MSAL\Uno.UI.MSAL.csproj">
+    <ProjectReference Include="..\..\AddIns\Uno.UI.MSAL\Uno.UI.MSAL.Windows.csproj">
       <Project>{2569663d-293a-4a1d-bb84-aa8c7b4b7f92}</Project>
       <Name>Uno.UI.MSAL</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Uno.UI.RuntimeTests\Uno.UI.RuntimeTests.csproj">
+    <ProjectReference Include="..\..\Uno.UI.RuntimeTests\Uno.UI.RuntimeTests.Windows.csproj">
       <Project>{028f3ee0-d51b-469a-a72c-c272585dcd40}</Project>
       <Name>Uno.UI.RuntimeTests</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Uno.UI.Toolkit\Uno.UI.Toolkit.csproj">
+    <ProjectReference Include="..\..\Uno.UI.Toolkit\Uno.UI.Toolkit.Windows.csproj">
       <Project>{2EAF39E3-2AC9-457A-A5B2-47D6548799B3}</Project>
       <Name>Uno.UI.Toolkit</Name>
     </ProjectReference>
