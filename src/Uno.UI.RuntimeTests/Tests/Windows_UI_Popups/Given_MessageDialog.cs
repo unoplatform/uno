@@ -68,6 +68,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Popups
 		[RunsOnUIThread]
 		public async Task When_Cancel_Then_CloseDialog()
 		{
+			if (WindowHelper.IsXamlIsland)
+			{
+				// MessageDialog is not supported in Uno Islands.
+				return;
+			}
+
 			var messageDialog = new MessageDialog("When_Cancel_Then_CloseDialog");
 			var asyncOperation = messageDialog.ShowAsync();
 

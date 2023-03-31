@@ -466,6 +466,11 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			SetPopupPosition(Target, PopupPositionInTarget);
 			ApplyTargetPosition();
 
+			if (XamlRoot is not null && _popup.XamlRoot is null)
+			{
+				_popup.XamlRoot = XamlRoot;
+			}
+
 			_popup.IsOpen = true;
 		}
 
