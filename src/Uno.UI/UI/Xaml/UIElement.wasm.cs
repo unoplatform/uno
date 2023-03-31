@@ -293,8 +293,7 @@ namespace Windows.UI.Xaml
 
 		protected internal string GetProperty(string name)
 		{
-			var command = "Uno.UI.WindowManager.current.getProperty(" + HtmlId + ", \"" + name + "\");";
-			return WebAssemblyRuntime.InvokeJS(command);
+			return WindowManagerInterop.GetProperty(HtmlId, name);
 		}
 
 		protected internal void SetHtmlContent(string html)

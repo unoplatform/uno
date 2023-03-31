@@ -9,6 +9,7 @@ using Windows.UI.Xaml.Media.Imaging;
 using Uno.Disposables;
 using Windows.Storage.Streams;
 using System.Runtime.InteropServices;
+using Uno.UI.Xaml;
 using Uno.UI.Xaml.Media;
 using Windows.UI;
 
@@ -109,7 +110,7 @@ namespace Windows.UI.Xaml.Controls
 						default:
 							if (MonochromeColor != null)
 							{
-								WebAssemblyRuntime.InvokeJS("Uno.UI.WindowManager.current.setImageAsMonochrome(" + _htmlImage.HtmlId + ", \"" + img.Value + "\", \"" + MonochromeColor.Value.ToHexString() + "\");");
+								WindowManagerInterop.SetImageAsMonochrome(_htmlImage.HtmlId, img.Value, MonochromeColor.Value.ToHexString());
 							}
 							else
 							{

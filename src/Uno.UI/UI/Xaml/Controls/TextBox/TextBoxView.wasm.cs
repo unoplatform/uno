@@ -9,6 +9,7 @@ using Windows.Foundation;
 using System.Globalization;
 using Uno.Disposables;
 using Uno.Foundation;
+using Uno.UI.Xaml;
 using Windows.UI.Xaml.Input;
 
 namespace Windows.UI.Xaml.Controls
@@ -112,7 +113,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		internal void Select(int start, int length)
-			=> WebAssemblyRuntime.InvokeJS($"Uno.UI.WindowManager.current.selectInputRange({HtmlId}, {start}, {length})");
+			=> WindowManagerInterop.SelectInputRange(HtmlId, start, length);
 
 		protected override Size MeasureOverride(Size availableSize) => MeasureView(availableSize);
 

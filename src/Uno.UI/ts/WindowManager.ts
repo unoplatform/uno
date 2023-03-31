@@ -465,10 +465,10 @@ namespace Uno.UI {
 		/**
 			* Get a property for an element.
 			*/
-		public getProperty(elementId: number, name: string): any {
-			const element = this.getView(elementId);
+		public getProperty(elementId: number, name: string): string {
+			const element = <any>this.getView(elementId);
 
-			return (element as any)[name] || "";
+			return (element[name] || "").toString();
 		}
 
 		/**
@@ -1431,7 +1431,7 @@ namespace Uno.UI {
 		 * @param url the source image
 		 * @param color the color to apply to the monochrome pixels
 		 */
-		public setImageAsMonochrome(viewId: number, url: string, color: string): string {
+		public setImageAsMonochrome(viewId: number, url: string, color: string): void {
 			const element = this.getView(viewId);
 
 			if (element.tagName.toUpperCase() === "IMG") {
@@ -1458,8 +1458,6 @@ namespace Uno.UI {
 
 					imgElement.src = c.toDataURL();
 				}
-
-				return "ok";
 			}
 			else {
 				throw `setImageAsMonochrome: Element id ${viewId} is not an Img.`;
@@ -1474,7 +1472,7 @@ namespace Uno.UI {
 			this.getView(viewId).releasePointerCapture(pointerId);
 		}
 
-		public focusView(elementId: number): string {
+		public focusView(elementId: number): void {
 			const element = this.getView(elementId);
 
 			if (!(element instanceof HTMLElement)) {
@@ -1482,8 +1480,6 @@ namespace Uno.UI {
 			}
 
 			element.focus();
-
-			return "ok";
 		}
 
 		/**

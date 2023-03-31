@@ -47,6 +47,14 @@ namespace Uno.UI.Xaml
 
 		#endregion
 
+		internal static string FindLaunchArguments()
+			=>
+#if NET7_0_OR_GREATER
+				NativeMethods.FindLaunchArguments();
+#else
+				WebAssemblyRuntime.InvokeJS("Uno.UI.WindowManager.findLaunchArguments()");
+#endif
+
 		#region CreateContent
 		internal static void CreateContent(IntPtr htmlId, string htmlTag, IntPtr handle, int uiElementRegistrationId, bool htmlTagIsSvg, bool isFocusable)
 		{
@@ -671,6 +679,16 @@ namespace Uno.UI.Xaml
 		}
 		#endregion
 
+		internal static string GetProperty(IntPtr htmlId, string name)
+		{
+#if NET7_0_OR_GREATER
+			return NativeMethods.GetProperty(htmlId, name);
+#else
+			var command = "Uno.UI.WindowManager.current.getProperty(" + htmlId + ", \"" + name + "\");";
+			return WebAssemblyRuntime.InvokeJS(command);
+#endif
+		}
+
 		#region SetProperty
 
 		internal static void SetProperty(IntPtr htmlId, (string name, string value)[] properties)
@@ -1074,6 +1092,14 @@ namespace Uno.UI.Xaml
 
 		#endregion
 
+		internal static void FocusView(IntPtr htmlId)
+			=>
+#if NET7_0_OR_GREATER
+				NativeMethods.FocusView(htmlId);
+#else
+				WebAssemblyRuntime.InvokeJS($"Uno.UI.WindowManager.current.focusView({htmlId});");
+#endif
+
 		#region ScrollTo
 		internal static void ScrollTo(IntPtr htmlId, double? left, double? top, bool disableAnimation)
 		{
@@ -1172,6 +1198,29 @@ namespace Uno.UI.Xaml
 		}
 		#endregion
 
+		internal static string RawPixelsToBase64EncodeImage(IntPtr data, int width, int height)
+			=>
+#if NET7_0_OR_GREATER
+				NativeMethods.RawPixelsToBase64EncodeImage(data, width, height);
+#else
+				WebAssemblyRuntime.InvokeJS("Uno.UI.WindowManager.current.rawPixelsToBase64EncodeImage(" + data + ", " + width + ", " + height + ");");
+#endif
+
+		internal static void SelectInputRange(IntPtr htmlId, int start, int length)
+			=>
+#if NET7_0_OR_GREATER
+				NativeMethods.SelectInputRange(htmlId, start, length);
+#else
+				WebAssemblyRuntime.InvokeJS($"Uno.UI.WindowManager.current.selectInputRange({htmlId}, {start}, {length})");
+#endif
+
+		internal static void SetImageAsMonochrome(IntPtr htmlId, string url, string color)
+			=>
+#if NET7_0_OR_GREATER
+				NativeMethods.SetImageAsMonochrome(htmlId, url, color);
+#else
+				WebAssemblyRuntime.InvokeJS($"Uno.UI.WindowManager.current.setImageAsMonochrome({htmlId}, \"{url}\", \"{color}\");");
+#endif
 		internal static void SetRootElement(IntPtr htmlId)
 		{
 #if NET7_0_OR_GREATER
@@ -1242,20 +1291,38 @@ namespace Uno.UI.Xaml
 			[JSImport("globalThis.Uno.UI.WindowManager.current.destroyViewNativeFast")]
 			internal static partial void DestroyView(IntPtr htmlId);
 
+			[JSImport("globalThis.Uno.UI.WindowManager.findLaunchArguments")]
+			internal static partial string FindLaunchArguments();
+
+			[JSImport("globalThis.Uno.UI.WindowManager.current.focusView")]
+			internal static partial void FocusView(IntPtr htmlId);
+
 			[JSImport("globalThis.Uno.UI.WindowManager.current.getAttribute")]
 			internal static partial string GetAttribute(IntPtr htmlId, string name);
+
+			[JSImport("globalThis.Uno.UI.WindowManager.current.getProperty")]
+			internal static partial string GetProperty(IntPtr htmlId, string name);
 
 			[JSImport("globalThis.Uno.UI.WindowManager.current.measureViewNativeFast")]
 			internal static partial void MeasureView(IntPtr htmlId, double availableWidth, double availableHeight, bool measureContent, IntPtr pReturn);
 
+			[JSImport("globalThis.Uno.UI.WindowManager.current.rawPixelsToBase64EncodeImage")]
+			internal static partial string RawPixelsToBase64EncodeImage(IntPtr data, int width, int height);
+
 			[JSImport("globalThis.Uno.UI.WindowManager.current.releasePointerCapture")]
 			internal static partial void ReleasePointerCapture(IntPtr htmlId, double pointerId);
+
+			[JSImport("globalThis.Uno.UI.WindowManager.current.selectInputRange")]
+			internal static partial void SelectInputRange(IntPtr htmlId, int start, int length);
 
 			[JSImport("globalThis.Uno.UI.WindowManager.current.setAttributesNativeFast")]
 			internal static partial void SetAttributes(IntPtr htmlId, string[] pairs);
 
 			[JSImport("globalThis.Uno.UI.WindowManager.current.setElementTransformNativeFast")]
 			internal static partial void SetElementTransform(IntPtr htmlId, float m11, float m12, float m21, float m22, float m31, float m32);
+
+			[JSImport("globalThis.Uno.UI.WindowManager.current.setImageAsMonochrome")]
+			internal static partial void SetImageAsMonochrome(IntPtr htmlId, string url, string color);
 
 			[JSImport("globalThis.Uno.UI.WindowManager.current.setPointerCapture")]
 			internal static partial void SetPointerCapture(IntPtr htmlId, double pointerId);
