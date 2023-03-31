@@ -50,14 +50,14 @@
 		<XamarinProjectType Condition="
 							'$(TargetPlatformIdentifier)' == 'ios'
 							or '$(TargetPlatformIdentifier)' == 'maccatalyst'
-							OR '$(TargetFramework)' == 'net6.0-ios'
-							OR '$(TargetFramework)' == 'net6.0-maccatalyst'
+							OR '$(TargetFramework)' == 'net8.0-ios'
+							OR '$(TargetFramework)' == 'net8.0-maccatalyst'
 							OR '$(TargetFramework)' == 'net7.0-ios'
 							OR '$(TargetFramework)' == 'net7.0-maccatalyst'
 							">ios</XamarinProjectType>
 		<XamarinProjectType Condition="
 							'$(TargetPlatformIdentifier)' == 'android'
-							OR '$(TargetFramework)' == 'net6.0-android'
+							OR '$(TargetFramework)' == 'net8.0-android'
 							OR '$(TargetFramework)' == 'net7.0-android'
 							">android</XamarinProjectType>
 		<XamarinProjectType Condition="'$(UnoRuntimeIdentifier)'=='WebAssembly'">wasm</XamarinProjectType>
