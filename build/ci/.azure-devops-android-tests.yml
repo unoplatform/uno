@@ -90,7 +90,7 @@ jobs:
           ANDROID_SIMULATOR_APILEVEL: 28
           UITEST_TEST_MODE_NAME: Automated
           UNO_UITEST_BUCKET_ID: ${{ testBucket }} ## Note: Align with UNO_UITEST_BUCKET_COUNT
-          SAMPLEAPP_ARTIFACT_NAME: uitests-android-net7-build
+          SAMPLEAPP_ARTIFACT_NAME: uitests-android-netcoremobile-build
           TARGETPLATFORM_NAME: net7
           FAILBUILD_ON_FAILURE: true
           ALLOW_RERUN: true
@@ -103,7 +103,7 @@ jobs:
           UNO_UITEST_BUCKET_ID: RuntimeTests
           UITEST_RUNTIME_TEST_GROUP: ${{ testGroup }}
           UITEST_RUNTIME_TEST_GROUP_COUNT: 3
-          SAMPLEAPP_ARTIFACT_NAME: uitests-android-net7-build
+          SAMPLEAPP_ARTIFACT_NAME: uitests-android-netcoremobile-build
           TARGETPLATFORM_NAME: net7
           FAILBUILD_ON_FAILURE: true
           ALLOW_RERUN: false
@@ -113,7 +113,7 @@ jobs:
         ANDROID_SIMULATOR_APILEVEL: 28
         UITEST_TEST_MODE_NAME: Snapshots
         UNO_UITEST_BUCKET_ID: Snapshots
-        SAMPLEAPP_ARTIFACT_NAME: uitests-android-net7-build
+        SAMPLEAPP_ARTIFACT_NAME: uitests-android-netcoremobile-build
         TARGETPLATFORM_NAME: net7
         FAILBUILD_ON_FAILURE: true
         ALLOW_RERUN: true
