@@ -1770,7 +1770,7 @@ namespace Uno.UWPSyncGenerator
 		}
 
 		static Dictionary<(string projectFile, string targetFramework), Compilation> _projects
-			= new Dictionary<(string projectFile, string targetFramework), Compilation>();
+			= new();
 
 		private static Compilation LoadProject(string projectFile, string targetFramework = null)
 		{
@@ -1788,7 +1788,6 @@ namespace Uno.UWPSyncGenerator
 		private static Compilation LoadUWPReferenceProject(string referencesFile)
 		{
 			var ws = new AdhocWorkspace();
-
 
 			var p = ws.AddProject("uwpref", LanguageNames.CSharp);
 
