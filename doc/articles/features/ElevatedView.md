@@ -1,3 +1,7 @@
+---
+uid: Uno.Features.ElevatedView
+---
+
 # ElevatedView
 In many design languages (like [_Material Design_](https://material.io/design)), there's a notion of 'elevation' where a portion of the UI should be presented as being _elevated_ over the rest of the content.
 

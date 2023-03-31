@@ -1,3 +1,7 @@
+---
+uid: Uno.Blog.UnderTheHoodDependencyObjectGeneration
+---
+
 # Talkin' 'bout my generation: How the Uno Platform generates code, part 2
 
 [Previously](https://medium.com/@unoplatform/talkin-bout-my-generation-how-the-uno-platform-generates-code-part-1-under-the-hood-7664d83c4f90) we looked at how the [Uno Platform](https://platform.uno/) turns XAML mark-up files into C# code.  In this article, I'll talk about another way Uno uses code generation, allowing us to make native Android and iOS views conform to UWP's API, and tackle the thorny problem of [multiple inheritance](https://en.wikipedia.org/wiki/Multiple_inheritance).

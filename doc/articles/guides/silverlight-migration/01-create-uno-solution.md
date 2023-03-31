@@ -1,3 +1,7 @@
+---
+uid: Uno.SilverlightMigration.CreateUnoSolution
+---
+
 # Create the Uno solution for UWP and WASM
 
 You can use the dotnet cli templates to create an Uno solution with just the project heads you requires. Alternatively, you can create the solution using the Visual Studio templates and just delete the project heads you don't require.

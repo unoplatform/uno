@@ -1,3 +1,7 @@
+---
+uid: Uno.GetStarted.Linux
+---
+
 # Additional setup for Linux or WSL
 
 The Uno Platform for Linux current comes with a rendering backend using Skia, and a shell support with Gtk3.

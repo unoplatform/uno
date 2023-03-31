@@ -1,3 +1,7 @@
+---
+uid: Uno.GetStarted.Wizard
+---
+
 # Welcome to Uno Platform!
 
 **Congratulations, you've just created a new project using the [Uno Platform](https://platform.uno/) project templates!**

@@ -1,3 +1,7 @@
+---
+uid: Uno.Contributing.IssueTriage
+---
+
 # Guidelines for issue triage
 
 ## Purpose

@@ -55,7 +55,7 @@ To create an Uno Platform app:
 
 1. Configure your new project by providing a project name and a location, then click the **Create** button
 
-    ![](Assets/tutorial01/configure-new-unoplatform-app.PNG)
+    ![Visual Studio - Configure project name and location](Assets/tutorial01/configure-new-unoplatform-app.PNG)
 
 1. Choose the base template to build your application
    

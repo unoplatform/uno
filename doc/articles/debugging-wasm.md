@@ -1,3 +1,7 @@
+---
+uid: Uno.Development.DebuggingWasm
+---
+
 # Using the WebAssembly C# Debugger
 
 There are two ways to debug a WebAssembly application:
@@ -44,11 +48,11 @@ To debug your application:
 - Start the debugging session using <kbd>Ctrl</kbd><kbd>F5</kbd> or _Debug_ > _Start Without Debugging_ from the menu, (<kbd>F5</kbd> will work, but the debugging experience won't be in Visual Studio)
 - Once your application has started, press <kbd>Alt</kbd><kbd>Shift</kbd><kbd>D</kbd> (in Chrome, on your application's tab)
 - A new tab will open with the debugger or instructions to activate it
-![](Assets/quick-start/wasm-debugger-step-01.png)
+![Debugger - New tab with instructions to activate it](Assets/quick-start/wasm-debugger-step-01.png)
 - You will now get the Chrome DevTools to open listing all the .NET loaded assemblies on the Sources tab:<br/>
-![](Assets/quick-start/wasm-debugger-step-02.png)
+![Debugger - Chrome DevTools listing all the .NET loaded assemblies on the Sources tab](Assets/quick-start/wasm-debugger-step-02.png)
 - You may need to refresh the original tab if you want to debug the entry point (Main) of your application.<br/>
-![](Assets/quick-start/wasm-debugger-step-03.png)
+![Debugger - The smaller refresh button location in the preview section of the Chrome DevTools](Assets/quick-start/wasm-debugger-step-03.png)
 
 > ### Tips for debugging in Chrome
 > * You need to launch a new instance of Chrome with right parameters. If Chrome is your main browser

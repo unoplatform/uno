@@ -1,3 +1,7 @@
+---
+uid: Uno.GetStarted.vsmac
+---
+
 # Get Started on Visual Studio 2022 For Mac
 
 While it is easier to create apps using Uno Platform on Windows, you can also create all but UWP/WinUI apps on your Mac.

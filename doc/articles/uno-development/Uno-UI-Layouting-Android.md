@@ -1,4 +1,8 @@
-﻿# Layouting in Android
+﻿---
+uid: Uno.Contributing.LayoutingAndroid
+---
+
+# Layouting in Android
 
 The layouting cycle (measure and arrange) in Uno on Android involves a complex interaction between Android UI framework methods and Uno 
 methods. These interactions are summarized in the diagram below. This information is primarily intended to help when debugging Uno, but 

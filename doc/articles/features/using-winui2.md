@@ -1,3 +1,7 @@
+---
+uid: Uno.Features.WinUI2
+---
+
 # Adding WinUI 2 to an Uno Platform application
 
 The [WinUI 2 library](https://docs.microsoft.com/en-us/windows/apps/winui/winui2/) provides additional controls above those that are available in the UWP framework. This article explains how to use WinUI 2 controls in an Uno Platform application.

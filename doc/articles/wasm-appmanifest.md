@@ -1,3 +1,7 @@
+---
+uid: Uno.Development.WasmAppManifest
+---
+
 # AppManifest for WebAssembly head project
 
 The `AppManifest.js` file contains settings for your WebAssembly application. It's normally located in the `[AppName].Wasm` project under the `WasmScripts` folder.

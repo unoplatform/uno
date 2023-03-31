@@ -1,3 +1,7 @@
+---
+uid: Uno.Contributing.BuildingUno
+---
+
 # Building Uno.UI
 
 This article explains how to build Uno.UI locally, for instance if you wish to contribute a bugfix or new feature.

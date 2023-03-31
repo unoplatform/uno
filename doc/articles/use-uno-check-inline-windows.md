@@ -1,3 +1,7 @@
+---
+uid: Uno.Development.UnoCheckWindows
+---
+
 ## Finalize your environment
 
 [!include[getting-help](use-uno-check-inline-windows-noheader.md)]

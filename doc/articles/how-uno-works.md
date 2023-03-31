@@ -1,3 +1,7 @@
+---
+uid: Uno.Development.HowItWorks
+---
+
 # How Uno Platform works
 
 How does Uno Platform make the same application code run on all platforms?

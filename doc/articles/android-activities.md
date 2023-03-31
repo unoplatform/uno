@@ -1,3 +1,7 @@
+---
+uid: Uno.Development.AndroidActivities
+---
+
 # Managing activities in Android
 
 [Activities](https://developer.android.com/reference/android/app/Activity) are an integral element of the Android platform. By default your Uno Platform application runs in a single activity, but you might for example spawn a new activity when a user shares content, or picks an image from their device. This article covers Activity management in Uno.

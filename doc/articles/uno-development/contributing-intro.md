@@ -1,3 +1,7 @@
+---
+uid: Uno.Contributing.Intro
+---
+
 # Contributing to Uno
 
 Everyone is welcome to contribute to the Uno Platform. Here you'll find useful information for new and returning contributors.

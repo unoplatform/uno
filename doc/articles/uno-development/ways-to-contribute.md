@@ -1,3 +1,7 @@
+---
+uid: Uno.Contributing.WaysToContribute
+---
+
 # Ways to contribute to Uno Platform
 
 There are lots of ways to contribute to the Uno Platform, and all of them are appreciated. You can provide feedback, report bugs, give suggestions, contribute code, and share your Uno expertise with others.

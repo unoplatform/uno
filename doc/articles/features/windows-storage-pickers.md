@@ -1,3 +1,7 @@
+---
+uid: Uno.Features.WSPickers
+---
+
 # Windows.Storage.Pickers
 
 ![Android JumpList sample](../Assets/features/filepickers/fileopenpicker.png)

@@ -1,3 +1,7 @@
+---
+uid: Uno.SilverlightMigration.ConsideringNavigation
+---
+
 # Considering navigation
 
 Silverlight 3 was the first version that included a navigation framework. Given the fact that Silverlight was predominately deployed via web browsers, it is unsurprising that the implementation mirrored the browser style of navigating to pages via URIs, passing query parameters and maintaining a navigation history for back/forward traversal.

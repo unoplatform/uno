@@ -1,3 +1,7 @@
+---
+uid: Uno.Features.Cookies
+---
+
 # Working with cookies
 
 In case of WebAssembly, you may need to work with the browser cookies to either read or set values with expiration support. For these purposes Uno Platform provides the `Uno.Web.Http.CookieManager` class.

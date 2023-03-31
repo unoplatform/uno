@@ -1,3 +1,7 @@
+---
+uid: Uno.Features.Assets
+---
+
 # Assets and image display
 
 Uno Platform automatically processes assets from your app's **Class Library Project** and makes them available on all platforms.

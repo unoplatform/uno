@@ -1,3 +1,7 @@
+---
+uid: Uno.Development.Performance
+---
+
 # Uno.UI - Performance
 
 This article lists a number of performance tips to optimize your Uno Platform application.

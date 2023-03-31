@@ -1,3 +1,7 @@
+---
+uid: Uno.Features.WinUISuccinctSyntax
+---
+
 # Uno Support for WinUI succinct syntax
 
 Uno supports the [succinct syntax](https://github.com/microsoft/microsoft-ui-xaml-specs/blob/master/active/gridsyntax/GridSyntaxSpec.md) WinUI XAML language feature 

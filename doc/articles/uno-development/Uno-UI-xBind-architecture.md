@@ -1,6 +1,8 @@
+---
+uid: Uno.Contributing.xBind
+---
+
 # x:Bind in Uno Platform
-
-
 
 ## Overview of the x:Bind feature in WinUI
 

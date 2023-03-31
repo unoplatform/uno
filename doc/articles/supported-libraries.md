@@ -1,3 +1,7 @@
+---
+uid: Uno.Development.SupportedLibraries
+---
+
 # Supported 3rd-party libraries
 
 This article lists some of the 3rd-party libraries supported by Uno Platform.

@@ -1,3 +1,7 @@
+---
+uid: Uno.Development.UseUnoControlsInXamarinForms
+---
+
 # How to use Uno Platform Controls in Xamarin.Forms
 
 All Uno Platform UI controls inherit directly from native views, which makes for an easy way for its controls to be integrated in Xamarin.iOS and Xamarin.Android projects.

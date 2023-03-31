@@ -1,3 +1,7 @@
+---
+uid: Uno.Features.Accelerometer
+---
+
 # Accelerometer
 
 > [!TIP]

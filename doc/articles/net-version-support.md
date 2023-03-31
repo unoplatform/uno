@@ -1,3 +1,7 @@
+---
+uid: Uno.Development.NetVersionSupport
+---
+
 # .NET version support
 
 This page lists supported .NET versions and [C# language versions](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/configure-language-version) for different target platforms.

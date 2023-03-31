@@ -1,3 +1,7 @@
+---
+uid: Uno.Development.ToolchainTelemetry
+---
+
 ## Uno Platform Build tools telemetry
 
 The [Uno Platform SDK](https://github.com/unoplatform/uno) includes a [telemetry feature](https://github.com/unoplatform/uno/blob/master/src/SourceGenerators/Uno.UI.SourceGenerators/XamlGenerator/XamlCodeGeneration.Telemetry.cs)

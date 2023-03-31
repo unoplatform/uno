@@ -1,3 +1,7 @@
+---
+uid: Uno.Development.NativeViews
+---
+
 # Incorporating native views to the Uno visual tree
 
 The Android, iOS, and macOS targets for Uno support the notion of a purely native view, that is not coming from Uno Platform but instead defined in a third-party library, via a Xamarin binding, or in the native framework itself. Since Uno's views are inheriting from the base native view type on these platforms, you can incorporate native views into your app's visual tree.

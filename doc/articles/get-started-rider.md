@@ -1,3 +1,7 @@
+---
+uid: Uno.GetStarted.Rider
+---
+
 # Get Started on JetBrains Rider
 
 ## Prerequisites

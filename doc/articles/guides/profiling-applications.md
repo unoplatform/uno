@@ -1,3 +1,7 @@
+---
+uid: Uno.Tutorials.ProfilingApplications
+---
+
 # Profiling Uno Platform Applications
 
 ## Profiling .NET 6 Android applications

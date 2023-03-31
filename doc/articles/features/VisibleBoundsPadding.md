@@ -1,3 +1,7 @@
+---
+uid: Uno.Features.VisibleBoundsPadding
+---
+
 # VisibleBoundsPadding behavior
 The `Uno.UI.Toolkit.VisibleBoundsPadding` is a behavior that overrides the `Padding` property of a control to ensure that its inner content is always inside the `ApplicationView.VisibleBounds` rectangle.
 

@@ -27,11 +27,11 @@ If you haven't prepared your dev environment for Uno Platform app development ye
 
 1. Open Visual Studio and click on `Create new project`.  
 
-    ![](Assets/tutorial01/newproject1.PNG)
+    ![Visual Studio - Create new project](Assets/tutorial01/newproject1.PNG)
 
 1. Search for the `Uno` templates, select the `Uno Platform App` then click `Next`.  
 
-    ![](Assets/tutorial01/newproject2.PNG)
+    ![Visual Studio - Select Uno Platform App](Assets/tutorial01/newproject2.PNG)
 
 1. Name your app then click `Next`.
 
@@ -44,7 +44,7 @@ If you haven't prepared your dev environment for Uno Platform app development ye
 
 1. After a few seconds, a banner may appear at the top of the editor asking to reload projects. Click **Reload projects**.
 
-    ![](Assets/quick-start/vs2022-project-reload.PNG)
+    ![Visual Studio - Reload projects banner](Assets/quick-start/vs2022-project-reload.PNG)
 
 1. In your `MyApp` Class Library project, open up `MainPage.xaml`
 

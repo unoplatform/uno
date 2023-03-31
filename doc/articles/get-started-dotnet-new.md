@@ -1,6 +1,7 @@
 ---
 uid: Uno.GetStarted.dotnet-new
 ---
+
 # dotnet new templates for Uno Platform
 
 The Uno Platform provides a set of command-line templates to create cross-platform applications.

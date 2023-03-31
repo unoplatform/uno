@@ -1,3 +1,7 @@
+---
+uid: Uno.Features.WinUINotifications
+---
+
 # Uno Support for Windows.UI.Notifications
 
 ## Badge notifications

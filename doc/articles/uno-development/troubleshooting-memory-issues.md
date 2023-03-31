@@ -1,3 +1,7 @@
+---
+uid: Uno.Contributing.MemoryIssues
+---
+
 # Troubleshooting Memory Issues 
 
 Uno Platform provides a set of classes aimed at diagnosing memory issues related to leaking controls, whether it be from

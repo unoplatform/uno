@@ -1,3 +1,7 @@
+---
+uid: Uno.Features.WAMChat
+---
+
 # Uno Support for Windows.ApplicationModel.Chat
 
 ## `ChatMessageManager`

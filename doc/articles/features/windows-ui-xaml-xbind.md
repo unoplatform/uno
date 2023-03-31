@@ -1,3 +1,7 @@
+---
+uid: Uno.Features.WinUIxBind
+---
+
 # Uno Support for x:Bind
 
 Uno supports the [`x:Bind`](https://docs.microsoft.com/en-us/windows/uwp/xaml-platform/x-bind-markup-extension) WinUI feature, which gives the ability to:

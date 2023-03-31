@@ -1,3 +1,7 @@
+---
+uid: Uno.Controls.TimePicker
+---
+
 # TimePicker
 
 ## Summary

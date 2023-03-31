@@ -1,3 +1,7 @@
+---
+uid: Uno.Features.ResourcesTrimming
+---
+
 # XAML Resource Trimming
 
 XAML Resource and Binding trimming is an optional feature used to reduce the size of the final payload of an Uno Platform application.

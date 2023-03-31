@@ -1,3 +1,7 @@
+---
+uid: Uno.Development.MigratingFromPreviousReleases
+---
+
 ## Migrating from Previous Releases of Uno Platform
 
 This article details the migration steps required to migrate from one version to the next.

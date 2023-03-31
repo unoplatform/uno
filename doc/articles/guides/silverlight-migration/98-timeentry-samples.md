@@ -1,3 +1,7 @@
+---
+uid: Uno.SilverlightMigration.TimeEntrySampleApps
+---
+
 # The TimeEntry Sample apps
 
 The sample application is made up of 3 solutions containing multiple projects and has a dependency on a SQL database. The source for the app can be found in the Uno.Platform Samples repository:

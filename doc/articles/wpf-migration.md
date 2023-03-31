@@ -1,3 +1,7 @@
+---
+uid: Uno.Development.WPFMigration
+---
+
 # Migrating WPF Apps to Web
 
 This article covers architecture and implementation considerations for migrating WPF applications to the Web using Uno Platform and WinUI.

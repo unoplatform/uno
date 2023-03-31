@@ -1,3 +1,7 @@
+---
+uid: Uno.Development.UwpVsWinUI3
+---
+
 # WinUI 3 and Uno Platform
 
 WinUI 3 is the [next generation of Microsoft's Windows UI library](https://docs.microsoft.com/windows/apps/winui/). It succeeds the UWP XAML framework as Microsoft's actively-developed native UI platform for Windows. WinUI 3 supports Windows Desktop apps through [Windows AppSDK](https://docs.microsoft.com/windows/apps/windows-app-sdk/).

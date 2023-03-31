@@ -1,3 +1,7 @@
+---
+uid: Uno.Controls.MapControl
+---
+
 # MapControl
 
 The `MapControl` is a control that allows you to display maps in your app. Currently Uno supports `MapControl` on iOS and Android.

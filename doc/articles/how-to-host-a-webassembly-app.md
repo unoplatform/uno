@@ -1,3 +1,7 @@
+---
+uid: Uno.Development.HostWebAssemblyApp
+---
+
 # Hosting a WebAssembly App
 
 - WASM Web Server Configuration

@@ -1,3 +1,7 @@
+---
+uid: Uno.Features.ProgressRing
+---
+
 # ProgressRing
 
 There are two implementations of the `ProgressRing` control available in Uno:
@@ -14,7 +18,7 @@ Uno Platform provides two versions of the `ProgressRing` control:
 
 ## Using the `Microsoft.UI.Xaml.Controls.ProgressRing`
 
-![](../Assets/features/progressring/muxprogressring.png)
+![MUX `ProgressRing`](../Assets/features/progressring/muxprogressring.png)
 
 This version comes with [WinUI 2.x and WinUI 3](https://docs.microsoft.com/en-us/windows/apps/winui/winui2/release-notes/winui-2.4#progressring) and is using an `<AnimatedVisualPlayer />` in its Control Template. It is also designed to be a replacement for the legacy version, where a custom template should work unchanged with this control.
 

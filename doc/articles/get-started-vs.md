@@ -1,3 +1,7 @@
+---
+uid: Uno.GetStarted.vs
+---
+
 # Get Started on Visual Studio 2019 for Xamarin
 
 ## Prerequisites
@@ -33,11 +37,11 @@
 
 1. Launch Visual Studio, then click `Continue without code`. Click `Extensions` -> `Manage Extensions` from the Menu Bar.
 
-    ![](Assets/tutorial01/manage-extensions.png)
+    ![Visual Studio - Manage Extensions from the Menu Bar](Assets/tutorial01/manage-extensions.png)
 
 2. In the Extension Manager expand the **Online** node and search for `Uno Platform Templates`, install the <code>Uno Platform Solution Templates</code> extension or download it from the [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=nventivecorp.uno-platform-addin) extension, then restart Visual Studio.
 
-    ![](Assets/tutorial01/uno-extensions.PNG)
+    ![Visual Studio - Uno Platform Templates Extension](Assets/tutorial01/uno-extensions.PNG)
 
 ## Create an application from the solution template
 

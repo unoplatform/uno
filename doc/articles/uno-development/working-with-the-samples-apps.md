@@ -1,3 +1,7 @@
+---
+uid: Uno.Contributing.SamplesApp
+---
+
 # Using the SamplesApp
 
 The SamplesApp in Uno.UI is an Uno application containing a large number of UI and non-UI samples. It serves a few purposes:

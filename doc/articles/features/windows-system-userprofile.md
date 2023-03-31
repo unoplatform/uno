@@ -1,4 +1,8 @@
-﻿# Uno Support for Windows.System.UserProfile APIs
+﻿---
+uid: Uno.Features.WSUserProfile
+---
+
+# Uno Support for Windows.System.UserProfile APIs
 
 ## `UserProfilePersonalizationSettings`
 

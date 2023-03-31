@@ -1,3 +1,7 @@
+---
+uid: Uno.Development.BestPractices
+---
+
 # Best practices for developing Uno Platform applications
 
 This article covers some basic best practices when developing cross-platform applications with Uno Platform.

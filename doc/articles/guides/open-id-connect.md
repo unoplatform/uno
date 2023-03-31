@@ -1,3 +1,7 @@
+---
+uid: Uno.Tutorials.OpenIDConnect
+---
+
 # Authentication using OpenID Connect
 
 OpenID Connect is a layer over OAuth 2.0, allowing a simpler integration into applications, especially when the OpenID  Connect Discovery is used.

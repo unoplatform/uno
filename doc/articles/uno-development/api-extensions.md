@@ -1,3 +1,7 @@
+---
+uid: Uno.Contributing.ApiExtensions
+---
+
 # API Extensions
 
 Uno provides a simple mechanism which allows for external provides to provide an implementation for some known interfaces. The goal behind this is two fold:

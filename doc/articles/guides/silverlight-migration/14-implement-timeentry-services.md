@@ -1,3 +1,7 @@
+---
+uid: Uno.SilverlightMigration.ImplementTimeEntryServices
+---
+
 # Implement the time entry service
 
 Implement the data-access services for time entry.

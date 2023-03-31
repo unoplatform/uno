@@ -1,3 +1,7 @@
+---
+uid: Uno.Features.WAB
+---
+
 # Web Authentication Broker
 
 * The timeout is set by default to 5 minutes. You can change it using `WinRTFeatureConfiguration.WebAuthenticationBroker.AuthenticationTimeout`.

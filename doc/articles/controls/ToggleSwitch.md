@@ -1,3 +1,7 @@
+---
+uid: Uno.Controls.ToggleSwitch
+---
+
 # ToggleSwitch in Uno.UI
 
 ToggleSwitch represents a switch that can be toggled between two states.

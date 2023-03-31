@@ -1,3 +1,7 @@
+---
+uid: Uno.Controls.ContentDialog
+---
+
 # ContentDialog
 Represents a dialog box that can be customized to contain checkboxes, hyperlinks, buttons and any other XAML content.
 

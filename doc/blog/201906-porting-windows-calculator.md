@@ -1,3 +1,7 @@
+---
+uid: Uno.Blog.PortingWindowsCalculator
+---
+
 # A piece of Windows 10 is now running on WebAssembly, natively on iOS and Android
 
 A few months ago, Microsoft [open sourced the Windows Calculator](https://blogs.windows.com/buildingapps/2019/03/06/announcing-the-open-sourcing-of-windows-calculator/), the very Calculator that ships with Windows 10.

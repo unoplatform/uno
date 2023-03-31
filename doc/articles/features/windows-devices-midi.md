@@ -1,3 +1,7 @@
+---
+uid: Uno.Features.WDMidi
+---
+
 # MIDI
 
 MIDI device input and output are supported across iOS, Android, macOS, and WebAssembly.

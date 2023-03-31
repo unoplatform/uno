@@ -1,3 +1,7 @@
+---
+uid: Uno.Features.UserInputs
+---
+
 # Uno support for user inputs
 
 ## Supported user inputs

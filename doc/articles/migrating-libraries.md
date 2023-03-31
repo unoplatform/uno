@@ -1,3 +1,7 @@
+---
+uid: Uno.Development.MigratingLibraries
+---
+
 # Migrating a WinUI or UWP class library to an Uno Platform class library
 
 This article describes how to port a class library for UWP to one that supports multiple target platforms using Uno. 

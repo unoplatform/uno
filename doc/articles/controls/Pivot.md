@@ -1,3 +1,7 @@
+---
+uid: Uno.Controls.Pivot
+---
+
 # Pivot in Uno.UI
 
 ## Pivot UWP Default Style
