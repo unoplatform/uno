@@ -324,12 +324,7 @@ namespace Windows.Media.Playback
 
 		private void OnMediaFailed(global::System.Exception ex = null, string message = null)
 		{
-			MediaFailed?.Invoke(this, new MediaPlayerFailedEventArgs()
-			{
-				Error = MediaPlayerError.Unknown,
-				ExtendedErrorCode = ex,
-				ErrorMessage = message ?? ex?.Message
-			});
+			MediaFailed?.Invoke(this, new(MediaPlayerError.Unknown, message ?? ex?.Message, ex));
 
 			PlaybackSession.PlaybackState = MediaPlaybackState.None;
 		}

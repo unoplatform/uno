@@ -1,4 +1,3 @@
-#if __ANDROID__ || __IOS__ || __MACOS__
 using System;
 using Windows.Foundation;
 
@@ -11,10 +10,7 @@ namespace Windows.Media.Playback
 		private TimeSpan _position;
 		public TimeSpan Position
 		{
-			get
-			{
-				return _position;
-			}
+			get => _position;
 			set
 			{
 				if (value < TimeSpan.Zero)
@@ -59,10 +55,7 @@ namespace Windows.Media.Playback
 		private TimeSpan _naturalDuration;
 		public TimeSpan NaturalDuration
 		{
-			get
-			{
-				return _naturalDuration;
-			}
+			get => _naturalDuration;
 			internal set
 			{
 				_naturalDuration = value;
@@ -73,10 +66,7 @@ namespace Windows.Media.Playback
 		private double _bufferingProgress;
 		public double BufferingProgress
 		{
-			get
-			{
-				return _bufferingProgress;
-			}
+			get => _bufferingProgress;
 			internal set
 			{
 				_bufferingProgress = value;
@@ -87,10 +77,7 @@ namespace Windows.Media.Playback
 		private double _playbackRate;
 		public double PlaybackRate
 		{
-			get
-			{
-				return _playbackRate;
-			}
+			get => _playbackRate;
 			set
 			{
 				_playbackRate = value;
@@ -101,10 +88,7 @@ namespace Windows.Media.Playback
 		private MediaPlaybackState _playbackState;
 		public MediaPlaybackState PlaybackState
 		{
-			get
-			{
-				return _playbackState;
-			}
+			get => _playbackState;
 			set
 			{
 				_playbackState = value;
@@ -128,4 +112,3 @@ namespace Windows.Media.Playback
 		}
 	}
 }
-#endif
