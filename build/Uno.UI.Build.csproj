@@ -61,6 +61,7 @@
 		<ItemGroup>
 			<_PackageToUpdate Include="Uno.UI" />
 			<_PackageToUpdate Include="Uno.UI.RemoteControl" />
+			<_PackageToUpdate Include="Uno.UI.RemoteControl.Messaging" />
 
 			<_legacyProject Include="..\src\SolutionTemplate\**\*.Uwp.csproj" Exclude="**\bin\**;**\obj\**"/>
 			<_legacyProject Include="..\src\SolutionTemplate\**\*.Droid.csproj" Exclude="**\bin\**;**\obj\**"/>
@@ -304,6 +305,9 @@
 
 		<!-- Update Uno.WinUI references version -->
 		<XmlPoke XmlInputPath="%(_NuspecFiles.Identity)" Query="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.WinUI']/@version" Value="$(GITVERSION_SemVer)" Namespaces="$(NugetNamespace)" />
+
+		<!-- Update Uno.WinUI.RemoteControl.Messaging references version -->
+		<XmlPoke XmlInputPath="%(_NuspecFiles.Identity)" Query="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.WinUI.RemoteControl.Messaging']/@version" Value="$(GITVERSION_SemVer)" Namespaces="$(NugetNamespace)" />
 
 		<!-- Update Uno.Foundation.Runtime.WebAssembly references version -->
 		<XmlPoke XmlInputPath="%(_NuspecFiles.Identity)" Query="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.Foundation.Runtime.WebAssembly']/@version" Value="$(GITVERSION_SemVer)" Namespaces="$(NugetNamespace)" />
