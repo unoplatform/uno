@@ -1,6 +1,6 @@
-﻿<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
+﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
 	<PropertyGroup>
-		<TargetFrameworks>net7.0-android;net7.0-ios;net7.0</TargetFrameworks>
+		<TargetFrameworks>net7.0</TargetFrameworks>
 		<!-- {0} does not explicitly define the {1} base type in code behind. -->
 		<NoWarn>$(NoWarn);UXAML0002;CS1030</NoWarn>
 
@@ -15,15 +15,7 @@
 
 	<Import Project="../../targetframework-override.props" />
 
-	<ItemGroup>
-		<PackageReference Include="Uno.SourceGenerationTasks" />
-	</ItemGroup>
-
-	<PropertyGroup Condition="'$(TargetFramework)'=='net461'">
-		<ImportFrameworkWinFXTargets>false</ImportFrameworkWinFXTargets>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(TargetFramework)'=='net7.0'">
+	<PropertyGroup>
 		<DefineConstants>$(DefineConstants);UNO_REFERENCE_API</DefineConstants>
 	</PropertyGroup>
 
@@ -35,22 +27,14 @@
 	  <EmbeddedResource Include="StoryboardTargetTest.xaml" />
 	</ItemGroup>
 
-	<ItemGroup Condition="$(IsAndroid)">
-		<ProjectReference Include="..\..\Uno.UI.BindingHelper.Android\Uno.UI.BindingHelper.Android.csproj" />
-	</ItemGroup>
-
-	<ItemGroup Condition="$(IsAndroid) or $(IsIOS) or '$(TargetFramework)'=='net7.0' or '$(TargetFramework)'=='net461'">
-		<ProjectReference Include="..\..\Uno.UI\Uno.UI.csproj" />
-		<ProjectReference Include="..\..\Uno.UWP\Uno.csproj" />
-		<ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.csproj" />
-	</ItemGroup>
-
-
 	<ItemGroup>
-		<ProjectReference Include="..\..\Uno.UI.Toolkit\Uno.UI.Toolkit.csproj" />
+		<ProjectReference Include="..\..\Uno.UI\Uno.UI.Reference.csproj" />
+		<ProjectReference Include="..\..\Uno.UWP\Uno.Reference.csproj" />
+		<ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.Reference.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.Toolkit\Uno.UI.Toolkit.Reference.csproj" />
 		<ProjectReference Include="..\XamlGenerationTests.Core\XamlGenerationTests.Core.csproj" />
 	</ItemGroup>
 
-	<Import Project="..\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" Condition="$(IsAndroid) or $(IsIOS) or '$(TargetFramework)'=='net7.0' or '$(TargetFramework)'=='net461'" />
+	<Import Project="..\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
 
 </Project>
