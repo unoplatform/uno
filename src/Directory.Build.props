@@ -62,6 +62,7 @@
     <!--This override is used to validate the use of specific version of the C# Compiler-->
 	<!-- Both compiler version and CodeStyle package version should be kept in sync -->
     <PackageReference Include="Microsoft.Net.Compilers.Toolset" Version="$(MicrosoftNetCompilersToolsetVersion)" PrivateAssets="all" />
+	<PackageReference Include="Microsoft.CodeAnalysis.CSharp.CodeStyle" Version="$(MicrosoftNetCompilersToolsetVersion)" PrivateAssets="all" />
   </ItemGroup>
 
   <PropertyGroup>
