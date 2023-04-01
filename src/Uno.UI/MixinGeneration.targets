@@ -74,7 +74,7 @@
 	<Target Name="GenerateMixins"
 		  Inputs="@(MixinInput)"
 		  Outputs="@(MixinOutput)"
-		  BeforeTargets="DispatchToInnerBuilds;Build;_UnoSourceGenerator"
+		  BeforeTargets="DispatchToInnerBuilds;Build;_UnoSourceGenerator;CoreCompile"
 		  Condition="'$(DesignTimeBuild)' != 'true'">
 
 		<PropertyGroup>
