@@ -13,7 +13,6 @@
 	<ItemGroup>
 		<PackageReference Include="FluentAssertions" />
 		<PackageReference Include="MSTest.TestFramework" />
-		<PackageReference Include="Uno.SourceGenerationTasks" />
 		<ProjectReference Include="..\Uno.UI.Toolkit\Uno.UI.Toolkit.Windows.csproj" />
 		<Reference Include="System.Xml" />
 		<Reference Include="System.Xml.Linq" />

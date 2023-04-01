@@ -25,7 +25,6 @@
 		<PackageReference Include="Uno.UITest.Selenium" />
 		<PackageReference Include="Uno.UITest.Xamarin" />
 		<PackageReference Include="Uno.UITest.Helpers" />
-		<PackageReference Include="Uno.SourceGenerationTasks" />
 		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" PrivateAssets="All" />
 	</ItemGroup>
 
