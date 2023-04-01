@@ -18,10 +18,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Uno.SourceGenerationTasks" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.Reference.csproj" />
 		<ProjectReference Include="..\..\Uno.UI\Uno.UI.Reference.csproj" />
 	</ItemGroup>

@@ -41,10 +41,6 @@
 		<Reference Include="System.Memory" />
 	</ItemGroup>
 
-	<ItemGroup>
-		<PackageReference Include="Uno.SourceGenerationTasks" />
-	</ItemGroup>
-
 	<Import Project="FluentMerge.targets" />
 
 </Project>

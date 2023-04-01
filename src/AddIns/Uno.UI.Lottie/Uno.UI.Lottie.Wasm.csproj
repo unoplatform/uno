@@ -34,7 +34,6 @@
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.TypeScript.MSBuild" />
-		<PackageReference Include="Uno.SourceGenerationTasks" />
 	</ItemGroup>
 
 	<ItemGroup>

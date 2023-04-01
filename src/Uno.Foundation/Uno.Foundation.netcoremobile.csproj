@@ -19,7 +19,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Uno.SourceGenerationTasks" />
 		<PackageReference Include="Uno.Diagnostics.Eventing" />
 	</ItemGroup>
 
