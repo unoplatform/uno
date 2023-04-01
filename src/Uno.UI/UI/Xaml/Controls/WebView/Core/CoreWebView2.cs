@@ -11,6 +11,7 @@ using System.Globalization;
 using Windows.Foundation;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
+using Foundation;
 
 namespace Microsoft.Web.WebView2.Core;
 
@@ -22,6 +23,7 @@ public partial class CoreWebView2
 
 	private readonly IWebView _owner;
 
+	private bool _scrollEnabled;
 	private INativeWebView? _nativeWebView;
 	internal long _navigationId;
 	private object _processedSource = BlankUri;
@@ -106,6 +108,16 @@ public partial class CoreWebView2
 		//The nativate WebView already navigate to a blank page if no source is set.
 		//Avoid a bug where invoke GoBack() on WebView do nothing in Android 4.4
 		UpdateFromInternalSource();
+		OnScrollEnabledChanged(_scrollEnabled);
+	}
+
+	internal void OnScrollEnabledChanged(bool newValue)
+	{
+		_scrollEnabled = newValue;
+		if (_nativeWebView != null)
+		{
+			_nativeWebView.SetScrollingEnabled(newValue);
+		}
 	}
 
 	internal void RaiseNavigationStarting(string uri, out bool cancel)

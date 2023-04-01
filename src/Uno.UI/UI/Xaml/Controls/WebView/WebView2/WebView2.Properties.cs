@@ -53,6 +53,21 @@ public partial class WebView2
 		DependencyProperty.Register(nameof(Source), typeof(Uri), typeof(WebView2), new FrameworkPropertyMetadata(null,
 			(s, e) => ((WebView2)s)?.CoreWebView2.Navigate(((Uri)e.NewValue)?.ToString())));
 
+	public bool IsScrollEnabled
+	{
+		get => (bool)GetValue(IsScrollEnabledProperty);
+		set => SetValue(IsScrollEnabledProperty, value);
+	}
+
+	public static DependencyProperty IsScrollEnabledProperty { get; } =
+		DependencyProperty.Register(
+			nameof(IsScrollEnabled),
+			typeof(bool),
+			typeof(WebView2),
+			new FrameworkPropertyMetadata(
+				true,
+				(s, e) => ((WebView2)s)?.CoreWebView2.OnScrollEnabledChanged((bool)e.NewValue)));
+
 #pragma warning disable 67
 	/// <summary>
 	/// Occurs when the core WebView2 process fails.

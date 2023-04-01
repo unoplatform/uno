@@ -206,24 +206,19 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 		}
 		else
 		{
-			_coreWebView.RaiseNavigationStarting(targetString, out var cancel);
+			RaiseNavigationStarting(targetString, out var cancel);
 
 			if (!cancel)
 			{
 #if __IOS__
 				if (UIKit.UIApplication.SharedApplication.CanOpenUrl(target))
-				{
-					UIKit.UIApplication.SharedApplication.OpenUrl(target);
-
-					_coreWebView.RaiseNavigationCompleted(target, true, 200, CoreWebView2WebErrorStatus.Unknown);
-				}
 #else
 				if (target != null && NSWorkspace.SharedWorkspace.UrlForApplication(new NSUrl(target.AbsoluteUri)) != null)
+#endif
 				{
-					NSWorkspace.SharedWorkspace.OpenUrl(target);
+					OpenUrl(targetString);
 					_coreWebView.RaiseNavigationCompleted(target, true, 200, CoreWebView2WebErrorStatus.Unknown);
 				}
-#endif
 				else
 				{
 					_coreWebView.RaiseNavigationCompleted(target, false, 400, CoreWebView2WebErrorStatus.Unknown);
@@ -232,6 +227,18 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 		}
 
 		return null;
+	}
+
+	private void OpenUrl(string url)
+	{
+		//TODO: CanGoBack and CanGoForward should be refreshed after navigation completed on both Android and iOS
+		var nsUrl = new NSUrl(url);
+		//Opens the specified URL, launching the app that's registered to handle the scheme.
+#if __IOS__
+		UIApplication.SharedApplication.OpenUrl(nsUrl);
+#else
+		NSWorkspace.SharedWorkspace.OpenUrl(nsUrl);
+#endif
 	}
 
 	private void OnDidClose(WKWebView obj)
@@ -366,7 +373,7 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 
 		_isCancelling = false;
 
-		_coreWebView.RaiseNavigationStarting(CoreWebView2.BlankUrl, out var cancel); //TODO:MZ: For HTML content 		var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(htmlContent);
+		RaiseNavigationStarting(CoreWebView2.BlankUrl, out var cancel); //TODO:MZ: For HTML content 		var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(htmlContent);
 																					 //var base64String = System.Convert.ToBase64String(plainTextBytes);
 																					 //var htmlUri = new Uri(string.Format(CultureInfo.InvariantCulture, DataUriFormatString, base64String));
 
@@ -381,6 +388,143 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 
 		return cancel;
 	}
+
+	private void RaiseNavigationStarting(string uriString, out bool cancel)
+	{
+		if (uriString == null)
+		{
+			// This ase should not happen when navigating normally using http requests.
+			// This is to stop a scenario where the webview is initialized without having a source
+			cancel = true;
+			return;
+		}
+
+		if (Uri.TryCreate(uriString, UriKind.Absolute, out var uri) && uri.Scheme.Equals(Uri.UriSchemeMailto, StringComparison.OrdinalIgnoreCase))
+		{
+#if __IOS__
+			ParseUriAndLauchMailto(uri);
+#else
+			NSWorkspace.SharedWorkspace.OpenUrl(new NSUrl(uri.ToString()));
+#endif
+			cancel = true;
+			return;
+		}
+
+		_coreWebView.RaiseNavigationStarting(uriString, out cancel);
+	}
+
+
+#if __IOS__
+	private void ParseUriAndLauchMailto(Uri mailtoUri)
+	{
+		_ = Uno.UI.Dispatching.CoreDispatcher.Main.RunAsync(
+			Uno.UI.Dispatching.CoreDispatcherPriority.Normal,
+			async (ct) =>
+			{
+				try
+				{
+					var subject = "";
+					var body = "";
+					var cc = new[] { "" };
+					var bcc = new[] { "" };
+
+					var recipients = mailtoUri.AbsoluteUri.Split(new[] { ':' })[1].Split(new[] { '?' })[0].Split(new[] { ',' });
+					var parameters = mailtoUri.Query.Split(new[] { '?' });
+
+					parameters = parameters.Length > 1 ?
+									parameters[1].Split(new[] { '&' }) :
+									Array.Empty<string>();
+
+					foreach (string param in parameters)
+					{
+						var keyValue = param.Split(new[] { '=' });
+						var key = keyValue[0];
+						var value = keyValue[1];
+
+						switch (key)
+						{
+							case "subject":
+								subject = value;
+								break;
+							case "to":
+								recipients.Concat(value);
+								break;
+							case "body":
+								body = value;
+								break;
+							case "cc":
+								cc.Concat(value);
+								break;
+							case "bcc":
+								bcc.Concat(value);
+								break;
+							default:
+								break;
+						}
+					}
+
+					await LaunchMailto(ct, subject, body, recipients, cc, bcc);
+				}
+
+				catch (Exception e)
+				{
+					if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Error))
+					{
+						this.Log().Error("Unable to launch mailto", e);
+					}
+				}
+			});
+	}
+
+	public
+#if !__MACCATALYST__
+	async
+#endif
+	Task LaunchMailto(CancellationToken ct, string subject = null, string body = null, string[] to = null, string[] cc = null, string[] bcc = null)
+	{
+#if !__MACCATALYST__  // catalyst https://github.com/xamarin/xamarin-macios/issues/13935
+		if (!MFMailComposeViewController.CanSendMail)
+		{
+			return;
+		}
+
+		var mailController = new MFMailComposeViewController();
+
+		mailController.SetToRecipients(to);
+		mailController.SetSubject(subject);
+		mailController.SetMessageBody(body, false);
+		mailController.SetCcRecipients(cc);
+		mailController.SetBccRecipients(bcc);
+
+		var finished = new TaskCompletionSource<object>();
+		var handler = new EventHandler<MFComposeResultEventArgs>((snd, args) => finished.TrySetResult(args));
+
+		try
+		{
+			mailController.Finished += handler;
+			UIApplication.SharedApplication.KeyWindow.RootViewController.PresentViewController(mailController, true, null);
+
+			using (ct.Register(() => finished.TrySetCanceled()))
+			{
+				await finished.Task;
+			}
+		}
+		finally
+		{
+			await CoreDispatcher
+				.Main
+				.RunAsync(CoreDispatcherPriority.High, () =>
+				{
+					mailController.Finished -= handler;
+					mailController.DismissViewController(true, null);
+				})
+				.AsTask(CancellationToken.None);
+		}
+#else
+		return Task.CompletedTask;
+#endif
+	}
+#endif
 
 	internal void OnError(WKWebView webView, WKNavigation navigation, NSError error)
 	{
@@ -527,6 +671,8 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 		}
 	}
 
+	void INativeWebView.Reload() => Reload();
+
 	void INativeWebView.SetScrollingEnabled(bool isScrollingEnabled)
 	{
 #if __IOS__
@@ -539,8 +685,6 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 		}
 #endif
 	}
-
-	void INativeWebView.Reload() => Reload();
 
 	private WKBackForwardListItem GetNearestValidHistoryItem(int direction)
 	{

@@ -14,6 +14,4 @@ namespace Uno.UI.Xaml.Controls;
 internal partial interface INativeWebView
 {
 	void SetOwner(CoreWebView2 xamlWebView);
-
-	void SetScrollingEnabled(bool isScrollingEnabled);
 }

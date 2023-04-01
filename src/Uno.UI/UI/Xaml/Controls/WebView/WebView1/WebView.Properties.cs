@@ -69,10 +69,13 @@ public partial class WebView : Control
 	}
 
 	public static DependencyProperty IsScrollEnabledProperty { get; } =
-		DependencyProperty.Register(nameof(IsScrollEnabled), typeof(bool), typeof(WebView), new FrameworkPropertyMetadata(true,
-			(s, e) => ((WebView)s)?.OnScrollEnabledChangedPartial((bool)e.NewValue)));
-
-	partial void OnScrollEnabledChangedPartial(bool scrollingEnabled);
+		DependencyProperty.Register(
+			nameof(IsScrollEnabled),
+			typeof(bool),
+			typeof(WebView),
+			new FrameworkPropertyMetadata(
+				true,
+				(s, e) => ((WebView)s)?.CoreWebView2.OnScrollEnabledChanged((bool)e.NewValue)));
 
 #pragma warning disable 67
 	/// <summary>
