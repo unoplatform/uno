@@ -40,9 +40,3 @@ At the end of the navigation, on `WebView` the either `NavigationCompleted` or `
 
 In `WebView`, most the events include `Uri`, but `WebView2` uses a unique `NavigationId` instead.
 For details on `WebView2` event behavior see: https://learn.microsoft.com/en-us/microsoft-edge/webview2/concepts/navigation-events
-
-## Navigation ID
-
-As `WebView2` tracks each navigation via a unique identifier, we need to have a way to generate these IDs properly.
-
-On iOS and macOS we use the `WKNavigation` which is a unique identifier of the load request for a webpage.

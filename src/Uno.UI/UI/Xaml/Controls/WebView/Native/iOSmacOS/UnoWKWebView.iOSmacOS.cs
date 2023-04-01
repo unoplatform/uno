@@ -180,7 +180,7 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 		}
 
 		_coreWebView.DocumentTitle = Title;
-		_coreWebView.RaiseNavigationCompleted(destinationUrl, true, 200, CoreWebView2WebErrorStatus.Unknown);
+		RaiseNavigationCompleted(destinationUrl, true, 200, CoreWebView2WebErrorStatus.Unknown);
 		_lastNavigationData = destinationUrl;
 	}
 
@@ -198,7 +198,7 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 		}
 		var targetString = target?.ToString();
 
-		_coreWebView.RaiseNewWindowRequested(targetString, action.SourceFrame?.Request?.Url?.ToUri(), out var handled);
+		RaiseNewWindowRequested(targetString, action.SourceFrame?.Request?.Url?.ToUri(), out var handled);
 
 		if (handled)
 		{
@@ -217,11 +217,11 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 #endif
 				{
 					OpenUrl(targetString);
-					_coreWebView.RaiseNavigationCompleted(target, true, 200, CoreWebView2WebErrorStatus.Unknown);
+					RaiseNavigationCompleted(target, true, 200, CoreWebView2WebErrorStatus.Unknown);
 				}
 				else
 				{
-					_coreWebView.RaiseNavigationCompleted(target, false, 400, CoreWebView2WebErrorStatus.Unknown);
+					RaiseNavigationCompleted(target, false, 400, CoreWebView2WebErrorStatus.Unknown);
 				}
 			}
 		}
@@ -231,7 +231,6 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 
 	private void OpenUrl(string url)
 	{
-		//TODO: CanGoBack and CanGoForward should be refreshed after navigation completed on both Android and iOS
 		var nsUrl = new NSUrl(url);
 		//Opens the specified URL, launching the app that's registered to handle the scheme.
 #if __IOS__
@@ -410,9 +409,15 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 			return;
 		}
 
+		_coreWebView.SetHistoryProperties(CanGoBack, CanGoForward);
 		_coreWebView.RaiseNavigationStarting(uriString, out cancel);
 	}
 
+	private void RaiseNavigationCompleted(Uri? uri, bool isSuccess, int httpStatusCode, CoreWebView2WebErrorStatus errorStatus)
+	{
+		_coreWebView.SetHistoryProperties(CanGoBack, CanGoForward);
+		_coreWebView.RaiseNavigationCompleted(uri, isSuccess, httpStatusCode, errorStatus);
+	}
 
 #if __IOS__
 	private void ParseUriAndLauchMailto(Uri mailtoUri)
@@ -553,7 +558,7 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 				uri = webView.Url?.ToUri() ?? new Uri(_coreWebView.Source); // TODO:MZ: What if Source is invalid URI?
 			}
 
-			_coreWebView.RaiseNavigationCompleted(uri, false, 0, status); // TODO:MZ: What HTTP Status code?
+			RaiseNavigationCompleted(uri, false, 0, status); // TODO:MZ: What HTTP Status code?
 		}
 
 		_isCancelling = false;
@@ -667,7 +672,7 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 				this.Log().Error($"The uri [{uri}] is invalid.");
 			}
 
-			_coreWebView.RaiseNavigationCompleted(uri, false, 404, CoreWebView2WebErrorStatus.UnexpectedError);
+			RaiseNavigationCompleted(uri, false, 404, CoreWebView2WebErrorStatus.UnexpectedError);
 		}
 	}
 
