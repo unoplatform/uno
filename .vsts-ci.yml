@@ -49,12 +49,12 @@ variables:
   windows2022HostedVMImage: 'windows-2022'
   windowsScaledPool: 'Windows2022-20220925-1'
   linuxVMImage: 'ubuntu-latest'
-  macOSVMImage: 'macOS-11'
-  macOSVMImage_UITests: 'macOS-11'
+  macOSVMImage: 'macOS-12'
+  macOSVMImage_UITests: 'macOS-12'
   xCodeRoot: '/Applications/Xcode_14.1.app'
-  XamarinSDKVersion: 6_12_12
+  XamarinSDKVersion: 6_12_24
   xCodeRoot_iOS_UITests: '/Applications/Xcode_14.1.app'
-  XamarinSDKVersion_iOS_UITests: 6_12_12
+  XamarinSDKVersion_iOS_UITests: 6_12_24
 
   # https://github.com/microsoft/azure-pipelines-tasks/issues/11864
   #enable_package_cache: true
