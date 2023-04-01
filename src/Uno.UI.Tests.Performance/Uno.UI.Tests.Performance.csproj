@@ -27,7 +27,6 @@
 		<PackageReference Include="FluentAssertions" />
 		<PackageReference Include="Moq" Version="4.17.2" />
 		<PackageReference Include="System.Collections.Immutable" Version="1.7.0" />
-		<PackageReference Include="Uno.SourceGenerationTasks"/>
   </ItemGroup>
 
   <ItemGroup>

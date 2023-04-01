@@ -23,10 +23,6 @@
 		<ProjectReference Include="..\Uno.UI\Uno.UI.Wasm.csproj" />
 	</ItemGroup>
 
-	<ItemGroup>
-		<PackageReference Include="Uno.SourceGenerationTasks" />
-	</ItemGroup>
-
 	<Import Project="FluentMerge.targets" />
 
 	<Import Project="..\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" Condition="'$(SkipUnoResourceGeneration)' == '' " />

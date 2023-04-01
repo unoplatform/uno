@@ -26,10 +26,6 @@
 	  <Compile Include="..\Uno.UI\Behaviors\VisibleBoundsPadding.cs" Link="VisibleBoundsPadding.cs" />
 	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Uno.SourceGenerationTasks" />
-	</ItemGroup>
-
 	<ItemGroup>
 		<ProjectReference Include="..\Uno.UI\Uno.UI.Wasm.csproj">
 		</ProjectReference>
