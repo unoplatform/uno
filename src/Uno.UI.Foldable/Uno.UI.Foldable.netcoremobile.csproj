@@ -34,10 +34,6 @@
 		<ProjectReference Include="..\Uno.UI.BindingHelper.Android\Uno.UI.BindingHelper.Android.netcoremobile.csproj" Condition="$(IsAndroid)" TreatAsPackageReference="false" PrivateAssets="all" />
 	</ItemGroup>
 
-	<ItemGroup>
-		<PackageReference Include="Uno.SourceGenerationTasks" />
-	</ItemGroup>
-
 	<ItemGroup Condition="'$(TargetPlatformIdentifier)'=='android'">
 		<PackageReference Include="Xamarin.AndroidX.Window.WindowJava" Version="1.0.0.8" />
 	</ItemGroup>
