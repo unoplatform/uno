@@ -109,10 +109,6 @@
 		<DefineConstants>$(DefineConstants);NETFX_CORE</DefineConstants>
 	</PropertyGroup>
 
-	<Target Name="_DisplayTargets" BeforeTargets="BeforeBuild">
-		<Message Text="Building target framework: $(TargetFramework)" Importance="high" Condition="'$(TargetFramework)'!=''" />
-	</Target>
-
 	<Target Name="_UnoOverrideNuget"
 		  AfterTargets="AfterBuild"
 		  DependsOnTargets="BuiltProjectOutputGroup"
