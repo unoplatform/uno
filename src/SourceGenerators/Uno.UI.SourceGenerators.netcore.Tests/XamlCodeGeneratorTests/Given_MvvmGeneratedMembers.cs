@@ -25,8 +25,17 @@ public class Given_MvvmGeneratedMembers
 			ReferenceAssemblies = ReferenceAssemblies.AddPackages(s_mvvmPackages);
 		}
 
-		protected override IEnumerable<ISourceGenerator> GetSourceGenerators()
-			=> base.GetSourceGenerators().Concat(new[] { new ObservablePropertyGenerator().AsSourceGenerator(), new RelayCommandGenerator().AsSourceGenerator() });
+		protected override IEnumerable<Type> GetSourceGenerators()
+		{
+			foreach (var generatorType in base.GetSourceGenerators())
+			{
+				yield return generatorType;
+			}
+
+			yield return typeof(ObservablePropertyGenerator);
+			yield return typeof(RelayCommandGenerator);
+		}
+
 	}
 
 	[TestMethod]

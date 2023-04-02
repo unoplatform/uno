@@ -86,12 +86,7 @@ build_metadata.AdditionalFiles.SourceItemGroup = Page
 				}
 				TestState.AnalyzerConfigFiles.Add(("/.globalconfig", globalConfigBuilder.ToString()));
 
-				ReferenceAssemblies = new ReferenceAssemblies(
-						"net7.0",
-						new PackageIdentity(
-							"Microsoft.NETCore.App.Ref",
-							"7.0.0"),
-						Path.Combine("ref", "net7.0"));
+				ReferenceAssemblies = ReferenceAssemblies.Net.Net70;
 
 #if WRITE_EXPECTED
 				TestBehaviors |= TestBehaviors.SkipGeneratedSourcesCheck;
@@ -113,11 +108,11 @@ build_metadata.AdditionalFiles.SourceItemGroup = Page
 				return base.ApplyCompilationOptions(p);
 			}
 
-			protected override async Task<Compilation> GetProjectCompilationAsync(Project project, IVerifier verifier, CancellationToken cancellationToken)
+			protected override async Task<(Compilation compilation, ImmutableArray<Diagnostic> generatorDiagnostics)> GetProjectCompilationAsync(Project project, IVerifier verifier, CancellationToken cancellationToken)
 			{
 				var resourceDirectory = Path.Combine(Path.GetDirectoryName(_testFilePath)!, TestOutputFolderName, _testMethodName);
 
-				var compilation = await base.GetProjectCompilationAsync(project, verifier, cancellationToken);
+				var (compilation, generatorDiagnostics) = await base.GetProjectCompilationAsync(project, verifier, cancellationToken);
 				var expectedNames = new HashSet<string>();
 				foreach (var tree in compilation.SyntaxTrees.Skip(project.DocumentIds.Count))
 				{
@@ -139,13 +134,13 @@ build_metadata.AdditionalFiles.SourceItemGroup = Page
 					}
 				}
 
-				return compilation;
+				return (compilation, generatorDiagnostics);
 			}
 
 			public Test AddGeneratedSources()
 			{
 				var expectedPrefix = $"Uno.UI.SourceGenerators.netcore.Tests.XamlCodeGeneratorTests.{TestOutputFolderName}.{_testMethodName}.";
-				foreach (var resourceName in typeof(Test).Assembly.GetManifestResourceNames().OrderBy(x => x.Contains("LocalizationResources") ? 0 : (x.Contains("GlobalStaticResources") ? 2 : 1)))
+				foreach (var resourceName in typeof(Test).Assembly.GetManifestResourceNames())
 				{
 					if (!resourceName.StartsWith(expectedPrefix))
 					{
