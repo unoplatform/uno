@@ -16,7 +16,7 @@ using System.Linq;
 namespace Windows.UI.Xaml.Controls;
 
 #if __WASM__ || __SKIA__
-[NotImplemented]
+[Uno.NotImplemented]
 #endif
 public partial class WebView : Control, IWebView
 {

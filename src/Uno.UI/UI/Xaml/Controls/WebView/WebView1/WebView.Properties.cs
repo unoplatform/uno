@@ -51,16 +51,20 @@ public partial class WebView : Control
 		DependencyProperty.Register(nameof(Source), typeof(Uri), typeof(WebView), new FrameworkPropertyMetadata(null,
 			(s, e) => ((WebView)s)?.CoreWebView2.Navigate(((Uri)e.NewValue)?.ToString())));
 
-#if __ANDROID__ || __IOS__ || __MACOS__
+	/// <summary>
+	/// Gets the current web page's title.
+	/// </summary>
 	public string DocumentTitle
 	{
 		get => (string)GetValue(DocumentTitleProperty);
 		private set => SetValue(DocumentTitleProperty, value);
 	}
 
+	/// <summary>
+	/// Identifies the DocumentTitle dependency property.
+	/// </summary>
 	public static DependencyProperty DocumentTitleProperty { get; } =
 		DependencyProperty.Register(nameof(DocumentTitle), typeof(string), typeof(WebView), new FrameworkPropertyMetadata(null));
-#endif
 
 	public bool IsScrollEnabled
 	{

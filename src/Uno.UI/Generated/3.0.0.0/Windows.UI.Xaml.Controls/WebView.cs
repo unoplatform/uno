@@ -48,7 +48,7 @@ namespace Windows.UI.Xaml.Controls
 		#endif
 		// Skipping already declared property CanGoBack
 		// Skipping already declared property CanGoForward
-		#if false || false || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false
+		#if false
 		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public  string DocumentTitle
 		{
@@ -139,7 +139,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.WebView), 
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Color)));
 		#endif
-		#if false || false || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false
+		#if false
 		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Xaml.DependencyProperty DocumentTitleProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(

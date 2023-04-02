@@ -11,7 +11,6 @@ using System.Globalization;
 using Windows.Foundation;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
-using Foundation;
 
 namespace Microsoft.Web.WebView2.Core;
 
