@@ -11,7 +11,7 @@ using Windows.Globalization.NumberFormatting;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	internal class NumberBoxParser
+	internal partial class NumberBoxParser
 	{
 		static string c_numberBoxOperators = "+-*/^";
 
@@ -85,8 +85,7 @@ namespace Microsoft.UI.Xaml.Controls
 		static (double, int) GetNextNumber(string input, INumberParser numberParser)
 		{
 			// Attempt to parse anything before an operator or space as a number
-			Regex regex = new Regex("^-?([^-+/*\\(\\)\\^\\s]+)");
-			var match = regex.Match(input);
+			var match = NextNumberParsing().Match(input);
 			if (match.Success)
 			{
 				// Might be a number
@@ -285,5 +284,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return null;
 		}
 
+		[GeneratedRegex("^-?([^-+/*\\(\\)\\^\\s]+)")]
+		private static partial Regex NextNumberParsing();
 	}
 }
