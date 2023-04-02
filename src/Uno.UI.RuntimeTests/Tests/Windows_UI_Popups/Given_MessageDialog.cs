@@ -28,6 +28,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Popups
 		[RunsOnUIThread]
 		public void Should_Close_Open_Flyouts()
 		{
+			if (WindowHelper.IsXamlIsland)
+			{
+				// MessageDialog is not supported in Uno Islands.
+				return;
+			}
+
 			var button = new Windows.UI.Xaml.Controls.Button();
 			var flyout = new Flyout();
 			FlyoutBase.SetAttachedFlyout(button, flyout);
@@ -45,6 +51,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Popups
 		[RunsOnUIThread]
 		public void Should_Not_Close_Open_ContentDialogs()
 		{
+			if (WindowHelper.IsXamlIsland)
+			{
+				// MessageDialog is not supported in Uno Islands.
+				return;
+			}
+
 			Assert.AreEqual(0, GetNonMessageDialogPopupsCount());
 
 			var contentDialog = new ContentDialog

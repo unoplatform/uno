@@ -25,6 +25,7 @@ using UIKit;
 using AppKit;
 #else
 using Uno.UI;
+using Uno.UI.Xaml;
 #endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
@@ -217,8 +218,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 #endif
 			object GetTreeRoot()
 			{
-				var current = Windows.UI.Xaml.Window.Current.Content?.GetVisualTreeParent();
-				current = Windows.UI.Xaml.Window.Current.Content;
+				var current = TestServices.WindowHelper.XamlRoot.Content;
 				var parent = current?.GetVisualTreeParent();
 				while (parent != null)
 				{

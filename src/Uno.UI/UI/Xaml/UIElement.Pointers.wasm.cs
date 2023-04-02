@@ -182,7 +182,7 @@ public partial class UIElement : DependencyObject
 
 						if (stopPropagation)
 						{
-							VisualTree.GetRootForElement(this)?.ProcessPointerUp(routedArgs, isAfterHandledUp: true);
+							VisualTree.GetRootForElement(element)?.ProcessPointerUp(routedArgs, isAfterHandledUp: true);
 						}
 
 						break;

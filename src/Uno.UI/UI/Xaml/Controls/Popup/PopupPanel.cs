@@ -150,7 +150,11 @@ internal partial class PopupPanel : Panel
 			Point anchorLocation = default;
 			if (Popup.PlacementTarget is { } anchor)
 			{
-				anchorLocation = anchor.TransformToVisual(this).TransformPoint(new Point());
+				anchorLocation = anchor.TransformToVisual(this).TransformPoint(default);
+			}
+			else
+			{
+				anchorLocation = Popup.TransformToVisual(null).TransformPoint(default);
 			}
 
 #if __ANDROID__
