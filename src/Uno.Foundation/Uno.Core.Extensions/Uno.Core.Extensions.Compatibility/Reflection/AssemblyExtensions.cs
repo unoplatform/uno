@@ -21,12 +21,20 @@ using System.Text.RegularExpressions;
 
 namespace Uno.Extensions
 {
-	internal static class AssemblyExtensions
+	internal static partial class AssemblyExtensions
 	{
 		public static Version GetVersionNumber(this Assembly assembly)
 		{
 			// Note: Assembly.GetExecutingAssembly().GetName() is not accessible in WP7
-			return new Version(Regex.Match(assembly.FullName, @"(\d+)(.\d+)(.\d+)?(.\d+)?").ToString());
+			return new Version(VersionMatch().Match(assembly.FullName).ToString());
 		}
+
+#if NET7_0_OR_GREATER
+		[GeneratedRegex(@"(\d+)(.\d+)(.\d+)?(.\d+)?")]
+		private static partial Regex VersionMatch();
+#else
+		private static Regex VersionMatch()
+			=> new Regex(@"(\d+)(.\d+)(.\d+)?(.\d+)?");
+#endif
 	}
 }

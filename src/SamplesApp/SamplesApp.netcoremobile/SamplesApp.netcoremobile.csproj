@@ -24,7 +24,7 @@
 		Required for Catalyst nuget restore to revalidate
 		once transitive dependencies have been updated.
 		-->
-		<NoWarn>$(NoWarn);NU1703</NoWarn>
+		<NoWarn>$(NoWarn);NU1703;SYSLIB1045</NoWarn>
 
 		<!--
 		aab is the default packaging format in net6 API 31.
