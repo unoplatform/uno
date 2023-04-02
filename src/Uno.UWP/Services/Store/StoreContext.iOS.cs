@@ -27,7 +27,7 @@ namespace Windows.Services.Store
 					_httpClient ??= new HttpClient();
 					var json = await _httpClient.GetStringAsync(url);
 
-					var regex = new Regex("trackId[^0-9]*([0-9]*)");
+					var regex = TrackParser();
 					var match = regex.Match(json);
 					if (!match.Success)
 					{
@@ -54,6 +54,9 @@ namespace Windows.Services.Store
 				}
 			});
 		}
+
+		[GeneratedRegex("trackId[^0-9]*([0-9]*)")]
+		private static partial Regex TrackParser();
 	}
 }
 #endif

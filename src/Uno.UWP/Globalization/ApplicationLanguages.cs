@@ -160,9 +160,7 @@ namespace Windows.Globalization
 			}
 			catch (CultureNotFoundException)
 			{
-				_cultureFormatRegex ??= new Regex(
-					@"(?<lang>[a-z]{2,8})(?:(?:\-(?<script>[a-zA-Z]+))?\-(?<reg>[A-Z]+))?",
-					RegexOptions.CultureInvariant | RegexOptions.Compiled | RegexOptions.Singleline | RegexOptions.IgnoreCase);
+				_cultureFormatRegex ??= CultureRegex();
 
 				var match = _cultureFormatRegex.Match(cultureId);
 				try
@@ -189,5 +187,8 @@ namespace Windows.Globalization
 				throw;
 			}
 		}
+
+		[GeneratedRegex(@"(?<lang>[a-z]{2,8})(?:(?:\-(?<script>[a-zA-Z]+))?\-(?<reg>[A-Z]+))?", RegexOptions.IgnoreCase | RegexOptions.Compiled | RegexOptions.Singleline | RegexOptions.CultureInvariant)]
+		private static partial Regex CultureRegex();
 	}
 }

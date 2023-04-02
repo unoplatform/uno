@@ -9,13 +9,13 @@ using System.Threading.Tasks;
 
 namespace Uno
 {
-	internal static class AndroidResourceNameEncoder
+	internal static partial class AndroidResourceNameEncoder
 	{
 		private const string NumberPrefix = "__";
 
 		// These characters are not supported on Android, but they're used by the attached property localization syntax.
 		// Example: "MyUid.[using:Windows.UI.Xaml.Automation]AutomationProperties.Name"
-		private static readonly Regex sanitizeName = new Regex(@"[^a-zA-Z0-9_.]", RegexOptions.Compiled);
+		private static readonly Regex sanitizeName = NameSanitizer();
 
 		/// <summary>
 		/// Encode a resource name to remove characters that are not supported on Android.
@@ -76,5 +76,13 @@ namespace Uno
 
 			return global::System.IO.Path.Combine(encodedDirectory, encodedFileName + extension).Replace(localSeparation, separator);
 		}
+
+#if NET7_0_OR_GREATER
+		[GeneratedRegex(@"[^a-zA-Z0-9_.]", RegexOptions.Compiled)]
+		private static partial Regex NameSanitizer();
+#else
+		private static Regex NameSanitizer()
+			=> new Regex(@"[^a-zA-Z0-9_.]", RegexOptions.Compiled);
+#endif
 	}
 }

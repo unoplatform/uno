@@ -29,7 +29,7 @@ using _View = Windows.UI.Xaml.UIElement;
 
 namespace Windows.UI.Xaml.Markup.Reader
 {
-	internal class XamlObjectBuilder
+	internal partial class XamlObjectBuilder
 	{
 		private XamlFileDefinition _fileDefinition;
 		private readonly string? _fileUri;
@@ -37,7 +37,6 @@ namespace Windows.UI.Xaml.Markup.Reader
 		private readonly List<(string elementName, ElementNameSubject bindingSubject)> _elementNames = new List<(string, ElementNameSubject)>();
 		private readonly Stack<Type> _styleTargetTypeStack = new Stack<Type>();
 		private Queue<Action> _postActions = new Queue<Action>();
-		private static readonly Regex _attachedPropertMatch = new Regex(@"(\(.*?\))");
 
 		private static Type[] _genericConvertibles = new[]
 		{
@@ -269,7 +268,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 					}
 				}
 
-				var match = _attachedPropertMatch.Match(value);
+				var match = AttachedPropertyMatching().Match(value);
 
 				if (match.Success)
 				{
@@ -1321,5 +1320,8 @@ namespace Windows.UI.Xaml.Markup.Reader
 				_method.Invoke(_instance, Array.Empty<object>());
 			}
 		}
+
+		[GeneratedRegex(@"(\(.*?\))")]
+		private static partial Regex AttachedPropertyMatching();
 	}
 }
