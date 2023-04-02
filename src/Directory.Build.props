@@ -55,7 +55,8 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<MicrosoftNetCompilersToolsetVersion>4.5.0</MicrosoftNetCompilersToolsetVersion>
+		<MicrosoftNetCompilersToolsetVersion Condition="$(TargetFramework.StartsWith('net7'))">4.5.0</MicrosoftNetCompilersToolsetVersion>
+		<MicrosoftNetCompilersToolsetVersion Condition="$(TargetFramework.StartsWith('net8'))">4.6.0-1.final</MicrosoftNetCompilersToolsetVersion>
 	</PropertyGroup>
 
 	<ItemGroup>
