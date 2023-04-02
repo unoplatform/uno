@@ -89,7 +89,7 @@ namespace Uno.UI.Lottie
 				 select pair).ToArray();
 		}
 
-		[GeneratedRegex("{\\s*(?<P>\\D\\w*)\\s*\\:\\s*var\\(\\s*(?<B>\\D\\w*)\\s*\\)\\s*(;\\s*(?<P>\\D\\w*)\\s*\\:\\s*var\\(\\s*(?<B>\\D\\w*)\\s*\\)\\s*\\s*)*}")]
+		[GeneratedRegex(@"{\s*" + PropertyBindingsListRegex + @"}")]
 		private static partial Regex VariableMatching();
 	}
 }
