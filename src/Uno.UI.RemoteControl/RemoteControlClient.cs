@@ -21,9 +21,23 @@ using Uno.UI.RemoteControl.Messages;
 
 namespace Uno.UI.RemoteControl
 {
+	public class ReceivedFrameEventArgs : EventArgs
+	{
+		public ReceivedFrameEventArgs(HotReload.Messages.Frame frame)
+		{
+			Frame = frame;
+		}
+
+		public HotReload.Messages.Frame Frame { get; set; }
+	}
+
 	public class RemoteControlClient : IRemoteControlClient
 	{
 		public static RemoteControlClient? Instance { get; private set; }
+
+		public delegate void RemoteControlFrameReceivedEventHandler(object sender, ReceivedFrameEventArgs args);
+
+		public event RemoteControlFrameReceivedEventHandler? FrameReceived;
 
 		public Type AppType { get; }
 
@@ -297,6 +311,8 @@ namespace Uno.UI.RemoteControl
 							this.Log().LogError($"Unknown Frame scope {frame.Scope}");
 						}
 					}
+
+					FrameReceived?.Invoke(this, new ReceivedFrameEventArgs(frame));
 				}
 			}
 		}
@@ -312,7 +328,7 @@ namespace Uno.UI.RemoteControl
 				{
 					if (this.Log().IsEnabled(LogLevel.Trace))
 					{
-						this.Log().Trace($"Sending Keepalive frame");
+						this.Log().Trace($"Sending Keepalive frame from client");
 					}
 
 					_ = SendMessage(keepAlive);
@@ -358,6 +374,11 @@ namespace Uno.UI.RemoteControl
 
 		public async Task SendMessage(IMessage message)
 		{
+			if (this.Log().IsEnabled(LogLevel.Error))
+			{
+				this.Log().LogError($"Sending message: {message} {message.Name}");
+			}
+
 			if (_webSocket != null)
 			{
 				await WebSocketHelper.SendFrame(

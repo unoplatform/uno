@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net.WebSockets;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using Uno.UI.RemoteControl;
 using Uno.UI.RemoteControl.Helpers;
 using Uno.UI.RemoteControl.HotReload.Messages;
 using Microsoft.Extensions.Logging;
@@ -15,7 +12,6 @@ using Uno.Extensions;
 using Uno.UI.RemoteControl.Messages;
 using System.Runtime.Loader;
 using Microsoft.Extensions.Configuration;
-using System.Diagnostics;
 
 namespace Uno.UI.RemoteControl.Host
 {
@@ -23,6 +19,7 @@ namespace Uno.UI.RemoteControl.Host
 	{
 		private readonly Dictionary<string, IServerProcessor> _processors = new Dictionary<string, IServerProcessor>();
 
+		private System.Reflection.Assembly? _loopAssembly;
 		private WebSocket? _socket;
 		private readonly IConfiguration _configuration;
 		private readonly AssemblyLoadContext _loadContext;
@@ -36,6 +33,17 @@ namespace Uno.UI.RemoteControl.Host
 				if (this.Log().IsEnabled(LogLevel.Debug))
 				{
 					this.Log().LogDebug("Unloading assembly context");
+				}
+			};
+			_loadContext.Resolving += (context, assemblyName) =>
+			{
+				if (_loopAssembly is not null)
+				{
+					return context.LoadFromAssemblyPath(Path.Combine(Path.GetDirectoryName(_loopAssembly.Location)!, assemblyName.Name + ".dll"));
+				}
+				else
+				{
+					return context.LoadFromAssemblyName(assemblyName);
 				}
 			};
 
@@ -101,57 +109,105 @@ namespace Uno.UI.RemoteControl.Host
 			var msg = JsonConvert.DeserializeObject<ProcessorsDiscovery>(frame.Content)!;
 			var serverAssemblyName = typeof(IServerProcessor).Assembly.GetName().Name;
 
-			var basePath = msg.BasePath.Replace('/', Path.DirectorySeparatorChar);
-
-#if NET7_0_OR_GREATER
-			basePath = Path.Combine(basePath, "net7.0");
-#elif NET6_0_OR_GREATER
-			basePath = Path.Combine(basePath, "net6.0");
-#else
-			basePath = Path.Combine(basePath, "netcoreapp3.1");
-#endif
-
 			var assemblies = new List<System.Reflection.Assembly>();
 
-			foreach (var file in Directory.GetFiles(basePath, "Uno.*.dll"))
+			// If BasePath is a specific file, try and load that
+			if (File.Exists(msg.BasePath))
 			{
-				if (Path.GetFileNameWithoutExtension(file).Equals(serverAssemblyName, StringComparison.OrdinalIgnoreCase))
+				try
 				{
-					continue;
+					assemblies.Add(_loadContext.LoadFromAssemblyPath(msg.BasePath));
+				}
+				catch (Exception exc)
+				{
+					if (this.Log().IsEnabled(LogLevel.Debug))
+					{
+						this.Log().LogDebug($"Failed to load assembly {msg.BasePath} : {exc}");
+					}
+				}
+			}
+			else
+			{
+				// As BasePath is a directory, try and load processors from assemblies within that dir
+				var basePath = msg.BasePath.Replace('/', Path.DirectorySeparatorChar);
+
+#if NET7_0_OR_GREATER
+				basePath = Path.Combine(basePath, "net7.0");
+#elif NET6_0_OR_GREATER
+				basePath = Path.Combine(basePath, "net6.0");
+#else
+				basePath = Path.Combine(basePath, "netcoreapp3.1");
+#endif
+
+				// Additional processors may not need the directory added immmediately above.
+				if (!Directory.Exists(basePath))
+				{
+					basePath = msg.BasePath;
 				}
 
-				if (this.Log().IsEnabled(LogLevel.Debug))
+				foreach (var file in Directory.GetFiles(basePath, "Uno.*.dll"))
 				{
-					this.Log().LogDebug($"Discovery: Loading {file}");
-				}
+					if (Path.GetFileNameWithoutExtension(file).Equals(serverAssemblyName, StringComparison.OrdinalIgnoreCase))
+					{
+						continue;
+					}
 
-				assemblies.Add(_loadContext.LoadFromAssemblyPath(file));
+					if (this.Log().IsEnabled(LogLevel.Debug))
+					{
+						this.Log().LogDebug($"Discovery: Loading {file}");
+					}
+
+					try
+					{
+						assemblies.Add(_loadContext.LoadFromAssemblyPath(file));
+					}
+					catch (Exception exc)
+					{
+						// With additional processors there may be duplicates of assemblies already loaded
+						if (this.Log().IsEnabled(LogLevel.Debug))
+						{
+							this.Log().LogDebug($"Failed to load assembly {file} : {exc}");
+						}
+					}
+				}
 			}
 
 			foreach (var asm in assemblies)
 			{
-				var attributes = asm.GetCustomAttributes(typeof(ServerProcessorAttribute), false);
-
-				foreach (var processorAttribute in attributes)
+				try
 				{
-					if (processorAttribute is ServerProcessorAttribute processor)
-					{
-						if (this.Log().IsEnabled(LogLevel.Debug))
-						{
-							this.Log().LogDebug($"Discovery: Registering {processor.ProcessorType}");
-						}
+					_loopAssembly = asm;
 
-						if (Activator.CreateInstance(processor.ProcessorType, this) is IServerProcessor serverProcessor)
-						{
-							RegisterProcessor(serverProcessor);
-						}
-						else
+					var attributes = asm.GetCustomAttributes(typeof(ServerProcessorAttribute), false);
+
+					foreach (var processorAttribute in attributes)
+					{
+						if (processorAttribute is ServerProcessorAttribute processor)
 						{
 							if (this.Log().IsEnabled(LogLevel.Debug))
 							{
-								this.Log().LogDebug($"Failed to create server processor {processor.ProcessorType}");
+								this.Log().LogDebug($"Discovery: Registering {processor.ProcessorType}");
+							}
+
+							if (Activator.CreateInstance(processor.ProcessorType, this) is IServerProcessor serverProcessor)
+							{
+								RegisterProcessor(serverProcessor);
+							}
+							else
+							{
+								if (this.Log().IsEnabled(LogLevel.Debug))
+								{
+									this.Log().LogDebug($"Failed to create server processor {processor.ProcessorType}");
+								}
 							}
 						}
+					}
+				}
+				catch (Exception exc)
+				{
+					if (this.Log().IsEnabled(LogLevel.Debug))
+					{
+						this.Log().LogDebug($"Failed to create instace of server processor in  {asm} : {exc}");
 					}
 				}
 			}

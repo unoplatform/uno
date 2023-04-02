@@ -37,6 +37,7 @@
       "Uno.UI.FluentTheme.v2\\Uno.UI.FluentTheme.v2.Skia.csproj",
       "Uno.UI.FluentTheme\\Uno.UI.FluentTheme.Skia.csproj",
       "Uno.UI.RemoteControl.Host\\Uno.UI.RemoteControl.Host.csproj",
+      "Uno.UI.RemoteControl.Messaging\\Uno.UI.RemoteControl.Messaging.csproj",
       "Uno.UI.RemoteControl.Server.Processors\\Uno.UI.RemoteControl.Server.Processors.csproj",
       "Uno.UI.RemoteControl.Server\\Uno.UI.RemoteControl.Server.csproj",
       "Uno.UI.RemoteControl.VS\\Uno.UI.RemoteControl.VS.csproj",

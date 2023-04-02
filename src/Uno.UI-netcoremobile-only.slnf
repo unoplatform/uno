@@ -26,6 +26,7 @@
       "Uno.UI.FluentTheme\\Uno.UI.FluentTheme.netcoremobile.csproj",
       "Uno.UI.Foldable\\Uno.UI.Foldable.netcoremobile.csproj",
       "Uno.UI.RemoteControl.Host\\Uno.UI.RemoteControl.Host.csproj",
+      "Uno.UI.RemoteControl.Messaging\\Uno.UI.RemoteControl.Messaging.csproj",
       "Uno.UI.RemoteControl.Server\\Uno.UI.RemoteControl.Server.csproj",
       "Uno.UI.RemoteControl.VS\\Uno.UI.RemoteControl.VS.csproj",
       "Uno.UI.RemoteControl\\Uno.UI.RemoteControl.netcoremobile.csproj",
