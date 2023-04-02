@@ -59,7 +59,7 @@ jobs:
 
   - task: CopyFiles@2
     inputs:
-      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.iOS/bin/iPhoneSimulator/Release/SamplesApp.app
+      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.netcoremobile/bin/Release/net7.0-ios/iossimulator-x64/SamplesApp.app
       Contents: '**'
       TargetFolder: $(build.artifactstagingdirectory)/SamplesApp.app
       CleanTargetFolder: false

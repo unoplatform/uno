@@ -19,6 +19,9 @@ jobs:
     UNO_UWP_BUILD: false
     XAML_FLAVOR_BUILD: WinUI
 
+    # Only build for net7
+    UnoDisableNet8Mobile: true
+
   steps:
   - checkout: self
     clean: true
