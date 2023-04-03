@@ -35,6 +35,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<Page Include="**/*.xaml" Exclude="bin/**;obj/**" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<None Include="Extensions\CGSizeExtensions.iOSmacOS.cs" />
 		<None Include="Mixins\Android\BaseActivity.Callbacks.g.cs">
 		  <DesignTime>True</DesignTime>
