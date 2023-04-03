@@ -81,7 +81,7 @@ namespace Windows.System
 				69 => VirtualKey.Add,
 				75 => VirtualKey.Divide,
 				78 => VirtualKey.Subtract,
-				81 => VirtualKey.Enter, // =
+				81 => (VirtualKey)187,
 				71 => VirtualKey.Clear,
 				76 => VirtualKey.Enter,
 
