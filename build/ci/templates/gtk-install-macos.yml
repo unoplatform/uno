@@ -1,9 +1,0 @@
-parameters:
-  GtkRuntimeUrl: 'https://github.com/tschoonj/GTK-for-Windows-Runtime-Environment-Installer/releases/download/2020-07-15/gtk3-runtime-3.24.20-2020-07-15-ts-win64.exe'
-
-steps:
-  - powershell: |
-        brew install gtk+3
-
-    displayName: Install GTK3 runtime
-    retryCountOnTaskFailure: 3

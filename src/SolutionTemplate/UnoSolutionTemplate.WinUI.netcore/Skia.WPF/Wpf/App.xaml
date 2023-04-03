@@ -1,9 +1,0 @@
-﻿<Application x:Class="$ext_safeprojectname$.WPF.App"
-			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-			 xmlns:local="clr-namespace:$ext_safeprojectname$.WPF"
-			 StartupUri="Wpf/MainWindow.xaml">
-	<Application.Resources>
-
-	</Application.Resources>
-</Application>

@@ -1,7 +1,0 @@
-<Project ToolsVersion="Current">
-  <ItemGroup>
-    <Compile Update="**\*.xaml.cs">
-      <DependentUpon>%(Filename)</DependentUpon>
-    </Compile>
-  </ItemGroup>
-</Project>

@@ -1,8 +1,0 @@
-# Overrides our root .editorconfig to match https://github.com/microsoft/microsoft-ui-xaml/blob/438e5ebd870f8e090b35140c456ea03f570da42c/.editorconfig
-
-[**.{xaml,xml}]
-indent_style = space
-indent_size = 4
-charset = utf-8-bom
-insert_final_newline = true
-trim_trailing_whitespace = true

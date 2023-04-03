@@ -1,7 +1,0 @@
-<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-					xmlns:other="using:MyOtherNamespace">
-
-  <other:TestObject Attached.Original="test" />
-
-</ResourceDictionary>

@@ -1,3 +1,0 @@
-# automatically invite contributors to this particular team in the organization when their pull-requests
-# are merged which enables maintainers to assign issues to these individuals.
-team: community

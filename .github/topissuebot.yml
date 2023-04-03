@@ -1,4 +1,0 @@
-# Configuration for top-issue-bot - https://github.com/adamzolyak/gh-vote-bot
-labelName: "triage/most-wanted"
-labelColor: "#BB8FCE"
-numberOfIssuesToLabel: 30

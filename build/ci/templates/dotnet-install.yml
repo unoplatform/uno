@@ -1,9 +1,0 @@
-steps:
-
-  - task: UseDotNet@2
-    displayName: 'Use .NET SDK'
-    retryCountOnTaskFailure: 3
-    inputs:
-      packageType: sdk
-      useGlobalJson: true
-      includePreviewVersions: true

@@ -1,5 +1,0 @@
-﻿<#@template language="C#" compilerOptions="/debug-" debug="false" #>
-<#@output extension="g.cs" #>
-#if XAMARIN_ANDROID
-<#@include file="../Uno.UI/BaseActivity.Callbacks.Implementation.Android.tt"#>
-#endif 

@@ -1,7 +1,0 @@
-﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-					xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-					xmlns:ext="using:Uno.UI.Tests.ViewLibrary">
-	<!--This dictionary should only be referenced by the Test_Control_With_Initializer control-->
-	<ext:TestInitializer x:Key="TestInitializer" />
-</ResourceDictionary>
