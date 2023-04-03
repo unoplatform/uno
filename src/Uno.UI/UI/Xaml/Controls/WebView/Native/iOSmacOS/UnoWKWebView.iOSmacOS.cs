@@ -19,6 +19,11 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 using System.Net;
+using Windows.UI.Core;
+
+#if !__MACOS__ && !__MACCATALYST__ // catalyst https://github.com/xamarin/xamarin-macios/issues/13935
+using MessageUI;
+#endif
 
 #if __IOS__
 using UIKit;
@@ -487,12 +492,12 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 	}
 
 	public
-#if !__MACCATALYST__
+#if !__MACOS__ && !__MACCATALYST__
 	async
 #endif
 	Task LaunchMailto(CancellationToken ct, string subject = null, string body = null, string[] to = null, string[] cc = null, string[] bcc = null)
 	{
-#if !__MACCATALYST__  // catalyst https://github.com/xamarin/xamarin-macios/issues/13935
+#if !__MACOS__ && !__MACCATALYST__  // catalyst https://github.com/xamarin/xamarin-macios/issues/13935
 		if (!MFMailComposeViewController.CanSendMail)
 		{
 			return;

@@ -19,10 +19,6 @@ using Windows.Foundation;
 using System.Globalization;
 using Windows.UI.Core;
 
-#if !__MACOS__ && !__MACCATALYST__ // catalyst https://github.com/xamarin/xamarin-macios/issues/13935
-using MessageUI;
-#endif
-
 #if __IOS__
 using UIKit;
 #else

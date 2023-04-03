@@ -74,7 +74,7 @@ internal class NativeWebViewWrapper : INativeWebView
 	public void Reload() => _webView.Reload();
 
 	public void SetScrollingEnabled(bool isScrollingEnabled)
-	{	
+	{
 		_webView.HorizontalScrollBarEnabled = isScrollingEnabled;
 		_webView.VerticalScrollBarEnabled = isScrollingEnabled;
 	}
