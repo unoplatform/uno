@@ -126,6 +126,10 @@ namespace Windows.UI.Xaml
 					{
 						ownerEvents.RaiseKeyDown(args);
 					}
+					else if (e.Action == KeyEventActions.Up)
+					{
+						ownerEvents.RaiseKeyUp(args);
+					}
 
 					if (FocusManager.GetFocusedElement() is FrameworkElement element)
 					{
