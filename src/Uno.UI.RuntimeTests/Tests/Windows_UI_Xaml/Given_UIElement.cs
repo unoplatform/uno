@@ -218,7 +218,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 #endif
 			object GetTreeRoot()
 			{
-				var current = TestServices.WindowHelper.XamlRoot.Content;
+				// Ttrick - GetVisualTreeParent's return type is different
+				// on each platform, so we use var to get the correct type implicitly
+				var current = Windows.UI.Xaml.Window.Current.Content?.GetVisualTreeParent();
+				current = Windows.UI.Xaml.Window.Current.Content;
 				var parent = current?.GetVisualTreeParent();
 				while (parent != null)
 				{
