@@ -63,6 +63,8 @@ namespace Windows.UI.Xaml.Media
 			else if (b is ImageBrush imageBrush)
 			{
 				var disposables = new CompositeDisposable(5);
+				imageBrushCallback?.Invoke();
+
 				void ImageChanged(_Image _) => colorSetter(SolidColorBrushHelper.Transparent.Color);
 
 				imageBrush.ImageChanged += ImageChanged;
