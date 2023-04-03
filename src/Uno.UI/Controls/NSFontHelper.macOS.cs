@@ -83,7 +83,16 @@ namespace Windows.UI
 
 		private static NSFont GetDefaultFont(nfloat size, FontWeight fontWeight, FontStyle fontStyle)
 		{
-			return ApplyStyle(NSFont.SystemFontOfSize(size, fontWeight.ToNSFontWeight()), size, fontStyle);
+			var font = NSFont.SystemFontOfSize(size, fontWeight.ToNSFontWeight());
+
+			if (font is not null)
+			{
+				return ApplyStyle(font, size, fontStyle);
+			}
+			else
+			{
+				throw new InvalidOperationException($"Unable to find {font}");
+			}
 		}
 
 		#region Load Custom Font
@@ -256,7 +265,19 @@ namespace Windows.UI
 				{
 					// Use the font even if the registration failed if the error code
 					// reports the fonts have already been registered.
-					return NSFont.FromFontName(font.PostScriptName, size);
+					if (font.PostScriptName is not null)
+					{
+						return NSFont.FromFontName(font.PostScriptName, size);
+					}
+					else
+					{
+						if (typeof(NSFontHelper).Log().IsEnabled(LogLevel.Debug))
+						{
+							typeof(NSFontHelper).Log().Debug($"Unable to register font from {file} ({error})");
+						}
+
+						return null;
+					}
 				}
 				else
 				{
