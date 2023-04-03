@@ -1,3 +1,7 @@
+---
+uid: Uno.Blog.UsingWSLToBuildAOT
+---
+
 # How to build WebAssembly C# Apps with the Mono AOT and  Windows Subsystem for Linux
 
 Microsoft's steady progress on WebAssembly gives an opportunity to test a lot of the new features regarding the payload size and performance balance.

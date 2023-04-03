@@ -1,3 +1,7 @@
+---
+uid: Uno.SilverlightMigration.SwitchingStringResources
+---
+
 # Switching to string resources
 
 The Silverlight Business App template includes string resources and a helper class that allows the strings to be bound to controls in the UI. Using strings resources for control content is often considered a best practice and comes into its own when an application must support multiple languages.

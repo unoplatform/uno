@@ -1,3 +1,7 @@
+---
+uid: Uno.Features.Accessibility
+---
+
 # Accessibility (a11y)
 
 Windows uses the UI Automation framework to provide accessibility information to screen readers.

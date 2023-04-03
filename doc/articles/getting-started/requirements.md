@@ -1,3 +1,7 @@
+---
+uid: Uno.GettingStarted.Requirements
+---
+
 # Supported platforms
 
 Uno Platform applications run on [Android](#android), [iOS](#ios), [web](#webassembly), [macOS](#macos), [Linux](#linux), Tizen, and [Windows](#windows). 

@@ -1,3 +1,7 @@
+---
+uid: Uno.SilverlightMigration.ImplementingIdentityServiceClient
+---
+
 # Implementing an identity service client
 
 In the preceding task, the code was created to allow the application to retrieve a client access token to secure access to business APIs. In this task, the access token will be used to interact with a ASP.NET Core WebAPI service.

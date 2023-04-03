@@ -1,3 +1,7 @@
+---
+uid: Uno.Features.WPDNotification
+---
+
 # Uno Support for Windows.Phone.Devices.Notification APIs
 
 ## `VibrationDevice`

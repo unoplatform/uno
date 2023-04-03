@@ -1,3 +1,7 @@
+---
+uid: Uno.SilverlightMigration.DataAccessOverview
+---
+
 # Data access services
 
 The Silverlight Business Application template utilizes a WCF RIA Services backend project to deliver the Silverlight application via a static or a dynamic page, and to provide access to services. These services use WCF (Windows Communication Foundation) and a custom binding due to restrictions in the network protocols that can be accessed from the browser at that time. There are two types of service that are supported:

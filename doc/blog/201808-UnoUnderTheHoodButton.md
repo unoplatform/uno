@@ -1,3 +1,7 @@
+---
+uid: Uno.Blog.UnderTheHoodButton
+---
+
 # Pushing the right buttons: How Uno implements views
 
 

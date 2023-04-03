@@ -1,3 +1,7 @@
+---
+uid: Uno.Development.SignalR
+---
+
 # SignalR
 
 [SignalR](https://docs.microsoft.com/en-us/aspnet/core/signalr/introduction?view=aspnetcore-3.1) is an ASP.NET Core library that allows server-side code to be instantly pushed to the client. 

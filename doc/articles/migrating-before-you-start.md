@@ -1,3 +1,7 @@
+---
+uid: Uno.Development.MigratingBeforeYouStart
+---
+
 # Migrating UWP-only code - Checklist
 
 Before you start migrating a UWP-only application or library to be Uno compatible, it's a good idea to assess the degree of effort involved in getting the port fully functional. Depending on the code in question, it may be as easy as copying the files, or it may involve significant extra effort.

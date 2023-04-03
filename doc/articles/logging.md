@@ -1,3 +1,7 @@
+---
+uid: Uno.Development.Logging
+---
+
 # Logging
 
 Virtually every production level application should utilize some form of logging. During development, especially when developing WASM applications where using a debugger can be more challenging, diagnostic logs can be invaluable for identifying issues. Once in production, capturing information about critical failures can be invaluable.

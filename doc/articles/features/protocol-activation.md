@@ -1,3 +1,7 @@
+---
+uid: Uno.Features.ProtocolActivation
+---
+
 # Custom protocol activation
 
 ## Registering custom scheme

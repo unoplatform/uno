@@ -1,4 +1,8 @@
- # Focus Management
+---
+uid: Uno.Features.FocusManagement
+---
+
+# Focus Management
 
 ## Programmatic focus
 

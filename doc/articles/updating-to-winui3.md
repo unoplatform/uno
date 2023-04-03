@@ -1,3 +1,7 @@
+---
+uid: Uno.Development.UpdatingToWinUI3
+---
+
 # Updating an Uno application to WinUI 3.0
 
 Uno Platform supports authoring apps using [WinUI 3's API](uwp-vs-winui3.md). This article details the changes required when migrating an application from the UWP API set to the WinUI 3 API set.

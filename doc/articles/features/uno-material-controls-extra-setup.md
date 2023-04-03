@@ -1,3 +1,7 @@
+---
+uid: Uno.Features.MaterialExtraSetup
+---
+
 # Uno.Material Controls: Extra setup
 
 > [!IMPORTANT]

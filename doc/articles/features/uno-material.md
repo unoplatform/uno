@@ -1,3 +1,7 @@
+---
+uid: Uno.Features.Material
+---
+
 # Uno.Material - cross-platform Material Design
 
 > [!IMPORTANT]

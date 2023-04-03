@@ -1,3 +1,7 @@
+---
+uid: Uno.Contributing.DebuggingUno
+---
+
 # Debugging Uno.UI
 
 > [!Note]

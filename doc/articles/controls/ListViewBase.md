@@ -1,4 +1,8 @@
-﻿# ListViewBase in Uno Platform
+﻿---
+uid: Uno.Controls.ListViewBase
+---
+
+# ListViewBase in Uno Platform
 
 Uno Platform's implementation of ListViewBase supports shared styling and template use with UWP apps, whilst internally delegating to the native list view on Android and iOS for high performance. This document explains how Uno's implementation differs in some details from Windows.
 

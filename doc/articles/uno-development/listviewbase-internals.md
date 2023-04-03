@@ -1,3 +1,7 @@
+---
+uid: Uno.Contributing.ListViewBase
+---
+
 # ListViewBase internals for contributors
 
 This document describes the internal operations of Uno's `ListViewBase` implementation(s) in detail, aimed at contributors.

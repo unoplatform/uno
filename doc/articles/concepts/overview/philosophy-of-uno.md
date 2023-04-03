@@ -1,3 +1,7 @@
+---
+uid: Uno.Overview.Philosophy
+---
+
 # Philosophy of Uno Platform
 
 This document outlines the philosophy of Uno Platform. It guides the development of past and future major architectural decisions.

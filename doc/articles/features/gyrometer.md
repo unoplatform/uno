@@ -1,3 +1,7 @@
+---
+uid: Uno.Features.Gyrometer
+---
+
 # Gyrometer
 
 > [!TIP]

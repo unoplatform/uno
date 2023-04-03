@@ -1,3 +1,7 @@
+---
+uid: Uno.Contributing.CreateRuntimeTests
+---
+
 # Creating unit tests in Uno.UI.RuntimeTests
 
 Platform-runtime unit tests are relatively cheap (in terms of developer productivity and CI time) whilst still allowing functionality to be verified across all supported platforms and in a realistic environment. Accordingly they're appropriate for many bugfixes and new features.

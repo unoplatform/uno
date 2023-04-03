@@ -1,3 +1,7 @@
+---
+uid: Uno.Features.WDHaptics
+---
+
 # Uno Support for `Windows.Devices.Haptics`
 
 ## `VibrationDevice`

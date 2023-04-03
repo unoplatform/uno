@@ -1,3 +1,7 @@
+---
+uid: Uno.Features.Localization
+---
+
 # String resources and localization
 
 Localization is done through the `resw` files in the current project. Normally you would put these files in the `strings/[lang]` folder in the `[AppName]` project.  Resources are then referenced using [`x:Uid`](https://docs.microsoft.com/en-us/windows/uwp/xaml-platform/x-uid-directive).

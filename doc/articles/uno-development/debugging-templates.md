@@ -1,3 +1,7 @@
+---
+uid: Uno.Contributing.DebuggingTemplates
+---
+
 # Debugging Uno Platform Solution templates
 
 The uno platform project contains multiple types of templates:

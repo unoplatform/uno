@@ -1,4 +1,8 @@
-﻿# The WeakEventHelper class
+﻿---
+uid: Uno.Contributing.WeakEventHelper
+---
+
+# The WeakEventHelper class
 
 The WeakEventHelper class is an internal method that is designed to provide a 
 memory-friendly environment for registering to events internally in Uno.

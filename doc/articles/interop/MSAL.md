@@ -1,3 +1,7 @@
+---
+uid: Uno.Interop.MSAL
+---
+
 # Azure Authentication with MSAL
 
 Uno can be used to build applications using authentication. A popular mechanism is Azure Authentication (Azure AD, Azure AD B2C or ADFS) and it can be used directly using the Microsoft Authentication Library for .NET (MSAL.NET) available from NuGet.

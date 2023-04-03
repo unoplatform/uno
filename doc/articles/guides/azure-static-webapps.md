@@ -1,3 +1,7 @@
+---
+uid: Uno.Tutorials.AzureStaticWepApps
+---
+
 # Hosting Uno Platform WebAssembly apps on Azure Static Web Apps
 
 Deploying and hosting of Uno Platform WebApps can be accomplished using [Azure Static Web Apps](https://docs.microsoft.com/en-us/azure/static-web-apps/overview).

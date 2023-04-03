@@ -1,3 +1,7 @@
+---
+uid: Uno.SilverlightMigration.MigrateHomePageAndStyles
+---
+
 # Migrating the home page XAML and styles
 
 The general approach for migrating a Silverlight page to UWP is to start by creating a new UWP page (as demonstrated earlier) and then copying the content XAML and associated styles from the Silverlight page to UWP. The approach would then be:

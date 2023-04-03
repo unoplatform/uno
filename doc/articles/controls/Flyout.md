@@ -1,3 +1,7 @@
+---
+uid: Uno.Controls.Flyout
+---
+
 # Flyout
 
 If you want to show a dimmed overlay underneath the flyout, set the `Flyout.LightDismissOverlayMode` property to `On`.

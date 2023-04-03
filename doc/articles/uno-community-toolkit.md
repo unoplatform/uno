@@ -1,3 +1,7 @@
+---
+uid: Uno.Development.CommunityToolkit
+---
+
 # How to use Windows Community Toolkit
 
 The [Windows Community Toolkit](https://docs.microsoft.com/en-us/windows/communitytoolkit/) is a collection of helper functions, custom controls, and app services. It simplifies and demonstrates common developer patterns when building experiences for Windows 10.

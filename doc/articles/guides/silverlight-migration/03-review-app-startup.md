@@ -1,3 +1,7 @@
+---
+uid: Uno.SilverlightMigration.ReviewAppStartup
+---
+
 # Reviewing the app startup
 
 Part of the initial startup for an application creates and configures navigation. The startup code and resources for both the Silverlight and UWP apps are defined in the **App.xaml** and **App.xaml.cs** files in each project. As Silverlight and UWP have different application models and life-cycles, unfortunately there is little opportunity for code-reuse here.

@@ -1,3 +1,7 @@
+---
+uid: Uno.Features.Themes
+---
+
 # Working with themes
 
 Uno Platform supports `Light`, `Dark` and `HighContrast` themes similarly to UWP.

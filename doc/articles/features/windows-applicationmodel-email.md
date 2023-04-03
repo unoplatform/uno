@@ -1,4 +1,8 @@
-﻿# Uno Support for Windows.ApplicationModel.Email
+﻿---
+uid: Uno.Features.WAMEmail
+---
+
+# Uno Support for Windows.ApplicationModel.Email
 
 ## `EmailManager`
 

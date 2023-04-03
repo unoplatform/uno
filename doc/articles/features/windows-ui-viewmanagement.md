@@ -1,4 +1,8 @@
-﻿# Uno Support for Windows.UI.ViewManagement
+﻿---
+uid: Uno.Features.WinUIViewManagement
+---
+
+# Uno Support for Windows.UI.ViewManagement
 
 ## `ApplicationViewTitleBar`
 

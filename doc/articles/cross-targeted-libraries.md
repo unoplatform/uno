@@ -1,3 +1,7 @@
+---
+uid: Uno.Development.CrossTargetedLibraries
+---
+
 # Working with cross-targeted class libraries
 
 Using cross-targeted library projects allows the same code to be compiled for multiple platforms from a single project, and offers advantages over older project formats, such as not having to explicitly include every file.

@@ -1,4 +1,8 @@
-﻿# Release notes
+﻿---
+uid: Uno.ReleaseNotes.Legacy
+---
+
+# Release notes
 
 ### Features
 

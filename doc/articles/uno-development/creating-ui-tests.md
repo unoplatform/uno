@@ -1,3 +1,7 @@
+---
+uid: Uno.Contributing.CreateUITests
+---
+
 # Creating automated UI tests
 
 Internally Uno.UI uses automated UI tests using the [Uno.UITest framework](https://github.com/unoplatform/Uno.UITest). These tests run out-of-process relative to the application itself. They can simulate user interaction, and can also record and verify on-screen pixels.

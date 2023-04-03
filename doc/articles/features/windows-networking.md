@@ -1,3 +1,7 @@
+---
+uid: Uno.Features.WNetworking
+---
+
 # Uno Support for Windows.Networking
 
 ## Checking for internet connectivity

@@ -1,3 +1,7 @@
+---
+uid: Uno.GettingStarted.Tutorial1
+---
+
 # Create a Single Page App with Uno Platform
 
 [Download the complete sample](https://github.com/unoplatform/Uno.GettingStartedTutorial/tree/master/src/Getting-Started-Tutorial-1)  
@@ -16,18 +20,18 @@ Also, you will learn how to run your applications on all platforms supported by 
 
 <div class="NOTE alert alert-info">
 <h5>Before you start the tutorial</h5>
-If you haven't prepared your dev environment for Uno Platform app development yet, [the Setting up the Environment page](get-started.md) will guide you through installing all the prerequisites.
+If you haven't prepared your dev environment for Uno Platform app development yet, <a href="get-started.md">the Setting up the Environment page</a> will guide you through installing all the prerequisites.
 </div>
 
 ## Getting Started
 
 1. Open Visual Studio and click on `Create new project`.  
 
-    ![](Assets/tutorial01/newproject1.PNG)
+    ![Visual Studio - Create new project](Assets/tutorial01/newproject1.PNG)
 
 1. Search for the `Uno` templates, select the `Uno Platform App` then click `Next`.  
 
-    ![](Assets/tutorial01/newproject2.PNG)
+    ![Visual Studio - Select Uno Platform App](Assets/tutorial01/newproject2.PNG)
 
 1. Name your app then click `Next`.
 
@@ -40,7 +44,7 @@ If you haven't prepared your dev environment for Uno Platform app development ye
 
 1. After a few seconds, a banner may appear at the top of the editor asking to reload projects. Click **Reload projects**.
 
-    ![](Assets/quick-start/vs2022-project-reload.PNG)
+    ![Visual Studio - Reload projects banner](Assets/quick-start/vs2022-project-reload.PNG)
 
 1. In your `MyApp` Class Library project, open up `MainPage.xaml`
 

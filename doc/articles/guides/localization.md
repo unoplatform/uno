@@ -1,3 +1,7 @@
+---
+uid: Uno.Tutorials.Localization
+---
+
 # How to localize text resources
 
 This guide will walk you through the necessary steps to localize an Uno Platform application.

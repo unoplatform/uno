@@ -1,3 +1,7 @@
+---
+uid: Uno.Blog.WasmIntroPart1
+---
+
 # Introduction to WebAssembly for the Uno Platform (Part 1)
 
 WebAssembly, or Wasm for short, is a hot topic these days and for good reasons. It has lots of promise, and for the Uno Platform it promises to open up the Web to other languages and frameworks.

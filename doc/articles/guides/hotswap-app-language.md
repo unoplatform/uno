@@ -1,3 +1,7 @@
+---
+uid: Uno.Tutorials.ChangeAppLanguage
+---
+
 # How to change app language at runtime
 
 This guide will walk you through the necessary steps for changing app language at runtime.

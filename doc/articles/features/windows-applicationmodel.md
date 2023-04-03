@@ -1,3 +1,7 @@
+---
+uid: Uno.Features.WAM
+---
+
 # Uno Support for Windows.ApplicationModel
 
 ## `PackageId`

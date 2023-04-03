@@ -1,3 +1,7 @@
+---
+uid: Uno.SilverlightMigration.MigratingAuthUI
+---
+
 # Migrating the authentication UI
 
 The Silverlight Business App template includes the user login and registration UI:

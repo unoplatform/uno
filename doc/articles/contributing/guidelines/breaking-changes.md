@@ -1,3 +1,7 @@
+---
+uid: Uno.Contributing.BreakingChanges
+---
+
 # Guidelines for breaking changes
 
 ## Overview

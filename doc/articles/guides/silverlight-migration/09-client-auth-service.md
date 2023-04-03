@@ -1,3 +1,7 @@
+---
+uid: Uno.SilverlightMigration.ClientAuthentication
+---
+
 # Client Authentication
 
 As noted above, the Silverlight Business Application template utilizes a WCF RIA Services backend that implements an **AuthenticationService** using ASP.NET web form authentication. The template also supported The TimeEntryRia sample application has extended the solution to use accounts stored in a custom database rather than use the default ASP.NET authentication schema - a common practice with enterprise applications.

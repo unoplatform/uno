@@ -1,3 +1,7 @@
+---
+uid: Uno.Features.XamlHotReload
+---
+
 # XAML Hot Reload
 
 The Uno Platform Hot Reload feature provides a way to modify the XAML displayed in a running application, in order to iterate faster on UI changes and Data Binding updates. This makes the inner developer loop faster.

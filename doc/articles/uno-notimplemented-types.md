@@ -1,3 +1,7 @@
+---
+uid: Uno.Development.NotImplemented
+---
+
 ## The member/type is not implemented
 
 If you're visiting this page after having clicked on a link in your application's debug log or exception view, this means you're using directly or indirectly an API that is not implemented.

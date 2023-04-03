@@ -1,3 +1,7 @@
+---
+uid: Uno.Features.ShapesAndBrushes
+---
+
 # Shapes & Brushes
 
 ## Implemented Shapes

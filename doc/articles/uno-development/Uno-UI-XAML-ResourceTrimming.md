@@ -1,3 +1,7 @@
+---
+uid: Uno.Contributing.XamlResourceTrimming
+---
+
 # XAML Resource Trimming
 
 This document provides technical details about the [XAML Resource trimming phase](../features/resources-trimming.md).

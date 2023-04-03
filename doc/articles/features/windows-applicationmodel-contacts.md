@@ -1,3 +1,7 @@
+---
+uid: Uno.Features.WAMContacts
+---
+
 # Uno Support for Windows.ApplicationModel.Contacts
 
 ## `ContactPicker`

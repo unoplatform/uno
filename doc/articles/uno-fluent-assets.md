@@ -1,3 +1,7 @@
+---
+uid: Uno.Development.FluentAssets
+---
+
 # Uno Fluent UI assets
 
 Starting from Uno.UI 4.7, Uno Platform provides a cross platform fluent symbols font, provided by the [Uno.Fonts.Fluent](https://nuget.info/packages/Uno.Fonts.Fluent) NuGet package.

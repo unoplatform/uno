@@ -1,3 +1,7 @@
+---
+uid: Uno.Features.Cursors
+---
+
 # Using pointer cursors
 
 You can change the pointer cursor in your application at runtime on WebAssembly, macOS, GTK and WPF by setting the `CoreWindow.PointerCursor` property:

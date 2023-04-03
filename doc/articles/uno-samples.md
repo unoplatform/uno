@@ -1,3 +1,7 @@
+---
+uid: Uno.Development.Samples
+---
+
 # Uno.Samples
 
 The [Uno.Samples repository](https://github.com/unoplatform/Uno.Samples) gathers various working examples for Uno Platform, ranging from small single-feature samples to larger showcase applications. 

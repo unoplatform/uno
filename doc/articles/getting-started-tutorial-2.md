@@ -1,3 +1,7 @@
+---
+uid: Uno.GettingStarted.Tutorial2
+---
+
 # Create a Single Page App with Uno Platform
 
 [Download the complete sample](https://github.com/unoplatform/Uno.GettingStartedTutorial/tree/master/src/Getting-Started-Tutorial-2)  
@@ -24,15 +28,15 @@ The tutorial walks you through creating a cross platform application with Uno Pl
 
 1. Open Visual Studio and click on `Create new project`. 
 
-    ![](Assets/tutorial01/newproject1.PNG)
+    ![Visual Studio - Get started - Selecting `create a new project` option](Assets/tutorial01/newproject1.PNG)
 
 1. Search for the `Uno` templates, select the `Uno Platform App` then click `Next`.
 
-    ![](Assets/tutorial01/newproject2.PNG)
+    ![Visual Studio - Create a new project - Selecting `Uno Platform App` option](Assets/tutorial01/newproject2.PNG)
 
 1. In the `Configure your new project` window, set the `Project name` to `BugTracker`, choose where you would like to save your project and click the `Create` button.
 
-    ![](Assets/tutorial01/newproject3.PNG)
+    ![Visual Studio - Configure your new project](Assets/tutorial01/newproject3.PNG)
 
     > [!IMPORTANT]
     > The C# and XAML snippets in this tutorial requires that the solution is named **BugTracker**. Using a different name will result in build errors when you copy code from this tutorial into the solution.
@@ -46,7 +50,7 @@ The tutorial walks you through creating a cross platform application with Uno Pl
 
 1. After a few seconds, a banner may appear at the top of the editor asking to reload projects. Click **Reload projects**.
 
-    ![](Assets/quick-start/vs2022-project-reload.PNG)
+    ![Banner appearing at the top of the editor asking to reload projects with a `Reload projects` button](Assets/quick-start/vs2022-project-reload.PNG)
 
 1. Right-click on `BugTracker` project and select `Manage NuGet Packages for Solution` from the context menu.
     - Make sure to select **nuget.org** or **NuGet official package source** as the package source
@@ -60,7 +64,7 @@ The tutorial walks you through creating a cross platform application with Uno Pl
 
 1. Add a Models folder in the **BugTracker** Project.
 
-    ![](Assets/tutorial01/create-models-folder.png)
+    ![Visual Studio - Solution Explorer - `Add > New Folder` option in the context menu for the `BugTracker` shared project](Assets/tutorial01/create-models-folder.png)
 
 1. Add a new class and then paste in the following code:
 
@@ -385,7 +389,7 @@ The tutorial walks you through creating a cross platform application with Uno Pl
 
 You should see something similar to the screenshot below. You can [download the completed tutorial code here](https://github.com/unoplatform/Uno.GettingStartedTutorial/tree/master/src/Getting-Started-Tutorial-2).
 
-![tutorial-screenshot](Assets/quick-start/tutorial-screenshot.png)
+![Tutorial screenshots - Final result on Windows, Android, iOS and WebAssembly](Assets/quick-start/tutorial-screenshot.png)
 
 In this tutorial, through creating a simple Bug Tracking app you have learned how to:
 

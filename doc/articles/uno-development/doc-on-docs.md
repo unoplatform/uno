@@ -1,3 +1,7 @@
+---
+uid: Uno.Contributing.Docs
+---
+
 # Contributing docs to Uno Platform
 
 Good documentation is essential, and writing docs is a valued contribution that makes Uno more useful for everybody. This article covers *when* to write docs and *what* you should write, with a focus on two of the most common forms of documentation: step-by-step guides (ie howtos or tutorials), and feature documentation.

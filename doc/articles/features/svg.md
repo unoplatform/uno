@@ -1,3 +1,7 @@
+---
+uid: Uno.Features.SVG
+---
+
 # Using SVG images
 
 * Uno Platform supports using vector SVG graphics inside of your cross-platform applications using the `Uno.UI.Svg` package.

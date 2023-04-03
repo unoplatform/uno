@@ -1,3 +1,7 @@
+---
+uid: Uno.Contributing.CreatingTests
+---
+
 # Guidelines for creating tests
 
 Good test coverage is essential to maintaining Uno stable and free of regressions. Appropriate tests are generally a requirement for bugfix and new feature PRs.

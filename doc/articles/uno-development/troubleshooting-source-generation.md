@@ -1,3 +1,7 @@
+---
+uid: Uno.Contributing.SourceGeneration
+---
+
 # Troubleshooting Source Generation
 
 Source Generation in Uno is done in one of two ways:

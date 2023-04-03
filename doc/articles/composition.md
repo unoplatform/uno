@@ -1,3 +1,7 @@
+---
+uid: Uno.Development.Composition
+---
+
 # Composition API
 
 Composition Visuals make up the visual tree structure which all other features of the composition API use and build on.

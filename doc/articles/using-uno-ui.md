@@ -1,4 +1,8 @@
-﻿# Developing with Uno Platform
+﻿---
+uid: Uno.Development.Overview
+---
+
+# Developing with Uno Platform
 
 Write applications once in XAML and C# and deploy them to [any target platform](getting-started/requirements.md).
 

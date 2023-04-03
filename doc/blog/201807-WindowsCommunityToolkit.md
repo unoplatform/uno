@@ -1,3 +1,7 @@
+---
+uid: Uno.Blog.WindowsCommunityToolkit
+---
+
 # Uno Platform support for the Windows Community Toolkit
 
 Recent updates to the Uno Platform have allowed for the [Windows Community Toolkit](https://github.com/unoplatform/uno.WindowsCommunityToolkit) to run

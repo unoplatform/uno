@@ -1,3 +1,7 @@
+---
+uid: Uno.Contributing.AndroidStudio
+---
+
 # Debugging Uno.UI Java code with Android studio
 
 Not all of Uno.UI is written in C#. On Android, certain low-level parts of the code is written in Java, including the UnoViewGroup class, from which UIElement (and hence most other views) inherit. The motivation for this is performance: the communication or 'interop' between C# and Java layers at runtime can, in very specific cases, have a measurable performance impact. 

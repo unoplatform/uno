@@ -1,3 +1,7 @@
+---
+uid: Uno.Interop.WasmJavaScript3
+---
+
 # Embedding Existing JavaScript Components Into Uno-WASM - Part 3
 
 In the previous article, a simple _syntax highlighter_ was used to enhance the display of text in HTML. But it is not enough for most apps: it's often required for JavaScript components to call back into the C# side of application. The easiest way to do that in Uno for WebAssembly is by using [_DOM Events_](https://developer.mozilla.org/docs/Web/Guide/Events/Creating_and_triggering_events). Applications using Uno can [consume DOM Events and CustomEvents](https://platform.uno/docs/articles/wasm-custom-events.html) very easily.
