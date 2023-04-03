@@ -119,10 +119,23 @@ public partial class CoreWebView2
 		}
 	}
 
-	internal void RaiseNavigationStarting(string uri, out bool cancel)
+	internal void RaiseNavigationStarting(object navigationData, out bool cancel)
 	{
+		string? uriString = null;
+		if (navigationData is Uri uri)
+		{
+			uriString = uri.ToString();
+		}
+		else if (navigationData is string htmlContent)
+		{
+			// Convert to data URI string
+			var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(htmlContent);
+			var base64String = System.Convert.ToBase64String(plainTextBytes);
+			uriString = string.Format(CultureInfo.InvariantCulture, DataUriFormatString, base64String);
+		}
+
 		var newNavigationId = Interlocked.Increment(ref _navigationId);
-		var args = new CoreWebView2NavigationStartingEventArgs((ulong)newNavigationId, uri);
+		var args = new CoreWebView2NavigationStartingEventArgs((ulong)newNavigationId, uriString);
 		NavigationStarting?.Invoke(this, args);
 
 		cancel = args.Cancel;

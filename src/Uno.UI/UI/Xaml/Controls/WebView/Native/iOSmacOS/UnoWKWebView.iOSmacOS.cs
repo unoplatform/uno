@@ -17,6 +17,7 @@ using Uno.UI.Extensions;
 using Windows.Foundation;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Text;
 using System.Net;
 
 #if __IOS__
@@ -30,7 +31,7 @@ namespace Windows.UI.Xaml.Controls;
 
 public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageHandler
 #if __MACOS__
-	,IHasSizeThatFits
+	, IHasSizeThatFits
 #endif
 {
 	private CoreWebView2 _coreWebView;
@@ -81,7 +82,7 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 		var height = Math.Min(availableSize.Height, FittingSize.Height);
 		var width = Math.Min(availableSize.Width, FittingSize.Width);
 		return new CGSize(width, height);
-	} 
+	}
 #endif
 
 
@@ -210,7 +211,7 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 		}
 		else
 		{
-			RaiseNavigationStarting(targetString, out var cancel);
+			RaiseNavigationStarting(target, out var cancel);
 
 			if (!cancel)
 			{
@@ -307,7 +308,8 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 		};
 		alert.AddButton(OkString);
 		alert.AddButton(CancelString);
-		alert.BeginSheetForResponse(webview.Window, (result) => {
+		alert.BeginSheetForResponse(webview.Window, (result) =>
+		{
 			var okButtonClicked = result == 1000;
 			completionHandler(okButtonClicked);
 		});
@@ -352,7 +354,8 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 		alert.AccessoryView = textField;
 		alert.AddButton(OkString);
 		alert.AddButton(CancelString);
-		alert.BeginSheetForResponse(webview.Window, (result) => {
+		alert.BeginSheetForResponse(webview.Window, (result) =>
+		{
 			var okButtonClicked = result == 1000;
 			completionHandler(okButtonClicked ? textField.StringValue : null);
 		});
@@ -376,9 +379,7 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 
 		_isCancelling = false;
 
-		RaiseNavigationStarting(CoreWebView2.BlankUrl, out var cancel); //TODO:MZ: For HTML content 		var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(htmlContent);
-																					 //var base64String = System.Convert.ToBase64String(plainTextBytes);
-																					 //var htmlUri = new Uri(string.Format(CultureInfo.InvariantCulture, DataUriFormatString, base64String));
+		RaiseNavigationStarting(targetUrl ?? _lastNavigationData, out var cancel); //TODO:MZ: For HTML content
 
 		if (cancel)
 		{
@@ -392,9 +393,9 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 		return cancel;
 	}
 
-	private void RaiseNavigationStarting(string uriString, out bool cancel)
+	private void RaiseNavigationStarting(object navigationData, out bool cancel)
 	{
-		if (uriString == null)
+		if (navigationData is null)
 		{
 			// This ase should not happen when navigating normally using http requests.
 			// This is to stop a scenario where the webview is initialized without having a source
@@ -402,7 +403,7 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 			return;
 		}
 
-		if (Uri.TryCreate(uriString, UriKind.Absolute, out var uri) && uri.Scheme.Equals(Uri.UriSchemeMailto, StringComparison.OrdinalIgnoreCase))
+		if (navigationData is Uri uri && uri.Scheme.Equals(Uri.UriSchemeMailto, StringComparison.OrdinalIgnoreCase))
 		{
 #if __IOS__
 			ParseUriAndLauchMailto(uri);
@@ -414,7 +415,7 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 		}
 
 		_coreWebView.SetHistoryProperties(CanGoBack, CanGoForward);
-		_coreWebView.RaiseNavigationStarting(uriString, out cancel);
+		_coreWebView.RaiseNavigationStarting(navigationData, out cancel);
 	}
 
 	private void RaiseNavigationCompleted(Uri uri, bool isSuccess, int httpStatusCode, CoreWebView2WebErrorStatus errorStatus)

@@ -9,7 +9,7 @@ namespace Microsoft.Web.WebView2.Core;
 /// </summary>
 public partial class CoreWebView2NavigationStartingEventArgs : EventArgs
 {
-	public CoreWebView2NavigationStartingEventArgs(ulong navigationId, string uri) =>
+	public CoreWebView2NavigationStartingEventArgs(ulong navigationId, string? uri) =>
 		(NavigationId, Uri) = (navigationId, uri);
 
 	/// <summary>
@@ -20,7 +20,7 @@ public partial class CoreWebView2NavigationStartingEventArgs : EventArgs
 	/// <summary>
 	/// Gets the URI of the requested navigation.
 	/// </summary>
-	public string Uri { get; }
+	public string? Uri { get; }
 
 	/// <summary>
 	/// Determines whether to cancel the navigation.
