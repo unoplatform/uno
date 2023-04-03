@@ -48,7 +48,7 @@ namespace Windows.System
 				UIKeyboardHidUsage.KeyboardZ => VirtualKey.Z,
 
 				UIKeyboardHidUsage.KeyboardPeriod => VirtualKey.Decimal,
-				UIKeyboardHidUsage.KeyboardEqualSign => VirtualKey.Enter, // TODO: THIS IS NOT CORRECT
+				UIKeyboardHidUsage.KeyboardEqualSign => VirtualKey.Enter,
 				UIKeyboardHidUsage.KeyboardSlash => VirtualKey.Divide,
 				UIKeyboardHidUsage.KeyboardHyphen => VirtualKey.Subtract,
 

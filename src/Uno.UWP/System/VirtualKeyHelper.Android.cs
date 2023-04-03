@@ -1,4 +1,6 @@
-﻿using Android.Views;
+﻿// Some mappings based on https://boostrobotics.eu/windows-key-codes/
+
+using Android.Views;
 
 namespace Windows.System;
 
@@ -70,20 +72,20 @@ internal static class VirtualKeyHelper
 
 			Keycode.Space => VirtualKey.Space,
 			Keycode.Tab => VirtualKey.Tab,
-			//Keycode.Del => VirtualKey.Eras,
+			Keycode.Del => VirtualKey.Delete, // TODO: Map Backspace properly
 			Keycode.ForwardDel => VirtualKey.Delete,
 
 			// Modifiers
 			Keycode.Escape => VirtualKey.Escape,
-			Keycode.MetaLeft => VirtualKey.LeftWindows, // Command
-														//Keycode.KeyboardRightGui => VirtualKey.RightWindows, // Command
-														//Keycode.KeyboardLeftShift => VirtualKey.Shift, // Left Shift
-														//Keycode.KeyboardCapsLock => VirtualKey.CapitalLock,
-														//Keycode.KeyboardLeftAlt => VirtualKey.LeftMenu,
-														//Keycode.KeyboardLeftControl => VirtualKey.Control, // Left control
-														//Keycode.KeyboardRightShift => VirtualKey.RightShift,
-														//Keycode.KeyboardRightAlt => VirtualKey.RightMenu, // Right option, a.k.a. Right Alt
-														//Keycode.KeyboardRightControl => VirtualKey.RightControl,
+			Keycode.MetaLeft => VirtualKey.LeftWindows,
+			//Keycode.KeyboardRightGui => VirtualKey.RightWindows, // Command
+			//Keycode.KeyboardLeftShift => VirtualKey.Shift, // Left Shift
+			//Keycode.KeyboardCapsLock => VirtualKey.CapitalLock,
+			//Keycode.KeyboardLeftAlt => VirtualKey.LeftMenu,
+			//Keycode.KeyboardLeftControl => VirtualKey.Control, // Left control
+			//Keycode.KeyboardRightShift => VirtualKey.RightShift,
+			//Keycode.KeyboardRightAlt => VirtualKey.RightMenu, // Right option, a.k.a. Right Alt
+			//Keycode.KeyboardRightControl => VirtualKey.RightControl,
 
 			// Functions
 			Keycode.F1 => VirtualKey.F1,
@@ -100,11 +102,17 @@ internal static class VirtualKeyHelper
 			Keycode.F12 => VirtualKey.F12,
 
 			// Navigation
+			Keycode.Help => VirtualKey.Help,
+			Keycode.NumLock => VirtualKey.NumberKeyLock,
+			Keycode.ScrollLock => VirtualKey.Scroll,
+
 			Keycode.Insert => VirtualKey.Insert,
 			Keycode.Home => VirtualKey.Home,
 			//Keycode.End => VirtualKey.End,
 			Keycode.PageUp => VirtualKey.PageUp,
 			Keycode.PageDown => VirtualKey.PageDown,
+			Keycode.AppSwitch => VirtualKey.Application, // TODO: Verify mapping
+
 			//Keycode.Left => VirtualKey.Left,
 			//Keycode.RightArrow => VirtualKey.Right,
 			//Keycode.DownArrow => VirtualKey.Down,
@@ -112,6 +120,8 @@ internal static class VirtualKeyHelper
 
 			Keycode.Back => VirtualKey.Back, //TODO:MZ: Should be GoBack?
 
+			Keycode.CtrlLeft => VirtualKey.LeftControl,
+			Keycode.CtrlRight => VirtualKey.RightControl,
 			Keycode.ShiftLeft => VirtualKey.LeftShift,
 			Keycode.ShiftRight => VirtualKey.RightShift,
 
@@ -124,6 +134,28 @@ internal static class VirtualKeyHelper
 			Keycode.DpadDown => VirtualKey.GamepadDPadDown,
 			Keycode.DpadLeft => VirtualKey.GamepadDPadLeft,
 			Keycode.DpadRight => VirtualKey.GamepadDPadRight,
+			Keycode.DpadCenter => VirtualKey.GamepadA,
+
+			// Android TV Remote
+			Keycode.Bookmark => VirtualKey.Favorites,
+			Keycode.Menu => VirtualKey.Menu,
+
+			Keycode.VolumeMute => (VirtualKey)173,
+			Keycode.VolumeDown=> (VirtualKey)174,
+			Keycode.VolumeUp => (VirtualKey)175,
+			Keycode.MediaNext => (VirtualKey)176,
+			Keycode.MediaPrevious => (VirtualKey)177,
+			Keycode.MediaStop => (VirtualKey)178,
+			Keycode.MediaPlayPause => (VirtualKey)179,
+			Keycode.MediaPause => (VirtualKey)179,
+
+			Keycode.CapsLock => VirtualKey.CapitalLock,
+#if __ANDROID_16__
+			Keycode.Kana => VirtualKey.Kana,
+#endif
+#if __ANDROID_20__
+			Keycode.Sleep => VirtualKey.Sleep,
+#endif
 
 			_ => VirtualKey.None
 		};
