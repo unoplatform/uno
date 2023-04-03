@@ -54,6 +54,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		private DataTemplate TextBlockItemTemplate => _testsResources["TextBlockItemTemplate"] as DataTemplate;
 
+		private DataTemplate WrappingTextBlockItemTemplate => _testsResources["WrappingTextBlockItemTemplate"] as DataTemplate;
+
 		private DataTemplate SelfHostingItemTemplate => _testsResources["SelfHostingItemTemplate"] as DataTemplate;
 
 		private DataTemplate FixedSizeItemTemplate => _testsResources["FixedSizeItemTemplate"] as DataTemplate;
@@ -776,7 +778,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			WindowHelper.WindowContent = container;
 			await WindowHelper.WaitForLoaded(list);
 
-			ScrollBy(list, 10000); // Scroll to end
+			ScrollTo(list, 10000); // Scroll to end
 
 			ListViewItem lastItem = null;
 			await WindowHelper.WaitFor(() => (lastItem = list.ContainerFromItem(19) as ListViewItem) != null);
@@ -791,8 +793,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			// Force rebuild the layout so that TranslateTransform picks up
 			// the updated values
-			ScrollBy(list, 0); // Scroll to top
-			ScrollBy(list, 100000); // Scroll to end
+			ScrollTo(list, 0); // Scroll to top
+			ScrollTo(list, 100000); // Scroll to end
 
 			await WindowHelper.WaitForEqual(181, () => GetTop(list.ContainerFromItem(18) as ListViewItem, container), tolerance: 2);
 		}
@@ -833,7 +835,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			WindowHelper.WindowContent = container;
 			await WindowHelper.WaitForIdle();
 
-			ScrollBy(list, 1000000); // Scroll to end
+			ScrollTo(list, 1000000); // Scroll to end
 
 			await WindowHelper.WaitForIdle();
 
@@ -876,7 +878,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			WindowHelper.WindowContent = container;
 			await WindowHelper.WaitForIdle();
 
-			ScrollBy(list, 1000000); // Scroll to end
+			ScrollTo(list, 1000000); // Scroll to end
 
 			await WindowHelper.WaitForIdle();
 
@@ -928,14 +930,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			dataContextChanged.Should().BeLessThan(5, $"dataContextChanged {dataContextChanged}");
 
-			ScrollBy(list, scroll.ExtentHeight / 2); // Scroll to middle
+			ScrollTo(list, scroll.ExtentHeight / 2); // Scroll to middle
 
 			await WindowHelper.WaitForIdle();
 
 			materialized.Should().BeLessThan(8, $"materialized {materialized}");
 			dataContextChanged.Should().BeLessThan(10, $"dataContextChanged {dataContextChanged}");
 
-			ScrollBy(list, scroll.ExtentHeight / 4); // Scroll to Quarter
+			ScrollTo(list, scroll.ExtentHeight / 4); // Scroll to Quarter
 
 			await WindowHelper.WaitForIdle();
 
@@ -984,13 +986,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var scroll = list.FindFirstChild<ScrollViewer>();
 			Assert.IsNotNull(scroll);
 
-			ScrollBy(list, scroll.ExtentHeight / 2); // Scroll to middle
+			ScrollTo(list, scroll.ExtentHeight / 2); // Scroll to middle
 
 			await WindowHelper.WaitForIdle();
 
 			materialized.Should().BeLessThan(10, $"materialized {materialized}");
 
-			ScrollBy(list, scroll.ExtentHeight / 4); // Scroll to Quarter
+			ScrollTo(list, scroll.ExtentHeight / 4); // Scroll to Quarter
 
 			await WindowHelper.WaitForIdle();
 
@@ -1043,28 +1045,28 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsNotNull(scroll);
 			dataContextChanged.Should().BeLessThan(10, $"dataContextChanged {dataContextChanged}");
 
-			ScrollBy(list, ElementHeight);
+			ScrollTo(list, ElementHeight);
 
 			await WindowHelper.WaitForIdle();
 
 			materialized.Should().BeLessThan(12, $"materialized {materialized}");
 			dataContextChanged.Should().BeLessThan(11, $"dataContextChanged {dataContextChanged}");
 
-			ScrollBy(list, ElementHeight * 3);
+			ScrollTo(list, ElementHeight * 3);
 
 			await WindowHelper.WaitForIdle();
 
 			materialized.Should().BeLessThan(14, $"materialized {materialized}");
 			dataContextChanged.Should().BeLessThan(13, $"dataContextChanged {dataContextChanged}");
 
-			ScrollBy(list, scroll.ExtentHeight / 2); // Scroll to middle
+			ScrollTo(list, scroll.ExtentHeight / 2); // Scroll to middle
 
 			await WindowHelper.WaitForIdle();
 
 			materialized.Should().BeLessThan(14, $"materialized {materialized}");
 			dataContextChanged.Should().BeLessThan(25, $"dataContextChanged {dataContextChanged}");
 
-			ScrollBy(list, scroll.ExtentHeight / 4); // Scroll to Quarter
+			ScrollTo(list, scroll.ExtentHeight / 4); // Scroll to Quarter
 
 			await WindowHelper.WaitForIdle();
 
@@ -2399,13 +2401,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var initial = GetCurrenState();
 
 			// scroll to bottom
-			ScrollBy(list, 10000);
+			ScrollTo(list, 10000);
 			await Task.Delay(500);
 			await WindowHelper.WaitForIdle();
 			var firstScroll = GetCurrenState();
 
 			// scroll to bottom
-			ScrollBy(list, 10000);
+			ScrollTo(list, 10000);
 			await Task.Delay(500);
 			await WindowHelper.WaitForIdle();
 			var secondScroll = GetCurrenState();
@@ -2451,7 +2453,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var initial = GetCurrenState();
 
 			// scroll to bottom
-			ScrollBy(list, 10000);
+			ScrollTo(list, 10000);
 			await Task.Delay(500);
 			await WindowHelper.WaitForIdle();
 			var firstScroll = GetCurrenState();
@@ -2460,7 +2462,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			source.HasMoreItems = false;
 
 			// scroll to bottom
-			ScrollBy(list, 10000);
+			ScrollTo(list, 10000);
 			await Task.Delay(500);
 			await WindowHelper.WaitForIdle();
 			var secondScroll = GetCurrenState();
