@@ -1698,7 +1698,7 @@ namespace Windows.UI.Xaml.Controls
 
 				if (WinUICoreServices.Instance.InitializationType == InitializationType.IslandsOnly)
 				{
-					visibleBounds = XamlRoot!.Bounds;
+					visibleBounds = XamlRoot?.Bounds ?? default;
 				}
 
 				bool windowed = false;
@@ -1900,7 +1900,7 @@ namespace Windows.UI.Xaml.Controls
 
 			if (WinUICoreServices.Instance.InitializationType == InitializationType.IslandsOnly)
 			{
-				visibleBounds = XamlRoot!.Bounds;
+				visibleBounds = XamlRoot?.Bounds ?? default;
 			}
 			// IFC_RETURN(DXamlCore::GetCurrent()->GetVisibleContentBoundsForElement(GetHandle(), &visibleBounds));
 
