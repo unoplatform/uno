@@ -91,11 +91,11 @@ jobs:
 
   - task: MSBuild@1
     inputs:
-      solution: Build/Uno.UI.Build.csproj
+      solution: filters/Uno.UI-packages-windows.slnf
       msbuildLocationMethod: version
       msbuildVersion: latest
       msbuildArchitecture: x86
-      msbuildArguments: /r /m /v:m /p:Configuration=Release filters/Uno.UI-packages-windows.slnf /detailedsummary /bl:$(build.artifactstagingdirectory)/build-$(GitVersion.FullSemVer)-windows-binaries.binlog
+      msbuildArguments: /r /m /v:m /p:Configuration=Release /detailedsummary /bl:$(build.artifactstagingdirectory)/build-$(GitVersion.FullSemVer)-windows-binaries.binlog
       clean: false
       restoreNugetPackages: false
       logProjectEvents: false
