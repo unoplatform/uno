@@ -75,6 +75,9 @@ jobs:
 
   - template: templates/install-windows-sdk.yml
 
+  - powershell: .\build\Install-WindowsSdkISO.ps1 18362
+    displayName: Insider SDK
+
   # This task is required to run in separately to avoid hitting targets file
   # caching issues with msbuild 17.3 or later
   - task: DotNetCoreCLI@2
