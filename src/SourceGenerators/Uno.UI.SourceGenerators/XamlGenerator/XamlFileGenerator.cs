@@ -714,14 +714,17 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					using (writer.BlockInvariant("switch (imageName)"))
 					{
-						var drawables = _metadataHelper.GetTypeByFullName($"{_defaultNamespace}.Resource").GetTypeMembers("Drawable").Single().GetFields();
+						var drawables = _metadataHelper.GetTypeByFullName($"{_defaultNamespace}.Resource").GetTypeMembers("Drawable").SingleOrDefault();
 
-						foreach (var drawable in drawables)
+						if (drawables?.GetFields() is { } drawableFields)
 						{
-							writer.AppendLineInvariantIndented("case \"{0}\":", drawable.Name);
-							using (writer.Indent())
+							foreach (var drawable in drawableFields)
 							{
-								writer.AppendLineInvariantIndented("return {0};", drawable.ConstantValue);
+								writer.AppendLineInvariantIndented("case \"{0}\":", drawable.Name);
+								using (writer.Indent())
+								{
+									writer.AppendLineInvariantIndented("return {0};", drawable.ConstantValue);
+								}
 							}
 						}
 
