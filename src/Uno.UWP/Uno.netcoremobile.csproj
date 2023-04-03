@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
+<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
 
 	<PropertyGroup>
 		<TargetFrameworks>net6.0-android;net6.0-ios</TargetFrameworks>
@@ -45,7 +45,7 @@
 		<PackageReference Include="Xamarin.AndroidX.Legacy.Support.v4" />
 		<PackageReference Include="Xamarin.AndroidX.AppCompat" />
 		<PackageReference Include="Xamarin.AndroidX.Fragment" />
-		<PackageReference Include="Xamarin.AndroidX.Browser" Version="1.0.0" />
+		<PackageReference Include="Xamarin.AndroidX.Browser" Version="1.5.0" />
 	</ItemGroup>
 
 	<ItemGroup>
