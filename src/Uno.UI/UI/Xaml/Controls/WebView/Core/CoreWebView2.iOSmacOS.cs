@@ -5,10 +5,13 @@ using System.Linq;
 using Uno.UI.Xaml.Controls;
 using Uno.Foundation.Logging;
 using Windows.UI.Xaml.Controls;
+
 #if __IOS__
 using UIKit;
+using _View = UIKit.UIView;
 #else
 using AppKit;
+using _View = AppKit.NSView;
 #endif
 
 namespace Microsoft.Web.WebView2.Core;
@@ -17,7 +20,7 @@ public partial class CoreWebView2
 {
 	internal INativeWebView? GetNativeWebViewFromTemplate()
 	{
-		var nativeWebView = (_owner as UIView)
+		var nativeWebView = (_owner as _View)
 			.FindSubviewsOfType<INativeWebView>()
 			.FirstOrDefault();
 
