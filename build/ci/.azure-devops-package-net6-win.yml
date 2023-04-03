@@ -91,7 +91,7 @@ jobs:
 
   - task: MSBuild@1
     inputs:
-      solution: filters/Uno.UI-packages-windows.slnf
+      solution: build/filters/Uno.UI-packages-windows.slnf
       msbuildLocationMethod: version
       msbuildVersion: latest
       msbuildArchitecture: x86
