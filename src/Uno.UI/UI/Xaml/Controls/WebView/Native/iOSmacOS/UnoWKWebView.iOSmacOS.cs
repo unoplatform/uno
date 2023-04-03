@@ -23,6 +23,7 @@ using System.Net;
 using UIKit;
 #else
 using AppKit;
+using Uno.UI;
 #endif
 
 namespace Windows.UI.Xaml.Controls;
@@ -198,7 +199,10 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 		}
 		var targetString = target?.ToString();
 
-		RaiseNewWindowRequested(targetString, action.SourceFrame?.Request?.Url?.ToUri(), out var handled);
+		_coreWebView.RaiseNewWindowRequested(
+			targetString,
+			action.SourceFrame?.Request?.Url?.ToUri(),
+			out var handled);
 
 		if (handled)
 		{
@@ -413,7 +417,7 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 		_coreWebView.RaiseNavigationStarting(uriString, out cancel);
 	}
 
-	private void RaiseNavigationCompleted(Uri? uri, bool isSuccess, int httpStatusCode, CoreWebView2WebErrorStatus errorStatus)
+	private void RaiseNavigationCompleted(Uri uri, bool isSuccess, int httpStatusCode, CoreWebView2WebErrorStatus errorStatus)
 	{
 		_coreWebView.SetHistoryProperties(CanGoBack, CanGoForward);
 		_coreWebView.RaiseNavigationCompleted(uri, isSuccess, httpStatusCode, errorStatus);
