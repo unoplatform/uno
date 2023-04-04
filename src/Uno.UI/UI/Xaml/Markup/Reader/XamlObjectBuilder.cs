@@ -60,7 +60,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 			TypeResolver = new XamlTypeResolver(_fileDefinition);
 		}
 
-		internal XamlObjectBuilder(XamlFileDefinition xamlFileDefinition, string fileUri = "")
+		internal XamlObjectBuilder(XamlFileDefinition xamlFileDefinition, string fileUri)
 		{
 			_fileDefinition = xamlFileDefinition;
 			_fileUri = fileUri;
