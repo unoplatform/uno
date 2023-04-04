@@ -18,6 +18,9 @@ namespace Windows.Media.Playback
 
 		public void Initialize()
 		{
+			Console.WriteLine($"MediaPlayer()");
+
+
 			if (!ApiExtensibility.CreateInstance<IMediaPlayerExtension>(this, out _extension))
 			{
 				if (this.Log().IsEnabled(LogLevel.Error))
@@ -28,6 +31,9 @@ namespace Windows.Media.Playback
 
 			_extension.Events = new MediaPlayerEvents(this);
 		}
+
+		partial void OnOptionChanged(string name, object value)
+			=> _extension?.OnOptionChanged(name, value);
 
 		public void Dispose()
 			=> _extension?.Dispose();

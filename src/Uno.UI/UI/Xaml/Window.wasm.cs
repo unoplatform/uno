@@ -194,6 +194,22 @@ namespace Windows.UI.Xaml
 				_rootVisual.RemoveAttribute("data-use-hand-cursor-interaction");
 			}
 		}
+
+		internal void DisplayFullscreen(UIElement content)
+		{
+			if (content == null)
+			{
+				FullWindowMediaRoot.Child = null;
+				_rootBorder.Visibility = Visibility.Visible;
+				FullWindowMediaRoot.Visibility = Visibility.Collapsed;
+			}
+			else
+			{
+				FullWindowMediaRoot.Visibility = Visibility.Visible;
+				_rootBorder.Visibility = Visibility.Collapsed;
+				FullWindowMediaRoot.Child = content;
+			}
+		}
 	}
 }
 #endif

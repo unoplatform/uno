@@ -1,6 +1,6 @@
 // @ts-nocheck
-namespace Windows.Media {
-	export class MediaElement {
+namespace Uno.UI.Media {
+	export class HtmlMediaPlayer {
 		public static videoWidth(htmlId: number): number {
 			return document.getElementById(htmlId.toString()).videoWidth;
 		}

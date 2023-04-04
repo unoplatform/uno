@@ -1,4 +1,3 @@
-#if __ANDROID__ || __IOS__ || NET461 || __MACOS__ || __WASM__
 using System;
 using System.Timers;
 using Uno.UI.Converters;
@@ -326,7 +325,6 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-#if !NET461 && !__WASM__
 		private static void OnIsCompactChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
 			VisualStateManager.GoToState((MediaTransportControls)dependencyObject, (bool)args.NewValue ? "CompactMode" : "NormalMode", false);
@@ -353,7 +351,5 @@ namespace Windows.UI.Xaml.Controls
 		{
 			VisualStateManager.GoToState(((MediaTransportControls)dependencyObject)._progressSlider, (bool)args.NewValue ? "Normal" : "Disabled", false);
 		}
-#endif
 	}
 }
-#endif

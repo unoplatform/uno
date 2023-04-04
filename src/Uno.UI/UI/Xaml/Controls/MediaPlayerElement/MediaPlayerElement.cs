@@ -1,4 +1,3 @@
-#if __IOS__ || __ANDROID__ || __MACOS__ || __WASM__
 using System;
 using Uno.Extensions;
 using Windows.Media.Playback;
@@ -43,8 +42,10 @@ namespace Windows.UI.Xaml.Controls
 
 		private static void OnSourceChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
 		{
-			sender.Maybe<MediaPlayerElement>(mpe =>
+			if (sender is MediaPlayerElement mpe)
 			{
+				Console.WriteLine($"MediaPlayerElement.SourceChanged({args.NewValue})");
+
 				var source = args.NewValue as IMediaPlaybackSource;
 
 				if (mpe.MediaPlayer != null)
@@ -56,7 +57,7 @@ namespace Windows.UI.Xaml.Controls
 				{
 					mpe.TogglePosterImage(true);
 				}
-			});
+			}
 		}
 
 		#endregion
@@ -155,22 +156,17 @@ namespace Windows.UI.Xaml.Controls
 					this.RemoveView(_layoutRoot);
 #elif __IOS__ || __MACOS__
 					_layoutRoot.RemoveFromSuperview();
+#else
+					_mediaPlayerPresenter?.RequestFullScreen();
 #endif
 
-#if __WASM__
-					_mediaPlayer?.RequestFullScreen();
-#else
 					Windows.UI.Xaml.Window.Current.DisplayFullscreen(_layoutRoot);
-#endif
 				}
 				else
 				{
 					ApplicationView.GetForCurrentView().ExitFullScreenMode();
-#if __WASM__
-					_mediaPlayer?.ExitFullScreen();
-#else
+
 					Windows.UI.Xaml.Window.Current.DisplayFullscreen(null);
-#endif
 
 #if __ANDROID__
 					this.AddView(_layoutRoot);
@@ -178,6 +174,8 @@ namespace Windows.UI.Xaml.Controls
 					this.Add(_layoutRoot);
 #elif __MACOS__
 					this.AddSubview(_layoutRoot);
+#else
+					_mediaPlayerPresenter?.ExitFullScreen();
 #endif
 				}
 			}
@@ -349,11 +347,7 @@ namespace Windows.UI.Xaml.Controls
 
 			if (MediaPlayer == null)
 			{
-#if __WASM__
-				MediaPlayer = new Windows.Media.Playback.MediaPlayer() { Player = _mediaPlayer };
-#else
 				MediaPlayer = new Windows.Media.Playback.MediaPlayer();
-#endif
 				_mediaPlayerPresenter?.ApplyStretch();
 			}
 
@@ -375,4 +369,3 @@ namespace Windows.UI.Xaml.Controls
 		}
 	}
 }
-#endif

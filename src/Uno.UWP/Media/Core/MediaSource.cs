@@ -1,4 +1,3 @@
-#if __ANDROID__ || __IOS__ || __MACOS__ || __WASM__
 using System;
 using Windows.Media.Playback;
 
@@ -21,4 +20,3 @@ namespace Windows.Media.Core
 		}
 	}
 }
-#endif

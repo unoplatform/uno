@@ -1,5 +1,3 @@
-#if __ANDROID__ || __IOS__ || NET461 || __MACOS__ || __WASM__
-
 using System;
 using System.Timers;
 using Uno.Disposables;
@@ -241,4 +239,3 @@ namespace Windows.UI.Xaml.Controls
 		}
 	}
 }
-#endif
