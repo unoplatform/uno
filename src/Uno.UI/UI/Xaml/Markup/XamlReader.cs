@@ -19,11 +19,11 @@ namespace Windows.UI.Xaml.Markup
 		{
 			return Load(xaml);
 		}
-		internal static object LoadUsingXClass(string xaml)
+		internal static object LoadUsingXClass(string xaml, string fileUri)
 		{
 			var r = new XamlStringParser();
 
-			var builder = new XamlObjectBuilder(r.Parse(xaml));
+			var builder = new XamlObjectBuilder(r.Parse(xaml), fileUri);
 
 			return builder.Build(createInstanceFromXClass: true);
 		}

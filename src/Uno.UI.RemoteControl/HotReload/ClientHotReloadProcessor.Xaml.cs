@@ -109,7 +109,7 @@ namespace Uno.UI.RemoteControl.HotReload
 							break;
 #endif
 						case ContentControl content:
-							if (XamlReader.LoadUsingXClass(fileContent) is ContentControl newContent)
+							if (XamlReader.LoadUsingXClass(fileContent, uri.ToString()) is ContentControl newContent)
 							{
 								SwapViews(content, newContent);
 							}
