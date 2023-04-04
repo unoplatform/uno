@@ -52,8 +52,8 @@ jobs:
       ArtifactName: skia-wpf-samples-app
       ArtifactType: Container
 
-  - powershell: dotnet msbuild src/SamplesApp/UnoIslandsSamplesApp.Skia.WPF/UnoIslandsSamplesApp.Skia.Wpf.csproj /r /m /p:Configuration=Release /detailedsummary /m /bl:$(build.artifactstagingdirectory)\build-wpf.binlog
-    displayName: Build WPF Head
+  - powershell: dotnet msbuild src/SamplesApp/UnoIslandsSamplesApp.Skia.WPF/UnoIslandsSamplesApp.Skia.Wpf.csproj /r /m /p:Configuration=Release /detailedsummary /m /bl:$(build.artifactstagingdirectory)\build-wpf-islands.binlog
+    displayName: Build WPF Islands Head
 
   - task: PublishBuildArtifacts@1
     retryCountOnTaskFailure: 3
