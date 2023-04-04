@@ -8,6 +8,7 @@
     xmlns:animatedvisuals="using:Microsoft.UI.Xaml.Controls.AnimatedVisuals">
 
     <!-- Uno specific: Because AnimatedIcon is not supported fully, several contract7NotPresent: are removed so that RotateTransform is used instead -->
+    <!-- Uno Specific: All Duration="0:0:0.1" ocurrences in this file were replaced by Duration="0:0:0" - https://github.com/unoplatform/uno/issues/11896 -->
 
     <ResourceDictionary.ThemeDictionaries>
         <ResourceDictionary x:Key="Dark">
@@ -236,7 +237,7 @@
                                         <DoubleAnimation
                                             Storyboard.TargetName="ExpandCollapseChevronRotateTransform"
                                             Storyboard.TargetProperty="Angle"
-                                            To="180.0" Duration="0:0:0.1"/>
+                                            To="180.0" Duration="0:0:0"/>
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
                                             <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ExpanderHeaderForeground}" />
                                         </ObjectAnimationUsingKeyFrames>
@@ -262,7 +263,7 @@
                                         <DoubleAnimation
                                             Storyboard.TargetName="ExpandCollapseChevronRotateTransform"
                                             Storyboard.TargetProperty="Angle"
-                                            To="180.0" Duration="0:0:0.1"/>
+                                            To="180.0" Duration="0:0:0"/>
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
                                             <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ExpanderHeaderForegroundPointerOver}" />
                                         </ObjectAnimationUsingKeyFrames>
@@ -288,7 +289,7 @@
                                         <DoubleAnimation
                                             Storyboard.TargetName="ExpandCollapseChevronRotateTransform"
                                             Storyboard.TargetProperty="Angle"
-                                            To="180.0" Duration="0:0:0.1"/>
+                                            To="180.0" Duration="0:0:0"/>
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
                                             <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ExpanderHeaderForegroundPressed}" />
                                         </ObjectAnimationUsingKeyFrames>
@@ -315,7 +316,7 @@
                                         <DoubleAnimation
                                             Storyboard.TargetName="ExpandCollapseChevronRotateTransform"
                                             Storyboard.TargetProperty="Angle"
-                                            To="180.0" Duration="0:0:0.1"/>
+                                            To="180.0" Duration="0:0:0"/>
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ToggleButtonGrid" Storyboard.TargetProperty="BorderBrush">
                                             <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ExpanderHeaderDisabledBorderBrush}" />
                                         </ObjectAnimationUsingKeyFrames>
@@ -507,7 +508,7 @@
                                         <DoubleAnimation
                                             Storyboard.TargetName="ExpandCollapseChevronRotateTransform"
                                             Storyboard.TargetProperty="Angle"
-                                            To="180.0" Duration="0:0:0.1"/>
+                                            To="180.0" Duration="0:0:0"/>
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
                                             <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ExpanderHeaderForeground}" />
                                         </ObjectAnimationUsingKeyFrames>
@@ -533,7 +534,7 @@
                                         <DoubleAnimation
                                             Storyboard.TargetName="ExpandCollapseChevronRotateTransform"
                                             Storyboard.TargetProperty="Angle"
-                                            To="180.0" Duration="0:0:0.1"/>
+                                            To="180.0" Duration="0:0:0"/>
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
                                             <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ExpanderHeaderForegroundPointerOver}" />
                                         </ObjectAnimationUsingKeyFrames>
@@ -559,7 +560,7 @@
                                         <DoubleAnimation
                                             Storyboard.TargetName="ExpandCollapseChevronRotateTransform"
                                             Storyboard.TargetProperty="Angle"
-                                            To="180.0" Duration="0:0:0.1"/>
+                                            To="180.0" Duration="0:0:0"/>
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
                                             <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ExpanderHeaderForegroundPressed}" />
                                         </ObjectAnimationUsingKeyFrames>
@@ -586,7 +587,7 @@
                                         <DoubleAnimation
                                             Storyboard.TargetName="ExpandCollapseChevronRotateTransform"
                                             Storyboard.TargetProperty="Angle"
-                                            To="180.0" Duration="0:0:0.1"/>
+                                            To="180.0" Duration="0:0:0"/>
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ToggleButtonGrid" Storyboard.TargetProperty="BorderBrush">
                                             <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ExpanderHeaderDisabledBorderBrush}" />
                                         </ObjectAnimationUsingKeyFrames>
