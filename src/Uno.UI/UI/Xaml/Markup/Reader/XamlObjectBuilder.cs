@@ -32,7 +32,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 	internal class XamlObjectBuilder
 	{
 		private XamlFileDefinition _fileDefinition;
-		private readonly string _fileUri;
+		private readonly string? _fileUri;
 		private XamlTypeResolver TypeResolver { get; }
 		private readonly List<(string elementName, ElementNameSubject bindingSubject)> _elementNames = new List<(string, ElementNameSubject)>();
 		private readonly Stack<Type> _styleTargetTypeStack = new Stack<Type>();
@@ -102,7 +102,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 
 				if (created is FrameworkElement fe && !string.IsNullOrWhiteSpace(_fileUri))
 				{
-					fe.SetBaseUri(fe.BaseUri.ToString(), _fileUri, control.LineNumber, control.LinePosition);
+					fe.SetBaseUri(fe.BaseUri.ToString(), _fileUri!, control.LineNumber, control.LinePosition);
 				}
 
 				return created;
@@ -132,7 +132,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 
 				if (created is FrameworkElement fe && !string.IsNullOrWhiteSpace(_fileUri))
 				{
-					fe.SetBaseUri(fe.BaseUri.ToString(), _fileUri, control.LineNumber, control.LinePosition);
+					fe.SetBaseUri(fe.BaseUri.ToString(), _fileUri!, control.LineNumber, control.LinePosition);
 				}
 
 				return created;
@@ -202,7 +202,11 @@ namespace Windows.UI.Xaml.Markup.Reader
 				if (instanceAsFrameworkElement is not null)
 				{
 					instanceAsFrameworkElement.IsParsing = true;
-					instanceAsFrameworkElement.SetBaseUri(instanceAsFrameworkElement.BaseUri.ToString(), _fileUri, control.LineNumber, control.LinePosition);
+
+					if (!string.IsNullOrWhiteSpace(_fileUri))
+					{
+						instanceAsFrameworkElement.SetBaseUri(instanceAsFrameworkElement.BaseUri.ToString(), _fileUri!, control.LineNumber, control.LinePosition);
+					}
 				}
 
 				IDisposable? TryProcessStyle()
