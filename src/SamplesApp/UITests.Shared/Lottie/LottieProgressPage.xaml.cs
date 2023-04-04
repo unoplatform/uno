@@ -20,6 +20,13 @@ namespace UITests.Lottie
 			var _ = InitializeJsonSource();
 		}
 
+		private async void OnReloadView()
+		{
+			container.Child = null;
+			await Task.Delay(2000);
+			container.Child = Progress_Player;
+		}
+
 		private async Task InitializeJsonSource()
 		{
 			// We'll need to set the JSON Source in code-behind in order to await it ...
