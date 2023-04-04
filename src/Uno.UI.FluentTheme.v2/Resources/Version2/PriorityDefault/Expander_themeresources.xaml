@@ -7,6 +7,8 @@
     xmlns:contract7NotPresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,7)"
     xmlns:animatedvisuals="using:Microsoft.UI.Xaml.Controls.AnimatedVisuals">
 
+    <!-- Uno specific: Because AnimatedIcon is not supported fully, several contract7NotPresent: are removed so that RotateTransform is used instead -->
+
     <ResourceDictionary.ThemeDictionaries>
         <ResourceDictionary x:Key="Dark">
 
@@ -21,7 +23,7 @@
             <StaticResource x:Key="ExpanderHeaderDisabledForeground" ResourceKey="TextFillColorDisabledBrush" />
             <StaticResource x:Key="ExpanderHeaderDisabledBorderBrush" ResourceKey="CardStrokeColorDefaultBrush" />
             <Thickness x:Key="ExpanderHeaderBorderThickness">1</Thickness>
-            
+
             <StaticResource x:Key="ExpanderChevronBackground" ResourceKey="SubtleFillColorTransparentBrush" />
             <StaticResource x:Key="ExpanderChevronPointerOverBackground" ResourceKey="SubtleFillColorSecondaryBrush" />
             <StaticResource x:Key="ExpanderChevronPressedBackground" ResourceKey="SubtleFillColorTertiaryBrush" />
@@ -231,7 +233,7 @@
                                 </VisualState>
                                 <VisualState x:Name="Checked">
                                     <Storyboard>
-                                        <contract7NotPresent:DoubleAnimation
+                                        <DoubleAnimation
                                             Storyboard.TargetName="ExpandCollapseChevronRotateTransform"
                                             Storyboard.TargetProperty="Angle"
                                             To="180.0" Duration="0:0:0.1"/>
@@ -257,7 +259,7 @@
                                 </VisualState>
                                 <VisualState x:Name="CheckedPointerOver" >
                                     <Storyboard>
-                                        <contract7NotPresent:DoubleAnimation
+                                        <DoubleAnimation
                                             Storyboard.TargetName="ExpandCollapseChevronRotateTransform"
                                             Storyboard.TargetProperty="Angle"
                                             To="180.0" Duration="0:0:0.1"/>
@@ -283,7 +285,7 @@
                                 </VisualState>
                                 <VisualState x:Name="CheckedPressed">
                                     <Storyboard>
-                                        <contract7NotPresent:DoubleAnimation
+                                        <DoubleAnimation
                                             Storyboard.TargetName="ExpandCollapseChevronRotateTransform"
                                             Storyboard.TargetProperty="Angle"
                                             To="180.0" Duration="0:0:0.1"/>
@@ -310,7 +312,7 @@
 
                                 <VisualState x:Name="CheckedDisabled">
                                     <Storyboard>
-                                        <contract7NotPresent:DoubleAnimation
+                                        <DoubleAnimation
                                             Storyboard.TargetName="ExpandCollapseChevronRotateTransform"
                                             Storyboard.TargetProperty="Angle"
                                             To="180.0" Duration="0:0:0.1"/>
@@ -348,8 +350,7 @@
                             ContentTransitions="{TemplateBinding ContentTransitions}"
                             HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
                             VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
-                            Foreground="{TemplateBinding Foreground}"
-                            AutomationProperties.AccessibilityView="Raw">
+                            Foreground="{TemplateBinding Foreground}">
                         </ContentPresenter>
 
                         <Border
@@ -381,7 +382,7 @@
                                         IsTextScaleFactorEnabled="False"/>
                                 </local:AnimatedIcon.FallbackIconSource>
                                 <local:AnimatedIcon.RenderTransform>
-                                    <contract7NotPresent:RotateTransform x:Name="ExpandCollapseChevronRotateTransform" Angle="0"/>
+                                    <RotateTransform x:Name="ExpandCollapseChevronRotateTransform" Angle="0"/>
                                 </local:AnimatedIcon.RenderTransform>
                             </local:AnimatedIcon>
                         </Border>
@@ -503,7 +504,7 @@
                                 </VisualState>
                                 <VisualState x:Name="Checked">
                                     <Storyboard>
-                                        <contract7NotPresent:DoubleAnimation
+                                        <DoubleAnimation
                                             Storyboard.TargetName="ExpandCollapseChevronRotateTransform"
                                             Storyboard.TargetProperty="Angle"
                                             To="180.0" Duration="0:0:0.1"/>
@@ -529,7 +530,7 @@
                                 </VisualState>
                                 <VisualState x:Name="CheckedPointerOver" >
                                     <Storyboard>
-                                        <contract7NotPresent:DoubleAnimation
+                                        <DoubleAnimation
                                             Storyboard.TargetName="ExpandCollapseChevronRotateTransform"
                                             Storyboard.TargetProperty="Angle"
                                             To="180.0" Duration="0:0:0.1"/>
@@ -555,7 +556,7 @@
                                 </VisualState>
                                 <VisualState x:Name="CheckedPressed">
                                     <Storyboard>
-                                        <contract7NotPresent:DoubleAnimation
+                                        <DoubleAnimation
                                             Storyboard.TargetName="ExpandCollapseChevronRotateTransform"
                                             Storyboard.TargetProperty="Angle"
                                             To="180.0" Duration="0:0:0.1"/>
@@ -582,7 +583,7 @@
 
                                 <VisualState x:Name="CheckedDisabled">
                                     <Storyboard>
-                                        <contract7NotPresent:DoubleAnimation
+                                        <DoubleAnimation
                                             Storyboard.TargetName="ExpandCollapseChevronRotateTransform"
                                             Storyboard.TargetProperty="Angle"
                                             To="180.0" Duration="0:0:0.1"/>
@@ -620,8 +621,7 @@
                             ContentTransitions="{TemplateBinding ContentTransitions}"
                             HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
                             VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
-                            Foreground="{TemplateBinding Foreground}"
-                            AutomationProperties.AccessibilityView="Raw">
+                            Foreground="{TemplateBinding Foreground}">
                         </ContentPresenter>
 
                         <Border
@@ -653,7 +653,7 @@
                                         IsTextScaleFactorEnabled="False"/>
                                 </local:AnimatedIcon.FallbackIconSource>
                                 <local:AnimatedIcon.RenderTransform>
-                                    <contract7NotPresent:RotateTransform x:Name="ExpandCollapseChevronRotateTransform" Angle="0"/>
+                                    <RotateTransform x:Name="ExpandCollapseChevronRotateTransform" Angle="0"/>
                                 </local:AnimatedIcon.RenderTransform>
                             </local:AnimatedIcon>
                         </Border>

@@ -15817,7 +15817,7 @@
                 </VisualState>
                 <VisualState x:Name="Checked">
                   <Storyboard>
-                    <contract7NotPresent:DoubleAnimation Storyboard.TargetName="ExpandCollapseChevronRotateTransform" Storyboard.TargetProperty="Angle" To="180.0" Duration="0:0:0.1" />
+                    <DoubleAnimation Storyboard.TargetName="ExpandCollapseChevronRotateTransform" Storyboard.TargetProperty="Angle" To="180.0" Duration="0:0:0.1" />
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ExpanderHeaderForeground}" />
                     </ObjectAnimationUsingKeyFrames>
@@ -15840,7 +15840,7 @@
                 </VisualState>
                 <VisualState x:Name="CheckedPointerOver">
                   <Storyboard>
-                    <contract7NotPresent:DoubleAnimation Storyboard.TargetName="ExpandCollapseChevronRotateTransform" Storyboard.TargetProperty="Angle" To="180.0" Duration="0:0:0.1" />
+                    <DoubleAnimation Storyboard.TargetName="ExpandCollapseChevronRotateTransform" Storyboard.TargetProperty="Angle" To="180.0" Duration="0:0:0.1" />
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ExpanderHeaderForegroundPointerOver}" />
                     </ObjectAnimationUsingKeyFrames>
@@ -15863,7 +15863,7 @@
                 </VisualState>
                 <VisualState x:Name="CheckedPressed">
                   <Storyboard>
-                    <contract7NotPresent:DoubleAnimation Storyboard.TargetName="ExpandCollapseChevronRotateTransform" Storyboard.TargetProperty="Angle" To="180.0" Duration="0:0:0.1" />
+                    <DoubleAnimation Storyboard.TargetName="ExpandCollapseChevronRotateTransform" Storyboard.TargetProperty="Angle" To="180.0" Duration="0:0:0.1" />
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ExpanderHeaderForegroundPressed}" />
                     </ObjectAnimationUsingKeyFrames>
@@ -15886,7 +15886,7 @@
                 </VisualState>
                 <VisualState x:Name="CheckedDisabled">
                   <Storyboard>
-                    <contract7NotPresent:DoubleAnimation Storyboard.TargetName="ExpandCollapseChevronRotateTransform" Storyboard.TargetProperty="Angle" To="180.0" Duration="0:0:0.1" />
+                    <DoubleAnimation Storyboard.TargetName="ExpandCollapseChevronRotateTransform" Storyboard.TargetProperty="Angle" To="180.0" Duration="0:0:0.1" />
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ToggleButtonGrid" Storyboard.TargetProperty="BorderBrush">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ExpanderHeaderDisabledBorderBrush}" />
                     </ObjectAnimationUsingKeyFrames>
@@ -15913,7 +15913,7 @@
                 <VisualState x:Name="IndeterminateDisabled" />
               </VisualStateGroup>
             </VisualStateManager.VisualStateGroups>
-            <ContentPresenter x:Name="ContentPresenter" Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" ContentTransitions="{TemplateBinding ContentTransitions}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" Foreground="{TemplateBinding Foreground}" AutomationProperties.AccessibilityView="Raw" />
+            <ContentPresenter x:Name="ContentPresenter" Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" ContentTransitions="{TemplateBinding ContentTransitions}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" Foreground="{TemplateBinding Foreground}" />
             <Border x:Name="ExpandCollapseChevronBorder" Grid.Column="1" Width="{ThemeResource ExpanderChevronButtonSize}" Height="{ThemeResource ExpanderChevronButtonSize}" Margin="{ThemeResource ExpanderChevronMargin}" contract7Present:CornerRadius="{ThemeResource ControlCornerRadius}" BorderBrush="{ThemeResource ExpanderChevronBorderBrush}" BorderThickness="{ThemeResource ExpanderChevronBorderThickness}" Background="{ThemeResource ExpanderChevronBackground}">
               <controls:AnimatedIcon Width="{StaticResource ExpanderChevronGlyphSize}" Height="{StaticResource ExpanderChevronGlyphSize}" x:Name="ExpandCollapseChevron" RenderTransformOrigin="0.5, 0.5" Foreground="{ThemeResource ExpanderChevronForeground}" HorizontalAlignment="Center" VerticalAlignment="Center" AutomationProperties.AccessibilityView="Raw" local:AnimatedIcon.State="NormalOff" xmlns:local="using:Microsoft.UI.Xaml.Controls">
                 <animatedvisuals:AnimatedChevronUpDownSmallVisualSource />
@@ -15921,7 +15921,7 @@
                   <controls:FontIconSource Glyph="{StaticResource ExpanderChevronDownGlyph}" FontFamily="{StaticResource SymbolThemeFontFamily}" FontSize="12" IsTextScaleFactorEnabled="False" />
                 </controls:AnimatedIcon.FallbackIconSource>
                 <controls:AnimatedIcon.RenderTransform>
-                  <contract7NotPresent:RotateTransform x:Name="ExpandCollapseChevronRotateTransform" Angle="0" />
+                  <RotateTransform x:Name="ExpandCollapseChevronRotateTransform" Angle="0" />
                 </controls:AnimatedIcon.RenderTransform>
               </controls:AnimatedIcon>
             </Border>
@@ -16028,7 +16028,7 @@
                 </VisualState>
                 <VisualState x:Name="Checked">
                   <Storyboard>
-                    <contract7NotPresent:DoubleAnimation Storyboard.TargetName="ExpandCollapseChevronRotateTransform" Storyboard.TargetProperty="Angle" To="180.0" Duration="0:0:0.1" />
+                    <DoubleAnimation Storyboard.TargetName="ExpandCollapseChevronRotateTransform" Storyboard.TargetProperty="Angle" To="180.0" Duration="0:0:0.1" />
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ExpanderHeaderForeground}" />
                     </ObjectAnimationUsingKeyFrames>
@@ -16051,7 +16051,7 @@
                 </VisualState>
                 <VisualState x:Name="CheckedPointerOver">
                   <Storyboard>
-                    <contract7NotPresent:DoubleAnimation Storyboard.TargetName="ExpandCollapseChevronRotateTransform" Storyboard.TargetProperty="Angle" To="180.0" Duration="0:0:0.1" />
+                    <DoubleAnimation Storyboard.TargetName="ExpandCollapseChevronRotateTransform" Storyboard.TargetProperty="Angle" To="180.0" Duration="0:0:0.1" />
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ExpanderHeaderForegroundPointerOver}" />
                     </ObjectAnimationUsingKeyFrames>
@@ -16074,7 +16074,7 @@
                 </VisualState>
                 <VisualState x:Name="CheckedPressed">
                   <Storyboard>
-                    <contract7NotPresent:DoubleAnimation Storyboard.TargetName="ExpandCollapseChevronRotateTransform" Storyboard.TargetProperty="Angle" To="180.0" Duration="0:0:0.1" />
+                    <DoubleAnimation Storyboard.TargetName="ExpandCollapseChevronRotateTransform" Storyboard.TargetProperty="Angle" To="180.0" Duration="0:0:0.1" />
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ExpanderHeaderForegroundPressed}" />
                     </ObjectAnimationUsingKeyFrames>
@@ -16097,7 +16097,7 @@
                 </VisualState>
                 <VisualState x:Name="CheckedDisabled">
                   <Storyboard>
-                    <contract7NotPresent:DoubleAnimation Storyboard.TargetName="ExpandCollapseChevronRotateTransform" Storyboard.TargetProperty="Angle" To="180.0" Duration="0:0:0.1" />
+                    <DoubleAnimation Storyboard.TargetName="ExpandCollapseChevronRotateTransform" Storyboard.TargetProperty="Angle" To="180.0" Duration="0:0:0.1" />
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ToggleButtonGrid" Storyboard.TargetProperty="BorderBrush">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ExpanderHeaderDisabledBorderBrush}" />
                     </ObjectAnimationUsingKeyFrames>
@@ -16124,7 +16124,7 @@
                 <VisualState x:Name="IndeterminateDisabled" />
               </VisualStateGroup>
             </VisualStateManager.VisualStateGroups>
-            <ContentPresenter x:Name="ContentPresenter" Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" ContentTransitions="{TemplateBinding ContentTransitions}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" Foreground="{TemplateBinding Foreground}" AutomationProperties.AccessibilityView="Raw" />
+            <ContentPresenter x:Name="ContentPresenter" Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" ContentTransitions="{TemplateBinding ContentTransitions}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" Foreground="{TemplateBinding Foreground}" />
             <Border x:Name="ExpandCollapseChevronBorder" Grid.Column="1" Width="{ThemeResource ExpanderChevronButtonSize}" Height="{ThemeResource ExpanderChevronButtonSize}" Margin="{ThemeResource ExpanderChevronMargin}" contract7Present:CornerRadius="{ThemeResource ControlCornerRadius}" BorderBrush="{ThemeResource ExpanderChevronBorderBrush}" BorderThickness="{ThemeResource ExpanderChevronBorderThickness}" Background="{ThemeResource ExpanderChevronBackground}">
               <controls:AnimatedIcon Width="{StaticResource ExpanderChevronGlyphSize}" Height="{StaticResource ExpanderChevronGlyphSize}" x:Name="ExpandCollapseChevron" RenderTransformOrigin="0.5, 0.5" Foreground="{ThemeResource ExpanderChevronForeground}" HorizontalAlignment="Center" VerticalAlignment="Center" AutomationProperties.AccessibilityView="Raw" local:AnimatedIcon.State="NormalOn" xmlns:local="using:Microsoft.UI.Xaml.Controls">
                 <animatedvisuals:AnimatedChevronUpDownSmallVisualSource />
@@ -16132,7 +16132,7 @@
                   <controls:FontIconSource Glyph="{StaticResource ExpanderChevronUpGlyph}" FontFamily="{StaticResource SymbolThemeFontFamily}" FontSize="12" IsTextScaleFactorEnabled="False" />
                 </controls:AnimatedIcon.FallbackIconSource>
                 <controls:AnimatedIcon.RenderTransform>
-                  <contract7NotPresent:RotateTransform x:Name="ExpandCollapseChevronRotateTransform" Angle="0" />
+                  <RotateTransform x:Name="ExpandCollapseChevronRotateTransform" Angle="0" />
                 </controls:AnimatedIcon.RenderTransform>
               </controls:AnimatedIcon>
             </Border>

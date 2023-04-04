@@ -120,7 +120,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 
 		protected virtual Rect GetBoundingRectangleCore() => default;
 
-		protected internal virtual IList<AutomationPeer> GetChildrenCore() => null;
+		protected virtual IList<AutomationPeer> GetChildrenCore() => null;
 
 		protected virtual Point GetClickablePointCore() => default;
 
@@ -186,7 +186,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 
 		protected virtual string GetClassNameCore() => "";
 
-		protected internal virtual string GetNameCore() => "";
+		protected virtual string GetNameCore() => "";
 
 		protected virtual string GetLocalizedControlTypeCore() => LocalizeControlType(GetAutomationControlType());
 

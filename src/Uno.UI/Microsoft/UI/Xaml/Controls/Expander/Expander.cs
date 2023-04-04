@@ -69,7 +69,7 @@ public partial class Expander : ContentControl
 				if (string.IsNullOrEmpty(AutomationProperties.GetName(this))
 					&& !string.IsNullOrEmpty(toggleButtonPeer.GetName()))
 				{
-					AutomationProperties.SetName(this, toggleButtonPeer.GetNameCore());
+					AutomationProperties.SetName(this, toggleButtonPeer.GetName());
 				}
 			}
 		}

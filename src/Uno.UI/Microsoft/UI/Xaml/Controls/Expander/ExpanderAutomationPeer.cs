@@ -98,7 +98,7 @@ public class ExpanderAutomationPeer : FrameworkElementAutomationPeer, IExpandCol
 			else
 			{
 				// If it is ExpanderToggleButton, we want to exclude it but add its children into the peer 
-				var expanderToggleButtonChildrenPeers = peer.GetChildrenCore();
+				var expanderToggleButtonChildrenPeers = peer.GetChildren();
 				foreach (var expanderHeaderPeer in expanderToggleButtonChildrenPeers)
 				{
 					peers.Add(expanderHeaderPeer);
@@ -149,7 +149,7 @@ public class ExpanderAutomationPeer : FrameworkElementAutomationPeer, IExpandCol
 	/// </summary>
 	public void Collapse()
 	{
-		if (_owner is Expander expander)
+		if (Owner is Expander expander)
 		{
 			expander.IsExpanded = false;
 			RaiseExpandCollapseAutomationEvent(ExpandCollapseState.Collapsed);
