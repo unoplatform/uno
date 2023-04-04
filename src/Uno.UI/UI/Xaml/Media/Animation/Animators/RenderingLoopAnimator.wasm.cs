@@ -114,7 +114,12 @@ namespace Windows.UI.Xaml.Media.Animation
 
 			/// <inheritdoc />
 			public void DestroyNativeInstance(IntPtr managedHandle, long jsHandle)
-				=> WebAssemblyRuntime.InvokeJS($"Windows.UI.Xaml.Media.Animation.RenderingLoopAnimator.destroyInstance(\"{jsHandle}\")");
+				=>
+#if NET7_0_OR_GREATER
+					NativeMethods.DestroyInstance(jsHandle);
+#else
+					WebAssemblyRuntime.InvokeJS($"Windows.UI.Xaml.Media.Animation.RenderingLoopAnimator.destroyInstance(\"{jsHandle}\")");
+#endif
 
 			/// <inheritdoc />
 			public object InvokeManaged(object instance, string method, string parameters)
