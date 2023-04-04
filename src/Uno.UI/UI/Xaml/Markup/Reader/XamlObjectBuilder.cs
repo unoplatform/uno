@@ -205,7 +205,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 
 					if (_fileUri is not null)
 					{
-						instanceAsFrameworkElement.SetBaseUri(instanceAsFrameworkElement.BaseUri.ToString(), _fileUri!, control.LineNumber, control.LinePosition);
+						instanceAsFrameworkElement.SetBaseUri(instanceAsFrameworkElement.BaseUri.OriginalString, _fileUri, control.LineNumber, control.LinePosition);
 					}
 				}
 
