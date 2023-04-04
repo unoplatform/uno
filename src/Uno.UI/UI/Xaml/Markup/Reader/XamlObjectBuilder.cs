@@ -97,12 +97,9 @@ namespace Windows.UI.Xaml.Markup.Reader
 				if (created is FrameworkElement fe)
 				{
 					fe.SetBaseUri(fe.BaseUri.ToString(), _fileUri, control.LineNumber, control.LinePosition);
-					return fe;
 				}
-				else
-				{
-					return created;
-				}
+
+				return created;
 			}
 
 			if (type == null)
