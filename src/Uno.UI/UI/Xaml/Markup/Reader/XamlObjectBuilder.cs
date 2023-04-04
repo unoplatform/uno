@@ -32,7 +32,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 	internal class XamlObjectBuilder
 	{
 		private XamlFileDefinition _fileDefinition;
-		private string _fileUri;
+		private readonly string _fileUri;
 		private XamlTypeResolver TypeResolver { get; }
 		private readonly List<(string elementName, ElementNameSubject bindingSubject)> _elementNames = new List<(string, ElementNameSubject)>();
 		private readonly Stack<Type> _styleTargetTypeStack = new Stack<Type>();
