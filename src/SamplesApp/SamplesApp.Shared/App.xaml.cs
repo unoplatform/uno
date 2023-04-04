@@ -443,6 +443,8 @@ namespace SamplesApp
 				// Runtime Tests control logging
 				builder.AddFilter("Uno.UI.Samples.Tests", LogLevel.Information);
 
+				builder.AddFilter("Uno.UI.Media", LogLevel.Debug);
+
 				builder.AddFilter("Uno", LogLevel.Warning);
 				builder.AddFilter("Windows", LogLevel.Warning);
 				builder.AddFilter("Microsoft", LogLevel.Warning);

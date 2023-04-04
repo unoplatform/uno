@@ -18,6 +18,9 @@ namespace SamplesApp.Wasm
 			Uno.UI.FeatureConfiguration.UIElement.AssignDOMXamlProperties = true;
 #endif
 
+			// Always enable anonymous videos for Samples App.
+			Uno.UI.Media.FeatureConfiguration.AnonymousCorsDefault = true;
+
 			Windows.UI.Xaml.Application.Start(_ => _app = new App());
 		}
 	}

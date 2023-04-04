@@ -645,7 +645,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.MediaTransportControls), 
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 		#endif
-		#if false || false || false || __SKIA__ || __NETSTD_REFERENCE__ || false
+		#if false || false || false || false || false
 		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
 		public MediaTransportControls() : base()
 		{
@@ -709,14 +709,14 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.MediaTransportControls.IsRepeatEnabled.set
 		// Forced skipping of method Windows.UI.Xaml.Controls.MediaTransportControls.IsRepeatButtonVisible.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.MediaTransportControls.IsRepeatButtonVisible.set
-		#if false || false || false || __SKIA__ || __NETSTD_REFERENCE__ || false
+		#if false || false || false || false || false
 		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
 		public  void Show()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.MediaTransportControls", "void MediaTransportControls.Show()");
 		}
 		#endif
-		#if false || false || false || __SKIA__ || __NETSTD_REFERENCE__ || false
+		#if false || false || false || false || false
 		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
 		public  void Hide()
 		{

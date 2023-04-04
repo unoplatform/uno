@@ -20,29 +20,8 @@ public static class MediaPlayerElementExtensions
 		if (d is MediaPlayerElement mediaPlayer)
 		{
 			var anonymousCORSEnabled = (bool)e.NewValue;
-			if (mediaPlayer?.MediaPlayer?.Player is { } player)
-			{
-				//Current MediaElement is initialized, so apply value directly to it
-				player.SetAnonymousCORS(anonymousCORSEnabled);
-				return;
-			}
-			else
-			{
-				//Wait until current MediaElement is initialized and then configure CORS
-				RoutedEventHandler handler = null;
-				handler = (sender, args) =>
-				{
-					var mediaPlayer = (MediaPlayerElement)sender;
-					if (mediaPlayer.MediaPlayer?.Player is { } player)
-					{
-						player.SetAnonymousCORS(anonymousCORSEnabled);
-					}
 
-					mediaPlayer.Loaded -= handler;
-				};
-
-				mediaPlayer.Loaded += handler;
-			}
+			mediaPlayer?.MediaPlayer?.SetOption("AnonymousCORSEnabled", anonymousCORSEnabled);
 		}
 	}
 }

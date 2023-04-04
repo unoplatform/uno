@@ -1,4 +1,3 @@
-#if __ANDROID__ || __IOS__ || __MACOS__ || __WASM__
 using System;
 using Windows.Foundation;
 using Windows.Media.Playback;
@@ -28,6 +27,8 @@ namespace Windows.UI.Xaml.Controls
 
 		private static void OnMediaPlayerChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
 		{
+			Console.WriteLine($"MediaPlayerPresenter.OnMediaPlayerChanged({args.NewValue})");
+
 			if (sender is MediaPlayerPresenter presenter)
 			{
 				if (args.OldValue is Windows.Media.Playback.MediaPlayer oldPlayer)
@@ -40,16 +41,19 @@ namespace Windows.UI.Xaml.Controls
 				{
 					newPlayer.VideoRatioChanged += presenter.OnVideoRatioChanged;
 					newPlayer.MediaFailed += presenter.OnMediaFailed;
-#if __WASM__
-					presenter.SetVideoSurface(newPlayer.Player);
-#else
+
+#if __IOS__ || __ANDROID__ || __MACOS__
 					presenter.SetVideoSurface(newPlayer.RenderSurface);
 #endif
+
+					presenter.OnMediaPlayerChangedPartial(newPlayer);
 				}
 			}
 		}
 
 		#endregion
+
+		partial void OnMediaPlayerChangedPartial(MediaPlayer mediaPlayer);
 
 		#region Stretch Property
 
@@ -87,7 +91,10 @@ namespace Windows.UI.Xaml.Controls
 
 		public MediaPlayerPresenter() : base()
 		{
+			InitializePartial();
 		}
+
+		partial void InitializePartial();
 
 		/// <summary>
 		/// Indicates whether or not the player is currently toggling the fullscreen mode.
@@ -156,4 +163,3 @@ namespace Windows.UI.Xaml.Controls
 		}
 	}
 }
-#endif

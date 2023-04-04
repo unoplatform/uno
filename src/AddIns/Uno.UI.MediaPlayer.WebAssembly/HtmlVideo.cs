@@ -1,6 +1,8 @@
 ﻿#nullable enable
 
-namespace Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml;
+
+namespace Uno.UI.Media;
 
 internal class HtmlVideo : UIElement
 {

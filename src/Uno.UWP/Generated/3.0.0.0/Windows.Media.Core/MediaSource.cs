@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Media.Core
 {
-	#if false || false || NET461 || __SKIA__ || __NETSTD_REFERENCE__ || false
+	#if false || false || false || false
 	[global::Uno.NotImplemented("NET461", "__SKIA__", "__NETSTD_REFERENCE__")]
 	#endif
 	public  partial class MediaSource : global::System.IDisposable,global::Windows.Media.Playback.IMediaPlaybackSource
@@ -97,7 +97,7 @@ namespace Windows.Media.Core
 			}
 		}
 		#endif
-		#if false || false || NET461 || __SKIA__ || __NETSTD_REFERENCE__ || false
+		#if false || false || false || false
 		[global::Uno.NotImplemented("NET461", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public  global::System.Uri Uri
 		{
@@ -124,7 +124,7 @@ namespace Windows.Media.Core
 		// Forced skipping of method Windows.Media.Core.MediaSource.IsOpen.get
 		// Forced skipping of method Windows.Media.Core.MediaSource.ExternalTimedTextSources.get
 		// Forced skipping of method Windows.Media.Core.MediaSource.ExternalTimedMetadataTracks.get
-		#if false || false || NET461 || __SKIA__ || __NETSTD_REFERENCE__ || false
+		#if false || false || false || false
 		[global::Uno.NotImplemented("NET461", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public  void Dispose()
 		{

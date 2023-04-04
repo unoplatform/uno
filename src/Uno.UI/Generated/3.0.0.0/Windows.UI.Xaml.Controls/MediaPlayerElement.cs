@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	#if false || false || false || __SKIA__ || __NETSTD_REFERENCE__ || false
+	#if false || false || false || false || false
 	[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
 	#endif
 	public  partial class MediaPlayerElement : global::Windows.UI.Xaml.Controls.Control
@@ -21,7 +21,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if false || false || NET461 || __SKIA__ || __NETSTD_REFERENCE__ || false
+		#if false
 		[global::Uno.NotImplemented("NET461", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public  global::Windows.UI.Xaml.Media.Stretch Stretch
 		{
@@ -35,7 +35,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if false || false || NET461 || __SKIA__ || __NETSTD_REFERENCE__ || false
+		#if false
 		[global::Uno.NotImplemented("NET461", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public  global::Windows.Media.Playback.IMediaPlaybackSource Source
 		{
@@ -49,7 +49,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if false || false || NET461 || __SKIA__ || __NETSTD_REFERENCE__ || false
+		#if false
 		[global::Uno.NotImplemented("NET461", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public  global::Windows.UI.Xaml.Media.ImageSource PosterSource
 		{
@@ -63,7 +63,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if false || false || NET461 || __SKIA__ || __NETSTD_REFERENCE__ || false
+		#if false
 		[global::Uno.NotImplemented("NET461", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public  bool IsFullWindow
 		{
@@ -77,7 +77,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if false || false || NET461 || __SKIA__ || __NETSTD_REFERENCE__ || false
+		#if false
 		[global::Uno.NotImplemented("NET461", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public  bool AutoPlay
 		{
@@ -91,7 +91,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if false || false || NET461 || __SKIA__ || __NETSTD_REFERENCE__ || false
+		#if false
 		[global::Uno.NotImplemented("NET461", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public  bool AreTransportControlsEnabled
 		{
@@ -105,7 +105,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if false || false || NET461 || __SKIA__ || __NETSTD_REFERENCE__ || false
+		#if false
 		[global::Uno.NotImplemented("NET461", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public  global::Windows.Media.Playback.MediaPlayer MediaPlayer
 		{
@@ -115,7 +115,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if false || false || NET461 || __SKIA__ || __NETSTD_REFERENCE__ || false
+		#if false
 		[global::Uno.NotImplemented("NET461", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Xaml.DependencyProperty AreTransportControlsEnabledProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -123,7 +123,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.MediaPlayerElement), 
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 		#endif
-		#if false || false || NET461 || __SKIA__ || __NETSTD_REFERENCE__ || false
+		#if false
 		[global::Uno.NotImplemented("NET461", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Xaml.DependencyProperty AutoPlayProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -131,7 +131,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.MediaPlayerElement), 
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 		#endif
-		#if false || false || NET461 || __SKIA__ || __NETSTD_REFERENCE__ || false
+		#if false
 		[global::Uno.NotImplemented("NET461", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Xaml.DependencyProperty IsFullWindowProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -139,7 +139,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.MediaPlayerElement), 
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 		#endif
-		#if false || false || NET461 || __SKIA__ || __NETSTD_REFERENCE__ || false
+		#if false
 		[global::Uno.NotImplemented("NET461", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Xaml.DependencyProperty MediaPlayerProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -147,7 +147,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.MediaPlayerElement), 
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.Media.Playback.MediaPlayer)));
 		#endif
-		#if false || false || NET461 || __SKIA__ || __NETSTD_REFERENCE__ || false
+		#if false
 		[global::Uno.NotImplemented("NET461", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Xaml.DependencyProperty PosterSourceProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -155,7 +155,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.MediaPlayerElement), 
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.ImageSource)));
 		#endif
-		#if false || false || NET461 || __SKIA__ || __NETSTD_REFERENCE__ || false
+		#if false
 		[global::Uno.NotImplemented("NET461", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Xaml.DependencyProperty SourceProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -163,7 +163,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.MediaPlayerElement), 
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.Media.Playback.IMediaPlaybackSource)));
 		#endif
-		#if false || false || NET461 || __SKIA__ || __NETSTD_REFERENCE__ || false
+		#if false
 		[global::Uno.NotImplemented("NET461", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Xaml.DependencyProperty StretchProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -194,7 +194,7 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.MediaPlayerElement.IsFullWindow.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.MediaPlayerElement.IsFullWindow.set
 		// Forced skipping of method Windows.UI.Xaml.Controls.MediaPlayerElement.MediaPlayer.get
-		#if false || false || NET461 || __SKIA__ || __NETSTD_REFERENCE__ || false
+		#if false
 		[global::Uno.NotImplemented("NET461", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public  void SetMediaPlayer( global::Windows.Media.Playback.MediaPlayer mediaPlayer)
 		{

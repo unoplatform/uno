@@ -82,6 +82,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\AddIns\Uno.UI.Lottie\Uno.UI.Lottie.Wasm.csproj" />
+		<ProjectReference Include="..\..\AddIns\Uno.UI.MediaPlayer.WebAssembly\Uno.UI.MediaPlayer.WebAssembly.csproj" />
 		<ProjectReference Include="..\..\AddIns\Uno.UI.MSAL\Uno.UI.MSAL.Wasm.csproj" />
 		<ProjectReference Include="..\..\Uno.Foundation.Runtime.WebAssembly\Uno.Foundation.Runtime.WebAssembly.csproj" />
 		<ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.Wasm.csproj" />
