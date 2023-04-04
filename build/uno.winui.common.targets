@@ -260,5 +260,9 @@
 			<Reference Include="System.Memory" />
 		</ItemGroup>
 	</Target>
+
+	<!-- Workaround for OmniSharp single-TargetFramework use -->
+	<Import Project="$([MSBuild]::GetPathOfFileAbove('uno.vscode.targets', '$(MSBuildThisFileDirectory)../.vscode/'))" 
+			Condition="'$(UnoDisableOmnisharpTargetsImport)'=='' and Exists($([MSBuild]::GetPathOfFileAbove('uno.vscode.targets', '$(MSBuildThisFileDirectory)../.vscode/')))" />
   
 </Project>
