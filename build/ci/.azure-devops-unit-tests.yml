@@ -57,7 +57,7 @@ jobs:
   - task: MSBuild@1
     inputs:
       solution: src/Uno.UI-UnitTests-only.slnf
-      msbuildArguments: /r /v:m /p:CheckExclusions=True /p:Configuration=Release /nodeReuse:true /detailedsummary /m $(ADDITIONAL_FLAGS) /bl:$(build.artifactstagingdirectory)\unit-tests-build.binlog
+      msbuildArguments: /r /v:m /p:CheckExclusions=True /p:Configuration=Release /nodeReuse:true /detailedsummary /m $(ADDITIONAL_FLAGS) /bl:$(build.artifactstagingdirectory)\unit-tests-build-$(XAML_FLAVOR_BUILD).binlog
 
   - task: PublishBuildArtifacts@1
     condition: always()
