@@ -19,6 +19,7 @@ using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.Extensions;
 using Windows.Foundation.Metadata;
 using Windows.UI.Xaml;
+using System.Linq;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 {
@@ -165,8 +166,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 			await WindowHelper.WaitForIdle();
 			await WindowHelper.WaitForLoaded(rect);
 
-			byte[] bgraPixelData = new byte[wb.PixelBuffer.Length];
-			Array.Fill<byte>(bgraPixelData, 255);
+			var bgraPixelData = Enumerable.Repeat<byte>(255, (int)wb.PixelBuffer.Length).ToArray();
 
 			using (Stream stream = wb.PixelBuffer.AsStream())
 			{
