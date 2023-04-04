@@ -72,7 +72,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(bool),
 				typeof(Expander),
 				new FrameworkPropertyMetadata(
-					true,
+					false,
 					(s, e) => (s as Expander)?.OnIsExpandedPropertyChanged(e)));
 
 		public ExpanderTemplateSettings TemplateSettings
