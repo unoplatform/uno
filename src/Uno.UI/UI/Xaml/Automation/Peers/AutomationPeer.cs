@@ -14,6 +14,8 @@ namespace Windows.UI.Xaml.Automation.Peers
 
 		#region Public
 
+		public AutomationPeer EventsSource { get; set; } // TODO Uno: Implement properly.
+
 		public object GetPattern(Windows.UI.Xaml.Automation.Peers.PatternInterface patternInterface) => GetPatternCore(patternInterface);
 
 		public void SetParent(global::Windows.UI.Xaml.Automation.Peers.AutomationPeer peer) => _parent = peer;
@@ -118,7 +120,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 
 		protected virtual Rect GetBoundingRectangleCore() => default;
 
-		protected virtual IList<AutomationPeer> GetChildrenCore() => null;
+		protected internal virtual IList<AutomationPeer> GetChildrenCore() => null;
 
 		protected virtual Point GetClickablePointCore() => default;
 
@@ -184,7 +186,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 
 		protected virtual string GetClassNameCore() => "";
 
-		protected virtual string GetNameCore() => "";
+		protected internal virtual string GetNameCore() => "";
 
 		protected virtual string GetLocalizedControlTypeCore() => LocalizeControlType(GetAutomationControlType());
 
