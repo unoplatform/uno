@@ -573,9 +573,10 @@ namespace Windows.UI.Xaml.Controls
 					}
 
 					SaveContainersBeforeRemoveForIndexRepair(args.OldStartingIndex, args.OldItems.Count);
-					CleanUpContainers(args.OldStartingIndex, args.OldItems.Count);
+					var removedContainers = CaptureContainers(args.OldStartingIndex, args.OldItems.Count);
 					RemoveItems(args.OldStartingIndex, args.OldItems.Count, section);
 					RepairIndices();
+					CleanUpContainers(removedContainers);
 
 					break;
 				case NotifyCollectionChangedAction.Replace:
@@ -680,17 +681,43 @@ namespace Windows.UI.Xaml.Controls
 			_containersForIndexRepair.Clear();
 		}
 
-		private void CleanUpContainers(int startingIndex, int length)
+		private void CleanUpAllContainers()
 		{
-			if (ShouldItemsControlManageChildren) return;
-			
+			if (ShouldItemsControlManageChildren)
+			{
+				return;
+			}
+
+			foreach (var container in MaterializedContainers)
+			{
+				CleanUpContainer(container);
+			}
+		}
+
+		private ICollection<DependencyObject> CaptureContainers(int startingIndex, int length)
+		{
+			if (ShouldItemsControlManageChildren)
+			{
+				return Array.Empty<DependencyObject>();
+			}
+
+			var containers = new List<DependencyObject>(length);
 			foreach (var container in MaterializedContainers)
 			{
 				var index = (int)container.GetValue(ItemsControl.IndexForItemContainerProperty);
 				if (startingIndex <= index && index < startingIndex + length)
 				{
-					CleanUpContainer(container);
+					containers.Add(container);
 				}
+			}
+			return containers;
+		}
+
+		private void CleanUpContainers(ICollection<DependencyObject> containersToCleanup)
+		{
+			foreach (var container in containersToCleanup)
+			{
+				CleanUpContainer(container);
 			}
 		}
 
