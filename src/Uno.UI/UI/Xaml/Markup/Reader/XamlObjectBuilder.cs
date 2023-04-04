@@ -132,7 +132,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 
 				if (created is FrameworkElement fe && _fileUri is not null)
 				{
-					fe.SetBaseUri(fe.BaseUri.ToString(), _fileUri!, control.LineNumber, control.LinePosition);
+					fe.SetBaseUri(fe.BaseUri.OriginalString, _fileUri, control.LineNumber, control.LinePosition);
 				}
 
 				return created;
