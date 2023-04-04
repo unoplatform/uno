@@ -791,7 +791,8 @@ namespace Windows.UI.Xaml.Controls
 			}
 			else
 			{
-				FocusManager.TryMoveFocus(topToBottom ? FocusNavigationDirection.Down : FocusNavigationDirection.Up);
+				var focusManager = VisualTree.GetFocusManagerForElement(this);
+				focusManager?.TryMoveFocusInstance(topToBottom ? FocusNavigationDirection.Down : FocusNavigationDirection.Up);
 				DXamlCore.Current.GetElementSoundPlayerServiceNoRef().RequestInteractionSoundForElement(ElementSoundKind.Focus, this);
 			}
 		}
@@ -1092,7 +1093,8 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 
-			FocusManager.TryMoveFocus(moveToRight ? FocusNavigationDirection.Right : FocusNavigationDirection.Left);
+			var focusManager = VisualTree.GetFocusManagerForElement(this);
+			focusManager?.TryMoveFocusInstance(moveToRight ? FocusNavigationDirection.Right : FocusNavigationDirection.Left);
 			DXamlCore.Current.GetElementSoundPlayerServiceNoRef().RequestInteractionSoundForElement(ElementSoundKind.Focus, this);
 		}
 
