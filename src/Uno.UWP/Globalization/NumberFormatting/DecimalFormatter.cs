@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿#nullable enable
+
+using System.Collections.Generic;
+using Uno;
 using Uno.Globalization.NumberFormatting;
 
 namespace Windows.Globalization.NumberFormatting
@@ -32,7 +35,7 @@ namespace Windows.Globalization.NumberFormatting
 
 		public int FractionDigits { get => _formatterHelper.FractionDigits; set => _formatterHelper.FractionDigits = value; }
 
-		public INumberRounder NumberRounder { get; set; }
+		public INumberRounder? NumberRounder { get; set; }
 
 		public bool IsZeroSigned { get => _formatterHelper.IsZeroSigned; set => _formatterHelper.IsZeroSigned = value; }
 
@@ -52,25 +55,27 @@ namespace Windows.Globalization.NumberFormatting
 				value = NumberRounder.RoundDouble(value);
 			}
 
-			string formatted = string.Empty;
+
+			var stringBuilder = StringBuilderCache.Acquire();
 
 			if (value == 0d)
 			{
-				formatted = _formatterHelper.FormatZero(value);
+				_formatterHelper.AppendFormatZero(value, stringBuilder);
 			}
 			else
 			{
-				formatted = _formatterHelper.FormatDoubleCore(value);
+				_formatterHelper.AppendFormatDouble(value, stringBuilder);
 			}
 
-			formatted = _translator.TranslateNumerals(formatted);
+			_translator.TranslateNumerals(stringBuilder);
+			var formatted = StringBuilderCache.GetStringAndRelease(stringBuilder);
 			return formatted;
 		}
 
 		public double? ParseDouble(string text)
 		{
 			text = _translator.TranslateBackNumerals(text);
-			return _formatterHelper.ParseDoubleCore(text);
+			return _formatterHelper.ParseDouble(text);
 		}
 
 	}

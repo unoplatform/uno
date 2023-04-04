@@ -1,4 +1,7 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿#nullable enable
+
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+#if HAS_UNO || IS_UNIT_TESTS
 using Uno.Globalization.NumberFormatting;
 using Windows.Globalization.NumberFormatting;
 
@@ -167,3 +170,4 @@ namespace Uno.UI.Tests.Windows_Globalization
 		}
 	}
 }
+#endif
