@@ -100,7 +100,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 			{
 				var created = Activator.CreateInstance(classType);
 
-				if (created is FrameworkElement fe && !string.IsNullOrWhiteSpace(_fileUri))
+				if (created is FrameworkElement fe && _fileUri is not null)
 				{
 					fe.SetBaseUri(fe.BaseUri.ToString(), _fileUri!, control.LineNumber, control.LinePosition);
 				}
@@ -130,7 +130,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 
 				var created = Activator.CreateInstance(type, builder);
 
-				if (created is FrameworkElement fe && !string.IsNullOrWhiteSpace(_fileUri))
+				if (created is FrameworkElement fe && _fileUri is not null)
 				{
 					fe.SetBaseUri(fe.BaseUri.ToString(), _fileUri!, control.LineNumber, control.LinePosition);
 				}
@@ -203,7 +203,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 				{
 					instanceAsFrameworkElement.IsParsing = true;
 
-					if (!string.IsNullOrWhiteSpace(_fileUri))
+					if (_fileUri is not null)
 					{
 						instanceAsFrameworkElement.SetBaseUri(instanceAsFrameworkElement.BaseUri.ToString(), _fileUri!, control.LineNumber, control.LinePosition);
 					}
