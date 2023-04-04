@@ -54,7 +54,13 @@ namespace Windows.UI.Xaml.Markup.Reader
 			typeof(FontWeight),
 		};
 
-		public XamlObjectBuilder(XamlFileDefinition xamlFileDefinition, string fileUri = "")
+		public XamlObjectBuilder(XamlFileDefinition xamlFileDefinition)
+		{
+			_fileDefinition = xamlFileDefinition;
+			TypeResolver = new XamlTypeResolver(_fileDefinition);
+		}
+
+		internal XamlObjectBuilder(XamlFileDefinition xamlFileDefinition, string fileUri = "")
 		{
 			_fileDefinition = xamlFileDefinition;
 			_fileUri = fileUri;
@@ -94,7 +100,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 			{
 				var created = Activator.CreateInstance(classType);
 
-				if (created is FrameworkElement fe)
+				if (created is FrameworkElement fe && !string.IsNullOrWhiteSpace(_fileUri))
 				{
 					fe.SetBaseUri(fe.BaseUri.ToString(), _fileUri, control.LineNumber, control.LinePosition);
 				}
@@ -124,7 +130,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 
 				var created = Activator.CreateInstance(type, builder);
 
-				if (created is FrameworkElement fe)
+				if (created is FrameworkElement fe && !string.IsNullOrWhiteSpace(_fileUri))
 				{
 					fe.SetBaseUri(fe.BaseUri.ToString(), _fileUri, control.LineNumber, control.LinePosition);
 				}

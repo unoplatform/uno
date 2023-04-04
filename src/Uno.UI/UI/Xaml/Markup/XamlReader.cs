@@ -19,6 +19,7 @@ namespace Windows.UI.Xaml.Markup
 		{
 			return Load(xaml);
 		}
+
 		internal static object LoadUsingXClass(string xaml, string fileUri)
 		{
 			var r = new XamlStringParser();
