@@ -55,6 +55,14 @@ namespace Uno.UI.Xaml
 				WebAssemblyRuntime.InvokeJS("Uno.UI.WindowManager.findLaunchArguments()");
 #endif
 
+		internal static double GetBootTime()
+			=>
+#if NET7_0_OR_GREATER
+				NativeMethods.GetBootTime();
+#else
+				double.Parse(WebAssemblyRuntime.InvokeJS("Date.now() - performance.now()"), CultureInfo.InvariantCulture);
+#endif
+
 		#region CreateContent
 		internal static void CreateContent(IntPtr htmlId, string htmlTag, IntPtr handle, int uiElementRegistrationId, bool htmlTagIsSvg, bool isFocusable)
 		{
@@ -1293,6 +1301,9 @@ namespace Uno.UI.Xaml
 
 			[JSImport("globalThis.Uno.UI.WindowManager.findLaunchArguments")]
 			internal static partial string FindLaunchArguments();
+
+			[JSImport("globalThis.Uno.UI.WindowManager.getBootTime")]
+			internal static partial double GetBootTime();
 
 			[JSImport("globalThis.Uno.UI.WindowManager.current.focusView")]
 			internal static partial void FocusView(IntPtr htmlId);
