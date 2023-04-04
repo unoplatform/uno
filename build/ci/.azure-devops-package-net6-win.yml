@@ -103,6 +103,7 @@ jobs:
       restoreNugetPackages: false
       logProjectEvents: false
       createLogFile: false
+    condition: and(succeeded(), eq(variables['ZipFileTargetFramework'], 'net7'))
     displayName: Building WinAppSDK/UWP package binaries
 
   - template: templates/copy-package-assets.yml
