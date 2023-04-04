@@ -193,7 +193,11 @@ internal class FontFamilyLoader
 			}
 			else
 			{
+#if NET7_0_OR_GREATER
+				NativeMethods.ForceFontUsage(_fontFamily.CssFontName);
+#else
 				WebAssemblyRuntime.InvokeJS($"Windows.UI.Xaml.Media.FontFamily.forceFontUsage(\"{_fontFamily.CssFontName}\")");
+#endif
 			}
 
 			_loadOperation = new TaskCompletionSource<bool>();
