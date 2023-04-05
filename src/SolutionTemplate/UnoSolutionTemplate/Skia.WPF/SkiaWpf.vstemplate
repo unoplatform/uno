@@ -16,6 +16,7 @@
   <TemplateContent>
     <Project File="UnoQuickStart.Skia.Wpf.csproj" TargetFileName="$ext_safeprojectname$.Skia.Wpf.csproj" ReplaceParameters="true">
       <ProjectItem TargetFileName="Program.cs" ReplaceParameters="true">Program.cs</ProjectItem>
+      <ProjectItem TargetFileName="app.manifest" ReplaceParameters="true">app.manifest</ProjectItem>
     </Project>
   </TemplateContent>
 </VSTemplate>
