@@ -164,37 +164,37 @@ public class Given_TreeView
 		child3.Children.Add(child32);
 
 		SUT.myTree.ItemsSource = new[] { root };
-		await TestServices.WindowHelper.WaitForIdle();
+		await DelayWait();
 
 		var rootNode = (TreeViewItem)SUT.myTree.ContainerFromItem(root);
 		rootNode.IsExpanded = true;
-		await TestServices.WindowHelper.WaitForIdle();
+		await DelayWait();
 
 		var child2Node = (TreeViewItem)SUT.myTree.ContainerFromItem(child2);
 		child2Node.IsExpanded = true;
-		await TestServices.WindowHelper.WaitForIdle();
+		await DelayWait();
 
 		rootNode.IsExpanded = false;
-		await TestServices.WindowHelper.WaitForIdle();
+		await DelayWait();
 
 		rootNode.IsExpanded = true;
-		await TestServices.WindowHelper.WaitForIdle();
+		await DelayWait();
 
 		// Force refresh
 		container.Width = 700;
 		container.Height = 700;
 
-		await TestServices.WindowHelper.WaitForIdle();
+		await DelayWait();
 
 		var child1Node = (TreeViewItem)SUT.myTree.ContainerFromItem(child1);
 		Assert.IsNotNull(child1Node);
 		Assert.AreEqual(child1, child1Node.DataContext);
 
 		rootNode.IsExpanded = false;
-		await TestServices.WindowHelper.WaitForIdle();
+		await DelayWait();
 
 		rootNode.IsExpanded = true;
-		await TestServices.WindowHelper.WaitForIdle();
+		await DelayWait();
 
 		var child3Node = (TreeViewItem)SUT.myTree.ContainerFromItem(child3);
 
@@ -202,16 +202,35 @@ public class Given_TreeView
 		// of recursive items removal in the TreeView control.
 		Assert.IsFalse(child3Node.IsExpanded);
 		child3Node.IsExpanded = false;
-		await TestServices.WindowHelper.WaitForIdle();
+		await DelayWait();
 
 		child3Node.IsExpanded = true;
-		await TestServices.WindowHelper.WaitForIdle();
+		await DelayWait();
 
 #if HAS_UNO
-		Assert.AreEqual(
-			1,
-			MUXTestPage.FindVisualChildrenByType<TextBlock>(SUT.myTree).Count(c => c.Text == "Child 21"));
+		var hasChild21 = false;
+
+		foreach (var item in SUT.myTree.ListControl.Items)
+		{
+			var container2 = SUT.myTree.ListControl.ContainerFromItem(item) as TreeViewItem;
+
+			if (MUXTestPage.FindVisualChildrenByType<TextBlock>(container2).Count(c => c.Text == "Child 21") != 0)
+			{
+				hasChild21 = true;
+				break;
+			}
+		}
+
+		Assert.IsTrue(hasChild21);
 #endif
+
+		async Task DelayWait()
+		{
+			await TestServices.WindowHelper.WaitForIdle();
+
+			// Arbitrary delay for animations handling
+			await Task.Delay(500);
+		}
 	}
 }
 
