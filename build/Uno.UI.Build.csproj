@@ -431,10 +431,10 @@
 		</PropertyGroup>
 
 		<!-- Pre-validation of contents to be packed -->
-		<Error Text="The Uno.UI.Toolkit PRI file is not present in src\Uno.UI.Toolkit\bin\Release"
-					 Condition="'$(UNO_UWP_BUILD)'=='true' and !exists('..\src\Uno.UI.Toolkit\bin\Release\uap10.0.18362\Uno.UI.Toolkit.pri')" />
-		<Error Text="The Uno.UI.Toolkit PRI file is not present in src\Uno.UI.Toolkit\bin\Release"
-					 Condition="'$(UNO_UWP_BUILD)'!='true' and !exists('..\src\Uno.UI.Toolkit\bin\Release\net5.0-windows10.0.18362.0\Uno.UI.Toolkit.pri')" />
+		<Error Text="The Uno.UI.Toolkit PRI file is not present in src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Windows\Release"
+					 Condition="'$(UNO_UWP_BUILD)'=='true' and !exists('..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Windows\Release\uap10.0.18362\Uno.UI.Toolkit.pri')" />
+		<Error Text="The Uno.UI.Toolkit PRI file is not present in src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Windows\Release"
+					 Condition="'$(UNO_UWP_BUILD)'!='true' and !exists('..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Windows\Release\net5.0-windows10.0.18362.0\Uno.UI.Toolkit.pri')" />
 
 		<!-- Create the packages -->
 		<Exec Command="$(NuGetBin) pack Uno.WinUI.nuspec -Verbosity Detailed -Version &quot;$(GITVERSION_SemVer)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
