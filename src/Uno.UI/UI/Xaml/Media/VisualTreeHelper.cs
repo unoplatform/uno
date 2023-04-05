@@ -168,9 +168,9 @@ namespace Windows.UI.Xaml.Media
 #if XAMARIN
 			realParent = (reference as _ViewGroup)?
 				.FindFirstParent<DependencyObject>();
-#else
-			realParent = reference.GetParent() as DependencyObject;
 #endif
+
+			realParent ??= reference.GetParent() as DependencyObject;
 
 			if (realParent is null && reference is _ViewGroup uiElement)
 			{
