@@ -102,7 +102,7 @@ namespace Windows.UI.Xaml.Media.Animation
 #if NET7_0_OR_GREATER
 				NativeMethods.CreateInstance(managedHandle, id);
 #else
-				WebAssemblyRuntime.InvokeJS($"Windows.UI.Xaml.Media.Animation.RenderingLoopAnimator.createInstance(\"{managedHandle}\", \"{id}\")");
+				WebAssemblyRuntime.InvokeJS($"Windows.UI.Xaml.Media.Animation.RenderingLoopAnimator.createInstance({managedHandle}, {id})");
 #endif
 
 				return id;
@@ -118,7 +118,7 @@ namespace Windows.UI.Xaml.Media.Animation
 #if NET7_0_OR_GREATER
 					NativeMethods.DestroyInstance(jsHandle);
 #else
-					WebAssemblyRuntime.InvokeJS($"Windows.UI.Xaml.Media.Animation.RenderingLoopAnimator.destroyInstance(\"{jsHandle}\")");
+					WebAssemblyRuntime.InvokeJS($"Windows.UI.Xaml.Media.Animation.RenderingLoopAnimator.destroyInstance({jsHandle})");
 #endif
 
 			/// <inheritdoc />
