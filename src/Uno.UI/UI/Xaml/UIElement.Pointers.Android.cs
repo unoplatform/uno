@@ -11,6 +11,7 @@ using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml.Core;
+using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
@@ -123,7 +124,7 @@ namespace Windows.UI.Xaml
 					// but if the event has been handled, we need to raise it after the 'up' has been processed.
 					if (OnNativePointerUp(args))
 					{
-						VisualTree.GetRootForElement(this)?.ProcessPointerUp(args, isAfterHandledUp: true);
+						WinUICoreServices.Instance.MainRootVisual.ProcessPointerUp(args, isAfterHandledUp: true); // TODO for #8341
 						return true;
 					}
 					else
