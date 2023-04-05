@@ -15,7 +15,7 @@ namespace Uno.UWPSyncGenerator
 	{
 		internal const string CSharpLangVersion = "11.0";
 
-		private const string net461Define = "NET461";
+		private const string UnitTestsDefine = "IS_UNIT_TESTS";
 		private const string AndroidDefine = "__ANDROID__";
 		private const string iOSDefine = "__IOS__";
 		private const string MacDefine = "__MACOS__";
@@ -101,7 +101,7 @@ namespace Uno.UWPSyncGenerator
 		private INamedTypeSymbol _androidBaseSymbol;
 		private INamedTypeSymbol _macOSBaseSymbol;
 		private Compilation _referenceCompilation;
-		private Compilation _net461Compilation;
+		private Compilation _unitTestsCompilation;
 
 		private Compilation _netstdReferenceCompilation;
 		private Compilation _wasmCompilation;
@@ -152,7 +152,7 @@ namespace Uno.UWPSyncGenerator
 
 			_iOSCompilation = LoadProject($@"{basePath}\{baseName}.netcoremobile.csproj", "net7.0-ios");
 			_androidCompilation = LoadProject($@"{basePath}\{baseName}.netcoremobile.csproj", "net7.0-android");
-			_net461Compilation = LoadProject($@"{basePath}\{baseName}.Tests.csproj", "net7.0");
+			_unitTestsCompilation = LoadProject($@"{basePath}\{baseName}.Tests.csproj", "net7.0");
 			_macCompilation = LoadProject($@"{basePath}\{baseName}.netcoremobile.csproj", "net7.0-macos");
 
 			_netstdReferenceCompilation = LoadProject($@"{basePath}\{baseName}.Reference.csproj", "net7.0");
@@ -346,7 +346,7 @@ namespace Uno.UWPSyncGenerator
 		{
 			public T AndroidSymbol;
 			public T IOSSymbol;
-			public T net461ymbol;
+			public T UnitTestsymbol;
 			public T MacOSSymbol;
 			public T UAPSymbol;
 			public T NetStdReferenceSymbol;
@@ -370,7 +370,7 @@ namespace Uno.UWPSyncGenerator
 			{
 				this.AndroidSymbol = androidType;
 				this.IOSSymbol = iOSType;
-				this.net461ymbol = unitTestType;
+				this.UnitTestsymbol = unitTestType;
 				this.MacOSSymbol = macOSType;
 				this.UAPSymbol = uapType;
 				this.NetStdReferenceSymbol = netStdRerefenceType;
@@ -385,9 +385,9 @@ namespace Uno.UWPSyncGenerator
 				{
 					_implementedFor |= ImplementedFor.iOS;
 				}
-				if (IsImplemented(net461ymbol))
+				if (IsImplemented(UnitTestsymbol))
 				{
-					_implementedFor |= ImplementedFor.Net461;
+					_implementedFor |= ImplementedFor.UnitTests;
 				}
 				if (IsImplemented(MacOSSymbol))
 				{
@@ -410,7 +410,7 @@ namespace Uno.UWPSyncGenerator
 			public bool HasUndefined =>
 				AndroidSymbol == null
 				|| IOSSymbol == null
-				|| net461ymbol == null
+				|| UnitTestsymbol == null
 				|| MacOSSymbol == null
 				|| NetStdReferenceSymbol == null
 				|| WasmSymbol == null
@@ -422,7 +422,7 @@ namespace Uno.UWPSyncGenerator
 				var defines = new[] {
 					IsNotDefinedByUno(AndroidSymbol) ? AndroidDefine : "false",
 					IsNotDefinedByUno(IOSSymbol) ? iOSDefine : "false",
-					IsNotDefinedByUno(net461ymbol) ? net461Define : "false",
+					IsNotDefinedByUno(UnitTestsymbol) ? UnitTestsDefine : "false",
 					IsNotDefinedByUno(WasmSymbol) ? WasmDefine : "false",
 					IsNotDefinedByUno(SkiaSymbol) ? SkiaDefine : "false",
 					IsNotDefinedByUno(NetStdReferenceSymbol) ? NetStdReferenceDefine : "false",
@@ -437,7 +437,7 @@ namespace Uno.UWPSyncGenerator
 				var defines = new[] {
 					IsNotDefinedByUno(AndroidSymbol) ? $"\"{AndroidDefine}\"" : "",
 					IsNotDefinedByUno(IOSSymbol) ? $"\"{iOSDefine}\"" : "",
-					IsNotDefinedByUno(net461ymbol) ? $"\"{net461Define}\"" : "",
+					IsNotDefinedByUno(UnitTestsymbol) ? $"\"{UnitTestsDefine}\"" : "",
 					IsNotDefinedByUno(WasmSymbol) ? $"\"{WasmDefine}\"" : "",
 					IsNotDefinedByUno(SkiaSymbol) ? $"\"{SkiaDefine}\"": "",
 					IsNotDefinedByUno(NetStdReferenceSymbol) ? $"\"{NetStdReferenceDefine}\"" : "",
@@ -450,7 +450,7 @@ namespace Uno.UWPSyncGenerator
 			public bool IsNotImplementedInAllPlatforms()
 				=> IsNotDefinedByUno(AndroidSymbol) &&
 					IsNotDefinedByUno(IOSSymbol) &&
-					IsNotDefinedByUno(net461ymbol) &&
+					IsNotDefinedByUno(UnitTestsymbol) &&
 					IsNotDefinedByUno(WasmSymbol) &&
 					IsNotDefinedByUno(SkiaSymbol) &&
 					IsNotDefinedByUno(NetStdReferenceSymbol) &&
@@ -501,7 +501,7 @@ namespace Uno.UWPSyncGenerator
 				  androidType: _androidCompilation.GetTypeByMetadataName(name),
 				  iOSType: _iOSCompilation.GetTypeByMetadataName(name),
 				  macOSType: _macCompilation?.GetTypeByMetadataName(name),
-				  unitTestType: _net461Compilation.GetTypeByMetadataName(name),
+				  unitTestType: _unitTestsCompilation.GetTypeByMetadataName(name),
 				  netStdRerefenceType: _netstdReferenceCompilation.GetTypeByMetadataName(name),
 				  wasmType: _wasmCompilation.GetTypeByMetadataName(name),
 				  skiaType: _skiaCompilation.GetTypeByMetadataName(name),
@@ -514,7 +514,7 @@ namespace Uno.UWPSyncGenerator
 			var android = GetNonGeneratedMembers(types.AndroidSymbol, name);
 			var ios = GetNonGeneratedMembers(types.IOSSymbol, name);
 			var macOS = GetNonGeneratedMembers(types.MacOSSymbol, name);
-			var net461 = GetNonGeneratedMembers(types.net461ymbol, name);
+			var unitTests = GetNonGeneratedMembers(types.UnitTestsymbol, name);
 			var netStdReference = GetNonGeneratedMembers(types.NetStdReferenceSymbol, name);
 			var wasm = GetNonGeneratedMembers(types.WasmSymbol, name);
 			var skia = GetNonGeneratedMembers(types.SkiaSymbol, name);
@@ -523,7 +523,7 @@ namespace Uno.UWPSyncGenerator
 				androidType: filter(android),
 				iOSType: filter(ios),
 				macOSType: filter(macOS),
-				unitTestType: filter(net461),
+				unitTestType: filter(unitTests),
 				netStdRerefenceType: filter(netStdReference),
 				wasmType: filter(wasm),
 				skiaType: filter(skia),
@@ -536,7 +536,7 @@ namespace Uno.UWPSyncGenerator
 				androidType: FindMatchingMethod(types.AndroidSymbol, method),
 				iOSType: FindMatchingMethod(types.IOSSymbol, method),
 				macOSType: FindMatchingMethod(types.MacOSSymbol, method),
-				unitTestType: FindMatchingMethod(types.net461ymbol, method),
+				unitTestType: FindMatchingMethod(types.UnitTestsymbol, method),
 				netStdRerefenceType: FindMatchingMethod(types.NetStdReferenceSymbol, method),
 				wasmType: FindMatchingMethod(types.WasmSymbol, method),
 				skiaType: FindMatchingMethod(types.SkiaSymbol, method),
@@ -548,7 +548,7 @@ namespace Uno.UWPSyncGenerator
 				androidType: GetMatchingPropertyMember(types.AndroidSymbol, property),
 				iOSType: GetMatchingPropertyMember(types.IOSSymbol, property),
 				macOSType: GetMatchingPropertyMember(types.MacOSSymbol, property),
-				unitTestType: GetMatchingPropertyMember(types.net461ymbol, property),
+				unitTestType: GetMatchingPropertyMember(types.UnitTestsymbol, property),
 				netStdRerefenceType: GetMatchingPropertyMember(types.NetStdReferenceSymbol, property),
 				wasmType: GetMatchingPropertyMember(types.WasmSymbol, property),
 				skiaType: GetMatchingPropertyMember(types.SkiaSymbol, property),
