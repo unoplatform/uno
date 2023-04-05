@@ -17,6 +17,7 @@
 	<TemplateContent>
 		<Project File="UnoQuickStart.Skia.Gtk.csproj" TargetFileName="$ext_safeprojectname$.Skia.Gtk.csproj" ReplaceParameters="true">
 			<ProjectItem TargetFileName="Program.cs" ReplaceParameters="true">Program.cs</ProjectItem>
+			<ProjectItem TargetFileName="app.manifest" ReplaceParameters="true">app.manifest</ProjectItem>
 		</Project>
 	</TemplateContent>
 </VSTemplate>

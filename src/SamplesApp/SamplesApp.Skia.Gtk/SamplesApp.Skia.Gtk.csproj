@@ -2,6 +2,7 @@
 	<PropertyGroup>
 		<TargetFrameworks>netcoreapp3.1;net5.0</TargetFrameworks>
 		<RollForward>Major</RollForward>
+		<ApplicationManifest>app.manifest</ApplicationManifest>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(MSBuildRuntimeType)'=='Core'">
@@ -37,6 +38,8 @@
 		<PackageReference Include="SkiaSharp" />
 		<PackageReference Include="SkiaSharp.NativeAssets.Linux" />
 		<PackageReference Include="GtkSharp" />
+		<Manifest Remove="app.manifest" />
+		<Manifest Include="$(ApplicationManifest)" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -62,9 +65,7 @@
 	<Import Project="..\..\..\build\*.Skia.Gtk.targets" />
 	<Import Project="..\..\..\build\uno.winui.runtime-replace.targets" />
 
-	<Target Name="ValidateTransientLocalAssets"
-			AfterTargets="Build"
-			Condition="'$(TargetFramework)'!=''">
+	<Target Name="ValidateTransientLocalAssets" AfterTargets="Build" Condition="'$(TargetFramework)'!=''">
 		<Message Text="Validating local assets" Importance="high" />
 		<Error Condition="!Exists('$(OutputPath)Uno.UI.RuntimeTests\Assets\TransientAsset01.txt')" Text="$(OutputPath)uno.ui.runtimetests\Assets\TransientAsset01.txt" />
 	</Target>
