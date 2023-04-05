@@ -16,6 +16,7 @@ namespace SamplesApp.Droid
 {
 	[global::Android.App.ApplicationAttribute(
 		Label = "@string/ApplicationName",
+		Banner = "@drawable/banner",
 		LargeHeap = true,
 		HardwareAccelerated = true,
 		Theme = "@style/AppTheme"

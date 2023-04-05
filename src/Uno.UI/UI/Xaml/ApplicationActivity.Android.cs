@@ -7,10 +7,7 @@ using Android.Graphics;
 using Android.OS;
 using Android.Views;
 using Android.Views.InputMethods;
-using Uno.AuthenticationBroker;
-using Uno.Extensions;
 using Uno.Foundation.Logging;
-using Uno.Gaming.Input.Internal;
 using Uno.UI;
 using Windows.Devices.Sensors;
 using Windows.Gaming.Input;
@@ -18,7 +15,9 @@ using Windows.Graphics.Display;
 using Windows.Security.Authentication.Web;
 using Windows.Storage.Pickers;
 using Windows.System;
+using Windows.UI.Core;
 using Windows.UI.ViewManagement;
+using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
@@ -100,41 +99,52 @@ namespace Windows.UI.Xaml
 		public override bool DispatchKeyEvent(KeyEvent e)
 		{
 			var handled = false;
-			if (Uno.WinRTFeatureConfiguration.Focus.EnableExperimentalKeyboardFocus)
-			{
-				var focusHandler = Uno.UI.Xaml.Core.CoreServices.Instance.MainRootVisual.AssociatedVisualTree.UnoFocusInputHandler;
-				if (focusHandler != null && e.Action == KeyEventActions.Down)
+
+			var virtualKey = VirtualKeyHelper.FromKeyCode(e.KeyCode);
+
+			var args = new KeyEventArgs(
+				"keyboard",
+				virtualKey,
+				new CorePhysicalKeyStatus
 				{
-					if (e.KeyCode == Keycode.Tab)
+					ScanCode = (uint)e.KeyCode,
+					RepeatCount = 1,
+				});
+
+			if (this.Log().IsEnabled(LogLevel.Trace))
+			{
+				this.Log().Trace($"PressesBegan: {e.KeyCode} -> {virtualKey}");
+			}
+
+			try
+			{
+				if (CoreWindow.GetForCurrentThread() is ICoreWindowEvents ownerEvents)
+				{
+					if (e.Action == KeyEventActions.Down)
 					{
-						var shift = e.Modifiers.HasFlag(MetaKeyStates.ShiftLeftOn) || e.Modifiers.HasFlag(MetaKeyStates.ShiftRightOn) || e.Modifiers.HasFlag(MetaKeyStates.ShiftOn);
-						handled = focusHandler.TryHandleTabFocus(shift);
+						ownerEvents.RaiseKeyDown(args);
 					}
-					else if (
-						e.KeyCode == Keycode.DpadUp ||
-						e.KeyCode == Keycode.SystemNavigationUp)
+
+					if (FocusManager.GetFocusedElement() is FrameworkElement element)
 					{
-						handled = focusHandler.TryHandleDirectionalFocus(VirtualKey.Up);
+						var routedArgs = new KeyRoutedEventArgs(this, virtualKey)
+						{
+							CanBubbleNatively = false
+						};
+
+						RoutedEvent routedEvent = e.Action == KeyEventActions.Down ?
+							UIElement.KeyDownEvent :
+							UIElement.KeyUpEvent;
+
+						element?.RaiseEvent(routedEvent, routedArgs);
 					}
-					else if (
-						e.KeyCode == Keycode.DpadDown ||
-						e.KeyCode == Keycode.SystemNavigationDown)
-					{
-						handled = focusHandler.TryHandleDirectionalFocus(VirtualKey.Down);
-					}
-					else if (
-						e.KeyCode == Keycode.DpadRight ||
-						e.KeyCode == Keycode.SystemNavigationRight)
-					{
-						handled = focusHandler.TryHandleDirectionalFocus(VirtualKey.Right);
-					}
-					else if (
-						e.KeyCode == Keycode.DpadLeft ||
-						e.KeyCode == Keycode.SystemNavigationLeft)
-					{
-						handled = focusHandler.TryHandleDirectionalFocus(VirtualKey.Left);
-					}
+
+					handled = true;
 				}
+			}
+			catch (Exception ex)
+			{
+				Windows.UI.Xaml.Application.Current.RaiseRecoverableUnhandledException(ex);
 			}
 
 			if (Gamepad.TryHandleKeyEvent(e))

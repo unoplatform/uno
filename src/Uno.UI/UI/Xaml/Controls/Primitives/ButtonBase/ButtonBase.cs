@@ -232,59 +232,5 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				this.Log().Error("Failed to execute command", e);
 			}
 		}
-
-		private void OnKeyDown(object sender, KeyRoutedEventArgs args)
-		{
-			// Key presses can be ignored when disabled or in ClickMode.Hover
-			if (IsEnabled && ClickMode != ClickMode.Hover)
-			{
-				if (IsPressKey(args.Key))
-				{
-					if (!HasPointerCapture)
-					{
-						IsPressed = true;
-
-						if (ClickMode == ClickMode.Press)
-						{
-							OnClick();
-						}
-
-						args.Handled = true;
-					}
-				}
-				else
-				{
-					//Any other keys pressed are irrelevant
-					IsPressed = false;
-				}
-			}
-		}
-
-		private void OnKeyUp(object sender, KeyRoutedEventArgs args)
-		{
-			// Key presses can be ignored when disabled or in ClickMode.Hover
-			if (IsEnabled && ClickMode != ClickMode.Hover && IsPressKey(args.Key))
-			{
-				// If the pointer isn't in use, raise the Click event if we're in the
-				// correct click mode
-				if (!HasPointerCapture)
-				{
-					if (IsPressed && ClickMode == ClickMode.Release)
-					{
-						OnClick();
-					}
-
-					IsPressed = false;
-				}
-
-				args.Handled = true;
-			}
-		}
-
-		private bool IsPressKey(VirtualKey key) =>
-				key == VirtualKey.Space ||
-				key == VirtualKey.Enter ||
-				key == VirtualKey.Execute ||
-				key == VirtualKey.GamepadA;
 	}
 }
