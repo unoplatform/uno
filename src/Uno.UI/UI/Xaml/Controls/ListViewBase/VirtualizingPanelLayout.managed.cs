@@ -266,7 +266,7 @@ namespace Windows.UI.Xaml.Controls
 				// the line based on the average line height.
 				var index = (int)(ScrollOffset / _averageLineHeight);
 				_dynamicSeedStart = ScrollOffset - _averageLineHeight;
-				_dynamicSeedIndex = Uno.UI.IndexPath.FromRowSection(index - sign, 0);
+				_dynamicSeedIndex = Uno.UI.IndexPath.FromRowSection(index == 0 ? -1 : index - sign, 0);
 			}
 
 			while (unappliedDelta > 0)

@@ -919,6 +919,67 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(4, materialized);
 		}
 
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if __IOS__ || __ANDROID__
+		[Ignore("Disabled because of animated scrolling, even when explicitly requested.")]
+#endif
+		public async Task When_Large_List_Scroll_To_End_Then_Back_Up_And_First_Item()
+		{
+			var materialized = 0;
+			var container = new Grid { Height = 500, Width = 100 };
+
+			var list = new ListView
+			{
+				ItemContainerStyle = NoSpaceContainerStyle,
+				ItemTemplate = new DataTemplate(() =>
+				{
+					var tb = new TextBlock();
+					tb.SetBinding(TextBlock.TextProperty, new Binding());
+					var border = new Border()
+					{
+						Height = 50,
+						Child = tb
+					};
+
+					materialized++;
+
+					return border;
+				})
+			};
+			container.Children.Add(list);
+
+			var source = new ObservableCollection<int>(Enumerable.Range(0, 50));
+			list.ItemsSource = source;
+
+			WindowHelper.WindowContent = container;
+			await WindowHelper.WaitForIdle();
+
+			for (int i = 0; i < 3; i++)
+			{
+				ScrollTo(list, 1000000); // Scroll to end
+
+				await Task.Delay(200);
+				await WindowHelper.WaitForIdle();
+
+				ScrollTo(list, 5); // Scroll to end
+
+				await Task.Delay(200);
+				await WindowHelper.WaitForIdle();
+
+				var firstContainer = (FrameworkElement)list.ContainerFromIndex(0);
+
+				firstContainer.Should().NotBeNull();
+				LayoutInformation.GetLayoutSlot(firstContainer).Y.Should().BeLessOrEqualTo(0);
+
+				var secondContainer = (FrameworkElement)list.ContainerFromIndex(1);
+
+				secondContainer.Should().NotBeNull();
+				LayoutInformation.GetLayoutSlot(secondContainer).Y.Should().Be(50);
+			}
+		}
+
 		[TestMethod]
 		[RunsOnUIThread]
 #if __IOS__ || __ANDROID__
