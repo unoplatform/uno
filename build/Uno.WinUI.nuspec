@@ -492,48 +492,6 @@
 		<file src="..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.netcoremobile\Release\net7.0-android\Uno.UI.Toolkit.dll" target="lib\net7.0-android30.0" />
 		<file src="..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.netcoremobile\Release\net7.0-android\Uno.UI.Toolkit.pdb" target="lib\net7.0-android30.0" />
 
-		<!-- macOS -->
-		<file src="..\src\Uno.UI\Bin\Release\xamarinmac20\Uno.dll" target="lib\xamarinmac20" />
-		<file src="..\src\Uno.UI\Bin\Release\xamarinmac20\Uno.pdb" target="lib\xamarinmac20" />
-		<file src="..\src\Uno.UI\Bin\Release\xamarinmac20\Uno.Foundation.dll" target="lib\xamarinmac20" />
-		<file src="..\src\Uno.UI\Bin\Release\xamarinmac20\Uno.Foundation.pdb" target="lib\xamarinmac20" />
-		<file src="..\src\Uno.UI\Bin\Release\xamarinmac20\Uno.Foundation.Logging.dll" target="lib\xamarinmac20" />
-		<file src="..\src\Uno.UI\Bin\Release\xamarinmac20\Uno.Foundation.Logging.pdb" target="lib\xamarinmac20" />
-		<file src="..\src\Uno.UI\Bin\Release\xamarinmac20\Uno.UI.dll" target="lib\xamarinmac20" />
-		<file src="..\src\Uno.UI\Bin\Release\xamarinmac20\Uno.UI.pdb" target="lib\xamarinmac20" />
-		<file src="..\src\Uno.UI\Bin\Release\xamarinmac20\Uno.UI.Composition.dll" target="lib\xamarinmac20" />
-		<file src="..\src\Uno.UI\Bin\Release\xamarinmac20\Uno.UI.Composition.pdb" target="lib\xamarinmac20" />
-		<file src="..\src\Uno.UI\Bin\Release\xamarinmac20\Uno.UI.Dispatching.dll" target="lib\xamarinmac20" />
-		<file src="..\src\Uno.UI\Bin\Release\xamarinmac20\Uno.UI.Dispatching.pdb" target="lib\xamarinmac20" />
-		<file src="..\src\Uno.UI\Bin\Release\xamarinmac20\Uno.Xaml.dll" target="lib\xamarinmac20" />
-		<file src="..\src\Uno.UI\Bin\Release\xamarinmac20\Uno.Xaml.pdb" target="lib\xamarinmac20" />
-		<file src="..\src\Uno.UI\bin\Release\xamarinmac20\*.xml" target="lib\xamarinmac20" />
-		<file src="..\src\Uno.UI.FluentTheme\bin\Release\xamarinmac20\Uno.UI.FluentTheme.dll" target="lib\xamarinmac20" />
-		<file src="..\src\Uno.UI.FluentTheme\bin\Release\xamarinmac20\Uno.UI.FluentTheme.pdb" target="lib\xamarinmac20" />
-		<file src="..\src\Uno.UI.FluentTheme\bin\Release\xamarinmac20\Uno.UI.FluentTheme.v1.dll" target="lib\xamarinmac20" />
-		<file src="..\src\Uno.UI.FluentTheme\bin\Release\xamarinmac20\Uno.UI.FluentTheme.v1.pdb" target="lib\xamarinmac20" />
-		<file src="..\src\Uno.UI.FluentTheme\bin\Release\xamarinmac20\Uno.UI.FluentTheme.v2.dll" target="lib\xamarinmac20" />
-		<file src="..\src\Uno.UI.FluentTheme\bin\Release\xamarinmac20\Uno.UI.FluentTheme.v2.pdb" target="lib\xamarinmac20" />
-		<file src="..\src\Uno.UI.Toolkit\bin\Release\xamarinmac20\Uno.UI.Toolkit.dll" target="lib\xamarinmac20" />
-		<file src="..\src\Uno.UI.Toolkit\bin\Release\xamarinmac20\Uno.UI.Toolkit.pdb" target="lib\xamarinmac20" />
-
-		<!-- netstandard2.0 reference -->
-		<file src="..\src\Uno.UI\Bin\Release\netstandard2.0\Uno.dll" target="lib\netstandard2.0" />
-		<file src="..\src\Uno.UI\Bin\Release\netstandard2.0\Uno.Foundation.dll" target="lib\netstandard2.0" />
-		<file src="..\src\Uno.UI\Bin\Release\netstandard2.0\Uno.Foundation.Logging.dll" target="lib\netstandard2.0" />
-		<file src="..\src\Uno.UI\Bin\Release\netstandard2.0\Uno.UI.dll" target="lib\netstandard2.0" />
-		<file src="..\src\Uno.UI\Bin\Release\netstandard2.0\Uno.UI.Composition.dll" target="lib\netstandard2.0" />
-		<file src="..\src\Uno.UI\Bin\Release\netstandard2.0\Uno.UI.Dispatching.dll" target="lib\netstandard2.0" />
-		<file src="..\src\Uno.UI\Bin\Release\netstandard2.0\Uno.Xaml.dll" target="lib\netstandard2.0" />
-		<file src="..\src\Uno.UI.FluentTheme\bin\Release\netstandard2.0\Uno.UI.FluentTheme.dll" target="lib\netstandard2.0" />
-		<file src="..\src\Uno.UI.FluentTheme\bin\Release\netstandard2.0\Uno.UI.FluentTheme.pdb" target="lib\netstandard2.0" />
-		<file src="..\src\Uno.UI.FluentTheme\bin\Release\netstandard2.0\Uno.UI.FluentTheme.v1.dll" target="lib\netstandard2.0" />
-		<file src="..\src\Uno.UI.FluentTheme\bin\Release\netstandard2.0\Uno.UI.FluentTheme.v1.pdb" target="lib\netstandard2.0" />
-		<file src="..\src\Uno.UI.FluentTheme\bin\Release\netstandard2.0\Uno.UI.FluentTheme.v2.dll" target="lib\netstandard2.0" />
-		<file src="..\src\Uno.UI.FluentTheme\bin\Release\netstandard2.0\Uno.UI.FluentTheme.v2.pdb" target="lib\netstandard2.0" />
-		<file src="..\src\Uno.UI.Toolkit\bin\Release\netstandard2.0\Uno.UI.Toolkit.dll" target="lib\netstandard2.0" />
-		<file src="..\src\Uno.UI.Toolkit\bin\Release\netstandard2.0\Uno.UI.Toolkit.pdb" target="lib\netstandard2.0" />
-
 		<!-- net7.0 reference -->
 		<file src="..\src\Uno.UI\Bin\Uno.UI.Reference\Release\net7.0\Uno.dll" target="lib\net7.0" />
 		<file src="..\src\Uno.UI\Bin\Uno.UI.Reference\Release\net7.0\Uno.Foundation.dll" target="lib\net7.0" />
@@ -551,57 +509,22 @@
 		<file src="..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Reference\Release\net7.0\Uno.UI.Toolkit.dll" target="lib\net7.0" />
 		<file src="..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Reference\Release\net7.0\Uno.UI.Toolkit.pdb" target="lib\net7.0" />
 
-		<!-- netstandard2.0 WebAssembly -->
-		<file src="..\src\Uno.UI\Bin\Uno.UI.Wasm\Release\netstandard2.0\Uno.dll" target="uno-runtime\netstandard2.0\webassembly" />
-		<file src="..\src\Uno.UI\Bin\Uno.UI.Wasm\Release\netstandard2.0\Uno.pdb" target="uno-runtime\netstandard2.0\webassembly" />
-		<file src="..\src\Uno.UI\Bin\Uno.UI.Wasm\Release\netstandard2.0\Uno.Foundation.dll" target="uno-runtime\netstandard2.0\webassembly" />
-		<file src="..\src\Uno.UI\Bin\Uno.UI.Wasm\Release\netstandard2.0\Uno.Foundation.pdb" target="uno-runtime\netstandard2.0\webassembly" />
-		<file src="..\src\Uno.UI\Bin\Uno.UI.Wasm\Release\netstandard2.0\Uno.Foundation.Logging.dll" target="uno-runtime\netstandard2.0\webassembly" />
-		<file src="..\src\Uno.UI\Bin\Uno.UI.Wasm\Release\netstandard2.0\Uno.Foundation.Logging.pdb" target="uno-runtime\netstandard2.0\webassembly" />
-		<file src="..\src\Uno.UI\Bin\Uno.UI.Wasm\Release\netstandard2.0\Uno.UI.dll" target="uno-runtime\netstandard2.0\webassembly" />
-		<file src="..\src\Uno.UI\Bin\Uno.UI.Wasm\Release\netstandard2.0\Uno.UI.pdb" target="uno-runtime\netstandard2.0\webassembly" />
-		<file src="..\src\Uno.UI\Bin\Uno.UI.Wasm\Release\netstandard2.0\Uno.UI.Composition.dll" target="uno-runtime\netstandard2.0\webassembly" />
-		<file src="..\src\Uno.UI\Bin\Uno.UI.Wasm\Release\netstandard2.0\Uno.UI.Composition.pdb" target="uno-runtime\netstandard2.0\webassembly" />
-		<file src="..\src\Uno.UI\Bin\Uno.UI.Wasm\Release\netstandard2.0\Uno.UI.Dispatching.dll" target="uno-runtime\netstandard2.0\webassembly" />
-		<file src="..\src\Uno.UI\Bin\Uno.UI.Wasm\Release\netstandard2.0\Uno.UI.Dispatching.pdb" target="uno-runtime\netstandard2.0\webassembly" />
-		<file src="..\src\Uno.UI\bin\Uno.UI.Wasm\Release\netstandard2.0\*.xml" target="uno-runtime\netstandard2.0\webassembly" />
-		<file src="..\src\Uno.UI\Bin\Uno.UI.Wasm\Release\netstandard2.0\Uno.Xaml.dll" target="uno-runtime\netstandard2.0\webassembly" />
-		<file src="..\src\Uno.UI\Bin\Uno.UI.Wasm\Release\netstandard2.0\Uno.Xaml.pdb" target="uno-runtime\netstandard2.0\webassembly" />
-		<file src="..\src\Uno.UI\Bin\Uno.UI.Wasm\Release\netstandard2.0\Uno.Xaml.dll" target="uno-runtime\netstandard2.0\webassembly" />
-		<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.Wasm\Release\netstandard2.0\Uno.UI.FluentTheme.dll" target="uno-runtime\netstandard2.0\webassembly" />
-		<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.Wasm\Release\netstandard2.0\Uno.UI.FluentTheme.pdb" target="uno-runtime\netstandard2.0\webassembly" />
-		<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.Wasm\Release\netstandard2.0\Uno.UI.FluentTheme.v1.dll" target="uno-runtime\netstandard2.0\webassembly" />
-		<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.Wasm\Release\netstandard2.0\Uno.UI.FluentTheme.v1.pdb" target="uno-runtime\netstandard2.0\webassembly" />
-		<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.Wasm\Release\netstandard2.0\Uno.UI.FluentTheme.v2.dll" target="uno-runtime\netstandard2.0\webassembly" />
-		<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.Wasm\Release\netstandard2.0\Uno.UI.FluentTheme.v2.pdb" target="uno-runtime\netstandard2.0\webassembly" />
-		<file src="..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Wasm\Release\netstandard2.0\Uno.UI.Toolkit.dll" target="uno-runtime\netstandard2.0\webassembly" />
-		<file src="..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Wasm\Release\netstandard2.0\Uno.UI.Toolkit.pdb" target="uno-runtime\netstandard2.0\webassembly" />
-		<file src="..\src\Uno.UI.Runtime.WebAssembly.Compatibility\Bin\Release\netstandard2.0\Uno.UI.Wasm.*" target="uno-runtime\netstandard2.0\webassembly" />
-
-		<!-- netstandard2.0 Skia -->
-		<file src="..\src\Uno.UI\Bin\Uno.UI.Skia\Release\netstandard2.0\Uno.dll" target="uno-runtime\netstandard2.0\skia" />
-		<file src="..\src\Uno.UI\Bin\Uno.UI.Skia\Release\netstandard2.0\Uno.pdb" target="uno-runtime\netstandard2.0\skia" />
-		<file src="..\src\Uno.UI\Bin\Uno.UI.Skia\Release\netstandard2.0\Uno.Foundation.dll" target="uno-runtime\netstandard2.0\skia" />
-		<file src="..\src\Uno.UI\Bin\Uno.UI.Skia\Release\netstandard2.0\Uno.Foundation.pdb" target="uno-runtime\netstandard2.0\skia" />
-		<file src="..\src\Uno.UI\Bin\Uno.UI.Wasm\Release\netstandard2.0\Uno.Foundation.Logging.dll" target="uno-runtime\netstandard2.0\skia" />
-		<file src="..\src\Uno.UI\Bin\Uno.UI.Wasm\Release\netstandard2.0\Uno.Foundation.Logging.pdb" target="uno-runtime\netstandard2.0\skia" />
-		<file src="..\src\Uno.UI\Bin\Uno.UI.Skia\Release\netstandard2.0\Uno.UI.dll" target="uno-runtime\netstandard2.0\skia" />
-		<file src="..\src\Uno.UI\Bin\Uno.UI.Skia\Release\netstandard2.0\Uno.UI.pdb" target="uno-runtime\netstandard2.0\skia" />
-		<file src="..\src\Uno.UI\Bin\Uno.UI.Skia\Release\netstandard2.0\Uno.UI.Composition.dll" target="uno-runtime\netstandard2.0\skia" />
-		<file src="..\src\Uno.UI\Bin\Uno.UI.Skia\Release\netstandard2.0\Uno.UI.Composition.pdb" target="uno-runtime\netstandard2.0\skia" />
-		<file src="..\src\Uno.UI\Bin\Uno.UI.Skia\Release\netstandard2.0\Uno.UI.Dispatching.dll" target="uno-runtime\netstandard2.0\skia" />
-		<file src="..\src\Uno.UI\Bin\Uno.UI.Skia\Release\netstandard2.0\Uno.UI.Dispatching.pdb" target="uno-runtime\netstandard2.0\skia" />
-		<file src="..\src\Uno.UI\bin\Uno.UI.Skia\Release\netstandard2.0\*.xml" target="uno-runtime\netstandard2.0\skia" />
-		<file src="..\src\Uno.UI\Bin\Uno.UI.Skia\Release\netstandard2.0\Uno.Xaml.dll" target="uno-runtime\netstandard2.0\skia" />
-		<file src="..\src\Uno.UI\Bin\Uno.UI.Skia\Release\netstandard2.0\Uno.Xaml.pdb" target="uno-runtime\netstandard2.0\skia" />
-		<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.Skia\Release\netstandard2.0\Uno.UI.FluentTheme.dll" target="uno-runtime\netstandard2.0\skia" />
-		<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.Skia\Release\netstandard2.0\Uno.UI.FluentTheme.pdb" target="uno-runtime\netstandard2.0\skia" />
-		<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.Skia\Release\netstandard2.0\Uno.UI.FluentTheme.v1.dll" target="uno-runtime\netstandard2.0\skia" />
-		<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.Skia\Release\netstandard2.0\Uno.UI.FluentTheme.v1.pdb" target="uno-runtime\netstandard2.0\skia" />
-		<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.Skia\Release\netstandard2.0\Uno.UI.FluentTheme.v2.dll" target="uno-runtime\netstandard2.0\skia" />
-		<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.Skia\Release\netstandard2.0\Uno.UI.FluentTheme.v2.pdb" target="uno-runtime\netstandard2.0\skia" />
-		<file src="..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Skia\Release\netstandard2.0\Uno.UI.Toolkit.dll" target="uno-runtime\netstandard2.0\skia" />
-		<file src="..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Skia\Release\netstandard2.0\Uno.UI.Toolkit.pdb" target="uno-runtime\netstandard2.0\skia" />
+		<!-- net8.0 reference -->
+		<file src="..\src\Uno.UI\Bin\Uno.UI.Reference\Release\net8.0\Uno.dll" target="lib\net8.0" />
+		<file src="..\src\Uno.UI\Bin\Uno.UI.Reference\Release\net8.0\Uno.Foundation.dll" target="lib\net8.0" />
+		<file src="..\src\Uno.UI\Bin\Uno.UI.Reference\Release\net8.0\Uno.Foundation.Logging.dll" target="lib\net8.0" />
+		<file src="..\src\Uno.UI\Bin\Uno.UI.Reference\Release\net8.0\Uno.UI.dll" target="lib\net8.0" />
+		<file src="..\src\Uno.UI\Bin\Uno.UI.Reference\Release\net8.0\Uno.UI.Composition.dll" target="lib\net8.0" />
+		<file src="..\src\Uno.UI\Bin\Uno.UI.Reference\Release\net8.0\Uno.UI.Dispatching.dll" target="lib\net8.0" />
+		<file src="..\src\Uno.UI\Bin\Uno.UI.Reference\Release\net8.0\Uno.Xaml.dll" target="lib\net8.0" />
+		<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.Reference\Release\net8.0\Uno.UI.FluentTheme.dll" target="lib\net8.0" />
+		<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.Reference\Release\net8.0\Uno.UI.FluentTheme.pdb" target="lib\net8.0" />
+		<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.Reference\Release\net8.0\Uno.UI.FluentTheme.v1.dll" target="lib\net8.0" />
+		<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.Reference\Release\net8.0\Uno.UI.FluentTheme.v1.pdb" target="lib\net8.0" />
+		<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.Reference\Release\net8.0\Uno.UI.FluentTheme.v2.dll" target="lib\net8.0" />
+		<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.Reference\Release\net8.0\Uno.UI.FluentTheme.v2.pdb" target="lib\net8.0" />
+		<file src="..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Reference\Release\net8.0\Uno.UI.Toolkit.dll" target="lib\net8.0" />
+		<file src="..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Reference\Release\net8.0\Uno.UI.Toolkit.pdb" target="lib\net8.0" />
 
 		<!-- net7.0 WebAssembly -->
 		<file src="..\src\Uno.UI\Bin\Uno.UI.Wasm\Release\net7.0\Uno.dll" target="uno-runtime\net7.0\webassembly" />
@@ -655,6 +578,58 @@
 		<file src="..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Skia\Release\net7.0\Uno.UI.Toolkit.dll" target="uno-runtime\net7.0\skia" />
 		<file src="..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Skia\Release\net7.0\Uno.UI.Toolkit.pdb" target="uno-runtime\net7.0\skia" />
 
+		<!-- net8.0 WebAssembly -->
+		<file src="..\src\Uno.UI\Bin\Uno.UI.Wasm\Release\net8.0\Uno.dll" target="uno-runtime\net8.0\webassembly" />
+		<file src="..\src\Uno.UI\Bin\Uno.UI.Wasm\Release\net8.0\Uno.pdb" target="uno-runtime\net8.0\webassembly" />
+		<file src="..\src\Uno.UI\Bin\Uno.UI.Wasm\Release\net8.0\Uno.Foundation.dll" target="uno-runtime\net8.0\webassembly" />
+		<file src="..\src\Uno.UI\Bin\Uno.UI.Wasm\Release\net8.0\Uno.Foundation.pdb" target="uno-runtime\net8.0\webassembly" />
+		<file src="..\src\Uno.UI\Bin\Uno.UI.Wasm\Release\net8.0\Uno.Foundation.Logging.dll" target="uno-runtime\net8.0\webassembly" />
+		<file src="..\src\Uno.UI\Bin\Uno.UI.Wasm\Release\net8.0\Uno.Foundation.Logging.pdb" target="uno-runtime\net8.0\webassembly" />
+		<file src="..\src\Uno.UI\Bin\Uno.UI.Wasm\Release\net8.0\Uno.UI.dll" target="uno-runtime\net8.0\webassembly" />
+		<file src="..\src\Uno.UI\Bin\Uno.UI.Wasm\Release\net8.0\Uno.UI.pdb" target="uno-runtime\net8.0\webassembly" />
+		<file src="..\src\Uno.UI\Bin\Uno.UI.Wasm\Release\net8.0\Uno.UI.Composition.dll" target="uno-runtime\net8.0\webassembly" />
+		<file src="..\src\Uno.UI\Bin\Uno.UI.Wasm\Release\net8.0\Uno.UI.Composition.pdb" target="uno-runtime\net8.0\webassembly" />
+		<file src="..\src\Uno.UI\Bin\Uno.UI.Wasm\Release\net8.0\Uno.UI.Dispatching.dll" target="uno-runtime\net8.0\webassembly" />
+		<file src="..\src\Uno.UI\Bin\Uno.UI.Wasm\Release\net8.0\Uno.UI.Dispatching.pdb" target="uno-runtime\net8.0\webassembly" />
+		<file src="..\src\Uno.UI\bin\Uno.UI.Wasm\Release\net8.0\*.xml" target="uno-runtime\net8.0\webassembly" />
+		<file src="..\src\Uno.UI\Bin\Uno.UI.Wasm\Release\net8.0\Uno.Xaml.dll" target="uno-runtime\net8.0\webassembly" />
+		<file src="..\src\Uno.UI\Bin\Uno.UI.Wasm\Release\net8.0\Uno.Xaml.pdb" target="uno-runtime\net8.0\webassembly" />
+		<file src="..\src\Uno.UI\Bin\Uno.UI.Wasm\Release\net8.0\Uno.Xaml.dll" target="uno-runtime\net8.0\webassembly" />
+		<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.Wasm\Release\net8.0\Uno.UI.FluentTheme.dll" target="uno-runtime\net8.0\webassembly" />
+		<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.Wasm\Release\net8.0\Uno.UI.FluentTheme.pdb" target="uno-runtime\net8.0\webassembly" />
+		<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.Wasm\Release\net8.0\Uno.UI.FluentTheme.v1.dll" target="uno-runtime\net8.0\webassembly" />
+		<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.Wasm\Release\net8.0\Uno.UI.FluentTheme.v1.pdb" target="uno-runtime\net8.0\webassembly" />
+		<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.Wasm\Release\net8.0\Uno.UI.FluentTheme.v2.dll" target="uno-runtime\net8.0\webassembly" />
+		<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.Wasm\Release\net8.0\Uno.UI.FluentTheme.v2.pdb" target="uno-runtime\net8.0\webassembly" />
+		<file src="..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Wasm\Release\net8.0\Uno.UI.Toolkit.dll" target="uno-runtime\net8.0\webassembly" />
+		<file src="..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Wasm\Release\net8.0\Uno.UI.Toolkit.pdb" target="uno-runtime\net8.0\webassembly" />
+		<file src="..\src\Uno.UI.Runtime.WebAssembly.Compatibility\Bin\Release\net8.0\Uno.UI.Wasm.*" target="uno-runtime\net8.0\webassembly" />
+
+		<!-- net8.0 Skia -->
+		<file src="..\src\Uno.UI\Bin\Uno.UI.Skia\Release\net8.0\Uno.dll" target="uno-runtime\net8.0\skia" />
+		<file src="..\src\Uno.UI\Bin\Uno.UI.Skia\Release\net8.0\Uno.pdb" target="uno-runtime\net8.0\skia" />
+		<file src="..\src\Uno.UI\Bin\Uno.UI.Skia\Release\net8.0\Uno.Foundation.dll" target="uno-runtime\net8.0\skia" />
+		<file src="..\src\Uno.UI\Bin\Uno.UI.Skia\Release\net8.0\Uno.Foundation.pdb" target="uno-runtime\net8.0\skia" />
+		<file src="..\src\Uno.UI\Bin\Uno.UI.Wasm\Release\net8.0\Uno.Foundation.Logging.dll" target="uno-runtime\net8.0\skia" />
+		<file src="..\src\Uno.UI\Bin\Uno.UI.Wasm\Release\net8.0\Uno.Foundation.Logging.pdb" target="uno-runtime\net8.0\skia" />
+		<file src="..\src\Uno.UI\Bin\Uno.UI.Skia\Release\net8.0\Uno.UI.dll" target="uno-runtime\net8.0\skia" />
+		<file src="..\src\Uno.UI\Bin\Uno.UI.Skia\Release\net8.0\Uno.UI.pdb" target="uno-runtime\net8.0\skia" />
+		<file src="..\src\Uno.UI\Bin\Uno.UI.Skia\Release\net8.0\Uno.UI.Composition.dll" target="uno-runtime\net8.0\skia" />
+		<file src="..\src\Uno.UI\Bin\Uno.UI.Skia\Release\net8.0\Uno.UI.Composition.pdb" target="uno-runtime\net8.0\skia" />
+		<file src="..\src\Uno.UI\Bin\Uno.UI.Skia\Release\net8.0\Uno.UI.Dispatching.dll" target="uno-runtime\net8.0\skia" />
+		<file src="..\src\Uno.UI\Bin\Uno.UI.Skia\Release\net8.0\Uno.UI.Dispatching.pdb" target="uno-runtime\net8.0\skia" />
+		<file src="..\src\Uno.UI\bin\Uno.UI.Skia\Release\net8.0\*.xml" target="uno-runtime\net8.0\skia" />
+		<file src="..\src\Uno.UI\Bin\Uno.UI.Skia\Release\net8.0\Uno.Xaml.dll" target="uno-runtime\net8.0\skia" />
+		<file src="..\src\Uno.UI\Bin\Uno.UI.Skia\Release\net8.0\Uno.Xaml.pdb" target="uno-runtime\net8.0\skia" />
+		<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.Skia\Release\net8.0\Uno.UI.FluentTheme.dll" target="uno-runtime\net8.0\skia" />
+		<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.Skia\Release\net8.0\Uno.UI.FluentTheme.pdb" target="uno-runtime\net8.0\skia" />
+		<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.Skia\Release\net8.0\Uno.UI.FluentTheme.v1.dll" target="uno-runtime\net8.0\skia" />
+		<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.Skia\Release\net8.0\Uno.UI.FluentTheme.v1.pdb" target="uno-runtime\net8.0\skia" />
+		<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.Skia\Release\net8.0\Uno.UI.FluentTheme.v2.dll" target="uno-runtime\net8.0\skia" />
+		<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.Skia\Release\net8.0\Uno.UI.FluentTheme.v2.pdb" target="uno-runtime\net8.0\skia" />
+		<file src="..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Skia\Release\net8.0\Uno.UI.Toolkit.dll" target="uno-runtime\net8.0\skia" />
+		<file src="..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Skia\Release\net8.0\Uno.UI.Toolkit.pdb" target="uno-runtime\net8.0\skia" />
+		
 		<!-- Analyzers -->
 		<file src="..\src\Uno.Analyzers\Bin\Release\Uno.Analyzers.dll" target="analyzers/dotnet/cs" />
 		<file src="..\src\Uno.Analyzers\Bin\Release\Uno.Analyzers.pdb" target="analyzers/dotnet/cs" />
@@ -682,10 +657,6 @@
 
 		<file src="..\src\SourceGenerators\Uno.UI.Tasks\external\linker\*.*" target="tools\linker" />
 
-		<file src="Uno.WinUI.targets" target="buildTransitive\MonoAndroid" />
-		<file src="Uno.WinUI.targets" target="buildTransitive\xamarinios10" />
-		<file src="Uno.WinUI.targets" target="buildTransitive\xamarinmac20" />
-		<file src="Uno.WinUI.targets" target="buildTransitive\netstandard2.0" />
 		<file src="Uno.WinUI.targets" target="buildTransitive\net7.0" />
 		<file src="Uno.WinUI.targets" target="buildTransitive\net8.0-android30.0" />
 		<file src="Uno.WinUI.targets" target="buildTransitive\net8.0-ios" />
