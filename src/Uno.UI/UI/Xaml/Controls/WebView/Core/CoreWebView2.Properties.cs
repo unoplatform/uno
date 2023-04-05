@@ -1,4 +1,5 @@
 ﻿using Windows.Foundation;
+using Windows.UI.Xaml.Controls;
 
 namespace Microsoft.Web.WebView2.Core;
 #pragma warning disable CS0067 // TODO:MZ: Undo this
@@ -55,17 +56,6 @@ public partial class CoreWebView2
 	public event TypedEventHandler<CoreWebView2, CoreWebView2NavigationStartingEventArgs> NavigationStarting;
 
 	/// <summary>
-	/// DOMContentLoaded is raised when the initial HTML document has been parsed.
-	/// </summary>
-	public event TypedEventHandler<CoreWebView2, CoreWebView2DOMContentLoadedEventArgs> DOMContentLoaded;
-
-	/// <summary>
-	/// ContentLoading is raised before any content is loaded, including scripts added with CoreWebView2.AddScriptToExecuteOnDocumentCreatedAsync.
-	/// ContentLoading is not raised if a same page navigation occurs (such as through fragment navigations or history.pushState navigations).
-	/// </summary>
-	public event TypedEventHandler<CoreWebView2, CoreWebView2ContentLoadingEventArgs> ContentLoading;
-
-	/// <summary>
 	/// NavigationCompleted is raised when the WebView has completely loaded (body.onload has been raised) or loading stopped with error.
 	/// </summary>
 	public event TypedEventHandler<CoreWebView2, CoreWebView2NavigationCompletedEventArgs> NavigationCompleted;
@@ -96,4 +86,6 @@ public partial class CoreWebView2
 	/// Dispatches after web content sends a message to the app host.
 	/// </summary>
 	public event TypedEventHandler<CoreWebView2, CoreWebView2WebMessageReceivedEventArgs> WebMessageReceived;
+
+	internal event TypedEventHandler<CoreWebView2, WebViewUnsupportedUriSchemeIdentifiedEventArgs> UnsupportedUriSchemeIdentified;
 }

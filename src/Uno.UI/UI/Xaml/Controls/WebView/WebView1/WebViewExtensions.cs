@@ -5,12 +5,6 @@ namespace Windows.UI.Xaml.Controls;
 
 internal static class WebViewExtensions
 {
-	public static WebViewContentLoadingEventArgs ToWebViewArgs(this CoreWebView2ContentLoadingEventArgs args) =>
-		new WebViewContentLoadingEventArgs(args.Uri);
-
-	public static WebViewDOMContentLoadedEventArgs ToWebViewArgs(this CoreWebView2DOMContentLoadedEventArgs args) =>
-		new WebViewDOMContentLoadedEventArgs(args.Uri);
-
 	public static WebViewNavigationStartingEventArgs ToWebViewArgs(this CoreWebView2NavigationStartingEventArgs args) =>
 		new WebViewNavigationStartingEventArgs(args.Uri.Length <= 2048 ? new global::System.Uri(args.Uri) : CoreWebView2.BlankUri)
 		{

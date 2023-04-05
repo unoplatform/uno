@@ -165,10 +165,7 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 			this.Log().Debug($"OnUnsupportedUriSchemeIdentified: {targetUri}");
 		}
 
-		var args = new WebViewUnsupportedUriSchemeIdentifiedEventArgs(targetUri);
-
-		// TODO:MZ:
-		//_coreWebView.RaiseUnsupportedUriSchemeIdentified(args);
+		_coreWebView.RaiseUnsupportedUriSchemeIdentified(targetUri, out var handled);
 
 		return args.Handled;
 	}

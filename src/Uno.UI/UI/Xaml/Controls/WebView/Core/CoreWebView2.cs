@@ -5,7 +5,6 @@ using Uno.Extensions;
 using Uno.Foundation.Logging;
 using System.Net.Http;
 using Uno.UI.Xaml.Controls;
-using System.Linq;
 using System.Threading;
 using System.Globalization;
 using Windows.Foundation;
@@ -158,6 +157,14 @@ public partial class CoreWebView2
 	internal void RaiseHistoryChanged() => HistoryChanged?.Invoke(this, null);
 
 	internal void RaiseWebMessageReceived(string message) => WebMessageReceived?.Invoke(this, new(message));
+
+	internal void RaiseUnsupportedUriSchemeIdentified(Uri targetUri, out bool handled)
+	{
+		var args = new Windows.UI.Xaml.Controls.WebViewUnsupportedUriSchemeIdentifiedEventArgs(targetUri);
+		UnsupportedUriSchemeIdentified?.Invoke(this, args);
+
+		handled = args.Handled;
+	}
 
 	internal void SetHistoryProperties(bool canGoBack, bool canGoForward)
 	{
