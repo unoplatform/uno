@@ -33,7 +33,6 @@ using Uno.UI.RuntimeTests.Extensions;
 using Windows.UI.Xaml.Input;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Diagnostics;
-using Uno.UI.Extensions;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -357,10 +356,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitFor(() => (si = SUT.ContainerFromItem(source[0]) as SelectorItem) != null);
 
 			Assert.IsNull(si.Parent);
-			var parent = si.GetParentInternal();
+			var parent = Uno.UI.Extensions.DependencyObjectExtensions.GetParentInternal(si, false);
 			while (parent is not null && parent is not ListView listView)
 			{
-				parent = parent.GetParentInternal();
+				parent = Uno.UI.Extensions.DependencyObjectExtensions.GetParentInternal(parent, false);
 			}
 
 			Assert.IsInstanceOfType(parent, typeof(ListView));
