@@ -167,7 +167,7 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 
 		_coreWebView.RaiseUnsupportedUriSchemeIdentified(targetUri, out var handled);
 
-		return args.Handled;
+		return handled;
 	}
 
 	/// <summary>
