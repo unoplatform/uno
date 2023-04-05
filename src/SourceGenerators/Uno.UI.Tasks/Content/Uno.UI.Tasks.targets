@@ -46,7 +46,7 @@
 	  to inject Uno properly. Failing to add this task early enough makes X.A and X.I miss the generated resource files.
 	-->
 	<Target Name="UnoResourcesGeneration"
-				BeforeTargets="_GetLibraryImports;PrepareForBuild;_CheckForContent;_CollectBundleResources"
+				BeforeTargets="_GetLibraryImports;PrepareForBuild;_CheckForContent;_CollectBundleResources;_ComputeAndroidResourcePaths"
 				DependsOnTargets="ResolveProjectReferences;_UnoLangSetup"
 				Condition="'$(DesignTimeBuild)' != 'true' and '$(BuildingInsideUnoSourceGenerator)' == ''">
 
@@ -116,7 +116,7 @@
 	</Target>
 
 	<Target Name="UnoAssetsGeneration"
-				BeforeTargets="_GetLibraryImports;_CheckForContent;_CollectBundleResources;_CompileAppManifest"
+				BeforeTargets="_GetLibraryImports;_CheckForContent;_CollectBundleResources;_CompileAppManifest;_ComputeAndroidResourcePaths"
 				DependsOnTargets="ResolveProjectReferences;GetCopyToOutputDirectoryItems;_UnoLangSetup"
 				Condition="
 				'$(DesignTimeBuild)' != 'true'
