@@ -176,7 +176,7 @@ namespace Uno.UI.SourceGenerators.RemoteControl
 			var xamlPaths = from item in sources.SelectMany(BuildSearchPath)
 							select Path.GetDirectoryName(item);
 
-			return xamlPaths.Distinct();
+			return xamlPaths.Distinct().Where(x => !string.IsNullOrEmpty(x));
 		}
 
 		private static void BuildEndPointAttribute(GeneratorExecutionContext context, IndentedStringBuilder sb)
