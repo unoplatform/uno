@@ -33,6 +33,7 @@ using Uno.UI.RuntimeTests.Extensions;
 using Windows.UI.Xaml.Input;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Diagnostics;
+using Uno.UI.Extensions;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -328,6 +329,43 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.IsInstanceOfType(parent, typeof(ListView));
 		}
+
+#if HAS_UNO
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Item_GetParentInternal_Include_ListView()
+		{
+			var SUT = new ListView()
+			{
+				ItemContainerStyle = BasicContainerStyle,
+				SelectionMode = ListViewSelectionMode.Single,
+			};
+
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForIdle();
+
+			var source = new[] {
+				new ListViewItem(){ Content = "item 1" },
+				new ListViewItem(){ Content = "item 2" },
+				new ListViewItem(){ Content = "item 3" },
+				new ListViewItem(){ Content = "item 4" },
+			};
+
+			SUT.ItemsSource = source;
+
+			SelectorItem si = null;
+			await WindowHelper.WaitFor(() => (si = SUT.ContainerFromItem(source[0]) as SelectorItem) != null);
+
+			Assert.IsNull(si.Parent);
+			var parent = si.GetParentInternal();
+			while (parent is not null && parent is not ListView listView)
+			{
+				parent = parent.GetParentInternal();
+			}
+
+			Assert.IsInstanceOfType(parent, typeof(ListView));
+		}
+#endif
 
 
 		[TestMethod]
