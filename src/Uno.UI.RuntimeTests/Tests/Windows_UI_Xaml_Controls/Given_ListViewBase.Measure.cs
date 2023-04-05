@@ -8,10 +8,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Uno.UI.RuntimeTests.Extensions;
 using System.Collections.ObjectModel;
-<<<<<<< HEAD
 using Windows.Foundation;
-=======
->>>>>>> 4effe62259 (fix(ios): ListView not resizing as items change)
 #if NETFX_CORE
 using Uno.UI.Extensions;
 #elif __IOS__
