@@ -182,7 +182,7 @@ public partial class UIElement : DependencyObject
 
 						if (stopPropagation)
 						{
-							WinUICoreServices.Instance.MainRootVisual.ProcessPointerUp(routedArgs, isAfterHandledUp: true); // TODO for #8341
+							WinUICoreServices.Instance.MainRootVisual?.ProcessPointerUp(routedArgs, isAfterHandledUp: true); // TODO for #8341
 						}
 
 						break;
