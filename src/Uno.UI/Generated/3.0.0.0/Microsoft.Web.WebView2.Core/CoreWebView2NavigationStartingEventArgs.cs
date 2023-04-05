@@ -11,7 +11,16 @@ namespace Microsoft.Web.WebView2.Core
 		// Skipping already declared property IsRedirected
 		// Skipping already declared property IsUserInitiated
 		// Skipping already declared property NavigationId
-		// Skipping already declared property RequestHeaders
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  global::Microsoft.Web.WebView2.Core.CoreWebView2HttpRequestHeaders RequestHeaders
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member CoreWebView2HttpRequestHeaders CoreWebView2NavigationStartingEventArgs.RequestHeaders is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CoreWebView2HttpRequestHeaders%20CoreWebView2NavigationStartingEventArgs.RequestHeaders");
+			}
+		}
+		#endif
 		// Skipping already declared property Uri
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2NavigationStartingEventArgs.Uri.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2NavigationStartingEventArgs.IsUserInitiated.get

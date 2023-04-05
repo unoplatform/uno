@@ -5,12 +5,8 @@ namespace Windows.Globalization.NumberFormatting
 	#if false || false || false || false || false || false || false
 	public   enum CurrencyFormatterMode 
 	{
-		#if false || false || false || false || false || false || false
-		UseSymbol = 0,
-		#endif
-		#if false || false || false || false || false || false || false
-		UseCurrencyCode = 1,
-		#endif
+		// Skipping already declared field Windows.Globalization.NumberFormatting.CurrencyFormatterMode.UseSymbol
+		// Skipping already declared field Windows.Globalization.NumberFormatting.CurrencyFormatterMode.UseCurrencyCode
 	}
 	#endif
 }

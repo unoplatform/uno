@@ -88,11 +88,6 @@ public partial class WebView : Control
 	public event TypedEventHandler<WebView, WebViewNavigationStartingEventArgs> NavigationStarting;
 
 	/// <summary>
-	/// Occurs when the WebView has started loading new content.
-	/// </summary>
-	public event TypedEventHandler<WebView, WebViewContentLoadingEventArgs> ContentLoading;
-
-	/// <summary>
 	/// Occurs when the WebView has finished loading the current content or if navigation has failed.
 	/// </summary>
 	public event TypedEventHandler<WebView, WebViewNavigationCompletedEventArgs> NavigationCompleted;
