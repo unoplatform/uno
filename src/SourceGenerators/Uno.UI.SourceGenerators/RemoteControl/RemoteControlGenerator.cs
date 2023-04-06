@@ -118,14 +118,18 @@ namespace Uno.UI.SourceGenerators.RemoteControl
 		private static void BuildLibrarySearchPath(GeneratorExecutionContext context, IndentedStringBuilder sb)
 		{
 			var xamlPaths = EnumerateLocalSearchPaths(context);
-			var distictPaths = string.Join(Path.PathSeparator.ToString(), xamlPaths);
 
-			sb.AppendLineIndented($"""
-				[assembly: global::System.Reflection.AssemblyMetadata(
-					"{LibraryXamlSearchPathAssemblyMetadata}",
-					@"{distictPaths}"
-				)]
-				""");
+            if (xamlPaths.Any())
+            {
+				var distictPaths = string.Join(Path.PathSeparator.ToString(), xamlPaths);
+
+				sb.AppendLineIndented($"""
+					[assembly: global::System.Reflection.AssemblyMetadata(
+						"{LibraryXamlSearchPathAssemblyMetadata}",
+						@"{distictPaths}"
+					)]
+					""");
+			}
 		}
 
 		private static IEnumerable<string> EnumerateLibrarySearchPaths(GeneratorExecutionContext context)
@@ -150,7 +154,7 @@ namespace Uno.UI.SourceGenerators.RemoteControl
 
 						if (rawPaths is not null)
 						{
-							foreach (var path in rawPaths.Split(Path.PathSeparator))
+							foreach (var path in rawPaths.Split(new[] { Path.PathSeparator }, StringSplitOptions.RemoveEmptyEntries))
 							{
 								yield return path;
 							}
