@@ -17,8 +17,17 @@ namespace Windows.UI.Xaml.Controls
 #if XAMARIN_ANDROID
 		public int FirstCacheIndex => _layout.XamlParent.NativePanel.ViewCache.FirstCacheIndex;
 		public int LastCacheIndex => _layout.XamlParent.NativePanel.ViewCache.LastCacheIndex;
-#endif
 
+		partial void OnItemWidthChangedPartial(double oldItemWidth, double newItemWidth)
+		{
+			_layout?.Refresh();
+		}
+
+		partial void OnItemHeightChangedPartial(double oldItemHeight, double newItemHeight)
+		{
+			_layout?.Refresh();
+		}
+#endif
 		public ItemsWrapGrid()
 		{
 			if (FeatureConfiguration.ListViewBase.DefaultCacheLength.HasValue)
