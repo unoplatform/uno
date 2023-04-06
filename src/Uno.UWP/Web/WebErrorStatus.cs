@@ -24,6 +24,8 @@ public enum WebErrorStatus
 	UnexpectedRedirection = 19,
 	UnexpectedClientError = 20,
 	UnexpectedServerError = 21,
+	InsufficientRangeSupport = 22,
+	MissingContentLengthSupport = 23,
 	MultipleChoices = 300,
 	MovedPermanently = 301,
 	Found = 302,

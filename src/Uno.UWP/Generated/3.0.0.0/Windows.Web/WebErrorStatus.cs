@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Web
 {
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	public   enum WebErrorStatus 
 	{
 		// Skipping already declared field Windows.Web.WebErrorStatus.Unknown
@@ -27,12 +27,8 @@ namespace Windows.Web
 		// Skipping already declared field Windows.Web.WebErrorStatus.UnexpectedRedirection
 		// Skipping already declared field Windows.Web.WebErrorStatus.UnexpectedClientError
 		// Skipping already declared field Windows.Web.WebErrorStatus.UnexpectedServerError
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		InsufficientRangeSupport = 22,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		MissingContentLengthSupport = 23,
-		#endif
+		// Skipping already declared field Windows.Web.WebErrorStatus.InsufficientRangeSupport
+		// Skipping already declared field Windows.Web.WebErrorStatus.MissingContentLengthSupport
 		// Skipping already declared field Windows.Web.WebErrorStatus.MultipleChoices
 		// Skipping already declared field Windows.Web.WebErrorStatus.MovedPermanently
 		// Skipping already declared field Windows.Web.WebErrorStatus.Found
@@ -65,5 +61,5 @@ namespace Windows.Web
 		// Skipping already declared field Windows.Web.WebErrorStatus.GatewayTimeout
 		// Skipping already declared field Windows.Web.WebErrorStatus.HttpVersionNotSupported
 	}
-	#endif
+#endif
 }
