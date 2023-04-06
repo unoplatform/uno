@@ -15,11 +15,13 @@ jobs:
       UWP_net7:
         UNO_UWP_BUILD: true
         XAML_FLAVOR_BUILD: UWP
+        UnoDisableNet8Mobile: true
         ZipFileTargetFramework: net7
 
       WinUI_net7:
         UNO_UWP_BUILD: false
         XAML_FLAVOR_BUILD: WinUI
+        UnoDisableNet8Mobile: true
         ZipFileTargetFramework: net7
 
       UWP_net8:
