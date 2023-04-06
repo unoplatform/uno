@@ -13,6 +13,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls;
 [RunsOnUIThread]
 public class Given_WebView2
 {
+#if __ANDROID__ || __IOS__ || __MACOS__
 	[TestMethod]
 	public async Task When_ExecuteScriptAsync()
 	{
@@ -91,4 +92,5 @@ public class Given_WebView2
 
 		Assert.AreEqual(@"{""some"":[""values"",""in"",""json"",1]}", message);
 	}
+#endif
 }

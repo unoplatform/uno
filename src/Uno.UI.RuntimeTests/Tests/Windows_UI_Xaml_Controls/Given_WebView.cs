@@ -45,7 +45,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			webView.NavigateToString("<html></html>");
 			Assert.IsNull(webView.Source);
 		}
-#endif
 
 		[TestMethod]
 		public async Task When_InvokeScriptAsync()
@@ -100,4 +99,5 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual("red", color);
 		}
 	}
+#endif
 }
