@@ -844,10 +844,14 @@ namespace Uno.Xaml
 
 				var currentNodeType = r.NodeType;
 				var nextNodeType = r.MoveToContent();
-
+				var currentNodeValue = r.Value;
 				if (currentNodeType == XmlNodeType.Whitespace && nextNodeType != XmlNodeType.EndElement)
 				{
 					yield return Node(XamlNodeType.Value, " ");
+				}
+				if (currentNodeType == XmlNodeType.SignificantWhitespace)
+				{
+					yield return Node(XamlNodeType.Value, currentNodeValue);
 				}
 			}
 
