@@ -12,29 +12,13 @@ jobs:
 
   strategy:
     matrix:
-      UWP_net7:
+      UWP:
         UNO_UWP_BUILD: true
         XAML_FLAVOR_BUILD: UWP
-        UnoDisableNet8Mobile: true
-        ZipFileTargetFramework: net7
 
-      WinUI_net7:
+      WinUI:
         UNO_UWP_BUILD: false
         XAML_FLAVOR_BUILD: WinUI
-        UnoDisableNet8Mobile: true
-        ZipFileTargetFramework: net7
-
-      UWP_net8:
-        UNO_UWP_BUILD: true
-        XAML_FLAVOR_BUILD: UWP
-        UnoDisableNet7Mobile: true
-        ZipFileTargetFramework: net8
-
-      WinUI_net8:
-        UNO_UWP_BUILD: false
-        XAML_FLAVOR_BUILD: WinUI
-        UnoDisableNet7Mobile: true
-        ZipFileTargetFramework: net8
 
   variables:
     CombinedConfiguration: Release|Any CPU
@@ -57,9 +41,8 @@ jobs:
       cp global.json global-net7.json
       cp global-net8.json global.json
     displayName: Replace global.json with .NET 8
-    condition: and(succeeded(), eq(variables.UnoDisableNet7Mobile, 'true'))
 
-  - template: templates/dotnet-mobile-install-windows.yml
+  - template: templates/dotnet-install.yml
 
   # This task is required to run in separately to avoid hitting targets file
   # caching issues with msbuild 17.3 or later
@@ -80,12 +63,12 @@ jobs:
       rootFolderOrFile: $(build.sourcesdirectory)/build-artifacts/bin-$(XAML_FLAVOR_BUILD)
       includeRootFolder: false
       archiveType: 'zip'
-      archiveFile: '$(Build.ArtifactStagingDirectory)/Reference-$(ZipFileTargetFramework)-bin-$(XAML_FLAVOR_BUILD).zip'
+      archiveFile: '$(Build.ArtifactStagingDirectory)/Reference-bin-$(XAML_FLAVOR_BUILD).zip'
 
   - task: PublishBuildArtifacts@1
     condition: always()
     retryCountOnTaskFailure: 3
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
-      ArtifactName: NugetPackages-Artifacts-reference-$(ZipFileTargetFramework)-$(XAML_FLAVOR_BUILD)
+      ArtifactName: NugetPackages-Artifacts-reference-$(XAML_FLAVOR_BUILD)
       ArtifactType: Container
