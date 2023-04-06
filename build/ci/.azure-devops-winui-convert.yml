@@ -21,6 +21,7 @@ jobs:
 
     # Only build for net7
     UnoDisableNet8Mobile: true
+    UnoDisableNet8: true
 
   steps:
   - checkout: self
