@@ -452,6 +452,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 					var controlBaseType = GetType(topLevelControl.Type);
 
+					WriteMetadataNewTypeAttribute(writer);
+
 					using (writer.BlockInvariant("partial class {0} : {1}", _xClassName.ClassName, controlBaseType.GetFullyQualifiedTypeIncludingGlobal()))
 					{
 						BuildBaseUri(writer);
@@ -599,6 +601,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				using (writer.BlockInvariant("namespace {0}", _defaultNamespace))
 				{
+					WriteMetadataNewTypeAttribute(writer);
+
 					using (writer.BlockInvariant("static class {0}XamlApplyExtensions", _fileUniqueId))
 					{
 						foreach (var typeInfo in _xamlAppliedTypes)
@@ -993,6 +997,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						{
 							var classAccessibility = isTopLevel ? "" : "private";
 
+							WriteMetadataNewTypeAttribute(writer);
+
 							using (writer.BlockInvariant($"{classAccessibility} class {className}"))
 							{
 								BuildBaseUri(writer);
@@ -1206,6 +1212,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				writer.AppendLineIndented($"private {bindingsInterfaceName} Bindings;");
 				writer.AppendLineIndented($"#pragma warning restore 0169");
 
+				WriteMetadataNewTypeAttribute(writer);
+
 				writer.AppendLineIndented($"[global::System.Diagnostics.DebuggerNonUserCodeAttribute()]");
 				using (writer.BlockInvariant($"private class {bindingsClassName} : {bindingsInterfaceName}"))
 				{
@@ -1272,6 +1280,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				using (writer.BlockInvariant("namespace {0}", _defaultNamespace))
 				{
+					WriteMetadataNewTypeAttribute(writer);
+
 					AnalyzerSuppressionsGenerator.Generate(writer, _analyzerSuppressions);
 					using (writer.BlockInvariant("public sealed partial class GlobalStaticResources"))
 					{
@@ -1280,6 +1290,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						IDisposable WrapSingleton()
 						{
 							writer.AppendLineIndented("// This non-static inner class is a means of reducing size of AOT compilations by avoiding many accesses to static members from a static callsite, which adds costly class initializer checks each time.");
+
+							WriteMetadataNewTypeAttribute(writer);
+
 							var block = writer.BlockInvariant("internal sealed class {0} : {1}", SingletonClassName, DictionaryProviderInterfaceName);
 							_isInSingletonInstance = true;
 							return new DisposableAction(() =>
@@ -1369,6 +1382,16 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 
 				BuildChildSubclasses(writer, isTopLevel: true);
+			}
+		}
+
+		private void WriteMetadataNewTypeAttribute(IIndentedStringBuilder writer)
+		{
+			if (_isDebug)
+			{
+				writer.AppendLineIndented("#if NET6_0_OR_GREATER");
+				writer.AppendLineIndented("[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]");
+				writer.AppendLineIndented("#endif");
 			}
 		}
 
@@ -1657,6 +1680,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				using (writer.BlockInvariant("namespace {0}", className.Namespace))
 				{
 					AnalyzerSuppressionsGenerator.Generate(writer, _analyzerSuppressions);
+
+					WriteMetadataNewTypeAttribute(writer);
+
 					using (writer.BlockInvariant("public sealed partial class {0} : {1}", className.ClassName, controlBaseType.GetFullyQualifiedTypeIncludingGlobal()))
 					{
 						BuildBaseUri(writer);
