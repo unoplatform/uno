@@ -49,9 +49,6 @@
 					<ProjectItem ReplaceParameters="false" TargetFileName="Default-568h@2x.png">Default-568h@2x.png</ProjectItem>
 					<ProjectItem ReplaceParameters="false" TargetFileName="SplashScreen@2x.png">SplashScreen@2x.png</ProjectItem>
 					<ProjectItem ReplaceParameters="false" TargetFileName="SplashScreen@3x.png">SplashScreen@3x.png</ProjectItem>
-					<Folder Name="Fonts" TargetFolderName="Fonts">
-						<ProjectItem ReplaceParameters="false" TargetFileName="uno-fluentui-assets.ttf">uno-fluentui-assets.ttf</ProjectItem>
-					</Folder>
 				</Folder>
 
 			</Folder>
@@ -121,9 +118,6 @@
 					<ProjectItem ReplaceParameters="false" TargetFileName="Default-568h@2x.png">Default-568h@2x.png</ProjectItem>
 					<ProjectItem ReplaceParameters="false" TargetFileName="SplashScreen@2x.png">SplashScreen@2x.png</ProjectItem>
 					<ProjectItem ReplaceParameters="false" TargetFileName="SplashScreen@3x.png">SplashScreen@3x.png</ProjectItem>
-					<Folder Name="Fonts" TargetFolderName="Fonts">
-						<ProjectItem ReplaceParameters="false" TargetFileName="uno-fluentui-assets.ttf">uno-fluentui-assets.ttf</ProjectItem>
-					</Folder>
 				</Folder>
 
 			</Folder>
@@ -152,11 +146,6 @@
 						<ProjectItem ReplaceParameters="false" ItemType="ImageAsset" TargetFileName="Contents.json">Contents.json</ProjectItem>
 					</Folder>
 					<ProjectItem ReplaceParameters="false" ItemType="ImageAsset" TargetFileName="Contents.json">Contents.json</ProjectItem>
-				</Folder>
-				<Folder Name="Resources" TargetFolderName="Resources">
-					<Folder Name="Fonts" TargetFolderName="Fonts">
-						<ProjectItem ReplaceParameters="false" TargetFileName="uno-fluentui-assets.ttf">uno-fluentui-assets.ttf</ProjectItem>
-					</Folder>
 				</Folder>
 			</Folder>
 		</Project>

@@ -18,10 +18,6 @@
 	</array>
 	<key>XSAppIconAssets</key>
 	<string>Media.xcassets/AppIcon.appiconset</string>
-	<key>UIAppFonts</key>
-	<array>
-	  <string>Fonts/uno-fluentui-assets.ttf</string>
-	</array>
 
 	<!--
 	Adjust this to your application's encryption usage.
