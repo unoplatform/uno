@@ -119,8 +119,8 @@ namespace Uno.UI.SourceGenerators.RemoteControl
 		{
 			var xamlPaths = EnumerateLocalSearchPaths(context);
 
-            if (xamlPaths.Any())
-            {
+			if (xamlPaths.Any())
+			{
 				var distictPaths = string.Join(Path.PathSeparator.ToString(), xamlPaths);
 
 				sb.AppendLineIndented($"""
