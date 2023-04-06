@@ -15,11 +15,6 @@
   </TemplateData>
   <TemplateContent>
     <Project File="UnoQuickStart.Skia.Gtk.csproj" TargetFileName="$ext_safeprojectname$.Skia.Gtk.csproj" ReplaceParameters="true">
-      <Folder Name="Assets" TargetFolderName="Assets">
-        <Folder Name="Fonts" TargetFolderName="Fonts">
-          <ProjectItem TargetFileName="uno-fluentui-assets.ttf" ReplaceParameters="false">uno-fluentui-assets.ttf</ProjectItem>
-        </Folder>
-      </Folder>
       <ProjectItem TargetFileName="Program.cs" ReplaceParameters="true">Program.cs</ProjectItem>
     </Project>
   </TemplateContent>

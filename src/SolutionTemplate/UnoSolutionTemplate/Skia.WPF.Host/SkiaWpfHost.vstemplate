@@ -15,12 +15,6 @@
   </TemplateData>
   <TemplateContent>
 	<Project File="UnoQuickStart.Skia.Wpf.Host.csproj" TargetFileName="$ext_safeprojectname$.Skia.Wpf.Host.csproj" ReplaceParameters="true">
-	  <Folder Name="Assets" TargetFolderName="Assets">
-		<Folder Name="Fonts" TargetFolderName="Fonts">
-		  <ProjectItem TargetFileName="uno-fluentui-assets.ttf" ReplaceParameters="false">uno-fluentui-assets.ttf</ProjectItem>
-		</Folder>
-	  </Folder>
-
 	  <ProjectItem TargetFileName="App.xaml" ReplaceParameters="true">App.xaml</ProjectItem>
 	  <ProjectItem TargetFileName="App.xaml.cs" ReplaceParameters="true">App.xaml.cs</ProjectItem>
 	  <ProjectItem TargetFileName="MainWindow.xaml" ReplaceParameters="true">MainWindow.xaml</ProjectItem>
