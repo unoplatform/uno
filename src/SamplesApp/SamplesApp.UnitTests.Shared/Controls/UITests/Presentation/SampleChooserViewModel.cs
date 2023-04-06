@@ -85,9 +85,12 @@ namespace SampleControl.Presentation
 #endif
 		}
 
-		public SampleChooserViewModel()
+		public SampleChooserControl Owner { get; }
+
+		public SampleChooserViewModel(SampleChooserControl owner)
 		{
 			Instance = this;
+			Owner = owner;
 
 #if TRACK_REFS
 			Uno.UI.DataBinding.BinderReferenceHolder.IsEnabled = true;

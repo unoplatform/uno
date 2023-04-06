@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives.PopupPages;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -70,6 +71,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 		public void When_Closed_Immediately()
 		{
 			var popup = new Popup();
+			popup.XamlRoot = TestServices.WindowHelper.XamlRoot;
 			popup.IsOpen = true;
 			// Should not throw
 			popup.IsOpen = false;

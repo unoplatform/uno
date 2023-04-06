@@ -307,7 +307,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 
 					await RunOnUIThread.ExecuteAsync(() =>
 					{
-						var openPopups = VisualTreeHelper.GetOpenPopups(Window.Current);
+						var openPopups = VisualTreeHelper.GetOpenPopupsForXamlRoot(TestServices.WindowHelper.XamlRoot);
 						var flyout = openPopups[openPopups.Count - 1];
 						Verify.IsNotNull(flyout, "Flyout could not be retrieved");
 						var ellipsisItemsRepeater = TestUtilities.FindDescendents<ItemsRepeater>(flyout).Single();
@@ -389,7 +389,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 
 					await RunOnUIThread.ExecuteAsync(() =>
 					{
-						var openPopups = VisualTreeHelper.GetOpenPopups(Window.Current);
+						var openPopups = VisualTreeHelper.GetOpenPopupsForXamlRoot(TestServices.WindowHelper.XamlRoot);
 						var flyout = openPopups[openPopups.Count - 1];
 						Verify.IsNotNull(flyout, "Flyout could not be retrieved");
 						var ellipsisItemsRepeater = TestUtilities.FindDescendents<ItemsRepeater>(flyout).Single();

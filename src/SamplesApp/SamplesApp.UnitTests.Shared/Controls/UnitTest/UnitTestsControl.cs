@@ -87,6 +87,13 @@ namespace Uno.UI.Samples.Tests
 			Private.Infrastructure.TestServices.WindowHelper.CurrentTestWindow =
 				Windows.UI.Xaml.Window.Current;
 
+			Private.Infrastructure.TestServices.WindowHelper.IsXamlIsland =
+#if HAS_UNO
+				Uno.UI.Xaml.Core.CoreServices.Instance.InitializationType == Xaml.Core.InitializationType.IslandsOnly;
+#else
+				false;
+#endif
+
 			DataContext = null;
 
 			SampleChooserViewModel.Instance.SampleChanging += OnSampleChanging;
@@ -683,6 +690,8 @@ namespace Uno.UI.Samples.Tests
 			ReportTestClass(testClassInfo.Type.GetTypeInfo());
 			_ = ReportMessage($"Running {tests.Length} test methods");
 
+			var ignorePointerInjection = Private.Infrastructure.TestServices.WindowHelper.IsXamlIsland;
+
 			foreach (var test in tests)
 			{
 				var testName = test.Name;
@@ -693,7 +702,8 @@ namespace Uno.UI.Samples.Tests
 					return;
 				}
 
-				if (test.IsIgnored(out var ignoreMessage))
+				if (test.IsIgnored(out var ignoreMessage) ||
+					(test.UsesPointerInjection && ignorePointerInjection))
 				{
 					if (config.IsRunningIgnored)
 					{

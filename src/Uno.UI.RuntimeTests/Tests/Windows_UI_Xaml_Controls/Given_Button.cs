@@ -71,7 +71,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				await TestServices.WindowHelper.WaitForIdle();
 
-				var popups = VisualTreeHelper.GetOpenPopups(Windows.UI.Xaml.Window.Current);
+				var popups = VisualTreeHelper.GetOpenPopupsForXamlRoot(TestServices.WindowHelper.XamlRoot);
 
 				var innerFlyoutItem = popups.Select(p
 					=> ((p.Child as MenuFlyoutPresenter)?.TemplatedRoot as FrameworkElement)?.FindName("innerFlyoutItem") as MenuFlyoutItem).Trim().FirstOrDefault();

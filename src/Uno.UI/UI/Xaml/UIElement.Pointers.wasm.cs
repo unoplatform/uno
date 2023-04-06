@@ -17,8 +17,8 @@ using Uno.UI;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Core;
-
 using PointerIdentifier = Windows.Devices.Input.PointerIdentifier;
+using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
@@ -182,7 +182,7 @@ public partial class UIElement : DependencyObject
 
 						if (stopPropagation)
 						{
-							RootVisual.ProcessPointerUp(routedArgs, isAfterHandledUp: true);
+							WinUICoreServices.Instance.MainRootVisual?.ProcessPointerUp(routedArgs, isAfterHandledUp: true); // TODO for #8341
 						}
 
 						break;

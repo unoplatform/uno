@@ -329,6 +329,43 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsInstanceOfType(parent, typeof(ListView));
 		}
 
+#if HAS_UNO
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Item_GetParentInternal_Include_ListView()
+		{
+			var SUT = new ListView()
+			{
+				ItemContainerStyle = BasicContainerStyle,
+				SelectionMode = ListViewSelectionMode.Single,
+			};
+
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForIdle();
+
+			var source = new[] {
+				new ListViewItem(){ Content = "item 1" },
+				new ListViewItem(){ Content = "item 2" },
+				new ListViewItem(){ Content = "item 3" },
+				new ListViewItem(){ Content = "item 4" },
+			};
+
+			SUT.ItemsSource = source;
+
+			SelectorItem si = null;
+			await WindowHelper.WaitFor(() => (si = SUT.ContainerFromItem(source[0]) as SelectorItem) != null);
+
+			Assert.IsNull(si.Parent);
+			var parent = Uno.UI.Extensions.DependencyObjectExtensions.GetParentInternal(si, false);
+			while (parent is not null && parent is not ListView listView)
+			{
+				parent = Uno.UI.Extensions.DependencyObjectExtensions.GetParentInternal(parent, false);
+			}
+
+			Assert.IsInstanceOfType(parent, typeof(ListView));
+		}
+#endif
+
 
 		[TestMethod]
 		[RunsOnUIThread]
@@ -2516,10 +2553,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 			item1.Focus(FocusState.Keyboard);
-			var success = FocusManager.TryMoveFocus(FocusNavigationDirection.Next);
+			var success = FocusManager.TryMoveFocus(
+				FocusNavigationDirection.Next,
+				new FindNextElementOptions() { SearchRoot = TestServices.WindowHelper.XamlRoot.Content });
 			Assert.IsTrue(success);
 
-			var focused = FocusManager.GetFocusedElement();
+			var focused = FocusManager.GetFocusedElement(TestServices.WindowHelper.XamlRoot);
 			Assert.AreEqual(item2, focused);
 		}
 
@@ -2551,10 +2590,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 			item2.Focus(FocusState.Keyboard);
-			var success = FocusManager.TryMoveFocus(FocusNavigationDirection.Previous);
+			var success = FocusManager.TryMoveFocus(
+				FocusNavigationDirection.Previous,
+				new FindNextElementOptions() { SearchRoot = TestServices.WindowHelper.XamlRoot.Content });
 			Assert.IsTrue(success);
 
-			var focused = FocusManager.GetFocusedElement();
+			var focused = FocusManager.GetFocusedElement(TestServices.WindowHelper.XamlRoot);
 			Assert.AreEqual(item1, focused);
 		}
 

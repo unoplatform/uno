@@ -676,7 +676,14 @@ namespace Windows.UI.Xaml
 			// then the whole tree will be measured at the last known value which is 0x0 and will never be invalidated.
 			//
 			// To avoid this we are instead using the Window Bounds as anyway they are the same as the root's slot.
-			var bounds = Windows.UI.Xaml.Window.Current.Bounds;
+
+			if (root.XamlRoot is null)
+			{
+				// Element is not in the visual tree.
+				return;
+			}
+
+			var bounds = root.XamlRoot.Bounds;
 
 #if __MACOS__ || __IOS__ // IsMeasureDirty and IsArrangeDirty are not available on iOS / macOS
 			root.Measure(bounds.Size);

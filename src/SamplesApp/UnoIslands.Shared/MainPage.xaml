@@ -12,6 +12,7 @@
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto" />
 			<RowDefinition Height="*" />
+			<RowDefinition Height="Auto" />
 		</Grid.RowDefinitions>
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition />
@@ -24,8 +25,9 @@
 			<HyperlinkButton Content="{Binding Email}" NavigateUri="{Binding EmailUrl}" Grid.Row="1" />	
 			<TextBlock Text="{Binding Phone}" />
 			<TextBox Text="{Binding Note, Mode=TwoWay}" PlaceholderText="Enter a note..." />
+			<SymbolIcon Symbol="Home" />
 		</StackPanel>
-		<Button Click="Button_Click">
+		<Button Grid.Row="2" Click="Button_Click">
 			<ToolTipService.ToolTip>
 				<StackPanel Orientation="Vertical">
 					<TextBlock Text="Test"/>

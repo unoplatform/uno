@@ -23,6 +23,7 @@ public class Given_CalendarDatePicker
 
 		var root = (Grid)SUT.FindName("Root");
 		var flyout = (Flyout)FlyoutBase.GetAttachedFlyout(root);
+		flyout.XamlRoot = SUT.XamlRoot;
 		flyout.Open();
 
 		await WindowHelper.WaitForIdle();

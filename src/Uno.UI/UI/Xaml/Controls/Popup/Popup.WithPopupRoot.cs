@@ -86,7 +86,7 @@ public partial class Popup
 			{
 #if !HAS_UNO_WINUI
 				// In UWP, XamlRoot is set automatically to CoreWindow XamlRoot if not set beforehand.
-				if (XamlRoot is null && Child?.XamlRoot is null)
+				if (XamlRoot is null && Child?.XamlRoot is null && CoreServices.Instance.InitializationType != InitializationType.IslandsOnly)
 				{
 					XamlRoot = CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRoot.XamlRoot;
 				}

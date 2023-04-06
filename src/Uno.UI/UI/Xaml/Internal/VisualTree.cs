@@ -83,9 +83,9 @@ namespace Uno.UI.Xaml.Core
 				RootVisual.AssociatedVisualTree = this;
 				RootVisual.SetBackgroundColor(backgroundColor);
 				RootElement = RootVisual;
-
-				_focusInputHandler = new UnoFocusInputHandler(RootVisual);
 			}
+
+			_focusInputHandler = new UnoFocusInputHandler(RootElement);
 		}
 
 		internal UnoFocusInputHandler? UnoFocusInputHandler => _focusInputHandler;
@@ -352,10 +352,8 @@ namespace Uno.UI.Xaml.Core
 		/// </summary>
 		/// <param name="pObject">Element.</param>
 		/// <returns>Root visual or null.</returns>
-		internal static RootVisual? GetRootForElement(DependencyObject? pObject)
-		{
-			return pObject?.GetContext().MainRootVisual;
-		}
+		internal static RootVisual? GetRootForElement(DependencyObject? pObject) =>
+			VisualTree.GetForElement(pObject)?.RootVisual;
 
 		/// <summary>
 		/// Static helper function that encapsulates getting the FocusManager

@@ -47,12 +47,20 @@ using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
 using LaunchActivatedEventArgs = Windows.ApplicationModel.Activation.LaunchActivatedEventArgs;
 #endif
 
+#if UNO_ISLANDS
+using Windows.UI.Xaml.Markup;
+using Uno.UI.XamlHost;
+#endif
+
 namespace SamplesApp
 {
 	/// <summary>
 	/// Provides application-specific behavior to supplement the default Application class.
 	/// </summary>
 	sealed public partial class App : Application
+#if UNO_ISLANDS
+	, IXamlMetadataProvider, IXamlMetadataContainer, IDisposable
+#endif
 	{
 #if HAS_UNO
 		private static Uno.Foundation.Logging.Logger _log;
@@ -185,15 +193,17 @@ namespace SamplesApp
 			return false;
 		}
 
-		private static
+		private static Task<bool> HandleSkiaRuntimeTests(LaunchActivatedEventArgs e) => HandleSkiaRuntimeTests(e.Arguments);
+
+		public static
 #if __SKIA__ || __MACOS__
 			async
 #endif
-			Task<bool> HandleSkiaRuntimeTests(LaunchActivatedEventArgs e)
+			Task<bool> HandleSkiaRuntimeTests(string args)
 		{
 #if __SKIA__ || __MACOS__
 			var runRuntimeTestsResultsParam =
-			e.Arguments.Split(';').FirstOrDefault(a => a.StartsWith("--runtime-tests"));
+				args.Split(';').FirstOrDefault(a => a.StartsWith("--runtime-tests"));
 
 			var runtimeTestResultFilePath = runRuntimeTestsResultsParam?.Split('=').LastOrDefault();
 
@@ -646,6 +656,10 @@ namespace SamplesApp
 		public void AssertIssue8641NativeOverlayInitialized()
 		{
 #if __SKIA__
+			if (Uno.UI.Xaml.Core.CoreServices.Instance.InitializationType == Uno.UI.Xaml.Core.InitializationType.IslandsOnly)
+			{
+				return;
+			}
 			// Temporarily add a TextBox to the current page's content to verify native overlay is available
 			Frame rootFrame = Windows.UI.Xaml.Window.Current.Content as Frame;
 			var textBox = new TextBox();

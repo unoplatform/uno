@@ -910,7 +910,10 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			UIElement focusedElement = null;
 
-			if (FocusManager.GetFocusedElement() is DependencyObject child)
+			var focusedObject = m_owner?.XamlRoot is null ?
+				FocusManager.GetFocusedElement() :
+				FocusManager.GetFocusedElement(m_owner.XamlRoot);
+			if (focusedObject is DependencyObject child)
 			{
 				var parent = CachedVisualTreeHelpers.GetParent(child);
 				var owner = (UIElement)m_owner;

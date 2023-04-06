@@ -15,6 +15,7 @@
 		<Button Content="test" />
 		<Border Background="Red">
 			<StackPanel>
+				<SymbolIcon Symbol="Home" />
 				<ComboBox Header="Test"
 						  x:Name="test"
 						  ItemsSource="{Binding}">

@@ -33,6 +33,7 @@ using global::System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("SamplesApp.iOS")]
 [assembly: InternalsVisibleTo("SamplesApp.Droid")]
 [assembly: InternalsVisibleTo("SamplesApp.MacOS")]
+[assembly: InternalsVisibleTo("UnoIslandsSamplesApp.Skia")]
 [assembly: InternalsVisibleTo("Uno.UI.Adapter.Microsoft.Extensions.Logging")]
 [assembly: InternalsVisibleTo("Uno.UI.Composition")]
 [assembly: InternalsVisibleTo("Uno.UI.Dispatching")]

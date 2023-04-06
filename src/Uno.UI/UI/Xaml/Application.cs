@@ -21,6 +21,7 @@ using Windows.UI.Popups.Internal;
 using Windows.UI.Popups;
 using Uno.UI.WinRT.Extensions.UI.Popups;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
+using Uno.UI.Xaml.Core;
 
 #if HAS_UNO_WINUI
 using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
@@ -68,8 +69,14 @@ namespace Windows.UI.Xaml
 			ApiInformation.RegisterAssembly(typeof(Windows.UI.Composition.Compositor).Assembly);
 
 			Uno.Helpers.DispatcherTimerProxy.SetDispatcherTimerGetter(() => new DispatcherTimer());
-			Uno.Helpers.VisualTreeHelperProxy.SetCloseAllFlyoutsAction(() => Media.VisualTreeHelper.CloseAllFlyouts(
-				WinUICoreServices.Instance.ContentRootCoordinator.CoreWindowContentRoot.XamlRoot));
+			Uno.Helpers.VisualTreeHelperProxy.SetCloseAllFlyoutsAction(() =>
+			{
+				var contentRoots = WinUICoreServices.Instance.ContentRootCoordinator.ContentRoots;
+				foreach (var contentRoot in contentRoots)
+				{
+					Media.VisualTreeHelper.CloseAllFlyouts(contentRoot.XamlRoot);
+				}
+			});
 
 			RegisterExtensions();
 
@@ -408,28 +415,31 @@ namespace Windows.UI.Xaml
 
 		private void OnResourcesChanged(ResourceUpdateReason updateReason)
 		{
-			if (GetTreeRoot() is { } root)
+			foreach (var contentRoot in WinUICoreServices.Instance.ContentRootCoordinator.ContentRoots)
 			{
-				// Update theme bindings in application resources
-				Resources?.UpdateThemeBindings(updateReason);
-
-				// Update theme bindings in system resources
-				ResourceResolver.UpdateSystemThemeBindings(updateReason);
-
-				PropagateResourcesChanged(root, updateReason);
-			}
-
-			// Start from the real root, which may not be a FrameworkElement on some platforms
-			View GetTreeRoot()
-			{
-				View current = Windows.UI.Xaml.Window.Current.Content;
-				var parent = current?.GetVisualTreeParent();
-				while (parent != null)
+				if (GetTreeRoot(contentRoot) is { } root)
 				{
-					current = parent;
-					parent = current?.GetVisualTreeParent();
+					// Update theme bindings in application resources
+					Resources?.UpdateThemeBindings(updateReason);
+
+					// Update theme bindings in system resources
+					ResourceResolver.UpdateSystemThemeBindings(updateReason);
+
+					PropagateResourcesChanged(root, updateReason);
 				}
-				return current;
+
+				// Start from the real root, which may not be a FrameworkElement on some platforms
+				View GetTreeRoot(ContentRoot contentRoot)
+				{
+					View current = contentRoot.XamlRoot.Content;
+					var parent = current?.GetVisualTreeParent();
+					while (parent != null)
+					{
+						current = parent;
+						parent = current?.GetVisualTreeParent();
+					}
+					return current;
+				}
 			}
 		}
 

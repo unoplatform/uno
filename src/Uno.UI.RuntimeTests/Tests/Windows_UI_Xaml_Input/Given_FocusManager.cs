@@ -72,25 +72,25 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 					{
 						receivedGotFocus[inner] = true;
 						wasEventRaised = true;
-						FocusManager.GetFocusedElement().Should().NotBeNull($"buttons[{i}].GotFocus");
+						FocusManager.GetFocusedElement(TestServices.WindowHelper.XamlRoot).Should().NotBeNull($"buttons[{i}].GotFocus");
 					};
 
 					buttons[i].LostFocus += (o, e) =>
 					{
 						receivedLostFocus[inner] = true;
 						wasEventRaised = true;
-						FocusManager.GetFocusedElement().Should().NotBeNull($"buttons[{i}].LostFocus");
+						FocusManager.GetFocusedElement(TestServices.WindowHelper.XamlRoot).Should().NotBeNull($"buttons[{i}].LostFocus");
 					};
 				}
 
 				FocusManager.GotFocus += (o, e) =>
 				{
-					FocusManager.GetFocusedElement().Should().NotBeNull($"FocusManager.GotFocus - element");
+					FocusManager.GetFocusedElement(TestServices.WindowHelper.XamlRoot).Should().NotBeNull($"FocusManager.GotFocus - element");
 					wasEventRaised = true;
 				};
 				FocusManager.LostFocus += (o, e) =>
 				{
-					FocusManager.GetFocusedElement().Should().NotBeNull($"FocusManager.LostFocus - element");
+					FocusManager.GetFocusedElement(TestServices.WindowHelper.XamlRoot).Should().NotBeNull($"FocusManager.LostFocus - element");
 					wasEventRaised = true;
 				};
 
@@ -446,14 +446,18 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 
 			textBox1.Focus(FocusState.Programmatic);
 
-			var moved = FocusManager.TryMoveFocus(FocusNavigationDirection.Next);
-			var focused = FocusManager.GetFocusedElement();
+			var moved = FocusManager.TryMoveFocus(
+				FocusNavigationDirection.Next,
+				new FindNextElementOptions() { SearchRoot = TestServices.WindowHelper.XamlRoot.Content });
+			var focused = FocusManager.GetFocusedElement(TestServices.WindowHelper.XamlRoot);
 
 			Assert.IsTrue(moved);
 			Assert.AreEqual(textBox2, focused);
 
-			moved = FocusManager.TryMoveFocus(FocusNavigationDirection.Next);
-			focused = FocusManager.GetFocusedElement();
+			moved = FocusManager.TryMoveFocus(
+				FocusNavigationDirection.Next,
+				new FindNextElementOptions() { SearchRoot = TestServices.WindowHelper.XamlRoot.Content });
+			focused = FocusManager.GetFocusedElement(TestServices.WindowHelper.XamlRoot);
 
 			Assert.IsTrue(moved);
 			Assert.AreEqual(button, focused);
@@ -502,7 +506,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 		private void AssertHasFocus(Control control)
 		{
 			control.Should().NotBeNull("control");
-			var focused = FocusManager.GetFocusedElement();
+			var focused = FocusManager.GetFocusedElement(TestServices.WindowHelper.XamlRoot);
 			focused.Should().NotBeNull("focused element");
 			focused.Should().BeSameAs(control, "must be same element");
 			control.FocusState.Should().NotBe(FocusState.Unfocused);

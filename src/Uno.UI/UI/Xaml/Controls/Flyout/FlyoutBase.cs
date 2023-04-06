@@ -15,6 +15,7 @@ using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media;
+using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
 #if XAMARIN_IOS
 using View = UIKit.UIView;
@@ -328,7 +329,16 @@ namespace Windows.UI.Xaml.Controls.Primitives
 						throw new ArgumentException("Invalid flyout position");
 					}
 
-					var visibleBounds = ApplicationView.GetForCurrentView().VisibleBounds;
+					Rect visibleBounds;
+					if (WinUICoreServices.Instance.InitializationType == Uno.UI.Xaml.Core.InitializationType.IslandsOnly)
+					{
+						var xamlRoot = XamlRoot ?? placementTarget?.XamlRoot;
+						visibleBounds = xamlRoot.Bounds;
+					}
+					else
+					{
+						visibleBounds = ApplicationView.GetForCurrentView().VisibleBounds;
+					}
 					positionValue = new Point(
 						positionValue.X.Clamp(visibleBounds.Left, visibleBounds.Right),
 						positionValue.Y.Clamp(visibleBounds.Top, visibleBounds.Bottom));
@@ -456,6 +466,11 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			SetPopupPosition(Target, PopupPositionInTarget);
 			ApplyTargetPosition();
 
+			if (XamlRoot is not null && _popup.XamlRoot is null)
+			{
+				_popup.XamlRoot = XamlRoot;
+			}
+
 			_popup.IsOpen = true;
 		}
 
@@ -517,6 +532,12 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		{
 			// UNO TODO: UWP also uses values coming from the input pane and app bars, if any.
 			// Make sure of migrate to XamlRoot: https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.xamlroot
+			if (WinUICoreServices.Instance.InitializationType == Uno.UI.Xaml.Core.InitializationType.IslandsOnly)
+			{
+				var xamlRoot = popup.XamlRoot ?? popup.Child?.XamlRoot;
+				return xamlRoot.Bounds;
+			}
+
 			return ApplicationView.GetForCurrentView().VisibleBounds;
 		}
 

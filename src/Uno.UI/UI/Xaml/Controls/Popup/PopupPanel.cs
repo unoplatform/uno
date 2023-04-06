@@ -147,8 +147,15 @@ internal partial class PopupPanel : Panel
 			// Gets the location of the popup (or its Anchor) in the VisualTree, so we will align Top/Left with it
 			// Note: we do not prevent overflow of the popup on any side as UWP does not!
 			//		 (And actually it also lets the view appear out of the window ...)
-			var anchor = Popup.PlacementTarget ?? Popup;
-			var anchorLocation = anchor.TransformToVisual(this).TransformPoint(new Point());
+			Point anchorLocation = default;
+			if (Popup.PlacementTarget is { } anchor)
+			{
+				anchorLocation = anchor.TransformToVisual(this).TransformPoint(default);
+			}
+			else
+			{
+				anchorLocation = Popup.TransformToVisual(null).TransformPoint(default);
+			}
 
 #if __ANDROID__
 			// for android, the above line returns the absolute coordinates of anchor on the screen

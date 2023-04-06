@@ -37,6 +37,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				SecondaryButtonText = "Nope"
 			};
 
+			SetXamlRootForIslandsOrWinUI(SUT);
+
 			try
 			{
 				await ShowDialog(SUT);
@@ -67,8 +69,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				SecondaryButtonText = "Nope"
 			};
 
-			SUT.FullSizeDesired = true;
+			SetXamlRootForIslandsOrWinUI(SUT);
 
+			SUT.FullSizeDesired = true;
 
 			try
 			{
@@ -101,8 +104,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				SecondaryButtonText = "Nope"
 			};
 
-			Assert.AreEqual(ContentDialogButton.None, SUT.DefaultButton);
+			SetXamlRootForIslandsOrWinUI(SUT);
 
+			Assert.AreEqual(ContentDialogButton.None, SUT.DefaultButton);
 
 			try
 			{
@@ -135,8 +139,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				SecondaryButtonText = "Nope"
 			};
 
-			SUT.DefaultButton = ContentDialogButton.Primary;
+			SetXamlRootForIslandsOrWinUI(SUT);
 
+			SUT.DefaultButton = ContentDialogButton.Primary;
 
 			try
 			{
@@ -171,6 +176,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				SecondaryButtonText = "Secondary"
 			};
 
+			SetXamlRootForIslandsOrWinUI(SUT);
+
 			SUT.DefaultButton = ContentDialogButton.None;
 
 			try
@@ -201,6 +208,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				PrimaryButtonText = "Target",
 				SecondaryButtonText = "Secondary"
 			};
+
+			SetXamlRootForIslandsOrWinUI(SUT);
 
 			SUT.DefaultButton = ContentDialogButton.None;
 
@@ -234,6 +243,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				SecondaryButtonText = "Target"
 			};
 
+			SetXamlRootForIslandsOrWinUI(SUT);
+
 			SUT.DefaultButton = ContentDialogButton.Secondary;
 
 			try
@@ -264,6 +275,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				PrimaryButtonText = "Accept",
 				SecondaryButtonText = "Nope"
 			};
+
+			SetXamlRootForIslandsOrWinUI(SUT);
 
 			bool triggered = false;
 			bool hideSecondTime = false;
@@ -334,6 +347,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 					SecondaryButtonText = "Nope"
 				};
 
+				SetXamlRootForIslandsOrWinUI(SUT);
+
 				try
 				{
 					await ShowDialog(SUT);
@@ -390,6 +405,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				CloseButtonText = "Close",
 			};
 
+			SetXamlRootForIslandsOrWinUI(SUT);
+
 			if (!isCloseButtonEnabled)
 			{
 				var disabledStyle = new Style(typeof(Button));
@@ -442,6 +459,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Content = "Dialog content",
 				CloseButtonText = "Close",
 			};
+
+			SetXamlRootForIslandsOrWinUI(SUT);
 
 			closedRegistration.Attach(SUT, (s, e) => closedEvent.Set());
 			openedRegistration.Attach(SUT, (s, e) => openedEvent.Set());
@@ -536,6 +555,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if !NETFX_CORE
 			await WindowHelper.WaitFor(() => dialog.BackgroundElement.ActualHeight > 0); // This is necessary on current version of Uno because the template is materialized too early  
 #endif
+		}
+
+		private void SetXamlRootForIslandsOrWinUI(ContentDialog dialog)
+		{
+#if !HAS_UNO_WINUI
+			if (WindowHelper.IsXamlIsland)
+#endif
+			{
+				dialog.XamlRoot = WindowHelper.EmbeddedTestRoot.control.XamlRoot;
+			}
 		}
 	}
 

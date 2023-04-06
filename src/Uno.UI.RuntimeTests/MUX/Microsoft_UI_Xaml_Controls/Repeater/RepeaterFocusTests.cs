@@ -50,6 +50,13 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				return;
 			}
 
+#if HAS_UNO
+			if (TestServices.WindowHelper.IsXamlIsland)
+			{
+				return;
+			}
+#endif
+
 			ItemsRepeater repeater = null;
 			ScrollViewer scrollViewer = null;
 			var data = new ObservableCollection<string>(Enumerable.Range(0, 50).Select(i => "Item #" + i));
