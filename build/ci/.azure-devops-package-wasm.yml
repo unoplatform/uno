@@ -24,10 +24,6 @@ jobs:
     CombinedConfiguration: Release|Any CPU
     CI_Build: true
 
-    # Disable .NET 5 build on CI for package generation
-    # Build validation is performed on other jobs
-    UnoUIDisableNet7Build: true
-
     NUGET_PACKAGES: $(build.sourcesdirectory)/.nuget
 
   steps:
@@ -41,6 +37,11 @@ jobs:
       nugetPackages: $(NUGET_PACKAGES)
 
   - template: templates/gitversion.yml
+
+  - script: |
+      cp global.json global-net7.json
+      cp global-net8.json global.json
+    displayName: Replace global.json with .NET 8
 
   - template: templates/dotnet-install.yml
 
