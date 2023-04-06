@@ -699,6 +699,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				writer.AppendLineIndented("/// Contains all the static resources defined for the application");
 				writer.AppendLineIndented("/// </summary>");
 
+				if (_isDebug)
+				{
+					writer.AppendLineIndented("#if NET6_0_OR_GREATER");
+					writer.AppendLineIndented("[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]");
+					writer.AppendLineIndented("#endif");
+				}
+
 				AnalyzerSuppressionsGenerator.Generate(writer, _analyzerSuppressions);
 				using (writer.BlockInvariant("public sealed partial class GlobalStaticResources"))
 				{
