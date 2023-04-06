@@ -3,101 +3,100 @@ using System.Threading.Tasks;
 using Private.Infrastructure;
 using Windows.UI.Xaml.Controls;
 
-namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
+namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
+
+[TestClass]
+[RunsOnUIThread]
+public class Given_WebView
 {
-	[TestClass]
-	[RunsOnUIThread]
-	public class Given_WebView
-	{
 #if __ANDROID__ || __IOS__ || __MACOS__
-		[TestMethod]
-		public void When_Navigate()
-		{
-			var webView = new WebView();
-			var uri = new Uri("https://bing.com");
-			webView.Navigate(uri);
-			Assert.IsNotNull(webView.Source);
-			Assert.AreEqual("https://bing.com/", webView.Source.OriginalString);
-			Assert.AreEqual("https://bing.com", uri.OriginalString);
-		}
+	[TestMethod]
+	public void When_Navigate()
+	{
+		var webView = new WebView();
+		var uri = new Uri("https://bing.com");
+		webView.Navigate(uri);
+		Assert.IsNotNull(webView.Source);
+		Assert.AreEqual("https://bing.com/", webView.Source.OriginalString);
+		Assert.AreEqual("https://bing.com", uri.OriginalString);
+	}
 
-		[TestMethod]
-		public void When_NavigateWithHttpRequestMessage()
-		{
-			var webView = new WebView();
-			var uri = new Uri("https://bing.com");
-			webView.NavigateWithHttpRequestMessage(new System.Net.Http.HttpRequestMessage(System.Net.Http.HttpMethod.Get, uri));
-			Assert.IsNotNull(webView.Source);
-			Assert.AreEqual("https://bing.com/", webView.Source.OriginalString);
-			Assert.AreEqual("https://bing.com", uri.OriginalString);
-		}
+	[TestMethod]
+	public void When_NavigateWithHttpRequestMessage()
+	{
+		var webView = new WebView();
+		var uri = new Uri("https://bing.com");
+		webView.NavigateWithHttpRequestMessage(new System.Net.Http.HttpRequestMessage(System.Net.Http.HttpMethod.Get, uri));
+		Assert.IsNotNull(webView.Source);
+		Assert.AreEqual("https://bing.com/", webView.Source.OriginalString);
+		Assert.AreEqual("https://bing.com", uri.OriginalString);
+	}
 
-		[TestMethod]
-		public void When_NavigateToString()
-		{
-			var webView = new WebView();
-			var uri = new Uri("https://bing.com");
-			webView.Source = uri;
+	[TestMethod]
+	public void When_NavigateToString()
+	{
+		var webView = new WebView();
+		var uri = new Uri("https://bing.com");
+		webView.Source = uri;
 
-			Assert.AreEqual("https://bing.com/", webView.Source.OriginalString);
-			Assert.AreEqual("https://bing.com", uri.OriginalString);
+		Assert.AreEqual("https://bing.com/", webView.Source.OriginalString);
+		Assert.AreEqual("https://bing.com", uri.OriginalString);
 
-			webView.NavigateToString("<html></html>");
-			Assert.IsNull(webView.Source);
-		}
+		webView.NavigateToString("<html></html>");
+		Assert.IsNull(webView.Source);
+	}
 
-		[TestMethod]
-		public async Task When_InvokeScriptAsync()
-		{
-			var border = new Border();
-			var webView = new WebView();
-			webView.Width = 200;
-			webView.Height = 200;
-			border.Child = webView;
-			TestServices.WindowHelper.WindowContent = border;
-			bool navigated = false;
-			await TestServices.WindowHelper.WaitForLoaded(border);
-			webView.NavigationCompleted += (sender, e) => navigated = true;
-			webView.NavigateToString("<html><body><div id='test' style='width: 100px; height: 100px; background-color: blue;' /></body></html>");
-			await TestServices.WindowHelper.WaitFor(() => navigated);
+	[TestMethod]
+	public async Task When_InvokeScriptAsync()
+	{
+		var border = new Border();
+		var webView = new WebView();
+		webView.Width = 200;
+		webView.Height = 200;
+		border.Child = webView;
+		TestServices.WindowHelper.WindowContent = border;
+		bool navigated = false;
+		await TestServices.WindowHelper.WaitForLoaded(border);
+		webView.NavigationCompleted += (sender, e) => navigated = true;
+		webView.NavigateToString("<html><body><div id='test' style='width: 100px; height: 100px; background-color: blue;' /></body></html>");
+		await TestServices.WindowHelper.WaitFor(() => navigated);
 
-			var color = await webView.InvokeScriptAsync("eval", new[] { "document.getElementById('test').style.backgroundColor.toString()" });
-			Assert.AreEqual("blue", color);
+		var color = await webView.InvokeScriptAsync("eval", new[] { "document.getElementById('test').style.backgroundColor.toString()" });
+		Assert.AreEqual("blue", color);
 
-			// Change color to red
-			await webView.InvokeScriptAsync("eval", new[] { "document.getElementById('test').style.backgroundColor = 'red'" });
-			color = await webView.InvokeScriptAsync("eval", new[] { "document.getElementById('test').style.backgroundColor.toString()" });
+		// Change color to red
+		await webView.InvokeScriptAsync("eval", new[] { "document.getElementById('test').style.backgroundColor = 'red'" });
+		color = await webView.InvokeScriptAsync("eval", new[] { "document.getElementById('test').style.backgroundColor.toString()" });
 
-			Assert.AreEqual("red", color);
-		}
+		Assert.AreEqual("red", color);
+	}
 
-		[TestMethod]
-		public async Task When_SendMessage()
-		{
-			var border = new Border();
-			var webView = new WebView();
-			webView.Width = 200;
-			webView.Height = 200;
-			border.Child = webView;
-			TestServices.WindowHelper.WindowContent = border;
-			bool navigated = false;
-			await TestServices.WindowHelper.WaitForLoaded(border);
-			webView.NavigationCompleted += (sender, e) => navigated = true;
-			webView.NavigateToString(
-				"<html><body><button onclick='send()'>Test</button><script type='text/javascript'>" +
-				"function send(){var message = { 'hello': ['world', 'of', 'uno'] }; " +
-				"if (window.chrome.webview) { window.chrome.webview.postMessage(message); }}</script></body></html>");
-			await TestServices.WindowHelper.WaitFor(() => navigated);
+	[TestMethod]
+	public async Task When_SendMessage()
+	{
+		var border = new Border();
+		var webView = new WebView();
+		webView.Width = 200;
+		webView.Height = 200;
+		border.Child = webView;
+		TestServices.WindowHelper.WindowContent = border;
+		bool navigated = false;
+		await TestServices.WindowHelper.WaitForLoaded(border);
+		webView.NavigationCompleted += (sender, e) => navigated = true;
+		webView.NavigateToString(
+			"<html><body><button onclick='send()'>Test</button><script type='text/javascript'>" +
+			"function send(){var message = { 'hello': ['world', 'of', 'uno'] }; " +
+			"if (window.chrome.webview) { window.chrome.webview.postMessage(message); }}</script></body></html>");
+		await TestServices.WindowHelper.WaitFor(() => navigated);
 
-			var color = await webView.InvokeScriptAsync("eval", new[] { "document.getElementById('test').style.backgroundColor.toString()" });
-			Assert.AreEqual("blue", color);
+		var color = await webView.InvokeScriptAsync("eval", new[] { "document.getElementById('test').style.backgroundColor.toString()" });
+		Assert.AreEqual("blue", color);
 
-			// Change color to red
-			await webView.InvokeScriptAsync("eval", new[] { "document.getElementById('test').style.backgroundColor = 'red'" });
-			color = await webView.InvokeScriptAsync("eval", new[] { "document.getElementById('test').style.backgroundColor.toString()" });
+		// Change color to red
+		await webView.InvokeScriptAsync("eval", new[] { "document.getElementById('test').style.backgroundColor = 'red'" });
+		color = await webView.InvokeScriptAsync("eval", new[] { "document.getElementById('test').style.backgroundColor.toString()" });
 
-			Assert.AreEqual("red", color);
-		}
+		Assert.AreEqual("red", color);
 	}
 #endif
 }
