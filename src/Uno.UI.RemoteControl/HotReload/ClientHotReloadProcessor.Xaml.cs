@@ -102,14 +102,14 @@ namespace Uno.UI.RemoteControl.HotReload
 					{
 #if __IOS__
 						case UserControl userControl:
-							if (XamlReader.LoadUsingXClass(fileContent) is UIKit.UIView newInstance)
+							if (XamlReader.LoadUsingXClass(fileContent, uri.OriginalString) is UIKit.UIView newInstance)
 							{
 								SwapViews(userControl, newInstance);
 							}
 							break;
 #endif
 						case ContentControl content:
-							if (XamlReader.LoadUsingXClass(fileContent) is ContentControl newContent)
+							if (XamlReader.LoadUsingXClass(fileContent, uri.ToString()) is ContentControl newContent)
 							{
 								SwapViews(content, newContent);
 							}
