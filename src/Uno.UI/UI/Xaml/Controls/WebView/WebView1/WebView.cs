@@ -42,7 +42,7 @@ public partial class WebView : Control, IWebView
 
 	protected override void OnApplyTemplate() => CoreWebView2.OnOwnerApplyTemplate();
 
-	public void Navigate(global::System.Uri uri) => CoreWebView2.Navigate(uri.ToString());
+	public void Navigate(global::System.Uri source) => CoreWebView2.Navigate(source.ToString());
 
 	public void NavigateToString(string text) => CoreWebView2.NavigateToString(text);
 

@@ -3,11 +3,11 @@ using Java.Interop;
 
 namespace Uno.UI.Xaml.Controls;
 
-internal class UnoWebMessageHandler : Java.Lang.Object
+internal class UnoWebViewHandler : Java.Lang.Object
 {
 	private readonly NativeWebViewWrapper _nativeWebView;
 
-	public UnoWebMessageHandler(NativeWebViewWrapper wrapper)
+	public UnoWebViewHandler(NativeWebViewWrapper wrapper)
 	{
 		_nativeWebView = wrapper;
 	}

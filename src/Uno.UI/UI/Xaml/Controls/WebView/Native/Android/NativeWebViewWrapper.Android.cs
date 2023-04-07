@@ -31,8 +31,6 @@ internal class NativeWebViewWrapper : INativeWebView
 		//
 		// this will still be used to handle extra activity with the native control.
 
-		_webView.SetWebViewClient(new InternalClient(_coreWebView, this));
-		_webView.SetWebChromeClient(new InternalWebChromeClient());
 		_webView.Settings.JavaScriptEnabled = true;
 		_webView.Settings.DomStorageEnabled = true;
 		_webView.Settings.BuiltInZoomControls = true;
@@ -40,7 +38,10 @@ internal class NativeWebViewWrapper : INativeWebView
 		_webView.Settings.SetSupportZoom(true);
 		_webView.Settings.LoadWithOverviewMode = true;
 		_webView.Settings.UseWideViewPort = true;
-		_webView.AddJavascriptInterface(new UnoWebMessageHandler(this), "unoWebMessageHandler");
+		_webView.SetWebViewClient(new InternalClient(_coreWebView, this));
+		_webView.SetWebChromeClient(new InternalWebChromeClient());
+
+		_webView.AddJavascriptInterface(new UnoWebViewHandler(this), "unoWebView");
 
 		//Allow ThirdPartyCookies by default only on Android 5.0 and UP
 		if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.Lollipop)
