@@ -843,8 +843,9 @@ namespace Uno.Xaml
 				}
 
 				var currentNodeType = r.NodeType;
-				var nextNodeType = r.MoveToContent();
 				var currentNodeValue = r.Value;
+				var nextNodeType = r.MoveToContent();
+				
 				if (currentNodeType == XmlNodeType.Whitespace && nextNodeType != XmlNodeType.EndElement)
 				{
 					yield return Node(XamlNodeType.Value, " ");
