@@ -53,6 +53,7 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.TextBlockTests
 		public void When_LineBreak_SurroundingWhiteSpace()
 		{
 			var page = new LineBreak_Surrounding_WhiteSpace();
+		
 			var tbTrim = page.tbTrim;
 			Assert.AreEqual(5, tbTrim.Inlines.Count);
 			Assert.AreEqual("BeforeLineBreak", ((Run)tbTrim.Inlines[0]).Text);
@@ -69,7 +70,33 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.TextBlockTests
 			Assert.IsInstanceOfType(tbPreserve.Inlines[3], typeof(LineBreak));
 			Assert.AreEqual("\n\t\t\t\t   AfterLineBreak\n\t\t", ((Run)tbPreserve.Inlines[4]).Text);
 		}
+
+		[TestMethod]
+		public void When_Space_In_TextBlock_Inlines()
+		{
+			var page = new WhiteSpace_In_TextBlock_Inlines();
+			var tbDefault = page.tbDefault;
+			Assert.AreEqual(" ", tbDefault.Inlines[1].GetText());
+			Assert.AreEqual(" ", tbDefault.Inlines[3].GetText());
+			Assert.AreEqual(" LeftSpace", tbDefault.Inlines[5].GetText());
+			Assert.AreEqual("RightSpace ", tbDefault.Inlines[7].GetText());
+			Assert.AreEqual(" SurroundSpace ", tbDefault.Inlines[9].GetText());
+			Assert.AreEqual("Middle Space", tbDefault.Inlines[11].GetText());
+			Assert.AreEqual(" DoubleSpace", tbDefault.Inlines[13].GetText());
+
+
+
+			var tbPreserve = page.tbPreserve;
+			Assert.AreEqual(" ", tbPreserve.Inlines[1].GetText());
+			Assert.AreEqual("  ", tbPreserve.Inlines[3].GetText());
+			Assert.AreEqual(" LeftSpace", tbPreserve.Inlines[5].GetText());
+			Assert.AreEqual("RightSpace ", tbPreserve.Inlines[7].GetText());
+			Assert.AreEqual(" SurroundSpace ", tbPreserve.Inlines[9].GetText());
+			Assert.AreEqual("Middle Space", tbPreserve.Inlines[11].GetText());
+			Assert.AreEqual("  DoubleSpace  ", tbPreserve.Inlines[13].GetText());
+		}
 	}
 
+	
 	public partial class MyControl : Control { }
 }
