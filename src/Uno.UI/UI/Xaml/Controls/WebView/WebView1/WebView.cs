@@ -17,6 +17,8 @@ namespace Windows.UI.Xaml.Controls;
 #endif
 public partial class WebView : Control, IWebView
 {
+	private bool _sourceChangeFromCore;
+
 	/// <summary>
 	/// Initializes a new instance of the WebView class.
 	/// </summary>
@@ -98,8 +100,19 @@ public partial class WebView : Control, IWebView
 		args.Handled = webViewArgs.Handled;
 	}
 
-	private void CoreWebView2_SourceChanged(CoreWebView2 sender, CoreWebView2SourceChangedEventArgs args) =>
-		Source = Uri.TryCreate(sender.Source, UriKind.Absolute, out var uri) ? uri : CoreWebView2.BlankUri;
+	private void CoreWebView2_SourceChanged(CoreWebView2 sender, CoreWebView2SourceChangedEventArgs args)
+	{
+		_sourceChangeFromCore = true;
+		if (sender.Source == CoreWebView2.BlankUrl)
+		{
+			Source = null;
+		}
+		else
+		{
+			Source = Uri.TryCreate(sender.Source, UriKind.Absolute, out var uri) ? uri : CoreWebView2.BlankUri;
+		}
+		_sourceChangeFromCore = false;
+	}
 
 	private void CoreWebView2_UnsupportedUriSchemeIdentified(CoreWebView2 sender, WebViewUnsupportedUriSchemeIdentifiedEventArgs args) =>
 		UnsupportedUriSchemeIdentified?.Invoke(this, args);

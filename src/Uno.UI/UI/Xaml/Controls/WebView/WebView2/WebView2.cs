@@ -18,6 +18,7 @@ namespace Microsoft.UI.Xaml.Controls;
 #endif
 public partial class WebView2 : Control, IWebView
 {
+	private bool _sourceChangeFromCore;
 	private bool _coreWebView2Initialized;
 
 	/// <summary>
@@ -85,6 +86,10 @@ public partial class WebView2 : Control, IWebView
 	private void CoreWebView2_WebMessageReceived(CoreWebView2 sender, CoreWebView2WebMessageReceivedEventArgs args) =>
 		WebMessageReceived?.Invoke(this, args);
 
-	private void CoreWebView2_SourceChanged(CoreWebView2 sender, CoreWebView2SourceChangedEventArgs args) =>
+	private void CoreWebView2_SourceChanged(CoreWebView2 sender, CoreWebView2SourceChangedEventArgs args)
+	{
+		_sourceChangeFromCore = true;
 		Source = Uri.TryCreate(sender.Source, UriKind.Absolute, out var uri) ? uri : CoreWebView2.BlankUri;
+		_sourceChangeFromCore = false;
+	}
 }

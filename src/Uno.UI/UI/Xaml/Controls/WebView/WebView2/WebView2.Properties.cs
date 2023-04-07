@@ -51,7 +51,14 @@ public partial class WebView2
 	/// </summary>
 	public static DependencyProperty SourceProperty { get; } =
 		DependencyProperty.Register(nameof(Source), typeof(Uri), typeof(WebView2), new FrameworkPropertyMetadata(null,
-			(s, e) => ((WebView2)s)?.CoreWebView2.Navigate(((Uri)e.NewValue)?.ToString())));
+			(s, e) =>
+			{
+				var webView = (WebView2)s;
+				if (!webView._sourceChangeFromCore)
+				{
+					webView.CoreWebView2.Navigate(((Uri)e.NewValue)?.ToString());
+				}
+			}));
 
 	public bool IsScrollEnabled
 	{

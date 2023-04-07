@@ -24,7 +24,7 @@ public partial class CoreWebView2
 	private bool _scrollEnabled;
 	private INativeWebView? _nativeWebView;
 	internal long _navigationId;
-	private object _processedSource = BlankUri;
+	private object? _processedSource;
 
 	internal CoreWebView2(IWebView owner)
 	{
@@ -39,45 +39,36 @@ public partial class CoreWebView2
 
 	public void Navigate(string uri)
 	{
-		if (!VerifyWebViewAvailability())
-		{
-			return;
-		}
-
 		if (!Uri.TryCreate(uri, UriKind.Absolute, out var actualUri))
 		{
 			throw new ArgumentException("The passed in value is not an absolute URI", nameof(uri));
 		}
 
 		_processedSource = actualUri;
-		_nativeWebView.ProcessNavigation(actualUri);
+		Source = actualUri.ToString();
+
+		UpdateFromInternalSource();
 	}
 
 	public void NavigateToString(string htmlContent)
 	{
-		if (!VerifyWebViewAvailability())
-		{
-			return;
-		}
-
 		_processedSource = htmlContent;
-		_nativeWebView.ProcessNavigation(htmlContent);
+		Source = BlankUrl;
+
+		UpdateFromInternalSource();
 	}
 
 	internal void NavigateWithHttpRequestMessage(global::System.Net.Http.HttpRequestMessage requestMessage)
 	{
-		if (!VerifyWebViewAvailability())
+		if (requestMessage?.RequestUri is null)
 		{
-			return;
-		}
-
-		if (requestMessage?.RequestUri == null)
-		{
-			throw new ArgumentException("Invalid request message. It does not have a RequestUri.");
+			throw new ArgumentException("Invalid request message. It does not have a RequestUri.", nameof(requestMessage));
 		}
 
 		_processedSource = requestMessage;
-		_nativeWebView.ProcessNavigation(requestMessage);
+		Source = requestMessage.RequestUri.ToString();
+
+		UpdateFromInternalSource();
 	}
 
 	public void GoBack() => _nativeWebView?.GoBack();
@@ -205,7 +196,6 @@ public partial class CoreWebView2
 		if (_processedSource is Uri uri)
 		{
 			_nativeWebView.ProcessNavigation(uri);
-			return;
 		}
 
 		if (_processedSource is string html)
@@ -217,5 +207,7 @@ public partial class CoreWebView2
 		{
 			_nativeWebView.ProcessNavigation(httpRequestMessage);
 		}
+
+		_processedSource = null;
 	}
 }
