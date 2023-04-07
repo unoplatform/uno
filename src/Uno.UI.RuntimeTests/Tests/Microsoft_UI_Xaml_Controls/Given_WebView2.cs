@@ -9,11 +9,43 @@ using Windows.UI.Xaml.Controls;
 
 namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls;
 
+#if !HAS_UNO || __ANDROID__ || __IOS__ || __MACOS__
 [TestClass]
 [RunsOnUIThread]
 public class Given_WebView2
 {
-#if __ANDROID__ || __IOS__ || __MACOS__
+	[TestMethod]
+	public async Task When_Navigate()
+	{
+		var webView = new WebView2();
+		var uri = new Uri("https://www.bing.com/");
+		await webView.EnsureCoreWebView2Async();
+		bool navigationDone = false;
+		webView.NavigationCompleted += (s, e) => navigationDone = true;
+		webView.CoreWebView2.Navigate(uri.ToString());
+		Assert.IsNull(webView.Source);
+		await TestServices.WindowHelper.WaitFor(() => navigationDone);
+		Assert.IsNotNull(webView.Source);
+		Assert.IsTrue(webView.Source.OriginalString.StartsWith("https://www.bing.com/", StringComparison.OrdinalIgnoreCase));
+	}
+
+	[TestMethod]
+	public async Task When_NavigateToString()
+	{
+		var webView = new WebView2();
+		var uri = new Uri("https://www.bing.com/");
+		await webView.EnsureCoreWebView2Async();
+		bool navigationDone = false;
+		webView.NavigationCompleted += (s, e) => navigationDone = true;
+		webView.Source = uri;
+		Assert.IsNotNull(webView.Source);
+		await TestServices.WindowHelper.WaitFor(() => navigationDone);
+		Assert.IsNotNull(webView.Source);
+		webView.NavigateToString("<html></html>");
+		Assert.IsTrue(webView.Source.OriginalString.StartsWith("https://www.bing.com/", StringComparison.OrdinalIgnoreCase));
+		Assert.IsTrue(webView.CoreWebView2.Source.StartsWith("https://www.bing.com/", StringComparison.OrdinalIgnoreCase));
+	}
+
 	[TestMethod]
 	public async Task When_ExecuteScriptAsync()
 	{
@@ -92,5 +124,5 @@ public class Given_WebView2
 
 		Assert.AreEqual(@"{""some"":[""values"",""in"",""json"",1]}", message);
 	}
-#endif
 }
+#endif
