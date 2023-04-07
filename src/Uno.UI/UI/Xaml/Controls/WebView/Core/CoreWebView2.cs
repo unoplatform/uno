@@ -197,13 +197,11 @@ public partial class CoreWebView2
 		{
 			_nativeWebView.ProcessNavigation(uri);
 		}
-
-		if (_processedSource is string html)
+		else if (_processedSource is string html)
 		{
 			_nativeWebView.ProcessNavigation(html);
 		}
-
-		if (_processedSource is HttpRequestMessage httpRequestMessage)
+		else if (_processedSource is HttpRequestMessage httpRequestMessage)
 		{
 			_nativeWebView.ProcessNavigation(httpRequestMessage);
 		}

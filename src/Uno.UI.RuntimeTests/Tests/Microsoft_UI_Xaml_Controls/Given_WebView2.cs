@@ -17,8 +17,14 @@ public class Given_WebView2
 	[TestMethod]
 	public async Task When_Navigate()
 	{
+		var border = new Border();
 		var webView = new WebView2();
-		var uri = new Uri("https://www.bing.com/");
+		webView.Width = 200;
+		webView.Height = 200;
+		border.Child = webView;
+		TestServices.WindowHelper.WindowContent = border;
+		await TestServices.WindowHelper.WaitForLoaded(border);
+		var uri = new Uri("https://example.com/");
 		await webView.EnsureCoreWebView2Async();
 		bool navigationDone = false;
 		webView.NavigationCompleted += (s, e) => navigationDone = true;
@@ -26,24 +32,30 @@ public class Given_WebView2
 		Assert.IsNull(webView.Source);
 		await TestServices.WindowHelper.WaitFor(() => navigationDone);
 		Assert.IsNotNull(webView.Source);
-		Assert.IsTrue(webView.Source.OriginalString.StartsWith("https://www.bing.com/", StringComparison.OrdinalIgnoreCase));
+		Assert.IsTrue(webView.Source.OriginalString.StartsWith("https://example.com/", StringComparison.OrdinalIgnoreCase));
 	}
 
 	[TestMethod]
 	public async Task When_NavigateToString()
 	{
+		var border = new Border();
 		var webView = new WebView2();
-		var uri = new Uri("https://www.bing.com/");
+		webView.Width = 200;
+		webView.Height = 200;
+		border.Child = webView;
+		TestServices.WindowHelper.WindowContent = border;
+		await TestServices.WindowHelper.WaitForLoaded(border);
+		var uri = new Uri("https://example.com/");
 		await webView.EnsureCoreWebView2Async();
 		bool navigationDone = false;
 		webView.NavigationCompleted += (s, e) => navigationDone = true;
 		webView.Source = uri;
 		Assert.IsNotNull(webView.Source);
-		await TestServices.WindowHelper.WaitFor(() => navigationDone);
+		await TestServices.WindowHelper.WaitFor(() => navigationDone, 2000);
 		Assert.IsNotNull(webView.Source);
 		webView.NavigateToString("<html></html>");
-		Assert.IsTrue(webView.Source.OriginalString.StartsWith("https://www.bing.com/", StringComparison.OrdinalIgnoreCase));
-		Assert.IsTrue(webView.CoreWebView2.Source.StartsWith("https://www.bing.com/", StringComparison.OrdinalIgnoreCase));
+		Assert.IsTrue(webView.Source.OriginalString.StartsWith("https://example.com/", StringComparison.OrdinalIgnoreCase));
+		Assert.IsTrue(webView.CoreWebView2.Source.StartsWith("https://example.com/", StringComparison.OrdinalIgnoreCase));
 	}
 
 	[TestMethod]
