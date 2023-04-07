@@ -346,7 +346,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.UI.Svg.Skia", "AddIns\U
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.UI.Svg.Reference", "AddIns\Uno.UI.Svg\Uno.UI.Svg.Reference.csproj", "{4C572A79-0878-4841-82E1-B3125B03036B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Uno.UI.RemoteControl.Messaging", "Uno.UI.RemoteControl.Messaging\Uno.UI.RemoteControl.Messaging.csproj", "{8E3C8617-ABC2-464C-9376-1B334250F80F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.UI.RemoteControl.Messaging", "Uno.UI.RemoteControl.Messaging\Uno.UI.RemoteControl.Messaging.csproj", "{8E3C8617-ABC2-464C-9376-1B334250F80F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnoIslandsSamplesApp.Skia", "SamplesApp\UnoIslandsSamplesApp.Skia\UnoIslandsSamplesApp.Skia.csproj", "{FA0E451F-69EB-4E90-BC77-696B16391C02}"
 EndProject
@@ -1532,8 +1532,8 @@ Global
 		{95F17106-3548-4CD5-B315-060C048903F5}.Release|x64.Build.0 = Release|Any CPU
 		{95F17106-3548-4CD5-B315-060C048903F5}.Release|x86.ActiveCfg = Release|Any CPU
 		{95F17106-3548-4CD5-B315-060C048903F5}.Release|x86.Build.0 = Release|Any CPU
-		{028F3EE0-D51B-469A-A72C-C272585DCD40}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{028F3EE0-D51B-469A-A72C-C272585DCD40}.Debug|Any CPU.Build.0 = Debug|x86
+		{028F3EE0-D51B-469A-A72C-C272585DCD40}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{028F3EE0-D51B-469A-A72C-C272585DCD40}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{028F3EE0-D51B-469A-A72C-C272585DCD40}.Debug|ARM.ActiveCfg = Debug|Any CPU
 		{028F3EE0-D51B-469A-A72C-C272585DCD40}.Debug|ARM.Build.0 = Debug|Any CPU
 		{028F3EE0-D51B-469A-A72C-C272585DCD40}.Debug|ARM64.ActiveCfg = Debug|Any CPU
