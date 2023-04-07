@@ -92,35 +92,41 @@ public class Given_WebView2
 		};
 
 		webView.NavigateToString(
-			"""
-			<html>
-				<head>
-					<script type="text/javascript">
-						function sendMessage(){
-							try{
-								const message = {"some": ['values',"in","json",1]};
-										
-								if (window.hasOwnProperty("chrome") && chrome?.webview?.postMessage){
-									chrome.webview.postMessage(message);
-								} else if (window.hasOwnProperty("unoWebMessageHandler")){
-									unoWebMessageHandler?.postMessage(JSON.stringify(message));
-								} else if (window.hasOwnProperty("webkit") && webkit?.messageHandlers?.unoWebView?.postMessage){
-									webkit.messageHandlers.unoWebView.postMessage(JSON.stringify(message));
-								}
-							}
-							catch (ex){
-								alert("Error occurred: " + ex);
-							}
-						}
-					</script>
-				</head>
-				<body onload="sendMessage();">
-					<div id='test' style='width: 100px; height: 100px; background-color: blue;' />
-				</body>
-			</html>
-			""");
+"""
+<html>
+	<head>
+		<title>Test message</title>
+	</head>
+	<body>
+		<div id='test' style='width: 100px; height: 100px; background-color: blue;'></div>
+		<script type="text/javascript">
+			function sendWebMessage(){
+				try{
+					let message = {"some": ['values',"in","json",1]};
 
-		await TestServices.WindowHelper.WaitFor(() => message is not null);
+					if (window.hasOwnProperty("chrome") && typeof chrome.webview !== undefined) {
+						// Windows
+						chrome.webview.postMessage(message);
+					} else if (window.hasOwnProperty("unoWebView")) {
+						// Android
+						unoWebView.postMessage(JSON.stringify(message));
+					} else if (window.hasOwnProperty("webkit") && typeof webkit.messageHandlers !== undefined) {
+						// iOS and macOS
+						webkit.messageHandlers.unoWebView.postMessage(JSON.stringify(message));
+					}
+				}
+				catch (ex){
+					alert("Error occurred: " + ex);
+				}
+			}
+			sendWebMessage()
+		</script>
+	</body>
+</html>
+"""
+		);
+
+		await TestServices.WindowHelper.WaitFor(() => message is not null, 2000);
 
 		Assert.AreEqual(@"{""some"":[""values"",""in"",""json"",1]}", message);
 	}
