@@ -39,6 +39,8 @@ public partial class WebView2 : Control, IWebView
 
 	public CoreWebView2 CoreWebView2 { get; }
 
+	bool IWebView.IsLoaded => IsLoaded;
+
 	protected override void OnApplyTemplate() => CoreWebView2.OnOwnerApplyTemplate();
 
 	private void WebView2_Loaded(object sender, Windows.UI.Xaml.RoutedEventArgs e) =>

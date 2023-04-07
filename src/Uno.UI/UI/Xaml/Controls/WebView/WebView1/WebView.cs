@@ -1,13 +1,14 @@
 ﻿#nullable enable
 
 using System;
-using System.Net.Http;
 using Microsoft.Web.WebView2.Core;
 using Uno.UI.Xaml.Controls;
 using System.Collections.Generic;
 using Windows.Foundation;
 using System.Globalization;
 using System.Linq;
+using System.Threading.Tasks;
+using System.Threading;
 
 namespace Windows.UI.Xaml.Controls;
 
@@ -35,9 +36,11 @@ public partial class WebView : Control, IWebView
 
 	internal CoreWebView2 CoreWebView2 { get; }
 
+	bool IWebView.IsLoaded => IsLoaded;
+
 	protected override void OnApplyTemplate() => CoreWebView2.OnOwnerApplyTemplate();
 
-	public void Navigate(global::System.Uri source) => CoreWebView2.Navigate(source.ToString());
+	public void Navigate(global::System.Uri uri) => CoreWebView2.Navigate(uri.ToString());
 
 	public void NavigateToString(string text) => CoreWebView2.NavigateToString(text);
 
@@ -56,7 +59,14 @@ public partial class WebView : Control, IWebView
 		return CoreWebView2.ExecuteScriptAsync(javaScript);
 	}
 
-	internal void NavigateWithHttpRequestMessage(HttpRequestMessage requestMessage) =>
+	public async Task<string> InvokeScriptAsync(CancellationToken ct, string script, string[] arguments)
+	{
+		var argumentString = ConcatenateJavascriptArguments(arguments);
+		var javaScript = string.Format(CultureInfo.InvariantCulture, "{0}(\"{1}\")", script, argumentString);
+		return await CoreWebView2.ExecuteScriptAsync(javaScript);
+	}
+
+	public void NavigateWithHttpRequestMessage(global::System.Net.Http.HttpRequestMessage requestMessage) =>
 		CoreWebView2.NavigateWithHttpRequestMessage(requestMessage);
 
 	private void CoreWebView2_DocumentTitleChanged(CoreWebView2 sender, object args) =>

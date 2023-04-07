@@ -35,7 +35,7 @@ public partial class CoreWebView2
 	/// Gets the CoreWebView2Settings object contains various modifiable
 	/// settings for the running WebView.
 	/// </summary>
-	public CoreWebView2Settings Settings = new();
+	public CoreWebView2Settings Settings => new();
 
 	public void Navigate(string uri)
 	{
@@ -64,7 +64,7 @@ public partial class CoreWebView2
 		_nativeWebView.ProcessNavigation(htmlContent);
 	}
 
-	internal void NavigateWithHttpRequestMessage(HttpRequestMessage requestMessage)
+	internal void NavigateWithHttpRequestMessage(global::System.Net.Http.HttpRequestMessage requestMessage)
 	{
 		if (!VerifyWebViewAvailability())
 		{

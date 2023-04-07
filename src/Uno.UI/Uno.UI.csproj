@@ -144,12 +144,7 @@
 			<UndefineProperties>TargetFramework</UndefineProperties>
 		</ProjectReference>
 	</ItemGroup>
-
-	<ItemGroup>
-	  <UpToDateCheckInput Remove="UI\Xaml\Controls\WebView\Core\CoreWebView2Settings.cs" />
-	  <UpToDateCheckInput Remove="UI\Xaml\Controls\WebView\Core\CoreWebView2WebMessageReceivedEventArgs.cs" />
-	</ItemGroup>
-
+	
 	<ItemGroup>
 		<Compile Include="Mixins\Android\BaseActivity.Callbacks.g.cs" />
 		<Compile Include="Mixins\Android\FrameworkElementMixins.g.cs" />
