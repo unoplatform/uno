@@ -42,6 +42,8 @@ public partial class WebView2 : Control, IWebView
 
 	bool IWebView.IsLoaded => IsLoaded;
 
+	bool IWebView.SwitchSourceBeforeNavigating => false; // WebView2 switches source only when navigation completes.
+
 	protected override void OnApplyTemplate() => CoreWebView2.OnOwnerApplyTemplate();
 
 	private void WebView2_Loaded(object sender, Windows.UI.Xaml.RoutedEventArgs e) =>

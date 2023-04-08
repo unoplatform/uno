@@ -40,6 +40,8 @@ public partial class WebView : Control, IWebView
 
 	bool IWebView.IsLoaded => IsLoaded;
 
+	bool IWebView.SwitchSourceBeforeNavigating => true;
+
 	protected override void OnApplyTemplate() => CoreWebView2.OnOwnerApplyTemplate();
 
 	public void Navigate(global::System.Uri source) => CoreWebView2.Navigate(source.ToString());
@@ -54,18 +56,29 @@ public partial class WebView : Control, IWebView
 
 	public void Stop() => CoreWebView2.Stop();
 
-	public IAsyncOperation<string?> InvokeScriptAsync(string scriptName, IEnumerable<string> arguments)
-	{
-		var argumentString = ConcatenateJavascriptArguments(arguments);
-		var javaScript = string.Format(CultureInfo.InvariantCulture, "{0}(\"{1}\")", scriptName, argumentString);
-		return CoreWebView2.ExecuteScriptAsync(javaScript);
-	}
+	public IAsyncOperation<string?> InvokeScriptAsync(string scriptName, IEnumerable<string> arguments) =>
+		AsyncOperation.FromTask(ct => InvokeScriptAsync(ct, scriptName, arguments.ToArray()));
 
-	public async Task<string> InvokeScriptAsync(CancellationToken ct, string script, string[] arguments)
+	public async Task<string?> InvokeScriptAsync(CancellationToken ct, string script, string[] arguments)
 	{
 		var argumentString = ConcatenateJavascriptArguments(arguments);
 		var javaScript = string.Format(CultureInfo.InvariantCulture, "{0}(\"{1}\")", script, argumentString);
-		return await CoreWebView2.ExecuteScriptAsync(javaScript);
+		return AdjustInvokeScriptResult(await CoreWebView2.ExecuteScriptAsync(javaScript));
+	}
+
+	private string? AdjustInvokeScriptResult(string result)
+	{
+		if (result is null)
+		{
+			return null;
+		}
+
+		if (result.StartsWith("\"", StringComparison.Ordinal) && result.EndsWith("\"", StringComparison.Ordinal))
+		{
+			return result.Substring(1, result.Length - 2);
+		}
+
+		return "";
 	}
 
 	public void NavigateWithHttpRequestMessage(global::System.Net.Http.HttpRequestMessage requestMessage) =>

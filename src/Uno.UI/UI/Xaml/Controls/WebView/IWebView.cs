@@ -2,5 +2,7 @@
 
 internal interface IWebView
 {
+	bool SwitchSourceBeforeNavigating { get; }
+
 	bool IsLoaded { get; }
 }

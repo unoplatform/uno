@@ -45,7 +45,10 @@ public partial class CoreWebView2
 		}
 
 		_processedSource = actualUri;
-		Source = actualUri.ToString();
+		if (_owner.SwitchSourceBeforeNavigating)
+		{
+			Source = actualUri.ToString();
+		}
 
 		UpdateFromInternalSource();
 	}
@@ -53,7 +56,10 @@ public partial class CoreWebView2
 	public void NavigateToString(string htmlContent)
 	{
 		_processedSource = htmlContent;
-		Source = BlankUrl;
+		if (_owner.SwitchSourceBeforeNavigating)
+		{
+			Source = BlankUrl;
+		}
 
 		UpdateFromInternalSource();
 	}
@@ -66,7 +72,10 @@ public partial class CoreWebView2
 		}
 
 		_processedSource = requestMessage;
-		Source = requestMessage.RequestUri.ToString();
+		if (_owner.SwitchSourceBeforeNavigating)
+		{
+			Source = requestMessage.RequestUri.ToString();
+		}
 
 		UpdateFromInternalSource();
 	}
