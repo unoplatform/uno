@@ -200,6 +200,8 @@
               href: features/windows-ui-markup-extensions.md
             - name: WinAppSDK Specifics
               href: features/winapp-sdk-specifics.md
+            - name: Toasts
+              href: features/toasts.md
         - name: WinUI Controls
           items:
             - name: ComboBox
