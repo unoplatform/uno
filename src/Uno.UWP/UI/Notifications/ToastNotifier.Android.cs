@@ -34,7 +34,7 @@ namespace Windows.UI.Notifications
 		private string ConvertToastTextToString(string toasttext)
 		{
 			// this is simple text, e.g. "dummy" or "1"
-			if (!toasttext.StartsWith("ms-resource:"))
+			if (!toasttext.StartsWith("ms-resource:", StringComparison.Ordinal))
 			{
 				return toasttext;
 			}
