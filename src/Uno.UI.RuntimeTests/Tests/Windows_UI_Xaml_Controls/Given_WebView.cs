@@ -72,5 +72,45 @@ public class Given_WebView
 
 		Assert.AreEqual("red", color);
 	}
+
+	[TestMethod]
+	public async Task When_ExecuteScriptAsync_String()
+	{
+		var border = new Border();
+		var webView = new WebView();
+		webView.Width = 200;
+		webView.Height = 200;
+		border.Child = webView;
+		TestServices.WindowHelper.WindowContent = border;
+		bool navigated = false;
+		await TestServices.WindowHelper.WaitForLoaded(border);
+		webView.NavigationCompleted += (sender, e) => navigated = true;
+		webView.NavigateToString("<html></html>");
+		await TestServices.WindowHelper.WaitFor(() => navigated);
+		var script = "(1 + 1).toString()";
+
+		var result = await webView.InvokeScriptAsync("eval", new[] { script });
+		Assert.AreEqual("2", result);
+	}
+
+	[TestMethod]
+	public async Task When_ExecuteScriptAsync_Non_String()
+	{
+		var border = new Border();
+		var webView = new WebView();
+		webView.Width = 200;
+		webView.Height = 200;
+		border.Child = webView;
+		TestServices.WindowHelper.WindowContent = border;
+		bool navigated = false;
+		await TestServices.WindowHelper.WaitForLoaded(border);
+		webView.NavigationCompleted += (sender, e) => navigated = true;
+		webView.NavigateToString("<html></html>");
+		await TestServices.WindowHelper.WaitFor(() => navigated);
+		var script = "(1 + 1)";
+
+		var result = await webView.InvokeScriptAsync("eval", new[] { script });
+		Assert.AreEqual("", result);
+	}
 }
 #endif
