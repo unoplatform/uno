@@ -616,7 +616,28 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 			}
 			else
 			{
-				tcs.TrySetResult(result as NSString);
+				if (NSJsonSerialization.IsValidJSONObject(result))
+				{
+					var serializedData = NSJsonSerialization.Serialize(result, default, out var serializationError);
+					if (serializationError != null)
+					{
+						tcs.TrySetException(new InvalidOperationException($"Failed to serialize javascript result {serializationError.LocalizedDescription}, {serializationError.LocalizedFailureReason}, {serializationError.LocalizedRecoverySuggestion}"));
+					}
+					else
+					{
+						tcs.TrySetResult(NSString.FromData(serializedData, NSStringEncoding.UTF8).ToString());
+					}
+				}
+				else if (result is NSString resultString)
+				{
+					// String needs to be wrapped in quotes to match Windows behavior
+					var netString = resultString.ToString();
+					tcs.TrySetResult($"\"{netString.Replace("\"", "\\\"")}\"");
+				}
+				else
+				{
+					tcs.TrySetResult(result?.ToString());
+				}
 			}
 		});
 
