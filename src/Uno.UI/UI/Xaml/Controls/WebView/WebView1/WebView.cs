@@ -57,28 +57,13 @@ public partial class WebView : Control, IWebView
 	public void Stop() => CoreWebView2.Stop();
 
 	public IAsyncOperation<string?> InvokeScriptAsync(string scriptName, IEnumerable<string> arguments) =>
-		AsyncOperation.FromTask(ct => InvokeScriptAsync(ct, scriptName, arguments.ToArray()));
+		AsyncOperation.FromTask(ct => InvokeScriptAsync(ct, scriptName, arguments?.ToArray()));
 
-	public async Task<string?> InvokeScriptAsync(CancellationToken ct, string script, string[] arguments)
+	public async Task<string?> InvokeScriptAsync(CancellationToken ct, string script, string[]? arguments)
 	{
 		var argumentString = ConcatenateJavascriptArguments(arguments);
 		var javaScript = string.Format(CultureInfo.InvariantCulture, "{0}(\"{1}\")", script, argumentString);
 		return AdjustInvokeScriptResult(await CoreWebView2.ExecuteScriptAsync(javaScript));
-	}
-
-	private string? AdjustInvokeScriptResult(string result)
-	{
-		if (result is null)
-		{
-			return null;
-		}
-
-		if (result.StartsWith("\"", StringComparison.Ordinal) && result.EndsWith("\"", StringComparison.Ordinal))
-		{
-			return result.Substring(1, result.Length - 2);
-		}
-
-		return "";
 	}
 
 	public void NavigateWithHttpRequestMessage(global::System.Net.Http.HttpRequestMessage requestMessage) =>
@@ -130,7 +115,22 @@ public partial class WebView : Control, IWebView
 	private void CoreWebView2_UnsupportedUriSchemeIdentified(CoreWebView2 sender, WebViewUnsupportedUriSchemeIdentifiedEventArgs args) =>
 		UnsupportedUriSchemeIdentified?.Invoke(this, args);
 
-	private static string ConcatenateJavascriptArguments(string[] arguments)
+	private static string? AdjustInvokeScriptResult(string result)
+	{
+		if (result is null)
+		{
+			return null;
+		}
+
+		if (result.StartsWith("\"", StringComparison.Ordinal) && result.EndsWith("\"", StringComparison.Ordinal))
+		{
+			return result.Substring(1, result.Length - 2);
+		}
+
+		return "";
+	}
+
+	private static string ConcatenateJavascriptArguments(string[]? arguments)
 	{
 		var argument = string.Empty;
 		if (arguments != null && arguments.Length > 0)
