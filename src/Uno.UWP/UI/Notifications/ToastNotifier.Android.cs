@@ -24,7 +24,7 @@ namespace Windows.UI.Notifications
 			_notificationManager = notifManager;
 
 			if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.O)
-			{   // none of this strings would be visible for user
+			{   // none of these strings would be visible to the user
 				var channel = new Android.App.NotificationChannel(_channelID, "PlatformUnoChannel", Android.App.NotificationImportance.Default); ; // deprecated: Android.App.NotificationManager.ImportanceDefault
 				_notificationManager.CreateNotificationChannel(channel);
 			}
@@ -153,7 +153,7 @@ namespace Windows.UI.Notifications
 			}
 
 			if (toastText.Length > 0)
-			{ // Android toasts doesn't support new line character in standard toasts
+			{ // Android toasts don't support new line character in standard toasts
 
 				if (Android.OS.Build.VERSION.SdkInt < Android.OS.BuildVersionCodes.JellyBean)
 				{
@@ -274,7 +274,7 @@ namespace Windows.UI.Notifications
 
 			Android.App.Notification.Builder builder = GetToastBuilder();
 
-			// we use XmlDocument for retrieving text items and launch attribute
+			// we use XmlDocument for retrieving text items and 'launch' attribute
 			var xmlDoc = new XmlDocument();
 			xmlDoc.LoadXml(notification.Content.GetXml());
 
