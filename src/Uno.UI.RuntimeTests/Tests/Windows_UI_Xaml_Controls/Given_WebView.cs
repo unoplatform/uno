@@ -74,7 +74,7 @@ public class Given_WebView
 	}
 
 	[TestMethod]
-	public async Task When_ExecuteScriptAsync_String()
+	public async Task When_InvokeScriptAsync_String()
 	{
 		var border = new Border();
 		var webView = new WebView();
@@ -94,7 +94,7 @@ public class Given_WebView
 	}
 
 	[TestMethod]
-	public async Task When_ExecuteScriptAsync_Non_String()
+	public async Task When_InvokeScriptAsync_Non_String()
 	{
 		var border = new Border();
 		var webView = new WebView();

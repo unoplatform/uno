@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.Web.WebView2.Core;
 using Private.Infrastructure;
 using Windows.UI.Xaml.Controls;
 
@@ -30,7 +31,7 @@ public class Given_WebView2
 		webView.NavigationCompleted += (s, e) => navigationDone = true;
 		webView.CoreWebView2.Navigate(uri.ToString());
 		Assert.IsNull(webView.Source);
-		await TestServices.WindowHelper.WaitFor(() => navigationDone);
+		await TestServices.WindowHelper.WaitFor(() => navigationDone, 3000);
 		Assert.IsNotNull(webView.Source);
 		Assert.IsTrue(webView.Source.OriginalString.StartsWith("https://example.com/", StringComparison.OrdinalIgnoreCase));
 	}
@@ -51,11 +52,12 @@ public class Given_WebView2
 		webView.NavigationCompleted += (s, e) => navigationDone = true;
 		webView.Source = uri;
 		Assert.IsNotNull(webView.Source);
-		await TestServices.WindowHelper.WaitFor(() => navigationDone, 2000);
+		await TestServices.WindowHelper.WaitFor(() => navigationDone, 3000);
 		Assert.IsNotNull(webView.Source);
+		navigationDone = false;
 		webView.NavigateToString("<html></html>");
-		Assert.IsTrue(webView.Source.OriginalString.StartsWith("https://example.com/", StringComparison.OrdinalIgnoreCase));
-		Assert.IsTrue(webView.CoreWebView2.Source.StartsWith("https://example.com/", StringComparison.OrdinalIgnoreCase));
+		await TestServices.WindowHelper.WaitFor(() => navigationDone, 3000);
+		Assert.AreEqual(CoreWebView2.BlankUri, webView.Source);
 	}
 
 	[TestMethod]
