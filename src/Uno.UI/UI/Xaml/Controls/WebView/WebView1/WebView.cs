@@ -130,10 +130,10 @@ public partial class WebView : Control, IWebView
 	private void CoreWebView2_UnsupportedUriSchemeIdentified(CoreWebView2 sender, WebViewUnsupportedUriSchemeIdentifiedEventArgs args) =>
 		UnsupportedUriSchemeIdentified?.Invoke(this, args);
 
-	private static string ConcatenateJavascriptArguments(IEnumerable<string> arguments)
+	private static string ConcatenateJavascriptArguments(string[] arguments)
 	{
 		var argument = string.Empty;
-		if (arguments != null && arguments.Any())
+		if (arguments != null && arguments.Length > 0)
 		{
 			argument = string.Join(",", arguments);
 		}

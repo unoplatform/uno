@@ -1,28 +1,29 @@
-﻿using Uno.UI.Samples.Controls;
+﻿using System;
+using Uno.UI.Samples.Controls;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
 namespace SamplesApp.Microsoft_UI_Xaml_Controls.WebView2Tests
 {
-	[SampleControlInfo("WebView2", "Javascript_AlertConfirmPrompt")]
+	[Sample("WebView", Name = "WebView2_Javascript_AlertConfirmPrompt")]
 	public sealed partial class WebView2ControlJavaScriptAlertConfirmPrompt : UserControl
 	{
-#if HAS_UNO
 		public WebView2ControlJavaScriptAlertConfirmPrompt()
 		{
 			InitializeComponent();
 			Loaded += WebView2ControlWithJavaError_Loaded;
 		}
 
-		private void WebView2ControlWithJavaError_Loaded(object sender, RoutedEventArgs e)
+		private async void WebView2ControlWithJavaError_Loaded(object sender, RoutedEventArgs e)
 		{
+			await MyWebView2.EnsureCoreWebView2Async();
 			var sampleHTML = @"
 <html>
 	<head>
 		<title></title>
 	</head>
 	<body>
-	<p><br />This is a WKWebView2</p>
+	<p><br />This is a WebView2</p>
 	<p><br />Basic alert:</p>
 	<button onclick='basicAlert()'>Tap Me</button>
 	<p><br />Confirmation alert:</p>
@@ -58,6 +59,5 @@ namespace SamplesApp.Microsoft_UI_Xaml_Controls.WebView2Tests
 </html>";
 			MyWebView2.NavigateToString(sampleHTML);
 		}
-#endif
 	}
 }

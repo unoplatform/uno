@@ -35,7 +35,7 @@ public partial class CoreWebView2
 	/// Gets the CoreWebView2Settings object contains various modifiable
 	/// settings for the running WebView.
 	/// </summary>
-	public CoreWebView2Settings Settings => new();
+	public CoreWebView2Settings Settings { get; } = new();
 
 	public void Navigate(string uri)
 	{
@@ -112,10 +112,7 @@ public partial class CoreWebView2
 	internal void OnScrollEnabledChanged(bool newValue)
 	{
 		_scrollEnabled = newValue;
-		if (_nativeWebView != null)
-		{
-			_nativeWebView.SetScrollingEnabled(newValue);
-		}
+		_nativeWebView?.SetScrollingEnabled(newValue);
 	}
 
 	internal void RaiseNavigationStarting(object navigationData, out bool cancel)

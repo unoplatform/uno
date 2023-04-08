@@ -73,42 +73,23 @@ internal class InternalClient : Android.Webkit.WebViewClient
 	//Matched using these two sources
 	//http://developer.xamarin.com/api/type/Android.Webkit.ClientError/
 	//https://msdn.microsoft.com/en-ca/library/windows/apps/windows.web.weberrorstatus
-	private WebErrorStatus ConvertClientError(ClientError clientError)
+	private WebErrorStatus ConvertClientError(ClientError clientError) => clientError switch
 	{
-		switch (clientError)
-		{
-			case ClientError.Authentication:
-				return WebErrorStatus.Unauthorized;
-			case ClientError.BadUrl:
-				return WebErrorStatus.BadRequest;
-			case ClientError.Connect:
-				return WebErrorStatus.CannotConnect;
-			case ClientError.FailedSslHandshake:
-				return WebErrorStatus.UnexpectedClientError;
-			case ClientError.File:
-				return WebErrorStatus.UnexpectedClientError;
-			case ClientError.FileNotFound:
-				return WebErrorStatus.NotFound;
-			case ClientError.HostLookup:
-				return WebErrorStatus.HostNameNotResolved;
-			case ClientError.Io:
-				return WebErrorStatus.InternalServerError;
-			case ClientError.ProxyAuthentication:
-				return WebErrorStatus.ProxyAuthenticationRequired;
-			case ClientError.RedirectLoop:
-				return WebErrorStatus.RedirectFailed;
-			case ClientError.Timeout:
-				return WebErrorStatus.Timeout;
-			case ClientError.TooManyRequests:
-				return WebErrorStatus.UnexpectedClientError;
-			case ClientError.Unknown:
-				return WebErrorStatus.Unknown;
-			case ClientError.UnsupportedAuthScheme:
-				return WebErrorStatus.Unauthorized;
-			case ClientError.UnsupportedScheme:
-				return WebErrorStatus.UnexpectedClientError;
-			default:
-				return WebErrorStatus.UnexpectedClientError;
-		}
-	}
+		ClientError.Authentication => WebErrorStatus.Unauthorized,
+		ClientError.BadUrl => WebErrorStatus.BadRequest,
+		ClientError.Connect => WebErrorStatus.CannotConnect,
+		ClientError.FailedSslHandshake => WebErrorStatus.UnexpectedClientError,
+		ClientError.File => WebErrorStatus.UnexpectedClientError,
+		ClientError.FileNotFound => WebErrorStatus.NotFound,
+		ClientError.HostLookup => WebErrorStatus.HostNameNotResolved,
+		ClientError.Io => WebErrorStatus.InternalServerError,
+		ClientError.ProxyAuthentication => WebErrorStatus.ProxyAuthenticationRequired,
+		ClientError.RedirectLoop => WebErrorStatus.RedirectFailed,
+		ClientError.Timeout => WebErrorStatus.Timeout,
+		ClientError.TooManyRequests => WebErrorStatus.UnexpectedClientError,
+		ClientError.Unknown => WebErrorStatus.Unknown,
+		ClientError.UnsupportedAuthScheme => WebErrorStatus.Unauthorized,
+		ClientError.UnsupportedScheme => WebErrorStatus.UnexpectedClientError,
+		_ => WebErrorStatus.UnexpectedClientError,
+	};
 }

@@ -6,7 +6,7 @@ using SamplesApp.Microsoft_UI_Xaml_Controls.WebView2Tests;
 
 namespace UITests.Shared.Windows_UI_Xaml
 {
-	[SampleControlInfo("WebView", "WebView2_Alert", typeof(WebView2ViewModel))]
+	[Sample("WebView", Name = "WebView2_Alert", ViewModelType = typeof(WebView2ViewModel))]
 	public sealed partial class WebView2_Alert : Page
 	{
 		public WebView2_Alert()
@@ -16,7 +16,7 @@ namespace UITests.Shared.Windows_UI_Xaml
 
 		private async void Load(object sender, RoutedEventArgs e)
 		{
-			var html = (DataContext as WebView2ViewModel).AlertHtml;
+			var html = ((WebView2ViewModel)DataContext).AlertHtml;
 			await web.EnsureCoreWebView2Async();
 			web.CoreWebView2.NavigateToString(html);
 		}
