@@ -75,23 +75,35 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.TextBlockTests
 		{
 			var page = new WhiteSpace_In_TextBlock_Inlines();
 			var tbDefault = page.tbDefault;
+			Assert.AreEqual("Word1", tbDefault.Inlines[0].GetText());
 			Assert.AreEqual(" ", tbDefault.Inlines[1].GetText());
+			Assert.AreEqual("Word2", tbDefault.Inlines[2].GetText());
 			Assert.AreEqual(" ", tbDefault.Inlines[3].GetText());
+			Assert.AreEqual("Word3", tbDefault.Inlines[4].GetText());
 			Assert.AreEqual(" LeftSpace", tbDefault.Inlines[5].GetText());
+			Assert.AreEqual("Word4", tbDefault.Inlines[6].GetText());
 			Assert.AreEqual("RightSpace ", tbDefault.Inlines[7].GetText());
+			Assert.AreEqual("Word5", tbDefault.Inlines[8].GetText());
 			Assert.AreEqual(" SurroundSpace ", tbDefault.Inlines[9].GetText());
+			Assert.AreEqual("Word6", tbDefault.Inlines[10].GetText());
 			Assert.AreEqual("Middle Space", tbDefault.Inlines[11].GetText());
+			Assert.AreEqual("Word7", tbDefault.Inlines[12].GetText());
 			Assert.AreEqual(" DoubleSpace", tbDefault.Inlines[13].GetText());
 
-
-
 			var tbPreserve = page.tbPreserve;
+			Assert.AreEqual("Word1", tbPreserve.Inlines[0].GetText());
 			Assert.AreEqual(" ", tbPreserve.Inlines[1].GetText());
+			Assert.AreEqual("Word2", tbPreserve.Inlines[2].GetText());
 			Assert.AreEqual("  ", tbPreserve.Inlines[3].GetText());
+			Assert.AreEqual("Word3", tbPreserve.Inlines[4].GetText());
 			Assert.AreEqual(" LeftSpace", tbPreserve.Inlines[5].GetText());
+			Assert.AreEqual("Word4", tbPreserve.Inlines[6].GetText());
 			Assert.AreEqual("RightSpace ", tbPreserve.Inlines[7].GetText());
+			Assert.AreEqual("Word5", tbPreserve.Inlines[8].GetText());
 			Assert.AreEqual(" SurroundSpace ", tbPreserve.Inlines[9].GetText());
+			Assert.AreEqual("Word6", tbPreserve.Inlines[10].GetText());
 			Assert.AreEqual("Middle Space", tbPreserve.Inlines[11].GetText());
+			Assert.AreEqual("Word7 ", tbPreserve.Inlines[12].GetText());
 			Assert.AreEqual("  DoubleSpace  ", tbPreserve.Inlines[13].GetText());
 		}
 	}
