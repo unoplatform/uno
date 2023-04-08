@@ -96,6 +96,5 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.TextBlockTests
 		}
 	}
 
-	
 	public partial class MyControl : Control { }
 }
