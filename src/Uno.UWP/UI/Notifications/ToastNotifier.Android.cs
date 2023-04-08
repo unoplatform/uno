@@ -1,5 +1,4 @@
-﻿#if __ANDROID__
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -18,7 +17,7 @@ namespace Windows.UI.Notifications
 		public ToastNotifier()
 		{
 			var notifManager = Android.App.NotificationManager.FromContext(Android.App.Application.Context);
-			if(notifManager is null)
+			if (notifManager is null)
 			{
 				throw new InvalidOperationException("ToastNotifier: cannot get _notificationManager");
 			}
@@ -105,7 +104,7 @@ namespace Windows.UI.Notifications
 		private void SetToastTexts(Android.App.Notification.Builder builder, XmlDocument xmlDoc)
 		{
 			string toastTitleText = "";
-			StringBuilder toastText = new ("");
+			StringBuilder toastText = new("");
 
 			var childToast = xmlDoc.GetElementsByTagName("text");
 			if ((childToast != null) && childToast.Count > 0)
@@ -136,7 +135,7 @@ namespace Windows.UI.Notifications
 
 						// to keep compiler happy
 						var childNode = childToast[childIndex];
-						if(childNode is null )
+						if (childNode is null)
 						{
 							throw new InvalidOperationException("Invalid document notification document");
 						}
@@ -340,4 +339,3 @@ namespace Windows.UI.Notifications
 	}
 }
 
-#endif
