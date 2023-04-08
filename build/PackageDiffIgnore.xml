@@ -9439,6 +9439,9 @@
 			<Member fullName="System.Void Windows.UI.Xaml.Controls.WebViewUnsupportedUriSchemeIdentifiedEventArgs..ctor(System.Uri uri)" reason="Should not be public" />
 			<Member fullName="System.Void Windows.UI.Xaml.Controls.UnoWKWebView.RegisterNavigationEvents(Windows.UI.Xaml.Controls.WebView xamlWebView)" reason="Should not be public" />
 			<Member fullName="System.Threading.Tasks.Task`1&lt;System.String&gt; Windows.UI.Xaml.Controls.UnoWKWebView.EvaluateJavascriptAsync(System.Threading.CancellationToken ct, System.String javascript)" reason="Should not be public" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.WebView.Navigate(System.Uri uri)" reason="Was using incorrect parameter name" />
+			<Member fullName="System.Threading.Tasks.Task Windows.UI.Xaml.Controls.WebView.LaunchMailto(System.Threading.CancellationToken ct, System.String subject, System.String body, System.String[] to, System.String[] cc, System.String[] bcc)" reason="Should not be public" />
+			<Member fullName="System.Void Microsoft.Web.WebView2.Core.CoreWebView2NavigationStartingEventArgs..ctor()" reason="Should not be public" />
 			<!-- END WebView -->
 
 		</Methods>
