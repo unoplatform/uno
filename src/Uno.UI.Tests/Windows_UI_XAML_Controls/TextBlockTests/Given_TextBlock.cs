@@ -53,7 +53,6 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.TextBlockTests
 		public void When_LineBreak_SurroundingWhiteSpace()
 		{
 			var page = new LineBreak_Surrounding_WhiteSpace();
-		
 			var tbTrim = page.tbTrim;
 			Assert.AreEqual(5, tbTrim.Inlines.Count);
 			Assert.AreEqual("BeforeLineBreak", ((Run)tbTrim.Inlines[0]).Text);
