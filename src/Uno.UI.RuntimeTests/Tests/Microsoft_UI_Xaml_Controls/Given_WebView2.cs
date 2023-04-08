@@ -87,6 +87,27 @@ public class Given_WebView2
 	}
 
 	[TestMethod]
+	public async Task When_ExecuteScriptAsync_String_Double_Quote()
+	{
+		var border = new Border();
+		var webView = new WebView2();
+		webView.Width = 200;
+		webView.Height = 200;
+		border.Child = webView;
+		TestServices.WindowHelper.WindowContent = border;
+		bool navigated = false;
+		await TestServices.WindowHelper.WaitForLoaded(border);
+		await webView.EnsureCoreWebView2Async();
+		webView.NavigationCompleted += (sender, e) => navigated = true;
+		webView.NavigateToString("<html></html>");
+		await TestServices.WindowHelper.WaitFor(() => navigated);
+
+		var script = $"'hello \"world\"'.toString()";
+		var result = await webView.ExecuteScriptAsync(script);
+		Assert.AreEqual("\"hello \\\"world\\\"\"", result);
+	}
+
+	[TestMethod]
 	public async Task When_ExecuteScriptAsync_String()
 	{
 		var border = new Border();
