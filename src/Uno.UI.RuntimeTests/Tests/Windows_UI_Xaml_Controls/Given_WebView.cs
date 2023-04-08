@@ -48,6 +48,7 @@ public class Given_WebView
 		Assert.IsNull(webView.Source);
 	}
 
+#if !__MACOS__
 	[TestMethod]
 	public async Task When_InvokeScriptAsync()
 	{
@@ -112,5 +113,6 @@ public class Given_WebView
 		var result = await webView.InvokeScriptAsync("eval", new[] { script });
 		Assert.AreEqual("", result);
 	}
+#endif
 }
 #endif

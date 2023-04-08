@@ -10,7 +10,7 @@ using Windows.UI.Xaml.Controls;
 
 namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls;
 
-#if !HAS_UNO || __ANDROID__ || __IOS__ || __MACOS__
+#if !HAS_UNO || __ANDROID__ || __IOS__
 [TestClass]
 [RunsOnUIThread]
 public class Given_WebView2
