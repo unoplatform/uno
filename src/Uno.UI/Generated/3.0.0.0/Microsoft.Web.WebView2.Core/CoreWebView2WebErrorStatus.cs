@@ -2,60 +2,26 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.Web.WebView2.Core
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+	#if false || false || false || false || false || false || false
 	public   enum CoreWebView2WebErrorStatus 
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Unknown = 0,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		CertificateCommonNameIsIncorrect = 1,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		CertificateExpired = 2,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		ClientCertificateContainsErrors = 3,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		CertificateRevoked = 4,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		CertificateIsInvalid = 5,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		ServerUnreachable = 6,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Timeout = 7,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		ErrorHttpInvalidServerResponse = 8,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		ConnectionAborted = 9,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		ConnectionReset = 10,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Disconnected = 11,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		CannotConnect = 12,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		HostNameNotResolved = 13,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		OperationCanceled = 14,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		RedirectFailed = 15,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		UnexpectedError = 16,
-		#endif
+		// Skipping already declared field Microsoft.Web.WebView2.Core.CoreWebView2WebErrorStatus.Unknown
+		// Skipping already declared field Microsoft.Web.WebView2.Core.CoreWebView2WebErrorStatus.CertificateCommonNameIsIncorrect
+		// Skipping already declared field Microsoft.Web.WebView2.Core.CoreWebView2WebErrorStatus.CertificateExpired
+		// Skipping already declared field Microsoft.Web.WebView2.Core.CoreWebView2WebErrorStatus.ClientCertificateContainsErrors
+		// Skipping already declared field Microsoft.Web.WebView2.Core.CoreWebView2WebErrorStatus.CertificateRevoked
+		// Skipping already declared field Microsoft.Web.WebView2.Core.CoreWebView2WebErrorStatus.CertificateIsInvalid
+		// Skipping already declared field Microsoft.Web.WebView2.Core.CoreWebView2WebErrorStatus.ServerUnreachable
+		// Skipping already declared field Microsoft.Web.WebView2.Core.CoreWebView2WebErrorStatus.Timeout
+		// Skipping already declared field Microsoft.Web.WebView2.Core.CoreWebView2WebErrorStatus.ErrorHttpInvalidServerResponse
+		// Skipping already declared field Microsoft.Web.WebView2.Core.CoreWebView2WebErrorStatus.ConnectionAborted
+		// Skipping already declared field Microsoft.Web.WebView2.Core.CoreWebView2WebErrorStatus.ConnectionReset
+		// Skipping already declared field Microsoft.Web.WebView2.Core.CoreWebView2WebErrorStatus.Disconnected
+		// Skipping already declared field Microsoft.Web.WebView2.Core.CoreWebView2WebErrorStatus.CannotConnect
+		// Skipping already declared field Microsoft.Web.WebView2.Core.CoreWebView2WebErrorStatus.HostNameNotResolved
+		// Skipping already declared field Microsoft.Web.WebView2.Core.CoreWebView2WebErrorStatus.OperationCanceled
+		// Skipping already declared field Microsoft.Web.WebView2.Core.CoreWebView2WebErrorStatus.RedirectFailed
+		// Skipping already declared field Microsoft.Web.WebView2.Core.CoreWebView2WebErrorStatus.UnexpectedError
 	}
 	#endif
 }

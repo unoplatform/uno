@@ -232,6 +232,8 @@
               href: controls/TimePicker.md
             - name: ToggleSwitch
               href: controls/ToggleSwitch.md
+            - name: WebView (WebView2)
+              href: controls/WebView.md
         - name: Non-UI APIs
           items:
             - name: Accelerometer
