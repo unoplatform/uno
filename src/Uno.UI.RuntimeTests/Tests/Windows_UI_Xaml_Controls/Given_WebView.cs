@@ -48,7 +48,7 @@ public class Given_WebView
 		Assert.IsNull(webView.Source);
 	}
 
-#if !__MACOS__
+#if !HAS_UNO
 	[TestMethod]
 	public async Task When_InvokeScriptAsync()
 	{
