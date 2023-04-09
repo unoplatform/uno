@@ -644,6 +644,36 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 		return await tcs.Task;
 	}
 
+	async Task<string> INativeWebView.InvokeScriptAsync(string script, string[] arguments, CancellationToken ct)
+	{
+		var argumentString = Windows.UI.Xaml.Controls.WebView.ConcatenateJavascriptArguments(arguments);
+		var javascript = string.Format(CultureInfo.InvariantCulture, "javascript:{0}(\"{1}\")", script, argumentString);
+
+		if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
+		{
+			this.Log().Debug($"EvaluateJavascriptAsync: {javascript}");
+		}
+
+		var tcs = new TaskCompletionSource<string>();
+
+		using (ct.Register(() => tcs.TrySetCanceled()))
+		{
+			EvaluateJavaScript(javascript, (result, error) =>
+			{
+				if (error != null)
+				{
+					tcs.TrySetException(new InvalidOperationException($"Failed to execute javascript {error.LocalizedDescription}, {error.LocalizedFailureReason}, {error.LocalizedRecoverySuggestion}"));
+				}
+				else
+				{
+					tcs.TrySetResult(result as NSString);
+				}
+			});
+
+			return await tcs.Task;
+		}
+	}
+
 	private void ProcessNSUrlRequest(NSUrlRequest request)
 	{
 		if (request == null)

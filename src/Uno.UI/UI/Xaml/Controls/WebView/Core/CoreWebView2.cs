@@ -99,6 +99,16 @@ public partial class CoreWebView2
 			return _nativeWebView.ExecuteScriptAsync(javaScript, ct);
 		});
 
+	internal async Task<string?> InvokeScriptAsync(string script, string[]? arguments, CancellationToken ct)
+	{
+		if (_nativeWebView is null)
+		{
+			return null;
+		}
+
+		return await _nativeWebView.InvokeScriptAsync(script, arguments, ct);
+	}
+
 	internal void OnOwnerApplyTemplate()
 	{
 		_nativeWebView = GetNativeWebViewFromTemplate();

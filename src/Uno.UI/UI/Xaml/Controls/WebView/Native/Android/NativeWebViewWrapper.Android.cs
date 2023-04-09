@@ -160,8 +160,6 @@ internal class NativeWebViewWrapper : INativeWebView
 		_webView.LoadDataWithBaseURL(null, html, "text/html; charset=utf-8", "utf-8", null);
 	}
 
-	//_owner should be IAsyncOperation<string> instead of Task<string> but we use an extension method to enable the same signature in Win.
-	//IAsyncOperation is not available in Xamarin.
 	async Task<string> INativeWebView.ExecuteScriptAsync(string script, CancellationToken token)
 	{
 		TaskCompletionSource<string> tcs = new TaskCompletionSource<string>();
@@ -170,6 +168,20 @@ internal class NativeWebViewWrapper : INativeWebView
 
 		_webView.EvaluateJavascript(
 			string.Format(CultureInfo.InvariantCulture, "javascript:{0}", script),
+			new ScriptResponse(value => tcs.SetResult(value)));
+
+		return await tcs.Task;
+	}
+
+	async Task<string> INativeWebView.InvokeScriptAsync(string script, string[] arguments, CancellationToken ct)
+	{
+		var argumentString = Windows.UI.Xaml.Controls.WebView.ConcatenateJavascriptArguments(arguments);
+
+		TaskCompletionSource<string> tcs = new TaskCompletionSource<string>();
+		ct.Register(() => tcs.TrySetCanceled());
+
+		_webView.EvaluateJavascript(
+			string.Format(CultureInfo.InvariantCulture, "javascript:{0}(\"{1}\");", script, argumentString),
 			new ScriptResponse(value => tcs.SetResult(value)));
 
 		return await tcs.Task;

@@ -25,5 +25,7 @@ internal partial interface INativeWebView
 
 	Task<string?> ExecuteScriptAsync(string script, CancellationToken token);
 
+	Task<string?> InvokeScriptAsync(string script, string[]? arguments, CancellationToken token);
+
 	void SetScrollingEnabled(bool isScrollingEnabled);
 }
