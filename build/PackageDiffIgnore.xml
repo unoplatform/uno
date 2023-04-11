@@ -9397,7 +9397,6 @@
 		<Types>
 			<!-- BEGIN WebView -->
 			<Member fullName="Windows.UI.Xaml.Controls.INativeWebView" reason="Should not be public" />
-			<Member fullName="Uno.UI.Web.WebErrorStatus" reason="Incorrect namespace" />
 			<!-- END WebView -->
 		</Types>
 
@@ -9408,10 +9407,6 @@
 		</Fields>
 
 		<Properties>
-			<!-- BEGIN WebView -->
-			<Member fullName="Uno.UI.Web.WebErrorStatus Windows.UI.Xaml.Controls.WebViewNavigationCompletedEventArgs::WebErrorStatus()" reason="Incorrect type" />
-			<Member fullName="Uno.UI.Web.WebErrorStatus Windows.UI.Xaml.Controls.WebViewNavigationFailedEventArgs::WebErrorStatus()" reason="Incorrect type" />
-			<!-- END WebView -->
 		</Properties>
 
 		<Methods>
@@ -9431,9 +9426,7 @@
 			<Member fullName="System.Void Microsoft.Web.WebView2.Core.CoreWebView2Settings..ctor()" reason="Should not be public" />
 			<Member fullName="System.Threading.Tasks.Task Microsoft.UI.Xaml.Controls.WebView.LaunchMailto(System.Threading.CancellationToken ct, System.String subject, System.String body, System.String[] to, System.String[] cc, System.String[] bcc)" reason="Should not be public" />
 			<Member fullName="System.Boolean Windows.UI.Xaml.Controls.WebView.MustUseWebKitWebView()" reason="Should not be public" />
-			<Member fullName="Uno.UI.Web.WebErrorStatus Windows.UI.Xaml.Controls.WebViewNavigationCompletedEventArgs.get_WebErrorStatus()" reason="Incorrect return type" />
 			<Member fullName="System.Void Windows.UI.Xaml.Controls.WebViewNavigationCompletedEventArgs..ctor()" reason="Should not be public" />
-			<Member fullName="Uno.UI.Web.WebErrorStatus Windows.UI.Xaml.Controls.WebViewNavigationFailedEventArgs.get_WebErrorStatus()" reason="Incorrect return type" />
 			<Member fullName="System.Void Windows.UI.Xaml.Controls.WebViewNavigationFailedEventArgs..ctor()" reason="Should not be public" />
 			<Member fullName="System.Void Windows.UI.Xaml.Controls.WebViewNavigationStartingEventArgs..ctor()" reason="Should not be public" />
 			<Member fullName="System.Void Windows.UI.Xaml.Controls.WebViewUnsupportedUriSchemeIdentifiedEventArgs..ctor(System.Uri uri)" reason="Should not be public" />
