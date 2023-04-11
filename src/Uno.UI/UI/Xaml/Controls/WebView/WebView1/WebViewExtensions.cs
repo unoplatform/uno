@@ -1,5 +1,6 @@
 ﻿using Microsoft.Web.WebView2.Core;
 using Windows.Web;
+using WebErrorStatus = Uno.UI.Web.WebErrorStatus;
 
 namespace Windows.UI.Xaml.Controls;
 
@@ -12,13 +13,13 @@ internal static class WebViewExtensions
 		};
 
 	public static WebViewNavigationCompletedEventArgs ToWebViewArgs(this CoreWebView2NavigationCompletedEventArgs args) =>
-		new WebViewNavigationCompletedEventArgs(args.IsSuccess, args.Uri, args.WebErrorStatus.ToWebErrorStatus()); //TODO:MZ:
+		new WebViewNavigationCompletedEventArgs(args.IsSuccess, args.Uri, args.WebErrorStatus.ToWebErrorStatus());
 
 	public static WebViewNewWindowRequestedEventArgs ToWebViewArgs(this CoreWebView2NewWindowRequestedEventArgs args) =>
 		new WebViewNewWindowRequestedEventArgs(null, args.Uri.Length <= 2048 ? new global::System.Uri(args.Uri) : CoreWebView2.BlankUri)
 		{
 			Handled = args.Handled
-		}; //TODO:MZ:
+		};
 
 	public static WebErrorStatus ToWebErrorStatus(this CoreWebView2WebErrorStatus coreWebView2WebErrorStatus) =>
 		coreWebView2WebErrorStatus switch

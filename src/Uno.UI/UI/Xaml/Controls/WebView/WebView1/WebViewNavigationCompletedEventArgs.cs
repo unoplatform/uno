@@ -1,7 +1,7 @@
 ﻿#nullable enable
 
 using System;
-using Windows.Web;
+using Uno.UI.Web;
 
 namespace Windows.UI.Xaml.Controls;
 
