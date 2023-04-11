@@ -262,8 +262,8 @@
 	</Target>
 
 	<!-- Workaround for OmniSharp single-TargetFramework use -->
-	<ItemGroup Condition="'$(UnoForceSingleTFM)' == 'true'">
+	<PropertyGroup Condition="'$(UnoForceSingleTFM)' == 'true'">
 		<TargetFrameworks></TargetFrameworks>
-	</ItemGroup>
+	</PropertyGroup>
   
 </Project>
