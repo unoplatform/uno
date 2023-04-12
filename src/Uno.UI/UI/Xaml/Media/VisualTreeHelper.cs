@@ -1,5 +1,5 @@
 ﻿#nullable disable // Not supported by WinUI yet
-// #define TRACE_HIT_TESTING
+//#define TRACE_HIT_TESTING
 
 using System;
 using System.Collections.Generic;
@@ -345,12 +345,12 @@ namespace Windows.UI.Xaml.Media
 			Point position,
 			XamlRoot? xamlRoot,
 			GetHitTestability? getTestability = null,
-			Predicate<UIElement>? isStale = null
+			StalePredicate? isStale = null
 #if TRACE_HIT_TESTING
-			, [CallerMemberName] string? caller = null)
+			, [CallerMemberName] string caller = "")
 		{
 			using var _ = BEGIN_TRACE();
-			TRACE($"[{caller!.Replace("CoreWindow_Pointer", "").ToUpperInvariant()}] @{position.ToDebugString()}");
+			TRACE($"[{caller!.ToUpperInvariant()}] @{position.ToDebugString()}");
 #else
 			)
 		{
@@ -367,7 +367,7 @@ namespace Windows.UI.Xaml.Media
 			Point posRelToParent,
 			UIElement element,
 			GetHitTestability getVisibility,
-			Predicate<UIElement>? isStale = null,
+			StalePredicate? isStale = null,
 			Func<IEnumerable<UIElement>, IEnumerable<UIElement>>? childrenFilter = null)
 		{
 			var stale = default(Branch?);
@@ -388,9 +388,9 @@ namespace Windows.UI.Xaml.Media
 			if (elementHitTestVisibility == HitTestability.Collapsed)
 			{
 				// Even if collapsed, if the element is stale, we search down for the real stale leaf
-				if (isStale?.Invoke(element) ?? false)
+				if (isStale?.Method.Invoke(element) ?? false)
 				{
-					stale = SearchDownForStaleBranch(element, isStale);
+					stale = SearchDownForStaleBranch(element, isStale.Value);
 				}
 
 				TRACE($"> NOT FOUND (Element is HitTestability.Collapsed) | stale branch: {stale?.ToString() ?? "-- none --"}");
@@ -473,9 +473,18 @@ namespace Windows.UI.Xaml.Media
 			if (!clippingBounds.Contains(posRelToElement))
 			{
 				// Even if out of bounds, if the element is stale, we search down for the real stale leaf
-				if (isStale?.Invoke(element) ?? false)
+				if (isStale is not null)
 				{
-					stale = SearchDownForStaleBranch(element, isStale);
+					if (isStale.Value.Method(element))
+					{
+						TRACE($"- Is {isStale.Value.Name}");
+
+						stale = SearchDownForStaleBranch(element, isStale.Value);
+					}
+					else
+					{
+						TRACE($"- Is NOT {isStale.Value.Name}");
+					}
 				}
 
 				TRACE($"> NOT FOUND (Out of the **clipped** bounds) | stale branch: {stale?.ToString() ?? "-- none --"}");
@@ -491,29 +500,65 @@ namespace Windows.UI.Xaml.Media
 				var childResult = SearchDownForTopMostElementAt(posRelToElement, child.Current!, getVisibility, isChildStale);
 
 				// If we found a stale element in child sub-tree, keep it and stop looking for stale elements
-				if (childResult.stale is { })
+				if (childResult.stale is not null)
 				{
 					stale = childResult.stale;
 					isChildStale = null;
 				}
 
 				// If we found an acceptable element in the child's sub-tree, job is done!
-				if (childResult.element is { })
+				if (childResult.element is not null)
 				{
-					if (isChildStale is { }) // Also indicates that stale is null
+					if (isChildStale is not null) // Also indicates that stale is null
 					{
 						// If we didn't find any stale root in previous children or in the child's sub tree,
 						// we continue to enumerate sibling children to detect a potential stale root.
 
+						TRACE($"+ Searching for stale {isChildStale.Value.Name} branch.");
+
 						while (child.MoveNext())
 						{
-							if (isChildStale(child.Current))
+#if TRACE_HIT_TESTING
+							using var __ = SET_TRACE_SUBJECT(child.Current);
+#endif
+
+							if (isChildStale.Value.Method(child.Current))
 							{
-								stale = SearchDownForStaleBranch(child.Current!, isChildStale);
+								TRACE($"- Is {isChildStale.Value.Name}");
+
+								stale = SearchDownForStaleBranch(child.Current!, isChildStale.Value);
+
+#if TRACE_HIT_TESTING
+								while (child.MoveNext())
+								{
+									using var ___ = SET_TRACE_SUBJECT(child.Current);
+									if (isChildStale.Value.Method(child.Current))
+									{
+										//Debug.Assert(false);
+										TRACE($"- Is {isChildStale.Value.Name} ***** INVALID: Only one branch can be considered as stale at once! ****");
+									}
+									TRACE($"> Ignored since leaf and stale branch has already been found.");
+								}
+#endif
+
 								break;
+							}
+							else
+							{
+								TRACE($"- Is NOT {isChildStale.Value.Name}");
 							}
 						}
 					}
+#if TRACE_HIT_TESTING
+					else
+					{
+						while (child.MoveNext())
+						{
+							using var __ = SET_TRACE_SUBJECT(child.Current);
+							TRACE($"> Ignored since leaf has already been found and no stale branch to find.");
+						}
+					}
+#endif
 
 					TRACE($"> found child: {childResult.element.GetDebugName()} | stale branch: {stale?.ToString() ?? "-- none --"}");
 					return (childResult.element, stale);
@@ -531,7 +576,7 @@ namespace Windows.UI.Xaml.Media
 			{
 				// If no stale element found yet, validate if the current is stale.
 				// Note: no needs to search down for stale child, we already did it!
-				if (isStale?.Invoke(element) ?? false)
+				if (isStale?.Method.Invoke(element) ?? false)
 				{
 					stale = new Branch(element, stale?.Leaf ?? element);
 				}
@@ -541,16 +586,33 @@ namespace Windows.UI.Xaml.Media
 			}
 		}
 
-		private static Branch SearchDownForStaleBranch(UIElement staleRoot, Predicate<UIElement> isStale)
-			=> new Branch(staleRoot, SearchDownForLeaf(staleRoot, isStale));
+		private static Branch SearchDownForStaleBranch(UIElement staleRoot, StalePredicate isStale)
+			=> new Branch(staleRoot, SearchDownForLeafCore(staleRoot, isStale));
 
-		internal static UIElement SearchDownForLeaf(UIElement root, Predicate<UIElement> predicate)
+		internal static UIElement SearchDownForLeaf(UIElement root, StalePredicate predicate)
+		{
+#if TRACE_HIT_TESTING
+			using var trace = ENSURE_TRACE();
+#endif
+			return SearchDownForLeafCore(root, predicate);
+		}
+
+		private static UIElement SearchDownForLeafCore(UIElement root, StalePredicate predicate)
 		{
 			foreach (var child in GetManagedVisualChildren(root).Reverse())
 			{
-				if (predicate(child))
+#if TRACE_HIT_TESTING
+				SET_TRACE_SUBJECT(child);
+#endif
+
+				if (predicate.Method(child))
 				{
-					return SearchDownForLeaf(child, predicate);
+					TRACE($"- Is {predicate.Name}");
+					return SearchDownForLeafCore(child, predicate);
+				}
+				else
+				{
+					TRACE($"- Is NOT {predicate.Name}");
 				}
 			}
 
@@ -566,7 +628,7 @@ namespace Windows.UI.Xaml.Media
 			}
 		}
 
-		#region Helpers
+#region Helpers
 		private static Func<IEnumerable<UIElement>, IEnumerable<UIElement>> Except(UIElement element)
 			=> children => children.Except(element);
 
@@ -591,12 +653,17 @@ namespace Windows.UI.Xaml.Media
 			}
 		}
 
+		internal static IEnumerable<UIElement> GetManagedVisualChildren(object view)
+			=> view is _ViewGroup elt
+				? GetManagedVisualChildren(elt)
+				: Enumerable.Empty<UIElement>();
+
 #if __IOS__ || __MACOS__ || __ANDROID__
 		/// <summary>
 		/// Gets all immediate UIElement children of this <paramref name="view"/>. If any immediate subviews are native, it will descend into
 		/// them depth-first until it finds a UIElement, and return those UIElements.
 		/// </summary>
-		private static IEnumerable<UIElement> GetManagedVisualChildren(_ViewGroup view)
+		internal static IEnumerable<UIElement> GetManagedVisualChildren(_ViewGroup view)
 		{
 			foreach (var child in view.GetChildren())
 			{
@@ -614,11 +681,12 @@ namespace Windows.UI.Xaml.Media
 			}
 		}
 #else
-		private static IEnumerable<UIElement> GetManagedVisualChildren(_View view) => view.GetChildren().OfType<UIElement>();
+		internal static IEnumerable<UIElement> GetManagedVisualChildren(_View view)
+			=> view.GetChildren().OfType<UIElement>();
 #endif
-		#endregion
+#endregion
 
-		#region HitTest tracing
+#region HitTest tracing
 #if TRACE_HIT_TESTING
 		[ThreadStatic]
 		private static StringBuilder? _trace;
@@ -637,6 +705,9 @@ namespace Windows.UI.Xaml.Media
 			});
 		}
 
+		private static IDisposable ENSURE_TRACE()
+			=> _trace is null ? BEGIN_TRACE() : Disposable.Empty;
+
 		private static IDisposable SET_TRACE_SUBJECT(UIElement element)
 		{
 			if (_trace is { })
@@ -644,8 +715,7 @@ namespace Windows.UI.Xaml.Media
 				var previous = _traceSubject;
 				_traceSubject = element;
 
-				_trace.Append(new string('\t', _traceSubject.GetDebugDepth()));
-				_trace.Append($"[{element.GetDebugName()}]\r\n");
+				_trace.AppendLine(_traceSubject.GetDebugIdentifier());
 
 				return Disposable.Create(() => _traceSubject = previous);
 			}
@@ -662,7 +732,8 @@ namespace Windows.UI.Xaml.Media
 #if TRACE_HIT_TESTING
 			if (_trace is { })
 			{
-				_trace.Append(new string('\t', _traceSubject?.GetDebugDepth() ?? 0));
+				_trace.Append(_traceSubject.GetDebugIndent(subLine: true));
+				_trace.Append(' ');
 				_trace.Append(msg.ToStringInvariant());
 				_trace.Append("\r\n");
 			}

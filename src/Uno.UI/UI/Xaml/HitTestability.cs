@@ -30,4 +30,6 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		Visible,
 	}
+
+	internal record struct StalePredicate(Predicate<UIElement> Method, string Name);
 }

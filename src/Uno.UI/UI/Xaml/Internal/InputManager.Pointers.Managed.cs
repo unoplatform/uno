@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
@@ -60,7 +61,7 @@ internal partial class InputManager
 		private static IPointerExtension? _pointerExtension;
 
 		// TODO: Use pointer ID for the predicates
-		private static readonly Predicate<UIElement> _isOver = e => e.IsPointerOver;
+		private static readonly StalePredicate _isOver = new(e => e.IsPointerOver, "IsPointerOver");
 
 		private readonly Dictionary<Pointer, UIElement> _pressedElements = new();
 
@@ -107,23 +108,13 @@ internal partial class InputManager
 
 			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
-				this.Log().Trace($"CoreWindow_PointerWheelChanged [{originalSource.GetDebugName()}");
+				this.Log().Trace($"CoreWindow_PointerWheelChanged [{originalSource.GetDebugName()}]");
 			}
 
 			var routedArgs = new PointerRoutedEventArgs(args, originalSource);
 
 			// Second raise the event, either on the OriginalSource or on the capture owners if any
 			RaiseUsingCaptures(Wheel, originalSource, routedArgs);
-		}
-
-		private (UIElement?, VisualTreeHelper.Branch?) HitTest(PointerEventArgs args, Predicate<UIElement>? isStale = null)
-		{
-			if (_inputManager._contentRoot?.XamlRoot is null)
-			{
-				throw new InvalidOperationException("The XamlRoot must be properly initialized for hit testng.");
-			}
-
-			return VisualTreeHelper.HitTest(args.CurrentPoint.Position, _inputManager._contentRoot.XamlRoot, isStale: isStale);
 		}
 
 		internal void OnPointerEntered(Windows.UI.Core.PointerEventArgs args)
@@ -151,7 +142,7 @@ internal partial class InputManager
 
 			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
-				this.Log().Trace($"CoreWindow_PointerEntered [{originalSource.GetDebugName()}");
+				this.Log().Trace($"CoreWindow_PointerEntered [{originalSource.GetDebugName()}]");
 			}
 
 			var routedArgs = new PointerRoutedEventArgs(args, originalSource);
@@ -163,7 +154,7 @@ internal partial class InputManager
 		{
 			// This is how UWP behaves: when out of the bounds of the Window, the root element is use.
 			var originalSource = Windows.UI.Xaml.Window.Current.Content;
-			if (originalSource == null)
+			if (originalSource is null)
 			{
 				if (this.Log().IsEnabled(LogLevel.Trace))
 				{
@@ -174,7 +165,6 @@ internal partial class InputManager
 			}
 
 			var overBranchLeaf = VisualTreeHelper.SearchDownForLeaf(originalSource, _isOver);
-
 			if (overBranchLeaf is null)
 			{
 				if (this.Log().IsEnabled(LogLevel.Trace))
@@ -187,7 +177,7 @@ internal partial class InputManager
 
 			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
-				this.Log().Trace($"CoreWindow_PointerExited [{overBranchLeaf.GetDebugName()}");
+				this.Log().Trace($"CoreWindow_PointerExited [{overBranchLeaf.GetDebugName()}]");
 			}
 
 			var routedArgs = new PointerRoutedEventArgs(args, originalSource);
@@ -222,7 +212,7 @@ internal partial class InputManager
 
 			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
-				this.Log().Trace($"CoreWindow_PointerPressed [{originalSource.GetDebugName()}");
+				this.Log().Trace($"CoreWindow_PointerPressed [{originalSource.GetDebugName()}]");
 			}
 
 			var routedArgs = new PointerRoutedEventArgs(args, originalSource);
@@ -254,24 +244,11 @@ internal partial class InputManager
 
 			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
-				this.Log().Trace($"CoreWindow_PointerReleased [{originalSource.GetDebugName()}");
+				this.Log().Trace($"CoreWindow_PointerReleased [{originalSource.GetDebugName()}]");
 			}
 
 			var routedArgs = new PointerRoutedEventArgs(args, originalSource);
 
-			var overBranchLeaf = VisualTreeHelper.SearchDownForLeaf(originalSource, _isOver);
-
-			if (overBranchLeaf is not null)
-			{
-				if (this.Log().IsEnabled(LogLevel.Trace))
-				{
-					this.Log().Trace($"CoreWindow_PointerReleased [{overBranchLeaf.GetDebugName()}");
-				}
-
-				Raise(Leave, overBranchLeaf, routedArgs);
-			}
-
-			args.Handled = false;
 			RaiseUsingCaptures(Released, originalSource, routedArgs);
 			if (isOutOfWindow || (PointerDeviceType)args.CurrentPoint.Pointer.Type != PointerDeviceType.Touch)
 			{
@@ -302,7 +279,7 @@ internal partial class InputManager
 
 			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
-				this.Log().Trace($"CoreWindow_PointerMoved [{originalSource.GetDebugName()}");
+				this.Log().Trace($"CoreWindow_PointerMoved [{originalSource.GetDebugName()}]");
 			}
 
 			var routedArgs = new PointerRoutedEventArgs(args, originalSource);
@@ -310,16 +287,22 @@ internal partial class InputManager
 			// First raise the PointerExited events on the stale branch
 			if (staleBranch.HasValue)
 			{
-				Raise(Leave, staleBranch.Value, routedArgs);
+				if (Raise(Leave, staleBranch.Value, routedArgs) is { VisualTreeAltered: true })
+				{
+					// The visual tree have been modified in a way that requires to perform a new hit test.
+					originalSource = HitTest(args).element ?? Windows.UI.Xaml.Window.Current.Content;
+				}
 			}
 
 			// Second (try to) raise the PointerEnter on the OriginalSource
 			// Note: This won't do anything if already over.
-			routedArgs.Handled = false;
-			Raise(Enter, originalSource, routedArgs);
+			if (Raise(Enter, originalSource, routedArgs) is { VisualTreeAltered: true })
+			{
+				// The visual tree have been modified in a way that requires to perform a new hit test.
+				originalSource = HitTest(args).element ?? Windows.UI.Xaml.Window.Current.Content;
+			}
 
 			// Finally raise the event, either on the OriginalSource or on the capture owners if any
-			routedArgs.Handled = false;
 			RaiseUsingCaptures(Move, originalSource, routedArgs);
 		}
 
@@ -343,7 +326,7 @@ internal partial class InputManager
 
 			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
-				this.Log().Trace($"CoreWindow_PointerCancelled [{originalSource.GetDebugName()}");
+				this.Log().Trace($"CoreWindow_PointerCancelled [{originalSource.GetDebugName()}]");
 			}
 
 			var routedArgs = new PointerRoutedEventArgs(args, originalSource);
@@ -357,7 +340,7 @@ internal partial class InputManager
 		{
 			if (_pointerExtension is not null)
 			{
-				_pointerExtension?.SetPointerCapture(uniqueId, _inputManager._contentRoot.XamlRoot);
+				_pointerExtension.SetPointerCapture(uniqueId, _inputManager._contentRoot.XamlRoot);
 			}
 			else
 			{
@@ -369,7 +352,7 @@ internal partial class InputManager
 		{
 			if (_pointerExtension is not null)
 			{
-				_pointerExtension?.ReleasePointerCapture(uniqueId, _inputManager._contentRoot.XamlRoot);
+				_pointerExtension.ReleasePointerCapture(uniqueId, _inputManager._contentRoot.XamlRoot);
 			}
 			else
 			{
@@ -381,7 +364,7 @@ internal partial class InputManager
 		{
 			if (PointerCapture.TryGet(routedArgs.Pointer, out var capture))
 			{
-				foreach (var target in capture.Targets)
+				foreach (var target in capture.Targets.ToList())
 				{
 					target.Element.ReleasePointerCapture(capture.Pointer.UniqueId, kinds: PointerCaptureKind.Any);
 				}
@@ -405,11 +388,22 @@ internal partial class InputManager
 		}
 
 		#region Helpers
-		private delegate void RaisePointerEventArgs(UIElement element, PointerRoutedEventArgs args, BubblingContext ctx);
+		private (UIElement? element, VisualTreeHelper.Branch? stale) HitTest(PointerEventArgs args, StalePredicate? isStale = null)
+		{
+			if (_inputManager._contentRoot.XamlRoot is null)
+			{
+				throw new InvalidOperationException("The XamlRoot must be properly initialized for hit testing.");
+			}
 
-		private static readonly RaisePointerEventArgs Wheel = (elt, args, ctx) => elt.OnPointerWheel(args, ctx);
-		private static readonly RaisePointerEventArgs Enter = (elt, args, ctx) => elt.OnPointerEnter(args, ctx);
-		private static readonly RaisePointerEventArgs Leave = (elt, args, ctx) =>
+			return VisualTreeHelper.HitTest(args.CurrentPoint.Position, _inputManager._contentRoot.XamlRoot, isStale: isStale);
+		}
+
+		private delegate void RaisePointerEventArgs(UIElement element, PointerRoutedEventArgs args, BubblingContext ctx);
+		private readonly record struct PointerEvent(RaisePointerEventArgs Invoke, [CallerMemberName] string Name = "");
+
+		private static readonly PointerEvent Wheel = new((elt, args, ctx) => elt.OnPointerWheel(args, ctx));
+		private static readonly PointerEvent Enter = new((elt, args, ctx) => elt.OnPointerEnter(args, ctx));
+		private static readonly PointerEvent Leave = new((elt, args, ctx) =>
 		{
 			elt.OnPointerExited(args, ctx);
 
@@ -420,38 +414,70 @@ internal partial class InputManager
 			ctx.IsInternal = true;
 			args.Handled = false;
 			elt.OnPointerUp(args, ctx);
-		};
-		private static readonly RaisePointerEventArgs Pressed = (elt, args, ctx) => elt.OnPointerDown(args, ctx);
-		private static readonly RaisePointerEventArgs Released = (elt, args, ctx) => elt.OnPointerUp(args, ctx);
-		private static readonly RaisePointerEventArgs Move = (elt, args, ctx) => elt.OnPointerMove(args, ctx);
-		private static readonly RaisePointerEventArgs Cancelled = (elt, args, ctx) => elt.OnPointerCancel(args, ctx);
+		});
+		private static readonly PointerEvent Pressed = new((elt, args, ctx) => elt.OnPointerDown(args, ctx));
+		private static readonly PointerEvent Released = new((elt, args, ctx) => elt.OnPointerUp(args, ctx));
+		private static readonly PointerEvent Move = new((elt, args, ctx) => elt.OnPointerMove(args, ctx));
+		private static readonly PointerEvent Cancelled = new((elt, args, ctx) => elt.OnPointerCancel(args, ctx));
 
-		private static void Raise(RaisePointerEventArgs raise, UIElement originalSource, PointerRoutedEventArgs routedArgs)
-			=> raise(originalSource, routedArgs, BubblingContext.Bubble);
-
-		private static void Raise(RaisePointerEventArgs raise, VisualTreeHelper.Branch branch, PointerRoutedEventArgs routedArgs)
-			=> raise(branch.Leaf, routedArgs, BubblingContext.BubbleUpTo(branch.Root));
-
-		private static void RaiseUsingCaptures(RaisePointerEventArgs raise, UIElement originalSource, PointerRoutedEventArgs routedArgs)
+		private static PointerEventDispatchResult Raise(PointerEvent evt, UIElement originalSource, PointerRoutedEventArgs routedArgs)
 		{
+			routedArgs.Handled = false;
+			UIElement.UIElement.BeginPointerEventDispatch();
+
+			evt.Invoke(originalSource, routedArgs, BubblingContext.Bubble);
+
+			return EndPointerEventDispatch();
+		}
+
+		private static PointerEventDispatchResult Raise(PointerEvent evt, VisualTreeHelper.Branch branch, PointerRoutedEventArgs routedArgs)
+		{
+			routedArgs.Handled = false;
+			UIElement.BeginPointerEventDispatch();
+
+			evt.Invoke(branch.Leaf, routedArgs, BubblingContext.BubbleUpTo(branch.Root));
+
+			return UIElement.EndPointerEventDispatch();
+		}
+
+		private PointerEventDispatchResult RaiseUsingCaptures(PointerEvent evt, UIElement originalSource, PointerRoutedEventArgs routedArgs)
+		{
+			routedArgs.Handled = false;
+			UIElement.BeginPointerEventDispatch();
+
 			if (PointerCapture.TryGet(routedArgs.Pointer, out var capture))
 			{
 				var targets = capture.Targets.ToList();
 				if (capture.IsImplicitOnly)
 				{
-					raise(originalSource, routedArgs, BubblingContext.Bubble);
+					if (this.Log().IsEnabled(LogLevel.Trace))
+					{
+						this.Log().Trace($"[Implicit capture] raising event {evt.Name} (args: {routedArgs.GetHashCode():X8}) to original source first [{originalSource.GetDebugName()}]");
+					}
+
+					evt.Invoke(originalSource, routedArgs, BubblingContext.Bubble);
 
 					foreach (var target in targets)
 					{
+						if (this.Log().IsEnabled(LogLevel.Trace))
+						{
+							this.Log().Trace($"[Implicit capture] raising event {evt.Name} (args: {routedArgs.GetHashCode():X8}) to capture target [{originalSource.GetDebugName()}] (-- no bubbling--)");
+						}
+
 						routedArgs.Handled = false;
-						raise(target.Element, routedArgs, BubblingContext.NoBubbling);
+						evt.Invoke(target.Element, routedArgs, BubblingContext.NoBubbling);
 					}
 				}
 				else
 				{
 					var explicitTarget = targets.Find(c => c.Kind.HasFlag(PointerCaptureKind.Explicit))!;
 
-					raise(explicitTarget.Element, routedArgs, BubblingContext.Bubble);
+					if (this.Log().IsEnabled(LogLevel.Trace))
+					{
+						this.Log().Trace($"[Explicit capture] raising event {evt.Name} (args: {routedArgs.GetHashCode():X8}) to capture target [{explicitTarget.Element.GetDebugName()}]");
+					}
+
+					evt.Invoke(explicitTarget.Element, routedArgs, BubblingContext.Bubble);
 
 					foreach (var target in targets)
 					{
@@ -460,15 +486,27 @@ internal partial class InputManager
 							continue;
 						}
 
+						if (this.Log().IsEnabled(LogLevel.Trace))
+						{
+							this.Log().Trace($"[Explicit capture] raising event {evt.Name} (args: {routedArgs.GetHashCode():X8}) to alternative (implicit) target [{explicitTarget.Element.GetDebugName()}] (-- no bubbling--)");
+						}
+
 						routedArgs.Handled = false;
-						raise(target.Element, routedArgs, BubblingContext.NoBubbling);
+						evt.Invoke(target.Element, routedArgs, BubblingContext.NoBubbling);
 					}
 				}
 			}
 			else
 			{
-				raise(originalSource, routedArgs, BubblingContext.Bubble);
+				if (this.Log().IsEnabled(LogLevel.Trace))
+				{
+					this.Log().Trace($"[No capture] raising event {evt.Name} (args: {routedArgs.GetHashCode():X8}) to original source [{originalSource.GetDebugName()}]");
+				}
+
+				evt.Invoke(originalSource, routedArgs, BubblingContext.Bubble);
 			}
+
+			return UIElement.EndPointerEventDispatch();
 		}
 		#endregion
 	}
