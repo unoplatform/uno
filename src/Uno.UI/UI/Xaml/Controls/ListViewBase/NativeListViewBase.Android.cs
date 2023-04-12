@@ -257,6 +257,11 @@ namespace Windows.UI.Xaml.Controls
 				if (vh != null)
 				{
 					vh.IsDetached = true;
+
+					// This should be invoked only from the LV.CleanContainer()
+					// **BUT** the container is not Cleaned/Prepared by the LV on Android
+					// https://github.com/unoplatform/uno/issues/11957
+					UIElement.PrepareForRecycle(view);
 				}
 			}
 			base.DetachViewFromParent(index);
