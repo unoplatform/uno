@@ -217,23 +217,54 @@ namespace Windows.UI.Xaml
 
 			if (sender is UIElement elt && elt.GetHitTestVisibility() == HitTestability.Collapsed)
 			{
-				elt.Release(PointerCaptureKind.Any);
-				elt.ClearPressed();
-				elt.SetOver(null, false, ctx: BubblingContext.NoBubbling);
-				elt.ClearDragOver();
+				_currentPointerEventDispatch.VisualTreeAltered = true;
+				elt.ClearPointerState();
 			}
 		};
 
 		private static readonly RoutedEventHandler ClearPointersStateOnUnload = (object sender, RoutedEventArgs args) =>
 		{
-			if (sender is UIElement elt)
-			{
-				elt.Release(PointerCaptureKind.Any);
-				elt.ClearPressed();
-				elt.SetOver(null, false, ctx: BubblingContext.NoBubbling);
-				elt.ClearDragOver();
-			}
+			_currentPointerEventDispatch.VisualTreeAltered = true;
+			(sender as UIElement)?.ClearPointerState();
 		};
+
+		private partial void ClearPointerStateOnRecycle()
+		{
+			_currentPointerEventDispatch.VisualTreeAltered = true;
+			ClearPointerState();
+		}
+
+		internal void ClearPointerState()
+		{
+			Release(PointerCaptureKind.Any);
+			ClearPressed();
+			SetOver(null, false, ctx: BubblingContext.NoBubbling);
+			ClearDragOver();
+		}
+
+		[ThreadStatic]
+		private static PointerEventDispatchResult _currentPointerEventDispatch;
+
+		internal static void BeginPointerEventDispatch()
+			=> _currentPointerEventDispatch = new();
+
+		internal static PointerEventDispatchResult EndPointerEventDispatch()
+			=> _currentPointerEventDispatch; // No need to clean it right now, we can safely wait for the next sequence to do it.
+
+		internal struct PointerEventDispatchResult
+		{
+			/// <summary>
+			/// Indicates that the visual tree has been modified in a way that the input manager must perform a complete hit testing sequence before dispatching a new event.
+			/// </summary>
+			/// <remarks>
+			/// This is designed for the case where for a single native pointer event, we are dispatching multiple managed events (e.g. managed Enter/Exit when we get only a native Move)
+			/// for all other cases **a full hit test must be perform**.
+			/// This means that we must not "capture"/cache the current top-most-element (a.k.a. OriginalSource) and try to update it on next event
+			/// as this flag does not take in consideration RenderTransform and other layout modification that does not alter the state of the pointer.
+			/// </remarks>
+			/// <remarks>This is used only for managed dispatch.</remarks>
+			public bool VisualTreeAltered { get; set; }
+		}
 
 		/// <summary>
 		/// Indicates if this element or one of its child might be target pointer pointer events.
