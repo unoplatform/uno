@@ -114,6 +114,14 @@ namespace Windows.UI.Xaml
 		}
 
 		/// <summary>
+		/// Clear/remove a HTML attribute from an element.
+		/// </summary>
+		public static void RemoveAttribute(this UIElement element, string name)
+		{
+			WindowManagerInterop.RemoveAttribute(element.HtmlId, name);
+		}
+
+		/// <summary>
 		/// Run javascript in the context of a DOM element.
 		/// This one is available in the scope as "element".
 		/// </summary>

@@ -5,7 +5,9 @@
 #endif
 
 using System;
+#if USE_JSIMPORT
 using System.Runtime.InteropServices.JavaScript;
+#endif
 using Uno.Foundation;
 
 namespace Uno.UI.Media;
@@ -52,6 +54,26 @@ partial class HtmlMediaPlayer
 
 #if !USE_JSIMPORT
 		internal static partial void SetCurrentPosition(nint htmlId, double currentPosition)
+			=> throw new NotSupportedException();
+#endif
+
+#if USE_JSIMPORT
+		[JSImport("globalThis.Uno.UI.Media.HtmlMediaPlayer.setPlaybackRate")]
+#endif
+		internal static partial void SetPlaybackRate(nint htmlId, double playbackRate);
+
+#if !USE_JSIMPORT
+		internal static partial void SetPlaybackRate(nint htmlId, double playbackRate)
+			=> throw new NotSupportedException();
+#endif
+
+#if USE_JSIMPORT
+		[JSImport("globalThis.Uno.UI.Media.HtmlMediaPlayer.setAttribute")]
+#endif
+		internal static partial void SetAttribute(nint htmlId, string name, string value);
+
+#if !USE_JSIMPORT
+		internal static partial void setAttribute(nint htmlId, string name, string value)
 			=> throw new NotSupportedException();
 #endif
 

@@ -17,6 +17,16 @@ namespace Uno.UI.Media {
 			document.getElementById(htmlId.toString()).currentTime = currentTime;
 		}
 
+		public static setAttribute(htmlId: number, name: string, value: string) {
+			document.getElementById(htmlId.toString()).setAttribute(name, value);
+		}
+		public static removeAttribute(htmlId: number, name: string) {
+			document.getElementById(htmlId.toString()).removeAttribute(name);
+		}
+		public static setPlaybackRate(htmlId: number, playbackRate: number) {
+			document.getElementById(htmlId.toString()).playbackRate = playbackRate;
+		}
+
 		public static reload(htmlId: number) {
 			var element = Uno.UI.WindowManager.current.getView(htmlId.toString());
 			element.load();

@@ -4,7 +4,12 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="">
 
-	<MediaPlayerElement Source="http://distribution.bbb3d.renderfarming.net/video/mp4/bbb_sunflower_1080p_30fps_normal.mp4"
+	<!--<MediaPlayerElement Source="http://distribution.bbb3d.renderfarming.net/video/mp4/bbb_sunflower_1080p_30fps_normal.mp4"-->
+	<!--<MediaPlayerElement x:Name="mediaPlayerElement" Source="https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/720/Big_Buck_Bunny_720_10s_5MB.mp4"-->
+	<!--<MediaPlayerElement Source="https://www.youtube.com/embed/DDtzqzIqgdw"-->
+
+	<MediaPlayerElement Source="https://ia800201.us.archive.org/12/items/BigBuckBunny_328/BigBuckBunny_512kb.mp4"
 						AreTransportControlsEnabled="True"
-						AutoPlay="True" />
+		AutoPlay="True" />
+	
 </UserControl>

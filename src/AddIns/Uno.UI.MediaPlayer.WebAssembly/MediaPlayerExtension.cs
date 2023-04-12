@@ -19,6 +19,8 @@ using Windows.UI.Xaml.Controls;
 using System.Diagnostics.CodeAnalysis;
 using Windows.ApplicationModel.Background;
 using Uno.Foundation.Extensibility;
+using Windows.UI.Xaml.Controls.Maps;
+using System.Numerics;
 
 [assembly: ApiExtension(typeof(IMediaPlayerExtension), typeof(Uno.UI.Media.MediaPlayerExtension))]
 
@@ -28,7 +30,7 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 {
 	private static Dictionary<MediaPlayer, MediaPlayerExtension> _instances = new();
 
-	private MediaPlayer _owner;
+	private readonly MediaPlayer _owner;
 	private HtmlMediaPlayer? _player;
 
 	private bool _updatingPosition;
@@ -94,9 +96,6 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 				_anonymousCors = enabled;
 				ApplyAnonymousCors();
 				break;
-
-			default:
-				break;
 		}
 	}
 
@@ -105,9 +104,33 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 
 	public IMediaPlayerEventsExtension? Events { get; set; }
 
-	public double PlaybackRate { get; set; }
+	private double _playbackRate;
+	public double PlaybackRate
+	{
+		get => _playbackRate;
+		set
+		{
+			_playbackRate = value;
+			if (_player is not null)
+			{
+				_player.PlaybackRate = value;
+			}
+		}
+	}
 
-	public bool IsLoopingEnabled { get; set; }
+	private bool _isLoopingEnabled;
+	public bool IsLoopingEnabled
+	{
+		get => _isLoopingEnabled;
+		set
+		{
+			_isLoopingEnabled = value;
+			if (_player is not null)
+			{
+				_player.SetIsLoopingEnabled(value);
+			}
+		}
+	}
 
 	public MediaPlayerState CurrentState { get; private set; }
 
@@ -159,7 +182,7 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 
 				try
 				{
-					if (_owner.PlaybackSession.PlaybackState != MediaPlaybackState.None && _player is not null)
+					if (_owner.PlaybackSession.PlaybackState != MediaPlaybackState.None && _player is not null && _player.Source is not null)
 					{
 						_player.CurrentPosition = (int)value.TotalSeconds;
 						OnSeekComplete();
@@ -223,7 +246,10 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 		Console.WriteLine($"MediaPlayerExtension.InitializeSource()");
 
 		NaturalDuration = TimeSpan.Zero;
-		Position = TimeSpan.Zero;
+		if (Position != TimeSpan.Zero)
+		{
+			Position = TimeSpan.Zero;
+		}
 
 		// Reset player
 		TryDisposePlayer();
@@ -235,8 +261,8 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 
 		try
 		{
-			InitializePlayer();
 			_owner.PlaybackSession.PlaybackState = MediaPlaybackState.Opening;
+			InitializePlayer();
 
 			switch (_owner.Source)
 			{
@@ -259,9 +285,12 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 
 			ApplyVideoSource();
 			Events?.RaiseMediaOpened();
+			Events?.RaiseSourceChanged();
 		}
 		catch (global::System.Exception ex)
 		{
+
+			this.Log().Debug($"MediaPlayerElementExtension.InitializeSource({ex.Message})");
 			OnMediaFailed(ex);
 		}
 	}
@@ -328,6 +357,7 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 
 			if (_isPlayerPrepared)
 			{
+				_player.PlaybackRate = 1;
 				_player.Play();
 				_owner.PlaybackSession.PlaybackState = MediaPlaybackState.Playing;
 			}
@@ -391,6 +421,7 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 			|| _owner.PlaybackSession.PlaybackState == MediaPlaybackState.Paused)
 		{
 			_player?.Pause(); // Do not call stop, otherwise player will need to be prepared again
+			_owner.PlaybackSession.Position = TimeSpan.Zero;
 			_owner.PlaybackSession.PlaybackState = MediaPlaybackState.None;
 		}
 	}
@@ -434,12 +465,16 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 
 			if (mp.IsVideo && Events is not null)
 			{
-				if (this.Log().IsEnabled(LogLevel.Debug))
+				try
 				{
-					this.Log().Debug($"OnPrepared: {mp.VideoWidth}x{mp.VideoHeight}");
-				}
+					if (this.Log().IsEnabled(LogLevel.Debug))
+					{
+						this.Log().Debug($"OnPrepared: {mp.VideoWidth}x{mp.VideoHeight}");
+					}
 
-				Events.RaiseVideoRatioChanged((double)mp.VideoWidth / global::System.Math.Max(mp.VideoHeight, 1));
+					Events.RaiseVideoRatioChanged((double)mp.VideoWidth / global::System.Math.Max(mp.VideoHeight, 1));
+				}
+				catch { }
 			}
 
 			if (_owner.PlaybackSession.PlaybackState == MediaPlaybackState.Opening)
@@ -499,6 +534,7 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 	{
 		Events?.RaiseMediaFailed(MediaPlayerError.Unknown, message ?? ex?.Message, ex);
 
+		this.Log().Debug($"MediaPlayerElementExtension.OnMediaFailed({message})");
 		_owner.PlaybackSession.PlaybackState = MediaPlaybackState.None;
 	}
 

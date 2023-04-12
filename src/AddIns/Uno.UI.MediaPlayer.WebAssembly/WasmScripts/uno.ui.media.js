@@ -18,6 +18,15 @@ var Uno;
                 static setCurrentPosition(htmlId, currentTime) {
                     document.getElementById(htmlId.toString()).currentTime = currentTime;
                 }
+                static setAttribute(htmlId, name, value) {
+                    document.getElementById(htmlId.toString()).setAttribute(name, value);
+                }
+                static removeAttribute(htmlId, name) {
+                    document.getElementById(htmlId.toString()).removeAttribute(name);
+                }
+                static setPlaybackRate(htmlId, playbackRate) {
+                    document.getElementById(htmlId.toString()).playbackRate = playbackRate;
+                }
                 static reload(htmlId) {
                     var element = Uno.UI.WindowManager.current.getView(htmlId.toString());
                     element.load();

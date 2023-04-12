@@ -8,6 +8,8 @@ using Uno.Foundation.Logging;
 using Windows.Media.Playback;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml;
+using System.Globalization;
+using Windows.UI.Xaml.Controls.Maps;
 
 namespace Uno.UI.Media;
 
@@ -20,6 +22,8 @@ internal partial class HtmlMediaPlayer : Border
 		ImmutableArray.Create(new string[] { ".MP3", ".WAV" });
 	private readonly ImmutableArray<string> videoTagAllowedFormats =
 		ImmutableArray.Create(new string[] { ".MP4", ".WEBM", ".OGG" });
+	private static UIElement ActiveElement;
+	private static string ActiveElementName;
 
 	public event EventHandler<object> OnSourceLoaded;
 	public event EventHandler<object> OnSourceFailed;
@@ -29,16 +33,19 @@ internal partial class HtmlMediaPlayer : Border
 
 	public HtmlMediaPlayer()
 	{
-		_htmlVideo.SetCssStyle("visibility", "hidden");
-		_htmlAudio.SetCssStyle("visibility", "hidden");
 
 		if (this.Log().IsEnabled(LogLevel.Debug))
 		{
 			this.Log().Debug("Adding media elements");
 		}
+		_htmlVideo.SetCssStyle("visibility", "hidden");
+		_htmlAudio.SetCssStyle("visibility", "hidden");
 
 		AddChild(_htmlVideo);
 		AddChild(_htmlAudio);
+
+		ActiveElement = IsVideo ? _htmlVideo : IsAudio ? _htmlAudio : default;
+		ActiveElementName = IsVideo ? "Video" : IsAudio ? "Audio" : "";
 
 		Loaded += OnLoaded;
 		Unloaded += OnUnloaded;
@@ -52,11 +59,14 @@ internal partial class HtmlMediaPlayer : Border
 			this.Log().Debug($"HtmlMediaPlayer Loaded");
 		}
 
+		ActiveElement = IsVideo ? _htmlVideo : IsAudio ? _htmlAudio : default;
+		ActiveElementName = IsVideo ? "Video" : IsAudio ? "Audio" : "";
 		SourceLoaded += OnHtmlSourceLoaded;
 		SourceFailed += OnHtmlSourceFailed;
 		SourceEnded += OnHtmlSourceEnded;
 		MetadataLoaded += OnHtmlMetadataLoaded;
 		TimeUpdated += OnHtmlTimeUpdated;
+
 	}
 
 	private void OnUnloaded(object sender, object args)
@@ -98,19 +108,43 @@ internal partial class HtmlMediaPlayer : Border
 	/// </summary>
 	public double CurrentPosition
 	{
-		get => NativeMethods.GetCurrentPosition(IsAudio ? _htmlAudio.HtmlId : _htmlVideo.HtmlId);
-		set => NativeMethods.SetCurrentPosition(IsAudio ? _htmlAudio.HtmlId : _htmlVideo.HtmlId, value);
+		get
+		{
+			if (ActiveElement == null)
+			{
+				return 0;
+			}
+			return NativeMethods.GetCurrentPosition(ActiveElement.HtmlId);
+		}
+		set
+		{
+			if (ActiveElement != null)
+			{
+				NativeMethods.SetCurrentPosition(ActiveElement.HtmlId, value);
+			}
+		}
 	}
 
 	public double Duration { get; set; }
 
 	public void SetAnonymousCORS(bool enable)
 	{
-		_htmlAudio.SetAnonymousCORS(enable);
-		_htmlVideo.SetAnonymousCORS(enable);
-
-		NativeMethods.Reload(_htmlAudio.HtmlId);
-		NativeMethods.Reload(_htmlVideo.HtmlId);
+		if (enable)
+		{
+			_htmlVideo.SetHtmlAttribute("crossorigin", "anonymous");
+			_htmlAudio.SetHtmlAttribute("crossorigin", "anonymous");
+		}
+		else
+		{
+			if (!string.IsNullOrEmpty(_htmlVideo.GetHtmlAttribute("crossorigin")))
+			{
+				_htmlVideo.RemoveAttribute("crossorigin");
+			}
+			if (!string.IsNullOrEmpty(_htmlAudio.GetHtmlAttribute("crossorigin")))
+			{
+				_htmlAudio.RemoveAttribute("crossorigin");
+			}
+		}
 	}
 
 	public void SetVolume(float volume)
@@ -125,13 +159,18 @@ internal partial class HtmlMediaPlayer : Border
 	{
 		add
 		{
-			_htmlVideo.RegisterHtmlEventHandler("timeupdate", value);
-			_htmlAudio.RegisterHtmlEventHandler("timeupdate", value);
+			if (ActiveElement == null)
+			{
+				return;
+			}
+			ActiveElement.RegisterHtmlEventHandler("timeupdate", value);
 		}
 		remove
 		{
-			_htmlVideo.UnregisterHtmlEventHandler("timeupdate", value);
-			_htmlAudio.UnregisterHtmlEventHandler("timeupdate", value);
+			if (ActiveElement != null)
+			{
+				ActiveElement.UnregisterHtmlEventHandler("timeupdate", value);
+			}
 		}
 	}
 
@@ -142,13 +181,18 @@ internal partial class HtmlMediaPlayer : Border
 	{
 		add
 		{
-			_htmlVideo.RegisterHtmlEventHandler("loadedmetadata", value);
-			_htmlAudio.RegisterHtmlEventHandler("loadedmetadata", value);
+			if (ActiveElement == null)
+			{
+				return;
+			}
+			ActiveElement.RegisterHtmlEventHandler("loadedmetadata", value);
 		}
 		remove
 		{
-			_htmlVideo.UnregisterHtmlEventHandler("loadedmetadata", value);
-			_htmlAudio.UnregisterHtmlEventHandler("loadedmetadata", value);
+			if (ActiveElement != null)
+			{
+				ActiveElement.UnregisterHtmlEventHandler("loadedmetadata", value);
+			}
 		}
 	}
 
@@ -159,13 +203,18 @@ internal partial class HtmlMediaPlayer : Border
 	{
 		add
 		{
-			_htmlVideo.RegisterHtmlEventHandler("ended", value);
-			_htmlAudio.RegisterHtmlEventHandler("ended", value);
+			if (ActiveElement == null)
+			{
+				return;
+			}
+			ActiveElement.RegisterHtmlEventHandler("ended", value);
 		}
 		remove
 		{
-			_htmlVideo.UnregisterHtmlEventHandler("ended", value);
-			_htmlAudio.UnregisterHtmlEventHandler("ended", value);
+			if (ActiveElement != null)
+			{
+				ActiveElement.UnregisterHtmlEventHandler("ended", value);
+			}
 		}
 	}
 
@@ -227,7 +276,7 @@ internal partial class HtmlMediaPlayer : Border
 
 	private void OnHtmlMetadataLoaded(object sender, EventArgs e)
 	{
-		Duration = NativeMethods.GetDuration(IsAudio ? _htmlAudio.HtmlId : _htmlVideo.HtmlId);
+		Duration = NativeMethods.GetDuration(ActiveElement.HtmlId);
 		OnMetadataLoaded?.Invoke(this, Duration);
 	}
 
@@ -238,21 +287,12 @@ internal partial class HtmlMediaPlayer : Border
 			this.Log().Debug($"Media opened [{Source}]");
 		}
 
-		if (IsVideo)
+		ActiveElement = IsVideo ? _htmlVideo : IsAudio ? _htmlAudio : default;
+		ActiveElementName = IsVideo ? "Video" : IsAudio ? "Audio" : "";
+		ActiveElement.SetCssStyle("visibility", "visible");
+		if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 		{
-			_htmlVideo.SetCssStyle("visibility", "visible");
-			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
-			{
-				this.Log().Debug($"Video source loaded: [{Source}]");
-			}
-		}
-		else if (IsAudio)
-		{
-			_htmlAudio.SetCssStyle("visibility", "visible");
-			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
-			{
-				this.Log().Debug($"Audio source loaded: [{Source}]");
-			}
+			this.Log().Debug($"{ActiveElementName} source loaded: [{Source}]");
 		}
 
 		OnSourceLoaded?.Invoke(this, EventArgs.Empty);
@@ -260,23 +300,11 @@ internal partial class HtmlMediaPlayer : Border
 
 	private void OnHtmlSourceFailed(object sender, HtmlCustomEventArgs e)
 	{
-		if (IsVideo)
+		ActiveElement.SetCssStyle("visibility", "hidden");
+		if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 		{
-			_htmlVideo.SetCssStyle("visibility", "hidden");
-			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
-			{
-				this.Log().Error($"Video source failed: [{Source}]");
-			}
+			this.Log().Error($"{ActiveElementName} source failed: [{Source}]");
 		}
-		else if (IsAudio)
-		{
-			_htmlAudio.SetCssStyle("visibility", "hidden");
-			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
-			{
-				this.Log().Error($"Audio source failed: [{Source}]");
-			}
-		}
-
 		OnSourceFailed?.Invoke(this, e.Detail);
 	}
 
@@ -295,21 +323,21 @@ internal partial class HtmlMediaPlayer : Border
 				player.Log().Debug($"HtmlMediaPlayer.OnSourceChanged: {args.NewValue} isVideo:{player.IsVideo} isAudio:{player.IsAudio}");
 			}
 
-			if (player.IsVideo)
+			ActiveElement = player.IsVideo ? _htmlVideo : player.IsAudio ? _htmlAudio : default;
+			ActiveElementName = player.IsVideo ? "Video" : player.IsAudio ? "Audio" : "";
+
+			if (ActiveElement != null)
 			{
-				_htmlVideo.SetHtmlAttribute("src", encodedSource);
+
+				ActiveElement.SetHtmlAttribute("src", encodedSource);
+				ActiveElement.SetCssStyle("visibility", "visible");
+
 				if (player.Log().IsEnabled(LogLevel.Debug))
 				{
-					player.Log().Debug($"Video source changed: [{player.Source}]");
+					player.Log().Debug($"{ActiveElementName} source changed: [{player.Source}]");
 				}
-			}
-			else if (player.IsAudio)
-			{
-				_htmlAudio.SetHtmlAttribute("src", encodedSource);
-				if (player.Log().IsEnabled(LogLevel.Debug))
-				{
-					player.Log().Debug($"Audio source changed: [{player.Source}]");
-				}
+
+				player.OnSourceLoaded?.Invoke(player, EventArgs.Empty);
 			}
 			else
 			{
@@ -318,6 +346,7 @@ internal partial class HtmlMediaPlayer : Border
 					player.Log().Debug($"HtmlMediaPlayer.OnSourceChanged: unsupported source");
 				}
 			}
+
 		}
 	}
 
@@ -329,7 +358,7 @@ internal partial class HtmlMediaPlayer : Border
 	{
 		if (dependencyobject is HtmlMediaPlayer player)
 		{
-			NativeMethods.SetAutoPlay(player.IsAudio ? _htmlAudio.HtmlId : _htmlVideo.HtmlId, (bool)args.NewValue);
+			NativeMethods.SetAutoPlay(ActiveElement.HtmlId, (bool)args.NewValue);
 		}
 	}
 
@@ -346,45 +375,20 @@ internal partial class HtmlMediaPlayer : Border
 		{
 			if (enabled)
 			{
-				if (player.IsVideo)
+				if (!string.IsNullOrEmpty(ActiveElement.GetHtmlAttribute("controls")))
 				{
-					if (!string.IsNullOrEmpty(_htmlVideo.GetHtmlAttribute("controls")))
-					{
-						_htmlVideo.SetHtmlAttribute("controls", "");
-					}
-					else
-					{
-						_htmlVideo.SetHtmlAttribute("controls", "controls");
-					}
+					ActiveElement.SetHtmlAttribute("controls", "");
 				}
-				else if (player.IsAudio)
+				else
 				{
-					if (!string.IsNullOrEmpty(_htmlAudio.GetHtmlAttribute("controls")))
-					{
-						_htmlAudio.SetHtmlAttribute("controls", "");
-
-					}
-					else
-					{
-						_htmlAudio.SetHtmlAttribute("controls", "controls");
-					}
+					ActiveElement.SetHtmlAttribute("controls", "controls");
 				}
 			}
 			else
 			{
-				if (player.IsVideo)
+				if (!string.IsNullOrEmpty(ActiveElement.GetHtmlAttribute("controls")))
 				{
-					if (!string.IsNullOrEmpty(_htmlVideo.GetHtmlAttribute("controls")))
-					{
-						_htmlVideo.SetHtmlAttribute("controls", "");
-					}
-				}
-				else if (player.IsAudio)
-				{
-					if (!string.IsNullOrEmpty(_htmlAudio.GetHtmlAttribute("controls")))
-					{
-						_htmlAudio.SetHtmlAttribute("controls", "");
-					}
+					ActiveElement.SetHtmlAttribute("controls", "");
 				}
 			}
 		}
@@ -393,7 +397,10 @@ internal partial class HtmlMediaPlayer : Border
 	public string Source
 	{
 		get => (string)GetValue(SourceProperty);
-		set => SetValue(SourceProperty, value);
+		set
+		{
+			SetValue(SourceProperty, value);
+		}
 	}
 
 	public bool AutoPlay
@@ -434,8 +441,10 @@ internal partial class HtmlMediaPlayer : Border
 		{
 			this.Log().Debug($"Pause()");
 		}
-
-		NativeMethods.Pause(IsAudio ? _htmlAudio.HtmlId : _htmlVideo.HtmlId);
+		if (ActiveElement != null)
+		{
+			NativeMethods.Pause(ActiveElement.HtmlId);
+		}
 	}
 
 	internal void UpdateVideoStretch(VideoStretch stretch)
@@ -464,7 +473,7 @@ internal partial class HtmlMediaPlayer : Border
 			this.Log().Debug($"Play()");
 		}
 
-		NativeMethods.Play(IsAudio ? _htmlAudio.HtmlId : _htmlVideo.HtmlId);
+		NativeMethods.Play(ActiveElement.HtmlId);
 	}
 
 	public void Stop()
@@ -474,6 +483,35 @@ internal partial class HtmlMediaPlayer : Border
 			this.Log().Debug($"Stop()");
 		}
 
-		NativeMethods.Stop(IsAudio ? _htmlAudio.HtmlId : _htmlVideo.HtmlId);
+		NativeMethods.Stop(ActiveElement.HtmlId);
+	}
+
+	private double _playbackRate;
+	public double PlaybackRate
+	{
+		get => _playbackRate;
+		set
+		{
+			_playbackRate = value;
+			NativeMethods.SetPlaybackRate(IsAudio ? _htmlAudio.HtmlId : _htmlVideo.HtmlId, value);
+		}
+	}
+
+	private bool _isLoopingEnabled;
+	public void SetIsLoopingEnabled(bool value)
+	{
+		_isLoopingEnabled = value;
+		if (_isLoopingEnabled)
+		{
+			ActiveElement.SetHtmlAttribute("loop", "loop");
+		}
+		else
+		{
+			ActiveElement.ClearHtmlAttribute("loop");
+		}
+		if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
+		{
+			this.Log().Debug($"{ActiveElementName} loop {_isLoopingEnabled}: [{Source}]");
+		}
 	}
 }

@@ -56,6 +56,7 @@ namespace Windows.UI.Xaml.Controls
 		private const string ZoomButtonName = "ZoomButton";
 		private const string PlaybackRateButtonName = "PlaybackRateButton";
 		private const string SkipForwardButtonName = "SkipForwardButton";
+		private const string RepeatVideoButtonName = "RepeatVideoButton";
 		private const string NextTrackButtonName = "NextTrackButton";
 		private const string FastForwardButtonName = "FastForwardButton";
 		private const string RewindButtonName = "RewindButton";
@@ -83,6 +84,7 @@ namespace Windows.UI.Xaml.Controls
 		private Button _zoomButton;
 		private Button _playbackRateButton;
 		private Button _skipForwardButton;
+		private Button _repeatVideoButton;
 		private Button _nextTrackButton;
 		private Button _fastForwardButton;
 		private Button _rewindButton;
@@ -105,15 +107,12 @@ namespace Windows.UI.Xaml.Controls
 
 		public MediaTransportControls() : base()
 		{
-
 			_controlsVisibilityTimer = new Timer()
 			{
 				AutoReset = false,
 				Interval = 3000
 			};
-
 			_controlsVisibilityTimer.Elapsed += ControlsVisibilityTimerElapsed;
-
 			DefaultStyleKey = typeof(MediaTransportControls);
 		}
 
@@ -196,6 +195,14 @@ namespace Windows.UI.Xaml.Controls
 			_playbackRateButton = this.GetTemplateChild(PlaybackRateButtonName) as Button;
 			_playbackRateButton?.SetBinding(Button.VisibilityProperty, new Binding { Path = "IsPlaybackRateButtonVisible", Source = this, Mode = BindingMode.OneWay, FallbackValue = Visibility.Collapsed, Converter = trueToVisible });
 			_playbackRateButton?.SetBinding(Button.IsEnabledProperty, new Binding { Path = "IsPlaybackRateEnabled", Source = this, Mode = BindingMode.OneWay, FallbackValue = true });
+			_playbackRateButton.Tapped -= PlaybackRateButtonTapped;
+			_playbackRateButton.Tapped += PlaybackRateButtonTapped;
+
+			_repeatVideoButton = this.GetTemplateChild(RepeatVideoButtonName) as Button;
+			_repeatVideoButton?.SetBinding(Button.VisibilityProperty, new Binding { Path = "IsRepeatButtonVisible", Source = this, Mode = BindingMode.OneWay, FallbackValue = Visibility.Collapsed, Converter = trueToVisible });
+			_repeatVideoButton?.SetBinding(Button.IsEnabledProperty, new Binding { Path = "IsRepeatEnabled", Source = this, Mode = BindingMode.OneWay, FallbackValue = true });
+			_repeatVideoButton.Tapped -= IsRepeatEnabledButtonTapped;
+			_repeatVideoButton.Tapped += IsRepeatEnabledButtonTapped;
 
 			_skipForwardButton = this.GetTemplateChild(SkipForwardButtonName) as Button;
 			_skipForwardButton?.SetBinding(Button.VisibilityProperty, new Binding { Path = "IsSkipForwardButtonVisible", Source = this, Mode = BindingMode.OneWay, FallbackValue = Visibility.Collapsed, Converter = trueToVisible });
@@ -203,6 +210,13 @@ namespace Windows.UI.Xaml.Controls
 
 			_nextTrackButton = this.GetTemplateChild(NextTrackButtonName) as Button;
 			_nextTrackButton?.SetBinding(Button.VisibilityProperty, new Binding { Path = "IsNextTrackButtonVisible", Source = this, Mode = BindingMode.OneWay, FallbackValue = Visibility.Collapsed, Converter = trueToVisible });
+			_nextTrackButton.Tapped -= NextTrackButtonTapped;
+			_nextTrackButton.Tapped += NextTrackButtonTapped;
+
+			_previousTrackButton = this.GetTemplateChild(PreviousTrackButtonName) as Button;
+			_previousTrackButton?.SetBinding(Button.VisibilityProperty, new Binding { Path = "IsPreviousTrackButtonVisible", Source = this, Mode = BindingMode.OneWay, FallbackValue = Visibility.Collapsed, Converter = trueToVisible });
+			_previousTrackButton.Tapped -= PreviousTrackButtonTapped;
+			_previousTrackButton.Tapped += PreviousTrackButtonTapped;
 
 			_fastForwardButton = this.GetTemplateChild(FastForwardButtonName) as Button;
 			_fastForwardButton?.SetBinding(Button.VisibilityProperty, new Binding { Path = "IsFastForwardButtonVisible", Source = this, Mode = BindingMode.OneWay, FallbackValue = Visibility.Collapsed, Converter = trueToVisible });
@@ -211,9 +225,6 @@ namespace Windows.UI.Xaml.Controls
 			_rewindButton = this.GetTemplateChild(RewindButtonName) as Button;
 			_rewindButton?.SetBinding(Button.VisibilityProperty, new Binding { Path = "IsFastRewindButtonVisible", Source = this, Mode = BindingMode.OneWay, FallbackValue = Visibility.Collapsed, Converter = trueToVisible });
 			_rewindButton?.SetBinding(Button.IsEnabledProperty, new Binding { Path = "IsFastRewindEnabled", Source = this, Mode = BindingMode.OneWay, FallbackValue = true });
-
-			_previousTrackButton = this.GetTemplateChild(PreviousTrackButtonName) as Button;
-			_previousTrackButton?.SetBinding(Button.VisibilityProperty, new Binding { Path = "IsPreviousTrackButtonVisible", Source = this, Mode = BindingMode.OneWay, FallbackValue = Visibility.Collapsed, Converter = trueToVisible });
 
 			_skipBackwardButton = this.GetTemplateChild(SkipBackwardButtonName) as Button;
 			_skipBackwardButton?.SetBinding(Button.VisibilityProperty, new Binding { Path = "IsSkipBackwardButtonVisible", Source = this, Mode = BindingMode.OneWay, FallbackValue = Visibility.Collapsed, Converter = trueToVisible });
@@ -238,8 +249,12 @@ namespace Windows.UI.Xaml.Controls
 			_bufferingProgressBar = this.GetTemplateChild(BufferingProgressBarName) as ProgressBar;
 
 			_timelineContainer = this.GetTemplateChild(TimelineContainerName) as Border;
+			_timelineContainer?.SetBinding(Border.VisibilityProperty, new Binding { Path = "IsSeekBarVisible", Source = this, Mode = BindingMode.OneWay, FallbackValue = Visibility.Collapsed, Converter = trueToVisible });
+			_timelineContainer?.SetBinding(Border.IsEnabledProperty, new Binding { Path = "IsSeekEnabled", Source = this, Mode = BindingMode.OneWay, FallbackValue = true });
 
 			_downloadProgressIndicator = _progressSlider?.GetTemplateChild(DownloadProgressIndicatorName) as ProgressBar;
+
+			UpdateMediaTransportControlMode();
 
 			_rootGrid = this.GetTemplateChild(RootGridName) as Grid;
 			if (_rootGrid != null)
@@ -258,6 +273,24 @@ namespace Windows.UI.Xaml.Controls
 		{
 			_mpe.IsFullWindow = !_mpe.IsFullWindow;
 			UpdateFullscreenButtonStyle();
+		}
+		private void PlaybackRateButtonTapped(object sender, RoutedEventArgs e)
+		{
+			_mpe.MediaPlayer.PlaybackRate += 0.25;
+		}
+		private void IsRepeatEnabledButtonTapped(object sender, RoutedEventArgs e)
+		{
+			_mpe.MediaPlayer.IsLoopingEnabled = !_mpe.MediaPlayer.IsLoopingEnabled;
+		}
+		private void PreviousTrackButtonTapped(object sender, RoutedEventArgs e)
+		{
+			_mediaPlayer.PlaybackSession.Position = TimeSpan.Zero;
+			_mpe.MediaPlayer.PlaybackSession.Position = TimeSpan.Zero;
+		}
+		private void NextTrackButtonTapped(object sender, RoutedEventArgs e)
+		{
+			_mediaPlayer.PlaybackSession.Position = _mediaPlayer.PlaybackSession.NaturalDuration;
+			_mpe.MediaPlayer.PlaybackSession.Position = _mediaPlayer.PlaybackSession.NaturalDuration;
 		}
 
 		private void UpdateFullscreenButtonStyle()
@@ -350,6 +383,10 @@ namespace Windows.UI.Xaml.Controls
 		private static void OnIsSeekEnabledChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
 			VisualStateManager.GoToState(((MediaTransportControls)dependencyObject)._progressSlider, (bool)args.NewValue ? "Normal" : "Disabled", false);
+		}
+		private void UpdateMediaTransportControlMode()
+		{
+			VisualStateManager.GoToState(this, IsCompact ? "CompactMode" : "NormalMode", true);
 		}
 	}
 }

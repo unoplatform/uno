@@ -8,19 +8,4 @@ internal class HtmlAudio : UIElement
 	{
 		SetAttribute("background-color", "transparent");
 	}
-
-	internal void SetAnonymousCORS(bool enable)
-	{
-		if (enable)
-		{
-			SetAttribute("crossorigin", "anonymous");
-		}
-		else
-		{
-			if (string.IsNullOrEmpty(GetAttribute("controls")))
-			{
-				RemoveAttribute("controls");
-			}
-		}
-	}
 }
