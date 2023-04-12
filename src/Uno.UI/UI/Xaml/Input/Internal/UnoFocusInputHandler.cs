@@ -49,10 +49,15 @@ internal class UnoFocusInputHandler
 			e.Handled = TryHandleTabFocus(_isShiftDown);
 		}
 
-		if (e.OriginalKey == VirtualKey.Up ||
-			e.OriginalKey == VirtualKey.Down ||
-			e.OriginalKey == VirtualKey.Left ||
-			e.OriginalKey == VirtualKey.Right)
+		if (e.OriginalKey is
+			VirtualKey.Up or
+			VirtualKey.GamepadDPadUp or
+			VirtualKey.Down or
+			VirtualKey.GamepadDPadDown or
+			VirtualKey.Left or
+			VirtualKey.GamepadDPadLeft or
+			VirtualKey.Right or
+			VirtualKey.GamepadDPadRight)
 		{
 			e.Handled = TryHandleDirectionalFocus(e.OriginalKey);
 		}
