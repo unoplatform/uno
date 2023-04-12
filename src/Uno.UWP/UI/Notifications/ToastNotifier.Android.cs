@@ -115,8 +115,9 @@ namespace Windows.UI.Notifications
 				var childNode0 = childToast[0];
 				if (childNode0 is null)
 				{
-					throw new InvalidOperationException("Invalid document notification document"); 
+					throw new InvalidOperationException("Invalid document notification document");
 				}
+
 				toastTitleText = ConvertToastTextToString(childNode0.InnerText);
 
 				if (childToast.Count > 1)
