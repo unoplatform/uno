@@ -771,5 +771,14 @@ namespace Uno.UI
 			public static bool UseHandForInteraction { get; set; } = true;
 #endif
 		}
+
+		public static class Timeline
+		{
+			/// <summary>
+			/// Determines if the default animation starting value
+			/// will be from the animated value or local value, when the From property is omitted.
+			/// </summary>
+			public static bool DefaultsStartingValueFromAnimatedValue { get; } = true;
+		}
 	}
 }
