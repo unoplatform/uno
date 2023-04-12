@@ -833,7 +833,7 @@ namespace Windows.UI.Xaml
 					OnPointerDown(ptArgs, BubblingContext.OnManagedBubbling);
 					break;
 				case RoutedEventFlag.PointerMoved:
-#if __IOS__ || __ANDROID__
+#if __IOS__
 					OnNativePointerMoveWithOverCheck(ptArgs, ptArgs.IsPointCoordinatesOver(this), BubblingContext.OnManagedBubbling);
 #else
 					OnPointerMove(ptArgs, BubblingContext.OnManagedBubbling);
