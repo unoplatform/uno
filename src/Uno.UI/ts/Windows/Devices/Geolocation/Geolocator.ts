@@ -29,7 +29,7 @@
 			this.positionWatches = {};
 
 			if (!Geolocator.interopInitialized) {
-				const exports: any = (<any>globalThis).DotnetExports?.Uno?.Windows?.Devices?.Geolocation?.Geolocator;
+				const exports: any = (<any>globalThis).DotnetExports?.Uno?.Uno?.Devices?.Geolocation?.Geolocator;
 
 				if (exports !== undefined) {
 					Geolocator.dispatchAccessRequest = exports.DispatchAccessRequest;
@@ -37,9 +37,9 @@
 					Geolocator.dispatchGeoposition = exports.DispatchGeoposition;
 				}
 				else {
-					Geolocator.dispatchAccessRequest = (<any>Module).mono_bind_static_method("[Uno] Windows.Devices.Geolocation.Geolocator:DispatchAccessRequest");
-					Geolocator.dispatchError = (<any>Module).mono_bind_static_method("[Uno] Windows.Devices.Geolocation.Geolocator:DispatchError");
-					Geolocator.dispatchGeoposition = (<any>Module).mono_bind_static_method("[Uno] Windows.Devices.Geolocation.Geolocator:DispatchGeoposition");
+					Geolocator.dispatchAccessRequest = (<any>Module).mono_bind_static_method("[Uno] Uno.Devices.Geolocation.Geolocator:DispatchAccessRequest");
+					Geolocator.dispatchError = (<any>Module).mono_bind_static_method("[Uno] Uno.Devices.Geolocation.Geolocator:DispatchError");
+					Geolocator.dispatchGeoposition = (<any>Module).mono_bind_static_method("[Uno] Uno.Devices.Geolocation.Geolocator:DispatchGeoposition");
 				}
 
 				Geolocator.interopInitialized = true;
