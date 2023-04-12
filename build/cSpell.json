@@ -114,7 +114,13 @@
 	"Udemy",
 	"UNOB",
 	"winui",
+<<<<<<< HEAD
 	"illinker"
+=======
+	"illinker",
+	"Onoh",
+	"Findlay"
+>>>>>>> dd6ca6418d (chore: adjust for author name)
   ],
   "patterns": [
 	{
