@@ -50,56 +50,55 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		protected override bool OnNativeMotionEvent(MotionEvent nativeEvent)
-		{
-			// TODO: Is this reachable?
-			if (!ArePointersEnabled)
-			{
-				return false;
-			}
+		//protected override bool OnNativeMotionEvent(MotionEvent nativeEvent)
+		//{
+		//	// TODO: Is this reachable?
+		//	if (!ArePointersEnabled)
+		//	{
+		//		return false;
+		//	}
 
-			switch (nativeEvent.ActionMasked)
-			{
-				// TODO: STYLUS_WITH_BARREL_DOWN, STYLUS_WITH_BARREL_MOVE, STYLUS_WITH_BARREL_UP ?
-				case MotionEventActions.Down:
-				case MotionEventActions.PointerDown:
-					OnPointerDown(new PointerRoutedEventArgs(BuildPointerArgs(nativeEvent), this));
-					break;
+		//	switch (nativeEvent.ActionMasked)
+		//	{
+		//		// TODO: STYLUS_WITH_BARREL_DOWN, STYLUS_WITH_BARREL_MOVE, STYLUS_WITH_BARREL_UP ?
+		//		case MotionEventActions.Down:
+		//		case MotionEventActions.PointerDown:
+		//			OnPointerDown(new PointerRoutedEventArgs(BuildPointerArgs(nativeEvent), this));
+		//			break;
 
-				case MotionEventActions.Move:
-				case MotionEventActions.HoverMove:
-					OnPointerMove(new PointerRoutedEventArgs(BuildPointerArgs(nativeEvent), this));
-					break;
+		//		case MotionEventActions.Move:
+		//		case MotionEventActions.HoverMove:
+		//			OnPointerMove(new PointerRoutedEventArgs(BuildPointerArgs(nativeEvent), this));
+		//			break;
 
-				case MotionEventActions.Up:
-				case MotionEventActions.PointerUp:
-					OnPointerUp(new PointerRoutedEventArgs(BuildPointerArgs(nativeEvent), this));
-					break;
+		//		case MotionEventActions.Up:
+		//		case MotionEventActions.PointerUp:
+		//			OnPointerUp(new PointerRoutedEventArgs(BuildPointerArgs(nativeEvent), this));
+		//			break;
 
-				case MotionEventActions.Cancel:
-					OnPointerCancel(new PointerRoutedEventArgs(BuildPointerArgs(nativeEvent), this));
-					break;
+		//		case MotionEventActions.Cancel:
+		//			OnPointerCancel(new PointerRoutedEventArgs(BuildPointerArgs(nativeEvent), this));
+		//			break;
 
-				case MotionEventActions.HoverEnter:
-					OnPointerEnter(new PointerRoutedEventArgs(BuildPointerArgs(nativeEvent), this));
-					break;
+		//		case MotionEventActions.HoverEnter:
+		//			OnPointerEnter(new PointerRoutedEventArgs(BuildPointerArgs(nativeEvent), this));
+		//			break;
 
-				case MotionEventActions.HoverExit:
-					OnPointerExited(new PointerRoutedEventArgs(BuildPointerArgs(nativeEvent), this));
-					break;
-			}
+		//		case MotionEventActions.HoverExit:
+		//			OnPointerExited(new PointerRoutedEventArgs(BuildPointerArgs(nativeEvent), this));
+		//			break;
+		//	}
 
-			return false;
-		}
+		//	return false;
+		//}
 
 		private static readonly ulong _unixEpochMs = (ulong)(new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc) - new DateTime()).TotalMilliseconds;
 
 		private const int _pointerIdsCount = (int)MotionEventActions.PointerIndexMask >> (int)MotionEventActions.PointerIndexShift; // 0xff
 		private const int _pointerIdsShift = 31 - (int)MotionEventActions.PointerIndexShift; // 23
 
-		private protected PointerEventArgs BuildPointerArgs(MotionEvent nativeEvent)
+		private protected PointerEventArgs BuildPointerArgs(MotionEvent nativeEvent, int pointerIndex)
 		{
-			var pointerIndex = nativeEvent.ActionIndex;
 			var pointerType = nativeEvent.GetToolType(pointerIndex).ToPointerDeviceType();
 
 			var device = Windows.Devices.Input.PointerDevice.For((Windows.Devices.Input.PointerDeviceType)pointerType);
@@ -114,7 +113,7 @@ namespace Windows.UI.Xaml
 				device,
 				pointerId,
 				// TODO: Confirm position calculation.
-				rawPosition: position,
+				rawPosition: position, // TODO: Should be relative to the screen
 				position: position,
 				isInContact,
 				GetProperties(nativeEvent.GetToolType(pointerIndex), nativeEvent, isInContact)

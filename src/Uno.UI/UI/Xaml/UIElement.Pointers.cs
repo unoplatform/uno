@@ -1282,7 +1282,7 @@ namespace Windows.UI.Xaml
 		/// </remarks>
 		internal bool IsPressed(Pointer pointer) => _pressedPointers.Contains(pointer.PointerId);
 
-		private bool IsPressed(uint pointerId) => _pressedPointers.Contains(pointerId);
+		internal bool IsPressed(uint pointerId) => _pressedPointers.Contains(pointerId);
 
 		private bool SetPressed(PointerRoutedEventArgs args, bool isPressed, BubblingContext ctx)
 		{
@@ -1336,7 +1336,13 @@ namespace Windows.UI.Xaml
 		 * - The PointersCapture property remains `null` until a pointer is captured
 		 */
 
-		private List<Pointer> _localExplicitCaptures;
+		/// <summary>
+		/// DO NOT USE
+		/// This is the backing field of <see cref="PointerCaptures"/>.
+		/// It's internal to be accessible to the <see cref="PointerCapture"/> and must not be used directly by any other code!
+		/// Use dedicated APIs like <see cref="CapturePointer(Pointer)"/>, <see cref="ReleasePointerCapture(Pointer)"/> and <see cref="IsCaptured(Pointer)"/> instead.
+		/// </summary>
+		internal List<Pointer> PointerCapturesBackingField;
 
 		#region Capture public (and internal) API ==> This manages only Explicit captures
 		public static DependencyProperty PointerCapturesProperty { get; } = DependencyProperty.Register(
@@ -1351,7 +1357,7 @@ namespace Windows.UI.Xaml
 		/// Indicates if this UIElement has any active ** EXPLICIT ** pointer capture.
 		/// </summary>
 #if __ANDROID__
-		internal new bool HasPointerCapture => (_localExplicitCaptures?.Count ?? 0) != 0;
+		internal new bool HasPointerCapture => (PointerCapturesBackingField?.Count ?? 0) != 0;
 #else
 		internal bool HasPointerCapture => (_localExplicitCaptures?.Count ?? 0) != 0;
 #endif
@@ -1418,8 +1424,8 @@ namespace Windows.UI.Xaml
 		}
 		#endregion
 
-		partial void CapturePointerNative(Pointer pointer);
-		partial void ReleasePointerNative(Pointer pointer);
+		internal partial void CapturePointerNative(Pointer pointer);
+		internal partial void ReleasePointerNative(Pointer pointer);
 
 		private bool ValidateAndUpdateCapture(PointerRoutedEventArgs args)
 			=> ValidateAndUpdateCapture(args, IsOver(args.Pointer));
@@ -1469,10 +1475,10 @@ namespace Windows.UI.Xaml
 
 		private PointerCaptureResult Capture(Pointer pointer, PointerCaptureKind kind, PointerRoutedEventArgs relatedArgs)
 		{
-			if (_localExplicitCaptures == null)
+			if (PointerCapturesBackingField == null)
 			{
-				_localExplicitCaptures = new List<Pointer>();
-				this.SetValue(PointerCapturesProperty, _localExplicitCaptures); // Note: On UWP this is done only on first capture (like here)
+				PointerCapturesBackingField = new List<Pointer>();
+				this.SetValue(PointerCapturesProperty, PointerCapturesBackingField); // Note: On UWP this is done only on first capture (like here)
 			}
 
 			return PointerCapture.GetOrCreate(pointer).TryAddTarget(this, kind, relatedArgs);
