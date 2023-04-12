@@ -206,6 +206,13 @@ namespace Uno.UI {
 		}
 
 		/**
+			* Estimated application startup time
+			*/
+		public static getBootTime(): number {
+			return Date.now() - performance.now();
+		}
+
+		/**
 			* Create a html DOM element representing a Xaml element.
 			*
 			* You need to call addView to connect it to the DOM.

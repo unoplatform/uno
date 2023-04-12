@@ -2,7 +2,7 @@
 	export class RenderingLoopAnimator {
 		private static activeInstances: { [jsHandle: number]: RenderingLoopAnimator} = {};
 
-		public static createInstance(managedHandle: string, jsHandle: number) {
+		public static createInstance(managedHandle: number, jsHandle: number) {
 			RenderingLoopAnimator.activeInstances[jsHandle] = new RenderingLoopAnimator(managedHandle);
 		}
 
@@ -20,7 +20,7 @@
 			delete RenderingLoopAnimator.activeInstances[jsHandle];
 		}
 
-		private constructor(private managedHandle: string) {
+		private constructor(private managedHandle: number) {
 		}
 
 		public SetStartFrameDelay(delay: number) {

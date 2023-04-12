@@ -110,7 +110,7 @@ namespace Windows.UI.Xaml.Input
 
 		private static ulong ToTimeStamp(double timestamp)
 		{
-			_bootTime ??= (ulong)(double.Parse(WebAssemblyRuntime.InvokeJS("Date.now() - performance.now()"), CultureInfo.InvariantCulture) * TimeSpan.TicksPerMillisecond);
+			_bootTime ??= (ulong)(WindowManagerInterop.GetBootTime() * TimeSpan.TicksPerMillisecond);
 
 			return _bootTime.Value + (ulong)(timestamp * TimeSpan.TicksPerMillisecond);
 		}

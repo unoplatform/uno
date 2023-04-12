@@ -30,6 +30,10 @@ using Uno.UI;
 using Uno.UI.Xaml;
 using System.Diagnostics.CodeAnalysis;
 
+#if NET7_0_OR_GREATER
+using NativeMethods = __Windows.ApplicationModel.DataTransfer.DragDrop.Core.DragDropExtension.NativeMethods;
+#endif
+
 // As IDragDropExtension is internal, the generated registration cannot be used.
 // [assembly: ApiExtension(typeof(Windows.ApplicationModel.DataTransfer.DragDrop.Core.IDragDropExtension), typeof(Windows.ApplicationModel.DataTransfer.DragDrop.Core.DragDropExtension))]
 
@@ -100,7 +104,11 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 
 		private static void EnableExternalWarning()
 		{
+#if NET7_0_OR_GREATER
+			NativeMethods.RegisterNoOp();
+#else
 			WebAssemblyRuntime.InvokeJS("Windows.ApplicationModel.DataTransfer.DragDrop.Core.DragDropExtension.registerNoOp();");
+#endif
 		}
 
 		/// <inheritdoc />
