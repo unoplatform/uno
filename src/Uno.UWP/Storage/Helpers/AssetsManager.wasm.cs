@@ -33,7 +33,7 @@ namespace Windows.Storage.Helpers
 
 			var assets = await WebAssemblyRuntime.InvokeAsync($"Windows.Storage.AssetManager.DownloadAssetsManifest(\'{assetsUri}\')");
 
-			return new HashSet<string>(Regex.Split(assets, "\r\n|\r|\n"), StringComparer.OrdinalIgnoreCase);
+			return new HashSet<string>(SplitMatch().Split(assets), StringComparer.OrdinalIgnoreCase);
 		}
 
 		public static async Task<string> DownloadAsset(CancellationToken ct, string assetPath)
@@ -88,5 +88,15 @@ namespace Windows.Storage.Helpers
 				throw new FileNotFoundException($"The file [{assetPath}] cannot be found");
 			}
 		}
+
+#if NET7_0_OR_GREATER
+		[GeneratedRegex("\r\n|\r|\n")]
+#endif
+		private static partial Regex SplitMatch();
+
+#if !NET7_0_OR_GREATER
+		private static partial Regex SplitMatch()
+			=> new Regex("\r\n|\r|\n");
+#endif
 	}
 }
