@@ -26,7 +26,7 @@ public partial class FontIcon : IconElement
 		_textBlock = new TextBlock();
 		AddIconChild(_textBlock);
 
-		Loaded += FontIcon_Loaded;
+		SynchronizeProperties();
 	}
 
 	/// <summary>
@@ -178,8 +178,6 @@ public partial class FontIcon : IconElement
 				false,
 				propertyChangedCallback: (s, e) => ((FontIcon)s).UpdateMirroring()));
 
-	private void FontIcon_Loaded(object sender, RoutedEventArgs e) => SynchronizeProperties();
-
 	private void SynchronizeProperties()
 	{
 		_textBlock.Style = null;
@@ -213,5 +211,5 @@ public partial class FontIcon : IconElement
 	}
 
 	private protected override void OnForegroundChanged(DependencyPropertyChangedEventArgs e) =>
-		_textBlock.Foreground = e.NewValue as Brush;
+		_textBlock.Foreground = (Brush)e.NewValue;
 }

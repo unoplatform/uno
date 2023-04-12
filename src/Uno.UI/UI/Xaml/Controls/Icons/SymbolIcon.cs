@@ -35,7 +35,7 @@ public sealed partial class SymbolIcon : IconElement
 		AddIconChild(_textBlock);
 		Symbol = symbol;
 
-		Loaded += SymbolIcon_Loaded;
+		SynchronizeProperties();
 	}
 
 	/// <summary>
@@ -57,16 +57,8 @@ public sealed partial class SymbolIcon : IconElement
 			typeof(SymbolIcon),
 			new FrameworkPropertyMetadata(Symbol.Emoji, propertyChangedCallback: (d, e) => ((SymbolIcon)d).SetSymbolText()));
 
-	private protected override void OnForegroundChanged(DependencyPropertyChangedEventArgs e) =>
-		_textBlock.Foreground = e.NewValue as Brush;
-
-	private void SymbolIcon_Loaded(object sender, RoutedEventArgs e) => SynchronizeProperties();
-
 	private void SynchronizeProperties()
 	{
-		SetSymbolText();
-		_textBlock.Foreground = Foreground;
-
 		_textBlock.Style = null;
 		_textBlock.TextAlignment = TextAlignment.Center;
 		_textBlock.HorizontalAlignment = HorizontalAlignment.Stretch;
@@ -76,10 +68,16 @@ public sealed partial class SymbolIcon : IconElement
 		_textBlock.FontFamily = GetSymbolFontFamily();
 		_textBlock.IsTextScaleFactorEnabled = false;
 		_textBlock.SetValue(AutomationProperties.AccessibilityViewProperty, AccessibilityView.Raw);
+
+		SetSymbolText();
+		_textBlock.Foreground = Foreground;
 	}
 
 	private void SetSymbolText() => _textBlock.Text = new string((char)Symbol, 1);
 
 	private static FontFamily GetSymbolFontFamily() =>
 		 _symbolIconFontFamily ??= new FontFamily(Uno.UI.FeatureConfiguration.Font.SymbolsFont);
+
+	private protected override void OnForegroundChanged(DependencyPropertyChangedEventArgs e) =>
+		_textBlock.Foreground = (Brush)e.NewValue;
 }
