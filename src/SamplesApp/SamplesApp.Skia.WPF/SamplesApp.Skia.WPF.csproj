@@ -1,6 +1,10 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras">
 	<PropertyGroup>
-		<TargetFrameworks>net7.0-windows;net8.0-windows</TargetFrameworks>
+		<TargetFrameworks>net7.0-windows</TargetFrameworks>
+		<TargetFrameworks Condition="'$(UnoDisableNet8)'!='true'">$(TargetFrameworks);net8.0-windows</TargetFrameworks>
+	</PropertyGroup>
+
+	<PropertyGroup>
 		<!--
 		Enable implicit dotnet runtime forward rolling, as the specifed target framework
 		project may run with only a later version of the .NET runtime installed.
