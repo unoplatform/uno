@@ -6,7 +6,7 @@
 /* https://github.com/unoplatform/uno/issues/3954 */
 @font-face {
   font-family: 'Segoe UI';
-  src: local('system-ui'), local('Segoe UI'), local('-apple-system'), local('BlinkMacSystemFont'), local('Inter'), local('Cantarell'), local('Ubuntu'), local('Roboto'), local('Open Sans'), local('Noto Sans'), local('Helvetica Neue'), local('sans-serif');
+  src: local('Segoe UI'), local('-apple-system'), local('BlinkMacSystemFont'), local('Inter'), local('Cantarell'), local('Ubuntu'), local('Roboto'), local('Open Sans'), local('Noto Sans'), local('Helvetica Neue'), local('sans-serif');
 }
 
 @font-face {
