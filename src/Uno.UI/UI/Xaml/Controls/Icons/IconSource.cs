@@ -17,8 +17,6 @@ namespace Windows.UI.Xaml.Controls
 		public static DependencyProperty ForegroundProperty { get; } =
 			DependencyProperty.Register(nameof(Foreground), typeof(Brush), typeof(IconSource), new FrameworkPropertyMetadata(null));
 
-#nullable enable
-
 		public virtual IconElement? CreateIconElement() => default;
 	}
 }
