@@ -104,48 +104,51 @@ namespace Windows.UI.Xaml
 
 			var virtualKey = VirtualKeyHelper.FromKeyCode(e.KeyCode);
 
-			var args = new KeyEventArgs(
-				"keyboard",
-				virtualKey,
-				new CorePhysicalKeyStatus
-				{
-					ScanCode = (uint)e.KeyCode,
-					RepeatCount = 1,
-				});
-
 			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
-				this.Log().Trace($"PressesBegan: {e.KeyCode} -> {virtualKey}");
+				this.Log().Trace($"DispatchKeyEvent: {e.KeyCode} -> {virtualKey}");
 			}
 
 			try
 			{
+				if (FocusManager.GetFocusedElement() is FrameworkElement element)
+				{
+					var routedArgs = new KeyRoutedEventArgs(this, virtualKey)
+					{
+						CanBubbleNatively = false,
+					};
+
+					RoutedEvent routedEvent = e.Action == KeyEventActions.Down ?
+						UIElement.KeyDownEvent :
+						UIElement.KeyUpEvent;
+
+					element?.RaiseEvent(routedEvent, routedArgs);
+
+					handled = routedArgs.Handled;
+				}
+
 				if (CoreWindow.GetForCurrentThread() is ICoreWindowEvents ownerEvents)
 				{
+					var coreWindowArgs = new KeyEventArgs(
+						"keyboard",
+						virtualKey,
+						new CorePhysicalKeyStatus
+						{
+							ScanCode = (uint)e.KeyCode,
+							RepeatCount = 1,
+						})
+					{
+						Handled = handled
+					};
+
 					if (e.Action == KeyEventActions.Down)
 					{
-						ownerEvents.RaiseKeyDown(args);
+						ownerEvents.RaiseKeyDown(coreWindowArgs);
 					}
 					else if (e.Action == KeyEventActions.Up)
 					{
-						ownerEvents.RaiseKeyUp(args);
+						ownerEvents.RaiseKeyUp(coreWindowArgs);
 					}
-
-					if (FocusManager.GetFocusedElement() is FrameworkElement element)
-					{
-						var routedArgs = new KeyRoutedEventArgs(this, virtualKey)
-						{
-							CanBubbleNatively = false
-						};
-
-						RoutedEvent routedEvent = e.Action == KeyEventActions.Down ?
-							UIElement.KeyDownEvent :
-							UIElement.KeyUpEvent;
-
-						element?.RaiseEvent(routedEvent, routedArgs);
-					}
-
-					handled = true;
 				}
 			}
 			catch (Exception ex)
