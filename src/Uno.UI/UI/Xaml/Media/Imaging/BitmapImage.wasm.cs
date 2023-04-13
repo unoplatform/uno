@@ -186,7 +186,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 #endif
 		}
 
-			internal override void ReportImageLoaded()
+		internal override void ReportImageLoaded()
 		{
 			RaiseImageOpened();
 		}
