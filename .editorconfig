@@ -402,6 +402,15 @@ dotnet_diagnostic.CA2101.severity = none
 # CA2211: Non-constant fields should not be visible
 dotnet_diagnostic.CA2211.severity = error
 
+# CA1851: Possible multiple enumerations of 'IEnumerable' collection.
+dotnet_diagnostic.CA1851.severity = none
+
+# CA1854: Prefer a 'TryGetValue' call over a Dictionary indexer access guarded by a 'ContainsKey'
+dotnet_diagnostic.CA1854.severity = none
+
+# CA1852: Type 'XX' can be sealed because
+dotnet_diagnostic.CA1852.severity = none
+
 # IDE0055: Fix formatting
 dotnet_diagnostic.IDE0055.severity = warning # Will be promoted as an error by TreatWarningsAsErrors but also allows usage of WarningsNotAsErrors in debug
 
