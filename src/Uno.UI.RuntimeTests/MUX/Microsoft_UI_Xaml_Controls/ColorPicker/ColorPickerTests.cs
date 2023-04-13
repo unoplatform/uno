@@ -341,7 +341,10 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 				Content.UpdateLayout();
 			});
 
-			spectrumLoadedEvent.WaitOne();
+			if (!spectrumLoadedEvent.WaitOne(timeout: TimeSpan.FromSeconds(10)))
+			{
+				Assert.Fail("Timeout waiting on SpectrumRectangle.Fill to be set.");
+			}
 		}
 	}
 
