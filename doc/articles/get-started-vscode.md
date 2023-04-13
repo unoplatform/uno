@@ -99,6 +99,64 @@ Note that C# Hot Reload is not available when running with the debugger. In orde
     dotnet run
     ```
 
+### Mobile Targets (iOS, Android, Mac Catalyst)
+
+The Uno Platform extension provides support for debugging:
+- The Android target on Windows
+- The iOS, Android and Mac Catalyst targets on macOS
+
+It is also possible to use [Remote - SSH](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-ssh) addin to connect to a macOS machine from a Windows or Linux machine to debug iOS and Mac Catalyst apps remotely.
+
+# [**Android**](#tab/android-debug)
+
+#### Debugging for Android
+- In the status bar, select the `MyApp.Mobile` project (by default `MyApp.sln` is selected)
+
+  ![mobile project name](Assets/quick-start/vs-code-debug-project.png)
+- To the right of `MyApp.Mobile`, click on the target framework to select `net7.0-android | Debug`
+
+  ![mobile project name](Assets/quick-start/vs-code-debug-tf-android.png)
+- Then, to the right of the target framework, select the device to debug with. You will need to connect an android device, or create an Android simulator.
+
+  ![mobile project name](Assets/quick-start/vs-code-debug-device-android.png)
+- Finally, in the debugger side menu, select the `Uno Plaform Mobile` profile
+- Either press `F5` or press the green arrow to start the debugging session.
+
+# [**iOS**](#tab/android-debug)
+
+> [!NOTE]
+> Debugging for iOS is only possible when running locally (or remotely through SSH) on a macOS machine.
+
+- In the status bar, select the `MyApp.Mobile` project (by default `MyApp.sln` is selected)
+
+  ![mobile project name](Assets/quick-start/vs-code-debug-project.png)
+- To the right of `MyApp.Mobile`, click on the target framework to select `net7.0-ios | Debug`
+
+  ![mobile project name](Assets/quick-start/vs-code-debug-tf-ios.png)
+- Then, to the right of the target framework, select the device to debug with. You will need to connect an iOS device, or use an existing iOS simulator.
+
+  ![mobile project name](Assets/quick-start/vs-code-debug-device-ios.png)
+- Finally, in the debugger side menu, select the `Uno Plaform Mobile` profile
+- Either press `F5` or press the green arrow
+
+# [**Mac Catalyst**](#tab/android-debug)
+
+> [!NOTE]
+> Debugging for Mac Catalyst is only possible when running locally (or remotely through SSH) on a macOS machine.
+
+- In the status bar, select the `MyApp.Mobile` project (by default `MyApp.sln` is selected)
+
+  ![mobile project name](Assets/quick-start/vs-code-debug-project.png)
+- To the right of `MyApp.Mobile`, click on the target framework to select `net7.0-maccatalyst | Debug`
+
+  ![mobile project name](Assets/quick-start/vs-code-debug-tf-catalyst.png)
+- Finally, in the debugger side menu, select the `Uno Plaform Mobile` profile
+- Either press `F5` or press the green arrow to start the debugging session.
+
+***
+
+You can find [advanced Code debugging topic here](xref:uno.vscode.mobile.advanced.debugging).
+
 ## Using code snippets
 
 ### Adding a new Page
