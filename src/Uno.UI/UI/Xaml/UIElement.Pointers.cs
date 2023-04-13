@@ -27,6 +27,7 @@ using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml;
+using Uno.UI.Xaml.Core;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
@@ -1375,7 +1376,7 @@ namespace Windows.UI.Xaml
 #if __ANDROID__
 		internal new bool HasPointerCapture => (PointerCapturesBackingField?.Count ?? 0) != 0;
 #else
-		internal bool HasPointerCapture => (_localExplicitCaptures?.Count ?? 0) != 0;
+		internal bool HasPointerCapture => (PointerCapturesBackingField?.Count ?? 0) != 0;
 #endif
 
 		internal bool IsCaptured(Pointer pointer)

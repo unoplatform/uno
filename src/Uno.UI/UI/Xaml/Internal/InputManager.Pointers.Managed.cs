@@ -423,7 +423,7 @@ internal partial class InputManager
 		private static PointerEventDispatchResult Raise(PointerEvent evt, UIElement originalSource, PointerRoutedEventArgs routedArgs)
 		{
 			routedArgs.Handled = false;
-			UIElement.UIElement.BeginPointerEventDispatch();
+			UIElement.BeginPointerEventDispatch();
 
 			evt.Invoke(originalSource, routedArgs, BubblingContext.Bubble);
 
