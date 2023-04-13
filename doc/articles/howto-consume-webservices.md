@@ -9,12 +9,12 @@ This how-to will walk you through the process of creating a multi-platform appli
 * Creating a simple Uno application.
 * Registering for The Cat API web service.
 * Building a number of data models that utilize JSON serialization.
-* Building a web service base class that supports REST service operations and then build a number of services that derived from it.
+* Building a web service base class that supports REST service operations and then building a number of services that are derived from it.
 * Using the services in a view-model.
 * Build a XAML UI that utilizes the view-model.
 * Test the application in Windows and WASM.
 
-Throughout the how-to there will be notes on recommended practices and tips that highlight resources for additional learning.
+Throughout the how-to, there will be notes on recommended practices and tips that highlight resources for additional learning.
 
 > [!TIP]
 > The complete source code that goes along with this tutorial is available in the [unoplatform/Uno.Samples](https://github.com/unoplatform/Uno.Samples) GitHub repository - [TheCatApiClient](https://github.com/unoplatform/Uno.Samples/tree/master/UI/TheCatApiClient)
@@ -24,7 +24,7 @@ Throughout the how-to there will be notes on recommended practices and tips that
 
 ## Task 1 - Create a simple Uno application
 
-In this task you will create a simple Single Page App with the Uno Platform. This app - **TheCatApiClient** - will be used to demonstrate an approach to consuming REST web services using the **HttpClient** class.
+In this task, you will create a simple Single Page App with the Uno Platform. This app - **TheCatApiClient** - will be used to demonstrate an approach to consuming REST web services using the **HttpClient** class.
 
 1. Open Visual Studio and click on **Create a new project**.
 
@@ -35,12 +35,12 @@ In this task you will create a simple Single Page App with the Uno Platform. Thi
 
 1. In the filtered list of templates, select **Uno Platform App** and then click **Next**.
 
-1. In the **Configure your new project** window, set the **Project name** to **TheCatApiClient**, choose where you would like to save your project and click the **Create** button.
+1. In the **Configure your new project** window, set the **Project name** to **TheCatApiClient**, choose where you would like to save your project, and click the **Create** button.
 
     ![Configure your new project dialog](Assets/how-to-webservice/newproject3.PNG)
 
 > [!IMPORTANT]
-> The C# and XAML snippets in this tutorial requires that the solution is named **TheCatApiClient**. Using a different name will result in build errors when you copy code from this tutorial into the solution.
+> The C# and XAML snippets in this tutorial require that the solution is named **TheCatApiClient**. Using a different name will result in build errors when you copy code from this tutorial into the solution.
 
 1. In the **Solution Explorer**, to update the Uno NuGet packages to the latest version, right-click on the Solution file **Solution 'TheCatApiClient'** and select **Manage NuGet Packages for Solution...** from the context menu.
 
@@ -66,7 +66,7 @@ In this task you will create a simple Single Page App with the Uno Platform. Thi
 
 1. To update the packages, click **Update**.
 
-1. At the top-left of page, to browse the available packages, click **Browse**.
+1. At the top-left of the page, to browse the available packages, click **Browse**.
 
 1. In the **Search** field, enter **System.Text.Json** and select **System.Text.Json**.
 
@@ -174,11 +174,11 @@ In order to use this service, you need to sign up for a free API key.
 > [!TIP]
 > You can learn more about the breed search API here - [GET/breeds/search](https://docs.thecatapi.com/api-reference/breeds/breeds-search).
 
-Now you have signed up for the API, you are ready to start implementing the API client by create a data model.
+Now you have signed up for the API, you are ready to start implementing the API client by creating a data model.
 
 ## Task 3 - Create API model
 
-The primary objective of this tutorial is to demonstrate how to implement a REST web service client that runs in each of the project heads. To achieve that, you won't be creating a client that makes full use of **TheCatApi** - it will focus on breed search and favorites. The app will also use use simplified models (less fields) where possible.
+The primary objective of this tutorial is to demonstrate how to implement a REST web service client that runs in each project head. To achieve that, you won't create a client that fully uses **TheCatApi** - it will focus on breed searches and favorites. The app will also use simplified models (fewer fields) where possible.
 
 1. To create a folder for the models, in the **Solution Explorer**, right-click the **TheCatApiClient** project, select **Add**, click **New Folder**, and then name the new folder **Models**.
 
@@ -279,7 +279,7 @@ You have now created a simple data model that can be used to deserialize the JSO
 
 ## Task 4 - Create simple GET service for breed search
 
-In this task, you will create a number of classes that demonstrate how to use the **HttpClient** class to interact with a web service. Along the way, you will see some  patterns that may assist in the reuse of the code in additional projects.
+In this task, you will create a number of classes that demonstrate how to use the **HttpClient** class to interact with a web service. Along the way, you will see some patterns that may assist in the reuse of the code in additional projects.
 
 1. To create a folder for the web services, in the **Solution Explorer**, right-click the **TheCatApiClient** project, select **Add**, click **New Folder**, and then name the new folder **WebServices**.
 
@@ -361,7 +361,7 @@ In this task, you will create a number of classes that demonstrate how to use th
     }
     ```
 
-    Notice that this method expects the **HttpMethod** representing a GET, DELETE, UPDATE, or POST operation, the string URL and an optional dictionary of headers. In this initial implementation of the **WebApiBase** class, you will consume this from the **GetAsync** method you are about to implement.
+    Notice that this method expects the **HttpMethod** to represent a GET, DELETE, UPDATE, or POST operation, the string URL, and an optional dictionary of headers. In this initial implementation of the **WebApiBase** class, you will consume this from the **GetAsync** method you are about to implement.
 
 > [!NOTE]
 > You will use the header dictionary to supply the authentication key you created earlier.
@@ -390,7 +390,7 @@ In this task, you will create a number of classes that demonstrate how to use th
     The remainder of the method uses the single **HttpClient** instance to send the **request** and `await` a response. If the response is successful, the response content is read and returned as a string. If, for some reason, the response does not indicate success, a `null` is returned.
 
 > [!IMPORTANT]
-> As implementing adequate error handling would add many lines of code, more robust error handling is omitted for clarity. If you are interested in learning more about the considerations for handling errors with **HttpClient**, review the following blog post - [HttpClient - Error handling, a test driven approach](https://josef.codes/httpclient-error-handling-a-test-driven-approach/).
+> As implementing adequate error handling would add many lines of code, more robust error handling is omitted for clarity. If you are interested in learning more about the considerations for handling errors with **HttpClient**, review the following blog post - [HttpClient - Error handling, a test-driven approach](https://josef.codes/httpclient-error-handling-a-test-driven-approach/).
 
 1. You will implement the remaining methods of the **WebApiBase** class in a later task. The current implementation should look similar to:
 
@@ -504,7 +504,7 @@ At this point, you have implemented a simple breed search service. Now, it is ti
 
 ## Task 5 - Create a base view model
 
-In this sample application you will be adopting the Model-View-ViewModel (MVVM) pattern, which helps to cleanly separate business and presentation logic. In this task you will be creating the base view model that will be used in the following task to create the view model for the main page.
+In this sample application, you will be adopting the Model-View-ViewModel (MVVM) pattern, which helps to cleanly separate business and presentation logic. In this task, you will be creating the base view model that will be used in the following task to create the view model for the main page.
 
 > [!TIP]
 > If you want to learn more about MVVM, review the document here - [The Model-View-ViewModel Pattern](https://docs.microsoft.com/xamarin/xamarin-forms/enterprise-application-patterns/mvvm).
@@ -579,7 +579,7 @@ In this sample application you will be adopting the Model-View-ViewModel (MVVM) 
 
     The method body then compares the incoming value with the current property value, and returns false if they are equal. This prevents a situation where a property is updated, which updates a control via binding, which then sets the same property with the same value again. Without this guard, the code would continue to loop.
 
-    The **value** is then assigned to the **backingVariable** (updating the variable in the caller). The property changed event is raise (you will add that next) and a true value is returned.
+    The **value** is then assigned to the **backingVariable** (updating the variable in the caller). The property changed event is raised (you will add that next) and a true value is returned.
 
 > [!TIP]
 > You can learn more about **CallerMemberNameAttribute** here - [Reserved attributes: Determine caller information](https://docs.microsoft.com/dotnet/csharp/language-reference/attributes/caller-information).
@@ -596,7 +596,7 @@ In this sample application you will be adopting the Model-View-ViewModel (MVVM) 
     }
     ```
 
-    This method uses a helper method (added next) to ensure the event is raised on the UI thread. As the code does not await this execution, the compiler would usually display a warning in the assumption that this is a mistake. As it is intentional, the code includes `#pragma` directives that temporarily disable that warning.
+    This method uses a helper method (added next) to ensure the event is raised on the UI thread. As the code does not await this execution, the compiler would usually display a warning with the assumption that this is a mistake. As it is intentional, the code includes `#pragma` directives that temporarily disable that warning.
 
 > [!TIP]
 > If you want to learn more about lambda expressions, review the document here - [Lambda expressions](https://docs.microsoft.com/dotnet/csharp/language-reference/operators/lambda-expressions)
@@ -621,7 +621,7 @@ In this sample application you will be adopting the Model-View-ViewModel (MVVM) 
         else
         {
             var completion = new TaskCompletionSource();
-            Dispatcher.TryEnqueue(()=>
+            Dispatcher.TryEnqueue(() =>
             {
                 callback();
                 completion.SetResult();
@@ -692,7 +692,7 @@ In this sample application you will be adopting the Model-View-ViewModel (MVVM) 
             else
             {
                 var completion = new TaskCompletionSource();
-                Dispatcher.TryEnqueue(()=>
+                Dispatcher.TryEnqueue(() =>
                 {
                     callback();
                     completion.SetResult();
@@ -705,7 +705,7 @@ In this sample application you will be adopting the Model-View-ViewModel (MVVM) 
 
 ## Task 6 - Build the search UI view model
 
-In this task you will build the view-model that implements a simple breed search feature using the base class and web service client you just implemented.
+In this task, you will build the view-model that implements a simple breed search feature using the base class and web service client you just implemented.
 
 1. In the **TheCatApiClient** project, right-click the **Models\ViewModels** folder, select **Add** and click **Class...**
 
@@ -1018,7 +1018,7 @@ In this task you will create the XAML for the UI and implement the bindings for 
     ![Windows app Search UI preview](Assets/how-to-webservice/uwp-ui-busy.png)
 
 > [!NOTE]
-> You would typically use a **ProgressRing** here, but in a effort to keep the UI as simple as possible, this approach was taken.
+> You would typically use a **ProgressRing** here, but in an effort to keep the UI as simple as possible, this approach was taken.
 
 1. When you have completed adding the XAML, it should look similar to this.
 
@@ -1444,7 +1444,7 @@ You will start by adding the data models.
     }
     ```
 
-    These methods are very similar to the methods you have implemented earlier - **GetAll** returns a collection of the users **Favorite** instances, whereas **Get** returns a single **Favorite** by its ID.
+    These methods are very similar to the methods you implemented earlier - **GetAll** returns a collection of the users **Favorite** instances, whereas **Get** returns a single **Favorite** by its ID.
 
 > [!TIP]
 > You can review the favorites service documentation here - [/favorites](https://docs.thecatapi.com/api-reference/favourites/)
@@ -1703,7 +1703,7 @@ You have now updated the view-model - the final task will have you update the UI
 
 ## Task 10 - Add favorites to the main view
 
-In this final task you will bring together the new **FavoritesApi** with the updated **MainViewModel** to add a list of favorites to the UI.
+In this final task, you will bring together the new **FavoritesApi** with the updated **MainViewModel** to add a list of favorites to the UI.
 
 1. In the **Solution Explorer**, in the **TheCatApiClient** project, open the **MainPage.xaml** file.
 
@@ -1802,9 +1802,9 @@ In this final task you will bring together the new **FavoritesApi** with the upd
 
 1. Search for additional breeds and add and remove favorites - you should see the same functionality as the Windows app.
 
-1. Try the app on the other platforms. Below is an image of app running on the iPhone and Android simulators.
+1. Try the app on other platforms. Below is an image of the app running on iPhone and Android simulators.
 
-    ![app running on iPhone and Android simulators](Assets/how-to-webservice/favorites-on-phone.png)
+    ![Application running on iPhone and Android simulators](Assets/how-to-webservice/favorites-on-phone.png)
 
 ## Summary
 
