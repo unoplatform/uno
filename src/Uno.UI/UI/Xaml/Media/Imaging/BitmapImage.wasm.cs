@@ -182,7 +182,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 
 #if !NET7_0_OR_GREATER || DISABLE_GENERATED_REGEX
 			private static partial Regex LineMatch()
-				=> new Regex("\r\n|\r|\n"));
+				=> new Regex("\r\n|\r|\n");
 #endif
 		}
 
