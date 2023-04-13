@@ -15,7 +15,9 @@ namespace Windows.Devices.Sensors
 {
 	public partial class Accelerometer
 	{
+#if !NET7_0_OR_GREATER
 		private const string JsType = "Windows.Devices.Sensors.Accelerometer";
+#endif
 		private const float Gravity = 9.81f;
 
 		private ShakeDetector _shakeDetector;
