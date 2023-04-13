@@ -28,14 +28,15 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.ImageTests
 		{
 			using (var data = _bitmap.PixelBuffer.AsStream())
 			{
+				var random = new Random();
 
 				for (var i = 1; i < data.Length; i += 4)
 				{
 					// Half of the image in green, alpha 100% (bgra buffer)
 					var pixel = new byte[] {
-						(byte)Random.Shared.Next(256)
-						, (byte)Random.Shared.Next(256)
-						, (byte)Random.Shared.Next(256)
+						(byte)random.Next(256)
+						, (byte)random.Next(256)
+						, (byte)random.Next(256)
 						, 255
 					};
 
