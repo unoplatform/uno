@@ -45,7 +45,7 @@ public partial class PathIcon : IconElement
 	private void SynchronizeProperties()
 	{
 		_path.HorizontalAlignment = HorizontalAlignment.Stretch;
-		_path.VerticalAlignment = HorizontalAlignment.Stretch;
+		_path.VerticalAlignment = VerticalAlignment.Stretch;
 
 		_path.Fill = Foreground;
 		_path.Data = Data;

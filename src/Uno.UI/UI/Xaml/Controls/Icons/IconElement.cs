@@ -1,8 +1,8 @@
 ﻿#nullable enable
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using Windows.Foundation;
-using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml.Controls;
@@ -86,29 +86,39 @@ public partial class IconElement : FrameworkElement
 
 	private protected virtual void OnForegroundChanged(DependencyPropertyChangedEventArgs e) { }
 
+	[MemberNotNull(nameof(_rootGrid))]
+	private protected void InitializeRootGrid()
+	{
+		if (_rootGrid is not null)
+		{
+			return;
+		}
+
+		var backgroundBrush = new SolidColorBrush()
+		{
+			Color = Color.FromArgb(0, 0, 0, 0)
+		};
+
+		_rootGrid = new Grid()
+		{
+			Background = backgroundBrush
+		};
+
+		VisualTreeHelper.AddChild(this, _rootGrid);
+	}
+
 	internal void AddIconChild(UIElement child)
 	{
-		if (_rootGrid is null)
-		{
-			_rootGrid = new Grid();
-			var backgroundBrush = new SolidColorBrush()
-			{
-				Color = Color.FromArgb(0, 0, 0, 0)
-			};
-			_rootGrid.Background = backgroundBrush;
-
-			VisusalTreeHelper.AddChild(this, _rootGrid);
-		}
+		InitializeRootGrid();
 
 		_rootGrid.Children.Add(child);
 	}
 
 	internal void RemoveIconChild()
 	{
-		if (_rootGrid is not null)
-		{
-			_rootGrid.Children.Clear();
-		}
+		InitializeRootGrid();
+
+		_rootGrid.Children.Clear();
 	}
 
 	internal override bool CanHaveChildren() => true;

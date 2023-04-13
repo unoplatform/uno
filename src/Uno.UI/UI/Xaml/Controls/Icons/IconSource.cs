@@ -1,3 +1,5 @@
+#nullable enable
+
 using Windows.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml.Controls
@@ -8,9 +10,9 @@ namespace Windows.UI.Xaml.Controls
 		{
 		}
 
-		public Brush Foreground
+		public Brush? Foreground
 		{
-			get => (Brush)GetValue(ForegroundProperty);
+			get => (Brush?)GetValue(ForegroundProperty);
 			set => SetValue(ForegroundProperty, value);
 		}
 

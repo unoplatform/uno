@@ -30,10 +30,7 @@ namespace Microsoft.UI.Xaml.Controls
 					Stretch = Stretch.Uniform
 				};
 
-				var grid = new Grid();
-				grid.Children.Add(image);
-
-				AddIconElementView(grid);
+				AddIconChild(image);
 				_initialized = true;
 			}
 		}

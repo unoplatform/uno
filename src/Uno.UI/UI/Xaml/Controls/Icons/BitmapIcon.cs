@@ -1,5 +1,7 @@
 ﻿using System;
 using Windows.Foundation;
+using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml.Controls;
 
@@ -8,17 +10,22 @@ namespace Windows.UI.Xaml.Controls;
 /// </summary>
 public partial class BitmapIcon : IconElement
 {
-	private Image _image;
-	private Grid _grid;
+	private readonly Image _image;
 
 	/// <summary>
 	/// Initializes a new instance of the BitmapIcon class.
 	/// </summary>
 	public BitmapIcon()
 	{
-		SetValue(ForegroundProperty, SolidColorBrushHelper.Black, DependencyPropertyValuePrecedences.Inheritance);
+		_image = new Image();
+		AddIconChild(_image);
 
-		Loaded += (s, e) SynchronizeProperties();
+		_image.SetBinding(
+			dependencyProperty: Image.SourceProperty,
+			binding: new Binding { Source = this, Path = nameof(UriSource) }
+		);
+		this.SetValue(ForegroundProperty, SolidColorBrushHelper.Black, DependencyPropertyValuePrecedences.Inheritance);
+		UpdateImageMonochromeColor();
 	}
 
 	/// <summary>
@@ -58,40 +65,10 @@ public partial class BitmapIcon : IconElement
 			typeof(BitmapIcon),
 			new FrameworkPropertyMetadata(default(Uri)));
 
-	protected override Size MeasureOverride(Size availableSize)
-	{
-		if (_image == null)
-		{
-			_image = new Image
-			{
-				Stretch = Media.Stretch.Uniform
-			};
-
-			UpdateImageMonochromeColor();
-
-			_image.SetBinding(
-				dependencyProperty: Image.SourceProperty,
-				binding: new Binding { Source = this, Path = nameof(UriSource) }
-			);
-
-			_grid = new Grid();
-			_grid.Children.Add(_image);
-
-			AddIconElementView(_grid);
-		}
-
-
-		return base.MeasureOverride(availableSize);
-	}
-
-
 	private void OnShowAsMonochromeChanged(bool value) => UpdateImageMonochromeColor();
 
-	private protected override void OnForegroundChanged(DependencyPropertyChangedEventArgs e)
-	{
-		base.OnForegroundChanged(e);
+	private protected override void OnForegroundChanged(DependencyPropertyChangedEventArgs e) =>
 		UpdateImageMonochromeColor();
-	}
 
 	private void UpdateImageMonochromeColor()
 	{

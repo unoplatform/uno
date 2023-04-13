@@ -145,7 +145,7 @@ public partial class FontIcon : IconElement
 	}
 
 	/// <summary>
-	/// Identifies the IsTextScaleFactorEnabled  dependency property.
+	/// Identifies the IsTextScaleFactorEnabled dependency property.
 	/// </summary>
 	[NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 	public static DependencyProperty IsTextScaleFactorEnabledProperty { get; } =
@@ -154,7 +154,7 @@ public partial class FontIcon : IconElement
 			typeof(bool),
 			typeof(FontIcon),
 			new FrameworkPropertyMetadata(
-				false,
+				true,
 				(s, e) => ((FontIcon)s)._textBlock.IsTextScaleFactorEnabled = (bool)e.NewValue));
 
 	/// <summary>
@@ -191,6 +191,7 @@ public partial class FontIcon : IconElement
 		_textBlock.FontStyle = FontStyle;
 		_textBlock.FontFamily = FontFamily;
 		_textBlock.Foreground = Foreground;
+		_textBlock.IsTextScaleFactorEnabled = IsTextScaleFactorEnabled;
 	}
 
 	private void UpdateMirroring()
