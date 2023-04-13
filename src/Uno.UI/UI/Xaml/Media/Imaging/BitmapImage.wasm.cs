@@ -74,7 +74,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 			}
 		}
 
-		internal static class AssetResolver
+		internal static partial class AssetResolver
 		{
 			private static readonly Lazy<Task<HashSet<string>>> _assets = new Lazy<Task<HashSet<string>>>(GetAssets);
 
@@ -84,7 +84,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 
 				var assets = await WebAssemblyRuntime.InvokeAsync($"fetch('{assetsUri}').then(r => r.text())");
 
-				return new HashSet<string>(Regex.Split(assets, "\r\n|\r|\n"));
+				return new HashSet<string>(LineMatch().Split(assets));
 			}
 
 			internal static async Task<ImageData> ResolveImageAsync(ImageSource source, Uri uri, ResolutionScale? scaleOverride)
@@ -174,6 +174,9 @@ namespace Windows.UI.Xaml.Media.Imaging
 				(int)ResolutionScale.Scale450Percent,
 				(int)ResolutionScale.Scale500Percent
 			};
+
+			[GeneratedRegex("\r\n|\r|\n")]
+			private static partial Regex LineMatch();
 		}
 
 		internal override void ReportImageLoaded()
