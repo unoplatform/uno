@@ -15,6 +15,7 @@ using Android.Graphics;
 using Uno.UI.Extensions;
 using Uno.UI.DataBinding;
 using Windows.Networking.NetworkOperators;
+using Android.Views.Animations;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -2670,6 +2671,13 @@ namespace Windows.UI.Xaml.Controls
 		{
 			private const float BaseDuration = 250f, ScalableDuration = 150f; // in ms
 
+			private const int TARGET_SEEK_SCROLL_DISTANCE_PX = 10000;
+
+			// Trigger a scroll to a further distance than TARGET_SEEK_SCROLL_DISTANCE_PX so that if target
+			// view is not laid out until interim target position is reached, we can detect the case before
+			// scrolling slows down and reschedule another interim target scroll
+			private const float TARGET_SEEK_EXTRA_SCROLL_RATIO = 1.2f;
+
 			private readonly VirtualizingPanelLayout _layout;
 			private readonly RecyclerView.State _state;
 
@@ -2680,6 +2688,45 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			public override PointF ComputeScrollVectorForPosition(int targetPosition) => _layout.ComputeScrollVectorForPosition(targetPosition);
+
+			protected override void UpdateActionForInterimTarget(Action action)
+			{
+				// find an interim target position
+				var scrollVector = ComputeScrollVectorForPosition(TargetPosition); // direction only, not magniture WHERE x and y are in {-1,0,1}
+				if (scrollVector == null || (scrollVector.X == 0 && scrollVector.Y == 0))
+				{
+					var target = TargetPosition;
+					action.JumpTo(target);
+					Stop();
+					return;
+				}
+
+				Normalize(scrollVector);
+				MTargetVector = scrollVector;
+				MInterimTargetDx = (int)(TARGET_SEEK_SCROLL_DISTANCE_PX * scrollVector.X);
+				MInterimTargetDy = (int)(TARGET_SEEK_SCROLL_DISTANCE_PX * scrollVector.Y);
+
+				var extend = _layout.ComputeVerticalScrollExtent(_state);
+				MInterimTargetDx = Math.Min(MInterimTargetDx, extend);
+				MInterimTargetDy = Math.Min(MInterimTargetDy, extend);
+
+				var time = CalculateTimeForScrolling(extend);
+
+				// To avoid UI hiccups, trigger a smooth scroll to a distance little further than the
+				// interim target. Since we track the distance travelled in onSeekTargetStep callback, it
+				// won't actually scroll more than what we need.
+				ActionUpdate(
+					(int)(MInterimTargetDx * TARGET_SEEK_EXTRA_SCROLL_RATIO),
+					(int)(MInterimTargetDy * TARGET_SEEK_EXTRA_SCROLL_RATIO),
+					(int)(time * TARGET_SEEK_EXTRA_SCROLL_RATIO),
+					MLinearInterpolator
+				);
+
+				void ActionUpdate(int dx, int dy, int duration, IInterpolator interpolator)
+				{
+					action.Update(dx, dy, duration, interpolator);
+				}
+			}
 
 			// The time (in ms) it should take for each pixel. For instance, if returned value is 2 ms,
 			// it means scrolling 1000 pixels with LinearInterpolation should take 2 seconds.
