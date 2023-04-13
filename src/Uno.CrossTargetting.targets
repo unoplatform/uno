@@ -109,6 +109,16 @@
 		<DefineConstants>$(DefineConstants);NETFX_CORE</DefineConstants>
 	</PropertyGroup>
 
+	<PropertyGroup Condition=" '$(TargetFramework)'=='net8.0' and '$(UnoRuntimeIdentifier)'=='WebAssembly' ">
+
+		<!--
+		Generated regex does not yet work with missing member on
+		bootstrapper 7.0, remove when bootstrapper is updated.
+		-->
+		<DefineConstants>$(DefineConstants);DISABLE_GENERATED_REGEX</DefineConstants>
+		<NoWarn>$(NoWarn);SYSLIB1045</NoWarn>
+	</PropertyGroup>
+
 	<Target Name="_UnoOverrideNuget"
 		  AfterTargets="AfterBuild"
 		  DependsOnTargets="BuiltProjectOutputGroup"

@@ -29,7 +29,7 @@ namespace Uno.Extensions
 			return new Version(VersionMatch().Match(assembly.FullName).ToString());
 		}
 
-#if NET7_0_OR_GREATER
+#if NET7_0_OR_GREATER && !DISABLE_GENERATED_REGEX
 		[GeneratedRegex(@"(\d+)(.\d+)(.\d+)?(.\d+)?")]
 		private static partial Regex VersionMatch();
 #else

@@ -1294,7 +1294,14 @@ namespace Windows.UI.Xaml.Markup.Reader
 			}
 		}
 
+#if NET7_0_OR_GREATER && !DISABLE_GENERATED_REGEX
 		[GeneratedRegex(@"(\(.*?\))")]
+#endif
 		private static partial Regex AttachedPropertyMatching();
+
+#if !NET7_0_OR_GREATER || DISABLE_GENERATED_REGEX
+		private static partial Regex AttachedPropertyMatching()
+			=> new Regex(@"(\(.*?\))");
+#endif
 	}
 }

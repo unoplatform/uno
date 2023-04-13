@@ -940,12 +940,12 @@ namespace Uno.Xaml
 			}
 		}
 
-#if NET7_0_OR_GREATER
+#if NET7_0_OR_GREATER && !DISABLE_GENERATED_REGEX
 		[System.Text.RegularExpressions.GeneratedRegex("\\s+")]
 #endif
 		private static partial System.Text.RegularExpressions.Regex SpaceMatch();
 
-#if !NET7_0_OR_GREATER
+#if !NET7_0_OR_GREATER || DISABLE_GENERATED_REGEX
 		private static partial System.Text.RegularExpressions.Regex SpaceMatch()
 			=> new System.Text.RegularExpressions.Regex("\\s+");
 #endif
