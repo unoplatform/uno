@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+	<Import Project="../uno.winui.common.props" Condition="'$(WindowsAppSDKWinUI)'!='true'" />
+
+</Project>

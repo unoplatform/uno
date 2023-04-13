@@ -260,5 +260,10 @@
 			<Reference Include="System.Memory" />
 		</ItemGroup>
 	</Target>
+
+	<!-- Workaround for OmniSharp single-TargetFramework use -->
+	<PropertyGroup Condition="'$(UnoForceSingleTFM)' == 'true'">
+		<TargetFrameworks></TargetFrameworks>
+	</PropertyGroup>
   
 </Project>
