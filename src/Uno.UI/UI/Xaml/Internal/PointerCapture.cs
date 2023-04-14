@@ -24,7 +24,7 @@ namespace Uno.UI.Xaml.Core;
 /// <summary>
 /// This is an helper class that use to manage the captures for a given pointer.
 /// </summary>
-internal class PointerCapture
+internal partial class PointerCapture
 {
 	private static readonly IDictionary<PointerIdentifier, PointerCapture> _actives = new Dictionary<PointerIdentifier, PointerCapture>(EqualityComparer<PointerIdentifier>.Default);
 
@@ -316,17 +316,24 @@ internal class PointerCapture
 	/// See https://github.com/dotnet/runtime/issues/56309
 	/// </remarks>
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	private void ReleasePointerNative()
+	private void CapturePointerNative()
 	{
 		try
 		{
-			_nativeCaptureElement?.ReleasePointerNative(Pointer);
+			if (_nativeCaptureElement is not null)
+			{
+				CaptureNative(_nativeCaptureElement, Pointer);
+			}
 		}
 		catch (Exception e)
 		{
-			this.Log().Error($"Failed to release native capture of {Pointer}", e);
+			this.Log().Error($"Failed to capture natively pointer {Pointer}.", e);
 		}
 	}
+
+	// Implement this to get pointer capture out of the bounds of the app
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	partial void CaptureNative(UIElement target, Pointer pointer);
 
 	/// <remarks>
 	/// This method contains or is called by a try/catch containing method and
@@ -334,15 +341,22 @@ internal class PointerCapture
 	/// See https://github.com/dotnet/runtime/issues/56309
 	/// </remarks>
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	private void CapturePointerNative()
+	private void ReleasePointerNative()
 	{
 		try
 		{
-			_nativeCaptureElement?.CapturePointerNative(Pointer);
+			if (_nativeCaptureElement is not null)
+			{
+				ReleaseNative(_nativeCaptureElement, Pointer);
+			}
 		}
 		catch (Exception e)
 		{
-			this.Log().Error($"Failed to capture natively pointer {Pointer}.", e);
+			this.Log().Error($"Failed to release native capture of {Pointer}", e);
 		}
 	}
+
+	// Implement this to get pointer capture out of the bounds of the app
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	partial void ReleaseNative(UIElement target, Pointer pointer);
 }

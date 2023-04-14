@@ -441,11 +441,5 @@ namespace Windows.UI.Xaml
 			}
 		}
 		#endregion
-
-		#region Capture
-		// Pointer capture is not needed on iOS, otherwise we could use ExclusiveTouch = true;
-		// partial void CapturePointerNative(Pointer pointer);
-		// partial void ReleasePointerNative(Pointer pointer);
-		#endregion
 	}
 }

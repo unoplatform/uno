@@ -1441,9 +1441,6 @@ namespace Windows.UI.Xaml
 		}
 		#endregion
 
-		internal partial void CapturePointerNative(Pointer pointer);
-		internal partial void ReleasePointerNative(Pointer pointer);
-
 		private bool ValidateAndUpdateCapture(PointerRoutedEventArgs args)
 			=> ValidateAndUpdateCapture(args, IsOver(args.Pointer));
 
