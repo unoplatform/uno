@@ -26,6 +26,10 @@ jobs:
 
     NUGET_PACKAGES: $(build.sourcesdirectory)/.nuget
 
+    # Disabled until the wasm bootstrap can be updated to .NET 8 Pre 3 or later
+    UnoDisableNet8Mobile: true
+    UnoDisableNet8: true
+
   steps:
   - checkout: self
     clean: true
