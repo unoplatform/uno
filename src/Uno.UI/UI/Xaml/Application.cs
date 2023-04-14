@@ -415,6 +415,7 @@ namespace Windows.UI.Xaml
 
 		private void OnResourcesChanged(ResourceUpdateReason updateReason)
 		{
+			UIElement.ResetDefaultThemeBrushes();
 			foreach (var contentRoot in WinUICoreServices.Instance.ContentRootCoordinator.ContentRoots)
 			{
 				if (GetTreeRoot(contentRoot) is { } root)

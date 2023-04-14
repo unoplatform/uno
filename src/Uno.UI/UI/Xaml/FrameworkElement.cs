@@ -964,10 +964,7 @@ namespace Windows.UI.Xaml
 		/// <param name="foregroundProperty">The appropriate property for the calling instance.</param>
 		private protected void SetDefaultForeground(DependencyProperty foregroundProperty)
 		{
-			(this).SetValue(foregroundProperty,
-							Application.Current == null || Application.Current.RequestedTheme == ApplicationTheme.Light
-								? SolidColorBrushHelper.Black
-								: SolidColorBrushHelper.White, DependencyPropertyValuePrecedences.DefaultValue);
+			(this).SetValue(foregroundProperty, UIElement.GetDefaultTextBrush(), DependencyPropertyValuePrecedences.DefaultValue);
 		}
 
 		#region AutomationPeer
