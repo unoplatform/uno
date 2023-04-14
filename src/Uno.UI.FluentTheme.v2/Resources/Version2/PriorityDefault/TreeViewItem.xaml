@@ -205,6 +205,7 @@
                                 Grid.Column="2"
                                 ContentTransitions="{TemplateBinding ContentTransitions}"
                                 ContentTemplate="{TemplateBinding ContentTemplate}"
+                                ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
                                 Content="{TemplateBinding Content}"
                                 HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                 VerticalAlignment="{TemplateBinding VerticalContentAlignment}"

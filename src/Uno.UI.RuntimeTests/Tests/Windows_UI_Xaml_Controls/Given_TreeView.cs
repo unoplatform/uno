@@ -127,6 +127,34 @@ public class Given_TreeView
 		Assert.AreEqual(child2, child2NodeAfter.DataContext);
 	}
 
+	[TestMethod]
+	public async Task When_Simplified_Template()
+	{
+		var SUT = new When_Simplified_Template();
+		TestServices.WindowHelper.WindowContent = SUT;
+
+		var root = new MyNode();
+		root.Name = "root 4";
+		root.IsDirectory = true;
+		var child1 = new MyNode { Name = "Child 1" };
+		var child2 = new MyNode { Name = "Child 2" };
+		root.Children.Add(child1);
+		root.Children.Add(child2);
+
+		SUT.myTree.ItemsSource = new[] { root };
+		await TestServices.WindowHelper.WaitForIdle();
+
+		var rootNode = (TreeViewItem)SUT.myTree.ContainerFromItem(root);
+		rootNode.IsExpanded = true;
+		await TestServices.WindowHelper.WaitForIdle();
+
+#if HAS_UNO
+		Assert.AreEqual(
+			1,
+			MUXTestPage.FindVisualChildrenByType<TextBlock>(SUT.myTree).Count(c => c.Text == "Child 1"));
+#endif
+	}
+
 #if __ANDROID__
 	[Ignore("Test is not operational on Android, items are not returned properly https://github.com/unoplatform/uno/issues/9080")]
 #endif

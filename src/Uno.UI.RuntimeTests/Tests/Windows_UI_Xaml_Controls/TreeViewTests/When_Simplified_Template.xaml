@@ -1,0 +1,40 @@
+﻿<Grid x:Class="Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.TreeViewTests.When_Simplified_Template"
+	  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	  xmlns:local="using:Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.TreeViewTests"
+	  xmlns:local2="using:Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls"
+	  xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
+	  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	  mc:Ignorable="d"
+	  Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+	<Grid.Resources>
+
+		<DataTemplate x:Key="DirectoryTemplate">
+			<muxc:TreeViewItem ItemsSource="{Binding Children}">
+				<Grid>
+					<TextBlock Foreground="Blue" Text="{Binding Name}" />
+				</Grid>
+			</muxc:TreeViewItem>
+		</DataTemplate>
+		<DataTemplate x:Key="FileTemplate">
+			<Grid>
+				<TextBlock Foreground="Green" Text="{Binding Name}" />
+			</Grid>
+		</DataTemplate>
+
+		<local2:FSObjectTemplateSelector
+			x:Key="FSObjectTemplateSelector"
+			FileTemplate="{StaticResource FileTemplate}"
+			DirectoryTemplate="{StaticResource DirectoryTemplate}" />
+		
+	</Grid.Resources>
+
+	<muxc:TreeView x:Name="myTree"
+				   x:FieldModifier="public"
+				   SelectionMode="Multiple"
+				   ItemTemplateSelector="{StaticResource FSObjectTemplateSelector}"
+				   ItemsSource="{Binding Children}">
+	</muxc:TreeView>
+</Grid>
