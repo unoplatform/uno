@@ -765,12 +765,6 @@ namespace Windows.UI.Xaml.Controls
 		#endregion
 
 		#region Hyperlinks
-
-		protected override bool NativeHitCheck()
-		{
-			return true;
-		}
-
 		private int GetCharacterIndexAtPoint(Point point)
 		{
 			point.X -= Padding.Left;
@@ -790,7 +784,6 @@ namespace Windows.UI.Xaml.Controls
 
 			return -1;
 		}
-
 		#endregion
 	}
 }

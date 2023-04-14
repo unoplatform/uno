@@ -106,11 +106,5 @@ namespace Windows.UI.Xaml
 		{
 			UpdateHitTest();
 		}
-
-		// This section is using the UnoViewGroup overrides for performance reasons
-		// where most of the work is performed on the java side.
-
-		protected override bool NativeHitCheck()
-			=> IsViewHit();
 	}
 }

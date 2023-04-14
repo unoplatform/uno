@@ -15,8 +15,6 @@ public abstract class UnoRecyclerView
 		super(context);
 	}
 
-	@Override public /* hidden to C# */ final boolean nativeHitCheck() { return true; }
-
 	@Override public /* hidden to C# */ final int getChildrenRenderTransformCount() { return 0; }
 	@Override public /* hidden to C# */ final Matrix findChildRenderTransform(View child) { return null; }
 

@@ -478,7 +478,7 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		/// <remarks>This property is intended as a shortcut to inspect the properties of a specific view at runtime. Suggested usage:
 		/// 1. Be debugging Uno. 2. Flag the view you want in xaml with 'Name = "TargetView", or set <see cref="ViewOfInterestSelector"/>
-		/// to select the view you want. 3. Put a breakpoint in the <see cref="UIElement.NativeHitCheck"/> method. 4. Tap anywhere in the app.
+		/// to select the view you want. 3. Put a breakpoint in the <see cref="IsViewHit"/> method. 4. Tap anywhere in the app.
 		/// 5. Inspect this property, or one of the typed versions below.</remarks>
 		public View ViewOfInterest
 		{

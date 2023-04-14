@@ -636,7 +636,7 @@ namespace Windows.UI.Xaml.Media
 			}
 		}
 
-#region Helpers
+		#region Helpers
 		private static Func<IEnumerable<UIElement>, IEnumerable<UIElement>> Except(UIElement element)
 			=> children => children.Except(element);
 
@@ -692,9 +692,9 @@ namespace Windows.UI.Xaml.Media
 		internal static IEnumerable<UIElement> GetManagedVisualChildren(_View view)
 			=> view.GetChildren().OfType<UIElement>();
 #endif
-#endregion
+		#endregion
 
-#region HitTest tracing
+		#region HitTest tracing
 #if TRACE_HIT_TESTING
 		[ThreadStatic]
 		private static StringBuilder? _trace;

@@ -535,9 +535,7 @@ namespace Uno.UI.Controls
 		}
 
 		/// <inheritdoc />
-		protected override bool NativeHitCheck()
+		internal override bool IsViewHit()
 			=> true; // Ensure clicks don't go through panes
 	}
-
-
 }

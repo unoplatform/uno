@@ -363,8 +363,6 @@ public abstract class UnoViewGroup
 		return false;
 	}
 
-	public /* protected in C# */ abstract boolean nativeHitCheck();
-
 	/**
 	 * Call this method if a view is to be laid out outside of a framework layout pass, to ensure that requestLayout() requests are captured
 	 * and propagated later. (Equivalent of ViewRootImpl.requestLayoutDuringLayout())

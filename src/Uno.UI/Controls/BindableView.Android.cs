@@ -248,16 +248,6 @@ namespace Uno.UI.Controls
 		}
 
 		/// <summary>
-		/// Provides a default implementation for the HitCheck
-		/// performed in the UnoViewGroup java class.
-		/// </summary>
-		/// <returns></returns>
-		protected override bool NativeHitCheck()
-		{
-			return true;
-		}
-
-		/// <summary>
 		/// Determines if the native call to RequestLayout should call its base.
 		/// </summary>
 		/// <returns></returns>

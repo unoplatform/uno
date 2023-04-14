@@ -10,8 +10,6 @@ import android.view.*;
  * Note: This interface is for internal use (a.k.a. package-private) and is NOT VISIBLE to the C# binding
  */
 interface UnoMotionTarget {
-	/* internal OR protected */	boolean nativeHitCheck(); // TODO: This should be coerced into the IsHitTestVisible()
-
 	/**
 	 * Gets the number of children that have a RenderTransform
 	 */
