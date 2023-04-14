@@ -112,19 +112,16 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				// Force the line info, otherwise it will be enabled only when the debugger is attached.
 				var settings = new XamlXmlReaderSettings() { ProvideLineInfo = true };
 
-				(XmlReader document, bool disableCaching) = ApplyIgnorables(file, sourceText, cancellationToken);
+				XmlReader document = ApplyIgnorables(sourceText);
 
-				using (var reader = new XamlXmlReader(document, context, settings))
+				using (var reader = new XamlXmlReader(document, context, settings, IsIncluded))
 				{
 					if (reader.Read())
 					{
 						cancellationToken.ThrowIfCancellationRequested();
 
 						var xamlFileDefinition = Visit(reader, file.Path, targetFilePath);
-						if (!disableCaching)
-						{
-							_cachedFiles[cachedFileKey] = new CachedFile(DateTimeOffset.Now, xamlFileDefinition);
-						}
+						_cachedFiles[cachedFileKey] = new CachedFile(DateTimeOffset.Now, xamlFileDefinition);
 
 						return xamlFileDefinition;
 					}
@@ -150,146 +147,79 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
-		private (XmlReader Reader, bool DisableCaching) ApplyIgnorables(AdditionalText file, SourceText sourceText, CancellationToken cancellationToken)
+		private bool? IsIncluded(string localName, string namespaceUri)
+		{
+			if (_includeXamlNamespaces.Contains(localName))
+			{
+				return true;
+			}
+			else if (_excludeXamlNamespaces.Contains(localName))
+			{
+				return false;
+			}
+
+			var valueSplit = namespaceUri.Split('?');
+			if (valueSplit.Length != 2)
+			{
+				// Not a (valid) conditional
+				return null;
+			}
+
+			var elements = valueSplit[1].Split('(', ',', ')');
+
+			var methodName = elements[0];
+
+			switch (methodName)
+			{
+				case nameof(ApiInformation.IsApiContractPresent):
+				case nameof(ApiInformation.IsApiContractNotPresent):
+					if (elements.Length < 4 || !ushort.TryParse(elements[2].Trim(), out var majorVersion))
+					{
+						throw new InvalidOperationException($"Syntax error while parsing conditional namespace expression {namespaceUri}");
+					}
+
+					return methodName == nameof(ApiInformation.IsApiContractPresent) ?
+						ApiInformation.IsApiContractPresent(elements[1], majorVersion) :
+						ApiInformation.IsApiContractNotPresent(elements[1], majorVersion);
+				case nameof(ApiInformation.IsTypePresent):
+				case nameof(ApiInformation.IsTypeNotPresent):
+					if (elements.Length < 2)
+					{
+						throw new InvalidOperationException($"Syntax error while parsing conditional namespace expression {namespaceUri}");
+					}
+					var expectedType = elements[1];
+					return methodName == nameof(ApiInformation.IsTypePresent) ?
+						ApiInformation.IsTypePresent(elements[1], _metadataHelper) :
+						ApiInformation.IsTypeNotPresent(elements[1], _metadataHelper);
+				default:
+					return null;// TODO: support IsPropertyPresent
+			}
+		}
+
+		private XmlReader ApplyIgnorables(SourceText sourceText)
 		{
 			var originalString = sourceText.ToString();
-			StringBuilder adjusted;
 
 			var document = new XmlDocument();
 			document.LoadXml(originalString);
 
-			var (ignorables, shouldCreateIgnorable) = FindIgnorables(document);
-			var conditionals = FindConditionals(document);
-
-			shouldCreateIgnorable |= conditionals.ExcludedConditionals.Count > 0;
+			//var conditionals = FindConditionals(document); /*TODO*/
 
 			var hasxBind = originalString.Contains("{x:Bind", StringComparison.Ordinal);
 
-			if (ignorables == null && !shouldCreateIgnorable && !hasxBind)
+			if (!hasxBind)
 			{
 				// No need to modify file
-				return (XmlReader.Create(new StringReader(originalString)), conditionals.DisableCaching);
+				return XmlReader.Create(new StringReader(originalString));
 			}
 
-			var originalIgnorables = ignorables?.Value ?? "";
+			// Apply replacements to avoid having issues with the XAML parser which does not
+			// support quotes in positional markup extensions parameters.
+			// Note that the UWP preprocessor does not need to apply those replacements as the
+			// x:Bind expressions are being removed during the first phase and replaced by "connections".
+			var adjusted = XBindExpressionParser.RewriteDocumentPaths(originalString);
 
-			var ignoredNs = originalIgnorables.Split(' ');
-
-			var newIgnored = ignoredNs
-				.Except(_includeXamlNamespaces)
-				.Concat(_excludeXamlNamespaces.Where(n => document.DocumentElement is { } documentElement && !documentElement.GetNamespaceOfPrefix(n).IsNullOrEmpty()))
-				.Concat(conditionals.ExcludedConditionals.Select(a => a.LocalName))
-				.ToArray();
-			var newIgnoredFlat = newIgnored.JoinBy(" ");
-
-			if (ignorables != null)
-			{
-				ignorables.Value = newIgnoredFlat;
-
-#if DEBUG
-				Console.WriteLine("Ignorable XAML namespaces: {0} for {1}", ignorables.Value, file.Path);
-#endif
-				adjusted = new StringBuilder(originalString);
-
-				// change the namespaces using textreplace, to keep the formatting and have proper
-				// line/position reporting.
-				adjusted
-					.Replace(
-						"Ignorable=\"{0}\"".InvariantCultureFormat(originalIgnorables),
-						"Ignorable=\"{0}\"".InvariantCultureFormat(ignorables.Value)
-					);
-			}
-			else
-			{
-				// No existing Ignorable node, create one
-				var targetLine = sourceText.Lines.Select(l => sourceText.ToString(l.Span)).First(l => !l.IsNullOrWhiteSpace() && !l.Trim().StartsWith("<!", StringComparison.Ordinal))!;
-				if (targetLine.EndsWith(">", StringComparison.Ordinal))
-				{
-					targetLine = targetLine.TrimEnd(">");
-				}
-
-				var mcName = document.DocumentElement?
-					.Attributes
-					.Cast<XmlAttribute>()
-					.FirstOrDefault(a => a.Prefix == "xmlns" && a.Value == "http://schemas.openxmlformats.org/markup-compatibility/2006")
-					?.LocalName;
-
-				var mcString = "";
-				if (mcName == null)
-				{
-					mcName = "mc";
-					mcString = " xmlns:mc=\"http://schemas.openxmlformats.org/markup-compatibility/2006\"";
-				}
-
-				var replacement = "{0}{1} {2}:Ignorable=\"{3}\"".InvariantCultureFormat(targetLine, mcString, mcName, newIgnoredFlat);
-				adjusted = ReplaceFirst(
-					originalString,
-					targetLine,
-					replacement
-				);
-			}
-
-			// Replace the ignored namespaces with unique urns so that same urn that are placed in Ignored attribute
-			// are ignored independently.
-			foreach (var n in newIgnored)
-			{
-				adjusted
-					.Replace(
-						"xmlns:{0}=\"{1}\"".InvariantCultureFormat(n, document.DocumentElement?.GetNamespaceOfPrefix(n)),
-						"xmlns:{0}=\"{1}\"".InvariantCultureFormat(n, Guid.NewGuid())
-					);
-			}
-
-			// Put all the included namespaces in the same default namespace, so that the properties get their
-			// DeclaringType properly set.
-			foreach (var n in _includeXamlNamespaces)
-			{
-				if (document.DocumentElement != null)
-				{
-					var originalPrefix = document.DocumentElement.GetNamespaceOfPrefix(n);
-					var indexOfUsingColon = originalPrefix.IndexOf("using:", StringComparison.Ordinal);
-					if (indexOfUsingColon == -1)
-					{
-						// There is no "using:" in the namespace. So assume the default namespace
-						adjusted
-							.Replace(
-								"xmlns:{0}=\"{1}\"".InvariantCultureFormat(n, originalPrefix),
-								"xmlns:{0}=\"{1}\"".InvariantCultureFormat(n, document.DocumentElement.GetNamespaceOfPrefix(""))
-							);
-					}
-					else if (indexOfUsingColon > 0 && originalPrefix[indexOfUsingColon - 1] == '#')
-					{
-						// We have "#using:", we want to keep it.
-						adjusted
-							.Replace(
-								"xmlns:{0}=\"{1}\"".InvariantCultureFormat(n, originalPrefix),
-								"xmlns:{0}=\"{1}\"".InvariantCultureFormat(n, originalPrefix.Substring(indexOfUsingColon - 1))
-							);
-					}
-				}
-			}
-
-			foreach (var includedCond in conditionals.IncludedConditionals)
-			{
-				var valueSplit = includedCond.Value.Split('?');
-				// Strip the conditional part, so the namespace can be parsed correctly by the Xaml reader
-				adjusted
-					.Replace(
-						includedCond.OuterXml,
-						"{0}=\"{1}\"".InvariantCultureFormat(includedCond.Name, valueSplit[0])
-					);
-			}
-
-			if (hasxBind)
-			{
-				// Apply replacements to avoid having issues with the XAML parser which does not
-				// support quotes in positional markup extensions parameters.
-				// Note that the UWP preprocessor does not need to apply those replacements as the
-				// x:Bind expressions are being removed during the first phase and replaced by "connections".
-				adjusted = new(XBindExpressionParser.RewriteDocumentPaths(adjusted.ToString()));
-			}
-
-			return (XmlReader.Create(new StringReader(adjusted.ToString())), conditionals.DisableCaching);
+			return XmlReader.Create(new StringReader(adjusted));
 		}
 
 		private static StringBuilder ReplaceFirst(string targetString, string oldValue, string newValue)
@@ -309,109 +239,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			result.Append(targetString, secondBlockStart, targetString.Length - secondBlockStart);
 
 			return result;
-		}
-
-		private (XmlNode? Ignorables, bool ShouldCreateIgnorable) FindIgnorables(XmlDocument document)
-		{
-			var ignorables = document.DocumentElement?.Attributes.GetNamedItem("Ignorable", "http://schemas.openxmlformats.org/markup-compatibility/2006") as XmlAttribute;
-
-			var excludeNamespaces = _excludeXamlNamespaces
-				.Select(n => new { Name = n, Namespace = document.DocumentElement?.GetNamespaceOfPrefix(n) })
-				.Where(n => !n.Namespace.IsNullOrEmpty());
-
-			var shouldCreateIgnorable = false;
-
-			foreach (var nspace in excludeNamespaces)
-			{
-				var excludeNodes = document
-					.DocumentElement
-					?.SelectNodes("//* | //@*")
-					?.OfType<XmlNode>()
-					.Where(e => e.Prefix == nspace.Name);
-
-				if (ignorables == null && (excludeNodes?.Any() ?? false))
-				{
-					shouldCreateIgnorable = true;
-				}
-			}
-
-			return (ignorables, shouldCreateIgnorable);
-		}
-
-		/// <summary>
-		/// Returns those XAML namespace definitions for which a conditional is set, grouped by those for which the conditional returns true and
-		/// should be included, and those for which it returns fales and should be excluded.
-		/// </summary>
-		private (List<XmlAttribute> IncludedConditionals, List<XmlAttribute> ExcludedConditionals, bool DisableCaching) FindConditionals(XmlDocument document)
-		{
-			var disableCaching = false;
-			var included = new List<XmlAttribute>();
-			var excluded = new List<XmlAttribute>();
-
-			foreach (XmlAttribute attr in document.DocumentElement!.Attributes)
-			{
-				if (attr.Prefix != "xmlns")
-				{
-					// Not a namespace
-					continue;
-				}
-
-				var valueSplit = attr.Value.Split('?');
-				if (valueSplit.Length != 2)
-				{
-					// Not a (valid) conditional
-					continue;
-				}
-
-				(bool? shouldInclude, bool disableCaching1) = ShouldInclude();
-				disableCaching = disableCaching || disableCaching1;
-				if (shouldInclude.HasValue)
-				{
-					if (shouldInclude.GetValueOrDefault())
-					{
-						included.Add(attr);
-					}
-					else
-					{
-						excluded.Add(attr);
-					}
-				}
-
-				(bool? ShouldInclude, bool DisableCaching) ShouldInclude()
-				{
-					var elements = valueSplit[1].Split('(', ',', ')');
-
-					var methodName = elements[0];
-
-					switch (methodName)
-					{
-						case nameof(ApiInformation.IsApiContractPresent):
-						case nameof(ApiInformation.IsApiContractNotPresent):
-							if (elements.Length < 4 || !ushort.TryParse(elements[2].Trim(), out var majorVersion))
-							{
-								throw new InvalidOperationException($"Syntax error while parsing conditional namespace expression {attr.Value}");
-							}
-
-							return (methodName == nameof(ApiInformation.IsApiContractPresent) ?
-								ApiInformation.IsApiContractPresent(elements[1], majorVersion) :
-								ApiInformation.IsApiContractNotPresent(elements[1], majorVersion), false);
-						case nameof(ApiInformation.IsTypePresent):
-						case nameof(ApiInformation.IsTypeNotPresent):
-							if (elements.Length < 2)
-							{
-								throw new InvalidOperationException($"Syntax error while parsing conditional namespace expression {attr.Value}");
-							}
-							var expectedType = elements[1];
-							return (methodName == nameof(ApiInformation.IsTypePresent) ?
-								ApiInformation.IsTypePresent(elements[1], _metadataHelper) :
-								ApiInformation.IsTypeNotPresent(elements[1], _metadataHelper), true);
-						default:
-							return (null, false);// TODO: support IsPropertyPresent
-					}
-				}
-			}
-
-			return (included, excluded, disableCaching);
 		}
 
 		private XamlFileDefinition Visit(XamlXmlReader reader, string file, string targetFilePath)

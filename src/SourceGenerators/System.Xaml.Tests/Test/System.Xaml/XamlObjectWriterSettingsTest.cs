@@ -63,7 +63,7 @@ namespace MonoTests.Uno.Xaml
 			var rsettings = new XamlXmlReaderSettings ();
 			
 			var xml = String.Format (@"<RootObjectInstanceTestClass Property=""Test"" xmlns=""clr-namespace:MonoTests.Uno.Xaml;assembly={0}""></RootObjectInstanceTestClass>", GetType ().Assembly.GetName ().Name);
-			using (var reader = new XamlXmlReader (new StringReader (xml), rsettings)) {
+			using (var reader = new XamlXmlReader (new StringReader (xml), rsettings, (_, _) => null)) {
 				var wsettings = new XamlObjectWriterSettings ();
 				wsettings.RootObjectInstance = obj;
 				using (var writer = new XamlObjectWriter (reader.SchemaContext, wsettings)) {

@@ -37,17 +37,17 @@ namespace Uno.Xaml
 
 		public static Object Load (Stream stream)
 		{
-			return Load (new XamlXmlReader (stream));
+			return Load (new XamlXmlReader (stream, (_, _) => null));
 		}
 
 		public static Object Load (TextReader textReader)
 		{
-			return Load (new XamlXmlReader (textReader));
+			return Load (new XamlXmlReader (textReader, (_, _) => null));
 		}
 
 		public static Object Load (XmlReader xmlReader)
 		{
-			return Load (new XamlXmlReader (xmlReader));
+			return Load (new XamlXmlReader (xmlReader, (_, _) => null));
 		}
 
 		public static Object Load (XamlReader xamlReader)
