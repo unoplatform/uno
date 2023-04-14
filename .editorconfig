@@ -411,6 +411,15 @@ dotnet_diagnostic.CA1854.severity = none
 # CA1852: Type 'XX' can be sealed because
 dotnet_diagnostic.CA1852.severity = none
 
+# CA1859: Change return type of method 'XX' from 'XX' to 'XX' for improved performance
+dotnet_diagnostic.CA1859.severity = none
+
+# CA1860: Prefer comparing 'Count' to 0 rather than using 'Any()', both for clarity and for performance
+dotnet_diagnostic.CA1860.severity = none
+
+# CA1850: Prefer static 'System.Security.Cryptography.SHA256.HashData' method over 'ComputeHash'
+dotnet_diagnostic.CA1850.severity = none
+
 # IDE0055: Fix formatting
 dotnet_diagnostic.IDE0055.severity = warning # Will be promoted as an error by TreatWarningsAsErrors but also allows usage of WarningsNotAsErrors in debug
 
