@@ -46,6 +46,7 @@ using AppKit;
 #else
 using View = Windows.UI.Xaml.UIElement;
 using ViewGroup = Windows.UI.Xaml.UIElement;
+using Uno.UI.Xaml.Media;
 #endif
 
 namespace Windows.UI.Xaml
@@ -415,7 +416,7 @@ namespace Windows.UI.Xaml
 
 		private void OnResourcesChanged(ResourceUpdateReason updateReason)
 		{
-			UIElement.ResetDefaultThemeBrushes();
+			DefaultBrushes.ResetDefaultThemeBrushes();
 			foreach (var contentRoot in WinUICoreServices.Instance.ContentRootCoordinator.ContentRoots)
 			{
 				if (GetTreeRoot(contentRoot) is { } root)
@@ -449,7 +450,6 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		internal static void PropagateResourcesChanged(object instance, ResourceUpdateReason updateReason)
 		{
-
 			// Update ThemeResource references that have changed
 			if (instance is FrameworkElement fe)
 			{

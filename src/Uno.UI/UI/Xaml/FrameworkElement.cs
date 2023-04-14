@@ -25,6 +25,7 @@ using Uno.UI.Xaml;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Data;
 using Uno.UI.Xaml.Core;
+using Uno.UI.Xaml.Media;
 
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
@@ -964,7 +965,7 @@ namespace Windows.UI.Xaml
 		/// <param name="foregroundProperty">The appropriate property for the calling instance.</param>
 		private protected void SetDefaultForeground(DependencyProperty foregroundProperty)
 		{
-			(this).SetValue(foregroundProperty, UIElement.GetDefaultTextBrush(), DependencyPropertyValuePrecedences.DefaultValue);
+			(this).SetValue(foregroundProperty, DefaultBrushes.TextForegroundBrush, DependencyPropertyValuePrecedences.DefaultValue);
 		}
 
 		#region AutomationPeer

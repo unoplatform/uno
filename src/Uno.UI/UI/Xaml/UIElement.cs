@@ -47,8 +47,6 @@ namespace Windows.UI.Xaml
 
 		private static readonly Type[] _bringIntoViewRequestedArgs = new[] { typeof(BringIntoViewRequestedEventArgs) };
 
-		private static Brush _defaultTextBrush;
-
 		private readonly SerialDisposable _clipSubscription = new SerialDisposable();
 		private string _uid;
 
@@ -186,31 +184,6 @@ namespace Windows.UI.Xaml
 
 			defaultValue = null;
 			return false;
-		}
-
-		internal static void ResetDefaultThemeBrushes()
-		{
-			_defaultTextBrush = null;
-		}
-
-		internal static Brush GetDefaultTextBrush()
-		{
-			if (_defaultTextBrush is null)
-			{
-				if (Application.Current.Resources.TryGetValue("DefaultTextForegroundThemeBrush", out var defaultBrushObject) &&
-					defaultBrushObject is Brush defaultBrush)
-				{
-					_defaultTextBrush = defaultBrush;
-				}
-				else
-				{
-					// Fallback to black/white
-					_defaultTextBrush = CoreApplication.RequestedTheme == Uno.Helpers.Theming.SystemTheme.Dark ?
-						SolidColorBrushHelper.White : SolidColorBrushHelper.Black;
-				}
-			}
-
-			return _defaultTextBrush;
 		}
 
 		public Vector2 ActualSize => new Vector2((float)GetActualWidth(), (float)GetActualHeight());
