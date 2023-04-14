@@ -177,8 +177,11 @@
 		<!-- Build targets -->
 		<file src="..\src\Uno.UI.RemoteControl\buildTransitive\*" target="buildTransitive" />
 
-		<!-- net8.0 WebAssembly -->
+		<!-- net8.0 WebAssembly
+		Disabled until bootstrapper can be updated to .NET 8 Preview 3 or later
 		<file src="..\src\Uno.UI.RemoteControl\Bin\Uno.UI.RemoteControl.Wasm\Release\net8.0\Uno.UI.RemoteControl.*" target="uno-runtime\net8.0\webassembly" />
+		-->
+		<file src="..\src\Uno.UI.RemoteControl\Bin\Uno.UI.RemoteControl.Wasm\Release\net7.0\Uno.UI.RemoteControl.*" target="uno-runtime\net8.0\webassembly" />
 
 		<!-- net8.0 Skia -->
 		<file src="..\src\Uno.UI.RemoteControl\Bin\Uno.UI.RemoteControl.Skia\Release\net8.0\Uno.UI.RemoteControl.*" target="uno-runtime\net8.0\skia" />
