@@ -180,6 +180,7 @@
                                     IsHitTestVisible="False"/>
 							</Grid>
 
+                            <!-- UNO TODO ContentTemplate/ContentTemplateSelector are needed for #857 -->
 							<ContentPresenter x:Name="ContentPresenter"
                                 Grid.Column="2"
                                 ContentTransitions="{TemplateBinding ContentTransitions}"
