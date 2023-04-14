@@ -15,11 +15,6 @@ public abstract class UnoRecyclerView
 		super(context);
 	}
 
-	// NativeIsEnabled property
-	private boolean _isEnabled = true;
-	@Override public /* hidden to C# */ final boolean getNativeIsEnabled() { return _isEnabled; }
-	public /* protected to C# */ final void setNativeIsEnabled(boolean isEnabled) { _isEnabled = isEnabled; }
-
 	@Override public /* hidden to C# */ final boolean getNativeIsHitTestVisible() { return true; }
 	@Override public /* hidden to C# */ final boolean nativeHitCheck() { return true; }
 

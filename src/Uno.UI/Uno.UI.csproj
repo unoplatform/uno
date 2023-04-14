@@ -148,6 +148,11 @@
 	<ItemGroup>
 		<Compile Include="Mixins\Android\BaseActivity.Callbacks.g.cs" />
 		<Compile Include="Mixins\Android\FrameworkElementMixins.g.cs" />
+		<Compile Include="Mixins\Android\FrameworkElementMixins.g.cs" />
+		<Compile Include="Mixins\Android\FrameworkElementMixins.g.cs" />
+		<Compile Include="Mixins\Android\FrameworkElementMixins.g.cs" />
+		<Compile Include="Mixins\Android\FrameworkElementMixins.g.cs" />
+		<Compile Include="Mixins\Android\FrameworkElementMixins.g.cs" />
 		<Compile Include="Mixins\DependencyPropertyMixins.g.cs" />
 	</ItemGroup>
 

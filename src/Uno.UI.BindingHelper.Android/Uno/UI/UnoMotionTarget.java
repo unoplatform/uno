@@ -11,11 +11,6 @@ import android.view.*;
  */
 interface UnoMotionTarget {
 	/**
-	 * Get value of the managed IsEnabled
-	 */
-	/* internal */ boolean getNativeIsEnabled();
-
-	/**
 	 * Gets the value of the managed IsHitTestVisible
 	 */
 	/* internal */ boolean getNativeIsHitTestVisible();

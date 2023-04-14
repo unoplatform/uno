@@ -284,9 +284,6 @@ namespace <#= mixin.NamespaceName #>
 
 			var newValue = (bool)e.NewValue;
 
-#if <#= mixin.IsUnoMotionTarget #> // IsFrameworkElement
-			base.SetNativeIsEnabled(newValue);
-#endif
 			Enabled = newValue;
 
 #if <#= mixin.IsFocusable #> // IsFocusable

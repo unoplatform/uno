@@ -20,7 +20,6 @@ public abstract class UnoViewGroup
 	private static ArrayList<UnoViewGroup> callToRequestLayout = new ArrayList<UnoViewGroup>();
 
 	private boolean _inLocalAddView, _inLocalRemoveView;
-	private boolean _isEnabled;
 	private boolean _isHitTestVisible;
 
 	private boolean _isManagedLoaded;
@@ -68,7 +67,6 @@ public abstract class UnoViewGroup
 	{
 		super(ctx);
 
-		_isEnabled = true;
 		_isHitTestVisible = true;
 
 		setOnHierarchyChangeListener(
@@ -370,9 +368,6 @@ public abstract class UnoViewGroup
 
 	public final void setNativeIsHitTestVisible(boolean hitTestVisible) { _isHitTestVisible = hitTestVisible; }
 	public /* hidden to C# */ final boolean getNativeIsHitTestVisible() { return _isHitTestVisible; }
-
-	public final void setNativeIsEnabled(boolean isEnabled) { _isEnabled = isEnabled; }
-	public /* hidden to C# */ final boolean getNativeIsEnabled() { return _isEnabled; }
 
 	public /* protected in C# */ abstract boolean nativeHitCheck();
 
