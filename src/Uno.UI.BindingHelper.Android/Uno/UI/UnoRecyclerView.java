@@ -27,8 +27,6 @@ public abstract class UnoRecyclerView
 	@Override public /* hidden to C# */ final Matrix findChildRenderTransform(View child) { return null; }
 
 	@Override public /* hidden to C# */ final boolean getIsNativeMotionEventsInterceptForbidden() { return false; }
-	@Override public /* protected in C# */ final boolean getIsNativeMotionEventsEnabled() { return false; }
-	// public /* protected in C# */ final void setIsNativeMotionEventsEnabled(boolean value) { }
 	@Override public /* protected in C# */ boolean onNativeMotionEvent(MotionEvent event) { return false; }
 
 	private class TouchMotionTarget extends Uno.UI.TouchMotionTarget

@@ -41,14 +41,7 @@ interface UnoMotionTarget {
 	/* protected */ boolean getIsNativeMotionEventsInterceptForbidden();
 
 	/**
-	 * Gets a boolean which indicates if the native motion events should be propagated to the managed
-	 * code using the {{@link #onNativeMotionEvent(MotionEvent, View)}
-	 * @return false means that {{@link #onNativeMotionEvent(MotionEvent, View)} won't be invoked.
-	 */
-	/* protected */ boolean getIsNativeMotionEventsEnabled();
-
-	/**
-	 * Propagates a native {{@Link MotionEvent}} to the managed code, if {{@Link getIsNativeMotionEventsEnabled}}.
+	 * Propagates a native {{@Link MotionEvent}} to the managed code.
 	 * Remarks: this is the base method for Pointer events in UWP.
 	 * @param event The native event that has to be interpreted and raised by the managed code
 	 * @param originalSource The OriginalSource of the UWP RoutedEvent

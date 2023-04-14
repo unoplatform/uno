@@ -79,8 +79,6 @@ import android.view.ViewParent;
 
 	public boolean dispatchMotionEvent(Uno.UI.MotionTargetAdapter adapter, MotionEvent event)
 	{
-
-		final ViewGroup view = adapter.asViewGroup();
 		final Uno.UI.UnoMotionTarget target = adapter.asMotionTarget();
 
 		if (isMotionSupportedByManaged(event)) {

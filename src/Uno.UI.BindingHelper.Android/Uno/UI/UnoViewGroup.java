@@ -364,10 +364,6 @@ public abstract class UnoViewGroup
 	@Override public /* protected in C# */ final boolean getIsNativeMotionEventsInterceptForbidden(){ return _isNativeMotionEventsInterceptForbidden; }
 	public /* protected in C# */ final void setIsNativeMotionEventsInterceptForbidden(boolean isNativeMotionEventsInterceptForbidden){ _isNativeMotionEventsInterceptForbidden = isNativeMotionEventsInterceptForbidden; }
 
-	private boolean _isNativeMotionEventsEnabled = true;
-	@Override public /* protected in C# */ final boolean getIsNativeMotionEventsEnabled(){ return _isNativeMotionEventsEnabled; }
-	public /* protected in C# */ final void setIsNativeMotionEventsEnabled(boolean isNativeMotionEventsEnabled){ _isNativeMotionEventsEnabled = isNativeMotionEventsEnabled; }
-
 	@Override public /* protected in C# */ boolean onNativeMotionEvent(MotionEvent event) {
 		return false;
 	}

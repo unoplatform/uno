@@ -35,21 +35,6 @@ namespace Windows.UI.Xaml
 			ArePointersEnabled = true;
 		}
 
-		partial void AddPointerHandler(RoutedEvent routedEvent, int handlersCount, object handler, bool handledEventsToo)
-		{
-			if (handlersCount == 1)
-			{
-				IsNativeMotionEventsEnabled = true;
-			}
-		}
-
-		partial void RemovePointerHandler(RoutedEvent routedEvent, int remainingHandlersCount, object handler)
-		{
-			if (remainingHandlersCount == 0)
-			{
-				// TODO: Disable pointer events reporting (https://github.com/unoplatform/uno/issues/1806)
-			}
-		}
 
 		partial void OnManipulationModeChanged(ManipulationModes oldMode, ManipulationModes newMode)
 			=> IsNativeMotionEventsInterceptForbidden = newMode == ManipulationModes.None;
