@@ -147,7 +147,7 @@ public class TestWithGeneratorDriver
 					private const string __baseUri_prefix_MyPage_475768487d8bc5c2265a59a28d897e2e = "ms-appx:///TestCase/";
 					[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 					private const string __baseUri_MyPage_475768487d8bc5c2265a59a28d897e2e = "ms-appx:///TestCase/";
-							global::Windows.UI.Xaml.NameScope __nameScope = new global::Windows.UI.Xaml.NameScope();
+					global::Windows.UI.Xaml.NameScope __nameScope = new global::Windows.UI.Xaml.NameScope();
 					private void InitializeComponent()
 					{
 						InitializeComponent_B325464D();
@@ -278,7 +278,6 @@ public class TestWithGeneratorDriver
 						{
 						}
 					}
-
 				}
 			}
 
@@ -332,12 +331,17 @@ public class TestWithGeneratorDriver
 					private const string __baseUri_prefix_MyPage_475768487d8bc5c2265a59a28d897e2e = "ms-appx:///TestCase/";
 					[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 					private const string __baseUri_MyPage_475768487d8bc5c2265a59a28d897e2e = "ms-appx:///TestCase/";
-							global::Windows.UI.Xaml.NameScope __nameScope = new global::Windows.UI.Xaml.NameScope();
+					global::Windows.UI.Xaml.NameScope __nameScope = new global::Windows.UI.Xaml.NameScope();
 					private void InitializeComponent()
 					{
-						InitializeComponent_B325464D();
+						InitializeComponent_286ACB34();
 					}
 					private void InitializeComponent_B325464D()
+					{
+						NameScope.SetNameScope(this, __nameScope);
+						var __that = this;
+					}
+					private void InitializeComponent_286ACB34()
 					{
 						var __resourceLocator = new global::System.Uri("file:///C:/TestCase/MyPage.xaml");
 						if(global::Uno.UI.ApplicationHelper.IsLoadableComponent(__resourceLocator))
@@ -359,7 +363,7 @@ public class TestWithGeneratorDriver
 								new global::Windows.UI.Xaml.Controls.TextBlock
 								{
 									IsParsing = true,
-									Text = "Hello, world!",
+									Text = "Hello2, world!",
 									Margin = new global::Windows.UI.Xaml.Thickness(20),
 									FontSize = 30d,
 									// Source ..\..\MyPage.xaml (Line 11:8)
@@ -463,7 +467,6 @@ public class TestWithGeneratorDriver
 						{
 						}
 					}
-
 				}
 			}
 			

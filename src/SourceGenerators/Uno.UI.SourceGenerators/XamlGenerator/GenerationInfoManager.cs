@@ -159,12 +159,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private bool GetIsHotReloadHost(GeneratorExecutionContext context)
 			=> bool.TryParse(context.GetMSBuildPropertyValue("IsHotReloadHost"), out var value) && value;
 
-		internal bool IsFirstRun(GenerationRunFileInfo generationRunFileInfo)
-			=> GetAllRuns(generationRunFileInfo.RunInfo).Count() == 1;
-
-		internal GenerationRunInfo GetFirstValidRun(GenerationRunFileInfo generationRunFileInfo, string fileUniqueId)
-			=> GetAllRuns(generationRunFileInfo.RunInfo).FirstOrDefault(r => r.GetRunFileInfo(fileUniqueId)?.ComponentCode != null);
-
 		internal IEnumerable<GenerationRunInfo> GetAllRunsWithoutSelf(GenerationRunFileInfo generationRunFileInfo)
 			=> GetAllRuns(generationRunFileInfo.RunInfo).Except(generationRunFileInfo.RunInfo);
 	}
