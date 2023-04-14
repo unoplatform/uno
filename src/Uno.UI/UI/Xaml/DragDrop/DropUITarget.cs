@@ -131,7 +131,7 @@ namespace Windows.UI.Xaml
 				dragInfo.Position,
 				Window.Current.RootElement.XamlRoot, //TODO: Choose proper XamlRoot https://github.com/unoplatform/uno/issues/8978
 				getTestability: GetDropHitTestability,
-				isStale: new (elt => elt.IsDragOver(dragInfo.SourceId), "IsDragOver"));
+				isStale: new StalePredicate(elt => elt.IsDragOver(dragInfo.SourceId), "IsDragOver"));
 
 			// First raise the drag leave event on stale branch if any.
 			if (target.stale is { } staleBranch)

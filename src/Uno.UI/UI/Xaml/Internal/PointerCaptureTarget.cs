@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Linq;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Input;
@@ -54,5 +56,5 @@ internal class PointerCaptureTarget
 	/// is a parent of the Owner and we are only bubbling the routed event, so this element can
 	/// raise the event (if the opposite, it means that the element is a child, so it has to mute the event).
 	/// </summary>
-	public PointerRoutedEventArgs LastDispatched { get; set; }
+	public PointerRoutedEventArgs? LastDispatched { get; set; }
 }

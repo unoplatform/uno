@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Windows.Devices.Input;
@@ -41,9 +43,9 @@ internal class PointerCapture
 	public static bool TryGet(Pointer pointer, out PointerCapture capture)
 		=> _actives.TryGetValue(pointer.UniqueId, out capture);
 
-	public static bool Any(out List<PointerCapture> cloneOfAllCaptures)
+	public static bool Any(out List<PointerCapture>? cloneOfAllCaptures)
 	{
-		if (_actives.Any())
+		if (_actives.Count > 0)
 		{
 			cloneOfAllCaptures = _actives.Values.ToList();
 			return true;
@@ -55,8 +57,8 @@ internal class PointerCapture
 		}
 	}
 
-	private UIElement _nativeCaptureElement;
-	private readonly Dictionary<UIElement, PointerCaptureTarget> _targets = new Dictionary<UIElement, PointerCaptureTarget>(2);
+	private UIElement? _nativeCaptureElement;
+	private readonly Dictionary<UIElement, PointerCaptureTarget> _targets = new(2);
 
 	private PointerCapture(Pointer pointer)
 	{
@@ -90,15 +92,15 @@ internal class PointerCapture
 			.Values
 			.Where(target => (target.Kind & kinds) != PointerCaptureKind.None);
 
-	internal PointerCaptureResult TryAddTarget(UIElement element, PointerCaptureKind kind, PointerRoutedEventArgs relatedArgs = null)
+	internal PointerCaptureResult TryAddTarget(UIElement element, PointerCaptureKind kind, PointerRoutedEventArgs? relatedArgs = null)
 	{
 		global::System.Diagnostics.Debug.Assert(
-			kind == PointerCaptureKind.Explicit || kind == PointerCaptureKind.Implicit,
+			kind is PointerCaptureKind.Explicit or PointerCaptureKind.Implicit,
 			"The initial capture kind must be Explicit **OR** Implicit.");
 
-		if (this.Log().IsEnabled(LogLevel.Information))
+		if (this.Log().IsEnabled(LogLevel.Debug))
 		{
-			this.Log().Info($"{element.GetDebugName()}: Capturing ({kind}) pointer {Pointer}");
+			this.Log().Debug($"{element.GetDebugName()}: Capturing ({kind}) pointer {Pointer}");
 		}
 
 		if (_targets.TryGetValue(element, out var target))
@@ -152,7 +154,7 @@ internal class PointerCapture
 	/// Removes a UIElement from the targets of this capture.
 	/// DO NOT USE directly, use instead the Release method on the UIElement in order to properly raise the PointerCaptureLost event.
 	/// </summary>
-	internal PointerCaptureKind RemoveTarget(UIElement element, PointerCaptureKind kinds, out PointerRoutedEventArgs lastDispatched)
+	internal PointerCaptureKind RemoveTarget(UIElement element, PointerCaptureKind kinds, out PointerRoutedEventArgs? lastDispatched)
 	{
 		if (!_targets.TryGetValue(element, out var target)
 			|| (target.Kind & kinds) == 0) // Validate if any of the requested kinds is handled
@@ -183,9 +185,9 @@ internal class PointerCapture
 			kinds != PointerCaptureKind.None,
 			"The capture kind must be set to release pointer captures.");
 
-		if (this.Log().IsEnabled(LogLevel.Information))
+		if (this.Log().IsEnabled(LogLevel.Debug))
 		{
-			this.Log().Info($"{target.Element.GetDebugName()}: Releasing ({kinds}) capture of pointer {Pointer}");
+			this.Log().Debug($"{target.Element.GetDebugName()}: Releasing ({kinds}) capture of pointer {Pointer}");
 		}
 
 		// If we remove an explicit capture, we update the _localExplicitCaptures of the target element
@@ -219,7 +221,7 @@ internal class PointerCapture
 	public bool ValidateAndUpdate(UIElement element, PointerRoutedEventArgs args, bool autoRelease)
 	{
 		if ((autoRelease && MostRecentDispatchedEventFrameId < args.FrameId)
-			|| _nativeCaptureElement.GetHitTestVisibility() == HitTestability.Collapsed)
+			|| _nativeCaptureElement?.GetHitTestVisibility() == HitTestability.Collapsed)
 		{
 			// If 'autoRelease' we want to release any previous capture that was not release properly no matter the reason.
 			// BUT we don't want to release a capture that was made by a child control (so MostRecentDispatchedEventFrameId should already be equals to current FrameId).
@@ -265,7 +267,7 @@ internal class PointerCapture
 
 	private void EnsureEffectiveCaptureState()
 	{
-		if (_targets.Any())
+		if (_targets.Count > 0)
 		{
 			// We have some target, self enable us
 
@@ -318,7 +320,7 @@ internal class PointerCapture
 	{
 		try
 		{
-			_nativeCaptureElement.ReleasePointerNative(Pointer);
+			_nativeCaptureElement?.ReleasePointerNative(Pointer);
 		}
 		catch (Exception e)
 		{
@@ -336,7 +338,7 @@ internal class PointerCapture
 	{
 		try
 		{
-			_nativeCaptureElement.CapturePointerNative(Pointer);
+			_nativeCaptureElement?.CapturePointerNative(Pointer);
 		}
 		catch (Exception e)
 		{
