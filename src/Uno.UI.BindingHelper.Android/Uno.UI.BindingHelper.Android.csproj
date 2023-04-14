@@ -47,6 +47,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<InternalsVisibleTo Include="Uno.UI" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<TransformFile Include="Transforms\Metadata.xml">
 			<SubType>Designer</SubType>
 		</TransformFile>

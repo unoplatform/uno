@@ -17,5 +17,5 @@
 	<attr path="/api/package[@name='Uno.UI']/class[@name='UnoViewGroup']/method[@name='getText']" name="visibility">protected</attr>
 
 	<!--Hide the UnoMotionTarget interface and all its members (for all implementors) -->
-	<attr path="/api/package[@name='Uno.UI']/class/method[@name='onNativeMotionEvent']" name="visibility">protected</attr>
+	<attr path="/api/package[@name='Uno.UI']/class/method[@name='onNativeMotionEvent']" name="visibility">internal</attr>
 </metadata>

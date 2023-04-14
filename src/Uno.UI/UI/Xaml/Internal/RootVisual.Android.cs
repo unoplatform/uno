@@ -10,7 +10,7 @@ namespace Uno.UI.Xaml.Core;
 
 internal partial class RootVisual
 {
-	protected sealed override bool OnNativeMotionEvent(MotionEvent nativeEvent)
+	internal sealed override bool OnNativeMotionEvent(MotionEvent nativeEvent)
 	{
 		if (!ArePointersEnabled)
 		{
