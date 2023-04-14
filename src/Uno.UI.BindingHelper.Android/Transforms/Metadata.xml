@@ -18,7 +18,6 @@
 
 	<!--Hide the UnoMotionTarget interface and all its members (for all implementors) -->
 	<remove-node path="/api/package[@name='Uno.UI']/interface[@name='UnoMotionTarget']" />
-	<remove-node path="/api/package[@name='Uno.UI']/class/method[@name='getNativeIsHitTestVisible']" />
 	<attr path="/api/package[@name='Uno.UI']/class[@name='UnoViewGroup']/method[@name='nativeHitCheck']" name="visibility">protected</attr>
 	<remove-node path="/api/package[@name='Uno.UI']/class[@name='UnoRecyclerView']/method[@name='nativeHitCheck']" />
 	<remove-node path="/api/package[@name='Uno.UI']/class/method[@name='getChildrenRenderTransformCount']" />

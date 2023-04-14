@@ -20,7 +20,6 @@ public abstract class UnoViewGroup
 	private static ArrayList<UnoViewGroup> callToRequestLayout = new ArrayList<UnoViewGroup>();
 
 	private boolean _inLocalAddView, _inLocalRemoveView;
-	private boolean _isHitTestVisible;
 
 	private boolean _isManagedLoaded;
 	private boolean _needsLayoutOnAttachedToWindow;
@@ -66,8 +65,6 @@ public abstract class UnoViewGroup
 	public UnoViewGroup(android.content.Context ctx)
 	{
 		super(ctx);
-
-		_isHitTestVisible = true;
 
 		setOnHierarchyChangeListener(
 			new OnHierarchyChangeListener()
@@ -365,9 +362,6 @@ public abstract class UnoViewGroup
 	@Override public /* protected in C# */ boolean onNativeMotionEvent(MotionEvent event) {
 		return false;
 	}
-
-	public final void setNativeIsHitTestVisible(boolean hitTestVisible) { _isHitTestVisible = hitTestVisible; }
-	public /* hidden to C# */ final boolean getNativeIsHitTestVisible() { return _isHitTestVisible; }
 
 	public /* protected in C# */ abstract boolean nativeHitCheck();
 

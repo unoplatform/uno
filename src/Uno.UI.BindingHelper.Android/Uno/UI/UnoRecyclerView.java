@@ -15,7 +15,6 @@ public abstract class UnoRecyclerView
 		super(context);
 	}
 
-	@Override public /* hidden to C# */ final boolean getNativeIsHitTestVisible() { return true; }
 	@Override public /* hidden to C# */ final boolean nativeHitCheck() { return true; }
 
 	@Override public /* hidden to C# */ final int getChildrenRenderTransformCount() { return 0; }

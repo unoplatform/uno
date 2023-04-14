@@ -10,10 +10,6 @@ import android.view.*;
  * Note: This interface is for internal use (a.k.a. package-private) and is NOT VISIBLE to the C# binding
  */
 interface UnoMotionTarget {
-	/**
-	 * Gets the value of the managed IsHitTestVisible
-	 */
-	/* internal */ boolean getNativeIsHitTestVisible();
 	/* internal OR protected */	boolean nativeHitCheck(); // TODO: This should be coerced into the IsHitTestVisible()
 
 	/**

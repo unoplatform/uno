@@ -105,7 +105,6 @@ namespace Windows.UI.Xaml
 		partial void OnIsHitTestVisibleChangedPartial(bool oldValue, bool newValue)
 		{
 			UpdateHitTest();
-			base.SetNativeIsHitTestVisible(newValue);
 		}
 
 		// This section is using the UnoViewGroup overrides for performance reasons
