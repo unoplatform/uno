@@ -642,8 +642,8 @@
 		<file src="..\src\Uno.UI\Bin\Uno.UI.Skia\Release\net8.0\Uno.pdb" target="uno-runtime\net8.0\skia" />
 		<file src="..\src\Uno.UI\Bin\Uno.UI.Skia\Release\net8.0\Uno.Foundation.dll" target="uno-runtime\net8.0\skia" />
 		<file src="..\src\Uno.UI\Bin\Uno.UI.Skia\Release\net8.0\Uno.Foundation.pdb" target="uno-runtime\net8.0\skia" />
-		<file src="..\src\Uno.UI\Bin\Uno.UI.Wasm\Release\net8.0\Uno.Foundation.Logging.dll" target="uno-runtime\net8.0\skia" />
-		<file src="..\src\Uno.UI\Bin\Uno.UI.Wasm\Release\net8.0\Uno.Foundation.Logging.pdb" target="uno-runtime\net8.0\skia" />
+		<file src="..\src\Uno.UI\Bin\Uno.UI.Skia\Release\net8.0\Uno.Foundation.Logging.dll" target="uno-runtime\net8.0\skia" />
+		<file src="..\src\Uno.UI\Bin\Uno.UI.Skia\Release\net8.0\Uno.Foundation.Logging.pdb" target="uno-runtime\net8.0\skia" />
 		<file src="..\src\Uno.UI\Bin\Uno.UI.Skia\Release\net8.0\Uno.UI.dll" target="uno-runtime\net8.0\skia" />
 		<file src="..\src\Uno.UI\Bin\Uno.UI.Skia\Release\net8.0\Uno.UI.pdb" target="uno-runtime\net8.0\skia" />
 		<file src="..\src\Uno.UI\Bin\Uno.UI.Skia\Release\net8.0\Uno.UI.Composition.dll" target="uno-runtime\net8.0\skia" />
