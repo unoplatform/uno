@@ -9,6 +9,9 @@
 	Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
 	<StackPanel Margin="10" Spacing="10" HorizontalAlignment="Left">
+		<TextBlock FontSize="15">Switch to indeterminate to determinate ProgressRing:</TextBlock>
+		<winui:ProgressRing IsIndeterminate ="{Binding IsChecked, ElementName=isIndeterminate}" Value="50" />
+		<ToggleButton x:Name="isIndeterminate">IsIndeterminate</ToggleButton>
 		<TextBlock FontSize="15">Inactive ProgressRing:</TextBlock>
 		<winui:ProgressRing IsActive="False" />
 		<TextBlock FontSize="15">Active ProgressRing:</TextBlock>
@@ -47,6 +50,6 @@
 
 		</StackPanel>
 		
-		
+
 	</StackPanel>
 </Page>
