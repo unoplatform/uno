@@ -35,10 +35,6 @@ namespace Windows.UI.Xaml
 			ArePointersEnabled = true;
 		}
 
-
-		partial void OnManipulationModeChanged(ManipulationModes oldMode, ManipulationModes newMode)
-			=> IsNativeMotionEventsInterceptForbidden = newMode == ManipulationModes.None;
-
 		partial void OnGestureRecognizerInitialized(GestureRecognizer recognizer)
 		{
 			recognizer.ManipulationConfigured += (snd, manip) =>

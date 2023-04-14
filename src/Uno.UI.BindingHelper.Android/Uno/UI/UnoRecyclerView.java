@@ -8,39 +8,10 @@ import android.view.*;
 import java.lang.*;
 
 public abstract class UnoRecyclerView
-	extends RecyclerView
-	implements Uno.UI.UnoMotionTarget {
+	extends RecyclerView {
 
 	protected UnoRecyclerView(Context context) {
 		super(context);
-	}
-
-	@Override public /* hidden to C# */ final int getChildrenRenderTransformCount() { return 0; }
-	@Override public /* hidden to C# */ final Matrix findChildRenderTransform(View child) { return null; }
-
-	@Override public /* hidden to C# */ final boolean getIsNativeMotionEventsInterceptForbidden() { return false; }
-	@Override public /* protected in C# */ boolean onNativeMotionEvent(MotionEvent event) { return false; }
-
-	private class TouchMotionTarget extends Uno.UI.TouchMotionTarget
-	{
-		protected TouchMotionTarget() { super(UnoRecyclerView.this); }
-		@Override public boolean dispatchToSuper(MotionEvent event) { return Uno.UI.UnoRecyclerView.super.dispatchTouchEvent(event); }
-	}
-
-	private class GenericMotionTarget extends Uno.UI.GenericMotionTarget
-	{
-		protected GenericMotionTarget() { super(UnoRecyclerView.this); }
-		@Override public boolean dispatchToSuper(MotionEvent event) { return Uno.UI.UnoRecyclerView.super.dispatchGenericMotionEvent(event); }
-	}
-
-	private final Uno.UI.MotionTargetAdapter _thisAsTouchTarget = new TouchMotionTarget();
-	private final Uno.UI.MotionTargetAdapter _thisAsGenericMotionTarget = new GenericMotionTarget();
-
-	@Override public final boolean dispatchTouchEvent(MotionEvent event) {
-		return Uno.UI.UnoMotionHelper.Instance.dispatchMotionEvent(_thisAsTouchTarget, event);
-	}
-	@Override public final boolean dispatchGenericMotionEvent(MotionEvent event) {
-		return Uno.UI.UnoMotionHelper.Instance.dispatchMotionEvent(_thisAsGenericMotionTarget, event);
 	}
 
 	@Override

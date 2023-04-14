@@ -12,8 +12,7 @@ import java.util.Map;
 import java.util.HashMap;
 
 public abstract class UnoViewGroup
-	extends android.view.ViewGroup
-	implements Uno.UI.UnoMotionTarget {
+	extends android.view.ViewGroup {
 
 	private static final String LOGTAG = "UnoViewGroup";
 	private static boolean _isLayoutingFromMeasure = false;
@@ -333,34 +332,49 @@ public abstract class UnoViewGroup
 		super.setAlpha(opacity);
 	}
 
-	private class TouchMotionTarget extends Uno.UI.TouchMotionTarget
-	{
-		TouchMotionTarget() { super(UnoViewGroup.this); }
-		@Override public boolean dispatchToSuper(MotionEvent event) { return Uno.UI.UnoViewGroup.super.dispatchTouchEvent(event); }
-	}
-
-	private class GenericMotionTarget extends Uno.UI.GenericMotionTarget
-	{
-		GenericMotionTarget() { super(UnoViewGroup.this); }
-		@Override public boolean dispatchToSuper(MotionEvent event) { return Uno.UI.UnoViewGroup.super.dispatchGenericMotionEvent(event); }
-	}
-
-	private final Uno.UI.MotionTargetAdapter _thisAsTouchTarget = new TouchMotionTarget();
-	private final Uno.UI.MotionTargetAdapter _thisAsGenericMotionTarget = new GenericMotionTarget();
-
 	@Override public /* TODO: final */ boolean dispatchTouchEvent(MotionEvent event) {
-		return Uno.UI.UnoMotionHelper.Instance.dispatchMotionEvent(_thisAsTouchTarget, event);
+		if (isMotionSupportedByManaged(event)) {
+			onNativeMotionEvent(event);
+		}
+
+		return true;
 	}
 	@Override public final boolean dispatchGenericMotionEvent(MotionEvent event) {
-		return Uno.UI.UnoMotionHelper.Instance.dispatchMotionEvent(_thisAsGenericMotionTarget, event);
+		if (isMotionSupportedByManaged(event)) {
+			onNativeMotionEvent(event);
+		}
+
+		return true;
 	}
 
-	private boolean _isNativeMotionEventsInterceptForbidden = false;
-	@Override public /* protected in C# */ final boolean getIsNativeMotionEventsInterceptForbidden(){ return _isNativeMotionEventsInterceptForbidden; }
-	public /* protected in C# */ final void setIsNativeMotionEventsInterceptForbidden(boolean isNativeMotionEventsInterceptForbidden){ _isNativeMotionEventsInterceptForbidden = isNativeMotionEventsInterceptForbidden; }
-
-	@Override public /* protected in C# */ boolean onNativeMotionEvent(MotionEvent event) {
+	public /* protected in C# */ boolean onNativeMotionEvent(MotionEvent event) {
 		return false;
+	}
+
+	// Stylus when barrel is pressed when touching the screen
+	private static final int STYLUS_WITH_BARREL_DOWN = 211;
+	private static final int STYLUS_WITH_BARREL_MOVE = 213;
+	private static final int STYLUS_WITH_BARREL_UP = 212;
+
+	private static final boolean isMotionSupportedByManaged(MotionEvent event) {
+		switch (event.getActionMasked())
+		{
+			case MotionEvent.ACTION_DOWN:
+			case MotionEvent.ACTION_POINTER_DOWN:
+			case MotionEvent.ACTION_MOVE:
+			case MotionEvent.ACTION_UP:
+			case MotionEvent.ACTION_CANCEL:
+			case MotionEvent.ACTION_POINTER_UP:
+			case MotionEvent.ACTION_HOVER_ENTER:
+			case MotionEvent.ACTION_HOVER_MOVE:
+			case MotionEvent.ACTION_HOVER_EXIT:
+			case STYLUS_WITH_BARREL_DOWN:
+			case STYLUS_WITH_BARREL_MOVE:
+			case STYLUS_WITH_BARREL_UP:
+				return true;
+			default:
+				return false;
+		}
 	}
 
 	/**
@@ -523,10 +537,6 @@ public abstract class UnoViewGroup
 		return true;
 	}
 
-	public /* hidden to C# */ int getChildrenRenderTransformCount() { return _childrenTransformations.size(); }
-	public /* hidden to C# */ Matrix findChildRenderTransform(View child) { return _childrenTransformations.get(child); }
-
-
 	@Override
 	public void getLocationInWindow(int[] outLocation) {
 		super.getLocationInWindow(outLocation);
@@ -537,7 +547,7 @@ public abstract class UnoViewGroup
 		while (currentParent instanceof View) {
 			if (currentParent instanceof UnoViewGroup) {
 				final UnoViewGroup currentUVGParent = (UnoViewGroup)currentParent;
-				Matrix parentMatrix = currentUVGParent.findChildRenderTransform(currentChild);
+				Matrix parentMatrix = currentUVGParent._childrenTransformations.get(currentChild);
 				if (parentMatrix != null && !parentMatrix.isIdentity()) {
 					if (points == null) {
 						points = new float[2];
