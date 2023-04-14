@@ -249,19 +249,6 @@ internal partial class InputManager
 
 			var routedArgs = new PointerRoutedEventArgs(args, originalSource);
 
-			var overBranchLeaf = VisualTreeHelper.SearchDownForLeaf(originalSource, _isOver);
-
-			if (overBranchLeaf is not null)
-			{
-				if (this.Log().IsEnabled(LogLevel.Trace))
-				{
-					this.Log().Trace($"CoreWindow_PointerReleased [{overBranchLeaf.GetDebugName()}");
-				}
-
-				Raise(Leave, overBranchLeaf, routedArgs);
-			}
-
-			args.Handled = false;
 			RaiseUsingCaptures(Released, originalSource, routedArgs);
 			if (isOutOfWindow || (PointerDeviceType)args.CurrentPoint.Pointer.Type != PointerDeviceType.Touch)
 			{
