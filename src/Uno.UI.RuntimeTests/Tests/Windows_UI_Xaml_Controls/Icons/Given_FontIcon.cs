@@ -55,6 +55,15 @@ public class Given_FontIcon
 	}
 
 	[TestMethod]
+	public async Task When_Themed_Fluent()
+	{
+		using (StyleHelper.UseFluentStyles())
+		{
+			await When_Themed();
+		}
+	}
+
+	[TestMethod]
 	public async Task When_Themed_TextBlock()
 	{
 		var textBlock = new TextBlock() { Text = "test" };
@@ -86,5 +95,14 @@ public class Given_FontIcon
 		fontIcon.Foreground = new SolidColorBrush(Colors.Red);
 		fontIconBrush = (SolidColorBrush)innerTextBlock.Foreground;
 		Assert.AreEqual(Colors.Red, fontIconBrush.Color);
+	}
+
+	[TestMethod]
+	public async Task When_Themed_TextBlock_Fluent()
+	{
+		using (StyleHelper.UseFluentStyles())
+		{
+			await When_Themed_TextBlock();
+		}
 	}
 }

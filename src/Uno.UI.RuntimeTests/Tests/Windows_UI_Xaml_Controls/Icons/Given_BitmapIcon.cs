@@ -37,4 +37,13 @@ public class Given_BitmapIcon
 			Assert.AreEqual(textBlockBrush.Color, bitmapIconBrush.Color);
 		}
 	}
+
+	[TestMethod]
+	public async Task When_Themed_Fluent()
+	{
+		using (StyleHelper.UseFluentStyles())
+		{
+			await When_Themed();
+		}
+	}
 }

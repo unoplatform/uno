@@ -47,6 +47,15 @@ public class Given_PathIcon
 	}
 
 	[TestMethod]
+	public async Task When_Themed_Fluent()
+	{
+		using (StyleHelper.UseFluentStyles())
+		{
+			await When_Themed();
+		}
+	}
+
+	[TestMethod]
 	public async Task When_Themed_Path()
 	{
 		var textBlock = new TextBlock() { Text = "test" };
@@ -83,5 +92,15 @@ public class Given_PathIcon
 		pathIcon.Foreground = new SolidColorBrush(Colors.Red);
 		pathIconBrush = (SolidColorBrush)innerPath.Fill;
 		Assert.AreEqual(Colors.Red, pathIconBrush.Color);
+	}
+
+
+	[TestMethod]
+	public async Task When_Themed_Path_Fluent()
+	{
+		using (StyleHelper.UseFluentStyles())
+		{
+			await When_Themed_Path();
+		}
 	}
 }
