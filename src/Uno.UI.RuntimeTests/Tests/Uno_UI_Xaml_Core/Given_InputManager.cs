@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if __SKIA__
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
@@ -54,3 +55,4 @@ public class Given_InputManager
 		Assert.IsFalse(failed, "The pointer should not have been dispatched to the col2 as it has been set to visibility collapsed.");
 	}
 }
+#endif
