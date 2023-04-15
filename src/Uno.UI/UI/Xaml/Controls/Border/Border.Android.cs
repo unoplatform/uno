@@ -32,6 +32,11 @@ public partial class Border
 		}
 	}
 
+	partial void OnPaddingChangedPartial()
+	{
+		ShouldUpdateMeasures = true;
+	}
+
 	protected override void OnDraw(Android.Graphics.Canvas canvas)
 	{
 		AdjustCornerRadius(canvas, CornerRadius);
