@@ -12,7 +12,7 @@ using View = Windows.UI.Xaml.UIElement;
 
 namespace Windows.UI.Xaml.Controls;
 
-partial class Panel
+partial class Panel : IEnumerable
 {
 	/// <summary>        
 	/// Support for the C# collection initializer style.
@@ -31,4 +31,6 @@ partial class Panel
 	{
 		Children.Add(view);
 	}
+
+	public IEnumerator GetEnumerator() => this.GetChildren().GetEnumerator();
 }
