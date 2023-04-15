@@ -125,9 +125,7 @@ namespace Microsoft.UI.Xaml.Controls
 		CornerRadius IBorderInfoProvider.CornerRadius => GetItemCornerRadius();
 
 #if __ANDROID__
-		Thickness IBorderInfoProvider.Padding => Padding;
-
-		bool IBorderInfoProvider.ShouldUpdateMeasures => false;
+		bool IBorderInfoProvider.ShouldUpdateMeasures { get; set; }
 #endif
 
 		private bool IsClear(Brush brush)
