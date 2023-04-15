@@ -46,7 +46,13 @@ namespace Windows.UI.Xaml.Controls
 
 		internal BorderLayerRenderer BorderRenderer { get; }
 
-		private void UpdateBorder() => BorderRenderer.Update();
+		private void UpdateBorder()
+		{
+			BorderRenderer.Update();
+			UpdateBorderPartial();
+		}
+
+		partial void UpdateBorderPartial();
 
 		/// <summary>        
 		/// Support for the C# collection initializer style.
@@ -81,7 +87,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public static DependencyProperty ChildProperty { get; } =
 			DependencyProperty.Register(
-				"Child",
+				nameof(Child),
 				typeof(UIElement),
 				typeof(Border),
 				new FrameworkPropertyMetadata(
