@@ -2,7 +2,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
@@ -22,10 +21,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private Func<INamedTypeSymbol, string[]>? _findLocalizableDeclaredProperties;
 		private XClassName? _xClassName;
 		private string[]? _clrNamespaces;
-		private readonly static Func<INamedTypeSymbol, IPropertySymbol?> _findContentProperty;
-		private readonly static Func<INamedTypeSymbol, string, bool> _isAttachedProperty;
-		private readonly static Func<INamedTypeSymbol, string, INamedTypeSymbol> _getAttachedPropertyType;
-		private readonly static Func<INamedTypeSymbol, bool> _isTypeImplemented;
 
 		record XClassName(string Namespace, string ClassName, INamedTypeSymbol? Symbol)
 		{
@@ -405,7 +400,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				if (type != null)
 				{
-					return _isAttachedProperty(type, member.Member.Name);
+					return IsAttachedProperty(type, member.Member.Name);
 				}
 			}
 
@@ -432,51 +427,23 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return true;
 		}
 
-		private static bool SourceIsAttachedProperty(INamedTypeSymbol? type, string name)
-		{
-			do
-			{
-				var property = type.GetPropertyWithName(name);
-				if (property?.GetMethod?.IsStatic ?? false)
-				{
-					return true;
-				}
-
-				var setMethod = type?.GetFirstMethodWithName("Set" + name);
-				if (setMethod is { IsStatic: true, Parameters.Length: 2 })
-				{
-					return true;
-				}
-
-				type = type?.BaseType;
-				if (type == null || type.SpecialType == SpecialType.System_Object)
-				{
-					return false;
-				}
-
-			} while (true);
-		}
-
 		/// <summary>
 		/// Get the type of the attached property.
 		/// </summary>
 		private INamedTypeSymbol GetAttachedPropertyType(XamlMemberDefinition member)
 		{
 			var type = GetType(member.Member.DeclaringType);
-			return _getAttachedPropertyType(type, member.Member.Name);
+			return GetAttachedPropertyType(type, member.Member.Name);
 		}
 
 		/// <summary>
 		/// Get the type of the attached property.
 		/// </summary>
-		private INamedTypeSymbol GetAttachedPropertyType(INamedTypeSymbol type, string propertyName)
-			=> _getAttachedPropertyType(type, propertyName);
-
-		private static INamedTypeSymbol SourceGetAttachedPropertyType(INamedTypeSymbol? type, string name)
+		private INamedTypeSymbol GetAttachedPropertyType(INamedTypeSymbol? type, string propertyName)
 		{
 			do
 			{
-				var setMethod = type?.GetFirstMethodWithName("Set" + name);
+				var setMethod = type?.GetFirstMethodWithName("Set" + propertyName);
 
 				if (setMethod != null && setMethod.IsStatic && setMethod.Parameters.Length == 2)
 				{
@@ -487,7 +454,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				if (type == null || type.SpecialType == SpecialType.System_Object)
 				{
-					throw new InvalidOperationException($"No valid setter found for attached property {name}");
+					throw new InvalidOperationException($"No valid setter found for attached property {propertyName}");
 				}
 
 			} while (true);
@@ -889,8 +856,32 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				type = type.BaseType;
 			}
 		}
+
 		private bool IsAttachedProperty(INamedTypeSymbol declaringType, string name)
-			=> _isAttachedProperty(declaringType, name);
+		{
+			var type = declaringType;
+			do
+			{
+				var property = type.GetPropertyWithName(name);
+				if (property?.GetMethod?.IsStatic ?? false)
+				{
+					return true;
+				}
+
+				var setMethod = type?.GetFirstMethodWithName("Set" + name);
+				if (setMethod is { IsStatic: true, Parameters.Length: 2 })
+				{
+					return true;
+				}
+
+				type = type?.BaseType;
+				if (type == null || type.SpecialType == SpecialType.System_Object)
+				{
+					return false;
+				}
+
+			} while (true);
+		}
 
 		private IEnumerable<(INamedTypeSymbol ownerType, string property)> FindLocalizableAttachedProperties(string uid)
 		{
@@ -940,9 +931,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				.ToArray();
 		}
 
-		private bool IsTypeImplemented(INamedTypeSymbol type) => _isTypeImplemented(type);
-
-		private static bool SourceIsTypeImplemented(INamedTypeSymbol type)
+		private bool IsTypeImplemented(INamedTypeSymbol type)
 			=> type.GetAttributes().None(a => a.AttributeClass?.GetFullyQualifiedTypeExcludingGlobal() == XamlConstants.Types.NotImplementedAttribute);
 	}
 }
