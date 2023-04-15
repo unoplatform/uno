@@ -3,13 +3,16 @@
 using System;
 using System.Xml;
 
+// ValueTuple`2 isn't available on net461. So using KeyValuePair for now. We can switch to tuples if we no longer build on net461.
+using IsIncludedType = System.Func<string, string, System.Collections.Generic.KeyValuePair<bool?, string>>;
+
 namespace Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection
 {
 	internal class XamlXmlReader : IDisposable
 	{
 		private __uno::Uno.Xaml.XamlXmlReader _unoReader;
 
-		public XamlXmlReader(XmlReader document, XamlSchemaContext context, XamlXmlReaderSettings settings, Func<string, string, bool?> isIncluded)
+		public XamlXmlReader(XmlReader document, XamlSchemaContext context, XamlXmlReaderSettings settings, IsIncludedType isIncluded)
 		{
 			_unoReader = new __uno::Uno.Xaml.XamlXmlReader(document, context.UnoInner, settings.UnoInner, isIncluded);
 		}

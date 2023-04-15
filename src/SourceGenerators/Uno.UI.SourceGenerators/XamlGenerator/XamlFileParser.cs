@@ -147,22 +147,32 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
-		private bool? IsIncluded(string localName, string namespaceUri)
+		private KeyValuePair<bool?, string> IsIncluded(string localName, string namespaceUri)
 		{
 			if (_includeXamlNamespaces.Contains(localName))
 			{
-				return true;
+				if (namespaceUri.IndexOf("using:", StringComparison.Ordinal) is int indexOfUsingColon && indexOfUsingColon == -1)
+				{
+					// There is no "using:" in the namespace. So assume the default namespace
+					return new KeyValuePair<bool?, string>(true, "http://schemas.microsoft.com/winfx/2006/xaml/presentation");
+				}
+				else if (indexOfUsingColon > 0 && namespaceUri[indexOfUsingColon - 1] == '#')
+				{
+					// We have "#using:", we want to keep it.
+					return new KeyValuePair<bool?, string>(true, namespaceUri.Substring(indexOfUsingColon - 1));
+				}
+				return new KeyValuePair<bool?, string>(true, namespaceUri);
 			}
 			else if (_excludeXamlNamespaces.Contains(localName))
 			{
-				return false;
+				return new KeyValuePair<bool?, string>(false, namespaceUri);
 			}
 
 			var valueSplit = namespaceUri.Split('?');
 			if (valueSplit.Length != 2)
 			{
 				// Not a (valid) conditional
-				return null;
+				return new KeyValuePair<bool?, string>(null, namespaceUri);
 			}
 
 			var elements = valueSplit[1].Split('(', ',', ')');
@@ -178,9 +188,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						throw new InvalidOperationException($"Syntax error while parsing conditional namespace expression {namespaceUri}");
 					}
 
-					return methodName == nameof(ApiInformation.IsApiContractPresent) ?
+					return new KeyValuePair<bool?, string>(methodName == nameof(ApiInformation.IsApiContractPresent) ?
 						ApiInformation.IsApiContractPresent(elements[1], majorVersion) :
-						ApiInformation.IsApiContractNotPresent(elements[1], majorVersion);
+						ApiInformation.IsApiContractNotPresent(elements[1], majorVersion), valueSplit[0]);
 				case nameof(ApiInformation.IsTypePresent):
 				case nameof(ApiInformation.IsTypeNotPresent):
 					if (elements.Length < 2)
@@ -188,11 +198,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						throw new InvalidOperationException($"Syntax error while parsing conditional namespace expression {namespaceUri}");
 					}
 					var expectedType = elements[1];
-					return methodName == nameof(ApiInformation.IsTypePresent) ?
+					return new KeyValuePair<bool?, string>(methodName == nameof(ApiInformation.IsTypePresent) ?
 						ApiInformation.IsTypePresent(elements[1], _metadataHelper) :
-						ApiInformation.IsTypeNotPresent(elements[1], _metadataHelper);
+						ApiInformation.IsTypeNotPresent(elements[1], _metadataHelper), valueSplit[0]);
 				default:
-					return null;// TODO: support IsPropertyPresent
+					return new KeyValuePair<bool?, string>(null, namespaceUri);// TODO: support IsPropertyPresent
 			}
 		}
 

@@ -30,91 +30,94 @@ using Uno.Xaml.Schema;
 
 using Pair = System.Collections.Generic.KeyValuePair<Uno.Xaml.XamlMember,string>;
 
+// ValueTuple`2 isn't available on net461. So using KeyValuePair for now. We can switch to tuples if we no longer build on net461.
+using IsIncludedType = System.Func<string, string, System.Collections.Generic.KeyValuePair<bool?, string>>;
+
 namespace Uno.Xaml
 {
 	public class XamlXmlReader : XamlReader, IXamlLineInfo
 	{
 		#region constructors
 
-		public XamlXmlReader (Stream stream, Func<string, string, bool?> isIncluded)
+		public XamlXmlReader (Stream stream, IsIncludedType isIncluded)
 			: this (stream, (XamlXmlReaderSettings) null, isIncluded)
 		{
 		}
 
-		public XamlXmlReader (string fileName, Func<string, string, bool?> isIncluded)
+		public XamlXmlReader (string fileName, IsIncludedType isIncluded)
 			: this (fileName, (XamlXmlReaderSettings) null, isIncluded)
 		{
 		}
 
-		public XamlXmlReader (TextReader textReader, Func<string, string, bool?> isIncluded)
+		public XamlXmlReader (TextReader textReader, IsIncludedType isIncluded)
 			: this (textReader, (XamlXmlReaderSettings) null, isIncluded)
 		{
 		}
 
-		public XamlXmlReader (XmlReader xmlReader, Func<string, string, bool?> isIncluded)
+		public XamlXmlReader (XmlReader xmlReader, IsIncludedType isIncluded)
 			: this (xmlReader, (XamlXmlReaderSettings) null, isIncluded)
 		{
 		}
 
-		public XamlXmlReader (Stream stream, XamlSchemaContext schemaContext, Func<string, string, bool?> isIncluded)
+		public XamlXmlReader (Stream stream, XamlSchemaContext schemaContext, IsIncludedType isIncluded)
 			: this (stream, schemaContext, null, isIncluded)
 		{
 		}
 
-		public XamlXmlReader (Stream stream, XamlXmlReaderSettings settings, Func<string, string, bool?> isIncluded)
+		public XamlXmlReader (Stream stream, XamlXmlReaderSettings settings, IsIncludedType isIncluded)
 			: this (stream, new XamlSchemaContext (null, null), settings, isIncluded)
 		{
 		}
 
-		public XamlXmlReader (string fileName, XamlSchemaContext schemaContext, Func<string, string, bool?> isIncluded)
+		public XamlXmlReader (string fileName, XamlSchemaContext schemaContext, IsIncludedType isIncluded)
 			: this (fileName, schemaContext, null, isIncluded)
 		{
 		}
 
-		public XamlXmlReader (string fileName, XamlXmlReaderSettings settings, Func<string, string, bool?> isIncluded)
+		public XamlXmlReader (string fileName, XamlXmlReaderSettings settings, IsIncludedType isIncluded)
 			: this (fileName, new XamlSchemaContext (null, null), settings, isIncluded)
 		{
 		}
 
-		public XamlXmlReader (TextReader textReader, XamlSchemaContext schemaContext, Func<string, string, bool?> isIncluded)
+		public XamlXmlReader (TextReader textReader, XamlSchemaContext schemaContext, IsIncludedType isIncluded)
 			: this (textReader, schemaContext, null, isIncluded)
 		{
 		}
 
-		public XamlXmlReader (TextReader textReader, XamlXmlReaderSettings settings, Func<string, string, bool?> isIncluded)
+		public XamlXmlReader (TextReader textReader, XamlXmlReaderSettings settings, IsIncludedType isIncluded)
 			: this (textReader, new XamlSchemaContext (null, null), settings, isIncluded)
 		{
 		}
 
-		public XamlXmlReader (XmlReader xmlReader, XamlSchemaContext schemaContext, Func<string, string, bool?> isIncluded)
+		public XamlXmlReader (XmlReader xmlReader, XamlSchemaContext schemaContext, IsIncludedType isIncluded)
 			: this (xmlReader, schemaContext, null, isIncluded)
 		{
 		}
 
-		public XamlXmlReader (XmlReader xmlReader, XamlXmlReaderSettings settings, Func<string, string, bool?> isIncluded)
+		public XamlXmlReader (XmlReader xmlReader, XamlXmlReaderSettings settings, IsIncludedType isIncluded)
 			: this (xmlReader, new XamlSchemaContext (null, null), settings, isIncluded)
 		{
 		}
 
-		public XamlXmlReader (Stream stream, XamlSchemaContext schemaContext, XamlXmlReaderSettings settings, Func<string, string, bool?> isIncluded)
+		public XamlXmlReader (Stream stream, XamlSchemaContext schemaContext, XamlXmlReaderSettings settings, IsIncludedType isIncluded)
 			: this (XmlReader.Create (stream), schemaContext, settings, isIncluded)
 		{
 		}
 
 		static readonly XmlReaderSettings file_reader_settings = new XmlReaderSettings () { CloseInput =true };
 
-		public XamlXmlReader (string fileName, XamlSchemaContext schemaContext, XamlXmlReaderSettings settings, Func<string, string, bool?> isIncluded)
+		public XamlXmlReader (string fileName, XamlSchemaContext schemaContext, XamlXmlReaderSettings settings, IsIncludedType isIncluded)
 			: this (XmlReader.Create (fileName, file_reader_settings), schemaContext, settings, isIncluded)
 		{
 		}
 
-		public XamlXmlReader (TextReader textReader, XamlSchemaContext schemaContext, XamlXmlReaderSettings settings, Func<string, string, bool?> isIncluded)
+		public XamlXmlReader (TextReader textReader, XamlSchemaContext schemaContext, XamlXmlReaderSettings settings, IsIncludedType isIncluded)
 			: this (XmlReader.Create (textReader), schemaContext, settings, isIncluded)
 		{
 		}
 
 		// Uno specific: includeXamlNamespaces and excludeXamlNamespaces are Uno specific.
-		public XamlXmlReader (XmlReader xmlReader, XamlSchemaContext schemaContext, XamlXmlReaderSettings settings, Func<string, string, bool?> isIncluded)
+		public XamlXmlReader (XmlReader xmlReader, XamlSchemaContext schemaContext, XamlXmlReaderSettings settings, IsIncludedType isIncluded)
 		{
 			parser = new XamlXmlParser (xmlReader, schemaContext, settings, isIncluded);
 		}
@@ -204,9 +207,9 @@ namespace Uno.Xaml
 	class XamlXmlParser
 	{
 		// Uno specific
-		private readonly Func<string, string, bool?> _isIncluded;
+		private readonly IsIncludedType _isIncluded;
 
-		public XamlXmlParser (XmlReader xmlReader, XamlSchemaContext schemaContext, XamlXmlReaderSettings settings, Func<string, string, bool?> isIncluded)
+		public XamlXmlParser (XmlReader xmlReader, XamlSchemaContext schemaContext, XamlXmlReaderSettings settings, IsIncludedType isIncluded)
 		{
 			if (xmlReader == null)
 				throw new ArgumentNullException ("xmlReader");
@@ -277,7 +280,7 @@ namespace Uno.Xaml
 			if (r.MoveToFirstAttribute ()) {
 				do {
 					if (r.NamespaceURI == XamlLanguage.Xmlns2000Namespace)
-						yield return Node (XamlNodeType.NamespaceDeclaration, new NamespaceDeclaration (AdjustNamespaceUri(r.Value), r.Prefix == "xmlns" ? r.LocalName : String.Empty));
+						yield return Node (XamlNodeType.NamespaceDeclaration, new NamespaceDeclaration (_isIncluded(r.LocalName, r.Value).Value, r.Prefix == "xmlns" ? r.LocalName : String.Empty));
 				} while (r.MoveToNextAttribute ());
 				r.MoveToElement ();
 			}
@@ -898,35 +901,15 @@ namespace Uno.Xaml
 			return null;
 		}
 
-		private string AdjustNamespaceUri(string namespaceUri)
-		{
-			if (namespaceUri.IndexOf('?') is int indexOfQuestionMark && indexOfQuestionMark > -1)
-			{
-				return namespaceUri.Substring(0, indexOfQuestionMark);
-			}
-			else if (namespaceUri.IndexOf("using:", StringComparison.Ordinal) is int indexOfUsingColon && indexOfUsingColon == -1)
-			{
-				// TODO: This will replace some namespaces that shouldn't be replaced. e.g., `x` namespace. This should only be done when it's platform-specific namespace.
-				// There is no "using:" in the namespace. So assume the default namespace
-				return r.LookupNamespace("");
-			}
-			else if (indexOfUsingColon > 0 && namespaceUri[indexOfUsingColon - 1] == '#')
-			{
-				// We have "#using:", we want to keep it.
-				return namespaceUri.Substring(indexOfUsingColon - 1);
-			}
-
-			return namespaceUri;
-		}
-
 		private bool IsIgnored(string localName, string namespaceUri, StartTagInfo sti)
 		{
-			var isIncluded = _isIncluded(localName, namespaceUri);
+			var result = _isIncluded(localName, namespaceUri);
+			var isIncluded = result.Key;
 			if (isIncluded == true)
 			{
 				if (sti is not null)
 				{
-					sti.Namespace = AdjustNamespaceUri(namespaceUri);
+					sti.Namespace = result.Value;
 				}
 
 				return false;
