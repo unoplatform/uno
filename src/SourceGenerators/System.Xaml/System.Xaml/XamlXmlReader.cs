@@ -277,7 +277,7 @@ namespace Uno.Xaml
 			if (r.MoveToFirstAttribute ()) {
 				do {
 					if (r.NamespaceURI == XamlLanguage.Xmlns2000Namespace)
-						yield return Node (XamlNodeType.NamespaceDeclaration, new NamespaceDeclaration (r.Value, r.Prefix == "xmlns" ? r.LocalName : String.Empty));
+						yield return Node (XamlNodeType.NamespaceDeclaration, new NamespaceDeclaration (AdjustNamespaceUri(r.Value), r.Prefix == "xmlns" ? r.LocalName : String.Empty));
 				} while (r.MoveToNextAttribute ());
 				r.MoveToElement ();
 			}
@@ -898,6 +898,27 @@ namespace Uno.Xaml
 			return null;
 		}
 
+		private string AdjustNamespaceUri(string namespaceUri)
+		{
+			if (namespaceUri.IndexOf('?') is int indexOfQuestionMark && indexOfQuestionMark > -1)
+			{
+				return namespaceUri.Substring(0, indexOfQuestionMark);
+			}
+			else if (namespaceUri.IndexOf("using:", StringComparison.Ordinal) is int indexOfUsingColon && indexOfUsingColon == -1)
+			{
+				// TODO: This will replace some namespaces that shouldn't be replaced. e.g., `x` namespace. This should only be done when it's platform-specific namespace.
+				// There is no "using:" in the namespace. So assume the default namespace
+				return r.LookupNamespace("");
+			}
+			else if (indexOfUsingColon > 0 && namespaceUri[indexOfUsingColon - 1] == '#')
+			{
+				// We have "#using:", we want to keep it.
+				return namespaceUri.Substring(indexOfUsingColon - 1);
+			}
+
+			return namespaceUri;
+		}
+
 		private bool IsIgnored(string localName, string namespaceUri, StartTagInfo sti)
 		{
 			var isIncluded = _isIncluded(localName, namespaceUri);
@@ -905,20 +926,7 @@ namespace Uno.Xaml
 			{
 				if (sti is not null)
 				{
-					if (namespaceUri.IndexOf('?') is int indexOfQuestionMark && indexOfQuestionMark > -1)
-					{
-						sti.Namespace = namespaceUri.Substring(0, indexOfQuestionMark);
-					}
-					else if (namespaceUri.IndexOf("using:", StringComparison.Ordinal) is int indexOfUsingColon && indexOfUsingColon == -1)
-					{
-						// There is no "using:" in the namespace. So assume the default namespace
-						sti.Namespace = r.LookupNamespace("");
-					}
-					else if (indexOfUsingColon > 0 && namespaceUri[indexOfUsingColon - 1] == '#')
-					{
-						// We have "#using:", we want to keep it.
-						sti.Namespace = namespaceUri.Substring(indexOfUsingColon - 1);
-					}
+					sti.Namespace = AdjustNamespaceUri(namespaceUri);
 				}
 
 				return false;
