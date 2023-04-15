@@ -16,8 +16,6 @@ partial class ContentPresenter : IBorderInfoProvider
 	CornerRadius IBorderInfoProvider.CornerRadius => CornerRadius;
 
 #if __ANDROID__
-	Thickness IBorderInfoProvider.Padding => Padding;
-
-	bool IBorderInfoProvider.ShouldUpdateMeasures => false;
+	bool IBorderInfoProvider.ShouldUpdateMeasures { get; set; }
 #endif
 }

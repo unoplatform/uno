@@ -83,6 +83,7 @@ namespace Windows.UI.Xaml.Controls
 			if (_borderInfoProvider.ShouldUpdateMeasures)
 			{
 				_owner.RequestLayout();
+				_borderInfoProvider.ShouldUpdateMeasures = false;
 			}
 			else
 			{
