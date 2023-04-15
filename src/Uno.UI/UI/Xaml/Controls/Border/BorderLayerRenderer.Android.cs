@@ -40,8 +40,7 @@ namespace Windows.UI.Xaml.Controls
 				_borderInfoProvider.Background,
 				_borderInfoProvider.BorderThickness,
 				_borderInfoProvider.BorderBrush,
-				_borderInfoProvider.CornerRadius,
-				_borderInfoProvider.Padding);
+				_borderInfoProvider.CornerRadius);
 			var previousLayoutState = _currentState;
 
 			if (newState.Equals(previousLayoutState))
@@ -485,17 +484,15 @@ namespace Windows.UI.Xaml.Controls
 			public readonly Color? BorderBrushColor;
 			public readonly Thickness BorderThickness;
 			public readonly CornerRadius CornerRadius;
-			public readonly Thickness Padding;
 			public readonly Color? BackgroundFallbackColor;
 
-			public LayoutState(Windows.Foundation.Rect area, Brush background, Thickness borderThickness, Brush borderBrush, CornerRadius cornerRadius, Thickness padding)
+			public LayoutState(Windows.Foundation.Rect area, Brush background, Thickness borderThickness, Brush borderBrush, CornerRadius cornerRadius)
 			{
 				Area = area;
 				Background = background;
 				BorderBrush = borderBrush;
 				CornerRadius = cornerRadius;
 				BorderThickness = borderThickness;
-				Padding = padding;
 
 				var imageBrushBackground = Background as ImageBrush;
 				BackgroundImageSource = imageBrushBackground?.ImageSource;
@@ -524,7 +521,6 @@ namespace Windows.UI.Xaml.Controls
 					&& other.BorderBrushColor == BorderBrushColor
 					&& other.BorderThickness == BorderThickness
 					&& other.CornerRadius == CornerRadius
-					&& other.Padding == Padding
 					&& other.BackgroundFallbackColor == BackgroundFallbackColor;
 			}
 		}

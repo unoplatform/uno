@@ -38,11 +38,6 @@ internal partial interface IBorderInfoProvider
 
 #if __ANDROID__
 	/// <summary>
-	/// Gets the element padding.
-	/// </summary>
-	Thickness Padding { get; }
-
-	/// <summary>
 	/// Gets a value indicating whether measure should be updated.
 	/// </summary>
 	bool ShouldUpdateMeasures { get; }
