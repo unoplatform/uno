@@ -35,13 +35,13 @@ namespace Uno.UI.RemoteControl.Host
 
 			app.Use(async (context, next) =>
 			{
-				context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
-				context.Response.Headers.Add("Access-Control-Allow-Methods", "*");
-				context.Response.Headers.Add("Access-Control-Allow-Headers", "*");
+				context.Response.Headers.Append("Access-Control-Allow-Origin", "*");
+				context.Response.Headers.Append("Access-Control-Allow-Methods", "*");
+				context.Response.Headers.Append("Access-Control-Allow-Headers", "*");
 
 				// Required for SharedArrayBuffer: https://developer.chrome.com/blog/enabling-shared-array-buffer/
-				context.Response.Headers.Add("Cross-Origin-Embedder-Policy", "require-corp");
-				context.Response.Headers.Add("Cross-Origin-Opener-Policy", "same-origin");
+				context.Response.Headers.Append("Cross-Origin-Embedder-Policy", "require-corp");
+				context.Response.Headers.Append("Cross-Origin-Opener-Policy", "same-origin");
 				await next();
 			});
 		}
