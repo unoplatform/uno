@@ -18,7 +18,7 @@ using Windows.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml.Controls
 {
-	partial class Panel : IEnumerable
+	partial class Panel
 	{
 		protected override void OnChildViewAdded(View child)
 		{
@@ -34,6 +34,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			base.OnLayoutCore(changed, left, top, right, bottom, localIsLayoutRequested);
 
+			ShouldUpdateMeasures = changed;
 			UpdateBorder();
 		}
 
@@ -43,6 +44,11 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		protected virtual void OnChildrenChanged() => UpdateBorder();
+
+		partial void OnPaddingChangedPartial(Thickness oldValue, Thickness newValue)
+		{
+			ShouldUpdateMeasures = true;
+		}
 
 		protected override void OnBeforeArrange()
 		{
@@ -59,8 +65,6 @@ namespace Windows.UI.Xaml.Controls
 			//We trigger all layoutUpdated animations
 			_transitionHelper?.LayoutUpdatedTransition();
 		}
-
-		public IEnumerator GetEnumerator() => this.GetChildren().GetEnumerator();
 
 		bool ICustomClippingElement.AllowClippingToLayoutSlot => true;
 
