@@ -179,7 +179,13 @@ namespace Windows.UI.Xaml.Controls
 			set => SetPaddingValue(value);
 		}
 
-		protected virtual void OnPaddingChanged(Thickness oldValue, Thickness newValue) => UpdateBorder();
+		protected virtual void OnPaddingChanged(Thickness oldValue, Thickness newValue) 
+		{
+			OnPaddingChangedPartial();
+			UpdateBorder();
+		}
+
+		partial void OnPaddingChangedPartial();
 
 		#endregion
 
@@ -217,10 +223,6 @@ namespace Windows.UI.Xaml.Controls
 		#endregion
 
 		#region BorderBrush Dependency Property
-
-
-		private SerialDisposable _borderBrushColorChanged = new SerialDisposable();
-		private SerialDisposable _borderBrushOpacityChanged = new SerialDisposable();
 
 #if XAMARIN_ANDROID
 		//This field is never accessed. It just exists to create a reference, because the DP causes issues with ImageBrush of the backing bitmap being prematurely garbage-collected. (Bug with ConditionalWeakTable? https://bugzilla.xamarin.com/show_bug.cgi?id=21620)
