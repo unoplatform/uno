@@ -37,14 +37,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<None Remove="Assets\Fonts\uno-fluentui-assets.ttf" />
 		<None Remove="Assets\SharedAssets.md" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<Content Include="Assets\Fonts\uno-fluentui-assets.ttf">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
 		<Content Include="Assets\SharedAssets.md" />
 	</ItemGroup>
 

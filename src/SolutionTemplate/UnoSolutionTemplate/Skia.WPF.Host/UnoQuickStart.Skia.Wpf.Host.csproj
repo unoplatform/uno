@@ -27,10 +27,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Content Include="Assets\Fonts\uno-fluentui-assets.ttf" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<ProjectReference Include="..\$ext_safeprojectname$.Skia.WPF\$ext_safeprojectname$.Skia.WPF.csproj" />
 	</ItemGroup>
 

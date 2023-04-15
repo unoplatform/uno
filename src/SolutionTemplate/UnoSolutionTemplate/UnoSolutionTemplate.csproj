@@ -77,23 +77,17 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Skia.Linux.FrameBuffer\Program.cs" />
-    <None Include="Skia.Linux.FrameBuffer\Assets\Fonts\uno-fluentui-assets.ttf" />
     <None Include="Skia.Linux.FrameBuffer\UnoQuickStart.Skia.Linux.FrameBuffer.csproj" />
     <None Include="Skia.Tizen\Program.cs" />
-    <None Include="Skia.Tizen\Assets\Fonts\uno-fluentui-assets.ttf" />
     <None Include="Skia.Tizen\UnoQuickStart.Skia.Tizen.csproj" />
     <None Include="Skia.WPF\Program.cs" />
     <None Include="Skia.WPF.Host\App.xaml.cs" />
     <None Include="Skia.WPF.Host\MainWindow.xaml.cs" />
-    <None Include="Skia.Gtk\Assets\Fonts\uno-fluentui-assets.ttf" />
     <None Include="Skia.Gtk\Program.cs" />
     <None Include="macOS\AppDelegate.cs" />
     <None Include="macOS\Main.cs" />
     <None Include="macOS\Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <None Include="Droid\Assets\Fonts\uno-fluentui-assets.ttf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Include="iOS\LaunchScreen.storyboard">
       <SubType>Designer</SubType>
     </None>
@@ -121,22 +115,17 @@
     <Content Include="iOS\Media.xcassets\LaunchImages.launchimage\Contents.json">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <None Include="iOS\Resources\Fonts\uno-fluentui-assets.ttf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Include="macOS\Assets.xcassets\AppIcon.appiconset\Contents.json" />
     <None Include="macOS\Assets.xcassets\Contents.json" />
     <None Include="macOS\Assets.xcassets\unologo.imageset\Contents.json" />
     <None Include="macOS\Entitlements.plist" />
     <None Include="macOS\Info.plist" />
-    <None Include="macOS\Resources\Fonts\uno-fluentui-assets.ttf" />
     <None Include="macOS\UnoQuickStart.macOS.csproj" />
     <None Include="Shared\Assets\SharedAssets.md" />
     <None Include="Shared\Strings\en\Resources.resw">
       <SubType>Designer</SubType>
     </None>
     <None Include="Skia.Gtk\UnoQuickStart.Skia.Gtk.csproj" />
-    <None Include="Skia.WPF.Host\Assets\Fonts\uno-fluentui-assets.ttf" />
     <None Include="Skia.WPF.Host\UnoQuickStart.Skia.Wpf.Host.csproj" />
     <None Include="Skia.WPF\UnoQuickStart.Skia.Wpf.csproj" />
     <None Include="Wasm\Program.cs" />

@@ -104,11 +104,6 @@
 		<Compile Include="Main.cs" />
 		<Compile Include="Properties\AssemblyInfo.cs" />
 	</ItemGroup>
-	<ItemGroup>
-		<BundleResource Include="Resources\Fonts\uno-fluentui-assets.ttf">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</BundleResource>
-	</ItemGroup>
 	<Import Project="$(MSBuildExtensionsPath)\Xamarin\Mac\Xamarin.Mac.CSharp.targets" />
 
 	<Target Name="VS16Mac_RemoveSystemMemory" BeforeTargets="ResolveAssemblyReferences">
