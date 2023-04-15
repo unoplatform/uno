@@ -1,7 +1,5 @@
 ﻿using Windows.UI.Xaml.Markup;
 using Windows.UI;
-using Windows.Foundation;
-using System;
 
 namespace Windows.UI.Xaml.Media
 {
