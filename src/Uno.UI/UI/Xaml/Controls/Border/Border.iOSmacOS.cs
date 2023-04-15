@@ -38,6 +38,8 @@ namespace Microsoft.UI.Xaml.Controls
 			UpdateBorder();
 		}
 
+		partial void UpdateBorderPartial() => this.SetNeedsDisplay(); // TODO: Investigate whether this is actually needed
+
 		bool ICustomClippingElement.AllowClippingToLayoutSlot => CornerRadius == CornerRadius.None && (!(Child is UIElement ue) || ue.RenderTransform == null);
 		bool ICustomClippingElement.ForceClippingToLayoutSlot => false;
 	}
