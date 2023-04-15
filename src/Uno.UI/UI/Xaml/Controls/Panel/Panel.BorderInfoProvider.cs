@@ -18,8 +18,6 @@ partial class Panel : IBorderInfoProvider
 	CornerRadius IBorderInfoProvider.CornerRadius => CornerRadiusInternal;
 
 #if __ANDROID__
-	Thickness IBorderInfoProvider.Padding => PaddingInternal;
-
-	bool IBorderInfoProvider.ShouldUpdateMeasures => false;
+	bool IBorderInfoProvider.ShouldUpdateMeasures { get; set; }
 #endif
 }
