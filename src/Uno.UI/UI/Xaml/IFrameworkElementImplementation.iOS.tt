@@ -871,12 +871,14 @@ namespace <#= mixin.NamespaceName #>
 			set => SetBackgroundValue(value);
 		}
 
-
+#if !<#= mixin.IsFrameworkElement #> // IsFrameworkElement
 		SerialDisposable _brushColorChanged = new SerialDisposable();
 		SerialDisposable _brushOpacityChanged = new SerialDisposable();
+#endif
 
 		protected virtual void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
 		{
+#if !<#= mixin.IsFrameworkElement #> // IsFrameworkElement
 			if (e.NewValue != null)
 			{
 				if(e.NewValue is SolidColorBrush scb)
@@ -922,6 +924,7 @@ namespace <#= mixin.NamespaceName #>
 				_brushOpacityChanged.Disposable = null;
 				BackgroundColor = SolidColorBrushHelper.Transparent.Color;
 			}
+#endif
 		}
 
 		#endregion
