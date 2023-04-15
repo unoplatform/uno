@@ -167,8 +167,6 @@
 		<file src="..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.netcoremobile\Release\net7.0-macos\Uno.UI.RemoteControl.pdb" target="lib\net7.0-macos" />
 
 		<!-- Processors -->
-		<file src="..\src\Uno.UI.RemoteControl.Server.Processors\bin\Release\netcoreapp3.1\*.dll" target="tools\rc\processors\netcoreapp3.1" />
-		<file src="..\src\Uno.UI.RemoteControl.Server.Processors\bin\Release\netcoreapp3.1\*.pdb" target="tools\rc\processors\netcoreapp3.1" />
 		<file src="..\src\Uno.UI.RemoteControl.Server.Processors\bin\Release\net8.0\*.dll" target="tools\rc\processors\net8.0" />
 		<file src="..\src\Uno.UI.RemoteControl.Server.Processors\bin\Release\net8.0\*.pdb" target="tools\rc\processors\net8.0" />
 		<file src="..\src\Uno.UI.RemoteControl.Server.Processors\bin\Release\net7.0\*.dll" target="tools\rc\processors\net7.0" />
@@ -193,9 +191,9 @@
 		<file src="..\src\Uno.UI.RemoteControl\Bin\Uno.UI.RemoteControl.Skia\Release\net7.0\Uno.UI.RemoteControl.*" target="uno-runtime\net7.0\skia" />
 
 		<!-- Remote Control host and integration -->
-		<file src="..\src\Uno.UI.RemoteControl.Host\bin\Release\netcoreapp3.1\*.*" target="tools\rc\host\netcoreapp3.1" />
 		<file src="..\src\Uno.UI.RemoteControl.Host\bin\Release\net8.0\*.*" target="tools\rc\host\net8.0" />
 		<file src="..\src\Uno.UI.RemoteControl.Host\bin\Release\net7.0\*.*" target="tools\rc\host\net7.0" />
+		
 		<file src="..\src\Uno.UI.RemoteControl.VS\bin\Release\net48\*.dll" target="tools\rc\17.0" />
 		<file src="..\src\Uno.UI.RemoteControl.VS\bin\Release\net48\*.pdb" target="tools\rc\17.0" />
 		<file src="..\src\Uno.UI.RemoteControl.VS\bin\Release\net48\Newtonsoft.Json.dll" target="tools\rc\17.0" />

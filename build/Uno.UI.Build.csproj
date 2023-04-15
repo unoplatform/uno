@@ -180,9 +180,9 @@
 
 	</Target>
 
-	<Target Name="BuildCINet6">
+	<Target Name="BuildCIMobile">
 
-		<MSBuild Properties="Configuration=Release;InformationalVersion=$(GITVERSION_InformationalVersion);CI_Build=true;IS_NET6_BUILD=true;_IsCIBuild=true;PackageOutputPath=$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest-netcoremobile;PackageVersion=$(GITVERSION_SemVer)"
+		<MSBuild Properties="Configuration=Release;InformationalVersion=$(GITVERSION_InformationalVersion);CI_Build=true;_IsCIBuild=true;PackageOutputPath=$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest-netcoremobile;PackageVersion=$(GITVERSION_SemVer)"
              Projects="..\src\Uno.UI-netcoremobile-only.slnf"
              Targets="Restore;Build"
              RebaseOutputs="false"
@@ -192,7 +192,7 @@
 
 	<Target Name="BuildCIWasm">
 
-		<MSBuild Properties="Configuration=Release;InformationalVersion=$(GITVERSION_InformationalVersion);CI_Build=true;IS_NET7_BUILD=true;_IsCIBuild=true;PackageOutputPath=$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest-wasm;PackageVersion=$(GITVERSION_SemVer)"
+		<MSBuild Properties="Configuration=Release;InformationalVersion=$(GITVERSION_InformationalVersion);CI_Build=true;_IsCIBuild=true;PackageOutputPath=$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest-wasm;PackageVersion=$(GITVERSION_SemVer)"
              Projects="filters\Uno.UI-packages-wasm.slnf"
              Targets="Restore;Build"
              RebaseOutputs="false"
@@ -202,7 +202,7 @@
 
 	<Target Name="BuildCISkia">
 
-		<MSBuild Properties="Configuration=Release;InformationalVersion=$(GITVERSION_InformationalVersion);CI_Build=true;IS_NET7_BUILD=true;_IsCIBuild=true;PackageOutputPath=$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest-skia;PackageVersion=$(GITVERSION_SemVer)"
+		<MSBuild Properties="Configuration=Release;InformationalVersion=$(GITVERSION_InformationalVersion);CI_Build=true;_IsCIBuild=true;PackageOutputPath=$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest-skia;PackageVersion=$(GITVERSION_SemVer)"
              Projects="filters\Uno.UI-packages-skia.slnf"
              Targets="Restore;Build"
              RebaseOutputs="false"
