@@ -91,7 +91,7 @@ jobs:
   - task: DotNetCoreCLI@2
     inputs:
       workingDirectory: Build
-      arguments: Uno.UI.Build.csproj /r /m /t:BuildCINet6 "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)\build-$(GitVersion.FullSemVer)-netcoremobile-$(ZipFileTargetFramework)-$(XAML_FLAVOR_BUILD).binlog
+      arguments: Uno.UI.Build.csproj /r /m /t:BuildCIMobile "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)\build-$(GitVersion.FullSemVer)-netcoremobile-$(ZipFileTargetFramework)-$(XAML_FLAVOR_BUILD).binlog
     displayName: Building package binaries
 
   - task: MSBuild@1
