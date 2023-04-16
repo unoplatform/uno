@@ -20,12 +20,12 @@
 
 	<PropertyGroup>
 		<PackageTags>dotnet-new;templates;uno-platform</PackageTags>
-		<Authors>nventive</Authors>
+		<authors>Uno Platform</authors>
 		<PackageProjectUrl>https://github.com/unoplatform/uno</PackageProjectUrl>
 		<PackageIcon>uno.png</PackageIcon>
 		<RepositoryUrl>https://github.com/unoplatform/uno</RepositoryUrl>
 		<Description></Description>
-		<Copyright>Copyright (C) 2015-2019 nventive inc. - all rights reserved</Copyright>
+		<Copyright>Copyright (C) 2015-2019 Uno Platform Inc. - all rights reserved</Copyright>
 		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
 		<PackageTags>dotnet-new;templates;uno-platform;webassembly;ios;android;uwp;winui</PackageTags>
 	</PropertyGroup>
@@ -96,7 +96,7 @@
 		<_UnoAppnet6WinUITemplateFilesExclude Include="..\UnoSolutionTemplate.WinUI.netcore\Properties\**" />
 		<_UnoAppnet6WinUITemplateFilesExclude Include="..\UnoSolutionTemplate.WinUI.netcore\UnoSolutionTemplate.WinUI.netcore.csproj" />
 
-		<_UnoAppnet6WinUITemplateFiles Include="..\UnoSolutionTemplate.WinUI.netcore\**" Exclude="@(_UnoAppnet6WinUITemplateFilesExclude)"/>
+		<_UnoAppnet6WinUITemplateFiles Include="..\UnoSolutionTemplate.WinUI.netcore\**" Exclude="@(_UnoAppnet6WinUITemplateFilesExclude)" />
 	</ItemGroup>
 
 	<ItemGroup>
