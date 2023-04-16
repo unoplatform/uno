@@ -29,11 +29,9 @@
 	<files>
 		<file src="..\src\Common\uno.png" target="/" />
 
-		<file src="..\src\Uno.UI.XamlHost.Skia.Wpf\Bin\Release\net47\Uno.UI.XamlHost.Skia.Wpf.*" target="lib\net47" />
-
-		<file src="..\src\Uno.UI.XamlHost.Skia.Wpf\Bin\Release\netcoreapp3.1\Uno.UI.XamlHost.Skia.Wpf.*" target="lib\netcoreapp3.1" />
-
 		<file src="..\src\Uno.UI.XamlHost.Skia.Wpf\Bin\Release\net7.0-windows\Uno.UI.XamlHost.Skia.Wpf.*" target="lib\net7.0-windows" />
+		
+		<file src="..\src\Uno.UI.XamlHost.Skia.Wpf\Bin\Release\net8.0-windows\Uno.UI.XamlHost.Skia.Wpf.*" target="lib\net8.0-windows" />
 	</files>
 
 </package>
