@@ -37,6 +37,7 @@
       "Uno.UI.TestComparer\\Uno.UI.TestComparer.csproj",
       "Uno.UI.Toolkit\\Uno.UI.Toolkit.Wasm.csproj",
       "Uno.UI.Wasm.Tests\\Uno.UI.Wasm.Tests.csproj",
+      "Uno.UI.XamlHost\\Uno.UI.XamlHost.Wasm.csproj",
       "Uno.UI\\Uno.UI.Wasm.csproj",
       "Uno.UWPSyncGenerator.Reference\\Uno.UWPSyncGenerator.Reference.csproj",
       "Uno.UWPSyncGenerator\\Uno.UWPSyncGenerator.csproj",
