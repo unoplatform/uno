@@ -73,9 +73,13 @@
 		<file src="..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.Reference\Release\net8.0\Uno.UI.XamlHost.dll" target="lib\net8.0" />
 		<file src="..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.Reference\Release\net7.0\Uno.UI.XamlHost.dll" target="lib\net7.0" />
 
-		<!-- net8.0 WebAssembly -->
+		<!-- net8.0 WebAssembly 
+		Disabled until bootstrapper can be updated to .NET 8 Preview 3 or later
 		<file src="..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.Wasm\Release\net8.0\Uno.UI.XamlHost.dll" target="uno-runtime\net8.0\webassembly" />
 		<file src="..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.Wasm\Release\net8.0\Uno.UI.XamlHost.pdb" target="uno-runtime\net8.0\webassembly" />
+		-->
+		<file src="..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.Wasm\Release\net7.0\Uno.UI.XamlHost.dll" target="uno-runtime\net8.0\webassembly" />
+		<file src="..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.Wasm\Release\net7.0\Uno.UI.XamlHost.pdb" target="uno-runtime\net8.0\webassembly" />
 
 		<!-- net8.0 Skia -->
 		<file src="..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.Skia\Release\net8.0\Uno.UI.XamlHost.dll" target="uno-runtime\net8.0\skia" />
