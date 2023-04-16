@@ -9050,7 +9050,7 @@
 		</Methods>
 	</IgnoreSet>
 
-	<IgnoreSet baseVersion="4.7">
+	<IgnoreSet baseVersion="4.8">
 		<Types>
 			<Member fullName="Microsoft.UI.Windowing.AppWindowConfiguration" reason="Not present in WinAppSDK 1.2" />
 			<Member fullName="Microsoft.Foundation.LiftedContract" reason="Not present in WinAppSDK 1.2" />
