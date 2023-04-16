@@ -3,7 +3,7 @@
 	<metadata minClientVersion="5.0">
 		<id>Uno.WinUI.XamlHost.Skia.Wpf</id>
 		<version>0.0.1</version>
-		<authors>nventive</authors>
+		<authors>Uno Platform</authors>
 		<icon>uno.png</icon>
 		<projectUrl>https://github.com/unoplatform/uno</projectUrl>
 		<license type="expression">Apache-2.0</license>

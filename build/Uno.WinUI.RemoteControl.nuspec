@@ -4,14 +4,14 @@
 		<id>Uno.UI.RemoteControl</id>
 		<version>0.1.0.0</version>
 		<title>Uno.UI.RemoteControl</title>
-		<authors>nventive</authors>
+		<authors>Uno Platform</authors>
 		<owners>nventive</owners>
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
 		<projectUrl>https://platform.uno/</projectUrl>
 		<license type="expression">Apache-2.0</license>
 		<icon>uno.png</icon>
 		<description>Remote Control module for Uno Platform projects, such as XAML Hot Reload.</description>
-		<copyright>Copyright (C) 2015-2019 nventive inc. - all rights reserved</copyright>
+		<copyright>Copyright (C) 2015-2019 Uno Platform Inc. - all rights reserved</copyright>
 		<repository type="git" url="https://github.com/unoplatform/uno.git" branch="$branch$" commit="$commitid$" />
 
 		<dependencies>
