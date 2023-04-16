@@ -9150,6 +9150,8 @@
 			<Member fullName="Windows.UI.Xaml.VisiblityExtensions" reason="Api alignments" />
 			<Member fullName="Uno.Presentation.Resources.IResourceRegistry" reason="Api alignments" />
 			<Member fullName="Uno.Presentation.Resources.ResourceRegistry" reason="Api alignments" />
+			
+			<Member fullName="Uno.UI.Toolkit.Uno_UI_Toolkit_XamlTypeInfo.XamlMetaDataProvider" reason="Renamed project, reflection-based API for UAP/WinAPPSDK only" />
 		</Types>
 		<Events>
 			<Member fullName="Windows.Foundation.TypedEventHandler`2&lt;Microsoft.UI.Xaml.Controls.IInputValidationControl,Microsoft.UI.Xaml.Controls.HasValidationErrorsChangedEventArgs&gt; Microsoft.UI.Xaml.Controls.AutoSuggestBox::HasValidationErrorsChanged" reason="Not present in WinAppSDK 1.2" />
