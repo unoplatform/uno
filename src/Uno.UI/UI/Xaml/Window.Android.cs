@@ -69,10 +69,7 @@ namespace Windows.UI.Xaml
 				if (Uno.UI.ContextHelper.Current is Android.App.Activity activity)
 				{
 					_decor = activity.Window.DecorView;
-					if (_decor is not null)
-					{
-						_decor.ViewTreeObserver.AddOnPreDrawListener(_preDrawListener);
-					}
+					_decor?.ViewTreeObserver.AddOnPreDrawListener(_preDrawListener);
 				}
 			}
 		}
