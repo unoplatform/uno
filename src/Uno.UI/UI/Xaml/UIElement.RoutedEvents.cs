@@ -719,11 +719,13 @@ namespace Windows.UI.Xaml
 				args.CanBubbleNatively = false;
 			}
 
-#if __IOS__ || __ANDROID__
-			var parent = this.FindFirstParent<UIElement>();
-#else
 			var parent = this.GetParent() as UIElement;
+#if __IOS__ || __ANDROID__
+			// This is for safety (legacy support) and should be removed.
+			// A common issue is the managed parent being cleared before unload event raised.
+			parent ??= this.FindFirstParent<UIElement>();
 #endif
+
 			// [11] A parent is defined?
 			if (parent == null)
 			{
