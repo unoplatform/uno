@@ -355,7 +355,7 @@ namespace Windows.UI.Xaml
 		#endregion
 
 
-		private class ActivationPreDrawListener : Java.Lang.Object, ViewTreeObserver.IOnPreDrawListener
+		private sealed class ActivationPreDrawListener : Java.Lang.Object, ViewTreeObserver.IOnPreDrawListener
 		{
 			public ActivationPreDrawListener()
 			{
