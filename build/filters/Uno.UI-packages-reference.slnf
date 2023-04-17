@@ -15,6 +15,7 @@
       "Uno.Analyzers\\Uno.Analyzers.csproj",
       "Uno.Foundation.Logging\\Uno.Foundation.Logging.csproj",
       "Uno.Foundation\\Uno.Foundation.Reference.csproj",
+      "Uno.ReferenceImplComparer\\Uno.ReferenceImplComparer.csproj",
       "Uno.UI.Composition\\Uno.UI.Composition.Reference.csproj",
       "Uno.UI.Dispatching\\Uno.UI.Dispatching.Reference.csproj",
       "Uno.UI.FluentTheme.v1\\Uno.UI.FluentTheme.v1.Reference.csproj",
