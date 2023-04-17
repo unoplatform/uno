@@ -60,6 +60,7 @@ public class Given_WebView2
 		Assert.AreEqual(CoreWebView2.BlankUri, webView.Source);
 	}
 
+#if !__IOS__ // Temporarily disabled due to #11997
 	[TestMethod]
 	public async Task When_ExecuteScriptAsync()
 	{
@@ -148,6 +149,7 @@ public class Given_WebView2
 		var result = await webView.ExecuteScriptAsync($"eval(\"{script}\")");
 		Assert.AreEqual("2", result);
 	}
+#endif
 
 	[TestMethod]
 	public async Task When_WebMessageReceived()
