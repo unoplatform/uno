@@ -13,6 +13,7 @@ using Uno.Foundation;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using System.Threading;
+using System.Threading.Tasks;
 using Uno.UI;
 using Uno.UI.Xaml;
 using Uno;
@@ -84,19 +85,31 @@ namespace Windows.UI.Xaml
 			return 0;
 		}
 
-		static partial void StartPartial(ApplicationInitializationCallback callback)
+		static async partial void StartPartial(ApplicationInitializationCallback callback)
 		{
-			_startInvoked = true;
+			try
+			{
+				_startInvoked = true;
 
-			var isLoadEventsEnabled = !FeatureConfiguration.FrameworkElement.WasmUseManagedLoadedUnloaded;
-			WindowManagerInterop.Init(isLoadEventsEnabled);
-			Windows.Storage.ApplicationData.Init();
+				SynchronizationContext.SetSynchronizationContext(
+					new CoreDispatcherSynchronizationContext(CoreDispatcher.Main, CoreDispatcherPriority.Normal)
+				);
 
-			SynchronizationContext.SetSynchronizationContext(
-				new CoreDispatcherSynchronizationContext(CoreDispatcher.Main, CoreDispatcherPriority.Normal)
-			);
+				var isLoadEventsEnabled = !FeatureConfiguration.FrameworkElement.WasmUseManagedLoadedUnloaded;
 
-			callback(new ApplicationInitializationCallbackParams());
+				await WindowManagerInterop.InitAsync(isLoadEventsEnabled);
+
+				Windows.Storage.ApplicationData.Init();
+
+				callback(new ApplicationInitializationCallbackParams());
+			}
+			catch (Exception exception)
+			{
+				if (typeof(Application).Log().IsEnabled(LogLevel.Error))
+				{
+					typeof(Application).Log().LogError("Application initialization failed.", exception);
+				}
+			}
 		}
 
 		partial void ObserveSystemThemeChanges()
