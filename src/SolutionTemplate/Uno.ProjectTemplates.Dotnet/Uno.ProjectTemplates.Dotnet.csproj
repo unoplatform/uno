@@ -229,14 +229,15 @@
 		</ItemGroup>
 	</Target>
 
-	<UsingTask TaskName="ReplaceContent" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
+	<UsingTask TaskName="ReplaceContent"
+			   TaskFactory="RoslynCodeTaskFactory"
+			   AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
 		<ParameterGroup>
 			<SourcePath ParameterType="System.String" Required="True" Output="False" />
 			<SafeProjectName ParameterType="System.String" Required="True" Output="False" />
 			<IsWinUI ParameterType="System.Boolean" Required="True" Output="False" />
 		</ParameterGroup>
 		<Task>
-			<Reference Include="System.Xml" />
 			<Using Namespace="System" />
 			<Using Namespace="System.Text" />
 			<Using Namespace="System.Text.RegularExpressions" />
@@ -350,14 +351,13 @@
 		</Task>
 	</UsingTask>
 
-	<UsingTask TaskName="RenameSolution" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
+	<UsingTask TaskName="RenameSolution" TaskFactory="RoslynCodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
 		<ParameterGroup>
 			<SourcePath ParameterType="System.String" Required="True" Output="False" />
 			<SourceName ParameterType="System.String" Required="True" Output="False" />
 			<TargetName ParameterType="System.String" Required="True" Output="False" />
 		</ParameterGroup>
 		<Task>
-			<Reference Include="System.Xml" />
 			<Using Namespace="System" />
 			<Using Namespace="System.Linq" />
 			<Using Namespace="System.IO" />
