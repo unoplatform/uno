@@ -95,7 +95,7 @@ jobs:
 
   - script: |
         cd $(build.sourcesdirectory)/build/uno-macos-artifacts
-        installer -pkg SamplesApp.macOS-1.0.pkg -target CurrentUserHomeDirectory
+        installer -pkg SamplesApp-1.0.pkg -target CurrentUserHomeDirectory
 
     displayName: Install SamplesApp
 
