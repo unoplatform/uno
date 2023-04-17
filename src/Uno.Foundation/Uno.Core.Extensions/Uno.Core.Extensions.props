@@ -17,7 +17,6 @@
   <ItemGroup>
 	<Compile Include="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Compatibility\Collections\ImmutableList.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
 	<Compile Include="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Compatibility\Conversion\ConversionExtensionPoint.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
-	<Compile Include="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Compatibility\Conversion\ConversionExtensions.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
 	<Compile Include="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Compatibility\Conversion\CustomConversionStrategy.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
 	<Compile Include="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Compatibility\Conversion\CustomCulturelessConversionStrategy.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
 	<Compile Include="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Compatibility\Conversion\DefaultConversionExtensions.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
@@ -68,9 +67,6 @@
 	<Compile Include="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Threading\Transactional.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
 	<Compile Include="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Threading\Transactional.Immutables.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
 	<Compile Include="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Compatibility\Extensions\ComparableExtensions.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
-	<Compile Remove="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Equality\FuncComparer.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
-	<Compile Remove="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Equality\FuncEqualityComparer.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
-	<Compile Remove="$(MSBuildThisFileDirectory)Uno.Core.Extensions\UriExtensions.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
 	<Compile Include="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Compatibility\Extensions\FuncAsyncExtensions.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
 	<Compile Include="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Compatibility\Extensions\InvocationLockingMode.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
   </ItemGroup>

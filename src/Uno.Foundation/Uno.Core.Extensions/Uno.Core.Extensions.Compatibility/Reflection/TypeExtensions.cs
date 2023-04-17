@@ -15,26 +15,13 @@
 //
 // ******************************************************************
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using Uno.Reflection;
-using System.Linq.Expressions;
 
 namespace Uno.Extensions
 {
 	internal static class TypeExtensions
 	{
-		public static object New(this Type type, params object[] args)
-		{
-			return Activator.CreateInstance(type, args);
-		}
-
-		public static T New<T>(this Type type, params object[] args)
-		{
-			return (T)New(type, args);
-		}
-
 		public static bool Is<T>(this Type type)
 		{
 			return type.Is(typeof(T));
@@ -45,48 +32,10 @@ namespace Uno.Extensions
 			return type.IsAssignableFrom(instance);
 		}
 
-		public static MemberInfo GetMemberInfo(this Type type, string memberName)
-		{
-			return GetMemberInfo(type, memberName, BindingContract.Default);
-		}
-
-		public static MemberInfo GetMemberInfo(this Type type, string memberName, BindingContract contract)
-		{
-			var mi = FindMemberInfo(type, memberName, contract);
-
-			return mi.Validation().Found();
-		}
-
-#if HAS_NO_TYPEINFO
-		public static Type GetTypeInfo(this Type type)
-		{
-			return type;
-		}
-#endif
-
 #if WINDOWS_UWP || WINPRT || XAMARIN
 		public static IEnumerable<ConstructorInfo> GetConstructors(this TypeInfo type)
 		{
 			return type.DeclaredConstructors;
-		}
-#endif
-
-#if !WINDOWS_UWP
-		public static MemberInfo FindMemberInfo(this Type type, string memberName)
-		{
-			return FindMemberInfo(type, memberName, BindingContract.Default);
-		}
-#endif
-
-#if WINDOWS_UWP
-		public static Assembly GetAssembly(this Type type)
-		{
-			return type.GetTypeInfo().Assembly;
-		}
-#else
-		public static Assembly GetAssembly(this Type type)
-		{
-			return type.Assembly;
 		}
 #endif
 
@@ -225,119 +174,7 @@ namespace Uno.Extensions
 			return null;
 		}
 
-		/// <summary>
-		/// Recursively get all interfaces of a type
-		/// </summary>
-		public static IEnumerable<Type> GetAllInterfaces(this Type type)
-		{
-			foreach (var iface in type.GetInterfaces())
-			{
-				yield return iface;
-
-				foreach (var subInterfaces in iface.GetAllInterfaces())
-				{
-					yield return subInterfaces;
-				}
-			}
-		}
-
-		public static TAttribute FindAttribute<TAttribute>(this Type type)
-			where TAttribute : Attribute
-		{
-			return type.GetCustomAttributes(typeof(TAttribute), true).FirstOrDefault() as TAttribute;
-		}
-
-		/// <summary>
-		/// Gets the inheritance hierarchy of supplied type.
-		/// </summary>
-		public static IEnumerable<Type> GetBaseTypes(this Type type)
-		{
-			var previousType = type;
-			while (true)
-			{
 #if !WINDOWS_UWP
-				var baseType = previousType.BaseType;
-#else
-				var baseType = previousType.GetTypeInfo().BaseType;
-#endif
-				if (baseType == null || baseType.FullName == previousType.FullName)
-				{
-					yield break;
-				}
-				else
-				{
-					yield return baseType;
-					previousType = baseType;
-				}
-			}
-		}
-
-#if !WINDOWS_UWP
-		/// <summary>
-		/// Determine if <see cref="type"/> implements IEnumerable&lt;T&gt;.
-		/// </summary>
-		/// <returns>The type of ITEM or null if <see cref="type"/> is not IEnumerable</returns>
-		public static Type EnumerableOf(this Type type)
-		{
-			if (type.IsArray)
-			{
-				return type.GetElementType();
-			}
-
-			if (type.IsInterface && type.IsGenericType && type.GetGenericTypeDefinition() == typeof(IEnumerable<>))
-			{
-				return type.GetGenericArguments().First();
-			}
-
-			return type.GetAllInterfaces().FirstOrDefault(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IEnumerable<>)).SelectOrDefault(i => i.GetGenericArguments().First());
-		}
-#endif
-
-
-#if !HAS_NO_TYPEINFO
-		/// <summary>
-		/// Gets the declared property by searching the flattened hierarchy.
-		/// </summary>
-		/// <param name="type">The type to search into</param>
-		/// <param name="name">The name of the declared property</param>
-		/// <returns>The property info if found, otherwise null.</returns>
-		public static PropertyInfo GetFlattenedDeclaredProperty(this Type type, string name)
-		{
-			return type
-				.GetTypeInfo()
-				.Flatten(t => t.BaseType != typeof(object) ? t.BaseType.GetTypeInfo() : null)
-				.Select(t => t.GetDeclaredProperty(name))
-				.FirstOrDefault(t => t != null);
-		}
-
-		/// <summary>
-		/// Gets the declared field by searching the flattened hierarchy.
-		/// </summary>
-		/// <param name="type">The type to search into</param>
-		/// <param name="name">The name of the declared field</param>
-		/// <returns>The field info if found, otherwise null.</returns>
-		public static FieldInfo GetFlattenedDeclaredField(this Type type, string name)
-		{
-			return type
-				.GetTypeInfo()
-				.Flatten(t => t.BaseType != typeof(object) ? t.BaseType.GetTypeInfo() : null)
-				.Select(t => t.GetDeclaredField(name))
-				.FirstOrDefault(t => t != null);
-		}
-#endif
-
-#if !WINDOWS_UWP
-		private static Func<Type, bool> _isNullable = Funcs.Create((Type t) => IsNullable(t)).AsLockedMemoized();
-
-		/// <summary>
-		/// Returns a cached result of the the IsNullable method, as it works
-		/// in O(n) where n is the depth of the hierarchy.
-		/// </summary>
-		public static bool IsNullableCached(this Type type)
-		{
-			return _isNullable(type);
-		}
-
 		/// <summary>
 		/// Gets whether null can be assigned to a variable of the given <see cref="type"/>
 		/// </summary>
