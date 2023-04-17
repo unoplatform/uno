@@ -263,7 +263,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			{
 				"Uno.UI.Lottie.resume(",
 				_player.HtmlId.ToString(),
-				");"
+				");" 
 			};
 
 			InvokeJs(js);

@@ -71,7 +71,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 		private static void OnUriSourceChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
 		{
-			if (sender is LottieVisualSource source)
+			if (sender is LottieVisualSourceBase source)
 			{
 				source.Update(source._player);
 			}
