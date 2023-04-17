@@ -512,7 +512,7 @@
 			<_diffPackage Include="$(PackageNamePrefix).Maps" Other="..\..\..\NugetPackages-Artifacts-generic-UWP\vslatest-generic\$(PackageNamePrefix).Maps.$(GITVERSION_SemVer).nupkg" />
 			<_diffPackage Include="$(PackageNamePrefix).MSAL" Other="$(PackageNamePrefix).MSAL.$(GITVERSION_SemVer).nupkg" />
 			<_diffPackage Include="$(PackageNamePrefix).Svg" Other="$(PackageNamePrefix).Svg.$(GITVERSION_SemVer).nupkg" />
-			<_diffPackage Include="$(PackageNamePrefix).RemoteControl" Other="$(PackageNamePrefix).RemoteControl.$(GITVERSION_SemVer).nupkg" />
+			<!-- <_diffPackage Include="$(PackageNamePrefix).RemoteControl" Other="$(PackageNamePrefix).RemoteControl.$(GITVERSION_SemVer).nupkg" /> -->
 			<_diffPackage Include="$(PackageNamePrefix).Skia.Gtk" Other="$(PackageNamePrefix).Skia.Gtk.$(GITVERSION_SemVer).nupkg" />
 			<_diffPackage Include="$(PackageNamePrefix).Runtime.Skia.Gtk" Other="..\..\..\NugetPackages-Artifacts-skia-UWP\vslatest-skia\$(PackageNamePrefix).Runtime.Skia.Gtk.$(GITVERSION_SemVer).nupkg" />
 			<_diffPackage Include="$(PackageNamePrefix).Runtime.Skia.Linux.FrameBuffer" Other="..\..\..\NugetPackages-Artifacts-skia-UWP\vslatest-skia\$(PackageNamePrefix).Runtime.Skia.Linux.FrameBuffer.$(GITVERSION_SemVer).nupkg" />
