@@ -407,6 +407,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return false;
 		}
 
+		private bool IsAttachedProperty(INamedTypeSymbol declaringType, string name) => _metadataHelper.IsAttachedProperty(declaringType, name);
+
 		private static bool IsRelevantNamespace(string? xamlNamespace)
 		{
 			if (XamlConstants.XmlXmlNamespace.Equals(xamlNamespace, StringComparison.OrdinalIgnoreCase))
@@ -434,30 +436,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		{
 			var type = GetType(member.Member.DeclaringType);
 			return GetAttachedPropertyType(type, member.Member.Name);
-		}
-
-		/// <summary>
-		/// Get the type of the attached property.
-		/// </summary>
-		private INamedTypeSymbol GetAttachedPropertyType(INamedTypeSymbol? type, string propertyName)
-		{
-			do
-			{
-				var setMethod = type?.GetFirstMethodWithName("Set" + propertyName);
-
-				if (setMethod != null && setMethod.IsStatic && setMethod.Parameters.Length == 2)
-				{
-					return (setMethod.Parameters[1].Type as INamedTypeSymbol)!;
-				}
-
-				type = type?.BaseType;
-
-				if (type == null || type.SpecialType == SpecialType.System_Object)
-				{
-					throw new InvalidOperationException($"No valid setter found for attached property {propertyName}");
-				}
-
-			} while (true);
 		}
 
 		/// <summary>
@@ -857,32 +835,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
-		private bool IsAttachedProperty(INamedTypeSymbol declaringType, string name)
-		{
-			var type = declaringType;
-			do
-			{
-				var property = type.GetPropertyWithName(name);
-				if (property?.GetMethod?.IsStatic ?? false)
-				{
-					return true;
-				}
-
-				var setMethod = type?.GetFirstMethodWithName("Set" + name);
-				if (setMethod is { IsStatic: true, Parameters.Length: 2 })
-				{
-					return true;
-				}
-
-				type = type?.BaseType;
-				if (type == null || type.SpecialType == SpecialType.System_Object)
-				{
-					return false;
-				}
-
-			} while (true);
-		}
-
 		private IEnumerable<(INamedTypeSymbol ownerType, string property)> FindLocalizableAttachedProperties(string uid)
 		{
 			foreach (var resource in _resourceDetailsCollection.FindByUId(uid))
@@ -930,8 +882,5 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				.Select(p => p.Name)
 				.ToArray();
 		}
-
-		private bool IsTypeImplemented(INamedTypeSymbol type)
-			=> type.GetAttributes().None(a => a.AttributeClass?.GetFullyQualifiedTypeExcludingGlobal() == XamlConstants.Types.NotImplementedAttribute);
 	}
 }
