@@ -481,6 +481,9 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		// ScrollViewer scrolls vertically, but there is an inner 
 		// repeater which flows horizontally which needs corrections to be handled.
 		[TestMethod]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		public void VerifyCorrectionsInNonScrollableDirection()
 		{
 			ItemsRepeater rootRepeater = null;

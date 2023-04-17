@@ -41,6 +41,9 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 	[RequiresFullWindow]
 	public class RepeaterFocusTests : MUXApiTestBase
 	{
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		[TestMethod]
 		public async Task ValidateTabNavigation()
 		{
