@@ -66,8 +66,7 @@ namespace Windows.UI.Xaml
 
 			if (!_preDrawListener.IsActivated)
 			{
-				var activity = Uno.UI.ContextHelper.Current as Android.App.Activity;
-				if (activity is not null)
+				if (Uno.UI.ContextHelper.Current is Android.App.Activity activity)
 				{
 					_decor = activity.Window.DecorView;
 					if (_decor is not null)
