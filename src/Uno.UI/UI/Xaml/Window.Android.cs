@@ -1,6 +1,7 @@
 #if XAMARIN_ANDROID
 using System;
 using Android.App;
+using Android.Runtime;
 using Android.Util;
 using Android.Views;
 using Uno.Disposables;
@@ -22,7 +23,9 @@ namespace Windows.UI.Xaml
 {
 	public sealed partial class Window
 	{
+		private readonly ActivationPreDrawListener _preDrawListener = new ActivationPreDrawListener();
 		private Border _rootBorder;
+		private View _decor;
 
 		partial void InitPlatform()
 		{
@@ -31,6 +34,13 @@ namespace Windows.UI.Xaml
 
 			CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBarChanged
 				+= RaiseNativeSizeChanged;
+		}
+
+		partial void InternalActivate()
+		{
+			_preDrawListener.IsActivated = true;
+			_decor?.ViewTreeObserver.RemoveOnPreDrawListener(_preDrawListener);
+			_decor = default;
 		}
 
 		internal Thickness Insets { get; set; }
@@ -53,6 +63,19 @@ namespace Windows.UI.Xaml
 				ApplicationActivity.Instance?.SetContentView(_rootVisual);
 			}
 			_rootBorder.Child = _content = value;
+
+			if (!_preDrawListener.IsActivated)
+			{
+				var activity = Uno.UI.ContextHelper.Current as Android.App.Activity;
+				if (activity is not null)
+				{
+					_decor = activity.Window.DecorView;
+					if (_decor is not null)
+					{
+						_decor.ViewTreeObserver.AddOnPreDrawListener(_preDrawListener);
+					}
+				}
+			}
 		}
 
 		internal UIElement MainContent => _rootVisual;
@@ -334,6 +357,23 @@ namespace Windows.UI.Xaml
 				|| flags.HasFlag(WindowManagerFlags.LayoutNoLimits);
 		}
 		#endregion
+
+
+		private class ActivationPreDrawListener : Java.Lang.Object, ViewTreeObserver.IOnPreDrawListener
+		{
+			public ActivationPreDrawListener()
+			{
+			}
+
+			public ActivationPreDrawListener(IntPtr handle, JniHandleOwnership transfer)
+				: base(handle, transfer)
+			{
+			}
+
+			public bool IsActivated { get; set; }
+
+			public bool OnPreDraw() => IsActivated;
+		}
 	}
 }
 #endif
