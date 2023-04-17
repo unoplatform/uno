@@ -2,15 +2,15 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using Windows.Devices.Input;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Input;
-
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
-using System.Runtime.CompilerServices;
-using Windows.UI.Xaml;
 
 namespace Uno.UI.Xaml.Core;
 
@@ -37,13 +37,13 @@ internal partial class PointerCapture
 			? capture
 			: new PointerCapture(pointer); // The capture will be added to the _actives only when a target is added to it.
 
-	internal static bool TryGet(PointerIdentifier pointer, out PointerCapture capture)
+	internal static bool TryGet(PointerIdentifier pointer, [NotNullWhen(true)] out PointerCapture? capture)
 		=> _actives.TryGetValue(pointer, out capture);
 
-	public static bool TryGet(Pointer pointer, out PointerCapture capture)
+	public static bool TryGet(Pointer pointer, [NotNullWhen(true)] out PointerCapture? capture)
 		=> _actives.TryGetValue(pointer.UniqueId, out capture);
 
-	public static bool Any(out List<PointerCapture>? cloneOfAllCaptures)
+	public static bool Any([NotNullWhen(true)] out List<PointerCapture>? cloneOfAllCaptures)
 	{
 		if (_actives.Count > 0)
 		{
