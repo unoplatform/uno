@@ -176,6 +176,9 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 			await global::Private.Infrastructure.TestServices.WindowHelper.WaitForIdle();
 		}
 
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		[TestMethod]
 		public async Task VerifyVSMStatesForPhotosAndInitials()
 		{

@@ -12,6 +12,7 @@ public class ProgressRingTests
 	[TestMethod]
 	[DataRow(true)]
 	[DataRow(false)]
+	[RunsOnUIThread]
 	public async Task ProgressRingDefaultHeightShouldBe32(bool useFluent)
 	{
 		using (useFluent ? StyleHelper.UseFluentStyles() : null)
