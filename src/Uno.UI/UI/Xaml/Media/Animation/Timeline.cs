@@ -297,6 +297,11 @@ namespace Windows.UI.Xaml.Media.Animation
 			PropertyInfo.Value = value;
 		}
 
+		internal void SetAnimationFillingValue(object value)
+		{
+			PropertyInfo.SetAnimationFillingValue(value);
+		}
+
 		/// <summary>
 		/// Clears the animated value of the dependency property value precedence system
 		/// </summary>
@@ -308,6 +313,11 @@ namespace Windows.UI.Xaml.Media.Animation
 			}
 
 			PropertyInfo.ClearValue();
+		}
+
+		internal void ClearAnimationFillingValue()
+		{
+			PropertyInfo.ClearAnimationFillingValue();
 		}
 
 		void ITimeline.Begin()

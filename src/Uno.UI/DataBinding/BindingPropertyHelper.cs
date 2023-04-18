@@ -49,7 +49,7 @@ namespace Uno.UI.DataBinding
 		//          those. If this situation changes, we could remove the associated code and 
 		//          revert to memoized Funcs.
 		//
-		private static Dictionary<CachedTuple<Type, String, DependencyPropertyValuePrecedences?, bool>, ValueGetterHandler> _getValueGetter = new Dictionary<CachedTuple<Type, string, DependencyPropertyValuePrecedences?, bool>, ValueGetterHandler>(CachedTuple<Type, String, DependencyPropertyValuePrecedences?, bool>.Comparer);
+		private static Dictionary<CachedTuple<Type, string, DependencyPropertyValuePrecedences?, bool>, ValueGetterHandler> _getValueGetter = new Dictionary<CachedTuple<Type, string, DependencyPropertyValuePrecedences?, bool>, ValueGetterHandler>(CachedTuple<Type, String, DependencyPropertyValuePrecedences?, bool>.Comparer);
 		private static Dictionary<CachedTuple<Type, string, bool, DependencyPropertyValuePrecedences>, ValueSetterHandler> _getValueSetter = new Dictionary<CachedTuple<Type, string, bool, DependencyPropertyValuePrecedences>, ValueSetterHandler>(CachedTuple<Type, string, bool, DependencyPropertyValuePrecedences>.Comparer);
 		private static Dictionary<CachedTuple<Type, string, DependencyPropertyValuePrecedences>, ValueGetterHandler> _getPrecedenceSpecificValueGetter = new Dictionary<CachedTuple<Type, string, DependencyPropertyValuePrecedences>, ValueGetterHandler>(CachedTuple<Type, string, DependencyPropertyValuePrecedences>.Comparer);
 		private static Dictionary<CachedTuple<Type, string, DependencyPropertyValuePrecedences>, ValueGetterHandler> _getSubstituteValueGetter = new Dictionary<CachedTuple<Type, string, DependencyPropertyValuePrecedences>, ValueGetterHandler>(CachedTuple<Type, string, DependencyPropertyValuePrecedences>.Comparer);
@@ -1132,7 +1132,7 @@ namespace Uno.UI.DataBinding
 		{
 			if (type == typeof(UnsetValue))
 			{
-				return _ => { };
+				return UnsetValueUnsetter;
 			}
 
 			property = SanitizePropertyName(type, property);
@@ -1249,6 +1249,8 @@ namespace Uno.UI.DataBinding
 			=> DependencyProperty.UnsetValue;
 
 		private static void UnsetValueSetter(object unused, object? unused2) { }
+
+		private static void UnsetValueUnsetter(object unused) { }
 
 		/// <summary>
 		/// Determines if the type can be provided by the MetadataProvider

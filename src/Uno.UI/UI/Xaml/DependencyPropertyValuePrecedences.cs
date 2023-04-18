@@ -12,6 +12,12 @@ namespace Windows.UI.Xaml
 		Coercion = 0,
 
 		/// <summary>
+		/// Defined when filling from a HoldEnd animation
+		/// </summary>
+		/// <remarks>Set the animation or local value will clear this value.</remarks>
+		FillingAnimations,
+
+		/// <summary>
 		/// Defined by animation storyboards
 		/// </summary>
 		Animations,

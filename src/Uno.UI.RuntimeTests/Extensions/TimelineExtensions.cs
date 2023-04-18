@@ -8,20 +8,11 @@ using Windows.UI.Xaml.Media.Animation;
 
 namespace Uno.UI.RuntimeTests.Extensions;
 
-internal static class StoryboardExtensions
+internal static class TimelineExtensions
 {
-	public static void Begin(this Timeline timeline)
+	public static Storyboard ToStoryboard(this Timeline timeline)
 	{
-		var storyboard = new Storyboard { Children = { timeline } };
-
-		storyboard.Begin();
-	}
-
-	public static async Task RunAsync(this Timeline timeline, TimeSpan? timeout, bool throwsException = false)
-	{
-		var storyboard = new Storyboard { Children = { timeline } };
-
-		await storyboard.RunAsync(timeout, throwsException);
+		return new Storyboard { Children = { timeline } };
 	}
 
 	public static async Task RunAsync(this Storyboard storyboard, TimeSpan? timeout = null, bool throwsException = false)
