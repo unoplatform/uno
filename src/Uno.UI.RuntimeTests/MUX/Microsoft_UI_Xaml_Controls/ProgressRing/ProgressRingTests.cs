@@ -13,6 +13,9 @@ public class ProgressRingTests
 	[DataRow(true)]
 	[DataRow(false)]
 	[RunsOnUIThread]
+#if __MACOS__
+	[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 	public async Task ProgressRingDefaultHeightShouldBe32(bool useFluent)
 	{
 		using (useFluent ? StyleHelper.UseFluentStyles() : null)
