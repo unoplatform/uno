@@ -50,7 +50,7 @@ namespace Uno.Foundation.Interop
 				}
 
 				var id = Interlocked.Increment(ref _handles);
-				WebAssemblyRuntime.InvokeJS($"{_type.FullName}.createInstance(\"{managedHandle}\", \"{id}\")");
+				WebAssemblyRuntime.InvokeJS($"{_type.FullName}.createInstance({managedHandle}, {id})");
 
 				return id;
 			}
@@ -61,7 +61,7 @@ namespace Uno.Foundation.Interop
 
 			/// <inheritdoc />
 			public void DestroyNativeInstance(IntPtr managedHandle, long jsHandle)
-				=> WebAssemblyRuntime.InvokeJS($"{_type.FullName}.destroyInstance(\"{managedHandle}\", \"{jsHandle}\")");
+				=> WebAssemblyRuntime.InvokeJS($"{_type.FullName}.destroyInstance({managedHandle}, {jsHandle})");
 
 			/// <inheritdoc />
 			public object InvokeManaged(object instance, string method, string jsonParameters)
