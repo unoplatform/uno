@@ -41,7 +41,7 @@ namespace Windows.UI.Xaml.Controls
 		public bool RefreshOnCollectionChanged { get; set; }
 
 		internal override bool IsSingleSelection => SelectionMode == ListViewSelectionMode.Single;
-		private bool IsSelectionMultiple => SelectionMode == ListViewSelectionMode.Multiple || SelectionMode == ListViewSelectionMode.Extended;
+		internal bool IsSelectionMultiple => SelectionMode == ListViewSelectionMode.Multiple || SelectionMode == ListViewSelectionMode.Extended;
 		private bool _modifyingSelectionInternally;
 		private readonly List<object> _oldSelectedItems = new List<object>();
 

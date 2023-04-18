@@ -2777,6 +2777,29 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 #endif
 
+		[TestMethod]
+		public async Task When_SelectionMode_Is_Multiple()
+		{
+			// #11971: It was too early to apply MultiSelectStates in PrepareContainerForItemOverride,
+			// as LVI doesnt have its Control::Template, which defines the visual-states, applied yet.
+			var SUT = new ListView()
+			{
+				Height = 200,
+				SelectionMode = ListViewSelectionMode.Multiple,
+				ItemsSource = Enumerable.Range(3, 12).ToArray(),
+			};
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			// Validate the newly materialized item has MultiSelectStates set
+			var lvi0 = (ListViewItem)SUT.ContainerFromIndex(0);
+			var root = lvi0 is not null && VisualTreeHelper.GetChildrenCount(lvi0) > 0 ? VisualTreeHelper.GetChild(lvi0, 0) : null;
+			var vsgs = root is FrameworkElement rootAsFE ? VisualStateManager.GetVisualStateGroups(rootAsFE) : null;
+			var vsg = vsgs?.FirstOrDefault(x => x.Name == "MultiSelectStates");
+
+			Assert.IsNotNull(vsg, "VisualStateGroup[Name=MultiSelectStates] was not found.");
+			Assert.AreEqual(vsg.CurrentState?.Name, "MultiSelectEnabled");
+		}
 
 		private bool ApproxEquals(double value1, double value2) => Math.Abs(value1 - value2) <= 2;
 
