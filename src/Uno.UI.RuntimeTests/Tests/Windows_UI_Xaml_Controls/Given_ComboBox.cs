@@ -13,10 +13,7 @@ using Windows.UI.Xaml.Media;
 using static Private.Infrastructure.TestServices;
 using System.Collections.ObjectModel;
 using Windows.UI.Xaml.Data;
-using Windows.UI.Core;
-using Windows.UI.Xaml.Media.Animation;
-using static Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.MultiFrame;
-using Windows.UI.Xaml.Controls.Primitives;
+
 
 #if NETFX_CORE
 using Uno.UI.Extensions;
@@ -24,11 +21,16 @@ using Uno.UI.Extensions;
 using UIKit;
 using _UIViewController = UIKit.UIViewController;
 using Uno.UI.Controls;
+
+using Windows.UI.Core;
+using Windows.UI.Xaml.Media.Animation;
+using static Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.MultiFrame;
+using Windows.UI.Xaml.Controls.Primitives;
+
 #elif __MACOS__
 using AppKit;
 #else
 using Uno.UI;
-using _UIViewController = System.Object;
 #endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
@@ -237,10 +239,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
-#if !__IOS__
-		[Ignore("Show Modal Implementation tied to iOS")]
-#endif
+#if __IOS__
 		[TestMethod]
+		[RunsOnUIThread]
 		public async Task Check_DropDown_Flyout_Marging_When_In_Modal()
 		{
 			MultiFrame multiFrame = new();
@@ -262,13 +263,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				gridContainer.Children.Add(SUT);
 				modalPage.Content = gridContainer;
 
-				var transitionInfo =
-#if __IOS__
-			FrameSectionsTransitionInfo.NativeiOSModal;
-#else
-			FrameSectionsTransitionInfo.SlideUp;
-#endif
-				await multiFrame.OpenModal((FrameSectionsTransitionInfo)transitionInfo, modalPage);
+				await multiFrame.OpenModal(FrameSectionsTransitionInfo.NativeiOSModal, modalPage);
 			}
 
 			try
@@ -304,6 +299,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				WindowHelper.WindowContent = null;
 			}
 		}
+#endif
 
 		[TestMethod]
 #if __MACOS__
@@ -793,17 +789,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 	}
-
-	#region "Helper classes for the Modal Pop Up"
+#if __IOS__
+	#region "Helper classes for the iOS Modal Page (UIModalPresentationStyle.pageSheet)"
 	public partial class MultiFrame : Grid
 	{
 		private readonly TaskCompletionSource<bool> _isReady = new TaskCompletionSource<bool>();
 
-#if WINUI
-		private DispatcherQueue _dispatcher => DispatcherQueue;
-#else
 		private CoreDispatcher _dispatcher => Dispatcher;
-#endif
 
 		public MultiFrame()
 		{
@@ -817,21 +809,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		public async Task OpenModal(FrameSectionsTransitionInfo transitionInfo, Page page) // Runs on background thread.
 		{
-#if __IOS__
-
 			var uiViewController = new UiViewController(page);
 
 			var rootController = UIApplication.SharedApplication.KeyWindow.RootViewController;
 
 			await rootController.PresentViewControllerAsync(uiViewController, animated: false);
-#else
-			await Task.CompletedTask;
-#endif
 		}
 
 		public async Task CloseModal()
 		{
-#if __IOS__
 			try
 			{
 				var rootController = UIApplication.SharedApplication.KeyWindow.RootViewController;
@@ -839,18 +825,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				await rootController.DismissViewControllerAsync(false);
 			}
 			catch (Exception) { /* purposely */ }
-#else
-			await Task.CompletedTask;
-#endif
 		}
 
 		public class UiViewController : _UIViewController
 		{
 			public UiViewController(Page frame)
 			{
-#if __IOS__
 				View = frame;
-#endif
 			}
 
 			public UIViewControllerSectionsTransitionInfo OpeningTransitionInfo { get; set; }
@@ -971,7 +952,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		public class UIViewControllerSectionsTransitionInfo : FrameSectionsTransitionInfo
 		{
-#if __IOS__
 			public UIViewControllerSectionsTransitionInfo(bool allowDismissFromGesture = true, UIModalPresentationStyle modalPresentationStyle = UIModalPresentationStyle.PageSheet, UIModalTransitionStyle modalTransitionStyle = UIModalTransitionStyle.CoverVertical)
 			{
 				AllowDismissFromGesture = allowDismissFromGesture;
@@ -984,7 +964,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			public UIModalPresentationStyle ModalPresentationStyle { get; }
 
 			public UIModalTransitionStyle ModalTransitionStyle { get; }
-#endif
 
 			public override FrameSectionsTransitionInfoTypes Type => FrameSectionsTransitionInfoTypes.UIViewControllerBased;
 		}
@@ -1006,10 +985,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				// 2. Make the next frame visible so that we see it as the previous frame fades out.
 				frame2.Opacity = 1;
-#if __IOS__ || __ANDROID__
-				// TODO: Fix this workaround
-				frame2.SetValue(UIElement.OpacityProperty, 1d, DependencyPropertyValuePrecedences.Animations);
-#endif
+
 				frame2.Visibility = Visibility.Visible;
 				frame2.IsHitTestVisible = true;
 
@@ -1031,10 +1007,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				// 2. Make the next frame visible, but transparent.
 				frame2.Opacity = 0;
-#if __IOS__ || __ANDROID__
-				// TODO: Fix this workaround
-				frame2.SetValue(UIElement.OpacityProperty, 0d, DependencyPropertyValuePrecedences.Animations);
-#endif
 				frame2.Visibility = Visibility.Visible;
 
 				// 3. Fade in the frame.
@@ -1166,4 +1138,5 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 	}
 	#endregion
+#endif
 }
