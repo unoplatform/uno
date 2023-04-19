@@ -4500,8 +4500,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 
 			return currentType;
-
-
 		}
 
 		private bool IsStaticMember(string fullMemberName)
