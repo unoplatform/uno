@@ -22,8 +22,6 @@ namespace Uno.UI.FluentTheme.Controls;
 public partial class FauxGradientBorderPresenter : ContentControl
 {
 #if __WASM__ || __IOS__ || __MACOS__
-	private static readonly Dictionary<LinearGradientBrush, SolidColorBrush> _overlayBrushCache = new();
-
 	private readonly Border? _displayBorder;
 #endif
 
@@ -99,7 +97,8 @@ public partial class FauxGradientBorderPresenter : ContentControl
 		var requestedBorderBrush = RequestedBorderBrush;
 		var requestedCornerRadius = RequestedCornerRadius;
 
-		if (requestedBorderBrush is not LinearGradientBrush gradientBrush)
+		if (requestedBorderBrush is not LinearGradientBrush gradientBrush ||
+			!gradientBrush.CanApplySolidColorRendering())
 		{
 			_displayBorder.Visibility = Visibility.Collapsed;
 			return;
@@ -125,7 +124,7 @@ public partial class FauxGradientBorderPresenter : ContentControl
 
 		requestedThickness.Left = 0;
 		requestedThickness.Right = 0;
-		var minorStopAlignment = BorderGradientBrushHelper.GetMinorStopAlignment(gradientBrush);
+		var minorStopAlignment = gradientBrush.GetMinorStopAlignment();
 		if (minorStopAlignment == VerticalAlignment.Top)
 		{
 			requestedThickness.Bottom = 0;
@@ -143,18 +142,9 @@ public partial class FauxGradientBorderPresenter : ContentControl
 
 		_displayBorder.Visibility = Visibility.Visible;
 
-		if (!_overlayBrushCache.TryGetValue(gradientBrush, out var overlayBrush))
-		{
-			var majorStop = BorderGradientBrushHelper.GetMajorStop(gradientBrush);
-			var minorStop = gradientBrush.GradientStops.First(s => s != majorStop);
-
-			overlayBrush = new SolidColorBrush(minorStop.Color);
-			_overlayBrushCache[gradientBrush] = overlayBrush;
-		}
-
 		_displayBorder.CornerRadius = requestedCornerRadius;
 		_displayBorder.BorderThickness = requestedThickness;
-		_displayBorder.BorderBrush = overlayBrush;
+		_displayBorder.BorderBrush = gradientBrush.FauxOverlayBrush;
 #endif
 	}
 }
