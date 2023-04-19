@@ -25,15 +25,9 @@ partial class BorderLayerRenderer
 		// Bounds is captured to avoid calling twice calls below.
 		var area = new Rect(0, 0, _owner.ActualWidth, _owner.ActualHeight);
 
-		var newState = new BorderLayerState(
-			area,
-			_borderInfoProvider.Background,
-			_borderInfoProvider.BackgroundSizing,
-			_borderInfoProvider.BorderBrush,
-			_borderInfoProvider.BorderThickness,
-			_borderInfoProvider.CornerRadius);
+		var newState = new BorderLayerState(area, _borderInfoProvider);
 
-		var previousLayoutState = _lastState;
+		var previousLayoutState = _currentState;
 
 		if (!newState.Equals(previousLayoutState))
 		{
@@ -52,14 +46,14 @@ partial class BorderLayerRenderer
 				_layerDisposable.Disposable = null;
 			}
 
-			_lastState = newState;
+			_currentState = newState;
 		}
 	}
 
 	partial void ClearLayer()
 	{
 		_layerDisposable.Disposable = null;
-		_lastState = default;
+		_currentState = default;
 	}
 
 	private static IDisposable InnerCreateLayer(UIElement owner, BorderLayerState state)
