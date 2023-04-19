@@ -23,6 +23,8 @@ using System.Collections.Concurrent;
 using System.Collections.Immutable;
 using Uno.UI.SourceGenerators.Helpers;
 using Uno.UI.SourceGenerators.Utils;
+using Uno.UI.SourceGenerators.XamlGenerator.ThirdPartyGenerators;
+using Uno.UI.SourceGenerators.XamlGenerator.ThirdPartyGenerators.CommunityToolkitMvvm;
 
 #if NETFRAMEWORK
 using Microsoft.Build.Execution;
@@ -145,6 +147,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		internal Lazy<INamedTypeSymbol?> IRelayCommandTSymbol { get; }
 		internal Lazy<INamedTypeSymbol?> IAsyncRelayCommandSymbol { get; }
 		internal Lazy<INamedTypeSymbol?> IAsyncRelayCommandTSymbol { get; }
+
+		internal ImmutableArray<ITypeProvider> TypeProviders { get; }
 
 		public XamlCodeGeneration(GeneratorExecutionContext context)
 		{
@@ -326,6 +330,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			Lazy<INamedTypeSymbol> GetSpecialTypeSymbolAsLazy(SpecialType specialType)
 				=> new(() => context.Compilation.GetSpecialType(specialType));
+
+			TypeProviders = ImmutableArray.Create<ITypeProvider>(
+				new MvvmTypeProvider(this)
+				);
 		}
 
 		private static bool IsWinUIItem(Uno.Roslyn.MSBuildItem item)
