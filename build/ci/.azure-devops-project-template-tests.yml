@@ -1,4 +1,5 @@
 parameters:
+  poolName: ''
   vmImageWindows: ''
   vmImageLinux: ''
 
