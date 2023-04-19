@@ -6,6 +6,7 @@ using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Text;
+using CommunityToolkit.Mvvm.SourceGenerators;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Testing;
@@ -117,7 +118,7 @@ build_metadata.AdditionalFiles.SourceItemGroup = Page
 				foreach (var tree in compilation.SyntaxTrees.Skip(project.DocumentIds.Count))
 				{
 					WriteTreeToDiskIfNecessary(tree, resourceDirectory);
-					expectedNames.Add(Path.GetFileName(tree.FilePath));
+					expectedNames.Add(GetFileNameFromTree(tree));
 				}
 
 				var currentTestPrefix = $"Uno.UI.SourceGenerators.netcore.Tests.XamlCodeGeneratorTests.{TestOutputFolderName}.{_testMethodName}.";
@@ -155,10 +156,27 @@ build_metadata.AdditionalFiles.SourceItemGroup = Page
 
 					using var reader = new StreamReader(resourceStream, Encoding.UTF8, detectEncodingFromByteOrderMarks: true, bufferSize: 4096, leaveOpen: true);
 					var name = resourceName.Substring(expectedPrefix.Length);
-					TestState.GeneratedSources.Add((typeof(XamlCodeGenerator), name, reader.ReadToEnd()));
+					var underscoreIndex = name.IndexOf('_');
+					var generatorName = name.Substring(0, underscoreIndex);
+					name = name.Substring(underscoreIndex + 1);
+
+					var type = generatorName switch
+					{
+						"XamlCodeGenerator" => typeof(XamlCodeGenerator),
+						"ObservablePropertyGenerator" => typeof(ObservablePropertyGenerator),
+						_ => throw new Exception("Unexpected generator name"),
+					};
+					TestState.GeneratedSources.Add((type, name, reader.ReadToEnd()));
 				}
 
 				return this;
+			}
+
+			private static string GetFileNameFromTree(SyntaxTree tree)
+			{
+				var generatorName = new DirectoryInfo(tree.FilePath).Parent!.Name;
+				generatorName = generatorName.Substring(generatorName.LastIndexOf('.') + 1);
+				return $"{generatorName}_{Path.GetFileName(tree.FilePath)}";
 			}
 
 			[Conditional("WRITE_EXPECTED")]
@@ -169,7 +187,8 @@ build_metadata.AdditionalFiles.SourceItemGroup = Page
 					throw new ArgumentException("Syntax tree encoding was not specified");
 				}
 
-				var name = Path.GetFileName(tree.FilePath);
+				var name = GetFileNameFromTree(tree);
+
 				var filePath = Path.Combine(resourceDirectory, name);
 				Directory.CreateDirectory(resourceDirectory);
 				File.WriteAllText(filePath, tree.GetText().ToString(), tree.Encoding);
