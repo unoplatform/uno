@@ -60,7 +60,7 @@ public sealed partial class SymbolIcon : IconElement
 	private void SynchronizeProperties()
 	{
 		_textBlock.Style = null;
-		_textBlock.TextAlignment = TextAlignment.Center;
+		_textBlock.TextAlignment = Windows.UI.Xaml.TextAlignment.Center;
 		_textBlock.HorizontalAlignment = HorizontalAlignment.Stretch;
 		_textBlock.VerticalAlignment = VerticalAlignment.Center;
 		_textBlock.FontSize = DefaultFontSize;

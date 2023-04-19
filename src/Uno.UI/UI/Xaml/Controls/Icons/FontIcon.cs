@@ -183,7 +183,7 @@ public partial class FontIcon : IconElement
 		_textBlock.Style = null;
 		_textBlock.VerticalAlignment = VerticalAlignment.Center;
 		_textBlock.HorizontalAlignment = HorizontalAlignment.Center;
-		_textBlock.TextAlignment = TextAlignment.Center;
+		_textBlock.TextAlignment = Windows.UI.Xaml.TextAlignment.Center;
 		_textBlock.SetValue(AutomationProperties.AccessibilityViewProperty, AccessibilityView.Raw);
 
 		_textBlock.Text = Glyph;
