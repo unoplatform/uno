@@ -90,7 +90,7 @@ export UNO_UITEST_BENCHMARKS_PATH=$BUILD_ARTIFACTSTAGINGDIRECTORY/benchmarks/ios
 export UNO_UITEST_RUNTIMETESTS_RESULTS_FILE_PATH=$BUILD_SOURCESDIRECTORY/build/RuntimeTestResults-ios-automated.xml
 
 export UNO_UITEST_SIMULATOR_VERSION="com.apple.CoreSimulator.SimRuntime.iOS-15-2"
-export UNO_UITEST_SIMULATOR_NAME="iPad Pro (12.9-inch) (4th generation)"
+export UNO_UITEST_SIMULATOR_NAME="iPad Pro (12.9-inch) (5th generation)"
 
 UITEST_IGNORE_RERUN_FILE="${UITEST_IGNORE_RERUN_FILE:=false}"
 
