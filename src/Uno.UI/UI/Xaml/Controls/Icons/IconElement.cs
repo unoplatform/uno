@@ -96,7 +96,7 @@ public partial class IconElement : FrameworkElement
 
 		var backgroundBrush = new SolidColorBrush()
 		{
-			Color = Color.FromArgb(0, 0, 0, 0)
+			Color = Windows.UI.Color.FromArgb(0, 0, 0, 0)
 		};
 
 		_rootGrid = new Grid()
