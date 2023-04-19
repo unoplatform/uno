@@ -124,7 +124,6 @@
 		<PackageReference Include="Microsoft.Extensions.Logging.Filter" Version="1.1.1" />
 		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" Version="4.0.0-dev.7" />
 		<PackageReference Include="Uno.Fonts.Fluent" />
-		<PackageReference Include="Xamarin.TestCloud.Agent" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'android'">
@@ -133,10 +132,12 @@
 
 	<ItemGroup Condition="'$(TargetPlatformIdentifier)' == 'ios'">
 		<PackageReference Include="SkiaSharp.NativeAssets.iOS" />
+		<PackageReference Include="Xamarin.TestCloud.Agent" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetPlatformIdentifier)' == 'maccatalyst'">
 		<PackageReference Include="SkiaSharp.NativeAssets.MacCatalyst" />
+		<PackageReference Include="Xamarin.TestCloud.Agent" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetPlatformIdentifier)' == 'macos'">
