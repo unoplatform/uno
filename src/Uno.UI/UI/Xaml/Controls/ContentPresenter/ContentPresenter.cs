@@ -823,8 +823,6 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			base.OnUnloaded();
 
-			ClearBorder();
-
 			TryDetachNativeElement();
 		}
 

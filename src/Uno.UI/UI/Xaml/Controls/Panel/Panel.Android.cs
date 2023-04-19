@@ -16,58 +16,57 @@ using Android.Graphics.Drawables;
 using Uno.UI;
 using Microsoft.UI.Xaml.Media;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls;
+
+partial class Panel
 {
-	partial class Panel
+	protected override void OnChildViewAdded(View child)
 	{
-		protected override void OnChildViewAdded(View child)
+		if (child is IFrameworkElement element)
 		{
-			if (child is IFrameworkElement element)
-			{
-				OnChildAdded(element);
-			}
-
-			base.OnChildViewAdded(child);
+			OnChildAdded(element);
 		}
 
-		protected override void OnLayoutCore(bool changed, int left, int top, int right, int bottom, bool localIsLayoutRequested)
-		{
-			base.OnLayoutCore(changed, left, top, right, bottom, localIsLayoutRequested);
-
-			ShouldUpdateMeasures = changed;
-			UpdateBorder();
-		}
-
-		protected override void OnDraw(Android.Graphics.Canvas canvas)
-		{
-			AdjustCornerRadius(canvas, CornerRadiusInternal);
-		}
-
-		protected virtual void OnChildrenChanged() => UpdateBorder();
-
-		partial void OnPaddingChangedPartial(Thickness oldValue, Thickness newValue)
-		{
-			ShouldUpdateMeasures = true;
-		}
-
-		protected override void OnBeforeArrange()
-		{
-			base.OnBeforeArrange();
-
-			//We set childrens position for the animations before the arrange
-			_transitionHelper?.SetInitialChildrenPositions();
-		}
-
-		protected override void OnAfterArrange()
-		{
-			base.OnAfterArrange();
-
-			//We trigger all layoutUpdated animations
-			_transitionHelper?.LayoutUpdatedTransition();
-		}
-
-		bool ICustomClippingElement.AllowClippingToLayoutSlot => true;
-
-		bool ICustomClippingElement.ForceClippingToLayoutSlot => CornerRadiusInternal != CornerRadius.None;
+		base.OnChildViewAdded(child);
 	}
+
+	protected override void OnLayoutCore(bool changed, int left, int top, int right, int bottom, bool localIsLayoutRequested)
+	{
+		base.OnLayoutCore(changed, left, top, right, bottom, localIsLayoutRequested);
+
+		ShouldUpdateMeasures = changed;
+		UpdateBorder();
+	}
+
+	protected override void OnDraw(Android.Graphics.Canvas canvas)
+	{
+		AdjustCornerRadius(canvas, CornerRadiusInternal);
+	}
+
+	protected virtual void OnChildrenChanged() => UpdateBorder();
+
+	partial void OnPaddingChangedPartial(Thickness oldValue, Thickness newValue)
+	{
+		ShouldUpdateMeasures = true;
+	}
+
+	protected override void OnBeforeArrange()
+	{
+		base.OnBeforeArrange();
+
+		//We set childrens position for the animations before the arrange
+		_transitionHelper?.SetInitialChildrenPositions();
+	}
+
+	protected override void OnAfterArrange()
+	{
+		base.OnAfterArrange();
+
+		//We trigger all layoutUpdated animations
+		_transitionHelper?.LayoutUpdatedTransition();
+	}
+
+	bool ICustomClippingElement.AllowClippingToLayoutSlot => true;
+
+	bool ICustomClippingElement.ForceClippingToLayoutSlot => CornerRadiusInternal != CornerRadius.None;
 }

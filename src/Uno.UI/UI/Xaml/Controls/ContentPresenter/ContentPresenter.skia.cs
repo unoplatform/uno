@@ -10,138 +10,137 @@ using Windows.UI.Core;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls;
+
+/// <summary>
+/// Declares a Content presenter
+/// </summary>
+/// <remarks>
+/// The content presenter is used for compatibility with WPF concepts,
+/// but the ContentSource property is not available, because there are ControlTemplates for now.
+/// </remarks>
+public partial class ContentPresenter : FrameworkElement
 {
-	/// <summary>
-	/// Declares a Content presenter
-	/// </summary>
-	/// <remarks>
-	/// The content presenter is used for compatibility with WPF concepts,
-	/// but the ContentSource property is not available, because there are ControlTemplates for now.
-	/// </remarks>
-	public partial class ContentPresenter : FrameworkElement
+	private Rect? _lastArrangeRect;
+	private Rect _lastGlobalRect;
+	private bool _nativeHostRegistered;
+
+	public ContentPresenter()
 	{
-		private Rect? _lastArrangeRect;
-		private Rect _lastGlobalRect;
-		private bool _nativeHostRegistered;
+		InitializeContentPresenter();
+	}
 
-		public ContentPresenter()
-		{
-			InitializeContentPresenter();
-		}
+	private void SetUpdateTemplate()
+	{
+		UpdateContentTemplateRoot();
+	}
 
-		private void SetUpdateTemplate()
-		{
-			UpdateContentTemplateRoot();
-		}
+	partial void RegisterContentTemplateRoot()
+	{
+		AddChild(ContentTemplateRoot);
+	}
 
-		partial void RegisterContentTemplateRoot()
-		{
-			AddChild(ContentTemplateRoot);
-		}
+	partial void UnregisterContentTemplateRoot()
+	{
+		RemoveChild(ContentTemplateRoot);
+	}
 
-		partial void UnregisterContentTemplateRoot()
+	partial void TryRegisterNativeElement(object newValue)
+	{
+		if (CoreWindow.Main.IsNativeElement(newValue))
 		{
-			RemoveChild(ContentTemplateRoot);
-		}
+			IsNativeHost = true;
 
-		partial void TryRegisterNativeElement(object newValue)
-		{
-			if (IsNativeElement(newValue))
+			if (ContentTemplate is not null)
 			{
-				IsNativeHost = true;
-
-				if (ContentTemplate is not null)
-				{
-					throw new InvalidOperationException("ContentTemplate cannot be set when the Content is a native element");
-				}
-				if (ContentTemplateSelector is not null)
-				{
-					throw new InvalidOperationException("ContentTemplateSelector cannot be set when the Content is a native element");
-				}
-
-				RegisterNativeHostSupport();
+				throw new InvalidOperationException("ContentTemplate cannot be set when the Content is a native element");
 			}
-			else if (IsNativeHost)
+			if (ContentTemplateSelector is not null)
 			{
-				IsNativeHost = false;
-				UnregisterNativeHostSupport();
+				throw new InvalidOperationException("ContentTemplateSelector cannot be set when the Content is a native element");
 			}
+
+			RegisterNativeHostSupport();
 		}
-
-		void RegisterNativeHostSupport()
+		else if (IsNativeHost)
 		{
-			if (IsNativeHost && XamlRoot is not null)
-			{
-				XamlRoot.InvalidateRender += UpdateNativeElementPosition;
-				_nativeHostRegistered = true;
-			}
+			IsNativeHost = false;
+			UnregisterNativeHostSupport();
 		}
+	}
 
-		void UnregisterNativeHostSupport()
+	void RegisterNativeHostSupport()
+	{
+		if (IsNativeHost && XamlRoot is not null)
 		{
-			if (_nativeHostRegistered)
-			{
-				_nativeHostRegistered = false;
-				XamlRoot.InvalidateRender -= UpdateNativeElementPosition;
-			}
+			XamlRoot.InvalidateRender += UpdateNativeElementPosition;
+			_nativeHostRegistered = true;
 		}
+	}
 
-		bool ICustomClippingElement.AllowClippingToLayoutSlot => true;
-
-		bool ICustomClippingElement.ForceClippingToLayoutSlot => CornerRadius != CornerRadius.None;
-
-		partial void ArrangeNativeElement(Rect arrangeRect)
+	void UnregisterNativeHostSupport()
+	{
+		if (_nativeHostRegistered)
 		{
-			if (IsNativeHost)
-			{
-				_lastArrangeRect = arrangeRect;
-
-				UpdateNativeElementPosition();
-			}
+			_nativeHostRegistered = false;
+			XamlRoot.InvalidateRender -= UpdateNativeElementPosition;
 		}
+	}
 
-		partial void TryAttachNativeElement()
+	bool ICustomClippingElement.AllowClippingToLayoutSlot => true;
+
+	bool ICustomClippingElement.ForceClippingToLayoutSlot => CornerRadius != CornerRadius.None;
+
+	partial void ArrangeNativeElement(Rect arrangeRect)
+	{
+		if (IsNativeHost)
 		{
-			if (IsNativeHost)
-			{
-				AttachNativeElement(XamlRoot, Content);
-			}
+			_lastArrangeRect = arrangeRect;
+
+			UpdateNativeElementPosition();
 		}
+	}
 
-		partial void TryDetachNativeElement()
+	partial void TryAttachNativeElement()
+	{
+		if (IsNativeHost)
 		{
-			if (IsNativeHost)
-			{
-				DetachNativeElement(XamlRoot, Content);
-			}
+			CoreWindow.Main.AttachNativeElement(XamlRoot, Content);
 		}
+	}
 
-		private Size MeasureNativeElement(Size size)
+	partial void TryDetachNativeElement()
+	{
+		if (IsNativeHost)
 		{
-			if (IsNativeHost)
-			{
-				return MeasureNativeElement(XamlRoot, Content, size);
-			}
-			else
-			{
-				return size;
-			}
+			CoreWindow.Main.DetachNativeElement(XamlRoot, Content);
 		}
+	}
 
-		private void UpdateNativeElementPosition()
+	private Size MeasureNativeElement(Size size)
+	{
+		if (IsNativeHost)
 		{
-			if (_lastArrangeRect is { } lastArrangeRect)
+			return CoreWindow.Main.MeasureNativeElement(XamlRoot, Content, size);
+		}
+		else
+		{
+			return size;
+		}
+	}
+
+	private void UpdateNativeElementPosition()
+	{
+		if (_lastArrangeRect is { } lastArrangeRect)
+		{
+			var globalPosition = TransformToVisual(null).TransformPoint(lastArrangeRect.Location);
+			var globalRect = new Rect(globalPosition, lastArrangeRect.Size);
+
+			if (_lastGlobalRect != globalRect)
 			{
-				var globalPosition = TransformToVisual(null).TransformPoint(lastArrangeRect.Location);
-				var globalRect = new Rect(globalPosition, lastArrangeRect.Size);
+				_lastGlobalRect = globalRect;
 
-				if (_lastGlobalRect != globalRect)
-				{
-					_lastGlobalRect = globalRect;
-
-					_nativeElementHostingExtension.Value.ArrangeNativeElement(XamlRoot, Content, globalRect);
-				}
+				CoreWindow.Main.ArrangeNativeElement(XamlRoot, Content, globalRect);
 			}
 		}
 
