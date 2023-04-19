@@ -3,14 +3,13 @@ parameters:
   vmImageLinux: ''
 
 jobs:
-- job: reference_package_build
-  displayName: 'Build Reference Package Binaries'
+- job: templates_package_build
+  displayName: 'Build Template Package'
 
   pool:
     vmImage: ${{ parameters.vmImageWindows }}
 
   variables:
-    CombinedConfiguration: Release|Any CPU
     CI_Build: true
     NUGET_PACKAGES: $(build.sourcesdirectory)/.nuget
 
@@ -36,17 +35,10 @@ jobs:
 
   - powershell: |
       Set-PSDebug -Trace 1
-      dotnet build build/Uno.UI.Build.csproj /m /t:BuildCIReference "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)/build-Reference-$(XAML_FLAVOR_BUILD).binlog
-    displayName: Building Reference Binaries
+      dotnet build build/Uno.UI.Build.csproj /m /t:BuildCIPackages "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)/build-Reference-$(XAML_FLAVOR_BUILD).binlog
+    displayName: Building Template Packages
 
   - template: templates/copy-package-assets.yml
-
-  - task: ArchiveFiles@2
-    inputs:
-      rootFolderOrFile: $(build.sourcesdirectory)/build-artifacts/bin-$(XAML_FLAVOR_BUILD)
-      includeRootFolder: false
-      archiveType: 'zip'
-      archiveFile: '$(Build.ArtifactStagingDirectory)/Reference-bin-$(XAML_FLAVOR_BUILD).zip'
 
   - task: PublishBuildArtifacts@1
     condition: always()
@@ -56,14 +48,14 @@ jobs:
       ArtifactName: NugetPackages-Artifacts-reference-$(XAML_FLAVOR_BUILD)
       ArtifactType: Container
 
-
-
 - job: Dotnet_Template_Tests
   displayName: 'Run dotnet new Templates Tests'
 
   pool: ${{ parameters.poolName }}
 
-  dependsOn: Generate_Packages
+  dependsOn:
+    - Generate_Packages
+    - templates_package_build
 
   variables:
     # Force disable .NET Native for all samples validation
@@ -105,7 +97,9 @@ jobs:
 
   pool: ${{ parameters.poolName }}
 
-  dependsOn: Generate_Packages
+  dependsOn:
+    - Generate_Packages
+    - templates_package_build
 
   steps:
   - task: DownloadBuildArtifacts@0
