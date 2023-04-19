@@ -17,7 +17,7 @@ internal partial class BorderLayerRenderer
 	private readonly SerialDisposable _borderBrushSubscription = new();
 	private readonly SerialDisposable _backgroundBrushSubscription = new();
 
-	private BorderLayerState _lastState;
+	private BorderLayerState _currentState;
 
 	public BorderLayerRenderer(FrameworkElement owner)
 	{
@@ -40,7 +40,7 @@ internal partial class BorderLayerRenderer
 	internal void Update()
 	{
 		// Subscribe to brushes to observe their changes.
-		if (_lastState.BorderBrush != _borderInfoProvider.BorderBrush)
+		if (_currentState.BorderBrush != _borderInfoProvider.BorderBrush)
 		{
 			_borderBrushSubscription.Disposable = null;
 			if (_borderInfoProvider.BorderBrush is { } brush)
@@ -49,7 +49,7 @@ internal partial class BorderLayerRenderer
 			}
 		}
 
-		if (_lastState.Background != _borderInfoProvider.Background)
+		if (_currentState.Background != _borderInfoProvider.Background)
 		{
 			_backgroundBrushSubscription.Disposable = null;
 			if (_borderInfoProvider.Background is { } background)
@@ -67,14 +67,14 @@ internal partial class BorderLayerRenderer
 	private void OnBorderBrushChanged(ManagedWeakReference instance, DependencyProperty property, DependencyPropertyChangedEventArgs args)
 	{
 		// Force the border to be recreated during update.
-		_lastState.BorderBrush = null;
+		_currentState.BorderBrush = null;
 		Update();
 	}
 
 	private void OnBackgroundBrushChanged(ManagedWeakReference instance, DependencyProperty property, DependencyPropertyChangedEventArgs args)
 	{
 		// Force the background to be recreated during update.
-		_lastState.Background = null;
+		_currentState.Background = null;
 		Update();
 	}
 

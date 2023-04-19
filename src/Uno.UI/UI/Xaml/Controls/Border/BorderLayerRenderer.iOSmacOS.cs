@@ -50,7 +50,7 @@ namespace Windows.UI.Xaml.Controls
 
 			var newState = new BorderLayerState(area, _borderInfoProvider);
 
-			if (!newState.Equals(_lastState))
+			if (!newState.Equals(_currentState))
 			{
 #if __MACOS__
 				_owner.WantsLayer = true;
@@ -59,7 +59,7 @@ namespace Windows.UI.Xaml.Controls
 				_layerDisposable.Disposable = null;
 				_layerDisposable.Disposable = InnerCreateLayer(_owner as UIElement, _owner.Layer, newState, out var updatedBoundsPath);
 
-				_lastState = newState;
+				_currentState = newState;
 
 				BoundsPath = updatedBoundsPath;
 			}
@@ -86,7 +86,7 @@ namespace Windows.UI.Xaml.Controls
 		partial void ClearLayer()
 		{
 			_layerDisposable.Disposable = null;
-			_lastState = default;
+			_currentState = default;
 		}
 
 		public enum Corner { TopLeft, TopRight, BottomRight, BottomLeft }

@@ -35,12 +35,12 @@ namespace Windows.UI.Xaml.Controls
 			var drawArea = new Rect(default, _owner.LayoutSlotWithMarginsAndAlignments.Size.LogicalToPhysicalPixels());
 			var newState = new BorderLayerState(drawArea, _borderInfoProvider);
 
-			if (newState.Equals(_lastState))
+			if (newState.Equals(_currentState))
 			{
 				return;
 			}
 
-			var imageHasChanged = newState.BackgroundImageSource != _lastState?.BackgroundImageSource;
+			var imageHasChanged = newState.BackgroundImageSource != _currentState?.BackgroundImageSource;
 			var shouldDisposeEagerly = imageHasChanged || newState.BackgroundImageSource == null;
 			if (shouldDisposeEagerly)
 			{
