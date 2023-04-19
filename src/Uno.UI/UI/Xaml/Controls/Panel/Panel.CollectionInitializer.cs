@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using Uno.UI;
 
 #if XAMARIN_ANDROID
 using View = Windows.UI.Xaml.UIElement;
@@ -34,7 +35,9 @@ partial class Panel : IEnumerable
 		Children.Add(view);
 	}
 
-#if !__IOS__ // UIView already implements IEnumerable
-	public IEnumerator GetEnumerator() => this.GetChildren().GetEnumerator();
+	public
+#if __NETSTD__ || __IOS__
+	new
 #endif
+	IEnumerator GetEnumerator() => this.GetChildren().GetEnumerator();
 }
