@@ -35,10 +35,10 @@
 		<Warning Text="Building this project under Visual Studio has no effect." />
 	</Target>
 
-	<Target Name="PrepareBuildAssets" AfterTargets="Build" Condition="'$(BuildingInsideVisualStudio)'==''">
+	<Target Name="PrepareBuildAssets" AfterTargets="Build" Condition="'$(BuildingInsideVisualStudio)'=='' and '$(UNO_UWP_BUILD)'=='true'">
 		<Message Text="Building for $(Configuration) and $(Platform) BuildReason:$(BUILD_REASON) Version:$(GitVersion_SemVer) UNO_UWP_BUILD:$(UNO_UWP_BUILD)" />
 
-		<CallTarget Targets="UpdateFileVersions;UpdateTasksSHA" Condition="$(_isWindows) and '$(UNO_UWP_BUILD)'=='true'" />
+		<CallTarget Targets="UpdateFileVersions;UpdateTasksSHA" Condition="$(_isWindows)" />
 		<CallTarget Targets="PrepareNuGetPackage" />
 	</Target>
 
