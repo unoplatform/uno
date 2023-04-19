@@ -45,8 +45,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly bool _isDesignTimeBuild;
 		private readonly string _defaultNamespace;
 		private readonly string[] _assemblySearchPaths;
-		private readonly string _excludeXamlNamespaces;
-		private readonly string _includeXamlNamespaces;
+		private readonly string[] _excludeXamlNamespaces;
+		private readonly string[] _includeXamlNamespaces;
 		private readonly string[] _analyzerSuppressions;
 		private readonly Uno.Roslyn.MSBuildItem[] _resourceFiles;
 		private readonly Dictionary<string, string[]> _uiAutomationMappings;
@@ -179,9 +179,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			_xamlSourceLinks = xamlItems.Select(GetSourceLink).ToArray();
 
-			_excludeXamlNamespaces = context.GetMSBuildPropertyValue("ExcludeXamlNamespacesProperty");
+			_excludeXamlNamespaces = context.GetMSBuildPropertyValue("ExcludeXamlNamespacesProperty").Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
 
-			_includeXamlNamespaces = context.GetMSBuildPropertyValue("IncludeXamlNamespacesProperty");
+			_includeXamlNamespaces = context.GetMSBuildPropertyValue("IncludeXamlNamespacesProperty").Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
 
 			_analyzerSuppressions = context.GetMSBuildPropertyValue("XamlGeneratorAnalyzerSuppressionsProperty").Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
 
@@ -459,7 +459,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						generatorContext: _generatorContext,
 						xamlResourcesTrimming: _xamlResourcesTrimming,
 						generationRunFileInfo: generationRunInfo.GetRunFileInfo(file.UniqueID),
-						xamlTypeToXamlTypeBaseMap: xamlTypeToXamlTypeBaseMap
+						xamlTypeToXamlTypeBaseMap: xamlTypeToXamlTypeBaseMap,
+						includeXamlNamespaces: _includeXamlNamespaces
 					).GenerateFile()
 				)).ToList();
 

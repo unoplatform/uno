@@ -31,7 +31,7 @@ using Uno.Xaml.Schema;
 using Pair = System.Collections.Generic.KeyValuePair<Uno.Xaml.XamlMember,string>;
 
 // ValueTuple`2 isn't available on net461. So using KeyValuePair for now. We can switch to tuples if we no longer build on net461.
-using IsIncludedType = System.Func<string, string, System.Collections.Generic.KeyValuePair<bool?, string>>;
+using IsIncludedType = System.Func<string, string, bool?>;
 
 namespace Uno.Xaml
 {
@@ -280,7 +280,7 @@ namespace Uno.Xaml
 			if (r.MoveToFirstAttribute ()) {
 				do {
 					if (r.NamespaceURI == XamlLanguage.Xmlns2000Namespace)
-						yield return Node (XamlNodeType.NamespaceDeclaration, new NamespaceDeclaration (_isIncluded(r.LocalName, r.Value).Value, r.Prefix == "xmlns" ? r.LocalName : String.Empty));
+						yield return Node (XamlNodeType.NamespaceDeclaration, new NamespaceDeclaration (r.Value, r.Prefix == "xmlns" ? r.LocalName : String.Empty));
 				} while (r.MoveToNextAttribute ());
 				r.MoveToElement ();
 			}
@@ -288,7 +288,7 @@ namespace Uno.Xaml
 			var sti = GetStartTagInfo ();
 			using (PushIgnorables(sti.Members))
 			{
-				if (IsIgnored(r.Prefix, r.NamespaceURI, sti))
+				if (IsIgnored(r.Prefix, r.NamespaceURI))
 				{
 					r.Skip();
 					yield break;
@@ -520,7 +520,7 @@ namespace Uno.Xaml
 						break;
 
 					default:
-						if (IsIgnored(r.Prefix, r.NamespaceURI, sti: null))
+						if (IsIgnored(r.Prefix, r.NamespaceURI))
 						{
 							continue;
 						}
@@ -681,7 +681,7 @@ namespace Uno.Xaml
 		// member element, implicit member, children via content property, or value
 		IEnumerable<XamlXmlNodeInfo> ReadMemberElement (XamlType parentType, XamlType xt)
 		{
-			if (IsIgnored(r.Prefix, r.NamespaceURI, sti: null))
+			if (IsIgnored(r.Prefix, r.NamespaceURI))
 			{
 				r.Skip();
 				yield break;
@@ -901,17 +901,11 @@ namespace Uno.Xaml
 			return null;
 		}
 
-		private bool IsIgnored(string localName, string namespaceUri, StartTagInfo sti)
+		private bool IsIgnored(string localName, string namespaceUri)
 		{
-			var result = _isIncluded(localName, namespaceUri);
-			var isIncluded = result.Key;
+			var isIncluded = _isIncluded(localName, namespaceUri);
 			if (isIncluded == true)
 			{
-				if (sti is not null)
-				{
-					//sti.Namespace = result.Value;
-				}
-
 				return false;
 			}
 			else if (isIncluded == false)

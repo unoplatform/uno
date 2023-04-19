@@ -143,6 +143,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private readonly IDictionary<INamedTypeSymbol, XamlType> _xamlTypeToXamlTypeBaseMap;
 
+		private readonly string[] _includeXamlNamespaces;
+
 		/// <summary>
 		/// Information about types used in .Apply() scenarios
 		/// </summary>
@@ -231,7 +233,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			GeneratorExecutionContext generatorContext,
 			bool xamlResourcesTrimming,
 			GenerationRunFileInfo generationRunFileInfo,
-			IDictionary<INamedTypeSymbol, XamlType> xamlTypeToXamlTypeBaseMap)
+			IDictionary<INamedTypeSymbol, XamlType> xamlTypeToXamlTypeBaseMap,
+			string[] includeXamlNamespaces)
 		{
 			Generation = generation;
 			_fileDefinition = file;
@@ -259,6 +262,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_xamlResourcesTrimming = xamlResourcesTrimming;
 			_generationRunFileInfo = generationRunFileInfo;
 			_xamlTypeToXamlTypeBaseMap = xamlTypeToXamlTypeBaseMap;
+			_includeXamlNamespaces = includeXamlNamespaces;
 
 			InitCaches();
 

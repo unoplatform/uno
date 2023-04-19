@@ -28,8 +28,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 	{
 		private static readonly ConcurrentDictionary<CachedFileKey, CachedFile> _cachedFiles = new();
 		private static readonly TimeSpan _cacheEntryLifetime = new TimeSpan(hours: 1, minutes: 0, seconds: 0);
-		private readonly string _excludeXamlNamespacesProperty;
-		private readonly string _includeXamlNamespacesProperty;
 		private readonly string[] _excludeXamlNamespaces;
 		private readonly string[] _includeXamlNamespaces;
 
@@ -41,13 +39,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private int _depth;
 
-		public XamlFileParser(string excludeXamlNamespaces, string includeXamlNamespaces, RoslynMetadataHelper roslynMetadataHelper)
+		public XamlFileParser(string[] excludeXamlNamespaces, string[] includeXamlNamespaces, RoslynMetadataHelper roslynMetadataHelper)
 		{
-			_excludeXamlNamespacesProperty = excludeXamlNamespaces;
-			_excludeXamlNamespaces = excludeXamlNamespaces.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-
-			_includeXamlNamespacesProperty = includeXamlNamespaces;
-			_includeXamlNamespaces = includeXamlNamespaces.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+			_excludeXamlNamespaces = excludeXamlNamespaces;
+			_includeXamlNamespaces = includeXamlNamespaces;
 
 			_metadataHelper = roslynMetadataHelper;
 		}
@@ -94,7 +89,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					throw new Exception($"Failed to read additional file '{file.Path}'");
 				}
 
-				var cachedFileKey = new CachedFileKey(_includeXamlNamespacesProperty, _excludeXamlNamespacesProperty, file.Path, sourceText.GetChecksum());
+				var cachedFileKey = new CachedFileKey(file.Path, sourceText.GetChecksum());
 				if (_cachedFiles.TryGetValue(cachedFileKey, out var cached))
 				{
 					_cachedFiles[cachedFileKey] = cached.WithUpdatedLastTimeUsed();
@@ -147,32 +142,22 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
-		private KeyValuePair<bool?, string> IsIncluded(string localName, string namespaceUri)
+		private bool? IsIncluded(string localName, string namespaceUri)
 		{
 			if (_includeXamlNamespaces.Contains(localName))
 			{
-				if (namespaceUri.IndexOf("using:", StringComparison.Ordinal) is int indexOfUsingColon && indexOfUsingColon == -1)
-				{
-					// There is no "using:" in the namespace. So assume the default namespace
-					return new KeyValuePair<bool?, string>(true, "http://schemas.microsoft.com/winfx/2006/xaml/presentation");
-				}
-				else if (indexOfUsingColon > 0 && namespaceUri[indexOfUsingColon - 1] == '#')
-				{
-					// We have "#using:", we want to keep it.
-					return new KeyValuePair<bool?, string>(true, namespaceUri.Substring(indexOfUsingColon - 1));
-				}
-				return new KeyValuePair<bool?, string>(true, namespaceUri);
+				return true;
 			}
 			else if (_excludeXamlNamespaces.Contains(localName))
 			{
-				return new KeyValuePair<bool?, string>(false, namespaceUri);
+				return false;
 			}
 
 			var valueSplit = namespaceUri.Split('?');
 			if (valueSplit.Length != 2)
 			{
 				// Not a (valid) conditional
-				return new KeyValuePair<bool?, string>(null, namespaceUri);
+				return null;
 			}
 
 			var elements = valueSplit[1].Split('(', ',', ')');
@@ -188,9 +173,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						throw new InvalidOperationException($"Syntax error while parsing conditional namespace expression {namespaceUri}");
 					}
 
-					return new KeyValuePair<bool?, string>(methodName == nameof(ApiInformation.IsApiContractPresent) ?
+					return methodName == nameof(ApiInformation.IsApiContractPresent) ?
 						ApiInformation.IsApiContractPresent(elements[1], majorVersion) :
-						ApiInformation.IsApiContractNotPresent(elements[1], majorVersion), valueSplit[0]);
+						ApiInformation.IsApiContractNotPresent(elements[1], majorVersion);
 				case nameof(ApiInformation.IsTypePresent):
 				case nameof(ApiInformation.IsTypeNotPresent):
 					if (elements.Length < 2)
@@ -198,11 +183,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						throw new InvalidOperationException($"Syntax error while parsing conditional namespace expression {namespaceUri}");
 					}
 					var expectedType = elements[1];
-					return new KeyValuePair<bool?, string>(methodName == nameof(ApiInformation.IsTypePresent) ?
+					return methodName == nameof(ApiInformation.IsTypePresent) ?
 						ApiInformation.IsTypePresent(elements[1], _metadataHelper) :
-						ApiInformation.IsTypeNotPresent(elements[1], _metadataHelper), valueSplit[0]);
+						ApiInformation.IsTypeNotPresent(elements[1], _metadataHelper);
 				default:
-					return new KeyValuePair<bool?, string>(null, namespaceUri);// TODO: support IsPropertyPresent
+					return null;// TODO: support IsPropertyPresent
 			}
 		}
 

@@ -775,12 +775,21 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					// We should be returning null here, but we fallback to fuzzy matching if enabled.
 					return SearchWithFuzzyMatching(fields[1]);
 				}
-				else if (ns.Namespace.Equals("http://schemas.microsoft.com/winfx/2006/xaml/presentation", StringComparison.Ordinal))
+
+				var indexOfQuestionMark = ns.Namespace.IndexOf('?');
+				var namespaceUrl = ns.Namespace;
+				if (indexOfQuestionMark > -1)
+				{
+					namespaceUrl = ns.Namespace.Substring(0, indexOfQuestionMark);
+				}
+
+				if (namespaceUrl.Equals("http://schemas.microsoft.com/winfx/2006/xaml/presentation", StringComparison.Ordinal) ||
+					_includeXamlNamespaces.Contains(ns.Prefix))
 				{
 					return SearchClrNamespaces(fields[1]);
 				}
 
-				var nsName = GetTrimmedNamespace(ns.Namespace);
+				var nsName = GetTrimmedNamespace(namespaceUrl);
 				name = nsName + "." + fields[1];
 
 				if (_metadataHelper.FindTypeByFullName(name) is INamedTypeSymbol namedTypeSymbol1)
