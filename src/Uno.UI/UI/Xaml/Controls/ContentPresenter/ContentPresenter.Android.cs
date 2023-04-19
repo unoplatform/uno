@@ -54,6 +54,11 @@ public partial class ContentPresenter
 		this.RemoveViewAndDispose(ContentTemplateRoot);
 	}
 
+	partial void OnPaddingChangedPartial()
+	{
+		ShouldUpdateMeasures = true;
+	}
+
 	protected override void OnDraw(Android.Graphics.Canvas canvas)
 	{
 		AdjustCornerRadius(canvas, CornerRadius);

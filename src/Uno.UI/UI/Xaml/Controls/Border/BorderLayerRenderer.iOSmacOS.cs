@@ -155,7 +155,7 @@ namespace Windows.UI.Xaml.Controls
 			var disposables = new CompositeDisposable();
 			var sublayers = new List<CALayer>();
 
-			var adjustedArea = area.Shrink(borderThickness);
+			var adjustedArea = area.DeflateBy(borderThickness);
 
 			if (cornerRadius != CornerRadius.None)
 			{
