@@ -18,16 +18,14 @@ using Uno.UI.SourceGenerators.XamlGenerator.Utils;
 using Uno.Roslyn;
 using Windows.Foundation.Metadata;
 
-#if NETFRAMEWORK
-using GeneratorExecutionContext = Uno.SourceGeneration.GeneratorExecutionContext;
-#endif
-
 namespace Uno.UI.SourceGenerators.XamlGenerator
 {
 	internal partial class XamlFileParser
 	{
 		private static readonly ConcurrentDictionary<CachedFileKey, CachedFile> _cachedFiles = new();
 		private static readonly TimeSpan _cacheEntryLifetime = new TimeSpan(hours: 1, minutes: 0, seconds: 0);
+		private readonly string _excludeXamlNamespacesProperty;
+		private readonly string _includeXamlNamespacesProperty;
 		private readonly string[] _excludeXamlNamespaces;
 		private readonly string[] _includeXamlNamespaces;
 
@@ -39,9 +37,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private int _depth;
 
-		public XamlFileParser(string[] excludeXamlNamespaces, string[] includeXamlNamespaces, RoslynMetadataHelper roslynMetadataHelper)
+		public XamlFileParser(string excludeXamlNamespacesProperty, string includeXamlNamespacesProperty, string[] excludeXamlNamespaces, string[] includeXamlNamespaces, RoslynMetadataHelper roslynMetadataHelper)
 		{
+			_excludeXamlNamespacesProperty = excludeXamlNamespacesProperty;
 			_excludeXamlNamespaces = excludeXamlNamespaces;
+
+			_includeXamlNamespacesProperty = includeXamlNamespacesProperty;
 			_includeXamlNamespaces = includeXamlNamespaces;
 
 			_metadataHelper = roslynMetadataHelper;
@@ -89,7 +90,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					throw new Exception($"Failed to read additional file '{file.Path}'");
 				}
 
-				var cachedFileKey = new CachedFileKey(file.Path, sourceText.GetChecksum());
+				var cachedFileKey = new CachedFileKey(_includeXamlNamespacesProperty, _excludeXamlNamespacesProperty, file.Path, sourceText.GetChecksum());
 				if (_cachedFiles.TryGetValue(cachedFileKey, out var cached))
 				{
 					_cachedFiles[cachedFileKey] = cached.WithUpdatedLastTimeUsed();
