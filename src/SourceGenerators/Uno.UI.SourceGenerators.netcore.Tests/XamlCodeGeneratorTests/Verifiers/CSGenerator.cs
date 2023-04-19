@@ -75,7 +75,7 @@ namespace Uno.UI.SourceGenerators.Tests.Verifiers
 					build_property.MSBuildProjectFullPath = C:\Project\Project.csproj
 					build_property.RootNamespace = MyProject
 					build_property.UnoForceHotReloadCodeGen = false
-					""");
+					""").AppendLine();
 
 				foreach (var xamlFile in xamlFiles)
 				{
