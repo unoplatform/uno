@@ -3,7 +3,6 @@
 using System;
 using System.Xml;
 
-// ValueTuple`2 isn't available on net461. So using KeyValuePair for now. We can switch to tuples if we no longer build on net461.
 using IsIncludedType = System.Func<string, string, bool?>;
 
 namespace Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection

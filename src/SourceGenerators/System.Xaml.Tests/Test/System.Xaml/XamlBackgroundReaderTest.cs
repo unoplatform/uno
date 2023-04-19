@@ -8,10 +8,10 @@
 // distribute, sublicense, and/or sell copies of the Software, and to
 // permit persons to whom the Software is furnished to do so, subject to
 // the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be
 // included in all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 // EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 // MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -44,7 +44,7 @@ namespace MonoTests.Uno.Xaml
 		{
 			var directory = Path.GetDirectoryName(new Uri(GetType().Assembly.CodeBase).LocalPath);
 
-			return new XamlXmlReader (XmlReader.Create (Path.Combine (directory, "Test/XmlFiles", filename), new XmlReaderSettings () { CloseInput =true }), (_, nsUri) => new KeyValuePair<bool?, string>(null, nsUri));
+			return new XamlXmlReader (XmlReader.Create (Path.Combine (directory, "Test/XmlFiles", filename), new XmlReaderSettings () { CloseInput =true }), (_, _) => null);
 		}
 
 		void ReadTest (string filename)
