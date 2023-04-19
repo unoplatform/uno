@@ -10,6 +10,8 @@ jobs:
   pool:
     vmImage: ${{ parameters.vmImageWindows }}
 
+  dependsOn: Pipeline_Validations
+
   variables:
     CI_Build: true
     NUGET_PACKAGES: $(build.sourcesdirectory)/.nuget
