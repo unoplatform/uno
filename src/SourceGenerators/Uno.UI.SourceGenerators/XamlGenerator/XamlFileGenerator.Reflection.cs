@@ -677,7 +677,23 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 
 				var nsName = GetTrimmedNamespace(trimmedNamespace);
-				if (_metadataHelper.FindTypeByFullName(nsName + "." + type.Name) is INamedTypeSymbol namedType)
+				if (nsName.IndexOf("#using:", StringComparison.Ordinal) is int indexOfHashUsing && indexOfHashUsing > -1)
+				{
+					if (SearchClrNamespaces(type.Name) is INamedTypeSymbol symbolFromCLRNamespace)
+					{
+						return symbolFromCLRNamespace;
+					}
+
+					var hashUsingNamespaces = nsName.Substring(indexOfHashUsing + "#using:".Length).Split(';');
+					foreach (var hashUsingNamespace in hashUsingNamespaces)
+					{
+						if (_metadataHelper.FindTypeByFullName(hashUsingNamespace + "." + type.Name) is INamedTypeSymbol namedType)
+						{
+							return namedType;
+						}
+					}
+				}
+				else if (_metadataHelper.FindTypeByFullName(nsName + "." + type.Name) is INamedTypeSymbol namedType)
 				{
 					return namedType;
 				}
@@ -694,6 +710,23 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					var fullName = isKnownNamespace && ns != null ? ns.Prefix + ":" + type.Name : type.Name;
 
 					return _findType!(fullName);
+				}
+			}
+
+			return null;
+		}
+
+		private INamedTypeSymbol? SearchClrNamespaces(string name)
+		{
+			if (_clrNamespaces != null)
+			{
+				// Search first using the default namespace
+				foreach (var clrNamespace in _clrNamespaces)
+				{
+					if (_metadataHelper.FindTypeByFullName(clrNamespace + "." + name) is INamedTypeSymbol type)
+					{
+						return type;
+					}
 				}
 			}
 
@@ -746,28 +779,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					return SearchClrNamespaces(fields[1]);
 				}
-				else if (ns.Namespace.StartsWith("#using:", StringComparison.Ordinal))
-				{
-					// We are dealing with a namespace on the form `xmlns:android="http://platform.uno/android#using:TestNS;TestNS2"`
-					// In this case, we search both the default namespaces and the user-specified namespaces.
-					// This code path is about the new "#using" syntax, so we never fallback to fuzzy matching here.
-					var firstResult = SearchClrNamespaces(fields[1]);
-					if (firstResult is not null)
-					{
-						return firstResult;
-					}
-
-					var userSpecifiedNamespaces = ns.Namespace.Substring("#using:".Length).Split(';');
-					foreach (var userSpecifiedNamespace in userSpecifiedNamespaces)
-					{
-						if (_metadataHelper.FindTypeByFullName(userSpecifiedNamespace + "." + fields[1]) is INamedTypeSymbol symbolFromUserSpecifiedNamespaces)
-						{
-							return symbolFromUserSpecifiedNamespaces;
-						}
-					}
-
-					return null;
-				}
 
 				var nsName = GetTrimmedNamespace(ns.Namespace);
 				name = nsName + "." + fields[1];
@@ -806,23 +817,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 
 			return SearchWithFuzzyMatching(name);
-
-			INamedTypeSymbol? SearchClrNamespaces(string name)
-			{
-				if (_clrNamespaces != null)
-				{
-					// Search first using the default namespace
-					foreach (var clrNamespace in _clrNamespaces)
-					{
-						if (_metadataHelper.FindTypeByFullName(clrNamespace + "." + name) is INamedTypeSymbol type)
-						{
-							return type;
-						}
-					}
-				}
-
-				return null;
-			}
 
 			INamedTypeSymbol? SearchWithFuzzyMatching(string name)
 			{

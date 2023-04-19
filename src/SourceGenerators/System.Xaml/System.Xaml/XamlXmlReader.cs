@@ -529,7 +529,7 @@ namespace Uno.Xaml
 							atts.Add (r.LocalName, r.Value);
 							continue;
 						}
-						if (r.NamespaceURI.StartsWith("using:", StringComparison.Ordinal) || r.NamespaceURI.StartsWith("#using:", StringComparison.Ordinal)) {
+						if (r.NamespaceURI.StartsWith("using:", StringComparison.Ordinal) || r.NamespaceURI.Contains("#using:")) {
 							atts.Add (r.Name, r.Value);
 							continue;
 						}
@@ -909,7 +909,7 @@ namespace Uno.Xaml
 			{
 				if (sti is not null)
 				{
-					sti.Namespace = result.Value;
+					//sti.Namespace = result.Value;
 				}
 
 				return false;

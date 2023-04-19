@@ -2416,7 +2416,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							{
 								var firstChild = implicitContentChild.Objects.First();
 
-								var elementType = topLevelControlSymbol ?? throw new InvalidOperationException("The type {0} could not be found".InvariantCultureFormat(topLevelControl.Type)); ;
+								var elementType = topLevelControlSymbol ?? throw new InvalidOperationException("The type {0} could not be found".InvariantCultureFormat(topLevelControl.Type));
 								var contentProperty = FindContentProperty(elementType);
 
 								writer.AppendLineInvariantIndented("{0}{1} = ",
