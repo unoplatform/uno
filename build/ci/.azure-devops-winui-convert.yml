@@ -31,6 +31,8 @@ jobs:
     parameters:
       nugetPackages: $(NUGET_PACKAGES)
 
+  - template: templates/gitversion.yml
+
   - template: templates/dotnet-mobile-install-windows.yml
   - template: templates/install-windows-sdk.yml
 
