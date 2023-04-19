@@ -1,4 +1,6 @@
-﻿#if XAMARIN_ANDROID
+﻿using System.Collections;
+
+#if XAMARIN_ANDROID
 using View = Windows.UI.Xaml.UIElement;
 #elif XAMARIN_IOS_UNIFIED
 using View = UIKit.UIView;
