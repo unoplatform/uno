@@ -136,7 +136,6 @@
 
 	<ItemGroup Condition="'$(TargetPlatformIdentifier)' == 'maccatalyst'">
 		<PackageReference Include="SkiaSharp.NativeAssets.MacCatalyst" />
-		<PackageReference Include="Xamarin.TestCloud.Agent" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetPlatformIdentifier)' == 'macos'">
