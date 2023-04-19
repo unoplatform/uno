@@ -14,6 +14,8 @@ namespace Windows.UI.Xaml.Automation.Peers
 
 		#region Public
 
+		public AutomationPeer EventsSource { get; set; } // TODO Uno: Implement properly.
+
 		public object GetPattern(Windows.UI.Xaml.Automation.Peers.PatternInterface patternInterface) => GetPatternCore(patternInterface);
 
 		public void SetParent(global::Windows.UI.Xaml.Automation.Peers.AutomationPeer peer) => _parent = peer;
