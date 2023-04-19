@@ -16,7 +16,7 @@ public partial class LinearGradientBrush
 
 	internal SolidColorBrush? FauxOverlayBrush => _fauxOverlayBrush ??= CreateFauxOverlayBrush();
 
-	internal static bool CanApplySolidColorRendering() => brush.GradientStops.Count == 2;
+	internal bool CanApplySolidColorRendering() => GradientStops.Count == 2;
 
 	/// <summary>
 	/// Returns major stop of given border gradient.
@@ -52,7 +52,7 @@ public partial class LinearGradientBrush
 
 	internal VerticalAlignment GetMinorStopAlignment()
 	{
-		var scaleTransform = brush.RelativeTransform as ScaleTransform;
+		var scaleTransform = RelativeTransform as ScaleTransform;
 		return scaleTransform?.ScaleY != -1 ?
 				VerticalAlignment.Top : VerticalAlignment.Bottom;
 	}

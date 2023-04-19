@@ -34,5 +34,7 @@ partial class Panel : IEnumerable
 		Children.Add(view);
 	}
 
+#if !__IOS__ // UIView already implements IEnumerable
 	public IEnumerator GetEnumerator() => this.GetChildren().GetEnumerator();
+#endif
 }
