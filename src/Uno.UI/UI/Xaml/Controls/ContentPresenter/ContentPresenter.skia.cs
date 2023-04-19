@@ -23,9 +23,10 @@ public partial class ContentPresenter : FrameworkElement
 	private Rect _lastGlobalRect;
 	private bool _nativeHostRegistered;
 
-	public ContentPresenter()
+	partial void InitializePlatform()
 	{
-		InitializeContentPresenter();
+		Loaded += (s, e) => RegisterNativeHostSupport();
+		Unloaded += (s, e) => UnregisterNativeHostSupport();
 	}
 
 	private void SetUpdateTemplate()
@@ -67,7 +68,7 @@ public partial class ContentPresenter : FrameworkElement
 		}
 	}
 
-	void RegisterNativeHostSupport()
+	private void RegisterNativeHostSupport()
 	{
 		if (IsNativeHost && XamlRoot is not null)
 		{
@@ -76,7 +77,7 @@ public partial class ContentPresenter : FrameworkElement
 		}
 	}
 
-	void UnregisterNativeHostSupport()
+	private void UnregisterNativeHostSupport()
 	{
 		if (_nativeHostRegistered)
 		{
