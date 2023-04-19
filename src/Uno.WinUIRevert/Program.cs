@@ -72,11 +72,11 @@ namespace UnoWinUIRevert
 			// Files/Class that are implemented in both MUX and WUX and which should not be converted
 			var duplicatedImplementations = new[]
 			{
-				Path.Combine(basePath, @"src\Uno.UI\UI\Xaml\Controls\Icon\BitmapIconSource.cs"),
-				Path.Combine(basePath, @"src\Uno.UI\UI\Xaml\Controls\Icon\SymbolIconSource.cs"),
-				Path.Combine(basePath, @"src\Uno.UI\UI\Xaml\Controls\Icon\PathIconSource.cs"),
-				Path.Combine(basePath, @"src\Uno.UI\UI\Xaml\Controls\Icon\FontIconSource.cs"),
-				Path.Combine(basePath, @"src\Uno.UI\UI\Xaml\Controls\Icon\IconSource.cs"),
+				Path.Combine(basePath, @"src\Uno.UI\UI\Xaml\Controls\Icons\BitmapIconSource.cs"),
+				Path.Combine(basePath, @"src\Uno.UI\UI\Xaml\Controls\Icons\SymbolIconSource.cs"),
+				Path.Combine(basePath, @"src\Uno.UI\UI\Xaml\Controls\Icons\PathIconSource.cs"),
+				Path.Combine(basePath, @"src\Uno.UI\UI\Xaml\Controls\Icons\FontIconSource.cs"),
+				Path.Combine(basePath, @"src\Uno.UI\UI\Xaml\Controls\Icons\IconSource.cs"),
 				Path.Combine(basePath, @"src\Uno.UI\UI\Xaml\Controls\Unsupported\RatingControl.cs"),
 				Path.Combine(basePath, @"src\Uno.UI\UI\Xaml\Automation\Peers\RatingControlAutomationPeer.cs"),
 				Path.Combine(basePath, @"src\Uno.UI\UI\Xaml\Controls\Unsupported\SplitButton.cs"),
