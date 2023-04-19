@@ -30,25 +30,17 @@ namespace Windows.UI.Xaml.Controls
 		private static readonly float[] _outerRadiiStore = new float[8];
 		private static readonly float[] _innerRadiiStore = new float[8];
 
-		private LayoutState _currentState;
-
 		partial void UpdateLayer()
 		{
 			var drawArea = new Rect(default, _owner.LayoutSlotWithMarginsAndAlignments.Size.LogicalToPhysicalPixels());
-			var newState = new LayoutState(
-				drawArea,
-				_borderInfoProvider.Background,
-				_borderInfoProvider.BorderThickness,
-				_borderInfoProvider.BorderBrush,
-				_borderInfoProvider.CornerRadius);
-			var previousLayoutState = _currentState;
+			var newState = new BorderLayerState(drawArea, _borderInfoProvider);
 
-			if (newState.Equals(previousLayoutState))
+			if (newState.Equals(_lastState))
 			{
 				return;
 			}
 
-			var imageHasChanged = newState.BackgroundImageSource != previousLayoutState?.BackgroundImageSource;
+			var imageHasChanged = newState.BackgroundImageSource != _lastState?.BackgroundImageSource;
 			var shouldDisposeEagerly = imageHasChanged || newState.BackgroundImageSource == null;
 			if (shouldDisposeEagerly)
 			{
@@ -61,11 +53,7 @@ namespace Windows.UI.Xaml.Controls
 			var disposable = InnerCreateLayers(
 				_owner,
 				drawArea,
-				_borderInfoProvider.Background,
-				_borderInfoProvider.BackgroundSizing,
-				_borderInfoProvider.BorderThickness,
-				_borderInfoProvider.BorderBrush,
-				_borderInfoProvider.CornerRadius,
+				_borderInfoProvider,
 				() => onImageSet?.Invoke());
 
 			// Most of the time we immediately dispose the previous layer. In the case where we're using an ImageBrush,
@@ -104,12 +92,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private static IDisposable InnerCreateLayers(
 			BindableView view,
-			Rect drawArea,
-			Brush background,
-			BackgroundSizing backgroundSizing,
-			Thickness borderThickness,
-			Brush borderBrush,
-			CornerRadius cornerRadius,
+			IBorderInfoProvider borderInfoProvider,
 			Action onImageSet)
 		{
 			// In case the element has no size, skip everything!
@@ -472,58 +455,6 @@ namespace Windows.UI.Xaml.Controls
 			).AsTask(cd.Token);
 
 			return cd;
-		}
-
-		private class LayoutState : IEquatable<LayoutState>
-		{
-			public readonly Windows.Foundation.Rect Area;
-			public readonly Brush Background;
-			public readonly ImageSource BackgroundImageSource;
-			public readonly Uri BackgroundImageSourceUri;
-			public readonly Color? BackgroundColor;
-			public readonly Brush BorderBrush;
-			public readonly Color? BorderBrushColor;
-			public readonly Thickness BorderThickness;
-			public readonly CornerRadius CornerRadius;
-			public readonly Color? BackgroundFallbackColor;
-
-			public LayoutState(Windows.Foundation.Rect area, Brush background, Thickness borderThickness, Brush borderBrush, CornerRadius cornerRadius)
-			{
-				Area = area;
-				Background = background;
-				BorderBrush = borderBrush;
-				CornerRadius = cornerRadius;
-				BorderThickness = borderThickness;
-
-				var imageBrushBackground = Background as ImageBrush;
-				BackgroundImageSource = imageBrushBackground?.ImageSource;
-				BackgroundImageSourceUri = BackgroundImageSource switch
-				{
-					BitmapImage bitmapImage => bitmapImage.UriSource,
-					SvgImageSource svgImageSource => svgImageSource.UriSource,
-					_ => null
-				};
-
-				BackgroundColor = (Background as SolidColorBrush)?.Color;
-				BorderBrushColor = (BorderBrush as SolidColorBrush)?.Color;
-
-				BackgroundFallbackColor = (Background as XamlCompositionBrushBase)?.FallbackColor;
-			}
-
-			public bool Equals(LayoutState other)
-			{
-				return other != null
-					&& other.Area == Area
-					&& other.Background == Background
-					&& other.BackgroundImageSource == BackgroundImageSource
-					&& other.BackgroundImageSourceUri == BackgroundImageSourceUri
-					&& other.BackgroundColor == BackgroundColor
-					&& other.BorderBrush == BorderBrush
-					&& other.BorderBrushColor == BorderBrushColor
-					&& other.BorderThickness == BorderThickness
-					&& other.CornerRadius == CornerRadius
-					&& other.BackgroundFallbackColor == BackgroundFallbackColor;
-			}
 		}
 	}
 }
