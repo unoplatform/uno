@@ -48,13 +48,7 @@ namespace Windows.UI.Xaml.Controls
 			var bounds = _owner.Bounds;
 			var area = new CGRect(0, 0, bounds.Width, bounds.Height);
 
-			var newState = new BorderLayerState(
-				area,
-				_borderInfoProvider.Background,
-				_borderInfoProvider.BackgroundSizing,
-				_borderInfoProvider.BorderBrush,
-				_borderInfoProvider.BorderThickness,
-				_borderInfoProvider.CornerRadius);
+			var newState = new BorderLayerState(area, _borderInfoProvider);
 
 			if (!newState.Equals(_lastState))
 			{
