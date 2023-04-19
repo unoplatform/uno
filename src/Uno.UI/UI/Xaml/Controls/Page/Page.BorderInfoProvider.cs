@@ -18,6 +18,6 @@ public partial class Page : IBorderInfoProvider
 	CornerRadius IBorderInfoProvider.CornerRadius => CornerRadius.None;
 
 #if __ANDROID__
-	bool IBorderInfoProvider.ShouldUpdateMeasures { get; set; }
+	bool IBorderInfoProvider.ShouldUpdateMeasures => false;
 #endif
 }
