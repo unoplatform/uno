@@ -9436,6 +9436,8 @@
 			<Member fullName="System.Threading.Tasks.Task Windows.UI.Xaml.Controls.WebView.LaunchMailto(System.Threading.CancellationToken ct, System.String subject, System.String body, System.String[] to, System.String[] cc, System.String[] bcc)" reason="Should not be public" />
 			<Member fullName="System.Void Microsoft.Web.WebView2.Core.CoreWebView2NavigationStartingEventArgs..ctor()" reason="Should not be public" />
 			<!-- END WebView -->
+			
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.IconElement.OnForegroundChanged(Windows.UI.Xaml.DependencyPropertyChangedEventArgs e)" reason="Should not be public" />
 
 		</Methods>
 	</IgnoreSet>
