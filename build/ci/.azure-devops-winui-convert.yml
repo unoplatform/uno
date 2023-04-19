@@ -48,7 +48,7 @@ jobs:
       msbuildLocationMethod: version
       msbuildVersion: latest
       msbuildArchitecture: x86
-      msbuildArguments: /r /m /v:m /t:RunAPISyncTool "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)\build-winui-convert.binlog
+      msbuildArguments: /r /m /v:m "/t:PrepareBuildAssets;RunAPISyncTool" "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)\build-winui-convert.binlog
       clean: false
       restoreNugetPackages: false
       logProjectEvents: false
