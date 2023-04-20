@@ -12,6 +12,8 @@ using Uno.UI.Xaml.Input;
 using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.UI.Core;
+using Windows.UI.Input;
+using Windows.UI.Input.Preview.Injection;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
@@ -22,46 +24,30 @@ namespace Uno.UI.Xaml.Core;
 
 internal partial class InputManager
 {
-	internal void RaisePointerEntered(PointerEventArgs args)
-		=> _pointerManager.OnPointerEntered(args);
+	internal PointerManager Pointers { get; private set; } = default!;
 
-	internal void RaisePointerExited(PointerEventArgs args)
-		=> _pointerManager.OnPointerExited(args);
-
-	internal void RaisePointerMoved(PointerEventArgs args)
-		=> _pointerManager.OnPointerMoved(args);
-
-	internal void RaisePointerPressed(PointerEventArgs args)
-		=> _pointerManager.OnPointerPressed(args);
-
-	internal void RaisePointerReleased(PointerEventArgs args)
-		=> _pointerManager.OnPointerReleased(args);
-
-	internal void RaisePointerWheelChanged(PointerEventArgs args)
-		=> _pointerManager.OnPointerWheelChanged(args);
-
-	internal void RaisePointerCancelled(PointerEventArgs args)
-		=> _pointerManager.OnPointerCancelled(args);
-
-	internal void SetPointerCapture(PointerIdentifier identifier)
-		=> _pointerManager.SetPointerCapture(identifier);
-
-	internal void ReleasePointerCapture(PointerIdentifier identifier)
-		=> _pointerManager.ReleasePointerCapture(identifier);
-
-	private PointerManager _pointerManager = null!;
-
-	partial void InitializeManagedPointers()
+	partial void ConstructManagedPointers()
 	{
-		_pointerManager = new PointerManager(this);
+		Pointers = new PointerManager(this);
+		//InputInjector.SetTargetForCurrentThread(this); // Injector supports only pointers for now, so configure it only if usefull!
 	}
 
-	private class PointerManager
+	partial void InitializeManagedPointers(object host)
+		=> Pointers.Init(host);
+
+	partial void InjectPointerAdded(PointerEventArgs args)
+		=> Pointers.InjectPointerAdded(args);
+
+	partial void InjectPointerUpdated(PointerEventArgs args)
+		=> Pointers.InjectPointerUpdated(args);
+
+	partial void InjectPointerRemoved(PointerEventArgs args)
+		=> Pointers.InjectPointerRemoved(args);
+
+	internal class PointerManager
 	{
 		private static readonly Logger _log = LogExtensionPoint.Log(typeof(PointerManager));
 		private static readonly bool _trace = _log.IsEnabled(LogLevel.Trace);
-
-		private static IPointerExtension? _pointerExtension;
 
 		// TODO: Use pointer ID for the predicates
 		private static readonly StalePredicate _isOver = new(e => e.IsPointerOver, "IsPointerOver");
@@ -69,28 +55,39 @@ internal partial class InputManager
 		private readonly Dictionary<Pointer, UIElement> _pressedElements = new();
 
 		private readonly InputManager _inputManager;
+		private IUnoCorePointerInputSource? _source;
 
 		public PointerManager(InputManager inputManager)
 		{
-			if (_pointerExtension is null)
-			{
-				ApiExtensibility.CreateInstance(typeof(PointerManager), out _pointerExtension); // TODO: Add IPointerExtension implementation to all Skia targets and create instance per XamlRoot https://github.com/unoplatform/uno/issues/8978
-			}
 			_inputManager = inputManager;
-
-			if (_inputManager._contentRoot.Type == ContentRootType.CoreWindow)
-			{
-				Windows.UI.Xaml.Window.Current.CoreWindow.PointerMoved += (c, e) => OnPointerMoved(e);
-				Windows.UI.Xaml.Window.Current.CoreWindow.PointerEntered += (c, e) => OnPointerEntered(e);
-				Windows.UI.Xaml.Window.Current.CoreWindow.PointerExited += (c, e) => OnPointerExited(e);
-				Windows.UI.Xaml.Window.Current.CoreWindow.PointerPressed += (c, e) => OnPointerPressed(e);
-				Windows.UI.Xaml.Window.Current.CoreWindow.PointerReleased += (c, e) => OnPointerReleased(e);
-				Windows.UI.Xaml.Window.Current.CoreWindow.PointerWheelChanged += (c, e) => OnPointerWheelChanged(e);
-				Windows.UI.Xaml.Window.Current.CoreWindow.PointerCancelled += (c, e) => OnPointerCancelled(e);
-			}
 		}
 
-		internal void OnPointerWheelChanged(Windows.UI.Core.PointerEventArgs args)
+		/// <summary>
+		/// Initialize the InputManager.
+		/// This has to be invoked only once the host of the owning ContentRoot has been set.
+		/// </summary>
+		public void Init(object host)
+		{
+			if (!ApiExtensibility.CreateInstance(host, out _source))
+			{
+				throw new InvalidOperationException("Failed to initialize the PointerManager: cannot resolve the IUnoCorePointerInputSource.");
+			}
+
+			// Currently there is no need to filter on ContentRootType ('_inputManager._contentRoot.Type is ContentRootType.CoreWindow')
+			// As soon as we have a CoreWindow we configure it.
+			// This might needed later once we support multi windowing
+			CoreWindow.GetForCurrentThread()?.SetPointerInputSource(_source);
+
+			_source.PointerMoved += (c, e) => OnPointerMoved(e);
+			_source.PointerEntered += (c, e) => OnPointerEntered(e);
+			_source.PointerExited += (c, e) => OnPointerExited(e);
+			_source.PointerPressed += (c, e) => OnPointerPressed(e);
+			_source.PointerReleased += (c, e) => OnPointerReleased(e);
+			_source.PointerWheelChanged += (c, e) => OnPointerWheelChanged(e);
+			_source.PointerCancelled += (c, e) => OnPointerCancelled(e);
+		}
+
+		private void OnPointerWheelChanged(Windows.UI.Core.PointerEventArgs args)
 		{
 			var (originalSource, _) = HitTest(args);
 
@@ -120,7 +117,7 @@ internal partial class InputManager
 			RaiseUsingCaptures(Wheel, originalSource, routedArgs);
 		}
 
-		internal void OnPointerEntered(Windows.UI.Core.PointerEventArgs args)
+		private void OnPointerEntered(Windows.UI.Core.PointerEventArgs args)
 		{
 			var (originalSource, _) = HitTest(args);
 
@@ -153,7 +150,7 @@ internal partial class InputManager
 			Raise(Enter, originalSource, routedArgs);
 		}
 
-		internal void OnPointerExited(Windows.UI.Core.PointerEventArgs args)
+		private void OnPointerExited(Windows.UI.Core.PointerEventArgs args)
 		{
 			// This is how UWP behaves: when out of the bounds of the Window, the root element is used.
 			var originalSource = Windows.UI.Xaml.Window.Current.Content;
@@ -194,7 +191,7 @@ internal partial class InputManager
 			}
 		}
 
-		internal void OnPointerPressed(Windows.UI.Core.PointerEventArgs args)
+		private void OnPointerPressed(Windows.UI.Core.PointerEventArgs args)
 		{
 			var (originalSource, _) = HitTest(args);
 
@@ -224,7 +221,7 @@ internal partial class InputManager
 			Raise(Pressed, originalSource, routedArgs);
 		}
 
-		internal void OnPointerReleased(Windows.UI.Core.PointerEventArgs args)
+		private void OnPointerReleased(Windows.UI.Core.PointerEventArgs args)
 		{
 			var (originalSource, _) = HitTest(args);
 
@@ -262,7 +259,7 @@ internal partial class InputManager
 			ClearPressedState(routedArgs);
 		}
 
-		internal void OnPointerMoved(Windows.UI.Core.PointerEventArgs args)
+		private void OnPointerMoved(Windows.UI.Core.PointerEventArgs args)
 		{
 			var (originalSource, staleBranch) = HitTest(args, _isOver);
 
@@ -309,7 +306,7 @@ internal partial class InputManager
 			RaiseUsingCaptures(Move, originalSource, routedArgs);
 		}
 
-		internal void OnPointerCancelled(Windows.UI.Core.PointerEventArgs args)
+		private void OnPointerCancelled(Windows.UI.Core.PointerEventArgs args)
 		{
 			var (originalSource, _) = HitTest(args);
 
@@ -339,28 +336,15 @@ internal partial class InputManager
 			ClearPressedState(routedArgs);
 		}
 
+		#region Captures
 		internal void SetPointerCapture(PointerIdentifier uniqueId)
 		{
-			if (_pointerExtension is not null)
-			{
-				_pointerExtension.SetPointerCapture(uniqueId, _inputManager._contentRoot.XamlRoot);
-			}
-			else
-			{
-				CoreWindow.GetForCurrentThread()!.SetPointerCapture(uniqueId);
-			}
+			_source?.SetPointerCapture(uniqueId);
 		}
 
 		internal void ReleasePointerCapture(PointerIdentifier uniqueId)
 		{
-			if (_pointerExtension is not null)
-			{
-				_pointerExtension.ReleasePointerCapture(uniqueId, _inputManager._contentRoot.XamlRoot);
-			}
-			else
-			{
-				CoreWindow.GetForCurrentThread()!.ReleasePointerCapture(uniqueId);
-			}
+			_source?.ReleasePointerCapture(uniqueId);
 		}
 
 		private void ReleaseCaptures(PointerRoutedEventArgs routedArgs)
@@ -373,6 +357,41 @@ internal partial class InputManager
 				}
 			}
 		}
+		#endregion
+
+		#region Pointer injection
+		internal void InjectPointerAdded(PointerEventArgs args)
+			=> OnPointerEntered(args);
+
+		internal void InjectPointerRemoved(PointerEventArgs args)
+			=> OnPointerExited(args);
+
+		internal void InjectPointerUpdated(PointerEventArgs args)
+		{
+			var kind = args.CurrentPoint.Properties.PointerUpdateKind;
+
+			if (args.CurrentPoint.Properties.IsCanceled)
+			{
+				OnPointerCancelled(args);
+			}
+			else if (args.CurrentPoint.Properties.MouseWheelDelta is not 0)
+			{
+				OnPointerWheelChanged(args);
+			}
+			else if (kind is PointerUpdateKind.Other)
+			{
+				OnPointerMoved(args);
+			}
+			else if (((int)kind & 1) == 1)
+			{
+				OnPointerPressed(args);
+			}
+			else
+			{
+				OnPointerReleased(args);
+			}
+		}
+		#endregion
 
 		private void ClearPressedState(PointerRoutedEventArgs routedArgs)
 		{
@@ -517,6 +536,5 @@ internal partial class InputManager
 		}
 		#endregion
 	}
-
 }
 #endif

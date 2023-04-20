@@ -76,6 +76,7 @@ namespace Uno.UI.Runtime.Skia
 
 		public void Run()
 		{
+			ApiExtensibility.Register(typeof(Windows.UI.Core.IUnoCorePointerInputSource), o => new TizenCorePointerInputSource(_tizenApplication.Canvas));
 			ApiExtensibility.Register(typeof(Windows.UI.Core.ICoreWindowExtension), o => new TizenCoreWindowExtension(o, _tizenApplication.Canvas));
 			ApiExtensibility.Register(typeof(Windows.UI.ViewManagement.IApplicationViewExtension), o => new TizenApplicationViewExtension(o, _tizenApplication.Window));
 			ApiExtensibility.Register(typeof(IDisplayInformationExtension), o => new TizenDisplayInformationExtension(o, _tizenApplication.Window));
@@ -106,16 +107,17 @@ namespace Uno.UI.Runtime.Skia
 
 		private void OnCoreWindowContentRootSet(object? sender, object e)
 		{
-			var xamlRoot = CoreServices.Instance
+			var contentRoot = CoreServices.Instance
 				.ContentRootCoordinator
-				.CoreWindowContentRoot?
-				.GetOrCreateXamlRoot();
+				.CoreWindowContentRoot;
+			var xamlRoot = contentRoot?.GetOrCreateXamlRoot();
 
 			if (xamlRoot is null)
 			{
 				throw new InvalidOperationException("XamlRoot was not properly initialized");
 			}
 
+			contentRoot!.SetHost(this);
 			xamlRoot.InvalidateRender += _tizenApplication!.Canvas.InvalidateRender;
 
 			CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRootSet -= OnCoreWindowContentRootSet;
