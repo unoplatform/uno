@@ -117,7 +117,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						cancellationToken.ThrowIfCancellationRequested();
 
 						var xamlFileDefinition = Visit(reader, file.Path, targetFilePath);
-						_cachedFiles[cachedFileKey] = new CachedFile(DateTimeOffset.Now, xamlFileDefinition);
+						if (!reader.IsIncludedOrExcludedUsed)
+						{
+							// TODO: This might be disabling cache for more cases than it should.
+							// If _includeXamlNamespaces/_excludeXamlNamespaces were used, we shouldn't disable cache.
+							// However, we should disable cache for usage of ApiInformation.X
+							_cachedFiles[cachedFileKey] = new CachedFile(DateTimeOffset.Now, xamlFileDefinition);
+						}
 
 						return xamlFileDefinition;
 					}

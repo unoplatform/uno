@@ -16,6 +16,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection
 			_unoReader = new __uno::Uno.Xaml.XamlXmlReader(document, context.UnoInner, settings.UnoInner, isIncluded);
 		}
 
+		public bool IsIncludedOrExcludedUsed => _unoReader.IsIncludedOrExcludedUsed;
+
 		public XamlNodeType NodeType => Convert(_unoReader.NodeType);
 
 		private XamlNodeType Convert(__uno::Uno.Xaml.XamlNodeType source)

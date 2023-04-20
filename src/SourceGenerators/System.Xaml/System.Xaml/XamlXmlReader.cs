@@ -126,6 +126,8 @@ namespace Uno.Xaml
 		XamlXmlParser parser;
 		IEnumerator<XamlXmlNodeInfo> iter;
 
+		public bool IsIncludedOrExcludedUsed => parser.IsIncludedOrExcludedUsed;
+
 		public bool PreserveWhitespace => parser.Reader.XmlSpace == XmlSpace.Preserve;
 
 		public bool HasLineInfo {
@@ -888,6 +890,8 @@ namespace Uno.Xaml
 			get { return line_info != null && line_info.HasLineInfo () ? line_info.LinePosition : 0; }
 		}
 
+		public bool IsIncludedOrExcludedUsed { get; private set; }
+
 		private IDisposable PushIgnorables(List<Pair> members)
 		{
 			var ignorable = members.FirstOrDefault(a => a.Key == XamlLanguage.Ignorable);
@@ -905,10 +909,12 @@ namespace Uno.Xaml
 			var isIncluded = _isIncluded(localName, namespaceUri);
 			if (isIncluded == true)
 			{
+				IsIncludedOrExcludedUsed = true;
 				return false;
 			}
 			else if (isIncluded == false)
 			{
+				IsIncludedOrExcludedUsed = true;
 				return true;
 			}
 
