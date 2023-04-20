@@ -77,3 +77,11 @@ jobs:
       PathtoPublish: $(build.artifactstagingdirectory)
       ArtifactName: NugetPackages-Artifacts-skia-$(XAML_FLAVOR_BUILD)
       ArtifactType: Container
+
+  - task: PublishBuildArtifacts@1
+    condition: always()
+    retryCountOnTaskFailure: 3
+    inputs:
+      PathtoPublish: $(build.sourcesdirectory)/src/Uno.UI/UI/Xaml/Style/mergedstyles.xaml
+      ArtifactName: SkiaMergedStyles-Temporary-For-Debugging
+      ArtifactType: Container
