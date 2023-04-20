@@ -783,13 +783,18 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					namespaceUrl = ns.Namespace.Substring(0, indexOfQuestionMark);
 				}
 
-				if (namespaceUrl.Equals("http://schemas.microsoft.com/winfx/2006/xaml/presentation", StringComparison.Ordinal) ||
-					_includeXamlNamespaces.Contains(ns.Prefix))
+				if (namespaceUrl.Equals("http://schemas.microsoft.com/winfx/2006/xaml/presentation", StringComparison.Ordinal))
 				{
 					return SearchClrNamespaces(fields[1]);
 				}
 
 				var nsName = GetTrimmedNamespace(namespaceUrl);
+				if (namespaceUrl != nsName && _includeXamlNamespaces.Contains(ns.Prefix))
+				{
+					// For XAML included namespaces (e.g, android) where we don't have "using:" in the url, assume the default namespace.
+					return SearchClrNamespaces(fields[1]);
+				}
+
 				name = nsName + "." + fields[1];
 
 				if (_metadataHelper.FindTypeByFullName(name) is INamedTypeSymbol namedTypeSymbol1)
