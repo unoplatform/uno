@@ -19,10 +19,7 @@ namespace Windows.UI.ViewManagement
 
 		public ApplicationView()
 		{
-			if (!ApiExtensibility.CreateInstance(this, out _applicationViewExtension))
-			{
-				throw new InvalidOperationException($"Unable to find IApplicationViewExtension extension");
-			}
+			_applicationViewExtension = ApiExtensibility.CreateInstance<IApplicationViewExtension>(this);
 		}
 
 		public string Title

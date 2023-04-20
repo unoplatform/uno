@@ -11,7 +11,7 @@ namespace Windows.ApplicationModel.DataTransfer
 	{
 		private static readonly Lazy<IDataTransferManagerExtension?> _dataTransferManagerExtension = new Lazy<IDataTransferManagerExtension?>(() =>
 		{
-			if (ApiExtensibility.CreateInstance(typeof(DataTransferManager), out IDataTransferManagerExtension dataTransferManagerExtension))
+			if (ApiExtensibility.CreateInstance(typeof(DataTransferManager), out IDataTransferManagerExtension? dataTransferManagerExtension))
 			{
 				return dataTransferManagerExtension;
 			}
