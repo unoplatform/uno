@@ -71,10 +71,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
-		private static void ScavengeCache()
-		{
-			_cachedFiles.Remove(kvp => DateTimeOffset.Now - kvp.Value.LastTimeUsed > _cacheEntryLifetime);
-		}
+		//private static void ScavengeCache()
+		//{
+		//	_cachedFiles.Remove(kvp => DateTimeOffset.Now - kvp.Value.LastTimeUsed > _cacheEntryLifetime);
+		//}
 
 		private XamlFileDefinition? ParseFile(AdditionalText file, string targetFilePath, CancellationToken cancellationToken)
 		{
@@ -90,15 +90,15 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					throw new Exception($"Failed to read additional file '{file.Path}'");
 				}
 
-				var cachedFileKey = new CachedFileKey(_includeXamlNamespacesProperty, _excludeXamlNamespacesProperty, file.Path, sourceText.GetChecksum());
-				if (_cachedFiles.TryGetValue(cachedFileKey, out var cached))
-				{
-					_cachedFiles[cachedFileKey] = cached.WithUpdatedLastTimeUsed();
-					ScavengeCache();
-					return cached.XamlFileDefinition;
-				}
+				//var cachedFileKey = new CachedFileKey(_includeXamlNamespacesProperty, _excludeXamlNamespacesProperty, file.Path, sourceText.GetChecksum());
+				//if (_cachedFiles.TryGetValue(cachedFileKey, out var cached))
+				//{
+				//	_cachedFiles[cachedFileKey] = cached.WithUpdatedLastTimeUsed();
+				//	ScavengeCache();
+				//	return cached.XamlFileDefinition;
+				//}
 
-				ScavengeCache();
+				//ScavengeCache();
 
 				// Initialize the reader using an empty context, because when the tasl
 				// is run under the BeforeCompile in VS IDE, the loaded assemblies are used 
@@ -122,7 +122,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							// TODO: This might be disabling cache for more cases than it should.
 							// If _includeXamlNamespaces/_excludeXamlNamespaces were used, we shouldn't disable cache.
 							// However, we should disable cache for usage of ApiInformation.X
-							_cachedFiles[cachedFileKey] = new CachedFile(DateTimeOffset.Now, xamlFileDefinition);
+							//_cachedFiles[cachedFileKey] = new CachedFile(DateTimeOffset.Now, xamlFileDefinition);
 						}
 
 						return xamlFileDefinition;
