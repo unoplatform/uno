@@ -789,7 +789,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 
 				var nsName = GetTrimmedNamespace(namespaceUrl);
-				if (namespaceUrl != nsName && _includeXamlNamespaces.Contains(ns.Prefix))
+				if (namespaceUrl == nsName && _includeXamlNamespaces.Contains(ns.Prefix))
 				{
 					// For XAML included namespaces (e.g, android) where we don't have "using:" in the url, assume the default namespace.
 					return SearchClrNamespaces(fields[1]);
