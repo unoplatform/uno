@@ -526,7 +526,10 @@ namespace Uno.Xaml
 							continue;
 						}
 
-						if (r.NamespaceURI == String.Empty  || r.NamespaceURI == r.LookupNamespace("") ) {
+						var defaultNamespace = r.LookupNamespace("");
+						if (r.NamespaceURI == String.Empty  || r.NamespaceURI == defaultNamespace ||
+							// Uno specific: Handle the `http://schemas.microsoft.com/winfx/2006/xaml/presentation?[IsApiContractPresent,etc]` case
+							(r.NamespaceURI.StartsWith(defaultNamespace, StringComparison.Ordinal) && r.NamespaceURI[defaultNamespace.Length] == '?' )) {
 							atts.Add (r.LocalName, r.Value);
 							continue;
 						}
