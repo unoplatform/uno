@@ -59,7 +59,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// <summary>
 		/// Names of disambiguated keys associated with resource definitions. These are created for top-level ResourceDictionary declarations only.
 		/// </summary>
-		private readonly Dictionary<(string? Theme, string ResourceKey), (string Value, int LineNumber)> _topLevelQualifiedKeys = new Dictionary<(string?, string), (string, int)>();
+		private readonly Dictionary<(string? Theme, string ResourceKey), string> _topLevelQualifiedKeys = new Dictionary<(string?, string), string>();
 		private readonly Stack<NameScope> _scopeStack = new Stack<NameScope>();
 		private readonly Stack<XLoadScope> _xLoadScopeStack = new Stack<XLoadScope>();
 		private int _resourceOwner;
@@ -1401,14 +1401,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				index++;
 				var propertyName = GetInitializerNameForResourceKey(index);
-				if (_topLevelQualifiedKeys.TryGetValue((theme, key), out var foundValue))
+				if (_topLevelQualifiedKeys.ContainsKey((theme, key)))
 				{
-					throw new InvalidOperationException($"Dictionary Item {resource.Type?.Name} has duplicate key `{key}` {(theme != null ? $" in theme {theme}" : "")}. Old line number: {foundValue.LineNumber}. Current line number: {resource.LineNumber}");
+					throw new InvalidOperationException($"Dictionary Item {resource.Type?.Name} has duplicate key `{key}` {(theme != null ? $" in theme {theme}" : "")}.");
 				}
 				var isStaticResourceAlias = resource.Type.Name == "StaticResource";
 				if (!isStaticResourceAlias)
 				{
-					_topLevelQualifiedKeys[(theme, key)] = (propertyName, resource.LineNumber);
+					_topLevelQualifiedKeys[(theme, key)] = propertyName;
 				}
 			}
 
@@ -1436,7 +1436,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				else
 				{
 					var initializerName = GetInitializerNameForResourceKey(_dictionaryPropertyIndex);
-					if (_topLevelQualifiedKeys[(theme, key)].Value != initializerName)
+					if (_topLevelQualifiedKeys[(theme, key)] != initializerName)
 					{
 						throw new InvalidOperationException($"Method name was not created correctly for {key} (theme={theme}).");
 					}
@@ -4792,7 +4792,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		{
 			if (_topLevelQualifiedKeys.TryGetValue((_themeDictionaryCurrentlyBuilding, keyStr), out var qualifiedKey))
 			{
-				return qualifiedKey.Value;
+				return qualifiedKey;
 			}
 
 			return null;
