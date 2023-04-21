@@ -289,7 +289,7 @@ namespace Uno.Xaml
 			var sti = GetStartTagInfo ();
 			using (PushIgnorables(sti.Members))
 			{
-				if (IsIgnored(r.Prefix, r.NamespaceURI))
+				if (IsIgnored(r.Prefix, r.NamespaceURI, out _))
 				{
 					r.Skip();
 					yield break;
@@ -521,15 +521,12 @@ namespace Uno.Xaml
 						break;
 
 					default:
-						if (IsIgnored(r.Prefix, r.NamespaceURI))
+						if (IsIgnored(r.Prefix, r.NamespaceURI, out var shouldTreatAsDefaultNamespace))
 						{
 							continue;
 						}
 
-						var defaultNamespace = r.LookupNamespace("");
-						if (r.NamespaceURI == String.Empty  || r.NamespaceURI == defaultNamespace ||
-							// Uno specific: Handle the `http://schemas.microsoft.com/winfx/2006/xaml/presentation?[IsApiContractPresent,etc]` case
-							(r.NamespaceURI.StartsWith(defaultNamespace, StringComparison.Ordinal) && r.NamespaceURI[defaultNamespace.Length] == '?' )) {
+						if (r.NamespaceURI == String.Empty  || r.NamespaceURI == r.LookupNamespace("") || shouldTreatAsDefaultNamespace) {
 							atts.Add (r.LocalName, r.Value);
 							continue;
 						}
@@ -685,7 +682,7 @@ namespace Uno.Xaml
 		// member element, implicit member, children via content property, or value
 		IEnumerable<XamlXmlNodeInfo> ReadMemberElement (XamlType parentType, XamlType xt)
 		{
-			if (IsIgnored(r.Prefix, r.NamespaceURI))
+			if (IsIgnored(r.Prefix, r.NamespaceURI, out _))
 			{
 				r.Skip();
 				yield break;
@@ -907,15 +904,18 @@ namespace Uno.Xaml
 			return null;
 		}
 
-		private bool IsIgnored(string localName, string namespaceUri)
+		private bool IsIgnored(string localName, string namespaceUri, out bool shouldTreatAsDefaultNamespace)
 		{
 			var isIncluded = _isIncluded(localName, namespaceUri);
 			if (isIncluded == true)
 			{
 				IsIncludedOrExcludedUsed = true;
+				shouldTreatAsDefaultNamespace = true;
 				return false;
 			}
-			else if (isIncluded == false)
+
+			shouldTreatAsDefaultNamespace = false;
+			if (isIncluded == false)
 			{
 				IsIncludedOrExcludedUsed = true;
 				return true;
