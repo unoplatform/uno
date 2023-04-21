@@ -30,7 +30,7 @@ using Uno.Xaml.Schema;
 
 using Pair = System.Collections.Generic.KeyValuePair<Uno.Xaml.XamlMember,string>;
 
-using IsIncludedType = System.Func<string, string, (bool?, bool)>;
+using IsIncludedType = System.Func<string, string, System.Collections.Generic.KeyValuePair<bool?, bool>>;
 
 namespace Uno.Xaml
 {
@@ -906,8 +906,9 @@ namespace Uno.Xaml
 
 		private bool IsIgnored(string localName, string namespaceUri, out bool shouldTreatAsDefaultNamespace)
 		{
-			var (isIncluded, disableCaching) = _isIncluded(localName, namespaceUri);
-			DisableCaching |= disableCaching;
+			var result = _isIncluded(localName, namespaceUri);
+			var isIncluded = result.Key;
+			DisableCaching |= result.Value;
 			if (isIncluded == true)
 			{
 				shouldTreatAsDefaultNamespace = true;

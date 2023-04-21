@@ -777,7 +777,7 @@ namespace MonoTests.Uno.Xaml
 			Attached2 result = null;
 
 			var rsettings = new XamlXmlReaderSettings ();
-			using (var reader = new XamlXmlReader (new StringReader (String.Format (@"<Attached2 AttachedWrapper3.Property=""Test"" xmlns=""clr-namespace:MonoTests.Uno.Xaml;assembly={0}""></Attached2>", typeof (AttachedWrapper3).Assembly.GetName ().Name)), rsettings, (_, _) => null)) {
+			using (var reader = new XamlXmlReader (new StringReader (String.Format (@"<Attached2 AttachedWrapper3.Property=""Test"" xmlns=""clr-namespace:MonoTests.Uno.Xaml;assembly={0}""></Attached2>", typeof (AttachedWrapper3).Assembly.GetName ().Name)), rsettings, (_, _) => new KeyValuePair<bool?, bool>(null, false))) {
 				var wsettings = new XamlObjectWriterSettings ();
 				using (var writer = new XamlObjectWriter (reader.SchemaContext, wsettings)) {
 					XamlServices.Transform (reader, writer, false);
@@ -812,7 +812,7 @@ namespace MonoTests.Uno.Xaml
 				// ... and leave Handled as false, to invoke the actual setter
 			};
 			var xow = new XamlObjectWriter (new XamlSchemaContext (), settings);
-			var xxr = new XamlXmlReader (XmlReader.Create (new StringReader (xml)), (_, _) => null);
+			var xxr = new XamlXmlReader (XmlReader.Create (new StringReader (xml)), (_, _) => new KeyValuePair<bool?, bool>(null, false));
 			XamlServices.Transform (xxr, xow);
 			Assert.IsTrue (invoked, "#6");
 			Assert.IsNotNull (xow.Result, "#7");
@@ -829,7 +829,7 @@ namespace MonoTests.Uno.Xaml
 			var output = XamarinBug3003.TestContext.Writer;
 			output.WriteLine ();
 
-			var reader = new XamlXmlReader (XmlReader.Create (new StringReader (XamarinBug3003.TestContext.XmlInput)), context, (_, _) => null);
+			var reader = new XamlXmlReader (XmlReader.Create (new StringReader (XamarinBug3003.TestContext.XmlInput)), context, (_, _) => new KeyValuePair<bool?, bool>(null, false));
 
 			var writerSettings = new XamlObjectWriterSettings ();
 			writerSettings.AfterBeginInitHandler = (sender, e) => {
@@ -920,7 +920,7 @@ namespace MonoTests.Uno.Xaml
 			var directory = Path.GetDirectoryName(new Uri(GetType().Assembly.CodeBase).LocalPath);
 
 			string xml = File.ReadAllText (Path.Combine (directory, "Test/XmlFiles", filename)).Replace ("System.Xaml_test_net_4_0", "Uno.Xaml.Tests");
-			return new XamlXmlReader (XmlReader.Create (new StringReader (xml)), (_, _) => null);
+			return new XamlXmlReader (XmlReader.Create (new StringReader (xml)), (_, _) => new KeyValuePair<bool?, bool>(null, false));
 		}
 
 		[Test]

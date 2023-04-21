@@ -3,7 +3,7 @@
 using System;
 using System.Xml;
 
-using IsIncludedType = System.Func<string, string, (bool?, bool)>;
+using IsIncludedType = System.Func<string, string, System.Collections.Generic.KeyValuePair<bool?, bool>>;
 
 namespace Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection
 {

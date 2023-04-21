@@ -169,22 +169,22 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return XmlReader.Create(new StringReader(adjusted));
 		}
 
-		private (bool? Include, bool DisableCaching) IsIncluded(string localName, string namespaceUri)
+		private KeyValuePair<bool?, bool> IsIncluded(string localName, string namespaceUri)
 		{
 			if (_includeXamlNamespaces.Contains(localName))
 			{
-				return (true, false);
+				return new KeyValuePair<bool?, bool>(true, false);
 			}
 			else if (_excludeXamlNamespaces.Contains(localName))
 			{
-				return (true, false);
+				return new KeyValuePair<bool?, bool>(false, false);
 			}
 
 			var valueSplit = namespaceUri.Split('?');
 			if (valueSplit.Length != 2)
 			{
 				// Not a (valid) conditional
-				return (null, false);
+				return new KeyValuePair<bool?, bool>(null, false);
 			}
 
 			var elements = valueSplit[1].Split('(', ',', ')');
@@ -200,7 +200,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						throw new InvalidOperationException($"Syntax error while parsing conditional namespace expression {namespaceUri}");
 					}
 
-					return (methodName == nameof(ApiInformation.IsApiContractPresent) ?
+					return new KeyValuePair<bool?, bool>(methodName == nameof(ApiInformation.IsApiContractPresent) ?
 						ApiInformation.IsApiContractPresent(elements[1], majorVersion) :
 						ApiInformation.IsApiContractNotPresent(elements[1], majorVersion), false);
 				case nameof(ApiInformation.IsTypePresent):
@@ -210,11 +210,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						throw new InvalidOperationException($"Syntax error while parsing conditional namespace expression {namespaceUri}");
 					}
 					var expectedType = elements[1];
-					return (methodName == nameof(ApiInformation.IsTypePresent) ?
+					return new KeyValuePair<bool?, bool>(methodName == nameof(ApiInformation.IsTypePresent) ?
 						ApiInformation.IsTypePresent(elements[1], _metadataHelper) :
 						ApiInformation.IsTypeNotPresent(elements[1], _metadataHelper), true);
 				default:
-					return (null, false); // TODO: support IsPropertyPresent
+					return new KeyValuePair<bool?, bool>(null, false); // TODO: support IsPropertyPresent
 			}
 		}
 
