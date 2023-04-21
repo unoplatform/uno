@@ -3,7 +3,7 @@
 using System;
 using System.Xml;
 
-using IsIncludedType = System.Func<string, string, bool?>;
+using IsIncludedType = System.Func<string, string, (bool?, bool)>;
 
 namespace Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection
 {
@@ -16,7 +16,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection
 			_unoReader = new __uno::Uno.Xaml.XamlXmlReader(document, context.UnoInner, settings.UnoInner, isIncluded);
 		}
 
-		public bool IsIncludedOrExcludedUsed => _unoReader.IsIncludedOrExcludedUsed;
+		public bool DisableCaching => _unoReader.DisableCaching;
 
 		public XamlNodeType NodeType => Convert(_unoReader.NodeType);
 

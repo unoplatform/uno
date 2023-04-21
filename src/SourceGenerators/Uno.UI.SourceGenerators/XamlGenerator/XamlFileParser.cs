@@ -71,10 +71,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
-		//private static void ScavengeCache()
-		//{
-		//	_cachedFiles.Remove(kvp => DateTimeOffset.Now - kvp.Value.LastTimeUsed > _cacheEntryLifetime);
-		//}
+		private static void ScavengeCache()
+		{
+			// DateTimeOffset.Now might be expensive.
+			// Investigate if using Environment.TickCount can work and is faster.
+			_cachedFiles.Remove(kvp => DateTimeOffset.Now - kvp.Value.LastTimeUsed > _cacheEntryLifetime);
+		}
 
 		private XamlFileDefinition? ParseFile(AdditionalText file, string targetFilePath, CancellationToken cancellationToken)
 		{
@@ -90,15 +92,15 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					throw new Exception($"Failed to read additional file '{file.Path}'");
 				}
 
-				//var cachedFileKey = new CachedFileKey(_includeXamlNamespacesProperty, _excludeXamlNamespacesProperty, file.Path, sourceText.GetChecksum());
-				//if (_cachedFiles.TryGetValue(cachedFileKey, out var cached))
-				//{
-				//	_cachedFiles[cachedFileKey] = cached.WithUpdatedLastTimeUsed();
-				//	ScavengeCache();
-				//	return cached.XamlFileDefinition;
-				//}
+				var cachedFileKey = new CachedFileKey(_includeXamlNamespacesProperty, _excludeXamlNamespacesProperty, file.Path, sourceText.GetChecksum());
+				if (_cachedFiles.TryGetValue(cachedFileKey, out var cached))
+				{
+					_cachedFiles[cachedFileKey] = cached.WithUpdatedLastTimeUsed();
+					ScavengeCache();
+					return cached.XamlFileDefinition;
+				}
 
-				//ScavengeCache();
+				ScavengeCache();
 
 				// Initialize the reader using an empty context, because when the tasl
 				// is run under the BeforeCompile in VS IDE, the loaded assemblies are used
@@ -108,7 +110,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				// Force the line info, otherwise it will be enabled only when the debugger is attached.
 				var settings = new XamlXmlReaderSettings() { ProvideLineInfo = true };
 
-				XmlReader document = ApplyIgnorables(sourceText);
+				XmlReader document = RewriteForXBind(sourceText);
 
 				using (var reader = new XamlXmlReader(document, context, settings, IsIncluded))
 				{
@@ -117,12 +119,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						cancellationToken.ThrowIfCancellationRequested();
 
 						var xamlFileDefinition = Visit(reader, file.Path, targetFilePath);
-						if (!reader.IsIncludedOrExcludedUsed)
+						if (!reader.DisableCaching)
 						{
-							// TODO: This might be disabling cache for more cases than it should.
-							// If _includeXamlNamespaces/_excludeXamlNamespaces were used, we shouldn't disable cache.
-							// However, we should disable cache for usage of ApiInformation.X
-							//_cachedFiles[cachedFileKey] = new CachedFile(DateTimeOffset.Now, xamlFileDefinition);
+							_cachedFiles[cachedFileKey] = new CachedFile(DateTimeOffset.Now, xamlFileDefinition);
 						}
 
 						return xamlFileDefinition;
@@ -149,7 +148,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
-		private XmlReader ApplyIgnorables(SourceText sourceText)
+		private XmlReader RewriteForXBind(SourceText sourceText)
 		{
 			var originalString = sourceText.ToString();
 
@@ -170,22 +169,22 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return XmlReader.Create(new StringReader(adjusted));
 		}
 
-		private bool? IsIncluded(string localName, string namespaceUri)
+		private (bool? Include, bool DisableCaching) IsIncluded(string localName, string namespaceUri)
 		{
 			if (_includeXamlNamespaces.Contains(localName))
 			{
-				return true;
+				return (true, false);
 			}
 			else if (_excludeXamlNamespaces.Contains(localName))
 			{
-				return false;
+				return (true, false);
 			}
 
 			var valueSplit = namespaceUri.Split('?');
 			if (valueSplit.Length != 2)
 			{
 				// Not a (valid) conditional
-				return null;
+				return (null, false);
 			}
 
 			var elements = valueSplit[1].Split('(', ',', ')');
@@ -201,9 +200,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						throw new InvalidOperationException($"Syntax error while parsing conditional namespace expression {namespaceUri}");
 					}
 
-					return methodName == nameof(ApiInformation.IsApiContractPresent) ?
+					return (methodName == nameof(ApiInformation.IsApiContractPresent) ?
 						ApiInformation.IsApiContractPresent(elements[1], majorVersion) :
-						ApiInformation.IsApiContractNotPresent(elements[1], majorVersion);
+						ApiInformation.IsApiContractNotPresent(elements[1], majorVersion), false);
 				case nameof(ApiInformation.IsTypePresent):
 				case nameof(ApiInformation.IsTypeNotPresent):
 					if (elements.Length < 2)
@@ -211,11 +210,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						throw new InvalidOperationException($"Syntax error while parsing conditional namespace expression {namespaceUri}");
 					}
 					var expectedType = elements[1];
-					return methodName == nameof(ApiInformation.IsTypePresent) ?
+					return (methodName == nameof(ApiInformation.IsTypePresent) ?
 						ApiInformation.IsTypePresent(elements[1], _metadataHelper) :
-						ApiInformation.IsTypeNotPresent(elements[1], _metadataHelper);
+						ApiInformation.IsTypeNotPresent(elements[1], _metadataHelper), true);
 				default:
-					return null;// TODO: support IsPropertyPresent
+					return (null, false); // TODO: support IsPropertyPresent
 			}
 		}
 

@@ -30,7 +30,7 @@ using Uno.Xaml.Schema;
 
 using Pair = System.Collections.Generic.KeyValuePair<Uno.Xaml.XamlMember,string>;
 
-using IsIncludedType = System.Func<string, string, bool?>;
+using IsIncludedType = System.Func<string, string, (bool?, bool)>;
 
 namespace Uno.Xaml
 {
@@ -126,7 +126,7 @@ namespace Uno.Xaml
 		XamlXmlParser parser;
 		IEnumerator<XamlXmlNodeInfo> iter;
 
-		public bool IsIncludedOrExcludedUsed => parser.IsIncludedOrExcludedUsed;
+		public bool DisableCaching => parser.DisableCaching;
 
 		public bool PreserveWhitespace => parser.Reader.XmlSpace == XmlSpace.Preserve;
 
@@ -890,7 +890,7 @@ namespace Uno.Xaml
 			get { return line_info != null && line_info.HasLineInfo () ? line_info.LinePosition : 0; }
 		}
 
-		public bool IsIncludedOrExcludedUsed { get; private set; }
+		public bool DisableCaching { get; private set; }
 
 		private IDisposable PushIgnorables(List<Pair> members)
 		{
@@ -906,10 +906,10 @@ namespace Uno.Xaml
 
 		private bool IsIgnored(string localName, string namespaceUri, out bool shouldTreatAsDefaultNamespace)
 		{
-			var isIncluded = _isIncluded(localName, namespaceUri);
+			var (isIncluded, disableCaching) = _isIncluded(localName, namespaceUri);
+			DisableCaching |= disableCaching;
 			if (isIncluded == true)
 			{
-				IsIncludedOrExcludedUsed = true;
 				shouldTreatAsDefaultNamespace = true;
 				return false;
 			}
@@ -917,7 +917,6 @@ namespace Uno.Xaml
 			shouldTreatAsDefaultNamespace = false;
 			if (isIncluded == false)
 			{
-				IsIncludedOrExcludedUsed = true;
 				return true;
 			}
 
