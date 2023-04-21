@@ -99,8 +99,14 @@ public partial struct InjectedInputPointerInfo
 
 	public override bool Equals(object? obj) => obj is InjectedInputPointerInfo other && Equals(other);
 
-	public override int GetHashCode() => HashCode.Combine(PointerId, (int)PointerOptions, PixelLocation,
-		TimeOffsetInMilliseconds, PerformanceCount);
+	public override int GetHashCode() => new
+	{
+		PointerId,
+		PointerOptions,
+		PixelLocation,
+		TimeOffsetInMilliseconds,
+		PerformanceCount
+	}.GetHashCode();
 
 	public static bool operator ==(InjectedInputPointerInfo left, InjectedInputPointerInfo right) => left.Equals(right);
 

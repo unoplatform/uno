@@ -19,7 +19,7 @@ public partial struct InjectedInputRectangle
 
 	public override bool Equals(object? obj) => obj is InjectedInputRectangle other && Equals(other);
 
-	public override int GetHashCode() => HashCode.Combine(Left, Top, Bottom, Right);
+	public override int GetHashCode() => new { Left, Top, Bottom, Right }.GetHashCode();
 
 	public static bool operator ==(InjectedInputRectangle left, InjectedInputRectangle right) => left.Equals(right);
 

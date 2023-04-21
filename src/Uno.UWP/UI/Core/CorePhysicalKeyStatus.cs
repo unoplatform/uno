@@ -20,8 +20,16 @@ namespace Windows.UI.Core
 
 		public override bool Equals(object? obj) => obj is CorePhysicalKeyStatus other && Equals(other);
 
-		public override int GetHashCode() => HashCode.Combine(RepeatCount, ScanCode, IsExtendedKey, IsMenuKeyDown,
-			WasKeyDown, IsKeyReleased);
+		public override int GetHashCode() =>
+			new
+			{
+				RepeatCount,
+				ScanCode,
+				IsExtendedKey,
+				IsMenuKeyDown,
+				WasKeyDown,
+				IsKeyReleased
+			}.GetHashCode();
 
 		public static bool operator ==(CorePhysicalKeyStatus left, CorePhysicalKeyStatus right) => left.Equals(right);
 
