@@ -53,9 +53,16 @@ internal sealed class WpfCorePointerInputSource : IUnoCorePointerInputSource
 		_hostControl.MouseUp += HostOnMouseUp;
 
 		// Hook for native events
-		_hostControl.Loaded += HookNative;
+		if (_hostControl.IsLoaded)
+		{
+			HookNative(null, null);
+		}
+		else
+		{
+			_hostControl.Loaded += HookNative;
+		}
 
-		void HookNative(object sender, RoutedEventArgs e)
+		void HookNative(object? sender, RoutedEventArgs? e)
 		{
 			_hostControl.Loaded -= HookNative;
 
