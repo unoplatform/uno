@@ -99,14 +99,16 @@ public partial struct InjectedInputPointerInfo
 
 	public override bool Equals(object? obj) => obj is InjectedInputPointerInfo other && Equals(other);
 
-	public override int GetHashCode() => new
+	public override int GetHashCode()
 	{
-		PointerId,
-		PointerOptions,
-		PixelLocation,
-		TimeOffsetInMilliseconds,
-		PerformanceCount
-	}.GetHashCode();
+		var hashCode = -2014432303;
+		hashCode = hashCode * -1521134295 + PointerId.GetHashCode();
+		hashCode = hashCode * -1521134295 + PointerOptions.GetHashCode();
+		hashCode = hashCode * -1521134295 + PixelLocation.GetHashCode();
+		hashCode = hashCode * -1521134295 + TimeOffsetInMilliseconds.GetHashCode();
+		hashCode = hashCode * -1521134295 + PerformanceCount.GetHashCode();
+		return hashCode;
+	}
 
 	public static bool operator ==(InjectedInputPointerInfo left, InjectedInputPointerInfo right) => left.Equals(right);
 

@@ -14,7 +14,13 @@ public partial struct InjectedInputPoint
 
 	public override bool Equals(object? obj) => obj is InjectedInputPoint other && Equals(other);
 
-	public override int GetHashCode() => new { PositionX, PositionY }.GetHashCode();
+	public override int GetHashCode()
+	{
+		var hashCode = -700598033;
+		hashCode = hashCode * -1521134295 + PositionX.GetHashCode();
+		hashCode = hashCode * -1521134295 + PositionY.GetHashCode();
+		return hashCode;
+	}
 
 	public static bool operator ==(InjectedInputPoint left, InjectedInputPoint right) => left.Equals(right);
 
