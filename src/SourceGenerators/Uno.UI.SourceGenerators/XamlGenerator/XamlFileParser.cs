@@ -101,7 +101,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				//ScavengeCache();
 
 				// Initialize the reader using an empty context, because when the tasl
-				// is run under the BeforeCompile in VS IDE, the loaded assemblies are used 
+				// is run under the BeforeCompile in VS IDE, the loaded assemblies are used
 				// to interpret the meaning of objects, which is not correct in Uno.UI context.
 				var context = new XamlSchemaContext(Enumerable.Empty<Assembly>());
 
@@ -147,6 +147,27 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				throw new XamlParsingException($"Failed to parse file", e, 1, 1, file.Path);
 			}
+		}
+
+		private XmlReader ApplyIgnorables(SourceText sourceText)
+		{
+			var originalString = sourceText.ToString();
+
+			var hasxBind = originalString.Contains("{x:Bind", StringComparison.Ordinal);
+
+			if (!hasxBind)
+			{
+				// No need to modify file
+				return XmlReader.Create(new StringReader(originalString));
+			}
+
+			// Apply replacements to avoid having issues with the XAML parser which does not
+			// support quotes in positional markup extensions parameters.
+			// Note that the UWP preprocessor does not need to apply those replacements as the
+			// x:Bind expressions are being removed during the first phase and replaced by "connections".
+			var adjusted = XBindExpressionParser.RewriteDocumentPaths(originalString);
+
+			return XmlReader.Create(new StringReader(adjusted));
 		}
 
 		private bool? IsIncluded(string localName, string namespaceUri)
@@ -196,51 +217,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				default:
 					return null;// TODO: support IsPropertyPresent
 			}
-		}
-
-		private XmlReader ApplyIgnorables(SourceText sourceText)
-		{
-			var originalString = sourceText.ToString();
-
-			var document = new XmlDocument();
-			document.LoadXml(originalString);
-
-			//var conditionals = FindConditionals(document); /*TODO*/
-
-			var hasxBind = originalString.Contains("{x:Bind", StringComparison.Ordinal);
-
-			if (!hasxBind)
-			{
-				// No need to modify file
-				return XmlReader.Create(new StringReader(originalString));
-			}
-
-			// Apply replacements to avoid having issues with the XAML parser which does not
-			// support quotes in positional markup extensions parameters.
-			// Note that the UWP preprocessor does not need to apply those replacements as the
-			// x:Bind expressions are being removed during the first phase and replaced by "connections".
-			var adjusted = XBindExpressionParser.RewriteDocumentPaths(originalString);
-
-			return XmlReader.Create(new StringReader(adjusted));
-		}
-
-		private static StringBuilder ReplaceFirst(string targetString, string oldValue, string newValue)
-		{
-			var index = targetString.IndexOf(oldValue, StringComparison.InvariantCulture);
-			if (index < 0)
-			{
-				throw new InvalidOperationException();
-			}
-
-			var result = new StringBuilder(targetString.Length + newValue.Length);
-
-			result.Append(targetString, 0, index);
-			result.Append(newValue);
-
-			var secondBlockStart = index + oldValue.Length;
-			result.Append(targetString, secondBlockStart, targetString.Length - secondBlockStart);
-
-			return result;
 		}
 
 		private XamlFileDefinition Visit(XamlXmlReader reader, string file, string targetFilePath)
