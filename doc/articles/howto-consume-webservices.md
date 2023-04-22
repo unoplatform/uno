@@ -39,8 +39,8 @@ In this task, you will create a simple Single Page App with the Uno Platform. Th
 
     ![Configure your new project dialog](Assets/how-to-webservice/newproject3.PNG)
 
-> [!IMPORTANT]
-> The C# and XAML snippets in this tutorial require that the solution is named **TheCatApiClient**. Using a different name will result in build errors when you copy code from this tutorial into the solution.
+    > [!IMPORTANT]
+    > The C# and XAML snippets in this tutorial require that the solution is named **TheCatApiClient**. Using a different name will result in build errors when you copy code from this tutorial into the solution.
 
 1. In the **Solution Explorer**, to update the Uno NuGet packages to the latest version, right-click on the Solution file **Solution 'TheCatApiClient'** and select **Manage NuGet Packages for Solution...** from the context menu.
 
@@ -61,8 +61,8 @@ In this task, you will create a simple Single Page App with the Uno Platform. Th
     * **Uno.Wasm.Bootstrap**
     * **Uno.Wasm.Bootstrap.DevServer**
 
-> [!IMPORTANT]
-> **Do not** update the **Microsoft.Extensions.Logging.Console**. Recent versions of the package use APIs that aren't supported by WebAssembly, and aren't compatible with Uno Platform.
+    > [!IMPORTANT]
+    > **Do not** update the **Microsoft.Extensions.Logging.Console**. Recent versions of the package use APIs that aren't supported by WebAssembly, and aren't compatible with Uno Platform.
 
 1. To update the packages, click **Update**.
 
@@ -70,8 +70,8 @@ In this task, you will create a simple Single Page App with the Uno Platform. Th
 
 1. In the **Search** field, enter **System.Text.Json** and select **System.Text.Json**.
 
-> [!TIP]
-> The **System.Text.Json** package provides functionality for serializing to and deserializing from JavaScript Object Notation (JSON). You can learn more about how to serialize and deserialize here: [How to serialize and deserialize (marshal and unmarshal) JSON in .NET](https://docs.microsoft.com/dotnet/standard/serialization/system-text-json-how-to)
+    > [!TIP]
+    > The **System.Text.Json** package provides functionality for serializing to and deserializing from JavaScript Object Notation (JSON). You can learn more about how to serialize and deserialize here: [How to serialize and deserialize (marshal and unmarshal) JSON in .NET](https://docs.microsoft.com/dotnet/standard/serialization/system-text-json-how-to)
 
 1. In the right pane of the **Manage Packages for Solution** page, select every project and click **Install**.
 
@@ -171,8 +171,8 @@ In order to use this service, you need to sign up for a free API key.
     ]
     ```
 
-> [!TIP]
-> You can learn more about the breed search API here - [GET/breeds/search](https://docs.thecatapi.com/api-reference/breeds/breeds-search).
+    > [!TIP]
+    > You can learn more about the breed search API here - [GET/breeds/search](https://docs.thecatapi.com/api-reference/breeds/breeds-search).
 
 Now you have signed up for the API, you are ready to start implementing the API client by creating a data model.
 
@@ -272,8 +272,8 @@ The primary objective of this tutorial is to demonstrate how to implement a REST
     }
     ```
 
-> [!TIP]
-> This class is using the **JsonPropertyNameAttribute** from the **System.Text.Json** package to map the lowercase JSON property names to the [PascalCase](https://techterms.com/definition/pascalcase) convention used in C#. To learn more about **System.Text.Json**, you can review the documentation here - [How to serialize and deserialize (marshal and unmarshal) JSON in .NET](https://docs.microsoft.com/dotnet/standard/serialization/system-text-json-how-to).
+    > [!TIP]
+    > This class is using the **JsonPropertyNameAttribute** from the **System.Text.Json** package to map the lowercase JSON property names to the [PascalCase](https://techterms.com/definition/pascalcase) convention used in C#. To learn more about **System.Text.Json**, you can review the documentation here - [How to serialize and deserialize (marshal and unmarshal) JSON in .NET](https://docs.microsoft.com/dotnet/standard/serialization/system-text-json-how-to).
 
 You have now created a simple data model that can be used to deserialize the JSON returned by the breed search API. Next, you will create a service that interacts with the web service API.
 
@@ -327,8 +327,8 @@ In this task, you will create a number of classes that demonstrate how to use th
 
     Notice that the **_client** variable is declared as **static**. This means there will only be one instance of the **HttpClient** shared by every instance of **WebApiBase** as **HttpClient** is intended to be instantiated once and re-used throughout the life of an application.
 
-> [!TIP]
-> You can review the Microsoft remarks on **HttpClient** here - [HttpClient Remarks](https://docs.microsoft.com/dotnet/api/system.net.http.httpclient#remarks).
+    > [!TIP]
+    > You can review the Microsoft remarks on **HttpClient** here - [HttpClient Remarks](https://docs.microsoft.com/dotnet/api/system.net.http.httpclient#remarks).
 
 1. To initialize the static **_client** variable, locate the comment **// Insert static constructor below here** and replace it with the following code:
 
@@ -363,8 +363,8 @@ In this task, you will create a number of classes that demonstrate how to use th
 
     Notice that this method expects the **HttpMethod** to represent a GET, DELETE, UPDATE, or POST operation, the string URL, and an optional dictionary of headers. In this initial implementation of the **WebApiBase** class, you will consume this from the **GetAsync** method you are about to implement.
 
-> [!NOTE]
-> You will use the header dictionary to supply the authentication key you created earlier.
+    > [!NOTE]
+    > You will use the header dictionary to supply the authentication key you created earlier.
 
 1. To implement a method that will retrieve a string from a web API, locate the comment **// Insert GetAsync method below here** and replace it with the following code:
 
@@ -389,8 +389,8 @@ In this task, you will create a number of classes that demonstrate how to use th
 
     The remainder of the method uses the single **HttpClient** instance to send the **request** and `await` a response. If the response is successful, the response content is read and returned as a string. If, for some reason, the response does not indicate success, a `null` is returned.
 
-> [!IMPORTANT]
-> As implementing adequate error handling would add many lines of code, more robust error handling is omitted for clarity. If you are interested in learning more about the considerations for handling errors with **HttpClient**, review the following blog post - [HttpClient - Error handling, a test-driven approach](https://josef.codes/httpclient-error-handling-a-test-driven-approach/).
+    > [!IMPORTANT]
+    > As implementing adequate error handling would add many lines of code, more robust error handling is omitted for clarity. If you are interested in learning more about the considerations for handling errors with **HttpClient**, review the following blog post - [HttpClient - Error handling, a test-driven approach](https://josef.codes/httpclient-error-handling-a-test-driven-approach/).
 
 1. You will implement the remaining methods of the **WebApiBase** class in a later task. The current implementation should look similar to:
 
@@ -495,8 +495,8 @@ In this task, you will create a number of classes that demonstrate how to use th
 
     First, you will note that the method is asynchronous. You will then notice the use of string interpolation and the **WebUtility.HtmlEncode** method to construct the API url. Also note how the request headers are supplied to the call - the **accept** header advises the API that the client expects JSON, and the **x-api-key** specifies your API key.
 
-> [!IMPORTANT]
-> Replace the `{YOUR-API-KEY}` value with the API key you were sent when you registered with TheCatApi.
+    > [!IMPORTANT]
+    > Replace the `{YOUR-API-KEY}` value with the API key you were sent when you registered with TheCatApi.
 
 Once the result is returned, it is null-checked and, if not-null, the JSON is deserialized into an enumerable collection of **Breed** instances using the data model you created earlier. If the result is null, then an empty list is returned.
 
@@ -506,8 +506,8 @@ At this point, you have implemented a simple breed search service. Now, it is ti
 
 In this sample application, you will be adopting the Model-View-ViewModel (MVVM) pattern, which helps to cleanly separate business and presentation logic. In this task, you will be creating the base view model that will be used in the following task to create the view model for the main page.
 
-> [!TIP]
-> If you want to learn more about MVVM, review the document here - [The Model-View-ViewModel Pattern](https://docs.microsoft.com/xamarin/xamarin-forms/enterprise-application-patterns/mvvm).
+    > [!TIP]
+    > If you want to learn more about MVVM, review the [The Model-View-ViewModel Pattern documentation](https://learn.microsoft.com/xamarin/xamarin-forms/enterprise-application-patterns/mvvm).
 
 1. To add a base view-model class, in the **TheCatApiClient** project, right-click the **Models\ViewModels** folder, select **Add** and click **Class...**
 
@@ -555,8 +555,8 @@ In this sample application, you will be adopting the Model-View-ViewModel (MVVM)
 
     The **Dispatcher** property is used later to ensure property updates are performed on the UI thread - an essential detail for updating controls in multi-tasking applications.
 
-> [!TIP]
-> You can learn more about the UI Thread and multi-tasking here - [Keep the UI thread responsive](https://docs.microsoft.com/windows/uwp/debug-test-perf/keep-the-ui-thread-responsive)
+    > [!TIP]
+    > You can learn more about the UI Thread and multi-tasking here - [Keep the UI thread responsive](https://docs.microsoft.com/windows/uwp/debug-test-perf/keep-the-ui-thread-responsive)
 
 1. To add the method that will be used to set a property value and raise the property changed event, locate the comment **// Insert SetProperty below here** and replace it with the following code:
 
@@ -581,8 +581,8 @@ In this sample application, you will be adopting the Model-View-ViewModel (MVVM)
 
     The **value** is then assigned to the **backingVariable** (updating the variable in the caller). The property changed event is raised (you will add that next) and a true value is returned.
 
-> [!TIP]
-> You can learn more about **CallerMemberNameAttribute** here - [Reserved attributes: Determine caller information](https://docs.microsoft.com/dotnet/csharp/language-reference/attributes/caller-information).
+    > [!TIP]
+    > You can learn more about **CallerMemberNameAttribute** here - [Reserved attributes: Determine caller information](https://docs.microsoft.com/dotnet/csharp/language-reference/attributes/caller-information).
 
 1. To add the method that will actually raise the property changed event, locate the comment **// Insert RaisePropertyChanged below here** and replace it with the following code:
 
@@ -598,8 +598,8 @@ In this sample application, you will be adopting the Model-View-ViewModel (MVVM)
 
     This method uses a helper method (added next) to ensure the event is raised on the UI thread. As the code does not await this execution, the compiler would usually display a warning with the assumption that this is a mistake. As it is intentional, the code includes `#pragma` directives that temporarily disable that warning.
 
-> [!TIP]
-> If you want to learn more about lambda expressions, review the document here - [Lambda expressions](https://docs.microsoft.com/dotnet/csharp/language-reference/operators/lambda-expressions)
+    > [!TIP]
+    > If you want to learn more about lambda expressions, review the document here - [Lambda expressions](https://docs.microsoft.com/dotnet/csharp/language-reference/operators/lambda-expressions)
 
 1. To add a helper method that will ensure a callback is executed on the UI thread, locate the comment **// Insert Dispatch below here** and replace it with the following code:
 
@@ -631,10 +631,10 @@ In this sample application, you will be adopting the Model-View-ViewModel (MVVM)
     }
     ```
 
-> [!NOTE]
-> As **WASM** is currently single-threaded, the **Uno.WASM** implementation of `DispatcherQueue.HasThreadAccess` always returns `false` by default. This default has been chosen to prevent live-locking for certain frameworks that expect a multi-threaded environment. This app overrides that default WASM behavior here via conditional compilation and always invokes the callback directly on WASM.
+    > [!NOTE]
+    > As **WASM** is currently single-threaded, the **Uno.WASM** implementation of `DispatcherQueue.HasThreadAccess` always returns `false` by default. This default has been chosen to prevent live-locking for certain frameworks that expect a multi-threaded environment. This app overrides that default WASM behavior here via conditional compilation and always invokes the callback directly on WASM.
 
-* In XAML applications, control bindings should only be updated on the UI thread, therefore this code uses the value of **hasThreadAccess** to determine if the callback can be directly invoked. If not, the **DispatcherQueue.TryEnqueue** method is used to execute the callback on the UI Thread. This method is used when setting properties and whenever bound collections are updated, to ensure the collection views (such as GridView, ListView, etc.) are updated.
+    In XAML applications, control bindings should only be updated on the UI thread, therefore this code uses the value of **hasThreadAccess** to determine if the callback can be directly invoked. If not, the **DispatcherQueue.TryEnqueue** method is used to execute the callback on the UI Thread. This method is used when setting properties and whenever bound collections are updated, to ensure the collection views (such as GridView, ListView, etc.) are updated.
 
 1. Once complete the base class will look similar to the following:
 
@@ -755,8 +755,8 @@ In this task, you will build the view-model that implements a simple breed searc
 
     The final variable, **_breedSearchApi**, holds a reference to an instance of the **BreedSearchApi** you created earlier.
 
-> [!TIP]
-> You can learn more about **ObservableCollection** and its events here - [ObservableCollection<T> Class](https://docs.microsoft.com/dotnet/api/system.collections.objectmodel.observablecollection-1)
+    > [!TIP]
+    > You can learn more about **ObservableCollection** and its events here - [ObservableCollection<T> Class](https://docs.microsoft.com/dotnet/api/system.collections.objectmodel.observablecollection-1)
 
 1. To add the properties that will be used in XAML bindings, locate the comment **// Insert properties below here** and replace it with the following code:
 
@@ -1017,8 +1017,8 @@ In this task you will create the XAML for the UI and implement the bindings for 
 
     ![Windows app Search UI preview](Assets/how-to-webservice/uwp-ui-busy.png)
 
-> [!NOTE]
-> You would typically use a **ProgressRing** here, but in an effort to keep the UI as simple as possible, this approach was taken.
+    > [!NOTE]
+    > You would typically use a **ProgressRing** here, but in an effort to keep the UI as simple as possible, this approach was taken.
 
 1. When you have completed adding the XAML, it should look similar to this.
 
@@ -1377,8 +1377,8 @@ You will start by adding the data models.
 
     This service implements two methods - **GetByBreed** which returns back all images for a breed and **GetById**, which returns a specific image. They each utilize the **WebApiBase.GetAsync** method you used earlier.
 
-> [!TIP]
-> You can review the images service documentation here - [/images](https://docs.thecatapi.com/api-reference/images/)
+    > [!TIP]
+    > You can review the images service documentation here - [/images](https://docs.thecatapi.com/api-reference/images/)
 
 1. To add a class for the Favorites API service, in the **TheCatApiClient** project, right-click the **WebServices** folder, select **Add** and click **Class...**
 
@@ -1446,8 +1446,8 @@ You will start by adding the data models.
 
     These methods are very similar to the methods you implemented earlier - **GetAll** returns a collection of the users **Favorite** instances, whereas **Get** returns a single **Favorite** by its ID.
 
-> [!TIP]
-> You can review the favorites service documentation here - [/favorites](https://docs.thecatapi.com/api-reference/favourites/)
+    > [!TIP]
+    > You can review the favorites service documentation here - [/favorites](https://docs.thecatapi.com/api-reference/favourites/)
 
 1. To add support for adding an image to your favorites, locate the comment **// Insert Add below here** and replace it with the following code:
 
