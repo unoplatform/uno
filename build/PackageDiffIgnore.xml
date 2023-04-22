@@ -9392,7 +9392,7 @@
       <Member fullName="System.Void Windows.Devices.Lights.Lamp..ctor()" reason="Not present in Windows" />
 		</Methods>
 	</IgnoreSet>
-	  
+
 	<IgnoreSet baseVersion="4.8">
 		<Types>
 			<!-- BEGIN WebView -->
@@ -9454,6 +9454,8 @@
 			<Member fullName="Windows.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.ExpanderTemplateSettings.get_ContentHeightProperty()" reason="Should not be public" />
 			<Member fullName="Windows.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.ExpanderTemplateSettings.get_NegativeContentHeightProperty()" reason="Should not be public" />
 			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.ExpanderTemplateSettings..ctor()" reason="Should not be public" />
+
+			<Member fullName="System.Void Uno.Foundation.Interop.JSObject.Dispatch(System.String handlePtr, System.String method, System.String parameters)" reason="First parameter changed from string to IntPtr for performance" />
 		</Methods>
 	</IgnoreSet>
 
