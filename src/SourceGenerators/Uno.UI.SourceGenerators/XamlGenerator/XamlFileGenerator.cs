@@ -1209,12 +1209,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				writer.AppendLineIndented($"[global::System.Diagnostics.DebuggerNonUserCodeAttribute()]");
 				using (writer.BlockInvariant($"private class {bindingsClassName} : {bindingsInterfaceName}"))
 				{
-					writer.AppendLineIndented("#if UNO_HAS_UIELEMENT_IMPLICIT_PINNING");
-					writer.AppendLineInvariantIndented("{0}", $"private global::System.WeakReference _ownerReference;");
-					writer.AppendLineInvariantIndented("{0}", $"private {_xClassName} Owner {{ get => ({_xClassName})_ownerReference?.Target; set => _ownerReference = new global::System.WeakReference(value); }}");
-					writer.AppendLineIndented("#else");
+					//writer.AppendLineIndented("#if UNO_HAS_UIELEMENT_IMPLICIT_PINNING");
+					//writer.AppendLineInvariantIndented("{0}", $"private global::System.WeakReference _ownerReference;");
+					//writer.AppendLineInvariantIndented("{0}", $"private {_xClassName} Owner {{ get => ({_xClassName})_ownerReference?.Target; set => _ownerReference = new global::System.WeakReference(value); }}");
+					//writer.AppendLineIndented("#else");
 					writer.AppendLineInvariantIndented("{0}", $"private {_xClassName} Owner {{ get; set; }}");
-					writer.AppendLineIndented("#endif");
+					//writer.AppendLineIndented("#endif");
 
 					using (writer.BlockInvariant($"public {bindingsClassName}({_xClassName} owner)"))
 					{
