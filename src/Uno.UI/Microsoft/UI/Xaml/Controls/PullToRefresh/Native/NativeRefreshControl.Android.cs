@@ -168,7 +168,7 @@ public partial class NativeRefreshControl : SwipeRefreshLayout, IShadowChildrenP
 	Size ILayouterElement.LastAvailableSize => LayoutInformation.GetAvailableSize(this);
 	bool ILayouterElement.IsMeasureDirty => true;
 	bool ILayouterElement.IsFirstMeasureDoneAndManagedElement => false;
-	bool ILayouterElement.StretchAffectsMeasure => false;
+	bool ILayouterElement.StretchAffectsMeasure => true;
 	bool ILayouterElement.IsMeasureDirtyPathDisabled => true;
 
 	public override void OnMeasure(int widthMeasureSpec, int heightMeasureSpec)
