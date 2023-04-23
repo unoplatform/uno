@@ -15,7 +15,7 @@ partial class BorderLayerRenderer
 	private readonly static SKPoint[] _outerRadiiStore = new SKPoint[4];
 	private readonly static SKPoint[] _innerRadiiStore = new SKPoint[4];
 
-	private SerialDisposable _layerDisposable = new SerialDisposable();
+	private readonly SerialDisposable _layerDisposable = new();
 
 	/// <summary>
 	/// Updates or creates a sublayer to render a border-like shape.
@@ -31,19 +31,13 @@ partial class BorderLayerRenderer
 
 		if (!newState.Equals(previousLayoutState))
 		{
-			if (
-				_borderInfoProvider.Background != null ||
-				_borderInfoProvider.CornerRadius != CornerRadius.None ||
-				(_borderInfoProvider.BorderThickness != Thickness.Empty && _borderInfoProvider.BorderBrush != null)
-			)
-			{
+			_layerDisposable.Disposable = null;
 
-				_layerDisposable.Disposable = null;
-				_layerDisposable.Disposable = InnerCreateLayer(_owner, newState);
-			}
-			else
+			if (_borderInfoProvider.Background != null ||
+				_borderInfoProvider.CornerRadius != CornerRadius.None ||
+				(_borderInfoProvider.BorderThickness != Thickness.Empty && _borderInfoProvider.BorderBrush != null))
 			{
-				_layerDisposable.Disposable = null;
+				_layerDisposable.Disposable = InnerCreateLayer(_owner, newState);
 			}
 
 			_currentState = newState;
