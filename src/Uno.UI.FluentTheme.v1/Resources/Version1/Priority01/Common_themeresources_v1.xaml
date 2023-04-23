@@ -35,18 +35,7 @@
             <Thickness x:Key="TextControlThemePadding">10,6,6,5</Thickness>
         </ResourceDictionary>
     </ResourceDictionary.ThemeDictionaries>
-
+   
     <!-- DateTimeFlyoutBorderPadding is defined since RS5. set it here to ensure it's always defined. -->
     <Thickness x:Key="DateTimeFlyoutBorderPadding">0</Thickness>
-
-    <!-- Default DataTemplate used for the compact presentation of errors -->
-    <DataTemplate x:Key="DefaultCompactErrorIconTemplate">
-        <FontIcon Foreground="{StaticResource SystemControlErrorTextForegroundBrush}" Glyph="&#xE946;" FontSize="16" Width="20" Height="20" Margin="3,0,0,0">
-            <ToolTipService.ToolTip>
-                <ToolTip Placement="Right" />
-            </ToolTipService.ToolTip>
-        </FontIcon>
-    </DataTemplate>
-
-    <x:String x:Key="RequiredHeaderContent">*</x:String>
 </ResourceDictionary>
