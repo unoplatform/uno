@@ -1,5 +1,10 @@
 ﻿<!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. See LICENSE in the project root for license information. -->
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:contract7Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,7)"
+  xmlns:contract7NotPresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,7)"
+  xmlns:contract6Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,6)"
+  xmlns:contract5Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,5)"
+  xmlns:contract5NotPresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,5)"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <ResourceDictionary.ThemeDictionaries>
         <ResourceDictionary x:Key="Default">
@@ -80,12 +85,11 @@
     </ResourceDictionary.ThemeDictionaries>
 
     <Thickness x:Key="TextBoxTopHeaderMargin">0,0,0,4</Thickness>
+    <x:Double x:Key="TextBoxIconFontSize">12</x:Double>
 
     <Style TargetType="TextBox" BasedOn="{StaticResource DefaultTextBoxStyle}" />
 
     <Style x:Key="DefaultTextBoxStyle" TargetType="TextBox">
-        <!-- Uno workaround: theme-binding with updates is currently not supported on TargetNullValue -->
-        <Setter Property="PlaceholderForeground" Value="{ThemeResource TextControlPlaceholderForeground}" />
         <Setter Property="Foreground" Value="{ThemeResource TextControlForeground}" />
         <Setter Property="Background" Value="{ThemeResource TextControlBackground}" />
         <Setter Property="BorderBrush" Value="{ThemeResource TextControlBorderBrush}" />
@@ -101,11 +105,12 @@
         <Setter Property="MinHeight" Value="{ThemeResource TextControlThemeMinHeight}" />
         <Setter Property="MinWidth" Value="{ThemeResource TextControlThemeMinWidth}" />
         <Setter Property="Padding" Value="{ThemeResource TextControlThemePadding}" />
-        <Setter Property="UseSystemFocusVisuals" Value="{ThemeResource IsApplicationFocusVisualKindReveal}" />
-        <!--UNO TODO: TextCommandBarFlyout isn't implemented but ContextFlyout is mapped to long-press on some platforms, causing an undismissable invisible popup to appear-->
-        <!--<Setter Property="ContextFlyout" Value="{StaticResource TextControlCommandBarContextFlyout}" />-->
-        <Setter Property="SelectionFlyout" Value="{StaticResource TextControlCommandBarSelectionFlyout}" />
-        <Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}" />
+        <contract6Present:Setter Property="UseSystemFocusVisuals" Value="{ThemeResource IsApplicationFocusVisualKindReveal}" />
+        <!-- Uno TODO: TextCommandBarFlyout isn't implemented but ContextFlyout is mapped to long-press on some platforms, 
+            causing an undismissable invisible popup to appear. Also the definition is missing in V1 styles. -->
+        <!-- <contract7Present:Setter Property="ContextFlyout" Value="{StaticResource TextControlCommandBarContextFlyout}" />
+        <contract7Present:Setter Property="SelectionFlyout" Value="{StaticResource TextControlCommandBarSelectionFlyout}" /> -->
+        <contract7Present:Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="TextBox">
@@ -119,7 +124,8 @@
                                                 BorderBrush="{ThemeResource TextControlButtonBorderBrush}"
                                                 BorderThickness="{TemplateBinding BorderThickness}"
                                                 Background="{ThemeResource TextControlButtonBackground}"
-                                                CornerRadius="{TemplateBinding CornerRadius}">
+                                                contract7Present:CornerRadius="{TemplateBinding CornerRadius}"
+                                                contract7NotPresent:CornerRadius="{Binding Source={ThemeResource ControlCornerRadius}, Converter={StaticResource RightCornerRadiusFilterConverter}}">
                                                 <VisualStateManager.VisualStateGroups>
                                                     <VisualStateGroup x:Name="CommonStates">
                                                         <VisualState x:Name="Normal" />
@@ -167,7 +173,7 @@
                                                     VerticalAlignment="Center"
                                                     HorizontalAlignment="Center"
                                                     FontStyle="Normal"
-                                                    FontSize="12"
+                                                    FontSize="{ThemeResource TextBoxIconFontSize}"
                                                     Text="&#xE10A;"
                                                     FontFamily="{ThemeResource SymbolThemeFontFamily}"
                                                     AutomationProperties.AccessibilityView="Raw" />
@@ -198,9 +204,9 @@
                                             <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TextControlForegroundDisabled}" />
                                         </ObjectAnimationUsingKeyFrames>
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="PlaceholderTextContentPresenter" Storyboard.TargetProperty="Foreground">
-                                            <!-- Uno workaround: theme-binding with updates is currently not supported on TargetNullValue -->
-                                            <!-- <DiscreteObjectKeyFrame KeyTime="0" Value="{Binding PlaceholderForeground, RelativeSource={RelativeSource TemplatedParent}, TargetNullValue={ThemeResource TextControlPlaceholderForegroundDisabled}}" /> -->
                                             <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TextControlPlaceholderForegroundDisabled}" />
+                                            <!-- Uno workaround: theme-binding with updates is currently not supported on TargetNullValue -->
+                                            <!-- <contract5Present:DiscreteObjectKeyFrame KeyTime="0" Value="{Binding PlaceholderForeground, RelativeSource={RelativeSource TemplatedParent}, TargetNullValue={ThemeResource TextControlPlaceholderForegroundDisabled}}" /> -->
                                         </ObjectAnimationUsingKeyFrames>
                                     </Storyboard>
                                 </VisualState>
@@ -215,9 +221,9 @@
                                             <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TextControlBackgroundPointerOver}" />
                                         </ObjectAnimationUsingKeyFrames>
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="PlaceholderTextContentPresenter" Storyboard.TargetProperty="Foreground">
-                                            <!-- Uno workaround: theme-binding with updates is currently not supported on TargetNullValue -->
-                                            <!-- <DiscreteObjectKeyFrame KeyTime="0" Value="{Binding PlaceholderForeground, RelativeSource={RelativeSource TemplatedParent}, TargetNullValue={ThemeResource TextControlPlaceholderForegroundPointerOver}}" /> -->
                                             <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TextControlPlaceholderForegroundPointerOver}" />
+                                            <!-- Uno workaround: theme-binding with updates is currently not supported on TargetNullValue -->
+                                            <!-- <contract5Present:DiscreteObjectKeyFrame KeyTime="0" Value="{Binding PlaceholderForeground, RelativeSource={RelativeSource TemplatedParent}, TargetNullValue={ThemeResource TextControlPlaceholderForegroundPointerOver}}" /> -->
                                         </ObjectAnimationUsingKeyFrames>
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentElement" Storyboard.TargetProperty="Foreground">
                                             <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TextControlForegroundPointerOver}" />
@@ -228,9 +234,9 @@
 
                                     <Storyboard>
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="PlaceholderTextContentPresenter" Storyboard.TargetProperty="Foreground">
-                                            <!-- Uno workaround: theme-binding with updates is currently not supported on TargetNullValue -->
-                                            <!-- <DiscreteObjectKeyFrame KeyTime="0" Value="{Binding PlaceholderForeground, RelativeSource={RelativeSource TemplatedParent}, TargetNullValue={ThemeResource TextControlPlaceholderForegroundFocused}}" /> -->
                                             <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TextControlPlaceholderForegroundFocused}" />
+                                            <!-- Uno workaround: theme-binding with updates is currently not supported on TargetNullValue -->
+                                            <!-- <contract5Present:DiscreteObjectKeyFrame KeyTime="0" Value="{Binding PlaceholderForeground, RelativeSource={RelativeSource TemplatedParent}, TargetNullValue={ThemeResource TextControlPlaceholderForegroundFocused}}" /> -->
                                         </ObjectAnimationUsingKeyFrames>
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BorderElement" Storyboard.TargetProperty="Background">
                                             <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TextControlBackgroundFocused}" />
@@ -264,37 +270,6 @@
                                 <VisualState x:Name="ButtonCollapsed" />
 
                             </VisualStateGroup>
-                             <VisualStateGroup x:Name="InputValidationEnabledStates">
-                                <VisualState x:Name="CompactValidationEnabled" />
-                                <VisualState x:Name="InlineValidationEnabled">
-                                    <VisualState.Setters>
-                                        <Setter Target="ErrorPresenterRow.MinHeight" Value="20" />
-                                    </VisualState.Setters>
-                                </VisualState>
-                                <VisualState x:Name="ValidationDisabled" />
-
-                            </VisualStateGroup>
-                            <VisualStateGroup x:Name="InputValidationErrorStates">
-                                <VisualState x:Name="CompactErrors">
-                                    <VisualState.Setters>
-                                        <Setter Target="ErrorIconColumn.MaxWidth" Value="20" />
-                                        <Setter Target="ErrorPresenter.Visibility" Value="Visible" />
-                                        <Setter Target="BorderElement.BorderBrush" Value="{StaticResource SystemControlErrorTextForegroundBrush}" />
-                                    </VisualState.Setters>
-                                </VisualState>
-                                <VisualState x:Name="InlineErrors">
-                                    <VisualState.Setters>
-                                        <Setter Target="ErrorPresenter.(Grid.Row)" Value="2" />
-                                        <Setter Target="ErrorPresenter.(Grid.Column)" Value="2" />
-                                        <Setter Target="ErrorPresenter.(Grid.ColumnSpan)" Value="3" />
-                                        <Setter Target="DescriptionPresenter.Visibility" Value="Collapsed" />
-                                        <Setter Target="ErrorPresenter.Visibility" Value="Visible" />
-                                        <Setter Target="BorderElement.BorderBrush" Value="{StaticResource SystemControlErrorTextForegroundBrush}" />
-                                    </VisualState.Setters>
-                                </VisualState>
-                                <VisualState x:Name="ErrorsCleared" />
-
-                            </VisualStateGroup>
 
                         </VisualStateManager.VisualStateGroups>
 
@@ -302,27 +277,16 @@
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="*" />
                             <RowDefinition Height="Auto" />
-                            <RowDefinition x:Name="ErrorPresenterRow" Height="Auto" MinHeight="0" />
                         </Grid.RowDefinitions>
 
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition x:Name="ErrorIconColumn" MaxWidth="0" />
                         </Grid.ColumnDefinitions>
-
-                        <ContentPresenter x:Name="RequiredHeaderPresenter"
-                            Content="{StaticResource RequiredHeaderContent}"
-                            x:DeferLoadStrategy="Lazy"
-                            Visibility="Collapsed"
-                            Grid.Column="0"
-                            AutomationProperties.AccessibilityView="Raw"
-                            Foreground="{ThemeResource SystemControlErrorTextForegroundBrush}" />
 
                         <ContentPresenter x:Name="HeaderContentPresenter"
                             Grid.Row="0"
-                            Grid.Column="1"
+                            Grid.Column="0"
                             Grid.ColumnSpan="2"
                             Content="{TemplateBinding Header}"
                             ContentTemplate="{TemplateBinding HeaderTemplate}"
@@ -335,19 +299,20 @@
                             x:DeferLoadStrategy="Lazy" />
                         <Border x:Name="BorderElement"
                             Grid.Row="1"
-                            Grid.Column="1"
+                            Grid.Column="0"
                             Grid.RowSpan="1"
                             Grid.ColumnSpan="2"
                             Background="{TemplateBinding Background}"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}"
-                            CornerRadius="{TemplateBinding CornerRadius}"
+                            contract7Present:CornerRadius="{TemplateBinding CornerRadius}"
+                            contract7NotPresent:CornerRadius="{ThemeResource ControlCornerRadius}"
                             Control.IsTemplateFocusTarget="True"
                             MinWidth="{TemplateBinding MinWidth}"
                             MinHeight="{TemplateBinding MinHeight}" />
                             <ScrollViewer x:Name="ContentElement"
                             Grid.Row="1"
-                            Grid.Column="1"
+                            Grid.Column="0"
                             HorizontalScrollMode="{TemplateBinding ScrollViewer.HorizontalScrollMode}"
                             HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
                             VerticalScrollMode="{TemplateBinding ScrollViewer.VerticalScrollMode}"
@@ -357,15 +322,17 @@
                             IsDeferredScrollingEnabled="{TemplateBinding ScrollViewer.IsDeferredScrollingEnabled}"
                             Margin="{TemplateBinding BorderThickness}"
                             Padding="{TemplateBinding Padding}"
+                            Foreground="{TemplateBinding Foreground}"
                             IsTabStop="False"
                             AutomationProperties.AccessibilityView="Raw"
                             ZoomMode="Disabled" />
 
+                        <!-- Uno workaround: theme-binding with updates is currently not supported on TargetNullValue -->
                         <TextBlock x:Name="PlaceholderTextContentPresenter"
                             Grid.Row="1"
-                            Grid.Column="1"
+                            Grid.Column="0"
                             Grid.ColumnSpan="2"
-                            Foreground="{Binding PlaceholderForeground, RelativeSource={RelativeSource TemplatedParent}, TargetNullValue={ThemeResource TextControlPlaceholderForeground}}"
+                            Foreground="{ThemeResource TextControlPlaceholderForeground}"
                             Margin="{TemplateBinding BorderThickness}"
                             Padding="{TemplateBinding Padding}"
                             Text="{TemplateBinding PlaceholderText}"
@@ -374,10 +341,10 @@
                             IsHitTestVisible="False" />
                         <Button x:Name="DeleteButton"
                             Grid.Row="1"
-                            Grid.Column="2"
+                            Grid.Column="1"
                             Style="{StaticResource DeleteButtonStyle}"
                             BorderThickness="{TemplateBinding BorderThickness}"
-                            CornerRadius="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=CornerRadius, Converter={StaticResource RightCornerRadiusFilterConverter}}"
+                            contract7Present:CornerRadius="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=CornerRadius, Converter={StaticResource RightCornerRadiusFilterConverter}}"
                             Padding="{ThemeResource HelperButtonThemePadding}"
                             IsTabStop="False"
                             Visibility="Collapsed"
@@ -385,13 +352,7 @@
                             FontSize="{TemplateBinding FontSize}"
                             MinWidth="34"
                             VerticalAlignment="Stretch" />
-                        <ContentPresenter x:Name="ErrorPresenter"
-                            x:Load="False"
-                            Grid.Row="1"
-                            Grid.Column="3"
-                            Foreground="{ThemeResource SystemControlErrorTextForegroundBrush}"
-                            AutomationProperties.AccessibilityView="Raw" />
-                        <ContentPresenter x:Name="DescriptionPresenter"
+                        <contract7Present:ContentPresenter x:Name="DescriptionPresenter"
                             Grid.Row="2"
                             Grid.Column="0"
                             Grid.ColumnSpan="2"
