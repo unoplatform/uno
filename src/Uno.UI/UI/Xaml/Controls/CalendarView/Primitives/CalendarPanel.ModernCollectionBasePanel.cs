@@ -345,6 +345,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		private CalendarLayoutStrategy? _layoutStrategy;
 		private CalendarViewGeneratorHost? _host;
 		private Rect _effectiveViewport;
+		private bool _hasEffectiveViewport;
 		private Rect _lastLayoutedViewport = Rect.Empty;
 
 		private void base_Initialize()
@@ -742,6 +743,13 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		private void OnEffectiveViewportChanged(EffectiveViewportChangedEventArgs args)
 		{
+			if (_hasEffectiveViewport && args.EffectiveViewport.IsEmpty)
+			{
+				// The panel is not visible at all, don't update the _effectiveLayout so any measure/arrange path would keep the current values.
+				// This also prevent a useless InvalidateMeasure() that causes lags but also implicit scroll (and header update) to the January 19XX.
+				return;
+			}
+
 			_effectiveViewport = args.EffectiveViewport;
 
 			if (_host is null || _layoutStrategy is null)
@@ -750,7 +758,10 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			}
 
 			var needsMeasure = ForceConfigViewport(GetLayoutViewport().Size);
-			if (needsMeasure || Math.Abs(_effectiveViewport.Y - _lastLayoutedViewport.Y) > (_lastLayoutedViewport.Height / Rows) * .75)
+			_hasEffectiveViewport = true;
+
+			if (!args.EffectiveViewport.IsEmpty
+				&& (needsMeasure || Math.Abs(_effectiveViewport.Y - _lastLayoutedViewport.Y) > (_lastLayoutedViewport.Height / Rows) * .75))
 			{
 				InvalidateMeasure();
 			}
