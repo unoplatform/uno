@@ -315,8 +315,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			ColumnDefinitionSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.ColumnDefinition);
 			TaskSymbol = GetMandatorySymbolAsLazy("System.Threading.Tasks");
 
-			InitializeMvvmLazySymbols();
-
 			TypeProviders = ImmutableArray.Create<ITypeProvider>(
 				new MvvmTypeProvider(this)
 				);
@@ -325,7 +323,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private Lazy<INamedTypeSymbol> GetMandatorySymbolAsLazy(string fullyQualifiedName)
 			=> new(() => _generatorContext.Compilation.GetTypeByMetadataName(fullyQualifiedName) ?? throw new InvalidOperationException($"Unable to find type {fullyQualifiedName}"));
 
-		private Lazy<INamedTypeSymbol?> GetOptionalSymbolAsLazy(string fullyQualifiedName)
+		internal Lazy<INamedTypeSymbol?> GetOptionalSymbolAsLazy(string fullyQualifiedName)
 			=> new(() => _generatorContext.Compilation.GetTypeByMetadataName(fullyQualifiedName));
 
 		private Lazy<INamedTypeSymbol> GetSpecialTypeSymbolAsLazy(SpecialType specialType)

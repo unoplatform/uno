@@ -14,7 +14,16 @@ internal sealed class MvvmTypeProvider : ITypeProvider
 	public MvvmTypeProvider(XamlCodeGeneration generation)
 	{
 		_generation = generation;
+		IRelayCommandSymbol = generation.GetOptionalSymbolAsLazy("CommunityToolkit.Mvvm.Input.IRelayCommand");
+		IRelayCommandTSymbol = generation.GetOptionalSymbolAsLazy("CommunityToolkit.Mvvm.Input.IRelayCommand`1");
+		IAsyncRelayCommandSymbol = generation.GetOptionalSymbolAsLazy("CommunityToolkit.Mvvm.Input.IAsyncRelayCommand");
+		IAsyncRelayCommandTSymbol = generation.GetOptionalSymbolAsLazy("CommunityToolkit.Mvvm.Input.IAsyncRelayCommand`1");
 	}
+
+	internal Lazy<INamedTypeSymbol?> IRelayCommandSymbol { get; }
+	internal Lazy<INamedTypeSymbol?> IRelayCommandTSymbol { get; }
+	internal Lazy<INamedTypeSymbol?> IAsyncRelayCommandSymbol { get; }
+	internal Lazy<INamedTypeSymbol?> IAsyncRelayCommandTSymbol { get; }
 
 	public ITypeSymbol? TryGetType(ITypeSymbol symbol, string memberName)
 	{
@@ -65,21 +74,21 @@ internal sealed class MvvmTypeProvider : ITypeProvider
 			{
 				if (method.ReturnsVoid && method.Parameters.Length == 0)
 				{
-					return _generation.IRelayCommandSymbol.Value;
+					return IRelayCommandSymbol.Value;
 				}
 				else if (method.ReturnsVoid && method.Parameters.Length == 1)
 				{
-					return _generation.IRelayCommandTSymbol.Value?.Construct(method.Parameters[0].Type);
+					return IRelayCommandTSymbol.Value?.Construct(method.Parameters[0].Type);
 				}
 				else if (method.ReturnType is INamedTypeSymbol namedType && namedType.Is(_generation.TaskSymbol.Value))
 				{
 					if (method.Parameters.Length == 0)
 					{
-						return _generation.IAsyncRelayCommandSymbol.Value;
+						return IAsyncRelayCommandSymbol.Value;
 					}
 					else if (method.Parameters.Length is 1 or 2)
 					{
-						return _generation.IAsyncRelayCommandTSymbol.Value?.Construct(method.Parameters[0].Type);
+						return IAsyncRelayCommandTSymbol.Value?.Construct(method.Parameters[0].Type);
 					}
 				}
 			}
