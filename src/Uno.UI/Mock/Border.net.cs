@@ -18,7 +18,7 @@ namespace Windows.UI.Xaml.Controls
 				RemoveChild(previousValue);
 			}
 
-			if (newValue != null)
+			if (newValue is not null)
 			{
 				AddChild(newValue);
 			}
