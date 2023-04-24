@@ -1,49 +1,57 @@
 ﻿using System;
-using System.Linq;
-using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using Uno.Disposables;
 using Uno.Extensions;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Media;
+using Windows.Foundation;
 
 namespace Windows.UI.Xaml.Controls;
 
 partial class BorderLayerRenderer
 {
-	private Brush _background;
-	private (Brush, Thickness) _border;
-	private CornerRadius _cornerRadius;
+	private readonly SerialDisposable _backgroundSubscription = new();
 
-	private SerialDisposable _backgroundSubscription;
+	private bool _resetBackgroundOnSizeChange;
+	private bool _resetBorderOnSizeChange;
 
 	partial void UpdateLayer()
 	{
-		if (_background != _borderInfoProvider.Background)
-		{
-			_background = _borderInfoProvider.Background;
-			var subscription = _backgroundSubscription ??= new SerialDisposable();
+		var newState = new BorderLayerState(
+			new Size(_owner.ActualWidth, _owner.ActualHeight),
+			_borderInfoProvider);
 
-			subscription.Disposable = null;
-			subscription.Disposable = SetAndObserveBackgroundBrush(_owner, _borderInfoProvider.Background);
+		var sizeChanged = _currentState.ElementSize != newState.ElementSize;
+
+		var currentBackgroundState = (_currentState.Background, _currentState.BackgroundSizing);
+		var newBackgroundState = (newState.Background, newState.BackgroundSizing);
+
+		if ((_resetBackgroundOnSizeChange && sizeChanged) ||
+			currentBackgroundState != newBackgroundState)
+		{
+			_backgroundSubscription.Disposable = null;
+			_backgroundSubscription.Disposable = SetAndObserveBackgroundBrush(_owner, _borderInfoProvider.Background);
 		}
 
-		if (_border != (_borderInfoProvider.BorderBrush, _borderInfoProvider.BorderThickness))
+		var currentBorderState = (_currentState.BorderBrush, _currentState.BorderThickness, _currentState.CornerRadius);
+		var newBorderState = (newState.BorderBrush, newState.BorderThickness, newState.CornerRadius);
+
+		if ((_resetBorderOnSizeChange && sizeChanged) ||
+			currentBorderState != newBorderState)
 		{
-			_border = (_borderInfoProvider.BorderBrush, _borderInfoProvider.BorderThickness);
-			SetBorder(_owner, _borderInfoProvider.BorderThickness, _borderInfoProvider.BorderBrush);
+			SetBorder(_owner, newBorderState.BorderThickness, newBorderState.BorderBrush, newBorderState.CornerRadius);
 		}
 
-		if (_cornerRadius != _borderInfoProvider.CornerRadius)
+		if (_currentState.CornerRadius != newState.CornerRadius)
 		{
-			_cornerRadius = _borderInfoProvider.CornerRadius;
-			SetCornerRadius(_owner, _borderInfoProvider.CornerRadius);
+			SetCornerRadius(_owner, newState.CornerRadius);
 		}
+
+		_currentState = newState;
 	}
 
 	partial void ClearLayer()
 	{
-		//TODO:MZ
 	}
 
 	public static void SetCornerRadius(UIElement element, CornerRadius cornerRadius)
@@ -61,8 +69,9 @@ partial class BorderLayerRenderer
 		}
 	}
 
-	public static void SetBorder(UIElement element, Thickness thickness, Brush brush)
+	private void SetBorder(UIElement element, Thickness thickness, Brush brush, CornerRadius cornerRadius)
 	{
+		_resetBorderOnSizeChange = false;
 		if (thickness == Thickness.Empty)
 		{
 			element.SetStyle(
@@ -77,20 +86,22 @@ partial class BorderLayerRenderer
 			{
 				case SolidColorBrush solidColorBrush:
 					var borderColor = solidColorBrush.ColorWithOpacity;
-					element.SetStyle(
-						("border", ""),
-						("border-style", "solid"),
-						("border-color", borderColor.ToHexString()),
-						("border-width", borderWidth));
+					element.SetSolidColorBorder(borderColor, borderWidth);
 					break;
 				case GradientBrush gradientBrush:
-					var border = gradientBrush.ToCssString(element.RenderSize); // TODO: Reevaluate when size is changing
-					element.SetStyle(
-						("border-style", "solid"),
-						("border-color", ""),
-						("border-image", border),
-						("border-width", borderWidth),
-						("border-image-slice", "1"));
+					if (gradientBrush is LinearGradientBrush linearGradientBrush &&
+						cornerRadius != CornerRadius.None &&
+						linearGradientBrush.CanApplySolidColorRendering())
+					{
+						var majorStopBrush = linearGradientBrush.MajorStopBrush;
+						element.SetSolidColorBorder(majorStopBrush?.Color ?? Colors.Transparent, borderWidth);
+					}
+					else
+					{
+						_resetBorderOnSizeChange = true;
+						var border = gradientBrush.ToCssString(element.RenderSize);
+						element.SetGradientBorder(border, borderWidth);
+					}
 					break;
 				case AcrylicBrush acrylicBrush:
 					var acrylicFallbackColor = acrylicBrush.FallbackColorWithOpacity;
@@ -107,13 +118,13 @@ partial class BorderLayerRenderer
 		}
 	}
 
-	public static IDisposable SetAndObserveBackgroundBrush(FrameworkElement element, Brush brush)
+	private IDisposable SetAndObserveBackgroundBrush(FrameworkElement element, Brush brush)
 	{
-		SetBackgroundBrush(element, brush);
+		_resetBackgroundOnSizeChange = false;
+		WindowManagerInterop.ResetElementBackground(element.HtmlId);
 
 		if (brush is ImageBrush imgBrush)
 		{
-			RecalculateBrushOnSizeChanged(element, false);
 			return imgBrush.Subscribe(img =>
 			{
 				switch (img.Kind)
@@ -140,55 +151,28 @@ partial class BorderLayerRenderer
 		}
 		else if (brush is AcrylicBrush acrylicBrush)
 		{
-			return acrylicBrush.Subscribe(element);
+			acrylicBrush.Apply(element);
+		}
+		else if (brush is SolidColorBrush solidColorBrush)
+		{
+			var color = solidColorBrush.ColorWithOpacity;
+			WindowManagerInterop.SetElementBackgroundColor(element.HtmlId, color);
+		}
+		else if (brush is GradientBrush gradientBrush)
+		{
+			_resetBackgroundOnSizeChange = true;
+			WindowManagerInterop.SetElementBackgroundGradient(element.HtmlId, gradientBrush.ToCssString(element.RenderSize));
+		}
+		else if (brush is XamlCompositionBrushBase unsupportedCompositionBrush)
+		{
+			var fallbackColor = unsupportedCompositionBrush.FallbackColorWithOpacity;
+			WindowManagerInterop.SetElementBackgroundColor(element.HtmlId, fallbackColor);
 		}
 		else
 		{
-			return Brush.AssignAndObserveBrush(brush, _ => SetBackgroundBrush(element, brush));
+			WindowManagerInterop.ResetElementBackground(element.HtmlId);
 		}
-	}
 
-	public static void SetBackgroundBrush(FrameworkElement element, Brush brush)
-	{
-		switch (brush)
-		{
-			case SolidColorBrush solidColorBrush:
-				var color = solidColorBrush.ColorWithOpacity;
-				WindowManagerInterop.SetElementBackgroundColor(element.HtmlId, color);
-				RecalculateBrushOnSizeChanged(element, false);
-				break;
-			case GradientBrush gradientBrush:
-				WindowManagerInterop.SetElementBackgroundGradient(element.HtmlId, gradientBrush.ToCssString(element.RenderSize));
-				RecalculateBrushOnSizeChanged(element, true);
-				break;
-			case XamlCompositionBrushBase unsupportedCompositionBrush:
-				var fallbackColor = unsupportedCompositionBrush.FallbackColorWithOpacity;
-				WindowManagerInterop.SetElementBackgroundColor(element.HtmlId, fallbackColor);
-				RecalculateBrushOnSizeChanged(element, false);
-				break;
-			default:
-				WindowManagerInterop.ResetElementBackground(element.HtmlId);
-				RecalculateBrushOnSizeChanged(element, false);
-				break;
-		}
-	}
-
-	private static readonly SizeChangedEventHandler _onSizeChangedForBrushCalculation = (sender, args) =>
-	{
-		var fe = sender as FrameworkElement;
-		SetBackgroundBrush(fe, fe.Background);
-	};
-
-	private static void RecalculateBrushOnSizeChanged(FrameworkElement element, bool shouldRecalculate)
-	{
-		if (shouldRecalculate)
-		{
-			element.SizeChanged -= _onSizeChangedForBrushCalculation;
-			element.SizeChanged += _onSizeChangedForBrushCalculation;
-		}
-		else
-		{
-			element.SizeChanged -= _onSizeChangedForBrushCalculation;
-		}
+		return Disposable.Empty;
 	}
 }

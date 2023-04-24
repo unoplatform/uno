@@ -535,19 +535,6 @@ namespace Uno.UI {
 				params.BottomRight.toFixed(2).toString(),
 				params.BottomLeft.toFixed(2).toString());
 		}
-
-		public setSolidColorBorder(htmlId: number, color: number, width: string) {
-			const element = this.getView(htmlId);
-
-			const elementStyle = element.style;
-
-			elementStyle.setProperty("border", "");
-			elementStyle.setProperty("border-style", "solid");
-			elementStyle.setProperty("border-color", this.numberToCssColor(color));
-			elementStyle.setProperty("border-width", width);
-			
-			return true;	
-		}
 			
 		public setStyleString(htmlId: number, name: string, value: string): string {
 
@@ -569,10 +556,20 @@ namespace Uno.UI {
 
 			this.getView(htmlId).style.setProperty(name, value);
 		}
-		
-		/**
-		* Set border to solid color brush.
-		*/
+
+		public setSolidColorBorder(htmlId: number, color: number, width: string) {
+			const element = this.getView(htmlId);
+
+			const elementStyle = element.style;
+
+			elementStyle.setProperty("border", "");
+			elementStyle.setProperty("border-style", "solid");
+			elementStyle.setProperty("border-color", this.numberToCssColor(color));
+			elementStyle.setProperty("border-width", width);
+
+			return true;
+		}
+
 		public setSolidColorBorderNative(pParams: number): boolean {
 
 			const params = WindowManagerSetSolidColorBorderParams.unmarshal(pParams);
