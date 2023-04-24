@@ -1,29 +1,29 @@
 #nullable enable
 
-using Uno.Extensions;
-using Uno.MsBuildTasks.Utils;
-using Uno.UI.SourceGenerators.XamlGenerator.Utils;
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Text;
 using System.Text.RegularExpressions;
 using Microsoft.CodeAnalysis;
-using Uno.Roslyn;
-using Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection;
-using System.Runtime.CompilerServices;
-using Uno.UI.Xaml;
-using Uno.Disposables;
-using Uno.UI.SourceGenerators.BindableTypeProviders;
 using Microsoft.CodeAnalysis.CSharp;
-using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
-using Uno.UI.SourceGenerators.Helpers;
-using System.Collections.Immutable;
-using System.Text;
 using Microsoft.CodeAnalysis.Text;
-
+using Uno.Disposables;
+using Uno.Extensions;
+using Uno.MsBuildTasks.Utils;
+using Uno.Roslyn;
+using Uno.UI.SourceGenerators.BindableTypeProviders;
+using Uno.UI.SourceGenerators.Helpers;
+using Uno.UI.SourceGenerators.Utils;
+using Uno.UI.SourceGenerators.XamlGenerator.Utils;
+using Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection;
+using Uno.UI.Xaml;
 
 #if NETFRAMEWORK
 using Uno.SourceGeneration;
