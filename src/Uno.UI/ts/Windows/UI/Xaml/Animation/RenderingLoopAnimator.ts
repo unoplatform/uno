@@ -23,6 +23,10 @@
 		private constructor(private managedHandle: number) {
 		}
 
+		public static setStartFrameDelay(jsHandle: number, delay: number) {
+			RenderingLoopAnimator.getInstance(jsHandle).SetStartFrameDelay(delay);
+		}
+
 		public SetStartFrameDelay(delay: number) {
 			this.unscheduleFrame();
 

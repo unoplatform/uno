@@ -22,6 +22,9 @@ namespace __Windows.UI.Xaml.Media.Animation
 
 			[JSImport("globalThis.Windows.UI.Xaml.Media.Animation.RenderingLoopAnimator.setAnimationFramesInterval")]
 			internal static partial void SetAnimationFramesInterval(double jsHandle);
+
+			[JSImport("globalThis.Windows.UI.Xaml.Media.Animation.RenderingLoopAnimator.setStartFrameDelay")]
+			internal static partial void SetStartFrameDelay(double jsHandle, double delayMs);
 		}
 	}
 }

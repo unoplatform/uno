@@ -57,7 +57,11 @@ namespace Windows.UI.Xaml.Media.Animation
 		{
 			if (Handle.IsAlive)
 			{
+#if NET7_0_OR_GREATER
+				NativeMethods.SetStartFrameDelay(Handle.JSHandle, delayMs);
+#else
 				WebAssemblyRuntime.InvokeJSWithInterop($"{this}.SetStartFrameDelay({delayMs});");
+#endif
 			}
 			else if (this.Log().IsEnabled(LogLevel.Debug))
 			{
