@@ -460,9 +460,9 @@
                             x:Name="PointerRectangle" 
                             Fill="Transparent"
                             Visibility="Collapsed"/>
-                        <Border		
-                            x:Name="RevealBorder"		
-                            BorderBrush="{TemplateBinding BorderBrush}"		
+                        <Border
+                            x:Name="RevealBorder"
+                            BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}" />
                         <FontIcon
                             x:Name="Icon"
@@ -528,9 +528,9 @@
                         <Rectangle 
                             x:Name="PointerRectangle" 
                             Fill="Transparent" />
-                        <Border		
-                            x:Name="RevealBorder"		
-                            BorderBrush="{TemplateBinding BorderBrush}"		
+                        <Border
+                            x:Name="RevealBorder"
+                            BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}" />
                         <FontIcon
                             x:Name="Icon"
@@ -844,9 +844,9 @@
                             </VisualStateGroup>
                         </VisualStateManager.VisualStateGroups>
                         
-                        <Border		
-                            x:Name="RevealBorder"		
-                            BorderBrush="{TemplateBinding BorderBrush}"		
+                        <Border
+                            x:Name="RevealBorder"
+                            BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}" />
                         <Grid x:Name="PresenterContentRootGrid">
                             <!-- Wrap SelectionIndicator in a grid so that its offset is 0,0 - this enables the offset animation. -->
@@ -1004,9 +1004,9 @@
                         <Rectangle 
                             x:Name="PointerRectangle" 
                             Fill="Transparent" />
-                        <Border		
-                            x:Name="RevealBorder"		
-                            BorderBrush="{TemplateBinding BorderBrush}"		
+                        <Border
+                            x:Name="RevealBorder"
+                            BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}" >
                         </Border>
                         <Grid x:Name="ContentGrid">
@@ -1160,9 +1160,9 @@
                             x:Name="PointerRectangle" 
                             Fill="Transparent"
                             Visibility="Collapsed" />
-                        <Border		
-                            x:Name="RevealBorder"		
-                            BorderBrush="{TemplateBinding BorderBrush}"		
+                        <Border
+                            x:Name="RevealBorder"
+                            BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}" />
                         <Grid x:Name="ContentGrid">
                             <Grid.ColumnDefinitions>

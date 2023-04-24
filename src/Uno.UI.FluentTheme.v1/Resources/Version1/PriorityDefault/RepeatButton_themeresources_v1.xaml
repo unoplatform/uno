@@ -1,7 +1,9 @@
 ﻿<!-- Copyright (c) Microsoft Corporation. All Rights Reserved. -->
 <ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:contract7Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,7)"
+    xmlns:contract7NotPresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,7)">
 
     <ResourceDictionary.ThemeDictionaries>
         <ResourceDictionary x:Key="Default">
@@ -82,7 +84,7 @@
 
     <Style x:Key="DefaultRepeatButtonStyle" TargetType="RepeatButton">
         <Setter Property="Background" Value="{ThemeResource RepeatButtonBackground}" />
-        <Setter Property="BackgroundSizing" Value="OuterBorderEdge" />
+        <contract7Present:Setter Property="BackgroundSizing" Value="OuterBorderEdge" />
         <Setter Property="Foreground" Value="{ThemeResource RepeatButtonForeground}" />
         <Setter Property="BorderBrush" Value="{ThemeResource RepeatButtonBorderBrush}" />
         <Setter Property="BorderThickness" Value="{ThemeResource ButtonBorderThemeThickness}" />
@@ -94,21 +96,22 @@
         <Setter Property="FontSize" Value="{ThemeResource ControlContentThemeFontSize}" />
         <Setter Property="UseSystemFocusVisuals" Value="{StaticResource UseSystemFocusVisuals}" />
         <Setter Property="FocusVisualMargin" Value="-3" />
-        <Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}" />
+        <contract7Present:Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="RepeatButton">
-					<!-- Uno workaround: template-bind ContentTemplateSelector because it's not automatically propagated from the ContentControl -->
+                    <!-- Uno workaround: template-bind ContentTemplateSelector because it's not automatically propagated from the ContentControl -->
                     <ContentPresenter x:Name="ContentPresenter"
                                       Background="{TemplateBinding Background}"
-                                      BackgroundSizing="{TemplateBinding BackgroundSizing}"
+                                      contract7Present:BackgroundSizing="{TemplateBinding BackgroundSizing}"
                                       BorderBrush="{TemplateBinding BorderBrush}"
                                       BorderThickness="{TemplateBinding BorderThickness}"
                                       Content="{TemplateBinding Content}"
                                       ContentTemplate="{TemplateBinding ContentTemplate}"
                                       ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
                                       ContentTransitions="{TemplateBinding ContentTransitions}"
-                                      CornerRadius="{TemplateBinding CornerRadius}"
+                                      contract7Present:CornerRadius="{TemplateBinding CornerRadius}"
+                                      contract7NotPresent:CornerRadius="{ThemeResource ControlCornerRadius}"
                                       Padding="{TemplateBinding Padding}"
                                       HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
                                       VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"

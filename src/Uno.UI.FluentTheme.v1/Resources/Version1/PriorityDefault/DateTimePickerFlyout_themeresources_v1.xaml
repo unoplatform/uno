@@ -1,6 +1,8 @@
 ﻿<!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. See LICENSE in the project root for license information. -->
 <ResourceDictionary 
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:contract7Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,7)"
+    xmlns:contract7NotPresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,7)"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <ResourceDictionary.ThemeDictionaries>
         <ResourceDictionary x:Key="Default">
@@ -37,10 +39,10 @@
 
     <Style x:Key="DateTimePickerFlyoutButtonStyle" TargetType="ButtonBase">
         <Setter Property="Background" Value="{ThemeResource DateTimePickerFlyoutButtonBackground}" />
-        <Setter Property="BackgroundSizing" Value="OuterBorderEdge" />
+        <contract7Present:Setter Property="BackgroundSizing" Value="OuterBorderEdge" />
         <Setter Property="UseSystemFocusVisuals" Value="{StaticResource UseSystemFocusVisuals}" />
         <Setter Property="FocusVisualMargin" Value="0" />
-        <Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}" />
+        <contract7Present:Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ButtonBase">
@@ -84,7 +86,7 @@
                         </VisualStateManager.VisualStateGroups>
                         <ContentPresenter x:Name="ContentPresenter"
                             Background="{TemplateBinding Background}"
-                            BackgroundSizing="{TemplateBinding BackgroundSizing}"
+                            contract7Present:BackgroundSizing="{TemplateBinding BackgroundSizing}"
                             BorderBrush="{ThemeResource DateTimePickerFlyoutButtonBorderBrush}"
                             BorderThickness="{ThemeResource DateTimeFlyoutButtonBorderThickness}"
                             Content="{TemplateBinding Content}"
@@ -94,7 +96,8 @@
                             HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
                             VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
                             AutomationProperties.AccessibilityView="Raw"
-                            CornerRadius="{TemplateBinding CornerRadius}"/>
+                            contract7Present:CornerRadius="{TemplateBinding CornerRadius}"
+                            contract7NotPresent:CornerRadius="{ThemeResource ControlCornerRadius}"/>
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>
