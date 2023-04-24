@@ -185,7 +185,7 @@ namespace Windows.UI.Xaml.Controls
 			set => SetPaddingValue(value);
 		}
 
-		protected virtual void OnPaddingChanged(Thickness oldValue, Thickness newValue) 
+		protected virtual void OnPaddingChanged(Thickness oldValue, Thickness newValue)
 		{
 			OnPaddingChangedPartial();
 			UpdateBorder();

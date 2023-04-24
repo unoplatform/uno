@@ -15,7 +15,7 @@ internal record struct BorderLayerState(
 	CornerRadius CornerRadius)
 {
 	internal BorderLayerState(Rect area, IBorderInfoProvider borderInfoProvider) : this(
-		Area,
+		area,
 		borderInfoProvider.Background,
 		borderInfoProvider.BackgroundSizing,
 		borderInfoProvider.BorderBrush,
