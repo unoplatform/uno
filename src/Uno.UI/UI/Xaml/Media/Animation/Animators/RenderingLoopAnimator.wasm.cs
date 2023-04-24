@@ -25,7 +25,11 @@ namespace Windows.UI.Xaml.Media.Animation
 		{
 			if (Handle.IsAlive)
 			{
+#if NET7_0_OR_GREATER
+				NativeMethods.EnableFrameReporting(Handle.JSHandle);
+#else
 				WebAssemblyRuntime.InvokeJSWithInterop($"{this}.EnableFrameReporting();");
+#endif
 			}
 			else if (this.Log().IsEnabled(LogLevel.Debug))
 			{

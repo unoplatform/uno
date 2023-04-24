@@ -13,6 +13,9 @@ namespace __Windows.UI.Xaml.Media.Animation
 
 			[JSImport("globalThis.Windows.UI.Xaml.Media.Animation.RenderingLoopAnimator.destroyInstance")]
 			internal static partial void DestroyInstance(double jsHandle);
+
+			[JSImport("globalThis.Windows.UI.Xaml.Media.Animation.RenderingLoopAnimator.enableFrameReporting")]
+			internal static partial void EnableFrameReporting(double jsHandle);
 		}
 	}
 }

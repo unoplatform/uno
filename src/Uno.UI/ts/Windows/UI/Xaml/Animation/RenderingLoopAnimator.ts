@@ -39,6 +39,10 @@
 			}
 		}
 
+		public static enableFrameReporting(jsHandle: number) {
+			RenderingLoopAnimator.getInstance(jsHandle).EnableFrameReporting();
+		}
+
 		public EnableFrameReporting() {
 			if (this._isEnabled) {
 				return;
