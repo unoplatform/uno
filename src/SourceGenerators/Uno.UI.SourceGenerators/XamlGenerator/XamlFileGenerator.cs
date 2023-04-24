@@ -193,14 +193,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		public XamlCodeGeneration Generation { get; }
 
-		static XamlFileGenerator()
-		{
-			_findContentProperty = Funcs.Create<INamedTypeSymbol, IPropertySymbol?>(SourceFindContentProperty).AsLockedMemoized();
-			_isAttachedProperty = Funcs.Create<INamedTypeSymbol, string, bool>(SourceIsAttachedProperty).AsLockedMemoized();
-			_getAttachedPropertyType = Funcs.Create<INamedTypeSymbol, string, INamedTypeSymbol>(SourceGetAttachedPropertyType).AsLockedMemoized();
-			_isTypeImplemented = Funcs.Create<INamedTypeSymbol, bool>(SourceIsTypeImplemented).AsLockedMemoized();
-		}
-
 		public XamlFileGenerator(
 			XamlCodeGeneration generation,
 			XamlFileDefinition file,
@@ -2683,31 +2675,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
-		private static IPropertySymbol? FindContentProperty(INamedTypeSymbol elementType)
-		{
-			return _findContentProperty(elementType);
-		}
+		private IPropertySymbol? FindContentProperty(INamedTypeSymbol elementType) => _metadataHelper.FindContentProperty(elementType);
 
-		private static IPropertySymbol? SourceFindContentProperty(INamedTypeSymbol elementType)
-		{
-			var data = elementType
-				.GetAllAttributes()
-				.FirstOrDefault(t => t.AttributeClass?.GetFullyQualifiedTypeExcludingGlobal() == XamlConstants.Types.ContentPropertyAttribute);
+		private INamedTypeSymbol GetAttachedPropertyType(INamedTypeSymbol type, string propertyName) => _metadataHelper.GetAttachedPropertyType(type, propertyName);
 
-			if (data != null)
-			{
-				var nameProperty = data.NamedArguments.Where(f => f.Key == "Name").FirstOrDefault();
-
-				if (nameProperty.Value.Value != null)
-				{
-					var name = nameProperty.Value.Value.ToString() ?? "";
-
-					return elementType.GetPropertyWithName(name);
-				}
-			}
-
-			return null;
-		}
+		private bool IsTypeImplemented(INamedTypeSymbol type) => _metadataHelper.IsTypeImplemented(type);
 
 		private string GetFullGenericTypeName(INamedTypeSymbol? propertyType)
 		{
