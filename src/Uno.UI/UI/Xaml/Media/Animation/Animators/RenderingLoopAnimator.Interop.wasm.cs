@@ -19,6 +19,9 @@ namespace __Windows.UI.Xaml.Media.Animation
 
 			[JSImport("globalThis.Windows.UI.Xaml.Media.Animation.RenderingLoopAnimator.enableFrameReporting")]
 			internal static partial void EnableFrameReporting(double jsHandle);
+
+			[JSImport("globalThis.Windows.UI.Xaml.Media.Animation.RenderingLoopAnimator.setAnimationFramesInterval")]
+			internal static partial void SetAnimationFramesInterval(double jsHandle);
 		}
 	}
 }

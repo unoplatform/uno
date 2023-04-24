@@ -31,6 +31,10 @@
 			}
 		}
 
+		public static setAnimationFramesInterval(jsHandle: number) {
+			RenderingLoopAnimator.getInstance(jsHandle).SetAnimationFramesInterval();
+		}
+
 		public SetAnimationFramesInterval() {
 			this.unscheduleFrame();
 

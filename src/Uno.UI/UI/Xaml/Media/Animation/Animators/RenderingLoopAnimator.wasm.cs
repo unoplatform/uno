@@ -69,7 +69,11 @@ namespace Windows.UI.Xaml.Media.Animation
 		{
 			if (Handle.IsAlive)
 			{
+#if NET7_0_OR_GREATER
+				NativeMethods.SetAnimationFramesInterval(Handle.JSHandle);
+#else
 				WebAssemblyRuntime.InvokeJSWithInterop($"{this}.SetAnimationFramesInterval();");
+#endif
 			}
 			else if (this.Log().IsEnabled(LogLevel.Debug))
 			{
