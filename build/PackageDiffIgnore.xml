@@ -9456,21 +9456,6 @@
 			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.ExpanderTemplateSettings..ctor()" reason="Should not be public" />
 
 			<!-- BEGIN XamlFileParser performance updates -->
-			<Member fullName="System.Void Uno.Xaml.XamlXmlReader..ctor(System.IO.Stream stream)" reason="Adding parameter. These should not be used by user code" />
-			<Member fullName="System.Void Uno.Xaml.XamlXmlReader..ctor(System.String fileName)" reason="Adding parameter. These should not be used by user code" />
-			<Member fullName="System.Void Uno.Xaml.XamlXmlReader..ctor(System.IO.TextReader textReader)" reason="Adding parameter. These should not be used by user code" />
-			<Member fullName="System.Void Uno.Xaml.XamlXmlReader..ctor(System.Xml.XmlReader xmlReader)" reason="Adding parameter. These should not be used by user code" />
-			<Member fullName="System.Void Uno.Xaml.XamlXmlReader..ctor(System.IO.Stream stream, Uno.Xaml.XamlSchemaContext schemaContext)" reason="Adding parameter. These should not be used by user code" />
-			<Member fullName="System.Void Uno.Xaml.XamlXmlReader..ctor(System.IO.Stream stream, Uno.Xaml.XamlXmlReaderSettings settings)" reason="Adding parameter. These should not be used by user code" />
-			<Member fullName="System.Void Uno.Xaml.XamlXmlReader..ctor(System.String fileName, Uno.Xaml.XamlSchemaContext schemaContext)" reason="Adding parameter. These should not be used by user code" />
-			<Member fullName="System.Void Uno.Xaml.XamlXmlReader..ctor(System.String fileName, Uno.Xaml.XamlXmlReaderSettings settings)" reason="Adding parameter. These should not be used by user code" />
-			<Member fullName="System.Void Uno.Xaml.XamlXmlReader..ctor(System.IO.TextReader textReader, Uno.Xaml.XamlSchemaContext schemaContext)" reason="Adding parameter. These should not be used by user code" />
-			<Member fullName="System.Void Uno.Xaml.XamlXmlReader..ctor(System.IO.TextReader textReader, Uno.Xaml.XamlXmlReaderSettings settings)" reason="Adding parameter. These should not be used by user code" />
-			<Member fullName="System.Void Uno.Xaml.XamlXmlReader..ctor(System.Xml.XmlReader xmlReader, Uno.Xaml.XamlSchemaContext schemaContext)" reason="Adding parameter. These should not be used by user code" />
-			<Member fullName="System.Void Uno.Xaml.XamlXmlReader..ctor(System.Xml.XmlReader xmlReader, Uno.Xaml.XamlXmlReaderSettings settings)" reason="Adding parameter. These should not be used by user code" />
-			<Member fullName="System.Void Uno.Xaml.XamlXmlReader..ctor(System.IO.Stream stream, Uno.Xaml.XamlSchemaContext schemaContext, Uno.Xaml.XamlXmlReaderSettings settings)" reason="Adding parameter. These should not be used by user code" />
-			<Member fullName="System.Void Uno.Xaml.XamlXmlReader..ctor(System.String fileName, Uno.Xaml.XamlSchemaContext schemaContext, Uno.Xaml.XamlXmlReaderSettings settings)" reason="Adding parameter. These should not be used by user code" />
-			<Member fullName="System.Void Uno.Xaml.XamlXmlReader..ctor(System.IO.TextReader textReader, Uno.Xaml.XamlSchemaContext schemaContext, Uno.Xaml.XamlXmlReaderSettings settings)" reason="Adding parameter. These should not be used by user code" />
 			<Member fullName="System.Void Uno.Xaml.XamlXmlReader..ctor(System.Xml.XmlReader xmlReader, Uno.Xaml.XamlSchemaContext schemaContext, Uno.Xaml.XamlXmlReaderSettings settings)" reason="Adding parameter. These should not be used by user code" />
 			<!-- END XamlFileParser performance updates -->
 		</Methods>
