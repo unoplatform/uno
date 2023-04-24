@@ -206,25 +206,6 @@
 			],
 			"replaces": "net7.0",
 			"defaultValue": "net7.0"
-		},
-		"libarybasetargetframework": {
-			"type": "generated",
-			"generator": "switch",
-			"replaces": "$libarybasetargetframework$",
-			"parameters": {
-				"evaluator": "C++",
-				"datatype": "string",
-				"cases": [
-					{
-						"condition": "(Framework == 'net7.0')",
-						"value": "netstandard2.0"
-					},
-					{
-						"condition": "(Framework != 'net7.0')",
-						"value": "net7.0"
-					}
-				]
-			}
 		}
 	},
 	"primaryOutputs": [
