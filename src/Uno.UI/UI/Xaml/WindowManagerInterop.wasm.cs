@@ -301,23 +301,14 @@ namespace Uno.UI.Xaml
 
 		internal static void SetSolidColorBorder(IntPtr htmlId, Color color, string borderWidth)
 		{
-			if (UseJavascriptEval)
+			var parms = new WindowManagerSetSolidColorBorderParams
 			{
-				var command = "Uno.UI.WindowManager.current.setSolidColorBorder(" + htmlId + ", \"" + color.ToCssInteger() + "\", \"" + WebAssemblyRuntime.EscapeJs(borderWidth) + "\")";
+				HtmlId = htmlId,
+				Color = color.ToCssInteger(),
+				Width = borderWidth,
+			};
 
-				WebAssemblyRuntime.InvokeJS(command);
-			}
-			else
-			{
-				var parms = new WindowManagerSetSolidColorBorderParams
-				{
-					HtmlId = htmlId,
-					Color = color.ToCssInteger(),
-					Width = borderWidth,
-				};
-
-				TSInteropMarshaller.InvokeJS("Uno:setSolidColorBorderNative", parms);
-			}
+			TSInteropMarshaller.InvokeJS("Uno:setSolidColorBorderNative", parms);
 		}
 
 		[TSInteropMessage]
@@ -338,23 +329,14 @@ namespace Uno.UI.Xaml
 
 		internal static void SetGradientBorder(IntPtr htmlId, string borderImage, string borderWidth)
 		{
-			if (UseJavascriptEval)
+			var parms = new WindowManagerSetGradientBorderParams
 			{
-				var command = "Uno.UI.WindowManager.current.setGradientBorder(" + htmlId + ", \"" + WebAssemblyRuntime.EscapeJs(borderImage) + "\", \"" + WebAssemblyRuntime.EscapeJs(borderWidth) + "\")";
+				HtmlId = htmlId,
+				BorderImage = borderImage,
+				Width = borderWidth,
+			};
 
-				WebAssemblyRuntime.InvokeJS(command);
-			}
-			else
-			{
-				var parms = new WindowManagerSetGradientBorderParams
-				{
-					HtmlId = htmlId,
-					BorderImage = borderImage,
-					Width = borderWidth,
-				};
-
-				TSInteropMarshaller.InvokeJS("Uno:setGradientBorderNative", parms);
-			}
+			TSInteropMarshaller.InvokeJS("Uno:setGradientBorderNative", parms);
 		}
 
 		[TSInteropMessage]
@@ -376,29 +358,16 @@ namespace Uno.UI.Xaml
 
 		internal static void SetBorderRadius(IntPtr htmlId, CornerRadius cornerRadius)
 		{
-			if (UseJavascriptEval)
+			var parms = new WindowManagerSetBorderRadiusParams
 			{
-				var topLeft = cornerRadius.TopLeft.ToStringInvariant();
-				var topRight = cornerRadius.TopRight.ToStringInvariant();
-				var bottomLeft = cornerRadius.BottomLeft.ToStringInvariant();
-				var bottomRight = cornerRadius.BottomRight.ToStringInvariant();
-				var command = "Uno.UI.WindowManager.current.setBorderRadius(" + htmlId + ", \"" + topLeft + "\",\"" + topRight + "\",\"" + bottomRight + "\",\"" + bottomLeft + "\")";
+				HtmlId = htmlId,
+				TopLeft = cornerRadius.TopLeft,
+				TopRight = cornerRadius.TopRight,
+				BottomLeft = cornerRadius.BottomLeft,
+				BottomRight = cornerRadius.BottomRight,
+			};
 
-				WebAssemblyRuntime.InvokeJS(command);
-			}
-			else
-			{
-				var parms = new WindowManagerSetBorderRadiusParams
-				{
-					HtmlId = htmlId,
-					TopLeft = cornerRadius.TopLeft,
-					TopRight = cornerRadius.TopRight,
-					BottomLeft = cornerRadius.BottomLeft,
-					BottomRight = cornerRadius.BottomRight,
-				};
-
-				TSInteropMarshaller.InvokeJS("Uno:setBorderRadiusNative", parms);
-			}
+			TSInteropMarshaller.InvokeJS("Uno:setBorderRadiusNative", parms);
 		}
 
 		[TSInteropMessage]

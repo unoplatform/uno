@@ -7,15 +7,15 @@ using Uno.UI.Xaml.Controls;
 namespace Windows.UI.Xaml.Controls;
 
 internal record struct BorderLayerState(
-	Rect Area,
+	Size ElementSize,
 	Brush? Background,
 	BackgroundSizing BackgroundSizing,
 	Brush? BorderBrush,
 	Thickness BorderThickness,
 	CornerRadius CornerRadius)
 {
-	internal BorderLayerState(Rect area, IBorderInfoProvider borderInfoProvider) : this(
-		area,
+	internal BorderLayerState(Size elementSize, IBorderInfoProvider borderInfoProvider) : this(
+		elementSize,
 		borderInfoProvider.Background,
 		borderInfoProvider.BackgroundSizing,
 		borderInfoProvider.BorderBrush,
