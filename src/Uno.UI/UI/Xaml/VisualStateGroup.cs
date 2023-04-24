@@ -1,5 +1,4 @@
-﻿using Windows.UI.Xaml.Controls;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -8,11 +7,13 @@ using System.Linq;
 using System.Text;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
+using Uno.UI;
 using Uno.UI.DataBinding;
+using Windows.Foundation.Collections;
+using Windows.UI.Core;
 using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Markup;
-using Uno.UI;
-using Windows.Foundation.Collections;
+using Windows.UI.Xaml.Controls;
 
 using static Windows.UI.Xaml.Media.Animation.Timeline.TimelineState;
 
@@ -218,17 +219,29 @@ namespace Windows.UI.Xaml
 				? current.animation
 				: current.transition;
 			var nextAnimation = target.transition ?? target.animation;
-			if (runningAnimation != null)
+
+			// We need to dispatch here. The scenario is calling GoToState successively with two different states.
+			// In this case, we dispatch/schedule a begin for the first animation, then the second.
+			// The second GoToState call will come here and try to stop the running animation of the first call.
+			// But the first call wasn't yet run by the dispatcher, causing race condition and we go into unrecoverable bad state.
+#if __ANDROID__
+			_ = Dispatcher.RunAnimation(() =>
+#else
+			_ = Dispatcher.RunAsync(CoreDispatcherPriority.High, () =>
+#endif
 			{
-				if (nextAnimation is null)
+				if (runningAnimation != null)
 				{
-					runningAnimation.Stop();
+					if (nextAnimation is null)
+					{
+						runningAnimation.Stop();
+					}
+					else
+					{
+						runningAnimation.TurnOverAnimationsTo(nextAnimation);
+					}
 				}
-				else
-				{
-					runningAnimation.TurnOverAnimationsTo(nextAnimation);
-				}
-			}
+			});
 
 			// Rollback setters that won't be re-set by the target state setters
 			// Note about setters and transition (as of 2021-08-16 win 19043):
