@@ -503,11 +503,13 @@
 		<PropertyGroup>
 			<PackageNamePrefix>Uno.WinUI</PackageNamePrefix>
 			<PackageNamePrefix Condition="'$(UNO_UWP_BUILD)'=='true'">Uno.UI</PackageNamePrefix>
+			<GenericArtifactsName>NugetPackages-Artifacts-generic-WinUI</GenericArtifactsName>
+			<GenericArtifactsName Condition="'$(UNO_UWP_BUILD)'=='true'">NugetPackages-Artifacts-generic-UWP</GenericArtifactsName>
 		</PropertyGroup>
 
         <ItemGroup>
 			<_diffPackage Include="$(PackageNamePrefix)" Other="$(PackageNamePrefix).$(GITVERSION_SemVer).nupkg" />
-			<_diffPackage Include="$(PackageNamePrefix).Foldable" Other="..\..\..\NugetPackages-Artifacts-generic-UWP\vslatest-generic\$(PackageNamePrefix).Foldable.$(GITVERSION_SemVer).nupkg" />
+			<_diffPackage Include="$(PackageNamePrefix).Foldable" Other="..\..\..\$(GenericArtifactsName)\vslatest-generic\$(PackageNamePrefix).Foldable.$(GITVERSION_SemVer).nupkg" />
 			<_diffPackage Include="$(PackageNamePrefix).Lottie" Other="$(PackageNamePrefix).Lottie.$(GITVERSION_SemVer).nupkg" />
 			<_diffPackage Include="$(PackageNamePrefix).Maps" Other="..\..\..\NugetPackages-Artifacts-generic-UWP\vslatest-generic\$(PackageNamePrefix).Maps.$(GITVERSION_SemVer).nupkg" />
 			<_diffPackage Include="$(PackageNamePrefix).MSAL" Other="$(PackageNamePrefix).MSAL.$(GITVERSION_SemVer).nupkg" />
