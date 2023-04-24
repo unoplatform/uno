@@ -143,10 +143,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		internal Lazy<INamedTypeSymbol> RowDefinitionSymbol { get; }
 		internal Lazy<INamedTypeSymbol> ColumnDefinitionSymbol { get; }
 		internal Lazy<INamedTypeSymbol> TaskSymbol { get; }
-		internal Lazy<INamedTypeSymbol?> IRelayCommandSymbol { get; }
-		internal Lazy<INamedTypeSymbol?> IRelayCommandTSymbol { get; }
-		internal Lazy<INamedTypeSymbol?> IAsyncRelayCommandSymbol { get; }
-		internal Lazy<INamedTypeSymbol?> IAsyncRelayCommandTSymbol { get; }
+
 
 		internal ImmutableArray<ITypeProvider> TypeProviders { get; }
 
@@ -317,24 +314,22 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			RowDefinitionSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.RowDefinition);
 			ColumnDefinitionSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.ColumnDefinition);
 			TaskSymbol = GetMandatorySymbolAsLazy("System.Threading.Tasks");
-			IRelayCommandSymbol = GetOptionalSymbolAsLazy("CommunityToolkit.Mvvm.Input.IRelayCommand");
-			IRelayCommandTSymbol = GetOptionalSymbolAsLazy("CommunityToolkit.Mvvm.Input.IRelayCommand`1");
-			IAsyncRelayCommandSymbol = GetOptionalSymbolAsLazy("CommunityToolkit.Mvvm.Input.IAsyncRelayCommand");
-			IAsyncRelayCommandTSymbol = GetOptionalSymbolAsLazy("CommunityToolkit.Mvvm.Input.IAsyncRelayCommand`1");
 
-			Lazy<INamedTypeSymbol> GetMandatorySymbolAsLazy(string fullyQualifiedName)
-				=> new(() => context.Compilation.GetTypeByMetadataName(fullyQualifiedName) ?? throw new InvalidOperationException($"Unable to find type {fullyQualifiedName}"));
-
-			Lazy<INamedTypeSymbol?> GetOptionalSymbolAsLazy(string fullyQualifiedName)
-				=> new(() => context.Compilation.GetTypeByMetadataName(fullyQualifiedName));
-
-			Lazy<INamedTypeSymbol> GetSpecialTypeSymbolAsLazy(SpecialType specialType)
-				=> new(() => context.Compilation.GetSpecialType(specialType));
+			InitializeMvvmLazySymbols();
 
 			TypeProviders = ImmutableArray.Create<ITypeProvider>(
 				new MvvmTypeProvider(this)
 				);
 		}
+
+		private Lazy<INamedTypeSymbol> GetMandatorySymbolAsLazy(string fullyQualifiedName)
+			=> new(() => _generatorContext.Compilation.GetTypeByMetadataName(fullyQualifiedName) ?? throw new InvalidOperationException($"Unable to find type {fullyQualifiedName}"));
+
+		private Lazy<INamedTypeSymbol?> GetOptionalSymbolAsLazy(string fullyQualifiedName)
+			=> new(() => _generatorContext.Compilation.GetTypeByMetadataName(fullyQualifiedName));
+
+		private Lazy<INamedTypeSymbol> GetSpecialTypeSymbolAsLazy(SpecialType specialType)
+			=> new(() => _generatorContext.Compilation.GetSpecialType(specialType));
 
 		private static bool IsWinUIItem(Uno.Roslyn.MSBuildItem item)
 			=> item.GetMetadataValue("XamlRuntime") is { } xamlRuntime
