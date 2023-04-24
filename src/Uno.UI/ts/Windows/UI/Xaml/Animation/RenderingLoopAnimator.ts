@@ -52,6 +52,10 @@
 			this.scheduleAnimationFrame();
 		}
 
+		public static disableFrameReporting(jsHandle: number) {
+			RenderingLoopAnimator.getInstance(jsHandle).DisableFrameReporting();
+		}
+
 		public DisableFrameReporting() {
 			this._isEnabled = false;
 			this.unscheduleFrame();
