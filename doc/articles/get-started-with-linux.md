@@ -23,7 +23,7 @@ Using VS 2019 16.6 or later:
     - If you still want to use WSL 2 anyways, you can try [following those steps](https://skeptric.com/wsl2-xserver).
 - Install the [`dotnet new` templates](get-started-dotnet-new.md):
     ```
-    dotnet new -i Uno.ProjectTemplates.Dotnet
+    dotnet new -i Uno.Templates
     ```
 - Then create a new project using:
     ```
@@ -73,7 +73,7 @@ Now let's run the application:
     ```
 - Install the `dotnet new` templates:
     ```bash
-    dotnet new -i Uno.ProjectTemplates.Dotnet
+    dotnet new -i Uno.Templates
     ```
 
 You may also need to [install the Microsoft fonts](https://wiki.archlinux.org/title/Microsoft_fonts) manually.
@@ -85,7 +85,7 @@ You may also need to [install the Microsoft fonts](https://wiki.archlinux.org/ti
 
 - Install the `dotnet new` templates:
     ```bash
-    dotnet new -i Uno.ProjectTemplates.Dotnet
+    dotnet new -i Uno.Templates
     ```
 - Then create a new project using:
     ```bash

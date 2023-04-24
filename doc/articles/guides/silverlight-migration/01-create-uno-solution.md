@@ -13,7 +13,7 @@ You can use the dotnet cli templates to create an Uno solution with just the pro
 1. To install the Uno dotnet cli templates, enter the following command:
 
     ```powershell
-    dotnet new -i Uno.ProjectTemplates.Dotnet
+    dotnet new -i Uno.Templates
     ```
 
 1. To create the Uno solution with just UWP and WASM heads, enter the following command:
