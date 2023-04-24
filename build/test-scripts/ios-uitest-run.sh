@@ -118,6 +118,9 @@ xcrun simctl boot "$SIMULATOR_ID" || true
 echo "Install app on simulator: $SIMULATOR_ID"
 xcrun simctl install "$SIMULATOR_ID" "$UNO_UITEST_IOSBUNDLE_PATH" || true
 
+echo "Shutdown simulator: $SIMULATOR_ID ($UNO_UITEST_SIMULATOR_VERSION / $UNO_UITEST_SIMULATOR_NAME)"
+xcrun simctl shutdown "$SIMULATOR_ID" || true
+
 ## Pre-build the transform tool to get early warnings
 pushd $BUILD_SOURCESDIRECTORY/src/Uno.NUnitTransformTool
 dotnet build
