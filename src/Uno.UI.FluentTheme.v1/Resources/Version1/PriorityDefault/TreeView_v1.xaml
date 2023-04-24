@@ -36,6 +36,7 @@
                 <ControlTemplate TargetType="local:TreeView">
                     <local:TreeViewList
                         x:Name="ListControl"
+                        Background="{TemplateBinding Background}"
                         ItemTemplate="{TemplateBinding ItemTemplate}"
                         ItemTemplateSelector="{TemplateBinding ItemTemplateSelector}"
                         ItemContainerStyle="{TemplateBinding ItemContainerStyle}"
