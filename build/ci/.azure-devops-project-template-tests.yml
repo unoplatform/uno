@@ -54,50 +54,6 @@ jobs:
       ArtifactName: NugetPackages-Artifacts-reference-$(XAML_FLAVOR_BUILD)
       ArtifactType: Container
 
-- job: Dotnet_Template_Tests
-  displayName: 'Run dotnet new Templates Tests'
-
-  pool: ${{ parameters.poolName }}
-
-  dependsOn:
-    - Generate_Packages
-    - templates_package_build
-
-  variables:
-    # Force disable .NET Native for all samples validation
-    UseDotNetNativeToolchain: false
-
-  steps:
-  - task: DownloadBuildArtifacts@0
-    inputs:
-      artifactName: NugetPackages
-
-  - task: DownloadBuildArtifacts@0
-    inputs:
-      artifactName: private-templates
-
-  - template: templates/gitversion.yml
-  - template: templates/dotnet-install.yml
-  - template: templates/jdk-setup.yml
-
-  - template: templates/install-windows-sdk.yml
-    parameters:
-      sdkVersion: '18362' # Align with TargetPlatformVersion in templates
-
-  - script: copy $(System.ArtifactsDirectory)\NugetPackages\vslatest\*.nupkg $(Build.SourcesDirectory)\src\PackageCache
-    displayName: Copy Artifacts to PackageCache
-
-  - script: copy $(System.ArtifactsDirectory)\private-templates\*.nupkg $(Build.SourcesDirectory)\src\PackageCache
-    displayName: Copy Private Artifacts to PackageCache
-
-  - script: dotnet new -i $(System.ArtifactsDirectory)\private-templates\Uno.ProjectTemplates.Dotnet*.nupkg
-    displayName: Install Project Templates
-
-  - powershell: build\test-scripts\run-template-tests.ps1
-    displayName: Run Project Templates Tests
-    env:
-      BUILD_SOURCESDIRECTORY: $(BUILD.SOURCESDIRECTORY)
-
 - job: Dotnet_Template_Tests_NetCoreMobile
   displayName: 'Run .NET Mobile Templates Tests'
 
@@ -137,41 +93,6 @@ jobs:
     displayName: Run Project Templates Tests
     env:
       BUILD_SOURCESDIRECTORY: $(BUILD.SOURCESDIRECTORY)
-
-- job: Dotnet_Template_Tests_Linux
-  displayName: 'Run dotnet new Templates Tests - Linux'
-
-  pool:
-    vmImage: ${{ parameters.vmImageLinux }}
-
-  container: unoplatform/wasm-build:2.3
-
-  dependsOn: Generate_Packages
-
-  steps:
-  - task: DownloadBuildArtifacts@0
-    inputs:
-      artifactName: NugetPackages
-
-  - task: DownloadBuildArtifacts@0
-    inputs:
-      artifactName: private-templates
-
-  - template: templates/gitversion.yml
-
-  - script: cp $(System.ArtifactsDirectory)/NugetPackages/vslatest/*.nupkg $(Build.SourcesDirectory)/src/PackageCache
-    displayName: Copy Artifacts to PackageCache
-
-  - script: cp $(System.ArtifactsDirectory)/private-templates/*.nupkg $(Build.SourcesDirectory)/src/PackageCache
-    displayName: Copy Private Artifacts to PackageCache
-
-  - template: templates/dotnet-install.yml
-
-  - script: dotnet new -i $(Build.SourcesDirectory)/src/PackageCache/Uno.ProjectTemplates.Dotnet*.nupkg
-    displayName: Install Project Templates
-
-  - pwsh: build/test-scripts/run-template-tests-linux.ps1
-    displayName: Run Project Templates Tests
 
 - job: Dotnet_Template_Tests_net7_Linux
   displayName: 'Run dotnet new Templates Tests - Linux (net7)'
