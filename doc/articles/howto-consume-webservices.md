@@ -38,6 +38,10 @@ In this task, you will create a simple Single Page App with the Uno Platform. Th
     > [!IMPORTANT]
     > The C# and XAML snippets in this tutorial require that the solution is named **TheCatApiClient**. Using a different name will result in build errors when you copy code from this tutorial into the solution.
 
+1. Select the **Blank** preset. Then, click the **Create** button. Wait for the projects to be created and their dependencies to be restored.
+
+    ![Select startup type in the Uno platform template wizard](Assets/tutorial01/vsix-new-project-options.png)
+
 1. In the **Solution Explorer**, to update the Uno NuGet packages to the latest version, right-click on the Solution file **Solution 'TheCatApiClient'** and select **Manage NuGet Packages for Solution...** from the context menu.
 
     The **Manage Packages for Solution** page will open.
