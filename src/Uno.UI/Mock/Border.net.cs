@@ -18,7 +18,10 @@ namespace Windows.UI.Xaml.Controls
 				RemoveChild(previousValue);
 			}
 
-			AddChild(newValue);
+			if (newValue is not null)
+			{
+				AddChild(newValue);
+			}
 		}
 
 		bool ICustomClippingElement.AllowClippingToLayoutSlot => !(Child is UIElement ue) || ue.RenderTransform == null;
