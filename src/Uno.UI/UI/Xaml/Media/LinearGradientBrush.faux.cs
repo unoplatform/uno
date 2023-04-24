@@ -12,7 +12,10 @@ namespace Windows.UI.Xaml.Media;
 
 public partial class LinearGradientBrush
 {
+	private SolidColorBrush? _majorStopBrush;
 	private SolidColorBrush? _fauxOverlayBrush;
+
+	internal SolidColorBrush? MajorStopBrush => _majorStopBrush ??= CreateMajorBrush();
 
 	internal SolidColorBrush? FauxOverlayBrush => _fauxOverlayBrush ??= CreateFauxOverlayBrush();
 
@@ -68,6 +71,17 @@ public partial class LinearGradientBrush
 		var minorStop = GradientStops.First(s => s != majorStop);
 
 		return new SolidColorBrush(minorStop.Color);
+	}
+
+	private SolidColorBrush? CreateMajorBrush()
+	{
+		if (!CanApplySolidColorRendering())
+		{
+			return null;
+		}
+
+		var majorStop = GetMajorStop();
+		return new SolidColorBrush(majorStop!.Color);
 	}
 }
 #endif
