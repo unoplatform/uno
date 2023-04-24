@@ -5,10 +5,13 @@ using System.Threading;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Uno.UI.DataBinding;
 using Uno.UI.Xaml;
+using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Shapes;
 
 namespace Uno.UI.Tests.BinderTests
@@ -1374,6 +1377,57 @@ namespace Uno.UI.Tests.BinderTests
 			Assert.AreEqual(1, SUT.GetValue(property1));
 			Assert.AreEqual(2, SUT.GetValue(property2));
 			Assert.AreEqual(3, SUT.GetValue(property3));
+		}
+
+		[TestMethod]
+		public void When_AddCallback_OnPropertyChanged()
+		{
+			var brush = new SolidColorBrush();
+			IDisposable disposable = null;
+			IDisposable disposable2 = null;
+			disposable = brush.RegisterDisposablePropertyChangedCallback(OnBrushChanged);
+
+			void OnBrushChanged(ManagedWeakReference instance, DependencyProperty property, DependencyPropertyChangedEventArgs args)
+			{
+				disposable2 = brush.RegisterDisposablePropertyChangedCallback(OnInnerCallbackBrushChanged);
+			}
+
+			brush.Color = Colors.Red;
+
+			disposable?.Dispose();
+			disposable2?.Dispose();
+		}
+
+		private void OnInnerCallbackBrushChanged(ManagedWeakReference instance, DependencyProperty property, DependencyPropertyChangedEventArgs args)
+		{
+			Assert.Fail();
+		}
+
+		[TestMethod]
+		public void When_AddParentChanged_OnParentChanged()
+		{
+			var firstParent = new Windows.UI.Xaml.Controls.Border();
+			var secondParent = new Windows.UI.Xaml.Controls.Border();
+			var border = new Windows.UI.Xaml.Controls.Border();
+			firstParent.Child = border;
+			IDisposable disposable = null;
+			IDisposable disposable2 = null;
+			border.RegisterParentChangedCallback(1, OnParentChangedCallback);
+
+			void OnParentChangedCallback(object instance, object key, DependencyObjectParentChangedEventArgs args)
+			{
+				border.RegisterParentChangedCallback(2, OnInnerParentChangedCallback);
+			}
+
+			firstParent.Child = null;
+
+			disposable?.Dispose();
+			disposable2?.Dispose();
+		}
+
+		private void OnInnerParentChangedCallback(object instance, object key, DependencyObjectParentChangedEventArgs args)
+		{
+			Assert.Fail();
 		}
 
 		[TestMethod]
