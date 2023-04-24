@@ -30,95 +30,95 @@ using Uno.Xaml.Schema;
 
 using Pair = System.Collections.Generic.KeyValuePair<Uno.Xaml.XamlMember,string>;
 
-using IsIncludedType = System.Func<string, string, System.Collections.Generic.KeyValuePair<bool?, bool>>;
-
 namespace Uno.Xaml
 {
+	public delegate KeyValuePair<bool?, bool> IsIncluded(string localName, string namespaceUri);
+
 	public class XamlXmlReader : XamlReader, IXamlLineInfo
 	{
 		#region constructors
 
-		public XamlXmlReader (Stream stream, IsIncludedType isIncluded)
-			: this (stream, (XamlXmlReaderSettings) null, isIncluded)
+		public XamlXmlReader (Stream stream)
+			: this (stream, (XamlXmlReaderSettings) null)
 		{
 		}
 
-		public XamlXmlReader (string fileName, IsIncludedType isIncluded)
-			: this (fileName, (XamlXmlReaderSettings) null, isIncluded)
+		public XamlXmlReader (string fileName)
+			: this (fileName, (XamlXmlReaderSettings) null)
 		{
 		}
 
-		public XamlXmlReader (TextReader textReader, IsIncludedType isIncluded)
-			: this (textReader, (XamlXmlReaderSettings) null, isIncluded)
+		public XamlXmlReader (TextReader textReader)
+			: this (textReader, (XamlXmlReaderSettings) null)
 		{
 		}
 
-		public XamlXmlReader (XmlReader xmlReader, IsIncludedType isIncluded)
-			: this (xmlReader, (XamlXmlReaderSettings) null, isIncluded)
+		public XamlXmlReader (XmlReader xmlReader)
+			: this (xmlReader, (XamlXmlReaderSettings) null)
 		{
 		}
 
-		public XamlXmlReader (Stream stream, XamlSchemaContext schemaContext, IsIncludedType isIncluded)
-			: this (stream, schemaContext, null, isIncluded)
+		public XamlXmlReader (Stream stream, XamlSchemaContext schemaContext)
+			: this (stream, schemaContext, null)
 		{
 		}
 
-		public XamlXmlReader (Stream stream, XamlXmlReaderSettings settings, IsIncludedType isIncluded)
-			: this (stream, new XamlSchemaContext (null, null), settings, isIncluded)
+		public XamlXmlReader (Stream stream, XamlXmlReaderSettings settings)
+			: this (stream, new XamlSchemaContext (null, null), settings)
 		{
 		}
 
-		public XamlXmlReader (string fileName, XamlSchemaContext schemaContext, IsIncludedType isIncluded)
-			: this (fileName, schemaContext, null, isIncluded)
+		public XamlXmlReader (string fileName, XamlSchemaContext schemaContext)
+			: this (fileName, schemaContext, null)
 		{
 		}
 
-		public XamlXmlReader (string fileName, XamlXmlReaderSettings settings, IsIncludedType isIncluded)
-			: this (fileName, new XamlSchemaContext (null, null), settings, isIncluded)
+		public XamlXmlReader (string fileName, XamlXmlReaderSettings settings)
+			: this (fileName, new XamlSchemaContext (null, null), settings)
 		{
 		}
 
-		public XamlXmlReader (TextReader textReader, XamlSchemaContext schemaContext, IsIncludedType isIncluded)
-			: this (textReader, schemaContext, null, isIncluded)
+		public XamlXmlReader (TextReader textReader, XamlSchemaContext schemaContext)
+			: this (textReader, schemaContext, null)
 		{
 		}
 
-		public XamlXmlReader (TextReader textReader, XamlXmlReaderSettings settings, IsIncludedType isIncluded)
-			: this (textReader, new XamlSchemaContext (null, null), settings, isIncluded)
+		public XamlXmlReader (TextReader textReader, XamlXmlReaderSettings settings)
+			: this (textReader, new XamlSchemaContext (null, null), settings)
 		{
 		}
 
-		public XamlXmlReader (XmlReader xmlReader, XamlSchemaContext schemaContext, IsIncludedType isIncluded)
-			: this (xmlReader, schemaContext, null, isIncluded)
+		public XamlXmlReader (XmlReader xmlReader, XamlSchemaContext schemaContext)
+			: this (xmlReader, schemaContext, null)
 		{
 		}
 
-		public XamlXmlReader (XmlReader xmlReader, XamlXmlReaderSettings settings, IsIncludedType isIncluded)
-			: this (xmlReader, new XamlSchemaContext (null, null), settings, isIncluded)
+		public XamlXmlReader (XmlReader xmlReader, XamlXmlReaderSettings settings)
+			: this (xmlReader, new XamlSchemaContext (null, null), settings)
 		{
 		}
 
-		public XamlXmlReader (Stream stream, XamlSchemaContext schemaContext, XamlXmlReaderSettings settings, IsIncludedType isIncluded)
-			: this (XmlReader.Create (stream), schemaContext, settings, isIncluded)
+		public XamlXmlReader (Stream stream, XamlSchemaContext schemaContext, XamlXmlReaderSettings settings)
+			: this (XmlReader.Create (stream), schemaContext, settings)
 		{
 		}
 
 		static readonly XmlReaderSettings file_reader_settings = new XmlReaderSettings () { CloseInput =true };
 
-		public XamlXmlReader (string fileName, XamlSchemaContext schemaContext, XamlXmlReaderSettings settings, IsIncludedType isIncluded)
-			: this (XmlReader.Create (fileName, file_reader_settings), schemaContext, settings, isIncluded)
+		public XamlXmlReader (string fileName, XamlSchemaContext schemaContext, XamlXmlReaderSettings settings)
+			: this (XmlReader.Create (fileName, file_reader_settings), schemaContext, settings)
 		{
 		}
 
-		public XamlXmlReader (TextReader textReader, XamlSchemaContext schemaContext, XamlXmlReaderSettings settings, IsIncludedType isIncluded)
-			: this (XmlReader.Create (textReader), schemaContext, settings, isIncluded)
+		public XamlXmlReader (TextReader textReader, XamlSchemaContext schemaContext, XamlXmlReaderSettings settings)
+			: this (XmlReader.Create (textReader), schemaContext, settings)
 		{
 		}
 
 		// Uno specific: includeXamlNamespaces and excludeXamlNamespaces are Uno specific.
-		public XamlXmlReader (XmlReader xmlReader, XamlSchemaContext schemaContext, XamlXmlReaderSettings settings, IsIncludedType isIncluded)
+		public XamlXmlReader (XmlReader xmlReader, XamlSchemaContext schemaContext, XamlXmlReaderSettings settings, IsIncluded isIncluded = null)
 		{
-			parser = new XamlXmlParser (xmlReader, schemaContext, settings, isIncluded);
+			parser = new XamlXmlParser (xmlReader, schemaContext, settings, isIncluded ?? ((_, _) => new KeyValuePair<bool?, bool>(null, false)));
 		}
 
 		#endregion
@@ -208,9 +208,9 @@ namespace Uno.Xaml
 	class XamlXmlParser
 	{
 		// Uno specific
-		private readonly IsIncludedType _isIncluded;
+		private readonly IsIncluded _isIncluded;
 
-		public XamlXmlParser (XmlReader xmlReader, XamlSchemaContext schemaContext, XamlXmlReaderSettings settings, IsIncludedType isIncluded)
+		public XamlXmlParser (XmlReader xmlReader, XamlSchemaContext schemaContext, XamlXmlReaderSettings settings, IsIncluded isIncluded)
 		{
 			if (xmlReader == null)
 				throw new ArgumentNullException ("xmlReader");

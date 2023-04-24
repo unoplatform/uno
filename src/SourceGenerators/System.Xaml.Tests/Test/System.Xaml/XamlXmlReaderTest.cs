@@ -52,7 +52,7 @@ namespace MonoTests.Uno.Xaml
 
 			var s = new XmlReaderSettings { IgnoreWhitespace = ignoreWhitespace };
 
-			return new XamlXmlReader (XmlReader.Create (new StringReader (xml), s), (_, _) => new KeyValuePair<bool?, bool>(null, false));
+			return new XamlXmlReader (XmlReader.Create (new StringReader (xml), s));
 		}
 
 		void ReadTest (string filename)
@@ -65,7 +65,7 @@ namespace MonoTests.Uno.Xaml
 		[Test]
 		public void SchemaContext ()
 		{
-			Assert.AreNotEqual (XamlLanguage.Type.SchemaContext, new XamlXmlReader (XmlReader.Create (new StringReader ("<root/>")), (_, _) => new KeyValuePair<bool?, bool>(null, false)).SchemaContext, "#1");
+			Assert.AreNotEqual (XamlLanguage.Type.SchemaContext, new XamlXmlReader (XmlReader.Create (new StringReader ("<root/>"))).SchemaContext, "#1");
 		}
 
 		[Test]

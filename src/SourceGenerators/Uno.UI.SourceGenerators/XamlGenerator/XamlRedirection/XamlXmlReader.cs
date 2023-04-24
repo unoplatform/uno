@@ -3,15 +3,13 @@
 using System;
 using System.Xml;
 
-using IsIncludedType = System.Func<string, string, System.Collections.Generic.KeyValuePair<bool?, bool>>;
-
 namespace Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection
 {
 	internal class XamlXmlReader : IDisposable
 	{
 		private __uno::Uno.Xaml.XamlXmlReader _unoReader;
 
-		public XamlXmlReader(XmlReader document, XamlSchemaContext context, XamlXmlReaderSettings settings, IsIncludedType isIncluded)
+		public XamlXmlReader(XmlReader document, XamlSchemaContext context, XamlXmlReaderSettings settings, __uno::Uno.Xaml.IsIncluded isIncluded)
 		{
 			_unoReader = new __uno::Uno.Xaml.XamlXmlReader(document, context.UnoInner, settings.UnoInner, isIncluded);
 		}
