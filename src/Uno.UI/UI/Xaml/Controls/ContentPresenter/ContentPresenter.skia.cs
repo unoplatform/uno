@@ -31,21 +31,6 @@ public partial class ContentPresenter : FrameworkElement
 		Unloaded += (s, e) => UnregisterNativeHostSupport();
 	}
 
-	private void SetUpdateTemplate()
-	{
-		UpdateContentTemplateRoot();
-	}
-
-	partial void RegisterContentTemplateRoot()
-	{
-		AddChild(ContentTemplateRoot);
-	}
-
-	partial void UnregisterContentTemplateRoot()
-	{
-		RemoveChild(ContentTemplateRoot);
-	}
-
 	partial void TryRegisterNativeElement(object newValue)
 	{
 		if (CoreWindow.Main.IsNativeElement(newValue))
@@ -87,10 +72,6 @@ public partial class ContentPresenter : FrameworkElement
 			XamlRoot.InvalidateRender -= UpdateNativeElementPosition;
 		}
 	}
-
-	bool ICustomClippingElement.AllowClippingToLayoutSlot => true;
-
-	bool ICustomClippingElement.ForceClippingToLayoutSlot => CornerRadius != CornerRadius.None;
 
 	partial void ArrangeNativeElement(Rect arrangeRect)
 	{
