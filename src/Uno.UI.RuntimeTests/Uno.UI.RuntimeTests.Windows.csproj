@@ -6,8 +6,6 @@
 		<RootNamespace>Uno.UI.RuntimeTests</RootNamespace>
 
 		<DefineConstants>$(DefineConstants);IS_RUNTIME_UI_TESTS</DefineConstants>
-		
-		<Platforms>AnyCPU;x86</Platforms>
 	</PropertyGroup>
 
 	<Import Project="../targetframework-override.props" />
