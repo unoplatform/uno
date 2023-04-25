@@ -111,7 +111,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 		private static void ThrowNotImplementedOnNonTestPlatforms()
 		{
-#if !NET461
+#if !IS_UNIT_TESTS
 			throw new NotImplementedException();
 #endif
 		}
