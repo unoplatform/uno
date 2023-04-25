@@ -707,6 +707,17 @@ namespace Uno.Xaml
 
 					yield return ni;
 				}
+				var currentNodeType = r.NodeType;
+				var currentNodeValue = r.Value;
+				var nextNodeType = r.MoveToContent();
+				if (currentNodeType == XmlNodeType.Whitespace && nextNodeType != XmlNodeType.EndElement)
+				{
+					yield return Node(XamlNodeType.Value, " ");
+				}
+				if (currentNodeType == XmlNodeType.SignificantWhitespace)
+				{
+					yield return Node(XamlNodeType.Value, currentNodeValue);
+				}
 			}
 		}
 

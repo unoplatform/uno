@@ -9,6 +9,7 @@ By default, controls in Uno Platform applications are rendered exactly the same 
 ## About native control styles
 
 For supported controls, two pre-defined styles are provided:
+
 * NativeDefault[Control] which is customized to match the UI guidelines of the target platform.
 * XamlDefault[Control] which are consistent in look and behavior across platforms.
 
@@ -21,13 +22,15 @@ The full set of native control styles can be found in [Generic.Native.xaml](http
 > [!NOTE]
 > Third-party libraries can define native variants of default styles for custom controls, using the `xamarin:IsNativeStyle="True"` tag in XAML. These will be used if the consuming application is configured to use native styles.
 
-On WASM, the `NativeDefault[Control]` styles are currently only aliases to the `XamlDefault[Control]`, for code compatibility with other platforms. 
+On WASM, the `NativeDefault[Control]` styles are currently only aliases to the `XamlDefault[Control]`, for code compatibility with other platforms.
 
 ## Enabling native control styles globally
 
 An application can set native styles as the default for supported controls by setting the static flag `Uno.UI.FeatureConfiguration.Style.UseUWPDefaultStyles = false;` somewhere in app code (typically from the `App()` constructor in `App.cs` or `App.xaml.cs`). It's also possible to configure only certain control types to default to the native style, by adding an entry to `UseUWPDefaultStylesOverride` for that type. For example, to default to native styling for every `ToggleSwitch` in the app, you would add the following code: `Uno.UI.FeatureConfiguration.Style.UseUWPDefaultStylesOverride[typeof(ToggleSwitch)] = false;`
 
-The default Uno app template includes Fluent control styles in the application. If enabling native control styles globally, these Fluent resources **should be removed from `App.xaml`**, by removing `<XamlControlsResources />` from the `Resources.MergedDictionaries` declaration.
+The default Uno app template includes Fluent control styles in the application. If enabling native control styles globally, these Fluent resources **should be removed from `AppResources.xaml`**, by removing `<XamlControlsResources />` from the `Resources.MergedDictionaries` declaration.
+
+In order for the native styles to be used globally by default, you cannot include resources in your `AppResources.xaml` that also contain implicit styles for those same controls. For example, if you are using Uno.Material or Uno.Cupertino, those resources will override the native styles and, therefore, cannot be used if you are planning to enable native styles globally. You should remove the corresponding resource dictionaries from `AppResources.xaml`.
 
 ### Native navigation styles
 
@@ -41,49 +44,44 @@ Since there are several controls that participate in navigation (`Frame`, `Comma
 
 ### Example
 
-This sample shows how you'd enable native styles globally for your whole app. You need to modify both `App.xaml.cs` and `App.xaml`:
+This sample shows how you'd enable native styles globally for your whole app. You need to modify both `App.cs` and `AppResources.xaml`:
 
-App.xaml.cs:
-
-```csharp
-	public sealed partial class App : Application
-	{
-		/// <summary>
-		/// Initializes the singleton application object.  This is the first line of authored code
-		/// executed, and as such is the logical equivalent of main() or WinMain().
-		/// </summary>
-		public App()
-		{
-			ConfigureFilters(global::Uno.Extensions.LogExtensionPoint.AmbientLoggerFactory);
-
-			this.InitializeComponent();
-			this.Suspending += OnSuspending;
-
-#if !NETFX_CORE
-			// Enable native styles on Android and iOS for all supported controls
-			Uno.UI.FeatureConfiguration.Style.UseUWPDefaultStyles = false;
-
-			// Enable native styling only for ToggleSwitch instances
-			// Uno.UI.FeatureConfiguration.Style.UseUWPDefaultStylesOverride[typeof(ToggleSwitch)] = false;
-
-			// Enable native frame navigation on Android and iOS
-			// Uno.UI.FeatureConfiguration.Style.ConfigureNativeFrameNavigation();
-#endif
-		}
-```
-
-App.xaml:
+App.cs:
 
 ```diff
-    <Application.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
--                <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" /> <!-- Remove Fluent styles to allow native styles from framework to be used -->
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </Application.Resources>
+public class App : Application
+{
+    public static Window? _window;
+
++    public App()
++    {
++ #if HAS_UNO
++        FeatureConfiguration.Style.UseUWPDefaultStyles = false;
++ #endif
++    }
+
+    protected override void OnLaunched(LaunchActivatedEventArgs args)
+    {
+        // OnLaunched Logic...
+    }
+}
 ```
 
+AppResources.xaml:
+
+```diff
+ <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <ResourceDictionary.MergedDictionaries>
+-        <!--  Load WinUI resources  -->
+-        <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
+
+    </ResourceDictionary.MergedDictionaries>
+    <!--  Add resources here  -->
+
+ </ResourceDictionary>
+```
 
 ## Enable native styling on a single control
 
@@ -93,21 +91,21 @@ For example, to use native styling on a single `CheckBox` in XAML:
 
 ```xml
 <Page x:Class="MyApp.MainPage"
-	  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-	  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	  xmlns:local="using:MyApp"
-	  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-	  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	  xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-	  xmlns:not_win="http://uno.ui/not_win"
-	  mc:Ignorable="d not_win"
-	  Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:local="using:MyApp"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:not_win="http://uno.ui/not_win"
+      mc:Ignorable="d not_win"
+      Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-	<Grid>
-		<!--This check box will use a platform-native style on Android and iOS-->
-		<CheckBox IsChecked="{Binding OptionSelected}"
-				  not_win:Style="{StaticResource NativeDefaultCheckBox}" />
-	</Grid>
+    <Grid>
+        <!--  This check box will use a platform-native style on Android and iOS  -->
+        <CheckBox IsChecked="{Binding OptionSelected}"
+                  not_win:Style="{StaticResource NativeDefaultCheckBox}" />
+    </Grid>
 </Page>
 ```
 

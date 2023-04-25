@@ -1,7 +1,7 @@
 ﻿using System.Text;
 using Microsoft.CodeAnalysis.Text;
 
-namespace Uno.UI.SourceGenerators.XamlGenerator.Utils;
+namespace Uno.UI.SourceGenerators.Utils;
 
 /// <summary>
 /// A SourceText implementation that is more performant for cases when we already have a StringBuilder.

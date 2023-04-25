@@ -5,42 +5,41 @@
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls;
+
+public partial class SymbolIconSource : IconSource
 {
-	public partial class SymbolIconSource : IconSource
+	public Symbol Symbol
 	{
-		public Symbol Symbol
+		get => (Symbol)GetValue(SymbolProperty);
+		set => SetValue(SymbolProperty, value);
+	}
+
+	public static DependencyProperty SymbolProperty { get; } =
+		DependencyProperty.Register(nameof(Symbol), typeof(Symbol), typeof(SymbolIconSource), new FrameworkPropertyMetadata(Symbol.Emoji, OnPropertyChanged));
+
+	private protected override IconElement CreateIconElementCore()
+	{
+		var symbolIcon = new SymbolIcon()
 		{
-			get => (Symbol)GetValue(SymbolProperty);
-			set => SetValue(SymbolProperty, value);
+			Symbol = Symbol
+		};
+
+		if (Foreground != null)
+		{
+			symbolIcon.Foreground = Foreground;
 		}
 
-		public static DependencyProperty SymbolProperty { get; } =
-			DependencyProperty.Register(nameof(Symbol), typeof(Symbol), typeof(SymbolIconSource), new FrameworkPropertyMetadata(Symbol.Emoji, OnPropertyChanged));
+		return symbolIcon;
+	}
 
-		private protected override IconElement CreateIconElementCore()
+	private protected override DependencyProperty GetIconElementPropertyCore(DependencyProperty sourceProperty)
+	{
+		if (sourceProperty == SymbolProperty)
 		{
-			var symbolIcon = new SymbolIcon()
-			{
-				Symbol = Symbol
-			};
-
-			if (Foreground != null)
-			{
-				symbolIcon.Foreground = Foreground;
-			}
-
-			return symbolIcon;
+			return SymbolIcon.SymbolProperty;
 		}
 
-		private protected override DependencyProperty GetIconElementPropertyCore(DependencyProperty sourceProperty)
-		{
-			if (sourceProperty == SymbolProperty)
-			{
-				return SymbolIcon.SymbolProperty;
-			}
-
-			return base.GetIconElementPropertyCore(sourceProperty);
-		}
+		return base.GetIconElementPropertyCore(sourceProperty);
 	}
 }
