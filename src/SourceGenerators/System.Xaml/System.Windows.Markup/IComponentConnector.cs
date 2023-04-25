@@ -28,7 +28,7 @@ using Uno.Xaml.Schema;
 
 namespace System.Windows.Markup
 {
-#if NET461
+#if IS_UNIT_TESTS
 	[System.Runtime.CompilerServices.TypeForwardedFrom(Consts.AssemblyWindowsBase)]
 	public interface IComponentConnector
 	{
