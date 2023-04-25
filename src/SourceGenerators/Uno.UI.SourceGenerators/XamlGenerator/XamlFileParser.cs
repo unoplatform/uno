@@ -169,22 +169,22 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return XmlReader.Create(new StringReader(adjusted));
 		}
 
-		private KeyValuePair<bool?, bool> IsIncluded(string localName, string namespaceUri)
+		private __uno::Uno.Xaml.IsIncludedResult IsIncluded(string localName, string namespaceUri)
 		{
 			if (_includeXamlNamespaces.Contains(localName))
 			{
-				return new KeyValuePair<bool?, bool>(true, false);
+				return __uno::Uno.Xaml.IsIncludedResult.ForceInclude;
 			}
 			else if (_excludeXamlNamespaces.Contains(localName))
 			{
-				return new KeyValuePair<bool?, bool>(false, false);
+				return __uno::Uno.Xaml.IsIncludedResult.ForceExclude;
 			}
 
 			var valueSplit = namespaceUri.Split('?');
 			if (valueSplit.Length != 2)
 			{
 				// Not a (valid) conditional
-				return new KeyValuePair<bool?, bool>(null, false);
+				return __uno::Uno.Xaml.IsIncludedResult.Default;
 			}
 
 			var elements = valueSplit[1].Split('(', ',', ')');
@@ -200,9 +200,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						throw new InvalidOperationException($"Syntax error while parsing conditional namespace expression {namespaceUri}");
 					}
 
-					return new KeyValuePair<bool?, bool>(methodName == nameof(ApiInformation.IsApiContractPresent) ?
+					var isIncluded1 = methodName == nameof(ApiInformation.IsApiContractPresent) ?
 						ApiInformation.IsApiContractPresent(elements[1], majorVersion) :
-						ApiInformation.IsApiContractNotPresent(elements[1], majorVersion), false);
+						ApiInformation.IsApiContractNotPresent(elements[1], majorVersion);
+					return isIncluded1
+						? __uno::Uno.Xaml.IsIncludedResult.ForceInclude
+						: __uno::Uno.Xaml.IsIncludedResult.ForceExclude;
 				case nameof(ApiInformation.IsTypePresent):
 				case nameof(ApiInformation.IsTypeNotPresent):
 					if (elements.Length < 2)
@@ -210,11 +213,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						throw new InvalidOperationException($"Syntax error while parsing conditional namespace expression {namespaceUri}");
 					}
 					var expectedType = elements[1];
-					return new KeyValuePair<bool?, bool>(methodName == nameof(ApiInformation.IsTypePresent) ?
+					var isIncluded2 = methodName == nameof(ApiInformation.IsTypePresent) ?
 						ApiInformation.IsTypePresent(elements[1], _metadataHelper) :
-						ApiInformation.IsTypeNotPresent(elements[1], _metadataHelper), true);
+						ApiInformation.IsTypeNotPresent(elements[1], _metadataHelper);
+					return isIncluded2
+						? __uno::Uno.Xaml.IsIncludedResult.ForceIncludeWithCacheDisabled
+						: __uno::Uno.Xaml.IsIncludedResult.ForceExclude;
 				default:
-					return new KeyValuePair<bool?, bool>(null, false); // TODO: support IsPropertyPresent
+					return __uno::Uno.Xaml.IsIncludedResult.Default; // TODO: support IsPropertyPresent
 			}
 		}
 

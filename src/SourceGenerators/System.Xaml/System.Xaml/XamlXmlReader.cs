@@ -32,7 +32,38 @@ using Pair = System.Collections.Generic.KeyValuePair<Uno.Xaml.XamlMember,string>
 
 namespace Uno.Xaml
 {
-	public delegate KeyValuePair<bool?, bool> IsIncluded(string localName, string namespaceUri);
+	public readonly struct IsIncludedResult : IEquatable<IsIncludedResult>
+	{
+		public static IsIncludedResult Default { get; } = new IsIncludedResult(isIncluded: null, disableCaching: false);
+		public static IsIncludedResult ForceExclude { get; } = new IsIncludedResult(isIncluded: false, disableCaching: false);
+		public static IsIncludedResult ForceInclude { get; } = new IsIncludedResult(isIncluded: true, disableCaching: false);
+		public static IsIncludedResult ForceIncludeWithCacheDisabled { get; } = new IsIncludedResult(isIncluded: true, disableCaching: true);
+
+		public bool? IsIncluded { get; }
+		public bool DisableCaching { get; }
+
+		private IsIncludedResult(bool? isIncluded, bool disableCaching)
+		{
+			IsIncluded = isIncluded;
+			DisableCaching = disableCaching;
+		}
+
+		public override bool Equals(object obj) => obj is IsIncludedResult result && Equals(result);
+		public bool Equals(IsIncludedResult other) => IsIncluded == other.IsIncluded && DisableCaching == other.DisableCaching;
+
+		public override int GetHashCode()
+		{
+			var hashCode = 676255761;
+			hashCode = hashCode * -1521134295 + IsIncluded.GetHashCode();
+			hashCode = hashCode * -1521134295 + DisableCaching.GetHashCode();
+			return hashCode;
+		}
+
+		public static bool operator ==(IsIncludedResult left, IsIncludedResult right) => left.Equals(right);
+		public static bool operator !=(IsIncludedResult left, IsIncludedResult right) => !(left == right);
+	}
+
+	public delegate IsIncludedResult IsIncluded(string localName, string namespaceUri);
 
 	public class XamlXmlReader : XamlReader, IXamlLineInfo
 	{
@@ -118,7 +149,7 @@ namespace Uno.Xaml
 		// Uno specific: includeXamlNamespaces and excludeXamlNamespaces are Uno specific.
 		public XamlXmlReader (XmlReader xmlReader, XamlSchemaContext schemaContext, XamlXmlReaderSettings settings, IsIncluded isIncluded = null)
 		{
-			parser = new XamlXmlParser (xmlReader, schemaContext, settings, isIncluded ?? ((_, _) => new KeyValuePair<bool?, bool>(null, false)));
+			parser = new XamlXmlParser (xmlReader, schemaContext, settings, isIncluded ?? ((_, _) => IsIncludedResult.Default));
 		}
 
 		#endregion
@@ -907,8 +938,8 @@ namespace Uno.Xaml
 		private bool IsIgnored(string localName, string namespaceUri, out bool shouldTreatAsDefaultNamespace)
 		{
 			var result = _isIncluded(localName, namespaceUri);
-			var isIncluded = result.Key;
-			DisableCaching |= result.Value;
+			var isIncluded = result.IsIncluded;
+			DisableCaching |= result.DisableCaching;
 			if (isIncluded == true)
 			{
 				shouldTreatAsDefaultNamespace = true;

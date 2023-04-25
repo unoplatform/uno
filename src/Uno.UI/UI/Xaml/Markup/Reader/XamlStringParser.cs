@@ -32,7 +32,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 			// Force the line info, otherwise it will be enabled only when the debugger is attached.
 			var settings = new XamlXmlReaderSettings() { ProvideLineInfo = true };
 
-			using (var reader = new XamlXmlReader(document, context, settings, (_, _) => new KeyValuePair<bool?, bool>(null, false)))
+			using (var reader = new XamlXmlReader(document, context, settings, (_, _) => new IsIncludedResult(isIncluded: null, disableCaching false)))
 			{
 				if (reader.Read())
 				{
