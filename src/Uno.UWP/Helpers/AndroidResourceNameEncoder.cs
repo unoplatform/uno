@@ -1,21 +1,13 @@
 #nullable enable
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace Uno
 {
 	internal static class AndroidResourceNameEncoder
 	{
 		private const string NumberPrefix = "__";
-
-		// These characters are not supported on Android, but they're used by the attached property localization syntax.
-		// Example: "MyUid.[using:Windows.UI.Xaml.Automation]AutomationProperties.Name"
-		private static readonly Regex sanitizeName = new Regex(@"[^a-zA-Z0-9_.]", RegexOptions.Compiled);
 
 		/// <summary>
 		/// Encode a resource name to remove characters that are not supported on Android.
@@ -24,11 +16,22 @@ namespace Uno
 		/// <returns>The encoded resource name for the Android Strings.xml file.</returns>
 		public static string Encode(string key)
 		{
-			// Checks whether the key contains unsupported characters
-			key = sanitizeName.Replace(key, "_");
+			var charArray = key.ToCharArray();
+			for (int i = 0; i < charArray.Length; i++)
+			{
+				// Checks whether the key contains unsupported characters
+				// These characters are not supported on Android, but they're used by the attached property localization syntax.
+				// Example: "MyUid.[using:Windows.UI.Xaml.Automation]AutomationProperties.Name"
+				if (charArray[i] is not ((>= 'a' and <= 'z') or (>= 'A' and <= 'Z') or (>= '0' and <= '9') or '_' or '.'))
+				{
+					charArray[i] = '_';
+				}
+			}
+
+			key = new string(charArray);
 
 			//Checks if the keys are starting by a number because they are invalid in C#
-			if (int.TryParse(key.Substring(0, 1), out var number))
+			if (int.TryParse(key.Substring(0, 1), out _))
 			{
 				key = $"{NumberPrefix}{key}";
 			}
