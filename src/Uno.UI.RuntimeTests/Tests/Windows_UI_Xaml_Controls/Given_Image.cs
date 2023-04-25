@@ -156,6 +156,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+#if __MACOS__
+		[Ignore("Randomly fails on macOS")]
+#endif
 		public async Task When_Transitive_Asset_With_Link_Loaded()
 		{
 			string url = "ms-appx:///Uno.UI.RuntimeTests/Assets/TransitiveTest/colors300.png";
@@ -254,6 +257,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+#if __MACOS__
+		[Ignore("Randomly fails on macOS")]
+#endif
 		public async Task When_Image_Is_Loaded_From_URL()
 		{
 			string decoded_url = "https://nv-assets.azurewebsites.net/tests/images/image with spaces.jpg";

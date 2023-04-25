@@ -13,34 +13,14 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property FontSize
 		// Skipping already declared property FontFamily
 		// Skipping already declared property IsTextScaleFactorEnabled
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool MirroredWhenRightToLeft
-		{
-			get
-			{
-				return (bool)this.GetValue(MirroredWhenRightToLeftProperty);
-			}
-			set
-			{
-				this.SetValue(MirroredWhenRightToLeftProperty, value);
-			}
-		}
-		#endif
+		// Skipping already declared property MirroredWhenRightToLeft
 		// Skipping already declared property FontFamilyProperty
 		// Skipping already declared property FontSizeProperty
 		// Skipping already declared property FontStyleProperty
 		// Skipping already declared property FontWeightProperty
 		// Skipping already declared property GlyphProperty
 		// Skipping already declared property IsTextScaleFactorEnabledProperty
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty MirroredWhenRightToLeftProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(MirroredWhenRightToLeft), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.FontIcon), 
-			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
-		#endif
+		// Skipping already declared property MirroredWhenRightToLeftProperty
 		// Skipping already declared method Windows.UI.Xaml.Controls.FontIcon.FontIcon()
 		// Forced skipping of method Windows.UI.Xaml.Controls.FontIcon.FontIcon()
 		// Forced skipping of method Windows.UI.Xaml.Controls.FontIcon.Glyph.get
