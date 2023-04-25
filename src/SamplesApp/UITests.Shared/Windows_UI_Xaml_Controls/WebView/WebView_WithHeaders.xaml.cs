@@ -21,7 +21,7 @@ namespace Uno.UI.Samples.Content.UITests.WebView
 		{
 			var url = "http://requestb.in/rw35narw";
 			MyTextBlock.Text = $"Inspect data at {url}?inspect";
-			var request = new HttpRequestMessage(HttpMethod.Get, new Uri(url));
+			var request = new global::System.Net.Http.HttpRequestMessage(HttpMethod.Get, new Uri(url));
 			request.Headers.Add("HELLO", "TESTTEST, TEST2");
 			request.Headers.Add("HELLO2", "TEST111");
 			MyWebView2.NavigateWithHttpRequestMessage(request);
