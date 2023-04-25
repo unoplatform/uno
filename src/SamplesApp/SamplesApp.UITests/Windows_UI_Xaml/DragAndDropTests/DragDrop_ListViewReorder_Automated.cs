@@ -22,28 +22,34 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.DragAndDropTests
 		[Test]
 		[AutoRetry]
 		[ActivePlatforms(Platform.Browser)] // TODO: support drag-and-drop testing on mobile https://github.com/unoplatform/Uno.UITest/issues/31
-		public void When_Disabled()
+		public async Task When_Disabled()
 		{
 			Run("UITests.Windows_UI_Xaml.DragAndDrop.DragDrop_ListView", skipInitialScreenshot: true);
 
 			var sut = _app.Marked("SUT");
 			var mode = _app.Marked("DragMode");
 
+			_app.WaitForElement(sut);
+			await Task.Delay(250); // wait out the EntranceThemeTransition (duration=100)
+
+			// Disable re-ordering
 			mode.SetDependencyPropertyValue("IsChecked", "False");
 
 			var before = TakeScreenshot("Before", ignoreInSnapshotCompare: true);
 
-			// Attempt to re-order
+			// Attempt to re-order by dragging from item1 (orange) to item3 (green)
 			var sutBounds = _app.Query(sut).Single().Rect;
 			var x = sutBounds.X + 50;
 			var srcY = Item(sutBounds, 1);
 			var dstY = Item(sutBounds, 3);
-
 			_app.DragCoordinates(x, srcY, x, dstY);
+
+			// Tap outside the ListView to get rid of PointerOver visual from the step above
+			_app.TapCoordinates(sutBounds.CenterX, sutBounds.Bottom + 10);
 
 			var after = TakeScreenshot("After", ignoreInSnapshotCompare: true);
 
-			// note: we test only 100 pixels width to avoid failure due to scrollbar being visible in "after" screenshot
+			// note: we only test the left-most 100 pixels width to avoid failure due to scrollbar being visible in "after" screenshot
 			var testBounds = new Rectangle((int)sutBounds.X, (int)sutBounds.Y, 100, (int)sutBounds.Height);
 			ImageAssert.AreEqual(before, after, testBounds);
 		}
