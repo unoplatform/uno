@@ -206,6 +206,15 @@ namespace Uno.UI.RemoteControl.HotReload
 			{
 				parentAsContentControl.Content = newView;
 			}
+			else if (newView is Page newPage && oldView is Page oldPage)
+			{
+				// In the case of Page, swapping the actual page is not supported, so we
+				// need to swap the content of the page instead. This can happen if the Frame
+				// is using a native presenter which does not use the `Frame.Content` property.
+				oldPage.DataContext = null;
+				oldPage.Content = newPage;
+				newPage.Frame = oldPage.Frame;
+			}
 			else
 			{
 				VisualTreeHelper.SwapViews(oldView, newView);

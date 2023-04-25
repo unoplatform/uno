@@ -21,6 +21,13 @@ namespace Windows.UI.Xaml
 			{
 				XamlReader.LoadUsingComponent(document, component);
 			}
+			else
+			{
+				if (typeof(VisualTreeHelper).Log().IsEnabled(LogLevel.Debug))
+				{
+					typeof(VisualTreeHelper).Log().LogDebug($"Skipping component load, could not find registration for {resourceLocator}");
+				}
+			}
 		}
 
 		internal static void RegisterComponent(Uri resourceLocator, string xaml)
