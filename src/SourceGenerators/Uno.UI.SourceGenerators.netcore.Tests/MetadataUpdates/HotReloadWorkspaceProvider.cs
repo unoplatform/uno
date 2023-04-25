@@ -413,12 +413,12 @@ sealed class MyGeneratorReference : AnalyzerReference
 
 	public override string FullPath
 	{
-		get { throw new NotImplementedException(); }
+		get => "";
 	}
 
 	public override object Id
 	{
-		get { throw new NotImplementedException(); }
+		get => nameof(MyGeneratorReference);
 	}
 
 	public override ImmutableArray<DiagnosticAnalyzer> GetAnalyzers(string language)

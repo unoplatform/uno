@@ -16,6 +16,7 @@ using Uno.Foundation.Logging;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Media;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Uno.UI.DataBinding
 {
@@ -119,6 +120,16 @@ namespace Uno.UI.DataBinding
 		public IEnumerable<IBindingItem> GetPathItems()
 		{
 			return _chain?.Flatten(i => i.Next!) ?? Array.Empty<BindingItem>();
+		}
+
+		public (object DataContext, string PropertyName) GetTargetContextAndPropertyName()
+		{
+			var info = GetPathItems().Last();
+			var propertyName = info.PropertyName
+				.Split(new[] { '.' }).Last()
+				.Replace("(", "").Replace(")", "");
+
+			return (info.DataContext, propertyName);
 		}
 
 		/// <summary>
@@ -226,6 +237,14 @@ namespace Uno.UI.DataBinding
 			}
 		}
 
+		internal void SetAnimationFillingValue(object value)
+		{
+			if (!_disposed)
+			{
+				_value?.SetAnimationFillingValue(value);
+			}
+		}
+
 		/// <summary>
 		/// Clears the value of the current precedence.
 		/// </summary>
@@ -237,6 +256,13 @@ namespace Uno.UI.DataBinding
 			if (!_disposed)
 			{
 				_value?.ClearValue();
+			}
+		}
+		public void ClearAnimationFillingValue()
+		{
+			if (!_disposed)
+			{
+				_value?.ClearAnimationFillingValue();
 			}
 		}
 
@@ -479,7 +505,9 @@ namespace Uno.UI.DataBinding
 			private ValueGetterHandler? _substituteValueGetter;
 			private ValueSetterHandler? _valueSetter;
 			private ValueSetterHandler? _localValueSetter;
+			private ValueSetterHandler? _animationFillingValueSetter;
 			private ValueUnsetterHandler? _valueUnsetter;
+			private ValueUnsetterHandler? _animationFillingValueUnsetter;
 
 			private Type? _dataContextType;
 
@@ -568,6 +596,12 @@ namespace Uno.UI.DataBinding
 			{
 				BuildLocalValueSetter();
 				SetSourceValue(_localValueSetter!, value);
+			}
+
+			public void SetAnimationFillingValue(object value)
+			{
+				BuildAnimationFillingValueSetter();
+				SetSourceValue(_animationFillingValueSetter!, value);
 			}
 
 			public Type? PropertyType
@@ -686,14 +720,15 @@ namespace Uno.UI.DataBinding
 			{
 				if (_valueSetter == null && _dataContextType != null)
 				{
+					_valueSetter = BindingPropertyHelper.GetValueSetter(
+						_dataContextType,
+						PropertyName,
+						convert: true,
+						precedence: _precedence ?? DependencyPropertyValuePrecedences.Local
+					);
 					if (_precedence == null)
 					{
-						BuildLocalValueSetter();
-						_valueSetter = _localValueSetter;
-					}
-					else
-					{
-						_valueSetter = BindingPropertyHelper.GetValueSetter(_dataContextType, PropertyName, convert: true, precedence: _precedence.Value);
+						_localValueSetter = _valueSetter;
 					}
 				}
 			}
@@ -702,7 +737,25 @@ namespace Uno.UI.DataBinding
 			{
 				if (_localValueSetter == null && _dataContextType != null)
 				{
-					_localValueSetter = BindingPropertyHelper.GetValueSetter(_dataContextType, PropertyName, convert: true);
+					_localValueSetter = BindingPropertyHelper.GetValueSetter(
+						_dataContextType,
+						PropertyName,
+						convert: true,
+						precedence: DependencyPropertyValuePrecedences.Local
+					);
+				}
+			}
+
+			private void BuildAnimationFillingValueSetter()
+			{
+				if (_animationFillingValueSetter == null && _dataContextType != null)
+				{
+					_animationFillingValueSetter = BindingPropertyHelper.GetValueSetter(
+						_dataContextType,
+						PropertyName,
+						convert: true,
+						precedence: DependencyPropertyValuePrecedences.FillingAnimations
+					);
 				}
 			}
 
@@ -825,6 +878,30 @@ namespace Uno.UI.DataBinding
 					{
 						this.Log().DebugFormat("Unsetting [{0}] failed because the DataContext is null for. It may have already been collected, or explicitly set to null.", PropertyName);
 					}
+				}
+			}
+
+			private void BuildAnimationFillingValueUnsetter()
+			{
+				if (_animationFillingValueUnsetter == null && _dataContextType != null)
+				{
+					_animationFillingValueUnsetter = BindingPropertyHelper.GetValueUnsetter(
+						_dataContextType,
+						PropertyName,
+						precedence: DependencyPropertyValuePrecedences.FillingAnimations
+					);
+				}
+			}
+
+			internal void ClearAnimationFillingValue()
+			{
+				BuildAnimationFillingValueUnsetter();
+
+				// Capture the datacontext before the call to avoid a race condition with the GC.
+				var dataContext = DataContext;
+				if (dataContext != null)
+				{
+					_animationFillingValueUnsetter!(dataContext);
 				}
 			}
 

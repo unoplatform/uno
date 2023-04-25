@@ -28,9 +28,5 @@
 		<Manifest Include="$(ApplicationManifest)" />
 	</ItemGroup>
 
-	<ItemGroup>
-		<Content Include="Assets\Fonts\uno-fluentui-assets.ttf" />
-	</ItemGroup>
-
 	<Import Project="..\$ext_safeprojectname$.Shared\$ext_safeprojectname$.Shared.projitems" Label="Shared" />
 </Project>

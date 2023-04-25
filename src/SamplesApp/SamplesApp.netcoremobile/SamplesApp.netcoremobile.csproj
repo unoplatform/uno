@@ -98,7 +98,6 @@
 
 	<ItemGroup Condition="'$(TargetPlatformIdentifier)'=='android'">
 		<AndroidAsset Include="Assets\sound.mp3" />
-		<AndroidAsset Include="Assets\Fonts\uno-fluentui-assets.ttf" />
 		<AndroidAsset Include="Assets\Lottie\4770-lady-and-dove.json" />
 		<AndroidAsset Include="Assets\Lottie\4930-checkbox-animation.json" />
 		<AndroidAsset Include="Assets\Lottie\lottie-logo.json" />

@@ -1,4 +1,4 @@
-﻿namespace Windows.Web;
+﻿namespace Uno.UI.Web;
 
 public enum WebErrorStatus
 {

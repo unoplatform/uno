@@ -1105,9 +1105,10 @@ namespace Windows.UI.Xaml
 				_inheritedForwardedProperties[parentProperty] = sourceInstance;
 
 				// If not, propagate the DP down to the child listeners, if any.
-				for (var storeIndex = 0; storeIndex < _childrenStores.Count; storeIndex++)
+				var localChildrenStores = _childrenStores;
+				for (var storeIndex = 0; storeIndex < localChildrenStores.Count; storeIndex++)
 				{
-					var child = _childrenStores[storeIndex];
+					var child = localChildrenStores[storeIndex];
 					child.OnParentPropertyChangedCallback(sourceInstance, parentProperty, newValue);
 				}
 			}
@@ -1568,9 +1569,10 @@ namespace Windows.UI.Xaml
 			}
 			else
 			{
-				for (var childStoreIndex = 0; childStoreIndex < _childrenStores.Count; childStoreIndex++)
+				var localChildrenStores = _childrenStores;
+				for (var childStoreIndex = 0; childStoreIndex < localChildrenStores.Count; childStoreIndex++)
 				{
-					var child = _childrenStores[childStoreIndex];
+					var child = localChildrenStores[childStoreIndex];
 					Propagate(child);
 				}
 			}
@@ -1624,9 +1626,10 @@ namespace Windows.UI.Xaml
 					}
 					else
 					{
-						for (var i = 0; i < _childrenStores.Count; i++)
+						var localChildrenStores = _childrenStores;
+						for (var i = 0; i < localChildrenStores.Count; i++)
 						{
-							Propagate(_childrenStores[i]);
+							Propagate(localChildrenStores[i]);
 						}
 					}
 				}
@@ -1866,9 +1869,10 @@ namespace Windows.UI.Xaml
 				// Raise the property change for generic handlers for inheritance
 				if (frameworkPropertyMetadata.Options.HasInherits())
 				{
-					for (var storeIndex = 0; storeIndex < _childrenStores.Count; storeIndex++)
+					var localChildrenStores = _childrenStores;
+					for (var storeIndex = 0; storeIndex < localChildrenStores.Count; storeIndex++)
 					{
-						CallChildCallback(_childrenStores[storeIndex], instanceRef, property, eventArgs);
+						CallChildCallback(localChildrenStores[storeIndex], instanceRef, property, eventArgs);
 					}
 				}
 			}
@@ -1908,9 +1912,10 @@ namespace Windows.UI.Xaml
 			propertyDetails.RaisePropertyChanged(actualInstanceAlias, eventArgs);
 
 			// Raise the property change for generic handlers
-			for (var callbackIndex = 0; callbackIndex < _genericCallbacks.Data.Length; callbackIndex++)
+			var currentCallbacks = _genericCallbacks.Data;
+			for (var callbackIndex = 0; callbackIndex < currentCallbacks.Length; callbackIndex++)
 			{
-				var callback = _genericCallbacks.Data[callbackIndex];
+				var callback = currentCallbacks[callbackIndex];
 				callback.Invoke(instanceRef, property, eventArgs);
 			}
 		}
@@ -2017,9 +2022,10 @@ namespace Windows.UI.Xaml
 				{
 					var args = new DependencyObjectParentChangedEventArgs(previousParent, value);
 
-					for (var parentCallbackIndex = 0; parentCallbackIndex < _parentChangedCallbacks.Data.Length; parentCallbackIndex++)
+					var currentCallbacks = _parentChangedCallbacks.Data;
+					for (var parentCallbackIndex = 0; parentCallbackIndex < currentCallbacks.Length; parentCallbackIndex++)
 					{
-						var handler = _parentChangedCallbacks.Data[parentCallbackIndex];
+						var handler = currentCallbacks[parentCallbackIndex];
 						handler.Invoke(actualInstanceAlias, null, args);
 					}
 				}

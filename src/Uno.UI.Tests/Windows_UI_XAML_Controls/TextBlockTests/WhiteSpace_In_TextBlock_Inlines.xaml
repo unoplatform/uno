@@ -11,5 +11,7 @@
     <StackPanel>
 		<TextBlock x:FieldModifier="public" x:Name="tbDefault" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"><Bold>Word1</Bold> <Bold>Word2</Bold>  <Bold>Word3</Bold> LeftSpace<Run>Word4</Run>RightSpace <Run>Word5</Run> SurroundSpace <Run>Word6</Run>Middle Space<Run>Word7 </Run>  DoubleSpace  </TextBlock>
 		<TextBlock x:FieldModifier="public" x:Name="tbPreserve" xml:space="preserve" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"><Bold>Word1</Bold> <Bold>Word2</Bold>  <Bold>Word3</Bold> LeftSpace<Run>Word4</Run>RightSpace <Run>Word5</Run> SurroundSpace <Run>Word6</Run>Middle Space<Run>Word7 </Run>  DoubleSpace  </TextBlock>
+		<TextBlock x:FieldModifier="public" x:Name="tbFrontText" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">Word0<Bold>Word1</Bold><Bold>Word2</Bold>  <Bold>Word3</Bold> LeftSpace<Run>Word4</Run>RightSpace <Run>Word5</Run> SurroundSpace <Run>Word6</Run>Middle Space<Run>Word7 </Run>  DoubleSpace  </TextBlock>
+		<TextBlock x:FieldModifier="public" x:Name="tbFrontTextPreserve" xml:space="preserve" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">Word0<Bold>Word1</Bold><Bold>Word2</Bold>  <Bold>Word3</Bold> LeftSpace<Run>Word4</Run>RightSpace <Run>Word5</Run> SurroundSpace <Run>Word6</Run>Middle Space<Run>Word7 </Run>  DoubleSpace  </TextBlock>
 	</StackPanel>
 </Page>

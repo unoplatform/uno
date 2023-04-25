@@ -20,17 +20,16 @@ namespace Uno.UI {
 		private static readonly unoUnarrangedClassName = "uno-unarranged";
 		private static readonly unoCollapsedClassName = "uno-visibility-collapsed";
 
-		private static _cctor = (() => {
-			WindowManager.initMethods();
-			HtmlDom.initPolyfills();
-		})();
-
 		/**
 			* Initialize the WindowManager
 			* @param containerElementId The ID of the container element for the Xaml UI
 			* @param loadingElementId The ID of the loading element to remove once ready
 			*/
-		public static init(isLoadEventsEnabled: boolean, containerElementId: string = "uno-body", loadingElementId: string = "uno-loading"): void {
+		public static async init(isLoadEventsEnabled: boolean, containerElementId: string = "uno-body", loadingElementId: string = "uno-loading") {
+
+			HtmlDom.initPolyfills();
+
+			await WindowManager.initMethods();
 
 			WindowManager._isLoadEventsEnabled = isLoadEventsEnabled;
 
@@ -48,7 +47,7 @@ namespace Uno.UI {
 		private static buildReadyPromise(): Promise<boolean> {
 			return new Promise<boolean>(resolve => {
 				Promise.all(
-					[WindowManager.buildSplashScreen(), ExportManager.initialize()]
+					[WindowManager.buildSplashScreen()]
 				).then(() => resolve(true))
 			});
 		}
@@ -110,20 +109,6 @@ namespace Uno.UI {
 				// If there's no response, skip the loading
 				setTimeout(loadingDone, 2000);
 			});
-		}
-
-		/**
-			* Initialize the WindowManager
-			* @param containerElementId The ID of the container element for the Xaml UI
-			* @param loadingElementId The ID of the loading element to remove once ready
-			*/
-		public static initNative(pParams: number): boolean {
-
-			const params = WindowManagerInitParams.unmarshal(pParams);
-
-			WindowManager.init(params.IsLoadEventsEnabled);
-
-			return true;
 		}
 
 		private containerElement: HTMLDivElement;
@@ -203,6 +188,13 @@ namespace Uno.UI {
 
 				return "";
 			}
+		}
+
+		/**
+			* Estimated application startup time
+			*/
+		public static getBootTime(): number {
+			return Date.now() - performance.now();
 		}
 
 		/**
@@ -1575,7 +1567,10 @@ namespace Uno.UI {
 			);
 		}
 
-		private static initMethods() {
+		private static async initMethods() {
+
+			await ExportManager.initialize();
+
 			if (!WindowManager.resizeMethod) {
 				WindowManager.resizeMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.Window:Resize");
 			}

@@ -12,17 +12,16 @@ Some additional resources:
 - [Further curated links](winui-doc-links-development.md)
 - [Performance tips and tricks](Uno-UI-Performance.md)
 
-## Uno Extensions
-
-Uno.Extensions is a series of NuGet packages designed to encapsulate common developer tasks associated with building multi-platform mobile, desktop, and web applications using the Uno platform.
-
-Visit [the documentation](xref:Overview.Features) to know more.
 
 ## Free & paid tutorials, courses, and guided pathways for getting started with Uno Platform
 
 #### Syncfusion - Uno Platform Succinctly
 
 Syncfusion supports Uno Platform to two of its most popular UWP controls —DataGrid and Charts, published [Uno Platform Succinctly]( https://www.syncfusion.com/succinctly-free-ebooks/uno-platform-succinctly). A free eBook that will take you from setting up your first Uno project in Visual Studio to a fully functioning single-page application.
+
+#### Udemy – Introduction to Uno Platform
+
+Christian Findlay developed a great video tutorial to get you started with Uno Platform course on Udemy. The course walks you through a simple UI scenario and shows you how to build a single-source app for iOS, Android, Browser, and macOS.  [Uno Platform course on Udemy]( https://www.udemy.com/course/introduction-to-uno-platform/?referralCode=C9FE308096EADFB5B661)
 
 #### Skye Hoefling – Getting Started with Uno Platform
 
@@ -81,10 +80,6 @@ The course covers:
 - How to adapt your user interface to different screen sizes
 - How to write platform-specific code
 - How to connect your application to a data source to load data
-
-#### Udemy – Introduction to Uno Platform
-
-A cost-effective way to get the basics is the [Uno Platform course on Udemy]( https://www.udemy.com/course/introduction-to-uno-platform/?referralCode=C9FE308096EADFB5B661) – only about $15 USD. *If you visit the page on consecutive days, it automatically kicks in with a discount.
 
 #### Packt - Creating Cross-Platform C# Applications with Uno Platform
 

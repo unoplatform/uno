@@ -8,6 +8,10 @@ using Uno.Foundation.Logging;
 using Uno.UI.DataBinding;
 using Windows.Storage.Helpers;
 
+#if NET7_0_OR_GREATER
+using NativeMethods = __Windows.UI.Xaml.Media.FontFamilyLoader.NativeMethods;
+#endif
+
 namespace Windows.UI.Xaml.Media;
 
 /// <summary>
@@ -181,11 +185,19 @@ internal class FontFamilyLoader
 
 			if (_fontFamily.ExternalSource is { Length: > 0 })
 			{
+#if NET7_0_OR_GREATER
+				NativeMethods.LoadFont(_fontFamily.CssFontName, _fontFamily.ExternalSource);
+#else
 				WebAssemblyRuntime.InvokeJS($"Windows.UI.Xaml.Media.FontFamily.loadFont(\"{_fontFamily.CssFontName}\",\"{_fontFamily.ExternalSource}\")");
+#endif
 			}
 			else
 			{
+#if NET7_0_OR_GREATER
+				NativeMethods.ForceFontUsage(_fontFamily.CssFontName);
+#else
 				WebAssemblyRuntime.InvokeJS($"Windows.UI.Xaml.Media.FontFamily.forceFontUsage(\"{_fontFamily.CssFontName}\")");
+#endif
 			}
 
 			_loadOperation = new TaskCompletionSource<bool>();

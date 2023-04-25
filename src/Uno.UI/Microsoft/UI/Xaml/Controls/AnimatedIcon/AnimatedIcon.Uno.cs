@@ -31,7 +31,7 @@ namespace Microsoft.UI.Xaml.Controls
 			if (!_initialized)
 			{
 				// TODO Uno specific - We must add the child element manually.
-				AddIconElementView(new Grid());
+				InitializeRootGrid();
 				_initialized = true;
 			}
 		}

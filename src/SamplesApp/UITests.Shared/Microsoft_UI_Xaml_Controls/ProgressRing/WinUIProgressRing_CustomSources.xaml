@@ -15,6 +15,18 @@
 		<lottie:LottieVisualSource UriSource="ms-appx:///Assets/Animations/acrobat.json" x:Key="AcrobatAnimation"/>
 	</Page.Resources>
 	<StackPanel Margin="50">
+		<TextBlock Text="Determinate to Indeterminate"/>
+		<muxc:ProgressRing IsActive="True"
+						   DeterminateSource="{StaticResource SquirrelAnimation}"
+						   IsIndeterminate="{Binding IsChecked, ElementName=isIndeterminate}"
+						   IndeterminateSource="{StaticResource SquirrelAnimation}"/>
+
+		<muxc:ProgressRing IsActive="True"
+						   DeterminateSource="{StaticResource AcrobatAnimation}"
+						   IsIndeterminate="{Binding IsChecked, ElementName=isIndeterminate}"
+						   IndeterminateSource="{StaticResource AcrobatAnimation}"/>
+		<ToggleButton x:Name="isIndeterminate">IsIndeterminate</ToggleButton>
+
 		<TextBlock Text="Indeterminate"/>
 		<muxc:ProgressRing IsActive="True"
 						   not_win:IndeterminateSource="{StaticResource SquirrelAnimation}"/>

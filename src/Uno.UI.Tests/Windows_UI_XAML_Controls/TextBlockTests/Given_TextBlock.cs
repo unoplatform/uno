@@ -105,6 +105,38 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.TextBlockTests
 			Assert.AreEqual("Middle Space", tbPreserve.Inlines[11].GetText());
 			Assert.AreEqual("Word7 ", tbPreserve.Inlines[12].GetText());
 			Assert.AreEqual("  DoubleSpace  ", tbPreserve.Inlines[13].GetText());
+
+			var tbFrontText = page.tbFrontText;
+			Assert.AreEqual("Word0", tbFrontText.Inlines[0].GetText());
+			Assert.AreEqual("Word1", tbFrontText.Inlines[1].GetText());
+			Assert.AreEqual("Word2", tbFrontText.Inlines[2].GetText());
+			Assert.AreEqual(" ", tbFrontText.Inlines[3].GetText());
+			Assert.AreEqual("Word3", tbFrontText.Inlines[4].GetText());
+			Assert.AreEqual(" LeftSpace", tbFrontText.Inlines[5].GetText());
+			Assert.AreEqual("Word4", tbFrontText.Inlines[6].GetText());
+			Assert.AreEqual("RightSpace ", tbFrontText.Inlines[7].GetText());
+			Assert.AreEqual("Word5", tbFrontText.Inlines[8].GetText());
+			Assert.AreEqual(" SurroundSpace ", tbFrontText.Inlines[9].GetText());
+			Assert.AreEqual("Word6", tbFrontText.Inlines[10].GetText());
+			Assert.AreEqual("Middle Space", tbFrontText.Inlines[11].GetText());
+			Assert.AreEqual("Word7", tbFrontText.Inlines[12].GetText());
+			Assert.AreEqual(" DoubleSpace", tbFrontText.Inlines[13].GetText());
+
+			var tbFrontTextPreserve = page.tbFrontTextPreserve;
+			Assert.AreEqual("Word0", tbFrontTextPreserve.Inlines[0].GetText());
+			Assert.AreEqual("Word1", tbFrontTextPreserve.Inlines[1].GetText());
+			Assert.AreEqual("Word2", tbFrontTextPreserve.Inlines[2].GetText());
+			Assert.AreEqual("  ", tbFrontTextPreserve.Inlines[3].GetText());
+			Assert.AreEqual("Word3", tbFrontTextPreserve.Inlines[4].GetText());
+			Assert.AreEqual(" LeftSpace", tbFrontTextPreserve.Inlines[5].GetText());
+			Assert.AreEqual("Word4", tbFrontTextPreserve.Inlines[6].GetText());
+			Assert.AreEqual("RightSpace ", tbFrontTextPreserve.Inlines[7].GetText());
+			Assert.AreEqual("Word5", tbFrontTextPreserve.Inlines[8].GetText());
+			Assert.AreEqual(" SurroundSpace ", tbFrontTextPreserve.Inlines[9].GetText());
+			Assert.AreEqual("Word6", tbFrontTextPreserve.Inlines[10].GetText());
+			Assert.AreEqual("Middle Space", tbFrontTextPreserve.Inlines[11].GetText());
+			Assert.AreEqual("Word7 ", tbFrontTextPreserve.Inlines[12].GetText());
+			Assert.AreEqual("  DoubleSpace  ", tbFrontTextPreserve.Inlines[13].GetText());
 		}
 	}
 

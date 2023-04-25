@@ -39,6 +39,8 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 				FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange,
 				OnUriSourceChanged));
 
+		Uri IAnimatedVisualSource.UriSource { get => UriSource; set => UriSource = value; }
+
 		public Uri UriSource
 		{
 			get => (Uri)GetValue(UriSourceProperty);
@@ -71,7 +73,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 		private static void OnUriSourceChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
 		{
-			if (sender is LottieVisualSource source)
+			if (sender is LottieVisualSourceBase source)
 			{
 				source.Update(source._player);
 			}

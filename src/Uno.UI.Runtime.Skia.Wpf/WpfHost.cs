@@ -121,7 +121,7 @@ namespace Uno.UI.Skia.Platform
 		/// Creates a WpfHost element to host a Uno-Skia into a WPF application.
 		/// </summary>
 		/// <param name="appBuilder">App builder.</param>
-		/// <param name="args">Deprecated, value ignored.</param>		
+		/// <param name="args">Deprecated, value ignored.</param>
 		/// <remarks>
 		/// Args are obsolete and will be removed in the future. Environment.CommandLine is used instead
 		/// to fill LaunchEventArgs.Arguments.

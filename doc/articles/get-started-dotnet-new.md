@@ -130,6 +130,6 @@ For additional information about UI Tests creation, visit the [Uno.UITest](https
 
 Using a command line or terminal, run the following command:
 
-`dotnet new -u Uno.ProjectTemplates.Dotnet`
+`dotnet new -u Uno.Templates`
 
 [!include[getting-help](getting-help.md)]

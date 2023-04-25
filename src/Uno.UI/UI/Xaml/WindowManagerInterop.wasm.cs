@@ -27,25 +27,13 @@ namespace Uno.UI.Xaml
 		//When users set double.MaxValue to scroll to the end of the page Javascript doesn't scroll.
 		private const double MAX_SCROLLING_OFFSET = 1_000_000_000_000_000_000;
 
-		#region Init
-		internal static void Init(bool isLoadEventsEnabled)
-		{
-			var parms = new WindowManagerInitParams
-			{
-				IsLoadEventsEnabled = isLoadEventsEnabled
-			};
-
-			TSInteropMarshaller.InvokeJS("UnoStatic:initNative", parms);
-		}
-
-		[TSInteropMessage]
-		[StructLayout(LayoutKind.Sequential, Pack = 4)]
-		private struct WindowManagerInitParams
-		{
-			public bool IsLoadEventsEnabled;
-		}
-
-		#endregion
+		internal static Task InitAsync(bool isLoadEventsEnabled)
+			=>
+#if NET7_0_OR_GREATER
+				NativeMethods.InitAsync(isLoadEventsEnabled);
+#else
+				WebAssemblyRuntime.InvokeAsync($"Uno.UI.WindowManager.init({(isLoadEventsEnabled ? "true" : "false")})");
+#endif
 
 		internal static string FindLaunchArguments()
 			=>
@@ -53,6 +41,14 @@ namespace Uno.UI.Xaml
 				NativeMethods.FindLaunchArguments();
 #else
 				WebAssemblyRuntime.InvokeJS("Uno.UI.WindowManager.findLaunchArguments()");
+#endif
+
+		internal static double GetBootTime()
+			=>
+#if NET7_0_OR_GREATER
+				NativeMethods.GetBootTime();
+#else
+				double.Parse(WebAssemblyRuntime.InvokeJS("Date.now() - performance.now()"), CultureInfo.InvariantCulture);
 #endif
 
 		#region CreateContent
@@ -1294,6 +1290,9 @@ namespace Uno.UI.Xaml
 			[JSImport("globalThis.Uno.UI.WindowManager.findLaunchArguments")]
 			internal static partial string FindLaunchArguments();
 
+			[JSImport("globalThis.Uno.UI.WindowManager.getBootTime")]
+			internal static partial double GetBootTime();
+
 			[JSImport("globalThis.Uno.UI.WindowManager.current.focusView")]
 			internal static partial void FocusView(IntPtr htmlId);
 
@@ -1302,6 +1301,9 @@ namespace Uno.UI.Xaml
 
 			[JSImport("globalThis.Uno.UI.WindowManager.current.getProperty")]
 			internal static partial string GetProperty(IntPtr htmlId, string name);
+
+			[JSImport("globalThis.Uno.UI.WindowManager.init")]
+			internal static partial Task InitAsync(bool isLoadEventsEnabled);
 
 			[JSImport("globalThis.Uno.UI.WindowManager.current.measureViewNativeFast")]
 			internal static partial void MeasureView(IntPtr htmlId, double availableWidth, double availableHeight, bool measureContent, IntPtr pReturn);

@@ -16,7 +16,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\Nullable.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\PathHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\PlatformHelper.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Helpers\RoslynMetadataHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\SymbolExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\UnoNamedTypeSymbolDisplayVisitor.cs" />
   </ItemGroup>

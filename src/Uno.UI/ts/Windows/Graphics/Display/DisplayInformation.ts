@@ -18,6 +18,26 @@
 
 		private static lockingSupported: boolean | null;
 
+		public static getDevicePixelRatio() : number {
+			return globalThis.devicePixelRatio;
+		}
+
+		public static getScreenWidth(): number {
+			return globalThis.screen.width;
+		}
+
+		public static getScreenHeight(): number {
+			return globalThis.screen.height;
+		}
+
+		public static getScreenOrientationAngle(): number | null {
+			return globalThis.screen.orientation?.angle;
+		}
+
+		public static getScreenOrientationType(): string | null {
+			return globalThis.screen.orientation?.type;
+		}
+
 		public static startOrientationChanged() {
 			window.screen.orientation.addEventListener("change", DisplayInformation.onOrientationChange);
 		}

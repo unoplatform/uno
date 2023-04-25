@@ -112,9 +112,6 @@
     <None Include="Info.plist" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <None Include="Entitlements.plist" />
-    <BundleResource Include="Resources\Fonts\uno-fluentui-assets.ttf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </BundleResource>
     <None Include="Resources\LaunchScreen.xib" />
   </ItemGroup>
   <ItemGroup>

@@ -22,7 +22,7 @@ using System.Threading;
 using System.Collections.Concurrent;
 using System.Collections.Immutable;
 using Uno.UI.SourceGenerators.Helpers;
-using Uno.UI.SourceGenerators.XamlGenerator.Utils;
+using Uno.UI.SourceGenerators.Utils;
 
 #if NETFRAMEWORK
 using Microsoft.Build.Execution;

@@ -38,6 +38,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 		private SkiaSharp.Skottie.Animation? _animation;
 
 
+		private bool _wasPlaying;
 		private DispatcherQueueTimer? _timer;
 		private object _gate = new();
 
@@ -444,8 +445,9 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 		public void Load()
 		{
-			if (_player?.IsPlaying ?? false)
+			if (_wasPlaying)
 			{
+				_wasPlaying = false;
 				Resume();
 			}
 		}
@@ -454,6 +456,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 		{
 			if (_player?.IsPlaying ?? false)
 			{
+				_wasPlaying = true;
 				Pause();
 			}
 		}
