@@ -4,8 +4,6 @@
 		<TargetFrameworks>net7.0-windows;net8.0-windows</TargetFrameworks>
 	</PropertyGroup>
 
-	<Import Project="../netcore-build-windows.props" />
-
 	<PropertyGroup>
 		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
 		<IsPackable>false</IsPackable>

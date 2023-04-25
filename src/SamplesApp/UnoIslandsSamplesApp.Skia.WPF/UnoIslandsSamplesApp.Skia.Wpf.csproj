@@ -11,8 +11,6 @@
 
 	<Import Project="../../targetframework-override.props" />
 
-	<Import Project="../../netcore-build-windows.props" />
-
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
 		<UseWPF>true</UseWPF>
