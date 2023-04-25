@@ -354,7 +354,7 @@ namespace Uno.UI.RuntimeTests.Tests
 #if __MACOS__
 		[Ignore("Currently fails on macOS, part of #9282 epic")]
 #endif
-        public async Task When_Project_Transitive_Asset()
+		public async Task When_Project_Transitive_Asset()
 		{
 			var uri = new Uri($"ms-appx:///Uno.UI.RuntimeTests/Assets/TransientAsset01.txt");
 
