@@ -17,6 +17,7 @@ namespace Windows.UI.Xaml.Documents
 	{
 		private readonly List<RenderLine> _renderLines = new();
 
+		private bool _invalidationPending;
 		private double _lastMeasuredWidth;
 		private Size _lastDesiredSize;
 		private Size _lastArrangedSize;
@@ -26,10 +27,14 @@ namespace Windows.UI.Xaml.Documents
 		/// </summary>
 		internal Size Measure(Size availableSize)
 		{
-			if (availableSize.Width <= _lastMeasuredWidth && availableSize.Width >= _lastDesiredSize.Width)
+			if (!_invalidationPending &&
+				availableSize.Width <= _lastMeasuredWidth &&
+				availableSize.Width >= _lastDesiredSize.Width)
 			{
 				return _lastDesiredSize;
 			}
+
+			_invalidationPending = false;
 
 			_lastMeasuredWidth = availableSize.Width;
 
@@ -264,7 +269,9 @@ namespace Windows.UI.Xaml.Documents
 		{
 			_lastArrangedSize = finalSize;
 
-			if (finalSize.Width <= _lastMeasuredWidth && finalSize.Width >= _lastDesiredSize.Width)
+			if (!_invalidationPending &&
+				finalSize.Width <= _lastMeasuredWidth &&
+				finalSize.Width >= _lastDesiredSize.Width)
 			{
 				return _lastDesiredSize;
 			}
@@ -274,9 +281,11 @@ namespace Windows.UI.Xaml.Documents
 
 		internal void InvalidateMeasure()
 		{
-			_lastMeasuredWidth = 0;
-			_lastDesiredSize = new();
-			_lastArrangedSize = new();
+			// Mark invalidation as pending, but temporarily keep
+			// the least last measured width, last desired size, and
+			// last arranged size, so that asynchronous rendering can still
+			// use them to render properly.
+			_invalidationPending = true;
 		}
 
 		/// <summary>
