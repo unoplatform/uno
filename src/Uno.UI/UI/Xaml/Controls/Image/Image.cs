@@ -56,12 +56,19 @@ namespace Windows.UI.Xaml.Controls
 			public const int Image_SetImageStop = 6;
 		}
 
-		protected virtual void OnImageFailed(ImageSource imageSource)
+		protected virtual void OnImageFailed(ImageSource imageSource, Exception? exception)
 		{
 			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				this.Log().Debug(this.ToString() + " Image failed to open");
 			}
+
+#if !__SKIA__ && !__WASM__ // TODO: Have consistent handling on Wasm and Skia.
+			if (imageSource is BitmapImage bitmapImage && exception is not null)
+			{
+				bitmapImage.RaiseImageFailed(exception);
+			}
+#endif
 
 			ImageFailed?.Invoke(this, new ExceptionRoutedEventArgs(this, "Image failed to download"));
 		}
@@ -72,6 +79,13 @@ namespace Windows.UI.Xaml.Controls
 			{
 				this.Log().Debug(this.ToString() + " Image opened successfully");
 			}
+
+#if !__SKIA__ && !__WASM__ // TODO: Have consistent handling on Wasm and Skia.
+			if (imageSource is BitmapImage bitmapImage)
+			{
+				bitmapImage.RaiseImageOpened();
+			}
+#endif
 
 			ImageOpened?.Invoke(this, new RoutedEventArgs(this));
 			_successfullyOpenedImage = imageSource;

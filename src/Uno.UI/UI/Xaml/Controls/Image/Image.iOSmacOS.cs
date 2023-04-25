@@ -166,7 +166,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 			else
 			{
-				OnImageFailed(_openedSource);
+				OnImageFailed(_openedSource, imageData.Error);
 			}
 		}
 
