@@ -34,7 +34,7 @@ public class Given_WebView
 		}
 #endif
 
-    [TestMethod]
+	[TestMethod]
 	public void When_NavigateToString()
 	{
 		var webView = new WebView();
