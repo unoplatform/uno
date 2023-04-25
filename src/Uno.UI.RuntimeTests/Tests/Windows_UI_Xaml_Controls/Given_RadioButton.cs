@@ -385,10 +385,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 	}
 
-#pragma warning disable CS0067
 	public class TestCommand : ICommand
 	{
-		public event EventHandler CanExecuteChanged;
+		public event EventHandler CanExecuteChanged { add { } remove { } }
 		public event EventHandler CommandFired;
 
 		public TestCommand()
@@ -402,5 +401,4 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		public void Execute(object o) => CommandFired.Invoke(this, null);
 	}
-#pragma warning restore CS0067
 }
