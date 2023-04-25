@@ -5,9 +5,6 @@
 		<TargetFrameworks Condition="'$(UnoDisableNet8)'!='true'">$(TargetFrameworks);net8.0-windows</TargetFrameworks>
 	</PropertyGroup>
 
-
-	<Import Project="../netcore-build-windows.props" />
-
 	<PropertyGroup>
 		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
 		<authors>Uno Platform</authors>
