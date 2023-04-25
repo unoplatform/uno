@@ -10,11 +10,15 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media;
 using Uno;
 using Uno.UI;
+using Uno.Disposables;
+using Windows.UI.Xaml.Media.Imaging;
 
 namespace Windows.UI.Xaml.Media
 {
 	public partial class ImageBrush : Brush
 	{
+		private readonly SerialDisposable _sourceDisposable = new SerialDisposable();
+
 #pragma warning disable CS0067 // The event 'ImageBrush.ImageFailed' is never used
 		public event RoutedEventHandler ImageOpened;
 		public event ExceptionRoutedEventHandler ImageFailed;
@@ -65,12 +69,30 @@ namespace Windows.UI.Xaml.Media
 		#region ImageSource DP
 		public static DependencyProperty ImageSourceProperty { get; } =
 			DependencyProperty.Register("ImageSource", typeof(ImageSource), typeof(ImageBrush), new FrameworkPropertyMetadata(defaultValue: null, propertyChangedCallback: (s, e) =>
-			((ImageBrush)s).OnSourceChangedPartial((ImageSource)e.NewValue, (ImageSource)e.OldValue)));
+			((ImageBrush)s).OnSourceChanged((ImageSource)e.NewValue, (ImageSource)e.OldValue)));
 
 		public ImageSource ImageSource
 		{
 			get => (ImageSource)this.GetValue(ImageSourceProperty);
 			set => this.SetValue(ImageSourceProperty, value);
+		}
+
+		private void OnSourceChanged(ImageSource newValue, ImageSource oldValue)
+		{
+			if (newValue is null)
+			{
+				_sourceDisposable.Disposable = null;
+			}
+			else if (newValue is BitmapImage bitmapImage)
+			{
+				_sourceDisposable.Disposable = bitmapImage.RegisterDisposablePropertyChangedCallback(
+					BitmapImage.UriSourceProperty, (_, _) =>
+					{
+						OnSourceChangedPartial(newValue, null);
+					});
+			}
+
+			OnSourceChangedPartial(newValue, oldValue);
 		}
 
 		partial void OnSourceChangedPartial(ImageSource newValue, ImageSource oldValue);

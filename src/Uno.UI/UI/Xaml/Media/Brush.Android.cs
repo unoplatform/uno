@@ -11,6 +11,7 @@ using Rect = Windows.Foundation.Rect;
 using Windows.UI.Input.Spatial;
 using Android.Graphics.Drawables;
 using Android.Graphics.Drawables.Shapes;
+using Windows.UI.Xaml.Media.Imaging;
 
 namespace Windows.UI.Xaml.Media
 {
@@ -92,6 +93,22 @@ namespace Windows.UI.Xaml.Media
 			{
 				var disposables = new CompositeDisposable(5);
 				imageBrushCallback();
+
+				var imageBrushSource = imageBrush.ImageSource;
+				if (imageBrushSource is SvgImageSource svgImageSource)
+				{
+					svgImageSource.RegisterDisposablePropertyChangedCallback(
+						SvgImageSource.UriSourceProperty,
+						(_, _) => imageBrushCallback()
+					).DisposeWith(disposables);
+				}
+				else if (imageBrushSource is BitmapImage bitmapImage)
+				{
+					bitmapImage.RegisterDisposablePropertyChangedCallback(
+						BitmapImage.UriSourceProperty,
+						(_, _) => imageBrushCallback()
+					).DisposeWith(disposables);
+				}
 
 				imageBrush.RegisterDisposablePropertyChangedCallback(
 					ImageBrush.ImageSourceProperty,
