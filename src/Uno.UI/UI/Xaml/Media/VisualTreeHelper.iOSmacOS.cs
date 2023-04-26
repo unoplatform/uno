@@ -3,6 +3,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Uno.Foundation.Logging;
+
 #if __IOS__
 using UIKit;
 using _View = UIKit.UIView;
@@ -30,6 +32,13 @@ namespace Windows.UI.Xaml.Media
 #elif __MACOS__
 				currentSuperview?.AddSubview(newView, NSWindowOrderingMode.Above, currentSuperview.Subviews[Math.Max(0, currentPosition - 1)]);
 #endif
+			}
+			else
+			{
+				if (typeof(VisualTreeHelper).Log().IsEnabled(LogLevel.Debug))
+				{
+					typeof(VisualTreeHelper).Log().LogDebug($"Unable to swap view, could not find old view's position.");
+				}
 			}
 		}
 	}
