@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using FluentAssertions;
+using Microsoft.UI.Xaml.Tests.Common;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Controls;
 using static Private.Infrastructure.TestServices;
 
@@ -341,5 +345,60 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.IsFalse(radioButtonNull2.IsChecked);
 		}
+
+		[TestMethod]
+		public async Task When_AutomationPeer_Toggle()
+		{
+			var radioButton = new RadioButton();
+
+			WindowHelper.WindowContent = radioButton;
+
+			await WindowHelper.WaitForIdle();
+
+			using (var clickEvent = new EventTester<RadioButton, RoutedEventArgs>(radioButton, "Click"))
+			{
+				var peer = FrameworkElementAutomationPeer.CreatePeerForElement(radioButton) as RadioButtonAutomationPeer;
+				peer.Toggle();
+
+				Assert.IsTrue(await clickEvent.WaitAsync(TimeSpan.FromSeconds(3)));
+			}
+		}
+
+		[TestMethod]
+		public async Task When_AutomationPeer_Toggle_With_Command()
+		{
+			var radioButton = new RadioButton();
+			var command = new TestCommand();
+			radioButton.Command = command;
+
+			WindowHelper.WindowContent = radioButton;
+
+			await WindowHelper.WaitForIdle();
+
+			using (var commandFired = new EventTester<TestCommand, EventArgs>(command, "CommandFired"))
+			{
+				var peer = FrameworkElementAutomationPeer.CreatePeerForElement(radioButton) as RadioButtonAutomationPeer;
+				peer.Toggle();
+
+				Assert.IsTrue(await commandFired.WaitAsync(TimeSpan.FromSeconds(3)));
+			}
+		}
+	}
+
+	public class TestCommand : ICommand
+	{
+		public event EventHandler CanExecuteChanged { add { } remove { } }
+		public event EventHandler CommandFired;
+
+		public TestCommand()
+		{
+		}
+
+		public bool CanExecute(object o)
+		{
+			return true;
+		}
+
+		public void Execute(object o) => CommandFired.Invoke(this, null);
 	}
 }
