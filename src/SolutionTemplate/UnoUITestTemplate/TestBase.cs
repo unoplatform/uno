@@ -60,10 +60,10 @@ namespace UnoUITestsLibrary
 			var fileInfo = _app.Screenshot(title);
 
 			var fileNameWithoutExt = Path.GetFileNameWithoutExtension(fileInfo.Name);
-			if (fileNameWithoutExt != title)
+			if (fileNameWithoutExt != title && fileInfo.DirectoryName != null)
 			{
 				var destFileName = Path
-					.Combine(Path.GetDirectoryName(fileInfo.FullName), title + Path.GetExtension(fileInfo.Name));
+					.Combine(fileInfo.DirectoryName, title + Path.GetExtension(fileInfo.Name));
 
 				if (File.Exists(destFileName))
 				{
