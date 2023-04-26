@@ -19,6 +19,11 @@ function Assert-ExitCodeIsZero()
 {
     if ($LASTEXITCODE -ne 0)
     {
+        popd
+        popd
+
+        Set-PSDebug -Off
+
         throw "Exit code must be zero."
     }
 }
