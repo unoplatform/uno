@@ -2,6 +2,7 @@
 
 using System;
 using Uno.Foundation.Extensibility;
+using Uno.Foundation.Logging;
 using Uno.Media.Playback;
 using Windows.Foundation;
 using Windows.Media.Playback;
@@ -33,8 +34,10 @@ public class MediaPlayerPresenterExtension : IMediaPlayerPresenterExtension
 
 	public void MediaPlayerChanged()
 	{
-		Console.WriteLine($"MediaPlayerPresenterExtension.MediaPlayerChanged()");
-
+		if (this.Log().IsEnabled(LogLevel.Debug))
+		{
+			this.Log().LogDebug("Enter MediaPlayerPresenterExtension.MediaPlayerChanged().");
+		}
 		if (_owner is not null
 			&& MediaPlayerExtension.GetByMediaPlayer(_owner.MediaPlayer) is { } extension)
 		{
@@ -42,7 +45,10 @@ public class MediaPlayerPresenterExtension : IMediaPlayerPresenterExtension
 		}
 		else
 		{
-			Console.WriteLine($"MediaPlayerPresenter.OnMediaPlayerChanged: Unable to find associated MediaPlayerExtension");
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().LogDebug($"MediaPlayerPresenter.OnMediaPlayerChanged: Unable to find associated MediaPlayerExtension");
+			}
 		}
 	}
 
@@ -51,16 +57,7 @@ public class MediaPlayerPresenterExtension : IMediaPlayerPresenterExtension
 	{
 		if (_owner is not null)
 		{
-			var stretch = _owner.Stretch switch
-			{
-				Stretch.Uniform => VideoStretch.Uniform,
-				Stretch.Fill => VideoStretch.Fill,
-				Stretch.None => VideoStretch.None,
-				Stretch.UniformToFill => VideoStretch.UniformToFill,
-				_ => throw new NotSupportedException($"Stretch mode {_owner.Stretch} is not supported")
-			};
-
-			_htmlPlayer.UpdateVideoStretch(stretch);
+			_htmlPlayer.UpdateVideoStretch(_owner.Stretch);
 		}
 	}
 }

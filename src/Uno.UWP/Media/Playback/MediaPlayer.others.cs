@@ -18,8 +18,10 @@ namespace Windows.Media.Playback
 
 		public void Initialize()
 		{
-			Console.WriteLine($"MediaPlayer()");
-
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().LogDebug("Enter Initialize MediaPlayer().");
+			}
 
 			if (!ApiExtensibility.CreateInstance<IMediaPlayerExtension>(this, out _extension))
 			{

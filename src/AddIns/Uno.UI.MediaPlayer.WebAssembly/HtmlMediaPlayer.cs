@@ -10,6 +10,7 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml;
 using System.Globalization;
 using Windows.UI.Xaml.Controls.Maps;
+using Windows.UI.Xaml.Media;
 
 namespace Uno.UI.Media;
 
@@ -447,20 +448,21 @@ internal partial class HtmlMediaPlayer : Border
 		}
 	}
 
-	internal void UpdateVideoStretch(VideoStretch stretch)
+	internal void UpdateVideoStretch(Stretch stretch)
 	{
+
 		switch (stretch)
 		{
-			case VideoStretch.None:
+			case Stretch.None:
 				_htmlVideo.SetCssStyle("object-fit", "none");
 				break;
-			case VideoStretch.Fill:
+			case Stretch.Fill:
 				_htmlVideo.SetCssStyle("object-fit", "fill");
 				break;
-			case VideoStretch.Uniform:
+			case Stretch.Uniform:
 				_htmlVideo.SetCssStyle("object-fit", "cover");
 				break;
-			case VideoStretch.UniformToFill:
+			case Stretch.UniformToFill:
 				_htmlVideo.SetCssStyle("object-fit", "contain");
 				break;
 		}

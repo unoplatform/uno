@@ -9,7 +9,8 @@ internal class HtmlVideo : UIElement
 	public HtmlVideo() : base("video")
 	{
 		SetAttribute("background-color", "transparent");
-		SetStyle("width", "100%");
-		SetStyle("height", "100%");
+		SetStyle(
+			("width", "100%"),
+			("height", "100%"));
 	}
 }

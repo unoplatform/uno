@@ -3,6 +3,7 @@ using Windows.Foundation;
 using Windows.Media.Playback;
 using Windows.UI.Core;
 using Windows.UI.Xaml.Media;
+using Uno.Foundation.Logging;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -27,10 +28,12 @@ namespace Windows.UI.Xaml.Controls
 
 		private static void OnMediaPlayerChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
 		{
-			Console.WriteLine($"MediaPlayerPresenter.OnMediaPlayerChanged({args.NewValue})");
-
 			if (sender is MediaPlayerPresenter presenter)
 			{
+				if (presenter.Log().IsEnabled(LogLevel.Debug))
+				{
+					presenter.Log().LogDebug($"MediaPlayerPresenter.OnMediaPlayerChanged({args.NewValue})");
+				}
 				if (args.OldValue is Windows.Media.Playback.MediaPlayer oldPlayer)
 				{
 					oldPlayer.VideoRatioChanged -= presenter.OnVideoRatioChanged;

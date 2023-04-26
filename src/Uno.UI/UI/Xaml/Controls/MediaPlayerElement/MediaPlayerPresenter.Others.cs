@@ -17,8 +17,10 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void InitializePartial()
 		{
-			Console.WriteLine($"MediaPlayerPresenter");
-
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().LogDebug($"Enter MediaPlayerPresenter InitializePartial");
+			}
 			if (!ApiExtensibility.CreateInstance<IMediaPlayerPresenterExtension>(this, out _extension))
 			{
 				if (this.Log().IsEnabled(LogLevel.Error))

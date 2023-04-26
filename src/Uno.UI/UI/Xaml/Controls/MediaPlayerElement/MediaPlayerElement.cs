@@ -4,6 +4,7 @@ using Windows.Media.Playback;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml.Media;
+using Uno.Foundation.Logging;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -44,8 +45,10 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (sender is MediaPlayerElement mpe)
 			{
-				Console.WriteLine($"MediaPlayerElement.SourceChanged({args.NewValue})");
-
+				if (mpe.Log().IsEnabled(LogLevel.Debug))
+				{
+					mpe.Log().LogDebug($"MediaPlayerElement.SourceChanged({args.NewValue})");
+				}
 				var source = args.NewValue as IMediaPlaybackSource;
 
 				if (mpe.MediaPlayer != null)

@@ -243,7 +243,10 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 
 	public void InitializeSource()
 	{
-		Console.WriteLine($"MediaPlayerExtension.InitializeSource()");
+		if (this.Log().IsEnabled(LogLevel.Debug))
+		{
+			this.Log().LogDebug("Enter MediaPlayerExtension.InitializeSource().");
+		}
 
 		NaturalDuration = TimeSpan.Zero;
 		if (Position != TimeSpan.Zero)
