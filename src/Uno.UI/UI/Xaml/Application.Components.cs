@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Windows.UI.Xaml.Markup;
+using Uno.Foundation.Logging;
 
 namespace Windows.UI.Xaml
 {
@@ -23,9 +24,9 @@ namespace Windows.UI.Xaml
 			}
 			else
 			{
-				if (typeof(VisualTreeHelper).Log().IsEnabled(LogLevel.Debug))
+				if (typeof(Application).Log().IsEnabled(LogLevel.Debug))
 				{
-					typeof(VisualTreeHelper).Log().LogDebug($"Skipping component load, could not find registration for {resourceLocator}");
+					typeof(Application).Log().LogDebug($"Skipping component load, could not find registration for {resourceLocator}");
 				}
 			}
 		}
