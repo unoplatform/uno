@@ -145,7 +145,9 @@ fi
 
 cd $UNO_TESTS_LOCAL_TESTS_FILE
 
-echo "Test filters: $UNO_TESTS_FILTER"
+echo "Test Parameters:"
+echo "  Timeout=$UITEST_TEST_TIMEOUT"
+echo "  Test filters: $UNO_TESTS_FILTER"
 
 ## Run tests
 dotnet test \
