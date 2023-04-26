@@ -67,13 +67,13 @@ else
 	elif [ "$UITEST_AUTOMATED_GROUP" == 'Benchmarks' ];
 	then
 		export TEST_FILTERS=" \
-			FullyQualifiedName = SamplesApp.UITests.Runtime.BenchmarkDotNetTests
+			FullyQualifiedName ~ SamplesApp.UITests.Runtime.BenchmarkDotNetTests
 		"
 	elif [ "$UITEST_AUTOMATED_GROUP" == 'Local' ];
 	then
 		# Use this group to debug failing UI tests locally
 		export TEST_FILTERS=" \
-			FullyQualifiedName = SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests.TextBoxTests.TextBox_No_Text_Entered \
+			FullyQualifiedName ~ SamplesApp.UITests.Runtime.BenchmarkDotNetTests
 		"
 	fi
 fi
@@ -138,14 +138,14 @@ cd $UNO_UITEST_SCREENSHOT_PATH
 
 ## Build the NUnit configuration file
 if [ -f "$UNO_TESTS_FAILED_LIST" ] && [ "$UITEST_IGNORE_RERUN_FILE" != "true" ]; then
-    UNO_TESTS_FILTER=$UNO_TESTS_FAILED_LIST
+    UNO_TESTS_FILTER=`cat $UNO_TESTS_FAILED_LIST`
 else
     UNO_TESTS_FILTER=$TEST_FILTERS
 fi
 
 cd $UNO_TESTS_LOCAL_TESTS_FILE
 
-## Show the tests list
+## Run tests
 dotnet test --logger "nunit;LogFileName=$UNO_ORIGINAL_TEST_RESULTS" --filter "$UNO_TESTS_FILTER" || true
 
 # export the simulator logs
