@@ -243,7 +243,7 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.WebView.UnsafeContentWarningDisplaying.remove
 		// Forced skipping of method Windows.UI.Xaml.Controls.WebView.UnviewableContentIdentified.add
 		// Forced skipping of method Windows.UI.Xaml.Controls.WebView.UnviewableContentIdentified.remove
-		#if false || false || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__ || false
+		#if false || false || IS_UNIT_TESTS || false || false || false || false
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
 		public  void NavigateWithHttpRequestMessage( global::Windows.Web.Http.HttpRequestMessage requestMessage)
 		{
