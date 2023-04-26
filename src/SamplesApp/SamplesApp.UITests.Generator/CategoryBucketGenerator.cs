@@ -53,7 +53,7 @@ namespace Uno.Samples.UITest.Generator
 				var builder = new IndentedStringBuilder();
 				using (builder.BlockInvariant($"namespace {type.ContainingNamespace}"))
 				{
-					if(bucketCount != 0)
+					if (bucketCount != 0)
 					{
 						// Compute a stable hash of the full metadata name
 						var buffer = Encoding.UTF8.GetBytes(fullMetadataName);
