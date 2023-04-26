@@ -425,8 +425,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual("Image_ImageOpened", logs[1]);
 		}
 
-
-
 		private async Task<RawBitmap> TakeScreenshot(FrameworkElement SUT)
 		{
 			var renderer = new RenderTargetBitmap();
