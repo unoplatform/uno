@@ -152,7 +152,7 @@ internal partial class InputManager
 
 		internal void OnPointerExited(Windows.UI.Core.PointerEventArgs args)
 		{
-			// This is how UWP behaves: when out of the bounds of the Window, the root element is use.
+			// This is how UWP behaves: when out of the bounds of the Window, the root element is used.
 			var originalSource = Windows.UI.Xaml.Window.Current.Content;
 			if (originalSource is null)
 			{
@@ -289,7 +289,7 @@ internal partial class InputManager
 			{
 				if (Raise(Leave, staleBranch.Value, routedArgs) is { VisualTreeAltered: true })
 				{
-					// The visual tree have been modified in a way that requires to perform a new hit test.
+					// The visual tree has been modified in a way that requires performing a new hit test.
 					originalSource = HitTest(args).element ?? Windows.UI.Xaml.Window.Current.Content;
 				}
 			}
@@ -298,7 +298,7 @@ internal partial class InputManager
 			// Note: This won't do anything if already over.
 			if (Raise(Enter, originalSource, routedArgs) is { VisualTreeAltered: true })
 			{
-				// The visual tree have been modified in a way that requires to perform a new hit test.
+				// The visual tree has been modified in a way that requires performing a new hit test.
 				originalSource = HitTest(args).element ?? Windows.UI.Xaml.Window.Current.Content;
 			}
 

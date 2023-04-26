@@ -64,7 +64,7 @@ public static class ApiExtensibility
 	/// <typeparam name="T">A registered type</typeparam>
 	/// <param name="owner">An optional owner to be passed to the extension constructor</param>
 	/// <param name="instance">The instance if the creation was successful</param>
-	/// <returns>True if the creation suceeded, otherwise False.</returns>
+	/// <returns>True if the creation succeeded, otherwise False.</returns>
 	public static bool CreateInstance<T>(object owner, [NotNullWhen(true)] out T? instance)
 		where T : class
 	{

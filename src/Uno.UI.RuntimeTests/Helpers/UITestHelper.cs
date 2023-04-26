@@ -11,7 +11,7 @@ using Private.Infrastructure;
 
 namespace Uno.UI.RuntimeTests.Tests.Uno_UI_Xaml_Core;
 
-// Note: This files contains bunch of helpers that are expected to be moved to the test engine among the pointer injection work
+// Note: This file contains a bunch of helpers that are expected to be moved to the test engine among the pointer injection work
 
 public static class UITestHelper
 {

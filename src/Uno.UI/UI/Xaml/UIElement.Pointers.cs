@@ -254,21 +254,21 @@ namespace Windows.UI.Xaml
 		internal struct PointerEventDispatchResult
 		{
 			/// <summary>
-			/// Indicates that the visual tree has been modified in a way that the input manager must perform a complete hit testing sequence before dispatching a new event.
+			/// Indicates that the visual tree has been modified in a way that the input manager must perform a complete hit-testing sequence before dispatching a new event.
 			/// </summary>
 			/// <remarks>
 			/// This is designed for the case where for a single native pointer event, we are dispatching multiple managed events (e.g. managed Enter/Exit when we get only a native Move)
-			/// for all other cases **a full hit test must be perform**.
-			/// This means that we must not "capture"/cache the current top-most-element (a.k.a. OriginalSource) and try to update it on next event
-			/// as this flag does not take in consideration RenderTransform and other layout modification that does not alter the state of the pointer.
+			/// for all other cases **a full hit test must be performed**.
+			/// This means that we must not "capture"/cache the current top-most-element (a.k.a. OriginalSource) and try to update it on the next event
+			/// as this flag does not take into consideration RenderTransform and other layout modification that does not alter the state of the pointer.
 			/// </remarks>
 			/// <remarks>This is used only for managed dispatch.</remarks>
 			public bool VisualTreeAltered { get; set; }
 		}
 
 		/// <summary>
-		/// Indicates if this element or one of its child might be target pointer pointer events.
-		/// Be aware this doesn't means that the element itself can be actually touched by user,
+		/// Indicates if this element or one of its children might be target pointer events.
+		/// Be aware this doesn't means that the element itself can be actually touched by the user,
 		/// but only that pointer events can be raised on this element.
 		/// I.e. this element is NOT <see cref="HitTestability.Collapsed"/>.
 		/// </summary>

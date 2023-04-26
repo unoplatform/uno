@@ -22,7 +22,7 @@ namespace Uno.UI.Xaml.Core;
  */
 
 /// <summary>
-/// This is an helper class that use to manage the captures for a given pointer.
+/// This is a helper class that uses to manage the captures for a given pointer.
 /// </summary>
 internal partial class PointerCapture
 {
@@ -71,13 +71,13 @@ internal partial class PointerCapture
 	public Pointer Pointer { get; }
 
 	/// <summary>
-	/// Gets the <see cref="PointerRoutedEventArgs.FrameId"/> of the last args that has been handled by this capture
+	/// Gets the <see cref="PointerRoutedEventArgs.FrameId"/> of the last args that have been handled by this capture
 	/// </summary>
 	public long MostRecentDispatchedEventFrameId { get; private set; }
 
 	/// <summary>
-	/// Determines if this capture was made only for implicit kind
-	/// (So we should not use it to filter out some event on other controls)
+	/// Determines if this capture was made only for an implicit kind
+	/// (So we should not use it to filter out some events on other controls)
 	/// </summary>
 	public bool IsImplicitOnly { get; private set; } = true;
 
@@ -216,7 +216,7 @@ internal partial class PointerCapture
 	/// </summary>
 	/// <param name="element">The target element for which the args are validated</param>
 	/// <param name="args">The pending pointer event args that is under test</param>
-	/// <param name="autoRelease">A flag that allows to automatically release any pending out-dated capture (for PointerDown only)</param>
+	/// <param name="autoRelease">A flag that allows releasing automatically any pending outdated capture (for PointerDown only)</param>
 	/// <returns>A boolean which indicates if the args are valid or not for the given element</returns>
 	public bool ValidateAndUpdate(UIElement element, PointerRoutedEventArgs args, bool autoRelease)
 	{
@@ -247,8 +247,8 @@ internal partial class PointerCapture
 		{
 			// We should dispatch the event only if the control which has captured the pointer has already dispatched the event
 			// (Which actually means that the current control is a parent of the control which has captured the pointer)
-			// Remarks: This is not enough to determine parent-child relationship when we dispatch multiple events base on the same native event,
-			//			(as they will all have the same FrameId), however in that case we dispatch events layer per layer
+			// Remarks: This is not enough to determine the parent-child relationship when we dispatch multiple events based on the same native event,
+			//			(as they will all have the same FrameId), however, in that case, we dispatch events layer per layer
 			//			instead of bubbling a single event before raising the next one, so we are safe.
 			//			The only limitation would be when mixing native vs. managed bubbling, but this check only prevents
 			//			the leaf of the tree to raise the event, so we cannot mix bubbling mode in that case.
