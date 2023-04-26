@@ -158,7 +158,7 @@ namespace SamplesApp.UITests.TestFramework
 			}
 
 			expectedRect = Normalize(expectedRect, new(expectedBitmap.Width, expectedBitmap.Height));
-			actualRect = Normalize(actualRect,  new(actualBitmap.Width, actualBitmap.Height));
+			actualRect = Normalize(actualRect, new(actualBitmap.Width, actualBitmap.Height));
 
 			var expectedPixels = ExpectedPixels
 				.At(actualRect.Location)

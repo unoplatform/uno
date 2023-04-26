@@ -27,7 +27,7 @@ namespace SamplesApp.UITests
 		{
 			ImageAssert.TryIgnoreImageAssert();
 
-			if(_bitmap is null)
+			if (_bitmap is null)
 			{
 				using var input = System.IO.File.OpenRead(File.FullName);
 				using var inputStream = new SKManagedStream(input);
@@ -70,11 +70,11 @@ namespace SamplesApp.UITests
 		}
 
 
-		public int Width  => _bitmap.Width;
+		public int Width => _bitmap.Width;
 
-		public int Height  => _bitmap.Height;
+		public int Height => _bitmap.Height;
 
-		public System.Drawing.Size Size => new(_bitmap.Width,_bitmap.Height);
+		public System.Drawing.Size Size => new(_bitmap.Width, _bitmap.Height);
 
 		public System.Drawing.Color GetPixel(int x, int y)
 			=> _bitmap.GetPixel(x, y).ToColor();
