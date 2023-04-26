@@ -149,7 +149,11 @@ else
 fi
 
 ## Run NUnit tests
-dotnet test --logger "nunit;LogFileName=$UNO_ORIGINAL_TEST_RESULTS" --filter "$UNO_TESTS_FILTER" || true
+dotnet test \
+	--logger "nunit;LogFileName=$UNO_ORIGINAL_TEST_RESULTS" \
+	--filter "$UNO_TESTS_FILTER" \
+	--blame-hang-timeout $UITEST_TEST_TIMEOUT \
+	|| true
 
 ## Dump the emulator's system log
 $ANDROID_HOME/platform-tools/adb shell logcat -d > $BUILD_ARTIFACTSTAGINGDIRECTORY/screenshots/$SCREENSHOTS_FOLDERNAME/android-device-log-$UNO_UITEST_BUCKET_ID-$UITEST_RUNTIME_TEST_GROUP-$UITEST_TEST_MODE_NAME.txt

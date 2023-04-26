@@ -146,7 +146,11 @@ fi
 cd $UNO_TESTS_LOCAL_TESTS_FILE
 
 ## Run tests
-dotnet test --logger "nunit;LogFileName=$UNO_ORIGINAL_TEST_RESULTS" --filter "$UNO_TESTS_FILTER" || true
+dotnet test \
+	--logger "nunit;LogFileName=$UNO_ORIGINAL_TEST_RESULTS" \
+	--filter "$UNO_TESTS_FILTER" \
+	--blame-hang-timeout $UITEST_TEST_TIMEOUT
+	|| true
 
 # export the simulator logs
 export LOG_FILEPATH=$UNO_UITEST_SCREENSHOT_PATH/_logs
