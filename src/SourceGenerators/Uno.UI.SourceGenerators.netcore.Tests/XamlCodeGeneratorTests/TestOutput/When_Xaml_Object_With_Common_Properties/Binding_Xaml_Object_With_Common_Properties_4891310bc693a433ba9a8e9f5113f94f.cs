@@ -39,7 +39,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 		private const string __baseUri_prefix_Binding_Xaml_Object_With_Common_Properties_4891310bc693a433ba9a8e9f5113f94f = "ms-appx:///TestProject/";
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		private const string __baseUri_Binding_Xaml_Object_With_Common_Properties_4891310bc693a433ba9a8e9f5113f94f = "ms-appx:///TestProject/";
-				global::Windows.UI.Xaml.NameScope __nameScope = new global::Windows.UI.Xaml.NameScope();
+		global::Windows.UI.Xaml.NameScope __nameScope = new global::Windows.UI.Xaml.NameScope();
 		private void InitializeComponent()
 		{
 			InitializeComponent_584AF9FA();
@@ -200,7 +200,6 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 			{
 			}
 		}
-
 	}
 }
 namespace MyProject

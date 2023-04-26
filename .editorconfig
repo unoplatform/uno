@@ -2,7 +2,6 @@ root = true
 
 [*]
 tab_width = 4
-trim_trailing_whitespace = true
 insert_final_newline = true
 
 [*.{xaml,xml,targets,props,csproj,cs,tt,java,ts,json}]
