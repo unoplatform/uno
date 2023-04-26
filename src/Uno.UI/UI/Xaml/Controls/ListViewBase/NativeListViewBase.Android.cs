@@ -238,12 +238,32 @@ namespace Windows.UI.Xaml.Controls
 			return NativeLayout.CanCurrentlyScrollVertically(direction);
 		}
 
+		private bool _trackDetachedViews;
+		private readonly List<UnoViewHolder> _detachedViews = new();
+
+		internal void StartDetachedViewTracking()
+			=> _trackDetachedViews = true;
+
+		internal void StopDetachedViewTrackingAndNotifyPendingAsRecycled()
+		{
+			_trackDetachedViews = false;
+
+			// This should be invoked only from the LV.CleanContainer()
+			// **BUT** the container is not Cleaned/Prepared by the LV on Android
+			// https://github.com/unoplatform/uno/issues/11957
+			foreach (var detachedView in _detachedViews)
+			{
+				UIElement.PrepareForRecycle(detachedView.ItemView);
+			}
+		}
+
 		protected override void AttachViewToParent(View child, int index, ViewGroup.LayoutParams layoutParams)
 		{
 			var vh = GetChildViewHolder(child);
 			if (vh != null)
 			{
 				vh.IsDetached = false;
+				_detachedViews.Remove(vh);
 			}
 			base.AttachViewToParent(child, index, layoutParams);
 		}
@@ -257,11 +277,11 @@ namespace Windows.UI.Xaml.Controls
 				if (vh != null)
 				{
 					vh.IsDetached = true;
-
-					// This should be invoked only from the LV.CleanContainer()
-					// **BUT** the container is not Cleaned/Prepared by the LV on Android
-					// https://github.com/unoplatform/uno/issues/11957
-					UIElement.PrepareForRecycle(view);
+					if (_trackDetachedViews)
+					{
+						// Avoid memory leak by adding them only when needed
+						_detachedViews.Add(vh);
+					}
 				}
 			}
 			base.DetachViewFromParent(index);
@@ -273,6 +293,7 @@ namespace Windows.UI.Xaml.Controls
 			if (vh != null)
 			{
 				vh.IsDetached = false;
+				_detachedViews.Remove(vh);
 			}
 #if DEBUG
 			if (!vh.IsDetachedPrivate)
