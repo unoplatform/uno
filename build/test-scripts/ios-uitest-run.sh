@@ -153,7 +153,7 @@ echo "  Test filters: $UNO_TESTS_FILTER"
 dotnet test \
 	--logger "nunit;LogFileName=$UNO_ORIGINAL_TEST_RESULTS" \
 	--filter "$UNO_TESTS_FILTER" \
-	--blame-hang-timeout $UITEST_TEST_TIMEOUT
+	--blame-hang-timeout 30m #$UITEST_TEST_TIMEOUT
 	|| true
 
 # export the simulator logs
