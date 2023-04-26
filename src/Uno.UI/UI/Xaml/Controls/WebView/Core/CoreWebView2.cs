@@ -64,7 +64,7 @@ public partial class CoreWebView2
 		UpdateFromInternalSource();
 	}
 
-	internal void NavigateWithHttpRequestMessage(global::System.Net.Http.HttpRequestMessage requestMessage)
+	internal void NavigateWithHttpRequestMessage(global::Windows.Web.Http.HttpRequestMessage requestMessage)
 	{
 		if (requestMessage?.RequestUri is null)
 		{
