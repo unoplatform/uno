@@ -43,6 +43,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		private Style CounterComboBoxContainerStyle => _testsResources["CounterComboBoxContainerStyle"] as Style;
 
+		private Style ComboBoxWithSeparatorStyle => _testsResources["ComboBoxWithSeparatorStyle"] as Style;
+
 		private DataTemplate CounterItemTemplate => _testsResources["CounterItemTemplate"] as DataTemplate;
 
 		private ItemsPanelTemplate MeasureCountCarouselPanelTemplate => _testsResources["MeasureCountCarouselPanel"] as ItemsPanelTemplate;
@@ -245,15 +247,19 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		public async Task Check_DropDown_Flyout_Marging_When_In_Modal()
 		{
 			MultiFrame multiFrame = new();
+			var showModalButton = new Button();
+
+			multiFrame.Children.Add(showModalButton);
 
 			var source = Enumerable.Range(0, 5).ToArray();
 			var SUT = new ComboBox
 			{
 				ItemsSource = source,
-				Margin = new Thickness(20, 5)
+				Text = "Alignment",
+				VerticalAlignment = VerticalAlignment.Center,
+				PlaceholderText = "Testing",
+				Style = ComboBoxWithSeparatorStyle
 			};
-
-			var button = new Button();
 
 			var modalPage = new Page();
 			var gridContainer = new Grid();
@@ -268,16 +274,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			try
 			{
-				var page = new Page();
-				button.Click += OpenModal;
-				page.Content = button;
+				var homePage = new Page();
+				showModalButton.Click += OpenModal;
+				homePage.Content = multiFrame;
 
-				WindowHelper.WindowContent = page;
+				WindowHelper.WindowContent = homePage;
 
-				await WindowHelper.WaitForLoaded(page);
+				await WindowHelper.WaitForLoaded(homePage);
 
 				// Open Modal
-				button.RaiseClick();
+				showModalButton.RaiseClick();
 
 				await WindowHelper.WaitForLoaded(modalPage);
 
@@ -287,13 +293,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				var popup = gridContainer.FindFirstChild<Popup>();
 
+				Assert.IsNotNull(ComboBoxWithSeparatorStyle);
 				Assert.IsNotNull(popup);
 				Assert.IsTrue(popup.IsOpen);
-				Assert.AreEqual(SUT.Bounds.X, popup.Bounds.X, "ComboBox vs PopUp Bounds X is not equal");
+				Assert.AreEqual(SUT.Frame.X, popup.Frame.X, "ComboBox vs ComboBox.PopUp Frame.X are not equal");
 			}
 			finally
 			{
-				button.Click -= OpenModal;
+				showModalButton.Click -= OpenModal;
 				SUT.IsDropDownOpen = false;
 				await multiFrame.CloseModal();
 				WindowHelper.WindowContent = null;
