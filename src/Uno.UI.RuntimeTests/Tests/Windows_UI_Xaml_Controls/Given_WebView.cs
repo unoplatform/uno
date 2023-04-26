@@ -27,7 +27,7 @@ public class Given_WebView
 	{
 		var webView = new WebView();
 		var uri = new Uri("https://bing.com");
-		webView.NavigateWithHttpRequestMessage(new System.Net.Http.HttpRequestMessage(System.Net.Http.HttpMethod.Get, uri));
+		webView.NavigateWithHttpRequestMessage(new global::Windows.Web.Http.HttpRequestMessage(global::Windows.Web.Http.HttpMethod.Get, uri));
 		Assert.IsNotNull(webView.Source);
 		Assert.AreEqual("https://bing.com/", webView.Source.OriginalString);
 		Assert.AreEqual("https://bing.com", uri.OriginalString);

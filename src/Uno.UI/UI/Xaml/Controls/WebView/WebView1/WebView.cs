@@ -62,7 +62,7 @@ public partial class WebView : Control, IWebView
 	public async Task<string?> InvokeScriptAsync(CancellationToken ct, string script, string[]? arguments) =>
 		await CoreWebView2.InvokeScriptAsync(script, arguments, ct);
 
-	public void NavigateWithHttpRequestMessage(global::System.Net.Http.HttpRequestMessage requestMessage) =>
+	public void NavigateWithHttpRequestMessage(global::Windows.Web.Http.HttpRequestMessage requestMessage) =>
 		CoreWebView2.NavigateWithHttpRequestMessage(requestMessage);
 
 	internal static string ConcatenateJavascriptArguments(string[]? arguments)
