@@ -6353,7 +6353,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 										{
 											if (_isHotReloadEnabled)
 											{
-												writer.AppendLineIndented($"var owner = global::Uno.UI.Helpers.MarkupHelper.GetElementProperty<{CurrentScope.ClassName}>(sender, \"{{componentName}}_owner\");");
+												writer.AppendLineIndented($"var owner = global::Uno.UI.Helpers.MarkupHelper.GetElementProperty<{CurrentScope.ClassName}>(sender, \"{componentName}_owner\");");
 											}
 
 											// Refresh the bindings when the ElementStub is unloaded. This assumes that
