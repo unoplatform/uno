@@ -145,6 +145,8 @@ fi
 
 cd $UNO_TESTS_LOCAL_TESTS_FILE
 
+echo "Test filters: $UNO_TESTS_FILTER"
+
 ## Run tests
 dotnet test \
 	--logger "nunit;LogFileName=$UNO_ORIGINAL_TEST_RESULTS" \

@@ -148,6 +148,8 @@ else
     UNO_TESTS_FILTER=$TEST_FILTERS
 fi
 
+echo "Test filters: $UNO_TESTS_FILTER"
+
 ## Run NUnit tests
 dotnet test \
 	--logger "nunit;LogFileName=$UNO_ORIGINAL_TEST_RESULTS" \
