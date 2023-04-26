@@ -60,7 +60,14 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
-				this.Log().Debug(this.ToString() + " Image failed to open");
+				if (exception is null)
+				{
+					this.Log().Debug($"Image '{this}' failed to open");
+				}
+				else
+				{
+					this.Log().Debug($"Image '{this}' failed to open: {exception}");
+				}
 			}
 
 #if !__SKIA__ && !__WASM__ // TODO: Have consistent handling on Wasm and Skia.
@@ -70,7 +77,14 @@ namespace Windows.UI.Xaml.Controls
 			}
 #endif
 
-			ImageFailed?.Invoke(this, new ExceptionRoutedEventArgs(this, "Image failed to download"));
+			if (exception is null)
+			{
+				ImageFailed?.Invoke(this, new ExceptionRoutedEventArgs(this, "Image failed to download"));
+			}
+			else
+			{
+				ImageFailed?.Invoke(this, new ExceptionRoutedEventArgs(this, "Image failed to download: " + exception.ToString()));
+			}
 		}
 
 		protected virtual void OnImageOpened(ImageSource imageSource)
