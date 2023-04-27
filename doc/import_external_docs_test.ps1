@@ -20,6 +20,11 @@ function Assert-ExitCodeIsZero()
 {
     if ($LASTEXITCODE -ne 0)
     {
+        popd
+        popd
+
+        Set-PSDebug -Off
+
         throw "Exit code must be zero."
     }
 }
@@ -59,4 +64,4 @@ docfx
 
 Assert-ExitCodeIsZero
 
-dotnet-serve
+dotnet-serve --open-browser

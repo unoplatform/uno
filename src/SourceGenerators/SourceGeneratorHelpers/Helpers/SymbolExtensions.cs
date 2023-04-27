@@ -219,6 +219,21 @@ namespace Microsoft.CodeAnalysis
 			return property?.GetAllAttributes().FirstOrDefault(a => SymbolEqualityComparer.Default.Equals(a.AttributeClass, attributeClassSymbol));
 		}
 
+		public static ITypeSymbol? TryGetPropertyOrFieldType(this ITypeSymbol type, string propertyOrFieldName)
+		{
+			if (type.GetAllMembersWithName(propertyOrFieldName).FirstOrDefault() is ISymbol member)
+			{
+				return member switch
+				{
+					IPropertySymbol propertySymbol => propertySymbol.Type,
+					IFieldSymbol fieldSymbol => fieldSymbol.Type,
+					_ => null,
+				};
+			}
+
+			return null;
+		}
+
 		public static IEnumerable<INamedTypeSymbol> GetAllInterfaces(this ITypeSymbol? symbol)
 		{
 			if (symbol != null)
