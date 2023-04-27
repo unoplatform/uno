@@ -362,5 +362,32 @@ namespace Windows.UI.Xaml.Controls
 		{
 			VisualStateManager.GoToState(this, IsCompact ? "CompactMode" : "NormalMode", true);
 		}
+
+		private static void OnIsCompactChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
+		{
+			VisualStateManager.GoToState((MediaTransportControls)dependencyObject, (bool)args.NewValue ? "CompactMode" : "NormalMode", false);
+		}
+
+		private static void OnShowAndHideAutomaticallyChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
+		{
+			if ((bool)args.NewValue)
+			{
+				((MediaTransportControls)dependencyObject).ResetControlsVisibilityTimer();
+			}
+			else
+			{
+				((MediaTransportControls)dependencyObject).CancelControlsVisibilityTimer();
+			}
+		}
+
+		private static void OnIsSeekBarVisibleChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
+		{
+			((MediaTransportControls)dependencyObject)._timelineContainer.Visibility = (bool)args.NewValue ? Visibility.Visible : Visibility.Collapsed;
+		}
+
+		private static void OnIsSeekEnabledChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
+		{
+			VisualStateManager.GoToState(((MediaTransportControls)dependencyObject)._progressSlider, (bool)args.NewValue ? "Normal" : "Disabled", false);
+		}
 	}
 }
