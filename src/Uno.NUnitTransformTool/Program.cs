@@ -6,6 +6,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Transactions;
 using System.Xml;
 using Mono.Cecil;
@@ -36,7 +37,12 @@ namespace Uno.ReferenceImplComparer
 			var failedTests = new List<string>();
 			foreach (var failedNode in failedNodes.OfType<XmlElement>())
 			{
-				failedTests.Add(failedNode.GetAttribute("fullname"));
+				var name = failedNode.GetAttribute("fullname");
+
+				// This is used to remove the test parameters from the test name, which are not used by the nunit-console runner.
+				var simpleName = Regex.Replace(name, @"\(([^)]*)\)", "");
+
+				failedTests.Add(simpleName);
 			}
 
 			// Add a dummy line to be used to rerun the test running in case 
