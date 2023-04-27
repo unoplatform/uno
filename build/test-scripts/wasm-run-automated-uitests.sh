@@ -22,7 +22,7 @@ export UITEST_RUNTIME_TEST_GROUP=${UITEST_RUNTIME_TEST_GROUP=automated}
 export UNO_UITEST_PLATFORM=Browser
 export UNO_UITEST_BENCHMARKS_PATH=$BUILD_ARTIFACTSTAGINGDIRECTORY/benchmarks/wasm-automated
 export UNO_UITEST_RUNTIMETESTS_RESULTS_FILE_PATH=$BUILD_SOURCESDIRECTORY/build/RuntimeTestResults-wasm-automated-$SITE_SUFFIX.xml
-export NUNIT_VERSION=3.11.1
+export UNO_TESTS_LOCAL_TESTS_FILE=$BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.UITests
 export UNO_ORIGINAL_TEST_RESULTS=$BUILD_SOURCESDIRECTORY/build/TestResult-original.xml
 export UNO_TESTS_FAILED_LIST=$BUILD_SOURCESDIRECTORY/build/uitests-failure-results/failed-tests-wasm-automated-$SITE_SUFFIX-$UITEST_AUTOMATED_GROUP-$UITEST_RUNTIME_TEST_GROUP-chromium.txt
 export UNO_TESTS_RESPONSE_FILE=$BUILD_SOURCESDIRECTORY/build/nunit.response
@@ -59,7 +59,11 @@ else
     UNO_TESTS_FILTER=$TEST_FILTERS
 fi
 
-echo "Test filters: $UNO_TESTS_FILTER"
+echo "Test Parameters:"
+echo "  Timeout=$UITEST_TEST_TIMEOUT"
+echo "  Test filters: $UNO_TESTS_FILTER"
+
+cd $UNO_TESTS_LOCAL_TESTS_FILE
 
 ## Run the tests
 dotnet test \

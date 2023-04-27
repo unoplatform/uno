@@ -2,8 +2,6 @@
 set -euo pipefail
 IFS=$'\n\t'
 
-export NUNIT_VERSION=3.12.0
-
 if [ "$UITEST_SNAPSHOTS_ONLY" == 'true' ];
 then
 	export SCREENSHOTS_FOLDERNAME=ios-Snap

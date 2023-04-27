@@ -6,7 +6,6 @@ IFS=$'\n\t'
 set -x
 
 export BUILDCONFIGURATION=Release
-export NUNIT_VERSION=3.12.0
 
 if [ "$UITEST_TEST_MODE_NAME" == 'Snapshots' ];
 then
@@ -38,7 +37,7 @@ export UNO_UITEST_PLATFORM=Android
 export UNO_UITEST_ANDROIDAPK_PATH=$BUILD_SOURCESDIRECTORY/build/$SAMPLEAPP_ARTIFACT_NAME/android/uno.platform.unosampleapp-Signed.apk
 export IsUiAutomationMappingEnabled=true
 export UITEST_RUNTIME_TEST_GROUP=${UITEST_RUNTIME_TEST_GROUP=automated}
-
+export UNO_TESTS_LOCAL_TESTS_FILE=$BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.UITests
 export UNO_ORIGINAL_TEST_RESULTS=$BUILD_SOURCESDIRECTORY/build/TestResult-original.xml
 export UNO_TESTS_FAILED_LIST=$BUILD_SOURCESDIRECTORY/build/uitests-failure-results/failed-tests-android-$ANDROID_SIMULATOR_APILEVEL-$SCREENSHOTS_FOLDERNAME-$UNO_UITEST_BUCKET_ID-$UITEST_RUNTIME_TEST_GROUP-$TARGETPLATFORM_NAME.txt
 export UNO_TESTS_RESPONSE_FILE=$BUILD_SOURCESDIRECTORY/build/nunit.response
@@ -148,13 +147,17 @@ else
     UNO_TESTS_FILTER=$TEST_FILTERS
 fi
 
-echo "Test filters: $UNO_TESTS_FILTER"
+echo "Test Parameters:"
+echo "  Timeout=$UITEST_TEST_TIMEOUT"
+echo "  Test filters: $UNO_TESTS_FILTER"
+
+cd $UNO_TESTS_LOCAL_TESTS_FILE
 
 ## Run NUnit tests
 dotnet test \
 	--logger "nunit;LogFileName=$UNO_ORIGINAL_TEST_RESULTS" \
 	--filter "$UNO_TESTS_FILTER" \
-	--blame-hang-timeout $UITEST_TEST_TIMEOUT \
+	--blame-hang-timeout 120m \
 	|| true
 
 ## Dump the emulator's system log
