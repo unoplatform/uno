@@ -84,13 +84,19 @@ namespace Windows.UI.Xaml
 			if (content == null)
 			{
 				FullWindowMediaRoot.Child = null;
-				_rootBorder.Visibility = Visibility.Visible;
+				if (_rootBorder != null)
+				{
+					_rootBorder.Visibility = Visibility.Visible;
+				}
 				FullWindowMediaRoot.Visibility = Visibility.Collapsed;
 			}
 			else
 			{
 				FullWindowMediaRoot.Visibility = Visibility.Visible;
-				_rootBorder.Visibility = Visibility.Collapsed;
+				if (_rootBorder != null)
+				{
+					_rootBorder.Visibility = Visibility.Collapsed;
+				}
 				FullWindowMediaRoot.Child = content;
 			}
 		}
