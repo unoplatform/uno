@@ -16,7 +16,7 @@ namespace SamplesApp.UITests.TestFramework
 	[AttributeUsage(AttributeTargets.Method | AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
 	public partial class AutoRetryAttribute : NUnitAttribute, IRepeatTest
 	{
-		public const int AutoRetryDefaultCount = 2;
+		public const int AutoRetryDefaultCount = 1;
 
 		private readonly int _tryCount;
 
