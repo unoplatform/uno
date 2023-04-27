@@ -23,12 +23,20 @@
 		private constructor(private managedHandle: number) {
 		}
 
+		public static setStartFrameDelay(jsHandle: number, delay: number) {
+			RenderingLoopAnimator.getInstance(jsHandle).SetStartFrameDelay(delay);
+		}
+
 		public SetStartFrameDelay(delay: number) {
 			this.unscheduleFrame();
 
 			if (this._isEnabled) {
 				this.scheduleDelayedFrame(delay);
 			}
+		}
+
+		public static setAnimationFramesInterval(jsHandle: number) {
+			RenderingLoopAnimator.getInstance(jsHandle).SetAnimationFramesInterval();
 		}
 
 		public SetAnimationFramesInterval() {
@@ -39,6 +47,10 @@
 			}
 		}
 
+		public static enableFrameReporting(jsHandle: number) {
+			RenderingLoopAnimator.getInstance(jsHandle).EnableFrameReporting();
+		}
+
 		public EnableFrameReporting() {
 			if (this._isEnabled) {
 				return;
@@ -46,6 +58,10 @@
 
 			this._isEnabled = true;
 			this.scheduleAnimationFrame();
+		}
+
+		public static disableFrameReporting(jsHandle: number) {
+			RenderingLoopAnimator.getInstance(jsHandle).DisableFrameReporting();
 		}
 
 		public DisableFrameReporting() {

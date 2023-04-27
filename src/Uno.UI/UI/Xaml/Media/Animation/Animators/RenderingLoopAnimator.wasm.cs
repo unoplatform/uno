@@ -25,7 +25,11 @@ namespace Windows.UI.Xaml.Media.Animation
 		{
 			if (Handle.IsAlive)
 			{
+#if NET7_0_OR_GREATER
+				NativeMethods.EnableFrameReporting(Handle.JSHandle);
+#else
 				WebAssemblyRuntime.InvokeJSWithInterop($"{this}.EnableFrameReporting();");
+#endif
 			}
 			else if (this.Log().IsEnabled(LogLevel.Debug))
 			{
@@ -37,7 +41,11 @@ namespace Windows.UI.Xaml.Media.Animation
 		{
 			if (Handle.IsAlive)
 			{
+#if NET7_0_OR_GREATER
+				NativeMethods.DisableFrameReporting(Handle.JSHandle);
+#else
 				WebAssemblyRuntime.InvokeJSWithInterop($"{this}.DisableFrameReporting();");
+#endif
 			}
 			else if (this.Log().IsEnabled(LogLevel.Debug))
 			{
@@ -49,7 +57,11 @@ namespace Windows.UI.Xaml.Media.Animation
 		{
 			if (Handle.IsAlive)
 			{
+#if NET7_0_OR_GREATER
+				NativeMethods.SetStartFrameDelay(Handle.JSHandle, delayMs);
+#else
 				WebAssemblyRuntime.InvokeJSWithInterop($"{this}.SetStartFrameDelay({delayMs});");
+#endif
 			}
 			else if (this.Log().IsEnabled(LogLevel.Debug))
 			{
@@ -61,7 +73,11 @@ namespace Windows.UI.Xaml.Media.Animation
 		{
 			if (Handle.IsAlive)
 			{
+#if NET7_0_OR_GREATER
+				NativeMethods.SetAnimationFramesInterval(Handle.JSHandle);
+#else
 				WebAssemblyRuntime.InvokeJSWithInterop($"{this}.SetAnimationFramesInterval();");
+#endif
 			}
 			else if (this.Log().IsEnabled(LogLevel.Debug))
 			{

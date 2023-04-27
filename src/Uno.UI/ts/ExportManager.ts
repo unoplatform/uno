@@ -9,7 +9,13 @@ namespace Uno.UI {
 				const unoExports = await (<any>Module).getAssemblyExports("Uno");
 				const unoUIExports = await (<any>Module).getAssemblyExports("Uno.UI");
 
-				(<any>globalThis).DotnetExports = { Uno: unoExports, UnoUI: unoUIExports };
+				const runtimeWasmExports = await (<any>Module).getAssemblyExports("Uno.Foundation.Runtime.WebAssembly");
+
+				(<any>globalThis).DotnetExports = {
+					Uno: unoExports,
+					UnoUI: unoUIExports,
+					UnoFoundationRuntimeWebAssembly: runtimeWasmExports
+				};
 			}
 		}
 	}
