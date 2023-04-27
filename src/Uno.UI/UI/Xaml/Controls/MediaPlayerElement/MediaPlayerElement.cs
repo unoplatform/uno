@@ -190,7 +190,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-#endregion
+		#endregion
 
 		#region MediaPlayer Property
 

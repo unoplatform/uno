@@ -1,4 +1,4 @@
-#if __ANDROID__ || __IOS__ || __MACOS__ || __WASM__ || __SKIA__
+#if __ANDROID__ || __IOS__ || __MACOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 
 using System;
 using Windows.Media.Playback;
