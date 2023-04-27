@@ -223,7 +223,7 @@ namespace Windows.Media.Core
 			throw new global::System.NotImplementedException("The member MediaSource MediaSource.CreateFromStreamReference(IRandomAccessStreamReference stream, string contentType) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaSource%20MediaSource.CreateFromStreamReference%28IRandomAccessStreamReference%20stream%2C%20string%20contentType%29");
 		}
 		#endif
-		#if false || false || NET461 || __SKIA__ || __NETSTD_REFERENCE__ || false
+		#if false || false || NET461 || false || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("NET461", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.Media.Core.MediaSource CreateFromUri( global::System.Uri uri)
 		{
