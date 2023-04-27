@@ -19,10 +19,7 @@ namespace Windows.Media.Playback
 				Stop();
 
 				_source = value;
-				if (_extension == null)
-				{
-					Initialize();
-				}
+
 				InitializeSource();
 
 				SourceChanged?.Invoke(this, null);
