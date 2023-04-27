@@ -634,12 +634,11 @@
 		<Setter Property="BorderThickness"
 					Value="0,0,0,1" />
 		<Setter Property="Margin"
-					Value="45,0" />
+					Value="60,0" />
 	</Style>
 
 	<Style x:Key="DefaultComboBoxItemStyle"
 			   TargetType="ComboBoxItem">
-
 		<Setter Property="Background"
 					Value="Transparent" />
 		<Setter Property="VerticalContentAlignment"
@@ -765,7 +764,6 @@
 
 	<Style x:Key="DefaultComboBoxStyle"
 			   TargetType="ComboBox">
-
 		<Setter Property="Background"
 					Value="Transparent" />
 		<Setter Property="Foreground"

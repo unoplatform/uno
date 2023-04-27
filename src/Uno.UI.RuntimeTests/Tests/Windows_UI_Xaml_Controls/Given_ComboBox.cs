@@ -251,7 +251,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			multiFrame.Children.Add(showModalButton);
 
-			var source = Enumerable.Range(0, 5).ToArray();
+			var source = Enumerable.Range(0, 6).ToArray();
 			var SUT = new ComboBox
 			{
 				ItemsSource = source,
@@ -262,7 +262,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			};
 
 			var modalPage = new Page();
-			var gridContainer = new Grid();
+			var gridContainer = new Grid()
+			{
+				Background = SolidColorBrushHelper.LightGreen
+			};
 
 			async void OpenModal(object sender, RoutedEventArgs e)
 			{
@@ -291,12 +294,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				await WindowHelper.WaitForIdle();
 
-				var popup = gridContainer.FindFirstChild<Popup>();
+				var locationX = SUT.GetAbsoluteBoundsRect().Location.X;
+
+				var popup = SUT.FindFirstChild<Popup>();
+				var childX = popup?.Child?.Frame.X ?? 0;
 
 				Assert.IsNotNull(ComboBoxWithSeparatorStyle);
 				Assert.IsNotNull(popup);
 				Assert.IsTrue(popup.IsOpen);
-				Assert.AreEqual(SUT.Frame.X, popup.Frame.X, "ComboBox vs ComboBox.PopUp Frame.X are not equal");
+				Assert.AreEqual(locationX, childX, "ComboBox vs ComboBox.PopUp.Child Frame.X are not equal");
 			}
 			finally
 			{
