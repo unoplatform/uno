@@ -536,6 +536,9 @@ namespace Windows.UI.Xaml.Controls
 				typeof(ContentPresenter),
 				new FrameworkPropertyMetadata(
 					null,
+#if __WASM__
+					FrameworkPropertyMetadataOptions.AffectsArrange,
+#endif
 					(s, e) => ((ContentPresenter)s)?.OnBorderBrushChanged((Brush)e.OldValue, (Brush)e.NewValue)
 				)
 			);

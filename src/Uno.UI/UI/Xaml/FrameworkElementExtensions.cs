@@ -334,19 +334,19 @@ namespace Windows.UI.Xaml
 		/// <returns>Whether the given element has an actual border.</returns>
 		internal static bool TryGetActualBorderThickness(this IFrameworkElement frameworkElement, out Thickness borderThickness)
 		{
-			if (__LinkerHints.Is_Windows_UI_Xaml_Controls_Panel_Available && frameworkElement is Panel p)
+			if (__LinkerHints.Is_Windows_UI_Xaml_Controls_Panel_Available && frameworkElement is Panel { BorderBrushInternal: not null } p)
 			{
 				borderThickness = p.BorderThicknessInternal;
 				return true;
 			}
 
-			if (__LinkerHints.Is_Windows_UI_Xaml_Controls_ContentPresenter_Available && frameworkElement is ContentPresenter cp)
+			if (__LinkerHints.Is_Windows_UI_Xaml_Controls_ContentPresenter_Available && frameworkElement is ContentPresenter { BorderBrush: not null } cp)
 			{
 				borderThickness = cp.BorderThickness;
 				return true;
 			}
 
-			if (__LinkerHints.Is_Windows_UI_Xaml_Controls_Border_Available && frameworkElement is Border b)
+			if (__LinkerHints.Is_Windows_UI_Xaml_Controls_Border_Available && frameworkElement is Border { BorderBrush: not null } b)
 			{
 				borderThickness = b.BorderThickness;
 				return true;

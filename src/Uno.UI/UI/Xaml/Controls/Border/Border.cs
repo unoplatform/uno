@@ -247,7 +247,11 @@ namespace Windows.UI.Xaml.Controls
 
 		private static Brush GetBorderBrushDefaultValue() => SolidColorBrushHelper.Transparent;
 
-		[GeneratedDependencyProperty(ChangedCallback = true, Options = FrameworkPropertyMetadataOptions.ValueInheritsDataContext)]
+		[GeneratedDependencyProperty(ChangedCallback = true, Options = FrameworkPropertyMetadataOptions.ValueInheritsDataContext
+#if __WASM__
+			| FrameworkPropertyMetadataOptions.AffectsArrange
+#endif
+			)]
 		public static DependencyProperty BorderBrushProperty { get; } = CreateBorderBrushProperty();
 
 		protected virtual void OnBorderBrushChanged(Brush oldValue, Brush newValue)

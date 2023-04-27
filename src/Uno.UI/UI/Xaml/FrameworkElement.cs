@@ -341,7 +341,7 @@ namespace Windows.UI.Xaml
 		protected void ArrangeElement(View view, Rect finalRect)
 		{
 #if __WASM__
-			var adjust = GetBorderThickness();
+			_ = this.TryGetActualBorderThickness(out var adjust);
 
 			// HTML moves the origin along with the border thickness.
 			// Adjust the child based on this element's border thickness.

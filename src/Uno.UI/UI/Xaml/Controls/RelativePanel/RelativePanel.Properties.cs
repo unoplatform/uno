@@ -37,7 +37,11 @@ public partial class RelativePanel
 	/// <summary>
 	/// Identifies the BorderBrush dependency property.
 	/// </summary>
-	[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnBorderBrushPropertyChanged), Options = FrameworkPropertyMetadataOptions.ValueInheritsDataContext)]
+	[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnBorderBrushPropertyChanged), Options = FrameworkPropertyMetadataOptions.ValueInheritsDataContext
+#if __WASM__
+			| FrameworkPropertyMetadataOptions.AffectsArrange
+#endif
+		)]
 	public static DependencyProperty BorderBrushProperty { get; } = CreateBorderBrushProperty();
 
 	private void OnBorderBrushPropertyChanged(Brush oldValue, Brush newValue)
@@ -60,7 +64,11 @@ public partial class RelativePanel
 	/// <summary>
 	/// Identifies the BorderThickness dependency property.
 	/// </summary>
-	[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnBorderThicknessPropertyChanged))]
+	[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnBorderThicknessPropertyChanged)
+#if __WASM__
+			, Options = FrameworkPropertyMetadataOptions.AffectsArrange
+#endif
+		)]
 	public static DependencyProperty BorderThicknessProperty { get; } = CreateBorderThicknessProperty();
 
 	private void OnBorderThicknessPropertyChanged(Thickness oldValue, Thickness newValue)
