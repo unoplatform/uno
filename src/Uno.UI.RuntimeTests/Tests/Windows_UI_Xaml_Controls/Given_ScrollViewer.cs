@@ -448,7 +448,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var content = new TextBlock()
 			{
 				Text = "Hello",
-				FontSize = 13.621,
+				FontSize = 26.756,
 				UseLayoutRounding = false
 			};
 
