@@ -92,12 +92,6 @@ jobs:
         artifactName: wasm-uitest-binaries
         downloadPath: '$(build.sourcesdirectory)/build'
 
-  - task: DownloadBuildArtifacts@0
-    displayName: 'Download iOS SamplesApp UnitTests'
-    inputs:
-        artifactName: samplesapp-uitest-binaries
-        downloadPath: '$(build.sourcesdirectory)/build'
-
   - template: templates/dotnet-install.yml
 
   - bash: |
