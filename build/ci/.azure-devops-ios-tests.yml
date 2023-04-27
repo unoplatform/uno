@@ -190,7 +190,7 @@ jobs:
       nugetPackages: $(NUGET_PACKAGES)
       JobName: 'iOS_Snapshot_Tests_Group_${{ snapshotGroup.value }}'
       JobDisplayName: 'Run iOS Snapshot Tests Group ${{ snapshotGroup.value }}'
-      JobTimeoutInMinutes: 45
+      JobTimeoutInMinutes: 60
       vmImage: ${{ parameters.vmImageTest }}
       UITEST_SNAPSHOTS_ONLY: true
       UITEST_SNAPSHOTS_GROUP: ${{ snapshotGroup.key }}

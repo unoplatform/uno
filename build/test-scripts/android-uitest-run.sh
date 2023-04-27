@@ -44,7 +44,7 @@ export UNO_UITEST_RUNTIMETESTS_RESULTS_FILE_PATH=$BUILD_SOURCESDIRECTORY/build/R
 
 mkdir -p $UNO_UITEST_SCREENSHOT_PATH
 
-if [ $(wc -l < "$UNO_TESTS_FAILED_LIST") -eq 1 ];
+if [ `cat "$UNO_TESTS_FAILED_LIST"` -eq "invalid-test-for-retry" ];
 then
 	# The test results file only contains the re-run marker and no
 	# other test to rerun. We can skip this run.
