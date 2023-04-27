@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.UI;
@@ -115,6 +116,55 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 			sut.Children.Count.Should().BeGreaterThan(1);
 		}
 #endif
+
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if !HAS_UNO
+		[Ignore("Custom behavior of uno")]
+#elif __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
+		public async Task When_UnloadAndReload_Then_UnsubscribeAndResubscribeToEffectiveViewportChanged()
+		{
+			var evt = typeof(FrameworkElement).GetField("_effectiveViewportChanged", BindingFlags.Instance | BindingFlags.NonPublic)
+				?? throw new InvalidOperationException("Cannot find the private event backing field.");
+
+			var sut = default(ItemsRepeater);
+			var root = new Border
+			{
+				Child = (sut = new ItemsRepeater
+				{
+					ItemsSource = Enumerable.Range(0, 10).Select(i => $"Item #{i}"),
+					Layout = new StackLayout { Orientation = Orientation.Horizontal },
+					ItemTemplate = new DataTemplate(() => new Border
+					{
+						Width = 100,
+						Height = 100,
+						Background = new SolidColorBrush(Colors.DeepSkyBlue),
+						Margin = new Thickness(10),
+						Child = new TextBlock().Apply(tb => tb.SetBinding(TextBlock.TextProperty, new Binding()))
+					})
+				})
+			};
+
+			TestServices.WindowHelper.WindowContent = root;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			evt.GetValue(sut).Should().NotBeNull();
+
+			// Unload the IR
+			root.Child = new TextBlock { Text = "IR unloaded" };
+			await TestServices.WindowHelper.WaitForIdle();
+
+			evt.GetValue(sut).Should().BeNull("the ViewportManagerWithPlatformFeatures should have remove handler in the ResetScrollers method");
+
+			// Load again IR
+			root.Child = sut;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			evt.GetValue(sut).Should().NotBeNull("the IR should have invalidate it's measure, causing a layout pass driving to invoke the ViewportManagerWithPlatformFeatures.EnsureScroller which should have re-added handler");
+		}
 
 		private async Task RetryAssert(Action assertion)
 		{
