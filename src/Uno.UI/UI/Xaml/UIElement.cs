@@ -910,6 +910,45 @@ namespace Windows.UI.Xaml
 		}
 #endif
 
+		/// <summary>
+		/// This method has to be invoked for elements that are going to be recycled WITHOUT necessarily being unloaded / loaded.
+		/// For instance, this is not expected to be invoked for elements recycled by the template pool as they are always unloaded.
+		/// The main use case is for ListView and is expected to be invoked by ListView.CleanUpContainer.
+		/// </summary>
+		/// <remarks>This will walk the tree down to invoke this on all children!</remarks>
+		internal static void PrepareForRecycle(object view)
+		{
+			if (view is UIElement elt)
+			{
+				elt.PrepareForRecycle();
+			}
+			else
+			{
+				foreach (var child in VisualTreeHelper.GetManagedVisualChildren(view))
+				{
+					child.PrepareForRecycle();
+				}
+			}
+		}
+
+		/// <summary>
+		/// This method has to be invoked on elements that are going to be recycled WITHOUT necessarily being unloaded / loaded.
+		/// For instance, this is not expected to be invoked for elements recycled by the template pool as they are always unloaded.
+		/// The main use case is for ListView and is expected to be invoked by ListView.CleanUpContainer.
+		/// </summary>
+		/// <remarks>This will walk the tree down to invoke this on all children!</remarks>
+		internal virtual void PrepareForRecycle()
+		{
+			ClearPointerStateOnRecycle();
+
+			foreach (var child in VisualTreeHelper.GetManagedVisualChildren(this))
+			{
+				child.PrepareForRecycle();
+			}
+		}
+
+		private partial void ClearPointerStateOnRecycle();
+
 		internal virtual bool IsViewHit() => true;
 
 		internal virtual bool IsEnabledOverride() => true;
