@@ -152,6 +152,7 @@ dotnet test \
 	--logger "nunit;LogFileName=$UNO_ORIGINAL_TEST_RESULTS" \
 	--filter "$UNO_TESTS_FILTER" \
 	--blame-hang-timeout 120m \
+	-v m \
 	|| true
 
 # export the simulator logs

@@ -9,25 +9,24 @@ export BUILDCONFIGURATION=Release
 
 if [ "$UITEST_TEST_MODE_NAME" == 'Snapshots' ];
 then
-	export TEST_FILTERS="namespace == 'SamplesApp.UITests.Snap'"
+	export TEST_FILTERS="FullyQualifiedName~SamplesApp.UITests.Snap"
+
 	export SCREENSHOTS_FOLDERNAME=android-$ANDROID_SIMULATOR_APILEVEL-$TARGETPLATFORM_NAME-Snap
 
 elif [ "$UITEST_TEST_MODE_NAME" == 'Automated' ];
 then
 	export TEST_FILTERS="\
-		Namespace !~ SamplesApp.UITests.Snap \
-		& class !~ SamplesApp.UITests.Runtime.BenchmarkDotNetTests \
-		& class !~ SamplesApp.UITests.Runtime.RuntimeTests \
-		& Category ~ testBucket:$UNO_UITEST_BUCKET_ID
+		Namespace!~SamplesApp.UITests.Snap\
+		&FullyQualifiedName!~SamplesApp.UITests.Runtime.BenchmarkDotNetTests\
+		&FullyQualifiedName!~SamplesApp.UITests.Runtime.RuntimeTests\
+		&Category~testBucket:$UNO_UITEST_BUCKET_ID
 	";
 
 	export SCREENSHOTS_FOLDERNAME=android-$ANDROID_SIMULATOR_APILEVEL-$TARGETPLATFORM_NAME
 
 elif [ "$UITEST_TEST_MODE_NAME" == 'RuntimeTests' ];
 then
-	export TEST_FILTERS="\
-		FullyQualifiedName ~ 'SamplesApp.UITests.Runtime.RuntimeTests' \
-	";
+	export TEST_FILTERS="FullyQualifiedName~SamplesApp.UITests.Runtime.RuntimeTests"
 
 	export SCREENSHOTS_FOLDERNAME=android-$ANDROID_SIMULATOR_APILEVEL-$TARGETPLATFORM_NAME
 fi

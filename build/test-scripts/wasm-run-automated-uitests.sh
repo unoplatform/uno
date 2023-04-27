@@ -31,21 +31,17 @@ if [ "$UITEST_AUTOMATED_GROUP" == 'Default' ];
 then
 	export TEST_FILTERS=" \
 		Namespace != SamplesApp.UITests.Snap \
-		& FullyQualifiedName !~ 'SamplesApp.UITests.Runtime.RuntimeTests' \
-		& FullyQualifiedName !~ 'SamplesApp.UITests.Runtime.BenchmarkDotNetTests' \
+		& FullyQualifiedName !~ SamplesApp.UITests.Runtime.RuntimeTests \
+		& FullyQualifiedName !~ SamplesApp.UITests.Runtime.BenchmarkDotNetTests \
 	"
 
 elif [ "$UITEST_AUTOMATED_GROUP" == 'RuntimeTests' ];
 then
-		export TEST_FILTERS=" \
-			FullyQualifiedName ~ 'SamplesApp.UITests.Runtime.RuntimeTests' \
-		"
+		export TEST_FILTERS="FullyQualifiedName ~ SamplesApp.UITests.Runtime.RuntimeTests"
 
 elif [ "$UITEST_AUTOMATED_GROUP" == 'Benchmarks' ];
 then
-		export TEST_FILTERS=" \
-			FullyQualifiedName ~ 'SamplesApp.UITests.Runtime.BenchmarkDotNetTests' \
-		"
+		export TEST_FILTERS="FullyQualifiedName ~ SamplesApp.UITests.Runtime.BenchmarkDotNetTests"
 fi
 
 mkdir -p $UNO_UITEST_SCREENSHOT_PATH
