@@ -10,8 +10,8 @@ then
 	# runGroup is used to parallelize the snapshots tests on multiple agents
 	export TEST_FILTERS=" \
 		FullyQualifiedName ~ SamplesApp.UITests.Snap \
-		| TestCategory !~ automated:Uno.UI.Samples.Content.UITests.CommandBar \
-		| TestCategory ~ runGroup:$UITEST_SNAPSHOTS_GROUP \
+		& TestCategory !~ automated:Uno.UI.Samples.Content.UITests.CommandBar \
+		& TestCategory ~ runGroup:$UITEST_SNAPSHOTS_GROUP \
 	"
 else
 	export SCREENSHOTS_FOLDERNAME=ios
@@ -23,56 +23,52 @@ else
 	if [ "$UITEST_AUTOMATED_GROUP" == '1' ];
 	then
 		export TEST_FILTERS=" \
-			Namespace = SamplesApp.UITests.Windows_UI_Xaml_Controls.ButtonTests | \
-			Namespace = SamplesApp.UITests | \
-			Namespace = SamplesApp.UITests.Windows_UI_Xaml_Input.VisualState_Tests | \
-			Namespace = SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests | \
-			Namespace = SamplesApp.UITests.Windows_UI_Xaml_Controls.DatePickerTests | \
-			Namespace = SamplesApp.UITests.Windows_UI_Xaml_Controls.WUXProgressRingTests | \
-			FullyQualifiedName ~ SamplesApp.UITests.Windows_UI_Xaml.DragAndDropTests.DragDrop_ListViewReorder_Automated | \
-			Namespace = SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests | \
-			Namespace = SamplesApp.UITests.MessageDialogTests
+			Namespace = SamplesApp.UITests.Windows_UI_Xaml_Controls.ButtonTests \
+			| Namespace = SamplesApp.UITests \
+			| Namespace = SamplesApp.UITests.Windows_UI_Xaml_Input.VisualState_Tests \
+			| Namespace = SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests \
+			| Namespace = SamplesApp.UITests.Windows_UI_Xaml_Controls.DatePickerTests \
+			| Namespace = SamplesApp.UITests.Windows_UI_Xaml_Controls.WUXProgressRingTests \
+			| FullyQualifiedName ~ SamplesApp.UITests.Windows_UI_Xaml.DragAndDropTests.DragDrop_ListViewReorder_Automated \
+			| Namespace = SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests \
+			| Namespace = SamplesApp.UITests.MessageDialogTests
 		"
 	elif [ "$UITEST_AUTOMATED_GROUP" == '2' ];
 	then
 		export TEST_FILTERS=" \
-			Namespace = SamplesApp.UITests.Windows_UI_Xaml_Media.Animation_Tests | \
-			Namespace = SamplesApp.UITests.Windows_UI_Xaml_Controls.ControlTests | \
-			Namespace = SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests | \
-			Namespace = SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests | \
-			Namespace = SamplesApp.UITests.Windows_UI_Xaml.FocusManagerDirectionTests | \
-			Namespace = SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests | \
-			Namespace = SamplesApp.UITests.Windows_UI_Xaml_Controls.ItemsControl | \
-			Namespace = SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
+			Namespace = SamplesApp.UITests.Windows_UI_Xaml_Media.Animation_Tests \
+			| Namespace = SamplesApp.UITests.Windows_UI_Xaml_Controls.ControlTests \
+			| Namespace = SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests \
+			| Namespace = SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests \
+			| Namespace = SamplesApp.UITests.Windows_UI_Xaml.FocusManagerDirectionTests \
+			| Namespace = SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests \
+			| Namespace = SamplesApp.UITests.Windows_UI_Xaml_Controls.ItemsControl \
+			| Namespace = SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 		"
 	elif [ "$UITEST_AUTOMATED_GROUP" == '3' ];
 	then
 		export TEST_FILTERS=" \
-			Namespace = SamplesApp.UITests.Windows_UI_Xaml_Controls.PivotTests | \
-			Namespace = SamplesApp.UITests.Windows_UI_Xaml_Controls.CommandBarTests | \
-			Namespace = SamplesApp.UITests.Windows_UI_Xaml_Controls.ComboBoxTests | \
-			Namespace = SamplesApp.UITests.Windows_UI_Xaml_Media_Animation | \
-			Namespace = SamplesApp.UITests.Windows_UI_Xaml_Controls.BorderTests | \
-			Namespace = SamplesApp.UITests.Windows_UI_Xaml_Controls.MenuFlyoutTests | \
-			FullyQualifiedName ~ SamplesApp.UITests.Windows_UI_Xaml_Shapes.Basics_Shapes_Tests | \
-			Namespace = SamplesApp.UITests.Windows_UI_Xaml_Controls.ScrollViewerTests
+			Namespace = SamplesApp.UITests.Windows_UI_Xaml_Controls.PivotTests \
+			| Namespace = SamplesApp.UITests.Windows_UI_Xaml_Controls.CommandBarTests \
+			| Namespace = SamplesApp.UITests.Windows_UI_Xaml_Controls.ComboBoxTests \
+			| Namespace = SamplesApp.UITests.Windows_UI_Xaml_Media_Animation \
+			| Namespace = SamplesApp.UITests.Windows_UI_Xaml_Controls.BorderTests \
+			| Namespace = SamplesApp.UITests.Windows_UI_Xaml_Controls.MenuFlyoutTests \
+			| FullyQualifiedName ~ SamplesApp.UITests.Windows_UI_Xaml_Shapes.Basics_Shapes_Tests \
+			| Namespace = SamplesApp.UITests.Windows_UI_Xaml_Controls.ScrollViewerTests
 		"
 	elif [ "$UITEST_AUTOMATED_GROUP" == '4' ];
 	then
-		export TEST_FILTERS=" \
-			FullyQualifiedName = SamplesApp.UITests.Runtime.RuntimeTests
-		"
+		export TEST_FILTERS="FullyQualifiedName = SamplesApp.UITests.Runtime.RuntimeTests"
+
 	elif [ "$UITEST_AUTOMATED_GROUP" == 'Benchmarks' ];
 	then
-		export TEST_FILTERS=" \
-			FullyQualifiedName ~ SamplesApp.UITests.Runtime.BenchmarkDotNetTests
-		"
+		export TEST_FILTERS="FullyQualifiedName ~ SamplesApp.UITests.Runtime.BenchmarkDotNetTests"
+
 	elif [ "$UITEST_AUTOMATED_GROUP" == 'Local' ];
 	then
 		# Use this group to debug failing UI tests locally
-		export TEST_FILTERS=" \
-			FullyQualifiedName ~ SamplesApp.UITests.Runtime.BenchmarkDotNetTests
-		"
+		export TEST_FILTERS="FullyQualifiedName ~ SamplesApp.UITests.Runtime.BenchmarkDotNetTests"
 	fi
 fi
 

@@ -66,6 +66,7 @@ dotnet test \
 	--logger "nunit;LogFileName=$UNO_ORIGINAL_TEST_RESULTS" \
 	--filter "$UNO_TESTS_FILTER" \
 	--blame-hang-timeout $UITEST_TEST_TIMEOUT \
+	-v m \
 	|| true
 
 ## Copy the results file to the results folder
