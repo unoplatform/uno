@@ -114,8 +114,8 @@ namespace Windows.UI.Xaml.Media.Animation
 				);
 			}
 
-			// We explicitly call the Stop of the _frameScheduler befire teh Reste dispose it,
-			// so the EndReason will stopped instead of Aborted
+			// We explicitly call the Stop of the _frameScheduler before the Reset dispose it,
+			// so the EndReason will be Stopped instead of Aborted.
 			_frameScheduler?.Stop();
 
 			Reset();
