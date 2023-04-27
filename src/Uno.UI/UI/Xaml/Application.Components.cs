@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Windows.UI.Xaml.Markup;
+using Uno.Foundation.Logging;
 
 namespace Windows.UI.Xaml
 {
@@ -20,6 +21,13 @@ namespace Windows.UI.Xaml
 			if (Current._loadableComponents.TryGetValue(resourceLocator.OriginalString, out var document))
 			{
 				XamlReader.LoadUsingComponent(document, component);
+			}
+			else
+			{
+				if (typeof(Application).Log().IsEnabled(LogLevel.Debug))
+				{
+					typeof(Application).Log().LogDebug($"Skipping component load, could not find registration for {resourceLocator}");
+				}
 			}
 		}
 
