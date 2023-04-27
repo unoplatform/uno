@@ -107,16 +107,16 @@ xcrun simctl list devices --json
 ##
 ## Pre-install the application to avoid https://github.com/microsoft/appcenter/issues/2389
 ##
-export SIMULATOR_ID=`xcrun simctl list -j | jq -r --arg sim "$UNO_UITEST_SIMULATOR_VERSION" --arg name "$UNO_UITEST_SIMULATOR_NAME" '.devices[$sim] | .[] | select(.name==$name) | .udid'`
+export UITEST_IOSDEVICE_ID=`xcrun simctl list -j | jq -r --arg sim "$UNO_UITEST_SIMULATOR_VERSION" --arg name "$UNO_UITEST_SIMULATOR_NAME" '.devices[$sim] | .[] | select(.name==$name) | .udid'`
 
-echo "Starting simulator: $SIMULATOR_ID ($UNO_UITEST_SIMULATOR_VERSION / $UNO_UITEST_SIMULATOR_NAME)"
-xcrun simctl boot "$SIMULATOR_ID" || true
+echo "Starting simulator: $UITEST_IOSDEVICE_ID ($UNO_UITEST_SIMULATOR_VERSION / $UNO_UITEST_SIMULATOR_NAME)"
+xcrun simctl boot "$UITEST_IOSDEVICE_ID" || true
 
-echo "Install app on simulator: $SIMULATOR_ID"
-xcrun simctl install "$SIMULATOR_ID" "$UNO_UITEST_IOSBUNDLE_PATH" || true
+echo "Install app on simulator: $UITEST_IOSDEVICE_ID"
+xcrun simctl install "$UITEST_IOSDEVICE_ID" "$UNO_UITEST_IOSBUNDLE_PATH" || true
 
-echo "Shutdown simulator: $SIMULATOR_ID ($UNO_UITEST_SIMULATOR_VERSION / $UNO_UITEST_SIMULATOR_NAME)"
-xcrun simctl shutdown "$SIMULATOR_ID" || true
+echo "Shutdown simulator: $UITEST_IOSDEVICE_ID ($UNO_UITEST_SIMULATOR_VERSION / $UNO_UITEST_SIMULATOR_NAME)"
+xcrun simctl shutdown "$UITEST_IOSDEVICE_ID" || true
 
 ## Pre-build the transform tool to get early warnings
 pushd $BUILD_SOURCESDIRECTORY/src/Uno.NUnitTransformTool
