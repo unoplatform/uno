@@ -402,6 +402,10 @@ namespace AppKit
 				{
 					return controller;
 				}
+				else
+				{
+					responder = null;
+				}
 
 			} while (responder != null);
 
