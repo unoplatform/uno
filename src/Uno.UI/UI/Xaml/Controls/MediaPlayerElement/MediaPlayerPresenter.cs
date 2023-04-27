@@ -58,7 +58,7 @@ namespace Windows.UI.Xaml.Controls
 
 		#endregion
 
-		partial void OnMediaPlayerChangedPartial(MediaPlayer mediaPlayer);
+		partial void OnMediaPlayerChangedPartial(Windows.Media.Playback.MediaPlayer mediaPlayer);
 
 		#region Stretch Property
 
