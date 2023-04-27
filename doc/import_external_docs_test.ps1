@@ -29,12 +29,11 @@ function Assert-ExitCodeIsZero()
     }
 }
 
-if (Test-Path articles\external)
+if (-Not (Test-Path articles\external))
 {
-    del -recurse -force articles\external
+    mkdir articles\external -ErrorAction Continue
 }
 
-mkdir articles\external -ErrorAction Continue
 pushd articles\external
 
 # ensure long paths are supported on Windows
@@ -47,14 +46,23 @@ for ($i = 0; $i -lt $external_docs.Length; $i++)
     $repoPath=$external_docs[$i][1]
     $repoBranch=$external_docs[$i][2]
 
-    echo "Cloning $repoPath ($repoUrl@$repoBranch)"
+    $cloneExists = Test-Path $repoPath
 
-    git clone $repoUrl $repoPath
-    Assert-ExitCodeIsZero
+    if (-Not ($cloneExists))
+    {        
+        echo "Cloning $repoPath ($repoUrl@$repoBranch)..."
+        git clone $repoUrl $repoPath
+        Assert-ExitCodeIsZero
+    }
 
     pushd $repoPath
+
     git checkout $repoBranch
     Assert-ExitCodeIsZero
+
+    git pull
+    Assert-ExitCodeIsZero
+
     popd
 }
 
