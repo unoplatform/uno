@@ -82,10 +82,9 @@ namespace Windows.UI.Xaml.Media
 			if (newValue is BitmapImage bitmapImage)
 			{
 				_sourceDisposable.Disposable = bitmapImage.RegisterDisposablePropertyChangedCallback(
-					BitmapImage.UriSourceProperty, (_, _) =>
-					{
-						OnSourceChangedPartial(newValue, null);
-					});
+					BitmapImage.UriSourceProperty,
+					(_, _) => OnSourceChangedPartial(newValue, null)
+				);
 			}
 			else
 			{
