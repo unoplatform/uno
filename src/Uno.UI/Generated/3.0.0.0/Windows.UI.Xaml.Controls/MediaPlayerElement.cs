@@ -7,7 +7,7 @@ namespace Windows.UI.Xaml.Controls
 	#endif
 	public  partial class MediaPlayerElement : global::Windows.UI.Xaml.Controls.Control
 	{
-		#if false || false || NET461 || false || __NETSTD_REFERENCE__ || false
+		#if false || false || NET461 || false || false || false
 		[global::Uno.NotImplemented("NET461", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public  global::Windows.UI.Xaml.Controls.MediaTransportControls TransportControls
 		{
@@ -171,7 +171,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.MediaPlayerElement), 
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Stretch)));
 		#endif
-		#if false || false || false || false || __NETSTD_REFERENCE__ || false
+		#if false || false || false || false || false || false
 		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
 		public MediaPlayerElement() : base()
 		{

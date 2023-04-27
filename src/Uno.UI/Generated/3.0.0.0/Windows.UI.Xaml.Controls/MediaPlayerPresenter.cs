@@ -7,7 +7,7 @@ namespace Windows.UI.Xaml.Controls
 	#endif
 	public  partial class MediaPlayerPresenter 
 	{
-		#if false || false || NET461 || false || __NETSTD_REFERENCE__ || false
+		#if false || false || NET461 || false || false || false
 		[global::Uno.NotImplemented("NET461", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public  global::Windows.UI.Xaml.Media.Stretch Stretch
 		{
@@ -21,7 +21,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if false || false || NET461 || false || __NETSTD_REFERENCE__ || false
+		#if false || false || NET461 || false || false || false
 		[global::Uno.NotImplemented("NET461", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public  global::Windows.Media.Playback.MediaPlayer MediaPlayer
 		{
@@ -35,7 +35,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if false || false || NET461 || false || __NETSTD_REFERENCE__ || false
+		#if false || false || NET461 || false || false || false
 		[global::Uno.NotImplemented("NET461", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public  bool IsFullWindow
 		{
@@ -49,7 +49,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if false || false || NET461 || false || __NETSTD_REFERENCE__ || false
+		#if false || false || NET461 || false || false || false
 		[global::Uno.NotImplemented("NET461", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Xaml.DependencyProperty IsFullWindowProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -57,7 +57,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.MediaPlayerPresenter), 
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 		#endif
-		#if false || false || NET461 || false || __NETSTD_REFERENCE__ || false
+		#if false || false || NET461 || false || false || false
 		[global::Uno.NotImplemented("NET461", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Xaml.DependencyProperty MediaPlayerProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -65,7 +65,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.MediaPlayerPresenter), 
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.Media.Playback.MediaPlayer)));
 		#endif
-		#if false || false || NET461 || false || __NETSTD_REFERENCE__ || false
+		#if false || false || NET461 || false || false || false
 		[global::Uno.NotImplemented("NET461", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Xaml.DependencyProperty StretchProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(

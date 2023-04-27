@@ -162,14 +162,16 @@ namespace Windows.UI.Xaml.Controls
 #else
 					_mediaPlayerPresenter?.RequestFullScreen();
 #endif
-
+#if !__NETSTD_REFERENCE__
 					Windows.UI.Xaml.Window.Current.DisplayFullscreen(_layoutRoot);
+#endif
 				}
 				else
 				{
 					ApplicationView.GetForCurrentView().ExitFullScreenMode();
-
+#if !__NETSTD_REFERENCE__
 					Windows.UI.Xaml.Window.Current.DisplayFullscreen(null);
+#endif
 
 #if __ANDROID__
 					this.AddView(_layoutRoot);
@@ -188,7 +190,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		#endregion
+#endregion
 
 		#region MediaPlayer Property
 
