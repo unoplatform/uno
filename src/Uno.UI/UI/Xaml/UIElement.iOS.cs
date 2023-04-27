@@ -239,7 +239,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		partial class TransformToVisualContext
+		partial struct TransformToVisualContext
 		{
 			public UIViewController ViewController { get; set; }
 		}

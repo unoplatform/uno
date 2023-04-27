@@ -542,8 +542,8 @@ namespace Windows.UI.Xaml
 #if __IOS__
 				// On iOS, the `from` and `to` may be coming different ViewController.
 				// In such case, their coordinates should not be "added" together, since they are from different coordinates space.
-				if (context?.ViewController is { } vc1 &&
-					toContext?.ViewController is { } vc2 &&
+				if (context.ViewController is { } vc1 &&
+					toContext.ViewController is { } vc2 &&
 					vc1 == vc2)
 #endif
 				{
@@ -1145,6 +1145,6 @@ namespace Windows.UI.Xaml
 		}
 #endif
 
-		private partial class TransformToVisualContext { }
+		private partial struct TransformToVisualContext { }
 	}
 }
