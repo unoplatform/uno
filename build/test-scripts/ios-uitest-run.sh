@@ -87,7 +87,7 @@ export UNO_UITEST_SIMULATOR_NAME="iPad Pro (12.9-inch) (5th generation)"
 
 UITEST_IGNORE_RERUN_FILE="${UITEST_IGNORE_RERUN_FILE:=false}"
 
-if [ `cat "$UNO_TESTS_FAILED_LIST"` -eq "invalid-test-for-retry" ] && [ "$UITEST_IGNORE_RERUN_FILE" != "true" ]; then
+if [ -f "$UNO_TESTS_FAILED_LIST" ] && [ `cat "$UNO_TESTS_FAILED_LIST"` = "invalid-test-for-retry" ] && [ "$UITEST_IGNORE_RERUN_FILE" != "true" ]; then
 	# The test results file only contains the re-run marker and no
 	# other test to rerun. We can skip this run.
 	echo "The file $UNO_TESTS_FAILED_LIST does not contain tests to re-run, skipping."
