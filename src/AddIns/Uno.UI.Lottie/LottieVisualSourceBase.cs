@@ -17,8 +17,13 @@ using Uno.Foundation.Logging;
 using Uno.Extensions;
 using Uno.Helpers;
 using System.Diagnostics;
+using Microsoft.UI.Xaml.Controls;
 
+#if HAS_UNO_WINUI
+namespace CommunityToolkit.WinUI.Lottie
+#else
 namespace Microsoft.Toolkit.Uwp.UI.Lottie
+#endif
 {
 	public abstract partial class LottieVisualSourceBase : DependencyObject, IAnimatedVisualSource
 	{

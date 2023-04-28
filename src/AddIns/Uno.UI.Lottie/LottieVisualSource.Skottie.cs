@@ -28,9 +28,14 @@ using SkiaSharp.Views.Windows;
 using Windows.UI.Core;
 #else
 using SkiaSharp.Views.UWP;
+using Microsoft.UI.Xaml.Controls;
 #endif
 
+#if HAS_UNO_WINUI
+namespace CommunityToolkit.WinUI.Lottie
+#else
 namespace Microsoft.Toolkit.Uwp.UI.Lottie
+#endif
 {
 	partial class LottieVisualSourceBase
 	{

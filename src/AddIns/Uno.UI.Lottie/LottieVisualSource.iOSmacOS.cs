@@ -13,7 +13,11 @@ using _ViewContentMode = UIKit.UIViewContentMode;
 using _ViewContentMode = Airbnb.Lottie.LOTViewContentMode;
 #endif
 
+#if HAS_UNO_WINUI
+namespace CommunityToolkit.WinUI.Lottie
+#else
 namespace Microsoft.Toolkit.Uwp.UI.Lottie
+#endif
 {
 	partial class LottieVisualSourceBase
 	{
