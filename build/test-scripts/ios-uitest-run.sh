@@ -146,6 +146,7 @@ echo "  Test filters: $UNO_TESTS_FILTER"
 ## Run tests
 dotnet test \
 	-c Release \
+	-l:"console;verbosity=normal" \
 	--logger "nunit;LogFileName=$UNO_ORIGINAL_TEST_RESULTS" \
 	--filter "$UNO_TESTS_FILTER" \
 	--blame-hang-timeout 120m \
