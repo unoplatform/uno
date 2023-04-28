@@ -29,7 +29,7 @@ namespace Windows.UI.Xaml
 
 		private CoreWindowActivationState? _lastActivationState;
 		private Brush _background;
-		private bool _wasEverActivated;
+		private bool _wasEverCodeActivated;
 
 		private List<WeakEventHelper.GenericEventHandler> _sizeChangedHandlers = new List<WeakEventHelper.GenericEventHandler>();
 		private List<WeakEventHelper.GenericEventHandler> _backgroundChangedHandlers;
@@ -216,16 +216,17 @@ namespace Windows.UI.Xaml
 			// for compatibility with WinUI we set the first activated
 			// as Current #8341
 			_current ??= this;
-			_wasEverActivated = true;
+			_wasEverCodeActivated = true;
 
 			// Initialize visibility on first activation.
 			Visible = true;
-			OnActivated(CoreWindowActivationState.CodeActivated);
 
-			ActivatePartial();
+			ActivatingPartial();
+
+			OnActivated(CoreWindowActivationState.CodeActivated);
 		}
 
-		partial void ActivatePartial();
+		partial void ActivatingPartial();
 
 		public void Close() { }
 
@@ -247,7 +248,7 @@ namespace Windows.UI.Xaml
 
 		internal void OnActivated(CoreWindowActivationState state)
 		{
-			if (!_wasEverActivated)
+			if (!_wasEverCodeActivated)
 			{
 				return;
 			}
@@ -276,7 +277,7 @@ namespace Windows.UI.Xaml
 
 		internal void OnVisibilityChanged(bool newVisibility)
 		{
-			if (!_wasEverActivated)
+			if (!_wasEverCodeActivated)
 			{
 				return;
 			}

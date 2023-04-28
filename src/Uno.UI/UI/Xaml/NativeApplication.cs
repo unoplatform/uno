@@ -22,7 +22,6 @@ namespace Windows.UI.Xaml
 	{
 		private readonly Application _app;
 		private Intent _lastHandledIntent;
-		private IOnPreDrawListener _activePreDrawListener;
 
 		private bool _isRunning;
 
@@ -71,13 +70,6 @@ namespace Windows.UI.Xaml
 				if (!handled && !_isRunning)
 				{
 					_app.OnLaunched(new LaunchActivatedEventArgs());
-				}
-
-				if (!Window.Current.Visible)
-				{
-					// User did not yet activate the app's window.
-					// Delay the splash screen dismissal.
-					DelayDrawUntilWindowVisible();
 				}
 
 				_isRunning = true;
@@ -129,54 +121,6 @@ namespace Windows.UI.Xaml
 			}
 
 			return handled;
-		}
-
-		private void DelayDrawUntilWindowVisible()
-		{
-			Window.Current.VisibilityChanged += Window_VisibilityChanged;
-			Android.Views.ViewGroup rootVisual = WinUICoreServices.Instance.MainRootVisual;
-			if (_activePreDrawListener != null)
-			{
-				rootVisual.ViewTreeObserver.RemoveOnPreDrawListener(_activePreDrawListener);
-			}
-
-			_activePreDrawListener = new ApplicationPreDrawListener(this);
-			rootVisual.ViewTreeObserver.AddOnPreDrawListener(_activePreDrawListener);
-		}
-
-		private void Window_VisibilityChanged(object sender, VisibilityChangedEventArgs e)
-		{
-			if (e.Visible)
-			{
-				// In case the view render was delayed until Window.Activate(),
-				// we need to invalidate the root visual so PreDraw is called again.
-				Android.Views.ViewGroup rootVisual = WinUICoreServices.Instance.MainRootVisual;
-				rootVisual?.Invalidate();
-
-				Window.Current.VisibilityChanged -= Window_VisibilityChanged;
-			}
-		}
-
-		private class ApplicationPreDrawListener : Java.Lang.Object, IOnPreDrawListener
-		{
-			private readonly NativeApplication _application;
-
-			public ApplicationPreDrawListener(NativeApplication application)
-			{
-				_application = application;
-			}
-
-			public bool OnPreDraw()
-			{
-				if (Window.Current.Visible)
-				{
-					Android.Views.ViewGroup rootVisual = WinUICoreServices.Instance.MainRootVisual;
-					rootVisual.ViewTreeObserver.RemoveOnPreDrawListener(this);
-					_application._activePreDrawListener = null;
-				}
-
-				return Window.Current.Visible;
-			}
 		}
 
 		/// <summary>

@@ -23,7 +23,7 @@ namespace Windows.UI.Xaml
 			CoreWindow = CoreWindow.GetOrCreateForCurrentThread();
 		}
 
-		partial void ActivatePartial()
+		partial void ActivatingPartial()
 		{
 			_isActive = true;
 			TryLoadRootVisual();
