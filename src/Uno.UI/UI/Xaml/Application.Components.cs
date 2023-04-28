@@ -20,7 +20,7 @@ namespace Windows.UI.Xaml
 		{
 			if (Current._loadableComponents.TryGetValue(resourceLocator.OriginalString, out var document))
 			{
-				XamlReader.LoadUsingComponent(document, component);
+				XamlReader.LoadUsingComponent(document, component, resourceLocator.OriginalString);
 			}
 			else
 			{
