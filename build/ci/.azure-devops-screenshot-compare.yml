@@ -5,6 +5,9 @@ jobs:
 
 - job: UITests_Screenshots_Compare
   displayName: 'UI Tests Screenshots Comparison'
+  
+  timeoutInMinutes: 90
+  
   dependsOn:
     - Wasm_UITests_Snap
     - Wasm_UITests_Automated
