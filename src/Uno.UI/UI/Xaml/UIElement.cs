@@ -956,7 +956,7 @@ namespace Windows.UI.Xaml
 		internal bool GetUseLayoutRounding()
 		{
 #if __SKIA__
-			return true;
+			return UseLayoutRounding;
 #else
 			return false;
 #endif

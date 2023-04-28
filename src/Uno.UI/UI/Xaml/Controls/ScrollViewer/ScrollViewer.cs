@@ -21,6 +21,7 @@ using Windows.UI.Xaml.Input;
 using Uno;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
+using Uno.UI.Extensions;
 
 
 #if __ANDROID__
@@ -49,6 +50,7 @@ using Microsoft.UI.Input;
 #else
 using Windows.Devices.Input;
 using Windows.UI.Input;
+using Windows.UI.Xaml.Media;
 #endif
 
 namespace Windows.UI.Xaml.Controls
@@ -775,23 +777,16 @@ namespace Windows.UI.Xaml.Controls
 				ExtentWidth = 0;
 			}
 
-			var scrollableHeight = Math.Max(ExtentHeight - ViewportHeight, 0);
-			// On Skia, the ExtentHeight can include a rounding error, which may cause
-			// unwanted ScrollBar to pop in and out of existence.
-			if (scrollableHeight < 0.1)
-			{
-				scrollableHeight = 0;
-			}
+			// For scrollable height and scrollable width we apply rounding
+			// to ensure there is no unwanted difference caused by double
+			// precision, which could then cause the scroll bars to appear
+			// for no reason.
+
+			var scrollableHeight = Math.Max(Math.Round(ExtentHeight - ViewportHeight, 4), 0);
 
 			ScrollableHeight = scrollableHeight;
 
-			var scrollableWidth = Math.Max(ExtentWidth - ViewportWidth, 0);
-			// On Skia, the ExtentWidth can include a rounding error, which may cause
-			// unwanted ScrollBar to pop in and out of existence.
-			if (scrollableWidth < 0.1)
-			{
-				scrollableWidth = 0;
-			}
+			var scrollableWidth = Math.Max(Math.Round(ExtentWidth - ViewportWidth, 4), 0);
 
 			ScrollableWidth = scrollableWidth;
 
@@ -940,6 +935,15 @@ namespace Windows.UI.Xaml.Controls
 			DetachScrollBars();
 
 			base.OnApplyTemplate();
+
+#if __SKIA__
+			// To work around non-uniformly applied layout rounding behavior, we need to force set layout
+			// rounding on the child Grid currently. #12082
+			if (this.FindFirstDescendant<Grid>() is { } grid)
+			{
+				grid.UseLayoutRounding = false;
+			}
+#endif
 
 			var scpTemplatePart = GetTemplateChild(Parts.WinUI3.Scroller) ?? GetTemplateChild(Parts.Uwp.ScrollContentPresenter);
 			_presenter = scpTemplatePart as _ScrollContentPresenter;
