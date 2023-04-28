@@ -6,7 +6,7 @@ using AppKit;
 using Foundation;
 using Windows.UI.Xaml;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class NativeMenuBarPresenter : FrameworkElement
 	{

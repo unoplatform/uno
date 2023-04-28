@@ -5,7 +5,7 @@ using System.Collections.ObjectModel;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Markup;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	[ContentProperty(Name = nameof(Items))]
 	public partial class MenuBar : Control
