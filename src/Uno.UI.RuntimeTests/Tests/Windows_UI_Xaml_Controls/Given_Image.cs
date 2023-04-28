@@ -306,7 +306,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForLoaded(parent);
 			var result = await TakeScreenshot(parent);
 
-			var sample = SUT.GetRelativeCoords(parent);
+			var sample = parent.GetRelativeCoords(SUT);
 			var centerX = sample.X + sample.Width / 2;
 			var centerY = sample.Y + sample.Height / 2;
 
@@ -361,7 +361,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var snapshot = await TakeScreenshot(parent);
 
-			var sample = SUT.GetRelativeCoords(parent);
+			var sample = parent.GetRelativeCoords(SUT);
 			var centerX = sample.X + sample.Width / 2;
 			var centerY = sample.Y + sample.Height / 2;
 
