@@ -11,16 +11,16 @@ namespace Uno.UI.SourceGenerators.Tests;
 [TestClass]
 public class Given_MvvmGeneratedMembers
 {
-	private class Test : XamlSourceGeneratorVerifier.Test
+	private class MvvmTest : XamlSourceGeneratorVerifier.TestBase
 	{
 		private static readonly ImmutableArray<PackageIdentity> s_mvvmPackages = ImmutableArray.Create(new PackageIdentity("CommunityToolkit.Mvvm", "8.1.0"));
 
-		public Test(XamlFile xamlFile, [CallerFilePath] string testFilePath = "", [CallerMemberName] string testMethodName = "") : base(xamlFile, testFilePath, testMethodName)
+		public MvvmTest(XamlFile xamlFile, string testMethodName, [CallerFilePath] string testFilePath = "") : base(xamlFile, testFilePath, testMethodName)
 		{
 			ReferenceAssemblies = ReferenceAssemblies.AddPackages(s_mvvmPackages);
 		}
 
-		public Test(XamlFile[] xamlFiles, [CallerFilePath] string testFilePath = "", [CallerMemberName] string testMethodName = "") : base(xamlFiles, testFilePath, testMethodName)
+		public MvvmTest(XamlFile[] xamlFiles, string testMethodName, [CallerFilePath] string testFilePath = "") : base(xamlFiles, testFilePath, testMethodName)
 		{
 			ReferenceAssemblies = ReferenceAssemblies.AddPackages(s_mvvmPackages);
 		}
@@ -35,7 +35,6 @@ public class Given_MvvmGeneratedMembers
 			yield return typeof(ObservablePropertyGenerator);
 			yield return typeof(RelayCommandGenerator);
 		}
-
 	}
 
 	[TestMethod]
@@ -60,7 +59,7 @@ public class Given_MvvmGeneratedMembers
 			</Page>
 			""");
 
-		var test = new Test(xamlFile, testMethodName: $"{nameof(When_ObservableProperty_AttributeExists)}_{fieldName}")
+		var test = new MvvmTest(xamlFile, $"WOPAE_{fieldName}")
 		{
 			TestState =
 			{
@@ -120,7 +119,7 @@ public class Given_MvvmGeneratedMembers
 			</Page>
 			""");
 
-		var test = new Test(xamlFile)
+		var test = new MvvmTest(xamlFile, "WOPADNE")
 		{
 			TestState =
 			{
