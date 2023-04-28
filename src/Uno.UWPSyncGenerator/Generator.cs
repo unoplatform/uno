@@ -631,12 +631,6 @@ namespace Uno.UWPSyncGenerator
 				case "Microsoft.UI.Xaml.Controls.MenuBarItemFlyout":
 				case "Microsoft.UI.Xaml.Controls.PersonPicture":
 				case "Microsoft.UI.Xaml.Controls.PersonPictureTemplateSettings":
-				case "Microsoft.UI.Xaml.Controls.SwipeBehaviorOnInvoked":
-				case "Microsoft.UI.Xaml.Controls.SwipeControl":
-				case "Microsoft.UI.Xaml.Controls.SwipeItem":
-				case "Microsoft.UI.Xaml.Controls.SwipeItemInvokedEventArgs":
-				case "Microsoft.UI.Xaml.Controls.SwipeItems":
-				case "Microsoft.UI.Xaml.Controls.SwipeMode":
 					// Skipped because the implementation is currently incorrectly placed in WUX namespace
 					return true;
 #endif

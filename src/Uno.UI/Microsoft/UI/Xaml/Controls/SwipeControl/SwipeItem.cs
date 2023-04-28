@@ -11,6 +11,8 @@ using System;
 using System.Windows.Input;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
@@ -19,7 +21,7 @@ using Windows.Devices.Input;
 using Windows.UI.Input;
 #endif
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class SwipeItem : DependencyObject
 	{

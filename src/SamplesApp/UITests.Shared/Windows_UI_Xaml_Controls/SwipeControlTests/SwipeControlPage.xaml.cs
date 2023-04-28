@@ -19,10 +19,10 @@ using Windows.UI.Xaml.Navigation;
 using SwipeControl_TestUI;
 using Uno.UI.Samples.Controls;
 
-//using IconSource = Microsoft.UI.Xaml.Controls.IconSource;
-//using SwipeItem = Microsoft.UI.Xaml.Controls.SwipeItem;
-//using SwipeControl = Microsoft.UI.Xaml.Controls.SwipeControl;
-//using SwipeItemInvokedEventArgs = Microsoft.UI.Xaml.Controls.SwipeItemInvokedEventArgs;
+using IconSource = Microsoft.UI.Xaml.Controls.IconSource;
+using SwipeItem = Microsoft.UI.Xaml.Controls.SwipeItem;
+using SwipeControl = Microsoft.UI.Xaml.Controls.SwipeControl;
+using SwipeItemInvokedEventArgs = Microsoft.UI.Xaml.Controls.SwipeItemInvokedEventArgs;
 //using MaterialHelperTestApi = Microsoft.UI.Private.Media.MaterialHelperTestApi;
 //using SwipeTestHooks = Microsoft.UI.Private.Controls.SwipeTestHooks;
 //using MUXControlsTestHooks = Microsoft.UI.Private.Controls.MUXControlsTestHooks;

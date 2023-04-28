@@ -221,6 +221,13 @@
       <StaticResource x:Key="SplitButtonBorderBrushCheckedPressed" ResourceKey="SystemControlHighlightAltTransparentBrush" />
       <StaticResource x:Key="SplitButtonBorderBrushCheckedDisabled" ResourceKey="SystemControlDisabledTransparentBrush" />
       <Thickness x:Key="SplitButtonBorderThemeThickness">1</Thickness>
+      <StaticResource x:Key="SwipeItemBackground" ResourceKey="SystemControlBackgroundBaseLowBrush" />
+      <StaticResource x:Key="SwipeItemForeground" ResourceKey="SystemControlForegroundBaseHighBrush" />
+      <StaticResource x:Key="SwipeItemBackgroundPressed" ResourceKey="SystemControlBackgroundBaseMediumLowBrush" />
+      <StaticResource x:Key="SwipeItemPreThresholdExecuteForeground" ResourceKey="SystemControlBackgroundBaseMediumBrush" />
+      <StaticResource x:Key="SwipeItemPreThresholdExecuteBackground" ResourceKey="SystemControlBackgroundBaseLowBrush" />
+      <StaticResource x:Key="SwipeItemPostThresholdExecuteForeground" ResourceKey="SystemControlForegroundChromeWhiteBrush" />
+      <StaticResource x:Key="SwipeItemPostThresholdExecuteBackground" ResourceKey="SystemControlBackgroundAccentBrush" />
       <StaticResource x:Key="TabViewBackground" ResourceKey="SystemControlBackgroundBaseLowBrush" />
       <StaticResource x:Key="TabViewItemHeaderBackground" ResourceKey="SystemControlTransparentBrush" />
       <StaticResource x:Key="TabViewItemHeaderBackgroundSelected" ResourceKey="SystemControlBackgroundAltHighBrush" />
@@ -865,13 +872,6 @@
       <StaticResource x:Key="MenuFlyoutSubItemRevealBorderBrushPointerOver" ResourceKey="SystemControlTransparentRevealBorderBrush" />
       <StaticResource x:Key="MenuFlyoutSubItemRevealBorderBrushSubMenuOpened" ResourceKey="SystemControlTransparentRevealBorderBrush" />
       <StaticResource x:Key="MenuFlyoutSubItemRevealBorderBrushDisabled" ResourceKey="SystemControlTransparentBrush" />
-      <StaticResource x:Key="SwipeItemBackground" ResourceKey="SystemControlBackgroundBaseLowBrush" />
-      <StaticResource x:Key="SwipeItemForeground" ResourceKey="SystemControlForegroundBaseHighBrush" />
-      <StaticResource x:Key="SwipeItemBackgroundPressed" ResourceKey="SystemControlBackgroundBaseMediumLowBrush" />
-      <StaticResource x:Key="SwipeItemPreThresholdExecuteForeground" ResourceKey="SystemControlBackgroundBaseMediumBrush" />
-      <StaticResource x:Key="SwipeItemPreThresholdExecuteBackground" ResourceKey="SystemControlBackgroundBaseLowBrush" />
-      <StaticResource x:Key="SwipeItemPostThresholdExecuteForeground" ResourceKey="SystemControlForegroundChromeWhiteBrush" />
-      <StaticResource x:Key="SwipeItemPostThresholdExecuteBackground" ResourceKey="SystemControlBackgroundAccentBrush" />
       <StaticResource x:Key="ToolTipForeground" ResourceKey="SystemControlForegroundBaseHighBrush" />
       <StaticResource x:Key="ToolTipBackground" ResourceKey="SystemControlBackgroundChromeMediumLowBrush" />
       <StaticResource x:Key="ToolTipBorderBrush" ResourceKey="SystemControlTransientBorderBrush" />
@@ -1102,6 +1102,13 @@
       <StaticResource x:Key="SplitButtonBorderBrushCheckedPressed" ResourceKey="SystemControlHighlightAltTransparentBrush" />
       <StaticResource x:Key="SplitButtonBorderBrushCheckedDisabled" ResourceKey="SystemControlDisabledTransparentBrush" />
       <Thickness x:Key="SplitButtonBorderThemeThickness">1</Thickness>
+      <StaticResource x:Key="SwipeItemBackground" ResourceKey="SystemControlBackgroundBaseLowBrush" />
+      <StaticResource x:Key="SwipeItemForeground" ResourceKey="SystemControlForegroundBaseHighBrush" />
+      <StaticResource x:Key="SwipeItemBackgroundPressed" ResourceKey="SystemControlBackgroundBaseMediumLowBrush" />
+      <StaticResource x:Key="SwipeItemPreThresholdExecuteForeground" ResourceKey="SystemControlBackgroundBaseMediumBrush" />
+      <StaticResource x:Key="SwipeItemPreThresholdExecuteBackground" ResourceKey="SystemControlBackgroundBaseLowBrush" />
+      <StaticResource x:Key="SwipeItemPostThresholdExecuteForeground" ResourceKey="SystemControlForegroundChromeWhiteBrush" />
+      <StaticResource x:Key="SwipeItemPostThresholdExecuteBackground" ResourceKey="SystemControlBackgroundAccentBrush" />
       <StaticResource x:Key="TabViewBackground" ResourceKey="SystemControlBackgroundListLowBrush" />
       <StaticResource x:Key="TabViewItemHeaderBackground" ResourceKey="SystemControlTransparentBrush" />
       <StaticResource x:Key="TabViewItemHeaderBackgroundSelected" ResourceKey="SystemControlBackgroundAltHighBrush" />
@@ -1749,13 +1756,6 @@
       <StaticResource x:Key="MenuFlyoutSubItemRevealBorderBrushPointerOver" ResourceKey="SystemControlTransparentRevealBorderBrush" />
       <StaticResource x:Key="MenuFlyoutSubItemRevealBorderBrushSubMenuOpened" ResourceKey="SystemControlTransparentRevealBorderBrush" />
       <StaticResource x:Key="MenuFlyoutSubItemRevealBorderBrushDisabled" ResourceKey="SystemControlTransparentBrush" />
-      <StaticResource x:Key="SwipeItemBackground" ResourceKey="SystemControlBackgroundBaseLowBrush" />
-      <StaticResource x:Key="SwipeItemForeground" ResourceKey="SystemControlForegroundBaseHighBrush" />
-      <StaticResource x:Key="SwipeItemBackgroundPressed" ResourceKey="SystemControlBackgroundBaseMediumLowBrush" />
-      <StaticResource x:Key="SwipeItemPreThresholdExecuteForeground" ResourceKey="SystemControlBackgroundBaseMediumBrush" />
-      <StaticResource x:Key="SwipeItemPreThresholdExecuteBackground" ResourceKey="SystemControlBackgroundBaseLowBrush" />
-      <StaticResource x:Key="SwipeItemPostThresholdExecuteForeground" ResourceKey="SystemControlForegroundChromeWhiteBrush" />
-      <StaticResource x:Key="SwipeItemPostThresholdExecuteBackground" ResourceKey="SystemControlBackgroundAccentBrush" />
       <x:Double x:Key="ToolTipContentThemeFontSize">12</x:Double>
       <StaticResource x:Key="ToolTipForeground" ResourceKey="SystemControlForegroundBaseHighBrush" />
       <StaticResource x:Key="ToolTipBackground" ResourceKey="SystemControlBackgroundChromeMediumLowBrush" />
@@ -1985,6 +1985,13 @@
       <StaticResource x:Key="SplitButtonBorderBrushCheckedPressed" ResourceKey="SystemControlHighlightAltTransparentBrush" />
       <StaticResource x:Key="SplitButtonBorderBrushCheckedDisabled" ResourceKey="SystemControlDisabledTransparentBrush" />
       <Thickness x:Key="SplitButtonBorderThemeThickness">1</Thickness>
+      <StaticResource x:Key="SwipeItemBackground" ResourceKey="SystemControlBackgroundBaseLowBrush" />
+      <StaticResource x:Key="SwipeItemForeground" ResourceKey="SystemControlForegroundBaseHighBrush" />
+      <StaticResource x:Key="SwipeItemBackgroundPressed" ResourceKey="SystemControlBackgroundBaseMediumLowBrush" />
+      <StaticResource x:Key="SwipeItemPreThresholdExecuteForeground" ResourceKey="SystemControlBackgroundBaseMediumBrush" />
+      <StaticResource x:Key="SwipeItemPreThresholdExecuteBackground" ResourceKey="SystemControlBackgroundBaseLowBrush" />
+      <StaticResource x:Key="SwipeItemPostThresholdExecuteForeground" ResourceKey="SystemControlForegroundChromeWhiteBrush" />
+      <StaticResource x:Key="SwipeItemPostThresholdExecuteBackground" ResourceKey="SystemControlBackgroundAccentBrush" />
       <StaticResource x:Key="TabViewBackground" ResourceKey="SystemControlBackgroundBaseLowBrush" />
       <StaticResource x:Key="TabViewItemHeaderBackground" ResourceKey="SystemControlBackgroundBaseLowBrush" />
       <StaticResource x:Key="TabViewItemHeaderBackgroundSelected" ResourceKey="SystemControlHighlightChromeHighBrush" />
@@ -2610,13 +2617,6 @@
       <StaticResource x:Key="MenuFlyoutSubItemRevealBorderBrushPointerOver" ResourceKey="SystemControlTransparentRevealBorderBrush" />
       <StaticResource x:Key="MenuFlyoutSubItemRevealBorderBrushSubMenuOpened" ResourceKey="SystemControlTransparentRevealBorderBrush" />
       <StaticResource x:Key="MenuFlyoutSubItemRevealBorderBrushDisabled" ResourceKey="SystemControlTransparentBrush" />
-      <StaticResource x:Key="SwipeItemBackground" ResourceKey="SystemControlBackgroundBaseLowBrush" />
-      <StaticResource x:Key="SwipeItemForeground" ResourceKey="SystemControlForegroundBaseHighBrush" />
-      <StaticResource x:Key="SwipeItemBackgroundPressed" ResourceKey="SystemControlBackgroundBaseMediumLowBrush" />
-      <StaticResource x:Key="SwipeItemPreThresholdExecuteForeground" ResourceKey="SystemControlBackgroundBaseMediumBrush" />
-      <StaticResource x:Key="SwipeItemPreThresholdExecuteBackground" ResourceKey="SystemControlBackgroundBaseLowBrush" />
-      <StaticResource x:Key="SwipeItemPostThresholdExecuteForeground" ResourceKey="SystemControlForegroundChromeWhiteBrush" />
-      <StaticResource x:Key="SwipeItemPostThresholdExecuteBackground" ResourceKey="SystemControlBackgroundAccentBrush" />
       <StaticResource x:Key="ToolTipForeground" ResourceKey="SystemControlForegroundBaseHighBrush" />
       <StaticResource x:Key="ToolTipBackground" ResourceKey="SystemControlBackgroundChromeMediumLowBrush" />
       <StaticResource x:Key="ToolTipBorderBrush" ResourceKey="SystemControlTransientBorderBrush" />
@@ -7040,6 +7040,76 @@
   <!--origin: Microsoft\UI\Xaml\Controls\SplitButton\SplitButton_themeresources.xaml-->
   <x:Double x:Key="SplitButtonPrimaryButtonSize">32</x:Double>
   <x:Double x:Key="SplitButtonSecondaryButtonSize">32</x:Double>
+  <!--origin: Microsoft\UI\Xaml\Controls\SwipeControl\SwipeControl.xaml-->
+  <Style x:Key="DefaultSwipeControlStyle" TargetType="controls:SwipeControl">
+    <Setter Property="IsTabStop" Value="False" />
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="MinHeight" Value="{ThemeResource ListViewItemMinHeight}" />
+    <Setter Property="MinWidth" Value="{ThemeResource ListViewItemMinWidth}" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="controls:SwipeControl">
+          <Grid x:Name="RootGrid">
+            <Grid x:Name="SwipeContentRoot">
+              <StackPanel x:Name="SwipeContentStackPanel" />
+            </Grid>
+            <!-- ContentRoot is the part that moves. -->
+            <Grid x:Name="ContentRoot">
+              <ContentPresenter x:Name="ContentPresenter" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" contract7Present:CornerRadius="{TemplateBinding CornerRadius}" Padding="{TemplateBinding Padding}" Content="{TemplateBinding Content}" ContentTransitions="{TemplateBinding ContentTransitions}" ContentTemplate="{TemplateBinding ContentTemplate}" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" AutomationProperties.AccessibilityView="Raw" />
+              <Grid x:Name="InputEater" />
+            </Grid>
+          </Grid>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+  <Style TargetType="controls:SwipeControl" BasedOn="{StaticResource DefaultSwipeControlStyle}" />
+  <!--origin: Microsoft\UI\Xaml\Controls\SwipeControl\SwipeControl_rs1.xaml-->
+  <!--origin: Microsoft\UI\Xaml\Controls\SwipeControl\SwipeControl_rs1_v1.xaml-->
+  <!--origin: Microsoft\UI\Xaml\Controls\SwipeControl\SwipeControl_themeresources.xaml-->
+  <!--origin: Microsoft\UI\Xaml\Controls\SwipeControl\SwipeControl_themeresources_v1.xaml-->
+  <Style x:Key="SwipeItemStyle" TargetType="AppBarButton">
+    <Setter Property="HorizontalAlignment" Value="Center" />
+    <Setter Property="VerticalAlignment" Value="Center" />
+    <Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}" />
+    <Setter Property="FontWeight" Value="Normal" />
+    <Setter Property="MinWidth" Value="68" />
+    <Setter Property="Width" Value="Auto" />
+    <Setter Property="MinHeight" Value="40" />
+    <Setter Property="AutomationProperties.AccessibilityView" Value="Raw" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="AppBarButton">
+          <Grid x:Name="Root" MinWidth="{TemplateBinding MinWidth}" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
+            <VisualStateManager.VisualStateGroups>
+              <VisualStateGroup x:Name="CommonStates">
+                <VisualState x:Name="Normal" />
+                <VisualState x:Name="Disabled" />
+                <VisualState x:Name="PointerOver" />
+                <VisualState x:Name="Pressed">
+                  <VisualState.Setters>
+                    <Setter Target="Root.Background" Value="{ThemeResource SwipeItemBackgroundPressed}" />
+                  </VisualState.Setters>
+                </VisualState>
+              </VisualStateGroup>
+            </VisualStateManager.VisualStateGroups>
+            <Grid x:Name="ContentRoot" Margin="4,4,4,2" VerticalAlignment="Center" HorizontalAlignment="Center">
+              <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+              </Grid.RowDefinitions>
+              <Viewbox MaxHeight="16" MinWidth="16">
+                <ContentPresenter x:Name="Content" Margin="0,0,0,2" Content="{TemplateBinding Icon}" />
+              </Viewbox>
+              <!-- Font Size 12pt == 16px in the redlines -->
+              <TextBlock x:Name="TextLabel" Grid.Row="1" Text="{TemplateBinding Label}" FontSize="12" TextAlignment="Center" TextWrapping="Wrap" AutomationProperties.AccessibilityView="Raw" />
+            </Grid>
+          </Grid>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+  <!--origin: Microsoft\UI\Xaml\Controls\SwipeControl\SwipeControl_v1.xaml-->
   <!--origin: Microsoft\UI\Xaml\Controls\TabView\TabView_themeresources_v1.xaml-->
   <Thickness x:Key="TabViewHeaderPadding">8,8,4,0</Thickness>
   <Thickness x:Key="TabViewItemHeaderPadding">12,8,10,8</Thickness>
@@ -14375,76 +14445,6 @@
   <netstdref:Style TargetType="ScrollViewer" BasedOn="{StaticResource DefaultScrollViewerStyle}" />
   <ios:Style TargetType="ScrollViewer" BasedOn="{StaticResource NativeScrollViewerStyle}" />
   <android:Style TargetType="ScrollViewer" BasedOn="{StaticResource NativeScrollViewerStyle}" />
-  <!--origin: UI\Xaml\Controls\SwipeControl\SwipeControl.xaml-->
-  <Style x:Key="DefaultSwipeControlStyle" TargetType="controls:SwipeControl">
-    <Setter Property="IsTabStop" Value="False" />
-    <Setter Property="Background" Value="Transparent" />
-    <Setter Property="MinHeight" Value="{ThemeResource ListViewItemMinHeight}" />
-    <Setter Property="MinWidth" Value="{ThemeResource ListViewItemMinWidth}" />
-    <Setter Property="Template">
-      <Setter.Value>
-        <ControlTemplate TargetType="controls:SwipeControl">
-          <Grid x:Name="RootGrid">
-            <Grid x:Name="SwipeContentRoot">
-              <StackPanel x:Name="SwipeContentStackPanel" />
-            </Grid>
-            <!-- ContentRoot is the part that moves. -->
-            <Grid x:Name="ContentRoot">
-              <ContentPresenter x:Name="ContentPresenter" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" contract7Present:CornerRadius="{TemplateBinding CornerRadius}" Padding="{TemplateBinding Padding}" Content="{TemplateBinding Content}" ContentTransitions="{TemplateBinding ContentTransitions}" ContentTemplate="{TemplateBinding ContentTemplate}" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" AutomationProperties.AccessibilityView="Raw" />
-              <Grid x:Name="InputEater" />
-            </Grid>
-          </Grid>
-        </ControlTemplate>
-      </Setter.Value>
-    </Setter>
-  </Style>
-  <Style TargetType="controls:SwipeControl" BasedOn="{StaticResource DefaultSwipeControlStyle}" />
-  <!--origin: UI\Xaml\Controls\SwipeControl\SwipeControl_rs1.xaml-->
-  <!--origin: UI\Xaml\Controls\SwipeControl\SwipeControl_rs1_v1.xaml-->
-  <!--origin: UI\Xaml\Controls\SwipeControl\SwipeControl_themeresources.xaml-->
-  <!--origin: UI\Xaml\Controls\SwipeControl\SwipeControl_themeresources_v1.xaml-->
-  <Style x:Key="SwipeItemStyle" TargetType="AppBarButton">
-    <Setter Property="HorizontalAlignment" Value="Center" />
-    <Setter Property="VerticalAlignment" Value="Center" />
-    <Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}" />
-    <Setter Property="FontWeight" Value="Normal" />
-    <Setter Property="MinWidth" Value="68" />
-    <Setter Property="Width" Value="Auto" />
-    <Setter Property="MinHeight" Value="40" />
-    <Setter Property="AutomationProperties.AccessibilityView" Value="Raw" />
-    <Setter Property="Template">
-      <Setter.Value>
-        <ControlTemplate TargetType="AppBarButton">
-          <Grid x:Name="Root" MinWidth="{TemplateBinding MinWidth}" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
-            <VisualStateManager.VisualStateGroups>
-              <VisualStateGroup x:Name="CommonStates">
-                <VisualState x:Name="Normal" />
-                <VisualState x:Name="Disabled" />
-                <VisualState x:Name="PointerOver" />
-                <VisualState x:Name="Pressed">
-                  <VisualState.Setters>
-                    <Setter Target="Root.Background" Value="{ThemeResource SwipeItemBackgroundPressed}" />
-                  </VisualState.Setters>
-                </VisualState>
-              </VisualStateGroup>
-            </VisualStateManager.VisualStateGroups>
-            <Grid x:Name="ContentRoot" Margin="4,4,4,2" VerticalAlignment="Center" HorizontalAlignment="Center">
-              <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
-              </Grid.RowDefinitions>
-              <Viewbox MaxHeight="16" MinWidth="16">
-                <ContentPresenter x:Name="Content" Margin="0,0,0,2" Content="{TemplateBinding Icon}" />
-              </Viewbox>
-              <!-- Font Size 12pt == 16px in the redlines -->
-              <TextBlock x:Name="TextLabel" Grid.Row="1" Text="{TemplateBinding Label}" FontSize="12" TextAlignment="Center" TextWrapping="Wrap" AutomationProperties.AccessibilityView="Raw" />
-            </Grid>
-          </Grid>
-        </ControlTemplate>
-      </Setter.Value>
-    </Setter>
-  </Style>
-  <!--origin: UI\Xaml\Controls\SwipeControl\SwipeControl_v1.xaml-->
   <!--origin: UI\Xaml\Controls\ToolTip\ToolTip.xaml-->
   <Style TargetType="ToolTip">
     <Setter Property="Foreground" Value="{ThemeResource ToolTipForeground}" />

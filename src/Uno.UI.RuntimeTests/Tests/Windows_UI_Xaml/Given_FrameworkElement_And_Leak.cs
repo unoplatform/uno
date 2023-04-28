@@ -81,7 +81,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[DataRow(typeof(Page), 15)]
 		[DataRow(typeof(Image), 15)]
 		[DataRow(typeof(ToggleSwitch), 15)]
-		[DataRow(typeof(Windows.UI.Xaml.Controls.SwipeControl), 15)]
+		[DataRow(typeof(Microsoft.UI.Xaml.Controls.SwipeControl), 15)]
 		[DataRow(typeof(SplitView), 15)]
 		[DataRow(typeof(Microsoft.UI.Xaml.Controls.AnimatedIcon), 15)]
 		[DataRow(typeof(Microsoft.UI.Xaml.Controls.BreadcrumbBar), 15)]

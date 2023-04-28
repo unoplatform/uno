@@ -7,9 +7,11 @@
 using System;
 using Windows.UI.Composition;
 using Windows.UI.Composition.Interactions;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class SwipeControl
 	{
