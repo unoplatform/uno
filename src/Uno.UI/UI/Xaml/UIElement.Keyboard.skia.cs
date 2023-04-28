@@ -34,23 +34,23 @@ namespace Windows.UI.Xaml
 				Window.Current.CoreWindow.NativeKeyUpReceived += InitiateKeyUpBubblingFlow;
 			}
 
-			private static void InitiateKeyDownBubblingFlow(CoreWindow sender, CoreWindow.WrappedKeyEventArgs wrappedArgs)
+			private static void InitiateKeyDownBubblingFlow(CoreWindow sender, KeyEventArgs args)
 			{
 				var originalSource = FocusManager.GetFocusedElement() as UIElement ?? Window.Current.Content;
 
-				wrappedArgs.IsHandled = originalSource.RaiseEvent(
+				originalSource.RaiseEvent(
 					KeyDownEvent,
-					new KeyRoutedEventArgs(originalSource, wrappedArgs.args.VirtualKey, wrappedArgs.args.KeyStatus) { CanBubbleNatively = false }
+					new KeyRoutedEventArgs(originalSource, args.VirtualKey, args.KeyStatus) { CanBubbleNatively = false }
 				);
 			}
 
-			private void InitiateKeyUpBubblingFlow(CoreWindow sender, CoreWindow.WrappedKeyEventArgs wrappedArgs)
+			private void InitiateKeyUpBubblingFlow(CoreWindow sender, KeyEventArgs args)
 			{
 				var originalSource = FocusManager.GetFocusedElement() as UIElement ?? Window.Current.Content;
 
-				wrappedArgs.IsHandled = originalSource.RaiseEvent(
+				originalSource.RaiseEvent(
 					KeyUpEvent,
-					new KeyRoutedEventArgs(originalSource, wrappedArgs.args.VirtualKey, wrappedArgs.args.KeyStatus) { CanBubbleNatively = false }
+					new KeyRoutedEventArgs(originalSource, args.VirtualKey, args.KeyStatus) { CanBubbleNatively = false }
 				);
 			}
 
