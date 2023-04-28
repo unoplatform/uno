@@ -30,6 +30,28 @@ namespace Windows.UI.Xaml
 			{
 				Window.Current.CoreWindow.KeyUp += CoreWindow_KeyUp;
 				Window.Current.CoreWindow.KeyDown += CoreWindow_KeyDown;
+				Window.Current.CoreWindow.NativeKeyDownReceived += InitiateKeyDownBubblingFlow;
+				Window.Current.CoreWindow.NativeKeyUpReceived += InitiateKeyUpBubblingFlow;
+			}
+
+			private static void InitiateKeyDownBubblingFlow(CoreWindow sender, CoreWindow.WrappedKeyEventArgs wrappedArgs)
+			{
+				var originalSource = FocusManager.GetFocusedElement() as UIElement ?? Window.Current.Content;
+
+				wrappedArgs.IsHandled = originalSource.RaiseEvent(
+					KeyDownEvent,
+					new KeyRoutedEventArgs(originalSource, wrappedArgs.args.VirtualKey, wrappedArgs.args.KeyStatus) { CanBubbleNatively = false }
+				);
+			}
+
+			private void InitiateKeyUpBubblingFlow(CoreWindow sender, CoreWindow.WrappedKeyEventArgs wrappedArgs)
+			{
+				var originalSource = FocusManager.GetFocusedElement() as UIElement ?? Window.Current.Content;
+
+				wrappedArgs.IsHandled = originalSource.RaiseEvent(
+					KeyUpEvent,
+					new KeyRoutedEventArgs(originalSource, wrappedArgs.args.VirtualKey, wrappedArgs.args.KeyStatus) { CanBubbleNatively = false }
+				);
 			}
 
 			private void CoreWindow_KeyDown(CoreWindow sender, KeyEventArgs args)
@@ -45,13 +67,6 @@ namespace Windows.UI.Xaml
 						$"ScanCode: {args.KeyStatus.ScanCode})"
 					);
 				}
-
-				var originalSource = FocusManager.GetFocusedElement() as UIElement ?? Window.Current.Content;
-
-				originalSource.RaiseEvent(
-					KeyDownEvent,
-					new KeyRoutedEventArgs(originalSource, args.VirtualKey, args.KeyStatus) { CanBubbleNatively = false }
-				);
 			}
 
 			private void CoreWindow_KeyUp(CoreWindow sender, KeyEventArgs args)
@@ -67,13 +82,6 @@ namespace Windows.UI.Xaml
 						$"ScanCode: {args.KeyStatus.ScanCode})"
 					);
 				}
-
-				var originalSource = FocusManager.GetFocusedElement() as UIElement ?? Window.Current.Content;
-
-				originalSource.RaiseEvent(
-					KeyUpEvent,
-					new KeyRoutedEventArgs(originalSource, args.VirtualKey, args.KeyStatus) { CanBubbleNatively = false }
-				);
 			}
 		}
 

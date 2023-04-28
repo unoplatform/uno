@@ -24,6 +24,23 @@ public partial class CoreWindow : ICoreWindowEvents
 	public event TypedEventHandler<CoreWindow, KeyEventArgs>? KeyDown;
 	public event TypedEventHandler<CoreWindow, KeyEventArgs>? KeyUp;
 
+#if __SKIA__
+	internal event TypedEventHandler<CoreWindow, WrappedKeyEventArgs>? NativeKeyDownReceived;
+	internal event TypedEventHandler<CoreWindow, WrappedKeyEventArgs>? NativeKeyUpReceived;
+
+	internal class WrappedKeyEventArgs
+	{
+		public KeyEventArgs args { get; set; }
+		public bool IsHandled { get; set; }
+
+		public WrappedKeyEventArgs(KeyEventArgs args, bool isHandled = false)
+		{
+			this.args = args;
+			IsHandled = isHandled;
+		}
+	}
+#endif
+
 	public CoreCursor PointerCursor
 	{
 		get => _coreWindowExtension?.PointerCursor ?? new CoreCursor(CoreCursorType.Arrow, 0);
@@ -80,6 +97,28 @@ public partial class CoreWindow : ICoreWindowEvents
 
 	void ICoreWindowEvents.RaiseKeyDown(KeyEventArgs args)
 		=> KeyDown?.Invoke(this, args);
+
+#if __SKIA__
+	void ICoreWindowEvents.RaiseNativeKeyDownReceived(KeyEventArgs args)
+	{
+		var wrappedArgs = new WrappedKeyEventArgs(args);
+		NativeKeyDownReceived?.Invoke(this, wrappedArgs);
+		if (!wrappedArgs.IsHandled)
+		{
+			((ICoreWindowEvents)this).RaiseKeyDown(args);
+		}
+	}
+
+	void ICoreWindowEvents.RaiseNativeKeyUpReceived(KeyEventArgs args)
+	{
+		var wrappedArgs = new WrappedKeyEventArgs(args);
+		NativeKeyUpReceived?.Invoke(this, wrappedArgs);
+		if (!wrappedArgs.IsHandled)
+		{
+			((ICoreWindowEvents)this).RaiseKeyUp(args);
+		}
+	}
+#endif
 
 	internal void InjectPointerAdded(PointerEventArgs args)
 		=> PointerEntered?.Invoke(this, args);
