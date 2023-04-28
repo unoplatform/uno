@@ -21,28 +21,6 @@ using Uno.UI.RemoteControl.Messages;
 
 namespace Uno.UI.RemoteControl
 {
-	public class ReceivedFrameEventArgs : EventArgs
-	{
-		public ReceivedFrameEventArgs(HotReload.Messages.Frame frame)
-		{
-			Frame = frame;
-		}
-
-		public HotReload.Messages.Frame Frame { get; set; }
-	}
-
-	public class ClientEventEventArgs : EventArgs
-	{
-		public ClientEventEventArgs(string eventName, string eventDetails)
-		{
-			EventName = eventName;
-			EventDetails = eventDetails;
-		}
-
-		public string EventName { get; }
-		public string EventDetails { get; }
-	}
-
 	public class RemoteControlClient : IRemoteControlClient
 	{
 		public static RemoteControlClient? Instance { get; private set; }
