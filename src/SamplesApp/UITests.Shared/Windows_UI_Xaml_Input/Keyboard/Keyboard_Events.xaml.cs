@@ -38,18 +38,17 @@ namespace UITests.Windows_UI_Xaml_Input.Keyboard
 
 		private void SetupEvent(CoreWindow window)
 		{
-			var windowName = $"{typeof(CoreWindow).Name}";
 			window.KeyDown += (snd, e) =>
 			{
-				Console.WriteLine($"{windowName} - [KEYDOWN] {e.VirtualKey}");
-				global::System.Diagnostics.Debug.WriteLine($"{windowName} - [KEYDOWN] {e.VirtualKey}");
-				_output.Text += $"{windowName} - [KEYDOWN] {e.VirtualKey}\r\n";
+				Console.WriteLine("CoreWindow - [KEYDOWN] {e.VirtualKey}");
+				global::System.Diagnostics.Debug.WriteLine($"CoreWindow - [KEYDOWN] {e.VirtualKey}");
+				_output.Text += $"CoreWindow - [KEYDOWN] {e.VirtualKey}\r\n";
 			};
 			window.KeyUp += (snd, e) =>
 			{
-				Console.WriteLine($"{windowName} - [KEYUP] {e.VirtualKey}");
-				global::System.Diagnostics.Debug.WriteLine($"{windowName} - [KEYUP] {e.VirtualKey}");
-				_output.Text += $"{windowName} - [KEYUP] {e.VirtualKey}\r\n";
+				Console.WriteLine($"CoreWindow - [KEYUP] {e.VirtualKey}");
+				global::System.Diagnostics.Debug.WriteLine($"CoreWindow - [KEYUP] {e.VirtualKey}");
+				_output.Text += $"CoreWindow - [KEYUP] {e.VirtualKey}\r\n";
 			};
 		}
 	}
