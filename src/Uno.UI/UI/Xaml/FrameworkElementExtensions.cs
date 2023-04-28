@@ -1,7 +1,5 @@
 ﻿#if !SILVERLIGHT
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Reflection;
 using Uno.Extensions;
 using Windows.UI.Xaml.Controls;
@@ -17,7 +15,6 @@ using Windows.UI.Xaml.Data;
 using Uno.UI.DataBinding;
 #else
 using Windows.UI.Xaml.Data;
-using Uno.UI.DataBinding;
 #endif
 
 namespace Windows.UI.Xaml
@@ -324,6 +321,7 @@ namespace Windows.UI.Xaml
 			return false;
 		}
 
+#if __WASM__
 		/// <summary>
 		/// This method retrieves the actual border thickness of given FrameworkElement.
 		/// Note that for Control.BorderThickness is not actually applied unless
@@ -352,9 +350,16 @@ namespace Windows.UI.Xaml
 				return true;
 			}
 
+			if (__LinkerHints.Is_Windows_UI_Xaml_Controls_CalendarViewDayItem_Available && frameworkElement is CalendarViewDayItem calendarViewDayItem)
+			{
+				borderThickness = calendarViewDayItem.EffectiveBorderThickness;
+				return true;
+			}
+
 			borderThickness = default;
 			return false;
 		}
+#endif
 
 		internal static bool TryGetBorderThickness(this IFrameworkElement frameworkElement, out Thickness borderThickness)
 		{

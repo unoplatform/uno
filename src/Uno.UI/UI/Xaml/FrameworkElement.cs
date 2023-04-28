@@ -340,15 +340,7 @@ namespace Windows.UI.Xaml
 		/// <param name="finalRect">The final size that the parent computes for the child in layout, provided as a <see cref="Windows.Foundation.Rect"/> value.</param>
 		protected void ArrangeElement(View view, Rect finalRect)
 		{
-#if __WASM__
-			_ = this.TryGetActualBorderThickness(out var adjust);
-
-			// HTML moves the origin along with the border thickness.
-			// Adjust the child based on this element's border thickness.
-			var rect = new Rect(finalRect.X - adjust.Left, finalRect.Y - adjust.Top, finalRect.Width, finalRect.Height);
-
-			view.Arrange(rect);
-#elif UNO_REFERENCE_API
+#if UNO_REFERENCE_API
 			view.Arrange(finalRect);
 #else
 			_layouter.ArrangeElement(view, finalRect);
