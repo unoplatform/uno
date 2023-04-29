@@ -14,6 +14,7 @@ using System.Reflection;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 
+#if !WINDOWS_UWP
 [TestClass]
 [RunsOnUIThread]
 public class Given_CalendarView
@@ -133,3 +134,4 @@ public class Given_CalendarView
 		Assert.AreEqual(calendar.SelectedBorderBrush, brush2);
 	}
 }
+#endif
