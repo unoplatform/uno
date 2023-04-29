@@ -1333,7 +1333,7 @@ namespace DirectUI
 		// This class is marked novtable, so must not be instantiated directly.
 		protected ValueTypeView() { }
 
-		public void IndexOf(T value, out uint index, out bool found)
+		public virtual void IndexOf(T value, out uint index, out bool found)
 		{
 			index = 0;
 			found = false;
