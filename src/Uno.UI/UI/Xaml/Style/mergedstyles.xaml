@@ -18781,6 +18781,9 @@
                       <Button x:Name="CastButton" Style="{StaticResource MTC_ButtonStyle}" Visibility="Collapsed">
                         <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xEC15;" />
                       </Button>
+                      <Button x:Name="CompactOverlayButton" Style="{StaticResource MTC_ButtonStyle}" Visibility="Collapsed">
+                        <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE8B9;" />
+                      </Button>
                       <Button x:Name="FullWindowButton" Style="{StaticResource MTC_ButtonStyle}" Visibility="Collapsed">
                         <SymbolIcon x:Name="FullWindowSymbol" Symbol="FullScreen" />
                       </Button>

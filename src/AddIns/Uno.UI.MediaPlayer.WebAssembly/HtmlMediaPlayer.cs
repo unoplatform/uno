@@ -290,7 +290,10 @@ internal partial class HtmlMediaPlayer : Border
 
 		ActiveElement = IsVideo ? _htmlVideo : IsAudio ? _htmlAudio : default;
 		ActiveElementName = IsVideo ? "Video" : IsAudio ? "Audio" : "";
-		ActiveElement.SetCssStyle("visibility", "visible");
+		if (ActiveElement != null)
+		{
+			ActiveElement.SetCssStyle("visibility", "visible");
+		}
 		if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 		{
 			this.Log().Debug($"{ActiveElementName} source loaded: [{Source}]");

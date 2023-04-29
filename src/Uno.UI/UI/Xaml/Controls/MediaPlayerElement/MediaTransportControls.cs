@@ -72,6 +72,7 @@ namespace Windows.UI.Xaml.Controls
 		private const string TimelineContainerName = "MediaTransportControls_Timeline_Border";
 		private const string HorizontalThumbName = "HorizontalThumb";
 		private const string DownloadProgressIndicatorName = "DownloadProgressIndicator";
+		private const string CompactOverlayButtonName = "CompactOverlayButton";
 
 		private Grid _rootGrid;
 		private Button _playPauseButton;
@@ -88,6 +89,7 @@ namespace Windows.UI.Xaml.Controls
 		private Button _nextTrackButton;
 		private Button _fastForwardButton;
 		private Button _rewindButton;
+		private Button _compactOverlayButton;
 		private Button _previousTrackButton;
 		private Button _skipBackwardButton;
 		private Button _stopButton;
@@ -197,6 +199,12 @@ namespace Windows.UI.Xaml.Controls
 			_playbackRateButton?.SetBinding(Button.IsEnabledProperty, new Binding { Path = "IsPlaybackRateEnabled", Source = this, Mode = BindingMode.OneWay, FallbackValue = true });
 			_playbackRateButton.Tapped -= PlaybackRateButtonTapped;
 			_playbackRateButton.Tapped += PlaybackRateButtonTapped;
+
+			_compactOverlayButton = this.GetTemplateChild(CompactOverlayButtonName) as Button;
+			_compactOverlayButton?.SetBinding(Button.VisibilityProperty, new Binding { Path = "IsCompactOverlayButtonVisible", Source = this, Mode = BindingMode.OneWay, FallbackValue = Visibility.Collapsed, Converter = trueToVisible });
+			_compactOverlayButton?.SetBinding(Button.IsEnabledProperty, new Binding { Path = "IsCompactOverlayEnabled", Source = this, Mode = BindingMode.OneWay, FallbackValue = true });
+			_compactOverlayButton.Tapped -= UpdateMediaTransportControlMode;
+			_compactOverlayButton.Tapped += UpdateMediaTransportControlMode;
 
 			_repeatVideoButton = this.GetTemplateChild(RepeatVideoButtonName) as Button;
 			_repeatVideoButton?.SetBinding(Button.VisibilityProperty, new Binding { Path = "IsRepeatButtonVisible", Source = this, Mode = BindingMode.OneWay, FallbackValue = Visibility.Collapsed, Converter = trueToVisible });
@@ -357,7 +365,11 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 		}
-
+		private void UpdateMediaTransportControlMode(object sender, RoutedEventArgs e)
+		{
+			IsCompact = !IsCompact;
+			UpdateMediaTransportControlMode();
+		}
 		private void UpdateMediaTransportControlMode()
 		{
 			VisualStateManager.GoToState(this, IsCompact ? "CompactMode" : "NormalMode", true);

@@ -38,7 +38,10 @@
 										IsVolumeButtonVisible="{Binding IsChecked, ElementName=IsVolumeButtonVisible}"
 										IsVolumeEnabled="{Binding IsChecked, ElementName=IsVolumeEnabled}"
 										IsZoomButtonVisible="{Binding IsChecked, ElementName=IsZoomButtonVisible}"
-										IsZoomEnabled="{Binding IsChecked, ElementName=IsZoomEnabled}" />
+										IsZoomEnabled="{Binding IsChecked, ElementName=IsZoomEnabled}"
+										IsCompactOverlayButtonVisible="{Binding IsChecked, ElementName=IsCompactOverlayButtonVisible}"
+										IsCompactOverlayEnabled="{Binding IsChecked, ElementName=IsCompactOverlayEnabled}"
+										/>
 			</MediaPlayerElement.TransportControls>
 		</MediaPlayerElement>
 
@@ -56,6 +59,14 @@
 				<CheckBox x:Name="IsCompact"
 						  IsChecked="False"
 						  Content="IsCompact" />
+
+				<CheckBox x:Name="IsCompactOverlayButtonVisible"
+						  IsChecked="True"
+						  Content="IsCompactOverlayButtonVisible" />
+
+				<CheckBox x:Name="IsCompactOverlayEnabled"
+						  IsChecked="True"
+						  Content="IsCompactOverlayEnabled" />
 				
 				<CheckBox x:Name="ShowAndHideAutomatically"
 						  IsChecked="True"
