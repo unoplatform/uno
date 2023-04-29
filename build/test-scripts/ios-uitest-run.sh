@@ -97,6 +97,10 @@ fi
 echo "Current system date"
 date
 
+echo "Disabling keyboard connection to the simulator"
+# Xamarin.UITest needs this for keyboard interactions
+defaults write com.apple.iphonesimulator ConnectHardwareKeyboard -bool NO
+
 echo "Listing iOS simulators"
 xcrun simctl list devices --json
 
