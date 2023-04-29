@@ -3,10 +3,6 @@
 		<TargetFrameworks>net7.0;net8.0</TargetFrameworks>
 		<RollForward>Major</RollForward>
 	</PropertyGroup>
-	
-	<PropertyGroup Condition="'$(MSBuildRuntimeType)'=='Core'">
-		<TargetFrameworks>$(TargetFrameworks);net7.0</TargetFrameworks>
-	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'=='netstandard2.0'">
 		<TargetFrameworks>netcoreapp3.1</TargetFrameworks>
@@ -23,12 +19,12 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
-	
+
 	<ItemGroup>
 		<PackageReference Include="SkiaSharp" />
 		<PackageReference Include="SkiaSharp.NativeAssets.Linux" />
 	</ItemGroup>
-	
+
 	<ItemGroup>
 	  <ProjectReference Include="..\..\SourceGenerators\System.Xaml\Uno.Xaml.csproj" />
 	  <ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.Skia.csproj" />
@@ -37,7 +33,7 @@
 	  <ProjectReference Include="..\..\Uno.UWP\Uno.Skia.csproj" />
 	  <ProjectReference Include="..\SamplesApp.Skia\SamplesApp.Skia.csproj" />
 	</ItemGroup>
-	
+
 	<ItemGroup>
 	  <Compile Update="Program.cs" />
 	</ItemGroup>

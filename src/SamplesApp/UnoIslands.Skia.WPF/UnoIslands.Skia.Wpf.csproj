@@ -9,7 +9,7 @@
 		<RollForward>Major</RollForward>
 	</PropertyGroup>
 
-	<Import Project="../../targetframework-override.props" />
+	<Import Project="../../targetframework-override-windows.props" />
 
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
