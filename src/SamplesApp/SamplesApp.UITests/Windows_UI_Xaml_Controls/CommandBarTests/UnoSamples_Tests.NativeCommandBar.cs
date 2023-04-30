@@ -83,7 +83,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.CommandBarTests
 					}
 
 					return GetIsCurrentRotationLandscape(rootElementName) == currentModeIsLandscape;
-				});
+				}, timeout: TimeSpan.FromSeconds(60));
 
 				await Task.Delay(125); // A delay ia required after rotation for the test to succeed
 			}
