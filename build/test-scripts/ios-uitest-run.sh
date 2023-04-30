@@ -97,10 +97,6 @@ fi
 echo "Current system date"
 date
 
-echo "Disabling keyboard connection to the simulator"
-# Xamarin.UITest needs this for keyboard interactions
-defaults write com.apple.iphonesimulator ConnectHardwareKeyboard -bool NO
-
 echo "Listing iOS simulators"
 xcrun simctl list devices --json
 
@@ -108,6 +104,10 @@ xcrun simctl list devices --json
 ## Pre-install the application to avoid https://github.com/microsoft/appcenter/issues/2389
 ##
 export UITEST_IOSDEVICE_ID=`xcrun simctl list -j | jq -r --arg sim "$UNO_UITEST_SIMULATOR_VERSION" --arg name "$UNO_UITEST_SIMULATOR_NAME" '.devices[$sim] | .[] | select(.name==$name) | .udid'`
+
+echo "Disable keyboard connection to the simulator"
+# Xamarin.UITest needs this for keyboard interactions
+plutil -replace DevicePreferences.$UITEST_IOSDEVICE_ID.ConnectHardwareKeyboard -bool NO ~/Library/Preferences/com.apple.iphonesimulator.plist
 
 echo "Starting simulator: $UITEST_IOSDEVICE_ID ($UNO_UITEST_SIMULATOR_VERSION / $UNO_UITEST_SIMULATOR_NAME)"
 xcrun simctl boot "$UITEST_IOSDEVICE_ID" || true
