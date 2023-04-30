@@ -2673,9 +2673,9 @@ namespace Windows.UI.Xaml.Controls
 
 			private const int TARGET_SEEK_SCROLL_DISTANCE_PX = 10000;
 
-			// Trigger a scroll to a further distance than TARGET_SEEK_SCROLL_DISTANCE_PX so that if target
-			// view is not laid out until interim target position is reached, we can detect the case before
-			// scrolling slows down and reschedule another interim target scroll
+			// Trigger a scroll to a further distance than TARGET_SEEK_SCROLL_DISTANCE_PX so that if the target
+			// view is not laid out until the interim target position is reached, we can detect the case before
+			// scrolling slows down and reschedules another interim target scroll
 			private const float TARGET_SEEK_EXTRA_SCROLL_RATIO = 1.2f;
 
 			private readonly VirtualizingPanelLayout _layout;
@@ -2692,7 +2692,7 @@ namespace Windows.UI.Xaml.Controls
 			protected override void UpdateActionForInterimTarget(Action action)
 			{
 				// find an interim target position
-				var scrollVector = ComputeScrollVectorForPosition(TargetPosition); // direction only, not magniture WHERE x and y are in {-1,0,1}
+				var scrollVector = ComputeScrollVectorForPosition(TargetPosition); // direction only, not magnitude WHERE x and y are in {-1,0,1}
 				if (scrollVector == null || (scrollVector.X == 0 && scrollVector.Y == 0))
 				{
 					var target = TargetPosition;
@@ -2712,8 +2712,8 @@ namespace Windows.UI.Xaml.Controls
 
 				var time = CalculateTimeForScrolling(extend);
 
-				// To avoid UI hiccups, trigger a smooth scroll to a distance little further than the
-				// interim target. Since we track the distance travelled in onSeekTargetStep callback, it
+				// To avoid UI hiccups, trigger a smooth scroll to a distance a little further than the
+				// interim target. Since we track the distance traveled in the onSeekTargetStep callback, it
 				// won't actually scroll more than what we need.
 				ActionUpdate(
 					(int)(MInterimTargetDx * TARGET_SEEK_EXTRA_SCROLL_RATIO),
