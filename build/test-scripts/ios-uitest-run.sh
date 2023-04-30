@@ -105,10 +105,6 @@ xcrun simctl list devices --json
 ##
 export UITEST_IOSDEVICE_ID=`xcrun simctl list -j | jq -r --arg sim "$UNO_UITEST_SIMULATOR_VERSION" --arg name "$UNO_UITEST_SIMULATOR_NAME" '.devices[$sim] | .[] | select(.name==$name) | .udid'`
 
-echo "Disable keyboard connection to the simulator"
-# Xamarin.UITest needs this for keyboard interactions
-plutil -replace DevicePreferences.$UITEST_IOSDEVICE_ID.ConnectHardwareKeyboard -bool NO ~/Library/Preferences/com.apple.iphonesimulator.plist
-
 echo "Starting simulator: $UITEST_IOSDEVICE_ID ($UNO_UITEST_SIMULATOR_VERSION / $UNO_UITEST_SIMULATOR_NAME)"
 xcrun simctl boot "$UITEST_IOSDEVICE_ID" || true
 
@@ -117,6 +113,10 @@ xcrun simctl install "$UITEST_IOSDEVICE_ID" "$UNO_UITEST_IOSBUNDLE_PATH" || true
 
 echo "Shutdown simulator: $UITEST_IOSDEVICE_ID ($UNO_UITEST_SIMULATOR_VERSION / $UNO_UITEST_SIMULATOR_NAME)"
 xcrun simctl shutdown "$UITEST_IOSDEVICE_ID" || true
+
+echo "Disable keyboard connection to the simulator"
+# Xamarin.UITest needs this for keyboard interactions
+plutil -replace DevicePreferences.$UITEST_IOSDEVICE_ID.ConnectHardwareKeyboard -bool NO ~/Library/Preferences/com.apple.iphonesimulator.plist
 
 ## Pre-build the transform tool to get early warnings
 pushd $BUILD_SOURCESDIRECTORY/src/Uno.NUnitTransformTool
