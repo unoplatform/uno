@@ -244,7 +244,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if __IOS__
 		[TestMethod]
 		[RunsOnUIThread]
-		public async Task Check_DropDown_Flyout_Marging_When_In_Modal()
+		public async Task Check_DropDown_Flyout_Margin_When_In_Modal()
 		{
 			MultiFrame multiFrame = new();
 			var showModalButton = new Button();

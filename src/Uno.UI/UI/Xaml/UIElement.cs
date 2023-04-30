@@ -540,11 +540,9 @@ namespace Windows.UI.Xaml
 				var toToRoot = GetTransform(to, null, toContext);
 
 #if __IOS__
-				// On iOS, the `from` and `to` may be coming different ViewController.
+				// On iOS, the `from` and `to` may be coming from different ViewController.
 				// In such case, their coordinates should not be "added" together, since they are from different coordinates space.
-				if (context.ViewController is { } vc1 &&
-					toContext.ViewController is { } vc2 &&
-					vc1 == vc2)
+				if (context.ViewController == toContext.ViewController)
 #endif
 				{
 					var rootToTo = toToRoot.Inverse();
