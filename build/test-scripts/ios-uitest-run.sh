@@ -116,7 +116,8 @@ xcrun simctl shutdown "$UITEST_IOSDEVICE_ID" || true
 
 echo "Disable keyboard connection to the simulator"
 # Xamarin.UITest needs this for keyboard interactions
-plutil -replace DevicePreferences.$UITEST_IOSDEVICE_ID.ConnectHardwareKeyboard -bool NO ~/Library/Preferences/com.apple.iphonesimulator.plist
+/usr/libexec/PlistBuddy -c "Set :DevicePreferences:$UITEST_IOSDEVICE_ID:ConnectHardwareKeyboard 
+false" ~/Library/Preferences/com.apple.iphonesimulator.plist || true
 
 ## Pre-build the transform tool to get early warnings
 pushd $BUILD_SOURCESDIRECTORY/src/Uno.NUnitTransformTool
