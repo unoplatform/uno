@@ -13,6 +13,10 @@ using Uno.UITest;
 using Uno.UITest.Helpers;
 using Uno.UITest.Helpers.Queries;
 using Uno.UITests.Helpers;
+using SkiaSharp;
+using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
 
 namespace SamplesApp.UITests
 {
@@ -54,6 +58,39 @@ namespace SamplesApp.UITests
 			// Start the app only once, so the tests runs don't restart it
 			// and gain some time for the tests.
 			AppInitializer.ColdStartApp();
+
+
+			TryInitializeSkiaSharpLoader();
+		}
+
+		private static void TryInitializeSkiaSharpLoader()
+		{
+			if (AppInitializer.GetLocalPlatform() == Platform.Browser
+				&& !RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+			{
+				if (Environment.OSVersion.Platform == PlatformID.Win32NT)
+				{
+					NativeLibrary.SetDllImportResolver(
+						typeof(SkiaSharpVersion).Assembly,
+						ImportResolver);
+				}
+			}
+		}
+
+		private static IntPtr ImportResolver(string libraryName, Assembly assembly, DllImportSearchPath? searchPath)
+		{
+			IntPtr libHandle = IntPtr.Zero;
+
+			if (libraryName == "libSkiaSharp")
+			{
+				NativeLibrary.TryLoad(
+					"libSkiaSharp.so",
+					typeof(SampleControlUITestBase).Assembly,
+					DllImportSearchPath.AssemblyDirectory,
+					out libHandle);
+			}
+
+			return libHandle;
 		}
 
 		/// <summary>
