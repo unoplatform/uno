@@ -38,7 +38,7 @@ You can add a default entry for all mobile targets by adding the following JSON 
       "type": "Uno",
       "request": "launch",
       // any Uno* task will do, this is simply to satisfy vscode requirement when a launch.json is present
-      "preLaunchTask": "Uno: android.0-ios | Debug | android-x64"
+      "preLaunchTask": "Uno: net7.0-android | Debug | android-x64"
     },
 ```
 
