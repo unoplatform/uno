@@ -21,16 +21,6 @@ using Uno.UI.RemoteControl.Messages;
 
 namespace Uno.UI.RemoteControl
 {
-	public class ReceivedFrameEventArgs : EventArgs
-	{
-		public ReceivedFrameEventArgs(HotReload.Messages.Frame frame)
-		{
-			Frame = frame;
-		}
-
-		public HotReload.Messages.Frame Frame { get; set; }
-	}
-
 	public class RemoteControlClient : IRemoteControlClient
 	{
 		public static RemoteControlClient? Instance { get; private set; }
@@ -38,6 +28,10 @@ namespace Uno.UI.RemoteControl
 		public delegate void RemoteControlFrameReceivedEventHandler(object sender, ReceivedFrameEventArgs args);
 
 		public event RemoteControlFrameReceivedEventHandler? FrameReceived;
+
+		public delegate void RemoteControlClientEventEventHandler(object sender, ClientEventEventArgs args);
+
+		public event RemoteControlClientEventEventHandler? ClientEvent;
 
 		public Type AppType { get; }
 
@@ -311,9 +305,9 @@ namespace Uno.UI.RemoteControl
 							this.Log().LogError($"Unknown Frame scope {frame.Scope}");
 						}
 					}
-
-					FrameReceived?.Invoke(this, new ReceivedFrameEventArgs(frame));
 				}
+
+				FrameReceived?.Invoke(this, new ReceivedFrameEventArgs(frame));
 			}
 		}
 
@@ -398,6 +392,11 @@ namespace Uno.UI.RemoteControl
 					this.Log().LogError("Unable send message, no connection available");
 				}
 			}
+		}
+
+		internal void NotifyOfEvent(string eventName, string eventDetails)
+		{
+			ClientEvent?.Invoke(this, new ClientEventEventArgs(eventName, eventDetails));
 		}
 	}
 }

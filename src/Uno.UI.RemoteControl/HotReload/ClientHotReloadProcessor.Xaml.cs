@@ -71,6 +71,8 @@ namespace Uno.UI.RemoteControl.HotReload
 				async () =>
 				{
 					await ReloadWithFileAndContent(fileReload.FilePath, fileReload.Content);
+
+					RemoteControlClient.Instance?.NotifyOfEvent(nameof(FileReload), fileReload.FilePath);
 				});
 		}
 
