@@ -35,7 +35,11 @@
 		<PackageReference Include="Uno.SourceGenerationTasks" />
 		<PackageReference Include="System.Memory" Version="4.5.2" />
 	</ItemGroup>
-
+	
+	<ItemGroup>
+		<None Include="..\Common\uno.png" Pack="true" PackagePath="\" Visible="false"/>
+	</ItemGroup>
+	
 	<ItemGroup>
 		<ProjectReference Include="..\Uno.UI\Uno.UI.Wasm.csproj" />
 		<ProjectReference Include="..\Uno.UWP\Uno.Wasm.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
