@@ -6,7 +6,7 @@
 	<PropertyGroup>
 		<Product>$(AssemblyName) $(TargetFramework)</Product>
 		<Product Condition="'$(UnoRuntimeIdentifier)' != ''">$(AssemblyName) ($(TargetFramework) $(UnoRuntimeIdentifier))</Product>
-		<CommunityToolkitMvvmVersion>8.1.0</CommunityToolkitMvvmVersion>
+		<CommunityToolkitMvvmVersion>8.2.0</CommunityToolkitMvvmVersion>
 	</PropertyGroup>
 
 	<ItemGroup Condition="$(EnableAutomaticXamlPageInclusion)">
