@@ -9,10 +9,11 @@ using Windows.UI.Xaml.Media;
 using Uno.UI.RuntimeTests.MUX.Helpers;
 using Windows.UI;
 using Windows.UI.Xaml.Input;
-#if !HAS_UNO_WINUI
-using Microsoft.UI.Xaml.Controls;
-#endif
 using System.Reflection;
+
+#if !HAS_UNO_WINUI
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+#endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 

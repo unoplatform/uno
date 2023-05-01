@@ -16,8 +16,6 @@ namespace UnoWinUIRevert
 			DeleteFolder(Path.Combine(basePath, "src", "Uno.UI.Composition", "Generated"));
 			DeleteFolder(Path.Combine(basePath, "src", "Uno.UWP", "Generated"));
 			DeleteFolder(Path.Combine(basePath, "src", "Uno.UI", "tsBindings")); // Generated
-			DeleteFolder(Path.Combine(basePath, "src", "Uno.UI", "UI", "Xaml", "Controls", "ProgressBar")); // ProgressBar in WinUI is a replacement of the UWP's version
-			DeleteFolder(Path.Combine(basePath, "src", "Uno.UI", "UI", "Xaml", "Controls", "NavigationView")); // NavigationView in WinUI is a replacement of the UWP's version
 
 			var colorsFilepath = Path.Combine(basePath, @"src", "Uno.UWP", "UI", "Colors.cs");
 			if (File.Exists(colorsFilepath))
@@ -68,20 +66,12 @@ namespace UnoWinUIRevert
 				}
 			}
 
-			// Files/Class that are implemented in both MUX and WUX and which should not be converted
-			Directory.Delete(Path.Combine(basePath, @"src\Uno.UI\UI\Xaml\Controls\Unsupported"), recursive: true);
-			var duplicatedImplementations = new[]
-			{
-				Path.Combine(basePath, @"src\Uno.UI\UI\Xaml\Controls\Icons\BitmapIconSource.cs"),
-				Path.Combine(basePath, @"src\Uno.UI\UI\Xaml\Controls\Icons\SymbolIconSource.cs"),
-				Path.Combine(basePath, @"src\Uno.UI\UI\Xaml\Controls\Icons\PathIconSource.cs"),
-				Path.Combine(basePath, @"src\Uno.UI\UI\Xaml\Controls\Icons\FontIconSource.cs"),
-				Path.Combine(basePath, @"src\Uno.UI\UI\Xaml\Controls\Icons\IconSource.cs"),
-				Path.Combine(basePath, @"src\Uno.UI\UI\Xaml\Media\RevealBrush.Android.cs"),
-				Path.Combine(basePath, @"src\Uno.UI\UI\Xaml\Controls\Unsupported\RatingControl.cs"),
-				Path.Combine(basePath, @"src\Uno.UI\UI\Xaml\Automation\Peers\RatingControlAutomationPeer.cs"),
-			};
-			DeleteFiles(duplicatedImplementations);
+			// Replace microsoft namespaces in a reversible way
+			ReplaceInFolders(basePath,
+				new[] {
+				("Microsoft.UI.Xaml", "Microsoft/* UWP don't rename */.UI.Xaml") }
+				, searchPattern: "*.cs"
+			);
 
 			// Generic replacements
 			var genericReplacements = new[] {
@@ -156,7 +146,7 @@ namespace UnoWinUIRevert
 			"Uno.UWPSyncGenerator.Reference.csproj",
 			"SamplesApp.UWP.csproj",
 			"SamplesApp.UWP.Design.csproj",
-			@"Uno.UWPSyncGenerator\Generator.cs",
+			@"Uno.UWPSyncGenerator",
 			@"src\Uno.UWP\",
 			@"src\Uno.UI\UI\Xaml\Controls\NavigationView\",
 			@"src\Uno.UI.RuntimeTests\Tests\Windows_UI_Xaml_Controls\Given_NavigationView.cs",
@@ -164,7 +154,8 @@ namespace UnoWinUIRevert
 			@"\bin\",
 			@"\.git",
 			@"\.vs",
-			@"\docs\",
+			@"\doc\",
+			@"\src\SolutionTemplate\",
 		}
 		.Select(AlignPath)
 		.ToArray();
@@ -173,27 +164,45 @@ namespace UnoWinUIRevert
 
 		private static void ReplaceInFolders(string basePath, (string from, string to)[] replacements, string searchPattern = "*.*")
 		{
-			foreach (var file in Directory.EnumerateFiles(basePath, searchPattern, SearchOption.AllDirectories))
-			{
-				if (_exclusions.Any(e => file.Contains(e, StringComparison.Ordinal)))
+			Directory.EnumerateFiles(basePath, searchPattern, SearchOption.AllDirectories)
+				.AsParallel()
+				.ForAll(file =>
 				{
-					continue;
-				}
+					if (_exclusions.Any(e => file.Contains(e, StringComparison.OrdinalIgnoreCase)))
+					{
+						return;
+					}
 
-				var originalContent = File.ReadAllText(file);
-				var updatedContent = originalContent;
+					var updated = false;
+					var content = File.ReadAllText(file);
 
-				for (int i = 0; i < replacements.Length; i++)
-				{
-					updatedContent = updatedContent.Replace(replacements[i].from, replacements[i].to);
-				}
+					for (int i = 0; i < replacements.Length; i++)
+					{
+						if (content.Contains(replacements[i].from))
+						{
+							content = content.Replace(replacements[i].from, replacements[i].to);
+							updated = true;
+						}
+					}
 
-				if (!object.ReferenceEquals(originalContent, updatedContent))
-				{
-					Console.WriteLine($"Updating [{file}]");
-					File.WriteAllText(file, updatedContent, Encoding.UTF8);
-				}
-			}
+					if (updated)
+					{
+						Console.WriteLine($"Updating [{file}]");
+
+						int retry = 3;
+						while (retry-- > 0)
+						{
+							try
+							{
+								File.WriteAllText(file, content, Encoding.UTF8);
+							}
+							catch
+							{
+								System.Threading.Thread.Sleep(500);
+							}
+						}
+					}
+				});
 		}
 
 		private static void DeleteFolder(string path)
@@ -212,17 +221,6 @@ namespace UnoWinUIRevert
 			var txt = File.ReadAllText(filePath);
 			txt = txt.Replace(from, to);
 			File.WriteAllText(filePath, txt, Encoding.UTF8);
-		}
-
-		private static void DeleteFiles(string[] filePaths)
-		{
-			foreach (var filePath in filePaths)
-			{
-				if (File.Exists(filePath))
-				{
-					File.Delete(filePath);
-				}
-			}
 		}
 
 		private static void UncommentWinUISpecificBlock(string nuspecPath)

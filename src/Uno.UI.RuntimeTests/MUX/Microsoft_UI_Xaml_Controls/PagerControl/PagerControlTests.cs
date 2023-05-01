@@ -12,9 +12,10 @@ using System.Collections.Generic;
 using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Automation;
 using Windows.UI.Xaml.Automation.Provider;
+
 #if !HAS_UNO_WINUI
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+using Microsoft/* UWP don't rename */.UI.Xaml.Automation.Peers;
 #endif
 using Windows.UI.Xaml.Controls;
 using Private.Infrastructure;

@@ -17,6 +17,10 @@ using MUXControlsTestApp.Utilities;
 using Windows.UI.Xaml;
 using Windows.UI;
 
+#if !HAS_UNO_WINUI
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+#endif
+
 namespace Uno.UI.RuntimeTests.MUX.Microsoft_UI_Xaml_Controls
 {
 	[TestClass]

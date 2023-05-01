@@ -10,9 +10,6 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Threading.Tasks;
 using Common;
-#if !HAS_UNO_WINUI
-using Microsoft.UI.Xaml.Controls;
-#endif
 using MUXControlsTestApp.Utilities;
 using MUXControlsTestApp.Utils;
 using Private.Infrastructure;
@@ -20,6 +17,10 @@ using Uno.UI.RuntimeTests;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common;
+
+#if !HAS_UNO_WINUI
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+#endif
 
 #if USING_TAEF
 using WEX.TestExecution;

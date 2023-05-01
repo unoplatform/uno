@@ -5,9 +5,6 @@ using System.Threading.Tasks;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.UI.Xaml.Controls;
-#if !HAS_UNO_WINUI
-using Microsoft.UI.Xaml.Controls;
-#endif
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
@@ -20,6 +17,10 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Uno.UI;
 using MUXControlsTestApp.Utilities;
+
+#if !HAS_UNO_WINUI
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+#endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 
