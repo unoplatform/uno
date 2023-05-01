@@ -510,6 +510,9 @@ namespace Windows.UI.Xaml.Controls
 				typeof(ContentPresenter),
 				new FrameworkPropertyMetadata(
 					(Thickness)Thickness.Empty,
+#if __WASM__
+					FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange,
+#endif
 					(s, e) => ((ContentPresenter)s)?.OnBorderThicknessChanged((Thickness)e.OldValue, (Thickness)e.NewValue)
 				)
 			);
@@ -536,15 +539,19 @@ namespace Windows.UI.Xaml.Controls
 				typeof(ContentPresenter),
 				new FrameworkPropertyMetadata(
 					null,
-#if __WASM__
-					FrameworkPropertyMetadataOptions.AffectsArrange,
-#endif
 					(s, e) => ((ContentPresenter)s)?.OnBorderBrushChanged((Brush)e.OldValue, (Brush)e.NewValue)
 				)
 			);
 
 		private void OnBorderBrushChanged(Brush oldValue, Brush newValue)
 		{
+#if __WASM__
+			if (((oldValue is null) ^ (newValue is null)) && BorderThickness != default)
+			{
+				// The transition from null to non-null (and vice-versa) affects child arrange on Wasm when non-zero BorderThickness is specified.
+				(Content as UIElement)?.InvalidateArrange();
+			}
+#endif
 			UpdateBorder();
 		}
 

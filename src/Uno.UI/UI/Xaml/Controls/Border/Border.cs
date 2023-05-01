@@ -247,11 +247,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private static Brush GetBorderBrushDefaultValue() => SolidColorBrushHelper.Transparent;
 
-		[GeneratedDependencyProperty(ChangedCallback = true, Options = FrameworkPropertyMetadataOptions.ValueInheritsDataContext
-#if __WASM__
-			| FrameworkPropertyMetadataOptions.AffectsArrange
-#endif
-			)]
+		[GeneratedDependencyProperty(ChangedCallback = true, Options = FrameworkPropertyMetadataOptions.ValueInheritsDataContext)]
 		public static DependencyProperty BorderBrushProperty { get; } = CreateBorderBrushProperty();
 
 		protected virtual void OnBorderBrushChanged(Brush oldValue, Brush newValue)
@@ -292,6 +288,14 @@ namespace Windows.UI.Xaml.Controls
 				_borderBrushColorChanged.Disposable = null;
 				_borderBrushOpacityChanged.Disposable = null;
 			}
+
+#if __WASM__
+			if (((oldValue is null) ^ (newValue is null)) && BorderThickness != default)
+			{
+				// The transition from null to non-null (and vice-versa) affects child arrange on Wasm when non-zero BorderThickness is specified.
+				Child?.InvalidateArrange();
+			}
+#endif
 
 			OnBorderBrushChangedPartial();
 		}

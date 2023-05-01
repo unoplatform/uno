@@ -16,11 +16,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private static Brush GetBorderBrushDefaultValue() => SolidColorBrushHelper.Transparent;
 
-		[GeneratedDependencyProperty(ChangedCallback = false, Options = FrameworkPropertyMetadataOptions.ValueInheritsDataContext
-#if __WASM__
-			| FrameworkPropertyMetadataOptions.AffectsArrange
-#endif
-			)]
+		[GeneratedDependencyProperty(ChangedCallback = false, Options = FrameworkPropertyMetadataOptions.ValueInheritsDataContext)]
 		public static DependencyProperty BorderBrushProperty { get; } = CreateBorderBrushProperty();
 
 		#endregion
@@ -35,11 +31,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private static Thickness GetBorderThicknessDefaultValue() => Thickness.Empty;
 
-		[GeneratedDependencyProperty(ChangedCallback = false
-#if __WASM__
-			, Options = FrameworkPropertyMetadataOptions.AffectsArrange
-#endif
-	)]
+		[GeneratedDependencyProperty(ChangedCallback = false)]
 		public static DependencyProperty BorderThicknessProperty { get; } = CreateBorderThicknessProperty();
 
 		#endregion

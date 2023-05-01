@@ -140,16 +140,6 @@ namespace Uno.UI
 					break;
 			}
 
-#if __WASM__
-			if (e.Parent is FrameworkElement parent)
-			{
-				// HTML moves the origin along with the border thickness.
-				// Adjust this element based on this its parent border thickness.
-				_ = parent.TryGetActualBorderThickness(out var adjust);
-				offset = offset.WithX(offset.X - adjust.Left).WithY(offset.Y - adjust.Top);
-			}
-#endif
-
 			return (offset, overflow);
 		}
 

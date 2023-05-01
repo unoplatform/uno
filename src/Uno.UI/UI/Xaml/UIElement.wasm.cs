@@ -212,14 +212,7 @@ namespace Windows.UI.Xaml
 		/// <param name="clipRect">The Clip rect to set, if any</param>
 		protected internal void ArrangeVisual(Rect rect, Rect? clipRect)
 		{
-			// FrameworkElement.ArrangeElement shifts the origin by border thickness to adhere to HTML's behavior,
-			// for LayoutSlotWithMarginsAndAlignments we need to shift it back in the right place for consistency
-			// with other platforms.
-			LayoutSlotWithMarginsAndAlignments =
-				VisualTreeHelper.GetParent(this) is FrameworkElement parent &&
-				parent.TryGetActualBorderThickness(out var borderThickness)
-					? new Rect(rect.X + borderThickness.Left, rect.Y + borderThickness.Top, rect.Width, rect.Height)
-					: rect;
+			LayoutSlotWithMarginsAndAlignments = rect;
 
 			if (FeatureConfiguration.UIElement.AssignDOMXamlProperties)
 			{
@@ -230,6 +223,14 @@ namespace Windows.UI.Xaml
 			{
 				// cf. OnVisibilityChanged
 				rect.X = rect.Y = -100000;
+			}
+			else if (VisualTreeHelper.GetParent(this) is FrameworkElement parent)
+			{
+				// HTML moves the origin along with the border thickness.
+				// Adjust this element based on this its parent border thickness.
+				_ = parent.TryGetActualBorderThickness(out var adjust);
+				rect.X = rect.X - adjust.Left;
+				rect.Y = rect.Y - adjust.Top;
 			}
 
 			Uno.UI.Xaml.WindowManagerInterop.ArrangeElement(HtmlId, rect, clipRect);

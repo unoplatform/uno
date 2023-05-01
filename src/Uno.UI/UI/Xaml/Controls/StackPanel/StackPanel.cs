@@ -50,11 +50,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private static Brush GetBorderBrushDefaultValue() => SolidColorBrushHelper.Transparent;
 
-		[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnBorderBrushPropertyChanged), Options = FrameworkPropertyMetadataOptions.ValueInheritsDataContext
-#if __WASM__
-			| FrameworkPropertyMetadataOptions.AffectsArrange
-#endif
-			)]
+		[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnBorderBrushPropertyChanged), Options = FrameworkPropertyMetadataOptions.ValueInheritsDataContext)]
 		public static DependencyProperty BorderBrushProperty { get; } = CreateBorderBrushProperty();
 
 		private void OnBorderBrushPropertyChanged(Brush oldValue, Brush newValue)
@@ -77,7 +73,7 @@ namespace Windows.UI.Xaml.Controls
 
 		[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnBorderThicknessPropertyChanged)
 #if __WASM__
-			, Options = FrameworkPropertyMetadataOptions.AffectsArrange
+			, Options = FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange
 #endif
 			)]
 		public static DependencyProperty BorderThicknessProperty { get; } = CreateBorderThicknessProperty();
