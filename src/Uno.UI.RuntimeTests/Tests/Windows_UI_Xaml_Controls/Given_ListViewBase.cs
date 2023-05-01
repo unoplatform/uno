@@ -2099,8 +2099,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if __WASM__
-		[Ignore("Fails on WASM - https://github.com/unoplatform/uno/issues/7323")]
+#if __WASM__ || __SKIA__
+		[Ignore("Fails on WASM/Skia - https://github.com/unoplatform/uno/issues/7323")]
 #endif
 		public async Task When_ItemTemplate_Selector_Correct_Reuse()
 		{
