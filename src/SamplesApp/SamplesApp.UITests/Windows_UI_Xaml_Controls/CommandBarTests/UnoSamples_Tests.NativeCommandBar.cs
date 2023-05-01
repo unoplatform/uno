@@ -54,6 +54,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.CommandBarTests
 
 		[Test]
 		[AutoRetry]
+#if __IOS__
+		[Ignore("Test is flaky on iOS: https://github.com/unoplatform/uno/issues/9080")]
+#endif
 		public async Task NativeCommandBar_Size()
 		{
 			Run("Uno.UI.Samples.Content.UITests.CommandBar.CommandBar_Dynamic");
