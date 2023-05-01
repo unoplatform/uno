@@ -68,17 +68,22 @@ namespace SamplesApp.UITests
 			if (AppInitializer.GetLocalPlatform() == Platform.Browser
 				&& !RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
 			{
-				if (Environment.OSVersion.Platform == PlatformID.Win32NT)
-				{
-					NativeLibrary.SetDllImportResolver(
-						typeof(SkiaSharpVersion).Assembly,
-						ImportResolver);
-				}
+#if DEBUG
+				Console.WriteLine("Initializing SkiaSharp loader");
+#endif
+
+				NativeLibrary.SetDllImportResolver(
+					typeof(SkiaSharpVersion).Assembly,
+					ImportResolver);
 			}
 		}
 
 		private static IntPtr ImportResolver(string libraryName, Assembly assembly, DllImportSearchPath? searchPath)
 		{
+#if DEBUG
+			Console.WriteLine($"Searching SkiaSharp loader ({libraryName}, {assembly})");
+#endif
+
 			IntPtr libHandle = IntPtr.Zero;
 
 			if (libraryName == "libSkiaSharp")
