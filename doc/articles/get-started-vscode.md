@@ -170,7 +170,7 @@ It is also possible to use [Remote - SSH](https://marketplace.visualstudio.com/i
 
 ***
 
-Once your app is running, place a breakpoing in the `OnClick` method, the breakpoint will be hit when clicking the button in the app.
+Once your app is running, place a breakpoint in the `OnClick` method, the breakpoint will be hit when clicking the button in the app.
 
 You can find [advanced Code debugging topic here](xref:uno.vscode.mobile.advanced.debugging).
 

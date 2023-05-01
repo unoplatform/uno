@@ -116,7 +116,9 @@
 	"winui",
 	"illinker",
 	"Onoh",
-	"Findlay"
+	"Findlay",
+	"Logpoints",
+	"addin"
   ],
   "patterns": [
 	{
