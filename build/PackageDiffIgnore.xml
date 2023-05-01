@@ -9154,7 +9154,7 @@
 			<Member fullName="Windows.UI.Xaml.VisiblityExtensions" reason="Api alignments" />
 			<Member fullName="Uno.Presentation.Resources.IResourceRegistry" reason="Api alignments" />
 			<Member fullName="Uno.Presentation.Resources.ResourceRegistry" reason="Api alignments" />
-			
+
 			<Member fullName="Uno.UI.Toolkit.Uno_UI_Toolkit_XamlTypeInfo.XamlMetaDataProvider" reason="Renamed project, reflection-based API for UAP/WinAPPSDK only" />
 
 			<Member fullName="Uno.UI.Web.WebErrorStatus" reason="Incorrect namespace" />
@@ -9577,6 +9577,8 @@
 			<Member fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.DependencyProperty.RegisterAttached(System.String name, System.Type propertyType, System.Type ownerType, Windows.UI.Xaml.PropertyMetadata typeMetadata)" reason="Changed parameter name to match WinUI" />
 
 			<Member fullName="System.Void Windows.UI.Xaml.Controls.IconElement..ctor()" reason="Not public in WinUI" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.ListViewBaseScrollContentPresenter.SetContentOffset(CoreGraphics.CGPoint contentOffset, System.Boolean animated)" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.ListViewBaseScrollContentPresenter.SetZoomScale(System.Runtime.InteropServices.NFloat scale, System.Boolean animated)" reason="Api alignments" />
 		</Methods>
 	</IgnoreSet>
 
