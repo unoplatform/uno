@@ -2,15 +2,16 @@ Set-PSDebug -Trace 1
 
 $external_docs =
 @(
-    @("https://github.com/unoplatform/uno.wasm.bootstrap", "uno.wasm.bootstrap", "4abadfc93ffeddc82420cc28af04cd7f6b2693ab"),
-    @("https://github.com/unoplatform/uno.themes", "uno.themes", "3d12f341f3ce9ecd7738e163a3a0904e9b94466f"),
-    @("https://github.com/unoplatform/uno.toolkit.ui", "uno.toolkit.ui", "434712b657f479d1329ff60af3b6f22bb6fdb34c"),
-    @("https://github.com/unoplatform/uno.check", "uno.check", "5dec33b3cb4c26f578c8d6bd7a84000bf265a14e"),
-    @("https://github.com/unoplatform/uno.xamlmerge.task", "uno.xamlmerge.task", "7e8ffef206e87dfea90c53805c45e93a7d8c0b46"),
-    @("https://github.com/unoplatform/figma-docs", "figma-docs", "f13d08f2bd7b62fc274b43a4ede4d75909d0f41f"),
-    @("https://github.com/unoplatform/uno.resizetizer", "uno.resizetizer", "f650e844cb66a7dafa084a7e778f14f4fd3ce8a2"),
-    @("https://github.com/unoplatform/uno.uitest", "uno.uitest", "555453c2985ef2745fe44503c5809a6168d063c2"),
-    @("https://github.com/unoplatform/uno.extensions", "uno.extensions", "767fe7eeb610eb2acadcd2e0f79bc55c43f59f70")
+    # use either commit or branch name (latest commit) in 3rd argument
+    @("https://github.com/unoplatform/uno.wasm.bootstrap", "uno.wasm.bootstrap", "main"),
+    @("https://github.com/unoplatform/uno.themes", "uno.themes", "master"),
+    @("https://github.com/unoplatform/uno.toolkit.ui", "uno.toolkit.ui", "main"),
+    @("https://github.com/unoplatform/uno.check", "uno.check", "main"),
+    @("https://github.com/unoplatform/uno.xamlmerge.task", "uno.xamlmerge.task", "main"),
+    @("https://github.com/unoplatform/figma-docs", "figma-docs", "main"),
+    @("https://github.com/unoplatform/uno.resizetizer", "uno.resizetizer", "main"),
+    @("https://github.com/unoplatform/uno.uitest", "uno.uitest", "master"),
+    @("https://github.com/unoplatform/uno.extensions", "uno.extensions", "main")
 )
 
 $ErrorActionPreference = 'Stop'
@@ -28,7 +29,11 @@ function Assert-ExitCodeIsZero()
     }
 }
 
-mkdir articles\external -ErrorAction Continue
+if (-Not (Test-Path articles\external))
+{
+    mkdir articles\external -ErrorAction Continue
+}
+
 pushd articles\external
 
 # ensure long paths are supported on Windows
@@ -40,15 +45,24 @@ for ($i = 0; $i -lt $external_docs.Length; $i++)
     $repoUrl=$external_docs[$i][0]
     $repoPath=$external_docs[$i][1]
     $repoBranch=$external_docs[$i][2]
-
-    echo "Cloning $repoPath ($repoUrl@$repoBranch)"
-
-    git clone $repoUrl $repoPath
-    Assert-ExitCodeIsZero
+        
+    if (-Not (Test-Path $repoPath))
+    {        
+        echo "Cloning $repoPath ($repoUrl@$repoBranch)..."
+        git clone $repoUrl $repoPath
+        Assert-ExitCodeIsZero
+    }
 
     pushd $repoPath
+
+    echo "Checking out $repoUrl@$repoBranch..."
     git checkout $repoBranch
     Assert-ExitCodeIsZero
+
+    echo "Pulling $repoUrl@$repoBranch..."
+    git pull
+    Assert-ExitCodeIsZero
+
     popd
 }
 
