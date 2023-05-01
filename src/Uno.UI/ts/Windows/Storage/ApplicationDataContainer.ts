@@ -30,6 +30,7 @@ namespace Windows.Storage {
 			} catch (e) {
 				ret.Value = "";
 				ret.HasValue = false;
+				console.debug(`ApplicationDataContainer.tryGetValue failed: ${e}`);
 			}
 
 			ret.marshal(pReturn);
@@ -48,6 +49,7 @@ namespace Windows.Storage {
 
 				localStorage.setItem(storageKey, params.Value);
 			} catch (e) {
+				console.debug(`ApplicationDataContainer.setValue failed: ${e}`);
 			}
 
 			return true;
@@ -66,6 +68,7 @@ namespace Windows.Storage {
 				ret.ContainsKey = localStorage.hasOwnProperty(storageKey);
 			} catch (e) {
 				ret.ContainsKey = false;
+				console.debug(`ApplicationDataContainer.containsKey failed: ${e}`);
 			}
 
 			ret.marshal(pReturn);
@@ -98,7 +101,7 @@ namespace Windows.Storage {
 					}
 				}
 			} catch (e) {
-
+				console.debug(`ApplicationDataContainer.getKeyByIndex failed: ${e}`);
 			}
 
 			ret.Value = returnKey;
@@ -127,7 +130,7 @@ namespace Windows.Storage {
 					}
 				}
 			} catch (e) {
-
+				console.debug(`ApplicationDataContainer.getCount failed: ${e}`);
 			}
 
 			ret.marshal(pReturn);
@@ -158,7 +161,7 @@ namespace Windows.Storage {
 					localStorage.removeItem(itemsToRemove[item]);
 				}
 			} catch (e) {
-
+				console.debug(`ApplicationDataContainer.clear failed: ${e}`);
 			}
 
 			return true;
@@ -177,6 +180,7 @@ namespace Windows.Storage {
 				ret.Removed = localStorage.hasOwnProperty(storageKey);
 			} catch (e) {
 				ret.Removed = false;
+				console.debug(`ApplicationDataContainer.remove failed: ${e}`);
 			}
 
 			if (ret.Removed) {
@@ -213,7 +217,7 @@ namespace Windows.Storage {
 					}
 				}
 			} catch (e) {
-
+				console.debug(`ApplicationDataContainer.getValueByIndex failed: ${e}`);
 			}
 
 			ret.Value = returnKey;
