@@ -190,28 +190,28 @@ namespace Windows.Globalization
 		#region Read / Write _time
 		public int Era
 		{
-			get => _calendar.GetEra(_time.UtcDateTime);
+			get => _calendar.GetEra(_time.DateTime);
 			[NotImplemented]
 			set => global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Globalization.Calendar", "int Calendar.Era");
 		}
 
 		public int Year
 		{
-			get => _calendar.GetYear(_time.UtcDateTime);
+			get => _calendar.GetYear(_time.DateTime);
 			set => AddYears(value - Year);
 		}
 
 		public int Month
 		{
-			get => _calendar.GetMonth(_time.UtcDateTime);
+			get => _calendar.GetMonth(_time.DateTime);
 			set => AddMonths(value - Month);
 		}
 
-		public global::Windows.Globalization.DayOfWeek DayOfWeek => (global::Windows.Globalization.DayOfWeek)_calendar.GetDayOfWeek(_time.UtcDateTime);
+		public global::Windows.Globalization.DayOfWeek DayOfWeek => (global::Windows.Globalization.DayOfWeek)_calendar.GetDayOfWeek(_time.DateTime);
 
 		public int Day
 		{
-			get => _calendar.GetDayOfMonth(_time.UtcDateTime);
+			get => _calendar.GetDayOfMonth(_time.DateTime);
 			set => AddDays(value - Day);
 		}
 
@@ -219,7 +219,7 @@ namespace Windows.Globalization
 		{
 			get
 			{
-				var hour = _calendar.GetHour(_time.UtcDateTime);
+				var hour = _calendar.GetHour(_time.DateTime);
 
 				if (hour < 12 || _clock == ClockIdentifiers.TwentyFourHour)
 				{
@@ -236,13 +236,13 @@ namespace Windows.Globalization
 
 		public int Minute
 		{
-			get => _calendar.GetMinute(_time.UtcDateTime);
+			get => _calendar.GetMinute(_time.DateTime);
 			set => AddMinutes(value - Minute);
 		}
 
 		public int Second
 		{
-			get => _calendar.GetSecond(_time.UtcDateTime);
+			get => _calendar.GetSecond(_time.DateTime);
 			set => AddSeconds(value - Second);
 		}
 
@@ -281,7 +281,7 @@ namespace Windows.Globalization
 
 		public int Nanosecond
 		{
-			get => (int)(_calendar.GetMilliseconds(_time.UtcDateTime) * 1000);
+			get => (int)(_calendar.GetMilliseconds(_time.DateTime) * 1000);
 			set => AddNanoseconds(value - Nanosecond);
 		}
 
