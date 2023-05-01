@@ -39,12 +39,15 @@ public class Given_CalendarView
 		{
 			SelectedDates = { day1 },
 			SelectionMode = CalendarViewSelectionMode.Single,
+			MinDate = DateTimeOffset.Now.AddDays(-10),
+			MaxDate = DateTimeOffset.Now.AddDays(10)
 		};
 		TestServices.WindowHelper.WindowContent = calendar;
 		await TestServices.WindowHelper.WaitForIdle();
 		Assert.AreEqual(1, calendar.SelectedDates.Count);
 		Assert.AreEqual(day1, calendar.SelectedDates[0]);
-		dayItem1 = MUXTestPage.FindVisualChildrenByType<CalendarViewDayItem>(calendar).Find(it => it.Date == calendar.SelectedDates[0].Date);
+		dayItem1 = MUXTestPage.FindVisualChildrenByType<CalendarViewDayItem>(calendar).Find(it => it.Date.Date == calendar.SelectedDates[0].Date);
+		Assert.IsNotNull(dayItem1);
 		brush1 = (Brush)GetItemBorderBrushInfo.Invoke(dayItem1, new object[] { false });
 		Assert.AreEqual(calendar.SelectedBorderBrush, brush1);
 
@@ -60,7 +63,8 @@ public class Given_CalendarView
 		Assert.AreEqual(1, calendar.SelectedDates.Count);
 		Assert.AreEqual(day2, calendar.SelectedDates[0]);
 		await TestServices.WindowHelper.WaitForIdle();
-		dayItem2 = MUXTestPage.FindVisualChildrenByType<CalendarViewDayItem>(calendar).Find(it => it.Date == calendar.SelectedDates[0].Date);
+		dayItem2 = MUXTestPage.FindVisualChildrenByType<CalendarViewDayItem>(calendar).Find(it => it.Date.Date == calendar.SelectedDates[0].Date);
+		Assert.IsNotNull(dayItem2);
 		brush2 = (Brush)GetItemBorderBrushInfo.Invoke(dayItem2, new object[] { false });
 		Assert.AreEqual(calendar.SelectedBorderBrush, brush2);
 
@@ -81,14 +85,18 @@ public class Given_CalendarView
 		{
 			SelectionMode = CalendarViewSelectionMode.Multiple,
 			SelectedDates = { day1, day2 },
+			MinDate = DateTimeOffset.Now.AddDays(-10),
+			MaxDate = DateTimeOffset.Now.AddDays(10)
 		};
 		Assert.AreEqual(2, calendar.SelectedDates.Count);
 		Assert.AreEqual(day1, calendar.SelectedDates[0]);
 		Assert.AreEqual(day2, calendar.SelectedDates[1]);
 		TestServices.WindowHelper.WindowContent = calendar;
 		await TestServices.WindowHelper.WaitForIdle();
-		dayItem1 = MUXTestPage.FindVisualChildrenByType<CalendarViewDayItem>(calendar).Find(it => it.Date == calendar.SelectedDates[0].Date);
-		dayItem2 = MUXTestPage.FindVisualChildrenByType<CalendarViewDayItem>(calendar).Find(it => it.Date == calendar.SelectedDates[1].Date);
+		dayItem1 = MUXTestPage.FindVisualChildrenByType<CalendarViewDayItem>(calendar).Find(it => it.Date.Date == calendar.SelectedDates[0].Date);
+		Assert.IsNotNull(dayItem1);
+		dayItem2 = MUXTestPage.FindVisualChildrenByType<CalendarViewDayItem>(calendar).Find(it => it.Date.Date == calendar.SelectedDates[1].Date);
+		Assert.IsNotNull(dayItem2);
 		await TestServices.WindowHelper.WaitForIdle();
 		brush1 = (Brush)GetItemBorderBrushInfo.Invoke(dayItem1, new object[] { false });
 		Assert.AreEqual(calendar.SelectedBorderBrush, brush1);
@@ -118,7 +126,7 @@ public class Given_CalendarView
 		OnTappedInfo.Invoke(dayItem1, new object[] { new TappedRoutedEventArgs() });
 		await TestServices.WindowHelper.WaitForIdle();
 		Assert.AreEqual(1, calendar.SelectedDates.Count);
-		Assert.AreEqual(dayItem1.Date, calendar.SelectedDates[0].Date);
+		Assert.AreEqual(dayItem1.Date, calendar.SelectedDates[0]);
 		brush1 = (Brush)GetItemBorderBrushInfo.Invoke(dayItem1, new object[] { false });
 		Assert.AreEqual(calendar.SelectedBorderBrush, brush1);
 		brush2 = (Brush)GetItemBorderBrushInfo.Invoke(dayItem2, new object[] { false });
@@ -128,8 +136,8 @@ public class Given_CalendarView
 		OnTappedInfo.Invoke(dayItem2, new object[] { new TappedRoutedEventArgs() });
 		await TestServices.WindowHelper.WaitForIdle();
 		Assert.AreEqual(2, calendar.SelectedDates.Count);
-		Assert.AreEqual(dayItem1.Date, calendar.SelectedDates[0].Date);
-		Assert.AreEqual(dayItem2.Date, calendar.SelectedDates[1].Date);
+		Assert.AreEqual(dayItem1.Date, calendar.SelectedDates[0]);
+		Assert.AreEqual(dayItem2.Date, calendar.SelectedDates[1]);
 		brush1 = (Brush)GetItemBorderBrushInfo.Invoke(dayItem1, new object[] { false });
 		Assert.AreEqual(calendar.SelectedBorderBrush, brush1);
 		brush2 = (Brush)GetItemBorderBrushInfo.Invoke(dayItem2, new object[] { false });
