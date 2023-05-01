@@ -398,7 +398,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				var resourceDetailsCollection = BuildResourceDetails(_generatorContext.CancellationToken);
 				TryGenerateUnoResourcesKeyAttribute(resourceDetailsCollection);
 
-				var filesFull = new XamlFileParser(_excludeXamlNamespaces, _includeXamlNamespaces, _metadataHelper)
+				var excludeXamlNamespaces = _excludeXamlNamespaces.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+				var includeXamlNamespaces = _includeXamlNamespaces.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+
+				var filesFull = new XamlFileParser(_excludeXamlNamespaces, _includeXamlNamespaces, excludeXamlNamespaces, includeXamlNamespaces, _metadataHelper)
 					.ParseFiles(_xamlSourceFiles, _projectDirectory, _generatorContext.CancellationToken);
 
 				var xamlTypeToXamlTypeBaseMap = new ConcurrentDictionary<INamedTypeSymbol, XamlRedirection.XamlType>();
@@ -470,7 +473,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						generatorContext: _generatorContext,
 						xamlResourcesTrimming: _xamlResourcesTrimming,
 						generationRunFileInfo: generationRunInfo.GetRunFileInfo(file.UniqueID),
-						xamlTypeToXamlTypeBaseMap: xamlTypeToXamlTypeBaseMap
+						xamlTypeToXamlTypeBaseMap: xamlTypeToXamlTypeBaseMap,
+						includeXamlNamespaces: includeXamlNamespaces
 					).GenerateFile()
 				)).ToList();
 

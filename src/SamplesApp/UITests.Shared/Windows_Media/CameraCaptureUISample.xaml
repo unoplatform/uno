@@ -5,8 +5,8 @@
     xmlns:local="using:UITests.Windows_Media"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	xmlns:android="http://platform.uno/android"
-	xmlns:ios="http://platform.uno/android"
+    xmlns:android="http://platform.uno/android"
+    xmlns:ios="http://platform.uno/ios"
     mc:Ignorable="d android ios"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 

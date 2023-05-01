@@ -9457,6 +9457,10 @@
 			<Member fullName="Windows.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.ExpanderTemplateSettings.get_NegativeContentHeightProperty()" reason="Should not be public" />
 			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.ExpanderTemplateSettings..ctor()" reason="Should not be public" />
 
+			<!-- BEGIN XamlFileParser performance updates -->
+			<Member fullName="System.Void Uno.Xaml.XamlXmlReader..ctor(System.Xml.XmlReader xmlReader, Uno.Xaml.XamlSchemaContext schemaContext, Uno.Xaml.XamlXmlReaderSettings settings)" reason="Adding parameter. These should not be used by user code" />
+			<!-- END XamlFileParser performance updates -->
+
 			<Member fullName="System.Void Uno.Foundation.Interop.JSObject.Dispatch(System.String handlePtr, System.String method, System.String parameters)" reason="First parameter changed from string to IntPtr for performance" />
 		</Methods>
 	</IgnoreSet>

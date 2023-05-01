@@ -143,6 +143,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private readonly IDictionary<INamedTypeSymbol, XamlType> _xamlTypeToXamlTypeBaseMap;
 
+		private readonly string[] _includeXamlNamespaces;
+
 		/// <summary>
 		/// Information about types used in .Apply() scenarios
 		/// </summary>
@@ -223,7 +225,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			GeneratorExecutionContext generatorContext,
 			bool xamlResourcesTrimming,
 			GenerationRunFileInfo generationRunFileInfo,
-			IDictionary<INamedTypeSymbol, XamlType> xamlTypeToXamlTypeBaseMap)
+			IDictionary<INamedTypeSymbol, XamlType> xamlTypeToXamlTypeBaseMap,
+			string[] includeXamlNamespaces)
 		{
 			Generation = generation;
 			_fileDefinition = file;
@@ -251,6 +254,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_xamlResourcesTrimming = xamlResourcesTrimming;
 			_generationRunFileInfo = generationRunFileInfo;
 			_xamlTypeToXamlTypeBaseMap = xamlTypeToXamlTypeBaseMap;
+			_includeXamlNamespaces = includeXamlNamespaces;
 
 			InitCaches();
 
@@ -1391,7 +1395,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				var propertyName = GetInitializerNameForResourceKey(index);
 				if (_topLevelQualifiedKeys.ContainsKey((theme, key)))
 				{
-					throw new InvalidOperationException($"Dictionary Item {resource?.Type?.Name} has duplicate key `{key}` {(theme != null ? $" in theme {theme}" : "")}.");
+					throw new InvalidOperationException($"Dictionary Item {resource.Type?.Name} has duplicate key `{key}` {(theme != null ? $" in theme {theme}" : "")}.");
 				}
 				var isStaticResourceAlias = resource.Type.Name == "StaticResource";
 				if (!isStaticResourceAlias)
@@ -2408,7 +2412,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							{
 								var firstChild = implicitContentChild.Objects.First();
 
-								var elementType = topLevelControlSymbol ?? throw new InvalidOperationException("The type {0} could not be found".InvariantCultureFormat(topLevelControl.Type)); ;
+								var elementType = topLevelControlSymbol ?? throw new InvalidOperationException("The type {0} could not be found".InvariantCultureFormat(topLevelControl.Type));
 								var contentProperty = FindContentProperty(elementType);
 
 								writer.AppendLineInvariantIndented("{0}{1} = ",
