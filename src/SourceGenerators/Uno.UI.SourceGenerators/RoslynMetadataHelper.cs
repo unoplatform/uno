@@ -74,7 +74,7 @@ namespace Uno.Roslyn
 			return null;
 		}
 
-		public bool IsAttachedProperty(INamedTypeSymbol declaringType, string name)
+		public bool IsAttachedProperty(INamedTypeSymbol? declaringType, string name)
 			=> _isAttachedProperty(declaringType, name);
 
 		private static bool SourceIsAttachedProperty(INamedTypeSymbol? type, string name)
