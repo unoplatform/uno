@@ -492,7 +492,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 			// change focus and assert
 			textBox2.FastTap();
 			_app.WaitForText(textChangedTextBlock, "Testing text property");
-			_app.WaitForText(lostFocusTextBlock, "Testing text property");	
+			_app.WaitForText(lostFocusTextBlock, "Testing text property");
 		}
 
 		[Test]
