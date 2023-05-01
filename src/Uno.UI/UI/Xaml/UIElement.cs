@@ -452,6 +452,15 @@ namespace Windows.UI.Xaml
 
 		partial void OnVisibilityChangedPartial(Visibility oldValue, Visibility newValue);
 
+		/// <summary>
+		/// Set correct default foreground for the current theme.
+		/// </summary>
+		/// <param name="foregroundProperty">The appropriate property for the calling instance.</param>
+		private protected void SetDefaultForeground(DependencyProperty foregroundProperty)
+		{
+			this.SetValue(foregroundProperty, DefaultBrushes.TextForegroundBrush, DependencyPropertyValuePrecedences.DefaultValue);
+		}
+
 		[NotImplemented]
 		protected virtual AutomationPeer OnCreateAutomationPeer() => new AutomationPeer();
 

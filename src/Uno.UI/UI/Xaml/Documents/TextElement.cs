@@ -35,6 +35,7 @@ using View = Windows.UI.Xaml.UIElement;
 using Color = Windows.UI.Color;
 #else
 using Color = System.Drawing.Color;
+using Uno.UI.Xaml.Media;
 #endif
 
 #if __WASM__
@@ -45,11 +46,12 @@ using BaseClass = Windows.UI.Xaml.DependencyObject;
 
 namespace Windows.UI.Xaml.Documents
 {
-	public abstract partial class TextElement : BaseClass
+	public abstract partial class TextElement : BaseClass, IThemeChangeAware
 	{
 #if !__WASM__
 		public TextElement()
 		{
+			SetDefaultForeground();
 			InitializeBinder();
 		}
 #endif
@@ -333,5 +335,14 @@ namespace Windows.UI.Xaml.Documents
 
 			return parent as FrameworkElement;
 		}
+
+#if !__WASM__
+		private void SetDefaultForeground()
+		{
+			this.SetValue(ForegroundProperty, DefaultBrushes.TextForegroundBrush, DependencyPropertyValuePrecedences.DefaultValue);
+		}
+
+		public void OnThemeChanged() => SetDefaultForeground();
+#endif
 	}
 }

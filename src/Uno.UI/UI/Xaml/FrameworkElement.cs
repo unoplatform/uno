@@ -959,15 +959,6 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		/// <summary>
-		/// Set correct default foreground for the current theme.
-		/// </summary>
-		/// <param name="foregroundProperty">The appropriate property for the calling instance.</param>
-		private protected void SetDefaultForeground(DependencyProperty foregroundProperty)
-		{
-			(this).SetValue(foregroundProperty, DefaultBrushes.TextForegroundBrush, DependencyPropertyValuePrecedences.DefaultValue);
-		}
-
 		#region AutomationPeer
 #if !__IOS__ && !__ANDROID__ && !__MACOS__ // This code is generated in FrameworkElementMixins
 		private AutomationPeer _automationPeer;
