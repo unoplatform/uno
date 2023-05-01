@@ -4519,7 +4519,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					var typeName = fullMemberName.Substring(0, lastDotIndex);
 					return _metadataHelper.FindTypeByFullName(typeName) as INamedTypeSymbol
-						?? FindType(new XamlType(_defaultXmlNamespace.Namespace, typeName, new List<XamlType>(), new XamlSchemaContext()), true);
+						?? FindType(new XamlType(_defaultXmlNamespace.Namespace, typeName, new List<XamlType>(), new XamlSchemaContext()));
 				}
 			}
 
