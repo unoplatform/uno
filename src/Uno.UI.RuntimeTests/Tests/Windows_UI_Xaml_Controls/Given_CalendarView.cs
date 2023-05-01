@@ -20,7 +20,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 public class Given_CalendarView
 {
 #if __ANDROID__ || __IOS__ || __MACOS__
-[Ignore("Test fails on these platforms")]
+	[Ignore("Test fails on these platforms")]
 #endif
 	[TestMethod]
 	public async Task SelectedDatesBorder()
