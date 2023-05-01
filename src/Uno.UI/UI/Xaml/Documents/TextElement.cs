@@ -341,8 +341,8 @@ namespace Windows.UI.Xaml.Documents
 		{
 			this.SetValue(ForegroundProperty, DefaultBrushes.TextForegroundBrush, DependencyPropertyValuePrecedences.DefaultValue);
 		}
+#endif
 
 		public void OnThemeChanged() => SetDefaultForeground();
-#endif
 	}
 }
