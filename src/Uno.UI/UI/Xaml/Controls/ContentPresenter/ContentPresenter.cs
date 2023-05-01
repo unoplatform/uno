@@ -510,9 +510,7 @@ namespace Windows.UI.Xaml.Controls
 				typeof(ContentPresenter),
 				new FrameworkPropertyMetadata(
 					(Thickness)Thickness.Empty,
-#if __WASM__
 					FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange,
-#endif
 					(s, e) => ((ContentPresenter)s)?.OnBorderThicknessChanged((Thickness)e.OldValue, (Thickness)e.NewValue)
 				)
 			);
