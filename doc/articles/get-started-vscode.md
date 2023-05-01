@@ -4,7 +4,7 @@ uid: Uno.GetStarted.vscode
 
 # Get Started on VS Code
 
-This guide will walk you through the set-up process for building WebAssembly and Gtk+ apps with Uno under Windows, Linux, or macOS.
+This guide will walk you through the set-up process for building apps with Uno under Windows, Linux or macOS.
 
 See these sections for information about using Uno Platform with:
 - [Codespaces](features/working-with-codespaces.md)
@@ -25,17 +25,24 @@ See these sections for information about using Uno Platform with:
 
 ### Create the project
 
-In the terminal, type the following to create a new project:
+Let's start by updating the Uno project templates. In a terminal, type the following command:
 
 ```bash
-dotnet new unoapp -o MyApp -mobile=false --skia-wpf=false --skia-linux-fb=false --vscode
+dotnet new install Uno.Templates
 ```
 
+Then inside the same terminal, type the following to create a new project:
+
+```bash
+dotnet new unoapp -o MyApp --skia-wpf=false --skia-linux-fb=false --vscode
+```
+
+> [!TIP]
 > `MyApp` is the name you want to give to your project.
 
-This will create a solution that only contains the WebAssembly and Skia+GTK platforms support.
+This will create a solution that only contains the WebAssembly, Skia+GTK and Mobile platforms support.
 
-## Prepare the WebAssembly application
+## Prepare the application
 
 1. Open the project using Visual Studio Code. In the terminal type
 
@@ -46,7 +53,7 @@ This will create a solution that only contains the WebAssembly and Skia+GTK plat
     > For this command to work you need to previously have configured Visual Studio Code to be launched from the terminal.
 
 1. Visual Studio Code will ask to restore the NuGet packages.
-1. Once the project has been loaded, in the status bar at the bottom left of VS Code, `MyApp.sln` is selected by default. Select `MyApp.Wasm.csproj` or `MyApp.Skia.Gtk.csproj` instead.
+1. Once the project has been loaded, in the status bar at the bottom left of VS Code, `MyApp.sln` is selected by default. Select `MyApp.Wasm.csproj`, `MyApp.Skia.Gtk.csproj` or `MyApp.Mobile.csproj` instead.
 
 ## Modify the template
 
@@ -76,28 +83,96 @@ This will create a solution that only contains the WebAssembly and Skia+GTK plat
 ## Run and Debug application
 
 ### WebAssembly
-1. In the debugger section of the Code activity bar, select `Debug (Chrome, WebAssembly)`
+
+1. In the debugger section of the Code activity bar
+    * Select `Debug (Chrome, WebAssembly)`
+    * If needed, the project from `MyApp.sln` to `MyApp.Wasm.csproj`
 1. Press `F5` to start the debugging session
 1. Place a breakpoint inside the `OnClick` method
 1. Click the button in the app, and the breakpoint will hit
 
 ### Skia GTK
-1. In the debugger section of the Code activity bar, select `Skia.GTK (Debug)`
+
+1. In the debugger section of the Code activity bar
+    1. Select `Skia.GTK (Debug)`
+    1. If needed, the project from `MyApp.sln` to `MyApp.Skia.Gtk.csproj`
 1. Press `F5` to start the debugging session
 1. Place a breakpoint inside the `OnClick` method
 1. Click the button in the app, and the breakpoint will hit
 
 Note that C# Hot Reload is not available when running with the debugger. In order to use C# Hot Reload, run the app using the following:
 - On Windows, type the following:
-    ```
+
+    ```bash
     $env:DOTNET_MODIFIABLE_ASSEMBLIES="debug"
     dotnet run
     ```
 - On Linux or macOS:
-    ```
+
+    ```bash
     export DOTNET_MODIFIABLE_ASSEMBLIES=debug
     dotnet run
     ```
+
+### Mobile Targets (iOS, Android, Mac Catalyst)
+
+The Uno Platform extension provides support for debugging:
+- The Android target on Windows
+- The iOS, Android and Mac Catalyst targets on macOS
+
+It is also possible to use [Remote - SSH](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-ssh) addin to connect to a macOS machine from a Windows or Linux machine to debug iOS and Mac Catalyst apps remotely.
+
+# [**Android**](#tab/android-debug)
+
+#### Debugging for Android
+- In the status bar, select the `MyApp.Mobile` project (by default `MyApp.sln` is selected)
+
+  ![mobile project name](Assets/quick-start/vs-code-debug-project.png)
+- To the right of `MyApp.Mobile`, click on the target framework to select `net7.0-android | Debug`
+
+  ![android target framework](Assets/quick-start/vs-code-debug-tf-android.png)
+- Then, to the right of the target framework, select the device to debug with. You will need to connect an android device, or create an Android simulator.
+
+  ![android device name](Assets/quick-start/vs-code-debug-device-android.png)
+- Finally, in the debugger side menu, select the `Uno Plaform Mobile` profile
+- Either press `F5` or press the green arrow to start the debugging session.
+
+# [**iOS**](#tab/android-debug)
+
+> [!NOTE]
+> Debugging for iOS is only possible when running locally (or remotely through SSH) on a macOS machine.
+
+- In the status bar, select the `MyApp.Mobile` project (by default `MyApp.sln` is selected)
+
+  ![mobile project name](Assets/quick-start/vs-code-debug-project.png)
+- To the right of `MyApp.Mobile`, click on the target framework to select `net7.0-ios | Debug`
+
+  ![ios target framework](Assets/quick-start/vs-code-debug-tf-ios.png)
+- Then, to the right of the target framework, select the device to debug with. You will need to connect an iOS device, or use an existing iOS simulator.
+
+  ![ios device](Assets/quick-start/vs-code-debug-device-ios.png)
+- Finally, in the debugger side menu, select the `Uno Plaform Mobile` profile
+- Either press `F5` or press the green arrow
+
+# [**Mac Catalyst**](#tab/android-debug)
+
+> [!NOTE]
+> Debugging for Mac Catalyst is only possible when running locally (or remotely through SSH) on a macOS machine.
+
+- In the status bar, select the `MyApp.Mobile` project (by default `MyApp.sln` is selected)
+
+  ![mobile project name](Assets/quick-start/vs-code-debug-project.png)
+- To the right of `MyApp.Mobile`, click on the target framework to select `net7.0-maccatalyst | Debug`
+
+  ![catalyst target framework](Assets/quick-start/vs-code-debug-tf-catalyst.png)
+- Finally, in the debugger side menu, select the `Uno Plaform Mobile` profile
+- Either press `F5` or press the green arrow to start the debugging session.
+
+***
+
+Once your app is running, place a breakpoint in the `OnClick` method, the breakpoint will be hit when clicking the button in the app.
+
+You can find [advanced Code debugging topic here](xref:uno.vscode.mobile.advanced.debugging).
 
 ## Using code snippets
 
@@ -137,7 +212,7 @@ An existing application needs additional changes to be debugged properly.
 3. Replace all instances of `UnoQuickStart` with your application's name in `launch.json`.
 4. Inside this folder, create a file named `tasks.json` and copy the [contents of this file](https://github.com/unoplatform/uno/blob/master/src/SolutionTemplate/Uno.ProjectTemplates.Dotnet/content/unoapp/.vscode/tasks.json).
 
-### Known limitations for Code support
+### Known limitations for VS Code support
 - C# Debugging is not supported when running in a remote Linux Container, Code Spaces or GitPod.
 - C# Hot Reload for WebAssembly only supports modifying method bodies. Any other modification is rejected by the compiler.
 - C# Hot Reload for Skia supports modifying method bodies, adding properties, adding methods, adding classes. A more accurate list is provided here in Microsoft's documentation.
@@ -148,6 +223,7 @@ If you're not sure whether your environment is correctly configured for Uno Plat
 
 The Uno Platform extension provides multiple output windows to troubleshoot its activities:
 - **Uno Platform**, which indicates general messages about the extension
+- **Uno Platform - Debugger**, which provides activity messages about the debugger feature
 - **Uno Platform - Hot Reload**, which provides activity messages about the Hot Reload feature
 - **Uno Platform - XAML**, which provides activity messages about the XAML Code Completion feature
 
