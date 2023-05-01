@@ -11,6 +11,12 @@
 
 	<PropertyGroup>
 		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
+		<Authors>nventive</Authors>
+		<PackageProjectUrl>https://github.com/unoplatform/uno</PackageProjectUrl>
+		<PackageIcon>uno.png</PackageIcon>
+		<RepositoryUrl>https://github.com/unoplatform/uno</RepositoryUrl>
+		<Description>This package provides the platform support for WebAssembly in Uno Platform projects.</Description>
+		<Copyright>Copyright (C) 2015-2020 nventive inc. - all rights reserved</Copyright>
 
 		<NoWarn>$(NoWarn);NU1701</NoWarn>
 		<DefineConstants>$(DefineConstants);IS_UNO</DefineConstants>
@@ -29,7 +35,11 @@
 		<PackageReference Include="Uno.SourceGenerationTasks" />
 		<PackageReference Include="System.Memory" Version="4.5.2" />
 	</ItemGroup>
-
+	
+	<ItemGroup>
+		<None Include="..\Common\uno.png" Pack="true" PackagePath="\" Visible="false"/>
+	</ItemGroup>
+	
 	<ItemGroup>
 		<ProjectReference Include="..\Uno.UI\Uno.UI.Wasm.csproj" />
 		<ProjectReference Include="..\Uno.UWP\Uno.Wasm.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
