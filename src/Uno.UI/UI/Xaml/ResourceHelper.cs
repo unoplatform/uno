@@ -1,7 +1,9 @@
-﻿using Uno.UI;
+﻿#if __ANDROID__ || __IOS__ || __MACOS__
+using Uno.UI.Services;
 using Windows.ApplicationModel.Resources;
 
 namespace Windows.UI.Xaml;
+
 public static class ResourceHelper
 {
 	static ResourceHelper()
@@ -10,12 +12,9 @@ public static class ResourceHelper
 	}
 
 	/// <summary>
-	/// Provides a global resource service for localization in Android and iOS
+	/// Provides a global resource service for localization in Android, iOS, and macOS
 	/// </summary>
-	public static IResourcesService ResourcesService
-	{
-		get; set;
-	}
+	public static ResourcesService ResourcesService { get; set; }
 
 	/// <summary>
 	/// Use to get resource for XamlFileGenerator in Android and iOS
@@ -27,3 +26,5 @@ public static class ResourceHelper
 		return ResourcesService.Get(name);
 	}
 }
+
+#endif

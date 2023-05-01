@@ -23,14 +23,14 @@ namespace Windows.UI.Xaml.Controls
 		, RecyclerView.SmoothScroller.IScrollVectorProvider
 #endif
 	{
-		/// Notes: For the sake of minimizing conditional branches, almost all the layouting logic is carried out relative to the scroll 
+		/// Notes: For the sake of minimizing conditional branches, almost all the layouting logic is carried out relative to the scroll
 		/// direction. To avoid confusion, a number of terms are used in place of terms like 'width' and 'height':
-		/// 
+		///
 		/// Extent: Size along the dimension parallel to scrolling. The equivalent of 'Height' if scrolling is vertical, or 'Width' otherwise.
 		/// Breadth: Size along the dimension orthogonal to scrolling. The equivalent of 'Width' if scrolling is vertical, or 'Height' otherwise.
 		/// Start: The edge of the element nearest to the top of the content panel, ie 'Top' or 'Left' depending whether scrolling is vertical or horizontal.
 		/// End: The edge of the element nearest to the bottom of the content panel, ie 'Bottom' or 'Right' depending whether scrolling is vertical or horizontal.
-		/// 
+		///
 		/// Leading: When scrolling, the edge that is coming into view. ie, if the scrolling forward in a vertical orientation, the bottom edge.
 		/// Trailing: When scrolling, the edge that is disappearing from view.
 
@@ -593,8 +593,8 @@ namespace Windows.UI.Xaml.Controls
 
 		public override bool OnRequestChildFocus(RecyclerView parent, RecyclerView.State state, View child, View focused)
 		{
-			// Returning true here prevents the list scrolling a focused control into view. We disable this behaviour to prevent a tricky 
-			// bug where, when there is a ScrapLayout while scrolling the list, a SelectorItem that has focus is detached and reattached 
+			// Returning true here prevents the list scrolling a focused control into view. We disable this behaviour to prevent a tricky
+			// bug where, when there is a ScrapLayout while scrolling the list, a SelectorItem that has focus is detached and reattached
 			// and the list tries to bring it into view, causing funky 'pinning' behaviour.
 			return true;
 		}
@@ -628,7 +628,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		/// <summary>
-		/// Find view by its 'adapter position' (current position in the collection, versus current laid-out position). These are different 
+		/// Find view by its 'adapter position' (current position in the collection, versus current laid-out position). These are different
 		/// when a collection change is in process.
 		/// </summary>
 		/// <param name="position">The adapter position</param>
@@ -911,7 +911,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		/// <summary>
-		/// Wipes stored layout information. 
+		/// Wipes stored layout information.
 		/// </summary>
 		protected virtual void ResetLayoutInfo()
 		{
@@ -1134,8 +1134,8 @@ namespace Windows.UI.Xaml.Controls
 
 			while (Math.Abs(unconsumedOffset) > Math.Abs(consumptionIncrement))
 			{
-				//Consume the scroll offset in bite-sized chunks to allow us to recycle views at the same rate as we create them. A big optimization, for 
-				//large scroll offsets (ie when calling ScrollIntoView), would be to 'guess' the number of items we will have scrolled and avoid measuring and layouting 
+				//Consume the scroll offset in bite-sized chunks to allow us to recycle views at the same rate as we create them. A big optimization, for
+				//large scroll offsets (ie when calling ScrollIntoView), would be to 'guess' the number of items we will have scrolled and avoid measuring and layouting
 				//the intervening views. This would require modifications to the group layouting logic, which currently assumes we measure the group contents
 				//entirely when scrolling forward.
 				unconsumedOffset -= consumptionIncrement;
@@ -1247,7 +1247,7 @@ namespace Windows.UI.Xaml.Controls
 			var willRunAnimations = state.WillRunSimpleAnimations();
 			if (isMeasure && willRunAnimations)
 			{
-				// When an item is added/removed via an INotifyCollectionChanged operation, the RecyclerView expects two layouts: one 'before' the 
+				// When an item is added/removed via an INotifyCollectionChanged operation, the RecyclerView expects two layouts: one 'before' the
 				// operation, and one 'after.' Here we provide the 'before' by very simply not modifying the layout at all.
 				return;
 			}
@@ -1294,7 +1294,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 			else if (!needsScrapOnMeasure && !willRunAnimations && !_needsUpdateAfterCollectionChange)
 			{
-				// Don't modify buffer on the same cycle as scrapping all views, because buffer is liable to 'suck up' scrapped views 
+				// Don't modify buffer on the same cycle as scrapping all views, because buffer is liable to 'suck up' scrapped views
 				// leading to weird behaviour
 				// And don't populate buffer after a collection change until visible layout has been rebuilt with up-to-date positions
 				AssertValidState();
@@ -1356,8 +1356,8 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		/// <summary>
-		/// Fills in visible views, using the strategy of creating new views in the desired fill direction as long as there is (a) available 
-		/// fill space and (b) available items. 
+		/// Fills in visible views, using the strategy of creating new views in the desired fill direction as long as there is (a) available
+		/// fill space and (b) available items.
 		/// Also initializes header, footer, and internal state if need be.
 		/// </summary>
 		private void FillLayout(GeneratorDirection direction, int scrollOffset, int availableExtent, int availableBreadth, RecyclerView.Recycler recycler, RecyclerView.State state)
@@ -1469,7 +1469,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		/// <summary>
-		/// Checks if there is available space and, if so, materializes a new <see cref="Line"/> (as well as a new <see cref="Group"/> if 
+		/// Checks if there is available space and, if so, materializes a new <see cref="Line"/> (as well as a new <see cref="Group"/> if
 		/// the new line is in a different group).
 		/// </summary>
 		/// <returns>True if a new line was created, false otherwise.</returns>
@@ -1555,7 +1555,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <param name="nextVisibleItem">The first item in the line to draw (or the last, if we're filling backwards)</param>
 		/// <param name="isNewGroup">Whether this is the first line materialized in a new group.</param>
 		/// <returns>An object containing information about the created line.</returns>
-		protected abstract Line CreateLine(GeneratorDirection fillDirection,
+		private protected abstract Line CreateLine(GeneratorDirection fillDirection,
 			int extentOffset,
 			int breadthOffset,
 			int availableBreadth,
@@ -1566,7 +1566,7 @@ namespace Windows.UI.Xaml.Controls
 		);
 
 		/// <summary>
-		/// Add a new non-empty group to the internal state of the layout. It will be added at the end if filling forward or the start if 
+		/// Add a new non-empty group to the internal state of the layout. It will be added at the end if filling forward or the start if
 		/// filling backward. Any intervening empty groups will also be added.
 		/// </summary>
 		private void CreateGroupsAtLeadingEdge(
@@ -1614,7 +1614,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		/// <summary>
-		/// Add a new group to the internal state of the layout. It will be added at the end if filling forward or the start if 
+		/// Add a new group to the internal state of the layout. It will be added at the end if filling forward or the start if
 		/// filling backward. If filling backward, the cached layout information of the group will be restored.
 		/// </summary>
 		private void CreateGroupAtLeadingEdge(int groupIndex, GeneratorDirection fillDirection, int availableBreadth, RecyclerView.Recycler recycler, RecyclerView.State state, int trailingEdge)
@@ -1800,7 +1800,7 @@ namespace Windows.UI.Xaml.Controls
 				(!adjustedFirstItem.HasValue || adjustedFirstItem == Uno.UI.IndexPath.Zero)
 			)
 			{
-				// If the header is visible, ensure to reapply its size in case it changes. 
+				// If the header is visible, ensure to reapply its size in case it changes.
 				_isInitialHeaderExtentOffsetApplied = false;
 				_previousHeaderExtent = GetChildExtentWithMargins(GetHeaderViewIndex());
 			}
@@ -1810,7 +1810,7 @@ namespace Windows.UI.Xaml.Controls
 
 			if (shouldScrap)
 			{
-				// Scrapped views will be preferentially reused by RecyclerView, without rebinding if the item hasn't changed, which is 
+				// Scrapped views will be preferentially reused by RecyclerView, without rebinding if the item hasn't changed, which is
 				// much cheaper than fully recycling an item view.
 				DetachAndScrapAttachedViews(recycler);
 			}
@@ -1853,13 +1853,13 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// Get 'seed' index for recreating the visual state of the list after <see cref="ScrapLayout(RecyclerView.Recycler, int)"/>;
 		/// </summary>
-		protected virtual Uno.UI.IndexPath? GetDynamicSeedIndex(Uno.UI.IndexPath? firstVisibleItem, int availableBreadth)
+		private protected virtual Uno.UI.IndexPath? GetDynamicSeedIndex(Uno.UI.IndexPath? firstVisibleItem, int availableBreadth)
 		{
 			var shouldDecrementSeedForPendingReorder = _shouldDecrementSeedForPendingReorder;
 			_shouldDecrementSeedForPendingReorder = false;
 			if (ContentOffset == 0)
 			{
-				// Ensure that the entire dataset is drawn if the list hasn't been scrolled. This is otherwise sometimes not done correctly 
+				// Ensure that the entire dataset is drawn if the list hasn't been scrolled. This is otherwise sometimes not done correctly
 				// if a previously-empty group becomes occupied.
 				return null;
 			}
@@ -1918,7 +1918,7 @@ namespace Windows.UI.Xaml.Controls
 					}
 					else if (op.GroupIndex == section)
 					{
-						// Group containing the first visible item has been deleted. Try to display the start of the next group. (If there 
+						// Group containing the first visible item has been deleted. Try to display the start of the next group. (If there
 						// is no next group, this will be caught later.)
 						row = 0;
 					}
@@ -2111,7 +2111,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		/// <summary>
-		/// Returns true if there is space between the edge of the leading item within the group and the edge of the viewport in the 
+		/// Returns true if there is space between the edge of the leading item within the group and the edge of the viewport in the
 		/// desired fill direction, false otherwise.
 		/// </summary>
 		private bool IsThereAGapWithinGroup(Group group, GeneratorDirection fillDirection, int offset, int availableExtent)
@@ -2121,7 +2121,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		/// <summary>
-		/// Get the edge of the leading item of the group in the desired fill direction. Note that this may differ from the Start/End of 
+		/// Get the edge of the leading item of the group in the desired fill direction. Note that this may differ from the Start/End of
 		/// the group because if the group header is <see cref="RelativeHeaderPlacement.Adjacent"/>, it may take up more extent than the items themselves.
 		/// </summary>
 		private int GetLeadingEdgeWithinGroup(Group group, GeneratorDirection fillDirection)
@@ -2140,7 +2140,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		/// <summary>
-		/// True if there is space between the leading edge of the group and the edge of the viewport in the 
+		/// True if there is space between the leading edge of the group and the edge of the viewport in the
 		/// desired fill direction, false otherwise.
 		/// </summary>
 		private bool IsThereAGapOutsideGroup(Group group, GeneratorDirection fillDirection, int offset, int availableExtent)
@@ -2269,7 +2269,7 @@ namespace Windows.UI.Xaml.Controls
 			};
 		}
 
-		protected Uno.UI.IndexPath? GetAndUpdateReorderingIndex()
+		private protected Uno.UI.IndexPath? GetAndUpdateReorderingIndex()
 		{
 			if (_pendingReorder is { } reorder)
 			{
@@ -2601,7 +2601,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// Flatten item index to pass it to the native recycler.
 		/// </summary>
-		protected int GetFlatItemIndex(Uno.UI.IndexPath indexPath)
+		private protected int GetFlatItemIndex(Uno.UI.IndexPath indexPath)
 		{
 			return XamlParent.GetDisplayIndexFromIndexPath(indexPath);
 		}
