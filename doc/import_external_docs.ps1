@@ -67,3 +67,5 @@ for ($i = 0; $i -lt $external_docs.Length; $i++)
 }
 
 popd
+
+Set-PSDebug -Off
