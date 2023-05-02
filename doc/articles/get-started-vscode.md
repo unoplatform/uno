@@ -42,6 +42,9 @@ dotnet new unoapp -o MyApp -preset=blank -platforms android ios maccatalyst wasm
 
 This will create a blank template app that only contains the WebAssembly, Skia+GTK and Mobile platforms support.
 
+> [!IMPORTANT]
+> Mobile targets cannot be built under Linux. In such operating system, you'll need to remove `android ios maccatalyst` from the `platforms` list.
+
 ## Prepare the application
 
 1. Open the project using Visual Studio Code. In the terminal type
