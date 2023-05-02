@@ -54,18 +54,34 @@ namespace Uno.UI.SourceGenerators.Tests.Verifiers
 			await test.RunAsync();
 		}
 
-		public class Test : CSharpSourceGeneratorVerifier<XamlCodeGenerator>.Test
+		public class Test : TestBase
 		{
-			private readonly string _testFilePath;
-			private readonly string _testMethodName;
-			private const string TestOutputFolderName = "TestOutput";
-
 			public Test(XamlFile xamlFile, [CallerFilePath] string testFilePath = "", [CallerMemberName] string testMethodName = "")
-				: this(new[] { xamlFile }, testFilePath, testMethodName)
+				: base(new[] { xamlFile }, testFilePath, ShortName(testMethodName)) // We use only upper-cased char to reduce length of filename push to git)
 			{
 			}
 
 			public Test(XamlFile[] xamlFiles, [CallerFilePath] string testFilePath = "", [CallerMemberName] string testMethodName = "")
+				: base(xamlFiles, testFilePath, ShortName(testMethodName))
+			{
+			}
+
+			private static string ShortName(string name)
+				=> new string(name.Where(char.IsUpper).ToArray()); // We use only upper-cased char to reduce length of filename push to git
+		}
+
+		public abstract class TestBase : CSharpSourceGeneratorVerifier<XamlCodeGenerator>.Test
+		{
+			private readonly string _testFilePath;
+			private readonly string _testMethodName;
+			private const string TestOutputFolderName = "Out";
+
+			protected TestBase(XamlFile xamlFile, [CallerFilePath] string testFilePath = "", [CallerMemberName] string testMethodName = "")
+				: this(new[] { xamlFile }, testFilePath, testMethodName)
+			{
+			}
+
+			protected TestBase(XamlFile[] xamlFiles, string testFilePath, string testMethodName)
 			{
 				_testFilePath = testFilePath;
 				_testMethodName = testMethodName;
@@ -138,7 +154,7 @@ build_metadata.AdditionalFiles.SourceItemGroup = Page
 				return (compilation, generatorDiagnostics);
 			}
 
-			public Test AddGeneratedSources()
+			public TestBase AddGeneratedSources()
 			{
 				var expectedPrefix = $"Uno.UI.SourceGenerators.netcore.Tests.XamlCodeGeneratorTests.{TestOutputFolderName}.{_testMethodName}.";
 				foreach (var resourceName in typeof(Test).Assembly.GetManifestResourceNames())
