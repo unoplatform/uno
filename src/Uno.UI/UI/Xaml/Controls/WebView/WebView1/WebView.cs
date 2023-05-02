@@ -57,10 +57,7 @@ public partial class WebView : Control, IWebView
 	public void Stop() => CoreWebView2.Stop();
 
 	public IAsyncOperation<string?> InvokeScriptAsync(string scriptName, IEnumerable<string> arguments) =>
-		AsyncOperation.FromTask(ct => InvokeScriptAsync(ct, scriptName, arguments?.ToArray()));
-
-	public async Task<string?> InvokeScriptAsync(CancellationToken ct, string script, string[]? arguments) =>
-		await CoreWebView2.InvokeScriptAsync(script, arguments, ct);
+		AsyncOperation.FromTask(ct => CoreWebView2.InvokeScriptAsync(scriptName, arguments?.ToArray(), ct));
 
 	public void NavigateWithHttpRequestMessage(global::Windows.Web.Http.HttpRequestMessage requestMessage) =>
 		CoreWebView2.NavigateWithHttpRequestMessage(requestMessage);
