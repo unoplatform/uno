@@ -132,7 +132,7 @@ jobs:
       UITEST_TEST_TIMEOUT: '3600s'
       UITEST_AUTOMATED_GROUP: 4
       UITEST_RUNTIME_TEST_GROUP: ${{ RuntimeTestGroup.key }}
-      UITEST_RUNTIME_TEST_GROUP_COUNT: $(UITEST_RUNTIME_TEST_GROUP_COUNT)
+      UITEST_RUNTIME_TEST_GROUP_COUNT: ${{ parameters.UITEST_RUNTIME_TEST_GROUP_COUNT }}
       UITEST_ALLOW_RERUN: 'false'
       xCodeRoot: ${{ parameters.xCodeRootTest }}
       XamarinSDKVersion: ${{ parameters.XamarinSDKVersionTest }}
