@@ -34,13 +34,16 @@ dotnet new install Uno.Templates
 Then inside the same terminal, type the following to create a new project:
 
 ```bash
-dotnet new unoapp -o MyApp --skia-wpf=false --skia-linux-fb=false --vscode
+dotnet new unoapp -o MyApp -preset=blank -platforms android ios maccatalyst wasm gtk --vscode
 ```
 
 > [!TIP]
 > `MyApp` is the name you want to give to your project.
 
-This will create a solution that only contains the WebAssembly, Skia+GTK and Mobile platforms support.
+This will create a blank template app that only contains the WebAssembly, Skia+GTK and Mobile platforms support.
+
+> [!IMPORTANT]
+> Mobile targets cannot be built under Linux. In such operating system, you'll need to remove `android ios maccatalyst` from the `platforms` list.
 
 ## Prepare the application
 
@@ -122,7 +125,7 @@ The Uno Platform extension provides support for debugging:
 
 It is also possible to use [Remote - SSH](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-ssh) addin to connect to a macOS machine from a Windows or Linux machine to debug iOS and Mac Catalyst apps remotely.
 
-# [**Android**](#tab/android-debug)
+# [**Android**](#tab/androiddebug)
 
 #### Debugging for Android
 - In the status bar, select the `MyApp.Mobile` project (by default `MyApp.sln` is selected)
@@ -137,7 +140,7 @@ It is also possible to use [Remote - SSH](https://marketplace.visualstudio.com/i
 - Finally, in the debugger side menu, select the `Uno Plaform Mobile` profile
 - Either press `F5` or press the green arrow to start the debugging session.
 
-# [**iOS**](#tab/android-debug)
+# [**iOS**](#tab/iosdebug)
 
 > [!NOTE]
 > Debugging for iOS is only possible when running locally (or remotely through SSH) on a macOS machine.
@@ -154,7 +157,7 @@ It is also possible to use [Remote - SSH](https://marketplace.visualstudio.com/i
 - Finally, in the debugger side menu, select the `Uno Plaform Mobile` profile
 - Either press `F5` or press the green arrow
 
-# [**Mac Catalyst**](#tab/android-debug)
+# [**Mac Catalyst**](#tab/catalystdebug)
 
 > [!NOTE]
 > Debugging for Mac Catalyst is only possible when running locally (or remotely through SSH) on a macOS machine.
