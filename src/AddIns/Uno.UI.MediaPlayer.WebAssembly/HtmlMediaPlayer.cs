@@ -250,8 +250,8 @@ internal partial class HtmlMediaPlayer : Border
 		}
 		remove
 		{
-			_htmlVideo.RegisterHtmlCustomEventHandler("error", value);
-			_htmlAudio.RegisterHtmlCustomEventHandler("error", value);
+			_htmlVideo.UnregisterHtmlCustomEventHandler("error", value);
+			_htmlAudio.UnregisterHtmlCustomEventHandler("error", value);
 		}
 	}
 
