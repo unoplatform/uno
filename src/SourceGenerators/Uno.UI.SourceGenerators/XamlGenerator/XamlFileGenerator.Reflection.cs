@@ -626,6 +626,16 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					return namedType;
 				}
+
+				var ns = _fileDefinition
+					.Namespaces
+					// Ensure that prefixless declaration (generally xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation") is considered first, otherwise PreferredXamlNamespace matching can go awry
+					.OrderByDescending(n => n.Prefix.IsNullOrEmpty())
+					.FirstOrDefault(n => n.Namespace == type.PreferredXamlNamespace);
+				if (ns?.Prefix is { Length: > 0 } nsPrefix)
+				{
+					return _findType!($"{nsPrefix}:{type.Name}");
+				}
 			}
 
 			return null;
