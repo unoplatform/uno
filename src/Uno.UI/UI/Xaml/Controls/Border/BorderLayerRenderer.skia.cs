@@ -23,7 +23,7 @@ partial class BorderLayerRenderer
 	partial void UpdateLayer()
 	{
 		// Bounds is captured to avoid calling twice calls below.
-		var area = new Rect(0, 0, _owner.ActualWidth, _owner.ActualHeight);
+		var area = new Size(_owner.ActualWidth, _owner.ActualHeight);
 
 		var newState = new BorderLayerState(area, _borderInfoProvider);
 
@@ -52,7 +52,8 @@ partial class BorderLayerRenderer
 
 	private static IDisposable InnerCreateLayer(UIElement owner, BorderLayerState state)
 	{
-		var area = owner.LayoutRound(state.Area);
+		var size = owner.LayoutRound(state.ElementSize);
+		var area = new Rect(default, size);
 
 		// In case the element has no size, skip everything!
 		if (area.Width == 0 && area.Height == 0)

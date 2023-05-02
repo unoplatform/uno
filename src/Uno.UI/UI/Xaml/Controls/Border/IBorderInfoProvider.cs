@@ -40,6 +40,6 @@ internal partial interface IBorderInfoProvider
 	/// <summary>
 	/// Gets a value indicating whether measure should be updated.
 	/// </summary>
-	bool ShouldUpdateMeasures { get; }
+	bool ShouldUpdateMeasures { get; set; }
 #endif
 }
