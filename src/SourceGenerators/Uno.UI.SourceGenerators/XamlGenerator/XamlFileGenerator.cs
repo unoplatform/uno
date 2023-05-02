@@ -6265,7 +6265,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						string closureName;
 						using (var innerWriter = CreateApplyBlock(writer, Generation.ElementStubSymbol.Value, out closureName))
 						{
-							var elementStubType = new XamlType("", "ElementStub", new List<XamlType>(), new XamlSchemaContext());
+							var elementStubType = new XamlType(XamlConstants.BaseXamlNamespace, "ElementStub", new List<XamlType>(), new XamlSchemaContext());
 
 							if (hasDataContextMarkup)
 							{
