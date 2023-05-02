@@ -51,7 +51,7 @@ namespace Windows.UI.Xaml.Documents
 #if !__WASM__
 		public TextElement()
 		{
-			SetDefaultForeground();
+			SetDefaultForeground(ForegroundProperty);
 			InitializeBinder();
 		}
 #endif
