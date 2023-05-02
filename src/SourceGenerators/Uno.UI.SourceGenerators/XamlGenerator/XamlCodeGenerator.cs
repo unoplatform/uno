@@ -10,15 +10,8 @@ using Uno.Roslyn;
 using Uno.UI.SourceGenerators.Helpers;
 using Uno.UI.SourceGenerators.Telemetry;
 
-#if NETFRAMEWORK
-using Uno.SourceGeneration;
-#endif
-
 namespace Uno.UI.SourceGenerators.XamlGenerator
 {
-#if NETFRAMEWORK
-	[GenerateAfter("Uno.UI.SourceGenerators.DependencyObject.DependencyPropertyGenerator")]
-#endif
 	[Generator]
 	public partial class XamlCodeGenerator : ISourceGenerator
 	{
@@ -56,9 +49,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						context.AddSource(tree.Key, tree.Value);
 					}
 
-#if !NETFRAMEWORK
 					DumpXamlSourceGeneratorState(context, generatedTrees);
-#endif
 				}
 			}
 		}

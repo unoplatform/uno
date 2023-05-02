@@ -2,12 +2,7 @@
 
 using System;
 using Microsoft.CodeAnalysis;
-
-#if NETFRAMEWORK
-using Uno.SourceGeneration;
-#else
 using Uno.Roslyn;
-#endif
 
 namespace Uno.UI.SourceGenerators.Helpers
 {

@@ -18,10 +18,6 @@ using Uno.UI.SourceGenerators.XamlGenerator.Utils;
 using Uno.Roslyn;
 using Windows.Foundation.Metadata;
 
-#if NETFRAMEWORK
-using GeneratorExecutionContext = Uno.SourceGeneration.GeneratorExecutionContext;
-#endif
-
 namespace Uno.UI.SourceGenerators.XamlGenerator
 {
 	internal partial class XamlFileParser
@@ -105,7 +101,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				ScavengeCache();
 
 				// Initialize the reader using an empty context, because when the tasl
-				// is run under the BeforeCompile in VS IDE, the loaded assemblies are used 
+				// is run under the BeforeCompile in VS IDE, the loaded assemblies are used
 				// to interpret the meaning of objects, which is not correct in Uno.UI context.
 				var context = new XamlSchemaContext(Enumerable.Empty<Assembly>());
 
