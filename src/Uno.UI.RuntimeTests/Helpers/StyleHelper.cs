@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Uno.Disposables;
+using Uno.UI.Xaml.Media;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
@@ -82,12 +83,12 @@ namespace Uno.UI.RuntimeTests.Helpers
 			resources.MergedDictionaries.Insert(0, xcr);
 
 			// Force default brushes to be reloaded
-			UIElement.ResetDefaultThemeBrushes();
+			DefaultBrushes.ResetDefaultThemeBrushes();
 
 			return new DisposableAction(() =>
 			{
 				resources.MergedDictionaries.Remove(xcr);
-				UIElement.ResetDefaultThemeBrushes();
+				DefaultBrushes.ResetDefaultThemeBrushes();
 			});
 #endif
 		}
