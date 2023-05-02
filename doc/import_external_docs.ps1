@@ -18,6 +18,8 @@ $external_docs = @{
     "uno.extensions"     = "539d6b0f2e61fbc2ae5d6e35a77de41cafacf5ce"      
 }
 
+$uno_git_url = "https://github.com/unoplatform/"
+
 if($branches -ne $null)
 {
     foreach ($repo in $branches.keys)
@@ -62,7 +64,7 @@ git config advice.detachedHead false
 # Heads - Release
 foreach ($repoPath in $external_docs.keys)
 {
-    $repoUrl = "https://github.com/unoplatform/$repoPath"
+    $repoUrl = "$uno_git_url$repoPath"
     $repoBranch = $external_docs[$repoPath]
         
     if (-Not (Test-Path $repoPath))
