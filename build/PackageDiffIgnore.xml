@@ -9575,6 +9575,8 @@
 			<Member fullName="System.Object Windows.UI.Xaml.ResourceHelper.FindResource(System.String resourceName)" reason="Api alignments" />
 			<Member fullName="Windows.UI.Xaml.Data.IValueConverter Windows.UI.Xaml.ResourceHelper.FindConverter(System.String converterName)" reason="Api alignments" />
 			<Member fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.DependencyProperty.RegisterAttached(System.String name, System.Type propertyType, System.Type ownerType, Windows.UI.Xaml.PropertyMetadata typeMetadata)" reason="Changed parameter name to match WinUI" />
+
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.IconElement..ctor()" reason="Not public in WinUI" />
 		</Methods>
 	</IgnoreSet>
 
