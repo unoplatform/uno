@@ -34,13 +34,13 @@ dotnet new install Uno.Templates
 Then inside the same terminal, type the following to create a new project:
 
 ```bash
-dotnet new unoapp -o MyApp --skia-wpf=false --skia-linux-fb=false --vscode
+dotnet new unoapp -o MyApp -preset=blank -platforms android ios maccatalyst wasm gtk --vscode
 ```
 
 > [!TIP]
 > `MyApp` is the name you want to give to your project.
 
-This will create a solution that only contains the WebAssembly, Skia+GTK and Mobile platforms support.
+This will create a blank template app that only contains the WebAssembly, Skia+GTK and Mobile platforms support.
 
 ## Prepare the application
 
