@@ -17,6 +17,7 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Text;
 using Uno.UI;
 using Uno.UI.Xaml;
+using Uno.UI.Xaml.Media;
 
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
@@ -35,7 +36,6 @@ using View = Windows.UI.Xaml.UIElement;
 using Color = Windows.UI.Color;
 #else
 using Color = System.Drawing.Color;
-using Uno.UI.Xaml.Media;
 #endif
 
 #if __WASM__
