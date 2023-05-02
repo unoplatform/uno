@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Uno.Disposables;
-using Uno.UI.Xaml.Media;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+
+#if HAS_UNO
+using Uno.UI.Xaml.Media;
+#endif
 
 namespace Uno.UI.RuntimeTests.Helpers
 {

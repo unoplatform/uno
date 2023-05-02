@@ -336,13 +336,13 @@ namespace Windows.UI.Xaml.Documents
 			return parent as FrameworkElement;
 		}
 
+		public void OnThemeChanged() => SetDefaultForeground(ForegroundProperty);
+
 #if !__WASM__
-		private void SetDefaultForeground()
+		private void SetDefaultForeground(DependencyProperty foregroundProperty)
 		{
-			this.SetValue(ForegroundProperty, DefaultBrushes.TextForegroundBrush, DependencyPropertyValuePrecedences.DefaultValue);
+			this.SetValue(foregroundProperty, DefaultBrushes.TextForegroundBrush, DependencyPropertyValuePrecedences.DefaultValue);
 		}
 #endif
-
-		public void OnThemeChanged() => SetDefaultForeground();
 	}
 }
