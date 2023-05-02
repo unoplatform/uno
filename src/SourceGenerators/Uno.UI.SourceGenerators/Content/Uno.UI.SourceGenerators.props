@@ -302,16 +302,6 @@
 		</CustomUiAutomationMemberMapping>
 	</ItemGroup>
 
-	<Target Name="_IncludeXamlFiles" BeforeTargets="_UnoSourceGenerator" DependsOnTargets="_FillSourceGeneratorItemGroups">
-		<!--
-		This group is created as part of a target to ensure the
-		capture of target-defined Pages
-		-->
-		<ItemGroup>
-			<SourceGeneratorInput Include="@(Page);@(ApplicationDefinition);@(UnoPage);@(UnoApplicationDefinition)" />
-		</ItemGroup>
-	</Target>
-
 	<Target Name="_FillSourceGeneratorItemGroups">
 
 		<ItemGroup>

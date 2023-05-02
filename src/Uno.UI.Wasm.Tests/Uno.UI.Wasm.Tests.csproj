@@ -9,7 +9,6 @@
 		<!-- Required for TSBinding tests -->
 		<UnoRewriteEmbeddedResources>true</UnoRewriteEmbeddedResources>
 
-		<UnoUIUseRoslynSourceGenerators>true</UnoUIUseRoslynSourceGenerators>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 
 		<EnableDefaultTypeScriptItems>false</EnableDefaultTypeScriptItems>
