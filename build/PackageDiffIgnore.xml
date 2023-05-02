@@ -9156,6 +9156,8 @@
 			<Member fullName="Uno.Presentation.Resources.ResourceRegistry" reason="Api alignments" />
 			
 			<Member fullName="Uno.UI.Toolkit.Uno_UI_Toolkit_XamlTypeInfo.XamlMetaDataProvider" reason="Renamed project, reflection-based API for UAP/WinAPPSDK only" />
+
+			<Member fullName="Uno.UI.Web.WebErrorStatus" reason="Incorrect namespace" />
 		</Types>
 		<Events>
 			<Member fullName="Windows.Foundation.TypedEventHandler`2&lt;Microsoft.UI.Xaml.Controls.IInputValidationControl,Microsoft.UI.Xaml.Controls.HasValidationErrorsChangedEventArgs&gt; Microsoft.UI.Xaml.Controls.AutoSuggestBox::HasValidationErrorsChanged" reason="Not present in WinAppSDK 1.2" />
@@ -9274,6 +9276,11 @@
 			<Member fullName="Windows.UI.Xaml.Controls.PersonPictureTemplateSettings Windows.UI.Xaml.Controls.PersonPicture::TemplateSettings()" reason="Moved to MUXC" />
 			<Member fullName="System.Boolean Uno.Devices.Sensors.INativeDualScreenProvider::IsDualScreen()" reason="Api alignments" />
 			<Member fullName="Uno.Presentation.Resources.IResourceRegistry Windows.UI.Xaml.ResourceHelper::Registry()" reason="Api alignments" />
+
+			<!-- BEGIN WebView -->
+			<Member fullName="Uno.UI.Web.WebErrorStatus Windows.UI.Xaml.Controls.WebViewNavigationCompletedEventArgs::WebErrorStatus()" reason="Incorrect type" />
+			<Member fullName="Uno.UI.Web.WebErrorStatus Windows.UI.Xaml.Controls.WebViewNavigationFailedEventArgs::WebErrorStatus()" reason="Incorrect type" />
+			<!-- END WebView -->
 		</Properties>
 		<Methods>
 			<!-- BEGIN MediaPlayer updates -->
@@ -9302,6 +9309,8 @@
 			<Member fullName="System.Threading.Tasks.Task Windows.UI.Xaml.Controls.WebView.LaunchMailto(System.Threading.CancellationToken ct, System.String subject, System.String body, System.String[] to, System.String[] cc, System.String[] bcc)" reason="Should not be public" />
 			<Member fullName="System.Void Microsoft.Web.WebView2.Core.CoreWebView2NavigationStartingEventArgs..ctor()" reason="Should not be public" />
 			<Member fullName="System.Threading.Tasks.Task`1&lt;System.String&gt; Windows.UI.Xaml.Controls.WebView.InvokeScriptAsync(System.Threading.CancellationToken ct, System.String script, System.String[] arguments)" reason="Not present in WinUI" />
+			<Member fullName="Uno.UI.Web.WebErrorStatus Windows.UI.Xaml.Controls.WebViewNavigationCompletedEventArgs.get_WebErrorStatus()" reason="Incorrect return type" />
+			<Member fullName="Uno.UI.Web.WebErrorStatus Windows.UI.Xaml.Controls.WebViewNavigationFailedEventArgs.get_WebErrorStatus()" reason="Incorrect return type" />
 			<!-- END WebView -->
 
 			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.Expander.OnContentClipSizeChanged(System.Object sender, Windows.UI.Xaml.SizeChangedEventArgs args)" reason="Should not be public" />
