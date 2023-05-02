@@ -32,6 +32,8 @@ using View = Windows.UI.Xaml.UIElement;
 #endif
 using _Debug = System.Diagnostics.Debug;
 
+using RadialGradientBrush = Microsoft.UI.Xaml.Media.RadialGradientBrush;
+
 namespace Windows.UI.Xaml.Controls
 {
 	[ContentProperty(Name = nameof(Child))]
@@ -271,6 +273,17 @@ namespace Windows.UI.Xaml.Controls
 				);
 				_borderBrushOpacityChanged.Disposable = gb.RegisterDisposablePropertyChangedCallback(
 					GradientBrush.OpacityProperty,
+					(s, _) => OnBorderBrushChangedPartial()
+				);
+			}
+			else if (newValue is RadialGradientBrush rgb)
+			{
+				_borderBrushColorChanged.Disposable = rgb.RegisterDisposablePropertyChangedCallback(
+					RadialGradientBrush.FallbackColorProperty,
+					(s, colorArg) => OnBorderBrushChangedPartial()
+				);
+				_borderBrushOpacityChanged.Disposable = rgb.RegisterDisposablePropertyChangedCallback(
+					RadialGradientBrush.OpacityProperty,
 					(s, _) => OnBorderBrushChangedPartial()
 				);
 			}

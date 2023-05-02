@@ -3,6 +3,8 @@ using System.Numerics;
 using Uno.Disposables;
 using Windows.UI.Composition;
 using Windows.UI;
+using Microsoft.UI.Xaml.Media;
+using System.Collections.Generic;
 
 namespace Windows.UI.Xaml.Media
 {
@@ -64,6 +66,22 @@ namespace Windows.UI.Xaml.Media
 					GradientBrush.RelativeTransformProperty,
 				});
 			}
+			else if (brush is RadialGradientBrush radialGradient)
+			{
+				UpdateColorWhenAnyChanged(radialGradient, new[]
+				{
+					RadialGradientBrush.CenterProperty,
+					RadialGradientBrush.FallbackColorProperty,
+					RadialGradientBrush.GradientOriginProperty,
+					RadialGradientBrush.InterpolationSpaceProperty,
+					RadialGradientBrush.MappingModeProperty,
+					RadialGradientBrush.OpacityProperty,
+					RadialGradientBrush.RadiusXProperty,
+					RadialGradientBrush.RadiusYProperty,
+					RadialGradientBrush.SpreadMethodProperty,
+					GradientBrush.RelativeTransformProperty,
+				});
+			}
 			else if (brush is ImageBrush imageBrush)
 			{
 				imageBrush
@@ -103,9 +121,9 @@ namespace Windows.UI.Xaml.Media
 			{
 				return AsssignAndObserveImageBrush(imageBrush, compositor, brushSetter);
 			}
-			else if (brush is AcrylicBrush acrylicBrush)
+			else if (brush is RadialGradientBrush radialGradientBrush)
 			{
-				return AssignAndObserveAcrylicBrush(acrylicBrush, compositor, brushSetter);
+				return AssignAndObserveRadialGradientBrush(radialGradientBrush, compositor, brushSetter);
 			}
 			else if (brush is XamlCompositionBrushBase unimplementedCompositionBrush)
 			{
@@ -222,22 +240,38 @@ namespace Windows.UI.Xaml.Media
 			return disposables;
 		}
 
-		private static IDisposable AssignAndObserveAcrylicBrush(AcrylicBrush acrylicBrush, Compositor compositor, BrushSetterHandler brushSetter)
+		private static IDisposable AssignAndObserveRadialGradientBrush(RadialGradientBrush brush, Compositor compositor, BrushSetterHandler brushSetter)
 		{
 			var disposables = new CompositeDisposable();
 
-			var compositionBrush = compositor.CreateColorBrush(acrylicBrush.FallbackColorWithOpacity);
+			var compositionBrush = CreateCompositionRadialGradientBrush(brush, compositor);
 
-			acrylicBrush.RegisterDisposablePropertyChangedCallback(
-				AcrylicBrush.FallbackColorProperty,
-				(s, colorArg) => compositionBrush.Color = acrylicBrush.FallbackColorWithOpacity
-			)
+			brush.RegisterDisposablePropertyChangedCallback(
+					RadialGradientBrush.MappingModeProperty,
+					(s, e) => compositionBrush.MappingMode = (CompositionMappingMode)e.NewValue
+				)
 			.DisposeWith(disposables);
 
-			acrylicBrush.RegisterDisposablePropertyChangedCallback(
-				AcrylicBrush.OpacityProperty,
-				(s, colorArg) => compositionBrush.Color = acrylicBrush.FallbackColorWithOpacity
-			)
+			brush.RegisterDisposablePropertyChangedCallback(
+					RadialGradientBrush.OpacityProperty,
+					(s, e) => ConvertGradientColorStops(
+						compositionBrush.Compositor,
+						compositionBrush,
+						((RadialGradientBrush)s).GradientStops,
+						(double)e.NewValue)
+				)
+			.DisposeWith(disposables);
+
+			brush.RegisterDisposablePropertyChangedCallback(
+					RadialGradientBrush.SpreadMethodProperty,
+					(s, e) => compositionBrush.ExtendMode = ConvertGradientExtendMode((GradientSpreadMethod)e.NewValue)
+				)
+			.DisposeWith(disposables);
+
+			brush.RegisterDisposablePropertyChangedCallback(
+					RadialGradientBrush.RelativeTransformProperty,
+					(s, e) => compositionBrush.RelativeTransformMatrix = ((Transform)e.NewValue)?.MatrixCore ?? Matrix3x2.Identity
+				)
 			.DisposeWith(disposables);
 
 			brushSetter(compositionBrush);
@@ -256,13 +290,13 @@ namespace Windows.UI.Xaml.Media
 			var compositionBrush = compositor.CreateColorBrush(brush.FallbackColorWithOpacity);
 
 			brush.RegisterDisposablePropertyChangedCallback(
-				AcrylicBrush.FallbackColorProperty,
+				XamlCompositionBrushBase.FallbackColorProperty,
 				(s, colorArg) => compositionBrush.Color = brush.FallbackColorWithOpacity
 			)
 			.DisposeWith(disposables);
 
 			brush.RegisterDisposablePropertyChangedCallback(
-				AcrylicBrush.OpacityProperty,
+				XamlCompositionBrushBase.OpacityProperty,
 				(s, colorArg) => compositionBrush.Color = brush.FallbackColorWithOpacity
 			)
 			.DisposeWith(disposables);
@@ -307,7 +341,20 @@ namespace Windows.UI.Xaml.Media
 			return compositionBrush;
 		}
 
-		private static void ConvertGradientColorStops(Compositor compositor, CompositionGradientBrush compositionBrush, GradientStopCollection gradientStops, double opacity)
+		private static CompositionRadialGradientBrush CreateCompositionRadialGradientBrush(RadialGradientBrush radialGradientBrush, Compositor compositor)
+		{
+			var compositionBrush = compositor.CreateRadialGradientBrush();
+			compositionBrush.CenterPoint = radialGradientBrush.Center.ToVector2();
+			ConvertGradientColorStops(compositor, compositionBrush, radialGradientBrush.GradientStops, radialGradientBrush.Opacity);
+			compositionBrush.GradientOriginOffset = radialGradientBrush.GradientOrigin.ToVector2();
+			compositionBrush.InterpolationSpace = radialGradientBrush.InterpolationSpace;
+			compositionBrush.MappingMode = ConvertBrushMappingMode(radialGradientBrush.MappingMode);
+			compositionBrush.RelativeTransformMatrix = radialGradientBrush.RelativeTransform?.MatrixCore ?? Matrix3x2.Identity;
+
+			return compositionBrush;
+		}
+
+		private static void ConvertGradientColorStops(Compositor compositor, CompositionGradientBrush compositionBrush, IEnumerable<GradientStop> gradientStops, double opacity)
 		{
 			compositionBrush.ColorStops.Clear();
 

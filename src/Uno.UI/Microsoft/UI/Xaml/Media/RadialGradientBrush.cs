@@ -4,12 +4,45 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Markup;
 using Windows.UI.Xaml.Media;
 using Uno;
+using Windows.Foundation.Collections;
 
 namespace Microsoft.UI.Xaml.Media
 {
 	[ContentProperty(Name = nameof(GradientStops))]
-	public sealed partial class RadialGradientBrush : GradientBrush
+	public sealed partial class RadialGradientBrush : XamlCompositionBrushBase
 	{
+		public static DependencyProperty SpreadMethodProperty { get; } =
+			DependencyProperty.Register(
+			nameof(SpreadMethod),
+			typeof(GradientSpreadMethod),
+			typeof(RadialGradientBrush),
+			new FrameworkPropertyMetadata(
+				defaultValue: GradientSpreadMethod.Pad,
+				options: FrameworkPropertyMetadataOptions.AffectsRender));
+
+		public GradientSpreadMethod SpreadMethod
+		{
+			get => (GradientSpreadMethod)GetValue(SpreadMethodProperty);
+			set => SetValue(SpreadMethodProperty, value);
+		}
+
+		public static DependencyProperty MappingModeProperty { get; } =
+			DependencyProperty.Register(
+				"MappingMode",
+				typeof(BrushMappingMode),
+				typeof(RadialGradientBrush),
+				new FrameworkPropertyMetadata(
+					defaultValue: BrushMappingMode.RelativeToBoundingBox,
+					options: FrameworkPropertyMetadataOptions.AffectsRender));
+
+		public BrushMappingMode MappingMode
+		{
+			get => (BrushMappingMode)GetValue(MappingModeProperty);
+			set => SetValue(MappingModeProperty, value);
+		}
+
+		public IObservableVector<GradientStop> GradientStops { get; } = new ObservableVector<GradientStop>();
+
 		public static DependencyProperty CenterProperty { get; } = DependencyProperty.Register(
 			nameof(Center), typeof(Point), typeof(RadialGradientBrush), new FrameworkPropertyMetadata(new Point(0.5d, 0.5d)));
 
