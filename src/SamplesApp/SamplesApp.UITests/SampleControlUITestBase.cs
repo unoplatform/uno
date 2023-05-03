@@ -210,7 +210,7 @@ namespace SamplesApp.UITests
 			WriteSystemLogs(GetCurrentStepTitle("log"));
 		}
 
-		private static void ResetSimulator()
+		private void ResetSimulator()
 		{
 			if (AppInitializer.GetLocalPlatform() == Platform.iOS
 								&& Environment.GetEnvironmentVariable("UITEST_IOSDEVICE_ID") is { } simId)
