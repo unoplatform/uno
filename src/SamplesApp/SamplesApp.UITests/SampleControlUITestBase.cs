@@ -32,7 +32,16 @@ namespace SamplesApp.UITests
 		[OneTimeSetUp]
 		public void SingleSetup()
 		{
-			ValidateAppMode();
+			try
+			{
+				ValidateAppMode();
+			}
+			catch
+			{
+				TerminateSimulator();
+
+				throw;
+			}
 		}
 
 		protected IApp App => _app;
@@ -192,23 +201,28 @@ namespace SamplesApp.UITests
 			{
 				TakeScreenshot($"{TestContext.CurrentContext.Test.Name} - Tear down on error", ignoreInSnapshotCompare: true);
 
-				if (AppInitializer.GetLocalPlatform() == Platform.iOS
-					&& Environment.GetEnvironmentVariable("SIMULATOR_ID") is { } simId)
-				{
-					// Shutdown the simulator to avoid errors like
-					// 2023-04-27 02:34:43.241 iOSDeviceManager[61843:222611] *** Terminating app due to uncaught exception 'CBXException', reason: 'Error codesigning /Users/runner/work/1/s/build/ios-uitest-build/SamplesApp.app: '
-					// App com.companyname.SamplesApp is not installed on 2C00916C-CB22-4AFE-954B-F1EF947D7F7B
-					// libc++abi: terminating due to uncaught exception of type NSException
-					// Simulator is already booted.
-					// StackTrace:    at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
-					//    at System.Reflection.ConstructorInvoker.Invoke(Object obj, IntPtr* args, BindingFlags invokeAttr)
-					// --DeviceAgentException
-					//    at Xamarin.UITest.iOS.iOSAppLauncher.LaunchAppLocal(IiOSAppConfiguration appConfiguration, HttpClient httpClient, Boolean clearAppData)
-					System.Diagnostics.Process.Start("xcrun", $"simctl shutdown \"{simId}\"");
-				}
+				TerminateSimulator();
 			}
 
 			WriteSystemLogs(GetCurrentStepTitle("log"));
+		}
+
+		private static void TerminateSimulator()
+		{
+			if (AppInitializer.GetLocalPlatform() == Platform.iOS
+								&& Environment.GetEnvironmentVariable("SIMULATOR_ID") is { } simId)
+			{
+				// Shutdown the simulator to avoid errors like
+				// 2023-04-27 02:34:43.241 iOSDeviceManager[61843:222611] *** Terminating app due to uncaught exception 'CBXException', reason: 'Error codesigning /Users/runner/work/1/s/build/ios-uitest-build/SamplesApp.app: '
+				// App com.companyname.SamplesApp is not installed on 2C00916C-CB22-4AFE-954B-F1EF947D7F7B
+				// libc++abi: terminating due to uncaught exception of type NSException
+				// Simulator is already booted.
+				// StackTrace:    at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+				//    at System.Reflection.ConstructorInvoker.Invoke(Object obj, IntPtr* args, BindingFlags invokeAttr)
+				// --DeviceAgentException
+				//    at Xamarin.UITest.iOS.iOSAppLauncher.LaunchAppLocal(IiOSAppConfiguration appConfiguration, HttpClient httpClient, Boolean clearAppData)
+				System.Diagnostics.Process.Start("xcrun", $"simctl shutdown \"{simId}\"");
+			}
 		}
 
 		private void WriteSystemLogs(string fileName)
