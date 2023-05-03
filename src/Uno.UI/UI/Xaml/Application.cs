@@ -132,7 +132,7 @@ namespace Windows.UI.Xaml
 			if (InternalRequestedTheme == null)
 			{
 				// just cache the theme, but do not notify about a change unnecessarily
-				InternalRequestedTheme = GetDefaultSystemTheme();
+				InternalRequestedTheme = GetSystemTheme();
 			}
 		}
 
@@ -188,7 +188,7 @@ namespace Windows.UI.Xaml
 		{
 			// this flag makes sure the app will not respond to OS events
 			IsThemeSetExplicitly = explicitTheme.HasValue;
-			var theme = explicitTheme ?? GetDefaultSystemTheme();
+			var theme = explicitTheme ?? GetSystemTheme();
 			SetRequestedTheme(theme);
 		}
 
@@ -223,18 +223,6 @@ namespace Windows.UI.Xaml
 		/// Apps can mark the occurrence as handled in event data.
 		/// </summary>
 		public event UnhandledExceptionEventHandler UnhandledException;
-
-		public void OnSystemThemeChanged(object sender, EventArgs e)
-		{
-			// if user overrides theme, don't apply system theme
-			if (!IsThemeSetExplicitly)
-			{
-				var theme = GetDefaultSystemTheme();
-				SetRequestedTheme(theme);
-			}
-
-			UISettings.OnColorValuesChanged();
-		}
 
 #if !__ANDROID__ && !__MACOS__ && !__SKIA__
 		[NotImplemented("__IOS__", "NET461", "__WASM__", "__NETSTD_REFERENCE__")]
@@ -272,9 +260,21 @@ namespace Windows.UI.Xaml
 
 		internal void RaiseRecoverableUnhandledException(Exception e) => UnhandledException?.Invoke(this, new UnhandledExceptionEventArgs(e, false));
 
-		private ApplicationTheme GetDefaultSystemTheme() =>
+		private ApplicationTheme GetSystemTheme() =>
 			SystemThemeHelper.SystemTheme == SystemTheme.Light ?
 				ApplicationTheme.Light : ApplicationTheme.Dark;
+
+		private void OnSystemThemeChanged(object sender, EventArgs e)
+		{
+			// if user overrides theme, don't apply system theme
+			if (!IsThemeSetExplicitly)
+			{
+				var theme = GetSystemTheme();
+				SetRequestedTheme(theme);
+			}
+
+			UISettings.OnColorValuesChanged();
+		}
 
 #if __WASM__ || __SKIA__
 		private IDisposable WritePhaseEventTrace(int startEventId, int stopEventId)
