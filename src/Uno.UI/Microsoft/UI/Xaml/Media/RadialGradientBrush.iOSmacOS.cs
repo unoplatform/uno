@@ -13,7 +13,7 @@ namespace Microsoft.UI.Xaml.Media
 {
 	partial class RadialGradientBrush
 	{
-		internal override CALayer GetLayer(CGSize size)
+		internal CALayer GetLayer(CGSize size)
 		{
 			var center = Center;
 			var radiusX = RadiusX;
