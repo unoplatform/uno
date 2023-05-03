@@ -55,10 +55,6 @@ namespace Windows.UI.Xaml
 		private bool _initializationComplete;
 		private readonly static IEventProvider _trace = Tracing.Get(TraceProvider.Id);
 		private ApplicationTheme? _requestedTheme;
-#pragma warning disable CA1805 // Do not initialize unnecessarily
-		// TODO: This field is ALWAYS false. Either remove it or assign when appropriate.
-		private bool _systemThemeChangesObserved = false;
-#pragma warning restore CA1805 // Do not initialize unnecessarily
 		private SpecializedResourceDictionary.ResourceKey _requestedThemeForResources;
 		private bool _isInBackground;
 
@@ -262,8 +258,6 @@ namespace Windows.UI.Xaml
 			StartPartial(callback);
 		}
 
-		partial void ObserveSystemThemeChanges();
-
 		static partial void StartPartial(ApplicationInitializationCallback callback);
 
 		protected internal virtual void OnActivated(IActivatedEventArgs args) { }
@@ -272,10 +266,7 @@ namespace Windows.UI.Xaml
 
 		internal void InitializationCompleted()
 		{
-			if (!_systemThemeChangesObserved)
-			{
-				ObserveSystemThemeChanges();
-			}
+			SystemThemeHelper.ObserveThemeChanges();
 			_initializationComplete = true;
 		}
 

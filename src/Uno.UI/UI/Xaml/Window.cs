@@ -14,6 +14,7 @@ using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Core;
 using Windows.UI.Xaml.Media;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
+using Uno.Helpers.Theming;
 
 namespace Windows.UI.Xaml
 {
