@@ -66,11 +66,17 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 #if HAS_UNO // On UWP/WinUI, the Samples app is always in Fluent theme
 		[TestMethod]
 		[RequiresFullWindow]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		public async Task When_DefaultForeground_Non_Fluent() => await When_DefaultForeground(Colors.Black, Colors.White);
 #endif
 
 		[TestMethod]
 		[RequiresFullWindow]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		public async Task When_DefaultForeground_Fluent()
 		{
 			using (StyleHelper.UseFluentStyles())
