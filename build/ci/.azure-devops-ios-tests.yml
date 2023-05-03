@@ -112,7 +112,7 @@ jobs:
       vmImage: ${{ parameters.vmImageTest }}
       UITEST_SNAPSHOTS_ONLY: false
       UITEST_AUTOMATED_GROUP: ${{ AutomatedTestGroup.key }}
-      UITEST_TEST_TIMEOUT: '270s'
+      UITEST_TEST_TIMEOUT: '20m'
       UITEST_ALLOW_RERUN: 'false'
       xCodeRoot: ${{ parameters.xCodeRootTest }}
       XamarinSDKVersion: ${{ parameters.XamarinSDKVersionTest }}
@@ -161,6 +161,6 @@ jobs:
       UITEST_SNAPSHOTS_ONLY: true
       UITEST_SNAPSHOTS_GROUP: ${{ snapshotGroup.key }}
       UITEST_TEST_TIMEOUT: '10m'
-      UITEST_ALLOW_RERUN: 'true'
+      UITEST_ALLOW_RERUN: 'false'
       xCodeRoot: ${{ parameters.xCodeRootTest }}
       XamarinSDKVersion: ${{ parameters.XamarinSDKVersionTest }}
