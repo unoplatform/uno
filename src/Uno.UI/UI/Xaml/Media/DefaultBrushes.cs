@@ -19,13 +19,16 @@ internal static class DefaultBrushes
 
 	internal static SolidColorBrush SelectionHighlightColor { get; } = new SolidColorBrush(Color.FromArgb(255, 0, 120, 212));
 
-	internal static void ResetDefaultThemeBrushes()
-	{
-		_textForegroundBrush = null;
-	}
+	internal static void ResetDefaultThemeBrushes() => _textForegroundBrush = null;
 
 	private static Brush GetDefaultTextBrush()
 	{
+		if (Application.Current is null)
+		{
+			// Called too early or within unit tests, fallback
+			return SolidColorBrushHelper.Black;
+		}
+
 		if (_textForegroundBrush is null)
 		{
 			if (Application.Current.Resources.TryGetValue(DefaultTextForegroundThemeBrushKey, out var defaultBrushObject) &&
