@@ -74,6 +74,10 @@ internal static partial class SystemThemeHelper
 		}
 	}
 
+	/// <summary>
+	/// This is just a partial method, as on some platforms (e.g. Android and iOS)
+	/// the theme change is listened to on the Application/Window level.
+	/// </summary>
 	static partial void ObserveThemeChangesPlatform();
 
 	private static void RaiseSystemThemeChanged() => _systemThemeChanged?.Invoke(null, EventArgs.Empty);
