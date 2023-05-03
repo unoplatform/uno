@@ -12,7 +12,12 @@ namespace Windows.UI.Xaml.Controls
 	[TemplatePart(Name = TransportControlsPresenterName, Type = typeof(ContentPresenter))]
 	[TemplatePart(Name = MediaPlayerPresenterName, Type = typeof(MediaPlayerPresenter))]
 	[TemplatePart(Name = LayoutRootName, Type = typeof(Grid))]
-	public partial class MediaPlayerElement : IDisposable
+	public partial class MediaPlayerElement
+#if __IOS__ || __ANDROID__ || __MACOS__
+		// To avoid causing FrameworkElement.Dispose to become virtual (and cause a breaking change),
+		// we keep the disposable for existing platforms, but we don't implement it for the other targets.
+		: IDisposable
+#endif
 	{
 		private const string PosterImageName = "PosterImage";
 		private const string TransportControlsPresenterName = "TransportControlsPresenter";
