@@ -5,24 +5,25 @@ using Uno.Extensions;
 using Uno.Foundation;
 using Uno.Foundation.Logging;
 
+#if NET7_0_OR_GREATER
+using NativeMethods = __Uno.Helpers.Theming.SystemThemeHelper.NativeMethods;
+#endif
+
 namespace Uno.Helpers.Theming;
 
 internal static partial class SystemThemeHelper
 {
-	private const string BaseUIXamlNamespace =
-#if HAS_UNO_WINUI
-		"Microsoft.UI.Xaml";
-#else
-		"Windows.UI.Xaml";
-#endif
-
 	private static SystemTheme GetSystemTheme()
 	{
-		var serializedTheme = WebAssemblyRuntime.InvokeJS(BaseUIXamlNamespace + ".Application.getDefaultSystemTheme()");
+#if NET7_0_OR_GREATER
+		var serializedTheme = NativeMethods.GetSystemTheme();
+#else
+		var serializedTheme = WebAssemblyRuntime.InvokeJS("Uno.Helpers.Theming.SystemThemeHelper.getSystemTheme()");
+#endif
 
 		if (serializedTheme != null)
 		{
-			if (Enum.TryParse(serializedTheme, out SystemTheme theme))
+			if (Enum.TryParse(serializedTheme, true, out SystemTheme theme))
 			{
 				if (typeof(SystemThemeHelper).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Information))
 				{
@@ -46,6 +47,16 @@ internal static partial class SystemThemeHelper
 
 	static partial void ObserveThemeChangesPlatform()
 	{
-		WebAssemblyRuntime.InvokeJS(BaseUIXamlNamespace + ".Application.observeSystemTheme()");
+#if NET7_0_OR_GREATER
+		NativeMethods.ObserveSystemTheme();
+#else
+		WebAssemblyRuntime.InvokeJS("Uno.Helpers.Theming.SystemThemeHelper.observeSystemTheme()");
+#endif
+	}
+
+	public static int DispatchSystemThemeChange()
+	{
+		RefreshSystemTheme();
+		return 0;
 	}
 }
