@@ -38,7 +38,7 @@ namespace SamplesApp.UITests
 			}
 			catch
 			{
-				ResetSimulator();
+				_app = ResetSimulator();
 			}
 		}
 
@@ -210,7 +210,7 @@ namespace SamplesApp.UITests
 			WriteSystemLogs(GetCurrentStepTitle("log"));
 		}
 
-		private void ResetSimulator()
+		private static IApp ResetSimulator()
 		{
 			if (AppInitializer.GetLocalPlatform() == Platform.iOS
 								&& Environment.GetEnvironmentVariable("UITEST_IOSDEVICE_ID") is { } simId)
@@ -228,7 +228,11 @@ namespace SamplesApp.UITests
 				System.Diagnostics.Process.Start("xcrun", $"simctl erase \"{simId}\"").WaitForExit();
 
 				// Retry a cold startup after the erasure
-				_app = AppInitializer.ColdStartApp();
+				return AppInitializer.ColdStartApp();
+			}
+			else
+			{
+				return null;
 			}
 		}
 
