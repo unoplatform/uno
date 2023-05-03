@@ -612,8 +612,6 @@ namespace Uno.UWPSyncGenerator
 #else
 				case "Microsoft.UI.Xaml.Automation.Peers.AnimatedVisualPlayerAutomationPeer":
 				case "Microsoft.UI.Xaml.Automation.Peers.PersonPictureAutomationPeer":
-				case "Microsoft.UI.Xaml.Automation.Peers.MenuBarAutomationPeer":
-				case "Microsoft.UI.Xaml.Automation.Peers.MenuBarItemAutomationPeer":
 				case "Microsoft.UI.Xaml.Controls.AnimatedVisuals.AnimatedAcceptVisualSource":
 				case "Microsoft.UI.Xaml.Controls.AnimatedVisuals.AnimatedBackVisualSource":
 				case "Microsoft.UI.Xaml.Controls.AnimatedVisuals.AnimatedChevronDownSmallVisualSource":
@@ -626,9 +624,6 @@ namespace Uno.UWPSyncGenerator
 				case "Microsoft.UI.Xaml.Controls.IAnimatedVisualSource":
 				case "Microsoft.UI.Xaml.Controls.IAnimatedVisualSource2":
 				case "Microsoft.UI.Xaml.Controls.IDynamicAnimatedVisualSource":
-				case "Microsoft.UI.Xaml.Controls.MenuBar":
-				case "Microsoft.UI.Xaml.Controls.MenuBarItem":
-				case "Microsoft.UI.Xaml.Controls.MenuBarItemFlyout":
 				case "Microsoft.UI.Xaml.Controls.PersonPicture":
 				case "Microsoft.UI.Xaml.Controls.PersonPictureTemplateSettings":
 				case "Microsoft.UI.Xaml.Controls.SwipeBehaviorOnInvoked":
