@@ -4519,7 +4519,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					var typeName = fullMemberName.Substring(0, lastDotIndex);
 					return _metadataHelper.FindTypeByFullName(typeName) as INamedTypeSymbol
-						?? FindType(new XamlType(_defaultXmlNamespace.Namespace, typeName, new List<XamlType>(), new XamlSchemaContext()), true);
+						?? FindType(new XamlType(_defaultXmlNamespace.Namespace, typeName, new List<XamlType>(), new XamlSchemaContext()));
 				}
 			}
 
@@ -6265,7 +6265,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						string closureName;
 						using (var innerWriter = CreateApplyBlock(writer, Generation.ElementStubSymbol.Value, out closureName))
 						{
-							var elementStubType = new XamlType("", "ElementStub", new List<XamlType>(), new XamlSchemaContext());
+							var elementStubType = new XamlType(XamlConstants.BaseXamlNamespace, "ElementStub", new List<XamlType>(), new XamlSchemaContext());
 
 							if (hasDataContextMarkup)
 							{
