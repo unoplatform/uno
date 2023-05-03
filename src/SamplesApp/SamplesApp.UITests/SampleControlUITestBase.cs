@@ -64,9 +64,18 @@ namespace SamplesApp.UITests
 			// Environment.SetEnvironmentVariable("ANDROID_HOME", @"C:\Program Files (x86)\Android\android-sdk");
 			// Environment.SetEnvironmentVariable("JAVA_HOME", @"C:\Program Files\Microsoft\jdk-11.0.12.7-hotspot");
 
-			// Start the app only once, so the tests runs don't restart it
-			// and gain some time for the tests.
-			AppInitializer.ColdStartApp();
+			try
+			{
+				// Start the app only once, so the tests runs don't restart it
+				// and gain some time for the tests.
+				AppInitializer.ColdStartApp();
+			}
+			catch
+			{
+				TerminateSimulator();
+
+				throw;
+			}
 
 
 			TryInitializeSkiaSharpLoader();
@@ -212,6 +221,8 @@ namespace SamplesApp.UITests
 			if (AppInitializer.GetLocalPlatform() == Platform.iOS
 								&& Environment.GetEnvironmentVariable("SIMULATOR_ID") is { } simId)
 			{
+				Console.WriteLine("Terminating and erasing simulator");
+
 				// Shutdown the simulator to avoid errors like
 				// 2023-04-27 02:34:43.241 iOSDeviceManager[61843:222611] *** Terminating app due to uncaught exception 'CBXException', reason: 'Error codesigning /Users/runner/work/1/s/build/ios-uitest-build/SamplesApp.app: '
 				// App com.companyname.SamplesApp is not installed on 2C00916C-CB22-4AFE-954B-F1EF947D7F7B
@@ -221,7 +232,8 @@ namespace SamplesApp.UITests
 				//    at System.Reflection.ConstructorInvoker.Invoke(Object obj, IntPtr* args, BindingFlags invokeAttr)
 				// --DeviceAgentException
 				//    at Xamarin.UITest.iOS.iOSAppLauncher.LaunchAppLocal(IiOSAppConfiguration appConfiguration, HttpClient httpClient, Boolean clearAppData)
-				System.Diagnostics.Process.Start("xcrun", $"simctl shutdown \"{simId}\"");
+				System.Diagnostics.Process.Start("xcrun", $"simctl shutdown \"{simId}\"").WaitForExit();
+				System.Diagnostics.Process.Start("xcrun", $"simctl shutdown \"{simId}\"").WaitForExit();
 			}
 		}
 
