@@ -72,7 +72,7 @@ public partial class BitmapIcon : IconElement
 	private void UpdateImageMonochromeColor()
 	{
 #if !NET461
-		if (_image != null)
+		if (_image is not null)
 		{
 			_image.MonochromeColor = ShowAsMonochrome ? (Foreground as SolidColorBrush)?.Color : null;
 		}

@@ -51,6 +51,13 @@ public partial class PathIcon : IconElement
 		_path.Data = Data;
 	}
 
-	private protected override void OnForegroundChanged(DependencyPropertyChangedEventArgs e) =>
-		_path.Fill = (Brush)e.NewValue;
+	private protected override void OnForegroundChanged(DependencyPropertyChangedEventArgs e)
+	{
+		// This may occur while executing the base constructor
+		// so _path may still be null.
+		if (_path is not null)
+		{
+			_path.Fill = (Brush)e.NewValue;
+		}
+	}
 }
