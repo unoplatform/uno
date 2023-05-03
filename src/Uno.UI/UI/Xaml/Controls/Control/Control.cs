@@ -143,7 +143,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 #endif
 		}
-#endregion
+		#endregion
 
 		internal bool IsEnabledSuppressed => _suppressIsEnabled;
 
