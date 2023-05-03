@@ -38,9 +38,7 @@ namespace SamplesApp.UITests
 			}
 			catch
 			{
-				TerminateSimulator();
-
-				throw;
+				ResetSimulator();
 			}
 		}
 
@@ -72,11 +70,9 @@ namespace SamplesApp.UITests
 			}
 			catch
 			{
-				TerminateSimulator();
-
+				ResetSimulator();
 				throw;
 			}
-
 
 			TryInitializeSkiaSharpLoader();
 		}
@@ -209,20 +205,16 @@ namespace SamplesApp.UITests
 			)
 			{
 				TakeScreenshot($"{TestContext.CurrentContext.Test.Name} - Tear down on error", ignoreInSnapshotCompare: true);
-
-				TerminateSimulator();
 			}
 
 			WriteSystemLogs(GetCurrentStepTitle("log"));
 		}
 
-		private static void TerminateSimulator()
+		private static void ResetSimulator()
 		{
 			if (AppInitializer.GetLocalPlatform() == Platform.iOS
 								&& Environment.GetEnvironmentVariable("UITEST_IOSDEVICE_ID") is { } simId)
 			{
-				Console.WriteLine("Terminating and erasing simulator");
-
 				// Shutdown the simulator to avoid errors like
 				// 2023-04-27 02:34:43.241 iOSDeviceManager[61843:222611] *** Terminating app due to uncaught exception 'CBXException', reason: 'Error codesigning /Users/runner/work/1/s/build/ios-uitest-build/SamplesApp.app: '
 				// App com.companyname.SamplesApp is not installed on 2C00916C-CB22-4AFE-954B-F1EF947D7F7B
@@ -233,7 +225,10 @@ namespace SamplesApp.UITests
 				// --DeviceAgentException
 				//    at Xamarin.UITest.iOS.iOSAppLauncher.LaunchAppLocal(IiOSAppConfiguration appConfiguration, HttpClient httpClient, Boolean clearAppData)
 				System.Diagnostics.Process.Start("xcrun", $"simctl shutdown \"{simId}\"").WaitForExit();
-				System.Diagnostics.Process.Start("xcrun", $"simctl shutdown \"{simId}\"").WaitForExit();
+				System.Diagnostics.Process.Start("xcrun", $"simctl erase \"{simId}\"").WaitForExit();
+
+				// Retry a cold startup after the erasure
+				_app = AppInitializer.ColdStartApp();
 			}
 		}
 
