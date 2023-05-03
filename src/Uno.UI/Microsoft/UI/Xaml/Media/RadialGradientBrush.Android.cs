@@ -5,6 +5,7 @@ using Uno.UI;
 using Windows.UI.Xaml.Media;
 using Point = Windows.Foundation.Point;
 using Size = Windows.Foundation.Size;
+using Rect = Windows.Foundation.Rect;
 
 namespace Microsoft.UI.Xaml.Media
 {
