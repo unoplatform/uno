@@ -7,6 +7,8 @@ using Uno.Disposables;
 using Windows.Foundation.Collections;
 using Windows.UI; // Required for WinUI 3+ Color
 
+using RadialGradientBrush = Microsoft.UI.Xaml.Media.RadialGradientBrush;
+
 namespace Windows.UI.Xaml.Media
 {
 	public abstract partial class Brush
@@ -51,6 +53,24 @@ namespace Windows.UI.Xaml.Media
 						(s, e) => innerDisposable.Disposable = ObserveGradientBrushStops((s as GradientBrush).GradientStops, colorSetter)
 					)
 					.DisposeWith(disposables);
+				innerDisposable.DisposeWith(disposables);
+
+				return disposables;
+			}
+			else if (b is RadialGradientBrush rgb)
+			{
+				var disposables = new CompositeDisposable(4);
+
+				colorSetter(rgb.FallbackColorWithOpacity);
+
+				WhenAnyChanged(disposables, rgb, (s, e) => colorSetter((s as GradientBrush).FallbackColorWithOpacity), new[]
+				{
+					RadialGradientBrush.FallbackColorProperty,
+					RadialGradientBrush.OpacityProperty,
+				});
+
+				var innerDisposable = new SerialDisposable();
+				innerDisposable.Disposable = ObserveGradientBrushStops(rgb.GradientStops, colorSetter);
 				innerDisposable.DisposeWith(disposables);
 
 				return disposables;
@@ -115,6 +135,23 @@ namespace Windows.UI.Xaml.Media
 					});
 				}
 			}
+		}
+
+		private static IDisposable ObserveGradientBrushStops(IObservableVector<GradientStop> stops, ColorSetterHandler colorSetter)
+		{
+			var disposables = new CompositeDisposable();
+
+			colorSetter(Colors.Transparent);
+			foreach (var stop in stops.ToArray())
+			{
+				WhenAnyChanged(disposables, stop, (s, e) => colorSetter(Colors.Transparent), new[]
+				{
+					GradientStop.ColorProperty,
+					GradientStop.OffsetProperty,
+				});
+			}
+
+			return disposables;
 		}
 
 		private static CompositeDisposable WhenAnyChanged(CompositeDisposable disposables, DependencyObject source, PropertyChangedCallback callback, params DependencyProperty[] properties)
