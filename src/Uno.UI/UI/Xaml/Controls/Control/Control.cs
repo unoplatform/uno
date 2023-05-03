@@ -41,6 +41,7 @@ namespace Windows.UI.Xaml.Controls
 		private bool _suspendStateChanges;
 		private View _templatedRoot;
 		private bool _updateTemplate;
+		private bool _suppressIsEnabled;
 
 		private void InitializeControl()
 		{
@@ -98,6 +99,71 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void UnregisterSubView();
 		partial void RegisterSubView(View child);
+
+		#region IsEnabled DependencyProperty
+
+		// Note: we keep the event args as a private field for perf consideration: This avoids to create a new instance each time.
+		//		 As it's used only internally it's safe to do so.
+		[ThreadStatic]
+		private static IsEnabledChangedEventArgs _isEnabledChangedEventArgs;
+
+		public event DependencyPropertyChangedEventHandler IsEnabledChanged;
+
+		[GeneratedDependencyProperty(DefaultValue = true, ChangedCallback = true, CoerceCallback = true, Options = FrameworkPropertyMetadataOptions.Inherits)]
+		public static DependencyProperty IsEnabledProperty { get; } = CreateIsEnabledProperty();
+
+		public bool IsEnabled
+		{
+			get => GetIsEnabledValue();
+			set => SetIsEnabledValue(value);
+		}
+
+		private void OnIsEnabledChanged(DependencyPropertyChangedEventArgs args)
+		{
+#if UNO_HAS_MANAGED_POINTERS
+			UpdateHitTest();
+#endif
+
+			_isEnabledChangedEventArgs ??= new IsEnabledChangedEventArgs();
+			_isEnabledChangedEventArgs.SourceEvent = args;
+
+			OnIsEnabledChanged(_isEnabledChangedEventArgs);
+
+#if __ANDROID__ || __IOS__ || __MACOS__
+			this.Enabled = (bool)args.NewValue;
+#endif
+
+			IsEnabledChanged?.Invoke(this, args);
+
+			// TODO: move focus elsewhere if control.FocusState != FocusState.Unfocused
+#if __WASM__
+			if (FeatureConfiguration.UIElement.AssignDOMXamlProperties)
+			{
+				UpdateDOMProperties();
+			}
+#endif
+		}
+#endregion
+
+		internal bool IsEnabledSuppressed => _suppressIsEnabled;
+
+		/// <summary>
+		/// Provides the ability to disable <see cref="IsEnabled"/> value changes, e.g. in the context of ICommand CanExecute.
+		/// </summary>
+		/// <param name="suppress">If true, <see cref="IsEnabled"/> will always be false</param>
+		private protected void SuppressIsEnabled(bool suppress)
+		{
+			if (_suppressIsEnabled != suppress)
+			{
+				_suppressIsEnabled = suppress;
+				this.CoerceValue(IsEnabledProperty);
+			}
+		}
+
+		private object CoerceIsEnabled(object baseValue)
+		{
+			return _suppressIsEnabled ? false : baseValue;
+		}
 
 
 		#region Template DependencyProperty
@@ -774,9 +840,8 @@ namespace Windows.UI.Xaml.Controls
 		{
 		}
 
-		private protected override void OnIsEnabledChanged(IsEnabledChangedEventArgs e)
+		private protected virtual void OnIsEnabledChanged(IsEnabledChangedEventArgs e)
 		{
-			base.OnIsEnabledChanged(e);
 			OnIsFocusableChanged();
 
 			// Part of logic from MUX Control.cpp Enabled method.
