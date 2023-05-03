@@ -63,7 +63,7 @@ internal static partial class SystemThemeHelper
 	/// Raises SystemThemeChanged if the theme
 	/// has changed since we last checked it.
 	/// </summary>
-	private static void RefreshSystemTheme()
+	internal static void RefreshSystemTheme()
 	{
 		var cachedTheme = _lastSystemTheme;
 		var currentTheme = GetSystemTheme();
