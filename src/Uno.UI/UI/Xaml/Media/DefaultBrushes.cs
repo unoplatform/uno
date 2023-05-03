@@ -15,7 +15,7 @@ internal static class DefaultBrushes
 
 	private static Brush? _textForegroundBrush;
 
-	internal static Brush TextForegroundBrush => _textForegroundBrush ??= GetDefaultTextBrush();
+	internal static Brush TextForegroundBrush => GetDefaultTextBrush();
 
 	internal static SolidColorBrush SelectionHighlightColor { get; } = new SolidColorBrush(Color.FromArgb(255, 0, 120, 212));
 
