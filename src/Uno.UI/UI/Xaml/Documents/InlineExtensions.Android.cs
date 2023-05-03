@@ -12,6 +12,8 @@ using Android.Graphics;
 using Uno.UI.Extensions;
 using Windows.Foundation;
 
+using RadialGradientBrush = Microsoft.UI.Xaml.Media.RadialGradientBrush;
+
 namespace Windows.UI.Xaml.Documents
 {
 	internal static partial class InlineExtensions
@@ -22,12 +24,12 @@ namespace Windows.UI.Xaml.Documents
 				.GetColorWithOpacity(inline.Foreground, Colors.Transparent)
 				.Value;
 
-			Shader shader = null;
-
-			if (inline.Foreground is GradientBrush gb)
+			Shader shader = inline.Foreground switch
 			{
-				shader = gb.GetShader(size.LogicalToPhysicalPixels());
-			}
+				GradientBrush gb => gb.GetShader(size.LogicalToPhysicalPixels()),
+				RadialGradientBrush rgb => rgb.GetShader(size.LogicalToPhysicalPixels()),
+				_ => null,
+			};
 
 			return Uno.UI.Controls.TextPaintPool.GetPaint(
 				inline.FontWeight,
