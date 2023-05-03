@@ -85,10 +85,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <UpToDateCheckInput Remove="UI\Xaml\Controls\MediaPlayerElement\IMediaPlayerPresenterExtension.cs" />
-	</ItemGroup>
-
-	<ItemGroup>
 	  <Folder Include="Microsoft\UI\Xaml\Controls\Repeater\" />
 	  <Folder Include="obj\Uno.UI.Wasm\Debug\" />
 	  <Folder Include="tsBindings\" />
