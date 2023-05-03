@@ -34,6 +34,8 @@ namespace Windows.UI.Xaml
 			_ = CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, Initialize);
 		}
 
+		internal ISkiaHost? Host { get; set; }
+
 		private void SetCurrentLanguage()
 		{
 			if (CultureInfo.CurrentUICulture.IetfLanguageTag == "" &&

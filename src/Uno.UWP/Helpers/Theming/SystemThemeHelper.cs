@@ -12,6 +12,7 @@ namespace Uno.Helpers.Theming;
 /// </summary>
 internal static partial class SystemThemeHelper
 {
+	private static EventHandler? _systemThemeChanged;
 	private static bool _changesObserved;
 	private static SystemTheme? _lastSystemTheme;
 
@@ -23,29 +24,39 @@ internal static partial class SystemThemeHelper
 	/// <summary>
 	/// Triggered when system theme changes.
 	/// </summary>
-	internal static event EventHandler? SystemThemeChanged;
+	internal static event EventHandler? SystemThemeChanged
+	{
+		add
+		{
+			_systemThemeChanged += value;
+			ObserveThemeChanges();
+		}
+		remove => _systemThemeChanged -= value;
+	}
 
 	/// <summary>
 	/// Starts observing system theme changes.
 	/// </summary>
 	internal static void ObserveThemeChanges()
 	{
-		if (!_changesObserved)
+		if (_changesObserved)
 		{
-			// Cache the initial theme for future comparisons
-			_lastSystemTheme = GetSystemTheme();
-
-			ObserveThemeChangesPartial();
-
-			// Ensure to check for theme changes when app leaves background
-			// as we might miss a theme change if the app gets suspended.
-			CoreApplication.LeavingBackground += (s, e) => RefreshSystemTheme();
-			CoreApplication.Resuming += (s, e) => RefreshSystemTheme();
-			CoreWindow.Main!.Activated += (s, e) => RefreshSystemTheme();
-			CoreWindow.Main!.VisibilityChanged += (s, e) => RefreshSystemTheme();
-
-			_changesObserved = true;
+			return;
 		}
+
+		_changesObserved = true;
+
+		// Cache the initial theme for future comparisons
+		_lastSystemTheme = GetSystemTheme();
+
+		ObserveThemeChangesPlatform();
+
+		// Ensure to check for theme changes when app leaves background
+		// as we might miss a theme change if the app gets suspended.
+		CoreApplication.LeavingBackground += (s, e) => RefreshSystemTheme();
+		CoreApplication.Resuming += (s, e) => RefreshSystemTheme();
+		CoreWindow.Main!.Activated += (s, e) => RefreshSystemTheme();
+		CoreWindow.Main!.VisibilityChanged += (s, e) => RefreshSystemTheme();
 	}
 
 	/// <summary>
@@ -65,5 +76,5 @@ internal static partial class SystemThemeHelper
 
 	static partial void ObserveThemeChangesPlatform();
 
-	private static void RaiseSystemThemeChanged() => SystemThemeChanged?.Invoke(null, EventArgs.Empty);
+	private static void RaiseSystemThemeChanged() => _systemThemeChanged?.Invoke(null, EventArgs.Empty);
 }

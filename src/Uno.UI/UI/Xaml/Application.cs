@@ -224,7 +224,7 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		public event UnhandledExceptionEventHandler UnhandledException;
 
-		public void OnSystemThemeChanged()
+		public void OnSystemThemeChanged(object sender, EventArgs e)
 		{
 			// if user overrides theme, don't apply system theme
 			if (!IsThemeSetExplicitly)
@@ -266,7 +266,7 @@ namespace Windows.UI.Xaml
 
 		internal void InitializationCompleted()
 		{
-			SystemThemeHelper.ObserveThemeChanges();
+			SystemThemeHelper.SystemThemeChanged += OnSystemThemeChanged;
 			_initializationComplete = true;
 		}
 
