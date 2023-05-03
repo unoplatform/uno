@@ -219,7 +219,7 @@ namespace SamplesApp.UITests
 		private static void TerminateSimulator()
 		{
 			if (AppInitializer.GetLocalPlatform() == Platform.iOS
-								&& Environment.GetEnvironmentVariable("SIMULATOR_ID") is { } simId)
+								&& Environment.GetEnvironmentVariable("UITEST_IOSDEVICE_ID") is { } simId)
 			{
 				Console.WriteLine("Terminating and erasing simulator");
 
