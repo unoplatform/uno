@@ -11,13 +11,20 @@ using Windows.UI.Xaml.Media;
 using Uno;
 using Uno.UI;
 using Uno.Disposables;
-using Windows.UI.Xaml.Media.Imaging;
 
 namespace Windows.UI.Xaml.Media
 {
 	public partial class ImageBrush : Brush
 	{
-		private readonly SerialDisposable _sourceDisposable = new SerialDisposable();
+		private static DependencyProperty[] _changeProperties = new[]
+		{
+			AlignmentXProperty,
+			AlignmentYProperty,
+			ImageSourceProperty,
+			StretchProperty,
+			OpacityProperty,
+			RelativeTransformProperty
+		};
 
 #pragma warning disable CS0067 // The event 'ImageBrush.ImageFailed' is never used
 		public event RoutedEventHandler ImageOpened;
@@ -96,6 +103,8 @@ namespace Windows.UI.Xaml.Media
 
 		partial void OnSourceChangedPartial(ImageSource newValue, ImageSource oldValue);
 		#endregion
+
+		internal override DependencyProperty[] ChangeProperties => _changeProperties;
 
 		internal Rect GetArrangedImageRect(Size sourceSize, Rect targetRect)
 		{

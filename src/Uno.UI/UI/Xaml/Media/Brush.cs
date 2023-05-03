@@ -6,6 +6,7 @@ using System.Diagnostics.Contracts;
 using Windows.UI.Xaml.Controls;
 using Windows.UI;
 using Uno.UI.Xaml;
+using Uno.Disposables;
 
 namespace Windows.UI.Xaml.Media
 {
@@ -60,6 +61,19 @@ namespace Windows.UI.Xaml.Media
 
 		protected virtual void OnRelativeTransformChanged(Transform oldValue, Transform newValue)
 		{
+		}
+
+		internal abstract DependencyProperty[] ChangeProperties { get; }
+
+		internal IDisposable ObserveChanges(Action onChange)
+		{
+			var compositeDisposable = new CompositeDisposable(ChangeProperties.Length);
+			foreach (var property in ChangeProperties)
+			{
+				this.RegisterDisposablePropertyChangedCallback(property, onChange)
+					.DisposeWith(compositeDisposable);
+			}
+			return compositeDisposable;
 		}
 
 		private protected Color GetColorWithOpacity(Color referenceColor)
