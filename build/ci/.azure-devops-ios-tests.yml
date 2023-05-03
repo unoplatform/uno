@@ -107,7 +107,7 @@ jobs:
     parameters:
       nugetPackages: $(NUGET_PACKAGES)
       JobName: 'iOS_Automated_Tests_Group_${{ AutomatedTestGroup.value }}'
-      JobDisplayName: 'Run iOS Automated Tests Group ${{ AutomatedTestGroup.value }}'
+      JobDisplayName: 'iOS Automated Tests ${{ AutomatedTestGroup.value }}'
       JobTimeoutInMinutes: 120
       vmImage: ${{ parameters.vmImageTest }}
       UITEST_SNAPSHOTS_ONLY: false
@@ -125,11 +125,11 @@ jobs:
     parameters:
       nugetPackages: $(NUGET_PACKAGES)
       JobName: 'iOS_Automated_Tests_Runtime_Tests_group_${{ RuntimeTestGroup.value }}'
-      JobDisplayName: 'Run iOS Automated Runtime Tests Group ${{ RuntimeTestGroup.value }}'
-      JobTimeoutInMinutes: 40
+      JobDisplayName: 'iOS Runtime Tests ${{ RuntimeTestGroup.value }}'
+      JobTimeoutInMinutes: 75
       vmImage: ${{ parameters.vmImageTest }}
       UITEST_SNAPSHOTS_ONLY: false
-      UITEST_TEST_TIMEOUT: '3600s'
+      UITEST_TEST_TIMEOUT: '70m'
       UITEST_AUTOMATED_GROUP: 4
       UITEST_RUNTIME_TEST_GROUP: ${{ RuntimeTestGroup.key }}
       UITEST_RUNTIME_TEST_GROUP_COUNT: ${{ parameters.UITEST_RUNTIME_TEST_GROUP_COUNT }}
@@ -155,12 +155,12 @@ jobs:
     parameters:
       nugetPackages: $(NUGET_PACKAGES)
       JobName: 'iOS_Snapshot_Tests_Group_${{ snapshotGroup.value }}'
-      JobDisplayName: 'Run iOS Snapshot Tests Group ${{ snapshotGroup.value }}'
+      JobDisplayName: 'iOS Snapshot Tests ${{ snapshotGroup.value }}'
       JobTimeoutInMinutes: 60
       vmImage: ${{ parameters.vmImageTest }}
       UITEST_SNAPSHOTS_ONLY: true
       UITEST_SNAPSHOTS_GROUP: ${{ snapshotGroup.key }}
-      UITEST_TEST_TIMEOUT: '270s'
+      UITEST_TEST_TIMEOUT: '10m'
       UITEST_ALLOW_RERUN: 'true'
       xCodeRoot: ${{ parameters.xCodeRootTest }}
       XamarinSDKVersion: ${{ parameters.XamarinSDKVersionTest }}
