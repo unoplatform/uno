@@ -40,18 +40,6 @@
 		<Reference Include="System.Numerics.Vectors" />
 	</ItemGroup>
 
-	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid13.0'">
-		<PackageReference Include="Xamarin.AndroidX.Legacy.Support.v4" />
-		<PackageReference Include="Xamarin.AndroidX.AppCompat" />
-		<PackageReference Include="Xamarin.AndroidX.RecyclerView" />
-	</ItemGroup>
-
-	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid12.0'">
-		<PackageReference Include="Xamarin.AndroidX.Legacy.Support.v4" />
-		<PackageReference Include="Xamarin.AndroidX.AppCompat" />
-		<PackageReference Include="Xamarin.AndroidX.RecyclerView" />
-	</ItemGroup>
-
 	<ItemGroup Condition="$(IsAndroid) or $(IsIOS) or '$(TargetFrameworkIdentifier)'=='.NETStandard' or $(IsMacOS) or '$(TargetFramework)'=='net461'">
 		<ProjectReference Include="..\Uno.UI\Uno.UI.csproj">
 			<Name>Uno.UI</Name>

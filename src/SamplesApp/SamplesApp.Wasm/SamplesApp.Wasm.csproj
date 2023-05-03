@@ -4,6 +4,8 @@
 		<TargetFrameworks>net7.0;net8.0</TargetFrameworks>
 	</PropertyGroup>
 
+	<Import Project="../../targetframework-override.props" />
+
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
 		<DefineConstants>$(DefineConstants);__WASM__;HAS_UNO;UNO_REFERENCE_API</DefineConstants>

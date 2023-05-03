@@ -6,6 +6,8 @@
 		<Nullable>enable</Nullable>
 	</PropertyGroup>
 
+	<Import Project="../targetframework-override.props" />
+
 	<ItemGroup>
 		<Compile Include="..\Uno.UI.RemoteControl\HotReload\Messages\**\*.cs" Link="HotReload/Messages/%(Filename)" />
 	</ItemGroup>
