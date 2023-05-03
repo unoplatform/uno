@@ -7,6 +7,8 @@ namespace Uno.Helpers.Theming;
 
 internal static partial class SystemThemeHelper
 {
+	private static SystemThemeObserver? _observer;
+
 	/// <summary>
 	/// Based on <see href="https://forums.developer.apple.com/thread/118974" />
 	/// </summary>
@@ -28,5 +30,11 @@ internal static partial class SystemThemeHelper
 			}
 		}
 		return SystemTheme.Light;
+	}
+
+	static partial void ObserveThemeChangesPlatform()
+	{
+		_observer ??= new();
+		_observer?.ObserveSystemThemeChanges();
 	}
 }
