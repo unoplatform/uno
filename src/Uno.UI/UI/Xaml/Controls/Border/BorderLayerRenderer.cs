@@ -29,9 +29,9 @@ internal partial class BorderLayerRenderer
 
 		_borderInfoProvider = borderInfoProvider;
 
-		_owner.Loaded += (s, e) => UpdateLayer();
-		_owner.Unloaded += (s, e) => ClearLayer();
-		_owner.LayoutUpdated += (s, e) => UpdateLayer();
+		_owner.Loaded += (s, e) => Update();
+		_owner.Unloaded += (s, e) => Clear();
+		_owner.LayoutUpdated += (s, e) => Update();
 	}
 
 	/// <summary>
@@ -39,27 +39,27 @@ internal partial class BorderLayerRenderer
 	/// </summary>
 	internal void Update()
 	{
-		// Subscribe to brushes to observe their changes.
-		if (_currentState.BorderBrush != _borderInfoProvider.BorderBrush)
-		{
-			_borderBrushSubscription.Disposable = null;
-			if (_borderInfoProvider.BorderBrush is { } brush)
-			{
-				_borderBrushSubscription.Disposable = brush.RegisterDisposablePropertyChangedCallback(OnBorderBrushChanged);
-			}
-		}
-
-		if (_currentState.Background != _borderInfoProvider.Background)
-		{
-			_backgroundBrushSubscription.Disposable = null;
-			if (_borderInfoProvider.Background is { } background)
-			{
-				_backgroundBrushSubscription.Disposable = background.RegisterDisposablePropertyChangedCallback(OnBackgroundBrushChanged);
-			}
-		}
-
 		if (_owner.IsLoaded)
 		{
+			// Subscribe to brushes to observe their changes.
+			if (_currentState.BorderBrush != _borderInfoProvider.BorderBrush)
+			{
+				_borderBrushSubscription.Disposable = null;
+				if (_borderInfoProvider.BorderBrush is { } brush)
+				{
+					_borderBrushSubscription.Disposable = brush.RegisterDisposablePropertyChangedCallback(OnBorderBrushChanged);
+				}
+			}
+
+			if (_currentState.Background != _borderInfoProvider.Background)
+			{
+				_backgroundBrushSubscription.Disposable = null;
+				if (_borderInfoProvider.Background is { } background)
+				{
+					_backgroundBrushSubscription.Disposable = background.RegisterDisposablePropertyChangedCallback(OnBackgroundBrushChanged);
+				}
+			}
+
 			UpdateLayer();
 		}
 	}
@@ -83,9 +83,16 @@ internal partial class BorderLayerRenderer
 	/// </summary>
 	internal void Clear()
 	{
+		UnsubscribeBrushChanges();
+		ClearLayer();
+	}
+
+	~BorderLayerRenderer() => UnsubscribeBrushChanges(); // If the owner was not Unloaded properly, we make sure to clean up here.
+
+	private void UnsubscribeBrushChanges()
+	{
 		_borderBrushSubscription.Disposable = null;
 		_backgroundBrushSubscription.Disposable = null;
-		ClearLayer();
 	}
 
 	partial void UpdateLayer();
