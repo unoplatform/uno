@@ -18,6 +18,7 @@ using Uno.UI;
 using AndroidX.AppCompat.View;
 using System.Diagnostics;
 using Rect = Windows.Foundation.Rect;
+using Windows.UI.Xaml.Media.Imaging;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -486,6 +487,7 @@ namespace Windows.UI.Xaml.Controls
 			public readonly Windows.Foundation.Rect Area;
 			public readonly Brush Background;
 			public readonly ImageSource BackgroundImageSource;
+			public readonly Uri BackgroundImageSourceUri;
 			public readonly Color? BackgroundColor;
 			public readonly Brush BorderBrush;
 			public readonly Color? BorderBrushColor;
@@ -505,6 +507,12 @@ namespace Windows.UI.Xaml.Controls
 
 				var imageBrushBackground = Background as ImageBrush;
 				BackgroundImageSource = imageBrushBackground?.ImageSource;
+				BackgroundImageSourceUri = BackgroundImageSource switch
+				{
+					BitmapImage bitmapImage => bitmapImage.UriSource,
+					SvgImageSource svgImageSource => svgImageSource.UriSource,
+					_ => null
+				};
 
 				BackgroundColor = (Background as SolidColorBrush)?.Color;
 				BorderBrushColor = (BorderBrush as SolidColorBrush)?.Color;
@@ -518,6 +526,7 @@ namespace Windows.UI.Xaml.Controls
 					&& other.Area == Area
 					&& other.Background == Background
 					&& other.BackgroundImageSource == BackgroundImageSource
+					&& other.BackgroundImageSourceUri == BackgroundImageSourceUri
 					&& other.BackgroundColor == BackgroundColor
 					&& other.BorderBrush == BorderBrush
 					&& other.BorderBrushColor == BorderBrushColor

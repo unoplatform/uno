@@ -9420,6 +9420,8 @@
 			<Member fullName="System.Void Windows.Media.Playback.MediaPlaybackSession..ctor()" reason="Not present in Windows" />
 			<!-- END MediaPlayer updates -->
 
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.Image.OnImageFailed(Windows.UI.Xaml.Media.ImageSource imageSource)" reason="Added parameter and made private" />
+
 			<!-- BEGIN WebView -->
 			<Member fullName="System.Void Microsoft.Web.WebView2.Core.CoreWebView2..ctor()" reason="Should not be public" />
 			<Member fullName="System.Void Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs..ctor()" reason="Should not be public" />

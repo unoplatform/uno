@@ -31,9 +31,7 @@ namespace Windows.UI.Xaml.Media
 			oldValue?.Dispose();
 			_imageSourceChanged = true;
 			_onImageLoaded?.Invoke();
-			return;
 		}
-
 
 		protected override Paint GetPaintInner(Rect drawRect)
 		{
