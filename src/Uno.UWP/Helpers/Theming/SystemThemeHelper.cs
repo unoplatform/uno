@@ -55,8 +55,10 @@ internal static partial class SystemThemeHelper
 		// as we might miss a theme change if the app gets suspended.
 		CoreApplication.LeavingBackground += (s, e) => RefreshSystemTheme();
 		CoreApplication.Resuming += (s, e) => RefreshSystemTheme();
-		CoreWindow.Main!.Activated += (s, e) => RefreshSystemTheme();
-		CoreWindow.Main!.VisibilityChanged += (s, e) => RefreshSystemTheme();
+
+		var coreWindow = CoreWindow.GetOrCreateForCurrentThread();
+		coreWindow.Activated += (s, e) => RefreshSystemTheme();
+		coreWindow.VisibilityChanged += (s, e) => RefreshSystemTheme();
 	}
 
 	/// <summary>

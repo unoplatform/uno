@@ -43,6 +43,7 @@ using UIKit;
 using View = AppKit.NSView;
 using ViewGroup = AppKit.NSView;
 using AppKit;
+using Windows.UI.Core;
 #else
 using View = Windows.UI.Xaml.UIElement;
 using ViewGroup = Windows.UI.Xaml.UIElement;
