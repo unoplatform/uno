@@ -13,7 +13,7 @@ public class Given_MvvmGeneratedMembers
 {
 	private class MvvmTest : XamlSourceGeneratorVerifier.TestBase
 	{
-		private static readonly ImmutableArray<PackageIdentity> s_mvvmPackages = ImmutableArray.Create(new PackageIdentity("CommunityToolkit.Mvvm", "8.1.0"));
+		private static readonly ImmutableArray<PackageIdentity> s_mvvmPackages = ImmutableArray.Create(new PackageIdentity("CommunityToolkit.Mvvm", "8.2.0"));
 
 		public MvvmTest(XamlFile xamlFile, string testMethodName, [CallerFilePath] string testFilePath = "") : base(xamlFile, testFilePath, testMethodName)
 		{
