@@ -1,7 +1,5 @@
 ﻿#if !SILVERLIGHT
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Reflection;
 using Uno.Extensions;
 using Windows.UI.Xaml.Controls;
@@ -17,7 +15,6 @@ using Windows.UI.Xaml.Data;
 using Uno.UI.DataBinding;
 #else
 using Windows.UI.Xaml.Data;
-using Uno.UI.DataBinding;
 #endif
 
 namespace Windows.UI.Xaml
@@ -324,6 +321,7 @@ namespace Windows.UI.Xaml
 			return false;
 		}
 
+#if __WASM__
 		/// <summary>
 		/// This method retrieves the actual border thickness of given FrameworkElement.
 		/// Note that for Control.BorderThickness is not actually applied unless
@@ -334,27 +332,34 @@ namespace Windows.UI.Xaml
 		/// <returns>Whether the given element has an actual border.</returns>
 		internal static bool TryGetActualBorderThickness(this IFrameworkElement frameworkElement, out Thickness borderThickness)
 		{
-			if (__LinkerHints.Is_Windows_UI_Xaml_Controls_Panel_Available && frameworkElement is Panel p)
+			if (__LinkerHints.Is_Windows_UI_Xaml_Controls_Panel_Available && frameworkElement is Panel { BorderBrushInternal: not null } p)
 			{
 				borderThickness = p.BorderThicknessInternal;
 				return true;
 			}
 
-			if (__LinkerHints.Is_Windows_UI_Xaml_Controls_ContentPresenter_Available && frameworkElement is ContentPresenter cp)
+			if (__LinkerHints.Is_Windows_UI_Xaml_Controls_ContentPresenter_Available && frameworkElement is ContentPresenter { BorderBrush: not null } cp)
 			{
 				borderThickness = cp.BorderThickness;
 				return true;
 			}
 
-			if (__LinkerHints.Is_Windows_UI_Xaml_Controls_Border_Available && frameworkElement is Border b)
+			if (__LinkerHints.Is_Windows_UI_Xaml_Controls_Border_Available && frameworkElement is Border { BorderBrush: not null } b)
 			{
 				borderThickness = b.BorderThickness;
+				return true;
+			}
+
+			if (__LinkerHints.Is_Windows_UI_Xaml_Controls_CalendarViewDayItem_Available && frameworkElement is CalendarViewDayItem calendarViewDayItem)
+			{
+				borderThickness = calendarViewDayItem.EffectiveBorderThickness;
 				return true;
 			}
 
 			borderThickness = default;
 			return false;
 		}
+#endif
 
 		internal static bool TryGetBorderThickness(this IFrameworkElement frameworkElement, out Thickness borderThickness)
 		{

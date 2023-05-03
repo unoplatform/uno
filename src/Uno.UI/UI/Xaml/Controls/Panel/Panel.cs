@@ -112,7 +112,27 @@ namespace Windows.UI.Xaml.Controls
 
 		internal Thickness BorderThicknessInternal { get; set; }
 
-		internal Brush BorderBrushInternal { get; set; }
+		private Brush _borderBrushInternal;
+
+		internal Brush BorderBrushInternal
+		{
+			get => _borderBrushInternal;
+			set
+			{
+#if __WASM__
+				if (((_borderBrushInternal is null) ^ (value is null)) && BorderThicknessInternal != default)
+				{
+					// The transition from null to non-null (and vice-versa) affects child arrange on Wasm when non-zero BorderThickness is specified.
+					foreach (var child in _children)
+					{
+						child.InvalidateArrange();
+					}
+				}
+#endif
+
+				_borderBrushInternal = value;
+			}
+		}
 
 		internal CornerRadius CornerRadiusInternal { get; set; }
 

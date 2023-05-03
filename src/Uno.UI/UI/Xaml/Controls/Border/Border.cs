@@ -289,6 +289,14 @@ namespace Windows.UI.Xaml.Controls
 				_borderBrushOpacityChanged.Disposable = null;
 			}
 
+#if __WASM__
+			if (((oldValue is null) ^ (newValue is null)) && BorderThickness != default)
+			{
+				// The transition from null to non-null (and vice-versa) affects child arrange on Wasm when non-zero BorderThickness is specified.
+				Child?.InvalidateArrange();
+			}
+#endif
+
 			OnBorderBrushChangedPartial();
 		}
 
