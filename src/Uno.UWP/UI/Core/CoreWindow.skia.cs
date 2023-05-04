@@ -29,19 +29,13 @@ namespace Windows.UI.Core
 		void ICoreWindowEvents.RaiseNativeKeyDownReceived(KeyEventArgs args)
 		{
 			NativeKeyDownReceived?.Invoke(this, args);
-			if (!args.Handled)
-			{
-				((ICoreWindowEvents)this).RaiseKeyDown(args);
-			}
+			((ICoreWindowEvents)this).RaiseKeyDown(args);
 		}
 
 		void ICoreWindowEvents.RaiseNativeKeyUpReceived(KeyEventArgs args)
 		{
 			NativeKeyUpReceived?.Invoke(this, args);
-			if (!args.Handled)
-			{
-				((ICoreWindowEvents)this).RaiseKeyUp(args);
-			}
+			((ICoreWindowEvents)this).RaiseKeyUp(args);
 		}
 	}
 }
