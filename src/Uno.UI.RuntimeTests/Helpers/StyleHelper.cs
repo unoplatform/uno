@@ -5,6 +5,8 @@ using System.Text;
 using Uno.Disposables;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Private.Infrastructure;
+using MUXControlsTestApp.Utilities;
 
 #if HAS_UNO
 using Uno.UI.Xaml.Media;
@@ -87,13 +89,24 @@ namespace Uno.UI.RuntimeTests.Helpers
 
 			// Force default brushes to be reloaded
 			DefaultBrushes.ResetDefaultThemeBrushes();
+			ResetIslandRootForeground();
 
 			return new DisposableAction(() =>
 			{
 				resources.MergedDictionaries.Remove(xcr);
 				DefaultBrushes.ResetDefaultThemeBrushes();
+				ResetIslandRootForeground();
 			});
 #endif
+		}
+
+		private static void ResetIslandRootForeground()
+		{
+			if (TestServices.WindowHelper.IsXamlIsland && VisualTreeUtils.FindVisualChildByType<Control>(TestServices.WindowHelper.XamlRoot.Content) is { } control)
+			{
+				// Ensure the root element's Foreground is set correctly
+				control.SetValue(Control.ForegroundProperty, DefaultBrushes.TextForegroundBrush, DependencyPropertyValuePrecedences.DefaultValue);
+			}
 		}
 	}
 }
