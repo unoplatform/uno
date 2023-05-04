@@ -81,7 +81,7 @@ public static class InjectedPointerExtensions
 
 public class Finger : IInjectedPointer, IDisposable
 {
-	private const int _defaultMoveSteps = 10;
+	private const uint _defaultMoveSteps = 10;
 
 	private readonly InputInjector _injector;
 	private readonly uint _id;
@@ -106,7 +106,7 @@ public class Finger : IInjectedPointer, IDisposable
 	}
 
 	void IInjectedPointer.MoveTo(Point position) => MoveTo(position);
-	public void MoveTo(Point position, int steps = _defaultMoveSteps)
+	public void MoveTo(Point position, uint steps = _defaultMoveSteps)
 	{
 		if (_currentPosition is { } current)
 		{
@@ -116,7 +116,7 @@ public class Finger : IInjectedPointer, IDisposable
 	}
 
 	void IInjectedPointer.MoveBy(double deltaX, double deltaY) => MoveBy(deltaX, deltaY);
-	public void MoveBy(double deltaX, double deltaY, int steps = _defaultMoveSteps)
+	public void MoveBy(double deltaX, double deltaY, uint steps = _defaultMoveSteps)
 	{
 		if (_currentPosition is { } current)
 		{
@@ -157,11 +157,13 @@ public class Finger : IInjectedPointer, IDisposable
 			}
 		};
 
-	public static IEnumerable<InjectedInputTouchInfo> GetMove(Point fromPosition, Point toPosition, int steps = _defaultMoveSteps)
+	public static IEnumerable<InjectedInputTouchInfo> GetMove(Point fromPosition, Point toPosition, uint steps = _defaultMoveSteps)
 	{
+		steps += 1; // We need to send at least the final location, but steps refers to the number of intermediate points
+
 		var stepX = (toPosition.X - fromPosition.X) / steps;
 		var stepY = (toPosition.Y - fromPosition.Y) / steps;
-		for (var step = 0; step <= steps; step++)
+		for (var step = 1; step <= steps; step++)
 		{
 			yield return new()
 			{

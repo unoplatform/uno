@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using Windows.Foundation;
 using Windows.UI;
+using Windows.UI.Input.Preview.Injection;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -13,6 +15,7 @@ using Windows.UI.Xaml.Shapes;
 using Windows.UI.ViewManagement;
 using static Private.Infrastructure.TestServices;
 using Uno.Disposables;
+using Uno.UI.RuntimeTests.Tests.Uno_UI_Xaml_Core;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -667,5 +670,97 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 #endif
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if !__SKIA__
+		[Ignore("Pointer injection supported only on skia for now.")]
+#endif
+		public async Task When_TouchScroll_Then_NestedElementReceivePointerEvents()
+		{
+			if (Private.Infrastructure.TestServices.WindowHelper.IsXamlIsland)
+			{
+				Assert.Inconclusive("Pointer injection is not supported yet on XamlIsland");
+				return;
+			}
+
+			var nested = new Border
+			{
+				Height = 4192,
+				Width = 256,
+				Background = new SolidColorBrush(Colors.DeepPink)
+			};
+			var sut = new ScrollViewer
+			{
+				Height = 512,
+				Width = 256,
+				Content = nested
+			};
+
+			var events = new List<string>();
+			nested.PointerEntered += (snd, e) => events.Add("enter");
+			nested.PointerExited += (snd, e) => events.Add("exited");
+			nested.PointerPressed += (snd, e) => events.Add("pressed");
+			nested.PointerReleased += (snd, e) => events.Add("release");
+			nested.PointerCanceled += (snd, e) => events.Add("cancel");
+
+			WindowHelper.WindowContent = new Grid { Children = { sut } };
+			await WindowHelper.WaitForLoaded(nested);
+			await WindowHelper.WaitForIdle();
+
+			var input = InputInjector.TryCreate() ?? throw new InvalidOperationException("Pointer injection not available on this platform.");
+			using var finger = input.GetFinger();
+
+			var sutLocation = sut.GetAbsoluteBounds().Location;
+			finger.Drag(sutLocation.Offset(5, 480), sutLocation.Offset(5, 5));
+
+			events.Should().BeEquivalentTo("enter", "pressed", "release", "exited"); // TODO: Exited is not injected by the InputInjector (but it is with native)
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if !__SKIA__
+		[Ignore("Pointer injection supported only on skia for now.")]
+#endif
+		public async Task When_TouchTap_Then_NestedElementReceivePointerEvents()
+		{
+			if (Private.Infrastructure.TestServices.WindowHelper.IsXamlIsland)
+			{
+				Assert.Inconclusive("Pointer injection is not supported yet on XamlIsland");
+				return;
+			}
+
+			var nested = new Border
+			{
+				Height = 4192,
+				Width = 256,
+				Background = new SolidColorBrush(Colors.DeepPink)
+			};
+			var sut = new ScrollViewer
+			{
+				Height = 512,
+				Width = 256,
+				Content = nested
+			};
+
+			var events = new List<string>();
+			nested.PointerEntered += (snd, e) => events.Add("enter");
+			nested.PointerExited += (snd, e) => events.Add("exited");
+			nested.PointerPressed += (snd, e) => events.Add("pressed");
+			nested.PointerReleased += (snd, e) => events.Add("release");
+			nested.PointerCanceled += (snd, e) => events.Add("cancel");
+
+			WindowHelper.WindowContent = new Grid { Children = { sut } };
+			await WindowHelper.WaitForLoaded(nested);
+			await WindowHelper.WaitForIdle();
+
+			var input = InputInjector.TryCreate() ?? throw new InvalidOperationException("Pointer injection not available on this platform.");
+			using var finger = input.GetFinger();
+
+			var sutLocation = sut.GetAbsoluteBounds().Location;
+			finger.Drag(sutLocation.Offset(5, 480), sutLocation.Offset(5, 5));
+
+			events.Should().BeEquivalentTo("enter", "pressed", "release", "exited"); // TODO: Exited is not injected by the InputInjector (but it is with native)
+		}
 	}
 }

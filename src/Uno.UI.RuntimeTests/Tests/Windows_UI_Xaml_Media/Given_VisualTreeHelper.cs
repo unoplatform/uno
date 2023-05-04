@@ -3,15 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.ApplicationModel.Appointments;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.RuntimeTests.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media.VisualTreeHelperPages;
 using Windows.Foundation;
+using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Media;
+using FluentAssertions;
+using Uno.Extensions;
+using Uno.UI.RuntimeTests.Tests.Uno_UI_Xaml_Core;
 using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
@@ -94,6 +99,89 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 				Assert.IsNotNull(hitTest.element);
 				Assert.AreNotEqual(sut, hitTest.element);
 			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_HitTestTransformedElement()
+		{
+			Border root, transformed, nested;
+			root = new Border
+			{
+				Name = "Root",
+				Width = 512,
+				Height = 512,
+				Background = new SolidColorBrush(Colors.DeepSkyBlue),
+				HorizontalAlignment = HorizontalAlignment.Left,
+				VerticalAlignment = VerticalAlignment.Top,
+				Child = transformed = new Border
+				{
+					Name = "Transformed",
+					Width = 128,
+					Height = 128,
+					Background = new SolidColorBrush(Colors.DeepPink),
+					RenderTransform = new TranslateTransform { X = 128, Y = 128 },
+					HorizontalAlignment = HorizontalAlignment.Center,
+					VerticalAlignment = VerticalAlignment.Center,
+					Child = nested = new Border
+					{
+						Name = "Nested",
+						Width = 64,
+						Height = 64,
+						Background = new SolidColorBrush(Colors.Chartreuse),
+						HorizontalAlignment = HorizontalAlignment.Center,
+						VerticalAlignment = VerticalAlignment.Center,
+					}
+				}
+			};
+
+			var position = (await UITestHelper.Load(root)).Location;
+
+			VisualTreeHelper.HitTest(position.Offset(256), root.XamlRoot).element!.Name!.Should().Be("Root");
+			VisualTreeHelper.HitTest(position.Offset(256 + 65), root.XamlRoot).element!.Name!.Should().Be("Transformed");
+			VisualTreeHelper.HitTest(position.Offset(256 + 128), root.XamlRoot).element!.Name!.Should().Be("Nested");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_HitTestScaledElement()
+		{
+			Border root, transformed, nested;
+			root = new Border
+			{
+				Name = "Root",
+				Width = 512,
+				Height = 512,
+				Background = new SolidColorBrush(Colors.DeepSkyBlue),
+				HorizontalAlignment = HorizontalAlignment.Left,
+				VerticalAlignment = VerticalAlignment.Top,
+				Child = transformed = new Border
+				{
+					Name = "Transformed",
+					Width = 128,
+					Height = 128,
+					Background = new SolidColorBrush(Colors.DeepPink),
+					RenderTransform = new ScaleTransform { ScaleX = 2, ScaleY = 2 },
+					RenderTransformOrigin = new Point(.5,.5),
+					HorizontalAlignment = HorizontalAlignment.Center,
+					VerticalAlignment = VerticalAlignment.Center,
+					Child = nested = new Border
+					{
+						Name = "Nested",
+						Width = 64,
+						Height = 64,
+						Background = new SolidColorBrush(Colors.Chartreuse),
+						HorizontalAlignment = HorizontalAlignment.Center,
+						VerticalAlignment = VerticalAlignment.Center,
+					}
+				}
+			};
+
+			var position = (await UITestHelper.Load(root)).Location;
+
+			VisualTreeHelper.HitTest(position.Offset(128 - 5), root.XamlRoot).element!.Name!.Should().Be("Root");
+			VisualTreeHelper.HitTest(position.Offset(128 + 5), root.XamlRoot).element!.Name!.Should().Be("Transformed");
+			VisualTreeHelper.HitTest(position.Offset(256 - 60), root.XamlRoot).element!.Name!.Should().Be("Nested");
 		}
 
 		private static IEnumerable<Point> GetPointsInside(Rect rect, double perimeterOffset)
