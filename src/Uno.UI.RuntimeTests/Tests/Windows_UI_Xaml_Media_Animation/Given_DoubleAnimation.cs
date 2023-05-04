@@ -120,7 +120,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 		[TestMethod]
 		[RunsOnUIThread]
 #if __SKIA__
-		[Ignore("This test is very flaky in CI")]
+		[Ignore("This test is very flaky in CI for Skia targets, see https://github.com/unoplatform/uno/issues/9080")]
 #endif
 		public async Task When_RepeatForever_ShouldLoop()
 		{
