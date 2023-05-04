@@ -1256,6 +1256,9 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 #if __MACOS__
 		[Ignore("Currently fails on macOS, part of #9282 epic")]
 #endif
+#if __ANDROID__
+		[Ignore("Currently fails on Android https://github.com/unoplatform/uno/issues/9080")]
+#endif
 		public async Task VerifyNavigationViewItemToolTipPaneDisplayMode()
 		{
 			if (!PlatformConfiguration.IsOsVersionGreaterThanOrEqual(OSVersion.Redstone5))
