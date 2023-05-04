@@ -35,6 +35,10 @@
 		Ensures that AssignLinkMetadata runs before AssignTargetPaths.
 		Otherwise, AssignTargetPath will generate a rooted path and will break embedded sources
 		LogicalName metadata's behavior.
+		
+		This particular path is used when building with .NET core. Otherwise, DependsOnTargets for UnoResourcesGeneration
+		ensures that AssignLinkMetadata runs before AssignTargetPaths. A different order forces EmbeddedResource items
+		to have an incorrect TargetPath metadata.
 		-->
 		<AssignTargetPathsDependsOn>$(AssignTargetPathsDependsOn);AssignLinkMetadata</AssignTargetPathsDependsOn>
 	</PropertyGroup>
@@ -47,7 +51,7 @@
 	-->
 	<Target Name="UnoResourcesGeneration"
 				BeforeTargets="_GetLibraryImports;PrepareForBuild;_CheckForContent;_CollectBundleResources;_ComputeAndroidResourcePaths"
-				DependsOnTargets="ResolveProjectReferences;_UnoLangSetup"
+				DependsOnTargets="ResolveProjectReferences;_UnoLangSetup;AssignLinkMetadata;AssignTargetPaths"
 				Condition="'$(DesignTimeBuild)' != 'true' and '$(BuildingInsideUnoSourceGenerator)' == ''">
 
 		<CheckForDevenv Condition="'$(SolutionFileName)'=='Uno.UI.sln' and '$(MSBuildRuntimeType)'!='Core'" />
