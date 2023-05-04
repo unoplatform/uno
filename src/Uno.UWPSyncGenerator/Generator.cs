@@ -82,13 +82,11 @@ namespace Uno.UWPSyncGenerator
 			BaseXamlNamespace + ".Media.Animation.FadeOutThemeAnimation",
 			BaseXamlNamespace + ".Media.ImageBrush",
 			BaseXamlNamespace + ".Media.LinearGradientBrush",
-			BaseXamlNamespace + ".Media.RadialGradientBrush",
 			BaseXamlNamespace + ".Data.RelativeSource",
 			BaseXamlNamespace + ".Controls.Primitives.CarouselPanel",
 			BaseXamlNamespace + ".Controls.MediaPlayerPresenter",
 			BaseXamlNamespace + ".Controls.NavigationViewItemBase",
 			"Microsoft.UI.Xaml.Controls.WebView2",
-			"Microsoft.UI.Xaml.Media.RadialGradientBrush",
 			// Mismatching public inheritance hierarchy because RadioMenuFlyoutItem has a double inheritance in WinUI.
 			// Remove this and update RadioMenuFlyoutItem if WinUI 3 removed the double inheritance.
 			"Microsoft.UI.Xaml.Controls.RadioMenuFlyoutItem",

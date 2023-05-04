@@ -14,6 +14,8 @@ using AppKit;
 using _Image = AppKit.NSImage;
 #endif
 
+using RadialGradientBrush = Microsoft.UI.Xaml.Media.RadialGradientBrush;
+
 namespace Windows.UI.Xaml.Media
 {
 	// iOS partial for SolidColorBrush
@@ -42,7 +44,6 @@ namespace Windows.UI.Xaml.Media
 
 				return disposables;
 			}
-
 			else if (b is GradientBrush gradientBrush)
 			{
 				var disposables = new CompositeDisposable(2);
@@ -56,6 +57,23 @@ namespace Windows.UI.Xaml.Media
 				gradientBrush.RegisterDisposablePropertyChangedCallback(
 					GradientBrush.OpacityProperty,
 					(s, colorArg) => colorSetter((s as GradientBrush).FallbackColorWithOpacity)
+				).DisposeWith(disposables);
+
+				return disposables;
+			}
+			else if (b is RadialGradientBrush radialGradientBrush)
+			{
+				var disposables = new CompositeDisposable(2);
+				colorSetter(radialGradientBrush.FallbackColorWithOpacity);
+
+				radialGradientBrush.RegisterDisposablePropertyChangedCallback(
+					RadialGradientBrush.FallbackColorProperty,
+					(s, colorArg) => colorSetter((s as RadialGradientBrush).FallbackColorWithOpacity)
+				).DisposeWith(disposables);
+
+				radialGradientBrush.RegisterDisposablePropertyChangedCallback(
+					RadialGradientBrush.OpacityProperty,
+					(s, colorArg) => colorSetter((s as RadialGradientBrush).FallbackColorWithOpacity)
 				).DisposeWith(disposables);
 
 				return disposables;
