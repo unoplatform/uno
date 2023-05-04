@@ -17,7 +17,10 @@ namespace Windows.UI.Xaml.Controls
 		void SetProgress(double progress);
 
 		Size Measure(Size availableSize);
+	}
 
+	internal partial interface IAnimatedVisualSourceWithUri
+	{
 		Uri UriSource { get; set; }
 	}
 }
