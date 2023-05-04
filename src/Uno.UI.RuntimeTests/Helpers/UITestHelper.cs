@@ -30,6 +30,9 @@ public static class InputInjectorExtensions
 {
 	public static Finger GetFinger(this InputInjector injector, uint id = 42)
 		=> new(injector, id);
+
+	public static Mouse GetMouse(this InputInjector injector)
+		=> new(injector);
 }
 
 public interface IInjectedPointer
@@ -196,5 +199,132 @@ public class Finger : IInjectedPointer, IDisposable
 
 	private void Inject(params InjectedInputTouchInfo[] infos)
 		=> _injector.InjectTouchInput(infos);
+}
+
+public class Mouse
+{
+	private readonly InputInjector _input;
+
+	public Mouse(InputInjector input)
+	{
+		_input = input;
+	}
+
+	public void Press()
+		=> Inject(new InjectedInputMouseInfo()
+		{
+			TimeOffsetInMilliseconds = 1,
+			MouseOptions = InjectedInputMouseOptions.LeftDown,
+		});
+
+	public void Release()
+		=> Inject(new InjectedInputMouseInfo()
+		{
+			TimeOffsetInMilliseconds = 1,
+			MouseOptions = InjectedInputMouseOptions.LeftUp,
+		});
+
+	public void ReleaseAny()
+	{
+		var options = default(InjectedInputMouseOptions);
+
+#if HAS_UNO
+		var current = _input.Mouse;
+		if (current.Properties.IsLeftButtonPressed)
+		{
+			options |= InjectedInputMouseOptions.LeftUp;
+		}
+
+		if (current.Properties.IsMiddleButtonPressed)
+		{
+			options |= InjectedInputMouseOptions.MiddleUp;
+		}
+
+		if (current.Properties.IsRightButtonPressed)
+		{
+			options |= InjectedInputMouseOptions.RightUp;
+		}
+
+		if (current.Properties.IsXButton1Pressed)
+		{
+			options |= InjectedInputMouseOptions.XUp;
+		}
+#else
+			options = InjectedInputMouseOptions.LeftUp
+				| InjectedInputMouseOptions.MiddleUp
+				| InjectedInputMouseOptions.RightUp
+				| InjectedInputMouseOptions.XUp;
+#endif
+
+		if (options != default)
+		{
+			Inject(new InjectedInputMouseInfo()
+			{
+				TimeOffsetInMilliseconds = 1,
+				MouseOptions = options
+			});
+		}
+	}
+
+	public void MoveBy(int deltaX, int deltaY)
+		=> Inject(MoveByCore(deltaX, deltaY));
+
+	public void MoveTo(double deltaX, double deltaY, int? steps = null)
+		=> Inject(MoveToCore(deltaX, deltaY, steps));
+
+	private InjectedInputMouseInfo MoveByCore(int deltaX, int deltaY)
+		=> new()
+		{
+			DeltaX = deltaX,
+			DeltaY = deltaY,
+			TimeOffsetInMilliseconds = 1,
+			MouseOptions = InjectedInputMouseOptions.MoveNoCoalesce,
+		};
+
+	private IEnumerable<InjectedInputMouseInfo> MoveToCore(double x, double y, int? steps)
+	{
+		Point Current()
+#if HAS_UNO
+			=> _input.Mouse.Position;
+#else
+				=> CoreWindow.GetForCurrentThread().PointerPosition;
+#endif
+
+		var deltaX = x - Current().X;
+		var deltaY = y - Current().Y;
+
+		steps ??= (int)Math.Min(Math.Max(Math.Abs(deltaX), Math.Abs(deltaY)), 512);
+		if (steps is 0)
+		{
+			yield break;
+		}
+
+		var stepX = deltaX / steps.Value;
+		var stepY = deltaY / steps.Value;
+
+		stepX = stepX is > 0 ? Math.Ceiling(stepX) : Math.Floor(stepX);
+		stepY = stepY is > 0 ? Math.Ceiling(stepY) : Math.Floor(stepY);
+
+		for (var step = 0; step <= steps && (stepX is not 0 || stepY is not 0); step++)
+		{
+			yield return MoveByCore((int)stepX, (int)stepY);
+
+			if (Math.Abs(Current().X - x) < stepX)
+			{
+				stepX = 0;
+			}
+
+			if (Math.Abs(Current().Y - y) < stepY)
+			{
+				stepY = 0;
+			}
+		}
+	}
+
+	private void Inject(IEnumerable<InjectedInputMouseInfo> infos)
+		=> _input.InjectMouseInput(infos);
+
+	private void Inject(params InjectedInputMouseInfo[] infos)
+		=> _input.InjectMouseInput(infos);
 }
 
