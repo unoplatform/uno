@@ -313,7 +313,6 @@ namespace Windows.UI.Xaml.Controls
 		protected override void OnPointerEntered(PointerRoutedEventArgs e)
 		{
 			base.OnPointerEntered(e);
-			IsPointerOver = true;
 
 			UpdateVisualState();
 		}
@@ -321,7 +320,6 @@ namespace Windows.UI.Xaml.Controls
 		protected override void OnPointerExited(PointerRoutedEventArgs e)
 		{
 			base.OnPointerEntered(e);
-			IsPointerOver = false;
 
 			UpdateVisualState();
 		}
@@ -329,7 +327,6 @@ namespace Windows.UI.Xaml.Controls
 		protected override void OnPointerCanceled(PointerRoutedEventArgs e)
 		{
 			base.OnPointerCanceled(e);
-			IsPointerOver = false;
 
 			UpdateVisualState();
 		}
@@ -338,7 +335,6 @@ namespace Windows.UI.Xaml.Controls
 		{
 			base.OnPointerCaptureLost(e);
 
-			IsPointerOver = false;
 			UpdateVisualState();
 		}
 
@@ -493,6 +489,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			UpdateDropDownState();
+			ChangeVisualState(true);
 		}
 
 		protected override void OnPointerPressed(PointerRoutedEventArgs args)
