@@ -131,7 +131,7 @@ When targeting Android 11 (API 30) or newer, you may notice the `QueryUriSupport
 
 ##### iOS
 
-Add any URL schemes passed to `QueryUriSupportAsync` as `LSApplicationQueriesSchemes` entries in your `Info.plist` file, otherwise it will return false:
+Add any URL schemes passed to `QueryUriSupportAsync` as `LSApplicationQueriesSchemes` entries in your `Info.plist` file, otherwise, it will return false:
 
 ```xml
 <key>LSApplicationQueriesSchemes</key>
