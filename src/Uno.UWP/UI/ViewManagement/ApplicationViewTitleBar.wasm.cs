@@ -4,6 +4,10 @@ using System.Collections.Generic;
 using System.Text;
 using Uno.Foundation;
 
+#if NET7_0_OR_GREATER
+using NativeMethods = __Windows.UI.ViewManagement.ApplicationViewTitleBar.NativeMethods;
+#endif
+
 namespace Windows.UI.ViewManagement
 {
 	public partial class ApplicationViewTitleBar

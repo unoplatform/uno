@@ -4,6 +4,10 @@ using System.Text;
 using Uno;
 using Uno.Foundation;
 
+#if NET7_0_OR_GREATER
+using NativeMethods = __Windows.UI.Core.SystemNavigationManager.NativeMethods;
+#endif
+
 namespace Windows.UI.Core
 {
 	partial class SystemNavigationManager

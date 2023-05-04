@@ -1,5 +1,9 @@
 ﻿#if __WASM__
 
+#if NET7_0_OR_GREATER
+using NativeMethods = __Windows.Networking.Connectivity.ConnectionProfile.NativeMethods;
+#endif
+
 namespace Windows.Networking.Connectivity
 {
 	public partial class ConnectionProfile

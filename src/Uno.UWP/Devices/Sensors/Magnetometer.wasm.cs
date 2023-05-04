@@ -4,6 +4,10 @@ using System.Diagnostics;
 using Uno;
 using Uno.Devices.Sensors.Helpers;
 
+#if NET7_0_OR_GREATER
+using NativeMethods = __Windows.Devices.Sensors.Magnetometer.NativeMethods;
+#endif
+
 namespace Windows.Devices.Sensors
 {
 	public partial class Magnetometer

@@ -3,6 +3,10 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
+#if NET7_0_OR_GREATER
+using NativeMethods = __Windows.ApplicationModel.Calls.PhoneCallManager.NativeMethods;
+#endif
+
 namespace Windows.ApplicationModel.Calls
 {
 	public partial class PhoneCallManager

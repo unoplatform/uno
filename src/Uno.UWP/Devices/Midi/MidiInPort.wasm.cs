@@ -11,6 +11,10 @@ using Uno.Devices.Enumeration.Internal;
 using Uno.Devices.Midi.Internal;
 using Uno.Foundation;
 
+#if NET7_0_OR_GREATER
+using NativeMethods = __Windows.Devices.Midi.MidiInPort.NativeMethods;
+#endif
+
 namespace Windows.Devices.Midi
 {
 	public partial class MidiInPort

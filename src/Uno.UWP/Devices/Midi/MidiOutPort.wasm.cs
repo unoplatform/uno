@@ -16,6 +16,10 @@ using Windows.Foundation;
 using Windows.Storage.Streams;
 using static Uno.Foundation.WebAssemblyRuntime;
 
+#if NET7_0_OR_GREATER
+using NativeMethods = __Windows.Devices.Midi.MidiOutPort.NativeMethods;
+#endif
+
 namespace Windows.Devices.Midi
 {
 	public partial class MidiOutPort

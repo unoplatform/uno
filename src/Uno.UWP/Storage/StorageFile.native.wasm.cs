@@ -10,6 +10,10 @@ using Windows.Storage.FileProperties;
 using Windows.Storage.Streams;
 using SystemPath = global::System.IO.Path;
 
+#if NET7_0_OR_GREATER
+using NativeMethods = __Windows.Storage.StorageFile.NativeMethods;
+#endif
+
 namespace Windows.Storage
 {
 	public partial class StorageFile

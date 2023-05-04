@@ -1,10 +1,14 @@
-using System.IO;
+﻿using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Uno.Foundation;
 using Uno.Storage.Internal;
 using Windows.Storage.Provider;
+
+#if NET7_0_OR_GREATER
+using NativeMethods = __Windows.Storage.CachedFileManager.NativeMethods;
+#endif
 
 namespace Windows.Storage
 {
