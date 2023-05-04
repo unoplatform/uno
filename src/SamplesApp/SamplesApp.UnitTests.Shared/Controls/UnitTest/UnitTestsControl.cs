@@ -14,7 +14,6 @@ using Windows.Storage;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SampleControl.Presentation;
 using Uno.Disposables;
-using Uno.Extensions;
 using Uno.Testing;
 using Uno.UI.Samples.Helper;
 using Windows.UI;
@@ -29,6 +28,7 @@ using Windows.UI.Xaml.Media;
 using Newtonsoft.Json;
 using System.Text;
 using System.Security.Cryptography;
+using MetalPerformanceShaders;
 
 #if HAS_UNO
 using Uno.Foundation.Logging;
@@ -663,7 +663,7 @@ namespace Uno.UI.Samples.Tests
 		{
 			var testClassNameContainsFilters = filters?.Any(f => testClassInfo.Type.FullName.Contains(f, StrComp)) ?? false;
 			return testClassInfo.Tests
-				.Where(t => (filters?.None() ?? true)
+				.Where(t => !(filters?.Any() ?? false)
 					|| testClassNameContainsFilters
 					|| filters.Any(f => t.DeclaringType.FullName.Contains(f, StrComp))
 					|| filters.Any(f => t.Name.Contains(f, StrComp)));
@@ -682,7 +682,7 @@ namespace Uno.UI.Samples.Tests
 			var tests = FilterTests(testClassInfo, config.Filters)
 				.Select(method => new UnitTestMethodInfo(instance, method))
 				.ToArray();
-			if (tests.None())
+			if (!tests.Any())
 			{
 				return;
 			}
@@ -953,11 +953,38 @@ namespace Uno.UI.Samples.Tests
 
 			var types = GetType().GetTypeInfo().Assembly.GetTypes().Concat(testAssembliesTypes);
 
-			if (_ciTestGroupCache != -1)
+			if (_ciTestsGroupCountCache != -1)
 			{
-				Console.WriteLine($"Filtering with group #{_ciTestGroupCache} (Groups {_ciTestsGroupCountCache})");
+				this.Log().Info($"Filtered groups summary for {_ciTestsGroupCountCache} groups:");
+
+				var totalCount = 0;
+				for (int i = 0; i < _ciTestsGroupCountCache; i++)
+				{
+					var testGroup = GetFilteredTests(types, _ciTestsGroupCountCache, i);
+					var testCount = testGroup.SelectMany(t => t.Tests).Count();
+					totalCount += testCount;
+
+					this.Log().Info($"Filtered group {i}: {testCount} tests");
+				}
+
+				var unfilteredTestCount = GetFilteredTests(types, -1, -1).SelectMany(t => t.Tests).Count();
+
+				if (totalCount != unfilteredTestCount)
+				{
+					throw new Exception($"Test filter inconsistent (Got {totalCount}, expected {unfilteredTestCount})");
+				}
+
+				this.Log().Info($"Filtering with group #{_ciTestGroupCache}");
+				Console.WriteLine($"Filtering with group #{_ciTestGroupCache}");
 			}
 
+			var groupedList = GetFilteredTests(types, _ciTestsGroupCountCache, _ciTestGroupCache);
+
+			return groupedList.ToArray();
+		}
+
+		private IEnumerable<UnitTestClassInfo> GetFilteredTests(IEnumerable<Type> types, int groupCount, int activeGroup)
+		{
 			var testClasses =
 				from type in types
 				where type.GetTypeInfo().GetCustomAttribute(typeof(TestClassAttribute)) != null
@@ -967,23 +994,22 @@ namespace Uno.UI.Samples.Tests
 			var groupedList =
 				from type in testClasses
 				from test in GetMethodsWithAttribute(type, typeof(Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute)).OrderBy(m => m.Name)
-				where _ciTestsGroupCountCache == -1 || (_ciTestsGroupCountCache != -1 && (GetTypeTestGroup(test) % _ciTestsGroupCountCache) == _ciTestGroupCache)
+				where groupCount == -1 || (groupCount != -1 && (GetTypeTestGroup(test) % (ulong)groupCount) == (ulong)activeGroup)
 				group test by type into g
 				where g.Count() != 0
 				select BuildTestClassInfo(g.Key, g.ToArray());
-
-			return groupedList.ToArray();
+			return groupedList;
 		}
 
 		private static SHA1 _sha1 = SHA1.Create();
 
-		private int GetTypeTestGroup(MethodInfo method)
+		private ulong GetTypeTestGroup(MethodInfo method)
 		{
 			// Compute a stable hash of the full metadata name
 			var buffer = Encoding.UTF8.GetBytes(method.DeclaringType.FullName + "." + method.Name);
 			var hash = _sha1.ComputeHash(buffer);
 
-			return (int)BitConverter.ToUInt64(hash, 0);
+			return BitConverter.ToUInt64(hash, 0);
 		}
 
 		private static UnitTestClassInfo BuildTestClassInfo(Type type, MethodInfo[] tests)
