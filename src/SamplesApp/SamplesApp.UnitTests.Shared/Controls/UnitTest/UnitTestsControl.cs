@@ -28,7 +28,6 @@ using Windows.UI.Xaml.Media;
 using Newtonsoft.Json;
 using System.Text;
 using System.Security.Cryptography;
-using MetalPerformanceShaders;
 
 #if HAS_UNO
 using Uno.Foundation.Logging;
@@ -618,7 +617,7 @@ namespace Uno.UI.Samples.Tests
 
 				var testTypes = InitializeTests();
 
-				_ = ReportMessage("Running tests...");
+				_ = ReportMessage($"Running tests ({testTypes.Count()} fixtures)...");
 
 				foreach (var type in testTypes)
 				{
