@@ -119,6 +119,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 
 		[TestMethod]
 		[RunsOnUIThread]
+#if __SKIA__
+		[Ignore("This test is very flaky in CI")]
+#endif
 		public async Task When_RepeatForever_ShouldLoop()
 		{
 			// On CI, the measurement at 100ms seem to be too unreliable on Android & MacOS.
