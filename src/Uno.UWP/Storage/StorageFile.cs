@@ -12,6 +12,7 @@ using Windows.Foundation;
 using Windows.Storage.FileProperties;
 using Windows.Storage.Streams;
 using Uno;
+using Uno.Helpers;
 
 namespace Windows.Storage
 {
@@ -25,7 +26,15 @@ namespace Windows.Storage
 
 		[NotImplemented("NET461", "__NETSTD_REFERENCE__")]
 		public static IAsyncOperation<StorageFile> GetFileFromApplicationUriAsync(Uri uri)
-			=> AsyncOperation.FromTask(ct => GetFileFromApplicationUri(ct, uri));
+			=> AsyncOperation.FromTask(ct =>
+			{
+				if (uri.IsAppData())
+				{
+					return Task.FromResult(GetFileFromPath(AppDataUriEvaluator.ToPath(uri)));
+				}
+
+				return GetFileFromApplicationUri(ct, uri);
+			});
 
 #if NET461 || __NETSTD_REFERENCE__
 		private static Task<StorageFile> GetFileFromApplicationUri(CancellationToken ct, Uri uri)

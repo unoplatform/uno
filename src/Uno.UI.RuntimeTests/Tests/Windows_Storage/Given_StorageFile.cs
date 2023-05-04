@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.RuntimeTests.Tests.Windows_Storage.Streams;
@@ -368,6 +369,18 @@ namespace Uno.UI.RuntimeTests.Tests
 			{
 				Assert.Fail("Transitive asset could not be found: " + ex);
 			}
+		}
+
+		[TestMethod]
+		public async Task When_GetFileFromApplicationUriAsync_Is_Passed_AppData()
+		{
+			var file1 = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/ingredient3.png"));
+			await file1.CopyAsync(ApplicationData.Current.LocalFolder, "ingredient3.png", NameCollisionOption.ReplaceExisting);
+
+			var file2 = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appdata:///local/ingredient3.png"));
+			var bytes1 = (await file1.OpenStreamForReadAsync()).ReadAllBytes();
+			var bytes2 = (await file2.OpenStreamForReadAsync()).ReadAllBytes();
+			Assert.IsTrue(bytes1.SequenceEqual(bytes2));
 		}
 
 		private string GetRandomFilePath()
