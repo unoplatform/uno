@@ -40,6 +40,7 @@ using Private.Infrastructure;
 namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 {
 	[TestClass]
+	[Uno.UI.RuntimeTests.RunsOnUIThread]
 	public class ViewManagerTests : MUXApiTestBase
 	{
 		[TestMethod]

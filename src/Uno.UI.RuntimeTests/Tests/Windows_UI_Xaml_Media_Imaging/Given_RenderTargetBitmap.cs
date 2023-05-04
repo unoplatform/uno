@@ -87,6 +87,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 		[Ignore("Currently fails on macOS, part of #9282 epic")]
 #elif __SKIA__
 		[Ignore("Currently fails on CI for skia GTK (works locally)")]
+#elif __ANDROID__
+		[Ignore("Currently fails on CI for Android https://github.com/unoplatform/uno/issues/9080")]
 #endif
 		public async Task When_Render_Then_CanRenderOnCanvas()
 		{

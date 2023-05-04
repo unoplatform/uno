@@ -128,6 +128,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if __MACOS__
 		[Ignore("Currently fails on macOS, part of #9282 epic")]
 #endif
+#if __IOS__
+		[Ignore("Currently fails on iOS, https://github.com/unoplatform/uno/issues/9080")]
+#endif
 		public async Task When_Flipview_DataTemplateSelector()
 		{
 			var dataContext = new When_Flipview_DataTemplateSelector_DataContext();

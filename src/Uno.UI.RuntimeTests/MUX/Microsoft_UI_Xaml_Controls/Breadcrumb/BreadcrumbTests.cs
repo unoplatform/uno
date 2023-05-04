@@ -27,6 +27,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 {
 
 	[TestClass]
+	[RunsOnUIThread]
 	[RequiresFullWindow]
 	public class BreadcrumbTests : MUXApiTestBase
 	{

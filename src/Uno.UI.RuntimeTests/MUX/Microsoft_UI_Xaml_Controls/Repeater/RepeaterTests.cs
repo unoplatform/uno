@@ -42,6 +42,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 #if __ANDROID__ || __WASM__
 	[Ignore] // TODO: Android and WASM tests are failing
 #endif
+	[Uno.UI.RuntimeTests.RunsOnUIThread]
 	public class RepeaterTests : MUXApiTestBase
 	{
 		[TestMethod]
