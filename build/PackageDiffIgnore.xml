@@ -9170,6 +9170,7 @@
 			<Member fullName="Windows.Foundation.TypedEventHandler`2&lt;Microsoft.UI.Xaml.Controls.IInputValidationControl,Microsoft.UI.Xaml.Controls.InputValidationErrorEventArgs&gt; Microsoft.UI.Xaml.Controls.TextBox::ValidationError" reason="Not present in WinAppSDK 1.2" />
 			<Member fullName="Windows.Foundation.TypedEventHandler`2&lt;Microsoft.UI.Xaml.FrameworkElement,Microsoft.UI.Xaml.DataContextChangedEventArgs&gt; Microsoft.UI.Xaml.Controls.ElementFactory::DataContextChanged" reason="Not present in WinAppSDK 1.2" />
 			<Member fullName="Windows.Foundation.TypedEventHandler`2&lt;Windows.UI.Xaml.Controls.CalendarDatePicker,Windows.UI.Xaml.Controls.CalendarDatePickerDateChangedEventArgs&gt; Windows.UI.Xaml.Controls.CalendarDatePicker::_dateChanged" reason="Not in Windows" />
+			<Member fullName="Windows.UI.Xaml.DependencyPropertyChangedEventHandler Windows.UI.Xaml.FrameworkElement::IsEnabledChanged" reason="Api alignments" />
 		</Events>
 		<Fields>
 			<Member fullName="System.Runtime.InteropServices.NFloat Uno.UI.ViewHelper::MainScreenScale" reason="Api alignments" />
@@ -9276,6 +9277,9 @@
 			<Member fullName="Windows.UI.Xaml.Controls.PersonPictureTemplateSettings Windows.UI.Xaml.Controls.PersonPicture::TemplateSettings()" reason="Moved to MUXC" />
 			<Member fullName="System.Boolean Uno.Devices.Sensors.INativeDualScreenProvider::IsDualScreen()" reason="Api alignments" />
 			<Member fullName="Uno.Presentation.Resources.IResourceRegistry Windows.UI.Xaml.ResourceHelper::Registry()" reason="Api alignments" />
+			<Member fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.FrameworkElement::IsEnabledProperty()" reason="Api alignments" />
+			<Member fullName="System.Boolean Windows.UI.Xaml.FrameworkElement::IsEnabled()" reason="Api alignments" />
+
 
 			<!-- BEGIN WebView -->
 			<Member fullName="Uno.UI.Web.WebErrorStatus Windows.UI.Xaml.Controls.WebViewNavigationCompletedEventArgs::WebErrorStatus()" reason="Incorrect type" />
@@ -9579,6 +9583,20 @@
 			<Member fullName="System.Void Windows.UI.Xaml.Controls.IconElement..ctor()" reason="Not public in WinUI" />
 			<Member fullName="System.Void Windows.UI.Xaml.Controls.ListViewBaseScrollContentPresenter.SetContentOffset(CoreGraphics.CGPoint contentOffset, System.Boolean animated)" reason="Api alignments" />
 			<Member fullName="System.Void Windows.UI.Xaml.Controls.ListViewBaseScrollContentPresenter.SetZoomScale(System.Runtime.InteropServices.NFloat scale, System.Boolean animated)" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.FrameworkElement.add_IsEnabledChanged(Windows.UI.Xaml.DependencyPropertyChangedEventHandler value)" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.FrameworkElement.remove_IsEnabledChanged(Windows.UI.Xaml.DependencyPropertyChangedEventHandler value)" reason="Api alignments" />
+			<Member fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.FrameworkElement.get_IsEnabledProperty()" reason="Api alignments" />
+			<Member fullName="System.Boolean Windows.UI.Xaml.FrameworkElement.get_IsEnabled()" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.FrameworkElement.set_IsEnabled(System.Boolean value)" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.FrameworkElement.OnIsEnabledChangedCore()" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.NativeListViewBase.OnIsEnabledChangedCore()" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.NativePagedView.OnIsEnabledChangedCore()" reason="Api alignments" />
+			<Member fullName="System.Void Uno.UI.Xaml.Controls.NativeRefreshControl.OnIsEnabledChangedCore()" reason="Api alignments" />
+			<Member fullName="System.Void Uno.UI.Controls.Legacy.GridView.OnIsEnabledChangedCore()" reason="Api alignments" />
+			<Member fullName="System.Void Uno.UI.Controls.Legacy.HorizontalGridView.OnIsEnabledChangedCore()" reason="Api alignments" />
+			<Member fullName="System.Void Uno.UI.Controls.Legacy.HorizontalListView.OnIsEnabledChangedCore()" reason="Api alignments" />
+			<Member fullName="System.Void Uno.UI.Controls.Legacy.ListView.OnIsEnabledChangedCore()" reason="Api alignments" />
+
 		</Methods>
 	</IgnoreSet>
 
