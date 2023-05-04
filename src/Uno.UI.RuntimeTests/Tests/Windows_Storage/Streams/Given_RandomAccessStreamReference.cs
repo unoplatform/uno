@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Windows.Storage;
 using Windows.Storage.Streams;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Linq;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_Storage.Streams
 {
@@ -75,6 +76,18 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage.Streams
 			var actual = await ReadToEnd(sut);
 
 			Assert.AreEqual(tempContent, actual);
+		}
+
+		[TestMethod]
+		public async Task When_From_AppData_Should_Open_For_Read()
+		{
+			var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/ingredient3.png"));
+			await file.CopyAsync(ApplicationData.Current.LocalFolder, "ingredient3.png", NameCollisionOption.ReplaceExisting);
+
+			var uri = new Uri("ms-appdata:///local/ingredient3.png");
+			var stream = (await RandomAccessStreamReference.CreateFromUri(uri).OpenReadAsync()).AsStreamForRead().ReadAllBytes();
+			var actual = (await file.OpenReadAsync()).AsStreamForRead().ReadAllBytes();
+			Assert.IsTrue(stream.SequenceEqual(actual));
 		}
 
 		private static async Task<StorageFile> GetTempFile()
