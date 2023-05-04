@@ -66,8 +66,8 @@ namespace Uno.UI.Samples.Tests
 		// On WinUI/UWP dependency properties cannot be accessed outside of
 		// UI thread. This field caches the current value so it can be accessed
 		// asynchronously during test enumeration.
-		private int _ciTestsGroupCountCache = -1;
-		private int _ciTestGroupCache = -1;
+		private int _ciTestsGroupCountCache = 4;
+		private int _ciTestGroupCache = 0;
 
 		public UnitTestsControl()
 		{
@@ -958,24 +958,49 @@ namespace Uno.UI.Samples.Tests
 				Console.WriteLine($"Filtering with group #{_ciTestGroupCache} (Groups {_ciTestsGroupCountCache})");
 			}
 
-			return from type in types
-				   where type.GetTypeInfo().GetCustomAttribute(typeof(TestClassAttribute)) != null
-				   where _ciTestsGroupCountCache == -1 || (_ciTestsGroupCountCache != -1 && (GetTypeTestGroup(type) % _ciTestsGroupCountCache) == _ciTestGroupCache)
-				   orderby type.Name
-				   let info = BuildType(type)
-				   where info.Type is { }
-				   select info;
+			var testClasses =
+				from type in types
+				where type.GetTypeInfo().GetCustomAttribute(typeof(TestClassAttribute)) != null
+				orderby type.Name
+				select type;
+
+			var groupedList =
+				from type in testClasses
+				from test in GetMethodsWithAttribute(type, typeof(Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute)).OrderBy(m => m.Name)
+				where _ciTestsGroupCountCache == -1 || (_ciTestsGroupCountCache != -1 && (GetTypeTestGroup(test) % _ciTestsGroupCountCache) == _ciTestGroupCache)
+				group test by type into g
+				where g.Count() != 0
+				select BuildTestClassInfo(g.Key, g.ToArray());
+
+			return groupedList.ToArray();
 		}
 
 		private static SHA1 _sha1 = SHA1.Create();
 
-		private int GetTypeTestGroup(Type type)
+		private int GetTypeTestGroup(MethodInfo method)
 		{
 			// Compute a stable hash of the full metadata name
-			var buffer = Encoding.UTF8.GetBytes(type.FullName);
+			var buffer = Encoding.UTF8.GetBytes(method.DeclaringType.FullName + "." + method.Name);
 			var hash = _sha1.ComputeHash(buffer);
 
 			return (int)BitConverter.ToUInt64(hash, 0);
+		}
+
+		private static UnitTestClassInfo BuildTestClassInfo(Type type, MethodInfo[] tests)
+		{
+			try
+			{
+				return new UnitTestClassInfo(
+					type: type,
+					tests: tests,
+					initialize: GetMethodsWithAttribute(type, typeof(Microsoft.VisualStudio.TestTools.UnitTesting.TestInitializeAttribute)).FirstOrDefault(),
+					cleanup: GetMethodsWithAttribute(type, typeof(Microsoft.VisualStudio.TestTools.UnitTesting.TestCleanupAttribute)).FirstOrDefault()
+				);
+			}
+			catch (Exception)
+			{
+				return new UnitTestClassInfo(null, null, null, null);
+			}
 		}
 
 		private static UnitTestClassInfo BuildType(Type type)
