@@ -21,13 +21,13 @@ parameters:
   # Runtime Test Groups
   UITEST_RUNTIME_TEST_GROUP_COUNT: 4
   RUNTIME_TESTS_GROUPS:
-  - key: '00'
+  - key: '0'
     value: '01'
-  - key: '01'
+  - key: '1'
     value: '02'
-  - key: '02'
+  - key: '2'
     value: '03'
-  - key: '03'
+  - key: '3'
     value: '04'
 
   # Autmated Test Groups
