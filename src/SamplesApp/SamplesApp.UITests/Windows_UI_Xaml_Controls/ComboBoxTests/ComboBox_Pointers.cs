@@ -6,10 +6,8 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using SamplesApp.UITests.TestFramework;
-using Uno.Testing;
 using Uno.UITest.Helpers;
 using Uno.UITest.Helpers.Queries;
-using Windows.Devices.Input;
 
 namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ComboBoxTests
 {
