@@ -1,7 +1,6 @@
 using System;
-using Windows.UI.Xaml.Automation.Peers;
 
-namespace Windows.UI.Xaml.Controls;
+namespace Windows.UI.Xaml.Automation.Peers;
 
 [Obsolete(
 	"The Windows.UI.Xaml.Controls version of this control is not supported. " +

@@ -5,6 +5,7 @@ using Uno.UI.Helpers.WinUI;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.System;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -24,17 +25,17 @@ namespace Microsoft.UI.Xaml.Controls
 		public IList<MenuFlyoutItemBase> Items => (IList<MenuFlyoutItemBase>)this.GetValue(ItemsProperty);
 
 		public static DependencyProperty ItemsProperty { get; } =
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"Items",
-			typeof(IList<MenuFlyoutItemBase>),
-			typeof(MenuBarItem),
-			new FrameworkPropertyMetadata(default(IList<MenuFlyoutItemBase>)));
+			DependencyProperty.Register(
+				"Items",
+				typeof(IList<MenuFlyoutItemBase>),
+				typeof(MenuBarItem),
+				new FrameworkPropertyMetadata(default(IList<MenuFlyoutItemBase>)));
 
 		public static DependencyProperty TitleProperty { get; } =
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"Title",
-			typeof(string),
-			typeof(MenuBarItem),
-			new FrameworkPropertyMetadata(default(string)));
+			DependencyProperty.Register(
+				"Title",
+				typeof(string),
+				typeof(MenuBarItem),
+				new FrameworkPropertyMetadata(default(string)));
 	}
 }

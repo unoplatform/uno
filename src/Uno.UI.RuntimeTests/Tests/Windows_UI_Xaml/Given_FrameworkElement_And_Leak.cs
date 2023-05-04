@@ -63,7 +63,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[DataRow(typeof(Slider), 15)]
 		[DataRow(typeof(SymbolIcon), 15)]
 		[DataRow(typeof(Viewbox), 15)]
-		[DataRow(typeof(Windows.UI.Xaml.Controls.MenuBar), 15)]
+		[DataRow(typeof(Microsoft.UI.Xaml.Controls.MenuBar), 15)]
 		[DataRow(typeof(ComboBox), 15)]
 		[DataRow(typeof(Canvas), 15)]
 		[DataRow(typeof(AutoSuggestBox), 15)]

@@ -1,7 +1,6 @@
-#pragma warning disable 108 // new keyword hiding
-#pragma warning disable 114 // new keyword hiding
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Markup;
@@ -20,12 +19,12 @@ namespace Microsoft.UI.Xaml.Controls
 			private set => this.SetValue(ItemsProperty, value);
 		}
 
-		public static global::Windows.UI.Xaml.DependencyProperty ItemsProperty { get; } =
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"Items",
-			typeof(global::System.Collections.Generic.IList<MenuBarItem>),
-			typeof(MenuBar),
-			new FrameworkPropertyMetadata(null)
+		public static DependencyProperty ItemsProperty { get; } =
+			DependencyProperty.Register(
+				"Items",
+				typeof(IList<MenuBarItem>),
+				typeof(MenuBar),
+				new FrameworkPropertyMetadata(null)
 		);
 
 		public MenuBar() : base()
