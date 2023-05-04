@@ -5,14 +5,21 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 // using Uno.Logging;
 
+#if NET7_0_OR_GREATER
+using System.Runtime.InteropServices.JavaScript;
+#endif
+
 namespace Uno.Foundation.Interop
 {
 	[Obfuscation(Feature = "renaming", Exclude = true)]
-	public sealed class JSObject
+	public sealed partial class JSObject
 	{
 		/// <summary>
 		/// Used by javascript to dispatch a method call to the managed object at <paramref name="handlePtr"/>.
 		/// </summary>
+#if NET7_0_OR_GREATER
+		[JSExport]
+#endif
 		[Obfuscation(Feature = "renaming", Exclude = true)]
 		public static void Dispatch(IntPtr handlePtr, string method, string parameters)
 		{

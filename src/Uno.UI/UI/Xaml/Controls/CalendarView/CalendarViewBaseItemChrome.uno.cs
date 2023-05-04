@@ -16,6 +16,12 @@ namespace Windows.UI.Xaml.Controls
 		{
 			_lastSize = default;
 			InvalidateArrange();
+#if __WASM__
+			if (this.GetTemplateRoot() is UIElement templateRoot)
+			{
+				templateRoot.InvalidateArrange();
+			}
+#endif
 		}
 
 		private void Uno_MeasureChrome(Size availableSize)
@@ -92,8 +98,24 @@ namespace Windows.UI.Xaml.Controls
 				borderBrush = selectedBrush;
 			}
 
+#if __WASM__
+			if (borderBrush is not null)
+			{
+				EffectiveBorderThickness = borderThickness;
+			}
+			else
+			{
+				EffectiveBorderThickness = default;
+			}
+#endif
+
 			_borderRenderer.UpdateLayer(this, background, BackgroundSizing.InnerBorderEdge, borderThickness, borderBrush, cornerRadius, default);
 		}
+
+
+#if __WASM__
+		internal Thickness EffectiveBorderThickness { get; set; }
+#endif
 
 		private bool IsClear(Brush brush)
 			=> brush is null

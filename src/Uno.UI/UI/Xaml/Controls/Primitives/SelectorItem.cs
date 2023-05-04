@@ -7,6 +7,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Core;
 using System.Threading.Tasks;
 using Uno.UI;
+using Uno.UI.Xaml.Core;
 #if XAMARIN_IOS
 using UIKit;
 #endif
@@ -180,7 +181,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				pause = false;
 			}
 
-			if (delay < TimeSpan.Zero)
+			if (delay <= TimeSpan.Zero)
 			{
 				_currentState = state;
 				VisualStateManager.GoToState(this, state, true);

@@ -2,13 +2,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	#if false || false || false || false || false || __NETSTD_REFERENCE__ || false
-	[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
+	#if false || false || false || false || false || false || false
+	[global::Uno.NotImplemented]
 	#endif
 	public  partial class PathIcon : global::Windows.UI.Xaml.Controls.IconElement
 	{
-		#if false || false || false || false || false || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
+		#if false || false || false || false || false || false || false
+		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Media.Geometry Data
 		{
 			get
@@ -21,16 +21,16 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if false || false || false || false || false || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
+		#if false || false || false || false || false || false || false
+		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty DataProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(Data), typeof(global::Windows.UI.Xaml.Media.Geometry), 
 			typeof(global::Windows.UI.Xaml.Controls.PathIcon), 
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Geometry)));
 		#endif
-		#if false || false || false || false || false || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
+		#if false || false || false || false || false || false || false
+		[global::Uno.NotImplemented]
 		public PathIcon() 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.PathIcon", "PathIcon.PathIcon()");

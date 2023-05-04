@@ -39,6 +39,8 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 				FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange,
 				OnUriSourceChanged));
 
+		Uri IAnimatedVisualSource.UriSource { get => UriSource; set => UriSource = value; }
+
 		public Uri UriSource
 		{
 			get => (Uri)GetValue(UriSourceProperty);

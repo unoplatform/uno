@@ -6,6 +6,7 @@ using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Text;
+using CommunityToolkit.Mvvm.SourceGenerators;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Testing;
@@ -53,18 +54,34 @@ namespace Uno.UI.SourceGenerators.Tests.Verifiers
 			await test.RunAsync();
 		}
 
-		public class Test : CSharpSourceGeneratorVerifier<XamlCodeGenerator>.Test
+		public class Test : TestBase
 		{
-			private readonly string _testFilePath;
-			private readonly string _testMethodName;
-			private const string TestOutputFolderName = "TestOutput";
-
 			public Test(XamlFile xamlFile, [CallerFilePath] string testFilePath = "", [CallerMemberName] string testMethodName = "")
-				: this(new[] { xamlFile }, testFilePath, testMethodName)
+				: base(new[] { xamlFile }, testFilePath, ShortName(testMethodName)) // We use only upper-cased char to reduce length of filename push to git)
 			{
 			}
 
 			public Test(XamlFile[] xamlFiles, [CallerFilePath] string testFilePath = "", [CallerMemberName] string testMethodName = "")
+				: base(xamlFiles, testFilePath, ShortName(testMethodName))
+			{
+			}
+
+			private static string ShortName(string name)
+				=> new string(name.Where(char.IsUpper).ToArray()); // We use only upper-cased char to reduce length of filename push to git
+		}
+
+		public abstract class TestBase : CSharpSourceGeneratorVerifier<XamlCodeGenerator>.Test
+		{
+			private readonly string _testFilePath;
+			private readonly string _testMethodName;
+			private const string TestOutputFolderName = "Out";
+
+			protected TestBase(XamlFile xamlFile, [CallerFilePath] string testFilePath = "", [CallerMemberName] string testMethodName = "")
+				: this(new[] { xamlFile }, testFilePath, testMethodName)
+			{
+			}
+
+			protected TestBase(XamlFile[] xamlFiles, string testFilePath, string testMethodName)
 			{
 				_testFilePath = testFilePath;
 				_testMethodName = testMethodName;
@@ -86,12 +103,7 @@ build_metadata.AdditionalFiles.SourceItemGroup = Page
 				}
 				TestState.AnalyzerConfigFiles.Add(("/.globalconfig", globalConfigBuilder.ToString()));
 
-				ReferenceAssemblies = new ReferenceAssemblies(
-						"net7.0",
-						new PackageIdentity(
-							"Microsoft.NETCore.App.Ref",
-							"7.0.0"),
-						Path.Combine("ref", "net7.0"));
+				ReferenceAssemblies = ReferenceAssemblies.Net.Net70;
 
 #if WRITE_EXPECTED
 				TestBehaviors |= TestBehaviors.SkipGeneratedSourcesCheck;
@@ -113,16 +125,16 @@ build_metadata.AdditionalFiles.SourceItemGroup = Page
 				return base.ApplyCompilationOptions(p);
 			}
 
-			protected override async Task<Compilation> GetProjectCompilationAsync(Project project, IVerifier verifier, CancellationToken cancellationToken)
+			protected override async Task<(Compilation compilation, ImmutableArray<Diagnostic> generatorDiagnostics)> GetProjectCompilationAsync(Project project, IVerifier verifier, CancellationToken cancellationToken)
 			{
 				var resourceDirectory = Path.Combine(Path.GetDirectoryName(_testFilePath)!, TestOutputFolderName, _testMethodName);
 
-				var compilation = await base.GetProjectCompilationAsync(project, verifier, cancellationToken);
+				var (compilation, generatorDiagnostics) = await base.GetProjectCompilationAsync(project, verifier, cancellationToken);
 				var expectedNames = new HashSet<string>();
 				foreach (var tree in compilation.SyntaxTrees.Skip(project.DocumentIds.Count))
 				{
 					WriteTreeToDiskIfNecessary(tree, resourceDirectory);
-					expectedNames.Add(Path.GetFileName(tree.FilePath));
+					expectedNames.Add(GetFileNameFromTree(tree));
 				}
 
 				var currentTestPrefix = $"Uno.UI.SourceGenerators.netcore.Tests.XamlCodeGeneratorTests.{TestOutputFolderName}.{_testMethodName}.";
@@ -139,13 +151,13 @@ build_metadata.AdditionalFiles.SourceItemGroup = Page
 					}
 				}
 
-				return compilation;
+				return (compilation, generatorDiagnostics);
 			}
 
-			public Test AddGeneratedSources()
+			public TestBase AddGeneratedSources()
 			{
 				var expectedPrefix = $"Uno.UI.SourceGenerators.netcore.Tests.XamlCodeGeneratorTests.{TestOutputFolderName}.{_testMethodName}.";
-				foreach (var resourceName in typeof(Test).Assembly.GetManifestResourceNames().OrderBy(x => x.Contains("LocalizationResources") ? 0 : (x.Contains("GlobalStaticResources") ? 2 : 1)))
+				foreach (var resourceName in typeof(Test).Assembly.GetManifestResourceNames())
 				{
 					if (!resourceName.StartsWith(expectedPrefix))
 					{
@@ -160,10 +172,27 @@ build_metadata.AdditionalFiles.SourceItemGroup = Page
 
 					using var reader = new StreamReader(resourceStream, Encoding.UTF8, detectEncodingFromByteOrderMarks: true, bufferSize: 4096, leaveOpen: true);
 					var name = resourceName.Substring(expectedPrefix.Length);
-					TestState.GeneratedSources.Add((typeof(XamlCodeGenerator), name, reader.ReadToEnd()));
+					var underscoreIndex = name.IndexOf('_');
+					var generatorName = name.Substring(0, underscoreIndex);
+					name = name.Substring(underscoreIndex + 1);
+
+					var type = generatorName switch
+					{
+						"XamlCodeGenerator" => typeof(XamlCodeGenerator),
+						"ObservablePropertyGenerator" => typeof(ObservablePropertyGenerator),
+						_ => throw new Exception("Unexpected generator name"),
+					};
+					TestState.GeneratedSources.Add((type, name, reader.ReadToEnd()));
 				}
 
 				return this;
+			}
+
+			private static string GetFileNameFromTree(SyntaxTree tree)
+			{
+				var generatorName = new DirectoryInfo(tree.FilePath).Parent!.Name;
+				generatorName = generatorName.Substring(generatorName.LastIndexOf('.') + 1);
+				return $"{generatorName}_{Path.GetFileName(tree.FilePath)}";
 			}
 
 			[Conditional("WRITE_EXPECTED")]
@@ -174,7 +203,8 @@ build_metadata.AdditionalFiles.SourceItemGroup = Page
 					throw new ArgumentException("Syntax tree encoding was not specified");
 				}
 
-				var name = Path.GetFileName(tree.FilePath);
+				var name = GetFileNameFromTree(tree);
+
 				var filePath = Path.Combine(resourceDirectory, name);
 				Directory.CreateDirectory(resourceDirectory);
 				File.WriteAllText(filePath, tree.GetText().ToString(), tree.Encoding);

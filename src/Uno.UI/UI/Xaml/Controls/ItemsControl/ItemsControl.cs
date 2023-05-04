@@ -1129,6 +1129,8 @@ namespace Windows.UI.Xaml.Controls
 			ClearContainerForItemOverride(element, item);
 			ContainerClearedForItem(item, element as SelectorItem);
 
+			UIElement.PrepareForRecycle(element);
+
 			if (element is ContentPresenter presenter
 				&& (
 				presenter.ContentTemplate == ItemTemplate

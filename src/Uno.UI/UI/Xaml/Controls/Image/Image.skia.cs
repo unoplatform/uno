@@ -18,6 +18,7 @@ namespace Windows.UI.Xaml.Controls
 		private SkiaCompositionSurface _currentSurface;
 		private CompositionSurfaceBrush _surfaceBrush;
 		private readonly SpriteVisual _imageSprite;
+		private ImageData _pendingImageData;
 
 		public Image()
 		{
@@ -68,24 +69,16 @@ namespace Windows.UI.Xaml.Controls
 		{
 			_sourceDisposable.Disposable = source.Subscribe(img =>
 			{
-				_currentSurface = img.CompositionSurface;
-				_surfaceBrush = Visual.Compositor.CreateSurfaceBrush(_currentSurface);
-				_imageSprite.Brush = _surfaceBrush;
-				InvalidateMeasure();
+				_pendingImageData = img;
 
-				if (img is not { Kind: ImageDataKind.Error })
-				{
-					ImageOpened?.Invoke(this, new RoutedEventArgs(this));
-				}
-				else
-				{
-					ImageFailed?.Invoke(this, new ExceptionRoutedEventArgs(this, img.Error?.Message ?? "Unknown error"));
-				}
+				InvalidateMeasure();
 			});
 		}
 
 		protected override Size MeasureOverride(Size availableSize)
 		{
+			TryProcessPendingSource();
+
 			if (IsSourceReady())
 			{
 				_lastMeasuredSize = GetSourceSize();
@@ -126,6 +119,29 @@ namespace Windows.UI.Xaml.Controls
 			else
 			{
 				return default;
+			}
+		}
+
+		private void TryProcessPendingSource()
+		{
+			if (_pendingImageData.HasData)
+			{
+				_currentSurface = _pendingImageData.CompositionSurface;
+				_surfaceBrush = Visual.Compositor.CreateSurfaceBrush(_currentSurface);
+				_imageSprite.Brush = _surfaceBrush;
+
+				_pendingImageData = new();
+
+				if (_pendingImageData is not { Kind: ImageDataKind.Error })
+				{
+					ImageOpened?.Invoke(this, new RoutedEventArgs(this));
+				}
+				else
+				{
+					ImageFailed?.Invoke(this, new(
+						this,
+						_pendingImageData.Error?.Message ?? "Unknown error"));
+				}
 			}
 		}
 

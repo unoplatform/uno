@@ -11,6 +11,7 @@ using Rect = Windows.Foundation.Rect;
 using Windows.UI.Input.Spatial;
 using Android.Graphics.Drawables;
 using Android.Graphics.Drawables.Shapes;
+using Windows.UI.Xaml.Media.Imaging;
 
 using RadialGradientBrush = Microsoft.UI.Xaml.Media.RadialGradientBrush;
 
@@ -109,33 +110,44 @@ namespace Windows.UI.Xaml.Media
 			}
 			else if (b is ImageBrush imageBrush && imageBrushCallback != null)
 			{
+				void ImageBrushCallback(DependencyObject sender, DependencyPropertyChangedEventArgs e) => imageBrushCallback();
+
 				var disposables = new CompositeDisposable(5);
 				imageBrushCallback();
 
-				imageBrush.RegisterDisposablePropertyChangedCallback(
-					ImageBrush.ImageSourceProperty,
-					(_, __) => imageBrushCallback()
-				).DisposeWith(disposables);
+				var imageBrushSource = imageBrush.ImageSource;
+				if (imageBrushSource is SvgImageSource svgImageSource)
+				{
+					svgImageSource
+						.RegisterDisposablePropertyChangedCallback(SvgImageSource.UriSourceProperty, ImageBrushCallback)
+						.DisposeWith(disposables);
+				}
+				else if (imageBrushSource is BitmapImage bitmapImage)
+				{
+					bitmapImage
+						.RegisterDisposablePropertyChangedCallback(BitmapImage.UriSourceProperty, ImageBrushCallback)
+						.DisposeWith(disposables);
+				}
 
-				imageBrush.RegisterDisposablePropertyChangedCallback(
-					ImageBrush.StretchProperty,
-					(_, __) => imageBrushCallback()
-				).DisposeWith(disposables);
+				imageBrush
+					.RegisterDisposablePropertyChangedCallback(ImageBrush.ImageSourceProperty, ImageBrushCallback)
+					.DisposeWith(disposables);
 
-				imageBrush.RegisterDisposablePropertyChangedCallback(
-					ImageBrush.AlignmentXProperty,
-					(_, __) => imageBrushCallback()
-				).DisposeWith(disposables);
+				imageBrush
+					.RegisterDisposablePropertyChangedCallback(ImageBrush.StretchProperty, ImageBrushCallback)
+					.DisposeWith(disposables);
 
-				imageBrush.RegisterDisposablePropertyChangedCallback(
-					ImageBrush.AlignmentYProperty,
-					(_, __) => imageBrushCallback()
-				).DisposeWith(disposables);
+				imageBrush.
+					RegisterDisposablePropertyChangedCallback(ImageBrush.AlignmentXProperty, ImageBrushCallback)
+					.DisposeWith(disposables);
 
-				imageBrush.RegisterDisposablePropertyChangedCallback(
-					ImageBrush.RelativeTransformProperty,
-					(_, __) => imageBrushCallback()
-				).DisposeWith(disposables);
+				imageBrush
+					.RegisterDisposablePropertyChangedCallback(ImageBrush.AlignmentYProperty, ImageBrushCallback)
+					.DisposeWith(disposables);
+
+				imageBrush
+					.RegisterDisposablePropertyChangedCallback(ImageBrush.RelativeTransformProperty, ImageBrushCallback)
+					.DisposeWith(disposables);
 
 				return disposables;
 			}

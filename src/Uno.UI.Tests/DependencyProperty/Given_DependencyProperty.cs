@@ -1389,7 +1389,7 @@ namespace Uno.UI.Tests.BinderTests
 
 			void OnBrushChanged(ManagedWeakReference instance, DependencyProperty property, DependencyPropertyChangedEventArgs args)
 			{
-				disposable2 = brush.RegisterDisposablePropertyChangedCallback(OnInnerCallbackBrushChanged);
+				disposable2 = brush.RegisterDisposablePropertyChangedCallback(OnInnerAddCallbackBrushChanged);
 			}
 
 			brush.Color = Colors.Red;
@@ -1398,9 +1398,34 @@ namespace Uno.UI.Tests.BinderTests
 			disposable2?.Dispose();
 		}
 
-		private void OnInnerCallbackBrushChanged(ManagedWeakReference instance, DependencyProperty property, DependencyPropertyChangedEventArgs args)
+		private void OnInnerAddCallbackBrushChanged(ManagedWeakReference instance, DependencyProperty property, DependencyPropertyChangedEventArgs args)
 		{
 			Assert.Fail();
+		}
+
+		[TestMethod]
+		public void When_RemoveCallback_OnPropertyChanged()
+		{
+			var brush = new SolidColorBrush();
+			IDisposable disposable = null;
+			IDisposable disposable2 = null;
+			disposable = brush.RegisterDisposablePropertyChangedCallback(OnBrushChanged);
+			disposable2 = brush.RegisterDisposablePropertyChangedCallback(OnInnerRemoveCallbackBrushChanged);
+
+			void OnBrushChanged(ManagedWeakReference instance, DependencyProperty property, DependencyPropertyChangedEventArgs args)
+			{
+				disposable2.Dispose();
+			}
+
+			Action act = () => brush.Color = Colors.Red;
+			act.Should().NotThrow();
+
+			disposable?.Dispose();
+			disposable2?.Dispose();
+		}
+
+		private void OnInnerRemoveCallbackBrushChanged(ManagedWeakReference instance, DependencyProperty property, DependencyPropertyChangedEventArgs args)
+		{
 		}
 
 		[TestMethod]
@@ -1410,13 +1435,13 @@ namespace Uno.UI.Tests.BinderTests
 			var secondParent = new Windows.UI.Xaml.Controls.Border();
 			var border = new Windows.UI.Xaml.Controls.Border();
 			firstParent.Child = border;
+
 			IDisposable disposable = null;
 			IDisposable disposable2 = null;
-			border.RegisterParentChangedCallback(1, OnParentChangedCallback);
-
+			disposable = border.RegisterParentChangedCallback(1, OnParentChangedCallback);
 			void OnParentChangedCallback(object instance, object key, DependencyObjectParentChangedEventArgs args)
 			{
-				border.RegisterParentChangedCallback(2, OnInnerParentChangedCallback);
+				disposable2 = border.RegisterParentChangedCallback(2, OnInnerAddParentChangedCallback);
 			}
 
 			firstParent.Child = null;
@@ -1425,9 +1450,36 @@ namespace Uno.UI.Tests.BinderTests
 			disposable2?.Dispose();
 		}
 
-		private void OnInnerParentChangedCallback(object instance, object key, DependencyObjectParentChangedEventArgs args)
+		private void OnInnerAddParentChangedCallback(object instance, object key, DependencyObjectParentChangedEventArgs args)
 		{
 			Assert.Fail();
+		}
+
+		[TestMethod]
+		public void When_RemoveParentChanged_OnParentChanged()
+		{
+			var firstParent = new Windows.UI.Xaml.Controls.Border();
+			var secondParent = new Windows.UI.Xaml.Controls.Border();
+			var border = new Windows.UI.Xaml.Controls.Border();
+			firstParent.Child = border;
+			IDisposable disposable = null;
+			IDisposable disposable2 = null;
+			disposable = border.RegisterParentChangedCallback(1, OnParentChangedCallback);
+			disposable2 = border.RegisterParentChangedCallback(2, OnInnerAddParentChangedCallback);
+			void OnParentChangedCallback(object instance, object key, DependencyObjectParentChangedEventArgs args)
+			{
+				disposable2.Dispose();
+			}
+
+			Action act = () => firstParent.Child = null;
+			act.Should().NotThrow();
+
+			disposable?.Dispose();
+			disposable2?.Dispose();
+		}
+
+		private void OnInnerRemoveParentChangedCallback(object instance, object key, DependencyObjectParentChangedEventArgs args)
+		{
 		}
 
 		[TestMethod]

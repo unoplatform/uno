@@ -17,6 +17,23 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 	public class Given_xBind_Binding
 	{
 		private const int V = 42;
+		private bool _previousPoolingEnabled;
+
+		[TestInitialize]
+		public void Init()
+		{
+			UnitTestsApp.App.EnsureApplication();
+
+			_previousPoolingEnabled = FrameworkTemplatePool.IsPoolingEnabled;
+			FrameworkTemplatePool.IsPoolingEnabled = false;
+		}
+
+		[TestCleanup]
+		public void Cleanup()
+		{
+			FrameworkTemplatePool.IsPoolingEnabled = _previousPoolingEnabled;
+			FrameworkTemplatePool.Scavenge();
+		}
 
 		[TestMethod]
 		public void When_Initial_Value()
@@ -1073,7 +1090,6 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 		}
 
 		[TestMethod]
-		[Ignore("https://github.com/unoplatform/uno/issues/10164")]
 		public async Task When_xLoad_StaticResource()
 		{
 			var SUT = new Binding_xLoad_StaticResources();
@@ -1365,6 +1381,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 
 			while (sw.Elapsed < timeout)
 			{
+				void validate()
 				{
 					var value = getter();
 
@@ -1376,12 +1393,14 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 					value = null;
 				}
 
+				validate();
+
 				await Task.Yield();
 
 				// Wait for the ElementNameSubject and ComponentHolder
 				// instances to release their references.
 				GC.Collect(2);
-				//GC.WaitForPendingFinalizers();
+				GC.WaitForPendingFinalizers();
 			}
 
 			{

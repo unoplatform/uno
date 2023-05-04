@@ -340,18 +340,6 @@ public partial class UIElement : DependencyObject
 		}
 	}
 
-	#region Capture
-	partial void CapturePointerNative(Pointer pointer)
-	{
-		WindowManagerInterop.SetPointerCapture(HtmlId, pointer.PointerId);
-	}
-
-	partial void ReleasePointerNative(Pointer pointer)
-	{
-		WindowManagerInterop.ReleasePointerCapture(HtmlId, pointer.PointerId);
-	}
-	#endregion
-
 	#region HitTestVisibility
 	internal void UpdateHitTest()
 	{

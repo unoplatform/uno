@@ -24,6 +24,8 @@ namespace Windows.Media.Playback
 				{
 					this.Log().Error("Unable to create an instance of IMediaPlayerExtension. MediaPlayer will not work.");
 				}
+
+				return;
 			}
 
 			_extension.Events = new MediaPlayerEvents(this);

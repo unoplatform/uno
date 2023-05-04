@@ -993,7 +993,7 @@ namespace Windows.UI.Xaml
 				var weakCallbackRef = WeakReferencePool.RentWeakReference(this, callback);
 
 				ParentChangedCallback weakCallback =
-					(s, _, e) => (weakCallbackRef.Target as ParentChangedCallback)?.Invoke(s, key, e);
+					(s, _, e) => (!weakCallbackRef.IsDisposed ? weakCallbackRef.Target as ParentChangedCallback : null)?.Invoke(s, key, e);
 
 				_parentChangedCallbacks = _parentChangedCallbacks.Add(weakCallback);
 
@@ -1761,7 +1761,7 @@ namespace Windows.UI.Xaml
 			var wr = WeakReferencePool.RentWeakReference(null, callback);
 
 			weakDelegate =
-				(instance, s, e) => (wr.Target as ExplicitPropertyChangedCallback)?.Invoke(instance, s, e);
+				(instance, s, e) => (!wr.IsDisposed ? wr.Target as ExplicitPropertyChangedCallback : null)?.Invoke(instance, s, e);
 
 			weakRelease = new WeakReferenceReturnDisposable(wr);
 		}

@@ -191,6 +191,34 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 				snapshot, new System.Drawing.Rectangle((int)coords.X, (int)coords.Y, (int)coords.Width, (int)coords.Height), Colors.Blue);
 		}
 
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_ImageBrush_Source_Changes()
+		{
+			var imageBrush = new ImageBrush();
+			var bitmapImage = new BitmapImage();
+			bitmapImage.UriSource = new Uri("ms-appx:///Assets/BlueSquare.png");
+			imageBrush.ImageSource = bitmapImage;
+
+			var stackPanel = new Border()
+			{
+				Width = 100,
+				Height = 100,
+				Background = imageBrush,
+			};
+
+			WindowHelper.WindowContent = stackPanel;
+			await WindowHelper.WaitForLoaded(stackPanel);
+
+
+			imageBrush.ImageOpened += ImageBrush_ImageOpened;
+			var imageOpened = false;
+			void ImageBrush_ImageOpened(object sender, RoutedEventArgs e) => imageOpened = true;
+
+			bitmapImage.UriSource = new Uri("ms-appx:///Assets/test_image_100_150.png");
+			await WindowHelper.WaitFor(() => imageOpened);
+		}
+
 		private class Given_BitmapSource_Exception : Exception
 		{
 			public string Caller { get; }

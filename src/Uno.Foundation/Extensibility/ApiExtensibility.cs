@@ -1,4 +1,8 @@
-﻿namespace Uno.Foundation.Extensibility;
+﻿#nullable enable
+
+using System.Diagnostics.CodeAnalysis;
+
+namespace Uno.Foundation.Extensibility;
 
 /// <summary>
 /// Registry for API existensibility providers, used to provide optional
@@ -60,8 +64,9 @@ public static class ApiExtensibility
 	/// <typeparam name="T">A registered type</typeparam>
 	/// <param name="owner">An optional owner to be passed to the extension constructor</param>
 	/// <param name="instance">The instance if the creation was successful</param>
-	/// <returns>True if the creation suceeded, otherwise False.</returns>
-	public static bool CreateInstance<T>(object owner, out T instance) where T : class
+	/// <returns>True if the creation succeeded, otherwise False.</returns>
+	public static bool CreateInstance<T>(object owner, [NotNullWhen(true)] out T? instance)
+		where T : class
 	{
 		lock (_gate)
 		{
@@ -75,5 +80,18 @@ public static class ApiExtensibility
 		instance = null;
 
 		return false;
+	}
+
+	internal static T CreateInstance<T>(object owner)
+		where T : class
+	{
+		if (CreateInstance<T>(owner, out var instance))
+		{
+			return instance;
+		}
+		else
+		{
+			throw new InvalidOperationException($"Unable to find {typeof(T)} extension");
+		}
 	}
 }

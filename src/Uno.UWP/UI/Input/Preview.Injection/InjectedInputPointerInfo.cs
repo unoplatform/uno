@@ -1,5 +1,6 @@
 #nullable enable
 
+using System;
 using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.System;
@@ -32,7 +33,7 @@ public partial struct InjectedInputPointerInfo
 		// IsMiddleButtonPressed = // Mouse only
 		// IsRightButtonPressed = // stateful, cf. below,
 		// IsHorizontalMouseWheel = // Mouse only
-		// IsXButton1Pressed = 
+		// IsXButton1Pressed =
 		// IsXButton2Pressed =
 		// IsBarrelButtonPressed = // Pen only
 		// IsEraser = // Pen only
@@ -56,6 +57,7 @@ public partial struct InjectedInputPointerInfo
 				update |= PointerUpdateKind.LeftButtonReleased;
 			}
 		}
+
 		if (PointerOptions.HasFlag(InjectedInputPointerOptions.SecondButton))
 		{
 			if (PointerOptions.HasFlag(InjectedInputPointerOptions.PointerDown))
@@ -89,4 +91,26 @@ public partial struct InjectedInputPointerInfo
 
 		return point;
 	}
+
+	public bool Equals(InjectedInputPointerInfo other) =>
+		PointerId == other.PointerId && PointerOptions.Equals(other.PointerOptions) &&
+		PixelLocation.Equals(other.PixelLocation) &&
+		TimeOffsetInMilliseconds == other.TimeOffsetInMilliseconds && PerformanceCount == other.PerformanceCount;
+
+	public override bool Equals(object? obj) => obj is InjectedInputPointerInfo other && Equals(other);
+
+	public override int GetHashCode()
+	{
+		var hashCode = -2014432303;
+		hashCode = hashCode * -1521134295 + PointerId.GetHashCode();
+		hashCode = hashCode * -1521134295 + PointerOptions.GetHashCode();
+		hashCode = hashCode * -1521134295 + PixelLocation.GetHashCode();
+		hashCode = hashCode * -1521134295 + TimeOffsetInMilliseconds.GetHashCode();
+		hashCode = hashCode * -1521134295 + PerformanceCount.GetHashCode();
+		return hashCode;
+	}
+
+	public static bool operator ==(InjectedInputPointerInfo left, InjectedInputPointerInfo right) => left.Equals(right);
+
+	public static bool operator !=(InjectedInputPointerInfo left, InjectedInputPointerInfo right) => !(left == right);
 }
