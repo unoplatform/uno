@@ -538,13 +538,6 @@ namespace Uno.UI.Xaml
 		#region SetAttribute
 		internal static void SetAttribute(IntPtr htmlId, string name, string value)
 		{
-
-#if NET7_0_OR_GREATER
-			var pairs = new string[2];
-			pairs[0] = name;
-			pairs[1] = value;
-			NativeMethods.SetAttributes(htmlId, pairs);
-#else
 			var parms = new WindowManagerSetAttributeParams()
 			{
 				HtmlId = htmlId,
@@ -553,7 +546,6 @@ namespace Uno.UI.Xaml
 			};
 
 			TSInteropMarshaller.InvokeJS("Uno:setAttributeNative", parms);
-#endif
 		}
 
 		[TSInteropMessage]
@@ -587,12 +579,6 @@ namespace Uno.UI.Xaml
 		#region ClearAttribute
 		internal static void RemoveAttribute(IntPtr htmlId, string name)
 		{
-
-#if NET7_0_OR_GREATER
-			var pairs = new string[2];
-			pairs[0] = name;
-			NativeMethods.RemoveAttribute(htmlId, pairs);
-#else
 			var parms = new WindowManagerRemoveAttributeParams()
 			{
 				HtmlId = htmlId,
@@ -600,8 +586,6 @@ namespace Uno.UI.Xaml
 			};
 
 			TSInteropMarshaller.InvokeJS("Uno:removeAttributeNative", parms);
-#endif
-
 		}
 
 		[TSInteropMessage]
@@ -1335,9 +1319,6 @@ namespace Uno.UI.Xaml
 
 			[JSImport("globalThis.Uno.UI.WindowManager.current.setAttributesNativeFast")]
 			internal static partial void SetAttributes(IntPtr htmlId, string[] pairs);
-
-			[JSImport("globalThis.Uno.UI.WindowManager.current.removeAttributeNative")]
-			internal static partial void RemoveAttribute(IntPtr htmlId, string[] pairs);
 
 			[JSImport("globalThis.Uno.UI.WindowManager.current.setElementTransformNativeFast")]
 			internal static partial void SetElementTransform(IntPtr htmlId, float m11, float m12, float m21, float m22, float m31, float m32);
