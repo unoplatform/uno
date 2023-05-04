@@ -21,7 +21,7 @@ public interface ICoreWindowEvents
 	// the CoreWindow is responsible for initiating the event
 	// bubbling flow. However, a RaiseKeyUp/Down event should
 	// be fired on CoreWindow itself AFTER the bubbling flow
-	// is done. So, we add another events as a workaround.
+	// is done. So, we add other events as a workaround.
 
 	internal void RaiseNativeKeyDownReceived(KeyEventArgs args);
 	internal void RaiseNativeKeyUpReceived(KeyEventArgs args);
