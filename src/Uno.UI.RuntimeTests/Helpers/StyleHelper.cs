@@ -100,6 +100,7 @@ namespace Uno.UI.RuntimeTests.Helpers
 #endif
 		}
 
+#if !NETFX_CORE
 		private static void ResetIslandRootForeground()
 		{
 			if (TestServices.WindowHelper.IsXamlIsland && VisualTreeUtils.FindVisualChildByType<Control>(TestServices.WindowHelper.XamlRoot.Content) is { } control)
@@ -108,5 +109,6 @@ namespace Uno.UI.RuntimeTests.Helpers
 				control.SetValue(Control.ForegroundProperty, DefaultBrushes.TextForegroundBrush, DependencyPropertyValuePrecedences.DefaultValue);
 			}
 		}
+#endif
 	}
 }
