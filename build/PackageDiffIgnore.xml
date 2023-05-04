@@ -9462,6 +9462,8 @@
 			<!-- END XamlFileParser performance updates -->
 
 			<Member fullName="System.Void Uno.Foundation.Interop.JSObject.Dispatch(System.String handlePtr, System.String method, System.String parameters)" reason="First parameter changed from string to IntPtr for performance" />
+
+			<Member fullName="System.Void Windows.UI.Xaml.Application.OnSystemThemeChanged()" reason="Does not exist in Windows" />
 		</Methods>
 	</IgnoreSet>
 
