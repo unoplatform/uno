@@ -8,7 +8,7 @@
 		<Nullable>enable</Nullable>
 	</PropertyGroup>
 
-	<Import Project="../targetframework-override.props" />
+	<Import Project="../targetframework-override-noplatform.props" />
 
 	<ItemGroup>
 		<PackageReference Include="Mono.Options" Version="6.6.0.161" />

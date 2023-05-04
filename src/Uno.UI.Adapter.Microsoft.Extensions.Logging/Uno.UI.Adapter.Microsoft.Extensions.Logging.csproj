@@ -3,7 +3,7 @@
 		<TargetFrameworks>net7.0;net8.0</TargetFrameworks>
 	</PropertyGroup>
 
-	<Import Project="../targetframework-override.props" />
+	<Import Project="../targetframework-override-noplatform.props" />
 
 	<ItemGroup>
 		<ProjectReference Include="..\Uno.Foundation.Logging\Uno.Foundation.Logging.csproj" />
