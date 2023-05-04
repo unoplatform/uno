@@ -306,7 +306,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		protected override void OnPointerEntered(PointerRoutedEventArgs args)
 		{
 			base.OnPointerEntered(args);
-			UpdateCommonStatesWithoutNeedsLayout(args.Pointer.PointerDeviceType, ManipulationUpdateKind.Begin);
+			UpdateCommonStatesWithoutNeedsLayout((Windows.Devices.Input.PointerDeviceType)args.Pointer.PointerDeviceType, ManipulationUpdateKind.Begin);
 		}
 
 		/// <inheritdoc />
@@ -327,7 +327,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			args.Handled = ShouldHandlePressed;
 
 			base.OnPointerPressed(args);
-			UpdateCommonStatesWithoutNeedsLayout(args.Pointer.PointerDeviceType, ManipulationUpdateKind.Begin);
+			UpdateCommonStatesWithoutNeedsLayout((Windows.Devices.Input.PointerDeviceType)args.Pointer.PointerDeviceType, ManipulationUpdateKind.Begin);
 		}
 
 		/// <inheritdoc />
@@ -356,7 +356,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			args.Handled = ShouldHandlePressed;
 
 			base.OnPointerReleased(args);
-			UpdateCommonStatesWithoutNeedsLayout(args.Pointer.PointerDeviceType, update);
+			UpdateCommonStatesWithoutNeedsLayout((Windows.Devices.Input.PointerDeviceType)args.Pointer.PointerDeviceType, update);
 		}
 
 		/// <inheritdoc />
@@ -367,7 +367,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			ReleasePointerCapture(args.Pointer.UniqueId, kinds: PointerCaptureKind.Implicit);
 
 			base.OnPointerExited(args);
-			UpdateCommonStatesWithoutNeedsLayout(args.Pointer.PointerDeviceType, ManipulationUpdateKind.End);
+			UpdateCommonStatesWithoutNeedsLayout((Windows.Devices.Input.PointerDeviceType)args.Pointer.PointerDeviceType, ManipulationUpdateKind.End);
 		}
 
 		/// <inheritdoc />
@@ -376,7 +376,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			_canRaiseClickOnPointerRelease = false;
 
 			base.OnPointerCanceled(args);
-			UpdateCommonStatesWithoutNeedsLayout(args.Pointer.PointerDeviceType, ManipulationUpdateKind.End);
+			UpdateCommonStatesWithoutNeedsLayout((Windows.Devices.Input.PointerDeviceType)args.Pointer.PointerDeviceType, ManipulationUpdateKind.End);
 		}
 
 		/// <inheritdoc />
@@ -385,7 +385,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			_canRaiseClickOnPointerRelease = false;
 
 			base.OnPointerCaptureLost(args);
-			UpdateCommonStatesWithoutNeedsLayout(args.Pointer.PointerDeviceType, ManipulationUpdateKind.End);
+			UpdateCommonStatesWithoutNeedsLayout((Windows.Devices.Input.PointerDeviceType)args.Pointer.PointerDeviceType, ManipulationUpdateKind.End);
 		}
 
 		protected override void OnGotFocus(RoutedEventArgs e)

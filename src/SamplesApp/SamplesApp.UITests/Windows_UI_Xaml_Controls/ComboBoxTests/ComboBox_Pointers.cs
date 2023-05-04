@@ -6,13 +6,16 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using SamplesApp.UITests.TestFramework;
+using Uno.Testing;
 using Uno.UITest.Helpers;
 using Uno.UITest.Helpers.Queries;
+using Windows.Devices.Input;
 
 namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ComboBoxTests
 {
 	public partial class ComboBox_Pointers : SampleControlUITestBase
 	{
+#if !IS_RUNTIME_UI_TESTS
 		[Test]
 		[AutoRetry]
 		public void When_Tap_PressedReleasedAreHandled()
@@ -63,5 +66,18 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ComboBoxTests
 				parsedOutput.Where(o => o.evt == "RELEASED").All(o => o.@params["handled"].Equals("True", StringComparison.OrdinalIgnoreCase)),
 				"Pressed must be flagged as handled");
 		}
+#endif
+
+#if IS_RUNTIME_UI_TESTS
+		[Test]
+		[AutoRetry]
+		[InjectedPointer(PointerDeviceType.Mouse)]
+		public async Task When_Hover_No_Delay_For_VisualState_Update()
+		{
+			await RunAsync("UITests.Windows_UI_Xaml_Controls.ComboBox.ComboBoxItem_Pointers");
+			var marked = App.Query("MyComboBoxItem").Single();
+			App.TapCoordinates(marked.Rect.CenterX, marked.Rect.CenterY);
+		}
+#endif
 	}
 }
