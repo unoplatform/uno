@@ -2715,17 +2715,11 @@ namespace Windows.UI.Xaml.Controls
 				// To avoid UI hiccups, trigger a smooth scroll to a distance a little further than the
 				// interim target. Since we track the distance traveled in the onSeekTargetStep callback, it
 				// won't actually scroll more than what we need.
-				ActionUpdate(
-					(int)(MInterimTargetDx * TARGET_SEEK_EXTRA_SCROLL_RATIO),
-					(int)(MInterimTargetDy * TARGET_SEEK_EXTRA_SCROLL_RATIO),
-					(int)(time * TARGET_SEEK_EXTRA_SCROLL_RATIO),
-					MLinearInterpolator
-				);
-
-				void ActionUpdate(int dx, int dy, int duration, IInterpolator interpolator)
-				{
-					action.Update(dx, dy, duration, interpolator);
-				}
+				action.Update(
+					dx: (int)(MInterimTargetDx * TARGET_SEEK_EXTRA_SCROLL_RATIO),
+					dy: (int)(MInterimTargetDy * TARGET_SEEK_EXTRA_SCROLL_RATIO),
+					duration: (int)(time * TARGET_SEEK_EXTRA_SCROLL_RATIO),
+					interpolator: MLinearInterpolator);
 			}
 
 			// The time (in ms) it should take for each pixel. For instance, if returned value is 2 ms,
