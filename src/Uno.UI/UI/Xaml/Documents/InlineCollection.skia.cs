@@ -327,6 +327,12 @@ namespace Windows.UI.Xaml.Documents
 					var fontInfo = inline.FontInfo;
 					var paint = inline.Paint;
 
+					if (segment.FallbackFont is FontDetails fallback)
+					{
+						paint = segment.Paint!;
+						fontInfo = fallback;
+					}
+
 					if (inline.Foreground is SolidColorBrush scb)
 					{
 						paint.Color = new SKColor(

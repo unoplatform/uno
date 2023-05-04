@@ -1,13 +1,7 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using System.Text;
 using HarfBuzzSharp;
 using SkiaSharp;
-using SkiaSharp.HarfBuzz;
-using Uno;
-using Uno.Foundation.Logging;
-using Uno.UI.Xaml;
-using Windows.UI.Text;
 using Windows.UI.Xaml.Documents.TextFormatting;
 
 #nullable enable
@@ -23,20 +17,30 @@ namespace Windows.UI.Xaml.Documents
 		private List<Segment> GetSegments()
 		{
 			// TODO: Implement Bidi algorithm here to split segments by direction prior to doing the below processing on each directional piece.
-			// TODO: Implement fallback font for emoji/international char segments
+			// TODO: Implement fallback font for international char segments
 
 			List<Segment> segments = new();
 			using HarfBuzzSharp.Buffer buffer = new();
-			var font = FontInfo.Font;
 			var fontInfo = FontInfo;
+			var defaultFont = fontInfo.Font;
+			int defaultFontScale;
+			float defaultTextSizeY, defaultTextSizeX;
+			var font = defaultFont;
+			var paint = Paint;
+			var fontSize = paint.TextSize;
 
 			font.GetScale(out int fontScale, out _);
 			float textSizeY = fontInfo.SKFontSize / fontScale;
 			float textSizeX = textSizeY * fontInfo.SKFontScaleX;
-
+			defaultFontScale = fontScale;
+			defaultTextSizeX = textSizeX;
+			defaultTextSizeY = textSizeY;
 			var text = Text.AsSpan();
 			int s = 0;
 			int i = 0;
+			SKTypeface? symbolTypeface = default;
+			FontDetails? fallbackFont = default;
+			var surrogate = false;
 
 			while (i < text.Length)
 			{
@@ -45,42 +49,31 @@ namespace Windows.UI.Xaml.Documents
 				int lineBreakLength = 0;
 				bool wordBreakAfter = false;
 
-				// Count leading spaces
-
-				while (i < text.Length && char.IsWhiteSpace(text[i]) && !Unicode.IsLineBreak(text[i]))
+				if (symbolTypeface is { })
 				{
-					leadingSpaces++;
-					i++;
+					var fi = FontDetailsCache.GetFont(symbolTypeface.FamilyName, (float)FontSize, FontWeight, FontStyle);
+					font = fi.Font;
+					wordBreakAfter = Unicode.HasWordBreakOpportunityAfter(text, i) || (i + 1 < text.Length && Unicode.HasWordBreakOpportunityBefore(text, i + 1));
+					font.GetScale(out fontScale, out _);
+					textSizeY = fontSize / fontScale;
+					textSizeX = textSizeY * paint.TextScaleX;
+					i += surrogate ? 2 : 1;
+					surrogate = false;
+					fallbackFont = fi;
+					symbolTypeface = default;
 				}
-
-				// Keep the segment going until we hit a word break opportunity or a line break
-
-				while (i < text.Length)
+				else
 				{
-					if (ProcessLineBreak(text, ref i, ref lineBreakLength))
-					{
-						break;
-					}
+					// Count leading spaces
 
-					if (Unicode.HasWordBreakOpportunityAfter(text, i) || (i + 1 < text.Length && Unicode.HasWordBreakOpportunityBefore(text, i + 1)))
+					while (i < text.Length && char.IsWhiteSpace(text[i]) && !Unicode.IsLineBreak(text[i]))
 					{
-						if (char.IsWhiteSpace(text[i]))
-						{
-							trailingSpaces++;
-						}
-
-						wordBreakAfter = true;
+						leadingSpaces++;
 						i++;
-						break;
 					}
 
-					i++;
-				}
+					// Keep the segment going until we hit a word break opportunity or a line break
 
-				// Tack on any trailing spaces or line breaks if this segment does not yet end in a line break
-
-				if (lineBreakLength == 0)
-				{
 					while (i < text.Length)
 					{
 						if (ProcessLineBreak(text, ref i, ref lineBreakLength))
@@ -88,59 +81,111 @@ namespace Windows.UI.Xaml.Documents
 							break;
 						}
 
-						if (char.IsWhiteSpace(text[i]))
+						if (Unicode.HasWordBreakOpportunityAfter(text, i) || (i + 1 < text.Length && Unicode.HasWordBreakOpportunityBefore(text, i + 1)))
 						{
-							trailingSpaces++;
+							if (char.IsWhiteSpace(text[i]))
+							{
+								trailingSpaces++;
+							}
+							wordBreakAfter = true;
 							i++;
-						}
-						else
-						{
 							break;
+						}
+
+						if (char.IsSymbol(text[i]))
+						{
+							symbolTypeface = SKFontManager.Default
+								.MatchCharacter(text[i]);
+							break;
+						}
+						else if (i + 1 < text.Length
+							&& char.IsSurrogate(text[i])
+							&& char.IsSurrogatePair(text[i], text[i + 1]))
+						{
+							var fontManager = SKFontManager.Default;
+							var codepoint = (int)((text[i] - 0xD800) * 0x400 + (text[i + 1] - 0xDC00) + 0x10000);
+							symbolTypeface = fontManager
+								.MatchCharacter(codepoint);
+							surrogate = symbolTypeface is { };
+							break;
+						}
+						i++;
+					}
+
+					// Tack on any trailing spaces or line breaks if this segment does not yet end in a line break
+
+					if (lineBreakLength == 0)
+					{
+						while (i < text.Length)
+						{
+							if (ProcessLineBreak(text, ref i, ref lineBreakLength))
+							{
+								break;
+							}
+
+							if (char.IsWhiteSpace(text[i]))
+							{
+								trailingSpaces++;
+								i++;
+							}
+							else
+							{
+								break;
+							}
 						}
 					}
 				}
 
 				int length = i - s;
-
-				if (lineBreakLength == 2)
+				if (length > 0)
 				{
-					buffer.AddUtf16(text.Slice(s, length - 1)); // Skip second line break char so that it is considered part of the same cluster as the first
+
+					if (lineBreakLength == 2)
+					{
+						buffer.AddUtf16(text.Slice(s, length - 1)); // Skip second line break char so that it is considered part of the same cluster as the first
+					}
+					else
+					{
+						buffer.AddUtf16(text.Slice(s, length));
+					}
+
+					// TODO: Set the segment properties instead of using HB guessing like below.
+					// - Set direction using Bidi algorithm.
+					// - Set Language and Script on buffer. From HarfBuzz docs:
+
+					// Script is crucial for choosing the proper shaping behaviour for scripts that require it (e.g. Arabic) and the which OpenType features defined
+					// in the font to be applied.
+
+					// Languages are crucial for selecting which OpenType feature to apply to the buffer which can result in applying language-specific behaviour.
+					// Languages are orthogonal to the scripts, and though they are related, they are different concepts and should not be confused with each other.
+
+					// buffer.Direction = ...
+					// buffer.Language = ...
+					// buffer.Script = ...
+
+					// Guess the above properties for now before shaping:
+					buffer.GuessSegmentProperties();
+					var direction = buffer.Direction == Direction.LeftToRight ? FlowDirection.LeftToRight : FlowDirection.RightToLeft;
+
+					font.Shape(buffer);
+
+					if (buffer.Direction == Direction.RightToLeft)
+					{
+						buffer.ReverseClusters();
+					}
+
+					var glyphs = GetGlyphs(buffer, s, textSizeX, textSizeY);
+
+					var segment = new Segment(this, direction, s, length, leadingSpaces, trailingSpaces, lineBreakLength, wordBreakAfter, glyphs, fallbackFont);
+
+					segments.Add(segment);
+					buffer.ClearContents();
 				}
-				else
-				{
-					buffer.AddUtf16(text.Slice(s, length));
-				}
-
-				// TODO: Set the segment properties instead of using HB guessing like below.
-				// - Set direction using Bidi algorithm.
-				// - Set Language and Script on buffer. From HarfBuzz docs:
-
-				// Script is crucial for choosing the proper shaping behaviour for scripts that require it (e.g. Arabic) and the which OpenType features defined
-				// in the font to be applied.
-
-				// Languages are crucial for selecting which OpenType feature to apply to the buffer which can result in applying language-specific behaviour.
-				// Languages are orthogonal to the scripts, and though they are related, they are different concepts and should not be confused with each other.
-
-				// buffer.Direction = ...
-				// buffer.Language = ...
-				// buffer.Script = ...
-
-				// Guess the above properties for now before shaping:
-				buffer.GuessSegmentProperties();
-				var direction = buffer.Direction == Direction.LeftToRight ? FlowDirection.LeftToRight : FlowDirection.RightToLeft;
-
-				font.Shape(buffer);
-
-				if (buffer.Direction == Direction.RightToLeft)
-				{
-					buffer.ReverseClusters();
-				}
-
-				var glyphs = GetGlyphs(buffer, s, textSizeX, textSizeY);
-				var segment = new Segment(this, direction, s, length, leadingSpaces, trailingSpaces, lineBreakLength, wordBreakAfter, glyphs);
-
-				segments.Add(segment);
-				buffer.ClearContents();
+				fallbackFont = default;
+				font = defaultFont;
+				textSizeY = defaultTextSizeY;
+				textSizeX = defaultTextSizeX;
+				fontScale = defaultFontScale;
 				s = i;
 			}
 
