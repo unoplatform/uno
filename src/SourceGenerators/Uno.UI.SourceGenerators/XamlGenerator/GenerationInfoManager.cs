@@ -12,10 +12,6 @@ using Uno.Equality;
 using Uno.Extensions;
 using Uno.Roslyn;
 
-#if NETFRAMEWORK
-using Uno.SourceGeneration;
-#endif
-
 namespace Uno.UI.SourceGenerators.XamlGenerator
 {
 	internal class GenerationRunInfoManager

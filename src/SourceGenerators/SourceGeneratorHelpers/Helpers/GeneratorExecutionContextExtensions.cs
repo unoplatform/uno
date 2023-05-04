@@ -7,18 +7,12 @@ using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 
-#if NETFRAMEWORK
-using Uno.SourceGeneration;
-#endif
-
-
 namespace Uno.Roslyn
 {
 	internal static class GeneratorExecutionContextExtensions
 	{
 		private const string SourceItemGroupMetadata = "build_metadata.AdditionalFiles.SourceItemGroup";
 
-#if NETSTANDARD || NET5_0
 		public static string GetMSBuildPropertyValue(
 			this GeneratorExecutionContext context,
 			string name,
@@ -32,7 +26,7 @@ namespace Uno.Roslyn
 		{
 			return context.AnalyzerConfigOptions.GetOptions(textFile).TryGetValue(key, out value);
 		}
-#endif
+
 		public static IEnumerable<Uno.Roslyn.MSBuildItem> GetMSBuildItemsWithAdditionalFiles(this GeneratorExecutionContext context, string name)
 		=> context
 			.AdditionalFiles

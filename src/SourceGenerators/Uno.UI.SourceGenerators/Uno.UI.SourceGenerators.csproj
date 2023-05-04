@@ -15,7 +15,7 @@
 		<PackageReference Include="Microsoft.DotNet.PlatformAbstractions" Version="3.1.6" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
+	<ItemGroup>
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.8.0" ExcludeAssets="runtime" />
 	</ItemGroup>
 
@@ -82,12 +82,11 @@
 		<PropertyGroup>
 			<_baseNugetPath Condition="'$(USERPROFILE)'!=''">$(USERPROFILE)</_baseNugetPath>
 			<_baseNugetPath Condition="'$(HOME)'!=''">$(HOME)</_baseNugetPath>
-			
+
 			<_OverridePackageId>Uno.UI</_OverridePackageId>
 			<_OverridePackageId Condition="'$(UNO_UWP_BUILD)'=='false'">Uno.WinUI</_OverridePackageId>
 
-			<_TargetNugetFolder Condition="'$(TargetFramework)'=='IS_UNIT_TESTS'">$(_baseNugetPath)\.nuget\packages\$(_OverridePackageId)\$(UnoNugetOverrideVersion)\tools\uno-sourcegen</_TargetNugetFolder>
-			<_TargetNugetFolder Condition="'$(TargetFramework)'=='netstandard2.0'">$(_baseNugetPath)\.nuget\packages\$(_OverridePackageId)\$(UnoNugetOverrideVersion)\analyzers\dotnet\cs</_TargetNugetFolder>
+			<_TargetNugetFolder>$(_baseNugetPath)\.nuget\packages\$(_OverridePackageId)\$(UnoNugetOverrideVersion)\analyzers\dotnet\cs</_TargetNugetFolder>
 		</PropertyGroup>
 		<ItemGroup>
 			<_OutputFiles Include="$(TargetDir)**" />

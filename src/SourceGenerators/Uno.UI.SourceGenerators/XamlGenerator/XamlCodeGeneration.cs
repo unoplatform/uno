@@ -24,12 +24,6 @@ using System.Collections.Immutable;
 using Uno.UI.SourceGenerators.Helpers;
 using Uno.UI.SourceGenerators.Utils;
 
-#if NETFRAMEWORK
-using Microsoft.Build.Execution;
-using Uno.SourceGeneration;
-using GeneratorExecutionContext = Uno.SourceGeneration.GeneratorExecutionContext;
-#endif
-
 namespace Uno.UI.SourceGenerators.XamlGenerator
 {
 	internal partial class XamlCodeGeneration
@@ -477,11 +471,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				TrackGenerationFailed(e, stopwatch.Elapsed);
 
-#if NETFRAMEWORK
-				throw;
-#else
 				return ProcessParsingException(e);
-#endif
 			}
 			finally
 			{
@@ -502,7 +492,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				""");
 		}
 
-#if !NETFRAMEWORK
 		private List<KeyValuePair<string, SourceText>> ProcessParsingException(Exception e)
 		{
 			IEnumerable<Exception> Flatten(Exception ex)
@@ -570,7 +559,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			return null;
 		}
-#endif
 
 		private XamlGlobalStaticResourcesMap BuildAssemblyGlobalStaticResourcesMap(XamlFileDefinition[] filesFull, string[] links)
 		{
@@ -665,7 +653,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					{
 						var message = $"Unable to parse resource file [{file.Identity}], make sure it is a valid resw file. ({e.Message})";
 
-#if NETSTANDARD
 						var diagnostic = Diagnostic.Create(
 							XamlCodeGenerationDiagnostics.ResourceParsingFailureRule,
 							null,
@@ -674,9 +661,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						_generatorContext.ReportDiagnostic(diagnostic);
 
 						return Array.Empty<ResourceDetails>();
-#else
-						throw new InvalidOperationException(message, e);
-#endif
 					}
 				})
 				.Distinct()

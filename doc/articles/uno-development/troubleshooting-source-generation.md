@@ -4,7 +4,7 @@ uid: Uno.Contributing.SourceGeneration
 
 # Troubleshooting Source Generation
 
-Source Generation in Uno is done in one of two ways:
+Before Uno 5.0, Source Generation in Uno was done in one of two ways:
 
 - Using [C# 9.0 source generators](https://devblogs.microsoft.com/dotnet/introducing-c-source-generators/)
 - Using [Uno.SourceGeneration](https://github.com/unoplatform/uno.sourcegeneration) generators
@@ -27,6 +27,8 @@ Conversely, Uno.SourceGeneration generators can be used by setting this:
   <UnoUIUseRoslynSourceGenerators>false</UnoUIUseRoslynSourceGenerators>
 </PropertyGroup>
 ```
+
+Starting with Uno 5.0, the only way for source generation is using Roslyn source generators, and setting `UnoUIUseRoslynSourceGenerators` has no effect.
 
 ## Adding generated files C# pragma
 
