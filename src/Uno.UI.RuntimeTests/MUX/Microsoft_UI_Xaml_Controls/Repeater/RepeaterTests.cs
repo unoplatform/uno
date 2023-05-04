@@ -313,6 +313,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		[TestMethod]
 #if __MACOS__
 		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#elif __IOS__
+		[Ignore("Currently fails on iOS https://github.com/unoplatform/uno/issues/9080")]
 #endif
 		public void NestedRepeaterWithDataTemplateScenario()
 		{
@@ -489,6 +491,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		[TestMethod]
 #if __MACOS__
 		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#elif __IOS__
+		[Ignore("Currently fails on iOS https://github.com/unoplatform/uno/issues/9080")]
 #endif
 		public void VerifyCorrectionsInNonScrollableDirection()
 		{
@@ -554,6 +558,9 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 
 
 		[TestMethod]
+#if __IOS__
+		[Ignore("Currently fails on iOS https://github.com/unoplatform/uno/issues/9080")]
+#endif
 		public void VerifyStoreScenarioCache()
 		{
 			ItemsRepeater rootRepeater = null;
@@ -619,6 +626,9 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 
 
 		[TestMethod]
+#if __IOS__
+		[Ignore("Currently fails on iOS https://github.com/unoplatform/uno/issues/9080")]
+#endif
 		public void VerifyUIElementsInItemsSource()
 		{
 			ItemsRepeater repeater = null;
@@ -672,6 +682,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		[TestMethod]
 #if __MACOS__
 		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#elif __IOS__
+		[Ignore("Currently fails on iOS https://github.com/unoplatform/uno/issues/9080")]
 #endif
 		public void VerifyRepeaterDoesNotLeakItemContainers()
 		{

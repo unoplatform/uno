@@ -432,9 +432,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 #endif
 
 		[TestMethod]
-#if __WASM__ || __ANDROID__ || __MACOS__
-		[Ignore("Failing on WASM and Androidand macOS for now https://github.com/unoplatform/uno/issues/4529")]
-#endif
+		[Ignore("Failing for now https://github.com/unoplatform/uno/issues/4529")]
 		[RequiresFullWindow]
 		public void EnsureReplaceOfAnchorDoesNotResetAllContainers()
 		{

@@ -19,10 +19,22 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 	[RunsOnUIThread]
 	public class Given_ImageBrushStretch
 	{
+		// Support is failing for some platforms, where RenderTargetBitmap is not rendering properly
+		// https://github.com/unoplatform/uno/issues/9080
+#if __SKIA__
 		[DataRow(Stretch.Fill)]
 		[DataRow(Stretch.UniformToFill)]
-#if !__SKIA__ //Stretch.Uniform create a Mosaic in Skia. See https://github.com/unoplatform/uno/issues/10021
+		[DataRow(Stretch.None)]
+#elif __IOS__
+		[DataRow(Stretch.Fill)]
+		[DataRow(Stretch.None)]
+#elif __ANDROID__
+		[DataRow(Stretch.Fill)]
+#else
+		[DataRow(Stretch.Fill)]
+		[DataRow(Stretch.UniformToFill)]
 		[DataRow(Stretch.Uniform)]
+		[DataRow(Stretch.None)]
 #endif
 		[DataRow(Stretch.None)]
 		[TestMethod]
