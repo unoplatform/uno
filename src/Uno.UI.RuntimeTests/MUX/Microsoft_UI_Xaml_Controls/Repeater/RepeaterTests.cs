@@ -33,6 +33,7 @@ using Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common.Mocks;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using Uno.UI.RuntimeTests;
+using System.Threading.Tasks;
 
 namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 {
@@ -91,7 +92,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		[TestMethod]
 		public void ValidateRepeaterDefaults()
 		{
-			RunOnUIThread.Execute(() =>
+			RunOnUIThread.Execute(async () =>
 			{
 				var repeater = new ItemsRepeater()
 				{
@@ -108,12 +109,16 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 					}
 				};
 
-				Content.UpdateLayout();
+				while (repeater.TryGetElement(0) == null)
+				{
+					await Task.Delay(1000);
+					Content.UpdateLayout();
+				}
 
 				for (int i = 0; i < 10; i++)
 				{
 					var element = repeater.TryGetElement(i);
-					Verify.IsNotNull(element);
+					Verify.IsNotNull(element, $"Item {i} is null");
 					Verify.AreEqual(string.Format("Item #{0}", i), ((TextBlock)element).Text);
 					Verify.AreEqual(i, repeater.GetElementIndex(element));
 				}
