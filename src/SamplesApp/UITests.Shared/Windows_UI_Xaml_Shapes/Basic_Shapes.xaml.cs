@@ -26,6 +26,10 @@ using System.IO;
 using Uno.UI;
 using Windows.Graphics.Display;
 
+#if !WINDOWS_UWP
+using Uno.UI.Controls.Legacy;
+#endif
+
 #if __IOS__
 using UIKit;
 #endif
