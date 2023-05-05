@@ -9598,6 +9598,8 @@
 			<Member fullName="Windows.UI.Xaml.Controls.VirtualizingPanelLayout/Line Windows.UI.Xaml.Controls.VirtualizingPanelLayout.CreateLine(Windows.UI.Xaml.Controls.Primitives.GeneratorDirection fillDirection, System.Int32 extentOffset, System.Int32 breadthOffset, System.Int32 availableBreadth, AndroidX.RecyclerView.Widget.RecyclerView/Recycler recycler, AndroidX.RecyclerView.Widget.RecyclerView/State state, Uno.UI.IndexPath nextVisibleItem, System.Boolean isNewGroup)" reason="Api alignments" />
 			<Member fullName="System.Nullable`1&lt;Uno.UI.IndexPath&gt; Windows.UI.Xaml.Controls.VirtualizingPanelLayout.GetDynamicSeedIndex(System.Nullable`1&lt;Uno.UI.IndexPath&gt; firstVisibleItem, System.Int32 availableBreadth)" reason="Api alignments" />
 			<Member fullName="System.String Uno.UI.Services.ResourcesService.Get(System.String id)" reason="Api alignments" />
+			
+			<Member fullName="System.Void Windows.UI.Xaml.Window.set_Visible(System.Boolean value)" reason="Does not exist in UWP and WinUI" />
 		</Methods>
 	</IgnoreSet>
 

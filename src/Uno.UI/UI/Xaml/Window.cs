@@ -188,7 +188,7 @@ namespace Windows.UI.Xaml
 		public bool Visible
 		{
 			get => CoreWindow.Visible;
-			set => CoreWindow.Visible = value;
+			private set => CoreWindow.Visible = value;
 		}
 
 		/// <summary>
