@@ -182,8 +182,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 
 			afterVisibleItems.Should().NotContain(beforeVisibleItems);
 		}
-#endif
-
 
 		[TestMethod]
 		[RunsOnUIThread]
@@ -232,6 +230,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 
 			evt.GetValue(sut).Should().NotBeNull("because the IR should have invalidated its measure, causing a layout pass driving to invoke the ViewportManagerWithPlatformFeatures.EnsureScroller which should have re-added handler");
 		}
+#endif
 
 		private async Task RetryAssert(Action assertion)
 		{
