@@ -36,7 +36,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 		[DataRow(Stretch.Uniform)]
 		[DataRow(Stretch.None)]
 #endif
-		[DataRow(Stretch.None)]
 		[TestMethod]
 		public async Task When_Stretch(Stretch stretch)
 		{

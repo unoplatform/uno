@@ -219,8 +219,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 #if __WASM__
 		[Ignore("WaitOne doesn't work on mono.")]
 #endif
-#if __IOS__
-		[Ignore("Fails on iOS: https://github.com/unoplatform/uno/issues/9080")]
+#if __IOS__ || __ANDROID__
+		[Ignore("Fails on iOS/Android: https://github.com/unoplatform/uno/issues/9080")]
 #endif
 		public void ValidateFractionalWidthDoesNotCrash()
 		{

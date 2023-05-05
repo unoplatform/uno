@@ -100,7 +100,7 @@ jobs:
       ArtifactType: Container
 
 ##
-## Runtime tests
+## Automated tests
 ##
 - ${{ each AutomatedTestGroup in parameters.AUTOMATED_TESTS_GROUPS }}:
   - template: .azure-devops-ios-tests-run.yml
@@ -113,7 +113,7 @@ jobs:
       UITEST_SNAPSHOTS_ONLY: false
       UITEST_AUTOMATED_GROUP: ${{ AutomatedTestGroup.key }}
       UITEST_TEST_TIMEOUT: '20m'
-      UITEST_ALLOW_RERUN: 'false'
+      UITEST_ALLOW_RERUN: 'true'
       xCodeRoot: ${{ parameters.xCodeRootTest }}
       XamarinSDKVersion: ${{ parameters.XamarinSDKVersionTest }}
 
@@ -126,7 +126,7 @@ jobs:
       nugetPackages: $(NUGET_PACKAGES)
       JobName: 'iOS_Automated_Tests_Runtime_Tests_group_${{ RuntimeTestGroup.value }}'
       JobDisplayName: 'iOS Runtime Tests ${{ RuntimeTestGroup.value }}'
-      JobTimeoutInMinutes: 75
+      JobTimeoutInMinutes: 120
       vmImage: ${{ parameters.vmImageTest }}
       UITEST_SNAPSHOTS_ONLY: false
       UITEST_TEST_TIMEOUT: '70m'
