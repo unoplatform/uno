@@ -83,7 +83,7 @@ namespace Uno.Extensions
 		/// <param name="origin">The relative origin to use to apply transform.</param>
 		/// <returns>A new rectangle</returns>
 		public static Rect Transform(this Matrix3x2 matrix, Rect rect, Point origin)
-			=> Transform(matrix.CenterOn(origin, rect.Size) , rect);
+			=> Transform(matrix.CenterOn(origin, rect.Size), rect);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static Matrix3x2 CenterOn(this Matrix3x2 matrix, Point relativeOrigin, Size size)
