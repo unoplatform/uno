@@ -12,7 +12,7 @@ using Windows.UI.Xaml.Input;
 
 namespace Windows.UI.Xaml.Controls
 {
-	[ContentProperty(Name = "Content")]
+	[ContentProperty(Name = nameof(Content))]
 	public partial class SplitView : Control
 	{
 		public event TypedEventHandler<SplitView, object> PaneClosed;

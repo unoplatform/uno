@@ -19,10 +19,11 @@ using Windows.UI.Xaml.Automation;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
-
+using Windows.UI.Xaml.Markup;
 
 namespace Windows.UI.Xaml.Controls
 {
+	[ContentProperty(Name = nameof(Header))]
 	public partial class DatePicker : Control
 	{
 		internal const long DEFAULT_DATE_TICKS = 504910368000000000;

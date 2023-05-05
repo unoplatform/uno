@@ -8,7 +8,7 @@ using Uno.Extensions;
 
 namespace Uno.UI.Services
 {
-	public class ResourcesService : IResourcesService
+	public class ResourcesService
 	{
 		private const string KeyNotFoundValue = "__KeyNotFoundValue__";
 		private readonly NSBundle[] _resourceBundles;

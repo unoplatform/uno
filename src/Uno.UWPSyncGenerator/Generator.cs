@@ -623,7 +623,6 @@ namespace Uno.UWPSyncGenerator
 				case "Microsoft.UI.Xaml.Controls.AnimatedVisuals.AnimatedGlobalNavigationButtonVisualSource":
 				case "Microsoft.UI.Xaml.Controls.AnimatedVisuals.AnimatedSettingsVisualSource":
 				case "Microsoft.UI.Xaml.Controls.AnimatedVisualPlayer":
-				case "Microsoft.UI.Xaml.Controls.ControlsResourcesVersion":
 				case "Microsoft.UI.Xaml.Controls.IAnimatedVisualSource":
 				case "Microsoft.UI.Xaml.Controls.IAnimatedVisualSource2":
 				case "Microsoft.UI.Xaml.Controls.IDynamicAnimatedVisualSource":

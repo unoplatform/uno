@@ -12,7 +12,7 @@ using Windows.UI.Xaml.Media.Animation;
 
 namespace Windows.UI.Xaml
 {
-	[ContentProperty(Name = "Storyboard")]
+	[ContentProperty(Name = nameof(Storyboard))]
 	public sealed partial class VisualState : DependencyObject
 	{
 		private Action lazyBuilder;
