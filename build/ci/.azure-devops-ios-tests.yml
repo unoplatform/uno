@@ -19,7 +19,7 @@ parameters:
     value: '05'
 
   # Runtime Test Groups
-  UITEST_RUNTIME_TEST_GROUP_COUNT: 4
+  UITEST_RUNTIME_TEST_GROUP_COUNT: 5
   RUNTIME_TESTS_GROUPS:
   - key: '0'
     value: '01'
@@ -29,6 +29,8 @@ parameters:
     value: '03'
   - key: '3'
     value: '04'
+  - key: '4'
+    value: '05'
 
   # Autmated Test Groups
   AUTOMATED_TESTS_GROUPS:
