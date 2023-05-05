@@ -31,8 +31,10 @@ public static class InputInjectorExtensions
 	public static Finger GetFinger(this InputInjector injector, uint id = 42)
 		=> new(injector, id);
 
+#if !WINDOWS_UWP
 	public static Mouse GetMouse(this InputInjector injector)
 		=> new(injector);
+#endif
 }
 
 public interface IInjectedPointer
