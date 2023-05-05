@@ -133,7 +133,7 @@ jobs:
 
 
 - job: Wasm_UITests_Automated
-  displayName: 'Run WebAssembly Automated Test'
+  displayName: ' WebAssembly Tests'
   dependsOn:
   - Wasm_UITests_Build
 
