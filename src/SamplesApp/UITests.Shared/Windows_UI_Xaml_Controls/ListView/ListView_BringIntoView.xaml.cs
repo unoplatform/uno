@@ -1,14 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Uno.UI.Samples.Controls;
+﻿using Uno.UI.Samples.Controls;
 using Windows.UI.Xaml.Controls;
 using SamplesApp.Windows_UI_Xaml_Controls.Models;
 using Windows.UI.Xaml;
-using Android.Systems;
 
 namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 {
