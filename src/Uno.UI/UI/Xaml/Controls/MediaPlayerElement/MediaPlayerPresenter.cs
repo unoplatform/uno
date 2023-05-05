@@ -1,9 +1,9 @@
-#if __ANDROID__ || __IOS__ || __MACOS__
 using System;
 using Windows.Foundation;
 using Windows.Media.Playback;
 using Windows.UI.Core;
 using Windows.UI.Xaml.Media;
+using Uno.Foundation.Logging;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -30,22 +30,35 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (sender is MediaPlayerPresenter presenter)
 			{
+				if (presenter.Log().IsEnabled(LogLevel.Debug))
+				{
+					presenter.Log().LogDebug($"MediaPlayerPresenter.OnMediaPlayerChanged({args.NewValue})");
+				}
 				if (args.OldValue is Windows.Media.Playback.MediaPlayer oldPlayer)
 				{
 					oldPlayer.VideoRatioChanged -= presenter.OnVideoRatioChanged;
 					oldPlayer.MediaFailed -= presenter.OnMediaFailed;
+					oldPlayer.SourceChanged -= presenter.OnSourceChanged;
 				}
 
 				if (args.NewValue is Windows.Media.Playback.MediaPlayer newPlayer)
 				{
 					newPlayer.VideoRatioChanged += presenter.OnVideoRatioChanged;
 					newPlayer.MediaFailed += presenter.OnMediaFailed;
+					newPlayer.SourceChanged += presenter.OnSourceChanged;
+
+#if __IOS__ || __ANDROID__ || __MACOS__
 					presenter.SetVideoSurface(newPlayer.RenderSurface);
+#endif
+
+					presenter.OnMediaPlayerChangedPartial(newPlayer);
 				}
 			}
 		}
 
 		#endregion
+
+		partial void OnMediaPlayerChangedPartial(Windows.Media.Playback.MediaPlayer mediaPlayer);
 
 		#region Stretch Property
 
@@ -83,7 +96,10 @@ namespace Windows.UI.Xaml.Controls
 
 		public MediaPlayerPresenter() : base()
 		{
+			InitializePartial();
 		}
+
+		partial void InitializePartial();
 
 		/// <summary>
 		/// Indicates whether or not the player is currently toggling the fullscreen mode.
@@ -124,6 +140,13 @@ namespace Windows.UI.Xaml.Controls
 				Visibility = Visibility.Collapsed;
 			});
 		}
+		private void OnSourceChanged(Windows.Media.Playback.MediaPlayer sender, object args)
+		{
+			_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+			{
+				Visibility = Visibility.Visible;
+			});
+		}
 
 		protected override Size MeasureOverride(Size availableSize)
 		{
@@ -152,4 +175,3 @@ namespace Windows.UI.Xaml.Controls
 		}
 	}
 }
-#endif

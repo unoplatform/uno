@@ -18736,10 +18736,10 @@
                         <SymbolIcon x:Name="VolumeMuteSymbol" Symbol="Volume" />
                       </Button>
                       <Button x:Name="CCSelectionButton" Style="{StaticResource MTC_ButtonStyle}" Visibility="Collapsed">
-                        <FontIcon Glyph="&#xED1E;" />
+                        <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xED1E;" />
                       </Button>
                       <Button x:Name="AudioTracksSelectionButton" Style="{StaticResource MTC_ButtonStyle}" Visibility="Collapsed">
-                        <FontIcon Glyph="&#xED1F;" />
+                        <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xED1F;" />
                       </Button>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" Grid.Column="1" VerticalAlignment="Center">
@@ -18747,36 +18747,42 @@
                         <SymbolIcon x:Name="StopSymbol" Symbol="Stop" />
                       </Button>
                       <Button x:Name="SkipBackwardButton" Style="{StaticResource MTC_ButtonStyle}" Visibility="Collapsed">
-                        <FontIcon Glyph="&#xED3C;" />
+                        <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xED3C;" />
                       </Button>
                       <Button x:Name="PreviousTrackButton" Style="{StaticResource MTC_ButtonStyle}" Visibility="Collapsed">
                         <SymbolIcon x:Name="PreviousTrackSymbol" Symbol="Previous" />
                       </Button>
                       <Button x:Name="RewindButton" Style="{StaticResource MTC_ButtonStyle}" Visibility="Collapsed">
-                        <FontIcon Glyph="&#xEB9E;" />
+                        <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xEB9E;" />
                       </Button>
                       <Button x:Name="PlayPauseButton" Style="{StaticResource MTC_ButtonStyle}">
                         <SymbolIcon x:Name="PlayPauseSymbol" Symbol="Play" />
                       </Button>
                       <Button x:Name="FastForwardButton" Style="{StaticResource MTC_ButtonStyle}" Visibility="Collapsed">
-                        <FontIcon Glyph="&#xEB9D;" />
+                        <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xEB9D;" />
                       </Button>
                       <Button x:Name="NextTrackButton" Style="{StaticResource MTC_ButtonStyle}" Visibility="Collapsed">
                         <SymbolIcon x:Name="NextTrackSymbol" Symbol="Next" />
                       </Button>
                       <Button x:Name="SkipForwardButton" Style="{StaticResource MTC_ButtonStyle}" Visibility="Collapsed">
-                        <FontIcon Glyph="&#xED3D;" />
+                        <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xED3D;" />
+                      </Button>
+                      <Button x:Name="RepeatVideoButton" Style="{StaticResource MTC_ButtonStyle}" Visibility="Collapsed">
+                        <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE8EE;" />
                       </Button>
                       <Button x:Name="PlaybackRateButton" Style="{StaticResource MTC_ButtonStyle}" Visibility="Collapsed">
-                        <FontIcon Glyph="&#xEC57;" />
+                        <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xEC57;" />
                       </Button>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" Grid.Column="2">
                       <Button x:Name="ZoomButton" Style="{StaticResource MTC_ButtonStyle}" Visibility="Collapsed">
-                        <FontIcon Glyph="&#xE799;" />
+                        <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE799;" />
                       </Button>
                       <Button x:Name="CastButton" Style="{StaticResource MTC_ButtonStyle}" Visibility="Collapsed">
-                        <FontIcon Glyph="&#xEC15;" />
+                        <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xEC15;" />
+                      </Button>
+                      <Button x:Name="CompactOverlayButton" Style="{StaticResource MTC_ButtonStyle}" Visibility="Collapsed">
+                        <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE8B9;" />
                       </Button>
                       <Button x:Name="FullWindowButton" Style="{StaticResource MTC_ButtonStyle}" Visibility="Collapsed">
                         <SymbolIcon x:Name="FullWindowSymbol" Symbol="FullScreen" />

@@ -1,12 +1,12 @@
-#if __ANDROID__ || __IOS__ || NET461 || __MACOS__
-
 using System;
+using System.Threading.Tasks;
 using System.Timers;
 using Uno.Disposables;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Windows.Media.Playback;
 using Windows.UI.Core;
+using Windows.UI.Input;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
 
@@ -46,8 +46,29 @@ namespace Windows.UI.Xaml.Controls
 			_stopButton.Maybe(p => p.Tapped += Stop);
 			_skipForwardButton.Maybe(p => p.Tapped += SkipForward);
 			_skipBackwardButton.Maybe(p => p.Tapped += SkipBackward);
+			_fastForwardButton.Maybe(p => p.Tapped += ForwardButton);
+			_rewindButton.Maybe(p => p.Tapped += RewindButton);
+			_progressSlider.Maybe(p => p.Tapped += TappedProgressSlider);
 
 			_subscriptions.Disposable = AttachThumbEventHandlers(_progressSlider);
+		}
+
+		public void TappedProgressSlider(object sender, RoutedEventArgs e)
+		{
+			if (double.IsNaN(_progressSlider.Value))
+			{
+				return;
+			}
+			if (_mediaPlayer != null)
+			{
+				_wasPlaying = _mediaPlayer.PlaybackSession.PlaybackState == MediaPlaybackState.Buffering || _mediaPlayer.PlaybackSession.PlaybackState == MediaPlaybackState.Playing;
+				_mediaPlayer.Pause();
+				_mediaPlayer.PlaybackSession.Position = TimeSpan.FromSeconds(_progressSlider.Value);
+				if (_wasPlaying)
+				{
+					_mediaPlayer.Play();
+				}
+			}
 		}
 
 		private void OnSliderTemplateChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
@@ -97,11 +118,13 @@ namespace Windows.UI.Xaml.Controls
 				case MediaPlaybackState.Opening:
 				case MediaPlaybackState.Paused:
 				case MediaPlaybackState.None:
+					_mediaPlayer.PlaybackSession.UpdateTimePositionRate = 0;
 					CancelControlsVisibilityTimer();
 					VisualStateManager.GoToState(this, "PlayState", false);
 					VisualStateManager.GoToState(this, "Normal", false);
 					break;
 				case MediaPlaybackState.Playing:
+					_mediaPlayer.PlaybackSession.UpdateTimePositionRate = 0;
 					ResetControlsVisibilityTimer();
 					VisualStateManager.GoToState(this, "PauseState", false);
 					VisualStateManager.GoToState(this, "Normal", false);
@@ -131,7 +154,7 @@ namespace Windows.UI.Xaml.Controls
 
 				if (_mediaPlayer.PlaybackSession.PlaybackState != MediaPlaybackState.Playing && _mediaPlayer.PlaybackSession.PlaybackState != MediaPlaybackState.Paused)
 				{
-					_timeRemainingElement.Maybe(p => p.Text = $"{duration.TotalHours:0}:{duration.Minutes:00}:{duration.Seconds:00}");
+					_timeRemainingElement.Maybe(p => p.Text = FormatTime(duration));
 				}
 			});
 		}
@@ -141,12 +164,46 @@ namespace Windows.UI.Xaml.Controls
 			_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 			{
 				var elapsed = args as TimeSpan? ?? TimeSpan.Zero;
-				_timeElapsedElement.Maybe(p => p.Text = $"{elapsed.TotalHours:0}:{elapsed.Minutes:00}:{elapsed.Seconds:00}");
+				_timeElapsedElement.Maybe(p => p.Text = FormatTime(elapsed));
 				_progressSlider.Maybe(p => p.Value = elapsed.TotalSeconds);
 
 				var remaining = _mediaPlayer.PlaybackSession.NaturalDuration - elapsed;
-				_timeRemainingElement.Maybe(p => p.Text = $"{remaining.TotalHours:0}:{remaining.Minutes:00}:{remaining.Seconds:00}");
+				_timeRemainingElement.Maybe(p => p.Text = FormatTime(remaining));
+				_ = UpdateTimePosition(elapsed);
 			});
+		}
+
+		public async Task UpdateTimePosition(TimeSpan elapsed)
+		{
+			if (_mediaPlayer.PlaybackSession.PlaybackState == MediaPlaybackState.Playing
+				&& !_mediaPlayer.PlaybackSession.IsUpdateTimePosition
+				&& elapsed != TimeSpan.Zero
+				&& _mediaPlayer.PlaybackSession.UpdateTimePositionRate != 0
+				&& _mediaPlayer.PlaybackSession.UpdateTimePositionRate != 1)
+			{
+				_mediaPlayer.PlaybackSession.IsUpdateTimePosition = true;
+				elapsed += TimeSpan.FromSeconds(_mediaPlayer.PlaybackSession.UpdateTimePositionRate);
+				_mediaPlayer.PlaybackSession.Position = elapsed;
+				await Task.Delay(250);
+				_mediaPlayer.PlaybackSession.IsUpdateTimePosition = false;
+			}
+		}
+
+		private void ResetProgressSlider()
+		{
+			var elapsed = TimeSpan.Zero;
+			_timeElapsedElement.Maybe(p => p.Text = FormatTime(elapsed));
+			_progressSlider.Maybe(p => p.Value = elapsed.TotalSeconds);
+
+			var remaining = _mediaPlayer.PlaybackSession.NaturalDuration - elapsed;
+			_timeRemainingElement.Maybe(p => p.Text = FormatTime(remaining));
+			_mediaPlayer.PlaybackSession.Position = elapsed;
+			_mediaPlayer.PlaybackSession.PositionFromPlayer = elapsed;
+		}
+
+		private string FormatTime(TimeSpan time)
+		{
+			return $"{time.TotalHours:0}:{time.Minutes:00}:{time.Seconds:00}";
 		}
 
 		private void PlayPause(object sender, RoutedEventArgs e)
@@ -163,6 +220,8 @@ namespace Windows.UI.Xaml.Controls
 
 		private void Stop(object sender, RoutedEventArgs e)
 		{
+			_mediaPlayer.Pause();
+			ResetProgressSlider();
 			_mediaPlayer.Stop();
 		}
 
@@ -174,6 +233,19 @@ namespace Windows.UI.Xaml.Controls
 		private void SkipForward(object sender, RoutedEventArgs e)
 		{
 			_mediaPlayer.PlaybackSession.Position = _mediaPlayer.PlaybackSession.Position + TimeSpan.FromSeconds(30);
+		}
+
+		private void ForwardButton(object sender, RoutedEventArgs e)
+		{
+			_mediaPlayer.PlaybackSession.UpdateTimePositionRate = _mediaPlayer.PlaybackSession.UpdateTimePositionRate < 1 ? 1 : /*To stop the Rewind*/
+														_mediaPlayer.PlaybackSession.UpdateTimePositionRate * 2; /*To start the Forward*/
+		}
+
+		private void RewindButton(object sender, RoutedEventArgs e)
+		{
+			_mediaPlayer.PlaybackSession.UpdateTimePositionRate = _mediaPlayer.PlaybackSession.UpdateTimePositionRate > 1 ? 1 : /*To stop the Forward*/
+														_mediaPlayer.PlaybackSession.UpdateTimePositionRate == 1 ? -1 : /*To start the Rewind*/
+														_mediaPlayer.PlaybackSession.UpdateTimePositionRate * 2;
 		}
 
 		private void OnVolumeChanged(object sender, RangeBaseValueChangedEventArgs e)
@@ -241,4 +313,3 @@ namespace Windows.UI.Xaml.Controls
 		}
 	}
 }
-#endif

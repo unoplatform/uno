@@ -17360,8 +17360,8 @@
                                         <Setter Target="PlayPauseSymbol.Glyph" Value="&#xF8AE;" />
                                         UNO TODO: Missing glyph
                                         -->
-                    <Setter Target="PlayPauseSymbolLeft.Glyph" Value="&#xE103;" />
-                    <Setter Target="PlayPauseSymbol.Glyph" Value="&#xE103;" />
+                    <Setter Target="PlayPauseSymbolLeft.Glyph" Value="&#xF8AE;" />
+                    <Setter Target="PlayPauseSymbol.Glyph" Value="&#xF8AE;" />
                   </VisualState.Setters>
                 </VisualState>
               </VisualStateGroup>
@@ -17491,74 +17491,47 @@
                       <AppBarButton x:Name="StopButton" Icon="Stop" Style="{StaticResource AppBarButtonStyle}" MediaTransportControlsHelper.DropoutOrder="7" Visibility="Collapsed" />
                       <AppBarButton x:Name="SkipBackwardButton" Style="{StaticResource AppBarButtonStyle}" MediaTransportControlsHelper.DropoutOrder="5" Visibility="Collapsed">
                         <AppBarButton.Icon>
-                          <!--
-                                                    <FontIcon Glyph="&#xED3C;" />
-                                                    UNO TODO: Missing Glyph
-                                                    -->
-                          <FontIcon Glyph="&#xE7A7;" />
+                          <FontIcon Glyph="&#xED3C;" />
                         </AppBarButton.Icon>
                       </AppBarButton>
                       <AppBarButton x:Name="PreviousTrackButton" Style="{StaticResource AppBarButtonStyle}" MediaTransportControlsHelper.DropoutOrder="3" Visibility="Collapsed">
                         <AppBarButton.Icon>
-                          <!--
-                                                    <FontIcon Glyph="&#xF8AC;" />
-                                                    UNO TODO: Missing Glyph
-                                                    -->
-                          <FontIcon Glyph="&#xE100;" />
+                          <FontIcon Glyph="&#xF8AC;" />
                         </AppBarButton.Icon>
                       </AppBarButton>
                       <AppBarButton x:Name="RewindButton" Style="{StaticResource AppBarButtonStyle}" MediaTransportControlsHelper.DropoutOrder="1" Visibility="Collapsed">
                         <AppBarButton.Icon>
-                          <!--
-                                                    <FontIcon Glyph="&#xE627;" />
-                                                    UNO TODO: Missing Glyph
-                                                    -->
-                          <FontIcon Glyph="&#xE0E2;" />
+                          <FontIcon Glyph="&#xE627;" />
                         </AppBarButton.Icon>
                       </AppBarButton>
                       <AppBarButton x:Name="PlayPauseButton" Style="{StaticResource AppBarButtonStyle}" MediaTransportControlsHelper.DropoutOrder="23">
                         <AppBarButton.Icon>
-                          <!--
-                                                    <FontIcon x:Name="PlayPauseSymbol" Glyph="&#xF5B0;" />
-                                                    UNO TODO: Missing Glyph
-                                                    -->
-                          <FontIcon x:Name="PlayPauseSymbol" Glyph="&#xE102;" />
+                          <FontIcon x:Name="PlayPauseSymbol" Glyph="&#xF5B0;" />
                         </AppBarButton.Icon>
                       </AppBarButton>
                       <AppBarButton x:Name="FastForwardButton" Style="{StaticResource AppBarButtonStyle}" MediaTransportControlsHelper.DropoutOrder="1" Visibility="Collapsed">
                         <AppBarButton.Icon>
-                          <!--
-                                                    <FontIcon Glyph="&#xE628;" />
-                                                    UNO TODO: Missing Glyph
-                                                    -->
-                          <FontIcon Glyph="&#xE0E3;" />
+                          <FontIcon Glyph="&#xE628;" />
                         </AppBarButton.Icon>
                       </AppBarButton>
                       <AppBarButton x:Name="NextTrackButton" Style="{StaticResource AppBarButtonStyle}" MediaTransportControlsHelper.DropoutOrder="3" Visibility="Collapsed">
                         <AppBarButton.Icon>
-                          <!--
-                                                    <FontIcon Glyph="&#xF8AD;" />
-                                                    UNO TODO: Missing Glyph
-                                                    -->
-                          <FontIcon Glyph="&#xE101;" />
+                          <FontIcon Glyph="&#xF8AD;" />
                         </AppBarButton.Icon>
                       </AppBarButton>
                       <AppBarButton x:Name="SkipForwardButton" Style="{StaticResource AppBarButtonStyle}" MediaTransportControlsHelper.DropoutOrder="5" Visibility="Collapsed">
                         <AppBarButton.Icon>
-                          <!--
-                                                    <FontIcon Glyph="&#xED3D;" />
-                                                    UNO TODO: Missing Glyph
-                                                    -->
-                          <FontIcon Glyph="&#xE7A6;" />
+                          <FontIcon Glyph="&#xED3D;" />
+                        </AppBarButton.Icon>
+                      </AppBarButton>
+                      <AppBarButton x:Name="RepeatVideoButton" Style="{StaticResource AppBarButtonStyle}" MediaTransportControlsHelper.DropoutOrder="10" Visibility="Collapsed">
+                        <AppBarButton.Icon>
+                          <FontIcon Glyph="&#xE8EE;" />
                         </AppBarButton.Icon>
                       </AppBarButton>
                       <AppBarButton x:Name="PlaybackRateButton" Style="{StaticResource AppBarButtonStyle}" MediaTransportControlsHelper.DropoutOrder="10" Visibility="Collapsed">
                         <AppBarButton.Icon>
-                          <!--
-                                                    <FontIcon Glyph="&#xEC57;" />
-                                                    UNO TODO: Missing Glyph
-                                                    -->
-                          <FontIcon Glyph="&#xE7AD;" />
+                          <FontIcon Glyph="&#xEC57;" />
                         </AppBarButton.Icon>
                       </AppBarButton>
                       <AppBarSeparator x:Name="RightSeparator" Height="0" Width="0" Margin="0,0" />
@@ -17574,11 +17547,7 @@
                       </AppBarButton>
                       <AppBarButton x:Name="CastButton" Style="{StaticResource AppBarButtonStyle}" MediaTransportControlsHelper.DropoutOrder="11">
                         <AppBarButton.Icon>
-                          <!--
-                                                    <FontIcon Glyph="&#xEC15;" />
-                                                    UNO TODO: Missing Glyph
-                                                    -->
-                          <FontIcon Glyph="&#xE701;" />
+                          <FontIcon Glyph="&#xEC15;" />
                         </AppBarButton.Icon>
                       </AppBarButton>
                       <AppBarButton x:Name="CompactOverlayButton" Style="{StaticResource AppBarButtonStyle}" MediaTransportControlsHelper.DropoutOrder="24" Visibility="Collapsed">

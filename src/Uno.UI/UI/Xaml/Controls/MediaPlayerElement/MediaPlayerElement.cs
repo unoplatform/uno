@@ -1,10 +1,10 @@
-#if __IOS__ || __ANDROID__ || __MACOS__
 using System;
 using Uno.Extensions;
 using Windows.Media.Playback;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml.Media;
+using Uno.Foundation.Logging;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -12,7 +12,12 @@ namespace Windows.UI.Xaml.Controls
 	[TemplatePart(Name = TransportControlsPresenterName, Type = typeof(ContentPresenter))]
 	[TemplatePart(Name = MediaPlayerPresenterName, Type = typeof(MediaPlayerPresenter))]
 	[TemplatePart(Name = LayoutRootName, Type = typeof(Grid))]
-	public partial class MediaPlayerElement : IDisposable
+	public partial class MediaPlayerElement
+#if __IOS__ || __ANDROID__ || __MACOS__
+		// To avoid causing FrameworkElement.Dispose to become virtual (and cause a breaking change),
+		// we keep the disposable for existing platforms, but we don't implement it for the other targets.
+		: IDisposable
+#endif
 	{
 		private const string PosterImageName = "PosterImage";
 		private const string TransportControlsPresenterName = "TransportControlsPresenter";
@@ -43,8 +48,12 @@ namespace Windows.UI.Xaml.Controls
 
 		private static void OnSourceChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
 		{
-			sender.Maybe<MediaPlayerElement>(mpe =>
+			if (sender is MediaPlayerElement mpe)
 			{
+				if (mpe.Log().IsEnabled(LogLevel.Debug))
+				{
+					mpe.Log().LogDebug($"MediaPlayerElement.SourceChanged({args.NewValue})");
+				}
 				var source = args.NewValue as IMediaPlaybackSource;
 
 				if (mpe.MediaPlayer != null)
@@ -56,7 +65,7 @@ namespace Windows.UI.Xaml.Controls
 				{
 					mpe.TogglePosterImage(true);
 				}
-			});
+			}
 		}
 
 		#endregion
@@ -155,15 +164,19 @@ namespace Windows.UI.Xaml.Controls
 					this.RemoveView(_layoutRoot);
 #elif __IOS__ || __MACOS__
 					_layoutRoot.RemoveFromSuperview();
+#else
+					_mediaPlayerPresenter?.RequestFullScreen();
 #endif
-
+#if !__NETSTD_REFERENCE__ && !NET461
 					Windows.UI.Xaml.Window.Current.DisplayFullscreen(_layoutRoot);
+#endif
 				}
 				else
 				{
 					ApplicationView.GetForCurrentView().ExitFullScreenMode();
-
+#if !__NETSTD_REFERENCE__ && !NET461
 					Windows.UI.Xaml.Window.Current.DisplayFullscreen(null);
+#endif
 
 #if __ANDROID__
 					this.AddView(_layoutRoot);
@@ -171,6 +184,8 @@ namespace Windows.UI.Xaml.Controls
 					this.Add(_layoutRoot);
 #elif __MACOS__
 					this.AddSubview(_layoutRoot);
+#else
+					_mediaPlayerPresenter?.ExitFullScreen();
 #endif
 				}
 			}
@@ -290,7 +305,11 @@ namespace Windows.UI.Xaml.Controls
 			TransportControls = new MediaTransportControls();
 
 			DefaultStyleKey = typeof(MediaPlayerElement);
+
+			Initialize();
 		}
+
+		partial void Initialize();
 
 		private protected override void OnLoaded()
 		{
@@ -360,4 +379,3 @@ namespace Windows.UI.Xaml.Controls
 		}
 	}
 }
-#endif
