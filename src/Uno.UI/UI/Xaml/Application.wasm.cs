@@ -57,12 +57,6 @@ namespace Windows.UI.Xaml
 			ObserveApplicationVisibility();
 		}
 
-		public static int DispatchSystemThemeChange()
-		{
-			Windows.UI.Xaml.Application.Current.OnSystemThemeChanged();
-			return 0;
-		}
-
 		public static int DispatchVisibilityChange(bool isVisible)
 		{
 			var application = Windows.UI.Xaml.Application.Current;
@@ -110,15 +104,6 @@ namespace Windows.UI.Xaml
 					typeof(Application).Log().LogError("Application initialization failed.", exception);
 				}
 			}
-		}
-
-		partial void ObserveSystemThemeChanges()
-		{
-#if NET7_0_OR_GREATER
-			NativeMethods.ObserveSystemTheme();
-#else
-			WebAssemblyRuntime.InvokeJS("Windows.UI.Xaml.Application.observeSystemTheme()");
-#endif
 		}
 
 		private void Initialize()

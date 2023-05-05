@@ -11,6 +11,7 @@ using Uno.AuthenticationBroker;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.Gaming.Input.Internal;
+using Uno.Helpers.Theming;
 using Uno.UI;
 using Windows.Devices.Sensors;
 using Windows.Gaming.Input;
@@ -283,7 +284,7 @@ namespace Windows.UI.Xaml
 			Xaml.Window.Current?.RaiseNativeSizeChanged();
 			ViewHelper.RefreshFontScale();
 			DisplayInformation.GetForCurrentView().HandleConfigurationChange();
-			Windows.UI.Xaml.Application.Current.OnSystemThemeChanged();
+			SystemThemeHelper.RefreshSystemTheme();
 		}
 
 #pragma warning disable CS0618 // deprecated members

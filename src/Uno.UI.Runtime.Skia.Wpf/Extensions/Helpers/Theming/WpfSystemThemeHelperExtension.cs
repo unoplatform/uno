@@ -1,45 +1,44 @@
-﻿using System;
+﻿#nullable enable
+
 using Microsoft.Win32;
+using System;
 using Uno.Helpers.Theming;
-using Uno.UI.Runtime.Skia.Wpf.WPF.Extensions.Helper.Theming;
-using Uno.UI.Xaml;
-using Windows.UI.Xaml;
 
-namespace Uno.UI.Runtime.Skia.Wpf
+namespace Uno.UI.Runtime.Skia.Wpf.WPF.Extensions.Helpers.Theming
 {
-	public class WpfApplicationExtension : IApplicationExtension, IDisposable
+	internal class WpfSystemThemeHelperExtension : ISystemThemeHelperExtension, IDisposable
 	{
-		private readonly Application _owner;
-		private WpfSystemThemeHelperExtension _themeHelper;
-		private SystemTheme _currentTheme;
-
 		private bool _disposedValue;
 
-		public WpfApplicationExtension(Application owner)
+		internal WpfSystemThemeHelperExtension(object owner)
 		{
-			_owner = owner ?? throw new ArgumentNullException(nameof(owner));
-
-			_themeHelper = new WpfSystemThemeHelperExtension(null);
-			_currentTheme = _themeHelper.GetSystemTheme();
-
 			SystemEvents.UserPreferenceChanged += SystemEvents_UserPreferenceChanged;
 		}
 
-		public event EventHandler SystemThemeChanged;
+		public event EventHandler? SystemThemeChanged;
+
+		public SystemTheme GetSystemTheme()
+		{
+			const string subKey = @"Software\Microsoft\Windows\CurrentVersion\Themes\Personalize";
+
+			if (Microsoft.Win32.Registry.CurrentUser.OpenSubKey(subKey) is { } key)
+			{
+				if (key.GetValue("AppsUseLightTheme") is int useLightTheme)
+				{
+					return useLightTheme != 0 ? SystemTheme.Light : SystemTheme.Dark;
+				}
+			}
+
+			return SystemTheme.Light;
+		}
 
 		private void SystemEvents_UserPreferenceChanged(object sender, UserPreferenceChangedEventArgs e)
 		{
 			// This event is raised when the theme is changed,
 			// but also for various other irrelevant reasons.
-			// Check the registry first, before forcing the application
-			// to refresh everything.
-			var newTheme = _themeHelper.GetSystemTheme();
-
-			if (newTheme != _currentTheme)
-			{
-				_currentTheme = newTheme;
-				SystemThemeChanged?.Invoke(this, EventArgs.Empty);
-			}
+			// SystemThemeHelper retrieves the current theme to ensure
+			// it actually changed, before changing the app theme.
+			SystemThemeChanged?.Invoke(this, EventArgs.Empty);
 		}
 
 		#region IDisposable
@@ -54,7 +53,7 @@ namespace Uno.UI.Runtime.Skia.Wpf
 			}
 		}
 
-		~WpfApplicationExtension()
+		~WpfSystemThemeHelperExtension()
 		{
 			// Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
 			Dispose(disposing: false);

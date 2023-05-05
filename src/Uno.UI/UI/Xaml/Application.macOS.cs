@@ -7,6 +7,7 @@ using Uno.UI.Services;
 using System.Globalization;
 using Uno.Foundation.Logging;
 using System.Linq;
+using Uno.Helpers.Theming;
 
 using Selector = ObjCRuntime.Selector;
 using Windows.UI.Core;
@@ -28,9 +29,6 @@ namespace Windows.UI.Xaml
 	[Register("UnoAppDelegate")]
 	public partial class Application : NSApplicationDelegate
 	{
-		private readonly NSString _themeChangedNotification = new NSString("AppleInterfaceThemeChangedNotification");
-		private readonly Selector _modeSelector = new Selector("themeChanged:");
-
 		private NSUrl[] _launchUrls;
 
 		static partial void InitializePartialStatic()
@@ -143,24 +141,6 @@ namespace Windows.UI.Xaml
 				this.Log().Error($"Failed to set culture for language: {language}", ex);
 			}
 		}
-
-		partial void ObserveSystemThemeChanges()
-		{
-			NSDistributedNotificationCenter
-#if NET6_0_OR_GREATER
-				.DefaultCenter
-#else
-				.GetDefaultCenter()
-#endif
-				.AddObserver(
-				this,
-				_modeSelector,
-				_themeChangedNotification,
-				null);
-		}
-
-		[Export("themeChanged:")]
-		public void ThemeChanged(NSObject change) => OnSystemThemeChanged();
 
 		private void SubscribeBackgroundNotifications()
 		{

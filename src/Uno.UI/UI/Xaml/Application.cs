@@ -43,6 +43,7 @@ using UIKit;
 using View = AppKit.NSView;
 using ViewGroup = AppKit.NSView;
 using AppKit;
+using Windows.UI.Core;
 #else
 using View = Windows.UI.Xaml.UIElement;
 using ViewGroup = Windows.UI.Xaml.UIElement;
@@ -55,10 +56,6 @@ namespace Windows.UI.Xaml
 		private bool _initializationComplete;
 		private readonly static IEventProvider _trace = Tracing.Get(TraceProvider.Id);
 		private ApplicationTheme? _requestedTheme;
-#pragma warning disable CA1805 // Do not initialize unnecessarily
-		// TODO: This field is ALWAYS false. Either remove it or assign when appropriate.
-		private bool _systemThemeChangesObserved = false;
-#pragma warning restore CA1805 // Do not initialize unnecessarily
 		private SpecializedResourceDictionary.ResourceKey _requestedThemeForResources;
 		private bool _isInBackground;
 
@@ -136,7 +133,7 @@ namespace Windows.UI.Xaml
 			if (InternalRequestedTheme == null)
 			{
 				// just cache the theme, but do not notify about a change unnecessarily
-				InternalRequestedTheme = GetDefaultSystemTheme();
+				InternalRequestedTheme = GetSystemTheme();
 			}
 		}
 
@@ -192,7 +189,7 @@ namespace Windows.UI.Xaml
 		{
 			// this flag makes sure the app will not respond to OS events
 			IsThemeSetExplicitly = explicitTheme.HasValue;
-			var theme = explicitTheme ?? GetDefaultSystemTheme();
+			var theme = explicitTheme ?? GetSystemTheme();
 			SetRequestedTheme(theme);
 		}
 
@@ -228,18 +225,6 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		public event UnhandledExceptionEventHandler UnhandledException;
 
-		public void OnSystemThemeChanged()
-		{
-			// if user overrides theme, don't apply system theme
-			if (!IsThemeSetExplicitly)
-			{
-				var theme = GetDefaultSystemTheme();
-				SetRequestedTheme(theme);
-			}
-
-			UISettings.OnColorValuesChanged();
-		}
-
 #if !__ANDROID__ && !__MACOS__ && !__SKIA__
 		[NotImplemented("__IOS__", "NET461", "__WASM__", "__NETSTD_REFERENCE__")]
 		public void Exit()
@@ -262,8 +247,6 @@ namespace Windows.UI.Xaml
 			StartPartial(callback);
 		}
 
-		partial void ObserveSystemThemeChanges();
-
 		static partial void StartPartial(ApplicationInitializationCallback callback);
 
 		protected internal virtual void OnActivated(IActivatedEventArgs args) { }
@@ -272,18 +255,27 @@ namespace Windows.UI.Xaml
 
 		internal void InitializationCompleted()
 		{
-			if (!_systemThemeChangesObserved)
-			{
-				ObserveSystemThemeChanges();
-			}
+			SystemThemeHelper.SystemThemeChanged += OnSystemThemeChanged;
 			_initializationComplete = true;
 		}
 
 		internal void RaiseRecoverableUnhandledException(Exception e) => UnhandledException?.Invoke(this, new UnhandledExceptionEventArgs(e, false));
 
-		private ApplicationTheme GetDefaultSystemTheme() =>
+		private ApplicationTheme GetSystemTheme() =>
 			SystemThemeHelper.SystemTheme == SystemTheme.Light ?
 				ApplicationTheme.Light : ApplicationTheme.Dark;
+
+		private void OnSystemThemeChanged(object sender, EventArgs e)
+		{
+			// if user overrides theme, don't apply system theme
+			if (!IsThemeSetExplicitly)
+			{
+				var theme = GetSystemTheme();
+				SetRequestedTheme(theme);
+			}
+
+			UISettings.OnColorValuesChanged();
+		}
 
 #if __WASM__ || __SKIA__
 		private IDisposable WritePhaseEventTrace(int startEventId, int stopEventId)
