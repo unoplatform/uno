@@ -170,7 +170,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			else if (manipulationUpdate == ManipulationUpdateKind.Begin)
 			{
 				// We delay the beginning of a manipulation to avoid flickers, but not for "exact" devices which has hover states
-				// (i.e. mouse and pen when not on iOS)
+				// (i.e. mouse when not on iOS)
 				if (isMouse)
 				{
 					_currentState = state;
