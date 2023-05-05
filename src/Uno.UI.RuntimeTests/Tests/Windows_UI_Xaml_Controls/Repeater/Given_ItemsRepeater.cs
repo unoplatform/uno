@@ -224,13 +224,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 			root.Child = new TextBlock { Text = "IR unloaded" };
 			await TestServices.WindowHelper.WaitForIdle();
 
-			evt.GetValue(sut).Should().BeNull("the ViewportManagerWithPlatformFeatures should have remove handler in the ResetScrollers method");
+			evt.GetValue(sut).Should().BeNull("because the ViewportManagerWithPlatformFeatures should have remove handler in the ResetScrollers method");
 
 			// Load again IR
 			root.Child = sut;
 			await TestServices.WindowHelper.WaitForIdle();
 
-			evt.GetValue(sut).Should().NotBeNull("the IR should have invalidate it's measure, causing a layout pass driving to invoke the ViewportManagerWithPlatformFeatures.EnsureScroller which should have re-added handler");
+			evt.GetValue(sut).Should().NotBeNull("because the IR should have invalidated its measure, causing a layout pass driving to invoke the ViewportManagerWithPlatformFeatures.EnsureScroller which should have re-added handler");
 		}
 
 		private async Task RetryAssert(Action assertion)
