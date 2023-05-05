@@ -1,7 +1,8 @@
+#pragma warning disable 108 // new keyword hiding
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Web
 {
-#if false || false || false || false || false || false || false
+	#if false || false || false || false || false || false || false
 	public   enum WebErrorStatus 
 	{
 		// Skipping already declared field Windows.Web.WebErrorStatus.Unknown
@@ -60,5 +61,5 @@ namespace Windows.Web
 		// Skipping already declared field Windows.Web.WebErrorStatus.GatewayTimeout
 		// Skipping already declared field Windows.Web.WebErrorStatus.HttpVersionNotSupported
 	}
-#endif
+	#endif
 }

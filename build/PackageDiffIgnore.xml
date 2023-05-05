@@ -978,6 +978,8 @@
 
 			<Member fullName="System.Void Windows.ApplicationModel.SuspendingDeferral..ctor(System.Action deferralDone)" reason="This constructor does not exist in Windows" />
 			<Member fullName="Windows.UI.Xaml.Controls.PersonPictureTemplateSettings Windows.UI.Xaml.Controls.PersonPicture.get_TemplateSettings()" reason="Moved to MUXC" />
+			<Member fullName="System.Boolean Windows.UI.Xaml.Controls.MenuBarItem.IsFlyoutOpen()" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.MenuBarItem.Invoke()" reason="Api alignments" />
 			<Member fullName="System.Boolean Windows.UI.Xaml.Controls.RelativePanel.GetAlignBottomWithPanel(Windows.UI.Xaml.UIElement view)" reason="Api alignments" />
 			<Member fullName="System.Void Windows.UI.Xaml.Controls.RelativePanel.SetAlignBottomWithPanel(Windows.UI.Xaml.UIElement view, System.Boolean value)" reason="Api alignments" />
 			<Member fullName="System.Boolean Windows.UI.Xaml.Controls.RelativePanel.GetAlignLeftWithPanel(Windows.UI.Xaml.UIElement view)" reason="Api alignments" />
