@@ -102,7 +102,7 @@ namespace Windows.UI.Xaml.Controls
 
 		#region IsEnabled DependencyProperty
 
-		// Note: we keep the event args as a private field for perf consideration: This avoids to create a new instance each time.
+		// Note: we keep the event args as a private field for perf consideration: This avoids creating a new instance each time.
 		//		 As it's used only internally it's safe to do so.
 		[ThreadStatic]
 		private static IsEnabledChangedEventArgs _isEnabledChangedEventArgs;
