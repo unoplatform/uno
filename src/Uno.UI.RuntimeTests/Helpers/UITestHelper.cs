@@ -201,6 +201,7 @@ public class Finger : IInjectedPointer, IDisposable
 		=> _injector.InjectTouchInput(infos);
 }
 
+#if !WINDOWS_UWP
 public class Mouse
 {
 	private readonly InputInjector _input;
@@ -316,4 +317,4 @@ public class Mouse
 	private void Inject(params InjectedInputMouseInfo[] infos)
 		=> _input.InjectMouseInput(infos);
 }
-
+#endif
