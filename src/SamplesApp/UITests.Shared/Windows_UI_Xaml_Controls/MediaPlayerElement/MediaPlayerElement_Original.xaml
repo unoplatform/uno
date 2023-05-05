@@ -8,7 +8,7 @@
 	<!--<MediaPlayerElement x:Name="mediaPlayerElement" Source="https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/720/Big_Buck_Bunny_720_10s_5MB.mp4"-->
 	<!--<MediaPlayerElement Source="https://www.youtube.com/embed/DDtzqzIqgdw"-->
 
-	<MediaPlayerElement Source="https://ia800201.us.archive.org/12/items/BigBuckBunny_328/BigBuckBunny_512kb.mp4"
+	<MediaPlayerElement Source="http://localhost:5000/mp4.mp4"
 						AreTransportControlsEnabled="True"
 		AutoPlay="True" />
 	

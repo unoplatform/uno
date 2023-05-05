@@ -11,28 +11,45 @@ using Windows.UI.Xaml;
 using System.Threading;
 using System.Linq;
 using Windows.UI.Notifications;
+using System.Globalization;
+using System.Collections.Immutable;
+using System.IO;
+using Uno.Extensions;
 
 namespace Uno.UI.Media;
 
-public partial class GTKMediaPlayer : Border
+public partial class GTKMediaPlayer : Button
 {
 	private LibVLC? _libvlc;
 	private LibVLCSharp.Shared.MediaPlayer? _mediaPlayer;
 	private VideoView? _videoView;
-
-	public event EventHandler<object>? OnSourceLoaded;
-	public event EventHandler SourceLoaded
+	private double _ratio;
+	public double Duration { get; set; }
+	private readonly ImmutableArray<string> audioTagAllowedFormats = ImmutableArray.Create(new string[] { ".MP3", ".WAV" });
+	private readonly ImmutableArray<string> videoTagAllowedFormats = ImmutableArray.Create(new string[] { ".MP4", ".WEBM", ".OGG" });
+	public VideoView? VideoView
 	{
-		add
+		get => _videoView;
+		set
 		{
-			//_htmlVideo.RegisterHtmlEventHandler("loadeddata", value);
-			//_htmlAudio.RegisterHtmlEventHandler("loadeddata", value);
+			_videoView = value;
 		}
-		remove
+	}
+	public double Ratio
+	{
+		get => _ratio;
+		set
 		{
-			//_htmlVideo.UnregisterHtmlEventHandler("loadeddata", value);
-			//_htmlAudio.UnregisterHtmlEventHandler("loadeddata", value);
+			_ratio = value;
 		}
+	}
+	public bool IsVideo
+	{
+		get => videoTagAllowedFormats.Contains(Path.GetExtension(Source), StringComparer.OrdinalIgnoreCase);
+	}
+	public bool IsAudio
+	{
+		get => audioTagAllowedFormats.Contains(Path.GetExtension(Source), StringComparer.OrdinalIgnoreCase);
 	}
 	public GTKMediaPlayer()
 	{
@@ -43,57 +60,10 @@ public partial class GTKMediaPlayer : Border
 
 		Loaded += OnLoaded;
 		Unloaded += OnUnloaded;
-	}
-	private void OnUnloaded(object sender, object args)
-	{
-		//if (this.Log().IsEnabled(LogLevel.Debug))
-		//{
-		//	this.Log().Debug($"HtmlMediaPlayer Unloaded");
-		//}
-
-		SourceLoaded -= OnSourceVideoLoaded;
+		//RaiseLoaded();
+		Initialized();
 	}
 
-	private void OnSourceVideoLoaded(object? sender, EventArgs e)
-	{
-		if (_videoView != null)
-		{
-			_videoView.Visible = true;
-		}
-		UpdateVideoStretch();
-		OnSourceLoaded?.Invoke(this, EventArgs.Empty);
-	}
-
-	private void OnLoaded(object sender, object args)
-	{
-		//if (this.Log().IsEnabled(LogLevel.Debug))
-		//{
-		//	this.Log().Debug($"GTKMediaPlayer Loaded");
-		//}
-
-#pragma warning disable CS8622 // Nullability of reference types in type of parameter doesn't match the target delegate (possibly because of nullability attributes).
-		SourceLoaded += OnSourceVideoLoaded;
-#pragma warning restore CS8622 // Nullability of reference types in type of parameter doesn't match the target delegate (possibly because of nullability attributes).
-		Console.WriteLine("Creating libvlc");
-		_libvlc = new LibVLC(enableDebugLogs: false);
-
-		Console.WriteLine("Creating player");
-		_mediaPlayer = new LibVLCSharp.Shared.MediaPlayer(_libvlc);
-
-		Console.WriteLine("Creating VideoView");
-		_videoView = new LibVLCSharp.GTK.VideoView();
-
-		_videoView.Visible = false;
-		_videoView.MediaPlayer = _mediaPlayer;
-		_mediaPlayer.Stopped += (sender, e) =>
-		{
-			_videoView.Visible = false;
-		};
-
-		//ContentView.Content = _videoView;
-		//myNativeContent.Content = _videoView;
-
-	}
 
 	public void Play()
 	{
@@ -122,6 +92,15 @@ public partial class GTKMediaPlayer : Border
 		}
 	}
 
+	public void SetVolume(int volume)
+	{
+		if (_videoView != null && _mediaPlayer != null)
+		{
+			_mediaPlayer.Volume = volume;
+			_videoView.Visible = true;
+		}
+	}
+
 	public string Source
 	{
 		get => (string)GetValue(SourceProperty);
@@ -134,35 +113,6 @@ public partial class GTKMediaPlayer : Border
 		"Source", typeof(string), typeof(GTKMediaPlayer), new PropertyMetadata(default(string),
 			OnSourceChanged));
 
-	private static void OnSourceChanged(DependencyObject dependencyobject, DependencyPropertyChangedEventArgs args)
-	{
-		if (dependencyobject is GTKMediaPlayer player)
-		{
-			string encodedSource = (string)args.NewValue;
-
-			//if (player.Log().IsEnabled(LogLevel.Debug))
-			//{
-			//	player.Log().Debug($"GTKMediaPlayer.OnSourceChanged: {args.NewValue} isVideo:{player.IsVideo} isAudio:{player.IsAudio}");
-			//}
-			if (player._mediaPlayer != null && player._libvlc != null)
-			{
-				string[] options = new string[1];
-				options[0] = "video-on-top";
-
-				var media = new LibVLCSharp.Shared.Media(player._libvlc, new Uri(encodedSource), options);
-				player._mediaPlayer.Media = media;
-				//UpdateVideoStretch();
-
-			}
-			//if (player.Log().IsEnabled(LogLevel.Debug))
-			//{
-			//	player.Log().Debug($"MediaPlayer source changed: [{player.Source}]");
-			//}
-
-			player.OnSourceLoaded?.Invoke(player, EventArgs.Empty);
-		}
-	}
-
 	internal void UpdateVideoStretch()
 	{
 		_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
@@ -171,11 +121,11 @@ public partial class GTKMediaPlayer : Border
 			{
 				try
 				{
+					_mediaPlayer.Media.Parse(MediaParseOptions.ParseNetwork);
 					var width = _videoView.AllocatedWidth;
 					var height = _videoView.AllocatedHeight;
 					// var parentRatio = (double)width / global::System.Math.Max(1, height);
 
-					_mediaPlayer.Media.Parse(MediaParseOptions.ParseNetwork);
 					while (_mediaPlayer.Media.Tracks != null && !_mediaPlayer.Media.Tracks.Any(track => track.TrackType == TrackType.Video))
 					{
 						Thread.Sleep(100);
@@ -193,9 +143,9 @@ public partial class GTKMediaPlayer : Border
 						{
 							return;
 						}
-						var ratio = (double)videoWidth / global::System.Math.Max(1, videoHeight);
-						height = (int)(width / ratio);
-						_videoView?.SizeAllocate(new(0, 0, width, height));
+						Ratio = (double)videoWidth / global::System.Math.Max(1, videoHeight);
+						height = (int)(videoWidth / Ratio);
+						_videoView?.SizeAllocate(new(100, 100, width, height));
 						Console.WriteLine($"Largura: {width},  Altura: {height}");
 					}
 				}
@@ -205,4 +155,67 @@ public partial class GTKMediaPlayer : Border
 			}
 		});
 	}
+	private double _playbackRate;
+	public double PlaybackRate
+	{
+		get => _playbackRate;
+		set
+		{
+			_playbackRate = value;
+		}
+	}
+	public double CurrentPosition
+	{
+		get
+		{
+			if (_videoView == null || _mediaPlayer == null)
+			{
+				return 0;
+			}
+			return _mediaPlayer.Time;
+		}
+		set
+		{
+			if (_videoView != null && _mediaPlayer != null)
+			{
+				_mediaPlayer.Time = long.Parse(value.ToString(CultureInfo.InvariantCulture), CultureInfo.InvariantCulture);
+			}
+		}
+	}
+	private bool _isLoopingEnabled;
+	public void SetIsLoopingEnabled(bool value)
+	{
+		_isLoopingEnabled = value;
+		if (_videoView != null && _mediaPlayer != null)
+		{
+			//TODO: version 3
+			//_mediaPlayer.PositionChanged += 
+			//public void MediaEndReached(object sender, EventArgs args)
+			//{
+			//	ThreadPool.QueueUserWorkItem(() => this.MediaPlayer.Stop());
+			//}
+			//version 4
+			//new LibVLC("--input-repeat=2");
+		}
+	}
+	internal void UpdateVideoStretch(Windows.UI.Xaml.Media.Stretch stretch)
+	{
+
+		switch (stretch)
+		{
+			case Windows.UI.Xaml.Media.Stretch.None:
+				//_htmlVideo.SetCssStyle("object-fit", "none");
+				break;
+			case Windows.UI.Xaml.Media.Stretch.Fill:
+				//_htmlVideo.SetCssStyle("object-fit", "fill");
+				break;
+			case Windows.UI.Xaml.Media.Stretch.Uniform:
+				//_htmlVideo.SetCssStyle("object-fit", "cover");
+				break;
+			case Windows.UI.Xaml.Media.Stretch.UniformToFill:
+				//_htmlVideo.SetCssStyle("object-fit", "contain");
+				break;
+		}
+	}
+
 }

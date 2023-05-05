@@ -21,6 +21,8 @@ using Windows.ApplicationModel.Background;
 using Uno.Foundation.Extensibility;
 using Windows.UI.Xaml.Controls.Maps;
 using System.Numerics;
+using Uno.Logging;
+using Windows.UI.Xaml;
 
 [assembly: ApiExtension(typeof(IMediaPlayerExtension), typeof(Uno.UI.Media.MediaPlayerExtension))]
 
@@ -33,7 +35,15 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 	private Uri? _uri;
 	private List<Uri>? _playlistItems;
 	private readonly Windows.Media.Playback.MediaPlayer _owner;
-	public GTKMediaPlayer? _player;
+	private GTKMediaPlayer? _player;
+
+
+
+	private bool _updatingPosition;
+	private bool _isPlayRequested;
+	private bool _isPlayerPrepared;
+	private int _playlistIndex;
+	private TimeSpan _naturalDuration;
 
 	public MediaPlayerExtension(object owner)
 	{
@@ -80,6 +90,7 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 			}
 		}
 	}
+	public IMediaPlayerEventsExtension? Events { get; set; }
 
 	private void InitializePlayer()
 	{
@@ -93,13 +104,44 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 			return;
 		}
 
-		// _player.OnSourceFailed -= OnError;
-		// _player.OnSourceLoaded -= OnPrepared;
+		_player.OnSourceFailed -= OnError;
+		_player.OnSourceLoaded -= OnPrepared;
+		_player.OnSourceEnded -= OnCompletion;
+		_player.OnTimeUpdate -= OnTimeUpdate;
+		_player.OnSourceFailed += OnError;
+		_player.OnSourceLoaded += OnPrepared;
+		_player.OnSourceEnded += OnCompletion;
+		_player.OnTimeUpdate += OnTimeUpdate;
 
+		_owner.PlaybackSession.PlaybackStateChanged -= OnStatusChanged;
+		_owner.PlaybackSession.PlaybackStateChanged += OnStatusChanged;
 
 		ApplyVideoSource();
 	}
+	public TimeSpan Position
+	{
+		get => TimeSpan.FromSeconds(_player?.CurrentPosition ?? 0);
+		set
+		{
+			if (!_updatingPosition)
+			{
+				_updatingPosition = true;
 
+				try
+				{
+					if (_owner.PlaybackSession.PlaybackState != MediaPlaybackState.None && _player is not null && _player.Source is not null)
+					{
+						_player.CurrentPosition = (int)value.TotalSeconds;
+						OnSeekComplete();
+					}
+				}
+				finally
+				{
+					_updatingPosition = false;
+				}
+			}
+		}
+	}
 
 	private void ApplyVideoSource()
 	{
@@ -201,7 +243,6 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 			_owner.PlaybackSession.PlaybackState = MediaPlaybackState.Paused;
 		}
 	}
-
 	public void Play()
 	{
 		//if (this.Log().IsEnabled(LogLevel.Debug))
@@ -220,51 +261,160 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 
 		try
 		{
-			_player.Play();
+			// If we reached the end of media, we need to reset position to 0
+			if (_owner.PlaybackSession.PlaybackState == MediaPlaybackState.None)
+			{
+				_owner.PlaybackSession.Position = TimeSpan.Zero;
+			}
+
+			_isPlayRequested = true;
+
+			if (_isPlayerPrepared)
+			{
+				if (_player != null)
+				{
+					_player.PlaybackRate = 1;
+					_player.Play();
+				}
+				_owner.PlaybackSession.PlaybackState = MediaPlaybackState.Playing;
+			}
+			else
+			{
+				//if (this.Log().IsEnabled(LogLevel.Debug))
+				//{
+				//	this.Log().Debug($"MediaPlayerExtension.Play(): Player was not prepared");
+				//}
+			}
 		}
-		catch (global::System.Exception)
+		catch (global::System.Exception ex)
 		{
 			//if (this.Log().IsEnabled(LogLevel.Debug))
 			//{
 			//	this.Log().Debug($"MediaPlayerExtension.Play(): Failed {ex}");
 			//}
-			//OnMediaFailed(ex);
+			OnMediaFailed(ex);
 		}
 	}
 
-	public IMediaPlayerEventsExtension? Events { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-	public double PlaybackRate { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-	public bool IsLoopingEnabled { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+	public void Initialize()
+		=> InitializePlayer();
+
+	private double _playbackRate;
+	public double PlaybackRate
+	{
+		get => _playbackRate;
+		set
+		{
+			_playbackRate = value;
+			if (_player is not null)
+			{
+				_player.PlaybackRate = value;
+			}
+		}
+	}
+
+	private bool _isLoopingEnabled;
+	public bool IsLoopingEnabled
+	{
+		get => _isLoopingEnabled;
+		set
+		{
+			_isLoopingEnabled = value;
+			if (_player is not null)
+			{
+				_player.SetIsLoopingEnabled(value);
+			}
+		}
+	}
+
 
 	public MediaPlayerState CurrentState => throw new NotImplementedException();
 
-	public TimeSpan NaturalDuration => throw new NotImplementedException();
+	public TimeSpan NaturalDuration
+	{
+		get => _naturalDuration;
+		internal set
+		{
+			_naturalDuration = value;
 
-	public bool IsProtected => throw new NotImplementedException();
+			Events?.NaturalDurationChanged();
+		}
+	}
 
-	public double BufferingProgress => throw new NotImplementedException();
+	public bool IsProtected
+			=> false;
 
-	public bool CanPause => throw new NotImplementedException();
+	public double BufferingProgress
+		=> 0.0;
 
-	public bool CanSeek => throw new NotImplementedException();
+	public bool CanPause
+		=> true;
 
-	public MediaPlayerAudioDeviceType AudioDeviceType { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-	public MediaPlayerAudioCategory AudioCategory { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-	public TimeSpan TimelineControllerPositionOffset { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-	public bool RealTimePlayback { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-	public double AudioBalance { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-	public TimeSpan Position { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+	public bool CanSeek
+		=> true;
 
-	public void SetUriSource(Uri value) => throw new NotImplementedException();
+	public MediaPlayerAudioDeviceType AudioDeviceType { get; set; }
+
+	public MediaPlayerAudioCategory AudioCategory { get; set; }
+
+	public TimeSpan TimelineControllerPositionOffset
+	{
+		get => Position;
+		set => Position = value;
+	}
+
+	public bool RealTimePlayback { get; set; }
+
+	public double AudioBalance { get; set; }
+
+	public void SetUriSource(Uri uri)
+	{
+		//if (this.Log().IsEnabled(LogLevel.Debug))
+		//{
+		//	this.Log().Debug($"MediaPlayerExtension.SetUriSource({uri})");
+		//}
+
+		if (_player is not null)
+		{
+			_player.Source = uri.OriginalString;
+		}
+	}
+
 	public void SetFileSource(IStorageFile file) => throw new NotImplementedException();
 	public void SetStreamSource(IRandomAccessStream stream) => throw new NotImplementedException();
 	public void SetMediaSource(IMediaSource source) => throw new NotImplementedException();
 	public void StepForwardOneFrame() => throw new NotImplementedException();
 	public void StepBackwardOneFrame() => throw new NotImplementedException();
 	public void SetSurfaceSize(Size size) => throw new NotImplementedException();
-	public void ToggleMute() => throw new NotImplementedException();
-	public void OnVolumeChanged() => throw new NotImplementedException();
-	public void Initialize() => throw new NotImplementedException();
+	public void ToggleMute()
+	{
+		if (_owner.IsMuted)
+		{
+			_player?.SetVolume(0);
+		}
+		else
+		{
+			var volume = (int)(_owner.Volume / 100);
+			_player?.SetVolume(volume);
+		}
+	}
+
+
+
 	public void OnOptionChanged(string name, object value) => throw new NotImplementedException();
-	public void Dispose() => throw new NotImplementedException();
+
+	public void Dispose()
+	{
+		_instances.Remove(_owner);
+
+		TryDisposePlayer();
+	}
+	private void TryDisposePlayer()
+	{
+		if (_player != null)
+		{
+			_isPlayRequested = false;
+			_isPlayerPrepared = false;
+		}
+	}
 }

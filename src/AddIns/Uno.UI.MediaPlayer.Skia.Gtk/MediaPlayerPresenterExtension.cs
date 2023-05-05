@@ -1,6 +1,8 @@
 ﻿#nullable enable
 
 using System;
+using Atk;
+using Pango;
 using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
 using Uno.Media.Playback;
@@ -25,9 +27,17 @@ public class MediaPlayerPresenterExtension : IMediaPlayerPresenterExtension
 		{
 			throw new InvalidOperationException($"MediaPlayerPresenterExtension must be initialized with a MediaPlayer instance");
 		}
-
 		_owner = presenter;
-		_owner.Child = _player = new GTKMediaPlayer();
+
+
+		_player = new GTKMediaPlayer();
+
+		var ContentView = new Button();
+		ContentView.Content = _player.VideoView;
+		_player.VideoView?.SizeAllocate(new(0, 0, (int)_owner.ActualWidth, (int)_owner.ActualHeight));
+		_player.VideoView?.SizeAllocate(new(0, 0, 800, 640));
+		_owner.Child = ContentView;
+		//_owner.Child = _player = new GTKMediaPlayer();
 	}
 
 
@@ -40,7 +50,7 @@ public class MediaPlayerPresenterExtension : IMediaPlayerPresenterExtension
 		if (_owner is not null
 			&& MediaPlayerExtension.GetByMediaPlayer(_owner.MediaPlayer) is { } extension)
 		{
-			extension._player = _player;
+			extension.GTKMediaPlayer = _player;
 		}
 		else
 		{
@@ -53,5 +63,11 @@ public class MediaPlayerPresenterExtension : IMediaPlayerPresenterExtension
 
 	public void ExitFullScreen() => throw new NotImplementedException();
 	public void RequestFullScreen() => throw new NotImplementedException();
-	public void StretchChanged() => throw new NotImplementedException();
+	public void StretchChanged()
+	{
+		if (_owner is not null)
+		{
+			_player.UpdateVideoStretch(_owner.Stretch);
+		}
+	}
 }
