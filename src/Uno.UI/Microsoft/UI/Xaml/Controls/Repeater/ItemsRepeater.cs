@@ -608,9 +608,11 @@ namespace Microsoft.UI.Xaml.Controls
 
 		void OnLoaded(object sender, RoutedEventArgs args)
 		{
+#if !HAS_UNO // With uno we always detach from the scroller on unload so we need to force a layouting pass to re-subscribe to scroller and update viewport (in a single pass)
 			// If we skipped an unload event, reset the scrollers now and invalidate measure so that we get a new
 			// layout pass during which we will hookup new scrollers.
 			if (_loadedCounter > _unloadedCounter)
+#endif
 			{
 				InvalidateMeasure();
 				m_viewportManager.ResetScrollers();
@@ -646,8 +648,11 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			_stackLayoutMeasureCounter = 0u;
 			++_unloadedCounter;
+
+#if !HAS_UNO // Avoids leak and useless as we are not validating such count in the loaded
 			// Only reset the scrollers if this unload event is in-sync.
 			if (_unloadedCounter == _loadedCounter)
+#endif
 			{
 				m_viewportManager.ResetScrollers();
 			}

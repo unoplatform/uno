@@ -1,5 +1,4 @@
 ﻿#nullable enable
-
 // #define TRACE_EFFECTIVE_VIEWPORT
 
 #if !(IS_NATIVE_ELEMENT && __IOS__)
@@ -40,6 +39,7 @@ namespace Windows.UI.Xaml
 	partial class FrameworkElement : IFrameworkElement_EffectiveViewport
 	{
 		private static readonly RoutedEventHandler ReconfigureViewportPropagationOnLoad = (snd, e) => ((_This)snd).ReconfigureViewportPropagation();
+		private static readonly RoutedEventHandler ReconfigureViewportPropagationOnUnload = (snd, e) => ((_This)snd).ReconfigureViewportPropagation();
 		private event TypedEventHandler<_This, EffectiveViewportChangedEventArgs>? _effectiveViewportChanged;
 		private bool _hasNewHandler;
 		private List<IFrameworkElement_EffectiveViewport>? _childrenInterestedInViewportUpdates;
@@ -70,7 +70,7 @@ namespace Windows.UI.Xaml
 		void IFrameworkElement_EffectiveViewport.InitializeEffectiveViewport()
 		{
 			Loaded += ReconfigureViewportPropagationOnLoad;
-			Unloaded += ReconfigureViewportPropagationOnLoad;
+			Unloaded += ReconfigureViewportPropagationOnUnload;
 		}
 
 		/// <summary>
@@ -81,8 +81,17 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Make sure to request or disable effective viewport changes from the parent
 		/// </summary>
-		private void ReconfigureViewportPropagation(bool isInternal = false, IFrameworkElement_EffectiveViewport? child = null)
+		private void ReconfigureViewportPropagation(
+			bool isInternal = false,
+			IFrameworkElement_EffectiveViewport? child = null
+#if TRACE_EFFECTIVE_VIEWPORT
+			, [CallerMemberName] string? caller = null)
 		{
+#else
+			)
+		{
+			const string caller = "--unavailable--";
+#endif
 			if (IsLoaded && IsEffectiveViewportEnabled)
 			{
 #if CHECK_LAYOUTED
@@ -94,7 +103,7 @@ namespace Windows.UI.Xaml
 
 				if (_parentViewportUpdatesSubscription == null)
 				{
-					TRACE_EFFECTIVE_VIEWPORT("Enabling effective viewport propagation.");
+					TRACE_EFFECTIVE_VIEWPORT($"Enabling effective viewport propagation (reason: {caller} | child: {child.GetDebugName()} | local: {_effectiveViewportChanged?.GetInvocationList().Length} | children: {_childrenInterestedInViewportUpdates?.Count}).");
 
 					var parent = this.FindFirstAncestor<IFrameworkElement_EffectiveViewport>();
 					if (parent is null)
@@ -112,7 +121,7 @@ namespace Windows.UI.Xaml
 				}
 				else if (child != null)
 				{
-					TRACE_EFFECTIVE_VIEWPORT("New child requested viewport propagation which has already been enabled, forwarding current viewport to it.");
+					TRACE_EFFECTIVE_VIEWPORT($"New child requested viewport propagation which has already been enabled, forwarding current viewport to it (reason: {caller} | child: {child.GetDebugName()} | local: {_effectiveViewportChanged?.GetInvocationList().Length} | children: {_childrenInterestedInViewportUpdates?.Count}).");
 
 					// We are already subscribed, the parent won't send any update (and our _parentViewport is expected to be up-to-date).
 					// But if this "reconfigure" was made for a new child (child != null), we have to initialize its own _parentViewport.
@@ -134,7 +143,7 @@ namespace Windows.UI.Xaml
 
 				if (_parentViewportUpdatesSubscription != null)
 				{
-					TRACE_EFFECTIVE_VIEWPORT("Disabling effective viewport propagation.");
+					TRACE_EFFECTIVE_VIEWPORT($"Disabling effective viewport propagation (reason: {caller} | loaded: {IsLoaded} | local: {_effectiveViewportChanged?.GetInvocationList().Length} | children: {_childrenInterestedInViewportUpdates?.Count}).");
 
 					_parentViewportUpdatesSubscription.Dispose();
 					_parentViewportUpdatesSubscription = null;
