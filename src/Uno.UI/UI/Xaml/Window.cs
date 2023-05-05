@@ -13,6 +13,7 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Core;
 using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Markup;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
 namespace Windows.UI.Xaml
@@ -20,6 +21,7 @@ namespace Windows.UI.Xaml
 	/// <summary>
 	/// Represents an application window.
 	/// </summary>
+	[ContentProperty(Name = nameof(Content))]
 	public sealed partial class Window
 	{
 		private static Window _current;

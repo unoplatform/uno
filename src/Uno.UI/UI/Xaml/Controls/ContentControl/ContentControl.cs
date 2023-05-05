@@ -37,7 +37,7 @@ using View = Windows.UI.Xaml.UIElement;
 
 namespace Windows.UI.Xaml.Controls
 {
-	[ContentProperty(Name = "Content")]
+	[ContentProperty(Name = nameof(Content))]
 	public partial class ContentControl : Control, IEnumerable
 	{
 		private View? _contentTemplateRoot;
