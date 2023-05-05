@@ -5,6 +5,7 @@ using System.Text;
 using AppKit;
 using Foundation;
 using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Controls
 {
