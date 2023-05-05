@@ -11,7 +11,7 @@ using System.Diagnostics;
 
 namespace Windows.UI.Xaml.Media.Animation
 {
-	[ContentProperty(Name = "KeyFrames")]
+	[ContentProperty(Name = nameof(KeyFrames))]
 	partial class ColorAnimationUsingKeyFrames : Timeline, ITimeline
 	{
 		private readonly Stopwatch _activeDuration = new Stopwatch();
