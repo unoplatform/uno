@@ -593,7 +593,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public override bool OnRequestChildFocus(RecyclerView parent, RecyclerView.State state, View child, View focused)
 		{
-			// Returning true here prevents the list scrolling a focused control into view. We disable this behaviour to prevent a tricky
+			// Returning true here prevents the list from scrolling a focused control into view. We disable this behaviour to prevent a tricky
 			// bug where, when there is a ScrapLayout while scrolling the list, a SelectorItem that has focus is detached and reattached
 			// and the list tries to bring it into view, causing funky 'pinning' behaviour.
 			return true;
@@ -1294,7 +1294,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 			else if (!needsScrapOnMeasure && !willRunAnimations && !_needsUpdateAfterCollectionChange)
 			{
-				// Don't modify buffer on the same cycle as scrapping all views, because buffer is liable to 'suck up' scrapped views
+				// Don't modify the buffer on the same cycle as scrapping all views, because the buffer is liable to 'suck up' scrapped views
 				// leading to weird behaviour
 				// And don't populate buffer after a collection change until visible layout has been rebuilt with up-to-date positions
 				AssertValidState();
