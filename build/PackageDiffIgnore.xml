@@ -9397,6 +9397,7 @@
 		<Types>
 			<!-- BEGIN WebView -->
 			<Member fullName="Windows.UI.Xaml.Controls.INativeWebView" reason="Should not be public" />
+			<Member fullName="Uno.UI.Runtime.Skia.GtkApplicationExtension" reason="Not needed anymore" />
 			<!-- END WebView -->
 		</Types>
 

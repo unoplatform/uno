@@ -10,7 +10,7 @@ namespace Uno.Helpers.Theming;
 internal interface ISystemThemeHelperExtension
 {
 	/// <summary>
-	/// Provides a notification that OS theme has changed.
+	/// Provides a notification that the OS theme has changed.
 	/// </summary>
 	event EventHandler SystemThemeChanged;
 
