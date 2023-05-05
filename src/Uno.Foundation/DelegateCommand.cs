@@ -2,7 +2,7 @@
 
 namespace Uno.UI.Common;
 
-public class DelegateCommand : ICommand
+internal class DelegateCommand : ICommand
 {
 	private Action _action;
 	private bool _canExecuteEnabled = true;
