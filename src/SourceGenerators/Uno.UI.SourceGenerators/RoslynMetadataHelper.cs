@@ -16,7 +16,7 @@ namespace Uno.Roslyn
 	{
 		private readonly Func<string, ITypeSymbol?> _findTypeByFullName;
 		private readonly Func<INamedTypeSymbol, IPropertySymbol?> _findContentProperty;
-		private readonly Func<INamedTypeSymbol, string, bool> _isAttachedProperty;
+		private readonly Func<INamedTypeSymbol?, string, bool> _isAttachedProperty;
 		private readonly Func<INamedTypeSymbol, string, INamedTypeSymbol> _getAttachedPropertyType;
 		private readonly Func<INamedTypeSymbol, bool> _isTypeImplemented;
 
@@ -30,7 +30,7 @@ namespace Uno.Roslyn
 
 			_findTypeByFullName = Funcs.Create<string, ITypeSymbol?>(SourceFindTypeByFullName).AsLockedMemoized();
 			_findContentProperty = Funcs.Create<INamedTypeSymbol, IPropertySymbol?>(SourceFindContentProperty).AsLockedMemoized();
-			_isAttachedProperty = Funcs.Create<INamedTypeSymbol, string, bool>(SourceIsAttachedProperty).AsLockedMemoized();
+			_isAttachedProperty = Funcs.Create<INamedTypeSymbol?, string, bool>(SourceIsAttachedProperty).AsLockedMemoized();
 			_getAttachedPropertyType = Funcs.Create<INamedTypeSymbol, string, INamedTypeSymbol>(SourceGetAttachedPropertyType).AsLockedMemoized();
 			_isTypeImplemented = Funcs.Create<INamedTypeSymbol, bool>(SourceIsTypeImplemented).AsLockedMemoized();
 		}
@@ -74,7 +74,7 @@ namespace Uno.Roslyn
 			return null;
 		}
 
-		public bool IsAttachedProperty(INamedTypeSymbol declaringType, string name)
+		public bool IsAttachedProperty(INamedTypeSymbol? declaringType, string name)
 			=> _isAttachedProperty(declaringType, name);
 
 		private static bool SourceIsAttachedProperty(INamedTypeSymbol? type, string name)
