@@ -9154,6 +9154,7 @@
 			<Member fullName="Windows.UI.Xaml.VisiblityExtensions" reason="Api alignments" />
 			<Member fullName="Uno.Presentation.Resources.IResourceRegistry" reason="Api alignments" />
 			<Member fullName="Uno.Presentation.Resources.ResourceRegistry" reason="Api alignments" />
+			<Member fullName="Microsoft.UI.Xaml.Controls.ControlsResourcesVersion" reason="Api alignments" />
 
 			<Member fullName="Uno.UI.Toolkit.Uno_UI_Toolkit_XamlTypeInfo.XamlMetaDataProvider" reason="Renamed project, reflection-based API for UAP/WinAPPSDK only" />
 
