@@ -228,7 +228,6 @@ public class Mouse
 	{
 		var options = default(InjectedInputMouseOptions);
 
-#if HAS_UNO
 		var current = _input.Mouse;
 		if (current.Properties.IsLeftButtonPressed)
 		{
@@ -249,12 +248,6 @@ public class Mouse
 		{
 			options |= InjectedInputMouseOptions.XUp;
 		}
-#else
-			options = InjectedInputMouseOptions.LeftUp
-				| InjectedInputMouseOptions.MiddleUp
-				| InjectedInputMouseOptions.RightUp
-				| InjectedInputMouseOptions.XUp;
-#endif
 
 		if (options != default)
 		{
@@ -284,11 +277,7 @@ public class Mouse
 	private IEnumerable<InjectedInputMouseInfo> MoveToCore(double x, double y, int? steps)
 	{
 		Point Current()
-#if HAS_UNO
 			=> _input.Mouse.Position;
-#else
-				=> CoreWindow.GetForCurrentThread().PointerPosition;
-#endif
 
 		var deltaX = x - Current().X;
 		var deltaY = y - Current().Y;
