@@ -9616,6 +9616,8 @@
 			<Member fullName="System.Void Windows.UI.Xaml.Controls.SinglelineTextBoxView.set_IsEnabled(System.Boolean value)" reason="Api alignments" />
 			<Member fullName="System.Boolean Uno.UI.Controls.Legacy.ListViewBase.get_IsEnabled()" reason="Api alignments" />
 			<Member fullName="System.Void Uno.UI.Controls.Legacy.ListViewBase.set_IsEnabled(System.Boolean value)" reason="Api alignments" />
+			<Member fullName="System.Boolean Windows.UI.Xaml.Controls.SecureTextBoxView.get_IsEnabled()" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.SecureTextBoxView.set_IsEnabled(System.Boolean value)" reason="Api alignments" />
 
 			<Member fullName="System.Nullable`1&lt;Uno.UI.IndexPath&gt; Windows.UI.Xaml.Controls.VirtualizingPanelLayout.GetNextUnmaterializedItem(Windows.UI.Xaml.Controls.Primitives.GeneratorDirection fillDirection, System.Nullable`1&lt;Uno.UI.IndexPath&gt; currentMaterializedItem)" reason="Api alignments" />
 			<Member fullName="System.Nullable`1&lt;Uno.UI.IndexPath&gt; Windows.UI.Xaml.Controls.VirtualizingPanelLayout.GetDynamicSeedIndex(System.Nullable`1&lt;Uno.UI.IndexPath&gt; firstVisibleItem)" reason="Api alignments" />
