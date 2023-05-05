@@ -222,19 +222,24 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-		public void InvalidSelectionChangeInvalidPrevious()
+		public void InvalidChanges_ShouldNotBeReflectedOnSelectedItem()
 		{
 			var source = Enumerable.Range(0, 10).ToArray();
 			var list = new ListView { ItemsSource = source };
+
+			// select 3 (value, not index)
 			list.SelectedItem = 3;
 			Assert.AreEqual(list.SelectedItem, 3);
+
+			// modifying the original source, should not be reflected on the listview
+			// since the source is not ObservableCollection or INotifyCollectionChanged
 			source[3] = 13;
-			list.SelectedItem = 17;
-#if NETFX_CORE
 			Assert.AreEqual(list.SelectedItem, 3);
-#else
-			Assert.IsNull(list.SelectedItem);
-#endif
+
+			// setting an invalid value for SelectedItem, should be reverted to old value
+			// and in this case, that should be the 3 from the original **unmodified** source
+			list.SelectedItem = 17;
+			Assert.AreEqual(list.SelectedItem, 3);
 		}
 
 		[TestMethod]
@@ -2746,6 +2751,58 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsNotNull(vsg, "VisualStateGroup[Name=MultiSelectStates] was not found.");
 			Assert.AreEqual(vsg.CurrentState?.Name, "MultiSelectEnabled");
 		}
+
+		[TestMethod]
+		[DataRow(nameof(ListView), "add")]
+		[DataRow(nameof(ListView), "remove")]
+		// note: ItemsControl won't reproduce the bug; we just throw that in here for sanity purpose.
+		[DataRow(nameof(ItemsControl), "add")]
+		[DataRow(nameof(ItemsControl), "remove")]
+		public async Task When_ItemsSource_NotNotify_Changed(string sutType, string scenario)
+		{
+			var source = "qwe,asd,zxc".Split(',').ToList();
+			var sut = sutType switch
+			{
+				nameof(ListView) => new ListView() { ItemsSource = source },
+				nameof(ItemsControl) => new ItemsControl() { ItemsSource = source },
+
+				_ => throw new ArgumentOutOfRangeException(nameof(sutType)),
+			};
+
+			WindowHelper.WindowContent = sut;
+			await WindowHelper.WaitForLoaded(sut);
+			await WindowHelper.WaitForIdle();
+
+			((Action)(scenario switch
+			{
+				"add" => () => source.Add("qwe2"),
+				"remove" => () => source.RemoveAt(0),
+
+				_ => throw new ArgumentOutOfRangeException(nameof(scenario)),
+			})).Invoke();
+			sut.InvalidateMeasure();
+			sut.ItemsPanelRoot.InvalidateMeasure();
+			await WindowHelper.WaitForIdle();
+
+			var children =
+#if __ANDROID__ || __IOS__
+				sut is ListView lv
+					? lv.NativePanel.GetChildren()
+					: sut.ItemsPanelRoot.Children;
+#else
+				sut.ItemsPanelRoot.Children;
+#endif
+			var materialized = children.Count(IsVisible);
+			Assert.AreEqual(3, materialized, $"ListView should still contains 3 materialized items, no more no less.");
+
+			bool IsVisible(object x) => x is UIElement uie
+				? uie.Visibility == Visibility.Visible
+#if __IOS__
+				: !(x as UIView)?.Hidden ?? false;
+#else
+				: false;
+#endif
+		}
 	}
 
 	public partial class Given_ListViewBase // data class, data-context, view-model, template-selector
@@ -2830,13 +2887,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			public string DisplayString
 			{
 				get => _displayString;
-				set => RaiseAndSetIfChanged(ref _displayString, value);
+				set => SetAndRaiseIfChanged(ref _displayString, value);
 			}
 
 			public double ItemHeight
 			{
 				get => _itemHeight;
-				set => RaiseAndSetIfChanged(ref _itemHeight, value);
+				set => SetAndRaiseIfChanged(ref _itemHeight, value);
 			}
 		}
 
@@ -2936,7 +2993,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			public string MySelection
 			{
 				get => _mySelection;
-				set => RaiseAndSetIfChanged(ref _mySelection, value);
+				set => SetAndRaiseIfChanged(ref _mySelection, value);
 			}
 		}
 
@@ -2947,7 +3004,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			public object SelectedItem
 			{
 				get => _selectedItem;
-				set => RaiseAndSetIfChanged(ref _selectedItem, value);
+				set => SetAndRaiseIfChanged(ref _selectedItem, value);
 			}
 			#endregion
 			#region SelectedValue
@@ -2955,7 +3012,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			public object SelectedValue
 			{
 				get => _selectedValue;
-				set => RaiseAndSetIfChanged(ref _selectedValue, value);
+				set => SetAndRaiseIfChanged(ref _selectedValue, value);
 			}
 			#endregion
 			#region SelectedIndex
@@ -2964,7 +3021,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			public int SelectedIndex
 			{
 				get => _selectedIndex;
-				set => RaiseAndSetIfChanged(ref _selectedIndex, value);
+				set => SetAndRaiseIfChanged(ref _selectedIndex, value);
 			}
 			#endregion
 		}
@@ -2975,7 +3032,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			public string Display
 			{
 				get => _display;
-				set => RaiseAndSetIfChanged(ref _display, value);
+				set => SetAndRaiseIfChanged(ref _display, value);
 			}
 		}
 	}

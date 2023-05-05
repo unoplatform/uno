@@ -10,7 +10,7 @@ namespace Uno.UI.RuntimeTests.Helpers
 	{
 		public event PropertyChangedEventHandler PropertyChanged;
 
-		protected void RaiseAndSetIfChanged<T>(ref T backingField, T value, [CallerMemberName] string propertyName = null)
+		protected void SetAndRaiseIfChanged<T>(ref T backingField, T value, [CallerMemberName] string propertyName = null)
 		{
 			if (!EqualityComparer<T>.Default.Equals(backingField, value))
 			{
