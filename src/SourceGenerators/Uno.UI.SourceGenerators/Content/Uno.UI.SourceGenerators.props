@@ -48,7 +48,7 @@
 							">android</XamarinProjectType>
 		<XamarinProjectType Condition="'$(UnoRuntimeIdentifier)'=='WebAssembly'">wasm</XamarinProjectType>
 		<XamarinProjectType Condition="'$(UnoRuntimeIdentifier)'=='Skia'">skia</XamarinProjectType>
-		<XamarinProjectType Condition="'$(TargetFramework)'=='IS_UNIT_TESTS'">IS_UNIT_TESTS</XamarinProjectType>
+		<XamarinProjectType Condition="$(DefineConstants.Contains('IS_UNIT_TESTS'))">IS_UNIT_TESTS</XamarinProjectType>
 	</PropertyGroup>
 
 	<ItemGroup Condition="'$(ShouldRunGenerator)'=='true'">
@@ -192,7 +192,7 @@
 		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='skia'" Include="not_macos" />
 		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='skia'" Include="not_wasm" />
 		<!-- IS_UNIT_TESTS -->
-		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='IS_UNIT_TESTS'" Include="IS_UNIT_TESTS" />
+		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='IS_UNIT_TESTS'" Include="unittests" />
 		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='IS_UNIT_TESTS'" Include="not_ios" />
 		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='IS_UNIT_TESTS'" Include="not_android" />
 		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='IS_UNIT_TESTS'" Include="not_wasm" />
