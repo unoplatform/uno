@@ -2,7 +2,7 @@ using System;
 
 namespace Uno.UI.Services
 {
-	public class ResourcesService : IResourcesService
+	public class ResourcesService
 	{
 		private Android.Content.Context _applicationContext;
 
