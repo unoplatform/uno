@@ -7,6 +7,7 @@ using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
 using ICommand = System.Windows.Input.ICommand;
+using Windows.UI.Xaml.Markup;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
@@ -17,6 +18,7 @@ using Windows.UI.Input;
 
 namespace Windows.UI.Xaml.Controls
 {
+	[ContentProperty(Name = nameof(Text))]
 	public partial class MenuFlyoutItem : MenuFlyoutItemBase
 	{
 		// Whether the pointer is currently over the

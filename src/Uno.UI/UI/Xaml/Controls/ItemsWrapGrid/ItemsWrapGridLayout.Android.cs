@@ -24,7 +24,7 @@ namespace Windows.UI.Xaml.Controls
 		private int? _implicitItemWidth;
 		private int? _implicitItemHeight;
 
-		protected override Line CreateLine(GeneratorDirection direction,
+		private protected override Line CreateLine(GeneratorDirection direction,
 			int extentOffset,
 			int breadthOffset,
 			int availableBreadth,
@@ -40,7 +40,7 @@ namespace Windows.UI.Xaml.Controls
 			//Find first item in line, since the item we are passed is the last
 			if (direction == GeneratorDirection.Backward)
 			{
-				// We are recreating the last line of the group - it may be truncated (if the total items are not an even multiple 
+				// We are recreating the last line of the group - it may be truncated (if the total items are not an even multiple
 				// of the items-per-line).
 				if (isNewGroup)
 				{
@@ -143,7 +143,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		/// <summary>
-		/// Resolve the width available for a single item view, using, in decreasing order of priority, the <see cref="ItemWidth"/> if 
+		/// Resolve the width available for a single item view, using, in decreasing order of priority, the <see cref="ItemWidth"/> if
 		/// defined, the width of the first item in the grid, or the maximum available space if we are measuring the first item.
 		/// </summary>
 		private int ResolveAvailableWidth(int availableBreadth)
@@ -169,7 +169,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		/// <summary>
-		/// Resolve the height available for a single item view, using, in decreasing order of priority, the <see cref="ItemHeight"/> if 
+		/// Resolve the height available for a single item view, using, in decreasing order of priority, the <see cref="ItemHeight"/> if
 		/// defined, the height of the first item in the grid, or the maximum available space if we are measuring the first item.
 		/// </summary>
 
@@ -274,9 +274,9 @@ namespace Windows.UI.Xaml.Controls
 			return base.ApplyChildStretch(childSize, slotSize, viewType);
 		}
 
-		protected override Uno.UI.IndexPath? GetDynamicSeedIndex(Uno.UI.IndexPath? firstVisibleItem, int availableBreadth)
+		private protected override Uno.UI.IndexPath? GetDynamicSeedIndex(Uno.UI.IndexPath? firstVisibleItem, int availableBreadth)
 		{
-			//Get the first preceding item that is at the end of a line 
+			//Get the first preceding item that is at the end of a line
 			var currentItem = firstVisibleItem;
 			var itemsPerLine = ResolveMaximumItemsInLine(availableBreadth);
 			while (currentItem != null)

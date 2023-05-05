@@ -21,7 +21,7 @@ using Windows.UI.Xaml.Media.Animation;
 
 namespace Windows.UI.Xaml.Controls
 {
-	[ContentProperty(Name = "Items")]
+	[ContentProperty(Name = nameof(Items))]
 	public partial class MenuFlyout : FlyoutBase, IMenu
 	{
 		private readonly ObservableVector<MenuFlyoutItemBase> m_tpItems;

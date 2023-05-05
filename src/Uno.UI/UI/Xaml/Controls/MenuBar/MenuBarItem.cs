@@ -14,7 +14,7 @@ using Windows.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml.Controls
 {
-	[ContentProperty(Name = "Items")]
+	[ContentProperty(Name = nameof(Items))]
 	public partial class MenuBarItem : Control
 	{
 		private readonly SerialDisposable _registrations = new SerialDisposable();

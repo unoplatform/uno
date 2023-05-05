@@ -529,10 +529,20 @@
 			<Member fullName="Windows.UI.Xaml.VisiblityExtensions" reason="Api alignments" />
 			<Member fullName="Uno.Presentation.Resources.IResourceRegistry" reason="Api alignments" />
 			<Member fullName="Uno.Presentation.Resources.ResourceRegistry" reason="Api alignments" />
-			
+			<Member fullName="Microsoft.UI.Xaml.Controls.ControlsResourcesVersion" reason="Api alignments" />
+
 			<Member fullName="Uno.UI.Toolkit.Uno_UI_Toolkit_XamlTypeInfo.XamlMetaDataProvider" reason="Renamed project, reflection-based API for UAP/WinAPPSDK only" />
 
 			<Member fullName="Uno.UI.Web.WebErrorStatus" reason="Incorrect namespace" />
+
+			<Member fullName="Uno.UI.IndexPath" reason="Api alignments" />
+			<Member fullName="Uno.UI.IResourcesService" reason="Api alignments" />
+			<Member fullName="Uno.UI.Common.DelegateCommand" reason="Api alignments" />
+			<Member fullName="Uno.UI.Common.DelegateCommand`1" reason="Api alignments" />
+			<Member fullName="Windows.Foundation.SizeConverter" reason="Api alignments" />
+			<Member fullName="Windows.UI.Xaml.ResourceHelper" reason="Api alignments" />
+			<Member fullName="Uno.UI.Extensions.CollectionViewExtensions" reason="Api alignments" />
+
 		</Types>
 		<Events>
 			<Member fullName="Windows.Foundation.TypedEventHandler`2&lt;Microsoft.UI.Xaml.Controls.IInputValidationControl,Microsoft.UI.Xaml.Controls.HasValidationErrorsChangedEventArgs&gt; Microsoft.UI.Xaml.Controls.AutoSuggestBox::HasValidationErrorsChanged" reason="Not present in WinAppSDK 1.2" />
@@ -955,13 +965,25 @@
 			
 			<Member fullName="System.Void Windows.UI.Xaml.Controls.Image.OnImageFailed(Windows.UI.Xaml.Media.ImageSource imageSource)" reason="Added parameter and made private" />
 
-			  <Member fullName="System.Void Windows.UI.Xaml.Controls.IconElement.OnForegroundChanged(Windows.UI.Xaml.DependencyPropertyChangedEventArgs e)" reason="Should not be public" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.IconElement.OnForegroundChanged(Windows.UI.Xaml.DependencyPropertyChangedEventArgs e)" reason="Should not be public" />
 
 			<!-- BEGIN XamlFileParser performance updates -->
 			<Member fullName="System.Void Uno.Xaml.XamlXmlReader..ctor(System.Xml.XmlReader xmlReader, Uno.Xaml.XamlSchemaContext schemaContext, Uno.Xaml.XamlXmlReaderSettings settings)" reason="Adding parameter. These should not be used by user code" />
 			<!-- END XamlFileParser performance updates -->
 
-			  <Member fullName="System.Void Uno.Foundation.Interop.JSObject.Dispatch(System.String handlePtr, System.String method, System.String parameters)" reason="First parameter changed from string to IntPtr for performance" />
+      <Member fullName="System.Void Uno.Foundation.Interop.JSObject.Dispatch(System.String handlePtr, System.String method, System.String parameters)" reason="First parameter changed from string to IntPtr for performance" />
+
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.ListViewBaseScrollContentPresenter.SetContentOffset(CoreGraphics.CGPoint contentOffset, System.Boolean animated)" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.ListViewBaseScrollContentPresenter.SetZoomScale(System.Runtime.InteropServices.NFloat scale, System.Boolean animated)" reason="Api alignments" />
+
+			<Member fullName="System.Nullable`1&lt;Uno.UI.IndexPath&gt; Windows.UI.Xaml.Controls.VirtualizingPanelLayout.GetNextUnmaterializedItem(Windows.UI.Xaml.Controls.Primitives.GeneratorDirection fillDirection, System.Nullable`1&lt;Uno.UI.IndexPath&gt; currentMaterializedItem)" reason="Api alignments" />
+			<Member fullName="System.Nullable`1&lt;Uno.UI.IndexPath&gt; Windows.UI.Xaml.Controls.VirtualizingPanelLayout.GetDynamicSeedIndex(System.Nullable`1&lt;Uno.UI.IndexPath&gt; firstVisibleItem)" reason="Api alignments" />
+			<Member fullName="Windows.UI.Xaml.Controls.VirtualizingPanelLayout/Line Windows.UI.Xaml.Controls.VirtualizingPanelLayout.CreateLine(Windows.UI.Xaml.Controls.Primitives.GeneratorDirection fillDirection, System.Double extentOffset, System.Double availableBreadth, Uno.UI.IndexPath nextVisibleItem)" reason="Api alignments" />
+			<Member fullName="System.Int32 Windows.UI.Xaml.Controls.VirtualizingPanelLayout.GetFlatItemIndex(Uno.UI.IndexPath indexPath)" reason="Api alignments" />
+			<Member fullName="System.Nullable`1&lt;Uno.UI.IndexPath&gt; Windows.UI.Xaml.Controls.VirtualizingPanelLayout.GetAndUpdateReorderingIndex()" reason="Api alignments" />
+			<Member fullName="Windows.UI.Xaml.Controls.VirtualizingPanelLayout/Line Windows.UI.Xaml.Controls.VirtualizingPanelLayout.CreateLine(Windows.UI.Xaml.Controls.Primitives.GeneratorDirection fillDirection, System.Int32 extentOffset, System.Int32 breadthOffset, System.Int32 availableBreadth, AndroidX.RecyclerView.Widget.RecyclerView/Recycler recycler, AndroidX.RecyclerView.Widget.RecyclerView/State state, Uno.UI.IndexPath nextVisibleItem, System.Boolean isNewGroup)" reason="Api alignments" />
+			<Member fullName="System.Nullable`1&lt;Uno.UI.IndexPath&gt; Windows.UI.Xaml.Controls.VirtualizingPanelLayout.GetDynamicSeedIndex(System.Nullable`1&lt;Uno.UI.IndexPath&gt; firstVisibleItem, System.Int32 availableBreadth)" reason="Api alignments" />
+			<Member fullName="System.String Uno.UI.Services.ResourcesService.Get(System.String id)" reason="Api alignments" />
 		</Methods>
 	</IgnoreSet>
 
