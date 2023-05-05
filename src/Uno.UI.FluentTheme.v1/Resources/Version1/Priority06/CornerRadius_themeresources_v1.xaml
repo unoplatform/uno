@@ -1,0 +1,37 @@
+﻿<!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. See LICENSE in the project root for license information. -->
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:primitives="using:Microsoft.UI.Xaml.Controls.Primitives">
+    <ResourceDictionary.ThemeDictionaries>
+        <ResourceDictionary x:Key="Default">
+            <CornerRadius x:Key="ControlCornerRadius">2,2,2,2</CornerRadius>
+            <CornerRadius x:Key="OverlayCornerRadius">4,4,4,4</CornerRadius>
+        </ResourceDictionary>
+        <ResourceDictionary x:Key="HighContrast">
+            <CornerRadius x:Key="ControlCornerRadius">2,2,2,2</CornerRadius>
+            <CornerRadius x:Key="OverlayCornerRadius">4,4,4,4</CornerRadius>
+        </ResourceDictionary>
+        <ResourceDictionary x:Key="Light">
+            <CornerRadius x:Key="ControlCornerRadius">2,2,2,2</CornerRadius>
+            <CornerRadius x:Key="OverlayCornerRadius">4,4,4,4</CornerRadius>
+        </ResourceDictionary>
+    </ResourceDictionary.ThemeDictionaries>
+
+    <primitives:CornerRadiusFilterConverter x:Key="TopCornerRadiusFilterConverter" Filter="Top"/>
+    <primitives:CornerRadiusFilterConverter x:Key="RightCornerRadiusFilterConverter" Filter="Right"/>
+    <primitives:CornerRadiusFilterConverter x:Key="BottomCornerRadiusFilterConverter" Filter="Bottom"/>
+    <primitives:CornerRadiusFilterConverter x:Key="LeftCornerRadiusFilterConverter" Filter="Left"/>
+    <primitives:CornerRadiusFilterConverter x:Key="TopLeftCornerRadiusDoubleValueConverter" Filter="TopLeftValue"/>
+    <primitives:CornerRadiusFilterConverter x:Key="BottomRightCornerRadiusDoubleValueConverter" Filter="BottomRightValue"/>
+
+
+    <primitives:CornerRadiusToThicknessConverter x:Key="TopThicknessFilterConverter" ConversionKind="FilterLeftAndRightFromTop"/>
+    <primitives:CornerRadiusToThicknessConverter x:Key="BottomThicknessFilterConverter" ConversionKind="FilterLeftAndRightFromBottom"/>
+    <primitives:CornerRadiusToThicknessConverter x:Key="LeftThicknessFilterConverter" ConversionKind="FilterTopAndBottomFromLeft"/>
+    <primitives:CornerRadiusToThicknessConverter x:Key="RightThicknessFilterConverter" ConversionKind="FilterTopAndBottomFromRight"/>
+
+    <primitives:CornerRadiusToThicknessConverter x:Key="TabViewLeftInsetCornerConverter" ConversionKind="FilterLeftFromBottomLeft" Multiplier="-1"/>
+    <primitives:CornerRadiusToThicknessConverter x:Key="TabViewRightInsetCornerConverter" ConversionKind="FilterRightFromBottomRight" Multiplier="-1"/>
+
+</ResourceDictionary>

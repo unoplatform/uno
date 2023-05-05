@@ -483,6 +483,7 @@
                             
                         </Grid>
 
+                        <!-- Uno workaround: ZIndex in non-Canvas panels is not supported properly, hence the order of XAML elements is different -->
 						<!-- Button grid -->
                         <Grid
                             x:Name="PaneToggleButtonGrid"
