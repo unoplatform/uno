@@ -8,6 +8,10 @@ using Uno.Extensions.Specialized;
 using Uno.Foundation;
 using System.Threading;
 
+#if NET7_0_OR_GREATER
+using NativeMethods = __Windows.ApplicationModel.DataTransfer.Clipboard.NativeMethods;
+#endif
+
 namespace Windows.ApplicationModel.DataTransfer
 {
 	public static partial class Clipboard

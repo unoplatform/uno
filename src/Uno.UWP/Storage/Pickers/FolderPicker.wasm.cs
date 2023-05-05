@@ -8,6 +8,10 @@ using Uno.Helpers.Serialization;
 using Uno.Storage.Internal;
 using Uno.Storage.Pickers;
 
+#if NET7_0_OR_GREATER
+using NativeMethods = __Windows.Storage.Pickers.FolderPicker.NativeMethods;
+#endif
+
 namespace Windows.Storage.Pickers
 {
 	public partial class FolderPicker

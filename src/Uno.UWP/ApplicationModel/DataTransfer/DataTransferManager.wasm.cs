@@ -4,6 +4,10 @@ using System;
 using System.Threading.Tasks;
 using Uno.Foundation;
 
+#if NET7_0_OR_GREATER
+using NativeMethods = __Windows.ApplicationModel.DataTransfer.DataTransferManager.NativeMethods;
+#endif
+
 namespace Windows.ApplicationModel.DataTransfer
 {
 	public partial class DataTransferManager

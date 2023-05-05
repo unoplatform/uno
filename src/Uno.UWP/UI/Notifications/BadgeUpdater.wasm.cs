@@ -2,6 +2,10 @@
 
 using Uno.Foundation;
 
+#if NET7_0_OR_GREATER
+using NativeMethods = __Windows.UI.Notifications.BadgeUpdater.NativeMethods;
+#endif
+
 namespace Windows.UI.Notifications
 {
 	public partial class BadgeUpdater

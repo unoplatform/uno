@@ -10,6 +10,10 @@ using Uno.UI.Xaml.Media;
 using Uno.Foundation.Logging;
 using System.Collections.Concurrent;
 
+#if NET7_0_OR_GREATER
+using NativeMethods = __Windows.UI.Xaml.Media.ImageBrush.NativeMethods;
+#endif
+
 namespace Windows.UI.Xaml.Media
 {
 	partial class ImageBrush

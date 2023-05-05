@@ -6,6 +6,10 @@ using System.Text;
 using System.Threading.Tasks;
 using Uno;
 
+#if NET7_0_OR_GREATER
+using NativeMethods = __Windows.Networking.Connectivity.NetworkInformation.NativeMethods;
+#endif
+
 namespace Windows.Networking.Connectivity
 {
 	public partial class NetworkInformation

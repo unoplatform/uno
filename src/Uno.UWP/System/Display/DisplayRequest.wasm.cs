@@ -5,6 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 using Uno.Foundation;
 
+#if NET7_0_OR_GREATER
+using NativeMethods = __Windows.__System.Display.DisplayRequest.NativeMethods;
+#endif
+
 namespace Windows.System.Display
 {
 	public partial class DisplayRequest

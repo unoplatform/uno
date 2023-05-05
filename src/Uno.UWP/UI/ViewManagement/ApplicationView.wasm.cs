@@ -5,6 +5,10 @@ using Uno.Foundation.Logging;
 using Windows.Foundation;
 using System.Globalization;
 
+#if NET7_0_OR_GREATER
+using NativeMethods = __Windows.UI.ViewManagement.ApplicationView.NativeMethods;
+#endif
+
 namespace Windows.UI.ViewManagement
 {
 	partial class ApplicationView

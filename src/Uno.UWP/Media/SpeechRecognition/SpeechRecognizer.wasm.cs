@@ -9,6 +9,10 @@ using Uno.Foundation;
 using Uno.Foundation.Logging;
 using Windows.Foundation;
 
+#if NET7_0_OR_GREATER
+using NativeMethods = __Windows.Media.SpeechRecognition.SpeechRecognizer.NativeMethods;
+#endif
+
 namespace Windows.Media.SpeechRecognition
 {
 	public partial class SpeechRecognizer

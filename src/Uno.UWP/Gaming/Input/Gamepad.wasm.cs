@@ -6,6 +6,10 @@ using Uno;
 using Uno.Extensions;
 using Uno.Foundation;
 
+#if NET7_0_OR_GREATER
+using NativeMethods = __Windows.Gaming.Input.Gamepad.NativeMethods;
+#endif
+
 namespace Windows.Gaming.Input;
 
 public partial class Gamepad
