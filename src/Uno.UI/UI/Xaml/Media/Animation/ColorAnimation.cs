@@ -116,14 +116,9 @@ namespace Windows.UI.Xaml.Media.Animation
 		/// <summary>
 		/// Dispose the Double animation.
 		/// </summary>
-		protected override void Dispose(bool disposing)
+		~ColorAnimation()
 		{
-			if (disposing)
-			{
-				_animationImplementation.Dispose();
-			}
-
-			base.Dispose(disposing);
+			_animationImplementation.Dispose();
 		}
 
 		ColorOffset IAnimation<ColorOffset>.Subtract(ColorOffset minuend, ColorOffset subtrahend) => minuend - subtrahend;

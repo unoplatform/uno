@@ -414,24 +414,8 @@ namespace Windows.UI.Xaml.Media.Animation
 			return true;
 		}
 
-		protected virtual void Dispose(bool disposing)
-		{
-			Target = null;
-		}
-
-		public void Dispose()
-		{
-			Dispose(true);
-			GC.SuppressFinalize(this);
-		}
-
 		void IThemeChangeAware.OnThemeChanged() => OnThemeChanged();
 
 		private protected virtual void OnThemeChanged() { }
-
-		~Timeline()
-		{
-			Dispose(false);
-		}
 	}
 }

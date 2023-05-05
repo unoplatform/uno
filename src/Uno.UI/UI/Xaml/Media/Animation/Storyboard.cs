@@ -41,7 +41,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			Children = new TimelineCollection(owner: this, isAutoPropertyInheritanceEnabled: false);
 		}
 
-		public TimelineCollection Children { get; }
+		public TimelineCollection Children { get; private set; }
 
 		#region TargetName Attached Property
 		public static string GetTargetName(Timeline timeline) => (string)timeline.GetValue(TargetNameProperty);
@@ -350,17 +350,9 @@ namespace Windows.UI.Xaml.Media.Animation
 			}
 		}
 
-		protected override void Dispose(bool disposing)
+		~Storyboard()
 		{
-			base.Dispose(disposing);
-
-			if (Children != null)
-			{
-				for (int i = 0; i < Children.Count; i++)
-				{
-					Children[i].Dispose();
-				}
-			}
+			Children = null;
 		}
 
 		IEnumerable<DependencyObject> IAdditionalChildrenProvider.GetAdditionalChildObjects() => Children;

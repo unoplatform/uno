@@ -94,14 +94,9 @@ namespace Windows.UI.Xaml.Media.Animation
 		/// <summary>
 		/// Dispose the Double animation.
 		/// </summary>
-		protected override void Dispose(bool disposing)
+		~DoubleAnimation()
 		{
-			if (disposing)
-			{
-				_animationImplementation.Dispose();
-			}
-
-			base.Dispose(disposing);
+			_animationImplementation.Dispose();
 		}
 
 		float IAnimation<float>.Subtract(float minuend, float subtrahend) => minuend - subtrahend;

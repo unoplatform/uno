@@ -342,16 +342,11 @@ namespace Windows.UI.Xaml.Media.Animation
 		/// <summary>
 		/// Dispose the Double animation.
 		/// </summary>
-		protected override void Dispose(bool disposing)
+		~DoubleAnimationUsingKeyFrames()
 		{
-			if (disposing)
-			{
-				_subscriptions.Dispose();
+			_subscriptions.Dispose();
 
-				DisposePartial();
-			}
-
-			base.Dispose(disposing);
+			DisposePartial();
 		}
 
 		partial void OnFrame(IValueAnimator currentAnimator);

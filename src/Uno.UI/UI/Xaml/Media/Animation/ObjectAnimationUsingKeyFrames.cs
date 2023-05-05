@@ -274,10 +274,8 @@ namespace Windows.UI.Xaml.Media.Animation
 		/// Destroys the animation
 		/// </summary>
 		/// <param name="disposing"></param>
-		protected override void Dispose(bool disposing)
+		~ObjectAnimationUsingKeyFrames()
 		{
-			base.Dispose(disposing);
-
 			if (_frameScheduler != null)
 			{
 				_frameScheduler.Dispose();

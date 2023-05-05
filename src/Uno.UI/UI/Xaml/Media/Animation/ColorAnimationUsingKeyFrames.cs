@@ -393,16 +393,11 @@ namespace Windows.UI.Xaml.Media.Animation
 		/// <summary>
 		/// Dispose the animation.
 		/// </summary>
-		protected override void Dispose(bool disposing)
+		~ColorAnimationUsingKeyFrames()
 		{
-			if (disposing)
-			{
-				_subscriptions.Dispose();
+			_subscriptions.Dispose();
 
-				DisposePartial();
-			}
-
-			base.Dispose(disposing);
+			DisposePartial();
 		}
 
 		private protected override void OnThemeChanged()
