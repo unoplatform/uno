@@ -57,6 +57,16 @@ namespace Uno.UI {
 		 * */
 		private static buildSplashScreen(): Promise<boolean> {
 			return new Promise<boolean>(resolve => {
+
+				let bootstrapperLoaders = document.getElementsByClassName("persistent-loader");
+				if (bootstrapperLoaders.length > 0) {
+					let bootstrapperLoader = bootstrapperLoaders[0] as HTMLElement;
+					bootstrapperLoader.classList.add("keep-loader");
+
+					// Skip creating local splash screen.
+					return true;
+				}
+
 				const img = new Image();
 				let loaded = false;
 
@@ -1614,14 +1624,18 @@ namespace Uno.UI {
 		}
 
 		private removeLoading() {
-
 			if (!this.loadingElementId) {
-				return;
-			}
-
-			const element = document.getElementById(this.loadingElementId);
-			if (element) {
-				element.parentElement.removeChild(element);
+				// No custom loading element, remove the bootstrapper's loader.
+				let bootstrapperLoaders = document.getElementsByClassName("persistent-loader");
+				if (bootstrapperLoaders.length > 0) {
+					let bootstrapperLoader = bootstrapperLoaders[0] as HTMLElement;
+					bootstrapperLoader.parentElement.removeChild(bootstrapperLoader);
+				}
+			} else {
+				const element = document.getElementById(this.loadingElementId);
+				if (element) {
+					element.parentElement.removeChild(element);
+				}
 			}
 		}
 
