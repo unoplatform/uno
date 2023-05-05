@@ -26,16 +26,16 @@ public class Given_RootVisual
 			return;
 		}
 
-		Assert.AreEqual(Colors.White, (rootVisual.Background as SolidColorBrush).Color);
+		Assert.AreEqual(Colors.White, ((SolidColorBrush)rootVisual.Background).Color);
 
 		using (ThemeHelper.UseDarkTheme())
 		{
 			await TestServices.WindowHelper.WaitForIdle();
-			Assert.AreEqual(Colors.Black, (rootVisual.Background as SolidColorBrush).Color);
+			Assert.AreEqual(Colors.Black, ((SolidColorBrush)rootVisual.Background).Color);
 		}
 
 		await TestServices.WindowHelper.WaitForIdle();
-		Assert.AreEqual(Colors.White, (rootVisual.Background as SolidColorBrush).Color);
+		Assert.AreEqual(Colors.White, ((SolidColorBrush)rootVisual.Background).Color);
 	}
 #endif
 }
