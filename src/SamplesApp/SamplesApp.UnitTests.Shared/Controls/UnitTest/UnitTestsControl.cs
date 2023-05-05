@@ -954,6 +954,7 @@ namespace Uno.UI.Samples.Tests
 
 			if (_ciTestsGroupCountCache != -1)
 			{
+#if false
 				this.Log().Info($"Filtered groups summary for {_ciTestsGroupCountCache} groups:");
 
 				var totalCount = 0;
@@ -974,6 +975,8 @@ namespace Uno.UI.Samples.Tests
 				}
 
 				this.Log().Info($"Filtering with group #{_ciTestGroupCache}");
+#endif
+
 				Console.WriteLine($"Filtering with group #{_ciTestGroupCache}");
 			}
 
