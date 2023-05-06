@@ -127,7 +127,7 @@ namespace Windows.UI.Xaml.Controls
 					}
 				};
 
-				UpdateCommonStates();
+				UpdateVisualState(true);
 			}
 		}
 
@@ -310,6 +310,34 @@ namespace Windows.UI.Xaml.Controls
 			UpdateContentPresenter();
 		}
 
+		protected override void OnPointerEntered(PointerRoutedEventArgs e)
+		{
+			base.OnPointerEntered(e);
+
+			UpdateVisualState();
+		}
+
+		protected override void OnPointerExited(PointerRoutedEventArgs e)
+		{
+			base.OnPointerEntered(e);
+
+			UpdateVisualState();
+		}
+
+		protected override void OnPointerCanceled(PointerRoutedEventArgs e)
+		{
+			base.OnPointerCanceled(e);
+
+			UpdateVisualState();
+		}
+
+		protected override void OnPointerCaptureLost(PointerRoutedEventArgs e)
+		{
+			base.OnPointerCaptureLost(e);
+
+			UpdateVisualState();
+		}
+
 		internal override void OnItemClicked(int clickedIndex)
 		{
 			base.OnItemClicked(clickedIndex);
@@ -424,7 +452,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			base.OnIsEnabledChanged(e);
 
-			UpdateCommonStates();
+			UpdateVisualState(true);
 		}
 
 		partial void OnIsDropDownOpenChangedPartial(bool oldIsDropDownOpen, bool newIsDropDownOpen)
@@ -461,12 +489,14 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			UpdateDropDownState();
+			ChangeVisualState(true);
 		}
 
 		protected override void OnPointerPressed(PointerRoutedEventArgs args)
 		{
 			base.OnPointerPressed(args);
 
+			UpdateVisualState(true);
 			// On UWP ComboBox does handle the pressed event ... but does not capture it!
 			args.Handled = true;
 		}
@@ -477,6 +507,8 @@ namespace Windows.UI.Xaml.Controls
 
 			Focus(FocusState.Programmatic);
 			IsDropDownOpen = true;
+
+			UpdateVisualState(true);
 
 			// On UWP ComboBox does handle the released event.
 			args.Handled = true;
@@ -603,12 +635,6 @@ namespace Windows.UI.Xaml.Controls
 			VisualStateManager.GoToState(this, state, true);
 		}
 
-		private void UpdateCommonStates()
-		{
-			var state = IsEnabled ? "Normal" : "Disabled";
-			VisualStateManager.GoToState(this, state, true);
-		}
-
 		protected override AutomationPeer OnCreateAutomationPeer()
 		{
 			return new ComboBoxAutomationPeer(this);
@@ -620,9 +646,58 @@ namespace Windows.UI.Xaml.Controls
 
 		private protected override void ChangeVisualState(bool useTransitions)
 		{
-			if (FocusState != FocusState.Unfocused && IsEnabled)
+			if (!IsEnabled)
 			{
-				if (FocusState == FocusState.Pointer)
+				GoToState(useTransitions, "Disabled");
+			}
+			else if (IsDropDownOpen)
+			{
+				GoToState(useTransitions, "Highlighted");
+			}
+			else if (IsPointerPressed)
+			{
+				GoToState(useTransitions, "Pressed");
+			}
+			else if (IsPointerOver)
+			{
+				GoToState(useTransitions, "PointerOver");
+			}
+			else
+			{
+				GoToState(useTransitions, "Normal");
+			}
+
+			// FocusStates VisualStateGroup.
+			if (!IsEnabled)
+			{
+				GoToState(useTransitions, "Unfocused");
+			}
+			else if (IsDropDownOpen)
+			{
+				GoToState(useTransitions, "FocusedDropDown");
+			}
+			else
+			{
+				var focusVisualState = FocusState switch
+				{
+					FocusState.Unfocused => "Unfocused",
+					FocusState.Pointer => "PointerFocused",
+					FocusState.Keyboard => IsPointerPressed ? "FocusedPressed" : "Focused",
+					FocusState.Programmatic => throw new NotImplementedException(),
+					_ => "Unfocused"
+				};
+				GoToState(useTransitions, focusVisualState);
+				var focusState = FocusState;
+
+				if (focusState == FocusState.Unfocused)
+				{
+					GoToState(useTransitions, "Unfocused");
+				}
+				else if (IsPointerPressed)
+				{
+					GoToState(useTransitions, "FocusedPressed");
+				}
+				else if (focusState == FocusState.Pointer)
 				{
 					GoToState(useTransitions, "PointerFocused");
 				}
@@ -630,10 +705,6 @@ namespace Windows.UI.Xaml.Controls
 				{
 					GoToState(useTransitions, "Focused");
 				}
-			}
-			else
-			{
-				GoToState(useTransitions, "Unfocused");
 			}
 		}
 
