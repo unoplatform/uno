@@ -282,6 +282,11 @@ namespace Windows.UI.Xaml
 				return;
 			}
 
+			if (this.Log().IsEnabled(LogLevel.Trace))
+			{
+				this.Log().LogTrace($"Window visibility changing to {value}");
+			}
+
 			Visible = newVisibility;
 		}
 

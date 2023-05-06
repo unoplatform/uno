@@ -19,6 +19,8 @@ namespace Uno.UI {
 		private static readonly unoRootClassName = "uno-root-element";
 		private static readonly unoUnarrangedClassName = "uno-unarranged";
 		private static readonly unoCollapsedClassName = "uno-visibility-collapsed";
+		private static readonly unoPersistentLoaderClassName = "uno-persistent-loader";
+		private static readonly unoKeepLoaderClassName = "uno-keep-loader";
 
 		/**
 			* Initialize the WindowManager
@@ -58,10 +60,10 @@ namespace Uno.UI {
 		private static buildSplashScreen(): Promise<boolean> {
 			return new Promise<boolean>(resolve => {
 
-				let bootstrapperLoaders = document.getElementsByClassName("persistent-loader");
+				let bootstrapperLoaders = document.getElementsByClassName(WindowManager.unoPersistentLoaderClassName);
 				if (bootstrapperLoaders.length > 0) {
 					let bootstrapperLoader = bootstrapperLoaders[0] as HTMLElement;
-					bootstrapperLoader.classList.add("keep-loader");
+					bootstrapperLoader.classList.add(WindowManager.unoKeepLoaderClassName);
 
 					// Skip creating local splash screen.
 					return true;
@@ -1626,7 +1628,7 @@ namespace Uno.UI {
 		private removeLoading() {
 			if (!this.loadingElementId) {
 				// No custom loading element, remove the bootstrapper's loader.
-				let bootstrapperLoaders = document.getElementsByClassName("persistent-loader");
+				let bootstrapperLoaders = document.getElementsByClassName(WindowManager.unoPersistentLoaderClassName);
 				if (bootstrapperLoaders.length > 0) {
 					let bootstrapperLoader = bootstrapperLoaders[0] as HTMLElement;
 					bootstrapperLoader.parentElement.removeChild(bootstrapperLoader);
