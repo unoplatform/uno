@@ -14,6 +14,6 @@
 		<TextBox x:Name="uiToastLine2" Header="Toast message line 2"/>
 		<TextBox x:Name="uiToastLaunchArg" Header="Toast launch argument"/>
 		<Button Click="sendToast_Click">Send toast</Button>
-		<TextBlock Text="" Foreground="Red" Name="uiErrorMsg"/>
+		<TextBlock Text="" Foreground="Red" Name="uiErrorMsg" TextWrapping="Wrap"/>
 	</StackPanel>
 </Page>

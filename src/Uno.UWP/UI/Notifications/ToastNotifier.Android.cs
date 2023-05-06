@@ -254,7 +254,7 @@ namespace Windows.UI.Notifications
 			// we should have intent.data field different for different toast arguments,
 			// else - next intent would overwrite previous.
 			// it can be any URI, e.g. http://dummy.com/dummy?arg=  
-			var data = Android.Net.Uri.Parse("http://unotask.com/toast?arg=" + Android.Net.Uri.Encode(toastArgument));
+			var data = Android.Net.Uri.Parse("http://android-toast.platform.uno/toast?arg=" + Android.Net.Uri.Encode(toastArgument));
 			intentAction.SetData(data);
 
 			// 12345: arbitrary number, it can be any value (as it is not used in Uno code anywhere)
