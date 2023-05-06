@@ -1,17 +1,17 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using Uno.Disposables;
 using System.Runtime.InteropServices;
-using Windows.ApplicationModel.DataTransfer.DragDrop.Core;
+using Uno.Disposables;
 using Uno.Extensions;
+using Uno.Foundation.Logging;
+using Uno.UI.Xaml.Core;
+using Windows.ApplicationModel.DataTransfer.DragDrop.Core;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.UI.Core;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
-using Uno.Foundation.Logging;
-using Uno.UI.Xaml.Core;
 using Windows.UI.Xaml.Media;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 using Uno.Helpers.Theming;
@@ -30,6 +30,7 @@ namespace Windows.UI.Xaml
 
 		private CoreWindowActivationState? _lastActivationState;
 		private Brush _background;
+		private bool _wasEverCodeActivated;
 
 		private List<WeakEventHelper.GenericEventHandler> _sizeChangedHandlers = new List<WeakEventHelper.GenericEventHandler>();
 		private List<WeakEventHelper.GenericEventHandler> _backgroundChangedHandlers;
@@ -187,7 +188,22 @@ namespace Windows.UI.Xaml
 		public bool Visible
 		{
 			get => CoreWindow.Visible;
-			set => CoreWindow.Visible = value;
+			set
+			{
+				if (Visible != value)
+				{
+					if (this.Log().IsEnabled(LogLevel.Debug))
+					{
+						this.Log().LogDebug($"Window visibility changing to {value}");
+					}
+
+					CoreWindow.Visible = value;
+
+					var args = new VisibilityChangedEventArgs() { Visible = value };
+					CoreWindow.OnVisibilityChanged(args);
+					VisibilityChanged?.Invoke(this, args);
+				}
+			}
 		}
 
 		/// <summary>
@@ -201,16 +217,17 @@ namespace Windows.UI.Xaml
 			// for compatibility with WinUI we set the first activated
 			// as Current #8341
 			_current ??= this;
-
-			InternalActivate();
-
-			OnActivated(CoreWindowActivationState.CodeActivated);
+			_wasEverCodeActivated = true;
 
 			// Initialize visibility on first activation.
 			Visible = true;
+
+			ActivatingPartial();
+
+			OnActivated(CoreWindowActivationState.CodeActivated);
 		}
 
-		partial void InternalActivate();
+		partial void ActivatingPartial();
 
 		public void Close() { }
 
@@ -232,6 +249,11 @@ namespace Windows.UI.Xaml
 
 		internal void OnActivated(CoreWindowActivationState state)
 		{
+			if (!_wasEverCodeActivated)
+			{
+				return;
+			}
+
 			if (_lastActivationState != state)
 			{
 				if (this.Log().IsEnabled(LogLevel.Debug))
@@ -256,19 +278,12 @@ namespace Windows.UI.Xaml
 
 		internal void OnVisibilityChanged(bool newVisibility)
 		{
-			if (Visible != newVisibility)
+			if (!_wasEverCodeActivated)
 			{
-				if (this.Log().IsEnabled(LogLevel.Debug))
-				{
-					this.Log().LogDebug($"Window visibility changing to {newVisibility}");
-				}
-
-				Visible = newVisibility;
-
-				var args = new VisibilityChangedEventArgs() { Visible = newVisibility };
-				CoreWindow.OnVisibilityChanged(args);
-				VisibilityChanged?.Invoke(this, args);
+				return;
 			}
+
+			Visible = newVisibility;
 		}
 
 		private void RootSizeChanged(object sender, SizeChangedEventArgs args) => _rootVisual.XamlRoot.NotifyChanged();

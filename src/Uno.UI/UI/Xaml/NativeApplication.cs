@@ -10,9 +10,11 @@ using Windows.UI.StartScreen;
 using Android.Content;
 using Uno.Extensions;
 using Windows.Foundation.Metadata;
-
 using System.ComponentModel;
 using Uno.Foundation.Logging;
+using Windows.UI.Core;
+using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
+using IOnPreDrawListener = Android.Views.ViewTreeObserver.IOnPreDrawListener;
 
 namespace Windows.UI.Xaml
 {
@@ -69,6 +71,7 @@ namespace Windows.UI.Xaml
 				{
 					_app.OnLaunched(new LaunchActivatedEventArgs());
 				}
+
 				_isRunning = true;
 			}
 		}

@@ -8,6 +8,7 @@ using Uno.Disposables;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI;
+using Uno.UI.Extensions;
 using Uno.UI.Xaml.Core;
 using Windows.ApplicationModel.Core;
 using Windows.Foundation;
@@ -18,14 +19,14 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Media;
 using Uno.UI.Extensions;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Windows.UI.Xaml
 {
 	public sealed partial class Window
 	{
-		private readonly ActivationPreDrawListener _preDrawListener = new ActivationPreDrawListener();
+		private readonly ActivationPreDrawListener _preDrawListener = new();
 		private Border _rootBorder;
-		private View _decor;
 
 		partial void InitPlatform()
 		{
@@ -36,12 +37,9 @@ namespace Windows.UI.Xaml
 				+= RaiseNativeSizeChanged;
 		}
 
-		partial void InternalActivate()
-		{
-			_preDrawListener.IsActivated = true;
-			_decor?.ViewTreeObserver.RemoveOnPreDrawListener(_preDrawListener);
-			_decor = default;
-		}
+		internal void OnActivityCreated() => AddPreDrawListener();
+
+		partial void ActivatingPartial() => RemovePreDrawListener();
 
 		internal Thickness Insets { get; set; }
 
@@ -63,15 +61,6 @@ namespace Windows.UI.Xaml
 				ApplicationActivity.Instance?.SetContentView(_rootVisual);
 			}
 			_rootBorder.Child = _content = value;
-
-			if (!_preDrawListener.IsActivated)
-			{
-				if (Uno.UI.ContextHelper.Current is Android.App.Activity activity)
-				{
-					_decor = activity.Window.DecorView;
-					_decor?.ViewTreeObserver.AddOnPreDrawListener(_preDrawListener);
-				}
-			}
 		}
 
 		internal UIElement MainContent => _rootVisual;
@@ -354,6 +343,23 @@ namespace Windows.UI.Xaml
 		}
 		#endregion
 
+		private void AddPreDrawListener()
+		{
+			if (Uno.UI.ContextHelper.Current is Android.App.Activity activity &&
+				activity.Window.DecorView is { } decorView)
+			{
+				decorView.ViewTreeObserver.AddOnPreDrawListener(_preDrawListener);
+			}
+		}
+
+		private void RemovePreDrawListener()
+		{
+			if (Uno.UI.ContextHelper.Current is Android.App.Activity activity &&
+				activity.Window.DecorView is { } decorView)
+			{
+				decorView.ViewTreeObserver.RemoveOnPreDrawListener(_preDrawListener);
+			}
+		}
 
 		private sealed class ActivationPreDrawListener : Java.Lang.Object, ViewTreeObserver.IOnPreDrawListener
 		{
@@ -366,9 +372,7 @@ namespace Windows.UI.Xaml
 			{
 			}
 
-			public bool IsActivated { get; set; }
-
-			public bool OnPreDraw() => IsActivated;
+			public bool OnPreDraw() => Window.Current.Visible;
 		}
 	}
 }
