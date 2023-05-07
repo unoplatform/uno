@@ -545,6 +545,7 @@
 			<Member fullName="Windows.Foundation.SizeConverter" reason="Api alignments" />
 			<Member fullName="Windows.UI.Xaml.ResourceHelper" reason="Api alignments" />
 			<Member fullName="Uno.UI.Extensions.CollectionViewExtensions" reason="Api alignments" />
+			<Member fullName="Windows.UI.Xaml.Controls.NativeMenuBarPresenter" reason="Api alignments" />
 
 		</Types>
 		<Events>
