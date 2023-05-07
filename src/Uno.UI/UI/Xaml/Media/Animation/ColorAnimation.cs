@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Uno;
 using Windows.UI;
+using Windows.UI.Core;
 
 namespace Windows.UI.Xaml.Media.Animation
 {
@@ -118,7 +119,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		/// </summary>
 		~ColorAnimation()
 		{
-			_animationImplementation.Dispose();
+			_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => _animationImplementation.Dispose());
 		}
 
 		ColorOffset IAnimation<ColorOffset>.Subtract(ColorOffset minuend, ColorOffset subtrahend) => minuend - subtrahend;

@@ -96,7 +96,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		/// </summary>
 		~DoubleAnimation()
 		{
-			_animationImplementation.Dispose();
+			_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => _animationImplementation.Dispose());
 		}
 
 		float IAnimation<float>.Subtract(float minuend, float subtrahend) => minuend - subtrahend;
