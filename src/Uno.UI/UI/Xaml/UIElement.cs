@@ -513,7 +513,7 @@ namespace Windows.UI.Xaml
 			{
 				elt.ApplyRenderTransform(ref matrix);
 				elt.ApplyLayoutTransform(ref matrix);
-				
+
 				if (elt != from)
 				{
 					// Don't adjust for scroll offsets if it's the ScrollViewer itself calling TransformToVisual
