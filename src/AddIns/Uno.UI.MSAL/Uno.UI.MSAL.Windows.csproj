@@ -17,8 +17,6 @@
 		<Copyright>Copyright (C) 2015-2020 Uno Platform Inc. - all rights reserved</Copyright>
 
 		<PackageId Condition="'$(UNO_UWP_BUILD)'!='true'">Uno.WinUI.MSAL</PackageId>
-
-		<UnoRuntimeIdentifier Condition="'$(TargetFramework)'=='netstandard2.0'">Reference</UnoRuntimeIdentifier>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -26,7 +24,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<None Include="..\..\Common\uno.png" Pack="true" PackagePath="\" /> 
+		<None Include="..\..\Common\uno.png" Pack="true" PackagePath="\" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -67,30 +65,6 @@
 
 
 	<Target Name="IncludeRuntimeAssets" BeforeTargets="BeforeCompile">
-
-		<!--
-		This inclusion is based on https://github.com/NuGet/NuGet.Client/blob/c05f9afa9c2fcee7fbe10754521b3f6424bee128/src/NuGet.Core/NuGet.Build.Tasks.Pack/NuGet.Build.Tasks.Pack.targets#L422.
-		This is required because this project is cross-targeted.
-		-->
-		<ItemGroup>
-			<TfmSpecificPackageFile Include="..\Uno.UI.MSAL\bin\Uno.UI.MSAL.Wasm\$(Configuration)\netstandard2.0\Uno.UI.MSAL.dll">
-				<Pack>true</Pack>
-				<PackagePath>uno-runtime/webassembly</PackagePath>
-			</TfmSpecificPackageFile>
-			<TfmSpecificPackageFile Include="..\Uno.UI.MSAL\bin\Uno.UI.MSAL.Wasm\$(Configuration)\netstandard2.0\Uno.UI.MSAL.pdb">
-				<Pack>true</Pack>
-				<PackagePath>uno-runtime/webassembly</PackagePath>
-			</TfmSpecificPackageFile>
-			<TfmSpecificPackageFile Include="..\Uno.UI.MSAL\bin\Uno.UI.MSAL.Skia\$(Configuration)\netstandard2.0\Uno.UI.MSAL.dll">
-				<Pack>true</Pack>
-				<PackagePath>uno-runtime/skia</PackagePath>
-			</TfmSpecificPackageFile>
-			<TfmSpecificPackageFile Include="..\Uno.UI.MSAL\bin\Uno.UI.MSAL.Skia\$(Configuration)\netstandard2.0\Uno.UI.MSAL.pdb">
-				<Pack>true</Pack>
-				<PackagePath>uno-runtime/skia</PackagePath>
-			</TfmSpecificPackageFile>
-		</ItemGroup>
-
 		<RemoveDuplicates Inputs="@(TfmSpecificPackageFile)">
 				<Output
 						TaskParameter="Filtered"

@@ -17,18 +17,12 @@
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>
 
-		<UnoRuntimeIdentifier Condition="'$(TargetFramework)'=='netstandard2.0'">Reference</UnoRuntimeIdentifier>
-
 		<UseCommonOverridePackage>true</UseCommonOverridePackage>
 		<CommonOverridePackageId>Uno.UI</CommonOverridePackageId>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(TargetFramework)'=='net5.0-windows10.0.18362.0'">
 		<DefineConstants>$(DefineConstants);WINUI</DefineConstants>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(TargetFramework)'=='net461'">
-		<ImportFrameworkWinFXTargets>false</ImportFrameworkWinFXTargets>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -40,7 +34,7 @@
 		<Reference Include="System.Numerics.Vectors" />
 	</ItemGroup>
 
-	<ItemGroup Condition="$(IsAndroid) or $(IsIOS) or '$(TargetFrameworkIdentifier)'=='.NETStandard' or $(IsMacOS) or '$(TargetFramework)'=='net461'">
+	<ItemGroup Condition="$(IsAndroid) or $(IsIOS) or '$(TargetFrameworkIdentifier)'=='.NETStandard' or $(IsMacOS)">
 		<ProjectReference Include="..\Uno.UI\Uno.UI.csproj">
 			<Name>Uno.UI</Name>
 		</ProjectReference>
@@ -71,14 +65,10 @@
 		</Compile>
 	</ItemGroup>
 
-	<PropertyGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
-		<EnableAutomaticXamlPageInclusion>false</EnableAutomaticXamlPageInclusion>
-	</PropertyGroup>
-
 	<!-- Override existing target, this project cannot be published -->
 	<Target Name="Publish" />
 
-	<Import Project="..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" Condition="$(IsAndroid) or $(IsIOS) or $(IsMacOS) or '$(TargetFramework)'=='netstandard2.0'" />
+	<Import Project="..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" Condition="$(IsAndroid) or $(IsIOS) or $(IsMacOS)" />
 
 	<Target Name="_UnoToolkitOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">
 
