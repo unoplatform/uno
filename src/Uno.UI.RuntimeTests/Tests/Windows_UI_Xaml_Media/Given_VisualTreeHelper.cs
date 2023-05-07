@@ -162,7 +162,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 					Height = 128,
 					Background = new SolidColorBrush(Colors.DeepPink),
 					RenderTransform = new ScaleTransform { ScaleX = 2, ScaleY = 2 },
-					RenderTransformOrigin = new Point(.5,.5),
+					RenderTransformOrigin = new Point(.5, .5),
 					HorizontalAlignment = HorizontalAlignment.Center,
 					VerticalAlignment = VerticalAlignment.Center,
 					Child = nested = new Border
