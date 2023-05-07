@@ -227,6 +227,12 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		/// </summary>
 		private void OnIsCheckedChanged()
 		{
+			if (_suppressCheckedChanged)
+			{
+				UpdateVisualState();
+				return;
+			}
+
 			var isChecked = IsChecked;
 			if (isChecked == null)
 			{
