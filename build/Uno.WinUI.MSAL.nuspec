@@ -55,9 +55,6 @@
 				<dependency id="Microsoft.Identity.Client" version="4.47.0" />
 			</group>
 		</dependencies>
-		<frameworkAssemblies>
-			<frameworkAssembly assemblyName="Java.Interop" targetFramework="MonoAndroid13.0, MonoAndroid12.0" />
-		</frameworkAssemblies>
 	</metadata>
 
 	<files>
