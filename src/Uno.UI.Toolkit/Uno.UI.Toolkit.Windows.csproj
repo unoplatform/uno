@@ -1,10 +1,7 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
 	<PropertyGroup>
-		<TargetFrameworks Condition="'$(UNO_UWP_BUILD)'=='true'">$(TargetFrameworks);uap10.0.18362</TargetFrameworks>
-		<TargetFrameworksCI Condition="'$(UNO_UWP_BUILD)'=='true'">$(TargetFrameworksCI);uap10.0.18362</TargetFrameworksCI>
-
-		<TargetFrameworks Condition="'$(UNO_UWP_BUILD)'!='true'">$(TargetFrameworks);net5.0-windows10.0.18362.0</TargetFrameworks>
-		<TargetFrameworksCI Condition="'$(UNO_UWP_BUILD)'!='true'">$(TargetFrameworksCI);net5.0-windows10.0.18362.0</TargetFrameworksCI>
+		<TargetFrameworks Condition="'$(UNO_UWP_BUILD)'=='true'">uap10.0.18362</TargetFrameworks>
+		<TargetFrameworks Condition="'$(UNO_UWP_BUILD)'!='true'">net5.0-windows10.0.18362.0</TargetFrameworks>
 	</PropertyGroup>
 
 	<Import Project="../targetframework-override.props" />
