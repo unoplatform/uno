@@ -498,7 +498,10 @@
 			<_diffPackage Include="$(PackageNamePrefix)" Other="$(PackageNamePrefix).$(GITVERSION_SemVer).nupkg" />
 			<_diffPackage Include="$(PackageNamePrefix).Foldable" Other="..\..\..\NugetPackages-Artifacts-netcoremobile-$(ArtifactsPlatformName)\vslatest-netcoremobile\$(PackageNamePrefix).Foldable.$(GITVERSION_SemVer).nupkg" />
 			<_diffPackage Include="$(PackageNamePrefix).Lottie" Other="$(PackageNamePrefix).Lottie.$(GITVERSION_SemVer).nupkg" />
+			<!--
+			To be restored before uno 5
 			<_diffPackage Include="$(PackageNamePrefix).Maps" Other="..\..\..\NugetPackages-Artifacts-netcoremobile-$(ArtifactsPlatformName)\vslatest-netcoremobile\$(PackageNamePrefix).Maps.$(GITVERSION_SemVer).nupkg" />
+			-->
 			<_diffPackage Include="$(PackageNamePrefix).MSAL" Other="$(PackageNamePrefix).MSAL.$(GITVERSION_SemVer).nupkg" />
 			<_diffPackage Include="$(PackageNamePrefix).Svg" Other="$(PackageNamePrefix).Svg.$(GITVERSION_SemVer).nupkg" />
 			<!-- <_diffPackage Include="$(PackageNamePrefix).RemoteControl" Other="$(PackageNamePrefix).RemoteControl.$(GITVERSION_SemVer).nupkg" /> -->
