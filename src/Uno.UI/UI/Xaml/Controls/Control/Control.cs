@@ -130,7 +130,9 @@ namespace Windows.UI.Xaml.Controls
 			OnIsEnabledChanged(_isEnabledChangedEventArgs);
 
 #if __ANDROID__
-			this.Enabled = (bool)args.NewValue;
+			var newValue = (bool)args.NewValue;
+			base.SetNativeIsEnabled(newValue);
+			this.Enabled = newValue;
 #elif __IOS__
 			UserInteractionEnabled = (bool)args.NewValue;
 #elif __MACOS__
