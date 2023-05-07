@@ -131,12 +131,10 @@ namespace Uno.UI.RemoteControl.Host
 				// As BasePath is a directory, try and load processors from assemblies within that dir
 				var basePath = msg.BasePath.Replace('/', Path.DirectorySeparatorChar);
 
-#if NET7_0_OR_GREATER
+#if NET8_0_OR_GREATER
+				basePath = Path.Combine(basePath, "net8.0");
+#elif NET7_0_OR_GREATER
 				basePath = Path.Combine(basePath, "net7.0");
-#elif NET6_0_OR_GREATER
-				basePath = Path.Combine(basePath, "net6.0");
-#else
-				basePath = Path.Combine(basePath, "netcoreapp3.1");
 #endif
 
 				// Additional processors may not need the directory added immmediately above.

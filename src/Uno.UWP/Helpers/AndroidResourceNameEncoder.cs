@@ -77,12 +77,7 @@ namespace Uno
 			return global::System.IO.Path.Combine(encodedDirectory, encodedFileName + extension).Replace(localSeparation, separator);
 		}
 
-#if NET7_0_OR_GREATER
 		[GeneratedRegex(@"[^a-zA-Z0-9_.]", RegexOptions.Compiled)]
 		private static partial Regex NameSanitizer();
-#else
-		private static Regex NameSanitizer()
-			=> new Regex(@"[^a-zA-Z0-9_.]", RegexOptions.Compiled);
-#endif
 	}
 }

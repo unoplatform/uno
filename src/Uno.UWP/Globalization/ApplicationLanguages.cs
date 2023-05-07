@@ -188,12 +188,12 @@ namespace Windows.Globalization
 			}
 		}
 
-#if NET7_0_OR_GREATER && !DISABLE_GENERATED_REGEX
+#if !DISABLE_GENERATED_REGEX
 		[GeneratedRegex(@"(?<lang>[a-z]{2,8})(?:(?:\-(?<script>[a-zA-Z]+))?\-(?<reg>[A-Z]+))?", RegexOptions.IgnoreCase | RegexOptions.Compiled | RegexOptions.Singleline | RegexOptions.CultureInvariant)]
 #endif
 		private static partial Regex CultureRegex();
 
-#if !NET7_0_OR_GREATER || DISABLE_GENERATED_REGEX
+#if DISABLE_GENERATED_REGEX
 		private static partial Regex CultureRegex()
 			=> new Regex(@"(?<lang>[a-z]{2,8})(?:(?:\-(?<script>[a-zA-Z]+))?\-(?<reg>[A-Z]+))?", RegexOptions.IgnoreCase | RegexOptions.Compiled | RegexOptions.Singleline | RegexOptions.CultureInvariant);
 #endif

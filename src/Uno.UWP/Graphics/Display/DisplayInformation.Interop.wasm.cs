@@ -1,5 +1,4 @@
-﻿#if NET7_0_OR_GREATER
-using System.Runtime.InteropServices.JavaScript;
+﻿using System.Runtime.InteropServices.JavaScript;
 
 namespace __Windows.Graphics.Display
 {
@@ -38,4 +37,3 @@ namespace __Windows.Graphics.Display
 		}
 	}
 }
-#endif

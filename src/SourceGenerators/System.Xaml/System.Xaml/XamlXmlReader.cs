@@ -8,10 +8,10 @@
 // distribute, sublicense, and/or sell copies of the Software, and to
 // permit persons to whom the Software is furnished to do so, subject to
 // the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be
 // included in all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 // EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 // MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -117,7 +117,7 @@ namespace Uno.Xaml
 		{
 			parser = new XamlXmlParser (xmlReader, schemaContext, settings);
 		}
-		
+
 		#endregion
 
 		XamlXmlParser parser;
@@ -175,7 +175,7 @@ namespace Uno.Xaml
 			return iter.Current.NodeType != XamlNodeType.None;
 		}
 	}
-	
+
 	struct XamlXmlNodeInfo
 	{
 		public XamlXmlNodeInfo (XamlNodeType nodeType, object nodeValue, IXmlLineInfo lineInfo)
@@ -192,7 +192,7 @@ namespace Uno.Xaml
 				LinePosition = 0;
 			}
 		}
-		
+
 		public bool HasLineInfo;
 		public int LineNumber;
 		public int LinePosition;
@@ -224,7 +224,7 @@ namespace Uno.Xaml
 			line_info = r as IXmlLineInfo;
 			xaml_namespace_resolver = new NamespaceResolver (r as IXmlNamespaceResolver);
 		}
-		
+
 		XmlReader r;
 		IXmlLineInfo line_info;
 		XamlSchemaContext sctx;
@@ -252,7 +252,7 @@ namespace Uno.Xaml
 				yield return xi;
 			yield return Node (XamlNodeType.None, null);
 		}
-		
+
 		// Note that it could return invalid (None) node to tell the caller that it is not really an object element.
 		IEnumerable<XamlXmlNodeInfo> ReadObjectElement (XamlType parentType, XamlMember currentMember)
 		{
@@ -776,7 +776,7 @@ namespace Uno.Xaml
 					}
 				}
 				else
-				{ 
+				{
 					foreach (var ni in ReadCollectionItems(xt, xm))
 						yield return ni;
 				}
@@ -819,7 +819,7 @@ namespace Uno.Xaml
 								throw new Exception("should not happen");
 							yield return ni;
 						}
-					}					
+					}
 				}
 			}
 
@@ -838,8 +838,8 @@ namespace Uno.Xaml
 				member = XamlLanguage.UnknownContent;
 			}
 
-			for (	
-				r.MoveToContent(); 
+			for (
+				r.MoveToContent();
 				r.NodeType != XmlNodeType.EndElement && r.NodeType != XmlNodeType.None && !r.Name.Contains(".");
 				// nothing
 			) {
@@ -955,12 +955,12 @@ namespace Uno.Xaml
 			}
 		}
 
-#if NET7_0_OR_GREATER && !DISABLE_GENERATED_REGEX
+#if !DISABLE_GENERATED_REGEX
 		[System.Text.RegularExpressions.GeneratedRegex("\\s+")]
 #endif
 		private static partial System.Text.RegularExpressions.Regex SpaceMatch();
 
-#if !NET7_0_OR_GREATER || DISABLE_GENERATED_REGEX
+#if DISABLE_GENERATED_REGEX
 		private static partial System.Text.RegularExpressions.Regex SpaceMatch()
 			=> new System.Text.RegularExpressions.Regex("\\s+");
 #endif
