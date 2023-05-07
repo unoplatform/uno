@@ -39,6 +39,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 {
 	[TestClass]
 	[RequiresFullWindow]
+	[Uno.UI.RuntimeTests.RunsOnUIThread]
 	public class RepeaterFocusTests : MUXApiTestBase
 	{
 #if __MACOS__

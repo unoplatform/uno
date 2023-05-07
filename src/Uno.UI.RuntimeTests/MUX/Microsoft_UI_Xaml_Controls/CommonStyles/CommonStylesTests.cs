@@ -33,6 +33,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting.Logging;
 namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 {
 	[TestClass]
+	[Uno.UI.RuntimeTests.RunsOnUIThread]
 	public class CommonStylesApiTests : MUXApiTestBase
 	{
 		// TODO: Many tests from MUX CommonStylesApiTests.cpp are missing here and should be added in the future to Uno Platform.

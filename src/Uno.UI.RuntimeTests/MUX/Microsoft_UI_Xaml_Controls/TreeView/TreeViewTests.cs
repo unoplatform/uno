@@ -52,6 +52,7 @@ namespace MUXControlsTestApp
 	class SpecialTreeViewNode : TreeViewNode { }
 
 	[TestClass]
+	[Uno.UI.RuntimeTests.RunsOnUIThread]
 	public class TreeViewTests : MUXApiTestBase
 	{
 		[TestMethod]

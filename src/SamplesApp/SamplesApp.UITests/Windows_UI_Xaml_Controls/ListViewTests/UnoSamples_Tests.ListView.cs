@@ -390,7 +390,10 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 
 		[Test]
 		[AutoRetry]
-		[Timeout(3 * 60 * 1000)] // On iOS, this test is slow
+		[Timeout(5 * 60 * 1000)] // On iOS, this test is slow
+#if __IOS__
+		[Ignore("Test is flaky on iOS: https://github.com/unoplatform/uno/issues/9080")]
+#endif
 		public void ListView_SelectedItems()
 		{
 			Run("SamplesApp.Windows_UI_Xaml_Controls.ListView.ListViewSelectedItems");

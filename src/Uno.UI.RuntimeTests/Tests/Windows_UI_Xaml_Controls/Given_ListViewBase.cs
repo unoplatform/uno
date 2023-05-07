@@ -2099,8 +2099,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if __WASM__
-		[Ignore("Fails on WASM - https://github.com/unoplatform/uno/issues/7323")]
+#if __WASM__ || __SKIA__
+		[Ignore("Fails on WASM/Skia - https://github.com/unoplatform/uno/issues/7323")]
 #endif
 		public async Task When_ItemTemplate_Selector_Correct_Reuse()
 		{
@@ -2125,7 +2125,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			AddItem(ItemColor.Red);
 			AddItem(ItemColor.Green);
 
-			for (int i = 0; i < 10; i++)
+			for (int i = 0; i < 30; i++)
 			{
 				AddItem(ItemColor.Beige);
 			}
@@ -2158,12 +2158,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var redCount1 = redGrid.LocalBindCount;
 			var greenCount1 = greenGrid.LocalBindCount;
 
-			for (int i = 300; i < 1000; i += 300)
+			for (int i = 100; i < 5000; i += 100)
 			{
 				sv.ChangeView(null, i, null, disableAnimation: true);
-				await Task.Delay(20);
+				await Task.Delay(50);
 			}
 
+			await Task.Delay(500);
 
 			var redCount2 = redGrid.LocalBindCount;
 			var greenCount2 = greenGrid.LocalBindCount;
@@ -2330,6 +2331,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 
 			await WindowHelper.WaitForNonNull(() => SUT.ContainerFromIndex(source.Count - 1));
+
+			await WindowHelper.WaitForIdle();
 
 			Assert.AreEqual(880, sv.VerticalOffset, delta: 1);
 

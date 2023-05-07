@@ -71,7 +71,6 @@ jobs:
   displayName: 'Run Android UI Tests'
   dependsOn:
   - Android_Build_NetCoreMobile_For_Tests
-  - SamplesApp_UITests_Build
 
   timeoutInMinutes: 90
   variables:
@@ -98,7 +97,7 @@ jobs:
           TARGETPLATFORM_NAME: net7
           FAILBUILD_ON_FAILURE: true
           ALLOW_RERUN: true
-          UITEST_TEST_TIMEOUT: '270000'
+          UITEST_TEST_TIMEOUT: '270s'
 
       ${{ each testGroup in parameters.runtimeTestsGroups }}:
         Android_9.0_RuntimeTests_${{ testGroup }}_net7:
@@ -111,7 +110,7 @@ jobs:
           TARGETPLATFORM_NAME: net7
           FAILBUILD_ON_FAILURE: true
           ALLOW_RERUN: false
-          UITEST_TEST_TIMEOUT: '2600000'
+          UITEST_TEST_TIMEOUT: '2600s'
 
       Android_9.0_Snapshots_net7:
         ANDROID_SIMULATOR_APILEVEL: 28
@@ -121,7 +120,7 @@ jobs:
         TARGETPLATFORM_NAME: net7
         FAILBUILD_ON_FAILURE: true
         ALLOW_RERUN: true
-        UITEST_TEST_TIMEOUT: '270000'
+        UITEST_TEST_TIMEOUT: '270s'
 
       # Android 10 testing is disabled because of https://github.com/microsoft/appcenter/issues/1451
       # Android_10.0:
@@ -136,12 +135,6 @@ jobs:
     displayName: 'Download SamplesApp UnitTests'
     inputs:
         artifactName: $(SAMPLEAPP_ARTIFACT_NAME)
-        downloadPath: '$(build.sourcesdirectory)/build'
-
-  - task: DownloadBuildArtifacts@0
-    displayName: 'Download SamplesApp UnitTests'
-    inputs:
-        artifactName: samplesapp-uitest-binaries
         downloadPath: '$(build.sourcesdirectory)/build'
 
   - task: DownloadBuildArtifacts@0

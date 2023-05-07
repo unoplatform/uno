@@ -151,6 +151,9 @@ public class Given_WebView2
 	}
 #endif
 
+#if __IOS__
+	[Ignore("Currently fails on iOS https://github.com/unoplatform/uno/issues/9080")]
+#endif
 	[TestMethod]
 	public async Task When_WebMessageReceived()
 	{

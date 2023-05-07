@@ -26,8 +26,7 @@ namespace Uno.Samples.UITest.Generator
 
 		private static void GenerateTests(GeneratorExecutionContext context)
 		{
-			if (context.Compilation.Assembly.Name == "SamplesApp.UITests"
-				&& int.TryParse(Environment.GetEnvironmentVariable("UNO_UITEST_BUCKET_COUNT"), out var bucketCount))
+			if (context.Compilation.Assembly.Name == "SamplesApp.UITests")
 			{
 				var testAttribute = context.Compilation.GetTypeByMetadataName("NUnit.Framework.TestAttribute");
 
@@ -36,16 +35,17 @@ namespace Uno.Samples.UITest.Generator
 							where typeSymbol.GetMembers().OfType<IMethodSymbol>().Any(m => m.FindAttributeFlattened(testAttribute) != null)
 							select typeSymbol;
 
-				GenerateCategories(context, query, bucketCount);
+				GenerateCategories(context, query);
 			}
 		}
 
 		private static void GenerateCategories(
 			GeneratorExecutionContext context,
-			IEnumerable<INamedTypeSymbol> symbols,
-			int bucketCount)
+			IEnumerable<INamedTypeSymbol> symbols)
 		{
 			using var sha1 = SHA1.Create();
+
+			int.TryParse(Environment.GetEnvironmentVariable("UNO_UITEST_BUCKET_COUNT"), out var bucketCount);
 
 			foreach (var type in symbols)
 			{
@@ -53,14 +53,20 @@ namespace Uno.Samples.UITest.Generator
 				var builder = new IndentedStringBuilder();
 				using (builder.BlockInvariant($"namespace {type.ContainingNamespace}"))
 				{
-					// Compute a stable hash of the full metadata name
-					var buffer = Encoding.UTF8.GetBytes(fullMetadataName);
-					var hash = sha1.ComputeHash(buffer);
-					var hashPart64 = BitConverter.ToUInt64(hash, 0);
+					if (bucketCount != 0)
+					{
+						// Compute a stable hash of the full metadata name
+						var buffer = Encoding.UTF8.GetBytes(fullMetadataName);
+						var hash = sha1.ComputeHash(buffer);
+						var hashPart64 = BitConverter.ToUInt64(hash, 0);
 
-					var testCategoryBucket = (hashPart64 % (uint)bucketCount) + 1;
+						var testCategoryBucket = (hashPart64 % (uint)bucketCount) + 1;
 
-					builder.AppendLineIndented($"[global::NUnit.Framework.Category(\"testBucket:{testCategoryBucket}\")]");
+						builder.AppendLineIndented($"[global::NUnit.Framework.Category(\"testBucket:{testCategoryBucket}\")]");
+					}
+
+					// Always generate the namespace property, so we can 
+					builder.AppendLineIndented($"[global::NUnit.Framework.Property(\"Namespace\", \"{type.ContainingNamespace}\")]");
 					using (builder.BlockInvariant($"partial class {type.Name}"))
 					{
 
