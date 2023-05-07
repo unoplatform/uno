@@ -419,7 +419,10 @@ namespace Windows.UI.Xaml.Controls
 			var args = new RoutedEventArgs();
 			args.OriginalSource = this;
 
-			Toggled?.Invoke(this, args);
+			if (!_suppressToggled) // Uno workaround.
+			{
+				Toggled?.Invoke(this, args);
+			}
 
 			if (!_isDragging)
 			{

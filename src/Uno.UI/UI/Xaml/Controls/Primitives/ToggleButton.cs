@@ -9,6 +9,12 @@ namespace Windows.UI.Xaml.Controls.Primitives
 	public partial class ToggleButton : ButtonBase, IFrameworkTemplatePoolAware
 	{
 		/// <summary>
+		/// This is a workaround for template pooling issue where we change IsChecked when template is recycled.
+		/// This prevents incorrect event raising, but is not a "real" solution. Pooling could still cause issues.
+		/// </summary>
+		private bool _suppressCheckedChanged;
+
+		/// <summary>
 		/// Initializes a new instance of the ToggleButton class.
 		/// </summary>
 		public ToggleButton()
@@ -82,6 +88,11 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		protected virtual void OnIsCheckedChanged(bool? oldValue, bool? newValue)
 		{
+			if (_suppressCheckedChanged)
+			{
+				return;
+			}
+
 			if (IsChecked == null)
 			{
 				// Indeterminate
@@ -99,7 +110,18 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			}
 		}
 
-		public void OnTemplateRecycled() => IsChecked = false;
+		public void OnTemplateRecycled()
+		{
+			try
+			{
+				_suppressCheckedChanged = true;
+				IsChecked = false;
+			}
+			finally
+			{
+				_suppressCheckedChanged = false;
+			}
+		}
 
 		internal void AutomationPeerToggle() => OnClick();
 	}

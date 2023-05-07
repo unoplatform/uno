@@ -31,7 +31,7 @@ class FrameworkTemplatePoolDefaultPlatformProvider : IFrameworkTemplatePoolPlatf
 	public TimeSpan Now
 		=> _watch.Elapsed;
 
-	public bool CanUseMemoryManager
+	public virtual bool CanUseMemoryManager
 		=> _canUseMemoryManager;
 
 	public ulong AppMemoryUsage

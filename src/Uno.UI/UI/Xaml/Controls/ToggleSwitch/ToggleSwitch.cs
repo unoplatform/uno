@@ -14,6 +14,12 @@ namespace Windows.UI.Xaml.Controls
 	public partial class ToggleSwitch : Control, IFrameworkTemplatePoolAware
 	{
 		/// <summary>
+		/// This is a workaround for template pooling issue where we change IsOn when template is recycled.
+		/// This prevents incorrect event raising, but is not a "real" solution. Pooling could still cause issues.
+		/// </summary>
+		private bool _suppressToggled;
+
+		/// <summary>
 		/// Initializes a new instance of the ToggleSwitch class.
 		/// </summary>
 		public ToggleSwitch()
@@ -221,7 +227,18 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		public void OnTemplateRecycled() => IsOn = false;
+		public void OnTemplateRecycled()
+		{
+			try
+			{
+				_suppressToggled = true;
+				IsOn = false;
+			}
+			finally
+			{
+				_suppressToggled = false;
+			}
+		}
 
 		internal void AutomationPeerToggle() => IsOn = !IsOn;
 	}
