@@ -13,10 +13,6 @@ namespace Uno
 	{
 		private const string NumberPrefix = "__";
 
-		// These characters are not supported on Android, but they're used by the attached property localization syntax.
-		// Example: "MyUid.[using:Windows.UI.Xaml.Automation]AutomationProperties.Name"
-		private static readonly Regex sanitizeName = NameSanitizer();
-
 		/// <summary>
 		/// Encode a resource name to remove characters that are not supported on Android.
 		/// </summary>
@@ -24,8 +20,19 @@ namespace Uno
 		/// <returns>The encoded resource name for the Android Strings.xml file.</returns>
 		public static string Encode(string key)
 		{
-			// Checks whether the key contains unsupported characters
-			key = sanitizeName.Replace(key, "_");
+			var charArray = key.ToCharArray();
+			for (int i = 0; i < charArray.Length; i++)
+			{
+				// Checks whether the key contains unsupported characters
+				// These characters are not supported on Android, but they're used by the attached property localization syntax.
+				// Example: "MyUid.[using:Windows.UI.Xaml.Automation]AutomationProperties.Name"
+				if (charArray[i] is not ((>= 'a' and <= 'z') or (>= 'A' and <= 'Z') or (>= '0' and <= '9') or '_' or '.'))
+				{
+					charArray[i] = '_';
+				}
+			}
+
+			key = new string(charArray);
 
 			//Checks if the keys are starting by a number because they are invalid in C#
 			if (int.TryParse(key.Substring(0, 1), out var number))
@@ -76,8 +83,5 @@ namespace Uno
 
 			return global::System.IO.Path.Combine(encodedDirectory, encodedFileName + extension).Replace(localSeparation, separator);
 		}
-
-		[GeneratedRegex(@"[^a-zA-Z0-9_.]", RegexOptions.Compiled)]
-		private static partial Regex NameSanitizer();
 	}
 }
