@@ -22,11 +22,11 @@ jobs:
     matrix:
       UWP:
         UNO_UWP_BUILD: true
-        XAML_FLAVOR_BUILD: UWP 
+        XAML_FLAVOR_BUILD: UWP
 
       WinUI:
         UNO_UWP_BUILD: false
-        XAML_FLAVOR_BUILD: WinUI 
+        XAML_FLAVOR_BUILD: WinUI
 
   steps:
   - checkout: self
@@ -40,8 +40,6 @@ jobs:
   - template: templates/nuget-cache.yml
     parameters:
       nugetPackages: $(NUGET_PACKAGES)
-
-  - template: templates/dotnet-install.yml
 
   - bash: |
       dotnet msbuild /r /nr:false /p:Configuration=Release src/SamplesApp/SamplesApp.Wasm/SamplesApp.Wasm.csproj /bl:$(build.artifactstagingdirectory)/build-wasm-uitest-net6-$(GitVersion.FullSemVer).binlog
@@ -91,8 +89,6 @@ jobs:
     inputs:
         artifactName: wasm-uitest-binaries
         downloadPath: '$(build.sourcesdirectory)/build'
-
-  - template: templates/dotnet-install.yml
 
   - bash: |
       set -euo pipefail
