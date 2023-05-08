@@ -961,7 +961,7 @@ namespace Uno.UI.Samples.Tests
 
 			if (_ciTestsGroupCountCache != -1)
 			{
-#if !DEBUG
+#if !DEBUG && HAS_UNO
 				this.Log().Info($"Filtered groups summary for {_ciTestsGroupCountCache} groups:");
 
 				var totalCount = 0;
