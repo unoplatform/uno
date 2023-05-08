@@ -22,8 +22,9 @@ public class Given_SymbolIcon
 	[TestMethod]
 #if __MACOS__
 	[Ignore("Currently fails on macOS, part of #9282! epic")]
-#endif
+#else
 	[Ignore("Fails on all targets https://github.com/unoplatform/uno/issues/9080")]
+#endif
 	public async Task Validate_Size()
 	{
 		var symbolIcon = new SymbolIcon() { Symbol = Symbol.Home };
