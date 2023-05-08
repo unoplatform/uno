@@ -227,7 +227,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		/// </summary>
 		private void OnIsCheckedChanged()
 		{
-			if (_suppressCheckedChanged)
+			if (_suppressCheckedChanged) // Uno workaround
 			{
 				UpdateVisualState();
 				return;
