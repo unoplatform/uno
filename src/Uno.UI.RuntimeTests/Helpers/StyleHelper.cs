@@ -7,9 +7,9 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Private.Infrastructure;
 using MUXControlsTestApp.Utilities;
-using Uno.UI.Dispatching;
 
 #if HAS_UNO
+using Uno.UI.Dispatching;
 using Uno.UI.Xaml.Media;
 #endif
 
