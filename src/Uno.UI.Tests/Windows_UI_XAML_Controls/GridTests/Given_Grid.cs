@@ -6,6 +6,7 @@ using System.Linq;
 using Windows.Foundation;
 using FluentAssertions;
 using FluentAssertions.Execution;
+using Uno.UI.Controls.Legacy;
 using Uno.UI.Tests.Windows_UI_XAML_Controls.GridTests.Controls;
 
 namespace Uno.UI.Tests.GridTests
