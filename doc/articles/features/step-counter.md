@@ -45,6 +45,8 @@ Make sure to add the following capability declaration to your `Info.plist` file,
 <string>Some reason why your app wants to track motion.</string>
 ```
 
+---
+
 ## Example
 
 ### Capturing sensor readings
