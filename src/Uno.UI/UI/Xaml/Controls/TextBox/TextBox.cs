@@ -46,6 +46,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// This is a workaround for template pooling issue where we change IsChecked when template is recycled.
 		/// This prevents incorrect event raising, but is not a "real" solution. Pooling could still cause issues.
+		/// This workaround can be removed if pooling is removed. See https://github.com/unoplatform/uno/issues/12189
 		/// </summary>
 		private bool _suppressTextChanged;
 
@@ -310,7 +311,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				_isInvokingTextChanged = true;
 				_isTextChangedPending = false;
-				if (!_suppressTextChanged)
+				if (!_suppressTextChanged) // This workaround can be removed if pooling is removed. See https://github.com/unoplatform/uno/issues/12189
 				{
 					TextChanged?.Invoke(this, new TextChangedEventArgs(this));
 				}

@@ -419,6 +419,7 @@ namespace Windows.UI.Xaml.Controls
 			var args = new RoutedEventArgs();
 			args.OriginalSource = this;
 
+			// This workaround can be removed if pooling is removed. See https://github.com/unoplatform/uno/issues/12189
 			if (!_suppressToggled) // Uno workaround.
 			{
 				Toggled?.Invoke(this, args);
