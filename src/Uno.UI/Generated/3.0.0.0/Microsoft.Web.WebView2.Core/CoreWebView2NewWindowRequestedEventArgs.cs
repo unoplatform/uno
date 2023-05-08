@@ -43,6 +43,17 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 		#endif
+		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  string Name
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string CoreWebView2NewWindowRequestedEventArgs.Name is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CoreWebView2NewWindowRequestedEventArgs.Name");
+			}
+		}
+		#endif
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2NewWindowRequestedEventArgs.Name.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2NewWindowRequestedEventArgs.Uri.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2NewWindowRequestedEventArgs.NewWindow.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2NewWindowRequestedEventArgs.NewWindow.set

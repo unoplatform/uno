@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Media.Animation
 {
-	#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class NavigationThemeTransition : global::Windows.UI.Xaml.Media.Animation.Transition
@@ -29,13 +29,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			typeof(global::Windows.UI.Xaml.Media.Animation.NavigationThemeTransition), 
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Animation.NavigationTransitionInfo)));
 		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public NavigationThemeTransition() 
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Media.Animation.NavigationThemeTransition", "NavigationThemeTransition.NavigationThemeTransition()");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.Media.Animation.NavigationThemeTransition.NavigationThemeTransition()
 		// Forced skipping of method Windows.UI.Xaml.Media.Animation.NavigationThemeTransition.NavigationThemeTransition()
 		// Forced skipping of method Windows.UI.Xaml.Media.Animation.NavigationThemeTransition.DefaultNavigationTransitionInfo.get
 		// Forced skipping of method Windows.UI.Xaml.Media.Animation.NavigationThemeTransition.DefaultNavigationTransitionInfo.set

@@ -2,39 +2,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Media.Playback
 {
-	#if false || false || false || false || false
-	[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+	#if false || false || false || false || false || false || false
+	[global::Uno.NotImplemented]
 	#endif
 	public  partial class MediaPlayer : global::System.IDisposable
 	{
-		#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public  double Volume
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member double MediaPlayer.Volume is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20MediaPlayer.Volume");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlayer", "double MediaPlayer.Volume");
-			}
-		}
-		#endif
-		#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public  global::System.TimeSpan Position
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member TimeSpan MediaPlayer.Position is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20MediaPlayer.Position");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlayer", "TimeSpan MediaPlayer.Position");
-			}
-		}
-		#endif
+		// Skipping already declared property Volume
+		// Skipping already declared property Position
 		#if __ANDROID__ || __IOS__ || false || false || false || false || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__MACOS__")]
 		public  double PlaybackRate
@@ -63,34 +37,8 @@ namespace Windows.Media.Playback
 			}
 		}
 		#endif
-		#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public  bool IsMuted
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool MediaPlayer.IsMuted is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20MediaPlayer.IsMuted");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlayer", "bool MediaPlayer.IsMuted");
-			}
-		}
-		#endif
-		#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public  bool AutoPlay
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool MediaPlayer.AutoPlay is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20MediaPlayer.AutoPlay");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlayer", "bool MediaPlayer.AutoPlay");
-			}
-		}
-		#endif
+		// Skipping already declared property IsMuted
+		// Skipping already declared property AutoPlay
 		#if __ANDROID__ || __IOS__ || false || false || false || false || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__MACOS__")]
 		public  global::Windows.Media.Playback.MediaPlayerState CurrentState
@@ -303,16 +251,7 @@ namespace Windows.Media.Playback
 			}
 		}
 		#endif
-		#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__MACOS__")]
-		public  global::Windows.Media.Playback.MediaPlaybackSession PlaybackSession
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member MediaPlaybackSession MediaPlayer.PlaybackSession is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaPlaybackSession%20MediaPlayer.PlaybackSession");
-			}
-		}
-		#endif
+		// Skipping already declared property PlaybackSession
 		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool IsVideoFrameServerEnabled
@@ -351,27 +290,8 @@ namespace Windows.Media.Playback
 			}
 		}
 		#endif
-		#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public  global::Windows.Media.Playback.IMediaPlaybackSource Source
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IMediaPlaybackSource MediaPlayer.Source is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IMediaPlaybackSource%20MediaPlayer.Source");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlayer", "IMediaPlaybackSource MediaPlayer.Source");
-			}
-		}
-		#endif
-		#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public MediaPlayer() 
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlayer", "MediaPlayer.MediaPlayer()");
-		}
-		#endif
+		// Skipping already declared property Source
+		// Skipping already declared method Windows.Media.Playback.MediaPlayer.MediaPlayer()
 		// Forced skipping of method Windows.Media.Playback.MediaPlayer.MediaPlayer()
 		// Forced skipping of method Windows.Media.Playback.MediaPlayer.AutoPlay.get
 		// Forced skipping of method Windows.Media.Playback.MediaPlayer.AutoPlay.set
@@ -412,20 +332,8 @@ namespace Windows.Media.Playback
 		// Forced skipping of method Windows.Media.Playback.MediaPlayer.BufferingStarted.remove
 		// Forced skipping of method Windows.Media.Playback.MediaPlayer.BufferingEnded.add
 		// Forced skipping of method Windows.Media.Playback.MediaPlayer.BufferingEnded.remove
-		#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public  void Play()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlayer", "void MediaPlayer.Play()");
-		}
-		#endif
-		#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
-		public  void Pause()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlayer", "void MediaPlayer.Pause()");
-		}
-		#endif
+		// Skipping already declared method Windows.Media.Playback.MediaPlayer.Play()
+		// Skipping already declared method Windows.Media.Playback.MediaPlayer.Pause()
 		#if __ANDROID__ || __IOS__ || false || false || false || false || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__MACOS__")]
 		public  void SetUriSource( global::System.Uri value)
@@ -477,13 +385,7 @@ namespace Windows.Media.Playback
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlayer", "void MediaPlayer.RemoveAllEffects()");
 		}
 		#endif
-		#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public  void Dispose()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlayer", "void MediaPlayer.Dispose()");
-		}
-		#endif
+		// Skipping already declared method Windows.Media.Playback.MediaPlayer.Dispose()
 		// Forced skipping of method Windows.Media.Playback.MediaPlayer.IsMutedChanged.add
 		// Forced skipping of method Windows.Media.Playback.MediaPlayer.IsMutedChanged.remove
 		// Forced skipping of method Windows.Media.Playback.MediaPlayer.SourceChanged.add
@@ -585,12 +487,12 @@ namespace Windows.Media.Playback
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__MACOS__")]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Playback.MediaPlayer, object> BufferingEnded
 		{
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__MACOS__")]
 			add
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlayer", "event TypedEventHandler<MediaPlayer, object> MediaPlayer.BufferingEnded");
 			}
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__MACOS__")]
 			remove
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlayer", "event TypedEventHandler<MediaPlayer, object> MediaPlayer.BufferingEnded");
@@ -601,12 +503,12 @@ namespace Windows.Media.Playback
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__MACOS__")]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Playback.MediaPlayer, object> BufferingStarted
 		{
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__MACOS__")]
 			add
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlayer", "event TypedEventHandler<MediaPlayer, object> MediaPlayer.BufferingStarted");
 			}
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__MACOS__")]
 			remove
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlayer", "event TypedEventHandler<MediaPlayer, object> MediaPlayer.BufferingStarted");
@@ -617,76 +519,31 @@ namespace Windows.Media.Playback
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__MACOS__")]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Playback.MediaPlayer, object> CurrentStateChanged
 		{
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__MACOS__")]
 			add
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlayer", "event TypedEventHandler<MediaPlayer, object> MediaPlayer.CurrentStateChanged");
 			}
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__MACOS__")]
 			remove
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlayer", "event TypedEventHandler<MediaPlayer, object> MediaPlayer.CurrentStateChanged");
 			}
 		}
 		#endif
-		#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Playback.MediaPlayer, object> MediaEnded
-		{
-			[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlayer", "event TypedEventHandler<MediaPlayer, object> MediaPlayer.MediaEnded");
-			}
-			[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlayer", "event TypedEventHandler<MediaPlayer, object> MediaPlayer.MediaEnded");
-			}
-		}
-		#endif
-		#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Playback.MediaPlayer, global::Windows.Media.Playback.MediaPlayerFailedEventArgs> MediaFailed
-		{
-			[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlayer", "event TypedEventHandler<MediaPlayer, MediaPlayerFailedEventArgs> MediaPlayer.MediaFailed");
-			}
-			[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlayer", "event TypedEventHandler<MediaPlayer, MediaPlayerFailedEventArgs> MediaPlayer.MediaFailed");
-			}
-		}
-		#endif
-		#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Playback.MediaPlayer, object> MediaOpened
-		{
-			[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlayer", "event TypedEventHandler<MediaPlayer, object> MediaPlayer.MediaOpened");
-			}
-			[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlayer", "event TypedEventHandler<MediaPlayer, object> MediaPlayer.MediaOpened");
-			}
-		}
-		#endif
+		// Skipping already declared event Windows.Media.Playback.MediaPlayer.MediaEnded
+		// Skipping already declared event Windows.Media.Playback.MediaPlayer.MediaFailed
+		// Skipping already declared event Windows.Media.Playback.MediaPlayer.MediaOpened
 		#if __ANDROID__ || __IOS__ || false || false || false || false || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__MACOS__")]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Playback.MediaPlayer, global::Windows.Media.Playback.MediaPlayerRateChangedEventArgs> MediaPlayerRateChanged
 		{
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__MACOS__")]
 			add
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlayer", "event TypedEventHandler<MediaPlayer, MediaPlayerRateChangedEventArgs> MediaPlayer.MediaPlayerRateChanged");
 			}
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__MACOS__")]
 			remove
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlayer", "event TypedEventHandler<MediaPlayer, MediaPlayerRateChangedEventArgs> MediaPlayer.MediaPlayerRateChanged");
@@ -697,92 +554,32 @@ namespace Windows.Media.Playback
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__MACOS__")]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Playback.MediaPlayer, global::Windows.Media.Playback.PlaybackMediaMarkerReachedEventArgs> PlaybackMediaMarkerReached
 		{
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__MACOS__")]
 			add
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlayer", "event TypedEventHandler<MediaPlayer, PlaybackMediaMarkerReachedEventArgs> MediaPlayer.PlaybackMediaMarkerReached");
 			}
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__MACOS__")]
 			remove
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlayer", "event TypedEventHandler<MediaPlayer, PlaybackMediaMarkerReachedEventArgs> MediaPlayer.PlaybackMediaMarkerReached");
 			}
 		}
 		#endif
-		#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Playback.MediaPlayer, object> SeekCompleted
-		{
-			[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlayer", "event TypedEventHandler<MediaPlayer, object> MediaPlayer.SeekCompleted");
-			}
-			[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlayer", "event TypedEventHandler<MediaPlayer, object> MediaPlayer.SeekCompleted");
-			}
-		}
-		#endif
-		#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Playback.MediaPlayer, object> VolumeChanged
-		{
-			[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlayer", "event TypedEventHandler<MediaPlayer, object> MediaPlayer.VolumeChanged");
-			}
-			[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlayer", "event TypedEventHandler<MediaPlayer, object> MediaPlayer.VolumeChanged");
-			}
-		}
-		#endif
-		#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Playback.MediaPlayer, object> IsMutedChanged
-		{
-			[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlayer", "event TypedEventHandler<MediaPlayer, object> MediaPlayer.IsMutedChanged");
-			}
-			[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlayer", "event TypedEventHandler<MediaPlayer, object> MediaPlayer.IsMutedChanged");
-			}
-		}
-		#endif
-		#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Playback.MediaPlayer, object> SourceChanged
-		{
-			[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlayer", "event TypedEventHandler<MediaPlayer, object> MediaPlayer.SourceChanged");
-			}
-			[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlayer", "event TypedEventHandler<MediaPlayer, object> MediaPlayer.SourceChanged");
-			}
-		}
-		#endif
+		// Skipping already declared event Windows.Media.Playback.MediaPlayer.SeekCompleted
+		// Skipping already declared event Windows.Media.Playback.MediaPlayer.VolumeChanged
+		// Skipping already declared event Windows.Media.Playback.MediaPlayer.IsMutedChanged
+		// Skipping already declared event Windows.Media.Playback.MediaPlayer.SourceChanged
 		#if __ANDROID__ || __IOS__ || false || false || false || false || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__MACOS__")]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Playback.MediaPlayer, object> VideoFrameAvailable
 		{
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__MACOS__")]
 			add
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlayer", "event TypedEventHandler<MediaPlayer, object> MediaPlayer.VideoFrameAvailable");
 			}
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__MACOS__")]
 			remove
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlayer", "event TypedEventHandler<MediaPlayer, object> MediaPlayer.VideoFrameAvailable");
@@ -793,12 +590,12 @@ namespace Windows.Media.Playback
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__MACOS__")]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Playback.MediaPlayer, object> SubtitleFrameChanged
 		{
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__MACOS__")]
 			add
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlayer", "event TypedEventHandler<MediaPlayer, object> MediaPlayer.SubtitleFrameChanged");
 			}
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__MACOS__")]
 			remove
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlayer", "event TypedEventHandler<MediaPlayer, object> MediaPlayer.SubtitleFrameChanged");
