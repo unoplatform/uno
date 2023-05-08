@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference TabView.cpp, commit 367bb0d512cd
+// MUX Reference TabView.cpp, commit 5f52761
 
 #pragma warning disable 105 // remove when moving to WinUI tree
 
@@ -1347,7 +1347,7 @@ public partial class TabView : Control
 					}
 					else
 					{
-						// Case: TabWidthMode "Compact" or "FitToContent"
+						// Case: TabWidthMode "Compact" or "SizeToContent"
 						tabColumn.MaxWidth = availableWidth;
 						tabColumn.Width = GridLengthHelper.FromValueAndType(1.0, GridUnitType.Auto);
 						var listview = m_listView;
