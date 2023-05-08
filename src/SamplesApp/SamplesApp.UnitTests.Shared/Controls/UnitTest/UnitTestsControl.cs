@@ -65,11 +65,18 @@ namespace Uno.UI.Samples.Tests
 		// On WinUI/UWP dependency properties cannot be accessed outside of
 		// UI thread. This field caches the current value so it can be accessed
 		// asynchronously during test enumeration.
-		private int _ciTestsGroupCountCache = 4;
-		private int _ciTestGroupCache = 0;
+		private int _ciTestsGroupCountCache = -1;
+		private int _ciTestGroupCache = -1;
 
 		public UnitTestsControl()
 		{
+#if DEBUG
+			if (_ciTestsGroupCountCache != -1 || _ciTestGroupCache != -1)
+			{
+				throw new Exception("_ciTestsGroupCountCache or _ciTestGroupCache values are incorrect");
+			}
+#endif
+
 			this.InitializeComponent();
 			this.Loaded += OnLoaded;
 
@@ -954,7 +961,7 @@ namespace Uno.UI.Samples.Tests
 
 			if (_ciTestsGroupCountCache != -1)
 			{
-#if false
+#if !DEBUG
 				this.Log().Info($"Filtered groups summary for {_ciTestsGroupCountCache} groups:");
 
 				var totalCount = 0;
