@@ -1,5 +1,5 @@
 ﻿<!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. See LICENSE in the project root for license information. -->
-<!-- MUX Reference TabView.xaml, commit f4d71ea -->
+<!-- MUX Reference TabView.xaml, commit 5f52761 -->
 <ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -743,7 +743,7 @@
                         </VisualStateManager.VisualStateGroups>
 
                         <Border x:Name="BottomBorderLine" BorderBrush="{ThemeResource TabViewBorderBrush}" BorderThickness="1" Height="1" Grid.ColumnSpan="3" VerticalAlignment="Bottom"/>
-                        
+
                         <Path x:Name="LeftRadiusRenderArc"
                             x:Load="False"
                             Fill="{ThemeResource TabViewBorderBrush}"
@@ -765,14 +765,17 @@
                             Width="4"
                             Data="M0 0C0 1.19469 0.523755 2.26706 1.35418 3H4C2.34315 3 1 1.65685 1 0H0Z"/>
 
-                        <Path x:Name="SelectedBackgroundPath"
-                            x:Load="False"
-                            Grid.ColumnSpan="3"
-                            Fill="{ThemeResource TabViewItemHeaderBackgroundSelected}"
-                            VerticalAlignment="Bottom"
-                            Margin="-4,0,-4,0"
-                            Visibility="Collapsed"
-                            Data="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TabViewTemplateSettings.TabGeometry}" />
+                        <!-- This Path wrapped in a Canvas to prevent an infinite loop in calculating its width. -->
+                        <Canvas>
+                            <Path x:Name="SelectedBackgroundPath"
+                                x:Load="False"
+                                Grid.ColumnSpan="3"
+                                Fill="{ThemeResource TabViewItemHeaderBackgroundSelected}"
+                                VerticalAlignment="Bottom"
+                                Margin="-4,0,-4,0"
+                                Visibility="Collapsed"
+                                Data="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TabViewTemplateSettings.TabGeometry}" />
+                        </Canvas>
 
                         <Border x:Name="TabSeparator"
                             HorizontalAlignment="Right"
