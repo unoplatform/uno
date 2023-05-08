@@ -22,6 +22,7 @@ using Windows.UI.Popups;
 using Uno.UI.WinRT.Extensions.UI.Popups;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 using Uno.UI.Xaml.Core;
+using Uno.UI.Xaml.Media;
 
 #if HAS_UNO_WINUI
 using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
@@ -415,6 +416,7 @@ namespace Windows.UI.Xaml
 
 		private void OnResourcesChanged(ResourceUpdateReason updateReason)
 		{
+			DefaultBrushes.ResetDefaultThemeBrushes();
 			foreach (var contentRoot in WinUICoreServices.Instance.ContentRootCoordinator.ContentRoots)
 			{
 				if (GetTreeRoot(contentRoot) is { } root)
@@ -448,7 +450,6 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		internal static void PropagateResourcesChanged(object instance, ResourceUpdateReason updateReason)
 		{
-
 			// Update ThemeResource references that have changed
 			if (instance is FrameworkElement fe)
 			{

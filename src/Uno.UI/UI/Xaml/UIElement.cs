@@ -30,6 +30,9 @@ using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Composition;
 using Windows.Graphics.Display;
 using Uno.UI.Extensions;
+using Windows.UI.Xaml.Documents;
+using Windows.ApplicationModel.Core;
+using Uno.UI.Xaml.Media;
 
 #if __IOS__
 using UIKit;
@@ -448,6 +451,15 @@ namespace Windows.UI.Xaml
 		}
 
 		partial void OnVisibilityChangedPartial(Visibility oldValue, Visibility newValue);
+
+		/// <summary>
+		/// Set correct default foreground for the current theme.
+		/// </summary>
+		/// <param name="foregroundProperty">The appropriate property for the calling instance.</param>
+		private protected void SetDefaultForeground(DependencyProperty foregroundProperty)
+		{
+			this.SetValue(foregroundProperty, DefaultBrushes.TextForegroundBrush, DependencyPropertyValuePrecedences.DefaultValue);
+		}
 
 		[NotImplemented]
 		protected virtual AutomationPeer OnCreateAutomationPeer() => new AutomationPeer();

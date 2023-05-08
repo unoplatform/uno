@@ -78,6 +78,13 @@ public sealed partial class SymbolIcon : IconElement
 	private static FontFamily GetSymbolFontFamily() =>
 		 _symbolIconFontFamily ??= new FontFamily(Uno.UI.FeatureConfiguration.Font.SymbolsFont);
 
-	private protected override void OnForegroundChanged(DependencyPropertyChangedEventArgs e) =>
-		_textBlock.Foreground = (Brush)e.NewValue;
+	private protected override void OnForegroundChanged(DependencyPropertyChangedEventArgs e)
+	{
+		// This may occur while executing the base constructor
+		// so _textBlock may still be null.
+		if (_textBlock is not null)
+		{
+			_textBlock.Foreground = (Brush)e.NewValue;
+		}
+	}
 }

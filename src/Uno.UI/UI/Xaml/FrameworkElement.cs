@@ -25,6 +25,7 @@ using Uno.UI.Xaml;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Data;
 using Uno.UI.Xaml.Core;
+using Uno.UI.Xaml.Media;
 
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
@@ -948,18 +949,6 @@ namespace Windows.UI.Xaml
 					ActualThemeChanged?.Invoke(this, null);
 				}
 			}
-		}
-
-		/// <summary>
-		/// Set correct default foreground for the current theme.
-		/// </summary>
-		/// <param name="foregroundProperty">The appropriate property for the calling instance.</param>
-		private protected void SetDefaultForeground(DependencyProperty foregroundProperty)
-		{
-			(this).SetValue(foregroundProperty,
-							Application.Current == null || Application.Current.RequestedTheme == ApplicationTheme.Light
-								? SolidColorBrushHelper.Black
-								: SolidColorBrushHelper.White, DependencyPropertyValuePrecedences.DefaultValue);
 		}
 
 		#region AutomationPeer
