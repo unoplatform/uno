@@ -72,7 +72,7 @@
 				<MenuFlyoutItem Text="About" 
 								Click="MenuFlyoutItem_Click"/>
 			</muxc:MenuBarItem>
-		</MenuBar>
+		</muxc:MenuBar>
 		<StackPanel Grid.Row="1">
 			<TextBlock x:Name="result" />
 		</StackPanel>
