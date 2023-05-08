@@ -78,7 +78,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 			await TestServices.WindowHelper.WaitForLoaded(Content as FrameworkElement);
 
 			await RunOnUIThread.ExecuteAsync(() =>
-			{				
+			{
 				Log.Comment("Verify a selected tab exists");
 				VerifySelectedItem("Tab 0");
 
