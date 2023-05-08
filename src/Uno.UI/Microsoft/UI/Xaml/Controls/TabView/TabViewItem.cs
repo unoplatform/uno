@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference: TabViewItem.cpp, commit 367bb0d512c
+// MUX Reference: TabViewItem.cpp, commit 5f52761
 
 using System.Numerics;
 using Microsoft/* UWP don't rename */.UI.Xaml.Automation.Peers;
@@ -148,9 +148,7 @@ public partial class TabViewItem : ListViewItem
 	private void UpdateTabGeometry()
 	{
 		var templateSettings = TabViewTemplateSettings;
-		var scaleFactor = SharedHelpers.Is19H1OrHigher() ?
-			XamlRoot.RasterizationScale :
-			DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel;
+
 		var height = ActualHeight;
 		var popupRadius = (CornerRadius)ResourceAccessor.ResourceLookup(this, c_overlayCornerRadiusKey);
 		var leftCorner = popupRadius.TopLeft;
@@ -162,18 +160,18 @@ public partial class TabViewItem : ListViewItem
 		var strOut = string.Format(
 			CultureInfo.InvariantCulture,
 			data,
-			height - 1.0f,
+			height,
 			leftCorner,
 			leftCorner,
 			leftCorner,
 			leftCorner,
 			leftCorner,
-			ActualWidth - (leftCorner + rightCorner + 1.0f / scaleFactor),
+			ActualWidth - (leftCorner + rightCorner),
 			rightCorner,
 			rightCorner,
 			rightCorner,
 			rightCorner,
-			height - (5 + rightCorner));
+			height - (4.0 + rightCorner));
 
 		var geometry = XamlReader.Load(strOut) as Geometry;
 
@@ -582,7 +580,7 @@ public partial class TabViewItem : ListViewItem
 			// we do want to handle things so we get the improved keyboarding experience.
 			var isAltDown = (Windows.UI.Xaml.Window.Current.CoreWindow.GetKeyState(VirtualKey.Menu) & CoreVirtualKeyStates.Down) == CoreVirtualKeyStates.Down;
 			var isShiftDown = (Windows.UI.Xaml.Window.Current.CoreWindow.GetKeyState(VirtualKey.Shift) & CoreVirtualKeyStates.Down) == CoreVirtualKeyStates.Down;
-			
+
 			if (!isAltDown || !isShiftDown)
 			{
 				var moveForward =
