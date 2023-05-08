@@ -666,6 +666,10 @@
 			<Member fullName="Uno.UI.Web.WebErrorStatus Windows.UI.Xaml.Controls.WebViewNavigationCompletedEventArgs::WebErrorStatus()" reason="Incorrect type" />
 			<Member fullName="Uno.UI.Web.WebErrorStatus Windows.UI.Xaml.Controls.WebViewNavigationFailedEventArgs::WebErrorStatus()" reason="Incorrect type" />
 			<!-- END WebView -->
+			
+			<!-- BEGIN Skia Adjustments -->
+			<Member fullName="SkiaSharp.SKSize Uno.UI.Skia.Platform.WpfHost::CanvasSize()" reason="Incorrect type" />
+			<!-- END Skia Adjustments -->
 		</Properties>
 		<Methods>
 			<!-- BEGIN MediaPlayer updates -->
@@ -987,6 +991,15 @@
 			<Member fullName="System.String Uno.UI.Services.ResourcesService.Get(System.String id)" reason="Api alignments" />
  
 			<Member fullName="System.Void Windows.UI.Xaml.Window.set_Visible(System.Boolean value)" reason="Does not exist in UWP and WinUI" />
+			
+			<Member fullName="System.Object Uno.UI.Svg.GlobalStaticResources.FindResource(System.String name)" reason="API Alignment" />
+
+			<!-- BEGIN Skia Adjustments -->
+			<Member fullName="System.Void Uno.UI.Runtime.Skia.GtkHost..ctor(System.Func`1&lt;Windows.UI.Xaml.Application&gt; appBuilder, System.String[] args)" reason="API Alignment" />
+			<Member fullName="System.Void Uno.UI.Runtime.Skia.FrameBufferHost..ctor(System.Func`1&lt;Windows.UI.Xaml.Application&gt; appBuilder, System.String[] args)" reason="API Alignment" />
+			<Member fullName="System.Void Uno.UI.Skia.Platform.WpfHost..ctor(System.Windows.Threading.Dispatcher dispatcher, System.Func`1&lt;Windows.UI.Xaml.Application&gt; appBuilder, System.String[] args)" reason="API Alignment" />
+			<Member fullName="SkiaSharp.SKSize Uno.UI.Skia.Platform.WpfHost.get_CanvasSize()" reason="API Alignment" />
+			<!-- End Skia Adjustments -->
 		</Methods>
 	</IgnoreSet>
 
