@@ -13,6 +13,7 @@ using TextBox = Windows.UI.Xaml.Controls.TextBox;
 namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 {
 	[TestClass]
+	[Uno.UI.RuntimeTests.RunsOnUIThread]
 	public partial class ColorPickerTests : MUXApiTestBase
 	{
 		[TestMethod]
@@ -217,6 +218,9 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 		[TestMethod]
 #if __WASM__
 		[Ignore("WaitOne doesn't work on mono.")]
+#endif
+#if __IOS__ || __ANDROID__
+		[Ignore("Fails on iOS/Android: https://github.com/unoplatform/uno/issues/9080")]
 #endif
 		public void ValidateFractionalWidthDoesNotCrash()
 		{

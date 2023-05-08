@@ -16,7 +16,7 @@ namespace SamplesApp.UITests.TestFramework
 	[AttributeUsage(AttributeTargets.Method | AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
 	public partial class AutoRetryAttribute : NUnitAttribute, IRepeatTest
 	{
-		public const int AutoRetryDefaultCount = 2;
+		public const int AutoRetryDefaultCount = 1;
 
 		private readonly int _tryCount;
 
@@ -76,8 +76,6 @@ namespace SamplesApp.UITests.TestFramework
 				{
 					try
 					{
-						TryResetTimeoutCommand(innerCommand);
-
 						context.CurrentResult = innerCommand.Execute(context);
 					}
 					// Commands are supposed to catch exceptions, but some don't
@@ -111,26 +109,6 @@ namespace SamplesApp.UITests.TestFramework
 				}
 
 				return context.CurrentResult;
-			}
-
-			private void TryResetTimeoutCommand(TestCommand innerCommand)
-			{
-				// Apply workaround for https://github.com/nunit/nunit/issues/3284
-				// Resets the command timeout flag on every new test run
-
-				if (innerCommand is TimeoutCommand tc)
-				{
-					if (tc.GetType().GetField(
-						"_commandTimedOut",
-						System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is { } timedOut)
-					{
-						timedOut.SetValue(innerCommand, false);
-					}
-					else
-					{
-						throw new Exception("This version of NUnit is not supported");
-					}
-				}
 			}
 		}
 

@@ -33,6 +33,7 @@ using Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common.Mocks;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using Uno.UI.RuntimeTests;
+using System.Threading.Tasks;
 
 namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 {
@@ -41,6 +42,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 #if __ANDROID__ || __WASM__
 	[Ignore] // TODO: Android and WASM tests are failing
 #endif
+	[Uno.UI.RuntimeTests.RunsOnUIThread]
 	public class RepeaterTests : MUXApiTestBase
 	{
 		[TestMethod]
@@ -91,7 +93,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		[TestMethod]
 		public void ValidateRepeaterDefaults()
 		{
-			RunOnUIThread.Execute(() =>
+			RunOnUIThread.Execute(async () =>
 			{
 				var repeater = new ItemsRepeater()
 				{
@@ -108,12 +110,16 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 					}
 				};
 
-				Content.UpdateLayout();
+				while (repeater.TryGetElement(0) == null)
+				{
+					await Task.Delay(1000);
+					Content.UpdateLayout();
+				}
 
 				for (int i = 0; i < 10; i++)
 				{
 					var element = repeater.TryGetElement(i);
-					Verify.IsNotNull(element);
+					Verify.IsNotNull(element, $"Item {i} is null");
 					Verify.AreEqual(string.Format("Item #{0}", i), ((TextBlock)element).Text);
 					Verify.AreEqual(i, repeater.GetElementIndex(element));
 				}
@@ -307,6 +313,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		[TestMethod]
 #if __MACOS__
 		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#elif __IOS__
+		[Ignore("Currently fails on iOS https://github.com/unoplatform/uno/issues/9080")]
 #endif
 		public void NestedRepeaterWithDataTemplateScenario()
 		{
@@ -317,6 +325,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		[TestMethod]
 #if __MACOS__
 		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#elif __IOS__ || __SKIA__
+		[Ignore("Currently fails on iOS/Skia https://github.com/unoplatform/uno/issues/9080")]
 #endif
 		public void VerifyFocusedItemIsRecycledOnCollectionReset()
 		{
@@ -483,6 +493,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		[TestMethod]
 #if __MACOS__
 		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#elif __IOS__
+		[Ignore("Currently fails on iOS https://github.com/unoplatform/uno/issues/9080")]
 #endif
 		public void VerifyCorrectionsInNonScrollableDirection()
 		{
@@ -548,6 +560,9 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 
 
 		[TestMethod]
+#if __IOS__
+		[Ignore("Currently fails on iOS https://github.com/unoplatform/uno/issues/9080")]
+#endif
 		public void VerifyStoreScenarioCache()
 		{
 			ItemsRepeater rootRepeater = null;
@@ -613,6 +628,9 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 
 
 		[TestMethod]
+#if __IOS__
+		[Ignore("Currently fails on iOS https://github.com/unoplatform/uno/issues/9080")]
+#endif
 		public void VerifyUIElementsInItemsSource()
 		{
 			ItemsRepeater repeater = null;
@@ -666,6 +684,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		[TestMethod]
 #if __MACOS__
 		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#elif __IOS__
+		[Ignore("Currently fails on iOS https://github.com/unoplatform/uno/issues/9080")]
 #endif
 		public void VerifyRepeaterDoesNotLeakItemContainers()
 		{

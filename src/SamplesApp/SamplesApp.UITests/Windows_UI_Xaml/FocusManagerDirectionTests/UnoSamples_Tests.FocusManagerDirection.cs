@@ -26,6 +26,8 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.FocusManagerDirectionTests
 			_app.ClearText();
 			_app.EnterText(finalText);
 
+			_app.WaitFor(() => target.GetDependencyPropertyValue("Text")?.ToString() == finalText, $"Text != \"{finalText}\"");
+
 			// Assert final state
 			Assert.AreEqual(finalText, target.GetDependencyPropertyValue("Text")?.ToString());
 		}

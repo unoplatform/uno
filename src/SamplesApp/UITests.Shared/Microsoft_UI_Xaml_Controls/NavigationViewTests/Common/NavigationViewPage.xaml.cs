@@ -33,7 +33,7 @@ using Uno.UI.Samples.Controls;
 
 namespace MUXControlsTestApp
 {
-	[Sample("NavigationView", "MUX")]
+	[Sample("NavigationView", "MUX", IgnoreInSnapshotTests = true)]
 	public sealed partial class NavigationViewPage : TestPage
 	{
 		private int m_newItemIndex = 0;

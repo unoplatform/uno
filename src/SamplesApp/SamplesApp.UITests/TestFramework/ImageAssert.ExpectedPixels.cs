@@ -18,7 +18,7 @@ using _Bitmap = Uno.UI.RuntimeTests.Helpers.RawBitmap;
 namespace Uno.UI.RuntimeTests.Helpers;
 #else
 using System.Drawing;
-using _Bitmap = System.Drawing.Bitmap;
+using _Bitmap = SamplesApp.UITests.PlatformBitmap;
 using SamplesApp.UITests._Utils;
 namespace SamplesApp.UITests.TestFramework;
 #endif
@@ -196,6 +196,17 @@ public record struct ExpectedPixels
 #else
 			? Color.Empty
 			: ColorCodeParser.Parse(colorCode);
+#endif
+}
+
+static class ColorExtensions
+{
+#if IS_RUNTIME_UI_TESTS
+	public static Color ToColor(this Color color)
+		=> color;
+#else
+	public static System.Drawing.Color ToColor(this SkiaSharp.SKColor color)
+		=> System.Drawing.Color.FromArgb(color.Alpha, color.Red, color.Green, color.Blue);
 #endif
 }
 
