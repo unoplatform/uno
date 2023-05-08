@@ -81,6 +81,7 @@ public partial class GTKMediaPlayer : Button
 		//	this.Log().Debug($"GTKMediaPlayer Loaded");
 		//}
 
+		Console.WriteLine("GTKMediaPlayer OnLoaded");
 		SourceLoaded += OnSourceVideoLoaded;
 		Console.WriteLine("Creating libvlc");
 		_libvlc = new LibVLC(enableDebugLogs: false);
@@ -94,18 +95,19 @@ public partial class GTKMediaPlayer : Button
 
 		_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 		{
+			Console.WriteLine("Set MediaPlayer");
 			_videoView.MediaPlayer = _mediaPlayer;
 
 			_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 			{
 
 				_videoView.Visible = true;
-				_videoView.MediaPlayer = _mediaPlayer;
+				//_videoView.MediaPlayer = _mediaPlayer;
 				_mediaPlayer.Stopped += (sender, e) =>
 				{
 					_videoView.Visible = false;
 				};
-
+				Console.WriteLine("Content _videoView on Dispatcher");
 				Content = _videoView;
 
 				//_videoView?.SizeAllocate(new(0, 0, 800, 640));
@@ -130,6 +132,7 @@ public partial class GTKMediaPlayer : Button
 		//	this.Log().Debug($"GTKMediaPlayer Loaded");
 		//}
 
+		Console.WriteLine("GTKMediaPlayer Initialized");
 		SourceLoaded += OnSourceVideoLoaded;
 		Console.WriteLine("Creating libvlc");
 		_libvlc = new LibVLC(enableDebugLogs: false);
@@ -143,6 +146,7 @@ public partial class GTKMediaPlayer : Button
 
 		_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 		{
+			Console.WriteLine("Set MediaPlayer");
 			_videoView.MediaPlayer = _mediaPlayer;
 
 			_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
@@ -157,12 +161,13 @@ public partial class GTKMediaPlayer : Button
 				//Starts playing
 				var media = new LibVLCSharp.Shared.Media(
 					_libvlc,
-					new Uri("http://localhost:5000/mp4.mp4")
+					new Uri("https://ia800201.us.archive.org/12/items/BigBuckBunny_328/BigBuckBunny_512kb.mp4")
 				);
 
 				media.Parse(MediaParseOptions.ParseNetwork);
 				_mediaPlayer.Media = media;
 
+				Console.WriteLine("Content _videoView on Dispatcher");
 				Content = _videoView;
 
 				_videoView?.SizeAllocate(new(0, 0, 800, 640));
@@ -217,7 +222,7 @@ public partial class GTKMediaPlayer : Button
 			if (player._mediaPlayer != null && player._libvlc != null)
 			{
 				string[] options = new string[1];
-				options[0] = "video-on-top";
+				//options[0] = "video-on-top";
 				var media = new LibVLCSharp.Shared.Media(player._libvlc, new Uri(encodedSource), options);
 				//media.par parseWithOptions(VLC::Media::ParseFlags::Network, -1);
 

@@ -115,6 +115,7 @@ public partial class GTKMediaPlayer : Button
 
 	internal void UpdateVideoStretch()
 	{
+		Console.WriteLine("UpdateVideoStretch");
 		_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 		{
 			if (_videoView != null && _mediaPlayer != null && _mediaPlayer.Media != null)
@@ -126,6 +127,7 @@ public partial class GTKMediaPlayer : Button
 					var height = _videoView.AllocatedHeight;
 					// var parentRatio = (double)width / global::System.Math.Max(1, height);
 
+					Console.WriteLine($"MediaPlayer {width} x {width}");
 					while (_mediaPlayer.Media.Tracks != null && !_mediaPlayer.Media.Tracks.Any(track => track.TrackType == TrackType.Video))
 					{
 						Thread.Sleep(100);
@@ -143,10 +145,27 @@ public partial class GTKMediaPlayer : Button
 						{
 							return;
 						}
+						if (videoWidth == 0 || videoHeight == 0)
+						{
+							return;
+						}
+						if (width == 1)
+						{
+							width = (int)videoWidth;
+						}
+
 						Ratio = (double)videoWidth / global::System.Math.Max(1, videoHeight);
 						height = (int)(videoWidth / Ratio);
+
+						Console.WriteLine($"Video Ratio {Ratio}");
+						Console.WriteLine($"VideoView SizeAllocate after Video Ratio {width} x {width}");
 						_videoView?.SizeAllocate(new(100, 100, width, height));
-						Console.WriteLine($"Largura: {width},  Altura: {height}");
+
+						if (_videoView != null)
+						{
+							_videoView.Visible = true;
+						}
+						Console.WriteLine($"After VideoView SizeAllocate: {width},  Altura: {height}");
 					}
 				}
 				finally
