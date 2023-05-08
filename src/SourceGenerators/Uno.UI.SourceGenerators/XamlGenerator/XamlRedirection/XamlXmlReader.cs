@@ -9,10 +9,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection
 	{
 		private __uno::Uno.Xaml.XamlXmlReader _unoReader;
 
-		public XamlXmlReader(XmlReader document, XamlSchemaContext context, XamlXmlReaderSettings settings)
+		public XamlXmlReader(XmlReader document, XamlSchemaContext context, XamlXmlReaderSettings settings, __uno::Uno.Xaml.IsIncluded isIncluded)
 		{
-			_unoReader = new __uno::Uno.Xaml.XamlXmlReader(document, context.UnoInner, settings.UnoInner);
+			_unoReader = new __uno::Uno.Xaml.XamlXmlReader(document, context.UnoInner, settings.UnoInner, isIncluded);
 		}
+
+		public bool DisableCaching => _unoReader.DisableCaching;
 
 		public XamlNodeType NodeType => Convert(_unoReader.NodeType);
 

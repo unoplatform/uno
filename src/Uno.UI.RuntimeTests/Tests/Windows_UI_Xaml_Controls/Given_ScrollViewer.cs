@@ -435,6 +435,30 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(320, outerScrollViewer.VerticalOffset);
 		}
 
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_NonRound_Content_Height()
+		{
+			var outerScrollViewer = new ScrollViewer()
+			{
+				Background = new SolidColorBrush(Colors.Yellow)
+			};
+
+			var content = new TextBlock()
+			{
+				Text = "Hello",
+				FontSize = 26.756,
+				UseLayoutRounding = false
+			};
+
+			outerScrollViewer.Content = content;
+
+			WindowHelper.WindowContent = outerScrollViewer;
+			await WindowHelper.WaitForLoaded(outerScrollViewer);
+			Assert.AreEqual(outerScrollViewer.ExtentHeight, outerScrollViewer.ViewportHeight, 0.000001);
+		}
+
 #if __ANDROID__
 		[TestMethod]
 		[RunsOnUIThread]

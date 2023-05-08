@@ -41,6 +41,19 @@ namespace Windows.UI.Xaml
 			UpdateHitTest();
 		}
 
+		public bool UseLayoutRounding
+		{
+			get => (bool)this.GetValue(UseLayoutRoundingProperty);
+			set => this.SetValue(UseLayoutRoundingProperty, value);
+		}
+
+		public static DependencyProperty UseLayoutRoundingProperty { get; } =
+			DependencyProperty.Register(
+				nameof(UseLayoutRounding),
+				typeof(bool),
+				typeof(UIElement),
+				new FrameworkPropertyMetadata(true));
+
 		internal bool IsChildrenRenderOrderDirty { get; set; } = true;
 
 		partial void InitializeKeyboard();

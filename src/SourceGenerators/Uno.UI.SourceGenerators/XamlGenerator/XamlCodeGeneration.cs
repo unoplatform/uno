@@ -23,6 +23,8 @@ using System.Collections.Concurrent;
 using System.Collections.Immutable;
 using Uno.UI.SourceGenerators.Helpers;
 using Uno.UI.SourceGenerators.Utils;
+using Uno.UI.SourceGenerators.XamlGenerator.ThirdPartyGenerators;
+using Uno.UI.SourceGenerators.XamlGenerator.ThirdPartyGenerators.CommunityToolkitMvvm;
 
 namespace Uno.UI.SourceGenerators.XamlGenerator
 {
@@ -134,6 +136,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		internal Lazy<INamedTypeSymbol> SolidColorBrushSymbol { get; }
 		internal Lazy<INamedTypeSymbol> RowDefinitionSymbol { get; }
 		internal Lazy<INamedTypeSymbol> ColumnDefinitionSymbol { get; }
+		internal Lazy<INamedTypeSymbol> TaskSymbol { get; }
+
+
+		internal ImmutableArray<ITypeProvider> TypeProviders { get; }
 
 		public XamlCodeGeneration(GeneratorExecutionContext context)
 		{
@@ -301,16 +307,21 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			SolidColorBrushSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.SolidColorBrush);
 			RowDefinitionSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.RowDefinition);
 			ColumnDefinitionSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.ColumnDefinition);
+			TaskSymbol = GetMandatorySymbolAsLazy("System.Threading.Tasks");
 
-			Lazy<INamedTypeSymbol> GetMandatorySymbolAsLazy(string fullyQualifiedName)
-				=> new(() => context.Compilation.GetTypeByMetadataName(fullyQualifiedName) ?? throw new InvalidOperationException($"Unable to find type {fullyQualifiedName}"));
-
-			Lazy<INamedTypeSymbol?> GetOptionalSymbolAsLazy(string fullyQualifiedName)
-				=> new(() => context.Compilation.GetTypeByMetadataName(fullyQualifiedName));
-
-			Lazy<INamedTypeSymbol> GetSpecialTypeSymbolAsLazy(SpecialType specialType)
-				=> new(() => context.Compilation.GetSpecialType(specialType));
+			TypeProviders = ImmutableArray.Create<ITypeProvider>(
+				new MvvmTypeProvider(this)
+				);
 		}
+
+		private Lazy<INamedTypeSymbol> GetMandatorySymbolAsLazy(string fullyQualifiedName)
+			=> new(() => _generatorContext.Compilation.GetTypeByMetadataName(fullyQualifiedName) ?? throw new InvalidOperationException($"Unable to find type {fullyQualifiedName}"));
+
+		internal Lazy<INamedTypeSymbol?> GetOptionalSymbolAsLazy(string fullyQualifiedName)
+			=> new(() => _generatorContext.Compilation.GetTypeByMetadataName(fullyQualifiedName));
+
+		private Lazy<INamedTypeSymbol> GetSpecialTypeSymbolAsLazy(SpecialType specialType)
+			=> new(() => _generatorContext.Compilation.GetSpecialType(specialType));
 
 		private static bool IsWinUIItem(Uno.Roslyn.MSBuildItem item)
 			=> item.GetMetadataValue("XamlRuntime") is { } xamlRuntime
@@ -381,7 +392,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				var resourceDetailsCollection = BuildResourceDetails(_generatorContext.CancellationToken);
 				TryGenerateUnoResourcesKeyAttribute(resourceDetailsCollection);
 
-				var filesFull = new XamlFileParser(_excludeXamlNamespaces, _includeXamlNamespaces, _metadataHelper)
+				var excludeXamlNamespaces = _excludeXamlNamespaces.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+				var includeXamlNamespaces = _includeXamlNamespaces.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+
+				var filesFull = new XamlFileParser(_excludeXamlNamespaces, _includeXamlNamespaces, excludeXamlNamespaces, includeXamlNamespaces, _metadataHelper)
 					.ParseFiles(_xamlSourceFiles, _projectDirectory, _generatorContext.CancellationToken);
 
 				var xamlTypeToXamlTypeBaseMap = new ConcurrentDictionary<INamedTypeSymbol, XamlRedirection.XamlType>();
@@ -453,7 +467,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						generatorContext: _generatorContext,
 						xamlResourcesTrimming: _xamlResourcesTrimming,
 						generationRunFileInfo: generationRunInfo.GetRunFileInfo(file.UniqueID),
-						xamlTypeToXamlTypeBaseMap: xamlTypeToXamlTypeBaseMap
+						xamlTypeToXamlTypeBaseMap: xamlTypeToXamlTypeBaseMap,
+						includeXamlNamespaces: includeXamlNamespaces
 					).GenerateFile()
 				)).ToList();
 

@@ -15,6 +15,7 @@ thumbs.db
 umbrella_installlog.txt
 Resource.Designer.cs
 *.g.cs
+!**/XamlCodeGeneratorTests/Out/**/*.g.cs
 
 # User-specific files
 *.suo

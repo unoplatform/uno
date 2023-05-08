@@ -227,7 +227,7 @@ namespace Windows.UI.Xaml.Controls
 				catch (Exception e)
 				{
 					this.Log().Error("Could not change image source", e);
-					OnImageFailed(imageSource);
+					OnImageFailed(imageSource, e);
 				}
 			}
 		}
@@ -300,7 +300,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				this.Log().Warn("Image failed to open.", ex);
 
-				OnImageFailed(newImageSource);
+				OnImageFailed(newImageSource, ex);
 			}
 		}
 
@@ -335,7 +335,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 			else
 			{
-				OnImageFailed(_openedSource);
+				OnImageFailed(_openedSource, imageData.Error);
 			}
 		}
 

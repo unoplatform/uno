@@ -310,7 +310,12 @@ public sealed partial class Geolocator
 		RestartUpdates();
 	}
 
-	partial void StopPositionChanged() => _positionChangedSubscriptions.TryRemove(this, out var _);
+	partial void StopPositionChanged()
+	{
+		_positionChangedSubscriptions.TryRemove(this, out _);
+		RemoveUpdates();
+		BroadcastStatusChanged(PositionStatus.Disabled);
+	}
 
 	private async Task<bool> TryWaitForGetGeopositionAsync(TimeSpan timeout, DateTime earliestDate)
 	{

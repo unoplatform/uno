@@ -9,9 +9,10 @@ namespace Windows.UI.Xaml.Media.Imaging
 	{
 #pragma warning disable CS0067 // The event is never used
 		public event DownloadProgressEventHandler DownloadProgress;
+#pragma warning restore CS0067 // The event is never used
+
 		public event ExceptionRoutedEventHandler ImageFailed;
 		public event RoutedEventHandler ImageOpened;
-#pragma warning restore CS0067 // The event is never used
 
 		#region UriSource DependencyProperty
 
@@ -128,22 +129,14 @@ namespace Windows.UI.Xaml.Media.Imaging
 
 		public BitmapImage() { }
 
-#if __SKIA__ || __WASM__
-		private void RaiseImageFailed(Exception ex)
+		internal void RaiseImageFailed(Exception ex)
 		{
-			if (ImageFailed is { } evt)
-			{
-				evt?.Invoke(this, new ExceptionRoutedEventArgs(this, ex.Message));
-			}
+			ImageFailed?.Invoke(this, new ExceptionRoutedEventArgs(this, ex.Message));
 		}
 
-		private void RaiseImageOpened()
+		internal void RaiseImageOpened()
 		{
-			if (ImageOpened is { } evt)
-			{
-				evt?.Invoke(this, new RoutedEventArgs(this));
-			}
+			ImageOpened?.Invoke(this, new RoutedEventArgs(this));
 		}
-#endif
 	}
 }

@@ -187,7 +187,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		}
 
 		/// <summary>
-		/// Raises the Click routed event.
+		/// Toggles the IsChecked state.
 		/// </summary>
 		private void OnToggleImpl()
 		{

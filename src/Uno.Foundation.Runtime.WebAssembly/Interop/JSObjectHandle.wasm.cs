@@ -49,6 +49,10 @@ namespace Uno.Foundation.Interop
 		/// </summary>
 		public bool IsAlive { get; private set; }
 
+		internal long JSHandle => _jsHandle;
+
+		internal nint ManagedHandle => _managedHandle;
+
 		/// <summary>
 		/// Metadata about the marshaled object
 		/// </summary>

@@ -60,7 +60,7 @@ public partial class RelativePanel
 	/// <summary>
 	/// Identifies the BorderThickness dependency property.
 	/// </summary>
-	[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnBorderThicknessPropertyChanged))]
+	[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnBorderThicknessPropertyChanged), Options = FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange)]
 	public static DependencyProperty BorderThicknessProperty { get; } = CreateBorderThicknessProperty();
 
 	private void OnBorderThicknessPropertyChanged(Thickness oldValue, Thickness newValue)

@@ -4,6 +4,9 @@
 		<TargetFrameworks>uap10.0.18362</TargetFrameworks>
 		<NoWarn>$(NoWarn);NU5100;NU5118;NU5128</NoWarn>
 		<Deterministic>true</Deterministic>
+		
+		<AssemblyName>Uno.UI.MSAL</AssemblyName>
+		<RootNamespace>Uno.UI.MSAL</RootNamespace>
 	</PropertyGroup>
 
 	<Import Project="../../targetframework-override.props" />

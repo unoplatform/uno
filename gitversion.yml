@@ -9,7 +9,7 @@ mode: Mainline
 branches:
   master:
     mode: ContinuousDeployment
-    regex: master
+    regex: ^master$
     tag: dev
     increment: Minor
     is-source-branch-for: ['beta', 'stable']

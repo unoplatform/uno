@@ -198,6 +198,11 @@ namespace Windows.UI.Xaml.Controls
 					{
 						ItemsControl?.CleanUpContainer(container);
 					}
+					else
+					{
+						// https://github.com/unoplatform/uno/issues/11957
+						container.PrepareForRecycle();
+					}
 				}
 				else
 				{

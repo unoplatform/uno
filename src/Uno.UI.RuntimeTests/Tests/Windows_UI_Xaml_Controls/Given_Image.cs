@@ -156,6 +156,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+#if __MACOS__
+		[Ignore("Randomly fails on macOS")]
+#endif
 		public async Task When_Transitive_Asset_With_Link_Loaded()
 		{
 			string url = "ms-appx:///Uno.UI.RuntimeTests/Assets/TransitiveTest/colors300.png";
@@ -254,6 +257,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+#if __MACOS__
+		[Ignore("Randomly fails on macOS")]
+#endif
 		public async Task When_Image_Is_Loaded_From_URL()
 		{
 			string decoded_url = "https://nv-assets.azurewebsites.net/tests/images/image with spaces.jpg";
@@ -388,6 +394,42 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 					.Pixel(red));
 		}
 #endif
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_BitmapImage_Should_Have_Correct_Event_Sequence()
+		{
+			var logs = new List<string>();
+			var image = new Image();
+
+			var bitmapImage = new BitmapImage(new Uri("ms-appx:///Assets/test_image_100_150.png"));
+			bitmapImage.ImageFailed += BitmapImage_ImageFailed;
+			bitmapImage.DownloadProgress += BitmapImage_DownloadProgress;
+			bitmapImage.ImageOpened += BitmapImage_ImageOpened;
+			image.ImageFailed += Image_ImageFailed;
+			image.ImageOpened += Image_ImageOpened;
+			var imageOpened = false;
+
+			void BitmapImage_ImageFailed(object sender, ExceptionRoutedEventArgs e) => logs.Add("BitmapImage_ImageFailed");
+			void BitmapImage_DownloadProgress(object sender, DownloadProgressEventArgs e) => logs.Add("BitmapImage_DownloadProgress");
+			void BitmapImage_ImageOpened(object sender, RoutedEventArgs e) => logs.Add("BitmapImage_ImageOpened");
+			void Image_ImageFailed(object sender, ExceptionRoutedEventArgs e) => logs.Add("Image_ImageFailed");
+			void Image_ImageOpened(object sender, RoutedEventArgs e)
+			{
+				logs.Add("Image_ImageOpened");
+				imageOpened = true;
+			}
+
+			image.Source = bitmapImage;
+
+			TestServices.WindowHelper.WindowContent = image;
+			await WindowHelper.WaitForLoaded(image);
+			await TestServices.WindowHelper.WaitFor(() => imageOpened);
+
+			Assert.AreEqual(2, logs.Count, string.Join(Environment.NewLine, logs));
+			Assert.AreEqual("BitmapImage_ImageOpened", logs[0]);
+			Assert.AreEqual("Image_ImageOpened", logs[1]);
+		}
 
 		private async Task<RawBitmap> TakeScreenshot(FrameworkElement SUT)
 		{

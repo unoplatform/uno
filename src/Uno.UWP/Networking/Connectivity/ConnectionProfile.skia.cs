@@ -8,7 +8,7 @@ namespace Windows.Networking.Connectivity
 {
 	public partial class ConnectionProfile
 	{
-		private IConnectionProfileExtension _connectionProfileExtension;
+		private IConnectionProfileExtension? _connectionProfileExtension;
 
 		internal static ConnectionProfile GetInternetConnectionProfile() =>
 			new ConnectionProfile();

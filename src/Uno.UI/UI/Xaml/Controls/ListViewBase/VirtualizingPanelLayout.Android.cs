@@ -1252,6 +1252,8 @@ namespace Windows.UI.Xaml.Controls
 				return;
 			}
 
+			XamlParent?.NativePanel.StartDetachedViewTracking();
+
 			var needsScrapOnMeasure = isMeasure && availableExtent > 0 && availableBreadth > 0 && ChildCount > 0;
 			var updatedAfterCollectionChange = false;
 			if (_isRecycleLayoutRequested)
@@ -1301,6 +1303,8 @@ namespace Windows.UI.Xaml.Controls
 				UpdateBuffers(recycler, state);
 				AssertValidState();
 			}
+
+			XamlParent?.NativePanel.StopDetachedViewTrackingAndNotifyPendingAsRecycled();
 
 			if (!isMeasure)
 			{

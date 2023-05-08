@@ -14,6 +14,22 @@ namespace Uno.UI.Tests.Windows_Globalization
 	public class When_Calendar
 	{
 		[TestMethod]
+		public void When_DateTimeOffset_Is_Next_Day_If_Converted_To_Utc()
+		{
+			var calendar = new WG.Calendar();
+			var offset = new DateTimeOffset(year: 2023, month: 5, day: 1, hour: 21, minute: 0, second: 0, TimeSpan.FromHours(-5));
+			calendar.SetDateTime(offset);
+			// calendar.Day must be 1 here to match WinUI, **and also** not break CalendarView selection of "Today"
+			Assert.AreEqual(1, calendar.Day);
+			Assert.AreEqual(2, offset.UtcDateTime.Day);
+
+			var comparer = new DirectUI.DateComparer();
+			comparer.SetCalendarForComparison(calendar);
+			var result = comparer.CompareDay(offset, new DateTimeOffset(year: 2023, month: 5, day: 1, hour: 4, minute: 0, second: 0, TimeSpan.FromHours(0)));
+			Assert.AreEqual(0, result);
+		}
+
+		[TestMethod]
 		public void When_Gregorian_FixedDate()
 		{
 			Validate(

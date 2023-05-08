@@ -15,6 +15,8 @@ namespace Windows.UI.Xaml.Media.Animation
 	partial class ColorAnimationUsingKeyFrames : Timeline, ITimeline
 	{
 		private readonly Stopwatch _activeDuration = new Stopwatch();
+		private bool _wasBeginScheduled;
+		private bool _wasRequestedToStop;
 		private int _replayCount = 1;
 		private ColorOffset? _startingValue;
 		private ColorOffset _finalValue;
@@ -79,7 +81,6 @@ namespace Windows.UI.Xaml.Media.Animation
 			return base.GetCalculatedDuration();
 		}
 
-		bool _wasBeginScheduled;
 		void ITimeline.Begin()
 		{
 			if (!_wasBeginScheduled)
@@ -87,7 +88,9 @@ namespace Windows.UI.Xaml.Media.Animation
 				// We dispatch the begin so that we can use bindings on ColorKeyFrame.Value from RelativeParent.
 				// This works because the template bindings are executed just after the constructor.
 				// WARNING: This does not allow us to bind ColorKeyFrame.Value with ViewModel properties.
+
 				_wasBeginScheduled = true;
+				_wasRequestedToStop = false;
 
 #if !IS_UNIT_TESTS
 #if __ANDROID__
@@ -97,14 +100,17 @@ namespace Windows.UI.Xaml.Media.Animation
 #endif
 #endif
 				{
-					if (KeyFrames.Count < 1)
+					_wasBeginScheduled = false;
+
+					if (KeyFrames.Count < 1 || // nothing to do
+						_wasRequestedToStop // was requested to stop, between Begin() and dispatched here
+					)
 					{
-						return; // nothing to do
+						return;
 					}
 
 					PropertyInfo?.CloneShareableObjectsInPath();
 
-					_wasBeginScheduled = false;
 					_activeDuration.Restart();
 					_replayCount = 1;
 
@@ -207,7 +213,9 @@ namespace Windows.UI.Xaml.Media.Animation
 				_currentAnimator.Cancel();//Stop the animator if it is running
 				_startingValue = null;
 			}
+
 			State = TimelineState.Stopped;
+			_wasRequestedToStop = true;
 		}
 
 		void ITimeline.Stop()
@@ -215,7 +223,9 @@ namespace Windows.UI.Xaml.Media.Animation
 			_currentAnimator?.Cancel(); // stop could be called before the initialization
 			_startingValue = null;
 			ClearValue();
+
 			State = TimelineState.Stopped;
+			_wasRequestedToStop = true;
 		}
 
 		/// <summary>

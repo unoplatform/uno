@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 using Newtonsoft.Json;
 
 namespace Uno.UI.RemoteControl.HotReload.Messages
 {
+	[DebuggerDisplay("{Name}-{Scope}")]
 	public class Frame
 	{
 		public Frame(short version, string scope, string name, string content)

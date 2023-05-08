@@ -101,6 +101,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		public void OnTemplateRecycled() => IsChecked = false;
 
-		internal void AutomationPeerToggle() => OnToggle();
+		internal void AutomationPeerToggle() => OnClick();
 	}
 }

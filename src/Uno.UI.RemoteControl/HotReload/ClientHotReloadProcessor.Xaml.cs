@@ -71,6 +71,8 @@ namespace Uno.UI.RemoteControl.HotReload
 				async () =>
 				{
 					await ReloadWithFileAndContent(fileReload.FilePath, fileReload.Content);
+
+					RemoteControlClient.Instance?.NotifyOfEvent(nameof(FileReload), fileReload.FilePath);
 				});
 		}
 
@@ -205,6 +207,19 @@ namespace Uno.UI.RemoteControl.HotReload
 			if (parentAsContentControl?.Content == oldView)
 			{
 				parentAsContentControl.Content = newView;
+			}
+			else if (newView is Page newPage && oldView is Page oldPage)
+			{
+				// In the case of Page, swapping the actual page is not supported, so we
+				// need to swap the content of the page instead. This can happen if the Frame
+				// is using a native presenter which does not use the `Frame.Content` property.
+
+				// Clear any local context, so that the new page can inherit the value coming
+				// from the parent Frame. It may happen if the old page set it explicitly.
+				oldPage.ClearValue(Page.DataContextProperty, DependencyPropertyValuePrecedences.Local);
+
+				oldPage.Content = newPage;
+				newPage.Frame = oldPage.Frame;
 			}
 			else
 			{

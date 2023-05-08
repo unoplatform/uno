@@ -414,6 +414,8 @@
               href: debugging-wasm.md
             - name: XAML Hot Reload
               href: features/working-with-xaml-hot-reload.md
+            - name: VS Code Advanced Mobile Debugging
+              href: features/vscode-advanced-mobile-debugging.md
         - name: Supported 3rd-party libraries
           href: supported-libraries.md
         - name: Performance
