@@ -104,6 +104,9 @@ namespace Uno.UI.Extensions
 			elt switch
 			{
 				null => 0,
+#if __NETSTD__
+				UIElement fwElt => fwElt.Depth,
+#endif
 				_ => elt.GetParent()?.GetDebugDepth() + 1 ?? 0,
 			};
 
