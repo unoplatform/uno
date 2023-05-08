@@ -10,6 +10,7 @@ namespace Uno.UI.RuntimeTests.MUX.Microsoft_UI_Xaml_Controls.ProgressRingTests;
 public class ProgressRingTests
 {
 	[TestMethod]
+	[RunsOnUIThread]
 	[DataRow(true)]
 	[DataRow(false)]
 	public async Task ProgressRingDefaultHeightShouldBe32(bool useFluent)
