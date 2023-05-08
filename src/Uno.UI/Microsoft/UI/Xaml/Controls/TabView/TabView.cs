@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference TabView.cpp, commit 5f52761
+// MUX Reference TabView.cpp, commit c8d3b4a
 
 #pragma warning disable 105 // remove when moving to WinUI tree
 
@@ -837,14 +837,9 @@ public partial class TabView : Control
 		}
 	}
 
-	//TODO Uno: The second parameter is needed, as OnItemsChanged may get called before OnApplyTemplate due to control lifecycle differences
+	//TODO Uno workaround: The second parameter is needed, as OnItemsChanged may get called before OnApplyTemplate due to control lifecycle differences
 	internal void OnItemsChanged(object item, TabViewListView tabListView)
 	{
-		if (m_isDragging)
-		{
-			return;
-		}
-
 		var args = item as IVectorChangedEventArgs;
 		if (args != null)
 		{
@@ -987,11 +982,13 @@ public partial class TabView : Control
 	{
 		m_isDragging = false;
 
-		// Selection change was disabled during drag, update SelectedIndex now
+		// Selection may have changed during drag if dragged outside, so we update SelectedIndex again.
 		if (m_listView is { } listView)
 		{
 			SelectedIndex = listView.SelectedIndex;
 			SelectedItem = listView.SelectedItem;
+
+			BringSelectedTabIntoView();
 		}
 
 		var item = args.Items[0];
