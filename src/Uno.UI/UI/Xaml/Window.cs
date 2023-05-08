@@ -243,11 +243,13 @@ namespace Windows.UI.Xaml
 
 		internal void RaiseCreated()
 		{
+#if !HAS_UNO_WINUI
 			if (Application.Current is not null && !_windowCreatedRaised)
 			{
 				_windowCreatedRaised = true;
 				Application.Current.RaiseWindowCreated(this);
 			}
+#endif
 		}
 
 		internal void OnActivated(CoreWindowActivationState state)
