@@ -7,6 +7,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Private.Infrastructure;
 using MUXControlsTestApp.Utilities;
+using Uno.UI.Dispatching;
 
 #if HAS_UNO
 using Uno.UI.Xaml.Media;
@@ -78,6 +79,9 @@ namespace Uno.UI.RuntimeTests.Helpers
 #if NETFX_CORE // Disabled on UWP for now because 18362 doesn't support WinUI 2.x; Fluent resources are used by default in SamplesApp.UWP
 			return null;
 #else
+
+			CoreDispatcher.CheckThreadAccess();
+
 			var resources = Application.Current.Resources;
 			if (resources is Microsoft.UI.Xaml.Controls.XamlControlsResources || resources.MergedDictionaries.OfType<Microsoft.UI.Xaml.Controls.XamlControlsResources>().Any())
 			{
