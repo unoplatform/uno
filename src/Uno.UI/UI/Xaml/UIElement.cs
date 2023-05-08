@@ -513,12 +513,7 @@ namespace Windows.UI.Xaml
 			{
 				elt.ApplyRenderTransform(ref matrix);
 				elt.ApplyLayoutTransform(ref matrix);
-
-				if (elt != from)
-				{
-					// Don't adjust for scroll offsets if it's the ScrollViewer itself calling TransformToVisual
-					elt.ApplyElementCustomTransform(ref matrix);
-				}
+				elt.ApplyElementCustomTransform(ref matrix);
 			} while (elt.TryGetParentUIElementForTransformToVisual(out elt, ref matrix) && elt != to); // If possible we stop as soon as we reach 'to'
 
 			if (to is not null && elt != to)
@@ -592,6 +587,7 @@ namespace Windows.UI.Xaml
 			if (this is ScrollViewer sv)
 			{
 				// Scroll offsets are handled at SCP level using the IsScrollPort
+				// TODO: ZoomFactor should also be handled at the SCP level!
 
 				var zoom = sv.ZoomFactor;
 				if (zoom != 1)
