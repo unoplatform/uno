@@ -120,7 +120,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnIsEnabledChanged(DependencyPropertyChangedEventArgs args)
 		{
-#if UNO_HAS_MANAGED_POINTERS
+#if UNO_HAS_MANAGED_POINTERS || __WASM__
 			UpdateHitTest();
 #endif
 
