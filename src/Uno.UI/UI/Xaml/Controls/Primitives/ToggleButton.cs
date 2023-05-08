@@ -9,8 +9,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 	public partial class ToggleButton : ButtonBase, IFrameworkTemplatePoolAware
 	{
 		/// <summary>
-		/// This is a workaround for template pooling issue where we change IsChecked when template is recycled.
-		/// This prevents incorrect event raising, but is not a "real" solution. Pooling could still cause issues.
+		/// This is a workaround for the template pooling issue where we change IsChecked when the template is recycled.
+		/// This prevents incorrect event raising but is not a "real" solution. Pooling could still cause issues.
 		/// This workaround can be removed if pooling is removed. See https://github.com/unoplatform/uno/issues/12189
 		/// </summary>
 		private bool _suppressCheckedChanged;

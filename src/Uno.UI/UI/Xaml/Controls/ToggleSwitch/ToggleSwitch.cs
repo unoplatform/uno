@@ -14,8 +14,8 @@ namespace Windows.UI.Xaml.Controls
 	public partial class ToggleSwitch : Control, IFrameworkTemplatePoolAware
 	{
 		/// <summary>
-		/// This is a workaround for template pooling issue where we change IsOn when template is recycled.
-		/// This prevents incorrect event raising, but is not a "real" solution. Pooling could still cause issues.
+		/// This is a workaround for the template pooling issue where we change IsOn when the template is recycled.
+		/// This prevents incorrect event raising but is not a "real" solution. Pooling could still cause issues.
 		/// This workaround can be removed if pooling is removed. See https://github.com/unoplatform/uno/issues/12189
 		/// </summary>
 		private bool _suppressToggled;
