@@ -7,7 +7,6 @@ using Windows.ApplicationModel.Activation;
 using Windows.ApplicationModel;
 using ObjCRuntime;
 using Windows.Graphics.Display;
-using Uno.UI.Services;
 using Uno.Extensions;
 using Windows.UI.Core;
 using Uno.Foundation.Logging;
