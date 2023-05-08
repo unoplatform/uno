@@ -69,7 +69,7 @@
 		<file src="..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.Reference\Release\net8.0\Uno.UI.MSAL.*" target="lib\net8.0" />
 		<file src="..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.Reference\Release\net7.0\Uno.UI.MSAL.*" target="lib\net7.0" />
 
-		<file src="..\src\AddIns\Uno.UI.MSAL\bin\Release\uap10.0.18362\Uno.UI.MSAL.*" target="lib\uap10.0.18362" />
+		<file src="..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.Windows\Release\uap10.0.18362\Uno.UI.MSAL.*" target="lib\uap10.0.18362" />
 
 		<file src="..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.netcoremobile\Release\net8.0-android\Uno.UI.MSAL.*" target="lib\net8.0-android" />
 		<file src="..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.netcoremobile\Release\net8.0-ios\Uno.UI.MSAL.*" target="lib\net8.0-ios" />
