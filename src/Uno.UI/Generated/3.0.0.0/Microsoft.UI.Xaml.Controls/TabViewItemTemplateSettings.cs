@@ -9,29 +9,9 @@ namespace Microsoft.UI.Xaml.Controls
 	public partial class TabViewItemTemplateSettings : global::Microsoft.UI.Xaml.DependencyObject
 	{
 		// Skipping already declared property IconElement
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.Media.Geometry TabGeometry
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Media.Geometry)this.GetValue(TabGeometryProperty);
-			}
-			set
-			{
-				this.SetValue(TabGeometryProperty, value);
-			}
-		}
-#endif
+		// Skipping already declared property TabGeometry
 		// Skipping already declared property IconElementProperty
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty TabGeometryProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(TabGeometry), typeof(global::Microsoft.UI.Xaml.Media.Geometry),
-			typeof(global::Microsoft.UI.Xaml.Controls.TabViewItemTemplateSettings),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Media.Geometry)));
-#endif
+		// Skipping already declared property TabGeometryProperty
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.TabViewItemTemplateSettings.TabViewItemTemplateSettings()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewItemTemplateSettings.TabViewItemTemplateSettings()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TabViewItemTemplateSettings.IconElement.get
