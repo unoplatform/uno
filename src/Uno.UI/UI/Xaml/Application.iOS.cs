@@ -38,7 +38,6 @@ namespace Windows.UI.Xaml
 		{
 			Current = this;
 			SetCurrentLanguage();
-			ResourceHelper.ResourcesService = new ResourcesService(new[] { NSBundle.MainBundle });
 
 			SubscribeBackgroundNotifications();
 		}
