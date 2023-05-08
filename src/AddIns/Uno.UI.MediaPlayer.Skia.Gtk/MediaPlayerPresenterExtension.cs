@@ -8,6 +8,7 @@ using Uno.Foundation.Logging;
 using Uno.Media.Playback;
 using Windows.Foundation;
 using Windows.Media.Playback;
+using Windows.UI;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Maps;
 using Windows.UI.Xaml.Media;
@@ -34,9 +35,14 @@ public class MediaPlayerPresenterExtension : IMediaPlayerPresenterExtension
 
 		var ContentView = new Button();
 		ContentView.Content = _player.VideoView;
-		_player.VideoView?.SizeAllocate(new(0, 0, (int)_owner.ActualWidth, (int)_owner.ActualHeight));
+		ContentView.Background = new SolidColorBrush(Colors.Yellow);
+		ContentView.Width = 800;
+		ContentView.Height = 640;
+
+		//_player.VideoView?.SizeAllocate(new(0, 0, (int)_owner.ActualWidth, (int)_owner.ActualHeight));
 		_player.VideoView?.SizeAllocate(new(0, 0, 800, 640));
 		_owner.Child = ContentView;
+
 		//_owner.Child = _player = new GTKMediaPlayer();
 	}
 

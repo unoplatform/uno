@@ -38,18 +38,18 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 		//	this.Log().Debug($"OnStatusChanged: {args}");
 		//}
 
-		if ((MediaPlaybackState)args == MediaPlaybackState.Playing)
-		{
-			_player?.Play();
-		}
-		if ((MediaPlaybackState)args == MediaPlaybackState.None)
-		{
-			_player?.Stop();
-		}
-		if ((MediaPlaybackState)args == MediaPlaybackState.Paused)
-		{
-			_player?.Pause();
-		}
+		//if ((MediaPlaybackState)args == MediaPlaybackState.Playing)
+		//{
+		//	_player?.Play();
+		//}
+		//if ((MediaPlaybackState)args == MediaPlaybackState.None)
+		//{
+		//	_player?.Stop();
+		//}
+		//if ((MediaPlaybackState)args == MediaPlaybackState.Paused)
+		//{
+		//	_player?.Pause();
+		//}
 	}
 	public void OnPrepared(object? sender, object what)
 	{
@@ -145,7 +145,7 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 		//	this.Log().Debug($"OnVolumeChanged: {_owner.Volume}");
 		//}
 
-		var volume = (int)(_owner.Volume / 100);
+		var volume = (int)_owner.Volume;
 		_player?.SetVolume(volume);
 	}
 

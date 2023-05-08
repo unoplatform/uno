@@ -165,7 +165,7 @@ public partial class GTKMediaPlayer : Button
 				);
 
 				media.Parse(MediaParseOptions.ParseNetwork);
-				_mediaPlayer.Media = media;
+				_videoView.MediaPlayer.Media = media;
 
 				Console.WriteLine("Content _videoView on Dispatcher");
 				Content = _videoView;
