@@ -297,6 +297,16 @@ namespace SamplesApp
 			}
 		}
 
+#if !HAS_UNO_WINUI
+		protected override void OnWindowCreated(global::Windows.UI.Xaml.WindowCreatedEventArgs args)
+		{
+			if (Current is null)
+			{
+				throw new InvalidOperationException("The Window should be created later in the application lifecycle.");
+			}
+		}
+#endif
+
 		private void InitializeFrame(string arguments = null)
 		{
 			Frame rootFrame = Windows.UI.Xaml.Window.Current.Content as Frame;

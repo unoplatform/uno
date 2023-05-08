@@ -259,6 +259,11 @@ namespace Windows.UI.Xaml
 		{
 			SystemThemeHelper.SystemThemeChanged += OnSystemThemeChanged;
 			_initializationComplete = true;
+
+#if !HAS_UNO_WINUI
+			// Delayed raise of OnWindowCreated.
+			Window.Current.RaiseCreated();
+#endif
 		}
 
 		internal void RaiseRecoverableUnhandledException(Exception e) => UnhandledException?.Invoke(this, new UnhandledExceptionEventArgs(e, false));
