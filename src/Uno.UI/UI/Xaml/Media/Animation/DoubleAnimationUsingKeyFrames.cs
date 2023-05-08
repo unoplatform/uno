@@ -344,9 +344,12 @@ namespace Windows.UI.Xaml.Media.Animation
 		/// </summary>
 		~DoubleAnimationUsingKeyFrames()
 		{
-			_subscriptions.Dispose();
+			Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+			{
+				_subscriptions.Dispose();
 
-			DisposePartial();
+				DisposePartial();
+			});
 		}
 
 		partial void OnFrame(IValueAnimator currentAnimator);

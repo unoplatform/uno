@@ -395,9 +395,12 @@ namespace Windows.UI.Xaml.Media.Animation
 		/// </summary>
 		~ColorAnimationUsingKeyFrames()
 		{
-			_subscriptions.Dispose();
+			Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+			{
+				_subscriptions.Dispose();
 
-			DisposePartial();
+				DisposePartial();
+			});
 		}
 
 		private protected override void OnThemeChanged()
