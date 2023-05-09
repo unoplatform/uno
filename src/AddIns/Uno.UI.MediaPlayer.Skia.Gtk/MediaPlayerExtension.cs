@@ -388,18 +388,11 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 	public void SetSurfaceSize(Size size) => throw new NotImplementedException();
 	public void ToggleMute()
 	{
-		if (_owner.IsMuted)
+		if (_player is not null)
 		{
-			_player?.SetVolume(0);
-		}
-		else
-		{
-			var volume = (int)(_owner.Volume / 100);
-			_player?.SetVolume(volume);
+			_player?.Mute(_owner.IsMuted);
 		}
 	}
-
-
 
 	public void OnOptionChanged(string name, object value) => throw new NotImplementedException();
 

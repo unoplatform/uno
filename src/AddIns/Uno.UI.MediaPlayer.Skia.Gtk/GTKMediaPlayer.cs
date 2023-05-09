@@ -125,7 +125,14 @@ public partial class GTKMediaPlayer : Border
 			_videoView.Visible = true;
 		}
 	}
-
+	public void Mute(bool IsMuted)
+	{
+		if (_videoView != null && _mediaPlayer != null)
+		{
+			Console.WriteLine($"Mute {IsMuted}");
+			_mediaPlayer.Mute = IsMuted;
+		}
+	}
 	public string Source
 	{
 		get => (string)GetValue(SourceProperty);
