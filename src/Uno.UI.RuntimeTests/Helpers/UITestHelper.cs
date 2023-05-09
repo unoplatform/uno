@@ -145,11 +145,7 @@ public class Finger : IInjectedPointer, IDisposable
 			PointerInfo = new()
 			{
 				PointerId = id,
-				PixelLocation = new()
-				{
-					PositionX = (int)position.X,
-					PositionY = (int)position.Y
-				},
+				PixelLocation = At(position),
 				PointerOptions = InjectedInputPointerOptions.New
 					| InjectedInputPointerOptions.FirstButton
 					| InjectedInputPointerOptions.PointerDown
@@ -169,11 +165,7 @@ public class Finger : IInjectedPointer, IDisposable
 			{
 				PointerInfo = new()
 				{
-					PixelLocation = new()
-					{
-						PositionX = (int)(fromPosition.X + step * stepX),
-						PositionY = (int)(fromPosition.Y + step * stepY)
-					},
+					PixelLocation = At(fromPosition.X + step * stepX, fromPosition.Y + step * stepY),
 					PointerOptions = InjectedInputPointerOptions.Update
 						| InjectedInputPointerOptions.FirstButton
 						| InjectedInputPointerOptions.InContact
@@ -188,21 +180,37 @@ public class Finger : IInjectedPointer, IDisposable
 		{
 			PointerInfo = new()
 			{
-				PixelLocation =
-				{
-					PositionX = (int)position.X,
-					PositionY = (int)position.Y
-				},
+				PixelLocation = At(position),
 				PointerOptions = InjectedInputPointerOptions.FirstButton
 					| InjectedInputPointerOptions.PointerUp
 			}
 		};
 
 	private void Inject(IEnumerable<InjectedInputTouchInfo> infos)
-		=> _injector.InjectTouchInput(infos);
+		=> _injector.InjectTouchInput(infos.ToArray());
 
 	private void Inject(params InjectedInputTouchInfo[] infos)
 		=> _injector.InjectTouchInput(infos);
+
+	// Note: This a patch until Uno's pointer injection is being relative to the screen
+	private static InjectedInputPoint At(Point position)
+		=> At(position.X, position.Y);
+
+	private static InjectedInputPoint At(double x, double y)
+#if HAS_UNO
+		=> new() { PositionX = (int)x, PositionY = (int)y };
+#else
+	{
+		var bounds = Windows.UI.ViewManagement.ApplicationView.GetForCurrentView().VisibleBounds;
+		var scale = Windows.Graphics.Display.DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel;
+
+		return new()
+		{
+			PositionX = (int)((bounds.X + x) * scale),
+			PositionY = (int)((bounds.Y + y) * scale),
+		};
+	}
+#endif
 }
 
 #if !WINDOWS_UWP

@@ -16,6 +16,7 @@ using Windows.UI.ViewManagement;
 using static Private.Infrastructure.TestServices;
 using Uno.Disposables;
 using Uno.UI.RuntimeTests.Tests.Uno_UI_Xaml_Core;
+using Uno.UI.Toolkit.Extensions;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -673,7 +674,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if !__SKIA__
+#if !__SKIA__ && !WINDOWS_UWP
 		[Ignore("Pointer injection supported only on skia for now.")]
 #endif
 		public async Task When_TouchScroll_Then_NestedElementReceivePointerEvents()
@@ -711,7 +712,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var input = InputInjector.TryCreate() ?? throw new InvalidOperationException("Pointer injection not available on this platform.");
 			using var finger = input.GetFinger();
 
-			var sutLocation = sut.GetAbsoluteBounds().Location;
+			var sutLocation = sut.GetAbsoluteBounds().GetLocation();
 			finger.Drag(sutLocation.Offset(5, 480), sutLocation.Offset(5, 5));
 
 			events.Should().BeEquivalentTo("enter", "pressed", "release", "exited");
@@ -757,7 +758,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var input = InputInjector.TryCreate() ?? throw new InvalidOperationException("Pointer injection not available on this platform.");
 			using var finger = input.GetFinger();
 
-			var sutLocation = sut.GetAbsoluteBounds().Location;
+			var sutLocation = sut.GetAbsoluteBounds().GetLocation();
 			finger.Drag(sutLocation.Offset(5, 480), sutLocation.Offset(5, 5));
 
 			events.Should().BeEquivalentTo("enter", "pressed", "release", "exited");

@@ -194,6 +194,13 @@ public partial struct Rect
 		}
 	}
 
+	/// <summary>
+	/// Provides the location of this rectangle.
+	/// </summary>
+	/// <remarks>This method is not provided by UWP, hence it is marked internal.</remarks>
+	/// <remarks>Unlike the Location property, this is accessible to UWP code through an extension method.</remarks>
+	internal Point GetLocation() => Location;
+
 	/// <summary>Expands or shrinks the rectangle by using the specified width and height amounts, in all directions. </summary>
 	/// <param name="width">The amount by which to expand or shrink the left and right sides of the rectangle.</param>
 	/// <param name="height">The amount by which to expand or shrink the top and bottom sides of the rectangle.</param>
