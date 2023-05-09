@@ -26,8 +26,6 @@
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>
 
-		<UnoRuntimeIdentifier Condition="'$(TargetFramework)'=='netstandard2.0'">Reference</UnoRuntimeIdentifier>
-
 		<!-- Force the generation of upri files for Uno.UI self localization -->
 		<UnoForceProcessPRIResource>true</UnoForceProcessPRIResource>
 
@@ -48,10 +46,6 @@
 		<UpToDateCheckInput Include="**\*.cs" Exclude="bin\**\*.cs;obj\**\*.cs;" Visible="False" />
 		<UpToDateCheckInput Include="**\*.tt" Exclude="bin\**\*.tt;obj\**\*.tt;" Visible="False" />
 	</ItemGroup>
-
-	<PropertyGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
-		<EnableAutomaticXamlPageInclusion>false</EnableAutomaticXamlPageInclusion>
-	</PropertyGroup>
 
 	<ItemGroup>
 		<None Include="Extensions\CGSizeExtensions.iOSmacOS.cs" />

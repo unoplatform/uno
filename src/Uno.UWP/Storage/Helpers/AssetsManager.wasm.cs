@@ -89,12 +89,12 @@ namespace Windows.Storage.Helpers
 			}
 		}
 
-#if NET7_0_OR_GREATER && !DISABLE_GENERATED_REGEX
+#if !DISABLE_GENERATED_REGEX
 		[GeneratedRegex("\r\n|\r|\n")]
 #endif
 		private static partial Regex SplitMatch();
 
-#if !NET7_0_OR_GREATER || DISABLE_GENERATED_REGEX
+#if DISABLE_GENERATED_REGEX
 		private static partial Regex SplitMatch()
 			=> new Regex("\r\n|\r|\n");
 #endif

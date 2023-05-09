@@ -28,9 +28,7 @@ using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
 using LaunchActivatedEventArgs = Windows.ApplicationModel.Activation.LaunchActivatedEventArgs;
 #endif
 
-#if NET7_0_OR_GREATER
 using NativeMethods = __Windows.UI.Xaml.Application.NativeMethods;
-#endif
 
 namespace Windows.UI.Xaml
 {
@@ -114,11 +112,7 @@ namespace Windows.UI.Xaml
 
 		partial void ObserveSystemThemeChanges()
 		{
-#if NET7_0_OR_GREATER
 			NativeMethods.ObserveSystemTheme();
-#else
-			WebAssemblyRuntime.InvokeJS("Windows.UI.Xaml.Application.observeSystemTheme()");
-#endif
 		}
 
 		private void Initialize()
@@ -159,11 +153,7 @@ namespace Windows.UI.Xaml
 
 		private void ObserveApplicationVisibility()
 		{
-#if NET7_0_OR_GREATER
 			NativeMethods.ObserveVisibility();
-#else
-			WebAssemblyRuntime.InvokeJS("Windows.UI.Xaml.Application.observeVisibility()");
-#endif
 		}
 	}
 }

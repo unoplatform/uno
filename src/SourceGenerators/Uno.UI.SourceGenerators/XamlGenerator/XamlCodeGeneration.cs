@@ -381,13 +381,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			try
 			{
 				var lastBinaryUpdateTime = GetLastBinaryUpdateTime();
-				var isInsideMainAssembly =
-					_isUnoHead
-
-					// Handle legacy Xamarin targets which do not define IsUnoHead.
-					|| PlatformHelper.IsXamariniOS(_generatorContext)
-					|| PlatformHelper.IsXamarinMacOs(_generatorContext)
-					|| PlatformHelper.IsAndroid(_generatorContext);
+				var isInsideMainAssembly = _isUnoHead || PlatformHelper.IsAndroid(_generatorContext);
 
 				var resourceDetailsCollection = BuildResourceDetails(_generatorContext.CancellationToken);
 				TryGenerateUnoResourcesKeyAttribute(resourceDetailsCollection);

@@ -29,7 +29,7 @@
 		<UpToDateCheckInput Include="**\*.cs" Exclude="bin\**\*.cs;obj\**\*.cs;" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)'!='netstandard2.0'">
+	<ItemGroup>
 		<EmbeddedResource Include="LinkerDefinition.Xamarin.xml">
 			<LogicalName>$(AssemblyName).xml</LogicalName>
 		</EmbeddedResource>

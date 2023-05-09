@@ -119,22 +119,10 @@
 			<group targetFramework="net7.0-android">
 				<reference file="Uno.UI.Lottie.dll" />
 			</group>
-			<group targetFramework="netstandard2.0">
-				<reference file="Uno.UI.Lottie.dll" />
-			</group>
 			<group targetFramework="net7.0">
 				<reference file="Uno.UI.Lottie.dll" />
 			</group>
-			<group targetFramework="xamarinios10">
-				<reference file="Uno.UI.Lottie.dll" />
-			</group>
-			<group targetFramework="xamarinmac20">
-				<reference file="Uno.UI.Lottie.dll" />
-			</group>
-			<group targetFramework="MonoAndroid13.0">
-				<reference file="Uno.UI.Lottie.dll" />
-			</group>
-			<group targetFramework="MonoAndroid12.0">
+			<group targetFramework="net8.0">
 				<reference file="Uno.UI.Lottie.dll" />
 			</group>
 			<!-- For UAP (UWP), the reference to Microsoft.Toolkit.Uwp.UI.Lottie will be added manually -->
@@ -163,7 +151,7 @@
 
 		<!-- net8.0 WebAssembly until bootstrapper can be updated to .NET 8 Preview 3 or later -->
 		<file src="..\src\AddIns\Uno.UI.Lottie\Bin\Uno.UI.Lottie.Wasm\Release\net7.0\Uno.UI.Lottie.*" target="uno-runtime\net8.0\webassembly" />
-		
+
 		<!-- net8.0 Skia -->
 		<file src="..\src\AddIns\Uno.UI.Lottie\Bin\Uno.UI.Lottie.Skia\Release\net8.0\Uno.UI.Lottie.*" target="uno-runtime\net8.0\skia" />
 

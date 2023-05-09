@@ -48,14 +48,6 @@
 
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 			</group>
-			<group targetFramework="net8.0-macos">
-				<dependency id="Svg.Skia" version="0.5.16" />
-				<dependency id="SkiaSharp.Views.Uno" version="2.88.3" />
-				<dependency id="SkiaSharp.NativeAssets.macos" version="2.88.3" />
-
-				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
-			</group>
-
 
 			<group targetFramework="net7.0-android">
 				<dependency id="Svg.Skia" version="0.5.16" />
@@ -78,32 +70,31 @@
 
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 			</group>
-			<group targetFramework="net7.0-macos">
-				<dependency id="Svg.Skia" version="0.5.16" />
-				<dependency id="SkiaSharp.Views.Uno" version="2.88.3" />
-				<dependency id="SkiaSharp.NativeAssets.macos" version="2.88.3" />
-
-				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
-			</group>
 		</dependencies>
 
 		<references>
-			<group targetFramework="net6.0-ios">
+			<group targetFramework="net7.0-ios">
 				<reference file="Uno.UI.Svg.dll" />
 			</group>
-			<group targetFramework="net6.0-maccatalyst">
+			<group targetFramework="net7.0-maccatalyst">
 				<reference file="Uno.UI.Svg.dll" />
 			</group>
-			<group targetFramework="net6.0-macos">
-				<reference file="Uno.UI.Svg.dll" />
-			</group>
-			<group targetFramework="net6.0-android">
-				<reference file="Uno.UI.Svg.dll" />
-			</group>
-			<group targetFramework="netstandard2.0">
+			<group targetFramework="net7.0-android">
 				<reference file="Uno.UI.Svg.dll" />
 			</group>
 			<group targetFramework="net7.0">
+				<reference file="Uno.UI.Svg.dll" />
+			</group>
+			<group targetFramework="net8.0-ios">
+				<reference file="Uno.UI.Svg.dll" />
+			</group>
+			<group targetFramework="net8.0-maccatalyst">
+				<reference file="Uno.UI.Svg.dll" />
+			</group>
+			<group targetFramework="net8.0-android">
+				<reference file="Uno.UI.Svg.dll" />
+			</group>
+			<group targetFramework="net8.0">
 				<reference file="Uno.UI.Svg.dll" />
 			</group>
 		</references>
