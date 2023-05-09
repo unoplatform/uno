@@ -631,15 +631,6 @@ namespace Windows.UI.Xaml
 					return false;
 			}
 		}
-#else
-		private bool TryGetParentUIElementForTransformToVisual(out UIElement parentElement, ref Matrix3x2 matrix)
-		{
-			double offsetX = 0.0, offsetY = 0.0;
-			var hasParent = TryGetParentUIElementForTransformToVisual(out parentElement, ref offsetX, ref offsetY);
-			matrix.M31 += (float)offsetX;
-			matrix.M32 += (float)offsetX;
-			return hasParent;
-		}
 #endif
 
 		protected virtual void OnIsHitTestVisibleChanged(bool oldValue, bool newValue)

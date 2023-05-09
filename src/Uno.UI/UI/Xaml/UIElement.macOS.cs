@@ -4,6 +4,7 @@ using Windows.UI.Xaml.Input;
 using Windows.System;
 using System;
 using System.Linq;
+using System.Numerics;
 using System.Runtime.CompilerServices;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -191,7 +192,7 @@ namespace Windows.UI.Xaml
 
 		private bool CheckFlagKeyDown(NSEventModifierMask flag, NSEventModifierMask newMask) => !_lastFlags.HasFlag(flag) && newMask.HasFlag(flag);
 
-		private bool TryGetParentUIElementForTransformToVisual(out UIElement parentElement, ref double offsetX, ref double offsetY, ref TransformToVisualContext context)
+		private bool TryGetParentUIElementForTransformToVisual(out UIElement parentElement, ref Matrix3x2 matrix, ref TransformToVisualContext context)
 		{
 			var parent = this.GetVisualTreeParent();
 			switch (parent)
@@ -220,8 +221,8 @@ namespace Windows.UI.Xaml
 								var offset = view?.ConvertPointToView(default, eltParent) ?? default;
 
 								parentElement = eltParent;
-								offsetX += offset.X;
-								offsetY += offset.Y;
+								matrix.M31 += (float)offset.X;
+								matrix.M32 += (float)offset.Y;
 								return true;
 
 							case null:
@@ -231,8 +232,8 @@ namespace Windows.UI.Xaml
 								offset = view.ConvertRectToView(default, null).Location;
 
 								parentElement = null;
-								offsetX += offset.X;
-								offsetY += offset.Y;
+								matrix.M31 += (float)offset.X;
+								matrix.M32 += (float)offset.Y;
 								return false;
 						}
 					} while (true);
