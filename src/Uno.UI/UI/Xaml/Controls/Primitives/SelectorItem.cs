@@ -8,6 +8,7 @@ using Windows.UI.Core;
 using System.Threading.Tasks;
 using Uno.UI;
 using Uno.UI.Xaml.Core;
+using Windows.Devices.Input;
 #if XAMARIN_IOS
 using UIKit;
 #endif
@@ -46,13 +47,13 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		private static readonly Stopwatch _chronometer = Stopwatch.StartNew();
 
 		/// <summary>
-		/// Delay time before setting the pressed state of an item to false, to allow time for the Pressed visual state to be drawn and perceived. 
+		/// Delay time before setting the pressed state of an item to false, to allow time for the Pressed visual state to be drawn and perceived.
 		/// </summary>
 		private static readonly TimeSpan MinTimeBetweenPressStates = TimeSpan.FromMilliseconds(100);
 
 		/// <summary>
-		/// Whether the SelectorItem will handle touches. This can be set to false for compatibility with controls where the parent 
-		/// handles touches (ComboBox-Android, legacy ListView/GridView). 
+		/// Whether the SelectorItem will handle touches. This can be set to false for compatibility with controls where the parent
+		/// handles touches (ComboBox-Android, legacy ListView/GridView).
 		/// </summary>
 		internal bool ShouldHandlePressed { get; set; } = true;
 
@@ -133,15 +134,15 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			Selector?.NotifyListItemSelected(this, oldIsSelected, newIsSelected);
 		}
 
-		private void UpdateCommonStatesWithoutNeedsLayout(ManipulationUpdateKind manipulationUpdate = ManipulationUpdateKind.None)
+		private void UpdateCommonStatesWithoutNeedsLayout(PointerDeviceType deviceType, ManipulationUpdateKind manipulationUpdate)
 		{
 			using (InterceptSetNeedsLayout())
 			{
-				UpdateCommonStates(manipulationUpdate);
+				UpdateCommonStates(deviceType == PointerDeviceType.Mouse, manipulationUpdate);
 			}
 		}
 
-		private void UpdateCommonStates(ManipulationUpdateKind manipulationUpdate = ManipulationUpdateKind.None)
+		private void UpdateCommonStates(bool isMouse = false, ManipulationUpdateKind manipulationUpdate = ManipulationUpdateKind.None)
 		{
 			// On Windows, the pressed state appears only after a few, and won't appear at all if you quickly start to scroll with the finger.
 			// So here we make sure to delay the beginning of a manipulation to match this behavior (and avoid flickering when scrolling)
@@ -157,7 +158,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			{
 				// When clicked (i.e. pointer released), but not yet in pressed state, we force to go immediately in pressed state
 				// Then we let the standard go to state process (i.e. with delay handling) reach the final expected state.
-
 				var pressedState = GetState(IsEnabled, IsSelected, IsPointerOver, isPressed: true);
 				_currentState = pressedState;
 				VisualStateManager.GoToState(this, pressedState, true);
@@ -170,7 +170,13 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			else if (manipulationUpdate == ManipulationUpdateKind.Begin)
 			{
 				// We delay the beginning of a manipulation to avoid flickers, but not for "exact" devices which has hover states
-				// (i.e. mouse and pen when not on iOS)
+				// (i.e. mouse when not on iOS)
+				if (isMouse)
+				{
+					_currentState = state;
+					VisualStateManager.GoToState(this, state, true);
+					return;
+				}
 
 				delay = MinTimeBetweenPressStates;
 				pause = true;
@@ -300,7 +306,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		protected override void OnPointerEntered(PointerRoutedEventArgs args)
 		{
 			base.OnPointerEntered(args);
-			UpdateCommonStatesWithoutNeedsLayout(ManipulationUpdateKind.Begin);
+			UpdateCommonStatesWithoutNeedsLayout((Windows.Devices.Input.PointerDeviceType)args.Pointer.PointerDeviceType, ManipulationUpdateKind.Begin);
 		}
 
 		/// <inheritdoc />
@@ -321,7 +327,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			args.Handled = ShouldHandlePressed;
 
 			base.OnPointerPressed(args);
-			UpdateCommonStatesWithoutNeedsLayout(ManipulationUpdateKind.Begin);
+			UpdateCommonStatesWithoutNeedsLayout((Windows.Devices.Input.PointerDeviceType)args.Pointer.PointerDeviceType, ManipulationUpdateKind.Begin);
 		}
 
 		/// <inheritdoc />
@@ -350,7 +356,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			args.Handled = ShouldHandlePressed;
 
 			base.OnPointerReleased(args);
-			UpdateCommonStatesWithoutNeedsLayout(update);
+			UpdateCommonStatesWithoutNeedsLayout((Windows.Devices.Input.PointerDeviceType)args.Pointer.PointerDeviceType, update);
 		}
 
 		/// <inheritdoc />
@@ -361,7 +367,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			ReleasePointerCapture(args.Pointer.UniqueId, kinds: PointerCaptureKind.Implicit);
 
 			base.OnPointerExited(args);
-			UpdateCommonStatesWithoutNeedsLayout(ManipulationUpdateKind.End);
+			UpdateCommonStatesWithoutNeedsLayout((Windows.Devices.Input.PointerDeviceType)args.Pointer.PointerDeviceType, ManipulationUpdateKind.End);
 		}
 
 		/// <inheritdoc />
@@ -370,7 +376,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			_canRaiseClickOnPointerRelease = false;
 
 			base.OnPointerCanceled(args);
-			UpdateCommonStatesWithoutNeedsLayout(ManipulationUpdateKind.End);
+			UpdateCommonStatesWithoutNeedsLayout((Windows.Devices.Input.PointerDeviceType)args.Pointer.PointerDeviceType, ManipulationUpdateKind.End);
 		}
 
 		/// <inheritdoc />
@@ -379,7 +385,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			_canRaiseClickOnPointerRelease = false;
 
 			base.OnPointerCaptureLost(args);
-			UpdateCommonStatesWithoutNeedsLayout(ManipulationUpdateKind.End);
+			UpdateCommonStatesWithoutNeedsLayout((Windows.Devices.Input.PointerDeviceType)args.Pointer.PointerDeviceType, ManipulationUpdateKind.End);
 		}
 
 		protected override void OnGotFocus(RoutedEventArgs e)
