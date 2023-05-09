@@ -459,6 +459,54 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(outerScrollViewer.ExtentHeight, outerScrollViewer.ViewportHeight, 0.000001);
 		}
 
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_ChangeView_Offset()
+		{
+			const double offset = 100;
+
+			var scroll = new ScrollViewer()
+			{
+				Background = new SolidColorBrush(Colors.Yellow)
+			};
+
+			var stackPanel = new StackPanel()
+			{
+				Orientation = Orientation.Vertical,
+				Height = 5000,
+			};
+
+			stackPanel.Children.Add(new Border() { Height = 200 });
+
+			var target = new Border()
+			{
+				Background = new SolidColorBrush(Colors.Lime),
+				Height = 50,
+			};
+
+			stackPanel.Children.Add(target);
+
+			var scrollChanged = false;
+			scroll.ViewChanged += (s, e) =>
+			{
+				scrollChanged = true;
+			};
+
+			scroll.Content = stackPanel;
+
+			WindowHelper.WindowContent = scroll;
+
+			await WindowHelper.WaitForLoaded(scroll);
+
+			_ = scroll.ChangeView(null, offset, null, true);
+
+			await WindowHelper.WaitFor(() => scrollChanged);
+
+			var loc = target.TransformToVisual(scroll).TransformPoint(new Point(0, 0));
+			Assert.AreEqual(offset, loc.Y);
+		}
+
+
 #if __ANDROID__
 		[TestMethod]
 		[RunsOnUIThread]
