@@ -586,7 +586,7 @@ namespace Windows.UI.Xaml
 #if !__MACOS__ // On macOS the SCP is using RenderTransforms for scrolling and zooming which has already been included.
 			if (this is ScrollViewer sv)
 			{
-				// Scroll offsets are handled at SCP level using the IsScrollPort
+				// Scroll offsets are handled at the SCP level using the IsScrollPort
 				// TODO: ZoomFactor should also be handled at the SCP level!
 
 				var zoom = sv.ZoomFactor;
@@ -608,7 +608,7 @@ namespace Windows.UI.Xaml
 
 #if !__IOS__ && !__ANDROID__ && !__MACOS__ // This is the default implementation, but it can be customized per platform
 		/// <summary>
-		/// Note: Offsets are only an approximation which does not take in consideration possible transformations
+		/// Note: Offsets are only an approximation that does not take into consideration possible transformations
 		///	applied by a 'UIView' between this element and its parent UIElement.
 		/// </summary>
 		private bool TryGetParentUIElementForTransformToVisual(out UIElement parentElement, ref Matrix3x2 _)

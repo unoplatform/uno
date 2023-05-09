@@ -400,7 +400,7 @@ namespace Windows.UI.Xaml.Media
 				return (default, stale);
 			}
 
-			// LayoutSlotWithMarginsAndAlignments is the region where the element was arrange by its parent.
+			// LayoutSlotWithMarginsAndAlignments is the region where the element was arranged by its parent.
 			// This is expressed in parent coordinate space
 			TRACE($"- layoutSlot (rel to parent): {element.LayoutSlotWithMarginsAndAlignments.ToDebugString()}");
 			if (element.IsScrollPort)

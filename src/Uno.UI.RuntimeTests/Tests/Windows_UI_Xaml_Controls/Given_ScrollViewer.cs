@@ -714,7 +714,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var sutLocation = sut.GetAbsoluteBounds().Location;
 			finger.Drag(sutLocation.Offset(5, 480), sutLocation.Offset(5, 5));
 
-			events.Should().BeEquivalentTo("enter", "pressed", "release", "exited"); // TODO: Exited is not injected by the InputInjector (but it is with native)
+			events.Should().BeEquivalentTo("enter", "pressed", "release", "exited");
 		}
 
 		[TestMethod]
@@ -760,7 +760,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var sutLocation = sut.GetAbsoluteBounds().Location;
 			finger.Drag(sutLocation.Offset(5, 480), sutLocation.Offset(5, 5));
 
-			events.Should().BeEquivalentTo("enter", "pressed", "release", "exited"); // TODO: Exited is not injected by the InputInjector (but it is with native)
+			events.Should().BeEquivalentTo("enter", "pressed", "release", "exited");
 		}
 	}
 }
