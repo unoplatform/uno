@@ -10,240 +10,239 @@ using Windows.UI.Composition;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
-namespace Microsoft.UI.Private.Controls
+namespace Microsoft.UI.Private.Controls;
+
+internal class TeachingTipTestHooks
 {
-	internal class TeachingTipTestHooks
+	private static TeachingTipTestHooks s_testHooks = new TeachingTipTestHooks();
+
+	private static void EnsureGlobalTestHooks()
 	{
-		private static TeachingTipTestHooks s_testHooks = new TeachingTipTestHooks();
+		// Not needed in Uno, we are using static singleton.
+	}
 
-		private static void EnsureGlobalTestHooks()
+	internal static void SetExpandEasingFunction(TeachingTip teachingTip, CompositionEasingFunction easingFunction)
+	{
+		if (teachingTip != null && easingFunction != null)
 		{
-			// Not needed in Uno, we are using static singleton.
+			teachingTip.SetExpandEasingFunction(easingFunction);
 		}
+	}
 
-		internal static void SetExpandEasingFunction(TeachingTip teachingTip, CompositionEasingFunction easingFunction)
+	internal static void SetContractEasingFunction(TeachingTip teachingTip, CompositionEasingFunction easingFunction)
+	{
+		if (teachingTip != null && easingFunction != null)
 		{
-			if (teachingTip != null && easingFunction != null)
-			{
-				teachingTip.SetExpandEasingFunction(easingFunction);
-			}
+			teachingTip.SetContractEasingFunction(easingFunction);
 		}
+	}
 
-		internal static void SetContractEasingFunction(TeachingTip teachingTip, CompositionEasingFunction easingFunction)
+	internal static void SetTipShouldHaveShadow(TeachingTip teachingTip, bool tipShouldHaveShadow)
+	{
+		if (teachingTip != null)
 		{
-			if (teachingTip != null && easingFunction != null)
-			{
-				teachingTip.SetContractEasingFunction(easingFunction);
-			}
+			teachingTip.SetTipShouldHaveShadow(tipShouldHaveShadow);
 		}
+	}
 
-		internal static void SetTipShouldHaveShadow(TeachingTip teachingTip, bool tipShouldHaveShadow)
+	internal static void SetContentElevation(TeachingTip teachingTip, float elevation)
+	{
+		if (teachingTip != null)
 		{
-			if (teachingTip != null)
-			{
-				teachingTip.SetTipShouldHaveShadow(tipShouldHaveShadow);
-			}
+			teachingTip.SetContentElevation(elevation);
 		}
+	}
 
-		internal static void SetContentElevation(TeachingTip teachingTip, float elevation)
+	internal static void SetTailElevation(TeachingTip teachingTip, float elevation)
+	{
+		if (teachingTip != null)
 		{
-			if (teachingTip != null)
-			{
-				teachingTip.SetContentElevation(elevation);
-			}
+			teachingTip.SetTailElevation(elevation);
 		}
+	}
 
-		internal static void SetTailElevation(TeachingTip teachingTip, float elevation)
+	internal static void SetUseTestWindowBounds(TeachingTip teachingTip, bool useTestWindowBounds)
+	{
+		if (teachingTip != null)
 		{
-			if (teachingTip != null)
-			{
-				teachingTip.SetTailElevation(elevation);
-			}
+			teachingTip.SetUseTestWindowBounds(useTestWindowBounds);
 		}
+	}
 
-		internal static void SetUseTestWindowBounds(TeachingTip teachingTip, bool useTestWindowBounds)
+	internal static void SetTestWindowBounds(TeachingTip teachingTip, Rect testWindowBounds)
+	{
+		if (teachingTip != null)
 		{
-			if (teachingTip != null)
-			{
-				teachingTip.SetUseTestWindowBounds(useTestWindowBounds);
-			}
+			teachingTip.SetTestWindowBounds(testWindowBounds);
 		}
+	}
 
-		internal static void SetTestWindowBounds(TeachingTip teachingTip, Rect testWindowBounds)
+	internal static void SetUseTestScreenBounds(TeachingTip teachingTip, bool useTestScreenBounds)
+	{
+		if (teachingTip != null)
 		{
-			if (teachingTip != null)
-			{
-				teachingTip.SetTestWindowBounds(testWindowBounds);
-			}
+			teachingTip.SetUseTestScreenBounds(useTestScreenBounds);
 		}
+	}
 
-		internal static void SetUseTestScreenBounds(TeachingTip teachingTip, bool useTestScreenBounds)
+	internal static void SetTestScreenBounds(TeachingTip teachingTip, Rect testScreenBounds)
+	{
+		if (teachingTip != null)
 		{
-			if (teachingTip != null)
-			{
-				teachingTip.SetUseTestScreenBounds(useTestScreenBounds);
-			}
+			teachingTip.SetTestScreenBounds(testScreenBounds);
 		}
+	}
 
-		internal static void SetTestScreenBounds(TeachingTip teachingTip, Rect testScreenBounds)
+	internal static void SetTipFollowsTarget(TeachingTip teachingTip, bool tipFollowsTarget)
+	{
+		if (teachingTip != null)
 		{
-			if (teachingTip != null)
-			{
-				teachingTip.SetTestScreenBounds(testScreenBounds);
-			}
+			teachingTip.SetTipFollowsTarget(tipFollowsTarget);
 		}
+	}
 
-		internal static void SetTipFollowsTarget(TeachingTip teachingTip, bool tipFollowsTarget)
+	internal static void SetReturnTopForOutOfWindowPlacement(TeachingTip teachingTip, bool returnTopForOutOfWindowPlacement)
+	{
+		if (teachingTip != null)
 		{
-			if (teachingTip != null)
-			{
-				teachingTip.SetTipFollowsTarget(tipFollowsTarget);
-			}
+			teachingTip.SetReturnTopForOutOfWindowPlacement(returnTopForOutOfWindowPlacement);
 		}
+	}
 
-		internal static void SetReturnTopForOutOfWindowPlacement(TeachingTip teachingTip, bool returnTopForOutOfWindowPlacement)
+	internal static void SetExpandAnimationDuration(TeachingTip teachingTip, TimeSpan expandAnimationDuration)
+	{
+		if (teachingTip != null)
 		{
-			if (teachingTip != null)
-			{
-				teachingTip.SetReturnTopForOutOfWindowPlacement(returnTopForOutOfWindowPlacement);
-			}
+			teachingTip.SetExpandAnimationDuration(expandAnimationDuration);
 		}
+	}
 
-		internal static void SetExpandAnimationDuration(TeachingTip teachingTip, TimeSpan expandAnimationDuration)
+	internal static void SetContractAnimationDuration(TeachingTip teachingTip, TimeSpan contractAnimationDuration)
+	{
+		if (teachingTip != null)
 		{
-			if (teachingTip != null)
-			{
-				teachingTip.SetExpandAnimationDuration(expandAnimationDuration);
-			}
+			teachingTip.SetContractAnimationDuration(contractAnimationDuration);
 		}
+	}
 
-		internal static void SetContractAnimationDuration(TeachingTip teachingTip, TimeSpan contractAnimationDuration)
+	internal static void NotifyOpenedStatusChanged(TeachingTip sender)
+	{
+		OpenedStatusChanged?.Invoke(sender, null);
+	}
+
+	internal static event TypedEventHandler<TeachingTip, object?>? OpenedStatusChanged;
+
+	internal static void NotifyIdleStatusChanged(TeachingTip sender)
+	{
+		IdleStatusChanged?.Invoke(sender, null);
+	}
+
+	internal static event TypedEventHandler<TeachingTip, object?>? IdleStatusChanged;
+
+	internal static bool GetIsIdle(TeachingTip teachingTip)
+	{
+		if (teachingTip != null)
 		{
-			if (teachingTip != null)
-			{
-				teachingTip.SetContractAnimationDuration(contractAnimationDuration);
-			}
+			return teachingTip.GetIsIdle();
 		}
+		return true;
+	}
 
-		internal static void NotifyOpenedStatusChanged(TeachingTip sender)
+	internal static void NotifyEffectivePlacementChanged(TeachingTip sender)
+	{
+		EffectivePlacementChanged?.Invoke(sender, null);
+	}
+
+	internal static event TypedEventHandler<TeachingTip, object?>? EffectivePlacementChanged;
+
+	internal static TeachingTipPlacementMode GetEffectivePlacement(TeachingTip teachingTip)
+	{
+		if (teachingTip != null)
 		{
-			OpenedStatusChanged?.Invoke(sender, null);
+			return teachingTip.GetEffectivePlacement();
 		}
+		return TeachingTipPlacementMode.Auto;
+	}
 
-		internal static event TypedEventHandler<TeachingTip, object?>? OpenedStatusChanged;
+	internal static void NotifyEffectiveHeroContentPlacementChanged(TeachingTip sender)
+	{
+		EffectiveHeroContentPlacementChanged?.Invoke(sender, null);
+	}
 
-		internal static void NotifyIdleStatusChanged(TeachingTip sender)
+	internal static TypedEventHandler<TeachingTip, object?>? EffectiveHeroContentPlacementChanged;
+
+	internal static TeachingTipHeroContentPlacementMode GetEffectiveHeroContentPlacement(TeachingTip teachingTip)
+	{
+		if (teachingTip != null)
 		{
-			IdleStatusChanged?.Invoke(sender, null);
+			return teachingTip.GetEffectiveHeroContentPlacement();
 		}
+		return TeachingTipHeroContentPlacementMode.Auto;
+	}
 
-		internal static event TypedEventHandler<TeachingTip, object?>? IdleStatusChanged;
+	internal static void NotifyOffsetChanged(TeachingTip sender)
+	{
+		OffsetChanged?.Invoke(sender, null);
+	}
 
-		internal static bool GetIsIdle(TeachingTip teachingTip)
+	internal static TypedEventHandler<TeachingTip, object?>? OffsetChanged;
+
+	internal static void NotifyTitleVisibilityChanged(TeachingTip sender)
+	{
+		TitleVisibilityChanged?.Invoke(sender, null);
+	}
+
+	internal static TypedEventHandler<TeachingTip, object?>? TitleVisibilityChanged;
+
+	internal static void NotifySubtitleVisibilityChanged(TeachingTip sender)
+	{
+		SubtitleVisibilityChanged?.Invoke(sender, null);
+	}
+
+	internal static TypedEventHandler<TeachingTip, object?>? SubtitleVisibilityChanged;
+
+	internal static double GetVerticalOffset(TeachingTip teachingTip)
+	{
+		if (teachingTip != null)
 		{
-			if (teachingTip != null)
-			{
-				return teachingTip.GetIsIdle();
-			}
-			return true;
+			return teachingTip.GetVerticalOffset();
 		}
+		return 0.0;
+	}
 
-		internal static void NotifyEffectivePlacementChanged(TeachingTip sender)
+	internal static double GetHorizontalOffset(TeachingTip teachingTip)
+	{
+		if (teachingTip != null)
 		{
-			EffectivePlacementChanged?.Invoke(sender, null);
+			return teachingTip.GetHorizontalOffset();
 		}
+		return 0.0;
+	}
 
-		internal static event TypedEventHandler<TeachingTip, object?>? EffectivePlacementChanged;
-
-		internal static TeachingTipPlacementMode GetEffectivePlacement(TeachingTip teachingTip)
+	internal static Visibility GetTitleVisibility(TeachingTip teachingTip)
+	{
+		if (teachingTip != null)
 		{
-			if (teachingTip != null)
-			{
-				return teachingTip.GetEffectivePlacement();
-			}
-			return TeachingTipPlacementMode.Auto;
+			return teachingTip.GetTitleVisibility();
 		}
+		return Visibility.Collapsed;
+	}
 
-		internal static void NotifyEffectiveHeroContentPlacementChanged(TeachingTip sender)
+	internal static Visibility GetSubtitleVisibility(TeachingTip teachingTip)
+	{
+		if (teachingTip != null)
 		{
-			EffectiveHeroContentPlacementChanged?.Invoke(sender, null);
+			return teachingTip.GetSubtitleVisibility();
 		}
+		return Visibility.Collapsed;
+	}
 
-		internal static TypedEventHandler<TeachingTip, object?>? EffectiveHeroContentPlacementChanged;
-
-		internal static TeachingTipHeroContentPlacementMode GetEffectiveHeroContentPlacement(TeachingTip teachingTip)
+	internal static Popup? GetPopup(TeachingTip teachingTip)
+	{
+		if (teachingTip != null)
 		{
-			if (teachingTip != null)
-			{
-				return teachingTip.GetEffectiveHeroContentPlacement();
-			}
-			return TeachingTipHeroContentPlacementMode.Auto;
+			return teachingTip.m_popup;
 		}
-
-		internal static void NotifyOffsetChanged(TeachingTip sender)
-		{
-			OffsetChanged?.Invoke(sender, null);
-		}
-
-		internal static TypedEventHandler<TeachingTip, object?>? OffsetChanged;
-
-		internal static void NotifyTitleVisibilityChanged(TeachingTip sender)
-		{
-			TitleVisibilityChanged?.Invoke(sender, null);
-		}
-
-		internal static TypedEventHandler<TeachingTip, object?>? TitleVisibilityChanged;
-
-		internal static void NotifySubtitleVisibilityChanged(TeachingTip sender)
-		{
-			SubtitleVisibilityChanged?.Invoke(sender, null);
-		}
-
-		internal static TypedEventHandler<TeachingTip, object?>? SubtitleVisibilityChanged;
-
-		internal static double GetVerticalOffset(TeachingTip teachingTip)
-		{
-			if (teachingTip != null)
-			{
-				return teachingTip.GetVerticalOffset();
-			}
-			return 0.0;
-		}
-
-		internal static double GetHorizontalOffset(TeachingTip teachingTip)
-		{
-			if (teachingTip != null)
-			{
-				return teachingTip.GetHorizontalOffset();
-			}
-			return 0.0;
-		}
-
-		internal static Visibility GetTitleVisibility(TeachingTip teachingTip)
-		{
-			if (teachingTip != null)
-			{
-				return teachingTip.GetTitleVisibility();
-			}
-			return Visibility.Collapsed;
-		}
-
-		internal static Visibility GetSubtitleVisibility(TeachingTip teachingTip)
-		{
-			if (teachingTip != null)
-			{
-				return teachingTip.GetSubtitleVisibility();
-			}
-			return Visibility.Collapsed;
-		}
-
-		internal static Popup? GetPopup(TeachingTip teachingTip)
-		{
-			if (teachingTip != null)
-			{
-				return teachingTip.m_popup;
-			}
-			return null;
-		}
+		return null;
 	}
 }
