@@ -8,35 +8,9 @@ namespace Windows.UI.Xaml.Media.Animation
 	{
 		// Source: https://easings.net/
 
-		public override double Ease(double currentTime, double startValue, double finalValue, double duration)
+		private protected override double EaseInCore(double normalizedTime)
 		{
-			var delta = finalValue - startValue;
-			var progress = currentTime / duration;
-
-			var ratio = EaseCore(progress);
-
-			return startValue + ratio * delta;
-		}
-
-		internal double EaseCore(double progress)
-		{
-			switch (EasingMode)
-			{
-				case EasingMode.EaseIn:
-					return BounceEaseIn(progress);
-
-				case EasingMode.EaseOut:
-					return BounceEaseOut(progress);
-
-				case EasingMode.EaseInOut:
-				default:
-					return BounceEaseInOut(progress);
-			}
-		}
-
-		private static double BounceEaseIn(double progress)
-		{
-			return 1 - BounceEaseOut(1 - progress);
+			return 1.0 - BounceEaseOut(1.0 - normalizedTime);
 		}
 
 		private static double BounceEaseOut(double progress)
@@ -62,11 +36,5 @@ namespace Windows.UI.Xaml.Media.Animation
 			}
 		}
 
-		private static double BounceEaseInOut(double progress)
-		{
-			return progress < 0.5
-				? (1 - BounceEaseOut(1 - 2 * progress)) / 2
-				: (1 + BounceEaseOut(2 * progress - 1)) / 2;
-		}
 	}
 }
