@@ -18,9 +18,8 @@ namespace Windows.UI.Xaml
 			TimeSpan = timeSpan;
 		}
 
-		public DurationType Type { get; private set; }
-
-		public TimeSpan TimeSpan { get; private set; }
+		public DurationType Type;
+		public TimeSpan TimeSpan;
 
 		public static implicit operator Duration(string timeSpan)
 			=> timeSpan != null ? new Duration(TimeSpan.Parse(timeSpan, CultureInfo.InvariantCulture)) : new Duration(TimeSpan.Zero);

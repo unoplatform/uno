@@ -6,7 +6,7 @@ using ProcessorArchitecture = Windows.System.ProcessorArchitecture;
 
 namespace Windows.ApplicationModel
 {
-	public partial class PackageId
+	public sealed partial class PackageId
 	{
 		internal PackageId() => InitializePlatform();
 

@@ -24,7 +24,7 @@ namespace Windows.UI.Xaml
 	/// <summary>
 	/// Describes the changes made to a dependency property
 	/// </summary>
-	public partial class DependencyPropertyChangedEventArgs : EventArgs
+	public sealed partial class DependencyPropertyChangedEventArgs : EventArgs
 	{
 		internal DependencyPropertyChangedEventArgs(
 			DependencyProperty property,
