@@ -18,7 +18,7 @@ using Windows.UI.Xaml.Media;
 
 namespace Uno.UI.Media;
 
-public partial class GTKMediaPlayer : Button
+public partial class GTKMediaPlayer
 {
 
 	public event EventHandler<object>? OnSourceFailed;
@@ -75,58 +75,58 @@ public partial class GTKMediaPlayer : Button
 		{
 		}
 	}
-	private void OnLoaded(object sender, object args)
-	{
-		//if (this.Log().IsEnabled(LogLevel.Debug))
-		//{
-		//	this.Log().Debug($"GTKMediaPlayer Loaded");
-		//}
-		if (_mediaPlayer != null && _libvlc != null)
-		{
-			return;
-		}
-		Console.WriteLine("GTKMediaPlayer OnLoaded");
-		SourceLoaded += OnSourceVideoLoaded;
-		Console.WriteLine("Creating libvlc");
-		_libvlc = new LibVLC(enableDebugLogs: false);
+	//private void OnLoaded(object sender, object args)
+	//{
+	//	//if (this.Log().IsEnabled(LogLevel.Debug))
+	//	//{
+	//	//	this.Log().Debug($"GTKMediaPlayer Loaded");
+	//	//}
+	//	if (_mediaPlayer != null && _libvlc != null)
+	//	{
+	//		return;
+	//	}
+	//	Console.WriteLine("GTKMediaPlayer OnLoaded");
+	//	SourceLoaded += OnSourceVideoLoaded;
+	//	Console.WriteLine("Creating libvlc");
+	//	_libvlc = new LibVLC(enableDebugLogs: false);
 
-		Console.WriteLine("Creating player");
-		_mediaPlayer = new LibVLCSharp.Shared.MediaPlayer(_libvlc);
+	//	Console.WriteLine("Creating player");
+	//	_mediaPlayer = new LibVLCSharp.Shared.MediaPlayer(_libvlc);
 
-		Console.WriteLine("Creating VideoView");
-		_videoView = new LibVLCSharp.GTK.VideoView();
-
-
-		_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-		{
-			Console.WriteLine("Set MediaPlayer");
-			_videoView.MediaPlayer = _mediaPlayer;
-
-			_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-			{
-
-				_videoView.Visible = true;
-				//_videoView.MediaPlayer = _mediaPlayer;
-				_mediaPlayer.Stopped += (sender, e) =>
-				{
-					_videoView.Visible = false;
-				};
-				Console.WriteLine("Content _videoView on Dispatcher");
-				Content = _videoView;
-				UpdateVideoStretch();
-				Console.WriteLine("Created player");
-			});
-		});
+	//	Console.WriteLine("Creating VideoView");
+	//	_videoView = new LibVLCSharp.GTK.VideoView();
 
 
+	//	_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+	//	{
+	//		Console.WriteLine("Set MediaPlayer");
+	//		_videoView.MediaPlayer = _mediaPlayer;
+
+	//		_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+	//		{
+
+	//			_videoView.Visible = true;
+	//			//_videoView.MediaPlayer = _mediaPlayer;
+	//			_mediaPlayer.Stopped += (sender, e) =>
+	//			{
+	//				_videoView.Visible = false;
+	//			};
+	//			Console.WriteLine("Content _videoView on Dispatcher");
+	//			Content = _videoView;
+	//			UpdateVideoStretch();
+	//			Console.WriteLine("Created player");
+	//		});
+	//	});
 
 
-		SourceLoaded += OnHtmlSourceLoaded;
-		SourceFailed += OnHtmlSourceFailed;
-		SourceEnded += OnHtmlSourceEnded;
-		MetadataLoaded += OnHtmlMetadataLoaded;
-		TimeUpdated += OnHtmlTimeUpdated;
-	}
+
+
+	//	SourceLoaded += OnHtmlSourceLoaded;
+	//	SourceFailed += OnHtmlSourceFailed;
+	//	SourceEnded += OnHtmlSourceEnded;
+	//	MetadataLoaded += OnHtmlMetadataLoaded;
+	//	TimeUpdated += OnHtmlTimeUpdated;
+	//}
 	private void Initialized()
 	{
 		//if (this.Log().IsEnabled(LogLevel.Debug))
@@ -177,10 +177,12 @@ public partial class GTKMediaPlayer : Button
 		_videoView.MediaPlayer.Media = media;
 
 		Console.WriteLine("Content _videoView on Dispatcher");
+		//_videoContainer.Content = new Border() { Background = new SolidColorBrush(Colors.Red) };
 		_videoContainer.Content = _videoView;
 		//_videoContainer.Height = 300;
 		//_videoContainer.Width = 450;
-		Content = _videoContainer;
+		//Child = new Border() { Background = new SolidColorBrush(Colors.Red) };
+		Child = _videoContainer;
 
 
 

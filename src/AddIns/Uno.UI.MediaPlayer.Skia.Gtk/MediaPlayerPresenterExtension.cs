@@ -118,7 +118,7 @@ public class MediaPlayerPresenterExtension : IMediaPlayerPresenterExtension
 
 
 
-		_player.UpdateVideoStretch();
+		//_player.UpdateVideoStretch();
 	}
 
 

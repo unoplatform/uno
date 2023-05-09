@@ -17,14 +17,15 @@ using System.IO;
 using Uno.Extensions;
 using Windows.Foundation;
 using Windows.UI.Xaml.Media;
+using Point = Windows.Foundation.Point;
 
 namespace Uno.UI.Media;
 
-public partial class GTKMediaPlayer : Button
+public partial class GTKMediaPlayer : Border
 {
 	private LibVLC? _libvlc;
 	private LibVLCSharp.Shared.MediaPlayer? _mediaPlayer;
-	private ContentControl _videoContainer;
+	private ContentControl? _videoContainer;
 	private VideoView? _videoView;
 	private double _ratio;
 	//public int VideoHeight;
@@ -68,13 +69,13 @@ public partial class GTKMediaPlayer : Button
 		//RaiseLoaded();
 		Initialized();
 
-		SizeChanged += GTKMediaPlayer_SizeChanged;
+		//SizeChanged += GTKMediaPlayer_SizeChanged;
 	}
 
-	private void GTKMediaPlayer_SizeChanged(object sender, SizeChangedEventArgs args)
-	{
-		UpdateVideoStretch();
-	}
+	//private void GTKMediaPlayer_SizeChanged(object sender, SizeChangedEventArgs args)
+	//{
+	//	UpdateVideoStretch();
+	//}
 
 	public void Play()
 	{
@@ -130,18 +131,36 @@ public partial class GTKMediaPlayer : Button
 		"Source", typeof(string), typeof(GTKMediaPlayer), new PropertyMetadata(default(string),
 			OnSourceChanged));
 
-	internal void UpdateVideoStretch()
+	private int _isUpdating;
+	private bool _updatedRequested;
+	private void UpdateVideoStretch()
 	{
+		if (Interlocked.CompareExchange(ref _isUpdating, 1, 0) == 1)
+		{
+			_updatedRequested = true;
+			return;
+		}
+
 		_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 		{
-			if (_videoView != null && _mediaPlayer != null && _mediaPlayer.Media != null)
+			try
 			{
-				try
+				if (_videoView != null &&
+			_mediaPlayer != null &&
+			_mediaPlayer.Media != null &&
+			_videoContainer is not null)
 				{
+					if (this.ActualHeight <= 0 || this.ActualWidth <= 0)
+					{
+						return;
+					}
+
 
 					var width = _videoView.AllocatedWidth;
 					var height = _videoView.AllocatedHeight;
 					var parentRatio = (double)width / global::System.Math.Max(1, height);
+
+					var playerRatio = (double)this.ActualHeight / (double)this.ActualWidth;
 
 
 					_mediaPlayer.Media.Parse(MediaParseOptions.ParseNetwork);
@@ -163,31 +182,32 @@ public partial class GTKMediaPlayer : Button
 						{
 							return;
 						}
-						UIElement? container = VisualTreeHelper.GetParent(_videoContainer) as UIElement;
-						UIElement? containerGrid = VisualTreeHelper.GetParent(container) as UIElement;
-						if (container != null)
-						{
+						var videoRatio = (double)videoHeight / (double)videoWidth;
 
-							//Point relativeLocation = _videoContainer.TransformToVisual(new Point(0, 0), container!);
-							Point pagePosition = _videoContainer.TransformToVisual(container).TransformPoint(new Point(0, 0));
+						var newHeight = (videoRatio > playerRatio) ? this.ActualHeight : this.ActualWidth * videoRatio;
+						var newWidth = (videoRatio > playerRatio) ? this.ActualHeight / videoRatio : this.ActualWidth;
 
-							//relative to the page
-							pagePosition = container.TransformToVisual(null).TransformPoint(new Point(0, 0));
 
-							//containerGrid.Background = new SolidColorBrush(Colors.Yellow);
-							_videoView?.SizeAllocate(new((int)pagePosition.X, (int)pagePosition.Y, (int)videoWidth, (int)videoHeight));
-						}
+						var root = (_videoContainer.XamlRoot?.Content as UIElement)!;
 
-						//_videoView?.SetNaturalSize((int)videoHeight, (int)videoWidth);
-						_videoContainer.Height = (int)videoHeight;
-						_videoContainer.Width = (int)videoWidth;
-						//_videoView?.SizeAllocate(new(0, 0, (int)_videoContainer.Width, (int)_videoContainer.Height));
+						var topInset = (this.ActualHeight - newHeight) / 2;
+						var leftInset = (this.ActualWidth - newWidth) / 2;
+						Point pagePosition = this.TransformToVisual(root).TransformPoint(new Point(leftInset, topInset));
+
+						_videoView?.SizeAllocate(new((int)pagePosition.X, (int)pagePosition.Y, (int)newWidth, (int)newHeight));
+						_videoView?.SetNaturalSize((int)newHeight, (int)newWidth);
 
 						Console.WriteLine($"Largura: {width},  Altura: {height}");
 					}
 				}
-				finally
+			}
+			finally
+			{
+				Interlocked.Exchange(ref _isUpdating, 0);
+				if (_updatedRequested)
 				{
+					_updatedRequested = false;
+					UpdateVideoStretch();
 				}
 			}
 		});
@@ -195,8 +215,10 @@ public partial class GTKMediaPlayer : Button
 
 	protected override Size ArrangeOverride(Size finalSize)
 	{
+		var result = base.ArrangeOverride(finalSize);
 		UpdateVideoStretch();
-		return base.ArrangeOverride(finalSize);
+
+		return result;
 	}
 
 	//internal void UpdateVideoStretch()
