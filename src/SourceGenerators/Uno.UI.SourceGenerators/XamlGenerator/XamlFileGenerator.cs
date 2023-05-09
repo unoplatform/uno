@@ -5457,7 +5457,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 							if (parts.Length == 2)
 							{
-								var targetType = SourceFindType(parts[0]);
+								var targetType = FindType(parts[0]);
 
 								if (targetType != null)
 								{
@@ -5912,25 +5912,21 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					}
 					else if (target != null)
 					{
-						// This builds property setters for specified member setter.
-						var separatorIndex = target.IndexOf(".", StringComparison.Ordinal);
-						var elementName = target.Substring(0, separatorIndex);
-						var propertyName = target.Substring(separatorIndex + 1);
-
 						var ownerControl = GetControlOwner(owner?.Owner);
-
-
-						// Attached properties need to be expanded using the namespace, otherwise the resolution will be
-						// performed at runtime at a higher cost.
-						propertyName = RewriteAttachedPropertyPath(propertyName);
 
 						if (ownerControl != null)
 						{
-
+							// This builds property setters for specified member setter.
+							var separatorIndex = target.IndexOf(".", StringComparison.Ordinal);
+							var elementName = target.Substring(0, separatorIndex);
 							var targetElement = FindSubElementByName(ownerControl, elementName);
 
 							if (targetElement != null)
 							{
+								var propertyName = target.Substring(separatorIndex + 1);
+								// Attached properties need to be expanded using the namespace, otherwise the resolution will be
+								// performed at runtime at a higher cost.
+								propertyName = RewriteAttachedPropertyPath(propertyName);
 								writer.AppendLineIndented($"new global::Windows.UI.Xaml.Setter(new global::Windows.UI.Xaml.TargetPropertyPath(this._{elementName}Subject, \"{propertyName}\"), ");
 
 								var targetElementType = GetType(targetElement.Type);
