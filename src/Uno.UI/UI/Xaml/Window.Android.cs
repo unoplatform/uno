@@ -18,7 +18,6 @@ using Windows.UI.ViewManagement;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Media;
-using Uno.UI.Extensions;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace Windows.UI.Xaml
