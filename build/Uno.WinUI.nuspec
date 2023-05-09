@@ -551,7 +551,6 @@
 		<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.Wasm\Release\net7.0\Uno.UI.FluentTheme.v2.pdb" target="uno-runtime\net7.0\webassembly" />
 		<file src="..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Wasm\Release\net7.0\Uno.UI.Toolkit.dll" target="uno-runtime\net7.0\webassembly" />
 		<file src="..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Wasm\Release\net7.0\Uno.UI.Toolkit.pdb" target="uno-runtime\net7.0\webassembly" />
-		<file src="..\src\Uno.UI.Runtime.WebAssembly.Compatibility\Bin\Release\net7.0\Uno.UI.Wasm.*" target="uno-runtime\net7.0\webassembly" />
 
 		<!-- net7.0 Skia -->
 		<file src="..\src\Uno.UI\Bin\Uno.UI.Skia\Release\net7.0\Uno.dll" target="uno-runtime\net7.0\skia" />
@@ -604,7 +603,6 @@
 		<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.Wasm\Release\net8.0\Uno.UI.FluentTheme.v2.pdb" target="uno-runtime\net8.0\webassembly" />
 		<file src="..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Wasm\Release\net8.0\Uno.UI.Toolkit.dll" target="uno-runtime\net8.0\webassembly" />
 		<file src="..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Wasm\Release\net8.0\Uno.UI.Toolkit.pdb" target="uno-runtime\net8.0\webassembly" />
-		<file src="..\src\Uno.UI.Runtime.WebAssembly.Compatibility\Bin\Release\net8.0\Uno.UI.Wasm.*" target="uno-runtime\net8.0\webassembly" />
 		-->
 		
 		<!--
@@ -635,7 +633,6 @@
 		<file src="..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.Wasm\Release\net7.0\Uno.UI.FluentTheme.v2.pdb" target="uno-runtime\net8.0\webassembly" />
 		<file src="..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Wasm\Release\net7.0\Uno.UI.Toolkit.dll" target="uno-runtime\net8.0\webassembly" />
 		<file src="..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Wasm\Release\net7.0\Uno.UI.Toolkit.pdb" target="uno-runtime\net8.0\webassembly" />
-		<file src="..\src\Uno.UI.Runtime.WebAssembly.Compatibility\Bin\Release\net7.0\Uno.UI.Wasm.*" target="uno-runtime\net8.0\webassembly" />
 		
 		<!-- net8.0 Skia -->
 		<file src="..\src\Uno.UI\Bin\Uno.UI.Skia\Release\net8.0\Uno.dll" target="uno-runtime\net8.0\skia" />
