@@ -55,7 +55,7 @@ namespace Uno.UI.Runtime.Skia
 					this.Log().Trace($"OnKeyPressEvent: {evt.Key} -> {virtualKey}");
 				}
 
-				_ownerEvents.RaiseNativeKeyDownReceived(
+				_owner.RaiseNativeKeyDownReceived(
 					new KeyEventArgs(
 						"keyboard",
 						virtualKey,
@@ -82,7 +82,7 @@ namespace Uno.UI.Runtime.Skia
 					this.Log().Trace($"OnKeyReleaseEvent: {evt.Key} -> {virtualKey}");
 				}
 
-				_ownerEvents.RaiseNativeKeyUpReceived(
+				_owner.RaiseNativeKeyUpReceived(
 					new KeyEventArgs(
 						"keyboard",
 						virtualKey,

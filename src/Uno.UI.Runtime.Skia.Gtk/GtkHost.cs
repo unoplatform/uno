@@ -293,9 +293,6 @@ namespace Uno.UI.Runtime.Skia
 				WUX.Window.Current.OnNativeSizeChanged(new Windows.Foundation.Size(e.Allocation.Width, e.Allocation.Height));
 			};
 
-			/* avoids double invokes at window level */
-			_area.AddEvents((int)GtkCoreWindowExtension.RequestedEvents);
-
 			ReplayPendingWindowStateChanges();
 
 			void CreateApp(ApplicationInitializationCallbackParams _)

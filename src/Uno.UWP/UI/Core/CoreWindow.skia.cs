@@ -9,6 +9,16 @@ namespace Windows.UI.Core
 {
 	public partial class CoreWindow
 	{
+		private ICoreWindowExtension _coreWindowExtension = default!; // Init in partial ctor.
+
+		public event TypedEventHandler<CoreWindow, KeyEventArgs>? KeyDown;
+		public event TypedEventHandler<CoreWindow, KeyEventArgs>? KeyUp;
+
+		partial void InitializePartial()
+		{
+			_coreWindowExtension = ApiExtensibility.CreateInstance<ICoreWindowExtension>(this);
+		}
+
 		internal event TypedEventHandler<CoreWindow, KeyEventArgs>? NativeKeyDownReceived;
 		internal event TypedEventHandler<CoreWindow, KeyEventArgs>? NativeKeyUpReceived;
 
@@ -27,16 +37,15 @@ namespace Windows.UI.Core
 		internal Size MeasureNativeElement(object owner, object content, Size size)
 			=> _coreWindowExtension.MeasureNativeElement(owner, content, size);
 
-		void ICoreWindowEvents.RaiseNativeKeyDownReceived(KeyEventArgs args)
+		internal void RaiseNativeKeyDownReceived(KeyEventArgs args)
 		{
 			NativeKeyDownReceived?.Invoke(this, args);
-			((ICoreWindowEvents)this).RaiseKeyDown(args);
+			KeyDown?.Invoke(this, args);
 		}
-
-		void ICoreWindowEvents.RaiseNativeKeyUpReceived(KeyEventArgs args)
+		internal void RaiseNativeKeyUpReceived(KeyEventArgs args)
 		{
 			NativeKeyUpReceived?.Invoke(this, args);
-			((ICoreWindowEvents)this).RaiseKeyUp(args);
+			KeyUp?.Invoke(this, args);
 		}
 	}
 }

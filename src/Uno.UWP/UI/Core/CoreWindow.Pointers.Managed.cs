@@ -22,8 +22,6 @@ public partial class CoreWindow
 	public event TypedEventHandler<CoreWindow, PointerEventArgs>? PointerReleased;
 	public event TypedEventHandler<CoreWindow, PointerEventArgs>? PointerWheelChanged;
 	public event TypedEventHandler<CoreWindow, PointerEventArgs>? PointerCancelled;
-	public event TypedEventHandler<CoreWindow, KeyEventArgs>? KeyDown;
-	public event TypedEventHandler<CoreWindow, KeyEventArgs>? KeyUp;
 
 	internal void SetPointerInputSource(IUnoCorePointerInputSource source)
 	{

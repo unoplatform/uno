@@ -35,7 +35,6 @@ namespace Uno.UI.Runtime.Skia
 			_owner = (CoreWindow)owner;
 
 			InitializeKeyboard();
-			InputManager.
 		}
 
 		partial void InitializeKeyboard();
