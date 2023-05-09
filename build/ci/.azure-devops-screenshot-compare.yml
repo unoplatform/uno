@@ -24,8 +24,7 @@ jobs:
 
   condition: or(succeeded(), and(failed(), ge(variables['System.StageAttempt'], 5)))
 
-  pool:
-    vmImage: ${{ parameters.vmImage }}
+  pool: ${{ parameters.poolName }}
 
 
   variables:

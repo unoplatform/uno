@@ -144,4 +144,4 @@ jobs:
 
 - template: build/ci/.azure-devops-screenshot-compare.yml
   parameters:
-    vmImage: '$(windows2022HostedVMImage)'
+    poolName: '$(windowsScaledPool)'
