@@ -7,6 +7,8 @@ using Private.Infrastructure;
 using Uno.Extensions;
 using Uno.UI.Extensions;
 using Uno.UI.RuntimeTests.Extensions;
+using Uno.UI.RuntimeTests.FlyoutPages;
+using Uno.UI.RuntimeTests.FramePages;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.UI;
 using Windows.UI.ViewManagement;
@@ -618,6 +620,30 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await TestServices.WindowHelper.WaitForIdle();
 
 			TestServices.WindowHelper.WindowContent = null;
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_PlacementTarget_Binding()
+		{
+			var SUT = new When_PlacementTarget_Binding();
+
+			try
+			{
+				SUT.DataContext = 42;
+
+				Assert.AreEqual(SUT.DataContext, SUT.myButton.Content);
+
+				SUT.contextFlyout.ShowAt(SUT.myButton);
+
+				await TestServices.WindowHelper.WaitForIdle();
+
+				Assert.AreEqual(SUT.DataContext, SUT.myButton.Content);
+			}
+			finally
+			{
+				SUT.contextFlyout.Close();
+			}
 		}
 
 		[TestMethod]
