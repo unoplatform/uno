@@ -350,7 +350,7 @@ namespace Windows.UI.Xaml.Controls
 		internal int CalculateOffsetFromMinDate(DateTime date)
 		{
 			var pIndex = 0;
-			DateTime estimatedDate = m_lastVisitedDateAndIndex.first.ToUniversalTime();
+			DateTime estimatedDate = m_lastVisitedDateAndIndex.first; //.ToUniversalTime(); - UNO
 			var pCalendar = GetCalendar();
 			global::System.Diagnostics.Debug.Assert(m_lastVisitedDateAndIndex.second != -1);
 

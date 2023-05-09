@@ -5,6 +5,7 @@ using Private.Infrastructure;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using Common;
+using Uno.UI.RuntimeTests;
 
 namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 {
@@ -16,20 +17,18 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 #if __MACOS__
 		[Ignore("Currently fails on macOS, part of #9282 epic")]
 #endif
+		[RunsOnUIThread]
 		public void VerifyFontFamilyForChevron()
 		{
 			Microsoft.UI.Xaml.Controls.ToggleSplitButton toggleSplitButton = null;
 			using (StyleHelper.UseFluentStyles())
 			{
-				RunOnUIThread.Execute(() =>
-				{
-					toggleSplitButton = new Microsoft.UI.Xaml.Controls.ToggleSplitButton();
-					TestServices.WindowHelper.WindowContent = toggleSplitButton;
+				toggleSplitButton = new Microsoft.UI.Xaml.Controls.ToggleSplitButton();
+				TestServices.WindowHelper.WindowContent = toggleSplitButton;
 
-					var secondayButton = toggleSplitButton.GetTemplateChild("SecondaryButton");
-					var font = ((secondayButton as Button).Content as TextBlock).FontFamily;
-					Verify.AreEqual((FontFamily)Application.Current.Resources["SymbolThemeFontFamily"], font);
-				});
+				var secondayButton = toggleSplitButton.GetTemplateChild("SecondaryButton");
+				var font = ((secondayButton as Button).Content as TextBlock).FontFamily;
+				Verify.AreEqual((FontFamily)Application.Current.Resources["SymbolThemeFontFamily"], font);
 			}
 		}
 	}

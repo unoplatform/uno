@@ -9,6 +9,10 @@ using Uno.Helpers;
 using Windows.Foundation;
 using Windows.UI.Core;
 
+#if NET7_0_OR_GREATER
+using NativeMethods = __Windows.UI.Popups.MessageDialog.NativeMethods;
+#endif
+
 namespace Windows.UI.Popups;
 
 public partial class MessageDialog

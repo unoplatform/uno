@@ -11,6 +11,7 @@ using Uno.AuthenticationBroker;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.Gaming.Input.Internal;
+using Uno.Helpers.Theming;
 using Uno.UI;
 using Windows.Devices.Sensors;
 using Windows.Gaming.Input;
@@ -66,6 +67,7 @@ namespace Windows.UI.Xaml
 		public override void OnAttachedToWindow()
 		{
 			base.OnAttachedToWindow();
+
 			// Cannot call this in ctor: see
 			// https://stackoverflow.com/questions/10593022/monodroid-error-when-calling-constructor-of-custom-view-twodscrollview#10603714
 			RaiseConfigurationChanges();
@@ -203,6 +205,7 @@ namespace Windows.UI.Xaml
 			}
 
 			base.OnCreate(bundle);
+			Windows.UI.Xaml.Window.Current.OnActivityCreated();
 
 			LayoutProvider = new LayoutProvider(this);
 			LayoutProvider.KeyboardChanged += OnKeyboardChanged;
@@ -284,7 +287,7 @@ namespace Windows.UI.Xaml
 			Xaml.Window.Current?.RaiseNativeSizeChanged();
 			ViewHelper.RefreshFontScale();
 			DisplayInformation.GetForCurrentView().HandleConfigurationChange();
-			Windows.UI.Xaml.Application.Current.OnSystemThemeChanged();
+			SystemThemeHelper.RefreshSystemTheme();
 		}
 
 #pragma warning disable CS0618 // deprecated members

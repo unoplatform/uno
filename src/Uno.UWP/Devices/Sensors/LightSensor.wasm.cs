@@ -3,6 +3,10 @@
 using System;
 using Uno;
 
+#if NET7_0_OR_GREATER
+using NativeMethods = __Windows.Devices.Sensors.LightSensor.NativeMethods;
+#endif
+
 namespace Windows.Devices.Sensors
 {
 	public partial class LightSensor

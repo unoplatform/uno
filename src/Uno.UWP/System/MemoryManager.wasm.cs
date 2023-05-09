@@ -2,6 +2,10 @@
 using System.Globalization;
 using Uno.Foundation;
 
+#if NET7_0_OR_GREATER
+using NativeMethods = __Windows.__System.MemoryManager.NativeMethods;
+#endif
+
 namespace Windows.System
 {
 	public partial class MemoryManager

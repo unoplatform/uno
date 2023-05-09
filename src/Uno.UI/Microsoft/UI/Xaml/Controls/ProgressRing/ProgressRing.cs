@@ -244,8 +244,11 @@ namespace Microsoft.UI.Xaml.Controls
 					}
 					else
 					{
-						_currentSourceUri = indeterminateSource == null ? FeatureConfiguration.ProgressRing.ProgressRingAsset : indeterminateSource.UriSource;
-						_player.Source.UriSource = _currentSourceUri;
+						_currentSourceUri = indeterminateSource is IAnimatedVisualSourceWithUri animatedVisualSourceWithUri ?
+							animatedVisualSourceWithUri.UriSource :
+							FeatureConfiguration.ProgressRing.ProgressRingAsset;
+
+						(_player.Source as IAnimatedVisualSourceWithUri)!.UriSource = _currentSourceUri;
 					}
 
 				}
@@ -277,8 +280,11 @@ namespace Microsoft.UI.Xaml.Controls
 					}
 					else
 					{
-						_currentSourceUri = determinateSource == null ? FeatureConfiguration.ProgressRing.DeterminateProgressRingAsset : determinateSource.UriSource;
-						_player.Source.UriSource = _currentSourceUri;
+						_currentSourceUri = determinateSource is IAnimatedVisualSourceWithUri animatedVisualSourceWithUri ?
+							animatedVisualSourceWithUri.UriSource :
+							FeatureConfiguration.ProgressRing.DeterminateProgressRingAsset;
+
+						(_player.Source as IAnimatedVisualSourceWithUri)!.UriSource = _currentSourceUri;
 					}
 
 				}

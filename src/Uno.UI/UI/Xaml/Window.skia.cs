@@ -78,5 +78,27 @@ namespace Windows.UI.Xaml
 				_rootBorder.Child = _content = content;
 			}
 		}
+
+		internal void DisplayFullscreen(UIElement content)
+		{
+			if (content == null)
+			{
+				FullWindowMediaRoot.Child = null;
+				if (_rootBorder != null)
+				{
+					_rootBorder.Visibility = Visibility.Visible;
+				}
+				FullWindowMediaRoot.Visibility = Visibility.Collapsed;
+			}
+			else
+			{
+				FullWindowMediaRoot.Visibility = Visibility.Visible;
+				if (_rootBorder != null)
+				{
+					_rootBorder.Visibility = Visibility.Collapsed;
+				}
+				FullWindowMediaRoot.Child = content;
+			}
+		}
 	}
 }

@@ -14,6 +14,10 @@ using Windows.Storage.Streams;
 using Uno.UI.Xaml.Media;
 using Path = global::System.IO.Path;
 
+#if NET7_0_OR_GREATER
+using NativeMethods = __Windows.UI.Xaml.Media.Imaging.BitmapImage.NativeMethods;
+#endif
+
 namespace Windows.UI.Xaml.Media.Imaging
 {
 	public sealed partial class BitmapImage : BitmapSource

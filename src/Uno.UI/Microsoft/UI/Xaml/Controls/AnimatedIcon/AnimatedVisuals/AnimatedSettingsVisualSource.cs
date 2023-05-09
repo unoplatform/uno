@@ -11,7 +11,6 @@ namespace Microsoft.UI.Xaml.Controls.AnimatedVisuals
 	public partial class AnimatedSettingsVisualSource : IAnimatedVisualSource2
 	{
 		public IReadOnlyDictionary<string, double> Markers => new Dictionary<string, double>();
-		public Uri UriSource { get; set; }
 		public void Load() { }
 		public Size Measure(Size availableSize) => availableSize;
 		public void Pause() { }

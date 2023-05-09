@@ -107,6 +107,40 @@ Exceptions are in line with UWP.
 
 This API is supported on iOS, Android and macOS, and the implementation does not respect the `LaunchQuerySupportType` parameter yet. It also reports the aforementioned special `ms-settings` URIs on Android and iOS as supported.
 
+#### Platform-specific requirements
+
+##### Android
+
+When targeting Android 11 (API 30) or newer, you may notice the `QueryUriSupportAsync` returning false. To avoid this, make sure to add any URL schemes passed to it as `<queries>` entries in your `AndroidManifest.xml`:
+
+```xml
+<queries>
+  <intent>
+    <action android:name="android.intent.action.VIEW" />
+    <data android:scheme="tel" />
+  </intent>
+
+  <intent>
+    <action android:name="android.intent.action.VIEW" />
+    <category android:name="android.intent.category.DEFAULT" />
+    <category android:name="android.intent.category.BROWSABLE" />
+    <data android:scheme="https" />
+  </intent>
+</queries>
+```
+
+##### iOS
+
+Add any URL schemes passed to `QueryUriSupportAsync` as `LSApplicationQueriesSchemes` entries in your `Info.plist` file, otherwise, it will return false:
+
+```xml
+<key>LSApplicationQueriesSchemes</key>
+<array>
+  <string>tel</string>
+  <string>https</string>
+</array>
+```
+
 #### Exceptions
 
 - When `uri` argument is `null`, `NullReferenceException` is thrown. Note this differs from UWP where a plain `Exception` with HRESULT is thrown.

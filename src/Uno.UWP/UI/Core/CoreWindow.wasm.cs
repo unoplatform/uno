@@ -1,4 +1,8 @@
-using Uno.Foundation;
+﻿using Uno.Foundation;
+
+#if NET7_0_OR_GREATER
+using NativeMethods = __Windows.UI.Core.CoreWindow.NativeMethods;
+#endif
 
 namespace Windows.UI.Core
 {

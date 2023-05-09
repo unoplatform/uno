@@ -16,10 +16,12 @@ namespace Windows.Media.Playback
 				if (value < TimeSpan.Zero)
 				{
 					_position = TimeSpan.Zero;
+					UpdateTimePositionRate = 0;
 				}
 				else if (value > NaturalDuration)
 				{
 					_position = NaturalDuration;
+					UpdateTimePositionRate = 0;
 				}
 				else
 				{
@@ -38,10 +40,12 @@ namespace Windows.Media.Playback
 				if (value < TimeSpan.Zero)
 				{
 					_position = TimeSpan.Zero;
+					UpdateTimePositionRate = 0;
 				}
 				else if (value > NaturalDuration)
 				{
 					_position = NaturalDuration;
+					UpdateTimePositionRate = 0;
 				}
 				else
 				{
@@ -62,6 +66,10 @@ namespace Windows.Media.Playback
 				NaturalDurationChanged?.Invoke(this, _naturalDuration);
 			}
 		}
+
+		public bool IsUpdateTimePosition { get; set; }
+
+		public double UpdateTimePositionRate { get; set; }
 
 		private double _bufferingProgress;
 		public double BufferingProgress

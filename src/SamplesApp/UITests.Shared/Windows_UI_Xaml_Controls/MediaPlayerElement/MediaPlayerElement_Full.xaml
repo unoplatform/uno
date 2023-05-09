@@ -1,15 +1,14 @@
 ﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.MediaPlayerElement.MediaPlayerElement_Full"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-
-    <Grid>
+	<Grid>
 		<Grid.RowDefinitions>
-			<RowDefinition Height="*" />
-			<RowDefinition Height="2*" />
+			<RowDefinition Height="7*" />
+			<RowDefinition Height="3*" />
 		</Grid.RowDefinitions>
 
 		<MediaPlayerElement x:Name="Mpe"
-							Source="https://bitmovin-a.akamaihd.net/content/sintel/hls/playlist.m3u8"
+							Source="https://ia800201.us.archive.org/12/items/BigBuckBunny_328/BigBuckBunny_512kb.mp4"
 							PosterSource="https://bitmovin-a.akamaihd.net/content/sintel/poster.png"
 							AreTransportControlsEnabled="{Binding IsChecked, ElementName=AreTransportControlsEnabled}"
 							AutoPlay="{Binding IsChecked, ElementName=AutoPlay}">
@@ -39,14 +38,16 @@
 										IsVolumeButtonVisible="{Binding IsChecked, ElementName=IsVolumeButtonVisible}"
 										IsVolumeEnabled="{Binding IsChecked, ElementName=IsVolumeEnabled}"
 										IsZoomButtonVisible="{Binding IsChecked, ElementName=IsZoomButtonVisible}"
-										IsZoomEnabled="{Binding IsChecked, ElementName=IsZoomEnabled}" />
+										IsZoomEnabled="{Binding IsChecked, ElementName=IsZoomEnabled}"
+										IsCompactOverlayButtonVisible="{Binding IsChecked, ElementName=IsCompactOverlayButtonVisible}"
+										IsCompactOverlayEnabled="{Binding IsChecked, ElementName=IsCompactOverlayEnabled}"
+										/>
 			</MediaPlayerElement.TransportControls>
 		</MediaPlayerElement>
 
 		<ScrollViewer Grid.Row="1"
 					  Margin="10,20">
 			<StackPanel>
-
 				<CheckBox x:Name="AreTransportControlsEnabled"
 						  IsChecked="True"
 						  Content="AreTransportControlsEnabled" />
@@ -58,6 +59,14 @@
 				<CheckBox x:Name="IsCompact"
 						  IsChecked="False"
 						  Content="IsCompact" />
+
+				<CheckBox x:Name="IsCompactOverlayButtonVisible"
+						  IsChecked="True"
+						  Content="IsCompactOverlayButtonVisible" />
+
+				<CheckBox x:Name="IsCompactOverlayEnabled"
+						  IsChecked="True"
+						  Content="IsCompactOverlayEnabled" />
 				
 				<CheckBox x:Name="ShowAndHideAutomatically"
 						  IsChecked="True"
@@ -90,11 +99,15 @@
 				<CheckBox x:Name="IsNextTrackButtonVisible"
 						  IsChecked="False"
 						  Content="IsNextTrackButtonVisible" />
-				
+
 				<CheckBox x:Name="IsPlaybackRateButtonVisible"
 						  IsChecked="False"
 						  Content="IsPlaybackRateButtonVisible" />
-				
+
+				<CheckBox x:Name="IsPlaybackRateEnabled"
+						  IsChecked="False"
+						  Content="IsPlaybackRateEnabled" />
+
 				<CheckBox x:Name="IsPreviousTrackButtonVisible"
 						  IsChecked="False"
 						  Content="IsPreviousTrackButtonVisible" />

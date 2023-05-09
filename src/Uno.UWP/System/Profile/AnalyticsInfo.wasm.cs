@@ -2,6 +2,10 @@
 using Uno.Foundation;
 using Windows.System.Profile.Internal;
 
+#if NET7_0_OR_GREATER
+using NativeMethods = __Windows.__System.Profile.AnalyticsInfo.NativeMethods;
+#endif
+
 namespace Windows.System.Profile
 {
 	public static partial class AnalyticsInfo

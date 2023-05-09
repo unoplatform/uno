@@ -25,6 +25,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public TextBlock()
 		{
+			SetDefaultForeground(ForegroundProperty);
 			_textVisual = new TextVisual(Visual.Compositor, this);
 
 			Visual.Children.InsertAtBottom(_textVisual);

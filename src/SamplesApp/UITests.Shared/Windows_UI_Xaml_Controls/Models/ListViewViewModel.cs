@@ -306,6 +306,8 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.Models
 
 		public int[] SampleItemsLong { get; } = Enumerable.Range(1, 2000).Select(i => i * 10000).ToArray();
 
+		public int[] SampleItemsMed { get; } = Enumerable.Range(1, 500).ToArray();
+
 		public double[] WidthChoices { get; } = Enumerable.Range(1, 5).Select(i => i * 100d).ToArray();
 
 		public Color[] SampleColors { get; } = CreateColorSeries();

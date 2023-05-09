@@ -2,10 +2,10 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Media.Playback
 {
-	#if false || false || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false
-	[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	#if false || false || false || false
+	[global::Uno.NotImplemented("NET461", "__SKIA__", "__NETSTD_REFERENCE__")]
 	#endif
-	public  partial class MediaPlaybackSession 
+	public  partial class MediaPlaybackSession
 	{
 		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]

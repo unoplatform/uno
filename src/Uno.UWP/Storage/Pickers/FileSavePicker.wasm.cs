@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -12,6 +12,10 @@ using Uno.Helpers.Serialization;
 using Uno.Storage.Internal;
 using Uno.Storage.Pickers;
 using Uno.Storage.Pickers.Internal;
+
+#if NET7_0_OR_GREATER
+using NativeMethods = __Windows.Storage.Pickers.FileSavePicker.NativeMethods;
+#endif
 
 namespace Windows.Storage.Pickers
 {

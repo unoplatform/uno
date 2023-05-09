@@ -17,6 +17,7 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Text;
 using Uno.UI;
 using Uno.UI.Xaml;
+using Uno.UI.Xaml.Media;
 
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
@@ -45,11 +46,12 @@ using BaseClass = Windows.UI.Xaml.DependencyObject;
 
 namespace Windows.UI.Xaml.Documents
 {
-	public abstract partial class TextElement : BaseClass
+	public abstract partial class TextElement : BaseClass, IThemeChangeAware
 	{
 #if !__WASM__
 		public TextElement()
 		{
+			SetDefaultForeground(ForegroundProperty);
 			InitializeBinder();
 		}
 #endif
@@ -333,5 +335,14 @@ namespace Windows.UI.Xaml.Documents
 
 			return parent as FrameworkElement;
 		}
+
+		public void OnThemeChanged() => SetDefaultForeground(ForegroundProperty);
+
+#if !__WASM__
+		private void SetDefaultForeground(DependencyProperty foregroundProperty)
+		{
+			this.SetValue(foregroundProperty, DefaultBrushes.TextForegroundBrush, DependencyPropertyValuePrecedences.DefaultValue);
+		}
+#endif
 	}
 }

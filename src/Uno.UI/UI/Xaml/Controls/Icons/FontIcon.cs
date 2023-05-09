@@ -211,6 +211,13 @@ public partial class FontIcon : IconElement
 		}
 	}
 
-	private protected override void OnForegroundChanged(DependencyPropertyChangedEventArgs e) =>
-		_textBlock.Foreground = (Brush)e.NewValue;
+	private protected override void OnForegroundChanged(DependencyPropertyChangedEventArgs e)
+	{
+		// This may occur while executing the base constructor
+		// so _textBlock may still be null.
+		if (_textBlock is not null)
+		{
+			_textBlock.Foreground = (Brush)e.NewValue;
+		}
+	}
 }

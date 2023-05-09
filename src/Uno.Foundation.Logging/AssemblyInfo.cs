@@ -28,6 +28,7 @@ using global::System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("SamplesApp.Skia.Tizen")]
 [assembly: InternalsVisibleTo("Uno.UI.RuntimeTests")]
 [assembly: InternalsVisibleTo("Uno.UI.Foldable")]
+[assembly: InternalsVisibleTo("Uno.UI.MediaPlayer.WebAssembly")]
 [assembly: InternalsVisibleTo("SamplesApp.Wasm")]
 [assembly: InternalsVisibleTo("SamplesApp.Skia")]
 [assembly: InternalsVisibleTo("SamplesApp")]
