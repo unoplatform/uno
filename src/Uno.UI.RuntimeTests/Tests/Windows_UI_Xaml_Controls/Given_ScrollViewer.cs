@@ -461,6 +461,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[RequiresFullWindow]
 		public async Task When_ChangeView_Offset()
 		{
 			const double offset = 100;
@@ -494,16 +495,26 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			scroll.Content = stackPanel;
 
-			WindowHelper.WindowContent = scroll;
+			try
+			{
 
-			await WindowHelper.WaitForLoaded(scroll);
+				var container = new Border() { Child = scroll };
 
-			_ = scroll.ChangeView(null, offset, null, true);
+				WindowHelper.WindowContent = container;
 
-			await WindowHelper.WaitFor(() => scrollChanged);
+				await WindowHelper.WaitForLoaded(scroll);
 
-			var loc = target.TransformToVisual(scroll).TransformPoint(new Point(0, 0));
-			Assert.AreEqual(offset, loc.Y);
+				_ = scroll.ChangeView(null, offset, null, true);
+
+				await WindowHelper.WaitFor(() => scrollChanged);
+
+				var loc = target.TransformToVisual(scroll).TransformPoint(new Point(0, 0));
+				Assert.AreEqual(offset, loc.Y);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
 		}
 
 
