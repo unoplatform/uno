@@ -43,6 +43,13 @@ namespace Windows.UI.Xaml.Controls
 
 	public partial class TextBox : Control, IFrameworkTemplatePoolAware
 	{
+		/// <summary>
+		/// This is a workaround for the template pooling issue where we change IsChecked when the template is recycled.
+		/// This prevents incorrect event raising but is not a "real" solution. Pooling could still cause issues.
+		/// This workaround can be removed if pooling is removed. See https://github.com/unoplatform/uno/issues/12189
+		/// </summary>
+		private bool _suppressTextChanged;
+
 #pragma warning disable CS0067, CS0649
 		private IFrameworkElement _placeHolder;
 		private ContentControl _contentElement;
@@ -304,13 +311,17 @@ namespace Windows.UI.Xaml.Controls
 			{
 				_isInvokingTextChanged = true;
 				_isTextChangedPending = false;
-				TextChanged?.Invoke(this, new TextChangedEventArgs(this));
+				if (!_suppressTextChanged) // This workaround can be removed if pooling is removed. See https://github.com/unoplatform/uno/issues/12189
+				{
+					TextChanged?.Invoke(this, new TextChangedEventArgs(this));
+				}
 			}
 #if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
 			finally
 #endif
 			{
 				_isInvokingTextChanged = false;
+				_suppressTextChanged = false;
 			}
 		}
 
@@ -1050,6 +1061,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public void OnTemplateRecycled()
 		{
+			_suppressTextChanged = true;
 			Text = string.Empty;
 		}
 
