@@ -70,7 +70,7 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 					//{
 					//	this.Log().Debug($"OnPrepared: {mp.VideoWidth}x{mp.VideoHeight}");
 					//}
-
+					mp.UpdateVideoStretch();
 					Events?.RaiseVideoRatioChanged(global::System.Math.Max(1, (double)mp.Ratio));
 				}
 				catch { }

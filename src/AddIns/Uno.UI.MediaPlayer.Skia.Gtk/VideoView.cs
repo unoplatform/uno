@@ -14,6 +14,8 @@ namespace LibVLCSharp.GTK
 	/// </summary>
 	public class VideoView : DrawingArea, IVideoView
 	{
+		int _videoHeight;
+		int _videoWidth;
 		struct Native
 		{
 			[DllImport("libgdk-3-0.dll", CallingConvention = CallingConvention.Cdecl)]
@@ -139,6 +141,46 @@ namespace LibVLCSharp.GTK
 			{
 				throw new PlatformNotSupportedException();
 			}
+		}
+		protected override void OnGetPreferredHeight(out int minimum_height, out int natural_height)
+		{
+			minimum_height = 0;
+			natural_height = _videoHeight;
+		}
+
+		protected override void OnGetPreferredWidth(out int minimum_width, out int natural_width)
+		{
+			minimum_width = 0;
+			natural_width = _videoWidth;
+		}
+		protected override void OnAdjustSizeRequest(Orientation orientation, out int minimum_size, out int natural_size)
+		{
+			//minimum_size = 0;
+			//natural_size = _videoHeight;
+			base.OnAdjustSizeRequest(orientation, out minimum_size, out natural_size);
+		}
+		protected override SizeRequestMode OnGetRequestMode() => SizeRequestMode.WidthForHeight;
+		protected override void OnGetPreferredHeightAndBaselineForWidth(int width, out int minimum_height, out int natural_height, out int minimum_baseline, out int natural_baseline)
+		{
+			minimum_height = 100;
+			natural_height = _videoHeight;
+			minimum_baseline = 100;
+			natural_baseline = 100;
+		}
+		protected override void OnGetPreferredHeightForWidth(int width, out int minimum_height, out int natural_height)
+		{
+			minimum_height = 0;
+			natural_height = _videoHeight;
+		}
+		protected override void OnGetPreferredWidthForHeight(int height, out int minimum_width, out int natural_width)
+		{
+			minimum_width = 0;
+			natural_width = _videoWidth;
+		}
+		public void SetNaturalSize(int videoHeight, int videoWidth)
+		{
+			_videoHeight = videoHeight;
+			_videoWidth = videoWidth;
 		}
 	}
 }

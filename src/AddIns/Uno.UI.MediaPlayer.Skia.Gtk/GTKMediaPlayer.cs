@@ -15,6 +15,8 @@ using System.Globalization;
 using System.Collections.Immutable;
 using System.IO;
 using Uno.Extensions;
+using Windows.Foundation;
+using Windows.UI.Xaml.Media;
 
 namespace Uno.UI.Media;
 
@@ -22,8 +24,11 @@ public partial class GTKMediaPlayer : Button
 {
 	private LibVLC? _libvlc;
 	private LibVLCSharp.Shared.MediaPlayer? _mediaPlayer;
+	private ContentControl _videoContainer;
 	private VideoView? _videoView;
 	private double _ratio;
+	//public int VideoHeight;
+	//public int VideoWidth;
 	public double Duration { get; set; }
 	private readonly ImmutableArray<string> audioTagAllowedFormats = ImmutableArray.Create(new string[] { ".MP3", ".WAV" });
 	private readonly ImmutableArray<string> videoTagAllowedFormats = ImmutableArray.Create(new string[] { ".MP4", ".WEBM", ".OGG" });
@@ -58,26 +63,36 @@ public partial class GTKMediaPlayer : Button
 		//	this.Log().Debug("Adding media elements");
 		//}
 
-		Loaded += OnLoaded;
-		Unloaded += OnUnloaded;
+		//Loaded += OnLoaded;
+		//Unloaded += OnUnloaded;
 		//RaiseLoaded();
 		Initialized();
+
+		SizeChanged += GTKMediaPlayer_SizeChanged;
 	}
 
+	private void GTKMediaPlayer_SizeChanged(object sender, SizeChangedEventArgs args)
+	{
+		UpdateVideoStretch();
+	}
 
 	public void Play()
 	{
 		if (_videoView != null && _mediaPlayer != null)
 		{
+			Console.WriteLine($"Play");
 			_mediaPlayer.Play();
 			_videoView.Visible = true;
+			//_videoView?.SizeAllocate(new(0, 0, (int)416, (int)240));
 		}
+		//UpdateVideoStretch();
 	}
 
 	public void Stop()
 	{
 		if (_videoView != null && _mediaPlayer != null)
 		{
+			Console.WriteLine($"Stop");
 			_mediaPlayer.Stop();
 			_videoView.Visible = false;
 		}
@@ -87,6 +102,7 @@ public partial class GTKMediaPlayer : Button
 	{
 		if (_videoView != null && _mediaPlayer != null)
 		{
+			Console.WriteLine($"Pause");
 			_mediaPlayer.Pause();
 			_videoView.Visible = true;
 		}
@@ -96,6 +112,7 @@ public partial class GTKMediaPlayer : Button
 	{
 		if (_videoView != null && _mediaPlayer != null)
 		{
+			Console.WriteLine($"SetVolume ({volume})");
 			_mediaPlayer.Volume = volume;
 			_videoView.Visible = true;
 		}
@@ -115,66 +132,137 @@ public partial class GTKMediaPlayer : Button
 
 	internal void UpdateVideoStretch()
 	{
-		Console.WriteLine("UpdateVideoStretch");
-		//_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-		//{
-		if (_videoView != null && _mediaPlayer != null && _mediaPlayer.Media != null)
+		_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 		{
-			try
+			if (_videoView != null && _mediaPlayer != null && _mediaPlayer.Media != null)
 			{
-				_mediaPlayer.Media.Parse(MediaParseOptions.ParseNetwork);
-				var width = _videoView.AllocatedWidth;
-				var height = _videoView.AllocatedHeight;
-				// var parentRatio = (double)width / global::System.Math.Max(1, height);
-
-				Console.WriteLine($"MediaPlayer {width} x {width}");
-				while (_mediaPlayer.Media.Tracks != null && !_mediaPlayer.Media.Tracks.Any(track => track.TrackType == TrackType.Video))
+				try
 				{
-					Thread.Sleep(100);
-				}
+
+					var width = _videoView.AllocatedWidth;
+					var height = _videoView.AllocatedHeight;
+					var parentRatio = (double)width / global::System.Math.Max(1, height);
 
 
-				if (_mediaPlayer.Media.Tracks != null && _mediaPlayer.Media.Tracks.Any(track => track.TrackType == TrackType.Video))
-				{
+					_mediaPlayer.Media.Parse(MediaParseOptions.ParseNetwork);
+					while (!_mediaPlayer.Media.Tracks.Any(track => track.TrackType == TrackType.Video))
+					{
+						Thread.Sleep(100);
+					}
+					// Obtém a faixa de vídeo
 					var videoTrack = _mediaPlayer.Media.Tracks.FirstOrDefault(track => track.TrackType == TrackType.Video);
-					var videoSettings = videoTrack.Data.Video;
-					var videoWidth = videoSettings.Width;
-					var videoHeight = videoSettings.Height;
 
-					if (videoWidth == 0 || videoHeight == 0)
+					if (_mediaPlayer.Media.Tracks.Any(track => track.TrackType == TrackType.Video))
 					{
-						return;
-					}
-					if (videoWidth == 0 || videoHeight == 0)
-					{
-						return;
-					}
-					if (width == 1)
-					{
-						width = (int)videoWidth;
-					}
 
-					Ratio = (double)videoWidth / global::System.Math.Max(1, videoHeight);
-					height = (int)(videoWidth / Ratio);
+						var videoSettings = videoTrack.Data.Video;
+						var videoWidth = videoSettings.Width;
+						var videoHeight = videoSettings.Height;
 
-					Console.WriteLine($"Video Ratio {Ratio}");
-					Console.WriteLine($"VideoView SizeAllocate after Video Ratio {width} x {width}");
-					_videoView?.SizeAllocate(new(100, 100, width, height));
+						if (videoWidth == 0 || videoHeight == 0)
+						{
+							return;
+						}
+						UIElement? container = VisualTreeHelper.GetParent(_videoContainer) as UIElement;
+						UIElement? containerGrid = VisualTreeHelper.GetParent(container) as UIElement;
+						if (container != null)
+						{
 
-					Console.WriteLine($"After VideoView SizeAllocate: {width},  Altura: {height}");
+							//Point relativeLocation = _videoContainer.TransformToVisual(new Point(0, 0), container!);
+							Point pagePosition = _videoContainer.TransformToVisual(container).TransformPoint(new Point(0, 0));
 
-					if (_videoView != null)
-					{
-						_videoView.Visible = true;
+							//relative to the page
+							pagePosition = container.TransformToVisual(null).TransformPoint(new Point(0, 0));
+
+							//containerGrid.Background = new SolidColorBrush(Colors.Yellow);
+							_videoView?.SizeAllocate(new((int)pagePosition.X, (int)pagePosition.Y, (int)videoWidth, (int)videoHeight));
+						}
+
+						//_videoView?.SetNaturalSize((int)videoHeight, (int)videoWidth);
+						_videoContainer.Height = (int)videoHeight;
+						_videoContainer.Width = (int)videoWidth;
+						//_videoView?.SizeAllocate(new(0, 0, (int)_videoContainer.Width, (int)_videoContainer.Height));
+
+						Console.WriteLine($"Largura: {width},  Altura: {height}");
 					}
 				}
+				finally
+				{
+				}
 			}
-			finally
-			{
-			}
-		}
-		//});
+		});
 	}
+
+	protected override Size ArrangeOverride(Size finalSize)
+	{
+		UpdateVideoStretch();
+		return base.ArrangeOverride(finalSize);
+	}
+
+	//internal void UpdateVideoStretch()
+	//{
+	//	Console.WriteLine("UpdateVideoStretch");
+	//	//_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+	//	//{
+	//	if (_videoView != null && _mediaPlayer != null && _mediaPlayer.Media != null)
+	//	{
+	//		try
+	//		{
+	//			_mediaPlayer.Media.Parse(MediaParseOptions.ParseNetwork);
+	//			var width = _videoView.AllocatedWidth;
+	//			var height = _videoView.AllocatedHeight;
+	//			// var parentRatio = (double)width / global::System.Math.Max(1, height);
+
+	//			Console.WriteLine($"MediaPlayer {width} x {width}");
+	//			while (_mediaPlayer.Media.Tracks != null && !_mediaPlayer.Media.Tracks.Any(track => track.TrackType == TrackType.Video))
+	//			{
+	//				Thread.Sleep(100);
+	//			}
+
+
+	//			if (_mediaPlayer.Media.Tracks != null && _mediaPlayer.Media.Tracks.Any(track => track.TrackType == TrackType.Video))
+	//			{
+	//				var videoTrack = _mediaPlayer.Media.Tracks.FirstOrDefault(track => track.TrackType == TrackType.Video);
+	//				var videoSettings = videoTrack.Data.Video;
+	//				var videoWidth = videoSettings.Width;
+	//				var videoHeight = videoSettings.Height;
+
+	//				if (videoWidth == 0 || videoHeight == 0)
+	//				{
+	//					return;
+	//				}
+	//				if (videoWidth == 0 || videoHeight == 0)
+	//				{
+	//					return;
+	//				}
+	//				if (width == 1)
+	//				{
+	//					width = (int)videoWidth;
+	//				}
+
+	//				Ratio = (double)videoWidth / global::System.Math.Max(1, videoHeight);
+	//				height = (int)(videoWidth / Ratio);
+
+	//				Console.WriteLine($"Video Ratio {Ratio}");
+	//				Console.WriteLine($"VideoView SizeAllocate after Video Ratio {width} x {width}");
+	//				_videoView?.SizeAllocate(new(100, 100, (int)width, (int)height));
+
+	//				Console.WriteLine($"After VideoView SizeAllocate: {width},  Altura: {height}");
+
+	//				if (_videoView != null)
+	//				{
+	//					_videoView.Visible = true;
+	//				}
+	//			}
+	//		}
+	//		finally
+	//		{
+	//		}
+	//	}
+	//	//});
+	//}
+
+
 	private double _playbackRate;
 	public double PlaybackRate
 	{

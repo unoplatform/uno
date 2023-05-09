@@ -14,6 +14,7 @@ using Windows.UI.Notifications;
 using Uno.Extensions;
 using Uno.Logging;
 using Pango;
+using Windows.UI.Xaml.Media;
 
 namespace Uno.UI.Media;
 
@@ -80,7 +81,10 @@ public partial class GTKMediaPlayer : Button
 		//{
 		//	this.Log().Debug($"GTKMediaPlayer Loaded");
 		//}
-
+		if (_mediaPlayer != null && _libvlc != null)
+		{
+			return;
+		}
 		Console.WriteLine("GTKMediaPlayer OnLoaded");
 		SourceLoaded += OnSourceVideoLoaded;
 		Console.WriteLine("Creating libvlc");
@@ -109,8 +113,6 @@ public partial class GTKMediaPlayer : Button
 				};
 				Console.WriteLine("Content _videoView on Dispatcher");
 				Content = _videoView;
-
-				//_videoView?.SizeAllocate(new(0, 0, 800, 640));
 				UpdateVideoStretch();
 				Console.WriteLine("Created player");
 			});
@@ -143,38 +145,50 @@ public partial class GTKMediaPlayer : Button
 		Console.WriteLine("Creating VideoView");
 		_videoView = new LibVLCSharp.GTK.VideoView();
 
+		_videoContainer = new ContentControl
+		{
+			HorizontalAlignment = HorizontalAlignment.Center,
+			VerticalAlignment = VerticalAlignment.Center,
+			HorizontalContentAlignment = HorizontalAlignment.Stretch,
+			VerticalContentAlignment = VerticalAlignment.Stretch,
+		};
 
 		_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+{
+	Console.WriteLine("Set MediaPlayer");
+	_videoView.MediaPlayer = _mediaPlayer;
+
+	_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+	{
+
+		_videoView.Visible = true;
+		_videoView.MediaPlayer = _mediaPlayer;
+		_mediaPlayer.Stopped += (sender, e) =>
 		{
-			Console.WriteLine("Set MediaPlayer");
-			_videoView.MediaPlayer = _mediaPlayer;
+			_videoView.Visible = false;
+		};
+		//Starts playing
+		var media = new LibVLCSharp.Shared.Media(
+			_libvlc,
+			new Uri("https://ia800201.us.archive.org/12/items/BigBuckBunny_328/BigBuckBunny_512kb.mp4")
+		);
 
-			_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-			{
+		media.Parse(MediaParseOptions.ParseNetwork);
+		_videoView.MediaPlayer.Media = media;
 
-				_videoView.Visible = true;
-				_videoView.MediaPlayer = _mediaPlayer;
-				_mediaPlayer.Stopped += (sender, e) =>
-				{
-					_videoView.Visible = false;
-				};
-				//Starts playing
-				var media = new LibVLCSharp.Shared.Media(
-					_libvlc,
-					new Uri("https://ia800201.us.archive.org/12/items/BigBuckBunny_328/BigBuckBunny_512kb.mp4")
-				);
+		Console.WriteLine("Content _videoView on Dispatcher");
+		_videoContainer.Content = _videoView;
+		//_videoContainer.Height = 300;
+		//_videoContainer.Width = 450;
+		Content = _videoContainer;
 
-				media.Parse(MediaParseOptions.ParseNetwork);
-				_videoView.MediaPlayer.Media = media;
 
-				Console.WriteLine("Content _videoView on Dispatcher");
-				Content = _videoView;
 
-				_videoView?.SizeAllocate(new(0, 0, 800, 640));
-				UpdateVideoStretch();
-				Console.WriteLine("Created player");
-			});
-		});
+
+		UpdateVideoStretch();
+		Console.WriteLine("Created player");
+	});
+});
 
 
 
