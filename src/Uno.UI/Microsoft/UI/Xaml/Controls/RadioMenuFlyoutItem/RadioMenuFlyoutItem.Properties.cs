@@ -11,7 +11,7 @@ namespace Microsoft.UI.Xaml.Controls
 		public static bool GetAreCheckStatesEnabled(DependencyObject obj) => (bool)obj.GetValue(AreCheckStatesEnabledProperty);
 		public static void SetAreCheckStatesEnabled(DependencyObject obj, bool value) => obj.SetValue(AreCheckStatesEnabledProperty, value);
 
-		public static DependencyProperty AreCheckStatesEnabledProperty { get; }=
+		public static DependencyProperty AreCheckStatesEnabledProperty { get; } =
 			DependencyProperty.RegisterAttached("AreCheckStatesEnabled", typeof(bool), typeof(RadioMenuFlyoutItem), new FrameworkPropertyMetadata(false, OnAreCheckStatesEnabledPropertyChanged));
 
 		public string GroupName
