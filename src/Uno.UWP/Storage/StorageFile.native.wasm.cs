@@ -26,7 +26,9 @@ namespace Windows.Storage
 
 		internal sealed class NativeStorageFile : ImplementationBase
 		{
+#if !NET7_0_OR_GREATER
 			private const string JsType = "Uno.Storage.NativeStorageFile";
+#endif
 
 			// Used to keep track of the File handle on the Typescript side.
 			private readonly Guid _id;
@@ -60,7 +62,13 @@ namespace Windows.Storage
 
 			public override async Task<BasicProperties> GetBasicPropertiesAsync(CancellationToken ct)
 			{
-				var basicPropertiesString = await WebAssemblyRuntime.InvokeAsync($"{JsType}.getBasicPropertiesAsync(\"{_id}\")");
+				var basicPropertiesString = await
+#if NET7_0_OR_GREATER
+					NativeMethods.GetBasicPropertiesAsync(_id.ToString());
+#else
+					WebAssemblyRuntime.InvokeAsync($"{JsType}.getBasicPropertiesAsync(\"{_id}\")");
+#endif
+
 				var parts = basicPropertiesString.Split('|');
 
 				ulong.TryParse(parts[0], out ulong size);
