@@ -18,6 +18,8 @@ using Uno.Extensions;
 using Windows.Foundation;
 using Windows.UI.Xaml.Media;
 using Point = Windows.Foundation.Point;
+using Pango;
+using Uno.UI.Extensions;
 
 namespace Uno.UI.Media;
 
@@ -28,6 +30,7 @@ public partial class GTKMediaPlayer : Border
 	private ContentControl? _videoContainer;
 	private VideoView? _videoView;
 	private double _ratio;
+	private int _transportControlAdjust = 94;
 	//public int VideoHeight;
 	//public int VideoWidth;
 	public double Duration { get; set; }
@@ -81,12 +84,16 @@ public partial class GTKMediaPlayer : Border
 	{
 		if (_videoView != null && _mediaPlayer != null)
 		{
+			UpdateVideoStretch();
 			Console.WriteLine($"Play");
 			_mediaPlayer.Play();
 			_videoView.Visible = true;
-			//_videoView?.SizeAllocate(new(0, 0, (int)416, (int)240));
 		}
-		//UpdateVideoStretch();
+	}
+
+	public void IsCompactChange()
+	{
+		UpdateVideoStretch();
 	}
 
 	public void Stop()
@@ -146,9 +153,10 @@ public partial class GTKMediaPlayer : Border
 			try
 			{
 				if (_videoView != null &&
-			_mediaPlayer != null &&
-			_mediaPlayer.Media != null &&
-			_videoContainer is not null)
+						_mediaPlayer != null &&
+						_mediaPlayer.Media != null &&
+						_mediaPlayer.Media.Mrl != null &&
+						_videoContainer is not null)
 				{
 					if (this.ActualHeight <= 0 || this.ActualWidth <= 0)
 					{
@@ -156,19 +164,17 @@ public partial class GTKMediaPlayer : Border
 					}
 
 
-					var width = _videoView.AllocatedWidth;
-					var height = _videoView.AllocatedHeight;
-					var parentRatio = (double)width / global::System.Math.Max(1, height);
-
-					var playerRatio = (double)this.ActualHeight / (double)this.ActualWidth;
-
+					UpdateTransportControlHeight();
+					var playerHeight = (double)this.ActualHeight - _transportControlAdjust;
+					var playerWidth = (double)this.ActualWidth;
+					var playerRatio = playerHeight / playerWidth;
 
 					_mediaPlayer.Media.Parse(MediaParseOptions.ParseNetwork);
 					while (!_mediaPlayer.Media.Tracks.Any(track => track.TrackType == TrackType.Video))
 					{
 						Thread.Sleep(100);
 					}
-					// Obtém a faixa de vídeo
+
 					var videoTrack = _mediaPlayer.Media.Tracks.FirstOrDefault(track => track.TrackType == TrackType.Video);
 
 					if (_mediaPlayer.Media.Tracks.Any(track => track.TrackType == TrackType.Video))
@@ -184,20 +190,18 @@ public partial class GTKMediaPlayer : Border
 						}
 						var videoRatio = (double)videoHeight / (double)videoWidth;
 
-						var newHeight = (videoRatio > playerRatio) ? this.ActualHeight : this.ActualWidth * videoRatio;
-						var newWidth = (videoRatio > playerRatio) ? this.ActualHeight / videoRatio : this.ActualWidth;
-
+						var newHeight = (int)Math.Floor((videoRatio > playerRatio) ? playerHeight : playerWidth * Math.Round(videoRatio, 4));
+						var newWidth = (int)Math.Ceiling((videoRatio > playerRatio) ? (playerHeight / videoRatio) : playerWidth);
 
 						var root = (_videoContainer.XamlRoot?.Content as UIElement)!;
 
-						var topInset = (this.ActualHeight - newHeight) / 2;
-						var leftInset = (this.ActualWidth - newWidth) / 2;
+						var topInset = (playerHeight - newHeight) / 2;
+						var leftInset = (playerWidth - newWidth) / 2;
+
 						Point pagePosition = this.TransformToVisual(root).TransformPoint(new Point(leftInset, topInset));
+						_videoView?.SizeAllocate(new((int)pagePosition.X, (int)pagePosition.Y, newWidth, newHeight));
 
-						_videoView?.SizeAllocate(new((int)pagePosition.X, (int)pagePosition.Y, (int)newWidth, (int)newHeight));
-						_videoView?.SetNaturalSize((int)newHeight, (int)newWidth);
-
-						Console.WriteLine($"Largura: {width},  Altura: {height}");
+						Console.WriteLine($"Width: {newWidth},  Height: {newHeight}");
 					}
 				}
 			}
@@ -212,78 +216,33 @@ public partial class GTKMediaPlayer : Border
 			}
 		});
 	}
+	protected void UpdateTransportControlHeight()
+	{
+		UIElement? container = VisualTreeHelper.GetParent(_videoContainer) as UIElement;
+		ContentPresenter? ContentPresenter = VisualTreeHelper.GetParent(container) as ContentPresenter;
+		ContentControl? ContentControl = VisualTreeHelper.GetParent(ContentPresenter) as ContentControl;
+		MediaPlayerPresenter? MediaPlayerPresenter = VisualTreeHelper.GetParent(ContentControl) as MediaPlayerPresenter;
+		UIElement? MediaPlayerPresenter2 = VisualTreeHelper.GetParent(MediaPlayerPresenter) as UIElement;
+
+		if (MediaPlayerPresenter2 != null)
+		{
+			foreach (var child in MediaPlayerPresenter2.GetChildren())
+			{
+				if (child is ContentPresenter)
+				{
+					_transportControlAdjust = (int)child.DesiredSize.Height;
+				}
+			}
+		}
+	}
 
 	protected override Size ArrangeOverride(Size finalSize)
 	{
-		var result = base.ArrangeOverride(finalSize);
 		UpdateVideoStretch();
+		var result = base.ArrangeOverride(finalSize);
 
 		return result;
 	}
-
-	//internal void UpdateVideoStretch()
-	//{
-	//	Console.WriteLine("UpdateVideoStretch");
-	//	//_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-	//	//{
-	//	if (_videoView != null && _mediaPlayer != null && _mediaPlayer.Media != null)
-	//	{
-	//		try
-	//		{
-	//			_mediaPlayer.Media.Parse(MediaParseOptions.ParseNetwork);
-	//			var width = _videoView.AllocatedWidth;
-	//			var height = _videoView.AllocatedHeight;
-	//			// var parentRatio = (double)width / global::System.Math.Max(1, height);
-
-	//			Console.WriteLine($"MediaPlayer {width} x {width}");
-	//			while (_mediaPlayer.Media.Tracks != null && !_mediaPlayer.Media.Tracks.Any(track => track.TrackType == TrackType.Video))
-	//			{
-	//				Thread.Sleep(100);
-	//			}
-
-
-	//			if (_mediaPlayer.Media.Tracks != null && _mediaPlayer.Media.Tracks.Any(track => track.TrackType == TrackType.Video))
-	//			{
-	//				var videoTrack = _mediaPlayer.Media.Tracks.FirstOrDefault(track => track.TrackType == TrackType.Video);
-	//				var videoSettings = videoTrack.Data.Video;
-	//				var videoWidth = videoSettings.Width;
-	//				var videoHeight = videoSettings.Height;
-
-	//				if (videoWidth == 0 || videoHeight == 0)
-	//				{
-	//					return;
-	//				}
-	//				if (videoWidth == 0 || videoHeight == 0)
-	//				{
-	//					return;
-	//				}
-	//				if (width == 1)
-	//				{
-	//					width = (int)videoWidth;
-	//				}
-
-	//				Ratio = (double)videoWidth / global::System.Math.Max(1, videoHeight);
-	//				height = (int)(videoWidth / Ratio);
-
-	//				Console.WriteLine($"Video Ratio {Ratio}");
-	//				Console.WriteLine($"VideoView SizeAllocate after Video Ratio {width} x {width}");
-	//				_videoView?.SizeAllocate(new(100, 100, (int)width, (int)height));
-
-	//				Console.WriteLine($"After VideoView SizeAllocate: {width},  Altura: {height}");
-
-	//				if (_videoView != null)
-	//				{
-	//					_videoView.Visible = true;
-	//				}
-	//			}
-	//		}
-	//		finally
-	//		{
-	//		}
-	//	}
-	//	//});
-	//}
-
 
 	private double _playbackRate;
 	public double PlaybackRate

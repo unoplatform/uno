@@ -75,58 +75,7 @@ public partial class GTKMediaPlayer
 		{
 		}
 	}
-	//private void OnLoaded(object sender, object args)
-	//{
-	//	//if (this.Log().IsEnabled(LogLevel.Debug))
-	//	//{
-	//	//	this.Log().Debug($"GTKMediaPlayer Loaded");
-	//	//}
-	//	if (_mediaPlayer != null && _libvlc != null)
-	//	{
-	//		return;
-	//	}
-	//	Console.WriteLine("GTKMediaPlayer OnLoaded");
-	//	SourceLoaded += OnSourceVideoLoaded;
-	//	Console.WriteLine("Creating libvlc");
-	//	_libvlc = new LibVLC(enableDebugLogs: false);
 
-	//	Console.WriteLine("Creating player");
-	//	_mediaPlayer = new LibVLCSharp.Shared.MediaPlayer(_libvlc);
-
-	//	Console.WriteLine("Creating VideoView");
-	//	_videoView = new LibVLCSharp.GTK.VideoView();
-
-
-	//	_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-	//	{
-	//		Console.WriteLine("Set MediaPlayer");
-	//		_videoView.MediaPlayer = _mediaPlayer;
-
-	//		_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-	//		{
-
-	//			_videoView.Visible = true;
-	//			//_videoView.MediaPlayer = _mediaPlayer;
-	//			_mediaPlayer.Stopped += (sender, e) =>
-	//			{
-	//				_videoView.Visible = false;
-	//			};
-	//			Console.WriteLine("Content _videoView on Dispatcher");
-	//			Content = _videoView;
-	//			UpdateVideoStretch();
-	//			Console.WriteLine("Created player");
-	//		});
-	//	});
-
-
-
-
-	//	SourceLoaded += OnHtmlSourceLoaded;
-	//	SourceFailed += OnHtmlSourceFailed;
-	//	SourceEnded += OnHtmlSourceEnded;
-	//	MetadataLoaded += OnHtmlMetadataLoaded;
-	//	TimeUpdated += OnHtmlTimeUpdated;
-	//}
 	private void Initialized()
 	{
 		//if (this.Log().IsEnabled(LogLevel.Debug))
@@ -154,46 +103,28 @@ public partial class GTKMediaPlayer
 		};
 
 		_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-{
-	Console.WriteLine("Set MediaPlayer");
-	_videoView.MediaPlayer = _mediaPlayer;
-
-	_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-	{
-
-		_videoView.Visible = true;
-		_videoView.MediaPlayer = _mediaPlayer;
-		_mediaPlayer.Stopped += (sender, e) =>
 		{
-			_videoView.Visible = false;
-		};
-		//Starts playing
-		var media = new LibVLCSharp.Shared.Media(
-			_libvlc,
-			new Uri("https://ia800201.us.archive.org/12/items/BigBuckBunny_328/BigBuckBunny_512kb.mp4")
-		);
+			Console.WriteLine("Set MediaPlayer");
+			_videoView.MediaPlayer = _mediaPlayer;
 
-		media.Parse(MediaParseOptions.ParseNetwork);
-		_videoView.MediaPlayer.Media = media;
+			_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+			{
+				_videoView.Visible = true;
+				_videoView.MediaPlayer = _mediaPlayer;
+				_mediaPlayer.Stopped += (sender, e) =>
+				{
+					Console.WriteLine("MediaPlayer Stopped");
+					_videoView.Visible = false;
+				};
 
-		Console.WriteLine("Content _videoView on Dispatcher");
-		//_videoContainer.Content = new Border() { Background = new SolidColorBrush(Colors.Red) };
-		_videoContainer.Content = _videoView;
-		//_videoContainer.Height = 300;
-		//_videoContainer.Width = 450;
-		//Child = new Border() { Background = new SolidColorBrush(Colors.Red) };
-		Child = _videoContainer;
+				Console.WriteLine("Content _videoView on Dispatcher");
+				_videoContainer.Content = _videoView;
+				Child = _videoContainer;
 
-
-
-
-		UpdateVideoStretch();
-		Console.WriteLine("Created player");
-	});
-});
-
-
-
+				UpdateVideoStretch();
+				Console.WriteLine("Created player");
+			});
+		});
 
 		SourceLoaded += OnHtmlSourceLoaded;
 		SourceFailed += OnHtmlSourceFailed;
@@ -244,8 +175,6 @@ public partial class GTKMediaPlayer
 
 				media.Parse(MediaParseOptions.ParseNetwork);
 				player._mediaPlayer.Media = media;
-				//UpdateVideoStretch();
-
 			}
 			//if (player.Log().IsEnabled(LogLevel.Debug))
 			//{
