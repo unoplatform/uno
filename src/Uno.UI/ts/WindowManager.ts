@@ -61,15 +61,14 @@ namespace Uno.UI {
 			return new Promise<boolean>(resolve => {
 
 				let bootstrapperLoaders = document.getElementsByClassName(WindowManager.unoPersistentLoaderClassName);
-				if (bootstrapperLoaders.length > 0) {					
+				if (bootstrapperLoaders.length > 0) {
 					// Bootstrapper supports persistent loader, skip creating local one and keep it displayed
 					let bootstrapperLoader = bootstrapperLoaders[0] as HTMLElement;
 					bootstrapperLoader.classList.add(WindowManager.unoKeepLoaderClassName);
 
 					resolve(true);
 				}
-				else
-				{
+				else {
 					const img = new Image();
 					let loaded = false;
 
@@ -1628,18 +1627,15 @@ namespace Uno.UI {
 		}
 
 		private removeLoading() {
-			if (!this.loadingElementId) {
-				// No custom loading element, remove the bootstrapper's loader.
-				let bootstrapperLoaders = document.getElementsByClassName(WindowManager.unoPersistentLoaderClassName);
-				if (bootstrapperLoaders.length > 0) {
-					let bootstrapperLoader = bootstrapperLoaders[0] as HTMLElement;
-					bootstrapperLoader.parentElement.removeChild(bootstrapperLoader);
-				}
-			} else {
-				const element = document.getElementById(this.loadingElementId);
-				if (element) {
-					element.parentElement.removeChild(element);
-				}
+			const element = document.getElementById(this.loadingElementId);
+			if (element) {
+				element.parentElement.removeChild(element);
+			}
+			
+			let bootstrapperLoaders = document.getElementsByClassName(WindowManager.unoPersistentLoaderClassName);
+			if (bootstrapperLoaders.length > 0) {
+				let bootstrapperLoader = bootstrapperLoaders[0] as HTMLElement;
+				bootstrapperLoader.parentElement.removeChild(bootstrapperLoader);
 			}
 		}
 
