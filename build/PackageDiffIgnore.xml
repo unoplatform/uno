@@ -667,7 +667,7 @@
 			<Member fullName="Uno.UI.Web.WebErrorStatus Windows.UI.Xaml.Controls.WebViewNavigationCompletedEventArgs::WebErrorStatus()" reason="Incorrect type" />
 			<Member fullName="Uno.UI.Web.WebErrorStatus Windows.UI.Xaml.Controls.WebViewNavigationFailedEventArgs::WebErrorStatus()" reason="Incorrect type" />
 			<!-- END WebView -->
-			
+
 			<!-- BEGIN Skia Adjustments -->
 			<Member fullName="SkiaSharp.SKSize Uno.UI.Skia.Platform.WpfHost::CanvasSize()" reason="Incorrect type" />
 			<!-- END Skia Adjustments -->
@@ -968,7 +968,7 @@
 			<Member fullName="System.Object Uno.UI.Lottie.GlobalStaticResources.FindResource(System.String name)" reason="Obsolete API" />
 
 			<Member fullName="System.Void Windows.UI.Xaml.Controls.IconElement..ctor()" reason="Not public in WinUI" />
-			
+
 			<Member fullName="System.Void Windows.UI.Xaml.Controls.Image.OnImageFailed(Windows.UI.Xaml.Media.ImageSource imageSource)" reason="Added parameter and made private" />
 
 			  <Member fullName="System.Void Windows.UI.Xaml.Controls.IconElement.OnForegroundChanged(Windows.UI.Xaml.DependencyPropertyChangedEventArgs e)" reason="Should not be public" />
@@ -990,9 +990,12 @@
 			<Member fullName="Windows.UI.Xaml.Controls.VirtualizingPanelLayout/Line Windows.UI.Xaml.Controls.VirtualizingPanelLayout.CreateLine(Windows.UI.Xaml.Controls.Primitives.GeneratorDirection fillDirection, System.Int32 extentOffset, System.Int32 breadthOffset, System.Int32 availableBreadth, AndroidX.RecyclerView.Widget.RecyclerView/Recycler recycler, AndroidX.RecyclerView.Widget.RecyclerView/State state, Uno.UI.IndexPath nextVisibleItem, System.Boolean isNewGroup)" reason="Api alignments" />
 			<Member fullName="System.Nullable`1&lt;Uno.UI.IndexPath&gt; Windows.UI.Xaml.Controls.VirtualizingPanelLayout.GetDynamicSeedIndex(System.Nullable`1&lt;Uno.UI.IndexPath&gt; firstVisibleItem, System.Int32 availableBreadth)" reason="Api alignments" />
 			<Member fullName="System.String Uno.UI.Services.ResourcesService.Get(System.String id)" reason="Api alignments" />
- 
+
+			<Member fullName="System.Void Windows.UI.Xaml.Media.Animation.Timeline.Dispose(System.Boolean disposing)" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Media.Animation.Timeline.Dispose()" reason="Api alignments" />
+
 			<Member fullName="System.Void Windows.UI.Xaml.Window.set_Visible(System.Boolean value)" reason="Does not exist in UWP and WinUI" />
-			
+
 			<Member fullName="System.Object Uno.UI.Svg.GlobalStaticResources.FindResource(System.String name)" reason="API Alignment" />
 			<Member fullName="System.Void Windows.Devices.Sensors.SimpleOrientationSensor.OnAccuracyChanged(Android.Hardware.Sensor sensor, Android.Hardware.SensorStatus accuracy)" reason="Api alignments" />
 			<Member fullName="System.Void Windows.Devices.Sensors.SimpleOrientationSensor.OnSensorChanged(Android.Hardware.SensorEvent e)" reason="Api alignments" />
