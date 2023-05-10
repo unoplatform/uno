@@ -8,6 +8,8 @@ using Android.Util;
 using Android.Views;
 using Android.Widget;
 using AndroidX.Core.View;
+using Uno.Disposables;
+using Uno.UI.Extensions;
 using Windows.Devices.Sensors;
 using Windows.Foundation;
 using Windows.Graphics.Display;
@@ -134,30 +136,24 @@ namespace Uno.UI
 			}
 		}
 
-		private void MeasureInsets(PopupWindow sender, WindowInsets insets)
+		private void MeasureInsets(PopupWindow sender, WindowInsetsCompat insets)
 		{
-#pragma warning disable 618
-#pragma warning disable CA1422 // Validate platform compatibility
-			Insets = new Thickness(
-				ViewHelper.PhysicalToLogicalPixels(insets.SystemWindowInsetLeft),
-				ViewHelper.PhysicalToLogicalPixels(insets.SystemWindowInsetTop),
-				ViewHelper.PhysicalToLogicalPixels(insets.SystemWindowInsetRight),
-				ViewHelper.PhysicalToLogicalPixels(insets.SystemWindowInsetBottom)
-			);
-#pragma warning restore CA1422 // Validate platform compatibility
-#pragma warning restore 618
+			var systemInsets = insets.GetInsets(WindowInsetsCompat.Type.SystemBars())
+				.ToThickness()
+				.PhysicalToLogicalPixels();
 
-			InsetsChanged?.Invoke(Insets);
+			InsetsChanged?.Invoke(systemInsets);
 		}
 
-		private class GlobalLayoutProvider : PopupWindow, ViewTreeObserver.IOnGlobalLayoutListener, View.IOnApplyWindowInsetsListener
+		private class GlobalLayoutProvider : PopupWindow, ViewTreeObserver.IOnGlobalLayoutListener, AndroidX.Core.View.IOnApplyWindowInsetsListener
 		{
 			public delegate void GlobalLayoutListener(PopupWindow sender);
-			public delegate void WindowInsetsListener(PopupWindow sender, WindowInsets insets);
+			public delegate void WindowInsetsListener(PopupWindow sender, WindowInsetsCompat insets);
 
 			private readonly GlobalLayoutListener _globalListener;
 			private readonly WindowInsetsListener _insetsListener;
 			private readonly Activity _activity;
+			private readonly SerialDisposable _listenerSubscription = new SerialDisposable();
 
 			public GlobalLayoutProvider(Activity activity, GlobalLayoutListener globalListener, WindowInsetsListener insetsListener) : base(activity)
 			{
@@ -179,38 +175,40 @@ namespace Uno.UI
 			{
 				if (!IsShowing)
 				{
-					ShowAtLocation(view, GravityFlags.NoGravity, 0, 0);
-					ContentView.ViewTreeObserver.AddOnGlobalLayoutListener(this);
-				}
-			}
+					var disposables = new CompositeDisposable();
+					_listenerSubscription.Disposable = disposables;
 
-			public void StartListenInsets()
-			{
-				_activity.Window.DecorView.SetOnApplyWindowInsetsListener(this);
+					ShowAtLocation(view, GravityFlags.NoGravity, 0, 0);
+					disposables.Add(Disposable.Create(() => Dismiss()));
+
+
+					ContentView.ViewTreeObserver.AddOnGlobalLayoutListener(this);
+					disposables.Add(Disposable.Create(() => ContentView.ViewTreeObserver.RemoveOnGlobalLayoutListener(this)));
+
+					if (_insetsListener is { })
+					{
+						ViewCompat.SetOnApplyWindowInsetsListener(view, this);
+						disposables.Add(Disposable.Create(() => ViewCompat.SetOnApplyWindowInsetsListener(view, null)));
+					}
+				}
 			}
 
 			public void Stop()
 			{
 				if (IsShowing)
 				{
-					Dismiss();
-					ContentView.ViewTreeObserver.RemoveOnGlobalLayoutListener(this);
-					_activity.Window.DecorView.SetOnApplyWindowInsetsListener(null);
+					_listenerSubscription.Disposable = null;
 				}
 			}
 
 			// event hook
 			public void OnGlobalLayout() => _globalListener?.Invoke(this);
 
-			public WindowInsets OnApplyWindowInsets(View v, WindowInsets insets)
+			public WindowInsetsCompat OnApplyWindowInsets(View v, WindowInsetsCompat insets)
 			{
 				_insetsListener?.Invoke(this, insets);
-				// We need to consume insets here since we will handle them in the Window.Android.cs
-#pragma warning disable 618
-#pragma warning disable CA1422 // Validate platform compatibility
-				return insets.ConsumeSystemWindowInsets();
-#pragma warning restore CA1422 // Validate platform compatibility
-#pragma warning restore 618
+
+				return insets;
 			}
 		}
 	}

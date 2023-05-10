@@ -276,6 +276,17 @@ namespace Uno.UI
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static Thickness PhysicalToLogicalPixels(this Thickness size)
+		{
+			return new Thickness(
+				top: PhysicalToLogicalPixels(size.Top),
+				left: PhysicalToLogicalPixels(size.Left),
+				right: PhysicalToLogicalPixels(size.Right),
+				bottom: PhysicalToLogicalPixels(size.Bottom)
+			);
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static Rect PhysicalToLogicalPixels(this Rect size)
 		{
 			return new Rect(
