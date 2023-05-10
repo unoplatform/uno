@@ -66,7 +66,7 @@ namespace Uno.UI {
 					bootstrapperLoader.classList.add(WindowManager.unoKeepLoaderClassName);
 
 					// Skip creating local splash screen.
-					return true;
+					resolve(true);
 				}
 
 				const img = new Image();
