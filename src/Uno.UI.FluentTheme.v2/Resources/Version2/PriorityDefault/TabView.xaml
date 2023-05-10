@@ -187,21 +187,22 @@
                             </VisualStateGroup>
                         </VisualStateManager.VisualStateGroups>
 
+                        <!-- TODO: Uno specific: Original template uses attached property template bindings (issue #4259) -->
                         <ScrollViewer x:Name="ScrollViewer"
                             Grid.Column="1"
                             AutomationProperties.AccessibilityView="Raw"
-                            BringIntoViewOnFocusChange="{TemplateBinding ScrollViewer.BringIntoViewOnFocusChange}"
-                            HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
-                            HorizontalScrollMode="{TemplateBinding ScrollViewer.HorizontalScrollMode}"
-                            IsDeferredScrollingEnabled="{TemplateBinding ScrollViewer.IsDeferredScrollingEnabled}"
-                            IsHorizontalRailEnabled="{TemplateBinding ScrollViewer.IsHorizontalRailEnabled}"
-                            IsHorizontalScrollChainingEnabled="{TemplateBinding ScrollViewer.IsHorizontalScrollChainingEnabled}"
-                            IsVerticalRailEnabled="{TemplateBinding ScrollViewer.IsVerticalRailEnabled}"
-                            IsVerticalScrollChainingEnabled="{TemplateBinding ScrollViewer.IsVerticalScrollChainingEnabled}"
+                            BringIntoViewOnFocusChange="True"
+                            HorizontalScrollBarVisibility="Auto"
+                            HorizontalScrollMode="Enabled"
+                            IsDeferredScrollingEnabled="False"
+                            IsHorizontalRailEnabled="False"
+                            IsHorizontalScrollChainingEnabled="False"
+                            IsVerticalRailEnabled="False"
+                            IsVerticalScrollChainingEnabled="{False"
                             TabNavigation="{TemplateBinding TabNavigation}"
-                            VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}"
-                            VerticalScrollMode="{TemplateBinding ScrollViewer.VerticalScrollMode}"
-                            ZoomMode="{TemplateBinding ScrollViewer.ZoomMode}"
+                            VerticalScrollBarVisibility="Disabled"
+                            VerticalScrollMode="Disabled"
+                            ZoomMode="Disabled"
                             Style="{StaticResource TabScrollViewerStyle}">
 
                             <ItemsPresenter x:Name="TabsItemsPresenter"
@@ -226,6 +227,9 @@
     </Style>
 
     <Style x:Name="TabScrollViewerStyle" TargetType="ScrollViewer">
+        <!--Uno workaround: ScrollBars are deliberately omitted from the style because they shouldn't appear-->
+		<Setter Property="uno:ScrollViewer.ShouldFallBackToNativeScrollBars"
+				Value="False"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ScrollViewer">
@@ -450,6 +454,9 @@
     <Style TargetType="local:TabViewItem">
         <Setter Property="Background" Value="{ThemeResource TabViewItemHeaderBackground}" />
         <Setter Property="HorizontalContentAlignment" Value="Left"/>
+        <!-- TODO: Uno specific: This is a temporary workaround for TabView items stretching vertically
+		Can be removed when #1133 is fixed.-->
+        <ios:Setter Property="MinHeight" Value="32"/>
         <Setter Property="UseSystemFocusVisuals" Value="{StaticResource UseSystemFocusVisuals}" />
         <Setter Property="MinHeight" Value="{ThemeResource TabViewItemMinHeight}"/>
         <contract7Present:Setter Property="CornerRadius" Value="{ThemeResource OverlayCornerRadius}" />
