@@ -748,6 +748,7 @@
 			<Member fullName="System.TimeSpan Windows.UI.Xaml.Media.Animation.RepeatBehavior::Duration()" reason="Api alignments" />
 			<Member fullName="Windows.UI.Xaml.Media.Animation.RepeatBehaviorType Windows.UI.Xaml.Media.Animation.RepeatBehavior::Type()" reason="Api alignments" />
 
+			<Member fullName="System.Int32 Windows.UI.Xaml.Media.Animation.PowerEase::Power()" reason="Api alignments" />
 
 			<!-- BEGIN WebView -->
 			<Member fullName="Uno.UI.Web.WebErrorStatus Windows.UI.Xaml.Controls.WebViewNavigationCompletedEventArgs::WebErrorStatus()" reason="Incorrect type" />
@@ -1252,6 +1253,11 @@
 			<Member fullName="System.Object Uno.UI.Svg.GlobalStaticResources.FindResource(System.String name)" reason="API Alignment" />
 			<Member fullName="System.Void Windows.Devices.Sensors.SimpleOrientationSensor.OnAccuracyChanged(Android.Hardware.Sensor sensor, Android.Hardware.SensorStatus accuracy)" reason="Api alignments" />
 			<Member fullName="System.Void Windows.Devices.Sensors.SimpleOrientationSensor.OnSensorChanged(Android.Hardware.SensorEvent e)" reason="Api alignments" />
+
+			<Member fullName="System.Void Windows.UI.Xaml.Media.Animation.EasingFunctionBase..ctor()" reason="API Alignment" />
+			<Member fullName="System.Double Windows.UI.Xaml.Media.Animation.EasingFunctionBase.Ease(System.Double currentTime, System.Double startValue, System.Double finalValue, System.Double duration)" reason="API Alignment" />
+			<Member fullName="System.Int32 Windows.UI.Xaml.Media.Animation.PowerEase.get_Power()" reason="API Alignment" />
+			<Member fullName="System.Void Windows.UI.Xaml.Media.Animation.PowerEase.set_Power(System.Int32 value)" reason="API Alignment" />
 
 			<!-- BEGIN Skia Adjustments -->
 			<Member fullName="System.Void Uno.UI.Runtime.Skia.GtkHost..ctor(System.Func`1&lt;Windows.UI.Xaml.Application&gt; appBuilder, System.String[] args)" reason="API Alignment" />
