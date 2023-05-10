@@ -10,6 +10,10 @@ using Uno.Foundation;
 using Uno.Foundation.Interop;
 using Uno.Foundation.Logging;
 
+#if NET7_0_OR_GREATER
+using System.Runtime.InteropServices.JavaScript;
+#endif
+
 namespace Uno.UI.Dispatching
 {
 	internal sealed partial class CoreDispatcher
@@ -22,6 +26,9 @@ namespace Uno.UI.Dispatching
 		/// Method invoked from 
 		/// </summary>
 #pragma warning disable IDE0051 // Remove unused private members - called by MonoSupport.ts
+#if NET7_0_OR_GREATER
+		[JSExport]
+#endif
 		private static int DispatcherCallback()
 #pragma warning restore IDE0051 // Remove unused private members
 		{
