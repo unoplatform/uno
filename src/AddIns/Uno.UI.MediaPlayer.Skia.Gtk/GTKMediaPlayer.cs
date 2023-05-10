@@ -215,6 +215,8 @@ public partial class GTKMediaPlayer : Border
 									var topInsetUniform = (playerHeight - newHeight) / 2;
 									var leftInsetUniform = (playerWidth - newWidth) / 2;
 
+									_mediaPlayer.CropGeometry = null;
+
 									Point pagePosition = this.TransformToVisual(root).TransformPoint(new Point(leftInsetUniform, topInsetUniform));
 									_videoView?.SizeAllocate(new((int)pagePosition.X, (int)pagePosition.Y, newWidth, newHeight));
 									Console.WriteLine($"Uniform Stretch Width: {newWidth},  Height: {newHeight}");
@@ -222,26 +224,27 @@ public partial class GTKMediaPlayer : Border
 									break;
 								case Windows.UI.Xaml.Media.Stretch.UniformToFill:
 
-									newHeight = (int)(newWidth * 9.0 / 16.0);
-									var topInsetUniformToFill = (playerHeight - newHeight) / 2;
-									var leftInsetUniformToFill = (playerWidth - newWidth) / 2;
+									//newHeight = (int)(newWidth * 9.0 / 16.0);
+									//var topInsetUniformToFill = (playerHeight - newHeight) / 2;
+									//var leftInsetUniformToFill = (playerWidth - newWidth) / 2;
 
-									Point pagePositionUniformToFill = this.TransformToVisual(root).TransformPoint(new Point(leftInsetUniformToFill, topInsetUniformToFill));
-									_videoView?.SizeAllocate(new((int)pagePositionUniformToFill.X, (int)pagePositionUniformToFill.Y, newWidth, newHeight));
-									Console.WriteLine($"UniformToFill Stretch Width: {newWidth},  Height: {newHeight}");
+									//Point pagePositionUniformToFill = this.TransformToVisual(root).TransformPoint(new Point(leftInsetUniformToFill, topInsetUniformToFill));
+									//_videoView?.SizeAllocate(new((int)pagePositionUniformToFill.X, (int)pagePositionUniformToFill.Y, newWidth, newHeight));
+									//Console.WriteLine($"UniformToFill Stretch Width: {newWidth},  Height: {newHeight}");
 
-									break;
-								case Windows.UI.Xaml.Media.Stretch.Fill:
+									//	break;
+									//case Windows.UI.Xaml.Media.Stretch.Fill:
 
 									var topInsetFill = (playerHeight - newHeight) / 2;
 									var leftInsetFill = 0;
 
-									var newHeightFill = (int)((videoRatio > playerRatio) ? videoHeight * Math.Round(playerRatio, 4) : videoHeight);
-									var newWidthFill = (int)((videoRatio > playerRatio) ? (videoWidth * playerRatio) : videoWidth);
+									var newHeightFill = (int)(videoHeight * playerRatio);
+									var newWidthFill = (int)(videoWidth * playerRatio);
+									double correctVideoRate = (videoRatio / playerRatio);
 
-									_mediaPlayer.CropGeometry = $"{(int)(newWidthFill / 2)}:{(int)(newHeightFill / 4)}";
 									Point pagePositionFill = this.TransformToVisual(root).TransformPoint(new Point(leftInsetFill, topInsetFill));
 									_videoView?.SizeAllocate(new((int)pagePositionFill.X, (int)pagePositionFill.Y, (int)playerWidth, (int)playerHeight));
+									_mediaPlayer.CropGeometry = $"{(int)(newWidthFill)}:{(int)(newHeightFill / correctVideoRate)}";
 
 									break;
 							}
