@@ -35,6 +35,7 @@ namespace Windows.UI.Xaml.Media
 
 		protected virtual void OnOpacityChanged(double oldValue, double newValue)
 		{
+			RaiseBrushChanged();
 		}
 
 		#endregion
@@ -61,6 +62,7 @@ namespace Windows.UI.Xaml.Media
 
 		protected virtual void OnRelativeTransformChanged(Transform oldValue, Transform newValue)
 		{
+			RaiseBrushChanged();
 		}
 
 		private protected Color GetColorWithOpacity(Color referenceColor)
@@ -99,7 +101,15 @@ namespace Windows.UI.Xaml.Media
 		internal bool SupportsAssignAndObserveBrush => true;
 #endif
 
-
+		private protected void RaiseBrushChanged()
+		{
+			var currentCallbacks = _brushChangedCallbacks.Data;
+			for (var callbackIndex = 0; callbackIndex < currentCallbacks.Length; callbackIndex++)
+			{
+				var callback = currentCallbacks[callbackIndex];
+				callback.Invoke();
+			}
+		}
 
 		internal IDisposable SubscribeToChanges(BrushChangedCallback onChanged)
 		{

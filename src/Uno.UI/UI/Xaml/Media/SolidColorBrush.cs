@@ -71,6 +71,8 @@ namespace Windows.UI.Xaml.Media
 		partial void OnColorChanged(Windows.UI.Color oldValue, Windows.UI.Color newValue)
 		{
 			UpdateColorWithOpacity(newValue);
+
+			RaiseBrushChanged();
 		}
 
 		protected override void OnOpacityChanged(double oldValue, double newValue)

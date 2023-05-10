@@ -40,11 +40,7 @@ namespace Windows.UI.Xaml.Media
 
 			if (brush is SolidColorBrush colorBrush)
 			{
-				UpdateColorWhenAnyChanged(colorBrush, new[]
-				{
-					SolidColorBrush.ColorProperty,
-					SolidColorBrush.OpacityProperty
-				});
+
 			}
 			else if (brush is GradientBrush gradientBrush)
 			{

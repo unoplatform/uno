@@ -7,12 +7,10 @@ using System;
 using Uno.Extensions;
 using Uno.UI.Common;
 using Uno.UI.DataBinding;
-using Uno.UI.Xaml.Input;
 using Windows.Foundation;
 using Windows.System;
 using Windows.UI.Core;
 using Windows.UI.Text;
-using Windows.UI.Xaml.Automation;
 using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
@@ -421,11 +419,12 @@ namespace Windows.UI.Xaml.Controls
 			_foregroundBrushSubscription.Disposable = null;
 			if (newValue is SolidColorBrush brush)
 			{
-				OnForegroundColorChangedPartial(brush);
-				_foregroundBrushSubscription.Disposable =
-					Brush.AssignAndObserveBrush(brush, c => OnForegroundColorChangedPartial(brush));
+				OnForegroundBrushChanged();
+				_foregroundBrushSubscription.Disposable = brush.SubscribeToChanges(OnForegroundBrushChanged);
 			}
 		}
+
+		private void OnForegroundBrushChanged() => OnForegroundColorChangedPartial(Foreground);
 
 		partial void OnForegroundColorChangedPartial(Brush newValue);
 
@@ -475,14 +474,16 @@ namespace Windows.UI.Xaml.Controls
 			_selectionHighlightColorSubscription.Disposable = null;
 			if (brush is not null)
 			{
-				OnSelectionHighlightColorChangedPartial(brush);
-				_selectionHighlightColorSubscription.Disposable = Brush.AssignAndObserveBrush(brush, c => OnSelectionHighlightColorChangedPartial(brush));
+				OnSelectionHighlightColorBrushChanged();
+				_selectionHighlightColorSubscription.Disposable = brush.SubscribeToChanges(OnSelectionHighlightColorBrushChanged);
 			}
 			else
 			{
 				OnSelectionHighlightColorChangedPartial(DefaultBrushes.SelectionHighlightColor);
 			}
 		}
+
+		private void OnSelectionHighlightColorBrushChanged() => OnSelectionHighlightColorChangedPartial(SelectionHighlightColor);
 
 		partial void OnSelectionHighlightColorChangedPartial(SolidColorBrush brush);
 
