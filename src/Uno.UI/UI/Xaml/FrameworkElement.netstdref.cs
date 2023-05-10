@@ -10,6 +10,9 @@ namespace Windows.UI.Xaml
 {
 	public partial class FrameworkElement : IEnumerable
 	{
+
+		public string Name { get; set; }
+
 		bool IFrameworkElementInternal.HasLayouter => throw new NotSupportedException("Reference assembly");
 
 		internal T AddChild<T>(T child) where T : View => throw new NotSupportedException("Reference assembly");

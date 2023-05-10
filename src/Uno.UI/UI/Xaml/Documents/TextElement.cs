@@ -313,9 +313,7 @@ namespace Windows.UI.Xaml.Documents
 
 		#endregion
 
-#if !__WASM__ // WASM version is inheriting from UIElement, so it's already implementing it.
 		public string Name { get; set; }
-#endif
 
 		/// <summary>
 		/// Retrieves the parent RichTextBox/CRichTextBlock/TextBlock.
