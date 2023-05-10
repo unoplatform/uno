@@ -1,4 +1,5 @@
 using System;
+using Windows.UI.Xaml.Controls;
 
 namespace Windows.UI.Xaml.Media.Animation
 {
@@ -21,9 +22,12 @@ namespace Windows.UI.Xaml.Media.Animation
 		private protected override double EaseInCore(double normalizedTime)
 		{
 			var exponent = Exponent;
-			var normalizedValue = (Math.Exp(exponent * normalizedTime) - 1) / (Math.Exp(exponent) - 1);
+			if (exponent.IsZero())
+			{
+				return normalizedTime;
+			}
 
-			return normalizedValue;
+			return (Math.Exp(exponent * normalizedTime) - 1) / (Math.Exp(exponent) - 1);
 		}
 	}
 }

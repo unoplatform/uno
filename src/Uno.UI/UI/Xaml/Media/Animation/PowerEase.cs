@@ -6,16 +6,17 @@ namespace Windows.UI.Xaml.Media.Animation
 	{
 		public double Power
 		{
-			get { return (int)this.GetValue(PowerProperty); }
-			set { this.SetValue(PowerProperty, value); }
+			get => (double)this.GetValue(PowerProperty);
+			set => this.SetValue(PowerProperty, value);
 		}
 
 		public static DependencyProperty PowerProperty { get; } =
-			DependencyProperty.Register(nameof(Power), typeof(int), typeof(PowerEase), new FrameworkPropertyMetadata(2));
+			DependencyProperty.Register(nameof(Power), typeof(double), typeof(PowerEase), new FrameworkPropertyMetadata(2.0));
 
 		private protected override double EaseInCore(double normalizedTime)
 		{
-			return Math.Pow(normalizedTime, Power);
+			var power = Math.Max(Power, 0.0);
+			return Math.Pow(normalizedTime, power);
 		}
 	}
 }
