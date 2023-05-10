@@ -1137,6 +1137,8 @@
 			<Member fullName="System.Void Windows.UI.Xaml.Media.Animation.RepeatBehavior.set_Duration(System.TimeSpan value)" reason="Api alignments" />
 			<Member fullName="Windows.UI.Xaml.Media.Animation.RepeatBehaviorType Windows.UI.Xaml.Media.Animation.RepeatBehavior.get_Type()" reason="Api alignments" />
 			<Member fullName="System.Void Windows.UI.Xaml.Media.Animation.RepeatBehavior.set_Type(Windows.UI.Xaml.Media.Animation.RepeatBehaviorType value)" reason="Api alignments" />
+			<Member fullName="System.Void Windows.Media.Playback.MediaPlayer.set_Position(System.TimeSpan value)" reason="Api alignments" />
+			<Member fullName="System.TimeSpan Windows.Media.Playback.MediaPlayer.get_Position()" reason="Api alignments" />
 
 			<Member fullName="System.Void Windows.UI.Xaml.Media.Animation.Timeline.Dispose(System.Boolean disposing)" reason="Api alignments" />
 			<Member fullName="System.Void Windows.UI.Xaml.Media.Animation.Timeline.Dispose()" reason="Api alignments" />
