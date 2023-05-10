@@ -714,7 +714,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 						// Support for net8.0+ resource constants
 						drawables ??= _metadataHelper
-							.GetTypeByFullName($"_Microsoft.Android.Resource.Designer.ResourceConstant")
+							.GetTypeByFullName("_Microsoft.Android.Resource.Designer.ResourceConstant")
 							.GetTypeMembers("Drawable")
 							.SingleOrDefault();
 
