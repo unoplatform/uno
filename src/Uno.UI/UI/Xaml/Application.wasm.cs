@@ -29,6 +29,8 @@ using LaunchActivatedEventArgs = Windows.ApplicationModel.Activation.LaunchActiv
 #endif
 
 #if NET7_0_OR_GREATER
+using System.Runtime.InteropServices.JavaScript;
+
 using NativeMethods = __Windows.UI.Xaml.Application.NativeMethods;
 #endif
 
@@ -137,6 +139,9 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Dispatch method from Javascript
 		/// </summary>
+#if NET7_0_OR_GREATER
+		[JSExport]
+#endif
 		internal static void DispatchSuspending()
 		{
 			Current?.RaiseSuspending();

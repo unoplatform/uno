@@ -1589,20 +1589,29 @@ namespace Uno.UI {
 
 			await ExportManager.initialize();
 
-			if (!WindowManager.resizeMethod) {
-				WindowManager.resizeMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.Window:Resize");
-			}
+			if ((<any>globalThis).DotnetExports !== undefined) {
+				const exports = (<any>globalThis).DotnetExports.UnoUI;
 
-			if (!WindowManager.dispatchEventMethod) {
-				WindowManager.dispatchEventMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.UIElement:DispatchEvent");
-			}
+				WindowManager.resizeMethod = exports.Windows.UI.Xaml.Window.Resize;
+				WindowManager.dispatchEventMethod = exports.Windows.UI.Xaml.UIElement.DispatchEvent;
+				WindowManager.focusInMethod = exports.Windows.UI.Xaml.Input.FocusManager.ReceiveFocusNative;
+				WindowManager.dispatchSuspendingMethod = exports.Windows.UI.Xaml.Application.DispatchSuspending;
+			} else {
+				if (!WindowManager.resizeMethod) {
+					WindowManager.resizeMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.Window:Resize");
+				}
 
-			if (!WindowManager.focusInMethod) {
-				WindowManager.focusInMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.Input.FocusManager:ReceiveFocusNative");
-			}
+				if (!WindowManager.dispatchEventMethod) {
+					WindowManager.dispatchEventMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.UIElement:DispatchEvent");
+				}
 
-			if (!WindowManager.dispatchSuspendingMethod) {
-				WindowManager.dispatchSuspendingMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.Application:DispatchSuspending");
+				if (!WindowManager.focusInMethod) {
+					WindowManager.focusInMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.Input.FocusManager:ReceiveFocusNative");
+				}
+
+				if (!WindowManager.dispatchSuspendingMethod) {
+					WindowManager.dispatchSuspendingMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.Application:DispatchSuspending");
+				}
 			}
 		}
 

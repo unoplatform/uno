@@ -12,6 +12,10 @@ using Uno.UI.Xaml.Input;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
+#if NET7_0_OR_GREATER
+using System.Runtime.InteropServices.JavaScript;
+#endif
+
 namespace Windows.UI.Xaml.Input
 {
 	public partial class FocusManager
@@ -111,6 +115,9 @@ namespace Windows.UI.Xaml.Input
 			return true;
 		}
 
+#if NET7_0_OR_GREATER
+		[JSExport]
+#endif
 		public static void ReceiveFocusNative(int handle)
 		{
 			if (_isCallingFocusNative)
