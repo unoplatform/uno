@@ -718,14 +718,26 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					using (writer.BlockInvariant("switch (imageName)"))
 					{
-						var drawables = _metadataHelper.GetTypeByFullName($"{_defaultNamespace}.Resource").GetTypeMembers("Drawable").Single().GetFields();
+						var drawables = _metadataHelper
+							.GetTypeByFullName($"{_defaultNamespace}.Resource")
+							.GetTypeMembers("Drawable")
+							.SingleOrDefault();
 
-						foreach (var drawable in drawables)
+						// Support for net8.0+ resource constants
+						drawables ??= _metadataHelper
+							.GetTypeByFullName($"_Microsoft.Android.Resource.Designer.ResourceConstant")
+							.GetTypeMembers("Drawable")
+							.SingleOrDefault();
+
+						if (drawables?.GetFields() is { } drawableFields)
 						{
-							writer.AppendLineInvariantIndented("case \"{0}\":", drawable.Name);
-							using (writer.Indent())
+							foreach (var drawable in drawables)
 							{
-								writer.AppendLineInvariantIndented("return {0};", drawable.ConstantValue);
+								writer.AppendLineInvariantIndented("case \"{0}\":", drawable.Name);
+								using (writer.Indent())
+								{
+									writer.AppendLineInvariantIndented("return {0};", drawable.ConstantValue);
+								}
 							}
 						}
 
