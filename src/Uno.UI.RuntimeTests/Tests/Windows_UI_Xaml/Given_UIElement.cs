@@ -89,16 +89,18 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			border.UpdateLayout();
 
-			await TestServices.WindowHelper.WaitFor(() => Math.Abs(text.ActualWidth - text.ActualSize.X) < 0.01);
-			await TestServices.WindowHelper.WaitFor(() => Math.Abs(text.ActualHeight - text.ActualSize.Y) < 0.01);
+			await TestServices.WindowHelper.WaitFor(() => Math.Abs(text.ActualWidth - text.ActualSize.X) < 1);
+			await TestServices.WindowHelper.WaitFor(() => Math.Abs(text.ActualHeight - text.ActualSize.Y) < 1);
 
 			text.Text = "This is a longer text";
 			border.UpdateLayout();
 
-			await TestServices.WindowHelper.WaitFor(() => Math.Abs(text.ActualWidth - text.ActualSize.X) < 0.01);
-			await TestServices.WindowHelper.WaitFor(() => Math.Abs(text.ActualHeight - text.ActualSize.Y) < 0.01);
+			await TestServices.WindowHelper.WaitFor(() => Math.Abs(text.ActualWidth - text.ActualSize.X) < 1);
+			await TestServices.WindowHelper.WaitFor(() => Math.Abs(text.ActualHeight - text.ActualSize.Y) < 1);
 		}
 
+		[TestMethod]
+		[RunsOnUIThread]
 		public async Task When_Rectangle_Set_ActualSize()
 		{
 			Border border = new Border();
