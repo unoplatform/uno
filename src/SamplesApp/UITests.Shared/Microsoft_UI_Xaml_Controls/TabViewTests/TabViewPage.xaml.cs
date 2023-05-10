@@ -305,9 +305,10 @@ namespace MUXControlsTestApp
 			// This event is called when we're dragging between different TabViews
 			// It is responsible for handling the drop of the item into the second TabView
 
-			object obj;
-			object objOriginTabView;
-			if (e.DataView.Properties.TryGetValue(DataIdentifier, out obj) && e.DataView.Properties.TryGetValue(DataTabView, out objOriginTabView))
+			object obj = null;
+			object objOriginTabView = null;
+			if (e.DataView.Properties.TryGetValue(DataIdentifier, out obj) &&
+				e.DataView.Properties.TryGetValue(DataTabView, out objOriginTabView))
 			{
 				// TODO - BUG: obj should never be null, but occassionally is. Why?
 				if (obj == null || objOriginTabView == null)
