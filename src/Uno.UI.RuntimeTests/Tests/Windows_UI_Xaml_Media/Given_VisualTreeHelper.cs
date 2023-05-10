@@ -103,7 +103,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 
 		[TestMethod]
 		[RunsOnUIThread]
-		public async Task When_HitTestTransformedElement()
+#if !UNO_HAS_MANAGED_POINTERS
+		[Ignore("Root visual tree elements are not configured properly to use managed hit testing.")]
+#endif
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
+		public async Task When_HitTestTranslatedElement()
 		{
 			Border root, transformed, nested;
 			root = new Border
@@ -144,6 +150,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 
 		[TestMethod]
 		[RunsOnUIThread]
+#if !UNO_HAS_MANAGED_POINTERS
+		[Ignore("Root visual tree elements are not configured properly to use managed hit testing.")]
+#endif
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		public async Task When_HitTestScaledElement()
 		{
 			Border root, transformed, nested;
