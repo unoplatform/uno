@@ -158,18 +158,10 @@ public sealed partial class SvgImageSource_FromMsAppData : Page
 			{
 				svgImageSource.RasterizePixelWidth = rasterizedWidth;
 			}
-			else
-			{
-				//svgImageSource.RasterizePixelWidth = double.PositiveInfinity;
-			}
 
 			if (double.TryParse(RasterizedHeight, out var rasterizedHeight))
 			{
 				svgImageSource.RasterizePixelHeight = rasterizedHeight;
-			}
-			else
-			{
-				//svgImageSource.RasterizePixelHeight = double.PositiveInfinity;
 			}
 		}
 		catch (Exception ex)
