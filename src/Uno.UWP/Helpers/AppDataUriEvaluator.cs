@@ -17,12 +17,6 @@ namespace Uno.Helpers
 		private const string TemporaryFolderRoute = "temp";
 
 		/// <summary>
-		/// Determines if an URI is using ms-appdata
-		/// </summary>
-		public static bool IsAppDataUri(Uri uri)
-			=> uri.Scheme.Equals("ms-appdata", StringComparison.OrdinalIgnoreCase);
-
-		/// <summary>
 		/// Converts given ms-appdata: URI to filesystem path.
 		/// </summary>
 		/// <param name="appdataUri">ms-appdata: URI.</param>

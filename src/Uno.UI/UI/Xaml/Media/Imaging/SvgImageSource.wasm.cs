@@ -76,7 +76,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 
 			if (AbsoluteUri is { } absoluteUri)
 			{
-				if (AppDataUriEvaluator.IsAppDataUri(absoluteUri))
+				if (absoluteUri.IsAppData())
 				{
 					asyncImage = OpenMsAppData(absoluteUri, ct);
 
