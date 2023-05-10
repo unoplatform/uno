@@ -13,7 +13,7 @@ $external_docs = @{
     "uno.check"          = "5dec33b3cb4c26f578c8d6bd7a84000bf265a14e"
     "uno.xamlmerge.task" = "7e8ffef206e87dfea90c53805c45e93a7d8c0b46"
     "figma-docs"         = "f13d08f2bd7b62fc274b43a4ede4d75909d0f41f"
-    "uno.resizetizer"    = "f650e844cb66a7dafa084a7e778f14f4fd3ce8a2"
+    "uno.resizetizer"    = "6ebb69b1e9d442b2304e9e4d41274bf46c00de87"
     "uno.uitest"         = "555453c2985ef2745fe44503c5809a6168d063c2"
     "uno.extensions"     = "539d6b0f2e61fbc2ae5d6e35a77de41cafacf5ce"      
 }
