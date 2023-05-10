@@ -41,6 +41,7 @@ namespace Windows.UI.Xaml.Controls
 		private bool _suspendStateChanges;
 		private View _templatedRoot;
 		private bool _updateTemplate;
+		private bool _suppressIsEnabled;
 
 		private void InitializeControl()
 		{
@@ -74,7 +75,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			// this is defined in the FrameworkElement mixin, and must not be used in Control.
 			// When setting the background color in a Control, the property is simply used as a placeholder
-			// for children controls, applied by inheritance. 
+			// for children controls, applied by inheritance.
 
 			// base.OnBackgroundChanged(e);
 		}
@@ -98,6 +99,77 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void UnregisterSubView();
 		partial void RegisterSubView(View child);
+
+		#region IsEnabled DependencyProperty
+
+		// Note: we keep the event args as a private field for perf consideration: This avoids creating a new instance each time.
+		//		 As it's used only internally it's safe to do so.
+		[ThreadStatic]
+		private static IsEnabledChangedEventArgs _isEnabledChangedEventArgs;
+
+		public event DependencyPropertyChangedEventHandler IsEnabledChanged;
+
+		[GeneratedDependencyProperty(DefaultValue = true, ChangedCallback = true, CoerceCallback = true, Options = FrameworkPropertyMetadataOptions.Inherits)]
+		public static DependencyProperty IsEnabledProperty { get; } = CreateIsEnabledProperty();
+
+		public bool IsEnabled
+		{
+			get => GetIsEnabledValue();
+			set => SetIsEnabledValue(value);
+		}
+
+		private void OnIsEnabledChanged(DependencyPropertyChangedEventArgs args)
+		{
+#if UNO_HAS_MANAGED_POINTERS || __WASM__
+			UpdateHitTest();
+#endif
+
+			_isEnabledChangedEventArgs ??= new IsEnabledChangedEventArgs();
+			_isEnabledChangedEventArgs.SourceEvent = args;
+
+			OnIsEnabledChanged(_isEnabledChangedEventArgs);
+
+#if __ANDROID__
+			var newValue = (bool)args.NewValue;
+			base.SetNativeIsEnabled(newValue);
+			this.Enabled = newValue;
+#elif __IOS__
+			UserInteractionEnabled = (bool)args.NewValue;
+#elif __MACOS__
+			// UserInteractionEnabled = (bool)args.NewValue; // UNO-TODO: Set MacOS native equivalent
+#endif
+
+			IsEnabledChanged?.Invoke(this, args);
+
+			// TODO: move focus elsewhere if control.FocusState != FocusState.Unfocused
+#if __WASM__
+			if (FeatureConfiguration.UIElement.AssignDOMXamlProperties)
+			{
+				UpdateDOMProperties();
+			}
+#endif
+		}
+		#endregion
+
+		internal bool IsEnabledSuppressed => _suppressIsEnabled;
+
+		/// <summary>
+		/// Provides the ability to disable <see cref="IsEnabled"/> value changes, e.g. in the context of ICommand CanExecute.
+		/// </summary>
+		/// <param name="suppress">If true, <see cref="IsEnabled"/> will always be false</param>
+		private protected void SuppressIsEnabled(bool suppress)
+		{
+			if (_suppressIsEnabled != suppress)
+			{
+				_suppressIsEnabled = suppress;
+				this.CoerceValue(IsEnabledProperty);
+			}
+		}
+
+		private object CoerceIsEnabled(object baseValue)
+		{
+			return _suppressIsEnabled ? false : baseValue;
+		}
 
 
 		#region Template DependencyProperty
@@ -439,7 +511,7 @@ namespace Windows.UI.Xaml.Controls
 		/// no parent view has been set. This is used for the ListView control (and other virtualizing controls)
 		/// to measure items properly. These controls set the size of the view based on the size reported
 		/// immediately after the BaseAdapter.GetView method returns, but the parent still has not been set.
-		/// 
+		///
 		/// The Content control uses this delayed creation as an optimization technique for layout creation, when controls
 		/// are created but not yet used.
 		/// </remarks>
@@ -774,9 +846,8 @@ namespace Windows.UI.Xaml.Controls
 		{
 		}
 
-		private protected override void OnIsEnabledChanged(IsEnabledChangedEventArgs e)
+		private protected virtual void OnIsEnabledChanged(IsEnabledChangedEventArgs e)
 		{
-			base.OnIsEnabledChanged(e);
 			OnIsFocusableChanged();
 
 			// Part of logic from MUX Control.cpp Enabled method.
@@ -1140,7 +1211,7 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		/// <remarks>
 		/// Note: Although this is usually called as 'SetDefaultStyleKey(this)' (per WinUI C++ code), we actually only use the compile-time
-		///  TDerived type and ignore the runtime derivedControl parameter, preserving the expected behaviour that DefaultStyleKey is 'fixed' 
+		///  TDerived type and ignore the runtime derivedControl parameter, preserving the expected behaviour that DefaultStyleKey is 'fixed'
 		/// under inheritance unless explicitly changed by an inheriting type.
 		/// </remarks>
 		private protected void SetDefaultStyleKey<TDerived>(TDerived derivedControl) where TDerived : Control

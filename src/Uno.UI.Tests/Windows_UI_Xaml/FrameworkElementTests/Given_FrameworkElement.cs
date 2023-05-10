@@ -136,7 +136,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.FrameworkElementTests
 		{
 			var grid = new UserControl();
 
-			grid.SetValue(FrameworkElement.IsEnabledProperty, null);
+			grid.SetValue(Control.IsEnabledProperty, null);
 		}
 	}
 

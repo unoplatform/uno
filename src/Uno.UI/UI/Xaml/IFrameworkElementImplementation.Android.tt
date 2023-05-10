@@ -42,7 +42,9 @@ namespace <#= mixin.NamespaceName #>
 	{
 		private readonly static IEventProvider _trace = Tracing.Get(FrameworkElement.TraceProvider.Id);
 
+#if !<#= mixin.IsFrameworkElement #> // IsFrameworkElement
 		public event DependencyPropertyChangedEventHandler IsEnabledChanged;
+#endif
 
 		public event TypedEventHandler<FrameworkElement, object> Loading;
 
@@ -252,15 +254,13 @@ namespace <#= mixin.NamespaceName #>
 		}
 #endif
 
+#if !<#= mixin.IsFrameworkElement #> // IsFrameworkElement
 		#region IsEnabled Dependency Property
 
 		[GeneratedDependencyProperty(
 			DefaultValue = true,
 			Options = FrameworkPropertyMetadataOptions.Inherits,
 			ChangedCallback = true
-#if <#= mixin.IsFrameworkElement #> // IsFrameworkElement
-			, CoerceCallback = true
-#endif
 		)]
 		public static DependencyProperty IsEnabledProperty { get ; } = CreateIsEnabledProperty();
 
@@ -270,18 +270,8 @@ namespace <#= mixin.NamespaceName #>
 			set => SetIsEnabledValue(value);
 		}
 
-#if <#= mixin.IsFrameworkElement #> // IsFrameworkElement
-		private static readonly IsEnabledChangedEventArgs _isEnabledChangedEventArgs = new IsEnabledChangedEventArgs();
-#endif
 		private void OnIsEnabledChanged(DependencyPropertyChangedEventArgs e)
 		{
-#if <#= mixin.IsFrameworkElement #> // IsFrameworkElement
-			// Calling the internal override (WinUI compatibility) -- Defined in FrameworkElement.cs
-			// Note: only available for controls inheriting from FrameworkElement
-			_isEnabledChangedEventArgs.SourceEvent = e;
-			OnIsEnabledChanged(_isEnabledChangedEventArgs);
-#endif
-
 			var newValue = (bool)e.NewValue;
 
 #if <#= mixin.IsUnoMotionTarget #> // IsFrameworkElement
@@ -294,12 +284,11 @@ namespace <#= mixin.NamespaceName #>
 			FocusableInTouchMode = newValue;
 #endif
 
-			OnIsEnabledChangedCore();
-
 			IsEnabledChanged?.Invoke(this, e);
 		}
 
 		#endregion
+#endif
 
 #if !<#= mixin.IsFrameworkElement #> // IsFrameworkElement
 		#region IsHitTestVisible Dependency Property
@@ -795,11 +784,6 @@ namespace <#= mixin.NamespaceName #>
 			OnGenericPropertyUpdatedPartial(args);
 #endif
 			this.InvalidateMeasure();
-		}
-
-		protected virtual void OnIsEnabledChangedCore()
-		{
-
 		}
 
 #if <#= mixin.OverridesOnLayout #> // OverridesOnLayout

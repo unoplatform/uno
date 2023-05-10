@@ -16,9 +16,6 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class Control
 	{
-		/// This binary compatibility workaround that can be removed
-		public new static DependencyProperty IsEnabledProperty => FrameworkElement.IsEnabledProperty;
-
 		public Control() : this("div") { }
 
 		public Control(string htmlTag) : base(htmlTag)
