@@ -335,7 +335,7 @@ namespace Windows.UI.Xaml.Controls
 			date = pCalendar.GetDateTime();
 			m_lastVisitedDateAndIndex.first = date;
 			m_lastVisitedDateAndIndex.second = (int)(index);
-			var pDate = date;
+			var pDate = date; // .ToUniversalTime() - UNO
 
 			return pDate;
 		}
