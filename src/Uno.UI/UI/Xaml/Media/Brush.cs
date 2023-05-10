@@ -1,17 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.ComponentModel;
 using System.Diagnostics.Contracts;
-using Windows.UI.Xaml.Controls;
-using Windows.UI;
+using Uno.Collections;
+using Uno.UI.DataBinding;
 using Uno.UI.Xaml;
+using Uno.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml.Media
 {
 	[TypeConverter(typeof(BrushConverter))]
 	public partial class Brush : DependencyObject
 	{
+		private ImmutableList<BrushChangedCallback> _brushChangedCallbacks = ImmutableList<BrushChangedCallback>.Empty;
+
 		public Brush()
 		{
 			InitializeBinder();
@@ -97,5 +98,45 @@ namespace Windows.UI.Xaml.Media
 		// TODO: Refactor brush handling to a cleaner unified approach - https://github.com/unoplatform/uno/issues/5192
 		internal bool SupportsAssignAndObserveBrush => true;
 #endif
+
+
+
+		internal IDisposable SubscribeToChanges(BrushChangedCallback onChanged)
+		{
+			var weakOnChangedReference = WeakReferencePool.RentWeakReference(null, onChanged);
+
+			BrushChangedCallback weakCallback = () => (!weakOnChangedReference.IsDisposed ?
+				weakOnChangedReference.Target as BrushChangedCallback : null)?.Invoke();
+
+			_brushChangedCallbacks = _brushChangedCallbacks.Add(weakCallback);
+
+			return new BrushChangedDisposable(this, weakCallback, weakOnChangedReference);
+		}
+
+		/// <summary>
+		/// Disposable that removes brush changed callback.
+		/// </summary>
+		internal struct BrushChangedDisposable : IDisposable
+		{
+			private readonly ManagedWeakReference _brushWeakReference;
+			private readonly ManagedWeakReference _onChangedWeakReference;
+			private readonly BrushChangedCallback _callbackWeak;
+
+			public BrushChangedDisposable(Brush brush, BrushChangedCallback callbackWeak, ManagedWeakReference onChangedWeakReference)
+			{
+				_brushWeakReference = WeakReferencePool.RentWeakReference(brush, brush);
+				_callbackWeak = callbackWeak;
+				_onChangedWeakReference = onChangedWeakReference;
+			}
+
+			public void Dispose()
+			{
+				if (!_brushWeakReference.IsDisposed && _brushWeakReference.Target is Brush brush)
+				{
+					brush._brushChangedCallbacks = brush._brushChangedCallbacks.Remove(_callbackWeak);
+					_onChangedWeakReference.Dispose();
+				}
+			}
+		}
 	}
 }
