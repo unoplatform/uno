@@ -20,6 +20,7 @@ using Windows.UI.Xaml.Media;
 using Point = Windows.Foundation.Point;
 using Pango;
 using Uno.UI.Extensions;
+using Windows.Media.Playback;
 
 namespace Uno.UI.Media;
 
@@ -241,6 +242,19 @@ public partial class GTKMediaPlayer : Border
 
 						Point pagePosition = this.TransformToVisual(root).TransformPoint(new Point(leftInset, topInset));
 						_videoView?.SizeAllocate(new((int)pagePosition.X, (int)pagePosition.Y, newWidth, newHeight));
+
+						/****************** CROPPING EXAMPLE ********************************/
+						// Note: This will crop the video to the region specified
+						// see https://github.com/caprica/vlcsharp/blob/f34a3e4f094cf5d7b3441d2a6ecd9660af066095/src/main/csharp/Caprica/VlcSharp/Player/MediaPlayer.cs#L716
+						// Options:
+						// W:H
+						// WxH+L+T
+						// L+T+R+B
+						//_mediaPlayer.CropGeometry = $"{(int)(newWidth / 4)}+{(int)(newHeight / 4)}+{(int)(newWidth / 4)}+{(int)(newHeight / 4)}";
+						//_videoView?.SizeAllocate(new((int)pagePosition.X, (int)pagePosition.Y, newWidth/2, newHeight/2));
+						/********************************************************************/
+
+						//_videoView?.SetSizeRequest(newWidth / 2, newHeight / 2);
 
 						Console.WriteLine($"Width: {newWidth},  Height: {newHeight}");
 					}
