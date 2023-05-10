@@ -30,6 +30,7 @@ public partial class GTKMediaPlayer : Border
 	private ContentControl? _videoContainer;
 	private VideoView? _videoView;
 	private double _ratio;
+	Windows.UI.Xaml.Media.Stretch _stretch = Windows.UI.Xaml.Media.Stretch.Uniform;
 	private int _transportControlAdjust = 94;
 	//public int VideoHeight;
 	//public int VideoWidth;
@@ -187,6 +188,7 @@ public partial class GTKMediaPlayer : Border
 					if (_mediaPlayer.Media.Tracks.Any(track => track.TrackType == TrackType.Video))
 					{
 
+
 						var videoSettings = videoTrack.Data.Video;
 						var videoWidth = videoSettings.Width;
 						var videoHeight = videoSettings.Height;
@@ -199,7 +201,39 @@ public partial class GTKMediaPlayer : Border
 
 						var newHeight = (int)Math.Floor((videoRatio > playerRatio) ? playerHeight : playerWidth * Math.Round(videoRatio, 4));
 						var newWidth = (int)Math.Ceiling((videoRatio > playerRatio) ? (playerHeight / videoRatio) : playerWidth);
+						switch (_stretch)
+						{
+							case Windows.UI.Xaml.Media.Stretch.UniformToFill:
+								newHeight = (int)(newWidth * 9.0 / 16.0);
+								break;
+						}
 
+						//if (_videoView != null)
+						//{
+						//	switch (_stretch)
+						//	{
+						//		case Windows.UI.Xaml.Media.Stretch.None:
+						//			_videoView.Hexpand = false;
+						//			_videoView.Vexpand = false;
+						//			break;
+						//		case Windows.UI.Xaml.Media.Stretch.Uniform:
+						//			_videoView.Hexpand = true;
+						//			_videoView.Vexpand = true;
+						//			break;
+						//		case Windows.UI.Xaml.Media.Stretch.UniformToFill:
+						//			_videoView.Hexpand = true;
+						//			_videoView.Vexpand = true;
+						//			//_videoView.Halign = Gtk.Align.Center;
+						//			//_videoView.Valign = Gtk.Align.Center;
+						//			break;
+						//		case Windows.UI.Xaml.Media.Stretch.Fill:
+						//			_videoView.Hexpand = true;
+						//			_videoView.Vexpand = true;
+						//			_videoView.Halign = Gtk.Align.Fill;
+						//			_videoView.Valign = Gtk.Align.Fill;
+						//			break;
+						//	}
+						//}
 						var root = (_videoContainer.XamlRoot?.Content as UIElement)!;
 
 						var topInset = (playerHeight - newHeight) / 2;
@@ -296,21 +330,10 @@ public partial class GTKMediaPlayer : Border
 	}
 	internal void UpdateVideoStretch(Windows.UI.Xaml.Media.Stretch stretch)
 	{
-
-		switch (stretch)
+		if (_videoView != null)
 		{
-			case Windows.UI.Xaml.Media.Stretch.None:
-				//_htmlVideo.SetCssStyle("object-fit", "none");
-				break;
-			case Windows.UI.Xaml.Media.Stretch.Fill:
-				//_htmlVideo.SetCssStyle("object-fit", "fill");
-				break;
-			case Windows.UI.Xaml.Media.Stretch.Uniform:
-				//_htmlVideo.SetCssStyle("object-fit", "cover");
-				break;
-			case Windows.UI.Xaml.Media.Stretch.UniformToFill:
-				//_htmlVideo.SetCssStyle("object-fit", "contain");
-				break;
+			_stretch = stretch;
+			UpdateVideoStretch();
 		}
 	}
 
