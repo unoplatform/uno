@@ -1,37 +1,34 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using Uno.Extensions;
-using Uno.UI;
+using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using Uno.Disposables;
-using Windows.UI.Xaml.Markup;
-using Uno.UI.DataBinding;
-using Windows.UI.Xaml.Data;
-using Windows.Foundation.Collections;
-using Uno.Extensions.Specialized;
-
-using Uno.UI.Extensions;
 using System.ComponentModel;
+using System.Linq;
+using Windows.Foundation.Collections;
 using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Markup;
+using Uno.Disposables;
+using Uno.Extensions;
+using Uno.Extensions.Specialized;
 using Uno.Foundation.Logging;
+using Uno.UI;
+using Uno.UI.DataBinding;
+using Uno.UI.Extensions;
 
 #if XAMARIN_ANDROID
-using View = Android.Views.View;
-using _ViewGroup = Android.Views.ViewGroup;
-using Font = Android.Graphics.Typeface;
 using Android.Graphics;
+
+using View = Android.Views.View;
 #elif XAMARIN_IOS
-using View = UIKit.UIView;
-using _ViewGroup = UIKit.UIView;
-using Color = UIKit.UIColor;
-using Font = UIKit.UIFont;
 using UIKit;
+
+using View = UIKit.UIView;
 #elif __MACOS__
 using AppKit;
+
 using View = AppKit.NSView;
-using Color = Windows.UI.Color;
 #else
 using View = Windows.UI.Xaml.UIElement;
 #endif
@@ -51,6 +48,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private bool _isReady; // Template applied
 		private ItemCollection _items = new ItemCollection();
+		private (object Source, IEnumerable Snapshot)? _cachedItemsSource;
 
 		// This gets prepended to MaterializedContainers to ensure it's being considered 
 		// even if it might not yet have be added to the ItemsPanel (e.eg., NativeListViewBase).
@@ -638,10 +636,31 @@ namespace Windows.UI.Xaml.Controls
 				this.Log().LogDebug($"Calling OnItemsSourceChanged(), Old source={e.OldValue}, new source={e.NewValue}, NoOfItems={NumberOfItems}");
 			}
 
+			TrySnapshotNonObservableSource(e.NewValue);
+
 			IsGrouping = (e.NewValue as ICollectionView)?.CollectionGroups != null;
 			Items.SetItemsSource(UnwrapItemsSource() as IEnumerable);
 			ObserveCollectionChanged();
 			TryObserveCollectionViewSource(e.NewValue);
+		}
+
+		private void TrySnapshotNonObservableSource(object source)
+		{
+			// For normal enumerables, that are not notifying (INCC) or observable (ObsCollection),
+			// any further change on the original source should not affect the rendering.
+			// Therefore, we want to use a shallow copy here instead of the original source
+			// to avoid changes being synchronized onto the materialized items on subsequent measure calls.
+			if (_cachedItemsSource?.Source != source &&
+				source is IEnumerable enumerable &&
+				!(source is CollectionViewSource or ObservableVectorWrapper or INotifyCollectionChanged or IObservableVector) &&
+				!source.GetType().IsGenericDescentOf(typeof(IObservableVector<>)))
+			{
+				_cachedItemsSource = (source, enumerable.Cast<object>().ToList());
+			}
+			else
+			{
+				_cachedItemsSource = null;
+			}
 		}
 
 		private void TryObserveCollectionViewSource(object newValue)
@@ -664,14 +683,16 @@ namespace Windows.UI.Xaml.Controls
 
 		internal int GetDisplayGroupCount(int displaySection) => IsGrouping ? GetGroupAtDisplaySection(displaySection).GroupItems.Count : 0;
 
-		// Supports the common usage (prescribed in the official doc) of ItemsSource="{Binding Source = {StaticResource SomeCollectionViewSource}}"
-		//
-		// Note: this is not correct, in that it's not actually possible on UWP to set ItemsControl.ItemsSource to a CollectionViewSource.
-		// What actually happens on UWP in the above case is that the *BindingExpression* 'unwraps' the CollectionViewSource and passes the
-		// CollectionViewSource.View to whatever is being bound to (ie the ItemsSource). This should be fixed at some point because it
-		// has observable consequences in some usages.
-		internal object UnwrapItemsSource()
-			=> ItemsSource is CollectionViewSource cvs ? (object)cvs.View : ItemsSource;
+		internal object UnwrapItemsSource() =>
+			// Use the snapshotted source for non-notifying/observable collection
+			_cachedItemsSource?.Snapshot ??
+			// Supports the common usage (prescribed in the official doc) of ItemsSource="{Binding Source = {StaticResource SomeCollectionViewSource}}"
+			// Note: this is not correct, in that it's not actually possible on UWP to set ItemsControl.ItemsSource to a CollectionViewSource.
+			// What actually happens on UWP in the above case is that the *BindingExpression* 'unwraps' the CollectionViewSource and passes the
+			// CollectionViewSource.View to whatever is being bound to (ie the ItemsSource). This should be fixed at some point because it
+			// has observable consequences in some usages.
+			(ItemsSource as CollectionViewSource)?.View ??
+			ItemsSource;
 
 		internal void ObserveCollectionChanged()
 		{

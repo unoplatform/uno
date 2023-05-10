@@ -15,6 +15,8 @@
 //
 // ******************************************************************
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using Uno.Reflection;
 
@@ -187,5 +189,52 @@ namespace Uno.Extensions
 				|| Nullable.GetUnderlyingType(type) != null;    // is Nullable<T>
 		}
 #endif
+
+		/// <summary>
+		/// Checks whether the type is of a specific generic type regardless of the generic type argument(s): <![CDATA[ 'is List<>' or 'is IList<>' ]]>
+		/// </summary>
+		/// <param name="type"></param>
+		/// <param name="genericTypeDefinition">The generic type without generic type argument(s).</param>
+		/// <returns></returns>
+		public static bool IsGenericDescentOf(this Type type, Type genericTypeDefinition)
+		{
+			if (!genericTypeDefinition.IsGenericTypeDefinition)
+			{
+				return genericTypeDefinition.IsAssignableFrom(type);
+			}
+
+			if (genericTypeDefinition.IsInterface)
+			{
+				return type.GetInterfaces()
+					.Where(x => x.IsGenericType)
+					.Any(x => genericTypeDefinition.IsAssignableFrom(x.GetGenericTypeDefinition()));
+			}
+			else
+			{
+				return type.EnumerateAncestorTypes(includeSelf: true)
+					.Where(x => x.IsGenericType)
+					.Select(x => x.GetGenericTypeDefinition())
+					.Contains(genericTypeDefinition);
+			}
+		}
+
+		/// <summary>
+		/// Enumerate all the types that this type inherits.
+		/// </summary>
+		/// <param name="type"></param>
+		/// <param name="includeSelf"></param>
+		/// <returns></returns>
+		public static IEnumerable<Type> EnumerateAncestorTypes(this Type type, bool includeSelf = false)
+		{
+			if (includeSelf)
+			{
+				yield return type;
+			}
+
+			while (type.BaseType is { } baseType)
+			{
+				yield return type = baseType;
+			}
+		}
 	}
 }
