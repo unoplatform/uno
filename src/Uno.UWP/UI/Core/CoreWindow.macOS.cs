@@ -17,11 +17,17 @@ namespace Windows.UI.Core
 	partial class CoreWindow
 	{
 		private readonly NSWindow _window;
+		private ICoreWindowExtension _coreWindowExtension = default!; // Init in partial ctor.
 
 		public CoreWindow(NSWindow window)
 			: this()
 		{
 			_window = window;
+		}
+
+		partial void InitializePartial()
+		{
+			_coreWindowExtension = ApiExtensibility.CreateInstance<ICoreWindowExtension>(this);
 		}
 
 		/// <summary>

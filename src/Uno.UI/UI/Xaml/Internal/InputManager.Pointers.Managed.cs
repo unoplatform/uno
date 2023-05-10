@@ -29,7 +29,7 @@ internal partial class InputManager
 	partial void ConstructManagedPointers()
 	{
 		Pointers = new PointerManager(this);
-		//InputInjector.SetTargetForCurrentThread(this); // Injector supports only pointers for now, so configure it only if usefull!
+		//InputInjector.SetTargetForCurrentThread(this); // Injector supports only pointers for now, so configure it only if useful!
 	}
 
 	partial void InitializeManagedPointers(object host)
@@ -75,7 +75,7 @@ internal partial class InputManager
 
 			// Currently there is no need to filter on ContentRootType ('_inputManager._contentRoot.Type is ContentRootType.CoreWindow')
 			// As soon as we have a CoreWindow we configure it.
-			// This might needed later once we support multi windowing
+			// This might be needed later once we support multi-windowing
 			CoreWindow.GetForCurrentThread()?.SetPointerInputSource(_source);
 
 			_source.PointerMoved += (c, e) => OnPointerMoved(e);

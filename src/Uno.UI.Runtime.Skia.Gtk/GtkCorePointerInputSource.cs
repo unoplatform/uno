@@ -103,7 +103,7 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 		{
 			Gtk.Device.GrabAdd(GtkHost.Window, _lastUsedDevice, block_others: false);
 		}
-		else if(this.Log().IsEnabled(LogLevel.Error))
+		else if (this.Log().IsEnabled(LogLevel.Error))
 		{
 			this.Log().Error("No native device to capture.");
 		}
@@ -168,7 +168,7 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 	{
 		try
 		{
-			// The Ungrab mode event is triggered after click even when the pointer does not leave the window.
+			// The Ungrab mode event is triggered after clicking even when the pointer does not leave the window.
 			// This may need to be removed when we implement native pointer capture support properly.
 			if (args.Event.Mode != CrossingMode.Ungrab)
 			{
