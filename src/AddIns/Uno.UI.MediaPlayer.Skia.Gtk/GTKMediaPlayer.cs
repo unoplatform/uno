@@ -86,7 +86,7 @@ public partial class GTKMediaPlayer : Border
 	{
 		if (_videoView != null && _mediaPlayer != null)
 		{
-			UpdateVideoStretch();
+			//UpdateVideoStretch();
 			Console.WriteLine($"Play");
 			_mediaPlayer.Play();
 			_videoView.Visible = true;
@@ -189,7 +189,7 @@ public partial class GTKMediaPlayer : Border
 					if (_mediaPlayer.Media.Tracks.Any(track => track.TrackType == TrackType.Video))
 					{
 
-
+						var root = (_videoContainer.XamlRoot?.Content as UIElement)!;
 						var videoSettings = videoTrack.Data.Video;
 						var videoWidth = videoSettings.Width;
 						var videoHeight = videoSettings.Height;
@@ -200,63 +200,52 @@ public partial class GTKMediaPlayer : Border
 						}
 						var videoRatio = (double)videoHeight / (double)videoWidth;
 
-						var newHeight = (int)Math.Floor((videoRatio > playerRatio) ? playerHeight : playerWidth * Math.Round(videoRatio, 4));
-						var newWidth = (int)Math.Ceiling((videoRatio > playerRatio) ? (playerHeight / videoRatio) : playerWidth);
-						switch (_stretch)
+						var newHeight = (int)((videoRatio > playerRatio) ? playerHeight : playerWidth * Math.Round(videoRatio, 4));
+						var newWidth = (int)((videoRatio > playerRatio) ? (playerHeight / videoRatio) : playerWidth);
+
+
+						if (_videoView != null)
 						{
-							case Windows.UI.Xaml.Media.Stretch.UniformToFill:
-								newHeight = (int)(newWidth * 9.0 / 16.0);
-								break;
+							switch (_stretch)
+							{
+								case Windows.UI.Xaml.Media.Stretch.None:
+									break;
+								case Windows.UI.Xaml.Media.Stretch.Uniform:
+
+									var topInsetUniform = (playerHeight - newHeight) / 2;
+									var leftInsetUniform = (playerWidth - newWidth) / 2;
+
+									Point pagePosition = this.TransformToVisual(root).TransformPoint(new Point(leftInsetUniform, topInsetUniform));
+									_videoView?.SizeAllocate(new((int)pagePosition.X, (int)pagePosition.Y, newWidth, newHeight));
+									Console.WriteLine($"Uniform Stretch Width: {newWidth},  Height: {newHeight}");
+
+									break;
+								case Windows.UI.Xaml.Media.Stretch.UniformToFill:
+
+									newHeight = (int)(newWidth * 9.0 / 16.0);
+									var topInsetUniformToFill = (playerHeight - newHeight) / 2;
+									var leftInsetUniformToFill = (playerWidth - newWidth) / 2;
+
+									Point pagePositionUniformToFill = this.TransformToVisual(root).TransformPoint(new Point(leftInsetUniformToFill, topInsetUniformToFill));
+									_videoView?.SizeAllocate(new((int)pagePositionUniformToFill.X, (int)pagePositionUniformToFill.Y, newWidth, newHeight));
+									Console.WriteLine($"UniformToFill Stretch Width: {newWidth},  Height: {newHeight}");
+
+									break;
+								case Windows.UI.Xaml.Media.Stretch.Fill:
+
+									var topInsetFill = (playerHeight - newHeight) / 2;
+									var leftInsetFill = 0;
+
+									var newHeightFill = (int)((videoRatio > playerRatio) ? videoHeight * Math.Round(playerRatio, 4) : videoHeight);
+									var newWidthFill = (int)((videoRatio > playerRatio) ? (videoWidth * playerRatio) : videoWidth);
+
+									_mediaPlayer.CropGeometry = $"{(int)(newWidthFill / 2)}:{(int)(newHeightFill / 4)}";
+									Point pagePositionFill = this.TransformToVisual(root).TransformPoint(new Point(leftInsetFill, topInsetFill));
+									_videoView?.SizeAllocate(new((int)pagePositionFill.X, (int)pagePositionFill.Y, (int)playerWidth, (int)playerHeight));
+
+									break;
+							}
 						}
-
-						//if (_videoView != null)
-						//{
-						//	switch (_stretch)
-						//	{
-						//		case Windows.UI.Xaml.Media.Stretch.None:
-						//			_videoView.Hexpand = false;
-						//			_videoView.Vexpand = false;
-						//			break;
-						//		case Windows.UI.Xaml.Media.Stretch.Uniform:
-						//			_videoView.Hexpand = true;
-						//			_videoView.Vexpand = true;
-						//			break;
-						//		case Windows.UI.Xaml.Media.Stretch.UniformToFill:
-						//			_videoView.Hexpand = true;
-						//			_videoView.Vexpand = true;
-						//			//_videoView.Halign = Gtk.Align.Center;
-						//			//_videoView.Valign = Gtk.Align.Center;
-						//			break;
-						//		case Windows.UI.Xaml.Media.Stretch.Fill:
-						//			_videoView.Hexpand = true;
-						//			_videoView.Vexpand = true;
-						//			_videoView.Halign = Gtk.Align.Fill;
-						//			_videoView.Valign = Gtk.Align.Fill;
-						//			break;
-						//	}
-						//}
-						var root = (_videoContainer.XamlRoot?.Content as UIElement)!;
-
-						var topInset = (playerHeight - newHeight) / 2;
-						var leftInset = (playerWidth - newWidth) / 2;
-
-						Point pagePosition = this.TransformToVisual(root).TransformPoint(new Point(leftInset, topInset));
-						_videoView?.SizeAllocate(new((int)pagePosition.X, (int)pagePosition.Y, newWidth, newHeight));
-
-						/****************** CROPPING EXAMPLE ********************************/
-						// Note: This will crop the video to the region specified
-						// see https://github.com/caprica/vlcsharp/blob/f34a3e4f094cf5d7b3441d2a6ecd9660af066095/src/main/csharp/Caprica/VlcSharp/Player/MediaPlayer.cs#L716
-						// Options:
-						// W:H
-						// WxH+L+T
-						// L+T+R+B
-						//_mediaPlayer.CropGeometry = $"{(int)(newWidth / 4)}+{(int)(newHeight / 4)}+{(int)(newWidth / 4)}+{(int)(newHeight / 4)}";
-						//_videoView?.SizeAllocate(new((int)pagePosition.X, (int)pagePosition.Y, newWidth/2, newHeight/2));
-						/********************************************************************/
-
-						//_videoView?.SetSizeRequest(newWidth / 2, newHeight / 2);
-
-						Console.WriteLine($"Width: {newWidth},  Height: {newHeight}");
 					}
 				}
 			}
@@ -293,8 +282,8 @@ public partial class GTKMediaPlayer : Border
 
 	protected override Size ArrangeOverride(Size finalSize)
 	{
-		UpdateVideoStretch();
 		var result = base.ArrangeOverride(finalSize);
+		UpdateVideoStretch();
 
 		return result;
 	}
