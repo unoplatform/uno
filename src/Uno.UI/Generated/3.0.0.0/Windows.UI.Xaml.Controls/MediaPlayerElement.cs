@@ -8,7 +8,7 @@ namespace Windows.UI.Xaml.Controls
 	public  partial class MediaPlayerElement : global::Windows.UI.Xaml.Controls.Control
 	{
 		#if false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__SKIA__", "__NETSTD_REFERENCE__")]
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public  global::Windows.UI.Xaml.Controls.MediaTransportControls TransportControls
 		{
 			get
@@ -22,7 +22,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 		#endif
 		#if false
-		[global::Uno.NotImplemented("NET461", "__SKIA__", "__NETSTD_REFERENCE__")]
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public  global::Windows.UI.Xaml.Media.Stretch Stretch
 		{
 			get
@@ -36,7 +36,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 		#endif
 		#if false
-		[global::Uno.NotImplemented("NET461", "__SKIA__", "__NETSTD_REFERENCE__")]
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public  global::Windows.Media.Playback.IMediaPlaybackSource Source
 		{
 			get
@@ -50,7 +50,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 		#endif
 		#if false
-		[global::Uno.NotImplemented("NET461", "__SKIA__", "__NETSTD_REFERENCE__")]
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public  global::Windows.UI.Xaml.Media.ImageSource PosterSource
 		{
 			get
@@ -64,7 +64,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 		#endif
 		#if false
-		[global::Uno.NotImplemented("NET461", "__SKIA__", "__NETSTD_REFERENCE__")]
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public  bool IsFullWindow
 		{
 			get
@@ -78,7 +78,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 		#endif
 		#if false
-		[global::Uno.NotImplemented("NET461", "__SKIA__", "__NETSTD_REFERENCE__")]
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public  bool AutoPlay
 		{
 			get
@@ -92,7 +92,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 		#endif
 		#if false
-		[global::Uno.NotImplemented("NET461", "__SKIA__", "__NETSTD_REFERENCE__")]
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public  bool AreTransportControlsEnabled
 		{
 			get
@@ -106,7 +106,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 		#endif
 		#if false
-		[global::Uno.NotImplemented("NET461", "__SKIA__", "__NETSTD_REFERENCE__")]
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public  global::Windows.Media.Playback.MediaPlayer MediaPlayer
 		{
 			get
@@ -116,7 +116,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 		#endif
 		#if false
-		[global::Uno.NotImplemented("NET461", "__SKIA__", "__NETSTD_REFERENCE__")]
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Xaml.DependencyProperty AreTransportControlsEnabledProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(AreTransportControlsEnabled), typeof(bool),
@@ -124,7 +124,7 @@ namespace Windows.UI.Xaml.Controls
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 		#endif
 		#if false
-		[global::Uno.NotImplemented("NET461", "__SKIA__", "__NETSTD_REFERENCE__")]
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Xaml.DependencyProperty AutoPlayProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(AutoPlay), typeof(bool),
@@ -132,7 +132,7 @@ namespace Windows.UI.Xaml.Controls
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 		#endif
 		#if false
-		[global::Uno.NotImplemented("NET461", "__SKIA__", "__NETSTD_REFERENCE__")]
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Xaml.DependencyProperty IsFullWindowProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(IsFullWindow), typeof(bool),
@@ -140,7 +140,7 @@ namespace Windows.UI.Xaml.Controls
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 		#endif
 		#if false
-		[global::Uno.NotImplemented("NET461", "__SKIA__", "__NETSTD_REFERENCE__")]
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Xaml.DependencyProperty MediaPlayerProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(MediaPlayer), typeof(global::Windows.Media.Playback.MediaPlayer),
@@ -148,7 +148,7 @@ namespace Windows.UI.Xaml.Controls
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.Media.Playback.MediaPlayer)));
 		#endif
 		#if false
-		[global::Uno.NotImplemented("NET461", "__SKIA__", "__NETSTD_REFERENCE__")]
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Xaml.DependencyProperty PosterSourceProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(PosterSource), typeof(global::Windows.UI.Xaml.Media.ImageSource),
@@ -156,7 +156,7 @@ namespace Windows.UI.Xaml.Controls
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.ImageSource)));
 		#endif
 		#if false
-		[global::Uno.NotImplemented("NET461", "__SKIA__", "__NETSTD_REFERENCE__")]
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Xaml.DependencyProperty SourceProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(Source), typeof(global::Windows.Media.Playback.IMediaPlaybackSource),
@@ -164,7 +164,7 @@ namespace Windows.UI.Xaml.Controls
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.Media.Playback.IMediaPlaybackSource)));
 		#endif
 		#if false
-		[global::Uno.NotImplemented("NET461", "__SKIA__", "__NETSTD_REFERENCE__")]
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Xaml.DependencyProperty StretchProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(Stretch), typeof(global::Windows.UI.Xaml.Media.Stretch),
@@ -195,7 +195,7 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.MediaPlayerElement.IsFullWindow.set
 		// Forced skipping of method Windows.UI.Xaml.Controls.MediaPlayerElement.MediaPlayer.get
 		#if false
-		[global::Uno.NotImplemented("NET461", "__SKIA__", "__NETSTD_REFERENCE__")]
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public  void SetMediaPlayer( global::Windows.Media.Playback.MediaPlayer mediaPlayer)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.MediaPlayerElement", "void MediaPlayerElement.SetMediaPlayer(MediaPlayer mediaPlayer)");

@@ -167,14 +167,14 @@ namespace Windows.UI.Xaml.Controls
 #else
 					_mediaPlayerPresenter?.RequestFullScreen();
 #endif
-#if !__NETSTD_REFERENCE__ && !NET461
+#if !__NETSTD_REFERENCE__ && !IS_UNIT_TESTS
 					Windows.UI.Xaml.Window.Current.DisplayFullscreen(_layoutRoot);
 #endif
 				}
 				else
 				{
 					ApplicationView.GetForCurrentView().ExitFullScreenMode();
-#if !__NETSTD_REFERENCE__ && !NET461
+#if !__NETSTD_REFERENCE__ && !IS_UNIT_TESTS
 					Windows.UI.Xaml.Window.Current.DisplayFullscreen(null);
 #endif
 

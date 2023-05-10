@@ -8,7 +8,7 @@ namespace Windows.UI.Xaml.Controls
 	public partial class MediaTransportControls : global::Windows.UI.Xaml.Controls.Control
 	{
 #if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public  bool IsZoomEnabled
 		{
 			get
@@ -22,7 +22,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 #endif
 #if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public  bool IsZoomButtonVisible
 		{
 			get
@@ -36,7 +36,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 #endif
 #if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public  bool IsVolumeEnabled
 		{
 			get
@@ -50,7 +50,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 #endif
 #if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public  bool IsVolumeButtonVisible
 		{
 			get
@@ -64,7 +64,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 #endif
 #if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public  bool IsStopEnabled
 		{
 			get
@@ -78,7 +78,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 #endif
 #if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public  bool IsStopButtonVisible
 		{
 			get
@@ -92,7 +92,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 #endif
 #if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public  bool IsSeekEnabled
 		{
 			get
@@ -106,7 +106,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 #endif
 #if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public  bool IsSeekBarVisible
 		{
 			get
@@ -120,7 +120,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 #endif
 #if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public  bool IsPlaybackRateEnabled
 		{
 			get
@@ -134,7 +134,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 #endif
 #if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public  bool IsPlaybackRateButtonVisible
 		{
 			get
@@ -148,7 +148,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 #endif
 #if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public  bool IsFullWindowEnabled
 		{
 			get
@@ -162,7 +162,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 #endif
 #if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public  bool IsFullWindowButtonVisible
 		{
 			get
@@ -176,7 +176,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 #endif
 #if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public  bool IsFastRewindEnabled
 		{
 			get
@@ -190,7 +190,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 #endif
 #if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public  bool IsFastRewindButtonVisible
 		{
 			get
@@ -204,7 +204,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 #endif
 #if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public  bool IsFastForwardEnabled
 		{
 			get
@@ -218,7 +218,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 #endif
 #if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public  bool IsFastForwardButtonVisible
 		{
 			get
@@ -232,7 +232,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 #endif
 #if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public  bool IsCompact
 		{
 			get
@@ -246,7 +246,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 #endif
 #if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public  bool IsSkipForwardEnabled
 		{
 			get
@@ -260,7 +260,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 #endif
 #if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public  bool IsSkipForwardButtonVisible
 		{
 			get
@@ -274,7 +274,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 #endif
 #if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public  bool IsSkipBackwardEnabled
 		{
 			get
@@ -288,7 +288,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 #endif
 #if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public  bool IsSkipBackwardButtonVisible
 		{
 			get
@@ -302,7 +302,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 #endif
 #if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public  bool IsPreviousTrackButtonVisible
 		{
 			get
@@ -316,7 +316,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 #endif
 #if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public  bool IsNextTrackButtonVisible
 		{
 			get
@@ -330,7 +330,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 #endif
 #if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public  global::Windows.UI.Xaml.Media.FastPlayFallbackBehaviour FastPlayFallbackBehaviour
 		{
 			get
@@ -344,7 +344,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 #endif
 #if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public  bool ShowAndHideAutomatically
 		{
 			get
@@ -358,7 +358,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 #endif
 #if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public  bool IsRepeatEnabled
 		{
 			get
@@ -372,7 +372,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 #endif
 #if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public  bool IsRepeatButtonVisible
 		{
 			get
@@ -386,7 +386,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 #endif
 #if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public  bool IsCompactOverlayEnabled
 		{
 			get
@@ -400,7 +400,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 #endif
 #if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public  bool IsCompactOverlayButtonVisible
 		{
 			get
@@ -414,7 +414,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 #endif
 #if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Xaml.DependencyProperty IsCompactProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(IsCompact), typeof(bool),
@@ -422,7 +422,7 @@ namespace Windows.UI.Xaml.Controls
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Xaml.DependencyProperty IsFastForwardButtonVisibleProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(IsFastForwardButtonVisible), typeof(bool),
@@ -430,7 +430,7 @@ namespace Windows.UI.Xaml.Controls
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Xaml.DependencyProperty IsFastForwardEnabledProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(IsFastForwardEnabled), typeof(bool),
@@ -438,7 +438,7 @@ namespace Windows.UI.Xaml.Controls
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Xaml.DependencyProperty IsFastRewindButtonVisibleProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(IsFastRewindButtonVisible), typeof(bool),
@@ -446,7 +446,7 @@ namespace Windows.UI.Xaml.Controls
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Xaml.DependencyProperty IsFastRewindEnabledProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(IsFastRewindEnabled), typeof(bool),
@@ -454,7 +454,7 @@ namespace Windows.UI.Xaml.Controls
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Xaml.DependencyProperty IsFullWindowButtonVisibleProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(IsFullWindowButtonVisible), typeof(bool),
@@ -462,7 +462,7 @@ namespace Windows.UI.Xaml.Controls
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Xaml.DependencyProperty IsFullWindowEnabledProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(IsFullWindowEnabled), typeof(bool),
@@ -470,7 +470,7 @@ namespace Windows.UI.Xaml.Controls
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Xaml.DependencyProperty IsPlaybackRateButtonVisibleProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(IsPlaybackRateButtonVisible), typeof(bool),
@@ -478,7 +478,7 @@ namespace Windows.UI.Xaml.Controls
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Xaml.DependencyProperty IsPlaybackRateEnabledProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(IsPlaybackRateEnabled), typeof(bool),
@@ -486,7 +486,7 @@ namespace Windows.UI.Xaml.Controls
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Xaml.DependencyProperty IsSeekBarVisibleProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(IsSeekBarVisible), typeof(bool),
@@ -494,7 +494,7 @@ namespace Windows.UI.Xaml.Controls
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Xaml.DependencyProperty IsSeekEnabledProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(IsSeekEnabled), typeof(bool),
@@ -502,7 +502,7 @@ namespace Windows.UI.Xaml.Controls
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Xaml.DependencyProperty IsStopButtonVisibleProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(IsStopButtonVisible), typeof(bool),
@@ -510,7 +510,7 @@ namespace Windows.UI.Xaml.Controls
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Xaml.DependencyProperty IsStopEnabledProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(IsStopEnabled), typeof(bool),
@@ -518,7 +518,7 @@ namespace Windows.UI.Xaml.Controls
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Xaml.DependencyProperty IsVolumeButtonVisibleProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(IsVolumeButtonVisible), typeof(bool),
@@ -526,7 +526,7 @@ namespace Windows.UI.Xaml.Controls
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Xaml.DependencyProperty IsVolumeEnabledProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(IsVolumeEnabled), typeof(bool),
@@ -534,7 +534,7 @@ namespace Windows.UI.Xaml.Controls
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Xaml.DependencyProperty IsZoomButtonVisibleProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(IsZoomButtonVisible), typeof(bool),
@@ -542,7 +542,7 @@ namespace Windows.UI.Xaml.Controls
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Xaml.DependencyProperty IsZoomEnabledProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(IsZoomEnabled), typeof(bool),
@@ -550,7 +550,7 @@ namespace Windows.UI.Xaml.Controls
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Xaml.DependencyProperty FastPlayFallbackBehaviourProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(FastPlayFallbackBehaviour), typeof(global::Windows.UI.Xaml.Media.FastPlayFallbackBehaviour),
@@ -558,7 +558,7 @@ namespace Windows.UI.Xaml.Controls
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.FastPlayFallbackBehaviour)));
 #endif
 #if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Xaml.DependencyProperty IsNextTrackButtonVisibleProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(IsNextTrackButtonVisible), typeof(bool),
@@ -566,7 +566,7 @@ namespace Windows.UI.Xaml.Controls
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Xaml.DependencyProperty IsPreviousTrackButtonVisibleProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(IsPreviousTrackButtonVisible), typeof(bool),
@@ -574,7 +574,7 @@ namespace Windows.UI.Xaml.Controls
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Xaml.DependencyProperty IsSkipBackwardButtonVisibleProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(IsSkipBackwardButtonVisible), typeof(bool),
@@ -582,7 +582,7 @@ namespace Windows.UI.Xaml.Controls
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Xaml.DependencyProperty IsSkipBackwardEnabledProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(IsSkipBackwardEnabled), typeof(bool),
@@ -590,7 +590,7 @@ namespace Windows.UI.Xaml.Controls
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Xaml.DependencyProperty IsSkipForwardButtonVisibleProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(IsSkipForwardButtonVisible), typeof(bool),
@@ -598,7 +598,7 @@ namespace Windows.UI.Xaml.Controls
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Xaml.DependencyProperty IsSkipForwardEnabledProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(IsSkipForwardEnabled), typeof(bool),
@@ -606,7 +606,7 @@ namespace Windows.UI.Xaml.Controls
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Xaml.DependencyProperty IsRepeatButtonVisibleProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(IsRepeatButtonVisible), typeof(bool),
@@ -614,7 +614,7 @@ namespace Windows.UI.Xaml.Controls
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Xaml.DependencyProperty IsRepeatEnabledProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(IsRepeatEnabled), typeof(bool),
@@ -622,7 +622,7 @@ namespace Windows.UI.Xaml.Controls
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Xaml.DependencyProperty ShowAndHideAutomaticallyProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(ShowAndHideAutomatically), typeof(bool),
@@ -630,7 +630,7 @@ namespace Windows.UI.Xaml.Controls
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Xaml.DependencyProperty IsCompactOverlayButtonVisibleProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(IsCompactOverlayButtonVisible), typeof(bool),
@@ -638,7 +638,7 @@ namespace Windows.UI.Xaml.Controls
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Xaml.DependencyProperty IsCompactOverlayEnabledProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(IsCompactOverlayEnabled), typeof(bool),
@@ -756,8 +756,8 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.MediaTransportControls.IsSeekBarVisibleProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.MediaTransportControls.IsSeekEnabledProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.MediaTransportControls.IsCompactProperty.get
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.Controls.MediaTransportControls, global::Windows.UI.Xaml.Media.MediaTransportControlsThumbnailRequestedEventArgs> ThumbnailRequested
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
