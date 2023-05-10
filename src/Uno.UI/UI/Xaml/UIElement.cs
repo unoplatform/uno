@@ -194,7 +194,25 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Gets the position of this UIElement, relative to its parent, computed during the arrange pass of the layout process.
 		/// </summary>
-		public Vector3 ActualOffset => new Vector3((float)LayoutSlotWithMarginsAndAlignments.X, (float)LayoutSlotWithMarginsAndAlignments.Y, 0f);
+		public Vector3 ActualOffset
+		{
+			get
+			{
+#if __ANDROID__
+				var parent = this.GetVisualTreeParent();
+
+				if (parent is NativeListViewBase lv)
+				{
+					// TODO Uno: Issue with LayoutSlot for list items
+					// https://github.com/unoplatform/uno/issues/2754
+					var sv = lv.FindFirstParent<ScrollViewer>();
+					var offset = GetPosition(this, relativeTo: sv);
+					return new Vector3((float)offset.X, (float)offset.Y, 0f);
+				}
+#endif
+				return new Vector3((float)LayoutSlotWithMarginsAndAlignments.X, (float)LayoutSlotWithMarginsAndAlignments.Y, 0f);
+			}
+		}
 
 		/// <summary>
 		/// Gets or sets the x, y, and z rendering position of the element.
