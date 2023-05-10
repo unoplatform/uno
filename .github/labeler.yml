@@ -61,8 +61,6 @@ platform/wasm:
   - src/Uno.Foundation.Runtime.WebAssembly/**/*
   - src/Uno.UI.Runtime.WebAssembly/*
   - src/Uno.UI.Runtime.WebAssembly/**/*
-  - src/Uno.UI.Runtime.WebAssembly.Compatibility/*
-  - src/Uno.UI.Runtime.WebAssembly.Compatibility/**/*
 
 platform/ios:
   - '**/*.iOS.cs'
