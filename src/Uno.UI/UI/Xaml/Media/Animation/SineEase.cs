@@ -6,7 +6,7 @@ namespace Windows.UI.Xaml.Media.Animation
 	{
 		private protected override double EaseInCore(double normalizedTime)
 		{
-			return 1.0 - EaseOutSine(1- normalizedTime);
+			return 1.0 - EaseOutSine(1 - normalizedTime);
 		}
 
 		private static double EaseOutSine(double normalizedTime)
