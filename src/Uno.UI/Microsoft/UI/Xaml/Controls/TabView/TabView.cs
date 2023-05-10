@@ -44,10 +44,6 @@ public partial class TabView : Control
 	// TODO (WinUI): what is the right number and should this be customizable?
 	private const double c_scrollAmount = 50.0;
 
-	// Change to 'true' to turn on debugging outputs in Output window
-	private const bool s_IsDebugOutputEnabled = false;
-	private const bool s_IsVerboseDebugOutputEnabled = false;
-
 	public TabView()
 	{
 		// Uno specific: Needs to be initialized here, as field can't use "this"
