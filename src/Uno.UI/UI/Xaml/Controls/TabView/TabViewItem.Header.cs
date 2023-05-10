@@ -30,7 +30,7 @@ public partial class TabViewItem
 	private readonly SerialDisposable m_closeButtonClickRevoker = new();
 	private readonly SerialDisposable m_tabDragStartingRevoker = new();
 	private readonly SerialDisposable m_tabDragCompletedRevoker = new();
-	
+
 	private object? m_shadow;
 
 	private TabView? m_parentTabView;
