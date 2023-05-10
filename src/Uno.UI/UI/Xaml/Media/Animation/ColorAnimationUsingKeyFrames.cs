@@ -403,7 +403,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		/// <summary>
 		/// Dispose the animation.
 		/// </summary>
-		protected override void Dispose(bool disposing)
+		private protected override void Dispose(bool disposing)
 		{
 			if (disposing)
 			{
