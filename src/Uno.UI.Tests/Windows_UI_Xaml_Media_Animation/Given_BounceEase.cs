@@ -15,7 +15,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Media_Animation
 		[TestMethod]
 		public void When_FinalValueGreaterThanInitial()
 		{
-			var sut = new BounceEase();
+			IEasingFunction sut = new BounceEase();
 
 			EaseCore(0.0).Should().BeApproximately(100, .1);
 			EaseCore(1.0).Should().BeApproximately(200, .1);
@@ -29,7 +29,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Media_Animation
 		[TestMethod]
 		public void When_FinalValueLowerThanInitial()
 		{
-			var sut = new BounceEase();
+			IEasingFunction sut = new BounceEase();
 
 			EaseCore(0.0).Should().BeApproximately(200, .1);
 			EaseCore(1.0).Should().BeApproximately(100, .1);
