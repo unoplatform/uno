@@ -491,7 +491,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// <summary>
 		/// Identifies the PaneTitle dependency property.
 		/// </summary>
-		public static readonly DependencyProperty PaneTitleProperty =
+		public static DependencyProperty PaneTitleProperty { get; } =
 			DependencyProperty.Register(nameof(PaneTitle), typeof(string), typeof(NavigationView), new FrameworkPropertyMetadata(string.Empty, OnPropertyChanged)); //TODO: Empty string or null?
 
 		/// <summary>

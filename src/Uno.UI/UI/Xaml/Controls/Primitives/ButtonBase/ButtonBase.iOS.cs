@@ -13,7 +13,7 @@ using MonoTouch.UIKit;
 
 namespace Windows.UI.Xaml.Controls.Primitives
 {
-	public abstract partial class ButtonBase : ContentControl
+	public partial class ButtonBase : ContentControl
 	{
 		private readonly SerialDisposable _clickSubscription = new SerialDisposable();
 
@@ -62,7 +62,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 			//
 			// Bind the enabled handler
-			// 
+			//
 			void enabledHandler(object e, DependencyPropertyChangedEventArgs s)
 			{
 				uiControl.Enabled = IsEnabled;
