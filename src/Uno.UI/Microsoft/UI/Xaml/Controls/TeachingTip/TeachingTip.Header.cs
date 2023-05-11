@@ -1,23 +1,51 @@
-﻿// MUX Reference TeachingTip.h, commit dfbe38b
+﻿// MUX Reference TeachingTip.h, commit 9aee101
 
 #nullable enable
 
 using System;
 using System.Numerics;
+using Uno.Disposables;
 using Windows.Foundation;
 using Windows.UI.Composition;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Shapes;
 
 namespace Microsoft.UI.Xaml.Controls;
 
 public partial class TeachingTip
 {
-	private XamlRoot m_xamlRoot;
-
-	internal bool m_isIdle = true;
 	private FrameworkElement m_target;
+	internal bool m_isIdle = true;
+
+	private readonly SerialDisposable m_automationNameChangedRevoker = new();
+	private readonly SerialDisposable m_automationIdChangedRevoker = new();
+	private readonly SerialDisposable m_acceleratorKeyActivatedRevoker = new();
+	// This handler is not required for Winui3 because the framework bug this works around has been fixed.
+	private readonly SerialDisposable m_popupPreviewKeyDownForF6Revoker = new();
+	private readonly SerialDisposable m_closeButtonClickedRevoker = new();
+	private readonly SerialDisposable m_alternateCloseButtonClickedRevoker = new();
+	private readonly SerialDisposable m_actionButtonClickedRevoker = new();
+	private readonly SerialDisposable m_contentSizeChangedRevoker = new();
+	private readonly SerialDisposable m_effectiveViewportChangedRevoker = new();
+	private readonly SerialDisposable m_targetEffectiveViewportChangedRevoker = new();
+	private readonly SerialDisposable m_targetLayoutUpdatedRevoker = new();
+	private readonly SerialDisposable m_targetLoadedRevoker = new();
+	private readonly SerialDisposable m_popupOpenedRevoker = new();
+	private readonly SerialDisposable m_popupClosedRevoker = new();
+	private readonly SerialDisposable m_lightDismissIndicatorPopupClosedRevoker = new();
+	private readonly SerialDisposable m_windowSizeChangedRevoker = new();
+	private readonly SerialDisposable m_tailOcclusionGridLoadedRevoker = new();
+	private readonly SerialDisposable m_xamlRootChangedRevoker = new();
+	// Hold a strong ref to the xamlRoot while we're open so that the changed revoker works.
+	// This can be removed when internal bug #21302432 is fixed.
+	private XamlRoot m_xamlRoot;
+	private readonly SerialDisposable m_actualThemeChangedRevoker = new();
+
+
+	float TopLeftCornerRadius() => GetTeachingTipCornerRadius().TopLeft;
+	float TopRightCornerRadius() => GetTeachingTipCornerRadius().TopRight;
 
 	private Border m_container;
 	internal Popup m_popup;
@@ -33,8 +61,8 @@ public partial class TeachingTip
 	private Button m_closeButton;
 	private Polygon m_tailPolygon;
 	private Grid m_tailEdgeBorder;
-	private UIElement m_titleTextBox;
-	private UIElement m_subtitleTextBox;
+	private UIElement m_titleTextBlock;
+	private UIElement m_subtitleTextBlock;
 
 	private WeakReference<DependencyObject> m_previouslyFocusedElement;
 
@@ -54,27 +82,28 @@ public partial class TeachingTip
 
 	private Size m_currentXamlRootSize = Size.Empty;
 
-	private bool m_isTemplateApplied = false;
-	private bool m_createNewPopupOnOpen = false;
+	private bool m_ignoreNextIsOpenChanged;
+	private bool m_isTemplateApplied;
+	private bool m_createNewPopupOnOpen;
 
-	private bool m_isExpandAnimationPlaying = false;
-	private bool m_isContractAnimationPlaying = false;
+	private bool m_isExpandAnimationPlaying;
+	private bool m_isContractAnimationPlaying;
 
-	private bool m_hasF6BeenInvoked = false;
+	private bool m_hasF6BeenInvoked;
 
-	private bool m_useTestWindowBounds = false;
+	private bool m_useTestWindowBounds;
 	private Rect m_testWindowBoundsInCoreWindowSpace = Rect.Empty;
-	private bool m_useTestScreenBounds = false;
+	private bool m_useTestScreenBounds;
 	private Rect m_testScreenBoundsInCoreWindowSpace = Rect.Empty;
 
 	private bool m_tipShouldHaveShadow = true;
 
-	private bool m_tipFollowsTarget = false;
+	private bool m_tipFollowsTarget;
 	private bool m_returnTopForOutOfWindowPlacement = true;
 
 	private float m_contentElevation = 32.0f;
 	private float m_tailElevation = 0.0f;
-	private bool m_tailShadowTargetsShadowTarget = false;
+	private bool m_tailShadowTargetsShadowTarget;
 
 	private TimeSpan m_expandAnimationDuration = TimeSpan.FromMilliseconds(300);
 	private TimeSpan m_contractAnimationDuration = TimeSpan.FromMilliseconds(200);
@@ -99,18 +128,36 @@ public partial class TeachingTip
 		placement == TeachingTipPlacementMode.RightBottom;
 
 	// These values are shifted by one because this is the 1px highlight that sits adjacent to the tip border.
-	private Thickness BottomPlacementTopRightHighlightMargin(double width, double height) => new Thickness((width / 2) + (TailShortSideLength() - 1.0f), 0, 3, 0);
-	private Thickness BottomRightPlacementTopRightHighlightMargin(double width, double height) => new Thickness(MinimumTipEdgeToTailEdgeMargin() + TailLongSideLength() - 1.0f, 0, 3, 0);
-	private Thickness BottomLeftPlacementTopRightHighlightMargin(double width, double height) => new Thickness(width - (MinimumTipEdgeToTailEdgeMargin() + 1.0f), 0, 3, 0);
-	static private Thickness OtherPlacementTopRightHighlightMargin(double width, double height) => new Thickness(0, 0, 0, 0);
+	private Thickness BottomPlacementTopRightHighlightMargin(double width, double height) =>
+		new((width / 2) + (TailShortSideLength() - 1.0f), 0, (TopRightCornerRadius() - 1.0f), 0);
 
-	private Thickness BottomPlacementTopLeftHighlightMargin(double width, double height) => new Thickness(3, 0, (width / 2) + (TailShortSideLength() - 1.0f), 0);
-	private Thickness BottomRightPlacementTopLeftHighlightMargin(double width, double height) => new Thickness(3, 0, width - (MinimumTipEdgeToTailEdgeMargin() + 1.0f), 0);
-	private Thickness BottomLeftPlacementTopLeftHighlightMargin(double width, double height) => new Thickness(3, 0, MinimumTipEdgeToTailEdgeMargin() + TailLongSideLength() - 1.0f, 0);
-	static private Thickness TopEdgePlacementTopLeftHighlightMargin(double width, double height) => new Thickness(3, 1, 3, 0);
+	private Thickness BottomRightPlacementTopRightHighlightMargin(double width, double height) =>
+		new(MinimumTipEdgeToTailEdgeMargin() + TailLongSideLength() - 1.0f, 0, (TopRightCornerRadius() - 1.0f), 0);
+
+	private Thickness BottomLeftPlacementTopRightHighlightMargin(double width, double height) =>
+		new(width - (MinimumTipEdgeToTailEdgeMargin() + 1.0f), 0, (TopRightCornerRadius() - 1.0f), 0);
+
+	static private Thickness OtherPlacementTopRightHighlightMargin(double width, double height) =>
+		new(0, 0, 0, 0);
+
+	private Thickness BottomPlacementTopLeftHighlightMargin(double width, double height) =>
+		new((TopLeftCornerRadius() - 1.0f), 0, (width / 2) + (TailShortSideLength() - 1.0f), 0);
+
+	private Thickness BottomRightPlacementTopLeftHighlightMargin(double width, double height) =>
+		new((TopLeftCornerRadius() - 1.0f), 0, width - (MinimumTipEdgeToTailEdgeMargin() + 1.0f), 0);
+
+	private Thickness BottomLeftPlacementTopLeftHighlightMargin(double width, double height) =>
+		new((TopLeftCornerRadius() - 1.0f), 0, MinimumTipEdgeToTailEdgeMargin() + TailLongSideLength() - 1.0f, 0);
+
+	private Thickness TopEdgePlacementTopLeftHighlightMargin(double width, double height) =>
+		new((TopLeftCornerRadius() - 1.0f), 1, (TopRightCornerRadius() - 1.0f), 0);
+
 	// Shifted by one since the tail edge's border is not accounted for automatically.
-	static private Thickness LeftEdgePlacementTopLeftHighlightMargin(double width, double height) => new Thickness(3, 1, 2, 0);
-	static private Thickness RightEdgePlacementTopLeftHighlightMargin(double width, double height) => new Thickness(2, 1, 3, 0);
+	private Thickness LeftEdgePlacementTopLeftHighlightMargin(double width, double height) =>
+		new((TopLeftCornerRadius() - 1.0f), 1, (TopRightCornerRadius() - 2.0f), 0);
+
+	private Thickness RightEdgePlacementTopLeftHighlightMargin(double width, double height) =>
+		new((TopLeftCornerRadius() - 2.0f), 1, (TopRightCornerRadius() - 1.0f), 0);
 
 	static private double UntargetedTipFarPlacementOffset(float farWindowCoordinateInCoreWindowSpace, double tipSize, double offset) =>
 		farWindowCoordinateInCoreWindowSpace - (tipSize + s_untargetedTipWindowEdgeMargin + offset);
