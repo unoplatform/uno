@@ -172,7 +172,7 @@ public partial class GTKMediaPlayer
 				//	player.Log().Debug($"MediaPlayer source changed: [{player.Source}]");
 				//}
 
-				//player.OnSourceLoaded?.Invoke(player, EventArgs.Empty);
+				player.OnSourceLoaded?.Invoke(player, EventArgs.Empty);
 			}
 		}
 	}
