@@ -30,7 +30,9 @@ public partial class GTKMediaPlayer : Border
 	private LibVLCSharp.Shared.MediaPlayer? _mediaPlayer;
 	private ContentControl? _videoContainer;
 	private VideoView? _videoView;
+	private Uri? _mediaPath;
 	private double _ratio;
+	private bool _isEnding;
 	Windows.UI.Xaml.Media.Stretch _stretch = Windows.UI.Xaml.Media.Stretch.Uniform;
 	private Rect _transportControlsBounds;
 	//public int VideoHeight;
@@ -327,17 +329,6 @@ public partial class GTKMediaPlayer : Border
 	public void SetIsLoopingEnabled(bool value)
 	{
 		_isLoopingEnabled = value;
-		if (_videoView != null && _mediaPlayer != null)
-		{
-			//TODO: version 3
-			//_mediaPlayer.PositionChanged += 
-			//public void MediaEndReached(object sender, EventArgs args)
-			//{
-			//	ThreadPool.QueueUserWorkItem(() => this.MediaPlayer.Stop());
-			//}
-			//version 4
-			//new LibVLC("--input-repeat=2");
-		}
 	}
 	internal void UpdateVideoStretch(Windows.UI.Xaml.Media.Stretch stretch)
 	{

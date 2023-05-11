@@ -24,7 +24,6 @@ namespace Uno.UI.Media;
 
 public partial class GTKMediaPlayer
 {
-
 	public event EventHandler<object>? OnSourceFailed;
 	public event EventHandler<object>? OnSourceEnded;
 	public event EventHandler<object>? OnMetadataLoaded;
@@ -33,10 +32,6 @@ public partial class GTKMediaPlayer
 
 	private void Initialized()
 	{
-		//if (this.Log().IsEnabled(LogLevel.Debug))
-		//{
-		//	this.Log().Debug($"GTKMediaPlayer Loaded");
-		//}
 
 		Console.WriteLine("GTKMediaPlayer Initialized");
 		Console.WriteLine("Creating libvlc");
@@ -63,39 +58,23 @@ public partial class GTKMediaPlayer
 
 			_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 			{
+				Console.WriteLine("Content _videoView on Dispatcher");
+
 				_videoView.Visible = true;
 				_videoView.MediaPlayer = _mediaPlayer;
-				_mediaPlayer.Stopped += (sender, e) =>
-				{
-					Console.WriteLine("MediaPlayer Stopped");
-					_videoView.Visible = false;
-				};
-				_mediaPlayer.TimeChanged += (sender, el) =>
-				{
-					var time = el is LibVLCSharp.Shared.MediaPlayerTimeChangedEventArgs e ? TimeSpan.FromMilliseconds(e.Time) : TimeSpan.Zero;
 
-					OnTimeUpdate?.Invoke(this, time);
-				};
-				_mediaPlayer.EndReached += (sender, el) =>
-				{
-					Console.WriteLine("EndReached");
-					OnHtmlSourceEnded(sender, el);
-				};
-				_mediaPlayer.MediaChanged += (sender, el) =>
-				{
-					Console.WriteLine("MediaChanged");
-					OnHtmlSourceLoaded(sender, el);
-				};
+				_mediaPlayer.TimeChanged += OnMediaPlayerTimeChange;
+				_mediaPlayer.MediaChanged += MediaPlayerMediaChanged;
+				_mediaPlayer.Stopped += OnMediaPlayerStopped;
 
-				Console.WriteLine("Content _videoView on Dispatcher");
 				_videoContainer.Content = _videoView;
 				Child = _videoContainer;
-
 				UpdateVideoStretch();
 				Console.WriteLine("Created player");
 			});
 		});
 	}
+
 	private void OnSourceVideoLoaded(object? sender, EventArgs e)
 	{
 		if (_videoView != null)
@@ -112,82 +91,123 @@ public partial class GTKMediaPlayer
 		{
 			string encodedSource = (string)args.NewValue;
 
-			//if (player.Log().IsEnabled(LogLevel.Debug))
-			//{
-			//	player.Log().Debug($"GTKMediaPlayer.OnSourceChanged: {args.NewValue} isVideo:{player.IsVideo} isAudio:{player.IsAudio}");
-			//}
-			if (player._mediaPlayer != null && player._libvlc != null)
+			player._mediaPath = new Uri(encodedSource);
+			player.UpdateMedia();
+		}
+	}
+
+	private void UpdateMedia()
+	{
+		if (_mediaPlayer != null && _libvlc != null && _mediaPath != null)
+		{
+			string[] options = new string[1];
+			var media = new LibVLCSharp.Shared.Media(_libvlc, _mediaPath, options);
+
+			media.Parse(MediaParseOptions.ParseNetwork);
+			_mediaPlayer.Media = media;
+			while (!_mediaPlayer.Media.IsParsed)
 			{
-				string[] options = new string[1];
-				var media = new LibVLCSharp.Shared.Media(player._libvlc, new Uri(encodedSource), options);
+				Thread.Sleep(10);
+			}
+			if (_mediaPlayer != null && _mediaPlayer.Media != null)
+			{
+				_mediaPlayer.Media.DurationChanged += DurationChanged;
+				_mediaPlayer.Media.MetaChanged += MetaChanged;
+				_mediaPlayer.Media.StateChanged += StateChanged;
+				_mediaPlayer.Media.ParsedChanged += ParsedChanged;
+			}
+			OnSourceLoaded?.Invoke(this, EventArgs.Empty);
+		}
+	}
 
-				media.Parse(MediaParseOptions.ParseNetwork);
-				player._mediaPlayer.Media = media;
-				while (!player._mediaPlayer.Media.IsParsed)
-				{
-					Thread.Sleep(10);
-				}
+	private void ParsedChanged(object? sender, EventArgs el)
+	{
+		Console.WriteLine("ParsedChanged");
+		OnGtkSourceLoaded(sender, el);
+	}
 
-				if (player._mediaPlayer != null && player._mediaPlayer.Media != null)
-				{
-					player._mediaPlayer.Media.DurationChanged += (sender, el) =>
-					{
-						Console.WriteLine("DurationChanged");
-						player.Duration = (double)(player._videoView?.MediaPlayer?.Media?.Duration / 1000 ?? 0);
-					};
-					player._mediaPlayer.Media.MetaChanged += (sender, el) =>
-					{
-						Console.WriteLine("MetaChanged");
-						player.OnHtmlMetadataLoaded(sender, el);
-					};
-					player._mediaPlayer.Media.StateChanged += (sender, el) =>
-					{
-						Console.WriteLine("StateChanged");
-						if (el.State == VLCState.Error)
-						{
-							Console.WriteLine("Error");
-							player.OnHtmlSourceFailed(sender, el);
-						}
-						if (el.State == VLCState.Ended)
-						{
-							Console.WriteLine("Ended");
-							player.OnHtmlSourceEnded(sender, el);
-						}
-						if (el.State == VLCState.Opening)
-						{
-							Console.WriteLine("Opening");
-							player.OnHtmlSourceLoaded(sender, el);
-						}
-					};
+	private void DurationChanged(object? sender, EventArgs el)
+	{
+		Console.WriteLine("DurationChanged");
+		Duration = (double)(_videoView?.MediaPlayer?.Media?.Duration / 1000 ?? 0);
+	}
 
-					player._mediaPlayer.Media.ParsedChanged += (sender, el) =>
-					{
-						Console.WriteLine("ParsedChanged");
-						player.OnHtmlSourceLoaded(sender, el);
-					};
+	private void StateChanged(object? sender, MediaStateChangedEventArgs el)
+	{
+		Console.WriteLine("StateChanged");
+		if (el.State == VLCState.Error)
+		{
+			Console.WriteLine("Error");
+			OnGtkSourceFailed(sender, el);
+		}
+		if (el.State == VLCState.Ended)
+		{
+			Console.WriteLine("Ended");
+			if (!_isEnding)
+			{
+				OnEndReached();
+			}
+		}
+		if (el.State == VLCState.Opening)
+		{
+			Console.WriteLine("Opening");
+			OnGtkSourceLoaded(sender, el);
+		}
+	}
 
-				}
-				//if (player.Log().IsEnabled(LogLevel.Debug))
-				//{
-				//	player.Log().Debug($"MediaPlayer source changed: [{player.Source}]");
-				//}
+	private void MetaChanged(object? sender, EventArgs el)
+	{
+		Console.WriteLine("MetaChanged");
+		OnGtkMetadataLoaded(sender, el);
+	}
 
-				player.OnSourceLoaded?.Invoke(player, EventArgs.Empty);
+	private void OnMediaPlayerStopped(object? sender, EventArgs el)
+	{
+		Console.WriteLine("MediaPlayer Stopped");
+		if (_videoView != null)
+		{
+			if (!_isEnding)
+			{
+				_videoView.Visible = false;
 			}
 		}
 	}
 
-	private void OnHtmlSourceEnded(object? sender, EventArgs e)
+	private void MediaPlayerMediaChanged(object? sender, MediaPlayerMediaChangedEventArgs el)
 	{
-		//if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
-		//{
-		//	this.Log().Debug($"Media ended [{Source}]");
-		//}
-
-		OnSourceEnded?.Invoke(this, EventArgs.Empty);
+		Console.WriteLine("MediaChanged");
+		OnGtkSourceLoaded(sender, el);
 	}
 
-	private void OnHtmlMetadataLoaded(object? sender, EventArgs e)
+	private void OnMediaPlayerTimeChange(object? sender, MediaPlayerTimeChangedEventArgs el)
+	{
+		var time = el is LibVLCSharp.Shared.MediaPlayerTimeChangedEventArgs e ? TimeSpan.FromMilliseconds(e.Time) : TimeSpan.Zero;
+		OnTimeUpdate?.Invoke(this, time);
+	}
+
+	private void OnEndReached()
+	{
+		Console.WriteLine("OnEndReached");
+
+		if (_libvlc != null && _videoView != null && _mediaPlayer != null && _mediaPath != null)
+		{
+			_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+			{
+				_isEnding = true;
+				UpdateMedia();
+
+				OnSourceEnded?.Invoke(this, EventArgs.Empty);
+				if (_isLoopingEnabled)
+				{
+					_mediaPlayer.Play();
+				}
+				_videoView.Visible = true;
+				_isEnding = false;
+			});
+		}
+	}
+
+	private void OnGtkMetadataLoaded(object? sender, EventArgs e)
 	{
 		if (_videoView != null && _mediaPlayer != null && _mediaPlayer.Media != null)
 		{
@@ -196,12 +216,8 @@ public partial class GTKMediaPlayer
 		OnMetadataLoaded?.Invoke(this, Duration);
 	}
 
-	private void OnHtmlSourceLoaded(object? sender, EventArgs e)
+	private void OnGtkSourceLoaded(object? sender, EventArgs e)
 	{
-		//if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
-		//{
-		//	this.Log().Debug($"Media opened [{Source}]");
-		//}
 		if (_videoView != null)
 		{
 			_videoView.Visible = true;
@@ -212,14 +228,9 @@ public partial class GTKMediaPlayer
 				OnSourceLoaded?.Invoke(this, EventArgs.Empty);
 			}
 		}
-		//if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
-		//{
-		//	this.Log().Debug($"{ActiveElementName} source loaded: [{Source}]");
-		//}
-
 	}
 
-	private void OnHtmlSourceFailed(object? sender, EventArgs e)
+	private void OnGtkSourceFailed(object? sender, EventArgs e)
 	{
 		if (_videoView != null)
 		{
