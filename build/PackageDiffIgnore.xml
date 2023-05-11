@@ -675,7 +675,22 @@
 			<Member fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.FrameworkElement::IsEnabledProperty()" reason="Api alignments" />
 			<Member fullName="System.Boolean Windows.UI.Xaml.FrameworkElement::IsEnabled()" reason="Api alignments" />
 
-
+			<Member fullName="Microsoft.UI.Xaml.FocusState Microsoft.UI.Xaml.Controls.Control::FocusState()" reason="Api alignments" />
+			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.Control::FocusStateProperty()" reason="Api alignments" />
+			<Member fullName="System.Boolean Microsoft.UI.Xaml.Controls.Control::IsTabStop()" reason="Api alignments" />
+			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.Control::IsTabStopProperty()" reason="Api alignments" />
+			<Member fullName="System.Int32 Microsoft.UI.Xaml.Controls.Control::TabIndex()" reason="Api alignments" />
+			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.Control::TabIndexProperty()" reason="Api alignments" />
+			<Member fullName="Microsoft.UI.Xaml.DependencyObject Microsoft.UI.Xaml.Controls.Control::XYFocusUp()" reason="Api alignments" />
+			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.Control::XYFocusUpProperty()" reason="Api alignments" />
+			<Member fullName="Microsoft.UI.Xaml.DependencyObject Microsoft.UI.Xaml.Controls.Control::XYFocusDown()" reason="Api alignments" />
+			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.Control::XYFocusDownProperty()" reason="Api alignments" />
+			<Member fullName="Microsoft.UI.Xaml.DependencyObject Microsoft.UI.Xaml.Controls.Control::XYFocusLeft()" reason="Api alignments" />
+			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.Control::XYFocusLeftProperty()" reason="Api alignments" />
+			<Member fullName="Microsoft.UI.Xaml.DependencyObject Microsoft.UI.Xaml.Controls.Control::XYFocusRight()" reason="Api alignments" />
+			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.Control::XYFocusRightProperty()" reason="Api alignments" />
+			<Member fullName="System.Boolean Microsoft.UI.Xaml.Controls.Control::UseSystemFocusVisuals()" reason="Api alignments" />
+			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.Control::UseSystemFocusVisualsProperty()" reason="Api alignments" />
 			<Member fullName="System.String Windows.UI.Xaml.TemplatePartAttribute::Name()" reason="Api alignments" />
 			<Member fullName="System.Type Windows.UI.Xaml.TemplatePartAttribute::Type()" reason="Api alignments" />
 			<Member fullName="System.Double Windows.UI.Xaml.CornerRadius::TopLeft()" reason="Api alignments" />
@@ -1041,6 +1056,31 @@
 			<Member fullName="System.Void Windows.UI.Xaml.Controls.ListViewBaseScrollContentPresenter.SetContentOffset(CoreGraphics.CGPoint contentOffset, System.Boolean animated)" reason="Api alignments" />
 			<Member fullName="System.Void Windows.UI.Xaml.Controls.ListViewBaseScrollContentPresenter.SetZoomScale(System.Runtime.InteropServices.NFloat scale, System.Boolean animated)" reason="Api alignments" />
 
+			<Member fullName="System.Boolean Microsoft.UI.Xaml.Controls.Control.Focus(Microsoft.UI.Xaml.FocusState value)" reason="Api alignments" />
+			<Member fullName="Microsoft.UI.Xaml.FocusState Microsoft.UI.Xaml.Controls.Control.get_FocusState()" reason="Api alignments" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.Control.set_FocusState(Microsoft.UI.Xaml.FocusState value)" reason="Api alignments" />
+			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.Control.get_FocusStateProperty()" reason="Api alignments" />
+			<Member fullName="System.Boolean Microsoft.UI.Xaml.Controls.Control.get_IsTabStop()" reason="Api alignments" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.Control.set_IsTabStop(System.Boolean value)" reason="Api alignments" />
+			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.Control.get_IsTabStopProperty()" reason="Api alignments" />
+			<Member fullName="System.Int32 Microsoft.UI.Xaml.Controls.Control.get_TabIndex()" reason="Api alignments" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.Control.set_TabIndex(System.Int32 value)" reason="Api alignments" />
+			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.Control.get_TabIndexProperty()" reason="Api alignments" />
+			<Member fullName="Microsoft.UI.Xaml.DependencyObject Microsoft.UI.Xaml.Controls.Control.get_XYFocusUp()" reason="Api alignments" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.Control.set_XYFocusUp(Microsoft.UI.Xaml.DependencyObject value)" reason="Api alignments" />
+			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.Control.get_XYFocusUpProperty()" reason="Api alignments" />
+			<Member fullName="Microsoft.UI.Xaml.DependencyObject Microsoft.UI.Xaml.Controls.Control.get_XYFocusDown()" reason="Api alignments" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.Control.set_XYFocusDown(Microsoft.UI.Xaml.DependencyObject value)" reason="Api alignments" />
+			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.Control.get_XYFocusDownProperty()" reason="Api alignments" />
+			<Member fullName="Microsoft.UI.Xaml.DependencyObject Microsoft.UI.Xaml.Controls.Control.get_XYFocusLeft()" reason="Api alignments" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.Control.set_XYFocusLeft(Microsoft.UI.Xaml.DependencyObject value)" reason="Api alignments" />
+			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.Control.get_XYFocusLeftProperty()" reason="Api alignments" />
+			<Member fullName="Microsoft.UI.Xaml.DependencyObject Microsoft.UI.Xaml.Controls.Control.get_XYFocusRight()" reason="Api alignments" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.Control.set_XYFocusRight(Microsoft.UI.Xaml.DependencyObject value)" reason="Api alignments" />
+			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.Control.get_XYFocusRightProperty()" reason="Api alignments" />
+			<Member fullName="System.Boolean Microsoft.UI.Xaml.Controls.Control.get_UseSystemFocusVisuals()" reason="Api alignments" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.Control.set_UseSystemFocusVisuals(System.Boolean value)" reason="Api alignments" />
+			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.Control.get_UseSystemFocusVisualsProperty()" reason="Api alignments" />
 			<Member fullName="System.Void Windows.UI.Xaml.FrameworkElement.add_IsEnabledChanged(Windows.UI.Xaml.DependencyPropertyChangedEventHandler value)" reason="Api alignments" />
 			<Member fullName="System.Void Windows.UI.Xaml.FrameworkElement.remove_IsEnabledChanged(Windows.UI.Xaml.DependencyPropertyChangedEventHandler value)" reason="Api alignments" />
 			<Member fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.FrameworkElement.get_IsEnabledProperty()" reason="Api alignments" />
