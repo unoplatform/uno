@@ -127,7 +127,7 @@ namespace Windows.UI.Xaml
 			InternalRequestedTheme = GetSystemTheme();
 		}
 
-		internal ApplicationTheme InternalRequestedTheme
+		private ApplicationTheme InternalRequestedTheme
 		{
 			get => _requestedTheme;
 			set
