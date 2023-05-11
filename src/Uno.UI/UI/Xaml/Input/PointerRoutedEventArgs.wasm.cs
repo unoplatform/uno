@@ -25,8 +25,7 @@ namespace Windows.UI.Xaml.Input
 
 		internal PointerRoutedEventArgs(
 			double timestamp,
-			uint pointerId,
-			PointerDeviceType pointerType,
+			PointerIdentifier pointerUniqueId,
 			Point absolutePosition,
 			bool isInContact,
 			bool isInRange,
@@ -46,7 +45,7 @@ namespace Windows.UI.Xaml.Input
 			_wheel = wheel;
 
 			FrameId = ToFrameId(timestamp);
-			Pointer = new Pointer(pointerId, pointerType, isInContact, isInRange);
+			Pointer = new Pointer(pointerUniqueId, isInContact, isInRange);
 			KeyModifiers = keys;
 			OriginalSource = source;
 		}

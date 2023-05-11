@@ -147,9 +147,7 @@ namespace Uno.UI.Xaml.Core
 
 #if __WASM__
 		private static void ProcessPointerCancelledWasm(PointerRoutedEventArgs args)
-		{
-			RemoveActivePointer(args.Pointer.UniqueId);
-		}
+			=> PointerIdentifierPool.ReleaseManaged(args.Pointer.UniqueId);
 #endif
 
 		internal void ProcessPointerUp(PointerRoutedEventArgs args, bool isAfterHandledUp = false)
@@ -200,7 +198,7 @@ namespace Uno.UI.Xaml.Core
 			ReleaseCaptures(args.Reset(canBubbleNatively: false));
 
 #if __WASM__
-			RemoveActivePointer(args.Pointer.UniqueId);
+			PointerIdentifierPool.ReleaseManaged(args.Pointer.UniqueId);
 #endif
 		}
 
