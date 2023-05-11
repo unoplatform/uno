@@ -73,7 +73,7 @@ partial class HtmlMediaPlayer
 		internal static partial void SetAttribute(nint htmlId, string name, string value);
 
 #if !USE_JSIMPORT
-		internal static partial void setAttribute(nint htmlId, string name, string value)
+		internal static partial void SetAttribute(nint htmlId, string name, string value)
 			=> throw new NotSupportedException();
 #endif
 
