@@ -20,6 +20,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Automation;
 using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Shapes;
@@ -35,6 +36,9 @@ public partial class TeachingTip : ContentControl
 	private const string c_SubtitleTextBlockCollapsedStateName = "CollapseSubtitleTextBlock";
 	private const string c_OverlayCornerRadiusName = "OverlayCornerRadius";
 
+	/// <summary>
+	/// Initializes a new instance of the TeachingTip class.
+	/// </summary>
 	public TeachingTip()
 	{
 		DefaultStyleKey = typeof(TeachingTip);
@@ -44,10 +48,7 @@ public partial class TeachingTip : ContentControl
 		SetValue(TemplateSettingsProperty, new TeachingTipTemplateSettings());
 	}
 
-	protected override AutomationPeer OnCreateAutomationPeer()
-	{
-		return new TeachingTipAutomationPeer(this);
-	}
+	protected override AutomationPeer OnCreateAutomationPeer() => new TeachingTipAutomationPeer(this);
 
 	protected override void OnApplyTemplate()
 	{
