@@ -1,7 +1,5 @@
 ﻿<linker>
 	<assembly fullname="Uno.UI">
-		<type fullname="Uno.UI.Wasm.WasmHttpHandler" />
-
 		<type fullname="Windows.UI.Xaml.UIElement" />
 		<type fullname="Windows.UI.Xaml.Window" />
 		<type fullname="Windows.UI.Xaml.Media.BrushConverter" />

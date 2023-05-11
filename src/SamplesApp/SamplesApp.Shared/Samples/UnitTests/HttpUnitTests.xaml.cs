@@ -16,11 +16,7 @@ namespace SamplesApp.Samples.UnitTests
 
 		private async void Go(object sender, RoutedEventArgs e)
 		{
-#if __WASM__
-			var handler = new Uno.UI.Wasm.WasmHttpHandler();
-#else
 			var handler = new HttpClientHandler();
-#endif
 
 			try
 			{
