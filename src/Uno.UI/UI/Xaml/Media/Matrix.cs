@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Numerics;
-using System.Security;
 using Windows.Foundation;
 
 namespace Windows.UI.Xaml.Media

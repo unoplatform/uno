@@ -16,8 +16,22 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Markup;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
+#if HAS_UNO_WINUI
+using WindowSizeChangedEventHandler = Windows.Foundation.TypedEventHandler<object,WindowSizeChangedEventArgs>;
+using WindowVisibilityChangedEventHandler = Windows.Foundation.TypedEventHandler<object,WindowVisibilityChangedEventArgs>;
+using WindowActivatedEventHandler = Windows.Foundation.TypedEventHandler<object,WindowActivatedEventArgs>;
+using WindowClosedEventHandler = Windows.Foundation.TypedEventHandler<object,WindowEventArgs>;
+#endif
+
 namespace Windows.UI.Xaml
 {
+#if HAS_UNO_WINUI
+	using WindowSizeChangedEventHandler = TypedEventHandler<object, WindowSizeChangedEventArgs>;
+	using WindowVisibilityChangedEventHandler = TypedEventHandler<object, WindowVisibilityChangedEventArgs>;
+	using WindowActivatedEventHandler = TypedEventHandler<object, WindowActivatedEventArgs>;
+	using WindowClosedEventHandler = TypedEventHandler<object, WindowEventArgs>;
+#endif
+
 	/// <summary>
 	/// Represents an application window.
 	/// </summary>
@@ -221,13 +235,13 @@ namespace Windows.UI.Xaml
 		/// Provides a memory-friendly registration to the <see cref="SizeChanged" /> event.
 		/// </summary>
 		/// <returns>A disposable instance that will cancel the registration.</returns>
-		internal IDisposable RegisterSizeChangedEvent(Windows.UI.Xaml.WindowSizeChangedEventHandler handler)
+		internal IDisposable RegisterSizeChangedEvent(WindowSizeChangedEventHandler handler)
 		{
 			return WeakEventHelper.RegisterEvent(
 				_sizeChangedHandlers,
 				handler,
 				(h, s, e) =>
-					(h as Windows.UI.Xaml.WindowSizeChangedEventHandler)?.Invoke(s, (WindowSizeChangedEventArgs)e)
+					(h as WindowSizeChangedEventHandler)?.Invoke(s, (WindowSizeChangedEventArgs)e)
 			);
 		}
 
@@ -268,7 +282,12 @@ namespace Windows.UI.Xaml
 
 				var args = new VisibilityChangedEventArgs() { Visible = newVisibility };
 				CoreWindow.OnVisibilityChanged(args);
+
+#if HAS_UNO_WINUI
+				VisibilityChanged?.Invoke(this, new WindowVisibilityChangedEventArgs() { Visible = newVisibility });
+#else
 				VisibilityChanged?.Invoke(this, args);
+#endif
 			}
 		}
 

@@ -147,7 +147,13 @@ namespace UITests.Windows_UI_Core
 			AddHistory("Window.Activated");
 		}
 
-		private void WindowVisibilityChanged(object sender, VisibilityChangedEventArgs e)
+		private void WindowVisibilityChanged(object sender,
+#if HAS_UNO_WINUI
+			Microsoft.UI.Xaml.WindowVisibilityChangedEventArgs e
+#else
+			VisibilityChangedEventArgs e
+#endif
+			)
 		{
 			WindowVisibility = XamlWindow.Current.Visible ? "Visible" : "Hidden";
 			AddHistory("Window.VisibilityChanged");

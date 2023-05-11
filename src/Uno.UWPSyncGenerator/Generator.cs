@@ -8,6 +8,7 @@ using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.MSBuild;
 using Uno.Extensions;
+using Uno.UWPSyncGenerator.Helpers;
 
 namespace Uno.UWPSyncGenerator
 {
@@ -554,7 +555,7 @@ namespace Uno.UWPSyncGenerator
 			);
 
 		protected PlatformSymbols<ISymbol> GetAllMatchingEvents(PlatformSymbols<INamedTypeSymbol> types, IEventSymbol eventMember)
-			=> GetAllGetNonGeneratedMembers(types, eventMember.Name, q => q.OfType<IEventSymbol>().FirstOrDefault(), eventMember);
+			=> GetAllGetNonGeneratedMembers(types, eventMember.Name, q => q.FirstOrDefault(e => SymbolMatchingHelpers.AreMatching(eventMember, e)), eventMember);
 
 		protected bool SkippedType(INamedTypeSymbol type)
 		{
@@ -734,7 +735,7 @@ namespace Uno.UWPSyncGenerator
 					continue;
 				}
 
-				var allMethods = GetAllGetNonGeneratedMembers(types, method.Name, q => q.OfType<IMethodSymbol>().FirstOrDefault());
+				var allMethods = GetAllGetNonGeneratedMembers(types, method.Name, q => q.OfType<IMethodSymbol>().FirstOrDefault(/*m => SymbolMatchingHelpers.AreMatching(method, m)*/));
 
 				if (allMethods.HasUndefined)
 				{
@@ -897,7 +898,7 @@ namespace Uno.UWPSyncGenerator
 		{
 			foreach (var field in type.GetMembers().OfType<IFieldSymbol>())
 			{
-				var allmembers = GetAllGetNonGeneratedMembers(types, field.Name, q => q.FirstOrDefault(m => m.Kind is SymbolKind.Field or SymbolKind.Property));
+				var allmembers = GetAllGetNonGeneratedMembers(types, field.Name, q => q.FirstOrDefault(f => SymbolMatchingHelpers.AreMatching(field, f)), field);
 
 				if (allmembers.HasUndefined)
 				{
@@ -1432,7 +1433,7 @@ namespace Uno.UWPSyncGenerator
 		{
 			foreach (var property in type.GetMembers().OfType<IPropertySymbol>())
 			{
-				var allMembers = GetAllGetNonGeneratedMembers(types, property.Name, q => q?.Where(m => m is IPropertySymbol || m is IFieldSymbol).FirstOrDefault());
+				var allMembers = GetAllGetNonGeneratedMembers(types, property.Name, q => q?.FirstOrDefault(p => SymbolMatchingHelpers.AreMatching(property, p)));
 
 				var staticQualifier = ((property.GetMethod?.IsStatic ?? false) || (property.SetMethod?.IsStatic ?? false)) ? "static" : "";
 
