@@ -140,6 +140,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+#if __MACOS__
+		[Ignore("Currently flaky on macOS, part of #9282 epic")]
+#endif
 		public async Task When_Transitive_Asset_Loaded()
 		{
 			string url = "ms-appx:///Uno.UI.RuntimeTests/Assets/Transitive-ingredient01.png";
