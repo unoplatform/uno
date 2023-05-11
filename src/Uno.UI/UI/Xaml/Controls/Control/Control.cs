@@ -980,8 +980,8 @@ namespace Windows.UI.Xaml.Controls
 		protected virtual void OnDragOver(global::Windows.UI.Xaml.DragEventArgs e) { }
 		protected virtual void OnDragLeave(global::Windows.UI.Xaml.DragEventArgs e) { }
 		protected virtual void OnDrop(global::Windows.UI.Xaml.DragEventArgs e) { }
-		protected virtual void OnKeyDown(KeyRoutedEventArgs args) { }
-		protected virtual void OnKeyUp(KeyRoutedEventArgs args) { }
+		protected virtual void OnKeyDown(KeyRoutedEventArgs e) { }
+		protected virtual void OnKeyUp(KeyRoutedEventArgs e) { }
 		protected virtual void OnGotFocus(RoutedEventArgs e) { }
 		protected virtual void OnLostFocus(RoutedEventArgs e) { }
 

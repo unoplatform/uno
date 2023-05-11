@@ -12,7 +12,7 @@ namespace Windows.UI.Xaml.Media
 	[TypeConverter(typeof(BrushConverter))]
 	public partial class Brush : DependencyObject
 	{
-		public Brush()
+		protected Brush()
 		{
 			InitializeBinder();
 		}

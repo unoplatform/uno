@@ -22,11 +22,15 @@ namespace Windows.UI.Xaml.Media
 {
 	/// <summary>
 	/// Transform :  Based on the WinRT Transform
-	/// 
+	///
 	/// https://msdn.microsoft.com/en-us/library/system.windows.media.transform(v=vs.110).aspx
 	/// </summary>
-	public abstract partial class Transform : GeneralTransform
+	public partial class Transform : GeneralTransform
 	{
+		private protected Transform()
+		{
+		}
+
 		protected static PropertyChangedCallback NotifyChangedCallback { get; } = (snd, args) =>
 		{
 			if (snd is Transform transform)

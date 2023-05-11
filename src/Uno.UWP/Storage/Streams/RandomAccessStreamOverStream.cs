@@ -10,7 +10,7 @@ using Uno;
 
 namespace Windows.Storage.Streams
 {
-	public partial class RandomAccessStreamOverStream : IRandomAccessStream, IInputStream, IOutputStream, IDisposable, IStreamWrapper
+	public sealed partial class RandomAccessStreamOverStream : IRandomAccessStream, IInputStream, IOutputStream, IDisposable, IStreamWrapper
 	{
 		private readonly Stream _stream;
 
@@ -89,7 +89,7 @@ namespace Windows.Storage.Streams
 		}
 
 		/// <inheritdoc />
-		public virtual void Dispose()
+		public void Dispose()
 			=> _stream.Dispose();
 	}
 }

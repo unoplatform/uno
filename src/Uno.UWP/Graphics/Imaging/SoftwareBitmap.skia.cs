@@ -93,13 +93,13 @@ namespace Windows.Graphics.Imaging
 		public SoftwareBitmap GetReadOnlyView() =>
 			new SoftwareBitmap(bitmap, true);
 
-		public void CopyTo(SoftwareBitmap destination)
+		public void CopyTo(SoftwareBitmap bitmap)
 		{
-			if (destination.IsReadOnly)
+			if (bitmap.IsReadOnly)
 			{
-				throw new ArgumentException("Destionanion is ReadOnly", nameof(destination));
+				throw new ArgumentException("Destionanion is ReadOnly", nameof(bitmap));
 			}
-			using var canvas = new SKCanvas(destination.bitmap);
+			using var canvas = new SKCanvas(bitmap.bitmap);
 			canvas.DrawBitmap(bitmap, 0, 0);
 			canvas.Flush();
 		}

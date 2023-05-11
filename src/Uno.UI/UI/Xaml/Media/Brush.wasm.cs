@@ -11,7 +11,7 @@ using RadialGradientBrush = Microsoft.UI.Xaml.Media.RadialGradientBrush;
 
 namespace Windows.UI.Xaml.Media
 {
-	public abstract partial class Brush
+	public partial class Brush
 	{
 		/// <summary>
 		/// Color action handler

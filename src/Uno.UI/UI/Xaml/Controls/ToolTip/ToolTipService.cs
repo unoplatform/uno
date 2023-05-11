@@ -18,8 +18,8 @@ namespace Windows.UI.Xaml.Controls
 				typeof(ToolTipService),
 				new FrameworkPropertyMetadata(default, OnToolTipChanged));
 
-		public static object GetToolTip(DependencyObject obj) => obj.GetValue(ToolTipProperty);
-		public static void SetToolTip(DependencyObject obj, object value) => obj.SetValue(ToolTipProperty, value);
+		public static object GetToolTip(DependencyObject element) => element.GetValue(ToolTipProperty);
+		public static void SetToolTip(DependencyObject element, object value) => element.SetValue(ToolTipProperty, value);
 
 		#endregion
 		#region DependencyProperty: Placement
@@ -30,8 +30,8 @@ namespace Windows.UI.Xaml.Controls
 			typeof(ToolTipService),
 			new FrameworkPropertyMetadata(PlacementMode.Top, OnPlacementChanged));
 
-		public static PlacementMode GetPlacement(DependencyObject obj) => (PlacementMode)obj.GetValue(PlacementProperty);
-		public static void SetPlacement(DependencyObject obj, PlacementMode value) => obj.SetValue(PlacementProperty, value);
+		public static PlacementMode GetPlacement(DependencyObject element) => (PlacementMode)element.GetValue(PlacementProperty);
+		public static void SetPlacement(DependencyObject element, PlacementMode value) => element.SetValue(PlacementProperty, value);
 
 		#endregion
 		#region DependencyProperty: ToolTipReference
