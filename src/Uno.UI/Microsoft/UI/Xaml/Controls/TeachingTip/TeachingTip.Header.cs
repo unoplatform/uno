@@ -5,6 +5,7 @@
 using System;
 using System.Numerics;
 using Uno.Disposables;
+using Uno.UI.DataBinding;
 using Windows.Foundation;
 using Windows.UI.Composition;
 using Windows.UI.Xaml;
@@ -45,13 +46,12 @@ partial class TeachingTip
 	private readonly SerialDisposable m_actualThemeChangedRevoker = new();
 
 
-	float TopLeftCornerRadius() => GetTeachingTipCornerRadius().TopLeft;
-	float TopRightCornerRadius() => GetTeachingTipCornerRadius().TopRight;
+	float TopLeftCornerRadius() => (float)GetTeachingTipCornerRadius().TopLeft;
+	float TopRightCornerRadius() => (float)GetTeachingTipCornerRadius().TopRight;
 
 	private Border m_container;
 	internal Popup m_popup;
 	private Popup m_lightDismissIndicatorPopup;
-	private ContentControl m_popupContentControl;
 	private UIElement m_rootElement;
 	private Grid m_tailOcclusionGrid;
 	private Grid m_contentRootGrid;
@@ -62,10 +62,8 @@ partial class TeachingTip
 	private Button m_closeButton;
 	private Polygon m_tailPolygon;
 	private Grid m_tailEdgeBorder;
-	private UIElement m_titleTextBlock;
-	private UIElement m_subtitleTextBlock;
 
-	private WeakReference<DependencyObject> m_previouslyFocusedElement;
+	private ManagedWeakReference m_previouslyFocusedElement;
 
 	private KeyFrameAnimation m_expandAnimation;
 	private KeyFrameAnimation m_contractAnimation;
@@ -104,7 +102,6 @@ partial class TeachingTip
 
 	private float m_contentElevation = 32.0f;
 	private float m_tailElevation = 0.0f;
-	private bool m_tailShadowTargetsShadowTarget;
 
 	private TimeSpan m_expandAnimationDuration = TimeSpan.FromMilliseconds(300);
 	private TimeSpan m_contractAnimationDuration = TimeSpan.FromMilliseconds(200);

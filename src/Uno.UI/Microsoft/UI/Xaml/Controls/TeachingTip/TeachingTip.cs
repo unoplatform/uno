@@ -8,6 +8,7 @@ using Microsoft.UI.Private.Controls;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Uno.Disposables;
 using Uno.Extensions;
+using Uno.UI.DataBinding;
 using Uno.UI.Helpers.WinUI;
 using Windows.ApplicationModel;
 using Windows.Foundation;
@@ -1238,7 +1239,14 @@ public partial class TeachingTip : ContentControl
 
 		if (hasFocusInSubtree && fromPopup)
 		{
-			var setFocus = SetFocus(m_previouslyFocusedElement, FocusState.Programmatic);
+			bool setFocus = false;
+			if (m_previouslyFocusedElement is not null &&
+				!m_previouslyFocusedElement.IsDisposed &&
+				m_previouslyFocusedElement.Target is DependencyObject strongPreviouslyFocused)
+			{
+				setFocus = SetFocus(strongPreviouslyFocused, FocusState.Programmatic);
+			}
+			WeakReferencePool.ReturnWeakReference(this, m_previouslyFocusedElement);
 			m_previouslyFocusedElement = null;
 			return setFocus;
 		}
@@ -1270,7 +1278,7 @@ public partial class TeachingTip : ContentControl
 			{
 				void ScopedHandler(object sender, GettingFocusEventArgs args)
 				{
-					m_previouslyFocusedElement = new WeakReference<DependencyObject>(args.OldFocusedElement);
+					m_previouslyFocusedElement = WeakReferencePool.RentWeakReference(this, args.OldFocusedElement);
 				}
 
 				f6Button.GettingFocus += ScopedHandler;
@@ -1421,12 +1429,14 @@ public partial class TeachingTip : ContentControl
 		//To give the tip focus, then we return focus when the popup closes.
 		if (m_lastCloseReason == TeachingTipCloseReason.CloseButton)
 		{
-			DependencyObject previouslyFocusedElement = null;
-			if (m_previouslyFocusedElement?.TryGetTarget(out previouslyFocusedElement) == true)
+			if (m_previouslyFocusedElement is not null &&
+				!m_previouslyFocusedElement.IsDisposed &&
+				m_previouslyFocusedElement.Target is DependencyObject previouslyFocusedElement)
 			{
-				CppWinRTHelpers.SetFocus(previouslyFocusedElement, FocusState.Programmatic);
+				SetFocus(previouslyFocusedElement, FocusState.Programmatic);
 			}
 		}
+		WeakReferencePool.ReturnWeakReference(this, m_previouslyFocusedElement);
 		m_previouslyFocusedElement = null;
 
 		var teachingTipPeer = FrameworkElementAutomationPeer.FromElement(this) as TeachingTipAutomationPeer;
