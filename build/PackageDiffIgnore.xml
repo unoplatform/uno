@@ -558,6 +558,7 @@
 			<Member fullName="Windows.Foundation.TypedEventHandler`2&lt;Microsoft.UI.Xaml.Controls.IInputValidationControl,Microsoft.UI.Xaml.Controls.InputValidationErrorEventArgs&gt; Microsoft.UI.Xaml.Controls.TextBox::ValidationError" reason="Not present in WinAppSDK 1.2" />
 			<Member fullName="Windows.Foundation.TypedEventHandler`2&lt;Microsoft.UI.Xaml.FrameworkElement,Microsoft.UI.Xaml.DataContextChangedEventArgs&gt; Microsoft.UI.Xaml.Controls.ElementFactory::DataContextChanged" reason="Not present in WinAppSDK 1.2" />
 			<Member fullName="Windows.Foundation.TypedEventHandler`2&lt;Windows.UI.Xaml.Controls.CalendarDatePicker,Windows.UI.Xaml.Controls.CalendarDatePickerDateChangedEventArgs&gt; Windows.UI.Xaml.Controls.CalendarDatePicker::_dateChanged" reason="Not in Windows" />
+			<Member fullName="Windows.UI.Xaml.DependencyPropertyChangedEventHandler Windows.UI.Xaml.FrameworkElement::IsEnabledChanged" reason="Api alignments" />
 		</Events>
 		<Fields>
 			<Member fullName="System.Runtime.InteropServices.NFloat Uno.UI.ViewHelper::MainScreenScale" reason="Api alignments" />
@@ -580,6 +581,15 @@
 			<Member fullName="Windows.UI.Xaml.DependencyProperty Uno.UI.Controls.Legacy.GridView::ItemContainerStyleProperty" reason="Api alignments" />
 			<Member fullName="Foundation.NSString Windows.Media.Playback.MediaPlayer::RateObservationContext" reason="Api alignments" />
 			<Member fullName="UIKit.UIInterfaceOrientationMask[] Windows.Graphics.Display.DisplayInformation::PreferredOrientations" reason="Api alignments" />
+			<Member fullName="Windows.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.NavigationView::PaneTitleProperty" reason="Api alignments" />
+			<Member fullName="Windows.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.ProgressRing::DeterminateSourceProperty" reason="Api alignments" />
+			<Member fullName="Windows.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.ProgressRing::IndeterminateSourceProperty" reason="Api alignments" />
+			<Member fullName="Windows.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.RadioMenuFlyoutItem::AreCheckStatesEnabledProperty" reason="Api alignments" />
+			<Member fullName="Windows.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.RadioMenuFlyoutItem::GroupNameProperty" reason="Api alignments" />
+			<Member fullName="Windows.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.RadioMenuFlyoutItem::IsCheckedProperty" reason="Api alignments" />
+			<Member fullName="Windows.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.Primitives.ColumnMajorUniformToLargestGridLayout::ColumnSpacingProperty" reason="Api alignments" />
+			<Member fullName="Windows.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.Primitives.ColumnMajorUniformToLargestGridLayout::MaxColumnsProperty" reason="Api alignments" />
+			<Member fullName="Windows.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.Primitives.ColumnMajorUniformToLargestGridLayout::RowSpacingProperty" reason="Api alignments" />
 		</Fields>
 		<Properties>
 			<!-- BEGIN Expander -->
@@ -664,6 +674,55 @@
 			<Member fullName="Windows.UI.Xaml.Controls.PersonPictureTemplateSettings Windows.UI.Xaml.Controls.PersonPicture::TemplateSettings()" reason="Moved to MUXC" />
 			<Member fullName="System.Boolean Uno.Devices.Sensors.INativeDualScreenProvider::IsDualScreen()" reason="Api alignments" />
 			<Member fullName="Uno.Presentation.Resources.IResourceRegistry Windows.UI.Xaml.ResourceHelper::Registry()" reason="Api alignments" />
+			<Member fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.FrameworkElement::IsEnabledProperty()" reason="Api alignments" />
+			<Member fullName="System.Boolean Windows.UI.Xaml.FrameworkElement::IsEnabled()" reason="Api alignments" />
+
+
+			<Member fullName="System.String Windows.UI.Xaml.TemplatePartAttribute::Name()" reason="Api alignments" />
+			<Member fullName="System.Type Windows.UI.Xaml.TemplatePartAttribute::Type()" reason="Api alignments" />
+			<Member fullName="System.Double Windows.UI.Xaml.CornerRadius::TopLeft()" reason="Api alignments" />
+			<Member fullName="System.Double Windows.UI.Xaml.CornerRadius::TopRight()" reason="Api alignments" />
+			<Member fullName="System.Double Windows.UI.Xaml.CornerRadius::BottomRight()" reason="Api alignments" />
+			<Member fullName="System.Double Windows.UI.Xaml.CornerRadius::BottomLeft()" reason="Api alignments" />
+			<Member fullName="Windows.UI.Xaml.DurationType Windows.UI.Xaml.Duration::Type()" reason="Api alignments" />
+			<Member fullName="System.TimeSpan Windows.UI.Xaml.Duration::TimeSpan()" reason="Api alignments" />
+			<Member fullName="Windows.UI.Xaml.GridUnitType Windows.UI.Xaml.GridLength::GridUnitType()" reason="Api alignments" />
+			<Member fullName="System.Double Windows.UI.Xaml.GridLength::Value()" reason="Api alignments" />
+			<Member fullName="System.Double Windows.UI.Xaml.Thickness::Left()" reason="Api alignments" />
+			<Member fullName="System.Double Windows.UI.Xaml.Thickness::Top()" reason="Api alignments" />
+			<Member fullName="System.Double Windows.UI.Xaml.Thickness::Right()" reason="Api alignments" />
+			<Member fullName="System.Double Windows.UI.Xaml.Thickness::Bottom()" reason="Api alignments" />
+			<Member fullName="System.Int32 Windows.UI.Xaml.Controls.Primitives.GeneratorPosition::Index()" reason="Api alignments" />
+			<Member fullName="System.Int32 Windows.UI.Xaml.Controls.Primitives.GeneratorPosition::Offset()" reason="Api alignments" />
+			<Member fullName="System.Double Windows.UI.Xaml.Media.Matrix::M11()" reason="Api alignments" />
+			<Member fullName="System.Double Windows.UI.Xaml.Media.Matrix::M12()" reason="Api alignments" />
+			<Member fullName="System.Double Windows.UI.Xaml.Media.Matrix::M21()" reason="Api alignments" />
+			<Member fullName="System.Double Windows.UI.Xaml.Media.Matrix::M22()" reason="Api alignments" />
+			<Member fullName="System.Double Windows.UI.Xaml.Media.Matrix::OffsetX()" reason="Api alignments" />
+			<Member fullName="System.Double Windows.UI.Xaml.Media.Matrix::OffsetY()" reason="Api alignments" />
+			<Member fullName="System.Double Windows.UI.Xaml.Media.Media3D.Matrix3D::M11()" reason="Api alignments" />
+			<Member fullName="System.Double Windows.UI.Xaml.Media.Media3D.Matrix3D::M12()" reason="Api alignments" />
+			<Member fullName="System.Double Windows.UI.Xaml.Media.Media3D.Matrix3D::M13()" reason="Api alignments" />
+			<Member fullName="System.Double Windows.UI.Xaml.Media.Media3D.Matrix3D::M14()" reason="Api alignments" />
+			<Member fullName="System.Double Windows.UI.Xaml.Media.Media3D.Matrix3D::M21()" reason="Api alignments" />
+			<Member fullName="System.Double Windows.UI.Xaml.Media.Media3D.Matrix3D::M22()" reason="Api alignments" />
+			<Member fullName="System.Double Windows.UI.Xaml.Media.Media3D.Matrix3D::M23()" reason="Api alignments" />
+			<Member fullName="System.Double Windows.UI.Xaml.Media.Media3D.Matrix3D::M24()" reason="Api alignments" />
+			<Member fullName="System.Double Windows.UI.Xaml.Media.Media3D.Matrix3D::M31()" reason="Api alignments" />
+			<Member fullName="System.Double Windows.UI.Xaml.Media.Media3D.Matrix3D::M32()" reason="Api alignments" />
+			<Member fullName="System.Double Windows.UI.Xaml.Media.Media3D.Matrix3D::M33()" reason="Api alignments" />
+			<Member fullName="System.Double Windows.UI.Xaml.Media.Media3D.Matrix3D::M34()" reason="Api alignments" />
+			<Member fullName="System.Double Windows.UI.Xaml.Media.Media3D.Matrix3D::M44()" reason="Api alignments" />
+			<Member fullName="System.Double Windows.UI.Xaml.Media.Media3D.Matrix3D::OffsetX()" reason="Api alignments" />
+			<Member fullName="System.Double Windows.UI.Xaml.Media.Media3D.Matrix3D::OffsetY()" reason="Api alignments" />
+			<Member fullName="System.Double Windows.UI.Xaml.Media.Media3D.Matrix3D::OffsetZ()" reason="Api alignments" />
+			<Member fullName="System.Single Windows.UI.Xaml.Media.Animation.EntranceThemeTransition::FromHorizontalOffset()" reason="Api alignments" />
+			<Member fullName="System.Single Windows.UI.Xaml.Media.Animation.EntranceThemeTransition::FromVerticalOffset()" reason="Api alignments" />
+			<Member fullName="System.TimeSpan Windows.UI.Xaml.Media.Animation.KeyTime::TimeSpan()" reason="Api alignments" />
+			<Member fullName="System.Double Windows.UI.Xaml.Media.Animation.RepeatBehavior::Count()" reason="Api alignments" />
+			<Member fullName="System.TimeSpan Windows.UI.Xaml.Media.Animation.RepeatBehavior::Duration()" reason="Api alignments" />
+			<Member fullName="Windows.UI.Xaml.Media.Animation.RepeatBehaviorType Windows.UI.Xaml.Media.Animation.RepeatBehavior::Type()" reason="Api alignments" />
+
 
 			<!-- BEGIN WebView -->
 			<Member fullName="Uno.UI.Web.WebErrorStatus Windows.UI.Xaml.Controls.WebViewNavigationCompletedEventArgs::WebErrorStatus()" reason="Incorrect type" />
@@ -987,6 +1046,32 @@
 			<Member fullName="System.Void Windows.UI.Xaml.Controls.ListViewBaseScrollContentPresenter.SetContentOffset(CoreGraphics.CGPoint contentOffset, System.Boolean animated)" reason="Api alignments" />
 			<Member fullName="System.Void Windows.UI.Xaml.Controls.ListViewBaseScrollContentPresenter.SetZoomScale(System.Runtime.InteropServices.NFloat scale, System.Boolean animated)" reason="Api alignments" />
 
+			<Member fullName="System.Void Windows.UI.Xaml.FrameworkElement.add_IsEnabledChanged(Windows.UI.Xaml.DependencyPropertyChangedEventHandler value)" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.FrameworkElement.remove_IsEnabledChanged(Windows.UI.Xaml.DependencyPropertyChangedEventHandler value)" reason="Api alignments" />
+			<Member fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.FrameworkElement.get_IsEnabledProperty()" reason="Api alignments" />
+			<Member fullName="System.Boolean Windows.UI.Xaml.FrameworkElement.get_IsEnabled()" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.FrameworkElement.set_IsEnabled(System.Boolean value)" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.FrameworkElement.OnIsEnabledChangedCore()" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.NativeListViewBase.OnIsEnabledChangedCore()" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.NativePagedView.OnIsEnabledChangedCore()" reason="Api alignments" />
+			<Member fullName="System.Void Uno.UI.Xaml.Controls.NativeRefreshControl.OnIsEnabledChangedCore()" reason="Api alignments" />
+			<Member fullName="System.Void Uno.UI.Controls.Legacy.GridView.OnIsEnabledChangedCore()" reason="Api alignments" />
+			<Member fullName="System.Void Uno.UI.Controls.Legacy.HorizontalGridView.OnIsEnabledChangedCore()" reason="Api alignments" />
+			<Member fullName="System.Void Uno.UI.Controls.Legacy.HorizontalListView.OnIsEnabledChangedCore()" reason="Api alignments" />
+			<Member fullName="System.Void Uno.UI.Controls.Legacy.ListView.OnIsEnabledChangedCore()" reason="Api alignments" />
+			<Member fullName="System.Boolean Windows.UI.Xaml.Controls.NativeListViewBase.get_IsEnabled()" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.NativeListViewBase.set_IsEnabled(System.Boolean value)" reason="Api alignments" />
+			<Member fullName="System.Boolean Windows.UI.Xaml.Controls.Picker.get_IsEnabled()" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.Picker.set_IsEnabled(System.Boolean value)" reason="Api alignments" />
+			<Member fullName="System.Boolean Windows.UI.Xaml.Controls.MultilineTextBoxView.get_IsEnabled()" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.MultilineTextBoxView.set_IsEnabled(System.Boolean value)" reason="Api alignments" />
+			<Member fullName="System.Boolean Windows.UI.Xaml.Controls.SinglelineTextBoxView.get_IsEnabled()" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.SinglelineTextBoxView.set_IsEnabled(System.Boolean value)" reason="Api alignments" />
+			<Member fullName="System.Boolean Uno.UI.Controls.Legacy.ListViewBase.get_IsEnabled()" reason="Api alignments" />
+			<Member fullName="System.Void Uno.UI.Controls.Legacy.ListViewBase.set_IsEnabled(System.Boolean value)" reason="Api alignments" />
+			<Member fullName="System.Boolean Windows.UI.Xaml.Controls.SecureTextBoxView.get_IsEnabled()" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.SecureTextBoxView.set_IsEnabled(System.Boolean value)" reason="Api alignments" />
+
 			<Member fullName="System.Nullable`1&lt;Uno.UI.IndexPath&gt; Windows.UI.Xaml.Controls.VirtualizingPanelLayout.GetNextUnmaterializedItem(Windows.UI.Xaml.Controls.Primitives.GeneratorDirection fillDirection, System.Nullable`1&lt;Uno.UI.IndexPath&gt; currentMaterializedItem)" reason="Api alignments" />
 			<Member fullName="System.Nullable`1&lt;Uno.UI.IndexPath&gt; Windows.UI.Xaml.Controls.VirtualizingPanelLayout.GetDynamicSeedIndex(System.Nullable`1&lt;Uno.UI.IndexPath&gt; firstVisibleItem)" reason="Api alignments" />
 			<Member fullName="Windows.UI.Xaml.Controls.VirtualizingPanelLayout/Line Windows.UI.Xaml.Controls.VirtualizingPanelLayout.CreateLine(Windows.UI.Xaml.Controls.Primitives.GeneratorDirection fillDirection, System.Double extentOffset, System.Double availableBreadth, Uno.UI.IndexPath nextVisibleItem)" reason="Api alignments" />
@@ -999,6 +1084,96 @@
 			<Member fullName="System.Void Windows.UI.Xaml.Window.set_Visible(System.Boolean value)" reason="Does not exist in UWP and WinUI" />
 
 			<Member fullName="System.Object Uno.UI.Svg.GlobalStaticResources.FindResource(System.String name)" reason="API Alignment" />
+			<Member fullName="System.Void Windows.ApplicationModel.Appointments.Appointment.set_CalendarId(System.String value)" reason="Api alignments" />
+			<Member fullName="System.Void Windows.ApplicationModel.Appointments.Appointment.set_LocalId(System.String value)" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Composition.KeyFrameAnimation.set_KeyFrameCount(System.Int32 value)" reason="Api alignments" />
+			<Member fullName="System.String Windows.UI.Xaml.TemplatePartAttribute.get_Name()" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.TemplatePartAttribute.set_Name(System.String value)" reason="Api alignments" />
+			<Member fullName="System.Type Windows.UI.Xaml.TemplatePartAttribute.get_Type()" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.TemplatePartAttribute.set_Type(System.Type value)" reason="Api alignments" />
+			<Member fullName="System.Double Windows.UI.Xaml.CornerRadius.get_TopLeft()" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.CornerRadius.set_TopLeft(System.Double value)" reason="Api alignments" />
+			<Member fullName="System.Double Windows.UI.Xaml.CornerRadius.get_TopRight()" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.CornerRadius.set_TopRight(System.Double value)" reason="Api alignments" />
+			<Member fullName="System.Double Windows.UI.Xaml.CornerRadius.get_BottomRight()" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.CornerRadius.set_BottomRight(System.Double value)" reason="Api alignments" />
+			<Member fullName="System.Double Windows.UI.Xaml.CornerRadius.get_BottomLeft()" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.CornerRadius.set_BottomLeft(System.Double value)" reason="Api alignments" />
+			<Member fullName="Windows.UI.Xaml.DurationType Windows.UI.Xaml.Duration.get_Type()" reason="Api alignments" />
+			<Member fullName="System.TimeSpan Windows.UI.Xaml.Duration.get_TimeSpan()" reason="Api alignments" />
+			<Member fullName="Windows.UI.Xaml.GridUnitType Windows.UI.Xaml.GridLength.get_GridUnitType()" reason="Api alignments" />
+			<Member fullName="System.Double Windows.UI.Xaml.GridLength.get_Value()" reason="Api alignments" />
+			<Member fullName="System.Double Windows.UI.Xaml.Thickness.get_Left()" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Thickness.set_Left(System.Double value)" reason="Api alignments" />
+			<Member fullName="System.Double Windows.UI.Xaml.Thickness.get_Top()" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Thickness.set_Top(System.Double value)" reason="Api alignments" />
+			<Member fullName="System.Double Windows.UI.Xaml.Thickness.get_Right()" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Thickness.set_Right(System.Double value)" reason="Api alignments" />
+			<Member fullName="System.Double Windows.UI.Xaml.Thickness.get_Bottom()" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Thickness.set_Bottom(System.Double value)" reason="Api alignments" />
+			<Member fullName="System.Int32 Windows.UI.Xaml.Controls.Primitives.GeneratorPosition.get_Index()" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.Primitives.GeneratorPosition.set_Index(System.Int32 value)" reason="Api alignments" />
+			<Member fullName="System.Int32 Windows.UI.Xaml.Controls.Primitives.GeneratorPosition.get_Offset()" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.Primitives.GeneratorPosition.set_Offset(System.Int32 value)" reason="Api alignments" />
+			<Member fullName="System.Double Windows.UI.Xaml.Media.Matrix.get_M11()" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Media.Matrix.set_M11(System.Double value)" reason="Api alignments" />
+			<Member fullName="System.Double Windows.UI.Xaml.Media.Matrix.get_M12()" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Media.Matrix.set_M12(System.Double value)" reason="Api alignments" />
+			<Member fullName="System.Double Windows.UI.Xaml.Media.Matrix.get_M21()" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Media.Matrix.set_M21(System.Double value)" reason="Api alignments" />
+			<Member fullName="System.Double Windows.UI.Xaml.Media.Matrix.get_M22()" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Media.Matrix.set_M22(System.Double value)" reason="Api alignments" />
+			<Member fullName="System.Double Windows.UI.Xaml.Media.Matrix.get_OffsetX()" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Media.Matrix.set_OffsetX(System.Double value)" reason="Api alignments" />
+			<Member fullName="System.Double Windows.UI.Xaml.Media.Matrix.get_OffsetY()" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Media.Matrix.set_OffsetY(System.Double value)" reason="Api alignments" />
+			<Member fullName="System.String Windows.UI.Xaml.Media.Matrix.ToString(System.IFormatProvider provider)" reason="Api alignments" />
+			<Member fullName="System.String Windows.UI.Xaml.Media.Matrix.ToString(System.String format, System.IFormatProvider provider)" reason="Api alignments" />
+			<Member fullName="System.Double Windows.UI.Xaml.Media.Media3D.Matrix3D.get_M11()" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Media.Media3D.Matrix3D.set_M11(System.Double value)" reason="Api alignments" />
+			<Member fullName="System.Double Windows.UI.Xaml.Media.Media3D.Matrix3D.get_M12()" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Media.Media3D.Matrix3D.set_M12(System.Double value)" reason="Api alignments" />
+			<Member fullName="System.Double Windows.UI.Xaml.Media.Media3D.Matrix3D.get_M13()" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Media.Media3D.Matrix3D.set_M13(System.Double value)" reason="Api alignments" />
+			<Member fullName="System.Double Windows.UI.Xaml.Media.Media3D.Matrix3D.get_M14()" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Media.Media3D.Matrix3D.set_M14(System.Double value)" reason="Api alignments" />
+			<Member fullName="System.Double Windows.UI.Xaml.Media.Media3D.Matrix3D.get_M21()" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Media.Media3D.Matrix3D.set_M21(System.Double value)" reason="Api alignments" />
+			<Member fullName="System.Double Windows.UI.Xaml.Media.Media3D.Matrix3D.get_M22()" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Media.Media3D.Matrix3D.set_M22(System.Double value)" reason="Api alignments" />
+			<Member fullName="System.Double Windows.UI.Xaml.Media.Media3D.Matrix3D.get_M23()" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Media.Media3D.Matrix3D.set_M23(System.Double value)" reason="Api alignments" />
+			<Member fullName="System.Double Windows.UI.Xaml.Media.Media3D.Matrix3D.get_M24()" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Media.Media3D.Matrix3D.set_M24(System.Double value)" reason="Api alignments" />
+			<Member fullName="System.Double Windows.UI.Xaml.Media.Media3D.Matrix3D.get_M31()" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Media.Media3D.Matrix3D.set_M31(System.Double value)" reason="Api alignments" />
+			<Member fullName="System.Double Windows.UI.Xaml.Media.Media3D.Matrix3D.get_M32()" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Media.Media3D.Matrix3D.set_M32(System.Double value)" reason="Api alignments" />
+			<Member fullName="System.Double Windows.UI.Xaml.Media.Media3D.Matrix3D.get_M33()" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Media.Media3D.Matrix3D.set_M33(System.Double value)" reason="Api alignments" />
+			<Member fullName="System.Double Windows.UI.Xaml.Media.Media3D.Matrix3D.get_M34()" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Media.Media3D.Matrix3D.set_M34(System.Double value)" reason="Api alignments" />
+			<Member fullName="System.Double Windows.UI.Xaml.Media.Media3D.Matrix3D.get_M44()" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Media.Media3D.Matrix3D.set_M44(System.Double value)" reason="Api alignments" />
+			<Member fullName="System.Double Windows.UI.Xaml.Media.Media3D.Matrix3D.get_OffsetX()" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Media.Media3D.Matrix3D.set_OffsetX(System.Double value)" reason="Api alignments" />
+			<Member fullName="System.Double Windows.UI.Xaml.Media.Media3D.Matrix3D.get_OffsetY()" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Media.Media3D.Matrix3D.set_OffsetY(System.Double value)" reason="Api alignments" />
+			<Member fullName="System.Double Windows.UI.Xaml.Media.Media3D.Matrix3D.get_OffsetZ()" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Media.Media3D.Matrix3D.set_OffsetZ(System.Double value)" reason="Api alignments" />
+			<Member fullName="System.Single Windows.UI.Xaml.Media.Animation.EntranceThemeTransition.get_FromHorizontalOffset()" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Media.Animation.EntranceThemeTransition.set_FromHorizontalOffset(System.Single value)" reason="Api alignments" />
+			<Member fullName="System.Single Windows.UI.Xaml.Media.Animation.EntranceThemeTransition.get_FromVerticalOffset()" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Media.Animation.EntranceThemeTransition.set_FromVerticalOffset(System.Single value)" reason="Api alignments" />
+			<Member fullName="System.TimeSpan Windows.UI.Xaml.Media.Animation.KeyTime.get_TimeSpan()" reason="Api alignments" />
+			<Member fullName="System.Double Windows.UI.Xaml.Media.Animation.RepeatBehavior.get_Count()" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Media.Animation.RepeatBehavior.set_Count(System.Double value)" reason="Api alignments" />
+			<Member fullName="System.TimeSpan Windows.UI.Xaml.Media.Animation.RepeatBehavior.get_Duration()" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Media.Animation.RepeatBehavior.set_Duration(System.TimeSpan value)" reason="Api alignments" />
+			<Member fullName="Windows.UI.Xaml.Media.Animation.RepeatBehaviorType Windows.UI.Xaml.Media.Animation.RepeatBehavior.get_Type()" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Media.Animation.RepeatBehavior.set_Type(Windows.UI.Xaml.Media.Animation.RepeatBehaviorType value)" reason="Api alignments" />
+			<Member fullName="System.Void Windows.Media.Playback.MediaPlayer.set_Position(System.TimeSpan value)" reason="Api alignments" />
+			<Member fullName="System.TimeSpan Windows.Media.Playback.MediaPlayer.get_Position()" reason="Api alignments" />
 
 			<Member fullName="System.Void Windows.UI.Xaml.Media.Animation.Timeline.Dispose(System.Boolean disposing)" reason="Api alignments" />
 			<Member fullName="System.Void Windows.UI.Xaml.Media.Animation.Timeline.Dispose()" reason="Api alignments" />

@@ -26,7 +26,7 @@ namespace Windows.UI.Composition
 
 		public global::System.TimeSpan DelayTime { get; set; }
 
-		public int KeyFrameCount { get; set; }
+		public int KeyFrameCount { get; }
 
 		public AnimationDirection Direction { get; set; }
 

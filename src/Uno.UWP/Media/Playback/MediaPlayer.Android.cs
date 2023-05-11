@@ -367,7 +367,7 @@ namespace Windows.Media.Playback
 			_player?.SetVolume(volume, volume);
 		}
 
-		public virtual TimeSpan Position
+		public TimeSpan Position
 		{
 			get
 			{

@@ -81,8 +81,6 @@ namespace Windows.UI.Xaml
 
 		string Name { get; set; }
 
-		bool IsEnabled { get; set; }
-
 		Visibility Visibility { get; set; }
 
 		Thickness Margin { get; set; }

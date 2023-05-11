@@ -230,8 +230,6 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		internal override bool IsEnabledOverride() => IsEnabled && base.IsEnabledOverride();
-
 		/// <summary>
 		/// Identifies the Name dependency property.
 		/// </summary>
@@ -422,7 +420,11 @@ namespace Windows.UI.Xaml
 				UpdateDOMXamlProperty(nameof(MinHeight), MinHeight);
 				UpdateDOMXamlProperty(nameof(MaxWidth), MaxWidth);
 				UpdateDOMXamlProperty(nameof(MaxHeight), MaxHeight);
-				UpdateDOMXamlProperty(nameof(IsEnabled), IsEnabled);
+
+				if (this is Control control)
+				{
+					UpdateDOMXamlProperty(nameof(Control.IsEnabled), control.IsEnabled);
+				}
 
 				if (this.TryGetPadding(out var padding))
 				{

@@ -90,7 +90,7 @@ namespace Microsoft.UI.Xaml.Controls
 			set { SetValue(DeterminateSourceProperty, value); }
 		}
 
-		public static readonly DependencyProperty DeterminateSourceProperty =
+		public static DependencyProperty DeterminateSourceProperty { get; } =
 			DependencyProperty.Register("DeterminateSource", typeof(Windows.UI.Xaml.Controls.IAnimatedVisualSource), typeof(ProgressRing), new FrameworkPropertyMetadata(null, (s, e) => (s as ProgressRing)?.OnDeterminateSourcePropertyChanged(e)));
 
 
@@ -100,7 +100,7 @@ namespace Microsoft.UI.Xaml.Controls
 			set { SetValue(IndeterminateSourceProperty, value); }
 		}
 
-		public static readonly DependencyProperty IndeterminateSourceProperty =
+		public static DependencyProperty IndeterminateSourceProperty { get; } =
 			DependencyProperty.Register("IndeterminateSource", typeof(Windows.UI.Xaml.Controls.IAnimatedVisualSource), typeof(ProgressRing), new FrameworkPropertyMetadata(null, (s, e) => (s as ProgressRing)?.OnIndeterminateSourcePropertyChanged(e)));
 
 		public ProgressRing()

@@ -17,7 +17,7 @@ namespace Windows.UI.Xaml.Media
 				this.Log().Error("The matrix transform does not support absolute origin");
 			}
 
-			return Matrix.Inner;
+			return Matrix.ToMatrix3x2();
 		}
 
 		public Matrix Matrix
