@@ -14,13 +14,13 @@ using Windows.UI.Xaml.Shapes;
 
 namespace Microsoft.UI.Xaml.Controls;
 
-public partial class TeachingTip
+partial class TeachingTip
 {
 	private FrameworkElement m_target;
 	internal bool m_isIdle = true;
 
-	private readonly SerialDisposable m_automationNameChangedRevoker = new();
-	private readonly SerialDisposable m_automationIdChangedRevoker = new();
+	private readonly long m_automationNameChangedRevoker;
+	private readonly long m_automationIdChangedRevoker;
 	private readonly SerialDisposable m_acceleratorKeyActivatedRevoker = new();
 	private readonly SerialDisposable m_previewKeyDownForF6Revoker = new();
 	// This handler is not required for Winui3 because the framework bug this works around has been fixed.
