@@ -161,7 +161,7 @@ namespace Windows.UI.Xaml
 		/// Note: Offsets are only an approximation which does not take in consideration possible transformations
 		///	applied by a 'UIView' between this element and its parent UIElement.
 		/// </summary>
-		private bool TryGetParentUIElementForTransformToVisual(out UIElement parentElement, ref double offsetX, ref double offsetY)
+		private bool TryGetParentUIElementForTransformToVisual(out UIElement parentElement, ref double offsetX, ref double offsetY, ref TransformToVisualContext context)
 		{
 			var parent = this.GetVisualTreeParent();
 			switch (parent)
@@ -222,16 +222,26 @@ namespace Windows.UI.Xaml
 							case null:
 								// We reached the top of the window without any UIElement in the hierarchy,
 								// so we adjust offsets using the X/Y position of the original 'view' in the window.
-
 								offset = view.ConvertRectToView(default, null).Location;
 
 								parentElement = null;
 								offsetX += offset.X;
 								offsetY += offset.Y;
+
+								if (this.FindViewController() is { } vc)
+								{
+									context.ViewController = vc;
+								}
+
 								return false;
 						}
 					} while (true);
 			}
+		}
+
+		partial struct TransformToVisualContext
+		{
+			public UIViewController ViewController { get; set; }
 		}
 
 #if DEBUG

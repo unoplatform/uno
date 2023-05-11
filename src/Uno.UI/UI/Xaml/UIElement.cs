@@ -493,7 +493,9 @@ namespace Windows.UI.Xaml
 
 		internal AutomationPeer OnCreateAutomationPeerInternal() => OnCreateAutomationPeer();
 
-		internal static Matrix3x2 GetTransform(UIElement from, UIElement to)
+		internal static Matrix3x2 GetTransform(UIElement from, UIElement to) => GetTransform(from, to, new());
+
+		private static Matrix3x2 GetTransform(UIElement from, UIElement to, TransformToVisualContext context)
 		{
 			var logInfoString = from.Log().IsEnabled(LogLevel.Debug) ? new StringBuilder() : null;
 			logInfoString?.Append($"{nameof(GetTransform)}(from: {from}, to: {to?.ToString() ?? "<null>"}) Offsets: [");
@@ -564,7 +566,7 @@ namespace Windows.UI.Xaml
 #endif
 
 				logInfoString?.Append($"{elt}: ({offsetX}, {offsetY}), ");
-			} while (elt.TryGetParentUIElementForTransformToVisual(out elt, ref offsetX, ref offsetY) && elt != to); // If possible we stop as soon as we reach 'to'
+			} while (elt.TryGetParentUIElementForTransformToVisual(out elt, ref offsetX, ref offsetY, ref context) && elt != to); // If possible we stop as soon as we reach 'to'
 
 			matrix *= Matrix3x2.CreateTranslation((float)offsetX, (float)offsetY);
 
@@ -573,10 +575,18 @@ namespace Windows.UI.Xaml
 				// Unfortunately we didn't find the 'to' in the parent hierarchy,
 				// so matrix == fromToRoot and we now have to compute the transform 'toToRoot'.
 				// Note: We do not propagate the 'intermediatesSelector' as cached transforms would be irrelevant
-				var toToRoot = GetTransform(to, null);
-				var rootToTo = toToRoot.Inverse();
+				var toContext = new TransformToVisualContext();
+				var toToRoot = GetTransform(to, null, toContext);
 
-				matrix *= rootToTo;
+#if __IOS__
+				// On iOS, the `from` and `to` may be coming from different ViewController.
+				// In such case, their coordinates should not be "added" together, since they are from different coordinates space.
+				if (context.ViewController == toContext.ViewController)
+#endif
+				{
+					var rootToTo = toToRoot.Inverse();
+					matrix *= rootToTo;
+				}
 			}
 
 			if (logInfoString != null)
@@ -592,7 +602,7 @@ namespace Windows.UI.Xaml
 		/// Note: Offsets are only an approximation which does not take in consideration possible transformations
 		///	applied by a 'UIView' between this element and its parent UIElement.
 		/// </summary>
-		private bool TryGetParentUIElementForTransformToVisual(out UIElement parentElement, ref double offsetX, ref double offsetY)
+		private bool TryGetParentUIElementForTransformToVisual(out UIElement parentElement, ref double offsetX, ref double offsetY, ref TransformToVisualContext context)
 		{
 			var parent = VisualTreeHelper.GetParent(this);
 			switch (parent)
@@ -1171,5 +1181,7 @@ namespace Windows.UI.Xaml
 			set;
 		}
 #endif
+
+		private partial struct TransformToVisualContext { }
 	}
 }
