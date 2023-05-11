@@ -16,7 +16,7 @@ public partial class TeachingTip
 	}
 
 	public static DependencyProperty ActionButtonCommandProperty { get; } =
-		DependencyProperty.Register(nameof(ActionButtonCommand), typeof(ICommand), typeof(TeachingTip), new PropertyMetadata(null, OnPropertyChanged));
+		DependencyProperty.Register(nameof(ActionButtonCommand), typeof(ICommand), typeof(TeachingTip), new FrameworkPropertyMetadata(null, OnPropertyChanged));
 
 	public object ActionButtonCommandParameter
 	{
@@ -25,7 +25,7 @@ public partial class TeachingTip
 	}
 
 	public static DependencyProperty ActionButtonCommandParameterProperty { get; } =
-		DependencyProperty.Register(nameof(ActionButtonCommandParameter), typeof(object), typeof(TeachingTip), new PropertyMetadata(null, OnPropertyChanged));
+		DependencyProperty.Register(nameof(ActionButtonCommandParameter), typeof(object), typeof(TeachingTip), new FrameworkPropertyMetadata(null, OnPropertyChanged));
 
 	public object ActionButtonContent
 	{
@@ -34,7 +34,7 @@ public partial class TeachingTip
 	}
 
 	public static DependencyProperty ActionButtonContentProperty { get; } =
-		DependencyProperty.Register(nameof(ActionButtonContent), typeof(object), typeof(TeachingTip), new PropertyMetadata(null, OnPropertyChanged));
+		DependencyProperty.Register(nameof(ActionButtonContent), typeof(object), typeof(TeachingTip), new FrameworkPropertyMetadata(null, OnPropertyChanged));
 
 	public Style ActionButtonStyle
 	{
@@ -43,7 +43,7 @@ public partial class TeachingTip
 	}
 
 	public static DependencyProperty ActionButtonStyleProperty { get; } =
-		DependencyProperty.Register(nameof(ActionButtonStyle), typeof(Style), typeof(TeachingTip), new PropertyMetadata(null, OnPropertyChanged));
+		DependencyProperty.Register(nameof(ActionButtonStyle), typeof(Style), typeof(TeachingTip), new FrameworkPropertyMetadata(null, OnPropertyChanged));
 
 	public ICommand CloseButtonCommand
 	{
@@ -52,7 +52,7 @@ public partial class TeachingTip
 	}
 
 	public static DependencyProperty CloseButtonCommandProperty { get; } =
-		DependencyProperty.Register(nameof(CloseButtonCommand), typeof(ICommand), typeof(TeachingTip), new PropertyMetadata(null, OnPropertyChanged));
+		DependencyProperty.Register(nameof(CloseButtonCommand), typeof(ICommand), typeof(TeachingTip), new FrameworkPropertyMetadata(null, OnPropertyChanged));
 
 	public object CloseButtonCommandParameter
 	{
@@ -61,7 +61,7 @@ public partial class TeachingTip
 	}
 
 	public static DependencyProperty CloseButtonCommandParameterProperty { get; } =
-		DependencyProperty.Register(nameof(CloseButtonCommandParameter), typeof(object), typeof(TeachingTip), new PropertyMetadata(null, OnPropertyChanged));
+		DependencyProperty.Register(nameof(CloseButtonCommandParameter), typeof(object), typeof(TeachingTip), new FrameworkPropertyMetadata(null, OnPropertyChanged));
 
 	public object CloseButtonContent
 	{
@@ -70,7 +70,7 @@ public partial class TeachingTip
 	}
 
 	public static DependencyProperty CloseButtonContentProperty { get; } =
-		DependencyProperty.Register(nameof(CloseButtonContent), typeof(object), typeof(TeachingTip), new PropertyMetadata(null, OnPropertyChanged));
+		DependencyProperty.Register(nameof(CloseButtonContent), typeof(object), typeof(TeachingTip), new FrameworkPropertyMetadata(null, OnPropertyChanged));
 
 	public Style CloseButtonStyle
 	{
@@ -79,7 +79,7 @@ public partial class TeachingTip
 	}
 
 	public static DependencyProperty CloseButtonStyleProperty { get; } =
-		DependencyProperty.Register(nameof(CloseButtonStyle), typeof(Style), typeof(TeachingTip), new PropertyMetadata(null, OnPropertyChanged));
+		DependencyProperty.Register(nameof(CloseButtonStyle), typeof(Style), typeof(TeachingTip), new FrameworkPropertyMetadata(null, OnPropertyChanged));
 
 	public UIElement HeroContent
 	{
@@ -88,7 +88,7 @@ public partial class TeachingTip
 	}
 
 	public static DependencyProperty HeroContentProperty { get; } =
-		DependencyProperty.Register(nameof(HeroContent), typeof(UIElement), typeof(TeachingTip), new PropertyMetadata(null, OnPropertyChanged));
+		DependencyProperty.Register(nameof(HeroContent), typeof(UIElement), typeof(TeachingTip), new FrameworkPropertyMetadata(null, OnPropertyChanged));
 
 	public TeachingTipHeroContentPlacementMode HeroContentPlacement
 	{
@@ -97,7 +97,7 @@ public partial class TeachingTip
 	}
 
 	public static DependencyProperty HeroContentPlacementProperty { get; } =
-		DependencyProperty.Register(nameof(HeroContentPlacement), typeof(TeachingTipHeroContentPlacementMode), typeof(TeachingTip), new PropertyMetadata(TeachingTipHeroContentPlacementMode.Auto, OnPropertyChanged));
+		DependencyProperty.Register(nameof(HeroContentPlacement), typeof(TeachingTipHeroContentPlacementMode), typeof(TeachingTip), new FrameworkPropertyMetadata(TeachingTipHeroContentPlacementMode.Auto, OnPropertyChanged));
 
 	public IconSource IconSource
 	{
@@ -106,7 +106,7 @@ public partial class TeachingTip
 	}
 
 	public static DependencyProperty IconSourceProperty { get; } =
-		DependencyProperty.Register(nameof(IconSource), typeof(IconSource), typeof(TeachingTip), new PropertyMetadata(null, OnPropertyChanged));
+		DependencyProperty.Register(nameof(IconSource), typeof(IconSource), typeof(TeachingTip), new FrameworkPropertyMetadata(null, OnPropertyChanged));
 
 	public bool IsLightDismissEnabled
 	{
@@ -115,7 +115,7 @@ public partial class TeachingTip
 	}
 
 	public static DependencyProperty IsLightDismissEnabledProperty { get; } =
-		DependencyProperty.Register(nameof(IsLightDismissEnabled), typeof(bool), typeof(TeachingTip), new PropertyMetadata(false, OnPropertyChanged));
+		DependencyProperty.Register(nameof(IsLightDismissEnabled), typeof(bool), typeof(TeachingTip), new FrameworkPropertyMetadata(false, OnPropertyChanged));
 
 	public bool IsOpen
 	{
@@ -124,7 +124,7 @@ public partial class TeachingTip
 	}
 
 	public static DependencyProperty IsOpenProperty { get; } =
-		DependencyProperty.Register(nameof(IsOpen), typeof(bool), typeof(TeachingTip), new PropertyMetadata(false, OnPropertyChanged));
+		DependencyProperty.Register(nameof(IsOpen), typeof(bool), typeof(TeachingTip), new FrameworkPropertyMetadata(false, OnPropertyChanged));
 
 	public Thickness PlacementMargin
 	{
@@ -133,7 +133,7 @@ public partial class TeachingTip
 	}
 
 	public static DependencyProperty PlacementMarginProperty { get; } =
-		DependencyProperty.Register(nameof(PlacementMargin), typeof(Thickness), typeof(TeachingTip), new PropertyMetadata(default(Thickness), OnPropertyChanged));
+		DependencyProperty.Register(nameof(PlacementMargin), typeof(Thickness), typeof(TeachingTip), new FrameworkPropertyMetadata(default(Thickness), OnPropertyChanged));
 
 	public TeachingTipPlacementMode PreferredPlacement
 	{
@@ -142,7 +142,7 @@ public partial class TeachingTip
 	}
 
 	public static DependencyProperty PreferredPlacementProperty { get; } =
-		DependencyProperty.Register(nameof(PreferredPlacement), typeof(TeachingTipPlacementMode), typeof(TeachingTip), new PropertyMetadata(TeachingTipPlacementMode.Auto, OnPropertyChanged));
+		DependencyProperty.Register(nameof(PreferredPlacement), typeof(TeachingTipPlacementMode), typeof(TeachingTip), new FrameworkPropertyMetadata(TeachingTipPlacementMode.Auto, OnPropertyChanged));
 
 	public bool ShouldConstrainToRootBounds
 	{
@@ -151,7 +151,7 @@ public partial class TeachingTip
 	}
 
 	public static DependencyProperty ShouldConstrainToRootBoundsProperty { get; } =
-		DependencyProperty.Register(nameof(ShouldConstrainToRootBounds), typeof(bool), typeof(TeachingTip), new PropertyMetadata(true, OnPropertyChanged));
+		DependencyProperty.Register(nameof(ShouldConstrainToRootBounds), typeof(bool), typeof(TeachingTip), new FrameworkPropertyMetadata(true, OnPropertyChanged));
 
 	public string Subtitle
 	{
@@ -160,7 +160,7 @@ public partial class TeachingTip
 	}
 
 	public static DependencyProperty SubtitleProperty { get; } =
-		DependencyProperty.Register(nameof(Subtitle), typeof(string), typeof(TeachingTip), new PropertyMetadata(null, OnPropertyChanged));
+		DependencyProperty.Register(nameof(Subtitle), typeof(string), typeof(TeachingTip), new FrameworkPropertyMetadata(null, OnPropertyChanged));
 
 	public TeachingTipTailVisibility TailVisibility
 	{
@@ -169,7 +169,7 @@ public partial class TeachingTip
 	}
 
 	public static DependencyProperty TailVisibilityProperty { get; } =
-		DependencyProperty.Register(nameof(TailVisibility), typeof(TeachingTipTailVisibility), typeof(TeachingTip), new PropertyMetadata(TeachingTipTailVisibility.Auto, OnPropertyChanged));
+		DependencyProperty.Register(nameof(TailVisibility), typeof(TeachingTipTailVisibility), typeof(TeachingTip), new FrameworkPropertyMetadata(TeachingTipTailVisibility.Auto, OnPropertyChanged));
 
 	public FrameworkElement Target
 	{
@@ -178,7 +178,7 @@ public partial class TeachingTip
 	}
 
 	public static DependencyProperty TargetProperty { get; } =
-		DependencyProperty.Register(nameof(Target), typeof(FrameworkElement), typeof(TeachingTip), new PropertyMetadata(null, OnPropertyChanged));
+		DependencyProperty.Register(nameof(Target), typeof(FrameworkElement), typeof(TeachingTip), new FrameworkPropertyMetadata(null, OnPropertyChanged));
 
 	public TeachingTipTemplateSettings TemplateSettings
 	{
@@ -187,7 +187,7 @@ public partial class TeachingTip
 	}
 
 	public static DependencyProperty TemplateSettingsProperty { get; } =
-		DependencyProperty.Register(nameof(TemplateSettings), typeof(TeachingTipTemplateSettings), typeof(TeachingTip), new PropertyMetadata(null, OnPropertyChanged));
+		DependencyProperty.Register(nameof(TemplateSettings), typeof(TeachingTipTemplateSettings), typeof(TeachingTip), new FrameworkPropertyMetadata(null, OnPropertyChanged));
 
 	public string Title
 	{
@@ -196,7 +196,7 @@ public partial class TeachingTip
 	}
 
 	public static DependencyProperty TitleProperty { get; } =
-		DependencyProperty.Register(nameof(Title), typeof(string), typeof(TeachingTip), new PropertyMetadata(null, OnPropertyChanged));
+		DependencyProperty.Register(nameof(Title), typeof(string), typeof(TeachingTip), new FrameworkPropertyMetadata(null, OnPropertyChanged));
 
 	// WinUI has a separate property changed method per property, but they all have the same body.
 	// Simplified this as a single method.
