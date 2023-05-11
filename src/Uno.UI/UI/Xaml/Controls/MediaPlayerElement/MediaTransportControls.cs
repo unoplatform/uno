@@ -258,7 +258,7 @@ namespace Windows.UI.Xaml.Controls
 
 			_timelineContainer = this.GetTemplateChild(TimelineContainerName) as Border;
 			_timelineContainer?.SetBinding(Border.VisibilityProperty, new Binding { Path = "IsSeekBarVisible", Source = this, Mode = BindingMode.OneWay, FallbackValue = Visibility.Collapsed, Converter = trueToVisible });
-			_timelineContainer?.SetBinding(Border.IsEnabledProperty, new Binding { Path = "IsSeekEnabled", Source = this, Mode = BindingMode.OneWay, FallbackValue = true });
+			_progressSlider?.SetBinding(Control.IsEnabledProperty, new Binding { Path = "IsSeekEnabled", Source = this, Mode = BindingMode.OneWay, FallbackValue = true });
 
 			_downloadProgressIndicator = _progressSlider?.GetTemplateChild(DownloadProgressIndicatorName) as ProgressBar;
 
