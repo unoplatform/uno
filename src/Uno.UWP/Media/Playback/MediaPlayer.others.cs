@@ -9,6 +9,7 @@ using Uno.Foundation.Logging;
 using Windows.Foundation;
 using Uno.Media.Playback;
 using Windows.ApplicationModel.Email;
+using System.Drawing;
 
 namespace Windows.Media.Playback
 {
@@ -38,6 +39,9 @@ namespace Windows.Media.Playback
 
 		partial void OnOptionChanged(string name, object value)
 			=> _extension?.OnOptionChanged(name, value);
+
+		partial void OnTransportControlBoundsChanged(Rect bounds)
+			=> _extension?.SetTransportControlsBounds(bounds);
 
 		public void Dispose()
 			=> _extension?.Dispose();

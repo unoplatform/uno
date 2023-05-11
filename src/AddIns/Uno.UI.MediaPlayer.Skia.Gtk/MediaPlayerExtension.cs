@@ -23,6 +23,7 @@ using Windows.UI.Xaml.Controls.Maps;
 using System.Numerics;
 using Uno.Logging;
 using Windows.UI.Xaml;
+using Atk;
 
 [assembly: ApiExtension(typeof(IMediaPlayerExtension), typeof(Uno.UI.Media.MediaPlayerExtension))]
 
@@ -36,7 +37,6 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 	private List<Uri>? _playlistItems;
 	private readonly Windows.Media.Playback.MediaPlayer _owner;
 	private GTKMediaPlayer? _player;
-
 
 
 	private bool _updatingPosition;
@@ -371,6 +371,11 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 	public bool RealTimePlayback { get; set; }
 
 	public double AudioBalance { get; set; }
+
+	public void SetTransportControlsBounds(Rect bounds)
+	{
+		_player?.SetTransportControlsBounds(bounds);
+	}
 
 	public void SetUriSource(Uri uri)
 	{

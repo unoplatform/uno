@@ -32,7 +32,7 @@ public partial class GTKMediaPlayer : Border
 	private VideoView? _videoView;
 	private double _ratio;
 	Windows.UI.Xaml.Media.Stretch _stretch = Windows.UI.Xaml.Media.Stretch.Uniform;
-	private int _transportControlAdjust = 94;
+	private Rect _transportControlsBounds;
 	//public int VideoHeight;
 	//public int VideoWidth;
 	public double Duration { get; set; }
@@ -173,8 +173,8 @@ public partial class GTKMediaPlayer : Border
 					}
 
 
-					UpdateTransportControlHeight();
-					var playerHeight = (double)this.ActualHeight - _transportControlAdjust;
+					//UpdateTransportControlHeight();
+					var playerHeight = (double)this.ActualHeight - _transportControlsBounds.Height;
 					var playerWidth = (double)this.ActualWidth;
 					var playerRatio = playerHeight / playerWidth;
 
@@ -263,25 +263,25 @@ public partial class GTKMediaPlayer : Border
 			}
 		});
 	}
-	protected void UpdateTransportControlHeight()
-	{
-		UIElement? container = VisualTreeHelper.GetParent(_videoContainer) as UIElement;
-		ContentPresenter? ContentPresenter = VisualTreeHelper.GetParent(container) as ContentPresenter;
-		ContentControl? ContentControl = VisualTreeHelper.GetParent(ContentPresenter) as ContentControl;
-		MediaPlayerPresenter? MediaPlayerPresenter = VisualTreeHelper.GetParent(ContentControl) as MediaPlayerPresenter;
-		UIElement? MediaPlayerPresenter2 = VisualTreeHelper.GetParent(MediaPlayerPresenter) as UIElement;
+	//protected void UpdateTransportControlHeight()
+	//{
+	//	UIElement? container = VisualTreeHelper.GetParent(_videoContainer) as UIElement;
+	//	ContentPresenter? ContentPresenter = VisualTreeHelper.GetParent(container) as ContentPresenter;
+	//	ContentControl? ContentControl = VisualTreeHelper.GetParent(ContentPresenter) as ContentControl;
+	//	MediaPlayerPresenter? MediaPlayerPresenter = VisualTreeHelper.GetParent(ContentControl) as MediaPlayerPresenter;
+	//	UIElement? MediaPlayerPresenter2 = VisualTreeHelper.GetParent(MediaPlayerPresenter) as UIElement;
 
-		if (MediaPlayerPresenter2 != null)
-		{
-			foreach (var child in MediaPlayerPresenter2.GetChildren())
-			{
-				if (child is ContentPresenter)
-				{
-					_transportControlAdjust = (int)child.DesiredSize.Height;
-				}
-			}
-		}
-	}
+	//	if (MediaPlayerPresenter2 != null)
+	//	{
+	//		foreach (var child in MediaPlayerPresenter2.GetChildren())
+	//		{
+	//			if (child is ContentPresenter)
+	//			{
+	//				_transportControlAdjust = (int)child.DesiredSize.Height;
+	//			}
+	//		}
+	//	}
+	//}
 
 	protected override Size ArrangeOverride(Size finalSize)
 	{
@@ -341,6 +341,15 @@ public partial class GTKMediaPlayer : Border
 		if (_videoView != null)
 		{
 			_stretch = stretch;
+			UpdateVideoStretch();
+		}
+	}
+
+	internal void SetTransportControlsBounds(Rect bounds)
+	{
+		if (!_transportControlsBounds.Equals(bounds))
+		{
+			_transportControlsBounds = bounds;
 			UpdateVideoStretch();
 		}
 	}
