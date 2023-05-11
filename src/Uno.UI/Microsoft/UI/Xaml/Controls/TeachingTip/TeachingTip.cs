@@ -1,9 +1,12 @@
-﻿using System;
+﻿// MUX Reference TeachingTip.cpp, commit 9aee101
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using Microsoft.UI.Private.Controls;
 using Microsoft.UI.Xaml.Automation.Peers;
+using Uno.Disposables;
 using Uno.Extensions;
 using Uno.UI.Helpers.WinUI;
 using Windows.ApplicationModel;
@@ -20,13 +23,17 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Shapes;
+using static Uno.UI.Helpers.WinUI.CppWinRTHelpers;
 
 namespace Microsoft.UI.Xaml.Controls;
 
 public partial class TeachingTip : ContentControl
 {
-	private long m_automationNameChangedRevoker;
-	private long m_automationIdChangedRevoker;
+	private const string c_TitleTextBlockVisibleStateName = "ShowTitleTextBlock";
+	private const string c_TitleTextBlockCollapsedStateName = "CollapseTitleTextBlock";
+	private const string c_SubtitleTextBlockVisibleStateName = "ShowSubtitleTextBlock";
+	private const string c_SubtitleTextBlockCollapsedStateName = "CollapseSubtitleTextBlock";
+	private const string c_OverlayCornerRadiusName = "OverlayCornerRadius";
 
 	public TeachingTip()
 	{
@@ -44,6 +51,8 @@ public partial class TeachingTip : ContentControl
 
 	protected override void OnApplyTemplate()
 	{
+		base.OnApplyTemplate();
+
 		// TODO: Uno specific - event not supported yet
 		if (ApiInformation.IsEventPresent("Windows.UI.Core.CoreDispatcher", nameof(CoreDispatcher.AcceleratorKeyActivated)))
 		{
@@ -85,8 +94,8 @@ public partial class TeachingTip : ContentControl
 		m_closeButton = (Button)GetTemplateChild(s_closeButtonName);
 		m_tailEdgeBorder = (Grid)GetTemplateChild(s_tailEdgeBorderName);
 		m_tailPolygon = (Polygon)GetTemplateChild(s_tailPolygonName);
-		m_titleTextBox = (UIElement)GetTemplateChild(s_titleTextBoxName);
-		m_subtitleTextBox = (UIElement)GetTemplateChild(s_subtitleTextBoxName);
+		ToggleVisibilityForEmptyContent(c_TitleTextBlockVisibleStateName, c_TitleTextBlockCollapsedStateName, Title);
+		ToggleVisibilityForEmptyContent(c_SubtitleTextBlockVisibleStateName, c_SubtitleTextBlockCollapsedStateName, Subtitle);
 
 		var container = m_container;
 		if (container != null)
@@ -133,6 +142,9 @@ public partial class TeachingTip : ContentControl
 		OnIconSourceChanged();
 		OnHeroContentPlacementChanged();
 
+		UpdateButtonAutomationProperties(m_actionButton, ActionButtonContent);
+		UpdateButtonAutomationProperties(m_closeButton, CloseButtonContent);
+
 		EstablishShadows();
 
 		m_isTemplateApplied = true;
@@ -162,11 +174,6 @@ public partial class TeachingTip : ContentControl
 				newTarget.Unloaded += ClosePopupOnUnloadEvent;
 			}
 			OnTargetChanged();
-		}
-		else if (property == ActionButtonContentProperty ||
-			property == CloseButtonContentProperty)
-		{
-			UpdateButtonsState();
 		}
 		else if (property == PlacementMarginProperty)
 		{
@@ -202,42 +209,53 @@ public partial class TeachingTip : ContentControl
 		else if (property == TitleProperty)
 		{
 			SetPopupAutomationProperties();
-			if (ToggleVisibilityForEmptyContent(m_titleTextBox, Title))
+			if (ToggleVisibilityForEmptyContent(c_TitleTextBlockVisibleStateName, c_TitleTextBlockCollapsedStateName, Title))
 			{
 				TeachingTipTestHooks.NotifyTitleVisibilityChanged(this);
 			}
 		}
 		else if (property == SubtitleProperty)
 		{
-			if (ToggleVisibilityForEmptyContent(m_subtitleTextBox, Subtitle))
+			if (ToggleVisibilityForEmptyContent(c_SubtitleTextBlockVisibleStateName, c_SubtitleTextBlockCollapsedStateName, Subtitle))
 			{
 				TeachingTipTestHooks.NotifySubtitleVisibilityChanged(this);
 			}
 		}
+		else if (property == ActionButtonContentProperty)
+		{
+			UpdateButtonsState();
+			var value = args.NewValue;
+			UpdateButtonAutomationProperties(m_actionButton, value);
+		}
+		else if (property == CloseButtonContentProperty)
+		{
+			UpdateButtonsState();
+			var value = args.NewValue;
+			UpdateButtonAutomationProperties(m_closeButton, value);
+		}
 	}
 
-	private bool ToggleVisibilityForEmptyContent(UIElement element, string content)
+	private void UpdateButtonAutomationProperties(Button button, object content)
 	{
-		if (element != null)
+		if (button is not null)
 		{
-			if (content != "")
-			{
-				if (element.Visibility == Visibility.Collapsed)
-				{
-					element.Visibility = Visibility.Visible;
-					return true;
-				}
-			}
-			else
-			{
-				if (element.Visibility == Visibility.Visible)
-				{
-					element.Visibility = Visibility.Collapsed;
-					return true;
-				}
-			}
+			string nameHString = SharedHelpers.TryGetStringRepresentationFromObject(content);
+			AutomationProperties.SetName(button, nameHString);
 		}
-		return false;
+	}
+
+	private bool ToggleVisibilityForEmptyContent(string visibleStateName, string collapsedStateName, string content)
+	{
+		if (content != "")
+		{
+			VisualStateManager.GoToState(this, visibleStateName, false);
+			return true;
+		}
+		else
+		{
+			VisualStateManager.GoToState(this, collapsedStateName, false);
+			return true;
+		}
 	}
 
 	private void OnOcclusionContentChanged(object oldContent, object newContent)
@@ -828,18 +846,33 @@ public partial class TeachingTip : ContentControl
 
 	private void OnIsOpenChanged()
 	{
-		SharedHelpers.QueueCallbackForCompositionRendering(() =>
+		if (m_ignoreNextIsOpenChanged)
 		{
-			if (this.IsOpen)
+			m_ignoreNextIsOpenChanged = false;
+		}
+		else
+		{
+			SharedHelpers.QueueCallbackForCompositionRendering(() =>
 			{
-				this.IsOpenChangedToOpen();
-			}
-			else
-			{
-				this.IsOpenChangedToClose();
-			}
-			TeachingTipTestHooks.NotifyOpenedStatusChanged(this);
-		});
+				if (m_isIdle)
+				{
+					if (IsOpen)
+					{
+						IsOpenChangedToOpen();
+					}
+					else
+					{
+						IsOpenChangedToClose();
+					}
+					TeachingTipTestHooks.NotifyOpenedStatusChanged(this);
+				}
+				else
+				{
+					m_ignoreNextIsOpenChanged = true;
+					IsOpen = !IsOpen;
+				}
+			});
+		}
 	}
 
 	private void IsOpenChangedToOpen()
@@ -918,6 +951,8 @@ public partial class TeachingTip : ContentControl
 			{
 				if (!popup.IsOpen)
 				{
+					// We are about to begin the process of trying to open the teaching tip, so notify that we are no longer idle.
+					SetIsIdle(false);
 					UpdatePopupRequestedTheme();
 					popup.Child = m_rootElement;
 					var lightDismissIndicatorPopup = m_lightDismissIndicatorPopup;
@@ -938,10 +973,23 @@ public partial class TeachingTip : ContentControl
 			}
 		}
 
-		if (ApiInformation.IsEventPresent("Windows.UI.Core.CoreDispatcher", nameof(CoreDispatcher.AcceleratorKeyActivated)))
+		void HookF6Handling()
 		{
-			Dispatcher.AcceleratorKeyActivated += OnF6AcceleratorKeyClicked;
+			if (XamlRoot is { } xamlRoot && xamlRoot.Content is { } content)
+			{
+				content.PreviewKeyDown += OnF6PreviewKeyDownClicked;
+				m_previewKeyDownForF6Revoker.Disposable = Disposable.Create(() => content.PreviewKeyDown -= OnF6PreviewKeyDownClicked);
+				return;
+			}
+
+			if (ApiInformation.IsEventPresent("Windows.UI.Core.CoreDispatcher", nameof(CoreDispatcher.AcceleratorKeyActivated)))
+			{
+				Dispatcher.AcceleratorKeyActivated += OnF6AcceleratorKeyClicked;
+				m_acceleratorKeyActivatedRevoker.Disposable = Disposable.Create(() => Dispatcher.AcceleratorKeyActivated -= OnF6AcceleratorKeyClicked);
+			}
 		}
+
+		HookF6Handling();
 
 		// Make sure we are in the correct VSM state after ApplyTemplate and moving the template content from the Control to the Popup:
 		OnIsLightDismissEnabledChanged();
@@ -968,6 +1016,8 @@ public partial class TeachingTip : ContentControl
 			}
 		}
 
+		m_acceleratorKeyActivatedRevoker.Disposable = null;
+		m_previewKeyDownForF6Revoker.Disposable = null;
 		m_currentEffectiveTipPlacementMode = TeachingTipPlacementMode.Auto;
 		TeachingTipTestHooks.NotifyEffectivePlacementChanged(this);
 	}
@@ -1121,71 +1171,114 @@ public partial class TeachingTip : ContentControl
 			args.VirtualKey == VirtualKey.F6 &&
 			args.EventType == CoreAcceleratorKeyEventType.KeyDown)
 		{
-			bool GetHasFocusInSubtree(AcceleratorKeyEventArgs args)
+			args.Handled = HandleF6Clicked();
+		}
+	}
+
+	private void OnF6PreviewKeyDownClicked(object sender, KeyRoutedEventArgs args)
+	{
+		if (!args.Handled && IsOpen && args.Key == VirtualKey.F6)
+		{
+			args.Handled = HandleF6Clicked();
+		}
+	}
+
+	private void OnF6PopupPreviewKeyDownClicked(object sender, KeyRoutedEventArgs args)
+	{
+		if (!args.Handled &&
+			IsOpen &&
+			args.Key == VirtualKey.F6)
+		{
+			args.Handled = HandleF6Clicked(/*fromPopup*/true);
+		}
+	}
+
+	private bool HandleF6Clicked(bool fromPopup = false)
+	{
+		// Logging usage telemetry
+		if (m_hasF6BeenInvoked)
+		{
+			//__RP_Marker_ClassMemberById(RuntimeProfiler::ProfId_TeachingTip, RuntimeProfiler::ProfMemberId_TeachingTip_F6AccessKey_SubsequentInvocation);
+		}
+		else
+		{
+			//__RP_Marker_ClassMemberById(RuntimeProfiler::ProfId_TeachingTip, RuntimeProfiler::ProfMemberId_TeachingTip_F6AccessKey_FirstInvocation);
+			m_hasF6BeenInvoked = true;
+		}
+
+		bool GetHasFocusInSubtree()
+		{
+			if (m_rootElement is { } rootElement)
 			{
-				var current = FocusManager.GetFocusedElement() as DependencyObject;
-				var rootElement = m_rootElement;
-				if (rootElement != null)
+				DependencyObject GetCurrent(UIElement rootElement)
 				{
-					while (current != null)
+					if (rootElement is { })
 					{
-						if ((current as UIElement) == rootElement)
-						{
-							return true;
-						}
-						current = VisualTreeHelper.GetParent(current);
+						return FocusManager.GetFocusedElement(rootElement.XamlRoot) as DependencyObject;
 					}
+
+					return FocusManager.GetFocusedElement() as DependencyObject;
 				}
-				return false;
+
+				var current = GetCurrent(rootElement);
+				while (current is not null)
+				{
+					if ((current as UIElement) == rootElement)
+					{
+						return true;
+					}
+					current = VisualTreeHelper.GetParent(current);
+				}
+			}
+			return false;
+		}
+
+		var hasFocusInSubtree = GetHasFocusInSubtree();
+
+		if (hasFocusInSubtree && fromPopup)
+		{
+			var setFocus = SetFocus(m_previouslyFocusedElement, FocusState.Programmatic);
+			m_previouslyFocusedElement = null;
+			return setFocus;
+		}
+		else if (!hasFocusInSubtree && !fromPopup)
+		{
+			Button GetF6Button()
+			{
+				var firstButton = m_closeButton;
+				var secondButton = m_alternateCloseButton;
+				//Prefer the close button to the alternate, except when there is no content.
+				if (CloseButtonContent is null)
+				{
+					(secondButton, firstButton) = (firstButton, secondButton);
+				}
+				if (firstButton is not null && firstButton.Visibility == Visibility.Visible)
+				{
+					return firstButton;
+				}
+				else if (secondButton is not null && secondButton.Visibility == Visibility.Visible)
+				{
+					return secondButton;
+				}
+				return null;
 			}
 
-			var hasFocusInSubtree = GetHasFocusInSubtree(args);
+			Button f6Button = GetF6Button();
 
-			if (hasFocusInSubtree)
+			if (f6Button is not null)
 			{
-				DependencyObject previouslyFocusedElement = null;
-				if (m_previouslyFocusedElement?.TryGetTarget(out previouslyFocusedElement) == true)
+				void ScopedHandler(object sender, GettingFocusEventArgs args)
 				{
-					bool setFocus = CppWinRTHelpers.SetFocus(previouslyFocusedElement, FocusState.Programmatic);
-					m_previouslyFocusedElement = null;
-					args.Handled = setFocus;
-				}
-			}
-			else
-			{
-				Button GetF6Button()
-				{
-					var firstButton = m_closeButton;
-					var secondButton = m_alternateCloseButton;
-					//Prefer the close button to the alternate, except when there is no content.
-					if (CloseButtonContent == null)
-					{
-						(secondButton, firstButton) = (firstButton, secondButton);
-					}
-					if (firstButton != null && firstButton.Visibility == Visibility.Visible)
-					{
-						return firstButton;
-					}
-					else if (secondButton != null && secondButton.Visibility == Visibility.Visible)
-					{
-						return secondButton;
-					}
-					return null;
+					m_previouslyFocusedElement = new WeakReference<DependencyObject>(args.OldFocusedElement);
 				}
 
-				Button f6Button = GetF6Button();
-
-				if (f6Button != null)
-				{
-					f6Button.GettingFocus += (sender, args) =>
-					{
-						m_previouslyFocusedElement = new WeakReference<DependencyObject>(args.OldFocusedElement);
-					};
-					bool setFocus = f6Button.Focus(FocusState.Keyboard);
-					args.Handled = setFocus;
-				}
+				f6Button.GettingFocus += ScopedHandler;
+				bool setFocus = f6Button.Focus(FocusState.Keyboard);
+				f6Button.GettingFocus -= ScopedHandler;
+				return setFocus;
 			}
 		}
+		return false;
 	}
 
 	private void OnAutomationNameChanged(object sender, object args)
@@ -1220,7 +1313,17 @@ public partial class TeachingTip : ContentControl
 			{
 				m_currentXamlRootSize = xamlRoot.Size;
 				m_xamlRoot = xamlRoot;
-				xamlRoot.Changed += XamlRootChanged;
+				m_xamlRootChangedRevoker.Disposable = RegisterXamlRootChanged(xamlRoot, XamlRootChanged);
+
+				if (m_popup is { } popup)
+				{
+					if (popup.Child is { } popupContent)
+					{
+						// This handler is not required for Winui3 because the framework bug this works around has been fixed.
+						popupContent.PreviewKeyDown += OnF6PopupPreviewKeyDownClicked;
+						m_popupPreviewKeyDownForF6Revoker.Disposable = Disposable.Create(() => popupContent.PreviewKeyDown -= OnF6PopupPreviewKeyDownClicked);
+					}
+				}
 			}
 		}
 		else
@@ -2355,6 +2458,22 @@ public partial class TeachingTip : ContentControl
 		return 0;
 	}
 
+	private CornerRadius GetTeachingTipCornerRadius()
+	{
+		if (SharedHelpers.IsRS5OrHigher())
+		{
+			return CornerRadius;
+		}
+		else if (m_contentRootGrid is { } contentRootGrid)
+		{
+			return contentRootGrid.CornerRadius;
+		}
+		else
+		{
+			return (CornerRadius)ResourceAccessor.ResourceLookup(this, c_OverlayCornerRadiusName);
+		}
+	}
+
 	////////////////
 	// Test Hooks //
 	////////////////
@@ -2532,8 +2651,7 @@ public partial class TeachingTip : ContentControl
 
 	internal Visibility GetTitleVisibility()
 	{
-		var titleTextBox = m_titleTextBox;
-		if (titleTextBox != null)
+		if (GetTemplateChild<UIElement>(s_titleTextBoxName) is { } titleTextBox)
 		{
 			return titleTextBox.Visibility;
 		}
@@ -2542,8 +2660,7 @@ public partial class TeachingTip : ContentControl
 
 	internal Visibility GetSubtitleVisibility()
 	{
-		var subtitleTextBox = m_subtitleTextBox;
-		if (subtitleTextBox != null)
+		if (GetTemplateChild<UIElement>(s_subtitleTextBoxName) is { } subtitleTextBox)
 		{
 			return subtitleTextBox.Visibility;
 		}
