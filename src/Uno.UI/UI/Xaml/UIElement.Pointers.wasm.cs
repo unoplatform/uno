@@ -27,6 +27,10 @@ using Windows.Devices.Input;
 using Windows.UI.Input;
 #endif
 
+#if NET7_0_OR_GREATER
+using System.Runtime.InteropServices.JavaScript;
+#endif
+
 namespace Windows.UI.Xaml;
 
 public partial class UIElement : DependencyObject
@@ -133,6 +137,9 @@ public partial class UIElement : DependencyObject
 
 	#region Native event dispatch
 	[EditorBrowsable(EditorBrowsableState.Never)]
+#if NET7_0_OR_GREATER
+	[JSExport]
+#endif
 	public static void OnNativePointerEvent()
 	{
 		var stopPropagation = false;
