@@ -115,7 +115,8 @@ public sealed partial class SvgImageSource_FromMsAppData : Page
 			{
 				var file = await StorageFile.GetFileFromApplicationUriAsync(SelectedSource.Uri);
 
-				var targetFolder = SelectedSource.Name switch {
+				var targetFolder = SelectedSource.Name switch 
+				{
 					"Local" => ApplicationData.Current.LocalFolder,
 					"Temp" => ApplicationData.Current.TemporaryFolder,
 					"Roaming" => ApplicationData.Current.RoamingFolder,
