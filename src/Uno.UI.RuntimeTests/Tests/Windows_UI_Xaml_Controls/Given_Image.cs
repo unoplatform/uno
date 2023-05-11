@@ -141,7 +141,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		[RunsOnUIThread]
 #if __MACOS__
-		[Ignore("Currently flaky on macOS, part of #9282 epic")]
+		[Ignore("Fails on macOS for resising and assets locations https://github.com/unoplatform/uno/issues/6261")]
 #endif
 		public async Task When_Transitive_Asset_Loaded()
 		{
@@ -160,7 +160,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		[RunsOnUIThread]
 #if __MACOS__
-		[Ignore("Randomly fails on macOS")]
+		[Ignore("Fails on macOS for resising and assets locations https://github.com/unoplatform/uno/issues/6261")]
 #endif
 		public async Task When_Transitive_Asset_With_Link_Loaded()
 		{
@@ -309,7 +309,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForLoaded(parent);
 			var result = await TakeScreenshot(parent);
 
-			var sample = SUT.GetRelativeCoords(parent);
+			var sample = parent.GetRelativeCoords(SUT);
 			var centerX = sample.X + sample.Width / 2;
 			var centerY = sample.Y + sample.Height / 2;
 
@@ -364,7 +364,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var snapshot = await TakeScreenshot(parent);
 
-			var sample = SUT.GetRelativeCoords(parent);
+			var sample = parent.GetRelativeCoords(SUT);
 			var centerX = sample.X + sample.Width / 2;
 			var centerY = sample.Y + sample.Height / 2;
 

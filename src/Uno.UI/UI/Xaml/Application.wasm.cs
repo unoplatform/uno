@@ -46,6 +46,7 @@ namespace Windows.UI.Xaml
 			}
 
 			Current = this;
+			InitializeSystemTheme();
 			Package.SetEntryAssembly(this.GetType().Assembly);
 
 			global::Uno.Foundation.Extensibility.ApiExtensibility.Register(
