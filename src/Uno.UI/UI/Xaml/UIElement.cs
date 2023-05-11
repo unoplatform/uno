@@ -459,6 +459,7 @@ namespace Windows.UI.Xaml
 		private protected void SetDefaultForeground(DependencyProperty foregroundProperty)
 		{
 			this.SetValue(foregroundProperty, DefaultBrushes.TextForegroundBrush, DependencyPropertyValuePrecedences.DefaultValue);
+			((IDependencyObjectStoreProvider)this).Store.SetLastUsedTheme(Application.Current?.RequestedThemeForResources);
 		}
 
 		[NotImplemented]
