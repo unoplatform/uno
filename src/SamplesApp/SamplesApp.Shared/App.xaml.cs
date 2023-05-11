@@ -102,6 +102,11 @@ namespace SamplesApp
 #endif
 			override void OnLaunched(LaunchActivatedEventArgs e)
 		{
+			if (InternalRequestedTheme is null)
+			{
+				throw new AssertFailedException("Requested theme should be initialized before calling OnLaunched");
+			}
+
 #if __IOS__ && !NET6_0_OR_GREATER
 			// requires Xamarin Test Cloud Agent
 			Xamarin.Calabash.Start();
