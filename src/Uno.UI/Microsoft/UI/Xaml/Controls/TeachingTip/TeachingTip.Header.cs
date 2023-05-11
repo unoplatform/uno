@@ -22,6 +22,7 @@ public partial class TeachingTip
 	private readonly SerialDisposable m_automationNameChangedRevoker = new();
 	private readonly SerialDisposable m_automationIdChangedRevoker = new();
 	private readonly SerialDisposable m_acceleratorKeyActivatedRevoker = new();
+	private readonly SerialDisposable m_previewKeyDownForF6Revoker = new();
 	// This handler is not required for Winui3 because the framework bug this works around has been fixed.
 	private readonly SerialDisposable m_popupPreviewKeyDownForF6Revoker = new();
 	private readonly SerialDisposable m_closeButtonClickedRevoker = new();
