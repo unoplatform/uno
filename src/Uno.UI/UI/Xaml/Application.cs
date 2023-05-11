@@ -259,6 +259,8 @@ namespace Windows.UI.Xaml
 		internal void InitializationCompleted()
 		{
 			SystemThemeHelper.SystemThemeChanged += OnSystemThemeChanged;
+			EnsureInternalRequestedTheme();
+
 			_initializationComplete = true;
 
 #if !HAS_UNO_WINUI
