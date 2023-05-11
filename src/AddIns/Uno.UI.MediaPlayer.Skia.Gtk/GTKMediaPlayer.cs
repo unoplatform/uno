@@ -66,6 +66,7 @@ public partial class GTKMediaPlayer : Border
 	}
 	public GTKMediaPlayer()
 	{
+
 		//if (this.Log().IsEnabled(LogLevel.Debug))
 		//{
 		//	this.Log().Debug("Adding media elements");
@@ -88,7 +89,6 @@ public partial class GTKMediaPlayer : Border
 	{
 		if (_videoView != null && _mediaPlayer != null)
 		{
-			//UpdateVideoStretch();
 			Console.WriteLine($"Play");
 			_mediaPlayer.Play();
 			_videoView.Visible = true;
@@ -98,6 +98,24 @@ public partial class GTKMediaPlayer : Border
 	public void IsCompactChange()
 	{
 		UpdateVideoStretch();
+	}
+
+	public void ExitFullScreen()
+	{
+		if (_mediaPlayer != null)
+		{
+			Console.WriteLine($"ExitFullScreen");
+			//_mediaPlayer.Fullscreen = false;
+		}
+	}
+
+	public void RequestFullScreen()
+	{
+		if (_mediaPlayer != null)
+		{
+			Console.WriteLine($"RequestFullScreen");
+			//_mediaPlayer.Fullscreen = true;
+		}
 	}
 
 	public void Stop()
@@ -151,8 +169,28 @@ public partial class GTKMediaPlayer : Border
 
 	private int _isUpdating;
 	private bool _updatedRequested;
+	//private Gtk.Window? _fullScreenWindow;
 	private void UpdateVideoStretch()
 	{
+		//if (_mediaPlayer?.Fullscreen == true && _fullScreenWindow == null)
+		//{
+		//	_fullScreenWindow = new Gtk.Window(Gtk.WindowType.Popup)
+		//	{
+		//		Decorated = false,
+		//		Resizable = false,
+		//		WindowPosition = Gtk.WindowPosition.Center,
+		//		TypeHint = Gdk.WindowTypeHint.Dialog
+		//	};
+
+		//	_fullScreenWindow.Add(_videoView);
+		//	_fullScreenWindow.ShowAll();
+
+		//	return;
+		//}
+		//if (_mediaPlayer?.Fullscreen != true && _fullScreenWindow != null)
+		//{
+		//	_fullScreenWindow = null;
+		//}
 		if (Interlocked.CompareExchange(ref _isUpdating, 1, 0) == 1)
 		{
 			_updatedRequested = true;
@@ -173,7 +211,6 @@ public partial class GTKMediaPlayer : Border
 					{
 						return;
 					}
-
 
 					//UpdateTransportControlHeight();
 					var playerHeight = (double)this.ActualHeight - _transportControlsBounds.Height;

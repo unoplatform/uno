@@ -3,6 +3,7 @@
 using System;
 using Atk;
 using Cairo;
+using LibVLCSharp.Shared;
 using Pango;
 using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
@@ -67,8 +68,14 @@ public class MediaPlayerPresenterExtension : IMediaPlayerPresenterExtension
 		}
 	}
 
-	public void ExitFullScreen() => throw new NotImplementedException();
-	public void RequestFullScreen() => throw new NotImplementedException();
+	public void ExitFullScreen()
+	{
+		_player.ExitFullScreen();
+	}
+	public void RequestFullScreen()
+	{
+		_player.RequestFullScreen();
+	}
 	public void StretchChanged()
 	{
 		if (_owner is not null)
