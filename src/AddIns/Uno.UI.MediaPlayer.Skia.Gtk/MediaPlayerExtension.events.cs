@@ -23,6 +23,7 @@ using Windows.UI.Xaml.Controls.Maps;
 using System.Numerics;
 using Uno.Logging;
 using Windows.UI.Xaml;
+using GLib;
 
 [assembly: ApiExtension(typeof(IMediaPlayerExtension), typeof(Uno.UI.Media.MediaPlayerExtension))]
 
@@ -33,6 +34,10 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 
 	private void OnStatusChanged(MediaPlaybackSession? sender, object args)
 	{
+		if ((MediaPlaybackState)args == MediaPlaybackState.Playing)
+		{
+			_player?.Play();
+		}
 		//if (this.Log().IsEnabled(LogLevel.Debug))
 		//{
 		//	this.Log().Debug($"OnStatusChanged: {args}");
@@ -86,8 +91,8 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 				else
 				{
 					// To display first image of media when setting a new source. Otherwise, last image of previous source remains visible
-					_player.Play();
-					_player.Stop();
+					//_player.Play();
+					//_player.Stop();
 				}
 			}
 
@@ -149,17 +154,17 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 		_player?.SetVolume(volume);
 	}
 
-	private void OnTimeUpdate(object? sender, object what)
+	private void OnTimeUpdate(object? sender, object o)
 	{
 		try
 		{
-			_updatingPosition = true;
 
+			var time = o is TimeSpan e ? e : TimeSpan.Zero;
+			_updatingPosition = true;
 			//if (this.Log().IsEnabled(LogLevel.Trace))
 			//{
 			//	this.Log().Trace($"OnTimeUpdate: {Position}");
 			//}
-
 			Events?.RaisePositionChanged();
 		}
 		finally

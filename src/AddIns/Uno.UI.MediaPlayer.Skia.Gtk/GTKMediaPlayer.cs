@@ -297,6 +297,7 @@ public partial class GTKMediaPlayer : Border
 		get => _playbackRate;
 		set
 		{
+			_mediaPlayer?.SetRate((float)value);
 			_playbackRate = value;
 		}
 	}
@@ -308,13 +309,14 @@ public partial class GTKMediaPlayer : Border
 			{
 				return 0;
 			}
-			return _mediaPlayer.Time;
+			return _mediaPlayer.Time / 1000;
 		}
 		set
 		{
-			if (_videoView != null && _mediaPlayer != null)
+			if (_videoView != null
+					&& _mediaPlayer != null)
 			{
-				_mediaPlayer.Time = long.Parse(value.ToString(CultureInfo.InvariantCulture), CultureInfo.InvariantCulture);
+				_mediaPlayer.Time = (long)value;
 			}
 		}
 	}

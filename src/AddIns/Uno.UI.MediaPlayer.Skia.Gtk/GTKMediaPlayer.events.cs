@@ -15,6 +15,10 @@ using Uno.Extensions;
 using Uno.Logging;
 using Pango;
 using Windows.UI.Xaml.Media;
+using System.Timers;
+using Timer = System.Timers.Timer;
+using System.Globalization;
+using Windows.Media.Playback;
 
 namespace Uno.UI.Media;
 
@@ -26,55 +30,6 @@ public partial class GTKMediaPlayer
 	public event EventHandler<object>? OnMetadataLoaded;
 	public event EventHandler<object>? OnTimeUpdate;
 	public event EventHandler<object>? OnSourceLoaded;
-	public event EventHandler SourceLoaded
-	{
-		add
-		{
-			//_htmlVideo.RegisterHtmlEventHandler("loadeddata", value);
-			//_htmlAudio.RegisterHtmlEventHandler("loadeddata", value);
-		}
-		remove
-		{
-			//_htmlVideo.UnregisterHtmlEventHandler("loadeddata", value);
-			//_htmlAudio.UnregisterHtmlEventHandler("loadeddata", value);
-		}
-	}
-	public event EventHandler? SourceFailed
-	{
-		add
-		{
-		}
-		remove
-		{
-		}
-	}
-	public event EventHandler? SourceEnded
-	{
-		add
-		{
-		}
-		remove
-		{
-		}
-	}
-	public event EventHandler? MetadataLoaded
-	{
-		add
-		{
-		}
-		remove
-		{
-		}
-	}
-	public event EventHandler? TimeUpdated
-	{
-		add
-		{
-		}
-		remove
-		{
-		}
-	}
 
 	private void Initialized()
 	{
@@ -84,7 +39,6 @@ public partial class GTKMediaPlayer
 		//}
 
 		Console.WriteLine("GTKMediaPlayer Initialized");
-		SourceLoaded += OnSourceVideoLoaded;
 		Console.WriteLine("Creating libvlc");
 		_libvlc = new LibVLC(enableDebugLogs: false);
 
@@ -116,6 +70,22 @@ public partial class GTKMediaPlayer
 					Console.WriteLine("MediaPlayer Stopped");
 					_videoView.Visible = false;
 				};
+				_mediaPlayer.TimeChanged += (sender, el) =>
+				{
+					var time = el is LibVLCSharp.Shared.MediaPlayerTimeChangedEventArgs e ? TimeSpan.FromMilliseconds(e.Time) : TimeSpan.Zero;
+
+					OnTimeUpdate?.Invoke(this, time);
+				};
+				_mediaPlayer.EndReached += (sender, el) =>
+				{
+					Console.WriteLine("EndReached");
+					OnHtmlSourceEnded(sender, el);
+				};
+				_mediaPlayer.MediaChanged += (sender, el) =>
+				{
+					Console.WriteLine("MediaChanged");
+					OnHtmlSourceLoaded(sender, el);
+				};
 
 				Console.WriteLine("Content _videoView on Dispatcher");
 				_videoContainer.Content = _videoView;
@@ -125,26 +95,6 @@ public partial class GTKMediaPlayer
 				Console.WriteLine("Created player");
 			});
 		});
-
-		SourceLoaded += OnHtmlSourceLoaded;
-		SourceFailed += OnHtmlSourceFailed;
-		SourceEnded += OnHtmlSourceEnded;
-		MetadataLoaded += OnHtmlMetadataLoaded;
-		TimeUpdated += OnHtmlTimeUpdated;
-	}
-
-	private void OnUnloaded(object sender, object args)
-	{
-		//if (this.Log().IsEnabled(LogLevel.Debug))
-		//{
-		//	this.Log().Debug($"HtmlMediaPlayer Unloaded");
-		//}
-
-		SourceLoaded -= OnHtmlSourceLoaded;
-		SourceFailed -= OnHtmlSourceFailed;
-		SourceEnded -= OnHtmlSourceEnded;
-		MetadataLoaded -= OnHtmlMetadataLoaded;
-		TimeUpdated -= OnHtmlTimeUpdated;
 	}
 	private void OnSourceVideoLoaded(object? sender, EventArgs e)
 	{
@@ -169,31 +119,62 @@ public partial class GTKMediaPlayer
 			if (player._mediaPlayer != null && player._libvlc != null)
 			{
 				string[] options = new string[1];
-				//options[0] = "video-on-top";
 				var media = new LibVLCSharp.Shared.Media(player._libvlc, new Uri(encodedSource), options);
-				//media.par parseWithOptions(VLC::Media::ParseFlags::Network, -1);
 
 				media.Parse(MediaParseOptions.ParseNetwork);
 				player._mediaPlayer.Media = media;
+				while (!player._mediaPlayer.Media.IsParsed)
+				{
+					Thread.Sleep(10);
+				}
+
+				if (player._mediaPlayer != null && player._mediaPlayer.Media != null)
+				{
+					player._mediaPlayer.Media.DurationChanged += (sender, el) =>
+					{
+						Console.WriteLine("DurationChanged");
+						player.Duration = (double)(player._videoView?.MediaPlayer?.Media?.Duration / 1000 ?? 0);
+					};
+					player._mediaPlayer.Media.MetaChanged += (sender, el) =>
+					{
+						Console.WriteLine("MetaChanged");
+						player.OnHtmlMetadataLoaded(sender, el);
+					};
+					player._mediaPlayer.Media.StateChanged += (sender, el) =>
+					{
+						Console.WriteLine("StateChanged");
+						if (el.State == VLCState.Error)
+						{
+							Console.WriteLine("Error");
+							player.OnHtmlSourceFailed(sender, el);
+						}
+						if (el.State == VLCState.Ended)
+						{
+							Console.WriteLine("Ended");
+							player.OnHtmlSourceEnded(sender, el);
+						}
+						if (el.State == VLCState.Opening)
+						{
+							Console.WriteLine("Opening");
+							player.OnHtmlSourceLoaded(sender, el);
+						}
+					};
+
+					player._mediaPlayer.Media.ParsedChanged += (sender, el) =>
+					{
+						Console.WriteLine("ParsedChanged");
+						player.OnHtmlSourceLoaded(sender, el);
+					};
+
+				}
+				//if (player.Log().IsEnabled(LogLevel.Debug))
+				//{
+				//	player.Log().Debug($"MediaPlayer source changed: [{player.Source}]");
+				//}
+
+				//player.OnSourceLoaded?.Invoke(player, EventArgs.Empty);
 			}
-			//if (player.Log().IsEnabled(LogLevel.Debug))
-			//{
-			//	player.Log().Debug($"MediaPlayer source changed: [{player.Source}]");
-			//}
-
-			player.OnSourceLoaded?.Invoke(player, EventArgs.Empty);
 		}
-	}
-
-
-	private void OnHtmlTimeUpdated(object? sender, EventArgs e)
-	{
-		//if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
-		//{
-		//	this.Log().Debug($"Time updated [{Source}]");
-		//}
-
-		OnTimeUpdate?.Invoke(this, EventArgs.Empty);
 	}
 
 	private void OnHtmlSourceEnded(object? sender, EventArgs e)
@@ -208,9 +189,9 @@ public partial class GTKMediaPlayer
 
 	private void OnHtmlMetadataLoaded(object? sender, EventArgs e)
 	{
-		if (_videoView != null && _mediaPlayer != null)
+		if (_videoView != null && _mediaPlayer != null && _mediaPlayer.Media != null)
 		{
-			Duration = _mediaPlayer.Time;
+			Duration = (double)_mediaPlayer.Media.Duration / 1000;
 		}
 		OnMetadataLoaded?.Invoke(this, Duration);
 	}
@@ -224,13 +205,18 @@ public partial class GTKMediaPlayer
 		if (_videoView != null)
 		{
 			_videoView.Visible = true;
+
+			Duration = (double)(_videoView?.MediaPlayer?.Media?.Duration / 1000 ?? 0);
+			if (Duration > 0)
+			{
+				OnSourceLoaded?.Invoke(this, EventArgs.Empty);
+			}
 		}
 		//if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 		//{
 		//	this.Log().Debug($"{ActiveElementName} source loaded: [{Source}]");
 		//}
 
-		OnSourceLoaded?.Invoke(this, EventArgs.Empty);
 	}
 
 	private void OnHtmlSourceFailed(object? sender, EventArgs e)

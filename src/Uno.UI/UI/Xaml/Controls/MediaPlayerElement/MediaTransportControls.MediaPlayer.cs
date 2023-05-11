@@ -152,7 +152,8 @@ namespace Windows.UI.Xaml.Controls
 				_progressSlider.Maybe(p => p.Minimum = 0);
 				_progressSlider.Maybe(p => p.Maximum = duration.TotalSeconds);
 
-				if (_mediaPlayer.PlaybackSession.PlaybackState != MediaPlaybackState.Playing && _mediaPlayer.PlaybackSession.PlaybackState != MediaPlaybackState.Paused)
+				if (_mediaPlayer.PlaybackSession.PlaybackState != MediaPlaybackState.Playing
+					&& _mediaPlayer.PlaybackSession.PlaybackState != MediaPlaybackState.Paused)
 				{
 					_timeRemainingElement.Maybe(p => p.Text = FormatTime(duration));
 				}

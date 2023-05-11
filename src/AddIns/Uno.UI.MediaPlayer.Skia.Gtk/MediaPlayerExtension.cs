@@ -131,7 +131,7 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 				{
 					if (_owner.PlaybackSession.PlaybackState != MediaPlaybackState.None && _player is not null && _player.Source is not null)
 					{
-						_player.CurrentPosition = (int)value.TotalSeconds;
+						_player.CurrentPosition = (int)value.TotalMilliseconds;
 						OnSeekComplete();
 					}
 				}
@@ -183,6 +183,11 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 		//{
 		//	this.Log().LogDebug("Enter MediaPlayerExtension.InitializeSource().");
 		//}
+		NaturalDuration = TimeSpan.Zero;
+		if (Position != TimeSpan.Zero)
+		{
+			Position = TimeSpan.Zero;
+		}
 
 		if (_owner.Source == null)
 		{
