@@ -1,19 +1,15 @@
 using System;
-using System.Globalization;
 using Uno;
 using Uno.UI;
 using Uno.Diagnostics.Eventing;
 using Windows.ApplicationModel.Activation;
-using Windows.Foundation;
 using Windows.Foundation.Metadata;
-using Windows.UI.Xaml.Controls.Primitives;
 using Windows.ApplicationModel.Core;
 using Windows.ApplicationModel;
 using Windows.Globalization;
 using Uno.Helpers.Theming;
 using Windows.UI.ViewManagement;
 using Uno.Extensions;
-using System.Collections.Generic;
 using Uno.Foundation.Logging;
 using Windows.UI.Xaml.Data;
 using Uno.Foundation.Extensibility;
@@ -56,7 +52,7 @@ namespace Windows.UI.Xaml
 	{
 		private bool _initializationComplete;
 		private readonly static IEventProvider _trace = Tracing.Get(TraceProvider.Id);
-		private ApplicationTheme? _requestedTheme;
+		private ApplicationTheme _requestedTheme = ApplicationTheme.Dark;
 		private SpecializedResourceDictionary.ResourceKey _requestedThemeForResources;
 		private bool _isInBackground;
 
@@ -114,11 +110,7 @@ namespace Windows.UI.Xaml
 
 		public ApplicationTheme RequestedTheme
 		{
-			get
-			{
-				EnsureInternalRequestedTheme();
-				return InternalRequestedTheme.Value;
-			}
+			get => InternalRequestedTheme;
 			set
 			{
 				if (_initializationComplete)
@@ -129,21 +121,19 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		private void EnsureInternalRequestedTheme()
+		private void InitializeSystemTheme()
 		{
-			if (InternalRequestedTheme == null)
-			{
-				// just cache the theme, but do not notify about a change unnecessarily
-				InternalRequestedTheme = GetSystemTheme();
-			}
+			// just cache the theme, but do not notify about a change unnecessarily
+			InternalRequestedTheme = GetSystemTheme();
 		}
 
-		private ApplicationTheme? InternalRequestedTheme
+		private ApplicationTheme InternalRequestedTheme
 		{
 			get => _requestedTheme;
 			set
 			{
 				_requestedTheme = value;
+
 				// Sync with core application's theme
 				CoreApplication.RequestedTheme = value == ApplicationTheme.Dark ? SystemTheme.Dark : SystemTheme.Light;
 
@@ -166,12 +156,7 @@ namespace Windows.UI.Xaml
 
 		internal SpecializedResourceDictionary.ResourceKey RequestedThemeForResources
 		{
-			get
-			{
-				EnsureInternalRequestedTheme();
-				return _requestedThemeForResources;
-			}
-
+			get => _requestedThemeForResources;
 			private set
 			{
 				_requestedThemeForResources = value;
@@ -259,6 +244,7 @@ namespace Windows.UI.Xaml
 		internal void InitializationCompleted()
 		{
 			SystemThemeHelper.SystemThemeChanged += OnSystemThemeChanged;
+
 			_initializationComplete = true;
 
 #if !HAS_UNO_WINUI
