@@ -118,31 +118,31 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="TabViewAddButtonName" xml:space="preserve">
-    <value>Yangi varaq qoʻshish</value>
+    <value>Додајте нову картицу</value>
     <comment>Automation name for the add new tab button.</comment>
   </data>
   <data name="TabViewAddButtonTooltip" xml:space="preserve">
-    <value>Yangi varaq qoʻshish</value>
+    <value>Додајте нову картицу</value>
     <comment>Tooltip for the add new tab button.</comment>
   </data>
   <data name="TabViewCloseButtonName" xml:space="preserve">
-    <value>Varaqni yopish</value>
+    <value>Затвори картицу</value>
     <comment>Automation name for the close button on each tab.</comment>
   </data>
   <data name="TabViewCloseButtonTooltip" xml:space="preserve">
-    <value>Varaqni yopish</value>
+    <value>Затвори картицу</value>
     <comment>Tooltip for the close button on each tab.</comment>
   </data>
   <data name="TabViewCloseButtonTooltipWithKA" xml:space="preserve">
-    <value>Varaqni yopish (Ctrl+F4)</value>
+    <value>Затвори картицу (Ctrl+F4)</value>
     <comment>Tooltip for the close button on each tab (with keyboard accelerator).</comment>
   </data>
   <data name="TabViewScrollDecreaseButtonTooltip" xml:space="preserve">
-    <value>Varaqlar roʻyxatini orqaga aylantirish</value>
+    <value>Помјери листу картица уназад</value>
     <comment>Tooltip for the tab list scroll decrease button.</comment>
   </data>
   <data name="TabViewScrollIncreaseButtonTooltip" xml:space="preserve">
-    <value>Varaqlar roʻyxatini oldinga aylantirish</value>
+    <value>Помјери листу картица унапред</value>
     <comment>Tooltip for the tab list scroll increase button.</comment>
   </data>
 </root>
