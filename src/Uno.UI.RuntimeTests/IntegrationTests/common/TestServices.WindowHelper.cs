@@ -8,7 +8,6 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Tests.Enterprise;
 using Windows.UI.Core;
 using MUXControlsTestApp.Utilities;
-using Uno.UI.Extensions;
 #if NETFX_CORE
 using Uno.UI.Extensions;
 #elif __IOS__
@@ -178,7 +177,7 @@ namespace Private.Infrastructure
 						return true;
 					}
 
-					await WaitFor(IsLoaded, message: $"{element.GetDebugName()} loaded");
+					await WaitFor(IsLoaded, message: $"{element} loaded");
 				}
 #if __WASM__   // Adjust for re-layout failures in When_Inline_Items_SelectedIndex, When_Observable_ItemsSource_And_Added, When_Presenter_Doesnt_Take_Up_All_Space
 				await Do();
