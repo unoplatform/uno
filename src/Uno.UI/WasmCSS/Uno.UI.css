@@ -174,7 +174,6 @@ embed.uno-frameworkelement.uno-unarranged {
   user-select: none;
   -webkit-user-drag: none;
   user-drag: none;
-  pointer-events: none;
 }
 
 .uno-scrollcontentpresenter {
