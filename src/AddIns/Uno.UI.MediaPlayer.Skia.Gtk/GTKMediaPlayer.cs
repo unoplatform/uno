@@ -194,6 +194,9 @@ public partial class GTKMediaPlayer : Border
 						var videoWidth = videoSettings.Width;
 						var videoHeight = videoSettings.Height;
 
+						// From: https://github.com/videolan/libvlcsharp/blob/bca0a53fe921e6f1f745e4e3ac83a7bd3b2e4a9d/src/LibVLCSharp/Shared/MediaPlayerElement/AspectRatioManager.cs#L188
+						videoWidth = videoWidth * videoSettings.SarNum / videoSettings.SarDen;
+
 						if (videoWidth == 0 || videoHeight == 0)
 						{
 							return;
