@@ -51,6 +51,7 @@ internal sealed class WpfCorePointerInputSource : IUnoCorePointerInputSource
 		_hostControl.MouseMove += HostOnMouseMove;
 		_hostControl.MouseDown += HostOnMouseDown;
 		_hostControl.MouseUp += HostOnMouseUp;
+		_hostControl.LostMouseCapture += HostOnMouseCaptureLost;
 
 		// Hook for native events
 		if (_hostControl.IsLoaded)
@@ -163,6 +164,20 @@ internal sealed class WpfCorePointerInputSource : IUnoCorePointerInputSource
 		catch (Exception e)
 		{
 			this.Log().Error("Failed to raise PointerReleased", e);
+		}
+	}
+
+	private void HostOnMouseCaptureLost(object sender, WpfMouseEventArgs args)
+	{
+		try
+		{
+			var eventArgs = BuildPointerArgs(args);
+			PointerCaptureLost?.Invoke(this, eventArgs);
+			_previous = eventArgs;
+		}
+		catch (Exception e)
+		{
+			this.Log().Error("Failed to raise PointerCaptureLost", e);
 		}
 	}
 

@@ -20,7 +20,7 @@ unsafe internal partial class FrameBufferPointerInputSource : IUnoCorePointerInp
 	public event TypedEventHandler<object, PointerEventArgs>? PointerPressed;
 	public event TypedEventHandler<object, PointerEventArgs>? PointerReleased;
 	public event TypedEventHandler<object, PointerEventArgs>? PointerWheelChanged;
-	public event TypedEventHandler<object, PointerEventArgs>? PointerCancelled;
+	public event TypedEventHandler<object, PointerEventArgs>? PointerCancelled; // Uno Only
 #pragma warning restore CS0067
 
 	private readonly DisplayInformation _displayInformation;
@@ -48,15 +48,6 @@ unsafe internal partial class FrameBufferPointerInputSource : IUnoCorePointerInp
 	[NotImplemented] public void SetPointerCapture() => LogNotSupported();
 	[NotImplemented] public void ReleasePointerCapture(PointerIdentifier pointer) => LogNotSupported();
 	[NotImplemented] public void ReleasePointerCapture() => LogNotSupported();
-
-	private void RaisePointerCaptureLost(PointerEventArgs args)
-		=> PointerCaptureLost?.Invoke(this, args);
-
-	private void RaisePointerEntered(PointerEventArgs args)
-		=> PointerEntered?.Invoke(this, args);
-
-	private void RaisePointerExited(PointerEventArgs args)
-		=> PointerExited?.Invoke(this, args);
 
 	private void RaisePointerMoved(PointerEventArgs args)
 		=> PointerMoved?.Invoke(this, args);

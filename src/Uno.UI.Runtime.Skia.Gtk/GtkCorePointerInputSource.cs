@@ -49,7 +49,7 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 	public event TypedEventHandler<object, PointerEventArgs>? PointerPressed;
 	public event TypedEventHandler<object, PointerEventArgs>? PointerReleased;
 	public event TypedEventHandler<object, PointerEventArgs>? PointerWheelChanged;
-	public event TypedEventHandler<object, PointerEventArgs>? PointerCancelled;
+	public event TypedEventHandler<object, PointerEventArgs>? PointerCancelled; // Uno Only
 #pragma warning restore CS0067
 
 	public GtkCorePointerInputSource()
