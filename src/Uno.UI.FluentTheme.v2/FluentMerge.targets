@@ -9,10 +9,7 @@
   <!-- This task is temporarily placed in debug configuration to avoid parallel build concurrency issues -->
   <Target Name="GenerateThemeResourceV2File" DependsOnTargets="ResolveProjectReferences" BeforeTargets="BeforeBuild" Outputs="themeresources_v2.xaml" Condition="'$(Configuration)'=='Debug'">
     <ItemGroup>
-      <ExcludedTemplatesV2 Include="$(MSBuildThisFileDirectory)Resources\Version2\PriorityDefault\RadioMenuFlyoutItem_themeresources.xaml" />
-      <ExcludedTemplatesV2 Include="$(MSBuildThisFileDirectory)Resources\Version2\PriorityDefault\TeachingTip.xaml" />
-      <ExcludedTemplatesV2 Include="$(MSBuildThisFileDirectory)Resources\Version2\PriorityDefault\TeachingTip_rs1_themeresources.xaml" />
-      <ExcludedTemplatesV2 Include="$(MSBuildThisFileDirectory)Resources\Version2\PriorityDefault\TeachingTip_rs2_themeresources.xaml" />
+      <ExcludedTemplatesV2 Include="$(MSBuildThisFileDirectory)Resources\Version2\PriorityDefault\RadioMenuFlyoutItem_themeresources.xaml" />      
       <ExcludedTemplatesV2 Include="$(MSBuildThisFileDirectory)Resources\Version2\PriorityDefault\ProgressRing.xaml" />
       <ExcludedTemplatesV2 Include="$(MSBuildThisFileDirectory)Resources\Version2\PriorityDefault\ScrollViewer.xaml" />
       <ExcludedTemplatesV2 Include="$(MSBuildThisFileDirectory)Resources\Version2\PriorityDefault\ScrollViewer_themeresources.xaml" />

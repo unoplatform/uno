@@ -7,34 +7,70 @@
     xmlns:contract7NotPresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,7)">
     <ResourceDictionary.ThemeDictionaries>
         <ResourceDictionary x:Key="Default">
-            <StaticResource x:Key="TeachingTipBorderBrush"                                                    ResourceKey="SurfaceStrokeColorDefaultBrush"/>
-            <SolidColorBrush x:Key="TeachingTipTopHighlightBrush"                                             Color="#0DFFFFFF"/>
-            <StaticResource x:Key="TeachingTipTransientBackground"                                            ResourceKey="SolidBackgroundFillColorTertiaryBrush"/>
-            <StaticResource x:Key="TeachingTipForegroundBrush"                                                ResourceKey="TextFillColorPrimaryBrush"/>
-            <StaticResource x:Key="TeachingTipBackgroundBrush"                                                ResourceKey="SolidBackgroundFillColorTertiaryBrush"/>
-            <StaticResource x:Key="TeachingTipTitleForegroundBrush"                                           ResourceKey="TextFillColorPrimaryBrush"/>
-            <StaticResource x:Key="TeachingTipSubtitleForegroundBrush"                                        ResourceKey="TextFillColorPrimaryBrush"/>
-            <Thickness x:Key="TeachingTipAlternateCloseButtonBorderThickness">0</Thickness>
+            <StaticResource x:Key="TeachingTipBorderBrush" ResourceKey="SurfaceStrokeColorDefaultBrush"/>
+            <SolidColorBrush x:Key="TeachingTipTopHighlightBrush" Color="#0DFFFFFF"/>
+            <StaticResource x:Key="TeachingTipTransientBackground" ResourceKey="SolidBackgroundFillColorTertiaryBrush"/>
+            <StaticResource x:Key="TeachingTipForegroundBrush" ResourceKey="TextFillColorPrimaryBrush"/>
+            <StaticResource x:Key="TeachingTipBackgroundBrush" ResourceKey="SolidBackgroundFillColorTertiaryBrush"/>
+            <StaticResource x:Key="TeachingTipTitleForegroundBrush" ResourceKey="TextFillColorPrimaryBrush"/>
+            <StaticResource x:Key="TeachingTipSubtitleForegroundBrush" ResourceKey="TextFillColorPrimaryBrush"/>
+            <StaticResource x:Key="TeachingTipAlternateCloseButtonBackground" ResourceKey="SubtleFillColorTransparentBrush" />
+            <StaticResource x:Key="TeachingTipAlternateCloseButtonBackgroundPointerOver" ResourceKey="SubtleFillColorSecondaryBrush" />
+            <StaticResource x:Key="TeachingTipAlternateCloseButtonBackgroundPressed" ResourceKey="SubtleFillColorTertiaryBrush" />
+            <StaticResource x:Key="TeachingTipAlternateCloseButtonBackgroundDisabled" ResourceKey="SubtleFillColorTransparentBrush" />
+            <StaticResource x:Key="TeachingTipAlternateCloseButtonForeground" ResourceKey="TextFillColorPrimaryBrush" />
+            <StaticResource x:Key="TeachingTipAlternateCloseButtonForegroundPointerOver" ResourceKey="TextFillColorPrimaryBrush" />
+            <StaticResource x:Key="TeachingTipAlternateCloseButtonForegroundPressed" ResourceKey="TextFillColorSecondaryBrush" />
+            <StaticResource x:Key="TeachingTipAlternateCloseButtonForegroundDisabled" ResourceKey="TextFillColorDisabledBrush" />
+            <StaticResource x:Key="TeachingTipAlternateCloseButtonBorderBrush" ResourceKey="SubtleFillColorTransparentBrush" />
+            <StaticResource x:Key="TeachingTipAlternateCloseButtonBorderBrushPointerOver" ResourceKey="SubtleFillColorSecondaryBrush" />
+            <StaticResource x:Key="TeachingTipAlternateCloseButtonBorderBrushPressed" ResourceKey="SubtleFillColorTertiaryBrush" />
+            <StaticResource x:Key="TeachingTipAlternateCloseButtonBorderBrushDisabled" ResourceKey="SubtleFillColorTransparentBrush" />
+            <Thickness x:Key="TeachingTipAlternateCloseButtonBorderThickness">1</Thickness>
         </ResourceDictionary>
         <ResourceDictionary x:Key="Light">
-            <StaticResource x:Key="TeachingTipBorderBrush"                                                    ResourceKey="SurfaceStrokeColorDefaultBrush"/>
-            <SolidColorBrush x:Key="TeachingTipTopHighlightBrush"                                             Color="#99FFFFFF"/>
-            <StaticResource x:Key="TeachingTipTransientBackground"                                            ResourceKey="SolidBackgroundFillColorTertiaryBrush"/>
-            <StaticResource x:Key="TeachingTipForegroundBrush"                                                ResourceKey="TextFillColorPrimaryBrush"/>
-            <StaticResource x:Key="TeachingTipBackgroundBrush"                                                ResourceKey="SolidBackgroundFillColorTertiaryBrush"/>
-            <StaticResource x:Key="TeachingTipTitleForegroundBrush"                                           ResourceKey="TextFillColorPrimaryBrush"/>
-            <StaticResource x:Key="TeachingTipSubtitleForegroundBrush"                                        ResourceKey="TextFillColorPrimaryBrush"/>
-            <Thickness x:Key="TeachingTipAlternateCloseButtonBorderThickness">0</Thickness>
+            <StaticResource x:Key="TeachingTipBorderBrush" ResourceKey="SurfaceStrokeColorDefaultBrush"/>
+            <SolidColorBrush x:Key="TeachingTipTopHighlightBrush" Color="#99FFFFFF"/>
+            <StaticResource x:Key="TeachingTipTransientBackground" ResourceKey="SolidBackgroundFillColorTertiaryBrush"/>
+            <StaticResource x:Key="TeachingTipForegroundBrush" ResourceKey="TextFillColorPrimaryBrush"/>
+            <StaticResource x:Key="TeachingTipBackgroundBrush" ResourceKey="SolidBackgroundFillColorTertiaryBrush"/>
+            <StaticResource x:Key="TeachingTipTitleForegroundBrush" ResourceKey="TextFillColorPrimaryBrush"/>
+            <StaticResource x:Key="TeachingTipSubtitleForegroundBrush" ResourceKey="TextFillColorPrimaryBrush"/>
+            <StaticResource x:Key="TeachingTipAlternateCloseButtonBackground" ResourceKey="SubtleFillColorTransparentBrush" />
+            <StaticResource x:Key="TeachingTipAlternateCloseButtonBackgroundPointerOver" ResourceKey="SubtleFillColorSecondaryBrush" />
+            <StaticResource x:Key="TeachingTipAlternateCloseButtonBackgroundPressed" ResourceKey="SubtleFillColorTertiaryBrush" />
+            <StaticResource x:Key="TeachingTipAlternateCloseButtonBackgroundDisabled" ResourceKey="SubtleFillColorTransparentBrush" />
+            <StaticResource x:Key="TeachingTipAlternateCloseButtonForeground" ResourceKey="TextFillColorPrimaryBrush" />
+            <StaticResource x:Key="TeachingTipAlternateCloseButtonForegroundPointerOver" ResourceKey="TextFillColorPrimaryBrush" />
+            <StaticResource x:Key="TeachingTipAlternateCloseButtonForegroundPressed" ResourceKey="TextFillColorSecondaryBrush" />
+            <StaticResource x:Key="TeachingTipAlternateCloseButtonForegroundDisabled" ResourceKey="TextFillColorDisabledBrush" />
+            <StaticResource x:Key="TeachingTipAlternateCloseButtonBorderBrush" ResourceKey="SubtleFillColorTransparentBrush" />
+            <StaticResource x:Key="TeachingTipAlternateCloseButtonBorderBrushPointerOver" ResourceKey="SubtleFillColorSecondaryBrush" />
+            <StaticResource x:Key="TeachingTipAlternateCloseButtonBorderBrushPressed" ResourceKey="SubtleFillColorTertiaryBrush" />
+            <StaticResource x:Key="TeachingTipAlternateCloseButtonBorderBrushDisabled" ResourceKey="SubtleFillColorTransparentBrush" />
+            <Thickness x:Key="TeachingTipAlternateCloseButtonBorderThickness">1</Thickness>
         </ResourceDictionary>
         <ResourceDictionary x:Key="HighContrast">
-            <StaticResource x:Key="TeachingTipBorderBrush"                                                    ResourceKey="SystemControlTransientBorderBrush"/>
-            <SolidColorBrush x:Key="TeachingTipTopHighlightBrush"                                             Color="Transparent"/>
-            <StaticResource x:Key="TeachingTipTransientBackground"                                            ResourceKey="SystemControlPageBackgroundChromeLowBrush"/>
-            <StaticResource x:Key="TeachingTipForegroundBrush"                                                ResourceKey="SystemControlForegroundBaseHighBrush"/>
-            <StaticResource x:Key="TeachingTipBackgroundBrush"                                                ResourceKey="SystemControlPageBackgroundChromeLowBrush"/>
-            <StaticResource x:Key="TeachingTipTitleForegroundBrush"                                           ResourceKey="SystemControlForegroundBaseHighBrush"/>
-            <StaticResource x:Key="TeachingTipSubtitleForegroundBrush"                                        ResourceKey="SystemControlForegroundBaseHighBrush"/>
-            <Thickness x:Key="TeachingTipAlternateCloseButtonBorderThickness">2</Thickness>
+            <StaticResource x:Key="TeachingTipBorderBrush" ResourceKey="SystemColorWindowTextColorBrush"/>
+            <SolidColorBrush x:Key="TeachingTipTopHighlightBrush" Color="Transparent"/>
+            <StaticResource x:Key="TeachingTipTransientBackground" ResourceKey="SystemColorWindowColorBrush"/>
+            <StaticResource x:Key="TeachingTipForegroundBrush" ResourceKey="SystemColorWindowTextColorBrush"/>
+            <StaticResource x:Key="TeachingTipBackgroundBrush" ResourceKey="SystemColorWindowColorBrush"/>
+            <StaticResource x:Key="TeachingTipTitleForegroundBrush" ResourceKey="SystemColorWindowTextColorBrush"/>
+            <StaticResource x:Key="TeachingTipSubtitleForegroundBrush" ResourceKey="SystemColorWindowTextColorBrush"/>
+            <StaticResource x:Key="TeachingTipAlternateCloseButtonBackground" ResourceKey="SystemColorButtonFaceColorBrush" />
+            <StaticResource x:Key="TeachingTipAlternateCloseButtonBackgroundPointerOver" ResourceKey="SystemColorHighlightTextColorBrush" />
+            <StaticResource x:Key="TeachingTipAlternateCloseButtonBackgroundPressed" ResourceKey="SystemColorHighlightTextColorBrush" />
+            <StaticResource x:Key="TeachingTipAlternateCloseButtonBackgroundDisabled" ResourceKey="SystemColorButtonFaceColorBrush" />
+            <StaticResource x:Key="TeachingTipAlternateCloseButtonForeground" ResourceKey="SystemColorButtonTextColorBrush" />
+            <StaticResource x:Key="TeachingTipAlternateCloseButtonForegroundPointerOver" ResourceKey="SystemColorHighlightColorBrush" />
+            <StaticResource x:Key="TeachingTipAlternateCloseButtonForegroundPressed" ResourceKey="SystemColorHighlightColorBrush" />
+            <StaticResource x:Key="TeachingTipAlternateCloseButtonForegroundDisabled" ResourceKey="SystemColorGrayTextColorBrush" />
+            <StaticResource x:Key="TeachingTipAlternateCloseButtonBorderBrush" ResourceKey="SystemColorButtonFaceColorBrush" />
+            <StaticResource x:Key="TeachingTipAlternateCloseButtonBorderBrushPointerOver" ResourceKey="SystemColorHighlightColorBrush" />
+            <StaticResource x:Key="TeachingTipAlternateCloseButtonBorderBrushPressed" ResourceKey="SystemColorHighlightTextColorBrush" />
+            <StaticResource x:Key="TeachingTipAlternateCloseButtonBorderBrushDisabled" ResourceKey="SystemColorButtonFaceColorBrush" />
+            <Thickness x:Key="TeachingTipAlternateCloseButtonBorderThickness">1</Thickness>
         </ResourceDictionary>
     </ResourceDictionary.ThemeDictionaries>
 
@@ -80,75 +116,85 @@
     <Thickness x:Key="TeachingTipTopHighlightOffsetForBorder">0,1,0,0</Thickness>
 
     <Style x:Key="AlternateCloseButtonStyle" TargetType="Button">
+        <contract7Present:Setter Property="BackgroundSizing" Value="InnerBorderEdge" />
         <Setter Property="Width" Value="{ThemeResource TeachingTipAlternateCloseButtonSize}" />
         <Setter Property="Height" Value="{ThemeResource TeachingTipAlternateCloseButtonSize}" />
-        <Setter Property="Background" Value="{ThemeResource SubtleFillColorTransparentBrush}" />
-        <Setter Property="Foreground" Value="{ThemeResource TextFillColorPrimaryBrush}" />
+        <Setter Property="Background" Value="{ThemeResource TeachingTipAlternateCloseButtonBackground}" />
+        <Setter Property="Foreground" Value="{ThemeResource TeachingTipAlternateCloseButtonForeground}" />
+        <Setter Property="BorderBrush" Value="{ThemeResource TeachingTipAlternateCloseButtonBorderBrush}" />
         <Setter Property="FontFamily" Value="{ThemeResource SymbolThemeFontFamily}" />
         <Setter Property="FontSize" Value="{ThemeResource TeachingTipAlternateCloseButtonGlyphSize}" />
         <Setter Property="VerticalAlignment" Value="Top" />
         <Setter Property="HorizontalAlignment" Value="Right" />
         <Setter Property="Padding" Value="4"/>
         <Setter Property="BorderThickness" Value="{ThemeResource TeachingTipAlternateCloseButtonBorderThickness}" />
-        <Setter Property="BorderBrush" Value="{ThemeResource ControlElevationBorderBrush}" />
         <Setter Property="Content" Value="&#xE711;"/>
         <contract7Present:Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}"/>
-        <Setter Property="FocusVisualMargin" Value="1"/>
+        <Setter Property="FocusVisualMargin" Value="-3"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
-                    <Border Padding="{TemplateBinding Padding}"
-                            BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="{TemplateBinding BorderThickness}"
-                            CornerRadius="{TemplateBinding CornerRadius}">
+                    <Border Background="Transparent" Padding="{TemplateBinding Padding}">
                         <VisualStateManager.VisualStateGroups>
                             <VisualStateGroup x:Name="CommonStates">
                                 <VisualState x:Name="Normal" />
                                 <VisualState x:Name="PointerOver">
                                     <Storyboard>
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Background">
-                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SubtleFillColorSecondaryBrush}"/>
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TeachingTipAlternateCloseButtonBackgroundPointerOver}" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TeachingTipAlternateCloseButtonBorderBrushPointerOver}" />
                                         </ObjectAnimationUsingKeyFrames>
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
-                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TextFillColorPrimaryBrush}"/>
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TeachingTipAlternateCloseButtonForegroundPointerOver}" />
                                         </ObjectAnimationUsingKeyFrames>
                                     </Storyboard>
                                 </VisualState>
                                 <VisualState x:Name="Pressed">
                                     <Storyboard>
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Background">
-                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SubtleFillColorTertiaryBrush}"/>
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TeachingTipAlternateCloseButtonBackgroundPressed}" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TeachingTipAlternateCloseButtonBorderBrushPressed}" />
                                         </ObjectAnimationUsingKeyFrames>
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
-                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TeachingTipAlternateCloseButtonForegroundPressed}" />
                                         </ObjectAnimationUsingKeyFrames>
                                     </Storyboard>
                                 </VisualState>
                                 <VisualState x:Name="Disabled">
                                     <Storyboard>
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Background">
-                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SubtleFillColorTransparentBrush}"/>
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TeachingTipAlternateCloseButtonBackgroundDisabled}" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TeachingTipAlternateCloseButtonBorderBrushDisabled}" />
                                         </ObjectAnimationUsingKeyFrames>
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
-                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TextFillColorDisabledBrush}"/>
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TeachingTipAlternateCloseButtonForegroundDisabled}" />
                                         </ObjectAnimationUsingKeyFrames>
                                     </Storyboard>
                                 </VisualState>
                             </VisualStateGroup>
                         </VisualStateManager.VisualStateGroups>
-                        <ContentPresenter x:Name="ContentPresenter"
-                                AutomationProperties.AccessibilityView="Raw"
-                                contract7Present:BackgroundSizing="{TemplateBinding BackgroundSizing}"
-                                Background="{TemplateBinding Background}"
-                                Foreground="{TemplateBinding Foreground}"
-                                FontFamily="{TemplateBinding FontFamily}"
-                                FontSize="{TemplateBinding FontSize}"
-                                Content="{TemplateBinding Content}"
-                                HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
-                                contract7Present:CornerRadius="{TemplateBinding CornerRadius}"
-                                contract7NotPresent:CornerRadius="{ThemeResource ControlCornerRadius}">
-                        </ContentPresenter>
+                        <ContentPresenter
+                            x:Name="ContentPresenter"
+                            AutomationProperties.AccessibilityView="Raw"
+                            contract7Present:BackgroundSizing="{TemplateBinding BackgroundSizing}"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            Foreground="{TemplateBinding Foreground}"
+                            FontFamily="{TemplateBinding FontFamily}"
+                            FontSize="{TemplateBinding FontSize}"
+                            Content="{TemplateBinding Content}"
+                            HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                            VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                            contract7Present:CornerRadius="{TemplateBinding CornerRadius}"
+                            contract7NotPresent:CornerRadius="{ThemeResource ControlCornerRadius}"
+                            Control.IsTemplateFocusTarget="True" />
                     </Border>
                 </ControlTemplate>
             </Setter.Value>

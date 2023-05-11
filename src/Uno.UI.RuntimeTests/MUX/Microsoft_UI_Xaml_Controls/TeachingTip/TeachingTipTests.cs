@@ -9,7 +9,6 @@ using Windows.UI.Xaml.Markup;
 using MUXControlsTestApp.Utilities;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Imaging;
 using Common;
 using System.Threading;
