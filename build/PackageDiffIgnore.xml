@@ -1261,6 +1261,9 @@
 			<Member fullName="System.Object Uno.UI.Svg.GlobalStaticResources.FindResource(System.String name)" reason="API Alignment" />
 			<Member fullName="System.Void Windows.Devices.Sensors.SimpleOrientationSensor.OnAccuracyChanged(Android.Hardware.Sensor sensor, Android.Hardware.SensorStatus accuracy)" reason="Api alignments" />
 			<Member fullName="System.Void Windows.Devices.Sensors.SimpleOrientationSensor.OnSensorChanged(Android.Hardware.SensorEvent e)" reason="Api alignments" />
+			<Member fullName="Windows.UI.Xaml.UIElement Windows.UI.Xaml.FrameworkTemplate.LoadContent()" reason="Api alignments" />
+			<Member fullName="Windows.UI.Xaml.UIElement Windows.UI.Xaml.Controls.ItemsPanelTemplate.LoadContent()" reason="Api alignments" />
+
 
 			<!-- BEGIN Skia Adjustments -->
 			<Member fullName="System.Void Uno.UI.Runtime.Skia.GtkHost..ctor(System.Func`1&lt;Windows.UI.Xaml.Application&gt; appBuilder, System.String[] args)" reason="API Alignment" />

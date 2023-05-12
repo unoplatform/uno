@@ -27,7 +27,7 @@ namespace Windows.UI.Xaml
 	public delegate View? FrameworkTemplateBuilder(object? owner);
 
 	[ContentProperty(Name = "Template")]
-	public partial class FrameworkTemplate : DependencyObject
+	public partial class FrameworkTemplate : DependencyObject, IFrameworkTemplateInternal
 	{
 		internal readonly FrameworkTemplateBuilder? _viewFactory;
 		private readonly int _hashCode;
