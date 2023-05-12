@@ -31,56 +31,15 @@ namespace Uno.UI.Media;
 
 public partial class MediaPlayerExtension : IMediaPlayerExtension
 {
-
-	private void OnStatusChanged(MediaPlaybackSession? sender, object args)
-	{
-		if ((MediaPlaybackState)args == MediaPlaybackState.Playing)
-		{
-			_player?.Play();
-		}
-		//if (this.Log().IsEnabled(LogLevel.Debug))
-		//{
-		//	this.Log().Debug($"OnStatusChanged: {args}");
-		//}
-
-		//if ((MediaPlaybackState)args == MediaPlaybackState.Playing)
-		//{
-		//	_player?.Play();
-		//}
-		//if ((MediaPlaybackState)args == MediaPlaybackState.None)
-		//{
-		//	_player?.Stop();
-		//}
-		//if ((MediaPlaybackState)args == MediaPlaybackState.Paused)
-		//{
-		//	_player?.Pause();
-		//}
-	}
 	public void OnPrepared(object? sender, object what)
 	{
-		if (sender is GTKMediaPlayer mp && _player is not null)
+		if (sender is GtkMediaPlayer mp && _player is not null)
 		{
-			//if (this.Log().IsEnabled(LogLevel.Debug))
-			//{
-			//	this.Log().Debug($"OnPrepared: {_player.Duration}");
-			//}
-
 			NaturalDuration = TimeSpan.FromSeconds(_player.Duration);
-
 			if (mp.IsVideo && Events is not null)
 			{
-				try
-				{
-					//if (this.Log().IsEnabled(LogLevel.Debug))
-					//{
-					//	this.Log().Debug($"OnPrepared: {mp.VideoWidth}x{mp.VideoHeight}");
-					//}
-					//mp.UpdateVideoStretch();
-					Events?.RaiseVideoRatioChanged(global::System.Math.Max(1, (double)mp.Ratio));
-				}
-				catch { }
+				Events?.RaiseVideoRatioChanged(global::System.Math.Max(1, (double)mp.VideoRatio));
 			}
-
 			if (_owner.PlaybackSession.PlaybackState == MediaPlaybackState.Opening)
 			{
 				if (_isPlayRequested)
@@ -88,19 +47,10 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 					_player.Play();
 					_owner.PlaybackSession.PlaybackState = MediaPlaybackState.Playing;
 				}
-				else
-				{
-					// To display first image of media when setting a new source. Otherwise, last image of previous source remains visible
-					//_player.Play();
-					//_player.Stop();
-				}
 			}
-
 			_isPlayerPrepared = true;
 		}
 	}
-
-
 
 	void OnError(object? sender, object what)
 	{
@@ -109,22 +59,11 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 			_player?.Stop();
 			_owner.PlaybackSession.PlaybackState = MediaPlaybackState.None;
 		}
-
-		//if (this.Log().IsEnabled(LogLevel.Debug))
-		//{
-		//	this.Log().Debug($"OnError: {what}");
-		//}
-
 		OnMediaFailed(message: $"MediaPlayer Error: {(string)what}");
 	}
 
 	public void OnCompletion(object? sender, object what)
 	{
-		//if (this.Log().IsEnabled(LogLevel.Debug))
-		//{
-		//	this.Log().Debug($"OnCompletion: {_owner.Position}");
-		//}
-
 		Events?.RaiseMediaEnded();
 		_owner.PlaybackSession.PlaybackState = MediaPlaybackState.None;
 
@@ -139,17 +78,14 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 	private void OnMediaFailed(global::System.Exception? ex = null, string? message = null)
 	{
 		Events?.RaiseMediaFailed(MediaPlayerError.Unknown, message ?? ex?.Message, ex);
-
-		this.Log().Debug($"MediaPlayerElementExtension.OnMediaFailed({message})");
+		if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+		{
+			this.Log().Debug($"MediaPlayerElementExtension.OnMediaFailed({message})");
+		}
 		_owner.PlaybackSession.PlaybackState = MediaPlaybackState.None;
 	}
 	public void OnVolumeChanged()
 	{
-		//if (this.Log().IsEnabled(LogLevel.Debug))
-		//{
-		//	this.Log().Debug($"OnVolumeChanged: {_owner.Volume}");
-		//}
-
 		var volume = (int)_owner.Volume;
 		_player?.SetVolume(volume);
 	}
@@ -158,13 +94,8 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 	{
 		try
 		{
-
 			var time = o is TimeSpan e ? e : TimeSpan.Zero;
 			_updatingPosition = true;
-			//if (this.Log().IsEnabled(LogLevel.Trace))
-			//{
-			//	this.Log().Trace($"OnTimeUpdate: {Position}");
-			//}
 			Events?.RaisePositionChanged();
 		}
 		finally
@@ -175,14 +106,13 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 
 	public void OnSeekComplete()
 	{
-		//if (this.Log().IsEnabled(LogLevel.Trace))
-		//{
-		//	this.Log().Trace($"OnSeekComplete: {Position}");
-		//}
-
 		Events?.RaiseSeekCompleted();
 	}
-
-
-
+	private void OnStatusChanged(MediaPlaybackSession? sender, object args)
+	{
+		//if ((MediaPlaybackState)args == MediaPlaybackState.Playing)
+		//{
+		//	_player?.Play();
+		//}
+	}
 }

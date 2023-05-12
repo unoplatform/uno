@@ -24,8 +24,7 @@ namespace Uno.UI.Media;
 public class MediaPlayerPresenterExtension : IMediaPlayerPresenterExtension
 {
 	private MediaPlayerPresenter? _owner;
-	private GTKMediaPlayer _player;
-
+	private GtkMediaPlayer _player;
 	public MediaPlayerPresenterExtension(object owner)
 	{
 		if (owner is not MediaPlayerPresenter presenter)
@@ -33,38 +32,21 @@ public class MediaPlayerPresenterExtension : IMediaPlayerPresenterExtension
 			throw new InvalidOperationException($"MediaPlayerPresenterExtension must be initialized with a MediaPlayer instance");
 		}
 		_owner = presenter;
-
-
-		_player = new GTKMediaPlayer();
-
-		var ContentView = new ContentControl();
-		ContentView.Content = _player;
-
-		ContentView.VerticalContentAlignment = Windows.UI.Xaml.VerticalAlignment.Stretch;
-		ContentView.HorizontalContentAlignment = Windows.UI.Xaml.HorizontalAlignment.Stretch;
-		ContentView.Background = new SolidColorBrush(Colors.Yellow);
-		_owner.Child = ContentView;
-
+		_player = new GtkMediaPlayer();
+		var contentView = new ContentControl();
+		contentView.Content = _player;
+		contentView.VerticalContentAlignment = Windows.UI.Xaml.VerticalAlignment.Stretch;
+		contentView.HorizontalContentAlignment = Windows.UI.Xaml.HorizontalAlignment.Stretch;
+		contentView.Background = new SolidColorBrush(Colors.Yellow);
+		_owner.Child = contentView;
 	}
-
 
 	public void MediaPlayerChanged()
 	{
-		//if (this.Log().IsEnabled(LogLevel.Debug))
-		//{
-		//	this.Log().LogDebug("Enter MediaPlayerPresenterExtension.MediaPlayerChanged().");
-		//}
 		if (_owner is not null
 			&& MediaPlayerExtension.GetByMediaPlayer(_owner.MediaPlayer) is { } extension)
 		{
-			extension.GTKMediaPlayer = _player;
-		}
-		else
-		{
-			//if (this.Log().IsEnabled(LogLevel.Debug))
-			//{
-			//	this.Log().LogDebug($"MediaPlayerPresenter.OnMediaPlayerChanged: Unable to find associated MediaPlayerExtension");
-			//}
+			extension.GtkMediaPlayer = _player;
 		}
 	}
 
@@ -72,10 +54,12 @@ public class MediaPlayerPresenterExtension : IMediaPlayerPresenterExtension
 	{
 		_player.ExitFullScreen();
 	}
+
 	public void RequestFullScreen()
 	{
 		_player.RequestFullScreen();
 	}
+
 	public void StretchChanged()
 	{
 		if (_owner is not null)

@@ -36,9 +36,7 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 	private Uri? _uri;
 	private List<Uri>? _playlistItems;
 	private readonly Windows.Media.Playback.MediaPlayer _owner;
-	private GTKMediaPlayer? _player;
-
-
+	private GtkMediaPlayer? _player;
 	private bool _updatingPosition;
 	private bool _isPlayRequested;
 	private bool _isPlayerPrepared;
@@ -78,7 +76,7 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 		}
 	}
 
-	internal GTKMediaPlayer? GTKMediaPlayer
+	internal GtkMediaPlayer? GtkMediaPlayer
 	{
 		get => _player;
 		set
@@ -90,15 +88,11 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 			}
 		}
 	}
+
 	public IMediaPlayerEventsExtension? Events { get; set; }
 
 	private void InitializePlayer()
 	{
-		//if (this.Log().IsEnabled(LogLevel.Debug))
-		//{
-		//	this.Log().Debug($"MediaPlayerExtension.InitializePlayer ({_player})");
-		//}
-
 		if (_player is null)
 		{
 			return;
@@ -118,6 +112,7 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 
 		ApplyVideoSource();
 	}
+
 	public TimeSpan Position
 	{
 		get => TimeSpan.FromSeconds(_player?.CurrentPosition ?? 0);
@@ -145,31 +140,14 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 
 	private void ApplyVideoSource()
 	{
-		//if (this.Log().IsEnabled(LogLevel.Debug))
-		//{
-		//	this.Log().Debug($"MediaPlayerElementExtension.SetVideoSource({_uri})");
-		//}
-
 		if (_player is not null && _uri is not null)
 		{
 			_player.Source = _uri.OriginalString;
 		}
-		//else
-		//{
-		//	if (this.Log().IsEnabled(LogLevel.Debug))
-		//	{
-		//		this.Log().Debug($"MediaPlayerElementExtension.SetVideoSource: failed (Player is not available)");
-		//	}
-		//}
 	}
 
 	public void Pause()
 	{
-		//if (this.Log().IsEnabled(LogLevel.Debug))
-		//{
-		//	this.Log().Debug($"MediaPlayerExtension.Pause()");
-		//}
-
 		if (_owner.PlaybackSession.PlaybackState == MediaPlaybackState.Playing)
 		{
 			_player?.Pause();
@@ -179,10 +157,6 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 
 	public void InitializeSource()
 	{
-		//if (this.Log().IsEnabled(LogLevel.Debug))
-		//{
-		//	this.Log().LogDebug("Enter MediaPlayerExtension.InitializeSource().");
-		//}
 		NaturalDuration = TimeSpan.Zero;
 		if (Position != TimeSpan.Zero)
 		{
@@ -224,43 +198,31 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 		}
 		catch (global::System.Exception)
 		{
-
 			//this.Log().Debug($"MediaPlayerElementExtension.InitializeSource({ex.Message})");
 			//OnMediaFailed(ex);
 		}
 	}
+
 	private void SetPlaylistItems(MediaPlaybackList playlist)
 	{
 		_playlistItems = playlist.Items
 			.Select(i => i.Source.Uri)
 			.ToList();
 	}
+
 	public void Stop()
 	{
-		//if (this.Log().IsEnabled(LogLevel.Debug))
-		//{
-		//	this.Log().Debug($"MediaPlayerExtension.Stop()");
-		//}
-
 		if (_owner.PlaybackSession.PlaybackState == MediaPlaybackState.Playing)
 		{
 			_player?.Stop();
 			_owner.PlaybackSession.PlaybackState = MediaPlaybackState.Paused;
 		}
 	}
+
 	public void Play()
 	{
-		//if (this.Log().IsEnabled(LogLevel.Debug))
-		//{
-		//	this.Log().Debug($"MediaPlayerExtension.Play()");
-		//}
-
 		if (_owner.Source == null || _player == null)
 		{
-			//if (this.Log().IsEnabled(LogLevel.Debug))
-			//{
-			//	this.Log().Debug($"MediaPlayerExtension.Play(): Failed {_owner.Source} / {_player}");
-			//}
 			return;
 		}
 
@@ -283,20 +245,9 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 				}
 				_owner.PlaybackSession.PlaybackState = MediaPlaybackState.Playing;
 			}
-			else
-			{
-				//if (this.Log().IsEnabled(LogLevel.Debug))
-				//{
-				//	this.Log().Debug($"MediaPlayerExtension.Play(): Player was not prepared");
-				//}
-			}
 		}
 		catch (global::System.Exception ex)
 		{
-			//if (this.Log().IsEnabled(LogLevel.Debug))
-			//{
-			//	this.Log().Debug($"MediaPlayerExtension.Play(): Failed {ex}");
-			//}
 			OnMediaFailed(ex);
 		}
 	}
@@ -305,6 +256,7 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 		=> InitializePlayer();
 
 	private double _playbackRate;
+
 	public double PlaybackRate
 	{
 		get => _playbackRate;
@@ -319,6 +271,7 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 	}
 
 	private bool _isLoopingEnabled;
+
 	public bool IsLoopingEnabled
 	{
 		get => _isLoopingEnabled;
@@ -331,7 +284,6 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 			}
 		}
 	}
-
 
 	public MediaPlayerState CurrentState => throw new NotImplementedException();
 
@@ -379,11 +331,10 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 
 	public void SetUriSource(Uri uri)
 	{
-		//if (this.Log().IsEnabled(LogLevel.Debug))
-		//{
-		//	this.Log().Debug($"MediaPlayerExtension.SetUriSource({uri})");
-		//}
-
+		if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+		{
+			this.Log().Debug($"MediaPlayerExtension.SetUriSource({uri})");
+		}
 		if (_player is not null)
 		{
 			_player.Source = uri.OriginalString;
@@ -391,11 +342,17 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 	}
 
 	public void SetFileSource(IStorageFile file) => throw new NotImplementedException();
+
 	public void SetStreamSource(IRandomAccessStream stream) => throw new NotImplementedException();
+
 	public void SetMediaSource(IMediaSource source) => throw new NotImplementedException();
+
 	public void StepForwardOneFrame() => throw new NotImplementedException();
+
 	public void StepBackwardOneFrame() => throw new NotImplementedException();
+
 	public void SetSurfaceSize(Size size) => throw new NotImplementedException();
+
 	public void ToggleMute()
 	{
 		if (_player is not null)
@@ -412,6 +369,7 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 
 		TryDisposePlayer();
 	}
+
 	private void TryDisposePlayer()
 	{
 		if (_player != null)

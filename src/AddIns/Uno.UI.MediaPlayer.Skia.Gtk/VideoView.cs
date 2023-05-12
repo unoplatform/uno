@@ -14,8 +14,6 @@ namespace LibVLCSharp.GTK
 	/// </summary>
 	public class VideoView : DrawingArea, IVideoView
 	{
-		//int _videoHeight;
-		//int _videoWidth;
 		struct Native
 		{
 			[DllImport("libgdk-3-0.dll", CallingConvention = CallingConvention.Cdecl)]
@@ -95,13 +93,13 @@ namespace LibVLCSharp.GTK
 			{
 				return;
 			}
-
 			if (PlatformHelper.IsWindows)
 			{
 				Console.WriteLine($"Player attached ({this.Window.Handle})");
 #pragma warning disable CS0618 // Type or member is obsolete
 				_mediaPlayer.Hwnd = Native.gdk_win32_window_get_handle(this.Window.Handle);
 #pragma warning restore CS0618 // Type or member is obsolete
+
 			}
 			else if (PlatformHelper.IsLinux)
 			{

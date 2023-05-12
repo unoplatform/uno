@@ -7,7 +7,7 @@
 		<TargetFrameworks>$(TargetFrameworks);net7.0</TargetFrameworks>
 	</PropertyGroup>
 
-	<Import Project="../../targetframework-override.props"/>
+	<Import Project="../../targetframework-override.props" />
 
 	<PropertyGroup>
 		<Deterministic>true</Deterministic>
@@ -27,17 +27,15 @@
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Identity.Client" Version="4.47.0" />
+		<PackageReference Include="Uno.Core.Extensions.Logging" Version="4.0.1" />
+		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" Version="4.0.1" />
+		<PackageReference Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Version="4.9.0-dev.1069" />
 
-		<PackageReference Include="Uno.UI.Skia.Gtk" Version="4.9.0-dev.834" />
-		<PackageReference Include="Uno.UI" Version="4.9.0-dev.834" />
 		<PackageReference Include="Uno.Resizetizer" Version="1.1.0-dev.13" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.1.0" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="7.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="8.0.0-preview.3.23174.8" />
 		<PackageReference Include="SkiaSharp.Views.Uno" Version="2.88.3" />
 		<PackageReference Include="SkiaSharp.Skottie" Version="2.88.3" />
-		<PackageReference Include="Uno.UI.RemoteControl" Version="4.9.0-dev.834" Condition="'$(Configuration)'=='Debug'" />
-		<PackageReference Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Version="4.9.0-dev.834" />
-
 		<PackageReference Include="VideoLAN.LibVLC.Windows" Version="3.0.18" />
 		<PackageReference Include="LibVLCSharp" Version="3.6.8" />
 		<PackageReference Include="GtkSharp" Version="3.24.24.38" />
@@ -45,11 +43,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\Uno.UI\Uno.UI.Skia.csproj">
-			<TreatAsPackageReference>false</TreatAsPackageReference>
-			<PrivateAssets>all</PrivateAssets>
-		</ProjectReference>
-
+		<ProjectReference Include="..\..\Uno.UI.Runtime.Skia.Gtk\Uno.UI.Runtime.Skia.Gtk.csproj" />
+		<ProjectReference Include="..\..\Uno.UI\Uno.UI.Skia.csproj" />
 		<EmbeddedResource Include="LinkerDefinition.xml">
 			<LogicalName>$(AssemblyName).xml</LogicalName>
 		</EmbeddedResource>
