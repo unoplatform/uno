@@ -8,7 +8,7 @@ using System.Linq;
 #if __IOS__
 using UIKit;
 using _View = UIKit.UIView;
-#else
+#elif __MACOS__
 using AppKit;
 using _View = AppKit.NSView;
 #endif
@@ -83,9 +83,9 @@ public class Given_WebView
 #endif
 
 #if __ANDROID__
-		var nativeWebView = ((_View)webView)
-			.FindSubviewsOfType<Android.Webkit.WebView>()
-			.FirstOrDefault();
+		var nativeWebView = (webView as Android.Views.ViewGroup)?
+			.GetChildren(v => v is Android.Webkit.WebView)
+			.FirstOrDefault() as Android.Webkit.WebView;
 		Assert.IsTrue(nativeWebView.HorizontalScrollBarEnabled);
 		Assert.IsTrue(nativeWebView.VerticalScrollBarEnabled);
 #endif
