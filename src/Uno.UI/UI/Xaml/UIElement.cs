@@ -490,9 +490,6 @@ namespace Windows.UI.Xaml
 
 		private static Matrix3x2 GetTransform(UIElement from, UIElement to, TransformToVisualContext context)
 		{
-			var logInfoString = from.Log().IsEnabled(LogLevel.Debug) ? new StringBuilder() : null;
-			logInfoString?.Append($"{nameof(GetTransform)}(from: {from}, to: {to?.ToString() ?? "<null>"}) Offsets: [");
-
 			if (from == to)
 			{
 				return Matrix3x2.Identity;
@@ -514,7 +511,7 @@ namespace Windows.UI.Xaml
 				elt.ApplyRenderTransform(ref matrix);
 				elt.ApplyLayoutTransform(ref matrix);
 				elt.ApplyElementCustomTransform(ref matrix);
-			} while (elt.TryGetParentUIElementForTransformToVisual(out elt, ref matrix) && elt != to); // If possible we stop as soon as we reach 'to'
+			} while (elt.TryGetParentUIElementForTransformToVisual(out elt, ref matrix, ref context) && elt != to); // If possible we stop as soon as we reach 'to'
 
 			if (to is not null && elt != to)
 			{
@@ -535,11 +532,11 @@ namespace Windows.UI.Xaml
 				}
 			}
 
-			if (logInfoString != null)
+			if (from.Log().IsEnabled(LogLevel.Trace))
 			{
-				logInfoString.Append($"], matrix: {matrix}");
-				from.Log().LogDebug(logInfoString.ToString());
+				from.Log().Trace($"{nameof(GetTransform)}(from: {from.GetDebugName()}, to: {to.GetDebugName()}) = {matrix}");
 			}
+
 			return matrix;
 		}
 
@@ -604,14 +601,12 @@ namespace Windows.UI.Xaml
 #endif
 		}
 
-
-
 #if !__IOS__ && !__ANDROID__ && !__MACOS__ // This is the default implementation, but it can be customized per platform
 		/// <summary>
 		/// Note: Offsets are only an approximation that does not take into consideration possible transformations
 		///	applied by a 'UIView' between this element and its parent UIElement.
 		/// </summary>
-		private bool TryGetParentUIElementForTransformToVisual(out UIElement parentElement, ref Matrix3x2 _)
+		private bool TryGetParentUIElementForTransformToVisual(out UIElement parentElement, ref Matrix3x2 _, ref TransformToVisualContext __)
 		{
 			var parent = VisualTreeHelper.GetParent(this);
 			switch (parent)
