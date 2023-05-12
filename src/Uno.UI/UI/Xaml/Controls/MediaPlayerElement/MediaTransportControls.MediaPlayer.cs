@@ -238,14 +238,20 @@ namespace Windows.UI.Xaml.Controls
 
 		private void ForwardButton(object sender, RoutedEventArgs e)
 		{
+#if __SKIA__ || __WASM__
+			_mediaPlayer.PlaybackRate = (_mediaPlayer.PlaybackRate < 0 ? 0 : _mediaPlayer.PlaybackRate) + 0.25;
+			_mediaPlayer.PlaybackSession.UpdateTimePositionRate = 0;
+#else
 			_mediaPlayer.PlaybackSession.UpdateTimePositionRate = _mediaPlayer.PlaybackSession.UpdateTimePositionRate < 1 ? 1 : /*To stop the Rewind*/
-														_mediaPlayer.PlaybackSession.UpdateTimePositionRate * 2; /*To start the Forward*/
+											_mediaPlayer.PlaybackSession.UpdateTimePositionRate * 2; /*To start the Forward*/
+#endif
 		}
 
 		private void RewindButton(object sender, RoutedEventArgs e)
 		{
 			_mediaPlayer.PlaybackSession.UpdateTimePositionRate = _mediaPlayer.PlaybackSession.UpdateTimePositionRate > 1 ? 1 : /*To stop the Forward*/
 														_mediaPlayer.PlaybackSession.UpdateTimePositionRate == 1 ? -1 : /*To start the Rewind*/
+														_mediaPlayer.PlaybackSession.UpdateTimePositionRate == 0 ? -1 : /*To start the Rewind*/
 														_mediaPlayer.PlaybackSession.UpdateTimePositionRate * 2;
 		}
 
