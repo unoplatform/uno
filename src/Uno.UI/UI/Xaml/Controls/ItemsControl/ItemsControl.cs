@@ -1171,8 +1171,6 @@ namespace Windows.UI.Xaml.Controls
 			}
 			else if (element is ContentControl contentControl)
 			{
-				contentControl.ClearValue(DataContextProperty);
-
 				if (!isOwnContainer)
 				{
 					static void ClearPropertyWhenNoExpression(ContentControl target, DependencyProperty property)
@@ -1201,6 +1199,10 @@ namespace Windows.UI.Xaml.Controls
 						ClearPropertyWhenNoExpression(contentControl, ContentControl.ContentTemplateSelectorProperty);
 					}
 				}
+
+				// We are clearing the DataContext last. Because if there is a binding set on any of the above properties, Content(Template(Selector)?)?,
+				// clearing the DC can cause the data-bound property to be unnecessarily re-evaluated with an inherited DC from the visual parent.
+				contentControl.ClearValue(DataContextProperty);
 			}
 		}
 

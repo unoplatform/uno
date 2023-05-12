@@ -40,6 +40,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	{
 		private ResourceDictionary _testsResources;
 
+		[TestInitialize]
+		public void Init()
+		{
+			_testsResources = new TestsResources();
+		}
+
 		private Style BasicContainerStyle => _testsResources["BasicListViewContainerStyle"] as Style;
 
 		private Style ContainerMarginStyle => _testsResources["ListViewContainerMarginStyle"] as Style;
@@ -88,12 +94,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 	public partial class Given_ListViewBase // test cases
 	{
-		[TestInitialize]
-		public void Init()
-		{
-			_testsResources = new TestsResources();
-		}
-
 		[TestMethod]
 		[RunsOnUIThread]
 		public void ValidSelectionChange()
@@ -2803,6 +2803,41 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				: false;
 #endif
 		}
+
+		[TestMethod]
+		public async Task When_ItemsSource_INCC_Reset()
+		{
+			// note: In order to repro #12059 (extra SelectTemplate call) & SelectTemplateCore called with incorrect item (the `source` is passed as item),
+			// we need a binding that inherits source from DataContext, and not: new Binding { Source = source }, or direct assignment.
+			Action<object> onSelectTemplateHook = null;
+
+			var source = new ObservableCollection<object>(new[] { new object() });
+			var sut = new ListView
+			{
+				ItemTemplateSelector = new LambdaDataTemplateSelector(x =>
+				{
+					onSelectTemplateHook?.Invoke(x);
+					return TextBlockItemTemplate;
+				}),
+			};
+			sut.DataContext = source;
+			sut.SetBinding(ItemsControl.ItemsSourceProperty, new Binding());
+
+			WindowHelper.WindowContent = sut;
+			await WindowHelper.WaitForLoaded(sut);
+			await WindowHelper.WaitForIdle();
+
+			// Clearing the source SHOULD NOT cause the ItemTemplateSelector to be re-evaluated,
+			// especially so when we are leaving the source empty.
+			var wasSelectTemplateCalled = false;
+			onSelectTemplateHook = x => wasSelectTemplateCalled = true;
+			source.Clear();
+
+			if (wasSelectTemplateCalled)
+			{
+				Assert.Fail("DataTemplateSelector.SelectTemplateCore is invoked during an INCC reset.");
+			}
+		}
 	}
 
 	public partial class Given_ListViewBase // data class, data-context, view-model, template-selector
@@ -3034,6 +3069,19 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				get => _display;
 				set => SetAndRaiseIfChanged(ref _display, value);
 			}
+		}
+
+		public class LambdaDataTemplateSelector : DataTemplateSelector
+		{
+			private readonly Func<object, DataTemplate> _impl;
+
+			public LambdaDataTemplateSelector(Func<object, DataTemplate> impl)
+			{
+				this._impl = impl;
+			}
+
+			protected override DataTemplate SelectTemplateCore(object item, DependencyObject container) => SelectTemplateCore(item);
+			protected override DataTemplate SelectTemplateCore(object item) => _impl(item);
 		}
 	}
 
