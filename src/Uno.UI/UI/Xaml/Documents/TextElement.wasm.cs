@@ -4,6 +4,7 @@
 	{
 		protected TextElement(string htmlTag = "span") : base(htmlTag)
 		{
+			SetDefaultForeground(ForegroundProperty);
 		}
 
 		partial void OnFontFamilyChangedPartial()

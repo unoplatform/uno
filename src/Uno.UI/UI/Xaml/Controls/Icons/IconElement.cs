@@ -2,7 +2,9 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
+using Uno.UI.Xaml.Media;
 using Windows.Foundation;
+using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml.Controls;
@@ -19,6 +21,7 @@ public partial class IconElement : FrameworkElement
 
 	public IconElement()
 	{
+		SetDefaultForeground(ForegroundProperty);
 	}
 
 	/// <summary>
@@ -85,6 +88,13 @@ public partial class IconElement : FrameworkElement
 	}
 
 	private protected virtual void OnForegroundChanged(DependencyPropertyChangedEventArgs e) { }
+
+	internal override void UpdateThemeBindings(ResourceUpdateReason updateReason)
+	{
+		base.UpdateThemeBindings(updateReason);
+
+		SetDefaultForeground(ForegroundProperty);
+	}
 
 	[MemberNotNull(nameof(_rootGrid))]
 	private protected void InitializeRootGrid()

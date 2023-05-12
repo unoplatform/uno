@@ -297,6 +297,16 @@ namespace SamplesApp
 			}
 		}
 
+#if !HAS_UNO_WINUI
+		protected override void OnWindowCreated(global::Windows.UI.Xaml.WindowCreatedEventArgs args)
+		{
+			if (Current is null)
+			{
+				throw new InvalidOperationException("The Window should be created later in the application lifecycle.");
+			}
+		}
+#endif
+
 		private void InitializeFrame(string arguments = null)
 		{
 			Frame rootFrame = Windows.UI.Xaml.Window.Current.Content as Frame;
@@ -443,6 +453,8 @@ namespace SamplesApp
 				// Runtime Tests control logging
 				builder.AddFilter("Uno.UI.Samples.Tests", LogLevel.Information);
 
+				builder.AddFilter("Uno.UI.Media", LogLevel.Information);
+
 				builder.AddFilter("Uno", LogLevel.Warning);
 				builder.AddFilter("Windows", LogLevel.Warning);
 				builder.AddFilter("Microsoft", LogLevel.Warning);
@@ -519,11 +531,6 @@ namespace SamplesApp
 #endif
 #if __SKIA__
 			Uno.UI.FeatureConfiguration.ToolTip.UseToolTips = true;
-#endif
-
-#if HAS_UNO
-			// Allow template pool to work under higher memory load for CI.
-			FrameworkTemplatePool.HighMemoryThreshold = 0.9f;
 #endif
 		}
 

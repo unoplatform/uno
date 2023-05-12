@@ -63,7 +63,7 @@ namespace Uno.Samples.UITest.Generator
 				}
 			}
 
-			context.AddSource("AllSamplesList", builder.ToString());
+			context.AddSource("AllSamplesList.g.cs", builder.ToString());
 		}
 	}
 }

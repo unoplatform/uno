@@ -44,6 +44,8 @@ namespace Windows.UI.Xaml.Controls
 		public TextBlock()
 		{
 			IFrameworkElementHelper.Initialize(this);
+			SetDefaultForeground(ForegroundProperty);
+
 			InitializeProperties();
 
 			InitializePartial();

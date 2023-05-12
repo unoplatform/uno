@@ -429,6 +429,8 @@
 		<Types>
 			<!-- BEGIN WebView -->
 			<Member fullName="Windows.UI.Xaml.Controls.INativeWebView" reason="Should not be public" />
+			<Member fullName="Uno.UI.Runtime.Skia.GtkApplicationExtension" reason="Not needed anymore" />
+			<Member fullName="Uno.UI.Runtime.Skia.Wpf.WpfApplicationExtension" reason="Not needed anymore" />
 			<!-- END WebView -->
 
 			<Member fullName="Microsoft.UI.Windowing.AppWindowConfiguration" reason="Not present in WinAppSDK 1.2" />
@@ -1036,7 +1038,10 @@
 			<Member fullName="System.Void Uno.Xaml.XamlXmlReader..ctor(System.Xml.XmlReader xmlReader, Uno.Xaml.XamlSchemaContext schemaContext, Uno.Xaml.XamlXmlReaderSettings settings)" reason="Adding parameter. These should not be used by user code" />
 			<!-- END XamlFileParser performance updates -->
 
-			  <Member fullName="System.Void Uno.Foundation.Interop.JSObject.Dispatch(System.String handlePtr, System.String method, System.String parameters)" reason="First parameter changed from string to IntPtr for performance" />
+			<Member fullName="System.Void Uno.Foundation.Interop.JSObject.Dispatch(System.String handlePtr, System.String method, System.String parameters)" reason="First parameter changed from string to IntPtr for performance" />
+
+			<Member fullName="System.Void Windows.UI.Xaml.Application.OnSystemThemeChanged()" reason="Does not exist in Windows" />
+			<Member fullName="System.Void Windows.UI.Xaml.Application.ThemeChanged(Foundation.NSObject change)" reason="Does not exist in Windows" />
 
 			<Member fullName="System.Void Windows.UI.Xaml.Controls.ListViewBaseScrollContentPresenter.SetContentOffset(CoreGraphics.CGPoint contentOffset, System.Boolean animated)" reason="Api alignments" />
 			<Member fullName="System.Void Windows.UI.Xaml.Controls.ListViewBaseScrollContentPresenter.SetZoomScale(System.Runtime.InteropServices.NFloat scale, System.Boolean animated)" reason="Api alignments" />

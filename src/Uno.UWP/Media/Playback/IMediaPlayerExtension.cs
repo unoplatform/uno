@@ -17,7 +17,7 @@ namespace Uno.Media.Playback
 		/// <summary>
 		/// Provides access to the ability to raise MediaPlayer events
 		/// </summary>
-		IMediaPlayerEventsExtension Events { get; set; }
+		IMediaPlayerEventsExtension? Events { get; set; }
 
 		/// <summary>
 		/// Gets or sets the playback rate
@@ -158,5 +158,10 @@ namespace Uno.Media.Playback
 		/// Initializes the extension
 		/// </summary>
 		void Initialize();
+
+		/// <summary>
+		/// Notifies the extension that an option has changed
+		/// </summary>
+		void OnOptionChanged(string name, object value);
 	}
 }

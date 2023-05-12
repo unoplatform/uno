@@ -33,7 +33,7 @@ namespace Uno.Media.Playback
 		/// <summary>
 		/// Raises the <see cref="MediaPlayer.MediaFailed"/> event
 		/// </summary>
-		void RaiseMediaFailed(MediaPlayerError error, string ErrorMessage, Exception ExtendedErrorCode);
+		void RaiseMediaFailed(MediaPlayerError error, string? ErrorMessage, Exception? ExtendedErrorCode);
 
 		/// <summary>
 		/// Raises the <see cref="MediaPlayer.MediaOpened"/> event
@@ -84,5 +84,9 @@ namespace Uno.Media.Playback
 		/// Raises the <see cref="MediaPlayer.SubtitleFrameChanged"/> event
 		/// </summary>
 		void RaiseSubtitleFrameChanged();
+
+		void RaisePositionChanged();
+
+		void NaturalDurationChanged();
 	}
 }

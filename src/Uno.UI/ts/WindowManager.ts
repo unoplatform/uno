@@ -19,6 +19,8 @@ namespace Uno.UI {
 		private static readonly unoRootClassName = "uno-root-element";
 		private static readonly unoUnarrangedClassName = "uno-unarranged";
 		private static readonly unoCollapsedClassName = "uno-visibility-collapsed";
+		private static readonly unoPersistentLoaderClassName = "uno-persistent-loader";
+		private static readonly unoKeepLoaderClassName = "uno-keep-loader";
 
 		/**
 			* Initialize the WindowManager
@@ -57,6 +59,16 @@ namespace Uno.UI {
 		 * */
 		private static buildSplashScreen(): Promise<boolean> {
 			return new Promise<boolean>(resolve => {
+
+				let bootstrapperLoaders = document.getElementsByClassName(WindowManager.unoPersistentLoaderClassName);
+				if (bootstrapperLoaders.length > 0) {
+					let bootstrapperLoader = bootstrapperLoaders[0] as HTMLElement;
+					bootstrapperLoader.classList.add(WindowManager.unoKeepLoaderClassName);
+
+					// Skip creating local splash screen.
+					return true;
+				}
+
 				const img = new Image();
 				let loaded = false;
 
@@ -144,21 +156,21 @@ namespace Uno.UI {
 
 			if (UnoAppManifest && UnoAppManifest.splashScreenImage) {
 
-				const loading = document.getElementById("loading");
-
-				if (loading) {
-					loading.remove();
-				}
-
 				const unoBody = document.getElementById("uno-body");
 
 				if (unoBody) {
 					const unoLoading = document.createElement("div");
 					unoLoading.id = "uno-loading";
 
-					if (UnoAppManifest.splashScreenColor) {
-						const body = document.getElementsByTagName("body")[0];
-						body.style.backgroundColor = UnoAppManifest.splashScreenColor;
+					if (UnoAppManifest.lightThemeBackgroundColor) {
+						unoLoading.style.setProperty("--light-theme-bg-color", UnoAppManifest.lightThemeBackgroundColor);
+					}
+					if (UnoAppManifest.darkThemeBackgroundColor) {
+						unoLoading.style.setProperty("--dark-theme-bg-color", UnoAppManifest.darkThemeBackgroundColor);
+					}
+
+					if (UnoAppManifest.splashScreenColor && UnoAppManifest.splashScreenColor != 'transparent') {
+						unoLoading.style.backgroundColor = UnoAppManifest.splashScreenColor;
 					}
 
 					splashImage.id = "uno-loading-splash";
@@ -167,6 +179,12 @@ namespace Uno.UI {
 					unoLoading.appendChild(splashImage);
 
 					unoBody.appendChild(unoLoading);
+				}
+
+				const loading = document.getElementById("loading");
+
+				if (loading) {
+					loading.remove();
 				}
 			}
 		}
@@ -1608,19 +1626,19 @@ namespace Uno.UI {
 		}
 
 		private removeLoading() {
-
 			if (!this.loadingElementId) {
-				return;
+				// No custom loading element, remove the bootstrapper's loader.
+				let bootstrapperLoaders = document.getElementsByClassName(WindowManager.unoPersistentLoaderClassName);
+				if (bootstrapperLoaders.length > 0) {
+					let bootstrapperLoader = bootstrapperLoaders[0] as HTMLElement;
+					bootstrapperLoader.parentElement.removeChild(bootstrapperLoader);
+				}
+			} else {
+				const element = document.getElementById(this.loadingElementId);
+				if (element) {
+					element.parentElement.removeChild(element);
+				}
 			}
-
-			const element = document.getElementById(this.loadingElementId);
-			if (element) {
-				element.parentElement.removeChild(element);
-			}
-
-			// UWP Window's default background is white.
-			const body = document.getElementsByTagName("body")[0];
-			body.style.backgroundColor = "#fff";
 		}
 
 		private resize() {

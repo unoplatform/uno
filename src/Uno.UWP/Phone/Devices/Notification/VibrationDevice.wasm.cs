@@ -3,6 +3,10 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
+#if NET7_0_OR_GREATER
+using NativeMethods = __Windows.Phone.Devices.Notification.VibrationDevice.NativeMethods;
+#endif
+
 namespace Windows.Phone.Devices.Notification
 {
 	public partial class VibrationDevice

@@ -211,9 +211,9 @@ You can find [advanced Code debugging topic here](xref:uno.vscode.mobile.advance
 An existing application needs additional changes to be debugged properly.
 
 1. At the root of the workspace, create a folder named `.vscode`
-2. Inside this folder, create a file named `launch.json` and copy the [contents of this file](https://github.com/unoplatform/uno/blob/master/src/SolutionTemplate/Uno.ProjectTemplates.Dotnet/content/unoapp/.vscode/launch.json).
+2. Inside this folder, create a file named `launch.json` and copy the [contents of this file](https://github.com/unoplatform/uno.templates/blob/main/src/Uno.Templates/content/unoapp/.vscode/launch.json).
 3. Replace all instances of `UnoQuickStart` with your application's name in `launch.json`.
-4. Inside this folder, create a file named `tasks.json` and copy the [contents of this file](https://github.com/unoplatform/uno/blob/master/src/SolutionTemplate/Uno.ProjectTemplates.Dotnet/content/unoapp/.vscode/tasks.json).
+4. Inside this folder, create a file named `tasks.json` and copy the [contents of this file](https://github.com/unoplatform/uno.templates/blob/main/src/Uno.Templates/content/unoapp/.vscode/tasks.json).
 
 ### Known limitations for VS Code support
 - C# Debugging is not supported when running in a remote Linux Container, Code Spaces or GitPod.

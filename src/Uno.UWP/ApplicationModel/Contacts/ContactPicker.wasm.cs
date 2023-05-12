@@ -11,6 +11,10 @@ using Uno.ApplicationModel.Contacts.Internal;
 using Uno.Foundation;
 using Uno.Helpers.Serialization;
 
+#if NET7_0_OR_GREATER
+using NativeMethods = __Windows.ApplicationModel.Contacts.ContactPicker.NativeMethods;
+#endif
+
 namespace Windows.ApplicationModel.Contacts
 {
 	public partial class ContactPicker

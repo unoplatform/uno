@@ -10,9 +10,9 @@ namespace Uno.UI.RuntimeTests.MUX.Microsoft_UI_Xaml_Controls.ProgressRingTests;
 public class ProgressRingTests
 {
 	[TestMethod]
+	[RunsOnUIThread]
 	[DataRow(true)]
 	[DataRow(false)]
-	[RunsOnUIThread]
 #if !(__WASM__ || (__ANDROID__ && !NET6_0_OR_GREATER) || (__IOS__ && !NET6_0_OR_GREATER) || __MACOS__ || HAS_SKOTTIE)
 	[Ignore("Skottie is not supported on net6+ UWP targets")]
 #endif

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using Uno.UI.RuntimeTests.Extensions;
 using Windows.ApplicationModel.Appointments;
 using Windows.Foundation;
 using Windows.UI;
@@ -62,6 +63,35 @@ public class Given_InputManager
 
 		Assert.AreEqual(Visibility.Collapsed, col2.Visibility, "The visibility should have been changed when the pointer left the col1.");
 		Assert.IsFalse(failed, "The pointer should not have been dispatched to the col2 as it has been set to visibility collapsed.");
+	}
+
+	[TestMethod]
+#if !__SKIA__
+	[Ignore("Pointer injection supported only on skia for now.")]
+#endif
+	public async Task When_Hover_No_Delay_For_VisualState_Update()
+	{
+		if (Private.Infrastructure.TestServices.WindowHelper.IsXamlIsland)
+		{
+			Assert.Inconclusive("Pointer injection is not supported yet on XamlIsland");
+			return;
+		}
+
+		var comboxBoxItem = new ComboBoxItem()
+		{
+			Content = "ComboBoxItem Content",
+		};
+
+		var position = await UITestHelper.Load(comboxBoxItem);
+
+		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+		var mouse = injector.GetMouse();
+
+		var oldState = VisualStateManager.GetCurrentState(comboxBoxItem, "CommonStates").Name;
+		mouse.MoveTo(position.GetCenter().X, position.GetCenter().Y);
+		var newState = VisualStateManager.GetCurrentState(comboxBoxItem, "CommonStates").Name;
+		Assert.AreEqual("Normal", oldState);
+		Assert.AreEqual("PointerOver", newState);
 	}
 }
 #endif

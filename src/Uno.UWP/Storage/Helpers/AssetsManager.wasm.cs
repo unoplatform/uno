@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -19,6 +19,10 @@ using Windows.Security.Cryptography.Core;
 using Windows.Storage.FileProperties;
 using Windows.Storage.Streams;
 using Windows.UI.WebUI;
+
+#if NET7_0_OR_GREATER
+using NativeMethods = __Windows.Storage.Helpers.AssetsManager.NativeMethods;
+#endif
 
 namespace Windows.Storage.Helpers
 {

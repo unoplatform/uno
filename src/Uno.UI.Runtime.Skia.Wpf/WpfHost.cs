@@ -24,7 +24,7 @@ using Uno.UI.Core.Preview;
 using Uno.UI.Runtime.Skia.Wpf;
 using Uno.UI.Runtime.Skia.Wpf.Extensions.UI.Xaml.Input;
 using Uno.UI.Runtime.Skia.Wpf.Rendering;
-using Uno.UI.Runtime.Skia.Wpf.WPF.Extensions.Helper.Theming;
+using Uno.UI.Runtime.Skia.Wpf.WPF.Extensions.Helpers.Theming;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Controls.Extensions;
 using Uno.UI.Xaml.Core;
@@ -84,7 +84,6 @@ namespace Uno.UI.Skia.Platform
 
 			ApiExtensibility.Register(typeof(Uno.ApplicationModel.Core.ICoreApplicationExtension), o => new CoreApplicationExtension(o));
 			ApiExtensibility.Register(typeof(Windows.UI.Core.ICoreWindowExtension), o => new WpfCoreWindowExtension(o));
-			ApiExtensibility.Register<Windows.UI.Xaml.Application>(typeof(IApplicationExtension), o => new WpfApplicationExtension(o));
 			ApiExtensibility.Register(typeof(Windows.UI.ViewManagement.IApplicationViewExtension), o => new WpfApplicationViewExtension(o));
 			ApiExtensibility.Register(typeof(ISystemThemeHelperExtension), o => new WpfSystemThemeHelperExtension(o));
 			ApiExtensibility.Register(typeof(IDisplayInformationExtension), o => new WpfDisplayInformationExtension(o));

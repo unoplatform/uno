@@ -13,7 +13,6 @@
 		</type>
 		<type fullname="Windows.UI.Xaml.Application">
 			<method name="DispatchSuspending" />
-			<method name="DispatchSystemThemeChange" />
 			<method name="DispatchVisibilityChange" />
 		</type>
 
@@ -78,6 +77,10 @@
 		</type>
 		<type fullname="Uno.Storage.NativeStorageItem">
 			<method name="GenerateGuids" />
+		</type>
+
+		<type fullname="Uno.Helpers.Theming.SystemThemeHelper">
+			<method name="DispatchSystemThemeChange" />
 		</type>
 
 		<type fullname="Uno.Storage.Internal.NativeStorageItemInfo" />

@@ -1,4 +1,7 @@
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Security.AccessControl;
 using Windows.Foundation;
 
 namespace Windows.Media.Playback
@@ -81,8 +84,14 @@ namespace Windows.Media.Playback
 		public MediaPlayer()
 		{
 			PlaybackSession = new MediaPlaybackSession(this);
-
 			Initialize();
 		}
+
+		internal void SetOption(string name, object value)
+		{
+			OnOptionChanged(name, value);
+		}
+
+		partial void OnOptionChanged(string name, object value);
 	}
 }

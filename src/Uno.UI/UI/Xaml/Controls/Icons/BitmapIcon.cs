@@ -24,7 +24,7 @@ public partial class BitmapIcon : IconElement
 			dependencyProperty: Image.SourceProperty,
 			binding: new Binding { Source = this, Path = nameof(UriSource) }
 		);
-		this.SetValue(ForegroundProperty, SolidColorBrushHelper.Black, DependencyPropertyValuePrecedences.Inheritance);
+
 		UpdateImageMonochromeColor();
 	}
 
@@ -67,13 +67,12 @@ public partial class BitmapIcon : IconElement
 
 	private void OnShowAsMonochromeChanged(bool value) => UpdateImageMonochromeColor();
 
-	private protected override void OnForegroundChanged(DependencyPropertyChangedEventArgs e) =>
-		UpdateImageMonochromeColor();
+	private protected override void OnForegroundChanged(DependencyPropertyChangedEventArgs e) => UpdateImageMonochromeColor();
 
 	private void UpdateImageMonochromeColor()
 	{
-#if !NET461
-		if (_image != null)
+#if !IS_UNIT_TESTS
+		if (_image is not null)
 		{
 			_image.MonochromeColor = ShowAsMonochrome ? (Foreground as SolidColorBrush)?.Color : null;
 		}

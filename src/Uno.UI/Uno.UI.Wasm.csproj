@@ -108,27 +108,21 @@
 		<MakeDir Directories="$(OutputPath)/javascript" />
 	</Target>
 
-	<Target Name="_UnoSetupTSCompilationUpdateEmbeddedResources"
-			Condition="'$(BuildingProject)' != 'false' and '$(DesignTimeBuild)' != 'true'"
-			BeforeTargets="_UnoEmbeddedResourcesInjection">
+	<Target Name="_UnoSetupTSCompilationUpdateEmbeddedResources" Condition="'$(BuildingProject)' != 'false' and '$(DesignTimeBuild)' != 'true'" BeforeTargets="_UnoEmbeddedResourcesInjection">
 		<PropertyGroup>
 			<_unoUIDTsFilePath>$(OutputPath)/javascript/Uno.UI.d.ts</_unoUIDTsFilePath>
 		</PropertyGroup>
 		<ItemGroup>
 			<_generatedJSFiles Include="$(OutputPath)/javascript/*.js" />
-			<EmbeddedResource Include="@(_generatedJSFiles)"
-							LogicalName="$(RootNamespace).WasmScripts.%(FileName)%(Extension)" />
+			<EmbeddedResource Include="@(_generatedJSFiles)" LogicalName="$(RootNamespace).WasmScripts.%(FileName)%(Extension)" />
 		</ItemGroup>
-		<Copy SourceFiles="$(OutputPath)/javascript/Uno.UI.d.ts"
-							DestinationFolder="$(OutputPath)"
-							Condition="exists('$(_unoUIDTsFilePath)')"/>
+		<Copy SourceFiles="$(OutputPath)/javascript/Uno.UI.d.ts" DestinationFolder="$(OutputPath)" Condition="exists('$(_unoUIDTsFilePath)')" />
 	</Target>
 
-	<Target Name="_AdjustTypeScriptOutputForPublishing"
-			AfterTargets="GetTypeScriptOutputForPublishing">
+	<Target Name="_AdjustTypeScriptOutputForPublishing" AfterTargets="GetTypeScriptOutputForPublishing">
 		<ItemGroup>
-			<FilesForPackagingFromProject Remove="@(GeneratedJavascriptWithTargetPath->'%(Identity)')"/>
-			<ContentWithTargetPath Remove="@(GeneratedJavascriptWithTargetPath->'%(Identity)')"/>
+			<FilesForPackagingFromProject Remove="@(GeneratedJavascriptWithTargetPath->'%(Identity)')" />
+			<ContentWithTargetPath Remove="@(GeneratedJavascriptWithTargetPath->'%(Identity)')" />
 			<Content Remove="@(GeneratedJavascript->'%(Identity)')" />
 		</ItemGroup>
 	</Target>

@@ -1,5 +1,9 @@
 ﻿using static Uno.Foundation.WebAssemblyRuntime;
 
+#if NET7_0_OR_GREATER
+using NativeMethods = __Windows.Security.ExchangeActiveSyncProvisioning.EasClientDeviceInformation.NativeMethods;
+#endif
+
 namespace Windows.Security.ExchangeActiveSyncProvisioning
 {
 	public partial class EasClientDeviceInformation
