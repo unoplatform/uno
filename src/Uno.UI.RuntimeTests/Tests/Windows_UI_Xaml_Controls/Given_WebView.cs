@@ -2,6 +2,16 @@
 using System.Threading.Tasks;
 using Private.Infrastructure;
 using Windows.UI.Xaml.Controls;
+using Uno.UI.Xaml.Controls;
+using System.Linq;
+
+#if __IOS__
+using UIKit;
+using _View = UIKit.UIView;
+#else
+using AppKit;
+using _View = AppKit.NSView;
+#endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 
@@ -47,6 +57,52 @@ public class Given_WebView
 		webView.NavigateToString("<html></html>");
 		Assert.IsNull(webView.Source);
 	}
+
+#if __ANDROID__ || __IOS__ || __MACOS__
+	[TestMethod]
+	public async Task When_IsScrollable()
+	{
+		var border = new Border();
+		var webView = new WebView();
+		webView.Source = new Uri("https://bing.com");
+		webView.Width = 200;
+		webView.Height = 200;
+		border.Child = webView;
+		TestServices.WindowHelper.WindowContent = border;
+		await TestServices.WindowHelper.WaitForLoaded(border);
+
+		Assert.IsTrue(webView.IsScrollEnabled);
+
+#if __IOS__
+		var nativeWebView = ((_View)webView)
+			.FindSubviewsOfType<INativeWebView>()
+			.FirstOrDefault();
+		var scrollView = ((_View)nativeWebView)?.FindSubviewsOfType<UIScrollView>().FirstOrDefault();
+		Assert.IsTrue(scrollView.ScrollEnabled);
+		Assert.IsTrue(scrollView.Bounces);
+#endif
+
+#if __ANDROID__
+		var nativeWebView = ((_View)webView)
+			.FindSubviewsOfType<Android.Webkit.WebView>()
+			.FirstOrDefault();
+		Assert.IsTrue(nativeWebView.HorizontalScrollBarEnabled);
+		Assert.IsTrue(nativeWebView.VerticalScrollBarEnabled);
+#endif
+		webView.IsScrollEnabled = false;
+
+#if __IOS__
+		Assert.IsFalse(scrollView.ScrollEnabled);
+		Assert.IsFalse(scrollView.Bounces);
+#endif
+
+#if __ANDROID__
+		Assert.IsFalse(nativeWebView.HorizontalScrollBarEnabled);
+		Assert.IsFalse(nativeWebView.VerticalScrollBarEnabled);
+#endif
+
+	}
+#endif
 
 #if !HAS_UNO
 	[TestMethod]
