@@ -17,14 +17,17 @@ using Uno.UI;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Core;
-using PointerIdentifier = Windows.Devices.Input.PointerIdentifier;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
+using PointerIdentifierPool = Windows.Devices.Input.PointerIdentifierPool; // internal type (should be in Uno namespace)
+using PointerIdentifier = Windows.Devices.Input.PointerIdentifier; // internal type (should be in Uno namespace)
+using PointerIdentifierDeviceType = Windows.Devices.Input.PointerDeviceType; // PointerIdentifier always uses Windows.Devices as it does noe have access to Microsoft.UI.Input (Uno.UI assembly)
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
+using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
 #else
-using Windows.Devices.Input;
 using Windows.UI.Input;
+using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
 #endif
 
 namespace Windows.UI.Xaml;
@@ -242,8 +245,6 @@ public partial class UIElement : DependencyObject
 		}
 	}
 
-	
-
 	private static PointerRoutedEventArgs ToPointerArgs(
 		UIElement snd,
 		NativePointerEventArgs args,
@@ -253,7 +254,7 @@ public partial class UIElement : DependencyObject
 		const int exitOrUp = (int)(NativePointerEvent.pointerout | NativePointerEvent.pointerup);
 
 		var pointerType = (PointerDeviceType)args.deviceType;
-		var pointerId = PointerIdentifierPool.RentManaged(new PointerIdentifier(pointerType, (uint)args.pointerId));
+		var pointerId = PointerIdentifierPool.RentManaged(new PointerIdentifier((PointerIdentifierDeviceType)pointerType, (uint)args.pointerId));
 
 		var src = GetElementFromHandle(args.srcHandle) ?? (UIElement)snd;
 		var position = new Point(args.x, args.y);

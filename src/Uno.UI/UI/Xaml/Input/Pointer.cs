@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using Uno;
-using PointerIdentifier = Windows.Devices.Input.PointerIdentifier;
 
+using PointerIdentifier = Windows.Devices.Input.PointerIdentifier; // internal type (should be in Uno namespace)
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
 #else
@@ -33,7 +33,7 @@ namespace Windows.UI.Xaml.Input
 		internal Pointer(PointerIdentifier uniqueId, bool isInContact, bool isInRange)
 		{
 			PointerId = uniqueId.Id;
-			PointerDeviceType = uniqueId.Type;
+			PointerDeviceType = (PointerDeviceType)uniqueId.Type;
 			IsInContact = isInContact;
 			IsInRange = isInRange;
 
@@ -53,7 +53,7 @@ namespace Windows.UI.Xaml.Input
 		/// <summary>
 		/// A unique identifier which contains <see cref="PointerDeviceType"/> and <see cref="PointerId"/>.
 		/// </summary>
-		internal PointerIdentifier UniqueId { get; }
+		internal Windows.Devices.Input.PointerIdentifier UniqueId { get; }
 
 		public uint PointerId { get; }
 
@@ -64,9 +64,10 @@ namespace Windows.UI.Xaml.Input
 		public bool IsInRange { get; }
 
 		public override string ToString()
-		{
-			return $"{PointerDeviceType}/{PointerId}";
-		}
+			=> UniqueId.ToString();
+
+		public override int GetHashCode()
+			=> UniqueId.GetHashCode();
 
 		public bool Equals(Pointer other)
 		{
@@ -83,14 +84,6 @@ namespace Windows.UI.Xaml.Input
 			if (!(obj is Pointer other)) return false;
 
 			return UniqueId == other.UniqueId;
-		}
-
-		public override int GetHashCode()
-		{
-			unchecked
-			{
-				return ((int)PointerDeviceType * 397) ^ (int)PointerId;
-			}
 		}
 	}
 }

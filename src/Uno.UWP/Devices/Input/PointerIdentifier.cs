@@ -17,6 +17,10 @@ internal readonly struct PointerIdentifier : IEquatable<PointerIdentifier>
 	public PointerDeviceType Type => unchecked((PointerDeviceType)(_uid >> 32));
 
 	/// <inheritdoc />
+	public override string ToString()
+		=> $"{Type}/{Id}";
+
+	/// <inheritdoc />
 	public override int GetHashCode()
 		=> _uid.GetHashCode();
 
