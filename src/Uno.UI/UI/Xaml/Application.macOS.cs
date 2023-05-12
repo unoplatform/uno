@@ -12,6 +12,7 @@ using Uno.Helpers.Theming;
 using Selector = ObjCRuntime.Selector;
 using Windows.UI.Core;
 using Uno.Foundation.Extensibility;
+using Uno.UI.Runtime.MacOS;
 #if HAS_UNO_WINUI
 using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
 #else
@@ -33,7 +34,7 @@ namespace Windows.UI.Xaml
 
 		static partial void InitializePartialStatic()
 		{
-			ApiExtensibility.Register(typeof(Windows.UI.Core.ICoreWindowExtension), o => new CoreWindowExtension());
+			ApiExtensibility.Register(typeof(IUnoCorePointerInputSource), host => new MacOSPointerInputSource((Uno.UI.Controls.Window)host));
 		}
 
 		public Application()
