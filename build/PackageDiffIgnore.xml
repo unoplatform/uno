@@ -1243,7 +1243,7 @@
 			<Member fullName="System.Void Windows.UI.Xaml.Media.Animation.RepeatBehavior.set_Type(Windows.UI.Xaml.Media.Animation.RepeatBehaviorType value)" reason="Api alignments" />
 			<Member fullName="System.Void Windows.Media.Playback.MediaPlayer.set_Position(System.TimeSpan value)" reason="Api alignments" />
 			<Member fullName="System.TimeSpan Windows.Media.Playback.MediaPlayer.get_Position()" reason="Api alignments" />
-
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.Primitives.ToggleButton.OnIsCheckedChanged(System.Nullable`1&lt;System.Boolean&gt; oldValue, System.Nullable`1&lt;System.Boolean&gt; newValue)" reason="Api alignments" />
 			<Member fullName="System.Void Windows.UI.Xaml.Media.Animation.Timeline.Dispose(System.Boolean disposing)" reason="Api alignments" />
 			<Member fullName="System.Void Windows.UI.Xaml.Media.Animation.Timeline.Dispose()" reason="Api alignments" />
 
