@@ -2,15 +2,14 @@
 using System.Threading.Tasks;
 using Private.Infrastructure;
 using Windows.UI.Xaml.Controls;
-using Uno.UI.Xaml.Controls;
 using System.Linq;
+#if HAS_UNO
+using Uno.UI.Xaml.Controls;
+#endif
 
 #if __IOS__
 using UIKit;
 using _View = UIKit.UIView;
-#elif __MACOS__
-using AppKit;
-using _View = AppKit.NSView;
 #endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
@@ -58,7 +57,7 @@ public class Given_WebView
 		Assert.IsNull(webView.Source);
 	}
 
-#if __ANDROID__ || __IOS__ || __MACOS__
+#if __ANDROID__ || __IOS__
 	[TestMethod]
 	public async Task When_IsScrollable()
 	{

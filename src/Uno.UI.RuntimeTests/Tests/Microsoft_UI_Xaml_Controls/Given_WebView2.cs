@@ -7,14 +7,13 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.Web.WebView2.Core;
 using Private.Infrastructure;
 using Windows.UI.Xaml.Controls;
+#if HAS_UNO
 using Uno.UI.Xaml.Controls;
+#endif
 
 #if __IOS__
 using UIKit;
 using _View = UIKit.UIView;
-#elif __MACOS__
-using AppKit;
-using _View = AppKit.NSView;
 #endif
 
 namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls;
@@ -69,7 +68,7 @@ public class Given_WebView2
 		Assert.AreEqual(CoreWebView2.BlankUri, webView.Source);
 	}
 
-#if __ANDROID__ || __IOS__ || __MACOS__
+#if __ANDROID__ || __IOS__
 	[TestMethod]
 	public async Task When_IsScrollable()
 	{
