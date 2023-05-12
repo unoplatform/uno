@@ -85,4 +85,10 @@
 		<Error Condition="!Exists('$(OutputPath)Uno.UI.RuntimeTests\Assets\TransientAsset01.txt')" Text="$(OutputPath)uno.ui.runtimetests\Assets\TransientAsset01.txt" />
 	</Target>
 
+	<ItemGroup>
+	  <Page Update="Tests\Windows_UI_Xaml_Controls\FlyoutPages\When_PlacementTarget_Binding.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </Page>
+	</ItemGroup>
+
 </Project>

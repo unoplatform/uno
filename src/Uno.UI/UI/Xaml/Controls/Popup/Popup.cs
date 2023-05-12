@@ -156,7 +156,10 @@ public partial class Popup
 			nameof(PlacementTarget),
 			typeof(FrameworkElement),
 			typeof(Popup),
-			new FrameworkPropertyMetadata(default(FrameworkElement), FrameworkPropertyMetadataOptions.AffectsArrange));
+			new FrameworkPropertyMetadata(
+				default(FrameworkElement),
+				FrameworkPropertyMetadataOptions.AffectsArrange | FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext
+			));
 
 	/// <summary>
 	/// Gets or sets the preferred placement to be used for the popup, in relation to its placement target.
