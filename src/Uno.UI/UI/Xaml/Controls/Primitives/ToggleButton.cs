@@ -87,31 +87,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		/// </summary>
 		internal bool CanRevertState { get; set; } = true;
 
-		private void OnIsCheckedChanged(bool? oldValue, bool? newValue)
-		{
-			// This workaround can be removed if pooling is removed. See https://github.com/unoplatform/uno/issues/12189
-			if (_suppressCheckedChanged)
-			{
-				return;
-			}
-
-			if (IsChecked == null)
-			{
-				// Indeterminate
-				Indeterminate?.Invoke(this, new RoutedEventArgs(this));
-			}
-			else if (IsChecked.Value)
-			{
-				// Checked
-				Checked?.Invoke(this, new RoutedEventArgs(this));
-			}
-			else
-			{
-				// Unchecked
-				Unchecked?.Invoke(this, new RoutedEventArgs(this));
-			}
-		}
-
 		public void OnTemplateRecycled()
 		{
 			try
