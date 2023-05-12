@@ -545,7 +545,13 @@
 			<Member fullName="Windows.Foundation.SizeConverter" reason="Api alignments" />
 			<Member fullName="Windows.UI.Xaml.ResourceHelper" reason="Api alignments" />
 			<Member fullName="Uno.UI.Extensions.CollectionViewExtensions" reason="Api alignments" />
-
+			<Member fullName="Windows.UI.Xaml.Controls.AnimatedVisualPlayer" reason="Api alignments" />
+			<Member fullName="Windows.UI.Xaml.Controls.IAnimatedVisualSource" reason="Api alignments" />
+			<Member fullName="Windows.UI.Xaml.Controls.IThemableAnimatedVisualSource" reason="Api alignments" />
+			<Member fullName="Microsoft.Toolkit.Uwp.UI.Lottie.LottieVisualOptions" reason="Api alignments" />
+			<Member fullName="Microsoft.Toolkit.Uwp.UI.Lottie.LottieVisualSource" reason="Api alignments" />
+			<Member fullName="Microsoft.Toolkit.Uwp.UI.Lottie.LottieVisualSourceBase" reason="Api alignments" />
+			<Member fullName="Microsoft.Toolkit.Uwp.UI.Lottie.ThemableLottieVisualSource" reason="Api alignments" />
 		</Types>
 		<Events>
 			<Member fullName="Windows.Foundation.TypedEventHandler`2&lt;Microsoft.UI.Xaml.Controls.IInputValidationControl,Microsoft.UI.Xaml.Controls.HasValidationErrorsChangedEventArgs&gt; Microsoft.UI.Xaml.Controls.AutoSuggestBox::HasValidationErrorsChanged" reason="Not present in WinAppSDK 1.2" />
@@ -662,6 +668,9 @@
 			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.TextBox::ErrorTemplateProperty()" reason="Not present in WinAppSDK 1.2" />
 			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.TextBox::InputValidationKindProperty()" reason="Not present in WinAppSDK 1.2" />
 			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.TextBox::InputValidationModeProperty()" reason="Not present in WinAppSDK 1.2" />
+
+			<Member fullName="Windows.UI.Xaml.Controls.IAnimatedVisualSource Microsoft.UI.Xaml.Controls.ProgressRing::DeterminateSource()" reason="Api alignments" />
+			<Member fullName="Windows.UI.Xaml.Controls.IAnimatedVisualSource Microsoft.UI.Xaml.Controls.ProgressRing::IndeterminateSource()" reason="Api alignments" />
 
 			<Member fullName="Microsoft.UI.Xaml.ApplicationTheme Microsoft.UI.Xaml.Media.RevealBrush::TargetTheme()" reason="Not present in WinAppSDK 1.2" />
 			<Member fullName="System.Boolean Microsoft.UI.Xaml.Media.RevealBrush::AlwaysUseFallback()" reason="Not present in WinAppSDK 1.2" />
@@ -1071,6 +1080,25 @@
 			<Member fullName="System.Void Uno.UI.Controls.Legacy.ListViewBase.set_IsEnabled(System.Boolean value)" reason="Api alignments" />
 			<Member fullName="System.Boolean Windows.UI.Xaml.Controls.SecureTextBoxView.get_IsEnabled()" reason="Api alignments" />
 			<Member fullName="System.Void Windows.UI.Xaml.Controls.SecureTextBoxView.set_IsEnabled(System.Boolean value)" reason="Api alignments" />
+			<Member fullName="Windows.UI.Xaml.Controls.IAnimatedVisualSource Microsoft.UI.Xaml.Controls.ILottieVisualSourceProvider.CreateFromLottieAsset(System.Uri sourceFile)" reason="Api alignments" />
+			<Member fullName="Windows.UI.Xaml.Controls.IThemableAnimatedVisualSource Microsoft.UI.Xaml.Controls.ILottieVisualSourceProvider.CreateTheamableFromLottieAsset(System.Uri sourceFile)" reason="Api alignments" />
+			<Member fullName="System.Boolean Microsoft.UI.Xaml.Controls.ILottieVisualSourceProvider.TryCreateThemableFromAnimatedVisualSource(Windows.UI.Xaml.Controls.IAnimatedVisualSource animatedVisualSource, Windows.UI.Xaml.Controls.IThemableAnimatedVisualSource&amp; themableAnimatedVisualSource)" reason="Api alignments" />
+			<Member fullName="Windows.UI.Xaml.Controls.IAnimatedVisualSource Microsoft.UI.Xaml.Controls.ProgressRing.get_DeterminateSource()" reason="Api alignments" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.ProgressRing.set_DeterminateSource(Windows.UI.Xaml.Controls.IAnimatedVisualSource value)" reason="Api alignments" />
+			<Member fullName="Windows.UI.Xaml.Controls.IAnimatedVisualSource Microsoft.UI.Xaml.Controls.ProgressRing.get_IndeterminateSource()" reason="Api alignments" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.ProgressRing.set_IndeterminateSource(Windows.UI.Xaml.Controls.IAnimatedVisualSource value)" reason="Api alignments" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.AnimatedVisuals.AnimatedAcceptVisualSource.Update(Windows.UI.Xaml.Controls.AnimatedVisualPlayer player)" reason="Api alignments" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.AnimatedVisuals.AnimatedBackVisualSource.Update(Windows.UI.Xaml.Controls.AnimatedVisualPlayer player)" reason="Api alignments" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.AnimatedVisuals.AnimatedChevronDownSmallVisualSource.Update(Windows.UI.Xaml.Controls.AnimatedVisualPlayer player)" reason="Api alignments" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.AnimatedVisuals.AnimatedChevronRightDownSmallVisualSource.Update(Windows.UI.Xaml.Controls.AnimatedVisualPlayer player)" reason="Api alignments" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.AnimatedVisuals.AnimatedChevronUpDownSmallVisualSource.Update(Windows.UI.Xaml.Controls.AnimatedVisualPlayer player)" reason="Api alignments" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.AnimatedVisuals.AnimatedFindVisualSource.Update(Windows.UI.Xaml.Controls.AnimatedVisualPlayer player)" reason="Api alignments" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.AnimatedVisuals.AnimatedGlobalNavigationButtonVisualSource.Update(Windows.UI.Xaml.Controls.AnimatedVisualPlayer player)" reason="Api alignments" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.AnimatedVisuals.AnimatedSettingsVisualSource.Update(Windows.UI.Xaml.Controls.AnimatedVisualPlayer player)" reason="Api alignments" />
+			<Member fullName="Windows.UI.Xaml.Controls.IAnimatedVisualSource Uno.UI.Lottie.LottieVisualSourceProvider.CreateFromLottieAsset(System.Uri sourceFile)" reason="Api alignments" />
+			<Member fullName="Windows.UI.Xaml.Controls.IThemableAnimatedVisualSource Uno.UI.Lottie.LottieVisualSourceProvider.CreateTheamableFromLottieAsset(System.Uri sourceFile)" reason="Api alignments" />
+			<Member fullName="System.Boolean Uno.UI.Lottie.LottieVisualSourceProvider.TryCreateThemableFromAnimatedVisualSource(Windows.UI.Xaml.Controls.IAnimatedVisualSource animatedVisualSource, Windows.UI.Xaml.Controls.IThemableAnimatedVisualSource&amp; themableAnimatedVisualSource)" reason="Api alignments" />
+			<Member fullName="System.Void Microsoft.Toolkit.Uwp.UI.Lottie.LottieVisualSourceBase.Update(Windows.UI.Xaml.Controls.AnimatedVisualPlayer player)" reason="Api alignments" />
 
 			<Member fullName="System.Nullable`1&lt;Uno.UI.IndexPath&gt; Windows.UI.Xaml.Controls.VirtualizingPanelLayout.GetNextUnmaterializedItem(Windows.UI.Xaml.Controls.Primitives.GeneratorDirection fillDirection, System.Nullable`1&lt;Uno.UI.IndexPath&gt; currentMaterializedItem)" reason="Api alignments" />
 			<Member fullName="System.Nullable`1&lt;Uno.UI.IndexPath&gt; Windows.UI.Xaml.Controls.VirtualizingPanelLayout.GetDynamicSeedIndex(System.Nullable`1&lt;Uno.UI.IndexPath&gt; firstVisibleItem)" reason="Api alignments" />
