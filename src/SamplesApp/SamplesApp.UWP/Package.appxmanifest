@@ -55,6 +55,7 @@
   <Capabilities>
     <Capability Name="internetClient" />
     <rescap:Capability Name="confirmAppClose" />
+	<rescap:Capability Name="inputInjectionBrokered" />
     <uap:Capability Name="appointments"/>
     <uap:Capability Name="contacts"/>
     <uap2:Capability Name="phoneCallHistoryPublic"/>
