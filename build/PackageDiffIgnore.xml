@@ -1245,6 +1245,9 @@
 			<Member fullName="System.TimeSpan Windows.Media.Playback.MediaPlayer.get_Position()" reason="Api alignments" />
 
 			<Member
+				fullName="System.IDisposable Uno.UI.Xaml.Controls.NativeRefreshControl.RegisterLoadActions(System.Action loaded, System.Action unloaded)"
+				reason="Remove LoadActions" />
+			<Member
 				fullName="System.IDisposable Windows.UI.Xaml.Controls.NativeListViewBase.RegisterLoadActions(System.Action loaded, System.Action unloaded)"
 				reason="Remove LoadActions" />
 			<Member
