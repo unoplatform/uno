@@ -540,6 +540,7 @@
 
 			<Member fullName="Uno.UI.IndexPath" reason="Api alignments" />
 			<Member fullName="Uno.UI.IResourcesService" reason="Api alignments" />
+			<Member fullName="Uno.UI.Services.ResourcesService" reason="Api alignments" />
 			<Member fullName="Uno.UI.Common.DelegateCommand" reason="Api alignments" />
 			<Member fullName="Uno.UI.Common.DelegateCommand`1" reason="Api alignments" />
 			<Member fullName="Windows.Foundation.SizeConverter" reason="Api alignments" />
@@ -749,6 +750,7 @@
 			<Member fullName="Windows.UI.Xaml.Media.Animation.RepeatBehaviorType Windows.UI.Xaml.Media.Animation.RepeatBehavior::Type()" reason="Api alignments" />
 
 			<Member fullName="System.Int32 Windows.UI.Xaml.Media.Animation.PowerEase::Power()" reason="Api alignments" />
+			<Member fullName="System.Func`2&lt;System.String,System.String&gt; Windows.ApplicationModel.Resources.ResourceLoader::GetStringInternal()" reason="Api alignments" />
 
 			<!-- BEGIN WebView -->
 			<Member fullName="Uno.UI.Web.WebErrorStatus Windows.UI.Xaml.Controls.WebViewNavigationCompletedEventArgs::WebErrorStatus()" reason="Incorrect type" />
@@ -1150,6 +1152,10 @@
 			<Member fullName="Windows.UI.Xaml.Controls.VirtualizingPanelLayout/Line Windows.UI.Xaml.Controls.VirtualizingPanelLayout.CreateLine(Windows.UI.Xaml.Controls.Primitives.GeneratorDirection fillDirection, System.Int32 extentOffset, System.Int32 breadthOffset, System.Int32 availableBreadth, AndroidX.RecyclerView.Widget.RecyclerView/Recycler recycler, AndroidX.RecyclerView.Widget.RecyclerView/State state, Uno.UI.IndexPath nextVisibleItem, System.Boolean isNewGroup)" reason="Api alignments" />
 			<Member fullName="System.Nullable`1&lt;Uno.UI.IndexPath&gt; Windows.UI.Xaml.Controls.VirtualizingPanelLayout.GetDynamicSeedIndex(System.Nullable`1&lt;Uno.UI.IndexPath&gt; firstVisibleItem, System.Int32 availableBreadth)" reason="Api alignments" />
 			<Member fullName="System.String Uno.UI.Services.ResourcesService.Get(System.String id)" reason="Api alignments" />
+			<Member fullName="System.Void Windows.ApplicationModel.Resources.ResourceLoader.set_GetStringInternal(System.Func`2&lt;System.String,System.String&gt; value)" reason="Api alignments" />
+			<Member fullName="System.Func`2&lt;System.String,System.String&gt; Windows.ApplicationModel.Resources.ResourceLoader.get_GetStringInternal()" reason="Api alignments" />
+
+			<Member fullName="System.Object Uno.UI.Svg.GlobalStaticResources.FindResource(System.String name)" reason="API Alignment" />
 
 			<Member fullName="System.Void Windows.UI.Xaml.Window.set_Visible(System.Boolean value)" reason="Does not exist in UWP and WinUI" />
 
