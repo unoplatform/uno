@@ -552,6 +552,7 @@
 			<Member fullName="Microsoft.Toolkit.Uwp.UI.Lottie.LottieVisualSource" reason="Api alignments" />
 			<Member fullName="Microsoft.Toolkit.Uwp.UI.Lottie.LottieVisualSourceBase" reason="Api alignments" />
 			<Member fullName="Microsoft.Toolkit.Uwp.UI.Lottie.ThemableLottieVisualSource" reason="Api alignments" />
+			<Member fullName="Windows.UI.Xaml.Controls.BackButton" reason="Api alignments" />
 		</Types>
 		<Events>
 			<Member fullName="Windows.Foundation.TypedEventHandler`2&lt;Microsoft.UI.Xaml.Controls.IInputValidationControl,Microsoft.UI.Xaml.Controls.HasValidationErrorsChangedEventArgs&gt; Microsoft.UI.Xaml.Controls.AutoSuggestBox::HasValidationErrorsChanged" reason="Not present in WinAppSDK 1.2" />
