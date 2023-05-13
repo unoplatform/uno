@@ -1191,8 +1191,8 @@
 			<Member fullName="System.Void Windows.UI.Xaml.Controls.SwipeItems.RemoveAt(System.UInt32 index)" reason="Api alignments" />
 			<Member fullName="System.Void Windows.UI.Xaml.Controls.SwipeItems.Append(Windows.UI.Xaml.Controls.SwipeItem value)" reason="Api alignments" />
 			<Member fullName="System.Void Windows.UI.Xaml.Controls.SwipeItems.RemoveAtEnd()" reason="Api alignments" />
-			<Member fullName="System.Void Windows.UI.Xaml.Controls.SwipeItems.add_VectorChanged(Windows.Foundation.Collections.VectorChangedEventHandler`1<Windows.UI.Xaml.Controls.SwipeItem> value)" reason="Api alignments" />
-			<Member fullName="System.Void Windows.UI.Xaml.Controls.SwipeItems.remove_VectorChanged(Windows.Foundation.Collections.VectorChangedEventHandler`1<Windows.UI.Xaml.Controls.SwipeItem> value)" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.SwipeItems.add_VectorChanged(Windows.Foundation.Collections.VectorChangedEventHandler`1&lt;Windows.UI.Xaml.Controls.SwipeItem&gt; value)" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.SwipeItems.remove_VectorChanged(Windows.Foundation.Collections.VectorChangedEventHandler`1&lt;Windows.UI.Xaml.Controls.SwipeItem&gt; value)" reason="Api alignments" />
 			<Member fullName="Windows.UI.Xaml.Controls.SwipeItem Windows.UI.Xaml.Controls.SwipeItems.First()" reason="Api alignments" />
 			<Member fullName="System.UInt32 Windows.UI.Xaml.Controls.SwipeItems.GetMany(System.UInt32 startIndex, Windows.UI.Xaml.Controls.SwipeItem[] items)" reason="Api alignments" />
 			<Member fullName="System.Void Windows.UI.Xaml.Controls.SwipeItems.ReplaceAll(Windows.UI.Xaml.Controls.SwipeItem[] items)" reason="Api alignments" />
