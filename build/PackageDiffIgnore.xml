@@ -1347,6 +1347,7 @@
 				fullName="System.IDisposable Uno.UI.Controls.BindableNSView.RegisterLoadActions(System.Action loaded, System.Action unloaded)"
 				reason="Remove LoadActions" />
 
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.Primitives.ToggleButton.OnIsCheckedChanged(System.Nullable`1&lt;System.Boolean&gt; oldValue, System.Nullable`1&lt;System.Boolean&gt; newValue)" reason="Api alignments" />
 			<Member fullName="System.Void Windows.UI.Xaml.Media.Animation.Timeline.Dispose(System.Boolean disposing)" reason="Api alignments" />
 			<Member fullName="System.Void Windows.UI.Xaml.Media.Animation.Timeline.Dispose()" reason="Api alignments" />
 
