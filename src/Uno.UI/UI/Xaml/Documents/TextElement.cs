@@ -313,7 +313,22 @@ namespace Windows.UI.Xaml.Documents
 
 		#endregion
 
-		public string Name { get; set; }
+		private string _name;
+
+		public string Name
+		{
+			get => _name;
+			set
+			{
+				if (_name != value)
+				{
+					_name = value;
+					OnNameChangedPartial(value);
+				}
+			}
+		}
+
+		partial void OnNameChangedPartial(string newValue);
 
 		/// <summary>
 		/// Retrieves the parent RichTextBox/CRichTextBlock/TextBlock.
