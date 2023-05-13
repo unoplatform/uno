@@ -732,7 +732,7 @@
 			<Member fullName="System.Double Windows.UI.Xaml.Media.Animation.RepeatBehavior::Count()" reason="Api alignments" />
 			<Member fullName="System.TimeSpan Windows.UI.Xaml.Media.Animation.RepeatBehavior::Duration()" reason="Api alignments" />
 			<Member fullName="Windows.UI.Xaml.Media.Animation.RepeatBehaviorType Windows.UI.Xaml.Media.Animation.RepeatBehavior::Type()" reason="Api alignments" />
-			<Member fullName="System.Func`2<System.String,System.String> Windows.ApplicationModel.Resources.ResourceLoader::GetStringInternal()" reason="Api alignments" />
+			<Member fullName="System.Func`2&lt;System.String,System.String&gt; Windows.ApplicationModel.Resources.ResourceLoader::GetStringInternal()" reason="Api alignments" />
 
 			<!-- BEGIN WebView -->
 			<Member fullName="Uno.UI.Web.WebErrorStatus Windows.UI.Xaml.Controls.WebViewNavigationCompletedEventArgs::WebErrorStatus()" reason="Incorrect type" />
