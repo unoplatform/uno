@@ -1263,7 +1263,12 @@
 			<Member fullName="System.Void Windows.Devices.Sensors.SimpleOrientationSensor.OnSensorChanged(Android.Hardware.SensorEvent e)" reason="Api alignments" />
 			<Member fullName="Windows.UI.Xaml.UIElement Windows.UI.Xaml.FrameworkTemplate.LoadContent()" reason="Api alignments" />
 			<Member fullName="Windows.UI.Xaml.UIElement Windows.UI.Xaml.Controls.ItemsPanelTemplate.LoadContent()" reason="Api alignments" />
-
+			<Member fullName="Android.Views.View Windows.UI.Xaml.Controls.ItemsPanelTemplate.LoadContent()" reason="Api alignments" />
+			<Member fullName="Android.Views.View Windows.UI.Xaml.FrameworkTemplate.LoadContent()" reason="Api alignments" />
+			<Member fullName="UIKit.UIView Windows.UI.Xaml.FrameworkTemplate.LoadContent()" reason="Api alignments" />
+			<Member fullName="UIKit.UIView Windows.UI.Xaml.Controls.ItemsPanelTemplate.LoadContent()" reason="Api alignments" />
+			<Member fullName="AppKit.NSView Windows.UI.Xaml.FrameworkTemplate.LoadContent()" reason="Api alignments" />
+			<Member fullName="AppKit.NSView Windows.UI.Xaml.Controls.ItemsPanelTemplate.LoadContent()" reason="Api alignments" />
 
 			<!-- BEGIN Skia Adjustments -->
 			<Member fullName="System.Void Uno.UI.Runtime.Skia.GtkHost..ctor(System.Func`1&lt;Windows.UI.Xaml.Application&gt; appBuilder, System.String[] args)" reason="API Alignment" />
