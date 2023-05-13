@@ -1844,22 +1844,8 @@ namespace Uno.UWPSyncGenerator
 				);
 			}
 
-			project = RegisterGenericHelperTypes(project);
-
 			return project
 					.GetCompilationAsync().Result;
-		}
-
-		private static Microsoft.CodeAnalysis.Project RegisterGenericHelperTypes(Microsoft.CodeAnalysis.Project project)
-		{
-			var sb = new StringBuilder();
-
-			for (int i = 0; i < 10; i++)
-			{
-				sb.AppendLine($"class __helper{i}__ {{}}");
-			}
-
-			return project.AddDocument("AdditionalGenericNames", sb.ToString()).Project;
 		}
 
 		public static IEnumerable<INamedTypeSymbol> GetNamespaceTypes(INamespaceSymbol sym)
