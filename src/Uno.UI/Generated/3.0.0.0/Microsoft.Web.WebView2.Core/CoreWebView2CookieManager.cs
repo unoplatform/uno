@@ -9,6 +9,13 @@ namespace Microsoft.Web.WebView2.Core
 	{
 		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Microsoft.Web.WebView2.Core.CoreWebView2Cookie>> GetCookiesAsync( string uri)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<CoreWebView2Cookie>> CoreWebView2CookieManager.GetCookiesAsync(string uri) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CIReadOnlyList%3CCoreWebView2Cookie%3E%3E%20CoreWebView2CookieManager.GetCookiesAsync%28string%20uri%29");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Microsoft.Web.WebView2.Core.CoreWebView2Cookie CreateCookie( string name,  string value,  string Domain,  string Path)
 		{
 			throw new global::System.NotImplementedException("The member CoreWebView2Cookie CoreWebView2CookieManager.CreateCookie(string name, string value, string Domain, string Path) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CoreWebView2Cookie%20CoreWebView2CookieManager.CreateCookie%28string%20name%2C%20string%20value%2C%20string%20Domain%2C%20string%20Path%29");

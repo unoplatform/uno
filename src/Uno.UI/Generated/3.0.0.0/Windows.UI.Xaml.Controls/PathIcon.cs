@@ -7,35 +7,9 @@ namespace Windows.UI.Xaml.Controls
 	#endif
 	public  partial class PathIcon : global::Windows.UI.Xaml.Controls.IconElement
 	{
-		#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Media.Geometry Data
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Media.Geometry)this.GetValue(DataProperty);
-			}
-			set
-			{
-				this.SetValue(DataProperty, value);
-			}
-		}
-		#endif
-		#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty DataProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Data), typeof(global::Windows.UI.Xaml.Media.Geometry), 
-			typeof(global::Windows.UI.Xaml.Controls.PathIcon), 
-			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Geometry)));
-		#endif
-		#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented]
-		public PathIcon() 
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.PathIcon", "PathIcon.PathIcon()");
-		}
-		#endif
+		// Skipping already declared property Data
+		// Skipping already declared property DataProperty
+		// Skipping already declared method Windows.UI.Xaml.Controls.PathIcon.PathIcon()
 		// Forced skipping of method Windows.UI.Xaml.Controls.PathIcon.PathIcon()
 		// Forced skipping of method Windows.UI.Xaml.Controls.PathIcon.Data.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.PathIcon.Data.set

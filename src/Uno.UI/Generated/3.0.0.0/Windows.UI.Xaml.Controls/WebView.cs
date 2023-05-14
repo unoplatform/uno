@@ -243,13 +243,7 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.WebView.UnsafeContentWarningDisplaying.remove
 		// Forced skipping of method Windows.UI.Xaml.Controls.WebView.UnviewableContentIdentified.add
 		// Forced skipping of method Windows.UI.Xaml.Controls.WebView.UnviewableContentIdentified.remove
-		#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
-		public  void NavigateWithHttpRequestMessage( global::Windows.Web.Http.HttpRequestMessage requestMessage)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.WebView", "void WebView.NavigateWithHttpRequestMessage(HttpRequestMessage requestMessage)");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.Controls.WebView.NavigateWithHttpRequestMessage(Windows.Web.Http.HttpRequestMessage)
 		// Skipping already declared method Windows.UI.Xaml.Controls.WebView.Focus(Windows.UI.Xaml.FocusState)
 		// Forced skipping of method Windows.UI.Xaml.Controls.WebView.ContainsFullScreenElement.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.WebView.ContainsFullScreenElementChanged.add
