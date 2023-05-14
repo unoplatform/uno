@@ -3,7 +3,6 @@ using System;
 using AppKit;
 using Windows.ApplicationModel.Activation;
 using Windows.ApplicationModel;
-using Uno.UI.Services;
 using System.Globalization;
 using Uno.Foundation.Logging;
 using System.Linq;
@@ -40,7 +39,6 @@ namespace Windows.UI.Xaml
 		{
 			Current = this;
 			SetCurrentLanguage();
-			ResourceHelper.ResourcesService = new ResourcesService(new[] { NSBundle.MainBundle });
 
 			SubscribeBackgroundNotifications();
 		}

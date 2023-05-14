@@ -111,6 +111,13 @@ namespace UnoWinUIRevert
 			// Restore DualPaneView XAML
 			// ReplaceInFile(Path.Combine(basePath, @"src\Uno.UI\Microsoft\UI\Xaml\Controls\TwoPaneView\TwoPaneView.xaml"), "using:Windows.UI.Xaml.Controls", "using:Windows.UI.Xaml.Controls");
 
+			// Adjust lottie namespace
+			var lottieReplacements = new[]
+			{
+				("Microsoft.Toolkit.Uwp.UI.Lottie", "CommunityToolkit.WinUI.Lottie"),
+			};
+			ReplaceInFolders(Path.Combine(basePath, "src", "SamplesApp", "UITests.Shared"), lottieReplacements, "*.xaml");
+
 			// Adjust Colors
 			ReplaceInFile(Path.Combine(basePath, @"src", "Uno.UI", "UI", "Colors.cs"), "Windows.UI", "Microsoft.UI");
 			ReplaceInFile(Path.Combine(basePath, @"src", "Uno.UI", "UI", "ColorHelper.cs"), "Windows.UI", "Microsoft.UI");
