@@ -1240,7 +1240,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 		public void When_Collection_Implicit_Add_Item()
 		{
 			var SUT = XamlHelper.LoadXaml<SwipeItems>("""
-				<muxc:SwipeItems xmlns:muxc="using:Microsoft.UI.Xaml.Controls">
+				<muxc:SwipeItems>
 					<muxc:SwipeItem Text="asd" />
 				</muxc:SwipeItems>
 				""");
@@ -1253,7 +1253,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 		public void When_Collection_Property_Nest_Collection()
 		{
 			var SUT = XamlHelper.LoadXaml<SwipeControl>("""
-				<muxc:SwipeControl xmlns:muxc="using:Microsoft.UI.Xaml.Controls">
+				<muxc:SwipeControl>
 					<muxc:SwipeControl.LeftItems>
 						<muxc:SwipeItems Mode="Execute">
 							<muxc:SwipeItem Text="asd" />
@@ -1272,7 +1272,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 		public void When_Collection_Property_Nest_Multiple_Collections()
 		{
 			var SUT = XamlHelper.LoadXaml<SwipeControl>("""
-				<muxc:SwipeControl xmlns:muxc="using:Microsoft.UI.Xaml.Controls">
+				<muxc:SwipeControl>
 					<muxc:SwipeControl.LeftItems>
 						<!-- This is actually allowed, however only the last will be kept -->
 						<muxc:SwipeItems>
