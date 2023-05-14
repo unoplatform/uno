@@ -1257,7 +1257,8 @@
 			<Member fullName="System.Void Windows.UI.Xaml.Media.Animation.Timeline.Dispose()" reason="Api alignments" />
 
 			<Member fullName="System.Void Windows.UI.Xaml.Window.set_Visible(System.Boolean value)" reason="Does not exist in UWP and WinUI" />
-
+			<Member fullName="System.Void Windows.UI.Xaml.UIElement.Arrange(Windows.Foundation.Rect finalRect)" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.UIElement.Measure(Windows.Foundation.Size availableSize)" reason="Api alignments" />
 			<Member fullName="System.Object Uno.UI.Svg.GlobalStaticResources.FindResource(System.String name)" reason="API Alignment" />
 			<Member fullName="System.Void Windows.Devices.Sensors.SimpleOrientationSensor.OnAccuracyChanged(Android.Hardware.Sensor sensor, Android.Hardware.SensorStatus accuracy)" reason="Api alignments" />
 			<Member fullName="System.Void Windows.Devices.Sensors.SimpleOrientationSensor.OnSensorChanged(Android.Hardware.SensorEvent e)" reason="Api alignments" />
