@@ -60,5 +60,25 @@ namespace Windows.UI.Xaml
 		{
 			child.SetParent(this);
 		}
+
+		partial void OnMeasurePartial(Size slotSize)
+		{
+			MeasureCallCount++;
+			AvailableMeasureSize = slotSize;
+
+			if (DesiredSizeSelector != null)
+			{
+				var desiredSize = DesiredSizeSelector(slotSize);
+
+				LayoutInformation.SetDesiredSize(this, desiredSize);
+				RequestedDesiredSize = desiredSize;
+			}
+			else if (RequestedDesiredSize != null)
+			{
+				var desiredSize = RequestedDesiredSize.Value;
+
+				LayoutInformation.SetDesiredSize(this, desiredSize);
+			}
+		}
 	}
 }
