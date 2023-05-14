@@ -93,7 +93,7 @@ namespace Windows.UI.Xaml
 				if (_visual == null)
 				{
 					_visual = Window.Current.Compositor.CreateContainerVisual();
-					_visual.Comment = $"Owner:{GetType()}/{Name}";
+					_visual.Comment = $"Owner:{GetType()}/{(this as FrameworkElement)?.Name}";
 				}
 
 				return _visual;
@@ -226,27 +226,6 @@ namespace Windows.UI.Xaml
 		}
 
 		internal UIElement FindFirstChild() => _children.FirstOrDefault();
-
-		#region Name Dependency Property
-
-		private void OnNameChanged(string oldValue, string newValue)
-		{
-			if (FrameworkElementHelper.IsUiAutomationMappingEnabled)
-			{
-				Windows.UI.Xaml.Automation.AutomationProperties.SetAutomationId(this, newValue);
-			}
-		}
-
-		[GeneratedDependencyProperty(DefaultValue = "", ChangedCallback = true)]
-		internal static DependencyProperty NameProperty { get; } = CreateNameProperty();
-
-		public string Name
-		{
-			get => GetNameValue();
-			set => SetNameValue(value);
-		}
-
-		#endregion
 
 		partial void InitializeCapture();
 

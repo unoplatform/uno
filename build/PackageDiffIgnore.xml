@@ -686,6 +686,7 @@
 			<Member fullName="System.Boolean Uno.Devices.Sensors.INativeDualScreenProvider::IsDualScreen()" reason="Api alignments" />
 			<Member fullName="Uno.Presentation.Resources.IResourceRegistry Windows.UI.Xaml.ResourceHelper::Registry()" reason="Api alignments" />
 			<Member fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.FrameworkElement::IsEnabledProperty()" reason="Api alignments" />
+			<Member fullName="System.String Windows.UI.Xaml.UIElement::Name()" reason="Api alignments" />
 			<Member fullName="System.Boolean Windows.UI.Xaml.FrameworkElement::IsEnabled()" reason="Api alignments" />
 
 			<Member fullName="Microsoft.UI.Xaml.FocusState Microsoft.UI.Xaml.Controls.Control::FocusState()" reason="Api alignments" />
@@ -1249,6 +1250,9 @@
 			<Member fullName="System.Void Windows.Media.Playback.MediaPlayer.set_Position(System.TimeSpan value)" reason="Api alignments" />
 			<Member fullName="System.TimeSpan Windows.Media.Playback.MediaPlayer.get_Position()" reason="Api alignments" />
 			<Member fullName="System.Void Windows.UI.Xaml.Controls.Primitives.ToggleButton.OnIsCheckedChanged(System.Nullable`1&lt;System.Boolean&gt; oldValue, System.Nullable`1&lt;System.Boolean&gt; newValue)" reason="Api alignments" />
+
+			<Member fullName="System.String Windows.UI.Xaml.UIElement.get_Name()" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.UIElement.set_Name(System.String value)" reason="Api alignments" />
 			<Member fullName="System.Void Windows.UI.Xaml.Media.Animation.Timeline.Dispose(System.Boolean disposing)" reason="Api alignments" />
 			<Member fullName="System.Void Windows.UI.Xaml.Media.Animation.Timeline.Dispose()" reason="Api alignments" />
 
