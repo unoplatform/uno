@@ -167,6 +167,13 @@ namespace Windows.UI.Xaml.Controls
 			{
 				owner.PointerEntered += OnPointerEntered;
 				owner.PointerExited += OnPointerExited;
+				owner.Tapped += OnTapped;
+				owner.KeyDown += OnKeyDown;
+				owner.AddHandler(UIElement.PointerPressedEvent, new PointerEventHandler(OnPointerPressed), true);
+				if (sender is ButtonBase buttonBase)
+				{
+					buttonBase.Click += OnClick;
+				}
 				var token = owner.RegisterPropertyChangedCallback(UIElement.VisibilityProperty, OnOwnerVisibilityChanged);
 				toolTip.OwnerVisibilitySubscription = Disposable.Create(() =>
 				{
@@ -182,6 +189,13 @@ namespace Windows.UI.Xaml.Controls
 				toolTip.IsOpen = false;
 				owner.PointerEntered -= OnPointerEntered;
 				owner.PointerExited -= OnPointerExited;
+				owner.Tapped -= OnTapped;
+				owner.KeyDown -= OnKeyDown;
+				owner.RemoveHandler(UIElement.PointerPressedEvent, new PointerEventHandler(OnPointerPressed));
+				if (sender is ButtonBase buttonBase)
+				{
+					buttonBase.Click -= OnClick;
+				}
 				toolTip.OwnerVisibilitySubscription?.Dispose();
 				toolTip.OwnerVisibilitySubscription = null;
 			}
@@ -220,6 +234,39 @@ namespace Windows.UI.Xaml.Controls
 			{
 				toolTip.IsOpen = false;
 				toolTip.CurrentHoverId++;
+			}
+		}
+
+		private static void OnTapped(object sender, TappedRoutedEventArgs e)
+		{
+			if (sender is FrameworkElement owner && GetToolTipReference(owner) is { } toolTip)
+			{
+				toolTip.IsOpen = false;
+			}
+		}
+
+		private static void OnClick(object sender, RoutedEventArgs e)
+		{
+			if (sender is FrameworkElement owner && GetToolTipReference(owner) is { } toolTip)
+			{
+				toolTip.IsOpen = false;
+			}
+		}
+
+		private static void OnKeyDown(object sender, KeyRoutedEventArgs args)
+		{
+			if (sender is FrameworkElement owner && GetToolTipReference(owner) is { } toolTip)
+			{
+				toolTip.IsOpen = false;
+			}
+		}
+
+		private static void OnPointerPressed(object sender, PointerRoutedEventArgs e)
+		{
+			if (sender is FrameworkElement owner && GetToolTipReference(owner) is { } toolTip)
+			{
+				if (e.GetCurrentPoint(owner).Properties.IsLeftButtonPressed)
+					toolTip.IsOpen = false;
 			}
 		}
 	}
