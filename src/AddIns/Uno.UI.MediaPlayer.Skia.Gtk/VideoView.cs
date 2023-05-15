@@ -5,6 +5,8 @@ using System.Runtime.InteropServices;
 using Gdk;
 using Gtk;
 using LibVLCSharp.Shared;
+using Uno.Extensions;
+using Uno.Logging;
 
 namespace LibVLCSharp.GTK
 {
@@ -29,13 +31,10 @@ namespace LibVLCSharp.GTK
 			internal static extern IntPtr gdk_win32_drawable_get_handle(IntPtr gdkWindow);
 
 			/// <summary>
-			/// Gets the window's XID
+			/// Gets the window's X11 ID
 			/// </summary>
-			/// <remarks>Linux X11 only</remarks>
-			/// <param name="gdkWindow">The pointer to the GdkWindow object</param>
-			/// <returns>The window's XID</returns>
-			[DllImport("libgdk-x11-2.0.so.0", CallingConvention = CallingConvention.Cdecl)]
-			internal static extern uint gdk_x11_drawable_get_xid(IntPtr gdkWindow);
+			[DllImport("libgdk-3.so.0", CallingConvention = CallingConvention.Cdecl)]
+			internal static extern uint gdk_x11_window_get_xid(IntPtr gdkWindow);
 
 			/// <summary>
 			/// Gets the nsview's handle
@@ -45,6 +44,12 @@ namespace LibVLCSharp.GTK
 			/// <returns>The nsview's handle</returns>
 			[DllImport("libgdk-quartz-2.0.0.dylib")]
 			internal static extern IntPtr gdk_quartz_window_get_nsview(IntPtr gdkWindow);
+
+			/// <summary>
+			/// Initializes X11 threads support, as required by LibVLCSharp.
+			/// </summary>
+			[DllImport("libX11.so")]
+			internal static extern int XInitThreads();
 		}
 
 		private MediaPlayer? _mediaPlayer;
@@ -54,6 +59,11 @@ namespace LibVLCSharp.GTK
 		/// </summary>
 		public VideoView()
 		{
+			if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+			{
+				Native.XInitThreads();
+			}
+
 			Core.Initialize();
 
 			//            Color black = Color.Zero;
@@ -93,17 +103,33 @@ namespace LibVLCSharp.GTK
 			{
 				return;
 			}
+
+			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			{
+				this.Log().Debug("Attaching player");
+			}
+
 			if (PlatformHelper.IsWindows)
 			{
-				Console.WriteLine($"Player attached ({this.Window.Handle})");
-#pragma warning disable CS0618 // Type or member is obsolete
 				_mediaPlayer.Hwnd = Native.gdk_win32_window_get_handle(this.Window.Handle);
-#pragma warning restore CS0618 // Type or member is obsolete
-
 			}
 			else if (PlatformHelper.IsLinux)
 			{
-				_mediaPlayer.XWindow = Native.gdk_x11_drawable_get_xid(this.Window.Handle);
+				var xid = Native.gdk_x11_window_get_xid(this.Window.Handle);
+
+				if (xid != 0)
+				{
+					_mediaPlayer.XWindow = xid;
+				}
+				else
+				{
+					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Error))
+					{
+						this.Log().Error("Unable to get the X11 Window ID. This may be caused when running in a Wayland environment, such as WSLg.");
+					}
+
+					_mediaPlayer.Stop();
+				}
 			}
 			else if (PlatformHelper.IsMac)
 			{
