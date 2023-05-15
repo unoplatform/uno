@@ -3,7 +3,6 @@
 namespace Windows.System
 {
 	#if false || false || false || false || false || false || false
-	[global::System.FlagsAttribute]
 	public   enum VirtualKeyModifiers : uint
 	{
 		// Skipping already declared field Windows.System.VirtualKeyModifiers.None

@@ -3,7 +3,6 @@
 namespace Windows.Gaming.Input
 {
 	#if false || false || false || false || false || false || false
-	[global::System.FlagsAttribute]
 	public   enum GamepadButtons : uint
 	{
 		// Skipping already declared field Windows.Gaming.Input.GamepadButtons.None

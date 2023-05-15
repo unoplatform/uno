@@ -3,7 +3,6 @@
 namespace Windows.Security.Authentication.Web
 {
 	#if false || false || false || false || false || false || false
-	[global::System.FlagsAttribute]
 	public   enum WebAuthenticationOptions : uint
 	{
 		// Skipping already declared field Windows.Security.Authentication.Web.WebAuthenticationOptions.None

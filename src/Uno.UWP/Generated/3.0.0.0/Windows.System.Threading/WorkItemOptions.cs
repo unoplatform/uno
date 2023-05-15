@@ -3,7 +3,6 @@
 namespace Windows.System.Threading
 {
 	#if false || false || false || false || false || false || false
-	[global::System.FlagsAttribute]
 	public   enum WorkItemOptions : uint
 	{
 		// Skipping already declared field Windows.System.Threading.WorkItemOptions.None

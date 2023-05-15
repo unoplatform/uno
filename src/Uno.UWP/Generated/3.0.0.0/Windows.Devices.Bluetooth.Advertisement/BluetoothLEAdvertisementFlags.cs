@@ -2,8 +2,8 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Bluetooth.Advertisement
 {
-	#if false || false || false || false || false || false || false
 	[global::System.FlagsAttribute]
+	#if false || false || false || false || false || false || false
 	public   enum BluetoothLEAdvertisementFlags : uint
 	{
 		// Skipping already declared field Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementFlags.None
