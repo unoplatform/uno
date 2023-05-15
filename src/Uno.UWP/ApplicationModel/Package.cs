@@ -14,7 +14,7 @@ namespace Windows.ApplicationModel
 
 		public bool IsDevelopmentMode => GetInnerIsDevelopmentMode();
 
-		public PackageId Id => new PackageId();
+		public PackageId Id { get; } = new();
 
 		public DateTimeOffset InstallDate => GetInstallDate();
 
