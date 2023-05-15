@@ -24,6 +24,10 @@
 				<Run Text="{Binding DistanceInMillimeters}" />
 			</TextBlock>
 			<TextBlock>
+				<Run FontWeight="Bold">IsDetected: </Run>
+				<Run Text="{Binding IsDetected}" />
+			</TextBlock>
+			<TextBlock>
 				<Run FontWeight="Bold">Timestamp: </Run>
 				<Run Text="{Binding Timestamp}" />
 			</TextBlock>
