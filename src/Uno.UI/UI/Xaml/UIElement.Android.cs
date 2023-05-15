@@ -293,7 +293,7 @@ namespace Windows.UI.Xaml
 
 								parentElement = eltParent;
 								matrix.M31 += (float)ViewHelper.PhysicalToLogicalPixels(windowToFirstParent[0] - windowToEltParent[0]);
-								matrix.M31 += (float)ViewHelper.PhysicalToLogicalPixels(windowToFirstParent[1] - windowToEltParent[1]);
+								matrix.M32 += (float)ViewHelper.PhysicalToLogicalPixels(windowToFirstParent[1] - windowToEltParent[1]);
 								return true;
 
 							case null:
@@ -302,7 +302,7 @@ namespace Windows.UI.Xaml
 
 								parentElement = null;
 								matrix.M31 += (float)ViewHelper.PhysicalToLogicalPixels(windowToFirstParent[0]);
-								matrix.M31 += (float)ViewHelper.PhysicalToLogicalPixels(windowToFirstParent[1]);
+								matrix.M32 += (float)ViewHelper.PhysicalToLogicalPixels(windowToFirstParent[1]);
 								return false;
 						}
 					} while (true);

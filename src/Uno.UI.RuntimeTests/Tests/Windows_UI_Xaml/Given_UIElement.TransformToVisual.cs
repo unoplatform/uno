@@ -1216,6 +1216,39 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			Assert.AreEqual(new Point(40, -60), outerPoint);
 		}
 
+#if __ANDROID__
+		[TestMethod]
+		[RequiresFullWindow]
+		[RunsOnUIThread]
+		public async Task When_Offset_Within_Native_View()
+		{
+			var item = new Border()
+			{
+				Width = 100,
+				Height = 100,
+				Background = new SolidColorBrush(Colors.Red)
+			};
+
+			var innerNativeContainer = new Android.Widget.LinearLayout(ContextHelper.Current);
+			innerNativeContainer.SetPadding(33, 22, 0, 0);
+			innerNativeContainer.AddChild(item);
+
+			var outerNativeContainer = new Android.Widget.LinearLayout(ContextHelper.Current);
+			outerNativeContainer.SetPadding(7, 8, 0, 0);
+			outerNativeContainer.AddChild(innerNativeContainer);
+
+			var root = new ContentControl { Content = outerNativeContainer };
+
+			WindowContent = root;
+			await WaitForLoaded(root);
+			await WaitForIdle();
+
+			var point = item.TransformToVisual(root).TransformPoint(default);
+
+			Assert.AreEqual(new Point(40, 30), point);
+		}
+#endif
+
 		private static double X(HorizontalAlignment alignment, double available, double used, double margin)
 			=> alignment switch
 			{
