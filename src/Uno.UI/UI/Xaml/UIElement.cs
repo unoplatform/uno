@@ -934,8 +934,9 @@ namespace Windows.UI.Xaml
 				return;
 			}
 
-			((ILayouterElement)fwe).Layouter.Arrange(finalRect);
-			((ILayouterElement)fwe).Layouter.ArrangeChild(fwe, finalRect);
+			var layouter = ((ILayouterElement)fwe).Layouter;
+			layouter.Arrange(finalRect);
+			layouter.ArrangeChild(fwe, finalRect);
 #endif
 		}
 
