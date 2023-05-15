@@ -83,7 +83,6 @@ public partial class GtkMediaPlayer : Border
 			if (_videoView != null && _mediaPlayer != null)
 			{
 				Stop();
-				_videoView._isFullscreenWindow = true;
 				_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
 				{
 					await Initialized();
@@ -118,8 +117,6 @@ public partial class GtkMediaPlayer : Border
 			if (_videoView != null && _mediaPlayer != null)
 			{
 				Stop();
-				//_mediaPlayer.Dispose();
-				_videoView._isFullscreenWindow = true;
 				_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
 				{
 					await Initialized();
