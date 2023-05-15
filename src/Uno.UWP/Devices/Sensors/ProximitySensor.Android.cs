@@ -38,7 +38,7 @@ public partial class ProximitySensor
 		}
 
 		var sensorManager = SensorHelpers.GetSensorManager();
-		var sensors = sensorManager.GetDynamicSensorList(Android.Hardware.SensorType.Proximity);
+		var sensors = sensorManager.GetSensorList(Android.Hardware.SensorType.Proximity);
 		var androidSensor = sensors?.FirstOrDefault(s =>
 			sensorIdentifier.Id.Equals(
 				s.Id.ToString(CultureInfo.InvariantCulture), StringComparison.Ordinal));
@@ -87,13 +87,13 @@ public partial class ProximitySensor
 
 		void ISensorEventListener.OnSensorChanged(SensorEvent? e)
 		{
-			if (e?.Values.FirstOrDefault() is not float distanceInCm)
+			if (e?.Values?.FirstOrDefault() is not float distanceInCm)
 			{
 				return;
 			}
 
 			uint? distanceInMillimters = null;
-			if (distanceInCm <= _proximitySensor._sensor!.MaximumRange)
+			if (distanceInCm < _proximitySensor._sensor!.MaximumRange)
 			{
 				distanceInMillimters = (uint)Math.Round(distanceInCm * 10);
 			}

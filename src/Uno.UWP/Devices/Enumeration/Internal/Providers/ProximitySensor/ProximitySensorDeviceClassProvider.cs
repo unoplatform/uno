@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Threading.Tasks;
+using Android.Hardware;
 using Uno.Devices.Enumeration.Internal;
 using Uno.Devices.Sensors.Helpers;
 
@@ -30,13 +31,21 @@ internal class ProximitySensorDeviceClassProvider : IDeviceClassProvider
 		var sensorManager = SensorHelpers.GetSensorManager();
 		var sensors = sensorManager.GetDynamicSensorList(Android.Hardware.SensorType.Proximity);
 
-		if (sensors is null)
+		List<DeviceInformation> devices = new();
+		if (sensors is null || sensors.Count == 0)
 		{
-			return Task.FromResult(Array.Empty<DeviceInformation>());
+			sensors = sensorManager.GetSensorList(Android.Hardware.SensorType.Proximity);
 		}
 
-		List<DeviceInformation> devices = new();
-		foreach (var sensor in sensors)
+		if (sensors is null || sensors.Count == 0)
+		{
+			if (sensorManager.GetDefaultSensor(Android.Hardware.SensorType.Proximity) is { } sensor)
+			{
+				sensors = new List<Sensor>() { sensor };
+			}
+		}
+
+		foreach (var sensor in sensors ?? Array.Empty<Sensor>())
 		{
 			var deviceIdentifier = new DeviceIdentifier(sensor.Id.ToString(CultureInfo.InvariantCulture), DeviceClassGuids.ProximitySensor);
 			var deviceInformation = new DeviceInformation(deviceIdentifier);
