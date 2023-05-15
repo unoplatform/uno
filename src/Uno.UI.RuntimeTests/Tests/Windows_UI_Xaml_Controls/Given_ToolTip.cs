@@ -340,5 +340,25 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 			}
 		}
+
+		[TestMethod]
+		public async Task When_ToolTip_Owner_Clicked()
+		{
+			Button button = new Button()
+			{
+				Content = "Click when tooltip is visible",
+			};
+			ToolTip tooltip = new ToolTip
+			{
+				Content = "Tooltip should disappear when button is clicked!",
+			};
+			ToolTipService.SetToolTip(button, tooltip);
+			TestServices.WindowHelper.WindowContent = button;
+			await TestServices.WindowHelper.WaitForIdle();
+			tooltip.IsOpen = true;
+			await TestServices.WindowHelper.WaitForIdle();button.RaiseClick();
+			await TestServices.WindowHelper.WaitForIdle();
+			Assert.IsFalse(tooltip.IsOpen);
+		}
 	}
 }
