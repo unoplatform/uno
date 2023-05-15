@@ -13,3 +13,4 @@ using Android.App;
 [assembly: UsesPermission("android.permission.RECORD_AUDIO")]
 [assembly: UsesPermission("android.permission.CAMERA")]
 [assembly: UsesPermission("android.permission.WRITE_EXTERNAL_STORAGE")]
+[assembly: UsesPermission("android.hardware.sensor.proximity")]
