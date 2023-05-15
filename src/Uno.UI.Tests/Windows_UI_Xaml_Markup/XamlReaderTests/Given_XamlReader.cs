@@ -1553,7 +1553,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 				<LineBreak />
 				   You can construct URLs and access their parts. For URLs that represent local files, you can also manipulate properties of those files directly.
 				<LineBreak />
-				   AfterLineBreak
+				   AfterLineBreak 
 				</TextBlock>
 				""") as TextBlock;
 
@@ -1574,7 +1574,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 				<LineBreak />
 				   You can construct URLs and access their parts. For URLs that represent local files, you can also manipulate properties of those files directly.
 				<LineBreak />
-				   AfterLineBreak
+				   AfterLineBreak 
 				</TextBlock>
 				""") as TextBlock;
 
@@ -1590,9 +1590,9 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 		public void When_Binding_Converter_StaticResource()
 		{
 			var root = (StackPanel)XamlReader.Load(
-				@"<StackPanel xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'
+				@"<StackPanel xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' 
                         xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'
-                        xmlns:primitives='using:Microsoft.UI.Xaml.Controls.Primitives'>
+                        xmlns:primitives='using:Microsoft.UI.Xaml.Controls.Primitives'> 
                     <StackPanel.Resources>
                         <primitives:CornerRadiusFilterConverter x:Key='RightCornerRadiusFilterConverter' Filter='Right'/>
                     </StackPanel.Resources>
