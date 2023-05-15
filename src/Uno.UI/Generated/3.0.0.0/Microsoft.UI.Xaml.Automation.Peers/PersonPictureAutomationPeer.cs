@@ -2,5 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Automation.Peers
 {
-	// Skipped type, see SkippedType method
+	#if false || false || false || false || false || false || false
+	[global::Uno.NotImplemented]
+	#endif
+	public  partial class PersonPictureAutomationPeer : global::Windows.UI.Xaml.Automation.Peers.FrameworkElementAutomationPeer
+	{
+		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.PersonPictureAutomationPeer.PersonPictureAutomationPeer(Microsoft.UI.Xaml.Controls.PersonPicture)
+		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.PersonPictureAutomationPeer.PersonPictureAutomationPeer(Microsoft.UI.Xaml.Controls.PersonPicture)
+	}
 }

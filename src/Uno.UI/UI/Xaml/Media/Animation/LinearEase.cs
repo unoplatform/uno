@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Windows.UI.Xaml.Media.Animation;
-
-namespace Windows.UI.Xaml.Media.Animation
+﻿namespace Windows.UI.Xaml.Media.Animation
 {
 	internal sealed class LinearEase : IEasingFunction
 	{

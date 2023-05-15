@@ -24,6 +24,13 @@ namespace Windows.UI.Xaml.Controls
 			return Math.Abs(value) < 2.2204460492503131E-15;
 		}
 
+		public static bool IsOne(this double value)
+		{
+			// We actually consider anything within an order of magnitude of
+			// epsilon to be zero
+			return Math.Abs(value - 1.0) < 2.2204460492503131E-15;
+		}
+
 		/// <summary>
 		/// Check if a number isn't really a number.
 		/// </summary>
