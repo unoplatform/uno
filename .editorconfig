@@ -222,6 +222,8 @@ dotnet_style_qualification_for_method = false:suggestion
 # http://kent-boogaart.com/blog/editorconfig-reference-for-c-developers#dotnet_style_qualification_for_property
 dotnet_style_qualification_for_property = false:suggestion
 
+csharp_style_namespace_declarations = file_scoped
+
 ## Naming styles
 
 dotnet_naming_style.pascal_case_style.capitalization = pascal_case
