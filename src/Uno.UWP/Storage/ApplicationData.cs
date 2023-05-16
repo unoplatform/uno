@@ -12,32 +12,36 @@ namespace Windows.Storage
 
 		private ApplicationData()
 		{
+			PartialCtor();
+
+			LocalFolder = new StorageFolder(GetLocalFolder());
+			RoamingFolder = new StorageFolder(GetRoamingFolder());
+			SharedLocalFolder = new StorageFolder(".shared", GetSharedLocalFolder());
+			LocalCacheFolder = new StorageFolder(GetLocalCacheFolder());
+			TemporaryFolder = new StorageFolder(GetTemporaryFolder());
+
 			LocalSettings = new ApplicationDataContainer(this, "Local", ApplicationDataLocality.Local);
 			RoamingSettings = new ApplicationDataContainer(this, "Roaming", ApplicationDataLocality.Roaming);
-
-			PartialCtor();
 		}
 
 		partial void PartialCtor();
 
-		public StorageFolder LocalFolder { get; } = new StorageFolder(GetLocalFolder());
+		public StorageFolder LocalFolder { get; }
 
-		public StorageFolder RoamingFolder { get; } = new StorageFolder(GetRoamingFolder());
+		public StorageFolder RoamingFolder { get; }
 
-		public StorageFolder SharedLocalFolder { get; } = new StorageFolder(".shared", GetSharedLocalFolder());
+		public StorageFolder SharedLocalFolder { get; }
 
-		public StorageFolder LocalCacheFolder { get; } = new StorageFolder(GetLocalCacheFolder());
+		public StorageFolder LocalCacheFolder { get; }
 
-		public StorageFolder TemporaryFolder { get; } = new StorageFolder(GetTemporaryFolder());
+		public StorageFolder TemporaryFolder { get; }
 
 		public ApplicationDataContainer LocalSettings { get; }
 
 		public ApplicationDataContainer RoamingSettings { get; }
 
-
 		[Uno.NotImplemented]
 		public ulong RoamingStorageQuota => 0;
-
 
 		[Uno.NotImplemented]
 		public uint Version => 0;
