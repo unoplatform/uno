@@ -94,7 +94,7 @@ namespace LibVLCSharp.GTK
 			}
 		}
 
-		void Attach()
+		private void Attach()
 		{
 			if (!IsRealized || _mediaPlayer == null)
 			{
