@@ -80,10 +80,7 @@ namespace LibVLCSharp.GTK
 		/// </summary>
 		public MediaPlayer? MediaPlayer
 		{
-			get
-			{
-				return _mediaPlayer;
-			}
+			get => _mediaPlayer;
 			set
 			{
 				if (ReferenceEquals(_mediaPlayer, value))
