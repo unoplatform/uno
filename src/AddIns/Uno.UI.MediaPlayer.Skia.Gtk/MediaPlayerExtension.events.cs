@@ -110,9 +110,27 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 	}
 	private void OnStatusChanged(MediaPlaybackSession? sender, object args)
 	{
-		//if ((MediaPlaybackState)args == MediaPlaybackState.Playing)
-		//{
-		//	_player?.Play();
-		//}
+		if (_player != null && args is MediaPlaybackState state)
+		{
+			switch (state)
+			{
+				case MediaPlaybackState.Playing:
+					if (_player.CurrentState != MediaPlayerState.Playing)
+					{
+						_player.Play();
+					}
+					break;
+				case MediaPlaybackState.Paused:
+					if (_player.CurrentState != MediaPlayerState.Paused)
+					{
+						_player.Pause();
+					}
+					break;
+				case MediaPlaybackState.None:
+				case MediaPlaybackState.Opening:
+				case MediaPlaybackState.Buffering:
+					break;
+			}
+		}
 	}
 }

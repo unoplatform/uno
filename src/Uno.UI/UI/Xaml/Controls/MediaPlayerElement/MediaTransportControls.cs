@@ -394,12 +394,13 @@ namespace Windows.UI.Xaml.Controls
 			{
 				return;
 			}
+			var bounds = new Foundation.Rect(0, 0,
+											_controlPanelGrid.ActualWidth,
+											_isInteractive ? _controlPanelGrid.ActualHeight : 0);
+
 			var transportBounds =
 				this.TransformToVisual(root)
-					.TransformBounds(
-						new Foundation.Rect(
-							0, 0,
-							_controlPanelGrid.ActualWidth, _isInteractive ? _controlPanelGrid.ActualHeight : 0));
+					.TransformBounds(bounds);
 			this._mediaPlayer?.SetTransportControlBounds(transportBounds);
 		}
 

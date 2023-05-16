@@ -1,4 +1,0 @@
-﻿<linker>
-	<assembly fullname="Microsoft.Identity.Client" />
-	<assembly fullname="System.IdentityModel.Tokens.Jwt" />
-</linker>

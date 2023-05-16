@@ -26,6 +26,7 @@ namespace Uno.UI.Media;
 
 public partial class GtkMediaPlayer
 {
+	private TaskCompletionSource _taskCompletionSource = new TaskCompletionSource();
 	public event EventHandler<object>? OnSourceFailed;
 	public event EventHandler<object>? OnSourceEnded;
 	public event EventHandler<object>? OnMetadataLoaded;
@@ -57,40 +58,58 @@ public partial class GtkMediaPlayer
 			HorizontalContentAlignment = HorizontalAlignment.Stretch,
 			VerticalContentAlignment = VerticalAlignment.Stretch,
 		};
-		var taskCompletionSource = new TaskCompletionSource();
+		_taskCompletionSource = new TaskCompletionSource();
 		_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 				{
-					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
-					{
-						this.Log().Debug($"Set MediaPlayer");
-					}
-					_videoView.MediaPlayer = _mediaPlayer;
-
-					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
-					{
-						this.Log().Debug($"Content _videoView on Dispatcher");
-					}
-					_videoView.Visible = true;
-					_videoView.MediaPlayer = _mediaPlayer;
-
-					_mediaPlayer.TimeChanged += OnMediaPlayerTimeChange;
-					_mediaPlayer.MediaChanged += MediaPlayerMediaChanged;
-					_mediaPlayer.Stopped += OnMediaPlayerStopped;
-
-					_videoContainer.Content = _videoView;
-
-					Child = _videoContainer;
-
-					UpdateVideoStretch();
-					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
-					{
-						this.Log().Debug($"Created player");
-					}
-					taskCompletionSource.SetResult();
+					InitializedMedia();
 				});
-		await taskCompletionSource.Task;
+		await _taskCompletionSource.Task;
 	}
 
+	private Task InitializedMedia()
+	{
+		try
+		{
+			if (_videoView != null && _mediaPlayer != null && _videoContainer != null)
+			{
+				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				{
+					this.Log().Debug($"Set MediaPlayer");
+				}
+				_videoView.MediaPlayer = _mediaPlayer;
+
+				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				{
+					this.Log().Debug($"Content _videoView on Dispatcher");
+				}
+				_videoView.Visible = true;
+				_videoView.MediaPlayer = _mediaPlayer;
+
+				_mediaPlayer.TimeChanged += OnMediaPlayerTimeChange;
+				_mediaPlayer.MediaChanged += MediaPlayerMediaChanged;
+				_mediaPlayer.Stopped += OnMediaPlayerStopped;
+
+				_videoContainer.Content = _videoView;
+
+				Child = _videoContainer;
+
+				UpdateVideoStretch();
+				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				{
+					this.Log().Debug($"Created player");
+				}
+				_taskCompletionSource.SetResult();
+			}
+		}
+		catch (Exception ex)
+		{
+			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			{
+				this.Log().Debug($"InitializedMedia error: " + ex.Message);
+			}
+		}
+		return Task.CompletedTask;
+	}
 
 	private void OnSourceVideoLoaded(object? sender, EventArgs e)
 	{
@@ -118,7 +137,6 @@ public partial class GtkMediaPlayer
 		if (_mediaPlayer != null && _libvlc != null && _mediaPath != null)
 		{
 			string[] options = new string[1];
-			//options[0] = "--video-on-top";
 			var media = new LibVLCSharp.Shared.Media(_libvlc, _mediaPath, options);
 
 			media.Parse(MediaParseOptions.ParseNetwork);
@@ -162,32 +180,40 @@ public partial class GtkMediaPlayer
 		{
 			this.Log().Debug($"StateChanged");
 		}
-		if (el.State == VLCState.Error)
+		switch (el.State)
 		{
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
-			{
-				this.Log().Debug($"Error");
-			}
-			OnGtkSourceFailed(sender, el);
-		}
-		if (el.State == VLCState.Ended)
-		{
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
-			{
-				this.Log().Debug($"Error");
-			}
-			if (!_isEnding)
-			{
-				OnEndReached();
-			}
-		}
-		if (el.State == VLCState.Opening)
-		{
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
-			{
-				this.Log().Debug($"Opening");
-			}
-			OnGtkSourceLoaded(sender, el);
+			case VLCState.Opening:
+				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				{
+					this.Log().Debug($"Opening");
+				}
+				OnGtkSourceLoaded(sender, el);
+				break;
+			case VLCState.Ended:
+				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				{
+					this.Log().Debug($"Error");
+				}
+				if (!_isEnding)
+				{
+					OnEndReached();
+				}
+				break;
+			case VLCState.Error:
+				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				{
+					this.Log().Debug($"Error");
+				}
+				OnGtkSourceFailed(sender, el);
+				break;
+			case VLCState.NothingSpecial:
+			case VLCState.Buffering:
+			case VLCState.Playing:
+			case VLCState.Paused:
+			case VLCState.Stopped:
+				break;
+			default:
+				break;
 		}
 	}
 
@@ -237,7 +263,7 @@ public partial class GtkMediaPlayer
 			this.Log().Debug($"OnEndReached");
 		}
 
-		if (_libvlc != null && _videoView != null && _mediaPlayer != null && _mediaPath != null)
+		if (_videoView != null && _mediaPlayer != null)
 		{
 			_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 			{

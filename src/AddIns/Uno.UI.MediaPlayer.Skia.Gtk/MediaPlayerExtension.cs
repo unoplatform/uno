@@ -42,6 +42,7 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 	private bool _isPlayerPrepared;
 	private int _playlistIndex;
 	private TimeSpan _naturalDuration;
+	private bool _isLoopingEnabled;
 
 	public MediaPlayerExtension(object owner)
 	{
@@ -167,40 +168,31 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 		{
 			return;
 		}
+		_owner.PlaybackSession.PlaybackState = MediaPlaybackState.Opening;
+		InitializePlayer();
 
-		try
+		switch (_owner.Source)
 		{
-			_owner.PlaybackSession.PlaybackState = MediaPlaybackState.Opening;
-			InitializePlayer();
+			case MediaPlaybackList playlist when playlist.Items.Count > 0 && _playlistItems is not null:
+				SetPlaylistItems(playlist);
+				_uri = _playlistItems[0];
+				break;
 
-			switch (_owner.Source)
-			{
-				case MediaPlaybackList playlist when playlist.Items.Count > 0 && _playlistItems is not null:
-					SetPlaylistItems(playlist);
-					_uri = _playlistItems[0];
-					break;
+			case MediaPlaybackItem item:
+				_uri = item.Source.Uri;
+				break;
 
-				case MediaPlaybackItem item:
-					_uri = item.Source.Uri;
-					break;
+			case MediaSource source:
+				_uri = source.Uri;
+				break;
 
-				case MediaSource source:
-					_uri = source.Uri;
-					break;
-
-				default:
-					throw new InvalidOperationException("Unsupported media source type");
-			}
-
-			ApplyVideoSource();
-			Events?.RaiseMediaOpened();
-			Events?.RaiseSourceChanged();
+			default:
+				throw new InvalidOperationException("Unsupported media source type");
 		}
-		catch (global::System.Exception)
-		{
-			//this.Log().Debug($"MediaPlayerElementExtension.InitializeSource({ex.Message})");
-			//OnMediaFailed(ex);
-		}
+		ApplyVideoSource();
+		Events?.RaiseMediaOpened();
+		Events?.RaiseSourceChanged();
+
 	}
 
 	private void SetPlaylistItems(MediaPlaybackList playlist)
@@ -270,8 +262,6 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 		}
 	}
 
-	private bool _isLoopingEnabled;
-
 	public bool IsLoopingEnabled
 	{
 		get => _isLoopingEnabled;
@@ -285,7 +275,17 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 		}
 	}
 
-	public MediaPlayerState CurrentState => throw new NotImplementedException();
+	public MediaPlayerState CurrentState
+	{
+		get => _player == null ? default(MediaPlayerState) : _player.CurrentState;
+		internal set
+		{
+			if (_player != null)
+			{
+				_player.CurrentState = value;
+			}
+		}
+	}
 
 	public TimeSpan NaturalDuration
 	{

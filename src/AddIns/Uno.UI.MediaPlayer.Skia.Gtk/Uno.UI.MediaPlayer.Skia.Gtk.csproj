@@ -26,28 +26,18 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.Identity.Client" Version="4.47.0" />
 		<PackageReference Include="Uno.Core.Extensions.Logging" Version="4.0.1" />
 		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" Version="4.0.1" />
-		<PackageReference Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Version="4.9.0-dev.1069" />
-
-		<PackageReference Include="Uno.Resizetizer" Version="1.1.0-dev.13" />
-		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.1.0" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="8.0.0-preview.3.23174.8" />
 		<PackageReference Include="SkiaSharp.Views.Uno" Version="2.88.3" />
 		<PackageReference Include="SkiaSharp.Skottie" Version="2.88.3" />
 		<PackageReference Include="VideoLAN.LibVLC.Windows" Version="3.0.18" />
 		<PackageReference Include="LibVLCSharp" Version="3.6.8" />
 		<PackageReference Include="GtkSharp" Version="3.24.24.38" />
-		
 	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\Uno.UI.Runtime.Skia.Gtk\Uno.UI.Runtime.Skia.Gtk.csproj" />
 		<ProjectReference Include="..\..\Uno.UI\Uno.UI.Skia.csproj" />
-		<EmbeddedResource Include="LinkerDefinition.xml">
-			<LogicalName>$(AssemblyName).xml</LogicalName>
-		</EmbeddedResource>
 	</ItemGroup>
 
 	<Target Name="_UnoUIUnoUIMediaPlayerSkiaGtkOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">
