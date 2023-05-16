@@ -6449,7 +6449,7 @@
               </VisualStateGroup>
             </VisualStateManager.VisualStateGroups>
             <!--AnimatedVisualPlayer for Lottie-->
-            <AnimatedVisualPlayer x:Name="LottiePlayer" AutoPlay="false" Stretch="fill" />
+            <controls:AnimatedVisualPlayer x:Name="LottiePlayer" AutoPlay="false" Stretch="fill" />
           </Grid>
         </ControlTemplate>
       </Setter.Value>

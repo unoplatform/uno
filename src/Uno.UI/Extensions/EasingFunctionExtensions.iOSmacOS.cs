@@ -141,19 +141,19 @@ namespace Windows.UI.Xaml.Media.Animation
 			return GetDefaultTimingFunction();
 		}
 
-		private static CAMediaTimingFunction GetPowerTimingFunction(int power, EasingMode easingMode)
+		private static CAMediaTimingFunction GetPowerTimingFunction(double power, EasingMode easingMode)
 		{
 			switch (power)
 			{
-				case 1:
+				case 1.0:
 					return CAMediaTimingFunction.FromName(CAMediaTimingFunction.Linear);
-				case 2:
+				case 2.0:
 					return GetQuadraticTimingFunction(easingMode);
-				case 3:
+				case 3.0:
 					return GetCubicTimingFunction(easingMode);
-				case 4:
+				case 4.0:
 					return GetQuarticTimingFunction(easingMode);
-				case 5:
+				case 5.0:
 					return GetQuinticTimingFunction(easingMode);
 				default:
 					return CAMediaTimingFunction.FromName(CAMediaTimingFunction.Default);

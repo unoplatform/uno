@@ -107,7 +107,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 			var itemsPanel = listView?.ItemsPanel;
 			Assert.IsNotNull(itemsPanel);
 
-			var content = itemsPanel.LoadContent() as StackPanel;
+			var content = ((IFrameworkTemplateInternal)itemsPanel).LoadContent() as StackPanel;
 			Assert.IsNotNull(content);
 			Assert.AreEqual(content.Name, "InnerStackPanel");
 

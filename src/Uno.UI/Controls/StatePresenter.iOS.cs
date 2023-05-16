@@ -48,40 +48,16 @@ namespace Uno.UI.Controls
 			InitializeBinder();
 		}
 
-		#region RegisterLoadActions
-
-		private List<(Action loaded, Action unloaded)> _loadActions = new List<(Action loaded, Action unloaded)>(2);
-
-		public IDisposable RegisterLoadActions(Action loaded, Action unloaded)
-		{
-			var actions = (loaded, unloaded);
-
-			_loadActions.Add(actions);
-
-			if (Window != null)
-			{
-				loaded();
-			}
-
-			return Disposable.Create(() => _loadActions.Remove(actions));
-		}
-
-		#endregion
-
 		public override void MovedToWindow()
 		{
 			base.MovedToWindow();
 
 			if (this.Window != null)
 			{
-				_loadActions.ForEach(a => a.loaded());
-
 				Loaded?.Invoke();
 			}
 			else
 			{
-				_loadActions.ForEach(a => a.unloaded());
-
 				Unloaded?.Invoke();
 			}
 		}

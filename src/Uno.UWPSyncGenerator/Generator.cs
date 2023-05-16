@@ -611,26 +611,14 @@ namespace Uno.UWPSyncGenerator
 					return true;
 #else
 				case "Microsoft.UI.Xaml.Automation.Peers.AnimatedVisualPlayerAutomationPeer":
-				case "Microsoft.UI.Xaml.Automation.Peers.PersonPictureAutomationPeer":
 				case "Microsoft.UI.Xaml.Automation.Peers.MenuBarAutomationPeer":
 				case "Microsoft.UI.Xaml.Automation.Peers.MenuBarItemAutomationPeer":
-				case "Microsoft.UI.Xaml.Controls.AnimatedVisuals.AnimatedAcceptVisualSource":
-				case "Microsoft.UI.Xaml.Controls.AnimatedVisuals.AnimatedBackVisualSource":
-				case "Microsoft.UI.Xaml.Controls.AnimatedVisuals.AnimatedChevronDownSmallVisualSource":
-				case "Microsoft.UI.Xaml.Controls.AnimatedVisuals.AnimatedChevronRightDownSmallVisualSource":
-				case "Microsoft.UI.Xaml.Controls.AnimatedVisuals.AnimatedChevronUpDownSmallVisualSource":
-				case "Microsoft.UI.Xaml.Controls.AnimatedVisuals.AnimatedFindVisualSource":
-				case "Microsoft.UI.Xaml.Controls.AnimatedVisuals.AnimatedGlobalNavigationButtonVisualSource":
-				case "Microsoft.UI.Xaml.Controls.AnimatedVisuals.AnimatedSettingsVisualSource":
-				case "Microsoft.UI.Xaml.Controls.AnimatedVisualPlayer":
 				case "Microsoft.UI.Xaml.Controls.IAnimatedVisualSource":
 				case "Microsoft.UI.Xaml.Controls.IAnimatedVisualSource2":
 				case "Microsoft.UI.Xaml.Controls.IDynamicAnimatedVisualSource":
 				case "Microsoft.UI.Xaml.Controls.MenuBar":
 				case "Microsoft.UI.Xaml.Controls.MenuBarItem":
 				case "Microsoft.UI.Xaml.Controls.MenuBarItemFlyout":
-				case "Microsoft.UI.Xaml.Controls.PersonPicture":
-				case "Microsoft.UI.Xaml.Controls.PersonPictureTemplateSettings":
 					// Skipped because the implementation is currently incorrectly placed in WUX namespace
 					return true;
 #endif

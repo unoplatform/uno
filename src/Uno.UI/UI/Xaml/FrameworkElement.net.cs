@@ -83,26 +83,6 @@ namespace Windows.UI.Xaml
 			base.OnInvalidateMeasure();
 		}
 
-		partial void OnMeasurePartial(Size slotSize)
-		{
-			MeasureCallCount++;
-			AvailableMeasureSize = slotSize;
-
-			if (DesiredSizeSelector != null)
-			{
-				var desiredSize = DesiredSizeSelector(slotSize);
-
-				LayoutInformation.SetDesiredSize(this, desiredSize);
-				RequestedDesiredSize = desiredSize;
-			}
-			else if (RequestedDesiredSize != null)
-			{
-				var desiredSize = RequestedDesiredSize.Value;
-
-				LayoutInformation.SetDesiredSize(this, desiredSize);
-			}
-		}
-
 		internal void InternalArrange(Rect frame)
 		{
 			_layouter.Arrange(frame);

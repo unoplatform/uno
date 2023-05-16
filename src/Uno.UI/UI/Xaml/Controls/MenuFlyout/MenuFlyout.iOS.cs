@@ -7,7 +7,6 @@ using System.Windows.Input;
 using Foundation;
 using Uno.Client;
 using Uno.Extensions;
-using Uno.UI.Services;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using UIKit;

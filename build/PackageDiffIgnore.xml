@@ -540,12 +540,20 @@
 
 			<Member fullName="Uno.UI.IndexPath" reason="Api alignments" />
 			<Member fullName="Uno.UI.IResourcesService" reason="Api alignments" />
+			<Member fullName="Uno.UI.Services.ResourcesService" reason="Api alignments" />
 			<Member fullName="Uno.UI.Common.DelegateCommand" reason="Api alignments" />
 			<Member fullName="Uno.UI.Common.DelegateCommand`1" reason="Api alignments" />
 			<Member fullName="Windows.Foundation.SizeConverter" reason="Api alignments" />
 			<Member fullName="Windows.UI.Xaml.ResourceHelper" reason="Api alignments" />
 			<Member fullName="Uno.UI.Extensions.CollectionViewExtensions" reason="Api alignments" />
-
+			<Member fullName="Windows.UI.Xaml.Controls.AnimatedVisualPlayer" reason="Api alignments" />
+			<Member fullName="Windows.UI.Xaml.Controls.IAnimatedVisualSource" reason="Api alignments" />
+			<Member fullName="Windows.UI.Xaml.Controls.IThemableAnimatedVisualSource" reason="Api alignments" />
+			<Member fullName="Microsoft.Toolkit.Uwp.UI.Lottie.LottieVisualOptions" reason="Api alignments" />
+			<Member fullName="Microsoft.Toolkit.Uwp.UI.Lottie.LottieVisualSource" reason="Api alignments" />
+			<Member fullName="Microsoft.Toolkit.Uwp.UI.Lottie.LottieVisualSourceBase" reason="Api alignments" />
+			<Member fullName="Microsoft.Toolkit.Uwp.UI.Lottie.ThemableLottieVisualSource" reason="Api alignments" />
+			<Member fullName="Windows.UI.Xaml.Controls.BackButton" reason="Api alignments" />
 		</Types>
 		<Events>
 			<Member fullName="Windows.Foundation.TypedEventHandler`2&lt;Microsoft.UI.Xaml.Controls.IInputValidationControl,Microsoft.UI.Xaml.Controls.HasValidationErrorsChangedEventArgs&gt; Microsoft.UI.Xaml.Controls.AutoSuggestBox::HasValidationErrorsChanged" reason="Not present in WinAppSDK 1.2" />
@@ -664,6 +672,9 @@
 			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.TextBox::InputValidationKindProperty()" reason="Not present in WinAppSDK 1.2" />
 			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.TextBox::InputValidationModeProperty()" reason="Not present in WinAppSDK 1.2" />
 
+			<Member fullName="Windows.UI.Xaml.Controls.IAnimatedVisualSource Microsoft.UI.Xaml.Controls.ProgressRing::DeterminateSource()" reason="Api alignments" />
+			<Member fullName="Windows.UI.Xaml.Controls.IAnimatedVisualSource Microsoft.UI.Xaml.Controls.ProgressRing::IndeterminateSource()" reason="Api alignments" />
+
 			<Member fullName="Microsoft.UI.Xaml.ApplicationTheme Microsoft.UI.Xaml.Media.RevealBrush::TargetTheme()" reason="Not present in WinAppSDK 1.2" />
 			<Member fullName="System.Boolean Microsoft.UI.Xaml.Media.RevealBrush::AlwaysUseFallback()" reason="Not present in WinAppSDK 1.2" />
 			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Media.RevealBrush::AlwaysUseFallbackProperty()" reason="Not present in WinAppSDK 1.2" />
@@ -676,9 +687,25 @@
 			<Member fullName="System.Boolean Uno.Devices.Sensors.INativeDualScreenProvider::IsDualScreen()" reason="Api alignments" />
 			<Member fullName="Uno.Presentation.Resources.IResourceRegistry Windows.UI.Xaml.ResourceHelper::Registry()" reason="Api alignments" />
 			<Member fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.FrameworkElement::IsEnabledProperty()" reason="Api alignments" />
+			<Member fullName="System.String Windows.UI.Xaml.UIElement::Name()" reason="Api alignments" />
 			<Member fullName="System.Boolean Windows.UI.Xaml.FrameworkElement::IsEnabled()" reason="Api alignments" />
 
-
+			<Member fullName="Microsoft.UI.Xaml.FocusState Microsoft.UI.Xaml.Controls.Control::FocusState()" reason="Api alignments" />
+			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.Control::FocusStateProperty()" reason="Api alignments" />
+			<Member fullName="System.Boolean Microsoft.UI.Xaml.Controls.Control::IsTabStop()" reason="Api alignments" />
+			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.Control::IsTabStopProperty()" reason="Api alignments" />
+			<Member fullName="System.Int32 Microsoft.UI.Xaml.Controls.Control::TabIndex()" reason="Api alignments" />
+			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.Control::TabIndexProperty()" reason="Api alignments" />
+			<Member fullName="Microsoft.UI.Xaml.DependencyObject Microsoft.UI.Xaml.Controls.Control::XYFocusUp()" reason="Api alignments" />
+			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.Control::XYFocusUpProperty()" reason="Api alignments" />
+			<Member fullName="Microsoft.UI.Xaml.DependencyObject Microsoft.UI.Xaml.Controls.Control::XYFocusDown()" reason="Api alignments" />
+			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.Control::XYFocusDownProperty()" reason="Api alignments" />
+			<Member fullName="Microsoft.UI.Xaml.DependencyObject Microsoft.UI.Xaml.Controls.Control::XYFocusLeft()" reason="Api alignments" />
+			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.Control::XYFocusLeftProperty()" reason="Api alignments" />
+			<Member fullName="Microsoft.UI.Xaml.DependencyObject Microsoft.UI.Xaml.Controls.Control::XYFocusRight()" reason="Api alignments" />
+			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.Control::XYFocusRightProperty()" reason="Api alignments" />
+			<Member fullName="System.Boolean Microsoft.UI.Xaml.Controls.Control::UseSystemFocusVisuals()" reason="Api alignments" />
+			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.Control::UseSystemFocusVisualsProperty()" reason="Api alignments" />
 			<Member fullName="System.String Windows.UI.Xaml.TemplatePartAttribute::Name()" reason="Api alignments" />
 			<Member fullName="System.Type Windows.UI.Xaml.TemplatePartAttribute::Type()" reason="Api alignments" />
 			<Member fullName="System.Double Windows.UI.Xaml.CornerRadius::TopLeft()" reason="Api alignments" />
@@ -724,6 +751,8 @@
 			<Member fullName="System.TimeSpan Windows.UI.Xaml.Media.Animation.RepeatBehavior::Duration()" reason="Api alignments" />
 			<Member fullName="Windows.UI.Xaml.Media.Animation.RepeatBehaviorType Windows.UI.Xaml.Media.Animation.RepeatBehavior::Type()" reason="Api alignments" />
 
+			<Member fullName="System.Int32 Windows.UI.Xaml.Media.Animation.PowerEase::Power()" reason="Api alignments" />
+			<Member fullName="System.Func`2&lt;System.String,System.String&gt; Windows.ApplicationModel.Resources.ResourceLoader::GetStringInternal()" reason="Api alignments" />
 
 			<!-- BEGIN WebView -->
 			<Member fullName="Uno.UI.Web.WebErrorStatus Windows.UI.Xaml.Controls.WebViewNavigationCompletedEventArgs::WebErrorStatus()" reason="Incorrect type" />
@@ -1047,6 +1076,31 @@
 			<Member fullName="System.Void Windows.UI.Xaml.Controls.ListViewBaseScrollContentPresenter.SetContentOffset(CoreGraphics.CGPoint contentOffset, System.Boolean animated)" reason="Api alignments" />
 			<Member fullName="System.Void Windows.UI.Xaml.Controls.ListViewBaseScrollContentPresenter.SetZoomScale(System.Runtime.InteropServices.NFloat scale, System.Boolean animated)" reason="Api alignments" />
 
+			<Member fullName="System.Boolean Microsoft.UI.Xaml.Controls.Control.Focus(Microsoft.UI.Xaml.FocusState value)" reason="Api alignments" />
+			<Member fullName="Microsoft.UI.Xaml.FocusState Microsoft.UI.Xaml.Controls.Control.get_FocusState()" reason="Api alignments" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.Control.set_FocusState(Microsoft.UI.Xaml.FocusState value)" reason="Api alignments" />
+			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.Control.get_FocusStateProperty()" reason="Api alignments" />
+			<Member fullName="System.Boolean Microsoft.UI.Xaml.Controls.Control.get_IsTabStop()" reason="Api alignments" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.Control.set_IsTabStop(System.Boolean value)" reason="Api alignments" />
+			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.Control.get_IsTabStopProperty()" reason="Api alignments" />
+			<Member fullName="System.Int32 Microsoft.UI.Xaml.Controls.Control.get_TabIndex()" reason="Api alignments" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.Control.set_TabIndex(System.Int32 value)" reason="Api alignments" />
+			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.Control.get_TabIndexProperty()" reason="Api alignments" />
+			<Member fullName="Microsoft.UI.Xaml.DependencyObject Microsoft.UI.Xaml.Controls.Control.get_XYFocusUp()" reason="Api alignments" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.Control.set_XYFocusUp(Microsoft.UI.Xaml.DependencyObject value)" reason="Api alignments" />
+			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.Control.get_XYFocusUpProperty()" reason="Api alignments" />
+			<Member fullName="Microsoft.UI.Xaml.DependencyObject Microsoft.UI.Xaml.Controls.Control.get_XYFocusDown()" reason="Api alignments" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.Control.set_XYFocusDown(Microsoft.UI.Xaml.DependencyObject value)" reason="Api alignments" />
+			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.Control.get_XYFocusDownProperty()" reason="Api alignments" />
+			<Member fullName="Microsoft.UI.Xaml.DependencyObject Microsoft.UI.Xaml.Controls.Control.get_XYFocusLeft()" reason="Api alignments" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.Control.set_XYFocusLeft(Microsoft.UI.Xaml.DependencyObject value)" reason="Api alignments" />
+			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.Control.get_XYFocusLeftProperty()" reason="Api alignments" />
+			<Member fullName="Microsoft.UI.Xaml.DependencyObject Microsoft.UI.Xaml.Controls.Control.get_XYFocusRight()" reason="Api alignments" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.Control.set_XYFocusRight(Microsoft.UI.Xaml.DependencyObject value)" reason="Api alignments" />
+			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.Control.get_XYFocusRightProperty()" reason="Api alignments" />
+			<Member fullName="System.Boolean Microsoft.UI.Xaml.Controls.Control.get_UseSystemFocusVisuals()" reason="Api alignments" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.Control.set_UseSystemFocusVisuals(System.Boolean value)" reason="Api alignments" />
+			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.Control.get_UseSystemFocusVisualsProperty()" reason="Api alignments" />
 			<Member fullName="System.Void Windows.UI.Xaml.FrameworkElement.add_IsEnabledChanged(Windows.UI.Xaml.DependencyPropertyChangedEventHandler value)" reason="Api alignments" />
 			<Member fullName="System.Void Windows.UI.Xaml.FrameworkElement.remove_IsEnabledChanged(Windows.UI.Xaml.DependencyPropertyChangedEventHandler value)" reason="Api alignments" />
 			<Member fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.FrameworkElement.get_IsEnabledProperty()" reason="Api alignments" />
@@ -1072,6 +1126,25 @@
 			<Member fullName="System.Void Uno.UI.Controls.Legacy.ListViewBase.set_IsEnabled(System.Boolean value)" reason="Api alignments" />
 			<Member fullName="System.Boolean Windows.UI.Xaml.Controls.SecureTextBoxView.get_IsEnabled()" reason="Api alignments" />
 			<Member fullName="System.Void Windows.UI.Xaml.Controls.SecureTextBoxView.set_IsEnabled(System.Boolean value)" reason="Api alignments" />
+			<Member fullName="Windows.UI.Xaml.Controls.IAnimatedVisualSource Microsoft.UI.Xaml.Controls.ILottieVisualSourceProvider.CreateFromLottieAsset(System.Uri sourceFile)" reason="Api alignments" />
+			<Member fullName="Windows.UI.Xaml.Controls.IThemableAnimatedVisualSource Microsoft.UI.Xaml.Controls.ILottieVisualSourceProvider.CreateTheamableFromLottieAsset(System.Uri sourceFile)" reason="Api alignments" />
+			<Member fullName="System.Boolean Microsoft.UI.Xaml.Controls.ILottieVisualSourceProvider.TryCreateThemableFromAnimatedVisualSource(Windows.UI.Xaml.Controls.IAnimatedVisualSource animatedVisualSource, Windows.UI.Xaml.Controls.IThemableAnimatedVisualSource&amp; themableAnimatedVisualSource)" reason="Api alignments" />
+			<Member fullName="Windows.UI.Xaml.Controls.IAnimatedVisualSource Microsoft.UI.Xaml.Controls.ProgressRing.get_DeterminateSource()" reason="Api alignments" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.ProgressRing.set_DeterminateSource(Windows.UI.Xaml.Controls.IAnimatedVisualSource value)" reason="Api alignments" />
+			<Member fullName="Windows.UI.Xaml.Controls.IAnimatedVisualSource Microsoft.UI.Xaml.Controls.ProgressRing.get_IndeterminateSource()" reason="Api alignments" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.ProgressRing.set_IndeterminateSource(Windows.UI.Xaml.Controls.IAnimatedVisualSource value)" reason="Api alignments" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.AnimatedVisuals.AnimatedAcceptVisualSource.Update(Windows.UI.Xaml.Controls.AnimatedVisualPlayer player)" reason="Api alignments" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.AnimatedVisuals.AnimatedBackVisualSource.Update(Windows.UI.Xaml.Controls.AnimatedVisualPlayer player)" reason="Api alignments" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.AnimatedVisuals.AnimatedChevronDownSmallVisualSource.Update(Windows.UI.Xaml.Controls.AnimatedVisualPlayer player)" reason="Api alignments" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.AnimatedVisuals.AnimatedChevronRightDownSmallVisualSource.Update(Windows.UI.Xaml.Controls.AnimatedVisualPlayer player)" reason="Api alignments" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.AnimatedVisuals.AnimatedChevronUpDownSmallVisualSource.Update(Windows.UI.Xaml.Controls.AnimatedVisualPlayer player)" reason="Api alignments" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.AnimatedVisuals.AnimatedFindVisualSource.Update(Windows.UI.Xaml.Controls.AnimatedVisualPlayer player)" reason="Api alignments" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.AnimatedVisuals.AnimatedGlobalNavigationButtonVisualSource.Update(Windows.UI.Xaml.Controls.AnimatedVisualPlayer player)" reason="Api alignments" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.AnimatedVisuals.AnimatedSettingsVisualSource.Update(Windows.UI.Xaml.Controls.AnimatedVisualPlayer player)" reason="Api alignments" />
+			<Member fullName="Windows.UI.Xaml.Controls.IAnimatedVisualSource Uno.UI.Lottie.LottieVisualSourceProvider.CreateFromLottieAsset(System.Uri sourceFile)" reason="Api alignments" />
+			<Member fullName="Windows.UI.Xaml.Controls.IThemableAnimatedVisualSource Uno.UI.Lottie.LottieVisualSourceProvider.CreateTheamableFromLottieAsset(System.Uri sourceFile)" reason="Api alignments" />
+			<Member fullName="System.Boolean Uno.UI.Lottie.LottieVisualSourceProvider.TryCreateThemableFromAnimatedVisualSource(Windows.UI.Xaml.Controls.IAnimatedVisualSource animatedVisualSource, Windows.UI.Xaml.Controls.IThemableAnimatedVisualSource&amp; themableAnimatedVisualSource)" reason="Api alignments" />
+			<Member fullName="System.Void Microsoft.Toolkit.Uwp.UI.Lottie.LottieVisualSourceBase.Update(Windows.UI.Xaml.Controls.AnimatedVisualPlayer player)" reason="Api alignments" />
 
 			<Member fullName="System.Nullable`1&lt;Uno.UI.IndexPath&gt; Windows.UI.Xaml.Controls.VirtualizingPanelLayout.GetNextUnmaterializedItem(Windows.UI.Xaml.Controls.Primitives.GeneratorDirection fillDirection, System.Nullable`1&lt;Uno.UI.IndexPath&gt; currentMaterializedItem)" reason="Api alignments" />
 			<Member fullName="System.Nullable`1&lt;Uno.UI.IndexPath&gt; Windows.UI.Xaml.Controls.VirtualizingPanelLayout.GetDynamicSeedIndex(System.Nullable`1&lt;Uno.UI.IndexPath&gt; firstVisibleItem)" reason="Api alignments" />
@@ -1081,7 +1154,12 @@
 			<Member fullName="Windows.UI.Xaml.Controls.VirtualizingPanelLayout/Line Windows.UI.Xaml.Controls.VirtualizingPanelLayout.CreateLine(Windows.UI.Xaml.Controls.Primitives.GeneratorDirection fillDirection, System.Int32 extentOffset, System.Int32 breadthOffset, System.Int32 availableBreadth, AndroidX.RecyclerView.Widget.RecyclerView/Recycler recycler, AndroidX.RecyclerView.Widget.RecyclerView/State state, Uno.UI.IndexPath nextVisibleItem, System.Boolean isNewGroup)" reason="Api alignments" />
 			<Member fullName="System.Nullable`1&lt;Uno.UI.IndexPath&gt; Windows.UI.Xaml.Controls.VirtualizingPanelLayout.GetDynamicSeedIndex(System.Nullable`1&lt;Uno.UI.IndexPath&gt; firstVisibleItem, System.Int32 availableBreadth)" reason="Api alignments" />
 			<Member fullName="System.String Uno.UI.Services.ResourcesService.Get(System.String id)" reason="Api alignments" />
+			<Member fullName="System.Void Windows.ApplicationModel.Resources.ResourceLoader.set_GetStringInternal(System.Func`2&lt;System.String,System.String&gt; value)" reason="Api alignments" />
+			<Member fullName="System.Func`2&lt;System.String,System.String&gt; Windows.ApplicationModel.Resources.ResourceLoader.get_GetStringInternal()" reason="Api alignments" />
 
+			<Member fullName="System.Object Uno.UI.Svg.GlobalStaticResources.FindResource(System.String name)" reason="API Alignment" />
+
+			<Member fullName="Windows.Foundation.Point Windows.Foundation.Point.op_Implicit(System.String point)" reason="Api alignments" />
 			<Member fullName="System.Void Windows.UI.Xaml.Window.set_Visible(System.Boolean value)" reason="Does not exist in UWP and WinUI" />
 
 			<Member fullName="System.Object Uno.UI.Svg.GlobalStaticResources.FindResource(System.String name)" reason="API Alignment" />
@@ -1176,11 +1254,119 @@
 			<Member fullName="System.Void Windows.Media.Playback.MediaPlayer.set_Position(System.TimeSpan value)" reason="Api alignments" />
 			<Member fullName="System.TimeSpan Windows.Media.Playback.MediaPlayer.get_Position()" reason="Api alignments" />
 
+			<Member
+				fullName="System.IDisposable Uno.UI.Xaml.Controls.NativeRefreshControl.RegisterLoadActions(System.Action loaded, System.Action unloaded)"
+				reason="Remove LoadActions" />
+			<Member
+				fullName="System.IDisposable Windows.UI.Xaml.Controls.NativeListViewBase.RegisterLoadActions(System.Action loaded, System.Action unloaded)"
+				reason="Remove LoadActions" />
+			<Member
+				fullName="System.IDisposable Windows.UI.Xaml.Controls.NativePagedView.RegisterLoadActions(System.Action loaded, System.Action unloaded)"
+				reason="Remove LoadActions" />
+			<Member
+				fullName="System.IDisposable Uno.UI.Controls.BindableButton.RegisterLoadActions(System.Action loaded, System.Action unloaded)"
+				reason="Remove LoadActions" />
+			<Member
+				fullName="System.IDisposable Uno.UI.Controls.BindableCheckBox.RegisterLoadActions(System.Action loaded, System.Action unloaded)"
+				reason="Remove LoadActions" />
+			<Member
+				fullName="System.IDisposable Uno.UI.Controls.BindableDrawerLayout.RegisterLoadActions(System.Action loaded, System.Action unloaded)"
+				reason="Remove LoadActions" />
+			<Member
+				fullName="System.IDisposable Uno.UI.Controls.BindableListView.RegisterLoadActions(System.Action loaded, System.Action unloaded)"
+				reason="Remove LoadActions" />
+			<Member
+				fullName="System.IDisposable Uno.UI.Controls.BindableProgressBar.RegisterLoadActions(System.Action loaded, System.Action unloaded)"
+				reason="Remove LoadActions" />
+			<Member
+				fullName="System.IDisposable Uno.UI.Controls.BindableRadioButton.RegisterLoadActions(System.Action loaded, System.Action unloaded)"
+				reason="Remove LoadActions" />
+			<Member
+				fullName="System.IDisposable Uno.UI.Controls.BindableSeekBar.RegisterLoadActions(System.Action loaded, System.Action unloaded)"
+				reason="Remove LoadActions" />
+			<Member
+				fullName="System.IDisposable Uno.UI.Controls.BindableSwitchCompat.RegisterLoadActions(System.Action loaded, System.Action unloaded)"
+				reason="Remove LoadActions" />
+			<Member
+				fullName="System.IDisposable Uno.UI.Controls.BindableToggleButton.RegisterLoadActions(System.Action loaded, System.Action unloaded)"
+				reason="Remove LoadActions" />
+			<Member
+				fullName="System.IDisposable Uno.UI.Controls.BindableView.RegisterLoadActions(System.Action loaded, System.Action unloaded)"
+				reason="Remove LoadActions" />
+			<Member
+				fullName="System.IDisposable Uno.UI.Controls.Legacy.GridView.RegisterLoadActions(System.Action loaded, System.Action unloaded)"
+				reason="Remove LoadActions" />
+			<Member
+				fullName="System.IDisposable Uno.UI.Controls.Legacy.HorizontalGridView.RegisterLoadActions(System.Action loaded, System.Action unloaded)"
+				reason="Remove LoadActions" />
+			<Member
+				fullName="System.IDisposable Uno.UI.Controls.Legacy.HorizontalListView.RegisterLoadActions(System.Action loaded, System.Action unloaded)"
+				reason="Remove LoadActions" />
+			<Member
+				fullName="System.IDisposable Uno.UI.Controls.Legacy.ListView.RegisterLoadActions(System.Action loaded, System.Action unloaded)"
+				reason="Remove LoadActions" />
+			<Member
+				fullName="System.IDisposable Windows.UI.Xaml.Controls.Picker.RegisterLoadActions(System.Action loaded, System.Action unloaded)"
+				reason="Remove LoadActions" />
+			<Member
+				fullName="System.IDisposable Windows.UI.Xaml.Controls.MultilineTextBoxView.RegisterLoadActions(System.Action loaded, System.Action unloaded)"
+				reason="Remove LoadActions" />
+			<Member
+				fullName="System.IDisposable Windows.UI.Xaml.Controls.SinglelineTextBoxView.RegisterLoadActions(System.Action loaded, System.Action unloaded)"
+				reason="Remove LoadActions" />
+			<Member
+				fullName="System.IDisposable Uno.UI.Views.Controls.BindableUIActivityIndicatorView.RegisterLoadActions(System.Action loaded, System.Action unloaded)"
+				reason="Remove LoadActions" />
+			<Member
+				fullName="System.IDisposable Uno.UI.Views.Controls.BindableUIAlertView.RegisterLoadActions(System.Action loaded, System.Action unloaded)"
+				reason="Remove LoadActions" />
+			<Member
+				fullName="System.IDisposable Uno.UI.Views.Controls.BindableUIButton.RegisterLoadActions(System.Action loaded, System.Action unloaded)"
+				reason="Remove LoadActions" />
+			<Member
+				fullName="System.IDisposable Uno.UI.Views.Controls.BindableUIProgressView.RegisterLoadActions(System.Action loaded, System.Action unloaded)"
+				reason="Remove LoadActions" />
+			<Member
+				fullName="System.IDisposable Uno.UI.Views.Controls.BindableUIScrollView.RegisterLoadActions(System.Action loaded, System.Action unloaded)"
+				reason="Remove LoadActions" />
+			<Member
+				fullName="System.IDisposable Uno.UI.Views.Controls.BindableUISwitch.RegisterLoadActions(System.Action loaded, System.Action unloaded)"
+				reason="Remove LoadActions" />
+			<Member
+				fullName="System.IDisposable Uno.UI.Views.Controls.BindableUICollectionView.RegisterLoadActions(System.Action loaded, System.Action unloaded)"
+				reason="Remove LoadActions" />
+			<Member
+				fullName="System.IDisposable Uno.UI.Controls.BindableSearchBar.RegisterLoadActions(System.Action loaded, System.Action unloaded)"
+				reason="Remove LoadActions" />
+			<Member
+				fullName="System.IDisposable Uno.UI.Controls.BindableUISlider.RegisterLoadActions(System.Action loaded, System.Action unloaded)"
+				reason="Remove LoadActions" />
+			<Member
+				fullName="System.IDisposable Uno.UI.Controls.BindableUIView.RegisterLoadActions(System.Action loaded, System.Action unloaded)"
+				reason="Remove LoadActions" />
+			<Member
+				fullName="System.IDisposable Uno.UI.Controls.StatePresenter.RegisterLoadActions(System.Action loaded, System.Action unloaded)"
+				reason="Remove LoadActions" />
+			<Member
+				fullName="System.IDisposable Uno.UI.Controls.UnoNavigationBar.RegisterLoadActions(System.Action loaded, System.Action unloaded)"
+				reason="Remove LoadActions" />
+			<Member
+				fullName="System.IDisposable Windows.UI.Xaml.Controls.SecureTextBoxView.RegisterLoadActions(System.Action loaded, System.Action unloaded)"
+				reason="Remove LoadActions" />
+			<Member
+				fullName="System.IDisposable Uno.UI.Controls.BindableNSView.RegisterLoadActions(System.Action loaded, System.Action unloaded)"
+				reason="Remove LoadActions" />
+
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.Primitives.ToggleButton.OnIsCheckedChanged(System.Nullable`1&lt;System.Boolean&gt; oldValue, System.Nullable`1&lt;System.Boolean&gt; newValue)" reason="Api alignments" />
+
+			<Member fullName="System.String Windows.UI.Xaml.UIElement.get_Name()" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.UIElement.set_Name(System.String value)" reason="Api alignments" />
 			<Member fullName="System.Void Windows.UI.Xaml.Media.Animation.Timeline.Dispose(System.Boolean disposing)" reason="Api alignments" />
 			<Member fullName="System.Void Windows.UI.Xaml.Media.Animation.Timeline.Dispose()" reason="Api alignments" />
 
 			<Member fullName="System.Void Windows.UI.Xaml.Window.set_Visible(System.Boolean value)" reason="Does not exist in UWP and WinUI" />
-
+			<Member fullName="System.Void Windows.UI.Xaml.UIElement.Arrange(Windows.Foundation.Rect finalRect)" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.UIElement.Measure(Windows.Foundation.Size availableSize)" reason="Api alignments" />
 			<Member fullName="System.Object Uno.UI.Svg.GlobalStaticResources.FindResource(System.String name)" reason="API Alignment" />
 			<Member fullName="System.Void Windows.Devices.Sensors.SimpleOrientationSensor.OnAccuracyChanged(Android.Hardware.Sensor sensor, Android.Hardware.SensorStatus accuracy)" reason="Api alignments" />
 			<Member fullName="System.Void Windows.Devices.Sensors.SimpleOrientationSensor.OnSensorChanged(Android.Hardware.SensorEvent e)" reason="Api alignments" />
@@ -1197,6 +1383,19 @@
 			<Member fullName="System.UInt32 Windows.UI.Xaml.Controls.SwipeItems.GetMany(System.UInt32 startIndex, Windows.UI.Xaml.Controls.SwipeItem[] items)" reason="Api alignments" />
 			<Member fullName="System.Void Windows.UI.Xaml.Controls.SwipeItems.ReplaceAll(Windows.UI.Xaml.Controls.SwipeItem[] items)" reason="Api alignments" />
 
+			<Member fullName="Windows.UI.Xaml.UIElement Windows.UI.Xaml.FrameworkTemplate.LoadContent()" reason="Api alignments" />
+			<Member fullName="Windows.UI.Xaml.UIElement Windows.UI.Xaml.Controls.ItemsPanelTemplate.LoadContent()" reason="Api alignments" />
+			<Member fullName="Android.Views.View Windows.UI.Xaml.Controls.ItemsPanelTemplate.LoadContent()" reason="Api alignments" />
+			<Member fullName="Android.Views.View Windows.UI.Xaml.FrameworkTemplate.LoadContent()" reason="Api alignments" />
+			<Member fullName="UIKit.UIView Windows.UI.Xaml.FrameworkTemplate.LoadContent()" reason="Api alignments" />
+			<Member fullName="UIKit.UIView Windows.UI.Xaml.Controls.ItemsPanelTemplate.LoadContent()" reason="Api alignments" />
+			<Member fullName="AppKit.NSView Windows.UI.Xaml.FrameworkTemplate.LoadContent()" reason="Api alignments" />
+			<Member fullName="AppKit.NSView Windows.UI.Xaml.Controls.ItemsPanelTemplate.LoadContent()" reason="Api alignments" />
+
+			<Member fullName="System.Void Windows.UI.Xaml.Media.Animation.EasingFunctionBase..ctor()" reason="API Alignment" />
+			<Member fullName="System.Double Windows.UI.Xaml.Media.Animation.EasingFunctionBase.Ease(System.Double currentTime, System.Double startValue, System.Double finalValue, System.Double duration)" reason="API Alignment" />
+			<Member fullName="System.Int32 Windows.UI.Xaml.Media.Animation.PowerEase.get_Power()" reason="API Alignment" />
+			<Member fullName="System.Void Windows.UI.Xaml.Media.Animation.PowerEase.set_Power(System.Int32 value)" reason="API Alignment" />
 
 			<!-- BEGIN Skia Adjustments -->
 			<Member fullName="System.Void Uno.UI.Runtime.Skia.GtkHost..ctor(System.Func`1&lt;Windows.UI.Xaml.Application&gt; appBuilder, System.String[] args)" reason="API Alignment" />

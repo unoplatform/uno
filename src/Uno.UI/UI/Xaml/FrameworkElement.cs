@@ -268,50 +268,6 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-#if !UNO_REFERENCE_API
-		/// <summary>
-		/// Updates the DesiredSize of a UIElement. Typically, objects that implement custom layout for their
-		/// layout children call this method from their own MeasureOverride implementations to form a recursive layout update.
-		/// </summary>
-		/// <param name="availableSize">
-		/// The available space that a parent can allocate to a child object. A child object can request a larger
-		/// space than what is available; the provided size might be accommodated if scrolling or other resize behavior is
-		/// possible in that particular container.
-		/// </param>
-		/// <returns>The measured size.</returns>
-		/// <remarks>
-		/// Under Uno.UI, this method should not be called during the normal layouting phase. Instead, use the
-		/// <see cref="MeasureElement(View, Size)"/> methods, which handles native view properly.
-		/// </remarks>
-		public override void Measure(Size availableSize)
-		{
-			if (double.IsNaN(availableSize.Width) || double.IsNaN(availableSize.Height))
-			{
-				throw new InvalidOperationException($"Cannot measure [{GetType()}] with NaN");
-			}
-
-			_layouter.Measure(availableSize);
-#if IS_UNIT_TESTS
-			OnMeasurePartial(availableSize);
-#endif
-		}
-
-		/// <summary>
-		/// Positions child objects and determines a size for a UIElement. Parent objects that implement custom layout
-		/// for their child elements should call this method from their layout override implementations to form a recursive layout update.
-		/// </summary>
-		/// <param name="finalRect">The final size that the parent computes for the child in layout, provided as a <see cref="Windows.Foundation.Rect"/> value.</param>
-		public override void Arrange(Rect finalRect)
-		{
-			_layouter.Arrange(finalRect);
-			_layouter.ArrangeChild(this, finalRect);
-		}
-#endif
-
-#if IS_UNIT_TESTS
-		partial void OnMeasurePartial(Size slotSize);
-#endif
-
 		/// <summary>
 		/// Measures an native element, in the same way <see cref="Measure"/> would do.
 		/// </summary>
