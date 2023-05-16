@@ -150,18 +150,18 @@ public partial class GtkMediaPlayer
 	}
 	private void AddMediaEvents()
 	{
-		if (_mediaPlayer != null && _mediaPlayer.Media != null && _mediaPlayer.Media.IsParsed)
-		{
-			_mediaPlayer.Media.DurationChanged -= DurationChanged;
-			_mediaPlayer.Media.MetaChanged -= MetaChanged;
-			_mediaPlayer.Media.StateChanged -= StateChanged;
-			_mediaPlayer.Media.ParsedChanged -= ParsedChanged;
+       if (_mediaPlayer?.Media is { IsParsed: true} media)
+       {
+			media.DurationChanged -= DurationChanged;
+			media.MetaChanged -= MetaChanged;
+			media.StateChanged -= StateChanged;
+			media.ParsedChanged -= ParsedChanged;
 
-			_mediaPlayer.Media.DurationChanged += DurationChanged;
-			_mediaPlayer.Media.MetaChanged += MetaChanged;
-			_mediaPlayer.Media.StateChanged += StateChanged;
-			_mediaPlayer.Media.ParsedChanged += ParsedChanged;
-		}
+			media.DurationChanged += DurationChanged;
+			media.MetaChanged += MetaChanged;
+			media.StateChanged += StateChanged;
+			media.ParsedChanged += ParsedChanged;
+       }
 	}
 
 	private void ParsedChanged(object? sender, EventArgs el)
