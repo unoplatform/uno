@@ -116,11 +116,10 @@ public partial class GtkMediaPlayer : Border
 					case MediaPlayerState.Stopped:
 						_mediaPlayer.Stop();
 						break;
-case MediaPlayerState.Opening:
+					case MediaPlayerState.Opening:
 						break;
 					case MediaPlayerState.Buffering:
 						break;
-					
 				};
 			}
 		}
