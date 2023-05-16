@@ -18,11 +18,11 @@ public sealed partial class PackageId
 	[global::Uno.NotImplemented("__WASM__, __SKIA__")]
 	public string FullName => "Unknown";
 
-	public string Name { get; internal set; } = "Unknown";
+	public string Name { get; internal set; } = "";
 
 	public PackageVersion Version { get; internal set; }
 
-	public string Publisher { get; internal set; } = "Unknown";
+	public string Publisher { get; internal set; } = "";
 
 	[Uno.NotImplemented]
 	public string PublisherId => "Unknown";
