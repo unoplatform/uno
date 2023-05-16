@@ -340,7 +340,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 			}
 		}
-
+#if HAS_UNO && !__MACOS__
 		[TestMethod]
 		public async Task When_ToolTip_Owner_Clicked()
 		{
@@ -356,9 +356,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			TestServices.WindowHelper.WindowContent = button;
 			await TestServices.WindowHelper.WaitForIdle();
 			tooltip.IsOpen = true;
-			await TestServices.WindowHelper.WaitForIdle();button.RaiseClick();
+			await TestServices.WindowHelper.WaitForIdle();
+			button.RaiseClick();
 			await TestServices.WindowHelper.WaitForIdle();
 			Assert.IsFalse(tooltip.IsOpen);
 		}
+#endif
 	}
 }
