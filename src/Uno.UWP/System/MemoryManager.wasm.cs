@@ -10,7 +10,9 @@ namespace Windows.System
 {
 	public partial class MemoryManager
 	{
+#if !NET7_0_OR_GREATER
 		private const string JsType = "Windows.System.MemoryManager";
+#endif
 
 		static MemoryManager()
 		{
@@ -21,6 +23,9 @@ namespace Windows.System
 		{
 			get
 			{
+#if NET7_0_OR_GREATER
+				return (ulong)NativeMethods.GetAppMemoryUsage();
+#else
 				if (ulong.TryParse(WebAssemblyRuntime.InvokeJS(
 					$"{JsType}.getAppMemoryUsage()"),
 					NumberStyles.Any,
@@ -30,6 +35,7 @@ namespace Windows.System
 				}
 
 				throw new Exception($"getAppMemoryUsage returned an unsupported value");
+#endif
 			}
 		}
 
