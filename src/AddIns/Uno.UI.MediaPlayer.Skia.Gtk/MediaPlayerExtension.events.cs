@@ -84,6 +84,7 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 		}
 		_owner.PlaybackSession.PlaybackState = MediaPlaybackState.None;
 	}
+
 	public void OnVolumeChanged()
 	{
 		var volume = (int)_owner.Volume;
