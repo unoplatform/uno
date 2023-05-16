@@ -26,7 +26,7 @@ namespace Uno.UI.Media;
 
 public partial class GtkMediaPlayer
 {
-	private TaskCompletionSource _taskCompletionSource = new TaskCompletionSource();
+	private TaskCompletionSource<string> _taskCompletionSource = new TaskCompletionSource<string>("");
 	public event EventHandler<object>? OnSourceFailed;
 	public event EventHandler<object>? OnSourceEnded;
 	public event EventHandler<object>? OnMetadataLoaded;
@@ -58,7 +58,7 @@ public partial class GtkMediaPlayer
 			HorizontalContentAlignment = HorizontalAlignment.Stretch,
 			VerticalContentAlignment = VerticalAlignment.Stretch,
 		};
-		_taskCompletionSource = new TaskCompletionSource();
+		_taskCompletionSource = new TaskCompletionSource<string>("");
 		_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 				{
 					InitializedMedia();
@@ -98,7 +98,7 @@ public partial class GtkMediaPlayer
 				{
 					this.Log().Debug($"Created player");
 				}
-				_taskCompletionSource.SetResult();
+				_taskCompletionSource.TrySetResult("");
 			}
 		}
 		catch (Exception ex)
@@ -161,10 +161,6 @@ public partial class GtkMediaPlayer
 			_mediaPlayer.Media.MetaChanged += MetaChanged;
 			_mediaPlayer.Media.StateChanged += StateChanged;
 			_mediaPlayer.Media.ParsedChanged += ParsedChanged;
-		}
-		else
-		{
-
 		}
 	}
 

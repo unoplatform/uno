@@ -4,7 +4,8 @@
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(MSBuildRuntimeType)'=='Core' or '$(BuildingInsideVisualStudio)'=='true'">
-		<TargetFrameworks>$(TargetFrameworks);net7.0</TargetFrameworks>
+		<!--<TargetFrameworks>$(TargetFrameworks);net7.0</TargetFrameworks>-->
+		<TargetFrameworks>netcoreapp3.1;net5.0</TargetFrameworks>
 	</PropertyGroup>
 
 	<Import Project="../../targetframework-override.props" />
