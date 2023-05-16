@@ -150,8 +150,8 @@ public partial class GtkMediaPlayer
 	}
 	private void AddMediaEvents()
 	{
-       if (_mediaPlayer?.Media is { IsParsed: true} media)
-       {
+		if (_mediaPlayer?.Media is { IsParsed: true } media)
+		{
 			media.DurationChanged -= DurationChanged;
 			media.MetaChanged -= MetaChanged;
 			media.StateChanged -= StateChanged;
@@ -161,7 +161,7 @@ public partial class GtkMediaPlayer
 			media.MetaChanged += MetaChanged;
 			media.StateChanged += StateChanged;
 			media.ParsedChanged += ParsedChanged;
-       }
+		}
 	}
 
 	private void ParsedChanged(object? sender, EventArgs el)
