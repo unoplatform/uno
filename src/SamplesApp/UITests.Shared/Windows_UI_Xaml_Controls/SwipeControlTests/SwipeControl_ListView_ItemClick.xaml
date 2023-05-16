@@ -10,7 +10,7 @@
 	Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
 	<Page.Resources>
-		<FontIconSource x:Name="Icon" Glyph="&#xE710;"/>
+		<muxc:FontIconSource x:Name="Icon" Glyph="&#xE710;"/>
 	</Page.Resources>
 
 	<Grid>
