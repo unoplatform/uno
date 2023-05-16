@@ -8,9 +8,9 @@ namespace Windows.ApplicationModel
 	{
 		private StorageFolder _installedLocation;
 
-		internal Package()
-		{
-		}
+		internal Package() => InitializePlatform();
+
+		partial void InitializePlatform();
 
 		public bool IsDevelopmentMode => GetInnerIsDevelopmentMode();
 
