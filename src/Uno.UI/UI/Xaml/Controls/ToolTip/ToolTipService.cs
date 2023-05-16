@@ -168,11 +168,10 @@ namespace Windows.UI.Xaml.Controls
 				owner.PointerEntered += OnPointerEntered;
 				owner.PointerExited += OnPointerExited;
 				owner.Tapped += OnTapped;
-				owner.KeyDown += OnKeyDown;
-				owner.AddHandler(UIElement.PointerPressedEvent, new PointerEventHandler(OnPointerPressed), true);
-				if (sender is ButtonBase buttonBase)
+				owner.AddHandler(UIElement.KeyDownEvent, new KeyEventHandler(OnKeyDown), true);
+				if (owner is ButtonBase)
 				{
-					buttonBase.Click += OnClick;
+					owner.AddHandler(UIElement.PointerPressedEvent, new PointerEventHandler(OnPointerPressed), true);
 				}
 				var token = owner.RegisterPropertyChangedCallback(UIElement.VisibilityProperty, OnOwnerVisibilityChanged);
 				toolTip.OwnerVisibilitySubscription = Disposable.Create(() =>
@@ -190,11 +189,10 @@ namespace Windows.UI.Xaml.Controls
 				owner.PointerEntered -= OnPointerEntered;
 				owner.PointerExited -= OnPointerExited;
 				owner.Tapped -= OnTapped;
-				owner.KeyDown -= OnKeyDown;
-				owner.RemoveHandler(UIElement.PointerPressedEvent, new PointerEventHandler(OnPointerPressed));
-				if (sender is ButtonBase buttonBase)
+				owner.AddHandler(UIElement.KeyDownEvent, new KeyEventHandler(OnKeyDown), true);
+				if (owner is ButtonBase)
 				{
-					buttonBase.Click -= OnClick;
+					owner.RemoveHandler(UIElement.PointerPressedEvent, new PointerEventHandler(OnPointerPressed));
 				}
 				toolTip.OwnerVisibilitySubscription?.Dispose();
 				toolTip.OwnerVisibilitySubscription = null;
@@ -245,18 +243,18 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private static void OnClick(object sender, RoutedEventArgs e)
-		{
-			if (sender is FrameworkElement owner && GetToolTipReference(owner) is { } toolTip)
-			{
-				toolTip.IsOpen = false;
-			}
-		}
-
 		private static void OnKeyDown(object sender, KeyRoutedEventArgs args)
 		{
 			if (sender is FrameworkElement owner && GetToolTipReference(owner) is { } toolTip)
 			{
+				switch (args.Key)
+				{
+					case System.VirtualKey.Up:
+					case System.VirtualKey.Down:
+					case System.VirtualKey.Left:
+					case System.VirtualKey.Right:
+						return;
+				}
 				toolTip.IsOpen = false;
 			}
 		}
@@ -266,7 +264,9 @@ namespace Windows.UI.Xaml.Controls
 			if (sender is FrameworkElement owner && GetToolTipReference(owner) is { } toolTip)
 			{
 				if (e.GetCurrentPoint(owner).Properties.IsLeftButtonPressed)
+				{
 					toolTip.IsOpen = false;
+				}
 			}
 		}
 	}
