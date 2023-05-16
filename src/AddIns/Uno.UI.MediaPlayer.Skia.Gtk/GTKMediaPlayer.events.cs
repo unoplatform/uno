@@ -141,18 +141,30 @@ public partial class GtkMediaPlayer
 
 			media.Parse(MediaParseOptions.ParseNetwork);
 			_mediaPlayer.Media = media;
-			while (!_mediaPlayer.Media.IsParsed)
+			_ = Dispatcher.RunAsync(CoreDispatcherPriority.Low, () =>
 			{
-				Thread.Sleep(10);
-			}
-			if (_mediaPlayer != null && _mediaPlayer.Media != null)
-			{
-				_mediaPlayer.Media.DurationChanged += DurationChanged;
-				_mediaPlayer.Media.MetaChanged += MetaChanged;
-				_mediaPlayer.Media.StateChanged += StateChanged;
-				_mediaPlayer.Media.ParsedChanged += ParsedChanged;
-			}
+				AddMediaEvents();
+			});
 			OnSourceLoaded?.Invoke(this, EventArgs.Empty);
+		}
+	}
+	private void AddMediaEvents()
+	{
+		if (_mediaPlayer != null && _mediaPlayer.Media != null && _mediaPlayer.Media.IsParsed)
+		{
+			_mediaPlayer.Media.DurationChanged -= DurationChanged;
+			_mediaPlayer.Media.MetaChanged -= MetaChanged;
+			_mediaPlayer.Media.StateChanged -= StateChanged;
+			_mediaPlayer.Media.ParsedChanged -= ParsedChanged;
+
+			_mediaPlayer.Media.DurationChanged += DurationChanged;
+			_mediaPlayer.Media.MetaChanged += MetaChanged;
+			_mediaPlayer.Media.StateChanged += StateChanged;
+			_mediaPlayer.Media.ParsedChanged += ParsedChanged;
+		}
+		else
+		{
+
 		}
 	}
 

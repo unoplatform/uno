@@ -64,6 +64,7 @@ public partial class GtkMediaPlayer : Border
 			{
 				this.Log().Debug("Play");
 			}
+			AddMediaEvents();
 			_mediaPlayer.Play();
 			_videoView.Visible = true;
 		}
