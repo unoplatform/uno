@@ -1,9 +1,10 @@
 ﻿<!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. See LICENSE in the project root for license information. -->
 <ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Microsoft.UI.Xaml.Controls">
 
-    <Style TargetType="MenuBarItem">
+    <Style TargetType="local:MenuBarItem">
         <Setter Property="Background" Value="{ThemeResource MenuBarItemBackground}"/>
         <Setter Property="BorderThickness" Value="{ThemeResource MenuBarItemBorderThickness}"/>
         <Setter Property="BorderBrush" Value="{ThemeResource MenuBarItemBorderBrush}"/>
@@ -13,7 +14,7 @@
         <Setter Property="UseSystemFocusVisuals" Value="True"/>
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="MenuBarItem">
+                <ControlTemplate TargetType="local:MenuBarItem">
 
                     <Grid x:Name="ContentRoot" Background="{TemplateBinding Background}">
                         <Grid.Resources>
