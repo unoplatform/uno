@@ -52,7 +52,7 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 		}
 	}
 
-	void OnError(object? sender, object what)
+	private void OnError(object? sender, object what)
 	{
 		if (_owner.PlaybackSession.PlaybackState != MediaPlaybackState.None)
 		{
