@@ -15,7 +15,7 @@
 		<PackageIcon>uno.png</PackageIcon>
 		<RepositoryUrl>https://github.com/unoplatform/uno</RepositoryUrl>
 		<Description>This package provides the ability for Uno Platform based apps to use the MapControl</Description>
-		<Copyright>Copyright (C) 2015-2023 nventive inc. - all rights reserved</Copyright>
+		<Copyright>Copyright (C) 2015-2023 Uno Platform inc. - all rights reserved</Copyright>
 	</PropertyGroup>
 	
 	<PropertyGroup>

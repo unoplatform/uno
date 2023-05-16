@@ -24,7 +24,7 @@ using System.Security;
 [assembly: AssemblyConfiguration("Release")]
 #endif
 
-[assembly: AssemblyCopyright("Copyright (C) 2009-2019 nVentive.")]
+[assembly: AssemblyCopyright("Copyright (C) 2009-2023 Uno Platform")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
