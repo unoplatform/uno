@@ -9,6 +9,8 @@ using Windows.UI.Xaml.Controls;
 using FluentAssertions;
 using Windows.UI.Xaml.Data;
 using FluentAssertions.Execution;
+using Windows.UI.Xaml;
+using System.ComponentModel;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests
 {
@@ -197,6 +199,58 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests
 			binding.RelativeSource.Should().NotBeNull();
 			binding.RelativeSource.Mode.Should().Be(RelativeSourceMode.None);
 			binding.Source.Should().Be("Source");
+		}
+
+		[TestMethod]
+		public void When_Parent_Set_To_Null_Should_Not_Clear_Child_Bindings()
+		{
+			using var _ = new AssertionScope();
+			var panel = new StackPanel();
+			var tb = new TextBox();
+			tb.SetBinding(TextBox.AllowFocusWhenDisabledProperty, new Binding());
+			panel.Children.Add(tb);
+
+			var beforeClear = tb.GetBindingExpression(TextBox.AllowFocusWhenDisabledProperty);
+			Assert.IsNotNull(beforeClear);
+			panel.Children.Clear();
+			var afterClear = tb.GetBindingExpression(TextBox.AllowFocusWhenDisabledProperty);
+			Assert.AreEqual(beforeClear, afterClear);
+		}
+
+		[TestMethod]
+		public void When_Parent_Set_To_Null_Should_Clear_Inherited_Value()
+		{
+			using var _ = new AssertionScope();
+			var panel = new StackPanel();
+			var tb = new TextBox();
+
+			Assert.IsFalse(tb.AllowFocusWhenDisabled);
+
+			panel.Children.Add(tb);
+			panel.AllowFocusWhenDisabled = true;
+
+			Assert.IsTrue(tb.AllowFocusWhenDisabled);
+
+			panel.Children.Clear();
+			Assert.IsFalse(tb.AllowFocusWhenDisabled);
+		}
+
+		[TestMethod]
+		public void When_Parent_Set_To_Null_Should_Not_Clear_Local_Value()
+		{
+			using var _ = new AssertionScope();
+			var panel = new StackPanel();
+			var tb = new TextBox();
+
+			Assert.IsFalse(tb.AllowFocusWhenDisabled);
+
+			panel.Children.Add(tb);
+			tb.AllowFocusWhenDisabled = true;
+
+			Assert.IsTrue(tb.AllowFocusWhenDisabled);
+
+			panel.Children.Clear();
+			Assert.IsTrue(tb.AllowFocusWhenDisabled);
 		}
 	}
 }

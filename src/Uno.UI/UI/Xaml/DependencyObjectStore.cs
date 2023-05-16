@@ -1220,7 +1220,11 @@ namespace Windows.UI.Xaml
 					while (propertiesEnumerator.MoveNext())
 					{
 						var dp = propertiesEnumerator.Current;
-						SetValue(dp, DependencyProperty.UnsetValue, DependencyPropertyValuePrecedences.Inheritance);
+						var details = _properties.GetPropertyDetails(dp);
+						if (details.CurrentHighestValuePrecedence == DependencyPropertyValuePrecedences.Inheritance)
+						{
+							SetValue(dp, DependencyProperty.UnsetValue, DependencyPropertyValuePrecedences.Inheritance, details);
+						}
 					}
 
 					SetValue(_dataContextProperty!, DependencyProperty.UnsetValue, DependencyPropertyValuePrecedences.Inheritance);
