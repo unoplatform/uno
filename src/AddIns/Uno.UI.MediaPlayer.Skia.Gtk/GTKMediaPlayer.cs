@@ -417,18 +417,10 @@ public partial class GtkMediaPlayer : Border
 
 	public double CurrentPosition
 	{
-		get
-		{
-			if (_videoView == null || _mediaPlayer == null)
-			{
-				return 0;
-			}
-			return _mediaPlayer.Time / 1000;
-		}
+		get => _mediaPlayer?.Time / 1000 ?? 0;
 		set
 		{
-			if (_videoView != null
-					&& _mediaPlayer != null)
+			if (_mediaPlayer is not null)
 			{
 				_mediaPlayer.Time = (long)value;
 			}
