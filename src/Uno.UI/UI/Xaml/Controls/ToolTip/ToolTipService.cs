@@ -5,6 +5,12 @@ using Uno.UI;
 using Windows.UI.Xaml.Controls.Primitives;
 using Uno.Disposables;
 
+#if __IOS__
+using UIKit;
+#elif __MACOS__
+using AppKit;
+#endif
+
 namespace Windows.UI.Xaml.Controls
 {
 	partial class ToolTipService
@@ -249,10 +255,10 @@ namespace Windows.UI.Xaml.Controls
 			{
 				switch (args.Key)
 				{
-					case System.VirtualKey.Up:
-					case System.VirtualKey.Down:
-					case System.VirtualKey.Left:
-					case System.VirtualKey.Right:
+					case Windows.System.VirtualKey.Up:
+					case Windows.System.VirtualKey.Down:
+					case Windows.System.VirtualKey.Left:
+					case Windows.System.VirtualKey.Right:
 						return;
 				}
 				toolTip.IsOpen = false;
