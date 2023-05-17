@@ -20,19 +20,9 @@ WinRTFeatureConfiguration.Focus.EnableExperimentalKeyboardFocus = true;
 
 The feature requires additional testing to verify all edge cases on Android and iOS. In a future release, we will switch the experimental support to be enabled by default.
 
-## Android TV Remote support
+### Android keyboard focus highlighting
 
-Uno Platform is proud to support Android TV remote control integration, enabling you to extend your application's reach to users interacting with their Android TV devices. The integration allows the remote control to work seamlessly, just like normal keyboard focus navigation. To use the directional focus (the directional pad of the remote control), you need to make sure `XYFocusKeyboardNavigation` is `Enabled` on all your pages:
-
-```xaml
-<Page xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      XYFocusKeyboardNavigation="Enabled">
-    <!-- Your app's UI elements go here -->
-</Page>
-```
-
-To disable the native Android highlighting of focused elements, the `styles.xml` file needs to be updated to make the highlight transparent:
+To disable the native Android highlighting of focused elements when keyboard navigation is used, the `styles.xml` file needs to be updated to make the highlight transparent:
 
 ```xml
 <item name="android:colorControlHighlight">@android:color/transparent</item>
