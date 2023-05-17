@@ -119,7 +119,7 @@ public partial class GtkMediaPlayer : Border
 						break;
 					case MediaPlayerState.Buffering:
 						break;
-				};
+				}
 			}
 		}
 	}
