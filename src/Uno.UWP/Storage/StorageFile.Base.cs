@@ -75,7 +75,7 @@ namespace Windows.Storage
 			public virtual async Task CopyAndReplaceAsync(CancellationToken ct, IStorageFile target)
 			{
 				using (var src = await Owner.OpenStreamForReadAsync())
-				using (var dst = await target.OpenStreamForReadAsync())
+				using (var dst = await target.OpenStreamForWriteAsync())
 				{
 					await src.CopyToAsync(dst, Buffer.DefaultCapacity, ct);
 				}
