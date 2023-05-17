@@ -23,7 +23,7 @@ namespace Windows.ApplicationModel
 
 		public static Package Current { get; } = new Package();
 
-		internal static Assembly? EntryAssembly { get; set; }
+		internal static Assembly EntryAssembly { get; set; }
 
 		[Uno.NotImplemented]
 		public IReadOnlyList<Package> Dependencies => new List<Package>();
