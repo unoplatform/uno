@@ -8,6 +8,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Uno.UI.Xaml.Controls.MediaPlayer.Internal;
 using System.Drawing;
+using Windows.Foundation;
 
 #if __IOS__
 using UIKit;
@@ -395,8 +396,7 @@ namespace Windows.UI.Xaml.Controls
 				return;
 			}
 
-#if !__MACCATALYST__
-			var bounds = new Foundation.Rect(0, 0,
+			var bounds = new Rect(0, 0,
 											_controlPanelGrid.ActualWidth,
 											_isInteractive ? _controlPanelGrid.ActualHeight : 0);
 
@@ -404,7 +404,6 @@ namespace Windows.UI.Xaml.Controls
 				this.TransformToVisual(root)
 					.TransformBounds(bounds);
 			this._mediaPlayer?.SetTransportControlBounds(transportBounds);
-#endif
 		}
 
 		private void OnPaneGridTapped(object sender, TappedRoutedEventArgs e)
