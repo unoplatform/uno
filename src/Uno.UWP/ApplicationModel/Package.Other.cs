@@ -17,7 +17,6 @@ namespace Windows.ApplicationModel
 	public partial class Package
 	{
 		private const string PackageManifestName = "Package.appxmanifest";
-		private static Assembly? _entryAssembly;
 		private string _displayName = "";
 		private string _logo = "ms-appx://logo";
 		private bool _manifestParsed;
@@ -28,7 +27,7 @@ namespace Windows.ApplicationModel
 
 		private string GetInstalledPath()
 		{
-			if (_entryAssembly?.Location is { Length: > 0 } location)
+			if (EntryAssembly?.Location is { Length: > 0 } location)
 			{
 				return global::System.IO.Path.GetDirectoryName(location) ?? "";
 			}
@@ -58,16 +57,11 @@ namespace Windows.ApplicationModel
 			}
 		}
 
-		internal static void SetEntryAssembly(Assembly entryAssembly)
-		{
-			_entryAssembly = entryAssembly;
-		}
-
 		private void TryParsePackageManifest()
 		{
-			if (_entryAssembly != null && !_manifestParsed)
+			if (EntryAssembly != null && !_manifestParsed)
 			{
-				var manifest = _entryAssembly.GetManifestResourceStream(PackageManifestName);
+				var manifest = EntryAssembly.GetManifestResourceStream(PackageManifestName);
 
 				if (manifest != null)
 				{

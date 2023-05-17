@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using Windows.Storage;
 
 namespace Windows.ApplicationModel
@@ -21,6 +22,8 @@ namespace Windows.ApplicationModel
 		public DateTimeOffset InstalledDate => GetInstallDate();
 
 		public static Package Current { get; } = new Package();
+
+		internal static Assembly? EntryAssembly { get; set; }
 
 		[Uno.NotImplemented]
 		public IReadOnlyList<Package> Dependencies => new List<Package>();

@@ -37,6 +37,7 @@ namespace Windows.UI.Xaml
 		public Application()
 		{
 			Current = this;
+			Package.EntryAssembly = this.GetType().Assembly;
 			SetCurrentLanguage();
 			InitializeSystemTheme();
 			ResourceHelper.ResourcesService = new ResourcesService(new[] { NSBundle.MainBundle });

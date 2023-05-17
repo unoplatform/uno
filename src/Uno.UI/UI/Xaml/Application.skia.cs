@@ -25,7 +25,7 @@ namespace Windows.UI.Xaml
 			SetCurrentLanguage();
 			InitializeSystemTheme();
 
-			Package.SetEntryAssembly(this.GetType().Assembly);
+			Package.EntryAssembly = this.GetType().Assembly;
 
 			if (!_startInvoked)
 			{

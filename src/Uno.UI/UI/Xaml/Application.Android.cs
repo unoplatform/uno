@@ -23,6 +23,7 @@ namespace Windows.UI.Xaml
 		{
 			Window.Current.ToString();
 			Current = this;
+			Package.EntryAssembly = this.GetType().Assembly;
 			InitializeSystemTheme();
 			PermissionsHelper.Initialize();
 		}
