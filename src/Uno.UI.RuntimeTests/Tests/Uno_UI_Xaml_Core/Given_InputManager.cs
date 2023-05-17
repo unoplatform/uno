@@ -13,7 +13,6 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using FluentAssertions;
-using Uno.UI.RuntimeTests.Extensions;
 using Private.Infrastructure;
 using Uno.Extensions;
 
