@@ -2663,8 +2663,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 #endif
 
-<<<<<<< HEAD
-=======
 		[TestMethod]
 		public async Task When_SelectionMode_Is_Multiple()
 		{
@@ -2741,7 +2739,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 		}
 	}
->>>>>>> 9943b48107 (chore: organize Given_ListViewBase code)
 
 	public partial class Given_ListViewBase // data class, data-context, view-model, template-selector
 	{
