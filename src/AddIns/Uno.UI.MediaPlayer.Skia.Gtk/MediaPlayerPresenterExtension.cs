@@ -17,6 +17,10 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Maps;
 using Windows.UI.Xaml.Media;
 
+#if HAS_UNO_WINUI
+using Microsoft.UI;
+#endif
+
 [assembly: ApiExtension(typeof(IMediaPlayerPresenterExtension), typeof(Uno.UI.Media.MediaPlayerPresenterExtension))]
 
 namespace Uno.UI.Media;
