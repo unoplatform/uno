@@ -3,8 +3,9 @@ using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Windows.Storage;
-using Uno.Foundation.Logging;
 using Uno;
+using Uno.Foundation.Logging;
+using Uno.UI;
 using Windows.ApplicationModel;
 
 namespace Windows.Globalization
