@@ -93,7 +93,7 @@ public partial class GtkMediaPlayer : Border
 					case VLCState.NothingSpecial:
 					default:
 						return default(MediaPlayerState);
-				};
+				}
 			}
 			return default(MediaPlayerState);
 		}
