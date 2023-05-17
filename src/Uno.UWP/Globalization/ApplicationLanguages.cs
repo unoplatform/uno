@@ -62,6 +62,7 @@ namespace Windows.Globalization
 			ApplyLanguages();
 		}
 
+#if !NET461
 		private static bool TryGetSettingFromKey(string key, out string value)
 		{
 			if (ApplicationData.Current.LocalSettings.Values.TryGetValue(key, out var savedValue))
@@ -83,6 +84,7 @@ namespace Windows.Globalization
 
 			return $"PrimaryLanguageOverrideSettingKey.{entryAssembly.GetName().Name}";
 		}
+#endif
 
 		internal static void ApplyCulture()
 		{
