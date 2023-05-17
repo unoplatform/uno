@@ -76,7 +76,12 @@ namespace Windows.Globalization
 
 		private static string GetAppSpecificSettingKey()
 		{
-			return $"PrimaryLanguageOverrideSettingKey.{Package.EntryAssembly.GetName().Name}";
+			if (Package.EntryAssembly is not { } entryAssembly)
+			{
+				throw new InvalidOperationException("ApplicationLanguages is being accessed too early before an instance of Application was created.");
+			}
+
+			return $"PrimaryLanguageOverrideSettingKey.{entryAssembly.GetName().Name}";
 		}
 
 		internal static void ApplyCulture()
