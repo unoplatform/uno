@@ -6,13 +6,13 @@ uid: Uno.Features.Themes
 
 Uno Platform offers fine-grained customization of typography, corner radius, and styling of UI elements to convey a brand identity in your application. However, platforms like iOS, Android, and web browsers also offer a system-wide color mode that users can change. For instance, Windows uses **Light mode** by default, but many users prefer **Dark mode** which is intended to be easier on the eyes in low-light conditions. Many platforms also offer a **High Contrast mode** to make things easier to see.
 
-These themes affect both the `Background` and `Foreground` colors to accomodate user preferences. All of the color modes mentioned above are available for use in your app. This guide will detail how to change the system theme setting, make your app recieve change notifications for it, and react to those changes at runtime.
+These themes affect both the `Background` and `Foreground` colors to accommodate user preferences. All of the color modes mentioned above are available for use in your app. This guide will detail how to change the system theme setting, make your app receive change notifications for it, and react to those changes at runtime.
 
 ## Enable dark mode
 
-As in WinUI, the possible values `Light`, `Dark`, and `HighContrast` correspond to a value users can select in the settings of their respective platform. 
+As in WinUI, the possible values `Light`, `Dark`, and `HighContrast` correspond to a value users can select in the settings of their respective platforms. 
 
-High Contrast mode is often available to enable seperately, from a dedicated _Accessibility_ page. For the purpose of this documentation, we will assume the user wants to use Dark mode.
+High Contrast mode is often available to enable separately, from a dedicated _Accessibility_ page. For the purpose of this documentation, we will assume the user wants to use Dark mode.
 
 # [**Windows**](#tab/windows)
 Windows PCs can enable Dark mode from Windows Settings. See [this guide](https://support.microsoft.com/windows/change-colors-in-windows-d26ef4d6-819a-581c-1581-493cfcc005fe) for more information.
@@ -71,7 +71,7 @@ public class MainPage : Page
 
 ## Change the app theme at runtime
 
-The `SetApplicationTheme` method in this helper class can also be used to support an in-app toggle for dark mode. For example, you could add a toggle button to your app's settings page that allows the user to switch between light and dark mode. The following code snippet shows how to implement this:
+The `SetApplicationTheme` method in this helper class can also be used to support an in-app toggle for dark mode. For example, you could add a toggle button to your app's settings page that allows the user to switch between light and dark modes. The following code snippet shows how to implement this:
 
 ```csharp
 using CommunityToolkit.WinUI.UI.Helpers;
@@ -102,7 +102,7 @@ public class SettingsPage : Page
 
 ## Change the app theme at startup
 
-Another method to change the app theme is to adjust it immediately upon startup. The following must only be called in the `App` class constructor
+Another method to change the app theme is to adjust it immediately upon startup. The following must only be called in the `App` class constructor.
 
 ```csharp
 Uno.UI.ApplicationHelper.RequestedCustomTheme = "Dark";
