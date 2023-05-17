@@ -336,8 +336,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsInstanceOfType(parent, typeof(ListView));
 		}
 
-<<<<<<< HEAD
-=======
 #if HAS_UNO
 		[TestMethod]
 		[RunsOnUIThread]
@@ -374,7 +372,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsInstanceOfType(parent, typeof(ListView));
 		}
 #endif
->>>>>>> 9943b48107 (chore: organize Given_ListViewBase code)
 
 		[TestMethod]
 		[RunsOnUIThread]
