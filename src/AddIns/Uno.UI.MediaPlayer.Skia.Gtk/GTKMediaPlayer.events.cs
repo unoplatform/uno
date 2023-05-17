@@ -86,6 +86,7 @@ public partial class GtkMediaPlayer
 				_videoView.MediaPlayer = _mediaPlayer;
 
 				_mediaPlayer.TimeChanged += OnMediaPlayerTimeChange;
+				_mediaPlayer.TimeChanged += OnMediaPlayerTimeChangeIsMediaParse;
 				_mediaPlayer.MediaChanged += MediaPlayerMediaChanged;
 				_mediaPlayer.Stopped += OnMediaPlayerStopped;
 
@@ -141,13 +142,10 @@ public partial class GtkMediaPlayer
 
 			media.Parse(MediaParseOptions.ParseNetwork);
 			_mediaPlayer.Media = media;
-			_ = Dispatcher.RunAsync(CoreDispatcherPriority.Low, () =>
-			{
-				AddMediaEvents();
-			});
 			OnSourceLoaded?.Invoke(this, EventArgs.Empty);
 		}
 	}
+
 	private void AddMediaEvents()
 	{
 		if (_mediaPlayer?.Media is { IsParsed: true } media)
@@ -156,11 +154,15 @@ public partial class GtkMediaPlayer
 			media.MetaChanged -= MetaChanged;
 			media.StateChanged -= StateChanged;
 			media.ParsedChanged -= ParsedChanged;
+			_mediaPlayer.TimeChanged -= OnMediaPlayerTimeChangeIsMediaParse;
 
 			media.DurationChanged += DurationChanged;
 			media.MetaChanged += MetaChanged;
 			media.StateChanged += StateChanged;
 			media.ParsedChanged += ParsedChanged;
+
+			Duration = (double)(_videoView?.MediaPlayer?.Media?.Duration / 1000 ?? 0);
+			OnSourceLoaded?.Invoke(this, EventArgs.Empty);
 		}
 	}
 
@@ -170,6 +172,7 @@ public partial class GtkMediaPlayer
 		{
 			this.Log().Debug($"ParsedChanged");
 		}
+		OnSourceLoaded?.Invoke(this, EventArgs.Empty);
 		OnGtkSourceLoaded(sender, el);
 	}
 
@@ -262,6 +265,11 @@ public partial class GtkMediaPlayer
 	{
 		var time = el is LibVLCSharp.Shared.MediaPlayerTimeChangedEventArgs e ? TimeSpan.FromMilliseconds(e.Time) : TimeSpan.Zero;
 		OnTimeUpdate?.Invoke(this, time);
+	}
+
+	private void OnMediaPlayerTimeChangeIsMediaParse(object? sender, MediaPlayerTimeChangedEventArgs el)
+	{
+		AddMediaEvents();
 	}
 
 	private void OnEndReached()
