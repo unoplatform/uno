@@ -70,7 +70,7 @@ public partial class GtkMediaPlayer
 	{
 		try
 		{
-			if (_videoView != null && _mediaPlayer != null && _videoContainer != null)
+			if (_videoView is not null && _mediaPlayer is not null && _videoContainer is not null)
 			{
 				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 				{
