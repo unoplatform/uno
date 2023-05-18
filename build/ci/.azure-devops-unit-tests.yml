@@ -72,7 +72,16 @@ jobs:
 
   - task: VisualStudioTestPlatformInstaller@1
     inputs:
-      versionSelector: latestStable
+      # 17.5.0 is forced because 17.6.0 issue with: 
+      # 
+      ##[error]DiscoveryMessage : System.InvalidOperationException: The provided manager was not found in any slot.
+      # at Microsoft.VisualStudio.TestPlatform.CrossPlatEngine.Client.ParallelOperationManager`3.ClearCompletedSlot(TManager completedManager)
+      # at Microsoft.VisualStudio.TestPlatform.CrossPlatEngine.Client.ParallelOperationManager`3.RunNextWork(TManager completedManager)
+      # at Microsoft.VisualStudio.TestPlatform.CrossPlatEngine.Client.Parallel.ParallelProxyDiscoveryManager.HandlePartialDiscoveryComplete(IProxyDiscoveryManager proxyDiscoveryManager, Int64 totalTests, IEnumerable`1 lastChunk, Boolean isAborted)
+      # at Microsoft.VisualStudio.TestPlatform.CrossPlatEngine.Client.Parallel.ParallelDiscoveryEventsHandler.HandleDiscoveryComplete(DiscoveryCompleteEventArgs discoveryCompleteEventArgs, IEnumerable`1 lastChunk)
+      # at Microsoft.VisualStudio.TestPlatform.CrossPlatEngine.Client.ProxyDiscoveryManager.InitializeDiscovery(DiscoveryCriteria discoveryCriteria, ITestDiscoveryEventsHandler2 eventHandler, Boolean skipDefaultAdapters)
+      # at Microsoft.VisualStudio.TestPlatform.CrossPlatEngine.Client.ProxyDiscoveryManager.DiscoverTests(DiscoveryCriteria discoveryCriteria, ITestDiscoveryEventsHandler2 eventHandler)
+      versionSelector: 17.5.0
 
   - task: VSTest@2
     inputs:
