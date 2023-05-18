@@ -73,6 +73,7 @@ jobs:
   - task: VisualStudioTestPlatformInstaller@1
     inputs:
       # 17.5.0 is forced because 17.6.0 issue with: 
+      # https://github.com/microsoft/vstest/issues/4467
       # 
       ##[error]DiscoveryMessage : System.InvalidOperationException: The provided manager was not found in any slot.
       # at Microsoft.VisualStudio.TestPlatform.CrossPlatEngine.Client.ParallelOperationManager`3.ClearCompletedSlot(TManager completedManager)
