@@ -26,14 +26,13 @@ namespace Uno.UI.Media;
 
 public partial class GtkMediaPlayer
 {
-	private TaskCompletionSource<string> _taskCompletionSource = new TaskCompletionSource<string>("");
 	public event EventHandler<object>? OnSourceFailed;
 	public event EventHandler<object>? OnSourceEnded;
 	public event EventHandler<object>? OnMetadataLoaded;
 	public event EventHandler<object>? OnTimeUpdate;
 	public event EventHandler<object>? OnSourceLoaded;
 
-	private async Task Initialized()
+	private Task Initialized()
 	{
 		if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 		{
@@ -58,55 +57,28 @@ public partial class GtkMediaPlayer
 			HorizontalContentAlignment = HorizontalAlignment.Stretch,
 			VerticalContentAlignment = VerticalAlignment.Stretch,
 		};
-		_taskCompletionSource = new TaskCompletionSource<string>("");
-		_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-				{
-					InitializedMedia();
-				});
-		await _taskCompletionSource.Task;
-	}
-
-	private Task InitializedMedia()
-	{
-		try
-		{
-			if (_videoView is not null && _mediaPlayer is not null && _videoContainer is not null)
-			{
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
-				{
-					this.Log().Debug($"Set MediaPlayer");
-				}
-				_videoView.MediaPlayer = _mediaPlayer;
-
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
-				{
-					this.Log().Debug($"Content _videoView on Dispatcher");
-				}
-				_videoView.Visible = true;
-				_videoView.MediaPlayer = _mediaPlayer;
-
-				_mediaPlayer.TimeChanged += OnMediaPlayerTimeChange;
-				_mediaPlayer.TimeChanged += OnMediaPlayerTimeChangeIsMediaParse;
-				_mediaPlayer.MediaChanged += MediaPlayerMediaChanged;
-				_mediaPlayer.Stopped += OnMediaPlayerStopped;
-
-				_videoContainer.Content = _videoView;
-
-				Child = _videoContainer;
-
-				UpdateVideoStretch();
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
-				{
-					this.Log().Debug($"Created player");
-				}
-				_taskCompletionSource.TrySetResult("");
-			}
-		}
-		catch (Exception ex)
+		if (_videoView != null && _mediaPlayer != null && _videoContainer != null)
 		{
 			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 			{
-				this.Log().Debug($"InitializedMedia error: " + ex.Message);
+				this.Log().Debug($"Set MediaPlayer");
+			}
+			_videoView.Visible = true;
+			_videoView.MediaPlayer = _mediaPlayer;
+
+			_mediaPlayer.TimeChanged += OnMediaPlayerTimeChange;
+			_mediaPlayer.TimeChanged += OnMediaPlayerTimeChangeIsMediaParse;
+			_mediaPlayer.MediaChanged += MediaPlayerMediaChanged;
+			_mediaPlayer.Stopped += OnMediaPlayerStopped;
+
+			_videoContainer.Content = _videoView;
+
+			Child = _videoContainer;
+
+			UpdateVideoStretch();
+			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			{
+				this.Log().Debug($"Created player");
 			}
 		}
 		return Task.CompletedTask;
