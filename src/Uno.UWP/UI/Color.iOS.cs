@@ -10,14 +10,14 @@ namespace Windows.UI
 {
 	public partial struct Color : IFormattable
 	{
-		private static bool legacy = !UIDevice.CurrentDevice.CheckSystemVersion(13, 0);
+		private static bool legacy = !UIKit.UIDevice.CurrentDevice.CheckSystemVersion(13, 0);
 
 		public static implicit operator UIKit.UIColor(Color color) => UIKit.UIColor.FromRGBA(color.R, color.G, color.B, color.A);
 		public static implicit operator CGColor(Color color)
 		{
 			if (legacy)
 			{
-				return UIKit.UIColor.FromRgba(color.R, color.G, color.B, color.A).CGColor;
+				return UIKit.UIColor.FromRGBA(color.R, color.G, color.B, color.A).CGColor;
 			}
 			else
 			{
