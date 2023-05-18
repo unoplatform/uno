@@ -18,7 +18,7 @@ public partial class ListViewBase
 	/// </summary>
 	public static DependencyProperty SingleSelectionFollowsFocusProperty { get; } =
 		DependencyProperty.Register(
-			nameof(SingleSelectionFollowsFocus), 
+			nameof(SingleSelectionFollowsFocus),
 			typeof(bool),
 			typeof(ListViewBase),
 			new FrameworkPropertyMetadata(true));
