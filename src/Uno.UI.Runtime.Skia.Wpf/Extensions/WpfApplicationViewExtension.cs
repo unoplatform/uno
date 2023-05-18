@@ -17,6 +17,7 @@ namespace Uno.UI.Skia.Platform
 			_owner = (ApplicationView)owner;
 
 			// TODO: support many windows
+			// TODO:MZ: This is null at first!
 			_mainWpfWindow = WpfApplication.Current.MainWindow;
 		}
 
