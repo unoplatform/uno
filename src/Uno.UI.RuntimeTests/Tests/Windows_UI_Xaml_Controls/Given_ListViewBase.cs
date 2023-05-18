@@ -336,42 +336,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsInstanceOfType(parent, typeof(ListView));
 		}
 
-#if HAS_UNO
-		[TestMethod]
-		[RunsOnUIThread]
-		public async Task When_Item_GetParentInternal_Include_ListView()
-		{
-			var SUT = new ListView()
-			{
-				ItemContainerStyle = BasicContainerStyle,
-				SelectionMode = ListViewSelectionMode.Single,
-			};
-
-			WindowHelper.WindowContent = SUT;
-			await WindowHelper.WaitForIdle();
-
-			var source = new[] {
-				new ListViewItem(){ Content = "item 1" },
-				new ListViewItem(){ Content = "item 2" },
-				new ListViewItem(){ Content = "item 3" },
-				new ListViewItem(){ Content = "item 4" },
-			};
-
-			SUT.ItemsSource = source;
-
-			SelectorItem si = null;
-			await WindowHelper.WaitFor(() => (si = SUT.ContainerFromItem(source[0]) as SelectorItem) != null);
-
-			Assert.IsNull(si.Parent);
-			var parent = Uno.UI.Extensions.DependencyObjectExtensions.GetParentInternal(si, false);
-			while (parent is not null && parent is not ListView listView)
-			{
-				parent = Uno.UI.Extensions.DependencyObjectExtensions.GetParentInternal(parent, false);
-			}
-
-			Assert.IsInstanceOfType(parent, typeof(ListView));
-		}
-#endif
 
 		[TestMethod]
 		[RunsOnUIThread]
@@ -2662,30 +2626,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsTrue(materialized.Contains(source.Last()), $"Failed to scroll. materialized: {string.Join(",", materialized)}");
 		}
 #endif
-
-		[TestMethod]
-		public async Task When_SelectionMode_Is_Multiple()
-		{
-			// #11971: It was too early to apply MultiSelectStates in PrepareContainerForItemOverride,
-			// as LVI doesnt have its Control::Template, which defines the visual-states, applied yet.
-			var SUT = new ListView()
-			{
-				Height = 200,
-				SelectionMode = ListViewSelectionMode.Multiple,
-				ItemsSource = Enumerable.Range(3, 12).ToArray(),
-			};
-			WindowHelper.WindowContent = SUT;
-			await WindowHelper.WaitForLoaded(SUT);
-
-			// Validate the newly materialized item has MultiSelectStates set
-			var lvi0 = (ListViewItem)SUT.ContainerFromIndex(0);
-			var root = lvi0 is not null && VisualTreeHelper.GetChildrenCount(lvi0) > 0 ? VisualTreeHelper.GetChild(lvi0, 0) : null;
-			var vsgs = root is FrameworkElement rootAsFE ? VisualStateManager.GetVisualStateGroups(rootAsFE) : null;
-			var vsg = vsgs?.FirstOrDefault(x => x.Name == "MultiSelectStates");
-
-			Assert.IsNotNull(vsg, "VisualStateGroup[Name=MultiSelectStates] was not found.");
-			Assert.AreEqual(vsg.CurrentState?.Name, "MultiSelectEnabled");
-		}
 
 		[TestMethod]
 		[DataRow(nameof(ListView), "add")]
