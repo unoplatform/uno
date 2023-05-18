@@ -35,6 +35,7 @@ public class Given_ApplicationLanguages
 	{
 		ApplicationLanguages.PrimaryLanguageOverride = "zh-Hans-CN";
 		ApplicationLanguages.Languages[0].Should().Be("zh-Hans-CN");
+		ApplicationLanguages.GetAppSpecificSettingKey().Should().Be(Key);
 		ApplicationData.Current.LocalSettings.Values[Key].Should().Be("zh-Hans-CN");
 	}
 
@@ -43,6 +44,7 @@ public class Given_ApplicationLanguages
 	{
 		ApplicationLanguages.PrimaryLanguageOverride = "fr-Latn-CA";
 		ApplicationLanguages.Languages[0].Should().Be("fr-Latn-CA");
+		ApplicationLanguages.GetAppSpecificSettingKey().Should().Be(Key);
 		ApplicationData.Current.LocalSettings.Values[Key].Should().Be("fr-Latn-CA");
 	}
 }

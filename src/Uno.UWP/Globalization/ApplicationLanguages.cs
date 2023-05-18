@@ -75,7 +75,7 @@ namespace Windows.Globalization
 			return false;
 		}
 
-		private static string GetAppSpecificSettingKey()
+		internal static string GetAppSpecificSettingKey()
 		{
 			if (Package.EntryAssembly is not { } entryAssembly)
 			{
