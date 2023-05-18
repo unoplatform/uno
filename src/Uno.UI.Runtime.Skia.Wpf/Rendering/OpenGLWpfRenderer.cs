@@ -12,6 +12,7 @@ using Uno.Foundation.Logging;
 using Windows.Graphics.Display;
 using WpfControl = global::System.Windows.Controls.Control;
 using WinUI = Windows.UI.Xaml;
+using Uno.UI.Runtime.Skia.Wpf.Hosting;
 
 namespace Uno.UI.Runtime.Skia.Wpf.Rendering;
 

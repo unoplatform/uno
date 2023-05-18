@@ -2,16 +2,16 @@
 
 using System;
 using System.Collections.Generic;
-using Uno.UI.Runtime.Skia.Wpf;
+using Uno.UI.Runtime.Skia.Wpf.Hosting;
 using Windows.UI.Xaml;
 
 namespace Uno.UI.XamlHost.Skia.Wpf.Hosting;
 
 internal static class XamlRootMap
 {
-	private static readonly Dictionary<XamlRoot, IWpfApplicationHost> _map = new();
+	private static readonly Dictionary<XamlRoot, IWpfXamlRootHost> _map = new();
 
-	internal static void Register(XamlRoot xamlRoot, IWpfApplicationHost host)
+	internal static void Register(XamlRoot xamlRoot, IWpfXamlRootHost host)
 	{
 		if (xamlRoot is null)
 		{
@@ -44,6 +44,6 @@ internal static class XamlRootMap
 		}
 	}
 
-	internal static IWpfApplicationHost? GetHostForRoot(XamlRoot xamlRoot) =>
+	internal static IWpfXamlRootHost? GetHostForRoot(XamlRoot xamlRoot) =>
 		_map.TryGetValue(xamlRoot, out var host) ? host : null;
 }

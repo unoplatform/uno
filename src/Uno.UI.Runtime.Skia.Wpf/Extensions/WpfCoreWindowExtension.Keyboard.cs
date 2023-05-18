@@ -1,22 +1,8 @@
 ﻿#nullable enable
 
 using System;
-using Windows.Devices.Input;
 using Windows.UI.Core;
-using Uno.Extensions;
-using MouseEventArgs = System.Windows.Input.MouseEventArgs;
-using WpfApplication = System.Windows.Application;
-using WpfWindow = System.Windows.Window;
-using System.Threading;
-using System.Windows;
-using System.Windows.Input;
-using System.Windows.Interop;
-using System.Windows.Media;
-using Windows.UI.Input;
-using MouseDevice = System.Windows.Input.MouseDevice;
-using System.Reflection;
 using Windows.System;
-using Uno.UI.Skia.Platform.Extensions;
 using Uno.Foundation.Logging;
 
 namespace Uno.UI.Skia.Platform

@@ -8,5 +8,4 @@ namespace Uno.UI.Runtime.Skia.Wpf.Hosting;
 
 internal interface IWpfWindowHost : IWpfXamlRootHost
 {
-	WpfCanvas? NativeOverlayLayer { get; }
 }
