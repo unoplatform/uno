@@ -79,16 +79,9 @@ namespace Uno.UI.Runtime.Skia.Wpf.Rendering
 			{
 				surface.Canvas.Clear(BackgroundColor);
 				surface.Canvas.SetMatrix(SKMatrix.CreateScale((float)dpiScaleX, (float)dpiScaleY));
-				if (!_host.IsIsland)
+				if (_host.RootElement?.Visual is { } rootVisual)
 				{
-					WinUI.Window.Current.Compositor.Render(surface);
-				}
-				else
-				{
-					if (_host.RootElement?.Visual != null)
-					{
-						WinUI.Window.Current.Compositor.RenderVisual(surface, _host.RootElement?.Visual!);
-					}
+					WinUI.Window.Current.Compositor.Render(surface, rootVisual);
 				}
 			}
 
