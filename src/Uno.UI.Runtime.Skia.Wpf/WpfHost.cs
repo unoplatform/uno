@@ -12,7 +12,7 @@ using UnoApplication = Windows.UI.Xaml.Application;
 using WinUI = Windows.UI.Xaml;
 using WpfApplication = System.Windows.Application;
 
-namespace Uno.UI.Skia.Platform;
+namespace Uno.UI.Skia;
 
 // TODO:MZ: Rename to WpfApplicationHost???
 public class WpfHost : IWpfApplicationHost
@@ -49,17 +49,11 @@ public class WpfHost : IWpfApplicationHost
 
 	public static WpfHost? Current => _current;
 
-	private HostPointerHandler? _hostPointerHandler;
-
-	bool IWpfApplicationHost.IsIsland => false;
-
 	/// <summary>
 	/// Gets or sets the current Skia Render surface type.
 	/// </summary>
 	/// <remarks>If <c>null</c>, the host will try to determine the most compatible mode.</remarks>
 	public RenderSurfaceType? RenderSurfaceType { get; set; }
-
-	WinUI.UIElement? IWpfApplicationHost.RootElement => null;
 
 	bool IWpfApplicationHost.IgnorePixelScaling => throw new NotImplementedException();
 
@@ -88,7 +82,6 @@ public class WpfHost : IWpfApplicationHost
 		}
 
 		WinUI.Application.StartWithArguments(CreateApp);
-		_hostPointerHandler = new HostPointerHandler(this);
 	}
 
 	private void MainWindow_StateChanged(object? sender, EventArgs e)
@@ -129,7 +122,7 @@ public class WpfHost : IWpfApplicationHost
 		set
 		{
 			_ignorePixelScaling = value;
-			InvalidateVisual();
+			// TODO:MZ: InvalidateVisual();
 		}
 	}
 }

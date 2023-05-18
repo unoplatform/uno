@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Media.Imaging;
 using Uno.ApplicationModel.DataTransfer;
+using Uno.UI.Skia;
 using Uno.UI.Skia.Platform;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage;
@@ -21,8 +22,8 @@ namespace Uno.Extensions.ApplicationModel.DataTransfer
 		const int WM_CLIPBOARDUPDATE = 0x031D;
 
 		private readonly WpfHost _host;
-		private HwndSource _hwndSource;
-		private bool _pendingStartContentChanged;
+		//private HwndSource _hwndSource;
+		//private bool _pendingStartContentChanged;
 
 		public event EventHandler<object> ContentChanged;
 
@@ -30,59 +31,60 @@ namespace Uno.Extensions.ApplicationModel.DataTransfer
 		{
 			_host = WpfHost.Current;
 
-			// This class may be accessed before the Window is loaded
-			// if the Clipboard is somehow accessed really early.
-			if (_host.IsLoaded)
-			{
-				HostLoaded(null, null);
-			}
-			else
-			{
-				// Hook for native events
-				_host.Loaded += HostLoaded;
-			}
+			//// TODO:MZ: Multi-window support?
+			//// This class may be accessed before the Window is loaded
+			//// if the Clipboard is somehow accessed really early.
+			//if (_host.IsLoaded)
+			//{
+			//	HostLoaded(null, null);
+			//}
+			//else
+			//{
+			//	// Hook for native events
+			//	_host.Loaded += HostLoaded;
+			//}
 
-			void HostLoaded(object sender, RoutedEventArgs e)
-			{
-				_host.Loaded -= HostLoaded;
+			//void HostLoaded(object sender, RoutedEventArgs e)
+			//{
+			//	_host.Loaded -= HostLoaded;
 
-				var win = Window.GetWindow(_host);
+			//	var win = Window.GetWindow(_host);
 
-				var fromDependencyObject = PresentationSource.FromDependencyObject(win);
-				_hwndSource = fromDependencyObject as HwndSource;
+			//	var fromDependencyObject = PresentationSource.FromDependencyObject(win);
+			//	_hwndSource = fromDependencyObject as HwndSource;
 
-				if (_pendingStartContentChanged)
-				{
-					StartContentChanged();
-				}
-			}
+			//	if (_pendingStartContentChanged)
+			//	{
+			//		StartContentChanged();
+			//	}
+			//}
 		}
 
 		public void StartContentChanged()
 		{
-			if (_hwndSource != null)
-			{
-				_hwndSource.AddHook(OnWmMessage);
-				ClipboardNativeFunctions.AddClipboardFormatListener(_hwndSource.Handle);
-			}
-			else
-			{
-				// Signals the app to hook when it's ready
-				_pendingStartContentChanged = true;
-			}
+			//if (_hwndSource != null)
+			//{
+			//	_hwndSource.AddHook(OnWmMessage);
+			//	ClipboardNativeFunctions.AddClipboardFormatListener(_hwndSource.Handle);
+			//}
+			//else
+			//{
+			//	// Signals the app to hook when it's ready
+			//	_pendingStartContentChanged = true;
+			//}
 		}
 
 		public void StopContentChanged()
 		{
-			if (_hwndSource != null)
-			{
-				ClipboardNativeFunctions.RemoveClipboardFormatListener(_hwndSource.Handle);
-				_hwndSource.RemoveHook(OnWmMessage);
-			}
-			else
-			{
-				_pendingStartContentChanged = false;
-			}
+			//if (_hwndSource != null)
+			//{
+			//	ClipboardNativeFunctions.RemoveClipboardFormatListener(_hwndSource.Handle);
+			//	_hwndSource.RemoveHook(OnWmMessage);
+			//}
+			//else
+			//{
+			//	_pendingStartContentChanged = false;
+			//}
 		}
 
 		public void Flush() => Clipboard.Flush();

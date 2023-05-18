@@ -22,7 +22,7 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 	private const GRSurfaceOrigin surfaceOrigin = GRSurfaceOrigin.TopLeft;
 
 	private readonly WpfControl _hostControl;
-	private readonly IWpfApplicationHost _host;
+	private readonly IWpfXamlRootHost _host;
 	private DisplayInformation? _displayInformation;
 	private nint _hwnd;
 	private nint _hdc;
@@ -32,7 +32,7 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 	private GRBackendRenderTarget? _renderTarget;
 	private WriteableBitmap? _backBuffer;
 
-	public OpenGLWpfRenderer(IWpfApplicationHost host)
+	public OpenGLWpfRenderer(IWpfXamlRootHost host)
 	{
 		_hostControl = host as WpfControl ?? throw new InvalidOperationException("Host should be a WPF control");
 		_host = host;

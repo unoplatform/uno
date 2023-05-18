@@ -4,12 +4,14 @@ using System;
 using System.IO;
 using System.Windows;
 using System.Windows.Media;
+using Uno.Disposables;
 using Uno.Foundation.Logging;
 using Uno.UI.Controls;
 using Uno.UI.Runtime.Skia.Wpf.Hosting;
 using Uno.UI.Runtime.Skia.Wpf.Rendering;
 using Uno.UI.Skia.Platform;
 using Uno.UI.Xaml.Core;
+using Uno.UI.XamlHost.Skia.Wpf;
 using Uno.UI.XamlHost.Skia.Wpf.Hosting;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml.Input;
@@ -29,6 +31,9 @@ internal class UnoWpfWindow : WpfWindow, IWpfWindowHost
 	private const string NativeOverlayLayerPart = "NativeOverlayLayer";
 
 	private readonly WinUI.Window _window;
+	private readonly CompositeDisposable _disposables = new();
+	private readonly HostPointerHandler? _hostPointerHandler;
+
 	private WpfCanvas? _nativeOverlayLayer;
 	private IWpfRenderer? _renderer;
 	private FocusManager? _focusManager;
@@ -42,6 +47,9 @@ internal class UnoWpfWindow : WpfWindow, IWpfWindowHost
 
 	public UnoWpfWindow(WinUI.Window window)
 	{
+		_window = window;
+		_hostPointerHandler = new HostPointerHandler(this);
+
 		FocusVisualStyle = null;
 
 		SizeChanged += WpfHost_SizeChanged;
@@ -58,12 +66,18 @@ internal class UnoWpfWindow : WpfWindow, IWpfWindowHost
 
 		RegisterForBackgroundColor();
 		UpdateWindowPropertiesFromPackage();
-		_window = window;
 	}
+
+	// TODO: Needed?
+	WinUI.UIElement? IWpfXamlRootHost.RootElement => null;
 
 	WpfCanvas? IWpfXamlRootHost.NativeOverlayLayer => _nativeOverlayLayer;
 
 	WinUI.XamlRoot? IWpfXamlRootHost.XamlRoot => _window.RootElement?.XamlRoot;
+
+	public bool IgnorePixelScaling => WpfHost.Current!.IgnorePixelScaling;
+
+	public bool IsIsland => false;
 
 	void IWpfXamlRootHost.InvalidateRender()
 	{
@@ -94,7 +108,7 @@ internal class UnoWpfWindow : WpfWindow, IWpfWindowHost
 				this.Log().Warn($"OpenGL failed to initialize, using software rendering");
 			}
 
-			RenderSurfaceType = Skia.RenderSurfaceType.Software;
+			WpfHost.Current!.RenderSurfaceType = Skia.RenderSurfaceType.Software;
 			InitializeRenderer();
 
 			_renderer.Initialize();
@@ -111,21 +125,22 @@ internal class UnoWpfWindow : WpfWindow, IWpfWindowHost
 
 	private void InitializeRenderer()
 	{
-		if (RenderSurfaceType is null)
+		// TODO:MZ: Do this only once, not for every window
+		if (WpfHost.Current!.RenderSurfaceType is null)
 		{
-			RenderSurfaceType = Skia.RenderSurfaceType.OpenGL;
+			WpfHost.Current!.RenderSurfaceType = Skia.RenderSurfaceType.OpenGL;
 		}
 
 		if (this.Log().IsEnabled(LogLevel.Debug))
 		{
-			this.Log().Debug($"Using {RenderSurfaceType} rendering");
+			this.Log().Debug($"Using {WpfHost.Current!.RenderSurfaceType} rendering");
 		}
 
-		_renderer = RenderSurfaceType switch
+		_renderer = WpfHost.Current!.RenderSurfaceType switch
 		{
 			Skia.RenderSurfaceType.Software => new SoftwareWpfRenderer(this),
 			Skia.RenderSurfaceType.OpenGL => new OpenGLWpfRenderer(this),
-			_ => throw new InvalidOperationException($"Render Surface type {RenderSurfaceType} is not supported")
+			_ => throw new InvalidOperationException($"Render Surface type {WpfHost.Current!.RenderSurfaceType} is not supported")
 		};
 	}
 
@@ -215,10 +230,8 @@ internal class UnoWpfWindow : WpfWindow, IWpfWindowHost
 
 		Update();
 
-		_registrations.Add(WinUI.Window.Current.RegisterBackgroundChangedEvent((s, e) => Update()));
+		_disposables.Add(WinUI.Window.Current.RegisterBackgroundChangedEvent((s, e) => Update()));
 	}
-
-
 
 	protected override void OnRender(DrawingContext drawingContext)
 	{
@@ -231,7 +244,7 @@ internal class UnoWpfWindow : WpfWindow, IWpfWindowHost
 	{
 		_focusManager ??= VisualTree.GetFocusManagerForElement(Windows.UI.Xaml.Window.Current?.RootElement);
 		_focusManager?.FocusRectManager?.RedrawFocusVisual();
-		if (_focusManager?.FocusedElement is TextBox textBox)
+		if (_focusManager?.FocusedElement is Windows.UI.Xaml.Controls.TextBox textBox)
 		{
 			textBox.TextBoxView?.Extension?.InvalidateLayout();
 		}

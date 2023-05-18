@@ -21,7 +21,9 @@ using Uno.Extensions;
 using DragEventArgs = System.Windows.DragEventArgs;
 using Point = Windows.Foundation.Point;
 using UIElement = Windows.UI.Xaml.UIElement;
-using Window = System.Windows.Window;
+using WpfWindow = System.Windows.Window;
+using WpfControl = System.Windows.Controls.Control;
+using WpfApplication = System.Windows.Application;
 using Uno.Foundation.Logging;
 
 namespace Uno.UI.Skia.Platform
@@ -31,11 +33,16 @@ namespace Uno.UI.Skia.Platform
 		private readonly long _fakePointerId = Pointer.CreateUniqueIdForUnknownPointer();
 		private readonly DragDropManager _manager;
 
+		// TODO:MZ: Multi-window support, wait for main window to be created!
+		private static WpfControl _rootControl;
+
 		public WpfDragDropExtension(object owner)
 		{
 			_manager = (DragDropManager)owner;
 
-			var host = WpfHost.Current;
+			// TODO:MZ: Multi-window support, wait for main window to be created!
+			var host = WpfApplication.Current.MainWindow;
+			_rootControl = host;
 
 			if (host is not null) // TODO: Add support for multiple XamlRoots
 			{
@@ -70,14 +77,14 @@ namespace Uno.UI.Skia.Platform
 			=> e.Effects = ToDropEffects(_manager.ProcessDropped(new DragEventSource(_fakePointerId, e)));
 
 		public void StartNativeDrag(CoreDragInfo info)
-			=> WpfHost.Current.Dispatcher.InvokeAsync(async () =>
+			=> _rootControl.Dispatcher.InvokeAsync(async () =>
 			{
 				try
 				{
 					var data = await ToDataObject(info.Data, CancellationToken.None);
 					var effects = ToDropEffects(info.AllowedOperations);
 
-					DragDrop.DoDragDrop(WpfHost.Current, data, effects);
+					DragDrop.DoDragDrop(_rootControl, data, effects);
 				}
 				catch (Exception e)
 				{
@@ -245,7 +252,7 @@ namespace Uno.UI.Skia.Platform
 			/// <inheritdoc />
 			public (Point location, DragDropModifiers modifier) GetState()
 			{
-				var wpfLocation = _wpfArgs.GetPosition(WpfHost.Current);
+				var wpfLocation = _wpfArgs.GetPosition(_rootControl);
 				var location = new Windows.Foundation.Point(wpfLocation.X, wpfLocation.Y);
 
 				var mods = DragDropModifiers.None;
@@ -281,7 +288,7 @@ namespace Uno.UI.Skia.Platform
 			/// <inheritdoc />
 			public Point GetPosition(object relativeTo)
 			{
-				var rawWpfPosition = _wpfArgs.GetPosition(WpfHost.Current);
+				var rawWpfPosition = _wpfArgs.GetPosition(_rootControl);
 				var rawPosition = new Point(rawWpfPosition.X, rawWpfPosition.Y);
 
 				if (relativeTo is null)
