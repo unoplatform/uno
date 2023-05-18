@@ -39,11 +39,14 @@ public class WpfHost : IWpfApplicationHost
 
 		WpfApplication.Current.Activated += Current_Activated;
 		WpfApplication.Current.Deactivated += Current_Deactivated;
-		WpfApplication.Current.MainWindow.StateChanged += MainWindow_StateChanged;
-		WpfApplication.Current.MainWindow.Closing += MainWindow_Closing;
+
+		// TODO:MZ: Adjust for new implementation!
+		//WpfApplication.Current.MainWindow.StateChanged += MainWindow_StateChanged;
+		//WpfApplication.Current.MainWindow.Closing += MainWindow_Closing;
 
 		// App needs to be created after the native overlay layer is properly initialized
 		// otherwise the initially focused input element would cause exception.
+		// TODO:MZ: Verify this is not broken after the changes
 		StartApp();
 	}
 

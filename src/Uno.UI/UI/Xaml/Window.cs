@@ -203,7 +203,7 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Gets the window of the current thread.
 		/// </summary>
-		public static Window Current => InternalGetCurrentWindow();
+		public static Window Current => InternalGetCurrentWindow(); // TODO:MZ: Accessing Current should not create the initial window, it should be explicit!
 
 		public void Activate()
 		{
