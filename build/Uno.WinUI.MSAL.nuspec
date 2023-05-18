@@ -8,7 +8,7 @@
 		<projectUrl>https://github.com/unoplatform/uno</projectUrl>
 		<license type="expression">Apache-2.0</license>
 		<description>This package provides the extensions to MSAL (Microsoft.Identity.Client) for an Uno Platform application.</description>
-		<copyright>nventive</copyright>
+		<copyright>Uno Platform</copyright>
 		<repository type="git" url="https://github.com/unoplatform/uno.git" branch="$branch$" commit="$commitid$" />
 		<dependencies>
 			<group targetFramework="net7.0">

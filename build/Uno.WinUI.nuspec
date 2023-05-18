@@ -5,7 +5,7 @@
 		<version>2.7.1000</version>
 		<title>Uno.UI</title>
 		<authors>Uno Platform</authors>
-		<owners>nventive</owners>
+		<owners>unoplatform</owners>
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
 		<projectUrl>https://platform.uno/</projectUrl>
 		<license type="expression">Apache-2.0</license>

@@ -8,8 +8,8 @@
 		<DebugType>portable</DebugType>
 		<DebugSymbols>True</DebugSymbols>
 		<RepositoryUrl>$(BUILD_REPOSITORY_URI)</RepositoryUrl>
-		<Copyright>nventive</Copyright>
-		<Author>nventive</Author>
+		<Copyright>Copyright (C) 2015-$([System.DateTime]::Now.ToString(`yyyy`)) Uno Platform Inc. - all rights reserved</Copyright>
+		<Author>Uno Platform</Author>
 		<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
 		<GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
 
