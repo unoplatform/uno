@@ -42,7 +42,7 @@ namespace LibVLCSharp.GTK
 			/// <remarks>Mac only</remarks>
 			/// <param name="gdkWindow">The pointer to the GdkWindow object</param>
 			/// <returns>The nsview's handle</returns>
-			[DllImport("libgdk-quartz-2.0.0.dylib")]
+			[DllImport("libgdk-3.0.dylib", CallingConvention = CallingConvention.Cdecl)]
 			internal static extern IntPtr gdk_quartz_window_get_nsview(IntPtr gdkWindow);
 
 			/// <summary>
