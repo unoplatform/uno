@@ -17,9 +17,9 @@ namespace Uno.UI.Runtime.Skia.Wpf.Rendering
 		private WpfControl _hostControl;
 		private DisplayInformation? _displayInformation;
 		private WriteableBitmap? _bitmap;
-		private IWpfApplicationHost _host;
+		private IWpfXamlRootHost _host;
 
-		public SoftwareWpfRenderer(IWpfApplicationHost host)
+		public SoftwareWpfRenderer(IWpfXamlRootHost host)
 		{
 			_hostControl = host as WpfControl ?? throw new InvalidOperationException("Host should be a WPF control");
 			_host = host;

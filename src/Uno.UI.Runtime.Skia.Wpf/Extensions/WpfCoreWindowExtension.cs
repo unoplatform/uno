@@ -39,26 +39,36 @@ namespace Uno.UI.Skia.Platform
 
 		public WpfCoreWindowExtension(object owner)
 		{
-			_owner = (CoreWindow)owner;
+			_ownerEvents = (ICoreWindowEvents)owner;
+
+			// TODO:MZ: Multi-window, attach to main window
 			_host = WpfHost.Current;
-			if (_host is null)
-			{
-				return;
-			}
+			//if (_host is null)
+			//{
+			//	return;
+			//}
 
-			// Hook for native events
-			_host.Loaded += HookNative;
+			//// Hook for native events
+			//_host.Loaded += HookNative;
 
-			void HookNative(object sender, System.Windows.RoutedEventArgs e)
-			{
-				_host.Loaded -= HookNative;
+			//void HookNative(object sender, System.Windows.RoutedEventArgs e)
+			//{
+			//	_host.Loaded -= HookNative;
 
-				var win = System.Windows.Window.GetWindow(_host);
+			//	var win = System.Windows.Window.GetWindow(_host);
 
-				win.AddHandler(System.Windows.UIElement.KeyUpEvent, (System.Windows.Input.KeyEventHandler)HostOnKeyUp, true);
-				win.AddHandler(System.Windows.UIElement.KeyDownEvent, (System.Windows.Input.KeyEventHandler)HostOnKeyDown, true);
-			}
+			//	win.AddHandler(System.Windows.UIElement.KeyUpEvent, (System.Windows.Input.KeyEventHandler)HostOnKeyUp, true);
+			//	win.AddHandler(System.Windows.UIElement.KeyDownEvent, (System.Windows.Input.KeyEventHandler)HostOnKeyDown, true);
+			//}
 		}
+
+		// TODO:MZ: Fix
+		public void SetPointerCapture(PointerIdentifier pointer) { }
+		//=> WpfHost.Current?.CaptureMouse();
+
+		// TODO:MZ: Fix
+		public void ReleasePointerCapture(PointerIdentifier pointer) { }
+		//=> WpfHost.Current?.ReleaseMouseCapture();
 
 		internal static WpfCanvas? GetOverlayLayer(XamlRoot xamlRoot) =>
 			XamlRootMap.GetHostForRoot(xamlRoot)?.NativeOverlayLayer;
