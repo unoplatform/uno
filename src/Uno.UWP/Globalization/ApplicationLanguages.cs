@@ -82,7 +82,7 @@ namespace Windows.Globalization
 				throw new InvalidOperationException("ApplicationLanguages is being accessed too early before an instance of Application was created.");
 			}
 
-			return $"PrimaryLanguageOverrideSettingKey.{entryAssembly.GetName().Name}";
+			return $"{PrimaryLanguageOverrideSettingKey}.{entryAssembly.GetName().Name}";
 		}
 #endif
 
