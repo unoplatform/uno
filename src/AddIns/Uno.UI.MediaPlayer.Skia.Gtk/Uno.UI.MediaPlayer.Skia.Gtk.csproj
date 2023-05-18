@@ -28,7 +28,6 @@
 	<ItemGroup>
 		<PackageReference Include="Uno.Core.Extensions.Logging" Version="4.0.1" />
 		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" Version="4.0.1" />
-		<PackageReference Include="VideoLAN.LibVLC.Windows" Version="3.0.18" />
 		<PackageReference Include="LibVLCSharp" Version="3.6.8" />
 		<PackageReference Include="GtkSharp" Version="3.24.24.38" />
 	</ItemGroup>
