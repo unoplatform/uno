@@ -9,10 +9,10 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using SkiaSharp;
 using Uno.Foundation.Logging;
-using Windows.Graphics.Display;
-using WpfControl = global::System.Windows.Controls.Control;
-using WinUI = Windows.UI.Xaml;
 using Uno.UI.Runtime.Skia.Wpf.Hosting;
+using Windows.Graphics.Display;
+using WinUI = Windows.UI.Xaml;
+using WpfControl = global::System.Windows.Controls.Control;
 
 namespace Uno.UI.Runtime.Skia.Wpf.Rendering;
 
@@ -205,16 +205,9 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 			canvas.Clear(BackgroundColor);
 			_surface.Canvas.SetMatrix(SKMatrix.CreateScale((float)dpiScaleX, (float)dpiScaleY));
 
-			if (!_host.IsIsland)
+			if (_host.RootElement?.Visual is { } rootVisual)
 			{
-				WinUI.Window.Current.Compositor.Render(_surface);
-			}
-			else
-			{
-				if (_host.RootElement?.Visual != null)
-				{
-					WinUI.Window.Current.Compositor.RenderVisual(_surface, _host.RootElement?.Visual!);
-				}
+				WinUI.Window.Current.Compositor.RenderVisual(_surface, rootVisual);
 			}
 		}
 

@@ -1,9 +1,9 @@
 #nullable enable
 
-using SkiaSharp;
 using System;
 using System.Collections.Generic;
 using System.Numerics;
+using SkiaSharp;
 using Windows.UI.Core;
 
 namespace Windows.UI.Composition
@@ -41,9 +41,8 @@ namespace Windows.UI.Composition
 			}
 		}
 
-		internal ContainerVisual? RootVisual { get; set; }
-
 		internal float CurrentOpacity => _currentOpacity;
+
 		internal SKColorFilter? CurrentOpacityColorFilter
 		{
 			get
@@ -65,17 +64,19 @@ namespace Windows.UI.Composition
 			}
 		}
 
-		internal void Render(SKSurface surface)
+		internal void Render(SKSurface surface, ContainerVisual rootVisual)
 		{
+			if (rootVisual is null)
+			{
+				throw new ArgumentNullException(nameof(rootVisual));
+			}
+
 			_isDirty = false;
 
-			if (RootVisual != null)
+			var children = rootVisual.GetChildrenInRenderOrder();
+			for (var i = 0; i < children.Count; i++)
 			{
-				var children = RootVisual.GetChildrenInRenderOrder();
-				for (var i = 0; i < children.Count; i++)
-				{
-					RenderVisual(surface, children[i]);
-				}
+				RenderVisual(surface, children[i]);
 			}
 		}
 

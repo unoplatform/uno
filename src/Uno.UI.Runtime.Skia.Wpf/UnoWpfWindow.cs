@@ -58,6 +58,7 @@ internal class UnoWpfWindow : WpfWindow, IWpfWindowHost
 		Windows.Foundation.Size preferredWindowSize = ApplicationView.PreferredLaunchViewSize;
 		if (preferredWindowSize != Windows.Foundation.Size.Empty)
 		{
+			// TODO:MZ: Do not use MainWindow!!!
 			WpfApplication.Current.MainWindow.Width = (int)preferredWindowSize.Width;
 			WpfApplication.Current.MainWindow.Height = (int)preferredWindowSize.Height;
 		}
@@ -68,8 +69,7 @@ internal class UnoWpfWindow : WpfWindow, IWpfWindowHost
 		UpdateWindowPropertiesFromPackage();
 	}
 
-	// TODO: Needed?
-	WinUI.UIElement? IWpfXamlRootHost.RootElement => null;
+	WinUI.UIElement? IWpfXamlRootHost.RootElement => 
 
 	WpfCanvas? IWpfXamlRootHost.NativeOverlayLayer => _nativeOverlayLayer;
 
@@ -212,7 +212,7 @@ internal class UnoWpfWindow : WpfWindow, IWpfWindowHost
 	{
 		void Update()
 		{
-			if (WinUI.Window.Current.Background is WinUI.Media.SolidColorBrush brush)
+			if (_window.Background is WinUI.Media.SolidColorBrush brush)
 			{
 				if (_renderer is not null)
 				{
@@ -230,7 +230,7 @@ internal class UnoWpfWindow : WpfWindow, IWpfWindowHost
 
 		Update();
 
-		_disposables.Add(WinUI.Window.Current.RegisterBackgroundChangedEvent((s, e) => Update()));
+		_disposables.Add(_window.RegisterBackgroundChangedEvent((s, e) => Update()));
 	}
 
 	protected override void OnRender(DrawingContext drawingContext)
@@ -242,7 +242,7 @@ internal class UnoWpfWindow : WpfWindow, IWpfWindowHost
 
 	private void InvalidateOverlays()
 	{
-		_focusManager ??= VisualTree.GetFocusManagerForElement(Windows.UI.Xaml.Window.Current?.RootElement);
+		_focusManager ??= VisualTree.GetFocusManagerForElement(_window.RootElement);
 		_focusManager?.FocusRectManager?.RedrawFocusVisual();
 		if (_focusManager?.FocusedElement is Windows.UI.Xaml.Controls.TextBox textBox)
 		{
