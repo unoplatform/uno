@@ -17,9 +17,12 @@ namespace Windows.UI
 		public static implicit operator AppKit.NSColor(Color color) => AppKit.NSColor.FromRgba(color.R, color.G, color.B, color.A);
 		public static implicit operator CGColor(Color color)
 		{
-			if (legacy) {
-				return AppKit.NSColor.FromRGBA(color.R, color.G, color.B, color.A).CGColor;
-			} else {
+			if (legacy)
+			{
+				return AppKit.NSColor.FromRgba(color.R, color.G, color.B, color.A).CGColor;
+			}
+			else
+			{
 				return CGColor.CreateSrgb(color.R / 255.0f, color.G / 255.0f, color.B / 255.0f, color.A / 255.0f);
 			}
 		}
