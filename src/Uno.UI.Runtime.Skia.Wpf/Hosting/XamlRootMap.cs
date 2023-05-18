@@ -9,9 +9,9 @@ namespace Uno.UI.XamlHost.Skia.Wpf.Hosting;
 
 internal static class XamlRootMap
 {
-	private static readonly Dictionary<XamlRoot, IWpfHost> _map = new();
+	private static readonly Dictionary<XamlRoot, IWpfApplicationHost> _map = new();
 
-	internal static void Register(XamlRoot xamlRoot, IWpfHost host)
+	internal static void Register(XamlRoot xamlRoot, IWpfApplicationHost host)
 	{
 		if (xamlRoot is null)
 		{
@@ -44,6 +44,6 @@ internal static class XamlRootMap
 		}
 	}
 
-	internal static IWpfHost? GetHostForRoot(XamlRoot xamlRoot) =>
+	internal static IWpfApplicationHost? GetHostForRoot(XamlRoot xamlRoot) =>
 		_map.TryGetValue(xamlRoot, out var host) ? host : null;
 }

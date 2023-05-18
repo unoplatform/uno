@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using SkiaSharp;
+using Uno.UI.Runtime.Skia.Wpf.Hosting;
 using Windows.Graphics.Display;
 using WinUI = Windows.UI.Xaml;
 using WpfControl = global::System.Windows.Controls.Control;
@@ -16,9 +17,9 @@ namespace Uno.UI.Runtime.Skia.Wpf.Rendering
 		private WpfControl _hostControl;
 		private DisplayInformation? _displayInformation;
 		private WriteableBitmap? _bitmap;
-		private IWpfHost _host;
+		private IWpfApplicationHost _host;
 
-		public SoftwareWpfRenderer(IWpfHost host)
+		public SoftwareWpfRenderer(IWpfApplicationHost host)
 		{
 			_hostControl = host as WpfControl ?? throw new InvalidOperationException("Host should be a WPF control");
 			_host = host;

@@ -1,8 +1,8 @@
 ﻿#nullable enable
 
 using System;
-using System.IO;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
@@ -22,6 +22,8 @@ using Uno.Foundation.Logging;
 using Uno.Helpers.Theming;
 using Uno.UI.Core.Preview;
 using Uno.UI.Runtime.Skia.Wpf;
+using Uno.UI.Runtime.Skia.Wpf.Extensions.UI.Xaml.Controls;
+using Uno.UI.Runtime.Skia.Wpf.Extensions.UI.Xaml.Input;
 using Uno.UI.Runtime.Skia.Wpf.Rendering;
 using Uno.UI.Runtime.Skia.Wpf.WPF.Extensions.Helpers.Theming;
 using Uno.UI.Xaml;
@@ -43,30 +45,22 @@ using WinUI = Windows.UI.Xaml;
 using WpfApplication = System.Windows.Application;
 using WpfCanvas = System.Windows.Controls.Canvas;
 using WpfControl = System.Windows.Controls.Control;
-using WpfFrameworkPropertyMetadata = System.Windows.FrameworkPropertyMetadata;
-using Uno.UI.Runtime.Skia.Wpf.Extensions.UI.Xaml.Controls;
 
 namespace Uno.UI.Skia.Platform
 {
-	[TemplatePart(Name = NativeOverlayLayerPart, Type = typeof(WpfCanvas))]
-	public class WpfHost : WpfControl, WinUI.ISkiaHost, IWpfHost
+	public class WpfHost : IWpfApplicationHost
 	{
-		private const string NativeOverlayLayerPart = "NativeOverlayLayer";
-
 		private readonly Func<UnoApplication> _appBuilder;
 		private CompositeDisposable _registrations = new();
 
 		[ThreadStatic] private static WpfHost? _current;
 
-		private WpfCanvas? _nativeOverlayLayer;
 		private bool ignorePixelScaling;
 		private FocusManager? _focusManager;
 		private bool _isVisible = true;
 
 		static WpfHost()
 		{
-			DefaultStyleKeyProperty.OverrideMetadata(typeof(WpfHost), new WpfFrameworkPropertyMetadata(typeof(WpfHost)));
-
 			RegisterExtensions();
 		}
 
@@ -112,37 +106,19 @@ namespace Uno.UI.Skia.Platform
 		/// <remarks>If <c>null</c>, the host will try to determine the most compatible mode.</remarks>
 		public RenderSurfaceType? RenderSurfaceType { get; set; }
 
-		internal WpfCanvas? NativeOverlayLayer => _nativeOverlayLayer;
 
 		public WpfHost(global::System.Windows.Threading.Dispatcher dispatcher, Func<WinUI.Application> appBuilder)
 		{
-			FocusVisualStyle = null;
-
 			_current = this;
 			_appBuilder = appBuilder;
 
 			Windows.UI.Core.CoreDispatcher.DispatchOverride = d => dispatcher.BeginInvoke(d);
 			Windows.UI.Core.CoreDispatcher.HasThreadAccessOverride = dispatcher.CheckAccess;
 
-			InitializeRenderer();
-
 			WpfApplication.Current.Activated += Current_Activated;
 			WpfApplication.Current.Deactivated += Current_Deactivated;
 			WpfApplication.Current.MainWindow.StateChanged += MainWindow_StateChanged;
 			WpfApplication.Current.MainWindow.Closing += MainWindow_Closing;
-
-			Windows.Foundation.Size preferredWindowSize = ApplicationView.PreferredLaunchViewSize;
-			if (preferredWindowSize != Windows.Foundation.Size.Empty)
-			{
-				WpfApplication.Current.MainWindow.Width = (int)preferredWindowSize.Width;
-				WpfApplication.Current.MainWindow.Height = (int)preferredWindowSize.Height;
-			}
-
-			SizeChanged += WpfHost_SizeChanged;
-			Loaded += WpfHost_Loaded;
-
-			CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRootSet += OnCoreWindowContentRootSet;
-			RegisterForBackgroundColor();
 		}
 
 		private void InitializeRenderer()
@@ -165,87 +141,7 @@ namespace Uno.UI.Skia.Platform
 			};
 		}
 
-		private void UpdateWindowPropertiesFromPackage()
-		{
-			if (Windows.ApplicationModel.Package.Current.Logo is Uri uri)
-			{
-				var basePath = uri.OriginalString.Replace('\\', Path.DirectorySeparatorChar);
-				var iconPath = Path.Combine(Windows.ApplicationModel.Package.Current.InstalledPath, basePath);
-
-				if (File.Exists(iconPath))
-				{
-					if (this.Log().IsEnabled(LogLevel.Information))
-					{
-						this.Log().Info($"Loading icon file [{iconPath}] from Package.appxmanifest file");
-					}
-
-					WpfApplication.Current.MainWindow.Icon = new BitmapImage(new Uri(iconPath));
-				}
-				else if (Windows.UI.Xaml.Media.Imaging.BitmapImage.GetScaledPath(basePath) is { } scaledPath && File.Exists(scaledPath))
-				{
-					if (this.Log().IsEnabled(LogLevel.Information))
-					{
-						this.Log().Info($"Loading icon file [{scaledPath}] scaled logo from Package.appxmanifest file");
-					}
-
-					WpfApplication.Current.MainWindow.Icon = new BitmapImage(new Uri(scaledPath));
-				}
-				else
-				{
-					if (this.Log().IsEnabled(LogLevel.Warning))
-					{
-						this.Log().Warn($"Unable to find icon file [{iconPath}] specified in the Package.appxmanifest file.");
-					}
-				}
-			}
-
-			Windows.UI.ViewManagement.ApplicationView.GetForCurrentView().Title = Windows.ApplicationModel.Package.Current.DisplayName;
-		}
-
-		private void RegisterForBackgroundColor()
-		{
-			void Update()
-			{
-				if (WinUI.Window.Current.Background is WinUI.Media.SolidColorBrush brush)
-				{
-					if (_renderer is not null)
-					{
-						_renderer.BackgroundColor = brush.Color;
-					}
-				}
-				else
-				{
-					if (this.Log().IsEnabled(LogLevel.Warning))
-					{
-						this.Log().Warn($"This platform only supports SolidColorBrush for the Window background");
-					}
-				}
-			}
-
-			Update();
-
-			_registrations.Add(WinUI.Window.Current.RegisterBackgroundChangedEvent((s, e) => Update()));
-		}
-
-		private void OnCoreWindowContentRootSet(object? sender, object e)
-		{
-			var contentRoot = CoreServices.Instance
-				.ContentRootCoordinator
-				.CoreWindowContentRoot;
-			var xamlRoot = contentRoot?.GetOrCreateXamlRoot();
-
-			if (xamlRoot is null)
-			{
-				throw new InvalidOperationException("XamlRoot was not properly initialized");
-			}
-
-			contentRoot!.SetHost(this);
-			XamlRootMap.Register(xamlRoot, this);
-
-			CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRootSet -= OnCoreWindowContentRootSet;
-		}
-
-		void IWpfHost.InvalidateRender()
+		void IWpfApplicationHost.InvalidateRender()
 		{
 			InvalidateOverlays();
 			InvalidateVisual();
@@ -265,17 +161,6 @@ namespace Uno.UI.Skia.Platform
 
 			// Closing should continue, perform suspension.
 			UnoApplication.Current.RaiseSuspending();
-		}
-
-		public override void OnApplyTemplate()
-		{
-			base.OnApplyTemplate();
-
-			_nativeOverlayLayer = GetTemplateChild(NativeOverlayLayerPart) as WpfCanvas;
-
-			// App needs to be created after the native overlay layer is properly initialized
-			// otherwise the initially focused input element would cause exception.
-			StartApp();
 		}
 
 		private void StartApp()
@@ -323,43 +208,6 @@ namespace Uno.UI.Skia.Platform
 			winUIWindow?.OnActivated(Windows.UI.Core.CoreWindowActivationState.CodeActivated);
 		}
 
-		private void WpfHost_Loaded(object sender, RoutedEventArgs e)
-		{
-			if (_renderer is not null && !_renderer.Initialize())
-			{
-				// OpenGL initialization failed, fallback to software rendering
-				// This may happen on headless systems or containers.
-
-				if (this.Log().IsEnabled(LogLevel.Warning))
-				{
-					this.Log().Warn($"OpenGL failed to initialize, using software rendering");
-				}
-
-				RenderSurfaceType = Skia.RenderSurfaceType.Software;
-				InitializeRenderer();
-
-				_renderer.Initialize();
-			}
-
-			WinUI.Window.Current.OnNativeSizeChanged(new Windows.Foundation.Size(ActualWidth, ActualHeight));
-
-			// Avoid dotted border on focus.
-			if (Parent is WpfControl control)
-			{
-				control.FocusVisualStyle = null;
-			}
-		}
-
-		private void WpfHost_SizeChanged(object sender, SizeChangedEventArgs e)
-		{
-			WinUI.Window.Current.OnNativeSizeChanged(
-				new Windows.Foundation.Size(
-					e.NewSize.Width,
-					e.NewSize.Height
-				)
-			);
-		}
-
 		public bool IgnorePixelScaling
 		{
 			get => ignorePixelScaling;
@@ -388,8 +236,8 @@ namespace Uno.UI.Skia.Platform
 		}
 
 		//TODO: This will need to be adjusted when multi-window support is added. https://github.com/unoplatform/uno/issues/8978[windows]
-		WinUI.XamlRoot? IWpfHost.XamlRoot => WinUI.Window.Current?.RootElement?.XamlRoot;
+		WinUI.XamlRoot? IWpfApplicationHost.XamlRoot => WinUI.Window.Current?.RootElement?.XamlRoot;
 
-		WpfCanvas? IWpfHost.NativeOverlayLayer => NativeOverlayLayer;
+		WpfCanvas? IWpfApplicationHost.NativeOverlayLayer => NativeOverlayLayer;
 	}
 }

@@ -12,7 +12,7 @@ using WUX = Windows.UI.Xaml;
 
 namespace Uno.UI.Runtime.Skia
 {
-	public class FrameBufferHost : ISkiaHost
+	public class FrameBufferHost : ISkiaApplicationHost
 	{
 		[ThreadStatic]
 		private static bool _isDispatcherThread = false;
