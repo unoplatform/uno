@@ -90,14 +90,14 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-        /// <summary>
-        /// Gets or sets whether the focus should be kept on the TextBox when the user taps outside of it.
-        /// </summary>
-        /// <remarks>
-        /// In some cases, like when the TextBox is inside an <see cref="AutoSuggestBox"/>,
-        /// the focus must be kept on the TextBox when making a selection.
-        /// </remarks>
-        /// Fix issue # https://github.com/unoplatform/uno/issues/11961
+		/// <summary>
+		/// Gets or sets whether the focus should be kept on the TextBox when the user taps outside of it.
+		/// </summary>
+		/// <remarks>
+		/// In some cases, like when the TextBox is inside an <see cref="AutoSuggestBox"/>,
+		/// the focus must be kept on the TextBox when making a selection.
+		/// </remarks>
+		/// Fix issue # https://github.com/unoplatform/uno/issues/11961
 		internal bool IsKeepingFocusOnEndEditing { get; set; }
 
 		private void UpdateTextBoxView()
