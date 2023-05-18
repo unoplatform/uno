@@ -1,21 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using Uno.UI.Skia;
 
 namespace SamplesApp.WPF
 {
 	/// <summary>
 	/// Interaction logic for App.xaml
 	/// </summary>
-	public partial class App : Application
+	public partial class App : System.Windows.Application
 	{
+		private readonly WpfHost _host;
+
 		public App()
 		{
 			SamplesApp.App.ConfigureFilters();
+
+			_host = new WpfHost(Dispatcher, () => new SamplesApp.App());
 		}
 	}
 }
