@@ -37,8 +37,8 @@ public partial class GtkMediaPlayer : Border
 	private Uri? _mediaPath;
 	private bool _isEnding;
 	private bool _isPlaying;
-	private int _isUpdating;
-	private bool _updatedRequested;
+	private int _isUpdatingStretching;
+	private bool _strechingUpdateRequested;
 	private double _playbackRate;
 	private bool _isLoopingEnabled;
 	private long _currentPositionBeforeFullscreenChange;
@@ -259,9 +259,9 @@ public partial class GtkMediaPlayer : Border
 
 	private void UpdateVideoStretch()
 	{
-		if (Interlocked.CompareExchange(ref _isUpdating, 1, 0) == 1)
+		if (Interlocked.CompareExchange(ref _isUpdatingStretching, 1, 0) == 1)
 		{
-			_updatedRequested = true;
+			_strechingUpdateRequested = true;
 			return;
 		}
 		_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
@@ -277,12 +277,9 @@ public partial class GtkMediaPlayer : Border
 					CheckUpdatedRequested();
 					return;
 				}
-
 				var playerHeight = (double)this.ActualHeight - _transportControlsBounds.Height;
 				var playerWidth = (double)this.ActualWidth;
-
 				_mediaPlayer.Media.Parse(MediaParseOptions.ParseNetwork);
-
 				_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 				{
 					if (_mediaPlayer != null && _mediaPlayer.Media != null)
@@ -293,10 +290,8 @@ public partial class GtkMediaPlayer : Border
 							var videoSettings = videoTrack.Data.Video;
 							var videoWidth = videoSettings.Width;
 							var videoHeight = videoSettings.Height;
-
 							// From: https://github.com/videolan/libvlcsharp/blob/bca0a53fe921e6f1f745e4e3ac83a7bd3b2e4a9d/src/LibVLCSharp/Shared/MediaPlayerElement/AspectRatioManager.cs#L188
 							videoWidth = videoWidth * videoSettings.SarNum / videoSettings.SarDen;
-
 							UpdateVideoSizeAllocate(playerHeight, playerWidth, videoHeight, videoWidth);
 						}
 						else
@@ -318,10 +313,10 @@ public partial class GtkMediaPlayer : Border
 	}
 	private void CheckUpdatedRequested()
 	{
-		Interlocked.Exchange(ref _isUpdating, 0);
-		if (_updatedRequested)
+		Interlocked.Exchange(ref _isUpdatingStretching, 0);
+		if (_strechingUpdateRequested)
 		{
-			_updatedRequested = false;
+			_strechingUpdateRequested = false;
 			UpdateVideoStretch();
 		}
 	}
