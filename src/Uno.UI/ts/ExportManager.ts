@@ -12,12 +12,14 @@ namespace Uno.UI {
 
 				const runtimeWasmExports = await (<any>Module).getAssemblyExports("Uno.Foundation.Runtime.WebAssembly");
 
-				(<any>globalThis).DotnetExports = {
-					Uno: unoExports,
-					UnoUI: unoUIExports,
-					UnoUIDispatching: unoUIDispatchingExports,
-					UnoFoundationRuntimeWebAssembly: runtimeWasmExports
-				};
+				if (Object.entries(unoUIExports).length > 0) {
+					(<any>globalThis).DotnetExports = {
+						Uno: unoExports,
+						UnoUI: unoUIExports,
+						UnoUIDispatching: unoUIDispatchingExports,
+						UnoFoundationRuntimeWebAssembly: runtimeWasmExports
+					};
+				}
 			}
 		}
 	}
