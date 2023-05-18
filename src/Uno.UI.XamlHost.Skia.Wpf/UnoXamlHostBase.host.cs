@@ -14,11 +14,11 @@ using WpfCanvas = global::System.Windows.Controls.Canvas;
 using Uno.UI.Controls;
 using Uno.UI.Skia.Platform;
 using Uno.UI.Runtime.Skia.Wpf.Rendering;
-using Uno.UI.Runtime.Skia.Wpf;
 using Uno.UI.XamlHost.Extensions;
 using System;
 using Uno.Foundation.Logging;
 using Windows.Foundation.Metadata;
+using Uno.UI.Runtime.Skia.Wpf.Hosting;
 
 namespace Uno.UI.XamlHost.Skia.Wpf
 {
@@ -105,8 +105,8 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 			_renderer?.Render(drawingContext);
 		}
 
-		WinUI.XamlRoot? IWpfHost.XamlRoot => ChildInternal?.XamlRoot;
+		WinUI.XamlRoot? IWpfApplicationHost.XamlRoot => ChildInternal?.XamlRoot;
 
-		System.Windows.Controls.Canvas? IWpfHost.NativeOverlayLayer => _nativeOverlayLayer;
+		System.Windows.Controls.Canvas? IWpfApplicationHost.NativeOverlayLayer => _nativeOverlayLayer;
 	}
 }

@@ -4,7 +4,7 @@
 // https://github.com/CommunityToolkit/Microsoft.Toolkit.Win32/blob/master/Microsoft.Toolkit.Wpf.UI.XamlHost/WindowsXamlHost.cs
 
 using System;
-using Uno.UI.Runtime.Skia.Wpf;
+using Uno.UI.Runtime.Skia.Wpf.Hosting;
 using Uno.UI.XamlHost.Skia.Wpf;
 using Uno.UI.XamlHost.Skia.Wpf.Hosting;
 using Windows.UI.Xaml;
@@ -17,7 +17,7 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 	/// <summary>
 	/// UnoXamlHost control hosts UWP XAML content inside the Windows Presentation Foundation
 	/// </summary>
-	public abstract partial class UnoXamlHostBase : WpfControl, IWpfHost
+	public abstract partial class UnoXamlHostBase : WpfControl, IWpfApplicationHost
 	{
 		/// <summary>
 		/// An instance of <seealso cref="IXamlMetadataContainer"/>. Required to
@@ -256,7 +256,7 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 		}
 
 
-		void IWpfHost.InvalidateRender()
+		void IWpfApplicationHost.InvalidateRender()
 		{
 			//InvalidateOverlays();
 			InvalidateVisual();
