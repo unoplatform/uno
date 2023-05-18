@@ -19,6 +19,7 @@ using System;
 using Uno.Foundation.Logging;
 using Windows.Foundation.Metadata;
 using Uno.UI.Runtime.Skia.Wpf.Hosting;
+using Uno.UI.Runtime.Skia.Wpf.Extensions;
 
 namespace Uno.UI.XamlHost.Skia.Wpf
 {
@@ -56,8 +57,7 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 
 		private void InitializeHost()
 		{
-			// TODO: These three lines are required here for initialization, but should be refactored later https://github.com/unoplatform/uno/issues/8978
-			WpfHost.RegisterExtensions();
+			WpfExtensionsRegistrar.RegisterExtensions();
 
 			_designMode = DesignerProperties.GetIsInDesignMode(this);
 

@@ -11,4 +11,10 @@ internal interface IWpfXamlRootHost
 	WpfCanvas? NativeOverlayLayer { get; }
 
 	XamlRoot? XamlRoot { get; }
+
+	void InvalidateRender();
+
+	void ReleasePointerCapture();
+
+	void SetPointerCapture();
 }

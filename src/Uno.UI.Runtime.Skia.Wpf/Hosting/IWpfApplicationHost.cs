@@ -10,13 +10,5 @@ internal interface IWpfApplicationHost : ISkiaApplicationHost
 
 	UIElement? RootElement { get; }
 
-	XamlRoot? XamlRoot { get; }
-
 	public bool IgnorePixelScaling { get; }
-
-	void ReleasePointerCapture();
-
-	void SetPointerCapture();
-
-	void InvalidateRender();
 }

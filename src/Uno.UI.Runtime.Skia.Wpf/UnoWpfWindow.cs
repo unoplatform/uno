@@ -3,12 +3,16 @@
 using System;
 using System.IO;
 using System.Windows;
+using System.Windows.Media;
 using Uno.Foundation.Logging;
 using Uno.UI.Controls;
+using Uno.UI.Runtime.Skia.Wpf.Hosting;
+using Uno.UI.Runtime.Skia.Wpf.Rendering;
 using Uno.UI.Skia.Platform;
 using Uno.UI.Xaml.Core;
 using Uno.UI.XamlHost.Skia.Wpf.Hosting;
 using Windows.UI.ViewManagement;
+using Windows.UI.Xaml.Input;
 using UnoApplication = Windows.UI.Xaml.Application;
 using WinUI = Windows.UI.Xaml;
 using WpfApplication = System.Windows.Application;
@@ -20,12 +24,14 @@ using WpfWindow = System.Windows.Window;
 namespace Uno.UI.Skia.Wpf;
 
 [TemplatePart(Name = NativeOverlayLayerPart, Type = typeof(WpfCanvas))]
-internal class UnoWpfWindow : WpfWindow
+internal class UnoWpfWindow : WpfWindow, IWpfWindowHost
 {
 	private const string NativeOverlayLayerPart = "NativeOverlayLayer";
 
 	private readonly WinUI.Window _window;
 	private WpfCanvas? _nativeOverlayLayer;
+	private IWpfRenderer? _renderer;
+	private FocusManager? _focusManager;
 
 	static UnoWpfWindow()
 	{
@@ -51,20 +57,29 @@ internal class UnoWpfWindow : WpfWindow
 		CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRootSet += OnCoreWindowContentRootSet;
 
 		RegisterForBackgroundColor();
+		UpdateWindowPropertiesFromPackage();
 		_window = window;
 	}
 
-	internal WpfCanvas? NativeOverlayLayer => _nativeOverlayLayer;
+	WpfCanvas? IWpfXamlRootHost.NativeOverlayLayer => _nativeOverlayLayer;
+
+	WinUI.XamlRoot? IWpfXamlRootHost.XamlRoot => _window.RootElement?.XamlRoot;
+
+	void IWpfXamlRootHost.InvalidateRender()
+	{
+		InvalidateOverlays();
+		InvalidateVisual();
+	}
+
+	void IWpfXamlRootHost.ReleasePointerCapture() => ReleaseMouseCapture(); //TODO: This should capture the correct type of pointer (stylus/mouse/touch) https://github.com/unoplatform/uno/issues/8978[capture]
+
+	void IWpfXamlRootHost.SetPointerCapture() => CaptureMouse();
 
 	public override void OnApplyTemplate()
 	{
 		base.OnApplyTemplate();
 
 		_nativeOverlayLayer = GetTemplateChild(NativeOverlayLayerPart) as WpfCanvas;
-
-		// App needs to be created after the native overlay layer is properly initialized
-		// otherwise the initially focused input element would cause exception.
-		StartApp();
 	}
 
 	private void WpfHost_Loaded(object sender, RoutedEventArgs e)
@@ -92,6 +107,26 @@ internal class UnoWpfWindow : WpfWindow
 		{
 			control.FocusVisualStyle = null;
 		}
+	}
+
+	private void InitializeRenderer()
+	{
+		if (RenderSurfaceType is null)
+		{
+			RenderSurfaceType = Skia.RenderSurfaceType.OpenGL;
+		}
+
+		if (this.Log().IsEnabled(LogLevel.Debug))
+		{
+			this.Log().Debug($"Using {RenderSurfaceType} rendering");
+		}
+
+		_renderer = RenderSurfaceType switch
+		{
+			Skia.RenderSurfaceType.Software => new SoftwareWpfRenderer(this),
+			Skia.RenderSurfaceType.OpenGL => new OpenGLWpfRenderer(this),
+			_ => throw new InvalidOperationException($"Render Surface type {RenderSurfaceType} is not supported")
+		};
 	}
 
 	private void OnCoreWindowContentRootSet(object? sender, object e)
@@ -181,5 +216,24 @@ internal class UnoWpfWindow : WpfWindow
 		Update();
 
 		_registrations.Add(WinUI.Window.Current.RegisterBackgroundChangedEvent((s, e) => Update()));
+	}
+
+
+
+	protected override void OnRender(DrawingContext drawingContext)
+	{
+		base.OnRender(drawingContext);
+
+		_renderer?.Render(drawingContext);
+	}
+
+	private void InvalidateOverlays()
+	{
+		_focusManager ??= VisualTree.GetFocusManagerForElement(Windows.UI.Xaml.Window.Current?.RootElement);
+		_focusManager?.FocusRectManager?.RedrawFocusVisual();
+		if (_focusManager?.FocusedElement is TextBox textBox)
+		{
+			textBox.TextBoxView?.Extension?.InvalidateLayout();
+		}
 	}
 }
