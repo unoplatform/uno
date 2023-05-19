@@ -46,7 +46,7 @@
 					   Grid.ColumnSpan="2" />
 
 			<TextBox x:Name="SourceTextBox"
-					 Text="https://ia800201.us.archive.org/12/items/BigBuckBunny_328/BigBuckBunny_512kb.mp4"
+					 Text="https://uno-assets.platform.uno/tests/videos/Mobile_Development_in_VS_Code_with_Uno_Platform_orDotNetMAUI.mp4"
 					 HorizontalAlignment="Stretch"
 					 Margin="12"
 					 Grid.Row="3" />
