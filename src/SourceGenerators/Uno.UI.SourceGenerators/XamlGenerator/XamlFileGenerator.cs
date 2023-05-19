@@ -4227,20 +4227,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			var modeMember = bindNode.Members.FirstOrDefault(m => m.Member.Name == "Mode")?.Value?.ToString() ?? GetDefaultBindMode();
 			var rawBindBack = bindNode.Members.FirstOrDefault(m => m.Member.Name == "BindBack")?.Value?.ToString();
 
-			// Populate the property paths only if updateable bindings.
-			var propertyPaths = modeMember != "OneTime"
-				? XBindExpressionParser.ParseProperties(rawFunction, IsStaticMember)
-				: (properties: Array.Empty<string>(), hasFunction: false);
-
-			var formattedPaths = propertyPaths
-				.properties
-				.Where(p => !p.StartsWith("global::", StringComparison.Ordinal))  // Don't include paths that start with global:: (e.g. Enums)
-				.Select(p => $"\"{p.Replace("\"", "\\\"")}\"");
-
-			var pathsArray = formattedPaths.Any()
-				? ", new [] {" + string.Join(", ", formattedPaths) + "}"
-				: "";
-
 			var applyBindingParameters = _isHotReloadEnabled
 				? "__that, (___b, __that)"
 				: "___b";
@@ -4256,11 +4242,32 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				var dataType = RewriteNamespaces(dataTypeObject.Value.ToString() ?? "");
 				var dataTypeSymbol = GetType(dataType);
 
+				var contextFunction = XBindExpressionParser.Rewrite("___tctx", rawFunction, dataTypeSymbol, _metadataHelper.Compilation.GlobalNamespace, isRValue: true, _xBindCounter, FindType);
+				if (contextFunction.MethodDeclaration is not null)
+				{
+					RegisterXBindTryGetDeclaration(contextFunction.MethodDeclaration);
+				}
+
+				// Populate the property paths only if updateable bindings.
+				// TODO: Properties is currently evaluated regardless of the mode. We just throw it out here.
+				// Consider optimizing that.
+				var propertyPaths = modeMember != "OneTime"
+					? contextFunction.Properties
+					: ImmutableArray<string>.Empty;
+
+				var formattedPaths = propertyPaths
+					.Where(p => !p.StartsWith("global::", StringComparison.Ordinal))  // Don't include paths that start with global:: (e.g. Enums)
+					.Select(p => $"\"{p.Replace("\"", "\\\"")}\"");
+
+				var pathsArray = formattedPaths.Any()
+					? ", new [] {" + string.Join(", ", formattedPaths) + "}"
+					: "";
+
 				string buildBindBack()
 				{
 					if (modeMember == "TwoWay")
 					{
-						if (propertyPaths.hasFunction)
+						if (contextFunction.HasFunction)
 						{
 							if (!string.IsNullOrWhiteSpace(rawBindBack))
 							{
@@ -4273,16 +4280,17 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						}
 						else
 						{
-							if (propertyPaths.properties.Length == 1)
+							if (contextFunction.Properties.Length == 1)
 							{
-								var targetPropertyType = GetXBindPropertyPathType(propertyPaths.properties[0], dataTypeSymbol).GetFullyQualifiedTypeIncludingGlobal();
-								var contextFunction = XBindExpressionParser.Rewrite("___tctx", rawFunction, dataTypeSymbol, _metadataHelper.Compilation.GlobalNamespace, isRValue: false, _xBindCounter, FindType);
+								var targetPropertyType = GetXBindPropertyPathType(contextFunction.Properties[0], dataTypeSymbol).GetFullyQualifiedTypeIncludingGlobal();
+								var contextFunctionLValue = XBindExpressionParser.Rewrite("___tctx", rawFunction, dataTypeSymbol, _metadataHelper.Compilation.GlobalNamespace, isRValue: false, _xBindCounter, FindType);
 								// There is no "TryGet*" method declaration for LValue usages.
-								Debug.Assert(contextFunction.MethodDeclaration is null);
-								return $"(___ctx, __value) => {{ if(___ctx is {dataType} ___tctx) {{ {contextFunction.Expression} = ({targetPropertyType})global::Windows.UI.Xaml.Markup.XamlBindingHelper.ConvertValue(typeof({targetPropertyType}), __value); }} }}";
+								Debug.Assert(contextFunctionLValue.MethodDeclaration is null);
+								return $"(___ctx, __value) => {{ if(___ctx is {dataType} ___tctx) {{ {contextFunctionLValue.Expression} = ({targetPropertyType})global::Windows.UI.Xaml.Markup.XamlBindingHelper.ConvertValue(typeof({targetPropertyType}), __value); }} }}";
 							}
 							else
 							{
+								Debugger.Launch();
 								throw new NotSupportedException($"Invalid x:Bind property path count (This should not happen)");
 							}
 						}
@@ -4293,18 +4301,16 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					}
 				}
 
-				var contextFunction = XBindExpressionParser.Rewrite("___tctx", rawFunction, dataTypeSymbol, _metadataHelper.Compilation.GlobalNamespace, isRValue: true, _xBindCounter, FindType);
-				if (contextFunction.MethodDeclaration is not null)
-				{
-					RegisterXBindTryGetDeclaration(contextFunction.MethodDeclaration);
-				}
 				return $".BindingApply({applyBindingParameters} => /*defaultBindMode{GetDefaultBindMode()}*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, null, ___ctx => ___ctx is {GetType(dataType)} ___tctx ? ({contextFunction.Expression}) : (false, default), {buildBindBack()} {pathsArray}))";
 			}
 			else
 			{
 				EnsureXClassName();
 
-				var rewrittenRValue = string.IsNullOrEmpty(rawFunction) ? (MethodDeclaration: null, Expression: "(true, ___ctx)") : XBindExpressionParser.Rewrite("___tctx", rawFunction, _xClassName.Symbol, _metadataHelper.Compilation.GlobalNamespace, isRValue: true, _xBindCounter, FindType);
+				var rewrittenRValue = string.IsNullOrEmpty(rawFunction)
+					? (MethodDeclaration: null, Expression: "(true, ___ctx)", Properties: ImmutableArray<string>.Empty, HasFunction: false)
+					: XBindExpressionParser.Rewrite("___tctx", rawFunction, _xClassName.Symbol, _metadataHelper.Compilation.GlobalNamespace, isRValue: true, _xBindCounter, FindType);
+
 				if (rewrittenRValue.MethodDeclaration is not null)
 				{
 					RegisterXBindTryGetDeclaration(rewrittenRValue.MethodDeclaration);
@@ -4314,7 +4320,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					if (modeMember == "TwoWay")
 					{
-						if (propertyPaths.hasFunction)
+						if (rewrittenRValue.HasFunction)
 						{
 							if (!string.IsNullOrWhiteSpace(rawBindBack))
 							{
@@ -4327,10 +4333,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						}
 						else
 						{
-							if (propertyPaths.properties.Length == 1)
+							if (rewrittenRValue.Properties.Length == 1)
 							{
 								var rewrittenLValue = string.IsNullOrEmpty(rawFunction) ? "___ctx" : XBindExpressionParser.Rewrite("___tctx", rawFunction, _xClassName.Symbol, _metadataHelper.Compilation.GlobalNamespace, isRValue: false, _xBindCounter, FindType).Expression;
-								var targetPropertyType = GetXBindPropertyPathType(propertyPaths.properties[0]).GetFullyQualifiedTypeIncludingGlobal();
+								var targetPropertyType = GetXBindPropertyPathType(rewrittenRValue.Properties[0]).GetFullyQualifiedTypeIncludingGlobal();
 								return $"(___ctx, __value) => {{ " +
 									$"if(___ctx is {_xClassName} ___tctx) " +
 									$"{rewrittenLValue} = ({targetPropertyType})global::Windows.UI.Xaml.Markup.XamlBindingHelper.ConvertValue(typeof({targetPropertyType}), __value);" +
@@ -4338,6 +4344,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							}
 							else
 							{
+								Debugger.Launch();
 								throw new NotSupportedException($"Invalid x:Bind property path count (This should not happen)");
 							}
 						}
@@ -4349,6 +4356,22 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 
 				var bindFunction = $"___ctx is {_xClassName} ___tctx ? ({rewrittenRValue.Expression}) : (false, default)";
+
+				// Populate the property paths only if updateable bindings.
+				// TODO: Properties is currently evaluated regardless of the mode. We just throw it out here.
+				// Consider optimizing that.
+				var propertyPaths = modeMember != "OneTime"
+					? rewrittenRValue.Properties
+					: ImmutableArray<string>.Empty;
+
+				var formattedPaths = propertyPaths
+					.Where(p => !p.StartsWith("global::", StringComparison.Ordinal))  // Don't include paths that start with global:: (e.g. Enums)
+					.Select(p => $"\"{p}\"");
+
+				var pathsArray = formattedPaths.Any()
+					? ", new [] {" + string.Join(", ", formattedPaths) + "}"
+					: "";
+
 				return $".BindingApply({applyBindingParameters} =>  /*defaultBindMode{GetDefaultBindMode()} {rawFunction}*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, __that, ___ctx => {bindFunction}, {buildBindBack()} {pathsArray}))";
 			}
 		}
@@ -4409,45 +4432,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 
 			return currentType;
-		}
-
-		private bool IsStaticMember(string fullMemberName)
-		{
-			fullMemberName = fullMemberName.TrimStart("global::");
-			var lastDotIndex = fullMemberName.LastIndexOf(".", StringComparison.Ordinal);
-
-			var isTopLevelMember = lastDotIndex == -1;
-
-			INamedTypeSymbol? GetTypeSymbol()
-			{
-				if (isTopLevelMember)
-				{
-					return _xClassName?.Symbol;
-				}
-				else
-				{
-					var typeName = fullMemberName.Substring(0, lastDotIndex);
-					return _metadataHelper.FindTypeByFullName(typeName) as INamedTypeSymbol
-						?? FindType(new XamlType(_defaultXmlNamespace.Namespace, typeName, new List<XamlType>(), new XamlSchemaContext()));
-				}
-			}
-
-			var typeSymbol = GetTypeSymbol();
-
-			var memberName = isTopLevelMember
-				? fullMemberName
-				: fullMemberName.Substring(lastDotIndex + 1);
-
-			if (typeSymbol is not null)
-			{
-				var isEnum = typeSymbol.TypeKind == TypeKind.Enum;
-
-				return (!isTopLevelMember && isEnum) ||
-					typeSymbol.GetMembers(memberName).Any(m => m.IsStatic && m.Kind is SymbolKind.Method or SymbolKind.Property or SymbolKind.Field);
-			}
-
-			return false;
-
 		}
 
 		private string RewriteNamespaces(string xamlString)
