@@ -259,11 +259,6 @@ internal partial class HtmlMediaPlayer : Border
 
 	private void OnHtmlTimeUpdated(object sender, EventArgs e)
 	{
-		//if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
-		//{
-		//	this.Log().Debug($"Time updated [{Source}]");
-		//}
-
 		OnTimeUpdate?.Invoke(this, EventArgs.Empty);
 	}
 
@@ -273,7 +268,7 @@ internal partial class HtmlMediaPlayer : Border
 		{
 			this.Log().Debug($"Media ended [{Source}]");
 		}
-
+		_isPlaying = false;
 		OnSourceEnded?.Invoke(this, EventArgs.Empty);
 	}
 
