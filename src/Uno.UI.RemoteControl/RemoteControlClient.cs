@@ -38,6 +38,7 @@ namespace Uno.UI.RemoteControl
 		private readonly (string endpoint, int port)[]? _serverAddresses;
 		private WebSocket? _webSocket;
 		private Dictionary<string, IRemoteControlProcessor> _processors = new Dictionary<string, IRemoteControlProcessor>();
+		private List<IRemoteControlPreProcessor> _preprocessors = new List<IRemoteControlPreProcessor>();
 		private Timer? _keepAliveTimer;
 
 		private RemoteControlClient(Type appType)
@@ -78,6 +79,11 @@ namespace Uno.UI.RemoteControl
 		private void RegisterProcessor(IRemoteControlProcessor processor)
 		{
 			_processors[processor.Scope] = processor;
+		}
+
+		public void RegisterPreProcessor(IRemoteControlPreProcessor preprocessor)
+		{
+			_preprocessors.Add(preprocessor);
 		}
 
 		private async Task StartConnection()
@@ -296,7 +302,20 @@ namespace Uno.UI.RemoteControl
 							this.Log().Trace($"Received frame [{frame.Scope}/{frame.Name}]");
 						}
 
-						await processor.ProcessFrame(frame);
+						bool skipProcessing = false;
+
+						foreach (var preProcessor in _preprocessors)
+						{
+							if (await preProcessor.SkipProcessingFrame(frame))
+							{
+								skipProcessing = true;
+							}
+						}
+
+						if (!skipProcessing)
+						{
+							await processor.ProcessFrame(frame);
+						}
 					}
 					else
 					{
