@@ -16,6 +16,11 @@ namespace Uno.UI.Skia.Platform
 		public WpfDisplayInformationExtension(object owner)
 		{
 			_displayInformation = (DisplayInformation)owner;
+			WpfApplication.Current.Activated += Current_Activated;
+		}
+
+		private void Current_Activated(object? sender, EventArgs e)
+		{
 			WpfApplication.Current.MainWindow.DpiChanged += OnDpiChanged;
 		}
 
