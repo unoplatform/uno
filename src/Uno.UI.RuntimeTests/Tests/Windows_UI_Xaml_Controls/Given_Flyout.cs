@@ -622,11 +622,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[RunsOnUIThread]
 		public async Task When_PlacementTarget_Binding()
 		{
-			if (TestServices.WindowHelper.IsXamlIsland)
-			{
-				Assert.Inconclusive($"Not supported under XAML islands yet https://github.com/unoplatform/uno/issues/8978");
-			}
-
 			var SUT = new When_PlacementTarget_Binding();
 
 			try
