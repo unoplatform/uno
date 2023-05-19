@@ -72,8 +72,8 @@ public partial class GtkMediaPlayer
 			_mediaPlayer.Stopped += OnMediaPlayerStopped;
 
 			_videoContainer.Content = _videoView;
-
-			Child = _videoContainer;
+			AddChild(_videoContainer);
+			//Child = _videoContainer;
 
 			UpdateVideoStretch();
 			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))

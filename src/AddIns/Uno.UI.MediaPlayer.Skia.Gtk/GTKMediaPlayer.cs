@@ -28,7 +28,7 @@ using Windows.Media.Core;
 
 namespace Uno.UI.Media;
 
-public partial class GtkMediaPlayer : Border
+public partial class GtkMediaPlayer : FrameworkElement
 {
 	private LibVLC? _libvlc;
 	private LibVLCSharp.Shared.MediaPlayer? _mediaPlayer;
