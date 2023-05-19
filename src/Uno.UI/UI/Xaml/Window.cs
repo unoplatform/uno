@@ -33,7 +33,8 @@ namespace Windows.UI.Xaml
 
 		private CoreWindowActivationState? _lastActivationState;
 		private Brush _background;
-		private bool _wasEverCodeActivated;
+		private bool _wasActivated;
+		private bool _wasShown;
 
 		private List<WeakEventHelper.GenericEventHandler> _sizeChangedHandlers = new List<WeakEventHelper.GenericEventHandler>();
 		private List<WeakEventHelper.GenericEventHandler> _backgroundChangedHandlers;
@@ -126,7 +127,7 @@ namespace Windows.UI.Xaml
 					}
 				}
 
-				if (value != null)
+				if (value is not null)
 				{
 					value.IsWindowRoot = true;
 				}
@@ -143,6 +144,8 @@ namespace Windows.UI.Xaml
 				{
 					value?.XamlRoot?.NotifyChanged();
 				}
+
+				TryShow();
 			}
 		}
 
@@ -203,7 +206,7 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Gets the window of the current thread.
 		/// </summary>
-		public static Window Current => null;//InternalGetCurrentWindow(); // TODO:MZ: Accessing Current should not create the initial window, it should be explicit!
+		public static Window Current => InternalGetCurrentWindow(); // TODO: We should make sure Current returns null in case of WinUI tree.
 
 		public void Activate()
 		{
@@ -211,17 +214,35 @@ namespace Windows.UI.Xaml
 			// for compatibility with WinUI we set the first activated
 			// as Current #8341
 			_current ??= this;
-			_wasEverCodeActivated = true;
+			_wasActivated = true;
 
 			// Initialize visibility on first activation.
 			Visible = true;
 
-			ActivatingPartial();
+			TryShow();
 
-			OnActivated(CoreWindowActivationState.CodeActivated);
+			RaiseActivated(CoreWindowActivationState.CodeActivated);
 		}
 
-		partial void ActivatingPartial();
+		/// <summary>
+		/// This is the moment the Window content should be shown.
+		/// It happens once the Window is both first Activated
+		/// in code and its Content is set.
+		/// </summary>
+		private void TryShow()
+		{
+			if (!_wasActivated ||
+				Content is null ||
+				_wasShown)
+			{
+				return;
+			}
+
+			ShowPartial();
+			_wasShown = true;
+		}
+
+		partial void ShowPartial();
 
 		public void Close() { }
 
@@ -250,9 +271,9 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		internal void OnActivated(CoreWindowActivationState state)
+		internal void RaiseActivated(CoreWindowActivationState state)
 		{
-			if (!_wasEverCodeActivated)
+			if (!_wasActivated)
 			{
 				return;
 			}
@@ -281,7 +302,7 @@ namespace Windows.UI.Xaml
 
 		internal void OnVisibilityChanged(bool newVisibility)
 		{
-			if (!_wasEverCodeActivated)
+			if (!_wasActivated)
 			{
 				return;
 			}
