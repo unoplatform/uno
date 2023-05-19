@@ -1,4 +1,4 @@
-﻿declare const require: any;
+﻿declare const require: unknown | undefined;
 declare const config: any;
 
 namespace Uno.UI {
@@ -102,7 +102,7 @@ namespace Uno.UI {
 		public static setProgress(elementId: number, progress: number): string {
 			Lottie.withPlayer(p => {
 				const animation = Lottie._runningAnimations[elementId].animation;
-				var frame = Lottie._numberOfFrames * progress;
+				let frame = Lottie._numberOfFrames * progress;
 				if (frame < (animation as any).firstFrame) {
 					frame = frame - (animation as any).firstFrame
 				} else {
@@ -266,7 +266,18 @@ namespace Uno.UI {
 			if (Lottie._player) {
 				action(Lottie._player);
 			} else {
-				require([`${config.uno_app_base}/lottie`], (p: LottiePlayer) => {
+				if (typeof require !== "function") {
+					console.error("RequireJS not present.");
+					return;
+				}
+
+				const dependencyToLoad = "/lottie";
+				const lottieDependencyName = config.uno_dependencies.find((d: string) => d.endsWith(dependencyToLoad));
+				require([lottieDependencyName], (p: LottiePlayer) => {
+					if(!p) {
+						console.error("Unable to load lottie player.");
+						return;
+					}
 					if (!Lottie._player) {
 						Lottie._player = p;
 					}

@@ -63,7 +63,7 @@ var Uno;
             static setProgress(elementId, progress) {
                 Lottie.withPlayer(p => {
                     const animation = Lottie._runningAnimations[elementId].animation;
-                    var frame = Lottie._numberOfFrames * progress;
+                    let frame = Lottie._numberOfFrames * progress;
                     if (frame < animation.firstFrame) {
                         frame = frame - animation.firstFrame;
                     }
@@ -194,7 +194,17 @@ var Uno;
                     action(Lottie._player);
                 }
                 else {
-                    require([`${config.uno_app_base}/lottie`], (p) => {
+                    if (typeof require !== "function") {
+                        console.error("RequireJS not present.");
+                        return;
+                    }
+                    const dependencyToLoad = "/lottie";
+                    const lottieDependencyName = config.uno_dependencies.find((d) => d.endsWith(dependencyToLoad));
+                    require([lottieDependencyName], (p) => {
+                        if (!p) {
+                            console.error("Unable to load lottie player.");
+                            return;
+                        }
                         if (!Lottie._player) {
                             Lottie._player = p;
                         }
