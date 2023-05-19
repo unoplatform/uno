@@ -15,7 +15,7 @@ using Uno.UI.Xaml.Media;
 using Path = global::System.IO.Path;
 
 #if NET7_0_OR_GREATER
-using NativeMethods = __Windows.UI.Xaml.Media.Imaging.BitmapImage.NativeMethods;
+using NativeMethods = __Windows.Storage.Helpers.AssetsManager.NativeMethods;
 #endif
 
 namespace Windows.UI.Xaml.Media.Imaging
@@ -86,7 +86,12 @@ namespace Windows.UI.Xaml.Media.Imaging
 			{
 				var assetsUri = AssetsPathBuilder.BuildAssetUri("uno-assets.txt");
 
-				var assets = await WebAssemblyRuntime.InvokeAsync($"fetch('{assetsUri}').then(r => r.text())");
+				var assets = await
+#if NET7_0_OR_GREATER
+					NativeMethods.DownloadAssetsManifestAsync(assetsUri);
+#else
+					WebAssemblyRuntime.InvokeAsync($"fetch('{assetsUri}').then(r => r.text())");
+#endif
 
 				return new HashSet<string>(Regex.Split(assets, "\r\n|\r|\n"));
 			}
