@@ -27,6 +27,8 @@ public sealed partial class Window
 		Compositor = new Compositor();
 	}
 
+	internal event EventHandler Shown;
+
 	public Compositor Compositor { get; private set; }
 
 	internal void OnNativeSizeChanged(Size size)
@@ -98,4 +100,6 @@ public sealed partial class Window
 			FullWindowMediaRoot.Child = content;
 		}
 	}
+
+	partial void ShowPartial() => Shown?.Invoke(this, EventArgs.Empty);
 }
