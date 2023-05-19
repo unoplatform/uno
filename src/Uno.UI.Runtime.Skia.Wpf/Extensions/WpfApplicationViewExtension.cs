@@ -11,6 +11,7 @@ namespace Uno.UI.Skia.Platform
 	{
 		private readonly ApplicationView _owner;
 		private WpfWindow _mainWpfWindow;
+		private string _title = "";
 
 		public WpfApplicationViewExtension(object owner)
 		{
@@ -23,8 +24,18 @@ namespace Uno.UI.Skia.Platform
 
 		public string Title
 		{
-			get => _mainWpfWindow.Title;
-			set => _mainWpfWindow.Title = value;
+			get => _mainWpfWindow is not null ? _mainWpfWindow.Title : _title;
+			set
+			{
+				if (_mainWpfWindow is not null)
+				{
+					_mainWpfWindow.Title = value;
+				}
+				else
+				{
+					_title = value;
+				}
+			}
 		}
 
 		private bool _isFullScreen;

@@ -7,6 +7,7 @@ using System.Windows.Media;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
 using Uno.UI.Controls;
+using Uno.UI.Runtime.Skia.Wpf.Extensions;
 using Uno.UI.Runtime.Skia.Wpf.Hosting;
 using Uno.UI.Runtime.Skia.Wpf.Rendering;
 using Uno.UI.Skia.Platform;
@@ -37,17 +38,19 @@ internal class UnoWpfWindow : WpfWindow, IWpfWindowHost
 	private WpfCanvas? _nativeOverlayLayer;
 	private IWpfRenderer? _renderer;
 	private FocusManager? _focusManager;
+	private bool _rendererInitialized;
 
 	static UnoWpfWindow()
 	{
 		DefaultStyleKeyProperty.OverrideMetadata(
 			typeof(UnoWpfWindow),
-			new WpfFrameworkPropertyMetadata(typeof(WpfHost)));
+			new WpfFrameworkPropertyMetadata(typeof(UnoWpfWindow)));
 	}
 
 	public UnoWpfWindow(WinUI.Window window)
 	{
 		_window = window;
+		_window.Shown += OnShown;
 		_hostPointerHandler = new HostPointerHandler(this);
 
 		FocusVisualStyle = null;
@@ -69,7 +72,9 @@ internal class UnoWpfWindow : WpfWindow, IWpfWindowHost
 		UpdateWindowPropertiesFromPackage();
 	}
 
-	WinUI.UIElement? IWpfXamlRootHost.RootElement => 
+	private void OnShown(object? sender, EventArgs e) => Show();
+
+	WinUI.UIElement? IWpfXamlRootHost.RootElement => _window.RootElement;
 
 	WpfCanvas? IWpfXamlRootHost.NativeOverlayLayer => _nativeOverlayLayer;
 
@@ -98,22 +103,6 @@ internal class UnoWpfWindow : WpfWindow, IWpfWindowHost
 
 	private void WpfHost_Loaded(object sender, RoutedEventArgs e)
 	{
-		if (_renderer is not null && !_renderer.Initialize())
-		{
-			// OpenGL initialization failed, fallback to software rendering
-			// This may happen on headless systems or containers.
-
-			if (this.Log().IsEnabled(LogLevel.Warning))
-			{
-				this.Log().Warn($"OpenGL failed to initialize, using software rendering");
-			}
-
-			WpfHost.Current!.RenderSurfaceType = Skia.RenderSurfaceType.Software;
-			InitializeRenderer();
-
-			_renderer.Initialize();
-		}
-
 		WinUI.Window.Current.OnNativeSizeChanged(new Windows.Foundation.Size(ActualWidth, ActualHeight));
 
 		// Avoid dotted border on focus.
@@ -142,6 +131,26 @@ internal class UnoWpfWindow : WpfWindow, IWpfWindowHost
 			Skia.RenderSurfaceType.OpenGL => new OpenGLWpfRenderer(this),
 			_ => throw new InvalidOperationException($"Render Surface type {WpfHost.Current!.RenderSurfaceType} is not supported")
 		};
+
+		UpdateRendererBackground();
+
+		if (!_renderer.Initialize())
+		{
+			// OpenGL initialization failed, fallback to software rendering
+			// This may happen on headless systems or containers.
+
+			if (this.Log().IsEnabled(LogLevel.Warning))
+			{
+				this.Log().Warn($"OpenGL failed to initialize, using software rendering");
+			}
+
+			WpfHost.Current!.RenderSurfaceType = Skia.RenderSurfaceType.Software;
+			InitializeRenderer();
+		}
+		else
+		{
+			_rendererInitialized = true;
+		}
 	}
 
 	private void OnCoreWindowContentRootSet(object? sender, object e)
@@ -200,6 +209,7 @@ internal class UnoWpfWindow : WpfWindow, IWpfWindowHost
 
 	private void WpfHost_SizeChanged(object sender, System.Windows.SizeChangedEventArgs e)
 	{
+		// TODO:MZ: Use Content.Size!
 		WinUI.Window.Current.OnNativeSizeChanged(
 			new Windows.Foundation.Size(
 				e.NewSize.Width,
@@ -210,33 +220,38 @@ internal class UnoWpfWindow : WpfWindow, IWpfWindowHost
 
 	private void RegisterForBackgroundColor()
 	{
-		void Update()
+		UpdateRendererBackground();
+
+		_disposables.Add(_window.RegisterBackgroundChangedEvent((s, e) => UpdateRendererBackground()));
+	}
+
+	private void UpdateRendererBackground()
+	{
+		if (_window.Background is WinUI.Media.SolidColorBrush brush)
 		{
-			if (_window.Background is WinUI.Media.SolidColorBrush brush)
+			if (_renderer is not null)
 			{
-				if (_renderer is not null)
-				{
-					_renderer.BackgroundColor = brush.Color;
-				}
-			}
-			else
-			{
-				if (this.Log().IsEnabled(LogLevel.Warning))
-				{
-					this.Log().Warn($"This platform only supports SolidColorBrush for the Window background");
-				}
+				_renderer.BackgroundColor = brush.Color;
+				Background = new SolidColorBrush(brush.Color.ToWpfColor());
 			}
 		}
-
-		Update();
-
-		_disposables.Add(_window.RegisterBackgroundChangedEvent((s, e) => Update()));
+		else
+		{
+			if (this.Log().IsEnabled(LogLevel.Warning))
+			{
+				this.Log().Warn($"This platform only supports SolidColorBrush for the Window background");
+			}
+		}
 	}
 
 	protected override void OnRender(DrawingContext drawingContext)
 	{
 		base.OnRender(drawingContext);
 
+		if (!_rendererInitialized)
+		{
+			InitializeRenderer();
+		}
 		_renderer?.Render(drawingContext);
 	}
 

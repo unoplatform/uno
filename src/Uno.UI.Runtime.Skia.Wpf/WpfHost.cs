@@ -5,8 +5,10 @@ using System.ComponentModel;
 using System.Windows;
 using Uno.UI.Runtime.Skia.Wpf.Extensions;
 using Uno.UI.Runtime.Skia.Wpf.Hosting;
+using Uno.UI.Skia.Wpf;
 using Uno.UI.XamlHost.Skia.Wpf;
 using Windows.UI.Core.Preview;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Input;
 using UnoApplication = Windows.UI.Xaml.Application;
 using WinUI = Windows.UI.Xaml;
@@ -40,14 +42,14 @@ public class WpfHost : IWpfApplicationHost
 		WpfApplication.Current.Activated += Current_Activated;
 		WpfApplication.Current.Deactivated += Current_Deactivated;
 
-		// TODO:MZ: Adjust for new implementation!
-		//WpfApplication.Current.MainWindow.StateChanged += MainWindow_StateChanged;
-		//WpfApplication.Current.MainWindow.Closing += MainWindow_Closing;
-
 		// App needs to be created after the native overlay layer is properly initialized
 		// otherwise the initially focused input element would cause exception.
 		// TODO:MZ: Verify this is not broken after the changes
 		StartApp();
+		WpfApplication.Current.MainWindow = new UnoWpfWindow(WinUI.Window.Current);
+
+		WpfApplication.Current.MainWindow.StateChanged += MainWindow_StateChanged;
+		WpfApplication.Current.MainWindow.Closing += MainWindow_Closing;
 	}
 
 	public static WpfHost? Current => _current;
@@ -110,13 +112,13 @@ public class WpfHost : IWpfApplicationHost
 	private void Current_Deactivated(object? sender, EventArgs e)
 	{
 		var winUIWindow = WinUI.Window.Current;
-		winUIWindow?.OnActivated(Windows.UI.Core.CoreWindowActivationState.Deactivated);
+		winUIWindow?.RaiseActivated(Windows.UI.Core.CoreWindowActivationState.Deactivated);
 	}
 
 	private void Current_Activated(object? sender, EventArgs e)
 	{
 		var winUIWindow = WinUI.Window.Current;
-		winUIWindow?.OnActivated(Windows.UI.Core.CoreWindowActivationState.CodeActivated);
+		winUIWindow?.RaiseActivated(Windows.UI.Core.CoreWindowActivationState.CodeActivated);
 	}
 
 	public bool IgnorePixelScaling
