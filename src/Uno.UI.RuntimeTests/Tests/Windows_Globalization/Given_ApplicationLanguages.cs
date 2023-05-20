@@ -13,6 +13,7 @@ public class Given_ApplicationLanguages
 		ApplicationLanguages.PrimaryLanguageOverride = string.Empty;
 	}
 
+#if !WINDOWS_UWP
 	[TestMethod]
 	public void Test_Chinese_With_Script_Subtag()
 	{
@@ -28,4 +29,5 @@ public class Given_ApplicationLanguages
 		ApplicationLanguages.Languages[0].Should().Be("fr-Latn-CA");
 		ApplicationData.Current.LocalSettings.Values[ApplicationLanguages.GetAppSpecificSettingKey()].Should().Be("fr-Latn-CA");
 	}
+#endif
 }
