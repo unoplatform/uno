@@ -16,7 +16,9 @@ namespace Windows.ApplicationModel.DataTransfer
 {
 	public static partial class Clipboard
 	{
+#if !NET7_0_OR_GREATER
 		private const string JsType = "Uno.Utils.Clipboard";
+#endif
 
 		public static void Clear() => SetClipboardText(string.Empty);
 
@@ -48,10 +50,14 @@ namespace Windows.ApplicationModel.DataTransfer
 
 		private static async Task<string> GetClipboardText(CancellationToken ct)
 		{
+#if NET7_0_OR_GREATER
+			return await NativeMethods.GetTextAsync();
+#else
 			var command = $"{JsType}.getText();";
 			var text = await WebAssemblyRuntime.InvokeAsync(command, ct);
 
 			return text;
+#endif
 		}
 
 		private static void SetClipboardText(string text)
