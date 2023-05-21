@@ -71,7 +71,7 @@ public class MainPage : Page
 
 ## Change the app theme at runtime
 
-The `SetApplicationTheme` method in this helper class can also be used to support an in-app toggle for dark mode. For example, you could add a toggle button to your app's settings page that allows the user to switch between light and dark modes. The following code snippet shows how to implement this:
+The [`SystemThemeHelper.SetApplicationTheme`](https://github.com/unoplatform/uno.toolkit.ui/blob/main/src/Uno.Toolkit.UI/Helpers/SystemThemeHelper.cs) method from `Uno.Toolkit.UI` can also be used to support an in-app toggle for dark mode. For example, you could add a toggle button to your app's settings page that allows the user to switch between light and dark modes. The following code snippet shows how to implement this:
 
 ```csharp
 using CommunityToolkit.WinUI.UI.Helpers;
@@ -105,7 +105,16 @@ public class SettingsPage : Page
 Another method to change the app theme is to adjust it immediately upon startup. The following must only be called in the `App` class constructor.
 
 ```csharp
-Uno.UI.ApplicationHelper.RequestedCustomTheme = "Dark";
+public App()
+{
+	this.InitializeComponent();
+
+#if HAS_UNO
+	Uno.UI.ApplicationHelper.RequestedCustomTheme = nameof(ApplicationTheme.Dark);
+#else
+	this.RequestedTheme = ApplicationTheme.Dark;
+#endif
+}
 ```
 
 ## See also
