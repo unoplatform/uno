@@ -10,11 +10,19 @@ namespace Windows.System.Profile
 {
 	public static partial class AnalyticsInfo
 	{
+#if !NET7_0_OR_GREATER
 		private const string JsType = "Windows.System.Profile.AnalyticsInfo";
+#endif
 
 		private static UnoDeviceForm GetDeviceForm()
 		{
-			var typeString = WebAssemblyRuntime.InvokeJS($"{JsType}.getDeviceType()");
+			var typeString =
+#if NET7_0_OR_GREATER
+				NativeMethods.GetDeviceType();
+#else
+				WebAssemblyRuntime.InvokeJS($"{JsType}.getDeviceType()");
+#endif
+
 			if (Enum.TryParse(typeString, true, out UnoDeviceForm deviceForm))
 			{
 				return deviceForm;
