@@ -298,7 +298,16 @@ namespace Uno.UI.DataBinding
 					if (IsIndexerFormat(property))
 					{
 						// Fallback on reflection-based lookup
-						var indexerInfo = GetIndexerInfo(type, null, allowPrivateMembers: false);
+
+						// In some cases, there are multiple indexers, in which case GetIndexerInfo fails due to multiple matches when not given an explicit parameter type.
+						// If we know this parses as an integer, then use typeof(int) to reduce the cases of failure.
+						Type? indexerParameterType = null;
+						if (int.TryParse(property.Substring(1, property.Length - 2), NumberStyles.Number, NumberFormatInfo.InvariantInfo, out _))
+						{
+							indexerParameterType = typeof(int);
+						}
+
+						var indexerInfo = GetIndexerInfo(type, indexerParameterType, allowPrivateMembers: false);
 
 						if (indexerInfo != null)
 						{
