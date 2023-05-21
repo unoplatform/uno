@@ -306,8 +306,13 @@ namespace Uno.UI.DataBinding
 						{
 							indexerParameterType = typeof(int);
 						}
+						else
+						{
+							indexerParameterType = typeof(string);
+						}
 
 						var indexerInfo = GetIndexerInfo(type, indexerParameterType, allowPrivateMembers: false);
+						indexerInfo ??= GetIndexerInfo(type, null, allowPrivateMembers: false);
 
 						if (indexerInfo != null)
 						{
