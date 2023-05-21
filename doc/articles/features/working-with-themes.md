@@ -74,7 +74,6 @@ public class MainPage : Page
 The [`SystemThemeHelper.SetApplicationTheme`](https://github.com/unoplatform/uno.toolkit.ui/blob/main/src/Uno.Toolkit.UI/Helpers/SystemThemeHelper.cs) method from `Uno.Toolkit.UI` can also be used to support an in-app toggle for dark mode. For example, you could add a toggle button to your app's settings page that allows the user to switch between light and dark modes. The following code snippet shows how to implement this:
 
 ```csharp
-using CommunityToolkit.WinUI.UI.Helpers;
 using Uno.Toolkit.UI;
 
 namespace MyApp.UI.Views;
