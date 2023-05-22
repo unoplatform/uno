@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<TargetFramework>net7.0</TargetFramework>
@@ -40,7 +40,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.CodeAnalysis" Version="4.5.0" />
-		<PackageReference Include="Microsoft.CodeAnalysis.Features" Version="4.5.0" />
+		<PackageReference Include="Microsoft.CodeAnalysis.Features" Version="4.6.0" />
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Features" Version="4.5.0" />
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.SourceGenerators.Testing.MSTest" Version="1.1.2-beta1.23163.2" />
 	</ItemGroup>
