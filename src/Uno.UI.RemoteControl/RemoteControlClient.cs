@@ -309,6 +309,7 @@ namespace Uno.UI.RemoteControl
 							if (await preProcessor.SkipProcessingFrame(frame))
 							{
 								skipProcessing = true;
+								break;
 							}
 						}
 
