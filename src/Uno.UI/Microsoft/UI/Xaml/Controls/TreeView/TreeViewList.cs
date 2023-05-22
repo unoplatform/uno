@@ -194,7 +194,7 @@ namespace Microsoft.UI.Xaml.Controls
 			if (!args.Handled)
 			{
 				args.AcceptedOperation = DataPackageOperation.None;
-				IInsertionPanel insertionPanel = (IInsertionPanel)ItemsPanelRoot;
+				IInsertionPanel insertionPanel = ItemsPanelRoot as IInsertionPanel;
 
 				// reorder is only supported with panels that implement IInsertionPanel
 				if (insertionPanel != null && m_draggedTreeViewNode != null && CanReorderItems)
