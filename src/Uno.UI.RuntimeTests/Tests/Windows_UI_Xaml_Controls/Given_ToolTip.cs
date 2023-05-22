@@ -8,6 +8,7 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml;
+using Windows.UI.Xaml.Input;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -357,7 +358,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await TestServices.WindowHelper.WaitForIdle();
 			tooltip.IsOpen = true;
 			await TestServices.WindowHelper.WaitForIdle();
-			button.RaiseClick();
+			button.SafeRaiseEvent(UIElement.TappedEvent, new TappedRoutedEventArgs());
 			await TestServices.WindowHelper.WaitForIdle();
 			Assert.IsFalse(tooltip.IsOpen);
 		}
