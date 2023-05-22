@@ -4,10 +4,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Uno.UI.RemoteControl.HotReload.Messages;
 
-namespace Uno.UI.RemoteControl
+namespace Uno.UI.RemoteControl;
+
+public interface IRemoteControlPreProcessor
 {
-	public interface IRemoteControlPreProcessor
-	{
-		Task<bool> SkipProcessingFrame(Frame frame);
-	}
+	Task<bool> SkipProcessingFrame(Frame frame);
 }
