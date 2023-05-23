@@ -17,7 +17,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 {
 	partial class SvgImageSource
 	{
-		internal string ContentType { get; set; } = "image/svg+xml";
+		internal override string ContentType { get; } = "image/svg+xml";
 
 		partial void InitPartial()
 		{
@@ -86,16 +86,6 @@ namespace Windows.UI.Xaml.Media.Imaging
 
 			asyncImage = default;
 			return false;
-		}
-
-		private protected async Task<ImageData> OpenMsAppData(Uri uri, CancellationToken ct)
-		{
-			var file = await StorageFile.GetFileFromPathAsync(AppDataUriEvaluator.ToPath(uri));
-			var stream = await file.OpenAsync(FileAccessMode.Read);
-
-			var streamWithContentType = stream.TrySetContentType(ContentType);
-
-			return await OpenFromStream(streamWithContentType, null, ct);
 		}
 
 		internal override void ReportImageLoaded() => RaiseImageOpened();

@@ -13,6 +13,7 @@ using Uno.UI.RuntimeTests.Helpers;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.Graphics.Display;
+using Windows.Storage;
 using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -432,6 +433,19 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(2, logs.Count, string.Join(Environment.NewLine, logs));
 			Assert.AreEqual("BitmapImage_ImageOpened", logs[0]);
 			Assert.AreEqual("Image_ImageOpened", logs[1]);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Loaded_From_AppData_LocalFolder()
+		{
+			var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/test_image_100_150.png"));
+			await file.CopyAsync(ApplicationData.Current.LocalFolder, "newfile.png", NameCollisionOption.ReplaceExisting);
+			var uri = new Uri($"ms-appdata:///Local/newfile.png");
+			var bitmapImage = new BitmapImage(uri);
+			var image = new Image() { Source = bitmapImage };
+			TestServices.WindowHelper.WindowContent = image;
+			await WindowHelper.WaitForLoaded(image);
 		}
 
 		private async Task<RawBitmap> TakeScreenshot(FrameworkElement SUT)
