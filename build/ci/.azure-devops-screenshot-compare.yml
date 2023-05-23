@@ -32,11 +32,6 @@ jobs:
   - checkout: self
     clean: true
 
-  - task: NuGetToolInstaller@0
-    inputs:
-      versionSpec: 4.9.1
-      checkLatest: false
-
   - template: templates/dotnet-install.yml
 
   - task: MSBuild@1
