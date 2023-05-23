@@ -651,23 +651,19 @@ namespace Uno.UI.DataBinding
 						}
 
 						var handler = MethodInvokerBuilder(method);
-
-						return instance =>
+						var indexerParameterType = indexerInfo.GetIndexParameters()[0].ParameterType;
+						if (indexerParameterType == typeof(string) &&
+							indexerString.StartsWith("\"", StringComparison.Ordinal) && indexerString.EndsWith("\"", StringComparison.Ordinal))
 						{
-							var indexerParameterType = indexerInfo.GetIndexParameters()[0].ParameterType;
-							if (indexerParameterType == typeof(string) &&
-								indexerString.StartsWith("\"", StringComparison.Ordinal) && indexerString.EndsWith("\"", StringComparison.Ordinal))
-							{
-								indexerString = indexerString.Substring(1, indexerString.Length - 2);
-							}
+							indexerString = indexerString.Substring(1, indexerString.Length - 2);
+						}
 
-							return handler(instance,
-								new object?[]
-								{
-									Convert(() => indexerParameterType, indexerString)
-								}
-							);
-						};
+						return instance => handler(
+							instance,
+							new object?[] {
+								Convert(() => indexerParameterType, indexerString)
+							}
+						);
 					}
 					else
 					{
