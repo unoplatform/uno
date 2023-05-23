@@ -119,6 +119,38 @@ namespace Windows.UI.Xaml.Controls
 			};
 			_controlsVisibilityTimer.Elapsed += ControlsVisibilityTimerElapsed;
 			DefaultStyleKey = typeof(MediaTransportControls);
+			Loaded += MediaTransportControls_Loaded;
+			Unloaded += MediaTransportControls_Unloaded;
+		}
+
+		private void MediaTransportControls_Unloaded(object sender, RoutedEventArgs e)
+		{
+			_rootGrid = this.GetTemplateChild(RootGridName) as Grid;
+			if (_rootGrid != null)
+			{
+				_rootGrid.Tapped -= OnRootGridTapped;
+			}
+
+			_controlPanelGrid = this.GetTemplateChild(ControlPanelGridName) as Grid;
+			if (_controlPanelGrid != null)
+			{
+				_controlPanelGrid.Tapped -= OnPaneGridTapped;
+			}
+		}
+
+		private void MediaTransportControls_Loaded(object sender, RoutedEventArgs e)
+		{
+			_rootGrid = this.GetTemplateChild(RootGridName) as Grid;
+			if (_rootGrid != null)
+			{
+				_rootGrid.Tapped += OnRootGridTapped;
+			}
+
+			_controlPanelGrid = this.GetTemplateChild(ControlPanelGridName) as Grid;
+			if (_controlPanelGrid != null)
+			{
+				_controlPanelGrid.Tapped += OnPaneGridTapped;
+			}
 		}
 
 		internal void SetMediaPlayerElement(MediaPlayerElement mediaPlayerElement)
@@ -267,19 +299,6 @@ namespace Windows.UI.Xaml.Controls
 
 			UpdateMediaTransportControlMode();
 
-			_rootGrid = this.GetTemplateChild(RootGridName) as Grid;
-			if (_rootGrid != null)
-			{
-				_rootGrid.Tapped -= OnRootGridTapped;
-				_rootGrid.Tapped += OnRootGridTapped;
-			}
-
-			_controlPanelGrid = this.GetTemplateChild(ControlPanelGridName) as Grid;
-			if (_controlPanelGrid != null)
-			{
-				_controlPanelGrid.Tapped -= OnPaneGridTapped;
-				_controlPanelGrid.Tapped += OnPaneGridTapped;
-			}
 			if (_mediaPlayer != null)
 			{
 				BindMediaPlayer();

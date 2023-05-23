@@ -491,12 +491,6 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 					_player.Play();
 					_owner.PlaybackSession.PlaybackState = MediaPlaybackState.Playing;
 				}
-				else
-				{
-					//// To display first image of media when setting a new source. Otherwise, last image of previous source remains visible
-					//_player.Play();
-					//_player.Stop();	
-				}
 			}
 
 			_isPlayerPrepared = true;
@@ -592,10 +586,5 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 			_isPlayRequested = false;
 			_isPlayerPrepared = false;
 		}
-	}
-
-	public void SetTransportControlsBounds(Rect bounds)
-	{
-		//_player?.SetTransportControlsBounds(bounds);
 	}
 }

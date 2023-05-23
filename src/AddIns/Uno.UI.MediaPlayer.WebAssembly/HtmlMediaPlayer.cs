@@ -45,8 +45,8 @@ internal partial class HtmlMediaPlayer : Border
 		AddChild(_htmlVideo);
 		AddChild(_htmlAudio);
 
-		ActiveElement = IsVideo ? _htmlVideo : IsAudio ? _htmlAudio : default;
-		ActiveElementName = IsVideo ? "Video" : IsAudio ? "Audio" : "";
+		_activeElement = IsVideo ? _htmlVideo : IsAudio ? _htmlAudio : default;
+		_activeElementName = IsVideo ? "Video" : IsAudio ? "Audio" : "";
 
 		Loaded += OnLoaded;
 		Unloaded += OnUnloaded;
@@ -59,8 +59,8 @@ internal partial class HtmlMediaPlayer : Border
 		{
 			this.Log().Debug($"HtmlMediaPlayer Loaded");
 		}
-		ActiveElement = IsVideo ? _htmlVideo : IsAudio ? _htmlAudio : default;
-		ActiveElementName = IsVideo ? "Video" : IsAudio ? "Audio" : "";
+		_activeElement = IsVideo ? _htmlVideo : IsAudio ? _htmlAudio : default;
+		_activeElementName = IsVideo ? "Video" : IsAudio ? "Audio" : "";
 		SourceLoaded += OnHtmlSourceLoaded;
 		SourceFailed += OnHtmlSourceFailed;
 		SourceEnded += OnHtmlSourceEnded;
@@ -109,21 +109,21 @@ internal partial class HtmlMediaPlayer : Border
 	{
 		get
 		{
-			if (ActiveElement == null)
+			if (_activeElement == null)
 			{
 				return 0;
 			}
-			return NativeMethods.GetCurrentPosition(ActiveElement.HtmlId);
+			return NativeMethods.GetCurrentPosition(_activeElement.HtmlId);
 		}
 		set
 		{
-			if (ActiveElement != null)
+			if (_activeElement != null)
 			{
 				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
-					this.Log().Debug($"{ActiveElementName} on ID {ActiveElement.HtmlId} SetCurrentPosition : [{value}]");
+					this.Log().Debug($"{_activeElementName} on ID {_activeElement.HtmlId} SetCurrentPosition : [{value}]");
 				}
-				NativeMethods.SetCurrentPosition(ActiveElement.HtmlId, value);
+				NativeMethods.SetCurrentPosition(_activeElement.HtmlId, value);
 			}
 		}
 	}
@@ -162,17 +162,17 @@ internal partial class HtmlMediaPlayer : Border
 	{
 		add
 		{
-			if (ActiveElement == null)
+			if (_activeElement == null)
 			{
 				return;
 			}
-			ActiveElement.RegisterHtmlEventHandler("timeupdate", value);
+			_activeElement.RegisterHtmlEventHandler("timeupdate", value);
 		}
 		remove
 		{
-			if (ActiveElement != null)
+			if (_activeElement != null)
 			{
-				ActiveElement.UnregisterHtmlEventHandler("timeupdate", value);
+				_activeElement.UnregisterHtmlEventHandler("timeupdate", value);
 			}
 		}
 	}
@@ -184,17 +184,17 @@ internal partial class HtmlMediaPlayer : Border
 	{
 		add
 		{
-			if (ActiveElement == null)
+			if (_activeElement == null)
 			{
 				return;
 			}
-			ActiveElement.RegisterHtmlEventHandler("loadedmetadata", value);
+			_activeElement.RegisterHtmlEventHandler("loadedmetadata", value);
 		}
 		remove
 		{
-			if (ActiveElement != null)
+			if (_activeElement != null)
 			{
-				ActiveElement.UnregisterHtmlEventHandler("loadedmetadata", value);
+				_activeElement.UnregisterHtmlEventHandler("loadedmetadata", value);
 			}
 		}
 	}
@@ -206,17 +206,17 @@ internal partial class HtmlMediaPlayer : Border
 	{
 		add
 		{
-			if (ActiveElement == null)
+			if (_activeElement == null)
 			{
 				return;
 			}
-			ActiveElement.RegisterHtmlEventHandler("ended", value);
+			_activeElement.RegisterHtmlEventHandler("ended", value);
 		}
 		remove
 		{
-			if (ActiveElement != null)
+			if (_activeElement != null)
 			{
-				ActiveElement.UnregisterHtmlEventHandler("ended", value);
+				_activeElement.UnregisterHtmlEventHandler("ended", value);
 			}
 		}
 	}
@@ -274,9 +274,9 @@ internal partial class HtmlMediaPlayer : Border
 
 	private void OnHtmlMetadataLoaded(object sender, EventArgs e)
 	{
-		if (ActiveElement != null)
+		if (_activeElement != null)
 		{
-			Duration = NativeMethods.GetDuration(ActiveElement.HtmlId);
+			Duration = NativeMethods.GetDuration(_activeElement.HtmlId);
 		}
 		OnMetadataLoaded?.Invoke(this, Duration);
 	}
@@ -288,21 +288,21 @@ internal partial class HtmlMediaPlayer : Border
 			this.Log().Debug($"Media opened [{Source}]");
 		}
 
-		ActiveElement = IsVideo ? _htmlVideo : IsAudio ? _htmlAudio : default;
-		ActiveElementName = IsVideo ? "Video" : IsAudio ? "Audio" : "";
-		if (ActiveElement != null)
+		_activeElement = IsVideo ? _htmlVideo : IsAudio ? _htmlAudio : default;
+		_activeElementName = IsVideo ? "Video" : IsAudio ? "Audio" : "";
+		if (_activeElement != null)
 		{
-			ActiveElement.SetCssStyle("visibility", "visible");
+			_activeElement.SetCssStyle("visibility", "visible");
 		}
 		if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 		{
-			this.Log().Debug($"{ActiveElementName} source loaded: [{Source}]");
+			this.Log().Debug($"{_activeElementName} source loaded: [{Source}]");
 		}
 
 		TimeUpdated += OnHtmlTimeUpdated;
-		if (ActiveElement != null)
+		if (_activeElement != null)
 		{
-			Duration = NativeMethods.GetDuration(ActiveElement.HtmlId);
+			Duration = NativeMethods.GetDuration(_activeElement.HtmlId);
 		}
 		OnSourceLoaded?.Invoke(this, EventArgs.Empty);
 	}
@@ -310,13 +310,13 @@ internal partial class HtmlMediaPlayer : Border
 	private void OnHtmlSourceFailed(object sender, HtmlCustomEventArgs e)
 	{
 		TimeUpdated += OnHtmlTimeUpdated;
-		if (ActiveElement != null)
+		if (_activeElement != null)
 		{
-			ActiveElement.SetCssStyle("visibility", "hidden");
+			_activeElement.SetCssStyle("visibility", "hidden");
 		}
 		if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 		{
-			this.Log().Error($"{ActiveElementName} source failed: [{Source}]");
+			this.Log().Error($"{_activeElementName} source failed: [{Source}]");
 		}
 		OnSourceFailed?.Invoke(this, e.Detail);
 	}
@@ -339,22 +339,22 @@ internal partial class HtmlMediaPlayer : Border
 				player.Log().Debug($"HtmlMediaPlayer.OnSourceChanged: {args.NewValue} isVideo:{player.IsVideo} isAudio:{player.IsAudio}");
 			}
 
-			player.ActiveElement = player.IsVideo 
+			player._activeElement = player.IsVideo 
 						? player._htmlVideo 
 						: (player.IsAudio 
 									? player._htmlAudio 
 									: default);
-			player.ActiveElementName = player.IsVideo ? "Video" : player.IsAudio ? "Audio" : "";
+			player._activeElementName = player.IsVideo ? "Video" : player.IsAudio ? "Audio" : "";
 
-			if (player.ActiveElement != null)
+			if (player._activeElement != null)
 			{
 
-				player.ActiveElement.SetHtmlAttribute("src", encodedSource);
-				player.ActiveElement.SetCssStyle("visibility", "visible");
+				player._activeElement.SetHtmlAttribute("src", encodedSource);
+				player._activeElement.SetCssStyle("visibility", "visible");
 
 				if (player.Log().IsEnabled(LogLevel.Debug))
 				{
-					player.Log().Debug($"{player.ActiveElementName} source changed: [{player.Source}]");
+					player.Log().Debug($"{player._activeElementName} source changed: [{player.Source}]");
 				}
 				player.OnSourceLoaded?.Invoke(player, EventArgs.Empty);
 			}
@@ -377,9 +377,9 @@ internal partial class HtmlMediaPlayer : Border
 	{
 		if (dependencyobject is HtmlMediaPlayer player)
 		{
-			if (player.ActiveElement != null)
+			if (player._activeElement != null)
 			{
-				NativeMethods.SetAutoPlay(player.ActiveElement.HtmlId, (bool)args.NewValue);
+				NativeMethods.SetAutoPlay(player._activeElement.HtmlId, (bool)args.NewValue);
 			}
 		}
 	}
@@ -394,24 +394,24 @@ internal partial class HtmlMediaPlayer : Border
 		if (dependencyobject is HtmlMediaPlayer player)
 		{
 			var enabled = (bool)args.NewValue;
-			if (player.ActiveElement != null)
+			if (player._activeElement != null)
 			{
 				if (enabled)
 				{
-					if (!string.IsNullOrEmpty(player.ActiveElement.GetHtmlAttribute("controls")))
+					if (!string.IsNullOrEmpty(player._activeElement.GetHtmlAttribute("controls")))
 					{
-						player.ActiveElement.SetHtmlAttribute("controls", "");
+						player._activeElement.SetHtmlAttribute("controls", "");
 					}
 					else
 					{
-						player.ActiveElement.SetHtmlAttribute("controls", "controls");
+						player._activeElement.SetHtmlAttribute("controls", "controls");
 					}
 				}
 				else
 				{
-					if (!string.IsNullOrEmpty(player.ActiveElement.GetHtmlAttribute("controls")))
+					if (!string.IsNullOrEmpty(player._activeElement.GetHtmlAttribute("controls")))
 					{
-						player.ActiveElement.SetHtmlAttribute("controls", "");
+						player._activeElement.SetHtmlAttribute("controls", "");
 					}
 				}
 			}
@@ -486,9 +486,9 @@ internal partial class HtmlMediaPlayer : Border
 		{
 			this.Log().Debug($"Play()");
 		}
-		if (ActiveElement != null && !_isPlaying)
+		if (_activeElement != null && !_isPlaying)
 		{
-			NativeMethods.Play(ActiveElement.HtmlId);
+			NativeMethods.Play(_activeElement.HtmlId);
 			_isPlaying = true;
 		}
 	}
@@ -500,9 +500,9 @@ internal partial class HtmlMediaPlayer : Border
 		{
 			this.Log().Debug($"Pause()");
 		}
-		if (ActiveElement != null && _isPlaying)
+		if (_activeElement != null && _isPlaying)
 		{
-			NativeMethods.Pause(ActiveElement.HtmlId);
+			NativeMethods.Pause(_activeElement.HtmlId);
 			_isPlaying = false;
 		}
 	}
@@ -514,9 +514,9 @@ internal partial class HtmlMediaPlayer : Border
 		{
 			this.Log().Debug($"Stop()");
 		}
-		if (ActiveElement != null)
+		if (_activeElement != null)
 		{
-			NativeMethods.Stop(ActiveElement.HtmlId);
+			NativeMethods.Stop(_activeElement.HtmlId);
 			_isPlaying = false;
 		}
 	}
@@ -536,19 +536,19 @@ internal partial class HtmlMediaPlayer : Border
 	public void SetIsLoopingEnabled(bool value)
 	{
 		_isLoopingEnabled = value;
-		if (ActiveElement != null)
+		if (_activeElement != null)
 		{
 			if (_isLoopingEnabled)
 			{
-				ActiveElement.SetHtmlAttribute("loop", "loop");
+				_activeElement.SetHtmlAttribute("loop", "loop");
 			}
 			else
 			{
-				ActiveElement.ClearHtmlAttribute("loop");
+				_activeElement.ClearHtmlAttribute("loop");
 			}
 			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
-				this.Log().Debug($"{ActiveElementName} loop {_isLoopingEnabled}: [{Source}]");
+				this.Log().Debug($"{_activeElementName} loop {_isLoopingEnabled}: [{Source}]");
 			}
 		}
 	}
