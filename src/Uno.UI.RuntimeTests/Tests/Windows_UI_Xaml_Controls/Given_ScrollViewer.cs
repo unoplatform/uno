@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using Windows.Foundation;
 using Windows.UI;
+using Windows.UI.Input.Preview.Injection;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -13,6 +15,8 @@ using Windows.UI.Xaml.Shapes;
 using Windows.UI.ViewManagement;
 using static Private.Infrastructure.TestServices;
 using Uno.Disposables;
+using Uno.UI.RuntimeTests.Tests.Uno_UI_Xaml_Core;
+using Uno.UI.Toolkit.Extensions;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -459,6 +463,68 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(outerScrollViewer.ExtentHeight, outerScrollViewer.ViewportHeight, 0.000001);
 		}
 
+		[TestMethod]
+		[RunsOnUIThread]
+		[RequiresFullWindow]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282! epic")]
+#endif
+		public async Task When_ChangeView_Offset()
+		{
+			const double offset = 100;
+
+			var scroll = new ScrollViewer()
+			{
+				Background = new SolidColorBrush(Colors.Yellow)
+			};
+
+			var stackPanel = new StackPanel()
+			{
+				Orientation = Orientation.Vertical,
+				Height = 5000,
+			};
+
+			stackPanel.Children.Add(new Border() { Height = 200 });
+
+			var target = new Border()
+			{
+				Background = new SolidColorBrush(Colors.Lime),
+				Height = 50,
+			};
+
+			stackPanel.Children.Add(target);
+
+			var scrollChanged = false;
+			scroll.ViewChanged += (s, e) =>
+			{
+				scrollChanged = true;
+			};
+
+			scroll.Content = stackPanel;
+
+			try
+			{
+
+				var container = new Border() { Child = scroll };
+
+				WindowHelper.WindowContent = container;
+
+				await WindowHelper.WaitForLoaded(scroll);
+
+				_ = scroll.ChangeView(null, offset, null, true);
+
+				await WindowHelper.WaitFor(() => scrollChanged);
+
+				var loc = target.TransformToVisual(scroll).TransformPoint(new Point(0, 0));
+				Assert.AreEqual(offset, loc.Y);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+
 #if __ANDROID__
 		[TestMethod]
 		[RunsOnUIThread]
@@ -605,5 +671,97 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 #endif
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if !__SKIA__ && !WINDOWS_UWP
+		[Ignore("Pointer injection supported only on skia for now.")]
+#endif
+		public async Task When_TouchScroll_Then_NestedElementReceivePointerEvents()
+		{
+			if (Private.Infrastructure.TestServices.WindowHelper.IsXamlIsland)
+			{
+				Assert.Inconclusive("Pointer injection is not supported yet on XamlIsland");
+				return;
+			}
+
+			var nested = new Border
+			{
+				Height = 4192,
+				Width = 256,
+				Background = new SolidColorBrush(Colors.DeepPink)
+			};
+			var sut = new ScrollViewer
+			{
+				Height = 512,
+				Width = 256,
+				Content = nested
+			};
+
+			var events = new List<string>();
+			nested.PointerEntered += (snd, e) => events.Add("enter");
+			nested.PointerExited += (snd, e) => events.Add("exited");
+			nested.PointerPressed += (snd, e) => events.Add("pressed");
+			nested.PointerReleased += (snd, e) => events.Add("release");
+			nested.PointerCanceled += (snd, e) => events.Add("cancel");
+
+			WindowHelper.WindowContent = new Grid { Children = { sut } };
+			await WindowHelper.WaitForLoaded(nested);
+			await WindowHelper.WaitForIdle();
+
+			var input = InputInjector.TryCreate() ?? throw new InvalidOperationException("Pointer injection not available on this platform.");
+			using var finger = input.GetFinger();
+
+			var sutLocation = sut.GetAbsoluteBounds().GetLocation();
+			finger.Drag(sutLocation.Offset(5, 480), sutLocation.Offset(5, 5));
+
+			events.Should().BeEquivalentTo("enter", "pressed", "release", "exited");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if !__SKIA__
+		[Ignore("Pointer injection supported only on skia for now.")]
+#endif
+		public async Task When_TouchTap_Then_NestedElementReceivePointerEvents()
+		{
+			if (Private.Infrastructure.TestServices.WindowHelper.IsXamlIsland)
+			{
+				Assert.Inconclusive("Pointer injection is not supported yet on XamlIsland");
+				return;
+			}
+
+			var nested = new Border
+			{
+				Height = 4192,
+				Width = 256,
+				Background = new SolidColorBrush(Colors.DeepPink)
+			};
+			var sut = new ScrollViewer
+			{
+				Height = 512,
+				Width = 256,
+				Content = nested
+			};
+
+			var events = new List<string>();
+			nested.PointerEntered += (snd, e) => events.Add("enter");
+			nested.PointerExited += (snd, e) => events.Add("exited");
+			nested.PointerPressed += (snd, e) => events.Add("pressed");
+			nested.PointerReleased += (snd, e) => events.Add("release");
+			nested.PointerCanceled += (snd, e) => events.Add("cancel");
+
+			WindowHelper.WindowContent = new Grid { Children = { sut } };
+			await WindowHelper.WaitForLoaded(nested);
+			await WindowHelper.WaitForIdle();
+
+			var input = InputInjector.TryCreate() ?? throw new InvalidOperationException("Pointer injection not available on this platform.");
+			using var finger = input.GetFinger();
+
+			var sutLocation = sut.GetAbsoluteBounds().GetLocation();
+			finger.Drag(sutLocation.Offset(5, 480), sutLocation.Offset(5, 5));
+
+			events.Should().BeEquivalentTo("enter", "pressed", "release", "exited");
+		}
 	}
 }

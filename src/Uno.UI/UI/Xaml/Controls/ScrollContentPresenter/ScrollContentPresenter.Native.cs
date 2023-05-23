@@ -115,9 +115,10 @@ namespace Windows.UI.Xaml.Controls
 		#region Native SCP to SCP
 		internal void OnNativeScroll(double horizontalOffset, double verticalOffset, bool isIntermediate)
 		{
+			ScrollOffsets = new Point(horizontalOffset, verticalOffset);
+
 			Scroller?.OnPresenterScrolled(horizontalOffset, verticalOffset, isIntermediate);
 
-			ScrollOffsets = new Point(horizontalOffset, verticalOffset);
 			InvalidateViewport();
 		}
 

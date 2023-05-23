@@ -3,6 +3,10 @@
 		<TargetFrameworks>net7.0;net8.0</TargetFrameworks>
 	</PropertyGroup>
 
+	<PropertyGroup Condition="'$(MSBuildRuntimeType)'!='Core'">
+		<IsPackable>false</IsPackable>
+	</PropertyGroup>
+
 	<Import Project="../targetframework-override.props" />
 
 	<PropertyGroup>

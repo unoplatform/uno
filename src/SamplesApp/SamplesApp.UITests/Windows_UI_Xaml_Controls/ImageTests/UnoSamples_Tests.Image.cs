@@ -246,7 +246,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 			showLow.SetDependencyPropertyValue("IsCheked", "False");
 
 			// Load image from url
-			url.SetDependencyPropertyValue("Text", "https://nv-assets.azurewebsites.net/tests/images/uno-overalls.png");
+			url.SetDependencyPropertyValue("Text", "https://uno-assets.platform.uno/tests/images/uno-overalls.png");
 			streamMode.SetDependencyPropertyValue("IsChecked", "False");
 
 			btnBitmap.FastTap();
@@ -285,7 +285,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 			showLow.SetDependencyPropertyValue("IsCheked", "False");
 
 			// Load image from url
-			url.SetDependencyPropertyValue("Text", "https://nv-assets.azurewebsites.net/tests/images/uno-overalls.svg");
+			url.SetDependencyPropertyValue("Text", "https://uno-assets.platform.uno/tests/images/uno-overalls.svg");
 			streamMode.SetDependencyPropertyValue("IsChecked", "False");
 
 			btnSvg.FastTap();
@@ -333,7 +333,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 
 			using var screenshotDirect = TakeScreenshot("url_local");
 
-			url.SetDependencyPropertyValue("Text", "https://nv-assets.azurewebsites.net/tests/images/uno-overalls.png");
+			url.SetDependencyPropertyValue("Text", "https://uno-assets.platform.uno/tests/images/uno-overalls.png");
 
 			btnBitmap.FastTap();
 
@@ -372,7 +372,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 
 			using var screenshotDirect = TakeScreenshot("url_local");
 
-			url.SetDependencyPropertyValue("Text", "https://nv-assets.azurewebsites.net/tests/images/uno-overalls.svg");
+			url.SetDependencyPropertyValue("Text", "https://uno-assets.platform.uno/tests/images/uno-overalls.svg");
 
 			btnSvg.FastTap();
 

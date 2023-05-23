@@ -18,6 +18,7 @@ using Windows.UI.Xaml.Controls;
 using Windows.System;
 using Color = Windows.UI.Color;
 using System.Globalization;
+using Microsoft.UI.Input;
 
 namespace Windows.UI.Xaml
 {
@@ -701,6 +702,40 @@ namespace Windows.UI.Xaml
 					yield return type.Name.ToLowerInvariant();
 					type = type.BaseType;
 				}
+			}
+		}
+
+
+		private Microsoft.UI.Input.InputCursor _protectedCursor;
+
+#if HAS_UNO_WINUI
+		protected Microsoft.UI.Input.InputCursor ProtectedCursor
+#else
+		private protected Microsoft.UI.Input.InputCursor ProtectedCursor
+#endif
+		{
+			get => _protectedCursor;
+			set
+			{
+				if (_protectedCursor != value)
+				{
+					_protectedCursor = value;
+					SetProtectedCursorNative();
+				}
+			}
+
+		}
+
+		private void SetProtectedCursorNative()
+		{
+			if (_protectedCursor is Microsoft.UI.Input.InputSystemCursor inputSystemCursor)
+			{
+				var cursorShape = inputSystemCursor.CursorShape.ToCssProtectedCursor();
+				this.SetStyle("cursor", cursorShape);
+			}
+			else
+			{
+				this.ResetStyle("cursor");
 			}
 		}
 	}

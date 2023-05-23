@@ -84,6 +84,12 @@ public partial class InputInjector
 			touch.Update(args);
 
 			InjectPointerUpdated(args);
+
+			if (info.PointerInfo.PointerOptions.HasFlag(InjectedInputPointerOptions.PointerUp))
+			{
+				InjectPointerRemoved(args);
+				_touch = (touch, isAdded: false);
+			}
 		}
 	}
 
@@ -102,9 +108,7 @@ public partial class InputInjector
 #if UNO_HAS_MANAGED_POINTERS
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	private void InjectPointerAdded(PointerEventArgs args)
-	{
-		_window.InjectPointerAdded(args);
-	}
+		=> _window.InjectPointerAdded(args);
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	private void InjectPointerUpdated(PointerEventArgs args)

@@ -16,7 +16,9 @@ namespace Windows.Storage.Pickers
 {
 	public partial class FolderPicker
 	{
+#if !NET7_0_OR_GREATER
 		private const string JsType = "Windows.Storage.Pickers.FolderPicker";
+#endif
 
 		private static bool? _fileSystemAccessApiSupported;
 
@@ -24,8 +26,12 @@ namespace Windows.Storage.Pickers
 		{
 			if (_fileSystemAccessApiSupported is null)
 			{
+#if NET7_0_OR_GREATER
+				_fileSystemAccessApiSupported = NativeMethods.IsNativeSupported();
+#else
 				var isSupportedString = WebAssemblyRuntime.InvokeJS($"{JsType}.isNativeSupported()");
 				_fileSystemAccessApiSupported = bool.TryParse(isSupportedString, out var isSupported) && isSupported;
+#endif
 			}
 
 			return _fileSystemAccessApiSupported.Value;
@@ -38,10 +44,14 @@ namespace Windows.Storage.Pickers
 				throw new NotSupportedException("Could not handle the request using any picker implementation.");
 			}
 
-			var id = WebAssemblyRuntime.EscapeJs(SettingsIdentifier);
 			var startIn = SuggestedStartLocation.ToStartInDirectory();
 
+#if NET7_0_OR_GREATER
+			var pickedFolderJson = await NativeMethods.PickSingleFolderAsync(SettingsIdentifier, startIn);
+#else
+			var id = WebAssemblyRuntime.EscapeJs(SettingsIdentifier);
 			var pickedFolderJson = await WebAssemblyRuntime.InvokeAsync($"{JsType}.pickSingleFolderAsync('{id}','{startIn}')");
+#endif
 
 			if (pickedFolderJson is null)
 			{

@@ -131,16 +131,7 @@ namespace Windows.UI.Xaml
 		#endif
 		// Skipping already declared property XamlRoot
 		// Skipping already declared property Shadow
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Numerics.Vector3 ActualOffset
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Vector3 UIElement.ActualOffset is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Vector3%20UIElement.ActualOffset");
-			}
-		}
-		#endif
+		// Skipping already declared property ActualOffset
 		// Skipping already declared property ActualSize
 		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]

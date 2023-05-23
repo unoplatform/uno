@@ -95,7 +95,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var items = new[] { "item 1", "item 2", "item 3" };
 			foreach (var control in DerivedStyledControlsInstances)
 			{
-				var templateSelector = new KeyedTemplateSelector
+				var templateSelector = new Given_ListViewBase.KeyedTemplateSelector
 				{
 					Templates =
 					{

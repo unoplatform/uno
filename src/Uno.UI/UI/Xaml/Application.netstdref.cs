@@ -9,5 +9,6 @@ public partial class Application
 	public Application()
 	{
 		Current = this;
+		InitializeSystemTheme();
 	}
 }

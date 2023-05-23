@@ -55,7 +55,7 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<MicrosoftNetCompilersToolsetVersion>4.6.0-1.final</MicrosoftNetCompilersToolsetVersion>
+		<MicrosoftNetCompilersToolsetVersion>4.6.0</MicrosoftNetCompilersToolsetVersion>
 	</PropertyGroup>
 
   <ItemGroup>
