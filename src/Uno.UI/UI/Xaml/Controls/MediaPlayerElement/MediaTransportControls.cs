@@ -270,6 +270,11 @@ namespace Windows.UI.Xaml.Controls
 				_rootGrid.Tapped -= OnRootGridTapped;
 				_rootGrid.Tapped += OnRootGridTapped;
 			}
+			if (_controlPanelGrid != null)
+			{
+				_controlPanelGrid.Tapped -= OnPaneGridTapped;
+				_controlPanelGrid.Tapped += OnPaneGridTapped;
+			}
 
 			if (_mediaPlayer != null)
 			{
@@ -348,6 +353,14 @@ namespace Windows.UI.Xaml.Controls
 			});
 		}
 
+		private void OnPaneGridTapped(object sender, TappedRoutedEventArgs e)
+		{
+			if (ShowAndHideAutomatically)
+			{
+				ResetControlsVisibilityTimer();
+			}
+			e.Handled = true;
+		}
 		private void OnRootGridTapped(object sender, TappedRoutedEventArgs e)
 		{
 			if (_isInteractive)
