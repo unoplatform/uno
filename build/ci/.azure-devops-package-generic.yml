@@ -43,11 +43,6 @@ jobs:
 
   - template: templates/gitversion.yml
 
-  - task: NuGetToolInstaller@0
-    inputs:
-      versionSpec: 4.9.1
-      checkLatest: false
-
   - template: templates/dotnet-install.yml
 
   - powershell: .\build\Install-WindowsSdkISO.ps1 18362
