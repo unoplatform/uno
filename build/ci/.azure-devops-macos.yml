@@ -34,11 +34,6 @@ jobs:
       xCodeRoot: ${{ parameters.xCodeRoot }}
       XamarinSDKVersion: ${{ parameters.XamarinSDKVersion }}
 
-  - task: NuGetToolInstaller@0
-    inputs:
-      versionSpec: 4.7.0
-      checkLatest: false
-
   - task: MSBuild@1
     inputs:
       solution: src/SamplesApp/SamplesApp.macOS/SamplesApp.macOS.csproj
