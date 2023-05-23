@@ -605,10 +605,7 @@ namespace Uno.UI.DataBinding
 
 							if (indexerMethod != null)
 							{
-								if (indexerString.StartsWith("\"", StringComparison.Ordinal) && indexerString.EndsWith("\"", StringComparison.Ordinal))
-								{
-									indexerString = indexerString.Substring(1, indexerString.Length - 2);
-								}
+								indexerString = CoerceIndexerParameter(indexerString, optionalParameterType: null);
 								return instance => indexerMethod(instance, indexerString);
 							}
 						}
@@ -652,11 +649,7 @@ namespace Uno.UI.DataBinding
 
 						var handler = MethodInvokerBuilder(method);
 						var indexerParameterType = indexerInfo.GetIndexParameters()[0].ParameterType;
-						if (indexerParameterType == typeof(string) &&
-							indexerString.StartsWith("\"", StringComparison.Ordinal) && indexerString.EndsWith("\"", StringComparison.Ordinal))
-						{
-							indexerString = indexerString.Substring(1, indexerString.Length - 2);
-						}
+						indexerString = CoerceIndexerParameter(indexerString, indexerParameterType);
 
 						return instance => handler(
 							instance,
@@ -850,6 +843,19 @@ namespace Uno.UI.DataBinding
 
 				return instance => empty();
 			}
+		}
+
+		private static string CoerceIndexerParameter(string indexerParameter, Type? optionalParameterType)
+		{
+			if (optionalParameterType is null || optionalParameterType == typeof(string))
+			{
+				if (indexerParameter.Length >= 2 && indexerParameter[0] == '"' && indexerParameter[indexerParameter.Length - 1] == '"')
+				{
+					return indexerParameter.Substring(1, indexerParameter.Length - 2);
+				}
+			}
+
+			return indexerParameter;
 		}
 
 		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1506:AvoidExcessiveClassCoupling", Justification = "To be refactored"),
