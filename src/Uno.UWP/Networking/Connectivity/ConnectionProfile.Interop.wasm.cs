@@ -7,6 +7,8 @@ namespace __Windows.Networking.Connectivity
 	{
 		internal static partial class NativeMethods
 		{
+			[JSImport("globalThis.Windows.Networking.Connectivity.ConnectionProfile.hasInternetAccess")]
+			internal static partial bool HasInternetAccess();
 		}
 	}
 }

@@ -8,7 +8,9 @@ namespace Windows.Networking.Connectivity
 {
 	public partial class ConnectionProfile
 	{
+#if !NET7_0_OR_GREATER
 		private const string JsType = "Windows.Networking.Connectivity.ConnectionProfile";
+#endif
 
 		internal static ConnectionProfile GetInternetConnectionProfile() =>
 			new ConnectionProfile();
@@ -19,9 +21,13 @@ namespace Windows.Networking.Connectivity
 
 		private NetworkConnectivityLevel GetNetworkConnectivityLevelImpl()
 		{
+#if NET7_0_OR_GREATER
+			return NativeMethods.HasInternetAccess() ? NetworkConnectivityLevel.InternetAccess : NetworkConnectivityLevel.None;
+#else
 			var command = $"{JsType}.hasInternetAccess()";
 			var result = Uno.Foundation.WebAssemblyRuntime.InvokeJS(command);
 			return bool.Parse(result) ? NetworkConnectivityLevel.InternetAccess : NetworkConnectivityLevel.None;
+#endif
 		}
 	}
 }
