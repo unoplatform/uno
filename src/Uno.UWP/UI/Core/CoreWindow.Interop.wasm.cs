@@ -7,6 +7,8 @@ namespace __Windows.UI.Core
 	{
 		internal static partial class NativeMethods
 		{
+			[JSImport("globalThis.Uno.UI.WindowManager.current.setCursor")]
+			internal static partial void SetCursor(string type);
 		}
 	}
 }
