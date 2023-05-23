@@ -66,12 +66,6 @@ public class Given_InputManager
 #endif
 	public async Task When_LeaveElementWhileManipulating_Then_CaptureNotLost()
 	{
-		if (Private.Infrastructure.TestServices.WindowHelper.IsXamlIsland)
-		{
-			Assert.Inconclusive("Pointer injection is not supported yet on XamlIsland");
-			return;
-		}
-
 		Border sut;
 		TranslateTransform transform;
 		var ui = new Grid
@@ -127,12 +121,6 @@ public class Given_InputManager
 #endif
 	public async Task When_Hover_No_Delay_For_VisualState_Update()
 	{
-		if (Private.Infrastructure.TestServices.WindowHelper.IsXamlIsland)
-		{
-			Assert.Inconclusive("Pointer injection is not supported yet on XamlIsland");
-			return;
-		}
-
 		var comboxBoxItem = new ComboBoxItem()
 		{
 			Content = "ComboBoxItem Content",
