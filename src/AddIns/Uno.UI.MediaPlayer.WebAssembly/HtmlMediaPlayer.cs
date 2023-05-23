@@ -481,7 +481,6 @@ internal partial class HtmlMediaPlayer : Border
 
 	public void Play()
 	{
-
 		TimeUpdated += OnHtmlTimeUpdated;
 		if (this.Log().IsEnabled(LogLevel.Debug))
 		{
