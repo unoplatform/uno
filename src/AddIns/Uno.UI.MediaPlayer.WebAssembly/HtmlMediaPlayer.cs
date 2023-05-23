@@ -24,8 +24,8 @@ internal partial class HtmlMediaPlayer : Border
 		ImmutableArray.Create(new string[] { ".MP3", ".WAV" });
 	private readonly ImmutableArray<string> videoTagAllowedFormats =
 		ImmutableArray.Create(new string[] { ".MP4", ".WEBM", ".OGG" });
-	private UIElement ActiveElement;
-	private string ActiveElementName;
+	private UIElement _activeElement;
+	private string _activeElementName;
 
 	public event EventHandler<object> OnSourceLoaded;
 	public event EventHandler<object> OnSourceFailed;
