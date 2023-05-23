@@ -1380,6 +1380,7 @@
 			<Member fullName="UIKit.UIView Windows.UI.Xaml.Controls.ItemsPanelTemplate.LoadContent()" reason="Api alignments" />
 			<Member fullName="AppKit.NSView Windows.UI.Xaml.FrameworkTemplate.LoadContent()" reason="Api alignments" />
 			<Member fullName="AppKit.NSView Windows.UI.Xaml.Controls.ItemsPanelTemplate.LoadContent()" reason="Api alignments" />
+			<Member fullName=".+?ApplyCompiledBindings\(\)" isRegex="true" reason="Api alignments" />
 
 			<Member fullName="System.Void Windows.UI.Xaml.Media.Animation.EasingFunctionBase..ctor()" reason="API Alignment" />
 			<Member fullName="System.Double Windows.UI.Xaml.Media.Animation.EasingFunctionBase.Ease(System.Double currentTime, System.Double startValue, System.Double finalValue, System.Double duration)" reason="API Alignment" />
