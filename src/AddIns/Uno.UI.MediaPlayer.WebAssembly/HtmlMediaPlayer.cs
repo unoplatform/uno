@@ -339,7 +339,11 @@ internal partial class HtmlMediaPlayer : Border
 				player.Log().Debug($"HtmlMediaPlayer.OnSourceChanged: {args.NewValue} isVideo:{player.IsVideo} isAudio:{player.IsAudio}");
 			}
 
-			player.ActiveElement = player.IsVideo ? player._htmlVideo : player.IsAudio ? player._htmlAudio : default;
+			player.ActiveElement = player.IsVideo 
+						? player._htmlVideo 
+						: (player.IsAudio 
+									? player._htmlAudio 
+									: default);
 			player.ActiveElementName = player.IsVideo ? "Video" : player.IsAudio ? "Audio" : "";
 
 			if (player.ActiveElement != null)
