@@ -61,9 +61,8 @@ internal class UnoWpfWindow : WpfWindow, IWpfWindowHost
 		Windows.Foundation.Size preferredWindowSize = ApplicationView.PreferredLaunchViewSize;
 		if (preferredWindowSize != Windows.Foundation.Size.Empty)
 		{
-			// TODO:MZ: Do not use MainWindow!!!
-			WpfApplication.Current.MainWindow.Width = (int)preferredWindowSize.Width;
-			WpfApplication.Current.MainWindow.Height = (int)preferredWindowSize.Height;
+			Width = (int)preferredWindowSize.Width;
+			Height = (int)preferredWindowSize.Height;
 		}
 
 		CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRootSet += OnCoreWindowContentRootSet;
@@ -184,7 +183,7 @@ internal class UnoWpfWindow : WpfWindow, IWpfWindowHost
 					this.Log().Info($"Loading icon file [{iconPath}] from Package.appxmanifest file");
 				}
 
-				WpfApplication.Current.MainWindow.Icon = new System.Windows.Media.Imaging.BitmapImage(new Uri(iconPath));
+				Icon = new System.Windows.Media.Imaging.BitmapImage(new Uri(iconPath));
 			}
 			else if (Windows.UI.Xaml.Media.Imaging.BitmapImage.GetScaledPath(basePath) is { } scaledPath && File.Exists(scaledPath))
 			{
@@ -193,7 +192,7 @@ internal class UnoWpfWindow : WpfWindow, IWpfWindowHost
 					this.Log().Info($"Loading icon file [{scaledPath}] scaled logo from Package.appxmanifest file");
 				}
 
-				WpfApplication.Current.MainWindow.Icon = new System.Windows.Media.Imaging.BitmapImage(new Uri(scaledPath));
+				Icon = new System.Windows.Media.Imaging.BitmapImage(new Uri(scaledPath));
 			}
 			else
 			{

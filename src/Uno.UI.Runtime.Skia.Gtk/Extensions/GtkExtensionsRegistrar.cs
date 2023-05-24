@@ -16,7 +16,7 @@ using Windows.Storage.Pickers;
 using Windows.System.Profile.Internal;
 using Windows.UI.Xaml.Controls;
 
-namespace Uno.UI.Runtime.Skia.Gtk.Extensions;
+namespace Uno.UI.Runtime.Skia.GTK.Extensions;
 
 internal static class GtkExtensionsRegistrar
 {

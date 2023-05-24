@@ -39,7 +39,11 @@ using System.Reflection;
 using Gdk;
 using System.Linq;
 using Size = Windows.Foundation.Size;
+using GtkApplication = Gtk.Application;
+using GtkWindow = Gtk.Window;
 using Uno.UI.Runtime.Skia.Gtk.Extensions;
+using Uno.UI.Runtime.Skia.GTK.Extensions;
+using Uno.UI.Runtime.Skia.UI.Xaml.Controls;
 
 namespace Uno.UI.Runtime.Skia
 {
@@ -79,8 +83,6 @@ namespace Uno.UI.Runtime.Skia
 			_appBuilder = appBuilder;
 		}
 
-		public static Gtk.Window Window => _window;
-
 		internal static UnoEventBox EventBox => _eventBox;
 
 		internal Fixed NativeOverlayLayer
@@ -106,7 +108,11 @@ namespace Uno.UI.Runtime.Skia
 			SetupTheme();
 
 			_isDispatcherThread = true;
-			_window = new Gtk.Window("GTK Host");
+
+			Windows.UI.Core.CoreDispatcher.DispatchOverride = DispatchNativeSingle;
+			Windows.UI.Core.CoreDispatcher.HasThreadAccessOverride = () => _isDispatcherThread;
+
+			_window = new UnoGtkWindow("GTK Host");
 			Size preferredWindowSize = ApplicationView.PreferredLaunchViewSize;
 			if (preferredWindowSize != Size.Empty)
 			{
@@ -126,8 +132,7 @@ namespace Uno.UI.Runtime.Skia
 
 			_window.DeleteEvent += WindowClosing;
 
-			Windows.UI.Core.CoreDispatcher.DispatchOverride = DispatchNativeSingle;
-			Windows.UI.Core.CoreDispatcher.HasThreadAccessOverride = () => _isDispatcherThread;
+
 
 			_window.WindowStateEvent += OnWindowStateChanged;
 			_window.ShowAll();
