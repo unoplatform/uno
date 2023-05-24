@@ -16,6 +16,15 @@ public partial class ProximitySensor
 	private ProximitySensorListener? _listener;
 
 	/// <summary>
+	/// Occurs each time the proximity sensor reports a new value.
+	/// </summary>
+	public event TypedEventHandler<ProximitySensor, ProximitySensorReadingChangedEventArgs> ReadingChanged
+	{
+		add => _readingChangedWrapper.AddHandler(value);
+		remove => _readingChangedWrapper.RemoveHandler(value);
+	}
+
+	/// <summary>
 	/// Gets the device identifier.
 	/// </summary>
 	public string DeviceId { get; }
