@@ -25,7 +25,7 @@ internal partial class TizenCorePointerInputSource : IUnoCorePointerInputSource
 
 	private PointerEventArgs? _previous;
 
-#pragma warning disable CS0067 // Some event are not raised on FrameBuffer ... yet!
+#pragma warning disable CS0067 // Some event are not raised on Tizen ... yet!
 	public event TypedEventHandler<object, PointerEventArgs>? PointerCaptureLost;
 	public event TypedEventHandler<object, PointerEventArgs>? PointerEntered;
 	public event TypedEventHandler<object, PointerEventArgs>? PointerExited;
@@ -195,26 +195,6 @@ internal partial class TizenCorePointerInputSource : IUnoCorePointerInputSource
 			IsInRange = true,
 		};
 
-	private void RaisePointerEntered(PointerEventArgs ptArgs, [CallerMemberName] string caller = "")
-	{
-		if (_isTraceEnabled)
-		{
-			_log.Trace($"[Entered] ({caller}) {ptArgs}");
-		}
-
-		PointerEntered?.Invoke(this, ptArgs);
-	}
-
-	private void RaisePointerExited(PointerEventArgs ptArgs, [CallerMemberName] string caller = "")
-	{
-		if (_isTraceEnabled)
-		{
-			_log.Trace($"[Exited] ({caller}) {ptArgs}");
-		}
-
-		PointerExited?.Invoke(this, ptArgs);
-	}
-
 	private void RaisePointerPressed(PointerEventArgs ptArgs, [CallerMemberName] string caller = "")
 	{
 		if (_isTraceEnabled)
@@ -243,26 +223,6 @@ internal partial class TizenCorePointerInputSource : IUnoCorePointerInputSource
 		}
 
 		PointerMoved?.Invoke(this, ptArgs);
-	}
-
-	private void RaisePointerCancelled(PointerEventArgs ptArgs, [CallerMemberName] string caller = "")
-	{
-		if (_isTraceEnabled)
-		{
-			_log.Trace($"[Cancelled] ({caller}) {ptArgs}");
-		}
-
-		PointerCancelled?.Invoke(this, ptArgs);
-	}
-
-	private void RaisePointerWheelChanged(PointerEventArgs ptArgs, [CallerMemberName] string caller = "")
-	{
-		if (_isTraceEnabled)
-		{
-			_log.Trace($"[Wheel] ({caller}) {ptArgs}");
-		}
-
-		PointerWheelChanged?.Invoke(this, ptArgs);
 	}
 
 	private void LogNotSupported([CallerMemberName] string member = "")
