@@ -47,7 +47,6 @@ public partial class GtkMediaPlayer : FrameworkElement
 
 	public bool IsAudio => audioTagAllowedFormats.Contains(Path.GetExtension(Source), StringComparer.OrdinalIgnoreCase);
 
-
 	public GtkMediaPlayer()
 	{
 		_ = Initialize();
@@ -55,7 +54,7 @@ public partial class GtkMediaPlayer : FrameworkElement
 
 	public void Play()
 	{
-		if (_videoView != null && _mediaPlayer != null)
+		if (EnsureMediaPlayerAndVideoView())
 		{
 			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 			{
@@ -63,6 +62,13 @@ public partial class GtkMediaPlayer : FrameworkElement
 			}
 			_mediaPlayer.Play();
 			_videoView.Visible = true;
+		}
+		else
+		{
+			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			{
+				this.Log().Debug("Unagle to Play, the player is not ready yet");
+			}
 		}
 	}
 
@@ -160,6 +166,13 @@ public partial class GtkMediaPlayer : FrameworkElement
 				});
 			});
 		}
+		else
+		{
+			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			{
+				this.Log().Debug("Unable to exit fullscreen, the player is not ready yet");
+			}
+		}
 	}
 
 	public void RequestFullScreen()
@@ -192,11 +205,14 @@ public partial class GtkMediaPlayer : FrameworkElement
 				});
 			});
 		}
+		else
+		{
+			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			{
+				this.Log().Debug("Unable to request fullscreen, the player is not ready yet");
+			}
+		}
 	}
-
-	[MemberNotNullWhen(true, nameof(_videoView), nameof(_mediaPlayer))]
-	private bool EnsureMediaPlayerAndVideoView() 
-		=> _videoView is not null && _mediaPlayer is not null;
 
 	public void Stop()
 	{
@@ -208,6 +224,13 @@ public partial class GtkMediaPlayer : FrameworkElement
 			}
 			_mediaPlayer.Stop();
 			_videoView.Visible = false;
+		}
+		else
+		{
+			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			{
+				this.Log().Debug("Unable to stop, the player is not ready yet");
+			}
 		}
 	}
 
@@ -222,6 +245,13 @@ public partial class GtkMediaPlayer : FrameworkElement
 			_mediaPlayer.Pause();
 			_videoView.Visible = true;
 		}
+		else
+		{
+			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			{
+				this.Log().Debug("Unable to pause, the player is not ready yet");
+			}
+		}
 	}
 
 	public void SetVolume(int volume)
@@ -235,6 +265,13 @@ public partial class GtkMediaPlayer : FrameworkElement
 			_mediaPlayer.Volume = volume;
 			_videoView.Visible = true;
 		}
+		else
+		{
+			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			{
+				this.Log().Debug("Unable to set the volume, the player is not ready yet");
+			}
+		}
 	}
 
 	public void Mute(bool IsMuted)
@@ -246,6 +283,13 @@ public partial class GtkMediaPlayer : FrameworkElement
 				this.Log().Debug($"Mute {IsMuted}");
 			}
 			_mediaPlayer.Mute = IsMuted;
+		}
+		else
+		{
+			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			{
+				this.Log().Debug("Unable to mute, the player is not ready yet");
+			}
 		}
 	}
 
@@ -448,6 +492,13 @@ public partial class GtkMediaPlayer : FrameworkElement
 			_stretch = stretch;
 			UpdateVideoStretch();
 		}
+		else
+		{
+			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			{
+				this.Log().Debug("Unable to set stretch, the player is not ready yet");
+			}
+		}
 	}
 
 	internal void SetTransportControlsBounds(Rect bounds)
@@ -458,4 +509,8 @@ public partial class GtkMediaPlayer : FrameworkElement
 			UpdateVideoStretch();
 		}
 	}
+
+	[MemberNotNullWhen(true, nameof(_videoView), nameof(_mediaPlayer))]
+	private bool EnsureMediaPlayerAndVideoView()
+		=> _videoView is not null && _mediaPlayer is not null;
 }

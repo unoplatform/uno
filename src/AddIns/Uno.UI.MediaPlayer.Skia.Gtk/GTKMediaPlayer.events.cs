@@ -32,62 +32,80 @@ public partial class GtkMediaPlayer
 	public event EventHandler<object>? OnTimeUpdate;
 	public event EventHandler<object>? OnSourceLoaded;
 
-	private Task Initialize()
+	private Task? _initializationTask;
+
+	private async Task Initialize()
 	{
-		if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+		if (_initializationTask is null)
 		{
-			this.Log().Debug($"Creating libvlc");
+			_initializationTask = InitializeInner();
 		}
 
-		_libvlc = new LibVLC(enableDebugLogs: false);
+		await _initializationTask;
+	}
 
-		if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
-		{
-			this.Log().Debug($"Creating player");
-		}
-
-		_mediaPlayer = new LibVLCSharp.Shared.MediaPlayer(_libvlc);
-
-		if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
-		{
-			this.Log().Debug($"Creating VideoView");
-		}
-
-		_videoView = new LibVLCSharp.GTK.VideoView();
-
-		_videoContainer = new ContentPresenter
-		{
-			HorizontalAlignment = HorizontalAlignment.Center,
-			VerticalAlignment = VerticalAlignment.Center,
-			HorizontalContentAlignment = HorizontalAlignment.Stretch,
-			VerticalContentAlignment = VerticalAlignment.Stretch,
-		};
-
-		if (_videoView != null && _mediaPlayer != null && _videoContainer != null)
+	private async Task InitializeInner()
+	{
+		await Task.Run(() =>
 		{
 			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 			{
-				this.Log().Debug($"Set MediaPlayer");
+				this.Log().Debug($"Creating libvlc");
 			}
-			_videoView.Visible = true;
-			_videoView.MediaPlayer = _mediaPlayer;
 
-			_mediaPlayer.TimeChanged += OnMediaPlayerTimeChange;
-			_mediaPlayer.TimeChanged += OnMediaPlayerTimeChangeIsMediaParse;
-			_mediaPlayer.MediaChanged += MediaPlayerMediaChanged;
-			_mediaPlayer.Stopped += OnMediaPlayerStopped;
-
-			_videoContainer.Content = _videoView;
-			AddChild(_videoContainer);
-			UpdateVideoStretch();
+			_libvlc = new LibVLC(enableDebugLogs: false);
 
 			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 			{
-				this.Log().Debug($"Created player");
+				this.Log().Debug($"Creating player");
 			}
-		}
 
-		return Task.CompletedTask;
+			_mediaPlayer = new LibVLCSharp.Shared.MediaPlayer(_libvlc);
+
+			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			{
+				this.Log().Debug($"Creating VideoView");
+			}
+
+			_videoView = new LibVLCSharp.GTK.VideoView();
+		});
+
+		await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+		{
+			_videoContainer = new ContentPresenter
+			{
+				HorizontalAlignment = HorizontalAlignment.Center,
+				VerticalAlignment = VerticalAlignment.Center,
+				HorizontalContentAlignment = HorizontalAlignment.Stretch,
+				VerticalContentAlignment = VerticalAlignment.Stretch,
+			};
+
+			if (_videoView != null && _mediaPlayer != null && _videoContainer != null)
+			{
+				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				{
+					this.Log().Debug($"Set MediaPlayer");
+				}
+				_videoView.Visible = true;
+				_videoView.MediaPlayer = _mediaPlayer;
+
+				_mediaPlayer.TimeChanged += OnMediaPlayerTimeChange;
+				_mediaPlayer.TimeChanged += OnMediaPlayerTimeChangeIsMediaParse;
+				_mediaPlayer.MediaChanged += MediaPlayerMediaChanged;
+				_mediaPlayer.Stopped += OnMediaPlayerStopped;
+
+				_videoContainer.Content = _videoView;
+				AddChild(_videoContainer);
+				UpdateVideoStretch();
+
+				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				{
+					this.Log().Debug($"Created player");
+				}
+			}
+
+			UpdateMedia();
+		});
 	}
 
 	private void OnSourceVideoLoaded(object? sender, EventArgs e)
@@ -123,6 +141,13 @@ public partial class GtkMediaPlayer
 			_mediaPlayer.Media = media;
 			OnSourceLoaded?.Invoke(this, EventArgs.Empty);
 		}
+		else
+		{
+			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			{
+				this.Log().Debug("Unable to update the media, the player is not ready yet");
+			}
+		}
 	}
 
 	private void AddMediaEvents()
@@ -142,6 +167,13 @@ public partial class GtkMediaPlayer
 
 			Duration = (double)(_videoView?.MediaPlayer?.Media?.Duration / 1000 ?? 0);
 			OnSourceLoaded?.Invoke(this, EventArgs.Empty);
+		}
+		else
+		{
+			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			{
+				this.Log().Debug("Unable to add media events, the player is not ready yet");
+			}
 		}
 	}
 
@@ -287,6 +319,13 @@ public partial class GtkMediaPlayer
 				_isEnding = false;
 			});
 		}
+		else
+		{
+			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			{
+				this.Log().Debug("Unable to process end reched, the player is not ready yet");
+			}
+		}
 	}
 
 	private void OnGtkMetadataLoaded(object? sender, EventArgs e)
@@ -294,9 +333,16 @@ public partial class GtkMediaPlayer
 		if (_videoView != null && _mediaPlayer != null && _mediaPlayer.Media != null)
 		{
 			Duration = (double)_mediaPlayer.Media.Duration / 1000;
-		}
 
-		OnMetadataLoaded?.Invoke(this, Duration);
+			OnMetadataLoaded?.Invoke(this, Duration);
+		}
+		else
+		{
+			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			{
+				this.Log().Debug("Unable to process metadata loaded, the player is not ready yet");
+			}
+		}
 	}
 
 	private void OnGtkSourceLoaded(object? sender, EventArgs e)
@@ -310,6 +356,13 @@ public partial class GtkMediaPlayer
 			if (Duration > 0)
 			{
 				OnSourceLoaded?.Invoke(this, EventArgs.Empty);
+			}
+		}
+		else
+		{
+			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			{
+				this.Log().Debug("Unable to process source loaded, the player is not ready yet");
 			}
 		}
 	}

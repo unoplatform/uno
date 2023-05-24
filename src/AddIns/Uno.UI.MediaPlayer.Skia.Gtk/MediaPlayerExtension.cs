@@ -237,6 +237,13 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 				}
 				_owner.PlaybackSession.PlaybackState = MediaPlaybackState.Playing;
 			}
+			else
+			{
+				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				{
+					this.Log().Debug("The player is not prepared yet, delaying playback");
+				}
+			}
 		}
 		catch (global::System.Exception ex)
 		{

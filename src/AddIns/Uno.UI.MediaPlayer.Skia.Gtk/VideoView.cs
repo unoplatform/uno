@@ -94,7 +94,7 @@ namespace LibVLCSharp.GTK
 			{
 				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 				{
-					this.Log().Debug($"Unable to attach player (IsRealized:{IsRealized}, _mediaPlayer: {_mediaPlayer is not null}");
+					this.Log().Debug($"Unable to attach player (IsRealized:{IsRealized}, _mediaPlayer: {_mediaPlayer is not null})");
 				}
 
 				return;

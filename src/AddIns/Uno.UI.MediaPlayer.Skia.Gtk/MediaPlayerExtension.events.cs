@@ -33,22 +33,40 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 {
 	public void OnPrepared(object? sender, object what)
 	{
-		if (sender is GtkMediaPlayer mp && _player is not null)
+		if (sender is GtkMediaPlayer mp)
 		{
-			NaturalDuration = TimeSpan.FromSeconds(_player.Duration);
-			if (mp.IsVideo && Events is not null)
+			if (_player is not null)
 			{
-				Events?.RaiseVideoRatioChanged(global::System.Math.Max(1, (double)mp.VideoRatio));
-			}
-			if (_owner.PlaybackSession.PlaybackState == MediaPlaybackState.Opening)
-			{
-				if (_isPlayRequested)
+				NaturalDuration = TimeSpan.FromSeconds(_player.Duration);
+
+				if (mp.IsVideo && Events is not null)
 				{
-					_player.Play();
-					_owner.PlaybackSession.PlaybackState = MediaPlaybackState.Playing;
+					Events?.RaiseVideoRatioChanged(global::System.Math.Max(1, (double)mp.VideoRatio));
+				}
+
+				if (_owner.PlaybackSession.PlaybackState == MediaPlaybackState.Opening)
+				{
+					if (_isPlayRequested)
+					{
+						_player.Play();
+						_owner.PlaybackSession.PlaybackState = MediaPlaybackState.Playing;
+					}
+				}
+
+				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				{
+					this.Log().Debug($"The GtkMediaPlayer is prepared");
+				}
+
+				_isPlayerPrepared = true;
+			}
+			else
+			{
+				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Error))
+				{
+					this.Log().Error($"The media player is not available yet");
 				}
 			}
-			_isPlayerPrepared = true;
 		}
 	}
 
