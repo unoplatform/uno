@@ -19,10 +19,6 @@ public partial class ProximitySensor
 		DeviceId = deviceId;
 	}
 
-	partial void StartReading();
-
-	partial void StopReading();
-
 	/// <summary>
 	/// Gets the device selector.
 	/// </summary>
@@ -31,12 +27,7 @@ public partial class ProximitySensor
 		$"System.Devices.InterfaceClassGuid:=\"{InterfaceId}\" AND " +
 		"System.Devices.InterfaceEnabled:=System.StructuredQueryType.Boolean#True";
 
-	/// <summary>
-	/// Occurs each time the proximity sensor reports a new value.
-	/// </summary>
-	public event TypedEventHandler<ProximitySensor, ProximitySensorReadingChangedEventArgs> ReadingChanged
-	{
-		add => _readingChangedWrapper.AddHandler(value);
-		remove => _readingChangedWrapper.RemoveHandler(value);
-	}
+	partial void StartReading();
+
+	partial void StopReading();
 }
