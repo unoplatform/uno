@@ -2,6 +2,7 @@
 
 using System;
 using System.Runtime.InteropServices;
+using Cairo;
 using Gdk;
 using Gtk;
 using LibVLCSharp.Shared;
@@ -12,9 +13,8 @@ namespace LibVLCSharp.GTK
 {
 	/// <summary>
 	/// GTK VideoView for Windows, Linux and Mac.
-	/// Mac is currently unsupported (see https://github.com/mono/gtk-sharp/issues/257)
 	/// </summary>
-	public class VideoView : DrawingArea, IVideoView
+	public class VideoView : Widget, IVideoView
 	{
 		struct Native
 		{
@@ -53,6 +53,7 @@ namespace LibVLCSharp.GTK
 		}
 
 		private MediaPlayer? _mediaPlayer;
+		private Gdk.Window? _videoWindow;
 
 		/// <summary>
 		/// GTK VideoView constructor
@@ -65,12 +66,6 @@ namespace LibVLCSharp.GTK
 			}
 
 			Core.Initialize();
-
-			//            Color black = Color.Zero;
-			//#pragma warning disable CS0612 // Type or member is obsolete
-			//            Color.Parse("black", ref black);
-			//            ModifyBg(StateType.Normal, black);
-			//#pragma warning restore CS0612 // Type or member is obsolete
 
 			Realized += (s, e) => Attach();
 		}
@@ -98,6 +93,11 @@ namespace LibVLCSharp.GTK
 		{
 			if (!IsRealized || _mediaPlayer == null)
 			{
+				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				{
+					this.Log().Debug($"Unable to attach player (IsRealized:{IsRealized}, _mediaPlayer: {_mediaPlayer is not null}");
+				}
+
 				return;
 			}
 
@@ -106,13 +106,49 @@ namespace LibVLCSharp.GTK
 				this.Log().Debug("Attaching player");
 			}
 
+			//
+			// Creating a child window ensures the video is explicitly rendered on full window
+			// even if the window is rendered layered over the existing app. Otherwise, using the current
+			// window may render incorrectly (on macOS), or fail to resize properly (on Windows).
+			//
+			var windowAttributes = new WindowAttr
+			{
+				WindowType = Gdk.WindowType.Child,
+				X = 0,
+				Y = 0,
+				Width = 0,
+				Height = 0,
+				Wclass = WindowWindowClass.InputOutput,
+				Visual = Screen.Default.RgbaVisual,
+				EventMask = (int)EventMask.ExposureMask
+			};
+
+			var windowAttributesTypes = WindowAttributesType.X | WindowAttributesType.Y | WindowAttributesType.Visual;
+
+			// Create the child window
+			_videoWindow = new Gdk.Window(Window.Toplevel, windowAttributes, windowAttributesTypes);
+			_videoWindow.SkipTaskbarHint = true;
+			_videoWindow.SkipPagerHint = true;
+
+			_videoWindow.Show();
+
+			AssignWindowId();
+		}
+
+		private void AssignWindowId()
+		{
+			if (_mediaPlayer is null || _videoWindow is null)
+			{
+				return;
+			}
+
 			if (PlatformHelper.IsWindows)
 			{
-				_mediaPlayer.Hwnd = Native.gdk_win32_window_get_handle(this.Window.Handle);
+				_mediaPlayer.Hwnd = Native.gdk_win32_window_get_handle(_videoWindow.Handle);
 			}
 			else if (PlatformHelper.IsLinux)
 			{
-				var xid = Native.gdk_x11_window_get_xid(this.Window.Handle);
+				var xid = Native.gdk_x11_window_get_xid(_videoWindow.Handle);
 
 				if (xid != 0)
 				{
@@ -130,13 +166,12 @@ namespace LibVLCSharp.GTK
 			}
 			else if (PlatformHelper.IsMac)
 			{
-				_mediaPlayer.NsObject = Native.gdk_quartz_window_get_nsview(this.Window.Handle);
+				_mediaPlayer.NsObject = Native.gdk_quartz_window_get_nsview(_videoWindow.Handle);
 			}
 			else
 			{
 				throw new PlatformNotSupportedException();
 			}
-
 		}
 
 		void Detach()
@@ -162,6 +197,23 @@ namespace LibVLCSharp.GTK
 			{
 				throw new PlatformNotSupportedException();
 			}
+
+			if (_videoWindow is not null)
+			{
+				_videoWindow.Hide();
+				_videoWindow.Destroy();
+				_videoWindow = null;
+			}
+		}
+
+		internal void Arrange(Gdk.Rectangle value)
+		{
+			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Trace))
+			{
+				this.Log().Trace($"Arranging child window to {value.X}x{value.Y} / {value.Width}x{value.Height}");
+			}
+
+			_videoWindow?.MoveResize(value.X, value.Y, value.Width, value.Height);
 		}
 	}
 }
