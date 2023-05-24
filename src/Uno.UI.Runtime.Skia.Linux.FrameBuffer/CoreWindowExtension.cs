@@ -92,14 +92,14 @@ unsafe internal partial class CoreWindowExtension : ICoreWindowExtension, IDispo
 					&& type <= LIBINPUT_EVENT_TOUCH_CANCEL
 					&& TryGetPointers(out var pointers))
 				{
-					pointers.ProcessTouchEvent(rawEvent, type);
+					pointers!.ProcessTouchEvent(rawEvent, type);
 				}
 
 				if (type >= LIBINPUT_EVENT_POINTER_MOTION
 					&& type <= LIBINPUT_EVENT_POINTER_AXIS
 					&& TryGetPointers(out pointers))
 				{
-					pointers.ProcessMouseEvent(rawEvent, type);
+					pointers!.ProcessMouseEvent(rawEvent, type);
 				}
 
 				if (type == LIBINPUT_EVENT_KEYBOARD_KEY)
@@ -135,7 +135,7 @@ unsafe internal partial class CoreWindowExtension : ICoreWindowExtension, IDispo
 	public Size MeasureNativeElement(object owner, object content, Size size)
 		=> size;
 
-	private bool TryGetPointers([NotNullWhen(true)] out FrameBufferPointerInputSource? pointers)
+	private bool TryGetPointers(/*[NotNullWhen(true)] */out FrameBufferPointerInputSource? pointers)
 	{
 		if (_pointers is null)
 		{
