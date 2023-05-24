@@ -43,6 +43,7 @@
 	  <UpToDateCheckInput Remove="HotReload\Messages\IMessage.cs" />
 	  <UpToDateCheckInput Remove="HotReload\Messages\XamlLoadError.cs" />
 	  <UpToDateCheckInput Remove="IRemoteControlProcessor.cs" />
+	  <UpToDateCheckInput Remove="IRemoteControlPreProcessor.cs" />
 	  <UpToDateCheckInput Remove="ProjectConfigurationAttribute.cs" />
 	  <UpToDateCheckInput Remove="RemoteControlClient.cs" />
 	  <UpToDateCheckInput Remove="ServerEndpointAttribute.cs" />
