@@ -38,7 +38,13 @@ public partial class ProximitySensor
 		}
 
 		var sensorManager = SensorHelpers.GetSensorManager();
-		var sensors = sensorManager.GetSensorList(Android.Hardware.SensorType.Proximity);
+		var sensors = sensorManager.GetDynamicSensorList(Android.Hardware.SensorType.Proximity);
+
+		if (sensors is not { Count: > 0 })
+		{
+			sensors = sensorManager.GetSensorList(Android.Hardware.SensorType.Proximity);
+		}
+
 		var androidSensor = sensors?.FirstOrDefault(s =>
 			sensorIdentifier.Id.Equals(
 				s.Id.ToString(CultureInfo.InvariantCulture), StringComparison.Ordinal));
@@ -72,7 +78,7 @@ public partial class ProximitySensor
 		_readingChangedWrapper.Event?.Invoke(this, new(reading));
 	}
 
-	private class ProximitySensorListener : Java.Lang.Object, ISensorEventListener, IDisposable
+	private sealed class ProximitySensorListener : Java.Lang.Object, ISensorEventListener, IDisposable
 	{
 		private readonly ProximitySensor _proximitySensor;
 

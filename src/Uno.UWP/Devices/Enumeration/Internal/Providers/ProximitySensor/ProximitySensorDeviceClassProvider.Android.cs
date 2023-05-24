@@ -32,12 +32,12 @@ internal class ProximitySensorDeviceClassProvider : IDeviceClassProvider
 		var sensors = sensorManager.GetDynamicSensorList(Android.Hardware.SensorType.Proximity);
 
 		List<DeviceInformation> devices = new();
-		if (sensors is null || sensors.Count == 0)
+		if (sensors is not { Count: > 0 })
 		{
 			sensors = sensorManager.GetSensorList(Android.Hardware.SensorType.Proximity);
 		}
 
-		if (sensors is null || sensors.Count == 0)
+		if (sensors is not { Count: > 0 })
 		{
 			if (sensorManager.GetDefaultSensor(Android.Hardware.SensorType.Proximity) is { } sensor)
 			{
