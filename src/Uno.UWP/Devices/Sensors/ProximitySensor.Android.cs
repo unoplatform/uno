@@ -7,6 +7,7 @@ using Android.Hardware;
 using Android.Runtime;
 using Uno.Devices.Enumeration.Internal;
 using Uno.Devices.Sensors.Helpers;
+using Windows.Foundation;
 
 namespace Windows.Devices.Sensors;
 
