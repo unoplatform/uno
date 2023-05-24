@@ -75,7 +75,7 @@ namespace Windows.UI.Core
 		/// Schedules the provided handler on the dispatcher.
 		/// </summary>
 		/// <param name="priority">The execution priority for the handler</param>
-		/// <param name="handler">The handler to execute</param>
+		/// <param name="agileCallback">The handler to execute</param>
 		/// <returns>An async operation for the scheduled handler.</returns>
 		public IAsyncAction RunAsync(CoreDispatcherPriority priority, DispatchedHandler agileCallback)
 			=> _inner.RunAsync((Uno.UI.Dispatching.CoreDispatcherPriority)priority, new Uno.UI.Dispatching.DispatchedHandler(agileCallback));
@@ -83,7 +83,7 @@ namespace Windows.UI.Core
 		/// <summary>
 		/// Schedules the provided handler using the idle priority
 		/// </summary>
-		/// <param name="handler">The handler to execute</param>
+		/// <param name="agileCallback">The handler to execute</param>
 		/// <returns>An async operation for the scheduled handler.</returns>
 		public IAsyncAction RunIdleAsync(IdleDispatchedHandler agileCallback)
 			=> _inner.RunIdleAsync(c => agileCallback(new IdleDispatchedHandlerArgs(c)));
