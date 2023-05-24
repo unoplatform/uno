@@ -155,6 +155,13 @@ http {
 }
 ```
 
+In order to enable the fallback routes in Nginx, you can use the following location rule in the configuration file:
+```
+location ~ ^\/(?!(package_)) {
+    try_files $uri $uri/ /index.html;
+}
+```
+
 If you have *brotli* enabled via [`ngx-brotli` module](https://github.com/google/ngx_brotli), you can add the following block for extra compression performance.
 
 ```nginx
