@@ -70,6 +70,7 @@ namespace Uno.UI.RuntimeTests.Tests.Uno_UI_Toolkit
 			ApplicationView.GetForCurrentView().ExitFullScreenMode();
 
 			using var _ = UseFullWindow();
+			var tb = UseTranslucentBars();
 
 			var redGrid = new Grid
 			{
@@ -85,6 +86,9 @@ namespace Uno.UI.RuntimeTests.Tests.Uno_UI_Toolkit
 			VisibleBoundsPadding.SetPaddingMask(redGrid, VisibleBoundsPadding.PaddingMask.All);
 
 			WindowHelper.WindowContent = redGrid;
+			await WindowHelper.WaitForIdle();
+
+			tb.Dispose();
 			await WindowHelper.WaitForIdle();
 
 			var blueWithOpaqueBars = blueGrid.TransformToVisual(redGrid).TransformBounds(new Windows.Foundation.Rect(0, 0, blueGrid.ActualWidth, blueGrid.ActualHeight));
