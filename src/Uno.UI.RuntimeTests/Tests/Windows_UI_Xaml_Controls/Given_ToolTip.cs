@@ -358,6 +358,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			};
 			ToolTipService.SetToolTip(button, tooltip);
 			TestServices.WindowHelper.WindowContent = button;
+			await TestServices.WindowHelper.WaitForLoaded(button);
 			await TestServices.WindowHelper.WaitForIdle();
 			tooltip.IsOpen = true;
 			await TestServices.WindowHelper.WaitForIdle();
