@@ -16,8 +16,10 @@ public partial class ProximitySensor
 	{
 		_readingChangedWrapper = new(() => StartReading(), () => StopReading());
 
-		DeviceId = deviceId;
+		InitializePlatform(deviceId);
 	}
+
+	partial void InitializePlatform(string deviceId);
 
 	/// <summary>
 	/// Gets the device selector.
