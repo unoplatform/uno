@@ -29,7 +29,10 @@ internal partial class InputManager
 	partial void ConstructManagedPointers()
 	{
 		Pointers = new PointerManager(this);
-		//InputInjector.SetTargetForCurrentThread(this); // Injector supports only pointers for now, so configure it only if useful!
+		
+		// Injector supports only pointers for now, so configure only in by managed pointer
+		// (should be moved to the InputManager ctor once the injector supports other input types)
+		InputInjector.SetTargetForCurrentThread(this); 
 	}
 
 	partial void InitializeManagedPointers(object host)

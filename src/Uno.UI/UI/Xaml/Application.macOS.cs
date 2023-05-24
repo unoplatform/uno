@@ -34,7 +34,7 @@ namespace Windows.UI.Xaml
 
 		static partial void InitializePartialStatic()
 		{
-			ApiExtensibility.Register(typeof(IUnoCorePointerInputSource), host => new MacOSPointerInputSource((Uno.UI.Controls.Window)host));
+			ApiExtensibility.Register(typeof(IUnoCorePointerInputSource), host => new MacOSPointerInputSource((Uno.UI.Controls.Window)((Windows.UI.Xaml.Window)host).NativeWindow));
 		}
 
 		public Application()
