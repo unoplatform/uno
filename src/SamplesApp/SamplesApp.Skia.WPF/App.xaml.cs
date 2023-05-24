@@ -7,13 +7,13 @@ namespace SamplesApp.WPF
 	/// </summary>
 	public partial class App : System.Windows.Application
 	{
-		private readonly WpfHost _host;
-
 		public App()
 		{
 			SamplesApp.App.ConfigureFilters();
 
-			_host = new WpfHost(Dispatcher, () => new SamplesApp.App());
+			var host = new WpfHost(Dispatcher, () => new SamplesApp.App());
+
+			host.Run();
 		}
 	}
 }

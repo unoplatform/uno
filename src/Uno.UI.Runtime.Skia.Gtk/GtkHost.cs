@@ -39,6 +39,7 @@ using System.Reflection;
 using Gdk;
 using System.Linq;
 using Size = Windows.Foundation.Size;
+using Uno.UI.Runtime.Skia.Gtk.Extensions;
 
 namespace Uno.UI.Runtime.Skia
 {
@@ -60,6 +61,11 @@ namespace Uno.UI.Runtime.Skia
 
 		private record PendingWindowStateChangedInfo(Gdk.WindowState newState, Gdk.WindowState changedMask);
 		private List<PendingWindowStateChangedInfo> _pendingWindowStateChanged = new();
+
+		static GtkHost()
+		{
+			GtkExtensionsRegistrar.Register();
+		}
 
 		/// <summary>
 		/// Creates a host for a Uno Skia GTK application.
@@ -98,21 +104,6 @@ namespace Uno.UI.Runtime.Skia
 			}
 
 			SetupTheme();
-
-			ApiExtensibility.Register(typeof(Uno.ApplicationModel.Core.ICoreApplicationExtension), o => new CoreApplicationExtension(o));
-			ApiExtensibility.Register(typeof(Windows.UI.Core.IUnoCorePointerInputSource), o => new GtkCorePointerInputSource());
-			ApiExtensibility.Register(typeof(Windows.UI.Core.ICoreWindowExtension), o => new GtkCoreWindowExtension(o));
-			ApiExtensibility.Register(typeof(Windows.UI.ViewManagement.IApplicationViewExtension), o => new GtkApplicationViewExtension(o));
-			ApiExtensibility.Register(typeof(ISystemThemeHelperExtension), o => new GtkSystemThemeHelperExtension(o));
-			ApiExtensibility.Register(typeof(Windows.Graphics.Display.IDisplayInformationExtension), o => _displayInformationExtension ??= new GtkDisplayInformationExtension(o, _window));
-			ApiExtensibility.Register<TextBoxView>(typeof(IOverlayTextBoxViewExtension), o => new TextBoxViewExtension(o));
-			ApiExtensibility.Register(typeof(ILauncherExtension), o => new LauncherExtension(o));
-			ApiExtensibility.Register<FileOpenPicker>(typeof(IFileOpenPickerExtension), o => new FileOpenPickerExtension(o));
-			ApiExtensibility.Register<FolderPicker>(typeof(IFolderPickerExtension), o => new FolderPickerExtension(o));
-			ApiExtensibility.Register(typeof(IClipboardExtension), o => new ClipboardExtensions(o));
-			ApiExtensibility.Register<FileSavePicker>(typeof(IFileSavePickerExtension), o => new FileSavePickerExtension(o));
-			ApiExtensibility.Register(typeof(IAnalyticsInfoExtension), o => new AnalyticsInfoExtension());
-			ApiExtensibility.Register(typeof(ISystemNavigationManagerPreviewExtension), o => new SystemNavigationManagerPreviewExtension(_window));
 
 			_isDispatcherThread = true;
 			_window = new Gtk.Window("GTK Host");
