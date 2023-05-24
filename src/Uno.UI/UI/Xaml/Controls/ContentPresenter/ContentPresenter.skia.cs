@@ -175,7 +175,5 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 		}
-
-		public void ArrangeNative(Point point) => throw new NotImplementedException();
 	}
 }

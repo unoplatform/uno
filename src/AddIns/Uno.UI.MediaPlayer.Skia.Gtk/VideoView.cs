@@ -2,7 +2,6 @@
 
 using System;
 using System.Runtime.InteropServices;
-using Cairo;
 using Gdk;
 using Gtk;
 using LibVLCSharp.Shared;
@@ -14,7 +13,7 @@ namespace LibVLCSharp.GTK
 	/// <summary>
 	/// GTK VideoView for Windows, Linux and Mac.
 	/// </summary>
-	public class VideoView : Widget, IVideoView
+	public class VideoView : DrawingArea, IVideoView
 	{
 		struct Native
 		{
@@ -126,7 +125,7 @@ namespace LibVLCSharp.GTK
 			var windowAttributesTypes = WindowAttributesType.X | WindowAttributesType.Y | WindowAttributesType.Visual;
 
 			// Create the child window
-			_videoWindow = new Gdk.Window(Window.Toplevel, windowAttributes, windowAttributesTypes);
+			_videoWindow = new(Window.Toplevel, windowAttributes, windowAttributesTypes);
 			_videoWindow.SkipTaskbarHint = true;
 			_videoWindow.SkipPagerHint = true;
 
