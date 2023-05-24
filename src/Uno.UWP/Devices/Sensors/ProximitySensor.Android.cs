@@ -15,6 +15,11 @@ public partial class ProximitySensor
 	private Sensor? _sensor;
 	private ProximitySensorListener? _listener;
 
+	partial void InitializePlatform(string deviceId)
+	{
+		DeviceId = deviceId;
+	}
+
 	/// <summary>
 	/// Occurs each time the proximity sensor reports a new value.
 	/// </summary>
