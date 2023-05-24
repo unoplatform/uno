@@ -67,6 +67,21 @@ namespace LibVLCSharp.GTK
 			Core.Initialize();
 
 			Realized += (s, e) => Attach();
+			Unrealized += (s, e) => Detach();
+		}
+
+		internal void SetVisible(bool visible)
+		{
+			Visible = visible;
+
+			if (Visible)
+			{
+				_videoWindow?.Show();
+			}
+			else
+			{
+				_videoWindow?.Hide();
+			}
 		}
 
 		/// <summary>
@@ -175,26 +190,24 @@ namespace LibVLCSharp.GTK
 
 		void Detach()
 		{
-			if (!IsRealized || _mediaPlayer == null)
+			if (_mediaPlayer is not null)
 			{
-				return;
-			}
-
-			if (PlatformHelper.IsWindows)
-			{
-				_mediaPlayer.Hwnd = IntPtr.Zero;
-			}
-			else if (PlatformHelper.IsLinux)
-			{
-				_mediaPlayer.XWindow = 0;
-			}
-			else if (PlatformHelper.IsMac)
-			{
-				_mediaPlayer.NsObject = IntPtr.Zero;
-			}
-			else
-			{
-				throw new PlatformNotSupportedException();
+				if (PlatformHelper.IsWindows)
+				{
+					_mediaPlayer.Hwnd = IntPtr.Zero;
+				}
+				else if (PlatformHelper.IsLinux)
+				{
+					_mediaPlayer.XWindow = 0;
+				}
+				else if (PlatformHelper.IsMac)
+				{
+					_mediaPlayer.NsObject = IntPtr.Zero;
+				}
+				else
+				{
+					throw new PlatformNotSupportedException();
+				}
 			}
 
 			if (_videoWindow is not null)

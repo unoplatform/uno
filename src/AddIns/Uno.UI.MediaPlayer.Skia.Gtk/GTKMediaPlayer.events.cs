@@ -140,6 +140,8 @@ public partial class GtkMediaPlayer
 			media.Parse(MediaParseOptions.ParseNetwork);
 			_mediaPlayer.Media = media;
 			OnSourceLoaded?.Invoke(this, EventArgs.Empty);
+
+			UpdateVideoStretch();
 		}
 		else
 		{
@@ -167,6 +169,8 @@ public partial class GtkMediaPlayer
 
 			Duration = (double)(_videoView?.MediaPlayer?.Media?.Duration / 1000 ?? 0);
 			OnSourceLoaded?.Invoke(this, EventArgs.Empty);
+
+			UpdateVideoStretch();
 		}
 		else
 		{
@@ -333,6 +337,7 @@ public partial class GtkMediaPlayer
 		if (_videoView != null && _mediaPlayer != null && _mediaPlayer.Media != null)
 		{
 			Duration = (double)_mediaPlayer.Media.Duration / 1000;
+			UpdateVideoStretch();
 
 			OnMetadataLoaded?.Invoke(this, Duration);
 		}
@@ -350,6 +355,7 @@ public partial class GtkMediaPlayer
 		if (_videoView != null)
 		{
 			_videoView.Visible = true;
+			UpdateVideoStretch();
 
 			Duration = (double)(_videoView?.MediaPlayer?.Media?.Duration / 1000 ?? 0);
 

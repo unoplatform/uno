@@ -9,6 +9,9 @@ using Windows.UI.Xaml.Media;
 using Uno.UI.Xaml.Controls.MediaPlayer.Internal;
 using System.Drawing;
 using Windows.Foundation;
+using Windows.UI.Xaml.Media.Animation;
+using Uno.Disposables;
+using Windows.UI.Xaml.Controls.Primitives;
 
 #if __IOS__
 using UIKit;
@@ -109,8 +112,9 @@ namespace Windows.UI.Xaml.Controls
 
 		private Timer _controlsVisibilityTimer;
 		private bool _wasPlaying;
-		private bool _isInteractive;
+		private bool _isInteractive = true;
 		private MediaPlayerElement _mpe;
+		private CompositeDisposable _loadedSubscriptions;
 
 		public MediaTransportControls() : base()
 		{
@@ -304,10 +308,72 @@ namespace Windows.UI.Xaml.Controls
 
 			UpdateMediaTransportControlMode();
 
-			if (_mediaPlayer != null)
+			if (_rootGrid is not null)
+			{
+				_rootGrid.Tapped -= OnRootGridTapped;
+			}
+
+			_rootGrid = this.GetTemplateChild(RootGridName) as Grid;
+
+			if (_mediaPlayer is not null)
 			{
 				BindMediaPlayer();
 			}
+		}
+
+		internal override void OnLayoutUpdated()
+		{
+			base.OnLayoutUpdated();
+
+			OnControlsBoundsChanged();
+		}
+
+		private protected override void OnLoaded()
+		{
+			base.OnLoaded();
+
+			_loadedSubscriptions = new();
+
+			if (_rootGrid is not null)
+			{
+				_rootGrid.Tapped += OnRootGridTapped;
+
+				_loadedSubscriptions.Add(() => _rootGrid.Tapped -= OnRootGridTapped);
+			}
+
+			// Register on visual state changes to update the layout in extensions
+			foreach (var groups in VisualStateManager.GetVisualStateGroups(this.GetTemplateRoot()))
+			{
+				foreach (var state in groups.States)
+				{
+					if (state.Name is "ControlPanelFadeOut")
+					{
+						foreach (var child in state.Storyboard.Children)
+						{
+							// Update the layout on opacity completed
+							if (child.PropertyInfo?.LeafPropertyName == "Opacity")
+							{
+								child.Completed += Storyboard_Completed;
+
+								_loadedSubscriptions.Add(() => child.Completed += Storyboard_Completed);
+							}
+						}
+					}
+				}
+			}
+		}
+
+		private protected override void OnUnloaded()
+		{
+			base.OnUnloaded();
+
+			_loadedSubscriptions?.Dispose();
+			_loadedSubscriptions = null;
+		}
+
+		private void Storyboard_Completed(object sender, object e)
+		{
+			OnControlsBoundsChanged();
 		}
 
 		private void ControlPanelGridSizeChanged(object sender, SizeChangedEventArgs args)
@@ -371,6 +437,8 @@ namespace Windows.UI.Xaml.Controls
 			{
 				VisualStateManager.GoToState(this, "ControlPanelFadeIn", false);
 			});
+
+			// Adjust layout bounds immediately
 			OnControlsBoundsChanged();
 		}
 
@@ -385,7 +453,6 @@ namespace Windows.UI.Xaml.Controls
 					VisualStateManager.GoToState(this, "ControlPanelFadeOut", false);
 				}
 			});
-			OnControlsBoundsChanged();
 		}
 
 		private void OnControlsBoundsChanged()
@@ -396,14 +463,16 @@ namespace Windows.UI.Xaml.Controls
 				return;
 			}
 
-			var bounds = new Rect(0, 0,
-											_controlPanelGrid.ActualWidth,
-											_isInteractive ? _controlPanelGrid.ActualHeight : 0);
+			var panelRect = LayoutInformation.GetLayoutSlot(_controlPanelGrid);
 
-			var transportBounds =
-				this.TransformToVisual(root)
-					.TransformBounds(bounds);
-			this._mediaPlayer?.SetTransportControlBounds(transportBounds);
+			var bounds = new Rect(
+				0,
+				0,
+				panelRect.Width,
+				_isInteractive ? panelRect.Height : 0);
+
+			var transportBounds = TransformToVisual(root).TransformBounds(bounds);
+			_mediaPlayer?.SetTransportControlBounds(transportBounds);
 		}
 
 		private void OnPaneGridTapped(object sender, TappedRoutedEventArgs e)

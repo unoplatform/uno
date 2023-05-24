@@ -17,6 +17,8 @@ using Point = Windows.Foundation.Point;
 using Windows.Media.Playback;
 using Uno.Logging;
 using System.Diagnostics.CodeAnalysis;
+using System.Threading.Tasks;
+using Windows.UI.Xaml.Controls.Primitives;
 
 namespace Uno.UI.Media;
 
@@ -30,27 +32,41 @@ public partial class GtkMediaPlayer : FrameworkElement
 	private bool _isEnding;
 	private bool _isPlaying;
 	private bool _isLoopingEnabled;
-	private bool _stretchingUpdateRequested;
 	private long _currentPositionBeforeFullscreenChange;
-	private int _isUpdatingStretching;
 	private double _playbackRate;
 	private Rect _transportControlsBounds;
 	private Windows.UI.Xaml.Media.Stretch _stretch = Windows.UI.Xaml.Media.Stretch.Uniform;
 	private readonly ImmutableArray<string> audioTagAllowedFormats = ImmutableArray.Create(".MP3", ".WAV");
 	private readonly ImmutableArray<string> videoTagAllowedFormats = ImmutableArray.Create(".MP4", ".WEBM", ".OGG");
 
+	public GtkMediaPlayer()
+	{
+		Loaded += GtkMediaPlayer_Loaded;
+		Unloaded += GtkMediaPlayer_Unloaded;
+		LayoutUpdated += GtkMediaPlayer_LayoutUpdated;
+
+		_ = Initialize();
+	}
+
+	public string Source
+	{
+		get => (string)GetValue(SourceProperty);
+		set => SetValue(SourceProperty, value);
+	}
+
+	public static DependencyProperty SourceProperty { get; } = DependencyProperty.Register(
+		"Source", typeof(string), typeof(GtkMediaPlayer), new PropertyMetadata(default(string),
+			OnSourceChanged));
+
 	public double Duration { get; set; }
 
 	public double VideoRatio { get; set; }
 
-	public bool IsVideo => videoTagAllowedFormats.Contains(Path.GetExtension(Source), StringComparer.OrdinalIgnoreCase);
+	public bool IsVideo
+		=> videoTagAllowedFormats.Contains(Path.GetExtension(Source), StringComparer.OrdinalIgnoreCase);
 
-	public bool IsAudio => audioTagAllowedFormats.Contains(Path.GetExtension(Source), StringComparer.OrdinalIgnoreCase);
-
-	public GtkMediaPlayer()
-	{
-		_ = Initialize();
-	}
+	public bool IsAudio
+		=> audioTagAllowedFormats.Contains(Path.GetExtension(Source), StringComparer.OrdinalIgnoreCase);
 
 	public void Play()
 	{
@@ -61,13 +77,14 @@ public partial class GtkMediaPlayer : FrameworkElement
 				this.Log().Debug("Play");
 			}
 			_mediaPlayer.Play();
-			_videoView.Visible = true;
+
+			_videoView.SetVisible(true);
 		}
 		else
 		{
 			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 			{
-				this.Log().Debug("Unagle to Play, the player is not ready yet");
+				this.Log().Debug("Unable to Play, the player is not ready yet");
 			}
 		}
 	}
@@ -222,8 +239,15 @@ public partial class GtkMediaPlayer : FrameworkElement
 			{
 				this.Log().Debug("Stop");
 			}
-			_mediaPlayer.Stop();
-			_videoView.Visible = false;
+
+			_ = Task.Run(() =>
+			{
+				// Required to be on a background thread
+				// to avoid deadlocks
+				_mediaPlayer.Stop();
+			});
+
+			_videoView.SetVisible(false);
 		}
 		else
 		{
@@ -242,8 +266,15 @@ public partial class GtkMediaPlayer : FrameworkElement
 			{
 				this.Log().Debug("Pause");
 			}
-			_mediaPlayer.Pause();
-			_videoView.Visible = true;
+
+			_ = Task.Run(() =>
+			{
+				// Required to be on a background thread
+				// to avoid deadlocks
+				_mediaPlayer.Pause();
+			});
+
+			_videoView.SetVisible(true);
 		}
 		else
 		{
@@ -262,8 +293,9 @@ public partial class GtkMediaPlayer : FrameworkElement
 			{
 				this.Log().Debug($"SetVolume ({volume})");
 			}
+
 			_mediaPlayer.Volume = volume;
-			_videoView.Visible = true;
+			_videoView.SetVisible(true);
 		}
 		else
 		{
@@ -293,23 +325,11 @@ public partial class GtkMediaPlayer : FrameworkElement
 		}
 	}
 
-	public string Source
-	{
-		get => (string)GetValue(SourceProperty);
-		set => SetValue(SourceProperty, value);
-	}
-
-	public static DependencyProperty SourceProperty { get; } = DependencyProperty.Register(
-		"Source", typeof(string), typeof(GtkMediaPlayer), new PropertyMetadata(default(string),
-			OnSourceChanged));
+	private void GtkMediaPlayer_LayoutUpdated(object? sender, object e)
+		=> UpdateVideoStretch();
 
 	private void UpdateVideoStretch()
 	{
-		if (Interlocked.CompareExchange(ref _isUpdatingStretching, 1, 0) == 1)
-		{
-			_stretchingUpdateRequested = true;
-			return;
-		}
 		_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 		{
 			if (_videoView != null &&
@@ -318,13 +338,20 @@ public partial class GtkMediaPlayer : FrameworkElement
 					_mediaPlayer.Media.Mrl != null &&
 					_videoContainer is not null)
 			{
-				if (this.ActualHeight <= 0 || this.ActualWidth <= 0)
+				var layoutSlot = LayoutInformation.GetLayoutSlot(this);
+
+				if (layoutSlot.Height <= 0 || layoutSlot.Width <= 0)
 				{
-					CheckUpdatedRequested();
+					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+					{
+						this.Log().Debug($"Skipping layout update for empty layout slot");
+					}
+
 					return;
 				}
-				var playerHeight = (double)this.ActualHeight - _transportControlsBounds.Height;
-				var playerWidth = (double)this.ActualWidth;
+
+				var playerHeight = (double)layoutSlot.Height - _transportControlsBounds.Height;
+				var playerWidth = (double)layoutSlot.Width;
 
 				_mediaPlayer.Media.Parse(MediaParseOptions.ParseNetwork);
 
@@ -345,107 +372,116 @@ public partial class GtkMediaPlayer : FrameworkElement
 						}
 						else
 						{
-							CheckUpdatedRequested();
+							if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+							{
+								this.Log().Debug($"Skipping layout update because no tracks could be found");
+							}
 						}
 					}
 					else
 					{
-						CheckUpdatedRequested();
+						if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+						{
+							this.Log().Debug($"Skipping layout update because the player is not available");
+						}
 					}
 				});
 			}
 			else
 			{
-				CheckUpdatedRequested();
+				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				{
+					this.Log().Debug($"Skipping layout update because the player is not available");
+				}
 			}
 		});
 	}
 
-	private void CheckUpdatedRequested()
+	private void GtkMediaPlayer_Loaded(object sender, RoutedEventArgs e)
 	{
-		Interlocked.Exchange(ref _isUpdatingStretching, 0);
-		if (_stretchingUpdateRequested)
+		if (_videoContainer is not null)
 		{
-			_stretchingUpdateRequested = false;
-			UpdateVideoStretch();
+			_videoContainer.Content = _videoView;
 		}
 	}
+
+	private void GtkMediaPlayer_Unloaded(object sender, RoutedEventArgs e)
+	{
+		if (_videoContainer is not null)
+		{
+			_videoContainer.Content = null;
+		}
+	}
+
 	private void UpdateVideoSizeAllocate(double playerHeight, double playerWidth, uint videoHeight, uint videoWidth)
 	{
-		try
+		if (_videoView != null && _mediaPlayer != null && _videoContainer != null)
 		{
-			if (_videoView != null && _mediaPlayer != null && _videoContainer != null)
+			if (videoWidth == 0 || videoHeight == 0)
 			{
-				if (videoWidth == 0 || videoHeight == 0)
-				{
-					return;
-				}
-				VideoRatio = (double)videoHeight / (double)videoWidth;
-				var playerRatio = playerHeight / playerWidth;
-
-				if (playerRatio == 0)
-				{
-					return;
-				}
-				var newHeight = (int)((VideoRatio > playerRatio) ? playerHeight : playerWidth * VideoRatio);
-				var newWidth = (int)((VideoRatio > playerRatio) ? (playerHeight / VideoRatio) : playerWidth);
-				var root = (_videoContainer.XamlRoot?.Content as UIElement)!;
-
-				switch (_stretch)
-				{
-					case Windows.UI.Xaml.Media.Stretch.None:
-						break;
-
-					case Windows.UI.Xaml.Media.Stretch.Uniform:
-
-						var topInsetUniform = (playerHeight - newHeight) / 2;
-						var leftInsetUniform = (playerWidth - newWidth) / 2;
-
-						_mediaPlayer.CropGeometry = null;
-
-						Point pagePosition = this.TransformToVisual(root).TransformPoint(new Point(leftInsetUniform, topInsetUniform));
-
-						Console.WriteLine($"UpdateVideoSizeAllocate Uniform ({pagePosition}, {newWidth}x{newHeight})");
-
-						if (_videoView is not null)
-						{
-							_videoView.Arrange(new((int)pagePosition.X, (int)pagePosition.Y, newWidth, newHeight));
-						}
-
-						if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
-						{
-							this.Log().Debug($"Uniform Stretch Width: {newWidth},  Height: {newHeight}");
-						}
-						break;
-
-					case Windows.UI.Xaml.Media.Stretch.UniformToFill:
-
-						var topInsetFill = (playerHeight - newHeight) / 2;
-						var leftInsetFill = 0;
-
-						var newHeightFill = (int)(videoHeight * playerRatio);
-						var newWidthFill = (int)(videoWidth * playerRatio);
-						double correctVideoRate = (VideoRatio / playerRatio);
-
-						if (_videoView is not null)
-						{
-							Point pagePositionFill = this.TransformToVisual(root).TransformPoint(new Point(leftInsetFill, topInsetFill));
-
-							if (_videoView is not null)
-							{
-								_videoView.Arrange(new((int)pagePositionFill.X, (int)pagePositionFill.Y, (int)playerWidth, (int)playerHeight));
-							}
-
-							Console.WriteLine($"UpdateVideoSizeAllocate UniformToFill ({pagePositionFill}, {newWidth}x{newHeight})");
-						}
-
-						break;
-				}
+				return;
 			}
-		}
-		finally
-		{
-			CheckUpdatedRequested();
+			VideoRatio = (double)videoHeight / (double)videoWidth;
+			var playerRatio = playerHeight / playerWidth;
+
+			if (playerRatio == 0)
+			{
+				return;
+			}
+			var newHeight = (int)((VideoRatio > playerRatio) ? playerHeight : playerWidth * VideoRatio);
+			var newWidth = (int)((VideoRatio > playerRatio) ? (playerHeight / VideoRatio) : playerWidth);
+			var root = (_videoContainer.XamlRoot?.Content as UIElement)!;
+
+			switch (_stretch)
+			{
+				case Windows.UI.Xaml.Media.Stretch.None:
+					break;
+
+				case Windows.UI.Xaml.Media.Stretch.Uniform:
+
+					var topInsetUniform = (playerHeight - newHeight) / 2;
+					var leftInsetUniform = (playerWidth - newWidth) / 2;
+
+					_mediaPlayer.CropGeometry = null;
+
+					Point pagePosition = this.TransformToVisual(root).TransformPoint(new Point(leftInsetUniform, topInsetUniform));
+
+					Console.WriteLine($"UpdateVideoSizeAllocate Uniform ({pagePosition}, {newWidth}x{newHeight})");
+
+					if (_videoView is not null)
+					{
+						_videoView.Arrange(new((int)pagePosition.X, (int)pagePosition.Y, newWidth, newHeight));
+					}
+
+					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+					{
+						this.Log().Debug($"Uniform Stretch Width: {newWidth},  Height: {newHeight}");
+					}
+					break;
+
+				case Windows.UI.Xaml.Media.Stretch.UniformToFill:
+
+					var topInsetFill = (playerHeight - newHeight) / 2;
+					var leftInsetFill = 0;
+
+					var newHeightFill = (int)(videoHeight * playerRatio);
+					var newWidthFill = (int)(videoWidth * playerRatio);
+					double correctVideoRate = (VideoRatio / playerRatio);
+
+					if (_videoView is not null)
+					{
+						Point pagePositionFill = this.TransformToVisual(root).TransformPoint(new Point(leftInsetFill, topInsetFill));
+
+						if (_videoView is not null)
+						{
+							_videoView.Arrange(new((int)pagePositionFill.X, (int)pagePositionFill.Y, (int)playerWidth, (int)playerHeight));
+						}
+
+						Console.WriteLine($"UpdateVideoSizeAllocate UniformToFill ({pagePositionFill}, {newWidth}x{newHeight})");
+					}
+
+					break;
+			}
 		}
 	}
 
@@ -478,7 +514,6 @@ public partial class GtkMediaPlayer : FrameworkElement
 			}
 		}
 	}
-
 
 	public void SetIsLoopingEnabled(bool value)
 	{
