@@ -125,7 +125,12 @@ public sealed partial class Geolocator
 	/// Requests permission to access location data.
 	/// </summary>
 	/// <returns>A GeolocationAccessStatus that indicates if permission to location data has been granted.</returns>
-	public static async IAsyncOperation<GeolocationAccessStatus> RequestAccessAsync()
+	public static IAsyncOperation<GeolocationAccessStatus> RequestAccessAsync()
+	{
+		return RequestAccessCore().AsAsyncOperation();
+	}
+
+	private static async Task<GeolocationAccessStatus> RequestAccessCore()
 	{
 		var status = GeolocationAccessStatus.Allowed;
 
@@ -158,7 +163,7 @@ public sealed partial class Geolocator
 			}
 		}
 
-		return Task.FromResult(status).AsAsyncOperation();
+		return status;
 	}
 
 	/// <summary>
@@ -166,6 +171,11 @@ public sealed partial class Geolocator
 	/// </summary>
 	/// <returns>An asynchronous operation that, upon completion, returns a Geoposition marking the found location.</returns>
 	public IAsyncOperation<Geoposition?> GetGeopositionAsync()
+	{
+		return GetGeopositionCore().AsAsyncOperation();
+	}
+
+	private Task<Geoposition?> GetGeopositionCore()
 	{
 		// on UWP, "This method times out after 60 seconds, except when in Connected Standby. During Connected Standby, Geolocator objects can be instantiated but the Geolocator object will not find any sensors to aggregate and calls to GetGeopositionAsync will time out after 7 seconds."
 		// so we have discrepancy here.
@@ -175,20 +185,20 @@ public sealed partial class Geolocator
 
 			if (_locationProvider is null || _locationManager is null)
 			{
-				return Task.FromResult<Geoposition?>(null).AsAsyncOperation();
+				return Task.FromResult<Geoposition?>(null);
 			}
 
 			BroadcastStatusChanged(PositionStatus.Initializing);
 			var location = _locationManager.GetLastKnownLocation(_locationProvider);
 			BroadcastStatusChanged(PositionStatus.Ready);
-			return Task.FromResult(location?.ToGeoPosition()).AsAsyncOperation();
+			return Task.FromResult(location?.ToGeoPosition());
 		}
 		else
 		{
 			return CoreDispatcher.Main.RunWithResultAsync(
 				priority: CoreDispatcherPriority.Normal,
-				task: () => GetGeopositionAsync()
-			).AsAsyncOperation();
+				task: () => GetGeopositionCore()
+			);
 		}
 	}
 
@@ -199,7 +209,12 @@ public sealed partial class Geolocator
 	/// <param name="timeout">The timeout. A TimeSpan is a time period expressed in 100-nanosecond units.</param>
 	/// <returns>An asynchronous operation that, upon completion, returns a Geoposition marking the found location.</returns>
 	/// <exception cref="TimeoutException">Thrown when the request times out.</exception>
-	public async IAsyncOperation<Geoposition?> GetGeopositionAsync(TimeSpan maximumAge, TimeSpan timeout)
+	public IAsyncOperation<Geoposition?> GetGeopositionAsync(TimeSpan maximumAge, TimeSpan timeout)
+	{
+		return GetGeopositionCore(maximumAge, timeout).AsAsyncOperation();
+	}
+
+	private async Task<Geoposition?> GetGeopositionCore(TimeSpan maximumAge, TimeSpan timeout)
 	{
 		_locationManager = (LocationManager?)Android.App.Application.Context.GetSystemService(Android.Content.Context.LocationService);
 

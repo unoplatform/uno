@@ -13,10 +13,12 @@ namespace Windows.Storage.Streams
 	public sealed partial class RandomAccessStreamOverStream : IRandomAccessStream, IInputStream, IOutputStream, IDisposable, IStreamWrapper
 	{
 		private readonly Stream _stream;
+		private readonly bool _disallowDispose;
 
-		internal RandomAccessStreamOverStream(Stream stream)
+		internal RandomAccessStreamOverStream(Stream stream, bool disallowDispose = false)
 		{
 			_stream = stream;
+			_disallowDispose = disallowDispose;
 		}
 
 		Stream IStreamWrapper.FindStream() => _stream;
@@ -90,6 +92,13 @@ namespace Windows.Storage.Streams
 
 		/// <inheritdoc />
 		public void Dispose()
-			=> _stream.Dispose();
+		{
+			if (_disallowDispose)
+			{
+				return;
+			}
+
+			_stream.Dispose();
+		}
 	}
 }
