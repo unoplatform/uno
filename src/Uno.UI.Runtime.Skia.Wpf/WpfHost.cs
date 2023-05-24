@@ -3,6 +3,7 @@
 using System;
 using System.ComponentModel;
 using System.Windows;
+using System.Windows.Threading;
 using Uno.UI.Runtime.Skia.Wpf.Extensions;
 using Uno.UI.Runtime.Skia.Wpf.Hosting;
 using Uno.UI.Skia.Wpf;
@@ -19,6 +20,7 @@ namespace Uno.UI.Skia;
 // TODO:MZ: Rename to WpfApplicationHost???
 public class WpfHost : IWpfApplicationHost
 {
+	private readonly Dispatcher _dispatcher;
 	private readonly Func<UnoApplication> _appBuilder;
 
 	[ThreadStatic] private static WpfHost? _current;
@@ -34,10 +36,16 @@ public class WpfHost : IWpfApplicationHost
 	public WpfHost(global::System.Windows.Threading.Dispatcher dispatcher, Func<WinUI.Application> appBuilder)
 	{
 		_current = this;
+		_dispatcher = dispatcher;
 		_appBuilder = appBuilder;
+	}
 
-		Windows.UI.Core.CoreDispatcher.DispatchOverride = d => dispatcher.BeginInvoke(d);
-		Windows.UI.Core.CoreDispatcher.HasThreadAccessOverride = dispatcher.CheckAccess;
+	public static WpfHost? Current => _current;
+
+	public void Run()
+	{
+		Windows.UI.Core.CoreDispatcher.DispatchOverride = d => _dispatcher.BeginInvoke(d);
+		Windows.UI.Core.CoreDispatcher.HasThreadAccessOverride = _dispatcher.CheckAccess;
 
 		WpfApplication.Current.Activated += Current_Activated;
 		WpfApplication.Current.Deactivated += Current_Deactivated;
@@ -51,8 +59,6 @@ public class WpfHost : IWpfApplicationHost
 		WpfApplication.Current.MainWindow.StateChanged += MainWindow_StateChanged;
 		WpfApplication.Current.MainWindow.Closing += MainWindow_Closing;
 	}
-
-	public static WpfHost? Current => _current;
 
 	/// <summary>
 	/// Gets or sets the current Skia Render surface type.
