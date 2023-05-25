@@ -177,7 +177,7 @@ namespace LibVLCSharp.GTK
 			}
 			else if (PlatformHelper.IsLinux)
 			{
-				var xid = Native.gdk_x11_window_get_xid(_videoWindow.Handle);
+				var xid = Native.gdk_x11_window_get_xid(_videoWindow.Window.Handle);
 
 				if (xid != 0)
 				{
@@ -195,7 +195,7 @@ namespace LibVLCSharp.GTK
 			}
 			else if (PlatformHelper.IsMac)
 			{
-				_mediaPlayer.NsObject = Native.gdk_quartz_window_get_nsview(_videoWindow.Handle);
+				_mediaPlayer.NsObject = Native.gdk_quartz_window_get_nsview(_videoWindow.Window.Handle);
 			}
 			else
 			{
