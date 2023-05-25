@@ -11,37 +11,31 @@ namespace Windows.UI.Composition
 
 		internal override void Render(SKSurface surface)
 		{
-			SkiaGeometrySource2D? geometrySource = Geometry?.BuildGeometry() as SkiaGeometrySource2D;
-
-			SKPath? geometry = geometrySource?.Geometry;
-			if (geometry == null)
+			if (Geometry?.BuildGeometry() is SkiaGeometrySource2D { Geometry: { } geometry })
 			{
-				return;
-			}
-
-			if (FillBrush != null)
-			{
-				var fillPaint = TryCreateAndClearFillPaint();
-
-				FillBrush.UpdatePaint(fillPaint, geometry.Bounds);
-
-				surface.Canvas.DrawPath(geometry, fillPaint);
-			}
-
-			if (StrokeBrush != null && StrokeThickness > 0)
-			{
-				var fillPaint = TryCreateAndClearFillPaint();
-				var strokePaint = TryCreateAndClearStrokePaint();
-
-				// Set stroke thickness
-				strokePaint.StrokeWidth = StrokeThickness;
-				// TODO: Add support for dashes here
-				// strokePaint.PathEffect = SKPathEffect.CreateDash();
-
-				// Generate stroke geometry for bounds that will be passed to a brush.
-				// - [Future]: This generated geometry should also be used for hit testing.
-				using (var strokeGeometry = strokePaint.GetFillPath(geometry))
+				if (FillBrush != null)
 				{
+					var fillPaint = TryCreateAndClearFillPaint();
+
+					FillBrush.UpdatePaint(fillPaint, geometry.Bounds);
+
+					surface.Canvas.DrawPath(geometry, fillPaint);
+				}
+
+				if (StrokeBrush != null && StrokeThickness > 0)
+				{
+					var fillPaint = TryCreateAndClearFillPaint();
+					var strokePaint = TryCreateAndClearStrokePaint();
+
+					// Set stroke thickness
+					strokePaint.StrokeWidth = StrokeThickness;
+					// TODO: Add support for dashes here
+					// strokePaint.PathEffect = SKPathEffect.CreateDash();
+
+					// Generate stroke geometry for bounds that will be passed to a brush.
+					// - [Future]: This generated geometry should also be used for hit testing.
+					using var strokeGeometry = strokePaint.GetFillPath(geometry);
+
 					StrokeBrush.UpdatePaint(fillPaint, strokeGeometry.Bounds);
 
 					surface.Canvas.DrawPath(strokeGeometry, fillPaint);

@@ -9203,6 +9203,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_Data\Pdf\PdfDocumentRenderTest.xaml.cs">
       <DependentUpon>PdfDocumentRenderTest.xaml</DependentUpon>
     </Compile>
-  </ItemGroup>  
+  </ItemGroup>
   <Import Project="ItemExclusions.props" />
 </Project>

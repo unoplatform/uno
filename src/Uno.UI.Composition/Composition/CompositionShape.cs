@@ -2,6 +2,7 @@
 
 using System;
 using System.Numerics;
+using Uno.Extensions;
 
 namespace Windows.UI.Composition
 {
@@ -9,7 +10,6 @@ namespace Windows.UI.Composition
 	{
 		private Matrix3x2 _transformMatrix = Matrix3x2.Identity;
 		private Vector2 _scale = new Vector2(1, 1);
-		private float _rotationAngleInDegrees;
 		private float _rotationAngle;
 		private Vector2 _offset;
 		private Vector2 _centerPoint;
@@ -34,8 +34,8 @@ namespace Windows.UI.Composition
 
 		public float RotationAngleInDegrees
 		{
-			get => _rotationAngleInDegrees;
-			set => SetProperty(ref _rotationAngleInDegrees, value);
+			get => (float)MathEx.ToDegree(_rotationAngle);
+			set => RotationAngle = (float)MathEx.ToRadians(value);
 		}
 
 		public float RotationAngle

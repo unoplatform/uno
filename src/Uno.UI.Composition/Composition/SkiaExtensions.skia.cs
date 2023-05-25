@@ -98,6 +98,12 @@ namespace Windows.UI.Composition
 			return ret;
 		}
 
+		public static SKMatrix ToSKMatrix(this Matrix4x4 m)
+			=> new(
+				m.M11, m.M21, m.M41,
+				m.M12, m.M22, m.M42,
+				m.M14, m.M24, m.M44);
+
 		/// <summary>
 		/// This is an alternative to the built-in SKBitmap.FromImage.
 		/// The problem with SKBitmap.FromImage is that it ignores the color type of the input image, and

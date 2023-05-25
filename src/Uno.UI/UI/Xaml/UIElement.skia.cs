@@ -81,7 +81,7 @@ namespace Windows.UI.Xaml
 				{
 					_visual = Window.Current.Compositor.CreateContainerVisual();
 #if ENABLE_CONTAINER_VISUAL_TRACKING
-					_visual.Comment = $"Owner:{GetType()}/{(this as FrameworkElement)?.Name}";
+					_visual.Comment = $"Owner: {this.GetDebugDepth():D2}-{this.GetDebugName()}";
 #endif
 				}
 

@@ -13,34 +13,8 @@ namespace Windows.UI.Composition
 		// Skipping already declared property Scale
 		// Skipping already declared property RotationAxis
 		// Skipping already declared property RotationAngleInDegrees
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public float RotationAngle
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member float Visual.RotationAngle is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20Visual.RotationAngle");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Visual", "float Visual.RotationAngle");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::System.Numerics.Quaternion Orientation
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Quaternion Visual.Orientation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Quaternion%20Visual.Orientation");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Visual", "Quaternion Visual.Orientation");
-			}
-		}
-#endif
+		// Skipping already declared property RotationAngle
+		// Skipping already declared property Orientation
 		// Skipping already declared property Opacity
 		// Skipping already declared property Offset
 		// Skipping already declared property IsVisible

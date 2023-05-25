@@ -201,24 +201,24 @@ namespace Windows.UI.Xaml.Shapes
 				// Border shape (if any)
 				if (borderThickness != Thickness.Empty)
 				{
-					Action<Action<CompositionSpriteShape, SKPath>> createLayer = builder =>
+					void CreateLayer(Action<CompositionSpriteShape, SKPath> builder)
 					{
 						var spriteShape = compositor.CreateSpriteShape();
 						var geometry = new SkiaGeometrySource2D();
 
 						// Border brush
 						Brush.AssignAndObserveBrush(borderBrush, compositor, brush => spriteShape.StrokeBrush = brush)
-								.DisposeWith(disposables);
+							.DisposeWith(disposables);
 
 						builder(spriteShape, geometry.Geometry);
 						spriteShape.Geometry = compositor.CreatePathGeometry(new CompositionPath(geometry));
 
 						shapeVisual.Shapes.Add(spriteShape);
-					};
+					}
 
 					if (borderThickness.Top != 0)
 					{
-						createLayer((l, path) =>
+						CreateLayer((l, path) =>
 						{
 							l.StrokeThickness = (float)borderThickness.Top;
 							var StrokeThicknessAdjust = (float)(borderThickness.Top / 2);
@@ -230,7 +230,7 @@ namespace Windows.UI.Xaml.Shapes
 
 					if (borderThickness.Bottom != 0)
 					{
-						createLayer((l, path) =>
+						CreateLayer((l, path) =>
 						{
 							l.StrokeThickness = (float)borderThickness.Bottom;
 							var StrokeThicknessAdjust = borderThickness.Bottom / 2;
@@ -242,7 +242,7 @@ namespace Windows.UI.Xaml.Shapes
 
 					if (borderThickness.Left != 0)
 					{
-						createLayer((l, path) =>
+						CreateLayer((l, path) =>
 						{
 							l.StrokeThickness = (float)borderThickness.Left;
 							var StrokeThicknessAdjust = borderThickness.Left / 2;
@@ -254,7 +254,7 @@ namespace Windows.UI.Xaml.Shapes
 
 					if (borderThickness.Right != 0)
 					{
-						createLayer((l, path) =>
+						CreateLayer((l, path) =>
 						{
 							l.StrokeThickness = (float)borderThickness.Right;
 							var StrokeThicknessAdjust = borderThickness.Right / 2;

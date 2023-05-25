@@ -11,32 +11,32 @@ namespace Windows.UI.Composition
 		{
 			foreach (var shape in Shapes)
 			{
-				surface.Canvas.Save();
-
-				var visualMatrix = surface.Canvas.TotalMatrix;
-
-				visualMatrix = visualMatrix.PreConcat(SKMatrix.CreateTranslation(shape.Offset.X, shape.Offset.Y));
-
-				if (shape.Scale != new Vector2(1, 1))
+				var shapeTransform = shape.TransformMatrix;
+				if (shape.Scale != Vector2.One)
 				{
-					visualMatrix = visualMatrix.PreConcat(SKMatrix.CreateScale(shape.Scale.X, shape.Scale.Y));
+					shapeTransform *= Matrix3x2.CreateScale(shape.Scale, shape.CenterPoint);
 				}
 
-				if (shape.RotationAngleInDegrees != 0)
+				if (shape.RotationAngle is not 0)
 				{
-					visualMatrix = visualMatrix.PreConcat(SKMatrix.CreateRotationDegrees(shape.RotationAngleInDegrees, shape.CenterPoint.X, shape.CenterPoint.Y));
+					shapeTransform *= Matrix3x2.CreateRotation(shape.RotationAngle, shape.CenterPoint);
 				}
 
-				if (shape.TransformMatrix != Matrix3x2.Identity)
+				if (!shapeTransform.IsIdentity)
 				{
-					visualMatrix = visualMatrix.PreConcat(shape.TransformMatrix.ToSKMatrix44().Matrix);
+					var shapeTransformMatrix = shapeTransform.ToSKMatrix44().Matrix;
+
+					surface.Canvas.Save();
+					surface.Canvas.Concat(ref shapeTransformMatrix);
+
+					shape.Render(surface);
+
+					surface.Canvas.Restore();
 				}
-
-				surface.Canvas.SetMatrix(visualMatrix);
-
-				shape.Render(surface);
-
-				surface.Canvas.Restore();
+				else
+				{
+					shape.Render(surface);
+				}
 			}
 		}
 	}
