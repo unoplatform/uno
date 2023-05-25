@@ -203,6 +203,7 @@ namespace Windows.UI.Xaml.Controls
 			base.OnApplyTemplate();
 
 			UnbindMediaPlayer();
+			_loadedSubscriptions?.Dispose();
 
 			var trueToVisible = new FromNullableBoolToVisibilityConverter();
 
@@ -224,12 +225,10 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			_fullWindowButton = this.GetTemplateChild(FullWindowButtonName) as Button;
-			if (_fullWindowButton != null)
+			if (_fullWindowButton is not null)
 			{
 				_fullWindowButton.SetBinding(Button.VisibilityProperty, new Binding { Path = "IsFullWindowButtonVisible", Source = this, Mode = BindingMode.OneWay, FallbackValue = Visibility.Collapsed, Converter = trueToVisible });
 				_fullWindowButton.SetBinding(Button.IsEnabledProperty, new Binding { Path = "IsFullWindowEnabled", Source = this, Mode = BindingMode.OneWay, FallbackValue = true });
-				_fullWindowButton.Tapped -= FullWindowButtonTapped;
-				_fullWindowButton.Tapped += FullWindowButtonTapped;
 			}
 
 			_castButton = this.GetTemplateChild(CastButtonName) as Button;
@@ -240,31 +239,21 @@ namespace Windows.UI.Xaml.Controls
 			{
 				_zoomButton?.SetBinding(Button.VisibilityProperty, new Binding { Path = "IsZoomButtonVisible", Source = this, Mode = BindingMode.OneWay, FallbackValue = Visibility.Collapsed, Converter = trueToVisible });
 				_zoomButton?.SetBinding(Button.IsEnabledProperty, new Binding { Path = "IsZoomEnabled", Source = this, Mode = BindingMode.OneWay, FallbackValue = true });
-				_zoomButton.Tapped -= ZoomButtonTapped;
-				_zoomButton.Tapped += ZoomButtonTapped;
 			}
 
 			_playbackRateButton = this.GetTemplateChild(PlaybackRateButtonName) as Button;
 			_playbackRateButton?.SetBinding(Button.VisibilityProperty, new Binding { Path = "IsPlaybackRateButtonVisible", Source = this, Mode = BindingMode.OneWay, FallbackValue = Visibility.Collapsed, Converter = trueToVisible });
 			_playbackRateButton?.SetBinding(Button.IsEnabledProperty, new Binding { Path = "IsPlaybackRateEnabled", Source = this, Mode = BindingMode.OneWay, FallbackValue = true });
-			_playbackRateButton.Tapped -= PlaybackRateButtonTapped;
-			_playbackRateButton.Tapped += PlaybackRateButtonTapped;
 
 			_compactOverlayButton = this.GetTemplateChild(CompactOverlayButtonName) as Button;
 			_compactOverlayButton?.SetBinding(Button.VisibilityProperty, new Binding { Path = "IsCompactOverlayButtonVisible", Source = this, Mode = BindingMode.OneWay, FallbackValue = Visibility.Collapsed, Converter = trueToVisible });
 			_compactOverlayButton?.SetBinding(Button.IsEnabledProperty, new Binding { Path = "IsCompactOverlayEnabled", Source = this, Mode = BindingMode.OneWay, FallbackValue = true });
-			_compactOverlayButton.Tapped -= UpdateMediaTransportControlMode;
-			_compactOverlayButton.Tapped += UpdateMediaTransportControlMode;
 
 			_controlPanelGrid = this.GetTemplateChild(ControlPanelGridName) as Grid;
-			_controlPanelGrid.SizeChanged -= ControlPanelGridSizeChanged;
-			_controlPanelGrid.SizeChanged += ControlPanelGridSizeChanged;
 
 			_repeatVideoButton = this.GetTemplateChild(RepeatVideoButtonName) as Button;
 			_repeatVideoButton?.SetBinding(Button.VisibilityProperty, new Binding { Path = "IsRepeatButtonVisible", Source = this, Mode = BindingMode.OneWay, FallbackValue = Visibility.Collapsed, Converter = trueToVisible });
 			_repeatVideoButton?.SetBinding(Button.IsEnabledProperty, new Binding { Path = "IsRepeatEnabled", Source = this, Mode = BindingMode.OneWay, FallbackValue = true });
-			_repeatVideoButton.Tapped -= IsRepeatEnabledButtonTapped;
-			_repeatVideoButton.Tapped += IsRepeatEnabledButtonTapped;
 
 			_skipForwardButton = this.GetTemplateChild(SkipForwardButtonName) as Button;
 			_skipForwardButton?.SetBinding(Button.VisibilityProperty, new Binding { Path = "IsSkipForwardButtonVisible", Source = this, Mode = BindingMode.OneWay, FallbackValue = Visibility.Collapsed, Converter = trueToVisible });
@@ -272,13 +261,9 @@ namespace Windows.UI.Xaml.Controls
 
 			_nextTrackButton = this.GetTemplateChild(NextTrackButtonName) as Button;
 			_nextTrackButton?.SetBinding(Button.VisibilityProperty, new Binding { Path = "IsNextTrackButtonVisible", Source = this, Mode = BindingMode.OneWay, FallbackValue = Visibility.Collapsed, Converter = trueToVisible });
-			_nextTrackButton.Tapped -= NextTrackButtonTapped;
-			_nextTrackButton.Tapped += NextTrackButtonTapped;
 
 			_previousTrackButton = this.GetTemplateChild(PreviousTrackButtonName) as Button;
 			_previousTrackButton?.SetBinding(Button.VisibilityProperty, new Binding { Path = "IsPreviousTrackButtonVisible", Source = this, Mode = BindingMode.OneWay, FallbackValue = Visibility.Collapsed, Converter = trueToVisible });
-			_previousTrackButton.Tapped -= PreviousTrackButtonTapped;
-			_previousTrackButton.Tapped += PreviousTrackButtonTapped;
 
 			_fastForwardButton = this.GetTemplateChild(FastForwardButtonName) as Button;
 			_fastForwardButton?.SetBinding(Button.VisibilityProperty, new Binding { Path = "IsFastForwardButtonVisible", Source = this, Mode = BindingMode.OneWay, FallbackValue = Visibility.Collapsed, Converter = trueToVisible });
@@ -317,16 +302,16 @@ namespace Windows.UI.Xaml.Controls
 
 			UpdateMediaTransportControlMode();
 
-			if (_rootGrid is not null)
-			{
-				_rootGrid.Tapped -= OnRootGridTapped;
-			}
-
 			_rootGrid = this.GetTemplateChild(RootGridName) as Grid;
 
 			if (_mediaPlayer is not null)
 			{
 				BindMediaPlayer();
+			}
+
+			if (IsLoaded)
+			{
+				BindToControlEvents();
 			}
 		}
 
@@ -341,6 +326,11 @@ namespace Windows.UI.Xaml.Controls
 		{
 			base.OnLoaded();
 
+			BindToControlEvents();
+		}
+
+		private void BindToControlEvents()
+		{
 			_loadedSubscriptions = new();
 
 			if (_rootGrid is not null)
@@ -353,6 +343,62 @@ namespace Windows.UI.Xaml.Controls
 					_rootGrid.Tapped -= OnRootGridTapped;
 					_rootGrid.PointerMoved -= OnRootGridPointerMoved;
 				});
+			}
+
+			if (_fullWindowButton is not null)
+			{
+				_fullWindowButton.Tapped += FullWindowButtonTapped;
+
+				_loadedSubscriptions.Add(() => _fullWindowButton.Tapped -= FullWindowButtonTapped);
+			}
+
+			if (_zoomButton is not null)
+			{
+				_zoomButton.Tapped += ZoomButtonTapped;
+
+				_loadedSubscriptions.Add(() => _zoomButton.Tapped -= ZoomButtonTapped);
+			}
+
+			if (_playbackRateButton is not null)
+			{
+				_playbackRateButton.Tapped += PlaybackRateButtonTapped;
+
+				_loadedSubscriptions.Add(() => _playbackRateButton.Tapped -= PlaybackRateButtonTapped);
+			}
+
+			if (_compactOverlayButton is not null)
+			{
+				_compactOverlayButton.Tapped += UpdateMediaTransportControlMode;
+
+				_loadedSubscriptions.Add(() => _compactOverlayButton.Tapped -= UpdateMediaTransportControlMode);
+			}
+
+			if (_controlPanelGrid is not null)
+			{
+				_controlPanelGrid.SizeChanged += ControlPanelGridSizeChanged;
+
+				_loadedSubscriptions.Add(() => _controlPanelGrid.SizeChanged -= ControlPanelGridSizeChanged);
+			}
+
+			if (_repeatVideoButton is not null)
+			{
+				_repeatVideoButton.Tapped += IsRepeatEnabledButtonTapped;
+
+				_loadedSubscriptions.Add(() => _repeatVideoButton.Tapped -= IsRepeatEnabledButtonTapped);
+			}
+
+			if (_nextTrackButton is not null)
+			{
+				_nextTrackButton.Tapped -= NextTrackButtonTapped;
+
+				_loadedSubscriptions.Add(() => _nextTrackButton.Tapped -= NextTrackButtonTapped);
+			}
+
+			if (_previousTrackButton is not null)
+			{
+				_previousTrackButton.Tapped -= PreviousTrackButtonTapped;
+
+				_loadedSubscriptions.Add(() => _previousTrackButton.Tapped -= PreviousTrackButtonTapped);
 			}
 
 			// Register on visual state changes to update the layout in extensions
