@@ -467,7 +467,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnControlsBoundsChanged()
 		{
-			var root = (XamlRoot.Content as UIElement);
+			var root = (XamlRoot?.Content as UIElement);
 			if (root is null)
 			{
 				return;
