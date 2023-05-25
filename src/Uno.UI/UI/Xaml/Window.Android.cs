@@ -3,6 +3,7 @@ using System;
 using Android.App;
 using Android.Util;
 using Android.Views;
+using AndroidX.Core.View;
 using Uno.Disposables;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
@@ -16,8 +17,13 @@ using Windows.UI.ViewManagement;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Media;
+<<<<<<< HEAD
 using Uno.Extensions.ValueType;
 using Uno.UI.Extensions;
+=======
+using static System.Net.Mime.MediaTypeNames;
+using Size = Windows.Foundation.Size;
+>>>>>>> 56fd87c520 (fix: Android Window/VisibleBounds calc)
 
 namespace Windows.UI.Xaml
 {
@@ -34,7 +40,13 @@ namespace Windows.UI.Xaml
 				+= RaiseNativeSizeChanged;
 		}
 
+<<<<<<< HEAD
 		internal Thickness Insets { get; set; }
+=======
+		internal void OnActivityCreated() => AddPreDrawListener();
+
+		partial void ActivatingPartial() => RemovePreDrawListener();
+>>>>>>> 56fd87c520 (fix: Android Window/VisibleBounds calc)
 
 		internal int SystemUiVisibility { get; set; }
 
@@ -60,13 +72,7 @@ namespace Windows.UI.Xaml
 
 		internal void RaiseNativeSizeChanged()
 		{
-#if __ANDROID_30__
-			var (windowBounds, visibleBounds, trueVisibleBounds) = Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.R
-				? GetVisualBounds()
-				: GetVisualBoundsLegacy();
-#else
-			var (windowBounds, visibleBounds, trueVisibleBounds) = GetVisualBoundsLegacy();
-#endif
+			var (windowBounds, visibleBounds, trueVisibleBounds) = GetVisualBounds();
 
 			ApplicationView.GetForCurrentView()?.SetVisibleBounds(visibleBounds);
 			ApplicationView.GetForCurrentView()?.SetTrueVisibleBounds(trueVisibleBounds);
@@ -83,181 +89,75 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-#if __ANDROID_30__
 		private (Rect windowBounds, Rect visibleBounds, Rect trueVisibleBounds) GetVisualBounds()
 		{
-			var metrics = (ContextHelper.Current as Activity)?.WindowManager?.CurrentWindowMetrics;
+			if (ContextHelper.Current is not Activity activity ||
+				ViewCompat.GetRootWindowInsets(activity.Window.DecorView) is not { } windowInsets)
+			{
+				return default;
+			}
 
-			var insetsTypes = WindowInsets.Type.SystemBars(); // == WindowInsets.Type.StatusBars() | WindowInsets.Type.NavigationBars() | WindowInsets.Type.CaptionBar();
+			var insetsTypes = WindowInsetsCompat.Type.SystemBars(); // == WindowInsets.Type.StatusBars() | WindowInsets.Type.NavigationBars() | WindowInsets.Type.CaptionBar();
+
 			var opaqueInsetsTypes = insetsTypes;
 			if (IsStatusBarTranslucent())
 			{
-				opaqueInsetsTypes &= ~WindowInsets.Type.StatusBars();
+				opaqueInsetsTypes &= ~WindowInsetsCompat.Type.StatusBars();
 			}
 			if (IsNavigationBarTranslucent())
 			{
-				opaqueInsetsTypes &= ~WindowInsets.Type.NavigationBars();
+				opaqueInsetsTypes &= ~WindowInsetsCompat.Type.NavigationBars();
 			}
 
-			var insets = metrics.WindowInsets.GetInsets(insetsTypes).ToThickness();
-			var opaqueInsets = metrics.WindowInsets.GetInsets(opaqueInsetsTypes).ToThickness();
+			var insets = windowInsets.GetInsets(insetsTypes).ToThickness();
+			var opaqueInsets = windowInsets.GetInsets(opaqueInsetsTypes).ToThickness();
 			var translucentInsets = insets.Minus(opaqueInsets);
 
-			// The 'metric.Bounds' does not include any insets, so we remove the "opaque" insets under which we cannot draw anything
-			var windowBounds = new Rect(default, ((Rect)metrics.Bounds).DeflateBy(opaqueInsets).Size);
+			// The native display size does not include any insets, so we remove the "opaque" insets under which we cannot draw anything
+			var windowBounds = new Rect(default, GetDisplaySize().Subtract(opaqueInsets));
 
 			// The visible bounds is the windows bounds on which we remove also translucentInsets
 			var visibleBounds = windowBounds.DeflateBy(translucentInsets);
 
 			return (windowBounds.PhysicalToLogicalPixels(), visibleBounds.PhysicalToLogicalPixels(), visibleBounds.PhysicalToLogicalPixels());
 		}
-#endif
 
-		private (Rect windowBounds, Rect visibleBounds, Rect trueVisibleBounds) GetVisualBoundsLegacy()
+		private Size GetDisplaySize()
 		{
-			using var display = (ContextHelper.Current as Activity)?.WindowManager?.DefaultDisplay;
-			using var fullScreenMetrics = new DisplayMetrics();
+			if (ContextHelper.Current is not Activity activity)
+			{
+				return default;
+			}
+
+			Size displaySize = default;
+
+#if __ANDROID_30__
+			if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.R)
+			{
+				var windowMetrics = (ContextHelper.Current as Activity)?.WindowManager?.CurrentWindowMetrics;
+				displaySize = new Size(windowMetrics.Bounds.Width(), windowMetrics.Bounds.Height());
+			}
+			else
+			{
+				SetDisplaySizeLegacy();
+			}
+#else
+			SetDisplaySizeLegacy();
+#endif
+			return displaySize;
+
+			void SetDisplaySizeLegacy()
+			{
+				using var realMetrics = new DisplayMetrics();
 
 #pragma warning disable 618
 #pragma warning disable CA1422 // Validate platform compatibility
-			display?.GetMetrics(outMetrics: fullScreenMetrics);
+				activity.WindowManager?.DefaultDisplay.GetRealMetrics(realMetrics);
 #pragma warning restore CA1422 // Validate platform compatibility
 #pragma warning restore 618
 
-			var newBounds = ViewHelper.PhysicalToLogicalPixels(new Rect(0, 0, fullScreenMetrics.WidthPixels, fullScreenMetrics.HeightPixels));
-
-			var statusBarSize = GetLogicalStatusBarSize();
-
-			var statusBarSizeExcluded = IsStatusBarTranslucent()
-				// The real metrics excluded the StatusBar only if it is plain.
-				// We want to subtract it if it is translucent. Otherwise, it will be like we subtract it twice.
-				? statusBarSize
-				: 0;
-			var navigationBarSizeExcluded = GetLogicalNavigationBarSizeExcluded();
-
-			// Actually, we need to check visibility of nav bar and status bar since the insets don't
-			UpdateInsetsWithVisibilities();
-
-			var orientation = DisplayInformation.GetForCurrentView().CurrentOrientation;
-
-			Rect CalculateVisibleBounds(double excludedStatusBarHeight)
-			{
-				var topHeightExcluded = Math.Max(Insets.Top, excludedStatusBarHeight);
-				var newVisibleBounds = new Rect();
-
-				switch (orientation)
-				{
-					// StatusBar on top, NavigationBar on right
-					case DisplayOrientations.Landscape:
-						newVisibleBounds = new Rect(
-							x: newBounds.X + Insets.Left,
-							y: newBounds.Y + topHeightExcluded,
-							width: newBounds.Width - (Insets.Left + Math.Max(Insets.Right, navigationBarSizeExcluded)),
-							height: newBounds.Height - topHeightExcluded - Insets.Bottom
-						);
-						break;
-					// StatusBar on top, NavigationBar on left
-					case DisplayOrientations.LandscapeFlipped:
-						newVisibleBounds = new Rect(
-							x: newBounds.X + Math.Max(Insets.Left, navigationBarSizeExcluded),
-							y: newBounds.Y + topHeightExcluded,
-							width: newBounds.Width - (Math.Max(Insets.Left, navigationBarSizeExcluded) + Insets.Right),
-							height: newBounds.Height - topHeightExcluded - Insets.Bottom
-						);
-						break;
-					// StatusBar on top, NavigationBar on bottom
-					default:
-						newVisibleBounds = new Rect(
-							x: newBounds.X + Insets.Left,
-							y: newBounds.Y + topHeightExcluded,
-							width: newBounds.Width - (Insets.Left + Insets.Right),
-							height: newBounds.Height - topHeightExcluded - Math.Max(Insets.Bottom, navigationBarSizeExcluded)
-						);
-						break;
-				}
-
-				return newVisibleBounds;
+				displaySize = new Size(realMetrics.WidthPixels, realMetrics.HeightPixels);
 			}
-
-			var visibleBounds = CalculateVisibleBounds(statusBarSizeExcluded);
-			var trueVisibleBounds = CalculateVisibleBounds(statusBarSize);
-
-			return (newBounds, visibleBounds, trueVisibleBounds);
-		}
-
-		internal void UpdateInsetsWithVisibilities()
-		{
-			var newInsets = new Thickness();
-			var orientation = DisplayInformation.GetForCurrentView().CurrentOrientation;
-
-			// Navigation bar check (depending of the orientation
-			switch (orientation)
-			{
-				// StatusBar on top, NavigationBar on bottom
-				case DisplayOrientations.Portrait:
-					newInsets.Top = IsStatusBarVisible() ? Insets.Top : 0d;
-					newInsets.Bottom = IsNavigationBarVisible() ? Insets.Bottom : 0d;
-					newInsets.Left = Insets.Left;
-					newInsets.Right = Insets.Right;
-					break;
-				// StatusBar on top, NavigationBar on right
-				case DisplayOrientations.Landscape:
-					newInsets.Top = IsStatusBarVisible() ? Insets.Top : 0d;
-					newInsets.Right = IsNavigationBarVisible() ? Insets.Right : 0d;
-					newInsets.Left = Insets.Left;
-					newInsets.Bottom = Insets.Bottom;
-					break;
-				// StatusBar on top, NavigationBar on bottom
-				case DisplayOrientations.PortraitFlipped:
-					newInsets.Top = IsStatusBarVisible() ? Insets.Top : 0d;
-					newInsets.Bottom = IsNavigationBarVisible() ? Insets.Bottom : 0d;
-					newInsets.Left = Insets.Left;
-					newInsets.Right = Insets.Right;
-					break;
-				// StatusBar on top, NavigationBar on left
-				case DisplayOrientations.LandscapeFlipped:
-					newInsets.Top = IsStatusBarVisible() ? Insets.Top : 0d;
-					newInsets.Left = IsNavigationBarVisible() ? Insets.Left : 0d;
-					newInsets.Bottom = Insets.Bottom;
-					newInsets.Right = Insets.Right;
-					break;
-				default:
-					break;
-			}
-
-			Insets = newInsets;
-		}
-
-		private double GetLogicalStatusBarSize()
-		{
-			var logicalStatusBarHeight = 0d;
-
-			if (IsStatusBarVisible())
-			{
-				var resourceId = Android.Content.Res.Resources.System.GetIdentifier("status_bar_height", "dimen", "android");
-				if (resourceId > 0)
-				{
-					logicalStatusBarHeight = ViewHelper.PhysicalToLogicalPixels(Android.Content.Res.Resources.System.GetDimensionPixelSize(resourceId));
-				}
-			}
-
-			return logicalStatusBarHeight;
-		}
-
-		// Used by legacy visual bounds calculation on <API 30 devices
-		private double GetLogicalNavigationBarSizeExcluded()
-		{
-			var orientation = DisplayInformation.GetForCurrentView().CurrentOrientation;
-
-			var navigationBarSize = orientation == DisplayOrientations.Landscape || orientation == DisplayOrientations.LandscapeFlipped
-				? ApplicationActivity.Instance.LayoutProvider.NavigationBarRect.Width()
-				: ApplicationActivity.Instance.LayoutProvider.NavigationBarRect.Height();
-
-			// The real metrics excluded the NavigationBar only if it is plain.
-			// We want to subtract it if it is translucent. Otherwise, it will be like we subtract it twice.
-			return IsNavigationBarVisible() && IsNavigationBarTranslucent()
-				? ViewHelper.PhysicalToLogicalPixels(navigationBarSize)
-				: 0;
 		}
 
 		internal void DisplayFullscreen(UIElement element)
@@ -277,22 +177,6 @@ namespace Windows.UI.Xaml
 		}
 
 		#region StatusBar properties
-		private bool IsStatusBarVisible()
-		{
-			var decorView = (ContextHelper.Current as Activity)?.Window?.DecorView;
-
-			if (decorView == null)
-			{
-				throw new global::System.Exception("Cannot check NavigationBar visibility property. DecorView is not defined yet.");
-			}
-
-#pragma warning disable 618
-#pragma warning disable CA1422 // Validate platform compatibility
-			return ((int)decorView.SystemUiVisibility & (int)SystemUiFlags.Fullscreen) == 0;
-#pragma warning restore CA1422 // Validate platform compatibility
-#pragma warning restore 618
-		}
-
 		public bool IsStatusBarTranslucent()
 		{
 			if (!(ContextHelper.Current is Activity activity))
@@ -306,23 +190,6 @@ namespace Windows.UI.Xaml
 		#endregion
 
 		#region NavigationBar properties
-		private bool IsNavigationBarVisible()
-		{
-			var decorView = (ContextHelper.Current as Activity)?.Window?.DecorView;
-			if (decorView == null)
-			{
-				throw new global::System.Exception("Cannot check NavigationBar visibility property. DecorView is not defined yet.");
-			}
-
-#pragma warning disable 618
-#pragma warning disable CA1422 // Validate platform compatibility
-			var uiFlags = (int)decorView.SystemUiVisibility;
-#pragma warning restore CA1422 // Validate platform compatibility
-#pragma warning restore 618
-			return (uiFlags & (int)SystemUiFlags.HideNavigation) == 0
-				|| (uiFlags & (int)SystemUiFlags.LayoutHideNavigation) == 0;
-		}
-
 		private bool IsNavigationBarTranslucent()
 		{
 			if (!(ContextHelper.Current is Activity activity))
