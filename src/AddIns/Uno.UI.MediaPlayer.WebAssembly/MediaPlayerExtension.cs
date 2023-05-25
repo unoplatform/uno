@@ -184,6 +184,10 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 				{
 					if (_owner.PlaybackSession.PlaybackState != MediaPlaybackState.None && _player is not null && _player.Source is not null)
 					{
+						if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
+						{
+							this.Log().Debug($"Position {value.TotalSeconds}");
+						}
 						_player.CurrentPosition = (int)value.TotalSeconds;
 						OnSeekComplete();
 					}
@@ -486,12 +490,6 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 				{
 					_player.Play();
 					_owner.PlaybackSession.PlaybackState = MediaPlaybackState.Playing;
-				}
-				else
-				{
-					// To display first image of media when setting a new source. Otherwise, last image of previous source remains visible
-					_player.Play();
-					_player.Stop();
 				}
 			}
 

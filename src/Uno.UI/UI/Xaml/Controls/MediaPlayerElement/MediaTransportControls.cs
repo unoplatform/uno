@@ -43,6 +43,7 @@ namespace Windows.UI.Xaml.Controls
 	[TemplatePart(Name = "ProgressSlider", Type = typeof(Slider))]
 	[TemplatePart(Name = "BufferingProgressBar", Type = typeof(ProgressBar))]
 	[TemplatePart(Name = "DownloadProgressIndicator", Type = typeof(ProgressBar))]
+	[TemplatePart(Name = "ControlPanelGrid", Type = typeof(Grid))]
 	public partial class MediaTransportControls : Control
 	{
 		private const string RootGridName = "RootGrid";
@@ -73,6 +74,7 @@ namespace Windows.UI.Xaml.Controls
 		private const string HorizontalThumbName = "HorizontalThumb";
 		private const string DownloadProgressIndicatorName = "DownloadProgressIndicator";
 		private const string CompactOverlayButtonName = "CompactOverlayButton";
+		private const string ControlPanelGridName = "ControlPanelGrid";
 
 		private Grid _rootGrid;
 		private Button _playPauseButton;
@@ -101,6 +103,7 @@ namespace Windows.UI.Xaml.Controls
 		private ProgressBar _bufferingProgressBar;
 		private Border _timelineContainer;
 		private ProgressBar _downloadProgressIndicator;
+		private Grid _controlPanelGrid;
 
 		private Timer _controlsVisibilityTimer;
 		private bool _wasPlaying;
@@ -116,6 +119,38 @@ namespace Windows.UI.Xaml.Controls
 			};
 			_controlsVisibilityTimer.Elapsed += ControlsVisibilityTimerElapsed;
 			DefaultStyleKey = typeof(MediaTransportControls);
+			Loaded += MediaTransportControls_Loaded;
+			Unloaded += MediaTransportControls_Unloaded;
+		}
+
+		private void MediaTransportControls_Unloaded(object sender, RoutedEventArgs e)
+		{
+			_rootGrid = this.GetTemplateChild(RootGridName) as Grid;
+			if (_rootGrid != null)
+			{
+				_rootGrid.Tapped -= OnRootGridTapped;
+			}
+
+			_controlPanelGrid = this.GetTemplateChild(ControlPanelGridName) as Grid;
+			if (_controlPanelGrid != null)
+			{
+				_controlPanelGrid.Tapped -= OnPaneGridTapped;
+			}
+		}
+
+		private void MediaTransportControls_Loaded(object sender, RoutedEventArgs e)
+		{
+			_rootGrid = this.GetTemplateChild(RootGridName) as Grid;
+			if (_rootGrid != null)
+			{
+				_rootGrid.Tapped += OnRootGridTapped;
+			}
+
+			_controlPanelGrid = this.GetTemplateChild(ControlPanelGridName) as Grid;
+			if (_controlPanelGrid != null)
+			{
+				_controlPanelGrid.Tapped += OnPaneGridTapped;
+			}
 		}
 
 		internal void SetMediaPlayerElement(MediaPlayerElement mediaPlayerElement)
@@ -264,13 +299,6 @@ namespace Windows.UI.Xaml.Controls
 
 			UpdateMediaTransportControlMode();
 
-			_rootGrid = this.GetTemplateChild(RootGridName) as Grid;
-			if (_rootGrid != null)
-			{
-				_rootGrid.Tapped -= OnRootGridTapped;
-				_rootGrid.Tapped += OnRootGridTapped;
-			}
-
 			if (_mediaPlayer != null)
 			{
 				BindMediaPlayer();
@@ -348,6 +376,14 @@ namespace Windows.UI.Xaml.Controls
 			});
 		}
 
+		private void OnPaneGridTapped(object sender, TappedRoutedEventArgs e)
+		{
+			if (ShowAndHideAutomatically)
+			{
+				ResetControlsVisibilityTimer();
+			}
+			e.Handled = true;
+		}
 		private void OnRootGridTapped(object sender, TappedRoutedEventArgs e)
 		{
 			if (_isInteractive)
