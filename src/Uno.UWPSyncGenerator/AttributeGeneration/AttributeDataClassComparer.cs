@@ -15,21 +15,10 @@ internal sealed class AttributeDataClassComparer : IEqualityComparer<AttributeDa
 	{
 	}
 
-	private static string? Coerce(string? attributeClass)
-	{
-		if (attributeClass == "Windows" + ".UI.Xaml.Markup.ContentPropertyAttribute")
-		{
-			// For the purpose of attribute equality, we want to consider both attributes as equal.
-			return "Microsoft.UI.Xaml.Markup.ContentPropertyAttribute";
-		}
-
-		return attributeClass;
-	}
-
 	public bool Equals(AttributeData? x, AttributeData? y)
 	{
-		return Coerce(x?.AttributeClass?.ToString()) == Coerce(y?.AttributeClass?.ToString());
+		return x?.AttributeClass?.Name == y?.AttributeClass?.Name;
 	}
 
-	public int GetHashCode([DisallowNull] AttributeData obj) => Coerce(obj.AttributeClass?.ToString())?.GetHashCode() ?? 0;
+	public int GetHashCode([DisallowNull] AttributeData obj) => obj.AttributeClass?.Name?.GetHashCode() ?? 0;
 }
