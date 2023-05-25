@@ -246,6 +246,7 @@ namespace Windows.UI.Xaml.Controls
 			if (sender is FrameworkElement owner && GetToolTipReference(owner) is { } toolTip)
 			{
 				toolTip.IsOpen = false;
+				toolTip.CurrentHoverId++;
 			}
 		}
 
@@ -262,6 +263,7 @@ namespace Windows.UI.Xaml.Controls
 						return;
 				}
 				toolTip.IsOpen = false;
+				toolTip.CurrentHoverId++;
 			}
 		}
 
@@ -272,6 +274,7 @@ namespace Windows.UI.Xaml.Controls
 				if (e.GetCurrentPoint(owner).Properties.IsLeftButtonPressed)
 				{
 					toolTip.IsOpen = false;
+					toolTip.CurrentHoverId++;
 				}
 			}
 		}
