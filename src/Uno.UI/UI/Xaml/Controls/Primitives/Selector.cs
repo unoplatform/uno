@@ -246,7 +246,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		private static object CoerceSelectedIndex(DependencyObject dependencyObject, object baseValue)
 		{
 			if (baseValue == null)
-			{ 
+			{
 				return -1;
 			}
 
