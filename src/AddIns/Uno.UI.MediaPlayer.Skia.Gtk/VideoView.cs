@@ -215,7 +215,7 @@ namespace LibVLCSharp.GTK
 				{
 					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Error))
 					{
-						this.Log().Error("Unable to get the X11 Window ID. This may be caused when running in a Wayland environment, such as WSLg.");
+						this.Log().Error("Unable to get the X11 Window ID. This may be caused when running in a Wayland environment, such as WSLg. https://aka.platform.uno/mediaplayerelement");
 					}
 
 					_mediaPlayer.Stop();
@@ -223,7 +223,16 @@ namespace LibVLCSharp.GTK
 			}
 			else if (PlatformHelper.IsMac)
 			{
-				_mediaPlayer.NsObject = Native.gdk_quartz_window_get_nsview(_videoWindow.Window.Handle);
+				// Not supported at this time, the child window is not
+				// properly placing itself in the parent window.
+				// _mediaPlayer.NsObject = Native.gdk_quartz_window_get_nsview(_videoWindow.Window.Handle);
+
+				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Error))
+				{
+					this.Log().Error("macOS playback is not supported at this time. https://aka.platform.uno/mediaplayerelement");
+				}
+
+				_mediaPlayer.Stop();
 			}
 			else
 			{
