@@ -245,13 +245,12 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		private static object CoerceSelectedIndex(DependencyObject dependencyObject, object baseValue)
 		{
-			if (baseValue == null)
+			if (baseValue is not int desiredIndex)
 			{
 				return -1;
 			}
 
 			var owner = (Selector)dependencyObject;
-			var desiredIndex = (int)baseValue;
 			if (desiredIndex == -1)
 			{
 				owner._uncoercedSelectedIndex = -1;
