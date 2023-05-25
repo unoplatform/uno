@@ -68,8 +68,8 @@ namespace LibVLCSharp.GTK
 
 			Core.Initialize();
 
-			Realized += (s, e) => Attach();
-			Unrealized += (s, e) => Detach();
+			Realized += (s, e) => AttachToWidget();
+			Unrealized += (s, e) => DetachFromWidget();
 		}
 
 		internal void SetVisible(bool visible)
@@ -99,22 +99,30 @@ namespace LibVLCSharp.GTK
 					return;
 				}
 
-				Detach();
+				DestroyChildWindow();
 				_mediaPlayer = value;
-				Attach();
+				CreateChildWindow();
 			}
 		}
 
-		private void Attach()
+		private void CreateChildWindow()
 		{
-			if (!IsRealized || _mediaPlayer == null)
+			if (_mediaPlayer == null)
 			{
 				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 				{
-					this.Log().Debug($"Unable to attach player (IsRealized:{IsRealized}, _mediaPlayer: {_mediaPlayer is not null})");
+					this.Log().Debug($"Unable to attach player (_mediaPlayer: {_mediaPlayer is not null})");
 				}
 
 				return;
+			}
+
+			if (_videoWindow is not null)
+			{
+				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				{
+					this.Log().Debug($"VideoView is already attached, skipping");
+				}
 			}
 
 			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
@@ -149,13 +157,29 @@ namespace LibVLCSharp.GTK
 			// Hide it immediately so it does not show outside of our own window
 			_videoWindow.Hide();
 
-			// Reparent the window to the current window, so it appears inside.
-			_videoWindow.Window.Reparent(Toplevel.Window, 0, 0);
-
 			AssignWindowId();
 
-			// Show the window once the ID has been associated in libVLC
-			_videoWindow.Show();
+			AttachToWidget();
+		}
+
+		private void AttachToWidget()
+		{
+			if (IsRealized && _videoWindow is not null)
+			{
+				// Reparent the window to the current window, so it appears inside.
+				_videoWindow.Window.Reparent(Toplevel.Window, 0, 0);
+
+				// Show the window once the ID has been associated in libVLC
+				_videoWindow.Show();
+			}
+		}
+
+		private void DetachFromWidget()
+		{
+			if (!IsRealized && _videoWindow is not null)
+			{
+				_videoWindow.Hide();
+			}
 		}
 
 		private void OnVideoWindowMotionNotifyEvent(object o, MotionNotifyEventArgs args)
@@ -203,7 +227,19 @@ namespace LibVLCSharp.GTK
 			}
 		}
 
-		void Detach()
+		private void DestroyChildWindow()
+		{
+			RemoveWindowId();
+
+			if (_videoWindow is not null)
+			{
+				_videoWindow.Hide();
+				_videoWindow.Destroy();
+				_videoWindow = null;
+			}
+		}
+
+		private void RemoveWindowId()
 		{
 			if (_mediaPlayer is not null)
 			{
@@ -223,13 +259,6 @@ namespace LibVLCSharp.GTK
 				{
 					throw new PlatformNotSupportedException();
 				}
-			}
-
-			if (_videoWindow is not null)
-			{
-				_videoWindow.Hide();
-				_videoWindow.Destroy();
-				_videoWindow = null;
 			}
 		}
 

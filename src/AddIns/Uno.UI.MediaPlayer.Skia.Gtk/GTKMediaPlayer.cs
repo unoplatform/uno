@@ -30,9 +30,7 @@ public partial class GtkMediaPlayer : FrameworkElement
 	private VideoView? _videoView;
 	private Uri? _mediaPath;
 	private bool _isEnding;
-	private bool _isPlaying;
 	private bool _isLoopingEnabled;
-	private long _currentPositionBeforeFullscreenChange;
 	private double _playbackRate;
 	private Rect _transportControlsBounds;
 	private Windows.UI.Xaml.Media.Stretch _stretch = Windows.UI.Xaml.Media.Stretch.Uniform;
@@ -154,84 +152,19 @@ public partial class GtkMediaPlayer : FrameworkElement
 
 	public void ExitFullScreen()
 	{
-		if (EnsureMediaPlayerAndVideoView())
+		if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 		{
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
-			{
-				this.Log().Debug("ExitFullScreen");
-			}
-
-			_isPlaying = _mediaPlayer.State == VLCState.Playing;
-			_currentPositionBeforeFullscreenChange = _mediaPlayer.Time;
-
-			Stop();
-
-			_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
-			{
-				await Initialize();
-
-				UpdateMedia();
-
-				_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-				{
-					UpdateVideoStretch();
-					Play();
-					Pause();
-					CurrentPosition = (double)_currentPositionBeforeFullscreenChange;
-
-					if (_isPlaying)
-					{
-						Play();
-					}
-				});
-			});
-		}
-		else
-		{
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
-			{
-				this.Log().Debug("Unable to exit fullscreen, the player is not ready yet");
-			}
+			this.Log().Debug("ExitFullScreen");
 		}
 	}
 
 	public void RequestFullScreen()
 	{
-		if (EnsureMediaPlayerAndVideoView())
+		if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 		{
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
-			{
-				this.Log().Debug("RequestFullScreen");
-			}
-
-			_isPlaying = _mediaPlayer.State == VLCState.Playing;
-			_currentPositionBeforeFullscreenChange = _mediaPlayer.Time;
-
-			Stop();
-			_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
-			{
-				await Initialize();
-				UpdateMedia();
-				_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-				{
-					UpdateVideoStretch();
-					Play();
-					Pause();
-					CurrentPosition = (double)_currentPositionBeforeFullscreenChange;
-					if (_isPlaying)
-					{
-						Play();
-					}
-				});
-			});
+			this.Log().Debug("RequestFullScreen");
 		}
-		else
-		{
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
-			{
-				this.Log().Debug("Unable to request fullscreen, the player is not ready yet");
-			}
-		}
+
 	}
 
 	public void Stop()

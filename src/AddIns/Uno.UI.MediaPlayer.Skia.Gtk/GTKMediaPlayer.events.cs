@@ -26,13 +26,14 @@ namespace Uno.UI.Media;
 
 public partial class GtkMediaPlayer
 {
+	private Task? _initializationTask;
+	private MediaPlayerElement? _mpe;
+
 	public event EventHandler<object>? OnSourceFailed;
 	public event EventHandler<object>? OnSourceEnded;
 	public event EventHandler<object>? OnMetadataLoaded;
 	public event EventHandler<object>? OnTimeUpdate;
 	public event EventHandler<object>? OnSourceLoaded;
-
-	private Task? _initializationTask;
 
 	private async Task Initialize()
 	{
@@ -112,11 +113,23 @@ public partial class GtkMediaPlayer
 
 	private void OnVideoViewVideoSurfaceInteraction(object? sender, EventArgs e)
 	{
-		if (_owner.FindFirstParent<MediaPlayerElement>() is { } mpe)
+		UpdateMediaPlayerElementReference();
+
+		if (_mpe is not null)
 		{
-			mpe.TransportControls.Show();
+			_mpe.TransportControls.Show();
+		}
+		else
+		{
+			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			{
+				this.Log().Debug($"Unable to find a MediaPlayerElement instance to show the transport controls");
+			}
 		}
 	}
+
+	private void UpdateMediaPlayerElementReference()
+		=> _mpe ??= _owner.FindFirstParent<MediaPlayerElement>();
 
 	private void OnSourceVideoLoaded(object? sender, EventArgs e)
 	{
