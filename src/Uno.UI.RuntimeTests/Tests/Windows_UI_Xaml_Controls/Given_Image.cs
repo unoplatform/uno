@@ -448,6 +448,90 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForLoaded(image);
 		}
 
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Exif_Rotated_MsAppx()
+		{
+			if (!ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			{
+				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
+			}
+
+			await When_Exif_Rotated_Common(new Uri("ms-appx:///Assets/testimage_exif_rotated.jpg"));
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Exif_Rotated_MsAppData()
+		{
+			if (!ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			{
+				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
+			}
+
+			var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/testimage_exif_rotated.jpg"));
+			var fileName = $"{Guid.NewGuid()}.jpg";
+			await file.CopyAsync(ApplicationData.Current.LocalFolder, fileName);
+			var uri = new Uri($"ms-appdata:///Local/{fileName}");
+			await When_Exif_Rotated_Common(uri);
+		}
+
+#if __ANDROID__
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Exif_Rotated_Target_Is_Saf()
+		{
+			var directory = new Java.IO.File(ApplicationData.Current.LocalCacheFolder.Path);
+			var documentFile = AndroidX.DocumentFile.Provider.DocumentFile.FromFile(directory);
+			var safFolder = StorageFolder.GetFromSafDocument(documentFile);
+
+			var file1 = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/testimage_exif_rotated.jpg"));
+			var file2 = await file1.CopyAsync(safFolder, "testimage_exif_rotated.jpg", NameCollisionOption.ReplaceExisting);
+			await file2.CopyAsync(ApplicationData.Current.LocalFolder, "testimage_exif_rotated.jpg", NameCollisionOption.ReplaceExisting);
+			await When_Exif_Rotated_Common(new Uri($"ms-appdata:///Local/testimage_exif_rotated.jpg"));
+		}
+#endif
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Exif_Rotated_From_Stream()
+		{
+			if (!ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			{
+				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
+			}
+
+			var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/testimage_exif_rotated.jpg"));
+			var image = new Image();
+			var bitmapImage = new BitmapImage();
+			await bitmapImage.SetSourceAsync(await file.OpenReadAsync());
+
+			var imageOpened = false;
+			image.ImageOpened += (_, _) => imageOpened = true;
+			image.Source = bitmapImage;
+			WindowHelper.WindowContent = image;
+			await WindowHelper.WaitForLoaded(image);
+			await WindowHelper.WaitFor(() => imageOpened);
+			var screenshot = await TakeScreenshot(image);
+			ImageAssert.HasColorAt(screenshot, screenshot.Width / 2, 5, Color.FromArgb(0xFF, 0x23, 0xB1, 0x4D), tolerance: 5);
+			ImageAssert.HasColorAt(screenshot, screenshot.Width / 2, screenshot.Height - 5, Color.FromArgb(0xFF, 0xED, 0x1B, 0x24), tolerance: 5);
+		}
+
+		private async Task When_Exif_Rotated_Common(Uri uri)
+		{
+			var image = new Image();
+			var bitmapImage = new BitmapImage(uri);
+			var imageOpened = false;
+			image.ImageOpened += (_, _) => imageOpened = true;
+			image.Source = bitmapImage;
+			WindowHelper.WindowContent = image;
+			await WindowHelper.WaitForLoaded(image);
+			await WindowHelper.WaitFor(() => imageOpened);
+			var screenshot = await TakeScreenshot(image);
+			ImageAssert.HasColorAt(screenshot, screenshot.Width / 2, 5, Color.FromArgb(0xFF, 0x23, 0xB1, 0x4D), tolerance: 5);
+			ImageAssert.HasColorAt(screenshot, screenshot.Width / 2, screenshot.Height - 5, Color.FromArgb(0xFF, 0xED, 0x1B, 0x24), tolerance: 5);
+		}
+
 		private async Task<RawBitmap> TakeScreenshot(FrameworkElement SUT)
 		{
 			var renderer = new RenderTargetBitmap();
