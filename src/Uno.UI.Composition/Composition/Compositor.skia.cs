@@ -83,56 +83,46 @@ namespace Windows.UI.Composition
 
 		internal void RenderVisual(SKSurface surface, Visual visual)
 		{
-			if (visual.Opacity != 0 && visual.IsVisible)
+			if (visual is { Opacity: 0 } or { IsVisible: false })
 			{
-				if (visual.ShadowState is { } shadow)
-				{
-					surface.Canvas.SaveLayer(shadow.Paint);
-				}
-				else
-				{
-					surface.Canvas.Save();
-				}
-
-				var visualMatrix = surface.Canvas.TotalMatrix;
-
-				visualMatrix = visualMatrix.PreConcat(SKMatrix.CreateTranslation(visual.Offset.X, visual.Offset.Y));
-				visualMatrix = visualMatrix.PreConcat(SKMatrix.CreateTranslation(visual.AnchorPoint.X, visual.AnchorPoint.Y));
-
-				if (visual.RotationAngleInDegrees != 0)
-				{
-					visualMatrix = visualMatrix.PreConcat(SKMatrix.CreateRotationDegrees(visual.RotationAngleInDegrees, visual.CenterPoint.X, visual.CenterPoint.Y));
-				}
-
-				if (visual.TransformMatrix != Matrix4x4.Identity)
-				{
-					visualMatrix = visualMatrix.PreConcat(visual.TransformMatrix.ToSKMatrix44().Matrix);
-				}
-
-				surface.Canvas.SetMatrix(visualMatrix);
-
-				ApplyClip(surface, visual);
-
-				using var opacityDisposable = PushOpacity(visual.Opacity);
-
-				visual.Render(surface);
-
-
-				surface.Canvas.Restore();
+				return;
 			}
+
+			if (visual.ShadowState is { } shadow)
+			{
+				surface.Canvas.SaveLayer(shadow.Paint);
+			}
+			else
+			{
+				surface.Canvas.Save();
+			}
+
+			// Set the position of the visual on the canvas (i.e. change coordinates system to the "XAML element" one)
+			surface.Canvas.Translate(visual.Offset.X + visual.AnchorPoint.X, visual.Offset.Y + visual.AnchorPoint.Y);
+
+			// Apply the clipping. This is relative to the visual's coordinate system, before any rendering transformation is applied.
+			ApplyClip(surface, visual);
+
+			// Applied rending transformation matrix (i.e. change coordinates system to the "rendering" one)
+			var transform = GetTransform(visual); 
+			if (!transform.IsIdentity)
+			{
+				var skTransform = transform.ToSKMatrix();
+				surface.Canvas.Concat(ref skTransform);
+			}
+
+			using var opacityDisposable = PushOpacity(visual.Opacity);
+
+			visual.Render(surface);
+
+			surface.Canvas.Restore();
 		}
 
 		private static void ApplyClip(SKSurface surface, Visual visual)
 		{
 			if (visual.Clip is InsetClip insetClip)
 			{
-				var clipRect = new SKRect
-				{
-					Top = insetClip.TopInset - 1,
-					Bottom = insetClip.BottomInset + 1,
-					Left = insetClip.LeftInset - 1,
-					Right = insetClip.RightInset + 1
-				};
+				var clipRect = insetClip.SKRect;
 
 				surface.Canvas.ClipRect(clipRect, SKClipOperation.Intersect, true);
 			}
@@ -142,26 +132,45 @@ namespace Windows.UI.Composition
 			}
 			else if (visual.Clip is CompositionGeometricClip geometricClip)
 			{
-				if (geometricClip.Geometry is CompositionPathGeometry cpg)
+				switch (geometricClip.Geometry)
 				{
-					if (cpg.Path?.GeometrySource is SkiaGeometrySource2D geometrySource)
-					{
+					case CompositionPathGeometry { Path.GeometrySource: SkiaGeometrySource2D geometrySource }:
 						surface.Canvas.ClipPath(geometrySource.Geometry, antialias: true);
-					}
-					else
-					{
+						break;
+					case CompositionPathGeometry cpg:
 						throw new InvalidOperationException($"Clipping with source {cpg.Path?.GeometrySource} is not supported");
-					}
-				}
-				else if (geometricClip.Geometry is null)
-				{
-					// null is nop
-				}
-				else
-				{
-					throw new InvalidOperationException($"Clipping with {geometricClip.Geometry} is not supported");
+					case null:
+						// null is nop
+						break;
+					default:
+						throw new InvalidOperationException($"Clipping with {geometricClip.Geometry} is not supported");
 				}
 			}
+		}
+
+		private static Matrix4x4 GetTransform(Visual visual)
+		{
+			var transform = visual.TransformMatrix;
+
+			var scale = visual.Scale;
+			if (scale != Vector3.One)
+			{
+				transform *= Matrix4x4.CreateScale(scale, visual.CenterPoint);
+			}
+
+			var orientation = visual.Orientation;
+			if (orientation != Quaternion.Identity)
+			{
+				transform *= Matrix4x4.CreateFromQuaternion(orientation);
+			}
+
+			var rotation = visual.RotationAngle;
+			if (rotation is not 0)
+			{
+				transform *= Matrix4x4.CreateFromAxisAngle(visual.RotationAxis, rotation);
+			}
+
+			return transform;
 		}
 
 		partial void InvalidateRenderPartial()
