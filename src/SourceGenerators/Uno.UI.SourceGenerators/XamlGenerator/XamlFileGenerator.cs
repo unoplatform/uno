@@ -4339,7 +4339,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			var formattedPaths = propertyPaths
 				.properties
 				.Where(p => !p.StartsWith("global::", StringComparison.Ordinal))  // Don't include paths that start with global:: (e.g. Enums)
-				.Select(p => $"\"{p}\"");
+				.Select(p => $"\"{p.Replace("\"", "\\\"")}\"");
 
 			var pathsArray = formattedPaths.Any()
 				? ", new [] {" + string.Join(", ", formattedPaths) + "}"
@@ -4465,13 +4465,21 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			var parts = propertyPath.Split('.');
 
-			foreach (var part in parts)
+			for (int i = 0; i < parts.Length; i++)
 			{
+				var part = parts[i];
+				var isIndexer = false;
+				if (part.IndexOf('[') is int indexOfIndexer && indexOfIndexer > 0)
+				{
+					isIndexer = true;
+					part = part.Substring(0, indexOfIndexer);
+				}
+
 				if (currentType.TryGetPropertyOrFieldType(part) is ITypeSymbol partType)
 				{
 					currentType = partType;
 				}
-				else if (FindSubElementByName(_fileDefinition.Objects.First(), part) is XamlObjectDefinition elementByName)
+				else if (i == 0 && FindSubElementByName(_fileDefinition.Objects.First(), part) is XamlObjectDefinition elementByName)
 				{
 					currentType = GetType(elementByName.Type);
 
@@ -4496,6 +4504,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 					if (currentType is null)
 						throw new InvalidOperationException($"Unable to find member [{part}] on type [{currentType}]");
+				}
+
+				if (isIndexer)
+				{
+					currentType = currentType.GetMembers().OfType<IPropertySymbol>().FirstOrDefault(p => p.IsIndexer).Type;
 				}
 			}
 

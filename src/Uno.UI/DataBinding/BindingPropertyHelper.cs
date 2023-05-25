@@ -298,7 +298,21 @@ namespace Uno.UI.DataBinding
 					if (IsIndexerFormat(property))
 					{
 						// Fallback on reflection-based lookup
-						var indexerInfo = GetIndexerInfo(type, null, allowPrivateMembers: false);
+
+						// In some cases, there are multiple indexers, in which case GetIndexerInfo fails due to multiple matches when not given an explicit parameter type.
+						// If we know this parses as an integer, then use typeof(int) to reduce the cases of failure.
+						Type? indexerParameterType = null;
+						if (int.TryParse(property.Substring(1, property.Length - 2), NumberStyles.Number, NumberFormatInfo.InvariantInfo, out _))
+						{
+							indexerParameterType = typeof(int);
+						}
+						else
+						{
+							indexerParameterType = typeof(string);
+						}
+
+						var indexerInfo = GetIndexerInfo(type, indexerParameterType, allowPrivateMembers: false);
+						indexerInfo ??= GetIndexerInfo(type, null, allowPrivateMembers: false);
 
 						if (indexerInfo != null)
 						{
@@ -591,6 +605,7 @@ namespace Uno.UI.DataBinding
 
 							if (indexerMethod != null)
 							{
+								indexerString = CoerceIndexerParameter(indexerString, optionalParameterType: null);
 								return instance => indexerMethod(instance, indexerString);
 							}
 						}
@@ -633,11 +648,13 @@ namespace Uno.UI.DataBinding
 						}
 
 						var handler = MethodInvokerBuilder(method);
+						var indexerParameterType = indexerInfo.GetIndexParameters()[0].ParameterType;
+						indexerString = CoerceIndexerParameter(indexerString, indexerParameterType);
 
 						return instance => handler(
 							instance,
 							new object?[] {
-								Convert(() => indexerInfo.GetIndexParameters()[0].ParameterType, indexerString)
+								Convert(() => indexerParameterType, indexerString)
 							}
 						);
 					}
@@ -826,6 +843,19 @@ namespace Uno.UI.DataBinding
 
 				return instance => empty();
 			}
+		}
+
+		private static string CoerceIndexerParameter(string indexerParameter, Type? optionalParameterType)
+		{
+			if (optionalParameterType is null || optionalParameterType == typeof(string))
+			{
+				if (indexerParameter.Length >= 2 && indexerParameter[0] == '"' && indexerParameter[indexerParameter.Length - 1] == '"')
+				{
+					return indexerParameter.Substring(1, indexerParameter.Length - 2);
+				}
+			}
+
+			return indexerParameter;
 		}
 
 		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1506:AvoidExcessiveClassCoupling", Justification = "To be refactored"),

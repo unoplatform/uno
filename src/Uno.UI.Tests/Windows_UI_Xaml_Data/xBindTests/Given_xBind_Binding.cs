@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Uno.UI.Tests.Windows_UI_Xaml.Controls;
 using Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls;
+using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
@@ -1371,6 +1373,91 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 			SUT.VM.Model2 = null;
 
 			Assert.IsNull(SUT.tb1.Tag);
+		}
+
+		[TestMethod]
+		public void When_Indexer()
+		{
+			var SUT = new XBind_Indexer();
+
+			SUT.ForceLoaded();
+
+			Assert.AreEqual("ListFirstItem", SUT.tbList.Text);
+			Assert.AreEqual("DictionaryValue", SUT.tbDict.Text);
+
+			SUT.VM.List = new ObservableCollection<string>() { "UpdatedList" };
+			SUT.VM.Dict = new PropertySet() { ["Key"] = "UpdatedDic" };
+
+			Assert.AreEqual("UpdatedList", SUT.tbList.Text);
+			Assert.AreEqual("UpdatedDic", SUT.tbDict.Text);
+		}
+
+		[TestMethod]
+		public void When_Indexer_Update_Collection()
+		{
+			var SUT = new XBind_Indexer();
+
+			SUT.ForceLoaded();
+
+			Assert.AreEqual("ListFirstItem", SUT.tbList.Text);
+			Assert.AreEqual("DictionaryValue", SUT.tbDict.Text);
+
+			SUT.VM.List[0] = "Updated1";
+			SUT.VM.Dict["Key"] = "Updated2";
+
+			Assert.AreEqual("Updated1", SUT.tbList.Text);
+			Assert.AreEqual("DictionaryValue", SUT.tbDict.Text);
+		}
+
+		[TestMethod]
+		public void When_Indexer_Then_Property_Access()
+		{
+			var SUT = new XBind_Indexer();
+
+			SUT.ForceLoaded();
+
+			Assert.AreEqual("ListFirstItem", SUT.tbList2.Text);
+			Assert.AreEqual("DictionaryValue", SUT.tbDict2.Text);
+
+			SUT.VM.List2 = new ObservableCollection<PersonViewModel>() { new PersonViewModel() { Name = "UpdatedList" } };
+			SUT.VM.Dict2 = new MyCustomMap() { ["Key"] = new PersonViewModel() { Name = "UpdatedDic" } };
+
+			Assert.AreEqual("UpdatedList", SUT.tbList2.Text);
+			Assert.AreEqual("UpdatedDic", SUT.tbDict2.Text);
+		}
+
+		[TestMethod]
+		public void When_Indexer_Then_Property_Access_Update_Collection()
+		{
+			var SUT = new XBind_Indexer();
+
+			SUT.ForceLoaded();
+
+			Assert.AreEqual("ListFirstItem", SUT.tbList2.Text);
+			Assert.AreEqual("DictionaryValue", SUT.tbDict2.Text);
+
+			SUT.VM.List2[0] = new PersonViewModel() { Name = "Updated1" };
+			SUT.VM.Dict2["Key"] = new PersonViewModel() { Name = "Updated2" };
+
+			Assert.AreEqual("Updated1", SUT.tbList2.Text);
+			Assert.AreEqual("DictionaryValue", SUT.tbDict2.Text);
+		}
+
+		[TestMethod]
+		public void When_Indexer_Then_Property_Access_Update_Collection_Element()
+		{
+			var SUT = new XBind_Indexer();
+
+			SUT.ForceLoaded();
+
+			Assert.AreEqual("ListFirstItem", SUT.tbList2.Text);
+			Assert.AreEqual("DictionaryValue", SUT.tbDict2.Text);
+
+			SUT.VM.List2[0].Name = "Updated1";
+			SUT.VM.Dict2["Key"].Name = "Updated2";
+
+			Assert.AreEqual("Updated1", SUT.tbList2.Text);
+			Assert.AreEqual("Updated2", SUT.tbDict2.Text);
 		}
 
 		private async Task AssertIsNullAsync<T>(Func<T> getter, TimeSpan? timeout = null) where T : class
