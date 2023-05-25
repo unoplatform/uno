@@ -12,6 +12,7 @@ using Windows.Foundation;
 using Windows.UI.Xaml.Media.Animation;
 using Uno.Disposables;
 using Windows.UI.Xaml.Controls.Primitives;
+using Windows.Devices.Input;
 
 #if __IOS__
 using UIKit;
@@ -492,7 +493,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 		private void OnRootGridTapped(object sender, TappedRoutedEventArgs e)
 		{
-			if (e.PointerDeviceType == Devices.Input.PointerDeviceType.Touch)
+			if (e.PointerDeviceType == PointerDeviceType.Touch)
 			{
 				if (_isShowingControls)
 				{
@@ -502,11 +503,6 @@ namespace Windows.UI.Xaml.Controls
 				else
 				{
 					Show();
-
-					if (ShowAndHideAutomatically)
-					{
-						ResetControlsVisibilityTimer();
-					}
 				}
 			}
 		}
