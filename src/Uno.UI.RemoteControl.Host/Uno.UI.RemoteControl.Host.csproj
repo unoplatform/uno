@@ -13,7 +13,7 @@
 	<ItemGroup>
 		<PackageReference Include="Mono.Options" Version="6.6.0.161" />
 		<PackageReference Include="Newtonsoft.Json" />
-		<PackageReference Include="System.Reactive" Version="5.0.0" />
+		<PackageReference Include="System.Reactive" Version="6.0.0" />
 		<PackageReference Include="Unity" Version="5.11.10" />
 		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" Version="4.0.0-dev.5" />
 		<PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="2.3.2" />

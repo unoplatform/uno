@@ -62,64 +62,65 @@ namespace Uno.UI {
 
 				let bootstrapperLoaders = document.getElementsByClassName(WindowManager.unoPersistentLoaderClassName);
 				if (bootstrapperLoaders.length > 0) {
+					// Bootstrapper supports persistent loader, skip creating local one and keep it displayed
 					let bootstrapperLoader = bootstrapperLoaders[0] as HTMLElement;
 					bootstrapperLoader.classList.add(WindowManager.unoKeepLoaderClassName);
 
-					// Skip creating local splash screen.
-					return true;
+					resolve(true);
 				}
+				else {
+					const img = new Image();
+					let loaded = false;
 
-				const img = new Image();
-				let loaded = false;
+					let loadingDone = () => {
+						if (!loaded) {
+							loaded = true;
+							if (img.width !== 0 && img.height !== 0) {
+								// Materialize the image content so it shows immediately
+								// even if the dispatcher is blocked thereafter by all
+								// the Uno initialization work. The resulting canvas is not used.
+								//
+								// If the image fails to load, setup the splashScreen anyways with the
+								// proper sample.
+								let canvas = document.createElement("canvas");
+								canvas.width = img.width;
+								canvas.height = img.height;
+								let ctx = canvas.getContext("2d");
+								ctx.drawImage(img, 0, 0);
+							}
 
-				let loadingDone = () => {
-					if (!loaded) {
-						loaded = true;
-						if (img.width !== 0 && img.height !== 0) {
-							// Materialize the image content so it shows immediately
-							// even if the dispatcher is blocked thereafter by all
-							// the Uno initialization work. The resulting canvas is not used.
-							//
-							// If the image fails to load, setup the splashScreen anyways with the
-							// proper sample.
-							let canvas = document.createElement("canvas");
-							canvas.width = img.width;
-							canvas.height = img.height;
-							let ctx = canvas.getContext("2d");
-							ctx.drawImage(img, 0, 0);
-						}
-
-						if (document.readyState === "loading") {
-							document.addEventListener("DOMContentLoaded", () => {
+							if (document.readyState === "loading") {
+								document.addEventListener("DOMContentLoaded", () => {
+									WindowManager.setupSplashScreen(img);
+									resolve(true);
+								});
+							} else {
 								WindowManager.setupSplashScreen(img);
 								resolve(true);
-							});
-						} else {
-							WindowManager.setupSplashScreen(img);
-							resolve(true);
+							}
 						}
+					};
+
+					// Preload the splash screen so the image element
+					// created later on 
+					img.onload = loadingDone;
+					img.onerror = loadingDone;
+
+					const UNO_BOOTSTRAP_APP_BASE = config.environmentVariables["UNO_BOOTSTRAP_APP_BASE"] || "";
+					const UNO_BOOTSTRAP_WEBAPP_BASE_PATH = config.environmentVariables["UNO_BOOTSTRAP_WEBAPP_BASE_PATH"] || "";
+
+					let fullImagePath = String(UnoAppManifest.splashScreenImage);
+
+					// If the splashScreenImage image already points to the app base path, use it, otherwise we build it.
+					if (UNO_BOOTSTRAP_APP_BASE !== "" && fullImagePath.indexOf(UNO_BOOTSTRAP_APP_BASE) == -1) {
+						fullImagePath = `${UNO_BOOTSTRAP_WEBAPP_BASE_PATH}${UNO_BOOTSTRAP_APP_BASE}/${UnoAppManifest.splashScreenImage}`;
 					}
-				};
 
-				// Preload the splash screen so the image element
-				// created later on 
-				img.onload = loadingDone;
-				img.onerror = loadingDone;
+					img.src = fullImagePath;
 
-				const UNO_BOOTSTRAP_APP_BASE = config.environmentVariables["UNO_BOOTSTRAP_APP_BASE"] || "";
-				const UNO_BOOTSTRAP_WEBAPP_BASE_PATH = config.environmentVariables["UNO_BOOTSTRAP_WEBAPP_BASE_PATH"] || "";
-
-				let fullImagePath = String(UnoAppManifest.splashScreenImage);
-
-				// If the splashScreenImage image already points to the app base path, use it, otherwise we build it.
-				if (UNO_BOOTSTRAP_APP_BASE !== "" && fullImagePath.indexOf(UNO_BOOTSTRAP_APP_BASE) == -1) {
-					fullImagePath = `${UNO_BOOTSTRAP_WEBAPP_BASE_PATH}${UNO_BOOTSTRAP_APP_BASE}/${UnoAppManifest.splashScreenImage}`;
+					// If there's no response, skip the loading
+					setTimeout(loadingDone, 2000);
 				}
-
-				img.src = fullImagePath;
-
-				// If there's no response, skip the loading
-				setTimeout(loadingDone, 2000);
 			});
 		}
 
@@ -1589,20 +1590,29 @@ namespace Uno.UI {
 
 			await ExportManager.initialize();
 
-			if (!WindowManager.resizeMethod) {
-				WindowManager.resizeMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.Window:Resize");
-			}
+			if ((<any>globalThis).DotnetExports !== undefined) {
+				const exports = (<any>globalThis).DotnetExports.UnoUI;
 
-			if (!WindowManager.dispatchEventMethod) {
-				WindowManager.dispatchEventMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.UIElement:DispatchEvent");
-			}
+				WindowManager.resizeMethod = exports.Windows.UI.Xaml.Window.Resize;
+				WindowManager.dispatchEventMethod = exports.Windows.UI.Xaml.UIElement.DispatchEvent;
+				WindowManager.focusInMethod = exports.Windows.UI.Xaml.Input.FocusManager.ReceiveFocusNative;
+				WindowManager.dispatchSuspendingMethod = exports.Windows.UI.Xaml.Application.DispatchSuspending;
+			} else {
+				if (!WindowManager.resizeMethod) {
+					WindowManager.resizeMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.Window:Resize");
+				}
 
-			if (!WindowManager.focusInMethod) {
-				WindowManager.focusInMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.Input.FocusManager:ReceiveFocusNative");
-			}
+				if (!WindowManager.dispatchEventMethod) {
+					WindowManager.dispatchEventMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.UIElement:DispatchEvent");
+				}
 
-			if (!WindowManager.dispatchSuspendingMethod) {
-				WindowManager.dispatchSuspendingMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.Application:DispatchSuspending");
+				if (!WindowManager.focusInMethod) {
+					WindowManager.focusInMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.Input.FocusManager:ReceiveFocusNative");
+				}
+
+				if (!WindowManager.dispatchSuspendingMethod) {
+					WindowManager.dispatchSuspendingMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.Application:DispatchSuspending");
+				}
 			}
 		}
 
@@ -1626,18 +1636,15 @@ namespace Uno.UI {
 		}
 
 		private removeLoading() {
-			if (!this.loadingElementId) {
-				// No custom loading element, remove the bootstrapper's loader.
-				let bootstrapperLoaders = document.getElementsByClassName(WindowManager.unoPersistentLoaderClassName);
-				if (bootstrapperLoaders.length > 0) {
-					let bootstrapperLoader = bootstrapperLoaders[0] as HTMLElement;
-					bootstrapperLoader.parentElement.removeChild(bootstrapperLoader);
-				}
-			} else {
-				const element = document.getElementById(this.loadingElementId);
-				if (element) {
-					element.parentElement.removeChild(element);
-				}
+			const element = document.getElementById(this.loadingElementId);
+			if (element) {
+				element.parentElement.removeChild(element);
+			}
+			
+			let bootstrapperLoaders = document.getElementsByClassName(WindowManager.unoPersistentLoaderClassName);
+			if (bootstrapperLoaders.length > 0) {
+				let bootstrapperLoader = bootstrapperLoaders[0] as HTMLElement;
+				bootstrapperLoader.parentElement.removeChild(bootstrapperLoader);
 			}
 		}
 

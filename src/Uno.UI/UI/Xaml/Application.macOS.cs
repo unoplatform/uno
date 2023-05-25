@@ -39,6 +39,7 @@ namespace Windows.UI.Xaml
 		{
 			Current = this;
 			SetCurrentLanguage();
+			InitializeSystemTheme();
 
 			SubscribeBackgroundNotifications();
 		}

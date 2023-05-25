@@ -2,6 +2,7 @@
 
 #if __WASM__
 using System;
+using System.Runtime.InteropServices.JavaScript;
 using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
@@ -44,6 +45,7 @@ namespace Windows.UI.Xaml
 			}
 
 			Current = this;
+			InitializeSystemTheme();
 			Package.SetEntryAssembly(this.GetType().Assembly);
 
 			global::Uno.Foundation.Extensibility.ApiExtensibility.Register(
@@ -135,6 +137,7 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Dispatch method from Javascript
 		/// </summary>
+		[JSExport]
 		internal static void DispatchSuspending()
 		{
 			Current?.RaiseSuspending();

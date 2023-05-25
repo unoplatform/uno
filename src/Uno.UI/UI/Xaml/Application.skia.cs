@@ -23,6 +23,7 @@ namespace Windows.UI.Xaml
 		{
 			Current = this;
 			SetCurrentLanguage();
+			InitializeSystemTheme();
 
 			Package.SetEntryAssembly(this.GetType().Assembly);
 

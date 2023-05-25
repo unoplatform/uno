@@ -705,7 +705,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				if (namespaceUrl == nsName && _includeXamlNamespaces.Contains(ns.Prefix))
 				{
 					// For XAML included namespaces (e.g, android) where we don't have "using:" in the url, assume the default namespace.
-					return SearchClrNamespaces(fields[1]);
+					return SearchClrNamespaces(fields[1]) ?? SearchWithFuzzyMatching(fields[1]);
 				}
 
 				name = nsName + "." + fields[1];

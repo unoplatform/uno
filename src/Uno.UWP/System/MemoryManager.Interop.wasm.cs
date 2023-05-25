@@ -7,6 +7,11 @@ namespace __Windows.__System
 	{
 		internal static partial class NativeMethods
 		{
+			private const string JsType = "globalThis.Windows.System.MemoryManager";
+
+			[JSImport($"{JsType}.getAppMemoryUsage")]
+			[return: JSMarshalAs<JSType.Number>]
+			internal static partial long GetAppMemoryUsage();
 		}
 	}
 }

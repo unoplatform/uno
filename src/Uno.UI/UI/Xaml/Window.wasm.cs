@@ -22,6 +22,10 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Media;
 
+#if NET7_0_OR_GREATER
+using System.Runtime.InteropServices.JavaScript;
+#endif
+
 namespace Windows.UI.Xaml
 {
 	public sealed partial class Window
@@ -94,6 +98,9 @@ namespace Windows.UI.Xaml
 			}
 		}
 
+#if NET7_0_OR_GREATER
+		[JSExport]
+#endif
 		[Preserve]
 		public static void Resize(double width, double height)
 		{

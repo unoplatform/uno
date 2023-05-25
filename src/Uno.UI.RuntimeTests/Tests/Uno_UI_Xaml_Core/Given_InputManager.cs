@@ -10,7 +10,11 @@ using Windows.UI;
 using Windows.UI.Input.Preview.Injection;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
+using FluentAssertions;
+using Private.Infrastructure;
+using Uno.Extensions;
 
 namespace Uno.UI.RuntimeTests.Tests.Uno_UI_Xaml_Core;
 
@@ -63,6 +67,67 @@ public class Given_InputManager
 
 		Assert.AreEqual(Visibility.Collapsed, col2.Visibility, "The visibility should have been changed when the pointer left the col1.");
 		Assert.IsFalse(failed, "The pointer should not have been dispatched to the col2 as it has been set to visibility collapsed.");
+	}
+
+	[TestMethod]
+#if !__SKIA__
+	[Ignore("Pointer injection supported only on skia for now.")]
+#endif
+	public async Task When_LeaveElementWhileManipulating_Then_CaptureNotLost()
+	{
+		if (Private.Infrastructure.TestServices.WindowHelper.IsXamlIsland)
+		{
+			Assert.Inconclusive("Pointer injection is not supported yet on XamlIsland");
+			return;
+		}
+
+		Border sut;
+		TranslateTransform transform;
+		var ui = new Grid
+		{
+			Width = 128,
+			Height = 512,
+			Children =
+			{
+				(sut = new Border
+				{
+					Name = "SUT-Border",
+					HorizontalAlignment = HorizontalAlignment.Center,
+					VerticalAlignment = VerticalAlignment.Center,
+					Width = 16,
+					Height = Windows.UI.Input.GestureRecognizer.Manipulation.StartTouch.TranslateY * 3,
+					Background = new SolidColorBrush(Colors.DeepPink),
+					ManipulationMode = ManipulationModes.TranslateY,
+					RenderTransform = (transform = new TranslateTransform())
+				}),
+			}
+		};
+
+		await UITestHelper.Load(ui);
+
+		var exited = false;
+		sut.ManipulationDelta += (snd, e) => transform.Y = e.Cumulative.Translation.Y;
+		sut.PointerExited += (snd, e) => exited = true;
+
+		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+		using var finger = injector.GetFinger();
+
+		finger.Press(sut.GetAbsoluteBounds().GetCenter());
+
+		// Start manipulation
+		finger.MoveBy(0, 50, steps: 50);
+		transform.Y.Should().NotBe(0, "Manipulation should have started");
+
+		// Cause a fast move that will trigger a pointer leave
+		// Note: This might not be the WinUI behavior, should we receive a pointer leave when the element is capturing the pointer?
+		exited.Should().BeFalse();
+		finger.MoveBy(0, 50, steps: 0);
+		exited.Should().BeTrue();
+
+		// Confirm that even if we got a leave, pointer is still captured and we are still receiving manipulation events
+		var intermediatePosition = transform.Y;
+		finger.MoveBy(0, 50);
+		transform.Y.Should().Be(intermediatePosition + 50);
 	}
 
 	[TestMethod]
