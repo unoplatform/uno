@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using Common;
@@ -14,10 +15,17 @@ using ProgressBar = Microsoft.UI.Xaml.Controls.ProgressBar;
 [TestClass]
 public class ProgressBarTest
 {
+
 	[RunsOnUIThread]
 	[TestMethod]
 	public async Task ProgressBarLayoutUpdate()
 	{
+		if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+		{
+			Assert.Inconclusive("This test is not valid on macOS");
+			return;
+		}
+
 		var sut = new ProgressBar();
 		sut.Width = 200;
 		sut.Height = 40;
