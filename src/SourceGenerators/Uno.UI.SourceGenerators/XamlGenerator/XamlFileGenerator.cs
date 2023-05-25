@@ -1858,7 +1858,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 
 			var targetType = _metadataHelper.FindTypeByFullName(fullTargetType) as INamedTypeSymbol;
-			var propertyType = FindPropertyTypeByOwnerSymbol(targetType, property);
+			var propertyType = _metadataHelper.FindPropertyTypeByOwnerSymbol(targetType, property);
 
 			if (propertyType != null)
 			{
@@ -3552,10 +3552,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								if (
 									!IsType(declaringTypeSymbol, objectDefinitionType)
 									|| IsAttachedProperty(member)
-									|| (eventSymbol = FindEventType(declaringTypeSymbol, member.Member.Name)) != null
+									|| (eventSymbol = _metadataHelper.FindEventType(declaringTypeSymbol, member.Member.Name)) != null
 								)
 								{
-									if (FindPropertyTypeByOwnerSymbol(declaringTypeSymbol, member.Member.Name) != null)
+									if (_metadataHelper.FindPropertyTypeByOwnerSymbol(declaringTypeSymbol, member.Member.Name) != null)
 									{
 										BuildSetAttachedProperty(writer, closureName, member, objectUid ?? "", isCustomMarkupExtension: false);
 									}
@@ -4112,7 +4112,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			var bindNode = member.Objects.FirstOrDefault(o => o.Type.Name == "Bind");
 			var templateBindingNode = member.Objects.FirstOrDefault(o => o.Type.Name == "TemplateBinding");
 			var declaringType = FindType(member.Member.DeclaringType);
-			if (FindEventType(declaringType, member.Member.Name) is IEventSymbol eventSymbol)
+			if (_metadataHelper.FindEventType(declaringType, member.Member.Name) is IEventSymbol eventSymbol)
 			{
 				GenerateInlineEvent(closureName, writer, member, eventSymbol, componentDefinition);
 			}
@@ -4148,7 +4148,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					TryAnnotateWithGeneratorSource(writer, suffix: "HasBindingOptions");
 					var isAttachedProperty = IsDependencyProperty(declaringType, member.Member.Name);
-					var isBindingType = SymbolEqualityComparer.Default.Equals(FindPropertyTypeByOwnerSymbol(declaringType, member.Member.Name), Generation.DataBindingSymbol.Value);
+					var isBindingType = SymbolEqualityComparer.Default.Equals(_metadataHelper.FindPropertyTypeByOwnerSymbol(declaringType, member.Member.Name), Generation.DataBindingSymbol.Value);
 					var isOwnerDependencyObject = member.Owner != null && GetType(member.Owner.Type) is { } ownerType &&
 						(
 							(_xamlTypeToXamlTypeBaseMap.TryGetValue(ownerType, out var baseTypeSymbol) && FindType(baseTypeSymbol)?.GetAllInterfaces().Any(i => SymbolEqualityComparer.Default.Equals(i, Generation.DependencyObjectSymbol.Value)) == true) ||
@@ -5498,7 +5498,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				return IsType(objectDefinition.Type, type)
 					&& !IsAttachedProperty(type, member.Member.Name)
 					&& !IsLazyVisualStateManagerProperty(member)
-					&& FindEventType(type, member.Member.Name) == null
+					&& _metadataHelper.FindEventType(type, member.Member.Name) == null
 					&& member.Member.Name != "_UnknownContent"; // We are defining the elements of a collection explicitly declared in XAML
 			}
 
@@ -5723,12 +5723,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return false;
 		}
 
-		private bool IsLocalizedString(INamedTypeSymbol? propertyType, string? objectUid)
+		private static bool IsLocalizedString(INamedTypeSymbol? propertyType, string? objectUid)
 		{
 			return !objectUid.IsNullOrEmpty() && IsLocalizablePropertyType(propertyType);
 		}
 
-		private bool IsLocalizablePropertyType(INamedTypeSymbol? propertyType)
+		internal static bool IsLocalizablePropertyType(INamedTypeSymbol? propertyType)
 		{
 			return propertyType is { SpecialType: SpecialType.System_String or SpecialType.System_Object };
 		}
@@ -5943,7 +5943,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								writer.AppendLineIndented($"new global::Windows.UI.Xaml.Setter(new global::Windows.UI.Xaml.TargetPropertyPath(this._{elementName}Subject, \"{propertyName}\"), ");
 
 								var targetElementType = GetType(targetElement.Type);
-								var propertyType = FindPropertyTypeByOwnerSymbol(targetElementType, propertyName);
+								var propertyType = _metadataHelper.FindPropertyTypeByOwnerSymbol(targetElementType, propertyName);
 
 								if (valueNode.Objects.None())
 								{
