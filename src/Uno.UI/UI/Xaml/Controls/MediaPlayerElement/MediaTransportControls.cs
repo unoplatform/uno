@@ -12,7 +12,14 @@ using Windows.Foundation;
 using Windows.UI.Xaml.Media.Animation;
 using Uno.Disposables;
 using Windows.UI.Xaml.Controls.Primitives;
-using Windows.Devices.Input;
+
+#if HAS_UNO_WINUI
+using Microsoft.UI.Input;
+using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
+#else
+using Windows.UI.Input;
+using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
+#endif
 
 #if __IOS__
 using UIKit;
