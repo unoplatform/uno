@@ -699,6 +699,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				CleanUpContainer(container);
 			}
+			ItemsPanelRoot?.Children?.Clear();
 		}
 
 		private ICollection<DependencyObject> CaptureContainers(int startingIndex, int length)
