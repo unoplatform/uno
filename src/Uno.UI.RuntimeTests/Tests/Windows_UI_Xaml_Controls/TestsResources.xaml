@@ -134,6 +134,13 @@
 			<TextBlock Text="{Binding UserName}" />
 		</Grid>
 	</DataTemplate>
+
+	<DataTemplate x:Key="ContentControlComboTemplate">
+		<ComboBox DisplayMemberPath="DisplayName"
+				  ItemsSource="{Binding Items}"
+				  SelectedIndex="{Binding SelectedIndex, Mode=TwoWay}" />
+	</DataTemplate>
+
 	<Style x:Key="ScrollViewerCrowdedTemplateStyle"
 		   TargetType="ScrollViewer">
 		<Setter Property="HorizontalScrollBarVisibility"
