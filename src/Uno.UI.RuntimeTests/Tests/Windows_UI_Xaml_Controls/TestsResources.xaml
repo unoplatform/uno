@@ -674,7 +674,6 @@
 								</VisualState>
 
 								<VisualState x:Name="Pressed">
-									<!-- Workaround for Issue #246732 where IOS combobox sometimes keeps the pressed-on state too long. -->
 									<ios:VisualState.Setters>
 										<Setter Target="PressedOverlay.Opacity"
 													Value="0.9" />
@@ -925,7 +924,6 @@
 							<Border x:Name="PopupBorder"
 										CornerRadius="{StaticResource ComboBoxRadius}"
 										Background="{StaticResource MaterialSurfaceBrush}">
-								<!-- Workaround for Issue #213 where android PopupBorder doesn't get redrawn properly, adds Background, CornerRadius and Border to ScrollViewer  -->
 								<ScrollViewer x:Name="ScrollViewer"
 												  BorderBrush="Transparent"
 												  BorderThickness="0"
