@@ -49,6 +49,17 @@ public partial class GtkMediaPlayer : FrameworkElement
 		_ = Initialize();
 	}
 
+	~GtkMediaPlayer()
+	{
+		if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+		{
+			this.Log().Debug("Collecting GtkMediaPlayer");
+		}
+
+		_mediaPlayer?.Dispose();
+		_libvlc?.Dispose();
+	}
+
 	public string Source
 	{
 		get => (string)GetValue(SourceProperty);

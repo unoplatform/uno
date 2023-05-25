@@ -53,6 +53,7 @@ namespace LibVLCSharp.GTK
 
 		private MediaPlayer? _mediaPlayer;
 		private Gtk.Window? _videoWindow;
+		private Rectangle? _lastArrange;
 
 		internal event EventHandler? VideoSurfaceInteraction;
 
@@ -79,6 +80,7 @@ namespace LibVLCSharp.GTK
 			if (Visible)
 			{
 				_videoWindow?.Show();
+				ApplyLastArrange();
 			}
 			else
 			{
@@ -171,6 +173,8 @@ namespace LibVLCSharp.GTK
 
 				// Show the window once the ID has been associated in libVLC
 				_videoWindow.Show();
+
+				ApplyLastArrange();
 			}
 		}
 
@@ -262,12 +266,22 @@ namespace LibVLCSharp.GTK
 			}
 		}
 
+		private void ApplyLastArrange()
+		{
+			if (_lastArrange is not null)
+			{
+				Arrange(_lastArrange.Value);
+			}
+		}
+
 		internal void Arrange(Gdk.Rectangle value)
 		{
 			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Trace))
 			{
 				this.Log().Trace($"Arranging child window to {value.X}x{value.Y} / {value.Width}x{value.Height}");
 			}
+
+			_lastArrange = value;
 
 			_videoWindow?.Window.MoveResize(value.X, value.Y, value.Width, value.Height);
 		}

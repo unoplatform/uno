@@ -24,6 +24,7 @@ using System.Numerics;
 using Uno.Logging;
 using Windows.UI.Xaml;
 using Atk;
+using System.Runtime.CompilerServices;
 
 [assembly: ApiExtension(typeof(IMediaPlayerExtension), typeof(Uno.UI.Media.MediaPlayerExtension))]
 
@@ -31,7 +32,7 @@ namespace Uno.UI.Media;
 
 public partial class MediaPlayerExtension : IMediaPlayerExtension
 {
-	private static Dictionary<Windows.Media.Playback.MediaPlayer, MediaPlayerExtension> _instances = new();
+	private static ConditionalWeakTable<Windows.Media.Playback.MediaPlayer, MediaPlayerExtension> _instances = new();
 
 	private Uri? _uri;
 	private List<Uri>? _playlistItems;
@@ -58,15 +59,7 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 
 		lock (_instances)
 		{
-			_instances[_owner] = this;
-		}
-	}
-
-	~MediaPlayerExtension()
-	{
-		lock (_instances)
-		{
-			_instances.Remove(_owner);
+			_instances.Add(_owner, this);
 		}
 	}
 

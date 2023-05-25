@@ -1,26 +1,15 @@
 #nullable enable
 
 using Windows.UI.Core;
-using LibVLCSharp.GTK;
 using LibVLCSharp.Shared;
-using Windows.UI;
 using Windows.UI.Xaml.Controls;
-using Microsoft.UI.Xaml;
 using System;
 using Windows.UI.Xaml;
-using System.Threading;
-using System.Linq;
-using Windows.UI.Notifications;
 using Uno.Extensions;
 using Uno.Logging;
-using Pango;
-using Windows.UI.Xaml.Media;
-using System.Timers;
-using Timer = System.Timers.Timer;
-using System.Globalization;
-using Windows.Media.Playback;
 using System.Threading.Tasks;
-using Uno.UI.Runtime.Skia;
+using System.Runtime.CompilerServices;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Uno.UI.Media;
 
@@ -28,6 +17,8 @@ public partial class GtkMediaPlayer
 {
 	private Task? _initializationTask;
 	private MediaPlayerElement? _mpe;
+	private static ConditionalWeakTable<object, WeakReference<GtkMediaPlayer>> _playerMap = new();
+	private static ConditionalWeakTable<object, WeakReference<GtkMediaPlayer>> _videoViewMap = new();
 
 	public event EventHandler<object>? OnSourceFailed;
 	public event EventHandler<object>? OnSourceEnded;
@@ -62,6 +53,7 @@ public partial class GtkMediaPlayer
 			}
 
 			_mediaPlayer = new LibVLCSharp.Shared.MediaPlayer(_libvlc);
+			_playerMap.Add(_mediaPlayer, new WeakReference<GtkMediaPlayer>(this));
 
 			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 			{
@@ -69,7 +61,15 @@ public partial class GtkMediaPlayer
 			}
 
 			_videoView = new LibVLCSharp.GTK.VideoView();
-			_videoView.VideoSurfaceInteraction += OnVideoViewVideoSurfaceInteraction;
+			_videoViewMap.Add(_videoView, new WeakReference<GtkMediaPlayer>(this));
+
+			_videoView.VideoSurfaceInteraction += static (s, e) =>
+			{
+				if (GetGtkPlayerForVlcPlayer(s, out var target))
+				{
+					target.OnVideoViewVideoSurfaceInteraction(s, e);
+				}
+			};
 		});
 
 		await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
@@ -92,10 +92,30 @@ public partial class GtkMediaPlayer
 				_videoView.Visible = true;
 				_videoView.MediaPlayer = _mediaPlayer;
 
-				_mediaPlayer.TimeChanged += OnMediaPlayerTimeChange;
-				_mediaPlayer.TimeChanged += OnMediaPlayerTimeChangeIsMediaParse;
-				_mediaPlayer.MediaChanged += MediaPlayerMediaChanged;
-				_mediaPlayer.Stopped += OnMediaPlayerStopped;
+				_mediaPlayer.TimeChanged += static (s, e) =>
+				{
+					if (GetGtkPlayerForVlcPlayer(s, out var target))
+					{
+						target.OnMediaPlayerTimeChange(s, e);
+						target.OnMediaPlayerTimeChangeIsMediaParse(s, e);
+					}
+				};
+
+				_mediaPlayer.MediaChanged += static (s, e) =>
+				{
+					if (GetGtkPlayerForVlcPlayer(s, out var target))
+					{
+						target.MediaPlayerMediaChanged(s, e);
+					}
+				};
+
+				_mediaPlayer.Stopped += static (s, e) =>
+				{
+					if (GetGtkPlayerForVlcPlayer(s, out var target))
+					{
+						target.OnMediaPlayerStopped(s, e);
+					}
+				};
 
 				_videoContainer.Content = _videoView;
 				AddChild(_videoContainer);
@@ -109,6 +129,21 @@ public partial class GtkMediaPlayer
 
 			UpdateMedia();
 		});
+	}
+
+	static bool GetGtkPlayerForVlcPlayer(
+		object? instance,
+		[NotNullWhen(true)] out GtkMediaPlayer? player)
+	{
+		if (instance is not null
+			&& _playerMap.TryGetValue(instance, out var weakTarget)
+			&& weakTarget.TryGetTarget(out player))
+		{
+			return true;
+		}
+
+		player = null;
+		return false;
 	}
 
 	private void OnVideoViewVideoSurfaceInteraction(object? sender, EventArgs e)
@@ -162,6 +197,7 @@ public partial class GtkMediaPlayer
 
 			media.Parse(MediaParseOptions.ParseNetwork);
 			_mediaPlayer.Media = media;
+			AddMediaEvents();
 			OnSourceLoaded?.Invoke(this, EventArgs.Empty);
 
 			UpdateVideoStretch();
@@ -177,13 +213,12 @@ public partial class GtkMediaPlayer
 
 	private void AddMediaEvents()
 	{
-		if (_mediaPlayer?.Media is { IsParsed: true } media)
+		if (_mediaPlayer?.Media is { } media)
 		{
 			media.DurationChanged -= DurationChanged;
 			media.MetaChanged -= MetaChanged;
 			media.StateChanged -= StateChanged;
 			media.ParsedChanged -= ParsedChanged;
-			_mediaPlayer.TimeChanged -= OnMediaPlayerTimeChangeIsMediaParse;
 
 			media.DurationChanged += DurationChanged;
 			media.MetaChanged += MetaChanged;
