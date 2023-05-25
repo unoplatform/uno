@@ -38,7 +38,6 @@ namespace SamplesApp.UITests.Runtime
 				=> AppInitializer.GetLocalPlatform() == Platform.Browser ? query : query.All();
 
 			var runButton = new QueryEx(q => AllQuery(q).Marked("runButton"));
-			var testFilter = new QueryEx(q => AllQuery(q).Marked("testFilter"));
 			var failedTests = new QueryEx(q => AllQuery(q).Marked("failedTests"));
 			var failedTestsDetails = new QueryEx(q => AllQuery(q).Marked("failedTestDetails"));
 			var unitTestsControl = new QueryEx(q => AllQuery(q).Marked("UnitTestsRootControl"));
@@ -49,7 +48,7 @@ namespace SamplesApp.UITests.Runtime
 			}
 
 			_app.WaitForElement(runButton);
-			testFilter.EnterText("Given_VisibleBounds");
+
 			if (Environment.GetEnvironmentVariable(TestResultsOutputFilePath) is { } path)
 			{
 				// Used to disable showing the test output visually
