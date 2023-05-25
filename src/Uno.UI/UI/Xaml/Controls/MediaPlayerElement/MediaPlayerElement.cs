@@ -219,14 +219,14 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (sender is MediaPlayerElement mpe)
 			{
-				if (args.OldValue is MediaPlayer oldMediaPlayer)
+				if (args.OldValue is Windows.Media.Playback.MediaPlayer oldMediaPlayer)
 				{
 					oldMediaPlayer.MediaFailed -= mpe.OnMediaFailed;
 					oldMediaPlayer.MediaFailed -= mpe.OnMediaOpened;
 					oldMediaPlayer.Dispose();
 				}
 
-				if (args.NewValue is MediaPlayer newMediaPlayer)
+				if (args.NewValue is Windows.Media.Playback.MediaPlayer newMediaPlayer)
 				{
 					newMediaPlayer.Source = mpe.Source;
 					newMediaPlayer.MediaFailed += mpe.OnMediaFailed;
@@ -360,7 +360,7 @@ namespace Windows.UI.Xaml.Controls
 
 			if (MediaPlayer == null)
 			{
-				MediaPlayer = new MediaPlayer();
+				MediaPlayer = new Windows.Media.Playback.MediaPlayer();
 				_mediaPlayerPresenter?.ApplyStretch();
 			}
 
@@ -381,6 +381,10 @@ namespace Windows.UI.Xaml.Controls
 			MediaPlayer = mediaPlayer;
 		}
 
+		#region IsCompactOverlay Property
+
+		public bool IsCompactOverlay { get; set; }
+
 		public void ToggleCompactOverlay(bool showCompactOverlay)
 		{
 #if __WASM__
@@ -397,5 +401,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 #endif
 		}
+
+		#endregion
 	}
 }

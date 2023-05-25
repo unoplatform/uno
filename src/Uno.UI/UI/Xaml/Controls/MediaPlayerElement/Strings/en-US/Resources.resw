@@ -239,7 +239,7 @@
   <data name="UIA_MEDIA_REPEAT_ALL" xml:space="preserve">
     <value>Repeat All</value>
   </data>
-  <data name="UIA_MEDIA_MINIVIEW" xml:space="preserve">
+	<data name="UIA_MEDIA_MINIVIEW" xml:space="preserve">
     <value>Enter MiniView</value>
   </data>
   <data name="UIA_MEDIA_EXIT_MINIVIEW" xml:space="preserve">
