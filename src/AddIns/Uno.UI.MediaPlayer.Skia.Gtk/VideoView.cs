@@ -52,7 +52,9 @@ namespace LibVLCSharp.GTK
 		}
 
 		private MediaPlayer? _mediaPlayer;
-		private Gdk.Window? _videoWindow;
+		private Gtk.Window? _videoWindow;
+
+		internal event EventHandler? VideoSurfaceInteraction;
 
 		/// <summary>
 		/// GTK VideoView constructor
@@ -125,29 +127,42 @@ namespace LibVLCSharp.GTK
 			// even if the window is rendered layered over the existing app. Otherwise, using the current
 			// window may render incorrectly (on macOS), or fail to resize properly (on Windows).
 			//
-			var windowAttributes = new WindowAttr
-			{
-				WindowType = Gdk.WindowType.Child,
-				X = 0,
-				Y = 0,
-				Width = 0,
-				Height = 0,
-				Wclass = WindowWindowClass.InputOutput,
-				Visual = Screen.Default.RgbaVisual,
-				EventMask = (int)EventMask.ExposureMask
-			};
-
-			var windowAttributesTypes = WindowAttributesType.X | WindowAttributesType.Y | WindowAttributesType.Visual;
-
-			// Create the child window
-			_videoWindow = new(Window.Toplevel, windowAttributes, windowAttributesTypes);
+			_videoWindow = new("Window");
 			_videoWindow.SkipTaskbarHint = true;
 			_videoWindow.SkipPagerHint = true;
+			_videoWindow.Decorated = false;
 
+			_videoWindow.Events
+				= EventMask.PointerMotionMask
+				| EventMask.Button1MotionMask
+				| EventMask.Button2MotionMask
+				| EventMask.ButtonPressMask
+				| EventMask.ButtonReleaseMask
+				;
+
+			_videoWindow.ButtonPressEvent += OnVideoWindowButtonPressEvent;
+			_videoWindow.MotionNotifyEvent += OnVideoWindowMotionNotifyEvent;
+
+			// Show the window once, so that we can get an ID for it.
 			_videoWindow.Show();
 
+			// Hide it immediately so it does not show outside of our own window
+			_videoWindow.Hide();
+
+			// Reparent the window to the current window, so it appears inside.
+			_videoWindow.Window.Reparent(Toplevel.Window, 0, 0);
+
 			AssignWindowId();
+
+			// Show the window once the ID has been associated in libVLC
+			_videoWindow.Show();
 		}
+
+		private void OnVideoWindowMotionNotifyEvent(object o, MotionNotifyEventArgs args)
+			=> VideoSurfaceInteraction?.Invoke(this, EventArgs.Empty);
+
+		private void OnVideoWindowButtonPressEvent(object o, ButtonPressEventArgs args)
+			=> VideoSurfaceInteraction?.Invoke(this, EventArgs.Empty);
 
 		private void AssignWindowId()
 		{
@@ -158,7 +173,7 @@ namespace LibVLCSharp.GTK
 
 			if (PlatformHelper.IsWindows)
 			{
-				_mediaPlayer.Hwnd = Native.gdk_win32_window_get_handle(_videoWindow.Handle);
+				_mediaPlayer.Hwnd = Native.gdk_win32_window_get_handle(_videoWindow.Window.Handle);
 			}
 			else if (PlatformHelper.IsLinux)
 			{
@@ -225,7 +240,7 @@ namespace LibVLCSharp.GTK
 				this.Log().Trace($"Arranging child window to {value.X}x{value.Y} / {value.Width}x{value.Height}");
 			}
 
-			_videoWindow?.MoveResize(value.X, value.Y, value.Width, value.Height);
+			_videoWindow?.Window.MoveResize(value.X, value.Y, value.Width, value.Height);
 		}
 	}
 }

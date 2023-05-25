@@ -38,9 +38,12 @@ public partial class GtkMediaPlayer : FrameworkElement
 	private Windows.UI.Xaml.Media.Stretch _stretch = Windows.UI.Xaml.Media.Stretch.Uniform;
 	private readonly ImmutableArray<string> audioTagAllowedFormats = ImmutableArray.Create(".MP3", ".WAV");
 	private readonly ImmutableArray<string> videoTagAllowedFormats = ImmutableArray.Create(".MP4", ".WEBM", ".OGG");
+	private readonly MediaPlayerPresenter _owner;
 
-	public GtkMediaPlayer()
+	public GtkMediaPlayer(MediaPlayerPresenter owner)
 	{
+		_owner = owner;
+
 		Loaded += GtkMediaPlayer_Loaded;
 		Unloaded += GtkMediaPlayer_Unloaded;
 		LayoutUpdated += GtkMediaPlayer_LayoutUpdated;
@@ -338,9 +341,9 @@ public partial class GtkMediaPlayer : FrameworkElement
 					_mediaPlayer.Media.Mrl != null &&
 					_videoContainer is not null)
 			{
-				var layoutSlot = LayoutInformation.GetLayoutSlot(this);
+				var currentSize = new Size(ActualWidth, ActualHeight);
 
-				if (layoutSlot.Height <= 0 || layoutSlot.Width <= 0)
+				if (currentSize.Height <= 0 || currentSize.Width <= 0)
 				{
 					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 					{
@@ -350,8 +353,8 @@ public partial class GtkMediaPlayer : FrameworkElement
 					return;
 				}
 
-				var playerHeight = (double)layoutSlot.Height - _transportControlsBounds.Height;
-				var playerWidth = (double)layoutSlot.Width;
+				var playerHeight = (double)currentSize.Height - _transportControlsBounds.Height;
+				var playerWidth = (double)currentSize.Width;
 
 				_mediaPlayer.Media.Parse(MediaParseOptions.ParseNetwork);
 
@@ -446,8 +449,6 @@ public partial class GtkMediaPlayer : FrameworkElement
 
 					Point pagePosition = this.TransformToVisual(root).TransformPoint(new Point(leftInsetUniform, topInsetUniform));
 
-					Console.WriteLine($"UpdateVideoSizeAllocate Uniform ({pagePosition}, {newWidth}x{newHeight})");
-
 					if (_videoView is not null)
 					{
 						_videoView.Arrange(new((int)pagePosition.X, (int)pagePosition.Y, newWidth, newHeight));
@@ -455,7 +456,7 @@ public partial class GtkMediaPlayer : FrameworkElement
 
 					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 					{
-						this.Log().Debug($"Uniform Stretch Width: {newWidth},  Height: {newHeight}");
+						this.Log().Debug($"UpdateVideoSizeAllocate Uniform ({pagePosition}, {newWidth}x{newHeight})");
 					}
 					break;
 
@@ -477,7 +478,10 @@ public partial class GtkMediaPlayer : FrameworkElement
 							_videoView.Arrange(new((int)pagePositionFill.X, (int)pagePositionFill.Y, (int)playerWidth, (int)playerHeight));
 						}
 
-						Console.WriteLine($"UpdateVideoSizeAllocate UniformToFill ({pagePositionFill}, {newWidth}x{newHeight})");
+						if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+						{
+							this.Log().Debug($"UpdateVideoSizeAllocate UniformToFill ({pagePositionFill}, {newWidth}x{newHeight})");
+						}
 					}
 
 					break;

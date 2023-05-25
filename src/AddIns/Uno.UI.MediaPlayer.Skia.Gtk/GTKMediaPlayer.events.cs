@@ -68,6 +68,7 @@ public partial class GtkMediaPlayer
 			}
 
 			_videoView = new LibVLCSharp.GTK.VideoView();
+			_videoView.VideoSurfaceInteraction += OnVideoViewVideoSurfaceInteraction;
 		});
 
 		await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
@@ -86,6 +87,7 @@ public partial class GtkMediaPlayer
 				{
 					this.Log().Debug($"Set MediaPlayer");
 				}
+
 				_videoView.Visible = true;
 				_videoView.MediaPlayer = _mediaPlayer;
 
@@ -106,6 +108,14 @@ public partial class GtkMediaPlayer
 
 			UpdateMedia();
 		});
+	}
+
+	private void OnVideoViewVideoSurfaceInteraction(object? sender, EventArgs e)
+	{
+		if (_owner.FindFirstParent<MediaPlayerElement>() is { } mpe)
+		{
+			mpe.TransportControls.Show();
+		}
 	}
 
 	private void OnSourceVideoLoaded(object? sender, EventArgs e)
@@ -288,8 +298,8 @@ public partial class GtkMediaPlayer
 
 	private void OnMediaPlayerTimeChange(object? sender, MediaPlayerTimeChangedEventArgs el)
 	{
-		var time = el is LibVLCSharp.Shared.MediaPlayerTimeChangedEventArgs e 
-			? TimeSpan.FromMilliseconds(e.Time) 
+		var time = el is LibVLCSharp.Shared.MediaPlayerTimeChangedEventArgs e
+			? TimeSpan.FromMilliseconds(e.Time)
 			: TimeSpan.Zero;
 
 		OnTimeUpdate?.Invoke(this, time);

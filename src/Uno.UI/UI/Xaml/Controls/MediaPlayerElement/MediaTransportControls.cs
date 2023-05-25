@@ -110,20 +110,21 @@ namespace Windows.UI.Xaml.Controls
 		private ProgressBar _downloadProgressIndicator;
 		private Grid _controlPanelGrid;
 
-		private Timer _controlsVisibilityTimer;
+		private DispatcherTimer _controlsVisibilityTimer;
 		private bool _wasPlaying;
-		private bool _isInteractive = true;
+		private bool _isShowingControls = true;
 		private MediaPlayerElement _mpe;
 		private CompositeDisposable _loadedSubscriptions;
 
 		public MediaTransportControls() : base()
 		{
-			_controlsVisibilityTimer = new Timer()
+			_controlsVisibilityTimer = new()
 			{
-				AutoReset = false,
-				Interval = 3000
+				Interval = TimeSpan.FromSeconds(3)
 			};
-			_controlsVisibilityTimer.Elapsed += ControlsVisibilityTimerElapsed;
+
+			_controlsVisibilityTimer.Tick += ControlsVisibilityTimerElapsed;
+
 			DefaultStyleKey = typeof(MediaTransportControls);
 			Loaded += MediaTransportControls_Loaded;
 			Unloaded += MediaTransportControls_Unloaded;
@@ -164,14 +165,14 @@ namespace Windows.UI.Xaml.Controls
 			_mpe = mediaPlayerElement;
 		}
 
-		private void ControlsVisibilityTimerElapsed(object sender, ElapsedEventArgs args)
+		private void ControlsVisibilityTimerElapsed(object sender, object args)
 		{
+			_controlsVisibilityTimer.Stop();
+
 			if (ShowAndHideAutomatically)
 			{
 				Hide();
 			}
-
-			_controlsVisibilityTimer.Stop();
 		}
 
 		private void ResetControlsVisibilityTimer()
@@ -337,8 +338,13 @@ namespace Windows.UI.Xaml.Controls
 			if (_rootGrid is not null)
 			{
 				_rootGrid.Tapped += OnRootGridTapped;
+				_rootGrid.PointerMoved += OnRootGridPointerMoved;
 
-				_loadedSubscriptions.Add(() => _rootGrid.Tapped -= OnRootGridTapped);
+				_loadedSubscriptions.Add(() =>
+				{
+					_rootGrid.Tapped -= OnRootGridTapped;
+					_rootGrid.PointerMoved -= OnRootGridPointerMoved;
+				});
 			}
 
 			// Register on visual state changes to update the layout in extensions
@@ -372,9 +378,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		private void Storyboard_Completed(object sender, object e)
-		{
-			OnControlsBoundsChanged();
-		}
+			=> OnControlsBoundsChanged();
 
 		private void ControlPanelGridSizeChanged(object sender, SizeChangedEventArgs args)
 		{
@@ -431,7 +435,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public void Show()
 		{
-			_isInteractive = true;
+			_isShowingControls = true;
 
 			_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 			{
@@ -440,11 +444,16 @@ namespace Windows.UI.Xaml.Controls
 
 			// Adjust layout bounds immediately
 			OnControlsBoundsChanged();
+
+			if (ShowAndHideAutomatically)
+			{
+				ResetControlsVisibilityTimer();
+			}
 		}
 
 		public void Hide()
 		{
-			_isInteractive = false;
+			_isShowingControls = false;
 
 			_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 			{
@@ -463,13 +472,11 @@ namespace Windows.UI.Xaml.Controls
 				return;
 			}
 
-			var panelRect = LayoutInformation.GetLayoutSlot(_controlPanelGrid);
-
 			var bounds = new Rect(
 				0,
 				0,
-				panelRect.Width,
-				_isInteractive ? panelRect.Height : 0);
+				_controlPanelGrid.ActualWidth,
+				_isShowingControls ? _controlPanelGrid.ActualHeight : 0);
 
 			var transportBounds = TransformToVisual(root).TransformBounds(bounds);
 			_mediaPlayer?.SetTransportControlBounds(transportBounds);
@@ -485,21 +492,30 @@ namespace Windows.UI.Xaml.Controls
 		}
 		private void OnRootGridTapped(object sender, TappedRoutedEventArgs e)
 		{
-			if (_isInteractive)
+			if (e.PointerDeviceType == Devices.Input.PointerDeviceType.Touch)
 			{
-				_controlsVisibilityTimer.Stop();
-				Hide();
-			}
-			else
-			{
-				Show();
-
-				if (ShowAndHideAutomatically)
+				if (_isShowingControls)
 				{
-					ResetControlsVisibilityTimer();
+					_controlsVisibilityTimer.Stop();
+					Hide();
+				}
+				else
+				{
+					Show();
+
+					if (ShowAndHideAutomatically)
+					{
+						ResetControlsVisibilityTimer();
+					}
 				}
 			}
 		}
+
+		private void OnRootGridPointerMoved(object sender, PointerRoutedEventArgs e)
+		{
+			Show();
+		}
+
 		private void UpdateMediaTransportControlMode(object sender, RoutedEventArgs e)
 		{
 			IsCompact = !IsCompact;

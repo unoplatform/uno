@@ -43,6 +43,7 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 	private int _playlistIndex;
 	private TimeSpan _naturalDuration;
 	private bool _isLoopingEnabled;
+	private double _playbackRate;
 
 	public MediaPlayerExtension(object owner)
 	{
@@ -253,8 +254,6 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 
 	public void Initialize()
 		=> InitializePlayer();
-
-	private double _playbackRate;
 
 	public double PlaybackRate
 	{

@@ -36,7 +36,7 @@ public class MediaPlayerPresenterExtension : IMediaPlayerPresenterExtension
 			throw new InvalidOperationException($"MediaPlayerPresenterExtension must be initialized with a MediaPlayer instance");
 		}
 		_owner = presenter;
-		_player = new GtkMediaPlayer();
+		_player = new GtkMediaPlayer(_owner);
 		var contentView = new ContentControl();
 		contentView.Content = _player;
 		contentView.VerticalContentAlignment = Windows.UI.Xaml.VerticalAlignment.Stretch;

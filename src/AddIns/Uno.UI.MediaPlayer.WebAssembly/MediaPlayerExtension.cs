@@ -588,5 +588,8 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 		}
 	}
 
-	public void SetTransportControlsBounds(Rect bounds) => throw new NotImplementedException();
+	public void SetTransportControlsBounds(Rect bounds)
+	{
+		// No effect on WebAssembly.
+	}
 }
