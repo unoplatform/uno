@@ -248,7 +248,7 @@ internal partial class HtmlMediaPlayer : Border
 	}
 
 	/// <summary>
-	/// Occurs when the video source change the status
+	/// Occurs when the video source change the status to Pause
 	/// </summary>
 	event EventHandler StatusPauseChanged
 	{
@@ -256,24 +256,15 @@ internal partial class HtmlMediaPlayer : Border
 		{
 			_htmlVideo.RegisterHtmlEventHandler("pause", value);
 			_htmlAudio.RegisterHtmlEventHandler("pause", value);
-
-			//_htmlVideo.RegisterHtmlEventHandler("playing", value);
-			//_htmlAudio.RegisterHtmlEventHandler("playing", value);
 		}
 		remove
 		{
 			_htmlVideo.UnregisterHtmlEventHandler("pause", value);
 			_htmlAudio.UnregisterHtmlEventHandler("pause", value);
-
-			//_htmlVideo.UnregisterHtmlEventHandler("pause", value);
-			//_htmlAudio.UnregisterHtmlEventHandler("pause", value);
-
-			//_htmlVideo.UnregisterHtmlEventHandler("playing", value);
-			//_htmlAudio.UnregisterHtmlEventHandler("playing", value);
 		}
 	}
 	/// <summary>
-	/// Occurs when the video source change the status
+	/// Occurs when the video source change the status to Play
 	/// </summary>
 	event EventHandler StatusPlayChanged
 	{
