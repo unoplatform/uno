@@ -78,7 +78,7 @@ namespace Uno.UI.Media {
 
 		public static exitPictureInPicture() {
 			if (document.pictureInPictureEnabled) {
-				var closePictureInPicture =
+				const closePictureInPicture =
 					document.exitPictureInPicture
 					|| document.mozCancelPictureInPicture
 					|| document.webkitExitPictureInPicture
