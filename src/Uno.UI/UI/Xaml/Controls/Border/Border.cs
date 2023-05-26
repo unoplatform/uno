@@ -36,8 +36,9 @@ using RadialGradientBrush = Microsoft.UI.Xaml.Media.RadialGradientBrush;
 
 namespace Windows.UI.Xaml.Controls
 {
+	// TODO: Border should be sealed
 	[ContentProperty(Name = nameof(Child))]
-	public sealed partial class Border : FrameworkElement
+	public partial class Border : FrameworkElement
 	{
 
 		/// <summary>

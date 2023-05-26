@@ -88,10 +88,10 @@ namespace Windows.Graphics.Imaging
 		public int PixelWidth =>
 			_bitmap.Width;
 
-		internal SKBitmap Bitmap => bitmap;
+		internal SKBitmap Bitmap => _bitmap;
 
 		public SoftwareBitmap GetReadOnlyView() =>
-			new SoftwareBitmap(bitmap, true);
+			new SoftwareBitmap(_bitmap, true);
 
 		public void CopyTo(SoftwareBitmap bitmap)
 		{
@@ -99,13 +99,13 @@ namespace Windows.Graphics.Imaging
 			{
 				throw new ArgumentException("Destionanion is ReadOnly", nameof(bitmap));
 			}
-			using var canvas = new SKCanvas(bitmap.bitmap);
+			using var canvas = new SKCanvas(bitmap._bitmap);
 			canvas.DrawBitmap(_bitmap, 0, 0);
 			canvas.Flush();
 		}
 
 		public static SoftwareBitmap Copy(SoftwareBitmap source) =>
-			new SoftwareBitmap(source.bitmap.Copy(), false);
+			new SoftwareBitmap(source._bitmap.Copy(), false);
 
 		public static global::Windows.Graphics.Imaging.SoftwareBitmap CreateCopyFromBuffer(global::Windows.Storage.Streams.IBuffer source, global::Windows.Graphics.Imaging.BitmapPixelFormat format, int width, int height)
 		{
