@@ -90,6 +90,11 @@ namespace Uno.Media.Playback
 		TimeSpan Position { get; set; }
 
 		/// <summary>
+		/// Sets the transport controls bounds so that video can be displayed around controls
+		/// </summary>
+		void SetTransportControlsBounds(Rect bounds);
+
+		/// <summary>
 		/// Sets the source from a Uri
 		/// </summary>
 		void SetUriSource(Uri value);

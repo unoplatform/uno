@@ -7,6 +7,19 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Uno.UI.Xaml.Controls.MediaPlayer.Internal;
+using System.Drawing;
+using Windows.Foundation;
+using Windows.UI.Xaml.Media.Animation;
+using Uno.Disposables;
+using Windows.UI.Xaml.Controls.Primitives;
+
+#if HAS_UNO_WINUI
+using Microsoft.UI.Input;
+using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
+#else
+using Windows.UI.Input;
+using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
+#endif
 
 #if __IOS__
 using UIKit;
@@ -105,19 +118,21 @@ namespace Windows.UI.Xaml.Controls
 		private ProgressBar _downloadProgressIndicator;
 		private Grid _controlPanelGrid;
 
-		private Timer _controlsVisibilityTimer;
+		private DispatcherTimer _controlsVisibilityTimer;
 		private bool _wasPlaying;
-		private bool _isInteractive;
+		private bool _isShowingControls = true;
 		private MediaPlayerElement _mpe;
+		private CompositeDisposable _loadedSubscriptions;
 
 		public MediaTransportControls() : base()
 		{
-			_controlsVisibilityTimer = new Timer()
+			_controlsVisibilityTimer = new()
 			{
-				AutoReset = false,
-				Interval = 3000
+				Interval = TimeSpan.FromSeconds(3)
 			};
-			_controlsVisibilityTimer.Elapsed += ControlsVisibilityTimerElapsed;
+
+			_controlsVisibilityTimer.Tick += ControlsVisibilityTimerElapsed;
+
 			DefaultStyleKey = typeof(MediaTransportControls);
 			Loaded += MediaTransportControls_Loaded;
 			Unloaded += MediaTransportControls_Unloaded;
@@ -158,14 +173,14 @@ namespace Windows.UI.Xaml.Controls
 			_mpe = mediaPlayerElement;
 		}
 
-		private void ControlsVisibilityTimerElapsed(object sender, ElapsedEventArgs args)
+		private void ControlsVisibilityTimerElapsed(object sender, object args)
 		{
+			_controlsVisibilityTimer.Stop();
+
 			if (ShowAndHideAutomatically)
 			{
 				Hide();
 			}
-
-			_controlsVisibilityTimer.Stop();
 		}
 
 		private void ResetControlsVisibilityTimer()
@@ -188,6 +203,7 @@ namespace Windows.UI.Xaml.Controls
 			base.OnApplyTemplate();
 
 			UnbindMediaPlayer();
+			_loadedSubscriptions?.Dispose();
 
 			var trueToVisible = new FromNullableBoolToVisibilityConverter();
 
@@ -209,12 +225,10 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			_fullWindowButton = this.GetTemplateChild(FullWindowButtonName) as Button;
-			if (_fullWindowButton != null)
+			if (_fullWindowButton is not null)
 			{
 				_fullWindowButton.SetBinding(Button.VisibilityProperty, new Binding { Path = "IsFullWindowButtonVisible", Source = this, Mode = BindingMode.OneWay, FallbackValue = Visibility.Collapsed, Converter = trueToVisible });
 				_fullWindowButton.SetBinding(Button.IsEnabledProperty, new Binding { Path = "IsFullWindowEnabled", Source = this, Mode = BindingMode.OneWay, FallbackValue = true });
-				_fullWindowButton.Tapped -= FullWindowButtonTapped;
-				_fullWindowButton.Tapped += FullWindowButtonTapped;
 			}
 
 			_castButton = this.GetTemplateChild(CastButtonName) as Button;
@@ -225,27 +239,21 @@ namespace Windows.UI.Xaml.Controls
 			{
 				_zoomButton?.SetBinding(Button.VisibilityProperty, new Binding { Path = "IsZoomButtonVisible", Source = this, Mode = BindingMode.OneWay, FallbackValue = Visibility.Collapsed, Converter = trueToVisible });
 				_zoomButton?.SetBinding(Button.IsEnabledProperty, new Binding { Path = "IsZoomEnabled", Source = this, Mode = BindingMode.OneWay, FallbackValue = true });
-				_zoomButton.Tapped -= ZoomButtonTapped;
-				_zoomButton.Tapped += ZoomButtonTapped;
 			}
 
 			_playbackRateButton = this.GetTemplateChild(PlaybackRateButtonName) as Button;
 			_playbackRateButton?.SetBinding(Button.VisibilityProperty, new Binding { Path = "IsPlaybackRateButtonVisible", Source = this, Mode = BindingMode.OneWay, FallbackValue = Visibility.Collapsed, Converter = trueToVisible });
 			_playbackRateButton?.SetBinding(Button.IsEnabledProperty, new Binding { Path = "IsPlaybackRateEnabled", Source = this, Mode = BindingMode.OneWay, FallbackValue = true });
-			_playbackRateButton.Tapped -= PlaybackRateButtonTapped;
-			_playbackRateButton.Tapped += PlaybackRateButtonTapped;
 
 			_compactOverlayButton = this.GetTemplateChild(CompactOverlayButtonName) as Button;
 			_compactOverlayButton?.SetBinding(Button.VisibilityProperty, new Binding { Path = "IsCompactOverlayButtonVisible", Source = this, Mode = BindingMode.OneWay, FallbackValue = Visibility.Collapsed, Converter = trueToVisible });
 			_compactOverlayButton?.SetBinding(Button.IsEnabledProperty, new Binding { Path = "IsCompactOverlayEnabled", Source = this, Mode = BindingMode.OneWay, FallbackValue = true });
-			_compactOverlayButton.Tapped -= UpdateMediaTransportControlMode;
-			_compactOverlayButton.Tapped += UpdateMediaTransportControlMode;
+
+			_controlPanelGrid = this.GetTemplateChild(ControlPanelGridName) as Grid;
 
 			_repeatVideoButton = this.GetTemplateChild(RepeatVideoButtonName) as Button;
 			_repeatVideoButton?.SetBinding(Button.VisibilityProperty, new Binding { Path = "IsRepeatButtonVisible", Source = this, Mode = BindingMode.OneWay, FallbackValue = Visibility.Collapsed, Converter = trueToVisible });
 			_repeatVideoButton?.SetBinding(Button.IsEnabledProperty, new Binding { Path = "IsRepeatEnabled", Source = this, Mode = BindingMode.OneWay, FallbackValue = true });
-			_repeatVideoButton.Tapped -= IsRepeatEnabledButtonTapped;
-			_repeatVideoButton.Tapped += IsRepeatEnabledButtonTapped;
 
 			_skipForwardButton = this.GetTemplateChild(SkipForwardButtonName) as Button;
 			_skipForwardButton?.SetBinding(Button.VisibilityProperty, new Binding { Path = "IsSkipForwardButtonVisible", Source = this, Mode = BindingMode.OneWay, FallbackValue = Visibility.Collapsed, Converter = trueToVisible });
@@ -253,13 +261,9 @@ namespace Windows.UI.Xaml.Controls
 
 			_nextTrackButton = this.GetTemplateChild(NextTrackButtonName) as Button;
 			_nextTrackButton?.SetBinding(Button.VisibilityProperty, new Binding { Path = "IsNextTrackButtonVisible", Source = this, Mode = BindingMode.OneWay, FallbackValue = Visibility.Collapsed, Converter = trueToVisible });
-			_nextTrackButton.Tapped -= NextTrackButtonTapped;
-			_nextTrackButton.Tapped += NextTrackButtonTapped;
 
 			_previousTrackButton = this.GetTemplateChild(PreviousTrackButtonName) as Button;
 			_previousTrackButton?.SetBinding(Button.VisibilityProperty, new Binding { Path = "IsPreviousTrackButtonVisible", Source = this, Mode = BindingMode.OneWay, FallbackValue = Visibility.Collapsed, Converter = trueToVisible });
-			_previousTrackButton.Tapped -= PreviousTrackButtonTapped;
-			_previousTrackButton.Tapped += PreviousTrackButtonTapped;
 
 			_fastForwardButton = this.GetTemplateChild(FastForwardButtonName) as Button;
 			_fastForwardButton?.SetBinding(Button.VisibilityProperty, new Binding { Path = "IsFastForwardButtonVisible", Source = this, Mode = BindingMode.OneWay, FallbackValue = Visibility.Collapsed, Converter = trueToVisible });
@@ -293,16 +297,146 @@ namespace Windows.UI.Xaml.Controls
 
 			_timelineContainer = this.GetTemplateChild(TimelineContainerName) as Border;
 			_timelineContainer?.SetBinding(Border.VisibilityProperty, new Binding { Path = "IsSeekBarVisible", Source = this, Mode = BindingMode.OneWay, FallbackValue = Visibility.Collapsed, Converter = trueToVisible });
-			_timelineContainer?.SetBinding(Border.IsEnabledProperty, new Binding { Path = "IsSeekEnabled", Source = this, Mode = BindingMode.OneWay, FallbackValue = true });
-
+			_progressSlider?.SetBinding(Control.IsEnabledProperty, new Binding { Path = "IsSeekEnabled", Source = this, Mode = BindingMode.OneWay, FallbackValue = true });
 			_downloadProgressIndicator = _progressSlider?.GetTemplateChild(DownloadProgressIndicatorName) as ProgressBar;
 
 			UpdateMediaTransportControlMode();
 
-			if (_mediaPlayer != null)
+			_rootGrid = this.GetTemplateChild(RootGridName) as Grid;
+
+			if (_mediaPlayer is not null)
 			{
 				BindMediaPlayer();
 			}
+
+			if (IsLoaded)
+			{
+				BindToControlEvents();
+			}
+		}
+
+		internal override void OnLayoutUpdated()
+		{
+			base.OnLayoutUpdated();
+
+			OnControlsBoundsChanged();
+		}
+
+		private protected override void OnLoaded()
+		{
+			base.OnLoaded();
+
+			BindToControlEvents();
+		}
+
+		private void BindToControlEvents()
+		{
+			_loadedSubscriptions = new();
+
+			if (_rootGrid is not null)
+			{
+				_rootGrid.Tapped += OnRootGridTapped;
+				_rootGrid.PointerMoved += OnRootGridPointerMoved;
+
+				_loadedSubscriptions.Add(() =>
+				{
+					_rootGrid.Tapped -= OnRootGridTapped;
+					_rootGrid.PointerMoved -= OnRootGridPointerMoved;
+				});
+			}
+
+			if (_fullWindowButton is not null)
+			{
+				_fullWindowButton.Tapped += FullWindowButtonTapped;
+
+				_loadedSubscriptions.Add(() => _fullWindowButton.Tapped -= FullWindowButtonTapped);
+			}
+
+			if (_zoomButton is not null)
+			{
+				_zoomButton.Tapped += ZoomButtonTapped;
+
+				_loadedSubscriptions.Add(() => _zoomButton.Tapped -= ZoomButtonTapped);
+			}
+
+			if (_playbackRateButton is not null)
+			{
+				_playbackRateButton.Tapped += PlaybackRateButtonTapped;
+
+				_loadedSubscriptions.Add(() => _playbackRateButton.Tapped -= PlaybackRateButtonTapped);
+			}
+
+			if (_compactOverlayButton is not null)
+			{
+				_compactOverlayButton.Tapped += UpdateMediaTransportControlMode;
+
+				_loadedSubscriptions.Add(() => _compactOverlayButton.Tapped -= UpdateMediaTransportControlMode);
+			}
+
+			if (_controlPanelGrid is not null)
+			{
+				_controlPanelGrid.SizeChanged += ControlPanelGridSizeChanged;
+
+				_loadedSubscriptions.Add(() => _controlPanelGrid.SizeChanged -= ControlPanelGridSizeChanged);
+			}
+
+			if (_repeatVideoButton is not null)
+			{
+				_repeatVideoButton.Tapped += IsRepeatEnabledButtonTapped;
+
+				_loadedSubscriptions.Add(() => _repeatVideoButton.Tapped -= IsRepeatEnabledButtonTapped);
+			}
+
+			if (_nextTrackButton is not null)
+			{
+				_nextTrackButton.Tapped -= NextTrackButtonTapped;
+
+				_loadedSubscriptions.Add(() => _nextTrackButton.Tapped -= NextTrackButtonTapped);
+			}
+
+			if (_previousTrackButton is not null)
+			{
+				_previousTrackButton.Tapped -= PreviousTrackButtonTapped;
+
+				_loadedSubscriptions.Add(() => _previousTrackButton.Tapped -= PreviousTrackButtonTapped);
+			}
+
+			// Register on visual state changes to update the layout in extensions
+			foreach (var groups in VisualStateManager.GetVisualStateGroups(this.GetTemplateRoot()))
+			{
+				foreach (var state in groups.States)
+				{
+					if (state.Name is "ControlPanelFadeOut")
+					{
+						foreach (var child in state.Storyboard.Children)
+						{
+							// Update the layout on opacity completed
+							if (child.PropertyInfo?.LeafPropertyName == "Opacity")
+							{
+								child.Completed += Storyboard_Completed;
+
+								_loadedSubscriptions.Add(() => child.Completed += Storyboard_Completed);
+							}
+						}
+					}
+				}
+			}
+		}
+
+		private protected override void OnUnloaded()
+		{
+			base.OnUnloaded();
+
+			_loadedSubscriptions?.Dispose();
+			_loadedSubscriptions = null;
+		}
+
+		private void Storyboard_Completed(object sender, object e)
+			=> OnControlsBoundsChanged();
+
+		private void ControlPanelGridSizeChanged(object sender, SizeChangedEventArgs args)
+		{
+			OnControlsBoundsChanged();
 		}
 
 		private void FullWindowButtonTapped(object sender, RoutedEventArgs e)
@@ -355,17 +489,25 @@ namespace Windows.UI.Xaml.Controls
 
 		public void Show()
 		{
-			_isInteractive = true;
+			_isShowingControls = true;
 
 			_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 			{
 				VisualStateManager.GoToState(this, "ControlPanelFadeIn", false);
 			});
+
+			// Adjust layout bounds immediately
+			OnControlsBoundsChanged();
+
+			if (ShowAndHideAutomatically)
+			{
+				ResetControlsVisibilityTimer();
+			}
 		}
 
 		public void Hide()
 		{
-			_isInteractive = false;
+			_isShowingControls = false;
 
 			_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 			{
@@ -374,6 +516,24 @@ namespace Windows.UI.Xaml.Controls
 					VisualStateManager.GoToState(this, "ControlPanelFadeOut", false);
 				}
 			});
+		}
+
+		private void OnControlsBoundsChanged()
+		{
+			var root = (XamlRoot?.Content as UIElement);
+			if (root is null)
+			{
+				return;
+			}
+
+			var bounds = new Rect(
+				0,
+				0,
+				_controlPanelGrid.ActualWidth,
+				_isShowingControls ? _controlPanelGrid.ActualHeight : 0);
+
+			var transportBounds = TransformToVisual(root).TransformBounds(bounds);
+			_mediaPlayer?.SetTransportControlBounds(transportBounds);
 		}
 
 		private void OnPaneGridTapped(object sender, TappedRoutedEventArgs e)
@@ -386,21 +546,25 @@ namespace Windows.UI.Xaml.Controls
 		}
 		private void OnRootGridTapped(object sender, TappedRoutedEventArgs e)
 		{
-			if (_isInteractive)
+			if (e.PointerDeviceType == PointerDeviceType.Touch)
 			{
-				_controlsVisibilityTimer.Stop();
-				Hide();
-			}
-			else
-			{
-				Show();
-
-				if (ShowAndHideAutomatically)
+				if (_isShowingControls)
 				{
-					ResetControlsVisibilityTimer();
+					_controlsVisibilityTimer.Stop();
+					Hide();
+				}
+				else
+				{
+					Show();
 				}
 			}
 		}
+
+		private void OnRootGridPointerMoved(object sender, PointerRoutedEventArgs e)
+		{
+			Show();
+		}
+
 		private void UpdateMediaTransportControlMode(object sender, RoutedEventArgs e)
 		{
 			IsCompact = !IsCompact;
@@ -409,11 +573,15 @@ namespace Windows.UI.Xaml.Controls
 		private void UpdateMediaTransportControlMode()
 		{
 			VisualStateManager.GoToState(this, IsCompact ? "CompactMode" : "NormalMode", true);
+			OnControlsBoundsChanged();
 		}
 
 		private static void OnIsCompactChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
-			VisualStateManager.GoToState((MediaTransportControls)dependencyObject, (bool)args.NewValue ? "CompactMode" : "NormalMode", false);
+			if (dependencyObject is MediaTransportControls mtc)
+			{
+				mtc.UpdateMediaTransportControlMode();
+			}
 		}
 
 		private static void OnShowAndHideAutomaticallyChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)

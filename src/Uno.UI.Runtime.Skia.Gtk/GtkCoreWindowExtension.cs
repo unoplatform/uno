@@ -140,6 +140,11 @@ namespace Uno.UI.Runtime.Skia
 				&& owner is XamlRoot xamlRoot
 				&& GetOverlayLayer(xamlRoot) is { } overlay)
 			{
+				if (this.Log().IsEnabled(LogLevel.Trace))
+				{
+					this.Log().Trace($"ArrangeNativeElement({owner}, {arrangeRect})");
+				}
+
 				widget.SizeAllocate(new((int)arrangeRect.X, (int)arrangeRect.Y, (int)arrangeRect.Width, (int)arrangeRect.Height));
 			}
 			else
@@ -158,6 +163,12 @@ namespace Uno.UI.Runtime.Skia
 				&& GetOverlayLayer(xamlRoot) is { } overlay)
 			{
 				widget.GetPreferredSize(out var minimum_Size, out var naturalSize);
+
+				if (this.Log().IsEnabled(LogLevel.Trace))
+				{
+					this.Log().Trace($"MeasureNativeElement({minimum_Size.Width}x{minimum_Size.Height}, {naturalSize.Width}x{naturalSize.Height})");
+				}
+
 				return new(naturalSize.Width, naturalSize.Height);
 			}
 			else

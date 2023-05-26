@@ -2,8 +2,11 @@
   "profiles": {
     "SamplesApp.Skia.Gtk": {
       "commandName": "Project",
-      "commandLineArgs": "",
       "nativeDebugging": false
+    },
+    "WSL": {
+      "commandName": "WSL2",
+      "distributionName": ""
     }
   }
 }
