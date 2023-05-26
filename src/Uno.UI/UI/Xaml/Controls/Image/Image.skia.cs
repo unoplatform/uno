@@ -85,12 +85,6 @@ namespace Windows.UI.Xaml.Controls
 
 				Size ret;
 
-				if (Source is BitmapSource bitmapSource)
-				{
-					bitmapSource.PixelWidth = (int)_lastMeasuredSize.Width;
-					bitmapSource.PixelHeight = (int)_lastMeasuredSize.Height;
-				}
-
 				if (
 					double.IsInfinity(availableSize.Width)
 					&& double.IsInfinity(availableSize.Height)

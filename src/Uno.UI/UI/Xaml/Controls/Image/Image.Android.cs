@@ -23,10 +23,6 @@ namespace Windows.UI.Xaml.Controls
 		private double _sourceImageScale = 1;
 		private SerialDisposable _childViewDisposable = new SerialDisposable();
 		private Windows.Foundation.Size _sourceImageSize;
-		private Windows.Foundation.Size SourceImageSize
-		{
-			get { return _sourceImageSize; }
-		}
 
 		/// <summary>
 		/// Updates the size of the image source (drawable, bitmap, etc.)
@@ -49,12 +45,6 @@ namespace Windows.UI.Xaml.Controls
 				: 1; // the size of the image source (usually a drawable/resource) is already physical pixels, no need to scale it
 
 			UpdateMatrix(_lastLayoutSize);
-
-			if (Source is BitmapSource bitmapSource)
-			{
-				bitmapSource.PixelWidth = (int)_sourceImageSize.Width;
-				bitmapSource.PixelHeight = (int)_sourceImageSize.Height;
-			}
 		}
 
 		private Windows.Foundation.Size _lastLayoutSize;
@@ -481,19 +471,19 @@ namespace Windows.UI.Xaml.Controls
 
 			_nativeImageView.SetScaleType(ImageView.ScaleType.Matrix);
 
-			if (SourceImageSize.Width == 0 || SourceImageSize.Height == 0 || frameSize.Width == 0 || frameSize.Height == 0)
+			if (_sourceImageSize.Width == 0 || _sourceImageSize.Height == 0 || frameSize.Width == 0 || frameSize.Height == 0)
 			{
 				return;
 			}
 
 			// Calculate the resulting space required on screen for the image
-			var containerSize = this.MeasureSource(frameSize, SourceImageSize);
+			var containerSize = this.MeasureSource(frameSize, _sourceImageSize);
 
 			// Calculate the position of the image to follow stretch and alignment requirements
 			var sourceRect = this.ArrangeSource(frameSize, containerSize);
 
-			var scaleX = (sourceRect.Width / SourceImageSize.Width) * _sourceImageScale;
-			var scaleY = (sourceRect.Height / SourceImageSize.Height) * _sourceImageScale;
+			var scaleX = (sourceRect.Width / _sourceImageSize.Width) * _sourceImageScale;
+			var scaleY = (sourceRect.Height / _sourceImageSize.Height) * _sourceImageScale;
 			var translateX = ViewHelper.LogicalToPhysicalPixels(sourceRect.X);
 			var translateY = ViewHelper.LogicalToPhysicalPixels(sourceRect.Y);
 

@@ -193,6 +193,21 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 
 		[TestMethod]
 		[RunsOnUIThread]
+		public async Task When_WriteableBitmap_SetSource_Should_Update_PixelWidth_And_PixelHeight()
+		{
+			var writeableBitmap = new WriteableBitmap(1, 1);
+			var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/ingredient3.png"));
+			using (var stream = await file.OpenReadAsync())
+			{
+				await writeableBitmap.SetSourceAsync(stream);
+			}
+
+			Assert.AreEqual(147, writeableBitmap.PixelWidth);
+			Assert.AreEqual(147, writeableBitmap.PixelHeight);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
 		public async Task When_ImageBrush_Source_Changes()
 		{
 			var imageBrush = new ImageBrush();

@@ -65,8 +65,8 @@ public partial class Image
 		// Use "Bounds" over "Frame" because it includes all transforms
 		var availableSize = Bounds.Size.ToFoundationSize();
 
-		if (SourceImageSize.Width == 0 ||
-			SourceImageSize.Height == 0 ||
+		if (_sourceImageSize.Width == 0 ||
+			_sourceImageSize.Height == 0 ||
 			availableSize.Width == 0 ||
 			availableSize.Height == 0 ||
 			(!_nativeImageView?.HasImage ?? true))

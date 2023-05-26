@@ -16,16 +16,17 @@ namespace Windows.UI.Xaml.Media.Imaging
 		public int PixelHeight
 		{
 			get { return (int)GetValue(PixelHeightProperty); }
-			internal set { SetValue(PixelHeightProperty, value); }
+#if __WASM__ // The setter should be private protected and must not be set by Image. In fact, the PixelWidth/PixelHeight value should be available even without being rendered by Image.
+			internal
+#else
+			private protected
+#endif
+			set { SetValue(PixelHeightProperty, value); }
 		}
 
 		// Using a DependencyProperty as the backing store for PixelHeight.  This enables animation, styling, binding, etc...
 		public static DependencyProperty PixelHeightProperty { get; } =
-			DependencyProperty.Register("PixelHeight", typeof(int), typeof(BitmapSource), new FrameworkPropertyMetadata(0, (s, e) => ((BitmapSource)s)?.OnPixelHeightChanged(e)));
-
-		private void OnPixelHeightChanged(DependencyPropertyChangedEventArgs e)
-		{
-		}
+			DependencyProperty.Register("PixelHeight", typeof(int), typeof(BitmapSource), new FrameworkPropertyMetadata(0));
 
 		#endregion
 
@@ -34,17 +35,17 @@ namespace Windows.UI.Xaml.Media.Imaging
 		public int PixelWidth
 		{
 			get { return (int)GetValue(PixelWidthProperty); }
-			internal set { SetValue(PixelWidthProperty, value); }
+#if __WASM__ // The setter should be private protected and must not be set by Image. In fact, the PixelWidth/PixelHeight value should be available even without being rendered by Image.
+			internal
+#else
+			private protected
+#endif
+			set { SetValue(PixelWidthProperty, value); }
 		}
 
 		// Using a DependencyProperty as the backing store for PixelWidth.  This enables animation, styling, binding, etc...
 		public static DependencyProperty PixelWidthProperty { get; } =
-			DependencyProperty.Register("PixelWidth", typeof(int), typeof(BitmapSource), new FrameworkPropertyMetadata(0, (s, e) => ((BitmapSource)s)?.OnPixelWidthChanged(e)));
-
-
-		private void OnPixelWidthChanged(DependencyPropertyChangedEventArgs e)
-		{
-		}
+			DependencyProperty.Register("PixelWidth", typeof(int), typeof(BitmapSource), new FrameworkPropertyMetadata(0));
 
 		#endregion
 
@@ -96,18 +97,19 @@ namespace Windows.UI.Xaml.Media.Imaging
 				throw new ArgumentException(nameof(streamSource));
 			}
 
-			PixelWidth = 0;
-			PixelHeight = 0;
-
 			// The source has to be cloned before leaving the "SetSource[Async]".
 			var clonedStreamSource = streamSource.CloneStream();
 
 #if __NETSTD__
 			_stream = clonedStreamSource;
+			UpdatePixelWidthAndHeightPartial(_stream.AsStream());
 #else
 			Stream = clonedStreamSource.AsStream();
+			UpdatePixelWidthAndHeightPartial(Stream);
 #endif
 		}
+
+		partial void UpdatePixelWidthAndHeightPartial(Stream stream);
 
 		private
 #if __NETSTD__
