@@ -56,8 +56,11 @@ public partial class GtkMediaPlayer : FrameworkElement
 			this.Log().Debug("Collecting GtkMediaPlayer");
 		}
 
-		_mediaPlayer?.Dispose();
-		_libvlc?.Dispose();
+		_videoView?.Dispose();
+
+		// Freeing those resources currently crash the app with an access violation exception.
+		//_mediaPlayer?.Dispose();
+		//_libvlc?.Dispose();
 	}
 
 	public string Source
@@ -84,6 +87,12 @@ public partial class GtkMediaPlayer : FrameworkElement
 	{
 		if (EnsureMediaPlayerAndVideoView())
 		{
+			if (PlatformHelper.IsMac)
+			{
+				VideoView.ReportMacOSNotSupported();
+				return;
+			}
+
 			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 			{
 				this.Log().Debug("Play");
@@ -302,37 +311,34 @@ public partial class GtkMediaPlayer : FrameworkElement
 
 				_mediaPlayer.Media.Parse(MediaParseOptions.ParseNetwork);
 
-				_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+				if (_mediaPlayer != null && _mediaPlayer.Media != null)
 				{
-					if (_mediaPlayer != null && _mediaPlayer.Media != null)
-					{
-						var videoTrack = _mediaPlayer.Media.Tracks.FirstOrDefault(track => track.TrackType == TrackType.Video);
+					var videoTrack = _mediaPlayer.Media.Tracks.FirstOrDefault(track => track.TrackType == TrackType.Video);
 
-						if (_mediaPlayer.Media.Tracks.Any(track => track.TrackType == TrackType.Video))
-						{
-							var videoSettings = videoTrack.Data.Video;
-							var videoWidth = videoSettings.Width;
-							var videoHeight = videoSettings.Height;
-							// From: https://github.com/videolan/libvlcsharp/blob/bca0a53fe921e6f1f745e4e3ac83a7bd3b2e4a9d/src/LibVLCSharp/Shared/MediaPlayerElement/AspectRatioManager.cs#L188
-							videoWidth = videoWidth * videoSettings.SarNum / videoSettings.SarDen;
-							UpdateVideoSizeAllocate(playerHeight, playerWidth, videoHeight, videoWidth);
-						}
-						else
-						{
-							if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
-							{
-								this.Log().Debug($"Skipping layout update because no tracks could be found");
-							}
-						}
+					if (_mediaPlayer.Media.Tracks.Any(track => track.TrackType == TrackType.Video))
+					{
+						var videoSettings = videoTrack.Data.Video;
+						var videoWidth = videoSettings.Width;
+						var videoHeight = videoSettings.Height;
+						// From: https://github.com/videolan/libvlcsharp/blob/bca0a53fe921e6f1f745e4e3ac83a7bd3b2e4a9d/src/LibVLCSharp/Shared/MediaPlayerElement/AspectRatioManager.cs#L188
+						videoWidth = videoWidth * videoSettings.SarNum / videoSettings.SarDen;
+						UpdateVideoSizeAllocate(playerHeight, playerWidth, videoHeight, videoWidth);
 					}
 					else
 					{
 						if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 						{
-							this.Log().Debug($"Skipping layout update because the player is not available");
+							this.Log().Debug($"Skipping layout update because no tracks could be found");
 						}
 					}
-				});
+				}
+				else
+				{
+					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+					{
+						this.Log().Debug($"Skipping layout update because the player is not available");
+					}
+				}
 			}
 			else
 			{

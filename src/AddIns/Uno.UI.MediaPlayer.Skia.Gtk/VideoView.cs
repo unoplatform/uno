@@ -73,6 +73,13 @@ namespace LibVLCSharp.GTK
 			Unrealized += (s, e) => DetachFromWidget();
 		}
 
+		protected override void Dispose(bool disposing)
+		{
+			base.Dispose(disposing);
+
+			DestroyChildWindow();
+		}
+
 		internal void SetVisible(bool visible)
 		{
 			Visible = visible;
@@ -101,6 +108,12 @@ namespace LibVLCSharp.GTK
 					return;
 				}
 
+				if (PlatformHelper.IsMac)
+				{
+					ReportMacOSNotSupported();
+					return;
+				}
+
 				DestroyChildWindow();
 				_mediaPlayer = value;
 				CreateChildWindow();
@@ -116,6 +129,12 @@ namespace LibVLCSharp.GTK
 					this.Log().Debug($"Unable to attach player (_mediaPlayer: {_mediaPlayer is not null})");
 				}
 
+				return;
+			}
+
+			if (PlatformHelper.IsMac)
+			{
+				ReportMacOSNotSupported();
 				return;
 			}
 
@@ -137,7 +156,7 @@ namespace LibVLCSharp.GTK
 			// even if the window is rendered layered over the existing app. Otherwise, using the current
 			// window may render incorrectly (on macOS), or fail to resize properly (on Windows).
 			//
-			_videoWindow = new("Window");
+			_videoWindow = new($"Window{GetHashCode():X8}");
 			_videoWindow.SkipTaskbarHint = true;
 			_videoWindow.SkipPagerHint = true;
 			_videoWindow.Decorated = false;
@@ -162,6 +181,14 @@ namespace LibVLCSharp.GTK
 			AssignWindowId();
 
 			AttachToWidget();
+		}
+
+		internal static void ReportMacOSNotSupported()
+		{
+			if (typeof(VideoView).Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Error))
+			{
+				typeof(VideoView).Log().Error("macOS playback is not supported at this time. https://aka.platform.uno/mediaplayerelement");
+			}
 		}
 
 		private void AttachToWidget()
@@ -227,10 +254,7 @@ namespace LibVLCSharp.GTK
 				// properly placing itself in the parent window.
 				// _mediaPlayer.NsObject = Native.gdk_quartz_window_get_nsview(_videoWindow.Window.Handle);
 
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Error))
-				{
-					this.Log().Error("macOS playback is not supported at this time. https://aka.platform.uno/mediaplayerelement");
-				}
+				ReportMacOSNotSupported();
 
 				_mediaPlayer.Stop();
 			}

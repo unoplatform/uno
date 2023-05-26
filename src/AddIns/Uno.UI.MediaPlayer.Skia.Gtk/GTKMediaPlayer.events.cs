@@ -10,6 +10,7 @@ using Uno.Logging;
 using System.Threading.Tasks;
 using System.Runtime.CompilerServices;
 using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
 
 namespace Uno.UI.Media;
 
@@ -19,6 +20,7 @@ public partial class GtkMediaPlayer
 	private MediaPlayerElement? _mpe;
 	private static ConditionalWeakTable<object, WeakReference<GtkMediaPlayer>> _playerMap = new();
 	private static ConditionalWeakTable<object, WeakReference<GtkMediaPlayer>> _videoViewMap = new();
+	private static ConditionalWeakTable<object, WeakReference<GtkMediaPlayer>> _mediaMap = new();
 
 	public event EventHandler<object>? OnSourceFailed;
 	public event EventHandler<object>? OnSourceEnded;
@@ -53,7 +55,16 @@ public partial class GtkMediaPlayer
 			}
 
 			_mediaPlayer = new LibVLCSharp.Shared.MediaPlayer(_libvlc);
-			_playerMap.Add(_mediaPlayer, new WeakReference<GtkMediaPlayer>(this));
+
+			if (TryGetEventManagerProperty(_mediaPlayer, out var playerManagerProperty)
+				&& playerManagerProperty.GetValue(_mediaPlayer) is { } eventManager)
+			{
+				_playerMap.Add(eventManager, new WeakReference<GtkMediaPlayer>(this));
+			}
+			else
+			{
+				throw new NotSupportedException("This version of libVLC is not supported (Missing EventManager property). Report this to the Uno Platform repository.");
+			}
 
 			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 			{
@@ -61,6 +72,7 @@ public partial class GtkMediaPlayer
 			}
 
 			_videoView = new LibVLCSharp.GTK.VideoView();
+
 			_videoViewMap.Add(_videoView, new WeakReference<GtkMediaPlayer>(this));
 
 			_videoView.VideoSurfaceInteraction += static (s, e) =>
@@ -96,8 +108,9 @@ public partial class GtkMediaPlayer
 				{
 					if (GetGtkPlayerForVlcPlayer(s, out var target))
 					{
-						target.OnMediaPlayerTimeChange(s, e);
-						target.OnMediaPlayerTimeChangeIsMediaParse(s, e);
+						_ = target.Dispatcher.RunAsync(
+							CoreDispatcherPriority.Normal,
+							() => target.OnMediaPlayerTimeChange(s, e));
 					}
 				};
 
@@ -105,7 +118,9 @@ public partial class GtkMediaPlayer
 				{
 					if (GetGtkPlayerForVlcPlayer(s, out var target))
 					{
-						target.MediaPlayerMediaChanged(s, e);
+						_ = target.Dispatcher.RunAsync(
+							CoreDispatcherPriority.Normal,
+							() => target.OnMediaPlayerMediaChanged(s, e));
 					}
 				};
 
@@ -113,7 +128,19 @@ public partial class GtkMediaPlayer
 				{
 					if (GetGtkPlayerForVlcPlayer(s, out var target))
 					{
-						target.OnMediaPlayerStopped(s, e);
+						_ = target.Dispatcher.RunAsync(
+							CoreDispatcherPriority.Normal,
+							() => target.OnMediaPlayerStopped(s, e));
+					}
+				};
+
+				_mediaPlayer.Playing += static (s, e) =>
+				{
+					if (GetGtkPlayerForVlcPlayer(s, out var target))
+					{
+						_ = target.Dispatcher.RunAsync(
+							CoreDispatcherPriority.Normal,
+							() => target.OnMediaPlayerPlaying(s, e));
 					}
 				};
 
@@ -131,12 +158,40 @@ public partial class GtkMediaPlayer
 		});
 	}
 
+	private bool TryGetEventManagerProperty(
+		object instance,
+		[NotNullWhen(true)] out PropertyInfo? propertyInfo)
+	{
+		if (instance.GetType().GetProperty("EventManager", BindingFlags.NonPublic | BindingFlags.Instance) is { } info)
+		{
+			propertyInfo = info;
+			return true;
+		}
+		propertyInfo = null;
+		return false;
+	}
+
 	static bool GetGtkPlayerForVlcPlayer(
 		object? instance,
 		[NotNullWhen(true)] out GtkMediaPlayer? player)
 	{
 		if (instance is not null
 			&& _playerMap.TryGetValue(instance, out var weakTarget)
+			&& weakTarget.TryGetTarget(out player))
+		{
+			return true;
+		}
+
+		player = null;
+		return false;
+	}
+
+	static bool GetGtkPlayerForVlcMedia(
+		object? instance,
+		[NotNullWhen(true)] out GtkMediaPlayer? player)
+	{
+		if (instance is not null
+			&& _mediaMap.TryGetValue(instance, out var weakTarget)
 			&& weakTarget.TryGetTarget(out player))
 		{
 			return true;
@@ -211,19 +266,97 @@ public partial class GtkMediaPlayer
 		}
 	}
 
+	private static void OnStaticDurationChanged(object? sender, EventArgs args)
+	{
+		if (GetGtkPlayerForVlcMedia(sender, out var target))
+		{
+			_ = target.Dispatcher.RunAsync(
+				CoreDispatcherPriority.Normal,
+				() => target.OnMediaDurationChanged(sender, args));
+		}
+		else
+		{
+			if (typeof(GtkMediaPlayer).Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Error))
+			{
+				typeof(GtkMediaPlayer).Log().Error("OnStaticDurationChanged: Failed to find player instance for media");
+			}
+		}
+	}
+
+	private static void OnStaticMetaChanged(object? sender, EventArgs args)
+	{
+		if (GetGtkPlayerForVlcMedia(sender, out var target))
+		{
+			_ = target.Dispatcher.RunAsync(
+				CoreDispatcherPriority.Normal,
+				() => target.OnMediaMetaChanged(sender, args));
+		}
+		else
+		{
+			if (typeof(GtkMediaPlayer).Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Error))
+			{
+				typeof(GtkMediaPlayer).Log().Error("OnStaticMetaChanged: Failed to find player instance for media");
+			}
+		}
+	}
+
+	private static void OnStaticStateChanged(object? sender, MediaStateChangedEventArgs args)
+	{
+		if (GetGtkPlayerForVlcMedia(sender, out var target))
+		{
+			_ = target.Dispatcher.RunAsync(
+				CoreDispatcherPriority.Normal,
+				() => target.OnMediaStateChanged(sender, args));
+		}
+		else
+		{
+			if (typeof(GtkMediaPlayer).Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Error))
+			{
+				typeof(GtkMediaPlayer).Log().Error("OnStaticStateChanged: Failed to find player instance for media");
+			}
+		}
+	}
+
+	private static void OnStaticParsedChanged(object? sender, EventArgs args)
+	{
+		if (GetGtkPlayerForVlcMedia(sender, out var target))
+		{
+			_ = target.Dispatcher.RunAsync(
+				CoreDispatcherPriority.Normal,
+				() => target.OnMediaParsedChanged(sender, args));
+		}
+		else
+		{
+			if (typeof(GtkMediaPlayer).Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Error))
+			{
+				typeof(GtkMediaPlayer).Log().Error("OnStaticParsedChanged: Failed to find player instance for media");
+			}
+		}
+	}
+
 	private void AddMediaEvents()
 	{
 		if (_mediaPlayer?.Media is { } media)
 		{
-			media.DurationChanged -= DurationChanged;
-			media.MetaChanged -= MetaChanged;
-			media.StateChanged -= StateChanged;
-			media.ParsedChanged -= ParsedChanged;
+			if (TryGetEventManagerProperty(media, out var managerProperty)
+				&& managerProperty.GetValue(media) is { } eventManager)
+			{
+				_mediaMap.Add(eventManager, new WeakReference<GtkMediaPlayer>(this));
+			}
+			else
+			{
+				throw new NotSupportedException("This version of libVLC is not supported (Missing EventManager property). Report this to the Uno Platform repository.");
+			}
 
-			media.DurationChanged += DurationChanged;
-			media.MetaChanged += MetaChanged;
-			media.StateChanged += StateChanged;
-			media.ParsedChanged += ParsedChanged;
+			media.DurationChanged -= OnStaticDurationChanged;
+			media.MetaChanged -= OnStaticMetaChanged;
+			media.StateChanged -= OnStaticStateChanged;
+			media.ParsedChanged -= OnStaticParsedChanged;
+
+			media.DurationChanged += OnStaticDurationChanged;
+			media.MetaChanged += OnStaticMetaChanged;
+			media.StateChanged += OnStaticStateChanged;
+			media.ParsedChanged += OnStaticParsedChanged;
 
 			Duration = (double)(_videoView?.MediaPlayer?.Media?.Duration / 1000 ?? 0);
 			OnSourceLoaded?.Invoke(this, EventArgs.Empty);
@@ -239,32 +372,32 @@ public partial class GtkMediaPlayer
 		}
 	}
 
-	private void ParsedChanged(object? sender, EventArgs el)
+	private void OnMediaParsedChanged(object? sender, EventArgs el)
 	{
 		if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 		{
-			this.Log().Debug($"ParsedChanged");
+			this.Log().Debug($"OnMediaParsedChanged");
 		}
 
 		OnSourceLoaded?.Invoke(this, EventArgs.Empty);
 		OnGtkSourceLoaded(sender, el);
 	}
 
-	private void DurationChanged(object? sender, EventArgs el)
+	private void OnMediaDurationChanged(object? sender, EventArgs el)
 	{
 		if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 		{
-			this.Log().Debug($"DurationChanged");
+			this.Log().Debug($"OnMediaDurationChanged");
 		}
 
 		Duration = (double)(_videoView?.MediaPlayer?.Media?.Duration / 1000 ?? 0);
 	}
 
-	private void StateChanged(object? sender, MediaStateChangedEventArgs el)
+	private void OnMediaStateChanged(object? sender, MediaStateChangedEventArgs el)
 	{
 		if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 		{
-			this.Log().Debug($"StateChanged");
+			this.Log().Debug($"OnMediaStateChanged");
 		}
 
 		switch (el.State)
@@ -308,11 +441,11 @@ public partial class GtkMediaPlayer
 		}
 	}
 
-	private void MetaChanged(object? sender, EventArgs el)
+	private void OnMediaMetaChanged(object? sender, EventArgs el)
 	{
 		if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 		{
-			this.Log().Debug($"MetaChanged");
+			this.Log().Debug($"OnMediaMetaChanged");
 		}
 
 		OnGtkMetadataLoaded(sender, el);
@@ -334,14 +467,24 @@ public partial class GtkMediaPlayer
 		}
 	}
 
-	private void MediaPlayerMediaChanged(object? sender, MediaPlayerMediaChangedEventArgs el)
+	private void OnMediaPlayerMediaChanged(object? sender, MediaPlayerMediaChangedEventArgs el)
 	{
 		if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 		{
-			this.Log().Debug($"MediaChanged");
+			this.Log().Debug($"OnMediaPlayerMediaChanged");
 		}
 
 		OnGtkSourceLoaded(sender, el);
+	}
+
+	private void OnMediaPlayerPlaying(object? s, EventArgs e)
+	{
+		if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+		{
+			this.Log().Debug($"OnMediaPlayerPlaying");
+		}
+
+		UpdateVideoStretch();
 	}
 
 	private void OnMediaPlayerTimeChange(object? sender, MediaPlayerTimeChangedEventArgs el)
