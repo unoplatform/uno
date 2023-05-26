@@ -83,6 +83,13 @@ internal static class SymbolMatchingHelpers
 			return true;
 		}
 
+		if (uapSymbol.Name == "Transform" && uapSymbol.Kind == SymbolKind.NamedType)
+		{
+			// In Uno, it's abstract to force all derived classes to implement a specific method.
+			// In UWP/WinUI, it's not abstract but it doesn't have any accessible constructors.
+			// The divergence here shouldn't be problematic/noticeable.
+			return true;
+		}
 		// Skipping accessibility check for now. It causes two issues:
 		// 1. For some reason, Roslyn is returning private accessibility for some public properties (Specifically, for some interface implementations).
 		// 2. For types declared without explicit accessibility, it's going to be considered internal (however, the generated file later will have the correct accessibility)
