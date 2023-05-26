@@ -16,12 +16,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 		public int PixelHeight
 		{
 			get { return (int)GetValue(PixelHeightProperty); }
-#if __WASM__ // The setter should be private protected and must not be set by Image. In fact, the PixelWidth/PixelHeight value should be available even without being rendered by Image.
-			internal
-#else
-			private protected
-#endif
-			set { SetValue(PixelHeightProperty, value); }
+			internal set { SetValue(PixelHeightProperty, value); }
 		}
 
 		// Using a DependencyProperty as the backing store for PixelHeight.  This enables animation, styling, binding, etc...
@@ -35,12 +30,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 		public int PixelWidth
 		{
 			get { return (int)GetValue(PixelWidthProperty); }
-#if __WASM__ // The setter should be private protected and must not be set by Image. In fact, the PixelWidth/PixelHeight value should be available even without being rendered by Image.
-			internal
-#else
-			private protected
-#endif
-			set { SetValue(PixelWidthProperty, value); }
+			internal set { SetValue(PixelWidthProperty, value); }
 		}
 
 		// Using a DependencyProperty as the backing store for PixelWidth.  This enables animation, styling, binding, etc...

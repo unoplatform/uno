@@ -1,35 +1,13 @@
 ﻿using CoreGraphics;
 using UIKit;
 
-namespace Uno.UI.Extensions;
-
-internal static partial class NSUIImageExtensions
+namespace Uno.UI.Extensions
 {
-	internal static UIImage FromCGImage(CGImage cgImage)
+	internal static partial class NSUIImageExtensions
 	{
-		return UIImage.FromImage(cgImage);
-	}
-
-	/// <summary>
-	/// Fixes orientation issues caused by taking an image straight from the camera
-	/// </summary>
-	/// <param name="image">UI Image</param>
-	/// <returns>UI image</returns>
-	internal static UIImage FixOrientation(this UIImage image)
-	{
-		if (image.Orientation == UIImageOrientation.Up)
+		internal static UIImage FromCGImage(CGImage cgImage)
 		{
-			return image;
+			return UIImage.FromImage(cgImage);
 		}
-
-		// http://stackoverflow.com/questions/5427656/ios-uiimagepickercontroller-result-image-orientation-after-upload
-		UIGraphics.BeginImageContextWithOptions(image.Size, false, image.CurrentScale);
-
-		image.Draw(new CGRect(0, 0, image.Size.Width, image.Size.Height));
-		var normalizedImage = UIGraphics.GetImageFromCurrentImageContext();
-
-		UIGraphics.EndImageContext();
-
-		return normalizedImage;
 	}
 }

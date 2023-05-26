@@ -16,7 +16,7 @@ public partial class BitmapSource
 	partial void UpdatePixelWidthAndHeightPartial(Stream stream)
 	{
 #if __IOS__
-		var image = UIKit.UIImage.LoadFromData(NSData.FromStream(stream)).FixOrientation();
+		var image = UIKit.UIImage.LoadFromData(NSData.FromStream(stream));
 		PixelWidth = (int)Math.Round(image.Size.Width * image.CurrentScale);
 		PixelHeight = (int)Math.Round(image.Size.Height * image.CurrentScale);
 #elif __MACOS__

@@ -5,10 +5,11 @@ namespace Windows.UI.Xaml.Media.Imaging;
 
 public partial class BitmapSource
 {
-	partial void UpdatePixelWidthAndHeightPartial(Stream stream)
+	protected void UpdatePixelWidthAndHeight(Stream stream)
 	{
-		var image = SKImage.FromEncodedData(stream);
-		PixelWidth = image.Width;
-		PixelHeight = image.Height;
+		using var codec = SKCodec.Create(stream);
+		var info = codec.Info;
+		PixelWidth = info.Width;
+		PixelHeight = info.Height;
 	}
 }

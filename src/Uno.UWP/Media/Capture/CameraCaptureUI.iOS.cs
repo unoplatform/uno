@@ -10,7 +10,6 @@ using Photos;
 using UIKit;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
-using Uno.UI.Extensions;
 using Windows.Foundation;
 using Windows.Graphics.Display;
 using Windows.Storage;
@@ -73,7 +72,7 @@ namespace Windows.Media.Capture
 					var image = result.ValueForKey(new NSString("UIImagePickerControllerOriginalImage")) as UIImage;
 					var metadata = result.ValueForKey(new NSString("UIImagePickerControllerOriginalImage")) as UIImage;
 
-					var correctedImage = image.FixOrientation();
+					var correctedImage = FixOrientation(image);
 
 					(Stream data, string extension) GetImageStream()
 					{
@@ -136,6 +135,29 @@ namespace Windows.Media.Capture
 			{
 				return _supportedOrientations;
 			}
+		}
+
+		/// <summary>
+		/// Fixes orientation issues caused by taking an image straight from the camera
+		/// </summary>
+		/// <param name="image">UI Image</param>
+		/// <returns>UI image</returns>
+		private static UIImage FixOrientation(UIImage image)
+		{
+			if (image.Orientation == UIImageOrientation.Up)
+			{
+				return image;
+			}
+
+			// http://stackoverflow.com/questions/5427656/ios-uiimagepickercontroller-result-image-orientation-after-upload
+			UIGraphics.BeginImageContextWithOptions(image.Size, false, image.CurrentScale);
+
+			image.Draw(new CGRect(0, 0, image.Size.Width, image.Size.Height));
+			var normalizedImage = UIGraphics.GetImageFromCurrentImageContext();
+
+			UIGraphics.EndImageContext();
+
+			return normalizedImage;
 		}
 	}
 

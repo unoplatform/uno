@@ -85,7 +85,9 @@ namespace Windows.UI.Xaml.Media.Imaging
 
 		private ImageData OpenFromStream(int? targetWidth, int? targetHeight, SkiaCompositionSurface surface, global::System.IO.Stream imageStream)
 		{
-			var result = surface.LoadFromStream(targetWidth, targetHeight, imageStream);
+			var result = surface.LoadFromStream(targetWidth, targetHeight, imageStream, out var originalWidth, out var originalHeight);
+			PixelWidth = originalWidth;
+			PixelHeight = originalHeight;
 
 			if (result.success)
 			{
