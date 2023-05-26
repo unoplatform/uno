@@ -7,7 +7,7 @@ namespace Windows.UI.Composition
 {
 	public partial class ScalarKeyFrameAnimation : global::Windows.UI.Composition.KeyFrameAnimation
 	{
-		private ImmutableArray<KeyFrame> _keys = ImmutableArray<KeyFrame>.Empty;
+		internal ImmutableArray<KeyFrame> Keys { get; private set; } = ImmutableArray<KeyFrame>.Empty;
 
 		internal ScalarKeyFrameAnimation(Compositor compositor) : base(compositor)
 		{
@@ -15,7 +15,7 @@ namespace Windows.UI.Composition
 
 		public void InsertKeyFrame(float normalizedProgressKey, float value)
 		{
-			_keys = _keys.Add(new KeyFrame(normalizedProgressKey, value));
+			Keys = Keys.Add(new KeyFrame(normalizedProgressKey, value));
 		}
 
 		[global::Uno.NotImplemented]
