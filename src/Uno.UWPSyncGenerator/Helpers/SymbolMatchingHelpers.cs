@@ -76,6 +76,13 @@ internal static class SymbolMatchingHelpers
 			return true;
 		}
 
+		if (uapSymbol.Name == "IGeometrySource2D")
+		{
+			// For some reason, we get here with IGeometrySource2D being an error symbol.
+			// Hence, the IsAbstract check below fails.
+			return true;
+		}
+
 		// Skipping accessibility check for now. It causes two issues:
 		// 1. For some reason, Roslyn is returning private accessibility for some public properties (Specifically, for some interface implementations).
 		// 2. For types declared without explicit accessibility, it's going to be considered internal (however, the generated file later will have the correct accessibility)
