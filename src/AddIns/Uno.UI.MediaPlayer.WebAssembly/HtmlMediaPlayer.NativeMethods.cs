@@ -166,5 +166,27 @@ partial class HtmlMediaPlayer
 		internal static partial void Stop(nint htmlId)
 			=> throw new NotSupportedException();
 #endif
+
+
+
+#if USE_JSIMPORT
+		[JSImport("globalThis.Uno.UI.Media.HtmlMediaPlayer.requestPictureInPicture")]
+#endif
+		internal static partial void RequestPictureInPicture(nint htmlId);
+
+#if !USE_JSIMPORT
+		internal static partial void RequestPictureInPicture(nint htmlId)
+			=> throw new NotSupportedException();
+#endif
+
+#if USE_JSIMPORT
+		[JSImport("globalThis.Uno.UI.Media.HtmlMediaPlayer.exitPictureInPicture")]
+#endif
+		internal static partial void ExitPictureInPicture();
+
+#if !USE_JSIMPORT
+		internal static partial void ExitPictureInPicture()
+			=> throw new NotSupportedException();
+#endif
 	}
 }

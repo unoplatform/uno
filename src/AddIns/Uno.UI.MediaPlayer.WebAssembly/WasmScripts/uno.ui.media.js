@@ -57,6 +57,23 @@ var Uno;
                         || document.msExitFullscreen;
                     closeFullScreen.call(document);
                 }
+                static requestPictureInPicture(htmlId) {
+                    var elem = Uno.UI.WindowManager.current.getView(htmlId.toString());
+                    if (elem !== null && document.pictureInPictureEnabled) {
+                        var fullscreen = elem.requestPictureInPicture
+                            || elem.webkitRequestPictureInPicture
+                            || elem.mozRequestPictureInPicture;
+                        fullscreen.call(elem);
+                    }
+                }
+                static exitPictureInPicture() {
+                    if (document.pictureInPictureEnabled) {
+                        var closePictureInPicture = document.exitPictureInPicture
+                            || document.mozCancelPictureInPicture
+                            || document.webkitExitPictureInPicture;
+                        closePictureInPicture.call(document);
+                    }
+                }
                 static pause(htmlId) {
                     var element = Uno.UI.WindowManager.current.getView(htmlId.toString());
                     element.pause();

@@ -380,5 +380,40 @@ namespace Windows.UI.Xaml.Controls
 		{
 			MediaPlayer = mediaPlayer;
 		}
+
+		#region IsCompactOverlay Property
+
+		public bool IsCompactOverlay { get; set; }
+
+		public void ToogleCompactOverlay(bool showCompactOverlay)
+		{
+			try
+			{
+				if (showCompactOverlay)
+				{
+#if __WASM__
+					if (_mediaPlayerPresenter != null)
+					{
+						_mediaPlayerPresenter.RequestCompactOverlay();
+					}
+#endif
+				}
+				else
+				{
+#if __WASM__
+					if (_mediaPlayerPresenter != null)
+					{
+						_mediaPlayerPresenter.ExitCompactOverlay();
+					}
+#endif
+				}
+			}
+			finally
+			{
+			}
+		}
+
+		#endregion
+
 	}
 }

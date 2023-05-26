@@ -13,6 +13,8 @@ declare namespace Uno.UI.Media {
         static setAutoPlay(htmlId: number, enabled: boolean): void;
         static requestFullScreen(htmlId: number): void;
         static exitFullScreen(): void;
+        static requestPictureInPicture(htmlId: number): void;
+        static exitPictureInPicture(): void;
         static pause(htmlId: number): void;
         static play(htmlId: number): void;
         static stop(htmlId: number): void;
