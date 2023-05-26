@@ -104,7 +104,7 @@ namespace Windows.UI.Composition
 			ApplyClip(surface, visual);
 
 			// Applied rending transformation matrix (i.e. change coordinates system to the "rendering" one)
-			var transform = GetTransform(visual); 
+			var transform = GetTransform(visual);
 			if (!transform.IsIdentity)
 			{
 				var skTransform = transform.ToSKMatrix();
