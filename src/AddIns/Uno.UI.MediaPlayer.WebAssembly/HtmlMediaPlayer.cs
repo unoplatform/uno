@@ -11,6 +11,7 @@ using Windows.UI.Xaml;
 using System.Globalization;
 using Windows.UI.Xaml.Controls.Maps;
 using Windows.UI.Xaml.Media;
+using Windows.UI.Notifications;
 
 namespace Uno.UI.Media;
 
@@ -26,8 +27,10 @@ internal partial class HtmlMediaPlayer : Border
 		ImmutableArray.Create(new string[] { ".MP4", ".WEBM", ".OGG" });
 	private UIElement _activeElement;
 	private string _activeElementName;
+	public bool IsPause;
 
 	public event EventHandler<object> OnSourceLoaded;
+	public event EventHandler<object> OnStatusChanged;
 	public event EventHandler<object> OnSourceFailed;
 	public event EventHandler<object> OnSourceEnded;
 	public event EventHandler<object> OnMetadataLoaded;
@@ -62,6 +65,8 @@ internal partial class HtmlMediaPlayer : Border
 		_activeElement = IsVideo ? _htmlVideo : IsAudio ? _htmlAudio : default;
 		_activeElementName = IsVideo ? "Video" : IsAudio ? "Audio" : "";
 		SourceLoaded += OnHtmlSourceLoaded;
+		StatusPlayChanged += OnHtmlStatusPlayChanged;
+		StatusPauseChanged += OnHtmlStatusPauseChanged;
 		SourceFailed += OnHtmlSourceFailed;
 		SourceEnded += OnHtmlSourceEnded;
 		MetadataLoaded += OnHtmlMetadataLoaded;
@@ -76,6 +81,8 @@ internal partial class HtmlMediaPlayer : Border
 		}
 
 		SourceLoaded -= OnHtmlSourceLoaded;
+		StatusPlayChanged -= OnHtmlStatusPlayChanged;
+		StatusPauseChanged -= OnHtmlStatusPauseChanged;
 		SourceFailed -= OnHtmlSourceFailed;
 		SourceEnded -= OnHtmlSourceEnded;
 		MetadataLoaded -= OnHtmlMetadataLoaded;
@@ -241,6 +248,48 @@ internal partial class HtmlMediaPlayer : Border
 	}
 
 	/// <summary>
+	/// Occurs when the video source change the status
+	/// </summary>
+	event EventHandler StatusPauseChanged
+	{
+		add
+		{
+			_htmlVideo.RegisterHtmlEventHandler("pause", value);
+			_htmlAudio.RegisterHtmlEventHandler("pause", value);
+
+			//_htmlVideo.RegisterHtmlEventHandler("playing", value);
+			//_htmlAudio.RegisterHtmlEventHandler("playing", value);
+		}
+		remove
+		{
+			_htmlVideo.UnregisterHtmlEventHandler("pause", value);
+			_htmlAudio.UnregisterHtmlEventHandler("pause", value);
+
+			//_htmlVideo.UnregisterHtmlEventHandler("pause", value);
+			//_htmlAudio.UnregisterHtmlEventHandler("pause", value);
+
+			//_htmlVideo.UnregisterHtmlEventHandler("playing", value);
+			//_htmlAudio.UnregisterHtmlEventHandler("playing", value);
+		}
+	}
+	/// <summary>
+	/// Occurs when the video source change the status
+	/// </summary>
+	event EventHandler StatusPlayChanged
+	{
+		add
+		{
+			_htmlVideo.RegisterHtmlEventHandler("play", value);
+			_htmlAudio.RegisterHtmlEventHandler("play", value);
+		}
+		remove
+		{
+			_htmlVideo.UnregisterHtmlEventHandler("play", value);
+			_htmlAudio.UnregisterHtmlEventHandler("play", value);
+		}
+	}
+
+	/// <summary>
 	/// Occurs when there is an error associated with video retrieval or format.
 	/// </summary>		
 	event EventHandler<HtmlCustomEventArgs> SourceFailed
@@ -305,6 +354,27 @@ internal partial class HtmlMediaPlayer : Border
 			Duration = NativeMethods.GetDuration(_activeElement.HtmlId);
 		}
 		OnSourceLoaded?.Invoke(this, EventArgs.Empty);
+	}
+
+	private void OnHtmlStatusPlayChanged(object sender, EventArgs e)
+	{
+		if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
+		{
+			this.Log().Debug($"Media Changed Status Play [{Source}]");
+		}
+		IsPause = false;
+		OnStatusChanged?.Invoke(this, EventArgs.Empty);
+	}
+
+	private void OnHtmlStatusPauseChanged(object sender, EventArgs e)
+	{
+		if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
+		{
+			this.Log().Debug($"Media Changed Status Pause [{Source}]");
+		}
+
+		IsPause = true;
+		OnStatusChanged?.Invoke(this, EventArgs.Empty);
 	}
 
 	private void OnHtmlSourceFailed(object sender, HtmlCustomEventArgs e)
