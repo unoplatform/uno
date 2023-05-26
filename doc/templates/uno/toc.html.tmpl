@@ -3,18 +3,12 @@
 <div id="sidetoggle">
     <div>
         <div class="sidefilter">
-            <form role="search" id="search">
-                <input type="text" id="search-query" aria-label="search box" autocomplete="off"
-                       placeholder="Search Docs..." onsubmit="if(e.key === 'Enter') {return false;}">
-            </form>
-            <div id="search-results">
-                <div class="sr-items"></div>
-            </div>
+            <div id="docsearch"></div>
         </div>
         <div class="sidetoc">
             <div class="toc" id="toc">
                 {{^leaf}}
-                    {{>partials/li}}
+                {{>partials/li}}
                 {{/leaf}}
             </div>
         </div>
