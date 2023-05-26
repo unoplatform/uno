@@ -57,6 +57,7 @@ namespace Windows.UI.Xaml.Controls
 	[TemplatePart(Name = "BufferingProgressBar", Type = typeof(ProgressBar))]
 	[TemplatePart(Name = "DownloadProgressIndicator", Type = typeof(ProgressBar))]
 	[TemplatePart(Name = "ControlPanelGrid", Type = typeof(Grid))]
+	[TemplatePart(Name = ControlPanelBorderName, Type = typeof(Border))]
 	public partial class MediaTransportControls : Control
 	{
 		private const string RootGridName = "RootGrid";
@@ -88,6 +89,7 @@ namespace Windows.UI.Xaml.Controls
 		private const string DownloadProgressIndicatorName = "DownloadProgressIndicator";
 		private const string CompactOverlayButtonName = "CompactOverlayButton";
 		private const string ControlPanelGridName = "ControlPanelGrid";
+		private const string ControlPanelBorderName = "ControlPanel_ControlPanelVisibilityStates_Border";
 
 		private Grid _rootGrid;
 		private Button _playPauseButton;
@@ -117,6 +119,7 @@ namespace Windows.UI.Xaml.Controls
 		private Border _timelineContainer;
 		private ProgressBar _downloadProgressIndicator;
 		private Grid _controlPanelGrid;
+		private Border _controlPanelBorder;
 
 		private DispatcherTimer _controlsVisibilityTimer;
 		private bool _wasPlaying;
@@ -234,12 +237,8 @@ namespace Windows.UI.Xaml.Controls
 			_castButton = this.GetTemplateChild(CastButtonName) as Button;
 
 			_zoomButton = this.GetTemplateChild(ZoomButtonName) as Button;
-
-			if (_zoomButton != null)
-			{
-				_zoomButton?.SetBinding(Button.VisibilityProperty, new Binding { Path = "IsZoomButtonVisible", Source = this, Mode = BindingMode.OneWay, FallbackValue = Visibility.Collapsed, Converter = trueToVisible });
-				_zoomButton?.SetBinding(Button.IsEnabledProperty, new Binding { Path = "IsZoomEnabled", Source = this, Mode = BindingMode.OneWay, FallbackValue = true });
-			}
+			_zoomButton?.SetBinding(Button.VisibilityProperty, new Binding { Path = "IsZoomButtonVisible", Source = this, Mode = BindingMode.OneWay, FallbackValue = Visibility.Collapsed, Converter = trueToVisible });
+			_zoomButton?.SetBinding(Button.IsEnabledProperty, new Binding { Path = "IsZoomEnabled", Source = this, Mode = BindingMode.OneWay, FallbackValue = true });
 
 			_playbackRateButton = this.GetTemplateChild(PlaybackRateButtonName) as Button;
 			_playbackRateButton?.SetBinding(Button.VisibilityProperty, new Binding { Path = "IsPlaybackRateButtonVisible", Source = this, Mode = BindingMode.OneWay, FallbackValue = Visibility.Collapsed, Converter = trueToVisible });
@@ -250,6 +249,8 @@ namespace Windows.UI.Xaml.Controls
 			_compactOverlayButton?.SetBinding(Button.IsEnabledProperty, new Binding { Path = "IsCompactOverlayEnabled", Source = this, Mode = BindingMode.OneWay, FallbackValue = true });
 
 			_controlPanelGrid = this.GetTemplateChild(ControlPanelGridName) as Grid;
+
+			_controlPanelBorder = this.GetTemplateChild(ControlPanelBorderName) as Border;
 
 			_repeatVideoButton = this.GetTemplateChild(RepeatVideoButtonName) as Button;
 			_repeatVideoButton?.SetBinding(Button.VisibilityProperty, new Binding { Path = "IsRepeatButtonVisible", Source = this, Mode = BindingMode.OneWay, FallbackValue = Visibility.Collapsed, Converter = trueToVisible });
@@ -380,6 +381,13 @@ namespace Windows.UI.Xaml.Controls
 				_loadedSubscriptions.Add(() => _controlPanelGrid.SizeChanged -= ControlPanelGridSizeChanged);
 			}
 
+			if (_controlPanelBorder is not null)
+			{
+				_controlPanelBorder.SizeChanged += ControlPanelBorderSizeChanged;
+
+				_loadedSubscriptions.Add(() => _controlPanelBorder.SizeChanged -= ControlPanelBorderSizeChanged);
+			}
+
 			if (_repeatVideoButton is not null)
 			{
 				_repeatVideoButton.Tapped += IsRepeatEnabledButtonTapped;
@@ -437,6 +445,14 @@ namespace Windows.UI.Xaml.Controls
 		private void ControlPanelGridSizeChanged(object sender, SizeChangedEventArgs args)
 		{
 			OnControlsBoundsChanged();
+		}
+
+		private static void ControlPanelBorderSizeChanged(object sender, SizeChangedEventArgs args)
+		{
+			if (sender is Border border)
+			{
+				border.Clip = new RectangleGeometry { Rect = new Rect(0, 0, args.NewSize.Width, args.NewSize.Height) };
+			}
 		}
 
 		private void FullWindowButtonTapped(object sender, RoutedEventArgs e)
