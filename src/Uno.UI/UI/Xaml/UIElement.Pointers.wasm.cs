@@ -41,12 +41,6 @@ public partial class UIElement : DependencyObject
 	private static TSInteropMarshaller.HandleRef<NativePointerEventArgs> _pointerEventArgs;
 	private static TSInteropMarshaller.HandleRef<NativePointerEventResult> _pointerEventResult;
 
-	static partial void InitializePointersStaticPartial()
-	{
-		_pointerEventArgs = TSInteropMarshaller.Allocate<NativePointerEventArgs>("UnoStatic_Windows_UI_Xaml_UIElement:setPointerEventArgs");
-		_pointerEventResult = TSInteropMarshaller.Allocate<NativePointerEventResult>("UnoStatic_Windows_UI_Xaml_UIElement:setPointerEventResult");
-	}
-
 	// Ref:
 	// https://www.w3.org/TR/pointerevents/
 	// https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent
@@ -65,6 +59,12 @@ public partial class UIElement : DependencyObject
 
 	partial void AddPointerHandler(RoutedEvent routedEvent, int handlersCount, object handler, bool handledEventsToo)
 	{
+		if (_pointerEventArgs == null)
+		{
+			_pointerEventArgs = TSInteropMarshaller.Allocate<NativePointerEventArgs>("UnoStatic_Windows_UI_Xaml_UIElement:setPointerEventArgs");
+			_pointerEventResult = TSInteropMarshaller.Allocate<NativePointerEventResult>("UnoStatic_Windows_UI_Xaml_UIElement:setPointerEventResult");
+		}
+
 		if (handlersCount != 1
 			|| routedEvent == PointerCaptureLostEvent) // Captures are handled in managed code only
 		{

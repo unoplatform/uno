@@ -23,6 +23,9 @@ namespace Windows.UI.Core
 
 		private void Internal_SetPointerCursor()
 		{
+#if NET7_0_OR_GREATER
+			NativeMethods.SetCursor(_pointerCursor.Type.ToCssCursor());
+#else
 			var command = string.Concat(new[]
 			{
 				"Uno.UI.WindowManager.current.setCursor(\"",
@@ -31,6 +34,7 @@ namespace Windows.UI.Core
 			});
 
 			WebAssemblyRuntime.InvokeJS(command);
+#endif
 		}
 	}
 }

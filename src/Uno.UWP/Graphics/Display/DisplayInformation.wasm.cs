@@ -18,7 +18,9 @@ namespace Windows.Graphics.Display
 
 		private static DisplayInformation InternalGetForCurrentView() => _lazyInstance.Value;
 
+#if !NET7_0_OR_GREATER
 		private const string JsType = "Windows.Graphics.Display.DisplayInformation";
+#endif
 
 		public static int DispatchDpiChanged()
 		{
@@ -272,7 +274,11 @@ namespace Windows.Graphics.Display
 
 		private static Task SetOrientationAsync(DisplayOrientations orientations, CancellationToken ct)
 		{
+#if NET7_0_OR_GREATER
+			return NativeMethods.SetOrientationAsync((int)orientations);
+#else
 			return WebAssemblyRuntime.InvokeAsync($"{JsType}.setOrientationAsync({(int)orientations})", ct);
+#endif
 		}
 	}
 }

@@ -15,6 +15,9 @@ namespace __Windows.Storage.Pickers
 
 			[JSImport($"{JsType}.nativePickSaveFileAsync")]
 			internal static partial Task<string> PickSaveFileAsync(bool showAll, string fileTypeMap, string suggestedFileName, string id, string startIn);
+
+			[JSImport($"{JsType}.SaveAs")]
+			internal static partial void SaveAs(string fileName, nint pData, int length);
 		}
 	}
 }
