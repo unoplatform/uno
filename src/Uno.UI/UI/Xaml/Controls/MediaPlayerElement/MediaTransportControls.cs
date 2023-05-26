@@ -245,12 +245,11 @@ namespace Windows.UI.Xaml.Controls
 			_playbackRateButton?.SetBinding(Button.VisibilityProperty, new Binding { Path = "IsPlaybackRateButtonVisible", Source = this, Mode = BindingMode.OneWay, FallbackValue = Visibility.Collapsed, Converter = trueToVisible });
 			_playbackRateButton?.SetBinding(Button.IsEnabledProperty, new Binding { Path = "IsPlaybackRateEnabled", Source = this, Mode = BindingMode.OneWay, FallbackValue = true });
 
+			_controlPanelGrid = this.GetTemplateChild(ControlPanelGridName) as Grid;
+
 			_compactOverlayButton = this.GetTemplateChild(CompactOverlayButtonName) as Button;
 			_compactOverlayButton?.SetBinding(Button.VisibilityProperty, new Binding { Path = "IsCompactOverlayButtonVisible", Source = this, Mode = BindingMode.OneWay, FallbackValue = Visibility.Collapsed, Converter = trueToVisible });
 			_compactOverlayButton?.SetBinding(Button.IsEnabledProperty, new Binding { Path = "IsCompactOverlayEnabled", Source = this, Mode = BindingMode.OneWay, FallbackValue = true });
-			_compactOverlayButton.Click -= UpdateCompactOverlayMode;
-			_compactOverlayButton.Click += UpdateCompactOverlayMode;
-
 
 			_repeatVideoButton = this.GetTemplateChild(RepeatVideoButtonName) as Button;
 			_repeatVideoButton?.SetBinding(Button.VisibilityProperty, new Binding { Path = "IsRepeatButtonVisible", Source = this, Mode = BindingMode.OneWay, FallbackValue = Visibility.Collapsed, Converter = trueToVisible });
@@ -369,9 +368,9 @@ namespace Windows.UI.Xaml.Controls
 
 			if (_compactOverlayButton is not null)
 			{
-				_compactOverlayButton.Tapped += UpdateMediaTransportControlMode;
+				_compactOverlayButton.Click += UpdateCompactOverlayMode;
 
-				_loadedSubscriptions.Add(() => _compactOverlayButton.Tapped -= UpdateMediaTransportControlMode);
+				_loadedSubscriptions.Add(() => _compactOverlayButton.Click -= UpdateCompactOverlayMode);
 			}
 
 			if (_controlPanelGrid is not null)
@@ -570,8 +569,13 @@ namespace Windows.UI.Xaml.Controls
 		{
 			_mpe.ToogleCompactOverlay(!_mpe.IsCompactOverlay);
 		}
-		
+
 		private void UpdateMediaTransportControlMode(object sender, RoutedEventArgs e)
+		{
+			VisualStateManager.GoToState(this, IsCompact ? "CompactMode" : "NormalMode", true);
+			OnControlsBoundsChanged();
+		}
+		private void UpdateMediaTransportControlMode()
 		{
 			VisualStateManager.GoToState(this, IsCompact ? "CompactMode" : "NormalMode", true);
 			OnControlsBoundsChanged();

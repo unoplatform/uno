@@ -68,7 +68,7 @@ var Uno;
                 }
                 static exitPictureInPicture() {
                     if (document.pictureInPictureEnabled) {
-                        var closePictureInPicture = document.exitPictureInPicture
+                        const closePictureInPicture = document.exitPictureInPicture
                             || document.mozCancelPictureInPicture
                             || document.webkitExitPictureInPicture;
                         closePictureInPicture.call(document);
