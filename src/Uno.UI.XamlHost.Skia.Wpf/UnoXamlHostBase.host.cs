@@ -29,7 +29,6 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 	{
 		private bool _designMode;
 		private bool _ignorePixelScaling;
-		private HostPointerHandler _hostPointerHandler;
 		private WpfCanvas _nativeOverlayLayer;
 		private IWpfRenderer _renderer;
 		private Windows.UI.Xaml.UIElement? _rootElement;
@@ -63,7 +62,6 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 			_designMode = DesignerProperties.GetIsInDesignMode(this);
 
 			SetupRenderer();
-			_hostPointerHandler = new HostPointerHandler(this);
 
 			Loaded += UnoXamlHostBase_Loaded;
 			Unloaded += UnoXamlHostBase_Unloaded;
@@ -106,10 +104,6 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 
 			_renderer?.Render(drawingContext);
 		}
-
-		void IWpfHost.ReleasePointerCapture() => ReleaseMouseCapture(); //TODO: This should capture the correct type of pointer (stylus/mouse/touch) https://github.com/unoplatform/uno/issues/8978[capture]
-
-		void IWpfHost.SetPointerCapture() => CaptureMouse();
 
 		WinUI.XamlRoot? IWpfHost.XamlRoot => ChildInternal?.XamlRoot;
 

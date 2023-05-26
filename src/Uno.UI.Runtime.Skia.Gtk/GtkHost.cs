@@ -107,6 +107,7 @@ namespace Uno.UI.Runtime.Skia
 			SetupTheme();
 
 			ApiExtensibility.Register(typeof(Uno.ApplicationModel.Core.ICoreApplicationExtension), o => new CoreApplicationExtension(o));
+			ApiExtensibility.Register(typeof(Windows.UI.Core.IUnoCorePointerInputSource), o => new GtkCorePointerInputSource());
 			ApiExtensibility.Register(typeof(Windows.UI.Core.ICoreWindowExtension), o => new GtkCoreWindowExtension(o));
 			ApiExtensibility.Register(typeof(Windows.UI.ViewManagement.IApplicationViewExtension), o => new GtkApplicationViewExtension(o));
 			ApiExtensibility.Register(typeof(ISystemThemeHelperExtension), o => new GtkSystemThemeHelperExtension(o));
@@ -292,9 +293,6 @@ namespace Uno.UI.Runtime.Skia
 				WUX.Window.Current.OnNativeSizeChanged(new Windows.Foundation.Size(e.Allocation.Width, e.Allocation.Height));
 			};
 
-			/* avoids double invokes at window level */
-			_area.AddEvents((int)GtkCoreWindowExtension.RequestedEvents);
-
 			ReplayPendingWindowStateChanges();
 
 			void CreateApp(ApplicationInitializationCallbackParams _)
@@ -351,16 +349,17 @@ namespace Uno.UI.Runtime.Skia
 
 		private void OnCoreWindowContentRootSet(object sender, object e)
 		{
-			var xamlRoot = CoreServices.Instance
+			var contentRoot = CoreServices.Instance
 				.ContentRootCoordinator
-				.CoreWindowContentRoot?
-				.GetOrCreateXamlRoot();
+				.CoreWindowContentRoot;
+			var xamlRoot = contentRoot?.GetOrCreateXamlRoot();
 
 			if (xamlRoot is null)
 			{
 				throw new InvalidOperationException("XamlRoot was not properly initialized");
 			}
 
+			contentRoot!.SetHost(this);
 			XamlRootMap.Register(xamlRoot, this);
 			xamlRoot.InvalidateRender += _renderSurface.InvalidateRender;
 

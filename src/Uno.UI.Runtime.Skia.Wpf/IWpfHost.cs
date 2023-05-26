@@ -20,10 +20,6 @@ namespace Uno.UI.Runtime.Skia.Wpf
 
 		public bool IgnorePixelScaling { get; }
 
-		void ReleasePointerCapture();
-
-		void SetPointerCapture();
-
 		void InvalidateRender();
 	}
 }
