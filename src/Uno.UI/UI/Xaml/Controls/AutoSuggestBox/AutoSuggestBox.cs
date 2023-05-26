@@ -372,6 +372,7 @@ namespace Windows.UI.Xaml.Controls
 			QuerySubmitted?.Invoke(this, new AutoSuggestBoxQuerySubmittedEventArgs(item, userInput));
 
 			IsSuggestionListOpen = false;
+			_suggestionsList.SelectedItem = null;
 		}
 
 		private void OnTextBoxKeyDown(object sender, KeyRoutedEventArgs e)
