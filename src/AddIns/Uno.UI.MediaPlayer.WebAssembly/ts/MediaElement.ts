@@ -53,7 +53,7 @@ namespace Uno.UI.Media {
 				|| elem.webkitRequestFullscreen
 				|| elem.mozRequestFullScreen
 				|| elem.msRequestFullscreen;
-			fullscreen.call(elem); 
+			fullscreen.call(elem);
 		}
 
 		public static exitFullScreen() {
@@ -63,6 +63,27 @@ namespace Uno.UI.Media {
 				|| document.webkitExitFullscreen
 				|| document.msExitFullscreen
 			closeFullScreen.call(document);
+		}
+
+		public static requestPictureInPicture(htmlId: number) {
+			var elem = Uno.UI.WindowManager.current.getView(htmlId.toString());
+			if (elem !== null && document.pictureInPictureEnabled) {
+				var fullscreen =
+					elem.requestPictureInPicture
+					|| elem.webkitRequestPictureInPicture
+					|| elem.mozRequestPictureInPicture;
+				fullscreen.call(elem);
+			}
+		}
+
+		public static exitPictureInPicture() {
+			if (document.pictureInPictureEnabled) {
+				var closePictureInPicture =
+					document.exitPictureInPicture
+					|| document.mozCancelPictureInPicture
+					|| document.webkitExitPictureInPicture
+				closePictureInPicture.call(document);
+			}
 		}
 
 		public static pause(htmlId: number) {

@@ -339,10 +339,10 @@ internal partial class HtmlMediaPlayer : Border
 				player.Log().Debug($"HtmlMediaPlayer.OnSourceChanged: {args.NewValue} isVideo:{player.IsVideo} isAudio:{player.IsAudio}");
 			}
 
-			player._activeElement = player.IsVideo 
-						? player._htmlVideo 
-						: (player.IsAudio 
-									? player._htmlAudio 
+			player._activeElement = player.IsVideo
+						? player._htmlVideo
+						: (player.IsAudio
+									? player._htmlAudio
 									: default);
 			player._activeElementName = player.IsVideo ? "Video" : player.IsAudio ? "Audio" : "";
 
@@ -457,6 +457,30 @@ internal partial class HtmlMediaPlayer : Border
 		}
 
 		NativeMethods.ExitFullScreen();
+	}
+
+	public void RequestCompactOverlay()
+	{
+		if (this.Log().IsEnabled(LogLevel.Debug))
+		{
+			this.Log().Debug($"RequestPictureInPicture()");
+		}
+		if (_htmlVideo != null)
+		{
+			NativeMethods.RequestPictureInPicture(_htmlVideo.HtmlId);
+		}
+	}
+
+	public void ExitCompactOverlay()
+	{
+		if (this.Log().IsEnabled(LogLevel.Debug))
+		{
+			this.Log().Debug($"ExitPictureInPicture()");
+		}
+		if (_htmlVideo != null)
+		{
+			NativeMethods.ExitPictureInPicture();
+		}
 	}
 
 	internal void UpdateVideoStretch(Stretch stretch)
