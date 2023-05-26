@@ -59,6 +59,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private Rectangle m_determinateProgressBarIndicator;
 		private Rectangle m_indeterminateProgressBarIndicator;
 		private Rectangle m_indeterminateProgressBarIndicator2;
+		private Size? m_previousMeasuredWidths;
 
 		public ProgressBar()
 		{
@@ -94,7 +95,14 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void OnSizeChange()
 		{
-			SetProgressBarIndicatorWidth();
+#if __ANDROID__ // Uno workaround for #12312: SetProgressBarIndicatorWidth raises LayoutUpdated, and they many loops to stabilize
+			var measures = new Size(m_layoutRoot.ActualWidth, m_determinateProgressBarIndicator.ActualWidth);
+			if (m_previousMeasuredWidths != measures)
+#endif
+			{
+				SetProgressBarIndicatorWidth();
+			}
+
 			UpdateWidthBasedTemplateSettings();
 		}
 
@@ -167,6 +175,7 @@ namespace Microsoft.UI.Xaml.Controls
 			var templateSettings = TemplateSettings;
 
 			var progressBar = m_layoutRoot;
+			m_previousMeasuredWidths = new Size(double.NaN, double.NaN);
 
 			if (progressBar != null)
 			{
@@ -178,6 +187,8 @@ namespace Microsoft.UI.Xaml.Controls
 					var maximum = Maximum;
 					var minimum = Minimum;
 					var padding = Padding;
+
+					m_previousMeasuredWidths = new Size(progressBarWidth, prevIndicatorWidth);
 
 					// Adds "Updating" state in between to trigger RepositionThemeAnimation Visual Transition
 					// in ProgressBar.xaml when reverting back to previous state
