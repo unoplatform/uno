@@ -364,7 +364,7 @@ namespace Windows.UI.Xaml.Controls
 				this.Log().Debug($"Query button clicked");
 			}
 
-			SubmitSearch(_suggestionsList.SelectedItem);
+			SubmitSearch(null);
 		}
 
 		private void SubmitSearch(object item)
