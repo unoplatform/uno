@@ -19,7 +19,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.ListView
 {
-	[SampleControlInfo("ListView", "ListView_SingleSelection_Focus", typeof(ViewModelBase), description: "ListView.SingleSelectionFollowsFocus.")]
+	[Sample("ListView", IsManualTest = true, IgnoreInSnapshotTests = true)]
 	public sealed partial class ListView_SingleSelection_Focus : UserControl
 	{
 		public ListView_SingleSelection_Focus()
