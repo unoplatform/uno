@@ -53,6 +53,37 @@ namespace Windows.UI.Xaml.Controls
 			_subscriptions.Disposable = AttachThumbEventHandlers(_progressSlider);
 		}
 
+		private void UnbindMediaPlayer()
+		{
+			try
+			{
+				_subscriptions.Disposable = null;
+
+				if (_mediaPlayer != null)
+				{
+					_mediaPlayer.PlaybackSession.PlaybackStateChanged -= OnPlaybackStateChanged;
+					_mediaPlayer.PlaybackSession.BufferingProgressChanged -= OnBufferingProgressChanged;
+					_mediaPlayer.PlaybackSession.NaturalDurationChanged -= OnNaturalDurationChanged;
+					_mediaPlayer.PlaybackSession.PositionChanged -= OnPositionChanged;
+				}
+
+				_playPauseButton.Maybe(p => p.Tapped -= PlayPause);
+				_playPauseButtonOnLeft.Maybe(p => p.Tapped -= PlayPause);
+				_audioMuteButton.Maybe(p => p.Tapped -= ToggleMute);
+				_volumeSlider.Maybe(p => p.ValueChanged -= OnVolumeChanged);
+				_stopButton.Maybe(p => p.Tapped -= Stop);
+				_skipForwardButton.Maybe(p => p.Tapped -= SkipForward);
+				_skipBackwardButton.Maybe(p => p.Tapped -= SkipBackward);
+				_fastForwardButton.Maybe(p => p.Tapped -= ForwardButton);
+				_rewindButton.Maybe(p => p.Tapped -= RewindButton);
+				_progressSlider.Maybe(p => p.Tapped -= TappedProgressSlider);
+			}
+			catch (Exception ex)
+			{
+				this.Log().Error($"Unable to unbind MediaTransportControls properly: {ex.Message}", ex);
+			}
+		}
+
 		public void TappedProgressSlider(object sender, RoutedEventArgs e)
 		{
 			if (double.IsNaN(_progressSlider.Value))
@@ -78,34 +109,6 @@ namespace Windows.UI.Xaml.Controls
 			if (_mediaPlayer != null)
 			{
 				_subscriptions.Disposable = AttachThumbEventHandlers(_progressSlider);
-			}
-		}
-
-		private void UnbindMediaPlayer()
-		{
-			try
-			{
-				_subscriptions.Disposable = null;
-
-				if (_mediaPlayer != null)
-				{
-					_mediaPlayer.PlaybackSession.PlaybackStateChanged -= OnPlaybackStateChanged;
-					_mediaPlayer.PlaybackSession.BufferingProgressChanged -= OnBufferingProgressChanged;
-					_mediaPlayer.PlaybackSession.NaturalDurationChanged -= OnNaturalDurationChanged;
-					_mediaPlayer.PlaybackSession.PositionChanged -= OnPositionChanged;
-				}
-
-				_playPauseButton.Maybe(p => p.Tapped -= PlayPause);
-				_playPauseButtonOnLeft.Maybe(p => p.Tapped -= PlayPause);
-				_audioMuteButton.Maybe(p => p.Tapped -= ToggleMute);
-				_volumeSlider.Maybe(p => p.ValueChanged -= OnVolumeChanged);
-				_stopButton.Maybe(p => p.Tapped -= Stop);
-				_skipForwardButton.Maybe(p => p.Tapped -= SkipForward);
-				_skipBackwardButton.Maybe(p => p.Tapped -= SkipBackward);
-			}
-			catch (Exception ex)
-			{
-				this.Log().Error($"Unable to unbind MediaTransportControls properly: {ex.Message}", ex);
 			}
 		}
 
