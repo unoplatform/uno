@@ -174,7 +174,7 @@ public class Given_DependencyObjectGenerator
 	 		{
 	 			__Store.RestoreBindings();
 	 		}
-
+	 		
 	 		private global::Uno.UI.DataBinding.ManagedWeakReference _selfWeakReference;
 	 		global::Uno.UI.DataBinding.ManagedWeakReference IWeakReferenceProvider.WeakReference
 	 		{
