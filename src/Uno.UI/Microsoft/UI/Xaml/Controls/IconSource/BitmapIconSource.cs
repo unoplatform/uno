@@ -29,7 +29,10 @@ public partial class BitmapIconSource : IconSource
 	public static DependencyProperty ShowAsMonochromeProperty { get; } =
 		DependencyProperty.Register(nameof(ShowAsMonochrome), typeof(bool), typeof(BitmapIconSource), new FrameworkPropertyMetadata(true, OnPropertyChanged));
 
-	private protected override IconElement CreateIconElementCore()
+#if !HAS_UNO_WINUI
+	private
+#endif
+	protected override IconElement CreateIconElementCore()
 	{
 		var bitmapIcon = new BitmapIcon();
 
@@ -51,7 +54,10 @@ public partial class BitmapIconSource : IconSource
 		return bitmapIcon;
 	}
 
-	private protected override DependencyProperty GetIconElementPropertyCore(DependencyProperty sourceProperty)
+#if !HAS_UNO_WINUI
+	private
+#endif
+	protected override DependencyProperty GetIconElementPropertyCore(DependencyProperty sourceProperty)
 	{
 		if (sourceProperty == ShowAsMonochromeProperty)
 		{

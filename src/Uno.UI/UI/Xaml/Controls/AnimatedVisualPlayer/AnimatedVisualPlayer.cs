@@ -96,10 +96,10 @@ namespace Windows.UI.Xaml.Controls
 
 		public void Pause() => Source?.Pause();
 
-		public Task PlayAsync(double fromProgress, double toProgress, bool looped)
+		public IAsyncAction PlayAsync(double fromProgress, double toProgress, bool looped)
 		{
 			Source?.Play(fromProgress, toProgress, looped);
-			return Task.CompletedTask;
+			return Task.CompletedTask.AsAsyncAction();
 		}
 
 		public void Resume() => Source?.Resume();

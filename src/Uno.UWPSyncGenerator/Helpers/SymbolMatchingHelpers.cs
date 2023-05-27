@@ -106,6 +106,12 @@ internal static class SymbolMatchingHelpers
 
 	private static bool AreEventsMatching(IEventSymbol uapEvent, IEventSymbol unoEvent)
 	{
+		if (uapEvent.ContainingType.Name == "Window")
+		{
+			// TODO: Match API with WinUI.
+			return true;
+		}
+
 		var result = AreMatchingCommon(uapEvent, unoEvent) && AreMatching(uapEvent.Type, unoEvent.Type);
 		return result;
 	}
@@ -120,6 +126,18 @@ internal static class SymbolMatchingHelpers
 
 	private static bool ArePropertiesMatching(IPropertySymbol uapProperty, IPropertySymbol unoProperty)
 	{
+		if (uapProperty.Name == "WindowActivationState" && uapProperty.ContainingType.Name == "WindowActivatedEventArgs")
+		{
+			// TODO: Match API with WinUI.
+			return true;
+		}
+
+		if (uapProperty.Name == "Name" && uapProperty.ContainingType.Name == "FrameworkElement")
+		{
+			// TODO: Name shouldn't be virtual.
+			return true;
+		}
+
 		if (!AreMatchingCommon(uapProperty, unoProperty))
 		{
 			return false;

@@ -76,7 +76,10 @@ public partial class FontIconSource : IconSource
 		DependencyProperty.Register(nameof(FontFamily), typeof(FontFamily), typeof(FontIconSource), new FrameworkPropertyMetadata(new FontFamily(Uno.UI.FeatureConfiguration.Font.SymbolsFont), OnPropertyChanged));
 
 	/// <inheritdoc />
-	private protected override IconElement CreateIconElementCore()
+#if !HAS_UNO_WINUI
+	private
+#endif
+	protected override IconElement CreateIconElementCore()
 	{
 		var fontIcon = new FontIcon()
 		{
@@ -101,7 +104,10 @@ public partial class FontIconSource : IconSource
 		return fontIcon;
 	}
 
-	private protected override DependencyProperty GetIconElementPropertyCore(DependencyProperty sourceProperty)
+#if !HAS_UNO_WINUI
+	private
+#endif
+	protected override DependencyProperty GetIconElementPropertyCore(DependencyProperty sourceProperty)
 	{
 		if (sourceProperty == FontFamilyProperty)
 		{
