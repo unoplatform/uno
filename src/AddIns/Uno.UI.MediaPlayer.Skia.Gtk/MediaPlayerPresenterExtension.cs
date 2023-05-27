@@ -71,4 +71,14 @@ public class MediaPlayerPresenterExtension : IMediaPlayerPresenterExtension
 			_player.UpdateVideoStretch(_owner.Stretch);
 		}
 	}
+
+	public void ExitCompactOverlay()
+	{
+		_player.ExitCompactOverlay();
+	}
+
+	public void RequestCompactOverlay()
+	{
+		_player.RequestCompactOverlay();
+	}
 }
