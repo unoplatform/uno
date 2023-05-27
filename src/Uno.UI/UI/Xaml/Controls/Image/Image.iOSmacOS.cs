@@ -23,10 +23,25 @@ namespace Windows.UI.Xaml.Controls
 	{
 		private SerialDisposable _childViewDisposable = new SerialDisposable();
 
+		private Size _sourceImageSize;
+
 		/// <summary>
 		/// The size of the native image data
 		/// </summary>
-		private Size _sourceImageSize;
+		private Size SourceImageSize
+		{
+			get => _sourceImageSize;
+			set
+			{
+				_sourceImageSize = value;
+
+				if (Source is BitmapSource bitmapSource)
+				{
+					bitmapSource.PixelWidth = (int)_sourceImageSize.Width;
+					bitmapSource.PixelHeight = (int)_sourceImageSize.Height;
+				}
+			}
+		}
 
 		public Image() { }
 
@@ -168,7 +183,7 @@ namespace Windows.UI.Xaml.Controls
 				_svgCanvas = null;
 			});
 
-			_sourceImageSize = svgImageSource.SourceSize;
+			SourceImageSize = svgImageSource.SourceSize;
 		}
 
 		private void SetNativeImage(ImageSource imageSource, _UIImage image)
@@ -190,7 +205,7 @@ namespace Windows.UI.Xaml.Controls
 
 				_nativeImageView.SetImage(image);
 
-				_sourceImageSize = image?.Size.ToFoundationSize() ?? default(Size);
+				SourceImageSize = image?.Size.ToFoundationSize() ?? default(Size);
 			}
 		}
 

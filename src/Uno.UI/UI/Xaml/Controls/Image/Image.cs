@@ -286,7 +286,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private Size InnerMeasureOverride(Size availableSize)
 		{
-			var sourceSize = _sourceImageSize;
+			var sourceSize = SourceImageSize;
 
 			if (sourceSize == default)
 			{
@@ -435,7 +435,7 @@ namespace Windows.UI.Xaml.Controls
 				if (_openedSource != null)
 				{
 					var renderedSize = finalSize.LogicalToPhysicalPixels();
-					var loadedSize = _sourceImageSize.LogicalToPhysicalPixels();
+					var loadedSize = SourceImageSize.LogicalToPhysicalPixels();
 
 					if (((renderedSize.Width + 512) < loadedSize.Width ||
 						(renderedSize.Height + 512) < loadedSize.Height) && !Source.UseTargetSize)

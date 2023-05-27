@@ -24,7 +24,7 @@ namespace Windows.UI.Composition
 			_image = image;
 		}
 
-		internal (bool success, object nativeResult) LoadFromStream(int? targetWidth, int? targetHeight, Stream imageStream, out int originalWidth, out int originalHeight)
+		internal (bool success, object nativeResult) LoadFromStream(int? targetWidth, int? targetHeight, Stream imageStream)
 		{
 			using var stream = new SKManagedStream(imageStream);
 
@@ -43,9 +43,6 @@ namespace Windows.UI.Composition
 					this.Log().Debug($"Image load result {result}");
 				}
 
-				originalWidth = info.Width;
-				originalHeight = info.Height;
-
 				return (result == SKCodecResult.Success || result == SKCodecResult.IncompleteInput, result);
 			}
 			else
@@ -53,19 +50,12 @@ namespace Windows.UI.Composition
 				try
 				{
 					_image = SKImage.FromEncodedData(stream);
-					if (_image is null)
-					{
-						originalWidth = originalHeight = 0;
-						return (false, "Failed to decode image");
-					}
-
-					originalWidth = _image.Width;
-					originalHeight = _image.Height;
-					return (true, "Success");
+					return _image is null
+						? (false, "Failed to decode image")
+						: (true, "Success");
 				}
 				catch (Exception e)
 				{
-					originalWidth = originalHeight = 0;
 					return (true, e.Message);
 				}
 			}
