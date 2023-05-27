@@ -1,4 +1,6 @@
 using System;
+using System.IO;
+using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Storage.Streams;
 using UwpBuffer = Windows.Storage.Streams.Buffer;
 
@@ -8,20 +10,24 @@ namespace Windows.UI.Xaml.Media.Imaging
 	{
 		internal event EventHandler Invalidated;
 
-		private readonly UwpBuffer _buffer;
+		private UwpBuffer _buffer;
 
 		public IBuffer PixelBuffer => _buffer;
 
 		public WriteableBitmap(int pixelWidth, int pixelHeight) : base()
 		{
-			var pixelsBufferSize = (uint)(pixelWidth * pixelHeight * 4);
+			PixelWidth = pixelWidth;
+			PixelHeight = pixelHeight;
+			UpdateBuffer();
+		}
+
+		private void UpdateBuffer()
+		{
+			var pixelsBufferSize = (uint)(PixelWidth * PixelHeight * 4);
 			_buffer = new UwpBuffer(pixelsBufferSize)
 			{
 				Length = pixelsBufferSize
 			};
-
-			PixelWidth = pixelWidth;
-			PixelHeight = pixelHeight;
 		}
 
 		public void Invalidate()
@@ -30,6 +36,12 @@ namespace Windows.UI.Xaml.Media.Imaging
 			InvalidateSource();
 #endif
 			Invalidated?.Invoke(this, EventArgs.Empty);
+		}
+
+		private protected override void OnSetSource()
+		{
+			UpdateBuffer();
+			_stream.AsStream().CopyTo(_buffer.AsStream());
 		}
 	}
 }

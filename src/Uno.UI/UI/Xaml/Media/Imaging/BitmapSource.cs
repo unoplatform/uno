@@ -97,9 +97,12 @@ namespace Windows.UI.Xaml.Media.Imaging
 			Stream = clonedStreamSource.AsStream();
 			UpdatePixelWidthAndHeightPartial(Stream);
 #endif
+			OnSetSource();
 		}
 
 		partial void UpdatePixelWidthAndHeightPartial(Stream stream);
+
+		private protected virtual void OnSetSource() { }
 
 		private
 #if __NETSTD__
