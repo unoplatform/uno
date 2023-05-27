@@ -36,6 +36,8 @@ namespace Uno.UI.Samples.Presentation.SamplePages
 		public ContentControlTestViewModel(CoreDispatcher dispatcher) : base(dispatcher)
 		{
 			SetChangeablePropertyToNull = new DelegateCommand(() => ChangeableProperty = null);
+
+			FillItems();
 		}
 
 		public TestDataItem SampleData { get; set; } = new TestDataItem()
@@ -64,6 +66,36 @@ namespace Uno.UI.Samples.Presentation.SamplePages
 			{
 				return "TestDataItem: " + base.ToString();
 			}
+		}
+
+
+		public sealed class Item
+		{
+			public string DisplayName { get; set; }
+		}
+
+		List<Item> _items = new List<Item>();
+		public IEnumerable<Item> Items { get => _items; }
+
+		private int _selectedIndex;
+		public int SelectedIndex
+		{
+			get { return _selectedIndex; }
+			set
+			{
+				if (_selectedIndex != value)
+				{
+					_selectedIndex = value;
+					RaisePropertyChanged();
+				}
+			}
+		}
+
+		private void FillItems()
+		{
+			_items.Add(new Item { DisplayName = "Test1" });
+			_items.Add(new Item { DisplayName = "Test2" });
+			_items.Add(new Item { DisplayName = "Test3" });
 		}
 	}
 }
