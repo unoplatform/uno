@@ -89,6 +89,30 @@ Add the following to your AndroidManifest.xml
 <uses-permission android:name="android.permission.WAKE_LOCK" />
 ```
 
+### WebAssembly
+Using the `MediaPlayerElement` on WebAssembly head requires adding the [`Uno.UI.MediaPlayer.WebAssembly`](https://www.nuget.org/packages/Uno.UI.MediaPlayer.WebAssembly) package to the `MyApp.Wasm` project. 
+
+> [!IMPORTANT]
+> The `Uno.UI.MediaPlayer.WebAssembly` package version must use the same version as the other `Uno.UI.*` or `Uno.WinUI.*` packages in your project.
+
+### Skia.GTK
+Using the `MediaPlayerElement` on the Skia+GTK head requires adding the [`Uno.UI.MediaPlayer.Skia.Gtk`](https://www.nuget.org/packages/Uno.UI.MediaPlayer.Skia.Gtk) package to the `MyApp.Skia.Gtk` project. 
+
+> [!IMPORTANT]
+> The `Uno.UI.MediaPlayer.Skia.Gtk` package version must use the same version as the other `Uno.UI.*` or `Uno.WinUI.*` packages in your project.
+
+#### Skia+GTK on Linux
+The `MediaPlayerElement` support is based on libVLC, and needs the system to provide the appropriate libraries to work properly.
+
+You'll need to install the following packages (Debian based distros):
+
+```
+sudo apt-get install libvlc-dev libx11-dev vlc libgtk2.0-0 libx11dev
+```
+
+#### Skia+GTK on Windows
+Running the `MediaPlayerElement` requires adding the [`VideoLAN.LibVLC.Windows`](https://www.nuget.org/packages/VideoLAN.LibVLC.Windows) package to your application.
+
 ## Future improvement
 
 - React to audio focus changes (pause/stop playback or reduce audio volume)
