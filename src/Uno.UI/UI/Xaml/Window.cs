@@ -225,7 +225,18 @@ namespace Windows.UI.Xaml
 
 		public void Close() { }
 
-		public void SetTitleBar(UIElement value) { }
+		// The parameter name differs between UWP and WinUI.
+		// UWP: https://learn.microsoft.com/en-us/uwp/api/windows.ui.xaml.window.settitlebar?view=winrt-22621
+		// WinUI: https://learn.microsoft.com/en-us/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.window.settitlebar?view=windows-app-sdk-1.3
+		public void SetTitleBar(UIElement
+#if HAS_UNO_WINUI
+								titleBar
+#else
+								value
+#endif
+			)
+		{
+		}
 
 		/// <summary>
 		/// Provides a memory-friendly registration to the <see cref="SizeChanged" /> event.
