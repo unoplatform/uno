@@ -1380,7 +1380,13 @@
 			<Member fullName="UIKit.UIView Windows.UI.Xaml.Controls.ItemsPanelTemplate.LoadContent()" reason="Api alignments" />
 			<Member fullName="AppKit.NSView Windows.UI.Xaml.FrameworkTemplate.LoadContent()" reason="Api alignments" />
 			<Member fullName="AppKit.NSView Windows.UI.Xaml.Controls.ItemsPanelTemplate.LoadContent()" reason="Api alignments" />
-			<Member fullName="System.Void Windows.UI.Xaml.Controls.Image.OnImageOpened(Windows.UI.Xaml.Media.ImageSource imageSource)" reason="Api alignments" />
+
+      <Member fullName="System.Void Windows.UI.Xaml.Controls.Image.OnImageOpened(Windows.UI.Xaml.Media.ImageSource imageSource)" reason="Api alignments" />
+
+      <Member fullName="System.Boolean Uno.UI.ResourceResolver.ResolveResourceStatic(System.Object key, System.Object&amp; value, System.Object context)" reason="Api alignments" />
+			<Member fullName="System.Void Uno.UI.ResourceResolver.ApplyResource(Windows.UI.Xaml.DependencyObject owner, Windows.UI.Xaml.DependencyProperty property, System.Object resourceKey, System.Boolean isThemeResourceExtension, System.Object context)" reason="Api alignments" />
+			<Member fullName="System.Boolean Uno.UI.ResourceResolverSingleton.ResolveResourceStatic(System.Object key, System.Object&amp; value, System.Object context)" reason="Api alignments" />
+			<Member fullName="System.Void Uno.UI.ResourceResolverSingleton.ApplyResource(Windows.UI.Xaml.DependencyObject owner, Windows.UI.Xaml.DependencyProperty property, System.Object resourceKey, System.Boolean isThemeResourceExtension, System.Object context)" reason="Api alignments" />
 
 			<Member fullName="System.Void Windows.UI.Xaml.Media.Animation.EasingFunctionBase..ctor()" reason="API Alignment" />
 			<Member fullName="System.Double Windows.UI.Xaml.Media.Animation.EasingFunctionBase.Ease(System.Double currentTime, System.Double startValue, System.Double finalValue, System.Double duration)" reason="API Alignment" />
