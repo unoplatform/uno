@@ -1,7 +1,6 @@
 #nullable enable
 
 using Windows.UI.Core;
-using LibVLCSharp.GTK;
 using LibVLCSharp.Shared;
 using Windows.UI.Xaml.Controls;
 using System;
@@ -284,7 +283,7 @@ public partial class GtkMediaPlayer : FrameworkElement
 	private void GtkMediaPlayer_LayoutUpdated(object? sender, object e)
 		=> UpdateVideoStretch();
 
-	private void UpdateVideoStretch()
+	private void UpdateVideoStretch(bool forceVideoViewVisibility = false)
 	{
 		_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 		{
@@ -323,6 +322,11 @@ public partial class GtkMediaPlayer : FrameworkElement
 						// From: https://github.com/videolan/libvlcsharp/blob/bca0a53fe921e6f1f745e4e3ac83a7bd3b2e4a9d/src/LibVLCSharp/Shared/MediaPlayerElement/AspectRatioManager.cs#L188
 						videoWidth = videoWidth * videoSettings.SarNum / videoSettings.SarDen;
 						UpdateVideoSizeAllocate(playerHeight, playerWidth, videoHeight, videoWidth);
+
+						if (forceVideoViewVisibility)
+						{
+							_videoView?.SetVisible(true);
+						}
 					}
 					else
 					{
