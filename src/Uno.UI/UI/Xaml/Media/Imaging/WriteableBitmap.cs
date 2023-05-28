@@ -41,7 +41,12 @@ namespace Windows.UI.Xaml.Media.Imaging
 		private protected override void OnSetSource()
 		{
 			UpdateBuffer();
+#if __NETSTD__
 			_stream.AsStream().CopyTo(_buffer.AsStream());
+#else
+			Stream.CopyTo(_buffer.AsStream());
+			Stream.Position = 0;
+#endif
 		}
 	}
 }
