@@ -11,5 +11,9 @@ namespace Windows.UI.Xaml.Controls
 		void RequestFullScreen();
 
 		void ExitFullScreen();
+
+		void RequestCompactOverlay();
+
+		void ExitCompactOverlay();
 	}
 }

@@ -59,6 +59,15 @@ public class MediaPlayerPresenterExtension : IMediaPlayerPresenterExtension
 	{
 		_htmlPlayer.RequestFullScreen();
 	}
+	public void ExitCompactOverlay()
+	{
+		_htmlPlayer.ExitCompactOverlay();
+	}
+
+	public void RequestCompactOverlay()
+	{
+		_htmlPlayer.RequestCompactOverlay();
+	}
 	public void StretchChanged()
 	{
 		if (_owner is not null)
