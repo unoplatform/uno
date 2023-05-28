@@ -92,7 +92,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 
 #if __NETSTD__
 			_stream = clonedStreamSource;
-			UpdatePixelWidthAndHeightPartial(_stream.AsStream());
+			UpdatePixelWidthAndHeightPartial(_stream.CloneStream().AsStream());
 #else
 			Stream = clonedStreamSource.AsStream();
 			UpdatePixelWidthAndHeightPartial(Stream);
