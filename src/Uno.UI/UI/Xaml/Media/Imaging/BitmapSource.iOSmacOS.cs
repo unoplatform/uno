@@ -21,8 +21,26 @@ public partial class BitmapSource
 		PixelHeight = (int)Math.Round(image.Size.Height * image.CurrentScale);
 #elif __MACOS__
 		var image = AppKit.NSImage.FromStream(stream);
-		PixelWidth = (int)Math.Round(image.Size.Width);
-		PixelHeight = (int)Math.Round(image.Size.Height);
+		var representations = image.Representations();
+		if (representations.Length == 0)
+		{
+			PixelWidth = (int)Math.Round(image.Size.Width);
+			PixelHeight = (int)Math.Round(image.Size.Height);
+			return;
+		}
+
+		var width = 0;
+		var height = 0;
+
+		foreach (var representation in representations)
+		{
+			width = Math.Max(width, (int)representation.PixelsWide);
+			height = Math.Max(height, (int)representation.PixelsHigh);
+		}
+
+		PixelWidth = width;
+		PixelHeight = height;
+
 #endif
 	}
 }
