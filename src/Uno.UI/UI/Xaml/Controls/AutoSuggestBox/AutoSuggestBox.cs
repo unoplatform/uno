@@ -379,7 +379,7 @@ namespace Windows.UI.Xaml.Controls
 					this.Log().Debug($"Enter key pressed");
 				}
 
-				SubmitSearch(_suggestionsList.SelectedItem);
+				SubmitSearch(IsSuggestionListOpen ? _suggestionsList.SelectedItem : null);
 			}
 			else if ((e.Key == Windows.System.VirtualKey.Up || e.Key == Windows.System.VirtualKey.Down) && IsSuggestionListOpen)
 			{
