@@ -290,6 +290,7 @@
 			<_NuspecFiles Include=".\Uno.WinUI.Lottie.nuspec" />
 			<_NuspecFiles Include=".\Uno.WinUI.MSAL.nuspec" />
 			<_NuspecFiles Include=".\Uno.WinUI.MediaPlayer.WebAssembly.nuspec" />
+			<_NuspecFiles Include=".\Uno.WinUI.MediaPlayer.Skia.Gtk.nuspec" />
 			<_NuspecFiles Include=".\Uno.WinUI.Svg.nuspec" />
 			<_NuspecFiles Include=".\Uno.WinUI.RemoteControl.nuspec" />
 			<_NuspecFiles Include=".\Uno.WinUI.RemoteControl.Messaging.nuspec" />
@@ -345,6 +346,7 @@
 		<XmlPoke XmlInputPath=".\Uno.WinUI.Lottie.nuspec" Query="/x:package/x:metadata/x:id" Value="$(PackageNamePrefix).Lottie" Namespaces="$(NugetNamespace)" />
 		<XmlPoke XmlInputPath=".\Uno.WinUI.MSAL.nuspec" Query="/x:package/x:metadata/x:id" Value="$(PackageNamePrefix).MSAL" Namespaces="$(NugetNamespace)" />
 		<XmlPoke XmlInputPath=".\Uno.WinUI.MediaPlayer.WebAssembly.nuspec" Query="/x:package/x:metadata/x:id" Value="$(PackageNamePrefix).MediaPlayer.WebAssembly" Namespaces="$(NugetNamespace)" />
+		<XmlPoke XmlInputPath=".\Uno.WinUI.MediaPlayer.Skia.Gtk.nuspec" Query="/x:package/x:metadata/x:id" Value="$(PackageNamePrefix).MediaPlayer.Skia.Gtk" Namespaces="$(NugetNamespace)" />
 		<XmlPoke XmlInputPath=".\Uno.WinUI.Svg.nuspec" Query="/x:package/x:metadata/x:id" Value="$(PackageNamePrefix).Svg" Namespaces="$(NugetNamespace)" />
 		<XmlPoke XmlInputPath=".\Uno.WinUI.XamlHost.nuspec" Query="/x:package/x:metadata/x:id" Value="$(PackageNamePrefix).XamlHost" Namespaces="$(NugetNamespace)" />
 		<XmlPoke XmlInputPath=".\Uno.WinUI.XamlHost.Skia.Wpf.nuspec" Query="/x:package/x:metadata/x:id" Value="$(PackageNamePrefix).XamlHost.Skia.Wpf" Namespaces="$(NugetNamespace)" />
@@ -361,6 +363,7 @@
 		<XmlPoke XmlInputPath=".\Uno.WinUI.Lottie.nuspec" Query="/x:package/x:metadata/x:title" Value="$(PackageNamePrefix).Lottie" Namespaces="$(NugetNamespace)" />
 		<XmlPoke XmlInputPath=".\Uno.WinUI.MSAL.nuspec" Query="/x:package/x:metadata/x:title" Value="$(PackageNamePrefix).MSAL" Namespaces="$(NugetNamespace)" />
 		<XmlPoke XmlInputPath=".\Uno.WinUI.MediaPlayer.WebAssembly.nuspec" Query="/x:package/x:metadata/x:title" Value="$(PackageNamePrefix).MediaPlayer.WebAssembly" Namespaces="$(NugetNamespace)" />
+		<XmlPoke XmlInputPath=".\Uno.WinUI.MediaPlayer.Skia.Gtk.nuspec" Query="/x:package/x:metadata/x:title" Value="$(PackageNamePrefix).Skia.Gtk.WebAssembly" Namespaces="$(NugetNamespace)" />
 		<XmlPoke XmlInputPath=".\Uno.WinUI.Svg.nuspec" Query="/x:package/x:metadata/x:title" Value="$(PackageNamePrefix).Svg" Namespaces="$(NugetNamespace)" />
 		<XmlPoke XmlInputPath=".\Uno.WinUI.XamlHost.nuspec" Query="/x:package/x:metadata/x:title" Value="$(PackageNamePrefix).XamlHost" Namespaces="$(NugetNamespace)" />
 		<XmlPoke XmlInputPath=".\Uno.WinUI.XamlHost.Skia.Wpf.nuspec" Query="/x:package/x:metadata/x:title" Value="$(PackageNamePrefix).XamlHost.Skia.Wpf" Namespaces="$(NugetNamespace)" />
@@ -489,6 +492,7 @@
 		<Exec Command="$(NuGetBin) pack Uno.WinUI.Lottie.nuspec -Verbosity Detailed -Version &quot;$(GITVERSION_SemVer)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
 		<Exec Command="$(NuGetBin) pack Uno.WinUI.MSAL.nuspec -Verbosity Detailed -Version &quot;$(GITVERSION_SemVer)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
 		<Exec Command="$(NuGetBin) pack Uno.WinUI.MediaPlayer.WebAssembly.nuspec -Verbosity Detailed -Version &quot;$(GITVERSION_SemVer)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
+		<Exec Command="$(NuGetBin) pack Uno.WinUI.MediaPlayer.Skia.Gtk.nuspec -Verbosity Detailed -Version &quot;$(GITVERSION_SemVer)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
 		<Exec Command="$(NuGetBin) pack Uno.WinUI.Svg.nuspec -Verbosity Detailed -Version &quot;$(GITVERSION_SemVer)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
 		<Exec Command="$(NuGetBin) pack Uno.WinUI.RemoteControl.nuspec -Verbosity Detailed -Version &quot;$(GITVERSION_SemVer)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
 		<Exec Command="$(NuGetBin) pack Uno.WinUI.RemoteControl.Messaging.nuspec -Verbosity Detailed -Version &quot;$(GITVERSION_SemVer)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
