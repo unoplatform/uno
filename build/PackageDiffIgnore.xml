@@ -590,6 +590,7 @@
 			<Member fullName="Windows.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.Primitives.ColumnMajorUniformToLargestGridLayout::ColumnSpacingProperty" reason="Api alignments" />
 			<Member fullName="Windows.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.Primitives.ColumnMajorUniformToLargestGridLayout::MaxColumnsProperty" reason="Api alignments" />
 			<Member fullName="Windows.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.Primitives.ColumnMajorUniformToLargestGridLayout::RowSpacingProperty" reason="Api alignments" />
+			<Member fullName="System.Int32 Microsoft.UI.Xaml.Controls.ElementRealizationOptions::value__" reason="Api alignments" />
 		</Fields>
 		<Properties>
 			<!-- BEGIN Expander -->
@@ -722,7 +723,10 @@
 			<Member fullName="System.Double Windows.UI.Xaml.Media.Animation.RepeatBehavior::Count()" reason="Api alignments" />
 			<Member fullName="System.TimeSpan Windows.UI.Xaml.Media.Animation.RepeatBehavior::Duration()" reason="Api alignments" />
 			<Member fullName="Windows.UI.Xaml.Media.Animation.RepeatBehaviorType Windows.UI.Xaml.Media.Animation.RepeatBehavior::Type()" reason="Api alignments" />
-
+			<Member fullName="Windows.UI.Xaml.UIElement Windows.UI.Xaml.Controls.Primitives.ButtonBase::ContentTemplateRoot()" reason="Api alignments" />
+			<Member fullName="AppKit.NSView Windows.UI.Xaml.Controls.Primitives.ButtonBase::ContentTemplateRoot()" reason="Api alignments" />
+			<Member fullName="UIKit.UIView Windows.UI.Xaml.Controls.Primitives.ButtonBase::ContentTemplateRoot()" reason="Api alignments" />
+			<Member fullName="Android.Views.View Windows.UI.Xaml.Controls.Primitives.ButtonBase::ContentTemplateRoot()" reason="Api alignments" />
 
 			<!-- BEGIN WebView -->
 			<Member fullName="Uno.UI.Web.WebErrorStatus Windows.UI.Xaml.Controls.WebViewNavigationCompletedEventArgs::WebErrorStatus()" reason="Incorrect type" />
@@ -1177,7 +1181,91 @@
 
 			<Member fullName="System.Void Windows.UI.Xaml.Media.Animation.Timeline.Dispose(System.Boolean disposing)" reason="Api alignments" />
 			<Member fullName="System.Void Windows.UI.Xaml.Media.Animation.Timeline.Dispose()" reason="Api alignments" />
-
+			<Member fullName="System.Threading.Tasks.Task`1&lt;Windows.UI.Popups.IUICommand&gt; Windows.UI.Popups.PopupMenu.ShowForSelectionAsync(Windows.Foundation.Rect selection)" reason="Api alignments" />
+			<Member fullName="System.Threading.Tasks.Task`1&lt;Windows.UI.Popups.IUICommand&gt; Windows.UI.Popups.PopupMenu.ShowForSelectionAsync(Windows.Foundation.Rect selection, Windows.UI.Popups.Placement preferredPlacement)" reason="Api alignments" />
+			<Member fullName="Windows.Foundation.IAsyncAction Windows.UI.Core.CoreDispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority priority, Windows.UI.Core.DispatchedHandler handler)" reason="Api alignments" />
+			<Member fullName="Windows.Foundation.IAsyncAction Windows.UI.Core.CoreDispatcher.RunIdleAsync(Windows.UI.Core.IdleDispatchedHandler handler)" reason="Api alignments" />
+			<Member fullName="System.Threading.Tasks.Task`1&lt;System.Boolean&gt; Windows.System.Launcher.LaunchUriAsync(System.Uri uri)" reason="Api alignments" />
+			<Member fullName="Windows.Foundation.IAsyncOperation`1&lt;Windows.Storage.StorageFolder&gt; Windows.Storage.StorageFolder.CreateFolderAsync(System.String folderName)" reason="Api alignments" />
+			<Member fullName="Windows.Foundation.IAsyncOperation`1&lt;Windows.Storage.StorageFolder&gt; Windows.Storage.StorageFolder.CreateFolderAsync(System.String folderName, Windows.Storage.CreationCollisionOption option)" reason="Api alignments" />
+			<Member fullName="Windows.Foundation.IAsyncOperation`1&lt;Windows.Storage.StorageFile&gt; Windows.Storage.StorageFolder.GetFileAsync(System.String path)" reason="Api alignments" />
+			<Member fullName="Windows.Foundation.IAsyncOperation`1&lt;Windows.Storage.IStorageItem&gt; Windows.Storage.StorageFolder.TryGetItemAsync(System.String path)" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Composition.KeyFrameAnimation.InsertKeyFrame(System.Single normalizedProgressKey, System.Single value)" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Composition.KeyFrameAnimation.InsertKeyFrame(System.Single normalizedProgressKey, System.Single value, Windows.UI.Composition.CompositionEasingFunction easingFunction)" reason="Api alignments" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Automation.Peers.NavigationViewItemAutomationPeer..ctor(Microsoft.UI.Xaml.Controls.NavigationViewItem navigationViewItem)" reason="Api alignments" />
+			<Member fullName="System.String Microsoft.UI.Xaml.Controls.AnimatedIcon.GetState(Windows.UI.Xaml.DependencyObject obj)" reason="Api alignments" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.AnimatedIcon.SetState(Windows.UI.Xaml.DependencyObject obj, System.String value)" reason="Api alignments" />
+			<Member fullName="System.Int32 Microsoft.UI.Xaml.Controls.ItemsSourceView.IndexFromKey(System.String id)" reason="Api alignments" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.TreeView.Expand(Microsoft.UI.Xaml.Controls.TreeViewNode node)" reason="Api alignments" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.TreeView.Collapse(Microsoft.UI.Xaml.Controls.TreeViewNode node)" reason="Api alignments" />
+			<Member fullName="Windows.UI.Xaml.Thickness Microsoft.UI.Xaml.Controls.Primitives.InfoBarPanel.GetHorizontalOrientationMargin(Windows.UI.Xaml.DependencyObject obj)" reason="Api alignments" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.InfoBarPanel.SetHorizontalOrientationMargin(Windows.UI.Xaml.DependencyObject obj, Windows.UI.Xaml.Thickness value)" reason="Api alignments" />
+			<Member fullName="Windows.UI.Xaml.Thickness Microsoft.UI.Xaml.Controls.Primitives.InfoBarPanel.GetVerticalOrientationMargin(Windows.UI.Xaml.DependencyObject obj)" reason="Api alignments" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.InfoBarPanel.SetVerticalOrientationMargin(Windows.UI.Xaml.DependencyObject obj, Windows.UI.Xaml.Thickness value)" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.StateTriggerBase.SetActive(System.Boolean active)" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Input.InputScopeName..ctor(Windows.UI.Xaml.Input.InputScopeNameValue value)" reason="Api alignments" />
+			<Member fullName="Windows.UI.Xaml.UIElement Windows.UI.Xaml.Controls.Border.get_Child()" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.Border.set_Child(Windows.UI.Xaml.UIElement value)" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.Border.OnChildChanged(Windows.UI.Xaml.UIElement oldValue, Windows.UI.Xaml.UIElement newValue)" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.Border.OnPaddingChanged(Windows.UI.Xaml.Thickness oldValue, Windows.UI.Xaml.Thickness newValue)" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.Border.OnBorderThicknessChanged(Windows.UI.Xaml.Thickness oldValue, Windows.UI.Xaml.Thickness newValue)" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.Border.OnBorderBrushChanged(Windows.UI.Xaml.Media.Brush oldValue, Windows.UI.Xaml.Media.Brush newValue)" reason="Api alignments" />
+			<Member fullName="System.Object Windows.UI.Xaml.Controls.ContentControl.get_Content()" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.ContentControl.set_Content(System.Object value)" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.ContentControl.OnContentChanged(System.Object oldValue, System.Object newValue)" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.ContentControl.OnContentTemplateChanged(Windows.UI.Xaml.DataTemplate oldTemplate, Windows.UI.Xaml.DataTemplate newTemplate)" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.ContentControl.OnContentTemplateSelectorChanged(Windows.UI.Xaml.Controls.DataTemplateSelector dataTemplateSelector1, Windows.UI.Xaml.Controls.DataTemplateSelector dataTemplateSelector2)" reason="Api alignments" />
+			<Member fullName="Windows.UI.Xaml.UIElement Windows.UI.Xaml.Controls.ContentControl.get_ContentTemplateRoot()" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.ContentControl.set_ContentTemplateRoot(Windows.UI.Xaml.UIElement value)" reason="Api alignments" />
+			<Member fullName="System.Object Windows.UI.Xaml.Controls.ContentPresenter.get_Content()" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.ContentPresenter.set_Content(System.Object value)" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.ContentPresenter.OnContentTemplateChanged(Windows.UI.Xaml.DataTemplate oldTemplate, Windows.UI.Xaml.DataTemplate newTemplate)" reason="Api alignments" />
+			<Member fullName="Windows.UI.Xaml.UIElement Windows.UI.Xaml.Controls.ContentPresenter.get_ContentTemplateRoot()" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.ContentPresenter.set_ContentTemplateRoot(Windows.UI.Xaml.UIElement value)" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.Control.OnKeyDown(Windows.UI.Xaml.Input.KeyRoutedEventArgs args)" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.Control.OnKeyUp(Windows.UI.Xaml.Input.KeyRoutedEventArgs args)" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.ItemsControl.SyncDataContext()" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.ItemsControl.SetNeedsUpdateItems()" reason="Api alignments" />
+			<Member fullName="System.Boolean Windows.UI.Xaml.Controls.ItemsControl.UpdateItemsIfNeeded()" reason="Api alignments" />
+			<Member fullName="System.Boolean Windows.UI.Xaml.Controls.ItemsControl.UpdateItems()" reason="Api alignments" />
+			<Member fullName="Windows.UI.Xaml.Controls.ScrollBarVisibility Windows.UI.Xaml.Controls.ScrollViewer.GetHorizontalScrollBarVisibility(Windows.UI.Xaml.DependencyObject obj)" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.ScrollViewer.SetHorizontalScrollBarVisibility(Windows.UI.Xaml.DependencyObject obj, Windows.UI.Xaml.Controls.ScrollBarVisibility value)" reason="Api alignments" />
+			<Member fullName="Windows.UI.Xaml.Controls.ScrollBarVisibility Windows.UI.Xaml.Controls.ScrollViewer.GetVerticalScrollBarVisibility(Windows.UI.Xaml.DependencyObject obj)" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.ScrollViewer.SetVerticalScrollBarVisibility(Windows.UI.Xaml.DependencyObject obj, Windows.UI.Xaml.Controls.ScrollBarVisibility value)" reason="Api alignments" />
+			<Member fullName="Windows.UI.Xaml.Controls.ScrollMode Windows.UI.Xaml.Controls.ScrollViewer.GetHorizontalScrollMode(Windows.UI.Xaml.DependencyObject obj)" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.ScrollViewer.SetHorizontalScrollMode(Windows.UI.Xaml.DependencyObject obj, Windows.UI.Xaml.Controls.ScrollMode value)" reason="Api alignments" />
+			<Member fullName="Windows.UI.Xaml.Controls.ScrollMode Windows.UI.Xaml.Controls.ScrollViewer.GetVerticalScrollMode(Windows.UI.Xaml.DependencyObject obj)" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.ScrollViewer.SetVerticalScrollMode(Windows.UI.Xaml.DependencyObject obj, Windows.UI.Xaml.Controls.ScrollMode value)" reason="Api alignments" />
+			<Member fullName="System.Object Windows.UI.Xaml.Controls.ToolTipService.GetToolTip(Windows.UI.Xaml.DependencyObject obj)" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.ToolTipService.SetToolTip(Windows.UI.Xaml.DependencyObject obj, System.Object value)" reason="Api alignments" />
+			<Member fullName="Windows.UI.Xaml.Controls.Primitives.PlacementMode Windows.UI.Xaml.Controls.ToolTipService.GetPlacement(Windows.UI.Xaml.DependencyObject obj)" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.ToolTipService.SetPlacement(Windows.UI.Xaml.DependencyObject obj, Windows.UI.Xaml.Controls.Primitives.PlacementMode value)" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Automation.Peers.ToggleButtonAutomationPeer..ctor(Windows.UI.Xaml.Controls.Primitives.ToggleButton element)" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Media.Transform..ctor()" reason="Api alignments" />
+			<Member fullName="System.String Windows.UI.Xaml.Media.Animation.Storyboard.GetTargetName(Windows.UI.Xaml.Media.Animation.Timeline timeline)" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Media.Animation.Storyboard.SetTargetName(Windows.UI.Xaml.Media.Animation.Timeline timeline, System.String value)" reason="Api alignments" />
+			<Member fullName="System.String Windows.UI.Xaml.Media.Animation.Storyboard.GetTargetProperty(Windows.UI.Xaml.Media.Animation.Timeline timeline)" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Media.Animation.Storyboard.SetTargetProperty(Windows.UI.Xaml.Media.Animation.Timeline timeline, System.String value)" reason="Api alignments" />
+			<Member fullName="Uno.Media.Playback.IVideoSurface Windows.Media.Playback.MediaPlayer.get_RenderSurface()" reason="Api alignments" />
+			<Member fullName="System.Void Windows.Media.Playback.MediaPlayer.InitializeSource()" reason="Api alignments" />
+			<Member fullName="System.Void Windows.Media.Playback.MediaPlayer.Play()" reason="Api alignments" />
+			<Member fullName="System.Void Windows.Media.Playback.MediaPlayer.Pause()" reason="Api alignments" />
+			<Member fullName="System.Void Windows.Media.Playback.MediaPlayer.Stop()" reason="Api alignments" />
+			<Member fullName="System.Threading.Tasks.Task`1&lt;Windows.Devices.Geolocation.GeolocationAccessStatus&gt; Windows.Devices.Geolocation.Geolocator.RequestAccessAsync()" reason="Api alignments" />
+			<Member fullName="System.Threading.Tasks.Task`1&lt;Windows.Devices.Geolocation.Geoposition&gt; Windows.Devices.Geolocation.Geolocator.GetGeopositionAsync()" reason="Api alignments" />
+			<Member fullName="System.Threading.Tasks.Task`1&lt;Windows.Devices.Geolocation.Geoposition&gt; Windows.Devices.Geolocation.Geolocator.GetGeopositionAsync(System.TimeSpan maximumAge, System.TimeSpan timeout)" reason="Api alignments" />
+			<Member fullName="Android.Views.View Windows.UI.Xaml.Controls.ContentControl.get_ContentTemplateRoot()" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.ContentControl.set_ContentTemplateRoot(Android.Views.View value)" reason="Api alignments" />
+			<Member fullName="Android.Views.View Windows.UI.Xaml.Controls.ContentPresenter.get_ContentTemplateRoot()" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.ContentPresenter.set_ContentTemplateRoot(Android.Views.View value)" reason="Api alignments" />
+			<Member fullName="UIKit.UIView Windows.UI.Xaml.Controls.ContentControl.get_ContentTemplateRoot()" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.ContentControl.set_ContentTemplateRoot(UIKit.UIView value)" reason="Api alignments" />
+			<Member fullName="UIKit.UIView Windows.UI.Xaml.Controls.ContentPresenter.get_ContentTemplateRoot()" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.ContentPresenter.set_ContentTemplateRoot(UIKit.UIView value)" reason="Api alignments" />
+			<Member fullName="AppKit.NSView Windows.UI.Xaml.Controls.ContentControl.get_ContentTemplateRoot()" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.ContentControl.set_ContentTemplateRoot(AppKit.NSView value)" reason="Api alignments" />
+			<Member fullName="AppKit.NSView Windows.UI.Xaml.Controls.ContentPresenter.get_ContentTemplateRoot()" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.ContentPresenter.set_ContentTemplateRoot(AppKit.NSView value)" reason="Api alignments" />
 			<Member fullName="System.Void Windows.UI.Xaml.Window.set_Visible(System.Boolean value)" reason="Does not exist in UWP and WinUI" />
 
 			<Member fullName="System.Object Uno.UI.Svg.GlobalStaticResources.FindResource(System.String name)" reason="API Alignment" />
