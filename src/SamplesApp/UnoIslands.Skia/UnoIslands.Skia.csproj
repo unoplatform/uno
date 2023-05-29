@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<TargetFrameworks>netstandard2.0;net5.0</TargetFrameworks>
 	</PropertyGroup>
@@ -47,7 +47,7 @@
 		<PackageReference Include="IdentityModel.OidcClient" Version="3.1.2" />
 		<PackageReference Include="Microsoft.Graph" Version="3.12.0" />
 		<PackageReference Include="Microsoft.Identity.Client" Version="4.47.0" />
-		<PackageReference Include="MSTest.TestFramework" Version="2.1.2" />
+		<PackageReference Include="MSTest.TestFramework" Version="3.0.3" />
 		<PackageReference Include="System.Management" Version="7.0.0" />
 		<PackageReference Include="BenchmarkDotNet" Version="0.11.4-develop" />
 	</ItemGroup>
