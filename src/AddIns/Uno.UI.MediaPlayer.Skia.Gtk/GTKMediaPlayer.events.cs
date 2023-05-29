@@ -42,53 +42,63 @@ public partial class GtkMediaPlayer
 	{
 		await Task.Run(() =>
 		{
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			try
 			{
-				this.Log().Debug($"Creating libvlc");
-			}
-
-			_libvlc = new LibVLC(enableDebugLogs: false);
-
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
-			{
-				this.Log().Debug($"Creating player");
-			}
-
-			_mediaPlayer = new LibVLCSharp.Shared.MediaPlayer(_libvlc);
-
-			if (TryGetEventManagerProperty(_mediaPlayer, out var playerManagerProperty)
-				&& playerManagerProperty.GetValue(_mediaPlayer) is { } eventManager)
-			{
-				_playerMap.Add(eventManager, new WeakReference<GtkMediaPlayer>(this));
-			}
-			else
-			{
-				throw new NotSupportedException("This version of libVLC is not supported (Missing EventManager property). Report this to the Uno Platform repository.");
-			}
-
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
-			{
-				this.Log().Debug($"Creating VideoView");
-			}
-
-			_videoView = new VideoView();
-
-			_videoViewMap.Add(_videoView, new WeakReference<GtkMediaPlayer>(this));
-
-			_videoView.VideoSurfaceInteraction += static (s, e) =>
-			{
-				if (GetGtkPlayerForVideoView(s, out var target))
+				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 				{
-					target.OnVideoViewVideoSurfaceInteraction(s, e);
+					this.Log().Debug($"Creating libvlc");
+				}
+
+				_libvlc = new LibVLC(enableDebugLogs: false);
+
+				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				{
+					this.Log().Debug($"Creating player");
+				}
+
+				_mediaPlayer = new LibVLCSharp.Shared.MediaPlayer(_libvlc);
+
+				if (TryGetEventManagerProperty(_mediaPlayer, out var playerManagerProperty)
+					&& playerManagerProperty.GetValue(_mediaPlayer) is { } eventManager)
+				{
+					_playerMap.Add(eventManager, new WeakReference<GtkMediaPlayer>(this));
 				}
 				else
 				{
-					if (typeof(GtkMediaPlayer).Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
-					{
-						typeof(GtkMediaPlayer).Log().Debug($"Unable to process interaction event, the GtkMediaPlayer instance cannot be found");
-					}
+					throw new NotSupportedException("This version of libVLC is not supported (Missing EventManager property). Report this to the Uno Platform repository.");
 				}
-			};
+
+				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				{
+					this.Log().Debug($"Creating VideoView");
+				}
+
+				_videoView = new VideoView();
+
+				_videoViewMap.Add(_videoView, new WeakReference<GtkMediaPlayer>(this));
+
+				_videoView.VideoSurfaceInteraction += static (s, e) =>
+				{
+					if (GetGtkPlayerForVideoView(s, out var target))
+					{
+						target.OnVideoViewVideoSurfaceInteraction(s, e);
+					}
+					else
+					{
+						if (typeof(GtkMediaPlayer).Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+						{
+							typeof(GtkMediaPlayer).Log().Debug($"Unable to process interaction event, the GtkMediaPlayer instance cannot be found");
+						}
+					}
+				};
+			}
+			catch(Exception ex)
+			{
+				if (typeof(GtkMediaPlayer).Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Error))
+				{
+					typeof(GtkMediaPlayer).Log().Error($"Failed to initialize libVLC. See for more details: https://aka.platform.uno/mediaplayerelement", ex);
+				}
+			}
 		});
 
 		await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
