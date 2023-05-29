@@ -506,4 +506,20 @@ public partial class GtkMediaPlayer : FrameworkElement
 	[MemberNotNullWhen(true, nameof(_videoView), nameof(_mediaPlayer))]
 	private bool EnsureMediaPlayerAndVideoView()
 		=> _videoView is not null && _mediaPlayer is not null;
+
+	public void RequestCompactOverlay()
+	{
+		if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+		{
+			this.Log().Debug($"RequestPictureInPicture()");
+		}
+	}
+
+	public void ExitCompactOverlay()
+	{
+		if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+		{
+			this.Log().Debug($"ExitPictureInPicture()");
+		}
+	}
 }

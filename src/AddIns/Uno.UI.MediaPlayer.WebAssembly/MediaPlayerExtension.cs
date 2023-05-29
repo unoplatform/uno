@@ -1,26 +1,16 @@
 ﻿#nullable enable
 
 using System;
-using Uno.Media.Playback;
-using Windows.Media.Core;
-using Uno.Extensions;
-using System.IO;
-using Uno.Foundation.Logging;
 using System.Collections.Generic;
-using Uno;
-using Uno.Helpers;
 using System.Linq;
-using System.Threading.Tasks;
+using Uno.Foundation.Extensibility;
+using Uno.Foundation.Logging;
+using Uno.Media.Playback;
+using Windows.Foundation;
+using Windows.Media.Core;
 using Windows.Media.Playback;
 using Windows.Storage;
 using Windows.Storage.Streams;
-using Windows.Foundation;
-using Windows.UI.Xaml.Controls;
-using System.Diagnostics.CodeAnalysis;
-using Windows.ApplicationModel.Background;
-using Uno.Foundation.Extensibility;
-using Windows.UI.Xaml.Controls.Maps;
-using System.Numerics;
 
 [assembly: ApiExtension(typeof(IMediaPlayerExtension), typeof(Uno.UI.Media.MediaPlayerExtension))]
 
@@ -231,11 +221,43 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 		_player.OnSourceEnded += OnCompletion;
 		_player.OnTimeUpdate += OnTimeUpdate;
 
+		_player.OnStatusChanged += OnStatusMediaChanged;
+
 		_owner.PlaybackSession.PlaybackStateChanged -= OnStatusChanged;
 		_owner.PlaybackSession.PlaybackStateChanged += OnStatusChanged;
 
 		ApplyAnonymousCors();
 		ApplyVideoSource();
+	}
+
+	private void OnStatusMediaChanged(object? sender, object e)
+	{
+		if (this.Log().IsEnabled(LogLevel.Debug))
+		{
+			this.Log().Debug($"MediaPlayerExtension.OnStatusMediaChanged Paused ({_player?.IsPause.ToString()})");
+		}
+
+		switch (_owner.PlaybackSession.PlaybackState)
+		{
+			case MediaPlaybackState.None:
+				break;
+			case MediaPlaybackState.Opening:
+				break;
+			case MediaPlaybackState.Buffering:
+				break;
+			case MediaPlaybackState.Playing:
+				if (_player?.IsPause == true)
+				{
+					_owner.PlaybackSession.MediaPlayer.Pause();
+				}
+				break;
+			case MediaPlaybackState.Paused:
+				if (_player?.IsPause == false)
+				{
+					_owner.PlaybackSession.MediaPlayer.Play();
+				}
+				break;
+		}
 	}
 
 	private void SetPlaylistItems(MediaPlaybackList playlist)
