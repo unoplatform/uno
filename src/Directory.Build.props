@@ -135,6 +135,7 @@
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.Foundation.Logging.csproj</_AdjustedOutputProjects>
 	  
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.MediaPlayer.WebAssembly.csproj</_AdjustedOutputProjects>
+	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.MediaPlayer.Skia.Gtk.csproj</_AdjustedOutputProjects>
 
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Dispatching.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Dispatching.netcoremobile.csproj</_AdjustedOutputProjects>
