@@ -14,6 +14,9 @@ using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.Xaml.Media;
 
+using ExifInterface = Android.Media.ExifInterface;
+using Orientation = Android.Media.Orientation;
+
 namespace Windows.UI.Xaml.Media
 {
 	public partial class ImageSource
@@ -192,6 +195,52 @@ namespace Windows.UI.Xaml.Media
 			return false;
 		}
 
+		private static Bitmap RespectExifOrientation(ExifInterface exifInterface, Bitmap bitmap)
+		{
+			int orientation = exifInterface.GetAttributeInt(ExifInterface.TagOrientation, (int)Orientation.Normal);
+			var rotationAngle = (Orientation)orientation switch
+			{
+				Orientation.Rotate270 => 270,
+				Orientation.Rotate180 => 180,
+				Orientation.Rotate90 => 90,
+				_ => 0, // for now, we handle only common orientations.
+			};
+
+			if (rotationAngle == 0)
+			{
+				return bitmap;
+			}
+
+			var matrix = new Android.Graphics.Matrix();
+			matrix.PostRotate(rotationAngle);
+			bitmap = Bitmap.CreateBitmap(bitmap, x: 0, y: 0, width: bitmap.Width, height: bitmap.Height, matrix, true);
+
+			return bitmap;
+		}
+
+		private static async Task<Bitmap> DecodeStreamAsBitmapWithExifOrientation(Stream stream, Rect outPadding = null, BitmapFactory.Options options = null)
+		{
+			var bitmap = await BitmapFactory.DecodeStreamAsync(stream, outPadding, options);
+			if (!stream.CanSeek)
+			{
+				// DecodeStreamAsync have read to the end, if we can't reset
+				// the Position to zero, ExifInterface will not be able to read the orientation correctly.
+				return bitmap;
+			}
+
+			stream.Position = 0;
+
+			var exifInterface = new ExifInterface(stream);
+			return RespectExifOrientation(exifInterface, bitmap);
+		}
+
+		private static async Task<Bitmap> DecodeFileAsBitmapWithExifOrientation(string path, BitmapFactory.Options options = null)
+		{
+			var bitmap = await BitmapFactory.DecodeFileAsync(path, options);
+			var exifInterface = new ExifInterface(path);
+			return RespectExifOrientation(exifInterface, bitmap);
+		}
+
 		internal async Task<ImageData> Open(CancellationToken ct, Android.Widget.ImageView targetImage = null, int? targetWidth = null, int? targetHeight = null)
 		{
 			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
@@ -236,11 +285,11 @@ namespace Windows.UI.Xaml.Media
 					if (ValidateIfImageNeedsResize(options))
 					{
 						options.InJustDecodeBounds = false;
-						return _imageData = ImageData.FromBitmap(await BitmapFactory.DecodeStreamAsync(Stream, emptyPadding, options));
+						return _imageData = ImageData.FromBitmap(await DecodeStreamAsBitmapWithExifOrientation(Stream, emptyPadding, options));
 					}
 				}
 
-				return _imageData = ImageData.FromBitmap(await BitmapFactory.DecodeStreamAsync(Stream));
+				return _imageData = ImageData.FromBitmap(await DecodeStreamAsBitmapWithExifOrientation(Stream));
 			}
 
 			if (!FilePath.IsNullOrEmpty())
@@ -249,9 +298,9 @@ namespace Windows.UI.Xaml.Media
 				if (ValidateIfImageNeedsResize(options))
 				{
 					options.InJustDecodeBounds = false;
-					return _imageData = ImageData.FromBitmap(await BitmapFactory.DecodeFileAsync(FilePath, options));
+					return _imageData = ImageData.FromBitmap(await DecodeFileAsBitmapWithExifOrientation(FilePath, options));
 				}
-				return _imageData = ImageData.FromBitmap(await BitmapFactory.DecodeFileAsync(FilePath));
+				return _imageData = ImageData.FromBitmap(await DecodeFileAsBitmapWithExifOrientation(FilePath));
 			}
 
 			if (AbsoluteUri != null)
@@ -263,7 +312,7 @@ namespace Windows.UI.Xaml.Media
 					{
 						var stream = ContactsContract.Contacts.OpenContactPhotoInputStream(ContextHelper.Current.ContentResolver, Android.Net.Uri.Parse(AbsoluteUri.OriginalString));
 
-						return _imageData = ImageData.FromBitmap(await BitmapFactory.DecodeStreamAsync(stream));
+						return _imageData = ImageData.FromBitmap(await DecodeStreamAsBitmapWithExifOrientation(stream));
 					}
 
 					var filePath = await Download(ct, AbsoluteUri);
@@ -273,7 +322,7 @@ namespace Windows.UI.Xaml.Media
 						return ImageData.Empty;
 					}
 
-					return _imageData = ImageData.FromBitmap(await BitmapFactory.DecodeFileAsync(filePath.LocalPath));
+					return _imageData = ImageData.FromBitmap(await DecodeFileAsBitmapWithExifOrientation(filePath.LocalPath));
 				}
 				else
 				{
