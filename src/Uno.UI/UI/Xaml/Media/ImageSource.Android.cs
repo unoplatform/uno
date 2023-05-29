@@ -201,9 +201,6 @@ namespace Windows.UI.Xaml.Media
 
 			IsImageLoadedToUiDirectly = false;
 
-			BitmapFactory.Options options = new BitmapFactory.Options();
-			options.InJustDecodeBounds = true;
-
 			var targetSize = UseTargetSize && targetWidth != null && targetHeight != null
 				? (global::System.Drawing.Size?)new global::System.Drawing.Size(targetWidth.Value, targetHeight.Value)
 				: null;
@@ -222,6 +219,9 @@ namespace Windows.UI.Xaml.Media
 			{
 				return _imageData = await FetchResourceWithDownsampling(ct, ResourceId.Value, targetSize);
 			}
+
+			BitmapFactory.Options options = new BitmapFactory.Options();
+			options.InJustDecodeBounds = true;
 
 			if (Stream != null)
 			{

@@ -21,11 +21,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 
 		// Using a DependencyProperty as the backing store for PixelHeight.  This enables animation, styling, binding, etc...
 		public static DependencyProperty PixelHeightProperty { get; } =
-			DependencyProperty.Register("PixelHeight", typeof(int), typeof(BitmapSource), new FrameworkPropertyMetadata(0, (s, e) => ((BitmapSource)s)?.OnPixelHeightChanged(e)));
-
-		private void OnPixelHeightChanged(DependencyPropertyChangedEventArgs e)
-		{
-		}
+			DependencyProperty.Register("PixelHeight", typeof(int), typeof(BitmapSource), new FrameworkPropertyMetadata(0));
 
 		#endregion
 
@@ -39,12 +35,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 
 		// Using a DependencyProperty as the backing store for PixelWidth.  This enables animation, styling, binding, etc...
 		public static DependencyProperty PixelWidthProperty { get; } =
-			DependencyProperty.Register("PixelWidth", typeof(int), typeof(BitmapSource), new FrameworkPropertyMetadata(0, (s, e) => ((BitmapSource)s)?.OnPixelWidthChanged(e)));
-
-
-		private void OnPixelWidthChanged(DependencyPropertyChangedEventArgs e)
-		{
-		}
+			DependencyProperty.Register("PixelWidth", typeof(int), typeof(BitmapSource), new FrameworkPropertyMetadata(0));
 
 		#endregion
 
@@ -96,18 +87,22 @@ namespace Windows.UI.Xaml.Media.Imaging
 				throw new ArgumentException(nameof(streamSource));
 			}
 
-			PixelWidth = 0;
-			PixelHeight = 0;
-
 			// The source has to be cloned before leaving the "SetSource[Async]".
 			var clonedStreamSource = streamSource.CloneStream();
 
 #if __NETSTD__
 			_stream = clonedStreamSource;
+			UpdatePixelWidthAndHeightPartial(_stream.CloneStream().AsStream());
 #else
 			Stream = clonedStreamSource.AsStream();
+			UpdatePixelWidthAndHeightPartial(clonedStreamSource.AsStream());
 #endif
+			OnSetSource();
 		}
+
+		partial void UpdatePixelWidthAndHeightPartial(Stream stream);
+
+		private protected virtual void OnSetSource() { }
 
 		private
 #if __NETSTD__
