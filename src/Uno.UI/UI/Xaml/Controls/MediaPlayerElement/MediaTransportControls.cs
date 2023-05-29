@@ -250,13 +250,10 @@ namespace Windows.UI.Xaml.Controls
 			_compactOverlayButton?.SetBinding(Button.VisibilityProperty, new Binding { Path = "IsCompactOverlayButtonVisible", Source = this, Mode = BindingMode.OneWay, FallbackValue = Visibility.Collapsed, Converter = trueToVisible });
 			_compactOverlayButton?.SetBinding(Button.IsEnabledProperty, new Binding { Path = "IsCompactOverlayEnabled", Source = this, Mode = BindingMode.OneWay, FallbackValue = true });
 
-<<<<<<< HEAD
-=======
 			_controlPanelGrid = this.GetTemplateChild(ControlPanelGridName) as Grid;
 
 			_controlPanelBorder = this.GetTemplateChild(ControlPanelBorderName) as Border;
 
->>>>>>> 7e460b095b (fix(mediaPlayerElement): Fix clipping + possible event handler leaks + possible null ref exception with custom template)
 			_repeatVideoButton = this.GetTemplateChild(RepeatVideoButtonName) as Button;
 			_repeatVideoButton?.SetBinding(Button.VisibilityProperty, new Binding { Path = "IsRepeatButtonVisible", Source = this, Mode = BindingMode.OneWay, FallbackValue = Visibility.Collapsed, Converter = trueToVisible });
 			_repeatVideoButton?.SetBinding(Button.IsEnabledProperty, new Binding { Path = "IsRepeatEnabled", Source = this, Mode = BindingMode.OneWay, FallbackValue = true });
