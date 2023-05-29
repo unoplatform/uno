@@ -39,13 +39,13 @@ public partial class ImageIconSource : IconSource
 #if !HAS_UNO_WINUI
 	private
 #endif
-	protected override DependencyProperty GetIconElementPropertyCore(DependencyProperty sourceProperty)
+	protected override DependencyProperty GetIconElementPropertyCore(DependencyProperty iconSourceProperty)
 	{
-		if (sourceProperty == ImageSourceProperty)
+		if (iconSourceProperty == ImageSourceProperty)
 		{
 			return ImageIcon.SourceProperty;
 		}
 
-		return base.GetIconElementPropertyCore(sourceProperty);
+		return base.GetIconElementPropertyCore(iconSourceProperty);
 	}
 }

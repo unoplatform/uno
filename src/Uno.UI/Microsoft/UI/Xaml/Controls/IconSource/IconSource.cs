@@ -74,9 +74,9 @@ public partial class IconSource : DependencyObject
 #if !HAS_UNO_WINUI
 	private
 #endif
-	protected virtual DependencyProperty? GetIconElementPropertyCore(DependencyProperty sourceProperty)
+	protected virtual DependencyProperty? GetIconElementPropertyCore(DependencyProperty iconSourceProperty)
 	{
-		if (sourceProperty == ForegroundProperty)
+		if (iconSourceProperty == ForegroundProperty)
 		{
 			return IconElement.ForegroundProperty;
 		}

@@ -42,13 +42,13 @@ public partial class PathIconSource : IconSource
 #if !HAS_UNO_WINUI
 	private
 #endif
-	protected override DependencyProperty GetIconElementPropertyCore(DependencyProperty sourceProperty)
+	protected override DependencyProperty GetIconElementPropertyCore(DependencyProperty iconSourceProperty)
 	{
-		if (sourceProperty == DataProperty)
+		if (iconSourceProperty == DataProperty)
 		{
 			return PathIcon.DataProperty;
 		}
 
-		return base.GetIconElementPropertyCore(sourceProperty);
+		return base.GetIconElementPropertyCore(iconSourceProperty);
 	}
 }

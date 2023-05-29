@@ -57,17 +57,17 @@ public partial class BitmapIconSource : IconSource
 #if !HAS_UNO_WINUI
 	private
 #endif
-	protected override DependencyProperty GetIconElementPropertyCore(DependencyProperty sourceProperty)
+	protected override DependencyProperty GetIconElementPropertyCore(DependencyProperty iconSourceProperty)
 	{
-		if (sourceProperty == ShowAsMonochromeProperty)
+		if (iconSourceProperty == ShowAsMonochromeProperty)
 		{
 			return BitmapIcon.ShowAsMonochromeProperty;
 		}
-		else if (sourceProperty == UriSourceProperty)
+		else if (iconSourceProperty == UriSourceProperty)
 		{
 			return BitmapIcon.UriSourceProperty;
 		}
 
-		return base.GetIconElementPropertyCore(sourceProperty);
+		return base.GetIconElementPropertyCore(iconSourceProperty);
 	}
 }

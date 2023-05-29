@@ -107,37 +107,37 @@ public partial class FontIconSource : IconSource
 #if !HAS_UNO_WINUI
 	private
 #endif
-	protected override DependencyProperty GetIconElementPropertyCore(DependencyProperty sourceProperty)
+	protected override DependencyProperty GetIconElementPropertyCore(DependencyProperty iconSourceProperty)
 	{
-		if (sourceProperty == FontFamilyProperty)
+		if (iconSourceProperty == FontFamilyProperty)
 		{
 			return FontIcon.FontFamilyProperty;
 		}
-		else if (sourceProperty == FontSizeProperty)
+		else if (iconSourceProperty == FontSizeProperty)
 		{
 			return FontIcon.FontSizeProperty;
 		}
-		else if (sourceProperty == FontStyleProperty)
+		else if (iconSourceProperty == FontStyleProperty)
 		{
 			return FontIcon.FontStyleProperty;
 		}
-		else if (sourceProperty == FontWeightProperty)
+		else if (iconSourceProperty == FontWeightProperty)
 		{
 			return FontIcon.FontWeightProperty;
 		}
-		else if (sourceProperty == GlyphProperty)
+		else if (iconSourceProperty == GlyphProperty)
 		{
 			return FontIcon.GlyphProperty;
 		}
-		else if (sourceProperty == IsTextScaleFactorEnabledProperty)
+		else if (iconSourceProperty == IsTextScaleFactorEnabledProperty)
 		{
 			return FontIcon.IsTextScaleFactorEnabledProperty;
 		}
-		else if (sourceProperty == MirroredWhenRightToLeftProperty)
+		else if (iconSourceProperty == MirroredWhenRightToLeftProperty)
 		{
 			return FontIcon.MirroredWhenRightToLeftProperty;
 		}
 
-		return base.GetIconElementPropertyCore(sourceProperty);
+		return base.GetIconElementPropertyCore(iconSourceProperty);
 	}
 }

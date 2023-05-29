@@ -62,22 +62,22 @@ namespace Microsoft.UI.Xaml.Controls
 #if !HAS_UNO_WINUI
 		private
 #endif
-		protected override DependencyProperty GetIconElementPropertyCore(DependencyProperty sourceProperty)
+		protected override DependencyProperty GetIconElementPropertyCore(DependencyProperty iconSourceProperty)
 		{
-			if (sourceProperty == SourceProperty)
+			if (iconSourceProperty == SourceProperty)
 			{
 				return AnimatedIcon.SourceProperty;
 			}
-			else if (sourceProperty == FallbackIconSourceProperty)
+			else if (iconSourceProperty == FallbackIconSourceProperty)
 			{
 				return AnimatedIcon.FallbackIconSourceProperty;
 			}
-			else if (sourceProperty == MirroredWhenRightToLeftProperty)
+			else if (iconSourceProperty == MirroredWhenRightToLeftProperty)
 			{
 				return AnimatedIcon.MirroredWhenRightToLeftProperty;
 			}
 
-			return base.GetIconElementPropertyCore(sourceProperty);
+			return base.GetIconElementPropertyCore(iconSourceProperty);
 		}
 
 	}
