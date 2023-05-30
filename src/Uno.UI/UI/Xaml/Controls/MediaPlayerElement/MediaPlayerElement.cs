@@ -219,14 +219,14 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (sender is MediaPlayerElement mpe)
 			{
-				if (args.OldValue is Windows.Media.Playback.MediaPlayer oldMediaPlayer)
+				if (args.OldValue is MediaPlayer oldMediaPlayer)
 				{
 					oldMediaPlayer.MediaFailed -= mpe.OnMediaFailed;
 					oldMediaPlayer.MediaFailed -= mpe.OnMediaOpened;
 					oldMediaPlayer.Dispose();
 				}
 
-				if (args.NewValue is Windows.Media.Playback.MediaPlayer newMediaPlayer)
+				if (args.NewValue is MediaPlayer newMediaPlayer)
 				{
 					newMediaPlayer.Source = mpe.Source;
 					newMediaPlayer.MediaFailed += mpe.OnMediaFailed;
@@ -360,7 +360,7 @@ namespace Windows.UI.Xaml.Controls
 
 			if (MediaPlayer == null)
 			{
-				MediaPlayer = new Windows.Media.Playback.MediaPlayer();
+				MediaPlayer = new MediaPlayer();
 				_mediaPlayerPresenter?.ApplyStretch();
 			}
 
