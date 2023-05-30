@@ -262,7 +262,9 @@
                                                         <Thumb x:Name="HorizontalThumb" Style="{StaticResource SliderThumbStyle}" Height="24" Width="24" Grid.Row="0" Grid.RowSpan="3" Grid.Column="1" FocusVisualMargin="-14,-6,-14,-6" AutomationProperties.AccessibilityView="Raw">
                                                             <ToolTipService.ToolTip>
                                                                 <ToolTip x:Name="ThumbnailTooltip">
-                                                                    <ContentPresenter Content="{Binding}" />
+                                                                    <!-- UNO TODO Binding ContentPresenter.Content is flagged as an error by Uno because it can have unpredictable results -->
+                                                                    <!--<ContentPresenter Content="{Binding}" />-->
+                                                                    <ContentControl Content="{Binding}" />
                                                                 </ToolTip>
                                                             </ToolTipService.ToolTip>
                                                             <Thumb.DataContext>
@@ -676,11 +678,12 @@
                             <!-- Closed Captioning  visibility states -->
                             <!-- Focus states -->
                             <VisualStateGroup x:Name="FocusStates">
-                                <VisualState x:Name="Focused">
+                                 <VisualState x:Name="Focused">
                                     <Storyboard>
-                                        <DoubleAnimation Storyboard.TargetName="FocusVisualWhite" Storyboard.TargetProperty="Opacity" To="1" Duration="0" />
-                                        <DoubleAnimation Storyboard.TargetName="FocusVisualBlack" Storyboard.TargetProperty="Opacity" To="1" Duration="0" />
-                                    </Storyboard>
+										<!--UNO TODO: There's no element called 'FocusVisualWhite', which presumably fails silently on Windows, but causes a compile-time error on Uno-->
+                                        <!-- <DoubleAnimation Storyboard.TargetName="FocusVisualWhite" Storyboard.TargetProperty="Opacity" To="1" Duration="0" /> -->
+                                        <!-- <DoubleAnimation Storyboard.TargetName="FocusVisualBlack" Storyboard.TargetProperty="Opacity" To="1" Duration="0" /> -->
+									</Storyboard>
                                 </VisualState>
                                 <VisualState x:Name="Unfocused" />
                                 <VisualState x:Name="PointerFocused" />
