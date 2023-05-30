@@ -15,63 +15,51 @@ namespace Windows.UI.Xaml.Controls
 	public partial class MediaTransportControls : Control
 	{
 		private Windows.Media.Playback.MediaPlayer _mediaPlayer;
+		private SerialDisposable _mediaPlayerSubscriptions = new();
+
+		// The player will be temporarily paused while the progress slider is being manipulated.
+		// This flag prevents the update of play/pause button while that happens.
 		private bool _skipPlayPauseStateUpdate;
 		private bool _isScrubbing;
-		private SerialDisposable _subscriptions = new SerialDisposable();
 
 		internal void SetMediaPlayer(Windows.Media.Playback.MediaPlayer mediaPlayer)
 		{
-			DeinitializeTransportControlsFromMPE();
+			_mediaPlayerSubscriptions.Disposable = null;
 
 			_mediaPlayer = mediaPlayer;
 
-			if (m_tpPlayPauseButton != null)
-			{
-				BindMediaPlayer();
-			}
+			BindMediaPlayer();
+		}
+
+		internal void SetMediaPlayerElement(MediaPlayerElement mediaPlayerElement)
+		{
+			_mpe = mediaPlayerElement;
 		}
 
 		private void BindMediaPlayer()
 		{
-			_subscriptions.Disposable = null;
+			if (_mediaPlayer is null)
+			{
+				return;
+			}
+
+			_mediaPlayerSubscriptions.Disposable = null;
 
 			_mediaPlayer.PlaybackSession.PlaybackStateChanged += OnPlaybackStateChanged;
 			_mediaPlayer.PlaybackSession.BufferingProgressChanged += OnBufferingProgressChanged;
 			_mediaPlayer.PlaybackSession.NaturalDurationChanged += OnNaturalDurationChanged;
 			_mediaPlayer.PlaybackSession.PositionChanged += OnPositionChanged;
 
-			_subscriptions.Disposable = AttachThumbEventHandlers(m_tpMediaPositionSlider);
-		}
-
-		private void UnbindMediaPlayer()
-		{
-			try
+			_mediaPlayerSubscriptions.Disposable = Disposable.Create(() =>
 			{
-				_subscriptions.Disposable = null;
-
-				if (_mediaPlayer != null)
+				if (_mediaPlayer is { })
 				{
 					_mediaPlayer.PlaybackSession.PlaybackStateChanged -= OnPlaybackStateChanged;
 					_mediaPlayer.PlaybackSession.BufferingProgressChanged -= OnBufferingProgressChanged;
 					_mediaPlayer.PlaybackSession.NaturalDurationChanged -= OnNaturalDurationChanged;
 					_mediaPlayer.PlaybackSession.PositionChanged -= OnPositionChanged;
 				}
-
-				_playPauseButton.Maybe(p => p.Tapped -= PlayPause);
-				_playPauseButtonOnLeft.Maybe(p => p.Tapped -= PlayPause);
-				_audioMuteButton.Maybe(p => p.Tapped -= ToggleMute);
-				_volumeSlider.Maybe(p => p.ValueChanged -= OnVolumeChanged);
-				_stopButton.Maybe(p => p.Tapped -= Stop);
-				_skipForwardButton.Maybe(p => p.Tapped -= SkipForward);
-				_skipBackwardButton.Maybe(p => p.Tapped -= SkipBackward);
-				_fastForwardButton.Maybe(p => p.Tapped -= ForwardButton);
-				_rewindButton.Maybe(p => p.Tapped -= RewindButton);
-				_progressSlider.Maybe(p => p.Tapped -= TappedProgressSlider);
-			}
-			catch (Exception ex)
-			{
-				this.Log().Error($"Unable to unbind MediaTransportControls properly: {ex.Message}", ex);
-			}
+			});
 		}
 
 		public void TappedProgressSlider(object sender, RoutedEventArgs e)
@@ -93,36 +81,6 @@ namespace Windows.UI.Xaml.Controls
 				}
 
 				_skipPlayPauseStateUpdate = false;
-			}
-		}
-
-		private void OnSliderTemplateChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
-		{
-			_subscriptions.Disposable = null;
-
-			if (_mediaPlayer != null)
-			{
-				_subscriptions.Disposable = AttachThumbEventHandlers(m_tpMediaPositionSlider);
-			}
-		}
-
-		private void DeinitializeTransportControlsFromMPE()
-		{
-			try
-			{
-				_subscriptions.Disposable = null;
-
-				if (_mediaPlayer != null)
-				{
-					_mediaPlayer.PlaybackSession.PlaybackStateChanged -= OnPlaybackStateChanged;
-					_mediaPlayer.PlaybackSession.BufferingProgressChanged -= OnBufferingProgressChanged;
-					_mediaPlayer.PlaybackSession.NaturalDurationChanged -= OnNaturalDurationChanged;
-					_mediaPlayer.PlaybackSession.PositionChanged -= OnPositionChanged;
-				}
-			}
-			catch (Exception ex)
-			{
-				this.Log().Error($"Unable to unbind MediaTransportControls properly: {ex.Message}", ex);
 			}
 		}
 
@@ -148,11 +106,9 @@ namespace Windows.UI.Xaml.Controls
 
 			// skip transition, as the event may originate from non-ui thread
 			UpdateMediaStates(useTransition: false);
-			UpdatePlayPauseStates(useTransition: false);
-
-			if (_skipPlayPauseStateUpdate)
+			if (!_skipPlayPauseStateUpdate)
 			{
-				_skipPlayPauseStateUpdate.ToString();
+				UpdatePlayPauseStates(useTransition: false);
 			}
 		}
 
@@ -250,12 +206,12 @@ namespace Windows.UI.Xaml.Controls
 
 		private void SkipBackward(object sender, RoutedEventArgs e)
 		{
-			_mediaPlayer.PlaybackSession.Position = _mediaPlayer.PlaybackSession.Position - TimeSpan.FromSeconds(10);
+			_mediaPlayer.PlaybackSession.Position -= TimeSpan.FromSeconds(10);
 		}
 
 		private void SkipForward(object sender, RoutedEventArgs e)
 		{
-			_mediaPlayer.PlaybackSession.Position = _mediaPlayer.PlaybackSession.Position + TimeSpan.FromSeconds(30);
+			_mediaPlayer.PlaybackSession.Position += TimeSpan.FromSeconds(30);
 		}
 
 		private void ForwardButton(object sender, RoutedEventArgs e)
@@ -264,17 +220,19 @@ namespace Windows.UI.Xaml.Controls
 			_mediaPlayer.PlaybackRate = (_mediaPlayer.PlaybackRate < 0 ? 0 : _mediaPlayer.PlaybackRate) + 0.25;
 			_mediaPlayer.PlaybackSession.UpdateTimePositionRate = 0;
 #else
-			_mediaPlayer.PlaybackSession.UpdateTimePositionRate = _mediaPlayer.PlaybackSession.UpdateTimePositionRate < 1 ? 1 : /*To stop the Rewind*/
-											_mediaPlayer.PlaybackSession.UpdateTimePositionRate * 2; /*To start the Forward*/
+			_mediaPlayer.PlaybackSession.UpdateTimePositionRate =
+				_mediaPlayer.PlaybackSession.UpdateTimePositionRate < 1 ? 1 : /*To stop the Rewind*/
+				_mediaPlayer.PlaybackSession.UpdateTimePositionRate * 2; /*To start the Forward*/
 #endif
 		}
 
 		private void RewindButton(object sender, RoutedEventArgs e)
 		{
-			_mediaPlayer.PlaybackSession.UpdateTimePositionRate = _mediaPlayer.PlaybackSession.UpdateTimePositionRate > 1 ? 1 : /*To stop the Forward*/
-														_mediaPlayer.PlaybackSession.UpdateTimePositionRate == 1 ? -1 : /*To start the Rewind*/
-														_mediaPlayer.PlaybackSession.UpdateTimePositionRate == 0 ? -1 : /*To start the Rewind*/
-														_mediaPlayer.PlaybackSession.UpdateTimePositionRate * 2;
+			_mediaPlayer.PlaybackSession.UpdateTimePositionRate =
+				_mediaPlayer.PlaybackSession.UpdateTimePositionRate > 1 ? 1 : /*To stop the Forward*/
+				_mediaPlayer.PlaybackSession.UpdateTimePositionRate == 1 ? -1 : /*To start the Rewind*/
+				_mediaPlayer.PlaybackSession.UpdateTimePositionRate == 0 ? -1 : /*To start the Rewind*/
+				_mediaPlayer.PlaybackSession.UpdateTimePositionRate * 2;
 		}
 
 		private void OnVolumeChanged(object sender, RangeBaseValueChangedEventArgs e)
@@ -289,25 +247,6 @@ namespace Windows.UI.Xaml.Controls
 			_mediaPlayer.IsMuted = !_mediaPlayer.IsMuted;
 			UpdateVolumeMuteStates(isExplicitMuteToggle: true);
 			ResetControlsVisibilityTimer();
-		}
-
-		private IDisposable AttachThumbEventHandlers(Slider slider)
-		{
-			var thumb = slider.GetTemplateChild(TemplateParts.HorizontalThumb) as Thumb;
-
-			if (thumb != null)
-			{
-				thumb.DragStarted += ThumbOnDragStarted;
-				thumb.DragCompleted += ThumbOnDragCompleted;
-
-				return Disposable.Create(() =>
-				{
-					thumb.DragStarted -= ThumbOnDragStarted;
-					thumb.DragCompleted -= ThumbOnDragCompleted;
-				});
-			}
-
-			return Disposable.Empty;
 		}
 
 		private void ThumbOnDragCompleted(object sender, DragCompletedEventArgs dragCompletedEventArgs)
@@ -336,10 +275,10 @@ namespace Windows.UI.Xaml.Controls
 			if (_mediaPlayer != null && !_isScrubbing)
 			{
 				_wasPlaying = _mediaPlayer.PlaybackSession.IsPlaying;
-				_mediaPlayer.Pause();
-
-				_isScrubbing = true;
 				_skipPlayPauseStateUpdate = true;
+				_isScrubbing = true;
+
+				_mediaPlayer.Pause();
 			}
 		}
 	}
