@@ -272,7 +272,7 @@ namespace Uno.UI {
 				}
 
 				const dependencyToLoad = "/lottie";
-				const lottieDependencyName = config.uno_dependencies.find((d: string) => d.endsWith(dependencyToLoad));
+				const lottieDependencyName = config.uno_dependencies.find((d: string) => d.endsWith(dependencyToLoad) || d.endsWith(dependencyToLoad + ".js"));
 				require([lottieDependencyName], (p: LottiePlayer) => {
 					if(!p) {
 						console.error("Unable to load lottie player.");
