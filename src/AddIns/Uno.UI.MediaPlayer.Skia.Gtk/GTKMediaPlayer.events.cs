@@ -92,7 +92,7 @@ public partial class GtkMediaPlayer
 					}
 				};
 			}
-			catch(Exception ex)
+			catch (Exception ex)
 			{
 				if (typeof(GtkMediaPlayer).Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Error))
 				{
