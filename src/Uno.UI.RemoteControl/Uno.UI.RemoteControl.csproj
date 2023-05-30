@@ -18,10 +18,6 @@
 		<PackageId Condition="'$(UNO_UWP_BUILD)'=='false'">Uno.WinUI.RemoteControl</PackageId>
 	</PropertyGroup>
 
-	<ItemGroup>
-		<UpToDateCheckInput Include="**\*.cs" Exclude="bin\**\*.cs;obj\**\*.cs;" />
-	</ItemGroup>
-
 	<ItemGroup Condition="'$(TargetFramework)'!='netstandard2.0'">
 		<EmbeddedResource Include="LinkerDefinition.Xamarin.xml">
 			<LogicalName>$(AssemblyName).xml</LogicalName>
@@ -30,23 +26,6 @@
 
 	<ItemGroup>
 	  <None Remove="buildTransitive\Uno.UI.RemoteControl.targets" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <UpToDateCheckInput Remove="Helpers\WebSocketHelper.cs" />
-	  <UpToDateCheckInput Remove="HotReload\ClientHotReloadProcessor.cs" />
-	  <UpToDateCheckInput Remove="HotReload\HotReloadConstants.cs" />
-	  <UpToDateCheckInput Remove="HotReload\IRemoteControlClient.cs" />
-	  <UpToDateCheckInput Remove="HotReload\Messages\ConfigureServer.cs" />
-	  <UpToDateCheckInput Remove="HotReload\Messages\FileReload.cs" />
-	  <UpToDateCheckInput Remove="HotReload\Messages\Frame.cs" />
-	  <UpToDateCheckInput Remove="HotReload\Messages\IMessage.cs" />
-	  <UpToDateCheckInput Remove="HotReload\Messages\XamlLoadError.cs" />
-	  <UpToDateCheckInput Remove="IRemoteControlProcessor.cs" />
-	  <UpToDateCheckInput Remove="IRemoteControlPreProcessor.cs" />
-	  <UpToDateCheckInput Remove="ProjectConfigurationAttribute.cs" />
-	  <UpToDateCheckInput Remove="RemoteControlClient.cs" />
-	  <UpToDateCheckInput Remove="ServerEndpointAttribute.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
