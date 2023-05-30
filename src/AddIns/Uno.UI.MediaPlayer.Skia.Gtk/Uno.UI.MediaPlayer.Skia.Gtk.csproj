@@ -1,4 +1,4 @@
-﻿<Project Sdk="MSBuild.Sdk.Extras">
+<Project Sdk="MSBuild.Sdk.Extras">
 	<PropertyGroup>
 		<TargetFrameworks>netcoreapp3.1</TargetFrameworks>
 	</PropertyGroup>
@@ -32,7 +32,7 @@
 		</PackageReference>
 		<PackageReference Include="Uno.Core.Extensions.Logging" Version="4.0.1" />
 		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" Version="4.0.1" />
-		<PackageReference Include="LibVLCSharp" Version="3.6.8" />
+		<PackageReference Include="LibVLCSharp" Version="3.7.0" />
 		<PackageReference Include="GtkSharp" Version="3.24.24.38" />
 	</ItemGroup>
 
