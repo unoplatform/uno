@@ -223,7 +223,7 @@ namespace Uno.UI.Media
 			{
 				// Reparent the window to the current window, so it appears inside, positition outside the bounds of the window
 				// to avoid a temporary visual glitch
-				_videoWindow.Window.Reparent(Toplevel.Window, Allocation.X + AllocatedWidth, Allocation.Y + AllocatedHeight);
+				_videoWindow.Window.Reparent(Toplevel.Window, Allocation.X, Allocation.Y);
 
 				if (Toplevel is Gtk.Window gtkWindow)
 				{
@@ -254,6 +254,8 @@ namespace Uno.UI.Media
 					{
 						this.Log().Debug($"{GetHashCode():X8} Showing child player window {Toplevel.Window}");
 					}
+
+					ApplyLastArrange();
 				}
 				else
 				{
@@ -263,8 +265,6 @@ namespace Uno.UI.Media
 					}
 				}
 
-
-				ApplyLastArrange();
 			}
 		}
 
@@ -389,11 +389,14 @@ namespace Uno.UI.Media
 		{
 			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 			{
-				this.Log().Debug($"{GetHashCode():X8}Arranging child window to {value.X}x{value.Y} / {value.Width}x{value.Height} (_videoWindow: {_videoWindow is not null})");
+				this.Log().Debug($"{GetHashCode():X8} Arranging child window to {value.X}x{value.Y} / {value.Width}x{value.Height} (_videoWindow: {_videoWindow is not null}, visible:{_videoWindow?.Visible})");
 			}
 
 			_lastArrange = value;
 
+			// Showing the window, even if visible, fixes positioning and sizing issues that may arise
+			// during the interactions between the gdk window and the gtk window.
+			_videoWindow?.Show();
 			_videoWindow?.Window.MoveResize(value.X, value.Y, value.Width, value.Height);
 		}
 	}
