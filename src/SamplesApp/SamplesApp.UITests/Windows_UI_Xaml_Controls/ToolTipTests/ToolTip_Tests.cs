@@ -13,14 +13,14 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ToolTipTests
 	{
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.iOS, Platform.Browser)] // Android is disabled https://github.com/unoplatform/uno/issues/1630
+		[ActivePlatforms(Platform.iOS)] // Android is disabled https://github.com/unoplatform/uno/issues/1630
 		public void NoToolTip_On_Open()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.ToolTip.TextOnlyToolTipSample");
 
 			_app.Marked("richToolTip").FirstResult().Should().BeNull("Initial state");
 
-			_app.Marked("rect2").FastTap();
+			_app.Marked("rect2").TouchAndHold();
 
 			_app.Marked("richToolTip").FirstResult().Should().BeNull("Right after first click");
 
@@ -30,7 +30,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ToolTipTests
 
 			Thread.Sleep(200);
 
-			_app.Marked("rect2").FastTap();
+			_app.Marked("rect2").TouchAndHold();
 
 			_app.Marked("richToolTip").FirstResult().Should().BeNull("Right after second click");
 
@@ -44,7 +44,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ToolTipTests
 
 			_app.Marked("richToolTip").FirstResult().Should().BeNull("tooltip delay expired");
 
-			_app.Marked("rect1").FastTap();
+			_app.Marked("rect1").TouchAndHold();
 
 			Thread.Sleep(1200);
 
@@ -53,7 +53,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ToolTipTests
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.Browser)] // Only WASM supports mouse-based tests for now
+		[ActivePlatforms(Platform.iOS)] // Only mobile shows tooltip by TouchAndHold
 		public void ToolTip_Large_Text()
 		{
 			Run("UITests.Windows_UI_Xaml_Controls.ToolTip.ToolTip_Long_Text");
@@ -71,7 +71,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ToolTipTests
 			using var before = TakeScreenshot("Before", ignoreInSnapshotCompare: true);
 
 			var lowerHoverY = buttonRectLogical.Bottom - buttonRectLogical.Height / 10;
-			_app.TapCoordinates(buttonRectLogical.CenterX, lowerHoverY);
+			_app.TouchAndHoldCoordinates(buttonRectLogical.CenterX, lowerHoverY);
 
 			_app.WaitForElement(BorderInsideToolTip);
 
@@ -86,7 +86,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ToolTipTests
 			_app.WaitForNoElement(BorderInsideToolTip);
 
 			var upperHoverY = buttonRectLogical.Y + buttonRectLogical.Height / 10;
-			_app.TapCoordinates(buttonRectLogical.CenterX, upperHoverY);
+			_app.TouchAndHoldCoordinates(buttonRectLogical.CenterX, upperHoverY);
 
 			_app.WaitForElement(BorderInsideToolTip);
 
