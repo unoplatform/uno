@@ -319,13 +319,24 @@ public partial class GtkMediaPlayer : FrameworkElement
 						var videoSettings = videoTrack.Data.Video;
 						var videoWidth = videoSettings.Width;
 						var videoHeight = videoSettings.Height;
-						// From: https://github.com/videolan/libvlcsharp/blob/bca0a53fe921e6f1f745e4e3ac83a7bd3b2e4a9d/src/LibVLCSharp/Shared/MediaPlayerElement/AspectRatioManager.cs#L188
-						videoWidth = videoWidth * videoSettings.SarNum / videoSettings.SarDen;
-						UpdateVideoSizeAllocate(playerHeight, playerWidth, videoHeight, videoWidth);
 
-						if (forceVideoViewVisibility)
+						if (videoSettings.SarDen != 0)
 						{
-							_videoView?.SetVisible(true);
+							// From: https://github.com/videolan/libvlcsharp/blob/bca0a53fe921e6f1f745e4e3ac83a7bd3b2e4a9d/src/LibVLCSharp/Shared/MediaPlayerElement/AspectRatioManager.cs#L188
+							videoWidth = videoWidth * videoSettings.SarNum / videoSettings.SarDen;
+							UpdateVideoSizeAllocate(playerHeight, playerWidth, videoHeight, videoWidth);
+
+							if (forceVideoViewVisibility)
+							{
+								_videoView?.SetVisible(true);
+							}
+						}
+						else
+						{
+							if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+							{
+								this.Log().Debug($"SarDen is zero, skipping layout");
+							}
 						}
 					}
 					else
