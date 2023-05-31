@@ -1,9 +1,9 @@
 using System;
-using Uno.Extensions;
 using Windows.Media.Playback;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml.Media;
+using Uno.Extensions;
 using Uno.Foundation.Logging;
 
 namespace Windows.UI.Xaml.Controls
@@ -217,13 +217,13 @@ namespace Windows.UI.Xaml.Controls
 
 		private static void OnMediaPlayerChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
 		{
-			sender.Maybe<MediaPlayerElement>(mpe =>
+			if (sender is MediaPlayerElement mpe)
 			{
 				if (args.OldValue is Windows.Media.Playback.MediaPlayer oldMediaPlayer)
 				{
 					oldMediaPlayer.MediaFailed -= mpe.OnMediaFailed;
 					oldMediaPlayer.MediaFailed -= mpe.OnMediaOpened;
-					oldMediaPlayer?.Dispose();
+					oldMediaPlayer.Dispose();
 				}
 
 				if (args.NewValue is Windows.Media.Playback.MediaPlayer newMediaPlayer)
@@ -234,7 +234,7 @@ namespace Windows.UI.Xaml.Controls
 					mpe.TransportControls?.SetMediaPlayer(newMediaPlayer);
 					mpe._isTransportControlsBound = true;
 				}
-			});
+			};
 		}
 
 		private void OnMediaFailed(Windows.Media.Playback.MediaPlayer session, object args)
@@ -381,11 +381,7 @@ namespace Windows.UI.Xaml.Controls
 			MediaPlayer = mediaPlayer;
 		}
 
-		#region IsCompactOverlay Property
-
-		public bool IsCompactOverlay { get; set; }
-
-		public void ToogleCompactOverlay(bool showCompactOverlay)
+		public void ToggleCompactOverlay(bool showCompactOverlay)
 		{
 #if __WASM__
 			if (_mediaPlayerPresenter != null)
@@ -401,6 +397,5 @@ namespace Windows.UI.Xaml.Controls
 			}
 #endif
 		}
-		#endregion
 	}
 }
