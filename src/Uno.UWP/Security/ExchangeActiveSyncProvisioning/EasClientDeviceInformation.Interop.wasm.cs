@@ -7,6 +7,8 @@ namespace __Windows.Security.ExchangeActiveSyncProvisioning
 	{
 		internal static partial class NativeMethods
 		{
+			[JSImport("globalThis.Windows.System.Profile.AnalyticsVersionInfo.getUserAgent")]
+			internal static partial string GetUserAgent();
 		}
 	}
 }
