@@ -142,9 +142,13 @@
 			const currentDpi = window.devicePixelRatio;
 			if (Math.abs(DisplayInformation.lastDpi - currentDpi) > 0.001) {
 				if (DisplayInformation.dispatchDpiChanged == null) {
-					DisplayInformation.dispatchDpiChanged =
-						(<any>Module).mono_bind_static_method(
-							"[Uno] Windows.Graphics.Display.DisplayInformation:DispatchDpiChanged");
+					if ((<any>globalThis).DotnetExports !== undefined) {
+						DisplayInformation.dispatchDpiChanged = (<any>globalThis).DotnetExports.Uno.Windows.Graphics.Display.DisplayInformation.DispatchDpiChanged;
+					} else {
+						DisplayInformation.dispatchDpiChanged =
+							(<any>Module).mono_bind_static_method(
+								"[Uno] Windows.Graphics.Display.DisplayInformation:DispatchDpiChanged");
+					}
 				}
 				DisplayInformation.dispatchDpiChanged(currentDpi);
 			}
@@ -153,9 +157,13 @@
 
 		private static onOrientationChange() {
 			if (DisplayInformation.dispatchOrientationChanged == null) {
-				DisplayInformation.dispatchOrientationChanged =
-					(<any>Module).mono_bind_static_method(
-						"[Uno] Windows.Graphics.Display.DisplayInformation:DispatchOrientationChanged");
+				if ((<any>globalThis).DotnetExports !== undefined) {
+					DisplayInformation.dispatchOrientationChanged = (<any>globalThis).DotnetExports.Uno.Windows.Graphics.Display.DisplayInformation.DispatchOrientationChanged;
+				} else {
+					DisplayInformation.dispatchOrientationChanged =
+						(<any>Module).mono_bind_static_method(
+							"[Uno] Windows.Graphics.Display.DisplayInformation:DispatchOrientationChanged");
+				}
 			}
 			DisplayInformation.dispatchOrientationChanged(window.screen.orientation.type);
 		}
