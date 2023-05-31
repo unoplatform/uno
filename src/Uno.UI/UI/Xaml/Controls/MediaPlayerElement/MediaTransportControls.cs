@@ -705,8 +705,7 @@ namespace Windows.UI.Xaml.Controls
 
 			_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 			{
-				if (_mediaPlayer is not null
-				&& _mediaPlayer.PlaybackSession.IsPlaying)
+				if (_mediaPlayer is { PlaybackSession.IsPlaying: true })
 				{
 					UpdateControlPanelVisibilityStates(useTransition: false);
 				}
