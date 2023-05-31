@@ -737,6 +737,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 			e.Handled = true;
 		}
+
 		private void OnRootGridTapped(object sender, TappedRoutedEventArgs e)
 		{
 			if (e.PointerDeviceType == PointerDeviceType.Touch)
@@ -752,14 +753,20 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 		}
+
 		private void OnRootGridPointerMoved(object sender, PointerRoutedEventArgs e)
 		{
-			Show();
+			if (e.Pointer.PointerDeviceType != PointerDeviceType.Touch)
+			{
+				Show();
+			}
 		}
+
 		private void ControlPanelGridSizeChanged(object sender, SizeChangedEventArgs args)
 		{
 			OnControlsBoundsChanged();
 		}
+
 		private static void ControlPanelBorderSizeChanged(object sender, SizeChangedEventArgs args)
 		{
 			if (sender is Border border)
