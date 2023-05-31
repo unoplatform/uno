@@ -22,6 +22,7 @@ using Microsoft.UI.Input;
 using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
 #else
 using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
+using System.Diagnostics.CodeAnalysis;
 #endif
 
 
@@ -1237,7 +1238,7 @@ namespace Windows.UI.Xaml.Controls
 #endif
 		}
 
-		private void SetAutomationNameAndTooltip(DependencyObject target, string uiaKey)
+		private void SetAutomationNameAndTooltip(DependencyObject? target, string uiaKey)
 		{
 			if (target is { })
 			{
