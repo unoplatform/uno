@@ -12,6 +12,7 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
 using Uno.UI;
 using Uno.UI.Xaml.Core;
+using Windows.UI.Xaml;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
@@ -20,7 +21,7 @@ using Windows.Devices.Input;
 using Windows.UI.Input;
 #endif
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class SwipeControl
 	{

@@ -2,5 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-	// Skipped type, see SkippedType method
+	#if false || false || false || false || false || false || false
+	public   enum SwipeBehaviorOnInvoked 
+	{
+		// Skipping already declared field Microsoft.UI.Xaml.Controls.SwipeBehaviorOnInvoked.Auto
+		// Skipping already declared field Microsoft.UI.Xaml.Controls.SwipeBehaviorOnInvoked.Close
+		// Skipping already declared field Microsoft.UI.Xaml.Controls.SwipeBehaviorOnInvoked.RemainOpen
+	}
+	#endif
 }

@@ -5,9 +5,10 @@
 // https://github.com/microsoft/microsoft-ui-xaml/blob/307bd99682cccaa128483036b764c0b7c862d666/dev/SwipeControl/SwipeTestHooks.cpp
 
 using Windows.Foundation;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	internal partial class SwipeTestHooks
 	{

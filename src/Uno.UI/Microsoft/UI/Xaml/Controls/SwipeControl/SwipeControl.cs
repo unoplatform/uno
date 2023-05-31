@@ -17,6 +17,9 @@ using Uno.Disposables;
 using Uno.UI.Helpers.WinUI;
 using Uno.UI.Extensions;
 using System.Threading.Tasks;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml;
+using Windows.UI;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
@@ -25,7 +28,7 @@ using Windows.Devices.Input;
 using Windows.UI.Input;
 #endif
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class SwipeControl : ContentControl
 	{
@@ -931,7 +934,7 @@ namespace Windows.UI.Xaml.Controls
 			var lookedUpStyle = SharedHelpers.FindInApplicationResources(s_swipeItemStyleName, null);
 			if (lookedUpStyle is { })
 			{
-				m_swipeItemStyle = lookedUpStyle as UI.Xaml.Style;
+				m_swipeItemStyle = lookedUpStyle as Style;
 			}
 		}
 

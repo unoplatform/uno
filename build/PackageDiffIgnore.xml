@@ -568,6 +568,7 @@
 			<Member fullName="Windows.Foundation.TypedEventHandler`2&lt;Microsoft.UI.Xaml.FrameworkElement,Microsoft.UI.Xaml.DataContextChangedEventArgs&gt; Microsoft.UI.Xaml.Controls.ElementFactory::DataContextChanged" reason="Not present in WinAppSDK 1.2" />
 			<Member fullName="Windows.Foundation.TypedEventHandler`2&lt;Windows.UI.Xaml.Controls.CalendarDatePicker,Windows.UI.Xaml.Controls.CalendarDatePickerDateChangedEventArgs&gt; Windows.UI.Xaml.Controls.CalendarDatePicker::_dateChanged" reason="Not in Windows" />
 			<Member fullName="Windows.UI.Xaml.DependencyPropertyChangedEventHandler Windows.UI.Xaml.FrameworkElement::IsEnabledChanged" reason="Api alignments" />
+			<Member fullName="Windows.Foundation.Collections.VectorChangedEventHandler`1&lt;Windows.UI.Xaml.Controls.SwipeItem&gt; Windows.UI.Xaml.Controls.SwipeItems::VectorChanged" reason="Api alignments" />
 		</Events>
 		<Fields>
 			<Member fullName="System.Runtime.InteropServices.NFloat Uno.UI.ViewHelper::MainScreenScale" reason="Api alignments" />
@@ -1372,6 +1373,19 @@
 			<Member fullName="System.Object Uno.UI.Svg.GlobalStaticResources.FindResource(System.String name)" reason="API Alignment" />
 			<Member fullName="System.Void Windows.Devices.Sensors.SimpleOrientationSensor.OnAccuracyChanged(Android.Hardware.Sensor sensor, Android.Hardware.SensorStatus accuracy)" reason="Api alignments" />
 			<Member fullName="System.Void Windows.Devices.Sensors.SimpleOrientationSensor.OnSensorChanged(Android.Hardware.SensorEvent e)" reason="Api alignments" />
+			<Member fullName="Windows.UI.Xaml.Controls.SwipeItem Windows.UI.Xaml.Controls.SwipeItems.GetAt(System.UInt32 index)" reason="Api alignments" />
+			<Member fullName="System.Boolean Windows.UI.Xaml.Controls.SwipeItems.IndexOf(Windows.UI.Xaml.Controls.SwipeItem value, System.UInt32&amp; index)" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.SwipeItems.SetAt(System.UInt32 index, Windows.UI.Xaml.Controls.SwipeItem value)" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.SwipeItems.InsertAt(System.UInt32 index, Windows.UI.Xaml.Controls.SwipeItem value)" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.SwipeItems.RemoveAt(System.UInt32 index)" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.SwipeItems.Append(Windows.UI.Xaml.Controls.SwipeItem value)" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.SwipeItems.RemoveAtEnd()" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.SwipeItems.add_VectorChanged(Windows.Foundation.Collections.VectorChangedEventHandler`1&lt;Windows.UI.Xaml.Controls.SwipeItem&gt; value)" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.SwipeItems.remove_VectorChanged(Windows.Foundation.Collections.VectorChangedEventHandler`1&lt;Windows.UI.Xaml.Controls.SwipeItem&gt; value)" reason="Api alignments" />
+			<Member fullName="Windows.UI.Xaml.Controls.SwipeItem Windows.UI.Xaml.Controls.SwipeItems.First()" reason="Api alignments" />
+			<Member fullName="System.UInt32 Windows.UI.Xaml.Controls.SwipeItems.GetMany(System.UInt32 startIndex, Windows.UI.Xaml.Controls.SwipeItem[] items)" reason="Api alignments" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.SwipeItems.ReplaceAll(Windows.UI.Xaml.Controls.SwipeItem[] items)" reason="Api alignments" />
+
 			<Member fullName="Windows.UI.Xaml.UIElement Windows.UI.Xaml.FrameworkTemplate.LoadContent()" reason="Api alignments" />
 			<Member fullName="Windows.UI.Xaml.UIElement Windows.UI.Xaml.Controls.ItemsPanelTemplate.LoadContent()" reason="Api alignments" />
 			<Member fullName="Android.Views.View Windows.UI.Xaml.Controls.ItemsPanelTemplate.LoadContent()" reason="Api alignments" />
