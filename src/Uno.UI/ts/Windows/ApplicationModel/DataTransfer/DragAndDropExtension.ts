@@ -15,7 +15,11 @@
 
 		public static enable(pArgs: number): void {
 			if (!DragDropExtension._dispatchDropEventMethod) {
-				DragDropExtension._dispatchDropEventMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Windows.ApplicationModel.DataTransfer.DragDrop.Core.DragDropExtension:OnNativeDropEvent");
+				if ((<any>globalThis).DotnetExports !== undefined) {
+					DragDropExtension._dispatchDropEventMethod = (<any>globalThis).DotnetExports.UnoUI.Windows.ApplicationModel.DataTransfer.DragDrop.Core.DragDropExtension.OnNativeDropEvent;
+				} else {
+					DragDropExtension._dispatchDropEventMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Windows.ApplicationModel.DataTransfer.DragDrop.Core.DragDropExtension:OnNativeDropEvent");
+				}
 			}
 
 			if (DragDropExtension._current) {
