@@ -38,11 +38,6 @@ namespace Windows.UI.Xaml.Controls
 			_mpe = mediaPlayerElement;
 		}
 
-		internal void SetMediaPlayerElement(MediaPlayerElement mediaPlayerElement)
-		{
-			_mpe = mediaPlayerElement;
-		}
-
 		private void BindMediaPlayer()
 		{
 			if (_mediaPlayer is null)
