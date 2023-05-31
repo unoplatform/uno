@@ -921,10 +921,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void UpdateCompactOverlayMode(object sender, RoutedEventArgs e)
 		{
-			if (_mpe is not null)
-			{
-				_mpe.ToggleCompactOverlay(!_mpe.IsCompactOverlay);
-			}
+			IsCompact = !IsCompact;
 		}
 
 
@@ -970,7 +967,6 @@ namespace Windows.UI.Xaml.Controls
 			switch (property)
 			{
 				case var _ when property == IsCompactProperty:
-					_mpe?.ToggleCompactOverlay(IsCompact);
 					UpdateMediaTransportControlModeStates();
 					OnControlsBoundsChanged();
 					break;
