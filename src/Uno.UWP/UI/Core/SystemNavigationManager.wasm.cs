@@ -17,12 +17,20 @@ namespace Windows.UI.Core
 			switch (visibility)
 			{
 				case AppViewBackButtonVisibility.Visible:
+#if NET7_0_OR_GREATER
+					NativeMethods.Enable();
+#else
 					WebAssemblyRuntime.InvokeJS("Windows.UI.Core.SystemNavigationManager.current.enable();");
+#endif
 					break;
 
 				case AppViewBackButtonVisibility.Collapsed:
 				default: // Disabled value is not present in currently supported UWP API, but should be mapped to collapsed
+#if NET7_0_OR_GREATER
+					NativeMethods.Disable();
+#else
 					WebAssemblyRuntime.InvokeJS("Windows.UI.Core.SystemNavigationManager.current.disable();");
+#endif
 					break;
 			}
 		}
