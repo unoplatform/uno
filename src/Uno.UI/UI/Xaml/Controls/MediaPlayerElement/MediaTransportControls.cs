@@ -11,14 +11,9 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using DirectUI;
 using Uno.Disposables;
-using Uno.UI.Converters;
-using Uno.UI.Xaml.Controls.MediaPlayer.Internal;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using Uno.Extensions;
-using Uno.UI.Converters;
-using Uno.UI.Xaml.Controls.MediaPlayer.Internal;
-using System.Diagnostics.CodeAnalysis;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
@@ -836,7 +831,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void PlaybackRateListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			if (_mpe is not null)
+			if (sender is ListView listView)
 			{
 				if (listView.SelectedItem is not null)
 				{
@@ -857,7 +852,7 @@ namespace Windows.UI.Xaml.Controls
 							}
 							if (_mpe is not null && _mpe.MediaPlayer is not null)
 							{
-								_mpe.MediaPlayer.PlaybackRate = double.Parse(item.Content.ToString(), CultureInfo.InvariantCulture);
+								_mpe.MediaPlayer.PlaybackRate = double.Parse(item.Content + "", CultureInfo.InvariantCulture);
 							}
 						}
 					}
@@ -1236,7 +1231,6 @@ namespace Windows.UI.Xaml.Controls
 
 			return child != null;
 		}
-		private void SetAutomationNameAndTooltip(DependencyObject? target, string uiaKey)
 
 		private void InitializePlaybackRateListView()
 		{
