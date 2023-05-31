@@ -398,11 +398,8 @@ namespace Windows.UI.Xaml.Controls
 
 		// Reference to the VisualStateGroup
 		//private VisualStateGroup m_tpVisibilityStatesGroup;
-		private VisualStateGroup m_tpVisibilityStatesGroup;
 
 		private Flyout m_tpPlaybackRateFlyout;
-
-		//private CompositeDisposable _loadedSubscriptions;
 
 		#endregion
 
