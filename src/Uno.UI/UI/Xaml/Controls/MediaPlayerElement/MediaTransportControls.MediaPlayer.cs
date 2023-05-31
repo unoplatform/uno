@@ -1,3 +1,5 @@
+#nullable enable
+
 using System;
 using System.Threading.Tasks;
 using System.Timers;
@@ -14,101 +16,73 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class MediaTransportControls : Control
 	{
-		private Windows.Media.Playback.MediaPlayer _mediaPlayer;
+		private Windows.Media.Playback.MediaPlayer? _mediaPlayer;
+		private SerialDisposable _mediaPlayerSubscriptions = new();
+
+		// The player will be temporarily paused while the progress slider is being manipulated.
+		// This flag prevents the update of play/pause button while that happens.
+		private bool _skipPlayPauseStateUpdate;
 		private bool _isScrubbing;
-		private SerialDisposable _subscriptions = new SerialDisposable();
 
 		internal void SetMediaPlayer(Windows.Media.Playback.MediaPlayer mediaPlayer)
 		{
-			UnbindMediaPlayer();
+			_mediaPlayerSubscriptions.Disposable = null;
 
 			_mediaPlayer = mediaPlayer;
 
-			if (_playPauseButton != null)
-			{
-				BindMediaPlayer();
-			}
+			BindMediaPlayer();
+		}
+
+		internal void SetMediaPlayerElement(MediaPlayerElement mediaPlayerElement)
+		{
+			_mpe = mediaPlayerElement;
 		}
 
 		private void BindMediaPlayer()
 		{
-			_subscriptions.Disposable = null;
+			if (_mediaPlayer is null)
+			{
+				return;
+			}
+
+			_mediaPlayerSubscriptions.Disposable = null;
 
 			_mediaPlayer.PlaybackSession.PlaybackStateChanged += OnPlaybackStateChanged;
 			_mediaPlayer.PlaybackSession.BufferingProgressChanged += OnBufferingProgressChanged;
 			_mediaPlayer.PlaybackSession.NaturalDurationChanged += OnNaturalDurationChanged;
 			_mediaPlayer.PlaybackSession.PositionChanged += OnPositionChanged;
 
-			_playPauseButton.Maybe(p => p.Tapped += PlayPause);
-			_playPauseButtonOnLeft.Maybe(p => p.Tapped += PlayPause);
-			_audioMuteButton.Maybe(p => p.Tapped += ToggleMute);
-			_volumeSlider.Maybe(p => p.ValueChanged += OnVolumeChanged);
-			_stopButton.Maybe(p => p.Tapped += Stop);
-			_skipForwardButton.Maybe(p => p.Tapped += SkipForward);
-			_skipBackwardButton.Maybe(p => p.Tapped += SkipBackward);
-			_fastForwardButton.Maybe(p => p.Tapped += ForwardButton);
-			_rewindButton.Maybe(p => p.Tapped += RewindButton);
-			_progressSlider.Maybe(p => p.Tapped += TappedProgressSlider);
-
-			_subscriptions.Disposable = AttachThumbEventHandlers(_progressSlider);
-		}
-
-		private void UnbindMediaPlayer()
-		{
-			try
+			_mediaPlayerSubscriptions.Disposable = Disposable.Create(() =>
 			{
-				_subscriptions.Disposable = null;
-
-				if (_mediaPlayer != null)
+				if (_mediaPlayer is { })
 				{
 					_mediaPlayer.PlaybackSession.PlaybackStateChanged -= OnPlaybackStateChanged;
 					_mediaPlayer.PlaybackSession.BufferingProgressChanged -= OnBufferingProgressChanged;
 					_mediaPlayer.PlaybackSession.NaturalDurationChanged -= OnNaturalDurationChanged;
 					_mediaPlayer.PlaybackSession.PositionChanged -= OnPositionChanged;
 				}
-
-				_playPauseButton.Maybe(p => p.Tapped -= PlayPause);
-				_playPauseButtonOnLeft.Maybe(p => p.Tapped -= PlayPause);
-				_audioMuteButton.Maybe(p => p.Tapped -= ToggleMute);
-				_volumeSlider.Maybe(p => p.ValueChanged -= OnVolumeChanged);
-				_stopButton.Maybe(p => p.Tapped -= Stop);
-				_skipForwardButton.Maybe(p => p.Tapped -= SkipForward);
-				_skipBackwardButton.Maybe(p => p.Tapped -= SkipBackward);
-				_fastForwardButton.Maybe(p => p.Tapped -= ForwardButton);
-				_rewindButton.Maybe(p => p.Tapped -= RewindButton);
-				_progressSlider.Maybe(p => p.Tapped -= TappedProgressSlider);
-			}
-			catch (Exception ex)
-			{
-				this.Log().Error($"Unable to unbind MediaTransportControls properly: {ex.Message}", ex);
-			}
+			});
 		}
 
 		public void TappedProgressSlider(object sender, RoutedEventArgs e)
 		{
-			if (double.IsNaN(_progressSlider.Value))
+			if (m_tpMediaPositionSlider is null || double.IsNaN(m_tpMediaPositionSlider.Value))
 			{
 				return;
 			}
 			if (_mediaPlayer != null)
 			{
-				_wasPlaying = _mediaPlayer.PlaybackSession.PlaybackState == MediaPlaybackState.Buffering || _mediaPlayer.PlaybackSession.PlaybackState == MediaPlaybackState.Playing;
+				_wasPlaying = _mediaPlayer.PlaybackSession.IsPlaying;
+				_skipPlayPauseStateUpdate = true;
+
 				_mediaPlayer.Pause();
-				_mediaPlayer.PlaybackSession.Position = TimeSpan.FromSeconds(_progressSlider.Value);
+				_mediaPlayer.PlaybackSession.Position = TimeSpan.FromSeconds(m_tpMediaPositionSlider.Value);
 				if (_wasPlaying)
 				{
 					_mediaPlayer.Play();
 				}
-			}
-		}
 
-		private void OnSliderTemplateChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
-		{
-			_subscriptions.Disposable = null;
-
-			if (_mediaPlayer != null)
-			{
-				_subscriptions.Disposable = AttachThumbEventHandlers(_progressSlider);
+				_skipPlayPauseStateUpdate = false;
 			}
 		}
 
@@ -121,29 +95,39 @@ namespace Windows.UI.Xaml.Controls
 				case MediaPlaybackState.Opening:
 				case MediaPlaybackState.Paused:
 				case MediaPlaybackState.None:
-					_mediaPlayer.PlaybackSession.UpdateTimePositionRate = 0;
+					if (_mediaPlayer is not null)
+					{
+						_mediaPlayer.PlaybackSession.UpdateTimePositionRate = 0;
+					}
 					CancelControlsVisibilityTimer();
-					VisualStateManager.GoToState(this, "PlayState", false);
-					VisualStateManager.GoToState(this, "Normal", false);
 					break;
 				case MediaPlaybackState.Playing:
-					_mediaPlayer.PlaybackSession.UpdateTimePositionRate = 0;
+					if (_mediaPlayer is not null)
+					{
+						_mediaPlayer.PlaybackSession.UpdateTimePositionRate = 0;
+					}
 					ResetControlsVisibilityTimer();
-					VisualStateManager.GoToState(this, "PauseState", false);
-					VisualStateManager.GoToState(this, "Normal", false);
 					break;
 				case MediaPlaybackState.Buffering:
-					VisualStateManager.GoToState(this, "Buffering", false);
 					break;
+			}
+
+			// skip transition, as the event may originate from non-ui thread
+			UpdateMediaStates(useTransition: false);
+			if (!_skipPlayPauseStateUpdate)
+			{
+				UpdatePlayPauseStates(useTransition: false);
 			}
 		}
 
 		private void OnBufferingProgressChanged(MediaPlaybackSession sender, object args)
 		{
-
 			_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 			{
-				_downloadProgressIndicator.Maybe(p => p.Value = (double)args);
+				if (m_tpDownloadProgressIndicator is not null && args is double value)
+				{
+					m_tpDownloadProgressIndicator.Value = value;
+				}
 			});
 		}
 
@@ -152,13 +136,17 @@ namespace Windows.UI.Xaml.Controls
 			_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 			{
 				var duration = args as TimeSpan? ?? TimeSpan.Zero;
-				_progressSlider.Maybe(p => p.Minimum = 0);
-				_progressSlider.Maybe(p => p.Maximum = duration.TotalSeconds);
 
-				if (_mediaPlayer.PlaybackSession.PlaybackState != MediaPlaybackState.Playing
-					&& _mediaPlayer.PlaybackSession.PlaybackState != MediaPlaybackState.Paused)
+				if (m_tpMediaPositionSlider is not null)
 				{
-					_timeRemainingElement.Maybe(p => p.Text = FormatTime(duration));
+					m_tpMediaPositionSlider.Minimum = 0;
+					m_tpMediaPositionSlider.Maximum = duration.TotalSeconds;
+				}
+
+				if (_mediaPlayer is not null
+					and { PlaybackSession.PlaybackState: not MediaPlaybackState.Playing and not MediaPlaybackState.Paused })
+				{
+					m_tpTimeRemainingElement.Maybe<TextBlock>(p => p.Text = FormatTime(duration));
 				}
 			});
 		}
@@ -168,18 +156,26 @@ namespace Windows.UI.Xaml.Controls
 			_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 			{
 				var elapsed = args as TimeSpan? ?? TimeSpan.Zero;
-				_timeElapsedElement.Maybe(p => p.Text = FormatTime(elapsed));
-				_progressSlider.Maybe(p => p.Value = elapsed.TotalSeconds);
+				m_tpTimeElapsedElement.Maybe<TextBlock>(p => p.Text = FormatTime(elapsed));
 
-				var remaining = _mediaPlayer.PlaybackSession.NaturalDuration - elapsed;
-				_timeRemainingElement.Maybe(p => p.Text = FormatTime(remaining));
-				_ = UpdateTimePosition(elapsed);
+				if (m_tpMediaPositionSlider is not null)
+				{
+					m_tpMediaPositionSlider.Value = elapsed.TotalSeconds;
+				}
+
+				if (_mediaPlayer is not null)
+				{
+					var remaining = _mediaPlayer.PlaybackSession.NaturalDuration - elapsed;
+					m_tpTimeRemainingElement.Maybe<TextBlock>(p => p.Text = FormatTime(remaining));
+					_ = UpdateTimePosition(elapsed);
+				}
 			});
 		}
 
 		public async Task UpdateTimePosition(TimeSpan elapsed)
 		{
-			if (_mediaPlayer.PlaybackSession.PlaybackState == MediaPlaybackState.Playing
+			if (_mediaPlayer is not null
+				&& _mediaPlayer.PlaybackSession.PlaybackState == MediaPlaybackState.Playing
 				&& !_mediaPlayer.PlaybackSession.IsUpdateTimePosition
 				&& elapsed != TimeSpan.Zero
 				&& _mediaPlayer.PlaybackSession.UpdateTimePositionRate != 0
@@ -196,111 +192,133 @@ namespace Windows.UI.Xaml.Controls
 		private void ResetProgressSlider()
 		{
 			var elapsed = TimeSpan.Zero;
-			_timeElapsedElement.Maybe(p => p.Text = FormatTime(elapsed));
-			_progressSlider.Maybe(p => p.Value = elapsed.TotalSeconds);
+			m_tpTimeElapsedElement.Maybe<TextBlock>(p => p.Text = FormatTime(elapsed));
 
-			var remaining = _mediaPlayer.PlaybackSession.NaturalDuration - elapsed;
-			_timeRemainingElement.Maybe(p => p.Text = FormatTime(remaining));
-			_mediaPlayer.PlaybackSession.Position = elapsed;
-			_mediaPlayer.PlaybackSession.PositionFromPlayer = elapsed;
+			if (m_tpMediaPositionSlider is not null)
+			{
+				m_tpMediaPositionSlider.Value = elapsed.TotalSeconds;
+			}
+
+			if (_mediaPlayer is not null)
+			{
+				var remaining = _mediaPlayer.PlaybackSession.NaturalDuration - elapsed;
+				m_tpTimeRemainingElement.Maybe<TextBlock>(p => p.Text = FormatTime(remaining));
+
+				_mediaPlayer.PlaybackSession.Position = elapsed;
+				_mediaPlayer.PlaybackSession.PositionFromPlayer = elapsed;
+			}
 		}
 
 		private string FormatTime(TimeSpan time)
-		{
-			return $"{time.TotalHours:0}:{time.Minutes:00}:{time.Seconds:00}";
-		}
+			=> $"{time.TotalHours:0}:{time.Minutes:00}:{time.Seconds:00}";
 
 		private void PlayPause(object sender, RoutedEventArgs e)
 		{
-			if (_mediaPlayer.PlaybackSession.PlaybackState == MediaPlaybackState.Buffering || _mediaPlayer.PlaybackSession.PlaybackState == MediaPlaybackState.Playing)
+			if (_mediaPlayer is not null)
 			{
-				_mediaPlayer.Pause();
-			}
-			else
-			{
-				_mediaPlayer.Play();
+				if (_mediaPlayer.PlaybackSession.IsPlaying)
+				{
+					_mediaPlayer.Pause();
+				}
+				else
+				{
+					_mediaPlayer.Play();
+				}
 			}
 		}
 
 		private void Stop(object sender, RoutedEventArgs e)
 		{
-			_mediaPlayer.Pause();
+			_skipPlayPauseStateUpdate = false;
+
+			_mediaPlayer?.Pause();
 			ResetProgressSlider();
-			_mediaPlayer.Stop();
+			_mediaPlayer?.Stop();
 		}
 
 		private void SkipBackward(object sender, RoutedEventArgs e)
 		{
-			_mediaPlayer.PlaybackSession.Position = _mediaPlayer.PlaybackSession.Position - TimeSpan.FromSeconds(10);
+			if (_mediaPlayer is null)
+			{
+				return;
+			}
+
+			_mediaPlayer.PlaybackSession.Position -= TimeSpan.FromSeconds(10);
 		}
 
 		private void SkipForward(object sender, RoutedEventArgs e)
 		{
-			_mediaPlayer.PlaybackSession.Position = _mediaPlayer.PlaybackSession.Position + TimeSpan.FromSeconds(30);
+			if (_mediaPlayer is null)
+			{
+				return;
+			}
+
+			_mediaPlayer.PlaybackSession.Position += TimeSpan.FromSeconds(30);
 		}
 
 		private void ForwardButton(object sender, RoutedEventArgs e)
 		{
+			if (_mediaPlayer is null)
+			{
+				return;
+			}
+
 #if __SKIA__ || __WASM__
 			_mediaPlayer.PlaybackRate = (_mediaPlayer.PlaybackRate < 0 ? 0 : _mediaPlayer.PlaybackRate) + 0.25;
 			_mediaPlayer.PlaybackSession.UpdateTimePositionRate = 0;
 #else
-			_mediaPlayer.PlaybackSession.UpdateTimePositionRate = _mediaPlayer.PlaybackSession.UpdateTimePositionRate < 1 ? 1 : /*To stop the Rewind*/
-											_mediaPlayer.PlaybackSession.UpdateTimePositionRate * 2; /*To start the Forward*/
+			_mediaPlayer.PlaybackSession.UpdateTimePositionRate =
+				_mediaPlayer.PlaybackSession.UpdateTimePositionRate < 1 ? 1 : /*To stop the Rewind*/
+				_mediaPlayer.PlaybackSession.UpdateTimePositionRate * 2; /*To start the Forward*/
 #endif
 		}
 
 		private void RewindButton(object sender, RoutedEventArgs e)
 		{
-			_mediaPlayer.PlaybackSession.UpdateTimePositionRate = _mediaPlayer.PlaybackSession.UpdateTimePositionRate > 1 ? 1 : /*To stop the Forward*/
-														_mediaPlayer.PlaybackSession.UpdateTimePositionRate == 1 ? -1 : /*To start the Rewind*/
-														_mediaPlayer.PlaybackSession.UpdateTimePositionRate == 0 ? -1 : /*To start the Rewind*/
-														_mediaPlayer.PlaybackSession.UpdateTimePositionRate * 2;
+			if (_mediaPlayer is null)
+			{
+				return;
+			}
+
+			_mediaPlayer.PlaybackSession.UpdateTimePositionRate =
+				_mediaPlayer.PlaybackSession.UpdateTimePositionRate > 1 ? 1 : /*To stop the Forward*/
+				_mediaPlayer.PlaybackSession.UpdateTimePositionRate == 1 ? -1 : /*To start the Rewind*/
+				_mediaPlayer.PlaybackSession.UpdateTimePositionRate == 0 ? -1 : /*To start the Rewind*/
+				_mediaPlayer.PlaybackSession.UpdateTimePositionRate * 2;
 		}
 
 		private void OnVolumeChanged(object sender, RangeBaseValueChangedEventArgs e)
 		{
-			_mediaPlayer.Volume = e.NewValue;
-			VisualStateManager.GoToState(this, _mediaPlayer.Volume == 0 ? "MuteState" : "VolumeState", false);
+			if (_mediaPlayer is not null)
+			{
+				_mediaPlayer.Volume = e.NewValue;
+			}
+
+			UpdateVolumeMuteStates();
 			ResetControlsVisibilityTimer();
 		}
 
 		private void ToggleMute(object sender, RoutedEventArgs e)
 		{
-			_mediaPlayer.IsMuted = !_mediaPlayer.IsMuted;
-			VisualStateManager.GoToState(this, _mediaPlayer.IsMuted ? "MuteState" : "VolumeState", false);
-			ResetControlsVisibilityTimer();
-		}
-
-		private IDisposable AttachThumbEventHandlers(Slider slider)
-		{
-			var thumb = slider.GetTemplateChild(HorizontalThumbName) as Thumb;
-
-			if (thumb != null)
+			if (_mediaPlayer is not null)
 			{
-				thumb.DragStarted += ThumbOnDragStarted;
-				thumb.DragCompleted += ThumbOnDragCompleted;
-
-				return Disposable.Create(() =>
-				{
-					thumb.DragStarted -= ThumbOnDragStarted;
-					thumb.DragCompleted -= ThumbOnDragCompleted;
-				});
+				_mediaPlayer.IsMuted = !_mediaPlayer.IsMuted;
 			}
 
-			return Disposable.Empty;
+			UpdateVolumeMuteStates(isExplicitMuteToggle: true);
+			ResetControlsVisibilityTimer();
 		}
 
 		private void ThumbOnDragCompleted(object sender, DragCompletedEventArgs dragCompletedEventArgs)
 		{
-			if (double.IsNaN(_progressSlider.Value))
+			if (m_tpMediaPositionSlider is null || double.IsNaN(m_tpMediaPositionSlider.Value))
 			{
 				return;
 			}
 
 			if (_mediaPlayer != null)
 			{
-				_mediaPlayer.PlaybackSession.Position = TimeSpan.FromSeconds(_progressSlider.Value);
+				_mediaPlayer.PlaybackSession.Position = TimeSpan.FromSeconds(m_tpMediaPositionSlider.Value);
 
 				if (_wasPlaying)
 				{
@@ -309,16 +327,18 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			_isScrubbing = false;
+			_skipPlayPauseStateUpdate = false;
 		}
 
 		private void ThumbOnDragStarted(object sender, DragStartedEventArgs dragStartedEventArgs)
 		{
 			if (_mediaPlayer != null && !_isScrubbing)
 			{
-				_wasPlaying = _mediaPlayer.PlaybackSession.PlaybackState == MediaPlaybackState.Buffering || _mediaPlayer.PlaybackSession.PlaybackState == MediaPlaybackState.Playing;
-				_mediaPlayer.Pause();
-
+				_wasPlaying = _mediaPlayer.PlaybackSession.IsPlaying;
+				_skipPlayPauseStateUpdate = true;
 				_isScrubbing = true;
+
+				_mediaPlayer.Pause();
 			}
 		}
 	}
