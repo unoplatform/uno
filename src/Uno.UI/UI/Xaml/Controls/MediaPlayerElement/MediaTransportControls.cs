@@ -361,7 +361,7 @@ namespace Windows.UI.Xaml.Controls
 		private Button? m_tpCompactOverlayButton;
 
 		// Reference to the PlayBack ListView of rates
-		private ListView m_tpPlaybackRateListView;
+		private ListView? m_tpPlaybackRateListView;
 
 		// Reference to the Left AppBarSeparator
 		private AppBarSeparator? m_tpLeftAppBarSeparator;
@@ -402,7 +402,7 @@ namespace Windows.UI.Xaml.Controls
 		// Reference to the VisualStateGroup
 		//private VisualStateGroup m_tpVisibilityStatesGroup;
 
-		private Flyout m_tpPlaybackRateFlyout;
+		private Flyout? m_tpPlaybackRateFlyout;
 
 		#endregion
 
@@ -740,15 +740,20 @@ namespace Windows.UI.Xaml.Controls
 				{
 					UpdateControlPanelVisibilityStates(useTransition: false);
 				}
-				if (m_tpPlaybackRateButton is AppBarButton playbackRateAppBarButton)
+				if (m_tpPlaybackRateButton is { }
+					&& m_tpPlaybackRateFlyout is { }
+					&& m_tpVolumeFlyout is { })
 				{
-					playbackRateAppBarButton.Flyout.Hide();
+					if (m_tpPlaybackRateButton is AppBarButton playbackRateAppBarButton)
+					{
+						playbackRateAppBarButton.Flyout.Hide();
+					}
+					else
+					{
+						m_tpPlaybackRateFlyout.Hide();
+					}
+					m_tpVolumeFlyout.Hide();
 				}
-				else
-				{
-					m_tpPlaybackRateFlyout.Hide();
-				}
-				m_tpVolumeFlyout.Hide();
 			});
 		}
 
@@ -833,7 +838,30 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (_mpe is not null)
 			{
-				_mpe.MediaPlayer.PlaybackRate += 0.25;
+				if (listView.SelectedItem is not null)
+				{
+					if (listView.SelectedItem is Windows.UI.Xaml.Controls.ListViewItem item)
+					{
+						_isShowingControlVolumeOrPlaybackRate = false;
+						ResetControlsVisibilityTimer();
+						if (m_tpPlaybackRateButton is { }
+							&& m_tpPlaybackRateFlyout is { })
+						{
+							if (m_tpPlaybackRateButton is AppBarButton playbackRateAppBarButton)
+							{
+								playbackRateAppBarButton.Flyout.Hide();
+							}
+							else
+							{
+								m_tpPlaybackRateFlyout.Hide();
+							}
+							if (_mpe is not null && _mpe.MediaPlayer is not null)
+							{
+								_mpe.MediaPlayer.PlaybackRate = double.Parse(item.Content.ToString(), CultureInfo.InvariantCulture);
+							}
+						}
+					}
+				}
 			}
 		}
 
@@ -898,7 +926,10 @@ namespace Windows.UI.Xaml.Controls
 
 		private void UpdateCompactOverlayMode(object sender, RoutedEventArgs e)
 		{
-			_mpe.ToggleCompactOverlay(!_mpe.IsCompactOverlay);
+			if (_mpe is not null)
+			{
+				_mpe.ToggleCompactOverlay(!_mpe.IsCompactOverlay);
+			}
 		}
 
 
@@ -1233,11 +1264,14 @@ namespace Windows.UI.Xaml.Controls
 			{
 				InitializeTemplateChild(TemplateParts.PlaybackRateListView, UIAKeys.UIA_MEDIA_PLAYBACKRATE, out m_tpPlaybackRateListView);
 			}
+			if (m_tpPlaybackRateFlyout is { })
+			{
 #if __SKIA__
-			m_tpPlaybackRateFlyout.Placement = FlyoutPlacementMode.RightEdgeAlignedTop;
+				m_tpPlaybackRateFlyout.Placement = FlyoutPlacementMode.RightEdgeAlignedTop;
 #else
-			m_tpPlaybackRateFlyout.Placement = FlyoutPlacementMode.Top;
+				m_tpPlaybackRateFlyout.Placement = FlyoutPlacementMode.Top;
 #endif
+			}
 		}
 
 		private void SetAutomationNameAndTooltip(DependencyObject? target, string uiaKey)
