@@ -922,6 +922,11 @@ namespace Windows.UI.Xaml.Controls
 		private void UpdateCompactOverlayMode(object sender, RoutedEventArgs e)
 		{
 			IsCompact = !IsCompact;
+
+			if (_mpe is not null)
+			{
+				_mpe.ToggleCompactOverlay(IsCompact);
+			}
 		}
 
 
