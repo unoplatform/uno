@@ -19,6 +19,7 @@ using DirectUI;
 using Uno.Disposables;
 using Uno.UI.Converters;
 using Uno.UI.Xaml.Controls.MediaPlayer.Internal;
+using System.Diagnostics.CodeAnalysis;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
@@ -26,7 +27,6 @@ using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
 #else
 using Windows.UI.Input;
 using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
-using System.Diagnostics.CodeAnalysis;
 #endif
 
 #if __IOS__
