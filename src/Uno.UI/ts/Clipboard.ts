@@ -60,9 +60,13 @@ namespace Uno.Utils {
 
 		private static onClipboardChanged() {
 			if (!Clipboard.dispatchContentChanged) {
-				Clipboard.dispatchContentChanged = 
-					(<any>Module).mono_bind_static_method(
-						"[Uno] Windows.ApplicationModel.DataTransfer.Clipboard:DispatchContentChanged");
+				if ((<any>globalThis).DotnetExports !== undefined) {
+					Clipboard.dispatchContentChanged = (<any>globalThis).DotnetExports.Uno.Windows.ApplicationModel.DataTransfer.Clipboard.DispatchContentChanged;
+				} else {
+					Clipboard.dispatchContentChanged = 
+						(<any>Module).mono_bind_static_method(
+							"[Uno] Windows.ApplicationModel.DataTransfer.Clipboard:DispatchContentChanged");
+				}
 			}
 			Clipboard.dispatchContentChanged();
 		}
