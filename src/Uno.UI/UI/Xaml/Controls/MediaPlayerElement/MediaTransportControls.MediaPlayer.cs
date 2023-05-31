@@ -144,8 +144,7 @@ namespace Windows.UI.Xaml.Controls
 				}
 
 				if (_mediaPlayer is not null
-					&& _mediaPlayer.PlaybackSession.PlaybackState != MediaPlaybackState.Playing
-					&& _mediaPlayer.PlaybackSession.PlaybackState != MediaPlaybackState.Paused)
+					and { PlaybackSession.PlaybackState: not MediaPlaybackState.Playing and not MediaPlaybackState.Paused })
 				{
 					m_tpTimeRemainingElement.Maybe<TextBlock>(p => p.Text = FormatTime(duration));
 				}
