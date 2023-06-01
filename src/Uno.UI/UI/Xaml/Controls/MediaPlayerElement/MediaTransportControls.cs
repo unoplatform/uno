@@ -1,39 +1,33 @@
 #nullable enable
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Timers;
 using Windows.Foundation;
-using Windows.Media.Casting;
 using Windows.Media.Playback;
 using Windows.UI.Core;
 using Windows.UI.Xaml.Automation;
 using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Animation;
 using DirectUI;
 using Uno.Disposables;
-using Uno.UI.Converters;
-using Uno.UI.Xaml.Controls.MediaPlayer.Internal;
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
+using Uno.Extensions;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
 using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
 #else
-using Windows.UI.Input;
 using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
 #endif
+
 
 #if __IOS__
 using UIKit;
 #elif __MACOS__
 using AppKit;
-#elif __ANDROID__
+#else
 using Uno.UI;
 #endif
 
@@ -77,6 +71,9 @@ namespace Windows.UI.Xaml.Controls
 			public const string PreviousTrackButton = nameof(PreviousTrackButton); // AppBarButton
 			public const string RepeatButton = nameof(RepeatButton); // AppBarToggleButton
 			public const string CompactOverlayButton = nameof(CompactOverlayButton); // AppBarButton
+			public const string PlaybackRateListView = nameof(PlaybackRateListView); // AppBarButton
+			public const string PlaybackRateFlyout = nameof(PlaybackRateFlyout); // AppBarButton
+
 			public const string LeftSeparator = nameof(LeftSeparator); // AppBarSeparator
 			public const string RightSeparator = nameof(RightSeparator); // AppBarSeparator
 
@@ -213,7 +210,6 @@ namespace Windows.UI.Xaml.Controls
 	[TemplatePart(Name = "CastButton", Type = typeof(Button))]
 	[TemplatePart(Name = "ZoomButton", Type = typeof(Button))]
 	[TemplatePart(Name = "PlaybackRateButton", Type = typeof(Button))]
-	[TemplatePart(Name = "PlaybackRateButton", Type = typeof(Button))]
 	[TemplatePart(Name = "SkipForwardButton", Type = typeof(Button))]
 	[TemplatePart(Name = "NextTrackButton", Type = typeof(Button))]
 	[TemplatePart(Name = "FastForwardButton", Type = typeof(Button))]
@@ -230,6 +226,16 @@ namespace Windows.UI.Xaml.Controls
 	[TemplatePart(Name = "DownloadProgressIndicator", Type = typeof(ProgressBar))]
 	[TemplatePart(Name = "ControlPanelGrid", Type = typeof(Grid))]
 	[TemplatePart(Name = "ControlPanel_ControlPanelVisibilityStates_Border", Type = typeof(Border))]
+
+
+	[TemplatePart(Name = "RepeatButton", Type = typeof(Button))]
+	[TemplatePart(Name = "VolumeFlyout", Type = typeof(Flyout))]
+	[TemplatePart(Name = "PlaybackRateFlyout", Type = typeof(Flyout))]
+	[TemplatePart(Name = "PlaybackRateListView", Type = typeof(ListView))]
+	[TemplatePart(Name = "CompactOverlayButton", Type = typeof(Button))]
+	[TemplatePart(Name = "MediaTransportControls_Timeline_Border", Type = typeof(Border))]
+	//[TemplatePart(Name = "HorizontalThumb", Type = typeof(Grid))]
+
 	public partial class MediaTransportControls : Control
 	{
 		#region Template Parts
@@ -349,6 +355,9 @@ namespace Windows.UI.Xaml.Controls
 		// Reference to the Mini View button
 		private Button? m_tpCompactOverlayButton;
 
+		// Reference to the PlayBack ListView of rates
+		private ListView? m_tpPlaybackRateListView;
+
 		// Reference to the Left AppBarSeparator
 		private AppBarSeparator? m_tpLeftAppBarSeparator;
 
@@ -387,6 +396,9 @@ namespace Windows.UI.Xaml.Controls
 
 		// Reference to the VisualStateGroup
 		//private VisualStateGroup m_tpVisibilityStatesGroup;
+
+		private Flyout? m_tpPlaybackRateFlyout;
+
 		#endregion
 
 		private MediaPlayerElement? _mpe;
@@ -395,6 +407,7 @@ namespace Windows.UI.Xaml.Controls
 		private bool _wasPlaying;
 		private bool _isTemplateApplied;
 		private bool _isShowingControls = true;
+		private bool _isShowingControlVolumeOrPlaybackRate;
 
 		public MediaTransportControls()
 		{
@@ -494,7 +507,10 @@ namespace Windows.UI.Xaml.Controls
 			InitializeTemplateChild(TemplateParts.RewindButton, UIAKeys.UIA_MEDIA_REWIND, out m_tpFastRewindButton);
 			InitializeTemplateChild(TemplateParts.StopButton, UIAKeys.UIA_MEDIA_STOP, out m_tpStopButton);
 			InitializeTemplateChild(TemplateParts.CastButton, UIAKeys.UIA_MEDIA_CAST, out m_tpCastButton);
+			InitializeTemplateChild(TemplateParts.PlaybackRateFlyout, UIAKeys.UIA_MEDIA_PLAYBACKRATE, out m_tpPlaybackRateFlyout);
+			InitializePlaybackRateListView();
 		}
+
 		private void MoreControls()
 		{
 			InitializeTemplateChild(TemplateParts.SkipForwardButton, UIAKeys.UIA_MEDIA_SKIPFORWARD, out m_tpSkipForwardButton);
@@ -543,12 +559,22 @@ namespace Windows.UI.Xaml.Controls
 			BindButtonClick(m_tpFastForwardButton, ForwardButton);
 			BindButtonClick(m_tpNextTrackButton, NextTrackButtonTapped);
 			BindButtonClick(m_tpSkipForwardButton, SkipForward);
-			BindButtonClick(m_tpPlaybackRateButton, PlaybackRateButtonTapped);
+			BindButtonClick(m_tpPlaybackRateButton, ResetControlsVisibilityTimerAndVolumeOrPlaybackVisibility);
+			BindButtonClick(m_tpTHVolumeButton, ResetControlsVisibilityTimerAndVolumeOrPlaybackVisibility);
+
+			Bind(m_tpTHVolumeSlider, x => x.ValueChanged += ResetVolumeOrPlaybackVisibility, x => x.ValueChanged -= ResetVolumeOrPlaybackVisibility);
+			Bind(m_tpTHVolumeSlider, x => x.PointerExited += ResetControlsVisibilityTimerAndVolumeOrPlaybackVisibility, x => x.PointerExited -= ResetControlsVisibilityTimerAndVolumeOrPlaybackVisibility);
+			Bind(m_tpTHVolumeSlider, x => x.PointerEntered += CancelControlsVisibilityTimerAndVolumeOrPlaybackVisibility, x => x.PointerEntered -= CancelControlsVisibilityTimerAndVolumeOrPlaybackVisibility);
+
+			Bind(m_tpPlaybackRateListView, x => x.SelectionChanged += PlaybackRateListView_SelectionChanged, x => x.SelectionChanged -= PlaybackRateListView_SelectionChanged);
+			Bind(m_tpPlaybackRateListView, x => x.PointerExited += ResetControlsVisibilityTimerAndVolumeOrPlaybackVisibility, x => x.PointerExited -= ResetControlsVisibilityTimerAndVolumeOrPlaybackVisibility);
+			Bind(m_tpPlaybackRateListView, x => x.PointerEntered += CancelControlsVisibilityTimerAndVolumeOrPlaybackVisibility, x => x.PointerEntered -= CancelControlsVisibilityTimerAndVolumeOrPlaybackVisibility);
+
 			// - RightSeparator
 			BindButtonClick(m_tpRepeatButton, RepeatButtonTapped);
 			BindButtonClick(m_tpZoomButton, ZoomButtonTapped);
 			//BindButtonClick(m_tpCastButton, null);
-			BindButtonClick(m_tpCompactOverlayButton, OnCompactOverlayButtonClick);
+			BindButtonClick(m_tpCompactOverlayButton, UpdateCompactOverlayMode);
 			BindButtonClick(m_tpFullWindowButton, FullWindowButtonTapped);
 
 			// Register on visual state changes to update the layout in extensions
@@ -622,7 +648,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			m_tpHideControlPanelTimer?.Stop();
 
-			if (ShowAndHideAutomatically)
+			if (ShowAndHideAutomatically && !_isShowingControlVolumeOrPlaybackRate)
 			{
 				Hide();
 			}
@@ -709,6 +735,20 @@ namespace Windows.UI.Xaml.Controls
 				{
 					UpdateControlPanelVisibilityStates(useTransition: false);
 				}
+				if (m_tpPlaybackRateButton is { }
+					&& m_tpPlaybackRateFlyout is { }
+					&& m_tpVolumeFlyout is { })
+				{
+					if (m_tpPlaybackRateButton is AppBarButton playbackRateAppBarButton)
+					{
+						playbackRateAppBarButton.Flyout.Hide();
+					}
+					else
+					{
+						m_tpPlaybackRateFlyout.Hide();
+					}
+					m_tpVolumeFlyout.Hide();
+				}
 			});
 		}
 
@@ -739,6 +779,14 @@ namespace Windows.UI.Xaml.Controls
 		}
 		private void OnRootGridTapped(object sender, TappedRoutedEventArgs e)
 		{
+			if (_isShowingControlVolumeOrPlaybackRate)
+			{
+				_isShowingControlVolumeOrPlaybackRate = false;
+				if (ShowAndHideAutomatically)
+				{
+					ResetControlsVisibilityTimer();
+				}
+			}
 			if (e.PointerDeviceType == PointerDeviceType.Touch)
 			{
 				if (_isShowingControls)
@@ -780,13 +828,55 @@ namespace Windows.UI.Xaml.Controls
 
 			UpdateFullWindowStates();
 		}
-		private void PlaybackRateButtonTapped(object sender, RoutedEventArgs e)
+
+		private void PlaybackRateListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			if (_mpe is not null)
+			if (sender is ListView listView)
 			{
-				_mpe.MediaPlayer.PlaybackRate += 0.25;
+				if (listView.SelectedItem is not null)
+				{
+					if (listView.SelectedItem is Windows.UI.Xaml.Controls.ListViewItem item)
+					{
+						_isShowingControlVolumeOrPlaybackRate = false;
+						ResetControlsVisibilityTimer();
+						if (m_tpPlaybackRateButton is { }
+							&& m_tpPlaybackRateFlyout is { })
+						{
+							if (m_tpPlaybackRateButton is AppBarButton playbackRateAppBarButton)
+							{
+								playbackRateAppBarButton.Flyout.Hide();
+							}
+							else
+							{
+								m_tpPlaybackRateFlyout.Hide();
+							}
+							if (_mpe is not null && _mpe.MediaPlayer is not null)
+							{
+								_mpe.MediaPlayer.PlaybackRate = double.Parse(item.Content + "", CultureInfo.InvariantCulture);
+							}
+						}
+					}
+				}
 			}
 		}
+
+		private void ResetControlsVisibilityTimerAndVolumeOrPlaybackVisibility(object sender, RoutedEventArgs e)
+		{
+			_isShowingControlVolumeOrPlaybackRate = false;
+			ResetControlsVisibilityTimer();
+		}
+
+		private void ResetVolumeOrPlaybackVisibility(object sender, RangeBaseValueChangedEventArgs e)
+		{
+			_isShowingControlVolumeOrPlaybackRate = false;
+		}
+
+		private void CancelControlsVisibilityTimerAndVolumeOrPlaybackVisibility(object sender, PointerRoutedEventArgs e)
+		{
+			_isShowingControlVolumeOrPlaybackRate = true;
+			CancelControlsVisibilityTimer();
+		}
+
 		private void RepeatButtonTapped(object sender, RoutedEventArgs e)
 		{
 			if (_mpe?.MediaPlayer is null)
@@ -805,6 +895,7 @@ namespace Windows.UI.Xaml.Controls
 				_mediaPlayer.PlaybackSession.Position = TimeSpan.Zero;
 			}
 		}
+
 		private void NextTrackButtonTapped(object sender, RoutedEventArgs e)
 		{
 			if (_mediaPlayer is not null)
@@ -827,9 +918,15 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 		}
-		private void OnCompactOverlayButtonClick(object sender, RoutedEventArgs e)
+
+		private void UpdateCompactOverlayMode(object sender, RoutedEventArgs e)
 		{
 			IsCompact = !IsCompact;
+
+			if (_mpe is not null)
+			{
+				_mpe.ToggleCompactOverlay(IsCompact);
+			}
 		}
 
 
@@ -875,8 +972,8 @@ namespace Windows.UI.Xaml.Controls
 			switch (property)
 			{
 				case var _ when property == IsCompactProperty:
-					_mpe?.ToggleCompactOverlay(IsCompact);
 					UpdateMediaTransportControlModeStates();
+					OnControlsBoundsChanged();
 					break;
 				case var _ when property == ShowAndHideAutomaticallyProperty:
 					OnShowAndHideAutomaticallyChanged();
@@ -1135,6 +1232,43 @@ namespace Windows.UI.Xaml.Controls
 
 			return child != null;
 		}
+
+		private void InitializePlaybackRateListView()
+		{
+
+			if (m_tpPlaybackRateButton is AppBarButton playbackRateAppBarButton)
+			{
+				m_tpPlaybackRateListView = new ListView();
+				m_tpPlaybackRateListView.VerticalAlignment = VerticalAlignment.Top;
+				m_tpPlaybackRateListView.HorizontalAlignment = HorizontalAlignment.Center;
+				m_tpPlaybackRateListView.Margin = new Thickness(0);
+				m_tpPlaybackRateListView.Items.AddRange(new List<ListViewItem>() {
+													new() { Content = "0.25" },
+													new() { Content = "0.5" },
+													new() { Content = "1" },
+													new() { Content = "1.5" },
+													new() { Content = "2" }});
+				m_tpPlaybackRateFlyout = new Flyout();
+				m_tpPlaybackRateFlyout.FlyoutPresenterStyle = (Style)Application.Current.Resources["FlyoutStyle"];
+				m_tpPlaybackRateFlyout.ShouldConstrainToRootBounds = false;
+				m_tpPlaybackRateFlyout.Content = m_tpPlaybackRateListView;
+
+				playbackRateAppBarButton.Flyout = m_tpPlaybackRateFlyout;
+			}
+			else
+			{
+				InitializeTemplateChild(TemplateParts.PlaybackRateListView, UIAKeys.UIA_MEDIA_PLAYBACKRATE, out m_tpPlaybackRateListView);
+			}
+			if (m_tpPlaybackRateFlyout is { })
+			{
+#if __SKIA__
+				m_tpPlaybackRateFlyout.Placement = FlyoutPlacementMode.RightEdgeAlignedTop;
+#else
+				m_tpPlaybackRateFlyout.Placement = FlyoutPlacementMode.Top;
+#endif
+			}
+		}
+
 		private void SetAutomationNameAndTooltip(DependencyObject? target, string uiaKey)
 		{
 			if (target is { })

@@ -199,7 +199,7 @@ var Uno;
                         return;
                     }
                     const dependencyToLoad = "/lottie";
-                    const lottieDependencyName = config.uno_dependencies.find((d) => d.endsWith(dependencyToLoad));
+                    const lottieDependencyName = config.uno_dependencies.find((d) => d.endsWith(dependencyToLoad) || d.endsWith(dependencyToLoad + ".js"));
                     require([lottieDependencyName], (p) => {
                         if (!p) {
                             console.error("Unable to load lottie player.");

@@ -414,14 +414,7 @@
                                                     <FontIcon Glyph="&#xED3D;" />
                                                 </AppBarButton.Icon>
                                             </AppBarButton>
-											
-                                            <AppBarButton x:Name="RepeatVideoButton" Style="{StaticResource AppBarButtonStyle}" MediaTransportControlsHelper.DropoutOrder="10" Visibility="Collapsed">
-                                                <AppBarButton.Icon>
-                                                    <FontIcon Glyph="&#xE8EE;" />
-                                                </AppBarButton.Icon>
-                                            </AppBarButton>
-											
-                                            <AppBarButton x:Name="PlaybackRateButton" Style="{StaticResource AppBarButtonStyle}" MediaTransportControlsHelper.DropoutOrder="10" Visibility="Collapsed">
+											<AppBarButton x:Name="PlaybackRateButton" Style="{StaticResource AppBarButtonStyle}" MediaTransportControlsHelper.DropoutOrder="10" Visibility="Collapsed">
                                                 <AppBarButton.Icon>
                                                     <FontIcon Glyph="&#xEC57;" />
                                                 </AppBarButton.Icon>
