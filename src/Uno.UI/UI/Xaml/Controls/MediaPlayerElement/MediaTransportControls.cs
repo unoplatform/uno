@@ -536,7 +536,7 @@ namespace Windows.UI.Xaml.Controls
 
 			BindTapped(_rootGrid, OnRootGridTapped);
 			Bind(_rootGrid, x => x.PointerMoved += OnRootGridPointerMoved, x => x.PointerMoved -= OnRootGridPointerMoved);
-			BindLoaded(m_tpCommandBar, OnCommandBarLoaded);
+			BindLoaded(m_tpCommandBar, OnCommandBarLoaded, invokeHandlerIfAlreadyLoaded: true);
 			BindSizeChanged(m_tpControlPanelGrid, ControlPanelGridSizeChanged);
 			BindTapped(m_tpControlPanelGrid, OnPaneGridTapped);
 			BindSizeChanged(_controlPanelBorder, ControlPanelBorderSizeChanged);
@@ -605,12 +605,19 @@ namespace Windows.UI.Xaml.Controls
 					disposables.Add(() => target.Tapped -= handler);
 				}
 			}
-			void BindLoaded(FrameworkElement? target, RoutedEventHandler handler)
+			void BindLoaded(FrameworkElement? target, RoutedEventHandler handler, bool invokeHandlerIfAlreadyLoaded = false)
 			{
 				if (target is { })
 				{
+					// register before invoking so that fire-once handler can self-unsubscribed
+
 					target.Loaded += handler;
 					disposables.Add(() => target.Loaded -= handler);
+
+					if (invokeHandlerIfAlreadyLoaded && target.IsLoaded)
+					{
+						handler.Invoke(target, default);
+					}
 				}
 			}
 			void BindSizeChanged(FrameworkElement? target, SizeChangedEventHandler handler)
