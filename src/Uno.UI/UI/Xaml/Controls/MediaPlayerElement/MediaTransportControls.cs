@@ -536,7 +536,7 @@ namespace Windows.UI.Xaml.Controls
 
 			BindTapped(_rootGrid, OnRootGridTapped);
 			Bind(_rootGrid, x => x.PointerMoved += OnRootGridPointerMoved, x => x.PointerMoved -= OnRootGridPointerMoved);
-			BindLoaded(m_tpCommandBar, OnCommandBarLoaded);
+			BindLoaded(m_tpCommandBar, OnCommandBarLoaded, invokeHandlerIfAlreadyLoaded: true);
 			BindSizeChanged(m_tpControlPanelGrid, ControlPanelGridSizeChanged);
 			BindTapped(m_tpControlPanelGrid, OnPaneGridTapped);
 			BindSizeChanged(_controlPanelBorder, ControlPanelBorderSizeChanged);
@@ -605,12 +605,19 @@ namespace Windows.UI.Xaml.Controls
 					disposables.Add(() => target.Tapped -= handler);
 				}
 			}
-			void BindLoaded(FrameworkElement? target, RoutedEventHandler handler)
+			void BindLoaded(FrameworkElement? target, RoutedEventHandler handler, bool invokeHandlerIfAlreadyLoaded = false)
 			{
 				if (target is { })
 				{
+					// register before invoking so that fire-once handler can self-unsubscribed
+
 					target.Loaded += handler;
 					disposables.Add(() => target.Loaded -= handler);
+
+					if (invokeHandlerIfAlreadyLoaded && target.IsLoaded)
+					{
+						handler.Invoke(target, default);
+					}
 				}
 			}
 			void BindSizeChanged(FrameworkElement? target, SizeChangedEventHandler handler)
@@ -777,6 +784,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 			e.Handled = true;
 		}
+
 		private void OnRootGridTapped(object sender, TappedRoutedEventArgs e)
 		{
 			if (_isShowingControlVolumeOrPlaybackRate)
@@ -800,14 +808,20 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 		}
+
 		private void OnRootGridPointerMoved(object sender, PointerRoutedEventArgs e)
 		{
-			Show();
+			if (e.Pointer.PointerDeviceType != PointerDeviceType.Touch)
+			{
+				Show();
+			}
 		}
+
 		private void ControlPanelGridSizeChanged(object sender, SizeChangedEventArgs args)
 		{
 			OnControlsBoundsChanged();
 		}
+
 		private static void ControlPanelBorderSizeChanged(object sender, SizeChangedEventArgs args)
 		{
 			if (sender is Border border)
