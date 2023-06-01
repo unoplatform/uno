@@ -996,7 +996,7 @@ namespace Windows.UI.Xaml.Controls
 					break;
 
 				case var _ when property == IsRepeatButtonVisibleProperty:
-					BindVisibility(m_tpRepeatButton, IsImplemented(typeof(MediaPlayer), "IsLoopingEnabled") && IsRepeatButtonVisible);
+					BindVisibility(m_tpRepeatButton, IsImplemented(typeof(Windows.Media.Playback.MediaPlayer), "IsLoopingEnabled") && IsRepeatButtonVisible);
 					break;
 				case var _ when property == IsRepeatEnabledProperty:
 					BindIsEnabled(m_tpRepeatButton, IsRepeatEnabled);
@@ -1020,7 +1020,7 @@ namespace Windows.UI.Xaml.Controls
 					BindIsEnabled(m_tpZoomButton, IsZoomEnabled);
 					break;
 				case var _ when property == IsPlaybackRateButtonVisibleProperty:
-					BindVisibility(m_tpPlaybackRateButton, IsImplemented(typeof(MediaPlayer), "PlaybackRate") && IsPlaybackRateButtonVisible);
+					BindVisibility(m_tpPlaybackRateButton, IsImplemented(typeof(Windows.Media.Playback.MediaPlayer), "PlaybackRate") && IsPlaybackRateButtonVisible);
 					break;
 				case var _ when property == IsPlaybackRateEnabledProperty:
 					BindIsEnabled(m_tpPlaybackRateButton, IsPlaybackRateEnabled);
