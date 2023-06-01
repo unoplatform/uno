@@ -1,4 +1,3 @@
-﻿#if __ANDROID__
 using Android.Graphics.Drawables;
 using AndroidX.Core.Content;
 using AndroidX.Core.Graphics.Drawable;
@@ -118,4 +117,3 @@ namespace Uno.Helpers
 		}
 	}
 }
-#endif
