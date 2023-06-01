@@ -996,94 +996,89 @@ namespace Windows.UI.Xaml.Controls
 					break;
 
 				case var _ when property == IsRepeatButtonVisibleProperty:
-					BindVisibility(m_tpRepeatButton, IsImplemented(typeof(MediaPlayer), "IsLoopingEnabled") && IsRepeatButtonVisible, property);
+					BindVisibility(m_tpRepeatButton, IsImplemented(typeof(MediaPlayer), "IsLoopingEnabled") && IsRepeatButtonVisible);
 					break;
 				case var _ when property == IsRepeatEnabledProperty:
 					BindIsEnabled(m_tpRepeatButton, IsRepeatEnabled);
 					break;
 				case var _ when property == IsVolumeButtonVisibleProperty:
-					BindVisibility(m_tpTHVolumeButton, IsImplemented(typeof(MediaPlayer), "Volume") && IsVolumeButtonVisible, property);
+					BindVisibility(m_tpTHVolumeButton, IsVolumeButtonVisible);
 					break;
 				case var _ when property == IsVolumeEnabledProperty:
 					BindIsEnabled(m_tpTHVolumeButton, IsVolumeEnabled);
 					break;
 				case var _ when property == IsFullWindowButtonVisibleProperty:
-					BindVisibility(m_tpFullWindowButton, IsFullWindowButtonVisible, property);
+					BindVisibility(m_tpFullWindowButton, IsFullWindowButtonVisible);
 					break;
 				case var _ when property == IsFullWindowEnabledProperty:
 					BindIsEnabled(m_tpFullWindowButton, IsFullWindowEnabled);
 					break;
 				case var _ when property == IsZoomButtonVisibleProperty:
-					BindVisibility(m_tpZoomButton, IsZoomButtonVisible, property);
+					BindVisibility(m_tpZoomButton, IsZoomButtonVisible);
 					break;
 				case var _ when property == IsZoomEnabledProperty:
 					BindIsEnabled(m_tpZoomButton, IsZoomEnabled);
 					break;
 				case var _ when property == IsPlaybackRateButtonVisibleProperty:
-					BindVisibility(m_tpPlaybackRateButton, IsImplemented(typeof(MediaPlayer), "PlaybackRate") && IsPlaybackRateButtonVisible, property);
+					BindVisibility(m_tpPlaybackRateButton, IsImplemented(typeof(MediaPlayer), "PlaybackRate") && IsPlaybackRateButtonVisible);
 					break;
 				case var _ when property == IsPlaybackRateEnabledProperty:
 					BindIsEnabled(m_tpPlaybackRateButton, IsPlaybackRateEnabled);
 					break;
 				case var _ when property == IsFastForwardButtonVisibleProperty:
-					BindVisibility(m_tpFastForwardButton, IsFastForwardButtonVisible, property);
+					BindVisibility(m_tpFastForwardButton, IsFastForwardButtonVisible);
 					break;
 				case var _ when property == IsFastForwardEnabledProperty:
 					BindIsEnabled(m_tpFastForwardButton, IsFastForwardEnabled);
 					break;
 				case var _ when property == IsFastRewindButtonVisibleProperty:
-					BindVisibility(m_tpFastRewindButton, IsFastRewindButtonVisible, property);
+					BindVisibility(m_tpFastRewindButton, IsFastRewindButtonVisible);
 					break;
 				case var _ when property == IsFastRewindEnabledProperty:
 					BindIsEnabled(m_tpFastRewindButton, IsFastRewindEnabled);
 					break;
 				case var _ when property == IsStopButtonVisibleProperty:
-					BindVisibility(m_tpStopButton, IsStopButtonVisible, property);
+					BindVisibility(m_tpStopButton, IsStopButtonVisible);
 					break;
 				case var _ when property == IsStopEnabledProperty:
 					BindIsEnabled(m_tpStopButton, IsStopEnabled);
 					break;
 				case var _ when property == IsSeekBarVisibleProperty:
-					BindVisibility(_timelineContainer, IsSeekBarVisible, property);
+					BindVisibility(_timelineContainer, IsSeekBarVisible);
 					break;
 				case var _ when property == IsSeekEnabledProperty:
 					BindIsEnabled(_timelineContainer, IsSeekEnabled);
 					break;
 				case var _ when property == IsSkipForwardButtonVisibleProperty:
-					BindVisibility(m_tpSkipForwardButton, IsSkipForwardButtonVisible, property);
+					BindVisibility(m_tpSkipForwardButton, IsSkipForwardButtonVisible);
 					break;
 				case var _ when property == IsSkipForwardEnabledProperty:
 					BindIsEnabled(m_tpSkipForwardButton, IsSkipForwardEnabled);
 					break;
 				case var _ when property == IsSkipBackwardButtonVisibleProperty:
-					BindVisibility(m_tpSkipBackwardButton, IsSkipBackwardButtonVisible, property);
+					BindVisibility(m_tpSkipBackwardButton, IsSkipBackwardButtonVisible);
 					break;
 				case var _ when property == IsSkipBackwardEnabledProperty:
 					BindIsEnabled(m_tpSkipBackwardButton, IsSkipBackwardEnabled);
 					break;
 				case var _ when property == IsNextTrackButtonVisibleProperty:
-					BindVisibility(m_tpNextTrackButton, IsNextTrackButtonVisible, property);
+					BindVisibility(m_tpNextTrackButton, IsNextTrackButtonVisible);
 					break;
 				case var _ when property == IsPreviousTrackButtonVisibleProperty:
-					BindVisibility(m_tpPreviousTrackButton, IsPreviousTrackButtonVisible, property);
+					BindVisibility(m_tpPreviousTrackButton, IsPreviousTrackButtonVisible);
 					break;
 				case var _ when property == IsCompactOverlayButtonVisibleProperty:
-					BindVisibility(m_tpCompactOverlayButton, IsCompactOverlayButtonVisible, property);
+					BindVisibility(m_tpCompactOverlayButton, IsCompactOverlayButtonVisible);
 					break;
 				case var _ when property == IsCompactOverlayEnabledProperty:
 					BindIsEnabled(m_tpCompactOverlayButton, IsCompactOverlayEnabled);
 					break;
 			}
 
-			void BindVisibility(FrameworkElement? target, bool value, DependencyProperty property)
+			void BindVisibility(FrameworkElement? target, bool value)
 			{
 				if (target is { })
 				{
-					if (!IsImplemented(typeof(MediaTransportControls), property.Name))
-					{
-						target.Visibility = Visibility.Collapsed;
-						return;
-					}
 					target.Visibility = value ? Visibility.Visible : Visibility.Collapsed;
 				}
 			}
