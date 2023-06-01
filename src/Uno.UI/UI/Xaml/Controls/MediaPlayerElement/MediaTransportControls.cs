@@ -1107,7 +1107,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private bool IsImplemented(Type Type, string Property)
+		private bool IsImplemented(Type type, string property)
 		{
 			return ApiInformation.IsPropertyPresent(Type.Namespace + "." + Type.Name, Property);
 		}
