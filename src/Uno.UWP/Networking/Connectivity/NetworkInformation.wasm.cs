@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using Uno;
 
 #if NET7_0_OR_GREATER
+using System.Runtime.InteropServices.JavaScript;
+
 using NativeMethods = __Windows.Networking.Connectivity.NetworkInformation.NativeMethods;
 #endif
 
@@ -38,6 +40,9 @@ namespace Windows.Networking.Connectivity
 #endif
 		}
 
+#if NET7_0_OR_GREATER
+		[JSExport]
+#endif
 		public static int DispatchStatusChanged()
 		{
 			OnNetworkStatusChanged();
