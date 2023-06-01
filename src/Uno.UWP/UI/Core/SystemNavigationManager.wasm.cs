@@ -5,6 +5,8 @@ using Uno;
 using Uno.Foundation;
 
 #if NET7_0_OR_GREATER
+using System.Runtime.InteropServices.JavaScript;
+
 using NativeMethods = __Windows.UI.Core.SystemNavigationManager.NativeMethods;
 #endif
 
@@ -36,6 +38,9 @@ namespace Windows.UI.Core
 		}
 
 		[Preserve]
+#if NET7_0_OR_GREATER
+		[JSExport]
+#endif
 		public static bool DispatchBackRequest() => GetForCurrentView().RequestBack();
 	}
 }
