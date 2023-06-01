@@ -14,6 +14,7 @@ using Uno.Disposables;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using Uno.Extensions;
+using Windows.Foundation.Metadata;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
@@ -1108,24 +1109,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private bool IsImplemented(Type Type, string Property)
 		{
-			var propertyInfo = Type.GetProperty(Property);
-			var methodInfo = propertyInfo?.GetGetMethod();
-			if (methodInfo != null && methodInfo != default)
-			{
-				MethodBody? methodBody = methodInfo?.GetMethodBody();
-				byte[]? ilBytes = methodBody?.GetILAsByteArray();
-				if (ilBytes != null)
-				{
-					for (int i = 0; i <= ilBytes.Length - 1; i++)
-					{
-						if (ilBytes[i] == OpCodes.Throw.Value)
-						{
-							return false;
-						}
-					}
-				}
-			}
-			return true;
+			return ApiInformation.IsPropertyPresent(Type.Namespace + "." + Type.Name, Property);
 		}
 
 		// visual states
