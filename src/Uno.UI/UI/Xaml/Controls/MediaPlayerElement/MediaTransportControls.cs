@@ -1104,7 +1104,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private bool IsImplemented(Type type, string property)
 		{
-			return ApiInformation.IsPropertyPresent(type.FullName, property);
+			return ApiInformation.IsPropertyPresent(type.FullName + "", property);
 		}
 
 		// visual states
