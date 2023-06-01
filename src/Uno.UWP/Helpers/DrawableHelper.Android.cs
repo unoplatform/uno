@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 using Android.Graphics.Drawables;
 using AndroidX.Core.Content;
 using AndroidX.Core.Graphics.Drawable;
@@ -87,6 +87,11 @@ namespace Uno.Helpers
 		/// <returns><seealso cref="Drawable"/> for the URI provided or null otherwise</returns>
 		public static Drawable? FromUri(Uri uri)
 		{
+			if (uri?.PathAndQuery is null)
+			{
+				return null;
+			}
+
 			var id = FindResourceIdFromPath(uri.PathAndQuery.TrimStart(new[] { '/' }));
 			var drawable = id.HasValue
 				? ContextCompat.GetDrawable(ContextHelper.Current, id.Value)
@@ -109,11 +114,16 @@ namespace Uno.Helpers
 
 		private static void InitializeDrawablesLookup()
 		{
+			if (_drawables is null)
+			{
+				return;
+			}
+
 			_drawablesLookup = _drawables
-				?.GetFields(BindingFlags.Static | BindingFlags.Public)
+				.GetFields(BindingFlags.Static | BindingFlags.Public)
 				.ToDictionary(
 					p => p.Name,
-					p => (int)p.GetValue(null)
+					p => (p.GetValue(null) as int?) ?? 0
 				);
 		}
 	}
