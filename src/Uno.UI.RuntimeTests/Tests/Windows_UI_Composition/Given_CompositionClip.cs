@@ -319,6 +319,7 @@ internal class Given_CompositionClip
 
 	private async Task<(RawBitmap actual, RawBitmap expected)> Render(FrameworkElement sut, FrameworkElement expected)
 	{
+#if DEBUG
 		await UITestHelper.Load(new Grid
 		{
 			ColumnDefinitions =
@@ -334,6 +335,16 @@ internal class Given_CompositionClip
 		});
 
 		return (await UITestHelper.ScreenShot(sut), await UITestHelper.ScreenShot(expected));
+#else
+		await UITestHelper.Load(expected);
+		var expectedImg = await UITestHelper.ScreenShot(expected);
+
+		// We render the sut in second so the final screenshot is the one of the sut
+		await UITestHelper.Load(sut);
+		var actual = await UITestHelper.ScreenShot(sut);
+
+		return (actual, expectedImg);
+#endif
 	}
 #endif
 }

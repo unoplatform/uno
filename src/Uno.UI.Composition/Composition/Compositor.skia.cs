@@ -38,40 +38,7 @@ public partial class Compositor
 
 	internal void RenderVisual(SKSurface surface, Visual visual)
 	{
-		if (visual is { Opacity: 0 } or { IsVisible: false })
-		{
-			return;
-		}
-
-		if (visual.ShadowState is { } shadow)
-		{
-			surface.Canvas.SaveLayer(shadow.Paint);
-		}
-		else
-		{
-			surface.Canvas.Save();
-		}
-
-		// Set the position of the visual on the canvas (i.e. change coordinates system to the "XAML element" one)
-		surface.Canvas.Translate(visual.Offset.X + visual.AnchorPoint.X, visual.Offset.Y + visual.AnchorPoint.Y);
-
-		// Applied rending transformation matrix (i.e. change coordinates system to the "rendering" one)
-		if (visual.GetTransform() is { IsIdentity: false } transform)
-		{
-			var skTransform = transform.ToSKMatrix();
-			surface.Canvas.Concat(ref skTransform);
-		}
-
-		// Apply the clipping defined on the element
-		// (Only the Clip property, clipping applied by parent for layout constraints reason it's managed by the ShapeVisual through the ViewBox)
-		// Note: The Clip is applied after the transformation matrix, so it's also transformed.
-		visual.Clip?.Apply(surface);
-
-		using var filter = PushFilter(visual.Opacity);
-
 		visual.Render(surface);
-
-		surface.Canvas.Restore();
 	}
 
 
@@ -85,7 +52,7 @@ public partial class Compositor
 		}
 	}
 
-	private FilterDisposable PushFilter(float opacity)
+	internal FilterDisposable PushFilter(float opacity)
 	{
 		if (opacity is 1.0f)
 		{
@@ -123,7 +90,7 @@ public partial class Compositor
 			: _opacityColorFilter ??= SKColorFilter.CreateBlendMode(new SKColor(0xFF, 0xFF, 0xFF, (byte)(255 * Opacity)), SKBlendMode.Modulate);
 	}
 
-	private readonly record struct FilterDisposable(Compositor Compositor) : IDisposable
+	internal readonly record struct FilterDisposable(Compositor Compositor) : IDisposable
 	{
 		public void Dispose()
 		{

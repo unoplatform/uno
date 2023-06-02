@@ -26,7 +26,7 @@ namespace Windows.UI.Composition
 			_owner = owner;
 		}
 
-		internal override void Render(SKSurface surface)
+		private protected override void Draw(SKSurface surface)
 		{
 			_owner.Inlines.Render(surface, Compositor);
 		}

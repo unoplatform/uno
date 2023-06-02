@@ -22,11 +22,9 @@ namespace Windows.UI.Composition
 			Brush?.UpdatePaint(_paint, new SKRect(left: 0, top: 0, right: Size.X, bottom: Size.Y));
 		}
 
-		internal override void Render(SKSurface surface)
+		private protected override void Draw(SKSurface surface)
 		{
-			base.Render(surface);
-
-			surface.Canvas.Save();
+			base.Draw(surface);
 
 			_paint.ColorFilter = Compositor.CurrentFilter.OpacityColorFilter;
 
@@ -34,8 +32,6 @@ namespace Windows.UI.Composition
 				new SKRect(left: 0, top: 0, right: Size.X, bottom: Size.Y),
 				_paint
 			);
-
-			surface.Canvas.Restore();
 		}
 	}
 }

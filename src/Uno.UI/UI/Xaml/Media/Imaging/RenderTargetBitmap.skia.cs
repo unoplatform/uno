@@ -53,7 +53,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 			//Ensure Clear
 			var canvas = surface.Canvas;
 			canvas.Clear(SKColors.Transparent);
-			visual.Render(surface);
+			visual.RenderAtOrigin(surface);
 
 			var img = surface.Snapshot();
 
