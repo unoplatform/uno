@@ -21,8 +21,6 @@ using Microsoft.UI.Input;
 using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
 #else
 using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
-using System.Reflection.Emit;
-using System.Reflection;
 #endif
 
 
@@ -901,7 +899,7 @@ namespace Windows.UI.Xaml.Controls
 				return;
 			}
 
-			_mpe.MediaPlayer.IsLoopingEnabled = !_mpe.MediaPlayer.IsLoopingEnabled;
+			_mpe.MediaPlayer.IsLoopingEnabled = !IsMediaPlayerLoopingEnabled;
 			UpdateRepeatStates();
 		}
 		private void PreviousTrackButtonTapped(object sender, RoutedEventArgs e)
@@ -1216,6 +1214,7 @@ namespace Windows.UI.Xaml.Controls
 				: UIAKeys.UIA_MEDIA_MUTE;
 			SetAutomationNameAndTooltip(m_tpMuteButton, uiaKey);
 		}
+
 		private void UpdateFullWindowStates(bool useTransition = true)
 		{
 			if (_mpe is not null)
@@ -1231,6 +1230,11 @@ namespace Windows.UI.Xaml.Controls
 				SetAutomationNameAndTooltip(m_tpFullWindowButton, uiaKey);
 			}
 		}
+
+		private bool IsMediaPlayerLoopingEnabled =>
+			ApiInformation.IsPropertyPresent(typeof(MediaPlayer).FullName!, nameof(MediaPlayer.IsLoopingEnabled))
+					&& (_mpe?.MediaPlayer.IsLoopingEnabled ?? false);
+
 		private void UpdateRepeatStates(bool useTransition = true)
 		{
 			if (_mpe?.MediaPlayer is null)
@@ -1238,12 +1242,12 @@ namespace Windows.UI.Xaml.Controls
 				return;
 			}
 
-			var state = _mpe.MediaPlayer.IsLoopingEnabled
+			var state = IsMediaPlayerLoopingEnabled
 				? VisualState.RepeatStates.RepeatAllState
 				: VisualState.RepeatStates.RepeatNoneState;
 			VisualStateManager.GoToState(this, state, useTransition);
 
-			var uiaKey = _mpe.MediaPlayer.IsLoopingEnabled
+			var uiaKey = IsMediaPlayerLoopingEnabled
 				? UIAKeys.UIA_MEDIA_REPEAT_ALL
 				: UIAKeys.UIA_MEDIA_REPEAT_NONE;
 			SetAutomationNameAndTooltip(m_tpRepeatButton, uiaKey);
