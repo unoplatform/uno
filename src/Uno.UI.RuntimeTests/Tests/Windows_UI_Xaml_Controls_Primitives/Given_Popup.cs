@@ -108,7 +108,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 
 			Assert.AreEqual(1, VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).Count);
 
-			VisualTreeHelper.CloseAllPopups(WindowHelper.XamlRoot);
+			popup.IsOpen = false;
 		}
 
 		private static bool CanReach(DependencyObject startingElement, DependencyObject targetElement)
