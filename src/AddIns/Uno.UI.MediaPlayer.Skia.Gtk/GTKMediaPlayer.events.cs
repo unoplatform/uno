@@ -327,6 +327,7 @@ public partial class GtkMediaPlayer
 			media.Parse(MediaParseOptions.ParseNetwork);
 			_mediaPlayer.Media = media;
 			AddMediaEvents();
+			Duration = (double)(_videoView?.MediaPlayer?.Media?.Duration / 1000 ?? 0);
 			OnSourceLoaded?.Invoke(this, EventArgs.Empty);
 
 			UpdateVideoStretch();
@@ -431,11 +432,6 @@ public partial class GtkMediaPlayer
 			media.MetaChanged += OnStaticMetaChanged;
 			media.StateChanged += OnStaticStateChanged;
 			media.ParsedChanged += OnStaticParsedChanged;
-
-			Duration = (double)(_videoView?.MediaPlayer?.Media?.Duration / 1000 ?? 0);
-			OnSourceLoaded?.Invoke(this, EventArgs.Empty);
-
-			UpdateVideoStretch();
 		}
 		else
 		{
@@ -585,11 +581,6 @@ public partial class GtkMediaPlayer
 
 			UpdateVideoStretch(forceVideoViewVisibility: true);
 		}
-	}
-
-	private void OnMediaPlayerTimeChangeIsMediaParse(object? sender, MediaPlayerTimeChangedEventArgs el)
-	{
-		AddMediaEvents();
 	}
 
 	private void OnEndReached()

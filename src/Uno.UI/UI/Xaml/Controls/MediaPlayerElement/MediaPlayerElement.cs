@@ -249,7 +249,11 @@ namespace Windows.UI.Xaml.Controls
 		{
 			_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 			{
-				TogglePosterImage(false);
+				// Always show the poster source for audio content.
+				if (session.IsVideo)
+				{
+					TogglePosterImage(false);
+				}
 			});
 		}
 
@@ -326,11 +330,15 @@ namespace Windows.UI.Xaml.Controls
 					&& AutoPlay)
 				{
 					MediaPlayer.Play();
-					TogglePosterImage(false);
 				}
 			}
 		}
 
+		// The PosterSource is displayed in the following situations:
+		//  - When a valid source is not set.For example, Source is not set, Source was set to Null, or the source is invalid (as is the case when a MediaFailed event fires).
+		//  - While media is loading. For example, a valid source is set, but the MediaOpened event has not fired yet.
+		//  - When media is streaming to another device.
+		//  - When the media is audio only.
 		private void TogglePosterImage(bool showPoster)
 		{
 			if (PosterSource != null)
@@ -365,10 +373,8 @@ namespace Windows.UI.Xaml.Controls
 				_mediaPlayerPresenter?.ApplyStretch();
 			}
 
-			if (!IsLoaded && MediaPlayer.PlaybackSession.PlaybackState == MediaPlaybackState.None)
-			{
-				TogglePosterImage(true);
-			}
+			// For video content, show the poster source until it is ready to be displayed.
+			TogglePosterImage(true);
 
 			if (!_isTransportControlsBound)
 			{

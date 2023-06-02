@@ -147,6 +147,8 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 	public bool CanSeek
 		=> true;
 
+	public bool? IsVideo { get; set; }
+
 	public MediaPlayerAudioDeviceType AudioDeviceType { get; set; }
 
 	public MediaPlayerAudioCategory AudioCategory { get; set; }
@@ -301,7 +303,6 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 			}
 
 			ApplyVideoSource();
-			Events?.RaiseMediaOpened();
 			Events?.RaiseSourceChanged();
 		}
 		catch (global::System.Exception ex)
@@ -480,6 +481,8 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 
 			NaturalDuration = TimeSpan.FromSeconds(_player.Duration);
 
+			IsVideo = _player.IsVideo;
+
 			if (mp.IsVideo && Events is not null)
 			{
 				try
@@ -508,6 +511,11 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 			}
 
 			_isPlayerPrepared = true;
+		}
+
+		if (Events is not null)
+		{
+			Events?.RaiseMediaOpened();
 		}
 	}
 

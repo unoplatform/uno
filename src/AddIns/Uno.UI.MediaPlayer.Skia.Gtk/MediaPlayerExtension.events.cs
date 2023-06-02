@@ -37,6 +37,8 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 		{
 			if (_player is not null)
 			{
+				IsVideo = _player.IsVideo;
+
 				if (mp.IsVideo && Events is not null)
 				{
 					Events?.RaiseVideoRatioChanged(global::System.Math.Max(1, (double)mp.VideoRatio));
@@ -65,6 +67,11 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 					this.Log().Error($"The media player is not available yet");
 				}
 			}
+		}
+
+		if (Events is not null)
+		{
+			Events?.RaiseMediaOpened();
 		}
 	}
 

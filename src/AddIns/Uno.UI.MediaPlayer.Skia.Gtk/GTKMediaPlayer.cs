@@ -33,8 +33,6 @@ public partial class GtkMediaPlayer : FrameworkElement
 	private double _playbackRate;
 	private Rect _transportControlsBounds;
 	private Windows.UI.Xaml.Media.Stretch _stretch = Windows.UI.Xaml.Media.Stretch.Uniform;
-	private readonly ImmutableArray<string> audioTagAllowedFormats = ImmutableArray.Create(".MP3", ".WAV");
-	private readonly ImmutableArray<string> videoTagAllowedFormats = ImmutableArray.Create(".MP4", ".WEBM", ".OGG");
 	private readonly MediaPlayerPresenter _owner;
 
 	public GtkMediaPlayer(MediaPlayerPresenter owner)
@@ -77,10 +75,10 @@ public partial class GtkMediaPlayer : FrameworkElement
 	public double VideoRatio { get; set; }
 
 	public bool IsVideo
-		=> videoTagAllowedFormats.Contains(Path.GetExtension(Source), StringComparer.OrdinalIgnoreCase);
+		=> _mediaPlayer?.Media?.Tracks?.Any(x => x.TrackType == TrackType.Video) == true;
 
 	public bool IsAudio
-		=> audioTagAllowedFormats.Contains(Path.GetExtension(Source), StringComparer.OrdinalIgnoreCase);
+		=> _mediaPlayer?.Media?.Tracks?.Any(x => x.TrackType == TrackType.Video) == true;
 
 	public void Play()
 	{

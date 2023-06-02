@@ -155,8 +155,6 @@ namespace Windows.Media.Playback
 				SetVideoSource(uri);
 
 				_player.PrepareAsync();
-
-				MediaOpened?.Invoke(this, null);
 			}
 			catch (global::System.Exception ex)
 			{
@@ -270,13 +268,17 @@ namespace Windows.Media.Playback
 
 		public void OnPrepared(AndroidMediaPlayer mp)
 		{
-			PlaybackSession.NaturalDuration = TimeSpan.FromMilliseconds(_player.Duration);
-
-			VideoRatioChanged?.Invoke(this, (double)mp.VideoWidth / global::System.Math.Max(mp.VideoHeight, 1));
-
-			if (PlaybackSession.PlaybackState == MediaPlaybackState.Opening)
+			if (mp is not null)
 			{
-				UpdateVideoStretch(_currentStretch);
+				PlaybackSession.NaturalDuration = TimeSpan.FromMilliseconds(_player.Duration);
+
+				VideoRatioChanged?.Invoke(this, (double)mp.VideoWidth / global::System.Math.Max(mp.VideoHeight, 1));
+
+				IsVideo = mp.GetTrackInfo()?.Any(x => x.TrackType == MediaTrackType.Video) == true;
+
+				if (PlaybackSession.PlaybackState == MediaPlaybackState.Opening)
+				{
+					UpdateVideoStretch(_currentStretch);
 
 				if (_isPlayRequested)
 				{
@@ -293,7 +295,10 @@ namespace Windows.Media.Playback
 				}
 			}
 
-			_isPlayerPrepared = true;
+				_isPlayerPrepared = true;
+
+				MediaOpened?.Invoke(this, null);
+			}
 		}
 
 		public bool OnError(AndroidMediaPlayer mp, MediaError what, int extra)
@@ -382,6 +387,8 @@ namespace Windows.Media.Playback
 				}
 			}
 		}
+
+		public bool IsVideo { get; set; }
 
 		internal void UpdateVideoStretch(VideoStretch stretch)
 		{
