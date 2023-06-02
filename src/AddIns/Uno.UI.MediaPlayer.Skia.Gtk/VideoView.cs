@@ -88,15 +88,25 @@ namespace Uno.UI.Media
 			{
 				if (_videoWindow?.TransientFor is not null)
 				{
-					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+					if (_lastArrange is { Width: > 1, Height: > 1 })
 					{
-						this.Log().Debug($"{GetHashCode():X8} Showing video window");
-					}
+						if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+						{
+							this.Log().Debug($"{GetHashCode():X8} Showing video window");
+						}
 
-					// Only show the child window if there's a parent set. If not, the window will
-					// appear floating outside the app.
-					_videoWindow.Show();
-					ApplyLastArrange();
+						// Only show the child window if there's a parent set. If not, the window will
+						// appear floating outside the app.
+						_videoWindow.Show();
+						ApplyLastArrange();
+					}
+					else
+					{
+						if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+						{
+							this.Log().Debug($"{GetHashCode():X8} Skipping show video window, the parent widget is not arranged");
+						}
+					}
 				}
 				else
 				{
@@ -138,7 +148,6 @@ namespace Uno.UI.Media
 
 				DestroyChildWindow();
 				_mediaPlayer = value;
-				CreateChildWindow();
 			}
 		}
 
@@ -171,7 +180,7 @@ namespace Uno.UI.Media
 
 			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 			{
-				this.Log().Debug($"{GetHashCode():X8} Attaching player");
+				this.Log().Debug($"{GetHashCode():X8} Creating Child Window");
 			}
 
 			//
@@ -198,15 +207,14 @@ namespace Uno.UI.Media
 			// Make the video window black (as we're will not be rendering it)
 			_videoWindow.AppPaintable = true;
 
-			// Show the window once, so that we can get an ID for it.
-			_videoWindow.Show();
-
-			// Hide it immediately so it does not show outside of our own window
-			_videoWindow.Hide();
+			// Realize the window, so that we can get an ID for it to provide to VLC
+			// It is important to create the window without showing it first, otherwise
+			// the window will be rendered on top of the app, and will not be able to
+			// be moved or resized, or may not be rendered at the right position in the current
+			// widget's window.
+			_videoWindow.Realize();
 
 			AssignWindowId();
-
-			AttachToWidget();
 		}
 
 		internal static void ReportMacOSNotSupported()
@@ -219,9 +227,16 @@ namespace Uno.UI.Media
 
 		private void AttachToWidget()
 		{
-			if (IsRealized && _videoWindow is not null)
+			if (IsRealized)
 			{
-				// Reparent the window to the current window, so it appears inside, positition outside the bounds of the window
+				CreateChildWindow();
+
+				if (_videoWindow is null)
+				{
+					throw new InvalidOperationException($"_videoWindow cannot be null");
+				}
+
+				// Reparent the window to the current window, so it appears inside, positioned outside the bounds of the window
 				// to avoid a temporary visual glitch
 				_videoWindow.Window.Reparent(Toplevel.Window, Allocation.X, Allocation.Y);
 
@@ -265,6 +280,26 @@ namespace Uno.UI.Media
 					}
 				}
 
+			}
+		}
+
+		protected override void OnSizeAllocated(Rectangle allocation)
+		{
+			base.OnSizeAllocated(allocation);
+
+			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			{
+				this.Log().Debug($"{GetHashCode():X8} OnSizeAllocated({allocation.Width}x{allocation.Height})");
+			}
+
+			if (_lastArrange is null && allocation is { Width: > 1, Height: > 1 })
+			{
+				// Store the first valid allocation to avoid the
+				// child window to show at a wrong initial position.
+
+				_lastArrange = allocation;
+
+				ApplyLastArrange();
 			}
 		}
 
