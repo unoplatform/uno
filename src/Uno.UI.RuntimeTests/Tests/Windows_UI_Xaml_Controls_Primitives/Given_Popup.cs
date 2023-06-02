@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives.PopupPages;
 using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Media;
 using static Private.Infrastructure.TestServices;
@@ -75,6 +72,36 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 			popup.IsOpen = true;
 			// Should not throw
 			popup.IsOpen = false;
+		}
+
+		[TestMethod]
+		public async Task When_Removed_From_Visualree_Immediately()
+		{
+			var stackPanel = new StackPanel();
+			var popup = new Popup()
+			{
+				Child = new Button() { Content = "Test" }
+			};
+			stackPanel.Children.Add(popup);
+			WindowHelper.WindowContent = stackPanel;
+			await WindowHelper.WaitForLoaded(stackPanel);
+
+			Assert.IsFalse(popup.IsOpen);
+
+			popup.IsOpen = true;
+
+			Assert.AreEqual(1, VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).Count);
+
+			stackPanel.Children.Remove(popup);
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsFalse(popup.IsOpen);
+			Assert.AreEqual(0, VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).Count);
+
+			popup.IsOpen = true;
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(1, VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).Count);
 		}
 
 		private static bool CanReach(DependencyObject startingElement, DependencyObject targetElement)
