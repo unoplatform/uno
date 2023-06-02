@@ -11,8 +11,8 @@ using Uno.UI.XamlHost.Skia.Wpf;
 using Windows.UI.Core.Preview;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Input;
-using UnoApplication = Windows.UI.Xaml.Application;
 using WinUI = Windows.UI.Xaml;
+using WinUIApplication = Windows.UI.Xaml.Application;
 using WpfApplication = System.Windows.Application;
 
 namespace Uno.UI.Skia;
@@ -21,44 +21,23 @@ namespace Uno.UI.Skia;
 public class WpfHost : IWpfApplicationHost
 {
 	private readonly Dispatcher _dispatcher;
-	private readonly Func<UnoApplication> _appBuilder;
+	private readonly Func<WinUIApplication> _appBuilder;
 
 	[ThreadStatic] private static WpfHost? _current;
 
 	private bool _ignorePixelScaling;
 	private bool _isVisible = true;
 
-	static WpfHost()
-	{
-		WpfExtensionsRegistrar.Register();
-	}
+	static WpfHost() => WpfExtensionsRegistrar.Register();
 
-	public WpfHost(global::System.Windows.Threading.Dispatcher dispatcher, Func<WinUI.Application> appBuilder)
+	public WpfHost(Dispatcher dispatcher, Func<WinUIApplication> appBuilder)
 	{
 		_current = this;
 		_dispatcher = dispatcher;
 		_appBuilder = appBuilder;
 	}
 
-	public static WpfHost? Current => _current;
-
-	public void Run()
-	{
-		Windows.UI.Core.CoreDispatcher.DispatchOverride = d => _dispatcher.BeginInvoke(d);
-		Windows.UI.Core.CoreDispatcher.HasThreadAccessOverride = _dispatcher.CheckAccess;
-
-		WpfApplication.Current.Activated += Current_Activated;
-		WpfApplication.Current.Deactivated += Current_Deactivated;
-
-		// App needs to be created after the native overlay layer is properly initialized
-		// otherwise the initially focused input element would cause exception.
-		// TODO:MZ: Verify this is not broken after the changes
-		StartApp();
-		WpfApplication.Current.MainWindow = new UnoWpfWindow(WinUI.Window.Current);
-
-		WpfApplication.Current.MainWindow.StateChanged += MainWindow_StateChanged;
-		WpfApplication.Current.MainWindow.Closing += MainWindow_Closing;
-	}
+	internal static WpfHost? Current => _current;
 
 	/// <summary>
 	/// Gets or sets the current Skia Render surface type.
@@ -66,7 +45,42 @@ public class WpfHost : IWpfApplicationHost
 	/// <remarks>If <c>null</c>, the host will try to determine the most compatible mode.</remarks>
 	public RenderSurfaceType? RenderSurfaceType { get; set; }
 
-	bool IWpfApplicationHost.IgnorePixelScaling => throw new NotImplementedException();
+	public bool IgnorePixelScaling
+	{
+		get => _ignorePixelScaling;
+		set
+		{
+			_ignorePixelScaling = value;
+			// TODO:MZ: InvalidateVisual();
+		}
+	}
+
+	public void Run()
+	{
+		InitializeDispatcher();
+
+		// App needs to be created after the native overlay layer is properly initialized
+		// otherwise the initially focused input element would cause exception.
+		// TODO:MZ: Verify this is not broken after the changes
+		StartApp();
+
+		SetupMainWindow();
+	}
+
+	private void InitializeDispatcher()
+	{
+		Windows.UI.Core.CoreDispatcher.DispatchOverride = d => _dispatcher.BeginInvoke(d);
+		Windows.UI.Core.CoreDispatcher.HasThreadAccessOverride = _dispatcher.CheckAccess;
+	}
+
+	private void SetupMainWindow()
+	{
+		WpfApplication.Current.MainWindow = new UnoWpfWindow(WinUI.Window.Current);
+		WpfApplication.Current.MainWindow.Activated += MainWindow_Activated;
+		WpfApplication.Current.MainWindow.Deactivated += MainWindow_Deactivated;
+		WpfApplication.Current.MainWindow.StateChanged += MainWindow_StateChanged;
+		WpfApplication.Current.MainWindow.Closing += MainWindow_Closing;
+	}
 
 	private void MainWindow_Closing(object? sender, CancelEventArgs e)
 	{
@@ -81,7 +95,7 @@ public class WpfHost : IWpfApplicationHost
 		}
 
 		// Closing should continue, perform suspension.
-		UnoApplication.Current.RaiseSuspending();
+		WinUIApplication.Current.RaiseSuspending();
 	}
 
 	private void StartApp()
@@ -92,7 +106,7 @@ public class WpfHost : IWpfApplicationHost
 			app.Host = this;
 		}
 
-		WinUI.Application.StartWithArguments(CreateApp);
+		WinUIApplication.StartWithArguments(CreateApp);
 	}
 
 	private void MainWindow_StateChanged(object? sender, EventArgs e)
@@ -115,25 +129,15 @@ public class WpfHost : IWpfApplicationHost
 		}
 	}
 
-	private void Current_Deactivated(object? sender, EventArgs e)
+	private void MainWindow_Deactivated(object? sender, EventArgs e)
 	{
 		var winUIWindow = WinUI.Window.Current;
 		winUIWindow?.RaiseActivated(Windows.UI.Core.CoreWindowActivationState.Deactivated);
 	}
 
-	private void Current_Activated(object? sender, EventArgs e)
+	private void MainWindow_Activated(object? sender, EventArgs e)
 	{
 		var winUIWindow = WinUI.Window.Current;
 		winUIWindow?.RaiseActivated(Windows.UI.Core.CoreWindowActivationState.CodeActivated);
-	}
-
-	public bool IgnorePixelScaling
-	{
-		get => _ignorePixelScaling;
-		set
-		{
-			_ignorePixelScaling = value;
-			// TODO:MZ: InvalidateVisual();
-		}
 	}
 }

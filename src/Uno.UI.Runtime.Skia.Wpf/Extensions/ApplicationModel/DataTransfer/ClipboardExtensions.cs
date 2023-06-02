@@ -21,7 +21,7 @@ namespace Uno.Extensions.ApplicationModel.DataTransfer
 	{
 		const int WM_CLIPBOARDUPDATE = 0x031D;
 
-		private readonly WpfHost _host;
+		//private readonly WpfHost _host;
 		//private HwndSource _hwndSource;
 		//private bool _pendingStartContentChanged;
 
@@ -29,7 +29,7 @@ namespace Uno.Extensions.ApplicationModel.DataTransfer
 
 		public ClipboardExtensions(object owner)
 		{
-			_host = WpfHost.Current;
+			//_host = WpfHost.Current;
 
 			//// TODO:MZ: Multi-window support?
 			//// This class may be accessed before the Window is loaded

@@ -255,13 +255,6 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 			}
 		}
 
-
-		void IWpfApplicationHost.InvalidateRender()
-		{
-			//InvalidateOverlays();
-			InvalidateVisual();
-		}
-
 		private void OnChildLoading(FrameworkElement sender, object args)
 		{
 			// Ensure the XamlRoot is registered early.

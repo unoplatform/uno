@@ -26,18 +26,13 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 	/// <summary>
 	/// UnoXamlHost control hosts UWP XAML content inside the Windows Presentation Foundation
 	/// </summary>
-	partial class UnoXamlHostBase
+	partial class UnoXamlHostBase : IWpfXamlRootHost
 	{
 		private bool _designMode;
 		private bool _ignorePixelScaling;
 		private WpfCanvas _nativeOverlayLayer;
 		private IWpfRenderer _renderer;
 		private Windows.UI.Xaml.UIElement? _rootElement;
-
-		public bool IsIsland => true;
-
-		public Windows.UI.Xaml.UIElement? RootElement =>
-			_rootElement ??= _xamlSource?.GetVisualTreeRoot();
 
 		/// <summary>
 		/// Gets or sets the current Skia Render surface type.
@@ -57,7 +52,7 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 
 		private void InitializeHost()
 		{
-			WpfExtensionsRegistrar.RegisterExtensions();
+			WpfExtensionsRegistrar.Register();
 
 			_designMode = DesignerProperties.GetIsInDesignMode(this);
 
@@ -105,8 +100,24 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 			_renderer?.Render(drawingContext);
 		}
 
-		WinUI.XamlRoot? IWpfApplicationHost.XamlRoot => ChildInternal?.XamlRoot;
+		void IWpfXamlRootHost.ReleasePointerCapture() => ReleaseMouseCapture(); //TODO: This should capture the correct type of pointer (stylus/mouse/touch) https://github.com/unoplatform/uno/issues/8978[capture]
 
-		System.Windows.Controls.Canvas? IWpfApplicationHost.NativeOverlayLayer => _nativeOverlayLayer;
+		void IWpfXamlRootHost.SetPointerCapture() => CaptureMouse();
+
+		void IWpfXamlRootHost.InvalidateRender()
+		{
+			//InvalidateOverlays();
+			InvalidateVisual();
+		}
+
+		bool IWpfXamlRootHost.IsIsland => true;
+
+		WinUI.UIElement? IWpfXamlRootHost.RootElement => _rootElement ??= _xamlSource?.GetVisualTreeRoot();
+
+		WpfCanvas? IWpfXamlRootHost.NativeOverlayLayer => _nativeOverlayLayer;
+
+		WinUI.XamlRoot? IWpfXamlRootHost.XamlRoot => ChildInternal?.XamlRoot;
+
+		bool IWpfXamlRootHost.IgnorePixelScaling => throw new NotImplementedException();
 	}
 }

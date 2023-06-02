@@ -1,26 +1,13 @@
 ﻿#nullable enable
 
-using Uno;
-using Windows.UI.Xaml;
+using Uno.UI.Xaml.Hosting;
 using WpfCanvas = System.Windows.Controls.Canvas;
 
 namespace Uno.UI.Runtime.Skia.Wpf.Hosting;
 
-internal interface IWpfXamlRootHost
+internal interface IWpfXamlRootHost : IXamlRootHost
 {
-	bool IsIsland { get; }
-
-	UIElement? RootElement { get; }
-
 	WpfCanvas? NativeOverlayLayer { get; }
 
-	XamlRoot? XamlRoot { get; }
-
 	bool IgnorePixelScaling { get; }
-
-	void InvalidateRender();
-
-	void ReleasePointerCapture();
-
-	void SetPointerCapture();
 }
