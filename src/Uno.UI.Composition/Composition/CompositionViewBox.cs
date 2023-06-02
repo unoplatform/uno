@@ -25,7 +25,7 @@ public partial class CompositionViewBox : CompositionObject
 	public CompositionStretch Stretch
 	{
 		get => _stretch;
-		set => SetProperty(ref _stretch, value);
+		set => SetEnumProperty(ref _stretch, value);
 	}
 
 	public Vector2 Size

@@ -8,27 +8,22 @@ namespace Windows.UI.Composition
 {
 	public partial class Visual : global::Windows.UI.Composition.CompositionObject
 	{
-		internal virtual void Render(SKSurface surface)
-		{
-
-		}
+		private CompositionClip? _clip;
+		private Vector2 _anchorPoint = Vector2.Zero; // Backing for scroll offsets
+		private int _zIndex;
 
 		public CompositionClip? Clip
 		{
-			get;
-			set;
+			get => _clip; 
+			set => SetProperty(ref _clip, value);
 		}
-
-		// Backing for scroll offsets
-		private Vector2 _anchorPoint = Vector2.Zero;
-		private int _zIndex;
 
 		public Vector2 AnchorPoint
 		{
 			get => _anchorPoint;
 			set
 			{
-				_anchorPoint = value;
+				SetProperty(ref _anchorPoint, value);
 				Compositor.InvalidateRender();
 			}
 		}
@@ -40,7 +35,7 @@ namespace Windows.UI.Composition
 			{
 				if (_zIndex != value)
 				{
-					_zIndex = value;
+					SetProperty(ref _zIndex, value);
 					if (Parent is ContainerVisual containerVisual)
 					{
 						containerVisual.IsChildrenRenderOrderDirty = true;
@@ -50,5 +45,9 @@ namespace Windows.UI.Composition
 		}
 
 		internal ShadowState? ShadowState { get; set; }
+
+		internal virtual void Render(SKSurface surface)
+		{
+		}
 	}
 }

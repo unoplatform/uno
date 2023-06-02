@@ -50,7 +50,7 @@ namespace Windows.UI.Composition
 		public CompositionCompositeMode CompositeMode
 		{
 			get => _compositeMode;
-			set => SetProperty(ref _compositeMode, value);
+			set => SetEnumProperty(ref _compositeMode, value);
 		}
 
 		public Vector3 CenterPoint

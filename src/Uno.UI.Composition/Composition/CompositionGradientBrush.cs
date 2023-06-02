@@ -29,13 +29,13 @@ namespace Windows.UI.Composition
 		public CompositionGradientExtendMode ExtendMode
 		{
 			get => _extendMode;
-			set => SetProperty(ref _extendMode, value);
+			set => SetEnumProperty(ref _extendMode, value);
 		}
 
 		public CompositionMappingMode MappingMode
 		{
 			get => _mappingMode;
-			set => SetProperty(ref _mappingMode, value);
+			set => SetEnumProperty(ref _mappingMode, value);
 		}
 
 		public Matrix3x2 TransformMatrix

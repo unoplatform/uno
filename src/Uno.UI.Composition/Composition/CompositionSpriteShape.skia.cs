@@ -13,16 +13,16 @@ namespace Windows.UI.Composition
 		{
 			if (Geometry?.BuildGeometry() is SkiaGeometrySource2D { Geometry: { } geometry })
 			{
-				if (FillBrush is {} fill)
+				if (FillBrush is { } fill)
 				{
 					var fillPaint = TryCreateAndClearFillPaint();
-					
+
 					fill.UpdatePaint(fillPaint, geometry.Bounds);
 
 					surface.Canvas.DrawPath(geometry, fillPaint);
 				}
 
-				if (StrokeBrush is {} stroke && StrokeThickness > 0)
+				if (StrokeBrush is { } stroke && StrokeThickness > 0)
 				{
 					var fillPaint = TryCreateAndClearFillPaint();
 					var strokePaint = TryCreateAndClearStrokePaint();

@@ -39,13 +39,13 @@ namespace Windows.UI.Composition
 		public ICompositionSurface? Surface
 		{
 			get => _surface;
-			set => SetProperty(ref _surface, value);
+			set => SetObjectProperty(ref _surface, value);
 		}
 
 		public CompositionStretch Stretch
 		{
 			get => _stretch;
-			set => SetProperty(ref _stretch, value);
+			set => SetEnumProperty(ref _stretch, value);
 		}
 
 		public float HorizontalAlignmentRatio
@@ -57,7 +57,7 @@ namespace Windows.UI.Composition
 		public CompositionBitmapInterpolationMode BitmapInterpolationMode
 		{
 			get => _bitmapInterpolationMode;
-			set => SetProperty(ref _bitmapInterpolationMode, value);
+			set => SetEnumProperty(ref _bitmapInterpolationMode, value);
 		}
 
 		public Matrix3x2 TransformMatrix

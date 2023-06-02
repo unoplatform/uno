@@ -1,6 +1,8 @@
 #nullable enable
 
 using System;
+using System.Collections.Generic;
+using System.Numerics;
 using System.Runtime.CompilerServices;
 using Windows.Foundation.Metadata;
 using Windows.UI.Core;
@@ -55,8 +57,151 @@ namespace Windows.UI.Composition
 			_contextStore.RemoveContext(context, propertyName);
 		}
 
-		private protected void SetProperty<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
+		private protected void SetProperty(ref bool field, bool value, [CallerMemberName] string? propertyName = null)
 		{
+			if (field == value)
+			{
+				return;
+			}
+
+			field = value;
+
+			OnPropertyChanged(propertyName, false);
+		}
+
+		private protected void SetProperty(ref int field, int value, [CallerMemberName] string? propertyName = null)
+		{
+			if (field == value)
+			{
+				return;
+			}
+
+			field = value;
+
+			OnPropertyChanged(propertyName, false);
+		}
+
+		private protected void SetProperty(ref float field, float value, [CallerMemberName] string? propertyName = null)
+		{
+			if (field == value)
+			{
+				return;
+			}
+
+			field = value;
+
+			OnPropertyChanged(propertyName, false);
+		}
+
+		private protected void SetProperty(ref Matrix3x2 field, Matrix3x2 value, [CallerMemberName] string? propertyName = null)
+		{
+			if (field == value)
+			{
+				return;
+			}
+
+			field = value;
+
+			OnPropertyChanged(propertyName, false);
+		}
+
+		private protected void SetProperty(ref Matrix4x4 field, Matrix4x4 value, [CallerMemberName] string? propertyName = null)
+		{
+			if (field == value)
+			{
+				return;
+			}
+
+			field = value;
+
+			OnPropertyChanged(propertyName, false);
+		}
+
+		private protected void SetProperty(ref Vector2 field, Vector2 value, [CallerMemberName] string? propertyName = null)
+		{
+			if (field == value)
+			{
+				return;
+			}
+
+			field = value;
+
+			OnPropertyChanged(propertyName, false);
+		}
+		
+		private protected void SetProperty(ref Vector3 field, Vector3 value, [CallerMemberName] string? propertyName = null)
+		{
+			if (field == value)
+			{
+				return;
+			}
+
+			field = value;
+
+			OnPropertyChanged(propertyName, false);
+		}
+
+		private protected void SetProperty(ref Quaternion field, Quaternion value, [CallerMemberName] string? propertyName = null)
+		{
+			if (field == value)
+			{
+				return;
+			}
+
+			field = value;
+
+			OnPropertyChanged(propertyName, false);
+		}
+
+		private protected void SetProperty(ref Color field, Color value, [CallerMemberName] string? propertyName = null)
+		{
+			if (field == value)
+			{
+				return;
+			}
+
+			field = value;
+
+			OnPropertyChanged(propertyName, false);
+		}
+
+		private protected void SetEnumProperty<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
+			where T : Enum
+		{
+			if (EqualityComparer<T>.Default.Equals(field, value))
+			{
+				return;
+			}
+
+			field = value;
+
+			OnPropertyChanged(propertyName, false);
+		}
+
+		private protected void SetProperty<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
+			where T : CompositionObject?
+		{
+			if (field == value)
+			{
+				return;
+			}
+
+			OnCompositionPropertyChanged(field, value, propertyName);
+
+			field = value;
+
+			OnPropertyChanged(propertyName, false);
+		}
+
+		private protected void SetObjectProperty<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
+		{
+			if (field?.Equals(value) ?? value == null)
+			{
+				return;
+			}
+
+			// This check is here for backward compatibility
+			// Is this valid even for non-composition objects like interface?
 			var fieldCO = field as CompositionObject;
 			var valueCO = value as CompositionObject;
 			if (fieldCO != null || value != null)
