@@ -1,15 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Windows.UI.Xaml.Media;
-using Uno.Extensions;
-using System.Linq;
-using Uno.Disposables;
-using Uno.UI.Extensions;
-using Uno.UI;
+﻿#nullable enable
+
+using System;
 using Windows.UI.Composition;
 using Windows.Foundation;
-using Windows.Graphics;
 using System.Numerics;
 
 namespace Windows.UI.Xaml.Shapes
@@ -33,17 +26,9 @@ namespace Windows.UI.Xaml.Shapes
 		protected override Size ArrangeOverride(Size finalSize)
 		{
 			var (shapeSize, renderingArea) = ArrangeRelativeShape(finalSize);
-
-			SkiaGeometrySource2D path;
-
-			if (renderingArea.Width > 0 && renderingArea.Height > 0)
-			{
-				path = GetGeometry(renderingArea);
-			}
-			else
-			{
-				path = null;
-			}
+			var path = renderingArea.Width > 0 && renderingArea.Height > 0 
+				? GetGeometry(renderingArea) 
+				: null;
 
 			Render(path);
 
@@ -52,33 +37,17 @@ namespace Windows.UI.Xaml.Shapes
 
 		private SkiaGeometrySource2D GetGeometry(Rect finalRect)
 		{
-			var strokeThickness = StrokeThickness;
 			var radiusX = RadiusX;
 			var radiusY = RadiusY;
 
-			var offset = new Vector2((float)(finalRect.Left), (float)(finalRect.Top));
+			var offset = new Vector2((float)finalRect.Left, (float)finalRect.Top);
 			var size = new Vector2((float)finalRect.Width, (float)finalRect.Height);
 
-			SkiaGeometrySource2D geometry;
-			if (radiusX == 0 || radiusY == 0)
-			{
-				// Simple rectangle
-				geometry = new SkiaGeometrySource2D(
-					CompositionGeometry.BuildRectangleGeometry(
-						offset,
-						size));
-			}
-			else
-			{
-				// Complex rectangle
-				geometry = new SkiaGeometrySource2D(
-					CompositionGeometry.BuildRoundedRectangleGeometry(
-						offset,
-						size,
-						new Vector2((float)radiusX, (float)radiusY)));
-			}
+			var geometry = radiusX is 0 || radiusY is 0
+				? CompositionGeometry.BuildRectangleGeometry(offset, size)
+				: CompositionGeometry.BuildRoundedRectangleGeometry(offset, size, new Vector2((float)radiusX, (float)radiusY));
 
-			return geometry;
+			return new SkiaGeometrySource2D(geometry);
 		}
 	}
 }
