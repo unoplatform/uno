@@ -766,11 +766,12 @@ namespace Windows.UI.Xaml.Controls
 				_mediaPlayer is { } &&
 				XamlRoot?.Content is UIElement root)
 			{
+				var marginBottom = XamlRoot.Size.Height - m_tpControlPanelGrid.LayoutSlot.Height - m_tpControlPanelGrid.RelativePosition.Y;
 				var bounds = new Rect(
 					0,
 					0,
 					m_tpControlPanelGrid.ActualWidth,
-					_isShowingControls ? m_tpControlPanelGrid.ActualHeight : 0
+					_isShowingControls ? m_tpControlPanelGrid.ActualHeight + (marginBottom > 0 ? marginBottom : 0) : 0
 				);
 				var transportBounds = TransformToVisual(root).TransformBounds(bounds);
 
