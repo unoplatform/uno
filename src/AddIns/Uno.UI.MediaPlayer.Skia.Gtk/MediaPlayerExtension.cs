@@ -143,7 +143,16 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 
 	public void Pause()
 	{
-		if (_owner.PlaybackSession.PlaybackState == MediaPlaybackState.Playing)
+		if (_owner.PlaybackSession.PlaybackState == MediaPlaybackState.Playing
+				&& _player != null
+				&& _player.CurrentState == MediaPlayerState.Playing)
+		{
+			_player?.Pause();
+			_owner.PlaybackSession.PlaybackState = MediaPlaybackState.Paused;
+		}
+		if (_owner.PlaybackSession.PlaybackState == MediaPlaybackState.Paused
+				&& _player != null
+				&& _player.CurrentState != MediaPlayerState.Paused)
 		{
 			_player?.Pause();
 			_owner.PlaybackSession.PlaybackState = MediaPlaybackState.Paused;
