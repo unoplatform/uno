@@ -14,12 +14,15 @@ using Uno.Disposables;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using Uno.Extensions;
+using Windows.Foundation.Metadata;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
 using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
 #else
 using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
+using System.Reflection.Emit;
+using System.Reflection;
 #endif
 
 
@@ -951,8 +954,6 @@ namespace Windows.UI.Xaml.Controls
 		}
 		private void UpdateMediaControlAllStates()
 		{
-			UpdateMediaControlState(IsCompactProperty);
-
 			UpdateMediaControlState(IsFullWindowButtonVisibleProperty);
 			UpdateMediaControlState(IsZoomButtonVisibleProperty);
 			UpdateMediaControlState(IsSeekBarVisibleProperty);
@@ -981,6 +982,7 @@ namespace Windows.UI.Xaml.Controls
 			UpdateMediaControlState(IsCompactOverlayButtonVisibleProperty);
 			UpdateMediaControlState(IsCompactOverlayEnabledProperty);
 		}
+
 		private void UpdateMediaControlState(DependencyProperty property)
 		{
 			switch (property)
@@ -994,7 +996,7 @@ namespace Windows.UI.Xaml.Controls
 					break;
 
 				case var _ when property == IsRepeatButtonVisibleProperty:
-					BindVisibility(m_tpRepeatButton, IsRepeatButtonVisible);
+					BindVisibility(m_tpRepeatButton, IsImplemented(typeof(Windows.Media.Playback.MediaPlayer), "IsLoopingEnabled") && IsRepeatButtonVisible);
 					break;
 				case var _ when property == IsRepeatEnabledProperty:
 					BindIsEnabled(m_tpRepeatButton, IsRepeatEnabled);
@@ -1018,7 +1020,7 @@ namespace Windows.UI.Xaml.Controls
 					BindIsEnabled(m_tpZoomButton, IsZoomEnabled);
 					break;
 				case var _ when property == IsPlaybackRateButtonVisibleProperty:
-					BindVisibility(m_tpPlaybackRateButton, IsPlaybackRateButtonVisible);
+					BindVisibility(m_tpPlaybackRateButton, IsImplemented(typeof(Windows.Media.Playback.MediaPlayer), "PlaybackRate") && IsPlaybackRateButtonVisible);
 					break;
 				case var _ when property == IsPlaybackRateEnabledProperty:
 					BindIsEnabled(m_tpPlaybackRateButton, IsPlaybackRateEnabled);
@@ -1098,6 +1100,11 @@ namespace Windows.UI.Xaml.Controls
 			{
 				CancelControlsVisibilityTimer();
 			}
+		}
+
+		private bool IsImplemented(Type type, string property)
+		{
+			return ApiInformation.IsPropertyPresent(type.FullName + "", property);
 		}
 
 		// visual states
