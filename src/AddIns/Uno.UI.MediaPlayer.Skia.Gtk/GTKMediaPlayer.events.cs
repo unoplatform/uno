@@ -574,7 +574,7 @@ public partial class GtkMediaPlayer
 
 		OnTimeUpdate?.Invoke(this, time);
 
-		if (_updateVideoSizeOnFirstTimeStamp 
+		if (_updateVideoSizeOnFirstTimeStamp
 			&& TryGetVideoDetails(out _, out _, out _))
 		{
 			// Actual media information may not be available until the
