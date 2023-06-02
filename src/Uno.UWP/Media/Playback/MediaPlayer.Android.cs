@@ -386,16 +386,17 @@ namespace Windows.Media.Playback
 		{
 			_currentStretch = stretch;
 
-			if (_player != null && RenderSurface is SurfaceView surface && !_isUpdatingStretch)
+			if (_player != null
+				&& RenderSurface is SurfaceView surface
+				&& surface.Parent is View parentView
+				&& !_isUpdatingStretch)
 			{
 				try
 				{
 					_isUpdatingStretch = true;
 
-					var parent = (View)surface.Parent;
-
-					var width = parent.Width;
-					var height = parent.Height;
+					var width = parentView.Width;
+					var height = parentView.Height;
 					var parentRatio = (double)width / global::System.Math.Max(1, height);
 
 					var videoWidth = _player.VideoWidth;
