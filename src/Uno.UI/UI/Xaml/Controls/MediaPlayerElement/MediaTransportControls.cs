@@ -1232,7 +1232,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		private bool IsMediaPlayerLoopingEnabled =>
-			ApiInformation.IsPropertyPresent(typeof(MediaPlayer).FullName!, nameof(MediaPlayer.IsLoopingEnabled))
+			ApiInformation.IsPropertyPresent(typeof(Windows.Media.Playback.MediaPlayer).FullName!, nameof(Windows.Media.Playback.MediaPlayer.IsLoopingEnabled))
 					&& (_mpe?.MediaPlayer.IsLoopingEnabled ?? false);
 
 		private void UpdateRepeatStates(bool useTransition = true)
