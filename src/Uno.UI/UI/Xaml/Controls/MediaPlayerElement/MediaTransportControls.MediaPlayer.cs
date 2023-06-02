@@ -62,6 +62,9 @@ namespace Windows.UI.Xaml.Controls
 					_mediaPlayer.PlaybackSession.PositionChanged -= OnPositionChanged;
 				}
 			});
+
+			UpdateAllVisualStates();
+			UpdateMediaControlAllStates();
 		}
 
 		public void TappedProgressSlider(object sender, RoutedEventArgs e)
