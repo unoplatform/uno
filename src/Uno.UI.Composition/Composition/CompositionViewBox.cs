@@ -2,49 +2,47 @@
 
 using System.Numerics;
 
-namespace Windows.UI.Composition
+namespace Windows.UI.Composition;
+
+public partial class CompositionViewBox : CompositionObject
 {
-	public partial class CompositionViewBox : CompositionObject
+	private float _verticalAlignmentRatio;
+	private CompositionStretch _stretch;
+	private Vector2 _size;
+	private Vector2 _offset;
+	private float _horizontalAlignmentRatio;
+
+	internal CompositionViewBox(Compositor compositor) : base(compositor)
 	{
-		private float _verticalAlignmentRatio;
-		private CompositionStretch _stretch;
-		private Vector2 _size;
-		private Vector2 _offset;
-		private float _horizontalAlignmentRatio;
+	}
 
-		internal CompositionViewBox(Compositor compositor) : base(compositor)
-		{
+	public float VerticalAlignmentRatio
+	{
+		get => _verticalAlignmentRatio;
+		set => SetProperty(ref _verticalAlignmentRatio, value);
+	}
 
-		}
+	public CompositionStretch Stretch
+	{
+		get => _stretch;
+		set => SetProperty(ref _stretch, value);
+	}
 
-		public float VerticalAlignmentRatio
-		{
-			get => _verticalAlignmentRatio;
-			set => SetProperty(ref _verticalAlignmentRatio, value);
-		}
+	public Vector2 Size
+	{
+		get => _size;
+		set => SetProperty(ref _size, value);
+	}
 
-		public CompositionStretch Stretch
-		{
-			get => _stretch;
-			set => SetProperty(ref _stretch, value);
-		}
+	public Vector2 Offset
+	{
+		get => _offset;
+		set => SetProperty(ref _offset, value);
+	}
 
-		public Vector2 Size
-		{
-			get => _size;
-			set => SetProperty(ref _size, value);
-		}
-
-		public Vector2 Offset
-		{
-			get => _offset;
-			set => SetProperty(ref _offset, value);
-		}
-
-		public float HorizontalAlignmentRatio
-		{
-			get => _horizontalAlignmentRatio;
-			set => SetProperty(ref _horizontalAlignmentRatio, value);
-		}
+	public float HorizontalAlignmentRatio
+	{
+		get => _horizontalAlignmentRatio;
+		set => SetProperty(ref _horizontalAlignmentRatio, value);
 	}
 }
