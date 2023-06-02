@@ -85,11 +85,9 @@ namespace Uno.UI.Controls
 				native.SetIcon(null);
 				native.SetTitle(element.Label);
 			}
-			else
+			else if (element.Icon is { } icon)
 			{
-				var iconOrContent = element.Icon ?? element.Content;
-
-				switch (iconOrContent)
+				switch (icon)
 				{
 					case BitmapIcon bitmap:
 						var drawable = DrawableHelper.FromUri(bitmap.UriSource);
@@ -98,6 +96,21 @@ namespace Uno.UI.Controls
 						native.SetTitle(null);
 						break;
 
+					case FontIcon: // not supported
+					case PathIcon: // not supported
+					case SymbolIcon: // not supported
+					default:
+						this.Log().Warn($"{icon.GetType().Name ?? "FontIcon, PathIcon, and SymbolIcon"} are not supported. Use BitmapIcon instead with UriSource.");
+						native.SetIcon(null);
+						break;
+				}
+				native.SetActionView(null);
+				native.SetTitle(null);
+			}
+			else
+			{
+				switch (element.Content)
+				{
 					case string text:
 						native.SetIcon(null);
 						native.SetActionView(null);
@@ -140,14 +153,13 @@ namespace Uno.UI.Controls
 			native.SetVisible(element.Visibility == Visibility.Visible);
 
 			// Foreground
-			var foreground = (element.Icon?.Foreground) as SolidColorBrush;
-
-			var foregroundOpacity = foreground?.Opacity ?? 0;
+			var foregroundOpacity = 0d;
 			if (native.Icon != null)
 			{
-				if (foreground != null)
+				if (element.TryGetIconColor(out var iconColor))
 				{
-					DrawableCompat.SetTint(native.Icon, (Android.Graphics.Color)foreground.Color);
+					foregroundOpacity = iconColor.A / 255d;
+					DrawableCompat.SetTint(native.Icon, (Android.Graphics.Color)iconColor);
 				}
 				else
 				{

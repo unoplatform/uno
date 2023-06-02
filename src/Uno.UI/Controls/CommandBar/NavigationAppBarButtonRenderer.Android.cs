@@ -50,16 +50,16 @@ namespace Uno.UI.Controls
 
 				// Foreground
 				var foreground = (element.Foreground as SolidColorBrush);
-				var foregroundOpacity = foreground?.Opacity ?? 0;
+				var foregroundOpacity = foreground?.Opacity ?? 0d;
 
 				if (FeatureConfiguration.AppBarButton.EnableBitmapIconTint)
 				{
-					var foregroundColor = foreground?.Color;
 					if (native.NavigationIcon != null)
 					{
-						if (foreground != null)
+						if (element.TryGetIconColor(out var iconColor))
 						{
-							DrawableCompat.SetTint(native.NavigationIcon, (Android.Graphics.Color)foregroundColor);
+							foregroundOpacity = iconColor.A / 255d;
+							DrawableCompat.SetTint(native.NavigationIcon, (Android.Graphics.Color)iconColor);
 						}
 						else
 						{

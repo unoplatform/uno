@@ -86,20 +86,38 @@ namespace Uno.UI.Controls
 			var native = Native;
 			var element = Element;
 
-			var iconOrContent = element.Icon ?? element.Content;
-			switch (iconOrContent)
+			if (element.Icon is { } icon)
 			{
-				case BitmapIcon bitmap:
-					native.Image = UIImageHelper.FromUri(bitmap.UriSource);
-					native.ClearCustomView();
-					native.Title = null;
-					break;
+				switch (icon)
+				{
+					case BitmapIcon bitmap:
+						native.Image = UIImageHelper.FromUri(bitmap.UriSource);
+						native.ClearCustomView();
+						native.Title = null;
+						break;
 
-				case string text:
-					native.Image = null;
-					native.ClearCustomView();
-					native.Title = text;
-					break;
+					case FontIcon: // not supported
+					case PathIcon: // not supported
+					case SymbolIcon: // not supported
+					default:
+						this.Log().Warn($"{icon.GetType().Name ?? "FontIcon, PathIcon, and SymbolIcon"} are not supported. Use BitmapIcon instead with UriSource.");
+						native.Image = null;
+						native.ClearCustomView();
+						// iOS doesn't add the UIBarButtonItem to the native logical tree unless it has an Image or Title set. 
+						// We default to an empty string to ensure it is added.
+						native.Title = string.Empty;
+						break;
+				}
+			}
+			else
+			{
+				switch (element.Content)
+				{
+					case string text:
+						native.Image = null;
+						native.ClearCustomView();
+						native.Title = text;
+						break;
 
 				case FrameworkElement fe:
 					var currentParent = element.GetParent();
@@ -131,9 +149,9 @@ namespace Uno.UI.Controls
 			native.AccessibilityLabel = element.Label;
 
 			// Foreground
-			if (Brush.TryGetColorWithOpacity(element.Foreground, out var foreground))
+			if (element.TryGetIconColor(out var iconColor))
 			{
-				var color = (UIColor)foreground;
+				var color = (UIColor)iconColor;
 				native.TintColor = color.ColorWithAlpha((nfloat)element.Opacity);
 			}
 			else
