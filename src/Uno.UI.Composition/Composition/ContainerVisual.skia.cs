@@ -49,10 +49,9 @@ public partial class ContainerVisual : Visual
 		var compositor = this.Compositor;
 		var children = GetChildrenInRenderOrder();
 		var childrenCount = children.Count;
-		for (int i = 0; i < childrenCount; i++)
+		for (var i = 0; i < childrenCount; i++)
 		{
 			compositor.RenderVisual(surface, children[i]);
 		}
 	}
-
 }
