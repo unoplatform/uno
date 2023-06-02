@@ -10,6 +10,9 @@ namespace __Windows.ApplicationModel.DataTransfer
 		{
 			private const string JsType = "globalThis.Uno.Utils.Clipboard";
 
+			[JSImport($"{JsType}.getText")]
+			internal static partial Task<string> GetTextAsync();
+
 			[JSImport($"{JsType}.setText")]
 			internal static partial void SetText(string text);
 

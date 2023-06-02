@@ -80,11 +80,7 @@ namespace Windows.UI.Xaml
 #if UNO_HAS_ENHANCED_HIT_TEST_PROPERTY
 			HitTestVisibilityProperty.GetMetadata(uiElement).MergePropertyChangedCallback(ClearPointersStateIfNeeded);
 #endif
-
-			InitializePointersStaticPartial();
 		}
-
-		static partial void InitializePointersStaticPartial();
 
 		#region ManipulationMode (DP)
 		public static DependencyProperty ManipulationModeProperty { get; } = DependencyProperty.Register(

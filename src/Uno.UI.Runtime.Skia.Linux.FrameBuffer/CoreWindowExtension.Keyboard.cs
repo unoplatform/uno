@@ -69,7 +69,7 @@ namespace Uno.UI.Runtime.Skia
 					RepeatCount = 1,
 				});
 
-			RaiseKeyEvent(_ownerEvents.RaiseNativeKeyDownReceived, args);
+			RaiseKeyEvent(_owner.RaiseNativeKeyDownReceived, args);
 		}
 
 		private void OnKeyReleaseEvent(libinput_key key)
@@ -92,7 +92,7 @@ namespace Uno.UI.Runtime.Skia
 					RepeatCount = 1,
 				});
 
-			RaiseKeyEvent(_ownerEvents.RaiseNativeKeyUpReceived, args);
+			RaiseKeyEvent(_owner.RaiseNativeKeyUpReceived, args);
 		}
 
 		private void RaiseKeyEvent(Action<KeyEventArgs> raisePointerEvent, KeyEventArgs args)

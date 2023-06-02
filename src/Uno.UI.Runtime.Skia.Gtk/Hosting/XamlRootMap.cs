@@ -24,6 +24,7 @@ internal static class XamlRootMap
 		}
 
 		_map[xamlRoot] = host;
+		xamlRoot.VisualTree.ContentRoot.SetHost(host); // Note: This might be a duplicated call but it's supported by ContentRoot and safe
 
 		xamlRoot.InvalidateRender += host.RenderSurface.InvalidateRender;
 	}

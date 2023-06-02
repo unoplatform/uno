@@ -679,12 +679,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 		public async Task When_TouchScroll_Then_NestedElementReceivePointerEvents()
 		{
-			if (Private.Infrastructure.TestServices.WindowHelper.IsXamlIsland)
-			{
-				Assert.Inconclusive("Pointer injection is not supported yet on XamlIsland");
-				return;
-			}
-
 			var nested = new Border
 			{
 				Height = 4192,
@@ -725,12 +719,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 		public async Task When_TouchTap_Then_NestedElementReceivePointerEvents()
 		{
-			if (Private.Infrastructure.TestServices.WindowHelper.IsXamlIsland)
-			{
-				Assert.Inconclusive("Pointer injection is not supported yet on XamlIsland");
-				return;
-			}
-
 			var nested = new Border
 			{
 				Height = 4192,

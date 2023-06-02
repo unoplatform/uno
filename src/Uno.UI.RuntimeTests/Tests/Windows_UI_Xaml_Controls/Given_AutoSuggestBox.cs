@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -166,6 +167,49 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 					AutoSuggestionBoxTextChangeReason.SuggestionChosen
 				},
 				reasons);
+		}
+
+		[TestMethod]
+		public async Task When_Selecting_Suggest_With_UpDown_Key()
+		{
+			AutoSuggestBox SUT = new AutoSuggestBox();
+			string[] suggestions = { "a1", "a2", "b1", "b2" };
+			bool eventRaised = false;
+			SUT.TextChanged += (s, e) =>
+			{
+				eventRaised = true;
+				if (e.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
+				{
+					s.ItemsSource = suggestions.Where(i => i.StartsWith(s.Text));
+				}
+			};
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForIdle();
+
+			Type type = typeof(AutoSuggestBox);
+			MethodInfo HandleUpDownKeys = type.GetMethod("HandleUpDownKeys", BindingFlags.NonPublic | BindingFlags.Instance);
+			var textBox = (TextBox)SUT.GetTemplateChild("TextBox");
+			SUT.Focus(FocusState.Programmatic);
+
+			eventRaised = false;
+			textBox.ProcessTextInput("a");
+			await WindowHelper.WaitFor(() => eventRaised);
+			_ = HandleUpDownKeys.Invoke(SUT, new object[] { new KeyRoutedEventArgs(SUT, Windows.System.VirtualKey.Down) });
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("a1", SUT.Text);
+			_ = HandleUpDownKeys.Invoke(SUT, new object[] { new KeyRoutedEventArgs(SUT, Windows.System.VirtualKey.Down) });
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("a2", SUT.Text);
+
+			eventRaised = false;
+			textBox.ProcessTextInput("b");
+			await WindowHelper.WaitFor(() => eventRaised);
+			_ = HandleUpDownKeys.Invoke(SUT, new object[] { new KeyRoutedEventArgs(SUT, Windows.System.VirtualKey.Down) });
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("b1", SUT.Text);
+			_ = HandleUpDownKeys.Invoke(SUT, new object[] { new KeyRoutedEventArgs(SUT, Windows.System.VirtualKey.Down) });
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("b2", SUT.Text);
 		}
 #endif
 

@@ -22,7 +22,6 @@ using Uno.Foundation.Logging;
 using Uno.Helpers.Theming;
 using Uno.UI.Core.Preview;
 using Uno.UI.Runtime.Skia.Wpf;
-using Uno.UI.Runtime.Skia.Wpf.Extensions.UI.Xaml.Input;
 using Uno.UI.Runtime.Skia.Wpf.Rendering;
 using Uno.UI.Runtime.Skia.Wpf.WPF.Extensions.Helpers.Theming;
 using Uno.UI.Xaml;
@@ -73,7 +72,6 @@ namespace Uno.UI.Skia.Platform
 
 		private static bool _extensionsRegistered;
 		private IWpfRenderer? _renderer;
-		private HostPointerHandler? _hostPointerHandler;
 
 		internal static void RegisterExtensions()
 		{
@@ -83,6 +81,7 @@ namespace Uno.UI.Skia.Platform
 			}
 
 			ApiExtensibility.Register(typeof(Uno.ApplicationModel.Core.ICoreApplicationExtension), o => new CoreApplicationExtension(o));
+			ApiExtensibility.Register(typeof(Windows.UI.Core.IUnoCorePointerInputSource), o => new WpfCorePointerInputSource((IWpfHost)o));
 			ApiExtensibility.Register(typeof(Windows.UI.Core.ICoreWindowExtension), o => new WpfCoreWindowExtension(o));
 			ApiExtensibility.Register(typeof(Windows.UI.ViewManagement.IApplicationViewExtension), o => new WpfApplicationViewExtension(o));
 			ApiExtensibility.Register(typeof(ISystemThemeHelperExtension), o => new WpfSystemThemeHelperExtension(o));
@@ -97,7 +96,6 @@ namespace Uno.UI.Skia.Platform
 			ApiExtensibility.Register(typeof(IClipboardExtension), o => new ClipboardExtensions(o));
 			ApiExtensibility.Register(typeof(IAnalyticsInfoExtension), o => new AnalyticsInfoExtension());
 			ApiExtensibility.Register(typeof(ISystemNavigationManagerPreviewExtension), o => new SystemNavigationManagerPreviewExtension());
-			ApiExtensibility.Register(typeof(IPointerExtension), o => new PointerExtension());
 
 			_extensionsRegistered = true;
 		}
@@ -231,16 +229,17 @@ namespace Uno.UI.Skia.Platform
 
 		private void OnCoreWindowContentRootSet(object? sender, object e)
 		{
-			var xamlRoot = CoreServices.Instance
+			var contentRoot = CoreServices.Instance
 				.ContentRootCoordinator
-				.CoreWindowContentRoot?
-				.GetOrCreateXamlRoot();
+				.CoreWindowContentRoot;
+			var xamlRoot = contentRoot?.GetOrCreateXamlRoot();
 
 			if (xamlRoot is null)
 			{
 				throw new InvalidOperationException("XamlRoot was not properly initialized");
 			}
 
+			contentRoot!.SetHost(this);
 			XamlRootMap.Register(xamlRoot, this);
 
 			CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRootSet -= OnCoreWindowContentRootSet;
@@ -288,7 +287,6 @@ namespace Uno.UI.Skia.Platform
 			}
 
 			WinUI.Application.StartWithArguments(CreateApp);
-			_hostPointerHandler = new HostPointerHandler(this);
 
 			UpdateWindowPropertiesFromPackage();
 		}
@@ -388,10 +386,6 @@ namespace Uno.UI.Skia.Platform
 				textBox.TextBoxView?.Extension?.InvalidateLayout();
 			}
 		}
-
-		void IWpfHost.ReleasePointerCapture() => ReleaseMouseCapture(); //TODO: This should capture the correct type of pointer (stylus/mouse/touch) https://github.com/unoplatform/uno/issues/8978[capture]
-
-		void IWpfHost.SetPointerCapture() => CaptureMouse();
 
 		//TODO: This will need to be adjusted when multi-window support is added. https://github.com/unoplatform/uno/issues/8978[windows]
 		WinUI.XamlRoot? IWpfHost.XamlRoot => WinUI.Window.Current?.RootElement?.XamlRoot;

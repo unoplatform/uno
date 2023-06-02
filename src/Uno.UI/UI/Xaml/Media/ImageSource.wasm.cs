@@ -1,11 +1,14 @@
 ﻿#nullable enable
 
-using Uno.Extensions;
 using System;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using Windows.Storage.Streams;
+using Uno.Extensions;
+using Uno.Helpers;
 using Uno.UI.Xaml.Media;
+using Windows.Storage;
+using Windows.Storage.Streams;
 
 #if !IS_UNO
 using Uno.Web.Query;
@@ -55,6 +58,20 @@ namespace Windows.UI.Xaml.Media
 		internal virtual void ReportImageFailed(string errorMessage)
 		{
 
+		}
+
+		internal virtual string? ContentType { get; }
+
+		internal async Task<ImageData> OpenMsAppData(Uri uri, CancellationToken ct)
+		{
+			var file = await StorageFile.GetFileFromPathAsync(AppDataUriEvaluator.ToPath(uri));
+			var stream = await file.OpenAsync(FileAccessMode.Read);
+
+			var streamWithContentType = ContentType is { } contentType
+				? stream.TrySetContentType(ContentType)
+				: stream.TrySetContentType();
+
+			return await OpenFromStream(streamWithContentType, null, ct);
 		}
 
 	}

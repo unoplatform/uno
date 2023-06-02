@@ -1,9 +1,9 @@
 using System;
-using Uno.Extensions;
 using Windows.Media.Playback;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml.Media;
+using Uno.Extensions;
 using Uno.Foundation.Logging;
 
 namespace Windows.UI.Xaml.Controls
@@ -179,6 +179,9 @@ namespace Windows.UI.Xaml.Controls
 					this.Add(_layoutRoot);
 #elif __MACOS__
 					this.AddSubview(_layoutRoot);
+#elif __SKIA__ || __WASM__
+					this.AddChild(_layoutRoot);
+					_mediaPlayerPresenter?.ExitFullScreen();
 #else
 					_mediaPlayerPresenter?.ExitFullScreen();
 #endif
@@ -209,13 +212,13 @@ namespace Windows.UI.Xaml.Controls
 
 		private static void OnMediaPlayerChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
 		{
-			sender.Maybe<MediaPlayerElement>(mpe =>
+			if (sender is MediaPlayerElement mpe)
 			{
 				if (args.OldValue is Windows.Media.Playback.MediaPlayer oldMediaPlayer)
 				{
 					oldMediaPlayer.MediaFailed -= mpe.OnMediaFailed;
 					oldMediaPlayer.MediaFailed -= mpe.OnMediaOpened;
-					oldMediaPlayer?.Dispose();
+					oldMediaPlayer.Dispose();
 				}
 
 				if (args.NewValue is Windows.Media.Playback.MediaPlayer newMediaPlayer)
@@ -226,7 +229,7 @@ namespace Windows.UI.Xaml.Controls
 					mpe.TransportControls?.SetMediaPlayer(newMediaPlayer);
 					mpe._isTransportControlsBound = true;
 				}
-			});
+			};
 		}
 
 		private void OnMediaFailed(Windows.Media.Playback.MediaPlayer session, object args)
@@ -372,5 +375,23 @@ namespace Windows.UI.Xaml.Controls
 		{
 			MediaPlayer = mediaPlayer;
 		}
+
+		public void ToggleCompactOverlay(bool showCompactOverlay)
+		{
+#if __WASM__
+			if (_mediaPlayerPresenter != null)
+			{
+				if (showCompactOverlay)
+				{
+					_mediaPlayerPresenter.RequestCompactOverlay();
+				}
+				else
+				{
+					_mediaPlayerPresenter.ExitCompactOverlay();
+				}
+			}
+#endif
+		}
+
 	}
 }

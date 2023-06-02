@@ -7131,17 +7131,36 @@
 													Visibility='Collapsed'>
 												<FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xED3D;" />
 											</Button>
-											<Button x:Name='RepeatVideoButton'
-													Style='{StaticResource MTC_ButtonStyle}'
-													Visibility='Collapsed'>
-												<FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE8EE;" />
-											</Button>
 											<Button x:Name='PlaybackRateButton'
 													Style='{StaticResource MTC_ButtonStyle}'
 													Visibility='Collapsed'>
+												<FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xEC57;" /><Button.Flyout>
+													<Flyout x:Name='PlaybackRateFlyout'
+															Placement="RightEdgeAlignedBottom"
+															FlyoutPresenterStyle="{StaticResource MTC_FlyoutStyle}">
+														<StackPanel Orientation="Vertical">
+															<ListView x:Name='PlaybackRateListView'
+																	VerticalAlignment='Top'
+																	HorizontalAlignment='Center'
+																	Margin='0' >
+																	<ListView.Items>
+																		<ListViewItem>0.25</ListViewItem>
+																		<ListViewItem>0.5</ListViewItem>
+																		<ListViewItem>1</ListViewItem>
+																		<ListViewItem>1.5</ListViewItem>
+																		<ListViewItem>2</ListViewItem>
+																</ListView.Items>
+															</ListView>
+														</StackPanel>
+													</Flyout>
+												</Button.Flyout>
 												<FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xEC57;" />
 											</Button>
-
+											<Button x:Name='RepeatButton'
+													Style='{StaticResource MTC_ButtonStyle}'
+													Visibility='Collapsed'>
+												<SymbolIcon x:Name="RepeatSymbol" Symbol="RepeatAll" />
+											</Button>
 										</StackPanel>
 
 										<StackPanel Orientation="Horizontal"

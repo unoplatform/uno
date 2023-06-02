@@ -44,6 +44,12 @@ namespace Windows.UI.Xaml.Controls
 
 		internal void ExitFullScreen()
 			=> _extension?.ExitFullScreen();
+
+		internal void RequestCompactOverlay()
+			=> _extension?.RequestCompactOverlay();
+
+		internal void ExitCompactOverlay()
+			=> _extension?.ExitCompactOverlay();
 	}
 }
 #endif

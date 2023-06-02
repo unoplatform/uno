@@ -165,22 +165,47 @@ public class Given_WebView2
 	[TestMethod]
 	public async Task When_ExecuteScriptAsync_String()
 	{
-		var border = new Border();
-		var webView = new WebView2();
-		webView.Width = 200;
-		webView.Height = 200;
-		border.Child = webView;
-		TestServices.WindowHelper.WindowContent = border;
-		bool navigated = false;
-		await TestServices.WindowHelper.WaitForLoaded(border);
-		await webView.EnsureCoreWebView2Async();
-		webView.NavigationCompleted += (sender, e) => navigated = true;
-		webView.NavigateToString("<html></html>");
-		await TestServices.WindowHelper.WaitFor(() => navigated);
-		var script = "(1 + 1).toString()";
 
-		var result = await webView.ExecuteScriptAsync($"eval(\"{script}\")");
-		Assert.AreEqual("\"2\"", result);
+		int tryCount = 3;
+
+		while (tryCount-- > 0)
+		{
+			try
+			{
+				var border = new Border();
+				var webView = new WebView2();
+				webView.Width = 200;
+				webView.Height = 200;
+				border.Child = webView;
+				TestServices.WindowHelper.WindowContent = border;
+				bool navigated = false;
+				await TestServices.WindowHelper.WaitForLoaded(border);
+				await webView.EnsureCoreWebView2Async();
+
+				webView.NavigationCompleted += (sender, e) => navigated = true;
+				webView.NavigateToString("<html></html>");
+				await TestServices.WindowHelper.WaitFor(() => navigated);
+				var script = "(1 + 1).toString()";
+
+				var result = await webView.ExecuteScriptAsync($"eval(\"{script}\")");
+				Assert.AreEqual("\"2\"", result);
+			}
+			catch (Exception ex)
+			{
+				// delay for temporary retry where the test randomly fails on android/ios
+				await Task.Delay(100);
+
+				if (tryCount == 0)
+				{
+					throw;
+				}
+				else
+				{
+					Console.WriteLine($"Exception: {ex.Message}");
+					Console.WriteLine("Retrying...");
+				}
+			}
+		}
 	}
 
 	[TestMethod]

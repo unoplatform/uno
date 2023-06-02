@@ -1008,6 +1008,14 @@ namespace Uno.UI.Xaml
 		}
 		#endregion
 
+		internal static Task<string> GetNaturalImageSizeAsync(string imageUri)
+			=>
+#if NET7_0_OR_GREATER
+				NativeMethods.GetNaturalImageSizeAsync(imageUri);
+#else
+				WebAssemblyRuntime.InvokeAsync($"Uno.UI.WindowManager.current.getNaturalImageSize(\"{imageUri}\")");
+#endif
+
 		internal static string RawPixelsToBase64EncodeImage(IntPtr data, int width, int height)
 			=> NativeMethods.RawPixelsToBase64EncodeImage(data, width, height);
 
@@ -1081,6 +1089,9 @@ namespace Uno.UI.Xaml
 
 			[JSImport("globalThis.Uno.UI.WindowManager.getBootTime")]
 			internal static partial double GetBootTime();
+
+			[JSImport("globalThis.Uno.UI.WindowManager.current.getNaturalImageSize")]
+			internal static partial Task<string> GetNaturalImageSizeAsync(string imageUri);
 
 			[JSImport("globalThis.Uno.UI.WindowManager.current.focusView")]
 			internal static partial void FocusView(IntPtr htmlId);

@@ -1,9 +1,11 @@
 ﻿#pragma warning disable 67 // TODO: Focus-related members are currently unused https://github.com/unoplatform/uno/issues/8978
 
 using System;
+using System.Diagnostics;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Islands;
 using Windows.Foundation;
+using Uno.Foundation.Logging;
 using WinUICoreServices = global::Uno.UI.Xaml.Core.CoreServices;
 
 namespace Windows.UI.Xaml.Hosting;

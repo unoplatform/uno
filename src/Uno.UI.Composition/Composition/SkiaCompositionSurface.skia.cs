@@ -24,10 +24,6 @@ namespace Windows.UI.Composition
 			_image = image;
 		}
 
-		internal void LoadFromBytes(byte[] image)
-		{
-		}
-
 		internal (bool success, object nativeResult) LoadFromStream(int? targetWidth, int? targetHeight, Stream imageStream)
 		{
 			using var stream = new SKManagedStream(imageStream);

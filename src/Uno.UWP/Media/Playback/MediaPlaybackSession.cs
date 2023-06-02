@@ -104,6 +104,10 @@ namespace Windows.Media.Playback
 			}
 		}
 
+		internal bool IsPlaying => PlaybackState
+			is MediaPlaybackState.Playing
+			or MediaPlaybackState.Buffering;
+
 		public event TypedEventHandler<MediaPlaybackSession, object> BufferingProgressChanged;
 
 		public event TypedEventHandler<MediaPlaybackSession, object> NaturalDurationChanged;

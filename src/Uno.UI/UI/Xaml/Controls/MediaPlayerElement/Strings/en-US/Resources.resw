@@ -1,0 +1,261 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="UIA_MEDIA_PLAY" xml:space="preserve">
+    <value>Play</value>
+  </data>
+  <data name="UIA_MEDIA_PAUSE" xml:space="preserve">
+    <value>Pause</value>
+  </data>
+  <data name="UIA_MEDIA_TIME_ELAPSED" xml:space="preserve">
+    <value>Time elapsed</value>
+  </data>
+  <data name="UIA_MEDIA_TIME_REMAINING" xml:space="preserve">
+    <value>Time remaining</value>
+  </data>
+  <data name="UIA_MEDIA_DOWNLOAD_PROGRESS" xml:space="preserve">
+    <value>Download Progress</value>
+  </data>
+  <data name="UIA_MEDIA_BUFFERING_PROGRESS" xml:space="preserve">
+    <value>Buffering Progress</value>
+  </data>
+  <data name="UIA_MEDIA_SEEK" xml:space="preserve">
+    <value>Seek</value>
+  </data>
+  <data name="UIA_MEDIA_MUTE" xml:space="preserve">
+    <value>Mute</value>
+  </data>
+  <data name="UIA_MEDIA_UNMUTE" xml:space="preserve">
+    <value>Unmute</value>
+  </data>
+  <data name="UIA_MEDIA_VOLUME" xml:space="preserve">
+    <value>Volume</value>
+  </data>
+  <data name="UIA_MEDIA_ERROR" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="TEXT_MEDIA_AUDIO_TRACK_UNTITLED" xml:space="preserve">
+    <value>untitled</value>
+  </data>
+  <data name="TEXT_MEDIA_AUDIO_TRACK_SELECTED" xml:space="preserve">
+    <value>(On)</value>
+    <comment>Appended to name of currently selected audio track</comment>
+  </data>
+  <data name="TEXT_MEDIA_AUDIO_TRACK_SEPARATOR" xml:space="preserve">
+    <value> - </value>
+    <comment>Used to separate pieces of metadata in audio track name</comment>
+  </data>
+  <data name="UIA_MEDIA_FULLSCREEN" xml:space="preserve">
+    <value>Full Screen</value>
+  </data>
+  <data name="UIA_MEDIA_EXIT_FULLSCREEN" xml:space="preserve">
+    <value>Exit Full Screen</value>
+  </data>
+  <data name="UIA_MEDIA_AUDIO_SELECTION" xml:space="preserve">
+    <value>Show audio selection menu</value>
+  </data>
+  <data name="UIA_MEDIA_CC_SELECTION" xml:space="preserve">
+    <value>Show closed caption menu</value>
+  </data>
+  <data name="TEXT_MEDIA_CC_OFF" xml:space="preserve">
+    <value>Off</value>
+  </data>
+  <data name="UIA_MEDIA_PLAYBACKRATE" xml:space="preserve">
+    <value>Show playback rate list</value>
+  </data>
+  <data name="UIA_MEDIA_FASTFORWARD" xml:space="preserve">
+    <value>Fast forward</value>
+  </data>
+  <data name="UIA_MEDIA_REWIND" xml:space="preserve">
+    <value>Rewind</value>
+  </data>
+  <data name="UIA_MEDIA_STOP" xml:space="preserve">
+    <value>Stop</value>
+  </data>
+  <data name="UIA_MEDIA_CAST" xml:space="preserve">
+    <value>Cast to Device</value>
+  </data>
+  <data name="UIA_MEDIA_ASPECTRATIO" xml:space="preserve">
+    <value>Aspect Ratio</value>
+  </data>
+  <data name="UIA_MEDIA_SKIPBACKWARD" xml:space="preserve">
+    <value>Skip Backward</value>
+  </data>
+  <data name="UIA_MEDIA_SKIPFORWARD" xml:space="preserve">
+    <value>Skip Forward</value>
+  </data>
+  <data name="UIA_MEDIA_NEXTRACK" xml:space="preserve">
+    <value>Next Track</value>
+  </data>
+  <data name="UIA_MEDIA_PREVIOUSTRACK" xml:space="preserve">
+    <value>Previous Track</value>
+  </data>
+  <data name="UIA_MEDIA_FASTFORWARD_2X" xml:space="preserve">
+    <value>Fast forward in 2X</value>
+  </data>
+  <data name="UIA_MEDIA_FASTFORWARD_4X" xml:space="preserve">
+    <value>Fast forward in 4X</value>
+  </data>
+  <data name="UIA_MEDIA_FASTFORWARD_8X" xml:space="preserve">
+    <value>Fast forward in 8X</value>
+  </data>
+  <data name="UIA_MEDIA_FASTFORWARD_16X" xml:space="preserve">
+    <value>Fast forward in 16X</value>
+  </data>
+  <data name="UIA_MEDIA_REWIND_2X" xml:space="preserve">
+    <value>Rewind in 2X</value>
+  </data>
+  <data name="UIA_MEDIA_REWIND_4X" xml:space="preserve">
+    <value>Rewind in 4X</value>
+  </data>
+  <data name="UIA_MEDIA_REWIND_8X" xml:space="preserve">
+    <value>Rewind in 8X</value>
+  </data>
+  <data name="UIA_MEDIA_REWIND_16X" xml:space="preserve">
+    <value>Rewind in 16X</value>
+  </data>
+  <data name="UIA_MEDIA_REPEAT_NONE" xml:space="preserve">
+    <value>Repeat None</value>
+  </data>
+  <data name="UIA_MEDIA_REPEAT_ONE" xml:space="preserve">
+    <value>Repeat One</value>
+  </data>
+  <data name="UIA_MEDIA_REPEAT_ALL" xml:space="preserve">
+    <value>Repeat All</value>
+  </data>
+	<data name="UIA_MEDIA_MINIVIEW" xml:space="preserve">
+    <value>Enter MiniView</value>
+  </data>
+  <data name="UIA_MEDIA_EXIT_MINIVIEW" xml:space="preserve">
+    <value>Exit MiniView</value>
+  </data>
+  <data name="UIA_LESS_BUTTON" xml:space="preserve">
+    <value>Less app bar</value>
+  </data>
+  <data name="UIA_AP_APPBAR_BUTTON" xml:space="preserve">
+    <value>app bar button</value>
+  </data>
+  <data name="UIA_AP_APPBAR_TOGGLEBUTTON" xml:space="preserve">
+    <value>app bar toggle button</value>
+  </data>
+  <data name="UIA_AP_MEDIAPLAYERELEMENT" xml:space="preserve">
+    <value>media player</value>
+    <comment>Localized control type for the video output of MediaPlayerElement (and MediaElement)</comment>
+  </data>
+</root>
