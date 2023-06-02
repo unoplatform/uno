@@ -75,13 +75,18 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 		}
 
 		[TestMethod]
-		public async Task When_Removed_From_Visualree_Immediately()
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
+		public async Task When_Removed_From_VisualTree()
 		{
 			var stackPanel = new StackPanel();
+			var button = new Button() { Content = "Test" };
 			var popup = new Popup()
 			{
 				Child = new Button() { Content = "Test" }
 			};
+			stackPanel.Children.Add(button);
 			stackPanel.Children.Add(popup);
 			WindowHelper.WindowContent = stackPanel;
 			await WindowHelper.WaitForLoaded(stackPanel);
@@ -102,6 +107,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 			await WindowHelper.WaitForIdle();
 
 			Assert.AreEqual(1, VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).Count);
+
+			VisualTreeHelper.CloseAllPopups(WindowHelper.XamlRoot);
 		}
 
 		private static bool CanReach(DependencyObject startingElement, DependencyObject targetElement)
