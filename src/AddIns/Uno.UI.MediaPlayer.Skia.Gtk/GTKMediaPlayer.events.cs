@@ -28,6 +28,8 @@ public partial class GtkMediaPlayer
 	public event EventHandler<object>? OnTimeUpdate;
 	public event EventHandler<object>? OnSourceLoaded;
 
+	private bool _updateVideoSizeOnFirstTimeStamp = true;
+
 	private async Task Initialize()
 	{
 		if (_initializationTask is null)
@@ -286,6 +288,8 @@ public partial class GtkMediaPlayer
 	{
 		if (source is GtkMediaPlayer player && args.NewValue is string encodedSource)
 		{
+			player._updateVideoSizeOnFirstTimeStamp = true;
+
 			if (typeof(GtkMediaPlayer).Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 			{
 				typeof(GtkMediaPlayer).Log().Debug($"Using source {encodedSource}");
@@ -457,7 +461,7 @@ public partial class GtkMediaPlayer
 	{
 		if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 		{
-			this.Log().Debug($"OnMediaDurationChanged");
+			this.Log().Debug($"OnMediaDurationChanged (duration: {_videoView?.MediaPlayer?.Media?.Duration})");
 		}
 
 		Duration = (double)(_videoView?.MediaPlayer?.Media?.Duration / 1000 ?? 0);
@@ -467,7 +471,7 @@ public partial class GtkMediaPlayer
 	{
 		if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 		{
-			this.Log().Debug($"OnMediaStateChanged");
+			this.Log().Debug($"OnMediaStateChanged (state: {el.State})");
 		}
 
 		switch (el.State)
@@ -483,7 +487,7 @@ public partial class GtkMediaPlayer
 			case VLCState.Ended:
 				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 				{
-					this.Log().Debug($"Error");
+					this.Log().Debug($"Ended");
 				}
 				if (!_isEnding)
 				{
@@ -559,11 +563,28 @@ public partial class GtkMediaPlayer
 
 	private void OnMediaPlayerTimeChange(object? sender, MediaPlayerTimeChangedEventArgs el)
 	{
+		if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+		{
+			this.Log().Debug($"OnMediaPlayerTimeChange ({el.Time})");
+		}
+
 		var time = el is LibVLCSharp.Shared.MediaPlayerTimeChangedEventArgs e
 			? TimeSpan.FromMilliseconds(e.Time)
 			: TimeSpan.Zero;
 
 		OnTimeUpdate?.Invoke(this, time);
+
+		if (_updateVideoSizeOnFirstTimeStamp 
+			&& TryGetVideoDetails(out _, out _, out _))
+		{
+			// Actual media information may not be available until the
+			// first time stamp is received. Once we do, we can update the
+			// video's render size.
+
+			_updateVideoSizeOnFirstTimeStamp = false;
+
+			UpdateVideoStretch(forceVideoViewVisibility: true);
+		}
 	}
 
 	private void OnMediaPlayerTimeChangeIsMediaParse(object? sender, MediaPlayerTimeChangedEventArgs el)
@@ -644,13 +665,13 @@ public partial class GtkMediaPlayer
 		}
 	}
 
-	private void OnGtkSourceFailed(object? sender, EventArgs e)
+	private void OnGtkSourceFailed(object? sender, MediaStateChangedEventArgs e)
 	{
 		if (_videoView != null)
 		{
 			_videoView.Visible = false;
 		}
 
-		OnSourceFailed?.Invoke(this, EventArgs.Empty);
+		OnSourceFailed?.Invoke(this, e.State.ToString());
 	}
 }
