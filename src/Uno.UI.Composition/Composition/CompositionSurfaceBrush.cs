@@ -1,14 +1,15 @@
 #nullable enable
 
 using System.Numerics;
+using Uno.Extensions;
+using Uno.UI.Composition;
 
 namespace Windows.UI.Composition
 {
-	public partial class CompositionSurfaceBrush : CompositionBrush
+	public partial class CompositionSurfaceBrush : CompositionBrush, I2DTransformableObject
 	{
 		private Matrix3x2 _transformMatrix = Matrix3x2.Identity;
 		private Vector2 _scale;
-		private float _rotationAngleInDegrees;
 		private float _rotationAngle;
 		private Vector2 _offset;
 		private Vector2 _centerPoint;
@@ -73,8 +74,8 @@ namespace Windows.UI.Composition
 
 		public float RotationAngleInDegrees
 		{
-			get => _rotationAngleInDegrees;
-			set => SetProperty(ref _rotationAngleInDegrees, value);
+			get => (float)MathEx.ToDegree(_rotationAngle);
+			set => RotationAngle = (float)MathEx.ToRadians(value);
 		}
 
 		public float RotationAngle

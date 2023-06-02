@@ -2,17 +2,18 @@
 
 using System;
 using System.Numerics;
+using Uno.Extensions;
+using Uno.UI.Composition;
 
 namespace Windows.UI.Composition
 {
-	public partial class CompositionGradientBrush : CompositionBrush
+	public partial class CompositionGradientBrush : CompositionBrush, I2DTransformableObject
 	{
 		private CompositionGradientExtendMode _extendMode;
 		private CompositionMappingMode _mappingMode;
 		private Matrix3x2 _transformMatrix = Matrix3x2.Identity;
 		private Matrix3x2 _relativeTransformMatrix = Matrix3x2.Identity;
 		private Vector2 _scale = new Vector2(1, 1);
-		private float _rotationAngleInDegrees;
 		private float _rotationAngle;
 		private Vector2 _offset;
 		private Vector2 _centerPoint;
@@ -51,22 +52,14 @@ namespace Windows.UI.Composition
 
 		public float RotationAngleInDegrees
 		{
-			get => _rotationAngleInDegrees;
-			set
-			{
-				_rotationAngle = value * (float)(Math.PI / 180);
-				SetProperty(ref _rotationAngleInDegrees, value);
-			}
+			get => (float)MathEx.ToDegree(_rotationAngle);
+			set => RotationAngle = (float)MathEx.ToRadians(value);
 		}
 
 		public float RotationAngle
 		{
 			get => _rotationAngle;
-			set
-			{
-				_rotationAngleInDegrees = value * 180 / (float)Math.PI;
-				SetProperty(ref _rotationAngle, value);
-			}
+			set => SetProperty(ref _rotationAngle, value);
 		}
 
 		public Vector2 Offset
