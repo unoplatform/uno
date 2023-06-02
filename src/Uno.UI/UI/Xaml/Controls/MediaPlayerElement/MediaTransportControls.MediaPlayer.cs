@@ -231,8 +231,8 @@ namespace Windows.UI.Xaml.Controls
 		{
 			_skipPlayPauseStateUpdate = false;
 
-			_mediaPlayer?.Pause();
 			ResetProgressSlider();
+			_mediaPlayer?.Pause();
 			_mediaPlayer?.Stop();
 		}
 
