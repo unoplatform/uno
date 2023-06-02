@@ -25,7 +25,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				if (this.Log().IsEnabled(LogLevel.Error))
 				{
-					this.Log().Error("Unable to create an instance of IMediaPlayerPresenterExtension. MediaPlayerPresenter will not work.");
+					this.Log().Error("The MediaPlayer extension is not installed. For more information aka.platform.uno/mediaplayerelement");
 				}
 			}
 		}
