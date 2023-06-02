@@ -37,8 +37,6 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 		{
 			if (_player is not null)
 			{
-				NaturalDuration = TimeSpan.FromSeconds(_player.Duration);
-
 				if (mp.IsVideo && Events is not null)
 				{
 					Events?.RaiseVideoRatioChanged(global::System.Math.Max(1, (double)mp.VideoRatio));
@@ -113,7 +111,11 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 	{
 		try
 		{
-			var time = o is TimeSpan e ? e : TimeSpan.Zero;
+			if (_player is not null)
+			{
+				NaturalDuration = TimeSpan.FromSeconds(_player.Duration);
+			}
+
 			_updatingPosition = true;
 			Events?.RaisePositionChanged();
 		}
