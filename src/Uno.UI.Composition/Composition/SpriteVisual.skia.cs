@@ -28,14 +28,7 @@ namespace Windows.UI.Composition
 
 			surface.Canvas.Save();
 
-			if (Compositor.CurrentOpacity != 1.0f)
-			{
-				_paint.ColorFilter = Compositor.CurrentOpacityColorFilter;
-			}
-			else
-			{
-				_paint.ColorFilter = null;
-			}
+			_paint.ColorFilter = Compositor.CurrentFilter.OpacityColorFilter;
 
 			surface.Canvas.DrawRect(
 				new SKRect(left: 0, top: 0, right: Size.X, bottom: Size.Y),

@@ -6,181 +6,133 @@ using System.Numerics;
 using SkiaSharp;
 using Windows.ApplicationModel.Core;
 using Windows.UI.Core;
+using Uno.Extensions;
 
-namespace Windows.UI.Composition
+namespace Windows.UI.Composition;
+
+public partial class Compositor
 {
-	public partial class Compositor
+
+	private readonly Stack<Filter> _filterStack = new();
+	private Filter _currentFilter = Filter.Default;
+
+	private bool _isDirty;
+	
+	internal Filter CurrentFilter => _currentFilter;
+
+	internal void RenderRootVisual(SKSurface surface, ContainerVisual rootVisual)
 	{
-		private readonly Stack<float> _opacityStack = new Stack<float>();
-		private float _currentOpacity = 1.0f;
-		private bool _isDirty;
-		private SKColorFilter? _currentOpacityColorFilter;
-
-		private OpacityDisposable PushOpacity(float opacity)
+		if (rootVisual is null)
 		{
-			_opacityStack.Push(_currentOpacity);
-			_currentOpacity *= opacity;
-			_currentOpacityColorFilter = null;
-
-			return new OpacityDisposable(this);
+			throw new ArgumentNullException(nameof(rootVisual));
 		}
 
-		private struct OpacityDisposable : IDisposable
+		_isDirty = false;
+
+		var children = rootVisual.GetChildrenInRenderOrder();
+		for (var i = 0; i < children.Count; i++)
 		{
-			private readonly Compositor Compositor;
+			RenderVisual(surface, children[i]);
+		}
+	}
 
-			public OpacityDisposable(Compositor compositor)
-			{
-				Compositor = compositor;
-			}
-
-			public void Dispose()
-			{
-				Compositor._currentOpacity = Compositor._opacityStack.Pop();
-				Compositor._currentOpacityColorFilter?.Dispose();
-				Compositor._currentOpacityColorFilter = null;
-			}
+	internal void RenderVisual(SKSurface surface, Visual visual)
+	{
+		if (visual is { Opacity: 0 } or { IsVisible: false })
+		{
+			return;
 		}
 
-		internal float CurrentOpacity => _currentOpacity;
-
-		internal SKColorFilter? CurrentOpacityColorFilter
+		if (visual.ShadowState is { } shadow)
 		{
-			get
-			{
-				if (_currentOpacity != 1.0f)
-				{
-					if (_currentOpacityColorFilter is null)
-					{
-						var opacity = 255 * _currentOpacity;
-						_currentOpacityColorFilter = SKColorFilter.CreateBlendMode(new SKColor(0xFF, 0xFF, 0xFF, (byte)opacity), SKBlendMode.Modulate);
-					}
-
-					return _currentOpacityColorFilter;
-				}
-				else
-				{
-					return null;
-				}
-			}
+			surface.Canvas.SaveLayer(shadow.Paint);
+		}
+		else
+		{
+			surface.Canvas.Save();
 		}
 
-		internal void RenderRootVisual(SKSurface surface, ContainerVisual rootVisual)
+		// Set the position of the visual on the canvas (i.e. change coordinates system to the "XAML element" one)
+		surface.Canvas.Translate(visual.Offset.X + visual.AnchorPoint.X, visual.Offset.Y + visual.AnchorPoint.Y);
+
+		// Applied rending transformation matrix (i.e. change coordinates system to the "rendering" one)
+		if (visual.GetTransform() is { IsIdentity: false } transform)
 		{
-			if (rootVisual is null)
-			{
-				throw new ArgumentNullException(nameof(rootVisual));
-			}
-
-			_isDirty = false;
-
-			var children = rootVisual.GetChildrenInRenderOrder();
-			for (var i = 0; i < children.Count; i++)
-			{
-				RenderVisual(surface, children[i]);
-			}
+			var skTransform = transform.ToSKMatrix();
+			surface.Canvas.Concat(ref skTransform);
 		}
 
-		internal void RenderVisual(SKSurface surface, Visual visual)
+		// Apply the clipping defined on the element
+		// (Only the Clip property, clipping applied by parent for layout constraints reason it's managed by the ShapeVisual through the ViewBox)
+		// Note: The Clip is applied after the transformation matrix, so it's also transformed.
+		visual.Clip?.Apply(surface);
+
+		using var filter = PushFilter(visual.Opacity);
+
+		visual.Render(surface);
+
+		surface.Canvas.Restore();
+	}
+
+
+	partial void InvalidateRenderPartial()
+	{
+		if (!_isDirty)
 		{
-			if (visual is { Opacity: 0 } or { IsVisible: false })
+			_isDirty = true;
+			// TODO: Adjust for multi window #8341 
+			CoreApplication.QueueInvalidateRender();
+		}
+	}
+
+	private FilterDisposable PushFilter(float opacity)
+	{
+		if (opacity is 1.0f)
+		{
+			// This won't change anything, to not increase effect stack size for nothing
+			return default;
+		}
+
+		_filterStack.Push(_currentFilter);
+
+		_currentFilter = _currentFilter with
+		{
+			Opacity = _currentFilter.Opacity * opacity
+		};
+
+		return new FilterDisposable(this);
+	}
+
+	/// <summary>
+	/// A holding struct for effects that should be applied by children instead of visual itself, usually only on actual drawing instead of container visual.
+	/// </summary>
+	/// <param name="Opacity">
+	///		The opacity to apply to children.
+	///		This should be applied only on drawing and not the container to avoid fade-ou of child containers.
+	/// </param>
+	internal record struct Filter(float Opacity)
+	{
+		public static Filter Default { get; } = new(1.0f);
+
+		private SKColorFilter? _opacityColorFilter = null;
+
+		// Note: This SKColorFilter might be created more than once since this Filter is a struct.
+		//       However since this Filter is copied (pushed to the stack) only when something changes, it should still catch most cases.
+		public SKColorFilter? OpacityColorFilter => Opacity is 1.0f
+			? null
+			: _opacityColorFilter ??= SKColorFilter.CreateBlendMode(new SKColor(0xFF, 0xFF, 0xFF, (byte)(255 * Opacity)), SKBlendMode.Modulate);
+	}
+
+	private readonly record struct FilterDisposable(Compositor Compositor) : IDisposable
+	{
+		public void Dispose()
+		{
+			if (Compositor is null) // nop filter!
 			{
 				return;
 			}
 
-			if (visual.ShadowState is { } shadow)
-			{
-				surface.Canvas.SaveLayer(shadow.Paint);
-			}
-			else
-			{
-				surface.Canvas.Save();
-			}
-
-			// Set the position of the visual on the canvas (i.e. change coordinates system to the "XAML element" one)
-			surface.Canvas.Translate(visual.Offset.X + visual.AnchorPoint.X, visual.Offset.Y + visual.AnchorPoint.Y);
-
-			// Apply the clipping. This is relative to the visual's coordinate system, before any rendering transformation is applied.
-			ApplyClip(surface, visual);
-
-			// Applied rending transformation matrix (i.e. change coordinates system to the "rendering" one)
-			var transform = GetTransform(visual);
-			if (!transform.IsIdentity)
-			{
-				var skTransform = transform.ToSKMatrix();
-				surface.Canvas.Concat(ref skTransform);
-			}
-
-			using var opacityDisposable = PushOpacity(visual.Opacity);
-
-			visual.Render(surface);
-
-			surface.Canvas.Restore();
-		}
-
-		private static void ApplyClip(SKSurface surface, Visual visual)
-		{
-			if (visual.Clip is InsetClip insetClip)
-			{
-				var clipRect = insetClip.SKRect;
-
-				surface.Canvas.ClipRect(clipRect, SKClipOperation.Intersect, true);
-			}
-			else if (visual.Clip is RectangleClip rectangleClip)
-			{
-				surface.Canvas.ClipRoundRect(rectangleClip.SKRoundRect, SKClipOperation.Intersect, true);
-			}
-			else if (visual.Clip is CompositionGeometricClip geometricClip)
-			{
-				switch (geometricClip.Geometry)
-				{
-					case CompositionPathGeometry { Path.GeometrySource: SkiaGeometrySource2D geometrySource }:
-						surface.Canvas.ClipPath(geometrySource.Geometry, antialias: true);
-						break;
-					case CompositionPathGeometry cpg:
-						throw new InvalidOperationException($"Clipping with source {cpg.Path?.GeometrySource} is not supported");
-					case null:
-						// null is nop
-						break;
-					default:
-						throw new InvalidOperationException($"Clipping with {geometricClip.Geometry} is not supported");
-				}
-			}
-		}
-
-		private static Matrix4x4 GetTransform(Visual visual)
-		{
-			var transform = visual.TransformMatrix;
-
-			var scale = visual.Scale;
-			if (scale != Vector3.One)
-			{
-				transform *= Matrix4x4.CreateScale(scale, visual.CenterPoint);
-			}
-
-			var orientation = visual.Orientation;
-			if (orientation != Quaternion.Identity)
-			{
-				transform *= Matrix4x4.CreateFromQuaternion(orientation);
-			}
-
-			var rotation = visual.RotationAngle;
-			if (rotation is not 0)
-			{
-				transform *= Matrix4x4.CreateFromAxisAngle(visual.RotationAxis, rotation);
-			}
-
-			return transform;
-		}
-
-		partial void InvalidateRenderPartial()
-		{
-			if (!_isDirty)
-			{
-				_isDirty = true;
-				// TODO: Adjust for multi window #8341 
-				CoreApplication.QueueInvalidateRender();
-			}
+			Compositor._currentFilter = Compositor._filterStack.Pop();
 		}
 	}
 }

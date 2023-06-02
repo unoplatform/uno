@@ -13,16 +13,16 @@ namespace Windows.UI.Composition
 		{
 			if (Geometry?.BuildGeometry() is SkiaGeometrySource2D { Geometry: { } geometry })
 			{
-				if (FillBrush != null)
+				if (FillBrush is {} fill)
 				{
 					var fillPaint = TryCreateAndClearFillPaint();
-
-					FillBrush.UpdatePaint(fillPaint, geometry.Bounds);
+					
+					fill.UpdatePaint(fillPaint, geometry.Bounds);
 
 					surface.Canvas.DrawPath(geometry, fillPaint);
 				}
 
-				if (StrokeBrush != null && StrokeThickness > 0)
+				if (StrokeBrush is {} stroke && StrokeThickness > 0)
 				{
 					var fillPaint = TryCreateAndClearFillPaint();
 					var strokePaint = TryCreateAndClearStrokePaint();
@@ -36,7 +36,7 @@ namespace Windows.UI.Composition
 					// - [Future]: This generated geometry should also be used for hit testing.
 					using var strokeGeometry = strokePaint.GetFillPath(geometry);
 
-					StrokeBrush.UpdatePaint(fillPaint, strokeGeometry.Bounds);
+					stroke.UpdatePaint(fillPaint, strokeGeometry.Bounds);
 
 					surface.Canvas.DrawPath(strokeGeometry, fillPaint);
 				}
@@ -70,7 +70,7 @@ namespace Windows.UI.Composition
 				}
 			}
 
-			paint.ColorFilter = Compositor.CurrentOpacityColorFilter;
+			paint.ColorFilter = Compositor.CurrentFilter.OpacityColorFilter;
 
 			return paint;
 		}
