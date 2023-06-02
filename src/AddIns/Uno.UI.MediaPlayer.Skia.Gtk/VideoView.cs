@@ -104,7 +104,7 @@ namespace Uno.UI.Media
 					{
 						if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 						{
-							this.Log().Debug($"{GetHashCode():X8} Skipping show show video window, the parent widget is not arranged");
+							this.Log().Debug($"{GetHashCode():X8} Skipping show video window, the parent widget is not arranged");
 						}
 					}
 				}
@@ -236,7 +236,7 @@ namespace Uno.UI.Media
 					throw new InvalidOperationException($"_videoWindow cannot be null");
 				}
 
-				// Reparent the window to the current window, so it appears inside, position outside the bounds of the window
+				// Reparent the window to the current window, so it appears inside, positioned outside the bounds of the window
 				// to avoid a temporary visual glitch
 				_videoWindow.Window.Reparent(Toplevel.Window, Allocation.X, Allocation.Y);
 
