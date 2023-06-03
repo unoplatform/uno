@@ -233,7 +233,12 @@ namespace Uno.UI.Media
 
 				if (_videoWindow is null)
 				{
-					throw new InvalidOperationException($"_videoWindow cannot be null");
+					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+					{
+						this.Log().Debug($"{GetHashCode():X8} Skipping AttachToWidget (no video window available)");
+					}
+
+					return;
 				}
 
 				// Reparent the window to the current window, so it appears inside, positioned outside the bounds of the window
