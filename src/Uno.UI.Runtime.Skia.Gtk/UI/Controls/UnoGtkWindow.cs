@@ -1,19 +1,26 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections.Generic;
 using Gtk;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
+using Uno.UI.Runtime.Skia.GTK.UI.Core;
 using Uno.UI.Xaml.Core;
 using Uno.UI.XamlHost.Skia.Gtk.Hosting;
+using Windows.Foundation;
 using Windows.UI.Core.Preview;
 using Windows.UI.ViewManagement;
 using Windows.UI.WebUI;
 using Windows.UI.Xaml;
+using WinUIWindow = Windows.UI.Xaml.Window;
 
 namespace Uno.UI.Runtime.Skia.UI.Xaml.Controls;
 
 internal class UnoGtkWindow : Gtk.Window
 {
+	private readonly WinUIWindow _window;
+
 	private static UnoEventBox _eventBox;
 	private Widget _area;
 	private Fixed _fix;
@@ -26,33 +33,35 @@ internal class UnoGtkWindow : Gtk.Window
 	private record PendingWindowStateChangedInfo(Gdk.WindowState newState, Gdk.WindowState changedMask);
 	private List<PendingWindowStateChangedInfo> _pendingWindowStateChanged = new();
 
-	public UnoGtkWindow(string title) : base(title)
+	public UnoGtkWindow(WinUIWindow window) : base(WindowType.Toplevel)
 	{
-		//_window = new UnoGtkWindow("GTK Host");
-		//Size preferredWindowSize = ApplicationView.PreferredLaunchViewSize;
-		//if (preferredWindowSize != Size.Empty)
-		//{
-		//	_window.SetDefaultSize((int)preferredWindowSize.Width, (int)preferredWindowSize.Height);
-		//}
-		//else
-		//{
-		//	_window.SetDefaultSize(1024, 800);
-		//}
-		//_window.SetPosition(Gtk.WindowPosition.Center);
-		//_window.Realized += (s, e) =>
-		//{
-		//	// Load the correct cursors before the window is shown
-		//	// but after the window has been initialized.
-		//	Cursors.Reload();
-		//};
+		_window = window;
+		_window.Shown += OnShown;
+		Size preferredWindowSize = ApplicationView.PreferredLaunchViewSize;
+		if (preferredWindowSize != Size.Empty)
+		{
+			SetDefaultSize((int)preferredWindowSize.Width, (int)preferredWindowSize.Height);
+		}
+		else
+		{
+			SetDefaultSize(1024, 800);
+		}
+		SetPosition(Gtk.WindowPosition.Center);
+		Realized += (s, e) =>
+		{
+			// Load the correct cursors before the window is shown
+			// but after the window has been initialized.
+			Cursors.EnsureLoaded();
+		};
 
-		//_window.DeleteEvent += WindowClosing;
+		DeleteEvent += WindowClosing;
 
-		//_window.WindowStateEvent += OnWindowStateChanged;
-		//_window.ShowAll();
+		WindowStateEvent += OnWindowStateChanged;
 
-		//SetupRenderSurface();
+		SetupRenderSurface();
 	}
+
+	private void OnShown(object? sender, EventArgs e) => ShowAll();
 
 	internal IRenderSurface RenderSurface => _renderSurface;
 

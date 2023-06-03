@@ -12,6 +12,7 @@ using Uno.UI.Runtime.Skia.Wpf.Hosting;
 using Uno.UI.Runtime.Skia.Wpf.Rendering;
 using Uno.UI.Skia.Platform;
 using Uno.UI.Xaml.Core;
+using Uno.UI.Xaml.Hosting;
 using Uno.UI.XamlHost.Skia.Wpf;
 using Uno.UI.XamlHost.Skia.Wpf.Hosting;
 using Windows.UI.ViewManagement;
@@ -73,25 +74,25 @@ internal class UnoWpfWindow : WpfWindow, IWpfWindowHost
 
 	private void OnShown(object? sender, EventArgs e) => Show();
 
-	WinUI.UIElement? IWpfXamlRootHost.RootElement => _window.RootElement;
+	WinUI.UIElement? IXamlRootHost.RootElement => _window.RootElement;
 
 	WpfCanvas? IWpfXamlRootHost.NativeOverlayLayer => _nativeOverlayLayer;
 
-	WinUI.XamlRoot? IWpfXamlRootHost.XamlRoot => _window.RootElement?.XamlRoot;
+	WinUI.XamlRoot? IXamlRootHost.XamlRoot => _window.RootElement?.XamlRoot;
 
 	public bool IgnorePixelScaling => WpfHost.Current!.IgnorePixelScaling;
 
 	public bool IsIsland => false;
 
-	void IWpfXamlRootHost.InvalidateRender()
+	void IXamlRootHost.InvalidateRender()
 	{
 		InvalidateOverlays();
 		InvalidateVisual();
 	}
 
-	void IWpfXamlRootHost.ReleasePointerCapture() => ReleaseMouseCapture(); //TODO: This should capture the correct type of pointer (stylus/mouse/touch) https://github.com/unoplatform/uno/issues/8978[capture]
+	void IXamlRootHost.ReleasePointerCapture() => ReleaseMouseCapture(); //TODO: This should capture the correct type of pointer (stylus/mouse/touch) https://github.com/unoplatform/uno/issues/8978[capture]
 
-	void IWpfXamlRootHost.SetPointerCapture() => CaptureMouse();
+	void IXamlRootHost.SetPointerCapture() => CaptureMouse();
 
 	public override void OnApplyTemplate()
 	{

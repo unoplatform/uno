@@ -1,48 +1,14 @@
 ﻿#nullable enable
 
 using System;
-using System.IO;
 using Gtk;
-using Uno.ApplicationModel.DataTransfer;
-using Uno.Extensions;
-using Uno.Extensions.Storage.Pickers;
-using Uno.Extensions.System;
-using Uno.Extensions.UI.Core.Preview;
-using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
-using Uno.Helpers.Theming;
-using Uno.UI.Core.Preview;
-using Uno.UI.Runtime.Skia.GTK.Extensions.ApplicationModel.DataTransfer;
 using Uno.UI.Runtime.Skia.GTK.Extensions.Helpers;
-using Uno.UI.Runtime.Skia.GTK.Extensions.Helpers.Theming;
-using Uno.UI.Runtime.Skia.GTK.Extensions.System;
-using Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls;
-using Uno.UI.Runtime.Skia.GTK.System.Profile;
-using Uno.UI.Runtime.Skia.GTK.UI.Core;
-using Uno.UI.Xaml.Controls.Extensions;
-using Windows.Foundation;
-using Windows.Storage.Pickers;
-using Windows.System.Profile.Internal;
-using Windows.UI.Core.Preview;
-using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
 using WinUIApplication = Windows.UI.Xaml.Application;
 using WUX = Windows.UI.Xaml;
-using Uno.UI.Xaml.Core;
-using System.ComponentModel;
-using Uno.Disposables;
-using System.Collections.Generic;
-using Uno.Extensions.ApplicationModel.Core;
-using Windows.ApplicationModel;
-using Uno.UI.XamlHost.Skia.Gtk.Hosting;
-using System.Runtime.InteropServices;
-using System.Reflection;
-using Gdk;
-using System.Linq;
-using Size = Windows.Foundation.Size;
 using GtkApplication = Gtk.Application;
-using GtkWindow = Gtk.Window;
+using WinUIWindow = Windows.UI.Xaml.Window;
 using Uno.UI.Runtime.Skia.GTK.Extensions;
 using Uno.UI.Runtime.Skia.UI.Xaml.Controls;
 
@@ -74,6 +40,8 @@ namespace Uno.UI.Runtime.Skia
 
 		internal static GtkHost? Current => _current;
 
+		internal UnoGtkWindow MainWindow { get; private set; }
+
 		/// <summary>
 		/// Gets or sets the current Skia Render surface type.
 		/// </summary>
@@ -95,6 +63,8 @@ namespace Uno.UI.Runtime.Skia
 
 			StartApp();
 
+			SetupMainWindow();
+
 			GtkApplication.Run();
 		}
 
@@ -104,6 +74,15 @@ namespace Uno.UI.Runtime.Skia
 
 			Windows.UI.Core.CoreDispatcher.DispatchOverride = DispatchNativeSingle;
 			Windows.UI.Core.CoreDispatcher.HasThreadAccessOverride = () => _isDispatcherThread;
+		}
+
+		private void SetupMainWindow()
+		{
+			MainWindow = new UnoGtkWindow(WinUIWindow.Current);
+			WpfApplication.Current.MainWindow.Activated += MainWindow_Activated;
+			WpfApplication.Current.MainWindow.Deactivated += MainWindow_Deactivated;
+			WpfApplication.Current.MainWindow.StateChanged += MainWindow_StateChanged;
+			WpfApplication.Current.MainWindow.Closing += MainWindow_Closing;
 		}
 
 		private void StartApp()
