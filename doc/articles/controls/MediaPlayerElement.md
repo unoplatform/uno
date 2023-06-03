@@ -36,7 +36,7 @@ See [MediaPlayerElement](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xam
 |						| Poster image											| X  		| X  		| X  		| X  		| Does not show when playing music				|
 |						| Enable/Disable MediaTransportControls			  		| X  		| X  		| X  		| X  		|												|
 |						| Stretch										  		| X  		| X  		| X  		| X  		| Stretch.None behave like Stretch.Fill on iOS	|
-|						| Pause media when headphones unplugged			  		| X  		| X  		| X  		| X  		| 												|
+|						| Pause media when headphones unplugged			  		| X  		| X  		| -  		| -  		| 												|
 | TransportControls		| Transport controls custom style						| X  		| X  		| X  		| X  		|												|
 | 			    		| Play/Pause 											| X  		| X  		| X  		| X  		|												|
 |						| Stop  												| X  		| X  		| X  		| X  		|												|
@@ -54,7 +54,7 @@ See [MediaPlayerElement](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xam
 |						| Show buffering progress						  		| X  		| X  		| X  		| X  		|												|
 |						| Zoom mode												| X  		| X  		| X  		| X  		| 												|
 |						| Full-screen mode								  		| X  		| X  		| X  		| X  		|												|
-|						| Playlists support		  								| X  		| X  		| X  		| X  		|												|
+|						| Playlists support		  								| X  		| X  		| -  		| -  		|												|
 |						| Change playback rate									| -  		| -  		| X  		| X  		|												|
 |						| Player controls on locked screen support  			| -  		| -  		| -  		| -  		|												|
 |						| Subtitles	support			  							| -  		| -  		| -  		| -  		|												|
