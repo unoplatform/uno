@@ -766,17 +766,21 @@ namespace Windows.UI.Xaml.Controls
 				_mediaPlayer is { } &&
 				XamlRoot?.Content is UIElement root)
 			{
-				var bounds = new Rect(
-					0,
-					0,
-					m_tpControlPanelGrid.ActualWidth,
-					_isShowingControls ? m_tpControlPanelGrid.ActualHeight : 0
-				);
-				var transportBounds = TransformToVisual(root).TransformBounds(bounds);
-
-				_mediaPlayer.SetTransportControlBounds(transportBounds);
+				var slot = m_tpControlPanelGrid
+					.TransformToVisual(m_tpControlPanelGrid.Parent as UIElement)
+					.TransformBounds(m_tpControlPanelGrid.LayoutSlotWithMarginsAndAlignments);
+				slot.Height += m_tpControlPanelGrid.Padding.Top
+								+ m_tpControlPanelGrid.Padding.Bottom
+								+ Margin.Top
+								+ Margin.Bottom;
+				if (!_isShowingControls)
+				{
+					slot.Height = 0;
+				}
+				_mediaPlayer.SetTransportControlBounds(slot);
 			}
 		}
+
 		private void OnPaneGridTapped(object sender, TappedRoutedEventArgs e)
 		{
 			if (ShowAndHideAutomatically)
