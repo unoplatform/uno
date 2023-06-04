@@ -14,8 +14,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 	internal partial class XamlFileGenerator
 	{
 		private Func<string, INamedTypeSymbol?>? _findType;
-		private Func<XamlType, bool, INamedTypeSymbol?>? _findTypeByXamlType;
-		private Func<INamedTypeSymbol?, string, INamedTypeSymbol?>? _findPropertyTypeByOwnerSymbol;
+		private Func<XamlType, INamedTypeSymbol?>? _findTypeByXamlType;
 		private Func<XamlMember, INamedTypeSymbol?>? _findPropertyTypeByXamlMember;
 		private XClassName? _xClassName;
 		private string[]? _clrNamespaces;
@@ -30,10 +29,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		{
 			_findType = Funcs.Create<string, INamedTypeSymbol?>(SourceFindType).AsMemoized();
 			_findPropertyTypeByXamlMember = Funcs.Create<XamlMember, INamedTypeSymbol?>(SourceFindPropertyType).AsMemoized();
-			_findTypeByXamlType = Funcs.Create<XamlType, bool, INamedTypeSymbol?>(SourceFindTypeByXamlType).AsMemoized();
-			_findEventType = Funcs.Create<INamedTypeSymbol?, string, IEventSymbol?>(SourceFindEventType).AsMemoized();
-			_findPropertyTypeByOwnerSymbol = Funcs.Create<INamedTypeSymbol?, string, INamedTypeSymbol?>(SourceFindPropertyTypeByOwnerSymbol).AsMemoized();
-			_findLocalizableDeclaredProperties = Funcs.Create<INamedTypeSymbol, string[]>(SourceFindLocalizableDeclaredProperties).AsMemoized();
+			_findTypeByXamlType = Funcs.Create<XamlType, INamedTypeSymbol?>(SourceFindTypeByXamlType).AsMemoized();
 
 			var defaultXmlNamespace = _fileDefinition
 				.Namespaces
