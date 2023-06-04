@@ -7,7 +7,6 @@ using Pango;
 using Uno.Foundation.Logging;
 using Uno.UI.Runtime.Skia.GTK.UI.Text;
 using Uno.UI.Xaml.Controls.Extensions;
-using Uno.UI.XamlHost.Skia.Gtk.Hosting;
 using Windows.UI.Text;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;

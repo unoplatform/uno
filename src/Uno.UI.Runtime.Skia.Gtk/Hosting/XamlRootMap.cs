@@ -3,10 +3,9 @@
 using System;
 using System.Collections.Generic;
 using Uno.UI.Runtime.Skia.GTK.Hosting;
-using Uno.UI.Xaml.Hosting;
 using Windows.UI.Xaml;
 
-namespace Uno.UI.XamlHost.Skia.Gtk.Hosting;
+namespace Uno.UI.XamlHost.Skia.GTK.Hosting;
 
 internal static class XamlRootMap
 {

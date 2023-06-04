@@ -21,7 +21,6 @@ using Exception = System.Exception;
 using Windows.UI.Xaml;
 using Uno.UI.Xaml.Core;
 using Windows.Foundation;
-using Uno.UI.XamlHost.Skia.Gtk.Hosting;
 using Atk;
 
 namespace Uno.UI.Runtime.Skia

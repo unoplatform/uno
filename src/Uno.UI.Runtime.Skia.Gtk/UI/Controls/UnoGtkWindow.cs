@@ -7,7 +7,6 @@ using Uno.Disposables;
 using Uno.Foundation.Logging;
 using Uno.UI.Runtime.Skia.GTK.UI.Core;
 using Uno.UI.Xaml.Core;
-using Uno.UI.XamlHost.Skia.Gtk.Hosting;
 using Windows.Foundation;
 using Windows.UI.Core.Preview;
 using Windows.UI.ViewManagement;
@@ -16,11 +15,14 @@ using Windows.UI.Xaml;
 using WinUIWindow = Windows.UI.Xaml.Window;
 using UnoApplication = Windows.UI.Xaml.Application;
 using WinUI = Windows.UI.Xaml;
+using Uno.UI.Runtime.Skia.GTK.Hosting;
+using Uno.UI.Xaml.Hosting;
+
 namespace Uno.UI.Runtime.Skia.UI.Xaml.Controls;
 #pragma warning disable CS0649
 #pragma warning disable CS0169
 
-internal class UnoGtkWindow : Gtk.Window
+internal class UnoGtkWindow : Gtk.Window, IGtkWindowHost
 {
 	private readonly WinUIWindow _window;
 
@@ -61,13 +63,54 @@ internal class UnoGtkWindow : Gtk.Window
 
 		WindowStateEvent += OnWindowStateChanged;
 
-		SetupRenderSurface();
+		//SetupRenderSurface();
+
+		var overlay = new Overlay();
+
+		_eventBox = new UnoEventBox();
+
+		_renderSurface = BuildRenderSurfaceType();
+		_area = (Widget)_renderSurface;
+		_fix = new Fixed();
+		overlay.Add(_area);
+		overlay.AddOverlay(_fix);
+		_eventBox.Add(overlay);
+		Add(_eventBox);
+
+		//// Show the whole tree again, since we may have
+		//// swapped the content with the GLValidationSurface.
+		//_window.ShowAll();
+
+		//if (this.Log().IsEnabled(LogLevel.Information))
+		//{
+		//	this.Log().Info($"Using {RenderSurfaceType} rendering");
+		//}
+
+		//_area.Realized += (s, e) =>
+		//{
+		//	WUX.Window.Current.OnNativeSizeChanged(new Windows.Foundation.Size(_area.AllocatedWidth, _area.AllocatedHeight));
+		//};
+
+		//_area.SizeAllocated += (s, e) =>
+		//{
+		//	WUX.Window.Current.OnNativeSizeChanged(new Windows.Foundation.Size(e.Allocation.Width, e.Allocation.Height));
+		//};
+
+		///* avoids double invokes at window level */
+		//_area.AddEvents((int)GtkCoreWindowExtension.RequestedEvents);
+
+
+		CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRootSet += OnCoreWindowContentRootSet;
+
+		RegisterForBackgroundColor();
+		UpdateWindowPropertiesFromPackage();
+
+		//ReplayPendingWindowStateChanges();
 	}
 
 	private void OnShown(object? sender, EventArgs e) => ShowAll();
 
 	internal IRenderSurface? RenderSurface => _renderSurface;
-
 
 	internal Fixed? NativeOverlayLayer => GtkCoreWindowExtension.FindNativeOverlayLayer(this);
 
@@ -187,131 +230,84 @@ internal class UnoGtkWindow : Gtk.Window
 	}
 
 
-	//private IRenderSurface BuildRenderSurfaceType()
-	//	=> RenderSurfaceType switch
+	private IRenderSurface BuildRenderSurfaceType()
+		=> GtkHost.Current!.RenderSurfaceType switch
+		{
+			Skia.RenderSurfaceType.OpenGLES => new OpenGLESRenderSurface(this),
+			Skia.RenderSurfaceType.OpenGL => new OpenGLRenderSurface(this),
+			Skia.RenderSurfaceType.Software => new SoftwareRenderSurface(this),
+			_ => throw new InvalidOperationException($"Unsupported RenderSurfaceType {GtkHost.Current!.RenderSurfaceType}")
+		};
+
+
+	//private void SetupRenderSurface()
+	//{
+	//	TryReadRenderSurfaceTypeEnvironment();
+
+	//	if (!OpenGLRenderSurface.IsSupported && !OpenGLESRenderSurface.IsSupported)
 	//	{
-	//		Skia.RenderSurfaceType.OpenGLES => new OpenGLESRenderSurface(),
-	//		Skia.RenderSurfaceType.OpenGL => new OpenGLRenderSurface(),
-	//		Skia.RenderSurfaceType.Software => new SoftwareRenderSurface(),
-	//		_ => throw new InvalidOperationException($"Unsupported RenderSurfaceType {RenderSurfaceType}")
-	//	};
+	//		// Pre-validation is required to avoid initializing OpenGL on macOS
+	//		// where the whole app may get visually corrupted even if OpenGL is not
+	//		// used in the app.
 
+	//		if (this.Log().IsEnabled(LogLevel.Debug))
+	//		{
+	//			this.Log().Debug($"Neither OpenGL or OpenGL ES are supporting, using software rendering");
+	//		}
 
-	private void SetupRenderSurface()
-	{
-		//TryReadRenderSurfaceTypeEnvironment();
+	//		GtkHost.Current!.RenderSurfaceType = Skia.RenderSurfaceType.Software;
+	//	}
 
-		//if (!OpenGLRenderSurface.IsSupported && !OpenGLESRenderSurface.IsSupported)
-		//{
-		//	// Pre-validation is required to avoid initializing OpenGL on macOS
-		//	// where the whole app may get visually corrupted even if OpenGL is not
-		//	// used in the app.
+	//	if (GtkHost.Current!.RenderSurfaceType == null)
+	//	{
+	//		// Create a temporary surface to automatically detect
+	//		// the OpenGL environment that can be used on the system.
+	//		GLValidationSurface validationSurface = new();
 
-		//	if (this.Log().IsEnabled(LogLevel.Debug))
-		//	{
-		//		this.Log().Debug($"Neither OpenGL or OpenGL ES are supporting, using software rendering");
-		//	}
+	//		Add(validationSurface);
+	//		ShowAll();
 
-		//	RenderSurfaceType = Skia.RenderSurfaceType.Software;
-		//}
+	//		DispatchNativeSingle(ValidatedSurface);
 
-		//if (RenderSurfaceType == null)
-		//{
-		//	// Create a temporary surface to automatically detect
-		//	// the OpenGL environment that can be used on the system.
-		//	GLValidationSurface validationSurface = new();
+	//		async void ValidatedSurface()
+	//		{
+	//			try
+	//			{
+	//				if (this.Log().IsEnabled(LogLevel.Debug))
+	//				{
+	//					this.Log().Debug($"Auto-detecting surface type");
+	//				}
 
-		//	_window.Add(validationSurface);
-		//	_window.ShowAll();
+	//				// Wait for a realization of the GLValidationSurface
+	//				RenderSurfaceType = await validationSurface.GetSurfaceTypeAsync();
 
-		//	DispatchNativeSingle(ValidatedSurface);
+	//				// Continue on the GTK main thread
+	//				DispatchNativeSingle(() =>
+	//				{
+	//					if (this.Log().IsEnabled(LogLevel.Debug))
+	//					{
+	//						this.Log().Debug($"Auto-detected {RenderSurfaceType} rendering");
+	//					}
 
-		//	async void ValidatedSurface()
-		//	{
-		//		try
-		//		{
-		//			if (this.Log().IsEnabled(LogLevel.Debug))
-		//			{
-		//				this.Log().Debug($"Auto-detecting surface type");
-		//			}
+	//					_window.Remove(validationSurface);
 
-		//			// Wait for a realization of the GLValidationSurface
-		//			RenderSurfaceType = await validationSurface.GetSurfaceTypeAsync();
-
-		//			// Continue on the GTK main thread
-		//			DispatchNativeSingle(() =>
-		//			{
-		//				if (this.Log().IsEnabled(LogLevel.Debug))
-		//				{
-		//					this.Log().Debug($"Auto-detected {RenderSurfaceType} rendering");
-		//				}
-
-		//				_window.Remove(validationSurface);
-
-		//				FinalizeStartup();
-		//			});
-		//		}
-		//		catch (Exception e)
-		//		{
-		//			if (this.Log().IsEnabled(LogLevel.Error))
-		//			{
-		//				this.Log().Error($"Auto-detected failed", e);
-		//			}
-		//		}
-		//	}
-		//}
-		//else
-		//{
-		//	FinalizeStartup();
-		//}
-	}
-
-	private void FinalizeStartup()
-	{
-		//var overlay = new Overlay();
-
-		//_eventBox = new UnoEventBox();
-
-		//_renderSurface = BuildRenderSurfaceType();
-		//_area = (Widget)_renderSurface;
-		//_fix = new Fixed();
-		//overlay.Add(_area);
-		//overlay.AddOverlay(_fix);
-		//_eventBox.Add(overlay);
-		//_window.Add(_eventBox);
-
-		//// Show the whole tree again, since we may have
-		//// swapped the content with the GLValidationSurface.
-		//_window.ShowAll();
-
-		//if (this.Log().IsEnabled(LogLevel.Information))
-		//{
-		//	this.Log().Info($"Using {RenderSurfaceType} rendering");
-		//}
-
-		//_area.Realized += (s, e) =>
-		//{
-		//	WUX.Window.Current.OnNativeSizeChanged(new Windows.Foundation.Size(_area.AllocatedWidth, _area.AllocatedHeight));
-		//};
-
-		//_area.SizeAllocated += (s, e) =>
-		//{
-		//	WUX.Window.Current.OnNativeSizeChanged(new Windows.Foundation.Size(e.Allocation.Width, e.Allocation.Height));
-		//};
-
-		///* avoids double invokes at window level */
-		//_area.AddEvents((int)GtkCoreWindowExtension.RequestedEvents);
-
-		//ReplayPendingWindowStateChanges();
-
-		//CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRootSet += OnCoreWindowContentRootSet;
-
-		//UpdateWindowPropertiesFromPackage();
-
-		//RegisterForBackgroundColor();
-	}
-
-
+	//					FinalizeStartup();
+	//				});
+	//			}
+	//			catch (Exception e)
+	//			{
+	//				if (this.Log().IsEnabled(LogLevel.Error))
+	//				{
+	//					this.Log().Error($"Auto-detected failed", e);
+	//				}
+	//			}
+	//		}
+	//	}
+	//	else
+	//	{
+	//		FinalizeStartup();
+	//	}
+	//}
 
 	private void TryReadRenderSurfaceTypeEnvironment()
 	{
@@ -369,6 +365,18 @@ internal class UnoGtkWindow : Gtk.Window
 
 		//CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRootSet -= OnCoreWindowContentRootSet;
 	}
+
+	void IXamlRootHost.InvalidateRender()
+	{
+		//InvalidateOverlays();
+		_renderSurface?.InvalidateRender();
+	}
+
+	bool IXamlRootHost.IsIsland => false;
+
+	WinUI.UIElement? IXamlRootHost.RootElement => _window.RootElement;
+
+	WinUI.XamlRoot? IXamlRootHost.XamlRoot => _window.RootElement?.XamlRoot;
 
 	private void WindowClosing(object sender, DeleteEventArgs args)
 	{

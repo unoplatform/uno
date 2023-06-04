@@ -5,6 +5,7 @@ using Uno.Extensions.ApplicationModel.Core;
 using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Core;
+using Uno.UI.Xaml.Hosting;
 using Uno.WinUI.Runtime.Skia.LinuxFB;
 using Windows.Graphics.Display;
 using Windows.UI.Xaml;
@@ -12,7 +13,7 @@ using WUX = Windows.UI.Xaml;
 
 namespace Uno.UI.Runtime.Skia
 {
-	public class FrameBufferHost : ISkiaApplicationHost
+	public class FrameBufferHost : ISkiaApplicationHost, IXamlRootHost
 	{
 		[ThreadStatic]
 		private static bool _isDispatcherThread = false;
@@ -119,7 +120,7 @@ namespace Uno.UI.Runtime.Skia
 			Windows.UI.Core.CoreDispatcher.DispatchOverride = Dispatch;
 			Windows.UI.Core.CoreDispatcher.HasThreadAccessOverride = () => _isDispatcherThread;
 
-			_renderer = new Renderer();
+			_renderer = new Renderer(this);
 			_displayInformationExtension!.Renderer = _renderer;
 
 			CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRootSet += OnCoreWindowContentRootSet;
