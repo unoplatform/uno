@@ -28,8 +28,8 @@ namespace Uno.UI.Skia.Platform
 {
 	internal partial class WpfCoreWindowExtension : ICoreWindowExtension
 	{
-		private readonly ICoreWindowEvents _ownerEvents;
-		//private readonly WpfHost? _host;
+		private readonly WpfHost? _host;
+		private readonly CoreWindow _owner;
 
 		public CoreCursor PointerCursor
 		{
@@ -39,7 +39,8 @@ namespace Uno.UI.Skia.Platform
 
 		public WpfCoreWindowExtension(object owner)
 		{
-			_ownerEvents = (ICoreWindowEvents)owner;
+			_owner = (CoreWindow)owner;
+			_host = WpfHost.Current;
 
 			// TODO:MZ: Multi-window, attach to main window
 			//_host = WpfHost.Current;
@@ -61,14 +62,6 @@ namespace Uno.UI.Skia.Platform
 			//	win.AddHandler(System.Windows.UIElement.KeyDownEvent, (System.Windows.Input.KeyEventHandler)HostOnKeyDown, true);
 			//}
 		}
-
-		// TODO:MZ: Fix
-		public void SetPointerCapture(PointerIdentifier pointer) { }
-		//=> WpfHost.Current?.CaptureMouse();
-
-		// TODO:MZ: Fix
-		public void ReleasePointerCapture(PointerIdentifier pointer) { }
-		//=> WpfHost.Current?.ReleaseMouseCapture();
 
 		internal static WpfCanvas? GetOverlayLayer(XamlRoot xamlRoot) =>
 			XamlRootMap.GetHostForRoot(xamlRoot)?.NativeOverlayLayer;
