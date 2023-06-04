@@ -3,6 +3,7 @@
 using System;
 using System.IO;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
@@ -15,27 +16,29 @@ using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Hosting;
 using Uno.UI.XamlHost.Skia.Wpf;
 using Uno.UI.XamlHost.Skia.Wpf.Hosting;
+using Windows.Networking.BackgroundTransfer;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml.Input;
 using WinUI = Windows.UI.Xaml;
 using WpfApplication = System.Windows.Application;
 using WpfCanvas = System.Windows.Controls.Canvas;
 using WpfControl = System.Windows.Controls.Control;
+using WpfContentPresenter = System.Windows.Controls.ContentPresenter;
 using WpfFrameworkPropertyMetadata = System.Windows.FrameworkPropertyMetadata;
 using WpfWindow = System.Windows.Window;
 
 namespace Uno.UI.Skia.Wpf;
 
-[TemplatePart(Name = NativeOverlayLayerPart, Type = typeof(WpfCanvas))]
+[TemplatePart(Name = NativeOverlayLayerHostPart, Type = typeof(WpfCanvas))]
 internal class UnoWpfWindow : WpfWindow, IWpfWindowHost
 {
-	private const string NativeOverlayLayerPart = "NativeOverlayLayer";
+	private const string NativeOverlayLayerHostPart = "NativeOverlayLayerHost";
 
+	private readonly WpfCanvas _nativeOverlayLayer = new();
 	private readonly WinUI.Window _window;
 	private readonly CompositeDisposable _disposables = new();
 	private readonly HostPointerHandler? _hostPointerHandler;
 
-	private WpfCanvas? _nativeOverlayLayer;
 	private IWpfRenderer? _renderer;
 	private FocusManager? _focusManager;
 	private bool _rendererInitialized;
@@ -97,7 +100,10 @@ internal class UnoWpfWindow : WpfWindow, IWpfWindowHost
 	{
 		base.OnApplyTemplate();
 
-		_nativeOverlayLayer = GetTemplateChild(NativeOverlayLayerPart) as WpfCanvas;
+		if (GetTemplateChild(NativeOverlayLayerHostPart) is WpfContentPresenter nativeOverlayLayerHost)
+		{
+			nativeOverlayLayerHost.Content = _nativeOverlayLayer;
+		}
 	}
 
 	private void WpfHost_Loaded(object sender, RoutedEventArgs e)
