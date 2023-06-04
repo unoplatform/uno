@@ -28,12 +28,9 @@ internal partial class InputManager : IInputInjectorTarget
 	/// <summary>
 	/// Initialize the InputManager.
 	/// </summary>
-	internal void Initialize(object host)
-	{
-		InitializeManagedPointers(host);
-	}
-	partial void InitializeManagedPointers(object host);
+	internal void Initialize(object host) => InitializeManagedPointers(host);
 
+	partial void InitializeManagedPointers(object host);
 
 	//TODO Uno: Set along with user input - this needs to be adjusted soon
 	internal InputDeviceType LastInputDeviceType { get; set; } = InputDeviceType.None;
