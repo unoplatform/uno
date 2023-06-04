@@ -1084,9 +1084,9 @@ namespace Windows.UI.Xaml.Controls
 			}
 			void BindIsEnabled(FrameworkElement? target, bool value)
 			{
-				if (target is { })
+				if (target is Control { } control)
 				{
-					target.IsEnabled = value;
+					control.IsEnabled = value;
 				}
 			}
 		}
