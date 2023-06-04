@@ -17,7 +17,6 @@ using Uno.UI.XamlHost.Skia.Wpf;
 using Uno.UI.XamlHost.Skia.Wpf.Hosting;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml.Input;
-using UnoApplication = Windows.UI.Xaml.Application;
 using WinUI = Windows.UI.Xaml;
 using WpfApplication = System.Windows.Application;
 using WpfCanvas = System.Windows.Controls.Canvas;

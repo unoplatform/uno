@@ -40,7 +40,7 @@ namespace Uno.UI.Runtime.Skia
 
 		internal static GtkHost? Current => _current;
 
-		internal UnoGtkWindow MainWindow { get; private set; }
+		internal UnoGtkWindow? MainWindow { get; private set; }
 
 		/// <summary>
 		/// Gets or sets the current Skia Render surface type.
@@ -79,10 +79,10 @@ namespace Uno.UI.Runtime.Skia
 		private void SetupMainWindow()
 		{
 			MainWindow = new UnoGtkWindow(WinUIWindow.Current);
-			WpfApplication.Current.MainWindow.Activated += MainWindow_Activated;
-			WpfApplication.Current.MainWindow.Deactivated += MainWindow_Deactivated;
-			WpfApplication.Current.MainWindow.StateChanged += MainWindow_StateChanged;
-			WpfApplication.Current.MainWindow.Closing += MainWindow_Closing;
+			//WpfApplication.Current.MainWindow.Activated += MainWindow_Activated;
+			//WpfApplication.Current.MainWindow.Deactivated += MainWindow_Deactivated;
+			//WpfApplication.Current.MainWindow.StateChanged += MainWindow_StateChanged;
+			//WpfApplication.Current.MainWindow.Closing += MainWindow_Closing;
 		}
 
 		private void StartApp()

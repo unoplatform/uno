@@ -2,16 +2,17 @@
 
 using System;
 using System.Collections.Generic;
-using Uno.UI.Runtime.Skia;
+using Uno.UI.Runtime.Skia.GTK.Hosting;
+using Uno.UI.Xaml.Hosting;
 using Windows.UI.Xaml;
 
 namespace Uno.UI.XamlHost.Skia.Gtk.Hosting;
 
 internal static class XamlRootMap
 {
-	private static readonly Dictionary<XamlRoot, GtkHost> _map = new();
+	private static readonly Dictionary<XamlRoot, IGtkXamlRootHost> _map = new();
 
-	internal static void Register(XamlRoot xamlRoot, GtkHost host)
+	internal static void Register(XamlRoot xamlRoot, IGtkXamlRootHost host)
 	{
 		if (xamlRoot is null)
 		{
@@ -26,7 +27,7 @@ internal static class XamlRootMap
 		_map[xamlRoot] = host;
 		xamlRoot.VisualTree.ContentRoot.SetHost(host); // Note: This might be a duplicated call but it's supported by ContentRoot and safe
 
-		xamlRoot.InvalidateRender += host.RenderSurface.InvalidateRender;
+		xamlRoot.InvalidateRender += host.InvalidateRender;
 	}
 
 	internal static void Unregister(XamlRoot xamlRoot)
@@ -39,11 +40,11 @@ internal static class XamlRootMap
 		var host = GetHostForRoot(xamlRoot);
 		if (host is not null)
 		{
-			xamlRoot.InvalidateRender -= host.RenderSurface.InvalidateRender;
+			xamlRoot.InvalidateRender -= host.InvalidateRender;
 			_map.Remove(xamlRoot);
 		}
 	}
 
-	internal static GtkHost? GetHostForRoot(XamlRoot xamlRoot) =>
+	internal static IGtkXamlRootHost? GetHostForRoot(XamlRoot xamlRoot) =>
 		_map.TryGetValue(xamlRoot, out var host) ? host : null;
 }

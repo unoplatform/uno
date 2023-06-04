@@ -20,30 +20,30 @@ namespace Uno.UI.Runtime.Skia
 
 		public string Title
 		{
-			get => GtkHost.Window.Title;
-			set => GtkHost.Window.Title = value;
+			get => GtkHost.Current!.MainWindow!.Title;
+			set => GtkHost.Current!.MainWindow!.Title = value;
 		}
 
 		public void ExitFullScreenMode()
 		{
-			GtkHost.Window.Unfullscreen();
+			GtkHost.Current!.MainWindow!.Unfullscreen();
 		}
 
 		public bool TryEnterFullScreenMode()
 		{
-			GtkHost.Window.Fullscreen();
+			GtkHost.Current!.MainWindow!.Fullscreen();
 			return true;
 		}
 
 		public bool TryResizeView(Size size)
 		{
-			GtkHost.Window.Resize((int)size.Width, (int)size.Height);
+			GtkHost.Current!.MainWindow!.Resize((int)size.Width, (int)size.Height);
 			return true;
 		}
 
 		public void SetPreferredMinSize(Size size)
 		{
-			GtkHost.Window.SetSizeRequest((int)size.Width, (int)size.Height);
+			GtkHost.Current!.MainWindow!.SetSizeRequest((int)size.Width, (int)size.Height);
 		}
 	}
 }

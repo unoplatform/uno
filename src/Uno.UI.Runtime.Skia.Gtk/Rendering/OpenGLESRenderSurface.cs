@@ -20,6 +20,7 @@ using Gtk;
 using Silk.NET.OpenGLES;
 using Silk.NET.Core.Loader;
 using Silk.NET.Core.Contexts;
+using Uno.UI.Xaml.Hosting;
 
 namespace Uno.UI.Runtime.Skia
 {
@@ -31,7 +32,7 @@ namespace Uno.UI.Runtime.Skia
 		private static DefaultNativeContext NativeContext
 			=> _nativeContext ??= new Silk.NET.Core.Contexts.DefaultNativeContext(new OpenGLESLibraryNameContainer().GetLibraryName());
 
-		public OpenGLESRenderSurface()
+		public OpenGLESRenderSurface(IXamlRootHost host) : base(host)
 		{
 			_glES = new GL(NativeContext);
 			_isGLES = true;
