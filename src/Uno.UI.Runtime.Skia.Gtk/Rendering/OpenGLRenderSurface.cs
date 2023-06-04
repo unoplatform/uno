@@ -21,6 +21,7 @@ using Silk.NET.OpenGL;
 using Silk.NET.Core.Loader;
 using Silk.NET.Core.Contexts;
 using static Uno.UI.Runtime.Skia.OpenGLESRenderSurface;
+using Uno.UI.Xaml.Hosting;
 
 namespace Uno.UI.Runtime.Skia
 {
@@ -32,7 +33,7 @@ namespace Uno.UI.Runtime.Skia
 		private static DefaultNativeContext NativeContext
 			=> _nativeContext ??= new Silk.NET.Core.Contexts.DefaultNativeContext(new GLCoreLibraryNameContainer().GetLibraryName());
 
-		public OpenGLRenderSurface()
+		public OpenGLRenderSurface(IXamlRootHost host) : base(host)
 		{
 			SetRequiredVersion(3, 3);
 

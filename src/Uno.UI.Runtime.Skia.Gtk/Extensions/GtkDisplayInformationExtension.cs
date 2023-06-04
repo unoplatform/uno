@@ -10,27 +10,27 @@ namespace Uno.UI.Runtime.Skia;
 internal class GtkDisplayInformationExtension : IDisplayInformationExtension
 {
 	private readonly DisplayInformation _displayInformation;
-	private readonly Window _window;
 	private readonly DpiHelper _dpiHelper;
 
 	private float? _dpi;
 
-	public GtkDisplayInformationExtension(object owner, Gtk.Window window)
+	public GtkDisplayInformationExtension(object owner)
 	{
 		_displayInformation = (DisplayInformation)owner;
-		_window = window;
-		_dpiHelper = new DpiHelper(_window);
+		_dpiHelper = new DpiHelper();
 		_dpiHelper.DpiChanged += OnDpiChanged;
 	}
 
+	private Gtk.Window GetWindow() => GtkHost.Current!.MainWindow!;
+
 	public DisplayOrientations CurrentOrientation => DisplayOrientations.Landscape;
 
-	public uint ScreenHeightInRawPixels => (uint)_window.Display.GetMonitorAtWindow(_window.Window).Workarea.Height;
+	public uint ScreenHeightInRawPixels => (uint)GetWindow().Display.GetMonitorAtWindow(GetWindow().Window).Workarea.Height;
 
-	public uint ScreenWidthInRawPixels => (uint)_window.Display.GetMonitorAtWindow(_window.Window).Workarea.Width;
+	public uint ScreenWidthInRawPixels => (uint)GetWindow().Display.GetMonitorAtWindow(GetWindow().Window).Workarea.Width;
 
 	public float LogicalDpi
-		=> _dpi ??= _window.Display.GetMonitorAtWindow(_window.Window).ScaleFactor * DisplayInformation.BaseDpi;
+		=> _dpi ??= GetWindow().Display.GetMonitorAtWindow(GetWindow().Window).ScaleFactor * DisplayInformation.BaseDpi;
 
 	public double RawPixelsPerViewPixel => LogicalDpi / DisplayInformation.BaseDpi;
 
@@ -40,7 +40,7 @@ internal class GtkDisplayInformationExtension : IDisplayInformationExtension
 
 	private void OnDpiChanged(object? sender, EventArgs args)
 	{
-		_dpi = _window.Display.GetMonitorAtWindow(_window.Window).ScaleFactor * DisplayInformation.BaseDpi;
+		_dpi = GetWindow().Display.GetMonitorAtWindow(GetWindow().Window).ScaleFactor * DisplayInformation.BaseDpi;
 		_displayInformation.NotifyDpiChanged();
 	}
 }

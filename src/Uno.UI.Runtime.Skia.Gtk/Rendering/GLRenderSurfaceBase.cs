@@ -17,6 +17,9 @@ using Windows.Graphics.Display;
 using Gdk;
 using System.Reflection;
 using Gtk;
+using System.Runtime.InteropServices.JavaScript;
+using Uno.UI.Runtime.Skia.GTK.Hosting;
+using Uno.UI.Xaml.Hosting;
 
 namespace Uno.UI.Runtime.Skia
 {
@@ -37,6 +40,7 @@ namespace Uno.UI.Runtime.Skia
 		private const int GuardBand = 1;
 
 		private readonly DisplayInformation _displayInformation;
+		private readonly IXamlRootHost _host;
 		private FocusManager? _focusManager;
 
 		private float? _scale = 1;
@@ -54,7 +58,7 @@ namespace Uno.UI.Runtime.Skia
 
 		public SKColor BackgroundColor { get; set; }
 
-		public GLRenderSurfaceBase()
+		public GLRenderSurfaceBase(IXamlRootHost host)
 		{
 			_displayInformation = DisplayInformation.GetForCurrentView();
 			_displayInformation.DpiChanged += OnDpiChanged;
@@ -71,6 +75,7 @@ namespace Uno.UI.Runtime.Skia
 			// for Visuals being updated during a pointer interaction, while not having measured
 			// and arranged properly.
 			AutoRender = false;
+			_host = host;
 		}
 
 		public Widget Widget => this;
@@ -142,10 +147,12 @@ namespace Uno.UI.Runtime.Skia
 				{
 					canvas.Scale(scale);
 				}
-
 				canvas.Translate(new SKPoint(0, GuardBand));
 
-				WUX.Window.Current.Compositor.Render(_surface);
+				if (_host.RootElement?.Visual is { } rootVisual)
+				{
+					WUX.Window.Current.Compositor.Render(_surface, rootVisual);
+				}
 			}
 
 			// update the control

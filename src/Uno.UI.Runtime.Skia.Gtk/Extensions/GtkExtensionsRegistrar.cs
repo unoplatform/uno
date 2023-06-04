@@ -15,7 +15,7 @@ using Uno.UI.Xaml.Controls.Extensions;
 using Windows.Storage.Pickers;
 using Windows.System.Profile.Internal;
 using Windows.UI.Xaml.Controls;
-
+#pragma warning disable CS0649
 namespace Uno.UI.Runtime.Skia.GTK.Extensions;
 
 internal static class GtkExtensionsRegistrar
@@ -33,7 +33,7 @@ internal static class GtkExtensionsRegistrar
 		ApiExtensibility.Register(typeof(Windows.UI.Core.ICoreWindowExtension), o => new GtkCoreWindowExtension(o));
 		ApiExtensibility.Register(typeof(Windows.UI.ViewManagement.IApplicationViewExtension), o => new GtkApplicationViewExtension(o));
 		ApiExtensibility.Register(typeof(ISystemThemeHelperExtension), o => new GtkSystemThemeHelperExtension(o));
-		ApiExtensibility.Register(typeof(Windows.Graphics.Display.IDisplayInformationExtension), o => _displayInformationExtension ??= new GtkDisplayInformationExtension(o, _window));
+		ApiExtensibility.Register(typeof(Windows.Graphics.Display.IDisplayInformationExtension), o => new GtkDisplayInformationExtension(o));
 		ApiExtensibility.Register<TextBoxView>(typeof(IOverlayTextBoxViewExtension), o => new TextBoxViewExtension(o));
 		ApiExtensibility.Register(typeof(ILauncherExtension), o => new LauncherExtension(o));
 		ApiExtensibility.Register<FileOpenPicker>(typeof(IFileOpenPickerExtension), o => new FileOpenPickerExtension(o));
@@ -41,6 +41,6 @@ internal static class GtkExtensionsRegistrar
 		ApiExtensibility.Register(typeof(IClipboardExtension), o => new ClipboardExtensions(o));
 		ApiExtensibility.Register<FileSavePicker>(typeof(IFileSavePickerExtension), o => new FileSavePickerExtension(o));
 		ApiExtensibility.Register(typeof(IAnalyticsInfoExtension), o => new AnalyticsInfoExtension());
-		ApiExtensibility.Register(typeof(ISystemNavigationManagerPreviewExtension), o => new SystemNavigationManagerPreviewExtension(_window));
+		ApiExtensibility.Register(typeof(ISystemNavigationManagerPreviewExtension), o => new SystemNavigationManagerPreviewExtension());
 	}
 }
