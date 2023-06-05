@@ -69,9 +69,13 @@ namespace Windows.Storage {
 
 		private static onStorageInitialized() {
 			if (!StorageFolder.dispatchStorageInitialized) {
-				StorageFolder.dispatchStorageInitialized =
-					(<any>Module).mono_bind_static_method(
-						"[Uno] Windows.Storage.StorageFolder:DispatchStorageInitialized");
+				if ((<any>globalThis).DotnetExports !== undefined) {
+					StorageFolder.dispatchStorageInitialized = (<any>globalThis).DotnetExports.Uno.Windows.Storage.StorageFolder.DispatchStorageInitialized;
+				} else {
+					StorageFolder.dispatchStorageInitialized =
+						(<any>Module).mono_bind_static_method(
+							"[Uno] Windows.Storage.StorageFolder:DispatchStorageInitialized");
+				}
 			}
 			StorageFolder.dispatchStorageInitialized();
 		}
