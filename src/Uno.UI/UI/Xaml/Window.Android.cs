@@ -17,13 +17,10 @@ using Windows.UI.ViewManagement;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Media;
-<<<<<<< HEAD
 using Uno.Extensions.ValueType;
 using Uno.UI.Extensions;
-=======
 using static System.Net.Mime.MediaTypeNames;
 using Size = Windows.Foundation.Size;
->>>>>>> 56fd87c520 (fix: Android Window/VisibleBounds calc)
 
 namespace Windows.UI.Xaml
 {
@@ -40,13 +37,6 @@ namespace Windows.UI.Xaml
 				+= RaiseNativeSizeChanged;
 		}
 
-<<<<<<< HEAD
-		internal Thickness Insets { get; set; }
-=======
-		internal void OnActivityCreated() => AddPreDrawListener();
-
-		partial void ActivatingPartial() => RemovePreDrawListener();
->>>>>>> 56fd87c520 (fix: Android Window/VisibleBounds calc)
 
 		internal int SystemUiVisibility { get; set; }
 
