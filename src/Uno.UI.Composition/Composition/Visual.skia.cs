@@ -15,7 +15,7 @@ namespace Windows.UI.Composition
 
 		public CompositionClip? Clip
 		{
-			get => _clip; 
+			get => _clip;
 			set => SetProperty(ref _clip, value);
 		}
 
@@ -97,7 +97,7 @@ namespace Windows.UI.Composition
 			}
 
 			PrepareSurfaceForDrawing(surface);
-			
+
 			Draw(surface);
 
 			CleanupSurfaceAfterDrawing(surface);

@@ -317,7 +317,7 @@ namespace Windows.UI.Xaml
 				var viewBox = visual.Compositor.CreateViewBox();
 				viewBox.Offset = clip.Value.Location.ToVector2();
 				viewBox.Size = clip.Value.Size.ToVector2();
-				
+
 				visual.ViewBox = viewBox;
 			}
 		}

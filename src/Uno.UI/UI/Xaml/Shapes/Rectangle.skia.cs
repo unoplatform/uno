@@ -26,8 +26,8 @@ namespace Windows.UI.Xaml.Shapes
 		protected override Size ArrangeOverride(Size finalSize)
 		{
 			var (shapeSize, renderingArea) = ArrangeRelativeShape(finalSize);
-			var path = renderingArea.Width > 0 && renderingArea.Height > 0 
-				? GetGeometry(renderingArea) 
+			var path = renderingArea.Width > 0 && renderingArea.Height > 0
+				? GetGeometry(renderingArea)
 				: null;
 
 			Render(path);

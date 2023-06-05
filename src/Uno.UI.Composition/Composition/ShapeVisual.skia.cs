@@ -89,7 +89,7 @@ public partial class ShapeVisual
 				surface.Canvas.ClipPath(shape, antialias: true);
 			}
 		}
-		
+
 		if (!transform.IsIdentity)
 		{
 			// Applied rending transformation matrix (i.e. change coordinates system to the "rendering" one)

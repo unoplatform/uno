@@ -54,8 +54,8 @@ namespace Windows.UI.Xaml.Shapes
 			}
 
 			_geometry.Path = new CompositionPath(path);
-			_shape.Scale = scaleX != null && scaleY != null 
-				? new Vector2((float)scaleX.Value, (float)scaleY.Value) 
+			_shape.Scale = scaleX != null && scaleY != null
+				? new Vector2((float)scaleX.Value, (float)scaleY.Value)
 				: Vector2.One;
 			_shape.Offset = LayoutRound(new Vector2((float)(renderOriginX ?? 0), (float)(renderOriginY ?? 0)));
 
@@ -72,7 +72,7 @@ namespace Windows.UI.Xaml.Shapes
 		private void UpdateFill()
 		{
 			_fillSubscription.Disposable = null;
-			
+
 			_shape.FillBrush = null;
 
 			_fillSubscription.Disposable = Brush.AssignAndObserveBrush(Fill, Visual.Compositor, compositionBrush => _shape.FillBrush = compositionBrush);
@@ -86,7 +86,7 @@ namespace Windows.UI.Xaml.Shapes
 		private void UpdateStroke()
 		{
 			_strokeSubscription.Disposable = null;
-			
+
 			_shape.StrokeBrush = null;
 
 			_strokeSubscription.Disposable = Brush.AssignAndObserveBrush(Stroke, Visual.Compositor, compositionBrush => _shape.StrokeBrush = compositionBrush);

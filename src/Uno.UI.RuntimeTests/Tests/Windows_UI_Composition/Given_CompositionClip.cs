@@ -97,7 +97,7 @@ internal class Given_CompositionClip
 		// Second we do a full comparison of something that should be identical but drawn using another (simpler ?) mechanism
 		await ImageAssert.AreEqualAsync(actual, expectedImg);
 	}
-	
+
 	[TestMethod]
 	[RunsOnUIThread]
 	public async Task When_TransformElementClippedByParentWithBorder_Then_ClippingAppliedPostRendering()
@@ -208,7 +208,7 @@ internal class Given_CompositionClip
 			VerticalAlignment = VerticalAlignment.Top,
 			HorizontalAlignment = HorizontalAlignment.Left,
 			Children =
-			{ 
+			{
 				new Grid
 				{
 					Name = "red",
@@ -268,17 +268,17 @@ internal class Given_CompositionClip
 			Height = 120,
 			HorizontalAlignment = HorizontalAlignment.Left,
 			VerticalAlignment = VerticalAlignment.Top,
-			Children = 
+			Children =
 			{
 				new Rectangle { Width = 200, Height = 100, Fill = new SolidColorBrush(Colors.Red.WithOpacity(.5)) },
 				new Line { X1 = 6, X2 = 6, Y1 = 0, Y2 = 100, Stroke = new SolidColorBrush(Colors.Red), StrokeThickness = 12 },
 				new Line { X1 = 0, X2 = 200, Y1 = 3, Y2 = 3, Stroke = new SolidColorBrush(Colors.Red), StrokeThickness = 6 },
 				new Line { X1 = 194, X2 = 194, Y1 = 0, Y2 = 100, Stroke = new SolidColorBrush(Colors.Red), StrokeThickness = 12 },
 				new Line { X1 = 200, X2 = 0, Y1 = 97, Y2 = 97, Stroke = new SolidColorBrush(Colors.Red), StrokeThickness = 6 },
-				
+
 				new Rectangle { Width = 108, Height = 44, Fill = new SolidColorBrush(Colors.Green.WithOpacity(.5)) }.Apply(e => Canvas.SetLeft(e, 112)),
 				new Line { X1 = 118, X2 = 118, Y1 = 0, Y2 = 44, Stroke = new SolidColorBrush(Colors.Green), StrokeThickness = 12 },
-				
+
 				new Rectangle { Width = 46, Height = 12, Fill = new SolidColorBrush(Colors.Orange) }.Apply(e => Canvas.SetLeft(e, 174)),
 
 				new Rectangle { Width = 108, Height = 54, Fill = new SolidColorBrush(Colors.Blue.WithOpacity(.5)) }.Apply(e => Canvas.SetLeft(e, 112)).Apply(e => Canvas.SetTop(e, 56)),
@@ -294,7 +294,7 @@ internal class Given_CompositionClip
 		ImageAssert.HasColorAt(actual, 118, 1, Colors.Green);
 		ImageAssert.DoesNotHaveColorAt(actual, 172, 1, Colors.Orange);
 		ImageAssert.HasColorAt(actual, 176, 1, Colors.Orange);
-		
+
 		ImageAssert.HasColorAt(actual, 118, 42, Colors.Green);
 		ImageAssert.DoesNotHaveColorAt(actual, 118, 46, Colors.Green);
 

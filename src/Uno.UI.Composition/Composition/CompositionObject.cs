@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using Windows.Foundation.Metadata;
+using Windows.UI;
 using Windows.UI.Core;
 
 namespace Windows.UI.Composition
@@ -128,7 +129,7 @@ namespace Windows.UI.Composition
 
 			OnPropertyChanged(propertyName, false);
 		}
-		
+
 		private protected void SetProperty(ref Vector3 field, Vector3 value, [CallerMemberName] string? propertyName = null)
 		{
 			if (field == value)
@@ -239,7 +240,6 @@ namespace Windows.UI.Composition
 
 		private protected virtual void OnPropertyChangedCore(string? propertyName, bool isSubPropertyChange)
 		{
-
 		}
 	}
 }
