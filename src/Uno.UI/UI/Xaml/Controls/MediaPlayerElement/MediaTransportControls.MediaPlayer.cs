@@ -69,6 +69,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public void TappedProgressSlider(object sender, RoutedEventArgs e)
 		{
+			_isScrubbing = true;
 			if (m_tpMediaPositionSlider is null || double.IsNaN(m_tpMediaPositionSlider.Value))
 			{
 				return;
@@ -84,9 +85,10 @@ namespace Windows.UI.Xaml.Controls
 				{
 					_mediaPlayer.Play();
 				}
-
 				_skipPlayPauseStateUpdate = false;
+
 			}
+			_isScrubbing = false;
 		}
 
 		private void OnPlaybackStateChanged(MediaPlaybackSession sender, object args)
@@ -156,6 +158,13 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnPositionChanged(MediaPlaybackSession sender, object args)
 		{
+			if (_isScrubbing)
+			{
+				if (_mediaPlayer != null && _isScrubbing)
+				{
+					_mediaPlayer.Pause();
+				}
+			}
 			_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 			{
 				var elapsed = args as TimeSpan? ?? TimeSpan.Zero;
@@ -321,8 +330,12 @@ namespace Windows.UI.Xaml.Controls
 
 			if (_mediaPlayer != null)
 			{
-				_mediaPlayer.PlaybackSession.Position = TimeSpan.FromSeconds(m_tpMediaPositionSlider.Value);
+				_wasPlaying = _mediaPlayer.PlaybackSession.IsPlaying;
+				_skipPlayPauseStateUpdate = true;
+				_isScrubbing = true;
 
+				_mediaPlayer.Pause();
+				_mediaPlayer.PlaybackSession.Position = TimeSpan.FromSeconds(m_tpMediaPositionSlider.Value);
 				if (_wasPlaying)
 				{
 					_mediaPlayer.Play();
