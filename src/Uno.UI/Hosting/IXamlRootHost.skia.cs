@@ -2,7 +2,7 @@
 
 using Windows.UI.Xaml;
 
-namespace Uno.UI.Xaml.Hosting;
+namespace Uno.UI.Hosting;
 
 internal interface IXamlRootHost
 {

@@ -38,7 +38,9 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 		_host = host;
 	}
 
-	public bool Initialize()
+	public SKColor BackgroundColor { get; set; }
+
+	public bool TryInitialize()
 	{
 		// Get the window from the wpf control
 		var hwnd = new WindowInteropHelper(Window.GetWindow(_hostControl)).Handle;
@@ -131,15 +133,15 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 	public void Render(DrawingContext drawingContext)
 	{
 		if (_hostControl.ActualWidth == 0
-				|| _hostControl.ActualHeight == 0
-				|| double.IsNaN(_hostControl.ActualWidth)
-				|| double.IsNaN(_hostControl.ActualHeight)
-				|| double.IsInfinity(_hostControl.ActualWidth)
-				|| double.IsInfinity(_hostControl.ActualHeight)
-				|| _hostControl.Visibility != Visibility.Visible
-				|| _hdc == 0
-				|| _glContext == 0
-				|| _grContext is null)
+			|| _hostControl.ActualHeight == 0
+			|| double.IsNaN(_hostControl.ActualWidth)
+			|| double.IsNaN(_hostControl.ActualHeight)
+			|| double.IsInfinity(_hostControl.ActualWidth)
+			|| double.IsInfinity(_hostControl.ActualHeight)
+			|| _hostControl.Visibility != Visibility.Visible
+			|| _hdc == 0
+			|| _glContext == 0
+			|| _grContext is null)
 		{
 			return;
 		}
@@ -226,6 +228,8 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 		}
 	}
 
+	public void Dispose() => Release();
+
 	private (int framebuffer, int stencil, int samples) GetGLBuffers()
 	{
 		NativeMethods.glGetIntegerv(NativeMethods.GL_FRAMEBUFFER_BINDING, out var framebuffer);
@@ -235,7 +239,7 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 		return (framebuffer, stencil, samples);
 	}
 
-	internal bool TryCreateGRGLContext(out GRContext? context)
+	private bool TryCreateGRGLContext(out GRContext? context)
 	{
 		context = null;
 
@@ -266,11 +270,6 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 		return true;
 	}
 
-	public void Dispose()
-	{
-		Release();
-	}
-
 	private void Release()
 	{
 		// Cleanup resources
@@ -292,9 +291,4 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 
 		_backBuffer = null;
 	}
-
-	public SKSize CanvasSize
-		=> _backBuffer == null ? SKSize.Empty : new SKSize(_backBuffer.PixelWidth, _backBuffer.PixelHeight);
-
-	public SKColor BackgroundColor { get; set; }
 }
