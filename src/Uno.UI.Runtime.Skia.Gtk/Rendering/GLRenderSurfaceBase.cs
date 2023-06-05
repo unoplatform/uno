@@ -23,7 +23,7 @@ using Uno.UI.Xaml.Hosting;
 
 namespace Uno.UI.Runtime.Skia
 {
-	internal abstract partial class GLRenderSurfaceBase : GLArea, IRenderSurface
+	internal abstract partial class GLRenderSurfaceBase : GLArea, IGtkRenderer
 	{
 		private const SKColorType colorType = SKColorType.Rgba8888;
 		private const GRSurfaceOrigin surfaceOrigin = GRSurfaceOrigin.BottomLeft;

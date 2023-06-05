@@ -30,7 +30,7 @@ internal class UnoGtkWindow : Gtk.Window, IGtkWindowHost
 	private Widget? _area;
 	private Fixed? _fix;
 
-	private IRenderSurface? _renderSurface;
+	private IGtkRenderer? _renderSurface;
 
 	private GtkDisplayInformationExtension? _displayInformationExtension;
 	private CompositeDisposable _registrations = new();
@@ -110,7 +110,7 @@ internal class UnoGtkWindow : Gtk.Window, IGtkWindowHost
 
 	private void OnShown(object? sender, EventArgs e) => ShowAll();
 
-	internal IRenderSurface? RenderSurface => _renderSurface;
+	internal IGtkRenderer? RenderSurface => _renderSurface;
 
 	internal Fixed? NativeOverlayLayer => GtkCoreWindowExtension.FindNativeOverlayLayer(this);
 
@@ -230,7 +230,7 @@ internal class UnoGtkWindow : Gtk.Window, IGtkWindowHost
 	}
 
 
-	private IRenderSurface BuildRenderSurfaceType()
+	private IGtkRenderer BuildRenderSurfaceType()
 		=> GtkHost.Current!.RenderSurfaceType switch
 		{
 			Skia.RenderSurfaceType.OpenGLES => new OpenGLESRenderSurface(this),

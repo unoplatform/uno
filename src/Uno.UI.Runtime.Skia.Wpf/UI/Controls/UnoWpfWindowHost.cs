@@ -10,7 +10,6 @@ using Uno.Foundation.Logging;
 using Uno.UI.Runtime.Skia.Wpf.Extensions;
 using Uno.UI.Runtime.Skia.Wpf.Rendering;
 using Uno.UI.Xaml.Core;
-using Uno.UI.Xaml.Hosting;
 using Uno.UI.XamlHost.Skia.Wpf.Hosting;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml.Input;
@@ -20,6 +19,8 @@ using WpfControl = System.Windows.Controls.Control;
 using WpfContentPresenter = System.Windows.Controls.ContentPresenter;
 using WpfFrameworkPropertyMetadata = System.Windows.FrameworkPropertyMetadata;
 using WpfWindow = System.Windows.Window;
+using RoutedEventArgs = System.Windows.RoutedEventArgs;
+using Uno.UI.Hosting;
 
 namespace Uno.UI.Skia.Wpf;
 
@@ -33,9 +34,10 @@ internal class UnoWpfWindowHost : WpfControl, IWpfWindowHost
 	private readonly WinUI.Window _window;
 	private readonly CompositeDisposable _disposables = new();
 
+	private Size _previousArrangeBounds;
+
 	private IWpfRenderer? _renderer;
 	private FocusManager? _focusManager;
-	private bool _rendererInitialized;
 
 	static UnoWpfWindowHost()
 	{
@@ -51,7 +53,6 @@ internal class UnoWpfWindowHost : WpfControl, IWpfWindowHost
 
 		FocusVisualStyle = null;
 
-		SizeChanged += WpfHost_SizeChanged;
 		Loaded += WpfHost_Loaded;
 
 		Windows.Foundation.Size preferredWindowSize = ApplicationView.PreferredLaunchViewSize;
@@ -67,13 +68,23 @@ internal class UnoWpfWindowHost : WpfControl, IWpfWindowHost
 		UpdateWindowPropertiesFromPackage();
 	}
 
+	protected override Size ArrangeOverride(Size arrangeBounds)
+	{
+		if (arrangeBounds != _previousArrangeBounds)
+		{
+			_window.OnNativeSizeChanged(new Windows.Foundation.Size(arrangeBounds.Width, arrangeBounds.Height));
+			_previousArrangeBounds = arrangeBounds;
+		}
+		return base.ArrangeOverride(arrangeBounds);
+	}
+
 	WinUI.UIElement? IXamlRootHost.RootElement => _window.RootElement;
 
 	WpfCanvas? IWpfXamlRootHost.NativeOverlayLayer => _nativeOverlayLayer;
 
 	WinUI.XamlRoot? IXamlRootHost.XamlRoot => _window.RootElement?.XamlRoot;
 
-	public bool IgnorePixelScaling => WpfHost.Current!.IgnorePixelScaling;
+	bool IWpfXamlRootHost.IgnorePixelScaling => WpfHost.Current!.IgnorePixelScaling;
 
 	public bool IsIsland => false;
 
@@ -95,53 +106,10 @@ internal class UnoWpfWindowHost : WpfControl, IWpfWindowHost
 
 	private void WpfHost_Loaded(object sender, RoutedEventArgs e)
 	{
-		WinUI.Window.Current.OnNativeSizeChanged(new Windows.Foundation.Size(ActualWidth, ActualHeight));
-
 		// Avoid dotted border on focus.
 		if (Parent is WpfControl control)
 		{
 			control.FocusVisualStyle = null;
-		}
-	}
-
-	private void InitializeRenderer()
-	{
-		// TODO:MZ: Do this only once, not for every window
-		if (WpfHost.Current!.RenderSurfaceType is null)
-		{
-			WpfHost.Current!.RenderSurfaceType = Skia.RenderSurfaceType.OpenGL;
-		}
-
-		if (this.Log().IsEnabled(LogLevel.Debug))
-		{
-			this.Log().Debug($"Using {WpfHost.Current!.RenderSurfaceType} rendering");
-		}
-
-		_renderer = WpfHost.Current!.RenderSurfaceType switch
-		{
-			Skia.RenderSurfaceType.Software => new SoftwareWpfRenderer(this),
-			Skia.RenderSurfaceType.OpenGL => new OpenGLWpfRenderer(this),
-			_ => throw new InvalidOperationException($"Render Surface type {WpfHost.Current!.RenderSurfaceType} is not supported")
-		};
-
-		UpdateRendererBackground();
-
-		if (!_renderer.Initialize())
-		{
-			// OpenGL initialization failed, fallback to software rendering
-			// This may happen on headless systems or containers.
-
-			if (this.Log().IsEnabled(LogLevel.Warning))
-			{
-				this.Log().Warn($"OpenGL failed to initialize, using software rendering");
-			}
-
-			WpfHost.Current!.RenderSurfaceType = Skia.RenderSurfaceType.Software;
-			InitializeRenderer();
-		}
-		else
-		{
-			_rendererInitialized = true;
 		}
 	}
 
@@ -201,17 +169,6 @@ internal class UnoWpfWindowHost : WpfControl, IWpfWindowHost
 		Windows.UI.ViewManagement.ApplicationView.GetForCurrentView().Title = Windows.ApplicationModel.Package.Current.DisplayName;
 	}
 
-	private void WpfHost_SizeChanged(object sender, System.Windows.SizeChangedEventArgs e)
-	{
-		// TODO:MZ: Use Content.Size!
-		WinUI.Window.Current.OnNativeSizeChanged(
-			new Windows.Foundation.Size(
-				e.NewSize.Width,
-				e.NewSize.Height
-			)
-		);
-	}
-
 	private void RegisterForBackgroundColor()
 	{
 		UpdateRendererBackground();
@@ -242,10 +199,12 @@ internal class UnoWpfWindowHost : WpfControl, IWpfWindowHost
 	{
 		base.OnRender(drawingContext);
 
-		if (!_rendererInitialized)
+		if (_renderer is null)
 		{
-			InitializeRenderer();
+			_renderer = WpfRendererProvider.CreateForHost(this);
+			UpdateRendererBackground();
 		}
+
 		_renderer?.Render(drawingContext);
 	}
 

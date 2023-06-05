@@ -21,7 +21,7 @@ using Uno.UI.Xaml.Hosting;
 
 namespace Uno.UI.Runtime.Skia;
 
-internal class SoftwareRenderSurface : Gtk.DrawingArea, IRenderSurface
+internal class SoftwareRenderSurface : Gtk.DrawingArea, IGtkRenderer
 {
 	private readonly DisplayInformation _displayInformation;
 	private FocusManager? _focusManager;

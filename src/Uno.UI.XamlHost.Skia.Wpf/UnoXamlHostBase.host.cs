@@ -21,6 +21,7 @@ using Uno.Foundation.Logging;
 using Windows.Foundation.Metadata;
 using Uno.UI.Runtime.Skia.Wpf.Hosting;
 using Uno.UI.Runtime.Skia.Wpf.Extensions;
+using Uno.UI.Hosting;
 
 namespace Uno.UI.XamlHost.Skia.Wpf
 {
@@ -96,6 +97,11 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 			if (!IsXamlContentLoaded())
 			{
 				return;
+			}
+
+			if (_renderer is null)
+			{
+				_renderer = WpfRendererProvider.CreateForHost(this);
 			}
 
 			_renderer?.Render(drawingContext);
