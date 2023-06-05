@@ -151,7 +151,7 @@ namespace Uno.UI.Runtime.Skia
 
 				if (_host.RootElement?.Visual is { } rootVisual)
 				{
-					WUX.Window.Current.Compositor.Render(_surface, rootVisual);
+					WUX.Window.Current.Compositor.RenderRootVisual(_surface, rootVisual);
 				}
 			}
 

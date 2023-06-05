@@ -83,10 +83,6 @@ internal class UnoWpfWindowHost : WpfControl, IWpfWindowHost
 		InvalidateVisual();
 	}
 
-	//void IXamlRootHost.ReleasePointerCapture() => ReleaseMouseCapture(); //TODO: This should capture the correct type of pointer (stylus/mouse/touch) https://github.com/unoplatform/uno/issues/8978[capture]
-
-	//void IXamlRootHost.SetPointerCapture() => CaptureMouse();
-
 	public override void OnApplyTemplate()
 	{
 		base.OnApplyTemplate();
