@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Numerics;
 using SkiaSharp;
+using Windows.ApplicationModel.Core;
 using Windows.UI.Core;
 
 namespace Windows.UI.Composition
@@ -168,7 +169,7 @@ namespace Windows.UI.Composition
 			if (!_isDirty)
 			{
 				_isDirty = true;
-				CoreWindow.QueueInvalidateRender();
+				CoreApplication.QueueInvalidateRender();
 			}
 		}
 	}
