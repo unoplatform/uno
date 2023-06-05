@@ -67,30 +67,6 @@ namespace Windows.UI.Xaml.Controls
 			UpdateMediaControlAllStates();
 		}
 
-		public void TappedProgressSlider(object sender, RoutedEventArgs e)
-		{
-			_isScrubbing = true;
-			if (m_tpMediaPositionSlider is null || double.IsNaN(m_tpMediaPositionSlider.Value))
-			{
-				return;
-			}
-			if (_mediaPlayer != null)
-			{
-				_wasPlaying = _mediaPlayer.PlaybackSession.IsPlaying;
-				_skipPlayPauseStateUpdate = true;
-
-				_mediaPlayer.Pause();
-				_mediaPlayer.PlaybackSession.Position = TimeSpan.FromSeconds(m_tpMediaPositionSlider.Value);
-				if (_wasPlaying)
-				{
-					_mediaPlayer.Play();
-				}
-				_skipPlayPauseStateUpdate = false;
-
-			}
-			_isScrubbing = false;
-		}
-
 		private void OnPlaybackStateChanged(MediaPlaybackSession sender, object args)
 		{
 			var state = (MediaPlaybackState)args;
@@ -158,23 +134,14 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnPositionChanged(MediaPlaybackSession sender, object args)
 		{
-			if (_isScrubbing)
-			{
-				if (_mediaPlayer != null && _isScrubbing)
-				{
-					_mediaPlayer.Pause();
-				}
-			}
 			_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 			{
 				var elapsed = args as TimeSpan? ?? TimeSpan.Zero;
 				m_tpTimeElapsedElement.Maybe<TextBlock>(p => p.Text = FormatTime(elapsed));
-
-				if (m_tpMediaPositionSlider is not null)
+				if (!_isScrubbing && m_tpMediaPositionSlider is not null)
 				{
 					m_tpMediaPositionSlider.Value = elapsed.TotalSeconds;
 				}
-
 				if (_mediaPlayer is not null)
 				{
 					var remaining = _mediaPlayer.PlaybackSession.NaturalDuration - elapsed;
@@ -321,41 +288,73 @@ namespace Windows.UI.Xaml.Controls
 			ResetControlsVisibilityTimer();
 		}
 
+		private void OnPointerEntered(object sender, PointerRoutedEventArgs e)
+		{
+			if (sender is Thumb && _mediaPlayer != null)
+			{
+				_wasPlaying = _mediaPlayer.PlaybackSession.IsPlaying;
+				_isScrubbing = true;
+			}
+		}
+
+		private void OnPointerExited(object sender, PointerRoutedEventArgs e)
+		{
+			if (sender is Thumb)
+			{
+				_isScrubbing = false;
+				if (_wasPlaying)
+				{
+					_mediaPlayer?.Play();
+				}
+			}
+		}
+
 		private void ThumbOnDragCompleted(object sender, DragCompletedEventArgs dragCompletedEventArgs)
 		{
 			if (m_tpMediaPositionSlider is null || double.IsNaN(m_tpMediaPositionSlider.Value))
 			{
 				return;
 			}
-
 			if (_mediaPlayer != null)
 			{
-				_wasPlaying = _mediaPlayer.PlaybackSession.IsPlaying;
-				_skipPlayPauseStateUpdate = true;
-				_isScrubbing = true;
-
-				_mediaPlayer.Pause();
+				if (_mediaPlayer.PlaybackSession.IsPlaying)
+				{
+					_skipPlayPauseStateUpdate = true;
+					_isScrubbing = true;
+					_wasPlaying = true;
+					_mediaPlayer.Pause();
+				}
 				_mediaPlayer.PlaybackSession.Position = TimeSpan.FromSeconds(m_tpMediaPositionSlider.Value);
 				if (_wasPlaying)
 				{
 					_mediaPlayer.Play();
 				}
 			}
-
 			_isScrubbing = false;
 			_skipPlayPauseStateUpdate = false;
 		}
 
-		private void ThumbOnDragStarted(object sender, DragStartedEventArgs dragStartedEventArgs)
+		public void TappedProgressSlider(object sender, RoutedEventArgs e)
 		{
-			if (_mediaPlayer != null && !_isScrubbing)
+			_isScrubbing = true;
+			if (m_tpMediaPositionSlider is null || double.IsNaN(m_tpMediaPositionSlider.Value))
+			{
+				_isScrubbing = false;
+				return;
+			}
+			if (_mediaPlayer != null)
 			{
 				_wasPlaying = _mediaPlayer.PlaybackSession.IsPlaying;
 				_skipPlayPauseStateUpdate = true;
-				_isScrubbing = true;
-
 				_mediaPlayer.Pause();
+				_mediaPlayer.PlaybackSession.Position = TimeSpan.FromSeconds(m_tpMediaPositionSlider.Value);
+				if (_wasPlaying)
+				{
+					_mediaPlayer.Play();
+				}
+				_skipPlayPauseStateUpdate = false;
 			}
+			_isScrubbing = false;
 		}
 	}
 }

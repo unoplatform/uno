@@ -542,8 +542,9 @@ namespace Windows.UI.Xaml.Controls
 			BindTapped(m_tpControlPanelGrid, OnPaneGridTapped);
 			BindSizeChanged(_controlPanelBorder, ControlPanelBorderSizeChanged);
 			BindTapped(m_tpMediaPositionSlider, TappedProgressSlider);
-			Bind(_sliderThumb, x => x.DragStarted += ThumbOnDragStarted, x => x.DragStarted -= ThumbOnDragStarted);
 			Bind(_sliderThumb, x => x.DragCompleted += ThumbOnDragCompleted, x => x.DragCompleted -= ThumbOnDragCompleted);
+			Bind(_sliderThumb, x => x.PointerEntered += OnPointerEntered, x => x.PointerEntered -= OnPointerEntered);
+			Bind(_sliderThumb, x => x.PointerExited += OnPointerExited, x => x.PointerExited -= OnPointerExited);
 
 			BindButtonClick(m_tpTHLeftSidePlayPauseButton, PlayPause);
 			BindButtonClick(m_tpMuteButton, ToggleMute);
