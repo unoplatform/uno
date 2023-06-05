@@ -1,4 +1,4 @@
-﻿using Uno.UI.Xaml.Hosting;
+﻿using Uno.UI.Hosting;
 
 namespace Uno.UI.Runtime.Skia.GTK.Hosting;
 

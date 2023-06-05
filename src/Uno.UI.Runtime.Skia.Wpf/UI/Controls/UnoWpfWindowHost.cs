@@ -12,7 +12,6 @@ using Uno.UI.Runtime.Skia.Wpf.Rendering;
 using Uno.UI.Xaml.Core;
 using Uno.UI.XamlHost.Skia.Wpf.Hosting;
 using Windows.UI.ViewManagement;
-using Windows.UI.Xaml.Input;
 using WinUI = Windows.UI.Xaml;
 using WpfCanvas = System.Windows.Controls.Canvas;
 using WpfControl = System.Windows.Controls.Control;
@@ -21,6 +20,7 @@ using WpfFrameworkPropertyMetadata = System.Windows.FrameworkPropertyMetadata;
 using WpfWindow = System.Windows.Window;
 using RoutedEventArgs = System.Windows.RoutedEventArgs;
 using Uno.UI.Hosting;
+using Uno.UI.Rendering;
 
 namespace Uno.UI.Skia.Wpf;
 
@@ -37,7 +37,6 @@ internal class UnoWpfWindowHost : WpfControl, IWpfWindowHost
 	private Size _previousArrangeBounds;
 
 	private IWpfRenderer? _renderer;
-	private FocusManager? _focusManager;
 
 	static UnoWpfWindowHost()
 	{
@@ -92,7 +91,7 @@ internal class UnoWpfWindowHost : WpfControl, IWpfWindowHost
 
 	void IXamlRootHost.InvalidateRender()
 	{
-		InvalidateOverlays();
+		_window.RootElement?.XamlRoot?.InvalidateOverlays();
 		InvalidateVisual();
 	}
 
@@ -208,15 +207,5 @@ internal class UnoWpfWindowHost : WpfControl, IWpfWindowHost
 		}
 
 		_renderer?.Render(drawingContext);
-	}
-
-	private void InvalidateOverlays()
-	{
-		_focusManager ??= VisualTree.GetFocusManagerForElement(_window.RootElement);
-		_focusManager?.FocusRectManager?.RedrawFocusVisual();
-		if (_focusManager?.FocusedElement is Windows.UI.Xaml.Controls.TextBox textBox)
-		{
-			textBox.TextBoxView?.Extension?.InvalidateLayout();
-		}
 	}
 }

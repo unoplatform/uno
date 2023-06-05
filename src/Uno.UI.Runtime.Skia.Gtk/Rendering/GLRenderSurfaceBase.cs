@@ -3,23 +3,14 @@
 using System;
 using System.IO;
 using SkiaSharp;
-using Uno.Extensions;
 using Uno.UI.Xaml.Core;
 using Windows.UI.Xaml.Input;
 using WUX = Windows.UI.Xaml;
 using Uno.Foundation.Logging;
 using Windows.UI.Xaml.Controls;
-using System.Diagnostics;
-using System.Runtime.InteropServices;
-using Uno.UI.Runtime.Skia.Helpers.Windows;
-using Uno.UI.Runtime.Skia.Helpers.Dpi;
 using Windows.Graphics.Display;
-using Gdk;
-using System.Reflection;
 using Gtk;
-using System.Runtime.InteropServices.JavaScript;
-using Uno.UI.Runtime.Skia.GTK.Hosting;
-using Uno.UI.Xaml.Hosting;
+using Uno.UI.Hosting;
 
 namespace Uno.UI.Runtime.Skia
 {
@@ -80,12 +71,7 @@ namespace Uno.UI.Runtime.Skia
 
 		public Widget Widget => this;
 
-		public void InvalidateRender()
-		{
-			// TODO Uno: Make this invalidation less often if possible.
-			InvalidateOverlays();
-			QueueRender();
-		}
+		public void InvalidateRender() => QueueRender();
 
 		private void GLRenderSurface_Realized(object? sender, EventArgs e)
 		{
@@ -191,16 +177,6 @@ namespace Uno.UI.Runtime.Skia
 
 		private void OnDpiChanged(DisplayInformation sender, object args) =>
 			UpdateDpi();
-
-		private void InvalidateOverlays()
-		{
-			_focusManager ??= VisualTree.GetFocusManagerForElement(Windows.UI.Xaml.Window.Current?.RootElement);
-			_focusManager?.FocusRectManager?.RedrawFocusVisual();
-			if (_focusManager?.FocusedElement is TextBox textBox)
-			{
-				textBox.TextBoxView?.Extension?.InvalidateLayout();
-			}
-		}
 
 		public void TakeScreenshot(string filePath)
 		{

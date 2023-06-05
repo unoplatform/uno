@@ -20,11 +20,10 @@ using Gtk;
 using Silk.NET.OpenGLES;
 using Silk.NET.Core.Loader;
 using Silk.NET.Core.Contexts;
-using Uno.UI.Xaml.Hosting;
+using Uno.UI.Hosting;
 
 namespace Uno.UI.Runtime.Skia
 {
-
 	internal class OpenGLESRenderSurface : GLRenderSurfaceBase
 	{
 		private static DefaultNativeContext? _nativeContext;

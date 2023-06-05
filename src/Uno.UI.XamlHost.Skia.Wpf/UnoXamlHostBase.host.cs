@@ -12,6 +12,7 @@ using Uno.UI.Runtime.Skia.Wpf.Hosting;
 using Uno.UI.Runtime.Skia.Wpf.Extensions;
 using Uno.UI.Hosting;
 using Uno.UI.Skia;
+using Uno.UI.Rendering;
 
 namespace Uno.UI.XamlHost.Skia.Wpf;
 
@@ -68,8 +69,7 @@ partial class UnoXamlHostBase : IWpfXamlRootHost
 
 	void IXamlRootHost.InvalidateRender()
 	{
-		// TODO: MZ:
-		//InvalidateOverlays();
+		ChildInternal?.XamlRoot?.InvalidateOverlays();
 		InvalidateVisual();
 	}
 
