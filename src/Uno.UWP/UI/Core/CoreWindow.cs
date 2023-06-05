@@ -20,7 +20,6 @@ namespace Windows.UI.Core
 	{
 		[ThreadStatic]
 		private static CoreWindow? _current;
-		private static Action? _invalidateRender;
 
 		private Point? _pointerPosition;
 		private CoreWindowActivationState _lastActivationState;
@@ -106,13 +105,6 @@ namespace Windows.UI.Core
 
 		public CoreVirtualKeyStates GetKeyState(System.VirtualKey virtualKey)
 			=> KeyboardStateTracker.GetKeyState(virtualKey);
-
-		internal static void SetInvalidateRender(Action invalidateRender)
-			// Currently we don't support multi-windowing, so only the first window can set the InvalidateRender
-			=> _invalidateRender ??= invalidateRender;
-
-		internal static void QueueInvalidateRender()
-			=> _invalidateRender?.Invoke();
 
 		internal void OnActivated(WindowActivatedEventArgs args)
 		{

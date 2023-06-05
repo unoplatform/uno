@@ -64,8 +64,6 @@ public sealed partial class Window
 				throw new InvalidOperationException("The root visual could not be created.");
 			}
 
-			CoreWindow.SetInvalidateRender(_rootVisual.XamlRoot.QueueInvalidateRender);
-
 			UIElement.LoadingRootElement(_rootVisual);
 
 			_rootVisual?.XamlRoot.InvalidateMeasure();

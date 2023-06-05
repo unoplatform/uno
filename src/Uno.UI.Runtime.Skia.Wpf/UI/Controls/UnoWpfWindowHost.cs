@@ -86,6 +86,8 @@ internal class UnoWpfWindowHost : WpfControl, IWpfWindowHost
 
 	bool IWpfXamlRootHost.IgnorePixelScaling => WpfHost.Current!.IgnorePixelScaling;
 
+	RenderSurfaceType? IWpfXamlRootHost.RenderSurfaceType => WpfHost.Current!.RenderSurfaceType;
+
 	public bool IsIsland => false;
 
 	void IXamlRootHost.InvalidateRender()
