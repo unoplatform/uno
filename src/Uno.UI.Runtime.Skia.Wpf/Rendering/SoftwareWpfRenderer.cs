@@ -81,7 +81,7 @@ namespace Uno.UI.Runtime.Skia.Wpf.Rendering
 				surface.Canvas.SetMatrix(SKMatrix.CreateScale((float)dpiScaleX, (float)dpiScaleY));
 				if (_host.RootElement?.Visual is { } rootVisual)
 				{
-					WinUI.Window.Current.Compositor.Render(surface, rootVisual);
+					WinUI.Window.Current.Compositor.RenderRootVisual(surface, rootVisual);
 				}
 			}
 

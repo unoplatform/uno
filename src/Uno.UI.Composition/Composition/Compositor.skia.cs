@@ -64,7 +64,7 @@ namespace Windows.UI.Composition
 			}
 		}
 
-		internal void Render(SKSurface surface, ContainerVisual rootVisual)
+		internal void RenderRootVisual(SKSurface surface, ContainerVisual rootVisual)
 		{
 			if (rootVisual is null)
 			{

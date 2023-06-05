@@ -119,7 +119,7 @@ internal class SoftwareRenderSurface : Gtk.DrawingArea, IRenderSurface
 
 			if (_host.RootElement?.Visual is { } rootVisual)
 			{
-				WUX.Window.Current.Compositor.Render(_surface, rootVisual);
+				WUX.Window.Current.Compositor.RenderRootVisual(_surface, rootVisual);
 			}
 		}
 

@@ -70,7 +70,7 @@ namespace Uno.UI.Runtime.Skia
 
 				if (_host.RootElement?.Visual is { } rootVisual)
 				{
-					WUX.Window.Current.Compositor.Render(surface, rootVisual);
+					WUX.Window.Current.Compositor.RenderRootVisual(surface, rootVisual);
 				}
 
 				_fbDev.VSync();

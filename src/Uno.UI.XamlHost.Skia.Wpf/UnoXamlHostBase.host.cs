@@ -101,10 +101,6 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 			_renderer?.Render(drawingContext);
 		}
 
-		void IXamlRootHost.ReleasePointerCapture() => ReleaseMouseCapture(); //TODO: This should capture the correct type of pointer (stylus/mouse/touch) https://github.com/unoplatform/uno/issues/8978[capture]
-
-		void IXamlRootHost.SetPointerCapture() => CaptureMouse();
-
 		void IXamlRootHost.InvalidateRender()
 		{
 			//InvalidateOverlays();

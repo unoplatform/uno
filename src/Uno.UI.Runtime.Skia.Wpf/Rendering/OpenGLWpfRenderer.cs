@@ -207,7 +207,7 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 
 			if (_host.RootElement?.Visual is { } rootVisual)
 			{
-				WinUI.Window.Current.Compositor.RenderVisual(_surface, rootVisual);
+				WinUI.Window.Current.Compositor.RenderRootVisual(_surface, rootVisual);
 			}
 		}
 
