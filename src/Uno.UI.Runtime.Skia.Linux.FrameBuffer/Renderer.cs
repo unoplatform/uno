@@ -9,7 +9,7 @@ using Uno.UI.Runtime.Skia.Native;
 using Uno.Foundation.Logging;
 using Windows.Graphics.Display;
 using System.Runtime.InteropServices.JavaScript;
-using Uno.UI.Xaml.Hosting;
+using Uno.UI.Hosting;
 
 namespace Uno.UI.Runtime.Skia
 {

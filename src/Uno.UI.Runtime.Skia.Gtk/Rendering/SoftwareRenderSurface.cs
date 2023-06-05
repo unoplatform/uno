@@ -1,30 +1,22 @@
 ﻿#nullable enable
 
-using System;
 using System.IO;
 using System.Runtime.InteropServices;
 using Cairo;
 using SkiaSharp;
-using Uno.Extensions;
-using Uno.UI.Xaml.Core;
 using Windows.UI.Xaml.Input;
 using WUX = Windows.UI.Xaml;
 using Uno.Foundation.Logging;
-using Windows.UI.Xaml.Controls;
 using System.Diagnostics;
-using Uno.UI.Runtime.Skia.Helpers.Windows;
-using Uno.UI.Runtime.Skia.Helpers.Dpi;
 using Windows.Graphics.Display;
 using Gtk;
-using System.Runtime.InteropServices.JavaScript;
-using Uno.UI.Xaml.Hosting;
+using Uno.UI.Hosting;
 
 namespace Uno.UI.Runtime.Skia;
 
 internal class SoftwareRenderSurface : Gtk.DrawingArea, IGtkRenderer
 {
 	private readonly DisplayInformation _displayInformation;
-	private FocusManager? _focusManager;
 	private SKSurface? _surface;
 	private SKBitmap? _bitmap;
 	private int _bheight, _bwidth;
@@ -58,28 +50,9 @@ internal class SoftwareRenderSurface : Gtk.DrawingArea, IGtkRenderer
 
 	public Widget Widget => this;
 
-	public void InvalidateRender()
-	{
-		// TODO Uno: Make this invalidation less often if possible.
-		InvalidateOverlays();
-		Invalidate();
-	}
+	public void InvalidateRender() => QueueDrawArea(0, 0, 10000, 10000);
 
-	private void OnDpiChanged(DisplayInformation sender, object args) =>
-		UpdateDpi();
-
-	private void InvalidateOverlays()
-	{
-		_focusManager ??= VisualTree.GetFocusManagerForElement(Windows.UI.Xaml.Window.Current?.RootElement);
-		_focusManager?.FocusRectManager?.RedrawFocusVisual();
-		if (_focusManager?.FocusedElement is TextBox textBox)
-		{
-			textBox.TextBoxView?.Extension?.InvalidateLayout();
-		}
-	}
-
-	private void Invalidate()
-		=> QueueDrawArea(0, 0, 10000, 10000);
+	private void OnDpiChanged(DisplayInformation sender, object args) => UpdateDpi();
 
 	protected override bool OnDrawn(Context cr)
 	{

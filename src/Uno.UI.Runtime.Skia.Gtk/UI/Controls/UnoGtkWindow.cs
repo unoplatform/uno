@@ -4,19 +4,17 @@ using System;
 using System.Collections.Generic;
 using Gtk;
 using Uno.Disposables;
-using Uno.Foundation.Logging;
 using Uno.UI.Runtime.Skia.GTK.UI.Core;
 using Uno.UI.Xaml.Core;
 using Windows.Foundation;
-using Windows.UI.Core.Preview;
 using Windows.UI.ViewManagement;
-using Windows.UI.WebUI;
-using Windows.UI.Xaml;
 using WinUIWindow = Windows.UI.Xaml.Window;
-using UnoApplication = Windows.UI.Xaml.Application;
 using WinUI = Windows.UI.Xaml;
 using Uno.UI.Runtime.Skia.GTK.Hosting;
-using Uno.UI.Xaml.Hosting;
+using Uno.UI.Hosting;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Controls;
+using Uno.UI.Rendering;
 
 namespace Uno.UI.Runtime.Skia.UI.Xaml.Controls;
 #pragma warning disable CS0649
@@ -25,6 +23,7 @@ namespace Uno.UI.Runtime.Skia.UI.Xaml.Controls;
 internal class UnoGtkWindow : Gtk.Window, IGtkWindowHost
 {
 	private readonly WinUIWindow _window;
+	private FocusManager? _focusManager;
 
 	private static UnoEventBox? _eventBox;
 	private Widget? _area;
@@ -230,16 +229,6 @@ internal class UnoGtkWindow : Gtk.Window, IGtkWindowHost
 	}
 
 
-	private IGtkRenderer BuildRenderSurfaceType()
-		=> GtkHost.Current!.RenderSurfaceType switch
-		{
-			Skia.RenderSurfaceType.OpenGLES => new OpenGLESRenderSurface(this),
-			Skia.RenderSurfaceType.OpenGL => new OpenGLRenderSurface(this),
-			Skia.RenderSurfaceType.Software => new SoftwareRenderSurface(this),
-			_ => throw new InvalidOperationException($"Unsupported RenderSurfaceType {GtkHost.Current!.RenderSurfaceType}")
-		};
-
-
 	//private void SetupRenderSurface()
 	//{
 	//	TryReadRenderSurfaceTypeEnvironment();
@@ -368,7 +357,8 @@ internal class UnoGtkWindow : Gtk.Window, IGtkWindowHost
 
 	void IXamlRootHost.InvalidateRender()
 	{
-		//InvalidateOverlays();
+		_window.RootElement?.XamlRoot?.InvalidateOverlays();
+
 		_renderSurface?.InvalidateRender();
 	}
 

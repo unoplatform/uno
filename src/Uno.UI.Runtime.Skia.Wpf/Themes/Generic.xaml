@@ -4,10 +4,10 @@
     xmlns:controls="clr-namespace:Uno.UI.Runtime.Skia.Wpf.Controls"
     xmlns:platform="clr-namespace:Uno.UI.Skia.Wpf">
 
-    <Style TargetType="{x:Type platform:UnoWpfWindow}">
+    <Style TargetType="{x:Type platform:UnoWpfWindowHost}">
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="{x:Type platform:UnoWpfWindow}">
+                <ControlTemplate TargetType="{x:Type platform:UnoWpfWindowHost}">
                     <Border
                         Background="{x:Null}"
                         BorderBrush="{TemplateBinding BorderBrush}"
