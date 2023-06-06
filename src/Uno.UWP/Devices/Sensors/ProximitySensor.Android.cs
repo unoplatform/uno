@@ -16,8 +16,10 @@ public partial class ProximitySensor
 	private Sensor? _sensor;
 	private ProximitySensorListener? _listener;
 
-	partial void InitializePlatform(string deviceId)
+	private ProximitySensor(string deviceId)
 	{
+		_readingChangedWrapper = new(() => StartReading(), () => StopReading());
+
 		DeviceId = deviceId;
 	}
 
@@ -33,7 +35,7 @@ public partial class ProximitySensor
 	/// <summary>
 	/// Gets the device identifier.
 	/// </summary>
-	public string DeviceId { get; }
+	public string DeviceId { get; private set; }
 
 	/// <summary>
 	/// Gets the maximum distance from the proximity sensor to the detected object.

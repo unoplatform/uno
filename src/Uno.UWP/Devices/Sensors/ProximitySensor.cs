@@ -12,14 +12,9 @@ public partial class ProximitySensor
 
 	private readonly StartStopEventWrapper<TypedEventHandler<ProximitySensor, ProximitySensorReadingChangedEventArgs>> _readingChangedWrapper;
 
-	private ProximitySensor(string deviceId)
+	private ProximitySensor()
 	{
-		_readingChangedWrapper = new(() => StartReading(), () => StopReading());
-
-		InitializePlatform(deviceId);
 	}
-
-	partial void InitializePlatform(string deviceId);
 
 	/// <summary>
 	/// Gets the device selector.
