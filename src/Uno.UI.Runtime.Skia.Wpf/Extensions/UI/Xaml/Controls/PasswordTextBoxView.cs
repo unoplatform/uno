@@ -3,7 +3,7 @@
 using System;
 using System.Windows;
 using Uno.Disposables;
-using Uno.UI.Runtime.Skia.Wpf.Controls;
+using Uno.UI.Runtime.Skia.Wpf.UI.Controls;
 using WpfElement = System.Windows.UIElement;
 using WpfFrameworkElement = System.Windows.FrameworkElement;
 using WpfGrid = System.Windows.Controls.Grid;

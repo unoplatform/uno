@@ -20,7 +20,6 @@ public class WpfHost : IWpfApplicationHost
 	[ThreadStatic] private static WpfHost? _current;
 
 	private bool _ignorePixelScaling;
-	private bool _isVisible = true;
 
 	static WpfHost() => WpfExtensionsRegistrar.Register();
 
