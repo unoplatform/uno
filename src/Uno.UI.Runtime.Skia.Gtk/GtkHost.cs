@@ -11,6 +11,7 @@ using GtkApplication = Gtk.Application;
 using WinUIWindow = Windows.UI.Xaml.Window;
 using Uno.UI.Runtime.Skia.GTK.Extensions;
 using Uno.UI.Runtime.Skia.UI.Xaml.Controls;
+using Uno.UI.Runtime.Skia.GTK.UI.Controls;
 
 namespace Uno.UI.Runtime.Skia
 {
@@ -66,6 +67,16 @@ namespace Uno.UI.Runtime.Skia
 			SetupMainWindow();
 
 			GtkApplication.Run();
+		}
+
+
+		public void TakeScreenshot(string filePath)
+		{
+			// TODO: MZ
+			//if (_area is IRenderSurface renderSurface)
+			//{
+			//	renderSurface.TakeScreenshot(filePath);
+			//}
 		}
 
 		private void InitializeDispatcher()

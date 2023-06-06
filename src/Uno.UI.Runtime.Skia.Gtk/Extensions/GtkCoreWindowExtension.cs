@@ -23,12 +23,6 @@ namespace Uno.UI.Runtime.Skia
 
 		partial void InitializeKeyboard();
 
-		internal static Fixed? FindNativeOverlayLayer(Gtk.Window window)
-		{
-			var overlay = (Overlay)((EventBox)window.Child).Child;
-			return overlay.Children.OfType<Fixed>().FirstOrDefault();
-		}
-
 		internal static Fixed? GetOverlayLayer(XamlRoot xamlRoot) =>
 			XamlRootMap.GetHostForRoot(xamlRoot)?.NativeOverlayLayer;
 
