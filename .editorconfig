@@ -2,7 +2,6 @@ root = true
 
 [*]
 tab_width = 4
-trim_trailing_whitespace = true
 insert_final_newline = true
 
 [*.{xaml,xml,targets,props,csproj,cs,tt,java,ts,json}]
@@ -221,6 +220,8 @@ dotnet_style_qualification_for_method = false:suggestion
 
 # http://kent-boogaart.com/blog/editorconfig-reference-for-c-developers#dotnet_style_qualification_for_property
 dotnet_style_qualification_for_property = false:suggestion
+
+csharp_style_namespace_declarations = file_scoped
 
 ## Naming styles
 

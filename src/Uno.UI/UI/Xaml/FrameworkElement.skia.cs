@@ -14,6 +14,7 @@ using System.Collections;
 
 using Uno.UI.Xaml;
 using System.Numerics;
+using Uno.UI;
 
 namespace Windows.UI.Xaml
 {
@@ -59,10 +60,26 @@ namespace Windows.UI.Xaml
 			_renderTransform?.UpdateSize(args.NewSize);
 		}
 
-		/// <summary>
-		/// Identifies the Name dependency property.
-		/// </summary>
-		public static new DependencyProperty NameProperty => UIElement.NameProperty;
+		#region Name Dependency Property
+
+		private void OnNameChanged(string oldValue, string newValue)
+		{
+			if (FrameworkElementHelper.IsUiAutomationMappingEnabled)
+			{
+				Windows.UI.Xaml.Automation.AutomationProperties.SetAutomationId(this, newValue);
+			}
+		}
+
+		[GeneratedDependencyProperty(DefaultValue = "", ChangedCallback = true)]
+		internal static DependencyProperty NameProperty { get; } = CreateNameProperty();
+
+		public string Name
+		{
+			get => GetNameValue();
+			set => SetNameValue(value);
+		}
+
+		#endregion
 
 		#region Margin Dependency Property
 		[GeneratedDependencyProperty(

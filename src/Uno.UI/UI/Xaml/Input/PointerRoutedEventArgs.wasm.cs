@@ -5,6 +5,7 @@ using Windows.System;
 using Uno.Foundation;
 using Uno.UI.Xaml;
 
+using PointerIdentifier = Windows.Devices.Input.PointerIdentifier; // internal type (should be in Uno namespace)
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
 #else
@@ -25,8 +26,7 @@ namespace Windows.UI.Xaml.Input
 
 		internal PointerRoutedEventArgs(
 			double timestamp,
-			uint pointerId,
-			PointerDeviceType pointerType,
+			PointerIdentifier pointerUniqueId,
 			Point absolutePosition,
 			bool isInContact,
 			bool isInRange,
@@ -46,7 +46,7 @@ namespace Windows.UI.Xaml.Input
 			_wheel = wheel;
 
 			FrameId = ToFrameId(timestamp);
-			Pointer = new Pointer(pointerId, pointerType, isInContact, isInRange);
+			Pointer = new Pointer(pointerUniqueId, isInContact, isInRange);
 			KeyModifiers = keys;
 			OriginalSource = source;
 		}

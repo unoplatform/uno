@@ -119,11 +119,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+#if !NETFX_CORE
+		[Ignore("#12183: ItemsControl.Items no longer map to ItemsSource for simple collection.")]
+#endif
 		public void When_ItemsSource_List_Modified_Change_Is_Reflected()
 		{
-			var listView = new ListView();
 			var items = new List<int>() { 1 };
-			listView.ItemsSource = items;
+			var listView = new ListView { ItemsSource = items };
+
 			Assert.AreEqual(1, listView.Items.Count);
 			items.Add(2);
 			Assert.AreEqual(2, listView.Items.Count);
@@ -142,7 +145,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				notified = true;
 			};
 			items.Add(2);
+#if NETFX_CORE // #12183: ItemsControl.Items no longer map to ItemsSource for simple collection.
 			Assert.AreEqual(2, listView.Items.Count);
+#endif
 			Assert.IsFalse(notified);
 		}
 
@@ -191,6 +196,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+#if !NETFX_CORE
+		[Ignore("#12183: ItemsControl.Items no longer map to ItemsSource for simple collection.")]
+#endif
 		public void When_ItemsSource_Updated_Items_Sync()
 		{
 			var listView = new ListView();

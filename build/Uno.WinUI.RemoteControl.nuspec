@@ -5,7 +5,7 @@
 		<version>0.1.0.0</version>
 		<title>Uno.UI.RemoteControl</title>
 		<authors>Uno Platform</authors>
-		<owners>nventive</owners>
+		<owners>unoplatform</owners>
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
 		<projectUrl>https://platform.uno/</projectUrl>
 		<license type="expression">Apache-2.0</license>

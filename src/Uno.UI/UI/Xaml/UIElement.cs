@@ -186,7 +186,33 @@ namespace Windows.UI.Xaml
 			return false;
 		}
 
+		/// <summary>
+		/// Gets the size that this UIElement computed during the arrange pass of the layout process.
+		/// </summary>
 		public Vector2 ActualSize => new Vector2((float)GetActualWidth(), (float)GetActualHeight());
+
+		/// <summary>
+		/// Gets the position of this UIElement, relative to its parent, computed during the arrange pass of the layout process.
+		/// </summary>
+		public Vector3 ActualOffset
+		{
+			get
+			{
+#if __ANDROID__
+				var parent = this.GetVisualTreeParent();
+
+				if (parent is NativeListViewBase lv)
+				{
+					// TODO Uno: Issue with LayoutSlot for list items
+					// https://github.com/unoplatform/uno/issues/2754
+					var sv = lv.FindFirstParent<ScrollViewer>();
+					var offset = GetPosition(this, relativeTo: sv);
+					return new Vector3((float)offset.X, (float)offset.Y, 0f);
+				}
+#endif
+				return new Vector3((float)LayoutSlotWithMarginsAndAlignments.X, (float)LayoutSlotWithMarginsAndAlignments.Y, 0f);
+			}
+		}
 
 		/// <summary>
 		/// Gets or sets the x, y, and z rendering position of the element.
@@ -341,31 +367,29 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		public Transform RenderTransform
 		{
-			get => (Transform)this.GetValue(RenderTransformProperty);
-			set => this.SetValue(RenderTransformProperty, value);
+			get => GetRenderTransformValue();
+			set => SetRenderTransformValue(value);
 		}
 
 		/// <summary>
 		/// Backing dependency property for <see cref="RenderTransform"/>
 		/// </summary>
-		public static DependencyProperty RenderTransformProperty { get; } =
-			DependencyProperty.Register("RenderTransform", typeof(Transform), typeof(UIElement), new FrameworkPropertyMetadata(null, (s, e) => OnRenderTransformChanged(s, e)));
+		[GeneratedDependencyProperty(DefaultValue = null, ChangedCallback = true)]
+		public static DependencyProperty RenderTransformProperty { get; } = CreateRenderTransformProperty();
 
-		private static void OnRenderTransformChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
+		private void OnRenderTransformChanged(Transform _, Transform transform)
 		{
-			var view = (UIElement)dependencyObject;
+			_renderTransform?.Dispose();
 
-			view._renderTransform?.Dispose();
-
-			if (args.NewValue is Transform transform)
+			if (transform is not null)
 			{
-				view._renderTransform = new NativeRenderTransformAdapter(view, transform, view.RenderTransformOrigin);
-				view.OnRenderTransformSet();
+				_renderTransform = new NativeRenderTransformAdapter(this, transform, RenderTransformOrigin);
+				OnRenderTransformSet();
 			}
 			else
 			{
 				// Sanity
-				view._renderTransform = null;
+				_renderTransform = null;
 			}
 		}
 
@@ -381,21 +405,16 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		public Point RenderTransformOrigin
 		{
-			get => (Point)this.GetValue(RenderTransformOriginProperty);
-			set => this.SetValue(RenderTransformOriginProperty, value);
+			get => GetRenderTransformOriginValue();
+			set => SetRenderTransformOriginValue(value);
 		}
 
-		// Using a DependencyProperty as the backing store for RenderTransformOrigin.  This enables animation, styling, binding, etc...
-		public static DependencyProperty RenderTransformOriginProperty { get; } =
-			DependencyProperty.Register("RenderTransformOrigin", typeof(Point), typeof(UIElement), new FrameworkPropertyMetadata(default(Point), (s, e) => OnRenderTransformOriginChanged(s, e)));
+		[GeneratedDependencyProperty(ChangedCallback = true)]
+		public static DependencyProperty RenderTransformOriginProperty { get; } = CreateRenderTransformOriginProperty();
+		private static object GetRenderTransformOriginDefaultValue() => default(Point);
 
-		private static void OnRenderTransformOriginChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
-		{
-			var view = (UIElement)dependencyObject;
-			var point = (Point)args.NewValue;
-
-			view._renderTransform?.UpdateOrigin(point);
-		}
+		private void OnRenderTransformOriginChanged(Point _, Point origin)
+			=> _renderTransform?.UpdateOrigin(origin);
 		#endregion
 
 		/// <summary>
@@ -459,6 +478,7 @@ namespace Windows.UI.Xaml
 		private protected void SetDefaultForeground(DependencyProperty foregroundProperty)
 		{
 			this.SetValue(foregroundProperty, DefaultBrushes.TextForegroundBrush, DependencyPropertyValuePrecedences.DefaultValue);
+			((IDependencyObjectStoreProvider)this).Store.SetLastUsedTheme(Application.Current?.RequestedThemeForResources);
 		}
 
 		[NotImplemented]
@@ -466,11 +486,10 @@ namespace Windows.UI.Xaml
 
 		internal AutomationPeer OnCreateAutomationPeerInternal() => OnCreateAutomationPeer();
 
-		internal static Matrix3x2 GetTransform(UIElement from, UIElement to)
-		{
-			var logInfoString = from.Log().IsEnabled(LogLevel.Debug) ? new StringBuilder() : null;
-			logInfoString?.Append($"{nameof(GetTransform)}(from: {from}, to: {to?.ToString() ?? "<null>"}) Offsets: [");
+		internal static Matrix3x2 GetTransform(UIElement from, UIElement to) => GetTransform(from, to, new());
 
+		private static Matrix3x2 GetTransform(UIElement from, UIElement to, TransformToVisualContext context)
+		{
 			if (from == to)
 			{
 				return Matrix3x2.Identity;
@@ -486,86 +505,108 @@ namespace Windows.UI.Xaml
 #endif
 
 			var matrix = Matrix3x2.Identity;
-			double offsetX = 0.0, offsetY = 0.0;
 			var elt = from;
 			do
 			{
-				var layoutSlot = elt.LayoutSlotWithMarginsAndAlignments;
-				var transform = elt.RenderTransform;
-				if (transform is null)
-				{
-					// As this is the common case, avoid Matrix computation when a basic addition is sufficient
-					offsetX += layoutSlot.X;
-					offsetY += layoutSlot.Y;
-				}
-				else
-				{
-					var origin = elt.RenderTransformOrigin;
-					var transformMatrix = origin == default
-						? transform.MatrixCore
-						: transform.ToMatrix(origin, layoutSlot.Size);
+				elt.ApplyRenderTransform(ref matrix);
+				elt.ApplyLayoutTransform(ref matrix);
+				elt.ApplyElementCustomTransform(ref matrix);
+			} while (elt.TryGetParentUIElementForTransformToVisual(out elt, ref matrix, ref context) && elt != to); // If possible we stop as soon as we reach 'to'
 
-					// First apply any pending arrange offset that would have been impacted by this RenderTransform (eg. scaled)
-					// Friendly reminder: Matrix multiplication is usually not commutative ;)
-					matrix *= Matrix3x2.CreateTranslation((float)offsetX, (float)offsetY);
-					matrix *= transformMatrix;
-
-					offsetX = layoutSlot.X;
-					offsetY = layoutSlot.Y;
-				}
-
-#if !__MACOS__ // On macOS the SCP is using RenderTransforms for scrolling and zooming which has already been included.
-				if (elt is ScrollViewer sv
-					// Don't adjust for scroll offsets if it's the ScrollViewer itself calling TransformToVisual
-					&& elt != from)
-				{
-					// Scroll offsets are handled at SCP level using the IsScrollPort
-
-					var zoom = sv.ZoomFactor;
-					if (zoom != 1)
-					{
-						matrix *= Matrix3x2.CreateTranslation((float)offsetX, (float)offsetY);
-						matrix *= Matrix3x2.CreateScale(zoom);
-					}
-				}
-
-				if (elt.IsScrollPort) // Managed SCP or custom scroller
-				{
-					offsetX -= elt.ScrollOffsets.X;
-					offsetY -= elt.ScrollOffsets.Y;
-				}
-#endif
-
-				logInfoString?.Append($"{elt}: ({offsetX}, {offsetY}), ");
-			} while (elt.TryGetParentUIElementForTransformToVisual(out elt, ref offsetX, ref offsetY) && elt != to); // If possible we stop as soon as we reach 'to'
-
-			matrix *= Matrix3x2.CreateTranslation((float)offsetX, (float)offsetY);
-
-			if (to != null && elt != to)
+			if (to is not null && elt != to)
 			{
 				// Unfortunately we didn't find the 'to' in the parent hierarchy,
 				// so matrix == fromToRoot and we now have to compute the transform 'toToRoot'.
 				// Note: We do not propagate the 'intermediatesSelector' as cached transforms would be irrelevant
-				var toToRoot = GetTransform(to, null);
-				var rootToTo = toToRoot.Inverse();
+				var toContext = new TransformToVisualContext();
+				var toToRoot = GetTransform(to, null, toContext);
 
-				matrix *= rootToTo;
+#if __IOS__
+				// On iOS, the `from` and `to` may be coming from different ViewController.
+				// In such case, their coordinates should not be "added" together, since they are from different coordinates space.
+				if (context.ViewController == toContext.ViewController)
+#endif
+				{
+					var rootToTo = toToRoot.Inverse();
+					matrix *= rootToTo;
+				}
 			}
 
-			if (logInfoString != null)
+			if (from.Log().IsEnabled(LogLevel.Trace))
 			{
-				logInfoString.Append($"], matrix: {matrix}");
-				from.Log().LogDebug(logInfoString.ToString());
+				from.Log().Trace($"{nameof(GetTransform)}(from: {from.GetDebugName()}, to: {to.GetDebugName()}) = {matrix}");
 			}
+
 			return matrix;
+		}
+
+		/// <summary>
+		/// Applies to the given matrix the transformation needed to convert from parent to local element coordinates space.
+		/// </summary>
+		/// <param name="matrix">The matrix into which the layout constraints should be written</param>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		internal void ApplyLayoutTransform(ref Matrix3x2 matrix)
+		{
+			// This is equivalent to matrix * Matrix3x2.CreateTranslation(layout.X, layout.Y);
+			var layoutSlot = LayoutSlotWithMarginsAndAlignments;
+			matrix.M31 += (float)layoutSlot.X;
+			matrix.M32 += (float)layoutSlot.Y;
+		}
+
+		/// <summary>
+		/// Applies to the given matrix the <see cref="RenderTransform"/>.
+		/// </summary>
+		/// <param name="matrix">The matrix into which the render transform should be written</param>
+		/// <param name="ignoreOrigin">Indicates if the <see cref="RenderTransformOrigin"/> should be ignored or not.</param>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		internal void ApplyRenderTransform(ref Matrix3x2 matrix, bool ignoreOrigin = false)
+		{
+			if (RenderTransform is { } transform)
+			{
+				var transformMatrix = transform.MatrixCore;
+				if (!ignoreOrigin)
+				{
+					transformMatrix = transformMatrix.CenterOn(RenderTransformOrigin, LayoutSlotWithMarginsAndAlignments.Size);
+				}
+
+				matrix *= transformMatrix;
+			}
+		}
+
+		/// <summary>
+		/// Applies to the given matrix the constrains specific to the current element (like ScrollOffsets).
+		/// </summary>
+		/// <param name="matrix">The matrix into which the transformations should be written</param>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		internal void ApplyElementCustomTransform(ref Matrix3x2 matrix)
+		{
+#if !__MACOS__ // On macOS the SCP is using RenderTransforms for scrolling and zooming which has already been included.
+			if (this is ScrollViewer sv)
+			{
+				// Scroll offsets are handled at the SCP level using the IsScrollPort
+				// TODO: ZoomFactor should also be handled at the SCP level!
+
+				var zoom = sv.ZoomFactor;
+				if (zoom != 1)
+				{
+					matrix *= Matrix3x2.CreateScale(zoom);
+				}
+			}
+
+			if (IsScrollPort) // Managed SCP or custom scroller
+			{
+				matrix.M31 -= (float)ScrollOffsets.X;
+				matrix.M32 -= (float)ScrollOffsets.Y;
+			}
+#endif
 		}
 
 #if !__IOS__ && !__ANDROID__ && !__MACOS__ // This is the default implementation, but it can be customized per platform
 		/// <summary>
-		/// Note: Offsets are only an approximation which does not take in consideration possible transformations
+		/// Note: Offsets are only an approximation that does not take into consideration possible transformations
 		///	applied by a 'UIView' between this element and its parent UIElement.
 		/// </summary>
-		private bool TryGetParentUIElementForTransformToVisual(out UIElement parentElement, ref double offsetX, ref double offsetY)
+		private bool TryGetParentUIElementForTransformToVisual(out UIElement parentElement, ref Matrix3x2 _, ref TransformToVisualContext __)
 		{
 			var parent = VisualTreeHelper.GetParent(this);
 			switch (parent)
@@ -883,12 +924,61 @@ namespace Windows.UI.Xaml
 		internal Rect? ClippedFrame;
 #endif
 
-		public virtual void Measure(Size availableSize)
+		/// <summary>
+		/// Updates the DesiredSize of a UIElement. Typically, objects that implement custom layout for their
+		/// layout children call this method from their own MeasureOverride implementations to form a recursive layout update.
+		/// </summary>
+		/// <param name="availableSize">
+		/// The available space that a parent can allocate to a child object. A child object can request a larger
+		/// space than what is available; the provided size might be accommodated if scrolling or other resize behavior is
+		/// possible in that particular container.
+		/// </param>
+		/// <returns>The measured size.</returns>
+		/// <remarks>
+		/// Under Uno.UI, this method should not be called during the normal layouting phase. Instead, use the
+		/// <see cref="MeasureElement(View, Size)"/> methods, which handles native view properly.
+		/// </remarks>
+		public void Measure(Size availableSize)
 		{
+#if !UNO_REFERENCE_API
+			if (this is not FrameworkElement fwe)
+			{
+				return;
+			}
+
+			if (double.IsNaN(availableSize.Width) || double.IsNaN(availableSize.Height))
+			{
+				throw new InvalidOperationException($"Cannot measure [{GetType()}] with NaN");
+			}
+
+			((ILayouterElement)fwe).Layouter.Measure(availableSize);
+#if IS_UNIT_TESTS
+			OnMeasurePartial(availableSize);
+#endif
+#endif
 		}
 
-		public virtual void Arrange(Rect finalRect)
+#if IS_UNIT_TESTS
+		partial void OnMeasurePartial(Size slotSize);
+#endif
+
+		/// <summary>
+		/// Positions child objects and determines a size for a UIElement. Parent objects that implement custom layout
+		/// for their child elements should call this method from their layout override implementations to form a recursive layout update.
+		/// </summary>
+		/// <param name="finalRect">The final size that the parent computes for the child in layout, provided as a <see cref="Windows.Foundation.Rect"/> value.</param>
+		public void Arrange(Rect finalRect)
 		{
+#if !UNO_REFERENCE_API
+			if (this is not FrameworkElement fwe)
+			{
+				return;
+			}
+
+			var layouter = ((ILayouterElement)fwe).Layouter;
+			layouter.Arrange(finalRect);
+			layouter.ArrangeChild(fwe, finalRect);
+#endif
 		}
 
 		public void InvalidateMeasure()
@@ -1135,14 +1225,24 @@ namespace Windows.UI.Xaml
 		[GeneratedDependencyProperty(DefaultValue = default(KeyboardNavigationMode))]
 		public static DependencyProperty TabFocusNavigationProperty { get; } = CreateTabFocusNavigationProperty();
 
-#if HAS_UNO_WINUI
 		// Skipping already declared property ActualSize
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public UI.Input.InputCursor ProtectedCursor
+
+#if !__WASM__
+		/// <summary>
+		/// Gets or sets the cursor that displays when the pointer is over this element. Defaults to null, indicating no change to the cursor.
+		/// </summary>
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+#if HAS_UNO_WINUI
+		protected Microsoft.UI.Input.InputCursor ProtectedCursor
+#else
+		private protected Microsoft.UI.Input.InputCursor ProtectedCursor
+#endif
 		{
 			get;
 			set;
 		}
 #endif
+
+		private partial struct TransformToVisualContext { }
 	}
 }

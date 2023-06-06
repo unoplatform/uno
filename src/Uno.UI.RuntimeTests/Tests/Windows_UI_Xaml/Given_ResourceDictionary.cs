@@ -58,7 +58,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 					[TestBrush] = new WeakResourceInitializer(dontcare, that =>
 					{
 						var brush = new SolidColorBrush();
-						ResourceResolverSingleton.Instance.ApplyResource(brush, SolidColorBrush.ColorProperty, TestThemeColor, true, parserContext);
+						ResourceResolverSingleton.Instance.ApplyResource(brush, SolidColorBrush.ColorProperty, TestThemeColor, true, false, parserContext);
 
 						return brush;
 					})

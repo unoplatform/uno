@@ -8,14 +8,18 @@ namespace Uno.UI {
 			if ((<any>Module).getAssemblyExports !== undefined) {
 				const unoExports = await (<any>Module).getAssemblyExports("Uno");
 				const unoUIExports = await (<any>Module).getAssemblyExports("Uno.UI");
+				const unoUIDispatchingExports = await (<any>Module).getAssemblyExports("Uno.UI.Dispatching");
 
 				const runtimeWasmExports = await (<any>Module).getAssemblyExports("Uno.Foundation.Runtime.WebAssembly");
 
-				(<any>globalThis).DotnetExports = {
-					Uno: unoExports,
-					UnoUI: unoUIExports,
-					UnoFoundationRuntimeWebAssembly: runtimeWasmExports
-				};
+				if (Object.entries(unoUIExports).length > 0) {
+					(<any>globalThis).DotnetExports = {
+						Uno: unoExports,
+						UnoUI: unoUIExports,
+						UnoUIDispatching: unoUIDispatchingExports,
+						UnoFoundationRuntimeWebAssembly: runtimeWasmExports
+					};
+				}
 			}
 		}
 	}

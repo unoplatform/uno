@@ -43,10 +43,7 @@ namespace Windows.UI.Xaml.Controls
 			=> new ItemsPanelTemplate(obj);
 
 		public static implicit operator Func<View?>(ItemsPanelTemplate? obj)
-			=> () => (View?)obj?.LoadContent();
-
-		public new View? LoadContent()
-			=> (View?)base.LoadContent();
+			=> () => (obj as IFrameworkTemplateInternal)?.LoadContent();
 	}
 }
 

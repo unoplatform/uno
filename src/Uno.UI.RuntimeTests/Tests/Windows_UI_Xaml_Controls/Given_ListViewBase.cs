@@ -1,11 +1,26 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Windows.Foundation;
+using Windows.UI;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
+using FluentAssertions;
+using FluentAssertions.Execution;
 using Private.Infrastructure;
+using Uno.Extensions;
+using Uno.UI.RuntimeTests.Extensions;
+using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.ListViewPages;
+
 #if NETFX_CORE
 using Uno.UI.Extensions;
 #elif __IOS__
@@ -16,34 +31,20 @@ using AppKit;
 #else
 using Uno.UI;
 #endif
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
+
 using static Private.Infrastructure.TestServices;
-using Windows.Foundation;
-using Windows.UI;
-using Windows.UI.Xaml.Media;
-using FluentAssertions;
-using FluentAssertions.Execution;
-using Uno.Extensions;
-using Uno.UI.RuntimeTests.Helpers;
-using System.Runtime.CompilerServices;
-using Windows.UI.Xaml.Data;
-using Uno.UI.RuntimeTests.Extensions;
-using Windows.UI.Xaml.Input;
-using System.Runtime.InteropServices.WindowsRuntime;
-using System.Diagnostics;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
-	[TestClass]
-	[RunsOnUIThread]
-#if __MACOS__
-	[Ignore("Currently fails on macOS, part of #9282! epic")]
-#endif
-	public partial class Given_ListViewBase
+	public partial class Given_ListViewBase // resources
 	{
 		private ResourceDictionary _testsResources;
+
+		[TestInitialize]
+		public void Init()
+		{
+			_testsResources = new TestsResources();
+		}
 
 		private Style BasicContainerStyle => _testsResources["BasicListViewContainerStyle"] as Style;
 
@@ -84,13 +85,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		private DataTemplate BoundHeightItemTemplate => _testsResources["BoundHeightItemTemplate"] as DataTemplate;
 
 		private DataTemplate ReuseCounterItemTemplate => _testsResources["ReuseCounterItemTemplate"] as DataTemplate;
+	}
 
-		[TestInitialize]
-		public void Init()
-		{
-			_testsResources = new TestsResources();
-		}
-
+	[TestClass]
+	[RunsOnUIThread]
+#if __MACOS__
+	[Ignore("Currently fails on macOS, part of #9282! epic")]
+#endif
+	public partial class Given_ListViewBase // test cases
+	{
 		[TestMethod]
 		[RunsOnUIThread]
 		public void ValidSelectionChange()
@@ -219,19 +222,24 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-		public void InvalidSelectionChangeInvalidPrevious()
+		public void InvalidChanges_ShouldNotBeReflectedOnSelectedItem()
 		{
 			var source = Enumerable.Range(0, 10).ToArray();
 			var list = new ListView { ItemsSource = source };
+
+			// select 3 (value, not index)
 			list.SelectedItem = 3;
 			Assert.AreEqual(list.SelectedItem, 3);
+
+			// modifying the original source, should not be reflected on the listview
+			// since the source is not ObservableCollection or INotifyCollectionChanged
 			source[3] = 13;
-			list.SelectedItem = 17;
-#if NETFX_CORE
 			Assert.AreEqual(list.SelectedItem, 3);
-#else
-			Assert.IsNull(list.SelectedItem);
-#endif
+
+			// setting an invalid value for SelectedItem, should be reverted to old value
+			// and in this case, that should be the 3 from the original **unmodified** source
+			list.SelectedItem = 17;
+			Assert.AreEqual(list.SelectedItem, 3);
 		}
 
 		[TestMethod]
@@ -264,7 +272,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var tb = si.FindFirstChild<TextBlock>();
 			Assert.AreEqual("item 0", tb?.Text);
 		}
-
 
 		[TestMethod]
 		[RunsOnUIThread]
@@ -365,7 +372,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsInstanceOfType(parent, typeof(ListView));
 		}
 #endif
-
 
 		[TestMethod]
 		[RunsOnUIThread]
@@ -721,46 +727,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 			ListViewItem lvi = null;
 			await WindowHelper.WaitFor(() => (lvi = page.SubjectListView.ContainerFromItem("One") as ListViewItem) != null);
-		}
-
-		private static ContentControl[] GetPanelVisibleChildren(ListViewBase list)
-		{
-#if __ANDROID__ || __IOS__
-			return list
-				.GetItemsPanelChildren()
-				.OfType<ContentControl>()
-				.ToArray();
-#else
-			return list.ItemsPanelRoot
-				.Children
-				.OfType<ContentControl>()
-				.Where(c => c.Visibility == Visibility.Visible) // Managed ItemsStackPanel currently uses the dirty trick of leaving reyclable items attached to panel and collapsed
-				.ToArray();
-#endif
-		}
-
-		private static ContentControl[] GetAllPanelChildren(ListViewBase list)
-		{
-#if __ANDROID__
-			return list
-				.GetItemsPanelChildren()
-				.OfType<ContentControl>()
-				.ToArray();
-#elif __IOS__
-			return list
-				.GetItemsPanelChildren()
-				.OfType<ContentControl>()
-				// iOS does not seem to provide to exclude the recycled items, so we mark
-				// then using IsDisplayed.
-				.Where(c => c.Superview?.Superview is ListViewBaseInternalContainer container && container.IsDisplayed)
-				.ToArray();
-#else
-			return list.ItemsPanelRoot
-				.Children
-				.OfType<ContentControl>()
-				.Where(c => c.Visibility == Visibility.Visible) // Managed ItemsStackPanel currently uses the dirty trick of leaving reyclable items attached to panel and collapsed
-				.ToArray();
-#endif
 		}
 
 		[TestMethod]
@@ -1209,16 +1175,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			dataContextChanged.Should().BeLessThan(35, $"dataContextChanged {dataContextChanged}");
 		}
 #endif
-
-		private static double GetTop(FrameworkElement element, FrameworkElement container)
-		{
-			if (element == null)
-			{
-				return double.NaN;
-			}
-			var transform = element.TransformToVisual(container);
-			return transform.TransformPoint(new Point()).Y;
-		}
 
 		[TestMethod]
 		[RunsOnUIThread]
@@ -2474,11 +2430,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
-		private record TestReleaseObject()
-		{
-			public byte[] test { get; set; } = new byte[1024 * 1024 * 2];
-		}
-
 		[TestMethod]
 		public async Task When_Item_Removed_Then_DataContext_Released()
 		{
@@ -2804,6 +2755,391 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(vsg.CurrentState?.Name, "MultiSelectEnabled");
 		}
 
+		[TestMethod]
+		[DataRow(nameof(ListView), "add")]
+		[DataRow(nameof(ListView), "remove")]
+		// note: ItemsControl won't reproduce the bug; we just throw that in here for sanity purpose.
+		[DataRow(nameof(ItemsControl), "add")]
+		[DataRow(nameof(ItemsControl), "remove")]
+		public async Task When_ItemsSource_NotNotify_Changed(string sutType, string scenario)
+		{
+			var source = "qwe,asd,zxc".Split(',').ToList();
+			var sut = sutType switch
+			{
+				nameof(ListView) => new ListView() { ItemsSource = source },
+				nameof(ItemsControl) => new ItemsControl() { ItemsSource = source },
+
+				_ => throw new ArgumentOutOfRangeException(nameof(sutType)),
+			};
+
+			WindowHelper.WindowContent = sut;
+			await WindowHelper.WaitForLoaded(sut);
+			await WindowHelper.WaitForIdle();
+
+			((Action)(scenario switch
+			{
+				"add" => () => source.Add("qwe2"),
+				"remove" => () => source.RemoveAt(0),
+
+				_ => throw new ArgumentOutOfRangeException(nameof(scenario)),
+			})).Invoke();
+			sut.InvalidateMeasure();
+			sut.ItemsPanelRoot.InvalidateMeasure();
+			await WindowHelper.WaitForIdle();
+
+			var children =
+#if __ANDROID__ || __IOS__
+				sut is ListView lv
+					? lv.NativePanel.GetChildren()
+					: sut.ItemsPanelRoot.Children;
+#else
+				sut.ItemsPanelRoot.Children;
+#endif
+			var materialized = children.Count(IsVisible);
+			Assert.AreEqual(3, materialized, $"ListView should still contains 3 materialized items, no more no less.");
+
+			bool IsVisible(object x) => x is UIElement uie
+				? uie.Visibility == Visibility.Visible
+#if __IOS__
+				: !(x as UIView)?.Hidden ?? false;
+#else
+				: false;
+#endif
+		}
+
+		[TestMethod]
+		public async Task When_ItemsSource_INCC_Reset()
+		{
+			// note: In order to repro #12059 (extra SelectTemplate call) & SelectTemplateCore called with incorrect item (the `source` is passed as item),
+			// we need a binding that inherits source from DataContext, and not: new Binding { Source = source }, or direct assignment.
+			Action<object> onSelectTemplateHook = null;
+
+			var source = new ObservableCollection<object>(new[] { new object() });
+			var sut = new ListView
+			{
+				ItemTemplateSelector = new LambdaDataTemplateSelector(x =>
+				{
+					onSelectTemplateHook?.Invoke(x);
+					return TextBlockItemTemplate;
+				}),
+			};
+			sut.DataContext = source;
+			sut.SetBinding(ItemsControl.ItemsSourceProperty, new Binding());
+
+			WindowHelper.WindowContent = sut;
+			await WindowHelper.WaitForLoaded(sut);
+			await WindowHelper.WaitForIdle();
+
+			// Clearing the source SHOULD NOT cause the ItemTemplateSelector to be re-evaluated,
+			// especially so when we are leaving the source empty.
+			var wasSelectTemplateCalled = false;
+			onSelectTemplateHook = x => wasSelectTemplateCalled = true;
+			source.Clear();
+
+			if (wasSelectTemplateCalled)
+			{
+				Assert.Fail("DataTemplateSelector.SelectTemplateCore is invoked during an INCC reset.");
+			}
+		}
+	}
+
+	public partial class Given_ListViewBase // data class, data-context, view-model, template-selector
+	{
+		public class KeyedTemplateSelector : DataTemplateSelector
+		{
+			public IDictionary<object, DataTemplate> Templates { get; } = new Dictionary<object, DataTemplate>();
+
+			protected override DataTemplate SelectTemplateCore(object item, DependencyObject container) => SelectTemplateCore(item); // On UWP only this overload is called when eg Button.ContentTemplateSelector is set
+
+			protected override DataTemplate SelectTemplateCore(object item)
+			{
+				if (item == null)
+				{
+					return null;
+				}
+
+				var template = Templates.UnoGetValueOrDefault(item);
+				return template;
+			}
+		}
+
+		public class KeyedTemplateSelector<T> : DataTemplateSelector
+		{
+			private readonly Func<object, T> _keySelector;
+
+			public KeyedTemplateSelector(Func<object, T> keySelector = null)
+			{
+				this._keySelector = keySelector;
+			}
+
+			public IDictionary<T, DataTemplate> Templates { get; } = new Dictionary<T, DataTemplate>();
+
+			protected override DataTemplate SelectTemplateCore(object item, DependencyObject container) => SelectTemplateCore(item); // On UWP only this overload is called when eg Button.ContentTemplateSelector is set
+
+			protected override DataTemplate SelectTemplateCore(object item)
+			{
+				if (item == null)
+				{
+					return null;
+				}
+
+				T itemT;
+				if (_keySelector != null)
+				{
+					itemT = _keySelector(item);
+				}
+				else if (item is T)
+				{
+					itemT = (T)item;
+				}
+				else
+				{
+					return null;
+				}
+
+				var template = Templates.UnoGetValueOrDefault(itemT);
+				return template;
+			}
+		}
+
+		public enum ItemColor
+		{
+			None,
+			Red,
+			Green,
+			Beige
+		}
+
+		public class ItemColorViewModel
+		{
+			public ItemColor ItemType { get; set; }
+			public int ItemIndex { get; set; }
+			public string DisplayString => $"Item {ItemIndex}";
+		}
+
+		public class ItemHeightViewModel : ViewModelBase
+		{
+			private string _displayString;
+			private double _itemHeight;
+
+			public string DisplayString
+			{
+				get => _displayString;
+				set => SetAndRaiseIfChanged(ref _displayString, value);
+			}
+
+			public double ItemHeight
+			{
+				get => _itemHeight;
+				set => SetAndRaiseIfChanged(ref _itemHeight, value);
+			}
+		}
+
+		public class SourceAwareItem
+		{
+			public int No { get; set; }
+
+			public override string ToString() => $"Item {No}";
+		}
+
+		public class SourceAwareSelector : DataTemplateSelector
+		{
+			private readonly IList<SourceAwareItem> _itemsSource;
+			public DataTemplate _dataTemplateA;
+			private readonly DataTemplate _dataTemplateB;
+
+			public Exception Exception { get; private set; }
+
+			public SourceAwareSelector(IList<SourceAwareItem> itemsSource, DataTemplate dataTemplateA, DataTemplate dataTemplateB)
+			{
+				_itemsSource = itemsSource;
+				_dataTemplateA = dataTemplateA;
+				_dataTemplateB = dataTemplateB;
+			}
+
+			protected override DataTemplate SelectTemplateCore(object item)
+			{
+				if (
+#if __IOS__
+				// On iOS, the template selector may be invoked with a null item. This is arguably also a bug, but not presently under test here.
+				item != null &&
+#endif
+						!_itemsSource.Contains(item)
+				)
+				{
+					var ex = new InvalidOperationException($"Selector called for item not in source ({item})");
+					Exception = Exception ?? ex;
+					throw ex;
+				}
+
+				if (item is SourceAwareItem dataItem && dataItem.No > 2)
+				{
+					return _dataTemplateB;
+				}
+
+				else
+				{
+					return _dataTemplateA;
+				}
+			}
+		}
+
+		public class InfiniteSource<T> : ObservableCollection<T>, ISupportIncrementalLoading
+		{
+			public delegate Task<T[]> AsyncFetch(int start);
+			public delegate T[] Fetch(int start);
+
+			private readonly AsyncFetch _fetchAsync;
+			private int _start;
+
+			public InfiniteSource(AsyncFetch fetch)
+			{
+				_fetchAsync = fetch;
+				_start = 0;
+			}
+
+			public IAsyncOperation<LoadMoreItemsResult> LoadMoreItemsAsync(uint count)
+			{
+				return AsyncInfo.Run(async ct =>
+				{
+					var items = await _fetchAsync(_start);
+					foreach (var item in items)
+					{
+						Add(item);
+					}
+					_start += items.Length;
+
+					return new LoadMoreItemsResult { Count = count };
+				});
+			}
+
+			public bool HasMoreItems { get; set; } = true;
+
+			public int LastIndex => _start;
+		}
+
+		private record TestReleaseObject()
+		{
+			public byte[] test { get; set; } = new byte[1024 * 1024 * 2];
+		}
+
+		private class When_Removed_From_Tree_And_Selection_TwoWay_Bound_DataContext : ViewModelBase
+		{
+			public string[] MyItems { get; } = new[] { "Red beans", "Rice" };
+
+			private string _mySelection;
+			public string MySelection
+			{
+				get => _mySelection;
+				set => SetAndRaiseIfChanged(ref _mySelection, value);
+			}
+		}
+
+		private class When_Selection_Events_DataContext : ViewModelBase
+		{
+			#region SelectedItem
+			private object _selectedItem;
+			public object SelectedItem
+			{
+				get => _selectedItem;
+				set => SetAndRaiseIfChanged(ref _selectedItem, value);
+			}
+			#endregion
+			#region SelectedValue
+			private object _selectedValue;
+			public object SelectedValue
+			{
+				get => _selectedValue;
+				set => SetAndRaiseIfChanged(ref _selectedValue, value);
+			}
+			#endregion
+			#region SelectedIndex
+			private int _selectedIndex;
+
+			public int SelectedIndex
+			{
+				get => _selectedIndex;
+				set => SetAndRaiseIfChanged(ref _selectedIndex, value);
+			}
+			#endregion
+		}
+
+		private class When_DisplayMemberPath_Property_Changed_DataContext : ViewModelBase
+		{
+			private string _display;
+			public string Display
+			{
+				get => _display;
+				set => SetAndRaiseIfChanged(ref _display, value);
+			}
+		}
+
+		public class LambdaDataTemplateSelector : DataTemplateSelector
+		{
+			private readonly Func<object, DataTemplate> _impl;
+
+			public LambdaDataTemplateSelector(Func<object, DataTemplate> impl)
+			{
+				this._impl = impl;
+			}
+
+			protected override DataTemplate SelectTemplateCore(object item, DependencyObject container) => SelectTemplateCore(item);
+			protected override DataTemplate SelectTemplateCore(object item) => _impl(item);
+		}
+	}
+
+	public partial class Given_ListViewBase // helpers
+	{
+		private static ContentControl[] GetPanelVisibleChildren(ListViewBase list)
+		{
+#if __ANDROID__ || __IOS__
+			return list
+				.GetItemsPanelChildren()
+				.OfType<ContentControl>()
+				.ToArray();
+#else
+			return list.ItemsPanelRoot
+				.Children
+				.OfType<ContentControl>()
+				.Where(c => c.Visibility == Visibility.Visible) // Managed ItemsStackPanel currently uses the dirty trick of leaving reyclable items attached to panel and collapsed
+				.ToArray();
+#endif
+		}
+
+		private static ContentControl[] GetAllPanelChildren(ListViewBase list)
+		{
+#if __ANDROID__
+			return list
+				.GetItemsPanelChildren()
+				.OfType<ContentControl>()
+				.ToArray();
+#elif __IOS__
+			return list
+				.GetItemsPanelChildren()
+				.OfType<ContentControl>()
+				// iOS does not seem to provide to exclude the recycled items, so we mark
+				// then using IsDisplayed.
+				.Where(c => c.Superview?.Superview is ListViewBaseInternalContainer container && container.IsDisplayed)
+				.ToArray();
+#else
+			return list.ItemsPanelRoot
+				.Children
+				.OfType<ContentControl>()
+				.Where(c => c.Visibility == Visibility.Visible) // Managed ItemsStackPanel currently uses the dirty trick of leaving reyclable items attached to panel and collapsed
+				.ToArray();
+#endif
+		}
+
+		private static double GetTop(FrameworkElement element, FrameworkElement container)
+		{
+			if (element == null)
+			{
+				return double.NaN;
+			}
+			var transform = element.TransformToVisual(container);
+			return transform.TransformPoint(new Point()).Y;
+		}
+
 		private bool ApproxEquals(double value1, double value2) => Math.Abs(value1 - value2) <= 2;
 
 		private async Task AssertCollectedReference(WeakReference reference)
@@ -2825,286 +3161,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsFalse(reference.IsAlive);
 		}
 
-		#region Helper classes
-		private class When_Removed_From_Tree_And_Selection_TwoWay_Bound_DataContext : System.ComponentModel.INotifyPropertyChanged
+		public partial class OnItemsChangedListView : ListView
 		{
-			public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+			public Action ItemsChangedAction;
 
-			public string[] MyItems { get; } = new[] { "Red beans", "Rice" };
-
-			private string _mySelection;
-			public string MySelection
+			protected override void OnItemsChanged(object e)
 			{
-				get => _mySelection;
-				set
-				{
-					var changing = _mySelection != value;
-					_mySelection = value;
-					if (changing)
-					{
-						PropertyChanged?.Invoke(this, new global::System.ComponentModel.PropertyChangedEventArgs(nameof(MySelection)));
-					}
-				}
-			}
-		}
-
-		private class When_Selection_Events_DataContext : global::System.ComponentModel.INotifyPropertyChanged
-		{
-			public event global::System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
-
-			#region SelectedItem
-			private object _selectedItem;
-			public object SelectedItem
-			{
-				get => _selectedItem;
-				set => RaiseAndSetIfChanged(ref _selectedItem, value);
-			}
-			#endregion
-			#region SelectedValue
-			private object _selectedValue;
-			public object SelectedValue
-			{
-				get => _selectedValue;
-				set => RaiseAndSetIfChanged(ref _selectedValue, value);
-			}
-			#endregion
-			#region SelectedIndex
-			private int _selectedIndex;
-
-			public int SelectedIndex
-			{
-				get => _selectedIndex;
-				set => RaiseAndSetIfChanged(ref _selectedIndex, value);
-			}
-			#endregion
-
-			protected void RaiseAndSetIfChanged<T>(ref T backingField, T value, [CallerMemberName] string propertyName = null)
-			{
-				if (!EqualityComparer<T>.Default.Equals(backingField, value))
-				{
-					backingField = value;
-					PropertyChanged?.Invoke(this, new global::System.ComponentModel.PropertyChangedEventArgs(propertyName));
-				}
-			}
-		}
-
-		private class When_DisplayMemberPath_Property_Changed_DataContext : System.ComponentModel.INotifyPropertyChanged
-		{
-			private string _display;
-
-			public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
-
-			public string Display
-			{
-				get => _display;
-				set
-				{
-					if (value != _display)
-					{
-						_display = value;
-						PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(nameof(Display)));
-					}
-				}
-			}
-		}
-		#endregion
-	}
-
-	#region Helper classes
-	public partial class OnItemsChangedListView : ListView
-	{
-		public Action ItemsChangedAction;
-
-		protected override void OnItemsChanged(object e)
-		{
-			base.OnItemsChanged(e);
-			ItemsChangedAction?.Invoke();
-		}
-	}
-
-	public class KeyedTemplateSelector : DataTemplateSelector
-	{
-		public IDictionary<object, DataTemplate> Templates { get; } = new Dictionary<object, DataTemplate>();
-
-		protected override DataTemplate SelectTemplateCore(object item, DependencyObject container) => SelectTemplateCore(item); // On UWP only this overload is called when eg Button.ContentTemplateSelector is set
-
-		protected override DataTemplate SelectTemplateCore(object item)
-		{
-			if (item == null)
-			{
-				return null;
-			}
-
-			var template = Templates.UnoGetValueOrDefault(item);
-			return template;
-		}
-	}
-
-	public class KeyedTemplateSelector<T> : DataTemplateSelector
-	{
-		private readonly Func<object, T> _keySelector;
-
-		public KeyedTemplateSelector(Func<object, T> keySelector = null)
-		{
-			this._keySelector = keySelector;
-		}
-
-		public IDictionary<T, DataTemplate> Templates { get; } = new Dictionary<T, DataTemplate>();
-
-		protected override DataTemplate SelectTemplateCore(object item, DependencyObject container) => SelectTemplateCore(item); // On UWP only this overload is called when eg Button.ContentTemplateSelector is set
-
-		protected override DataTemplate SelectTemplateCore(object item)
-		{
-			if (item == null)
-			{
-				return null;
-			}
-
-			T itemT;
-			if (_keySelector != null)
-			{
-				itemT = _keySelector(item);
-			}
-			else if (item is T)
-			{
-				itemT = (T)item;
-			}
-			else
-			{
-				return null;
-			}
-
-			var template = Templates.UnoGetValueOrDefault(itemT);
-			return template;
-		}
-	}
-
-	public enum ItemColor
-	{
-		None,
-		Red,
-		Green,
-		Beige
-	}
-
-	public class ItemColorViewModel
-	{
-		public ItemColor ItemType { get; set; }
-		public int ItemIndex { get; set; }
-		public string DisplayString => $"Item {ItemIndex}";
-	}
-
-	public class ItemHeightViewModel : global::System.ComponentModel.INotifyPropertyChanged
-	{
-		private string _displayString;
-		private double _itemHeight;
-
-		public string DisplayString
-		{
-			get => _displayString;
-			set
-			{
-				if (_displayString != value)
-				{
-					_displayString = value;
-					PropertyChanged?.Invoke(this, new global::System.ComponentModel.PropertyChangedEventArgs(nameof(DisplayString)));
-				}
-			}
-		}
-
-		public double ItemHeight
-		{
-			get => _itemHeight; set
-			{
-				_itemHeight = value;
-				PropertyChanged?.Invoke(this, new global::System.ComponentModel.PropertyChangedEventArgs(nameof(ItemHeight)));
-			}
-		}
-
-		public event global::System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
-	}
-
-	public class SourceAwareItem
-	{
-		public int No { get; set; }
-
-		public override string ToString() => $"Item {No}";
-	}
-
-	public class SourceAwareSelector : DataTemplateSelector
-	{
-		private readonly IList<SourceAwareItem> _itemsSource;
-		public DataTemplate _dataTemplateA;
-		private readonly DataTemplate _dataTemplateB;
-
-		public Exception Exception { get; private set; }
-
-		public SourceAwareSelector(IList<SourceAwareItem> itemsSource, DataTemplate dataTemplateA, DataTemplate dataTemplateB)
-		{
-			_itemsSource = itemsSource;
-			_dataTemplateA = dataTemplateA;
-			_dataTemplateB = dataTemplateB;
-		}
-
-		protected override DataTemplate SelectTemplateCore(object item)
-		{
-			if (
-#if __IOS__
-				// On iOS, the template selector may be invoked with a null item. This is arguably also a bug, but not presently under test here.
-				item != null &&
-#endif
-					!_itemsSource.Contains(item)
-			)
-			{
-				var ex = new InvalidOperationException($"Selector called for item not in source ({item})");
-				Exception = Exception ?? ex;
-				throw ex;
-			}
-
-			if (item is SourceAwareItem dataItem && dataItem.No > 2)
-			{
-				return _dataTemplateB;
-			}
-
-			else
-			{
-				return _dataTemplateA;
+				base.OnItemsChanged(e);
+				ItemsChangedAction?.Invoke();
 			}
 		}
 	}
-
-	public class InfiniteSource<T> : ObservableCollection<T>, ISupportIncrementalLoading
-	{
-		public delegate Task<T[]> AsyncFetch(int start);
-		public delegate T[] Fetch(int start);
-
-		private readonly AsyncFetch _fetchAsync;
-		private int _start;
-
-		public InfiniteSource(AsyncFetch fetch)
-		{
-			_fetchAsync = fetch;
-			_start = 0;
-		}
-
-		public IAsyncOperation<LoadMoreItemsResult> LoadMoreItemsAsync(uint count)
-		{
-			return AsyncInfo.Run(async ct =>
-			{
-				var items = await _fetchAsync(_start);
-				foreach (var item in items)
-				{
-					Add(item);
-				}
-				_start += items.Length;
-
-				return new LoadMoreItemsResult { Count = count };
-			});
-		}
-
-		public bool HasMoreItems { get; set; } = true;
-
-		public int LastIndex => _start;
-	}
-	#endregion
 }

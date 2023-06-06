@@ -8,6 +8,10 @@ namespace __Windows.Storage
 	{
 		internal static partial class NativeMethods
 		{
+			private const string JsType = "globalThis.Uno.Storage.NativeStorageFile";
+
+			[JSImport($"{JsType}.getBasicPropertiesAsync")]
+			internal static partial Task<string> GetBasicPropertiesAsync(string id);
 		}
 	}
 }

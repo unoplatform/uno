@@ -56,21 +56,33 @@ namespace Windows.ApplicationModel.DataTransfer
 
 		private static void SetClipboardText(string text)
 		{
+#if NET7_0_OR_GREATER
+			NativeMethods.SetText(text);
+#else
 			var escapedText = WebAssemblyRuntime.EscapeJs(text);
 			var command = $"{JsType}.setText(\"{escapedText}\");";
 			WebAssemblyRuntime.InvokeJS(command);
+#endif
 		}
 
 		private static void StartContentChanged()
 		{
+#if NET7_0_OR_GREATER
+			NativeMethods.StartContentChanged();
+#else
 			var command = $"{JsType}.startContentChanged()";
 			WebAssemblyRuntime.InvokeJS(command);
+#endif
 		}
 
 		private static void StopContentChanged()
 		{
+#if NET7_0_OR_GREATER
+			NativeMethods.StopContentChanged();
+#else
 			var command = $"{JsType}.stopContentChanged()";
 			WebAssemblyRuntime.InvokeJS(command);
+#endif
 		}
 
 		public static int DispatchContentChanged()

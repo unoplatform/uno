@@ -81,7 +81,7 @@ public static class InjectedPointerExtensions
 
 public class Finger : IInjectedPointer, IDisposable
 {
-	private const int _defaultMoveSteps = 10;
+	private const uint _defaultMoveSteps = 10;
 
 	private readonly InputInjector _injector;
 	private readonly uint _id;
@@ -106,7 +106,7 @@ public class Finger : IInjectedPointer, IDisposable
 	}
 
 	void IInjectedPointer.MoveTo(Point position) => MoveTo(position);
-	public void MoveTo(Point position, int steps = _defaultMoveSteps)
+	public void MoveTo(Point position, uint steps = _defaultMoveSteps)
 	{
 		if (_currentPosition is { } current)
 		{
@@ -116,7 +116,7 @@ public class Finger : IInjectedPointer, IDisposable
 	}
 
 	void IInjectedPointer.MoveBy(double deltaX, double deltaY) => MoveBy(deltaX, deltaY);
-	public void MoveBy(double deltaX, double deltaY, int steps = _defaultMoveSteps)
+	public void MoveBy(double deltaX, double deltaY, uint steps = _defaultMoveSteps)
 	{
 		if (_currentPosition is { } current)
 		{
@@ -145,11 +145,7 @@ public class Finger : IInjectedPointer, IDisposable
 			PointerInfo = new()
 			{
 				PointerId = id,
-				PixelLocation = new()
-				{
-					PositionX = (int)position.X,
-					PositionY = (int)position.Y
-				},
+				PixelLocation = At(position),
 				PointerOptions = InjectedInputPointerOptions.New
 					| InjectedInputPointerOptions.FirstButton
 					| InjectedInputPointerOptions.PointerDown
@@ -157,21 +153,19 @@ public class Finger : IInjectedPointer, IDisposable
 			}
 		};
 
-	public static IEnumerable<InjectedInputTouchInfo> GetMove(Point fromPosition, Point toPosition, int steps = _defaultMoveSteps)
+	public static IEnumerable<InjectedInputTouchInfo> GetMove(Point fromPosition, Point toPosition, uint steps = _defaultMoveSteps)
 	{
+		steps += 1; // We need to send at least the final location, but steps refers to the number of intermediate points
+
 		var stepX = (toPosition.X - fromPosition.X) / steps;
 		var stepY = (toPosition.Y - fromPosition.Y) / steps;
-		for (var step = 0; step <= steps; step++)
+		for (var step = 1; step <= steps; step++)
 		{
 			yield return new()
 			{
 				PointerInfo = new()
 				{
-					PixelLocation = new()
-					{
-						PositionX = (int)(fromPosition.X + step * stepX),
-						PositionY = (int)(fromPosition.Y + step * stepY)
-					},
+					PixelLocation = At(fromPosition.X + step * stepX, fromPosition.Y + step * stepY),
 					PointerOptions = InjectedInputPointerOptions.Update
 						| InjectedInputPointerOptions.FirstButton
 						| InjectedInputPointerOptions.InContact
@@ -186,21 +180,37 @@ public class Finger : IInjectedPointer, IDisposable
 		{
 			PointerInfo = new()
 			{
-				PixelLocation =
-				{
-					PositionX = (int)position.X,
-					PositionY = (int)position.Y
-				},
+				PixelLocation = At(position),
 				PointerOptions = InjectedInputPointerOptions.FirstButton
 					| InjectedInputPointerOptions.PointerUp
 			}
 		};
 
 	private void Inject(IEnumerable<InjectedInputTouchInfo> infos)
-		=> _injector.InjectTouchInput(infos);
+		=> _injector.InjectTouchInput(infos.ToArray());
 
 	private void Inject(params InjectedInputTouchInfo[] infos)
 		=> _injector.InjectTouchInput(infos);
+
+	// Note: This a patch until Uno's pointer injection is being relative to the screen
+	private static InjectedInputPoint At(Point position)
+		=> At(position.X, position.Y);
+
+	private static InjectedInputPoint At(double x, double y)
+#if HAS_UNO
+		=> new() { PositionX = (int)x, PositionY = (int)y };
+#else
+	{
+		var bounds = Windows.UI.ViewManagement.ApplicationView.GetForCurrentView().VisibleBounds;
+		var scale = Windows.Graphics.Display.DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel;
+
+		return new()
+		{
+			PositionX = (int)((bounds.X + x) * scale),
+			PositionY = (int)((bounds.Y + y) * scale),
+		};
+	}
+#endif
 }
 
 #if !WINDOWS_UWP

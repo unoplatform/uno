@@ -3,6 +3,10 @@
 		<TargetFrameworks>net7.0;net8.0</TargetFrameworks>
 	</PropertyGroup>
 
+	<PropertyGroup Condition="'$(MSBuildRuntimeType)'!='Core'">
+		<IsPackable>false</IsPackable>
+	</PropertyGroup>
+
 	<Import Project="../targetframework-override.props" />
 
 	<PropertyGroup>
@@ -26,7 +30,7 @@
 		<PackageIcon>uno.png</PackageIcon>
 		<RepositoryUrl>https://github.com/unoplatform/uno</RepositoryUrl>
 		<Description>This package provides the .NET interoperability support for WebAssembly in Uno Platform projects.</Description>
-		<Copyright>Copyright (C) 2015-2020 Uno Platform Inc. - all rights reserved</Copyright>
+		<Copyright>Copyright (C) 2015-$([System.DateTime]::Now.ToString(`yyyy`)) Uno Platform Inc. - all rights reserved</Copyright>
 	</PropertyGroup>
 
 	<ItemGroup>

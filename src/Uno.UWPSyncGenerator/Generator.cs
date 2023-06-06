@@ -612,32 +612,9 @@ namespace Uno.UWPSyncGenerator
 					return true;
 #else
 				case "Microsoft.UI.Xaml.Automation.Peers.AnimatedVisualPlayerAutomationPeer":
-				case "Microsoft.UI.Xaml.Automation.Peers.PersonPictureAutomationPeer":
-				case "Microsoft.UI.Xaml.Automation.Peers.MenuBarAutomationPeer":
-				case "Microsoft.UI.Xaml.Automation.Peers.MenuBarItemAutomationPeer":
-				case "Microsoft.UI.Xaml.Controls.AnimatedVisuals.AnimatedAcceptVisualSource":
-				case "Microsoft.UI.Xaml.Controls.AnimatedVisuals.AnimatedBackVisualSource":
-				case "Microsoft.UI.Xaml.Controls.AnimatedVisuals.AnimatedChevronDownSmallVisualSource":
-				case "Microsoft.UI.Xaml.Controls.AnimatedVisuals.AnimatedChevronRightDownSmallVisualSource":
-				case "Microsoft.UI.Xaml.Controls.AnimatedVisuals.AnimatedChevronUpDownSmallVisualSource":
-				case "Microsoft.UI.Xaml.Controls.AnimatedVisuals.AnimatedFindVisualSource":
-				case "Microsoft.UI.Xaml.Controls.AnimatedVisuals.AnimatedGlobalNavigationButtonVisualSource":
-				case "Microsoft.UI.Xaml.Controls.AnimatedVisuals.AnimatedSettingsVisualSource":
-				case "Microsoft.UI.Xaml.Controls.AnimatedVisualPlayer":
 				case "Microsoft.UI.Xaml.Controls.IAnimatedVisualSource":
 				case "Microsoft.UI.Xaml.Controls.IAnimatedVisualSource2":
 				case "Microsoft.UI.Xaml.Controls.IDynamicAnimatedVisualSource":
-				case "Microsoft.UI.Xaml.Controls.MenuBar":
-				case "Microsoft.UI.Xaml.Controls.MenuBarItem":
-				case "Microsoft.UI.Xaml.Controls.MenuBarItemFlyout":
-				case "Microsoft.UI.Xaml.Controls.PersonPicture":
-				case "Microsoft.UI.Xaml.Controls.PersonPictureTemplateSettings":
-				case "Microsoft.UI.Xaml.Controls.SwipeBehaviorOnInvoked":
-				case "Microsoft.UI.Xaml.Controls.SwipeControl":
-				case "Microsoft.UI.Xaml.Controls.SwipeItem":
-				case "Microsoft.UI.Xaml.Controls.SwipeItemInvokedEventArgs":
-				case "Microsoft.UI.Xaml.Controls.SwipeItems":
-				case "Microsoft.UI.Xaml.Controls.SwipeMode":
 					// Skipped because the implementation is currently incorrectly placed in WUX namespace
 					return true;
 #endif
@@ -1852,22 +1829,8 @@ namespace Uno.UWPSyncGenerator
 				);
 			}
 
-			project = RegisterGenericHelperTypes(project);
-
 			return project
 					.GetCompilationAsync().Result;
-		}
-
-		private static Microsoft.CodeAnalysis.Project RegisterGenericHelperTypes(Microsoft.CodeAnalysis.Project project)
-		{
-			var sb = new StringBuilder();
-
-			for (int i = 0; i < 10; i++)
-			{
-				sb.AppendLine($"class __helper{i}__ {{}}");
-			}
-
-			return project.AddDocument("AdditionalGenericNames", sb.ToString()).Project;
 		}
 
 		public static IEnumerable<INamedTypeSymbol> GetNamespaceTypes(INamespaceSymbol sym)

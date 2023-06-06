@@ -3,7 +3,6 @@
 namespace Windows.Devices.Bluetooth
 {
 	#if false || false || false || false || false || false || false
-	[global::System.FlagsAttribute]
 	public   enum BluetoothServiceCapabilities : uint
 	{
 		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothServiceCapabilities.None

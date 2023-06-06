@@ -22,6 +22,8 @@ namespace Microsoft.Web.WebView2.Core
 		// Skipping already declared field Microsoft.Web.WebView2.Core.CoreWebView2WebErrorStatus.OperationCanceled
 		// Skipping already declared field Microsoft.Web.WebView2.Core.CoreWebView2WebErrorStatus.RedirectFailed
 		// Skipping already declared field Microsoft.Web.WebView2.Core.CoreWebView2WebErrorStatus.UnexpectedError
+		// Skipping already declared field Microsoft.Web.WebView2.Core.CoreWebView2WebErrorStatus.ValidAuthenticationCredentialsRequired
+		// Skipping already declared field Microsoft.Web.WebView2.Core.CoreWebView2WebErrorStatus.ValidProxyAuthenticationRequired
 	}
 	#endif
 }

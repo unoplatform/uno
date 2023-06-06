@@ -3,7 +3,6 @@
 namespace Windows.UI.Input.Preview.Injection
 {
 	#if false || false || false || false || false || false || false
-	[global::System.FlagsAttribute]
 	public   enum InjectedInputPointerOptions : uint
 	{
 		// Skipping already declared field Windows.UI.Input.Preview.Injection.InjectedInputPointerOptions.None

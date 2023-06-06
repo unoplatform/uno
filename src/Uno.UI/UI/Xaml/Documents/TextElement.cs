@@ -313,9 +313,22 @@ namespace Windows.UI.Xaml.Documents
 
 		#endregion
 
-#if !__WASM__ // WASM version is inheriting from UIElement, so it's already implementing it.
-		public string Name { get; set; }
-#endif
+		private string _name;
+
+		public string Name
+		{
+			get => _name;
+			set
+			{
+				if (_name != value)
+				{
+					_name = value;
+					OnNameChangedPartial(value);
+				}
+			}
+		}
+
+		partial void OnNameChangedPartial(string newValue);
 
 		/// <summary>
 		/// Retrieves the parent RichTextBox/CRichTextBlock/TextBlock.
@@ -342,6 +355,7 @@ namespace Windows.UI.Xaml.Documents
 		private void SetDefaultForeground(DependencyProperty foregroundProperty)
 		{
 			this.SetValue(foregroundProperty, DefaultBrushes.TextForegroundBrush, DependencyPropertyValuePrecedences.DefaultValue);
+			((IDependencyObjectStoreProvider)this).Store.SetLastUsedTheme(Application.Current?.RequestedThemeForResources);
 		}
 #endif
 	}

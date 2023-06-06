@@ -19,7 +19,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage.Streams
 		[TestMethod]
 		public async Task When_FromUri()
 		{
-			var sut = RandomAccessStreamReference.CreateFromUri(new Uri("https://nv-assets.azurewebsites.net/uno-unit-tests.txt"));
+			var sut = RandomAccessStreamReference.CreateFromUri(new Uri("https://uno-assets.platform.uno/uno-unit-tests.txt"));
 			var actual = await ReadToEnd(sut);
 
 			Assert.AreEqual(_unoStaticTestFileContent, actual);
@@ -28,7 +28,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage.Streams
 		[TestMethod]
 		public async Task When_FlushReadOnly()
 		{
-			var sut = RandomAccessStreamReference.CreateFromUri(new Uri("https://nv-assets.azurewebsites.net/uno-unit-tests.txt"));
+			var sut = RandomAccessStreamReference.CreateFromUri(new Uri("https://uno-assets.platform.uno/uno-unit-tests.txt"));
 			using var readStream = await sut.OpenReadAsync();
 
 			try

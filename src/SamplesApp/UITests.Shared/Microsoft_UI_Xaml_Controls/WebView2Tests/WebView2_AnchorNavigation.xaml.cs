@@ -13,7 +13,7 @@ namespace SamplesApp.Microsoft_UI_Xaml_Controls.WebView2Tests
 
 #if HAS_UNO
 			//TODO:MZ:
-			//webView.Navigate(new Uri("https://nv-assets.azurewebsites.net/tests/docs/WebView2_NavigateToAnchor.html"));
+			//webView.Navigate(new Uri("https://uno-assets.platform.uno/tests/docs/WebView2_NavigateToAnchor.html"));
 			//webView.NavigationStarting += WebView2_NavigationStarting;
 			//webView.NavigationCompleted += WebView2_NavigationCompleted;
 #endif
@@ -33,7 +33,7 @@ namespace SamplesApp.Microsoft_UI_Xaml_Controls.WebView2Tests
 		private async void ButtonClicked()
 		{
 			await webView.EnsureCoreWebView2Async();
-			webView.CoreWebView2.Navigate("https://nv-assets.azurewebsites.net/tests/docs/WebView2_NavigateToAnchor.html#section-1");
+			webView.CoreWebView2.Navigate("https://uno-assets.platform.uno/tests/docs/WebView2_NavigateToAnchor.html#section-1");
 		}
 
 		private void OnClickAnchor()

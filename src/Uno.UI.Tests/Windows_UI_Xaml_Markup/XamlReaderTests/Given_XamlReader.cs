@@ -16,6 +16,10 @@ using Windows.UI.Xaml.Documents;
 using Windows.UI.Xaml.Markup;
 using Windows.UI.Xaml.Media;
 
+using SwipeItems = Microsoft.UI.Xaml.Controls.SwipeItems;
+using SwipeControl = Microsoft.UI.Xaml.Controls.SwipeControl;
+using SwipeMode = Microsoft.UI.Xaml.Controls.SwipeMode;
+
 namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 {
 	[TestClass]
@@ -103,7 +107,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 			var itemsPanel = listView?.ItemsPanel;
 			Assert.IsNotNull(itemsPanel);
 
-			var content = itemsPanel.LoadContent() as StackPanel;
+			var content = ((IFrameworkTemplateInternal)itemsPanel).LoadContent() as StackPanel;
 			Assert.IsNotNull(content);
 			Assert.AreEqual(content.Name, "InnerStackPanel");
 
@@ -1236,9 +1240,9 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 		public void When_Collection_Implicit_Add_Item()
 		{
 			var SUT = XamlHelper.LoadXaml<SwipeItems>("""
-				<SwipeItems>
-					<SwipeItem Text="asd" />
-				</SwipeItems>
+				<muxc:SwipeItems>
+					<muxc:SwipeItem Text="asd" />
+				</muxc:SwipeItems>
 				""");
 
 			Assert.AreEqual(1, SUT.Count);
@@ -1249,13 +1253,13 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 		public void When_Collection_Property_Nest_Collection()
 		{
 			var SUT = XamlHelper.LoadXaml<SwipeControl>("""
-				<SwipeControl>
-					<SwipeControl.LeftItems>
-						<SwipeItems Mode="Execute">
-							<SwipeItem Text="asd" />
-						</SwipeItems>
-					</SwipeControl.LeftItems>
-				</SwipeControl>
+				<muxc:SwipeControl>
+					<muxc:SwipeControl.LeftItems>
+						<muxc:SwipeItems Mode="Execute">
+							<muxc:SwipeItem Text="asd" />
+						</muxc:SwipeItems>
+					</muxc:SwipeControl.LeftItems>
+				</muxc:SwipeControl>
 				""");
 
 			Assert.IsNotNull(SUT.LeftItems);
@@ -1268,17 +1272,17 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 		public void When_Collection_Property_Nest_Multiple_Collections()
 		{
 			var SUT = XamlHelper.LoadXaml<SwipeControl>("""
-				<SwipeControl>
-					<SwipeControl.LeftItems>
+				<muxc:SwipeControl>
+					<muxc:SwipeControl.LeftItems>
 						<!-- This is actually allowed, however only the last will be kept -->
-						<SwipeItems>
-							<SwipeItem Text="asd" />
-						</SwipeItems>
-						<SwipeItems Mode="Execute">
-							<SwipeItem Text="qwe" />
-						</SwipeItems>
-					</SwipeControl.LeftItems>
-				</SwipeControl>
+						<muxc:SwipeItems>
+							<muxc:SwipeItem Text="asd" />
+						</muxc:SwipeItems>
+						<muxc:SwipeItems Mode="Execute">
+							<muxc:SwipeItem Text="qwe" />
+						</muxc:SwipeItems>
+					</muxc:SwipeControl.LeftItems>
+				</muxc:SwipeControl>
 				""");
 
 			Assert.IsNotNull(SUT.LeftItems);

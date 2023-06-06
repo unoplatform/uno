@@ -3,7 +3,6 @@
 namespace Windows.ApplicationModel.DataTransfer.DragDrop
 {
 	#if false || false || false || false || false || false || false
-	[global::System.FlagsAttribute]
 	public   enum DragDropModifiers : uint
 	{
 		// Skipping already declared field Windows.ApplicationModel.DataTransfer.DragDrop.DragDropModifiers.None
