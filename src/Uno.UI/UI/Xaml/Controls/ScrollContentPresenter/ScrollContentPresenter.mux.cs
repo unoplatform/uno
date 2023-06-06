@@ -10,6 +10,7 @@ namespace Windows.UI.Xaml.Controls;
 
 public partial class ScrollContentPresenter
 {
+#pragma warning disable IDE0051 // Remove unused private members
 	// Default physical amount to scroll with Up/Down/Left/Right key
 	//const double ScrollViewerLineDelta = 16.0;
 
@@ -64,7 +65,7 @@ public partial class ScrollContentPresenter
 	// by shrinking its viewport, we want to at least guarantee that it will keep
 	// an appropriate size.
 	//const double ScrollViewerMinHeightToReflowAroundOcclusions = 32.0f;
-
+#pragma warning restore IDE0051 // Remove unused private members
 
 	// BringIntoView functionality is ported from WinUI ScrollPresenter
 	// https://github.com/microsoft/microsoft-ui-xaml/blob/main/dev/ScrollPresenter/ScrollPresenter.cpp

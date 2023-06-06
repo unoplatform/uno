@@ -165,9 +165,7 @@ namespace Windows.UI.Xaml
 					args = _payloadConverter(_owner, nativeEventPayload);
 				}
 
-				//var result = HtmlEventDispatchResult.Ok;
 				var result = new HtmlEventDispatchResultHelper();
-
 				foreach (var invocationItem in _invocationList)
 				{
 					if (invocationItem.Handler is RawEventHandler rawHandler)

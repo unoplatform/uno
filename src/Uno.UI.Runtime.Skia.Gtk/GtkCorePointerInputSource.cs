@@ -412,7 +412,7 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 			case EventType.Scroll when EventHelper.GetScrollDeltas(evt!, out var scrollX, out var scrollY):
 				var isHorizontal = scrollY == 0;
 				properties.IsHorizontalMouseWheel = isHorizontal;
-				properties.MouseWheelDelta = (int)(isHorizontal ? scrollX : -scrollY) * ScrollContentPresenter.ScrollViewerDefaultMouseWheelDelta;
+				properties.MouseWheelDelta = (int)((isHorizontal ? scrollX : -scrollY) * ScrollContentPresenter.ScrollViewerDefaultMouseWheelDelta);
 				break;
 
 			case EventType.Scroll: // when no scroll value
