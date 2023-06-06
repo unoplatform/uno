@@ -13,11 +13,11 @@ using Windows.UI.Xaml.Data;
 namespace UITests.Windows_Devices;
 
 [Sample(
-	"Windows.Devices", 
-	Name = "ProximitySensor", 
-	Description = "Demonstrates use of Windows.Devices.Sensors.ProximitySensor", 
-	ViewModelType = typeof(ProximitySensorTestsViewModel), 
-	IgnoreInSnapshotTests = true, 
+	"Windows.Devices",
+	Name = "ProximitySensor",
+	Description = "Demonstrates use of Windows.Devices.Sensors.ProximitySensor",
+	ViewModelType = typeof(ProximitySensorTestsViewModel),
+	IgnoreInSnapshotTests = true,
 	IsManualTest = true)]
 public sealed partial class ProximitySensorTests : Page
 {
