@@ -82,12 +82,12 @@ namespace Windows.UI.Xaml
 		{
 			InitDragAndDrop();
 
+#if !HAS_UNO_WINUI
 			RaiseCreated();
+#endif
 
 			Background = SolidColorBrushHelper.White;
 		}
-
-		partial void RaiseCreated();
 
 		public UIElement Content
 		{

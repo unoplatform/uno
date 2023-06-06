@@ -9,7 +9,7 @@ partial class Window
 {
 	private bool _windowCreatedRaised;
 
-	partial void RaiseCreated()
+	internal void RaiseCreated()
 	{
 		if (Application.Current is not null && !_windowCreatedRaised)
 		{
