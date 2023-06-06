@@ -21,8 +21,9 @@ using WpfWindow = System.Windows.Window;
 using RoutedEventArgs = System.Windows.RoutedEventArgs;
 using Uno.UI.Hosting;
 using Uno.UI.Rendering;
+using Uno.UI.Skia;
 
-namespace Uno.UI.Skia.Wpf;
+namespace Uno.UI.Runtime.Skia.Wpf.UI.Controls;
 
 [TemplatePart(Name = NativeOverlayLayerHostPart, Type = typeof(WpfCanvas))]
 internal class UnoWpfWindowHost : WpfControl, IWpfWindowHost
@@ -31,7 +32,7 @@ internal class UnoWpfWindowHost : WpfControl, IWpfWindowHost
 
 	private readonly WpfCanvas _nativeOverlayLayer = new();
 	private readonly WpfWindow _wpfWindow;
-	private readonly WinUI.Window _window;
+	private readonly WinUI.Window _winUIWindow;
 	private readonly CompositeDisposable _disposables = new();
 
 	private Size _previousArrangeBounds;
@@ -45,43 +46,35 @@ internal class UnoWpfWindowHost : WpfControl, IWpfWindowHost
 			new WpfFrameworkPropertyMetadata(typeof(UnoWpfWindowHost)));
 	}
 
-	public UnoWpfWindowHost(WpfWindow wpfWindow, WinUI.Window window)
+	public UnoWpfWindowHost(WpfWindow wpfWindow, WinUI.Window winUIWindow)
 	{
 		_wpfWindow = wpfWindow;
-		_window = window;
+		_winUIWindow = winUIWindow;
 
 		FocusVisualStyle = null;
 
 		Loaded += WpfHost_Loaded;
 
-		Windows.Foundation.Size preferredWindowSize = ApplicationView.PreferredLaunchViewSize;
-		if (preferredWindowSize != Windows.Foundation.Size.Empty)
-		{
-			Width = (int)preferredWindowSize.Width;
-			Height = (int)preferredWindowSize.Height;
-		}
-
 		CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRootSet += OnCoreWindowContentRootSet;
 
 		RegisterForBackgroundColor();
-		UpdateWindowPropertiesFromPackage();
 	}
 
 	protected override Size ArrangeOverride(Size arrangeBounds)
 	{
 		if (arrangeBounds != _previousArrangeBounds)
 		{
-			_window.OnNativeSizeChanged(new Windows.Foundation.Size(arrangeBounds.Width, arrangeBounds.Height));
+			_winUIWindow.OnNativeSizeChanged(new Windows.Foundation.Size(arrangeBounds.Width, arrangeBounds.Height));
 			_previousArrangeBounds = arrangeBounds;
 		}
 		return base.ArrangeOverride(arrangeBounds);
 	}
 
-	WinUI.UIElement? IXamlRootHost.RootElement => _window.RootElement;
+	WinUI.UIElement? IXamlRootHost.RootElement => _winUIWindow.RootElement;
 
 	WpfCanvas? IWpfXamlRootHost.NativeOverlayLayer => _nativeOverlayLayer;
 
-	WinUI.XamlRoot? IXamlRootHost.XamlRoot => _window.RootElement?.XamlRoot;
+	WinUI.XamlRoot? IXamlRootHost.XamlRoot => _winUIWindow.RootElement?.XamlRoot;
 
 	bool IWpfXamlRootHost.IgnorePixelScaling => WpfHost.Current!.IgnorePixelScaling;
 
@@ -91,7 +84,7 @@ internal class UnoWpfWindowHost : WpfControl, IWpfWindowHost
 
 	void IXamlRootHost.InvalidateRender()
 	{
-		_window.RootElement?.XamlRoot?.InvalidateOverlays();
+		_winUIWindow.RootElement?.XamlRoot?.InvalidateOverlays();
 		InvalidateVisual();
 	}
 
@@ -133,58 +126,21 @@ internal class UnoWpfWindowHost : WpfControl, IWpfWindowHost
 		CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRootSet -= OnCoreWindowContentRootSet;
 	}
 
-	private void UpdateWindowPropertiesFromPackage()
-	{
-		if (Windows.ApplicationModel.Package.Current.Logo is Uri uri)
-		{
-			var basePath = uri.OriginalString.Replace('\\', Path.DirectorySeparatorChar);
-			var iconPath = Path.Combine(Windows.ApplicationModel.Package.Current.InstalledPath, basePath);
-
-			if (File.Exists(iconPath))
-			{
-				if (this.Log().IsEnabled(LogLevel.Information))
-				{
-					this.Log().Info($"Loading icon file [{iconPath}] from Package.appxmanifest file");
-				}
-
-				_wpfWindow.Icon = new System.Windows.Media.Imaging.BitmapImage(new Uri(iconPath));
-			}
-			else if (Windows.UI.Xaml.Media.Imaging.BitmapImage.GetScaledPath(basePath) is { } scaledPath && File.Exists(scaledPath))
-			{
-				if (this.Log().IsEnabled(LogLevel.Information))
-				{
-					this.Log().Info($"Loading icon file [{scaledPath}] scaled logo from Package.appxmanifest file");
-				}
-
-				_wpfWindow.Icon = new System.Windows.Media.Imaging.BitmapImage(new Uri(scaledPath));
-			}
-			else
-			{
-				if (this.Log().IsEnabled(LogLevel.Warning))
-				{
-					this.Log().Warn($"Unable to find icon file [{iconPath}] specified in the Package.appxmanifest file.");
-				}
-			}
-		}
-
-		Windows.UI.ViewManagement.ApplicationView.GetForCurrentView().Title = Windows.ApplicationModel.Package.Current.DisplayName;
-	}
-
 	private void RegisterForBackgroundColor()
 	{
 		UpdateRendererBackground();
 
-		_disposables.Add(_window.RegisterBackgroundChangedEvent((s, e) => UpdateRendererBackground()));
+		_disposables.Add(_winUIWindow.RegisterBackgroundChangedEvent((s, e) => UpdateRendererBackground()));
 	}
 
 	private void UpdateRendererBackground()
 	{
-		if (_window.Background is WinUI.Media.SolidColorBrush brush)
+		if (_winUIWindow.Background is WinUI.Media.SolidColorBrush brush)
 		{
 			if (_renderer is not null)
 			{
 				_renderer.BackgroundColor = brush.Color;
-				Background = new SolidColorBrush(brush.Color.ToWpfColor());
+				_wpfWindow.Background = new SolidColorBrush(brush.Color.ToWpfColor());
 			}
 		}
 		else

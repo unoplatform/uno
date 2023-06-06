@@ -1,16 +1,10 @@
 ﻿#nullable enable
 
 using System;
-using System.ComponentModel;
-using System.Windows;
 using System.Windows.Threading;
 using Uno.UI.Runtime.Skia.Wpf.Extensions;
 using Uno.UI.Runtime.Skia.Wpf.Hosting;
-using Uno.UI.Skia.Wpf;
-using Uno.UI.XamlHost.Skia.Wpf;
-using Windows.UI.Core.Preview;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Input;
+using Uno.UI.Runtime.Skia.Wpf.UI.Controls;
 using WinUI = Windows.UI.Xaml;
 using WinUIApplication = Windows.UI.Xaml.Application;
 using WpfApplication = System.Windows.Application;
@@ -76,26 +70,6 @@ public class WpfHost : IWpfApplicationHost
 	private void SetupMainWindow()
 	{
 		WpfApplication.Current.MainWindow = new UnoWpfWindow(WinUI.Window.Current);
-		WpfApplication.Current.MainWindow.Activated += MainWindow_Activated;
-		WpfApplication.Current.MainWindow.Deactivated += MainWindow_Deactivated;
-		WpfApplication.Current.MainWindow.StateChanged += MainWindow_StateChanged;
-		WpfApplication.Current.MainWindow.Closing += MainWindow_Closing;
-	}
-
-	private void MainWindow_Closing(object? sender, CancelEventArgs e)
-	{
-		var manager = SystemNavigationManagerPreview.GetForCurrentView();
-		if (!manager.HasConfirmedClose)
-		{
-			if (!manager.RequestAppClose())
-			{
-				e.Cancel = true;
-				return;
-			}
-		}
-
-		// Closing should continue, perform suspension.
-		WinUIApplication.Current.RaiseSuspending();
 	}
 
 	private void StartApp()
@@ -107,37 +81,5 @@ public class WpfHost : IWpfApplicationHost
 		}
 
 		WinUIApplication.StartWithArguments(CreateApp);
-	}
-
-	private void MainWindow_StateChanged(object? sender, EventArgs e)
-	{
-		var wpfWindow = WpfApplication.Current.MainWindow;
-		var winUIWindow = WinUI.Window.Current;
-		var application = WinUI.Application.Current;
-		var wasVisible = _isVisible;
-
-		_isVisible = wpfWindow.WindowState != WindowState.Minimized;
-
-		if (wasVisible && !_isVisible)
-		{
-			winUIWindow.OnVisibilityChanged(false);
-			application?.RaiseEnteredBackground(null);
-		}
-		else if (!wasVisible && _isVisible)
-		{
-			application?.RaiseLeavingBackground(() => winUIWindow?.OnVisibilityChanged(true));
-		}
-	}
-
-	private void MainWindow_Deactivated(object? sender, EventArgs e)
-	{
-		var winUIWindow = WinUI.Window.Current;
-		winUIWindow?.RaiseActivated(Windows.UI.Core.CoreWindowActivationState.Deactivated);
-	}
-
-	private void MainWindow_Activated(object? sender, EventArgs e)
-	{
-		var winUIWindow = WinUI.Window.Current;
-		winUIWindow?.RaiseActivated(Windows.UI.Core.CoreWindowActivationState.CodeActivated);
 	}
 }
