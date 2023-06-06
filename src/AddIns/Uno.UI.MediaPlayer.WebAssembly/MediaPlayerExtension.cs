@@ -221,6 +221,7 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 		_player.OnSourceEnded += OnCompletion;
 		_player.OnTimeUpdate += OnTimeUpdate;
 
+		_player.OnStatusChanged -= OnStatusMediaChanged;
 		_player.OnStatusChanged += OnStatusMediaChanged;
 
 		_owner.PlaybackSession.PlaybackStateChanged -= OnStatusChanged;
@@ -237,26 +238,13 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 			this.Log().Debug($"MediaPlayerExtension.OnStatusMediaChanged Paused ({_player?.IsPause.ToString()})");
 		}
 
-		switch (_owner.PlaybackSession.PlaybackState)
+		if (_player?.IsPause == true && _owner.PlaybackSession.PlaybackState == MediaPlaybackState.Playing)
 		{
-			case MediaPlaybackState.None:
-				break;
-			case MediaPlaybackState.Opening:
-				break;
-			case MediaPlaybackState.Buffering:
-				break;
-			case MediaPlaybackState.Playing:
-				if (_player?.IsPause == true)
-				{
-					_owner.PlaybackSession.MediaPlayer.Pause();
-				}
-				break;
-			case MediaPlaybackState.Paused:
-				if (_player?.IsPause == false)
-				{
-					_owner.PlaybackSession.MediaPlayer.Play();
-				}
-				break;
+			_owner.PlaybackSession.PlaybackState = MediaPlaybackState.Paused;
+		}
+		else if (_player?.IsPause == false && _owner.PlaybackSession.PlaybackState == MediaPlaybackState.Paused)
+		{
+			_owner.PlaybackSession.PlaybackState = MediaPlaybackState.Playing;
 		}
 	}
 

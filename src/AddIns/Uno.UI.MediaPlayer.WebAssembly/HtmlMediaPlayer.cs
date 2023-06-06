@@ -566,6 +566,7 @@ internal partial class HtmlMediaPlayer : Border
 
 	public void Play()
 	{
+		TimeUpdated -= OnHtmlTimeUpdated;
 		TimeUpdated += OnHtmlTimeUpdated;
 		if (this.Log().IsEnabled(LogLevel.Debug))
 		{
@@ -573,8 +574,9 @@ internal partial class HtmlMediaPlayer : Border
 		}
 		if (_activeElement != null && !_isPlaying)
 		{
-			NativeMethods.Play(_activeElement.HtmlId);
+			IsPause = false;
 			_isPlaying = true;
+			NativeMethods.Play(_activeElement.HtmlId);
 		}
 	}
 
@@ -587,8 +589,9 @@ internal partial class HtmlMediaPlayer : Border
 		}
 		if (_activeElement != null && _isPlaying)
 		{
-			NativeMethods.Pause(_activeElement.HtmlId);
 			_isPlaying = false;
+			IsPause = true;
+			NativeMethods.Pause(_activeElement.HtmlId);
 		}
 	}
 
@@ -603,6 +606,7 @@ internal partial class HtmlMediaPlayer : Border
 		{
 			NativeMethods.Stop(_activeElement.HtmlId);
 			_isPlaying = false;
+			IsPause = true;
 		}
 	}
 
