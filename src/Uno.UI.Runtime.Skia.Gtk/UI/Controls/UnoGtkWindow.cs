@@ -15,12 +15,17 @@ using Uno.UI.Hosting;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Controls;
 using Uno.UI.Rendering;
+using Uno.UI.XamlHost.Skia.GTK.Hosting;
+using System.IO;
+using Uno.Foundation.Logging;
+using IOPath = System.IO.Path;
+using Windows.UI.Xaml.Media;
 
 namespace Uno.UI.Runtime.Skia.UI.Xaml.Controls;
 #pragma warning disable CS0649
 #pragma warning disable CS0169
 
-internal class UnoGtkWindow : Gtk.Window, IGtkWindowHost
+internal class UnoGtkWindow : Gtk.Window, IGtkXamlRootHost
 {
 	private readonly WinUIWindow _window;
 	private FocusManager? _focusManager;
@@ -29,10 +34,10 @@ internal class UnoGtkWindow : Gtk.Window, IGtkWindowHost
 	private Widget? _area;
 	private Fixed? _fix;
 
-	private IGtkRenderer? _renderSurface;
+	private IGtkRenderer? _renderer;
 
 	private GtkDisplayInformationExtension? _displayInformationExtension;
-	private CompositeDisposable _registrations = new();
+	private CompositeDisposable _disposables = new();
 
 	private record PendingWindowStateChangedInfo(Gdk.WindowState newState, Gdk.WindowState changedMask);
 	private List<PendingWindowStateChangedInfo>? _pendingWindowStateChanged = new();
@@ -95,10 +100,6 @@ internal class UnoGtkWindow : Gtk.Window, IGtkWindowHost
 		//	WUX.Window.Current.OnNativeSizeChanged(new Windows.Foundation.Size(e.Allocation.Width, e.Allocation.Height));
 		//};
 
-		///* avoids double invokes at window level */
-		//_area.AddEvents((int)GtkCoreWindowExtension.RequestedEvents);
-
-
 		CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRootSet += OnCoreWindowContentRootSet;
 
 		RegisterForBackgroundColor();
@@ -107,11 +108,17 @@ internal class UnoGtkWindow : Gtk.Window, IGtkWindowHost
 		//ReplayPendingWindowStateChanges();
 	}
 
+	bool IXamlRootHost.IsIsland => false;
+
+	WinUI.UIElement? IXamlRootHost.RootElement => _window.RootElement;
+
+	WinUI.XamlRoot? IXamlRootHost.XamlRoot => _window.RootElement?.XamlRoot;
+
+	RenderSurfaceType? IGtkXamlRootHost.RenderSurfaceType => GtkHost.Current!.RenderSurfaceType;
+
 	private void OnShown(object? sender, EventArgs e) => ShowAll();
 
-	internal IGtkRenderer? RenderSurface => _renderSurface;
-
-	internal Fixed? NativeOverlayLayer => GtkCoreWindowExtension.FindNativeOverlayLayer(this);
+	Fixed? IGtkXamlRootHost.NativeOverlayLayer => GtkCoreWindowExtension.FindNativeOverlayLayer(this);
 
 	internal static UnoEventBox? EventBox => _eventBox;
 
@@ -193,180 +200,91 @@ internal class UnoGtkWindow : Gtk.Window, IGtkWindowHost
 
 	private void UpdateWindowPropertiesFromPackage()
 	{
-		//if (Windows.ApplicationModel.Package.Current.Logo is Uri uri)
-		//{
-		//	var basePath = uri.OriginalString.Replace('\\', Path.DirectorySeparatorChar);
-		//	var iconPath = Path.Combine(Windows.ApplicationModel.Package.Current.InstalledPath, basePath);
+		if (Windows.ApplicationModel.Package.Current.Logo is Uri uri)
+		{
+			var basePath = uri.OriginalString.Replace('\\', IOPath.DirectorySeparatorChar);
+			var iconPath = IOPath.Combine(Windows.ApplicationModel.Package.Current.InstalledPath, basePath);
 
-		//	if (File.Exists(iconPath))
-		//	{
-		//		if (this.Log().IsEnabled(LogLevel.Information))
-		//		{
-		//			this.Log().Info($"Loading icon file [{iconPath}] from Package.appxmanifest file");
-		//		}
+			if (File.Exists(iconPath))
+			{
+				if (this.Log().IsEnabled(LogLevel.Information))
+				{
+					this.Log().Info($"Loading icon file [{iconPath}] from Package.appxmanifest file");
+				}
 
-		//		GtkHost.Window.SetIconFromFile(iconPath);
-		//	}
-		//	else if (Windows.UI.Xaml.Media.Imaging.BitmapImage.GetScaledPath(basePath) is { } scaledPath && File.Exists(scaledPath))
-		//	{
-		//		if (this.Log().IsEnabled(LogLevel.Information))
-		//		{
-		//			this.Log().Info($"Loading icon file [{scaledPath}] scaled logo from Package.appxmanifest file");
-		//		}
+				SetIconFromFile(iconPath);
+			}
+			else if (Windows.UI.Xaml.Media.Imaging.BitmapImage.GetScaledPath(basePath) is { } scaledPath && File.Exists(scaledPath))
+			{
+				if (this.Log().IsEnabled(LogLevel.Information))
+				{
+					this.Log().Info($"Loading icon file [{scaledPath}] scaled logo from Package.appxmanifest file");
+				}
 
-		//		GtkHost.Window.SetIconFromFile(scaledPath);
-		//	}
-		//	else
-		//	{
-		//		if (this.Log().IsEnabled(LogLevel.Warning))
-		//		{
-		//			this.Log().Warn($"Unable to find icon file [{iconPath}] specified in the Package.appxmanifest file.");
-		//		}
-		//	}
-		//}
+				SetIconFromFile(scaledPath);
+			}
+			else
+			{
+				if (this.Log().IsEnabled(LogLevel.Warning))
+				{
+					this.Log().Warn($"Unable to find icon file [{iconPath}] specified in the Package.appxmanifest file.");
+				}
+			}
+		}
 
-		//Windows.UI.ViewManagement.ApplicationView.GetForCurrentView().Title = Windows.ApplicationModel.Package.Current.DisplayName;
-	}
-
-
-	//private void SetupRenderSurface()
-	//{
-	//	TryReadRenderSurfaceTypeEnvironment();
-
-	//	if (!OpenGLRenderSurface.IsSupported && !OpenGLESRenderSurface.IsSupported)
-	//	{
-	//		// Pre-validation is required to avoid initializing OpenGL on macOS
-	//		// where the whole app may get visually corrupted even if OpenGL is not
-	//		// used in the app.
-
-	//		if (this.Log().IsEnabled(LogLevel.Debug))
-	//		{
-	//			this.Log().Debug($"Neither OpenGL or OpenGL ES are supporting, using software rendering");
-	//		}
-
-	//		GtkHost.Current!.RenderSurfaceType = Skia.RenderSurfaceType.Software;
-	//	}
-
-	//	if (GtkHost.Current!.RenderSurfaceType == null)
-	//	{
-	//		// Create a temporary surface to automatically detect
-	//		// the OpenGL environment that can be used on the system.
-	//		GLValidationSurface validationSurface = new();
-
-	//		Add(validationSurface);
-	//		ShowAll();
-
-	//		DispatchNativeSingle(ValidatedSurface);
-
-	//		async void ValidatedSurface()
-	//		{
-	//			try
-	//			{
-	//				if (this.Log().IsEnabled(LogLevel.Debug))
-	//				{
-	//					this.Log().Debug($"Auto-detecting surface type");
-	//				}
-
-	//				// Wait for a realization of the GLValidationSurface
-	//				RenderSurfaceType = await validationSurface.GetSurfaceTypeAsync();
-
-	//				// Continue on the GTK main thread
-	//				DispatchNativeSingle(() =>
-	//				{
-	//					if (this.Log().IsEnabled(LogLevel.Debug))
-	//					{
-	//						this.Log().Debug($"Auto-detected {RenderSurfaceType} rendering");
-	//					}
-
-	//					_window.Remove(validationSurface);
-
-	//					FinalizeStartup();
-	//				});
-	//			}
-	//			catch (Exception e)
-	//			{
-	//				if (this.Log().IsEnabled(LogLevel.Error))
-	//				{
-	//					this.Log().Error($"Auto-detected failed", e);
-	//				}
-	//			}
-	//		}
-	//	}
-	//	else
-	//	{
-	//		FinalizeStartup();
-	//	}
-	//}
-
-	private void TryReadRenderSurfaceTypeEnvironment()
-	{
-		//if (Enum.TryParse(Environment.GetEnvironmentVariable("UNO_RENDER_SURFACE_TYPE"), out RenderSurfaceType surfaceType))
-		//{
-		//	if (this.Log().IsEnabled(LogLevel.Debug))
-		//	{
-		//		this.Log().Debug($"Overriding RnderSurfaceType using command line with {surfaceType}");
-		//	}
-
-		//	RenderSurfaceType = surfaceType;
-		//}
+		Windows.UI.ViewManagement.ApplicationView.GetForCurrentView().Title = Windows.ApplicationModel.Package.Current.DisplayName;
 	}
 
 	private void RegisterForBackgroundColor()
 	{
-		//if (_area is IRenderSurface renderSurface)
-		//{
-		//	void Update()
-		//	{
-		//		if (WUX.Window.Current.Background is WUX.Media.SolidColorBrush brush)
-		//		{
-		//			renderSurface.BackgroundColor = brush.Color;
-		//		}
-		//		else
-		//		{
-		//			if (this.Log().IsEnabled(LogLevel.Warning))
-		//			{
-		//				this.Log().Warn($"This platform only supports SolidColorBrush for the Window background");
-		//			}
-		//		}
+		UpdateRendererBackground();
 
-		//	}
-
-		//	Update();
-
-		//	_registrations.Add(WUX.Window.Current.RegisterBackgroundChangedEvent((s, e) => Update()));
-		//}
+		_disposables.Add(_window.RegisterBackgroundChangedEvent((s, e) => UpdateRendererBackground()));
 	}
 
-	private void OnCoreWindowContentRootSet(object sender, object e)
+	private void UpdateRendererBackground()
 	{
-		//var xamlRoot = CoreServices.Instance
-		//	.ContentRootCoordinator
-		//	.CoreWindowContentRoot?
-		//	.GetOrCreateXamlRoot();
+		if (_window.Background is WinUI.Media.SolidColorBrush brush)
+		{
+			if (_renderer is not null)
+			{
+				_renderer.BackgroundColor = brush.Color;
+			}
+		}
+		else
+		{
+			if (this.Log().IsEnabled(LogLevel.Warning))
+			{
+				this.Log().Warn($"This platform only supports SolidColorBrush for the Window background");
+			}
+		}
+	}
 
-		//if (xamlRoot is null)
-		//{
-		//	throw new InvalidOperationException("XamlRoot was not properly initialized");
-		//}
+	private void OnCoreWindowContentRootSet(object? sender, object e)
+	{
+		var contentRoot = CoreServices.Instance
+				.ContentRootCoordinator
+				.CoreWindowContentRoot;
+		var xamlRoot = contentRoot?.GetOrCreateXamlRoot();
 
-		//XamlRootMap.Register(xamlRoot, this);
-		//xamlRoot.InvalidateRender += _renderSurface.InvalidateRender;
+		if (xamlRoot is null)
+		{
+			throw new InvalidOperationException("XamlRoot was not properly initialized");
+		}
 
-		//CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRootSet -= OnCoreWindowContentRootSet;
+		contentRoot!.SetHost(this);
+		XamlRootMap.Register(xamlRoot, this);
+		xamlRoot.InvalidateRender += _renderer!.InvalidateRender;
+
+		CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRootSet -= OnCoreWindowContentRootSet;
 	}
 
 	void IXamlRootHost.InvalidateRender()
 	{
 		_window.RootElement?.XamlRoot?.InvalidateOverlays();
 
-		_renderSurface?.InvalidateRender();
+		_renderer?.InvalidateRender();
 	}
-
-	bool IXamlRootHost.IsIsland => false;
-
-	WinUI.UIElement? IXamlRootHost.RootElement => _window.RootElement;
-
-	WinUI.XamlRoot? IXamlRootHost.XamlRoot => _window.RootElement?.XamlRoot;
 
 	private void WindowClosing(object sender, DeleteEventArgs args)
 	{

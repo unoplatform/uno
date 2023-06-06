@@ -1,24 +1,10 @@
 ﻿#nullable enable
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using Gdk;
 using Gtk;
-using Uno.Extensions;
-using Uno.Foundation.Extensibility;
-using Uno.UI.Runtime.Skia;
-using Uno.UI.Runtime.Skia.GTK.Extensions;
-using Windows.ApplicationModel;
-using Windows.Devices.Input;
-using Windows.Foundation;
 using Windows.System;
-using Windows.UI.Composition;
 using Windows.UI.Core;
-using Windows.UI.Input;
 using Uno.Foundation.Logging;
 
 namespace Uno.UI.Runtime.Skia
