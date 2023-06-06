@@ -1,7 +1,7 @@
 ﻿using System.Windows.Controls;
 using WpfFrameworkPropertyMetadata = System.Windows.FrameworkPropertyMetadata;
 
-namespace Uno.UI.Runtime.Skia.Wpf.Controls;
+namespace Uno.UI.Runtime.Skia.Wpf.UI.Controls;
 
 internal class WpfTextViewTextBox : TextBox
 {

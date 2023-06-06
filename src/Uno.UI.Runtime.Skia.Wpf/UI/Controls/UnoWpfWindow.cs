@@ -97,7 +97,7 @@ internal class UnoWpfWindow : WpfWindow
 					this.Log().Info($"Loading icon file [{iconPath}] from Package.appxmanifest file");
 				}
 
-				_wpfWindow.Icon = new System.Windows.Media.Imaging.BitmapImage(new Uri(iconPath));
+				Icon = new System.Windows.Media.Imaging.BitmapImage(new Uri(iconPath));
 			}
 			else if (Windows.UI.Xaml.Media.Imaging.BitmapImage.GetScaledPath(basePath) is { } scaledPath && File.Exists(scaledPath))
 			{
@@ -106,7 +106,7 @@ internal class UnoWpfWindow : WpfWindow
 					this.Log().Info($"Loading icon file [{scaledPath}] scaled logo from Package.appxmanifest file");
 				}
 
-				_wpfWindow.Icon = new System.Windows.Media.Imaging.BitmapImage(new Uri(scaledPath));
+				Icon = new System.Windows.Media.Imaging.BitmapImage(new Uri(scaledPath));
 			}
 			else
 			{
