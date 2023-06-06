@@ -3,7 +3,6 @@
 namespace Windows.UI.Popups
 {
 	#if false || false || false || false || false || false || false
-	[global::System.FlagsAttribute]
 	public   enum MessageDialogOptions : uint
 	{
 		// Skipping already declared field Windows.UI.Popups.MessageDialogOptions.None

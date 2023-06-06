@@ -3,7 +3,6 @@
 namespace Microsoft.UI.Xaml.Controls
 {
 	#if false || false || false || false || false || false || false
-	[global::System.FlagsAttribute]
 	public   enum ElementRealizationOptions : uint
 	{
 		// Skipping already declared field Microsoft.UI.Xaml.Controls.ElementRealizationOptions.None

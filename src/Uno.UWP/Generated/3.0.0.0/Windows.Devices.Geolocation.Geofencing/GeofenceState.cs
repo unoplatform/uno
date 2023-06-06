@@ -3,7 +3,6 @@
 namespace Windows.Devices.Geolocation.Geofencing
 {
 	#if false || false || false || false || false || false || false
-	[global::System.FlagsAttribute]
 	public   enum GeofenceState : uint
 	{
 		// Skipping already declared field Windows.Devices.Geolocation.Geofencing.GeofenceState.None

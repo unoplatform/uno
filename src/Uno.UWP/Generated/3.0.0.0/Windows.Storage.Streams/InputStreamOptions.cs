@@ -3,7 +3,6 @@
 namespace Windows.Storage.Streams
 {
 	#if false || false || false || false || false || false || false
-	[global::System.FlagsAttribute]
 	public   enum InputStreamOptions : uint
 	{
 		// Skipping already declared field Windows.Storage.Streams.InputStreamOptions.None

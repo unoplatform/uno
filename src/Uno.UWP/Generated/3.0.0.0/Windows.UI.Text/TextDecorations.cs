@@ -3,7 +3,6 @@
 namespace Windows.UI.Text
 {
 	#if false || false || false || false || false || false || false
-	[global::System.FlagsAttribute]
 	public   enum TextDecorations : uint
 	{
 		// Skipping already declared field Windows.UI.Text.TextDecorations.None
