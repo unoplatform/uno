@@ -4,6 +4,7 @@ using Windows.Foundation;
 using Windows.System;
 using Uno.Foundation;
 using Uno.UI.Xaml;
+using Uno.UI.Xaml.Input;
 
 using PointerIdentifier = Windows.Devices.Input.PointerIdentifier; // internal type (should be in Uno namespace)
 #if HAS_UNO_WINUI
@@ -15,7 +16,7 @@ using Windows.UI.Input;
 
 namespace Windows.UI.Xaml.Input
 {
-	partial class PointerRoutedEventArgs
+	partial class PointerRoutedEventArgs : IHtmlHandleableRoutedEventArgs
 	{
 		private readonly double _timestamp;
 		private readonly Point _absolutePosition;
@@ -50,6 +51,10 @@ namespace Windows.UI.Xaml.Input
 			KeyModifiers = keys;
 			OriginalSource = source;
 		}
+
+		/// <inheritdoc />
+		/// <remarks>Default value for pointers is <see cref="HtmlEventDispatchResult.StopPropagation"/>.</remarks>
+		HtmlEventDispatchResult IHtmlHandleableRoutedEventArgs.HandledResult { get; set; } = HtmlEventDispatchResult.StopPropagation;
 
 		public PointerPoint GetCurrentPoint(UIElement relativeTo)
 		{
