@@ -27,8 +27,8 @@ class MediaPlayerElementTests : SampleControlUITestBase
 
 		// step 1: Test Auto Play
 		var itemQuery = _app.Marked("TimeElapsedElement");
-		_app.WaitForText(itemQuery, "0:00:03");
-		TakeScreenshot("TimeElapsedElement AutoPlay 03 seconds");
+		_app.WaitForText(itemQuery, "0:00:04");
+		TakeScreenshot("TimeElapsedElement AutoPlay 04 seconds");
 
 		// step 2: press button PlayPause 
 		_app.Tap(_app.Marked("PlayPauseButton"));
