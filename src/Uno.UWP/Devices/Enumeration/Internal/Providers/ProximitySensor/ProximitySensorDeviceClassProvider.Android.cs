@@ -26,20 +26,20 @@ internal class ProximitySensorDeviceClassProvider : IDeviceClassProvider
 	public event EventHandler<DeviceInformationUpdate>? WatchUpdated;
 #pragma warning restore CS0067
 
-	public Task<DeviceInformation[]> FindAllAsync()
+	public Task<DeviceInformation[]> FindAllAsync() => Task.Run(() =>
 	{
 		var sensorManager = SensorHelpers.GetSensorManager();
-		var sensors = sensorManager.GetDynamicSensorList(Android.Hardware.SensorType.Proximity);
+		var sensors = sensorManager.GetDynamicSensorList(SensorType.Proximity);
 
 		List<DeviceInformation> devices = new();
 		if (sensors is not { Count: > 0 })
 		{
-			sensors = sensorManager.GetSensorList(Android.Hardware.SensorType.Proximity);
+			sensors = sensorManager.GetSensorList(SensorType.Proximity);
 		}
 
 		if (sensors is not { Count: > 0 })
 		{
-			if (sensorManager.GetDefaultSensor(Android.Hardware.SensorType.Proximity) is { } sensor)
+			if (sensorManager.GetDefaultSensor(SensorType.Proximity) is { } sensor)
 			{
 				sensors = new List<Sensor>() { sensor };
 			}
@@ -53,7 +53,7 @@ internal class ProximitySensorDeviceClassProvider : IDeviceClassProvider
 		}
 
 		return Task.FromResult(devices.ToArray());
-	}
+	});
 
 	public void WatchStart() { }
 
