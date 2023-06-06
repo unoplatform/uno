@@ -40,7 +40,7 @@ See [MediaPlayerElement](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xam
 | TransportControls		| Transport controls custom style						| X  		| X  		| X  		| X  		|												|
 | 			    		| Play/Pause 											| X  		| X  		| X  		| X  		|												|
 |						| Stop  												| X  		| X  		| X  		| X  		|												|
-| 						| Seek  												| X  		| X  		| X  		| X  		|												|
+| 						| Seek  												| X  		| X  		| X  		| X  		| Wasm not working properly						|
 |						| Volume change											| X  		| X  		| X  		| X  		|												|
 |						| Mute													| X  		| X  		| X  		| X  		|												|
 |						| Show elapsed time										| X  		| X  		| X  		| X  		|												|
