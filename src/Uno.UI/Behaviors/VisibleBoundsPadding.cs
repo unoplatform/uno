@@ -348,11 +348,20 @@ namespace Uno.UI.Toolkit
 			private void ApplyPadding(Thickness padding)
 			{
 #if HAS_UNO // Is building using Uno.UI
-				if (Owner is { } owner
-					&& owner.SetPadding(padding)
-					&& _log.IsEnabled(LogLevel.Debug))
+				if (Owner is { } owner &&
+					!owner.GetPadding().Equals(padding) &&
+					owner.SetPadding(padding))
 				{
-					_log.LogDebug($"ApplyPadding={padding}");
+					if (_log.IsEnabled(LogLevel.Debug))
+					{
+						_log.Log(LogLevel.Debug, $"ApplyPadding={padding}");
+					}
+
+#if __ANDROID__
+					// Dispatching on Android prevents issues where layout/render changes occurring
+					// during initial loading of the view are not always properly picked up by the layouting/rendering engine.
+					_ = owner.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, owner.InvalidateMeasure);
+#endif
 				}
 #endif
 			}
