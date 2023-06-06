@@ -67,13 +67,13 @@
 	</ItemGroup>
 
 	<!--
-	DispatchToInnerBuilds is used for direct builds, CoreCompile is for
+	DispatchToInnerBuilds is used for direct builds, BeforeCompile is for
 	project dependency induced builds.
 	-->
 	<Target Name="GenerateMixins"
 		  Inputs="@(MixinInput)"
 		  Outputs="@(MixinOutput)"
-		  BeforeTargets="DispatchToInnerBuilds;Build;CoreCompile"
+		  BeforeTargets="DispatchToInnerBuilds;Build;BeforeCompile"
 		  Condition="'$(DesignTimeBuild)' != 'true'">
 
 		<PropertyGroup>
