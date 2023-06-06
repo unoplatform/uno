@@ -21,8 +21,7 @@ using Microsoft.UI.Input;
 using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
 #else
 using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
-using System.Reflection.Emit;
-using System.Reflection;
+using Uno.UI.Xaml.Core;
 #endif
 
 
@@ -544,9 +543,17 @@ namespace Windows.UI.Xaml.Controls
 			BindTapped(m_tpControlPanelGrid, OnPaneGridTapped);
 			BindSizeChanged(_controlPanelBorder, ControlPanelBorderSizeChanged);
 			BindTapped(m_tpMediaPositionSlider, TappedProgressSlider);
-			Bind(_sliderThumb, x => x.DragStarted += ThumbOnDragStarted, x => x.DragStarted -= ThumbOnDragStarted);
 			Bind(_sliderThumb, x => x.DragCompleted += ThumbOnDragCompleted, x => x.DragCompleted -= ThumbOnDragCompleted);
 
+#if __ANDROID__ || __IOS__ || __MACOS__
+			Bind(_sliderThumb, x => x.DragStarted += ThumbOnDragStarted, x => x.DragStarted -= ThumbOnDragStarted);
+#else
+			Bind(_sliderThumb, x => x.PointerEntered += OnPointerEntered, x => x.PointerEntered -= OnPointerEntered);
+			Bind(_sliderThumb, x => x.PointerExited += OnPointerExited, x => x.PointerExited -= OnPointerExited);
+			Bind(m_tpMediaPositionSlider, x => x.PointerEntered += OnPointerEntered, x => x.PointerEntered -= OnPointerEntered);
+			Bind(m_tpMediaPositionSlider, x => x.PointerExited += OnPointerExited, x => x.PointerExited -= OnPointerExited);
+			Bind(m_tpMediaPositionSlider, x => x.PointerMoved += OnPointerEntered, x => x.PointerMoved -= OnPointerEntered);
+#endif
 			BindButtonClick(m_tpTHLeftSidePlayPauseButton, PlayPause);
 			BindButtonClick(m_tpMuteButton, ToggleMute);
 			Bind(m_tpTHVolumeSlider, x => x.ValueChanged += OnVolumeChanged, x => x.ValueChanged -= OnVolumeChanged);
@@ -768,17 +775,21 @@ namespace Windows.UI.Xaml.Controls
 				_mediaPlayer is { } &&
 				XamlRoot?.Content is UIElement root)
 			{
-				var bounds = new Rect(
-					0,
-					0,
-					m_tpControlPanelGrid.ActualWidth,
-					_isShowingControls ? m_tpControlPanelGrid.ActualHeight : 0
-				);
-				var transportBounds = TransformToVisual(root).TransformBounds(bounds);
-
-				_mediaPlayer.SetTransportControlBounds(transportBounds);
+				var slot = m_tpControlPanelGrid
+					.TransformToVisual(m_tpControlPanelGrid.Parent as UIElement)
+					.TransformBounds(m_tpControlPanelGrid.LayoutSlotWithMarginsAndAlignments);
+				slot.Height += m_tpControlPanelGrid.Padding.Top
+								+ m_tpControlPanelGrid.Padding.Bottom
+								+ Margin.Top
+								+ Margin.Bottom;
+				if (!_isShowingControls)
+				{
+					slot.Height = 0;
+				}
+				_mediaPlayer.SetTransportControlBounds(slot);
 			}
 		}
+
 		private void OnPaneGridTapped(object sender, TappedRoutedEventArgs e)
 		{
 			if (ShowAndHideAutomatically)
@@ -901,7 +912,7 @@ namespace Windows.UI.Xaml.Controls
 				return;
 			}
 
-			_mpe.MediaPlayer.IsLoopingEnabled = !_mpe.MediaPlayer.IsLoopingEnabled;
+			_mpe.MediaPlayer.IsLoopingEnabled = !IsMediaPlayerLoopingEnabled;
 			UpdateRepeatStates();
 		}
 		private void PreviousTrackButtonTapped(object sender, RoutedEventArgs e)
@@ -1122,6 +1133,7 @@ namespace Windows.UI.Xaml.Controls
 			UpdateFullWindowStates(useTransition);
 			UpdateRepeatStates(useTransition);
 		}
+
 		private void UpdateControlPanelVisibilityStates(bool useTransition = true)
 		{
 			var state = _isShowingControls
@@ -1129,6 +1141,7 @@ namespace Windows.UI.Xaml.Controls
 				: VisualState.ControlPanelVisibilityStates.ControlPanelFadeOut;
 			VisualStateManager.GoToState(this, state, useTransition);
 		}
+
 		private void UpdateMediaStates(bool useTransition = true)
 		{
 			if (_mpe?.MediaPlayer?.PlaybackSession is { } session)
@@ -1144,12 +1157,20 @@ namespace Windows.UI.Xaml.Controls
 					_ => null,
 				};
 
+				if (m_tpBufferingProgressBar is not null)
+				{
+					// Disable indeterminate state if not buffering to avoid animation costs.
+					m_tpBufferingProgressBar.IsIndeterminate
+						= session.PlaybackState is MediaPlaybackState.Buffering or MediaPlaybackState.Opening;
+				}
+
 				if (state != null)
 				{
 					VisualStateManager.GoToState(this, state, useTransition);
 				}
 			}
 		}
+
 		private void UpdateMediaTransportControlModeStates(bool useTransition = true)
 		{
 			var state = IsCompact
@@ -1206,6 +1227,7 @@ namespace Windows.UI.Xaml.Controls
 				: UIAKeys.UIA_MEDIA_MUTE;
 			SetAutomationNameAndTooltip(m_tpMuteButton, uiaKey);
 		}
+
 		private void UpdateFullWindowStates(bool useTransition = true)
 		{
 			if (_mpe is not null)
@@ -1221,6 +1243,11 @@ namespace Windows.UI.Xaml.Controls
 				SetAutomationNameAndTooltip(m_tpFullWindowButton, uiaKey);
 			}
 		}
+
+		private bool IsMediaPlayerLoopingEnabled =>
+			ApiInformation.IsPropertyPresent(typeof(Windows.Media.Playback.MediaPlayer).FullName!, nameof(Windows.Media.Playback.MediaPlayer.IsLoopingEnabled))
+					&& (_mpe?.MediaPlayer.IsLoopingEnabled ?? false);
+
 		private void UpdateRepeatStates(bool useTransition = true)
 		{
 			if (_mpe?.MediaPlayer is null)
@@ -1228,12 +1255,12 @@ namespace Windows.UI.Xaml.Controls
 				return;
 			}
 
-			var state = _mpe.MediaPlayer.IsLoopingEnabled
+			var state = IsMediaPlayerLoopingEnabled
 				? VisualState.RepeatStates.RepeatAllState
 				: VisualState.RepeatStates.RepeatNoneState;
 			VisualStateManager.GoToState(this, state, useTransition);
 
-			var uiaKey = _mpe.MediaPlayer.IsLoopingEnabled
+			var uiaKey = IsMediaPlayerLoopingEnabled
 				? UIAKeys.UIA_MEDIA_REPEAT_ALL
 				: UIAKeys.UIA_MEDIA_REPEAT_NONE;
 			SetAutomationNameAndTooltip(m_tpRepeatButton, uiaKey);

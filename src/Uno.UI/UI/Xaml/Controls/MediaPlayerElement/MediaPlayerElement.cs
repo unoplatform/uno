@@ -317,7 +317,8 @@ namespace Windows.UI.Xaml.Controls
 			{
 				MediaPlayer.AutoPlay = AutoPlay;
 
-				if (MediaPlayer.PlaybackSession.PlaybackState == MediaPlaybackState.Opening && AutoPlay)
+				if (MediaPlayer.PlaybackSession.PlaybackState is not MediaPlaybackState.None
+					&& AutoPlay)
 				{
 					MediaPlayer.Play();
 					TogglePosterImage(false);

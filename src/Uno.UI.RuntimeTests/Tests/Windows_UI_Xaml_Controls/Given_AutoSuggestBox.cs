@@ -211,6 +211,25 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 			Assert.AreEqual("b2", SUT.Text);
 		}
+
+		[TestMethod]
+		public async Task When_Submitting_After_Typing_Text()
+		{
+			var SUT = new AutoSuggestBox();
+			SUT.QuerySubmitted += (s, e) =>
+			{
+				Assert.IsNull(e.ChosenSuggestion);
+			};
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForIdle();
+			SUT.ItemsSource = new List<string>() { "ab", "abc", "abcde" };
+			await WindowHelper.WaitForIdle();
+			SUT.Focus(FocusState.Programmatic);
+			SUT.Text = "abc";
+			await WindowHelper.WaitForIdle();
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+		}
 #endif
 
 		[TestMethod]

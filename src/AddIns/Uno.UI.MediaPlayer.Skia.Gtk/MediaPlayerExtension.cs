@@ -143,7 +143,16 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 
 	public void Pause()
 	{
-		if (_owner.PlaybackSession.PlaybackState == MediaPlaybackState.Playing)
+		if (_owner.PlaybackSession.PlaybackState == MediaPlaybackState.Playing
+				&& _player != null
+				&& _player.CurrentState == MediaPlayerState.Playing)
+		{
+			_player?.Pause();
+			_owner.PlaybackSession.PlaybackState = MediaPlaybackState.Paused;
+		}
+		if (_owner.PlaybackSession.PlaybackState == MediaPlaybackState.Paused
+				&& _player != null
+				&& _player.CurrentState != MediaPlayerState.Paused)
 		{
 			_player?.Pause();
 			_owner.PlaybackSession.PlaybackState = MediaPlaybackState.Paused;
@@ -187,6 +196,11 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 		Events?.RaiseMediaOpened();
 		Events?.RaiseSourceChanged();
 
+		// Set the player back to the paused state, so that the
+		// transport controls can be shown properly.
+		// This may need to be changed when the initialization of libVLC
+		// can be taken into account, as well as the media status.
+		_owner.PlaybackSession.PlaybackState = MediaPlaybackState.Paused;
 	}
 
 	private void SetPlaylistItems(MediaPlaybackList playlist)

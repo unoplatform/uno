@@ -9,6 +9,8 @@ using Uno.Foundation;
 using System.Threading;
 
 #if NET7_0_OR_GREATER
+using System.Runtime.InteropServices.JavaScript;
+
 using NativeMethods = __Windows.ApplicationModel.DataTransfer.Clipboard.NativeMethods;
 #endif
 
@@ -91,6 +93,9 @@ namespace Windows.ApplicationModel.DataTransfer
 #endif
 		}
 
+#if NET7_0_OR_GREATER
+		[JSExport]
+#endif
 		public static int DispatchContentChanged()
 		{
 			OnContentChanged();

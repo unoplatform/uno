@@ -44,6 +44,9 @@ internal static partial class SystemThemeHelper
 		NativeMethods.ObserveSystemTheme();
 	}
 
+#if NET7_0_OR_GREATER
+	[JSExport]
+#endif
 	public static int DispatchSystemThemeChange()
 	{
 		RefreshSystemTheme();

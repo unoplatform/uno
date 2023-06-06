@@ -13,8 +13,12 @@ namespace Windows.System
 	{
 		public static Task<bool> LaunchUriPlatformAsync(Uri uri)
 		{
+#if NET7_0_OR_GREATER
+			var result = NativeMethods.Open(uri.OriginalString);
+#else
 			var command = $"Uno.UI.WindowManager.current.open(\"{uri.OriginalString}\");";
 			var result = WebAssemblyRuntime.InvokeJS(command);
+#endif
 			return Task.FromResult(result == "True");
 		}
 	}

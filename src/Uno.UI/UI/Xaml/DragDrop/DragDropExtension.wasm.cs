@@ -37,7 +37,7 @@ using NativeMethods = __Windows.ApplicationModel.DataTransfer.DragDrop.Core.Drag
 
 namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 {
-	internal class DragDropExtension : IDragDropExtension
+	internal partial class DragDropExtension : IDragDropExtension
 	{
 		private const long _textReadTimeoutTicks = 10 * TimeSpan.TicksPerSecond;
 
@@ -118,6 +118,9 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 
 		[Preserve]
 		[EditorBrowsable(EditorBrowsableState.Never)]
+#if NET7_0_OR_GREATER
+		[JSExport]
+#endif
 		public static string OnNativeDropEvent()
 		{
 			try

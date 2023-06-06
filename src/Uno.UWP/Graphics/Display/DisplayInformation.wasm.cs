@@ -20,6 +20,9 @@ namespace Windows.Graphics.Display
 		private const string JsType = "Windows.Graphics.Display.DisplayInformation";
 #endif
 
+#if NET7_0_OR_GREATER
+		[JSExport]
+#endif
 		public static int DispatchDpiChanged()
 		{
 			if (_lazyInstance.IsValueCreated)
@@ -29,6 +32,9 @@ namespace Windows.Graphics.Display
 			return 0;
 		}
 
+#if NET7_0_OR_GREATER
+		[JSExport]
+#endif
 		public static int DispatchOrientationChanged()
 		{
 			if (_lazyInstance.IsValueCreated)

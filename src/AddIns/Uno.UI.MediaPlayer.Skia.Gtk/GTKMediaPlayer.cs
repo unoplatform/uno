@@ -283,15 +283,46 @@ public partial class GtkMediaPlayer : FrameworkElement
 	private void GtkMediaPlayer_LayoutUpdated(object? sender, object e)
 		=> UpdateVideoStretch();
 
+	private bool TryGetVideoDetails(
+		[NotNullWhen(true)] out uint? videoWidth,
+		[NotNullWhen(true)] out uint? videoHeight,
+		[NotNullWhen(true)] out VideoTrack? videoTrack)
+	{
+		if (_mediaPlayer is not null
+			&& _mediaPlayer.Media is not null)
+		{
+			var mediaTrack = _mediaPlayer
+				.Media
+				.Tracks
+				.FirstOrDefault(track => track.TrackType == TrackType.Video);
+
+			if (mediaTrack is { })
+			{
+				videoTrack = mediaTrack.Data.Video;
+				videoWidth = videoTrack.Value.Width;
+				videoHeight = videoTrack.Value.Height;
+
+				if (videoTrack.Value.SarDen != 0)
+				{
+					return true;
+				}
+			}
+		}
+
+		videoWidth = null;
+		videoHeight = null;
+		videoTrack = null;
+
+		return false;
+	}
+
 	private void UpdateVideoStretch(bool forceVideoViewVisibility = false)
 	{
-		_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+		_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
 		{
-			if (_videoView != null &&
-					_mediaPlayer != null &&
-					_mediaPlayer.Media != null &&
-					_mediaPlayer.Media.Mrl != null &&
-					_videoContainer is not null)
+			if (_videoView != null
+				&& _mediaPlayer?.Media?.Mrl is not null
+				&& _videoContainer is not null)
 			{
 				var currentSize = new Size(ActualWidth, ActualHeight);
 
@@ -308,50 +339,24 @@ public partial class GtkMediaPlayer : FrameworkElement
 				var playerHeight = (double)currentSize.Height - _transportControlsBounds.Height;
 				var playerWidth = (double)currentSize.Width;
 
-				_mediaPlayer.Media.Parse(MediaParseOptions.ParseNetwork);
+				await _mediaPlayer.Media.Parse(MediaParseOptions.ParseNetwork);
 
-				if (_mediaPlayer != null && _mediaPlayer.Media != null)
+				if (TryGetVideoDetails(out var videoWidth, out var videoHeight, out var videoSettings))
 				{
-					var videoTrack = _mediaPlayer.Media.Tracks.FirstOrDefault(track => track.TrackType == TrackType.Video);
+					// From: https://github.com/videolan/libvlcsharp/blob/bca0a53fe921e6f1f745e4e3ac83a7bd3b2e4a9d/src/LibVLCSharp/Shared/MediaPlayerElement/AspectRatioManager.cs#L188
+					videoWidth = videoWidth * videoSettings.Value.SarNum / videoSettings.Value.SarDen;
+					UpdateVideoSizeAllocate(playerHeight, playerWidth, videoHeight.Value, videoWidth.Value);
 
-					if (_mediaPlayer.Media.Tracks.Any(track => track.TrackType == TrackType.Video))
+					if (forceVideoViewVisibility)
 					{
-						var videoSettings = videoTrack.Data.Video;
-						var videoWidth = videoSettings.Width;
-						var videoHeight = videoSettings.Height;
-
-						if (videoSettings.SarDen != 0)
-						{
-							// From: https://github.com/videolan/libvlcsharp/blob/bca0a53fe921e6f1f745e4e3ac83a7bd3b2e4a9d/src/LibVLCSharp/Shared/MediaPlayerElement/AspectRatioManager.cs#L188
-							videoWidth = videoWidth * videoSettings.SarNum / videoSettings.SarDen;
-							UpdateVideoSizeAllocate(playerHeight, playerWidth, videoHeight, videoWidth);
-
-							if (forceVideoViewVisibility)
-							{
-								_videoView?.SetVisible(true);
-							}
-						}
-						else
-						{
-							if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
-							{
-								this.Log().Debug($"SarDen is zero, skipping layout");
-							}
-						}
-					}
-					else
-					{
-						if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
-						{
-							this.Log().Debug($"Skipping layout update because no tracks could be found");
-						}
+						_videoView?.SetVisible(true);
 					}
 				}
 				else
 				{
 					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 					{
-						this.Log().Debug($"Skipping layout update because the player is not available");
+						this.Log().Debug($"Skipping layout update because video details are not available");
 					}
 				}
 			}

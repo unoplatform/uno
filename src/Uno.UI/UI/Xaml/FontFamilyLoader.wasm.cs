@@ -15,7 +15,7 @@ namespace Windows.UI.Xaml.Media;
 /// <summary>
 /// WebAssembly-specific asynchronous font loader
 /// </summary>
-internal class FontFamilyLoader
+internal partial class FontFamilyLoader
 {
 	private static readonly Dictionary<FontFamily, FontFamilyLoader> _loaders = new(new FontFamilyComparer());
 	private static readonly Dictionary<string, FontFamilyLoader> _loadersFromCssName = new();
@@ -59,6 +59,9 @@ internal class FontFamilyLoader
 	/// <summary>
 	/// Typescript-invoked method to notify that a font has been loaded properly
 	/// </summary>
+#if NET7_0_OR_GREATER
+	[JSExport]
+#endif
 	internal static void NotifyFontLoaded(string cssFontName)
 	{
 		if (_loadersFromCssName.TryGetValue(cssFontName, out var loader))
@@ -99,6 +102,9 @@ internal class FontFamilyLoader
 	/// <summary>
 	/// Typescript-invoked method to notify that a font failed to load properly
 	/// </summary>
+#if NET7_0_OR_GREATER
+	[JSExport]
+#endif
 	internal static void NotifyFontLoadFailed(string cssFontName)
 	{
 		if (_loadersFromCssName.TryGetValue(cssFontName, out var loader))
