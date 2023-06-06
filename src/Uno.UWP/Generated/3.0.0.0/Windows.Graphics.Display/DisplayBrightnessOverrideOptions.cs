@@ -3,7 +3,6 @@
 namespace Windows.Graphics.Display
 {
 	#if false || false || false || false || false || false || false
-	[global::System.FlagsAttribute]
 	public   enum DisplayBrightnessOverrideOptions : uint
 	{
 		// Skipping already declared field Windows.Graphics.Display.DisplayBrightnessOverrideOptions.None

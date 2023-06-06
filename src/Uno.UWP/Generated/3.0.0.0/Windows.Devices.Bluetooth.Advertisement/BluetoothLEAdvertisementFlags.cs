@@ -3,7 +3,6 @@
 namespace Windows.Devices.Bluetooth.Advertisement
 {
 	#if false || false || false || false || false || false || false
-	[global::System.FlagsAttribute]
 	public   enum BluetoothLEAdvertisementFlags : uint
 	{
 		// Skipping already declared field Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementFlags.None

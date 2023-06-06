@@ -3,7 +3,6 @@
 namespace Windows.UI.Xaml.Input
 {
 	#if false || false || false || false || false || false || false
-	[global::System.FlagsAttribute]
 	public   enum ManipulationModes : uint
 	{
 		// Skipping already declared field Windows.UI.Xaml.Input.ManipulationModes.None

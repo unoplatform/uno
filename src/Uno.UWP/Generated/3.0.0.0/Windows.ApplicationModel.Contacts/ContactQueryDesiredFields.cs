@@ -3,7 +3,6 @@
 namespace Windows.ApplicationModel.Contacts
 {
 	#if false || false || false || false || false || false || false
-	[global::System.FlagsAttribute]
 	public   enum ContactQueryDesiredFields : uint
 	{
 		// Skipping already declared field Windows.ApplicationModel.Contacts.ContactQueryDesiredFields.None
