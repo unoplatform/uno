@@ -7,12 +7,15 @@ using Android.Hardware;
 using Android.Runtime;
 using Uno.Devices.Enumeration.Internal;
 using Uno.Devices.Sensors.Helpers;
+using Uno.Helpers;
 using Windows.Foundation;
 
 namespace Windows.Devices.Sensors;
 
 public partial class ProximitySensor
 {
+	private readonly StartStopEventWrapper<TypedEventHandler<ProximitySensor, ProximitySensorReadingChangedEventArgs>> _readingChangedWrapper;
+	
 	private Sensor? _sensor;
 	private ProximitySensorListener? _listener;
 
@@ -71,7 +74,7 @@ public partial class ProximitySensor
 		return sensor;
 	}
 
-	partial void StartReading()
+	private void StartReading()
 	{
 		_listener = new ProximitySensorListener(this);
 		SensorHelpers.GetSensorManager().RegisterListener(
@@ -80,7 +83,7 @@ public partial class ProximitySensor
 			SensorDelay.Normal);
 	}
 
-	partial void StopReading()
+	private void StopReading()
 	{
 		if (_listener is not null)
 		{
