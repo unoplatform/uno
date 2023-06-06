@@ -512,6 +512,7 @@
 
 	<IgnoreSet baseVersion="4.9">
 		<Types>
+			<Member fullName="Windows.UI.Core.ICoreWindowEvents" reason="Not present in WinUI" />
 			<Member fullName="Microsoft.UI.Windowing.AppWindowConfiguration" reason="Not present in WinAppSDK 1.2" />
 			<Member fullName="Microsoft.Foundation.LiftedContract" reason="Not present in WinAppSDK 1.2" />
 			<Member fullName="Microsoft.Foundation.LiftedExperimentalContract" reason="Not present in WinAppSDK 1.2" />
@@ -836,6 +837,10 @@
 			<!-- END Skia Adjustments -->
 		</Properties>
 		<Methods>
+			<Member fullName="System.Void Windows.UI.Core.CoreWindow.RaisePointerCancelled(Windows.UI.Core.PointerEventArgs args)" reason="Not present in WInUI" />
+			<Member fullName="Uno.UI.Web.WebErrorStatus Windows.UI.Xaml.Controls.WebViewNavigationFailedEventArgs.get_WebErrorStatus()" reason="Wrong type" />
+			<Member fullName="Uno.UI.Web.WebErrorStatus Windows.UI.Xaml.Controls.WebViewNavigationCompletedEventArgs.get_WebErrorStatus()" reason="Wrong type" />
+			<Member fullName="System.Threading.Tasks.Task`1&lt;System.String&gt; Windows.UI.Xaml.Controls.WebView.InvokeScriptAsync(System.Threading.CancellationToken ct, System.String script, System.String[] arguments)" reason="Wrong type" />
 			<Member fullName="Microsoft.UI.Windowing.AppWindowConfiguration Microsoft.UI.Windowing.AppWindow.get_Configuration()" reason="Not present in WinAppSDK 1.2" />
 			<Member fullName="System.Void Microsoft.UI.Windowing.AppWindow.ApplyConfiguration(Microsoft.UI.Windowing.AppWindowConfiguration appWindowConfiguration)" reason="Not present in WinAppSDK 1.2" />
 			<Member fullName="System.Boolean Microsoft.UI.Windowing.AppWindow.Destroy()" reason="Not present in WinAppSDK 1.2" />
