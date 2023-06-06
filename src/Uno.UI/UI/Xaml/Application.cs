@@ -376,17 +376,6 @@ namespace Windows.UI.Xaml
 			new SuspendingOperation(DateTimeOffset.Now.AddSeconds(0), null);
 #endif
 
-#if !HAS_UNO_WINUI
-		protected virtual void OnWindowCreated(global::Windows.UI.Xaml.WindowCreatedEventArgs args)
-		{
-		}
-
-		internal void RaiseWindowCreated(Windows.UI.Xaml.Window window)
-		{
-			OnWindowCreated(new WindowCreatedEventArgs(window));
-		}
-#endif
-
 		private void SetRequestedTheme(ApplicationTheme requestedTheme)
 		{
 			if (requestedTheme != InternalRequestedTheme)
