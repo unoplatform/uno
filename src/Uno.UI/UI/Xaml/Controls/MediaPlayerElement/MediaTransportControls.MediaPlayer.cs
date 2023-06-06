@@ -138,10 +138,17 @@ namespace Windows.UI.Xaml.Controls
 			{
 				var elapsed = args as TimeSpan? ?? TimeSpan.Zero;
 				m_tpTimeElapsedElement.Maybe<TextBlock>(p => p.Text = FormatTime(elapsed));
+#if __ANDROID__ || __IOS__ || __MACOS__
+				if (m_tpMediaPositionSlider is not null)
+				{
+					m_tpMediaPositionSlider.Value = elapsed.TotalSeconds;
+				}
+#else
 				if (!_isScrubbing && m_tpMediaPositionSlider is not null)
 				{
 					m_tpMediaPositionSlider.Value = elapsed.TotalSeconds;
 				}
+#endif
 				if (_mediaPlayer is not null)
 				{
 					var remaining = _mediaPlayer.PlaybackSession.NaturalDuration - elapsed;
@@ -288,9 +295,22 @@ namespace Windows.UI.Xaml.Controls
 			ResetControlsVisibilityTimer();
 		}
 
+#if __ANDROID__ || __IOS__ || __MACOS__
+		private void ThumbOnDragStarted(object sender, DragStartedEventArgs dragStartedEventArgs)
+		{
+			if (_mediaPlayer != null && !_isScrubbing)
+			{
+				_wasPlaying = _mediaPlayer.PlaybackSession.IsPlaying;
+				_skipPlayPauseStateUpdate = true;
+				_isScrubbing = true;
+
+				_mediaPlayer.Pause();
+			}
+		}
+#else
 		private void OnPointerEntered(object sender, PointerRoutedEventArgs e)
 		{
-			if (sender is Thumb && _mediaPlayer != null)
+			if (_mediaPlayer != null && !_isScrubbing)
 			{
 				_wasPlaying = _mediaPlayer.PlaybackSession.IsPlaying;
 				_isScrubbing = true;
@@ -299,15 +319,13 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnPointerExited(object sender, PointerRoutedEventArgs e)
 		{
-			if (sender is Thumb)
+			_isScrubbing = false;
+			if (_wasPlaying)
 			{
-				_isScrubbing = false;
-				if (_wasPlaying)
-				{
-					_mediaPlayer?.Play();
-				}
+				_mediaPlayer?.Play();
 			}
 		}
+#endif
 
 		private void ThumbOnDragCompleted(object sender, DragCompletedEventArgs dragCompletedEventArgs)
 		{
