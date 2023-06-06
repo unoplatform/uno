@@ -7,6 +7,8 @@ using Uno;
 using Uno.Foundation;
 
 #if NET7_0_OR_GREATER
+using System.Runtime.InteropServices.JavaScript;
+
 using NativeMethods = __Windows.Graphics.Display.DisplayInformation.NativeMethods;
 #endif
 
@@ -22,6 +24,9 @@ namespace Windows.Graphics.Display
 		private const string JsType = "Windows.Graphics.Display.DisplayInformation";
 #endif
 
+#if NET7_0_OR_GREATER
+		[JSExport]
+#endif
 		public static int DispatchDpiChanged()
 		{
 			if (_lazyInstance.IsValueCreated)
@@ -31,6 +36,9 @@ namespace Windows.Graphics.Display
 			return 0;
 		}
 
+#if NET7_0_OR_GREATER
+		[JSExport]
+#endif
 		public static int DispatchOrientationChanged()
 		{
 			if (_lazyInstance.IsValueCreated)

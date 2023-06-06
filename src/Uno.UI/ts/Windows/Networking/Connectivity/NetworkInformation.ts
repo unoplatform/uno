@@ -15,9 +15,13 @@
 
 		public static networkStatusChanged() {
 			if (NetworkInformation.dispatchStatusChanged == null) {
-				NetworkInformation.dispatchStatusChanged = 
-					(<any>Module).mono_bind_static_method(
-						"[Uno] Windows.Networking.Connectivity.NetworkInformation:DispatchStatusChanged");				
+				if ((<any>globalThis).DotnetExports !== undefined) {
+					NetworkInformation.dispatchStatusChanged = (<any>globalThis).DotnetExports.Uno.Windows.Networking.Connectivity.NetworkInformation.DispatchStatusChanged;
+				} else {
+					NetworkInformation.dispatchStatusChanged =
+						(<any>Module).mono_bind_static_method(
+							"[Uno] Windows.Networking.Connectivity.NetworkInformation:DispatchStatusChanged");
+				}
 			}
 			NetworkInformation.dispatchStatusChanged();
 		}

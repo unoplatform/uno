@@ -6,6 +6,8 @@ using Uno.Foundation;
 using Uno.Foundation.Logging;
 
 #if NET7_0_OR_GREATER
+using System.Runtime.InteropServices.JavaScript;
+
 using NativeMethods = __Uno.Helpers.Theming.SystemThemeHelper.NativeMethods;
 #endif
 
@@ -54,6 +56,9 @@ internal static partial class SystemThemeHelper
 #endif
 	}
 
+#if NET7_0_OR_GREATER
+	[JSExport]
+#endif
 	public static int DispatchSystemThemeChange()
 	{
 		RefreshSystemTheme();
