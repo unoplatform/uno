@@ -7,6 +7,8 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.Web.WebView2.Core;
 using Private.Infrastructure;
 using Windows.UI.Xaml.Controls;
+using System.Runtime.CompilerServices;
+using Uno.UI.RuntimeTests.Helpers;
 #if HAS_UNO
 using Uno.UI.Xaml.Controls;
 #endif
@@ -118,115 +120,112 @@ public class Given_WebView2
 	[TestMethod]
 	public async Task When_ExecuteScriptAsync()
 	{
-		var border = new Border();
-		var webView = new WebView2();
-		webView.Width = 200;
-		webView.Height = 200;
-		border.Child = webView;
-		TestServices.WindowHelper.WindowContent = border;
-		bool navigated = false;
-		await TestServices.WindowHelper.WaitForLoaded(border);
-		await webView.EnsureCoreWebView2Async();
-		webView.NavigationCompleted += (sender, e) => navigated = true;
-		webView.NavigateToString("<html><body><div id='test' style='width: 100px; height: 100px; background-color: blue;' /></body></html>");
-		await TestServices.WindowHelper.WaitFor(() => navigated);
+		async Task Do()
+		{
+			var border = new Border();
+			var webView = new WebView2();
+			webView.Width = 200;
+			webView.Height = 200;
+			border.Child = webView;
+			TestServices.WindowHelper.WindowContent = border;
+			bool navigated = false;
+			await TestServices.WindowHelper.WaitForLoaded(border);
+			await webView.EnsureCoreWebView2Async();
+			webView.NavigationCompleted += (sender, e) => navigated = true;
+			webView.NavigateToString("<html><body><div id='test' style='width: 100px; height: 100px; background-color: blue;' /></body></html>");
+			await TestServices.WindowHelper.WaitFor(() => navigated);
 
-		var color = await webView.ExecuteScriptAsync("eval({ 'color' : document.getElementById('test').style.backgroundColor })");
-		Assert.AreEqual("{\"color\":\"blue\"}", color);
+			var color = await webView.ExecuteScriptAsync("eval({ 'color' : document.getElementById('test').style.backgroundColor })");
+			Assert.AreEqual("{\"color\":\"blue\"}", color);
 
-		// Change color to red
-		await webView.ExecuteScriptAsync("document.getElementById('test').style.backgroundColor = 'red';");
-		color = await webView.ExecuteScriptAsync("eval({ 'color' : document.getElementById('test').style.backgroundColor })");
+			// Change color to red
+			await webView.ExecuteScriptAsync("document.getElementById('test').style.backgroundColor = 'red';");
+			color = await webView.ExecuteScriptAsync("eval({ 'color' : document.getElementById('test').style.backgroundColor })");
 
-		Assert.AreEqual("{\"color\":\"red\"}", color);
+			Assert.AreEqual("{\"color\":\"red\"}", color);
+		}
+
+		await TestHelper.RetryAssert(Do, 3);
 	}
 
 	[TestMethod]
 	public async Task When_ExecuteScriptAsync_String_Double_Quote()
 	{
-		var border = new Border();
-		var webView = new WebView2();
-		webView.Width = 200;
-		webView.Height = 200;
-		border.Child = webView;
-		TestServices.WindowHelper.WindowContent = border;
-		bool navigated = false;
-		await TestServices.WindowHelper.WaitForLoaded(border);
-		await webView.EnsureCoreWebView2Async();
-		webView.NavigationCompleted += (sender, e) => navigated = true;
-		webView.NavigateToString("<html></html>");
-		await TestServices.WindowHelper.WaitFor(() => navigated);
+		async Task Do()
+		{
+			var border = new Border();
+			var webView = new WebView2();
+			webView.Width = 200;
+			webView.Height = 200;
+			border.Child = webView;
+			TestServices.WindowHelper.WindowContent = border;
+			bool navigated = false;
+			await TestServices.WindowHelper.WaitForLoaded(border);
+			await webView.EnsureCoreWebView2Async();
+			webView.NavigationCompleted += (sender, e) => navigated = true;
+			webView.NavigateToString("<html></html>");
+			await TestServices.WindowHelper.WaitFor(() => navigated);
 
-		var script = $"'hello \"world\"'.toString()";
-		var result = await webView.ExecuteScriptAsync(script);
-		Assert.AreEqual("\"hello \\\"world\\\"\"", result);
+			var script = $"'hello \"world\"'.toString()";
+			var result = await webView.ExecuteScriptAsync(script);
+			Assert.AreEqual("\"hello \\\"world\\\"\"", result);
+		}
+
+		await TestHelper.RetryAssert(Do, 3);
 	}
 
 	[TestMethod]
 	public async Task When_ExecuteScriptAsync_String()
 	{
-
-		int tryCount = 3;
-
-		while (tryCount-- > 0)
+		async Task Do()
 		{
-			try
-			{
-				var border = new Border();
-				var webView = new WebView2();
-				webView.Width = 200;
-				webView.Height = 200;
-				border.Child = webView;
-				TestServices.WindowHelper.WindowContent = border;
-				bool navigated = false;
-				await TestServices.WindowHelper.WaitForLoaded(border);
-				await webView.EnsureCoreWebView2Async();
+			var border = new Border();
+			var webView = new WebView2();
+			webView.Width = 200;
+			webView.Height = 200;
+			border.Child = webView;
+			TestServices.WindowHelper.WindowContent = border;
+			bool navigated = false;
+			await TestServices.WindowHelper.WaitForLoaded(border);
+			await webView.EnsureCoreWebView2Async();
 
-				webView.NavigationCompleted += (sender, e) => navigated = true;
-				webView.NavigateToString("<html></html>");
-				await TestServices.WindowHelper.WaitFor(() => navigated);
-				var script = "(1 + 1).toString()";
+			webView.NavigationCompleted += (sender, e) => navigated = true;
+			webView.NavigateToString("<html></html>");
+			await TestServices.WindowHelper.WaitFor(() => navigated);
+			var script = "(1 + 1).toString()";
 
-				var result = await webView.ExecuteScriptAsync($"eval(\"{script}\")");
-				Assert.AreEqual("\"2\"", result);
-			}
-			catch (Exception ex)
-			{
-				// delay for temporary retry where the test randomly fails on android/ios
-				await Task.Delay(100);
-
-				if (tryCount == 0)
-				{
-					throw;
-				}
-				else
-				{
-					Console.WriteLine($"Exception: {ex.Message}");
-					Console.WriteLine("Retrying...");
-				}
-			}
+			var result = await webView.ExecuteScriptAsync($"eval(\"{script}\")");
+			Assert.AreEqual("\"2\"", result);
 		}
+
+		await TestHelper.RetryAssert(Do, 3);
 	}
+
 
 	[TestMethod]
 	public async Task When_ExecuteScriptAsync_Non_String()
 	{
-		var border = new Border();
-		var webView = new WebView2();
-		webView.Width = 200;
-		webView.Height = 200;
-		border.Child = webView;
-		TestServices.WindowHelper.WindowContent = border;
-		bool navigated = false;
-		await TestServices.WindowHelper.WaitForLoaded(border);
-		await webView.EnsureCoreWebView2Async();
-		webView.NavigationCompleted += (sender, e) => navigated = true;
-		webView.NavigateToString("<html></html>");
-		await TestServices.WindowHelper.WaitFor(() => navigated);
-		var script = "(1 + 1)";
+		async Task Do()
+		{
+			var border = new Border();
+			var webView = new WebView2();
+			webView.Width = 200;
+			webView.Height = 200;
+			border.Child = webView;
+			TestServices.WindowHelper.WindowContent = border;
+			bool navigated = false;
+			await TestServices.WindowHelper.WaitForLoaded(border);
+			await webView.EnsureCoreWebView2Async();
+			webView.NavigationCompleted += (sender, e) => navigated = true;
+			webView.NavigateToString("<html></html>");
+			await TestServices.WindowHelper.WaitFor(() => navigated);
+			var script = "(1 + 1)";
 
-		var result = await webView.ExecuteScriptAsync($"eval(\"{script}\")");
-		Assert.AreEqual("2", result);
+			var result = await webView.ExecuteScriptAsync($"eval(\"{script}\")");
+			Assert.AreEqual("2", result);
+		}
+
+		await TestHelper.RetryAssert(Do, 3);
 	}
 #endif
 
