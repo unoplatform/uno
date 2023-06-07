@@ -57,6 +57,17 @@ internal class UnoGtkWindowHost : IGtkXamlRootHost
 		var overlay = new Overlay();
 
 		_area = (Widget)_renderer;
+
+		_area.Realized += (s, e) =>
+		{
+			_winUIWindow.OnNativeSizeChanged(new Windows.Foundation.Size(_area.AllocatedWidth, _area.AllocatedHeight));
+		};
+
+		_area.SizeAllocated += (s, e) =>
+		{
+			_winUIWindow.OnNativeSizeChanged(new Windows.Foundation.Size(e.Allocation.Width, e.Allocation.Height));
+		};
+
 		overlay.Add(_area);
 		overlay.AddOverlay(_nativeOverlayLayer);
 		_eventBox.Add(overlay);

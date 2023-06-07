@@ -14,6 +14,7 @@ using System.IO;
 using System.Collections.Generic;
 using Uno.UI.Hosting;
 using Uno.UI.Runtime.Skia.GTK.Hosting;
+using System.ComponentModel;
 
 namespace Uno.UI.Runtime.Skia.GTK.UI.Controls;
 
@@ -53,6 +54,10 @@ internal class UnoGtkWindow : Gtk.Window
 		WindowStateEvent += OnWindowStateChanged;
 
 		_host = new UnoGtkWindowHost(this, winUIWindow);
+
+		ApplicationView.GetForCurrentView().PropertyChanged += OnApplicationViewPropertyChanged;
+		UpdateWindowPropertiesFromPackage();
+		UpdateWindowPropertiesFromApplicationView();
 	}
 
 	internal UnoEventBox EventBox => _host.EventBox;
@@ -121,9 +126,17 @@ internal class UnoGtkWindow : Gtk.Window
 			}
 		}
 
-		Windows.UI.ViewManagement.ApplicationView.GetForCurrentView().Title = Windows.ApplicationModel.Package.Current.DisplayName;
+		Title = Windows.ApplicationModel.Package.Current.DisplayName;
 	}
 
+	private void OnApplicationViewPropertyChanged(object? sender, PropertyChangedEventArgs e) => UpdateWindowPropertiesFromApplicationView();
+
+	private void UpdateWindowPropertiesFromApplicationView()
+	{
+		var appView = ApplicationView.GetForCurrentView();
+		Title = appView.Title;
+		SetSizeRequest((int)appView.PreferredMinSize.Width, (int)appView.PreferredMinSize.Height);
+	}
 
 	private void OnWindowStateChanged(object o, WindowStateEventArgs args)
 	{
