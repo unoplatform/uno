@@ -247,7 +247,7 @@ You can use both the Uno Platform and C# Dev Kit extensions but not simulteanous
 3. Enable `useOmnisharp` inside the configuration
 ![useOmnisharp](Assets/quick-start/vs-code-useOmniSharp.png)
 
-4. Create another pfoile for **C# Dev Kit**
+4. Create another profile for **C# Dev Kit**
 5. Enable (or install) the C# Dev Kit extension
 6. Ensure that `useOmnisharp` is disabled inside the configuration
 7. Disable the Uno Platform extension
