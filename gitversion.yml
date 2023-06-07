@@ -4,7 +4,7 @@ mode: Mainline
 # Don't use next-version with Mainline (changed since 5.3), otherwise the stable
 # branch will not count on commits, only on tags.
 # See https://github.com/GitTools/GitVersion/issues/2461#issuecomment-733658087
-next-version: 5.0
+# next-version: 5.0
 
 branches:
   master:
