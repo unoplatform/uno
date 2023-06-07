@@ -1,48 +1,89 @@
 ﻿using System;
+using System.Threading.Tasks;
+using Gtk;
 using Uno.Foundation.Logging;
 using Uno.UI.Runtime.Skia.GTK.Hosting;
+using Uno.UI.Runtime.Skia.GTK.UI;
 
 namespace Uno.UI.Runtime.Skia.GTK.Rendering;
 
 internal static class GtkRendererProvider
 {
-	public static IGtkRenderer CreateForHost(IGtkXamlRootHost host)
+	public static async Task<IGtkRenderer> CreateForHostAsync(IGtkXamlRootHost host)
 	{
-		var requestedRenderer = host.RenderSurfaceType ?? RenderSurfaceType.OpenGL;
-
-		if (typeof(GtkRendererProvider).Log().IsEnabled(LogLevel.Debug))
+		RenderSurfaceType? renderSurfaceType = host.RenderSurfaceType;
+		if (TryReadRenderSurfaceTypeEnvironment(out var overridenSurfaceType))
 		{
-			typeof(GtkRendererProvider).Log().Debug($"Validating {host.RenderSurfaceType} rendering");
+			renderSurfaceType = overridenSurfaceType;
 		}
 
-		IGtkRenderer renderer = null;
-		while (renderer is null)
+		if (!OpenGLRenderSurface.IsSupported && !OpenGLESRenderSurface.IsSupported)
 		{
-			renderer = requestedRenderer switch
+			// Pre-validation is required to avoid initializing OpenGL on macOS
+			// where the whole app may get visually corrupted even if OpenGL is not
+			// used in the app.
+
+			if (typeof(GtkRendererProvider).Log().IsEnabled(LogLevel.Debug))
 			{
-				RenderSurfaceType.Software => new SoftwareGTKRenderer(host),
-				RenderSurfaceType.OpenGL => new OpenGLGTKRenderer(host),
-				_ => throw new InvalidOperationException($"Render Surface type {host.RenderSurfaceType} is not supported")
-			};
+				typeof(GtkRendererProvider).Log().Debug($"Neither OpenGL or OpenGL ES are supporting, using software rendering");
+			}
 
-			if (!renderer.TryInitialize())
+			renderSurfaceType = Skia.RenderSurfaceType.Software;
+		}
+
+		if (renderSurfaceType is null)
+		{
+			TaskCompletionSource<RenderSurfaceType> validationCompletionSource = new();
+
+			// Create a temporary surface to automatically detect
+			// the OpenGL environment that can be used on the system.
+			GLValidationSurface validationSurface = new();
+
+			host.RootContainer.Add(validationSurface);
+			host.RootContainer.ShowAll();
+
+			GtkDispatch.DispatchNativeSingle(ValidateSurface);
+
+			renderSurfaceType = await validationCompletionSource.Task;
+
+			async void ValidateSurface()
 			{
-				renderer.Dispose();
-				renderer = null;
-
-				// OpenGL initialization failed, fallback to software rendering
-				// This may happen on headless systems or containers.
-
-				if (typeof(GTKRendererProvider).Log().IsEnabled(LogLevel.Warning))
+				try
 				{
-					typeof(GTKRendererProvider).Log().Warn($"OpenGL failed to initialize, using software rendering");
-				}
+					if (typeof(GtkRendererProvider).Log().IsEnabled(LogLevel.Debug))
+					{
+						typeof(GtkRendererProvider).Log().Debug($"Auto-detecting surface type");
+					}
 
-				requestedRenderer = RenderSurfaceType.Software;
+					// Wait for a realization of the GLValidationSurface
+					var validatedRenderSurfaceType = await validationSurface.GetSurfaceTypeAsync();
+
+					// Continue on the GTK main thread
+					GtkDispatch.DispatchNativeSingle(() =>
+					{
+						if (typeof(GtkRendererProvider).Log().IsEnabled(LogLevel.Debug))
+						{
+							typeof(GtkRendererProvider).Log().Debug($"Auto-detected {renderSurfaceType} rendering");
+						}
+
+						host.RootContainer.Remove(validationSurface);
+
+						validationCompletionSource.TrySetResult(validatedRenderSurfaceType);
+					});
+				}
+				catch (Exception e)
+				{
+					if (typeof(GtkRendererProvider).Log().IsEnabled(LogLevel.Error))
+					{
+						typeof(GtkRendererProvider).Log().Error($"Auto-detected failed", e);
+					}
+
+					validationCompletionSource.TrySetResult(RenderSurfaceType.Software);
+				}
 			}
 		}
 
-		return renderer;
+		return BuildRenderSurfaceType(renderSurfaceType.Value, host);
 	}
 
 	private static IGtkRenderer BuildRenderSurfaceType(RenderSurfaceType renderSurfaceType, IGtkXamlRootHost host)
@@ -54,85 +95,18 @@ internal static class GtkRendererProvider
 			_ => throw new InvalidOperationException($"Unsupported RenderSurfaceType {GtkHost.Current!.RenderSurfaceType}")
 		};
 
-	private static void TryReadRenderSurfaceTypeEnvironment()
+	private static bool TryReadRenderSurfaceTypeEnvironment(out RenderSurfaceType surfaceType)
 	{
-		if (Enum.TryParse(Environment.GetEnvironmentVariable("UNO_RENDER_SURFACE_TYPE"), out RenderSurfaceType surfaceType))
+		if (Enum.TryParse(Environment.GetEnvironmentVariable("UNO_RENDER_SURFACE_TYPE"), out surfaceType))
 		{
 			if (typeof(GtkRendererProvider).Log().IsEnabled(LogLevel.Debug))
 			{
 				typeof(GtkRendererProvider).Log().Debug($"Overriding RnderSurfaceType using command line with {surfaceType}");
 			}
 
-			RenderSurfaceType = surfaceType;
-		}
-	}
-
-	private void SetupRenderSurface()
-	{
-		TryReadRenderSurfaceTypeEnvironment();
-
-		if (!OpenGLRenderSurface.IsSupported && !OpenGLESRenderSurface.IsSupported)
-		{
-			// Pre-validation is required to avoid initializing OpenGL on macOS
-			// where the whole app may get visually corrupted even if OpenGL is not
-			// used in the app.
-
-			if (this.Log().IsEnabled(LogLevel.Debug))
-			{
-				this.Log().Debug($"Neither OpenGL or OpenGL ES are supporting, using software rendering");
-			}
-
-			GtkHost.Current!.RenderSurfaceType = Skia.RenderSurfaceType.Software;
+			return true;
 		}
 
-		if (GtkHost.Current!.RenderSurfaceType == null)
-		{
-			// Create a temporary surface to automatically detect
-			// the OpenGL environment that can be used on the system.
-			GLValidationSurface validationSurface = new();
-
-			Add(validationSurface);
-			ShowAll();
-
-			DispatchNativeSingle(ValidatedSurface);
-
-			async void ValidatedSurface()
-			{
-				try
-				{
-					if (this.Log().IsEnabled(LogLevel.Debug))
-					{
-						this.Log().Debug($"Auto-detecting surface type");
-					}
-
-					// Wait for a realization of the GLValidationSurface
-					RenderSurfaceType = await validationSurface.GetSurfaceTypeAsync();
-
-					// Continue on the GTK main thread
-					DispatchNativeSingle(() =>
-					{
-						if (this.Log().IsEnabled(LogLevel.Debug))
-						{
-							this.Log().Debug($"Auto-detected {RenderSurfaceType} rendering");
-						}
-
-						_window.Remove(validationSurface);
-
-						FinalizeStartup();
-					});
-				}
-				catch (Exception e)
-				{
-					if (this.Log().IsEnabled(LogLevel.Error))
-					{
-						this.Log().Error($"Auto-detected failed", e);
-					}
-				}
-			}
-		}
-		else
-		{
-			FinalizeStartup();
-		}
+		return false;
 	}
 }

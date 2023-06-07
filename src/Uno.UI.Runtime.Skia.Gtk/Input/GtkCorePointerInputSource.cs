@@ -59,9 +59,9 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 		_isTraceEnabled = _log.IsEnabled(LogLevel.Trace);
 
 		// even though we are not going to use events directly in the window here maintain the masks
-		GtkHost.Window.AddEvents((int)RequestedEvents);
+		GtkHost.Current!.MainWindow!.AddEvents((int)RequestedEvents);
 		// add masks for the GtkEventBox
-		GtkHost.EventBox.AddEvents((int)RequestedEvents);
+		GtkHost.Current!.MainWindow!.EventBox.AddEvents((int)RequestedEvents);
 
 		// Use GtkEventBox to fix Wayland titlebar events
 		// Note: On some devices (e.g. raspberryPI - seems to be devices that are not supporting multi-touch?),
@@ -71,15 +71,15 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 		//		 * When a device properly send the touch events through the OnTouchEvent,
 		//		   system does not "emulate the mouse" so this method should not be invoked.
 		//		   That's the purpose of the UnoEventBox.
-		GtkHost.EventBox.EnterNotifyEvent += OnEnterEvent;
-		GtkHost.EventBox.LeaveNotifyEvent += OnLeaveEvent;
-		GtkHost.EventBox.ButtonPressEvent += OnButtonPressEvent;
-		GtkHost.EventBox.ButtonReleaseEvent += OnButtonReleaseEvent;
-		GtkHost.EventBox.MotionNotifyEvent += OnMotionEvent;
-		GtkHost.EventBox.ScrollEvent += OnScrollEvent;
-		GtkHost.EventBox.Touched += OnTouchedEvent; //Note: we don't use the TouchEvent for the reason explained in the UnoEventBox!
-		GtkHost.EventBox.ProximityInEvent += OnProximityInEvent;
-		GtkHost.EventBox.ProximityOutEvent += OnProximityOutEvent;
+		GtkHost.Current!.MainWindow!.EventBox.EnterNotifyEvent += OnEnterEvent;
+		GtkHost.Current!.MainWindow!.EventBox.LeaveNotifyEvent += OnLeaveEvent;
+		GtkHost.Current!.MainWindow!.EventBox.ButtonPressEvent += OnButtonPressEvent;
+		GtkHost.Current!.MainWindow!.EventBox.ButtonReleaseEvent += OnButtonReleaseEvent;
+		GtkHost.Current!.MainWindow!.EventBox.MotionNotifyEvent += OnMotionEvent;
+		GtkHost.Current!.MainWindow!.EventBox.ScrollEvent += OnScrollEvent;
+		GtkHost.Current!.MainWindow!.EventBox.Touched += OnTouchedEvent; //Note: we don't use the TouchEvent for the reason explained in the UnoEventBox!
+		GtkHost.Current!.MainWindow!.EventBox.ProximityInEvent += OnProximityInEvent;
+		GtkHost.Current!.MainWindow!.EventBox.ProximityOutEvent += OnProximityOutEvent;
 	}
 
 	/// <inheritdoc />
@@ -93,8 +93,8 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 	/// <inheritdoc />
 	public CoreCursor PointerCursor
 	{
-		get => GtkHost.Window.Window.Cursor.ToCoreCursor();
-		set => GtkHost.Window.Window.Cursor = value.ToCursor();
+		get => GtkHost.Current!.MainWindow!.Window.Cursor.ToCoreCursor();
+		set => GtkHost.Current!.MainWindow!.Window.Cursor = value.ToCursor();
 	}
 
 	/// <inheritdoc />
@@ -102,7 +102,7 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 	{
 		if (_lastUsedDevice is not null)
 		{
-			Gtk.Device.GrabAdd(GtkHost.Window, _lastUsedDevice, block_others: false);
+			Gtk.Device.GrabAdd(GtkHost.Current!.MainWindow!, _lastUsedDevice, block_others: false);
 		}
 		else if (this.Log().IsEnabled(LogLevel.Error))
 		{
@@ -115,7 +115,7 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 	{
 		if (_knownDevices.TryGetValue(pointer, out var entry))
 		{
-			Gtk.Device.GrabAdd(GtkHost.Window, entry.dev, block_others: false);
+			Gtk.Device.GrabAdd(GtkHost.Current!.MainWindow!, entry.dev, block_others: false);
 		}
 		else if (this.Log().IsEnabled(LogLevel.Error))
 		{
@@ -128,7 +128,7 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 	{
 		if (_lastUsedDevice is not null)
 		{
-			Gtk.Device.GrabAdd(GtkHost.Window, _lastUsedDevice, block_others: false);
+			Gtk.Device.GrabAdd(GtkHost.Current!.MainWindow!, _lastUsedDevice, block_others: false);
 		}
 		else if (this.Log().IsEnabled(LogLevel.Error))
 		{
@@ -141,7 +141,7 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 	{
 		if (_knownDevices.TryGetValue(pointer, out var entry))
 		{
-			Gtk.Device.GrabRemove(GtkHost.Window, entry.dev);
+			Gtk.Device.GrabRemove(GtkHost.Current!.MainWindow!, entry.dev);
 		}
 		else if (this.Log().IsEnabled(LogLevel.Error))
 		{

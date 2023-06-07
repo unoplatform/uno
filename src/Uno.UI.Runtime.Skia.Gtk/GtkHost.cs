@@ -12,6 +12,7 @@ using WinUIWindow = Windows.UI.Xaml.Window;
 using Uno.UI.Runtime.Skia.GTK.Extensions;
 using Uno.UI.Runtime.Skia.UI.Xaml.Controls;
 using Uno.UI.Runtime.Skia.GTK.UI.Controls;
+using Uno.UI.Runtime.Skia.GTK.UI;
 
 namespace Uno.UI.Runtime.Skia
 {
@@ -83,17 +84,13 @@ namespace Uno.UI.Runtime.Skia
 		{
 			_isDispatcherThread = true;
 
-			Windows.UI.Core.CoreDispatcher.DispatchOverride = DispatchNativeSingle;
+			Windows.UI.Core.CoreDispatcher.DispatchOverride = GtkDispatch.DispatchNativeSingle;
 			Windows.UI.Core.CoreDispatcher.HasThreadAccessOverride = () => _isDispatcherThread;
 		}
 
 		private void SetupMainWindow()
 		{
 			MainWindow = new UnoGtkWindow(WinUIWindow.Current);
-			//WpfApplication.Current.MainWindow.Activated += MainWindow_Activated;
-			//WpfApplication.Current.MainWindow.Deactivated += MainWindow_Deactivated;
-			//WpfApplication.Current.MainWindow.StateChanged += MainWindow_StateChanged;
-			//WpfApplication.Current.MainWindow.Closing += MainWindow_Closing;
 		}
 
 		private void StartApp()
@@ -120,26 +117,6 @@ namespace Uno.UI.Runtime.Skia
 				return false;
 			}
 		}
-
-		private void DispatchNativeSingle(System.Action d)
-			=> GLib.Idle.Add(delegate
-			{
-				if (this.Log().IsEnabled(LogLevel.Trace))
-				{
-					this.Log().Trace($"Dispatch Iteration");
-				}
-
-				try
-				{
-					d();
-				}
-				catch (Exception e)
-				{
-					Console.WriteLine(e);
-				}
-
-				return false;
-			});
 
 		private void SetupTheme()
 		{
