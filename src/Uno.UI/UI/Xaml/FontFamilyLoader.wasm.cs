@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.InteropServices.JavaScript;
 using System.Threading.Tasks;
 using Uno.Foundation;
 using Uno.Foundation.Logging;
@@ -59,9 +60,7 @@ internal partial class FontFamilyLoader
 	/// <summary>
 	/// Typescript-invoked method to notify that a font has been loaded properly
 	/// </summary>
-#if NET7_0_OR_GREATER
 	[JSExport]
-#endif
 	internal static void NotifyFontLoaded(string cssFontName)
 	{
 		if (_loadersFromCssName.TryGetValue(cssFontName, out var loader))
@@ -102,9 +101,7 @@ internal partial class FontFamilyLoader
 	/// <summary>
 	/// Typescript-invoked method to notify that a font failed to load properly
 	/// </summary>
-#if NET7_0_OR_GREATER
 	[JSExport]
-#endif
 	internal static void NotifyFontLoadFailed(string cssFontName)
 	{
 		if (_loadersFromCssName.TryGetValue(cssFontName, out var loader))
