@@ -5,7 +5,7 @@ using System;
 namespace Windows.Devices.Sensors;
 
 /// <summary>
-/// Provides data for the reading– changed event of the proximity sensor.
+/// Provides data for the readingâ€“ changed event of the proximity sensor.
 /// </summary>
 public partial class ProximitySensorReadingChangedEventArgs
 {
