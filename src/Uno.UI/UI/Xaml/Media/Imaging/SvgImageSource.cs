@@ -1,4 +1,5 @@
-﻿using System;
+#nullable enable
+using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -20,7 +21,7 @@ public partial class SvgImageSource : ImageSource
 	private SvgImageSourceLoadStatus? _lastStatus;
 
 #if __NETSTD__
-	private IRandomAccessStream _stream;
+	private IRandomAccessStream? _stream;
 #endif
 
 	/// <summary>
@@ -56,7 +57,12 @@ public partial class SvgImageSource : ImageSource
 		{
 			UnloadImageData();
 		}
-		InitFromUri(e.NewValue as Uri);
+
+		if (e.NewValue is Uri uri)
+		{
+			InitFromUri(uri);
+		}
+
 #if __NETSTD__
 		InvalidateSource();
 #endif
@@ -115,7 +121,7 @@ public partial class SvgImageSource : ImageSource
 	}
 
 #if !__NETSTD__
-	internal event EventHandler StreamLoaded;
+	internal event EventHandler? StreamLoaded;
 #endif
 
 	partial void InitPartial();

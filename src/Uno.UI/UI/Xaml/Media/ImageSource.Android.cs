@@ -1,4 +1,5 @@
-﻿using System;
+#nullable enable
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
@@ -21,12 +22,10 @@ namespace Windows.UI.Xaml.Media
 {
 	public partial class ImageSource
 	{
-		//private const string DrawableUriPrefix = "drawable://";
-
 		private const string ContactUriPrefix = "content://com.android.contacts/";
 
 		private static bool _resourceCacheLock;
-		private static Dictionary<Tuple<int, global::System.Drawing.Size?>, Bitmap> _resourceCache = new Dictionary<Tuple<int, global::System.Drawing.Size?>, Bitmap>();
+		private static Dictionary<Tuple<int, global::System.Drawing.Size?>, Bitmap?> _resourceCache = new Dictionary<Tuple<int, global::System.Drawing.Size?>, Bitmap?>();
 
 		private int? _resourceId;
 
@@ -37,22 +36,22 @@ namespace Windows.UI.Xaml.Media
 		/// <param name="uri">The image uri</param>
 		/// <param name="targetSize">An optional target decoding size</param>
 		/// <returns>A Bitmap instance</returns>
-		public delegate Task<Bitmap> ImageLoaderHandler(CancellationToken ct, string uri, Android.Widget.ImageView imageView, global::System.Drawing.Size? targetSize);
+		public delegate Task<Bitmap> ImageLoaderHandler(CancellationToken ct, string uri, Android.Widget.ImageView? imageView, global::System.Drawing.Size? targetSize);
 
 		/// <summary>
 		/// Provides a optional external image loader.
 		/// </summary>
-		public static ImageLoaderHandler DefaultImageLoader { get; set; }
+		public static ImageLoaderHandler? DefaultImageLoader { get; set; }
 
 		/// <summary>
 		/// An optional image loader for this BindableImageView instance.
 		/// </summary>
-		public ImageLoaderHandler ImageLoader { get; set; }
+		public ImageLoaderHandler? ImageLoader { get; set; }
 
 		/// <summary>
 		/// The resource path for this ImageSource, if any. Useful for debugging purposes; internally the ResourceId is cached and used when fetching the resource.
 		/// </summary>
-		internal string ResourceString { get; private set; }
+		internal string? ResourceString { get; private set; }
 
 		internal bool IsImageLoadedToUiDirectly { get; private set; }
 
@@ -92,7 +91,7 @@ namespace Windows.UI.Xaml.Media
 				|| ResourceId != null;
 		}
 
-		internal BitmapDrawable BitmapDrawable { get; private set; }
+		internal BitmapDrawable? BitmapDrawable { get; private set; }
 
 		internal int? ResourceId
 		{
@@ -171,13 +170,13 @@ namespace Windows.UI.Xaml.Media
 		/// <paramref name="targetWidth"/> and <paramref name="targetHeight"/> can be used to improve performance by fetching / decoding only the required size.
 		/// Depending on stretching, only one of each can be provided.
 		/// </remarks>
-		private protected virtual bool TryOpenSourceAsync(CancellationToken ct, int? targetWidth, int? targetHeight, [NotNullWhen(true)] out Task<ImageData> asyncImage)
+		private protected virtual bool TryOpenSourceAsync(CancellationToken ct, int? targetWidth, int? targetHeight, [NotNullWhen(true)] out Task<ImageData>? asyncImage)
 		{
 			asyncImage = default;
 			return false;
 		}
 
-		internal bool TryOpenSync(out Bitmap image, int? targetWidth = null, int? targetHeight = null)
+		internal bool TryOpenSync(out Bitmap? image, int? targetWidth = null, int? targetHeight = null)
 		{
 			if (_imageData.Bitmap is not null)
 			{
@@ -213,14 +212,21 @@ namespace Windows.UI.Xaml.Media
 
 			var matrix = new Android.Graphics.Matrix();
 			matrix.PostRotate(rotationAngle);
-			bitmap = Bitmap.CreateBitmap(bitmap, x: 0, y: 0, width: bitmap.Width, height: bitmap.Height, matrix, true);
 
-			return bitmap;
+			var createdBitmap = Bitmap.CreateBitmap(bitmap, x: 0, y: 0, width: bitmap.Width, height: bitmap.Height, matrix, true);
+
+			// https://developer.android.com/reference/android/graphics/Bitmap#createBitmap(android.util.DisplayMetrics,%20int,%20int,%20android.graphics.Bitmap.Config,%20boolean,%20android.graphics.ColorSpace)
+			// Bitmap.CreateBitmap is marked as nullable, but it never returns null.
+			return createdBitmap!;
 		}
 
-		private static async Task<Bitmap> DecodeStreamAsBitmapWithExifOrientation(Stream stream, Rect outPadding = null, BitmapFactory.Options options = null)
+		private static async Task<Bitmap?> DecodeStreamAsBitmapWithExifOrientation(Stream stream, Rect? outPadding = null, BitmapFactory.Options? options = null)
 		{
-			var bitmap = await BitmapFactory.DecodeStreamAsync(stream, outPadding, options);
+			if (await BitmapFactory.DecodeStreamAsync(stream, outPadding, options) is not { } bitmap)
+			{
+				return null;
+			}
+
 			if (!stream.CanSeek)
 			{
 				// DecodeStreamAsync have read to the end, if we can't reset
@@ -231,17 +237,22 @@ namespace Windows.UI.Xaml.Media
 			stream.Position = 0;
 
 			var exifInterface = new ExifInterface(stream);
+
 			return RespectExifOrientation(exifInterface, bitmap);
 		}
 
-		private static async Task<Bitmap> DecodeFileAsBitmapWithExifOrientation(string path, BitmapFactory.Options options = null)
+		private static async Task<Bitmap?> DecodeFileAsBitmapWithExifOrientation(string path, BitmapFactory.Options? options = null)
 		{
-			var bitmap = await BitmapFactory.DecodeFileAsync(path, options);
+			if (await BitmapFactory.DecodeFileAsync(path, options) is not { } bitmap)
+			{
+				return null;
+			}
+
 			var exifInterface = new ExifInterface(path);
 			return RespectExifOrientation(exifInterface, bitmap);
 		}
 
-		internal async Task<ImageData> Open(CancellationToken ct, Android.Widget.ImageView targetImage = null, int? targetWidth = null, int? targetHeight = null)
+		internal async Task<ImageData> Open(CancellationToken ct, Android.Widget.ImageView? targetImage, int? targetWidth = null, int? targetHeight = null)
 		{
 			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
@@ -310,7 +321,10 @@ namespace Windows.UI.Xaml.Media
 					// The ContactsService returns the contact uri for compatibility with UniversalImageLoader - in order to obtain the corresponding photo we resolve using the service below.
 					if (IsContactUri(AbsoluteUri))
 					{
-						var stream = ContactsContract.Contacts.OpenContactPhotoInputStream(ContextHelper.Current.ContentResolver, Android.Net.Uri.Parse(AbsoluteUri.OriginalString));
+						if (ContactsContract.Contacts.OpenContactPhotoInputStream(ContextHelper.Current.ContentResolver, Android.Net.Uri.Parse(AbsoluteUri.OriginalString)) is not { } stream)
+						{
+							return _imageData = ImageData.Empty;
+						}
 
 						return _imageData = ImageData.FromBitmap(await DecodeStreamAsBitmapWithExifOrientation(stream));
 					}
@@ -409,7 +423,7 @@ namespace Windows.UI.Xaml.Media
 		{
 			var key = Tuple.Create(resourceId, targetSize);
 
-			Bitmap bitmap;
+			Bitmap? bitmap;
 			if (!_resourceCache.TryGetValue(key, out bitmap))
 			{
 				try
@@ -518,7 +532,7 @@ namespace Windows.UI.Xaml.Media
 
 		public override string ToString()
 		{
-			var source = Stream ?? AbsoluteUri ?? FilePath ?? _imageData.Bitmap ?? (object)BitmapDrawable ?? ResourceString ?? "[No source]";
+			var source = Stream ?? AbsoluteUri ?? FilePath ?? _imageData.Bitmap ?? (object?)BitmapDrawable ?? ResourceString ?? "[No source]";
 			return "ImageSource: {0}".InvariantCultureFormat(source);
 		}
 
