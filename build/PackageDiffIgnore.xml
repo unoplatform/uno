@@ -9491,22 +9491,7 @@
 
 		<Methods>
 			<Member fullName="System.Void Windows.UI.Core.CoreWindow.RaisePointerCancelled(Windows.UI.Core.PointerEventArgs args)" reason="Does not exist in Windows" />
-		</Methods>
-	</IgnoreSet>
-	<IgnoreSet baseVersion="4.9">
-		<Types>
-		</Types>
 
-		<Events>
-		</Events>
-
-		<Fields>
-		</Fields>
-
-		<Properties>
-		</Properties>
-
-		<Methods>
 			<!-- BEGIN Proximity sensor -->
 			<Member fullName="System.Void Windows.Devices.Sensors.ProximitySensor..ctor()" reason="Does not exist in Windows" />
 			<Member fullName="System.Void Windows.Devices.Sensors.ProximitySensorReading..ctor()" reason="Does not exist in Windows" />
