@@ -1,4 +1,5 @@
 ﻿using System.Runtime.InteropServices.JavaScript;
+using System.Threading.Tasks;
 
 namespace __Windows.Graphics.Display
 {
@@ -22,6 +23,9 @@ namespace __Windows.Graphics.Display
 
 			[JSImport($"{JsType}.getScreenWidth")]
 			internal static partial float GetScreenWidth();
+
+			[JSImport($"{JsType}.setOrientationAsync")]
+			internal static partial Task SetOrientationAsync(int orientations);
 
 			[JSImport($"{JsType}.startDpiChanged")]
 			internal static partial void StartDpiChanged();

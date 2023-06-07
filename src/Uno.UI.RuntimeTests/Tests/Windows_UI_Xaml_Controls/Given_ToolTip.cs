@@ -8,6 +8,7 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml;
+using Windows.UI.Xaml.Input;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -340,5 +341,31 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 			}
 		}
+#if HAS_UNO && !__MACOS__
+#if __IOS__ || __ANDROID__
+		[Ignore("Currently fails on Android and iOS")]
+#endif
+		[TestMethod]
+		public async Task When_ToolTip_Owner_Clicked()
+		{
+			Button button = new Button()
+			{
+				Content = "Click when tooltip is visible",
+			};
+			ToolTip tooltip = new ToolTip
+			{
+				Content = "Tooltip should disappear when button is clicked!",
+			};
+			ToolTipService.SetToolTip(button, tooltip);
+			TestServices.WindowHelper.WindowContent = button;
+			await TestServices.WindowHelper.WaitForLoaded(button);
+			await TestServices.WindowHelper.WaitForIdle();
+			tooltip.IsOpen = true;
+			await TestServices.WindowHelper.WaitForIdle();
+			button.SafeRaiseEvent(UIElement.TappedEvent, new TappedRoutedEventArgs());
+			await TestServices.WindowHelper.WaitForIdle();
+			Assert.IsFalse(tooltip.IsOpen);
+		}
+#endif
 	}
 }

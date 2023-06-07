@@ -35,7 +35,12 @@ namespace Windows.Storage.Helpers
 		{
 			var assetsUri = AssetsPathBuilder.BuildAssetUri("uno-assets.txt");
 
-			var assets = await WebAssemblyRuntime.InvokeAsync($"Windows.Storage.AssetManager.DownloadAssetsManifest(\'{assetsUri}\')");
+			var assets = await
+#if NET7_0_OR_GREATER
+				NativeMethods.DownloadAssetsManifestAsync(assetsUri);
+#else
+				WebAssemblyRuntime.InvokeAsync($"Windows.Storage.AssetManager.DownloadAssetsManifest(\'{assetsUri}\')");
+#endif
 
 			return new HashSet<string>(SplitMatch().Split(assets), StringComparer.OrdinalIgnoreCase);
 		}
@@ -54,7 +59,12 @@ namespace Windows.Storage.Helpers
 				if (!File.Exists(localPath))
 				{
 					var assetUri = AssetsPathBuilder.BuildAssetUri(updatedPath);
-					var assetInfo = await WebAssemblyRuntime.InvokeAsync($"Windows.Storage.AssetManager.DownloadAsset(\'{assetUri}\')");
+					var assetInfo = await
+#if NET7_0_OR_GREATER
+						NativeMethods.DownloadAssetAsync(assetUri);
+#else
+						WebAssemblyRuntime.InvokeAsync($"Windows.Storage.AssetManager.DownloadAsset(\'{assetUri}\')");
+#endif
 
 					var parts = assetInfo.Split(';');
 					if (parts.Length == 2)

@@ -34,7 +34,7 @@ namespace Uno.UI.Skia.Platform
 					this.Log().Trace($"OnKeyPressEvent: {args.Key} -> {virtualKey}");
 				}
 
-				_ownerEvents.RaiseNativeKeyDownReceived(
+				_owner.RaiseNativeKeyDownReceived(
 					new Windows.UI.Core.KeyEventArgs(
 						"keyboard",
 						virtualKey,
@@ -61,7 +61,7 @@ namespace Uno.UI.Skia.Platform
 					this.Log().Trace($"OnKeyPressEvent: {args.Key} -> {virtualKey}");
 				}
 
-				_ownerEvents.RaiseNativeKeyUpReceived(
+				_owner.RaiseNativeKeyUpReceived(
 					new Windows.UI.Core.KeyEventArgs(
 						"keyboard",
 						virtualKey,

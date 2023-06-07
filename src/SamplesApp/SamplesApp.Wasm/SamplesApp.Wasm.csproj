@@ -21,6 +21,12 @@
 		<DefineConstants>$(DefineConstants);TRACE;DEBUG</DefineConstants>
 		<DebugType>portable</DebugType>
 		<DebugSymbols>true</DebugSymbols>
+
+		<!--
+		IL Linking is disabled in Debug configuration.
+		When building in Release, see https://platform.uno/docs/articles/features/using-il-linker-webassembly.html
+		-->
+		<WasmShellILLinkerEnabled>false</WasmShellILLinkerEnabled>
 	</PropertyGroup>
 	<ItemGroup>
 		<Content Update="..\SamplesApp.UWP\Assets\*.png" Link="Assets\%(FileName)%(Extension)" />

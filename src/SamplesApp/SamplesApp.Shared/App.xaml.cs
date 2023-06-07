@@ -441,7 +441,6 @@ namespace SamplesApp
 				builder.AddConsole();
 #endif
 
-
 #if !DEBUG
 				// Exclude logs below this level
 				builder.SetMinimumLevel(LogLevel.Information);

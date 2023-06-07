@@ -163,7 +163,6 @@ namespace Uno.UWPSyncGenerator
 
 			FlagsAttributeSymbol = _referenceCompilation.GetTypeByMetadataName("System.FlagsAttribute");
 			UIElementSymbol = _referenceCompilation.GetTypeByMetadataName(BaseXamlNamespace + ".UIElement");
-			var a = _referenceCompilation.GetTypeByMetadataName("Microsoft.UI.ViewManagement.StatusBar");
 
 			var origins = from externalRedfs in _referenceCompilation.ExternalReferences
 						  let fileNameWithoutExtension = Path.GetFileNameWithoutExtension(externalRedfs.Display)

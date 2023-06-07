@@ -35,6 +35,7 @@ namespace Windows.UI.Core
 
 			InitializePartial();
 		}
+		partial void InitializePartial();
 
 		/// <summary>
 		/// Occurs when the window size is changed.
@@ -112,8 +113,6 @@ namespace Windows.UI.Core
 
 		internal static void QueueInvalidateRender()
 			=> _invalidateRender?.Invoke();
-
-		partial void InitializePartial();
 
 		internal void OnActivated(WindowActivatedEventArgs args)
 		{

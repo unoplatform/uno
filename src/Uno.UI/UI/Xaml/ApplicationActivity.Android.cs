@@ -30,7 +30,6 @@ namespace Windows.UI.Xaml
 	[Activity(ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize | ConfigChanges.UiMode, WindowSoftInputMode = SoftInput.AdjustPan | SoftInput.StateHidden)]
 	public class ApplicationActivity : Controls.NativePage, Uno.UI.Composition.ICompositionRoot
 	{
-
 		/// <summary>
 		/// The windows model implies only one managed activity.
 		/// </summary>
@@ -216,12 +215,7 @@ namespace Windows.UI.Xaml
 
 		private void OnInsetsChanged(Thickness insets)
 		{
-			if (Xaml.Window.Current != null)
-			{
-				//Set insets before raising the size changed event
-				Xaml.Window.Current.Insets = insets;
-				Xaml.Window.Current.RaiseNativeSizeChanged();
-			}
+			Xaml.Window.Current?.RaiseNativeSizeChanged();
 		}
 
 		public override void SetContentView(View view)
@@ -273,6 +267,8 @@ namespace Windows.UI.Xaml
 			base.OnDestroy();
 
 			LayoutProvider.Stop();
+			LayoutProvider.KeyboardChanged -= OnKeyboardChanged;
+			LayoutProvider.InsetsChanged -= OnInsetsChanged;
 		}
 
 		public override void OnConfigurationChanged(Configuration newConfig)

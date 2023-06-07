@@ -89,6 +89,7 @@ namespace Uno.UI.Runtime.Skia
 			_isDispatcherThread = true;
 
 			ApiExtensibility.Register(typeof(Uno.ApplicationModel.Core.ICoreApplicationExtension), o => _coreApplicationExtension!);
+			ApiExtensibility.Register(typeof(Windows.UI.Core.IUnoCorePointerInputSource), o => new FrameBufferPointerInputSource());
 			ApiExtensibility.Register(typeof(Windows.UI.Core.ICoreWindowExtension), o => new CoreWindowExtension(o));
 			ApiExtensibility.Register(typeof(Windows.UI.ViewManagement.IApplicationViewExtension), o => new ApplicationViewExtension(o));
 			ApiExtensibility.Register(typeof(Windows.Graphics.Display.IDisplayInformationExtension), o => _displayInformationExtension ??= new DisplayInformationExtension(o, DisplayScale));
@@ -128,16 +129,17 @@ namespace Uno.UI.Runtime.Skia
 
 		private void OnCoreWindowContentRootSet(object? sender, object e)
 		{
-			var xamlRoot = CoreServices.Instance
+			var contentRoot = CoreServices.Instance
 				.ContentRootCoordinator
-				.CoreWindowContentRoot?
-				.GetOrCreateXamlRoot();
+				.CoreWindowContentRoot;
+			var xamlRoot = contentRoot?.GetOrCreateXamlRoot();
 
 			if (xamlRoot is null)
 			{
 				throw new InvalidOperationException("XamlRoot was not properly initialized");
 			}
 
+			contentRoot!.SetHost(this);
 			xamlRoot.InvalidateRender += _renderer!.InvalidateRender;
 
 			CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRootSet -= OnCoreWindowContentRootSet;

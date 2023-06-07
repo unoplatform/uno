@@ -194,11 +194,12 @@
                             <!-- Closed Captioning  visibility states -->
                             <!-- Focus states -->
                             <VisualStateGroup x:Name="FocusStates">
-                                <VisualState x:Name="Focused">
+                                 <VisualState x:Name="Focused">
                                     <Storyboard>
-                                        <win:DoubleAnimation Storyboard.TargetName="FocusVisualWhite" Storyboard.TargetProperty="Opacity" To="1" Duration="0" />
-                                        <win:DoubleAnimation Storyboard.TargetName="FocusVisualBlack" Storyboard.TargetProperty="Opacity" To="1" Duration="0" />
-                                    </Storyboard>
+										<!--UNO TODO: There's no element called 'FocusVisualWhite', which presumably fails silently on Windows, but causes a compile-time error on Uno-->
+                                        <!-- <DoubleAnimation Storyboard.TargetName="FocusVisualWhite" Storyboard.TargetProperty="Opacity" To="1" Duration="0" /> -->
+                                        <!-- <DoubleAnimation Storyboard.TargetName="FocusVisualBlack" Storyboard.TargetProperty="Opacity" To="1" Duration="0" /> -->
+									</Storyboard>
                                 </VisualState>
                                 <VisualState x:Name="Unfocused" />
                                 <VisualState x:Name="PointerFocused" />
@@ -413,14 +414,7 @@
                                                     <FontIcon Glyph="&#xED3D;" />
                                                 </AppBarButton.Icon>
                                             </AppBarButton>
-											
-                                            <AppBarButton x:Name="RepeatVideoButton" Style="{StaticResource AppBarButtonStyle}" MediaTransportControlsHelper.DropoutOrder="10" Visibility="Collapsed">
-                                                <AppBarButton.Icon>
-                                                    <FontIcon Glyph="&#xE8EE;" />
-                                                </AppBarButton.Icon>
-                                            </AppBarButton>
-											
-                                            <AppBarButton x:Name="PlaybackRateButton" Style="{StaticResource AppBarButtonStyle}" MediaTransportControlsHelper.DropoutOrder="10" Visibility="Collapsed">
+											<AppBarButton x:Name="PlaybackRateButton" Style="{StaticResource AppBarButtonStyle}" MediaTransportControlsHelper.DropoutOrder="10" Visibility="Collapsed">
                                                 <AppBarButton.Icon>
                                                     <FontIcon Glyph="&#xEC57;" />
                                                 </AppBarButton.Icon>

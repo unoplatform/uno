@@ -1,26 +1,16 @@
 ﻿#nullable enable
 
 using System;
-using Uno.Media.Playback;
-using Windows.Media.Core;
-using Uno.Extensions;
-using System.IO;
-using Uno.Foundation.Logging;
 using System.Collections.Generic;
-using Uno;
-using Uno.Helpers;
 using System.Linq;
-using System.Threading.Tasks;
+using Uno.Foundation.Extensibility;
+using Uno.Foundation.Logging;
+using Uno.Media.Playback;
+using Windows.Foundation;
+using Windows.Media.Core;
 using Windows.Media.Playback;
 using Windows.Storage;
 using Windows.Storage.Streams;
-using Windows.Foundation;
-using Windows.UI.Xaml.Controls;
-using System.Diagnostics.CodeAnalysis;
-using Windows.ApplicationModel.Background;
-using Uno.Foundation.Extensibility;
-using Windows.UI.Xaml.Controls.Maps;
-using System.Numerics;
 
 [assembly: ApiExtension(typeof(IMediaPlayerExtension), typeof(Uno.UI.Media.MediaPlayerExtension))]
 
@@ -184,6 +174,10 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 				{
 					if (_owner.PlaybackSession.PlaybackState != MediaPlaybackState.None && _player is not null && _player.Source is not null)
 					{
+						if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
+						{
+							this.Log().Debug($"Position {value.TotalSeconds}");
+						}
 						_player.CurrentPosition = (int)value.TotalSeconds;
 						OnSeekComplete();
 					}
@@ -227,11 +221,31 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 		_player.OnSourceEnded += OnCompletion;
 		_player.OnTimeUpdate += OnTimeUpdate;
 
+		_player.OnStatusChanged -= OnStatusMediaChanged;
+		_player.OnStatusChanged += OnStatusMediaChanged;
+
 		_owner.PlaybackSession.PlaybackStateChanged -= OnStatusChanged;
 		_owner.PlaybackSession.PlaybackStateChanged += OnStatusChanged;
 
 		ApplyAnonymousCors();
 		ApplyVideoSource();
+	}
+
+	private void OnStatusMediaChanged(object? sender, object e)
+	{
+		if (this.Log().IsEnabled(LogLevel.Debug))
+		{
+			this.Log().Debug($"MediaPlayerExtension.OnStatusMediaChanged Paused ({_player?.IsPause.ToString()})");
+		}
+
+		if (_player?.IsPause == true && _owner.PlaybackSession.PlaybackState == MediaPlaybackState.Playing)
+		{
+			_owner.PlaybackSession.PlaybackState = MediaPlaybackState.Paused;
+		}
+		else if (_player?.IsPause == false && _owner.PlaybackSession.PlaybackState == MediaPlaybackState.Paused)
+		{
+			_owner.PlaybackSession.PlaybackState = MediaPlaybackState.Playing;
+		}
 	}
 
 	private void SetPlaylistItems(MediaPlaybackList playlist)
@@ -487,12 +501,6 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 					_player.Play();
 					_owner.PlaybackSession.PlaybackState = MediaPlaybackState.Playing;
 				}
-				else
-				{
-					// To display first image of media when setting a new source. Otherwise, last image of previous source remains visible
-					_player.Play();
-					_player.Stop();
-				}
 			}
 
 			_isPlayerPrepared = true;
@@ -588,5 +596,10 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 			_isPlayRequested = false;
 			_isPlayerPrepared = false;
 		}
+	}
+
+	public void SetTransportControlsBounds(Rect bounds)
+	{
+		// No effect on WebAssembly.
 	}
 }

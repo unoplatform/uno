@@ -1857,7 +1857,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 
 			var targetType = _metadataHelper.FindTypeByFullName(fullTargetType) as INamedTypeSymbol;
-			var propertyType = FindPropertyTypeByOwnerSymbol(targetType, property);
+			var propertyType = _metadataHelper.FindPropertyTypeByOwnerSymbol(targetType, property);
 
 			if (propertyType != null)
 			{
@@ -3537,10 +3537,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								if (
 									!IsType(declaringTypeSymbol, objectDefinitionType)
 									|| IsAttachedProperty(member)
-									|| (eventSymbol = FindEventType(declaringTypeSymbol, member.Member.Name)) != null
+									|| (eventSymbol = _metadataHelper.FindEventType(declaringTypeSymbol, member.Member.Name)) != null
 								)
 								{
-									if (FindPropertyTypeByOwnerSymbol(declaringTypeSymbol, member.Member.Name) != null)
+									if (_metadataHelper.FindPropertyTypeByOwnerSymbol(declaringTypeSymbol, member.Member.Name) != null)
 									{
 										BuildSetAttachedProperty(writer, closureName, member, objectUid ?? "", isCustomMarkupExtension: false);
 									}
@@ -4097,7 +4097,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			var bindNode = member.Objects.FirstOrDefault(o => o.Type.Name == "Bind");
 			var templateBindingNode = member.Objects.FirstOrDefault(o => o.Type.Name == "TemplateBinding");
 			var declaringType = FindType(member.Member.DeclaringType);
-			if (FindEventType(declaringType, member.Member.Name) is IEventSymbol eventSymbol)
+			if (_metadataHelper.FindEventType(declaringType, member.Member.Name) is IEventSymbol eventSymbol)
 			{
 				GenerateInlineEvent(closureName, writer, member, eventSymbol, componentDefinition);
 			}
@@ -4133,7 +4133,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					TryAnnotateWithGeneratorSource(writer, suffix: "HasBindingOptions");
 					var isAttachedProperty = IsDependencyProperty(declaringType, member.Member.Name);
-					var isBindingType = SymbolEqualityComparer.Default.Equals(FindPropertyTypeByOwnerSymbol(declaringType, member.Member.Name), Generation.DataBindingSymbol.Value);
+					var isBindingType = SymbolEqualityComparer.Default.Equals(_metadataHelper.FindPropertyTypeByOwnerSymbol(declaringType, member.Member.Name), Generation.DataBindingSymbol.Value);
 					var isOwnerDependencyObject = member.Owner != null && GetType(member.Owner.Type) is { } ownerType &&
 						(
 							(_xamlTypeToXamlTypeBaseMap.TryGetValue(ownerType, out var baseTypeSymbol) && FindType(baseTypeSymbol)?.GetAllInterfaces().Any(i => SymbolEqualityComparer.Default.Equals(i, Generation.DependencyObjectSymbol.Value)) == true) ||
@@ -4324,7 +4324,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			var formattedPaths = propertyPaths
 				.properties
 				.Where(p => !p.StartsWith("global::", StringComparison.Ordinal))  // Don't include paths that start with global:: (e.g. Enums)
-				.Select(p => $"\"{p}\"");
+				.Select(p => $"\"{p.Replace("\"", "\\\"")}\"");
 
 			var pathsArray = formattedPaths.Any()
 				? ", new [] {" + string.Join(", ", formattedPaths) + "}"
@@ -4450,13 +4450,21 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			var parts = propertyPath.Split('.');
 
-			foreach (var part in parts)
+			for (int i = 0; i < parts.Length; i++)
 			{
+				var part = parts[i];
+				var isIndexer = false;
+				if (part.IndexOf('[') is int indexOfIndexer && indexOfIndexer > 0)
+				{
+					isIndexer = true;
+					part = part.Substring(0, indexOfIndexer);
+				}
+
 				if (currentType.TryGetPropertyOrFieldType(part) is ITypeSymbol partType)
 				{
 					currentType = partType;
 				}
-				else if (FindSubElementByName(_fileDefinition.Objects.First(), part) is XamlObjectDefinition elementByName)
+				else if (i == 0 && FindSubElementByName(_fileDefinition.Objects.First(), part) is XamlObjectDefinition elementByName)
 				{
 					currentType = GetType(elementByName.Type);
 
@@ -4481,6 +4489,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 					if (currentType is null)
 						throw new InvalidOperationException($"Unable to find member [{part}] on type [{currentType}]");
+				}
+
+				if (isIndexer)
+				{
+					currentType = currentType.GetMembers().OfType<IPropertySymbol>().FirstOrDefault(p => p.IsIndexer).Type;
 				}
 			}
 
@@ -5469,7 +5482,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				return IsType(objectDefinition.Type, type)
 					&& !IsAttachedProperty(type, member.Member.Name)
 					&& !IsLazyVisualStateManagerProperty(member)
-					&& FindEventType(type, member.Member.Name) == null
+					&& _metadataHelper.FindEventType(type, member.Member.Name) == null
 					&& member.Member.Name != "_UnknownContent"; // We are defining the elements of a collection explicitly declared in XAML
 			}
 
@@ -5694,12 +5707,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return false;
 		}
 
-		private bool IsLocalizedString(INamedTypeSymbol? propertyType, string? objectUid)
+		private static bool IsLocalizedString(INamedTypeSymbol? propertyType, string? objectUid)
 		{
 			return !objectUid.IsNullOrEmpty() && IsLocalizablePropertyType(propertyType);
 		}
 
-		private bool IsLocalizablePropertyType(INamedTypeSymbol? propertyType)
+		internal static bool IsLocalizablePropertyType(INamedTypeSymbol? propertyType)
 		{
 			return propertyType is { SpecialType: SpecialType.System_String or SpecialType.System_Object };
 		}
@@ -5914,7 +5927,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								writer.AppendLineIndented($"new global::Windows.UI.Xaml.Setter(new global::Windows.UI.Xaml.TargetPropertyPath(this._{elementName}Subject, \"{propertyName}\"), ");
 
 								var targetElementType = GetType(targetElement.Type);
-								var propertyType = FindPropertyTypeByOwnerSymbol(targetElementType, propertyName);
+								var propertyType = _metadataHelper.FindPropertyTypeByOwnerSymbol(targetElementType, propertyName);
 
 								if (valueNode.Objects.None())
 								{

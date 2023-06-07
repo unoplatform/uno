@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.Security.AccessControl;
 using Windows.Foundation;
 
@@ -93,5 +94,12 @@ namespace Windows.Media.Playback
 		}
 
 		partial void OnOptionChanged(string name, object value);
+
+		internal void SetTransportControlBounds(Rect bounds)
+		{
+			OnTransportControlBoundsChanged(bounds);
+		}
+
+		partial void OnTransportControlBoundsChanged(Rect bounds);
 	}
 }

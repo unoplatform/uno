@@ -432,7 +432,87 @@
 			<Member fullName="Uno.UI.Runtime.Skia.GtkApplicationExtension" reason="Not needed anymore" />
 			<Member fullName="Uno.UI.Runtime.Skia.Wpf.WpfApplicationExtension" reason="Not needed anymore" />
 			<!-- END WebView -->
+			
+			<Member fullName="Windows.UI.Core.ICoreWindowEvents" reason="Should not be public" />
+		</Types>
 
+		<Events>
+		</Events>
+
+		<Fields>
+		</Fields>
+
+		<Properties>
+			<Member fullName="Windows.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.Expander::TemplateSettingsProperty()" reason="Should not be public" />
+			<Member fullName="Windows.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.ExpanderTemplateSettings::ContentHeightProperty()" reason="Should not be public" />
+			<Member fullName="Windows.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.ExpanderTemplateSettings::NegativeContentHeightProperty()" reason="Should not be public" />
+		</Properties>
+
+		<Methods>
+			<!-- BEGIN MediaPlayer updates -->
+			<Member fullName="System.Void Windows.Media.Playback.MediaPlayerFailedEventArgs..ctor()" reason="Not present in Windows" />
+			<Member fullName="System.Void Windows.Media.Playback.MediaPlayerRateChangedEventArgs..ctor()" reason="Not present in Windows" />
+			<Member fullName="System.Void Windows.Media.Playback.PlaybackMediaMarkerReachedEventArgs..ctor()" reason="Not present in Windows" />
+			<Member fullName="System.Void Windows.Media.Playback.MediaPlaybackSession..ctor()" reason="Not present in Windows" />
+			<!-- END MediaPlayer updates -->
+
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.Image.OnImageFailed(Windows.UI.Xaml.Media.ImageSource imageSource)" reason="Added parameter and made private" />
+
+			<!-- BEGIN WebView -->
+			<Member fullName="System.Void Microsoft.Web.WebView2.Core.CoreWebView2..ctor()" reason="Should not be public" />
+			<Member fullName="System.Void Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs..ctor()" reason="Should not be public" />
+			<Member fullName=" System.Void Microsoft.Web.WebView2.Core.CoreWebView2NavigationStartingEventArgs..ctor()" reason="Should not be public" />
+			<Member fullName="System.Void Microsoft.Web.WebView2.Core.CoreWebView2NewWindowRequestedEventArgs..ctor()" reason="Should not be public" />
+			<Member fullName="System.Void Microsoft.Web.WebView2.Core.CoreWebView2WebMessageReceivedEventArgs..ctor()" reason="Should not be public" />
+			<Member fullName="System.Void Microsoft.Web.WebView2.Core.CoreWebView2Settings..ctor()" reason="Should not be public" />
+			<Member fullName="System.Threading.Tasks.Task Microsoft.UI.Xaml.Controls.WebView.LaunchMailto(System.Threading.CancellationToken ct, System.String subject, System.String body, System.String[] to, System.String[] cc, System.String[] bcc)" reason="Should not be public" />
+			<Member fullName="System.Boolean Windows.UI.Xaml.Controls.WebView.MustUseWebKitWebView()" reason="Should not be public" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.WebViewNavigationCompletedEventArgs..ctor()" reason="Should not be public" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.WebViewNavigationFailedEventArgs..ctor()" reason="Should not be public" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.WebViewNavigationStartingEventArgs..ctor()" reason="Should not be public" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.WebViewUnsupportedUriSchemeIdentifiedEventArgs..ctor(System.Uri uri)" reason="Should not be public" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.UnoWKWebView.RegisterNavigationEvents(Windows.UI.Xaml.Controls.WebView xamlWebView)" reason="Should not be public" />
+			<Member fullName="System.Threading.Tasks.Task`1&lt;System.String&gt; Windows.UI.Xaml.Controls.UnoWKWebView.EvaluateJavascriptAsync(System.Threading.CancellationToken ct, System.String javascript)" reason="Should not be public" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.WebView.Navigate(System.Uri uri)" reason="Was using incorrect parameter name" />
+			<Member fullName="System.Threading.Tasks.Task Windows.UI.Xaml.Controls.WebView.LaunchMailto(System.Threading.CancellationToken ct, System.String subject, System.String body, System.String[] to, System.String[] cc, System.String[] bcc)" reason="Should not be public" />
+			<Member fullName="System.Void Microsoft.Web.WebView2.Core.CoreWebView2NavigationStartingEventArgs..ctor()" reason="Should not be public" />
+			<!-- END WebView -->
+			
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.IconElement.OnForegroundChanged(Windows.UI.Xaml.DependencyPropertyChangedEventArgs e)" reason="Should not be public" />
+
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.Expander.OnContentClipSizeChanged(System.Object sender, Windows.UI.Xaml.SizeChangedEventArgs args)" reason="Should not be public" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.Expander.OnContentSizeChanged(System.Object sender, Windows.UI.Xaml.SizeChangedEventArgs args)" reason="Should not be public" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.Expander.RaiseExpandingEvent(Microsoft.UI.Xaml.Controls.Expander container)" reason="Should not be public" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.Expander.RaiseCollapsedEvent(Microsoft.UI.Xaml.Controls.Expander container)" reason="Should not be public" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.Expander.OnIsExpandedPropertyChanged(Windows.UI.Xaml.DependencyPropertyChangedEventArgs args)" reason="Should not be public" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.Expander.OnExpandDirectionPropertyChanged(Windows.UI.Xaml.DependencyPropertyChangedEventArgs args)" reason="Should not be public" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.Expander.set_TemplateSettings(Microsoft.UI.Xaml.Controls.ExpanderTemplateSettings value)" reason="Should not be public" />
+			<Member fullName="Windows.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.Expander.get_TemplateSettingsProperty()" reason="Should not be public" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.ExpanderAutomationPeer.RaiseExpandCollapseAutomationEvent(Windows.UI.Xaml.Automation.ExpandCollapseState newState)" reason="Should not be public" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.ExpanderCollapsedEventArgs..ctor()" reason="Should not be public" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.ExpanderExpandingEventArgs..ctor()" reason="Should not be public" />
+			<Member fullName="Windows.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.ExpanderTemplateSettings.get_ContentHeightProperty()" reason="Should not be public" />
+			<Member fullName="Windows.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.ExpanderTemplateSettings.get_NegativeContentHeightProperty()" reason="Should not be public" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.ExpanderTemplateSettings..ctor()" reason="Should not be public" />
+			
+			
+
+			<!-- BEGIN XamlFileParser performance updates -->
+			<Member fullName="System.Void Uno.Xaml.XamlXmlReader..ctor(System.Xml.XmlReader xmlReader, Uno.Xaml.XamlSchemaContext schemaContext, Uno.Xaml.XamlXmlReaderSettings settings)" reason="Adding parameter. These should not be used by user code" />
+			<!-- END XamlFileParser performance updates -->
+
+			<Member fullName="System.Void Uno.Foundation.Interop.JSObject.Dispatch(System.String handlePtr, System.String method, System.String parameters)" reason="First parameter changed from string to IntPtr for performance" />
+
+			<Member fullName="System.Void Windows.UI.Xaml.Application.OnSystemThemeChanged()" reason="Does not exist in Windows" />
+			<Member fullName="System.Void Windows.UI.Xaml.Application.ThemeChanged(Foundation.NSObject change)" reason="Does not exist in Windows" />
+			
+			<Member fullName="System.Void Windows.UI.Core.CoreWindow.RaisePointerCancelled(Windows.UI.Core.PointerEventArgs args)" reason="Does not exist in Windows" />
+		</Methods>
+	</IgnoreSet>
+
+	<IgnoreSet baseVersion="4.9">
+		<Types>
+			<Member fullName="Windows.UI.Core.ICoreWindowEvents" reason="Not present in WinUI" />
 			<Member fullName="Microsoft.UI.Windowing.AppWindowConfiguration" reason="Not present in WinAppSDK 1.2" />
 			<Member fullName="Microsoft.Foundation.LiftedContract" reason="Not present in WinAppSDK 1.2" />
 			<Member fullName="Microsoft.Foundation.LiftedExperimentalContract" reason="Not present in WinAppSDK 1.2" />
@@ -519,7 +599,6 @@
 			<Member fullName="Uno.UI.BaseFragment" reason="Legacy class that is no longer needed" />
 			<Member fullName="Windows.Foundation.HResult" reason="Type is hidden in .NET and shouldn't be used" />
 			<Member fullName="Windows.Storage.Streams.InMemoryBuffer" reason="Windows.Storage.Streams.Buffer should be used." />
-			<Member fullName="Windows.UI.Core.ICoreWindowEvents" reason="Not needed publicly" />
 			<Member fullName="Uno.Extensions.JavaObjectExtensions" reason="Only needed internally" />
 			<Member fullName="Uno.Client.ICommandExtensions" reason="Only needed internally" />
 			<Member fullName="Uno.Extensions.UriExtensions" reason="Not needed publicly" />
@@ -602,13 +681,6 @@
 			<Member fullName="Windows.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.Primitives.ColumnMajorUniformToLargestGridLayout::RowSpacingProperty" reason="Api alignments" />
 		</Fields>
 		<Properties>
-			<!-- BEGIN Expander -->
-			<Member fullName="Windows.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.Expander::TemplateSettingsProperty()" reason="Should not be public" />
-			<Member fullName="Windows.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.ExpanderTemplateSettings::ContentHeightProperty()" reason="Should not be public" />
-			<Member fullName="Windows.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.ExpanderTemplateSettings::NegativeContentHeightProperty()" reason="Should not be public" />
-			<!-- END Expander -->
-
-
 			<Member fullName="Microsoft.UI.Windowing.AppWindowConfiguration Microsoft.UI.Windowing.AppWindow::Configuration()" reason="Not present in WinAppSDK 1.2" />
 			<Member fullName="System.Boolean Microsoft.UI.Windowing.AppWindowPresenter::DoNotActivateWindow()" reason="Not present in WinAppSDK 1.2" />
 			<Member fullName="System.Boolean Microsoft.UI.Windowing.AppWindowTitleBar::IsVisible()" reason="Not present in WinAppSDK 1.2" />
@@ -765,51 +837,10 @@
 			<!-- END Skia Adjustments -->
 		</Properties>
 		<Methods>
-			<!-- BEGIN MediaPlayer updates -->
-			<Member fullName="System.Void Windows.Media.Playback.MediaPlayerFailedEventArgs..ctor()" reason="Not present in Windows" />
-			<Member fullName="System.Void Windows.Media.Playback.MediaPlayerRateChangedEventArgs..ctor()" reason="Not present in Windows" />
-			<Member fullName="System.Void Windows.Media.Playback.PlaybackMediaMarkerReachedEventArgs..ctor()" reason="Not present in Windows" />
-			<Member fullName="System.Void Windows.Media.Playback.MediaPlaybackSession..ctor()" reason="Not present in Windows" />
-			<!-- END MediaPlayer updates -->
-
-			<!-- BEGIN WebView -->
-			<Member fullName="System.Void Microsoft.Web.WebView2.Core.CoreWebView2..ctor()" reason="Should not be public" />
-			<Member fullName="System.Void Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs..ctor()" reason="Should not be public" />
-			<Member fullName=" System.Void Microsoft.Web.WebView2.Core.CoreWebView2NavigationStartingEventArgs..ctor()" reason="Should not be public" />
-			<Member fullName="System.Void Microsoft.Web.WebView2.Core.CoreWebView2NewWindowRequestedEventArgs..ctor()" reason="Should not be public" />
-			<Member fullName="System.Void Microsoft.Web.WebView2.Core.CoreWebView2WebMessageReceivedEventArgs..ctor()" reason="Should not be public" />
-			<Member fullName="System.Void Microsoft.Web.WebView2.Core.CoreWebView2Settings..ctor()" reason="Should not be public" />
-			<Member fullName="System.Threading.Tasks.Task Microsoft.UI.Xaml.Controls.WebView.LaunchMailto(System.Threading.CancellationToken ct, System.String subject, System.String body, System.String[] to, System.String[] cc, System.String[] bcc)" reason="Should not be public" />
-			<Member fullName="System.Boolean Windows.UI.Xaml.Controls.WebView.MustUseWebKitWebView()" reason="Should not be public" />
-			<Member fullName="System.Void Windows.UI.Xaml.Controls.WebViewNavigationCompletedEventArgs..ctor()" reason="Should not be public" />
-			<Member fullName="System.Void Windows.UI.Xaml.Controls.WebViewNavigationFailedEventArgs..ctor()" reason="Should not be public" />
-			<Member fullName="System.Void Windows.UI.Xaml.Controls.WebViewNavigationStartingEventArgs..ctor()" reason="Should not be public" />
-			<Member fullName="System.Void Windows.UI.Xaml.Controls.WebViewUnsupportedUriSchemeIdentifiedEventArgs..ctor(System.Uri uri)" reason="Should not be public" />
-			<Member fullName="System.Void Windows.UI.Xaml.Controls.UnoWKWebView.RegisterNavigationEvents(Windows.UI.Xaml.Controls.WebView xamlWebView)" reason="Should not be public" />
-			<Member fullName="System.Threading.Tasks.Task`1&lt;System.String&gt; Windows.UI.Xaml.Controls.UnoWKWebView.EvaluateJavascriptAsync(System.Threading.CancellationToken ct, System.String javascript)" reason="Should not be public" />
-			<Member fullName="System.Void Windows.UI.Xaml.Controls.WebView.Navigate(System.Uri uri)" reason="Was using incorrect parameter name" />
-			<Member fullName="System.Threading.Tasks.Task Windows.UI.Xaml.Controls.WebView.LaunchMailto(System.Threading.CancellationToken ct, System.String subject, System.String body, System.String[] to, System.String[] cc, System.String[] bcc)" reason="Should not be public" />
-			<Member fullName="System.Void Microsoft.Web.WebView2.Core.CoreWebView2NavigationStartingEventArgs..ctor()" reason="Should not be public" />
-			<Member fullName="System.Threading.Tasks.Task`1&lt;System.String&gt; Windows.UI.Xaml.Controls.WebView.InvokeScriptAsync(System.Threading.CancellationToken ct, System.String script, System.String[] arguments)" reason="Not present in WinUI" />
-			<Member fullName="Uno.UI.Web.WebErrorStatus Windows.UI.Xaml.Controls.WebViewNavigationCompletedEventArgs.get_WebErrorStatus()" reason="Incorrect return type" />
-			<Member fullName="Uno.UI.Web.WebErrorStatus Windows.UI.Xaml.Controls.WebViewNavigationFailedEventArgs.get_WebErrorStatus()" reason="Incorrect return type" />
-			<!-- END WebView -->
-
-			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.Expander.OnContentClipSizeChanged(System.Object sender, Windows.UI.Xaml.SizeChangedEventArgs args)" reason="Should not be public" />
-			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.Expander.OnContentSizeChanged(System.Object sender, Windows.UI.Xaml.SizeChangedEventArgs args)" reason="Should not be public" />
-			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.Expander.RaiseExpandingEvent(Microsoft.UI.Xaml.Controls.Expander container)" reason="Should not be public" />
-			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.Expander.RaiseCollapsedEvent(Microsoft.UI.Xaml.Controls.Expander container)" reason="Should not be public" />
-			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.Expander.OnIsExpandedPropertyChanged(Windows.UI.Xaml.DependencyPropertyChangedEventArgs args)" reason="Should not be public" />
-			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.Expander.OnExpandDirectionPropertyChanged(Windows.UI.Xaml.DependencyPropertyChangedEventArgs args)" reason="Should not be public" />
-			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.Expander.set_TemplateSettings(Microsoft.UI.Xaml.Controls.ExpanderTemplateSettings value)" reason="Should not be public" />
-			<Member fullName="Windows.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.Expander.get_TemplateSettingsProperty()" reason="Should not be public" />
-			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.ExpanderAutomationPeer.RaiseExpandCollapseAutomationEvent(Windows.UI.Xaml.Automation.ExpandCollapseState newState)" reason="Should not be public" />
-			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.ExpanderCollapsedEventArgs..ctor()" reason="Should not be public" />
-			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.ExpanderExpandingEventArgs..ctor()" reason="Should not be public" />
-			<Member fullName="Windows.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.ExpanderTemplateSettings.get_ContentHeightProperty()" reason="Should not be public" />
-			<Member fullName="Windows.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.ExpanderTemplateSettings.get_NegativeContentHeightProperty()" reason="Should not be public" />
-			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.ExpanderTemplateSettings..ctor()" reason="Should not be public" />
-
+			<Member fullName="System.Void Windows.UI.Core.CoreWindow.RaisePointerCancelled(Windows.UI.Core.PointerEventArgs args)" reason="Not present in WInUI" />
+			<Member fullName="Uno.UI.Web.WebErrorStatus Windows.UI.Xaml.Controls.WebViewNavigationFailedEventArgs.get_WebErrorStatus()" reason="Wrong type" />
+			<Member fullName="Uno.UI.Web.WebErrorStatus Windows.UI.Xaml.Controls.WebViewNavigationCompletedEventArgs.get_WebErrorStatus()" reason="Wrong type" />
+			<Member fullName="System.Threading.Tasks.Task`1&lt;System.String&gt; Windows.UI.Xaml.Controls.WebView.InvokeScriptAsync(System.Threading.CancellationToken ct, System.String script, System.String[] arguments)" reason="Wrong type" />
 			<Member fullName="Microsoft.UI.Windowing.AppWindowConfiguration Microsoft.UI.Windowing.AppWindow.get_Configuration()" reason="Not present in WinAppSDK 1.2" />
 			<Member fullName="System.Void Microsoft.UI.Windowing.AppWindow.ApplyConfiguration(Microsoft.UI.Windowing.AppWindowConfiguration appWindowConfiguration)" reason="Not present in WinAppSDK 1.2" />
 			<Member fullName="System.Boolean Microsoft.UI.Windowing.AppWindow.Destroy()" reason="Not present in WinAppSDK 1.2" />
@@ -1062,19 +1093,6 @@
 			<Member fullName="System.Object Uno.UI.Lottie.GlobalStaticResources.FindResource(System.String name)" reason="Obsolete API" />
 
 			<Member fullName="System.Void Windows.UI.Xaml.Controls.IconElement..ctor()" reason="Not public in WinUI" />
-
-			<Member fullName="System.Void Windows.UI.Xaml.Controls.Image.OnImageFailed(Windows.UI.Xaml.Media.ImageSource imageSource)" reason="Added parameter and made private" />
-
-			  <Member fullName="System.Void Windows.UI.Xaml.Controls.IconElement.OnForegroundChanged(Windows.UI.Xaml.DependencyPropertyChangedEventArgs e)" reason="Should not be public" />
-
-			<!-- BEGIN XamlFileParser performance updates -->
-			<Member fullName="System.Void Uno.Xaml.XamlXmlReader..ctor(System.Xml.XmlReader xmlReader, Uno.Xaml.XamlSchemaContext schemaContext, Uno.Xaml.XamlXmlReaderSettings settings)" reason="Adding parameter. These should not be used by user code" />
-			<!-- END XamlFileParser performance updates -->
-
-			<Member fullName="System.Void Uno.Foundation.Interop.JSObject.Dispatch(System.String handlePtr, System.String method, System.String parameters)" reason="First parameter changed from string to IntPtr for performance" />
-
-			<Member fullName="System.Void Windows.UI.Xaml.Application.OnSystemThemeChanged()" reason="Does not exist in Windows" />
-			<Member fullName="System.Void Windows.UI.Xaml.Application.ThemeChanged(Foundation.NSObject change)" reason="Does not exist in Windows" />
 
 			<Member fullName="System.Void Windows.UI.Xaml.Controls.ListViewBaseScrollContentPresenter.SetContentOffset(CoreGraphics.CGPoint contentOffset, System.Boolean animated)" reason="Api alignments" />
 			<Member fullName="System.Void Windows.UI.Xaml.Controls.ListViewBaseScrollContentPresenter.SetZoomScale(System.Runtime.InteropServices.NFloat scale, System.Boolean animated)" reason="Api alignments" />

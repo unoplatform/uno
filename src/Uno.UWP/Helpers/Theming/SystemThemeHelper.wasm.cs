@@ -1,6 +1,7 @@
 ﻿#nullable enable
 
 using System;
+using System.Runtime.InteropServices.JavaScript;
 using Uno.Extensions;
 using Uno.Foundation;
 using Uno.Foundation.Logging;
@@ -44,6 +45,7 @@ internal static partial class SystemThemeHelper
 		NativeMethods.ObserveSystemTheme();
 	}
 
+	[JSExport]
 	public static int DispatchSystemThemeChange()
 	{
 		RefreshSystemTheme();

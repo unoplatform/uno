@@ -15,7 +15,7 @@ using Uno.UI.Xaml.Media;
 using Path = global::System.IO.Path;
 
 #if NET7_0_OR_GREATER
-using NativeMethods = __Windows.UI.Xaml.Media.Imaging.BitmapImage.NativeMethods;
+using NativeMethods = __Windows.Storage.Helpers.AssetsManager.NativeMethods;
 #endif
 
 namespace Windows.UI.Xaml.Media.Imaging
@@ -24,7 +24,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 	{
 		internal ResolutionScale? ScaleOverride { get; set; }
 
-		internal string ContentType { get; set; } = "application/octet-stream";
+		internal override string ContentType { get; } = "application/octet-stream";
 
 		private protected override bool TryOpenSourceAsync(
 			CancellationToken ct,
@@ -43,7 +43,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 					_ => uri
 				};
 
-				asyncImage = AssetResolver.ResolveImageAsync(this, newUri, ScaleOverride);
+				asyncImage = AssetResolver.ResolveImageAsync(this, newUri, ScaleOverride, ct);
 
 				return true;
 			}
@@ -86,12 +86,17 @@ namespace Windows.UI.Xaml.Media.Imaging
 			{
 				var assetsUri = AssetsPathBuilder.BuildAssetUri("uno-assets.txt");
 
-				var assets = await WebAssemblyRuntime.InvokeAsync($"fetch('{assetsUri}').then(r => r.text())");
+				var assets = await
+#if NET7_0_OR_GREATER
+					NativeMethods.DownloadAssetsManifestAsync(assetsUri);
+#else
+					WebAssemblyRuntime.InvokeAsync($"fetch('{assetsUri}').then(r => r.text())");
+#endif
 
 				return new HashSet<string>(LineMatch().Split(assets));
 			}
 
-			internal static async Task<ImageData> ResolveImageAsync(ImageSource source, Uri uri, ResolutionScale? scaleOverride)
+			internal static async Task<ImageData> ResolveImageAsync(ImageSource source, Uri uri, ResolutionScale? scaleOverride, CancellationToken ct)
 			{
 				try
 				{
@@ -104,7 +109,11 @@ namespace Windows.UI.Xaml.Media.Imaging
 							return ImageData.FromUrl(uri, source);
 						}
 
-						// TODO: Implement ms-appdata
+						if (uri.IsAppData())
+						{
+							return await source.OpenMsAppData(uri, ct);
+						}
+
 						return ImageData.Empty;
 					}
 

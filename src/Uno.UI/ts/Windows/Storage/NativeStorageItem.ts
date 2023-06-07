@@ -75,7 +75,11 @@
 
 		private static generateGuids(count: number): string[] {
 			if (!NativeStorageItem.generateGuidBinding) {
-				NativeStorageItem.generateGuidBinding = (<any>Module).mono_bind_static_method("[Uno] Uno.Storage.NativeStorageItem:GenerateGuids");
+				if ((<any>globalThis).DotnetExports !== undefined) {
+					NativeStorageItem.generateGuidBinding = (<any>globalThis).DotnetExports.Uno.Uno.Storage.NativeStorageItem.GenerateGuids;
+				} else {
+					NativeStorageItem.generateGuidBinding = (<any>Module).mono_bind_static_method("[Uno] Uno.Storage.NativeStorageItem:GenerateGuids");
+				}
 			}
 
 			const guids = NativeStorageItem.generateGuidBinding(count);

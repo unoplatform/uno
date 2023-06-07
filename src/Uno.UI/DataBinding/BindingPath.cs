@@ -6,6 +6,7 @@ using Uno.Extensions;
 using System;
 using System.Buffers;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
@@ -431,6 +432,37 @@ namespace Uno.UI.DataBinding
 
 			head = item;
 			tail ??= item;
+		}
+
+		private static IDisposable? SubscribeToNotifyCollectionChanged(BindingItem bindingItem)
+		{
+			if (!bindingItem.PropertyType.Is(typeof(INotifyCollectionChanged)) ||
+				bindingItem.Next?.PropertyName.StartsWith("[", StringComparison.Ordinal) != true)
+			{
+				return null;
+			}
+
+			if ((INotifyCollectionChanged?)bindingItem.Value is not { } notify)
+			{
+				return null;
+			}
+
+			NotifyCollectionChangedEventHandler handler = (s, args) =>
+			{
+				BindingItem tail = bindingItem;
+				while (tail.Next != null)
+				{
+					tail = tail.Next;
+				}
+				tail.ValueChangedListener?.OnValueChanged(bindingItem.Value);
+			};
+
+			notify.CollectionChanged += handler;
+
+			return Disposable.Create(() =>
+			{
+				notify.CollectionChanged -= handler;
+			});
 		}
 
 		/// <summary>
@@ -917,7 +949,11 @@ namespace Uno.UI.DataBinding
 			/// <returns>A disposable to be called when the subscription is disposed.</returns>
 			private IDisposable SubscribeToPropertyChanged()
 			{
-				var disposables = new CompositeDisposable(_propertyChangedHandlers.Count);
+				var disposables = new CompositeDisposable(_propertyChangedHandlers.Count + 1);
+				if (SubscribeToNotifyCollectionChanged(this) is { } notifyCollectionChangedDisposable)
+				{
+					disposables.Add(notifyCollectionChangedDisposable);
+				}
 
 				for (var i = 0; i < _propertyChangedHandlers.Count; i++)
 				{
