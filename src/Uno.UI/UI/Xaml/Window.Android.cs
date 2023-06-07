@@ -66,13 +66,9 @@ namespace Windows.UI.Xaml
 
 		internal void RaiseNativeSizeChanged()
 		{
-#if __ANDROID_30__
 			var (windowBounds, visibleBounds, trueVisibleBounds) = Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.R
 				? GetVisualBounds()
 				: GetVisualBoundsLegacy();
-#else
-			var (windowBounds, visibleBounds, trueVisibleBounds) = GetVisualBoundsLegacy();
-#endif
 
 			ApplicationView.GetForCurrentView()?.SetVisibleBounds(visibleBounds);
 			ApplicationView.GetForCurrentView()?.SetTrueVisibleBounds(trueVisibleBounds);
@@ -89,7 +85,6 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-#if __ANDROID_30__
 		private (Rect windowBounds, Rect visibleBounds, Rect trueVisibleBounds) GetVisualBounds()
 		{
 			var metrics = (ContextHelper.Current as Activity)?.WindowManager?.CurrentWindowMetrics;
@@ -117,7 +112,6 @@ namespace Windows.UI.Xaml
 
 			return (windowBounds.PhysicalToLogicalPixels(), visibleBounds.PhysicalToLogicalPixels(), visibleBounds.PhysicalToLogicalPixels());
 		}
-#endif
 
 		private (Rect windowBounds, Rect visibleBounds, Rect trueVisibleBounds) GetVisualBoundsLegacy()
 		{

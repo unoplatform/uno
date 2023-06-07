@@ -212,13 +212,11 @@ namespace Windows.UI.Xaml.Media.Animation
 		/// <inheritdoc />
 		public void Pause()
 		{
-#if __ANDROID_19__
 			if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.Kitkat)
 			{
 				_adaptee.Pause();
 			}
 			else
-#endif
 			{
 				_adaptee.Cancel();
 			}
@@ -227,13 +225,11 @@ namespace Windows.UI.Xaml.Media.Animation
 		/// <inheritdoc />
 		public void Resume()
 		{
-#if __ANDROID_19__
 			if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.Kitkat)
 			{
 				_adaptee.Resume();
 			}
 			else
-#endif
 			{
 				_adaptee.Start();
 			}

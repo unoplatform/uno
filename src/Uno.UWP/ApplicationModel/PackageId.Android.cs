@@ -43,11 +43,7 @@ namespace Windows.ApplicationModel
 
 		private long GetVersionCode()
 		{
-#if __ANDROID_28__
 			return AndroidX.Core.Content.PM.PackageInfoCompat.GetLongVersionCode(_packageInfo);
-#else
-			return _packageInfo.VersionCode;
-#endif
 		}
 	}
 }

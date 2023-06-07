@@ -48,10 +48,8 @@ namespace Uno.UI.Extensions
 					return VirtualKey.Pause;
 				case Keycode.CapsLock:
 					return VirtualKey.CapitalLock;
-#if __ANDROID_16__
 				case Keycode.Kana:
 					return VirtualKey.Kana;
-#endif
 				//case Keycode.Hangul:
 				//    return VirtualKey.Hangul;
 				//case Keycode.Junja:
@@ -102,10 +100,8 @@ namespace Uno.UI.Extensions
 					return VirtualKey.Insert;
 				case Keycode.Del:
 					return VirtualKey.Delete;
-#if __ANDROID_21__
 				case Keycode.Help:
 					return VirtualKey.Help;
-#endif
 				case Keycode.Num0:
 					return VirtualKey.Number0;
 				case Keycode.Num1:
@@ -184,10 +180,8 @@ namespace Uno.UI.Extensions
 				//    return VirtualKey.RightWindows;
 				case Keycode.AppSwitch:
 					return VirtualKey.Application;
-#if __ANDROID_20__
 				case Keycode.Sleep:
 					return VirtualKey.Sleep;
-#endif
 				case Keycode.Numpad0:
 					return VirtualKey.NumberPad0;
 				case Keycode.Numpad1:

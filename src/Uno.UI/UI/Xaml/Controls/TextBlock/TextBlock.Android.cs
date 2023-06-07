@@ -88,13 +88,11 @@ namespace Windows.UI.Xaml.Controls
 
 			if (_textDirectionHeuristics == null)
 			{
-#if __ANDROID_18__
 				if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.Kitkat)
 				{
 					_textDirectionHeuristics = (Java.Lang.Object)TextDirectionHeuristics.FirststrongLtr;
 				}
 				else
-#endif
 				{
 					// This is required because this class was not exposed until API 18 but available before.
 

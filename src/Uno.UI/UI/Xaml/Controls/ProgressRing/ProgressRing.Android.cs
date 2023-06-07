@@ -18,13 +18,9 @@ public partial class ProgressRing
 		//We only support SolidColorBrush for now
 		if (_native != null && Foreground is SolidColorBrush foregroundColor)
 		{
-#if __ANDROID_28__
 #pragma warning disable 618 // SetColorFilter is deprecated
 			_native.IndeterminateDrawable?.SetColorFilter(foregroundColor.Color, PorterDuff.Mode.SrcIn);
 #pragma warning restore 618 // SetColorFilter is deprecated
-#else
-			_native.IndeterminateDrawable?.SetColorFilter(new BlendModeColorFilter(foregroundColor.Color, BlendMode.SrcIn));
-#endif
 		}
 	}
 

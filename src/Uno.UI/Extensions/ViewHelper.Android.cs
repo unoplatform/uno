@@ -150,13 +150,11 @@ namespace Uno.UI
 			}
 			else
 			{
-#if __ANDROID_18__
 				if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.JellyBeanMr2)
 				{
 					return view.WindowId != null;
 				}
 				else
-#endif
 				{
 					return view.WindowToken != null;
 				}
