@@ -233,3 +233,23 @@ The Uno Platform extension provides multiple output windows to troubleshoot its 
 If the extension is not behaving properly, try using the `Developer: Reload Window` (or `Ctrl+R`) command in the palette.
 
 [!include[getting-help](getting-help.md)]
+
+## C# Dev Kit Compatibility
+
+At this time the preview version of the [C# Dev Kit extension](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csdevkit) `ms-dotnettools.csdevkit` is not compatible with the Uno Platform extension. It requires a preview version of the [C# extension](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csharp) `ms-dotnettools.csharp` that contains major breaking changes.
+
+### Workaround
+
+You can use both the Uno Platform and C# Dev Kit extensions but not simulteanously. The easiest way to accomplish this is to [create profiles](https://code.visualstudio.com/docs/editor/profiles) inside VSCode. Using this method you can:
+
+1. Create one profile for **Uno Platform**
+2. Disable, if installed, C# Dev Kit extension
+3. Enable `useOmnisharp` inside the configuration
+![useOmnisharp](Assets/quick-start/vs-code-useOmniSharp.png)
+
+4. Create another pfoile for **C# Dev Kit**
+5. Enable (or install) the C# Dev Kit extension
+6. Ensure that `useOmnisharp` is disabled inside the configuration
+7. Disable the Uno Platform extension
+
+You can then switch between both profiles according to the type of dotnet project you are developing.
