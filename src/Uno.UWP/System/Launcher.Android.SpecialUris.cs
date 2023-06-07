@@ -55,9 +55,7 @@ namespace Windows.System
 			};
 			if (Build.VERSION.SdkInt >= (BuildVersionCodes)28)
 			{
-#if __ANDROID_28__
 				settings.Add("network-datausage", Settings.ActionDataUsageSettings);
-#endif
 			}
 			return settings;
 		});

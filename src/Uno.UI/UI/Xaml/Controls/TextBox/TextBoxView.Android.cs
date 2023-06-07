@@ -221,7 +221,7 @@ namespace Windows.UI.Xaml.Controls
 						var mCursorDrawableRes = _cursorDrawableResField.GetInt(editText);
 						var editor = _editorField.Get(editText);
 
-#if __ANDROID_28__
+#if __ANDROID__
 #pragma warning disable 618 // SetColorFilter is deprecated
 						if ((int)Build.VERSION.SdkInt < 28) // 28 means BuildVersionCodes.P
 						{
@@ -292,7 +292,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public
-#if __ANDROID_23__
+#if __ANDROID__
 		new
 #endif
 		Brush Foreground
