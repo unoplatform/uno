@@ -240,7 +240,7 @@ At this time, the preview version of the [C# Dev Kit extension](https://marketpl
 
 ### Workaround
 
-You can use both the Uno Platform and C# Dev Kit extensions but not simulteanously. The easiest way to accomplish this is to [create profiles](https://code.visualstudio.com/docs/editor/profiles) inside VSCode. Using this method you can:
+You can use both the Uno Platform and C# Dev Kit extensions but not simultaneously. The easiest way to accomplish this is to [create profiles](https://code.visualstudio.com/docs/editor/profiles) inside VSCode. Using this method, you can:
 
 1. Create one profile for **Uno Platform**
 2. Disable, if installed, C# Dev Kit extension
