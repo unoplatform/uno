@@ -10,61 +10,43 @@ namespace Uno.UI.Skia.Platform
 	internal class WpfApplicationViewExtension : IApplicationViewExtension
 	{
 		private readonly ApplicationView _owner;
-		private WpfWindow _mainWpfWindow;
-		private string _title = "";
 
 		public WpfApplicationViewExtension(object owner)
 		{
 			_owner = (ApplicationView)owner;
-
-			// TODO: support many windows
-			// TODO:MZ: This is null at first!
-			_mainWpfWindow = WpfApplication.Current.MainWindow;
-		}
-
-		public string Title
-		{
-			get => _mainWpfWindow is not null ? _mainWpfWindow.Title : _title;
-			set
-			{
-				if (_mainWpfWindow is not null)
-				{
-					_mainWpfWindow.Title = value;
-				}
-				else
-				{
-					_title = value;
-				}
-			}
 		}
 
 		private bool _isFullScreen;
 		private (WindowStyle WindowStyle, WindowState WindowState) _previousModes;
 
-		public void SetPreferredMinSize(Windows.Foundation.Size size)
-		{
-			_mainWpfWindow.MinWidth = size.Width;
-			_mainWpfWindow.MinHeight = size.Height;
-		}
-
 		public bool TryResizeView(Windows.Foundation.Size size)
 		{
-			_mainWpfWindow.Width = size.Width;
-			_mainWpfWindow.Height = size.Height;
+			if (WpfApplication.Current.MainWindow is not { } wpfMainWindow)
+			{
+				return false;
+			}
+
+			wpfMainWindow.Width = size.Width;
+			wpfMainWindow.Height = size.Height;
 			return true;
 		}
 
 		public bool TryEnterFullScreenMode()
 		{
-			if (_isFullScreen || _mainWpfWindow.WindowStyle == WindowStyle.None)
+			if (WpfApplication.Current.MainWindow is not { } wpfMainWindow)
 			{
 				return false;
 			}
 
-			_previousModes = (_mainWpfWindow.WindowStyle, _mainWpfWindow.WindowState);
+			if (_isFullScreen || wpfMainWindow.WindowStyle == WindowStyle.None)
+			{
+				return false;
+			}
 
-			_mainWpfWindow.WindowStyle = WindowStyle.None;
-			_mainWpfWindow.WindowState = WindowState.Maximized;
+			_previousModes = (wpfMainWindow.WindowStyle, wpfMainWindow.WindowState);
+
+			wpfMainWindow.WindowStyle = WindowStyle.None;
+			wpfMainWindow.WindowState = WindowState.Maximized;
 			_isFullScreen = true;
 
 			return true;
@@ -72,14 +54,14 @@ namespace Uno.UI.Skia.Platform
 
 		public void ExitFullScreenMode()
 		{
-			if (!_isFullScreen)
+			if (WpfApplication.Current.MainWindow is not { } wpfMainWindow || !_isFullScreen)
 			{
 				return;
 			}
 
 			_isFullScreen = false;
-			_mainWpfWindow.WindowStyle = _previousModes.WindowStyle;
-			_mainWpfWindow.WindowState = _previousModes.WindowState;
+			wpfMainWindow.WindowStyle = _previousModes.WindowStyle;
+			wpfMainWindow.WindowState = _previousModes.WindowState;
 		}
 	}
 }

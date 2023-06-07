@@ -9,13 +9,16 @@ using Uno.Foundation.Extensibility;
 using Uno.Disposables;
 using Windows.ApplicationModel;
 using Windows.Storage;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace Windows.UI.ViewManagement
 {
-	partial class ApplicationView : IApplicationViewEvents
+	partial class ApplicationView
 	{
 		private readonly IApplicationViewExtension _applicationViewExtension;
 		private Size _preferredMinSize = Size.Empty;
+		private string _title = "";
 
 		public ApplicationView()
 		{
@@ -24,9 +27,25 @@ namespace Windows.UI.ViewManagement
 
 		public string Title
 		{
-			get => _applicationViewExtension.Title;
-			set => _applicationViewExtension.Title = value;
+			get => _title;
+			set
+			{
+				_title = value;
+				OnPropertyChanged();
+			}
 		}
+
+		internal Size PreferredMinSize
+		{
+			get => _preferredMinSize;
+			set
+			{
+				_preferredMinSize = value;
+				OnPropertyChanged();
+			}
+		}
+
+		internal PropertyChangedEventHandler? PropertyChanged;
 
 		public bool TryEnterFullScreenMode() => _applicationViewExtension.TryEnterFullScreenMode();
 
@@ -41,28 +60,20 @@ namespace Windows.UI.ViewManagement
 			return _applicationViewExtension.TryResizeView(value);
 		}
 
-		public void SetPreferredMinSize(Size minSize)
+		public void SetPreferredMinSize(Size minSize) => PreferredMinSize = minSize;
+
+		private void OnPropertyChanged([CallerMemberName]string? name = null)
 		{
-			_applicationViewExtension.SetPreferredMinSize(minSize);
-			_preferredMinSize = minSize;
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 		}
 	}
 
 	internal interface IApplicationViewExtension
 	{
-		string Title { get; set; }
-
 		bool TryEnterFullScreenMode();
 
 		void ExitFullScreenMode();
 
 		bool TryResizeView(Size size);
-
-		void SetPreferredMinSize(Size minSize);
-	}
-
-	internal interface IApplicationViewEvents
-	{
-
 	}
 }
