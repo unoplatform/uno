@@ -1,24 +1,17 @@
 ﻿#nullable enable
 
 using System;
-using System.Collections.Generic;
+using System.Threading.Tasks;
 using Gtk;
 using Uno.Disposables;
-using Uno.UI.Runtime.Skia.GTK.UI.Core;
-using Uno.UI.Xaml.Core;
-using Windows.Foundation;
-using Windows.UI.ViewManagement;
-using WinUIWindow = Windows.UI.Xaml.Window;
-using WinUI = Windows.UI.Xaml;
-using Uno.UI.Runtime.Skia.GTK.Hosting;
-using Uno.UI.Hosting;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Controls;
-using Uno.UI.Rendering;
-using Uno.UI.XamlHost.Skia.GTK.Hosting;
-using System.IO;
 using Uno.Foundation.Logging;
-using Windows.UI.Xaml.Media;
+using Uno.UI.Hosting;
+using Uno.UI.Runtime.Skia.GTK.Hosting;
+using Uno.UI.Runtime.Skia.GTK.Rendering;
+using Uno.UI.Xaml.Core;
+using Uno.UI.XamlHost.Skia.GTK.Hosting;
+using WinUI = Windows.UI.Xaml;
+using WinUIWindow = Windows.UI.Xaml.Window;
 
 namespace Uno.UI.Runtime.Skia.GTK.UI.Controls;
 
@@ -26,63 +19,26 @@ internal class UnoGtkWindowHost : IGtkXamlRootHost
 {
 	private readonly Window _gtkWindow;
 	private readonly WinUIWindow _winUIWindow;
-	private FocusManager? _focusManager;
+	private readonly UnoEventBox _eventBox = new();
+	private readonly Fixed _nativeOverlayLayer = new();
+	private readonly CompositeDisposable _disposables = new();
 
-	private static UnoEventBox? _eventBox;
 	private Widget? _area;
-	private Fixed? _nativeOverlayLayer;
-
 	private IGtkRenderer? _renderer;
-
-	private GtkDisplayInformationExtension? _displayInformationExtension;
-	private CompositeDisposable _disposables = new();
-
 
 	public UnoGtkWindowHost(Gtk.Window gtkWindow, WinUIWindow winUIWindow)
 	{
 		_gtkWindow = gtkWindow;
 		_winUIWindow = winUIWindow;
 
-		//SetupRenderSurface();
-
-		var overlay = new Overlay();
-
-		_eventBox = new UnoEventBox();
-
-		_renderSurface = BuildRenderSurfaceType();
-		_area = (Widget)_renderSurface;
-		_nativeOverlayLayer = new Fixed();
-		overlay.Add(_area);
-		overlay.AddOverlay(_nativeOverlayLayer);
-		_eventBox.Add(overlay);
-		Add(_eventBox);
-
-		//// Show the whole tree again, since we may have
-		//// swapped the content with the GLValidationSurface.
-		//_window.ShowAll();
-
-		//if (this.Log().IsEnabled(LogLevel.Information))
-		//{
-		//	this.Log().Info($"Using {RenderSurfaceType} rendering");
-		//}
-
-		//_area.Realized += (s, e) =>
-		//{
-		//	WUX.Window.Current.OnNativeSizeChanged(new Windows.Foundation.Size(_area.AllocatedWidth, _area.AllocatedHeight));
-		//};
-
-		//_area.SizeAllocated += (s, e) =>
-		//{
-		//	WUX.Window.Current.OnNativeSizeChanged(new Windows.Foundation.Size(e.Allocation.Width, e.Allocation.Height));
-		//};
-
 		CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRootSet += OnCoreWindowContentRootSet;
 
 		RegisterForBackgroundColor();
-		UpdateWindowPropertiesFromPackage();
-
-		//ReplayPendingWindowStateChanges();
 	}
+
+	UnoEventBox IGtkXamlRootHost.EventBox => _eventBox;
+
+	Container IGtkXamlRootHost.RootContainer => _gtkWindow;
 
 	bool IXamlRootHost.IsIsland => false;
 
@@ -94,7 +50,18 @@ internal class UnoGtkWindowHost : IGtkXamlRootHost
 
 	Fixed? IGtkXamlRootHost.NativeOverlayLayer => _nativeOverlayLayer;
 
-	internal static UnoEventBox? EventBox => _eventBox;
+	async Task IGtkXamlRootHost.InitializeAsync()
+	{
+		_renderer = await GtkRendererProvider.CreateForHostAsync(this);
+
+		var overlay = new Overlay();
+
+		_area = (Widget)_renderer;
+		overlay.Add(_area);
+		overlay.AddOverlay(_nativeOverlayLayer);
+		_eventBox.Add(overlay);
+		_gtkWindow.Add(_eventBox);
+	}
 
 	private void RegisterForBackgroundColor()
 	{
@@ -135,7 +102,6 @@ internal class UnoGtkWindowHost : IGtkXamlRootHost
 
 		contentRoot!.SetHost(this);
 		XamlRootMap.Register(xamlRoot, this);
-		xamlRoot.InvalidateRender += _renderer!.InvalidateRender;
 
 		CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRootSet -= OnCoreWindowContentRootSet;
 	}

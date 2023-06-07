@@ -32,7 +32,6 @@ namespace Uno.UI.Runtime.Skia
 
 		private readonly DisplayInformation _displayInformation;
 		private readonly IXamlRootHost _host;
-		private FocusManager? _focusManager;
 
 		private float? _scale = 1;
 		private GRContext? _grContext;

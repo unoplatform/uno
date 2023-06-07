@@ -12,13 +12,17 @@ using Uno.Foundation.Logging;
 using IOPath = System.IO.Path;
 using System.IO;
 using System.Collections.Generic;
+using Uno.UI.Hosting;
+using Uno.UI.Runtime.Skia.GTK.Hosting;
 
 namespace Uno.UI.Runtime.Skia.GTK.UI.Controls;
 
 internal class UnoGtkWindow : Gtk.Window
 {
-	private readonly UnoGtkWindowHost _host;
+	private readonly IGtkXamlRootHost _host;
 	private readonly WinUIWindow _winUIWindow;
+
+	private bool _wasShown;
 
 	private List<PendingWindowStateChangedInfo>? _pendingWindowStateChanged = new();
 
@@ -51,7 +55,15 @@ internal class UnoGtkWindow : Gtk.Window
 		_host = new UnoGtkWindowHost(this, winUIWindow);
 	}
 
-	private void OnShown(object? sender, EventArgs e) => Show();
+	internal UnoEventBox EventBox => _host.EventBox;
+
+	private async void OnShown(object? sender, EventArgs e)
+	{
+		await _host.InitializeAsync();
+		ShowAll();
+		_wasShown = true;
+		ReplayPendingWindowStateChanges();
+	}
 
 	private void WindowClosing(object sender, DeleteEventArgs args)
 	{
@@ -123,7 +135,7 @@ internal class UnoGtkWindow : Gtk.Window
 			this.Log().Debug($"OnWindowStateChanged: {newState}/{changedMask}");
 		}
 
-		if (_area != null)
+		if (_wasShown)
 		{
 			ProcessWindowStateChanged(newState, changedMask);
 		}
