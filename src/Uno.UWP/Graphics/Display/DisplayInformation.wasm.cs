@@ -1,6 +1,7 @@
 ﻿#if __WASM__
 using System;
 using System.Globalization;
+using System.Runtime.InteropServices.JavaScript;
 using System.Threading;
 using System.Threading.Tasks;
 using Uno;
@@ -16,13 +17,7 @@ namespace Windows.Graphics.Display
 
 		private static DisplayInformation InternalGetForCurrentView() => _lazyInstance.Value;
 
-#if !NET7_0_OR_GREATER
-		private const string JsType = "Windows.Graphics.Display.DisplayInformation";
-#endif
-
-#if NET7_0_OR_GREATER
 		[JSExport]
-#endif
 		public static int DispatchDpiChanged()
 		{
 			if (_lazyInstance.IsValueCreated)
@@ -32,9 +27,7 @@ namespace Windows.Graphics.Display
 			return 0;
 		}
 
-#if NET7_0_OR_GREATER
 		[JSExport]
-#endif
 		public static int DispatchOrientationChanged()
 		{
 			if (_lazyInstance.IsValueCreated)
@@ -237,11 +230,7 @@ namespace Windows.Graphics.Display
 
 		private static Task SetOrientationAsync(DisplayOrientations orientations, CancellationToken ct)
 		{
-#if NET7_0_OR_GREATER
 			return NativeMethods.SetOrientationAsync((int)orientations);
-#else
-			return WebAssemblyRuntime.InvokeAsync($"{JsType}.setOrientationAsync({(int)orientations})", ct);
-#endif
 		}
 	}
 }
