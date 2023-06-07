@@ -236,7 +236,7 @@ If the extension is not behaving properly, try using the `Developer: Reload Wind
 
 ## C# Dev Kit Compatibility
 
-At this time the preview version of the [C# Dev Kit extension](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csdevkit) `ms-dotnettools.csdevkit` is not compatible with the Uno Platform extension. It requires a preview version of the [C# extension](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csharp) `ms-dotnettools.csharp` that contains major breaking changes.
+At this time, the preview version of the [C# Dev Kit extension](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csdevkit) `ms-dotnettools.csdevkit` is not compatible with the Uno Platform extension. It requires a preview version of the [C# extension](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csharp) `ms-dotnettools.csharp` that contains major breaking changes.
 
 ### Workaround
 
