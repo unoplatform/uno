@@ -61,10 +61,10 @@ internal class UnoWpfWindow : WpfWindow
 	}
 
 	private void OnDeactivated(object? sender, EventArgs e) =>
-		_winUIWindow?.RaiseActivated(Windows.UI.Core.CoreWindowActivationState.Deactivated);
+		_winUIWindow?.OnNativeActivated(Windows.UI.Core.CoreWindowActivationState.Deactivated);
 
 	private void OnActivated(object? sender, EventArgs e) =>
-		_winUIWindow.RaiseActivated(Windows.UI.Core.CoreWindowActivationState.PointerActivated);
+		_winUIWindow.OnNativeActivated(Windows.UI.Core.CoreWindowActivationState.PointerActivated);
 
 	private void OnStateChanged(object? sender, EventArgs e)
 	{
@@ -75,12 +75,12 @@ internal class UnoWpfWindow : WpfWindow
 
 		if (wasVisible && !_isVisible)
 		{
-			_winUIWindow.OnVisibilityChanged(false);
+			_winUIWindow.OnNativeVisibilityChanged(false);
 			application?.RaiseEnteredBackground(null);
 		}
 		else if (!wasVisible && _isVisible)
 		{
-			application?.RaiseLeavingBackground(() => _winUIWindow?.OnVisibilityChanged(true));
+			application?.RaiseLeavingBackground(() => _winUIWindow?.OnNativeVisibilityChanged(true));
 		}
 	}
 

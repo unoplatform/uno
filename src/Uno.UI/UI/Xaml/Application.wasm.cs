@@ -68,14 +68,14 @@ namespace Windows.UI.Xaml
 			{
 				application?.RaiseLeavingBackground(() =>
 				{
-					window?.OnVisibilityChanged(true);
-					window?.RaiseActivated(CoreWindowActivationState.CodeActivated);
+					window?.OnNativeVisibilityChanged(true);
+					window?.OnNativeActivated(CoreWindowActivationState.CodeActivated);
 				});
 			}
 			else
 			{
-				window?.RaiseActivated(CoreWindowActivationState.Deactivated);
-				window?.OnVisibilityChanged(false);
+				window?.OnNativeActivated(CoreWindowActivationState.Deactivated);
+				window?.OnNativeVisibilityChanged(false);
 				application?.RaiseEnteredBackground(null);
 			}
 
