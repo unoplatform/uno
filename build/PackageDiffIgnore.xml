@@ -1412,6 +1412,7 @@
 			<Member fullName="UIKit.UIView Windows.UI.Xaml.Controls.ItemsPanelTemplate.LoadContent()" reason="Api alignments" />
 			<Member fullName="AppKit.NSView Windows.UI.Xaml.FrameworkTemplate.LoadContent()" reason="Api alignments" />
 			<Member fullName="AppKit.NSView Windows.UI.Xaml.Controls.ItemsPanelTemplate.LoadContent()" reason="Api alignments" />
+			<Member fullName=".+?ApplyCompiledBindings\(\)" isRegex="true" reason="Api alignments" />
 
       <Member fullName="System.Void Windows.UI.Xaml.Controls.Image.OnImageOpened(Windows.UI.Xaml.Media.ImageSource imageSource)" reason="Api alignments" />
 
