@@ -450,6 +450,38 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		public async Task When_SVGImageSource()
+		{
+			var svgImageSource = new SvgImageSource(new Uri("ms-appx:///Assets/couch.svg"));
+			var image = new Image() { Source = svgImageSource };
+			TestServices.WindowHelper.WindowContent = image;
+			await WindowHelper.WaitForLoaded(image);
+		}
+
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_SVGImageSource_Uri_Is_Null()
+		{
+			var svgImageSource = new SvgImageSource(null);
+			var image = new Image() { Source = svgImageSource };
+			TestServices.WindowHelper.WindowContent = image;
+			await WindowHelper.WaitForLoaded(image);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_SVGImageSource_Uri_Is_Set_Null()
+		{
+			var svgImageSource = new SvgImageSource(new Uri("ms-appx:///Assets/couch.svg"));
+			svgImageSource.UriSource = null;
+			var image = new Image() { Source = svgImageSource };
+			TestServices.WindowHelper.WindowContent = image;
+			await WindowHelper.WaitForLoaded(image);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
 #if __MACOS__
 		[Ignore("Currently fails on macOS, part of #9282 epic")]
 #endif
