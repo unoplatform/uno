@@ -94,7 +94,7 @@ jobs:
 
 - template: build/ci/.azure-devops-package.yml
   parameters:
-    vmImage: '$(windows2022HostedVMImage)'
+    poolName: '$(windowsScaledPool)'
 
 - template: build/ci/.azure-devops-project-template-tests.yml
   parameters:

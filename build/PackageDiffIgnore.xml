@@ -1432,9 +1432,18 @@
 			<Member fullName="System.Void Uno.UI.Skia.Platform.WpfHost..ctor(System.Windows.Threading.Dispatcher dispatcher, System.Func`1&lt;Windows.UI.Xaml.Application&gt; appBuilder, System.String[] args)" reason="API Alignment" />
 			<Member fullName="SkiaSharp.SKSize Uno.UI.Skia.Platform.WpfHost.get_CanvasSize()" reason="API Alignment" />
 			<!-- End Skia Adjustments -->
+
+			<!-- BEGIN Pointers update -->
+			<Member fullName="System.Void Windows.UI.Core.CoreWindow.RaisePointerCancelled(Windows.UI.Core.PointerEventArgs args)" reason="Does not exist in Windows" />
+			<!-- End Pointers update -->
+
+			<!-- BEGIN Proximity sensor -->
+			<Member fullName="System.Void Windows.Devices.Sensors.ProximitySensor..ctor()" reason="Does not exist in Windows" />
+			<Member fullName="System.Void Windows.Devices.Sensors.ProximitySensorReading..ctor()" reason="Does not exist in Windows" />
+			<Member fullName="System.Void Windows.Devices.Sensors.ProximitySensorReadingChangedEventArgs..ctor()" reason="Does not exist in Windows" />
+			<!-- END Proximity sensor -->
 		</Methods>
 	</IgnoreSet>
-
 	  <!--
 	Supported nodes (please keep at the bottom of this file):
 	<IgnoreSet baseVersion="0.0">

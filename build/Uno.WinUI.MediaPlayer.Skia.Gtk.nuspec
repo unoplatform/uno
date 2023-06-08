@@ -15,7 +15,7 @@
 		<repository type="git" url="https://github.com/unoplatform/uno.git" branch="$branch$" commit="$commitid$" />
 		<dependencies>
 			<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
-			<dependency id="LibVLCSharp" version="3.6.8" />
+			<dependency id="LibVLCSharp" version="3.7.0" />
 			<dependency id="GtkSharp" version="3.24.24.38" />
 		</dependencies>
 		<references>
