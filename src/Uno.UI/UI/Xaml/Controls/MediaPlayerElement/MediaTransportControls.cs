@@ -62,8 +62,7 @@ namespace Windows.UI.Xaml.Controls
 #pragma warning restore CS0649
 
 		private bool _wasPlaying;
-		private bool _isTemplateApplied;
-		//private bool _isShowingControls = true;
+		private bool _isTemplateApplied; // indicates if the template parts have been resolved
 
 		public MediaTransportControls()
 		{
@@ -81,12 +80,14 @@ namespace Windows.UI.Xaml.Controls
 		}
 		protected override void OnApplyTemplate()
 		{
-			_isTemplateApplied = true;
+			base.OnApplyTemplate();
 
 			// Detach any existing handlers
 			DeinitializeTransportControls();
 
 			HookupPartsAndHandlers();
+			_isTemplateApplied = true;
+
 			if (IsLoaded)
 			{
 				// uno-specific: event subcriptions are extracted out from HookupPartsAndHandlers() to ensure proper disposal
@@ -360,20 +361,19 @@ namespace Windows.UI.Xaml.Controls
 			_mediaPlayerSubscriptions.Disposable = null;
 		}
 
-		/* ShowAndHideAutomatically mechanism:
+		/* ShowAndHideAutomatically mechanism: // note: these are based from observation for reference only, and should not be viewed as the truth
 			- while playing & ShowAndHideAutomatically, the MTC will auto-hide after a set time. (see: m_tpHideControlPanelTimer.Interval)
 				^ performing any action will reset this timer. [mobile: ignoring PointerEnter/Exit]
 				^ having any flyout opened will disable this auto-hide.
 			- while MTC is hidden, setting ShowAndHideAutomatically=true will show the MTC immediately.
 			- while playing & MTC is visible, setting ShowAndHideAutomatically=true will begin the timer.
-			[desktop-specific]:
 			- tapping the video will shows the MTC.
+			[desktop-specific]:
 			- if ShowAndHideAutomatically, PointerEnter/Moved in the video will auto-shows the MTC and begin/reset the timer.
 				^ presumably, clicking any button should also reset the timer, but this is already encompassed in the above rule.
 				^ hovering over the button flyouts will also disable auto-hide.
 			- if ShowAndHideAutomatically, while the cursor is on MTC, auto-hide is disabled.
 			[mobile-specific]: // PointerEnter/Exit are obviously not well-supported here
-			- tapping anywhere outside of interactive elements or the video should toggle the visibility, regardless of PlaybackState.
 		 */
 
 		private void OnHideControlPanelTimerTick(object? sender, object args)
