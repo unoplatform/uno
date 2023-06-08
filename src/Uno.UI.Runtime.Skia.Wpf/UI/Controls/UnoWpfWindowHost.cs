@@ -2,7 +2,6 @@
 
 using Uno.UI.Runtime.Skia.Wpf.Hosting;
 using System;
-using System.IO;
 using System.Windows;
 using System.Windows.Media;
 using Uno.Disposables;
@@ -10,8 +9,6 @@ using Uno.Foundation.Logging;
 using Uno.UI.Runtime.Skia.Wpf.Extensions;
 using Uno.UI.Runtime.Skia.Wpf.Rendering;
 using Uno.UI.Xaml.Core;
-using Uno.UI.XamlHost.Skia.Wpf.Hosting;
-using Windows.UI.ViewManagement;
 using WinUI = Windows.UI.Xaml;
 using WpfCanvas = System.Windows.Controls.Canvas;
 using WpfControl = System.Windows.Controls.Control;
@@ -20,7 +17,6 @@ using WpfFrameworkPropertyMetadata = System.Windows.FrameworkPropertyMetadata;
 using WpfWindow = System.Windows.Window;
 using RoutedEventArgs = System.Windows.RoutedEventArgs;
 using Uno.UI.Hosting;
-using Uno.UI.Rendering;
 using Uno.UI.Skia;
 
 namespace Uno.UI.Runtime.Skia.Wpf.UI.Controls;
@@ -121,7 +117,7 @@ internal class UnoWpfWindowHost : WpfControl, IWpfWindowHost
 		}
 
 		contentRoot!.SetHost(this);
-		XamlRootMap.Register(xamlRoot, this);
+		XamlRootMap<IWpfXamlRootHost>.Register(xamlRoot, this);
 
 		CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRootSet -= OnCoreWindowContentRootSet;
 	}

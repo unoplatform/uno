@@ -9,7 +9,6 @@ using Uno.UI.Hosting;
 using Uno.UI.Runtime.Skia.GTK.Hosting;
 using Uno.UI.Runtime.Skia.GTK.Rendering;
 using Uno.UI.Xaml.Core;
-using Uno.UI.XamlHost.Skia.GTK.Hosting;
 using WinUI = Windows.UI.Xaml;
 using WinUIWindow = Windows.UI.Xaml.Window;
 
@@ -112,7 +111,7 @@ internal class UnoGtkWindowHost : IGtkXamlRootHost
 		}
 
 		contentRoot!.SetHost(this);
-		XamlRootMap.Register(xamlRoot, this);
+		XamlRootMap<IGtkXamlRootHost>.Register(xamlRoot, this);
 
 		CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRootSet -= OnCoreWindowContentRootSet;
 	}
