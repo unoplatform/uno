@@ -1,16 +1,8 @@
 ﻿#nullable enable
-using System;
-using Uno.Extensions;
-using Uno.Foundation;
-using Uno.Foundation.Logging;
-using Windows.Foundation;
-using System.Globalization;
-using Uno.Foundation.Extensibility;
-using Uno.Disposables;
-using Windows.ApplicationModel;
-using Windows.Storage;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using Uno.Foundation.Extensibility;
+using Windows.Foundation;
 
 namespace Windows.UI.ViewManagement
 {
@@ -62,7 +54,7 @@ namespace Windows.UI.ViewManagement
 
 		public void SetPreferredMinSize(Size minSize) => PreferredMinSize = minSize;
 
-		private void OnPropertyChanged([CallerMemberName]string? name = null)
+		private void OnPropertyChanged([CallerMemberName] string? name = null)
 		{
 			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 		}
