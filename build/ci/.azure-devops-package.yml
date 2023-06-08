@@ -16,8 +16,7 @@ jobs:
   - wasm_package_build
   - reference_package_build
 
-  pool:
-    vmImage: ${{ parameters.vmImage }}
+  pool: ${{ parameters.poolName }}
 
   strategy:
     matrix:
