@@ -191,25 +191,25 @@ internal class UnoGtkWindow : Gtk.Window
 
 		if (!focused && focusChanged)
 		{
-			_winUIWindow?.RaiseActivated(Windows.UI.Core.CoreWindowActivationState.Deactivated);
+			_winUIWindow?.OnNativeActivated(Windows.UI.Core.CoreWindowActivationState.Deactivated);
 		}
 
 		if (isVisibleChanged)
 		{
 			if (isVisible)
 			{
-				winUIApplication?.RaiseLeavingBackground(() => _winUIWindow?.OnVisibilityChanged(true));
+				winUIApplication?.RaiseLeavingBackground(() => _winUIWindow?.OnNativeVisibilityChanged(true));
 			}
 			else
 			{
-				_winUIWindow?.OnVisibilityChanged(false);
+				_winUIWindow?.OnNativeVisibilityChanged(false);
 				winUIApplication?.RaiseEnteredBackground(null);
 			}
 		}
 
 		if (focused && focusChanged)
 		{
-			_winUIWindow?.RaiseActivated(Windows.UI.Core.CoreWindowActivationState.CodeActivated);
+			_winUIWindow?.OnNativeActivated(Windows.UI.Core.CoreWindowActivationState.CodeActivated);
 		}
 	}
 }

@@ -221,7 +221,7 @@ namespace Windows.UI.Xaml
 
 			TryShow();
 
-			RaiseActivated(CoreWindowActivationState.CodeActivated);
+			OnNativeActivated(CoreWindowActivationState.CodeActivated);
 		}
 
 		/// <summary>
@@ -282,7 +282,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		internal void RaiseActivated(CoreWindowActivationState state)
+		internal void OnNativeActivated(CoreWindowActivationState state)
 		{
 			if (!_wasActivated)
 			{
@@ -311,7 +311,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		internal void OnVisibilityChanged(bool newVisibility)
+		internal void OnNativeVisibilityChanged(bool newVisibility)
 		{
 			if (!_wasActivated)
 			{
