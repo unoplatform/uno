@@ -518,6 +518,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_Devices\ProximitySensorTests.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_Devices\MagnetometerTests.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -5445,6 +5449,9 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_Devices\LightSensorTests.xaml.cs">
       <DependentUpon>LightSensorTests.xaml</DependentUpon>
+    </Compile>
+      <Compile Include="$(MSBuildThisFileDirectory)Windows_Devices\ProximitySensorTests.xaml.cs">
+      <DependentUpon>ProximitySensorTests.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_Devices\MagnetometerTests.xaml.cs">
       <DependentUpon>MagnetometerTests.xaml</DependentUpon>
