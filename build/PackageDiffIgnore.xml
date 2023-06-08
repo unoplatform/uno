@@ -9492,9 +9492,14 @@
 		<Methods>
 			<Member fullName="System.Void Windows.UI.Core.CoreWindow.RaisePointerCancelled(Windows.UI.Core.PointerEventArgs args)" reason="Does not exist in Windows" />
 			<Member fullName="System.Void Windows.UI.Xaml.Controls.MediaTransportControls.TappedProgressSlider(System.Object sender, Windows.UI.Xaml.RoutedEventArgs e)" reason="Should not be public" />
+
+			<!-- BEGIN Proximity sensor -->
+			<Member fullName="System.Void Windows.Devices.Sensors.ProximitySensor..ctor()" reason="Does not exist in Windows" />
+			<Member fullName="System.Void Windows.Devices.Sensors.ProximitySensorReading..ctor()" reason="Does not exist in Windows" />
+			<Member fullName="System.Void Windows.Devices.Sensors.ProximitySensorReadingChangedEventArgs..ctor()" reason="Does not exist in Windows" />			
+			<!-- END Proximity sensor -->
 		</Methods>
 	</IgnoreSet>
-
 	  <!--
 	Supported nodes (please keep at the bottom of this file):
 	<IgnoreSet baseVersion="0.0">
