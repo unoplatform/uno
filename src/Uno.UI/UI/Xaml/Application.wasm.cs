@@ -69,12 +69,12 @@ namespace Windows.UI.Xaml
 				application?.RaiseLeavingBackground(() =>
 				{
 					window?.OnVisibilityChanged(true);
-					window?.OnActivated(CoreWindowActivationState.CodeActivated);
+					window?.RaiseActivated(CoreWindowActivationState.CodeActivated);
 				});
 			}
 			else
 			{
-				window?.OnActivated(CoreWindowActivationState.Deactivated);
+				window?.RaiseActivated(CoreWindowActivationState.Deactivated);
 				window?.OnVisibilityChanged(false);
 				application?.RaiseEnteredBackground(null);
 			}
