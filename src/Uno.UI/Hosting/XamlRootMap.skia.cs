@@ -2,16 +2,15 @@
 
 using System;
 using System.Collections.Generic;
-using Uno.UI.Runtime.Skia.GTK.Hosting;
 using Windows.UI.Xaml;
 
-namespace Uno.UI.XamlHost.Skia.GTK.Hosting;
+namespace Uno.UI.Hosting;
 
-internal static class XamlRootMap
+internal static class XamlRootMap<THost> where THost : IXamlRootHost
 {
-	private static readonly Dictionary<XamlRoot, IGtkXamlRootHost> _map = new();
+	private static readonly Dictionary<XamlRoot, THost> _map = new();
 
-	internal static void Register(XamlRoot xamlRoot, IGtkXamlRootHost host)
+	internal static void Register(XamlRoot xamlRoot, THost host)
 	{
 		if (xamlRoot is null)
 		{
@@ -44,6 +43,6 @@ internal static class XamlRootMap
 		}
 	}
 
-	internal static IGtkXamlRootHost? GetHostForRoot(XamlRoot xamlRoot) =>
-		_map.TryGetValue(xamlRoot, out var host) ? host : null;
+	internal static THost? GetHostForRoot(XamlRoot xamlRoot) =>
+		_map.TryGetValue(xamlRoot, out var host) ? host : default;
 }

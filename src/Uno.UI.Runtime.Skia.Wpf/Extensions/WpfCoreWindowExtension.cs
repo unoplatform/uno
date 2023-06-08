@@ -1,28 +1,13 @@
 ﻿#nullable enable
 
-using System;
-using Windows.Devices.Input;
 using Windows.UI.Core;
-using Uno.Extensions;
-using MouseEventArgs = System.Windows.Input.MouseEventArgs;
-using WpfApplication = System.Windows.Application;
-using WpfWindow = System.Windows.Window;
-using System.Threading;
-using System.Windows;
 using System.Windows.Input;
-using System.Windows.Interop;
-using System.Windows.Media;
-using Windows.UI.Input;
-using MouseDevice = System.Windows.Input.MouseDevice;
-using System.Reflection;
-using Windows.System;
 using Uno.UI.Skia.Platform.Extensions;
 using Uno.Foundation.Logging;
-using Uno.UI.Runtime.Skia.Wpf.Constants;
-using Uno.UI.Runtime.Skia.Wpf.Input;
 using WpfCanvas = System.Windows.Controls.Canvas;
 using Windows.UI.Xaml;
-using Uno.UI.XamlHost.Skia.Wpf.Hosting;
+using Uno.UI.Hosting;
+using Uno.UI.Runtime.Skia.Wpf.Hosting;
 
 namespace Uno.UI.Skia.Platform
 {
@@ -64,7 +49,7 @@ namespace Uno.UI.Skia.Platform
 		}
 
 		internal static WpfCanvas? GetOverlayLayer(XamlRoot xamlRoot) =>
-			XamlRootMap.GetHostForRoot(xamlRoot)?.NativeOverlayLayer;
+			XamlRootMap<IWpfXamlRootHost>.GetHostForRoot(xamlRoot)?.NativeOverlayLayer;
 
 		public bool IsNativeElement(object content)
 			=> content is System.Windows.UIElement;
