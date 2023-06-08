@@ -1494,6 +1494,8 @@
 			<Member fullName="System.Double Windows.UI.Xaml.Media.Animation.EasingFunctionBase.Ease(System.Double currentTime, System.Double startValue, System.Double finalValue, System.Double duration)" reason="API Alignment" />
 			<Member fullName="System.Int32 Windows.UI.Xaml.Media.Animation.PowerEase.get_Power()" reason="API Alignment" />
 			<Member fullName="System.Void Windows.UI.Xaml.Media.Animation.PowerEase.set_Power(System.Int32 value)" reason="API Alignment" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Window.SetTitleBar(Microsoft.UI.Xaml.UIElement value)" reason="Api alignments" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.VirtualizingLayout.OnItemsChangedCore(Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext context, System.Object source, Microsoft.UI.Xaml.Interop.NotifyCollectionChangedEventArgs args)" reason="Api alignments" />
 
 			<!-- BEGIN Skia Adjustments -->
 			<Member fullName="System.Void Uno.UI.Runtime.Skia.GtkHost..ctor(System.Func`1&lt;Windows.UI.Xaml.Application&gt; appBuilder, System.String[] args)" reason="API Alignment" />
