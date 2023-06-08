@@ -294,6 +294,8 @@
               href: features/windows-applicationmodel-calls.md
             - name: PowerManager
               href: features/windows-system-power.md
+            - name: Proximity Sensor
+              href: features/proximity-sensor.md
             - name: Sharing
               href: features/windows-applicationmodel-datatransfer.md
             - name: SMS
