@@ -179,56 +179,86 @@ public partial class MediaTransportControls // Strings
 public partial class MediaTransportControls // Definitions
 {
 #pragma warning disable IDE0051 // Remove unused private members
+	// HNS Hunderds of Nano Seconds used for conversion in timer duration
 	private const uint HNSPerSecond = 10000000;
+
+	// Control Panel Timout in secs, after timeout Control Panel will be hide.
 	private const double ControlPanelDisplayTimeoutInSecs = 3.0;
+
+	// Vertical Volume bar Timout in secs, after timout Vertical Volume bar will be hide.
 	private const double VerticalVolumeDisplayTimeoutInSecs = 3.0;
+
+	// Timer frequecy in second to update Seek bar.
 	private const double SeekbarPositionUpdateFreqInSecs = 0.250;
+
+	// Elapsed-Remaining Button used seeking interval defined in HNS
 	private const long TimeButtonUsedSeekIntervalInHNS = 300000000;
-	private const uint MaxTimeButtonTextLength = 9;  // [H]H:mm:ss time string has up to 8 chars; also include terminating '\0'
-	private const uint MaxProcessedLanguageNameLength = 50; // include terminating '\0'
+
+	// Maximum Time String length unsed in the Time Buttons.
+	// [H]H:mm:ss time string has up to 8 chars; also include terminating '\0'
+	private const uint MaxTimeButtonTextLength = 9;
+
+	// Maximum Processed Language length
+	// include terminating '\0'
+	private const uint MaxProcessedLanguageNameLength = 50;
+
+	// Maximum Dropout levels used in WinBlue
 	private const uint MaxDropuOutLevels = 10;
+
+	// Maximum PlayRate Counts
 	private const uint AvailablePlaybackRateCount = 5;
+
 	private static readonly IReadOnlyCollection<double> AvailablePlaybackRateList = new[] { 0.25, 0.5, 1.0, 1.5, 2.0 };
+
+	// Skip forward/Skip Backward time interval defined in Seconds
 	private const uint SkipForwardInSecs = 30;
 	private const uint SkipBackwardInSecs = 10;
+
 	private const int VolumeSliderWheelScrollStep = 2;
+
 	private const int MinSupportedPlayRate = 2;
 #pragma warning restore IDE0051 // Remove unused private members
 }
 
-[TemplatePart(Name = "RootGrid", Type = typeof(Grid))]
-[TemplatePart(Name = "PlayPauseButton", Type = typeof(Button))]
-[TemplatePart(Name = "PlayPauseButtonOnLeft", Type = typeof(Button))]
-[TemplatePart(Name = "VolumeMuteButton", Type = typeof(Button))]
-[TemplatePart(Name = "AudioMuteButton", Type = typeof(Button))]
-[TemplatePart(Name = "VolumeSlider", Type = typeof(Slider))]
-[TemplatePart(Name = "FullWindowButton", Type = typeof(Button))]
-[TemplatePart(Name = "CastButton", Type = typeof(Button))]
-[TemplatePart(Name = "ZoomButton", Type = typeof(Button))]
-[TemplatePart(Name = "PlaybackRateButton", Type = typeof(Button))]
-[TemplatePart(Name = "SkipForwardButton", Type = typeof(Button))]
-[TemplatePart(Name = "NextTrackButton", Type = typeof(Button))]
-[TemplatePart(Name = "FastForwardButton", Type = typeof(Button))]
-[TemplatePart(Name = "RewindButton", Type = typeof(Button))]
-[TemplatePart(Name = "PreviousTrackButton", Type = typeof(Button))]
-[TemplatePart(Name = "SkipBackwardButton", Type = typeof(Button))]
-[TemplatePart(Name = "StopButton", Type = typeof(Button))]
-[TemplatePart(Name = "AudioTracksSelectionButton", Type = typeof(Button))]
-[TemplatePart(Name = "CCSelectionButton", Type = typeof(Button))]
-[TemplatePart(Name = "TimeElapsedElement", Type = typeof(TextBlock))]
-[TemplatePart(Name = "TimeRemainingElement", Type = typeof(TextBlock))]
-[TemplatePart(Name = "ProgressSlider", Type = typeof(Slider))]
-[TemplatePart(Name = "BufferingProgressBar", Type = typeof(ProgressBar))]
-[TemplatePart(Name = "DownloadProgressIndicator", Type = typeof(ProgressBar))]
-[TemplatePart(Name = "ControlPanelGrid", Type = typeof(Grid))]
-[TemplatePart(Name = "ControlPanel_ControlPanelVisibilityStates_Border", Type = typeof(Border))]
-[TemplatePart(Name = "RepeatButton", Type = typeof(Button))]
-[TemplatePart(Name = "VolumeFlyout", Type = typeof(Flyout))]
-[TemplatePart(Name = "PlaybackRateFlyout", Type = typeof(Flyout))]
-[TemplatePart(Name = "PlaybackRateListView", Type = typeof(ListView))]
-[TemplatePart(Name = "CompactOverlayButton", Type = typeof(Button))]
-[TemplatePart(Name = "MediaTransportControls_Timeline_Border", Type = typeof(Border))]
-//[TemplatePart(Name = "HorizontalThumb", Type = typeof(Grid))]
+[TemplatePart(Name = TemplateParts.ControlPanelGrid, Type = typeof(Grid))]
+[TemplatePart(Name = TemplateParts.TimeElapsedElement, Type = typeof(TextBlock))]
+[TemplatePart(Name = TemplateParts.TimeRemainingElement, Type = typeof(TextBlock))]
+[TemplatePart(Name = TemplateParts.ProgressSlider, Type = typeof(Slider))]
+[TemplatePart(Name = TemplateParts.PlayPauseButton, Type = typeof(AppBarButton))]
+[TemplatePart(Name = TemplateParts.PlayPauseButtonOnLeft, Type = typeof(AppBarButton))]
+[TemplatePart(Name = TemplateParts.FullWindowButton, Type = typeof(AppBarButton))]
+[TemplatePart(Name = TemplateParts.ZoomButton, Type = typeof(AppBarButton))]
+[TemplatePart(Name = TemplateParts.ErrorTextBlock, Type = typeof(TextBlock))]
+[TemplatePart(Name = TemplateParts.MediaControlsCommandBar, Type = typeof(CommandBar))]
+[TemplatePart(Name = TemplateParts.VolumeFlyout, Type = typeof(Flyout))]
+[TemplatePart(Name = TemplateParts.HorizontalVolumeSlider, Type = typeof(Slider))]
+[TemplatePart(Name = TemplateParts.VerticalVolumeSlider, Type = typeof(Slider))]
+[TemplatePart(Name = TemplateParts.VolumeSlider, Type = typeof(Slider))]
+[TemplatePart(Name = TemplateParts.AudioSelectionButton, Type = typeof(AppBarButton))]
+[TemplatePart(Name = TemplateParts.AudioTracksSelectionButton, Type = typeof(AppBarButton))]
+[TemplatePart(Name = TemplateParts.AvailableAudioTracksMenuFlyout, Type = typeof(MenuFlyout))]
+[TemplatePart(Name = TemplateParts.AvailableAudioTracksMenuFlyoutTarget, Type = typeof(FrameworkElement))]
+[TemplatePart(Name = TemplateParts.CCSelectionButton, Type = typeof(AppBarButton))]
+[TemplatePart(Name = TemplateParts.PlaybackRateButton, Type = typeof(AppBarButton))]
+[TemplatePart(Name = TemplateParts.VolumeButton, Type = typeof(ToggleButton))]
+[TemplatePart(Name = TemplateParts.AudioMuteButton, Type = typeof(AppBarButton))]
+[TemplatePart(Name = TemplateParts.VolumeMuteButton, Type = typeof(AppBarButton))]
+[TemplatePart(Name = TemplateParts.BufferingProgressBar, Type = typeof(ProgressBar))]
+[TemplatePart(Name = TemplateParts.FastForwardButton, Type = typeof(AppBarButton))]
+[TemplatePart(Name = TemplateParts.RewindButton, Type = typeof(AppBarButton))]
+[TemplatePart(Name = TemplateParts.StopButton, Type = typeof(AppBarButton))]
+[TemplatePart(Name = TemplateParts.CastButton, Type = typeof(AppBarButton))]
+[TemplatePart(Name = TemplateParts.SkipForwardButton, Type = typeof(AppBarButton))]
+[TemplatePart(Name = TemplateParts.SkipBackwardButton, Type = typeof(AppBarButton))]
+[TemplatePart(Name = TemplateParts.NextTrackButton, Type = typeof(AppBarButton))]
+[TemplatePart(Name = TemplateParts.PreviousTrackButton, Type = typeof(AppBarButton))]
+[TemplatePart(Name = TemplateParts.RepeatButton, Type = typeof(AppBarToggleButton))]
+[TemplatePart(Name = TemplateParts.CompactOverlayButton, Type = typeof(AppBarButton))]
+[TemplatePart(Name = TemplateParts.LeftSeparator, Type = typeof(AppBarSeparator))]
+[TemplatePart(Name = TemplateParts.RightSeparator, Type = typeof(AppBarSeparator))]
+[TemplatePart(Name = TemplateParts.MoreButton, Type = typeof(Button))]
+[TemplatePart(Name = TemplateParts.DownloadProgressIndicator, Type = typeof(ProgressBar))]
+[TemplatePart(Name = TemplateParts.HorizontalThumb, Type = typeof(Thumb))]
 public partial class MediaTransportControls // Template Parts
 {
 	//
