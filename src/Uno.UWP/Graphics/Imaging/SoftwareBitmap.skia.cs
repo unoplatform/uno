@@ -54,58 +54,58 @@ namespace Windows.Graphics.Imaging
 
 	partial class SoftwareBitmap : IDisposable
 	{
-		private readonly SKBitmap bitmap;
+		private readonly SKBitmap _bitmap;
 
 		internal SoftwareBitmap(SKBitmap bitmap, bool isReadOnly = false)
 		{
-			this.bitmap = bitmap;
+			_bitmap = bitmap;
 			IsReadOnly = isReadOnly;
 		}
 
 		public SoftwareBitmap(global::Windows.Graphics.Imaging.BitmapPixelFormat format, int width, int height)
 		{
 			var info = new SKImageInfo(width, height, format.ToSKColorType());
-			bitmap = new SKBitmap(info);
+			_bitmap = new SKBitmap(info);
 		}
 
 		public SoftwareBitmap(global::Windows.Graphics.Imaging.BitmapPixelFormat format, int width, int height, global::Windows.Graphics.Imaging.BitmapAlphaMode alpha)
 		{
 			var info = new SKImageInfo(width, height, format.ToSKColorType(), alpha.ToSKAlphaType());
-			bitmap = new SKBitmap(info);
+			_bitmap = new SKBitmap(info);
 		}
 
 		public BitmapAlphaMode BitmapAlphaMode =>
-			bitmap.AlphaType.ToBitmapAlphaMode();
+			_bitmap.AlphaType.ToBitmapAlphaMode();
 
 		public BitmapPixelFormat BitmapPixelFormat =>
-			bitmap.ColorType.ToBitmapPixelFormat();
+			_bitmap.ColorType.ToBitmapPixelFormat();
 
 		public bool IsReadOnly { get; }
 
 		public int PixelHeight =>
-			bitmap.Height;
+			_bitmap.Height;
 
 		public int PixelWidth =>
-			bitmap.Width;
+			_bitmap.Width;
 
-		internal SKBitmap Bitmap => bitmap;
+		internal SKBitmap Bitmap => _bitmap;
 
 		public SoftwareBitmap GetReadOnlyView() =>
-			new SoftwareBitmap(bitmap, true);
+			new SoftwareBitmap(_bitmap, true);
 
-		public void CopyTo(SoftwareBitmap destination)
+		public void CopyTo(SoftwareBitmap bitmap)
 		{
-			if (destination.IsReadOnly)
+			if (bitmap.IsReadOnly)
 			{
-				throw new ArgumentException("Destionanion is ReadOnly", nameof(destination));
+				throw new ArgumentException("Destionanion is ReadOnly", nameof(bitmap));
 			}
-			using var canvas = new SKCanvas(destination.bitmap);
-			canvas.DrawBitmap(bitmap, 0, 0);
+			using var canvas = new SKCanvas(bitmap._bitmap);
+			canvas.DrawBitmap(_bitmap, 0, 0);
 			canvas.Flush();
 		}
 
 		public static SoftwareBitmap Copy(SoftwareBitmap source) =>
-			new SoftwareBitmap(source.bitmap.Copy(), false);
+			new SoftwareBitmap(source._bitmap.Copy(), false);
 
 		public static global::Windows.Graphics.Imaging.SoftwareBitmap CreateCopyFromBuffer(global::Windows.Storage.Streams.IBuffer source, global::Windows.Graphics.Imaging.BitmapPixelFormat format, int width, int height)
 		{
@@ -141,7 +141,7 @@ namespace Windows.Graphics.Imaging
 
 		public void Dispose()
 		{
-			bitmap?.Dispose();
+			_bitmap?.Dispose();
 		}
 	}
 }

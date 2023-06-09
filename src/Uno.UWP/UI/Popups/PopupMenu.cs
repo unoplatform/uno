@@ -22,13 +22,13 @@ namespace Windows.UI.Popups
 		}
 
 		[Uno.NotImplemented]
-		public Task<IUICommand> ShowForSelectionAsync(Rect selection)
+		public IAsyncOperation<IUICommand> ShowForSelectionAsync(Rect selection)
 		{
 			throw new NotImplementedException();
 		}
 
 		[Uno.NotImplemented]
-		public Task<IUICommand> ShowForSelectionAsync(
+		public IAsyncOperation<IUICommand> ShowForSelectionAsync(
 		  Rect selection,
 		  Placement preferredPlacement
 		)

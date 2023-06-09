@@ -218,7 +218,7 @@ namespace Windows.UI.Xaml.Documents
 #if !__WASM__  // handled natively in WASM/Html
 			if (NavigateUri != null)
 			{
-				Launcher.LaunchUriAsync(NavigateUri);
+				_ = Launcher.LaunchUriAsync(NavigateUri);
 			}
 #endif
 		}

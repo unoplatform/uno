@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 {
 	public partial class ToggleButtonAutomationPeer : ButtonBaseAutomationPeer, Provider.IToggleProvider
 	{
-		public ToggleButtonAutomationPeer(ToggleButton element) : base(element)
+		public ToggleButtonAutomationPeer(ToggleButton owner) : base(owner)
 		{
 		}
 

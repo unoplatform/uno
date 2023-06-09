@@ -76,7 +76,7 @@ namespace Windows.UI.Xaml.Controls
 
 		#region Content DependencyProperty
 
-		public virtual object Content
+		public object Content
 		{
 			get { return (object)GetValue(ContentProperty); }
 			set { SetValue(ContentProperty, value); }
@@ -666,7 +666,7 @@ namespace Windows.UI.Xaml.Controls
 			SetImplicitContent();
 		}
 
-		protected virtual void OnContentTemplateChanged(DataTemplate oldTemplate, DataTemplate newTemplate)
+		protected virtual void OnContentTemplateChanged(DataTemplate oldContentTemplate, DataTemplate newContentTemplate)
 		{
 			if (ContentTemplateRoot != null)
 			{
@@ -676,13 +676,13 @@ namespace Windows.UI.Xaml.Controls
 			SetUpdateTemplate();
 		}
 
-		private void OnContentTemplateSelectorChanged(DataTemplateSelector dataTemplateSelector1, DataTemplateSelector dataTemplateSelector2)
+		protected virtual void OnContentTemplateSelectorChanged(DataTemplateSelector oldContentTemplateSelector, DataTemplateSelector newContentTemplateSelector)
 		{
 		}
 
 		partial void UnregisterContentTemplateRoot();
 
-		public virtual View ContentTemplateRoot
+		public View ContentTemplateRoot
 		{
 			get
 			{

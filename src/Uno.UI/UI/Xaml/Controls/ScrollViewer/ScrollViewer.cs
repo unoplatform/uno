@@ -157,11 +157,11 @@ namespace Windows.UI.Xaml.Controls
 		#endregion
 
 		#region HorizontalScrollBarVisibility (Attached DP - inherited)
-		public static ScrollBarVisibility GetHorizontalScrollBarVisibility(DependencyObject obj)
-			=> (ScrollBarVisibility)obj.GetValue(HorizontalScrollBarVisibilityProperty);
+		public static ScrollBarVisibility GetHorizontalScrollBarVisibility(DependencyObject element)
+			=> (ScrollBarVisibility)element.GetValue(HorizontalScrollBarVisibilityProperty);
 
-		public static void SetHorizontalScrollBarVisibility(DependencyObject obj, ScrollBarVisibility value)
-			=> obj.SetValue(HorizontalScrollBarVisibilityProperty, value);
+		public static void SetHorizontalScrollBarVisibility(DependencyObject element, ScrollBarVisibility horizontalScrollBarVisibility)
+			=> element.SetValue(HorizontalScrollBarVisibilityProperty, horizontalScrollBarVisibility);
 
 		public ScrollBarVisibility HorizontalScrollBarVisibility
 		{
@@ -183,11 +183,11 @@ namespace Windows.UI.Xaml.Controls
 		#endregion
 
 		#region VerticalScrollBarVisibility (Attached DP - inherited)
-		public static ScrollBarVisibility GetVerticalScrollBarVisibility(DependencyObject obj)
-			=> (ScrollBarVisibility)obj.GetValue(VerticalScrollBarVisibilityProperty);
+		public static ScrollBarVisibility GetVerticalScrollBarVisibility(DependencyObject element)
+			=> (ScrollBarVisibility)element.GetValue(VerticalScrollBarVisibilityProperty);
 
-		public static void SetVerticalScrollBarVisibility(DependencyObject obj, ScrollBarVisibility value)
-			=> obj.SetValue(VerticalScrollBarVisibilityProperty, value);
+		public static void SetVerticalScrollBarVisibility(DependencyObject element, ScrollBarVisibility verticalScrollBarVisibility)
+			=> element.SetValue(VerticalScrollBarVisibilityProperty, verticalScrollBarVisibility);
 
 		public ScrollBarVisibility VerticalScrollBarVisibility
 		{
@@ -209,11 +209,11 @@ namespace Windows.UI.Xaml.Controls
 		#endregion
 
 		#region HorizontalScrollMode (Attached DP - inherited)
-		public static ScrollMode GetHorizontalScrollMode(DependencyObject obj)
-			=> (ScrollMode)obj.GetValue(HorizontalScrollModeProperty);
+		public static ScrollMode GetHorizontalScrollMode(DependencyObject element)
+			=> (ScrollMode)element.GetValue(HorizontalScrollModeProperty);
 
-		public static void SetHorizontalScrollMode(DependencyObject obj, ScrollMode value)
-			=> obj.SetValue(HorizontalScrollModeProperty, value);
+		public static void SetHorizontalScrollMode(DependencyObject element, ScrollMode horizontalScrollMode)
+			=> element.SetValue(HorizontalScrollModeProperty, horizontalScrollMode);
 
 		public ScrollMode HorizontalScrollMode
 		{
@@ -236,11 +236,11 @@ namespace Windows.UI.Xaml.Controls
 
 		#region VerticalScrollMode (Attached DP - inherited)
 
-		public static ScrollMode GetVerticalScrollMode(DependencyObject obj)
-			=> (ScrollMode)obj.GetValue(VerticalScrollModeProperty);
+		public static ScrollMode GetVerticalScrollMode(DependencyObject element)
+			=> (ScrollMode)element.GetValue(VerticalScrollModeProperty);
 
-		public static void SetVerticalScrollMode(DependencyObject obj, ScrollMode value)
-			=> obj.SetValue(VerticalScrollModeProperty, value);
+		public static void SetVerticalScrollMode(DependencyObject element, ScrollMode verticalScrollMode)
+			=> element.SetValue(VerticalScrollModeProperty, verticalScrollMode);
 
 		public ScrollMode VerticalScrollMode
 		{

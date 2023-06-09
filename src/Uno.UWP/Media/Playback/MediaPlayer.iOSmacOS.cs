@@ -200,7 +200,7 @@ namespace Windows.Media.Playback
 			});
 		}
 
-		protected virtual void InitializeSource()
+		private void InitializeSource()
 		{
 			PlaybackSession.NaturalDuration = TimeSpan.Zero;
 			PlaybackSession.PositionFromPlayer = TimeSpan.Zero;

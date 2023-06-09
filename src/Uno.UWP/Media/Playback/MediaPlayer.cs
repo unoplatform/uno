@@ -7,7 +7,7 @@ using Windows.Foundation;
 
 namespace Windows.Media.Playback
 {
-	public partial class MediaPlayer
+	public sealed partial class MediaPlayer
 	{
 		#region Properties
 

@@ -504,7 +504,7 @@ namespace <#= mixin.NamespaceName #>
 		[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnGenericPropertyUpdated))]
 		public static DependencyProperty MarginProperty { get ; } = CreateMarginProperty();
 
-		public virtual Thickness Margin
+		public Thickness Margin
 		{
 			get => GetMarginValue();
 			set => SetMarginValue(value);

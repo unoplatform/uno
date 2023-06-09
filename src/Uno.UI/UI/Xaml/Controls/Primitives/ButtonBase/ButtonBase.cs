@@ -174,19 +174,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			return baseValue;
 		}
 
-		public override View ContentTemplateRoot
-		{
-			get
-			{
-				return base.ContentTemplateRoot;
-			}
-			protected set
-			{
-				base.ContentTemplateRoot = value;
-
-				RegisterEvents();
-			}
-		}
+		private protected override void OnContentTemplateRootSet() => RegisterEvents();
 
 
 		// Might be changed if the method does not conflict in UnoViewGroup.

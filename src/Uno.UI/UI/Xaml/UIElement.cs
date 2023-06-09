@@ -52,7 +52,7 @@ namespace Windows.UI.Xaml
 
 		private Vector3 _translation = Vector3.Zero;
 
-		//private protected virtual void PrepareState() 
+		//private protected virtual void PrepareState()
 		//{
 		//	// This is part of the WinUI internal API and is invoked at the end of DXamlCore.GetPeerPrivate
 		//	// but to avoid invoking a virtual method in ctor ** THIS IS NOT INVOKED BY DEFAULT IN UNO **.

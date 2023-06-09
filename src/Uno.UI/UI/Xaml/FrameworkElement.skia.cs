@@ -90,7 +90,7 @@ namespace Windows.UI.Xaml
 		)]
 		public static DependencyProperty MarginProperty { get; } = CreateMarginProperty();
 
-		public virtual Thickness Margin
+		public Thickness Margin
 		{
 			get => GetMarginValue();
 			set => SetMarginValue(value);
