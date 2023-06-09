@@ -170,6 +170,8 @@ function Test-InstallWindowsSDK
             $sdkRoot = Get-ItemProperty -Path $WindowsSDKRegPath | Select-Object -ExpandProperty $WindowsSDKRegRootKey
             if ($sdkRoot)
             {
+                compact /c /s $sdkRoot | Out-Null
+
                 if (Test-Path $sdkRoot)
                 {
                     $refPath = Join-Path $sdkRoot "References\$WindowsSDKVersion"
