@@ -182,7 +182,9 @@
 		using a powershell command line
 		-->
 		<Exec Condition="'$(CI_Build)'=='true' and '$(NUGET_PACKAGES)'!=''"
-			  Command="powershell -Command &quot;Get-ChildItem -Path '$(NUGET_PACKAGES)' -Filter *.nupkg -Recurse | Remove-Item -Force -ErrorAction SilentlyContinue&quot;" />
+			  Command="powershell -Command &quot;Get-ChildItem -Path '$(NUGET_PACKAGES)' -Filter *.nupkg -Recurse | Remove-Item -Force -ErrorAction SilentlyContinue&quot;"
+			  ContinueOnError="true"
+			  IgnoreExitCode="true"/>
 
 	</Target>
 </Project>
