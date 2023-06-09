@@ -5,6 +5,8 @@ using Uno;
 using Uno.Devices.Sensors.Helpers;
 
 #if NET7_0_OR_GREATER
+using System.Runtime.InteropServices.JavaScript;
+
 using NativeMethods = __Windows.Devices.Sensors.Magnetometer.NativeMethods;
 #endif
 
@@ -70,6 +72,9 @@ namespace Windows.Devices.Sensors
 		/// <param name="y">Magnetic field Y</param>
 		/// <param name="z">Magnetic field Z</param>
 		/// <returns>0 - needed to bind method from WASM</returns>
+#if NET7_0_OR_GREATER
+		[JSExport]
+#endif
 		public static int DispatchReading(float x, float y, float z)
 		{
 			if (_instance == null)
