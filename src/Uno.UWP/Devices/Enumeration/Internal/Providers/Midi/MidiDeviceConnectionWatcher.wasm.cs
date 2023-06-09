@@ -57,6 +57,9 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 			}
 		}
 
+#if NET7_0_OR_GREATER
+		[JSExport]
+#endif
 		public static int DispatchStateChanged(string id, string name, bool isInput, bool isConnected)
 		{
 			if (isInput)
