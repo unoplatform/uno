@@ -171,4 +171,18 @@
 			<ServerAddress></ServerAddress>
 		</PropertyGroup>
 	</Target>
+
+	<Target Name="_CINugetCleanup">
+		<!-- Remove all nupkg-->
+		<Message Condition="'$(CI_Build)'=='true'"
+				 Text="Removing all nupkg files from the nuget cache ($(NUGET_PACKAGES))"
+				 Importance="high" />
+		<!-- 
+		Delete all *.nupkg from the NUGET_PACKAGES folders 
+		using a powershell command line
+		-->
+		<Exec Condition="'$(CI_Build)'=='true' and '$(NUGET_PACKAGES)'!=''"
+			  Command="powershell -Command &quot;Get-ChildItem -Path '$(NUGET_PACKAGES)' -Filter *.nupkg -Recurse | Remove-Item -Force -ErrorAction SilentlyContinue&quot;" />
+
+	</Target>
 </Project>
