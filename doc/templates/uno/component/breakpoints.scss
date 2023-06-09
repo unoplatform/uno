@@ -15,12 +15,12 @@
 // adapting to different screen sizes, for use in media queries.
 
 $grid-breakpoints: (xs: 0,
-        sm: 576px,
-        mobile: 767px,
+        sm: 375px,
+        mobile: 768px,
         md: 768px,
-        lg: 980px,
+        lg: 1024px,
         tablet: 1024px,
-        xl: 1200px) !default;
+        xl: 1440px) !default;
 
 // Name of the next breakpoint, or null for the last breakpoint.
 //
