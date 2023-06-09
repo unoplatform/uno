@@ -7,3 +7,12 @@ steps:
       packageType: sdk
       useGlobalJson: true
       includePreviewVersions: true
+
+  - powershell: |
+      $DotnetRoot = (Get-Command dotnet).Path.Replace('dotnet.exe', '')
+      echo "Compacting $DotnetRoot"
+      compact /c "/s:$DotnetRoot"
+
+    condition: and(succeeded(), eq( variables['Agent.OS'], 'Windows_NT' ))
+    displayName: Compress dotnet install folder
+
