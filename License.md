@@ -1,6 +1,6 @@
 # Uno Platform
 
-Copyright (c) nventive
+Copyright (c) Uno Platform Inc.
 
 All rights reserved. 
 
