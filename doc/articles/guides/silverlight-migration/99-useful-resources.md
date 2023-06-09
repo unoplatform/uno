@@ -1,3 +1,7 @@
+---
+uid: Uno.SilverlightMigration.UsefulResources
+---
+
 # Useful resources
 
 * Uno Platform:

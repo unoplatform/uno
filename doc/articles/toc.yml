@@ -62,9 +62,9 @@
             - name: How to deploy a WebAssembly app on Azure Static Web Apps
               href: guides/azure-static-webapps.md
             - name: How to integrate Uno.Material
-              href: guides/uno-material-walkthrough.md
+              href: external/uno.themes/doc/material-getting-started.md
             - name: How to integrate Uno.Cupertino
-              href: guides/uno-cupertino-walkthrough.md
+              href: external/uno.themes/doc/cupertino-getting-started.md
             - name: How to use Windows Community Toolkit
               href: uno-community-toolkit.md
             - name: How to add a splash screen
@@ -232,6 +232,8 @@
               href: controls/TimePicker.md
             - name: ToggleSwitch
               href: controls/ToggleSwitch.md
+            - name: WebView (WebView2)
+              href: controls/WebView.md
         - name: Non-UI APIs
           items:
             - name: Accelerometer
@@ -292,6 +294,8 @@
               href: features/windows-applicationmodel-calls.md
             - name: PowerManager
               href: features/windows-system-power.md
+            - name: Proximity Sensor
+              href: features/proximity-sensor.md
             - name: Sharing
               href: features/windows-applicationmodel-datatransfer.md
             - name: SMS
@@ -319,21 +323,21 @@
                 - name: ElevatedView
                   href: features/ElevatedView.md
                 - name: AdaptiveTrigger
-                - href: features/AdaptiveTrigger.md
+                  href: features/AdaptiveTrigger.md
                 - name: Other features
                   href: Uno.UI.Toolkit.md
             - name: Uno Material
-              topicHref: features/uno-material.md
+              topicHref: external/uno.themes/doc/material-getting-started.md
               items:
                 - name: Overview
-                  href: features/uno-material.md
+                  href: external/uno.themes/doc/material-getting-started.md
                 - name: Controls extra setup
-                  href: features/uno-material-controls-extra-setup.md
+                  href: external/uno.themes/doc/material-getting-started.md
             - name: Uno Cupertino
-              topicHref: features/uno-cupertino.md
+              topicHref: external/uno.themes/doc/cupertino-getting-started.md
               items:
                 - name: Overview
-                  href: features/uno-cupertino.md
+                  href: external/uno.themes/doc/cupertino-getting-started.md
             - name: Uno Islands
               href: guides/uno-islands.md
             - name: Working with the Skia+GTK head
@@ -406,10 +410,14 @@
           items:
             - name: Troubleshooting build errors
               href: uno-builds-troubleshooting.md
+            - name: Build error codes
+              href: uno-build-error-codes.md
             - name: 'Debugging C# on WASM'
               href: debugging-wasm.md
             - name: XAML Hot Reload
               href: features/working-with-xaml-hot-reload.md
+            - name: VS Code Advanced Mobile Debugging
+              href: features/vscode-advanced-mobile-debugging.md
         - name: Supported 3rd-party libraries
           href: supported-libraries.md
         - name: Performance
@@ -418,6 +426,7 @@
               href: Uno-UI-Performance.md
             - name: How to profile applications
               href: guides/profiling-applications.md
+              
         - name: Tooling
           items:
             - name: Uno WebAssembly Bootstrapper
@@ -426,6 +435,10 @@
               href: external/uno.check/doc/toc.yml
             - name: Xaml Merging
               href: external/uno.xamlmerge.task/doc/toc.yml
+            - name: Uno Resizetizer
+              href: external/uno.resizetizer/doc/toc.yml
+            - name: Uno.UITest
+              href: external/uno.uitest/doc/toc.yml
 
     - name: Reference
       items:
@@ -527,7 +540,7 @@
             href: uno-development/Uno-UI-XAML-ResourceTrimming.md
 
 - name: Extensions
-  topicHref: external/uno.extensions/doc/Overview/ExtensionsOverviewAndGettingStarted.html
+  topicHref: external/uno.extensions/doc/ExtensionsOverview.md
   href: external/uno.extensions/doc/toc.yml
 - name: Themes
   topicHref: external/uno.themes/doc/themes-overview.html

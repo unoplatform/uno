@@ -2,6 +2,7 @@
 using Uno.Foundation.Logging;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Text;
 using System.Threading;
@@ -64,14 +65,35 @@ namespace Windows.UI.Xaml.Media
 		internal bool IsOpened => _imageData.HasData;
 
 		#region Implementers API
+		/// <summary>
+		/// Override to provide the capability of concrete ImageSource to open synchronously.
+		/// </summary>
+		/// <param name="targetWidth">The width of the image that will render this ImageSource.</param>
+		/// <param name="targetHeight">The width of the image that will render this ImageSource.</param>
+		/// <param name="image">Returned image data.</param>
+		/// <returns>True if opening synchronously is possible.</returns>
+		/// <remarks>
+		/// <paramref name="targetWidth"/> and <paramref name="targetHeight"/> can be used to improve performance by fetching / decoding only the required size.
+		/// Depending on stretching, only one of each can be provided.
+		/// </remarks>
 		private protected virtual bool TryOpenSourceSync(int? targetWidth, int? targetHeight, out ImageData image)
 		{
 			image = default;
 			return false;
 		}
 
-		private protected virtual bool TryOpenSourceAsync(CancellationToken ct, int? targetWidth, int? targetHeight,
-			out Task<ImageData> asyncImage)
+		/// <summary>
+		/// Override to provide the capability of concrete ImageSource to open asynchronously.
+		/// </summary>
+		/// <param name="targetWidth">The width of the image that will render this ImageSource.</param>
+		/// <param name="targetHeight">The width of the image that will render this ImageSource.</param>
+		/// <param name="asyncImage">Async task for image data retrieval.</param>
+		/// <returns>True if opening asynchronously is possible.</returns>
+		/// <remarks>
+		/// <paramref name="targetWidth"/> and <paramref name="targetHeight"/> can be used to improve performance by fetching / decoding only the required size.
+		/// Depending on stretching, only one of each can be provided.
+		/// </remarks>
+		private protected virtual bool TryOpenSourceAsync(CancellationToken ct, int? targetWidth, int? targetHeight, [NotNullWhen(true)] out Task<ImageData> asyncImage)
 		{
 			asyncImage = default;
 			return false;
@@ -144,8 +166,6 @@ namespace Windows.UI.Xaml.Media
 			}
 
 			var listeners = _subscriptions.ToList();
-
-
 			foreach (var listener in listeners)
 			{
 				listener(data);

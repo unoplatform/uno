@@ -31,6 +31,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			public const string Documents = BaseXamlNamespace + ".Documents";
 			public const string Media = BaseXamlNamespace + ".Media";
 			public const string MediaAnimation = BaseXamlNamespace + ".Media.Animation";
+			public const string MediaImaging = BaseXamlNamespace + ".Media.Imaging";
 			public const string Shapes = BaseXamlNamespace + ".Shapes";
 			public const string Input = BaseXamlNamespace + ".Input";
 			public const string Automation = BaseXamlNamespace + ".Automation";
@@ -38,10 +39,15 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			public static readonly string[] PresentationNamespaces =
 			{
 				Controls,
+#if HAS_UNO_WINUI
+				RootWUINamespace + ".Xaml.Controls", // NavigationViewList is in Windows.UI.Xaml.Controls even in WinUI tree
+#endif
 				Primitives,
 				Shapes,
+				Input,
 				Media,
 				MediaAnimation,
+				MediaImaging,
 				RootWUINamespace,
 				BaseXamlNamespace,
 				Data,

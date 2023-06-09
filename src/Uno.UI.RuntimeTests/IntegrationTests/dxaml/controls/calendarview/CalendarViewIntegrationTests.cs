@@ -1817,7 +1817,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			await WindowHelper.WaitForIdle();
 			await RunOnUIThread(() =>
 			{
-				var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement());
+				var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
 				CalendarHelper.DumpDate(focusedElement.Date, "Focus starts from ");
 				VERIFY_IS_TRUE(comparer(focusedElement.Date, minDate));
 			});
@@ -1827,7 +1827,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			await WindowHelper.WaitForIdle();
 			await RunOnUIThread(() =>
 			{
-				var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement());
+				var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
 				CalendarHelper.DumpDate(focusedElement.Date, "Pressed down twice, now focus is on ");
 				VERIFY_IS_TRUE(comparer(focusedElement.Date, ConvertToDateTime(1, 2014, 9, 17)));
 			});
@@ -1837,7 +1837,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			await WindowHelper.WaitForIdle();
 			await RunOnUIThread(() =>
 			{
-				var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement());
+				var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
 				CalendarHelper.DumpDate(focusedElement.Date, "Pressed left 4 times, now focus is on ");
 				VERIFY_IS_TRUE(comparer(focusedElement.Date, ConvertToDateTime(1, 2014, 9, 13)));
 			});
@@ -1846,7 +1846,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			await WindowHelper.WaitForIdle();
 			await RunOnUIThread(() =>
 			{
-				var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement());
+				var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
 				CalendarHelper.DumpDate(focusedElement.Date, "Pressed right once, now focus is on ");
 				VERIFY_IS_TRUE(comparer(focusedElement.Date, ConvertToDateTime(1, 2014, 9, 14)));
 			});
@@ -1855,7 +1855,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			await WindowHelper.WaitForIdle();
 			await RunOnUIThread(() =>
 			{
-				var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement());
+				var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
 				CalendarHelper.DumpDate(focusedElement.Date, "Pressed up once, now focus is on ");
 				VERIFY_IS_TRUE(comparer(focusedElement.Date, ConvertToDateTime(1, 2014, 9, 7)));
 			});
@@ -1864,7 +1864,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			await WindowHelper.WaitForIdle();
 			await RunOnUIThread(() =>
 			{
-				var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement());
+				var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
 				CalendarHelper.DumpDate(focusedElement.Date, "Pressed home once, now focus is on ");
 				// note we should be at 9/1 but the first day is 9/3.
 				VERIFY_IS_TRUE(comparer(focusedElement.Date, ConvertToDateTime(1, 2014, 9, 3)));
@@ -1874,7 +1874,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			await WindowHelper.WaitForIdle();
 			await RunOnUIThread(() =>
 			{
-				var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement());
+				var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
 				CalendarHelper.DumpDate(focusedElement.Date, "Pressed home again, now focus is on ");
 				VERIFY_IS_TRUE(comparer(focusedElement.Date, ConvertToDateTime(1, 2014, 9, 3)));
 			});
@@ -1883,7 +1883,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			await WindowHelper.WaitForIdle();
 			await RunOnUIThread(() =>
 			{
-				var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement());
+				var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
 				CalendarHelper.DumpDate(focusedElement.Date, "Pressed end once, now focus is on ");
 				VERIFY_IS_TRUE(comparer(focusedElement.Date, ConvertToDateTime(1, 2014, 9, 30)));
 			});
@@ -1892,7 +1892,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			await WindowHelper.WaitForIdle();
 			await RunOnUIThread(() =>
 			{
-				var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement());
+				var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
 				CalendarHelper.DumpDate(focusedElement.Date, "Pressed end again, now focus is on ");
 				VERIFY_IS_TRUE(comparer(focusedElement.Date, ConvertToDateTime(1, 2014, 9, 30)));
 			});
@@ -1909,7 +1909,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			await WindowHelper.WaitForIdle();
 			await RunOnUIThread(() =>
 			{
-				var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement());
+				var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
 				CalendarHelper.DumpDate(focusedElement.Date,
 					"Pressed pagedown once followed by right once, now focus is on ");
 				VERIFY_IS_TRUE(comparer(focusedElement.Date, ConvertToDateTime(1, 2014, 10, 31)));
@@ -1919,7 +1919,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			await WindowHelper.WaitForIdle();
 			await RunOnUIThread(() =>
 			{
-				var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement());
+				var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
 				CalendarHelper.DumpDate(focusedElement.Date,
 					"Pressed pagedown once followed by right once, now focus is on ");
 				VERIFY_IS_TRUE(comparer(focusedElement.Date, ConvertToDateTime(1, 2014, 9, 30)));
@@ -1929,7 +1929,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			await WindowHelper.WaitForIdle();
 			await RunOnUIThread(() =>
 			{
-				var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement());
+				var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
 				CalendarHelper.DumpDate(focusedElement.Date,
 					"Pressed pagedown once followed by right once, now focus is on ");
 				VERIFY_IS_TRUE(comparer(focusedElement.Date, ConvertToDateTime(1, 2014, 10, 30)));
@@ -1976,7 +1976,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 		//	await WindowHelper.WaitForIdle();
 		//	await RunOnUIThread(() =>
 		//	{
-		//		var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement());
+		//		var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
 		//		CalendarHelper.DumpDate(focusedElement.Date, "Focus starts from ");
 		//		VERIFY_IS_TRUE(comparer(focusedElement.Date, minDate));
 		//	});
@@ -1986,7 +1986,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 		//	await WindowHelper.WaitForIdle();
 		//	await RunOnUIThread(() =>
 		//	{
-		//		var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement());
+		//		var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
 		//		CalendarHelper.DumpDate(focusedElement.Date, "Pressed down twice, now focus is on ");
 		//		VERIFY_IS_TRUE(comparer(focusedElement.Date, ConvertToDateTime(1, 2014, 9, 17)));
 		//	});
@@ -1997,7 +1997,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 		//	await WindowHelper.WaitForIdle();
 		//	await RunOnUIThread(() =>
 		//	{
-		//		var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement());
+		//		var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
 		//		CalendarHelper.DumpDate(focusedElement.Date, "Pressed left 3 times, now focus is on ");
 		//		VERIFY_IS_TRUE(comparer(focusedElement.Date, ConvertToDateTime(1, 2014, 9, 14)));
 		//	});
@@ -2006,7 +2006,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 		//	await WindowHelper.WaitForIdle();
 		//	await RunOnUIThread(() =>
 		//	{
-		//		var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement());
+		//		var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
 		//		CalendarHelper.DumpDate(focusedElement.Date, "Pressed left again, now focus is on ");
 		//		VERIFY_IS_TRUE(comparer(focusedElement.Date, ConvertToDateTime(1, 2014, 9, 14)));
 		//	});
@@ -2020,7 +2020,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 		//	await WindowHelper.WaitForIdle();
 		//	await RunOnUIThread(() =>
 		//	{
-		//		var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement());
+		//		var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
 		//		CalendarHelper.DumpDate(focusedElement.Date, "Pressed right 6 times, now focus is on ");
 		//		VERIFY_IS_TRUE(comparer(focusedElement.Date, ConvertToDateTime(1, 2014, 9, 20)));
 		//	});
@@ -2029,7 +2029,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 		//	await WindowHelper.WaitForIdle();
 		//	await RunOnUIThread(() =>
 		//	{
-		//		var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement());
+		//		var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
 		//		CalendarHelper.DumpDate(focusedElement.Date, "Pressed right again, now focus is on ");
 		//		VERIFY_IS_TRUE(comparer(focusedElement.Date, ConvertToDateTime(1, 2014, 9, 20)));
 		//	});
@@ -2038,7 +2038,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 		//	await WindowHelper.WaitForIdle();
 		//	await RunOnUIThread(() =>
 		//	{
-		//		var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement());
+		//		var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
 		//		CalendarHelper.DumpDate(focusedElement.Date, "Pressed up once, now focus is on ");
 		//		VERIFY_IS_TRUE(comparer(focusedElement.Date, ConvertToDateTime(1, 2014, 9, 13)));
 		//	});
@@ -2084,7 +2084,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			await RunOnUIThread(() =>
 			{
 				CalendarHelper.CheckFocusedItem();
-				var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement());
+				var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
 				CalendarHelper.DumpDate(focusedElement.Date, "Focus starts from ");
 				VERIFY_IS_TRUE(comparer(focusedElement.Date, minDate));
 			});
@@ -2096,7 +2096,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 				// Cinch fails here - the focusedElement is not a CalendarVIewDayItem, however the focus should be still on the calendarViewDayItem and it is true locally.
 				// add a check to see where is the focus now.
 				CalendarHelper.CheckFocusedItem();
-				var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement());
+				var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
 				CalendarHelper.DumpDate(focusedElement.Date, "Pressed down, now focus is on ");
 				VERIFY_IS_TRUE(comparer(focusedElement.Date, minDate));
 			});
@@ -2106,7 +2106,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			await RunOnUIThread(() =>
 			{
 				CalendarHelper.CheckFocusedItem();
-				var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement());
+				var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
 				CalendarHelper.DumpDate(focusedElement.Date, "Pressed up, now focus is on ");
 				VERIFY_IS_TRUE(comparer(focusedElement.Date, minDate));
 			});
@@ -2117,7 +2117,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			await RunOnUIThread(() =>
 			{
 				CalendarHelper.CheckFocusedItem();
-				var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement());
+				var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
 				CalendarHelper.DumpDate(focusedElement.Date, "Pressed right, now focus is on ");
 				VERIFY_IS_TRUE(comparer(focusedElement.Date, minDate));
 			});
@@ -2127,7 +2127,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			await RunOnUIThread(() =>
 			{
 				CalendarHelper.CheckFocusedItem();
-				var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement());
+				var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
 				CalendarHelper.DumpDate(focusedElement.Date, "Pressed left, now focus is on ");
 				VERIFY_IS_TRUE(comparer(focusedElement.Date, minDate));
 			});
@@ -2222,7 +2222,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 				await WindowHelper.WaitForIdle();
 				await RunOnUIThread(() =>
 				{
-					var focusedElement = Input.FocusManager.GetFocusedElement();
+					var focusedElement = Input.FocusManager.GetFocusedElement(WindowHelper.XamlRoot);
 					VERIFY_IS_TRUE(!IsCalendarItem(focusedElement));
 				});
 
@@ -2231,7 +2231,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 				await WindowHelper.WaitForIdle();
 				await RunOnUIThread(() =>
 				{
-					var focusedElement = Input.FocusManager.GetFocusedElement();
+					var focusedElement = Input.FocusManager.GetFocusedElement(WindowHelper.XamlRoot);
 					VERIFY_IS_TRUE(IsCalendarItem(focusedElement));
 				});
 
@@ -2240,7 +2240,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 				await WindowHelper.WaitForIdle();
 				await RunOnUIThread(() =>
 				{
-					var focusedElement = Input.FocusManager.GetFocusedElement();
+					var focusedElement = Input.FocusManager.GetFocusedElement(WindowHelper.XamlRoot);
 					VERIFY_IS_TRUE(!IsCalendarItem(focusedElement));
 				});
 
@@ -2249,7 +2249,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 				await WindowHelper.WaitForIdle();
 				await RunOnUIThread(() =>
 				{
-					var focusedElement = Input.FocusManager.GetFocusedElement();
+					var focusedElement = Input.FocusManager.GetFocusedElement(WindowHelper.XamlRoot);
 					VERIFY_IS_TRUE(IsCalendarItem(focusedElement));
 				});
 			}
@@ -2296,7 +2296,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			await RunOnUIThread(() =>
 			{
 				CalendarHelper.CheckFocusedItem();
-				var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement());
+				var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
 				CalendarHelper.DumpDate(focusedElement.Date, "Focus starts from ");
 				VERIFY_IS_TRUE(comparer(focusedElement.Date, minDate));
 			});
@@ -2308,7 +2308,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			{
 				CalendarHelper.CheckFocusedItem();
 				// the focused element is calendar monthitem, which is not public, we can not verify the date of that item
-				VERIFY_IS_TRUE(IsCalendarItem(Input.FocusManager.GetFocusedElement()));
+				VERIFY_IS_TRUE(IsCalendarItem(Input.FocusManager.GetFocusedElement(WindowHelper.XamlRoot)));
 				VERIFY_IS_TRUE(cv.DisplayMode == CalendarViewDisplayMode.Year);
 			});
 
@@ -2319,7 +2319,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			{
 				CalendarHelper.CheckFocusedItem();
 				// the focused element is calendar yearitem, which is not public, we can not verify the date of that item
-				VERIFY_IS_TRUE(IsCalendarItem(Input.FocusManager.GetFocusedElement()));
+				VERIFY_IS_TRUE(IsCalendarItem(Input.FocusManager.GetFocusedElement(WindowHelper.XamlRoot)));
 				VERIFY_IS_TRUE(cv.DisplayMode == CalendarViewDisplayMode.Decade);
 			});
 
@@ -2330,7 +2330,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			{
 				CalendarHelper.CheckFocusedItem();
 				// nothing is changed this time.
-				VERIFY_IS_TRUE(IsCalendarItem(Input.FocusManager.GetFocusedElement()));
+				VERIFY_IS_TRUE(IsCalendarItem(Input.FocusManager.GetFocusedElement(WindowHelper.XamlRoot)));
 				VERIFY_IS_TRUE(cv.DisplayMode == CalendarViewDisplayMode.Decade);
 			});
 
@@ -2340,7 +2340,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			await RunOnUIThread(() =>
 			{
 				CalendarHelper.CheckFocusedItem();
-				VERIFY_IS_TRUE(IsCalendarItem(Input.FocusManager.GetFocusedElement()));
+				VERIFY_IS_TRUE(IsCalendarItem(Input.FocusManager.GetFocusedElement(WindowHelper.XamlRoot)));
 				VERIFY_IS_TRUE(cv.DisplayMode == CalendarViewDisplayMode.Year);
 			});
 
@@ -2351,7 +2351,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			await RunOnUIThread(() =>
 			{
 				CalendarHelper.CheckFocusedItem();
-				var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement());
+				var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
 				CalendarHelper.DumpDate(focusedElement.Date, "Pressed right, ctrl + down, now focus is on ");
 				VERIFY_IS_TRUE(comparer(focusedElement.Date, ConvertToDateTime(1, 2015, 2, 28)));
 				VERIFY_IS_TRUE(cv.DisplayMode == CalendarViewDisplayMode.Month);
@@ -2363,7 +2363,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			await RunOnUIThread(() =>
 			{
 				CalendarHelper.CheckFocusedItem();
-				var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement());
+				var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
 				CalendarHelper.DumpDate(focusedElement.Date, "Pressed ctrl + down, now focus is on ");
 				VERIFY_IS_TRUE(comparer(focusedElement.Date, ConvertToDateTime(1, 2015, 2, 28)));
 				VERIFY_IS_TRUE(cv.DisplayMode == CalendarViewDisplayMode.Month);
@@ -4114,7 +4114,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			await RunOnUIThread(() =>
 			{
 				CalendarHelper.CheckFocusedItem();
-				var focusedItem = CalendarViewDayItem(Input.FocusManager.GetFocusedElement());
+				var focusedItem = CalendarViewDayItem(Input.FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
 				TestServices.VERIFY_IS_NOT_NULL(focusedItem);
 				// before this fix, it will focus on first item.
 				VERIFY_ARE_EQUAL(focusedItem, secondItem);
@@ -4137,7 +4137,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 
 			await RunOnUIThread(() =>
 			{
-				var focusedItem = (CalendarViewDayItem)(Input.FocusManager.GetFocusedElement());
+				var focusedItem = (CalendarViewDayItem)(Input.FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
 				VERIFY_IS_NULL(focusedItem);
 			});
 
@@ -4593,7 +4593,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 			await RunOnUIThread(() =>
 			{
 				CheckFocusedItem();
-				var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement());
+				var focusedElement = CalendarViewDayItem(Input.FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
 				var monthPanel = CalendarPanel(helper.GetTemplateChild("MonthViewPanel"));
 				var itemJan30 = CalendarViewDayItem(monthPanel.Children.GetAt(29));
 				VERIFY_ARE_EQUAL(focusedElement, itemJan30);

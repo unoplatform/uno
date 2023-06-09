@@ -12,7 +12,7 @@ namespace Windows.UI.Xaml.Controls
 {
 	internal class TextBoxView
 	{
-		private readonly ITextBoxViewExtension? _textBoxExtension;
+		private readonly IOverlayTextBoxViewExtension? _textBoxExtension;
 
 		private readonly WeakReference<TextBox> _textBox;
 		private readonly bool _isPasswordBox;
@@ -33,7 +33,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		internal ITextBoxViewExtension? Extension => _textBoxExtension;
+		internal IOverlayTextBoxViewExtension? Extension => _textBoxExtension;
 
 		public TextBox? TextBox
 		{
@@ -55,19 +55,9 @@ namespace Windows.UI.Xaml.Controls
 
 		internal void SetTextNative(string text)
 		{
-			// TODO: Inheritance hierarchy is wrong in Uno. PasswordBox shouldn't inherit TextBox.
-			// This needs to be moved to PasswordBox if it's separated from TextBox.
-			if (_isPasswordBox && !_isPasswordRevealed)
-			{
-				// TODO: PasswordChar isn't currently implemented. It should be used here when implemented.
-				DisplayBlock.Text = new string('•', text.Length);
-			}
-			else
-			{
-				DisplayBlock.Text = text;
-			}
+			SetDisplayBlockText(text);
 
-			_textBoxExtension?.SetTextNative(text);
+			_textBoxExtension?.SetText(text);
 		}
 
 		internal void Select(int start, int length)
@@ -78,13 +68,13 @@ namespace Windows.UI.Xaml.Controls
 		internal void OnForegroundChanged(Brush brush)
 		{
 			DisplayBlock.Foreground = brush;
-			_textBoxExtension?.SetForeground(brush);
+			_textBoxExtension?.UpdateProperties();
 		}
 
 		internal void OnSelectionHighlightColorChanged(SolidColorBrush brush)
 		{
 			DisplayBlock.SelectionHighlightColor = brush;
-			_textBoxExtension?.SetSelectionHighlightColor(brush);
+			_textBoxExtension?.UpdateProperties();
 		}
 
 		internal void OnFocusStateChanged(FocusState focusState)
@@ -110,10 +100,10 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		internal void SetIsPassword(bool isPassword)
+		internal void SetPasswordRevealState(PasswordRevealState revealState)
 		{
-			_isPasswordRevealed = !isPassword;
-			_textBoxExtension?.SetIsPassword(isPassword);
+			_isPasswordRevealed = revealState == PasswordRevealState.Revealed;
+			_textBoxExtension?.SetPasswordRevealState(revealState);
 		}
 
 		internal void UpdateTextFromNative(string newText)
@@ -122,7 +112,7 @@ namespace Windows.UI.Xaml.Controls
 			if (textBox != null)
 			{
 				var text = textBox.ProcessTextInput(newText);
-				DisplayBlock.Text = text;
+				SetDisplayBlockText(text);
 				if (text != newText)
 				{
 					SetTextNative(text);
@@ -131,5 +121,20 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public void UpdateMaxLength() => _textBoxExtension?.UpdateNativeView();
+
+		private void SetDisplayBlockText(string text)
+		{
+			// TODO: Inheritance hierarchy is wrong in Uno. PasswordBox shouldn't inherit TextBox.
+			// This needs to be moved to PasswordBox if it's separated from TextBox.
+			if (_isPasswordBox && !_isPasswordRevealed)
+			{
+				// TODO: PasswordChar isn't currently implemented. It should be used here when implemented.
+				DisplayBlock.Text = new string('•', text.Length);
+			}
+			else
+			{
+				DisplayBlock.Text = text;
+			}
+		}
 	}
 }

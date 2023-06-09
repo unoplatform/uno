@@ -7,8 +7,8 @@
     "UITest",
     "Android",
     "iOS",
-    "WebAssembly",
-    "dotnet-new"
+    "macOS",
+    "WebAssembly"
   ],
   "name": "Cross-Platform UI Tests Library",
   "identity": "Uno.Platform.UITestLibrary",

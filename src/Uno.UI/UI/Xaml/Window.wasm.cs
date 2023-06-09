@@ -11,6 +11,7 @@ using Uno.Extensions;
 using Uno.Foundation;
 using Uno.Foundation.Logging;
 using Uno.UI;
+using Uno.UI.Xaml;
 using Uno.UI.Xaml.Core;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
@@ -20,6 +21,10 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Media;
+
+#if NET7_0_OR_GREATER
+using System.Runtime.InteropServices.JavaScript;
+#endif
 
 namespace Windows.UI.Xaml
 {
@@ -93,6 +98,9 @@ namespace Windows.UI.Xaml
 			}
 		}
 
+#if NET7_0_OR_GREATER
+		[JSExport]
+#endif
 		[Preserve]
 		public static void Resize(double width, double height)
 		{
@@ -130,9 +138,9 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		partial void InternalActivate()
+		partial void ActivatingPartial()
 		{
-			WebAssemblyRuntime.InvokeJS("Uno.UI.WindowManager.current.activate();");
+			WindowManagerInterop.WindowActivate();
 		}
 
 		private void InternalSetContent(UIElement content)
@@ -164,7 +172,7 @@ namespace Windows.UI.Xaml
 					UIElement.LoadingRootElement(_rootVisual);
 				}
 
-				WebAssemblyRuntime.InvokeJS($"Uno.UI.WindowManager.current.setRootElement({_rootVisual.HtmlId});");
+				WindowManagerInterop.SetRootElement(_rootVisual.HtmlId);
 
 				if (FeatureConfiguration.FrameworkElement.WasmUseManagedLoadedUnloaded)
 				{
@@ -194,34 +202,20 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		internal IDisposable OpenPopup(Popup popup)
+		internal void DisplayFullscreen(UIElement content)
 		{
-			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
+			if (content == null)
 			{
-				this.Log().Debug($"Creating popup");
+				FullWindowMediaRoot.Child = null;
+				_rootBorder.Visibility = Visibility.Visible;
+				FullWindowMediaRoot.Visibility = Visibility.Collapsed;
 			}
-
-			if (PopupRoot == null)
+			else
 			{
-				throw new InvalidOperationException("PopupRoot is not initialized yet.");
+				FullWindowMediaRoot.Visibility = Visibility.Visible;
+				_rootBorder.Visibility = Visibility.Collapsed;
+				FullWindowMediaRoot.Child = content;
 			}
-
-			var popupPanel = popup.PopupPanel;
-			PopupRoot.Children.Add(popupPanel);
-
-			return new CompositeDisposable(
-				Disposable.Create(() =>
-				{
-
-					if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
-					{
-						this.Log().Debug($"Closing popup");
-					}
-
-					PopupRoot.Children.Remove(popupPanel);
-				}),
-				VisualTreeHelper.RegisterOpenPopup(popup)
-			);
 		}
 	}
 }

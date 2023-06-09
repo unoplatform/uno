@@ -646,7 +646,7 @@ namespace Windows.UI.Xaml
 		internal bool RaiseEvent(RoutedEvent routedEvent, RoutedEventArgs args, BubblingContext ctx = default)
 		{
 #if TRACE_ROUTED_EVENT_BUBBLING
-			Debug.Write($"{this.GetDebugIdentifier()} - [{routedEvent.Name.TrimEnd("Event")}] (ctx: {ctx})\r\n");
+			global::System.Diagnostics.Debug.Write($"{this.GetDebugIdentifier()} - [{routedEvent.Name.TrimEnd("Event")}-{args?.GetHashCode():X8}] (ctx: {ctx}){(this is Windows.UI.Xaml.Controls.ContentControl ctrl ? ctrl.DataContext : "")}\r\n");
 #endif
 
 			if (routedEvent.Flag == RoutedEventFlag.None)
@@ -719,11 +719,13 @@ namespace Windows.UI.Xaml
 				args.CanBubbleNatively = false;
 			}
 
-#if __IOS__ || __ANDROID__
-			var parent = this.FindFirstParent<UIElement>();
-#else
 			var parent = this.GetParent() as UIElement;
+#if __IOS__ || __ANDROID__
+			// This is for safety (legacy support) and should be removed.
+			// A common issue is the managed parent being cleared before unload event raised.
+			parent ??= this.FindFirstParent<UIElement>();
 #endif
+
 			// [11] A parent is defined?
 			if (parent == null)
 			{
@@ -845,12 +847,8 @@ namespace Windows.UI.Xaml
 			/// </remarks>
 			public bool IsInternal { get; set; }
 
-			public BubblingContext WithMode(BubblingMode mode) => new()
-			{
-				Mode = mode,
-				Root = Root,
-				IsInternal = IsInternal
-			};
+			public BubblingContext WithMode(BubblingMode mode)
+				=> this with { Mode = mode };
 
 			public override string ToString()
 				=> $"{Mode}{(IsInternal ? " *internal*" : "")}{(Root is { } r ? $" up to {Root.GetDebugName()}" : "")}";

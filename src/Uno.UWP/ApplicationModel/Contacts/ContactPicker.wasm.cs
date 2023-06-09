@@ -11,21 +11,37 @@ using Uno.ApplicationModel.Contacts.Internal;
 using Uno.Foundation;
 using Uno.Helpers.Serialization;
 
+#if NET7_0_OR_GREATER
+using NativeMethods = __Windows.ApplicationModel.Contacts.ContactPicker.NativeMethods;
+#endif
+
 namespace Windows.ApplicationModel.Contacts
 {
 	public partial class ContactPicker
 	{
+#if !NET7_0_OR_GREATER
 		private const string JsType = "Windows.ApplicationModel.Contacts.ContactPicker";
+#endif
 
 		private static Task<bool> IsSupportedTaskAsync(CancellationToken token)
 		{
+#if NET7_0_OR_GREATER
+			return Task.FromResult(NativeMethods.IsSupported());
+#else
 			var isSupportedString = WebAssemblyRuntime.InvokeJS($"{JsType}.isSupported()");
 			return Task.FromResult(bool.TryParse(isSupportedString, out var isSupported) && isSupported);
+#endif
 		}
 
 		private async Task<Contact[]> PickContactsAsync(bool multiple, CancellationToken token)
 		{
-			var pickResultJson = await WebAssemblyRuntime.InvokeAsync($"{JsType}.pickContacts({(multiple ? "true" : "false")})");
+			var pickResultJson = await
+#if NET7_0_OR_GREATER
+				NativeMethods.PickContactsAsync(multiple);
+#else
+				WebAssemblyRuntime.InvokeAsync($"{JsType}.pickContacts({(multiple ? "true" : "false")})");
+#endif
+
 			if (string.IsNullOrEmpty(pickResultJson) || token.IsCancellationRequested)
 			{
 				return Array.Empty<Contact>();

@@ -12,6 +12,11 @@ public partial class ContainerVisual : Visual
 
 	internal bool IsChildrenRenderOrderDirty { get; set; }
 
+	partial void InitializePartial()
+	{
+		Children.CollectionChanged += (s, e) => IsChildrenRenderOrderDirty = true;
+	}
+
 	internal IList<Visual> GetChildrenInRenderOrder()
 	{
 		if (IsChildrenRenderOrderDirty)

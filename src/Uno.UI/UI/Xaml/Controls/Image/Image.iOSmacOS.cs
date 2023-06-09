@@ -35,10 +35,10 @@ namespace Windows.UI.Xaml.Controls
 			{
 				_sourceImageSize = value;
 
-				if (Source is BitmapSource bitmapSource)
+				if (Source is BitmapImage bitmapImage)
 				{
-					bitmapSource.PixelWidth = (int)_sourceImageSize.Width;
-					bitmapSource.PixelHeight = (int)_sourceImageSize.Height;
+					bitmapImage.PixelWidth = (int)_sourceImageSize.Width;
+					bitmapImage.PixelHeight = (int)_sourceImageSize.Height;
 				}
 			}
 		}
@@ -166,7 +166,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 			else
 			{
-				OnImageFailed(_openedSource);
+				OnImageFailed(_openedSource, imageData.Error);
 			}
 		}
 

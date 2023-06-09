@@ -779,13 +779,13 @@ namespace Windows.UI.Xaml
 
 			if (ReferenceEquals(callback.Target, ActualInstance))
 			{
-				return propertyDetails.CallbackManager.RegisterCallback(callback);
+				return propertyDetails.RegisterCallback(callback);
 			}
 			else
 			{
 				CreateWeakDelegate(callback, out var weakCallback, out var weakDelegateRelease);
 
-				var cookie = propertyDetails.CallbackManager.RegisterCallback(weakCallback);
+				var cookie = propertyDetails.RegisterCallback(weakCallback);
 
 				return new RegisterPropertyChangedCallbackForPropertyConditionalDisposable(
 					callback,
@@ -993,7 +993,7 @@ namespace Windows.UI.Xaml
 				var weakCallbackRef = WeakReferencePool.RentWeakReference(this, callback);
 
 				ParentChangedCallback weakCallback =
-					(s, _, e) => (weakCallbackRef.Target as ParentChangedCallback)?.Invoke(s, key, e);
+					(s, _, e) => (!weakCallbackRef.IsDisposed ? weakCallbackRef.Target as ParentChangedCallback : null)?.Invoke(s, key, e);
 
 				_parentChangedCallbacks = _parentChangedCallbacks.Add(weakCallback);
 
@@ -1079,7 +1079,7 @@ namespace Windows.UI.Xaml
 		// Keep a list of inherited properties that have been updated so they can be reset.
 		HashSet<DependencyProperty> _updatedProperties = new HashSet<DependencyProperty>(DependencyPropertyComparer.Default);
 
-		private void OnParentPropertyChangedCallback(ManagedWeakReference sourceInstance, DependencyProperty parentProperty, DependencyPropertyChangedEventArgs args)
+		private void OnParentPropertyChangedCallback(ManagedWeakReference sourceInstance, DependencyProperty parentProperty, object? newValue)
 		{
 			var (localProperty, propertyDetails) = GetLocalPropertyDetails(parentProperty);
 
@@ -1096,7 +1096,7 @@ namespace Windows.UI.Xaml
 					_updatedProperties.Add(localProperty);
 				}
 
-				SetValue(localProperty, args.NewValue, DependencyPropertyValuePrecedences.Inheritance, propertyDetails);
+				SetValue(localProperty, newValue, DependencyPropertyValuePrecedences.Inheritance, propertyDetails);
 			}
 			else
 			{
@@ -1105,10 +1105,11 @@ namespace Windows.UI.Xaml
 				_inheritedForwardedProperties[parentProperty] = sourceInstance;
 
 				// If not, propagate the DP down to the child listeners, if any.
-				for (var storeIndex = 0; storeIndex < _childrenStores.Count; storeIndex++)
+				var localChildrenStores = _childrenStores;
+				for (var storeIndex = 0; storeIndex < localChildrenStores.Count; storeIndex++)
 				{
-					var child = _childrenStores[storeIndex];
-					child.OnParentPropertyChangedCallback(sourceInstance, parentProperty, args);
+					var child = localChildrenStores[storeIndex];
+					child.OnParentPropertyChangedCallback(sourceInstance, parentProperty, newValue);
 				}
 			}
 		}
@@ -1558,13 +1559,7 @@ namespace Windows.UI.Xaml
 				{
 					var prop = props[propertyIndex];
 
-					store.OnParentPropertyChangedCallback(instanceRef, prop, new DependencyPropertyChangedEventArgs(
-						prop,
-						null,
-						DependencyPropertyValuePrecedences.DefaultValue,
-						GetValue(prop),
-						DependencyPropertyValuePrecedences.Inheritance
-					));
+					store.OnParentPropertyChangedCallback(instanceRef, prop, GetValue(prop));
 				}
 			}
 
@@ -1574,9 +1569,10 @@ namespace Windows.UI.Xaml
 			}
 			else
 			{
-				for (var childStoreIndex = 0; childStoreIndex < _childrenStores.Count; childStoreIndex++)
+				var localChildrenStores = _childrenStores;
+				for (var childStoreIndex = 0; childStoreIndex < localChildrenStores.Count; childStoreIndex++)
 				{
-					var child = _childrenStores[childStoreIndex];
+					var child = localChildrenStores[childStoreIndex];
 					Propagate(child);
 				}
 			}
@@ -1618,15 +1614,9 @@ namespace Windows.UI.Xaml
 						store.OnParentPropertyChangedCallback(
 							sourceInstanceProperties.Value,
 							sourceInstanceProperties.Key,
-							new DependencyPropertyChangedEventArgs(
-								sourceInstanceProperties.Key,
-								null,
-								DependencyPropertyValuePrecedences.DefaultValue,
 
-								// Get the value from the parent that holds the master value
-								(sourceInstanceProperties.Value.Target as DependencyObject)?.GetValue(sourceInstanceProperties.Key),
-								DependencyPropertyValuePrecedences.Inheritance
-							)
+							// Get the value from the parent that holds the master value
+							(sourceInstanceProperties.Value.Target as DependencyObject)?.GetValue(sourceInstanceProperties.Key)
 						);
 					}
 
@@ -1636,9 +1626,10 @@ namespace Windows.UI.Xaml
 					}
 					else
 					{
-						for (var i = 0; i < _childrenStores.Count; i++)
+						var localChildrenStores = _childrenStores;
+						for (var i = 0; i < localChildrenStores.Count; i++)
 						{
-							Propagate(_childrenStores[i]);
+							Propagate(localChildrenStores[i]);
 						}
 					}
 				}
@@ -1770,7 +1761,7 @@ namespace Windows.UI.Xaml
 			var wr = WeakReferencePool.RentWeakReference(null, callback);
 
 			weakDelegate =
-				(instance, s, e) => (wr.Target as ExplicitPropertyChangedCallback)?.Invoke(instance, s, e);
+				(instance, s, e) => (!wr.IsDisposed ? wr.Target as ExplicitPropertyChangedCallback : null)?.Invoke(instance, s, e);
 
 			weakRelease = new WeakReferenceReturnDisposable(wr);
 		}
@@ -1878,9 +1869,10 @@ namespace Windows.UI.Xaml
 				// Raise the property change for generic handlers for inheritance
 				if (frameworkPropertyMetadata.Options.HasInherits())
 				{
-					for (var storeIndex = 0; storeIndex < _childrenStores.Count; storeIndex++)
+					var localChildrenStores = _childrenStores;
+					for (var storeIndex = 0; storeIndex < localChildrenStores.Count; storeIndex++)
 					{
-						CallChildCallback(_childrenStores[storeIndex], instanceRef, property, eventArgs);
+						CallChildCallback(localChildrenStores[storeIndex], instanceRef, property, eventArgs);
 					}
 				}
 			}
@@ -1917,12 +1909,13 @@ namespace Windows.UI.Xaml
 			}
 
 			// Raise the changes for the callbacks register through RegisterPropertyChangedCallback.
-			propertyDetails.CallbackManager.RaisePropertyChanged(actualInstanceAlias, eventArgs);
+			propertyDetails.RaisePropertyChanged(actualInstanceAlias, eventArgs);
 
 			// Raise the property change for generic handlers
-			for (var callbackIndex = 0; callbackIndex < _genericCallbacks.Data.Length; callbackIndex++)
+			var currentCallbacks = _genericCallbacks.Data;
+			for (var callbackIndex = 0; callbackIndex < currentCallbacks.Length; callbackIndex++)
 			{
-				var callback = _genericCallbacks.Data[callbackIndex];
+				var callback = currentCallbacks[callbackIndex];
 				callback.Invoke(instanceRef, property, eventArgs);
 			}
 		}
@@ -1938,7 +1931,8 @@ namespace Windows.UI.Xaml
 				{
 					childStore._parentUnregisteringInheritedProperties = true;
 				}
-				childStore.OnParentPropertyChangedCallback(instanceRef, property, eventArgs);
+
+				childStore.OnParentPropertyChangedCallback(instanceRef, property, eventArgs.NewValue);
 			}
 #if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
 			finally
@@ -2028,9 +2022,10 @@ namespace Windows.UI.Xaml
 				{
 					var args = new DependencyObjectParentChangedEventArgs(previousParent, value);
 
-					for (var parentCallbackIndex = 0; parentCallbackIndex < _parentChangedCallbacks.Data.Length; parentCallbackIndex++)
+					var currentCallbacks = _parentChangedCallbacks.Data;
+					for (var parentCallbackIndex = 0; parentCallbackIndex < currentCallbacks.Length; parentCallbackIndex++)
 					{
-						var handler = _parentChangedCallbacks.Data[parentCallbackIndex];
+						var handler = currentCallbacks[parentCallbackIndex];
 						handler.Invoke(actualInstanceAlias, null, args);
 					}
 				}

@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Private.Infrastructure;
 using Windows.UI.Xaml;
 
 namespace Uno.UI.RuntimeTests.Helpers
@@ -15,7 +16,7 @@ namespace Uno.UI.RuntimeTests.Helpers
 		/// </summary>
 		public static IDisposable UseDarkTheme()
 		{
-			var root = Window.Current.Content as FrameworkElement;
+			var root = TestServices.WindowHelper.XamlRoot.Content as FrameworkElement;
 			Assert.IsNotNull(root);
 			var currentTheme = Application.Current.RequestedTheme;
 			root.RequestedTheme = ElementTheme.Dark;

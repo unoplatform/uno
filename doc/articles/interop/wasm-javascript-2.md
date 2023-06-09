@@ -1,3 +1,7 @@
+---
+uid: Uno.Interop.WasmJavaScript2
+---
+
 # Embedding Existing JavaScript Components Into Uno-WASM - Part 2
 Let's create an app to integrate a Syntax Highlighter named [`PrismJS`](https://prismjs.com/). This library is simple and is self-contained - there's no external dependencies.
 # Integration of PrismJS in a project

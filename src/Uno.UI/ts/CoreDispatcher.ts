@@ -53,11 +53,10 @@
 		}
 
 		private static initMethods() {
-			if (Uno.UI.WindowManager.isHosted) {
-				console.debug("Hosted Mode: Skipping CoreDispatcher initialization ");
-			}
-			else {
-				if (!CoreDispatcher._coreDispatcherCallback) {
+			if (!CoreDispatcher._coreDispatcherCallback) {
+				if ((<any>globalThis).DotnetExports !== undefined) {
+					CoreDispatcher._coreDispatcherCallback = (<any>globalThis).DotnetExports.UnoUIDispatching.Uno.UI.Dispatching.CoreDispatcher.DispatcherCallback;
+				} else {
 					CoreDispatcher._coreDispatcherCallback = (<any>Module).mono_bind_static_method("[Uno.UI.Dispatching] Uno.UI.Dispatching.CoreDispatcher:DispatcherCallback");
 				}
 			}

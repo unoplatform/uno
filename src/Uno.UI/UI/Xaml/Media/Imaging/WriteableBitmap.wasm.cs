@@ -4,6 +4,7 @@ using System.Runtime.InteropServices;
 using Windows.Foundation;
 using Windows.Storage.Streams;
 using Uno.Foundation;
+using Uno.UI.Xaml;
 using Uno.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml.Media.Imaging
@@ -17,7 +18,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 
 			try
 			{
-				var value = WebAssemblyRuntime.InvokeJS("Uno.UI.WindowManager.current.rawPixelsToBase64EncodeImage(" + pinnedData + ", " + PixelWidth + ", " + PixelHeight + ");");
+				var value = WindowManagerInterop.RawPixelsToBase64EncodeImage(pinnedData, PixelWidth, PixelHeight);
 
 				image = ImageData.FromDataUri(value);
 

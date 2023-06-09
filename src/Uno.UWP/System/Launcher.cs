@@ -61,11 +61,7 @@ namespace Windows.System
 			}
 
 			// this method may run on the background thread on UWP
-#if !__WASM__
 			if (CoreDispatcher.Main.HasThreadAccess)
-#else
-			if(true)
-#endif
 			{
 				return QueryUriSupportPlatformAsync(uri, launchQuerySupportType).AsAsyncOperation();
 			}

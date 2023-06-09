@@ -14,10 +14,10 @@ namespace Uno.UI.SourceGenerators.Tests
 		[DataRow("System.Collections.Generic.IList<int>", "global::System.Collections.Generic.IList<int>")]
 		[DataRow("System.Collections.Generic.IList<System.Disposable>", "global::System.Collections.Generic.IList<global::System.Disposable>")]
 		[DataRow("System.Collections.Generic.IDictionary<int, System.Disposable>", "global::System.Collections.Generic.IDictionary<int, global::System.Disposable>")]
-		[DataRow("(int, int)", "(int, int)")]
-		[DataRow("(int, System.Disposable)", "(int, global::System.Disposable)")]
-		[DataRow("System.Collections.Generic.IList<(int, System.Disposable)>", "global::System.Collections.Generic.IList<(int, global::System.Disposable)>")]
-		[DataRow("System.Collections.Generic.IList<(string, string, double)>", "global::System.Collections.Generic.IList<(string, string, double)>")]
+		[DataRow("(int, int)", "global::System.ValueTuple<int, int>")]
+		[DataRow("(int, System.Disposable)", "global::System.ValueTuple<int, global::System.Disposable>")]
+		[DataRow("System.Collections.Generic.IList<(int, System.Disposable)>", "global::System.Collections.Generic.IList<global::System.ValueTuple<int, global::System.Disposable>>")]
+		[DataRow("System.Collections.Generic.IList<(string, string, double)>", "global::System.Collections.Generic.IList<global::System.ValueTuple<string, string, double>>")]
 		public void When_GetFullyQualifiedString(string input, string expected)
 		{
 			var compilation = CreateTestCompilation(input);
@@ -26,7 +26,7 @@ namespace Uno.UI.SourceGenerators.Tests
 			{
 				if (testSymbol.GetAllMembersWithName("_myField").FirstOrDefault() is IPropertySymbol myField)
 				{
-					var actual = myField.Type.GetFullyQualifiedType();
+					var actual = myField.Type.GetFullyQualifiedTypeIncludingGlobal();
 					Assert.AreEqual<string>(expected, actual);
 				}
 				else

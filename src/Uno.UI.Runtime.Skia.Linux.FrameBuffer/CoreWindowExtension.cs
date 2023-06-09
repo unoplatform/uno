@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Threading;
 using Uno.Extensions;
@@ -16,130 +17,139 @@ using static Uno.UI.Runtime.Skia.Native.LibInput;
 using static Windows.UI.Input.PointerUpdateKind;
 using static Uno.UI.Runtime.Skia.Native.libinput_event_type;
 using System.Runtime.CompilerServices;
+using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
 
-namespace Uno.UI.Runtime.Skia
+namespace Uno.UI.Runtime.Skia;
+
+unsafe internal partial class CoreWindowExtension : ICoreWindowExtension, IDisposable
 {
-	unsafe internal partial class CoreWindowExtension : ICoreWindowExtension, IDisposable
+	private readonly CoreWindow _owner;
+	private readonly IntPtr _libInputContext;
+	private readonly Thread? _inputThread;
+	private FrameBufferPointerInputSource? _pointers;
+	private int _libDevFd;
+	private readonly CancellationTokenSource _cts = new CancellationTokenSource();
+
+	public CoreWindowExtension(object owner)
 	{
-		private readonly CoreWindow _owner;
-		private readonly ICoreWindowEvents _ownerEvents;
-		private readonly IntPtr _libInputContext;
-		private readonly Dictionary<uint, Point> _activePointers = new Dictionary<uint, Point>();
-		private readonly HashSet<libinput_event_code> _pointerPressed = new HashSet<libinput_event_code>();
-		private readonly DisplayInformation _displayInformation;
-		private readonly Thread? _inputThread;
-		private Point _mousePosition;
-		private int _libDevFd;
-		private readonly CancellationTokenSource _cts = new CancellationTokenSource();
+		_owner = (CoreWindow)owner;
 
-		public CoreWindowExtension(object owner)
+		try
 		{
-			_owner = (CoreWindow)owner;
-			_ownerEvents = (ICoreWindowEvents)owner;
-			_displayInformation = DisplayInformation.GetForCurrentView();
+			_libInputContext = libinput_path_create_context();
 
-			try
+			_inputThread = new Thread(Run)
 			{
-				_libInputContext = libinput_path_create_context();
+				Name = "Uno libdev Input",
+				IsBackground = true
+			};
 
-				_inputThread = new Thread(Run)
-				{
-					Name = "Uno libdev Input",
-					IsBackground = true
-				};
-
-				_inputThread.Start();
+			_inputThread.Start();
+		}
+		catch (Exception ex)
+		{
+			if (this.Log().IsEnabled(LogLevel.Warning))
+			{
+				this.Log().LogWarning($"Failed to initialize LibInput, continuing without pointer and keyboard support ({ex.Message})");
 			}
-			catch (Exception ex)
+		}
+	}
+
+	private void Run()
+	{
+		_libDevFd = libinput_get_fd(_libInputContext);
+
+		var timeval = stackalloc IntPtr[2];
+
+		if (Directory.Exists("/dev/input"))
+		{
+			foreach (var f in Directory.GetFiles("/dev/input", "event*"))
 			{
-				if (this.Log().IsEnabled(LogLevel.Warning))
+				if (this.Log().IsEnabled(LogLevel.Debug))
 				{
-					this.Log().LogWarning($"Failed to initialize LibInput, continuing without pointer and keyboard support ({ex.Message})");
+					this.Log().Debug($"Opening input device {f}");
 				}
+
+				libinput_path_add_device(_libInputContext, f);
 			}
 		}
 
-		private void Run()
+		while (!_cts.IsCancellationRequested)
 		{
-			_libDevFd = libinput_get_fd(_libInputContext);
-
-			var timeval = stackalloc IntPtr[2];
-
-			if (Directory.Exists("/dev/input"))
+			IntPtr rawEvent;
+			libinput_dispatch(_libInputContext);
+			while ((rawEvent = libinput_get_event(_libInputContext)) != IntPtr.Zero)
 			{
-				foreach (var f in Directory.GetFiles("/dev/input", "event*"))
+				var type = libinput_event_get_type(rawEvent);
+
+				if (this.Log().IsEnabled(LogLevel.Trace))
 				{
-					if (this.Log().IsEnabled(LogLevel.Debug))
-					{
-						this.Log().Debug($"Opening input device {f}");
-					}
-
-					libinput_path_add_device(_libInputContext, f);
+					this.Log().Trace($"Got event type (0x{rawEvent:X16}) {type}");
 				}
-			}
 
-			while (!_cts.IsCancellationRequested)
-			{
-				IntPtr rawEvent;
+				if (type >= LIBINPUT_EVENT_TOUCH_DOWN
+					&& type <= LIBINPUT_EVENT_TOUCH_CANCEL
+					&& TryGetPointers(out var pointers))
+				{
+					pointers!.ProcessTouchEvent(rawEvent, type);
+				}
+
+				if (type >= LIBINPUT_EVENT_POINTER_MOTION
+					&& type <= LIBINPUT_EVENT_POINTER_AXIS
+					&& TryGetPointers(out pointers))
+				{
+					pointers!.ProcessMouseEvent(rawEvent, type);
+				}
+
+				if (type == LIBINPUT_EVENT_KEYBOARD_KEY)
+				{
+					ProcessKeyboardEvent(rawEvent, type);
+				}
+
+				libinput_event_destroy(rawEvent);
 				libinput_dispatch(_libInputContext);
-				while ((rawEvent = libinput_get_event(_libInputContext)) != IntPtr.Zero)
-				{
-					var type = libinput_event_get_type(rawEvent);
-
-					if (this.Log().IsEnabled(LogLevel.Trace))
-					{
-						this.Log().Trace($"Got event type (0x{rawEvent:X16}) {type}");
-					}
-
-					if (type >= LIBINPUT_EVENT_TOUCH_DOWN
-						&& type <= LIBINPUT_EVENT_TOUCH_CANCEL)
-					{
-						ProcessTouchEvent(rawEvent, type);
-					}
-
-					if (type >= LIBINPUT_EVENT_POINTER_MOTION
-						&& type <= LIBINPUT_EVENT_POINTER_AXIS)
-					{
-						ProcessMouseEvent(rawEvent, type);
-					}
-
-					if (type == LIBINPUT_EVENT_KEYBOARD_KEY)
-					{
-						ProcessKeyboardEvent(rawEvent, type);
-					}
-
-					libinput_event_destroy(rawEvent);
-					libinput_dispatch(_libInputContext);
-				}
-
-				var pfd = new pollfd { fd = _libDevFd, events = 1 };
-				Libc.poll(&pfd, (IntPtr)1, -1);
 			}
+
+			var pfd = new pollfd { fd = _libDevFd, events = 1 };
+			Libc.poll(&pfd, (IntPtr)1, -1);
 		}
+	}
 
-		private void RaisePointerEvent(Action<PointerEventArgs> raisePointerEvent, PointerEventArgs args)
+	public void Dispose()
+	{
+		if (_libDevFd != 0)
 		{
-			_ = _owner.Dispatcher.RunAsync(
-				CoreDispatcherPriority.High,
-				() => raisePointerEvent(args));
+			Libc.close(_libDevFd);
+			_libDevFd = 0;
+
+			_cts.Cancel();
 		}
+	}
 
-		public CoreCursor PointerCursor { get => new CoreCursor(CoreCursorType.Arrow, 0); set { } }
+	public bool IsNativeElement(object content)
+		=> false;
+	public void AttachNativeElement(object owner, object content) { }
+	public void DetachNativeElement(object owner, object content) { }
+	public void ArrangeNativeElement(object owner, object content, Rect arrangeRect) { }
+	public Size MeasureNativeElement(object owner, object content, Size size)
+		=> size;
 
-		public void SetPointerCapture(PointerIdentifier pointer) { }
-
-		public void ReleasePointerCapture(PointerIdentifier pointer) { }
-
-		public void Dispose()
+	private bool TryGetPointers(/*[NotNullWhen(true)] */out FrameBufferPointerInputSource? pointers)
+	{
+		if (_pointers is null)
 		{
-			if (_libDevFd != 0)
+			_pointers = _owner.PointersSource as FrameBufferPointerInputSource;
+			if (_pointers is null)
 			{
-				Libc.close(_libDevFd);
-				_libDevFd = 0;
-
-				_cts.Cancel();
+				pointers = null;
+				return false;
 			}
+
+			_pointers.Configure(_owner, GetCurrentModifiersState);
 		}
+
+		pointers = _pointers;
+		return true;
 	}
 }

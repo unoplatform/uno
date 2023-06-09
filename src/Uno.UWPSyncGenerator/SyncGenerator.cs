@@ -38,6 +38,19 @@ namespace Uno.UWPSyncGenerator
 			}
 		}
 
+		private static string KindToKeyword(TypeKind kind)
+		{
+			return kind switch
+			{
+				TypeKind.Class => "class",
+				TypeKind.Struct => "struct",
+				TypeKind.Delegate => "delegate",
+				TypeKind.Enum => "enum",
+				TypeKind.Interface => "interface",
+				_ => throw new ArgumentOutOfRangeException($"Unexpected TypeKind '{kind}'."),
+			};
+		}
+
 		private void WriteType(INamedTypeSymbol type, IndentedStringBuilder b)
 		{
 			var kind = type.TypeKind;
@@ -101,7 +114,7 @@ namespace Uno.UWPSyncGenerator
 						$": {type.EnumUnderlyingType.ToDisplayString()}" :
 							string.Empty;
 
-				using (b.BlockInvariant($"public {staticQualifier} {partialModifier} {kind.ToString().ToLower(CultureInfo.InvariantCulture)} {type.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat)} {enumBaseType}{BuildInterfaces(type)}"))
+				using (b.BlockInvariant($"public {staticQualifier} {partialModifier} {KindToKeyword(kind)} {type.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat)} {enumBaseType}{BuildInterfaces(type)}"))
 				{
 					if (type.TypeKind != TypeKind.Enum)
 					{

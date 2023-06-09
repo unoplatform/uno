@@ -38,7 +38,7 @@ namespace Uno.UI.Samples.UITests.ImageBrushTestControl
 			this.RunWhileLoaded(async ct =>
 			{
 				using var httpClient = new HttpClient();
-				const string imageUrl = "https://nv-assets.azurewebsites.net/tests/images/uno-overalls.jpg";
+				const string imageUrl = "https://uno-assets.platform.uno/tests/images/uno-overalls.jpg";
 				var data = await httpClient.GetByteArrayAsync(imageUrl);
 
 				BitmapImage bitmapImage;

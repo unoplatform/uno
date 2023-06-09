@@ -7,6 +7,8 @@ using Private.Infrastructure;
 using Uno.Extensions;
 using Uno.UI.Extensions;
 using Uno.UI.RuntimeTests.Extensions;
+using Uno.UI.RuntimeTests.FlyoutPages;
+using Uno.UI.RuntimeTests.FramePages;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.UI;
 using Windows.UI.ViewManagement;
@@ -17,6 +19,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Shapes;
+using Uno.UI.Toolkit.Extensions;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -335,6 +338,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			};
 
 			var windowHeight = ApplicationView.GetForCurrentView().VisibleBounds.Height;
+			if (TestServices.WindowHelper.IsXamlIsland)
+			{
+				windowHeight = TestServices.WindowHelper.XamlRoot.Size.Height;
+			}
 
 			var flyoutContent = new Ellipse
 			{
@@ -570,18 +577,18 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			FlyoutBase.SetAttachedFlyout(button, flyout);
 			button.Focus(FocusState.Pointer);
 
-			Assert.AreEqual(button, FocusManager.GetFocusedElement());
+			Assert.AreEqual(button, FocusManager.GetFocusedElement(TestServices.WindowHelper.XamlRoot));
 
 			FlyoutBase.ShowAttachedFlyout(button);
 			flyoutButton.Focus(FocusState.Pointer);
 			await TestServices.WindowHelper.WaitForIdle();
 
-			Assert.AreNotEqual(button, FocusManager.GetFocusedElement());
+			Assert.AreNotEqual(button, FocusManager.GetFocusedElement(TestServices.WindowHelper.XamlRoot));
 
 			flyout.Hide();
 			await TestServices.WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(button, FocusManager.GetFocusedElement());
+			Assert.AreEqual(button, FocusManager.GetFocusedElement(TestServices.WindowHelper.XamlRoot));
 
 			TestServices.WindowHelper.WindowContent = null;
 		}
@@ -602,18 +609,49 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			FlyoutBase.SetAttachedFlyout(button, flyout);
 			button.Focus(FocusState.Pointer);
 
-			Assert.AreEqual(button, FocusManager.GetFocusedElement());
+			Assert.AreEqual(button, FocusManager.GetFocusedElement(TestServices.WindowHelper.XamlRoot));
 
 			FlyoutBase.ShowAttachedFlyout(button);
 			await TestServices.WindowHelper.WaitForIdle();
 
-			var focused = FocusManager.GetFocusedElement();
+			var focused = FocusManager.GetFocusedElement(TestServices.WindowHelper.XamlRoot);
 			Assert.IsInstanceOfType(focused, typeof(Popup));
 
 			flyout.Hide();
 			await TestServices.WindowHelper.WaitForIdle();
 
 			TestServices.WindowHelper.WindowContent = null;
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_PlacementTarget_Binding()
+		{
+			if (TestServices.WindowHelper.IsXamlIsland)
+			{
+				Assert.Inconclusive($"Not supported under XAML islands yet https://github.com/unoplatform/uno/issues/8978");
+			}
+
+			var SUT = new When_PlacementTarget_Binding();
+
+			try
+			{
+				SUT.DataContext = 42;
+
+				Assert.AreEqual(SUT.DataContext, SUT.myButton.Content);
+
+				SUT.contextFlyout.ShowAt(SUT.myButton);
+
+				await TestServices.WindowHelper.WaitForIdle();
+
+				Assert.AreEqual(SUT.DataContext, SUT.myButton.Content);
+			}
+			finally
+			{
+#if HAS_UNO
+				SUT.contextFlyout.Close();
+#endif
+			}
 		}
 
 		[TestMethod]
@@ -638,6 +676,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 		public async Task When_Opening_Canceled()
 		{
+
 			Flyout flyout = new Flyout();
 			try
 			{

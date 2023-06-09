@@ -2,18 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+	#if false || false || false || false || false || false || false
 	public   enum PasswordRevealMode 
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Peek = 0,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Hidden = 1,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Visible = 2,
-		#endif
+		// Skipping already declared field Windows.UI.Xaml.Controls.PasswordRevealMode.Peek
+		// Skipping already declared field Windows.UI.Xaml.Controls.PasswordRevealMode.Hidden
+		// Skipping already declared field Windows.UI.Xaml.Controls.PasswordRevealMode.Visible
 	}
 	#endif
 }

@@ -5,12 +5,12 @@
 		<OutputType Condition="'$(Configuration)'=='Debug'">Exe</OutputType>
 		<TargetFramework>net5.0</TargetFramework>
 		<LangVersion>latest</LangVersion>
+		<ApplicationManifest>app.manifest</ApplicationManifest>
 	</PropertyGroup>
 
 	<ItemGroup Condition="exists('..\$ext_safeprojectname$.UWP')">
 		<EmbeddedResource Include="..\$ext_safeprojectname$.UWP\Package.appxmanifest" LogicalName="Package.appxmanifest" />
 		<Content Include="..\$ext_safeprojectname$.UWP\Assets\StoreLogo.png" Link="Assets\StoreLogo.png" />
-		<Content Include="Assets\Fonts\uno-fluentui-assets.ttf" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -22,6 +22,7 @@
 		<PackageReference Include="Uno.UI.Skia.Gtk" Version="3.0.0-dev.1447" />
 		<PackageReference Include="Uno.UI.RemoteControl" Version="3.0.0-dev.1447" Condition="'$(Configuration)'=='Debug'" />
 		<PackageReference Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Version="3.0.5" />
+		<Manifest Include="$(ApplicationManifest)" />
 	</ItemGroup>
 
 	<Import Project="..\$ext_safeprojectname$.Shared\$ext_safeprojectname$.Shared.projitems" Label="Shared" />

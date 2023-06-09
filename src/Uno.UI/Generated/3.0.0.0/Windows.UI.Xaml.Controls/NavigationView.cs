@@ -118,8 +118,20 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.NavigationView.MenuItemContainerStyle.set
 		// Forced skipping of method Windows.UI.Xaml.Controls.NavigationView.MenuItemContainerStyleSelector.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.NavigationView.MenuItemContainerStyleSelector.set
-		// Skipping already declared method Windows.UI.Xaml.Controls.NavigationView.MenuItemFromContainer(Windows.UI.Xaml.DependencyObject)
-		// Skipping already declared method Windows.UI.Xaml.Controls.NavigationView.ContainerFromMenuItem(object)
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  object MenuItemFromContainer( global::Windows.UI.Xaml.DependencyObject container)
+		{
+			throw new global::System.NotImplementedException("The member object NavigationView.MenuItemFromContainer(DependencyObject container) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=object%20NavigationView.MenuItemFromContainer%28DependencyObject%20container%29");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  global::Windows.UI.Xaml.DependencyObject ContainerFromMenuItem( object item)
+		{
+			throw new global::System.NotImplementedException("The member DependencyObject NavigationView.ContainerFromMenuItem(object item) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DependencyObject%20NavigationView.ContainerFromMenuItem%28object%20item%29");
+		}
+		#endif
 		// Forced skipping of method Windows.UI.Xaml.Controls.NavigationView.SelectionChanged.add
 		// Forced skipping of method Windows.UI.Xaml.Controls.NavigationView.SelectionChanged.remove
 		// Forced skipping of method Windows.UI.Xaml.Controls.NavigationView.ItemInvoked.add

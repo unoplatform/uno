@@ -204,7 +204,10 @@ namespace Windows.UI.Xaml.Controls
 				if (TemplatedRoot is NativePivotPresenter presenter)
 				{
 					presenter.Items.Clear();
-					presenter.Items.AddRange(Items);
+					foreach (var item in Items)
+					{
+						presenter.Items.Add(item);
+					}
 				}
 			}
 		}

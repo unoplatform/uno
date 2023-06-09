@@ -25,6 +25,7 @@ using System.IO;
 
 #if HAS_UNO_WINUI
 using SkiaSharp.Views.Windows;
+using Windows.UI.Core;
 #else
 using SkiaSharp.Views.UWP;
 #endif
@@ -37,6 +38,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 		private SkiaSharp.Skottie.Animation? _animation;
 
 
+		private bool _wasPlaying;
 		private DispatcherQueueTimer? _timer;
 		private object _gate = new();
 
@@ -216,26 +218,28 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 		{
 			if (_hardwareCanvas != null)
 			{
-				void UpdateTransparency(object s, object e)
+				static void UpdateTransparency(object s, object e)
 				{
-					// The SKGLTextureView is opaque by default, so we poke at the tree
-					// to change the opacity of the first view of the SKSwapChainPanel
-					// to make it transparent.
-#if __ANDROID__
-					if (_hardwareCanvas.ChildCount == 1
-						&& _hardwareCanvas.GetChildAt(0) is Android.Views.TextureView texture)
+					if (s is SKSwapChainPanel swapChainPanel)
 					{
-						texture.SetOpaque(false);
-					}
-#elif __IOS__
-					if (_hardwareCanvas.Subviews.Length == 1
-						&& _hardwareCanvas.Subviews[0] is GLKit.GLKView texture)
-					{
-						texture.Opaque = false;
-					}
-#endif
 
-					_hardwareCanvas.Loaded -= UpdateTransparency;
+						// The SKGLTextureView is opaque by default, so we poke at the tree
+						// to change the opacity of the first view of the SKSwapChainPanel
+						// to make it transparent.
+#if __ANDROID__
+						if (swapChainPanel.ChildCount == 1
+							&& swapChainPanel.GetChildAt(0) is Android.Views.TextureView texture)
+						{
+							texture.SetOpaque(false);
+						}
+#elif __IOS__
+						if (swapChainPanel.Subviews.Length == 1
+							&& swapChainPanel.Subviews[0] is GLKit.GLKView texture)
+						{
+							texture.Opaque = false;
+						}
+#endif
+					}
 				}
 
 				_hardwareCanvas.Loaded += UpdateTransparency;
@@ -441,8 +445,9 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 		public void Load()
 		{
-			if (_player?.IsPlaying ?? false)
+			if (_wasPlaying)
 			{
+				_wasPlaying = false;
 				Resume();
 			}
 		}
@@ -451,6 +456,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 		{
 			if (_player?.IsPlaying ?? false)
 			{
+				_wasPlaying = true;
 				Pause();
 			}
 		}

@@ -102,8 +102,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Foundation.Collections
 			{
 				Assert.Fail("ValueSet.Clear didn't remove all items");
 			}
-
 		}
-
 	}
 }

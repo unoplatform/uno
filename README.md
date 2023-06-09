@@ -64,6 +64,8 @@ For a larger example and features demo:
     * [Rx.NET](https://github.com/reactiveui/Reactive.Wasm)
     * [ColorCode-Universal](https://github.com/unoplatform/uno.ColorCode-Universal)
     * [LibVLCSharp](https://github.com/videolan/libvlcsharp)
+    * [MapsUI](https://github.com/Mapsui/Mapsui)
+    * [LiveCharts](https://github.com/beto-rodriguez/LiveCharts2)
     * Any UWP project
 * Responsive Design:
     * [Visual State Manager](https://docs.microsoft.com/en-us/uwp/api/Windows.UI.Xaml.VisualStateManager)

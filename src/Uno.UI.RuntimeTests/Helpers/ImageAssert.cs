@@ -20,6 +20,9 @@ using Point = System.Drawing.Point;
 using SamplesApp.UITests;
 using Windows.UI.Xaml.Markup;
 using Windows.UI.Xaml;
+using Windows.Storage.Streams;
+using Windows.UI.Xaml.Media.Imaging;
+using Windows.Foundation;
 
 namespace Uno.UI.RuntimeTests.Helpers;
 
@@ -63,6 +66,25 @@ public static partial class ImageAssert
 		}
 
 		Assert.Fail($"Expected '{ToArgbCode(expectedColor)}' in rectangle '{rect}'.");
+	}
+
+	/// <summary>
+	/// Asserts that a given screenshot does not have a specific color anywhere within a given rectangle.
+	/// </summary>
+	public static void DoesNotHaveColorInRectangle(RawBitmap screenshot, Rectangle rect, Color excludedColor, byte tolerance = 0, [CallerLineNumber] int line = 0)
+	{
+		var bitmap = screenshot;
+		for (var x = rect.Left; x < rect.Right; x++)
+		{
+			for (var y = rect.Top; y < rect.Bottom; y++)
+			{
+				var pixel = bitmap.GetPixel(x, y);
+				if (AreSameColor(excludedColor, pixel, tolerance, out _))
+				{
+					Assert.Fail($"Color '{ToArgbCode(excludedColor)}' was found at ({x}, {y}) in rectangle '{rect}'.");
+				}
+			}
+		}
 	}
 
 	private static void HasColorAtImpl(RawBitmap screenshot, int x, int y, Color expectedColor, byte tolerance, int line)
@@ -161,4 +183,45 @@ public static partial class ImageAssert
 		}
 	}
 	#endregion
+
+	public static async Task AreEqualAsync(RawBitmap actual, RawBitmap expected)
+	{
+		if (!await AreRenderTargetBitmapsEqualAsync(actual.Bitmap, expected.Bitmap))
+		{
+			Assert.Fail("The bitmaps are not the same");
+		}
+	}
+
+	public static async Task AreNotEqualAsync(RawBitmap actual, RawBitmap expected)
+	{
+		if (await AreRenderTargetBitmapsEqualAsync(actual.Bitmap, expected.Bitmap))
+		{
+			Assert.Fail("The bitmaps are the same");
+		}
+	}
+
+	private static async Task<bool> AreRenderTargetBitmapsEqualAsync(RenderTargetBitmap bitmap1, RenderTargetBitmap bitmap2)
+	{
+		if (bitmap1.PixelWidth != bitmap2.PixelWidth || bitmap1.PixelHeight != bitmap2.PixelHeight)
+		{
+			return false;
+		}
+
+		var buffer1 = await bitmap1.GetPixelsAsync();
+		var buffer2 = await bitmap2.GetPixelsAsync();
+
+		using var reader1 = DataReader.FromBuffer(buffer1);
+		using var reader2 = DataReader.FromBuffer(buffer2);
+		var reader1Window = new byte[1024];
+		var reader2Window = new byte[1024];
+		while (reader1.UnconsumedBufferLength > 0 && reader2.UnconsumedBufferLength > 0)
+		{
+			if (reader1.ReadByte() != reader2.ReadByte())
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
 }

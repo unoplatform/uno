@@ -10,13 +10,6 @@ namespace Windows.Graphics.Imaging
 {
 	partial class BitmapEncoder
 	{
-		private static readonly IDictionary<Guid, Bitmap.CompressFormat> _encoderMap =
-			new Dictionary<Guid, Bitmap.CompressFormat>()
-			{
-				{JpegEncoderId, Bitmap.CompressFormat.Jpeg},
-				{PngEncoderId, Bitmap.CompressFormat.Png},
-			};
-
 		private readonly Bitmap.CompressFormat _imageFormat;
 		private readonly Storage.Streams.IRandomAccessStream _stream;
 		private SoftwareBitmap _softwareBitmap;
@@ -29,7 +22,7 @@ namespace Windows.Graphics.Imaging
 		}
 
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Graphics.Imaging.BitmapEncoder> CreateAsync(global::System.Guid encoderId, global::Windows.Storage.Streams.IRandomAccessStream stream) =>
-			AsyncOperation<BitmapEncoder>.FromTask((ct, _) =>
+			AsyncOperation.FromTask<BitmapEncoder>(ct =>
 			{
 				if (!_encoderMap.TryGetValue(encoderId, out var imageFormat))
 				{

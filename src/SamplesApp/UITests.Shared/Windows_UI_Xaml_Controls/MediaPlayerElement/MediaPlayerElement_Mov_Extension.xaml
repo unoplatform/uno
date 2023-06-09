@@ -7,4 +7,5 @@
 	<MediaPlayerElement Source="http://file-examples.com/wp-content/uploads/2018/04/file_example_MOV_1280_1_4MB.mov"
 						AreTransportControlsEnabled="True"
 						AutoPlay="True" />
+	
 </UserControl>

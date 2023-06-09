@@ -31,6 +31,12 @@ namespace Windows.UI.Xaml
 		private readonly static TypeToPropertiesDictionary _getPropertiesForType = new TypeToPropertiesDictionary();
 		private readonly static NameToPropertyDictionary _getPropertyCache = new NameToPropertyDictionary();
 
+		/// <summary>
+		/// A static <see cref="PropertyCacheEntry"/> used for lookups and avoid creating new instances. This assumes that uses are non-reentrant.
+		/// </summary>
+		private readonly static PropertyCacheEntry _searchPropertyCacheEntry = new();
+
+
 		private readonly static FrameworkPropertiesForTypeDictionary _getFrameworkPropertiesForType = new FrameworkPropertiesForTypeDictionary();
 
 		private readonly PropertyMetadata _ownerTypeMetadata; // For perf consideration, we keep direct ref the metadata for the owner type
@@ -226,7 +232,7 @@ namespace Windows.UI.Xaml
 
 				ForceInitializeTypeConstructor(forType);
 
-				metadata = _metadata.FindOrCreate(forType, () => GetMetadata(baseType));
+				metadata = _metadata.FindOrCreate(forType, baseType, this);
 			}
 
 			return metadata;
@@ -317,12 +323,11 @@ namespace Windows.UI.Xaml
 		/// <returns>A <see cref="DependencyProperty"/> instance, otherwise null it not found.</returns>
 		internal static DependencyProperty GetProperty(Type type, string name)
 		{
-			DependencyProperty result = null;
-			var key = new PropertyCacheEntry(type, name);
+			_searchPropertyCacheEntry.Update(type, name);
 
-			if (!_getPropertyCache.TryGetValue(key, out result))
+			if (!_getPropertyCache.TryGetValue(_searchPropertyCacheEntry, out var result))
 			{
-				_getPropertyCache.Add(key, result = InternalGetProperty(type, name));
+				_getPropertyCache.Add(_searchPropertyCacheEntry.Clone(), result = InternalGetProperty(type, name));
 			}
 
 			return result;
@@ -332,7 +337,9 @@ namespace Windows.UI.Xaml
 		{
 			if (_getPropertyCache.Count != 0)
 			{
-				_getPropertyCache.Remove(new PropertyCacheEntry(ownerType, name));
+				_searchPropertyCacheEntry.Update(ownerType, name);
+
+				_getPropertyCache.Remove(_searchPropertyCacheEntry);
 			}
 		}
 

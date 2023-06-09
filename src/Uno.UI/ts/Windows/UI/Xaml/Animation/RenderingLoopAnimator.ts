@@ -2,7 +2,7 @@
 	export class RenderingLoopAnimator {
 		private static activeInstances: { [jsHandle: number]: RenderingLoopAnimator} = {};
 
-		public static createInstance(managedHandle: string, jsHandle: number) {
+		public static createInstance(managedHandle: number, jsHandle: number) {
 			RenderingLoopAnimator.activeInstances[jsHandle] = new RenderingLoopAnimator(managedHandle);
 		}
 
@@ -20,7 +20,11 @@
 			delete RenderingLoopAnimator.activeInstances[jsHandle];
 		}
 
-		private constructor(private managedHandle: string) {
+		private constructor(private managedHandle: number) {
+		}
+
+		public static setStartFrameDelay(jsHandle: number, delay: number) {
+			RenderingLoopAnimator.getInstance(jsHandle).SetStartFrameDelay(delay);
 		}
 
 		public SetStartFrameDelay(delay: number) {
@@ -31,12 +35,20 @@
 			}
 		}
 
+		public static setAnimationFramesInterval(jsHandle: number) {
+			RenderingLoopAnimator.getInstance(jsHandle).SetAnimationFramesInterval();
+		}
+
 		public SetAnimationFramesInterval() {
 			this.unscheduleFrame();
 
 			if (this._isEnabled) {
 				this.onFrame();
 			}
+		}
+
+		public static enableFrameReporting(jsHandle: number) {
+			RenderingLoopAnimator.getInstance(jsHandle).EnableFrameReporting();
 		}
 
 		public EnableFrameReporting() {
@@ -46,6 +58,10 @@
 
 			this._isEnabled = true;
 			this.scheduleAnimationFrame();
+		}
+
+		public static disableFrameReporting(jsHandle: number) {
+			RenderingLoopAnimator.getInstance(jsHandle).DisableFrameReporting();
 		}
 
 		public DisableFrameReporting() {

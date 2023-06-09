@@ -6,44 +6,43 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Controls;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls;
+
+public partial class PathIconSource : IconSource
 {
-	public partial class PathIconSource : IconSource
+	public Geometry Data
 	{
-		public Geometry Data
+		get => (Geometry)GetValue(DataProperty);
+		set => SetValue(DataProperty, value);
+	}
+
+	public static DependencyProperty DataProperty { get; } =
+		DependencyProperty.Register(nameof(Data), typeof(Geometry), typeof(PathIconSource), new FrameworkPropertyMetadata(null, OnPropertyChanged));
+
+	private protected override IconElement CreateIconElementCore()
+	{
+		var pathIcon = new PathIcon();
+
+		if (Data != null)
 		{
-			get => (Geometry)GetValue(DataProperty);
-			set => SetValue(DataProperty, value);
+			pathIcon.Data = Data;
 		}
 
-		public static DependencyProperty DataProperty { get; } =
-			DependencyProperty.Register(nameof(Data), typeof(Geometry), typeof(PathIconSource), new FrameworkPropertyMetadata(null, OnPropertyChanged));
-
-		private protected override IconElement CreateIconElementCore()
+		if (Foreground != null)
 		{
-			var pathIcon = new PathIcon();
-
-			if (Data != null)
-			{
-				pathIcon.Data = Data;
-			}
-
-			if (Foreground != null)
-			{
-				pathIcon.Foreground = Foreground;
-			}
-
-			return pathIcon;
+			pathIcon.Foreground = Foreground;
 		}
 
-		private protected override DependencyProperty GetIconElementPropertyCore(DependencyProperty sourceProperty)
-		{
-			if (sourceProperty == DataProperty)
-			{
-				return PathIcon.DataProperty;
-			}
+		return pathIcon;
+	}
 
-			return base.GetIconElementPropertyCore(sourceProperty);
+	private protected override DependencyProperty GetIconElementPropertyCore(DependencyProperty sourceProperty)
+	{
+		if (sourceProperty == DataProperty)
+		{
+			return PathIcon.DataProperty;
 		}
+
+		return base.GetIconElementPropertyCore(sourceProperty);
 	}
 }

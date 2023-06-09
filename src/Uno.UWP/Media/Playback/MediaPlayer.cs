@@ -1,6 +1,8 @@
-#if __ANDROID__ || __IOS__ || __MACOS__
-
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Drawing;
+using System.Security.AccessControl;
 using Windows.Foundation;
 
 namespace Windows.Media.Playback
@@ -12,10 +14,7 @@ namespace Windows.Media.Playback
 		private IMediaPlaybackSource _source;
 		public IMediaPlaybackSource Source
 		{
-			get
-			{
-				return _source;
-			}
+			get => _source;
 			set
 			{
 				Stop();
@@ -38,10 +37,7 @@ namespace Windows.Media.Playback
 		private bool _isMuted;
 		public bool IsMuted
 		{
-			get
-			{
-				return _isMuted;
-			}
+			get => _isMuted;
 			set
 			{
 				_isMuted = value;
@@ -53,10 +49,7 @@ namespace Windows.Media.Playback
 		private double _volume = 1d;
 		public double Volume
 		{
-			get
-			{
-				return _volume;
-			}
+			get => _volume;
 			set
 			{
 				_volume = value;
@@ -92,9 +85,21 @@ namespace Windows.Media.Playback
 		public MediaPlayer()
 		{
 			PlaybackSession = new MediaPlaybackSession(this);
-
 			Initialize();
 		}
+
+		internal void SetOption(string name, object value)
+		{
+			OnOptionChanged(name, value);
+		}
+
+		partial void OnOptionChanged(string name, object value);
+
+		internal void SetTransportControlBounds(Rect bounds)
+		{
+			OnTransportControlBoundsChanged(bounds);
+		}
+
+		partial void OnTransportControlBoundsChanged(Rect bounds);
 	}
 }
-#endif

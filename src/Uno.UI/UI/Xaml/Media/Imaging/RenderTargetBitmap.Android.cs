@@ -39,16 +39,9 @@ namespace Windows.UI.Xaml.Media.Imaging
 		/// <inheritdoc />
 		private protected override bool IsSourceReady => _buffer != null;
 
-		/// <inheritdoc />
-		private protected override bool TryOpenSourceSync(int? targetWidth, int? targetHeight, [NotNullWhen(true)] out ImageData image)
+		private static ImageData Open(byte[] buffer, int bufferLength, int width, int height)
 		{
-			image = default;
-			if (_buffer is null)
-			{
-				return false;
-			}
-			image = ImageData.FromBitmap(BitmapFactory.DecodeByteArray(_buffer, 0, _bufferSize));
-			return image.HasData;
+			return ImageData.FromBitmap(BitmapFactory.DecodeByteArray(buffer, 0, bufferLength));
 		}
 
 		private (int ByteCount, int Width, int Height) RenderAsBgra8_Premul(UIElement element, ref byte[]? buffer, Size? scaledSize = null)
@@ -111,8 +104,6 @@ namespace Windows.UI.Xaml.Media.Imaging
 				bitmap?.Dispose();
 				SetSoftwareRendering(element, false);
 			}
-
-
 		}
 	}
 }

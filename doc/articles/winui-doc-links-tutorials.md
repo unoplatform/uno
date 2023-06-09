@@ -1,3 +1,7 @@
+---
+uid: Uno.Development.WinUITutorialsDoc
+---
+
 # WinUI documentation - Tutorials
 
 Uno Platform's API is derived from the WinUI application framework. Microsoft provides [extensive documentation for WinUI](https://docs.microsoft.com/en-us/windows/uwp/). Rather than duplicate all of it, here we list selected entries that are especially applicable to Uno Platform developers.

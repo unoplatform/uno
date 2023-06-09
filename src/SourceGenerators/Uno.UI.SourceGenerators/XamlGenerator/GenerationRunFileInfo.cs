@@ -8,13 +8,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 {
 	internal record GenerationRunFileInfo(GenerationRunInfo RunInfo, string FileId)
 	{
-		private Dictionary<INamedTypeSymbol, int> _appliedTypes = new Dictionary<INamedTypeSymbol, int>();
+		private Dictionary<string, int> _appliedTypes = new Dictionary<string, int>();
 
 		internal string? ComponentCode { get; set; }
 
-		internal IReadOnlyDictionary<INamedTypeSymbol, int> AppliedTypes => _appliedTypes;
+		internal IReadOnlyDictionary<string, int> AppliedTypes => _appliedTypes;
 
-		internal void SetAppliedTypes(Dictionary<INamedTypeSymbol, int> appliedTypes)
+		internal void SetAppliedTypes(Dictionary<string, int> appliedTypes)
 		{
 			foreach (var type in appliedTypes)
 			{

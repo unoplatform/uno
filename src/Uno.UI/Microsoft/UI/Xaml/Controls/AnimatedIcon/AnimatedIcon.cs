@@ -3,6 +3,7 @@
 // MUX Reference AnimatedIcon.cpp, commit 1b9db23
 
 using System;
+using System.Globalization;
 using System.Numerics;
 using Uno.Disposables;
 using Uno.UI.Helpers.WinUI;
@@ -448,7 +449,7 @@ namespace Microsoft.UI.Xaml.Controls
 			for (int currentLength = input.Length; currentLength > 0; currentLength--)
 			{
 				var shortenedInput = input.Substring(0, currentLength);
-				if (float.TryParse(shortenedInput, out var parsed))
+				if (float.TryParse(shortenedInput, NumberStyles.Float, NumberFormatInfo.InvariantInfo, out var parsed))
 				{
 					if (input.Length - currentLength == 0)
 					{

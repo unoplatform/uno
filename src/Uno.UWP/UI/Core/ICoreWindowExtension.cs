@@ -1,15 +1,21 @@
 using System;
 using System.Linq;
 using Windows.Devices.Input;
+using Windows.Foundation;
 
-namespace Windows.UI.Core
+namespace Windows.UI.Core;
+
+internal interface ICoreWindowExtension
 {
-	internal interface ICoreWindowExtension
-	{
-		public CoreCursor PointerCursor { get; set; }
+#if UNO_SUPPORTS_NATIVEHOST
+	bool IsNativeElement(object content);
 
-		void ReleasePointerCapture(PointerIdentifier pointer);
+	void AttachNativeElement(object owner, object content);
 
-		void SetPointerCapture(PointerIdentifier pointer);
-	}
+	void DetachNativeElement(object owner, object content);
+
+	void ArrangeNativeElement(object owner, object content, Rect arrangeRect);
+
+	Size MeasureNativeElement(object owner, object content, Size size);
+#endif
 }

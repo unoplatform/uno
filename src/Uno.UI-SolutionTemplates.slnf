@@ -5,16 +5,10 @@
       "SolutionTemplate\\Uno.ProjectTemplates.Dotnet\\Uno.ProjectTemplates.Dotnet.csproj",
       "SolutionTemplate\\UnoLibraryTemplate.netcore\\UnoLibraryTemplate.netcore.csproj",
       "SolutionTemplate\\UnoLibraryTemplate\\UnoLibraryTemplate.csproj",
-      "SolutionTemplate\\UnoSolutionTemplate.VSIX.2019\\UnoSolutionTemplate.VSIX.2019.csproj",
-      "SolutionTemplate\\UnoSolutionTemplate.VSIX.2022\\UnoSolutionTemplate.VSIX.2022.csproj",
-      "SolutionTemplate\\UnoSolutionTemplate.VSIX\\UnoSolutionTemplate.VSIX.shproj",
       "SolutionTemplate\\UnoSolutionTemplate.WinUI.netcore\\UnoSolutionTemplate.WinUI.netcore.csproj",
-      "SolutionTemplate\\UnoSolutionTemplate.Wizard.2019\\UnoSolutionTemplate.Wizard.2019.csproj",
-      "SolutionTemplate\\UnoSolutionTemplate.Wizard.2022\\UnoSolutionTemplate.Wizard.2022.csproj",
       "SolutionTemplate\\UnoSolutionTemplate.netcore\\UnoSolutionTemplate.netcore.csproj",
       "SolutionTemplate\\UnoSolutionTemplate\\UnoSolutionTemplate.csproj",
-      "SolutionTemplate\\UnoUITestTemplate\\UnoUITestTemplate.csproj",
-      "UnoItemTemplate\\UnoItemTemplate.csproj"
+      "SolutionTemplate\\UnoUITestTemplate\\UnoUITestTemplate.csproj"
     ]
   }
 }

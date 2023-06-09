@@ -1,3 +1,7 @@
+---
+uid: Uno.GetStarted.Rider
+---
+
 # Get Started on JetBrains Rider
 
 ## Prerequisites
@@ -49,7 +53,7 @@ At this time, there isn't a template for the Rider IDE like there is for Visual 
 
 Installs Uno template:  
 ```bash
-dotnet new -i Uno.ProjectTemplates.Dotnet
+dotnet new -i Uno.Templates
 ```
 Creates a new project:  
 ```bash

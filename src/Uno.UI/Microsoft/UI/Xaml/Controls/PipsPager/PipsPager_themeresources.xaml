@@ -149,8 +149,8 @@
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="Button">
-					<Grid 
-                        x:Name="RootGrid" 
+					<Grid
+                        x:Name="RootGrid"
                         Background="{TemplateBinding Background}"
                         BorderBrush="{TemplateBinding BorderBrush}"
                         BorderThickness="{TemplateBinding BorderThickness}"
@@ -249,12 +249,12 @@
 		<Setter Property="FocusVisualMargin" Value="0" />
 		<Setter Property="Content" Value="{StaticResource PipsPagerNormalGlyph}" />
 		<Setter Property="FontSize" Value="{StaticResource PipsPagerNormalGlyphFontSize}" />
-		<Setter Property="contract7Present:CornerRadius" Value="{StaticResource ControlCornerRadius}"/>
+		<contract7Present:Setter Property="CornerRadius" Value="{StaticResource ControlCornerRadius}"/>
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="Button">
-					<Grid 
-                        x:Name="RootGrid" 
+					<Grid
+                        x:Name="RootGrid"
                         Background="{TemplateBinding Background}"
                         BorderBrush="{TemplateBinding BorderBrush}"
                         BorderThickness="{TemplateBinding BorderThickness}"

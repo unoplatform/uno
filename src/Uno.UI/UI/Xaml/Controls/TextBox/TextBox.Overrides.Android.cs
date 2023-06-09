@@ -51,7 +51,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 			public override IEditable Replace(int start, int end, ICharSequence tb, int tbstart, int tbend)
 			{
-				if (Owner is { IsNativeReadOnly: true })
+				if (Owner is { IsNativeViewReadOnly: true })
 				{
 					return this;
 				}

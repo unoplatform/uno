@@ -7,11 +7,11 @@ using Android.Graphics;
 using Android.OS;
 using Android.Views;
 using Android.Views.InputMethods;
-
 using Uno.AuthenticationBroker;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.Gaming.Input.Internal;
+using Uno.Helpers.Theming;
 using Uno.UI;
 using Windows.Devices.Sensors;
 using Windows.Gaming.Input;
@@ -21,13 +21,14 @@ using Windows.Storage.Pickers;
 using Windows.System;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml.Media;
+using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
+
 
 namespace Windows.UI.Xaml
 {
 	[Activity(ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize | ConfigChanges.UiMode, WindowSoftInputMode = SoftInput.AdjustPan | SoftInput.StateHidden)]
 	public class ApplicationActivity : Controls.NativePage, Uno.UI.Composition.ICompositionRoot
 	{
-
 		/// <summary>
 		/// The windows model implies only one managed activity.
 		/// </summary>
@@ -64,6 +65,7 @@ namespace Windows.UI.Xaml
 		public override void OnAttachedToWindow()
 		{
 			base.OnAttachedToWindow();
+
 			// Cannot call this in ctor: see
 			// https://stackoverflow.com/questions/10593022/monodroid-error-when-calling-constructor-of-custom-view-twodscrollview#10603714
 			RaiseConfigurationChanges();
@@ -201,6 +203,7 @@ namespace Windows.UI.Xaml
 			}
 
 			base.OnCreate(bundle);
+			Windows.UI.Xaml.Window.Current.OnActivityCreated();
 
 			LayoutProvider = new LayoutProvider(this);
 			LayoutProvider.KeyboardChanged += OnKeyboardChanged;
@@ -211,12 +214,7 @@ namespace Windows.UI.Xaml
 
 		private void OnInsetsChanged(Thickness insets)
 		{
-			if (Xaml.Window.Current != null)
-			{
-				//Set insets before raising the size changed event
-				Xaml.Window.Current.Insets = insets;
-				Xaml.Window.Current.RaiseNativeSizeChanged();
-			}
+			Xaml.Window.Current?.RaiseNativeSizeChanged();
 		}
 
 		public override void SetContentView(View view)
@@ -257,7 +255,8 @@ namespace Windows.UI.Xaml
 		{
 			base.OnPause();
 
-			VisualTreeHelper.CloseAllPopups();
+			// TODO Uno: When we support multi-window, this should close popups for the appropriate XamlRoot #8341.
+			VisualTreeHelper.CloseLightDismissPopups(WinUICoreServices.Instance.ContentRootCoordinator.CoreWindowContentRoot.XamlRoot);
 
 			DismissKeyboard();
 		}
@@ -267,6 +266,8 @@ namespace Windows.UI.Xaml
 			base.OnDestroy();
 
 			LayoutProvider.Stop();
+			LayoutProvider.KeyboardChanged -= OnKeyboardChanged;
+			LayoutProvider.InsetsChanged -= OnInsetsChanged;
 		}
 
 		public override void OnConfigurationChanged(Configuration newConfig)
@@ -281,7 +282,7 @@ namespace Windows.UI.Xaml
 			Xaml.Window.Current?.RaiseNativeSizeChanged();
 			ViewHelper.RefreshFontScale();
 			DisplayInformation.GetForCurrentView().HandleConfigurationChange();
-			Windows.UI.Xaml.Application.Current.OnSystemThemeChanged();
+			SystemThemeHelper.RefreshSystemTheme();
 		}
 
 #pragma warning disable CS0618 // deprecated members

@@ -30,7 +30,7 @@ namespace Windows.UI.Xaml.Media
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(ColorInterpolationMode), typeof(global::Windows.UI.Xaml.Media.ColorInterpolationMode), 
 			typeof(global::Windows.UI.Xaml.Media.GradientBrush), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.ColorInterpolationMode)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.ColorInterpolationMode)));
 		#endif
 		// Skipping already declared property GradientStopsProperty
 		// Skipping already declared property MappingModeProperty

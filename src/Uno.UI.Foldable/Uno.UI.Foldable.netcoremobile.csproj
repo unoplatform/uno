@@ -41,8 +41,6 @@
 		<PackageReference Include="Uno.SourceGenerationTasks" />
 	</ItemGroup>
 
-	<Import Project="..\Uno.CrossTargetting.props" />
-
 	<ItemGroup Condition="'$(TargetPlatformIdentifier)'=='android'">
 		<PackageReference Include="Xamarin.AndroidX.Window.WindowJava" Version="1.0.0.8" />
 	</ItemGroup>

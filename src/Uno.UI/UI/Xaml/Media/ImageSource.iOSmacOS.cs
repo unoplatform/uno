@@ -127,8 +127,8 @@ public partial class ImageSource
 	/// Override to provide the capability of concrete ImageSource to open synchronously.
 	/// </summary>
 	/// <param name="image">Returned image data.</param>
-	/// <returns>True if opening synchronosly is possible.</returns>
-	private protected virtual bool TryOpenSourceSync([NotNullWhen(true)] out ImageData image)
+	/// <returns>True if opening synchronously is possible.</returns>
+	private protected virtual bool TryOpenSourceSync(int? targetWidth, int? targetHeight, out ImageData image)
 	{
 		image = default;
 		return false;
@@ -137,9 +137,15 @@ public partial class ImageSource
 	/// <summary>
 	/// Override to provide the capability of concrete ImageSource to open asynchronously.
 	/// </summary>
-	/// <param name="image">Async task for image data retrieval.</param>
-	/// <returns>True if opening synchronosly is possible.</returns>
-	private protected virtual bool TryOpenSourceAsync(CancellationToken ct, [NotNullWhen(true)] out Task<ImageData> asyncImage)
+	/// <param name="targetWidth">The width of the image that will render this ImageSource.</param>
+	/// <param name="targetHeight">The width of the image that will render this ImageSource.</param>
+	/// <param name="asyncImage">Async task for image data retrieval.</param>
+	/// <returns>True if opening asynchronously is possible.</returns>
+	/// <remarks>
+	/// <paramref name="targetWidth"/> and <paramref name="targetHeight"/> can be used to improve performance by fetching / decoding only the required size.
+	/// Depending on stretching, only one of each can be provided.
+	/// </remarks>
+	private protected virtual bool TryOpenSourceAsync(CancellationToken ct, int? targetWidth, int? targetHeight, [NotNullWhen(true)] out Task<ImageData> asyncImage)
 	{
 		asyncImage = default;
 		return false;
@@ -161,7 +167,7 @@ public partial class ImageSource
 			return true;
 		}
 
-		if (IsSourceReady && TryOpenSourceSync(out image))
+		if (IsSourceReady && TryOpenSourceSync(null, null, out image))
 		{
 			return true;
 		}
@@ -185,12 +191,12 @@ public partial class ImageSource
 				return ImageData.Empty;
 			}
 
-			if (IsSourceReady && TryOpenSourceSync(out var img))
+			if (IsSourceReady && TryOpenSourceSync(null, null, out var img))
 			{
 				return _imageData = img;
 			}
 
-			if (IsSourceReady && TryOpenSourceAsync(ct, out var asyncImg))
+			if (IsSourceReady && TryOpenSourceAsync(ct, null, null, out var asyncImg))
 			{
 				return _imageData = await asyncImg;
 			}

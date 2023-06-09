@@ -11,11 +11,9 @@ namespace Uno.UI.Samples.Content.UITests.WebView
 		{
 			InitializeComponent();
 
-#if HAS_UNO
-			webView.Navigate(new Uri("https://nv-assets.azurewebsites.net/tests/docs/WebView_NavigateToAnchor.html"));
+			webView.Navigate(new Uri("https://uno-assets.platform.uno/tests/docs/WebView_NavigateToAnchor.html"));
 			webView.NavigationStarting += WebView_NavigationStarting;
 			webView.NavigationCompleted += WebView_NavigationCompleted;
-#endif
 		}
 
 		private void WebView_NavigationStarting(Windows.UI.Xaml.Controls.WebView sender, WebViewNavigationStartingEventArgs args)
@@ -30,7 +28,7 @@ namespace Uno.UI.Samples.Content.UITests.WebView
 
 		private void ButtonClicked()
 		{
-			webView.Navigate(new Uri("https://nv-assets.azurewebsites.net/tests/docs/WebView_NavigateToAnchor.html#section-1"));
+			webView.Navigate(new Uri("https://uno-assets.platform.uno/tests/docs/WebView_NavigateToAnchor.html#section-1"));
 		}
 
 		private void OnClickAnchor()

@@ -42,7 +42,7 @@ namespace Windows.UI.Xaml.Documents
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(ElementSoundMode), typeof(global::Windows.UI.Xaml.ElementSoundMode), 
 			typeof(global::Windows.UI.Xaml.Documents.Hyperlink), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.ElementSoundMode)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.ElementSoundMode)));
 		#endif
 		// Skipping already declared property XYFocusDownProperty
 		// Skipping already declared property XYFocusLeftProperty

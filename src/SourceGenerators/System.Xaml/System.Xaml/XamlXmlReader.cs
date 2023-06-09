@@ -8,10 +8,10 @@
 // distribute, sublicense, and/or sell copies of the Software, and to
 // permit persons to whom the Software is furnished to do so, subject to
 // the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be
 // included in all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 // EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 // MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -32,6 +32,39 @@ using Pair = System.Collections.Generic.KeyValuePair<Uno.Xaml.XamlMember,string>
 
 namespace Uno.Xaml
 {
+	public readonly struct IsIncludedResult : IEquatable<IsIncludedResult>
+	{
+		public static IsIncludedResult Default { get; } = new IsIncludedResult(isIncluded: null, disableCaching: false);
+		public static IsIncludedResult ForceExclude { get; } = new IsIncludedResult(isIncluded: false, disableCaching: false);
+		public static IsIncludedResult ForceInclude { get; } = new IsIncludedResult(isIncluded: true, disableCaching: false);
+		public static IsIncludedResult ForceIncludeWithCacheDisabled { get; } = new IsIncludedResult(isIncluded: true, disableCaching: true);
+
+		public bool? IsIncluded { get; }
+		public bool DisableCaching { get; }
+
+		private IsIncludedResult(bool? isIncluded, bool disableCaching)
+		{
+			IsIncluded = isIncluded;
+			DisableCaching = disableCaching;
+		}
+
+		public override bool Equals(object obj) => obj is IsIncludedResult result && Equals(result);
+		public bool Equals(IsIncludedResult other) => IsIncluded == other.IsIncluded && DisableCaching == other.DisableCaching;
+
+		public override int GetHashCode()
+		{
+			var hashCode = 676255761;
+			hashCode = hashCode * -1521134295 + IsIncluded.GetHashCode();
+			hashCode = hashCode * -1521134295 + DisableCaching.GetHashCode();
+			return hashCode;
+		}
+
+		public static bool operator ==(IsIncludedResult left, IsIncludedResult right) => left.Equals(right);
+		public static bool operator !=(IsIncludedResult left, IsIncludedResult right) => !(left == right);
+	}
+
+	public delegate IsIncludedResult IsIncluded(string localName, string namespaceUri);
+
 	public class XamlXmlReader : XamlReader, IXamlLineInfo
 	{
 		#region constructors
@@ -113,15 +146,18 @@ namespace Uno.Xaml
 		{
 		}
 
-		public XamlXmlReader (XmlReader xmlReader, XamlSchemaContext schemaContext, XamlXmlReaderSettings settings)
+		// Uno specific: includeXamlNamespaces and excludeXamlNamespaces are Uno specific.
+		public XamlXmlReader (XmlReader xmlReader, XamlSchemaContext schemaContext, XamlXmlReaderSettings settings, IsIncluded isIncluded = null)
 		{
-			parser = new XamlXmlParser (xmlReader, schemaContext, settings);
+			parser = new XamlXmlParser (xmlReader, schemaContext, settings, isIncluded ?? ((_, _) => IsIncludedResult.Default));
 		}
-		
+
 		#endregion
 
 		XamlXmlParser parser;
 		IEnumerator<XamlXmlNodeInfo> iter;
+
+		public bool DisableCaching => parser.DisableCaching;
 
 		public bool PreserveWhitespace => parser.Reader.XmlSpace == XmlSpace.Preserve;
 
@@ -175,7 +211,7 @@ namespace Uno.Xaml
 			return iter.Current.NodeType != XamlNodeType.None;
 		}
 	}
-	
+
 	struct XamlXmlNodeInfo
 	{
 		public XamlXmlNodeInfo (XamlNodeType nodeType, object nodeValue, IXmlLineInfo lineInfo)
@@ -192,17 +228,20 @@ namespace Uno.Xaml
 				LinePosition = 0;
 			}
 		}
-		
+
 		public bool HasLineInfo;
 		public int LineNumber;
 		public int LinePosition;
 		public XamlNodeType NodeType;
 		public object NodeValue;
 	}
-	
+
 	class XamlXmlParser
 	{
-		public XamlXmlParser (XmlReader xmlReader, XamlSchemaContext schemaContext, XamlXmlReaderSettings settings)
+		// Uno specific
+		private readonly IsIncluded _isIncluded;
+
+		public XamlXmlParser (XmlReader xmlReader, XamlSchemaContext schemaContext, XamlXmlReaderSettings settings, IsIncluded isIncluded)
 		{
 			if (xmlReader == null)
 				throw new ArgumentNullException ("xmlReader");
@@ -223,8 +262,10 @@ namespace Uno.Xaml
 			r = XmlReader.Create (xmlReader, xrs);
 			line_info = r as IXmlLineInfo;
 			xaml_namespace_resolver = new NamespaceResolver (r as IXmlNamespaceResolver);
+
+			_isIncluded = isIncluded;
 		}
-		
+
 		XmlReader r;
 		IXmlLineInfo line_info;
 		XamlSchemaContext sctx;
@@ -252,7 +293,7 @@ namespace Uno.Xaml
 				yield return xi;
 			yield return Node (XamlNodeType.None, null);
 		}
-		
+
 		// Note that it could return invalid (None) node to tell the caller that it is not really an object element.
 		IEnumerable<XamlXmlNodeInfo> ReadObjectElement (XamlType parentType, XamlMember currentMember)
 		{
@@ -279,7 +320,7 @@ namespace Uno.Xaml
 			var sti = GetStartTagInfo ();
 			using (PushIgnorables(sti.Members))
 			{
-				if (IsIgnored(r.Prefix))
+				if (IsIgnored(r.Prefix, r.NamespaceURI, out _))
 				{
 					r.Skip();
 					yield break;
@@ -511,16 +552,16 @@ namespace Uno.Xaml
 						break;
 
 					default:
-						if (IsIgnored(r.Prefix))
+						if (IsIgnored(r.Prefix, r.NamespaceURI, out var shouldTreatAsDefaultNamespace))
 						{
 							continue;
 						}
 
-						if (r.NamespaceURI == String.Empty  || r.NamespaceURI == r.LookupNamespace("") ) {
+						if (r.NamespaceURI == String.Empty  || r.NamespaceURI == r.LookupNamespace("") || shouldTreatAsDefaultNamespace) {
 							atts.Add (r.LocalName, r.Value);
 							continue;
 						}
-						if (r.NamespaceURI.StartsWith("using:", StringComparison.Ordinal)) {
+						if (r.NamespaceURI.StartsWith("using:", StringComparison.Ordinal) || r.NamespaceURI.Contains("#using:")) {
 							atts.Add (r.Name, r.Value);
 							continue;
 						}
@@ -575,7 +616,7 @@ namespace Uno.Xaml
 					}
 					else
 					{
-						sti.Members.Add(new Pair(XamlMember.FromUnknown(p.Key, r.NamespaceURI, xt), p.Value));
+						sti.Members.Add(new Pair(XamlMember.FromUnknown(aname, r.NamespaceURI, xt), p.Value));
 					}
 				}
 			}
@@ -666,13 +707,24 @@ namespace Uno.Xaml
 
 					yield return ni;
 				}
+				var currentNodeType = r.NodeType;
+				var currentNodeValue = r.Value;
+				var nextNodeType = r.MoveToContent();
+				if (currentNodeType == XmlNodeType.Whitespace && nextNodeType != XmlNodeType.EndElement)
+				{
+					yield return Node(XamlNodeType.Value, " ");
+				}
+				if (currentNodeType == XmlNodeType.SignificantWhitespace)
+				{
+					yield return Node(XamlNodeType.Value, currentNodeValue);
+				}
 			}
 		}
 
 		// member element, implicit member, children via content property, or value
 		IEnumerable<XamlXmlNodeInfo> ReadMemberElement (XamlType parentType, XamlType xt)
 		{
-			if (IsIgnored(r.Prefix))
+			if (IsIgnored(r.Prefix, r.NamespaceURI, out _))
 			{
 				r.Skip();
 				yield break;
@@ -745,18 +797,27 @@ namespace Uno.Xaml
 			}
 			else
 			{
-
-				if (r.Name.Contains(".") && r.IsEmptyElement && !r.HasAttributes)
+				if (r.Name.Contains(".") && r.IsEmptyElement)
 				{
-					// This case is present to handle self closing attached property nodes.
+					if (!r.HasAttributes)
+					{
+						// This case is present to handle self closing attached property nodes.
 
-					yield return Node(XamlNodeType.StartMember, xm);
-					yield return Node(XamlNodeType.EndMember, xm);
-					r.Read();
-					yield break;
+						yield return Node(XamlNodeType.StartMember, xm);
+						yield return Node(XamlNodeType.EndMember, xm);
+						r.Read();
+						yield break;
+					}
+					else
+					{
+						throw new XamlParseException(
+							string.Format(
+								CultureInfo.InvariantCulture,
+								"Member '{0}' cannot have properties", xm.Name)) { LineNumber = this.LineNumber, LinePosition = this.LinePosition };
+					}
 				}
 				else
-				{ 
+				{
 					foreach (var ni in ReadCollectionItems(xt, xm))
 						yield return ni;
 				}
@@ -799,7 +860,7 @@ namespace Uno.Xaml
 								throw new Exception("should not happen");
 							yield return ni;
 						}
-					}					
+					}
 				}
 			}
 
@@ -818,8 +879,8 @@ namespace Uno.Xaml
 				member = XamlLanguage.UnknownContent;
 			}
 
-			for (	
-				r.MoveToContent(); 
+			for (
+				r.MoveToContent();
 				r.NodeType != XmlNodeType.EndElement && r.NodeType != XmlNodeType.None && !r.Name.Contains(".");
 				// nothing
 			) {
@@ -834,11 +895,15 @@ namespace Uno.Xaml
 				}
 
 				var currentNodeType = r.NodeType;
+				var currentNodeValue = r.Value;
 				var nextNodeType = r.MoveToContent();
-
 				if (currentNodeType == XmlNodeType.Whitespace && nextNodeType != XmlNodeType.EndElement)
 				{
 					yield return Node(XamlNodeType.Value, " ");
+				}
+				if (currentNodeType == XmlNodeType.SignificantWhitespace)
+				{
+					yield return Node(XamlNodeType.Value, currentNodeValue);
 				}
 			}
 
@@ -867,6 +932,8 @@ namespace Uno.Xaml
 			get { return line_info != null && line_info.HasLineInfo () ? line_info.LinePosition : 0; }
 		}
 
+		public bool DisableCaching { get; private set; }
+
 		private IDisposable PushIgnorables(List<Pair> members)
 		{
 			var ignorable = members.FirstOrDefault(a => a.Key == XamlLanguage.Ignorable);
@@ -879,8 +946,23 @@ namespace Uno.Xaml
 			return null;
 		}
 
-		private bool IsIgnored(string localName)
+		private bool IsIgnored(string localName, string namespaceUri, out bool shouldTreatAsDefaultNamespace)
 		{
+			var result = _isIncluded(localName, namespaceUri);
+			var isIncluded = result.IsIncluded;
+			DisableCaching |= result.DisableCaching;
+			if (isIncluded == true)
+			{
+				shouldTreatAsDefaultNamespace = true;
+				return false;
+			}
+
+			shouldTreatAsDefaultNamespace = false;
+			if (isIncluded == false)
+			{
+				return true;
+			}
+
 			if (ignorables.SelectMany(v => v).Contains(localName))
 			{
 				return true;

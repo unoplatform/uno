@@ -1,3 +1,7 @@
+---
+uid: Uno.Features.WDGeolocation
+---
+
 # Uno Support for Windows.Devices.Geolocation
 
 ## `Geolocator`

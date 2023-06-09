@@ -1,7 +1,10 @@
-﻿using Windows.Foundation;
+﻿using System;
+using System.Linq;
+using Windows.Foundation;
 using Windows.UI.Xaml;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Uno.Extensions;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml
 {
@@ -126,5 +129,46 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			group.CurrentState.Should().Be(state);
 		}
 
+		[DataTestMethod]
+		// when the widths differ, the widest win
+		[DataRow(1, 100, 100, "{10,10}|{20,0}")]
+		[DataRow(1, 100, 100, "{10,10}|{20,20}")]
+		// when the widths are the same and the heights differ, the tallest win
+		[DataRow(0, 100, 100, "{10,10}|{10,0}")]
+		[DataRow(1, 100, 100, "{10,10}|{10,20}")]
+		// when the widths and the heights are all same, the first in declaration order win
+		[DataRow(0, 100, 100, "{10,}|{10,}")]
+		[DataRow(0, 100, 100, "{,10}|{,10}")]
+		[DataRow(0, 100, 100, "{10,10}|{10,10}")]
+		public void When_Multiple_AdaptiveTriggers(int expectedIndex, int windowWidth, int windowHeight, string context)
+		{
+			Window.Current.SetWindowSize(new Size(windowWidth, windowHeight));
+
+			var sut = new VisualStateGroup();
+			var states = context.Split('|')
+				.Select(x => BuildAdaptiveTrigger(x.Trim('{', '}').Split(',')))
+				.Select(x => new VisualState
+				{
+					StateTriggers = { x }
+				})
+				.ForEach(sut.States.Add);
+
+			sut.CurrentState.Should().Be(sut.States[expectedIndex]);
+
+			AdaptiveTrigger BuildAdaptiveTrigger(string[] args)
+			{
+				var result = new AdaptiveTrigger();
+				if (args[0] is { Length: > 0 } arg0)
+				{
+					result.MinWindowWidth = double.Parse(arg0);
+				}
+				if (args[1] is { Length: > 0 } arg1)
+				{
+					result.MinWindowHeight = double.Parse(arg1);
+				}
+
+				return result;
+			}
+		}
 	}
 }

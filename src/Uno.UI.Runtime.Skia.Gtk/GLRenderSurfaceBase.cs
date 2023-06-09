@@ -28,8 +28,13 @@ namespace Uno.UI.Runtime.Skia
 		/// <summary>
 		/// Include a guard band for the creation of the OpenGL surface to avoid
 		/// incorrect renders when the surface is exactly the size of the GLArea.
+		/// The current GLArea seems to have an issue with OpenGL rendering and 
+		/// the first line rendering from the top. Adding one offsets the rendering
+		/// and prevents full area Skia surfaces to be blank, but causes issues in
+		/// rendering clipped shapes. Placing the GuardBand to one reduces but does
+		/// not remove the artifacts. See https://github.com/unoplatform/uno/issues/11139.
 		/// </summary>
-		private const int GuardBand = 32;
+		private const int GuardBand = 1;
 
 		private readonly DisplayInformation _displayInformation;
 		private FocusManager? _focusManager;

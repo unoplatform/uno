@@ -7,6 +7,7 @@ using System.Runtime.CompilerServices;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Tests.Enterprise;
 using Windows.UI.Core;
+using MUXControlsTestApp.Utilities;
 #if NETFX_CORE
 using Uno.UI.Extensions;
 #elif __IOS__
@@ -26,6 +27,10 @@ namespace Private.Infrastructure
 			private static Windows.UI.Xaml.Window _currentTestWindow;
 			private static UIElement _originalWindowContent;
 
+			public static XamlRoot XamlRoot { get; set; }
+
+			public static bool IsXamlIsland { get; set; }
+
 			public static Windows.UI.Xaml.Window CurrentTestWindow
 			{
 				get
@@ -44,13 +49,20 @@ namespace Private.Infrastructure
 			public static UIElement WindowContent
 			{
 				get => UseActualWindowRoot
-					? CurrentTestWindow.Content
+					? (IsXamlIsland ? GetXamlIslandRootContentControl().Content as UIElement : CurrentTestWindow.Content)
 					: EmbeddedTestRoot.getContent?.Invoke();
 				internal set
 				{
 					if (UseActualWindowRoot)
 					{
-						CurrentTestWindow.Content = value;
+						if (IsXamlIsland)
+						{
+							GetXamlIslandRootContentControl().Content = value;
+						}
+						else
+						{
+							CurrentTestWindow.Content = value;
+						}
 					}
 					else if (EmbeddedTestRoot.setContent is { } setter)
 					{
@@ -63,16 +75,41 @@ namespace Private.Infrastructure
 				}
 			}
 
+			private static ContentControl GetXamlIslandRootContentControl()
+			{
+				var islandContentRoot = EmbeddedTestRoot.control.XamlRoot.Content;
+				if (islandContentRoot is not ContentControl contentControl)
+				{
+					contentControl = VisualTreeUtils.FindVisualChildByType<ContentControl>(islandContentRoot);
+				}
+
+				return contentControl;
+			}
+
 			public static void SaveOriginalWindowContent()
 			{
-				_originalWindowContent = CurrentTestWindow.Content;
+				if (IsXamlIsland)
+				{
+					_originalWindowContent = GetXamlIslandRootContentControl().Content as UIElement;
+				}
+				else
+				{
+					_originalWindowContent = CurrentTestWindow.Content;
+				}
 			}
 
 			public static void RestoreOriginalWindowContent()
 			{
 				if (_originalWindowContent != null)
 				{
-					CurrentTestWindow.Content = _originalWindowContent;
+					if (IsXamlIsland)
+					{
+						GetXamlIslandRootContentControl().Content = _originalWindowContent;
+					}
+					else
+					{
+						CurrentTestWindow.Content = _originalWindowContent;
+					}
 					_originalWindowContent = null;
 				}
 			}

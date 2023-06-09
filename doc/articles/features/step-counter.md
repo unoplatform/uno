@@ -1,3 +1,7 @@
+---
+uid: Uno.Features.StepCounter
+---
+
 # Step counter (Pedometer)
 
 > [!TIP]
@@ -40,6 +44,8 @@ Make sure to add the following capability declaration to your `Info.plist` file,
 <key>NSMotionUsageDescription</key>
 <string>Some reason why your app wants to track motion.</string>
 ```
+
+---
 
 ## Example
 

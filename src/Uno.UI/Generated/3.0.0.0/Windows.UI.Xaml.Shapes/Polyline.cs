@@ -28,7 +28,7 @@ namespace Windows.UI.Xaml.Shapes
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(FillRule), typeof(global::Windows.UI.Xaml.Media.FillRule), 
 			typeof(global::Windows.UI.Xaml.Shapes.Polyline), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.FillRule)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.FillRule)));
 		#endif
 		// Skipping already declared property PointsProperty
 		// Skipping already declared method Windows.UI.Xaml.Shapes.Polyline.Polyline()

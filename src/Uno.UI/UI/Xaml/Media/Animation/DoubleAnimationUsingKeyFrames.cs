@@ -15,6 +15,8 @@ namespace Windows.UI.Xaml.Media.Animation
 	public partial class DoubleAnimationUsingKeyFrames : Timeline, ITimeline
 	{
 		private readonly Stopwatch _activeDuration = new Stopwatch();
+		private bool _wasBeginScheduled;
+		private bool _wasRequestedToStop;
 		private int _replayCount = 1;
 		private double? _startingValue;
 		private double _finalValue;
@@ -55,7 +57,6 @@ namespace Windows.UI.Xaml.Media.Animation
 			return base.GetCalculatedDuration();
 		}
 
-		bool _wasBeginScheduled;
 		void ITimeline.Begin()
 		{
 			if (!_wasBeginScheduled)
@@ -63,7 +64,10 @@ namespace Windows.UI.Xaml.Media.Animation
 				// We dispatch the begin so that we can use bindings on DoubleKeyFrame.Value from RelativeParent.
 				// This works because the template bindings are executed just after the constructor.
 				// WARNING: This does not allow us to bind DoubleKeyFrame.Value with ViewModel properties.
+
 				_wasBeginScheduled = true;
+				_wasRequestedToStop = false;
+
 #if !NET461
 #if __ANDROID__
 				_ = Dispatcher.RunAnimation(() =>
@@ -72,11 +76,14 @@ namespace Windows.UI.Xaml.Media.Animation
 #endif
 #endif
 				{
-					if (KeyFrames.Count < 1)
-					{
-						return; // nothing to do
-					}
 					_wasBeginScheduled = false;
+
+					if (KeyFrames.Count < 1 || // nothing to do
+						_wasRequestedToStop // was requested to stop, between Begin() and dispatched here
+					)
+					{
+						return;
+					}
 
 					_activeDuration.Restart();
 					_replayCount = 1;
@@ -175,7 +182,9 @@ namespace Windows.UI.Xaml.Media.Animation
 				_currentAnimator.Cancel();//Stop the animator if it is running
 				_startingValue = null;
 			}
+
 			State = TimelineState.Stopped;
+			_wasRequestedToStop = true;
 		}
 
 		void ITimeline.Stop()
@@ -183,7 +192,9 @@ namespace Windows.UI.Xaml.Media.Animation
 			_currentAnimator?.Cancel(); // stop could be called before the initialization
 			_startingValue = null;
 			ClearValue();
+
 			State = TimelineState.Stopped;
+			_wasRequestedToStop = true;
 		}
 
 		/// <summary>

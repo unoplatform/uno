@@ -1,3 +1,7 @@
+---
+uid: Uno.Controls.TextBox
+---
+
 # TextBox
 
 ## InputScopes Mapping Table

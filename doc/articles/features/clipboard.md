@@ -1,3 +1,7 @@
+---
+uid: Uno.Features.Clipboard
+---
+
 # Clipboard
 
 > [!TIP]

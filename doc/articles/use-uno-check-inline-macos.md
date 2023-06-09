@@ -1,3 +1,7 @@
+---
+uid: Uno.Development.UnoCheckmacOS
+---
+
 ## Finalize your environment
 
 [!include[getting-help](use-uno-check-inline-macos-noheader.md)]

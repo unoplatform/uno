@@ -6,6 +6,7 @@ using Uno.Extensions;
 using System;
 using System.Buffers;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
@@ -16,6 +17,7 @@ using Uno.Foundation.Logging;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Media;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Uno.UI.DataBinding
 {
@@ -119,6 +121,16 @@ namespace Uno.UI.DataBinding
 		public IEnumerable<IBindingItem> GetPathItems()
 		{
 			return _chain?.Flatten(i => i.Next!) ?? Array.Empty<BindingItem>();
+		}
+
+		public (object DataContext, string PropertyName) GetTargetContextAndPropertyName()
+		{
+			var info = GetPathItems().Last();
+			var propertyName = info.PropertyName
+				.Split(new[] { '.' }).Last()
+				.Replace("(", "").Replace(")", "");
+
+			return (info.DataContext, propertyName);
 		}
 
 		/// <summary>
@@ -226,6 +238,14 @@ namespace Uno.UI.DataBinding
 			}
 		}
 
+		internal void SetAnimationFillingValue(object value)
+		{
+			if (!_disposed)
+			{
+				_value?.SetAnimationFillingValue(value);
+			}
+		}
+
 		/// <summary>
 		/// Clears the value of the current precedence.
 		/// </summary>
@@ -237,6 +257,13 @@ namespace Uno.UI.DataBinding
 			if (!_disposed)
 			{
 				_value?.ClearValue();
+			}
+		}
+		public void ClearAnimationFillingValue()
+		{
+			if (!_disposed)
+			{
+				_value?.ClearAnimationFillingValue();
 			}
 		}
 
@@ -407,6 +434,37 @@ namespace Uno.UI.DataBinding
 			tail ??= item;
 		}
 
+		private static IDisposable? SubscribeToNotifyCollectionChanged(BindingItem bindingItem)
+		{
+			if (!bindingItem.PropertyType.Is(typeof(INotifyCollectionChanged)) ||
+				bindingItem.Next?.PropertyName.StartsWith("[", StringComparison.Ordinal) != true)
+			{
+				return null;
+			}
+
+			if ((INotifyCollectionChanged?)bindingItem.Value is not { } notify)
+			{
+				return null;
+			}
+
+			NotifyCollectionChangedEventHandler handler = (s, args) =>
+			{
+				BindingItem tail = bindingItem;
+				while (tail.Next != null)
+				{
+					tail = tail.Next;
+				}
+				tail.ValueChangedListener?.OnValueChanged(bindingItem.Value);
+			};
+
+			notify.CollectionChanged += handler;
+
+			return Disposable.Create(() =>
+			{
+				notify.CollectionChanged -= handler;
+			});
+		}
+
 		/// <summary>
 		/// Subscribes for updates to the INotifyPropertyChanged interface.
 		/// </summary>
@@ -479,7 +537,9 @@ namespace Uno.UI.DataBinding
 			private ValueGetterHandler? _substituteValueGetter;
 			private ValueSetterHandler? _valueSetter;
 			private ValueSetterHandler? _localValueSetter;
+			private ValueSetterHandler? _animationFillingValueSetter;
 			private ValueUnsetterHandler? _valueUnsetter;
+			private ValueUnsetterHandler? _animationFillingValueUnsetter;
 
 			private Type? _dataContextType;
 
@@ -568,6 +628,12 @@ namespace Uno.UI.DataBinding
 			{
 				BuildLocalValueSetter();
 				SetSourceValue(_localValueSetter!, value);
+			}
+
+			public void SetAnimationFillingValue(object value)
+			{
+				BuildAnimationFillingValueSetter();
+				SetSourceValue(_animationFillingValueSetter!, value);
 			}
 
 			public Type? PropertyType
@@ -686,14 +752,15 @@ namespace Uno.UI.DataBinding
 			{
 				if (_valueSetter == null && _dataContextType != null)
 				{
+					_valueSetter = BindingPropertyHelper.GetValueSetter(
+						_dataContextType,
+						PropertyName,
+						convert: true,
+						precedence: _precedence ?? DependencyPropertyValuePrecedences.Local
+					);
 					if (_precedence == null)
 					{
-						BuildLocalValueSetter();
-						_valueSetter = _localValueSetter;
-					}
-					else
-					{
-						_valueSetter = BindingPropertyHelper.GetValueSetter(_dataContextType, PropertyName, convert: true, precedence: _precedence.Value);
+						_localValueSetter = _valueSetter;
 					}
 				}
 			}
@@ -702,7 +769,25 @@ namespace Uno.UI.DataBinding
 			{
 				if (_localValueSetter == null && _dataContextType != null)
 				{
-					_localValueSetter = BindingPropertyHelper.GetValueSetter(_dataContextType, PropertyName, convert: true);
+					_localValueSetter = BindingPropertyHelper.GetValueSetter(
+						_dataContextType,
+						PropertyName,
+						convert: true,
+						precedence: DependencyPropertyValuePrecedences.Local
+					);
+				}
+			}
+
+			private void BuildAnimationFillingValueSetter()
+			{
+				if (_animationFillingValueSetter == null && _dataContextType != null)
+				{
+					_animationFillingValueSetter = BindingPropertyHelper.GetValueSetter(
+						_dataContextType,
+						PropertyName,
+						convert: true,
+						precedence: DependencyPropertyValuePrecedences.FillingAnimations
+					);
 				}
 			}
 
@@ -828,6 +913,30 @@ namespace Uno.UI.DataBinding
 				}
 			}
 
+			private void BuildAnimationFillingValueUnsetter()
+			{
+				if (_animationFillingValueUnsetter == null && _dataContextType != null)
+				{
+					_animationFillingValueUnsetter = BindingPropertyHelper.GetValueUnsetter(
+						_dataContextType,
+						PropertyName,
+						precedence: DependencyPropertyValuePrecedences.FillingAnimations
+					);
+				}
+			}
+
+			internal void ClearAnimationFillingValue()
+			{
+				BuildAnimationFillingValueUnsetter();
+
+				// Capture the datacontext before the call to avoid a race condition with the GC.
+				var dataContext = DataContext;
+				if (dataContext != null)
+				{
+					_animationFillingValueUnsetter!(dataContext);
+				}
+			}
+
 			private void RaiseValueChanged(object? newValue)
 			{
 				ValueChangedListener?.OnValueChanged(newValue);
@@ -840,7 +949,11 @@ namespace Uno.UI.DataBinding
 			/// <returns>A disposable to be called when the subscription is disposed.</returns>
 			private IDisposable SubscribeToPropertyChanged()
 			{
-				var disposables = new CompositeDisposable(_propertyChangedHandlers.Count);
+				var disposables = new CompositeDisposable(_propertyChangedHandlers.Count + 1);
+				if (SubscribeToNotifyCollectionChanged(this) is { } notifyCollectionChangedDisposable)
+				{
+					disposables.Add(notifyCollectionChangedDisposable);
+				}
 
 				for (var i = 0; i < _propertyChangedHandlers.Count; i++)
 				{

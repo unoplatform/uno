@@ -9,6 +9,8 @@ using Uno.Extensions;
 using Windows.Devices.Sensors;
 using CoreGraphics;
 using ObjCRuntime;
+using Uno.Helpers.Theming;
+using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
 #if !NET6_0_OR_GREATER
 using NativeHandle = System.IntPtr;
@@ -51,13 +53,17 @@ namespace Uno.UI.Controls
 
 		private void Initialize()
 		{
+			// TODO Uno: When we support multi-window, this should close popups for the appropriate XamlRoot #8341.
+
 			// Dismiss on device rotation: this reproduces the windows behavior
 			UIApplication.Notifications
-				.ObserveDidChangeStatusBarOrientation((sender, args) => VisualTreeHelper.CloseAllPopups());
+				.ObserveDidChangeStatusBarOrientation((sender, args) =>
+					VisualTreeHelper.CloseLightDismissPopups(WinUICoreServices.Instance.ContentRootCoordinator.CoreWindowContentRoot.XamlRoot));
 
 			// Dismiss when the app is entering background
 			UIApplication.Notifications
-				.ObserveWillResignActive((sender, args) => VisualTreeHelper.CloseAllPopups());
+				.ObserveWillResignActive((sender, args) =>
+					VisualTreeHelper.CloseLightDismissPopups(WinUICoreServices.Instance.ContentRootCoordinator.CoreWindowContentRoot.XamlRoot));
 		}
 
 		// This will handle when the status bar is showed / hidden by the system on iPhones
@@ -88,7 +94,7 @@ namespace Uno.UI.Controls
 		public override void TraitCollectionDidChange(UITraitCollection previousTraitCollection)
 		{
 			base.TraitCollectionDidChange(previousTraitCollection);
-			Windows.UI.Xaml.Application.Current.OnSystemThemeChanged();
+			SystemThemeHelper.RefreshSystemTheme();
 		}
 	}
 }

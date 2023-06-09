@@ -13,6 +13,7 @@ using Uno.Foundation;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using System.Threading;
+using System.Threading.Tasks;
 using Uno.UI;
 using Uno.UI.Xaml;
 using Uno;
@@ -25,6 +26,12 @@ using Uno.Helpers;
 using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
 #else
 using LaunchActivatedEventArgs = Windows.ApplicationModel.Activation.LaunchActivatedEventArgs;
+#endif
+
+#if NET7_0_OR_GREATER
+using System.Runtime.InteropServices.JavaScript;
+
+using NativeMethods = __Windows.UI.Xaml.Application.NativeMethods;
 #endif
 
 namespace Windows.UI.Xaml
@@ -41,6 +48,7 @@ namespace Windows.UI.Xaml
 			}
 
 			Current = this;
+			InitializeSystemTheme();
 			Package.SetEntryAssembly(this.GetType().Assembly);
 
 			global::Uno.Foundation.Extensibility.ApiExtensibility.Register(
@@ -52,12 +60,9 @@ namespace Windows.UI.Xaml
 			ObserveApplicationVisibility();
 		}
 
-		public static int DispatchSystemThemeChange()
-		{
-			Windows.UI.Xaml.Application.Current.OnSystemThemeChanged();
-			return 0;
-		}
-
+#if NET7_0_OR_GREATER
+		[JSExport]
+#endif
 		public static int DispatchVisibilityChange(bool isVisible)
 		{
 			var application = Windows.UI.Xaml.Application.Current;
@@ -80,25 +85,31 @@ namespace Windows.UI.Xaml
 			return 0;
 		}
 
-		static partial void StartPartial(ApplicationInitializationCallback callback)
+		static async partial void StartPartial(ApplicationInitializationCallback callback)
 		{
-			_startInvoked = true;
+			try
+			{
+				_startInvoked = true;
 
-			var isHostedMode = !WebAssemblyRuntime.IsWebAssembly;
-			var isLoadEventsEnabled = !FeatureConfiguration.FrameworkElement.WasmUseManagedLoadedUnloaded;
-			WindowManagerInterop.Init(isHostedMode, isLoadEventsEnabled);
-			Windows.Storage.ApplicationData.Init();
+				SynchronizationContext.SetSynchronizationContext(
+					new CoreDispatcherSynchronizationContext(CoreDispatcher.Main, CoreDispatcherPriority.Normal)
+				);
 
-			SynchronizationContext.SetSynchronizationContext(
-				new CoreDispatcherSynchronizationContext(CoreDispatcher.Main, CoreDispatcherPriority.Normal)
-			);
+				var isLoadEventsEnabled = !FeatureConfiguration.FrameworkElement.WasmUseManagedLoadedUnloaded;
 
-			callback(new ApplicationInitializationCallbackParams());
-		}
+				await WindowManagerInterop.InitAsync(isLoadEventsEnabled);
 
-		partial void ObserveSystemThemeChanges()
-		{
-			WebAssemblyRuntime.InvokeJS("Windows.UI.Xaml.Application.observeSystemTheme()");
+				Windows.Storage.ApplicationData.Init();
+
+				callback(new ApplicationInitializationCallbackParams());
+			}
+			catch (Exception exception)
+			{
+				if (typeof(Application).Log().IsEnabled(LogLevel.Error))
+				{
+					typeof(Application).Log().LogError("Application initialization failed.", exception);
+				}
+			}
 		}
 
 		private void Initialize()
@@ -108,7 +119,7 @@ namespace Windows.UI.Xaml
 				// Force init
 				Window.Current.ToString();
 
-				var arguments = WebAssemblyRuntime.InvokeJS("Uno.UI.WindowManager.findLaunchArguments()");
+				var arguments = WindowManagerInterop.FindLaunchArguments();
 
 				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
@@ -132,6 +143,9 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Dispatch method from Javascript
 		/// </summary>
+#if NET7_0_OR_GREATER
+		[JSExport]
+#endif
 		internal static void DispatchSuspending()
 		{
 			Current?.RaiseSuspending();
@@ -139,7 +153,11 @@ namespace Windows.UI.Xaml
 
 		private void ObserveApplicationVisibility()
 		{
+#if NET7_0_OR_GREATER
+			NativeMethods.ObserveVisibility();
+#else
 			WebAssemblyRuntime.InvokeJS("Windows.UI.Xaml.Application.observeVisibility()");
+#endif
 		}
 	}
 }

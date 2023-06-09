@@ -1,4 +1,8 @@
-## Verify your developer environment
+---
+uid: Uno.Development.UnoCheck
+---
+
+# Verify your developer environment
 
 # [**Windows**](#tab/windows)
 

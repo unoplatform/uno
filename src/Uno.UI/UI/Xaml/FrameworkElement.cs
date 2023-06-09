@@ -25,6 +25,7 @@ using Uno.UI.Xaml;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Data;
 using Uno.UI.Xaml.Core;
+using Uno.UI.Xaml.Media;
 
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
@@ -340,15 +341,7 @@ namespace Windows.UI.Xaml
 		/// <param name="finalRect">The final size that the parent computes for the child in layout, provided as a <see cref="Windows.Foundation.Rect"/> value.</param>
 		protected void ArrangeElement(View view, Rect finalRect)
 		{
-#if __WASM__
-			var adjust = GetBorderThickness();
-
-			// HTML moves the origin along with the border thickness.
-			// Adjust the child based on this element's border thickness.
-			var rect = new Rect(finalRect.X - adjust.Left, finalRect.Y - adjust.Top, finalRect.Width, finalRect.Height);
-
-			view.Arrange(rect);
-#elif UNO_REFERENCE_API
+#if UNO_REFERENCE_API
 			view.Arrange(finalRect);
 #else
 			_layouter.ArrangeElement(view, finalRect);
@@ -506,7 +499,7 @@ namespace Windows.UI.Xaml
 
 		private void OnRequestedThemeChanged(ElementTheme oldValue, ElementTheme newValue)
 		{
-			if (IsWindowRoot) // Some elements like TextBox set RequestedTheme in their Focused style, so only listen to changes to root view
+			if (IsWindowRoot || XamlRoot?.Content == this) // Some elements like TextBox set RequestedTheme in their Focused style, so only listen to changes to root view
 			{
 				// This is an ultra-naive implementation... but nonetheless enables the common use case of overriding the system theme for
 				// the entire visual tree (since Application.RequestedTheme cannot be set after launch)
@@ -956,18 +949,6 @@ namespace Windows.UI.Xaml
 					ActualThemeChanged?.Invoke(this, null);
 				}
 			}
-		}
-
-		/// <summary>
-		/// Set correct default foreground for the current theme.
-		/// </summary>
-		/// <param name="foregroundProperty">The appropriate property for the calling instance.</param>
-		private protected void SetDefaultForeground(DependencyProperty foregroundProperty)
-		{
-			(this).SetValue(foregroundProperty,
-							Application.Current == null || Application.Current.RequestedTheme == ApplicationTheme.Light
-								? SolidColorBrushHelper.Black
-								: SolidColorBrushHelper.White, DependencyPropertyValuePrecedences.DefaultValue);
 		}
 
 		#region AutomationPeer

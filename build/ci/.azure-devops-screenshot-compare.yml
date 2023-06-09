@@ -5,6 +5,9 @@ jobs:
 
 - job: UITests_Screenshots_Compare
   displayName: 'UI Tests Screenshots Comparison'
+  
+  timeoutInMinutes: 90
+  
   dependsOn:
     - Wasm_UITests_Snap
     - Wasm_UITests_Automated
@@ -32,10 +35,7 @@ jobs:
   - checkout: self
     clean: true
 
-  - task: NuGetToolInstaller@0
-    inputs:
-      versionSpec: 4.9.1
-      checkLatest: false
+  - template: templates/dotnet-install.yml
 
   - task: MSBuild@1
     inputs:

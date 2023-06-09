@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Windows.UI.Xaml
+namespace Windows.UI.Xaml;
+
+public partial class Application
 {
-	public partial class Application
+	public Application()
 	{
-		public Application()
-		{
-			Current = this;
-		}
+		Current = this;
+		InitializeSystemTheme();
 	}
 }

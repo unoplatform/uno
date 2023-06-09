@@ -114,6 +114,7 @@ namespace Windows.UI.Xaml.Media.Animation
 
 		private void Play()
 		{
+			_runningChildren = 0;
 			if (Children != null && Children.Count > 0)
 			{
 				for (int i = 0; i < Children.Count; i++)

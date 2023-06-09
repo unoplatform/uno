@@ -5,10 +5,7 @@ using System.Collections.Immutable;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Operations;
 
@@ -62,7 +59,7 @@ namespace Uno.Analyzers
 			var symbol = GetUnoSymbolFromOperation(context.Operation);
 			if (symbol != null)
 			{
-				var directives = GetDirectives(context.Operation.Syntax.SyntaxTree, context.CancellationToken);
+				var directives = GetDirectives(context.Operation.Syntax.SyntaxTree);
 
 				if (HasNotImplementedAttribute(notImplementedSymbol, symbol, directives) ||
 					(symbol.ContainingSymbol != null && HasNotImplementedAttribute(notImplementedSymbol, symbol.ContainingSymbol, directives)))
@@ -98,22 +95,9 @@ namespace Uno.Analyzers
 			return null;
 		}
 
-		private string[] GetDirectives(SyntaxTree tree, CancellationToken cancellationToken)
+		private static string[] GetDirectives(SyntaxTree tree)
 		{
-			var directives = tree.Options.PreprocessorSymbolNames.ToArray() ?? Array.Empty<string>();
-
-			if (directives.Length == 0)
-			{
-				// This case is only used during tests where explicit #define statements are
-				// present at the top of the file. In common cases, PreprocessorSymbolNames is
-				// not empty.
-				if (tree.GetRoot(cancellationToken).GetFirstDirective() is DefineDirectiveTriviaSyntax directive)
-				{
-					directives = new[] { directive.Name.Text };
-				}
-			}
-
-			return directives;
+			return tree.Options.PreprocessorSymbolNames.ToArray();
 		}
 
 		private static bool HasNotImplementedAttribute(INamedTypeSymbol notImplementedSymbol, ISymbol namedSymbol, string[] directives)

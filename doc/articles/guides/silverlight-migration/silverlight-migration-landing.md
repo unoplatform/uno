@@ -1,3 +1,7 @@
+---
+uid: Uno.SilverlightMigration.Landing
+---
+
 # Migrating from Silverlight to WinUI and Uno Platform Documentation
 
 Silverlight will reach the end of support  on October 12, 2021. As luck would have it, a new Windows UI framework is about to RTM in March 2021 – WinUI – the modern native UI platform of Windows. And with WinUI launch there is a renewed desire by C# and XAML developers to write single codebase applications for Windows and the Web.

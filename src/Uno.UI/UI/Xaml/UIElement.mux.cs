@@ -525,7 +525,7 @@ namespace Windows.UI.Xaml
 		internal Rect GetGlobalBoundsLogical(bool ignoreClipping = false, bool useTargetInformation = false)
 		{
 			//TODO Uno specific: This implementation is significantly simplified from the actual WinUI implementation.
-			var rootVisual = VisualTree.GetRootForElement(this);
+			var rootVisual = VisualTree.GetRootForElement(this) ?? VisualTree.GetRootOrIslandForElement(this);
 			if (rootVisual == null)
 			{
 				return Rect.Empty;

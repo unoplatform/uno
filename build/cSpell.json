@@ -76,7 +76,8 @@
 	"UWP's",
 	"VSIX",
 	"walkthrough",
-	"WEBASSEMBLY"
+	"WEBASSEMBLY",
+	"Resizetizer"
   ],
   "ignoreWords": [
 	"ADAL",
@@ -113,9 +114,18 @@
 	"Udemy",
 	"UNOB",
 	"winui",
-	"illinker"
+	"illinker",
+	"Onoh",
+	"Findlay",
+	"Logpoints",
+	"addin"
   ],
   "patterns": [
+	{
+		"name": "Markdown uid",
+		"pattern": "^(?=uid:).*$",
+		"description": ""
+	},
 	{
 	  "name": "Markdown links",
 	  "pattern": "\\((.*)\\)",
@@ -152,6 +162,7 @@
 	}
   ],
   "ignoreRegExpList": [
+	"Markdown uid",
 	"Markdown links",
 	"Markdown code blocks",
 	"Inline code blocks",

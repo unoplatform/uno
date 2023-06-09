@@ -41,6 +41,19 @@ namespace Windows.UI.Xaml
 			UpdateHitTest();
 		}
 
+		public bool UseLayoutRounding
+		{
+			get => (bool)this.GetValue(UseLayoutRoundingProperty);
+			set => this.SetValue(UseLayoutRoundingProperty, value);
+		}
+
+		public static DependencyProperty UseLayoutRoundingProperty { get; } =
+			DependencyProperty.Register(
+				nameof(UseLayoutRounding),
+				typeof(bool),
+				typeof(UIElement),
+				new FrameworkPropertyMetadata(true));
+
 		internal bool IsChildrenRenderOrderDirty { get; set; } = true;
 
 		partial void InitializeKeyboard();
@@ -130,7 +143,6 @@ namespace Windows.UI.Xaml
 			}
 
 			OnChildAdded(child);
-			Visual.IsChildrenRenderOrderDirty = true;
 
 			// Reset to original (invalidated) state
 			child.ResetLayoutFlags();
@@ -209,7 +221,6 @@ namespace Windows.UI.Xaml
 			if (Visual != null)
 			{
 				Visual.Children.Remove(child.Visual);
-				Visual.IsChildrenRenderOrderDirty = true;
 			}
 			OnChildRemoved(child);
 		}

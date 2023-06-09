@@ -1,3 +1,7 @@
+---
+uid: Uno.Contributing.ConventionalCommits
+---
+
 # Conventional Commits
 
 Uno uses the [Conventional Commits format](https://www.conventionalcommits.org/en/v1.0.0/#summary) for all changes to the source repository. If you submit a PR, the CI build won't pass until all commits satisfy the format. This format embeds semantic information in each commit that's used to automatically generate release notes.

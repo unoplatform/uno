@@ -12,12 +12,6 @@ namespace Windows.Graphics.Imaging
 	partial class BitmapEncoder
 	{
 		private readonly Func<UIImage, NSData> _encoder;
-		private static readonly Dictionary<Guid, Func<UIImage, NSData>> _encoderMap =
-			new()
-			{
-				{JpegEncoderId, AsJPEG},
-				{PngEncoderId, AsPNG},
-			};
 		private readonly global::Windows.Storage.Streams.IRandomAccessStream _stream;
 		private global::Windows.Graphics.Imaging.SoftwareBitmap _softwareBitmap;
 
@@ -29,7 +23,7 @@ namespace Windows.Graphics.Imaging
 		}
 
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Graphics.Imaging.BitmapEncoder> CreateAsync(global::System.Guid encoderId, global::Windows.Storage.Streams.IRandomAccessStream stream)
-			=> AsyncOperation<BitmapEncoder>.FromTask((ct, _) =>
+			=> AsyncOperation.FromTask<BitmapEncoder>(ct =>
 			{
 				if (!_encoderMap.TryGetValue(encoderId, out var encoder))
 				{

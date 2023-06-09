@@ -14,7 +14,7 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.RegisterAttached(
 			"PlacementTarget", typeof(global::Windows.UI.Xaml.UIElement), 
 			typeof(global::Windows.UI.Xaml.Controls.ToolTipService), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.UIElement)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.UIElement)));
 		#endif
 		// Skipping already declared property ToolTipProperty
 		// Forced skipping of method Windows.UI.Xaml.Controls.ToolTipService.PlacementProperty.get

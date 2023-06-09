@@ -10,3 +10,6 @@ using Android.App;
 [assembly: UsesPermission("android.permission.ACCESS_NETWORK_STATE")]
 [assembly: UsesPermission("android.permission.SET_WALLPAPER")]
 [assembly: UsesPermission("android.permission.READ_CONTACTS")]
+[assembly: UsesPermission("android.permission.RECORD_AUDIO")]
+[assembly: UsesPermission("android.permission.CAMERA")]
+[assembly: UsesPermission("android.permission.WRITE_EXTERNAL_STORAGE")]

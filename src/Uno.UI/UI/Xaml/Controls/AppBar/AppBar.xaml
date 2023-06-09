@@ -2,6 +2,7 @@
 <ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:not_mux="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:xamarin="http://uno.ui/xamarin"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -171,11 +172,11 @@
 			<StaticResource x:Key="AppBarEllipsisButtonRevealBorderBrushDisabled" ResourceKey="SystemControlTransparentBrush" />
 			<StaticResource x:Key="AppBarButtonRevealBackground" ResourceKey="SystemControlTransparentRevealBackgroundBrush" />
 			<StaticResource x:Key="AppBarButtonRevealBackgroundPointerOver" ResourceKey="SystemControlHighlightListLowRevealBackgroundBrush" />
-			<RevealBackgroundBrush x:Key="SystemControlHighlightListMediumRevealListLowBackgroundBrush" TargetTheme="Dark" Color="{StaticResource SystemRevealListLowColor}" FallbackColor="{StaticResource SystemListMediumColor}" />
+			<RevealBackgroundBrush x:Key="SystemControlHighlightListMediumRevealListLowBackgroundBrush" not_mux:TargetTheme="Dark" Color="{StaticResource SystemRevealListLowColor}" FallbackColor="{StaticResource SystemListMediumColor}" />
 			<StaticResource x:Key="AppBarButtonRevealBackgroundPressed" ResourceKey="SystemControlHighlightListMediumRevealListLowBackgroundBrush" />
 			<StaticResource x:Key="AppBarButtonRevealBackgroundDisabled" ResourceKey="SystemControlTransparentBrush" />
 			<StaticResource x:Key="AppBarButtonRevealBorderBrush" ResourceKey="SystemControlBackgroundTransparentRevealBorderBrush" />
-			<RevealBorderBrush x:Key="SystemControlTransparentRevealListLowBorderBrush" TargetTheme="Dark" Color="{StaticResource SystemRevealListLowColor}" FallbackColor="Transparent" />
+			<RevealBorderBrush x:Key="SystemControlTransparentRevealListLowBorderBrush" not_mux:TargetTheme="Dark" Color="{StaticResource SystemRevealListLowColor}" FallbackColor="Transparent" />
 			<StaticResource x:Key="AppBarButtonRevealBorderBrushPointerOver" ResourceKey="SystemControlTransparentRevealListLowBorderBrush" />
 			<StaticResource x:Key="AppBarButtonRevealBorderBrushPressed" ResourceKey="SystemControlTransparentRevealListLowBorderBrush" />
 			<StaticResource x:Key="AppBarButtonRevealBorderBrushDisabled" ResourceKey="SystemControlTransparentBrush" />
@@ -196,7 +197,7 @@
 			<StaticResource x:Key="AppBarToggleButtonRevealBorderBrushCheckedDisabled" ResourceKey="SystemControlTransparentBrush" />
 
 		</ResourceDictionary>
-		
+
 		<ResourceDictionary x:Key="HighContrast">
 			<!-- High Contrast theme resources -->
 			<!--
@@ -321,7 +322,7 @@
 			<Thickness x:Key="AppBarTopBorderThemeThickness">0,0,0,2</Thickness>
 			<Thickness x:Key="AppBarTopThemePadding">0,0,0,0</Thickness>
 			<Thickness x:Key="AppBarExpandButtonCircleInnerPadding">3,0,3,0</Thickness>
-			
+
 			<GridLength x:Key="AppBarExpandButtonThemeWidthGridLength">48</GridLength>
 
 			<!-- Legacy brushes -->
@@ -407,7 +408,7 @@
 			<Thickness x:Key="AppBarTopBorderThemeThickness">0,0,0,0</Thickness>
 			<Thickness x:Key="AppBarTopThemePadding">0,0,0,0</Thickness>
 			<Thickness x:Key="AppBarExpandButtonCircleInnerPadding">3,0,3,0</Thickness>
-			
+
 			<GridLength x:Key="AppBarExpandButtonThemeWidthGridLength">48</GridLength>
 
 			<!-- Resources for Windows.UI.Xaml.Controls.AppBarButton -->
@@ -550,11 +551,11 @@
 			<StaticResource x:Key="AppBarEllipsisButtonRevealBorderBrushDisabled" ResourceKey="SystemControlTransparentBrush" />
 			<StaticResource x:Key="AppBarButtonRevealBackground" ResourceKey="SystemControlTransparentRevealBackgroundBrush" />
 			<StaticResource x:Key="AppBarButtonRevealBackgroundPointerOver" ResourceKey="SystemControlHighlightListLowRevealBackgroundBrush" />
-			<RevealBackgroundBrush x:Key="SystemControlHighlightListMediumRevealListLowBackgroundBrush" TargetTheme="Light" Color="{StaticResource SystemRevealListLowColor}" FallbackColor="{StaticResource SystemListMediumColor}" />
+			<RevealBackgroundBrush x:Key="SystemControlHighlightListMediumRevealListLowBackgroundBrush" not_mux:TargetTheme="Light" Color="{StaticResource SystemRevealListLowColor}" FallbackColor="{StaticResource SystemListMediumColor}" />
 			<StaticResource x:Key="AppBarButtonRevealBackgroundPressed" ResourceKey="SystemControlHighlightListMediumRevealListLowBackgroundBrush" />
 			<StaticResource x:Key="AppBarButtonRevealBackgroundDisabled" ResourceKey="SystemControlTransparentBrush" />
 			<StaticResource x:Key="AppBarButtonRevealBorderBrush" ResourceKey="SystemControlBackgroundTransparentRevealBorderBrush" />
-			<RevealBorderBrush x:Key="SystemControlTransparentRevealListLowBorderBrush" TargetTheme="Light" Color="{StaticResource SystemRevealListLowColor}" FallbackColor="Transparent" />
+			<RevealBorderBrush x:Key="SystemControlTransparentRevealListLowBorderBrush" not_mux:TargetTheme="Light" Color="{StaticResource SystemRevealListLowColor}" FallbackColor="Transparent" />
 			<StaticResource x:Key="AppBarButtonRevealBorderBrushPointerOver" ResourceKey="SystemControlTransparentRevealListLowBorderBrush" />
 			<StaticResource x:Key="AppBarButtonRevealBorderBrushPressed" ResourceKey="SystemControlTransparentRevealListLowBorderBrush" />
 			<StaticResource x:Key="AppBarButtonRevealBorderBrushDisabled" ResourceKey="SystemControlTransparentBrush" />
@@ -591,7 +592,7 @@
 	<Thickness x:Key="AppBarToggleButtonTextLabelOnRightMargin">8,11,12,13</Thickness>
 	<Thickness x:Key="AppBarToggleButtonOverflowTextLabelPadding">0,5,0,8</Thickness>
 
-	
+
 	 <!-- Default style for Windows.UI.Xaml.Controls.AppBar -->
     <Style TargetType="AppBar">
         <Setter Property="Background" Value="{ThemeResource AppBarBackground}" />
@@ -1046,7 +1047,7 @@
                   VerticalAlignment="Stretch"
                   Stroke="{ThemeResource AppBarHighContrastBorder}"
                   StrokeThickness="1" />
-                            
+
                         </Grid>
 
                     </Grid>
@@ -1055,7 +1056,7 @@
             </Setter.Value>
         </Setter>
     </Style>
-	
+
 
 	<!-- Default style for Windows.UI.Xaml.Controls.AppBarButton -->
 	<Style x:Key="XamlDefaultAppBarButton" TargetType="AppBarButton">

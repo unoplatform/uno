@@ -28,22 +28,6 @@ namespace Uno.Extensions
 	internal static class CollectionExtensions
 	{
 		/// <summary>
-		/// Adds a new item with the default constructor
-		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <param name="items"></param>
-		/// <returns></returns>
-		public static T AddNew<T>(this ICollection<T> items)
-			where T : new()
-		{
-			T item = new T();
-
-			items.Add(item);
-
-			return item;
-		}
-
-		/// <summary>
 		/// Adds the items of the specified collection to the end of the ICollection.
 		/// </summary>
 		/// <typeparam name="T">The type of the items.</typeparam>
@@ -52,19 +36,6 @@ namespace Uno.Extensions
 		public static void AddRange<T>(this ICollection<T> collection, IEnumerable<T> items)
 		{
 			items.ForEach(collection.Add);
-		}
-
-		/// <summary>
-		/// Adds an item into the collection and returns an IDisposable which will remove the item when disposed.
-		/// </summary>
-		/// <typeparam name="T">Type of the items in collection</typeparam>
-		/// <param name="collection"></param>
-		/// <param name="item">The item to add</param>
-		/// <returns>An IDisposable which will remove the item when disposed</returns>
-		public static IDisposable DisposableAdd<T>(this ICollection<T> collection, T item)
-		{
-			collection.Add(item);
-			return Disposable.Create(() => collection.Remove(item));
 		}
 
 		/// <summary>
@@ -81,26 +52,6 @@ namespace Uno.Extensions
 				.ToArray()
 				.Where(collection.Remove)
 				.Count();
-		}
-
-
-		/// <summary>
-		/// Replaces the items in a collection with a new set of items.
-		/// </summary>
-		/// <typeparam name="T">The type of items.</typeparam>
-		/// <param name="collection">The collection who's content will be replaced.</param>
-		/// <param name="items">The replacing items.</param>
-		public static void ReplaceWith<T>(this ICollection<T> collection, IEnumerable<T> items)
-		{
-			collection.Clear();
-			AddRange(collection, items);
-		}
-
-		public static IDisposable Subscribe<T>(this ICollection<T> collection, T item)
-		{
-			collection.Add(item);
-
-			return Disposable.Create(() => collection.Remove(item));
 		}
 
 		/// <summary>
@@ -124,92 +75,6 @@ namespace Uno.Extensions
 		}
 
 		/// <summary>
-		/// Adds an item to a collection if not already in it using an EqualityComparer.
-		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <param name="collection"></param>
-		/// <param name="item">Item to add</param>
-		/// <param name="comparer">Equality comparer to use to determine if item is already in the collection</param>
-		/// <returns>True if the item was added, else false.</returns>
-		public static bool AddDistinct<T>(this ICollection<T> collection, T item, IEqualityComparer<T> comparer)
-		{
-			return AddDistinct(collection, item, comparer.Equals);
-		}
-
-		/// <summary>
-		/// Adds an item to a collection if not already in it using a predicate.
-		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <param name="collection"></param>
-		/// <param name="item">Item to add</param>
-		/// <param name="predicate">Predicate to use to determine if item is already in the collection</param>
-		/// <returns>True if the item was added, else false.</returns>
-		public static bool AddDistinct<T>(this ICollection<T> collection, T item, Func<T, T, bool> predicate)
-		{
-			if (collection.None(collectionItem => predicate(collectionItem, item)))
-			{
-				collection.Add(item);
-				return true;
-			}
-			else
-			{
-				return false;
-			}
-		}
-
-		/// <summary>
-		/// Adds to a collection the items of an <see cref="IEnumerable{T}"/> which are not already in collection.
-		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <param name="collection"></param>
-		/// <param name="items">Items to add</param>
-		/// <returns>Count of items added</returns>
-		public static int AddRangeDistinct<T>(this ICollection<T> collection, IEnumerable<T> items)
-		{
-			return items.Count(collection.AddDistinct);
-		}
-
-		/// <summary>
-		/// Adds to a collection the items of an <see cref="IEnumerable{T}"/> which are not already in collection using an equlaity comparer.
-		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <param name="collection"></param>
-		/// <param name="items">Items to add</param>
-		/// <param name="comparer">Equality comparer to use to determine if an item is already in the collection</param>
-		/// <returns>Count of items added</returns>
-		public static int AddRangeDistinct<T>(this ICollection<T> collection, IEnumerable<T> items, IEqualityComparer<T> comparer)
-		{
-			return AddRangeDistinct(collection, items, comparer.Equals);
-		}
-
-		/// <summary>
-		/// Adds to a collection the items of an <see cref="IEnumerable{T}"/> which are not already in collection using an equlaity comparer.
-		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <param name="collection"></param>
-		/// <param name="items">Items to add</param>
-		/// <param name="comparer">Predicate to use to determine if an item is already in the collection</param>
-		/// <returns>Count of items added</returns>
-		public static int AddRangeDistinct<T>(this ICollection<T> collection, IEnumerable<T> items, Func<T, T, bool> predicate)
-		{
-			return items.Count(item => collection.AddDistinct(item, predicate));
-		}
-
-		public static T FindOrCreate<T>(this ICollection<T> collection, Func<T, bool> predicate, Func<T> factory)
-			where T : class
-		{
-			var value = collection.FirstOrDefault(predicate);
-
-			if (value == null)
-			{
-				value = factory();
-				collection.Add(value);
-			}
-
-			return value;
-		}
-
-		/// <summary>
 		/// Projects the specified array to another array.
 		/// </summary>
 		public static TResult[] SelectToArray<TSource, TResult>(this TSource[] source, Func<TSource, TResult> selector)
@@ -219,21 +84,6 @@ namespace Uno.Extensions
 			for (int i = 0; i < output.Length; i++)
 			{
 				output[i] = selector(source[i]);
-			}
-
-			return output;
-		}
-
-		/// <summary>
-		/// Projects the specified array to another array, using the item index.
-		/// </summary>
-		public static TResult[] SelectToArray<TSource, TResult>(this TSource[] source, Func<TSource, int, TResult> selector)
-		{
-			var output = new TResult[source.Length];
-
-			for (int i = 0; i < output.Length; i++)
-			{
-				output[i] = selector(source[i], i);
 			}
 
 			return output;
@@ -253,26 +103,6 @@ namespace Uno.Extensions
 
 				index++;
 			}
-
-			return output;
-		}
-
-		/// <summary>
-		/// Create an array from a portion of another array, as a faster equivalent of .Skip().Take().ToArray().
-		/// </summary>
-		public static TSource[] ToRangeArray<TSource>(this TSource[] source, int skip, int take)
-		{
-			int maxLength = Math.Max(0, source.Length - skip);
-
-			var output = new TSource[Math.Min(take, maxLength)];
-
-			Array.ConstrainedCopy(
-				source,
-				Math.Min(skip, source.Length - 1),
-				output,
-				0,
-				output.Length
-			);
 
 			return output;
 		}
@@ -356,27 +186,6 @@ namespace Uno.Extensions
 				{
 					output.Add(item);
 				}
-			}
-
-			return output;
-		}
-
-		/// <summary>
-		/// Create a <see cref="List{T}"/> from a portion of another <see cref="List{T}"/>, as a faster equivalent of .Skip().Take().ToList().
-		/// </summary>
-		/// <remarks>This method can be useful when the enumeation of the result requires less allocations.(see <see cref="List{T}.Enumerator"/>)</remarks>
-		public static List<TSource> ToRangeList<TSource>(this List<TSource> source, int skip, int take)
-		{
-			int maxLength = Math.Max(0, source.Count - skip);
-			int outputLength = Math.Min(take, maxLength);
-			var startIndex = Math.Min(skip, source.Count - 1);
-			var endIndex = startIndex + outputLength;
-
-			var output = new List<TSource>(outputLength);
-
-			for (int i = startIndex; i < endIndex; i++)
-			{
-				output.Add(source[i]);
 			}
 
 			return output;

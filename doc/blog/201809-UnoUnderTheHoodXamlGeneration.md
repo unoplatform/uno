@@ -1,3 +1,7 @@
+---
+uid: Uno.Blog.UnderTheHoodXamlGeneration
+---
+
 # Talkin' 'bout my generation: How the Uno Platform generates code, part 1
 
 In [previous](https://medium.com/@unoplatform/under-the-hood-an-introduction-to-uno-platform-6064a765d6a) [articles](https://hackernoon.com/pushing-the-right-buttons-how-uno-implements-views-under-the-hood-a5e93ea86688) we've covered how the [Uno Platform](https://platform.uno/) takes a visual tree defined in the [XAML](https://docs.microsoft.com/en-us/windows/uwp/xaml-platform/xaml-overview) markup language and creates it on iOS, Android, and WebAssembly. In this article I want to dive into a key intermediate step: how the XAML is parsed and mapped to generated C# code. In an upcoming part 2, we'll look at a few other ways in which Uno leverages code generation to make the wheels turn. 

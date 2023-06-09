@@ -65,7 +65,7 @@ namespace Uno.Extensions.Storage.Pickers
 			{
 				var fullFilter = string.Join(";", _picker.FileTypeFilter.Select(fileType => $"*{fileType}"));
 				filterBuilder.Append($"|All|{fullFilter}");
-				filterIndex = fileTypeFilterCount;
+				filterIndex = fileTypeFilterCount + 1;
 			}
 
 			openFileDialog.Filter = filterBuilder.ToString(1, filterBuilder.Length - 1);

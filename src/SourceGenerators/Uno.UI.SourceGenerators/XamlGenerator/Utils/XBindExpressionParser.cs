@@ -5,7 +5,9 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Text;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
@@ -16,135 +18,134 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 		{
 			if (!string.IsNullOrEmpty(rawFunction))
 			{
-				var csu = ParseCompilationUnit(
-					$"class __Temp {{ private Func<object> __prop => {rawFunction} }}");
+				var expression = ParseExpression(rawFunction);
+				var v = new Visitor(isStaticMethod);
+				v.Visit(expression);
 
-				if (csu.DescendantNodes().OfType<ArrowExpressionClauseSyntax>().FirstOrDefault() is ArrowExpressionClauseSyntax arrow)
-				{
-					var v = new Visitor(isStaticMethod);
-					v.Visit(arrow);
-
-					return (v.IdentifierNames.ToArray(), v.HasMethodInvocation);
-				}
+				return (v.IdentifierNames.ToArray(), v.HasMethodInvocation);
 			}
 
 			return (Array.Empty<string>(), false);
 		}
 
-		internal static string Rewrite(string contextName, string rawFunction, Func<string, bool> isStaticMethod)
+		// TODO: isRValue feels like a hack so that we generate compilable code when bindings are generated as LValue.
+		// However, we could be incorrectly throwing NRE. This should be handled properly.
+		internal static (string? MethodDeclaration, string Expression) Rewrite(string contextName, string rawFunction, INamedTypeSymbol? contextTypeSymbol, INamespaceSymbol globalNamespace, bool isRValue, int xBindCounter, Func<string, INamedTypeSymbol?> findType)
 		{
-			var csu = ParseCompilationUnit(
-				$"class __Temp {{ private Func<object> __prop => {rawFunction}; }}");
+			SyntaxNode expression = ParseExpression(rawFunction);
 
-			var csuRewritten = new Rewriter(contextName, isStaticMethod).Visit(csu);
+			expression = new Rewriter(contextName, findType).Visit(expression);
+			if (isRValue && contextTypeSymbol is not null)
+			{
+				var nullabilityRewriter = new NullabilityRewriter(contextName, contextTypeSymbol, globalNamespace, xBindCounter);
+				nullabilityRewriter.Visit(expression);
+				nullabilityRewriter.SetActiveExpressionPropertiesThenCleanup();
+				if (!nullabilityRewriter.Failed)
+				{
+					var methodDeclaration = nullabilityRewriter.MainExpression.ToString();
+					return (methodDeclaration, $"TryGetInstance_xBind_{xBindCounter}({contextName}, out var bindResult{xBindCounter}) ? (true, bindResult{xBindCounter}) : (false, default)");
+				}
+			}
 
-			return csuRewritten
-				.DescendantNodes()
-				.OfType<ArrowExpressionClauseSyntax>()
-				.First()
-				.Expression
-				.ToFullString();
+			if (isRValue)
+			{
+				return (null, $"(true, {expression.ToFullString()})");
+			}
+
+			return (null, expression.ToFullString());
 		}
 
-		class Rewriter : CSharpSyntaxRewriter
+		private class Rewriter : CSharpSyntaxRewriter
 		{
 			private readonly string _contextName;
-			private readonly Func<string, bool> _isStaticMember;
+			private readonly Func<string, INamedTypeSymbol?> _findType;
 
-			public Rewriter(string contextName, Func<string, bool> isStaticMember)
+			public Rewriter(string contextName, Func<string, INamedTypeSymbol?> findType)
 			{
+				if (string.IsNullOrEmpty(contextName))
+				{
+					throw new ArgumentException($"'{contextName}' cannot be null or empty", nameof(contextName));
+				}
+
 				_contextName = contextName;
-				_isStaticMember = isStaticMember;
+				_findType = findType;
 			}
 
 			public override SyntaxNode? VisitInvocationExpression(InvocationExpressionSyntax node)
 			{
-				var e = base.VisitInvocationExpression(node);
+				var e = (InvocationExpressionSyntax)base.VisitInvocationExpression(node)!;
 
-				var isParentMemberStatic = node.Expression switch
+				var methodName = e.Expression.ToFullString();
+				if (!methodName.StartsWith("global::", StringComparison.Ordinal) && !Helpers.IsAttachedPropertySyntax(node.Expression).result)
 				{
-					MemberAccessExpressionSyntax ma => _isStaticMember(ma.Expression.ToFullString()),
-					IdentifierNameSyntax ins => _isStaticMember(ins.ToFullString()),
-					_ => false
-				};
-
-				var isValidParent = !Helpers.IsInsideMethod(node).result
-					&& !Helpers.IsInsideMemberAccessExpression(node).result
-					&& !Helpers.IsInsideMemberAccessExpression(node.Expression).result;
-
-				if (isValidParent && !_isStaticMember(node.Expression.ToFullString()) && !isParentMemberStatic)
-				{
-					if (e is InvocationExpressionSyntax newSyntax)
-					{
-						var methodName = newSyntax.Expression.ToFullString();
-						var arguments = newSyntax.ArgumentList.ToFullString();
-						var contextBuilder = _isStaticMember(methodName) ? "" : ContextBuilder;
-
-						return Helpers.ParseMethodBody($"{contextBuilder}{methodName}{arguments}");
-					}
-					else
-					{
-						throw new Exception();
-					}
+					return e.WithExpression(SyntaxFactory.ParseExpression($"{_contextName}.{methodName}"));
 				}
-				else
-				{
-					return e;
-				}
+
+				return e;
 			}
-
-			private string ContextBuilder
-				=> string.IsNullOrEmpty(_contextName) ? "" : _contextName + ".";
 
 			public override SyntaxNode? VisitMemberAccessExpression(MemberAccessExpressionSyntax node)
 			{
-				var e = base.VisitMemberAccessExpression(node);
+				var e = (MemberAccessExpressionSyntax)base.VisitMemberAccessExpression(node)!;
 				var isValidParent = !Helpers.IsInsideMethod(node).result && !Helpers.IsInsideMemberAccessExpression(node).result;
-				var isParentMemberStatic = node.Expression is MemberAccessExpressionSyntax m && _isStaticMember(m.ToFullString());
-				var isPathLessCast = Helpers.IsPathLessCast(node);
-				var isAttachedPropertySyntax = Helpers.IsAttachedPropertySyntax(node);
-				var isInsideAttachedPropertySyntax = Helpers.IsInsideAttachedPropertySyntax(node);
-				var isParenthesizedExpression = node.Expression is ParenthesizedExpressionSyntax;
 
-				if (e != null
-					&& isValidParent
-					&& !_isStaticMember(node.Expression.ToFullString())
-					&& !isParentMemberStatic
-					&& !isParenthesizedExpression)
+				var isParenthesizedExpression = node.Expression is ParenthesizedExpressionSyntax;
+				if (isValidParent
+					&& !isParenthesizedExpression
+					)
 				{
+					var isPathLessCast = Helpers.IsPathLessCast(node);
 					if (isPathLessCast.result)
 					{
-						return Helpers.ParseMethodBody($"({isPathLessCast.expression?.Expression}){_contextName}");
+						return ParseExpression($"({isPathLessCast.expression?.Expression}){_contextName}");
 					}
-					else if (isInsideAttachedPropertySyntax.result)
+
+					var isInsideAttachedPropertySyntax = Helpers.IsInsideAttachedPropertySyntax(node);
+					if (isInsideAttachedPropertySyntax.result)
 					{
-						var contextBuilder = ContextBuilder;
-						return Helpers.ParseMethodBody($"{contextBuilder}{isInsideAttachedPropertySyntax.expression?.Expression.ToString().TrimEnd('.')}");
+						return ParseExpression($"{_contextName}.{isInsideAttachedPropertySyntax.expression?.Expression.ToString().TrimEnd('.')}");
 					}
 					else
 					{
 						var expression = e.ToFullString();
-						var contextBuilder = _isStaticMember(expression) ? "" : ContextBuilder;
-
-						return Helpers.ParseMethodBody($"{contextBuilder}{expression}");
+						if (expression.StartsWith("global::", StringComparison.Ordinal))
+						{
+							return e;
+						}
+						else
+						{
+							return ParseExpression($"{_contextName}.{expression}");
+						}
 					}
 				}
-				else if (e != null && isAttachedPropertySyntax.result)
+
+				var isAttachedPropertySyntax = Helpers.IsAttachedPropertySyntax(node);
+				if (isAttachedPropertySyntax.result)
 				{
-					if (e is MemberAccessExpressionSyntax memberAccess
-						&& memberAccess.Expression is IdentifierNameSyntax identifierSyntax)
+					if (e.Expression is IdentifierNameSyntax)
 					{
 						if (
 							isAttachedPropertySyntax.expression?.ArgumentList.Arguments.FirstOrDefault() is { } property
 							&& property.Expression is MemberAccessExpressionSyntax memberAccessExpression
 							)
 						{
-							return Helpers.ParseMethodBody($"{memberAccessExpression.Expression}.Get{memberAccessExpression.Name}");
+							return ParseExpression($"{GetGlobalizedTypeName(memberAccessExpression.Expression.ToString())}.Get{memberAccessExpression.Name}");
 						}
 					}
 				}
 
 				return e;
+			}
+
+			private string GetGlobalizedTypeName(string typeName)
+			{
+				var typeSymbol = _findType(typeName);
+				if (typeSymbol is null)
+				{
+					return typeName;
+				}
+
+				return typeSymbol.GetFullyQualifiedTypeIncludingGlobal();
 			}
 
 			public override SyntaxNode? VisitIdentifierName(IdentifierNameSyntax node)
@@ -157,24 +158,276 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 						&& !isInsideCast.result
 					)
 					|| Helpers.IsInsideCastWithParentheses(node).result
-					|| Helpers.IsInsideCastAsArrowClause(node).result
+					|| Helpers.IsInsideCastAsRoot(node).result
 					|| Helpers.IsInsideCastAsMethodArgument(node).result;
 
-				if (isValidParent && !_isStaticMember(node.ToFullString()))
+				if (isValidParent)
 				{
 					var newIdentifier = node.ToFullString();
 
 					var rawFunction = string.IsNullOrWhiteSpace(newIdentifier)
 						? _contextName
-						: $"{ContextBuilder}{newIdentifier}";
+						: $"{_contextName}.{newIdentifier}";
 
-					return Helpers.ParseMethodBody(rawFunction);
+					return ParseExpression(rawFunction);
 
+				}
+
+				return base.VisitIdentifierName(node);
+			}
+		}
+
+		private class NullabilityRewriter : CSharpSyntaxWalker
+		{
+			private readonly string _contextName;
+			private readonly INamedTypeSymbol _contextTypeSymbol;
+			private readonly string _contextTypeString;
+			private readonly INamespaceSymbol _globalNamespace;
+			private readonly int _xBindCounter;
+			private readonly StringBuilder _builder = new();
+			private XBindExpressionInfo _activeSubexpression;
+
+			private (ISymbol? Symbol, bool IsTopLevelContext) _lastAccessed;
+
+			public bool Failed { get; private set; }
+
+			public bool HasNullable { get; private set; }
+
+			public XBindExpressionInfo MainExpression { get; }
+
+			public NullabilityRewriter(string contextName, INamedTypeSymbol contextTypeSymbol, INamespaceSymbol globalNamespace, int xBindCounter)
+			{
+				_contextName = contextName;
+				_contextTypeSymbol = contextTypeSymbol;
+				_contextTypeString = contextTypeSymbol.GetFullyQualifiedTypeIncludingGlobal();
+
+				// We need to take globalNamespace from the compilation itself.
+				// Walking ContainingNamespaces from contextTypeSymbol or
+				// accessing contextTypeSymbol.ContainingModule.GlobalNamespace doesn't work because
+				// the INamespaceSymbol we get has NamespaceKind == NamespaceKind.Module and it doesn't have access
+				// to all members.
+				_globalNamespace = globalNamespace;
+				_xBindCounter = xBindCounter;
+				_activeSubexpression = new(xBindCounter, _contextTypeString, contextName);
+				MainExpression = _activeSubexpression;
+			}
+
+			public override void DefaultVisit(SyntaxNode node)
+			{
+				if (Failed)
+				{
+					return;
+				}
+
+				base.DefaultVisit(node);
+			}
+
+			public override void VisitCastExpression(CastExpressionSyntax node)
+			{
+				if (Failed)
+				{
+					return;
+				}
+
+				_builder.Append($"(({node.Type.ToFullString()})");
+				_lastAccessed = (null, false);
+				Visit(node.Expression);
+				_builder.Append(')');
+			}
+
+			public override void VisitLiteralExpression(LiteralExpressionSyntax node)
+			{
+				_builder.Append(node.ToString());
+			}
+
+			public override void VisitElementAccessExpression(ElementAccessExpressionSyntax node)
+			{
+				if (Failed)
+				{
+					return;
+				}
+
+				if (node.ArgumentList.Arguments.Count != 1 ||
+					node.ArgumentList.Arguments[0].Expression is not LiteralExpressionSyntax index)
+				{
+					throw new Exception("x:Bind indexing expects a single literal argument");
+				}
+
+				Visit(node.Expression);
+
+				var lastType = _lastAccessed.Symbol switch
+				{
+					IPropertySymbol property => property.Type,
+					IFieldSymbol field => field.Type,
+					_ => throw new Exception("Only properties and fields can be indexed.")
+				};
+
+				var expectedIndexerParameterType = index is LiteralExpressionSyntax indexLiteral && indexLiteral.IsKind(SyntaxKind.StringLiteralExpression)
+					? SpecialType.System_String
+					: SpecialType.System_Int32;
+				var indexer = lastType.GetMemberInlcudingBaseTypes(expectedIndexerParameterType, (m, arg) => m is IPropertySymbol { IsIndexer: true } p && p.Parameters[0].Type.SpecialType == arg);
+				if (indexer is not null)
+				{
+					_lastAccessed = (indexer, IsTopLevelContext: false);
 				}
 				else
 				{
-					return base.VisitIdentifierName(node);
+					throw new Exception("Type is unsupported for indexing.");
 				}
+
+				_builder.Append('[');
+
+				VisitLiteralExpression(index);
+
+				_builder.Append(']');
+			}
+
+			public override void VisitArgumentList(ArgumentListSyntax node)
+			{
+				if (Failed)
+				{
+					return;
+				}
+
+				MainExpression.Arguments = new();
+
+				for (int i = 0; i < node.Arguments.Count; i++)
+				{
+					_lastAccessed = (null, false);
+					var argument = node.Arguments[i];
+
+					var argumentExpression = new XBindExpressionInfo(_xBindCounter, _contextTypeString, _contextName);
+					MainExpression.Arguments.Add(argumentExpression);
+					_activeSubexpression = argumentExpression;
+
+					VisitArgument(argument);
+
+					SetActiveExpressionPropertiesThenCleanup();
+				}
+			}
+
+			public override void VisitInvocationExpression(InvocationExpressionSyntax node)
+			{
+				if (Failed)
+				{
+					return;
+				}
+
+				Visit(node.Expression);
+
+				SetActiveExpressionPropertiesThenCleanup();
+
+				Visit(node.ArgumentList);
+			}
+
+			public override void VisitIdentifierName(IdentifierNameSyntax node)
+			{
+				if (Failed)
+				{
+					return;
+				}
+
+				if (node.Parent is AliasQualifiedNameSyntax aliasQualifiedName && node == aliasQualifiedName.Alias && node.Identifier.IsKind(SyntaxKind.GlobalKeyword))
+				{
+					_lastAccessed = (_globalNamespace, false);
+					_builder.Append("global::");
+					return;
+				}
+
+				if (_lastAccessed.Symbol is null && node.Identifier.ValueText == _contextName)
+				{
+					_lastAccessed = (_contextTypeSymbol, true);
+					_builder.Append(_contextName);
+					return;
+				}
+
+				if (_lastAccessed.Symbol is not (IPropertySymbol or IFieldSymbol or INamespaceOrTypeSymbol))
+				{
+					Failed = true;
+					return;
+				}
+
+				(INamespaceOrTypeSymbol previousType, bool mayBeNullAccessed) = _lastAccessed.Symbol switch
+				{
+					IPropertySymbol property => (property.Type, true),
+					IFieldSymbol field => (field.Type, true),
+					INamespaceOrTypeSymbol namespaceOrType => (namespaceOrType, false),
+					_ => throw new Exception($"Unexpected _lastAccessed symbol '{_lastAccessed.Symbol?.Kind}'."),
+				};
+
+				var member = previousType.GetMemberInlcudingBaseTypes(node.Identifier.ValueText);
+				if (member is null)
+				{
+					Failed = true;
+					return;
+				}
+
+				if (member is INamespaceOrTypeSymbol)
+				{
+					if (_lastAccessed.Symbol is INamespaceSymbol { IsGlobalNamespace: true })
+					{
+						_builder.Append(member.Name);
+					}
+					else
+					{
+						_builder.Append($".{member.Name}");
+					}
+
+					_lastAccessed = (member, false);
+					return;
+				}
+
+				if (!mayBeNullAccessed || _lastAccessed.IsTopLevelContext || !IsReferenceTypeOrNullableValueType((ITypeSymbol)previousType))
+				{
+					_builder.Append('.');
+				}
+				else
+				{
+					HasNullable = true;
+					_builder.Append("?.");
+				}
+
+				_builder.Append(member.Name);
+				_lastAccessed = (member, false);
+			}
+
+			private static bool IsReferenceTypeOrNullableValueType(ITypeSymbol symbol)
+			{
+				return symbol.IsReferenceType || symbol.IsNullable();
+			}
+
+			internal void SetActiveExpressionPropertiesThenCleanup()
+			{
+				if (_builder.Length == 0)
+				{
+					return;
+				}
+
+				var lastIndexOfNullAccess = LastIndexOfNullAccess();
+				if (lastIndexOfNullAccess == -1)
+				{
+					_activeSubexpression.ExpressionBeforeLastNullAccess = _builder.ToString();
+				}
+				else
+				{
+					_activeSubexpression.ExpressionBeforeLastNullAccess = _builder.ToString(0, lastIndexOfNullAccess);
+					_activeSubexpression.ExpressionAfterLastNullAccess = _builder.ToString(lastIndexOfNullAccess + "?.".Length, _builder.Length - (lastIndexOfNullAccess + "?.".Length));
+				}
+
+				_builder.Clear();
+			}
+
+			private int LastIndexOfNullAccess()
+			{
+				for (int i = _builder.Length - 1; i >= 1; i--)
+				{
+					if (_builder[i] == '.' && _builder[i - 1] == '?')
+					{
+						return i - 1;
+					}
+				}
+
+				return -1;
 			}
 		}
 
@@ -213,7 +466,16 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 
 				if (isValidParent)
 				{
-					IdentifierNames.Add(node.ToString());
+					// For {x:Bind A.B[0]}, we get here with A.B, but we want to include A.B[0]
+					// We special case it this way for now. This will be removed once we have an x:Bind parser.
+					if (node.Parent is ElementAccessExpressionSyntax)
+					{
+						IdentifierNames.Add(node.Parent.ToString());
+					}
+					else
+					{
+						IdentifierNames.Add(node.ToString());
+					}
 				}
 			}
 
@@ -234,13 +496,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 
 		private static class Helpers
 		{
-			internal static ExpressionSyntax ParseMethodBody(string body)
-				=> ParseCompilationUnit($"class __Temp {{ private Func<object> __prop => {body}; }}")
-					.DescendantNodes()
-					.OfType<ArrowExpressionClauseSyntax>()
-					.First()
-					.Expression;
-
 			internal static (bool result, MemberAccessExpressionSyntax? memberAccess) IsInsideMemberAccessExpression(SyntaxNode node)
 				=> IsInside(node, n => n as MemberAccessExpressionSyntax);
 
@@ -282,11 +537,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 						&& cast.Parent is ArgumentSyntax
 						&& cast.Expression == node ? cast : null);
 
-			internal static (bool result, CastExpressionSyntax? expression) IsInsideCastAsArrowClause(SyntaxNode node)
+			internal static (bool result, CastExpressionSyntax? expression) IsInsideCastAsRoot(SyntaxNode node)
 				=> IsInside(
 					node,
 					n => n is CastExpressionSyntax cast
-						&& cast.Parent is ArrowExpressionClauseSyntax
+						&& cast.Parent is null
 						&& cast.Expression == node ? cast : null);
 
 			internal static (bool result, T? expression) IsInside<T>(SyntaxNode node, Func<SyntaxNode?, T?> predicate) where T : SyntaxNode
@@ -319,8 +574,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 						return (true, expressionSyntax);
 					}
 
-					if (currentNode is ArrowExpressionClauseSyntax arrow
-						&& arrow.Expression is ParenthesizedExpressionSyntax expressionSyntax2)
+					if (currentNode is ParenthesizedExpressionSyntax expressionSyntax2
+						&& currentNode.Parent is null)
 					{
 						return (true, expressionSyntax2);
 					}

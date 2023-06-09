@@ -1,3 +1,7 @@
+---
+uid: Uno.Features.OrientationSensor
+---
+
 # Orientation sensor
 
 > [!TIP]

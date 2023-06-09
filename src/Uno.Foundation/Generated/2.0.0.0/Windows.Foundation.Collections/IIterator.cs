@@ -7,25 +7,11 @@ namespace Windows.Foundation.Collections
 	#endif
 	public  partial interface IIterator<T> 
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		T Current
-		{
-			get;
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		bool HasCurrent
-		{
-			get;
-		}
-		#endif
+		// Skipping already declared property Current
+		// Skipping already declared property HasCurrent
 		// Forced skipping of method Windows.Foundation.Collections.IIterator<T>.Current.get
 		// Forced skipping of method Windows.Foundation.Collections.IIterator<T>.HasCurrent.get
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		bool MoveNext();
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		uint GetMany( T[] items);
-		#endif
+		// Skipping already declared method Windows.Foundation.Collections.IIterator<T>.MoveNext()
+		// Skipping already declared method Windows.Foundation.Collections.IIterator<T>.GetMany(T[])
 	}
 }

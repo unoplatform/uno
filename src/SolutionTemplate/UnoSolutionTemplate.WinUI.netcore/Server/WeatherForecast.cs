@@ -1,6 +1,6 @@
 using System;
 
-namespace UnoQuickStart
+namespace $ext_safeprojectname$.Server
 {
 	public class WeatherForecast
 	{

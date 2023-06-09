@@ -177,7 +177,7 @@
             <StaticResource x:Key="ScrollBarPanningThumbBackgroundColor" ResourceKey="ControlStrongFillColorDefault" />
         </ResourceDictionary>
     </ResourceDictionary.ThemeDictionaries>
-    
+
 
     <x:String x:Key="ScrollBarExpandDuration">00:00:00.167</x:String>
     <x:String x:Key="ScrollBarOpacityChangeDuration">00:00:00.083</x:String>
@@ -225,7 +225,7 @@
         <Setter Property="IsTabStop" Value="False" />
         <Setter Property="CornerRadius" Value="{ThemeResource ScrollBarCornerRadius}" />
         <!-- UNO TODO: Doesn't appear in ScrollViewer because default visual states are incompatible with Uno fixed-orientation optimizations
-             for performance. As of WinUI 2.5, seems visually very similar to previous ScrollBar template anyway. If this is restored, the 
+             for performance. As of WinUI 2.5, seems visually very similar to previous ScrollBar template anyway. If this is restored, the
              modifications made to the base UWP style on performance grounds should also be made here. -->
         <win:Setter Property="Template">
             <Setter.Value>
@@ -581,7 +581,7 @@
                                             <DoubleAnimation Duration="{StaticResource ScrollBarOpacityChangeDuration}" BeginTime="{StaticResource ScrollBarContractBeginTime}" Storyboard.TargetName="HorizontalLargeDecrease" Storyboard.TargetProperty="Opacity" To="0" />
                                             <DoubleAnimation Duration="{StaticResource ScrollBarOpacityChangeDuration}" BeginTime="{StaticResource ScrollBarContractBeginTime}" Storyboard.TargetName="HorizontalSmallDecrease" Storyboard.TargetProperty="Opacity" To="0" />
                                             <DoubleAnimation Duration="{StaticResource ScrollBarOpacityChangeDuration}" BeginTime="{StaticResource ScrollBarContractBeginTime}" Storyboard.TargetName="HorizontalTrackRect" Storyboard.TargetProperty="Opacity" To="0" />
-                                            
+
                                             <DoubleAnimationUsingKeyFrames Storyboard.TargetName="VerticalThumb" Storyboard.TargetProperty="Width" BeginTime="{StaticResource ScrollBarContractBeginTime}" EnableDependentAnimation="True">
                                                 <SplineDoubleKeyFrame KeyTime="{StaticResource ScrollBarContractDuration}" Value="{StaticResource ScrollBarVerticalThumbMinWidth}" KeySpline="0,0,0,1" />
                                             </DoubleAnimationUsingKeyFrames>
@@ -631,7 +631,7 @@
                                         <DoubleAnimationUsingKeyFrames Storyboard.TargetName="VerticalThumb" Storyboard.TargetProperty="Width" BeginTime="{StaticResource ScrollBarExpandBeginTime}" EnableDependentAnimation="True">
                                             <SplineDoubleKeyFrame KeyTime="{StaticResource ScrollBarExpandDuration}" Value="{StaticResource ScrollBarSize}" KeySpline="0,0,0,1" />
                                         </DoubleAnimationUsingKeyFrames>
-                                        
+
                                         <DoubleAnimationUsingKeyFrames Storyboard.TargetName="VerticalThumbTransform" Storyboard.TargetProperty="X" BeginTime="{StaticResource ScrollBarExpandBeginTime}">
                                             <SplineDoubleKeyFrame KeyTime="{StaticResource ScrollBarExpandDuration}" Value="0" KeySpline="0,0,0,1" />
                                         </DoubleAnimationUsingKeyFrames>
@@ -667,7 +667,7 @@
                                         <DoubleAnimation Duration="0" BeginTime="{StaticResource ScrollBarExpandBeginTime}" Storyboard.TargetName="HorizontalLargeDecrease" Storyboard.TargetProperty="Opacity" To="1" />
                                         <DoubleAnimation Duration="0" BeginTime="{StaticResource ScrollBarExpandBeginTime}" Storyboard.TargetName="HorizontalSmallDecrease" Storyboard.TargetProperty="Opacity" To="1" />
                                         <DoubleAnimation Duration="0" BeginTime="{StaticResource ScrollBarExpandBeginTime}" Storyboard.TargetName="HorizontalTrackRect" Storyboard.TargetProperty="Opacity" To="1" />
-                                        
+
                                         <DoubleAnimationUsingKeyFrames Storyboard.TargetName="VerticalThumb" Storyboard.TargetProperty="Width" BeginTime="{StaticResource ScrollBarExpandBeginTime}" EnableDependentAnimation="True">
                                             <SplineDoubleKeyFrame KeyTime="0" Value="{StaticResource ScrollBarSize}" KeySpline="0,0,0,1" />
                                         </DoubleAnimationUsingKeyFrames>
@@ -704,7 +704,7 @@
                                         <DoubleAnimation Duration="0" BeginTime="{StaticResource ScrollBarContractBeginTime}" Storyboard.TargetName="HorizontalLargeDecrease" Storyboard.TargetProperty="Opacity" To="0" />
                                         <DoubleAnimation Duration="0" BeginTime="{StaticResource ScrollBarContractBeginTime}" Storyboard.TargetName="HorizontalSmallDecrease" Storyboard.TargetProperty="Opacity" To="0" />
                                         <DoubleAnimation Duration="0" BeginTime="{StaticResource ScrollBarContractBeginTime}" Storyboard.TargetName="HorizontalTrackRect" Storyboard.TargetProperty="Opacity" To="0" />
-                                        
+
                                         <DoubleAnimationUsingKeyFrames Storyboard.TargetName="VerticalThumb" Storyboard.TargetProperty="Width" BeginTime="{StaticResource ScrollBarContractBeginTime}" EnableDependentAnimation="True">
                                             <SplineDoubleKeyFrame KeyTime="0" Value="{StaticResource ScrollBarVerticalThumbMinWidth}" KeySpline="0,0,0,1" />
                                         </DoubleAnimationUsingKeyFrames>

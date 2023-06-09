@@ -1,5 +1,5 @@
 ﻿<!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. See LICENSE in the project root for license information. -->
-<ResourceDictionary 
+<ResourceDictionary
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
   xmlns:contract7Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,7)"
   xmlns:contract7NotPresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,7)"
@@ -369,7 +369,7 @@
     <CornerRadius x:Key="ComboBoxDropDownButtonBackgroundCornerRadius">4</CornerRadius>
     <CornerRadius x:Key="ComboBoxItemCornerRadius">3</CornerRadius>
     <CornerRadius x:Key="ComboBoxItemPillCornerRadius">1.5</CornerRadius>
-    
+
     <FontWeight x:Key="ComboBoxHeaderThemeFontWeight">Normal</FontWeight>
     <FontWeight x:Key="ComboBoxPlaceholderTextThemeFontWeight">SemiLight</FontWeight>
 
@@ -395,11 +395,11 @@
         <Setter Property="PlaceholderForeground" Value="{ThemeResource ComboBoxPlaceHolderForeground}" />
         <Setter Property="Foreground" Value="{ThemeResource ComboBoxForeground}" />
         <Setter Property="Background" Value="{ThemeResource ComboBoxBackground}" />
-        
+
         <!-- Uno specific (LinearGradientBrush borders): Use solid border brush -->
         <win:Setter Property="BorderBrush" Value="{ThemeResource ComboBoxBorderBrush}" />
         <not_win:Setter Property="BorderBrush" Value="{ThemeResource ControlStrokeColorDefaultBrush}" />
-        
+
         <Setter Property="BorderThickness" Value="{ThemeResource ComboBoxBorderThemeThickness}" />
         <Setter Property="TabNavigation" Value="Once" />
         <contract7Present:Setter Property="TextBoxStyle" Value="{StaticResource ComboBoxTextBoxStyle}" />
@@ -416,7 +416,8 @@
         <Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}" />
         <Setter Property="FontSize" Value="{ThemeResource ControlContentThemeFontSize}" />
         <contract6Present:Setter Property="UseSystemFocusVisuals" Value="{ThemeResource IsApplicationFocusVisualKindReveal}" />
-        <Setter Property="primitives:ComboBoxHelper.KeepInteriorCornersSquare" Value="true"/>
+        <!-- TODO: We don't have KeepInteriorCornersSquare yet. -->
+        <!-- <Setter Property="primitives:ComboBoxHelper.KeepInteriorCornersSquare" Value="true"/> -->
         <contract7Present:Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}" />
         <Setter Property="ItemsPanel">
             <Setter.Value>
@@ -686,7 +687,7 @@
                         <not_win:Border x:Name="BottomBorderElement"
                             Grid.Row="1"
                             Grid.Column="0"
-                            Grid.ColumnSpan="2"                        
+                            Grid.ColumnSpan="2"
                             BorderThickness="0,0,0,1"
                             contract7Present:CornerRadius="{TemplateBinding CornerRadius}"
                             contract7NotPresent:CornerRadius="{ThemeResource ControlCornerRadius}"
@@ -721,7 +722,7 @@
                             Style="{TemplateBinding TextBoxStyle}"
                             Margin="0,0,0,0"
                             Padding="{ThemeResource ComboBoxEditableTextPadding}"
-                            BorderBrush="Transparent"                  
+                            BorderBrush="Transparent"
                             HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                             VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
                             PlaceholderText="{TemplateBinding PlaceholderText}"
@@ -759,7 +760,7 @@
                             Height="12">
                             <animatedVisuals:AnimatedChevronDownSmallVisualSource/>
                             <controls:AnimatedIcon.FallbackIconSource>
-                                <controls:FontIconSource 
+                                <controls:FontIconSource
                                     Foreground="{ThemeResource ComboBoxDropDownGlyphForeground}"
                                     FontFamily="{ThemeResource SymbolThemeFontFamily}"
                                     FontSize="12"
@@ -809,7 +810,7 @@
     </Style>
 
     <Style TargetType="ComboBoxItem" BasedOn="{StaticResource DefaultComboBoxItemStyle}"/>
-        
+
     <Style TargetType="ComboBoxItem" x:Key="DefaultComboBoxItemStyle">
         <Setter Property="Foreground" Value="{ThemeResource ComboBoxItemForeground}" />
         <Setter Property="Background" Value="{ThemeResource ComboBoxItemBackground}" />
@@ -1037,7 +1038,7 @@
                                 <VisualState x:Name="Focused">
                                     <VisualState.Setters>
                                         <Setter Target="BorderElement.Background" Value="{ThemeResource TextControlBackgroundFocused}" />
-                                        
+
                                         <!-- Uno specific: Simulates focused bottom border -->
                                         <!-- <Setter Target="BorderElement.BorderBrush" Value="{ThemeResource TextControlBorderBrushFocused}" /> -->
                                         <Setter Target="BottomBorderElement.BorderThickness" Value="{ThemeResource UnoTextControlBottomBorderFocusedThickness}" />
@@ -1063,7 +1064,7 @@
                             contract7NotPresent:CornerRadius="{ThemeResource ControlCornerRadius}"/>
 
                         <!-- Uno specific: Simulates bottom border linear gradient shadow -->
-                        <Border x:Name="BottomBorderElement"                                
+                        <Border x:Name="BottomBorderElement"
                             BorderThickness="0,0,0,1"
                             contract7Present:CornerRadius="{TemplateBinding CornerRadius}"
                             contract7NotPresent:CornerRadius="{ThemeResource ControlCornerRadius}"
@@ -1080,7 +1081,7 @@
                             IsVerticalRailEnabled="{TemplateBinding ScrollViewer.IsVerticalRailEnabled}"
                             IsDeferredScrollingEnabled="{TemplateBinding ScrollViewer.IsDeferredScrollingEnabled}"
                             IsTabStop="False"
-                            ZoomMode="Disabled" 
+                            ZoomMode="Disabled"
                             AutomationProperties.AccessibilityView="Raw" />
                         <TextBlock x:Name="PlaceholderTextContentPresenter"
                             Foreground="{Binding PlaceholderForeground, RelativeSource={RelativeSource TemplatedParent}, TargetNullValue={ThemeResource TextControlPlaceholderForeground}}"

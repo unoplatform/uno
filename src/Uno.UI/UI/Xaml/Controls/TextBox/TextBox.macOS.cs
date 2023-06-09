@@ -22,7 +22,7 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void InitializePropertiesPartial()
 		{
-			OnTextAlignmentChanged(CreateInitialValueChangerEventArgs(TextAlignmentProperty, null, TextAlignment));
+			OnTextAlignmentChanged(TextAlignment);
 		}
 
 		partial void OnFocusStateChangedPartial(FocusState focusState)
@@ -42,17 +42,17 @@ namespace Windows.UI.Xaml.Controls
 
 		public override bool BecomeFirstResponder() => _textBoxView?.BecomeFirstResponder() ?? false;
 
-		partial void OnAcceptsReturnChangedPartial(DependencyPropertyChangedEventArgs e)
+		partial void OnAcceptsReturnChangedPartial(bool newValue)
 		{
 			UpdateTextBoxView();
 		}
 
-		partial void OnTextWrappingChangedPartial(DependencyPropertyChangedEventArgs e)
+		partial void OnTextWrappingChangedPartial()
 		{
 			UpdateTextBoxView();
 		}
 
-		partial void OnTextAlignmentChangedPartial(DependencyPropertyChangedEventArgs e)
+		partial void OnTextAlignmentChangedPartial(TextAlignment newValue)
 		{
 			UpdateTextBoxView();
 		}
@@ -118,17 +118,17 @@ namespace Windows.UI.Xaml.Controls
 			_revealView?.UpdateFont();
 		}
 
-		partial void OnMaxLengthChangedPartial(DependencyPropertyChangedEventArgs e)
+		partial void OnMaxLengthChangedPartial(int newValue)
 		{
 			//support by MultilineTextBoxDelegate and SinglelineTextBoxDelegate
 		}
 
-		partial void OnIsReadonlyChangedPartial(DependencyPropertyChangedEventArgs e)
+		partial void OnIsReadonlyChangedPartial()
 		{
 			//support by MultilineTextBoxDelegate and SinglelineTextBoxDelegate
 		}
 
-		partial void OnIsTextPredictionEnabledChangedPartial(DependencyPropertyChangedEventArgs e)
+		partial void OnIsTextPredictionEnabledChangedPartial(bool newValue)
 		{
 			// There doesn't seem to be any way to disable/enable TextPrediction without disabling/enabling SpellCheck
 			if (!IsTextPredictionEnabledErrorMessageShown)

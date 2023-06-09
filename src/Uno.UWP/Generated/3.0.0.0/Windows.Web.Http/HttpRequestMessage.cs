@@ -58,6 +58,7 @@ namespace Windows.Web.Http
 		}
 		#endif
 		// Skipping already declared method Windows.Web.Http.HttpRequestMessage.HttpRequestMessage(Windows.Web.Http.HttpMethod, System.Uri)
+		// Forced skipping of method Windows.Web.Http.HttpRequestMessage.HttpRequestMessage(Windows.Web.Http.HttpMethod, System.Uri)
 		// Skipping already declared method Windows.Web.Http.HttpRequestMessage.HttpRequestMessage()
 		// Forced skipping of method Windows.Web.Http.HttpRequestMessage.HttpRequestMessage()
 		// Forced skipping of method Windows.Web.Http.HttpRequestMessage.Content.get
@@ -76,13 +77,7 @@ namespace Windows.Web.Http
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.HttpRequestMessage", "void HttpRequestMessage.Dispose()");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public override string ToString()
-		{
-			throw new global::System.NotImplementedException("The member string HttpRequestMessage.ToString() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20HttpRequestMessage.ToString%28%29");
-		}
-		#endif
+		// Skipping already declared method Windows.Web.Http.HttpRequestMessage.ToString()
 		// Processing: System.IDisposable
 	}
 }

@@ -25,18 +25,12 @@ namespace Uno.Extensions
 	/// </summary>
 	internal sealed class IndentedStringBuilder : IIndentedStringBuilder
 	{
-		private readonly StringBuilder _stringBuilder;
+		public StringBuilder Builder { get; } = new();
 
 		public int CurrentLevel { get; private set; }
 
 		public IndentedStringBuilder()
-			: this(new StringBuilder())
 		{
-		}
-
-		public IndentedStringBuilder(StringBuilder stringBuilder)
-		{
-			_stringBuilder = stringBuilder;
 		}
 
 		public IDisposable Indent(int count = 1)
@@ -71,37 +65,37 @@ namespace Uno.Extensions
 
 		public void Append(string text)
 		{
-			_stringBuilder.Append(text);
+			Builder.Append(text);
 		}
 
 		public void AppendIndented(string text)
 		{
-			_stringBuilder.Append('\t', CurrentLevel);
-			_stringBuilder.Append(text);
+			Builder.Append('\t', CurrentLevel);
+			Builder.Append(text);
 		}
 
 		public void AppendIndented(ReadOnlySpan<char> text)
 		{
-			_stringBuilder.Append('\t', CurrentLevel);
+			Builder.Append('\t', CurrentLevel);
 			unsafe
 			{
 				fixed (char* ptr = &MemoryMarshal.GetReference(text))
 				{
-					_stringBuilder.Append(ptr, text.Length);
+					Builder.Append(ptr, text.Length);
 				}
 			}
 		}
 
 		private void AppendIndented(char c, int indentCount)
 		{
-			_stringBuilder.Append('\t', indentCount);
-			_stringBuilder.Append(c);
+			Builder.Append('\t', indentCount);
+			Builder.Append(c);
 		}
 
 		public void AppendFormatIndented(IFormatProvider formatProvider, string text, params object[] replacements)
 		{
-			_stringBuilder.Append('\t', CurrentLevel);
-			_stringBuilder.AppendFormat(formatProvider, text, replacements);
+			Builder.Append('\t', CurrentLevel);
+			Builder.AppendFormat(formatProvider, text, replacements);
 		}
 
 		/// <summary>
@@ -109,7 +103,7 @@ namespace Uno.Extensions
 		/// </summary>
 		public void AppendLine()
 		{
-			_stringBuilder.AppendLine();
+			Builder.AppendLine();
 		}
 
 		/// <summary>
@@ -127,7 +121,7 @@ namespace Uno.Extensions
 
 		public override string ToString()
 		{
-			return _stringBuilder.ToString();
+			return Builder.ToString();
 		}
 	}
 

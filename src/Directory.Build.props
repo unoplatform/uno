@@ -5,12 +5,6 @@
   <Import Project="$(MSBuildSDKExtrasTargets)" Condition="Exists('$(MSBuildSDKExtrasTargets)')" />
 
   <PropertyGroup>
-    <NoWarn>$(NoWarn);CA1416</NoWarn> <!-- Disable warning about cross platform call sites -->
-    <NoWarn>$(NoWarn);MSB4011</NoWarn> <!-- Disable duplicate msbuild files imports message -->
-    <NoWarn>$(NoWarn);NU1505</NoWarn> <!-- Disable: Duplicate 'PackageDownload' items found. Remove the duplicate items or use the Update functionality to ensure a consistent restore behavior. The duplicate 'PackageDownload' items are: Microsoft.NETCore.App.Host.win-x64 [3.1.25], Microsoft.NETCore.App.Host.win-x64 [3.1.25], Microsoft.NETCore.App.Host.win-x64 [3.1.25], Microsoft.NETCore.App.Host.win-x64 [3.1.25]. -->
-
-	<NoWarn Condition="'$(OS)' != 'Windows_NT'">$(NoWarn);IDE0055</NoWarn>
-
     <DebugType>portable</DebugType>
     <DebugSymbols>True</DebugSymbols>
     <RepositoryUrl>$(BUILD_REPOSITORY_URI)</RepositoryUrl>
@@ -18,6 +12,9 @@
     <Author>nventive</Author>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
+
+	<!-- Ensures the .xr.xml files are generated in a proper layout folder -->
+	<GenerateLibraryLayout>true</GenerateLibraryLayout>
 
     <!-- Enables hard links for obj -> bin files (symlinks generally don't work there -->
     <CreateHardLinksForCopyFilesToOutputDirectoryIfPossible>true</CreateHardLinksForCopyFilesToOutputDirectoryIfPossible>
@@ -44,19 +41,10 @@
 
     <UNO_UWP_BUILD>true</UNO_UWP_BUILD>
     <DefineConstants Condition="'$(UNO_UWP_BUILD)'!='true'">$(DefineConstants);HAS_UNO_WINUI</DefineConstants>
-    <DefineConstants Condition="
-		$(UnoTargetFrameworkOverride.ToLowerInvariant().StartsWith('monoandroid'))
-		OR $(UnoTargetFrameworkOverride.ToLowerInvariant().StartsWith('net6.0-android'))
-		OR $(UnoTargetFrameworkOverride.ToLowerInvariant().StartsWith('net7.0-android'))
-		">$(DefineConstants);TARGET_FRAMEWORK_OVERRIDE_ANDROID</DefineConstants>
-
-    <DefineConstants Condition="
-		$(UnoTargetFrameworkOverride.ToLowerInvariant().StartsWith('xamarinios'))
-		OR $(UnoTargetFrameworkOverride.ToLowerInvariant().StartsWith('net6.0-ios'))
-		OR $(UnoTargetFrameworkOverride.ToLowerInvariant().StartsWith('net7.0-ios'))
-		">$(DefineConstants);TARGET_FRAMEWORK_OVERRIDE_IOS</DefineConstants>
 
     <DisableImplicitNamespaceImports>true</DisableImplicitNamespaceImports>
+
+    <UnoEnableXamlFuzzyMatching>false</UnoEnableXamlFuzzyMatching>
 
 	<!-- Enable ShouldWriteErrorOnInvalidXaml for all the sample and test projects of this solution -->
 	<ShouldWriteErrorOnInvalidXaml>True</ShouldWriteErrorOnInvalidXaml>
@@ -67,18 +55,14 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <MicrosoftNetCompilersToolsetVersion>4.5.0-2.final</MicrosoftNetCompilersToolsetVersion>
+    <MicrosoftNetCompilersToolsetVersion>4.6.0</MicrosoftNetCompilersToolsetVersion>
   </PropertyGroup>
 
   <ItemGroup>
     <!--This override is used to validate the use of specific version of the C# Compiler-->
 	<!-- Both compiler version and CodeStyle package version should be kept in sync -->
     <PackageReference Include="Microsoft.Net.Compilers.Toolset" Version="$(MicrosoftNetCompilersToolsetVersion)" PrivateAssets="all" />
-
-    <!-- Workaround the following error: -->
-    <!-- error CS9057: The analyzer assembly 'Microsoft.CodeAnalysis.CodeStyle.dll' references version '4.5.0.0' of the compiler, which is newer than the currently running version '4.4.0.0'. [D:\a\1\s\src\SolutionTemplate\UnoSolutionTemplate.VSIX.2022\UnoSolutionTemplate.VSIX.2022.csproj] -->
-    <!-- For some reason, UnoSolutionTemplate.VSIX.2022.csproj isn't respecting Microsoft.Net.Compilers.Toolset -->
-    <PackageReference Condition="'$(UsingMicrosoftNETSDK)'=='true'" Include="Microsoft.CodeAnalysis.CSharp.CodeStyle" Version="$(MicrosoftNetCompilersToolsetVersion)" PrivateAssets="all" />
+	<PackageReference Include="Microsoft.CodeAnalysis.CSharp.CodeStyle" Version="$(MicrosoftNetCompilersToolsetVersion)" PrivateAssets="all" />
   </ItemGroup>
 
   <PropertyGroup>
@@ -146,14 +130,12 @@
     <_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.FluentTheme.v2.netcoremobile.csproj</_AdjustedOutputProjects>
     <_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.FluentTheme.v2.Reference.csproj</_AdjustedOutputProjects>
 
-	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.Xaml.netcoremobile.csproj</_AdjustedOutputProjects>
-	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.Xaml.Reference.csproj</_AdjustedOutputProjects>
-
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Adapter.Microsoft.Extensions.Logging.csproj</_AdjustedOutputProjects>
-	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Adapter.Microsoft.Extensions.Logging.netcoremobile.csproj</_AdjustedOutputProjects>
 
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.Foundation.Logging.csproj</_AdjustedOutputProjects>
-	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.Foundation.Logging.netcoremobile.csproj</_AdjustedOutputProjects>
+	  
+	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.MediaPlayer.WebAssembly.csproj</_AdjustedOutputProjects>
+	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.MediaPlayer.Skia.Gtk.csproj</_AdjustedOutputProjects>
 
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Dispatching.csproj</_AdjustedOutputProjects>
 	<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Dispatching.netcoremobile.csproj</_AdjustedOutputProjects>
@@ -188,19 +170,14 @@
     <DefaultItemExcludes>$(DefaultItemExcludes);obj/**;bin/**</DefaultItemExcludes>
   </PropertyGroup>
 
-  <PropertyGroup>
-    <!-- Workaround for android build using the Uno Source Generators: https://github.com/unoplatform/uno.SourceGeneration/issues/109 -->
-    <JavaSdkDirectory Condition="'$(JavaSdkDirectory)'=='' and '$(JAVA_HOME_8_X64)'!=''">$(JAVA_HOME_8_X64)</JavaSdkDirectory>
-  </PropertyGroup>
-
   <ItemGroup Condition="('$(TargetFramework)'=='net461' or '$(TargetFramework)'=='net472' or '$(TargetFramework)'=='') and '$(AndroidManifest)'==''">
 	<!--
 	Include the reference assemblies to ensure that hard links don't use system files (workaround for same disk restriction)
 	Make sure to include on the versions that are needed to avoid growing the nuget cache unnecessarily.
 	-->
-	<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net48" Version="1.0.2" PrivateAssets="All" />
-	<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net472" Version="1.0.2" PrivateAssets="All" />
-	<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net461" Version="1.0.2" PrivateAssets="All" />
+	<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net48" PrivateAssets="All" />
+	<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net472" PrivateAssets="All" />
+	<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net461" PrivateAssets="All" />
   </ItemGroup>
 
   <PropertyGroup>
@@ -224,6 +201,21 @@
 		or '$(TargetFramework)'=='net6.0-macos'
 		or '$(TargetFramework)'=='net7.0-macos'
 		">true</IsMacOS>
+
+	<IsCatalyst>false</IsCatalyst>
+	<IsCatalyst Condition="'$(TargetFramework)'=='net6.0-maccatalyst' or '$(TargetFramework)'=='net7.0-maccatalyst'">true</IsCatalyst>
+
+	<IsIOSOrCatalyst>false</IsIOSOrCatalyst>
+	<IsIOSOrCatalyst Condition="$(IsIOS) or $(IsCatalyst)">true</IsIOSOrCatalyst>
+
+	<_IsNet>false</_IsNet>
+	<_IsNet Condition="'$(TargetFramework)'=='net461'">true</_IsNet>
+
+	<_IsNetCore>false</_IsNetCore>
+	<_IsNetCore Condition="'$(TargetFramework)'=='net5.0' or '$(TargetFramework)'=='net6.0' or '$(TargetFramework)'=='net7.0'">true</_IsNetCore>
+
+	<_IsNetStd>false</_IsNetStd>
+	<_IsNetStd Condition="'$(TargetFramework)'=='netstandard2.0' or $(_IsNetCore)">true</_IsNetStd>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -232,6 +224,11 @@
     <IsSampleProject>$(MSBuildProjectName.Contains('Sample'))</IsSampleProject>
     <IsSampleProject Condition="'$(IsSampleProject)'=='false'">$(MSBuildProjectName.Contains('UnoIslands'))</IsSampleProject>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+	<WarningsNotAsErrors Condition="'$(Configuration)' == 'Debug'">$(WarningsNotAsErrors);IDE0051;IDE0055</WarningsNotAsErrors>
+	<NoWarn>$(NoWarn);CA1416</NoWarn> <!-- Disable warning about cross platform call sites -->
+    <NoWarn>$(NoWarn);MSB4011</NoWarn> <!-- Disable duplicate msbuild files imports message -->
+    <NoWarn>$(NoWarn);NU1505</NoWarn> <!-- Disable: Duplicate 'PackageDownload' items found. Remove the duplicate items or use the Update functionality to ensure a consistent restore behavior. The duplicate 'PackageDownload' items are: Microsoft.NETCore.App.Host.win-x64 [3.1.25], Microsoft.NETCore.App.Host.win-x64 [3.1.25], Microsoft.NETCore.App.Host.win-x64 [3.1.25], Microsoft.NETCore.App.Host.win-x64 [3.1.25]. -->
+	<NoWarn Condition="'$(OS)' != 'Windows_NT'">$(NoWarn);IDE0055</NoWarn>
   </PropertyGroup>
 
   <PropertyGroup>

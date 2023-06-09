@@ -73,7 +73,7 @@ namespace Windows.UI.Xaml.Controls
 
 						date = pItem.Date;
 
-						found = m_tpSelectedDates.IndexOf(date, out index);
+						m_tpSelectedDates.IndexOf(date, out index, out found);
 						if (found)
 						{
 							// when user deselect an item, we remove all equivalent dates from selectedDates.
@@ -384,12 +384,7 @@ namespace Windows.UI.Xaml.Controls
 		internal void IsSelected(DateTime date, out bool pIsSelected)
 		{
 			uint index = 0;
-			bool found = false;
-
-			found = m_tpSelectedDates.IndexOf(date, out index);
-
-			pIsSelected = found;
-
+			m_tpSelectedDates.IndexOf(date, out index, out pIsSelected);
 		}
 
 		private void OnSelectedDatesChanged(

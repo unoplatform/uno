@@ -79,6 +79,7 @@ namespace Windows.Storage.Streams
 				var memoryStream = new MemoryStream((int)Size);
 				_stream.Position = 0;
 				_stream.CopyTo(memoryStream);
+				memoryStream.Position = 0;
 				return memoryStream.AsRandomAccessStream();
 			}
 			finally

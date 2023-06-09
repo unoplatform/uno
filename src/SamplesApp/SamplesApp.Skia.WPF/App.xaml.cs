@@ -13,5 +13,9 @@ namespace SamplesApp.WPF
 	/// </summary>
 	public partial class App : Application
 	{
+		public App()
+		{
+			SamplesApp.App.ConfigureFilters();
+		}
 	}
 }

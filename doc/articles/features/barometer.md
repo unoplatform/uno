@@ -1,3 +1,7 @@
+---
+uid: Uno.Features.Barometer
+---
+
 # Barometer
 
 > [!TIP]

@@ -9,8 +9,7 @@
     "Windows",
     "macOS",
     "Linux",
-    "WebAssembly",
-    "dotnet-new"
+    "WebAssembly"
   ],
   "name": "Multi-Platform App (.NET 6, UWP)",
   "identity": "Uno.Platform.UnoApp.UWP.netcoremobile",
@@ -19,7 +18,8 @@
   "precedence": "6001",
   "tags": {
     "language": "C#",
-    "type": "project"
+    "type": "solution",
+    "editorTreatAs": "solution"
   },
   "shortName": "unoapp-uwp-net6",
   "sourceName": "UnoQuickStart",

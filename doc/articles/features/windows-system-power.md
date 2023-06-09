@@ -1,3 +1,7 @@
+---
+uid: Uno.Features.WSPower
+---
+
 # Uno Support for Windows.System.Power APIs
 
 ## `PowerManager`

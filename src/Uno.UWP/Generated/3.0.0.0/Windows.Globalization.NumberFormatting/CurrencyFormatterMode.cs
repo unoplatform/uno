@@ -2,15 +2,11 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Globalization.NumberFormatting
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+	#if false || false || false || false || false || false || false
 	public   enum CurrencyFormatterMode 
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		UseSymbol = 0,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		UseCurrencyCode = 1,
-		#endif
+		// Skipping already declared field Windows.Globalization.NumberFormatting.CurrencyFormatterMode.UseSymbol
+		// Skipping already declared field Windows.Globalization.NumberFormatting.CurrencyFormatterMode.UseCurrencyCode
 	}
 	#endif
 }

@@ -1,3 +1,7 @@
+---
+uid: Uno.Controls.Popup
+---
+
 # Popup
 
 ## Namespace discrepancy

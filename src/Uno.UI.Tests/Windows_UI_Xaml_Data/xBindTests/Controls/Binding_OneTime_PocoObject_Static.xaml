@@ -9,7 +9,7 @@
 	<Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 		<local:Binding_OneTime_PocoObject_Static_Control x:Name="myControl" x:FieldModifier="public">
 			<local:Binding_OneWay_PocoObject_Control.ClassCollection>
-				<local:Binding_OneTime_PocoObject_Static_Poco SampleString="{x:Bind LocalStatic, Mode=OneWay}" />
+				<local:Binding_OneTime_PocoObject_Static_Poco SampleString="{x:Bind local:Binding_OneTime_PocoObject_Static.LocalStatic, Mode=OneWay}" />
 				<local:Binding_OneTime_PocoObject_Static_Poco SampleString="{x:Bind local:Binding_OneTime_PocoObject_Static_Resource.MyStaticProperty}" />
 				<local:Binding_OneTime_PocoObject_Static_Poco SampleString="Test03" />
 			</local:Binding_OneWay_PocoObject_Control.ClassCollection>

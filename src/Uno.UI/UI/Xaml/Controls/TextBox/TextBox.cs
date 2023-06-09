@@ -43,6 +43,13 @@ namespace Windows.UI.Xaml.Controls
 
 	public partial class TextBox : Control, IFrameworkTemplatePoolAware
 	{
+		/// <summary>
+		/// This is a workaround for the template pooling issue where we change IsChecked when the template is recycled.
+		/// This prevents incorrect event raising but is not a "real" solution. Pooling could still cause issues.
+		/// This workaround can be removed if pooling is removed. See https://github.com/unoplatform/uno/issues/12189
+		/// </summary>
+		private bool _suppressTextChanged;
+
 #pragma warning disable CS0067, CS0649
 		private IFrameworkElement _placeHolder;
 		private ContentControl _contentElement;
@@ -74,6 +81,10 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		private bool _isInputModifyingText;
 		/// <summary>
+		/// Set when the <see cref="Text"/> property is being cleared via delete button.
+		/// </summary>
+		private bool _isInputClearingText;
+		/// <summary>
 		/// Set when <see cref="RaiseTextChanged"/> has been dispatched but not yet called.
 		/// </summary>
 		private bool _isTextChangedPending;
@@ -94,6 +105,8 @@ namespace Windows.UI.Xaml.Controls
 			Loaded += TextBox_Loaded;
 			Unloaded += TextBox_Unloaded;
 		}
+
+		internal bool IsUserModifying => _isInputModifyingText || _isInputClearingText;
 
 		private void TextBox_Loaded(object sender, RoutedEventArgs e)
 		{
@@ -125,21 +138,21 @@ namespace Windows.UI.Xaml.Controls
 		{
 			UpdatePlaceholderVisibility();
 			UpdateButtonStates();
-			OnInputScopeChanged(CreateInitialValueChangerEventArgs(InputScopeProperty, null, InputScope));
-			OnMaxLengthChanged(CreateInitialValueChangerEventArgs(MaxLengthProperty, null, MaxLength));
-			OnAcceptsReturnChanged(CreateInitialValueChangerEventArgs(AcceptsReturnProperty, null, AcceptsReturn));
-			OnIsReadonlyChanged(CreateInitialValueChangerEventArgs(IsReadOnlyProperty, null, IsReadOnly));
+			OnInputScopeChanged(InputScope);
+			OnMaxLengthChanged(MaxLength);
+			OnAcceptsReturnChanged(AcceptsReturn);
+			OnIsReadonlyChanged();
 			OnForegroundColorChanged(null, Foreground);
 			UpdateFontPartial();
 			OnHeaderChanged();
-			OnIsTextPredictionEnabledChanged(CreateInitialValueChangerEventArgs(IsTextPredictionEnabledProperty, IsTextPredictionEnabledProperty.GetMetadata(GetType()).DefaultValue, IsTextPredictionEnabled));
+			OnIsTextPredictionEnabledChanged(IsTextPredictionEnabled);
 			OnSelectionHighlightColorChanged(SelectionHighlightColor);
-			OnIsSpellCheckEnabledChanged(CreateInitialValueChangerEventArgs(IsSpellCheckEnabledProperty, IsSpellCheckEnabledProperty.GetMetadata(GetType()).DefaultValue, IsSpellCheckEnabled));
-			OnTextAlignmentChanged(CreateInitialValueChangerEventArgs(TextAlignmentProperty, TextAlignmentProperty.GetMetadata(GetType()).DefaultValue, TextAlignment));
-			OnTextWrappingChanged(CreateInitialValueChangerEventArgs(TextWrappingProperty, TextWrappingProperty.GetMetadata(GetType()).DefaultValue, TextWrapping));
+			OnIsSpellCheckEnabledChanged(IsSpellCheckEnabled);
+			OnTextAlignmentChanged(TextAlignment);
+			OnTextWrappingChanged();
 			OnFocusStateChanged((FocusState)FocusStateProperty.GetMetadata(GetType()).DefaultValue, FocusState, initial: true);
 			OnVerticalContentAlignmentChanged(VerticalAlignment.Top, VerticalContentAlignment);
-			OnTextCharacterCasingChanged(CreateInitialValueChangerEventArgs(CharacterCasingProperty, CharacterCasingProperty.GetMetadata(GetType()).DefaultValue, CharacterCasing));
+			OnTextCharacterCasingChanged(CharacterCasing);
 			UpdateDescriptionVisibility(true);
 			var buttonRef = _deleteButton?.GetTarget();
 
@@ -185,8 +198,6 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		partial void InitializePropertiesPartial();
-
-		private DependencyPropertyChangedEventArgs CreateInitialValueChangerEventArgs(DependencyProperty property, object oldValue, object newValue) => new DependencyPropertyChangedEventArgs(property, oldValue, DependencyPropertyValuePrecedences.DefaultValue, newValue, DependencyPropertyValuePrecedences.DefaultValue);
 
 		#region Text DependencyProperty
 
@@ -300,13 +311,17 @@ namespace Windows.UI.Xaml.Controls
 			{
 				_isInvokingTextChanged = true;
 				_isTextChangedPending = false;
-				TextChanged?.Invoke(this, new TextChangedEventArgs(this));
+				if (!_suppressTextChanged) // This workaround can be removed if pooling is removed. See https://github.com/unoplatform/uno/issues/12189
+				{
+					TextChanged?.Invoke(this, new TextChangedEventArgs(this));
+				}
 			}
 #if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
 			finally
 #endif
 			{
 				_isInvokingTextChanged = false;
+				_suppressTextChanged = false;
 			}
 		}
 
@@ -531,12 +546,12 @@ namespace Windows.UI.Xaml.Controls
 							}
 						}
 					},
-					propertyChangedCallback: (s, e) => ((TextBox)s)?.OnInputScopeChanged(e)
+					propertyChangedCallback: (s, e) => ((TextBox)s)?.OnInputScopeChanged((InputScope)e.NewValue)
 				)
 			);
 
-		protected void OnInputScopeChanged(DependencyPropertyChangedEventArgs e) => OnInputScopeChangedPartial(e);
-		partial void OnInputScopeChangedPartial(DependencyPropertyChangedEventArgs e);
+		private void OnInputScopeChanged(InputScope newValue) => OnInputScopeChangedPartial(newValue);
+		partial void OnInputScopeChangedPartial(InputScope newValue);
 
 		#endregion
 
@@ -555,13 +570,13 @@ namespace Windows.UI.Xaml.Controls
 				typeof(TextBox),
 				new FrameworkPropertyMetadata(
 					defaultValue: 0,
-					propertyChangedCallback: (s, e) => ((TextBox)s)?.OnMaxLengthChanged(e)
+					propertyChangedCallback: (s, e) => ((TextBox)s)?.OnMaxLengthChanged((int)e.NewValue)
 				)
 			);
 
-		private void OnMaxLengthChanged(DependencyPropertyChangedEventArgs e) => OnMaxLengthChangedPartial(e);
+		private void OnMaxLengthChanged(int newValue) => OnMaxLengthChangedPartial(newValue);
 
-		partial void OnMaxLengthChangedPartial(DependencyPropertyChangedEventArgs e);
+		partial void OnMaxLengthChangedPartial(int newValue);
 
 		#endregion
 
@@ -580,13 +595,13 @@ namespace Windows.UI.Xaml.Controls
 				typeof(TextBox),
 				new FrameworkPropertyMetadata(
 					defaultValue: false,
-					propertyChangedCallback: (s, e) => ((TextBox)s)?.OnAcceptsReturnChanged(e)
+					propertyChangedCallback: (s, e) => ((TextBox)s)?.OnAcceptsReturnChanged((bool)e.NewValue)
 				)
 			);
 
-		private void OnAcceptsReturnChanged(DependencyPropertyChangedEventArgs e)
+		private void OnAcceptsReturnChanged(bool newValue)
 		{
-			if (e.NewValue is false)
+			if (!newValue)
 			{
 				var text = Text;
 				var singleLineText = GetFirstLine(text);
@@ -596,11 +611,11 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 
-			OnAcceptsReturnChangedPartial(e);
+			OnAcceptsReturnChangedPartial(newValue);
 			UpdateButtonStates();
 		}
 
-		partial void OnAcceptsReturnChangedPartial(DependencyPropertyChangedEventArgs e);
+		partial void OnAcceptsReturnChangedPartial(bool newValue);
 
 		#endregion
 
@@ -618,16 +633,16 @@ namespace Windows.UI.Xaml.Controls
 				typeof(TextBox),
 				new FrameworkPropertyMetadata(
 					defaultValue: TextWrapping.NoWrap,
-					propertyChangedCallback: (s, e) => ((TextBox)s)?.OnTextWrappingChanged(e))
+					propertyChangedCallback: (s, e) => ((TextBox)s)?.OnTextWrappingChanged())
 				);
 
-		private void OnTextWrappingChanged(DependencyPropertyChangedEventArgs args)
+		private void OnTextWrappingChanged()
 		{
-			OnTextWrappingChangedPartial(args);
+			OnTextWrappingChangedPartial();
 			UpdateButtonStates();
 		}
 
-		partial void OnTextWrappingChangedPartial(DependencyPropertyChangedEventArgs e);
+		partial void OnTextWrappingChangedPartial();
 
 		#endregion
 
@@ -650,15 +665,15 @@ namespace Windows.UI.Xaml.Controls
 				typeof(TextBox),
 				new FrameworkPropertyMetadata(
 						defaultValue: CharacterCasing.Normal,
-						propertyChangedCallback: (s, e) => ((TextBox)s)?.OnTextCharacterCasingChanged(e))
+						propertyChangedCallback: (s, e) => ((TextBox)s)?.OnTextCharacterCasingChanged((CharacterCasing)e.NewValue))
 				);
 
-		private void OnTextCharacterCasingChanged(DependencyPropertyChangedEventArgs e)
+		private void OnTextCharacterCasingChanged(CharacterCasing newValue)
 		{
-			OnTextCharacterCasingChangedPartial(e);
+			OnTextCharacterCasingChangedPartial(newValue);
 		}
 
-		partial void OnTextCharacterCasingChangedPartial(DependencyPropertyChangedEventArgs e);
+		partial void OnTextCharacterCasingChangedPartial(CharacterCasing newValue);
 
 		#region IsReadOnly DependencyProperty
 
@@ -675,17 +690,17 @@ namespace Windows.UI.Xaml.Controls
 				typeof(TextBox),
 				new FrameworkPropertyMetadata(
 					false,
-					propertyChangedCallback: (s, e) => ((TextBox)s)?.OnIsReadonlyChanged(e)
+					propertyChangedCallback: (s, e) => ((TextBox)s)?.OnIsReadonlyChanged()
 				)
 			);
 
-		private void OnIsReadonlyChanged(DependencyPropertyChangedEventArgs e)
+		private void OnIsReadonlyChanged()
 		{
-			OnIsReadonlyChangedPartial(e);
+			OnIsReadonlyChangedPartial();
 			UpdateButtonStates();
 		}
 
-		partial void OnIsReadonlyChangedPartial(DependencyPropertyChangedEventArgs e);
+		partial void OnIsReadonlyChangedPartial();
 
 		#endregion
 
@@ -750,13 +765,13 @@ namespace Windows.UI.Xaml.Controls
 				typeof(TextBox),
 				new FrameworkPropertyMetadata(
 					defaultValue: true,
-					propertyChangedCallback: (s, e) => ((TextBox)s)?.OnIsSpellCheckEnabledChanged(e)
+					propertyChangedCallback: (s, e) => ((TextBox)s)?.OnIsSpellCheckEnabledChanged((bool)e.NewValue)
 				)
 			);
 
-		protected virtual void OnIsSpellCheckEnabledChanged(DependencyPropertyChangedEventArgs e) => OnIsSpellCheckEnabledChangedPartial(e);
+		private void OnIsSpellCheckEnabledChanged(bool newValue) => OnIsSpellCheckEnabledChangedPartial(newValue);
 
-		partial void OnIsSpellCheckEnabledChangedPartial(DependencyPropertyChangedEventArgs e);
+		partial void OnIsSpellCheckEnabledChangedPartial(bool newValue);
 
 		#endregion
 
@@ -777,13 +792,13 @@ namespace Windows.UI.Xaml.Controls
 				typeof(TextBox),
 				new FrameworkPropertyMetadata(
 					defaultValue: true,
-					propertyChangedCallback: (s, e) => ((TextBox)s)?.OnIsTextPredictionEnabledChanged(e)
+					propertyChangedCallback: (s, e) => ((TextBox)s)?.OnIsTextPredictionEnabledChanged((bool)e.NewValue)
 				)
 			);
 
-		protected virtual void OnIsTextPredictionEnabledChanged(DependencyPropertyChangedEventArgs e) => OnIsTextPredictionEnabledChangedPartial(e);
+		private void OnIsTextPredictionEnabledChanged(bool newValue) => OnIsTextPredictionEnabledChangedPartial(newValue);
 
-		partial void OnIsTextPredictionEnabledChangedPartial(DependencyPropertyChangedEventArgs e);
+		partial void OnIsTextPredictionEnabledChangedPartial(bool newValue);
 
 		#endregion
 
@@ -800,12 +815,12 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty TextAlignmentProperty { get; } =
-			DependencyProperty.Register("TextAlignment", typeof(TextAlignment), typeof(TextBox), new FrameworkPropertyMetadata(TextAlignment.Left, (s, e) => ((TextBox)s)?.OnTextAlignmentChanged(e)));
+			DependencyProperty.Register("TextAlignment", typeof(TextAlignment), typeof(TextBox), new FrameworkPropertyMetadata(TextAlignment.Left, (s, e) => ((TextBox)s)?.OnTextAlignmentChanged((TextAlignment)e.NewValue)));
 
 
-		protected virtual void OnTextAlignmentChanged(DependencyPropertyChangedEventArgs e) => OnTextAlignmentChangedPartial(e);
+		private void OnTextAlignmentChanged(TextAlignment newValue) => OnTextAlignmentChangedPartial(newValue);
 
-		partial void OnTextAlignmentChangedPartial(DependencyPropertyChangedEventArgs e);
+		partial void OnTextAlignmentChangedPartial(TextAlignment newValue);
 
 		#endregion
 
@@ -1019,8 +1034,21 @@ namespace Windows.UI.Xaml.Controls
 
 		private void DeleteButtonClick()
 		{
-			Text = string.Empty;
-			OnDeleteButtonClickPartial();
+#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
+			try
+#endif
+			{
+				_isInputClearingText = true;
+
+				Text = string.Empty;
+				OnDeleteButtonClickPartial();
+			}
+#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
+			finally
+#endif
+			{
+				_isInputClearingText = false;
+			}
 		}
 
 		partial void OnDeleteButtonClickPartial();
@@ -1033,6 +1061,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public void OnTemplateRecycled()
 		{
+			_suppressTextChanged = true;
 			Text = string.Empty;
 		}
 

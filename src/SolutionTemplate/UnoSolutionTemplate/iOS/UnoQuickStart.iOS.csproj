@@ -111,9 +111,6 @@
 		<Reference Include="Xamarin.iOS" />
 	</ItemGroup>
 	<ItemGroup>
-		<BundleResource Include="Resources\Fonts\uno-fluentui-assets.ttf" />
-	</ItemGroup>
-	<ItemGroup>
 		<PackageReference Include="Uno.UI" Version="2.2.0" />
 		<PackageReference Include="Uno.UI.RemoteControl" Version="2.2.0" Condition="'$(Configuration)'=='Debug'" />
 		<PackageReference Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Version="3.0.5" />

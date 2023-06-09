@@ -9,7 +9,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\AnalyzerSuppressions.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Helpers\CompilationExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\DesignTimeHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\GeneratorExecutionContextExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\HashBuilder.cs" />
@@ -17,8 +16,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\Nullable.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\PathHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\PlatformHelper.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Helpers\RoslynMetadataHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\SymbolExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\UnoNamedTypeSymbolDisplayVisitor.cs" />
   </ItemGroup>
   <Import Project="..\..\Uno.Foundation\Uno.Core.Extensions\Uno.Core.Extensions.props" />
 </Project>

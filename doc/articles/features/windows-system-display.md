@@ -1,4 +1,8 @@
-﻿# Uno Support for Windows.System.Display APIs
+﻿---
+uid: Uno.Features.WSDisplay
+---
+
+# Uno Support for Windows.System.Display APIs
 
 ## `DisplayRequest`
 

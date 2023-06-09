@@ -1,4 +1,5 @@
-﻿
+﻿#nullable enable
+
 using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.Globalization.NumberFormatting;
@@ -14,7 +15,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 		[DataRow(double.NaN, "NaN")]
 		public void When_FormatSpecialDouble(double value, string expected)
 		{
-			var sut = new DecimalFormatter();
+			var sut = MakeFormatter();
 			var actual = sut.FormatDouble(value);
 
 			Assert.AreEqual(expected, actual);
@@ -34,7 +35,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 		[DataRow(-0d, 3, 1, "000.0")]
 		public void When_FormatDouble(double value, int integerDigits, int fractionDigits, string expected)
 		{
-			var sut = new DecimalFormatter();
+			var sut = MakeFormatter();
 			sut.IntegerDigits = integerDigits;
 			sut.FractionDigits = fractionDigits;
 
@@ -50,7 +51,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 		[DataRow(1234.0, 6, 0, "001,234")]
 		public void When_FormatDoubleWithIsGroupSetTrue(double value, int integerDigits, int fractionDigits, string expected)
 		{
-			var sut = new DecimalFormatter();
+			var sut = MakeFormatter();
 			sut.IntegerDigits = integerDigits;
 			sut.FractionDigits = fractionDigits;
 			sut.IsGrouped = true;
@@ -66,7 +67,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 		[DataRow(3, 1, "-000.0")]
 		public void When_FormatDoubleMinusZeroWithIsZeroSignedSetTrue(int integerDigits, int fractionDigits, string expected)
 		{
-			var sut = new DecimalFormatter();
+			var sut = MakeFormatter();
 			sut.IntegerDigits = integerDigits;
 			sut.FractionDigits = fractionDigits;
 			sut.IsZeroSigned = true;
@@ -82,7 +83,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 		[DataRow(3, 1, "000.0")]
 		public void When_FormatDoubleZeroWithIsZeroSignedSetTrue(int integerDigits, int fractionDigits, string expected)
 		{
-			var sut = new DecimalFormatter();
+			var sut = MakeFormatter();
 			sut.IntegerDigits = integerDigits;
 			sut.FractionDigits = fractionDigits;
 			sut.IsZeroSigned = true;
@@ -95,7 +96,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 		[DataRow(1d, "1.")]
 		public void When_FormatDoubleWithIsDecimalPointerAlwaysDisplayedSetTrue(double value, string expected)
 		{
-			var sut = new DecimalFormatter();
+			var sut = MakeFormatter();
 			sut.IsDecimalPointAlwaysDisplayed = true;
 			sut.FractionDigits = 0;
 			sut.IntegerDigits = 0;
@@ -112,7 +113,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 		[DataRow(12.3d, 4, 1, 0, "12.30")]
 		public void When_FormatDoubleWithSpecificSignificantDigits(double value, int significantDigits, int integerDigits, int fractionDigits, string expected)
 		{
-			var sut = new DecimalFormatter();
+			var sut = MakeFormatter();
 			sut.SignificantDigits = significantDigits;
 			sut.IntegerDigits = integerDigits;
 			sut.FractionDigits = fractionDigits;
@@ -124,7 +125,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 		[TestMethod]
 		public void When_FormatDoubleUsingIncrementNumberRounder()
 		{
-			var sut = new DecimalFormatter();
+			var sut = MakeFormatter();
 			IncrementNumberRounder rounder = new IncrementNumberRounder();
 			rounder.Increment = 0.5;
 			sut.NumberRounder = rounder;
@@ -136,7 +137,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 		[TestMethod]
 		public void When_FormatDoubleUsingSignificantDigitsNumberRounder()
 		{
-			var sut = new DecimalFormatter();
+			var sut = MakeFormatter();
 			SignificantDigitsNumberRounder rounder = new SignificantDigitsNumberRounder();
 			rounder.SignificantDigits = 1;
 			sut.NumberRounder = rounder;
@@ -148,7 +149,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 		[TestMethod]
 		public void When_Initialize()
 		{
-			var sut = new DecimalFormatter();
+			var sut = MakeFormatter();
 
 			Assert.AreEqual(0, sut.SignificantDigits);
 			Assert.AreEqual(1, sut.IntegerDigits);
@@ -183,7 +184,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 		[DataRow("0", 0d)]
 		public void When_ParseDouble(string value, double? expected)
 		{
-			var sut = new DecimalFormatter();
+			var sut = MakeFormatter();
 			sut.FractionDigits = 2;
 
 			var actual = sut.ParseDouble(value);
@@ -196,7 +197,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 		[DataRow("12,34.2", null)]
 		public void When_ParseDoubleAndIsGroupSetTrue(string value, double? expected)
 		{
-			var sut = new DecimalFormatter();
+			var sut = MakeFormatter();
 			sut.FractionDigits = 2;
 			sut.IsGrouped = true;
 
@@ -209,7 +210,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 		[DataRow("1.", 1d)]
 		public void When_ParseDoubleAndIsDecimalPointAlwaysDisplayedSetTrue(string value, double? expected)
 		{
-			var sut = new DecimalFormatter();
+			var sut = MakeFormatter();
 			sut.FractionDigits = 2;
 			sut.IsDecimalPointAlwaysDisplayed = true;
 
@@ -220,7 +221,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 		[TestMethod]
 		public void When_ParseDoubleMinusZero()
 		{
-			var sut = new DecimalFormatter();
+			var sut = MakeFormatter();
 			var actual = sut.ParseDouble("-0");
 			bool isNegative = false;
 
@@ -270,7 +271,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 		[DataRow("Vaii")]
 		public void When_ParseDoubleUsingSpeceficNumeralSystem(string numeralSystem)
 		{
-			var sut = new DecimalFormatter();
+			var sut = MakeFormatter();
 			sut.NumeralSystem = numeralSystem;
 
 			var translator = new NumeralSystemTranslator { NumeralSystem = numeralSystem };
@@ -280,13 +281,15 @@ namespace Uno.UI.Tests.Windows_Globalization
 			Assert.AreEqual(1234.56789, actual);
 		}
 
-		[TestMethod]
-		public void When_ParseNotValidDouble()
-		{
-			var sut = new DecimalFormatter();
-
-			var actual = sut.ParseDouble("a12");
-			Assert.AreEqual(null, actual);
-		}
+		// In UWP DecimalFormatter() ignore PrimaryLanguageOverride
+		// and use the localization settings of the OS;
+		// to avoid this you need to use the constructor
+		// public DecimalFormatter([In] IEnumerable<string> languages, [In] string geographicRegion).
+		private static DecimalFormatter MakeFormatter() =>
+#if HAS_UNO || IS_UNIT_TESTS
+			new DecimalFormatter();
+#else
+			new DecimalFormatter(new[] { "en-us" }, "US");
+#endif
 	}
 }

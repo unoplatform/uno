@@ -6,10 +6,15 @@ using Uno;
 using Uno.Foundation;
 using Uno.Foundation.Logging;
 using Uno.UI;
+using Uno.UI.Xaml;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+
+#if NET7_0_OR_GREATER
+using System.Runtime.InteropServices.JavaScript;
+#endif
 
 namespace Windows.UI.Xaml.Input
 {
@@ -104,13 +109,15 @@ namespace Windows.UI.Xaml.Input
 			}
 
 			_isCallingFocusNative = true;
-			var command = $"Uno.UI.WindowManager.current.focusView({element.HtmlId});";
-			WebAssemblyRuntime.InvokeJS(command);
+			WindowManagerInterop.FocusView(element.HtmlId);
 			_isCallingFocusNative = false;
 
 			return true;
 		}
 
+#if NET7_0_OR_GREATER
+		[JSExport]
+#endif
 		public static void ReceiveFocusNative(int handle)
 		{
 			if (_isCallingFocusNative)

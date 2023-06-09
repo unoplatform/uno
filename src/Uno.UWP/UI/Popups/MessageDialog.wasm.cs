@@ -9,6 +9,10 @@ using Uno.Helpers;
 using Windows.Foundation;
 using Windows.UI.Core;
 
+#if NET7_0_OR_GREATER
+using NativeMethods = __Windows.UI.Popups.MessageDialog.NativeMethods;
+#endif
+
 namespace Windows.UI.Popups;
 
 public partial class MessageDialog
@@ -19,8 +23,12 @@ public partial class MessageDialog
 	{
 		VisualTreeHelperProxy.CloseAllFlyouts();
 
+#if NET7_0_OR_GREATER
+		NativeMethods.Alert(Content);
+#else
 		var command = $"Uno.UI.WindowManager.current.alert(\"{Uno.Foundation.WebAssemblyRuntime.EscapeJs(Content)}\");";
 		Uno.Foundation.WebAssemblyRuntime.InvokeJS(command);
+#endif
 
 		return AsyncOperation.FromTask<IUICommand>(
 			ct => Task.FromResult<IUICommand>(new UICommand("OK")) // TODO: Localize (PBI 28711)

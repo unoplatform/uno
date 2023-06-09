@@ -5,42 +5,63 @@ using Uno.Extensions;
 using Uno.Foundation;
 using Uno.Foundation.Logging;
 
-namespace Uno.Helpers.Theming
-{
-	internal static partial class SystemThemeHelper
-	{
-		private const string BaseUIXamlNamespace =
-#if HAS_UNO_WINUI
-			"Microsoft.UI.Xaml";
-#else
-			"Windows.UI.Xaml";
+#if NET7_0_OR_GREATER
+using System.Runtime.InteropServices.JavaScript;
+
+using NativeMethods = __Uno.Helpers.Theming.SystemThemeHelper.NativeMethods;
 #endif
 
-		private static SystemTheme GetSystemTheme()
-		{
-			var serializedTheme = WebAssemblyRuntime.InvokeJS(BaseUIXamlNamespace + ".Application.getDefaultSystemTheme()");
+namespace Uno.Helpers.Theming;
 
-			if (serializedTheme != null)
+internal static partial class SystemThemeHelper
+{
+	private static SystemTheme GetSystemTheme()
+	{
+#if NET7_0_OR_GREATER
+		var serializedTheme = NativeMethods.GetSystemTheme();
+#else
+		var serializedTheme = WebAssemblyRuntime.InvokeJS("Uno.Helpers.Theming.SystemThemeHelper.getSystemTheme()");
+#endif
+
+		if (serializedTheme != null)
+		{
+			if (Enum.TryParse(serializedTheme, true, out SystemTheme theme))
 			{
-				if (Enum.TryParse(serializedTheme, out SystemTheme theme))
+				if (typeof(SystemThemeHelper).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Information))
 				{
-					if (typeof(SystemThemeHelper).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Information))
-					{
-						typeof(SystemThemeHelper).Log().Info("Setting OS preferred theme: " + theme);
-					}
-					return theme;
+					typeof(SystemThemeHelper).Log().Info("Setting OS preferred theme: " + theme);
 				}
-				else
-				{
-					throw new InvalidOperationException($"{serializedTheme} theme is not a supported OS theme");
-				}
+				return theme;
 			}
-			//OS has no preference or API not implemented, use light as default
-			if (typeof(SystemThemeHelper).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Information))
+			else
 			{
-				typeof(SystemThemeHelper).Log().Info("No preferred theme, using Light instead");
+				throw new InvalidOperationException($"{serializedTheme} theme is not a supported OS theme");
 			}
-			return SystemTheme.Light;
 		}
+
+		//OS has no preference or API not implemented, use light as default
+		if (typeof(SystemThemeHelper).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Information))
+		{
+			typeof(SystemThemeHelper).Log().Info("No preferred theme, using Light instead");
+		}
+		return SystemTheme.Light;
+	}
+
+	static partial void ObserveThemeChangesPlatform()
+	{
+#if NET7_0_OR_GREATER
+		NativeMethods.ObserveSystemTheme();
+#else
+		WebAssemblyRuntime.InvokeJS("Uno.Helpers.Theming.SystemThemeHelper.observeSystemTheme()");
+#endif
+	}
+
+#if NET7_0_OR_GREATER
+	[JSExport]
+#endif
+	public static int DispatchSystemThemeChange()
+	{
+		RefreshSystemTheme();
+		return 0;
 	}
 }

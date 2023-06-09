@@ -19,8 +19,9 @@ namespace Windows.UI.Composition
 
 		public SKImage? Image { get => _image; }
 
-		internal void LoadFromBytes(byte[] image)
+		internal SkiaCompositionSurface(SKImage image)
 		{
+			_image = image;
 		}
 
 		internal (bool success, object nativeResult) LoadFromStream(int? targetWidth, int? targetHeight, Stream imageStream)

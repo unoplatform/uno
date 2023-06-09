@@ -27,6 +27,7 @@ using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml;
+using Uno.UI.Xaml.Core;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
@@ -79,11 +80,7 @@ namespace Windows.UI.Xaml
 #if UNO_HAS_ENHANCED_HIT_TEST_PROPERTY
 			HitTestVisibilityProperty.GetMetadata(uiElement).MergePropertyChangedCallback(ClearPointersStateIfNeeded);
 #endif
-
-			InitializePointersStaticPartial();
 		}
-
-		static partial void InitializePointersStaticPartial();
 
 		#region ManipulationMode (DP)
 		public static DependencyProperty ManipulationModeProperty { get; } = DependencyProperty.Register(
@@ -216,27 +213,58 @@ namespace Windows.UI.Xaml
 
 			if (sender is UIElement elt && elt.GetHitTestVisibility() == HitTestability.Collapsed)
 			{
-				elt.Release(PointerCaptureKind.Any);
-				elt.ClearPressed();
-				elt.SetOver(null, false, ctx: BubblingContext.NoBubbling);
-				elt.ClearDragOver();
+				_currentPointerEventDispatch.VisualTreeAltered = true;
+				elt.ClearPointerState();
 			}
 		};
 
 		private static readonly RoutedEventHandler ClearPointersStateOnUnload = (object sender, RoutedEventArgs args) =>
 		{
-			if (sender is UIElement elt)
-			{
-				elt.Release(PointerCaptureKind.Any);
-				elt.ClearPressed();
-				elt.SetOver(null, false, ctx: BubblingContext.NoBubbling);
-				elt.ClearDragOver();
-			}
+			_currentPointerEventDispatch.VisualTreeAltered = true;
+			(sender as UIElement)?.ClearPointerState();
 		};
 
+		private partial void ClearPointerStateOnRecycle()
+		{
+			_currentPointerEventDispatch.VisualTreeAltered = true;
+			ClearPointerState();
+		}
+
+		internal void ClearPointerState()
+		{
+			Release(PointerCaptureKind.Any);
+			ClearPressed();
+			SetOver(null, false, ctx: BubblingContext.NoBubbling);
+			ClearDragOver();
+		}
+
+		[ThreadStatic]
+		private static PointerEventDispatchResult _currentPointerEventDispatch;
+
+		internal static void BeginPointerEventDispatch()
+			=> _currentPointerEventDispatch = new();
+
+		internal static PointerEventDispatchResult EndPointerEventDispatch()
+			=> _currentPointerEventDispatch; // No need to clean it right now, we can safely wait for the next sequence to do it.
+
+		internal struct PointerEventDispatchResult
+		{
+			/// <summary>
+			/// Indicates that the visual tree has been modified in a way that the input manager must perform a complete hit-testing sequence before dispatching a new event.
+			/// </summary>
+			/// <remarks>
+			/// This is designed for the case where for a single native pointer event, we are dispatching multiple managed events (e.g. managed Enter/Exit when we get only a native Move)
+			/// for all other cases **a full hit test must be performed**.
+			/// This means that we must not "capture"/cache the current top-most-element (a.k.a. OriginalSource) and try to update it on the next event
+			/// as this flag does not take into consideration RenderTransform and other layout modification that does not alter the state of the pointer.
+			/// </remarks>
+			/// <remarks>This is used only for managed dispatch.</remarks>
+			public bool VisualTreeAltered { get; set; }
+		}
+
 		/// <summary>
-		/// Indicates if this element or one of its child might be target pointer pointer events.
-		/// Be aware this doesn't means that the element itself can be actually touched by user,
+		/// Indicates if this element or one of its children might be target pointer events.
+		/// Be aware this doesn't means that the element itself can be actually touched by the user,
 		/// but only that pointer events can be raised on this element.
 		/// I.e. this element is NOT <see cref="HitTestability.Collapsed"/>.
 		/// </summary>
@@ -1267,7 +1295,7 @@ namespace Windows.UI.Xaml
 		/// </remarks>
 		internal bool IsPressed(Pointer pointer) => _pressedPointers.Contains(pointer.PointerId);
 
-		private bool IsPressed(uint pointerId) => _pressedPointers.Contains(pointerId);
+		internal bool IsPressed(uint pointerId) => _pressedPointers.Contains(pointerId);
 
 		private bool SetPressed(PointerRoutedEventArgs args, bool isPressed, BubblingContext ctx)
 		{
@@ -1321,7 +1349,13 @@ namespace Windows.UI.Xaml
 		 * - The PointersCapture property remains `null` until a pointer is captured
 		 */
 
-		private List<Pointer> _localExplicitCaptures;
+		/// <summary>
+		/// DO NOT USE
+		/// This is the backing field of <see cref="PointerCaptures"/>.
+		/// It's internal to be accessible to the <see cref="PointerCapture"/> and must not be used directly by any other code!
+		/// Use dedicated APIs like <see cref="CapturePointer(Pointer)"/>, <see cref="ReleasePointerCapture(Pointer)"/> and <see cref="IsCaptured(Pointer)"/> instead.
+		/// </summary>
+		internal List<Pointer> PointerCapturesBackingField;
 
 		#region Capture public (and internal) API ==> This manages only Explicit captures
 		public static DependencyProperty PointerCapturesProperty { get; } = DependencyProperty.Register(
@@ -1336,9 +1370,9 @@ namespace Windows.UI.Xaml
 		/// Indicates if this UIElement has any active ** EXPLICIT ** pointer capture.
 		/// </summary>
 #if __ANDROID__
-		internal new bool HasPointerCapture => (_localExplicitCaptures?.Count ?? 0) != 0;
+		internal new bool HasPointerCapture => (PointerCapturesBackingField?.Count ?? 0) != 0;
 #else
-		internal bool HasPointerCapture => (_localExplicitCaptures?.Count ?? 0) != 0;
+		internal bool HasPointerCapture => (PointerCapturesBackingField?.Count ?? 0) != 0;
 #endif
 
 		internal bool IsCaptured(Pointer pointer)
@@ -1403,9 +1437,6 @@ namespace Windows.UI.Xaml
 		}
 		#endregion
 
-		partial void CapturePointerNative(Pointer pointer);
-		partial void ReleasePointerNative(Pointer pointer);
-
 		private bool ValidateAndUpdateCapture(PointerRoutedEventArgs args)
 			=> ValidateAndUpdateCapture(args, IsOver(args.Pointer));
 
@@ -1454,10 +1485,10 @@ namespace Windows.UI.Xaml
 
 		private PointerCaptureResult Capture(Pointer pointer, PointerCaptureKind kind, PointerRoutedEventArgs relatedArgs)
 		{
-			if (_localExplicitCaptures == null)
+			if (PointerCapturesBackingField == null)
 			{
-				_localExplicitCaptures = new List<Pointer>();
-				this.SetValue(PointerCapturesProperty, _localExplicitCaptures); // Note: On UWP this is done only on first capture (like here)
+				PointerCapturesBackingField = new List<Pointer>();
+				this.SetValue(PointerCapturesProperty, PointerCapturesBackingField); // Note: On UWP this is done only on first capture (like here)
 			}
 
 			return PointerCapture.GetOrCreate(pointer).TryAddTarget(this, kind, relatedArgs);

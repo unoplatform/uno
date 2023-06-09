@@ -40,3 +40,6 @@ using Android.App;
 [assembly: UsesPermission("android.permission.MANAGE_EXTERNAL_STORAGE")]
 [assembly: UsesPermission("android.permission.MANAGE_MEDIA")]
 [assembly: UsesPermission("android.permission.USE_FULL_SCREEN_INTENT")]
+[assembly: UsesPermission("android.permission.WRITE_EXTERNAL_STORAGE")]
+[assembly: UsesPermission("android.permission.CAMERA")]
+[assembly: UsesPermission("android.permission.RECORD_AUDIO")]

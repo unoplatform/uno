@@ -17,6 +17,7 @@ namespace Windows.UI.Xaml.Documents
 	{
 		private readonly List<RenderLine> _renderLines = new();
 
+		private bool _invalidationPending;
 		private double _lastMeasuredWidth;
 		private Size _lastDesiredSize;
 		private Size _lastArrangedSize;
@@ -26,10 +27,14 @@ namespace Windows.UI.Xaml.Documents
 		/// </summary>
 		internal Size Measure(Size availableSize)
 		{
-			if (availableSize.Width <= _lastMeasuredWidth && availableSize.Width >= _lastDesiredSize.Width)
+			if (!_invalidationPending &&
+				availableSize.Width <= _lastMeasuredWidth &&
+				availableSize.Width >= _lastDesiredSize.Width)
 			{
 				return _lastDesiredSize;
 			}
+
+			_invalidationPending = false;
 
 			_lastMeasuredWidth = availableSize.Width;
 
@@ -51,7 +56,7 @@ namespace Windows.UI.Xaml.Documents
 			float x = 0;
 			float height = 0;
 
-			foreach (var inline in _collection.SelectMany(InlineExtensions.Enumerate))
+			foreach (var inline in PreorderTree)
 			{
 				if (inline is LineBreak lineBreak)
 				{
@@ -264,7 +269,9 @@ namespace Windows.UI.Xaml.Documents
 		{
 			_lastArrangedSize = finalSize;
 
-			if (finalSize.Width <= _lastMeasuredWidth && finalSize.Width >= _lastDesiredSize.Width)
+			if (!_invalidationPending &&
+				finalSize.Width <= _lastMeasuredWidth &&
+				finalSize.Width >= _lastDesiredSize.Width)
 			{
 				return _lastDesiredSize;
 			}
@@ -274,9 +281,11 @@ namespace Windows.UI.Xaml.Documents
 
 		internal void InvalidateMeasure()
 		{
-			_lastMeasuredWidth = 0;
-			_lastDesiredSize = new();
-			_lastArrangedSize = new();
+			// Mark invalidation as pending, but temporarily keep
+			// the least last measured width, last desired size, and
+			// last arranged size, so that asynchronous rendering can still
+			// use them to render properly.
+			_invalidationPending = true;
 		}
 
 		/// <summary>
@@ -314,9 +323,17 @@ namespace Windows.UI.Xaml.Documents
 					}
 
 					var segment = segmentSpan.Segment;
-					var paint = segment.Inline.Paint;
+					var inline = segment.Inline;
+					var fontInfo = inline.FontInfo;
+					var paint = inline.Paint;
 
-					if (segment.Inline.Foreground is SolidColorBrush scb)
+					if (segment.FallbackFont is FontDetails fallback)
+					{
+						paint = segment.Paint!;
+						fontInfo = fallback;
+					}
+
+					if (inline.Foreground is SolidColorBrush scb)
 					{
 						paint.Color = new SKColor(
 							red: scb.Color.R,
@@ -325,12 +342,12 @@ namespace Windows.UI.Xaml.Documents
 							alpha: (byte)(scb.Color.A * scb.Opacity * compositor.CurrentOpacity));
 					}
 
-					var decorations = segment.Inline.TextDecorations;
+					var decorations = inline.TextDecorations;
 					const TextDecorations allDecorations = TextDecorations.Underline | TextDecorations.Strikethrough;
 
 					if ((decorations & allDecorations) != 0)
 					{
-						var metrics = paint.FontMetrics;
+						var metrics = fontInfo.SKFontMetrics;
 						float width = s == line.RenderOrderedSegmentSpans.Count - 1 ? segmentSpan.WidthWithoutTrailingSpaces : segmentSpan.Width;
 
 						if ((decorations & TextDecorations.Underline) != 0)
@@ -343,13 +360,13 @@ namespace Windows.UI.Xaml.Documents
 						if ((decorations & TextDecorations.Strikethrough) != 0)
 						{
 							// TODO: what should default thickness/position be if metrics does not contain it?
-							float yPos = y + baselineOffsetY + (metrics.StrikeoutPosition ?? paint.TextSize / -2);
+							float yPos = y + baselineOffsetY + (metrics.StrikeoutPosition ?? fontInfo.SKFontSize / -2);
 							DrawDecoration(canvas, x, yPos, width, metrics.StrikeoutThickness ?? 1, paint);
 						}
 					}
 
 					using var textBlobBuilder = new SKTextBlobBuilder();
-					var run = textBlobBuilder.AllocatePositionedRun(paint.ToFont(), segmentSpan.GlyphsLength);
+					var run = textBlobBuilder.AllocatePositionedRun(fontInfo.SKFont, segmentSpan.GlyphsLength);
 					var glyphs = run.GetGlyphSpan();
 					var positions = run.GetPositionSpan();
 

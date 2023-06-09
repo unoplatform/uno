@@ -15,6 +15,7 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Input;
 
+using PointerIdentifierPool = Windows.Devices.Input.PointerIdentifierPool; // internal type (should be in Uno namespace)
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
 #else
@@ -147,12 +148,10 @@ namespace Uno.UI.Xaml.Core
 
 #if __WASM__
 		private static void ProcessPointerCancelledWasm(PointerRoutedEventArgs args)
-		{
-			RemoveActivePointer(args.Pointer.UniqueId);
-		}
+			=> PointerIdentifierPool.ReleaseManaged(args.Pointer.UniqueId);
 #endif
 
-		internal static void ProcessPointerUp(PointerRoutedEventArgs args, bool isAfterHandledUp = false)
+		internal void ProcessPointerUp(PointerRoutedEventArgs args, bool isAfterHandledUp = false)
 		{
 			// We don't want handled events raised on RootVisual,
 			// instead we wait for the element that handled it to directly forward it to us,
@@ -167,7 +166,8 @@ namespace Uno.UI.Xaml.Core
 			}
 
 #if __ANDROID__ || __IOS__ // Not needed on WASM as we do have native support of the exit event
-			// On Android and iOS we use the RootVisual to raise the UWP only exit event (in managed only)
+			// On iOS we use the RootVisual to raise the UWP-only exit event (in managed only)
+			// Note: This is useless for managed pointers where the Exit is raised properly
 
 			if (args.Pointer.PointerDeviceType is PointerDeviceType.Touch
 				&& args.OriginalSource is UIElement src)
@@ -183,11 +183,14 @@ namespace Uno.UI.Xaml.Core
 			// Uno specific: To ensure focus is properly lost when clicking "outside" app's content,
 			// we set focus here. In case UWP, focus is set to the root ScrollViewer instead,
 			// but Uno does not have it on all targets yet.
+			var focusedElement = XamlRoot is null ?
+				FocusManager.GetFocusedElement() :
+				FocusManager.GetFocusedElement(XamlRoot);
 			if (!isHandled // so isAfterHandledUp is false!
 				&& _canUnFocusOnNextLeftPointerRelease
 				&& args.GetCurrentPoint(null).Properties.PointerUpdateKind is PointerUpdateKind.LeftButtonReleased
 				&& !PointerCapture.TryGet(args.Pointer, out _)
-				&& FocusManager.GetFocusedElement() is UIElement uiElement)
+				&& focusedElement is UIElement uiElement)
 			{
 				uiElement.Unfocus();
 				args.Handled = true;
@@ -196,7 +199,7 @@ namespace Uno.UI.Xaml.Core
 			ReleaseCaptures(args.Reset(canBubbleNatively: false));
 
 #if __WASM__
-			RemoveActivePointer(args.Pointer.UniqueId);
+			PointerIdentifierPool.ReleaseManaged(args.Pointer.UniqueId);
 #endif
 		}
 

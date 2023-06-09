@@ -47,12 +47,20 @@ using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
 using LaunchActivatedEventArgs = Windows.ApplicationModel.Activation.LaunchActivatedEventArgs;
 #endif
 
+#if UNO_ISLANDS
+using Windows.UI.Xaml.Markup;
+using Uno.UI.XamlHost;
+#endif
+
 namespace SamplesApp
 {
 	/// <summary>
 	/// Provides application-specific behavior to supplement the default Application class.
 	/// </summary>
 	sealed public partial class App : Application
+#if UNO_ISLANDS
+	, IXamlMetadataProvider, IXamlMetadataContainer, IDisposable
+#endif
 	{
 #if HAS_UNO
 		private static Uno.Foundation.Logging.Logger _log;
@@ -185,15 +193,17 @@ namespace SamplesApp
 			return false;
 		}
 
-		private static
+		private static Task<bool> HandleSkiaRuntimeTests(LaunchActivatedEventArgs e) => HandleSkiaRuntimeTests(e.Arguments);
+
+		public static
 #if __SKIA__ || __MACOS__
 			async
 #endif
-			Task<bool> HandleSkiaRuntimeTests(LaunchActivatedEventArgs e)
+			Task<bool> HandleSkiaRuntimeTests(string args)
 		{
 #if __SKIA__ || __MACOS__
 			var runRuntimeTestsResultsParam =
-			e.Arguments.Split(';').FirstOrDefault(a => a.StartsWith("--runtime-tests"));
+				args.Split(';').FirstOrDefault(a => a.StartsWith("--runtime-tests"));
 
 			var runtimeTestResultFilePath = runRuntimeTestsResultsParam?.Split('=').LastOrDefault();
 
@@ -286,6 +296,16 @@ namespace SamplesApp
 				}
 			}
 		}
+
+#if !HAS_UNO_WINUI
+		protected override void OnWindowCreated(global::Windows.UI.Xaml.WindowCreatedEventArgs args)
+		{
+			if (Current is null)
+			{
+				throw new InvalidOperationException("The Window should be created later in the application lifecycle.");
+			}
+		}
+#endif
 
 		private void InitializeFrame(string arguments = null)
 		{
@@ -421,7 +441,6 @@ namespace SamplesApp
 				builder.AddConsole();
 #endif
 
-
 #if !DEBUG
 				// Exclude logs below this level
 				builder.SetMinimumLevel(LogLevel.Information);
@@ -433,6 +452,8 @@ namespace SamplesApp
 				// Runtime Tests control logging
 				builder.AddFilter("Uno.UI.Samples.Tests", LogLevel.Information);
 
+				builder.AddFilter("Uno.UI.Media", LogLevel.Information);
+
 				builder.AddFilter("Uno", LogLevel.Warning);
 				builder.AddFilter("Windows", LogLevel.Warning);
 				builder.AddFilter("Microsoft", LogLevel.Warning);
@@ -442,6 +463,7 @@ namespace SamplesApp
 
 				// Display Skia related information
 				builder.AddFilter("Uno.UI.Runtime.Skia", LogLevel.Debug);
+				builder.AddFilter("Uno.UI.Skia", LogLevel.Debug);
 
 				// builder.AddFilter("Uno.Foundation.WebAssemblyRuntime", LogLevel.Debug );
 				// builder.AddFilter("Windows.UI.Xaml.Controls.PopupPanel", LogLevel.Debug );
@@ -508,11 +530,6 @@ namespace SamplesApp
 #endif
 #if __SKIA__
 			Uno.UI.FeatureConfiguration.ToolTip.UseToolTips = true;
-#endif
-
-#if HAS_UNO
-			// Allow template pool to work under higher memory load for CI.
-			FrameworkTemplatePool.HighMemoryThreshold = 0.9f;
 #endif
 		}
 
@@ -645,13 +662,17 @@ namespace SamplesApp
 		public void AssertIssue8641NativeOverlayInitialized()
 		{
 #if __SKIA__
+			if (Uno.UI.Xaml.Core.CoreServices.Instance.InitializationType == Uno.UI.Xaml.Core.InitializationType.IslandsOnly)
+			{
+				return;
+			}
 			// Temporarily add a TextBox to the current page's content to verify native overlay is available
 			Frame rootFrame = Windows.UI.Xaml.Window.Current.Content as Frame;
 			var textBox = new TextBox();
 			textBox.XamlRoot = rootFrame.XamlRoot;
 			var textBoxView = new TextBoxView(textBox);
-			ApiExtensibility.CreateInstance<ITextBoxViewExtension>(textBoxView, out var textBoxViewExtension);
-			Assert.IsTrue(textBoxViewExtension.IsNativeOverlayLayerInitialized);
+			ApiExtensibility.CreateInstance<IOverlayTextBoxViewExtension>(textBoxView, out var textBoxViewExtension);
+			Assert.IsTrue(textBoxViewExtension.IsOverlayLayerInitialized(rootFrame.XamlRoot));
 #endif
 		}
 	}

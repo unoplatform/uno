@@ -7,20 +7,7 @@ namespace Windows.UI.Xaml.Controls
 	#endif
 	public  partial class WebView 
 	{
-		#if false || false || NET461 || false || false || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("NET461", "__NETSTD_REFERENCE__")]
-		public  global::System.Uri Source
-		{
-			get
-			{
-				return (global::System.Uri)this.GetValue(SourceProperty);
-			}
-			set
-			{
-				this.SetValue(SourceProperty, value);
-			}
-		}
-		#endif
+		// Skipping already declared property Source
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::System.Collections.Generic.IList<global::System.Uri> AllowedScriptNotifyUris
@@ -59,36 +46,9 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if false || false || NET461 || false || false || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("NET461", "__NETSTD_REFERENCE__")]
-		public  bool CanGoBack
-		{
-			get
-			{
-				return (bool)this.GetValue(CanGoBackProperty);
-			}
-		}
-		#endif
-		#if false || false || NET461 || false || false || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("NET461", "__NETSTD_REFERENCE__")]
-		public  bool CanGoForward
-		{
-			get
-			{
-				return (bool)this.GetValue(CanGoForwardProperty);
-			}
-		}
-		#endif
-		#if false || false || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public  string DocumentTitle
-		{
-			get
-			{
-				return (string)this.GetValue(DocumentTitleProperty);
-			}
-		}
-		#endif
+		// Skipping already declared property CanGoBack
+		// Skipping already declared property CanGoForward
+		// Skipping already declared property DocumentTitle
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool ContainsFullScreenElement
@@ -139,7 +99,7 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(AllowedScriptNotifyUris), typeof(global::System.Collections.Generic.IList<global::System.Uri>), 
 			typeof(global::Windows.UI.Xaml.Controls.WebView), 
-			new FrameworkPropertyMetadata(default(global::System.Collections.Generic.IList<global::System.Uri>)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::System.Collections.Generic.IList<global::System.Uri>)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -157,55 +117,27 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(DataTransferPackage), typeof(global::Windows.ApplicationModel.DataTransfer.DataPackage), 
 			typeof(global::Windows.UI.Xaml.Controls.WebView), 
-			new FrameworkPropertyMetadata(default(global::Windows.ApplicationModel.DataTransfer.DataPackage)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.ApplicationModel.DataTransfer.DataPackage)));
 		#endif
-		#if false || false || NET461 || false || false || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("NET461", "__NETSTD_REFERENCE__")]
-		public static global::Windows.UI.Xaml.DependencyProperty SourceProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Source), typeof(global::System.Uri), 
-			typeof(global::Windows.UI.Xaml.Controls.WebView), 
-			new FrameworkPropertyMetadata(default(global::System.Uri)));
-		#endif
-		#if false || false || NET461 || false || false || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("NET461", "__NETSTD_REFERENCE__")]
-		public static global::Windows.UI.Xaml.DependencyProperty CanGoBackProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(CanGoBack), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.WebView), 
-			new FrameworkPropertyMetadata(default(bool)));
-		#endif
-		#if false || false || NET461 || false || false || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("NET461", "__NETSTD_REFERENCE__")]
-		public static global::Windows.UI.Xaml.DependencyProperty CanGoForwardProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(CanGoForward), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.WebView), 
-			new FrameworkPropertyMetadata(default(bool)));
-		#endif
+		// Skipping already declared property SourceProperty
+		// Skipping already declared property CanGoBackProperty
+		// Skipping already declared property CanGoForwardProperty
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.DependencyProperty DefaultBackgroundColorProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(DefaultBackgroundColor), typeof(global::Windows.UI.Color), 
 			typeof(global::Windows.UI.Xaml.Controls.WebView), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Color)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Color)));
 		#endif
-		#if false || false || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.UI.Xaml.DependencyProperty DocumentTitleProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(DocumentTitle), typeof(string), 
-			typeof(global::Windows.UI.Xaml.Controls.WebView), 
-			new FrameworkPropertyMetadata(default(string)));
-		#endif
+		// Skipping already declared property DocumentTitleProperty
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.DependencyProperty ContainsFullScreenElementProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(ContainsFullScreenElement), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.WebView), 
-			new FrameworkPropertyMetadata(default(bool)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -249,20 +181,8 @@ namespace Windows.UI.Xaml.Controls
 			throw new global::System.NotImplementedException("The member string WebView.InvokeScript(string scriptName, string[] arguments) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20WebView.InvokeScript%28string%20scriptName%2C%20string%5B%5D%20arguments%29");
 		}
 		#endif
-		#if false || false || NET461 || false || false || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("NET461", "__NETSTD_REFERENCE__")]
-		public  void Navigate( global::System.Uri source)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.WebView", "void WebView.Navigate(Uri source)");
-		}
-		#endif
-		#if false || false || NET461 || false || false || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("NET461", "__NETSTD_REFERENCE__")]
-		public  void NavigateToString( string text)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.WebView", "void WebView.NavigateToString(string text)");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.Controls.WebView.Navigate(System.Uri)
+		// Skipping already declared method Windows.UI.Xaml.Controls.WebView.NavigateToString(string)
 		// Forced skipping of method Windows.UI.Xaml.Controls.WebView.CanGoBack.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.WebView.CanGoForward.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.WebView.DocumentTitle.get
@@ -272,34 +192,10 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.WebView.ContentLoading.remove
 		// Forced skipping of method Windows.UI.Xaml.Controls.WebView.DOMContentLoaded.add
 		// Forced skipping of method Windows.UI.Xaml.Controls.WebView.DOMContentLoaded.remove
-		#if false || false || NET461 || false || false || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("NET461", "__NETSTD_REFERENCE__")]
-		public  void GoForward()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.WebView", "void WebView.GoForward()");
-		}
-		#endif
-		#if false || false || NET461 || false || false || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("NET461", "__NETSTD_REFERENCE__")]
-		public  void GoBack()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.WebView", "void WebView.GoBack()");
-		}
-		#endif
-		#if false || false || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public  void Refresh()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.WebView", "void WebView.Refresh()");
-		}
-		#endif
-		#if false || false || NET461 || false || false || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("NET461", "__NETSTD_REFERENCE__")]
-		public  void Stop()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.WebView", "void WebView.Stop()");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.Controls.WebView.GoForward()
+		// Skipping already declared method Windows.UI.Xaml.Controls.WebView.GoBack()
+		// Skipping already declared method Windows.UI.Xaml.Controls.WebView.Refresh()
+		// Skipping already declared method Windows.UI.Xaml.Controls.WebView.Stop()
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncAction CapturePreviewToStreamAsync( global::Windows.Storage.Streams.IRandomAccessStream stream)
@@ -307,13 +203,7 @@ namespace Windows.UI.Xaml.Controls
 			throw new global::System.NotImplementedException("The member IAsyncAction WebView.CapturePreviewToStreamAsync(IRandomAccessStream stream) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncAction%20WebView.CapturePreviewToStreamAsync%28IRandomAccessStream%20stream%29");
 		}
 		#endif
-		#if false || false || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public  global::Windows.Foundation.IAsyncOperation<string> InvokeScriptAsync( string scriptName,  global::System.Collections.Generic.IEnumerable<string> arguments)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<string> WebView.InvokeScriptAsync(string scriptName, IEnumerable<string> arguments) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3Cstring%3E%20WebView.InvokeScriptAsync%28string%20scriptName%2C%20IEnumerable%3Cstring%3E%20arguments%29");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.Controls.WebView.InvokeScriptAsync(string, System.Collections.Generic.IEnumerable<string>)
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.DataTransfer.DataPackage> CaptureSelectedContentToDataPackageAsync()
@@ -436,22 +326,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if false || false || NET461 || false || false || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("NET461", "__NETSTD_REFERENCE__")]
-		public  event global::Windows.UI.Xaml.Controls.WebViewNavigationFailedEventHandler NavigationFailed
-		{
-			[global::Uno.NotImplemented("NET461", "__NETSTD_REFERENCE__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.WebView", "event WebViewNavigationFailedEventHandler WebView.NavigationFailed");
-			}
-			[global::Uno.NotImplemented("NET461", "__NETSTD_REFERENCE__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.WebView", "event WebViewNavigationFailedEventHandler WebView.NavigationFailed");
-			}
-		}
-		#endif
+		// Skipping already declared event Windows.UI.Xaml.Controls.WebView.NavigationFailed
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  event global::Windows.UI.Xaml.Controls.NotifyEventHandler ScriptNotify
@@ -580,38 +455,8 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if false || false || NET461 || false || false || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("NET461", "__NETSTD_REFERENCE__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.Controls.WebView, global::Windows.UI.Xaml.Controls.WebViewNavigationCompletedEventArgs> NavigationCompleted
-		{
-			[global::Uno.NotImplemented("NET461", "__NETSTD_REFERENCE__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.WebView", "event TypedEventHandler<WebView, WebViewNavigationCompletedEventArgs> WebView.NavigationCompleted");
-			}
-			[global::Uno.NotImplemented("NET461", "__NETSTD_REFERENCE__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.WebView", "event TypedEventHandler<WebView, WebViewNavigationCompletedEventArgs> WebView.NavigationCompleted");
-			}
-		}
-		#endif
-		#if false || false || NET461 || false || false || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("NET461", "__NETSTD_REFERENCE__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.Controls.WebView, global::Windows.UI.Xaml.Controls.WebViewNavigationStartingEventArgs> NavigationStarting
-		{
-			[global::Uno.NotImplemented("NET461", "__NETSTD_REFERENCE__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.WebView", "event TypedEventHandler<WebView, WebViewNavigationStartingEventArgs> WebView.NavigationStarting");
-			}
-			[global::Uno.NotImplemented("NET461", "__NETSTD_REFERENCE__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.WebView", "event TypedEventHandler<WebView, WebViewNavigationStartingEventArgs> WebView.NavigationStarting");
-			}
-		}
-		#endif
+		// Skipping already declared event Windows.UI.Xaml.Controls.WebView.NavigationCompleted
+		// Skipping already declared event Windows.UI.Xaml.Controls.WebView.NavigationStarting
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.Controls.WebView, object> UnsafeContentWarningDisplaying
@@ -660,22 +505,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if false || false || NET461 || false || false || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("NET461", "__NETSTD_REFERENCE__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.Controls.WebView, global::Windows.UI.Xaml.Controls.WebViewNewWindowRequestedEventArgs> NewWindowRequested
-		{
-			[global::Uno.NotImplemented("NET461", "__NETSTD_REFERENCE__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.WebView", "event TypedEventHandler<WebView, WebViewNewWindowRequestedEventArgs> WebView.NewWindowRequested");
-			}
-			[global::Uno.NotImplemented("NET461", "__NETSTD_REFERENCE__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.WebView", "event TypedEventHandler<WebView, WebViewNewWindowRequestedEventArgs> WebView.NewWindowRequested");
-			}
-		}
-		#endif
+		// Skipping already declared event Windows.UI.Xaml.Controls.WebView.NewWindowRequested
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.Controls.WebView, global::Windows.UI.Xaml.Controls.WebViewPermissionRequestedEventArgs> PermissionRequested
@@ -692,22 +522,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if false || false || NET461 || false || false || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("NET461", "__NETSTD_REFERENCE__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.Controls.WebView, global::Windows.UI.Xaml.Controls.WebViewUnsupportedUriSchemeIdentifiedEventArgs> UnsupportedUriSchemeIdentified
-		{
-			[global::Uno.NotImplemented("NET461", "__NETSTD_REFERENCE__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.WebView", "event TypedEventHandler<WebView, WebViewUnsupportedUriSchemeIdentifiedEventArgs> WebView.UnsupportedUriSchemeIdentified");
-			}
-			[global::Uno.NotImplemented("NET461", "__NETSTD_REFERENCE__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.WebView", "event TypedEventHandler<WebView, WebViewUnsupportedUriSchemeIdentifiedEventArgs> WebView.UnsupportedUriSchemeIdentified");
-			}
-		}
-		#endif
+		// Skipping already declared event Windows.UI.Xaml.Controls.WebView.UnsupportedUriSchemeIdentified
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.Controls.WebView, global::Windows.UI.Xaml.Controls.WebViewSeparateProcessLostEventArgs> SeparateProcessLost

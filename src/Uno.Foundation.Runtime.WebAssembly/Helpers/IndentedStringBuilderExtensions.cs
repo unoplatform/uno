@@ -23,11 +23,6 @@ namespace Uno.Foundation.Runtime.WebAssembly.Helpers
 {
 	internal static class IndentedStringBuilderExtensions
 	{
-		public static IndentedStringBuilder AsIndented(this StringBuilder builder)
-		{
-			return new IndentedStringBuilder(builder);
-		}
-
 		public static void AppendLine(this IndentedStringBuilder builder, IFormatProvider formatProvider, string pattern, params object[] replacements)
 		{
 			builder.AppendFormat(formatProvider, pattern, replacements);

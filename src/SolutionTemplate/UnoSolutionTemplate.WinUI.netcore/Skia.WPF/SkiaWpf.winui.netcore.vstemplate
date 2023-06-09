@@ -22,6 +22,7 @@
 				<ProjectItem TargetFileName="MainWindow.xaml" ReplaceParameters="true">MainWindow.xaml</ProjectItem>
 				<ProjectItem TargetFileName="MainWindow.xaml.cs" ReplaceParameters="true">MainWindow.xaml.cs</ProjectItem>
 			</Folder>
+			<ProjectItem TargetFileName="app.manifest" ReplaceParameters="true">app.manifest</ProjectItem>
 		</Project>
 	</TemplateContent>
 </VSTemplate>

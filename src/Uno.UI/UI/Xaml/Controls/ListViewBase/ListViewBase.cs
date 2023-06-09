@@ -29,6 +29,7 @@ using Windows.Foundation;
 using Uno.UI;
 using Windows.UI.Xaml.Input;
 using Windows.System;
+using Uno.UI.Xaml.Input;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -41,7 +42,7 @@ namespace Windows.UI.Xaml.Controls
 		public bool RefreshOnCollectionChanged { get; set; }
 
 		internal override bool IsSingleSelection => SelectionMode == ListViewSelectionMode.Single;
-		private bool IsSelectionMultiple => SelectionMode == ListViewSelectionMode.Multiple || SelectionMode == ListViewSelectionMode.Extended;
+		internal bool IsSelectionMultiple => SelectionMode == ListViewSelectionMode.Multiple || SelectionMode == ListViewSelectionMode.Extended;
 		private bool _modifyingSelectionInternally;
 		private readonly List<object> _oldSelectedItems = new List<object>();
 
@@ -90,7 +91,10 @@ namespace Windows.UI.Xaml.Controls
 				return false;
 			}
 
-			var focusedContainer = FocusManager.GetFocusedElement() as SelectorItem;
+			var focusedElement = XamlRoot is null ?
+				FocusManager.GetFocusedElement() :
+				FocusManager.GetFocusedElement(XamlRoot);
+			var focusedContainer = focusedElement as SelectorItem;
 
 			if (args.Key == VirtualKey.Enter ||
 				args.Key == VirtualKey.Space)
@@ -127,7 +131,8 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			// If selection mode is single, moving focus also selects the item
-			if (SelectionMode == ListViewSelectionMode.Single)
+			if (SelectionMode == ListViewSelectionMode.Single &&
+				SingleSelectionFollowsFocus)
 			{
 				SelectedIndex = index;
 			}
@@ -150,7 +155,10 @@ namespace Windows.UI.Xaml.Controls
 
 		private int GetFocusedItemIndex()
 		{
-			var focusedItem = FocusManager.GetFocusedElement() as SelectorItem;
+			var focusedElement = XamlRoot is null ?
+				FocusManager.GetFocusedElement() :
+				FocusManager.GetFocusedElement(XamlRoot);
+			var focusedItem = focusedElement as SelectorItem;
 			if (focusedItem != null)
 			{
 				return IndexFromContainer(focusedItem);
@@ -573,9 +581,10 @@ namespace Windows.UI.Xaml.Controls
 					}
 
 					SaveContainersBeforeRemoveForIndexRepair(args.OldStartingIndex, args.OldItems.Count);
-					CleanUpContainers(args.OldStartingIndex, args.OldItems.Count);
+					var removedContainers = CaptureContainers(args.OldStartingIndex, args.OldItems.Count);
 					RemoveItems(args.OldStartingIndex, args.OldItems.Count, section);
 					RepairIndices();
+					CleanUpContainers(removedContainers);
 
 					break;
 				case NotifyCollectionChangedAction.Replace:
@@ -683,25 +692,42 @@ namespace Windows.UI.Xaml.Controls
 
 		private void CleanUpAllContainers()
 		{
-			if (ShouldItemsControlManageChildren) return;
+			if (ShouldItemsControlManageChildren)
+			{
+				return;
+			}
 
 			foreach (var container in MaterializedContainers)
 			{
 				CleanUpContainer(container);
 			}
+			ItemsPanelRoot?.Children?.Clear();
 		}
 
-		private void CleanUpContainers(int startingIndex, int length)
+		private ICollection<DependencyObject> CaptureContainers(int startingIndex, int length)
 		{
-			if (ShouldItemsControlManageChildren) return;
+			if (ShouldItemsControlManageChildren)
+			{
+				return Array.Empty<DependencyObject>();
+			}
 
+			var containers = new List<DependencyObject>(length);
 			foreach (var container in MaterializedContainers)
 			{
 				var index = (int)container.GetValue(ItemsControl.IndexForItemContainerProperty);
 				if (startingIndex <= index && index < startingIndex + length)
 				{
-					CleanUpContainer(container);
+					containers.Add(container);
 				}
+			}
+			return containers;
+		}
+
+		private void CleanUpContainers(ICollection<DependencyObject> containersToCleanup)
+		{
+			foreach (var container in containersToCleanup)
+			{
+				CleanUpContainer(container);
 			}
 		}
 

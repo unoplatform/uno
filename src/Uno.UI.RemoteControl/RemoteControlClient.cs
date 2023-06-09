@@ -25,11 +25,20 @@ namespace Uno.UI.RemoteControl
 	{
 		public static RemoteControlClient? Instance { get; private set; }
 
+		public delegate void RemoteControlFrameReceivedEventHandler(object sender, ReceivedFrameEventArgs args);
+
+		public event RemoteControlFrameReceivedEventHandler? FrameReceived;
+
+		public delegate void RemoteControlClientEventEventHandler(object sender, ClientEventEventArgs args);
+
+		public event RemoteControlClientEventEventHandler? ClientEvent;
+
 		public Type AppType { get; }
 
 		private readonly (string endpoint, int port)[]? _serverAddresses;
 		private WebSocket? _webSocket;
 		private Dictionary<string, IRemoteControlProcessor> _processors = new Dictionary<string, IRemoteControlProcessor>();
+		private List<IRemoteControlPreProcessor> _preprocessors = new List<IRemoteControlPreProcessor>();
 		private Timer? _keepAliveTimer;
 
 		private RemoteControlClient(Type appType)
@@ -70,6 +79,11 @@ namespace Uno.UI.RemoteControl
 		private void RegisterProcessor(IRemoteControlProcessor processor)
 		{
 			_processors[processor.Scope] = processor;
+		}
+
+		public void RegisterPreProcessor(IRemoteControlPreProcessor preprocessor)
+		{
+			_preprocessors.Add(preprocessor);
 		}
 
 		private async Task StartConnection()
@@ -288,7 +302,21 @@ namespace Uno.UI.RemoteControl
 							this.Log().Trace($"Received frame [{frame.Scope}/{frame.Name}]");
 						}
 
-						await processor.ProcessFrame(frame);
+						bool skipProcessing = false;
+
+						foreach (var preProcessor in _preprocessors)
+						{
+							if (await preProcessor.SkipProcessingFrame(frame))
+							{
+								skipProcessing = true;
+								break;
+							}
+						}
+
+						if (!skipProcessing)
+						{
+							await processor.ProcessFrame(frame);
+						}
 					}
 					else
 					{
@@ -298,6 +326,8 @@ namespace Uno.UI.RemoteControl
 						}
 					}
 				}
+
+				FrameReceived?.Invoke(this, new ReceivedFrameEventArgs(frame));
 			}
 		}
 
@@ -312,7 +342,7 @@ namespace Uno.UI.RemoteControl
 				{
 					if (this.Log().IsEnabled(LogLevel.Trace))
 					{
-						this.Log().Trace($"Sending Keepalive frame");
+						this.Log().Trace($"Sending Keepalive frame from client");
 					}
 
 					_ = SendMessage(keepAlive);
@@ -358,6 +388,11 @@ namespace Uno.UI.RemoteControl
 
 		public async Task SendMessage(IMessage message)
 		{
+			if (this.Log().IsEnabled(LogLevel.Error))
+			{
+				this.Log().LogError($"Sending message: {message} {message.Name}");
+			}
+
 			if (_webSocket != null)
 			{
 				await WebSocketHelper.SendFrame(
@@ -377,6 +412,11 @@ namespace Uno.UI.RemoteControl
 					this.Log().LogError("Unable send message, no connection available");
 				}
 			}
+		}
+
+		internal void NotifyOfEvent(string eventName, string eventDetails)
+		{
+			ClientEvent?.Invoke(this, new ClientEventEventArgs(eventName, eventDetails));
 		}
 	}
 }

@@ -48,6 +48,37 @@
               "branch": "master"
             },
             "_gitUrlPattern": "github"
+        },
+        "fileMetadata": {
+          "_gitContribute": {
+            "articles/external/uno.wasm.bootstrap/**.md": {
+              "branch": "main"
+            },
+            "articles/external/uno.themes/**.md": {
+              "branch": "master"
+            },
+            "articles/external/uno.toolkit.ui/**.md": {
+              "branch": "main"
+            },
+            "articles/external/uno.check/**.md": {
+              "branch": "main"
+            },
+            "articles/external/uno.xamlmerge.task/**.md": {
+              "branch": "main"
+            },
+            "articles/external/figma-docs/**.md": {
+              "branch": "main"
+            },
+            "articles/external/uno.resizetizer/**.md": {
+              "branch": "main"
+            },
+            "articles/external/uno.uitest/**.md": {
+              "branch": "master"
+            },
+            "articles/external/uno.extensions/**.md": {
+              "branch": "main"
+            }
+          }
         }
     }
 }

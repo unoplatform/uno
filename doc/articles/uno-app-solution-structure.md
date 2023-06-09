@@ -1,3 +1,7 @@
+---
+uid: Uno.Development.AppStructure
+---
+
 # Uno Platform app solution structure
 
 This guide briefly explains the structure of an app created with the default [Uno Platform app template](https://marketplace.visualstudio.com/items?itemName=unoplatform.uno-platform-addin-2022). It's particularly aimed at developers who have not worked with cross-platform codebases before. 

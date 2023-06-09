@@ -2,28 +2,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml
 {
-	#if false
+	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class UIElementWeakCollection : global::System.Collections.Generic.IList<global::Windows.UI.Xaml.UIElement>,global::System.Collections.Generic.IEnumerable<global::Windows.UI.Xaml.UIElement>
 	{
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  uint Size
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint UIElementWeakCollection.Size is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20UIElementWeakCollection.Size");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public UIElementWeakCollection() 
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.UIElementWeakCollection", "UIElementWeakCollection.UIElementWeakCollection()");
-		}
-		#endif
+		// Skipping already declared property Size
+		// Skipping already declared method Windows.UI.Xaml.UIElementWeakCollection.UIElementWeakCollection()
 		// Forced skipping of method Windows.UI.Xaml.UIElementWeakCollection.UIElementWeakCollection()
 		// Forced skipping of method Windows.UI.Xaml.UIElementWeakCollection.GetAt(uint)
 		// Forced skipping of method Windows.UI.Xaml.UIElementWeakCollection.Size.get
@@ -39,122 +24,11 @@ namespace Windows.UI.Xaml
 		// Forced skipping of method Windows.UI.Xaml.UIElementWeakCollection.ReplaceAll(Windows.UI.Xaml.UIElement[])
 		// Forced skipping of method Windows.UI.Xaml.UIElementWeakCollection.First()
 		// Processing: System.Collections.Generic.IList<Windows.UI.Xaml.UIElement>
-		#if false
-		// DeclaringType: System.Collections.Generic.IList<Windows.UI.Xaml.UIElement>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public int IndexOf( global::Windows.UI.Xaml.UIElement item)
-		{
-			throw new global::System.NotSupportedException();
-		}
-		#endif
-		#if false
-		// DeclaringType: System.Collections.Generic.IList<Windows.UI.Xaml.UIElement>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void Insert( int index,  global::Windows.UI.Xaml.UIElement item)
-		{
-			throw new global::System.NotSupportedException();
-		}
-		#endif
-		#if false
-		// DeclaringType: System.Collections.Generic.IList<Windows.UI.Xaml.UIElement>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void RemoveAt( int index)
-		{
-			throw new global::System.NotSupportedException();
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.UI.Xaml.UIElement this[int index]
-		{
-			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-			set
-			{
-				throw new global::System.NotSupportedException();
-			}
-		}
-		#endif
+		// Skipping already implement System.Collections.Generic.IList<Windows.UI.Xaml.UIElement>.this[int]
 		// Processing: System.Collections.Generic.ICollection<Windows.UI.Xaml.UIElement>
-		#if false
-		// DeclaringType: System.Collections.Generic.ICollection<Windows.UI.Xaml.UIElement>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void Add( global::Windows.UI.Xaml.UIElement item)
-		{
-			throw new global::System.NotSupportedException();
-		}
-		#endif
-		#if false
-		// DeclaringType: System.Collections.Generic.ICollection<Windows.UI.Xaml.UIElement>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void Clear()
-		{
-			throw new global::System.NotSupportedException();
-		}
-		#endif
-		#if false
-		// DeclaringType: System.Collections.Generic.ICollection<Windows.UI.Xaml.UIElement>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool Contains( global::Windows.UI.Xaml.UIElement item)
-		{
-			throw new global::System.NotSupportedException();
-		}
-		#endif
-		#if false
-		// DeclaringType: System.Collections.Generic.ICollection<Windows.UI.Xaml.UIElement>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void CopyTo( global::Windows.UI.Xaml.UIElement[] array,  int arrayIndex)
-		{
-			throw new global::System.NotSupportedException();
-		}
-		#endif
-		#if false
-		// DeclaringType: System.Collections.Generic.ICollection<Windows.UI.Xaml.UIElement>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool Remove( global::Windows.UI.Xaml.UIElement item)
-		{
-			throw new global::System.NotSupportedException();
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public int Count
-		{
-			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool IsReadOnly
-		{
-			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-		}
-		#endif
+		// Skipping already implement System.Collections.Generic.ICollection<Windows.UI.Xaml.UIElement>.Count
+		// Skipping already implement System.Collections.Generic.ICollection<Windows.UI.Xaml.UIElement>.IsReadOnly
 		// Processing: System.Collections.Generic.IEnumerable<Windows.UI.Xaml.UIElement>
-		#if false
-		// DeclaringType: System.Collections.Generic.IEnumerable<Windows.UI.Xaml.UIElement>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::System.Collections.Generic.IEnumerator<global::Windows.UI.Xaml.UIElement> GetEnumerator()
-		{
-			throw new global::System.NotSupportedException();
-		}
-		#endif
 		// Processing: System.Collections.IEnumerable
-		#if false
-		// DeclaringType: System.Collections.IEnumerable
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		 global::System.Collections.IEnumerator global::System.Collections.IEnumerable.GetEnumerator()
-		{
-			throw new global::System.NotSupportedException();
-		}
-		#endif
 	}
 }

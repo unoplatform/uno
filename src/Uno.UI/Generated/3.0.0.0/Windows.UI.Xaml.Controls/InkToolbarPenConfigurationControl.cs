@@ -23,7 +23,7 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(PenButton), typeof(global::Windows.UI.Xaml.Controls.InkToolbarPenButton), 
 			typeof(global::Windows.UI.Xaml.Controls.InkToolbarPenConfigurationControl), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.InkToolbarPenButton)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.InkToolbarPenButton)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]

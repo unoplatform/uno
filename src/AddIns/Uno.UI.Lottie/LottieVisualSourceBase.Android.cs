@@ -199,6 +199,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			{
 				return;
 			}
+			_playState = null;
 			_animation?.CancelAnimation();
 		}
 
@@ -223,6 +224,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			//Will be overridden in the Play method
 			_animation.SetMinAndMaxProgress(0f, 1f);
 			_animation.Progress = (float)progress;
+			Stop();
 		}
 
 		public void Load()

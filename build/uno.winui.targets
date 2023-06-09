@@ -7,8 +7,7 @@
 
 	<Import Project="../uno.winui.common.targets" Condition="'$(WindowsAppSDKWinUI)'!='true'" />
 	<Import Project="../uno.winui.cross-runtime.targets" Condition="'$(WindowsAppSDKWinUI)'!='true'" />
-	<Import Project="../uno.winui.single-project.targets" Condition="'$(UnoSingleLocationProject)'!='true'" />
-	<Import Project="../uno.winui.single-location-project.targets" Condition="'$(UnoSingleLocationProject)'=='true'" />
+	<Import Project="../uno.winui.single-project.targets" />
 	<Import Project="../uno.winui.runtime-replace.targets" Condition="'$(WindowsAppSDKWinUI)'!='true'" />
 	<Import Project="../uno.winui.winappsdk.targets" Condition="'$(WindowsAppSDKWinUI)'=='true'" />
 </Project>

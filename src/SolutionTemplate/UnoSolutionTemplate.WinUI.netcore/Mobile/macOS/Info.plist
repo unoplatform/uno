@@ -18,8 +18,6 @@
 	<string>NSApplication</string>
 	<key>XSAppIconAssets</key>
 	<string>Assets.xcassets/AppIcons.appiconset</string>
-	<key>ATSApplicationFontsPath</key>
-	<string>Fonts/uno-fluentui-assets.ttf</string>
 
 	<!--
 	Adjust this to your application's encryption usage.

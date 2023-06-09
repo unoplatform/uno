@@ -23,10 +23,7 @@ namespace Windows.UI.Xaml.Controls
 		private double _sourceImageScale = 1;
 		private SerialDisposable _childViewDisposable = new SerialDisposable();
 		private Windows.Foundation.Size _sourceImageSize;
-		private Windows.Foundation.Size SourceImageSize
-		{
-			get { return _sourceImageSize; }
-		}
+		private Windows.Foundation.Size SourceImageSize => _sourceImageSize;
 
 		/// <summary>
 		/// Updates the size of the image source (drawable, bitmap, etc.)
@@ -50,10 +47,10 @@ namespace Windows.UI.Xaml.Controls
 
 			UpdateMatrix(_lastLayoutSize);
 
-			if (Source is BitmapSource bitmapSource)
+			if (Source is BitmapImage bitmapImage)
 			{
-				bitmapSource.PixelWidth = (int)_sourceImageSize.Width;
-				bitmapSource.PixelHeight = (int)_sourceImageSize.Height;
+				bitmapImage.PixelWidth = (int)_sourceImageSize.Width;
+				bitmapImage.PixelHeight = (int)_sourceImageSize.Height;
 			}
 		}
 
@@ -227,7 +224,7 @@ namespace Windows.UI.Xaml.Controls
 				catch (Exception e)
 				{
 					this.Log().Error("Could not change image source", e);
-					OnImageFailed(imageSource);
+					OnImageFailed(imageSource, e);
 				}
 			}
 		}
@@ -300,7 +297,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				this.Log().Warn("Image failed to open.", ex);
 
-				OnImageFailed(newImageSource);
+				OnImageFailed(newImageSource, ex);
 			}
 		}
 
@@ -335,7 +332,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 			else
 			{
-				OnImageFailed(_openedSource);
+				OnImageFailed(_openedSource, imageData.Error);
 			}
 		}
 

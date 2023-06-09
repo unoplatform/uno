@@ -1,3 +1,7 @@
+---
+uid: Uno.Interop.WasmJavaScript1
+---
+
 # Embedding Existing JavaScript Components Into Uno-WASM - Part 1
 
 ## Leveraging the Uno.WASM Bootstrapper

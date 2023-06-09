@@ -9,13 +9,14 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.Text;
 using Uno.Roslyn;
 
 namespace Uno.UI.SourceGenerators.XamlGenerator
 {
 	public partial class XamlCodeGenerator : ISourceGenerator
 	{
-		private void DumpXamlSourceGeneratorState(GeneratorExecutionContext context, List<KeyValuePair<string, string>> generatedSources)
+		private void DumpXamlSourceGeneratorState(GeneratorExecutionContext context, List<KeyValuePair<string, SourceText>> generatedSources)
 		{
 			var tracingFolder = context.GetMSBuildPropertyValue("XamlSourceGeneratorTracingFolder");
 
@@ -81,11 +82,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			File.WriteAllLines(Path.Combine(basePath, "MSBuildItems.txt"), items);
 		}
 
-		private void DumpGeneratedSourceFiles(string sourcesPath, List<KeyValuePair<string, string>> generatedSources)
+		private void DumpGeneratedSourceFiles(string sourcesPath, List<KeyValuePair<string, SourceText>> generatedSources)
 		{
 			foreach (var sourceFile in generatedSources)
 			{
-				File.WriteAllText(Path.Combine(sourcesPath, $"{sourceFile.Key}.cs"), sourceFile.Value);
+				File.WriteAllText(Path.Combine(sourcesPath, $"{sourceFile.Key}.cs"), sourceFile.Value.ToString());
 			}
 		}
 	}

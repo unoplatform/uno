@@ -1,10 +1,14 @@
-using System.IO;
+﻿using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Uno.Foundation;
 using Uno.Storage.Internal;
 using Windows.Storage.Provider;
+
+#if NET7_0_OR_GREATER
+using NativeMethods = __Windows.Storage.Pickers.FileSavePicker.NativeMethods;
+#endif
 
 namespace Windows.Storage
 {
@@ -27,7 +31,11 @@ namespace Windows.Storage
 
 				try
 				{
+#if NET7_0_OR_GREATER
+					NativeMethods.SaveAs(file.Name, pinnedData, data.Length);
+#else
 					WebAssemblyRuntime.InvokeJS($"Windows.Storage.Pickers.FileSavePicker.SaveAs('{file.Name}', {pinnedData}, {data.Length})");
+#endif
 				}
 				finally
 				{

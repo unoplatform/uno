@@ -1,3 +1,7 @@
+---
+uid: Uno.Features.AppCloseHandler
+---
+
 # App Close Handler
 
 > [!TIP]

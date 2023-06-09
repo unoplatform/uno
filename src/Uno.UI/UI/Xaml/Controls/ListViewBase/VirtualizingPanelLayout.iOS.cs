@@ -1041,6 +1041,10 @@ namespace Windows.UI.Xaml.Controls
 				// If we're adding an item and the previous layout didn't use all available space, we probably need more space.
 				PropagateUnusedSpaceRelayout();
 			}
+			else if (change.Action == NotifyCollectionChangedAction.Remove)
+			{
+				NeedsRelayout();
+			}
 		}
 
 		/// <summary>
@@ -1208,8 +1212,13 @@ namespace Windows.UI.Xaml.Controls
 		private void PropagateUnusedSpaceRelayout()
 		{
 			SetWillConsumeUnusedSpace();
+			NeedsRelayout();
+		}
 
+		internal void NeedsRelayout()
+		{
 			var nativePanel = CollectionView as NativeListViewBase;
+
 			nativePanel.SetNeedsLayout();
 			// NativeListViewBase swallows layout requests by design
 			nativePanel.SetSuperviewNeedsLayout();
@@ -1887,7 +1896,9 @@ namespace Windows.UI.Xaml.Controls
 #if DEBUG
 		UICollectionViewLayoutAttributes[] AllItemLayoutAttributes => _itemLayoutInfos?.SelectMany(kvp => kvp.Value.Values).ToArray();
 
+#pragma warning disable IDE0051 // Remove unused private members
 		CGRect[] AllItemFrames => AllItemLayoutAttributes?.Select(l => l.Frame).ToArray();
+#pragma warning restore IDE0051 // Remove unused private members
 #endif
 	}
 }

@@ -7,6 +7,7 @@ using Windows.Foundation;
 using Windows.UI.Composition;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
+using Uno.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -17,6 +18,7 @@ namespace Windows.UI.Xaml.Controls
 		private SkiaCompositionSurface _currentSurface;
 		private CompositionSurfaceBrush _surfaceBrush;
 		private readonly SpriteVisual _imageSprite;
+		private ImageData _pendingImageData;
 
 		public Image()
 		{
@@ -67,25 +69,26 @@ namespace Windows.UI.Xaml.Controls
 		{
 			_sourceDisposable.Disposable = source.Subscribe(img =>
 			{
-				_currentSurface = img.CompositionSurface;
-				_surfaceBrush = Visual.Compositor.CreateSurfaceBrush(_currentSurface);
-				_imageSprite.Brush = _surfaceBrush;
+				_pendingImageData = img;
+
 				InvalidateMeasure();
 			});
 		}
 
 		protected override Size MeasureOverride(Size availableSize)
 		{
+			TryProcessPendingSource();
+
 			if (IsSourceReady())
 			{
 				_lastMeasuredSize = GetSourceSize();
 
 				Size ret;
 
-				if (Source is BitmapSource bitmapSource)
+				if (Source is BitmapImage bitmapImage)
 				{
-					bitmapSource.PixelWidth = (int)_lastMeasuredSize.Width;
-					bitmapSource.PixelHeight = (int)_lastMeasuredSize.Height;
+					bitmapImage.PixelWidth = (int)_lastMeasuredSize.Width;
+					bitmapImage.PixelHeight = (int)_lastMeasuredSize.Height;
 				}
 
 				if (
@@ -116,6 +119,29 @@ namespace Windows.UI.Xaml.Controls
 			else
 			{
 				return default;
+			}
+		}
+
+		private void TryProcessPendingSource()
+		{
+			if (_pendingImageData.HasData)
+			{
+				_currentSurface = _pendingImageData.CompositionSurface;
+				_surfaceBrush = Visual.Compositor.CreateSurfaceBrush(_currentSurface);
+				_imageSprite.Brush = _surfaceBrush;
+
+				_pendingImageData = new();
+
+				if (_pendingImageData is not { Kind: ImageDataKind.Error })
+				{
+					ImageOpened?.Invoke(this, new RoutedEventArgs(this));
+				}
+				else
+				{
+					ImageFailed?.Invoke(this, new(
+						this,
+						_pendingImageData.Error?.Message ?? "Unknown error"));
+				}
 			}
 		}
 

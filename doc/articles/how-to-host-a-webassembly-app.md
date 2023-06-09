@@ -1,3 +1,7 @@
+---
+uid: Uno.Development.HostWebAssemblyApp
+---
+
 # Hosting a WebAssembly App
 
 - WASM Web Server Configuration
@@ -90,7 +94,7 @@ http {
   gzip on;
   gzip_min_length 10240;
   gzip_proxied expired no-cache no-store private auth;
-  gzip_types text/plain text/css text/xml text/javascript application/x-javascript application/json application/xml;
+  gzip_types text/plain text/css text/xml text/javascript application/x-javascript application/json application/xml application/wasm application/octet-stream;
   gzip_disable msie6;
 
   # allow the server to close connection on non responding client, this will free up memory
@@ -148,6 +152,26 @@ http {
   client_header_timeout 3m;
 
   include /etc/nginx/conf.d/*.conf;
+}
+```
+
+In order to enable the fallback routes in Nginx, you can use the following location rule in the configuration file:
+```
+location ~ ^\/(?!(package_)) {
+    try_files $uri $uri/ /index.html;
+}
+```
+
+Additionally, in order to properly handle the caching of the WASM application by the browser, the Cache-control header should be set as follow:
+```
+location ~ ^\/(?!(package_)) {
+    try_files $uri $uri/ /index.html;
+    add_header Cache-Control "must-revalidate, max-age=3600";
+}
+
+location ~ ^\/package_ {
+    try_files $uri $uri/ =404;
+    add_header Cache-Control "public, immutable, max-age=31536000";
 }
 ```
 

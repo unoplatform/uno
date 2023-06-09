@@ -25,6 +25,7 @@
       "Uno.UI.Composition\\Uno.UI.Composition.csproj",
       "Uno.UI.Dispatching\\Uno.UI.Dispatching.csproj",
       "Uno.UI.RemoteControl.Host\\Uno.UI.RemoteControl.Host.csproj",
+      "Uno.UI.RemoteControl.Messaging\\Uno.UI.RemoteControl.Messaging.csproj",
       "Uno.UI.RemoteControl.VS\\Uno.UI.RemoteControl.VS.csproj",
       "Uno.UI.RemoteControl\\Uno.UI.RemoteControl.csproj",
       "Uno.UI.RuntimeTests\\Uno.UI.RuntimeTests.csproj",

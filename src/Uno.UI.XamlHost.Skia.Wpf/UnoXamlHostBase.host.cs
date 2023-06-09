@@ -16,6 +16,9 @@ using Uno.UI.Skia.Platform;
 using Uno.UI.Runtime.Skia.Wpf.Rendering;
 using Uno.UI.Runtime.Skia.Wpf;
 using Uno.UI.XamlHost.Extensions;
+using System;
+using Uno.Foundation.Logging;
+using Windows.Foundation.Metadata;
 
 namespace Uno.UI.XamlHost.Skia.Wpf
 {
@@ -26,15 +29,20 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 	{
 		private bool _designMode;
 		private bool _ignorePixelScaling;
-		private HostPointerHandler _hostPointerHandler;
 		private WpfCanvas _nativeOverlayLayer;
-		private UnoWpfRenderer _renderer;
+		private IWpfRenderer _renderer;
 		private Windows.UI.Xaml.UIElement? _rootElement;
 
 		public bool IsIsland => true;
 
 		public Windows.UI.Xaml.UIElement? RootElement =>
 			_rootElement ??= _xamlSource?.GetVisualTreeRoot();
+
+		/// <summary>
+		/// Gets or sets the current Skia Render surface type.
+		/// </summary>
+		/// <remarks>If <c>null</c>, the host will try to determine the most compatible mode.</remarks>
+		public Uno.UI.Skia.RenderSurfaceType? RenderSurfaceType { get; set; }
 
 		public bool IgnorePixelScaling
 		{
@@ -53,8 +61,36 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 
 			_designMode = DesignerProperties.GetIsInDesignMode(this);
 
-			_renderer = new UnoWpfRenderer(this);
-			_hostPointerHandler = new HostPointerHandler(this);
+			SetupRenderer();
+
+			Loaded += UnoXamlHostBase_Loaded;
+			Unloaded += UnoXamlHostBase_Unloaded;
+		}
+
+		private void UnoXamlHostBase_Unloaded(object sender, RoutedEventArgs e)
+		{
+		}
+
+		private void UnoXamlHostBase_Loaded(object sender, RoutedEventArgs e)
+		{
+			if (!(_renderer?.Initialize() ?? false))
+			{
+				RenderSurfaceType = Uno.UI.Skia.RenderSurfaceType.Software;
+				SetupRenderer();
+				_renderer?.Initialize();
+			}
+		}
+
+		private void SetupRenderer()
+		{
+			RenderSurfaceType ??= Uno.UI.Skia.RenderSurfaceType.OpenGL;
+
+			_renderer = RenderSurfaceType switch
+			{
+				Uno.UI.Skia.RenderSurfaceType.Software => new SoftwareWpfRenderer(this),
+				Uno.UI.Skia.RenderSurfaceType.OpenGL => new OpenGLWpfRenderer(this),
+				_ => throw new InvalidOperationException($"Render Surface type {RenderSurfaceType} is not supported")
+			};
 		}
 
 		protected override void OnRender(DrawingContext drawingContext)
@@ -68,10 +104,6 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 
 			_renderer?.Render(drawingContext);
 		}
-
-		void IWpfHost.ReleasePointerCapture() => ReleaseMouseCapture(); //TODO: This should capture the correct type of pointer (stylus/mouse/touch) https://github.com/unoplatform/uno/issues/8978[capture]
-
-		void IWpfHost.SetPointerCapture() => CaptureMouse();
 
 		WinUI.XamlRoot? IWpfHost.XamlRoot => ChildInternal?.XamlRoot;
 

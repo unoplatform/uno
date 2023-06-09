@@ -17,14 +17,21 @@ using Uno.UI;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Core;
+using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
-using PointerIdentifier = Windows.Devices.Input.PointerIdentifier;
-
+using PointerIdentifierPool = Windows.Devices.Input.PointerIdentifierPool; // internal type (should be in Uno namespace)
+using PointerIdentifier = Windows.Devices.Input.PointerIdentifier; // internal type (should be in Uno namespace)
+using PointerIdentifierDeviceType = Windows.Devices.Input.PointerDeviceType; // PointerIdentifier always uses Windows.Devices as it does noe have access to Microsoft.UI.Input (Uno.UI assembly)
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
+using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
 #else
-using Windows.Devices.Input;
 using Windows.UI.Input;
+using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
+#endif
+
+#if NET7_0_OR_GREATER
+using System.Runtime.InteropServices.JavaScript;
 #endif
 
 namespace Windows.UI.Xaml;
@@ -33,12 +40,6 @@ public partial class UIElement : DependencyObject
 {
 	private static TSInteropMarshaller.HandleRef<NativePointerEventArgs> _pointerEventArgs;
 	private static TSInteropMarshaller.HandleRef<NativePointerEventResult> _pointerEventResult;
-
-	static partial void InitializePointersStaticPartial()
-	{
-		_pointerEventArgs = TSInteropMarshaller.Allocate<NativePointerEventArgs>("UnoStatic_Windows_UI_Xaml_UIElement:setPointerEventArgs");
-		_pointerEventResult = TSInteropMarshaller.Allocate<NativePointerEventResult>("UnoStatic_Windows_UI_Xaml_UIElement:setPointerEventResult");
-	}
 
 	// Ref:
 	// https://www.w3.org/TR/pointerevents/
@@ -58,6 +59,12 @@ public partial class UIElement : DependencyObject
 
 	partial void AddPointerHandler(RoutedEvent routedEvent, int handlersCount, object handler, bool handledEventsToo)
 	{
+		if (_pointerEventArgs == null)
+		{
+			_pointerEventArgs = TSInteropMarshaller.Allocate<NativePointerEventArgs>("UnoStatic_Windows_UI_Xaml_UIElement:setPointerEventArgs");
+			_pointerEventResult = TSInteropMarshaller.Allocate<NativePointerEventResult>("UnoStatic_Windows_UI_Xaml_UIElement:setPointerEventResult");
+		}
+
 		if (handlersCount != 1
 			|| routedEvent == PointerCaptureLostEvent) // Captures are handled in managed code only
 		{
@@ -133,6 +140,9 @@ public partial class UIElement : DependencyObject
 
 	#region Native event dispatch
 	[EditorBrowsable(EditorBrowsableState.Never)]
+#if NET7_0_OR_GREATER
+	[JSExport]
+#endif
 	public static void OnNativePointerEvent()
 	{
 		var stopPropagation = false;
@@ -182,7 +192,7 @@ public partial class UIElement : DependencyObject
 
 						if (stopPropagation)
 						{
-							RootVisual.ProcessPointerUp(routedArgs, isAfterHandledUp: true);
+							WinUICoreServices.Instance.MainRootVisual?.ProcessPointerUp(routedArgs, isAfterHandledUp: true); // TODO for #8341
 						}
 
 						break;
@@ -242,42 +252,6 @@ public partial class UIElement : DependencyObject
 		}
 	}
 
-	private static readonly Dictionary<PointerIdentifier, PointerIdentifier> _nativeToManagedPointerId = new();
-	private static readonly Dictionary<PointerIdentifier, PointerIdentifier> _managedToNativePointerId = new();
-	private static uint _lastUsedId;
-
-	private static uint TransformPointerId(PointerIdentifier nativeId)
-	{
-		if (_nativeToManagedPointerId.TryGetValue(nativeId, out var managedId))
-		{
-			return managedId.Id;
-		}
-
-		managedId = new PointerIdentifier(nativeId.Type, ++_lastUsedId);
-		_managedToNativePointerId[managedId] = nativeId;
-		_nativeToManagedPointerId[nativeId] = managedId;
-
-		return managedId.Id;
-	}
-
-	internal static void RemoveActivePointer(PointerIdentifier managedId)
-	{
-		if (_managedToNativePointerId.TryGetValue(managedId, out var nativeId))
-		{
-			_managedToNativePointerId.Remove(managedId);
-			_nativeToManagedPointerId.Remove(nativeId);
-
-			if (_managedToNativePointerId.Count == 0)
-			{
-				_lastUsedId = 0; // We reset the pointer ID only when there is no active pointer.
-			}
-		}
-		else if (typeof(UIElement).Log().IsEnabled(LogLevel.Warning))
-		{
-			typeof(UIElement).Log().Warn($"Received an invalid managed pointer id {managedId}");
-		}
-	}
-
 	private static PointerRoutedEventArgs ToPointerArgs(
 		UIElement snd,
 		NativePointerEventArgs args,
@@ -287,7 +261,7 @@ public partial class UIElement : DependencyObject
 		const int exitOrUp = (int)(NativePointerEvent.pointerout | NativePointerEvent.pointerup);
 
 		var pointerType = (PointerDeviceType)args.deviceType;
-		var pointerId = TransformPointerId(new PointerIdentifier((Windows.Devices.Input.PointerDeviceType)pointerType, (uint)args.pointerId));
+		var pointerId = PointerIdentifierPool.RentManaged(new PointerIdentifier((PointerIdentifierDeviceType)pointerType, (uint)args.pointerId));
 
 		var src = GetElementFromHandle(args.srcHandle) ?? (UIElement)snd;
 		var position = new Point(args.x, args.y);
@@ -314,7 +288,6 @@ public partial class UIElement : DependencyObject
 		return new PointerRoutedEventArgs(
 			args.timestamp,
 			pointerId,
-			pointerType,
 			position,
 			isInContact,
 			isInRange,
@@ -339,20 +312,6 @@ public partial class UIElement : DependencyObject
 			SetStyle("touch-action", "none");
 		}
 	}
-
-	#region Capture
-	partial void CapturePointerNative(Pointer pointer)
-	{
-		var command = "Uno.UI.WindowManager.current.setPointerCapture(" + HtmlId + ", " + pointer.PointerId + ");";
-		WebAssemblyRuntime.InvokeJS(command);
-	}
-
-	partial void ReleasePointerNative(Pointer pointer)
-	{
-		var command = "Uno.UI.WindowManager.current.releasePointerCapture(" + HtmlId + ", " + pointer.PointerId + ");";
-		WebAssemblyRuntime.InvokeJS(command);
-	}
-	#endregion
 
 	#region HitTestVisibility
 	internal void UpdateHitTest()

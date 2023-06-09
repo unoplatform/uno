@@ -33,10 +33,16 @@ using Uno.Disposables;
 using System.Collections.Generic;
 using Uno.Extensions.ApplicationModel.Core;
 using Windows.ApplicationModel;
+using Uno.UI.XamlHost.Skia.Gtk.Hosting;
+using System.Runtime.InteropServices;
+using System.Reflection;
+using Gdk;
+using System.Linq;
+using Size = Windows.Foundation.Size;
 
 namespace Uno.UI.Runtime.Skia
 {
-	public class GtkHost : ISkiaHost
+	public partial class GtkHost : ISkiaHost
 	{
 		private const int UnoThemePriority = 800;
 
@@ -54,15 +60,6 @@ namespace Uno.UI.Runtime.Skia
 
 		private record PendingWindowStateChangedInfo(Gdk.WindowState newState, Gdk.WindowState changedMask);
 		private List<PendingWindowStateChangedInfo> _pendingWindowStateChanged = new();
-
-		public static Gtk.Window Window => _window;
-		internal static UnoEventBox EventBox => _eventBox;
-
-		/// <summary>
-		/// Gets or sets the current Skia Render surface type.
-		/// </summary>
-		/// <remarks>If <c>null</c>, the host will try to determine the most compatible mode.</remarks>
-		public RenderSurfaceType? RenderSurfaceType { get; set; }
 
 		/// <summary>
 		/// Creates a host for a Uno Skia GTK application.
@@ -83,9 +80,24 @@ namespace Uno.UI.Runtime.Skia
 			_appBuilder = appBuilder;
 		}
 
+		public static Gtk.Window Window => _window;
+
+		internal static UnoEventBox EventBox => _eventBox;
+
+		internal Fixed NativeOverlayLayer
+			=> GtkCoreWindowExtension.FindNativeOverlayLayer(_window);
+
+		internal IRenderSurface RenderSurface => _renderSurface;
+
+		/// <summary>
+		/// Gets or sets the current Skia Render surface type.
+		/// </summary>
+		/// <remarks>If <c>null</c>, the host will try to determine the most compatible mode.</remarks>
+		public RenderSurfaceType? RenderSurfaceType { get; set; }
+
 		public void Run()
 		{
-			Windows.UI.Xaml.Documents.Inline.ApplyHarfbuzzWorkaround();
+			PreloadHarfBuzz();
 
 			if (!InitializeGtk())
 			{
@@ -95,12 +107,12 @@ namespace Uno.UI.Runtime.Skia
 			SetupTheme();
 
 			ApiExtensibility.Register(typeof(Uno.ApplicationModel.Core.ICoreApplicationExtension), o => new CoreApplicationExtension(o));
+			ApiExtensibility.Register(typeof(Windows.UI.Core.IUnoCorePointerInputSource), o => new GtkCorePointerInputSource());
 			ApiExtensibility.Register(typeof(Windows.UI.Core.ICoreWindowExtension), o => new GtkCoreWindowExtension(o));
-			ApiExtensibility.Register<Windows.UI.Xaml.Application>(typeof(Uno.UI.Xaml.IApplicationExtension), o => new GtkApplicationExtension(o));
 			ApiExtensibility.Register(typeof(Windows.UI.ViewManagement.IApplicationViewExtension), o => new GtkApplicationViewExtension(o));
 			ApiExtensibility.Register(typeof(ISystemThemeHelperExtension), o => new GtkSystemThemeHelperExtension(o));
 			ApiExtensibility.Register(typeof(Windows.Graphics.Display.IDisplayInformationExtension), o => _displayInformationExtension ??= new GtkDisplayInformationExtension(o, _window));
-			ApiExtensibility.Register<TextBoxView>(typeof(ITextBoxViewExtension), o => new TextBoxViewExtension(o, _window));
+			ApiExtensibility.Register<TextBoxView>(typeof(IOverlayTextBoxViewExtension), o => new TextBoxViewExtension(o));
 			ApiExtensibility.Register(typeof(ILauncherExtension), o => new LauncherExtension(o));
 			ApiExtensibility.Register<FileOpenPicker>(typeof(IFileOpenPickerExtension), o => new FileOpenPickerExtension(o));
 			ApiExtensibility.Register<FolderPicker>(typeof(IFolderPickerExtension), o => new FolderPickerExtension(o));
@@ -141,6 +153,7 @@ namespace Uno.UI.Runtime.Skia
 			Gtk.Application.Run();
 		}
 
+
 		private bool InitializeGtk()
 		{
 			try
@@ -150,10 +163,7 @@ namespace Uno.UI.Runtime.Skia
 			}
 			catch (TypeInitializationException e)
 			{
-				if (this.Log().IsEnabled(LogLevel.Error))
-				{
-					this.Log().Error("Unable to initialize Gtk, visit https://aka.platform.uno/gtk-install for more information.", e);
-				}
+				Console.Error.WriteLine("Unable to initialize Gtk, visit https://aka.platform.uno/gtk-install for more information.", e);
 				return false;
 			}
 		}
@@ -280,9 +290,6 @@ namespace Uno.UI.Runtime.Skia
 				WUX.Window.Current.OnNativeSizeChanged(new Windows.Foundation.Size(e.Allocation.Width, e.Allocation.Height));
 			};
 
-			/* avoids double invokes at window level */
-			_area.AddEvents((int)GtkCoreWindowExtension.RequestedEvents);
-
 			ReplayPendingWindowStateChanges();
 
 			void CreateApp(ApplicationInitializationCallbackParams _)
@@ -339,16 +346,18 @@ namespace Uno.UI.Runtime.Skia
 
 		private void OnCoreWindowContentRootSet(object sender, object e)
 		{
-			var xamlRoot = CoreServices.Instance
+			var contentRoot = CoreServices.Instance
 				.ContentRootCoordinator
-				.CoreWindowContentRoot?
-				.GetOrCreateXamlRoot();
+				.CoreWindowContentRoot;
+			var xamlRoot = contentRoot?.GetOrCreateXamlRoot();
 
 			if (xamlRoot is null)
 			{
 				throw new InvalidOperationException("XamlRoot was not properly initialized");
 			}
 
+			contentRoot!.SetHost(this);
+			XamlRootMap.Register(xamlRoot, this);
 			xamlRoot.InvalidateRender += _renderSurface.InvalidateRender;
 
 			CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRootSet -= OnCoreWindowContentRootSet;

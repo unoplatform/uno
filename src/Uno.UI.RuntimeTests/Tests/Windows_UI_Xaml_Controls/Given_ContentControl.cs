@@ -33,6 +33,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		private ResourceDictionary _testsResources;
 
 		public DataTemplate DataContextBindingDataTemplate => _testsResources["DataContextBindingDataTemplate"] as DataTemplate;
+		public DataTemplate ContentControlComboTemplate => _testsResources["ContentControlComboTemplate"] as DataTemplate;
 
 		private DataTemplate SelectableItemTemplateA => _testsResources["SelectableItemTemplateA"] as DataTemplate;
 		private DataTemplate SelectableItemTemplateB => _testsResources["SelectableItemTemplateB"] as DataTemplate;
@@ -95,7 +96,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var items = new[] { "item 1", "item 2", "item 3" };
 			foreach (var control in DerivedStyledControlsInstances)
 			{
-				var templateSelector = new KeyedTemplateSelector
+				var templateSelector = new Given_ListViewBase.KeyedTemplateSelector
 				{
 					Templates =
 					{
@@ -156,14 +157,60 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(1, itemsSourceChangedCounter);
 		}
 
+		[TestMethod]
+		public async Task When_Content_Set_Null_ComboBox()
+		{
+			var contentControl = new ContentControl
+			{
+				ContentTemplate = ContentControlComboTemplate,
+			}.Apply(cc => cc.SetBinding(ContentControl.ContentProperty, new Binding()));
+
+			var grid = new Grid()
+			{
+				DataContext = new ViewModel()
+			};
+
+			grid.Children.Add(contentControl);
+			WindowHelper.WindowContent = grid;
+
+			await WindowHelper.WaitForLoaded(grid);
+
+			var comboBox = grid.FindFirstChild<ComboBox>();
+
+
+			Assert.IsNotNull(comboBox);
+			Assert.AreEqual(3, comboBox.Items.Count);
+
+			contentControl.Content = null;
+
+			Assert.IsTrue(comboBox.Items.Count == 0);
+			Assert.IsTrue(comboBox.SelectedIndex == -1);
+		}
+
 		private class SignInViewModel
 		{
 			public string UserName { get; set; } = "Steve";
 		}
 
+		public sealed class Item
+		{
+			public string DisplayName { get; init; }
+		}
+
 		private class ViewModel
 		{
 			public SignInViewModel SignIn { get; set; } = new SignInViewModel();
+
+			List<Item> _items = new()
+			{
+				new Item { DisplayName = "Test1" },
+				new Item { DisplayName = "Test2" },
+				new Item { DisplayName = "Test3" },
+			};
+
+			public IEnumerable<Item> Items => _items;
+
+			public int SelectedIndex { get; set; } = 1;
 		}
 	}
 }

@@ -28,29 +28,5 @@ namespace Uno.Extensions
 			// Note: Assembly.GetExecutingAssembly().GetName() is not accessible in WP7
 			return new Version(Regex.Match(assembly.FullName, @"(\d+)(.\d+)(.\d+)?(.\d+)?").ToString());
 		}
-
-		public static string GetProductName(this Assembly assembly)
-		{
-			var productNameAttribute = assembly.GetAssemblyAttribute<AssemblyProductAttribute>();
-			return productNameAttribute == null ? null : productNameAttribute.Product;
-		}
-
-		public static string GetCopyright(this Assembly assembly)
-		{
-			var assemblyCopyrightAttribute = assembly.GetAssemblyAttribute<AssemblyCopyrightAttribute>();
-			return assemblyCopyrightAttribute == null ? null : assemblyCopyrightAttribute.Copyright;
-		}
-
-#if NETFX_CORE
-		public static T GetAssemblyAttribute<T>(this Assembly assembly) where T : Attribute
-		{
-			return assembly.GetCustomAttribute(typeof(T)) as T;
-		}
-#else
-		public static T GetAssemblyAttribute<T>(this Assembly assembly) where T : Attribute
-		{
-			return (T)Attribute.GetCustomAttribute(assembly, typeof(T));
-		}
-#endif
 	}
 }

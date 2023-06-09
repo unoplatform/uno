@@ -53,14 +53,13 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.Identity.Client" Version="4.15.0" />
+		<PackageReference Include="Microsoft.Identity.Client" Version="4.47.0" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\Uno.UI\Uno.UI.Reference.csproj" />
 	</ItemGroup>
 
-	<Import Project="..\..\Uno.CrossTargetting.props" />
 	<Import Project="..\..\..\build\uno.winui.cross-runtime.targets"/>
 
 	<Target Name="_UnoToolkitOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">

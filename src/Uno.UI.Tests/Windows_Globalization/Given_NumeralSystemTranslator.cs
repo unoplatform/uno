@@ -1,4 +1,5 @@
-﻿
+﻿#nullable enable
+
 using System;
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -16,15 +17,18 @@ namespace Uno.UI.Tests.Windows_Globalization
 		public void When_NumeralSystemIsInvalid_Then_Throw(string numeralSystem)
 		{
 			var sut = new NumeralSystemTranslator();
+
+			try
+			{
+				sut.NumeralSystem = numeralSystem;
+			}
+			catch (Exception ex)
+			{
+				Assert.AreEqual("The parameter is incorrect.\r\n\r\nnumeralSystem", ex.Message);
+			}
+
 			Assert.ThrowsException<ArgumentException>(() => sut.NumeralSystem = numeralSystem);
 		}
-
-		[TestMethod]
-		public void When_NumeralSystemIsNull_Then_Throw()
-		{
-			Assert.ThrowsException<ArgumentNullException>(() => new NumeralSystemTranslator { NumeralSystem = null });
-		}
-
 
 		[DataTestMethod]
 		[DataRow(new string[0])]
@@ -32,13 +36,16 @@ namespace Uno.UI.Tests.Windows_Globalization
 		[DataRow(new string[] { "en-US", "abcd" })]
 		public void When_LanguagesIsInvalid_Then_Throw(IEnumerable<string> languages)
 		{
-			Assert.ThrowsException<ArgumentException>(() => new NumeralSystemTranslator(languages));
-		}
+			try
+			{
+				new NumeralSystemTranslator(languages);
+			}
+			catch (Exception ex)
+			{
+				Assert.AreEqual("The parameter is incorrect.\r\n\r\nlanguages", ex.Message);
+			}
 
-		[TestMethod]
-		public void When_LanguagesIsNull_Then_Throw()
-		{
-			Assert.ThrowsException<NullReferenceException>(() => new NumeralSystemTranslator(null));
+			Assert.ThrowsException<ArgumentException>(() => new NumeralSystemTranslator(languages));
 		}
 
 		[DataTestMethod]

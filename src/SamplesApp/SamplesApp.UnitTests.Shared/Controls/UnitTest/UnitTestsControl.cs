@@ -72,6 +72,7 @@ namespace Uno.UI.Samples.Tests
 		public UnitTestsControl()
 		{
 			this.InitializeComponent();
+			this.Loaded += OnLoaded;
 
 			Private.Infrastructure.TestServices.WindowHelper.EmbeddedTestRoot =
 			(
@@ -86,6 +87,13 @@ namespace Uno.UI.Samples.Tests
 			Private.Infrastructure.TestServices.WindowHelper.CurrentTestWindow =
 				Windows.UI.Xaml.Window.Current;
 
+			Private.Infrastructure.TestServices.WindowHelper.IsXamlIsland =
+#if HAS_UNO
+				Uno.UI.Xaml.Core.CoreServices.Instance.InitializationType == Xaml.Core.InitializationType.IslandsOnly;
+#else
+				false;
+#endif
+
 			DataContext = null;
 
 			SampleChooserViewModel.Instance.SampleChanging += OnSampleChanging;
@@ -93,6 +101,11 @@ namespace Uno.UI.Samples.Tests
 			OverrideDebugProviderAsserts();
 
 			_applicationView = ApplicationView.GetForCurrentView();
+		}
+
+		private void OnLoaded(object sender, RoutedEventArgs args)
+		{
+			Private.Infrastructure.TestServices.WindowHelper.XamlRoot = XamlRoot;
 		}
 
 		private static void OverrideDebugProviderAsserts()

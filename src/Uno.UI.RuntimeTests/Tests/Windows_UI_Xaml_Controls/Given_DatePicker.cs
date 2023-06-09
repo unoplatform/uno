@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if !WINDOWS_UWP
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -123,8 +124,20 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		private static IDisposable SetAmbiantLanguage(string language)
 		{
 			var previousLanguage = ApplicationLanguages.PrimaryLanguageOverride;
+			var currentCulture = CultureInfo.CurrentCulture;
+			var currentUICulture = CultureInfo.CurrentUICulture;
+			var defaultThreadCurrentCulture = CultureInfo.DefaultThreadCurrentCulture;
+			var defaultThreadCurrentUICulture = CultureInfo.DefaultThreadCurrentUICulture;
 			ApplicationLanguages.PrimaryLanguageOverride = language;
-			return Disposable.Create(() => ApplicationLanguages.PrimaryLanguageOverride = previousLanguage);
+			ApplicationLanguages.ApplyCulture();
+			return Disposable.Create(() =>
+			{
+				ApplicationLanguages.PrimaryLanguageOverride = previousLanguage;
+				CultureInfo.CurrentCulture = currentCulture;
+				CultureInfo.CurrentUICulture = currentUICulture;
+				CultureInfo.DefaultThreadCurrentCulture = defaultThreadCurrentCulture;
+				CultureInfo.DefaultThreadCurrentUICulture = defaultThreadCurrentUICulture;
+			});
 		}
 
 		private static void CheckDateTimeTextBlockPartPosition(DatePicker datePicker, string id, int expectedColumn)
@@ -139,3 +152,4 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 	}
 }
+#endif

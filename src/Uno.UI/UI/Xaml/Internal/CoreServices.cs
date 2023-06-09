@@ -36,7 +36,7 @@ namespace Uno.UI.Xaml.Core
 		/// <summary>
 		/// Initialization type.
 		/// </summary>
-		public InitializationType InitializationType { get; private set; } = InitializationType.MainView;
+		public InitializationType InitializationType { get; internal set; } = InitializationType.MainView;
 
 		public RootVisual? MainRootVisual => _mainVisualTree?.RootVisual;
 
@@ -72,7 +72,7 @@ namespace Uno.UI.Xaml.Core
 
 		private void InitCoreWindowContentRoot()
 		{
-			var contentRoot = ContentRootCoordinator.CreateContentRoot(ContentRootType.CoreWindow, Colors.Transparent, null);
+			var contentRoot = ContentRootCoordinator.CreateContentRoot(ContentRootType.CoreWindow, ThemingHelper.GetRootVisualBackground(), null);
 			_mainVisualTree = contentRoot.VisualTree;
 
 			//TODO Uno: Add input services

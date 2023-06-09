@@ -13,7 +13,7 @@ namespace System.IO
 		{
 			if (windowsRuntimeFile is StorageFile file)
 			{
-				return await file.OpenStream(CancellationToken.None, FileAccessMode.Read, StorageOpenOptions.None);
+				return await file.OpenStream(CancellationToken.None, FileAccessMode.Read, StorageOpenOptions.AllowReadersAndWriters);
 			}
 			else
 			{
@@ -32,7 +32,7 @@ namespace System.IO
 		{
 			if (windowsRuntimeFile is StorageFile file)
 			{
-				return await file.OpenStream(CancellationToken.None, FileAccessMode.ReadWrite, StorageOpenOptions.None);
+				return await file.OpenStream(CancellationToken.None, FileAccessMode.ReadWrite, StorageOpenOptions.AllowOnlyReaders);
 			}
 			else
 			{

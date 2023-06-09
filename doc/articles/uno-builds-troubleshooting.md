@@ -1,3 +1,7 @@
+---
+uid: Uno.Development.Troubleshooting
+---
+
 # Troubleshooting build issues
 
 ## Diagnose environment problems with `uno-check`

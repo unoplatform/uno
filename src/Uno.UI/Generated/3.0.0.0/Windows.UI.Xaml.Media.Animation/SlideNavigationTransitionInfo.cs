@@ -27,7 +27,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(Effect), typeof(global::Windows.UI.Xaml.Media.Animation.SlideNavigationTransitionEffect), 
 			typeof(global::Windows.UI.Xaml.Media.Animation.SlideNavigationTransitionInfo), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Animation.SlideNavigationTransitionEffect)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Animation.SlideNavigationTransitionEffect)));
 		#endif
 		// Skipping already declared method Windows.UI.Xaml.Media.Animation.SlideNavigationTransitionInfo.SlideNavigationTransitionInfo()
 		// Forced skipping of method Windows.UI.Xaml.Media.Animation.SlideNavigationTransitionInfo.SlideNavigationTransitionInfo()

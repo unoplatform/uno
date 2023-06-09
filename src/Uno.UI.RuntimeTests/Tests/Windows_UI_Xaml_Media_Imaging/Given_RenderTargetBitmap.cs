@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -7,6 +8,8 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Imaging;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading;
+using Uno.UI.RuntimeTests.Helpers;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 {
@@ -75,6 +78,60 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 				var component = i % 4;
 				Assert.AreEqual(rawBorderSnapshot[i], pixelsArray[i], $"The {map[component]} channel of pixel {pixel} is not same. Expected {rawBorderSnapshot[i]:x2} found {pixelsArray[i]:x2}.");
 			}
+		}
+
+		[TestMethod]
+#if __WASM__
+		[Ignore("Not implemented yet.")]
+#elif __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#elif __SKIA__
+		[Ignore("Currently fails on CI for skia GTK (works locally)")]
+#endif
+		public async Task When_Render_Then_CanRenderOnCanvas()
+		{
+			var border = new Border()
+			{
+				Name = "TestBorder",
+				Width = 10,
+				Height = 10,
+				BorderThickness = new Thickness(1),
+				Background = Background,
+				BorderBrush = BorderBrush
+			};
+
+			TestServices.WindowHelper.WindowContent = border;
+
+			await TestServices.WindowHelper.WaitForLoaded(border);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var sut = new RenderTargetBitmap();
+			await sut.RenderAsync(border);
+
+			var onCanvasReady = new TaskCompletionSource<object>();
+			var onCanvasTimeout = new CancellationTokenSource(TimeSpan.FromSeconds(Debugger.IsAttached ? 300 : 1));
+			var onCanvas = new Image
+			{
+				Width = 10,
+				Height = 10
+			};
+			onCanvasTimeout.Token.Register(() => onCanvasReady.TrySetException(new TimeoutException("Image didn't render")));
+			onCanvas.ImageOpened += (snd, e) => onCanvasReady.TrySetResult(default);
+			onCanvas.ImageFailed += (snd, e) => onCanvasReady.TrySetException(new InvalidOperationException(e.ErrorMessage));
+			onCanvas.Source = sut;
+
+			TestServices.WindowHelper.WindowContent = onCanvas;
+
+			await onCanvasReady.Task;
+			await TestServices.WindowHelper.WaitForLoaded(onCanvas);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			// We are also using RenderTargetBitmap to validate the result ... weird but it works :)
+			var resultTarget = new RenderTargetBitmap();
+			await resultTarget.RenderAsync(onCanvas);
+			var result = await RawBitmap.From(resultTarget, onCanvas);
+
+			ImageAssert.HasColorAt(result, 5, 5, Background.Color);
 		}
 	}
 }

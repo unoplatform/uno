@@ -1,12 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
 	<PropertyGroup>
 		<TargetFrameworks>netstandard2.0</TargetFrameworks>
-		<!--
-			Set to false as a temporary workaround for:
-			mergedstyles_071591b3676f22ac4e4712a47cc7d18f.cs(1466,14): error CS1029: #error: 'Property for contract7Present:CornerRadius cannot be found on Windows.UI.Xaml.Controls.Button' [/Users/runner/work/1/s/src/Uno.UI/Uno.UI.netcoremobile.csproj::TargetFramework=net6.0-android]
-			Remove this workaround when fixing https://github.com/unoplatform/uno/issues/10596
-		-->
-		<ShouldWriteErrorOnInvalidXaml>false</ShouldWriteErrorOnInvalidXaml>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(MSBuildRuntimeType)'=='Core'">
@@ -105,8 +99,6 @@
 		<Folder Include="UI\Xaml\Maps\Presenters\" />
 	</ItemGroup>
 
-	<Import Project="..\Uno.CrossTargetting.props" />
-
 	<PropertyGroup>
 		<PageExclusions>$(PlatformItemsBasePath)Themes\WinUI\Resources\**\*.xaml</PageExclusions>
 		<UnoUIMSBuildTasksPath>$(MSBuildThisFileDirectory)..\SourceGenerators\Uno.UI.Tasks\bin\$(Configuration)_Shadow</UnoUIMSBuildTasksPath>
@@ -121,27 +113,21 @@
 		<MakeDir Directories="$(OutputPath)/javascript" />
 	</Target>
 
-	<Target Name="_UnoSetupTSCompilationUpdateEmbeddedResources"
-			Condition="'$(BuildingProject)' != 'false' and '$(DesignTimeBuild)' != 'true'"
-			BeforeTargets="_UnoEmbeddedResourcesInjection">
+	<Target Name="_UnoSetupTSCompilationUpdateEmbeddedResources" Condition="'$(BuildingProject)' != 'false' and '$(DesignTimeBuild)' != 'true'" BeforeTargets="_UnoEmbeddedResourcesInjection">
 		<PropertyGroup>
 			<_unoUIDTsFilePath>$(OutputPath)/javascript/Uno.UI.d.ts</_unoUIDTsFilePath>
 		</PropertyGroup>
 		<ItemGroup>
 			<_generatedJSFiles Include="$(OutputPath)/javascript/*.js" />
-			<EmbeddedResource Include="@(_generatedJSFiles)"
-							LogicalName="$(RootNamespace).WasmScripts.%(FileName)%(Extension)" />
+			<EmbeddedResource Include="@(_generatedJSFiles)" LogicalName="$(RootNamespace).WasmScripts.%(FileName)%(Extension)" />
 		</ItemGroup>
-		<Copy SourceFiles="$(OutputPath)/javascript/Uno.UI.d.ts"
-							DestinationFolder="$(OutputPath)"
-							Condition="exists('$(_unoUIDTsFilePath)')"/>
+		<Copy SourceFiles="$(OutputPath)/javascript/Uno.UI.d.ts" DestinationFolder="$(OutputPath)" Condition="exists('$(_unoUIDTsFilePath)')" />
 	</Target>
 
-	<Target Name="_AdjustTypeScriptOutputForPublishing"
-			AfterTargets="GetTypeScriptOutputForPublishing">
+	<Target Name="_AdjustTypeScriptOutputForPublishing" AfterTargets="GetTypeScriptOutputForPublishing">
 		<ItemGroup>
-			<FilesForPackagingFromProject Remove="@(GeneratedJavascriptWithTargetPath->'%(Identity)')"/>
-			<ContentWithTargetPath Remove="@(GeneratedJavascriptWithTargetPath->'%(Identity)')"/>
+			<FilesForPackagingFromProject Remove="@(GeneratedJavascriptWithTargetPath->'%(Identity)')" />
+			<ContentWithTargetPath Remove="@(GeneratedJavascriptWithTargetPath->'%(Identity)')" />
 			<Content Remove="@(GeneratedJavascript->'%(Identity)')" />
 		</ItemGroup>
 	</Target>

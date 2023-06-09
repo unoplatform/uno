@@ -1,18 +1,18 @@
 
 using System;
 using System.Collections.Specialized;
-using System.Collections.Generic;
 using System.Linq;
-using Uno.Extensions;
 using Uno.Extensions.Specialized;
 using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.DataBinding;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.UI.ViewManagement;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
+using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
 #if __IOS__
 using UIKit;
@@ -32,6 +32,7 @@ namespace Windows.UI.Xaml.Controls
 		private AutoSuggestionBoxTextChangeReason _textChangeReason = AutoSuggestionBoxTextChangeReason.ProgrammaticChange;
 		private string userInput;
 		private BindingPath _textBoxBinding;
+		private FrameworkElement _suggestionsContainer;
 
 		public AutoSuggestBox() : base()
 		{
@@ -48,6 +49,7 @@ namespace Windows.UI.Xaml.Controls
 			_popup = GetTemplateChild("SuggestionsPopup") as Popup;
 			_layoutRoot = GetTemplateChild("LayoutRoot") as Grid;
 			_suggestionsList = GetTemplateChild("SuggestionsList") as ListView;
+			_suggestionsContainer = GetTemplateChild("SuggestionsContainer") as FrameworkElement;
 			_queryButton = GetTemplateChild("QueryButton") as Button;
 
 			// Uno specific: If the user enabled the legacy behavior for popup light dismiss default
@@ -92,13 +94,9 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override void OnItemsSourceChanged(DependencyPropertyChangedEventArgs e)
 		{
-			// Calling this method before base.OnItemsSourceChanged() ensures that, in the case of an ObservableCollection, the list
-			// subscribes to CollectionChanged before AutoSuggestBox does. This is important for Android because the list needs to
-			// notify RecyclerView of collection changes before UpdateSuggestionList() measures it, otherwise we get errors like
-			// "Inconsistency detected. Invalid view holder adapter position"
-			UpdateSuggestionList();
-
 			base.OnItemsSourceChanged(e);
+
+			UpdateSuggestionList();
 		}
 
 		internal override void OnItemsSourceSingleCollectionChanged(object sender, NotifyCollectionChangedEventArgs args, int section)
@@ -153,73 +151,108 @@ namespace Windows.UI.Xaml.Controls
 
 		private void LayoutPopup()
 		{
-			if (
-				_popup != null
-				&& _popup.IsOpen
-				&& _popup.Child is FrameworkElement popupChild
-			)
+			if (_popup is Popup popup &&
+				popup.IsOpen &&
+				popup.Child is FrameworkElement popupChild &&
+				_suggestionsContainer is not null &&
+				_layoutRoot is not null)
 			{
-				if (_popup is Popup popup)
+				// Reset popup offsets (Windows seems to do that)
+				popup.VerticalOffset = 0;
+				popup.HorizontalOffset = 0;
+
+				// Inject layouting constraints
+				popupChild.MinHeight = _layoutRoot.ActualHeight;
+				popupChild.MinWidth = _layoutRoot.ActualWidth;
+				popupChild.MaxHeight = MaxSuggestionListHeight;
+
+				Rect windowRect;
+				if (WinUICoreServices.Instance.InitializationType == Uno.UI.Xaml.Core.InitializationType.IslandsOnly)
 				{
-					if (_layoutRoot is FrameworkElement background)
-					{
-						// Reset popup offsets (Windows seems to do that)
-						popup.VerticalOffset = 0;
-						popup.HorizontalOffset = 0;
+					windowRect = XamlRoot.Bounds;
+				}
+				else
+				{
+					windowRect = ApplicationView.GetForCurrentView().VisibleBounds;
+				}
 
-						// Inject layouting constraints
-						popupChild.MinHeight = background.ActualHeight;
-						popupChild.MinWidth = background.ActualWidth;
-						popupChild.MaxHeight = MaxSuggestionListHeight;
+				var inputPaneRect = InputPane.GetForCurrentView().OccludedRect;
 
-						var windowRect = Xaml.Window.Current.Bounds;
+				if (inputPaneRect.Height > 0)
+				{
+					windowRect.Height -= inputPaneRect.Height;
+				}
 
-						var popupTransform = (MatrixTransform)popup.TransformToVisual(Xaml.Window.Current.Content);
-						var popupRect = new Rect(popupTransform.Matrix.OffsetX, popupTransform.Matrix.OffsetY, popup.ActualWidth, popup.ActualHeight);
+				var popupTransform = (MatrixTransform)popup.TransformToVisual(XamlRoot.Content);
+				var popupRect = new Rect(popupTransform.Matrix.OffsetX, popupTransform.Matrix.OffsetY, popup.ActualWidth, popup.ActualHeight);
 
-						var backgroundTransform = (MatrixTransform)background.TransformToVisual(Xaml.Window.Current.Content);
-						var backgroundRect = new Rect(backgroundTransform.Matrix.OffsetX, backgroundTransform.Matrix.OffsetY + background.ActualHeight, background.ActualWidth, background.ActualHeight);
+				var containerTransform = (MatrixTransform)_layoutRoot.TransformToVisual(XamlRoot.Content);
+				var containerRect = new Rect(containerTransform.Matrix.OffsetX, containerTransform.Matrix.OffsetY, _layoutRoot.ActualWidth, _layoutRoot.ActualHeight);
+				var textBoxHeight = _layoutRoot.ActualHeight;
 
-						// Because Popup.Child is not part of the visual tree until Popup.IsOpen,
-						// some descendant Controls may never have loaded and materialized their templates.
-						// We force the materialization of all templates to ensure that Measure works properly.
-						foreach (var control in popupChild.EnumerateAllChildren().OfType<Control>())
-						{
-							control.ApplyTemplate();
-						}
+				// Because Popup.Child is not part of the visual tree until Popup.IsOpen,
+				// some descendant Controls may never have loaded and materialized their templates.
+				// We force the materialization of all templates to ensure that Measure works properly.
+				foreach (var control in popupChild.EnumerateAllChildren().OfType<Control>())
+				{
+					control.ApplyTemplate();
+				}
 
-						popupChild.Measure(windowRect.Size);
-						var popupChildRect = new Rect(new Point(), popupChild.DesiredSize);
+				popupChild.Measure(windowRect.Size);
+				var popupChildRect = new Rect(new Point(), popupChild.DesiredSize);
 
-						// Align left of popup with left of background 
-						popupChildRect.X = backgroundRect.Left;
-						if (popupChildRect.Right > windowRect.Right) // popup overflows at right
-						{
-							// Align right of popup with right of background
-							popupChildRect.X = backgroundRect.Right - popupChildRect.Width;
-						}
-						if (popupChildRect.Left < windowRect.Left) // popup overflows at left
-						{
-							// Align center of popup with center of window
-							popupChildRect.X = (windowRect.Width - popupChildRect.Width) / 2.0;
-						}
+				// Align left of popup with left of background 
+				double targetX = containerRect.Left;
+				if (popupChildRect.Right > windowRect.Right) // popup overflows at right
+				{
+					// Align right of popup with right of background
+					targetX = containerRect.Right - popupChildRect.Width;
+				}
+				if (popupChildRect.Left < windowRect.Left) // popup overflows at left
+				{
+					// Align center of popup with center of window
+					targetX = (windowRect.Width - popupChildRect.Width) / 2.0;
+				}
 
-						// Align top of popup with top of background
-						popupChildRect.Y = backgroundRect.Top;
-						if (popupChildRect.Bottom > windowRect.Bottom) // popup overflows at bottom
-						{
-							// Align bottom of popup with bottom of background
-							popupChildRect.Y = backgroundRect.Bottom - popupChildRect.Height;
-						}
-						if (popupChildRect.Top < windowRect.Top) // popup overflows at top
-						{
-							// Align center of popup with center of window
-							popupChildRect.Y = (windowRect.Height - popupChildRect.Height) / 2.0;
-						}
+				// Calculates the maximum available popup height for a given target rect
+				double targetY;
+				double? targetHeight = null;
 
-						popup.HorizontalOffset = popupChildRect.X - popupRect.X;
-						popup.VerticalOffset = popupChildRect.Y - popupRect.Y;
-					}
+				var yBelow = containerRect.Top + textBoxHeight;
+
+				// Try to align popup below TextBox
+				var availableHeightBelow = windowRect.Bottom - yBelow;
+				var availableHeightAbove = containerRect.Top - windowRect.Top;
+
+				// Find to position the popup in this order:
+				//  1. Below text box completely
+				//  2. Above text box completely
+				//  3. To the position where is more space available
+				if (availableHeightBelow >= popupChild.DesiredSize.Height)
+				{
+					targetY = yBelow;
+				}
+				else if (availableHeightAbove >= popupChild.DesiredSize.Height)
+				{
+					targetY = containerRect.Top - popupChild.DesiredSize.Height;
+				}
+				else if (availableHeightBelow > availableHeightAbove)
+				{
+					targetY = containerRect.Top + textBoxHeight;
+					targetHeight = availableHeightBelow;
+				}
+				else
+				{
+					targetY = containerRect.Top - availableHeightAbove;
+					targetHeight = availableHeightAbove;
+				}
+
+				popup.HorizontalOffset = targetX - popupRect.X;
+				popup.VerticalOffset = targetY - popupRect.Y;
+
+				if (targetHeight is double requestedHeight)
+				{
+					_suggestionsContainer.MaxHeight = requestedHeight;
 				}
 			}
 		}
@@ -327,14 +360,12 @@ namespace Windows.UI.Xaml.Controls
 				this.Log().Debug($"Query button clicked");
 			}
 
-			SubmitSearch(_suggestionsList.SelectedItem);
+			SubmitSearch(null);
 		}
 
 		private void SubmitSearch(object item)
 		{
-			var finalResult = item ?? GetObjectText(Text);
-
-			QuerySubmitted?.Invoke(this, new AutoSuggestBoxQuerySubmittedEventArgs(finalResult is "" ? null : finalResult, userInput));
+			QuerySubmitted?.Invoke(this, new AutoSuggestBoxQuerySubmittedEventArgs(item, _textBox.Text));
 
 			IsSuggestionListOpen = false;
 		}
@@ -348,7 +379,7 @@ namespace Windows.UI.Xaml.Controls
 					this.Log().Debug($"Enter key pressed");
 				}
 
-				SubmitSearch(_suggestionsList.SelectedItem);
+				SubmitSearch(IsSuggestionListOpen ? _suggestionsList.SelectedItem : null);
 			}
 			else if ((e.Key == Windows.System.VirtualKey.Up || e.Key == Windows.System.VirtualKey.Down) && IsSuggestionListOpen)
 			{
@@ -400,7 +431,7 @@ namespace Windows.UI.Xaml.Controls
 			ChoseItem(_suggestionsList.SelectedItem);
 		}
 
-		private void ChoseItem(Object o)
+		internal void ChoseItem(Object o)
 		{
 			if (UpdateTextOnSelect)
 			{
@@ -442,6 +473,20 @@ namespace Windows.UI.Xaml.Controls
 
 			if (dependencyObject is AutoSuggestBox tb)
 			{
+				// On some platforms, the TextChangeReason is not updated
+				// as KeyDown is not triggered (e.g. Android)
+				if (tb._textChangeReason != AutoSuggestionBoxTextChangeReason.SuggestionChosen && tb._textBox is not null)
+				{
+					if (tb._textBox.IsUserModifying)
+					{
+						tb._textChangeReason = AutoSuggestionBoxTextChangeReason.UserInput;
+					}
+					else
+					{
+						tb._textChangeReason = AutoSuggestionBoxTextChangeReason.ProgrammaticChange;
+					}
+				}
+
 				tb.UpdateTextBox();
 				tb.UpdateSuggestionList();
 
@@ -455,6 +500,9 @@ namespace Windows.UI.Xaml.Controls
 					Reason = tb._textChangeReason,
 					Owner = tb
 				});
+
+				// Reset the default - otherwise SuggestionChosen could remain set.
+				tb._textChangeReason = AutoSuggestionBoxTextChangeReason.ProgrammaticChange;
 			}
 		}
 

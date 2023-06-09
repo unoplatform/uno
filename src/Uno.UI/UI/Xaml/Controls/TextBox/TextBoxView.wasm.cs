@@ -9,6 +9,7 @@ using Windows.Foundation;
 using System.Globalization;
 using Uno.Disposables;
 using Uno.Foundation;
+using Uno.UI.Xaml;
 using Windows.UI.Xaml.Input;
 
 namespace Windows.UI.Xaml.Controls
@@ -112,17 +113,17 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		internal void Select(int start, int length)
-			=> WebAssemblyRuntime.InvokeJS($"Uno.UI.WindowManager.current.selectInputRange({HtmlId}, {start}, {length})");
+			=> WindowManagerInterop.SelectInputRange(HtmlId, start, length);
 
 		protected override Size MeasureOverride(Size availableSize) => MeasureView(availableSize);
 
-		internal void SetIsPassword(bool isPassword)
+		internal void SetPasswordRevealState(PasswordRevealState revealState)
 		{
 			if (IsMultiline)
 			{
 				throw new NotSupportedException("A PasswordBox cannot have multiple lines.");
 			}
-			SetAttribute("type", isPassword ? "password" : "text");
+			SetAttribute("type", revealState == PasswordRevealState.Obscured ? "password" : "text");
 		}
 
 		internal void SetEnabled(bool newValue) => SetProperty("disabled", newValue ? "false" : "true");

@@ -1,3 +1,7 @@
+---
+uid: Uno.Development.UwpVsWinUI3
+---
+
 # WinUI 3 and Uno Platform
 
 WinUI 3 is the [next generation of Microsoft's Windows UI library](https://docs.microsoft.com/windows/apps/winui/). It succeeds the UWP XAML framework as Microsoft's actively-developed native UI platform for Windows. WinUI 3 supports Windows Desktop apps through [Windows AppSDK](https://docs.microsoft.com/windows/apps/windows-app-sdk/).
@@ -13,11 +17,11 @@ WinUI 3 differs in minor ways from UWP XAML in terms of API, and in more substan
 
 ### API
 
-The chief difference between WinUI 3 and UWP XAML is the change of namespace. UWP XAML namespaces begin with 'Windows' - `Windows.UI.Xaml`, `Windows.UI.Composition`, and so on. WinUI 3 namespaces begin with 'Microsoft' - `Microsoft.UI.Xaml`, `Microsoft.UI.Composition` and so on. Aside from that change, the API surface is very similar. Some of the remaining differences are listed in our [guide to upgrading to WinUI 3](updating-to-winui3.md).
+The main difference between WinUI 3 and UWP XAML is the change of namespace. UWP XAML namespaces begin with 'Windows' - `Windows.UI.Xaml`, `Windows.UI.Composition`, and so on. WinUI 3 namespaces begin with 'Microsoft' - `Microsoft.UI.Xaml`, `Microsoft.UI.Composition` and so on. Aside from that change, the API surface is very similar. Some of the remaining differences are listed in our [guide to upgrading to WinUI 3](updating-to-winui3.md).
 
 ### Technical
 
-Below the surface, the differences are more substantial. The UWP XAML stack is part of the Windows OS. The WinUI 3 stack is decoupled from the OS. This means application developers can use the newest features without worrying that they might not be supported on the end user's system.
+Below the surface, the differences are more substantial. The UWP XAML stack is part of the Windows OS. The WinUI 3 stack is decoupled from the Windows OS. This means application developers can use the newest features without worrying that they might not be supported on the end user's system.
 
 WinUI 3 is also decoupled from the application model. The UWP XAML stack is only compatible with the 'UWP model' in which the application runs in a secure sandbox. WinUI 3 is compatible both with the 'UWP model' and with the traditional 'Win32' or 'desktop' application model in which the application has largely-unrestricted access to the rest of the OS. 
 
@@ -37,7 +41,7 @@ The questions below should help guide you to the best choice when creating a new
 
 While 3rd party vendors have offerings for both UWP and WinUI, UWP has been in the market longer. From Uno Platform perspective either will work, or if not, contact us at our [Discord channel](https://discord.com/invite/eBHZSKG).
 
-#### Do you want to use .NET 5 or 6?
+#### Do you want to use .NET 5 or .NET 6/7/8 or later?
 
 WinUI 3 applications using the Win32 application model can use .NET 5 and latest C# versions right now. Microsoft has announced they will not invest into moving UWP to .NET 5 or later. However, this does not change anything for Uno Platform users, as described in this [blog](https://platform.uno/blog/recent-uwp-and-net-5-net-6-news-and-uno-platform-plans/).
 

@@ -22,10 +22,8 @@ using Uno.Foundation.Logging;
 using Uno.Helpers.Theming;
 using Uno.UI.Core.Preview;
 using Uno.UI.Runtime.Skia.Wpf;
-using Uno.UI.Runtime.Skia.Wpf.Extensions.UI.Xaml.Input;
 using Uno.UI.Runtime.Skia.Wpf.Rendering;
-using Uno.UI.Runtime.Skia.Wpf.WPF.Extensions.Helper.Theming;
-using Uno.UI.Runtime.Skia.WPF.Extensions.UI.Xaml.Controls;
+using Uno.UI.Runtime.Skia.Wpf.WPF.Extensions.Helpers.Theming;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Controls.Extensions;
 using Uno.UI.Xaml.Core;
@@ -46,6 +44,7 @@ using WpfApplication = System.Windows.Application;
 using WpfCanvas = System.Windows.Controls.Canvas;
 using WpfControl = System.Windows.Controls.Control;
 using WpfFrameworkPropertyMetadata = System.Windows.FrameworkPropertyMetadata;
+using Uno.UI.Runtime.Skia.Wpf.Extensions.UI.Xaml.Controls;
 
 namespace Uno.UI.Skia.Platform
 {
@@ -72,8 +71,7 @@ namespace Uno.UI.Skia.Platform
 		}
 
 		private static bool _extensionsRegistered;
-		private UnoWpfRenderer _renderer;
-		private HostPointerHandler? _hostPointerHandler;
+		private IWpfRenderer? _renderer;
 
 		internal static void RegisterExtensions()
 		{
@@ -83,8 +81,8 @@ namespace Uno.UI.Skia.Platform
 			}
 
 			ApiExtensibility.Register(typeof(Uno.ApplicationModel.Core.ICoreApplicationExtension), o => new CoreApplicationExtension(o));
+			ApiExtensibility.Register(typeof(Windows.UI.Core.IUnoCorePointerInputSource), o => new WpfCorePointerInputSource((IWpfHost)o));
 			ApiExtensibility.Register(typeof(Windows.UI.Core.ICoreWindowExtension), o => new WpfCoreWindowExtension(o));
-			ApiExtensibility.Register<Windows.UI.Xaml.Application>(typeof(IApplicationExtension), o => new WpfApplicationExtension(o));
 			ApiExtensibility.Register(typeof(Windows.UI.ViewManagement.IApplicationViewExtension), o => new WpfApplicationViewExtension(o));
 			ApiExtensibility.Register(typeof(ISystemThemeHelperExtension), o => new WpfSystemThemeHelperExtension(o));
 			ApiExtensibility.Register(typeof(IDisplayInformationExtension), o => new WpfDisplayInformationExtension(o));
@@ -93,12 +91,11 @@ namespace Uno.UI.Skia.Platform
 			ApiExtensibility.Register<FolderPicker>(typeof(IFolderPickerExtension), o => new FolderPickerExtension(o));
 			ApiExtensibility.Register(typeof(IFileSavePickerExtension), o => new FileSavePickerExtension(o));
 			ApiExtensibility.Register(typeof(IConnectionProfileExtension), o => new WindowsConnectionProfileExtension(o));
-			ApiExtensibility.Register<TextBoxView>(typeof(ITextBoxViewExtension), o => new TextBoxViewExtension(o));
+			ApiExtensibility.Register<TextBoxView>(typeof(IOverlayTextBoxViewExtension), o => new TextBoxViewExtension(o));
 			ApiExtensibility.Register(typeof(ILauncherExtension), o => new LauncherExtension(o));
 			ApiExtensibility.Register(typeof(IClipboardExtension), o => new ClipboardExtensions(o));
 			ApiExtensibility.Register(typeof(IAnalyticsInfoExtension), o => new AnalyticsInfoExtension());
 			ApiExtensibility.Register(typeof(ISystemNavigationManagerPreviewExtension), o => new SystemNavigationManagerPreviewExtension());
-			ApiExtensibility.Register(typeof(IPointerExtension), o => new PointerExtension());
 
 			_extensionsRegistered = true;
 		}
@@ -109,13 +106,19 @@ namespace Uno.UI.Skia.Platform
 
 		public static WpfHost? Current => _current;
 
+		/// <summary>
+		/// Gets or sets the current Skia Render surface type.
+		/// </summary>
+		/// <remarks>If <c>null</c>, the host will try to determine the most compatible mode.</remarks>
+		public RenderSurfaceType? RenderSurfaceType { get; set; }
+
 		internal WpfCanvas? NativeOverlayLayer => _nativeOverlayLayer;
 
 		/// <summary>
 		/// Creates a WpfHost element to host a Uno-Skia into a WPF application.
 		/// </summary>
 		/// <param name="appBuilder">App builder.</param>
-		/// <param name="args">Deprecated, value ignored.</param>		
+		/// <param name="args">Deprecated, value ignored.</param>
 		/// <remarks>
 		/// Args are obsolete and will be removed in the future. Environment.CommandLine is used instead
 		/// to fill LaunchEventArgs.Arguments.
@@ -134,7 +137,8 @@ namespace Uno.UI.Skia.Platform
 
 			Windows.UI.Core.CoreDispatcher.DispatchOverride = d => dispatcher.BeginInvoke(d);
 			Windows.UI.Core.CoreDispatcher.HasThreadAccessOverride = dispatcher.CheckAccess;
-			_renderer = new UnoWpfRenderer(this);
+
+			InitializeRenderer();
 
 			WpfApplication.Current.Activated += Current_Activated;
 			WpfApplication.Current.Deactivated += Current_Deactivated;
@@ -153,6 +157,26 @@ namespace Uno.UI.Skia.Platform
 
 			CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRootSet += OnCoreWindowContentRootSet;
 			RegisterForBackgroundColor();
+		}
+
+		private void InitializeRenderer()
+		{
+			if (RenderSurfaceType is null)
+			{
+				RenderSurfaceType = Skia.RenderSurfaceType.OpenGL;
+			}
+
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().Debug($"Using {RenderSurfaceType} rendering");
+			}
+
+			_renderer = RenderSurfaceType switch
+			{
+				Skia.RenderSurfaceType.Software => new SoftwareWpfRenderer(this),
+				Skia.RenderSurfaceType.OpenGL => new OpenGLWpfRenderer(this),
+				_ => throw new InvalidOperationException($"Render Surface type {RenderSurfaceType} is not supported")
+			};
 		}
 
 		private void UpdateWindowPropertiesFromPackage()
@@ -198,7 +222,10 @@ namespace Uno.UI.Skia.Platform
 			{
 				if (WinUI.Window.Current.Background is WinUI.Media.SolidColorBrush brush)
 				{
-					_renderer.BackgroundColor = brush.Color;
+					if (_renderer is not null)
+					{
+						_renderer.BackgroundColor = brush.Color;
+					}
 				}
 				else
 				{
@@ -216,16 +243,17 @@ namespace Uno.UI.Skia.Platform
 
 		private void OnCoreWindowContentRootSet(object? sender, object e)
 		{
-			var xamlRoot = CoreServices.Instance
+			var contentRoot = CoreServices.Instance
 				.ContentRootCoordinator
-				.CoreWindowContentRoot?
-				.GetOrCreateXamlRoot();
+				.CoreWindowContentRoot;
+			var xamlRoot = contentRoot?.GetOrCreateXamlRoot();
 
 			if (xamlRoot is null)
 			{
 				throw new InvalidOperationException("XamlRoot was not properly initialized");
 			}
 
+			contentRoot!.SetHost(this);
 			XamlRootMap.Register(xamlRoot, this);
 
 			CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRootSet -= OnCoreWindowContentRootSet;
@@ -273,7 +301,6 @@ namespace Uno.UI.Skia.Platform
 			}
 
 			WinUI.Application.StartWithArguments(CreateApp);
-			_hostPointerHandler = new HostPointerHandler(this);
 
 			UpdateWindowPropertiesFromPackage();
 		}
@@ -312,6 +339,22 @@ namespace Uno.UI.Skia.Platform
 
 		private void WpfHost_Loaded(object sender, RoutedEventArgs e)
 		{
+			if (_renderer is not null && !_renderer.Initialize())
+			{
+				// OpenGL initialization failed, fallback to software rendering
+				// This may happen on headless systems or containers.
+
+				if (this.Log().IsEnabled(LogLevel.Warning))
+				{
+					this.Log().Warn($"OpenGL failed to initialize, using software rendering");
+				}
+
+				RenderSurfaceType = Skia.RenderSurfaceType.Software;
+				InitializeRenderer();
+
+				_renderer.Initialize();
+			}
+
 			WinUI.Window.Current.OnNativeSizeChanged(new Windows.Foundation.Size(ActualWidth, ActualHeight));
 
 			// Avoid dotted border on focus.
@@ -342,13 +385,14 @@ namespace Uno.UI.Skia.Platform
 		}
 
 		[Obsolete("It will be removed in the next major release.")]
-		public SKSize CanvasSize => _renderer.CanvasSize;
+		public SKSize CanvasSize
+			=> _renderer?.CanvasSize ?? SKSize.Empty;
 
 		protected override void OnRender(DrawingContext drawingContext)
 		{
 			base.OnRender(drawingContext);
 
-			_renderer.Render(drawingContext);
+			_renderer?.Render(drawingContext);
 		}
 
 		private void InvalidateOverlays()
@@ -360,10 +404,6 @@ namespace Uno.UI.Skia.Platform
 				textBox.TextBoxView?.Extension?.InvalidateLayout();
 			}
 		}
-
-		void IWpfHost.ReleasePointerCapture() => ReleaseMouseCapture(); //TODO: This should capture the correct type of pointer (stylus/mouse/touch) https://github.com/unoplatform/uno/issues/8978[capture]
-
-		void IWpfHost.SetPointerCapture() => CaptureMouse();
 
 		//TODO: This will need to be adjusted when multi-window support is added. https://github.com/unoplatform/uno/issues/8978[windows]
 		WinUI.XamlRoot? IWpfHost.XamlRoot => WinUI.Window.Current?.RootElement?.XamlRoot;

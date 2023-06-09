@@ -10,6 +10,8 @@ using Android.Views;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
+using Uno.UI.Xaml.Core;
+using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
@@ -122,7 +124,7 @@ namespace Windows.UI.Xaml
 					// but if the event has been handled, we need to raise it after the 'up' has been processed.
 					if (OnNativePointerUp(args))
 					{
-						Uno.UI.Xaml.Core.RootVisual.ProcessPointerUp(args, isAfterHandledUp: true);
+						WinUICoreServices.Instance.MainRootVisual?.ProcessPointerUp(args, isAfterHandledUp: true); // TODO for #8341
 						return true;
 					}
 					else
@@ -234,12 +236,6 @@ namespace Windows.UI.Xaml
 				}
 			};
 		}
-
-		#region Capture
-		// No needs to explicitly capture pointers on Android, they are implicitly captured
-		// partial void CapturePointerNative(Pointer pointer);
-		// partial void ReleasePointerNative(Pointer pointer);
-		#endregion
 
 		partial void OnIsHitTestVisibleChangedPartial(bool oldValue, bool newValue)
 		{

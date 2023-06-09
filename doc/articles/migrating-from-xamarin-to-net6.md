@@ -1,3 +1,7 @@
+---
+uid: Uno.Development.MigratingFromXamarinToNet6
+---
+
 # Migrating Xamarin Projects to .NET 6
 
 As of July 2022, Microsoft has published a stable version of .NET 6 for iOS, Android, macOS and Mac Catalyst. This new target is supported by Uno Platform, alongside Xamarin.

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Numerics;
 using System.Text;
 using Uno.Extensions;
-using Uno.Extensions.ValueType;
 
 namespace Uno.UI.Media
 {

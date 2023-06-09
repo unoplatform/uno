@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Globalization;
 using System.Collections.Generic;
 using Uno.Extensions;
+using Uno.UI.Xaml;
 using Uno.UI.Xaml.Media;
 using Uno.Foundation.Logging;
 using System.Collections.Concurrent;
@@ -219,8 +220,7 @@ namespace Windows.UI.Xaml.Media
 
 			if (!_naturalSizeCache.TryGetValue(_imageUri, out var naturalSize))
 			{
-				var command = "Uno.UI.WindowManager.current.getNaturalImageSize(\"" + _imageUri + "\");";
-				var naturalSizeResponse = await Uno.Foundation.WebAssemblyRuntime.InvokeAsync(command);
+				var naturalSizeResponse = await WindowManagerInterop.GetNaturalImageSizeAsync(_imageUri);
 
 				if (!TryParseNaturalSize(naturalSizeResponse, out naturalSize))
 				{

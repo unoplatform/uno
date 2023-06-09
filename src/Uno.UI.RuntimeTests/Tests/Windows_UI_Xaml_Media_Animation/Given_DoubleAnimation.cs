@@ -1,12 +1,17 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Uno.UI.RuntimeTests.Extensions;
+using Windows.UI;
+using Windows.UI.Composition;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
+using Windows.UI.Xaml.Shapes;
 using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
@@ -44,7 +49,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 #if __ANDROID__
 		[Ignore("In this scenario, droid doesnt ReportEachFrame(), so we won't be able to read the animated values to evaluate this test.")]
 #endif
-		public async Task When_RepeatForever_WithoutFrom_Asd()
+		public async Task When_RepeatForever_WithoutFrom()
 		{
 			// droid: The fix is still valid for android, because it will now be reading from non-animated value as well.
 			// However, that doesnt change anything (it worked before), because the animated was never commited into the property details.
@@ -111,5 +116,234 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 				values.Add(transform.X);
 			}
 		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if __SKIA__
+		[Ignore("This test is very flaky in CI for Skia targets, see https://github.com/unoplatform/uno/issues/9080")]
+#endif
+		public async Task When_RepeatForever_ShouldLoop()
+		{
+			// On CI, the measurement at 100ms seem to be too unreliable on Android & MacOS.
+			// Stretch the test by 5x greatly improve the stability. When testing locally, we can used 1x to save time (5s vs 25s).
+			const int TimeResolutionScaling =
+#if !DEBUG && (__ANDROID__ || __MACOS__)
+				5;
+#else
+				1;
+#endif
+
+			var target = new Windows.UI.Xaml.Shapes.Rectangle
+			{
+				Stretch = Stretch.Fill,
+				Fill = new SolidColorBrush(Colors.SkyBlue),
+				Width = 50,
+				Height = 50,
+			};
+			WindowHelper.WindowContent = target;
+			await WindowHelper.WaitForLoaded(target);
+			await WindowHelper.WaitForIdle();
+
+			var animation = new DoubleAnimation
+			{
+				EnableDependentAnimation = true,
+				From = 0,
+				To = 50,
+				RepeatBehavior = RepeatBehavior.Forever,
+				Duration = TimeSpan.FromMilliseconds(500 * TimeResolutionScaling),
+			}.BindTo(target, nameof(Rectangle.Width));
+			animation.ToStoryboard().Begin();
+
+			// In an ideal world, the measurements would be [0 or 50,10,20,30,40] repeated 10 times.
+			var list = new List<double>();
+			for (int i = 0; i < 50; i++)
+			{
+				list.Add(NanToZero(target.Width));
+				await Task.Delay(100 * TimeResolutionScaling);
+			}
+
+			var delta = list.Zip(list.Skip(1), (a, b) => b - a).ToArray();
+			var averageIncrement = delta.Where(x => x > 0).Average();
+			var drops = delta.Select((x, i) => new { Delta = x, Index = i })
+				.Where(x => x.Delta < 0)
+				.Select(x => x.Index)
+				.ToArray();
+			var incrementSizes = drops.Zip(drops.Skip(1), (a, b) => b - a - 1).ToArray(); // -1 to exclude the drop itself
+
+			var context = new StringBuilder()
+				.AppendLine("list: " + string.Join(", ", list.Select(x => x.ToString("0.#"))))
+				.AppendLine("delta: " + string.Join(", ", delta.Select(x => x.ToString("+0.#;-0.#;0"))))
+				.AppendLine("averageIncrement: " + averageIncrement)
+				.AppendLine("drops: " + string.Join(", ", drops.Select(x => x.ToString("0.#"))))
+				.AppendLine("incrementSizes: " + string.Join(", ", incrementSizes.Select(x => x.ToString("0.#"))))
+				.ToString();
+
+			// This 500ms animation is expected to climb from 0 to 50, reset to 0 instantly, and repeat forever.
+			// Given that we are taking 5measurements per cycle, we can expect the followings:
+			Assert.AreEqual(10d, averageIncrement, 2.5, $"Expected an rough average of increment (excluding the drop) of 10 (+-25% error margin).\n" + context);
+			Assert.IsTrue(incrementSizes.Count(x => x >= 3) >= 8, $"Expected at least 10sets (-2 error margin: might miss first and/or last) of continuous increments in size of 4 (+-1 error margin: sliding slot).\n" + context);
+
+			double NanToZero(double value) => double.IsNaN(value) ? 0 : value;
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_StartingFrom_AnimatedValue() // value from completed(filling) animation
+		{
+			var translate = new TranslateTransform();
+			var border = new Border()
+			{
+				Background = new SolidColorBrush(Colors.Pink),
+				Margin = new Thickness(0, 50, 0, 0),
+				Width = 50,
+				Height = 50,
+				RenderTransform = translate,
+			};
+			WindowHelper.WindowContent = border;
+			await WindowHelper.WaitForLoaded(border);
+			await WindowHelper.WaitForIdle();
+
+			// Start an animation. Its final value will serve as
+			// the inferred starting value for the next animation.
+			var animation0 = new DoubleAnimation
+			{
+				// From = should be 0
+				To = 50,
+				Duration = new Duration(TimeSpan.FromSeconds(2)),
+			}.BindTo(translate, nameof(translate.Y));
+			await animation0.ToStoryboard().RunAsync(timeout: animation0.Duration.TimeSpan + TimeSpan.FromSeconds(1));
+			await Task.Delay(1000);
+
+			// Start an second animation which should pick up from current animated value.
+			var animation1 = new DoubleAnimation
+			{
+				// From = should be 50 from animation #0
+				To = -50,
+				Duration = new Duration(TimeSpan.FromSeconds(5)),
+			}.BindTo(translate, nameof(translate.Y));
+			animation1.ToStoryboard().Begin();
+			await Task.Delay(125);
+
+			// ~125ms into a 5s animation where the value is animating from 50 to -50,
+			// the value should be still positive.
+			var y = GetTranslateY(translate, isStillAnimating: true);
+			Assert.IsTrue(y > 0, $"Expecting Translate.Y to be still positive: {y}");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_StartingFrom_AnimatingValue() // value from mid animation
+		{
+			var translate = new TranslateTransform();
+			var border = new Border()
+			{
+				Background = new SolidColorBrush(Colors.Pink),
+				Margin = new Thickness(0, 50, 0, 0),
+				Width = 50,
+				Height = 50,
+				RenderTransform = translate,
+			};
+			WindowHelper.WindowContent = border;
+			await WindowHelper.WaitForLoaded(border);
+			await WindowHelper.WaitForIdle();
+
+			translate.Y = 50;
+			await WindowHelper.WaitForIdle();
+			await Task.Delay(1000);
+			var threshold = GetTranslateY(translate); // snapshot the value
+
+			// Start an animation. Its animating value will serve as
+			// the inferred starting value for the next animation.
+			var animation0 = new DoubleAnimation
+			{
+				From = 100,
+				To = 105,
+				Duration = new Duration(TimeSpan.FromSeconds(5)),
+			}.BindTo(translate, nameof(translate.Y));
+			animation0.ToStoryboard().Begin();
+			await Task.Delay(125);
+
+			// Start an second animation which should pick up from current animating value.
+			var animation1 = new DoubleAnimation
+			{
+				// From = should be around 100~105 from animation #0
+				To = 50,
+				Duration = new Duration(TimeSpan.FromSeconds(5)),
+			}.BindTo(translate, nameof(translate.Y));
+			animation1.ToStoryboard().Begin();
+			await Task.Delay(125);
+
+			var value = GetTranslateY(translate, isStillAnimating: true);
+			if (value is double y)
+			{
+				// Animation #1 should be animating from around[100~105] to 50, and not from 0 (unanimated Local value).
+				Assert.IsTrue(y > 50, $"Expecting Translate.Y to be still positive: {y}");
+			}
+			else
+			{
+				Assert.Fail($"Translate.Y is not a double: value={value}");
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public Task When_OverridingFillingValue_WithLocalValue() =>
+			When_OverridingFillingValue_WithLocalValue_Impl(skipToFill: false);
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public Task When_OverridingFillingValue_WithLocalValue_Skipped() =>
+			When_OverridingFillingValue_WithLocalValue_Impl(skipToFill: true);
+
+		public async Task When_OverridingFillingValue_WithLocalValue_Impl(bool skipToFill)
+		{
+			var translate = new TranslateTransform();
+			var border = new Border()
+			{
+				Background = new SolidColorBrush(Colors.Pink),
+				Margin = new Thickness(0, 50, 0, 0),
+				Width = 50,
+				Height = 50,
+				RenderTransform = translate,
+			};
+			WindowHelper.WindowContent = border;
+			await WindowHelper.WaitForLoaded(border);
+			await WindowHelper.WaitForIdle();
+
+			// Animate the value to fill.
+			var animation0 = new DoubleAnimation
+			{
+				To = 100,
+				Duration = new Duration(TimeSpan.FromSeconds(1)),
+			}.BindTo(translate, nameof(translate.Y));
+			if (skipToFill)
+			{
+				animation0.ToStoryboard().SkipToFill();
+			}
+			else
+			{
+				await animation0.ToStoryboard().RunAsync();
+			}
+			var beforeValue = translate.Y;
+
+			// Set a new local value
+			translate.Y = 312.0;
+			var afterValue = translate.Y;
+
+			Assert.AreEqual(beforeValue, 100.0, "before: Should be animated to 100");
+			Assert.AreEqual(afterValue, 312.0, "after: Should be set to 312");
+		}
+
+		private static double GetTranslateY(TranslateTransform translate, bool isStillAnimating = false) =>
+#if !__ANDROID__
+			translate.Y;
+#else
+			isStillAnimating
+				// On android, animation may target a native property implementing the behavior instead of the specified dependency property.
+				// We need to retrieve the value of that native property, as reading the dp value will just give the final value.
+				? ViewHelper.PhysicalToLogicalPixels((double)translate.View.TranslationY)
+				// And, when the animation is completed, this native value is reset even for HoldEnd animation.
+				: translate.Y;
+#endif
 	}
 }

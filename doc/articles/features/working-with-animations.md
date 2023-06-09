@@ -1,3 +1,7 @@
+---
+uid: Uno.Features.Animations
+---
+
 # Animations
 
 Uno Platform supports [storyboarded animations](https://docs.microsoft.com/en-us/windows/uwp/design/motion/storyboarded-animations). A number of animation types are supported, including `DoubleAnimation`, `ColorAnimation`, and key frame-based animations.

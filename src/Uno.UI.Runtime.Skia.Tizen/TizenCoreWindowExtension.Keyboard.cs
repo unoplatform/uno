@@ -1,25 +1,10 @@
 ﻿#nullable enable
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using ElmSharp;
-using Windows.Devices.Input;
 using Windows.UI.Core;
-using Windows.UI.Input;
-using Windows.UI.Xaml;
-using Uno.Extensions;
-using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
-using TizenWindow = ElmSharp.Window;
 using Windows.System;
-using System.Threading;
-using SkiaSharp.Views.Tizen;
-using Windows.Graphics.Display;
-using Windows.Foundation;
-using Tizen.NUI;
 using Tizen.Uix.InputMethod;
 
 namespace Uno.UI.Runtime.Skia
@@ -37,7 +22,7 @@ namespace Uno.UI.Runtime.Skia
 					this.Log().Trace($"OnKeyDown: ({args.KeyName}/{keyCode}) -> {virtualKey}");
 				}
 
-				_ownerEvents.RaiseKeyDown(
+				_owner.RaiseNativeKeyDownReceived(
 					new KeyEventArgs(
 						"keyboard",
 						virtualKey,
@@ -64,7 +49,7 @@ namespace Uno.UI.Runtime.Skia
 					this.Log().Trace($"OnKeyUp: ({args.KeyName}/{keyCode}) -> {virtualKey}");
 				}
 
-				_ownerEvents.RaiseKeyUp(
+				_owner.RaiseNativeKeyUpReceived(
 					new KeyEventArgs(
 						"keyboard",
 						virtualKey,

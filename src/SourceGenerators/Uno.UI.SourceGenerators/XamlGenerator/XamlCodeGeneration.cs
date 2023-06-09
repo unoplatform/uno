@@ -22,6 +22,9 @@ using System.Threading;
 using System.Collections.Concurrent;
 using System.Collections.Immutable;
 using Uno.UI.SourceGenerators.Helpers;
+using Uno.UI.SourceGenerators.Utils;
+using Uno.UI.SourceGenerators.XamlGenerator.ThirdPartyGenerators;
+using Uno.UI.SourceGenerators.XamlGenerator.ThirdPartyGenerators.CommunityToolkitMvvm;
 
 #if NETFRAMEWORK
 using Microsoft.Build.Execution;
@@ -76,11 +79,16 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private static DateTime _buildTasksBuildDate = File.GetLastWriteTime(new Uri(typeof(XamlFileGenerator).Assembly.Location).LocalPath);
 		private INamedTypeSymbol[]? _ambientGlobalResources;
 		private readonly bool _isUiAutomationMappingEnabled;
-		private Dictionary<string, string> _legacyTypes;
 
 		// Determines if the source generator will skip the inclusion of UseControls in the
 		// visual tree. See https://github.com/unoplatform/uno/issues/61
-		private bool _skipUserControlsInVisualTree;
+		private readonly bool _skipUserControlsInVisualTree;
+
+		/// <summary>
+		/// Exists for compatibility only. This option should be removed in Uno 5 and fuzzy matching should be disabled.
+		/// </summary>
+		private readonly bool _enableFuzzyMatching;
+
 		private readonly GeneratorExecutionContext _generatorContext;
 
 		private bool IsUnoAssembly
@@ -91,6 +99,53 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private const string WinUIThemeResourcePathSuffixFormatString = "themeresources_v{0}.xaml";
 		private static string WinUICompactPathSuffix = Path.Combine("DensityStyles", "Compact.xaml");
+
+		internal Lazy<INamedTypeSymbol?> AssemblyMetadataSymbol { get; }
+		internal Lazy<INamedTypeSymbol> ElementStubSymbol { get; }
+		internal Lazy<INamedTypeSymbol> ContentPresenterSymbol { get; }
+		internal Lazy<INamedTypeSymbol> StringSymbol { get; }
+		internal Lazy<INamedTypeSymbol> ObjectSymbol { get; }
+		internal Lazy<INamedTypeSymbol> FrameworkElementSymbol { get; }
+		internal Lazy<INamedTypeSymbol> UIElementSymbol { get; }
+		internal Lazy<INamedTypeSymbol> DependencyObjectSymbol { get; }
+		internal Lazy<INamedTypeSymbol> MarkupExtensionSymbol { get; }
+		internal Lazy<INamedTypeSymbol> BrushSymbol { get; }
+		internal Lazy<INamedTypeSymbol> ImageSourceSymbol { get; }
+		internal Lazy<INamedTypeSymbol> ImageSymbol { get; }
+		internal Lazy<INamedTypeSymbol> DependencyObjectParseSymbol { get; }
+		internal Lazy<INamedTypeSymbol?> AndroidContentContextSymbol { get; }
+		internal Lazy<INamedTypeSymbol?> AndroidViewSymbol { get; }
+		internal Lazy<INamedTypeSymbol?> IOSViewSymbol { get; }
+		internal Lazy<INamedTypeSymbol?> AppKitViewSymbol { get; }
+		internal Lazy<INamedTypeSymbol> ICollectionSymbol { get; }
+		internal Lazy<INamedTypeSymbol> ICollectionOfTSymbol { get; }
+		internal Lazy<INamedTypeSymbol> IConvertibleSymbol { get; }
+		internal Lazy<INamedTypeSymbol> IListSymbol { get; }
+		internal Lazy<INamedTypeSymbol> IListOfTSymbol { get; }
+		internal Lazy<INamedTypeSymbol> IDictionaryOfTKeySymbol { get; }
+		internal Lazy<INamedTypeSymbol> DataBindingSymbol { get; }
+		internal Lazy<INamedTypeSymbol> StyleSymbol { get; }
+		internal Lazy<INamedTypeSymbol> SetterSymbol { get; }
+		internal Lazy<INamedTypeSymbol> ColorSymbol { get; }
+		internal Lazy<INamedTypeSymbol> ColorsSymbol { get; }
+		internal Lazy<INamedTypeSymbol> FontWeightsSymbol { get; }
+		internal Lazy<INamedTypeSymbol> SolidColorBrushHelperSymbol { get; }
+		internal Lazy<INamedTypeSymbol> CreateFromStringAttributeSymbol { get; }
+		internal Lazy<INamedTypeSymbol> UserControlSymbol { get; }
+		internal Lazy<INamedTypeSymbol?> NativePageSymbol { get; }
+		internal Lazy<INamedTypeSymbol> ApplicationSymbol { get; }
+		internal Lazy<INamedTypeSymbol> ResourceDictionarySymbol { get; }
+		internal Lazy<INamedTypeSymbol> TextBlockSymbol { get; }
+		internal Lazy<INamedTypeSymbol> RunSymbol { get; }
+		internal Lazy<INamedTypeSymbol> SpanSymbol { get; }
+		internal Lazy<INamedTypeSymbol> BorderSymbol { get; }
+		internal Lazy<INamedTypeSymbol> SolidColorBrushSymbol { get; }
+		internal Lazy<INamedTypeSymbol> RowDefinitionSymbol { get; }
+		internal Lazy<INamedTypeSymbol> ColumnDefinitionSymbol { get; }
+		internal Lazy<INamedTypeSymbol> TaskSymbol { get; }
+
+
+		internal ImmutableArray<ITypeProvider> TypeProviders { get; }
 
 		public XamlCodeGeneration(GeneratorExecutionContext context)
 		{
@@ -106,13 +161,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_generatorContext = context;
 			InitTelemetry(context);
 
-			_legacyTypes = context
-				.GetMSBuildPropertyValue("LegacyTypesProperty")
-				.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
-				.ToList()
-				.ToDictionary(k => k, fullyQualifiedName => fullyQualifiedName.Split('.').Last());
-
-			_metadataHelper = new RoslynMetadataHelper(context, _legacyTypes);
+			_metadataHelper = new RoslynMetadataHelper(context);
 			_assemblySearchPaths = Array.Empty<string>();
 
 			_configuration = context.GetMSBuildPropertyValue("Configuration")
@@ -143,11 +192,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_analyzerSuppressions = context.GetMSBuildPropertyValue("XamlGeneratorAnalyzerSuppressionsProperty").Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
 
 			_resourceFiles = context.GetMSBuildItemsWithAdditionalFiles("PRIResource").ToArray();
-
-			if (bool.TryParse(context.GetMSBuildPropertyValue("UseUnoXamlParser"), out var useUnoXamlParser) && useUnoXamlParser)
-			{
-				XamlRedirection.XamlConfig.IsUnoXaml = useUnoXamlParser || XamlRedirection.XamlConfig.IsMono;
-			}
 
 			if (bool.TryParse(context.GetMSBuildPropertyValue("UnoSkipUserControlsInVisualTree"), out var skipUserControlsInVisualTree))
 			{
@@ -198,6 +242,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				_isHotReloadEnabled = _isDebug;
 			}
 
+			if (!bool.TryParse(context.GetMSBuildPropertyValue("UnoEnableXamlFuzzyMatching"), out _enableFuzzyMatching))
+			{
+				_enableFuzzyMatching = true;
+			}
+
 			_targetPath = Path.Combine(
 				_projectDirectory,
 				context.GetMSBuildPropertyValue("IntermediateOutputPath")
@@ -221,7 +270,64 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			_isWasm = context.GetMSBuildPropertyValue("DefineConstantsProperty")?.Contains("__WASM__") ?? false;
 			_isDesignTimeBuild = Helpers.DesignTimeHelper.IsDesignTime(context);
+
+			StringSymbol = GetSpecialTypeSymbolAsLazy(SpecialType.System_String);
+			ObjectSymbol = GetSpecialTypeSymbolAsLazy(SpecialType.System_Object);
+			AssemblyMetadataSymbol = GetOptionalSymbolAsLazy("System.Reflection.AssemblyMetadataAttribute");
+			ElementStubSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.ElementStub);
+			SetterSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.Setter);
+			ContentPresenterSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.ContentPresenter);
+			FrameworkElementSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.FrameworkElement);
+			UIElementSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.UIElement);
+			ImageSourceSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.ImageSource);
+			ImageSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.Image);
+			DependencyObjectSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.DependencyObject);
+			MarkupExtensionSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.MarkupExtension);
+			BrushSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.Brush);
+			DependencyObjectParseSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.IDependencyObjectParse);
+			ICollectionSymbol = GetMandatorySymbolAsLazy("System.Collections.ICollection");
+			ICollectionOfTSymbol = GetSpecialTypeSymbolAsLazy(SpecialType.System_Collections_Generic_ICollection_T);
+			IConvertibleSymbol = GetMandatorySymbolAsLazy("System.IConvertible");
+			IListSymbol = GetMandatorySymbolAsLazy("System.Collections.IList");
+			IListOfTSymbol = GetSpecialTypeSymbolAsLazy(SpecialType.System_Collections_Generic_IList_T);
+			IDictionaryOfTKeySymbol = GetMandatorySymbolAsLazy("System.Collections.Generic.IDictionary`2");
+			DataBindingSymbol = GetMandatorySymbolAsLazy("Windows.UI.Xaml.Data.Binding");
+			StyleSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.Style);
+			ColorSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.Color);
+			ColorsSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.Colors);
+			FontWeightsSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.FontWeights);
+			SolidColorBrushHelperSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.SolidColorBrushHelper);
+			AndroidContentContextSymbol = GetOptionalSymbolAsLazy("Android.Content.Context");
+			AndroidViewSymbol = GetOptionalSymbolAsLazy("Android.Views.View");
+			IOSViewSymbol = GetOptionalSymbolAsLazy("UIKit.UIView");
+			AppKitViewSymbol = GetOptionalSymbolAsLazy("AppKit.NSView");
+			CreateFromStringAttributeSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.CreateFromStringAttribute);
+			UserControlSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.UserControl);
+			NativePageSymbol = GetOptionalSymbolAsLazy(XamlConstants.Types.NativePage);
+			ApplicationSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.Application);
+			ResourceDictionarySymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.ResourceDictionary);
+			TextBlockSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.TextBlock);
+			RunSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.Run);
+			SpanSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.Span);
+			BorderSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.Border);
+			SolidColorBrushSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.SolidColorBrush);
+			RowDefinitionSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.RowDefinition);
+			ColumnDefinitionSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.ColumnDefinition);
+			TaskSymbol = GetMandatorySymbolAsLazy("System.Threading.Tasks");
+
+			TypeProviders = ImmutableArray.Create<ITypeProvider>(
+				new MvvmTypeProvider(this)
+				);
 		}
+
+		private Lazy<INamedTypeSymbol> GetMandatorySymbolAsLazy(string fullyQualifiedName)
+			=> new(() => _generatorContext.Compilation.GetTypeByMetadataName(fullyQualifiedName) ?? throw new InvalidOperationException($"Unable to find type {fullyQualifiedName}"));
+
+		internal Lazy<INamedTypeSymbol?> GetOptionalSymbolAsLazy(string fullyQualifiedName)
+			=> new(() => _generatorContext.Compilation.GetTypeByMetadataName(fullyQualifiedName));
+
+		private Lazy<INamedTypeSymbol> GetSpecialTypeSymbolAsLazy(SpecialType specialType)
+			=> new(() => _generatorContext.Compilation.GetSpecialType(specialType));
 
 		private static bool IsWinUIItem(Uno.Roslyn.MSBuildItem item)
 			=> item.GetMetadataValue("XamlRuntime") is { } xamlRuntime
@@ -274,16 +380,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return link;
 		}
 
-		public List<KeyValuePair<string, string>> Generate(GenerationRunInfo generationRunInfo)
+		public List<KeyValuePair<string, SourceText>> Generate(GenerationRunInfo generationRunInfo)
 		{
 			var stopwatch = Stopwatch.StartNew();
 
 			try
 			{
-#if DEBUG
-				Console.WriteLine("Xaml Source Generation is using the {0} Xaml Parser", XamlRedirection.XamlConfig.IsUnoXaml ? "Uno.UI" : "System");
-#endif
-
 				var lastBinaryUpdateTime = GetLastBinaryUpdateTime();
 				var isInsideMainAssembly =
 					_isUnoHead
@@ -296,7 +398,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				var resourceDetailsCollection = BuildResourceDetails(_generatorContext.CancellationToken);
 				TryGenerateUnoResourcesKeyAttribute(resourceDetailsCollection);
 
-				var filesFull = new XamlFileParser(_excludeXamlNamespaces, _includeXamlNamespaces, _metadataHelper)
+				var excludeXamlNamespaces = _excludeXamlNamespaces.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+				var includeXamlNamespaces = _includeXamlNamespaces.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+
+				var filesFull = new XamlFileParser(_excludeXamlNamespaces, _includeXamlNamespaces, excludeXamlNamespaces, includeXamlNamespaces, _metadataHelper)
 					.ParseFiles(_xamlSourceFiles, _projectDirectory, _generatorContext.CancellationToken);
 
 				var xamlTypeToXamlTypeBaseMap = new ConcurrentDictionary<INamedTypeSymbol, XamlRedirection.XamlType>();
@@ -323,7 +428,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				TrackStartGeneration(files);
 
-				var globalStaticResourcesMap = BuildAssemblyGlobalStaticResourcesMap(files, filesFull, _xamlSourceLinks, _generatorContext.CancellationToken);
+				var globalStaticResourcesMap = BuildAssemblyGlobalStaticResourcesMap(filesFull, _xamlSourceLinks);
 
 				var filesToProcess = files.AsParallel();
 
@@ -336,46 +441,44 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						.WithDegreeOfParallelism(1);
 				}
 
-				var outputFiles = filesToProcess.Select(file => new KeyValuePair<string, string>(
+				var outputFiles = filesToProcess.Select(file => new KeyValuePair<string, SourceText>(
+					file.UniqueID,
+					new XamlFileGenerator(
+						this,
+						file: file,
+						targetPath: _targetPath,
+						defaultNamespace: _defaultNamespace,
+						metadataHelper: _metadataHelper,
+						fileUniqueId: file.UniqueID,
+						lastReferenceUpdateTime: lastBinaryUpdateTime,
+						analyzerSuppressions: _analyzerSuppressions,
+						globalStaticResourcesMap: globalStaticResourcesMap,
+						resourceDetailsCollection: resourceDetailsCollection,
+						isUiAutomationMappingEnabled: _isUiAutomationMappingEnabled,
+						uiAutomationMappings: _uiAutomationMappings,
+						defaultLanguage: _defaultLanguage,
+						shouldWriteErrorOnInvalidXaml: _shouldWriteErrorOnInvalidXaml,
+						isWasm: _isWasm,
+						isDebug: _isDebug,
+						isHotReloadEnabled: _isHotReloadEnabled,
+						isInsideMainAssembly: isInsideMainAssembly,
+						useXamlReaderHotReload: _useXamlReaderHotReload,
+						isDesignTimeBuild: _isDesignTimeBuild,
+						skipUserControlsInVisualTree: _skipUserControlsInVisualTree,
+						shouldAnnotateGeneratedXaml: _shouldAnnotateGeneratedXaml,
+						isUnoAssembly: IsUnoAssembly,
+						isUnoFluentAssembly: IsUnoFluentAssembly,
+						isLazyVisualStateManagerEnabled: _isLazyVisualStateManagerEnabled,
+						enableFuzzyMatching: _enableFuzzyMatching,
+						generatorContext: _generatorContext,
+						xamlResourcesTrimming: _xamlResourcesTrimming,
+						generationRunFileInfo: generationRunInfo.GetRunFileInfo(file.UniqueID),
+						xamlTypeToXamlTypeBaseMap: xamlTypeToXamlTypeBaseMap,
+						includeXamlNamespaces: includeXamlNamespaces
+					).GenerateFile()
+				)).ToList();
 
-							file.UniqueID,
-							new XamlFileGenerator(
-									file: file,
-									targetPath: _targetPath,
-									defaultNamespace: _defaultNamespace,
-									metadataHelper: _metadataHelper,
-									fileUniqueId: file.UniqueID,
-									lastReferenceUpdateTime: lastBinaryUpdateTime,
-									analyzerSuppressions: _analyzerSuppressions,
-									globalStaticResourcesMap: globalStaticResourcesMap,
-									resourceDetailsCollection: resourceDetailsCollection,
-									isUiAutomationMappingEnabled: _isUiAutomationMappingEnabled,
-									uiAutomationMappings: _uiAutomationMappings,
-									defaultLanguage: _defaultLanguage,
-									shouldWriteErrorOnInvalidXaml: _shouldWriteErrorOnInvalidXaml,
-									isWasm: _isWasm,
-									isDebug: _isDebug,
-									isHotReloadEnabled: _isHotReloadEnabled,
-									isInsideMainAssembly: isInsideMainAssembly,
-									useXamlReaderHotReload: _useXamlReaderHotReload,
-									isDesignTimeBuild: _isDesignTimeBuild,
-									skipUserControlsInVisualTree: _skipUserControlsInVisualTree,
-									shouldAnnotateGeneratedXaml: _shouldAnnotateGeneratedXaml,
-									isUnoAssembly: IsUnoAssembly,
-									isUnoFluentAssembly: IsUnoFluentAssembly,
-									isLazyVisualStateManagerEnabled: _isLazyVisualStateManagerEnabled,
-									generatorContext: _generatorContext,
-									xamlResourcesTrimming: _xamlResourcesTrimming,
-									generationRunFileInfo: generationRunInfo.GetRunFileInfo(file.UniqueID),
-									xamlTypeToXamlTypeBaseMap: xamlTypeToXamlTypeBaseMap
-								)
-								.GenerateFile()
-						)
-					)
-					.ToList();
-
-
-				outputFiles.Add(new KeyValuePair<string, string>("GlobalStaticResources", GenerateGlobalResources(files, globalStaticResourcesMap)));
+				outputFiles.Add(new KeyValuePair<string, SourceText>("GlobalStaticResources", GenerateGlobalResources(files, globalStaticResourcesMap)));
 
 				TrackGenerationDone(stopwatch.Elapsed);
 
@@ -415,7 +518,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		}
 
 #if !NETFRAMEWORK
-		private List<KeyValuePair<string, string>> ProcessParsingException(Exception e)
+		private List<KeyValuePair<string, SourceText>> ProcessParsingException(Exception e)
 		{
 			IEnumerable<Exception> Flatten(Exception ex)
 			{
@@ -453,7 +556,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				_generatorContext.ReportDiagnostic(diagnostic);
 			}
 
-			return new List<KeyValuePair<string, string>>();
+			return new List<KeyValuePair<string, SourceText>>();
 		}
 
 		private Location? GetExceptionFileLocation(Exception exception)
@@ -484,18 +587,17 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		}
 #endif
 
-		private XamlGlobalStaticResourcesMap BuildAssemblyGlobalStaticResourcesMap(XamlFileDefinition[] files, XamlFileDefinition[] filesFull, string[] links, CancellationToken ct)
+		private XamlGlobalStaticResourcesMap BuildAssemblyGlobalStaticResourcesMap(XamlFileDefinition[] filesFull, string[] links)
 		{
 			var map = new XamlGlobalStaticResourcesMap();
 
-			BuildLocalProjectResources(files, map, ct);
-			BuildAmbientResources(map, ct);
+			BuildAmbientResources();
 			map.BuildResourceDictionaryMap(filesFull, links);
 
 			return map;
 		}
 
-		private void BuildAmbientResources(XamlGlobalStaticResourcesMap map, CancellationToken ct)
+		private void BuildAmbientResources()
 		{
 			// Lookup for GlobalStaticResources classes in external assembly
 			// references only, and in Uno.UI itself for generic.xaml-like resources.
@@ -520,100 +622,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						select typeName;
 
 			_ambientGlobalResources = query.Distinct().ToArray();
-
-			foreach (var ambientResources in _ambientGlobalResources)
-			{
-				ct.ThrowIfCancellationRequested();
-
-				var publicProperties = from member in ambientResources.GetAllProperties()
-									   where member.DeclaredAccessibility == Microsoft.CodeAnalysis.Accessibility.Public
-									   select member;
-
-				foreach (var member in publicProperties)
-				{
-					map.Add(member.Name, ambientResources.ContainingNamespace.ToDisplayString(), XamlGlobalStaticResourcesMap.ResourcePrecedence.System);
-				}
-			}
-		}
-
-		private void BuildLocalProjectResources(XamlFileDefinition[] files, XamlGlobalStaticResourcesMap map, CancellationToken ct)
-		{
-			foreach (var file in files)
-			{
-				ct.ThrowIfCancellationRequested();
-
-				var topLevelControl = file.Objects.FirstOrDefault();
-
-				if (topLevelControl?.Type.Name == "ResourceDictionary")
-				{
-					BuildResourceMap(topLevelControl, map);
-
-					var themeDictionaries = topLevelControl.Members.FirstOrDefault(m => m.Member.Name == "ThemeDictionaries");
-
-					if (themeDictionaries != null)
-					{
-						// We extract all distinct keys of all themed resource dictionaries defined and add them to global map
-
-						IEnumerable<string> GetResources(XamlObjectDefinition themeDictionary)
-						{
-							if (!(themeDictionary.Members
-								.FirstOrDefault(x => x.Member.Name.Equals("Key"))
-								?.Value is string))
-							{
-								yield break;
-							}
-
-							var resources = themeDictionary.Members
-								.FirstOrDefault(x => x.Member.Name.Equals("_UnknownContent"))
-								?.Objects;
-
-							if (resources != null)
-							{
-								foreach (var resource in resources)
-								{
-									if (resource.Members.FirstOrDefault(x => x.Member.Name.Equals("Key"))
-										?.Value is string resourceKey)
-									{
-										yield return resourceKey;
-									}
-								}
-							}
-						}
-
-						var themeResources = themeDictionaries
-							.Objects
-							.SelectMany(GetResources)
-							.Distinct();
-
-						foreach (var themeResource in themeResources)
-						{
-							map.Add(themeResource, _defaultNamespace, XamlGlobalStaticResourcesMap.ResourcePrecedence.Local);
-						}
-					}
-				}
-			}
-		}
-
-		private void BuildResourceMap(XamlObjectDefinition parentNode, XamlGlobalStaticResourcesMap map)
-		{
-			var contentNode = parentNode.Members.FirstOrDefault(m => m.Member.Name == "_UnknownContent");
-
-			if (contentNode != null)
-			{
-				foreach (var resource in contentNode.Objects)
-				{
-					var key = resource.Members.FirstOrDefault(m => m.Member.Name == "Key");
-
-					if (
-						key != null
-						&& key.Value?.ToString() is { } value
-						&& resource.Type.Name != "StaticResource"
-					)
-					{
-						map.Add(value, _defaultNamespace, XamlGlobalStaticResourcesMap.ResourcePrecedence.Local);
-					}
-				}
-			}
 		}
 
 		// Get keys of localized strings
@@ -706,7 +714,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				.Max();
 		}
 
-		private string GenerateGlobalResources(IEnumerable<XamlFileDefinition> files, XamlGlobalStaticResourcesMap map)
+		private SourceText GenerateGlobalResources(IEnumerable<XamlFileDefinition> files, XamlGlobalStaticResourcesMap map)
 		{
 			var writer = new IndentedStringBuilder();
 
@@ -716,9 +724,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			// If a failure happens here, this means that the _isWasm was not properly set as the DefineConstants msbuild property
 			// was not populated. This can happen when the property is set through a target with the "CreateProperty" task, and the
 			// Uno.SourceGeneration tasks do not execute this task properly.
-			writer.AppendLineIndented("#if __WASM__");
-			writer.AppendLineIndented(_isWasm ? "" : "#error invalid internal source generator state. The __WASM__ DefineConstant was not propagated properly.");
-			writer.AppendLineIndented("#endif");
+			if (!_isWasm)
+			{
+				writer.AppendLineIndented("#if __WASM__");
+				writer.AppendLineIndented("#error invalid internal source generator state. The __WASM__ DefineConstant was not propagated properly.");
+				writer.AppendLineIndented("#endif");
+			}
 
 			using (writer.BlockInvariant("namespace {0}", _defaultNamespace))
 			{
@@ -760,7 +771,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									{
 										if (ambientResource.GetFirstMethodWithName("Initialize") is not null)
 										{
-											writer.AppendLineIndented($"global::{ambientResource.GetFullName()}.Initialize();");
+											writer.AppendLineIndented($"{ambientResource.GetFullyQualifiedTypeIncludingGlobal()}.Initialize();");
 										}
 									}
 
@@ -769,7 +780,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 										// Note: we do *not* call RegisterDefaultStyles for the current assembly, because those styles are treated as implicit styles, not default styles
 										if (ambientResource.GetFirstMethodWithName("RegisterDefaultStyles") is not null)
 										{
-											writer.AppendLineIndented($"global::{ambientResource.GetFullName()}.RegisterDefaultStyles();");
+											writer.AppendLineIndented($"{ambientResource.GetFullyQualifiedTypeIncludingGlobal()}.RegisterDefaultStyles();");
 										}
 									}
 
@@ -777,7 +788,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									{
 										if (ambientResource.GetFirstMethodWithName("RegisterResourceDictionariesBySource") is not null)
 										{
-											writer.AppendLineIndented($"global::{ambientResource.GetFullName()}.RegisterResourceDictionariesBySource();");
+											writer.AppendLineIndented($"{ambientResource.GetFullyQualifiedTypeIncludingGlobal()}.RegisterResourceDictionariesBySource();");
 										}
 									}
 								}
@@ -890,7 +901,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 			}
 
-			return writer.ToString();
+			return new StringBuilderBasedSourceText(writer.Builder);
 		}
 
 		private static bool IsResourceDictionary(XamlFileDefinition fileDefinition) => fileDefinition.Objects.FirstOrDefault()?.Type.Name == "ResourceDictionary";

@@ -20,7 +20,7 @@ using System.Diagnostics;
 
 namespace Microsoft.Toolkit.Uwp.UI.Lottie
 {
-	public abstract partial class LottieVisualSourceBase : DependencyObject, IAnimatedVisualSource
+	public abstract partial class LottieVisualSourceBase : DependencyObject, IAnimatedVisualSource, IAnimatedVisualSourceWithUri
 	{
 		public delegate void UpdatedAnimation(string animationJson, string cacheKey);
 
@@ -38,6 +38,8 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 				default(Uri),
 				FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange,
 				OnUriSourceChanged));
+
+		Uri IAnimatedVisualSourceWithUri.UriSource { get => UriSource; set => UriSource = value; }
 
 		public Uri UriSource
 		{
@@ -71,7 +73,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 		private static void OnUriSourceChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
 		{
-			if (sender is LottieVisualSource source)
+			if (sender is LottieVisualSourceBase source)
 			{
 				source.Update(source._player);
 			}

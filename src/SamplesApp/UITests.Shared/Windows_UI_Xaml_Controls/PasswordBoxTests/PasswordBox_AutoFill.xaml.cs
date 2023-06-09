@@ -16,7 +16,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace UITests.Windows_UI_Xaml_Controls.PasswordBoxTests
 {
-	[Sample("PasswordBox")]
+	[Sample("TextBox")]
 	public sealed partial class PasswordBox_AutoFill : Page
 	{
 		public PasswordBox_AutoFill()

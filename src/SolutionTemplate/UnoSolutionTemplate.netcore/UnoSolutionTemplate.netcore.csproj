@@ -75,32 +75,26 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Mobile\Android\Assets\Fonts\uno-fluentui-assets.ttf" />
     <None Include="Mobile\iOS\Entitlements.plist" />
     <None Include="Mobile\iOS\Info.plist" />
     <None Include="Mobile\iOS\LaunchScreen.storyboard" />
     <None Include="Mobile\iOS\Media.xcassets\AppIcons.appiconset\Contents.json" />
     <None Include="Mobile\iOS\Media.xcassets\LaunchImages.launchimage\Contents.json" />
-    <None Include="Mobile\iOS\Resources\Fonts\uno-fluentui-assets.ttf" />
     <None Include="Mobile\MacCatalyst\Entitlements.plist" />
     <None Include="Mobile\MacCatalyst\Info.plist" />
     <None Include="Mobile\MacCatalyst\LaunchScreen.storyboard" />
     <None Include="Mobile\MacCatalyst\Media.xcassets\AppIcons.appiconset\Contents.json" />
     <None Include="Mobile\MacCatalyst\Media.xcassets\LaunchImages.launchimage\Contents.json" />
-    <None Include="Mobile\MacCatalyst\Resources\Fonts\uno-fluentui-assets.ttf" />
     <None Include="Mobile\macOS\Assets.xcassets\AppIcon.appiconset\Contents.json" />
     <None Include="Mobile\macOS\Assets.xcassets\Contents.json" />
     <None Include="Mobile\macOS\Assets.xcassets\unologo.imageset\Contents.json" />
     <None Include="Mobile\macOS\Entitlements.plist" />
     <None Include="Mobile\macOS\Info.plist" />
-    <None Include="Mobile\macOS\Resources\Fonts\uno-fluentui-assets.ttf" />
     <None Include="Mobile\UnoQuickStart.Mobile.csproj" />
     <None Include="Skia.Linux.FrameBuffer\Program.cs" />
-    <None Include="Skia.Linux.FrameBuffer\Assets\Fonts\uno-fluentui-assets.ttf" />
     <None Include="Skia.Linux.FrameBuffer\UnoQuickStart.Skia.Linux.FrameBuffer.csproj" />
     <None Include="Skia.WPF\App.xaml.cs" />
     <None Include="Skia.WPF\MainWindow.xaml.cs" />
-    <None Include="Skia.Gtk\Assets\Fonts\uno-fluentui-assets.ttf" />
     <None Include="Skia.Gtk\Program.cs" />
     <None Include="Mobile\Android\Main.Android.cs" />
     <None Include="Mobile\Android\MainActivity.Android.cs" />
@@ -113,7 +107,6 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="Skia.Gtk\UnoQuickStart.Skia.Gtk.csproj" />
-    <None Include="Skia.WPF\Assets\Fonts\uno-fluentui-assets.ttf" />
     <None Include="Skia.WPF\UnoQuickStart.Skia.Wpf.csproj" />
     <None Include="Wasm\Program.cs" />
     <None Include="Shared\App.xaml.cs" />

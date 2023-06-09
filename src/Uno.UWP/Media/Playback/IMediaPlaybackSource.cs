@@ -1,4 +1,3 @@
-#if __IOS__ || __ANDROID__ || __MACOS__
 using System.ComponentModel;
 
 namespace Windows.Media.Playback
@@ -8,4 +7,3 @@ namespace Windows.Media.Playback
 	{
 	}
 }
-#endif

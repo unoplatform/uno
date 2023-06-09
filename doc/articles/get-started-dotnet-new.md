@@ -1,3 +1,7 @@
+---
+uid: Uno.GetStarted.dotnet-new
+---
+
 # dotnet new templates for Uno Platform
 
 The Uno Platform provides a set of command-line templates to create cross-platform applications.
@@ -7,16 +11,16 @@ To install the templates, type the following:
 # [**.NET 7**](#tab/net7)
 
 ```
-dotnet new install Uno.ProjectTemplates.Dotnet
+dotnet new install Uno.Templates
 ```
 # [**.NET 6**](#tab/net6)
 
 ```
-dotnet new -i Uno.ProjectTemplates.Dotnet
+dotnet new -i Uno.Templates
 ```
 ***
 
-If you need to determine the parameters available for a template use `dotnet new [templatename] -h`.
+To determine all parameters available for a template use `dotnet new [templatename] -h`.
 
 > [!IMPORTANT]
 > Installing the templates is done per dotnet CLI version. Meaning that the templates are installed for the version shown by `dotnet --version`. If you tried to use the templates with a version different than the one you used for installing, you'll get "No templates found matching: '<template-name>'." error.
@@ -24,23 +28,28 @@ If you need to determine the parameters available for a template use `dotnet new
 > This is common when using `global.json` that alters the .NET CLI/SDK version. Specifically, it's common for the UI Test template.
 
 > [!NOTE]
-> When using .NET 6, use `dotnet new -i Uno.ProjectTemplates.Dotnet` instead.
+> When using .NET 6, use `dotnet new -i Uno.Templates` instead.
 
 [!include[getting-help](use-uno-check-inline.md)]
 
-## Uno Platform Blank Application for WinAppSDK - WinUI 3
+## Uno Platform Application
 
-This template can be used to create a blank multi-platform application for iOS, Android, WebAssembly, macOS, Mac Catalyst, Linux, and Win32 Desktop which uses the new WinUI 3 APIs.
+This template can be used to create a multi-platform application for iOS, Android, WebAssembly, Mac Catalyst, Linux, and Win32 Desktop which uses the new WinUI 3 APIs.
 
-This template uses a single project head for iOS, Android, macOS, and Mac Catalyst. It requires Visual Studio 2022.
+It comes with the **Blank** and **Recommended** presets.
 
-A basic example:
+To create a blank template, using minimal dependencies:
 ```
-dotnet new unoapp -o MyApp
+dotnet new unoapp -preset=blank -o test
+```
+
+To create from a recommended template, using [Uno.Extensions](xref:Overview.Extensions):
+```
+dotnet new unoapp -preset=recommended -o test
 ```
 
 > [!NOTE]
-> It is possible to create a .NET 6 template by using the `-f net6.0` parameter.
+> It is possible to create a .NET 6 template by using the `-tfm net6.0` parameter.
 
 More articles on WinUI 3:
 
@@ -61,23 +70,6 @@ A more advanced example that will not generate the android and macOS heads:
 ```
 dotnet new unoapp-uwp -o MyApp -android=false -macos=false
 ```
-
-## Uno Platform Blank Application (WinAppSDK - WinUI 3, Xamarin)
-
-This template can be used to create a blank multi-platform application for iOS, Android, WebAssembly, macOS, Linux, and Win32 Desktop which uses the new WinUI 3 APIs.
-
-[**Find detailed instructions here.**](get-started-winui3.md)
-
-A basic example:
-```
-dotnet new unoapp-winui-xamarin -o MyApp
-```
-
-More articles on WinUI 3:
-
- * [WinUI 3, UWP, and Uno Platform.](uwp-vs-winui3.md)
- * [Updating from UWP to WinUI 3.](updating-to-winui3.md)
-
 
 ## Uno Platform Blank Application (UWP, .NET 6)
 
@@ -100,7 +92,7 @@ dotnet new unoapp-uwp-net6 -o MyApp --Mobile=false
 
 Uno Platform provides an enhanced template to build your application with less effort.
 
-See [this documentation](external/uno.extensions/doc/Overview/ExtensionsOverviewAndGettingStarted.md) for more information.
+See [this documentation](xref:Overview.Features) for more information.
 
 ## Uno Platform Blank library
 
@@ -120,21 +112,6 @@ A basic example:
 dotnet new unolib-crossruntime -o MyCrossRuntimeLibrary
 ```
 
-## Uno Platform Blank Prism Application
-
-This template is specializing in the creation of a [Prism Library](https://github.com/PrismLibrary/Prism) enabled blank application.
-
-A basic example:
-```
-dotnet new unoapp-prism -o MyApp
-```
-
-A more advanced example which will not generate the android and macOS heads:
-
-```
-dotnet new unoapp -o MyApp -android=false -macos=false
-```
-
 ## Uno Platform Uno.UITest library
 This templates creates a project for creating and running UI Tests based on [Uno.UITest](https://github.com/unoplatform/Uno.UITest).
 
@@ -149,28 +126,10 @@ This will automatically add the new project to the existing solution.
 
 For additional information about UI Tests creation, visit the [Uno.UITest](https://github.com/unoplatform/Uno.UITest) documentation.
 
-## Uno Platform WebAssembly support for Xamarin.Forms
-
-This template is built to enhance an existing Xamarin.Forms application with the [Uno Platform WebAssembly support](https://github.com/unoplatform/Uno.Xamarin.Forms.Platform).
-
-To use it:
-
-1. Create a Xamarin.Forms project 
-    1. Check **Place project and solution in the same directory**
-    1. Check **Windows (UWP)**
-1. Using a **VS Developer Command Prompt**, navigate to the folder containing the solution
-    ```
-    dotnet new wasmxfhead
-    ```
-1. Open or Reload the solution in Visual Studio 
-1. Set the Wasm project as the startup project 
-1. Open the **Nuget Package manager** for the Wasm project and update the `Uno.Xamarin.Forms.Platform` project to the latest **stable** package 
-1. Run the app using **F5** (with the Visual Studio debugger), and you are good to go!
-
 ### Uninstalling the templates
 
 Using a command line or terminal, run the following command:
 
-`dotnet new -u Uno.ProjectTemplates.Dotnet`
+`dotnet new -u Uno.Templates`
 
 [!include[getting-help](getting-help.md)]

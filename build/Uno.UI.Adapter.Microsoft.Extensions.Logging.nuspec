@@ -21,7 +21,5 @@
     <file src="..\src\Common\uno.png" target="/" />
 
     <file src="..\src\Uno.UI.Adapter.Microsoft.Extensions.Logging\bin\Uno.UI.Adapter.Microsoft.Extensions.Logging\Release\netstandard2.0\*.*" target="lib\netstandard2.0" />
-    <file src="..\src\Uno.UI.Adapter.Microsoft.Extensions.Logging\bin\Uno.UI.Adapter.Microsoft.Extensions.Logging.netcoremobile\Release\net6.0\*.*" target="lib\net6.0" />
-    <file src="..\src\Uno.UI.Adapter.Microsoft.Extensions.Logging\bin\Uno.UI.Adapter.Microsoft.Extensions.Logging\Release\net7.0\*.*" target="lib\net7.0" />
   </files>
 </package>

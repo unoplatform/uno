@@ -57,8 +57,6 @@
 		<PackageReference Include="SkiaSharp.NativeAssets.macos" />
 	</ItemGroup>
 
-	<Import Project="..\..\Uno.CrossTargetting.props" />
-
 	<ItemGroup>
 		<ProjectReference Include="..\..\Uno.UI\Uno.UI.netcoremobile.csproj" />
 	</ItemGroup>

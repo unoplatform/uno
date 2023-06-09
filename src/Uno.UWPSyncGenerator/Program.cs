@@ -62,6 +62,8 @@ namespace Uno.UWPSyncGenerator
 				new SyncGenerator().Build(@"..\..\..\Uno.UI.Dispatching", "Uno.UI.Dispatching", "Windows.Foundation.UniversalApiContract");
 				new SyncGenerator().Build(@"..\..\..\Uno.UI", "Uno.UI", "Windows.Foundation.UniversalApiContract");
 				new SyncGenerator().Build(@"..\..\..\Uno.UI", "Uno.UI", "Windows.UI.Xaml.Hosting.HostingContract");
+				new SyncGenerator().Build(@"..\..\..\Uno.UI", "Uno.UI", "Microsoft.UI.Xaml");
+				new SyncGenerator().Build(@"..\..\..\Uno.UI", "Uno.UI", "Microsoft.Web.WebView2.Core");
 #endif
 			}
 

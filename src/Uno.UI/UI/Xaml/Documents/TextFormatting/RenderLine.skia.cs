@@ -53,28 +53,39 @@ namespace Windows.UI.Xaml.Documents.TextFormatting
 			WidthWithoutTrailingSpaces += _segmentSpans[lastIndex].WidthWithoutTrailingSpaces;
 			Width += _segmentSpans[lastIndex].Width;
 
+			var maxStackHeight = float.MinValue;
+			var maxAboveBaselineHeight = float.MinValue;
+			var maxBelowBaselineHeight = float.MinValue;
+
+			for (var i = 0; i < _segmentSpans.Count; i++)
+			{
+				var inline = _segmentSpans[i].Segment.Inline;
+
+				maxStackHeight = Math.Max(maxStackHeight, inline.LineHeight);
+				maxAboveBaselineHeight = Math.Max(maxAboveBaselineHeight, inline.AboveBaselineHeight);
+				maxBelowBaselineHeight = Math.Max(maxBelowBaselineHeight, inline.BelowBaselineHeight);
+			}
+
 			switch (lineStackingStrategy)
 			{
 				case LineStackingStrategy.MaxHeight:
-					float maxStackHeight = GetMaxStackHeight();
-
 					if (lineHeight == 0)
 					{
 						Height = maxStackHeight;
-						BaselineOffsetY = -GetMaxBelowBaselineHeight();
+						BaselineOffsetY = -maxBelowBaselineHeight;
 					}
 					else
 					{
 						if (lineHeight < maxStackHeight)
 						{
 							Height = maxStackHeight;
-							BaselineOffsetY = -GetMaxBelowBaselineHeight();
+							BaselineOffsetY = -maxBelowBaselineHeight;
 
 						}
 						else
 						{
 							Height = lineHeight;
-							BaselineOffsetY = GetBaselineOffsetY(lineHeight, maxStackHeight);
+							BaselineOffsetY = GetBaselineOffsetY(lineHeight, maxStackHeight, maxBelowBaselineHeight);
 						}
 					}
 
@@ -82,19 +93,19 @@ namespace Windows.UI.Xaml.Documents.TextFormatting
 
 				case LineStackingStrategy.BlockLineHeight:
 					Height = lineHeight;
-					BaselineOffsetY = GetBaselineOffsetY(lineHeight, GetMaxStackHeight());
+					BaselineOffsetY = GetBaselineOffsetY(lineHeight, maxStackHeight, maxBelowBaselineHeight);
 					break;
 
 				default: // LineStackingStrategy.BaselineToBaseline:
 					if (firstLine)
 					{
-						Height = GetMaxAboveBaselineHeight();
+						Height = maxAboveBaselineHeight;
 						BaselineOffsetY = 0;
 					}
 					else
 					{
 						Height = lineHeight;
-						BaselineOffsetY = GetBaselineOffsetY(lineHeight, GetMaxStackHeight());
+						BaselineOffsetY = GetBaselineOffsetY(lineHeight, maxStackHeight, maxBelowBaselineHeight);
 					}
 
 					break;
@@ -209,24 +220,18 @@ namespace Windows.UI.Xaml.Documents.TextFormatting
 			return orderedSpans ?? _segmentSpans;
 		}
 
-		private float GetMaxStackHeight() => _segmentSpans.Max(s => s.Segment.Inline.LineHeight);
-
-		private float GetMaxAboveBaselineHeight() => _segmentSpans.Max(s => s.Segment.Inline.AboveBaselineHeight);
-
-		private float GetMaxBelowBaselineHeight() => _segmentSpans.Max(s => s.Segment.Inline.BelowBaselineHeight);
-
 		/// <summary>
 		/// Gets the offset of the baseline for this render line based on a custom line height. Scales the default baseline offset
 		/// by the ratio of the default line height to the custom line height.
 		/// </summary>
-		private float GetBaselineOffsetY(float lineHeight, float maxStackHeight)
+		private float GetBaselineOffsetY(float lineHeight, float maxStackHeight, float maxBelowBaselineHeight)
 		{
 			if (maxStackHeight == 0)
 			{
 				return 0;
 			}
 
-			var defaultBaselineOffsetY = -(float)GetMaxBelowBaselineHeight();
+			var defaultBaselineOffsetY = -maxBelowBaselineHeight;
 			return defaultBaselineOffsetY * lineHeight / maxStackHeight;
 		}
 	}

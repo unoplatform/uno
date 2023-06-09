@@ -17,6 +17,7 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("SamplesApp.macOS")]
 [assembly: InternalsVisibleTo("SamplesApp.Wasm")]
 [assembly: InternalsVisibleTo("SamplesApp.Skia")]
+[assembly: InternalsVisibleTo("UnoIslandsSamplesApp.Skia")]
 
 #if NET6_0_OR_GREATER
 [assembly: System.Reflection.AssemblyMetadata("IsTrimmable", "True")]

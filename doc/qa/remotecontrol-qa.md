@@ -1,3 +1,7 @@
+---
+uid: Uno.QA.RemoteControl
+---
+
 ## Remote Control QA
 
 - Install Latest vsix from CI artifacts

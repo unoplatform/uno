@@ -44,7 +44,7 @@ $release = $default + '-c' + 'Release'
 
 # WinUI
 $createParams=(Get-TemplateConfiguration -wasm 1 -wasmVsCode 1 -skiaGtk 1 -skiaLinuxFB 1)
-dotnet new unoapp -n UnoAppWinUI --framework net7.0 $createParams
+dotnet new unoapp-winui -n UnoAppWinUI --framework net7.0 $createParams
 
 dotnet build $debug UnoAppWinUI/UnoAppWinUI.Wasm/UnoAppWinUI.Wasm.csproj
 Assert-ExitCodeIsZero

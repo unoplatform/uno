@@ -10,7 +10,6 @@ namespace Uno.UI.Xaml
 {
 	internal static class XamlFilePathHelper
 	{
-		private const string WinUIThemeResourceURLFormatString = "Microsoft.UI.Xaml/Themes/themeresources_v{0}.xaml";
 		public const string AppXIdentifier = AppXScheme + ":///";
 		public const string AppXScheme = "ms-appx";
 		public const string MSResourceIdentifier = "ms-resource:///";
@@ -49,7 +48,15 @@ namespace Uno.UI.Xaml
 		internal static bool IsAbsolutePath(string relativeTargetPath) => relativeTargetPath.StartsWith(AppXIdentifier, StringComparison.Ordinal)
 			|| relativeTargetPath.StartsWith(MSResourceIdentifier, StringComparison.Ordinal);
 
-		internal static string GetWinUIThemeResourceUrl(int version) => string.Format(CultureInfo.InvariantCulture, WinUIThemeResourceURLFormatString, version);
+		internal static string GetWinUIThemeResourceUrl(int version)
+		{
+			return version switch
+			{
+				1 => "Microsoft.UI.Xaml/Themes/themeresources_v1.xaml",
+				2 => "Microsoft.UI.Xaml/Themes/themeresources_v2.xaml",
+				_ => throw new ArgumentOutOfRangeException(nameof(version), $"'version' must be between 1 and 2. Found {version}."),
+			};
+		}
 
 		private static string GetAbsolutePath(string originDirectory, string relativeTargetPath)
 		{

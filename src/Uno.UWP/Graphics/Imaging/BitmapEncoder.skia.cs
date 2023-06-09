@@ -10,16 +10,6 @@ namespace Windows.Graphics.Imaging
 {
 	public partial class BitmapEncoder
 	{
-		private static readonly IDictionary<Guid, SKEncodedImageFormat> _encoderMap =
-			new Dictionary<Guid, SKEncodedImageFormat>()
-			{
-				{BmpEncoderId, SKEncodedImageFormat.Bmp},
-				{GifEncoderId, SKEncodedImageFormat.Gif},
-				{JpegEncoderId, SKEncodedImageFormat.Jpeg},
-				{PngEncoderId, SKEncodedImageFormat.Png},
-				{HeifEncoderId, SKEncodedImageFormat.Heif},
-			};
-
 		private readonly SKEncodedImageFormat _imageFormat;
 		private readonly Storage.Streams.IRandomAccessStream _stream;
 		private SoftwareBitmap _softwareBitmap;
@@ -33,7 +23,7 @@ namespace Windows.Graphics.Imaging
 
 		public static IAsyncOperation<BitmapEncoder> CreateAsync(Guid encoderId
 			, Storage.Streams.IRandomAccessStream stream) =>
-			AsyncOperation<BitmapEncoder>.FromTask((ct, _) =>
+			AsyncOperation.FromTask(ct =>
 			{
 				if (!_encoderMap.TryGetValue(encoderId, out var imageFormat))
 				{

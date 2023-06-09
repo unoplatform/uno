@@ -7,7 +7,6 @@ namespace Windows.UI.Xaml
 	{
 		Inactive = 0,
 		CustomTrigger = 1,
-		MinWidthTrigger = 2,
-		MinHeightTrigger = 3
+		AdaptiveTrigger = 2,
 	}
 }

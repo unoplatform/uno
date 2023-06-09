@@ -1,14 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+	<PropertyGroup>
+		<TargetFramework>net7.0</TargetFramework>
 		<IsPackable>false</IsPackable>
 		<RootNamespace>UnoCrossRuntimeLib</RootNamespace>
-    <AssemblyName>UnoCrossRuntimeLib</AssemblyName>
-  </PropertyGroup>
+		<AssemblyName>UnoCrossRuntimeLib</AssemblyName>
+		<UnoRuntimeIdentifier>skia</UnoRuntimeIdentifier>
+		<DefineConstants>$(DefineConstants);WINUI;__SKIA__</DefineConstants>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Uno.UI.Runtime.Skia" Version="3.0.0-PullRequest-3602-17779-1-3602.956" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Uno.WinUI" Version="3.0.0-PullRequest-3602-17779-1-3602.956" />
+	</ItemGroup>
 
 </Project>

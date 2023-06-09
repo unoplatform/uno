@@ -11,6 +11,7 @@ using Windows.Foundation;
 using Windows.Storage.Streams;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
+using Uno.UI.Xaml.Media;
 using Buffer = Windows.Storage.Streams.Buffer;
 using System.Buffers;
 
@@ -19,25 +20,8 @@ namespace Windows.UI.Xaml.Media.Imaging
 #if NOT_IMPLEMENTED
 	[global::Uno.NotImplemented("NET461", "__WASM__", "__NETSTD_REFERENCE__")]
 #endif
-	public partial class RenderTargetBitmap : IDisposable
+	public partial class RenderTargetBitmap : ImageSource, IDisposable
 	{
-#if !NOT_IMPLEMENTED
-		private static void Swap(ref byte a, ref byte b)
-		{
-			(a, b) = (b, a);
-		}
-
-		[global::System.Runtime.CompilerServices.MethodImpl(global::System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		private static void SwapRB(ref byte[] buffer, int byteCount)
-		{
-			for (int i = 0; i < byteCount; i += 4)
-			{
-				//Swap R and B chanal
-				Swap(ref buffer![i], ref buffer![i + 2]);
-			}
-		}
-#endif
-
 #if NOT_IMPLEMENTED
 		internal const bool IsImplemented = false;
 #else
@@ -82,6 +66,27 @@ namespace Windows.UI.Xaml.Media.Imaging
 		private byte[]? _buffer;
 		private int _bufferSize;
 
+		/// <inheritdoc />
+		private protected override bool TryOpenSourceSync(int? targetWidth, int? targetHeight, out ImageData image)
+		{
+			var width = PixelWidth;
+			var height = PixelHeight;
+
+			if (_buffer is null || _bufferSize <= 0 || width <= 0 || height <= 0)
+			{
+				image = default;
+				return false;
+			}
+
+			image = Open(_buffer, _bufferSize, width, height);
+			return image.HasData;
+		}
+
+#if NOT_IMPLEMENTED
+		private static ImageData Open(byte[] buffer, int bufferLength, int width, int height)
+			=> default;
+#endif
+
 #if NOT_IMPLEMENTED
 		[global::Uno.NotImplemented("NET461", "__WASM__", "__NETSTD_REFERENCE__")]
 #endif
@@ -90,9 +95,8 @@ namespace Windows.UI.Xaml.Media.Imaging
 			{
 				try
 				{
-					UIElement elementToRender = element
-						?? Window.Current.Content;
-					(_bufferSize, PixelWidth, PixelHeight) = RenderAsBgra8_Premul(elementToRender, ref _buffer, new Size(scaledWidth, scaledHeight));
+					element ??= Window.Current.Content;
+					(_bufferSize, PixelWidth, PixelHeight) = RenderAsBgra8_Premul(element, ref _buffer, new Size(scaledWidth, scaledHeight));
 #if __WASM__ || __SKIA__
 					InvalidateSource();
 #endif
@@ -113,10 +117,8 @@ namespace Windows.UI.Xaml.Media.Imaging
 			{
 				try
 				{
-					UIElement elementToRender = element
-						?? Window.Current.Content;
-
-					(_bufferSize, PixelWidth, PixelHeight) = RenderAsBgra8_Premul(elementToRender, ref _buffer);
+					element ??= Window.Current.Content;
+					(_bufferSize, PixelWidth, PixelHeight) = RenderAsBgra8_Premul(element, ref _buffer);
 #if __WASM__ || __SKIA__
 					InvalidateSource();
 #endif
@@ -133,7 +135,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 		[global::Uno.NotImplemented("NET461", "__WASM__", "__NETSTD_REFERENCE__")]
 #endif
 		public IAsyncOperation<IBuffer> GetPixelsAsync()
-			=> AsyncOperation<IBuffer>.FromTask((op, ct) =>
+			=> AsyncOperation.FromTask(ct =>
 			{
 				if (_buffer is null)
 				{
@@ -147,6 +149,15 @@ namespace Windows.UI.Xaml.Media.Imaging
 			=> throw new NotImplementedException("RenderTargetBitmap is not supported on this platform.");
 #endif
 
+		void IDisposable.Dispose()
+		{
+			if (_buffer is { })
+			{
+				ArrayPool<byte>.Shared.Return(_buffer);
+			}
+		}
+
+		#region Misc static helpers
 #if !NOT_IMPLEMENTED
 		private static void EnsureBuffer(ref byte[]? buffer, int length)
 		{
@@ -160,14 +171,24 @@ namespace Windows.UI.Xaml.Media.Imaging
 				buffer = ArrayPool<byte>.Shared.Rent(length);
 			}
 		}
-#endif
 
-		void IDisposable.Dispose()
+#if !__IOS__ && !__MACOS__
+		[global::System.Runtime.CompilerServices.MethodImpl(global::System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+		private static void SwapRB(ref byte[] buffer, int byteCount)
 		{
-			if (_buffer is { })
+			for (var i = 0; i < byteCount; i += 4)
 			{
-				ArrayPool<byte>.Shared.Return(_buffer);
+				//Swap R and B chanal
+				Swap(ref buffer![i], ref buffer![i + 2]);
 			}
 		}
+
+		private static void Swap(ref byte a, ref byte b)
+		{
+			(a, b) = (b, a);
+		}
+#endif
+#endif
+		#endregion
 	}
 }

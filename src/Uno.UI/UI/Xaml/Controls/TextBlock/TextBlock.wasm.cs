@@ -31,6 +31,8 @@ namespace Windows.UI.Xaml.Controls
 
 		public TextBlock() : base("p")
 		{
+			SetDefaultForeground(ForegroundProperty);
+
 			OnFontStyleChangedPartial();
 			OnFontWeightChangedPartial();
 			OnTextChangedPartial();

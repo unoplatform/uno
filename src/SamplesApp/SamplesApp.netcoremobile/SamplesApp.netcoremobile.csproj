@@ -98,7 +98,6 @@
 
 	<ItemGroup Condition="'$(TargetPlatformIdentifier)'=='android'">
 		<AndroidAsset Include="Assets\sound.mp3" />
-		<AndroidAsset Include="Assets\Fonts\uno-fluentui-assets.ttf" />
 		<AndroidAsset Include="Assets\Lottie\4770-lady-and-dove.json" />
 		<AndroidAsset Include="Assets\Lottie\4930-checkbox-animation.json" />
 		<AndroidAsset Include="Assets\Lottie\lottie-logo.json" />
@@ -112,7 +111,7 @@
 			<Version>3.12.0</Version>
 		</PackageReference>
 		<PackageReference Include="Microsoft.Identity.Client">
-			<Version>4.15.0</Version>
+			<Version>4.47.0</Version>
 		</PackageReference>
 
 		<PackageReference Include="MSTest.TestFramework" Version="2.1.1" />
@@ -153,7 +152,7 @@
 		<ProjectReference Include="..\..\Uno.UI.RuntimeTests\Uno.UI.RuntimeTests.netcoremobile.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.FluentTheme\Uno.UI.FluentTheme.netcoremobile.csproj" />
 		<ProjectReference Include="..\..\AddIns\Uno.UI.MSAL\Uno.UI.MSAL.netcoremobile.csproj" />
-		<ProjectReference Include="..\..\Uno.UI.Adapter.Microsoft.Extensions.Logging\Uno.UI.Adapter.Microsoft.Extensions.Logging.netcoremobile.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.Adapter.Microsoft.Extensions.Logging\Uno.UI.Adapter.Microsoft.Extensions.Logging.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.Foldable\Uno.UI.Foldable.netcoremobile.csproj" />
 
 		<!--
@@ -175,7 +174,6 @@
   <Import Project="..\UITests.Shared\UITests.Shared.projitems" Label="Shared" />
 	<Import Project="..\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.targets" />
 
-	<Import Project="..\..\Uno.CrossTargetting.props" />
 	<Import Project="..\..\..\build\uno.winui.single-project.targets" />
 
 </Project>

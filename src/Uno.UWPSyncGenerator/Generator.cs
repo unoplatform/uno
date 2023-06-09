@@ -13,7 +13,7 @@ namespace Uno.UWPSyncGenerator
 {
 	abstract class Generator
 	{
-		private const string CSharpLangVersion = "11.0";
+		internal const string CSharpLangVersion = "11.0";
 
 		private const string net461Define = "NET461";
 		private const string AndroidDefine = "__ANDROID__";
@@ -87,12 +87,11 @@ namespace Uno.UWPSyncGenerator
 			BaseXamlNamespace + ".Controls.Primitives.CarouselPanel",
 			BaseXamlNamespace + ".Controls.MediaPlayerPresenter",
 			BaseXamlNamespace + ".Controls.NavigationViewItemBase",
-
-#if HAS_UNO_WINUI
+			"Microsoft.UI.Xaml.Controls.WebView2",
+			"Microsoft.UI.Xaml.Media.RadialGradientBrush",
 			// Mismatching public inheritance hierarchy because RadioMenuFlyoutItem has a double inheritance in WinUI.
 			// Remove this and update RadioMenuFlyoutItem if WinUI 3 removed the double inheritance.
-			BaseXamlNamespace + ".Controls.RadioMenuFlyoutItem",
-#endif
+			"Microsoft.UI.Xaml.Controls.RadioMenuFlyoutItem",
 		};
 
 		private Compilation _iOSCompilation;
@@ -118,6 +117,8 @@ namespace Uno.UWPSyncGenerator
 			"Windows.UI.Xaml",
 			"Windows.UI.Composition",
 			"Windows.UI.Dispatching",
+			"Microsoft.UI.Xaml",
+			"Microsoft.Web",
 #if HAS_UNO_WINUI
 			"Microsoft.Foundation",
 			"Microsoft.UI.Xaml",
@@ -162,7 +163,6 @@ namespace Uno.UWPSyncGenerator
 			_dependencyPropertySymbol = _referenceCompilation.GetTypeByMetadataName(BaseXamlNamespace + ".DependencyProperty");
 			FlagsAttributeSymbol = _referenceCompilation.GetTypeByMetadataName("System.FlagsAttribute");
 			UIElementSymbol = _referenceCompilation.GetTypeByMetadataName(BaseXamlNamespace + ".UIElement");
-			var a = _referenceCompilation.GetTypeByMetadataName("Microsoft.UI.ViewManagement.StatusBar");
 
 			var origins = from externalRedfs in _referenceCompilation.ExternalReferences
 						  let fileNameWithoutExtension = Path.GetFileNameWithoutExtension(externalRedfs.Display)
@@ -313,6 +313,7 @@ namespace Uno.UWPSyncGenerator
 #endif
 			else if (containingNamespaceName.StartsWith("Windows.UI.Xaml", StringComparison.Ordinal)
 				|| containingNamespaceName.StartsWith("Microsoft.UI.Xaml", StringComparison.Ordinal)
+				|| containingNamespaceName.StartsWith("Microsoft.Web", StringComparison.Ordinal)
 #if HAS_UNO_WINUI
 				|| containingNamespaceName.StartsWith("Microsoft.System", StringComparison.Ordinal)
 				|| containingNamespaceName.StartsWith("Microsoft.UI.Composition", StringComparison.Ordinal)
@@ -602,6 +603,37 @@ namespace Uno.UWPSyncGenerator
 				case "Windows.UI.Colors":
 					// Skipped because the type not present WinAppSDK projection
 					return true;
+#else
+				case "Microsoft.UI.Xaml.Automation.Peers.AnimatedVisualPlayerAutomationPeer":
+				case "Microsoft.UI.Xaml.Automation.Peers.PersonPictureAutomationPeer":
+				case "Microsoft.UI.Xaml.Automation.Peers.MenuBarAutomationPeer":
+				case "Microsoft.UI.Xaml.Automation.Peers.MenuBarItemAutomationPeer":
+				case "Microsoft.UI.Xaml.Controls.AnimatedVisuals.AnimatedAcceptVisualSource":
+				case "Microsoft.UI.Xaml.Controls.AnimatedVisuals.AnimatedBackVisualSource":
+				case "Microsoft.UI.Xaml.Controls.AnimatedVisuals.AnimatedChevronDownSmallVisualSource":
+				case "Microsoft.UI.Xaml.Controls.AnimatedVisuals.AnimatedChevronRightDownSmallVisualSource":
+				case "Microsoft.UI.Xaml.Controls.AnimatedVisuals.AnimatedChevronUpDownSmallVisualSource":
+				case "Microsoft.UI.Xaml.Controls.AnimatedVisuals.AnimatedFindVisualSource":
+				case "Microsoft.UI.Xaml.Controls.AnimatedVisuals.AnimatedGlobalNavigationButtonVisualSource":
+				case "Microsoft.UI.Xaml.Controls.AnimatedVisuals.AnimatedSettingsVisualSource":
+				case "Microsoft.UI.Xaml.Controls.AnimatedVisualPlayer":
+				case "Microsoft.UI.Xaml.Controls.ControlsResourcesVersion":
+				case "Microsoft.UI.Xaml.Controls.IAnimatedVisualSource":
+				case "Microsoft.UI.Xaml.Controls.IAnimatedVisualSource2":
+				case "Microsoft.UI.Xaml.Controls.IDynamicAnimatedVisualSource":
+				case "Microsoft.UI.Xaml.Controls.MenuBar":
+				case "Microsoft.UI.Xaml.Controls.MenuBarItem":
+				case "Microsoft.UI.Xaml.Controls.MenuBarItemFlyout":
+				case "Microsoft.UI.Xaml.Controls.PersonPicture":
+				case "Microsoft.UI.Xaml.Controls.PersonPictureTemplateSettings":
+				case "Microsoft.UI.Xaml.Controls.SwipeBehaviorOnInvoked":
+				case "Microsoft.UI.Xaml.Controls.SwipeControl":
+				case "Microsoft.UI.Xaml.Controls.SwipeItem":
+				case "Microsoft.UI.Xaml.Controls.SwipeItemInvokedEventArgs":
+				case "Microsoft.UI.Xaml.Controls.SwipeItems":
+				case "Microsoft.UI.Xaml.Controls.SwipeMode":
+					// Skipped because the implementation is currently incorrectly placed in WUX namespace
+					return true;
 #endif
 			}
 
@@ -678,8 +710,8 @@ namespace Uno.UWPSyncGenerator
 
 				var isDefinedInClass = ownerType.GetMembers(method.Name).OfType<IMethodSymbol>().Any(m =>
 						m.DeclaredAccessibility == Accessibility.Public
-						&& m.Parameters.Select(p => p.Type.ToDisplayString(NullableFlowState.None)).SequenceEqual(method.Parameters.Select(p2 => p2.Type.ToDisplayString(NullableFlowState.None)))
-						&& m.ReturnType.ToDisplayString(NullableFlowState.None) == method.ReturnType.ToDisplayString(NullableFlowState.None)
+						&& m.Parameters.Select(p => p.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)).SequenceEqual(method.Parameters.Select(p2 => p2.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)))
+						&& m.ReturnType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat) == method.ReturnType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)
 					);
 				if (isDefinedInClass)
 				{
@@ -688,8 +720,8 @@ namespace Uno.UWPSyncGenerator
 
 				var isAlreadyGenerated = writtenMethods.Any(m => m.Name == method.Name
 						&& m.DeclaredAccessibility == Accessibility.Public
-						&& m.Parameters.Select(p => p.Type.ToDisplayString(NullableFlowState.None)).SequenceEqual(method.Parameters.Select(p2 => p2.Type.ToDisplayString(NullableFlowState.None)))
-						&& m.ReturnType.ToDisplayString(NullableFlowState.None) == method.ReturnType.ToDisplayString(NullableFlowState.None)
+						&& m.Parameters.Select(p => p.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)).SequenceEqual(method.Parameters.Select(p2 => p2.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)))
+						&& m.ReturnType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat) == method.ReturnType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)
 					);
 
 				if (isAlreadyGenerated || !IsNotUWPMapping(ownerType, method))
@@ -726,7 +758,7 @@ namespace Uno.UWPSyncGenerator
 				var allProperties = GetAllMatchingPropertyMember(types, property);
 
 				if (ownerType.GetMembers(property.Name).OfType<IPropertySymbol>().Any(p =>
-					   p.Type.ToDisplayString() == property.Type.ToDisplayString()
+					   p.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat) == property.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)
 					)
 					|| !IsNotUWPMapping(ownerType, property))
 				{
@@ -771,7 +803,7 @@ namespace Uno.UWPSyncGenerator
 		{
 			return GetNonGeneratedMembers(androidType, property.Name)
 								.OfType<IPropertySymbol>()
-								.Where(prop => prop.Parameters.Select(p => p.Type.ToDisplayString()).SequenceEqual(property.Parameters.Select(p => p.Type.ToDisplayString())) && prop.Type.ToDisplayString() == property.Type.ToDisplayString())
+								.Where(prop => prop.Parameters.Select(p => p.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)).SequenceEqual(property.Parameters.Select(p => p.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat))) && prop.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat) == property.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat))
 								.FirstOrDefault();
 		}
 
@@ -1458,7 +1490,7 @@ namespace Uno.UWPSyncGenerator
 								}
 
 								b.AppendLineInvariant($"\ttypeof({property.ContainingType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}), ");
-								b.AppendLineInvariant($"\tnew FrameworkPropertyMetadata(default({propertyDisplayType})));");
+								b.AppendLineInvariant($"\tnew {BaseXamlNamespace}.FrameworkPropertyMetadata(default({propertyDisplayType})));");
 							}
 							else
 							{
@@ -1720,10 +1752,10 @@ namespace Uno.UWPSyncGenerator
 					{
 						var sourceParams = sourceMethod
 							.Parameters
-							.Select(p => p.Type.ToDisplayString(NullableFlowState.None));
+							.Select(p => p.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat));
 						var targetParams = m
 								.Parameters
-								.Select(p => p.Type.ToDisplayString(NullableFlowState.None));
+								.Select(p => p.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat));
 						return sourceParams.SequenceEqual(targetParams);
 					}
 					);
@@ -1811,22 +1843,8 @@ namespace Uno.UWPSyncGenerator
 				);
 			}
 
-			project = RegisterGenericHelperTypes(project);
-
 			return project
 					.GetCompilationAsync().Result;
-		}
-
-		private static Microsoft.CodeAnalysis.Project RegisterGenericHelperTypes(Microsoft.CodeAnalysis.Project project)
-		{
-			var sb = new StringBuilder();
-
-			for (int i = 0; i < 10; i++)
-			{
-				sb.AppendLine($"class __helper{i}__ {{}}");
-			}
-
-			return project.AddDocument("AdditionalGenericNames", sb.ToString()).Project;
 		}
 
 		public static IEnumerable<INamedTypeSymbol> GetNamespaceTypes(INamespaceSymbol sym)

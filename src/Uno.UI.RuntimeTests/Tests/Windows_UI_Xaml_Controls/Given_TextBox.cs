@@ -553,5 +553,129 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(5, textChangingInvokeCount);
 			Assert.AreEqual(initialText + "5", textBox.Text);
 		}
+
+#if __ANDROID__
+		[TestMethod]
+		public async Task When_ReadOnly_TextBoxView()
+		{
+			var textBox = new TextBox
+			{
+				Text = "Text",
+				IsReadOnly = true
+			};
+
+			WindowHelper.WindowContent = textBox;
+			await WindowHelper.WaitForLoaded(textBox);
+
+			Assert.IsTrue(textBox.TextBoxView.Focusable);
+			Assert.IsTrue(textBox.TextBoxView.FocusableInTouchMode);
+			Assert.IsTrue(textBox.TextBoxView.Clickable);
+			Assert.IsTrue(textBox.TextBoxView.LongClickable);
+		}
+
+		[TestMethod]
+		public async Task When_NotTabStop_TextBoxView()
+		{
+			var textBox = new TextBox
+			{
+				Text = "Text",
+				IsTabStop = false
+			};
+
+			WindowHelper.WindowContent = textBox;
+			await WindowHelper.WaitForLoaded(textBox);
+
+			Assert.IsFalse(textBox.TextBoxView.Focusable);
+			Assert.IsFalse(textBox.TextBoxView.FocusableInTouchMode);
+			Assert.IsFalse(textBox.TextBoxView.Clickable);
+			Assert.IsFalse(textBox.TextBoxView.LongClickable);
+		}
+
+		[TestMethod]
+		public async Task When_ReadOnly_NotTabStop_TextBoxView()
+		{
+			var textBox = new TextBox
+			{
+				Text = "Text",
+				IsTabStop = false,
+				IsReadOnly = true
+			};
+
+			WindowHelper.WindowContent = textBox;
+			await WindowHelper.WaitForLoaded(textBox);
+
+			Assert.IsFalse(textBox.TextBoxView.Focusable);
+			Assert.IsFalse(textBox.TextBoxView.FocusableInTouchMode);
+			Assert.IsFalse(textBox.TextBoxView.Clickable);
+			Assert.IsFalse(textBox.TextBoxView.LongClickable);
+		}
+
+
+		[TestMethod]
+		public async Task When_ReadOnly_Update_Text_Native_View()
+		{
+			var textBox = new TextBox
+			{
+				Text = "Text",
+				IsReadOnly = true,
+				IsTabStop = false
+			};
+
+			WindowHelper.WindowContent = textBox;
+			await WindowHelper.WaitForLoaded(textBox);
+
+			textBox.Text = "Something";
+
+			Assert.AreEqual("Something", textBox.TextBoxView.Text);
+		}
+#endif
+
+		[TestMethod]
+		public async Task When_ReadOnly_Update_Text()
+		{
+			var textBox = new TextBox
+			{
+				Text = "Text",
+				IsReadOnly = true,
+				IsTabStop = false
+			};
+
+			WindowHelper.WindowContent = textBox;
+			await WindowHelper.WaitForLoaded(textBox);
+
+			textBox.Text = "Something";
+
+			Assert.AreEqual("Something", textBox.Text);
+		}
+
+		[TestMethod]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
+		public async Task When_ReadOnly_Toggled_Repeatedly()
+		{
+			var textBox = new TextBox
+			{
+				Text = "Text",
+				IsReadOnly = true,
+			};
+
+			WindowHelper.WindowContent = textBox;
+			await WindowHelper.WaitForLoaded(textBox);
+			textBox.Focus(FocusState.Programmatic);
+
+			textBox.Text = "Something";
+
+			textBox.IsReadOnly = false;
+
+			var updatedText = "Something else";
+			textBox.Text = updatedText;
+
+			textBox.IsReadOnly = true;
+
+			textBox.SelectAll();
+
+			Assert.AreEqual(updatedText.Length, textBox.SelectionLength);
+		}
 	}
 }

@@ -18,6 +18,7 @@ using Windows.UI.Xaml.Controls;
 using Windows.System;
 using Color = Windows.UI.Color;
 using System.Globalization;
+using Microsoft.UI.Input;
 
 namespace Windows.UI.Xaml
 {
@@ -126,13 +127,6 @@ namespace Windows.UI.Xaml
 			return Uno.UI.Xaml.WindowManagerInterop.GetBBox(HtmlId);
 		}
 
-		private Rect GetBoundingClientRect()
-		{
-			var sizeString = WebAssemblyRuntime.InvokeJS("Uno.UI.WindowManager.current.getBoundingClientRect(" + HtmlId + ");");
-			var sizeParts = sizeString.Split(';');
-			return new Rect(double.Parse(sizeParts[0], CultureInfo.InvariantCulture), double.Parse(sizeParts[1], CultureInfo.InvariantCulture), double.Parse(sizeParts[2], CultureInfo.InvariantCulture), double.Parse(sizeParts[3], CultureInfo.InvariantCulture));
-		}
-
 		protected internal void SetStyle(string name, string value)
 		{
 			Uno.UI.Xaml.WindowManagerInterop.SetStyleString(HtmlId, name, value);
@@ -219,14 +213,7 @@ namespace Windows.UI.Xaml
 		/// <param name="clipRect">The Clip rect to set, if any</param>
 		protected internal void ArrangeVisual(Rect rect, Rect? clipRect)
 		{
-			// FrameworkElement.ArrangeElement shifts the origin by border thickness to adhere to HTML's behavior,
-			// for LayoutSlotWithMarginsAndAlignments we need to shift it back in the right place for consistency
-			// with other platforms.
-			LayoutSlotWithMarginsAndAlignments =
-				VisualTreeHelper.GetParent(this) is FrameworkElement parent &&
-				parent.TryGetActualBorderThickness(out var borderThickness)
-					? new Rect(rect.X + borderThickness.Left, rect.Y + borderThickness.Top, rect.Width, rect.Height)
-					: rect;
+			LayoutSlotWithMarginsAndAlignments = rect;
 
 			if (FeatureConfiguration.UIElement.AssignDOMXamlProperties)
 			{
@@ -237,6 +224,14 @@ namespace Windows.UI.Xaml
 			{
 				// cf. OnVisibilityChanged
 				rect.X = rect.Y = -100000;
+			}
+			else if (VisualTreeHelper.GetParent(this) is FrameworkElement parent)
+			{
+				// HTML moves the origin along with the border thickness.
+				// Adjust this element based on this its parent border thickness.
+				_ = parent.TryGetActualBorderThickness(out var adjust);
+				rect.X = rect.X - adjust.Left;
+				rect.Y = rect.Y - adjust.Top;
 			}
 
 			Uno.UI.Xaml.WindowManagerInterop.ArrangeElement(HtmlId, rect, clipRect);
@@ -282,8 +277,7 @@ namespace Windows.UI.Xaml
 
 		protected internal string GetAttribute(string name)
 		{
-			var command = "Uno.UI.WindowManager.current.getAttribute(" + HtmlId + ", \"" + name + "\");";
-			return WebAssemblyRuntime.InvokeJS(command);
+			return WindowManagerInterop.GetAttribute(HtmlId, name);
 		}
 
 		protected internal void SetProperty(string name, string value)
@@ -301,8 +295,7 @@ namespace Windows.UI.Xaml
 
 		protected internal string GetProperty(string name)
 		{
-			var command = "Uno.UI.WindowManager.current.getProperty(" + HtmlId + ", \"" + name + "\");";
-			return WebAssemblyRuntime.InvokeJS(command);
+			return WindowManagerInterop.GetProperty(HtmlId, name);
 		}
 
 		protected internal void SetHtmlContent(string html)
@@ -735,6 +728,40 @@ namespace Windows.UI.Xaml
 					yield return type.Name.ToLowerInvariant();
 					type = type.BaseType;
 				}
+			}
+		}
+
+
+		private Microsoft.UI.Input.InputCursor _protectedCursor;
+
+#if HAS_UNO_WINUI
+		protected Microsoft.UI.Input.InputCursor ProtectedCursor
+#else
+		private protected Microsoft.UI.Input.InputCursor ProtectedCursor
+#endif
+		{
+			get => _protectedCursor;
+			set
+			{
+				if (_protectedCursor != value)
+				{
+					_protectedCursor = value;
+					SetProtectedCursorNative();
+				}
+			}
+
+		}
+
+		private void SetProtectedCursorNative()
+		{
+			if (_protectedCursor is Microsoft.UI.Input.InputSystemCursor inputSystemCursor)
+			{
+				var cursorShape = inputSystemCursor.CursorShape.ToCssProtectedCursor();
+				this.SetStyle("cursor", cursorShape);
+			}
+			else
+			{
+				this.ResetStyle("cursor");
 			}
 		}
 	}

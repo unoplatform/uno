@@ -1,3 +1,7 @@
+---
+uid: Uno.SilverlightMigration.DialogsAndErrors
+---
+
 # Dialogs and errors
 
 The Silverlight **TimeEntryRia** makes use of **ChildWindow** controls to display dialog controls such as the **LoginForm** and **ErrorWindow**. The equivalent UWP control for these types of dialogs is the **ContentDialog**.

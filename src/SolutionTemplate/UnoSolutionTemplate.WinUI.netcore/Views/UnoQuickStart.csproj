@@ -3,7 +3,7 @@
 		$if$($UseWinUI$ == True)<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('Windows')) or '$(EnableWindowsTargeting)' == 'true'">$(TargetFrameworks);$basetargetframework$-windows10.0.18362</TargetFrameworks>$endif$
 		<TargetFrameworks>$(TargetFrameworks);$libarybasetargetframework$</TargetFrameworks>
 
-		<!-- 
+		<!--
 			This condition is used when building under Linux. If you're not building under
 			 Linux, you can remove this line and the conditions below.
 		-->
@@ -13,14 +13,14 @@
 		$if$($UseIOS$ == True)<TargetFrameworks Condition="'$(_CanUseMobileTargets)'=='true'">$(TargetFrameworks);$basetargetframework$-ios</TargetFrameworks>$endif$
 		$if$($UseCatalyst$ == True)<TargetFrameworks Condition="'$(_CanUseMobileTargets)'=='true'">$(TargetFrameworks);$basetargetframework$-maccatalyst</TargetFrameworks>$endif$
 		$if$($UseAppKit$ == True)<TargetFrameworks Condition="'$(_CanUseMobileTargets)'=='true'">$(TargetFrameworks);$basetargetframework$-macos</TargetFrameworks>$endif$
-		
+
 		<DefaultLanguage>en</DefaultLanguage>
 
-		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">14.2</SupportedOSPlatformVersion>
-		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">14.0</SupportedOSPlatformVersion>
-		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>
-		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.18362.0</SupportedOSPlatformVersion>
-		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.18362.0</TargetPlatformMinVersion>
+		$if$($UseIOS$ == True)<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">14.2</SupportedOSPlatformVersion>$endif$
+		$if$($UseCatalyst$ == True)<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">14.0</SupportedOSPlatformVersion>$endif$
+		$if$($UseAndroid$ == True)<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>$endif$
+		$if$($UseWinUI$ == True)<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.18362.0</SupportedOSPlatformVersion>$endif$
+		$if$($UseWinUI$ == True)<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.18362.0</TargetPlatformMinVersion>$endif$
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -33,9 +33,9 @@
 		<PackageReference Include="Uno.WinUI" Version="4.7.0-dev.417" />
 	</ItemGroup>
 	<ItemGroup Condition="'$(TargetFramework)'=='$basetargetframework$-windows10.0.18362'">
-		<PackageReference Include="Microsoft.WindowsAppSDK" Version="1.1.3" />
-		<FrameworkReference Update="Microsoft.Windows.SDK.NET.Ref" RuntimeFrameworkVersion="10.0.22000.24" />
-		<FrameworkReference Update="Microsoft.Windows.SDK.NET.Ref" TargetingPackVersion="10.0.22000.24" />
+		<PackageReference Include="Microsoft.WindowsAppSDK" Version="1.2.221109.1" />
+		<FrameworkReference Update="Microsoft.Windows.SDK.NET.Ref" RuntimeFrameworkVersion="10.0.22621.28" />
+		<FrameworkReference Update="Microsoft.Windows.SDK.NET.Ref" TargetingPackVersion="10.0.22621.28" />
 	</ItemGroup>
 	<ItemGroup Condition="'$(TargetFramework)'!='$basetargetframework$-windows10.0.18362'">
 		<Content Include="Assets\**" />
@@ -43,7 +43,8 @@
 		<ApplicationDefinition Include="App.xaml" Condition="exists('App.xaml')" />
 		<Compile Update="**\*.xaml.cs">
 			<DependentUpon>%(Filename)</DependentUpon>
-		</Compile>
+		</Compile>		
+		<PriResource Include="**\*.resw" />
 	</ItemGroup>
 	<ItemGroup>
 		<UpToDateCheckInput Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml" />

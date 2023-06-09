@@ -1,3 +1,7 @@
+---
+uid: Uno.RaspberryPi.Intro
+---
+
 # Getting Started with Uno Platform and the Raspberry Pi
 
 ![Uno Hello World](images/00_uno-hello-world.jpg)

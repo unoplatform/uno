@@ -46,13 +46,6 @@ namespace Windows.Storage {
 		 * Setup the storage persistence of a given path.
 		 * */
 		public static setupStorage(path: string): void {
-			if (Uno.UI.WindowManager.isHosted) {
-				console.debug("Hosted Mode: skipping IndexDB initialization");
-
-				StorageFolder.onStorageInitialized();
-				return;
-			}
-
 			if (!this.isIndexDBAvailable()) {
 				console.warn("IndexedDB is not available (private mode or uri starts with file:// ?), changes will not be persisted.");
 
@@ -76,9 +69,13 @@ namespace Windows.Storage {
 
 		private static onStorageInitialized() {
 			if (!StorageFolder.dispatchStorageInitialized) {
-				StorageFolder.dispatchStorageInitialized =
-					(<any>Module).mono_bind_static_method(
-						"[Uno] Windows.Storage.StorageFolder:DispatchStorageInitialized");
+				if ((<any>globalThis).DotnetExports !== undefined) {
+					StorageFolder.dispatchStorageInitialized = (<any>globalThis).DotnetExports.Uno.Windows.Storage.StorageFolder.DispatchStorageInitialized;
+				} else {
+					StorageFolder.dispatchStorageInitialized =
+						(<any>Module).mono_bind_static_method(
+							"[Uno] Windows.Storage.StorageFolder:DispatchStorageInitialized");
+				}
 			}
 			StorageFolder.dispatchStorageInitialized();
 		}

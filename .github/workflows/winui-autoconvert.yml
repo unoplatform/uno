@@ -7,8 +7,8 @@ on:
 
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  UnoCheck_Version: '1.4.1'
-  UnoCheck_Manifest: 'https://raw.githubusercontent.com/unoplatform/uno.check/8c7f669060a6cca50f71bb0845281c424ad7eb0d/manifests/uno.ui-preview.manifest.json'
+  UnoCheck_Version: '1.11.0-dev.2'
+  UnoCheck_Manifest: 'https://raw.githubusercontent.com/unoplatform/uno.check/146b0b4b23d866bef455494a12ad7ffd2f6f2d20/manifests/uno.ui.manifest.json'
 
 jobs:
   build:
@@ -20,10 +20,10 @@ jobs:
       with:
         fetch-depth: 0
 
-    - name: Setup .NET 6 SDK
+    - name: Setup .NET SDK
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: '6.0.300'
+        global-json-file: global.json
 
     - name: Setup GitVersion
       uses: gittools/actions/gitversion/setup@v0.9.15

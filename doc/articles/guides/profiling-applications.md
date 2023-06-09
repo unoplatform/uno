@@ -1,3 +1,7 @@
+---
+uid: Uno.Tutorials.ProfilingApplications
+---
+
 # Profiling Uno Platform Applications
 
 ## Profiling .NET 6 Android applications
@@ -92,7 +96,7 @@ Profiling WebAssembly applications can be done through the use of AOT compilatio
 - Enable AOT compilation:
     ```xml
     <PropertyGroup>
-        <WasmShellEnableEmccProfiling>InterpreterAndAOT</WasmShellEnableEmccProfiling>
+        <WasmShellMonoRuntimeExecutionMode>InterpreterAndAOT</WasmShellMonoRuntimeExecutionMode>
     </PropertyGroup>
     ```
 

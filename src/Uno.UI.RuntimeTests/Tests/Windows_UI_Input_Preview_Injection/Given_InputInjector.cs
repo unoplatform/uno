@@ -15,6 +15,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.Extensions;
 using Uno.UITest;
 using static Private.Infrastructure.TestServices.WindowHelper;
+using Private.Infrastructure;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Input_Preview_Injection;
 
@@ -25,6 +26,12 @@ internal class Given_InputInjector
 	[RunsOnUIThread]
 	public async Task When_InjectTouch()
 	{
+		if (TestServices.WindowHelper.IsXamlIsland)
+		{
+			// Input injection is not supported in XamlIslands
+			return;
+		}
+
 		var target = new Border
 		{
 			Background = new SolidColorBrush(Colors.DeepPink),

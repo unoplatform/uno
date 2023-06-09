@@ -27,5 +27,17 @@ namespace UnoIslands
 		{
 			this.InitializeComponent();
 		}
+
+		private async void Button_Click(object sender, RoutedEventArgs e)
+		{
+			var dialog = new ContentDialog()
+			{
+				XamlRoot = XamlRoot,
+				Title = "Hello",
+				Content = "Hello World!",
+				CloseButtonText = "Close"
+			};
+			await dialog.ShowAsync();
+		}
 	}
 }

@@ -187,7 +187,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		}
 
 		/// <summary>
-		/// Raises the Click routed event.
+		/// Toggles the IsChecked state.
 		/// </summary>
 		private void OnToggleImpl()
 		{
@@ -227,6 +227,13 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		/// </summary>
 		private void OnIsCheckedChanged()
 		{
+			// This workaround can be removed if pooling is removed. See https://github.com/unoplatform/uno/issues/12189
+			if (_suppressCheckedChanged) // Uno workaround
+			{
+				UpdateVisualState();
+				return;
+			}
+
 			var isChecked = IsChecked;
 			if (isChecked == null)
 			{

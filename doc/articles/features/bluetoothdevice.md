@@ -1,3 +1,7 @@
+---
+uid: Uno.Features.BluetoothDevice
+---
+
 # Support for Windows.Devices.Bluetooth
 
 The support for `Windows.Devices.Bluetooth` is not available at this point, but some of the `BluetoothDevice` methods (getting device selectors) are implemented.

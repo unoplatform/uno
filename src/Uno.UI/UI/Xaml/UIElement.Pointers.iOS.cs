@@ -9,9 +9,9 @@ using Windows.UI.Xaml.Input;
 using Foundation;
 using UIKit;
 using Uno.Extensions;
-using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml.Core;
+using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
@@ -263,7 +263,7 @@ namespace Windows.UI.Xaml
 						// (in order to ensure the "up" has been fully processed, including gesture recognition).
 						// In that case we need to sent it by our-own directly from teh element that has handled the event.
 
-						RootVisual.ProcessPointerUp(args, isAfterHandledUp: true);
+						WinUICoreServices.Instance.MainRootVisual?.ProcessPointerUp(args, isAfterHandledUp: true); // TODO for #8341
 					}
 
 					pt.Release(this);
@@ -440,12 +440,6 @@ namespace Windows.UI.Xaml
 				}
 			}
 		}
-		#endregion
-
-		#region Capture
-		// Pointer capture is not needed on iOS, otherwise we could use ExclusiveTouch = true;
-		// partial void CapturePointerNative(Pointer pointer);
-		// partial void ReleasePointerNative(Pointer pointer);
 		#endregion
 	}
 }

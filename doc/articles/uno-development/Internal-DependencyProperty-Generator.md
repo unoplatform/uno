@@ -1,3 +1,7 @@
+---
+uid: Uno.Contributing.DependencyPropertyGenerator
+---
+
 # The DependencyProperty Generator
 
 Uno provides an internal `DependencyPproperty` code generator, used to provide the boiler plate for the property, as well as the handling of local-precedence property value caching.

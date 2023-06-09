@@ -1,4 +1,8 @@
-﻿# Uno Support for Windows.System.Profile APIs
+﻿---
+uid: Uno.Features.WSProfile
+---
+
+# Uno Support for Windows.System.Profile APIs
 
 ## `AnalyticsInfo`
 

@@ -44,11 +44,6 @@
 		  <ProjectItem ReplaceParameters="false" ItemType="ImageAsset" TargetFileName="Contents.json">Contents.json</ProjectItem>
 		</Folder>
 	  </Folder>
-	  <Folder Name="Resources" TargetFolderName="Resources">
-		<Folder Name="Fonts" TargetFolderName="Fonts">
-		  <ProjectItem ReplaceParameters="false" TargetFileName="uno-fluentui-assets.ttf">uno-fluentui-assets.ttf</ProjectItem>
-		</Folder>
-	  </Folder>
 	</Project>
   </TemplateContent>
 </VSTemplate>

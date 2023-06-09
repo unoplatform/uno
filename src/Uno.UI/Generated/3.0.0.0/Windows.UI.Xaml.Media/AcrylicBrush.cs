@@ -36,7 +36,7 @@ namespace Windows.UI.Xaml.Media
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(TintTransitionDuration), typeof(global::System.TimeSpan), 
 			typeof(global::Windows.UI.Xaml.Media.AcrylicBrush), 
-			new FrameworkPropertyMetadata(default(global::System.TimeSpan)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::System.TimeSpan)));
 		#endif
 		// Skipping already declared property TintLuminosityOpacityProperty
 		// Skipping already declared method Windows.UI.Xaml.Media.AcrylicBrush.AcrylicBrush()

@@ -167,12 +167,15 @@ namespace Windows.UI.Xaml.Controls
 
 		public override void CellDisplayingEnded(UICollectionView collectionView, UICollectionViewCell cell, NSIndexPath indexPath)
 		{
-			var key = cell as ListViewBaseInternalContainer;
-
-			if (_onRecycled.TryGetValue(key, out var actions))
+			if (cell is ListViewBaseInternalContainer key)
 			{
-				foreach (var a in actions) { a(); }
-				_onRecycled.Remove(key);
+				key.IsDisplayed = false;
+
+				if (_onRecycled.TryGetValue(key, out var actions))
+				{
+					foreach (var a in actions) { a(); }
+					_onRecycled.Remove(key);
+				}
 			}
 
 			if (this.Log().IsEnabled(LogLevel.Debug))
@@ -249,9 +252,18 @@ namespace Windows.UI.Xaml.Controls
 					// Normally this happens when the SelectorItem.Content is set, but there's an edge case where after a refresh, a
 					// container can be dequeued which happens to have had exactly the same DataContext as the new item.
 					cell.ClearMeasuredSize();
+
+					// Ensure ClippedFrame from a previous recycled item doesn't persist which can happen in some cases,
+					// and cause it to be clipped when either axis was smaller.
+					if (cell.Content is { } contentControl)
+					{
+						contentControl.ClippedFrame = null;
+					}
 				}
 
 				Owner?.XamlParent?.TryLoadMoreItems(index);
+
+				cell.IsDisplayed = true;
 
 				return cell;
 			}
@@ -695,6 +707,11 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 		}
+
+		/// <summary>
+		/// Indicates if the cell is currently displayed in the collection.
+		/// </summary>
+		internal bool IsDisplayed { get; set; }
 
 		private Orientation ScrollOrientation => Owner.NativeLayout.ScrollOrientation;
 		private bool SupportsDynamicItemSizes => Owner.NativeLayout.SupportsDynamicItemSizes;

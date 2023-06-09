@@ -1,37 +1,34 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using Uno.Extensions;
-using Uno.UI;
+using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using Uno.Disposables;
-using Windows.UI.Xaml.Markup;
-using Uno.UI.DataBinding;
-using Windows.UI.Xaml.Data;
-using Windows.Foundation.Collections;
-using Uno.Extensions.Specialized;
-
-using Uno.UI.Extensions;
 using System.ComponentModel;
+using System.Linq;
+using Windows.Foundation.Collections;
 using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Markup;
+using Uno.Disposables;
+using Uno.Extensions;
+using Uno.Extensions.Specialized;
 using Uno.Foundation.Logging;
+using Uno.UI;
+using Uno.UI.DataBinding;
+using Uno.UI.Extensions;
 
 #if XAMARIN_ANDROID
-using View = Android.Views.View;
-using _ViewGroup = Android.Views.ViewGroup;
-using Font = Android.Graphics.Typeface;
 using Android.Graphics;
+
+using View = Android.Views.View;
 #elif XAMARIN_IOS
-using View = UIKit.UIView;
-using _ViewGroup = UIKit.UIView;
-using Color = UIKit.UIColor;
-using Font = UIKit.UIFont;
 using UIKit;
+
+using View = UIKit.UIView;
 #elif __MACOS__
 using AppKit;
+
 using View = AppKit.NSView;
-using Color = Windows.UI.Color;
 #else
 using View = Windows.UI.Xaml.UIElement;
 #endif
@@ -51,6 +48,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private bool _isReady; // Template applied
 		private ItemCollection _items = new ItemCollection();
+		private (object Source, IEnumerable Snapshot)? _cachedItemsSource;
 
 		// This gets prepended to MaterializedContainers to ensure it's being considered 
 		// even if it might not yet have be added to the ItemsPanel (e.eg., NativeListViewBase).
@@ -638,10 +636,31 @@ namespace Windows.UI.Xaml.Controls
 				this.Log().LogDebug($"Calling OnItemsSourceChanged(), Old source={e.OldValue}, new source={e.NewValue}, NoOfItems={NumberOfItems}");
 			}
 
+			TrySnapshotNonObservableSource(e.NewValue);
+
 			IsGrouping = (e.NewValue as ICollectionView)?.CollectionGroups != null;
 			Items.SetItemsSource(UnwrapItemsSource() as IEnumerable);
 			ObserveCollectionChanged();
 			TryObserveCollectionViewSource(e.NewValue);
+		}
+
+		private void TrySnapshotNonObservableSource(object source)
+		{
+			// For normal enumerables, that are not notifying (INCC) or observable (ObsCollection),
+			// any further change on the original source should not affect the rendering.
+			// Therefore, we want to use a shallow copy here instead of the original source
+			// to avoid changes being synchronized onto the materialized items on subsequent measure calls.
+			if (_cachedItemsSource?.Source != source &&
+				source is IEnumerable enumerable &&
+				!(source is CollectionViewSource or ObservableVectorWrapper or INotifyCollectionChanged or IObservableVector) &&
+				!source.GetType().IsGenericDescentOf(typeof(IObservableVector<>)))
+			{
+				_cachedItemsSource = (source, enumerable.Cast<object>().ToList());
+			}
+			else
+			{
+				_cachedItemsSource = null;
+			}
 		}
 
 		private void TryObserveCollectionViewSource(object newValue)
@@ -664,14 +683,16 @@ namespace Windows.UI.Xaml.Controls
 
 		internal int GetDisplayGroupCount(int displaySection) => IsGrouping ? GetGroupAtDisplaySection(displaySection).GroupItems.Count : 0;
 
-		// Supports the common usage (prescribed in the official doc) of ItemsSource="{Binding Source = {StaticResource SomeCollectionViewSource}}"
-		//
-		// Note: this is not correct, in that it's not actually possible on UWP to set ItemsControl.ItemsSource to a CollectionViewSource.
-		// What actually happens on UWP in the above case is that the *BindingExpression* 'unwraps' the CollectionViewSource and passes the
-		// CollectionViewSource.View to whatever is being bound to (ie the ItemsSource). This should be fixed at some point because it
-		// has observable consequences in some usages.
-		internal object UnwrapItemsSource()
-			=> ItemsSource is CollectionViewSource cvs ? (object)cvs.View : ItemsSource;
+		internal object UnwrapItemsSource() =>
+			// Use the snapshotted source for non-notifying/observable collection
+			_cachedItemsSource?.Snapshot ??
+			// Supports the common usage (prescribed in the official doc) of ItemsSource="{Binding Source = {StaticResource SomeCollectionViewSource}}"
+			// Note: this is not correct, in that it's not actually possible on UWP to set ItemsControl.ItemsSource to a CollectionViewSource.
+			// What actually happens on UWP in the above case is that the *BindingExpression* 'unwraps' the CollectionViewSource and passes the
+			// CollectionViewSource.View to whatever is being bound to (ie the ItemsSource). This should be fixed at some point because it
+			// has observable consequences in some usages.
+			(ItemsSource as CollectionViewSource)?.View ??
+			ItemsSource;
 
 		internal void ObserveCollectionChanged()
 		{
@@ -1107,25 +1128,29 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		internal void CleanUpContainer(global::Windows.UI.Xaml.DependencyObject element)
 		{
+			// Determine the item characteristics manually, as the item
+			// does not exist anymore in the Items or ItemsSource.
 			object item;
+			bool isOwnContainer = false;
 			switch (element)
 			{
 				case ContentPresenter cp when cp is ContentPresenter:
 					item = cp.Content;
+					isOwnContainer = cp.IsOwnContainer;
 					break;
 				case ContentControl cc when cc is ContentControl:
 					item = cc.Content;
+					isOwnContainer = cc.IsOwnContainer;
 					break;
 				default:
 					item = element;
 					break;
-
 			}
-
-			var isOwnContainer = ReferenceEquals(element, item);
 
 			ClearContainerForItemOverride(element, item);
 			ContainerClearedForItem(item, element as SelectorItem);
+
+			UIElement.PrepareForRecycle(element);
 
 			if (element is ContentPresenter presenter
 				&& (
@@ -1134,31 +1159,50 @@ namespace Windows.UI.Xaml.Controls
 				)
 			)
 			{
-				// Clear the Content property first, in order to avoid creating a text placeholder when
-				// the ContentTemplate is removed.
-				presenter.ClearValue(ContentPresenter.ContentProperty);
+				if (!isOwnContainer)
+				{
+					// Clear the Content property first, in order to avoid creating a text placeholder when
+					// the ContentTemplate is removed.
+					presenter.ClearValue(ContentPresenter.ContentProperty);
 
-				presenter.ClearValue(ContentPresenter.ContentTemplateProperty);
-				presenter.ClearValue(ContentPresenter.ContentTemplateSelectorProperty);
+					presenter.ClearValue(ContentPresenter.ContentTemplateProperty);
+					presenter.ClearValue(ContentPresenter.ContentTemplateSelectorProperty);
+				}
 			}
 			else if (element is ContentControl contentControl)
 			{
-				contentControl.ClearValue(DataContextProperty);
-
 				if (!isOwnContainer)
 				{
-					// Clears value set in PrepareContainerForItemOverride
-					element.ClearValue(ContentControl.ContentProperty);
+					static void ClearPropertyWhenNoExpression(ContentControl target, DependencyProperty property)
+					{
+						// We must not clear the properties of the container if a binding expression
+						// is defined. This is a use-case present for TreeView, which generally uses TreeViewItem
+						// at the root of hierarchical templates.
+						if (target.GetBindingExpression(property) is null)
+						{
+							target.ClearValue(property);
+						}
+					}
+
+					if (!contentControl.IsContainerFromTemplateRoot)
+					{
+						// Clears value set in PrepareContainerForItemOverride
+						ClearPropertyWhenNoExpression(contentControl, ContentControl.ContentProperty);
+					}
+
+					if (contentControl.ContentTemplate is { } ct && ct == ItemTemplate)
+					{
+						ClearPropertyWhenNoExpression(contentControl, ContentControl.ContentTemplateProperty);
+					}
+					else if (contentControl.ContentTemplateSelector is { } cts && cts == ItemTemplateSelector)
+					{
+						ClearPropertyWhenNoExpression(contentControl, ContentControl.ContentTemplateSelectorProperty);
+					}
 				}
 
-				if (contentControl.ContentTemplate is { } ct && ct == ItemTemplate)
-				{
-					contentControl.ClearValue(ContentControl.ContentTemplateProperty);
-				}
-				else if (contentControl.ContentTemplateSelector is { } cts && cts == ItemTemplateSelector)
-				{
-					contentControl.ClearValue(ContentControl.ContentTemplateSelectorProperty);
-				}
+				// We are clearing the DataContext last. Because if there is a binding set on any of the above properties, Content(Template(Selector)?)?,
+				// clearing the DC can cause the data-bound property to be unnecessarily re-evaluated with an inherited DC from the visual parent.
+				contentControl.ClearValue(DataContextProperty);
 			}
 		}
 
@@ -1213,24 +1257,28 @@ namespace Windows.UI.Xaml.Controls
 			//Prepare ContentPresenter
 			if (element is ContentPresenter containerAsContentPresenter)
 			{
-				containerAsContentPresenter.ContentTemplate = ItemTemplate;
-				containerAsContentPresenter.ContentTemplateSelector = ItemTemplateSelector;
+				containerAsContentPresenter.IsOwnContainer = isOwnContainer;
 
 				if (!isOwnContainer)
 				{
+					containerAsContentPresenter.ContentTemplate = ItemTemplate;
+					containerAsContentPresenter.ContentTemplateSelector = ItemTemplateSelector;
+
 					SetContent(containerAsContentPresenter, ContentPresenter.ContentProperty);
 				}
 			}
 			else if (element is ContentControl containerAsContentControl)
 			{
-				if (!containerAsContentControl.IsContainerFromTemplateRoot)
-				{
-					containerAsContentControl.ContentTemplate = ItemTemplate;
-					containerAsContentControl.ContentTemplateSelector = ItemTemplateSelector;
-				}
+				containerAsContentControl.IsOwnContainer = isOwnContainer;
 
 				if (!isOwnContainer)
 				{
+					if (!containerAsContentControl.IsContainerFromTemplateRoot)
+					{
+						containerAsContentControl.ContentTemplate = ItemTemplate;
+						containerAsContentControl.ContentTemplateSelector = ItemTemplateSelector;
+					}
+
 					TryRepairContentConnection(containerAsContentControl, item);
 
 					// Set the datacontext first, then the binding.
@@ -1588,7 +1636,7 @@ namespace Windows.UI.Xaml.Controls
 			if (items is IList<object> list)
 			{
 				// This is primarily an optimization for ICollectionView, which implements IList<object> but might not implement non-generic IList
-				return list[index];
+				return list.Count > index ? list[index] : default;
 			}
 
 			return items?.ElementAtOrDefault(index);

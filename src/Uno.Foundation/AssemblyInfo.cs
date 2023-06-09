@@ -34,6 +34,7 @@ using global::System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("SamplesApp.iOS")]
 [assembly: InternalsVisibleTo("SamplesApp.Droid")]
 [assembly: InternalsVisibleTo("SamplesApp.MacOS")]
+[assembly: InternalsVisibleTo("UnoIslandsSamplesApp.Skia")]
 [assembly: InternalsVisibleTo("XamlGenerationTests")]
 [assembly: InternalsVisibleTo("XamlGenerationTests.Core")]
 [assembly: InternalsVisibleTo("Uno.UI.Adapter.Microsoft.Extensions.Logging")]

@@ -1,3 +1,7 @@
+---
+uid: Uno.Contributing.ThemeResource
+---
+
 # Theme resource internals for contributors
 
 This article looks at the way theme resources are handled under the hood, including the way that resource assignations are resolved, and the way that assigned resources are updated, for example when the active theme changes in the running application (from light to dark or vice versa). It's aimed at Uno Platform contributors looking to better understand the internals of the feature.

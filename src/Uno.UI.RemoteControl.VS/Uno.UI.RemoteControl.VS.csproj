@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
+<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
 
   <PropertyGroup>
     <TargetFrameworks>net461;net48</TargetFrameworks>
@@ -10,8 +10,6 @@
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>
 	</PropertyGroup>
-
-	<Import Project="..\Uno.CrossTargetting.props" />
 
 	<ItemGroup>
 		<UpToDateCheckInput Include="**\*.cs" Exclude="bin\**\*.cs;obj\**\*.cs;" />
@@ -31,7 +29,7 @@
 
 	<ItemGroup Condition="'$(TargetFramework)'=='net48'">
 		<PackageReference Include="Microsoft.VisualStudio.SDK" Version="17.0.0-previews-2-31512-422" ExcludeAssets="runtime" />
-		<PackageReference Include="Microsoft.VSSDK.BuildTools" Version="17.4.2116" />
+		<PackageReference Include="Microsoft.VSSDK.BuildTools" Version="17.6.2164" />
 		<PackageReference Include="Newtonsoft.Json" />
 		<PackageReference Include="NuGet.VisualStudio" version="4.5.0" />
 		<PackageReference Include="Microsoft.VisualStudio.ProjectSystem" Version="16.0.374-pre" />
@@ -46,7 +44,11 @@
 
 	<Target Name="_UnoToolkitOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">
 		<PropertyGroup>
-			<_TargetNugetFolder>$(USERPROFILE)\.nuget\packages\Uno.UI.RemoteControl\$(UnoNugetOverrideVersion)\tools\rc</_TargetNugetFolder>
+			<_OverridePackageId>Uno.UI</_OverridePackageId>
+			<_OverridePackageId Condition="'$(UNO_UWP_BUILD)'=='false'">Uno.WinUI</_OverridePackageId>
+			<_UnoOverrideTargetVSVersion>16.0</_UnoOverrideTargetVSVersion>
+			<_UnoOverrideTargetVSVersion Condition="'$(TargetFramework)'=='net48'">17.0</_UnoOverrideTargetVSVersion>
+			<_TargetNugetFolder>$(USERPROFILE)\.nuget\packages\$(_OverridePackageId).RemoteControl\$(UnoNugetOverrideVersion)\tools\rc\$(_UnoOverrideTargetVSVersion)</_TargetNugetFolder>
 		</PropertyGroup>
 		<ItemGroup>
 			<_OutputFiles Include="$(TargetDir)*.*" />

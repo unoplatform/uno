@@ -22,8 +22,6 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		private readonly HashtableEx _table = new HashtableEx();
 
-		internal delegate PropertyMetadata CreationHandler();
-
 		internal void Add(Type ownerType, PropertyMetadata ownerTypeMetadata)
 			=> _table.Add(ownerType, ownerTypeMetadata);
 
@@ -46,14 +44,14 @@ namespace Windows.UI.Xaml
 		internal bool ContainsValue(PropertyMetadata typeMetadata)
 			=> _table.ContainsValue(typeMetadata);
 
-		internal PropertyMetadata FindOrCreate(Type ownerType, CreationHandler createHandler)
+		internal PropertyMetadata FindOrCreate(Type ownerType, Type baseType, DependencyProperty property)
 		{
 			if (_table.TryGetValue(ownerType, out var value))
 			{
 				return (PropertyMetadata)value!;
 			}
 
-			var metadata = createHandler();
+			var metadata = property.GetMetadata(baseType);
 
 			_table[ownerType] = metadata;
 

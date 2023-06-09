@@ -509,7 +509,7 @@ namespace Microsoft.UI.Xaml.Controls
 			var repeater = m_repeater;
 			if (repeater != null)
 			{
-				var focusedElement = FocusManager.GetFocusedElement() as UIElement;
+				var focusedElement = FocusManager.GetFocusedElement(XamlRoot) as UIElement;
 				if (focusedElement != null)
 				{
 					var focusedIndex = repeater.GetElementIndex(focusedElement);

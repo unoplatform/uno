@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Uno.UI.Tests.Windows_UI_Xaml.Controls;
 using Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls;
+using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
@@ -17,6 +19,23 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 	public class Given_xBind_Binding
 	{
 		private const int V = 42;
+		private bool _previousPoolingEnabled;
+
+		[TestInitialize]
+		public void Init()
+		{
+			UnitTestsApp.App.EnsureApplication();
+
+			_previousPoolingEnabled = FrameworkTemplatePool.IsPoolingEnabled;
+			FrameworkTemplatePool.IsPoolingEnabled = false;
+		}
+
+		[TestCleanup]
+		public void Cleanup()
+		{
+			FrameworkTemplatePool.IsPoolingEnabled = _previousPoolingEnabled;
+			FrameworkTemplatePool.Scavenge();
+		}
 
 		[TestMethod]
 		public void When_Initial_Value()
@@ -1073,7 +1092,6 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 		}
 
 		[TestMethod]
-		[Ignore("https://github.com/unoplatform/uno/issues/10164")]
 		public async Task When_xLoad_StaticResource()
 		{
 			var SUT = new Binding_xLoad_StaticResources();
@@ -1307,8 +1325,10 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 			var SUT = new xBind_PathLessCasting();
 
 			SUT.ForceLoaded();
-
+			const string CastResult = "ExplicitConversion_Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls.xBind_PathLessCasting";
 			Assert.AreEqual(SUT, SUT.tb1.Tag);
+			Assert.AreEqual(CastResult, SUT.tb2.Text);
+			Assert.AreEqual($"{CastResult}-{CastResult}", SUT.tb3.Text);
 		}
 
 		[TestMethod]
@@ -1334,6 +1354,8 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 			SUT.ForceLoaded();
 
 			Assert.AreEqual(42, SUT.tb1.Tag);
+			Assert.AreEqual("TextBlockTag", SUT.tb3.Tag);
+			Assert.AreEqual("Formatted TextBlockTag", SUT.tb4.Tag);
 		}
 
 		[TestMethod]
@@ -1353,6 +1375,91 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 			Assert.IsNull(SUT.tb1.Tag);
 		}
 
+		[TestMethod]
+		public void When_Indexer()
+		{
+			var SUT = new XBind_Indexer();
+
+			SUT.ForceLoaded();
+
+			Assert.AreEqual("ListFirstItem", SUT.tbList.Text);
+			Assert.AreEqual("DictionaryValue", SUT.tbDict.Text);
+
+			SUT.VM.List = new ObservableCollection<string>() { "UpdatedList" };
+			SUT.VM.Dict = new PropertySet() { ["Key"] = "UpdatedDic" };
+
+			Assert.AreEqual("UpdatedList", SUT.tbList.Text);
+			Assert.AreEqual("UpdatedDic", SUT.tbDict.Text);
+		}
+
+		[TestMethod]
+		public void When_Indexer_Update_Collection()
+		{
+			var SUT = new XBind_Indexer();
+
+			SUT.ForceLoaded();
+
+			Assert.AreEqual("ListFirstItem", SUT.tbList.Text);
+			Assert.AreEqual("DictionaryValue", SUT.tbDict.Text);
+
+			SUT.VM.List[0] = "Updated1";
+			SUT.VM.Dict["Key"] = "Updated2";
+
+			Assert.AreEqual("Updated1", SUT.tbList.Text);
+			Assert.AreEqual("DictionaryValue", SUT.tbDict.Text);
+		}
+
+		[TestMethod]
+		public void When_Indexer_Then_Property_Access()
+		{
+			var SUT = new XBind_Indexer();
+
+			SUT.ForceLoaded();
+
+			Assert.AreEqual("ListFirstItem", SUT.tbList2.Text);
+			Assert.AreEqual("DictionaryValue", SUT.tbDict2.Text);
+
+			SUT.VM.List2 = new ObservableCollection<PersonViewModel>() { new PersonViewModel() { Name = "UpdatedList" } };
+			SUT.VM.Dict2 = new MyCustomMap() { ["Key"] = new PersonViewModel() { Name = "UpdatedDic" } };
+
+			Assert.AreEqual("UpdatedList", SUT.tbList2.Text);
+			Assert.AreEqual("UpdatedDic", SUT.tbDict2.Text);
+		}
+
+		[TestMethod]
+		public void When_Indexer_Then_Property_Access_Update_Collection()
+		{
+			var SUT = new XBind_Indexer();
+
+			SUT.ForceLoaded();
+
+			Assert.AreEqual("ListFirstItem", SUT.tbList2.Text);
+			Assert.AreEqual("DictionaryValue", SUT.tbDict2.Text);
+
+			SUT.VM.List2[0] = new PersonViewModel() { Name = "Updated1" };
+			SUT.VM.Dict2["Key"] = new PersonViewModel() { Name = "Updated2" };
+
+			Assert.AreEqual("Updated1", SUT.tbList2.Text);
+			Assert.AreEqual("DictionaryValue", SUT.tbDict2.Text);
+		}
+
+		[TestMethod]
+		public void When_Indexer_Then_Property_Access_Update_Collection_Element()
+		{
+			var SUT = new XBind_Indexer();
+
+			SUT.ForceLoaded();
+
+			Assert.AreEqual("ListFirstItem", SUT.tbList2.Text);
+			Assert.AreEqual("DictionaryValue", SUT.tbDict2.Text);
+
+			SUT.VM.List2[0].Name = "Updated1";
+			SUT.VM.Dict2["Key"].Name = "Updated2";
+
+			Assert.AreEqual("Updated1", SUT.tbList2.Text);
+			Assert.AreEqual("Updated2", SUT.tbDict2.Text);
+		}
+
 		private async Task AssertIsNullAsync<T>(Func<T> getter, TimeSpan? timeout = null) where T : class
 		{
 			timeout ??= TimeSpan.FromSeconds(1);
@@ -1361,6 +1468,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 
 			while (sw.Elapsed < timeout)
 			{
+				void validate()
 				{
 					var value = getter();
 
@@ -1372,12 +1480,14 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 					value = null;
 				}
 
+				validate();
+
 				await Task.Yield();
 
 				// Wait for the ElementNameSubject and ComponentHolder
 				// instances to release their references.
 				GC.Collect(2);
-				//GC.WaitForPendingFinalizers();
+				GC.WaitForPendingFinalizers();
 			}
 
 			{

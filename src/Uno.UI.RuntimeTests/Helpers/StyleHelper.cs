@@ -1,10 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Linq;
+using System.Text;
 using Uno.Disposables;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Private.Infrastructure;
+using MUXControlsTestApp.Utilities;
+
+#if HAS_UNO
+using Uno.UI.Dispatching;
+using Uno.UI.Xaml.Media;
+#endif
 
 namespace Uno.UI.RuntimeTests.Helpers
 {
@@ -72,6 +79,9 @@ namespace Uno.UI.RuntimeTests.Helpers
 #if NETFX_CORE // Disabled on UWP for now because 18362 doesn't support WinUI 2.x; Fluent resources are used by default in SamplesApp.UWP
 			return null;
 #else
+
+			CoreDispatcher.CheckThreadAccess();
+
 			var resources = Application.Current.Resources;
 			if (resources is Microsoft.UI.Xaml.Controls.XamlControlsResources || resources.MergedDictionaries.OfType<Microsoft.UI.Xaml.Controls.XamlControlsResources>().Any())
 			{
@@ -81,8 +91,28 @@ namespace Uno.UI.RuntimeTests.Helpers
 			var xcr = new Microsoft.UI.Xaml.Controls.XamlControlsResources();
 			resources.MergedDictionaries.Insert(0, xcr);
 
-			return new DisposableAction(() => resources.MergedDictionaries.Remove(xcr));
+			// Force default brushes to be reloaded
+			DefaultBrushes.ResetDefaultThemeBrushes();
+			ResetIslandRootForeground();
+
+			return new DisposableAction(() =>
+			{
+				resources.MergedDictionaries.Remove(xcr);
+				DefaultBrushes.ResetDefaultThemeBrushes();
+				ResetIslandRootForeground();
+			});
 #endif
 		}
+
+#if !NETFX_CORE
+		private static void ResetIslandRootForeground()
+		{
+			if (TestServices.WindowHelper.IsXamlIsland && VisualTreeUtils.FindVisualChildByType<Control>(TestServices.WindowHelper.XamlRoot.Content) is { } control)
+			{
+				// Ensure the root element's Foreground is set correctly
+				control.SetValue(Control.ForegroundProperty, DefaultBrushes.TextForegroundBrush, DependencyPropertyValuePrecedences.DefaultValue);
+			}
+		}
+#endif
 	}
 }

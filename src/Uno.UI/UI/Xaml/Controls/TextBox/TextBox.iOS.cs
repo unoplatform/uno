@@ -24,7 +24,7 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void InitializePropertiesPartial()
 		{
-			OnTextAlignmentChanged(CreateInitialValueChangerEventArgs(TextAlignmentProperty, null, TextAlignment));
+			OnTextAlignmentChanged(TextAlignment);
 			OnReturnKeyTypeChanged(ReturnKeyType);
 			OnKeyboardAppearanceChanged(KeyboardAppearance);
 			UpdateKeyboardThemePartial();
@@ -57,17 +57,17 @@ namespace Windows.UI.Xaml.Controls
 				.GetValueOrDefault(false);
 		}
 
-		partial void OnAcceptsReturnChangedPartial(DependencyPropertyChangedEventArgs e)
+		partial void OnAcceptsReturnChangedPartial(bool newValue)
 		{
 			UpdateTextBoxView();
 		}
 
-		partial void OnTextWrappingChangedPartial(DependencyPropertyChangedEventArgs e)
+		partial void OnTextWrappingChangedPartial()
 		{
 			UpdateTextBoxView();
 		}
 
-		partial void OnTextAlignmentChangedPartial(DependencyPropertyChangedEventArgs e)
+		partial void OnTextAlignmentChangedPartial(TextAlignment newValue)
 		{
 			_textBoxView?.UpdateTextAlignment();
 		}
@@ -138,18 +138,18 @@ namespace Windows.UI.Xaml.Controls
 			return downHandled || upHandled;
 		}
 
-		partial void OnInputScopeChangedPartial(DependencyPropertyChangedEventArgs e)
+		partial void OnInputScopeChangedPartial(InputScope newValue)
 		{
 			this.CoerceValue(ReturnKeyTypeProperty);
 
 			if (_textBoxView != null)
 			{
-				_textBoxView.KeyboardType = InputScopeHelper.ConvertInputScopeToKeyboardType((InputScope)e.NewValue);
+				_textBoxView.KeyboardType = InputScopeHelper.ConvertInputScopeToKeyboardType(newValue);
 
 				//If SpellCheck is enabled we already set the Capitalization.
 				if (!IsSpellCheckEnabled)
 				{
-					_textBoxView.AutocapitalizationType = InputScopeHelper.ConvertInputScopeToCapitalization((InputScope)e.NewValue);
+					_textBoxView.AutocapitalizationType = InputScopeHelper.ConvertInputScopeToCapitalization(newValue);
 				}
 			}
 		}
@@ -162,12 +162,12 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		partial void OnMaxLengthChangedPartial(DependencyPropertyChangedEventArgs e)
+		partial void OnMaxLengthChangedPartial(int newValue)
 		{
 			//support by MultilineTextBoxDelegate and SinglelineTextBoxDelegate
 		}
 
-		partial void OnIsReadonlyChangedPartial(DependencyPropertyChangedEventArgs e)
+		partial void OnIsReadonlyChangedPartial()
 		{
 			//support by MultilineTextBoxDelegate and SinglelineTextBoxDelegate
 		}
@@ -180,28 +180,26 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		partial void OnIsSpellCheckEnabledChangedPartial(DependencyPropertyChangedEventArgs e)
+		partial void OnIsSpellCheckEnabledChangedPartial(bool newValue)
 		{
 			if (_textBoxView != null)
 			{
-				var isSpellCheckEnabled = (bool)e.NewValue;
-
-				_textBoxView.SpellCheckingType = isSpellCheckEnabled
+				_textBoxView.SpellCheckingType = newValue
 					? UITextSpellCheckingType.Yes
 					: UITextSpellCheckingType.No;
 
-				_textBoxView.AutocorrectionType = isSpellCheckEnabled
+				_textBoxView.AutocorrectionType = newValue
 					? UITextAutocorrectionType.Yes
 					: UITextAutocorrectionType.No;
 
-				if (isSpellCheckEnabled)
+				if (newValue)
 				{
 					_textBoxView.AutocapitalizationType = UITextAutocapitalizationType.Sentences;
 				}
 			}
 		}
 
-		partial void OnIsTextPredictionEnabledChangedPartial(DependencyPropertyChangedEventArgs e)
+		partial void OnIsTextPredictionEnabledChangedPartial(bool newValue)
 		{
 			// There doesn't seem to be any way to disable/enable TextPrediction without disabling/enabling SpellCheck
 			if (!IsTextPredictionEnabledErrorMessageShown)

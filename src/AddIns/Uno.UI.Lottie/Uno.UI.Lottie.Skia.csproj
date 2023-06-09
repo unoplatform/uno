@@ -34,8 +34,6 @@
 		<PackageReference Include="Uno.WinUI" Version="4.4.5" ExcludeAssets="all" IncludeAssets="none" PrivateAssets="all" Condition="'$(UNO_UWP_BUILD)'!='true'" />
 	</ItemGroup>
 
-	<Import Project="..\..\Uno.CrossTargetting.props" />
-
 	<ItemGroup>
 	  <ProjectReference Include="..\..\Uno.UI\Uno.UI.Skia.csproj" />
 	</ItemGroup>

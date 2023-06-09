@@ -3,13 +3,14 @@
 	  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	  xmlns:local="using:Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls"
 	  mc:Ignorable="d">
 
 	<Grid>
-		<TwoWay_Object_TestObject x:Name="myObject"
+		<local:TwoWay_Object_TestObject x:Name="myObject"
 								 x:FieldModifier="public"
 								 MyProperty="{x:Bind MyIntProperty, Mode=TwoWay}" />
-		<TwoWay_Object_TestObject x:Name="myObjectNestedProperty"
+		<local:TwoWay_Object_TestObject x:Name="myObjectNestedProperty"
 								 x:FieldModifier="public"
 								 MyProperty="{x:Bind Model.MyIntProperty, Mode=TwoWay}" />
 	</Grid>

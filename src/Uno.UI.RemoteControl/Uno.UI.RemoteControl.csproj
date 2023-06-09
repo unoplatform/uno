@@ -8,9 +8,6 @@
 	<Import Project="../targetframework-override.props" />
 
 	<PropertyGroup>
-		<!-- Ensures the .xr.xml files are generated in a proper layout folder -->
-		<GenerateLibraryLayout>true</GenerateLibraryLayout>
-
 		<NoWarn>$(NoWarn);NU1701</NoWarn>
 
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
@@ -20,12 +17,6 @@
 
 		<PackageId Condition="'$(UNO_UWP_BUILD)'=='false'">Uno.WinUI.RemoteControl</PackageId>
 	</PropertyGroup>
-
-	<Import Project="..\Uno.CrossTargetting.props" />
-
-	<ItemGroup>
-		<UpToDateCheckInput Include="**\*.cs" Exclude="bin\**\*.cs;obj\**\*.cs;" />
-	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)'!='netstandard2.0'">
 		<EmbeddedResource Include="LinkerDefinition.Xamarin.xml">
@@ -38,22 +29,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <UpToDateCheckInput Remove="Helpers\WebSocketHelper.cs" />
-	  <UpToDateCheckInput Remove="HotReload\ClientHotReloadProcessor.cs" />
-	  <UpToDateCheckInput Remove="HotReload\HotReloadConstants.cs" />
-	  <UpToDateCheckInput Remove="HotReload\IRemoteControlClient.cs" />
-	  <UpToDateCheckInput Remove="HotReload\Messages\ConfigureServer.cs" />
-	  <UpToDateCheckInput Remove="HotReload\Messages\FileReload.cs" />
-	  <UpToDateCheckInput Remove="HotReload\Messages\Frame.cs" />
-	  <UpToDateCheckInput Remove="HotReload\Messages\IMessage.cs" />
-	  <UpToDateCheckInput Remove="HotReload\Messages\XamlLoadError.cs" />
-	  <UpToDateCheckInput Remove="IRemoteControlProcessor.cs" />
-	  <UpToDateCheckInput Remove="ProjectConfigurationAttribute.cs" />
-	  <UpToDateCheckInput Remove="RemoteControlClient.cs" />
-	  <UpToDateCheckInput Remove="ServerEndpointAttribute.cs" />
-	</ItemGroup>
-
-	<ItemGroup>
 	  <Content Include="buildTransitive\Uno.UI.RemoteControl.targets">
 	    <PackagePath>build</PackagePath>
 	    <Pack>true</Pack>
@@ -62,7 +37,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Newtonsoft.Json" />
-		<PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="2.3.1" />
+		<PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="2.3.2" />
 	</ItemGroup>
 
 	<ItemGroup Condition="$(IsAndroid) or $(IsIOS) or '$(TargetFramework)'=='xamarinmac20'">
@@ -72,6 +47,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.csproj" />
+		<ProjectReference Include="..\Uno.UI.RemoteControl.Messaging\Uno.UI.RemoteControl.Messaging.csproj" />
 		<ProjectReference Include="..\Uno.UWP\Uno.csproj" />
 		<ProjectReference Include="..\Uno.UI\Uno.UI.csproj" />
 	</ItemGroup>
@@ -104,7 +80,7 @@
 			<_OverrideTargetFramework>$(TargetFramework)</_OverrideTargetFramework>
 			<_baseNugetPath Condition="'$(USERPROFILE)'!=''">$(USERPROFILE)</_baseNugetPath>
 			<_baseNugetPath Condition="'$(HOME)'!=''">$(HOME)</_baseNugetPath>
-			<_TargetNugetFolder>$(_baseNugetPath)\.nuget\packages\uno.ui\$(UnoNugetOverrideVersion)\lib\$(_OverrideTargetFramework)</_TargetNugetFolder>
+			<_TargetNugetFolder>$(_baseNugetPath)\.nuget\packages\$(PackageId)\$(UnoNugetOverrideVersion)\lib\$(_OverrideTargetFramework)</_TargetNugetFolder>
 		</PropertyGroup>
 		<ItemGroup>
 			<_OutputFiles Include="$(TargetDir)\*.*" />

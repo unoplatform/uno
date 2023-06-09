@@ -21,6 +21,8 @@ namespace Windows.UI.Xaml.Documents
 		private void OnCollectionChanged()
 		{
 #if !NET461
+			_preorderTree = null;
+
 			switch (_collection.GetParent())
 			{
 				case TextBlock textBlock:
@@ -35,9 +37,55 @@ namespace Windows.UI.Xaml.Documents
 #endif
 		}
 
+		private Inline[] _preorderTree;
+
+		internal Inline[] PreorderTree => _preorderTree ??= GetPreorderTree();
+
+		private Inline[] GetPreorderTree()
+		{
+			if (_collection.Count == 1 && _collection[0] is not Span)
+			{
+				return new Inline[] { _collection[0] };
+			}
+			else if (_collection.Count == 0)
+			{
+				return Array.Empty<Inline>();
+			}
+			else
+			{
+				var result = new List<Inline>(4);
+
+				var enumerator = _collection.GetEnumeratorFast();
+
+				while (enumerator.MoveNext())
+				{
+					GetPreorderTreeInner(enumerator.Current, result);
+				}
+
+				return result.ToArray();
+			}
+
+			static void GetPreorderTreeInner(Inline inline, List<Inline> accumulator)
+			{
+				accumulator.Add(inline);
+
+				if (inline is Span span)
+				{
+					var enumerator = span.Inlines.GetEnumeratorFast();
+
+					while (enumerator.MoveNext())
+					{
+						GetPreorderTreeInner(enumerator.Current, accumulator);
+					}
+				}
+			}
+		}
+
 		public IEnumerator<Inline> GetEnumerator() => _collection.GetEnumerator();
 
 		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+		internal List<Inline>.Enumerator GetEnumeratorFast() => _collection.GetEnumeratorFast();
 
 		/// <inheritdoc />
 		public void Add(Inline item) => _collection.Add(item);

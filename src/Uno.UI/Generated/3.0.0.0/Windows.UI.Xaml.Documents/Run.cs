@@ -28,7 +28,7 @@ namespace Windows.UI.Xaml.Documents
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(FlowDirection), typeof(global::Windows.UI.Xaml.FlowDirection), 
 			typeof(global::Windows.UI.Xaml.Documents.Run), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.FlowDirection)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.FlowDirection)));
 		#endif
 		// Skipping already declared method Windows.UI.Xaml.Documents.Run.Run()
 		// Forced skipping of method Windows.UI.Xaml.Documents.Run.Run()

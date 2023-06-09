@@ -1,3 +1,7 @@
+---
+uid: Uno.Features.WinUIStartScreen
+---
+
 # Uno Support for Windows.UI.StartScreen
 
 ## `JumpList` &amp; `JumpListItem`

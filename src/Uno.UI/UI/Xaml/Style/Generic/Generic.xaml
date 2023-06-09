@@ -1,6 +1,5 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 					xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-					xmlns:not_mux="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 					xmlns:not_android="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 					xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -21,6 +20,7 @@
 					xmlns:itemswrapgridnotpresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsTypeNotPresent(Windows.UI.Xaml.Controls.ItemsWrapGrid)"
 					xmlns:uwpOnly="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsTypeNotPresent(Microsoft.UI.Xaml.FrameworkElement)"
 					xmlns:uBehaviors="using:Uno.UI.Behaviors"
+					xmlns:mux="using:Microsoft.UI.Xaml.Controls"
 					mc:Ignorable="d xamarin ios android not_wasm wasm netstdref not_netstdref macos skia">
 
 	<!-- TODO: ItemsControl should inject ItemsPresenter directly if no template is found. (Change this once template is materialized on Measure) -->
@@ -6185,7 +6185,7 @@
 		</Setter>
 	</Style>
 
-	<not_mux:Style TargetType="MediaPlayerElement">
+	<Style TargetType="MediaPlayerElement">
 		<Setter Property="HorizontalAlignment"
 				Value="Stretch" />
 		<Setter Property="VerticalAlignment"
@@ -6218,7 +6218,7 @@
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
-	</not_mux:Style>
+	</Style>
 
 	<Style x:Key="MTC_ButtonStyle"
 		   TargetType="Button">
@@ -6683,7 +6683,7 @@
 		</Setter>
 	</Style>
 
-	<not_mux:Style TargetType="MediaTransportControls">
+	<Style TargetType="MediaTransportControls">
 		<Setter Property="IsTabStop"
 				Value="False" />
 		<Setter Property="Background"
@@ -7075,12 +7075,12 @@
 											<Button x:Name='CCSelectionButton'
 													Style='{StaticResource MTC_ButtonStyle}'
 													Visibility='Collapsed'>
-												<FontIcon Glyph="&#xED1E;" />
+												<FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xED1E;" />
 											</Button>
 											<Button x:Name='AudioTracksSelectionButton'
 													Style='{StaticResource MTC_ButtonStyle}'
 													Visibility='Collapsed'>
-												<FontIcon Glyph="&#xED1F;" />
+												<FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xED1F;" />
 											</Button>
 										</StackPanel>
 
@@ -7097,7 +7097,7 @@
 											<Button x:Name='SkipBackwardButton'
 													Style='{StaticResource MTC_ButtonStyle}'
 													Visibility='Collapsed'>
-												<FontIcon Glyph="&#xED3C;" />
+												<FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xED3C;" />
 											</Button>
 											<Button x:Name='PreviousTrackButton'
 													Style='{StaticResource MTC_ButtonStyle}'
@@ -7108,7 +7108,7 @@
 											<Button x:Name='RewindButton'
 													Style='{StaticResource MTC_ButtonStyle}'
 													Visibility='Collapsed'>
-												<FontIcon Glyph="&#xEB9E;" />
+												<FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xEB9E;" />
 											</Button>
 											<Button x:Name='PlayPauseButton'
 													Style='{StaticResource MTC_ButtonStyle}'>
@@ -7118,7 +7118,7 @@
 											<Button x:Name='FastForwardButton'
 													Style='{StaticResource MTC_ButtonStyle}'
 													Visibility='Collapsed'>
-												<FontIcon Glyph="&#xEB9D;" />
+												<FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xEB9D;" />
 											</Button>
 											<Button x:Name='NextTrackButton'
 													Style='{StaticResource MTC_ButtonStyle}'
@@ -7129,14 +7129,38 @@
 											<Button x:Name='SkipForwardButton'
 													Style='{StaticResource MTC_ButtonStyle}'
 													Visibility='Collapsed'>
-												<FontIcon Glyph="&#xED3D;" />
+												<FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xED3D;" />
 											</Button>
 											<Button x:Name='PlaybackRateButton'
 													Style='{StaticResource MTC_ButtonStyle}'
 													Visibility='Collapsed'>
-												<FontIcon Glyph="&#xEC57;" />
+												<FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xEC57;" /><Button.Flyout>
+													<Flyout x:Name='PlaybackRateFlyout'
+															Placement="RightEdgeAlignedBottom"
+															FlyoutPresenterStyle="{StaticResource MTC_FlyoutStyle}">
+														<StackPanel Orientation="Vertical">
+															<ListView x:Name='PlaybackRateListView'
+																	VerticalAlignment='Top'
+																	HorizontalAlignment='Center'
+																	Margin='0' >
+																	<ListView.Items>
+																		<ListViewItem>0.25</ListViewItem>
+																		<ListViewItem>0.5</ListViewItem>
+																		<ListViewItem>1</ListViewItem>
+																		<ListViewItem>1.5</ListViewItem>
+																		<ListViewItem>2</ListViewItem>
+																</ListView.Items>
+															</ListView>
+														</StackPanel>
+													</Flyout>
+												</Button.Flyout>
+												<FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xEC57;" />
 											</Button>
-
+											<Button x:Name='RepeatButton'
+													Style='{StaticResource MTC_ButtonStyle}'
+													Visibility='Collapsed'>
+												<SymbolIcon x:Name="RepeatSymbol" Symbol="RepeatAll" />
+											</Button>
 										</StackPanel>
 
 										<StackPanel Orientation="Horizontal"
@@ -7144,12 +7168,17 @@
 											<Button x:Name='ZoomButton'
 													Style='{StaticResource MTC_ButtonStyle}'
 													Visibility='Collapsed'>
-												<FontIcon Glyph="&#xE799;" />
+												<FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE799;" />
 											</Button>
 											<Button x:Name='CastButton'
 													Style='{StaticResource MTC_ButtonStyle}'
 													Visibility='Collapsed'>
-												<FontIcon Glyph="&#xEC15;" />
+												<FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xEC15;" />
+											</Button>
+											<Button x:Name='CompactOverlayButton'
+													Style='{StaticResource MTC_ButtonStyle}'
+													Visibility='Collapsed'>
+												<FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE8B9;" />
 											</Button>
 											<Button x:Name='FullWindowButton'
 													Style='{StaticResource MTC_ButtonStyle}'
@@ -7167,7 +7196,7 @@
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
-	</not_mux:Style>
+	</Style>
 
 	<Style x:Key="AccentButtonStyle" TargetType="Button">
 		<Setter Property="Foreground" Value="{ThemeResource AccentButtonForeground}" />
@@ -7599,6 +7628,16 @@
 	</not_netstdref:Style>
 
 	<not_netstdref:Style TargetType="WebView">
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate>
+					<NativeWebView />
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</not_netstdref:Style>
+
+	<not_netstdref:Style TargetType="mux:WebView2">
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate>

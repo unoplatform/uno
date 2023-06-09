@@ -32,8 +32,10 @@ namespace Uno.UI.SourceGenerators.Tests.Verifiers
 	{
 		public class Test : CSharpSourceGeneratorVerifier<EmptySourceGeneratorProvider>.Test
 		{
-			protected override IEnumerable<ISourceGenerator> GetSourceGenerators()
-				=> new ISourceGenerator[] { new TSourceGenerator().AsSourceGenerator() };
+			protected override IEnumerable<Type> GetSourceGenerators()
+			{
+				yield return typeof(TSourceGenerator);
+			}
 		}
 	}
 }

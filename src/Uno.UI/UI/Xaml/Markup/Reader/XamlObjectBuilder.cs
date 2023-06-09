@@ -32,6 +32,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 	internal class XamlObjectBuilder
 	{
 		private XamlFileDefinition _fileDefinition;
+		private readonly string? _fileUri;
 		private XamlTypeResolver TypeResolver { get; }
 		private readonly List<(string elementName, ElementNameSubject bindingSubject)> _elementNames = new List<(string, ElementNameSubject)>();
 		private readonly Stack<Type> _styleTargetTypeStack = new Stack<Type>();
@@ -56,6 +57,13 @@ namespace Windows.UI.Xaml.Markup.Reader
 		public XamlObjectBuilder(XamlFileDefinition xamlFileDefinition)
 		{
 			_fileDefinition = xamlFileDefinition;
+			TypeResolver = new XamlTypeResolver(_fileDefinition);
+		}
+
+		internal XamlObjectBuilder(XamlFileDefinition xamlFileDefinition, string fileUri)
+		{
+			_fileDefinition = xamlFileDefinition;
+			_fileUri = fileUri;
 			TypeResolver = new XamlTypeResolver(_fileDefinition);
 		}
 
@@ -90,7 +98,14 @@ namespace Windows.UI.Xaml.Markup.Reader
 
 			if (createInstanceFromXClass && TypeResolver.FindType(classMember?.Value?.ToString()) is { } classType)
 			{
-				return Activator.CreateInstance(classType);
+				var created = Activator.CreateInstance(classType);
+
+				if (created is FrameworkElement fe && _fileUri is not null)
+				{
+					fe.SetBaseUri(fe.BaseUri.OriginalString, _fileUri, control.LineNumber, control.LinePosition);
+				}
+
+				return created;
 			}
 
 			if (type == null)
@@ -113,7 +128,14 @@ namespace Windows.UI.Xaml.Markup.Reader
 					return LoadObject(contentOwner?.Objects.FirstOrDefault(), rootInstance: rootInstance) as _View;
 				};
 
-				return Activator.CreateInstance(type, builder);
+				var created = Activator.CreateInstance(type, builder);
+
+				if (created is FrameworkElement fe && _fileUri is not null)
+				{
+					fe.SetBaseUri(fe.BaseUri.OriginalString, _fileUri, control.LineNumber, control.LinePosition);
+				}
+
+				return created;
 			}
 			else if (type.Is<ResourceDictionary>() && unknownContent != null)
 			{
@@ -180,6 +202,11 @@ namespace Windows.UI.Xaml.Markup.Reader
 				if (instanceAsFrameworkElement is not null)
 				{
 					instanceAsFrameworkElement.IsParsing = true;
+
+					if (_fileUri is not null)
+					{
+						instanceAsFrameworkElement.SetBaseUri(instanceAsFrameworkElement.BaseUri.OriginalString, _fileUri, control.LineNumber, control.LinePosition);
+					}
 				}
 
 				IDisposable? TryProcessStyle()
@@ -900,7 +927,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 			if (xBindNode != null)
 			{
 				binding.Source = rootInstance;
-				// TODO: here we should be setting Mode to OneTime by default, and we should also respect x:DefaultBindMode values set 
+				// TODO: here we should be setting Mode to OneTime by default, and we should also respect x:DefaultBindMode values set
 				// further up in the tree.
 			}
 
@@ -1251,14 +1278,14 @@ namespace Windows.UI.Xaml.Markup.Reader
 
 		private void ApplyPostActions(object? instance)
 		{
-			if (instance is FrameworkElement fe)
-			{
-				ResolveElementNames(fe);
-			}
-
 			while (_postActions.Count != 0)
 			{
 				_postActions.Dequeue()();
+			}
+
+			if (instance is FrameworkElement fe)
+			{
+				ResolveElementNames(fe);
 			}
 		}
 

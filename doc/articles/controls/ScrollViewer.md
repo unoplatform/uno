@@ -1,3 +1,7 @@
+---
+uid: Uno.Controls.ScrollViewer
+---
+
 # ScrollViewer in Uno.UI
 
 The `ScrollViewer` represents a scrollable area that can contain other visible elements. For more info about its usage, 
@@ -8,5 +12,5 @@ The `ScrollViewer` represents a scrollable area that can contain other visible e
 The `ScrollViewer` is a more intricate control and it's not always easy to have a good overview/understanding of some of its properties. 
 So here is a more visual diagram to better understand how some of the main ScrollViewer properties are supposed to behave.
 
-![](assets/scrollviewer/scrollviewer-diagram.png)
+![ScrollViewer Visual Diagram](assets/scrollviewer/scrollviewer-diagram.png)
 

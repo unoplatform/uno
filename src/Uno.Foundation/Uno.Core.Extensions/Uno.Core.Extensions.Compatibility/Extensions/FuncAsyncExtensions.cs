@@ -75,7 +75,7 @@ namespace Uno.Extensions
 		/// <returns>A FuncAsync which cannot have nmultiple instance running at a same time</returns>
 		public static FuncAsync<TResult> LockInvocation<TResult>(this FuncAsync<TResult> func, InvocationLockingMode mode = InvocationLockingMode.Share)
 		{
-			// Note: Do not use TaskCompletionSource, for strange reasons it cause app crashes on iOS (on SetException). 
+			// Note: Do not use TaskCompletionSource, for strange reasons it cause app crashes on iOS (on SetException).
 			// Prefer keep task by themselves instead of trying to replicate task state to a TaskCompletionSource.
 
 			if (mode == InvocationLockingMode.Share)
@@ -138,16 +138,12 @@ namespace Uno.Extensions
 		public static FuncAsync<TParam, TResult> LockInvocation<TParam, TResult>(this FuncAsync<TParam, TResult> func, InvocationLockingMode mode = InvocationLockingMode.Share)
 			where TParam : class
 		{
-			// Note: Do not use TaskCompletionSource, for strange reasons it cause app crashes on iOS (on SetException). 
+			// Note: Do not use TaskCompletionSource, for strange reasons it cause app crashes on iOS (on SetException).
 			// Prefer keep task by themselves instead of trying to replicate task state to a TaskCompletionSource.
 
 			if (mode == InvocationLockingMode.Share)
 			{
-#if HAS_NO_CONCURRENT_DICT
-				var pendings = new SynchronizedDictionary<TParam, Task<TResult>>();
-#else
 				var pendings = new System.Collections.Concurrent.ConcurrentDictionary<TParam, Task<TResult>>();
-#endif
 
 				return async (ct, param) =>
 				{

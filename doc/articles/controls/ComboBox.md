@@ -1,3 +1,7 @@
+---
+uid: Uno.Controls.ComboBox
+---
+
 # ComboBox in Uno.UI
 
 The `ComboBox` is designed to select a value in a set of items. For more info about its usage, 

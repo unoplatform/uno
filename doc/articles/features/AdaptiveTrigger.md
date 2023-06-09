@@ -1,3 +1,7 @@
+---
+uid: Uno.Features.AdaptiveTrigger
+---
+
 # Using Adaptive Triggers With Uno Platform Applications
 
 ## AdaptiveTrigger Class

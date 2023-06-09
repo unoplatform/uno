@@ -802,7 +802,9 @@ namespace Windows.UI.Xaml.Controls
 			{
 				// A child element got focus, so make sure we keep m_iFocusedIndex in sync
 				// with it.
-				var focusedElement = FocusManager.GetFocusedElement() as DependencyObject;
+				var focusedElement = (XamlRoot is null ?
+					FocusManager.GetFocusedElement() :
+					FocusManager.GetFocusedElement(XamlRoot)) as DependencyObject;
 
 				// Since GotFocus is an async event, the focused element could be null if we got it
 				// after the popup closes, which clears focus.
@@ -823,7 +825,9 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (m_iFocusedIndex == -1)
 			{
-				var focusedElement = FocusManager.GetFocusedElement();
+				var focusedElement = XamlRoot is null ?
+					FocusManager.GetFocusedElement() :
+					FocusManager.GetFocusedElement(XamlRoot);
 
 				if (this != focusedElement)
 				{

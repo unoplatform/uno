@@ -1,44 +1,42 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
-using System.Text;
 
-namespace Windows.Foundation
+namespace Windows.Foundation;
+
+[EditorBrowsable(EditorBrowsableState.Never)]
+public class SizeConverter : TypeConverter
 {
-	public class SizeConverter : TypeConverter
+	public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
 	{
-		public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
+		var canConvert = sourceType == typeof(string);
+
+		if (canConvert)
 		{
-			var canConvert = sourceType == typeof(string);
-
-			if (canConvert)
-			{
-				return true;
-			}
-
-			return base.CanConvertFrom(context, sourceType);
+			return true;
 		}
 
-		public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
+		return base.CanConvertFrom(context, sourceType);
+	}
+
+	public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
+	{
+		var stringValue = value as string;
+
+		if (stringValue != null)
 		{
-			var stringValue = value as string;
+			var values = stringValue
+				.Split(new[] { ',' })
+				.Select(s => double.Parse(s, CultureInfo.InvariantCulture))
+				.ToArray();
 
-			if (stringValue != null)
+			if (values.Length == 2)
 			{
-				var values = stringValue
-					.Split(new[] { ',' })
-					.Select(s => double.Parse(s, CultureInfo.InvariantCulture))
-					.ToArray();
-
-				if (values.Length == 2)
-				{
-					return new Size(values[0], values[1]);
-				}
+				return new Size(values[0], values[1]);
 			}
-
-			return base.ConvertFrom(context, culture, value);
 		}
+
+		return base.ConvertFrom(context, culture, value);
 	}
 }

@@ -14,9 +14,6 @@
     <_Globbed_Compile Remove="SecondPage.xaml.cs" />
   </ItemGroup>
   <ItemGroup>
-    <_Globbed_Content Remove="Assets\Fonts\uno-fluentui-assets.ttf" />
-  </ItemGroup>
-  <ItemGroup>
     <_Globbled_Page Remove="SecondPage.xaml" />
   </ItemGroup>
 </Project>

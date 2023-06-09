@@ -1,7 +1,8 @@
-namespace Windows.Globalization.NumberFormatting
+#nullable enable
+
+namespace Windows.Globalization.NumberFormatting;
+
+public partial interface INumberRounderOption
 {
-	public partial interface INumberRounderOption
-	{
-		INumberRounder NumberRounder { get; set; }
-	}
+	INumberRounder? NumberRounder { get; set; }
 }

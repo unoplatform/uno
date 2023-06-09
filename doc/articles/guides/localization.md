@@ -1,3 +1,7 @@
+---
+uid: Uno.Tutorials.Localization
+---
+
 # How to localize text resources
 
 This guide will walk you through the necessary steps to localize an Uno Platform application.
@@ -76,7 +80,7 @@ This guide will walk you through the necessary steps to localize an Uno Platform
         {
             var culture = new System.Globalization.CultureInfo("fr");
 
-            Windows.Globalization.ApplicationLanguages.PrimaryLanguageOverride = culture.IetfLanguageTag;
+            Windows.Globalization.ApplicationLanguages.PrimaryLanguageOverride = culture.TwoLetterISOLanguageName;
         }
         ```
 

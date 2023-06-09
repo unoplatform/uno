@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Markup
 		Windows.UI.Xaml.DependencyProperty.RegisterAttached(
 			"DataTemplateComponent", typeof(global::Windows.UI.Xaml.Markup.IDataTemplateComponent), 
 			typeof(global::Windows.UI.Xaml.Markup.XamlBindingHelper), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Markup.IDataTemplateComponent)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Markup.IDataTemplateComponent)));
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Markup.XamlBindingHelper.DataTemplateComponentProperty.get
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
