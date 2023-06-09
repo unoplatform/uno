@@ -12,6 +12,8 @@ using Uno.Devices.Midi.Internal;
 using Uno.Foundation;
 
 #if NET7_0_OR_GREATER
+using System.Runtime.InteropServices.JavaScript;
+
 using NativeMethods = __Windows.Devices.Midi.MidiInPort.NativeMethods;
 #endif
 
@@ -58,6 +60,9 @@ namespace Windows.Devices.Midi
 #endif
 		}
 
+#if NET7_0_OR_GREATER
+		[JSExport]
+#endif
 		public static int DispatchMessage(string managedId, string serializedMessage, double timestamp)
 		{
 #if DEBUG
