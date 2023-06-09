@@ -144,13 +144,8 @@
 		<!-- Build targets -->
 		<file src="..\src\AddIns\Uno.UI.Lottie\buildTransitive\*" target="buildTransitive" />
 
-		<!-- net8.0 WebAssembly
-		Disabled until bootstrapper can be updated to .NET 8 Preview 3 or later
+		<!-- net8.0 WebAssembly -->
 		<file src="..\src\AddIns\Uno.UI.Lottie\Bin\Uno.UI.Lottie.Wasm\Release\net8.0\Uno.UI.Lottie.*" target="uno-runtime\net8.0\webassembly" />
-		-->
-
-		<!-- net8.0 WebAssembly until bootstrapper can be updated to .NET 8 Preview 3 or later -->
-		<file src="..\src\AddIns\Uno.UI.Lottie\Bin\Uno.UI.Lottie.Wasm\Release\net7.0\Uno.UI.Lottie.*" target="uno-runtime\net8.0\webassembly" />
 
 		<!-- net8.0 Skia -->
 		<file src="..\src\AddIns\Uno.UI.Lottie\Bin\Uno.UI.Lottie.Skia\Release\net8.0\Uno.UI.Lottie.*" target="uno-runtime\net8.0\skia" />
