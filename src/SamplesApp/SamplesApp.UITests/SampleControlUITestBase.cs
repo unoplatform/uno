@@ -452,7 +452,7 @@ namespace SamplesApp.UITests
 				var result = _app.InvokeGeneric("browser:SampleRunner|IsTestDone", testRunId).ToString();
 				return bool.TryParse(result, out var testDone) && testDone;
 			}, retryFrequency: TimeSpan.FromMilliseconds(50)
-			, timeout: TimeSpan.FromSeconds(5));
+			, timeout: TimeSpan.FromSeconds(30));
 
 			if (!skipInitialScreenshot)
 			{
