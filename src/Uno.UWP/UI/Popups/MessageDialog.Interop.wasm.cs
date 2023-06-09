@@ -7,6 +7,8 @@ namespace __Windows.UI.Popups
 	{
 		internal static partial class NativeMethods
 		{
+			[JSImport("globalThis.alert")]
+			internal static partial void Alert(string message);
 		}
 	}
 }

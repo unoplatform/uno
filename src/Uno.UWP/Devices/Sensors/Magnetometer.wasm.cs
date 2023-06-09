@@ -12,7 +12,9 @@ namespace Windows.Devices.Sensors
 {
 	public partial class Magnetometer
 	{
+#if !NET7_0_OR_GREATER
 		private const string JsType = "Windows.Devices.Sensors.Magnetometer";
+#endif
 
 		private DateTimeOffset _lastReading = DateTimeOffset.MinValue;
 
@@ -24,6 +26,9 @@ namespace Windows.Devices.Sensors
 
 		private static Magnetometer TryCreateInstance()
 		{
+#if NET7_0_OR_GREATER
+			return NativeMethods.Initialize() ? new() : null;
+#else
 			var command = $"{JsType}.initialize()";
 			var initialized = Uno.Foundation.WebAssemblyRuntime.InvokeJS(command);
 			if (bool.Parse(initialized) == true)
@@ -31,18 +36,27 @@ namespace Windows.Devices.Sensors
 				return new Magnetometer();
 			}
 			return null;
+#endif
 		}
 
 		private void StartReading()
 		{
+#if NET7_0_OR_GREATER
+			NativeMethods.StartReading();
+#else
 			var command = $"{JsType}.startReading()";
 			Uno.Foundation.WebAssemblyRuntime.InvokeJS(command);
+#endif
 		}
 
 		private void StopReading()
 		{
+#if NET7_0_OR_GREATER
+			NativeMethods.StopReading();
+#else
 			var command = $"{JsType}.stopReading()";
 			Uno.Foundation.WebAssemblyRuntime.InvokeJS(command);
+#endif
 		}
 
 		/// <summary>

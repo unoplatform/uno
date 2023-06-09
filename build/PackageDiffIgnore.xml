@@ -9400,8 +9400,6 @@
 			<Member fullName="Uno.UI.Runtime.Skia.GtkApplicationExtension" reason="Not needed anymore" />
 			<Member fullName="Uno.UI.Runtime.Skia.Wpf.WpfApplicationExtension" reason="Not needed anymore" />
 			<!-- END WebView -->
-			
-			<Member fullName="Windows.UI.Core.ICoreWindowEvents" reason="Should not be public" />
 		</Types>
 
 		<Events>
@@ -9474,10 +9472,33 @@
 			<Member fullName="System.Void Windows.UI.Xaml.Application.OnSystemThemeChanged()" reason="Does not exist in Windows" />
 			<Member fullName="System.Void Windows.UI.Xaml.Application.ThemeChanged(Foundation.NSObject change)" reason="Does not exist in Windows" />
 			
-			<Member fullName="System.Void Windows.UI.Core.CoreWindow.RaisePointerCancelled(Windows.UI.Core.PointerEventArgs args)" reason="Does not exist in Windows" />
 		</Methods>
 	</IgnoreSet>
 
+	<IgnoreSet baseVersion="4.9">
+		<Types>
+			<Member fullName="Windows.UI.Core.ICoreWindowEvents" reason="Should not be public" />
+		</Types>
+
+		<Events>
+		</Events>
+
+		<Fields>
+		</Fields>
+
+		<Properties>
+		</Properties>
+
+		<Methods>
+			<Member fullName="System.Void Windows.UI.Core.CoreWindow.RaisePointerCancelled(Windows.UI.Core.PointerEventArgs args)" reason="Does not exist in Windows" />
+
+			<!-- BEGIN Proximity sensor -->
+			<Member fullName="System.Void Windows.Devices.Sensors.ProximitySensor..ctor()" reason="Does not exist in Windows" />
+			<Member fullName="System.Void Windows.Devices.Sensors.ProximitySensorReading..ctor()" reason="Does not exist in Windows" />
+			<Member fullName="System.Void Windows.Devices.Sensors.ProximitySensorReadingChangedEventArgs..ctor()" reason="Does not exist in Windows" />			
+			<!-- END Proximity sensor -->
+		</Methods>
+	</IgnoreSet>
 	  <!--
 	Supported nodes (please keep at the bottom of this file):
 	<IgnoreSet baseVersion="0.0">

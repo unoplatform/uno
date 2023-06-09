@@ -7,9 +7,13 @@ using System.Web;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 
+#if NET7_0_OR_GREATER
+using System.Runtime.InteropServices.JavaScript;
+#endif
+
 namespace Uno.Helpers
 {
-	public static class ProtocolActivation
+	public static partial class ProtocolActivation
 	{
 		internal const string QueryKey = "unoprotocolactivation";
 
@@ -72,8 +76,12 @@ namespace Uno.Helpers
 			uriString += "%s";
 
 			// register scheme
+#if NET7_0_OR_GREATER
+			NativeMethods.RegisterProtocolHandler(scheme, uriString, prompt);
+#else
 			var initialized = Uno.Foundation.WebAssemblyRuntime.InvokeJS(
 				$"navigator.registerProtocolHandler('{scheme}', '{uriString}' , '{prompt.Replace("'", "\\'")}')");
+#endif
 		}
 
 		internal static bool TryParseActivationUri(string queryArguments, out Uri uri)
@@ -107,6 +115,14 @@ namespace Uno.Helpers
 			// arguments did not contain activation URI or it could not be parsed
 			return false;
 		}
+
+#if NET7_0_OR_GREATER
+		internal static partial class NativeMethods
+		{
+			[JSImport("globalThis.navigator.registerProtocolHandler")]
+			internal static partial void RegisterProtocolHandler(string scheme, string uri, string prompt);
+		}
+#endif
 	}
 }
 #endif

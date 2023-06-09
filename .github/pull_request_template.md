@@ -27,6 +27,9 @@ What kind of change does this PR introduce?
 
 <!-- Please describe the new behavior after your modifications. -->
 
+## Copilot Summary
+
+copilot:summary
 
 ## PR Checklist
 

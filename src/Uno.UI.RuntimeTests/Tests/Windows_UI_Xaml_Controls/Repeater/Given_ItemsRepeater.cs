@@ -16,6 +16,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Data;
 using FluentAssertions;
 using Uno.Extensions;
+using Uno.UI.RuntimeTests.Helpers;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 {
@@ -53,7 +54,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 
 			try
 			{
-				await RetryAssert(() =>
+				await TestHelper.RetryAssert(() =>
 				{
 					var second = sut
 						.GetAllChildren()
@@ -123,18 +124,20 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 #endif
 		public async Task When_NestedIRSlowlyChangeViewport_Then_MaterializedNeededItems()
 		{
-			const int viewportHeight = 500;
-
-			var sut = default(ItemsRepeater);
-			var sv = new ScrollViewer
+			async Task Do()
 			{
-				Height = viewportHeight,
-				Content = (sut = new ItemsRepeater()
+				const int viewportHeight = 500;
+
+				var sut = default(ItemsRepeater);
+				var sv = new ScrollViewer
 				{
-					ItemsSource = Enumerable.Range(0, 10).Select(i => $"Group #{i:D2}"),
-					ItemTemplate = new DataTemplate(() => new StackPanel
+					Height = viewportHeight,
+					Content = (sut = new ItemsRepeater()
 					{
-						Children =
+						ItemsSource = Enumerable.Range(0, 10).Select(i => $"Group #{i:D2}"),
+						ItemTemplate = new DataTemplate(() => new StackPanel
+						{
+							Children =
 						{
 							new Border
 							{
@@ -155,32 +158,35 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 								})
 							}
 						}
+						})
 					})
-				})
-			};
+				};
 
-			TestServices.WindowHelper.WindowContent = sv;
-			await TestServices.WindowHelper.WaitForIdle();
-
-			sv.ChangeView(null, sv.ExtentHeight / 2, null, disableAnimation: true);
-			await TestServices.WindowHelper.WaitForIdle();
-
-			var groupView = sut.Children.Single(g => g.DataContext as string == "Group #05");
-			var groupIr = (ItemsRepeater)((StackPanel)groupView).Children[1];
-
-			var beforeVisibleItems = groupIr.Children.Select(i => i.DataContext?.ToString()).OrderBy(i => i).ToArray();
-
-			// Scroll by baby step to not be above the threshold which would cause a complete redraw
-			const int step = 10;
-			for (var i = 0; i < viewportHeight * 5; i += step)
-			{
-				sv.ChangeView(null, sv.VerticalOffset + step, null, disableAnimation: true);
+				TestServices.WindowHelper.WindowContent = sv;
 				await TestServices.WindowHelper.WaitForIdle();
+
+				sv.ChangeView(null, sv.ExtentHeight / 2, null, disableAnimation: true);
+				await TestServices.WindowHelper.WaitForIdle();
+
+				var groupView = sut.Children.Single(g => g.DataContext as string == "Group #05");
+				var groupIr = (ItemsRepeater)((StackPanel)groupView).Children[1];
+
+				var beforeVisibleItems = groupIr.Children.Select(i => i.DataContext?.ToString()).OrderBy(i => i).ToArray();
+
+				// Scroll by baby step to not be above the threshold which would cause a complete redraw
+				const int step = 10;
+				for (var i = 0; i < viewportHeight * 5; i += step)
+				{
+					sv.ChangeView(null, sv.VerticalOffset + step, null, disableAnimation: true);
+					await TestServices.WindowHelper.WaitForIdle();
+				}
+
+				var afterVisibleItems = groupIr.Children.Select(i => i.DataContext?.ToString()).OrderBy(i => i).ToArray();
+
+				afterVisibleItems.Should().NotContain(beforeVisibleItems);
 			}
 
-			var afterVisibleItems = groupIr.Children.Select(i => i.DataContext?.ToString()).OrderBy(i => i).ToArray();
-
-			afterVisibleItems.Should().NotContain(beforeVisibleItems);
+			await TestHelper.RetryAssert(Do, 3);
 		}
 
 		[TestMethod]
@@ -231,28 +237,5 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 			evt.GetValue(sut).Should().NotBeNull("because the IR should have invalidated its measure, causing a layout pass driving to invoke the ViewportManagerWithPlatformFeatures.EnsureScroller which should have re-added handler");
 		}
 #endif
-
-		private async Task RetryAssert(Action assertion)
-		{
-			var attempt = 0;
-			while (true)
-			{
-				try
-				{
-					assertion();
-
-					break;
-				}
-				catch (Exception)
-				{
-					if (attempt++ >= 30)
-					{
-						throw;
-					}
-
-					await Task.Delay(10);
-				}
-			}
-		}
 	}
 }

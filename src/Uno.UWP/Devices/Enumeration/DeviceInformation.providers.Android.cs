@@ -2,15 +2,16 @@
 using System.Collections.Generic;
 using Uno.Devices.Enumeration.Internal;
 using Uno.Devices.Enumeration.Internal.Providers.Midi;
+using Windows.Devices.Enumeration.Internal.Providers.ProximitySensor;
 
-namespace Windows.Devices.Enumeration
+namespace Windows.Devices.Enumeration;
+
+public partial class DeviceInformation
 {
-	public partial class DeviceInformation
+	private static readonly Dictionary<Guid, Func<IDeviceClassProvider>> _deviceClassProviders = new()
 	{
-		private static readonly Dictionary<Guid, Func<IDeviceClassProvider>> _deviceClassProviders = new Dictionary<Guid, Func<IDeviceClassProvider>>()
-		{
-			{ DeviceClassGuids.MidiIn, () => new MidiInDeviceClassProvider() },
-			{ DeviceClassGuids.MidiOut, () => new MidiOutDeviceClassProvider() },
-		};
-	}
+		{ DeviceClassGuids.MidiIn, () => new MidiInDeviceClassProvider() },
+		{ DeviceClassGuids.MidiOut, () => new MidiOutDeviceClassProvider() },
+		{ DeviceClassGuids.ProximitySensor, () => new ProximitySensorDeviceClassProvider() },
+	};
 }
