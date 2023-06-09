@@ -7,7 +7,9 @@ using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.UI.Input.Preview.Injection;
 using Windows.UI.Xaml;
+using Windows.UI.Xaml.Media.Imaging;
 using Private.Infrastructure;
+using Uno.UI.RuntimeTests.Helpers;
 
 namespace Uno.UI.RuntimeTests.Tests.Uno_UI_Xaml_Core;
 
@@ -23,6 +25,17 @@ public static class UITestHelper
 		await TestServices.WindowHelper.WaitForIdle();
 
 		return element.GetAbsoluteBounds();
+	}
+
+	public static async Task<RawBitmap> ScreenShot(FrameworkElement element, bool opaque = true)
+	{
+		var renderer = new RenderTargetBitmap();
+		element.UpdateLayout();
+		await TestServices.WindowHelper.WaitForIdle();
+		await renderer.RenderAsync(element);
+		var bitmap = await RawBitmap.From(renderer, element);
+
+		return bitmap;
 	}
 }
 
