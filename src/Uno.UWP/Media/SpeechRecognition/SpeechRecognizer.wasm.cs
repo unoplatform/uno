@@ -10,6 +10,8 @@ using Uno.Foundation.Logging;
 using Windows.Foundation;
 
 #if NET7_0_OR_GREATER
+using System.Runtime.InteropServices.JavaScript;
+
 using NativeMethods = __Windows.Media.SpeechRecognition.SpeechRecognizer.NativeMethods;
 #endif
 
@@ -28,6 +30,9 @@ namespace Windows.Media.SpeechRecognition
 
 		private TaskCompletionSource<SpeechRecognitionResult> _currentCompletionSource;
 
+#if NET7_0_OR_GREATER
+		[JSExport]
+#endif
 		public static int DispatchStatus(string instanceId, string state)
 		{
 			if (_instances.TryGetValue(instanceId, out var speechRecognizer))
@@ -40,6 +45,9 @@ namespace Windows.Media.SpeechRecognition
 			return 0;
 		}
 
+#if NET7_0_OR_GREATER
+		[JSExport]
+#endif
 		public static int DispatchError(string instanceId, string error)
 		{
 			if (_instances.TryGetValue(instanceId, out var speechRecognizer))
@@ -60,6 +68,9 @@ namespace Windows.Media.SpeechRecognition
 			return 0;
 		}
 
+#if NET7_0_OR_GREATER
+		[JSExport]
+#endif
 		public static int DispatchHypothesis(string instanceId, string hypothesis)
 		{
 			if (_instances.TryGetValue(instanceId, out var speechRecognizer))
@@ -69,6 +80,9 @@ namespace Windows.Media.SpeechRecognition
 			return 0;
 		}
 
+#if NET7_0_OR_GREATER
+		[JSExport]
+#endif
 		public static int DispatchResult(string instanceId, string result, double confidence)
 		{
 			if (_instances.TryGetValue(instanceId, out var speechRecognizer))
