@@ -22,7 +22,7 @@ stages:
   jobs:
   - template: .azure-devops-winui-convert.yml
     parameters:
-      poolName: '$(windowsScaledPool)'
+      vmImage: $(windows2022HostedVMImage)
 
 - stage: binaries_build
   displayName: Build Binaries
