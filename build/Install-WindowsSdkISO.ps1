@@ -170,6 +170,8 @@ function Test-InstallWindowsSDK
             $sdkRoot = Get-ItemProperty -Path $WindowsSDKRegPath | Select-Object -ExpandProperty $WindowsSDKRegRootKey
             if ($sdkRoot)
             {
+                # Compress the files for the folder
+                echo "Compressing $sdkRoot"
                 compact /c /s $sdkRoot | Out-Null
 
                 if (Test-Path $sdkRoot)
