@@ -24,6 +24,10 @@
   }
 }
 
+#menu-menu-principal {
+  margin-bottom:0;
+}
+
 #header-container {
   display: flex;
   position: fixed;
@@ -32,7 +36,7 @@
   width: 100%;
   min-height: 75px;
 
-  padding: 16px 32px;
+  padding: 24px 32px;
   border-bottom: 1px solid #f4f2f3;
 
   justify-content: space-between;
@@ -46,9 +50,9 @@
 
   #menu-menu-principal {
     float: right;
-
     list-style: none;
-
+    margin-bottom:0px;
+  
     @include media-breakpoint-down(lg) {
       width: 100%;
     }
@@ -60,7 +64,7 @@
 
 
   #header-logo-container {
-    width: 36px;
+    height: 48px;
     vertical-align: middle;
 
     img {
@@ -68,7 +72,7 @@
     }
 
     @include media-breakpoint-up(lg) {
-      width: 120px;
+      height: 48px;
     }
   }
 
@@ -86,25 +90,25 @@
       margin-top: 3px;
     }
 
-    @media (max-width: 979px) {
+    @media (max-width: 1024px) {
       display: block !important;
     }
   }
 
   .navbar-brand {
-    height: auto;
+    height: 48px;
   }
 
   nav {
     a {
       padding: 10px;
 
-      font-size: 16px;
+      font-size: 14px;
       font-weight: 600;
       font-stretch: normal;
       font-style: normal;
-      line-height: 16px;
-      letter-spacing: normal;
+      line-height: 24px;
+      letter-spacing: 0.1px;
       text-transform: uppercase;
       color: $black;
 
@@ -235,9 +239,10 @@
       border-radius: 8px;
 
       margin-left: 0;
-      padding: 8px 32px;
+      padding: 16px 43px;
 
       font-size: 16px;
+      line-height: 16px;
       font-weight: 700;
       min-width: 125px;
       text-align: center;
@@ -259,7 +264,7 @@
 }
 
 #navbar {
-  @media (max-width: 979px) {
+  @media (max-width: 1023px) {
 
     overflow: auto !important;
     
@@ -324,7 +329,7 @@
 
 .subnav {
   position: fixed;
-  top: 75px;
+  top: 96px;
   width: 100%;
   z-index: 999;
   background-color: #f8f8f8;
