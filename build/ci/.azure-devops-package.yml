@@ -41,6 +41,8 @@ jobs:
     parameters:
       nugetPackages: $(NUGET_PACKAGES)
 
+  - template: templates/globaljson-downgrade.yml
+
   - template: templates/download-winui-converted-tree.yml
 
   - template: templates/gitversion.yml
