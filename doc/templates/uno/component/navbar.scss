@@ -16,11 +16,16 @@
 .visibility-opacity-transition {
   @include media-breakpoint-up(lg) {
     visibility: hidden;
-    opacity: 0;
-    transition: visibility 100ms, opacity 100ms ease-in-out;
 
     list-style: none;
+
+    transition: visibility 100ms, opacity 100ms ease-in-out;
+    opacity: 0;
   }
+}
+
+#menu-menu-principal {
+  margin-bottom:0;
 }
 
 #header-container {
@@ -33,6 +38,7 @@
   width: 100%;
   min-height: 67px;
   max-height: 67px;
+  padding: 24px 32px;
   border-bottom: 1px solid #f4f2f3;
   justify-content: space-between;
 
@@ -45,6 +51,7 @@
   #menu-menu-principal {
     float: right;
     list-style: none;
+    margin-bottom:0px;
 
     @include media-breakpoint-down(lg) {
       width: 100%;
@@ -60,7 +67,7 @@
 
 
   #header-logo-container {
-    width: 36px;
+    height: 48px;
     vertical-align: middle;
     z-index: 9;
 
@@ -70,6 +77,7 @@
     }
 
     @include media-breakpoint-up(lg) {
+      height: 48px;
       min-width: 120px;
     }
   }
@@ -89,29 +97,32 @@
       margin-top: 3px;
     }
 
-    @media (max-width: 979px) {
+    @media (max-width: 1024px) {
       display: block !important;
     }
   }
 
   .navbar-brand {
-    height: auto;
+    height: 48px;
   }
 
   nav {
     a {
       padding: 10px;
-      font-size: 13px;
+
+      font-size: 16px;
       font-weight: 600;
       font-stretch: normal;
       font-style: normal;
-      line-height: 14px;
-      letter-spacing: normal;
+      line-height: 24px;
+      letter-spacing: 0.1px;
       text-transform: uppercase;
       color: $black;
 
       &:hover,
       &:focus {
+        border-radius: 4px;
+        background-color: transparentize($turquoise, 0.8);
         color: $purple;
       }
 
@@ -140,7 +151,6 @@
         position: relative;
 
         & > a {
-
 
           &::after {
             display: inline-block;
@@ -173,7 +183,6 @@
 
             flex-direction: column;
 
-            //border-radius: 4px;
             box-shadow: 0 0 20px 2px rgba(36, 36, 36, 0.2);
             background-color: $white;
           }
@@ -265,10 +274,10 @@
       border-radius: 8px;
 
       margin-left: 0;
-      padding: 8px 32px;
+      padding: 16px 43px;
 
       font-size: 16px;
-      line-height: 24px;
+      line-height: 16px;
       font-weight: 700;
       min-width: 125px;
       text-align: center;
@@ -290,10 +299,10 @@
 }
 
 #navbar {
-  @media (max-width: 979px) {
+  @media (max-width: 1023px) {
 
     overflow: auto !important;
-
+    
     position: fixed;
     width: 100%;
     margin: -16px 0 0 0;
