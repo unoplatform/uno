@@ -224,10 +224,16 @@
 	</Target>
 
 	<Target Name="BuildSyncGenerator">
+
+		<PropertyGroup>
+			<_UnoRestoreTargets>Restore</_UnoRestoreTargets>
+			<_UnoRestoreTargets Condition="'$(CI_Build)'=='true'">$(_UnoRestoreTargets);_CINugetCleanup</_UnoRestoreTargets>
+		</PropertyGroup>
+
 		<!-- Restore the nuget packages for the whole solution -->
 		<MSBuild Properties="Configuration=Release;InformationalVersion=$(GITVERSION_InformationalVersion);CI_Build=true;_IsCIBuild=true;UnoUIDisableNet7Build=true"
 				 Projects="..\src\Uno.UI-netcoremobile-only.slnf;..\src\Uno.UI-Reference-Only.slnf;..\src\Uno.UI-UnitTests-only.slnf;filters\Uno.UI-packages-wasm.slnf;filters\Uno.UI-packages-skia.slnf"
-				 Targets="Restore"
+				 Targets="$(_UnoRestoreTargets)"
 				 RebaseOutputs="false"
 				 BuildInParallel="true" />
 
