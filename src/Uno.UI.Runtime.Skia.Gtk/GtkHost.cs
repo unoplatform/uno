@@ -87,7 +87,12 @@ namespace Uno.UI.Runtime.Skia
 		private void SetupMainWindow()
 		{
 			MainWindow = new UnoGtkWindow(WinUIWindow.Current);
+			MainWindow.Shown += MainWindow_Shown;
 		}
+
+		internal event EventHandler? MainWindowShown;
+
+		private void MainWindow_Shown(object? sender, EventArgs e) => MainWindowShown?.Invoke(this, e);
 
 		private void StartApp()
 		{
