@@ -70,8 +70,6 @@ internal class UnoWpfWindowHost : WpfControl, IWpfWindowHost
 
 	WpfCanvas? IWpfXamlRootHost.NativeOverlayLayer => _nativeOverlayLayer;
 
-	WinUI.XamlRoot? IXamlRootHost.XamlRoot => _winUIWindow.RootElement?.XamlRoot;
-
 	bool IWpfXamlRootHost.IgnorePixelScaling => WpfHost.Current!.IgnorePixelScaling;
 
 	RenderSurfaceType? IWpfXamlRootHost.RenderSurfaceType => WpfHost.Current!.RenderSurfaceType;
@@ -117,7 +115,7 @@ internal class UnoWpfWindowHost : WpfControl, IWpfWindowHost
 		}
 
 		contentRoot!.SetHost(this);
-		XamlRootMap<IWpfXamlRootHost>.Register(xamlRoot, this);
+		WpfManager.XamlRootMap.Register(xamlRoot, this);
 
 		CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRootSet -= OnCoreWindowContentRootSet;
 	}

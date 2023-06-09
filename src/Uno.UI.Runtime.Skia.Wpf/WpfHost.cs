@@ -11,7 +11,6 @@ using WpfApplication = System.Windows.Application;
 
 namespace Uno.UI.Skia;
 
-// TODO:MZ: Rename to WpfApplicationHost???
 public class WpfHost : IWpfApplicationHost
 {
 	private readonly Dispatcher _dispatcher;
@@ -44,7 +43,10 @@ public class WpfHost : IWpfApplicationHost
 		set
 		{
 			_ignorePixelScaling = value;
-			// TODO:MZ: InvalidateVisual();
+			if (WpfApplication.Current.MainWindow is UnoWpfWindow window)
+			{
+				window.InvalidateVisual();
+			}
 		}
 	}
 
@@ -54,7 +56,6 @@ public class WpfHost : IWpfApplicationHost
 
 		// App needs to be created after the native overlay layer is properly initialized
 		// otherwise the initially focused input element would cause exception.
-		// TODO:MZ: Verify this is not broken after the changes
 		StartApp();
 
 		SetupMainWindow();
@@ -69,7 +70,12 @@ public class WpfHost : IWpfApplicationHost
 	private void SetupMainWindow()
 	{
 		WpfApplication.Current.MainWindow = new UnoWpfWindow(WinUI.Window.Current);
+		WpfApplication.Current.MainWindow.Activated += MainWindow_Activated;
 	}
+
+	internal event EventHandler? MainWindowShown;
+
+	private void MainWindow_Activated(object? sender, EventArgs e) => MainWindowShown?.Invoke(this, EventArgs.Empty);
 
 	private void StartApp()
 	{

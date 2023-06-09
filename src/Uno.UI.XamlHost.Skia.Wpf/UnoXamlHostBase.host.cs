@@ -73,13 +73,9 @@ partial class UnoXamlHostBase : IWpfXamlRootHost
 		InvalidateVisual();
 	}
 
-	bool IXamlRootHost.IsIsland => true;
-
 	WinUI.UIElement? IXamlRootHost.RootElement => _rootElement ??= _xamlSource?.GetVisualTreeRoot();
 
 	WpfCanvas? IWpfXamlRootHost.NativeOverlayLayer => _nativeOverlayLayer;
-
-	WinUI.XamlRoot? IXamlRootHost.XamlRoot => ChildInternal?.XamlRoot;
 
 	bool IWpfXamlRootHost.IgnorePixelScaling => IgnorePixelScaling;
 

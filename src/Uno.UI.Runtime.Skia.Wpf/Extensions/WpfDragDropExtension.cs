@@ -25,6 +25,7 @@ using WpfWindow = System.Windows.Window;
 using WpfControl = System.Windows.Controls.Control;
 using WpfApplication = System.Windows.Application;
 using Uno.Foundation.Logging;
+using Uno.UI.Runtime.Skia.Wpf;
 
 namespace Uno.UI.Skia.Platform
 {
@@ -33,15 +34,19 @@ namespace Uno.UI.Skia.Platform
 		private readonly long _fakePointerId = Pointer.CreateUniqueIdForUnknownPointer();
 		private readonly DragDropManager _manager;
 
-		// TODO:MZ: Multi-window support, wait for main window to be created!
 		private static WpfControl _rootControl;
 
 		public WpfDragDropExtension(object owner)
 		{
 			_manager = (DragDropManager)owner;
 
-			// TODO:MZ: Multi-window support, wait for main window to be created!
-			var host = WpfApplication.Current.MainWindow;
+			WpfManager.XamlRootMap.Registered += XamlRootMap_Registered;
+		}
+
+		private void XamlRootMap_Registered(object sender, XamlRoot xamlRoot)
+		{
+			// TODO:MZ: Multi-window support
+			var host = WpfManager.XamlRootMap.GetHostForRoot(xamlRoot) as WpfControl;
 			_rootControl = host;
 
 			if (host is not null) // TODO: Add support for multiple XamlRoots

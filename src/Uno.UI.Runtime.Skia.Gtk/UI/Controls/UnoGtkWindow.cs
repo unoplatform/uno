@@ -1,26 +1,23 @@
 ﻿#nullable enable
 
 using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.IO;
 using Gtk;
+using Uno.Foundation.Logging;
 using Uno.UI.Runtime.Skia.GTK.UI.Core;
 using Windows.Foundation;
-using Windows.UI.ViewManagement;
-using WinUIWindow = Windows.UI.Xaml.Window;
-using WinUIApplication = Windows.UI.Xaml.Application;
 using Windows.UI.Core.Preview;
-using Uno.Foundation.Logging;
+using Windows.UI.ViewManagement;
 using IOPath = System.IO.Path;
-using System.IO;
-using System.Collections.Generic;
-using Uno.UI.Hosting;
-using Uno.UI.Runtime.Skia.GTK.Hosting;
-using System.ComponentModel;
+using WinUIApplication = Windows.UI.Xaml.Application;
+using WinUIWindow = Windows.UI.Xaml.Window;
 
 namespace Uno.UI.Runtime.Skia.GTK.UI.Controls;
 
 internal class UnoGtkWindow : Gtk.Window
 {
-	private readonly IGtkXamlRootHost _host;
 	private readonly WinUIWindow _winUIWindow;
 
 	private bool _wasShown;
@@ -53,18 +50,18 @@ internal class UnoGtkWindow : Gtk.Window
 
 		WindowStateEvent += OnWindowStateChanged;
 
-		_host = new UnoGtkWindowHost(this, winUIWindow);
+		Host = new UnoGtkWindowHost(this, winUIWindow);
 
 		ApplicationView.GetForCurrentView().PropertyChanged += OnApplicationViewPropertyChanged;
 		UpdateWindowPropertiesFromPackage();
 		UpdateWindowPropertiesFromApplicationView();
 	}
 
-	internal UnoEventBox EventBox => _host.EventBox;
+	internal UnoGtkWindowHost Host { get; }
 
 	private async void OnShown(object? sender, EventArgs e)
 	{
-		await _host.InitializeAsync();
+		await Host.InitializeAsync();
 		ShowAll();
 		_wasShown = true;
 		ReplayPendingWindowStateChanges();
@@ -90,7 +87,6 @@ internal class UnoGtkWindow : Gtk.Window
 		args.RetVal = false;
 		Gtk.Main.Quit();
 	}
-
 
 	private void UpdateWindowPropertiesFromPackage()
 	{

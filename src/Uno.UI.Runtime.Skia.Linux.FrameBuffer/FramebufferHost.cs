@@ -6,6 +6,7 @@ using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
 using Uno.UI.Hosting;
 using Uno.UI.Xaml.Core;
+using Uno.WinUI.Runtime.Skia.Linux.FrameBuffer;
 using Uno.WinUI.Runtime.Skia.LinuxFB;
 using Windows.Graphics.Display;
 using Windows.UI.Xaml;
@@ -141,17 +142,13 @@ namespace Uno.UI.Runtime.Skia
 			}
 
 			contentRoot!.SetHost(this);
-			XamlRootMap<IXamlRootHost>.Register(xamlRoot, this);
+			FrameBufferManager.XamlRootMap.Register(xamlRoot, this);
 
 			CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRootSet -= OnCoreWindowContentRootSet;
 		}
 
 		void IXamlRootHost.InvalidateRender() => _renderer?.InvalidateRender();
 
-		bool IXamlRootHost.IsIsland => false;
-
 		WUX.UIElement? IXamlRootHost.RootElement => WUX.Window.Current.RootElement;
-
-		WUX.XamlRoot? IXamlRootHost.XamlRoot => WUX.Window.Current.RootElement?.XamlRoot;
 	}
 }

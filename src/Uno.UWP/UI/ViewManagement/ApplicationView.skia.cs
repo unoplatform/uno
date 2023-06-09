@@ -9,7 +9,7 @@ namespace Windows.UI.ViewManagement
 	partial class ApplicationView
 	{
 		private readonly IApplicationViewExtension _applicationViewExtension;
-		private Size _preferredMinSize = Size.Empty;
+		private Size _preferredMinSize;
 		private string _title = "";
 
 		public ApplicationView()

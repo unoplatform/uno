@@ -35,21 +35,19 @@ internal class UnoGtkWindowHost : IGtkXamlRootHost
 		RegisterForBackgroundColor();
 	}
 
-	UnoEventBox IGtkXamlRootHost.EventBox => _eventBox;
+	public UnoEventBox EventBox => _eventBox;
 
-	Container IGtkXamlRootHost.RootContainer => _gtkWindow;
+	public Container RootContainer => _gtkWindow;
 
-	bool IXamlRootHost.IsIsland => false;
+	public WinUI.UIElement? RootElement => _winUIWindow.RootElement;
 
-	WinUI.UIElement? IXamlRootHost.RootElement => _winUIWindow.RootElement;
+	public RenderSurfaceType? RenderSurfaceType => GtkHost.Current!.RenderSurfaceType;
 
-	WinUI.XamlRoot? IXamlRootHost.XamlRoot => _winUIWindow.RootElement?.XamlRoot;
+	public Fixed? NativeOverlayLayer => _nativeOverlayLayer;
 
-	RenderSurfaceType? IGtkXamlRootHost.RenderSurfaceType => GtkHost.Current!.RenderSurfaceType;
+	public IGtkRenderer? Renderer => _renderer;
 
-	Fixed? IGtkXamlRootHost.NativeOverlayLayer => _nativeOverlayLayer;
-
-	async Task IGtkXamlRootHost.InitializeAsync()
+	public async Task InitializeAsync()
 	{
 		_renderer = await GtkRendererProvider.CreateForHostAsync(this);
 
@@ -111,7 +109,7 @@ internal class UnoGtkWindowHost : IGtkXamlRootHost
 		}
 
 		contentRoot!.SetHost(this);
-		XamlRootMap<IGtkXamlRootHost>.Register(xamlRoot, this);
+		GtkManager.XamlRootMap.Register(xamlRoot, this);
 
 		CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRootSet -= OnCoreWindowContentRootSet;
 	}

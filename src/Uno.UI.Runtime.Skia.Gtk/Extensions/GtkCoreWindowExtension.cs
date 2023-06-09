@@ -8,6 +8,7 @@ using Uno.Foundation.Logging;
 using Windows.UI.Xaml;
 using Uno.UI.Hosting;
 using Uno.UI.Runtime.Skia.GTK.Hosting;
+using Uno.UI.Runtime.Skia.GTK;
 
 namespace Uno.UI.Runtime.Skia
 {
@@ -25,7 +26,7 @@ namespace Uno.UI.Runtime.Skia
 		partial void InitializeKeyboard();
 
 		internal static Fixed? GetOverlayLayer(XamlRoot xamlRoot) =>
-			XamlRootMap<IGtkXamlRootHost>.GetHostForRoot(xamlRoot)?.NativeOverlayLayer;
+			GtkManager.XamlRootMap.GetHostForRoot(xamlRoot)?.NativeOverlayLayer;
 
 		public bool IsNativeElement(object content)
 			=> content is Widget;

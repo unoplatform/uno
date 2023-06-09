@@ -73,11 +73,7 @@ namespace Uno.UI.Runtime.Skia
 
 		public void TakeScreenshot(string filePath)
 		{
-			// TODO: MZ
-			//if (_area is IRenderSurface renderSurface)
-			//{
-			//	renderSurface.TakeScreenshot(filePath);
-			//}
+			MainWindow?.Host.Renderer?.TakeScreenshot(filePath);
 		}
 
 		private void InitializeDispatcher()

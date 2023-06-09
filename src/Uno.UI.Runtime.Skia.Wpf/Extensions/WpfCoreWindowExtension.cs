@@ -1,13 +1,13 @@
 ﻿#nullable enable
 
-using Windows.UI.Core;
 using System.Windows.Input;
-using Uno.UI.Skia.Platform.Extensions;
 using Uno.Foundation.Logging;
-using WpfCanvas = System.Windows.Controls.Canvas;
+using Uno.UI.Runtime.Skia.Wpf;
+using Uno.UI.Skia.Platform.Extensions;
+using Windows.UI.Core;
 using Windows.UI.Xaml;
-using Uno.UI.Hosting;
-using Uno.UI.Runtime.Skia.Wpf.Hosting;
+using WpfCanvas = System.Windows.Controls.Canvas;
+using WpfUIElement = System.Windows.UIElement;
 
 namespace Uno.UI.Skia.Platform
 {
@@ -27,29 +27,32 @@ namespace Uno.UI.Skia.Platform
 			_owner = (CoreWindow)owner;
 			_host = WpfHost.Current;
 
-			// TODO:MZ: Multi-window, attach to main window
-			//_host = WpfHost.Current;
-			//if (_host is null)
-			//{
-			//	return;
-			//}
+			WpfManager.XamlRootMap.Registered += XamlRootMap_Registered;
+			WpfManager.XamlRootMap.Unregistered += XamlRootMap_Unregistered;
+		}
 
-			//// Hook for native events
-			//_host.Loaded += HookNative;
+		private void XamlRootMap_Registered(object? sender, XamlRoot xamlRoot)
+		{
+			var host = WpfManager.XamlRootMap.GetHostForRoot(xamlRoot);
+			if (host is WpfUIElement uiElement)
+			{
+				uiElement.AddHandler(WpfUIElement.KeyUpEvent, (System.Windows.Input.KeyEventHandler)HostOnKeyUp, true);
+				uiElement.AddHandler(WpfUIElement.KeyDownEvent, (System.Windows.Input.KeyEventHandler)HostOnKeyDown, true);
+			}
+		}
 
-			//void HookNative(object sender, System.Windows.RoutedEventArgs e)
-			//{
-			//	_host.Loaded -= HookNative;
-
-			//	var win = System.Windows.Window.GetWindow(_host);
-
-			//	win.AddHandler(System.Windows.UIElement.KeyUpEvent, (System.Windows.Input.KeyEventHandler)HostOnKeyUp, true);
-			//	win.AddHandler(System.Windows.UIElement.KeyDownEvent, (System.Windows.Input.KeyEventHandler)HostOnKeyDown, true);
-			//}
+		private void XamlRootMap_Unregistered(object? sender, XamlRoot xamlRoot)
+		{
+			var host = WpfManager.XamlRootMap.GetHostForRoot(xamlRoot);
+			if (host is WpfUIElement uiElement)
+			{
+				uiElement.RemoveHandler(WpfUIElement.KeyUpEvent, (System.Windows.Input.KeyEventHandler)HostOnKeyUp);
+				uiElement.RemoveHandler(WpfUIElement.KeyDownEvent, (System.Windows.Input.KeyEventHandler)HostOnKeyDown);
+			}
 		}
 
 		internal static WpfCanvas? GetOverlayLayer(XamlRoot xamlRoot) =>
-			XamlRootMap<IWpfXamlRootHost>.GetHostForRoot(xamlRoot)?.NativeOverlayLayer;
+			WpfManager.XamlRootMap.GetHostForRoot(xamlRoot)?.NativeOverlayLayer;
 
 		public bool IsNativeElement(object content)
 			=> content is System.Windows.UIElement;

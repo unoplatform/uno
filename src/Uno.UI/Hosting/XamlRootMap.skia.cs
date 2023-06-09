@@ -1,16 +1,21 @@
 ﻿#nullable enable
 
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using Windows.UI.Xaml;
 
 namespace Uno.UI.Hosting;
 
-internal static class XamlRootMap<THost> where THost : IXamlRootHost
+internal class XamlRootMap<THost> where THost : IXamlRootHost
 {
-	private static readonly Dictionary<XamlRoot, THost> _map = new();
+	private readonly Dictionary<XamlRoot, THost> _map = new();
 
-	internal static void Register(XamlRoot xamlRoot, THost host)
+	internal event EventHandler<XamlRoot>? Registered;
+
+	internal event EventHandler<XamlRoot>? Unregistered;
+
+	internal void Register(XamlRoot xamlRoot, THost host)
 	{
 		if (xamlRoot is null)
 		{
@@ -22,13 +27,19 @@ internal static class XamlRootMap<THost> where THost : IXamlRootHost
 			throw new ArgumentNullException(nameof(host));
 		}
 
+		if (_map.ContainsKey(xamlRoot))
+		{
+			return;
+		}
+
 		_map[xamlRoot] = host;
 		xamlRoot.VisualTree.ContentRoot.SetHost(host); // Note: This might be a duplicated call but it's supported by ContentRoot and safe
 
 		xamlRoot.InvalidateRender += host.InvalidateRender;
+		Registered?.Invoke(this, xamlRoot);
 	}
 
-	internal static void Unregister(XamlRoot xamlRoot)
+	internal void Unregister(XamlRoot xamlRoot)
 	{
 		if (xamlRoot is null)
 		{
@@ -40,9 +51,10 @@ internal static class XamlRootMap<THost> where THost : IXamlRootHost
 		{
 			xamlRoot.InvalidateRender -= host.InvalidateRender;
 			_map.Remove(xamlRoot);
+			Unregistered?.Invoke(this, xamlRoot);
 		}
 	}
 
-	internal static THost? GetHostForRoot(XamlRoot xamlRoot) =>
+	internal THost? GetHostForRoot(XamlRoot xamlRoot) =>
 		_map.TryGetValue(xamlRoot, out var host) ? host : default;
 }
