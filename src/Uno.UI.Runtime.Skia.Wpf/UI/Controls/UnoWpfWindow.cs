@@ -37,9 +37,10 @@ internal class UnoWpfWindow : WpfWindow
 		Deactivated += OnDeactivated;
 		StateChanged += OnStateChanged;
 
-		ApplicationView.GetForCurrentView().PropertyChanged += OnApplicationViewPropertyChanged;
 		UpdateWindowPropertiesFromPackage();
 		UpdateWindowPropertiesFromApplicationView();
+
+		ApplicationView.GetForCurrentView().PropertyChanged += OnApplicationViewPropertyChanged;
 	}
 
 	private void OnShown(object? sender, EventArgs e) => Show();
@@ -129,6 +130,9 @@ internal class UnoWpfWindow : WpfWindow
 			}
 		}
 
-		Windows.UI.ViewManagement.ApplicationView.GetForCurrentView().Title = Windows.ApplicationModel.Package.Current.DisplayName;
+		if (string.IsNullOrEmpty(ApplicationView.GetForCurrentView().Title))
+		{
+			ApplicationView.GetForCurrentView().Title = Windows.ApplicationModel.Package.Current.DisplayName;
+		}
 	}
 }

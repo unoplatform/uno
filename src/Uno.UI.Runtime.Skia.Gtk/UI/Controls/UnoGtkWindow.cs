@@ -52,9 +52,10 @@ internal class UnoGtkWindow : Gtk.Window
 
 		Host = new UnoGtkWindowHost(this, winUIWindow);
 
-		ApplicationView.GetForCurrentView().PropertyChanged += OnApplicationViewPropertyChanged;
 		UpdateWindowPropertiesFromPackage();
 		UpdateWindowPropertiesFromApplicationView();
+
+		ApplicationView.GetForCurrentView().PropertyChanged += OnApplicationViewPropertyChanged;
 	}
 
 	internal UnoGtkWindowHost Host { get; }
@@ -122,7 +123,10 @@ internal class UnoGtkWindow : Gtk.Window
 			}
 		}
 
-		Title = Windows.ApplicationModel.Package.Current.DisplayName;
+		if (string.IsNullOrEmpty(ApplicationView.GetForCurrentView().Title))
+		{
+			ApplicationView.GetForCurrentView().Title = Windows.ApplicationModel.Package.Current.DisplayName;
+		}
 	}
 
 	private void OnApplicationViewPropertyChanged(object? sender, PropertyChangedEventArgs e) => UpdateWindowPropertiesFromApplicationView();
