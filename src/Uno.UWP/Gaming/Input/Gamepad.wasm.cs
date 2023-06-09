@@ -7,6 +7,8 @@ using Uno.Extensions;
 using Uno.Foundation;
 
 #if NET7_0_OR_GREATER
+using System.Runtime.InteropServices.JavaScript;
+
 using NativeMethods = __Windows.Gaming.Input.Gamepad.NativeMethods;
 #endif
 
@@ -97,8 +99,10 @@ public partial class Gamepad
 		return reading;
 	}
 
-
-	public static int DispatchGamepadAdded(long id)
+#if NET7_0_OR_GREATER
+	[JSExport]
+#endif
+	public static int DispatchGamepadAdded(int id)
 	{
 		Gamepad gamepad;
 		lock (_gamepadCache)
@@ -113,7 +117,10 @@ public partial class Gamepad
 		return 0;
 	}
 
-	public static int DispatchGamepadRemoved(long id)
+#if NET7_0_OR_GREATER
+	[JSExport]
+#endif
+	public static int DispatchGamepadRemoved(int id)
 	{
 		Gamepad gamepad;
 		lock (_gamepadCache)
