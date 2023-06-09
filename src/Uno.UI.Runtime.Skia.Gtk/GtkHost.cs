@@ -50,6 +50,8 @@ namespace Uno.UI.Runtime.Skia
 		/// <remarks>If <c>null</c>, the host will try to determine the most compatible mode.</remarks>
 		public RenderSurfaceType? RenderSurfaceType { get; set; }
 
+		public Gtk.Window? Window => MainWindow;
+
 		public void Run()
 		{
 			PreloadHarfBuzz();
