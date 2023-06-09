@@ -5,7 +5,8 @@ jobs:
 - job: winui_convert_tree
   displayName: 'WinUI Converted Tree Generation'
 
-  pool: ${{ parameters.poolName }}
+  pool: 
+    vmImage: ${{ parameters.vmImage }}
 
   dependsOn: Pipeline_Validations
 
