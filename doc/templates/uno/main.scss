@@ -12,7 +12,13 @@
 
 body {
   font-family: 'Open Sans', sans-serif;
-  color: $darkgray;
+  color: $black;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 400;
+  text-transform: none;
+  color:$black;
+  letter-spacing: 0.5px;
 
   mark {
     background: rgba(21, 155, 255, 0.25);
@@ -44,29 +50,59 @@ a {
 
 h1 {
   font-size: 40px;
-  @media only screen and (max-width: 767px) {
-    font-size: 32px;
-  }
-  font-weight: 600;
+  line-height: 48px;
+  font-weight: 700;
   text-transform: none;
+  text-align: center;
+  color:$black;
+  letter-spacing: -1.5px;
 }
 
 h2 {
-  font-size: 34px;
-  @media only screen and (max-width: 767px) {
-    font-size: 28px;
-  }
-  font-weight: 600;
+  font-size: 24px;
+  line-height: 32px;
+  font-weight: 700;
   text-transform: none;
+  color:$black;
+  letter-spacing: -0.5px;
 }
 
 h3 {
-  font-size: 28px;
-  @media only screen and (max-width: 767px) {
-    font-size: 22px;
-  }
+  font-size: 20px;
+  line-height: 24px;
+  font-weight: 700;
+  text-transform: none;
+  color:$black;
+}
+
+h4 {
+  font-size: 18px;
+  line-height: 24px;
+  font-weight: 700;
+  text-transform: none;
+  color:$black;
+}
+
+subtitle {
+  font-size: 14px;
+  line-height: 24px;
   font-weight: 600;
   text-transform: none;
+  color:$black;
+  letter-spacing: 0.1px;
+}
+
+
+
+h5 {
+  font-family: 'Roboto';
+  font-style: normal;
+  letter-spacing: 1.5px;
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+  text-transform: uppercase;
+  color:$black;
 }
 
 @media screen {
@@ -75,6 +111,12 @@ h3 {
 
     > code {
       white-space: pre;
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 400;
+      text-transform: none;
+      color:$black;
+      letter-spacing: 0.25px;    
     }
   }
 }
@@ -89,6 +131,12 @@ h3 {
 
 .breadcrumb {
   white-space: inherit;
+  font-size: 14px;
+  line-height: 24px;
+  font-weight:400;
+  color:$black;
+  padding: 16px 0;
+  //padding: 0 16px 0 16px;
 }
 
 .body-content .article {
@@ -124,10 +172,28 @@ h3 {
   }
 
   .nav > li {
-    line-height: 1.79;
-
+    line-height: 24px;
+    
     a {
-      color: $darkgray;
+      font-size: 14px;
+      font-weight: 600;
+      text-transform: none;
+      color:$black;
+      letter-spacing: 0.1px;
+    }
+  }
+
+  .nav.level1 , .nav.level2 {
+    > li {
+      line-height: 20px;
+        
+      > a {
+        font-size: 14px;
+        font-weight: 400;
+        text-transform: none;
+        color:$black;
+        letter-spacing: 0.25px;
+      }
     }
   }
 
@@ -241,12 +307,13 @@ h3 {
 
   .button {
     display: inline-block;
-
+    
     a {
       display: inline-block;
       padding: 7px 17px;
-      font-size: 20px;
-      font-weight: bold;
+      font-size: 16px;
+      line-height: 16px;
+      font-weight: 700;
       box-shadow: 0 2px 4px 0 rgba(31, 31, 31, 0.25);
       border-radius: 8px;
       transition: color 0.2s ease-in-out,
