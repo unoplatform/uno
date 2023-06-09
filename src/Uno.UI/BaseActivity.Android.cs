@@ -196,7 +196,7 @@ namespace Uno.UI
 
 			Windows.UI.Xaml.Application.Current?.RaiseLeavingBackground(() =>
 			{
-				Windows.UI.Xaml.Window.Current?.OnVisibilityChanged(true);
+				Windows.UI.Xaml.Window.Current?.OnNativeVisibilityChanged(true);
 			});
 		}
 
