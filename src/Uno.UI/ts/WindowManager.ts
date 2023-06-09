@@ -1540,7 +1540,11 @@ namespace Uno.UI {
 		 */
 		public GetDependencyPropertyValue(elementId: number, propertyName: string): string {
 			if (!WindowManager.getDependencyPropertyValueMethod) {
-				WindowManager.getDependencyPropertyValueMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Uno.UI.Helpers.Automation:GetDependencyPropertyValue");
+				if ((<any>globalThis).DotnetExports !== undefined) {
+					WindowManager.getDependencyPropertyValueMethod = (<any>globalThis).DotnetExports.UnoUI.Uno.UI.Helpers.Automation.GetDependencyPropertyValue;
+				} else {
+					WindowManager.getDependencyPropertyValueMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Uno.UI.Helpers.Automation:GetDependencyPropertyValue");
+				}
 			}
 
 			const element = this.getView(elementId) as HTMLElement;
@@ -1556,7 +1560,11 @@ namespace Uno.UI {
 		 */
 		public SetDependencyPropertyValue(elementId: number, propertyNameAndValue: string): string {
 			if (!WindowManager.setDependencyPropertyValueMethod) {
-				WindowManager.setDependencyPropertyValueMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Uno.UI.Helpers.Automation:SetDependencyPropertyValue");
+				if ((<any>globalThis).DotnetExports !== undefined) {
+					WindowManager.setDependencyPropertyValueMethod = (<any>globalThis).DotnetExports.UnoUI.Uno.UI.Helpers.Automation.SetDependencyPropertyValue;
+				} else {
+					WindowManager.setDependencyPropertyValueMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Uno.UI.Helpers.Automation:SetDependencyPropertyValue");
+				}
 			}
 
 			const element = this.getView(elementId) as HTMLElement;
