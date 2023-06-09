@@ -10,6 +10,9 @@ jobs:
   pool:
     vmImage: ${{ parameters.vmImageWindows }}
 
+  dependsOn:
+    - Generate_Packages
+
   variables:
     CombinedConfiguration: Release|Any CPU
     CI_Build: true
@@ -58,7 +61,6 @@ jobs:
   pool: ${{ parameters.poolName }}
 
   dependsOn:
-    - Generate_Packages
     - templates_package_build
 
   steps:
