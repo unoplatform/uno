@@ -5,7 +5,7 @@ namespace Uno.UI.Runtime.Skia.GTK.UI;
 
 internal static class GtkDispatch
 {
-	internal static void DispatchNativeSingle(Action d) => 
+	internal static void DispatchNativeSingle(Action d) =>
 		GLib.Idle.Add(delegate
 		{
 			if (typeof(GtkDispatch).Log().IsEnabled(LogLevel.Trace))
