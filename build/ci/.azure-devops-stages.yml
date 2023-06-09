@@ -144,7 +144,7 @@ stages:
 - stage: test_finalization
   displayName: Tests - Results
   dependsOn:
-    - Tests_1
+    - Tests
     - uap_tests
     - ios_tests
     - android_tests
