@@ -24,8 +24,6 @@ jobs:
   pool:
     vmImage: ${{ parameters.vmMacOSImage }}
 
-  dependsOn: Pipeline_Validations
-
   variables:
     CI_Build: true
     SourceLinkEnabled: false

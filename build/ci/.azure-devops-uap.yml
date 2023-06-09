@@ -8,8 +8,6 @@ jobs:
   pool:
     vmImage: ${{ parameters.vmImage }}
 
-  dependsOn: Pipeline_Validations
-
   variables:
     CombinedConfiguration: Release|Any CPU
     CI_Build: true

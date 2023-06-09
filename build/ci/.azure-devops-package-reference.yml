@@ -5,8 +5,6 @@ jobs:
 - job: reference_package_build
   displayName: 'Build Reference Package Binaries'
 
-  dependsOn: winui_convert_tree
-
   pool:
     vmImage: ${{ parameters.vmImage }}
 

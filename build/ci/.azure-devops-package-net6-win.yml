@@ -8,8 +8,6 @@ jobs:
 
   pool: ${{ parameters.poolName }}
 
-  dependsOn: winui_convert_tree
-
   strategy:
     matrix:
       UWP_NET8:

@@ -45,8 +45,6 @@ jobs:
 - job: iOS_Build
   displayName: 'Build iOS Samples App UI Tests'
 
-  dependsOn: Pipeline_Validations
-
   pool:
     vmImage: ${{ parameters.vmImage }}
 

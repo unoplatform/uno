@@ -9,10 +9,6 @@ jobs:
   pool:
     vmImage: ${{ parameters.vmImage }}
 
-  dependsOn:
-    - winui_convert_tree
-    - reference_package_build
-
   strategy:
     matrix:
       UWP:
@@ -101,8 +97,6 @@ jobs:
 
   pool:
     vmImage: ${{ parameters.vmImage }}
-
-  dependsOn: reference_package_build
 
   strategy:
     matrix:

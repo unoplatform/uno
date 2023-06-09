@@ -14,8 +14,6 @@ jobs:
     NUGET_PACKAGES: $(build.sourcesdirectory)/.nuget
     XCODE_ROOT: /Applications/Xcode_10.3.app
 
-  dependsOn: Pipeline_Validations
-
   pool:
     vmImage: ${{ parameters.vmImage }}
 

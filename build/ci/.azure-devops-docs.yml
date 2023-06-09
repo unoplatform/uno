@@ -4,7 +4,6 @@ parameters:
 jobs:
 - job: Documentation
   displayName: 'Build Documentation WebSite'
-  dependsOn: Pipeline_Validations
 
   pool: ${{ parameters.poolName }}
 

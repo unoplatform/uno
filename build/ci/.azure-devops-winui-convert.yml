@@ -7,8 +7,6 @@ jobs:
 
   pool: ${{ parameters.poolName }}
 
-  dependsOn: Pipeline_Validations
-
   variables:
     CombinedConfiguration: Release|Any CPU
     CI_Build: true

@@ -10,8 +10,6 @@ jobs:
   pool:
     vmImage: ${{ parameters.vmImageWindows }}
 
-  dependsOn: Pipeline_Validations
-
   variables:
     CombinedConfiguration: Release|Any CPU
     CI_Build: true
@@ -101,8 +99,6 @@ jobs:
     vmImage: ${{ parameters.vmImageLinux }}
 
   container: unoplatform/wasm-build:2.3
-
-  dependsOn: Generate_Packages
 
   steps:
   - task: DownloadBuildArtifacts@0

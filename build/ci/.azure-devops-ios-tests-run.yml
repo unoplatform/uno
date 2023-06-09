@@ -15,7 +15,7 @@ jobs:
   timeoutInMinutes: ${{ parameters.JobTimeoutInMinutes }}
   dependsOn:
   - iOS_Build
-  - Commitsar
+
   displayName: ${{ parameters.JobDisplayName }}
 
   pool:

@@ -10,12 +10,6 @@ jobs:
 - job: Generate_Packages
   displayName: 'Pack NuGet'
 
-  dependsOn:
-  - netcoremobile_win_build
-  - skia_package_build
-  - wasm_package_build
-  - reference_package_build
-
   pool: ${{ parameters.poolName }}
 
   strategy:
