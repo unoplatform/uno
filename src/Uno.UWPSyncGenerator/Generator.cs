@@ -1750,11 +1750,12 @@ namespace Uno.UWPSyncGenerator
 		{
 			var key = (projectFile, targetFramework);
 
-			if (_projects.TryGetValue(key, out var compilation))
-			{
-				Console.WriteLine($"Using cached compilation for {projectFile} and {targetFramework}");
-				return compilation;
-			}
+			// Disable caching for low memory usage on hosted agents
+			// if (_projects.TryGetValue(key, out var compilation))
+			// {
+			// 	Console.WriteLine($"Using cached compilation for {projectFile} and {targetFramework}");
+			// 	return compilation;
+			// }
 
 			return _projects[key] = InnerLoadProject(projectFile, targetFramework);
 		}
