@@ -5,5 +5,6 @@ steps:
       $globalJsonPath = "$(build.sourcesdirectory)\global.json"
       $globalJson = Get-Content $globalJsonPath
       $globalJson = $globalJson -replace '7.0.302', '7.0.102'
+      $globalJson = $globalJson -replace 'allowPrerelease`"`: true', 'allowPrerelease`"`: false'
       $globalJson | Set-Content $globalJsonPath
     displayName: 'Downgrade global.json to 7.0.102'
