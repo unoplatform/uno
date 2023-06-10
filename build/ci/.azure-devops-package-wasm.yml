@@ -3,7 +3,7 @@ parameters:
 
 jobs:
 - job: wasm_package_build
-  displayName: 'Build WebAssembly Package Binaries'
+  displayName: 'WebAssembly Package Binaries'
 
   pool:
     vmImage: ${{ parameters.vmImage }}

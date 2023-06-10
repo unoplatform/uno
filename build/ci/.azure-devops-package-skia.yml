@@ -3,7 +3,7 @@ parameters:
 
 jobs:
 - job: skia_package_build
-  displayName: 'Build Skia Package Binaries'
+  displayName: 'Skia Package Binaries'
   container: nv-bionic-wasm
 
   pool:
