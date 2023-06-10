@@ -92,6 +92,9 @@ jobs:
       arguments: Uno.UI.Build.csproj /r /m /t:BuildCIMobile "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)\build-$(GitVersion.FullSemVer)-netcoremobile-$(ZipFileTargetFramework)-$(XAML_FLAVOR_BUILD).binlog
     displayName: Building package binaries
 
+   # downgrade global.json to .NET 7.0.102 for the Windows build only
+  - template: templates/globaljson-downgrade.yml
+
   - task: MSBuild@1
     inputs:
       solution: build/filters/Uno.UI-packages-windows.slnf
