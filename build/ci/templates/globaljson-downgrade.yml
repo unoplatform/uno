@@ -4,4 +4,3 @@ steps:
   - script: |
       cp global-net7.0.102.json global.json
     displayName: Downgrade global.json to 7.0.102
-    condition: and(succeeded(), eq(variables.UnoDisableNet7Mobile, 'true'))
