@@ -94,6 +94,7 @@ jobs:
 
   # downgrade global.json to .NET 7.0.102 for the Windows build only
   - template: templates/globaljson-downgrade.yml
+  - template: templates/dotnet-install.yml
 
   - task: MSBuild@1
     inputs:
