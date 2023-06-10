@@ -63,7 +63,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly string _defaultNamespace;
 		private readonly RoslynMetadataHelper _metadataHelper;
 		private readonly string _fileUniqueId;
-		private readonly DateTime _lastReferenceUpdateTime;
 		private readonly string[] _analyzerSuppressions;
 		private readonly ResourceDetailsCollection _resourceDetailsCollection;
 		private int _applyIndex;
@@ -80,6 +79,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly bool _isHotReloadEnabled;
 		private readonly bool _isInsideMainAssembly;
 		private readonly bool _isDesignTimeBuild;
+		private readonly string _relativePath;
 		private readonly bool _useXamlReaderHotReload;
 
 		/// <summary>
@@ -191,6 +191,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		public XamlFileGenerator(
 			XamlCodeGeneration generation,
 			XamlFileDefinition file,
+			string targetPath,
 			string defaultNamespace,
 			RoslynMetadataHelper metadataHelper,
 			string fileUniqueId,
@@ -249,6 +250,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			InitCaches();
 
+			_relativePath = PathHelper.GetRelativePath(targetPath, _fileDefinition.FilePath);
 			ShouldWriteErrorOnInvalidXaml = shouldWriteErrorOnInvalidXaml;
 
 			_isWasm = isWasm;
@@ -633,7 +635,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					blockWriter.AppendLineInvariantIndented(
 						"// Source {0} (Line {1}:{2})",
-						_fileDefinition.TargetFilePath,
+						_relativePath,
 						topLevelControl.LineNumber,
 						topLevelControl.LinePosition
 					);
@@ -842,7 +844,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					blockWriter.AppendLineInvariantIndented(
 						"// Source {0} (Line {1}:{2})",
-						_fileDefinition.TargetFilePath,
+						_relativePath,
 						topLevelControl.LineNumber,
 						topLevelControl.LinePosition
 					);
@@ -1665,7 +1667,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			TryAnnotateWithGeneratorSource(writer);
 			writer.AppendLineInvariantIndented(
 				"// Source {0} (Line {1}:{2})",
-					_fileDefinition.TargetFilePath,
+				_relativePath,
 				definition.LineNumber,
 				definition.LinePosition
 			);
