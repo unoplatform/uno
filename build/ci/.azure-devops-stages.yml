@@ -63,8 +63,8 @@ stages:
       vmImageWindows: $(windows2022HostedVMImage)
       vmImageLinux: '$(linuxVMImage)'
 
-- stage: Tests
-  displayName: Tests
+- stage: unit_tests
+  displayName: Tests - Unit
   dependsOn:
     - binaries_build
     - convert_tree
@@ -74,6 +74,13 @@ stages:
   - template: .azure-devops-unit-tests.yml
     parameters:
       vmImage: '$(windows2022HostedVMImage)'
+
+- stage: wasm_tests
+  displayName: Tests - WebAssembly
+  dependsOn:
+    - convert_tree
+
+  jobs:
   
   - template: .azure-devops-wasm-uitests.yml
     parameters:
@@ -144,7 +151,8 @@ stages:
 - stage: test_finalization
   displayName: Tests - Results
   dependsOn:
-    - Tests
+    - unit_tests
+    - wasm_tests
     - uap_tests
     - ios_tests
     - android_tests
