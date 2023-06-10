@@ -1,10 +1,7 @@
 steps:
 
   # Downgrade to 7.0.102 until build agents get updated to 17.6
-  - powershell: |
-      $globalJsonPath = "$(build.sourcesdirectory)\global.json"
-      $globalJson = Get-Content $globalJsonPath
-      $globalJson = $globalJson -replace '7.0.302', '7.0.102'
-      $globalJson = $globalJson -replace 'allowPrerelease`"`: true', 'allowPrerelease`"`: false'
-      $globalJson | Set-Content $globalJsonPath
-    displayName: 'Downgrade global.json to 7.0.102'
+  - script: |
+      cp global-net7.0.102.json global.json
+    displayName: Downgrade global.json to 7.0.102
+    condition: and(succeeded(), eq(variables.UnoDisableNet7Mobile, 'true'))
