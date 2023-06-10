@@ -380,7 +380,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			try
 			{
-				var lastBinaryUpdateTime = GetLastBinaryUpdateTime();
 				var isInsideMainAssembly = _isUnoHead || PlatformHelper.IsAndroid(_generatorContext);
 
 				var resourceDetailsCollection = BuildResourceDetails(_generatorContext.CancellationToken);
@@ -438,7 +437,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						defaultNamespace: _defaultNamespace,
 						metadataHelper: _metadataHelper,
 						fileUniqueId: file.UniqueID,
-						lastReferenceUpdateTime: lastBinaryUpdateTime,
 						analyzerSuppressions: _analyzerSuppressions,
 						globalStaticResourcesMap: globalStaticResourcesMap,
 						resourceDetailsCollection: resourceDetailsCollection,
@@ -679,17 +677,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			Console.WriteLine(resourceKeys.Length + " localization keys found");
 #endif
 			return resourceKeys;
-		}
-
-		private DateTime GetLastBinaryUpdateTime()
-		{
-			// Determine the last update time, to allow for the re-generation of the files.
-			// Include the current assembly, as it might have been updated since the last generation.
-
-			return _assemblySearchPaths
-				.Select(File.GetLastWriteTime)
-				.Concat(_buildTasksBuildDate)
-				.Max();
 		}
 
 		private SourceText GenerateGlobalResources(IEnumerable<XamlFileDefinition> files, XamlGlobalStaticResourcesMap map)
