@@ -40,7 +40,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly bool _isWasm;
 		private readonly bool _isDesignTimeBuild;
 		private readonly string _defaultNamespace;
-		private readonly string[] _assemblySearchPaths;
 		private readonly string _excludeXamlNamespaces;
 		private readonly string _includeXamlNamespaces;
 		private readonly string[] _analyzerSuppressions;
@@ -155,7 +154,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			InitTelemetry(context);
 
 			_metadataHelper = new RoslynMetadataHelper(context);
-			_assemblySearchPaths = Array.Empty<string>();
 
 			_configuration = context.GetMSBuildPropertyValue("Configuration")
 				?? throw new InvalidOperationException("The configuration property must be provided");
