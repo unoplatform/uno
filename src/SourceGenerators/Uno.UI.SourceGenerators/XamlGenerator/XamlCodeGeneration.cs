@@ -40,7 +40,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly bool _isWasm;
 		private readonly bool _isDesignTimeBuild;
 		private readonly string _defaultNamespace;
-		private readonly string[] _assemblySearchPaths;
 		private readonly string _excludeXamlNamespaces;
 		private readonly string _includeXamlNamespaces;
 		private readonly string[] _analyzerSuppressions;
@@ -70,7 +69,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// </summary>
 		private readonly bool _isLazyVisualStateManagerEnabled = true;
 
-		private static DateTime _buildTasksBuildDate = File.GetLastWriteTime(new Uri(typeof(XamlFileGenerator).Assembly.Location).LocalPath);
 		private INamedTypeSymbol[]? _ambientGlobalResources;
 		private readonly bool _isUiAutomationMappingEnabled;
 
@@ -156,7 +154,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			InitTelemetry(context);
 
 			_metadataHelper = new RoslynMetadataHelper(context);
-			_assemblySearchPaths = Array.Empty<string>();
 
 			_configuration = context.GetMSBuildPropertyValue("Configuration")
 				?? throw new InvalidOperationException("The configuration property must be provided");
@@ -380,7 +377,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			try
 			{
-				var lastBinaryUpdateTime = GetLastBinaryUpdateTime();
 				var isInsideMainAssembly = _isUnoHead || PlatformHelper.IsAndroid(_generatorContext);
 
 				var resourceDetailsCollection = BuildResourceDetails(_generatorContext.CancellationToken);
@@ -438,7 +434,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						defaultNamespace: _defaultNamespace,
 						metadataHelper: _metadataHelper,
 						fileUniqueId: file.UniqueID,
-						lastReferenceUpdateTime: lastBinaryUpdateTime,
 						analyzerSuppressions: _analyzerSuppressions,
 						globalStaticResourcesMap: globalStaticResourcesMap,
 						resourceDetailsCollection: resourceDetailsCollection,
@@ -679,17 +674,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			Console.WriteLine(resourceKeys.Length + " localization keys found");
 #endif
 			return resourceKeys;
-		}
-
-		private DateTime GetLastBinaryUpdateTime()
-		{
-			// Determine the last update time, to allow for the re-generation of the files.
-			// Include the current assembly, as it might have been updated since the last generation.
-
-			return _assemblySearchPaths
-				.Select(File.GetLastWriteTime)
-				.Concat(_buildTasksBuildDate)
-				.Max();
 		}
 
 		private SourceText GenerateGlobalResources(IEnumerable<XamlFileDefinition> files, XamlGlobalStaticResourcesMap map)
