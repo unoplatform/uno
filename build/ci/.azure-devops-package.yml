@@ -12,6 +12,9 @@ jobs:
 
   pool: ${{ parameters.poolName }}
 
+  dependsOn:
+  - templates_package_build
+
   strategy:
     matrix:
       UWP:
@@ -40,6 +43,8 @@ jobs:
   - template: templates/nuget-cache.yml
     parameters:
       nugetPackages: $(NUGET_PACKAGES)
+
+  - template: templates/globaljson-downgrade.yml
 
   - template: templates/download-winui-converted-tree.yml
 

@@ -47,7 +47,6 @@ stages:
     parameters:
       vmImage: '$(linuxVMImage)'
 
-
 - stage: packages_build
   displayName: Generate Packages
   dependsOn:
@@ -57,14 +56,15 @@ stages:
   - template: .azure-devops-package.yml
     parameters:
       poolName: '$(windowsScaledPool)'
+
   - template: .azure-devops-project-template-tests.yml
     parameters:
       poolName: '$(windowsScaledPool)'
       vmImageWindows: $(windows2022HostedVMImage)
       vmImageLinux: '$(linuxVMImage)'
 
-- stage: Tests_1
-  displayName: Tests 1
+- stage: unit_tests
+  displayName: Tests - Unit
   dependsOn:
     - binaries_build
     - convert_tree
@@ -74,13 +74,20 @@ stages:
   - template: .azure-devops-unit-tests.yml
     parameters:
       vmImage: '$(windows2022HostedVMImage)'
+
+- stage: wasm_tests
+  displayName: Tests - WebAssembly
+  dependsOn:
+    - convert_tree
+
+  jobs:
   
   - template: .azure-devops-wasm-uitests.yml
     parameters:
       vmImage: '$(linuxVMImage)'
 
 - stage: skia_tests
-  displayName: Skia Tests
+  displayName: Tests - Skia
   dependsOn:
     - Setup
 
@@ -92,7 +99,7 @@ stages:
       poolName: '$(windows2022HostedVMImage)'
   
 - stage: macos_tests
-  displayName: macOS Tests
+  displayName: Tests - macOS
   dependsOn:
     - Setup
 
@@ -104,7 +111,7 @@ stages:
       XamarinSDKVersion: '$(XamarinSDKVersion)'
   
 - stage: android_tests
-  displayName: Android Tests
+  displayName: Tests - Android
   dependsOn:
     - Setup
 
@@ -117,7 +124,7 @@ stages:
       XamarinSDKVersion: '$(XamarinSDKVersion)'
   
 - stage: ios_tests
-  displayName: iOS Tests
+  displayName: Tests - iOS
   dependsOn:
     - Setup
 
@@ -132,7 +139,7 @@ stages:
       XamarinSDKVersionTest: '$(XamarinSDKVersion_iOS_UITests)'
 
 - stage: uap_tests
-  displayName: UAP Tests
+  displayName: Tests - UAP
   dependsOn:
     - Setup
 
@@ -142,9 +149,10 @@ stages:
       vmImage: '$(windows2022HostedVMImage)'
 
 - stage: test_finalization
-  displayName: Test Finalization
+  displayName: Tests - Results
   dependsOn:
-    - Tests_1
+    - unit_tests
+    - wasm_tests
     - uap_tests
     - ios_tests
     - android_tests

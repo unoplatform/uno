@@ -3,7 +3,7 @@ parameters:
 
 jobs:
 - job: reference_package_build
-  displayName: 'Build Reference Package Binaries'
+  displayName: 'Reference Package Binaries'
 
   pool:
     vmImage: ${{ parameters.vmImage }}

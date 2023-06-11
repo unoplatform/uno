@@ -39,7 +39,7 @@ jobs:
 
   - powershell: |
       Set-PSDebug -Trace 1
-      dotnet build build/Uno.UI.Build.csproj /m /t:BuildCIPackages "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)/build-Reference-$(XAML_FLAVOR_BUILD).binlog
+      dotnet build build/Uno.UI.Build.csproj /m /t:BuildTemplatePackages "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)/build-Reference-$(XAML_FLAVOR_BUILD).binlog
     displayName: Building Template Packages
 
   - template: templates/copy-package-assets.yml
@@ -58,8 +58,8 @@ jobs:
   pool: ${{ parameters.poolName }}
 
   dependsOn:
-    - Generate_Packages
     - templates_package_build
+    - Generate_Packages
 
   steps:
   - task: DownloadBuildArtifacts@0
@@ -69,6 +69,9 @@ jobs:
   - task: DownloadBuildArtifacts@0
     inputs:
       artifactName: private-templates
+
+  # downgrade global.json to .NET 7.0.102 for the Windows build only
+  - template: templates/globaljson-downgrade.yml
 
   - template: templates/gitversion.yml
 
@@ -94,6 +97,10 @@ jobs:
 
 - job: Dotnet_Template_Tests_net7_Linux
   displayName: 'Run dotnet new Templates Tests - Linux (net7)'
+
+  dependsOn:
+    - templates_package_build
+    - Generate_Packages
 
   pool:
     vmImage: ${{ parameters.vmImageLinux }}

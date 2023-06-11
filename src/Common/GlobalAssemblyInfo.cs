@@ -3,7 +3,7 @@ using System.Reflection;
 using System.Security;
 
 [assembly: AssemblyProduct("Uno")]
-[assembly: AssemblyCompany("nventive")]
+[assembly: AssemblyCompany("Uno Platform Inc.")]
 
 #if !METRO && !WINPRT && !SILVERLIGHT
 [assembly: SecurityTransparent]
