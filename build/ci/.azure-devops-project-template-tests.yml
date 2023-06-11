@@ -59,6 +59,7 @@ jobs:
 
   dependsOn:
     - templates_package_build
+    - Generate_Packages
 
   steps:
   - task: DownloadBuildArtifacts@0
@@ -93,6 +94,10 @@ jobs:
 
 - job: Dotnet_Template_Tests_net7_Linux
   displayName: 'Run dotnet new Templates Tests - Linux (net7)'
+
+  dependsOn:
+    - templates_package_build
+    - Generate_Packages
 
   pool:
     vmImage: ${{ parameters.vmImageLinux }}
