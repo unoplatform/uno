@@ -12,6 +12,9 @@ jobs:
 
   pool: ${{ parameters.poolName }}
 
+  dependsOn:
+  - templates_package_build
+
   strategy:
     matrix:
       UWP:
