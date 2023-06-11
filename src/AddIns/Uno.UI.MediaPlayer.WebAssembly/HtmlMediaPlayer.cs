@@ -12,6 +12,8 @@ using System.Globalization;
 using Windows.UI.Xaml.Controls.Maps;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Notifications;
+using static System.Net.WebRequestMethods;
+using System.Numerics;
 
 namespace Uno.UI.Media;
 
@@ -28,6 +30,7 @@ internal partial class HtmlMediaPlayer : Border
 	private UIElement _activeElement;
 	private string _activeElementName;
 	public bool IsPause;
+	public bool IsAutoPlayRequested;
 
 	public event EventHandler<object> OnSourceLoaded;
 	public event EventHandler<object> OnStatusChanged;
@@ -299,7 +302,10 @@ internal partial class HtmlMediaPlayer : Border
 
 	private void OnHtmlTimeUpdated(object sender, EventArgs e)
 	{
-		OnTimeUpdate?.Invoke(this, EventArgs.Empty);
+		if (!IsAutoPlayRequested)
+		{
+			OnTimeUpdate?.Invoke(this, EventArgs.Empty);
+		}
 	}
 
 	private void OnHtmlSourceEnded(object sender, EventArgs e)
@@ -314,7 +320,7 @@ internal partial class HtmlMediaPlayer : Border
 
 	private void OnHtmlMetadataLoaded(object sender, EventArgs e)
 	{
-		if (_activeElement != null)
+		if (_activeElement != null && !IsAutoPlayRequested)
 		{
 			Duration = NativeMethods.GetDuration(_activeElement.HtmlId);
 		}
@@ -330,7 +336,8 @@ internal partial class HtmlMediaPlayer : Border
 
 		_activeElement = IsVideo ? _htmlVideo : IsAudio ? _htmlAudio : default;
 		_activeElementName = IsVideo ? "Video" : IsAudio ? "Audio" : "";
-		if (_activeElement != null)
+
+		if (_activeElement != null && IsAutoPlayRequested)
 		{
 			_activeElement.SetCssStyle("visibility", "visible");
 		}
@@ -340,11 +347,10 @@ internal partial class HtmlMediaPlayer : Border
 		}
 
 		TimeUpdated += OnHtmlTimeUpdated;
-		if (_activeElement != null)
-		{
-			Duration = NativeMethods.GetDuration(_activeElement.HtmlId);
-		}
+		Duration = NativeMethods.GetDuration(_activeElement.HtmlId);
 		OnSourceLoaded?.Invoke(this, EventArgs.Empty);
+
+		IsAutoPlayRequested = false;
 	}
 
 	private void OnHtmlStatusPlayChanged(object sender, EventArgs e)
@@ -353,6 +359,7 @@ internal partial class HtmlMediaPlayer : Border
 		{
 			this.Log().Debug($"Media Changed Status Play [{Source}]");
 		}
+
 		IsPause = false;
 		OnStatusChanged?.Invoke(this, EventArgs.Empty);
 	}
@@ -370,7 +377,7 @@ internal partial class HtmlMediaPlayer : Border
 
 	private void OnHtmlSourceFailed(object sender, HtmlCustomEventArgs e)
 	{
-		TimeUpdated += OnHtmlTimeUpdated;
+		TimeUpdated -= OnHtmlTimeUpdated;
 		if (_activeElement != null)
 		{
 			_activeElement.SetCssStyle("visibility", "hidden");
@@ -409,10 +416,13 @@ internal partial class HtmlMediaPlayer : Border
 
 			if (player._activeElement != null)
 			{
-
+				if (player.AutoPlay)
+				{
+					player._activeElement.SetHtmlAttribute("autoplay", "autoplay");
+					player._activeElement.SetCssStyle("visibility", "visible");
+				}
+				player.Duration = 0;
 				player._activeElement.SetHtmlAttribute("src", encodedSource);
-				player._activeElement.SetCssStyle("visibility", "visible");
-
 				if (player.Log().IsEnabled(LogLevel.Debug))
 				{
 					player.Log().Debug($"{player._activeElementName} source changed: [{player.Source}]");
@@ -426,7 +436,6 @@ internal partial class HtmlMediaPlayer : Border
 					player.Log().Debug($"HtmlMediaPlayer.OnSourceChanged: unsupported source");
 				}
 			}
-
 		}
 	}
 
@@ -438,9 +447,41 @@ internal partial class HtmlMediaPlayer : Border
 	{
 		if (dependencyobject is HtmlMediaPlayer player)
 		{
-			if (player._activeElement != null)
+			player.IsAutoPlayRequested = (bool)args.NewValue;
+
+			if (player._htmlVideo != null && player.IsAutoPlayRequested)
 			{
-				NativeMethods.SetAutoPlay(player._activeElement.HtmlId, (bool)args.NewValue);
+				if (!string.IsNullOrEmpty(player._htmlVideo.GetHtmlAttribute("autoplay")))
+				{
+					player._htmlVideo.RemoveAttribute("autoplay");
+				}
+				player._htmlVideo.SetHtmlAttribute("autoplay", "autoplay");
+				player._htmlVideo.SetCssStyle("visibility", "visible");
+			}
+			else
+			{
+				if (!string.IsNullOrEmpty(player._htmlVideo.GetHtmlAttribute("autoplay")))
+				{
+					player._htmlVideo.RemoveAttribute("autoplay");
+					player._htmlVideo.SetCssStyle("visibility", "hidden");
+				}
+			}
+			if (player._htmlAudio != null && player.IsAutoPlayRequested)
+			{
+				if (!string.IsNullOrEmpty(player._htmlAudio.GetHtmlAttribute("autoplay")))
+				{
+					player._htmlAudio.RemoveAttribute("autoplay");
+				}
+				player._htmlAudio.SetHtmlAttribute("autoplay", "autoplay");
+				player._htmlAudio.SetCssStyle("visibility", "visible");
+			}
+			else
+			{
+				if (!string.IsNullOrEmpty(player._htmlAudio.GetHtmlAttribute("autoplay")))
+				{
+					player._htmlAudio.RemoveAttribute("autoplay");
+					player._htmlAudio.SetCssStyle("visibility", "hidden");
+				}
 			}
 		}
 	}
@@ -566,17 +607,21 @@ internal partial class HtmlMediaPlayer : Border
 
 	public void Play()
 	{
-		TimeUpdated -= OnHtmlTimeUpdated;
-		TimeUpdated += OnHtmlTimeUpdated;
 		if (this.Log().IsEnabled(LogLevel.Debug))
 		{
 			this.Log().Debug($"Play()");
 		}
-		if (_activeElement != null && !_isPlaying)
+		if (_activeElement != null)
 		{
+			if (!IsAutoPlayRequested && !_isPlaying)
+			{
+				TimeUpdated -= OnHtmlTimeUpdated;
+				TimeUpdated += OnHtmlTimeUpdated;
+				NativeMethods.Play(_activeElement.HtmlId);
+				_activeElement.SetCssStyle("visibility", "visible");
+			}
 			IsPause = false;
 			_isPlaying = true;
-			NativeMethods.Play(_activeElement.HtmlId);
 		}
 	}
 
@@ -592,6 +637,7 @@ internal partial class HtmlMediaPlayer : Border
 			_isPlaying = false;
 			IsPause = true;
 			NativeMethods.Pause(_activeElement.HtmlId);
+			_activeElement.SetCssStyle("visibility", "visible");
 		}
 	}
 
@@ -617,7 +663,17 @@ internal partial class HtmlMediaPlayer : Border
 		set
 		{
 			_playbackRate = value;
-			NativeMethods.SetPlaybackRate(IsAudio ? _htmlAudio.HtmlId : _htmlVideo.HtmlId, value);
+			if (_activeElement != null && !IsAutoPlayRequested)
+			{
+				if (IsAudio)
+				{
+					NativeMethods.SetPlaybackRate(_htmlAudio.HtmlId, value);
+				}
+				else
+				{
+					NativeMethods.SetPlaybackRate(_htmlVideo.HtmlId, value);
+				}
+			}
 		}
 	}
 

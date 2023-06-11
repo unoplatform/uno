@@ -40,6 +40,7 @@ public class MediaPlayerPresenterExtension : IMediaPlayerPresenterExtension
 		if (_owner is not null
 			&& MediaPlayerExtension.GetByMediaPlayer(_owner.MediaPlayer) is { } extension)
 		{
+			_htmlPlayer.AutoPlay = _owner.MediaPlayer.AutoPlay;
 			extension.HtmlPlayer = _htmlPlayer;
 		}
 		else

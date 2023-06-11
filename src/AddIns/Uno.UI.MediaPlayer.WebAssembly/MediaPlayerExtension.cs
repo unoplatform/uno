@@ -11,6 +11,7 @@ using Windows.Media.Core;
 using Windows.Media.Playback;
 using Windows.Storage;
 using Windows.Storage.Streams;
+using Windows.UI.Xaml;
 
 [assembly: ApiExtension(typeof(IMediaPlayerExtension), typeof(Uno.UI.Media.MediaPlayerExtension))]
 
@@ -321,6 +322,7 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 
 		if (_player is not null && _uri is not null)
 		{
+			_player.AutoPlay = _owner.AutoPlay;
 			_player.Source = _uri.OriginalString;
 		}
 		else
@@ -375,8 +377,15 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 			if (_isPlayerPrepared)
 			{
 				_player.PlaybackRate = 1;
-				_player.Play();
-				_owner.PlaybackSession.PlaybackState = MediaPlaybackState.Playing;
+				try
+				{
+					_player.Play();
+					_owner.PlaybackSession.PlaybackState = MediaPlaybackState.Playing;
+				}
+				catch
+				{
+					_owner.PlaybackSession.PlaybackState = MediaPlaybackState.Paused;
+				}
 			}
 			else
 			{
@@ -465,7 +474,14 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 
 		if ((MediaPlaybackState)args == MediaPlaybackState.Playing)
 		{
-			_player?.Play();
+			if (_player?.AutoPlay != true && _isPlayerPrepared)
+			{
+				_player?.Play();
+			}
+		}
+		if (_player != null && _player.IsPause && (MediaPlaybackState)args == MediaPlaybackState.Playing)
+		{
+			_owner.PlaybackSession.PlaybackState = MediaPlaybackState.Paused;
 		}
 	}
 
@@ -494,7 +510,9 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 				catch { }
 			}
 
-			if (_owner.PlaybackSession.PlaybackState == MediaPlaybackState.Opening)
+			if (_player != null &&
+					(_owner.PlaybackSession.PlaybackState == MediaPlaybackState.Opening || _owner.PlaybackSession.PlaybackState == MediaPlaybackState.Playing)
+				)
 			{
 				if (_isPlayRequested)
 				{
@@ -505,9 +523,9 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 				{
 					_owner.PlaybackSession.PlaybackState = MediaPlaybackState.Paused;
 				}
+				_isPlayerPrepared = true;
 			}
 
-			_isPlayerPrepared = true;
 		}
 	}
 
@@ -568,6 +586,15 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 	{
 		try
 		{
+			if (sender is HtmlMediaPlayer mp && _player is not null && _player.Duration == 0)
+			{
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().Debug($"OnTimeUpdate: {_player.Duration}");
+				}
+				NaturalDuration = TimeSpan.FromSeconds(_player.Duration);
+			}
+
 			_updatingPosition = true;
 
 			if (this.Log().IsEnabled(LogLevel.Trace))
