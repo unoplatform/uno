@@ -23,7 +23,6 @@ jobs:
   - template: templates/dotnet-install.yml
 
   - powershell: |
-      Set-PSDebug -Trace 1
       dotnet build -c Release src/Uno.UI.TestComparer/Uno.UI.TestComparer.csproj /bl:$(build.artifactstagingdirectory)/test-comparer.binlog
     displayName: Build Test Comparer
 
