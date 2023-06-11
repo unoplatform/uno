@@ -50,7 +50,7 @@ namespace Windows.Media.Playback
 
 		const string MsAppXScheme = "ms-appx";
 
-		public virtual IVideoSurface RenderSurface { get; private set; } = new VideoSurface(Application.Context);
+		public IVideoSurface RenderSurface { get; private set; } = new VideoSurface(Application.Context);
 
 		private void Initialize()
 		{
@@ -116,7 +116,7 @@ namespace Windows.Media.Playback
 			PlaybackSession.PlaybackStateChanged += OnStatusChanged;
 		}
 
-		protected virtual void InitializeSource()
+		private void InitializeSource()
 		{
 			PlaybackSession.NaturalDuration = TimeSpan.Zero;
 			PlaybackSession.PositionFromPlayer = TimeSpan.Zero;
@@ -214,7 +214,7 @@ namespace Windows.Media.Playback
 			}
 		}
 
-		public virtual void Play()
+		public void Play()
 		{
 			if (Source == null || _player == null)
 			{
@@ -329,7 +329,7 @@ namespace Windows.Media.Playback
 			PlaybackSession.PlaybackState = MediaPlaybackState.None;
 		}
 
-		public virtual void Pause()
+		public void Pause()
 		{
 			if (PlaybackSession.PlaybackState == MediaPlaybackState.Playing)
 			{
@@ -338,7 +338,7 @@ namespace Windows.Media.Playback
 			}
 		}
 
-		public virtual void Stop()
+		public void Stop()
 		{
 			if (PlaybackSession.PlaybackState == MediaPlaybackState.Playing || PlaybackSession.PlaybackState == MediaPlaybackState.Paused)
 			{

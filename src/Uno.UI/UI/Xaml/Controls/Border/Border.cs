@@ -36,14 +36,15 @@ using RadialGradientBrush = Microsoft.UI.Xaml.Media.RadialGradientBrush;
 
 namespace Windows.UI.Xaml.Controls
 {
+	// TODO: Border should be sealed
 	[ContentProperty(Name = nameof(Child))]
 	public partial class Border : FrameworkElement
 	{
 
-		/// <summary>        
+		/// <summary>
 		/// Support for the C# collection initializer style.
-		/// Allows items to be added like this 
-		/// new Border 
+		/// Allows items to be added like this
+		/// new Border
 		/// {
 		///    new Border()
 		/// }
@@ -65,7 +66,7 @@ namespace Windows.UI.Xaml.Controls
 
 		#region Child DependencyProperty
 
-		public virtual UIElement Child
+		public UIElement Child
 		{
 			get => (UIElement)this.GetValue(ChildProperty);
 			set => this.SetValue(ChildProperty, value);
@@ -86,7 +87,7 @@ namespace Windows.UI.Xaml.Controls
 				)
 			);
 
-		protected void OnChildChanged(UIElement oldValue, UIElement newValue)
+		private void OnChildChanged(UIElement oldValue, UIElement newValue)
 		{
 			ReAttachChildTransitions(oldValue, newValue);
 
@@ -175,7 +176,7 @@ namespace Windows.UI.Xaml.Controls
 			set => SetPaddingValue(value);
 		}
 
-		protected virtual void OnPaddingChanged(Thickness oldValue, Thickness newValue)
+		private void OnPaddingChanged(Thickness oldValue, Thickness newValue)
 		{
 			OnPaddingChangedPartial(oldValue, newValue);
 		}
@@ -214,7 +215,7 @@ namespace Windows.UI.Xaml.Controls
 			set => SetBorderThicknessValue(value);
 		}
 
-		protected virtual void OnBorderThicknessChanged(Thickness oldValue, Thickness newValue)
+		private void OnBorderThicknessChanged(Thickness oldValue, Thickness newValue)
 		{
 			OnBorderThicknessChangedPartial(oldValue, newValue);
 		}
@@ -252,7 +253,7 @@ namespace Windows.UI.Xaml.Controls
 		[GeneratedDependencyProperty(ChangedCallback = true, Options = FrameworkPropertyMetadataOptions.ValueInheritsDataContext)]
 		public static DependencyProperty BorderBrushProperty { get; } = CreateBorderBrushProperty();
 
-		protected virtual void OnBorderBrushChanged(Brush oldValue, Brush newValue)
+		private void OnBorderBrushChanged(Brush oldValue, Brush newValue)
 		{
 			if (newValue is SolidColorBrush colorBrush)
 			{

@@ -8,7 +8,7 @@ using System.Collections.Generic;
 
 namespace Windows.UI.Xaml.Media
 {
-	public abstract partial class Brush
+	public partial class Brush
 	{
 		internal delegate void BrushSetterHandler(CompositionBrush brush);
 

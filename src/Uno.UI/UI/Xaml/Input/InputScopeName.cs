@@ -13,9 +13,9 @@ namespace Windows.UI.Xaml.Input
 
 		}
 
-		public InputScopeName(InputScopeNameValue value)
+		public InputScopeName(InputScopeNameValue nameValue)
 		{
-			NameValue = value;
+			NameValue = nameValue;
 		}
 		public InputScopeNameValue NameValue { get; set; }
 	}

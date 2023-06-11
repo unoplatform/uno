@@ -13,14 +13,14 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		/// </summary>
 		/// <param name="obj">The object that has an HorizontalOrientationMargin.</param>
 		/// <returns>The HorizontalOrientationMargin thickness.</returns>
-		public static Thickness GetHorizontalOrientationMargin(DependencyObject obj) => (Thickness)obj.GetValue(HorizontalOrientationMarginProperty);
+		public static Thickness GetHorizontalOrientationMargin(DependencyObject @object) => (Thickness)@object.GetValue(HorizontalOrientationMarginProperty);
 
 		/// <summary>
 		/// Sets the HorizontalOrientationMargin to an object.
 		/// </summary>
 		/// <param name="obj">The object that the HorizontalOrientationMargin value will be set to.</param>
 		/// <param name="value">The thickness of the HorizontalOrientationMargin.</param>
-		public static void SetHorizontalOrientationMargin(DependencyObject obj, Thickness value) => obj.SetValue(HorizontalOrientationMarginProperty, value);
+		public static void SetHorizontalOrientationMargin(DependencyObject @object, Thickness value) => @object.SetValue(HorizontalOrientationMarginProperty, value);
 
 		/// <summary>
 		/// Gets the identifier for the HorizontalOrientationMargin dependency property.
@@ -49,14 +49,14 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		/// </summary>
 		/// <param name="obj">The object that has a VerticalOrientationMargin.</param>
 		/// <returns>The VerticalOrientationMargin thickness.</returns>
-		public static Thickness GetVerticalOrientationMargin(DependencyObject obj) => (Thickness)obj.GetValue(VerticalOrientationMarginProperty);
+		public static Thickness GetVerticalOrientationMargin(DependencyObject @object) => (Thickness)@object.GetValue(VerticalOrientationMarginProperty);
 
 		/// <summary>
 		/// Sets the VerticalOrientationMargin to an object.
 		/// </summary>
 		/// <param name="obj">The object that the VerticalOrientationMargin value will be set to.</param>
 		/// <param name="value">The thickness of the VerticalOrientationMargin.</param>
-		public static void SetVerticalOrientationMargin(DependencyObject obj, Thickness value) => obj.SetValue(VerticalOrientationMarginProperty, value);
+		public static void SetVerticalOrientationMargin(DependencyObject @object, Thickness value) => @object.SetValue(VerticalOrientationMarginProperty, value);
 
 		/// <summary>
 		/// Gets the identifier for the VerticalOrientationMargin dependency property.
