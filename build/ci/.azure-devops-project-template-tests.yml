@@ -70,6 +70,9 @@ jobs:
     inputs:
       artifactName: private-templates
 
+  # downgrade global.json to .NET 7.0.102 for the Windows build only
+  - template: templates/globaljson-downgrade.yml
+
   - template: templates/gitversion.yml
 
   - template: templates/dotnet-mobile-install-windows.yml
