@@ -70,7 +70,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// </summary>
 		private readonly bool _isLazyVisualStateManagerEnabled = true;
 
-		private static DateTime _buildTasksBuildDate = File.GetLastWriteTime(new Uri(typeof(XamlFileGenerator).Assembly.Location).LocalPath);
 		private INamedTypeSymbol[]? _ambientGlobalResources;
 		private readonly bool _isUiAutomationMappingEnabled;
 
