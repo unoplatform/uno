@@ -147,15 +147,20 @@ public partial class Given_MediaPlayerElement
 				);
 
 		// step 2: Test Stop
+#if UAP10_0_18362
+		mpe.MediaPlayer.Pause();
+		mpe.MediaPlayer.Source = null;
+#else
 		mpe.MediaPlayer.Stop();
-		//Assert.AreEqual(mpe.MediaPlayer.PlaybackSession.Position, TimeSpan.Zero);
-		//await WindowHelper.WaitFor(() => mpe.MediaPlayer.PlaybackSession.Position == TimeSpan.Zero, 3000, "Timeout waiting for the playback session state changing to playing.")
+#endif
 		await WindowHelper.WaitFor(
 					condition: () => mpe.MediaPlayer.PlaybackSession.PlaybackState != MediaPlaybackState.Playing,
 					timeoutMS: 3000,
 					message: "Timeout waiting for the playback session state changing to Stop."
 				);
-
+#if UAP10_0_18362
+		mpe.MediaPlayer.Source = Windows.Media.Core.MediaSource.CreateFromUri(TestVideoUrl);
+#endif
 		// step 3: Test Pause
 		mpe.MediaPlayer.Play();
 		await Task.Delay(1000);
