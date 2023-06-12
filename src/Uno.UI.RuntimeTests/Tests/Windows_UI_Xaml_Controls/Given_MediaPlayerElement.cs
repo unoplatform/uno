@@ -76,37 +76,49 @@ public partial class Given_MediaPlayerElement
 	[TestMethod]
 	public void When_MediaPlayerElement_Not_SetSource_Property_Value()
 	{
-		var mpe = new MediaPlayerElement();
-		mpe.SetMediaPlayer(new Windows.Media.Playback.MediaPlayer());
-		Assert.IsNull(mpe.Source);
+		var sut = new MediaPlayerElement();
+		sut.SetMediaPlayer(new Windows.Media.Playback.MediaPlayer());
+		Assert.IsNull(sut.Source);
 	}
 
 	[TestMethod]
 	public async Task When_MediaPlayerElement_Added_In_Opening()
 	{
-		MediaPlayerElement mpe = await StartPlayerAsync();
+		var sut = new MediaPlayerElement();
+		sut.Source = Windows.Media.Core.MediaSource.CreateFromUri(TestVideoUrl);
+		sut.AutoPlay = true;
 
-		mpe.MediaPlayer.Play();
+		//Load Player
+		WindowHelper.WindowContent = sut;
+		await WindowHelper.WaitForLoaded(sut);
 
-		var mediaTransportControls = mpe.TransportControls as MediaTransportControls;
+		sut.MediaPlayer.Play();
+
+		var mediaTransportControls = sut.TransportControls as MediaTransportControls;
 		Assert.IsNotNull(mediaTransportControls);
 
-		var mediaPlayer = mpe.MediaPlayer as Windows.Media.Playback.MediaPlayer;
+		var mediaPlayer = sut.MediaPlayer as Windows.Media.Playback.MediaPlayer;
 		Assert.IsNotNull(mediaPlayer);
 	}
 
 	[TestMethod]
 	public async Task When_MediaPlayerElement_SetIsFullWindow_Check_Fullscreen()
 	{
+		var sut = new MediaPlayerElement();
+		sut.Source = Windows.Media.Core.MediaSource.CreateFromUri(TestVideoUrl);
+		sut.AutoPlay = true;
 
-		MediaPlayerElement mpe = await StartPlayerAsync();
+		//Load Player
+		WindowHelper.WindowContent = sut;
+		await WindowHelper.WaitForLoaded(sut);
+
 		try
 		{
 			var root = (WindowHelper.XamlRoot?.Content as FrameworkElement)!;
 			var mpp = (FrameworkElement)root.FindName("MediaPlayerPresenter");
 			var currentWidth = mpp.ActualWidth;
 
-			mpe.IsFullWindow = true;
+			sut.IsFullWindow = true;
 			await Task.Delay(3000);
 
 			if (mpp != null)
@@ -116,18 +128,24 @@ public partial class Given_MediaPlayerElement
 		}
 		finally
 		{
-			mpe.IsFullWindow = false;
+			sut.IsFullWindow = false;
 		}
 	}
 
 	[TestMethod]
 	public async Task When_MediaPlayerElement_SetSource_Check_Play()
 	{
-		MediaPlayerElement mpe = await StartPlayerAsync();
+		var sut = new MediaPlayerElement();
+		sut.Source = Windows.Media.Core.MediaSource.CreateFromUri(TestVideoUrl);
+		sut.AutoPlay = true;
 
-		mpe.MediaPlayer.Play();
+		//Load Player
+		WindowHelper.WindowContent = sut;
+		await WindowHelper.WaitForLoaded(sut);
+
+		sut.MediaPlayer.Play();
 		await WindowHelper.WaitFor(
-				condition: () => mpe.MediaPlayer.PlaybackSession.PlaybackState == MediaPlaybackState.Playing,
+				condition: () => sut.MediaPlayer.PlaybackSession.PlaybackState == MediaPlaybackState.Playing,
 				timeoutMS: 3000,
 				message: "Timeout waiting for the playback session state changing to Play."
 			);
@@ -136,39 +154,45 @@ public partial class Given_MediaPlayerElement
 	[TestMethod]
 	public async Task When_MediaPlayerElement_SetSource_Check_PausePlayStop()
 	{
-		MediaPlayerElement mpe = await StartPlayerAsync();
+		var sut = new MediaPlayerElement();
+		sut.Source = Windows.Media.Core.MediaSource.CreateFromUri(TestVideoUrl);
+		sut.AutoPlay = true;
 
-		mpe.MediaPlayer.Play();
+		//Load Player
+		WindowHelper.WindowContent = sut;
+		await WindowHelper.WaitForLoaded(sut);
+
+		sut.MediaPlayer.Play();
 
 		await WindowHelper.WaitFor(
-					condition: () => mpe.MediaPlayer.PlaybackSession.PlaybackState == MediaPlaybackState.Playing,
+					condition: () => sut.MediaPlayer.PlaybackSession.PlaybackState == MediaPlaybackState.Playing,
 					timeoutMS: 3000,
 					message: "Timeout waiting for the playback session state changing to playing."
 				);
 
 		// step 2: Test Stop
 #if UAP10_0_18362
-		mpe.MediaPlayer.Pause();
-		mpe.MediaPlayer.Source = null;
+		sut.MediaPlayer.Pause();
+		sut.MediaPlayer.Source = null;
 #else
-		mpe.MediaPlayer.Stop();
+		sut.MediaPlayer.Stop();
 #endif
 		await WindowHelper.WaitFor(
-					condition: () => mpe.MediaPlayer.PlaybackSession.PlaybackState != MediaPlaybackState.Playing,
+					condition: () => sut.MediaPlayer.PlaybackSession.PlaybackState != MediaPlaybackState.Playing,
 					timeoutMS: 3000,
 					message: "Timeout waiting for the playback session state changing to Stop."
 				);
 #if UAP10_0_18362
-		mpe.MediaPlayer.Source = Windows.Media.Core.MediaSource.CreateFromUri(TestVideoUrl);
+		sut.MediaPlayer.Source = Windows.Media.Core.MediaSource.CreateFromUri(TestVideoUrl);
 #endif
 		// step 3: Test Pause
-		mpe.MediaPlayer.Play();
+		sut.MediaPlayer.Play();
 		await Task.Delay(1000);
 
-		mpe.MediaPlayer.Pause();
-		var pausePosition = mpe.MediaPlayer.PlaybackSession.Position;
+		sut.MediaPlayer.Pause();
+		var pausePosition = sut.MediaPlayer.PlaybackSession.Position;
 		await WindowHelper.WaitFor(
-			condition: () => mpe.MediaPlayer.PlaybackSession.PlaybackState == MediaPlaybackState.Paused,
+			condition: () => sut.MediaPlayer.PlaybackSession.PlaybackState == MediaPlaybackState.Paused,
 			timeoutMS: 3000,
 			message: "Timeout waiting for the playback session state changing to Pause."
 		);
@@ -177,26 +201,21 @@ public partial class Given_MediaPlayerElement
 	[TestMethod]
 	public async Task When_MediaPlayerElement_Check_TransportControlvisibility()
 	{
-		MediaPlayerElement mpe = await StartPlayerAsync();
+		var sut = new MediaPlayerElement();
+		sut.Source = Windows.Media.Core.MediaSource.CreateFromUri(TestVideoUrl);
+		sut.AutoPlay = true;
+
+		//Load Player
+		WindowHelper.WindowContent = sut;
+		await WindowHelper.WaitForLoaded(sut);
+
 		var root = (WindowHelper.XamlRoot?.Content as FrameworkElement)!;
 		var tcp = (FrameworkElement)root.FindName("TransportControlsPresenter");
 
 		Assert.AreEqual(tcp.Visibility, Visibility.Collapsed);
-		mpe.AreTransportControlsEnabled = true;
+		sut.AreTransportControlsEnabled = true;
 		Assert.AreEqual(tcp.Visibility, Visibility.Visible);
-		mpe.AreTransportControlsEnabled = false;
+		sut.AreTransportControlsEnabled = false;
 		Assert.AreEqual(tcp.Visibility, Visibility.Collapsed);
-	}
-
-	public async Task<MediaPlayerElement> StartPlayerAsync()
-	{
-		var mpe = new MediaPlayerElement();
-		mpe.Source = Windows.Media.Core.MediaSource.CreateFromUri(TestVideoUrl);
-		mpe.AutoPlay = true;
-
-		//Load Player
-		WindowHelper.WindowContent = mpe;
-		await WindowHelper.WaitForLoaded(mpe);
-		return mpe;
 	}
 }
