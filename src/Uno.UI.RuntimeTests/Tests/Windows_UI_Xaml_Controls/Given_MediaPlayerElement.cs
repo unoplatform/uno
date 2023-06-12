@@ -127,7 +127,7 @@ public partial class Given_MediaPlayerElement
 
 		mpe.MediaPlayer.Play();
 		await WindowHelper.WaitFor(
-				condition: () => mpe.MediaPlayer.PlaybackSession.IsPlaying,
+				condition: () => mpe.MediaPlayer.PlaybackSession.PlaybackState == MediaPlaybackState.Playing,
 				timeoutMS: 3000,
 				message: "Timeout waiting for the playback session state changing to Play."
 			);
@@ -141,7 +141,7 @@ public partial class Given_MediaPlayerElement
 		mpe.MediaPlayer.Play();
 
 		await WindowHelper.WaitFor(
-					condition: () => mpe.MediaPlayer.PlaybackSession.IsPlaying,
+					condition: () => mpe.MediaPlayer.PlaybackSession.PlaybackState == MediaPlaybackState.Playing,
 					timeoutMS: 3000,
 					message: "Timeout waiting for the playback session state changing to playing."
 				);
@@ -151,7 +151,7 @@ public partial class Given_MediaPlayerElement
 		//Assert.AreEqual(mpe.MediaPlayer.PlaybackSession.Position, TimeSpan.Zero);
 		//await WindowHelper.WaitFor(() => mpe.MediaPlayer.PlaybackSession.Position == TimeSpan.Zero, 3000, "Timeout waiting for the playback session state changing to playing.")
 		await WindowHelper.WaitFor(
-					condition: () => !mpe.MediaPlayer.PlaybackSession.IsPlaying,
+					condition: () => mpe.MediaPlayer.PlaybackSession.PlaybackState != MediaPlaybackState.Playing,
 					timeoutMS: 3000,
 					message: "Timeout waiting for the playback session state changing to Stop."
 				);
