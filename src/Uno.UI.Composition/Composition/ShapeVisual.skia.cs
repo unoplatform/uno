@@ -5,12 +5,13 @@ using Windows.Foundation;
 using SkiaSharp;
 using Uno.Extensions;
 using System.Xml.Xsl;
+using Uno.UI.Composition;
 
 namespace Windows.UI.Composition;
 
 public partial class ShapeVisual
 {
-	internal override void Render(SKSurface surface)
+	internal override void Render(in DrawingSession parentSession)
 	{
 		if (this is { Opacity: 0 } or { IsVisible: false })
 		{
@@ -22,7 +23,7 @@ public partial class ShapeVisual
 		// WARNING: As we are overriding the "Render" method, at this point we are still in the parent's coordinate system
 		if (_shapes is { Count: not 0 } shapes)
 		{
-			PrepareSurfaceForShapesDrawing(surface);
+			using var session = BeginShapesDrawing(in parentSession);
 
 			for (var i = 0; i < shapes.Count; i++)
 			{
@@ -31,76 +32,74 @@ public partial class ShapeVisual
 
 				if (shapeTransform.IsIdentity)
 				{
-					shape.Render(surface);
+					shape.Draw(in session);
 				}
 				else
 				{
 					var shapeTransformMatrix = shapeTransform.ToSKMatrix();
 
-					surface.Canvas.Save();
-					surface.Canvas.Concat(ref shapeTransformMatrix);
+					session.Surface.Canvas.Save();
+					session.Surface.Canvas.Concat(ref shapeTransformMatrix);
 
-					shape.Render(surface);
+					shape.Draw(in session);
 
-					surface.Canvas.Restore();
+					session.Surface.Canvas.Restore();
 				}
 			}
-
-			CleanupSurfaceAfterShapesDrawing(surface);
 		}
 
 		// Second we render the children
-		base.Render(surface);
+		base.Render(in parentSession);
 	}
 
 	/// <inheritdoc />
-	private protected override void Draw(SKSurface surface)
+	private protected override void Draw(in DrawingSession session)
 	{
 		if (ViewBox is { } viewBox)
 		{
-			surface.Canvas.ClipRect(new SKRect(viewBox.Offset.X, viewBox.Offset.Y, viewBox.Offset.X + viewBox.Size.X, viewBox.Offset.Y + viewBox.Size.Y));
+			session.Surface.Canvas.ClipRect(new SKRect(viewBox.Offset.X, viewBox.Offset.Y, viewBox.Offset.X + viewBox.Size.X, viewBox.Offset.Y + viewBox.Size.Y));
 		}
 
-		base.Draw(surface);
+		base.Draw(in session);
 	}
 
-	private void PrepareSurfaceForShapesDrawing(SKSurface surface)
+	private DrawingSession BeginShapesDrawing(in DrawingSession parentSession)
 	{
-		surface.Canvas.Save();
+		parentSession.Surface.Canvas.Save();
 
 		// Set the position of the visual on the canvas (i.e. change coordinates system to the "XAML element" one)
-		surface.Canvas.Translate(Offset.X + AnchorPoint.X, Offset.Y + AnchorPoint.Y);
+		parentSession.Surface.Canvas.Translate(Offset.X + AnchorPoint.X, Offset.Y + AnchorPoint.Y);
 
-		var viewBox = ViewBox;
 		var transform = this.GetTransform().ToSKMatrix();
 
-		if (viewBox is not null)
+		if (ViewBox is { } viewBox)
 		{
 			// We apply the transformed viewbox clipping
 			if (transform.IsIdentity)
 			{
-				surface.Canvas.ClipRect(new SKRect(viewBox.Offset.X, viewBox.Offset.Y, viewBox.Offset.X + viewBox.Size.X, viewBox.Offset.Y + viewBox.Size.Y));
+				parentSession.Surface.Canvas.ClipRect(new SKRect(viewBox.Offset.X, viewBox.Offset.Y, viewBox.Offset.X + viewBox.Size.X, viewBox.Offset.Y + viewBox.Size.Y));
 			}
 			else
 			{
 				var shape = new SKPath();
 				shape.AddRect(new SKRect(0, 0, viewBox.Offset.X + viewBox.Size.X, viewBox.Offset.Y + viewBox.Size.Y));
 				shape.Transform(transform);
-				surface.Canvas.ClipPath(shape, antialias: true);
+				parentSession.Surface.Canvas.ClipPath(shape, antialias: true);
 			}
 		}
 
 		if (!transform.IsIdentity)
 		{
 			// Applied rending transformation matrix (i.e. change coordinates system to the "rendering" one)
-			surface.Canvas.Concat(ref transform);
+			parentSession.Surface.Canvas.Concat(ref transform);
 		}
 
-		Clip?.Apply(surface);
-	}
+		Clip?.Apply(parentSession.Surface);
 
-	private void CleanupSurfaceAfterShapesDrawing(SKSurface surface)
-	{
-		surface.Canvas.Restore();
+		var session = parentSession; // Creates a new session (clone the struct)
+
+		DrawingSession.PushOpacity(ref session, Opacity);
+
+		return session;
 	}
 }

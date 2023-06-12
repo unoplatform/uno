@@ -1,6 +1,7 @@
 #nullable enable
 
 using SkiaSharp;
+using Uno.UI.Composition;
 
 namespace Windows.UI.Composition
 {
@@ -22,13 +23,13 @@ namespace Windows.UI.Composition
 			Brush?.UpdatePaint(_paint, new SKRect(left: 0, top: 0, right: Size.X, bottom: Size.Y));
 		}
 
-		private protected override void Draw(SKSurface surface)
+		private protected override void Draw(in DrawingSession session)
 		{
-			base.Draw(surface);
+			base.Draw(in session);
 
-			_paint.ColorFilter = Compositor.CurrentFilter.OpacityColorFilter;
+			_paint.ColorFilter = session.Filters.OpacityColorFilter;
 
-			surface.Canvas.DrawRect(
+			session.Surface.Canvas.DrawRect(
 				new SKRect(left: 0, top: 0, right: Size.X, bottom: Size.Y),
 				_paint
 			);

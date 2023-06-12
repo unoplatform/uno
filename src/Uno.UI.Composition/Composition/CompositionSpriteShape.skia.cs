@@ -1,6 +1,7 @@
 #nullable enable
 
 using SkiaSharp;
+using Uno.UI.Composition;
 
 namespace Windows.UI.Composition
 {
@@ -9,23 +10,23 @@ namespace Windows.UI.Composition
 		private SKPaint? _strokePaint;
 		private SKPaint? _fillPaint;
 
-		internal override void Render(SKSurface surface)
+		internal override void Draw(in DrawingSession session)
 		{
 			if (Geometry?.BuildGeometry() is SkiaGeometrySource2D { Geometry: { } geometry })
 			{
 				if (FillBrush is { } fill)
 				{
-					var fillPaint = TryCreateAndClearFillPaint();
+					var fillPaint = TryCreateAndClearFillPaint(in session);
 
 					fill.UpdatePaint(fillPaint, geometry.Bounds);
 
-					surface.Canvas.DrawPath(geometry, fillPaint);
+					session.Surface.Canvas.DrawPath(geometry, fillPaint);
 				}
 
 				if (StrokeBrush is { } stroke && StrokeThickness > 0)
 				{
-					var fillPaint = TryCreateAndClearFillPaint();
-					var strokePaint = TryCreateAndClearStrokePaint();
+					var fillPaint = TryCreateAndClearFillPaint(in session);
+					var strokePaint = TryCreateAndClearStrokePaint(in session);
 
 					// Set stroke thickness
 					strokePaint.StrokeWidth = StrokeThickness;
@@ -38,16 +39,18 @@ namespace Windows.UI.Composition
 
 					stroke.UpdatePaint(fillPaint, strokeGeometry.Bounds);
 
-					surface.Canvas.DrawPath(strokeGeometry, fillPaint);
+					session.Surface.Canvas.DrawPath(strokeGeometry, fillPaint);
 				}
 			}
 		}
 
-		private SKPaint TryCreateAndClearStrokePaint() => TryCreateAndClearPaint(ref _strokePaint, true);
+		private SKPaint TryCreateAndClearStrokePaint(in DrawingSession session) 
+			=> TryCreateAndClearPaint(in session, ref _strokePaint, true);
 
-		private SKPaint TryCreateAndClearFillPaint() => TryCreateAndClearPaint(ref _fillPaint, false);
+		private SKPaint TryCreateAndClearFillPaint(in DrawingSession session) 
+			=> TryCreateAndClearPaint(in session, ref _fillPaint, false);
 
-		private SKPaint TryCreateAndClearPaint(ref SKPaint? paint, bool isStroke)
+		private static SKPaint TryCreateAndClearPaint(in DrawingSession session, ref SKPaint? paint, bool isStroke)
 		{
 			if (paint == null)
 			{
@@ -70,7 +73,7 @@ namespace Windows.UI.Composition
 				}
 			}
 
-			paint.ColorFilter = Compositor.CurrentFilter.OpacityColorFilter;
+			paint.ColorFilter = session.Filters.OpacityColorFilter;
 
 			return paint;
 		}

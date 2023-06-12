@@ -12,6 +12,7 @@ using Windows.Storage;
 using Windows.UI.Text;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
+using Uno.UI.Composition;
 
 #nullable enable
 
@@ -26,9 +27,9 @@ namespace Windows.UI.Composition
 			_owner = owner;
 		}
 
-		private protected override void Draw(SKSurface surface)
+		private protected override void Draw(in DrawingSession session)
 		{
-			_owner.Inlines.Render(surface, Compositor);
+			_owner.Inlines.Draw(in session);
 		}
 	}
 }
