@@ -2,6 +2,7 @@
 using System;
 using System.Runtime.InteropServices;
 using Windows.Foundation;
+using Windows.Graphics.Display;
 using Windows.UI.Composition;
 using Uno.UI.Xaml.Media;
 using SkiaSharp;
@@ -42,18 +43,21 @@ namespace Windows.UI.Xaml.Media.Imaging
 			var renderSize = element.RenderSize;
 			var visual = element.Visual;
 
-			if (element.RenderSize is { IsEmpty: true }
-				|| element.RenderSize is { Width: 0, Height: 0 })
+			if (renderSize is { IsEmpty: true } or { Width: 0, Height: 0 })
 			{
 				return (0, 0, 0);
 			}
-			var (width, height) = ((int)renderSize.Width, (int)renderSize.Height);
+
+			// Note: RenderTargetBitmap returns images with the current DPI (a 50x50 Border rendered on WinUI will return a 75x75 image)
+			var dpi = DisplayInformation.GetForCurrentView()?.RawPixelsPerViewPixel ?? 1;
+			var (width, height) = ((int)(renderSize.Width * dpi), (int)(renderSize.Height * dpi));
 			var info = new SKImageInfo(width, height, SKColorType.Bgra8888, SKAlphaType.Premul);
 			using var surface = SKSurface.Create(info);
 			//Ensure Clear
 			var canvas = surface.Canvas;
 			canvas.Clear(SKColors.Transparent);
-			visual.RenderAtOrigin(surface);
+			canvas.Scale((float)dpi);
+			visual.Render(surface, ignoreLocation: true);
 
 			var img = surface.Snapshot();
 
