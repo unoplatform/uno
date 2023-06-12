@@ -11,6 +11,7 @@ using Windows.Media.Core;
 using Windows.Media.Playback;
 using Windows.Storage;
 using Windows.Storage.Streams;
+using Windows.UI.Xaml.Controls.Maps;
 
 [assembly: ApiExtension(typeof(IMediaPlayerExtension), typeof(Uno.UI.Media.MediaPlayerExtension))]
 
@@ -321,6 +322,7 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 
 		if (_player is not null && _uri is not null)
 		{
+			_player.AutoPlay = _owner.AutoPlay;
 			_player.Source = _uri.OriginalString;
 		}
 		else
@@ -463,7 +465,7 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 			this.Log().Debug($"OnStatusChanged: {args}");
 		}
 
-		if ((MediaPlaybackState)args == MediaPlaybackState.Playing)
+		if ((MediaPlaybackState)args == MediaPlaybackState.Playing && _isPlayerPrepared)
 		{
 			_player?.Play();
 		}
@@ -498,9 +500,12 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 			{
 				if (_isPlayRequested)
 				{
-					_player.Play();
-					_owner.PlaybackSession.PlaybackState = MediaPlaybackState.Playing;
+					if (!_player.IsAutoPlayRequested)
+					{
+						_player.Play();
+					}
 				}
+				_owner.PlaybackSession.PlaybackState = MediaPlaybackState.Playing;
 			}
 
 			_isPlayerPrepared = true;

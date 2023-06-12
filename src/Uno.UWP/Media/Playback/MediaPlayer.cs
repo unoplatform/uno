@@ -82,12 +82,12 @@ namespace Windows.Media.Playback
 
 		#endregion
 
-		public MediaPlayer()
+		public MediaPlayer(bool autoPlay = false)
 		{
+			AutoPlay = autoPlay;
 			PlaybackSession = new MediaPlaybackSession(this);
 			Initialize();
 		}
-
 		internal void SetOption(string name, object value)
 		{
 			OnOptionChanged(name, value);

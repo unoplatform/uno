@@ -351,19 +351,20 @@ namespace Windows.UI.Xaml.Controls
 		{
 			base.OnApplyTemplate();
 
+			if (MediaPlayer == null)
+			{
+				MediaPlayer = new Windows.Media.Playback.MediaPlayer(AutoPlay);
+			}
+
 			_layoutRoot = this.GetTemplateChild(LayoutRootName) as Grid;
 			_posterImage = this.GetTemplateChild(PosterImageName) as Image;
 			_mediaPlayerPresenter = this.GetTemplateChild(MediaPlayerPresenterName) as MediaPlayerPresenter;
+			_mediaPlayerPresenter?.ApplyStretch();
 
 			_transportControlsPresenter = this.GetTemplateChild(TransportControlsPresenterName) as ContentPresenter;
 			_transportControlsPresenter.Content = TransportControls;
 			TransportControls.ApplyTemplate();
 
-			if (MediaPlayer == null)
-			{
-				MediaPlayer = new Windows.Media.Playback.MediaPlayer();
-				_mediaPlayerPresenter?.ApplyStretch();
-			}
 
 			if (!IsLoaded && MediaPlayer.PlaybackSession.PlaybackState == MediaPlaybackState.None)
 			{

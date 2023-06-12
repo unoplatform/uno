@@ -12,6 +12,7 @@ using System.Globalization;
 using Windows.UI.Xaml.Controls.Maps;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Notifications;
+using System.Numerics;
 
 namespace Uno.UI.Media;
 
@@ -28,6 +29,7 @@ internal partial class HtmlMediaPlayer : Border
 	private UIElement _activeElement;
 	private string _activeElementName;
 	public bool IsPause;
+	public bool IsAutoPlayRequested;
 
 	public event EventHandler<object> OnSourceLoaded;
 	public event EventHandler<object> OnStatusChanged;
@@ -314,10 +316,10 @@ internal partial class HtmlMediaPlayer : Border
 
 	private void OnHtmlMetadataLoaded(object sender, EventArgs e)
 	{
-		if (_activeElement != null)
-		{
-			Duration = NativeMethods.GetDuration(_activeElement.HtmlId);
-		}
+		//if (_activeElement != null)
+		//{
+		//	Duration = NativeMethods.GetDuration(_activeElement.HtmlId);
+		//}
 		OnMetadataLoaded?.Invoke(this, Duration);
 	}
 
@@ -339,12 +341,14 @@ internal partial class HtmlMediaPlayer : Border
 			this.Log().Debug($"{_activeElementName} source loaded: [{Source}]");
 		}
 
+		TimeUpdated -= OnHtmlTimeUpdated;
 		TimeUpdated += OnHtmlTimeUpdated;
 		if (_activeElement != null)
 		{
-			Duration = NativeMethods.GetDuration(_activeElement.HtmlId);
+			Duration = NativeMethods.GetDuration(_htmlVideo.HtmlId);
 		}
 		OnSourceLoaded?.Invoke(this, EventArgs.Empty);
+		IsAutoPlayRequested = false;
 	}
 
 	private void OnHtmlStatusPlayChanged(object sender, EventArgs e)
@@ -370,7 +374,7 @@ internal partial class HtmlMediaPlayer : Border
 
 	private void OnHtmlSourceFailed(object sender, HtmlCustomEventArgs e)
 	{
-		TimeUpdated += OnHtmlTimeUpdated;
+		TimeUpdated -= OnHtmlTimeUpdated;
 		if (_activeElement != null)
 		{
 			_activeElement.SetCssStyle("visibility", "hidden");
@@ -406,10 +410,12 @@ internal partial class HtmlMediaPlayer : Border
 									? player._htmlAudio
 									: default);
 			player._activeElementName = player.IsVideo ? "Video" : player.IsAudio ? "Audio" : "";
-
 			if (player._activeElement != null)
 			{
-
+				if (player.AutoPlay)
+				{
+					player._activeElement.SetHtmlAttribute("autoplay", "autoplay");
+				}
 				player._activeElement.SetHtmlAttribute("src", encodedSource);
 				player._activeElement.SetCssStyle("visibility", "visible");
 
@@ -438,12 +444,106 @@ internal partial class HtmlMediaPlayer : Border
 	{
 		if (dependencyobject is HtmlMediaPlayer player)
 		{
-			if (player._activeElement != null)
-			{
-				NativeMethods.SetAutoPlay(player._activeElement.HtmlId, (bool)args.NewValue);
-			}
+			player.IsAutoPlayRequested = (bool)args.NewValue;
+			//if (player._activeElement != null)
+			//{
+
+			//	if (player._htmlVideo != null && player.IsAutoPlayRequested)
+			//	{
+			//		if (!string.IsNullOrEmpty(player._htmlVideo.GetHtmlAttribute("autoplay")))
+			//		{
+			//			player._htmlVideo.RemoveAttribute("autoplay");
+			//		}
+			//		player._htmlVideo.SetHtmlAttribute("autoplay", "autoplay");
+			//		player._htmlVideo.SetCssStyle("visibility", "visible");
+			//	}
+			//	else
+			//	{
+			//		if (!string.IsNullOrEmpty(player._htmlVideo.GetHtmlAttribute("autoplay")))
+			//		{
+			//			player._htmlVideo.RemoveAttribute("autoplay");
+			//			player._htmlVideo.SetCssStyle("visibility", "hidden");
+			//		}
+			//	}
+
+			//	if (player._htmlAudio != null && player.IsAutoPlayRequested)
+			//	{
+			//		if (!string.IsNullOrEmpty(player._htmlAudio.GetHtmlAttribute("autoplay")))
+			//		{
+			//			player._htmlAudio.RemoveAttribute("autoplay");
+			//		}
+			//		player._htmlAudio.SetHtmlAttribute("autoplay", "autoplay");
+			//		player._htmlAudio.SetCssStyle("visibility", "visible");
+			//	}
+			//	else
+			//	{
+			//		if (!string.IsNullOrEmpty(player._htmlAudio.GetHtmlAttribute("autoplay")))
+			//		{
+			//			player._htmlAudio.RemoveAttribute("autoplay");
+			//			player._htmlAudio.SetCssStyle("visibility", "hidden");
+			//		}
+			//	}
+			//}
 		}
 	}
+	//private static void OnAutoPlayChanged(DependencyObject dependencyobject, DependencyPropertyChangedEventArgs args)
+	//{
+	//	if (dependencyobject is HtmlMediaPlayer player)
+	//	{
+	//		player.IsAutoPlayRequested = (bool)args.NewValue;
+
+	//		if (player._htmlVideo != null && player.IsAutoPlayRequested)
+	//		{
+	//			if (!string.IsNullOrEmpty(player._htmlVideo.GetHtmlAttribute("autoplay")))
+	//			{
+	//				player._htmlVideo.RemoveAttribute("autoplay");
+	//			}
+	//			player._htmlVideo.SetHtmlAttribute("autoplay", "autoplay");
+	//			player._htmlVideo.SetCssStyle("visibility", "visible");
+	//		}
+	//		else
+	//		{
+	//			if (!string.IsNullOrEmpty(player._htmlVideo.GetHtmlAttribute("autoplay")))
+	//			{
+	//				player._htmlVideo.RemoveAttribute("autoplay");
+	//				player._htmlVideo.SetCssStyle("visibility", "hidden");
+	//			}
+	//		}
+	//		if (player._htmlAudio != null && player.IsAutoPlayRequested)
+	//		{
+	//			if (!string.IsNullOrEmpty(player._htmlAudio.GetHtmlAttribute("autoplay")))
+	//			{
+	//				player._htmlAudio.RemoveAttribute("autoplay");
+	//			}
+	//			player._htmlAudio.SetHtmlAttribute("autoplay", "autoplay");
+	//			player._htmlAudio.SetCssStyle("visibility", "visible");
+	//		}
+	//		else
+	//		{
+	//			if (!string.IsNullOrEmpty(player._htmlAudio.GetHtmlAttribute("autoplay")))
+	//			{
+	//				player._htmlAudio.RemoveAttribute("autoplay");
+	//				player._htmlAudio.SetCssStyle("visibility", "hidden");
+	//			}
+	//		}
+	//		//NativeMethods.SetAutoPlay(player._activeElement.HtmlId, (bool)args.NewValue);
+	//		//if (player.AutoPlay)
+	//		//{
+	//		//	player._htmlVideo.SetHtmlAttribute("autoplay", "autoplay");
+	//		//}
+
+	//		//if (player._activeElement != null/* && !player.IsAutoPlay*/)
+	//		//{
+
+	//		//	if (player._isPlaying && !(bool)args.NewValue)
+	//		//	{
+	//		//		player._isPlaying = false;
+	//		//		player.IsPause = true;
+	//		//		NativeMethods.Pause(player._activeElement.HtmlId);
+	//		//	}
+	//		//}
+	//	}
+	//}
 
 	public static DependencyProperty AreTransportControlsEnabledProperty { get; } = DependencyProperty.Register(
 		"AreTransportControlsEnabled", typeof(bool), typeof(HtmlMediaPlayer), new PropertyMetadata(true,
@@ -566,14 +666,14 @@ internal partial class HtmlMediaPlayer : Border
 
 	public void Play()
 	{
-		TimeUpdated -= OnHtmlTimeUpdated;
-		TimeUpdated += OnHtmlTimeUpdated;
 		if (this.Log().IsEnabled(LogLevel.Debug))
 		{
 			this.Log().Debug($"Play()");
 		}
-		if (_activeElement != null && !_isPlaying)
+		if (_activeElement != null && !_isPlaying && !IsAutoPlayRequested)
 		{
+			TimeUpdated -= OnHtmlTimeUpdated;
+			TimeUpdated += OnHtmlTimeUpdated;
 			IsPause = false;
 			_isPlaying = true;
 			NativeMethods.Play(_activeElement.HtmlId);
