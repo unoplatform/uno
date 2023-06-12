@@ -86,7 +86,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[RunsOnUIThread]
 		[RequiresFullWindow]
 		[Ignore("Failing on CI due to animations")]
-#if __MACOS__
+#if false && __MACOS__
 		[Ignore("Currently fails on macOS, part of #9282 epic")]
 #endif
 		public async Task MUX_When_MinimalHierarchicalAndSelectItem_Then_RemoveOverState()
@@ -105,8 +105,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var SUT = new Microsoft.UI.Xaml.Controls.NavigationView
 			{
-				PaneDisplayMode = Microsoft.UI.Xaml.Controls.NavigationViewPaneDisplayMode.LeftMinimal, 
-				IsPaneToggleButtonVisible = true, 
+				PaneDisplayMode = Microsoft.UI.Xaml.Controls.NavigationViewPaneDisplayMode.LeftMinimal,
+				IsPaneToggleButtonVisible = true,
 				IsBackButtonVisible = Microsoft.UI.Xaml.Controls.NavigationViewBackButtonVisible.Collapsed,
 				IsPaneOpen = false
 			};
@@ -121,7 +121,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var item7 = await Select(0, 7);
 			var item5 = await Select(0, 5);
 
-			
 			// Open the pane and expend the group 0 for screenshot
 			await Expend(0);
 

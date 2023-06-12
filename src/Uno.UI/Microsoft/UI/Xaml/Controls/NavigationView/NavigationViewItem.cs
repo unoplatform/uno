@@ -1106,7 +1106,9 @@ namespace Microsoft.UI.Xaml.Controls
 			_uno_pointerDeferring?.Stop();
 
 			m_isPressed = false;
-#if false	// UNO specific: This seems to be only for Animated icons (https://github.com/microsoft/microsoft-ui-xaml/commit/c27a05caa0eeebaacdbd2106aebd12a6fc3dd912)
+#if false
+			// UNO specific: This seems to be only for Animated icons (https://github.com/microsoft/microsoft-ui-xaml/commit/c27a05caa0eeebaacdbd2106aebd12a6fc3dd912)
+
 			// which are not supported yet and causes some trouble with current pointers and lifecycle implementation when used with a minimal NavView
 			// (cf. https://github.com/unoplatform/uno/issues/7327 and https://github.com/unoplatform/uno/issues/11610)
 			// Note: That check has been modified in the WinUI repo to exclude the case where the pointer is touch https://github.com/microsoft/microsoft-ui-xaml/commit/18a981d03ec46763872c9b76bfc2351dc93ab197
@@ -1125,6 +1127,7 @@ namespace Microsoft.UI.Xaml.Controls
 			UpdateVisualState(true);
 		}
 
+#if false // Not used in Uno
 		private bool IsOutOfControlBounds(Point point)
 		{
 			// This is a conservative check. It is okay to say we are
@@ -1138,6 +1141,7 @@ namespace Microsoft.UI.Xaml.Controls
 				point.Y < tolerance ||
 				point.Y > actualHeight - tolerance;
 		}
+#endif
 
 		private void ProcessPointerOver(PointerRoutedEventArgs args)
 		{
