@@ -227,7 +227,7 @@ public class Finger : IInjectedPointer, IDisposable
 }
 
 #if !WINDOWS_UWP
-public class Mouse
+public class Mouse : IInjectedPointer, IDisposable
 {
 	private readonly InputInjector _input;
 
@@ -236,19 +236,16 @@ public class Mouse
 		_input = input;
 	}
 
+	private Point Current => _input.Mouse.Position;
+
+	public void Press(Point position)
+		=> Inject(GetMoveTo(position.X, position.Y, null).Concat(new[] { GetPress() }));
+
 	public void Press()
-		=> Inject(new InjectedInputMouseInfo()
-		{
-			TimeOffsetInMilliseconds = 1,
-			MouseOptions = InjectedInputMouseOptions.LeftDown,
-		});
+		=> Inject(GetPress());
 
 	public void Release()
-		=> Inject(new InjectedInputMouseInfo()
-		{
-			TimeOffsetInMilliseconds = 1,
-			MouseOptions = InjectedInputMouseOptions.LeftUp,
-		});
+		=> Inject(GetRelease());
 
 	public void ReleaseAny()
 	{
@@ -277,7 +274,7 @@ public class Mouse
 
 		if (options != default)
 		{
-			Inject(new InjectedInputMouseInfo()
+			Inject(new InjectedInputMouseInfo
 			{
 				TimeOffsetInMilliseconds = 1,
 				MouseOptions = options
@@ -285,30 +282,27 @@ public class Mouse
 		}
 	}
 
-	public void MoveBy(int deltaX, int deltaY)
-		=> Inject(MoveByCore(deltaX, deltaY));
+	public void MoveBy(double deltaX, double deltaY)
+		=> Inject(GetMoveBy(deltaX, deltaY));
 
-	public void MoveTo(double deltaX, double deltaY, int? steps = null)
-		=> Inject(MoveToCore(deltaX, deltaY, steps));
+	void IInjectedPointer.MoveTo(Point position) => MoveTo(position);
+	public void MoveTo(Point position, uint? steps = null)
+		=> Inject(GetMoveTo(position.X, position.Y, steps));
 
-	private InjectedInputMouseInfo MoveByCore(int deltaX, int deltaY)
-		=> new()
-		{
-			DeltaX = deltaX,
-			DeltaY = deltaY,
-			TimeOffsetInMilliseconds = 1,
-			MouseOptions = InjectedInputMouseOptions.MoveNoCoalesce,
-		};
+	public void WheelUp() => Wheel(ScrollContentPresenter.ScrollViewerDefaultMouseWheelDelta);
+	public void WheelDown() => Wheel(-ScrollContentPresenter.ScrollViewerDefaultMouseWheelDelta);
+	public void WheelRight() => Wheel(ScrollContentPresenter.ScrollViewerDefaultMouseWheelDelta, isHorizontal: true);
+	public void WheelLeft() => Wheel(-ScrollContentPresenter.ScrollViewerDefaultMouseWheelDelta, isHorizontal: true);
 
-	private IEnumerable<InjectedInputMouseInfo> MoveToCore(double x, double y, int? steps)
+	public void Wheel(double delta, bool isHorizontal = false)
+		=> Inject(GetWheel(delta, isHorizontal));
+
+	private IEnumerable<InjectedInputMouseInfo> GetMoveTo(double x, double y, uint? steps)
 	{
-		Point Current()
-			=> _input.Mouse.Position;
+		var deltaX = x - Current.X;
+		var deltaY = y - Current.Y;
 
-		var deltaX = x - Current().X;
-		var deltaY = y - Current().Y;
-
-		steps ??= (int)Math.Min(Math.Max(Math.Abs(deltaX), Math.Abs(deltaY)), 512);
+		steps ??= (uint)Math.Min(Math.Max(Math.Abs(deltaX), Math.Abs(deltaY)), 512);
 		if (steps is 0)
 		{
 			yield break;
@@ -322,14 +316,14 @@ public class Mouse
 
 		for (var step = 0; step <= steps && (stepX is not 0 || stepY is not 0); step++)
 		{
-			yield return MoveByCore((int)stepX, (int)stepY);
+			yield return GetMoveBy((int)stepX, (int)stepY);
 
-			if (Math.Abs(Current().X - x) < stepX)
+			if (Math.Abs(Current.X - x) < stepX)
 			{
 				stepX = 0;
 			}
 
-			if (Math.Abs(Current().Y - y) < stepY)
+			if (Math.Abs(Current.Y - y) < stepY)
 			{
 				stepY = 0;
 			}
@@ -341,5 +335,36 @@ public class Mouse
 
 	private void Inject(params InjectedInputMouseInfo[] infos)
 		=> _input.InjectMouseInput(infos);
+
+	public void Dispose()
+		=> ReleaseAny();
+
+	private static InjectedInputMouseInfo GetPress()
+		=> new()
+		{
+			TimeOffsetInMilliseconds = 1,
+			MouseOptions = InjectedInputMouseOptions.LeftDown,
+		};
+
+	private static InjectedInputMouseInfo GetMoveBy(double deltaX, double deltaY)
+		=> new()
+		{
+			DeltaX = (int)deltaX,
+			DeltaY = (int)deltaY,
+			TimeOffsetInMilliseconds = 1,
+			MouseOptions = InjectedInputMouseOptions.MoveNoCoalesce,
+		};
+
+	private static InjectedInputMouseInfo GetRelease()
+		=> new()
+		{
+			TimeOffsetInMilliseconds = 1,
+			MouseOptions = InjectedInputMouseOptions.LeftUp,
+		};
+
+	public static InjectedInputMouseInfo GetWheel(double delta, bool isHorizontal)
+		=> isHorizontal
+			? new() { TimeOffsetInMilliseconds = 1, DeltaX = (int)delta, MouseOptions = InjectedInputMouseOptions.HWheel }
+			: new() { TimeOffsetInMilliseconds = 1, DeltaY = (int)delta, MouseOptions = InjectedInputMouseOptions.Wheel };
 }
 #endif
