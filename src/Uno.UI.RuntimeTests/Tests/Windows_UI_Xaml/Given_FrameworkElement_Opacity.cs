@@ -36,17 +36,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			var SUT = new FrameworkElement_Opacity();
 
-			TestServices.WindowHelper.WindowContent = SUT;
+			await UITestHelper.Load(SUT);
 
-			await TestServices.WindowHelper.WaitForIdle();
-
-			await TestServices.WindowHelper.WaitForIdle();
-
-			var renderer = new RenderTargetBitmap();
-
-			await renderer.RenderAsync(SUT);
-
-			var si = await RawBitmap.From(renderer, SUT);
+			var si = await UITestHelper.ScreenShot(SUT);
 
 			var width = SUT.tbOpacity1_0.ActualWidth;
 			var height = SUT.tbOpacity1_0.ActualHeight;
@@ -74,15 +66,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			var SUT = new FrameworkElement_Opacity();
 
-			TestServices.WindowHelper.WindowContent = SUT;
+			await UITestHelper.Load(SUT);
 
-			await TestServices.WindowHelper.WaitForIdle();
+			var si = await UITestHelper.ScreenShot(SUT);
 
-			var renderer = new RenderTargetBitmap();
-
-			await renderer.RenderAsync(SUT);
-
-			var si = await RawBitmap.From(renderer, SUT);
 			var width = SUT.tbInnerOpacity1_0.ActualWidth;
 			var height = SUT.tbInnerOpacity1_0.ActualHeight;
 			ImageAssert.HasColorAtChild(si, SUT.tbInnerOpacity1_0, (width / 4) * 3.3, height / 2, "#FF808080");

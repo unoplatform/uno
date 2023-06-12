@@ -19,11 +19,10 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Markup;
 using Private.Infrastructure;
-using Uno.UI.RuntimeTests.Helpers;
 using Windows.UI.Xaml.Media.Imaging;
 using SamplesApp.UITests;
 
-namespace Uno.UI.RuntimeTests.Tests.Uno_UI_Xaml_Core;
+namespace Uno.UI.RuntimeTests.Helpers;
 
 // Note: This file contains a bunch of helpers that are expected to be moved to the test engine among the pointer injection work
 
@@ -444,16 +443,16 @@ public class Finger : IInjectedPointer, IDisposable
 #if HAS_UNO
 		=> new() { PositionX = (int)x, PositionY = (int)y };
 #else
-	{
-		var bounds = Windows.UI.ViewManagement.ApplicationView.GetForCurrentView().VisibleBounds;
-		var scale = Windows.Graphics.Display.DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel;
+{
+var bounds = Windows.UI.ViewManagement.ApplicationView.GetForCurrentView().VisibleBounds;
+var scale = Windows.Graphics.Display.DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel;
 
-		return new()
-		{
-			PositionX = (int)((bounds.X + x) * scale),
-			PositionY = (int)((bounds.Y + y) * scale),
-		};
-	}
+return new()
+{
+	PositionX = (int)((bounds.X + x) * scale),
+	PositionY = (int)((bounds.Y + y) * scale),
+};
+}
 #endif
 }
 

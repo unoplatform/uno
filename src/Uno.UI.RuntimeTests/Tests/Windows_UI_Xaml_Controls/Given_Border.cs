@@ -468,14 +468,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		private async Task<RawBitmap> TakeScreenshot(FrameworkElement SUT)
 		{
-			WindowHelper.WindowContent = SUT;
-			await WindowHelper.WaitForLoaded(SUT);
-			var renderer = new RenderTargetBitmap();
-			await WindowHelper.WaitForIdle();
-			await renderer.RenderAsync(SUT);
-			var result = await RawBitmap.From(renderer, SUT);
-			await WindowHelper.WaitForIdle();
-			return result;
+			await UITestHelper.Load(SUT);
+			return await UITestHelper.ScreenShot(SUT);
 		}
 	}
 }

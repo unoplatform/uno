@@ -12,7 +12,6 @@ using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Shapes;
 using Uno.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
-using Uno.UI.RuntimeTests.Tests.Uno_UI_Xaml_Core;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Composition;
 

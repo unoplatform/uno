@@ -7,6 +7,7 @@ using System.Text;
 using Windows.UI.Xaml.Media.Imaging;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
+using Windows.Graphics.Display;
 using Windows.Storage.Streams;
 using Windows.UI.Xaml.Controls;
 using Rectangle = System.Drawing.Rectangle;
@@ -36,9 +37,13 @@ namespace Uno.UI.RuntimeTests.Helpers
 			_implicitScaling = implicitScaling;
 		}
 
-		public static async Task<RawBitmap> From(RenderTargetBitmap bitmap, UIElement renderedElement, double implicitScaling = 1.0)
+		/// <summary>
+		/// Prefer using UITestHelper.Screenshot() instead.
+		/// </summary>
+		public static async Task<RawBitmap> From(RenderTargetBitmap bitmap, UIElement renderedElement, double? implicitScaling = null)
 		{
-			var raw = new RawBitmap(bitmap, renderedElement, implicitScaling);
+			implicitScaling ??= DisplayInformation.GetForCurrentView()?.RawPixelsPerViewPixel ?? 1;
+			var raw = new RawBitmap(bitmap, renderedElement, implicitScaling.Value);
 			await raw.Populate();
 
 			return raw;
