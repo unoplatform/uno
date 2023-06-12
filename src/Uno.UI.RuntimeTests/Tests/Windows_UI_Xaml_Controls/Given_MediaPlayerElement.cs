@@ -2,15 +2,9 @@ using System;
 using Windows.Media.Core;
 using Windows.Media.Playback;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml;
 using static Private.Infrastructure.TestServices;
 using System.Threading.Tasks;
-using FluentAssertions;
-using System.Threading;
-using Windows.UI.Xaml;
-using Uno.UI.Extensions;
-using Windows.UI.Xaml.Media;
-using Uno.UI.Xaml.Core;
-using Private.Infrastructure;
 
 #if HAS_UNO
 using Uno.Foundation.Extensibility;
@@ -173,6 +167,20 @@ public partial class Given_MediaPlayerElement
 			timeoutMS: 3000,
 			message: "Timeout waiting for the playback session state changing to Pause."
 		);
+	}
+
+	[TestMethod]
+	public async Task When_MediaPlayerElement_Check_TransportControlvisibility()
+	{
+		MediaPlayerElement mpe = await StartPlayerAsync();
+		var root = (WindowHelper.XamlRoot?.Content as FrameworkElement)!;
+		var tcp = (FrameworkElement)root.FindName("TransportControlsPresenter");
+
+		Assert.AreEqual(tcp.Visibility, Visibility.Collapsed);
+		mpe.AreTransportControlsEnabled = true;
+		Assert.AreEqual(tcp.Visibility, Visibility.Visible);
+		mpe.AreTransportControlsEnabled = false;
+		Assert.AreEqual(tcp.Visibility, Visibility.Collapsed);
 	}
 
 	public async Task<MediaPlayerElement> StartPlayerAsync()
