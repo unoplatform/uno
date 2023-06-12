@@ -23,6 +23,24 @@ namespace SamplesApp.UITests
 		public static void WaitForText(this IApp app, QueryEx element, string expectedText) =>
 			app.WaitForDependencyPropertyValue(element, "Text", expectedText);
 
+		public static void WaitForTextTimeSpan(this IApp app, QueryEx element, TimeSpan expectedTimeSpan)
+		{
+			app.WaitFor(() =>
+			{
+				var textValue = element.GetText();
+				TimeSpan timeSpan;
+
+				if (TimeSpan.TryParse(textValue, out timeSpan) && timeSpan >= expectedTimeSpan)
+				{
+					return true;
+				}
+				else
+				{
+					return false;
+				}
+			});
+		}
+
 		/// <summary>
 		/// Wait for element to be available and to have the expected value for its Text property.
 		/// </summary>
