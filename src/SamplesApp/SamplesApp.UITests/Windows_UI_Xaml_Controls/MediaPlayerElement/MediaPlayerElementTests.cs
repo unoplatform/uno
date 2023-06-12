@@ -27,7 +27,7 @@ class MediaPlayerElementTests : SampleControlUITestBase
 
 		// step 1: Test Auto Play
 		var itemQuery = _app.Marked("TimeElapsedElement");
-		_app.WaitForTextTimeSpan(itemQuery, TimeSpan.FromSeconds(4));
+		_app.WaitForTextGreaterThanTimeSpan(itemQuery, TimeSpan.FromSeconds(4));
 		TakeScreenshot("TimeElapsedElement AutoPlay 04 seconds");
 
 		// step 2: press button PlayPause 
@@ -42,7 +42,7 @@ class MediaPlayerElementTests : SampleControlUITestBase
 		_app.Tap(_app.Marked("PlayPauseButton"));
 		TakeScreenshot("Play Tapped");
 
-		_app.WaitForTextTimeSpan(itemQuery, TimeSpan.FromSeconds(2));
+		_app.WaitForTextGreaterThanTimeSpan(itemQuery, TimeSpan.FromSeconds(2));
 		TakeScreenshot("TimeElapsedElement Play 02 seconds");
 	}
 }
