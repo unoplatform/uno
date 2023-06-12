@@ -209,8 +209,6 @@ public static partial class ImageAssert
 
 		using var reader1 = DataReader.FromBuffer(buffer1);
 		using var reader2 = DataReader.FromBuffer(buffer2);
-		var reader1Window = new byte[1024];
-		var reader2Window = new byte[1024];
 		while (reader1.UnconsumedBufferLength > 0 && reader2.UnconsumedBufferLength > 0)
 		{
 			if (reader1.ReadByte() != reader2.ReadByte())

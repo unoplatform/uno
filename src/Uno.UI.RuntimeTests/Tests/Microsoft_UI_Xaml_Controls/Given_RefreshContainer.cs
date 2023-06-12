@@ -8,6 +8,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
+using Uno.UI.RuntimeTests.Tests.Uno_UI_Xaml_Core;
 using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
@@ -124,12 +125,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 			}
 		}
 
-		private async Task<RawBitmap> TakeScreenshot(FrameworkElement SUT)
-		{
-			var renderer = new RenderTargetBitmap();
-			await renderer.RenderAsync(SUT);
-			var result = await RawBitmap.From(renderer, SUT);
-			return result;
-		}
+		private Task<RawBitmap> TakeScreenshot(FrameworkElement SUT)
+			=> UITestHelper.ScreenShot(SUT);
 	}
 }
