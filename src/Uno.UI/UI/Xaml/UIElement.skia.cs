@@ -81,13 +81,23 @@ namespace Windows.UI.Xaml
 				{
 					_visual = Window.Current.Compositor.CreateShapeVisual();
 #if ENABLE_CONTAINER_VISUAL_TRACKING
-					_visual.Comment = $"Owner: {this.GetDebugDepth():D2}-{this.GetDebugName()}";
+					_visual.Comment = $"{this.GetDebugDepth():D2}-{this.GetDebugName()}";
 #endif
 				}
 
 				return _visual;
 			}
 		}
+
+#if ENABLE_CONTAINER_VISUAL_TRACKING // Make sure to update the Comment to have the valid depth
+		partial void OnLoading()
+		{
+			if (_visual is not null)
+			{
+				_visual.Comment = $"{this.GetDebugDepth():D2}-{this.GetDebugName()}";
+			}
+		}
+#endif
 
 		internal bool ClippingIsSetByCornerRadius { get; set; }
 
