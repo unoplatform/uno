@@ -44,10 +44,10 @@ namespace Windows.UI.Composition
 			}
 		}
 
-		private SKPaint TryCreateAndClearStrokePaint(in DrawingSession session) 
+		private SKPaint TryCreateAndClearStrokePaint(in DrawingSession session)
 			=> TryCreateAndClearPaint(in session, ref _strokePaint, true);
 
-		private SKPaint TryCreateAndClearFillPaint(in DrawingSession session) 
+		private SKPaint TryCreateAndClearFillPaint(in DrawingSession session)
 			=> TryCreateAndClearPaint(in session, ref _fillPaint, false);
 
 		private static SKPaint TryCreateAndClearPaint(in DrawingSession session, ref SKPaint? paint, bool isStroke)

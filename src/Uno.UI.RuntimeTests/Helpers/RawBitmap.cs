@@ -16,7 +16,6 @@ using Point = System.Drawing.Point;
 using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media;
-using SkiaSharp;
 using Uno.Helpers;
 
 namespace Uno.UI.RuntimeTests.Helpers
@@ -141,7 +140,7 @@ namespace Uno.UI.RuntimeTests.Helpers
 			}
 		}
 
-#if DEBUG // Make the build to fail on CI to avoid forgetting to remove the call (would poluate server or other devs disks!).
+#if __SKIA__ && DEBUG // DEBUG: Make the build to fail on CI to avoid forgetting to remove the call (would poluate server or other devs disks!).
 		/// <summary>
 		/// Save the screenshot into the specified path **for debug purposes only**.
 		/// </summary>
@@ -159,10 +158,10 @@ namespace Uno.UI.RuntimeTests.Helpers
 			await using var file = File.OpenWrite(path);
 
 			var img = preferOriginal
-				? SKImage.FromPixelCopy(new SKImageInfo(Bitmap.PixelWidth, Bitmap.PixelHeight, SKColorType.Bgra8888, SKAlphaType.Premul), (await Bitmap.GetPixelsAsync()).ToArray())
-				: SKImage.FromPixelCopy(new SKImageInfo(Bitmap.PixelWidth, Bitmap.PixelHeight, SKColorType.Bgra8888, SKAlphaType.Unpremul), _pixels);
+				? SkiaSharp.SKImage.FromPixelCopy(new SkiaSharp.SKImageInfo(Bitmap.PixelWidth, Bitmap.PixelHeight, SkiaSharp.SKColorType.Bgra8888, SkiaSharp.SKAlphaType.Premul), (await Bitmap.GetPixelsAsync()).ToArray())
+				: SkiaSharp.SKImage.FromPixelCopy(new SkiaSharp.SKImageInfo(Bitmap.PixelWidth, Bitmap.PixelHeight, SkiaSharp.SKColorType.Bgra8888, SkiaSharp.SKAlphaType.Unpremul), _pixels);
 
-			img.Encode(SKEncodedImageFormat.Png, 100).SaveTo(file);
+			img.Encode(SkiaSharp.SKEncodedImageFormat.Png, 100).SaveTo(file);
 		}
 #endif
 	}
