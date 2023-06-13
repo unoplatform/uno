@@ -1,6 +1,0 @@
-steps:
-
-  # Downgrade to 7.0.102 until build agents get updated to 17.6
-  - script: |
-      cp global-net7.0.102.json global.json
-    displayName: Downgrade global.json to 7.0.102
