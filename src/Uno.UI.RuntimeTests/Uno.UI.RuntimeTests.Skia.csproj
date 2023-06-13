@@ -16,6 +16,7 @@
 		<UnoRuntimeIdentifier>Skia</UnoRuntimeIdentifier>
 		<PlatformItemsBasePath>.\</PlatformItemsBasePath>
 		<DefineConstants>$(DefineConstants);IS_RUNTIME_UI_TESTS</DefineConstants>
+		<NoWarn>$(NoWarn);CS1998</NoWarn>
 	</PropertyGroup>
 
 	<ItemGroup>
