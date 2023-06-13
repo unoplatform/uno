@@ -89,7 +89,13 @@ namespace Windows.Media.Playback
 
 		#endregion
 
-		public MediaPlayer(bool autoPlay = false)
+		public MediaPlayer()
+		{
+			PlaybackSession = new MediaPlaybackSession(this);
+			Initialize();
+		}
+
+		public MediaPlayer(bool autoPlay)
 		{
 			AutoPlay = autoPlay;
 			PlaybackSession = new MediaPlaybackSession(this);
