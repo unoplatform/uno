@@ -8,6 +8,7 @@ using Windows.Foundation;
 using Windows.UI.Input.Preview.Injection;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media.Imaging;
+using Windows.UI.Xaml.Controls;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Helpers;
 
