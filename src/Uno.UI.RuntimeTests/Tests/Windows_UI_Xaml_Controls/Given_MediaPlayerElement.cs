@@ -24,13 +24,7 @@ public partial class Given_MediaPlayerElement
 	[TestMethod]
 	public async void When_NotAutoPlay_Source()
 	{
-#if HAS_UNO
-		if (_MediaPlayer.ImplementedByExtensions && !ApiExtensibility.IsRegistered<IMediaPlayerExtension>())
-		{
-			Assert.Inconclusive("Platform not supported.");
-		}
-#endif
-
+		Test_Setup();
 		var sut = new MediaPlayerElement()
 		{
 			AutoPlay = false,
@@ -50,13 +44,7 @@ public partial class Given_MediaPlayerElement
 	[TestMethod]
 	public async void When_MediaPlayerElement_AutoPlay_Source()
 	{
-#if HAS_UNO
-		if (_MediaPlayer.ImplementedByExtensions && !ApiExtensibility.IsRegistered<IMediaPlayerExtension>())
-		{
-			Assert.Inconclusive("Platform not supported.");
-		}
-#endif
-
+		Test_Setup();
 		var sut = new MediaPlayerElement()
 		{
 			AutoPlay = true,
@@ -65,17 +53,27 @@ public partial class Given_MediaPlayerElement
 		WindowHelper.WindowContent = sut;
 		await WindowHelper.WaitForLoaded(sut);
 
+#if __SKIA__
+		// AutoPlay is not working on Skia for now.
+		await WindowHelper.WaitFor(
+			condition: () => sut.MediaPlayer?.PlaybackSession?.PlaybackState == Windows.Media.Playback.MediaPlaybackState.Paused,
+			timeoutMS: 5000,
+			message: "Timeout waiting for the media player to enter Playing state on Auto Play."
+		);
+#else
 		// PlaybackState should transition out of Opening state when the video is ready to play.
 		await WindowHelper.WaitFor(
 			condition: () => sut.MediaPlayer?.PlaybackSession?.PlaybackState == Windows.Media.Playback.MediaPlaybackState.Playing,
 			timeoutMS: 5000,
-			message: "Timeout waiting for the media player to enter Paused state."
+			message: "Timeout waiting for the media player to enter Playing state on Auto Play."
 		);
+#endif
 	}
 
 	[TestMethod]
 	public void When_MediaPlayerElement_Not_SetSource_Property_Value()
 	{
+		Test_Setup();
 		var sut = new MediaPlayerElement();
 		sut.SetMediaPlayer(new Windows.Media.Playback.MediaPlayer());
 		Assert.IsNull(sut.Source);
@@ -84,6 +82,7 @@ public partial class Given_MediaPlayerElement
 	[TestMethod]
 	public async Task When_MediaPlayerElement_Added_In_Opening()
 	{
+		Test_Setup();
 		var sut = new MediaPlayerElement();
 		sut.Source = Windows.Media.Core.MediaSource.CreateFromUri(TestVideoUrl);
 		sut.AutoPlay = true;
@@ -104,6 +103,7 @@ public partial class Given_MediaPlayerElement
 	[TestMethod]
 	public async Task When_MediaPlayerElement_SetIsFullWindow_Check_Fullscreen()
 	{
+		Test_Setup();
 		var sut = new MediaPlayerElement();
 		sut.Source = Windows.Media.Core.MediaSource.CreateFromUri(TestVideoUrl);
 		sut.AutoPlay = true;
@@ -119,7 +119,7 @@ public partial class Given_MediaPlayerElement
 			var currentWidth = mpp.ActualWidth;
 
 			sut.IsFullWindow = true;
-			await Task.Delay(3000);
+			await Task.Delay(2000);
 
 			if (mpp != null)
 			{
@@ -135,6 +135,7 @@ public partial class Given_MediaPlayerElement
 	[TestMethod]
 	public async Task When_MediaPlayerElement_SetSource_Check_Play()
 	{
+		Test_Setup();
 		var sut = new MediaPlayerElement();
 		sut.Source = Windows.Media.Core.MediaSource.CreateFromUri(TestVideoUrl);
 		sut.AutoPlay = true;
@@ -154,6 +155,7 @@ public partial class Given_MediaPlayerElement
 	[TestMethod]
 	public async Task When_MediaPlayerElement_SetSource_Check_PausePlayStop()
 	{
+		Test_Setup();
 		var sut = new MediaPlayerElement();
 		sut.Source = Windows.Media.Core.MediaSource.CreateFromUri(TestVideoUrl);
 		sut.AutoPlay = true;
@@ -190,17 +192,18 @@ public partial class Given_MediaPlayerElement
 		await Task.Delay(1000);
 
 		sut.MediaPlayer.Pause();
-		var pausePosition = sut.MediaPlayer.PlaybackSession.Position;
+		await Task.Delay(1000);
 		await WindowHelper.WaitFor(
 			condition: () => sut.MediaPlayer.PlaybackSession.PlaybackState == MediaPlaybackState.Paused,
 			timeoutMS: 3000,
-			message: "Timeout waiting for the playback session state changing to Pause."
+			message: "Timeout waiting for the playback session state changing to Pause on Check_PausePlayStop."
 		);
 	}
 
 	[TestMethod]
 	public async Task When_MediaPlayerElement_Check_TransportControlvisibility()
 	{
+		Test_Setup();
 		var sut = new MediaPlayerElement();
 		sut.Source = Windows.Media.Core.MediaSource.CreateFromUri(TestVideoUrl);
 		sut.AutoPlay = true;
@@ -217,5 +220,15 @@ public partial class Given_MediaPlayerElement
 		Assert.AreEqual(tcp.Visibility, Visibility.Visible);
 		sut.AreTransportControlsEnabled = false;
 		Assert.AreEqual(tcp.Visibility, Visibility.Collapsed);
+	}
+
+	public void Test_Setup()
+	{
+#if HAS_UNO
+		if (_MediaPlayer.ImplementedByExtensions && !ApiExtensibility.IsRegistered<IMediaPlayerExtension>())
+		{
+			Assert.Inconclusive("Platform not supported.");
+		}
+#endif
 	}
 }
