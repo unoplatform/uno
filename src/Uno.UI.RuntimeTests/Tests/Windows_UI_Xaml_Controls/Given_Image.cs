@@ -452,6 +452,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[RunsOnUIThread]
 		public async Task When_SVGImageSource()
 		{
+#if __SKIA__
+			Assert.Inconclusive(); // SVGImage Load not implemented on Skia
+#endif
+			if (!ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			{
+				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
+			}
+
 			var svgImageSource = new SvgImageSource(new Uri("ms-appx:///Assets/couch.svg"));
 			var image = new Image() { Source = svgImageSource };
 			TestServices.WindowHelper.WindowContent = image;
@@ -463,6 +471,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[RunsOnUIThread]
 		public async Task When_SVGImageSource_Uri_Is_Null()
 		{
+
+#if __SKIA__
+			Assert.Inconclusive(); // SVGImage Load not implemented on Skia
+#endif
+			if (!ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			{
+				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
+			}
+
 			var svgImageSource = new SvgImageSource(null);
 			var image = new Image() { Source = svgImageSource };
 			TestServices.WindowHelper.WindowContent = image;
@@ -473,6 +490,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[RunsOnUIThread]
 		public async Task When_SVGImageSource_Uri_Is_Set_Null()
 		{
+#if __SKIA__
+			Assert.Inconclusive(); // SVGImage Load not implemented on Skia
+#endif
+			if (!ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			{
+				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
+			}
+
 			var svgImageSource = new SvgImageSource(new Uri("ms-appx:///Assets/couch.svg"));
 			svgImageSource.UriSource = null;
 			var image = new Image() { Source = svgImageSource };
