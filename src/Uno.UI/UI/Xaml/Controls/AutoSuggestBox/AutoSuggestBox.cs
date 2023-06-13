@@ -106,6 +106,11 @@ namespace Windows.UI.Xaml.Controls
 			UpdateSuggestionList();
 		}
 
+		protected override DependencyObject GetContainerForItemOverride()
+		{
+			return new ListViewItem() { IsGeneratedContainer = true };
+		}
+
 		internal override void OnItemsSourceGroupsChanged(object sender, NotifyCollectionChangedEventArgs args)
 		{
 			base.OnItemsSourceGroupsChanged(sender, args);
