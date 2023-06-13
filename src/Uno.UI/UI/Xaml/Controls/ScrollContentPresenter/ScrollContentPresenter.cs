@@ -193,7 +193,7 @@ namespace Windows.UI.Xaml.Controls
 				var canScrollHorizontally = CanHorizontallyScroll;
 				var canScrollVertically = CanVerticallyScroll;
 				var delta = IsPointerWheelReversed
-					? -properties.MouseWheelDelta 
+					? -properties.MouseWheelDelta
 					: properties.MouseWheelDelta;
 
 				if (e.KeyModifiers == VirtualKeyModifiers.Control)

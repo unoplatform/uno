@@ -172,15 +172,16 @@ public partial class UIElement : DependencyObject
 					// On WASM we do get 'pointerover' event for sub elements,
 					// so we can avoid useless work by validating if the pointer is already flagged as over element.
 					// If so, we stop bubbling since our parent will do the same!
-					var ptArgs = ToPointerArgs(element, args);
-					if (element.IsOver(ptArgs.Pointer))
+					var routedArgs = ToPointerArgs(element, args);
+					if (element.IsOver(routedArgs.Pointer))
 					{
 						result.Add(HtmlEventDispatchResult.StopPropagation);
 					}
 					else
 					{
-						result.Add(ptArgs, element.OnNativePointerEnter(ptArgs));
+						result.Add(routedArgs, element.OnNativePointerEnter(routedArgs));
 					}
+
 					break;
 				}
 
@@ -189,6 +190,7 @@ public partial class UIElement : DependencyObject
 					var routedArgs = ToPointerArgs(element, args);
 					var handled = element.OnNativePointerExited(routedArgs);
 					result.Add(routedArgs, handled);
+
 					break;
 				}
 
@@ -197,6 +199,7 @@ public partial class UIElement : DependencyObject
 					var routedArgs = ToPointerArgs(element, args);
 					var handled = element.OnNativePointerDown(routedArgs);
 					result.Add(routedArgs, handled);
+
 					break;
 				}
 
@@ -231,6 +234,7 @@ public partial class UIElement : DependencyObject
 						? element.OnNativePointerMoveWithOverCheck(routedArgs, isOver: routedArgs.IsPointCoordinatesOver(element))
 						: element.OnNativePointerMove(routedArgs);
 					result.Add(routedArgs, handled);
+
 					break;
 				}
 
@@ -239,6 +243,7 @@ public partial class UIElement : DependencyObject
 					var routedArgs = ToPointerArgs(element, args);
 					var handled = element.OnNativePointerCancel(routedArgs, isSwallowedBySystem: true);
 					result.Add(routedArgs, handled);
+
 					break;
 				}
 

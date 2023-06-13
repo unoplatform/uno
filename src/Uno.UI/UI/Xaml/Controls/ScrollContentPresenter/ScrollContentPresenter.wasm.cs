@@ -225,7 +225,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				var extentWidth = ExtentWidth;
 				var viewportWidth = ViewportWidth;
-				
+
 				horizontalOffset = ValidateInputOffset(hOffset, 0, extentWidth - viewportWidth);
 				success &= horizontalOffset == hOffset;
 			}
@@ -234,7 +234,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				var extentHeight = ExtentHeight;
 				var viewportHeight = ViewportHeight;
-				
+
 				verticalOffset = ValidateInputOffset(vOffset, 0, extentHeight - viewportHeight);
 				success &= verticalOffset == vOffset;
 			}
@@ -292,7 +292,7 @@ namespace Windows.UI.Xaml.Controls
 					}
 				}
 			}
-			
+
 			return success; // If if not yet processed, we assume that it will be.
 		}
 
