@@ -8,6 +8,7 @@ using System.Windows.Interop;
 using System.Windows.Media.Imaging;
 using Uno.ApplicationModel.DataTransfer;
 using Uno.UI.Skia;
+using Uno.UI.Skia.Platform;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage;
 using Windows.Storage.Streams;

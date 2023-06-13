@@ -9,7 +9,7 @@ using WinUI = Windows.UI.Xaml;
 using WinUIApplication = Windows.UI.Xaml.Application;
 using WpfApplication = System.Windows.Application;
 
-namespace Uno.UI.Skia;
+namespace Uno.UI.Skia.Platform;
 
 public class WpfHost : IWpfApplicationHost
 {

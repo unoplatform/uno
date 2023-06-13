@@ -18,6 +18,7 @@ using WpfWindow = System.Windows.Window;
 using RoutedEventArgs = System.Windows.RoutedEventArgs;
 using Uno.UI.Hosting;
 using Uno.UI.Skia;
+using Uno.UI.Skia.Platform;
 
 namespace Uno.UI.Runtime.Skia.Wpf.UI.Controls;
 
