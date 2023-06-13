@@ -40,6 +40,7 @@ using Uno.Extensions;
 using Uno.UI.RuntimeTests.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.Tests.Uno_UI_Xaml_Core;
+using Uno.UI.Toolkit.Extensions;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -93,13 +94,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			var items = Enumerable
 				.Range(0, 10)
-				.Select(g => new Microsoft.UI.Xaml.Controls.NavigationViewItem
+				.Select(g =>
 				{
-					Content = $"Group {g}",
-					MenuItems = Enumerable
+					var item = new Microsoft.UI.Xaml.Controls.NavigationViewItem { Content = $"Group {g}" };
+					item.MenuItems.AddRange(Enumerable
 						.Range(0, 30)
-						.Select(i => new Microsoft.UI.Xaml.Controls.NavigationViewItem { Content = $"Group {g} - Item {i}" } as object)
-						.ToList()
+						.Select(i => new Microsoft.UI.Xaml.Controls.NavigationViewItem { Content = $"Group {g} - Item {i}" } as object));
+
+					return item;
 				})
 				.ToList();
 
