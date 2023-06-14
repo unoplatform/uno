@@ -43,7 +43,7 @@ partial class SvgImageSource
 				return await FetchSvgAssetAsync(ct, ResourceString);
 			}
 
-			if (Stream != null)
+			if (Stream is not null)
 			{
 				return await ReadFromStreamAsync(Stream, ct);
 			}
@@ -54,7 +54,7 @@ partial class SvgImageSource
 				return await ReadFromStreamAsync(fileStream, ct);
 			}
 
-			if (AbsoluteUri != null)
+			if (AbsoluteUri is not null)
 			{
 				// The ContactsService returns the contact uri for compatibility with UniversalImageLoader - in order to obtain the corresponding photo we resolve using the service below.
 				if (IsContactUri(AbsoluteUri))
@@ -71,7 +71,7 @@ partial class SvgImageSource
 				{
 					var filePath = await Download(ct, AbsoluteUri);
 
-					if (filePath == null)
+					if (filePath is null)
 					{
 						return ImageData.Empty;
 					}
