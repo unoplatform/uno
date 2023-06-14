@@ -4,6 +4,7 @@
 		<OutputType>Exe</OutputType>
 		<TargetFramework>net7.0</TargetFramework>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+		<RollForward>Major</RollForward>
 
 		<SyncGeneratorCodeAnalysisVersion>4.5.0</SyncGeneratorCodeAnalysisVersion>
 		<NoWarn>$(NoWarn);RS1024</NoWarn> <!-- RS1024: Use SymbolEqualityComparer -->

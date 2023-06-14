@@ -149,14 +149,14 @@ namespace Uno.UWPSyncGenerator
 
 			_dependencyPropertySymbol = _referenceCompilation.GetTypeByMetadataName(BaseXamlNamespace + ".DependencyProperty");
 
-			_iOSCompilation = LoadProject($@"{basePath}\{baseName}.netcoremobile.csproj", "net7.0-ios");
-			_androidCompilation = LoadProject($@"{basePath}\{baseName}.netcoremobile.csproj", "net7.0-android");
-			_unitTestsCompilation = LoadProject($@"{basePath}\{baseName}.Tests.csproj", "net7.0");
-			_macCompilation = LoadProject($@"{basePath}\{baseName}.netcoremobile.csproj", "net7.0-macos");
+			_iOSCompilation = LoadProject($@"{basePath}\{baseName}.netcoremobile.csproj", "net8.0-ios");
+			_androidCompilation = LoadProject($@"{basePath}\{baseName}.netcoremobile.csproj", "net8.0-android");
+			_unitTestsCompilation = LoadProject($@"{basePath}\{baseName}.Tests.csproj", "net8.0");
+			_macCompilation = LoadProject($@"{basePath}\{baseName}.netcoremobile.csproj", "net8.0-macos");
 
-			_netstdReferenceCompilation = LoadProject($@"{basePath}\{baseName}.Reference.csproj", "net7.0");
-			_wasmCompilation = LoadProject($@"{basePath}\{baseName}.Wasm.csproj", "net7.0");
-			_skiaCompilation = LoadProject($@"{basePath}\{baseName}.Skia.csproj", "net7.0");
+			_netstdReferenceCompilation = LoadProject($@"{basePath}\{baseName}.Reference.csproj", "net8.0");
+			_wasmCompilation = LoadProject($@"{basePath}\{baseName}.Wasm.csproj", "net8.0");
+			_skiaCompilation = LoadProject($@"{basePath}\{baseName}.Skia.csproj", "net8.0");
 
 			_iOSBaseSymbol = _iOSCompilation.GetTypeByMetadataName("UIKit.UIView");
 			_androidBaseSymbol = _androidCompilation.GetTypeByMetadataName("Android.Views.View");
@@ -1775,6 +1775,7 @@ namespace Uno.UWPSyncGenerator
 								{ "SkipUnoResourceGeneration", "true" }, // Required to avoid loading a non-existent task
 								{ "DocsGeneration", "true" }, // Detect that source generation is running
 								{ "LangVersion", CSharpLangVersion },
+								{ "NoBuild", "True" },
 								//{ "DesignTimeBuild", "true" },
 								//{ "UseHostCompilerIfAvailable", "false" },
 								//{ "UseSharedCompilation", "false" },
