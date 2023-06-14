@@ -168,84 +168,84 @@ public partial class UIElement : DependencyObject
 			switch ((NativePointerEvent)args.Event)
 			{
 				case NativePointerEvent.pointerover:
-				{
-					// On WASM we do get 'pointerover' event for sub elements,
-					// so we can avoid useless work by validating if the pointer is already flagged as over element.
-					// If so, we stop bubbling since our parent will do the same!
-					var routedArgs = ToPointerArgs(element, args);
-					if (element.IsOver(routedArgs.Pointer))
 					{
-						result.Add(HtmlEventDispatchResult.StopPropagation);
-					}
-					else
-					{
-						result.Add(routedArgs, element.OnNativePointerEnter(routedArgs));
-					}
+						// On WASM we do get 'pointerover' event for sub elements,
+						// so we can avoid useless work by validating if the pointer is already flagged as over element.
+						// If so, we stop bubbling since our parent will do the same!
+						var routedArgs = ToPointerArgs(element, args);
+						if (element.IsOver(routedArgs.Pointer))
+						{
+							result.Add(HtmlEventDispatchResult.StopPropagation);
+						}
+						else
+						{
+							result.Add(routedArgs, element.OnNativePointerEnter(routedArgs));
+						}
 
-					break;
-				}
+						break;
+					}
 
 				case NativePointerEvent.pointerout: // No needs to check IsOver (leaving vs. bubbling), it's already done in native code
-				{
-					var routedArgs = ToPointerArgs(element, args);
-					var handled = element.OnNativePointerExited(routedArgs);
-					result.Add(routedArgs, handled);
-
-					break;
-				}
-
-				case NativePointerEvent.pointerdown:
-				{
-					var routedArgs = ToPointerArgs(element, args);
-					var handled = element.OnNativePointerDown(routedArgs);
-					result.Add(routedArgs, handled);
-
-					break;
-				}
-
-				case NativePointerEvent.pointerup:
-				{
-					var routedArgs = ToPointerArgs(element, args);
-					var handled = element.OnNativePointerUp(routedArgs);
-					result.Add(routedArgs, handled);
-
-					if (result.ShouldStop)
 					{
-						WinUICoreServices.Instance.MainRootVisual?.ProcessPointerUp(routedArgs, isAfterHandledUp: true); // TODO for #8341
+						var routedArgs = ToPointerArgs(element, args);
+						var handled = element.OnNativePointerExited(routedArgs);
+						result.Add(routedArgs, handled);
+
+						break;
 					}
 
-					break;
-				}
+				case NativePointerEvent.pointerdown:
+					{
+						var routedArgs = ToPointerArgs(element, args);
+						var handled = element.OnNativePointerDown(routedArgs);
+						result.Add(routedArgs, handled);
+
+						break;
+					}
+
+				case NativePointerEvent.pointerup:
+					{
+						var routedArgs = ToPointerArgs(element, args);
+						var handled = element.OnNativePointerUp(routedArgs);
+						result.Add(routedArgs, handled);
+
+						if (result.ShouldStop)
+						{
+							WinUICoreServices.Instance.MainRootVisual?.ProcessPointerUp(routedArgs, isAfterHandledUp: true); // TODO for #8341
+						}
+
+						break;
+					}
 
 				case NativePointerEvent.pointermove:
-				{
-					var routedArgs = ToPointerArgs(element, args);
-
-					// We do have "implicit capture" for touch and pen on chromium browsers, they won't raise 'pointerout' once in contact,
-					// this means that we need to validate the isOver to raise enter and exit like on UWP.
-					var needsToCheckIsOver = routedArgs.Pointer.PointerDeviceType switch
 					{
-						PointerDeviceType.Touch => routedArgs.Pointer.IsInRange, // If pointer no longer in range, isOver is always false
-						PointerDeviceType.Pen => routedArgs.Pointer.IsInContact, // We can ignore check when only hovering elements, browser does its job in that case
-						PointerDeviceType.Mouse => PointerCapture.TryGet(routedArgs.Pointer, out _), // Browser won't raise pointerenter/out as soon has we have an active capture
-						_ => true // For safety
-					};
-					var handled = needsToCheckIsOver
-						? element.OnNativePointerMoveWithOverCheck(routedArgs, isOver: routedArgs.IsPointCoordinatesOver(element))
-						: element.OnNativePointerMove(routedArgs);
-					result.Add(routedArgs, handled);
+						var routedArgs = ToPointerArgs(element, args);
 
-					break;
-				}
+						// We do have "implicit capture" for touch and pen on chromium browsers, they won't raise 'pointerout' once in contact,
+						// this means that we need to validate the isOver to raise enter and exit like on UWP.
+						var needsToCheckIsOver = routedArgs.Pointer.PointerDeviceType switch
+						{
+							PointerDeviceType.Touch => routedArgs.Pointer.IsInRange, // If pointer no longer in range, isOver is always false
+							PointerDeviceType.Pen => routedArgs.Pointer.IsInContact, // We can ignore check when only hovering elements, browser does its job in that case
+							PointerDeviceType.Mouse => PointerCapture.TryGet(routedArgs.Pointer, out _), // Browser won't raise pointerenter/out as soon has we have an active capture
+							_ => true // For safety
+						};
+						var handled = needsToCheckIsOver
+							? element.OnNativePointerMoveWithOverCheck(routedArgs, isOver: routedArgs.IsPointCoordinatesOver(element))
+							: element.OnNativePointerMove(routedArgs);
+						result.Add(routedArgs, handled);
+
+						break;
+					}
 
 				case NativePointerEvent.pointercancel:
-				{
-					var routedArgs = ToPointerArgs(element, args);
-					var handled = element.OnNativePointerCancel(routedArgs, isSwallowedBySystem: true);
-					result.Add(routedArgs, handled);
+					{
+						var routedArgs = ToPointerArgs(element, args);
+						var handled = element.OnNativePointerCancel(routedArgs, isSwallowedBySystem: true);
+						result.Add(routedArgs, handled);
 
-					break;
-				}
+						break;
+					}
 
 				case NativePointerEvent.wheel:
 					if (args.wheelDeltaX is not 0)
