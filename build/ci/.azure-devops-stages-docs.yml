@@ -19,6 +19,6 @@ stages:
   displayName: Docs Generation
   dependsOn: Setup
   jobs:
-  - template: build/ci/.azure-devops-docs.yml
+  - template: .azure-devops-docs.yml
     parameters:
       poolName: '$(windowsScaledPool)'
