@@ -95,7 +95,7 @@ partial class SvgImageSource
 #endif
 		Task<ImageData> DownloadSvgAsync(CancellationToken ct)
 	{
-		if (ct.IsCancellationRequested)
+		if (AbsoluteUri is null || ct.IsCancellationRequested)
 		{
 #if __IOS__
 			return ImageData.Empty;
