@@ -1,0 +1,25 @@
+
+stages:
+- stage: Setup
+  displayName: Setup
+  jobs:
+  - template: .azure-devops-commitsar.yml
+    parameters:
+      vmImage: '$(linuxVMImage)'
+
+  - template: .azure-devops-spell-check.yml
+    parameters:
+      vmImage: '$(linuxVMImage)'
+
+  - template: .azure-devops-pipeline-validations.yml
+    parameters:
+      vmImage: '$(linuxVMImage)'
+
+- stage: Docs Generation
+  displayName: Docs Generation
+  dependsOn: Setup
+  jobs:
+
+- template: build/ci/.azure-devops-docs.yml
+  parameters:
+    poolName: '$(windowsScaledPool)'
