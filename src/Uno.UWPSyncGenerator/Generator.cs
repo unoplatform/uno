@@ -1775,6 +1775,7 @@ namespace Uno.UWPSyncGenerator
 								{ "SkipUnoResourceGeneration", "true" }, // Required to avoid loading a non-existent task
 								{ "DocsGeneration", "true" }, // Detect that source generation is running
 								{ "LangVersion", CSharpLangVersion },
+								{ "NoBuild", "True" },
 								//{ "DesignTimeBuild", "true" },
 								//{ "UseHostCompilerIfAvailable", "false" },
 								//{ "UseSharedCompilation", "false" },
