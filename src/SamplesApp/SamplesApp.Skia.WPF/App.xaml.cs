@@ -1,4 +1,4 @@
-﻿using Uno.UI.Skia;
+﻿using Uno.UI.Skia.Platform;
 
 namespace SamplesApp.WPF
 {
