@@ -4,6 +4,10 @@ using System.Globalization;
 using System.Text;
 using Windows.UI.Xaml;
 
+#if NET7_0_OR_GREATER
+using System.Runtime.InteropServices.JavaScript;
+#endif
+
 namespace Uno.UI.Helpers
 {
 	/// <summary>
@@ -15,6 +19,9 @@ namespace Uno.UI.Helpers
 		/// Gets a dependency property value
 		/// </summary>
 		[Preserve]
+#if NET7_0_OR_GREATER
+		[JSExport]
+#endif
 		public static string GetDependencyPropertyValue(int handle, string propertyName)
 		{
 			// Dispatch to right object, if we can find it
@@ -36,6 +43,9 @@ namespace Uno.UI.Helpers
 		/// <param name="handle">The GCHandle of the UIElement to use</param>
 		/// <returns>The currenty set value at the Local precedence</returns>
 		[Preserve]
+#if NET7_0_OR_GREATER
+		[JSExport]
+#endif
 		public static string SetDependencyPropertyValue(int handle, string dependencyPropertyNameAndValue)
 		{
 			// Dispatch to right object, if we can find it
