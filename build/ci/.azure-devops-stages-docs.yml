@@ -15,7 +15,7 @@ stages:
     parameters:
       vmImage: '$(linuxVMImage)'
 
-- stage: Docs Generation
+- stage: docs_generation
   displayName: Docs Generation
   dependsOn: Setup
   jobs:
