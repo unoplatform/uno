@@ -76,7 +76,7 @@ partial class SvgImageSource
 						return ImageData.Empty;
 					}
 
-					using var fileStream = File.OpenRead(FilePath);
+					using var fileStream = File.OpenRead(filePath.LocalPath);
 					return await ReadFromStreamAsync(fileStream, ct);
 				}
 				else
