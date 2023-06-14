@@ -535,71 +535,72 @@ namespace Windows.UI.Xaml.Media
 			var source = Stream ?? AbsoluteUri ?? FilePath ?? _imageData.Bitmap ?? (object?)BitmapDrawable ?? ResourceString ?? "[No source]";
 			return "ImageSource: {0}".InvariantCultureFormat(source);
 		}
+	}
+#nullable disable
 
-		public class Converter : TypeConverter
+	public class Converter : TypeConverter
+	{
+		// Overrides the CanConvertFrom method of TypeConverter.
+		// The ITypeDescriptorContext interface provides the context for the
+		// conversion. Typically, this interface is used at design time to
+		// provide information about the design-time container.
+		public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
 		{
-			// Overrides the CanConvertFrom method of TypeConverter.
-			// The ITypeDescriptorContext interface provides the context for the
-			// conversion. Typically, this interface is used at design time to
-			// provide information about the design-time container.
-			public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
+			if (sourceType == typeof(string))
 			{
-				if (sourceType == typeof(string))
-				{
-					return true;
-				}
-				if (sourceType == typeof(Uri))
-				{
-					return true;
-				}
-				if (sourceType == typeof(Bitmap))
-				{
-					return true;
-				}
-				if (sourceType == typeof(BitmapDrawable))
-				{
-					return true;
-				}
-				if (sourceType.Is(typeof(Stream)))
-				{
-					return true;
-				}
-
-				return base.CanConvertFrom(context, sourceType);
+				return true;
+			}
+			if (sourceType == typeof(Uri))
+			{
+				return true;
+			}
+			if (sourceType == typeof(Bitmap))
+			{
+				return true;
+			}
+			if (sourceType == typeof(BitmapDrawable))
+			{
+				return true;
+			}
+			if (sourceType.Is(typeof(Stream)))
+			{
+				return true;
 			}
 
-			// Overrides the ConvertFrom method of TypeConverter.
-			public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
-			{
-				if (value is string)
-				{
-					return (ImageSource)value;
-				}
-				if (value is Uri)
-				{
-					return (ImageSource)value;
-				}
-				if (value is Bitmap)
-				{
-					return (ImageSource)value;
-				}
-				if (value is BitmapDrawable)
-				{
-					return (ImageSource)value;
-				}
-				if (value is Stream)
-				{
-					return (ImageSource)value;
-				}
+			return base.CanConvertFrom(context, sourceType);
+		}
 
-				return base.ConvertFrom(context, culture, value);
+		// Overrides the ConvertFrom method of TypeConverter.
+		public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
+		{
+			if (value is string)
+			{
+				return (ImageSource)value;
+			}
+			if (value is Uri)
+			{
+				return (ImageSource)value;
+			}
+			if (value is Bitmap)
+			{
+				return (ImageSource)value;
+			}
+			if (value is BitmapDrawable)
+			{
+				return (ImageSource)value;
+			}
+			if (value is Stream)
+			{
+				return (ImageSource)value;
 			}
 
-			// Overrides the ConvertTo method of TypeConverter.
-			public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
-			{
-				return base.ConvertTo(context, culture, value, destinationType);
-			}
+			return base.ConvertFrom(context, culture, value);
+		}
+
+		// Overrides the ConvertTo method of TypeConverter.
+		public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
+		{
+			return base.ConvertTo(context, culture, value, destinationType);
 		}
 	}
 }
