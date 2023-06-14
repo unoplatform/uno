@@ -461,7 +461,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 
 			var svgImageSource = new SvgImageSource(new Uri("ms-appx:///Assets/couch.svg"));
-			var image = new Image() { Source = svgImageSource };
+			var image = new Image() { Source = svgImageSource, Width = 100, Height = 100 };
 			TestServices.WindowHelper.WindowContent = image;
 			await WindowHelper.WaitForLoaded(image);
 		}
@@ -481,7 +481,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 
 			var svgImageSource = new SvgImageSource(null);
-			var image = new Image() { Source = svgImageSource };
+			var image = new Image() { Source = svgImageSource, Width = 100, Height = 100 };
 			TestServices.WindowHelper.WindowContent = image;
 			await WindowHelper.WaitForLoaded(image);
 		}
@@ -500,7 +500,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var svgImageSource = new SvgImageSource(new Uri("ms-appx:///Assets/couch.svg"));
 			svgImageSource.UriSource = null;
-			var image = new Image() { Source = svgImageSource };
+			var image = new Image() { Source = svgImageSource, Width = 100, Height = 100 };
 			TestServices.WindowHelper.WindowContent = image;
 			await WindowHelper.WaitForLoaded(image);
 		}
