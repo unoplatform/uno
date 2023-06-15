@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -15,11 +14,11 @@ using Windows.UI.Xaml.Shapes;
 using Windows.Foundation.Metadata;
 using Uno.UI;
 using static Private.Infrastructure.TestServices;
-using Rectangle = System.Drawing.Rectangle;
 using Windows.Media.Core;
 using Uno.UI.RuntimeTests.Extensions;
 using Windows.UI.Composition;
 using System.IO;
+using Windows.Foundation;
 using Windows.UI.Input.Preview.Injection;
 using Uno.Extensions;
 using Uno.UI.RuntimeTests.Tests.Uno_UI_Xaml_Core;
@@ -326,6 +325,70 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task Border_CornerRadiusAndClip_Clipping()
+		{
+			var sut = new Border
+			{
+				Name = "sut",
+				Height = 150,
+				Width = 150,
+				CornerRadius = new CornerRadius(50),
+				BorderBrush = new SolidColorBrush(Colors.Red),
+				BorderThickness = new Thickness(20),
+				Background = new SolidColorBrush(Colors.Blue),
+				Clip = new RectangleGeometry
+				{
+					Rect = new Rect(10, 10, 130, 130)
+				},
+				Child = new Rectangle
+				{
+					Name = "the_nested_rectangle",
+					Fill = new SolidColorBrush(Colors.Green),
+					Width = 150,
+					Height = 150
+				}
+			};
+
+			var root = new Border { Child = sut };
+			await UITestHelper.Load(root);
+			var snapshot = await UITestHelper.ScreenShot(root);
+			await UITestHelper.Show(snapshot);
+
+			ImageAssert.HasPixels(
+				snapshot,
+				ExpectedPixels
+					.At($"top-left-content-radius", 30, 30)
+					.WithColorTolerance(1)
+					.Pixel(Colors.Red),
+				ExpectedPixels
+					.At($"top-right-content-radius", 30, 120)
+					.WithColorTolerance(1)
+					.Pixel(Colors.Red),
+				ExpectedPixels
+					.At($"bottom-left-content-radius", 120, 30)
+					.WithColorTolerance(1)
+					.Pixel(Colors.Red),
+				ExpectedPixels
+					.At($"bottom-right-content-radius", 120, 120)
+					.WithColorTolerance(1)
+					.Pixel(Colors.Red),
+				ExpectedPixels
+					.At($"left-clip", 5, 75)
+					.Pixel(Colors.Transparent),
+				ExpectedPixels
+					.At($"top-clip", 75, 5)
+					.Pixel(Colors.Transparent),
+				ExpectedPixels
+					.At($"right-clip", 145, 75)
+					.Pixel(Colors.Transparent),
+				ExpectedPixels
+					.At($"bottom-clip", 145, 145)
+					.Pixel(Colors.Transparent)
+
+			);
+		}
+
+		[TestMethod]
 		public async Task Border_LinearGradient()
 		{
 #if __MACOS__
@@ -421,7 +484,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var firstBorderRect = SUT.GetRelativeCoords(SUT.FirstBorder);
 			var secondBorderRect = SUT.GetRelativeCoords(SUT.SecondBorder);
-			var rect = new Rectangle((int)firstBorderRect.X, (int)firstBorderRect.Y,
+			var rect = new System.Drawing.Rectangle((int)firstBorderRect.X, (int)firstBorderRect.Y,
 				(int)firstBorderRect.Width + 1, (int)firstBorderRect.Height + 1);
 
 			await WindowHelper.WaitForIdle();

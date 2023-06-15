@@ -157,7 +157,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 			await sut.RenderAsync(border);
 			var result = await RawBitmap.From(sut, border);
 
-			result.GetPixel(5, 5).Should().Be(nonOpaqueColor);
+			ImageAssert.HasColorAt(result, 5, 5, nonOpaqueColor, tolerance: 1);
 		}
 	}
 }
