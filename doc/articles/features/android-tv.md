@@ -21,4 +21,10 @@ The integration of focus management allows the Android TV remote control to work
 </Page>
 ```
 
-## 
+To disable the native Android highlighting of focused elements, the `styles.xml` file needs to be updated to make the highlight transparent:
+
+```xml
+<item name="android:colorControlHighlight">@android:color/transparent</item>
+```
+
+Please note, that this will disable all the highlights, even in embedded native controls you may host within the Uno Platform app.

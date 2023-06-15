@@ -1,16 +1,4 @@
-﻿using System;
-using Android.App;
-using Android.Content.PM;
-using Android.Views;
-using Java.Interop;
-using Windows.UI.Core;
-using Windows.UI.ViewManagement;
-using Microsoft.Identity.Client;
-using Uno.UI;
-using System.Threading;
-using Android.OS;
-
-namespace SamplesApp.Droid
+﻿namespace SamplesApp.Droid
 {
 	[Activity(
 			MainLauncher = true,
@@ -23,7 +11,8 @@ namespace SamplesApp.Droid
 		},
 		Categories = new[] {
 			Android.Content.Intent.CategoryDefault,
-			Android.Content.Intent.CategoryBrowsable
+			Android.Content.Intent.CategoryBrowsable,
+			Android.Content.Intent.CategoryLeanbackLauncher
 		},
 		DataScheme = "uno-samples-test")]
 	public class MainActivity : Windows.UI.Xaml.ApplicationActivity
