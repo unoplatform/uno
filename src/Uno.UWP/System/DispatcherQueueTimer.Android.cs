@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using Android.OS;
 using Java.Lang;
+using static JetBrains.Annotations.ApiStatus;
 
 #if HAS_UNO_WINUI && IS_UNO_UI_DISPATCHING_PROJECT
 namespace Microsoft.UI.Dispatching;
@@ -21,31 +20,13 @@ partial class DispatcherQueueTimer
 		_runnable = new TickRunnable(this);
 	}
 
-	private void StartNative(TimeSpan interval)
-	{
-		var longInterval = (long)interval.TotalMilliseconds;
+	private void ScheduleTickNative(TimeSpan dueTime) => _handler.PostDelayed(_runnable, (long)dueTime.TotalMilliseconds);
 
-		_runnable.Interval = longInterval;
-		_handler.PostDelayed(_runnable, longInterval);
-	}
-
-	private void StartNative(TimeSpan dueTime, TimeSpan interval)
-	{
-		_runnable.Interval = (long)interval.TotalMilliseconds;
-		_handler.PostDelayed(_runnable, (long)dueTime.TotalMilliseconds);
-	}
-
-	private void StopNative()
-	{
-		_runnable.Interval = -1;
-		_handler.RemoveCallbacks(_runnable);
-	}
+	private void StopNative() => _handler.RemoveCallbacks(_runnable);
 
 	private class TickRunnable : Java.Lang.Object, IRunnable
 	{
 		private readonly DispatcherQueueTimer _timer;
-
-		public long Interval { get; set; }
 
 		public TickRunnable(DispatcherQueueTimer timer)
 		{
@@ -54,16 +35,9 @@ partial class DispatcherQueueTimer
 
 		public void Run()
 		{
-			var interval = Interval;
-			if (interval >= 0)
+			if (_timer.IsRunning)
 			{
 				_timer.RaiseTick();
-
-				interval = Interval;
-				if (interval >= 0) // be sure to not self restart if the timer was Stopped by the Tick event handler
-				{
-					_timer._handler.PostDelayed(this, interval);
-				}
 			}
 		}
 	}

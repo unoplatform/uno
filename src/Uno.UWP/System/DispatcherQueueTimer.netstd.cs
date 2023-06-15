@@ -15,13 +15,11 @@ partial class DispatcherQueueTimer
 
 	private Timer _timer;
 
-	private void StartNative(TimeSpan interval)
+	private void ScheduleTickNative(TimeSpan interval)
 	{
 		_timer ??= new Timer(_ => DispatchRaiseTick());
 		_timer.Change(ClampInterval(interval), Timeout.InfiniteTimeSpan);
 	}
-
-	private void StartNative(TimeSpan dueTime, TimeSpan interval) => StartNative(dueTime);
 
 	private void DispatchRaiseTick()
 	{
@@ -33,14 +31,6 @@ partial class DispatcherQueueTimer
 		}
 #endif
 		_ = CoreDispatcher.Main.RunAsync(Uno.UI.Dispatching.CoreDispatcherPriority.Normal, () => RaiseTick());
-	}
-
-	partial void OnTickFinished(bool continueTicking)
-	{
-		if (IsRunning && IsRepeating && continueTicking)
-		{
-			_timer.Change(ClampInterval(Interval), Timeout.InfiniteTimeSpan);
-		}
 	}
 
 	private void StopNative()

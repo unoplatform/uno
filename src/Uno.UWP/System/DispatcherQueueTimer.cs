@@ -93,7 +93,7 @@ public partial class DispatcherQueueTimer
 		LastTickElapsed = TimeSpan.Zero;
 		if (Interlocked.CompareExchange(ref _state, States.Running, States.Idle) == States.Idle)
 		{
-			StartNative(Interval);
+			ScheduleTickNative(Interval);
 		}
 		else
 		{
@@ -101,7 +101,7 @@ public partial class DispatcherQueueTimer
 			// https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.dispatchertimer.start#Windows_UI_Xaml_DispatcherTimer_Start
 			StopNative();
 
-			StartNative(Interval);
+			ScheduleTickNative(Interval);
 		}
 
 		_stopwatch.Restart();
@@ -138,12 +138,12 @@ public partial class DispatcherQueueTimer
 
 			if (IsRunning) // be sure to not self restart if the timer was Stopped by the Tick event handler
 			{
-				StartNative(interval);
+				ScheduleTickNative(interval);
 			}
 		}
 		else
 		{
-			StartNative(interval - elapsed, interval);
+			ScheduleTickNative(interval - elapsed);
 		}
 	}
 
@@ -181,10 +181,13 @@ public partial class DispatcherQueueTimer
 			isRunning &&
 			IsRepeating;
 
-		OnTickFinished(shouldContinueTicking);
+		if (IsRunning && IsRepeating && shouldContinueTicking)
+		{
+			ScheduleTickNative(Interval);
+		}
 	}
 
-	partial void OnTickFinished(bool continueTicking);
+	partial void ScheduleNextTick();
 
 	~DispatcherQueueTimer()
 	{
