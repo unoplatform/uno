@@ -15,6 +15,7 @@ using Uno.Foundation.Logging;
 using static Windows.UI.Input.PointerUpdateKind;
 using Exception = System.Exception;
 using Windows.Foundation;
+using Windows.UI.Xaml.Controls;
 
 namespace Uno.UI.Runtime.Skia;
 
@@ -411,7 +412,7 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 			case EventType.Scroll when EventHelper.GetScrollDeltas(evt!, out var scrollX, out var scrollY):
 				var isHorizontal = scrollY == 0;
 				properties.IsHorizontalMouseWheel = isHorizontal;
-				properties.MouseWheelDelta = (int)(isHorizontal ? scrollX : scrollY);
+				properties.MouseWheelDelta = (int)((isHorizontal ? scrollX : -scrollY) * ScrollContentPresenter.ScrollViewerDefaultMouseWheelDelta);
 				break;
 
 			case EventType.Scroll: // when no scroll value
