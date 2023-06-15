@@ -20,15 +20,6 @@ WinRTFeatureConfiguration.Focus.EnableExperimentalKeyboardFocus = true;
 
 The feature requires additional testing to verify all edge cases on Android and iOS. In a future release, we will switch the experimental support to be enabled by default.
 
-### Android keyboard focus highlighting
-
-To disable the native Android highlighting of focused elements when keyboard navigation is used, the `styles.xml` file needs to be updated to make the highlight transparent:
-
-```xml
-<item name="android:colorControlHighlight">@android:color/transparent</item>
-```
-
-
 ## Disabling initial focus on Page
 
 The focus management logic in UWP/WinUI sets initial focus on `Page` that is being loaded (for example during navigation) if no element in the app is currently focused. This may cause an input element like `TextBox` to get focused automatically. This may not be a desirable behavior though, as it will cause the virtual keyboard on mobile platforms to open up. To avoid this initial focus, please set `IsTabStop` of the `Page` to `false`:
