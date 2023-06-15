@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if !__IOS__ && !__MACOS__ && !__ANDROID__
+using System;
 using System.Threading;
 using Uno.UI.Dispatching;
 
@@ -50,3 +51,4 @@ partial class DispatcherQueueTimer
 			_minInterval :
 			interval;
 }
+#endif
