@@ -839,6 +839,10 @@
 			<!-- BEGIN Skia Adjustments -->
 			<Member fullName="SkiaSharp.SKSize Uno.UI.Skia.Platform.WpfHost::CanvasSize()" reason="Incorrect type" />
 			<!-- END Skia Adjustments -->
+			
+			<Member fullName="System.Boolean Uno.UI.Skia.Platform.WpfHost.get_IsIsland()" reason="Not needed" />
+			<Member fullName="Windows.UI.Xaml.UIElement Uno.UI.Skia.Platform.WpfHost.get_RootElement()" reason="Not needed" />
+			<Member fullName="Uno.UI.Skia.Platform.WpfHost Uno.UI.Skia.Platform.WpfHost.get_Current()" reason="Not needed" />	
 		</Properties>
 		<Methods>
 			<Member fullName="System.Void Windows.UI.Core.CoreWindow.RaisePointerCancelled(Windows.UI.Core.PointerEventArgs args)" reason="Not present in WInUI" />
@@ -1531,7 +1535,7 @@
 			<Member fullName="System.Void Windows.Devices.Sensors.ProximitySensor..ctor()" reason="Does not exist in Windows" />
 			<Member fullName="System.Void Windows.Devices.Sensors.ProximitySensorReading..ctor()" reason="Does not exist in Windows" />
 			<Member fullName="System.Void Windows.Devices.Sensors.ProximitySensorReadingChangedEventArgs..ctor()" reason="Does not exist in Windows" />
-			<!-- END Proximity sensor -->
+			<!-- END Proximity sensor -->		
 		</Methods>
 	</IgnoreSet>
 	  <!--
