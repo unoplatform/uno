@@ -26,7 +26,7 @@ partial class DispatcherQueueTimer
 	private void DispatchRaiseTick()
 	{
 #if __WASM__
-		if (!CoreDispatcher.Main.IsThreadingSupported)
+		if (!CoreDispatcher.IsThreadingSupported)
 		{
 			RaiseTick();
 			return;
