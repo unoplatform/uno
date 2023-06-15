@@ -57,7 +57,7 @@ public partial class ShapeVisual
 	{
 		if (ViewBox is { } viewBox)
 		{
-			session.Surface.Canvas.ClipRect(new SKRect(viewBox.Offset.X, viewBox.Offset.Y, viewBox.Offset.X + viewBox.Size.X, viewBox.Offset.Y + viewBox.Size.Y));
+			session.Surface.Canvas.ClipRect(viewBox.GetRect(), antialias: true);
 		}
 
 		base.Draw(in session);
@@ -77,11 +77,14 @@ public partial class ShapeVisual
 			// We apply the transformed viewbox clipping
 			if (transform.IsIdentity)
 			{
-				parentSession.Surface.Canvas.ClipRect(new SKRect(viewBox.Offset.X, viewBox.Offset.Y, viewBox.Offset.X + viewBox.Size.X, viewBox.Offset.Y + viewBox.Size.Y));
+				parentSession.Surface.Canvas.ClipRect(viewBox.GetRect(), antialias: true);
 			}
 			else
 			{
 				var shape = new SKPath();
+				// Note: Here we apply the view box at 0,0 instead of offset
+				//	This is because the view box is somehow the clipping applied on us by our parent (in its coordinate space),
+				//	but when transformed our shapes can draw their content out that bounds ... but still have to respect the clipping of our parent itself.
 				shape.AddRect(new SKRect(0, 0, viewBox.Offset.X + viewBox.Size.X, viewBox.Offset.Y + viewBox.Size.Y));
 				shape.Transform(transform);
 				parentSession.Surface.Canvas.ClipPath(shape, antialias: true);
@@ -94,7 +97,9 @@ public partial class ShapeVisual
 			parentSession.Surface.Canvas.Concat(ref transform);
 		}
 
-		Clip?.Apply(parentSession.Surface);
+		// Note: We don't apply the clip here, as it is already applied on the shapes (i.e. CornerRadius)
+		//		 The Clip property is only used to apply the clip on the children (i.e. the UIElement's content)
+		// Clip?.Apply(parentSession.Surface);
 
 		var session = parentSession; // Creates a new session (clone the struct)
 
