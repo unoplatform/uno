@@ -1,4 +1,12 @@
-﻿namespace SamplesApp.Droid
+﻿using System;
+using System.Threading;
+using Android.App;
+using Android.OS;
+using Android.Views;
+using Java.Interop;
+using Uno.UI;
+
+namespace SamplesApp.Droid
 {
 	[Activity(
 			MainLauncher = true,
@@ -15,6 +23,12 @@
 			Android.Content.Intent.CategoryLeanbackLauncher
 		},
 		DataScheme = "uno-samples-test")]
+	[IntentFilter(
+		new[] { Android.Content.Intent.ActionMain },
+		Categories = new[] {
+			Android.Content.Intent.CategoryLauncher,
+			Android.Content.Intent.CategoryLeanbackLauncher 
+		})]
 	public class MainActivity : Windows.UI.Xaml.ApplicationActivity
 	{
 		private HandlerThread _pixelCopyHandlerThread;
