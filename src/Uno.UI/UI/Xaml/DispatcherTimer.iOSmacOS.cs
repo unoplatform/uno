@@ -4,52 +4,51 @@ using System.Text;
 using System.Threading;
 using Foundation;
 
-namespace Windows.UI.Xaml
+namespace Windows.UI.Xaml;
+
+partial class DispatcherTimer
 {
-	partial class DispatcherTimer
+	private NSTimer _timer;
+
+	private void StartNative(TimeSpan interval)
 	{
-		private NSTimer _timer;
+		Start(NSTimer.CreateScheduledTimer(interval.TotalSeconds, repeats: true, block: OnRecurentTick));
+	}
 
-		private void StartNative(TimeSpan interval)
-		{
-			Start(NSTimer.CreateScheduledTimer(interval.TotalSeconds, repeats: true, block: OnRecurentTick));
-		}
+	private void StartNative(TimeSpan dueTime, TimeSpan interval)
+	{
+		Start(NSTimer.CreateScheduledTimer(dueTime.TotalSeconds, repeats: false, block: OnUniqueTick));
+	}
 
-		private void StartNative(TimeSpan dueTime, TimeSpan interval)
-		{
-			Start(NSTimer.CreateScheduledTimer(dueTime.TotalSeconds, repeats: false, block: OnUniqueTick));
-		}
+	private void Start(NSTimer timer)
+	{
+		Interlocked.Exchange(ref _timer, timer)?.Invalidate();
+		NSRunLoop.Main.AddTimer(timer, NSRunLoopMode.Common);
+	}
 
-		private void Start(NSTimer timer)
-		{
-			Interlocked.Exchange(ref _timer, timer)?.Invalidate();
-			NSRunLoop.Main.AddTimer(timer, NSRunLoopMode.Common);
-		}
+	private void StopNative()
+	{
+		Interlocked.Exchange(ref _timer, null)?.Invalidate();
+	}
 
-		private void StopNative()
+	private void OnUniqueTick(NSTimer timer)
+	{
+		if (_timer == timer)
 		{
-			Interlocked.Exchange(ref _timer, null)?.Invalidate();
-		}
+			RaiseTick();
 
-		private void OnUniqueTick(NSTimer timer)
-		{
-			if (_timer == timer)
+			if (_timer == timer) // be sure to not self restart if the timer was Stopped by the Tick event handler
 			{
-				RaiseTick();
-
-				if (_timer == timer) // be sure to not self restart if the timer was Stopped by the Tick event handler
-				{
-					StartNative(Interval);
-				}
+				StartNative(Interval);
 			}
 		}
+	}
 
-		private void OnRecurentTick(NSTimer timer)
+	private void OnRecurentTick(NSTimer timer)
+	{
+		if (_timer == timer)
 		{
-			if (_timer == timer)
-			{
-				RaiseTick();
-			}
+			RaiseTick();
 		}
 	}
 }

@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Threading;
-using Windows.UI.Core;
+using Uno.UI.Dispatching;
 
 namespace Windows.UI.Xaml;
 
@@ -17,27 +16,23 @@ partial class DispatcherTimer
 		_timer.Change(ClampInterval(interval), Timeout.InfiniteTimeSpan);
 	}
 
-	private void StartNative(TimeSpan dueTime, TimeSpan interval)
-	{
-		_timer ??= new Timer(_ => DispatchRaiseTick());
-		_timer.Change(ClampInterval(dueTime), Timeout.InfiniteTimeSpan);
-	}
+	private void StartNative(TimeSpan dueTime, TimeSpan interval) => StartNative(dueTime);
 
 	private void DispatchRaiseTick()
 	{
 #if __WASM__
-		if (!dispatcher.IsThreadingSupported)
+		if (!CoreDispatcher.IsThreadingSupported)
 		{
 			RaiseTick();
 			return;
 		}
 #endif
-		CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, RaiseTick);
+		_ = CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, () => RaiseTick());
 	}
 
-	partial void OnTickFinished()
+	partial void OnTickFinished(bool continueTicking)
 	{
-		if (IsEnabled)
+		if (IsEnabled && continueTicking)
 		{
 			_timer.Change(ClampInterval(Interval), Timeout.InfiniteTimeSpan);
 		}
