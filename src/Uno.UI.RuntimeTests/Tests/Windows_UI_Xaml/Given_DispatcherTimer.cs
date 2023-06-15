@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Private.Infrastructure;
 using Windows.UI.Xaml;
+using UnhandledExceptionEventArgs = Windows.UI.Xaml.UnhandledExceptionEventArgs;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml;
 
@@ -102,13 +103,16 @@ public class Given_DispatcherTimer
 	{
 		var dispatcherTimer = new DispatcherTimer();
 		var simulatedExceptionMessage = "Simulated exception";
-		Application.Current.UnhandledException += (s, e) =>
+		void HandleException(object s, UnhandledExceptionEventArgs e)
 		{
 			if (e.Exception.Message == simulatedExceptionMessage)
 			{
 				e.Handled = true;
 			}
-		};
+		}
+
+		Application.Current.UnhandledException += HandleException;
+
 		dispatcherTimer.Interval = TimeSpan.FromMilliseconds(100);
 		try
 		{
@@ -123,10 +127,13 @@ public class Given_DispatcherTimer
 			await Task.Delay(200);
 			// Second tick never happens
 			Assert.AreEqual(tickCounter, 1);
+			// Even then, the timer still appears enabled
+			Assert.IsTrue(dispatcherTimer.IsEnabled);
 		}
 		finally
 		{
 			dispatcherTimer.Stop();
+			Application.Current.UnhandledException -= HandleException;
 		}
 	}
 }
