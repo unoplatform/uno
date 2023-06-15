@@ -1,7 +1,6 @@
 ﻿using System;
 using Android.OS;
 using Java.Lang;
-using static JetBrains.Annotations.ApiStatus;
 
 #if HAS_UNO_WINUI && IS_UNO_UI_DISPATCHING_PROJECT
 namespace Microsoft.UI.Dispatching;
