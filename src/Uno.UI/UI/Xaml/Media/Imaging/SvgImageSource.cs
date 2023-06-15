@@ -58,10 +58,7 @@ public partial class SvgImageSource : ImageSource
 			UnloadImageData();
 		}
 
-		if (e.NewValue is Uri uri)
-		{
-			InitFromUri(uri);
-		}
+		InitFromUri(e.NewValue as Uri);
 
 #if __NETSTD__
 		InvalidateSource();

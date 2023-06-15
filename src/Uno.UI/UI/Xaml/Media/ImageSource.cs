@@ -69,17 +69,15 @@ namespace Windows.UI.Xaml.Media
 		{
 			var uri = TryCreateUriFromString(url);
 
-			if (uri != null)
-			{
-				InitFromUri(uri);
-			}
-			else
+			if (uri is null)
 			{
 				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().DebugFormat("The uri [{0}] is not valid, skipping.", url);
 				}
 			}
+
+			InitFromUri(uri);
 		}
 
 		protected ImageSource(Uri uri) : this()
@@ -112,7 +110,7 @@ namespace Windows.UI.Xaml.Media
 			return null;
 		}
 
-		internal void InitFromUri(Uri uri)
+		internal void InitFromUri(Uri? uri)
 		{
 			CleanupResource();
 			FilePath = null;
