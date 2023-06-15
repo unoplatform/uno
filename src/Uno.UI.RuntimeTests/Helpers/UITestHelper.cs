@@ -45,7 +45,7 @@ public static class UITestHelper
 	/// <param name="opaque">Indicates if the resulting image should be make opaque (i.e. all pixels has an opacity of 0xFF) or not.</param>
 	/// <param name="scaling">Indicates the scaling strategy to apply for the image (when screen is not using a 1.0 scale, usually 4K screens).</param>
 	/// <returns></returns>
-	public static async Task<RawBitmap> ScreenShot(FrameworkElement element, bool opaque = true, ScreenShotScalingMode scaling = ScreenShotScalingMode.UsePhysicalPixelsWithImplicitScaling)
+	public static async Task<RawBitmap> ScreenShot(FrameworkElement element, bool opaque = false, ScreenShotScalingMode scaling = ScreenShotScalingMode.UsePhysicalPixelsWithImplicitScaling)
 	{
 		var renderer = new RenderTargetBitmap();
 		element.UpdateLayout();
@@ -115,10 +115,12 @@ public static class UITestHelper
 						BorderBrush = new SolidColorBrush(Windows.UI.Colors.Black),
 						BorderThickness = new Thickness(1),
 						Background = new SolidColorBrush(Windows.UI.Colors.Gray),
+						Width = bitmap.Width * bitmap.ImplicitScaling + 2,
+						Height = bitmap.Height * bitmap.ImplicitScaling + 2,
 						Child = img = new Image
 						{
-							Width = bitmap.Width,
-							Height = bitmap.Height,
+							Width = bitmap.Width * bitmap.ImplicitScaling,
+							Height = bitmap.Height * bitmap.ImplicitScaling,
 							Source = await bitmap.GetImageSource(),
 							Stretch = Stretch.None,
 							ManipulationMode = ManipulationModes.Scale
@@ -126,6 +128,7 @@ public static class UITestHelper
 								| ManipulationModes.TranslateX
 								| ManipulationModes.TranslateY
 								| ManipulationModes.TranslateInertia,
+							RenderTransformOrigin = new Point(.5, .5),
 							RenderTransform = imgTr = new CompositeTransform()
 						}
 					},

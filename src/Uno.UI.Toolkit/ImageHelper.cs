@@ -13,7 +13,7 @@ internal static class ImageHelper
 	/// </summary>
 	/// <param name="rgba8PixelsBuffer">The pixels buffer (must not be pre-multiplied!).</param>
 	/// <param name="background">The **opaque** background to use.</param>
-	public static void MakeOpaque(byte[] rgba8PixelsBuffer, Color? background = null)
+	public static bool MakeOpaque(byte[] rgba8PixelsBuffer, Color? background = null)
 	{
 		if (background is { A: not 255 })
 		{
@@ -22,9 +22,15 @@ internal static class ImageHelper
 
 		background ??= Colors.White;
 
+		var modified = false;
 		for (var i = 0; i < rgba8PixelsBuffer.Length; i += 4)
 		{
 			var a = rgba8PixelsBuffer[i + 3];
+			if (a == 255)
+			{
+				continue;
+			}
+
 			var r = rgba8PixelsBuffer[i + 2];
 			var g = rgba8PixelsBuffer[i + 1];
 			var b = rgba8PixelsBuffer[i + 0];
@@ -35,7 +41,11 @@ internal static class ImageHelper
 			rgba8PixelsBuffer[i + 2] = opaque.R;
 			rgba8PixelsBuffer[i + 1] = opaque.G;
 			rgba8PixelsBuffer[i + 0] = opaque.B;
+
+			modified = true;
 		}
+
+		return modified;
 	}
 
 	/// <summary>

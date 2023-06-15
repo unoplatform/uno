@@ -117,8 +117,7 @@ namespace Uno.UI.RuntimeTests.Helpers
 				throw new InvalidOperationException("Populate must be invoked first");
 			}
 
-			_altered = true;
-			ImageHelper.MakeOpaque(_pixels, background);
+			_altered = ImageHelper.MakeOpaque(_pixels, background);
 		}
 
 		internal async Task<ImageSource> GetImageSource(bool preferOriginal = false)
