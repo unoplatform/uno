@@ -15,7 +15,7 @@ partial class DispatcherQueueTimer
 	private Handler _handler;
 	private TickRunnable _runnable;
 
-	partial void NativeCtor()
+	partial void InitializePlatform()
 	{
 		_handler = new Handler(Looper.MainLooper);
 		_runnable = new TickRunnable(this);

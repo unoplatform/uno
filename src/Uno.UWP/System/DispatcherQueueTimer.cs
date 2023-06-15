@@ -22,13 +22,18 @@ public partial class DispatcherQueueTimer
 	}
 
 	private readonly Stopwatch _stopwatch = new();
-
+	private readonly bool _simulateDispatcherTimer;
 	private int _state = States.Idle;
 	private TimeSpan _interval;
 
-	internal DispatcherQueueTimer()
+	/// <summary>
+	/// Creates a new instance of DispatcherQueueTimer.
+	/// </summary>
+	/// <param name="simulateDispatcherTimer">Indicates whether the timer simulates DispatcherTimer behavior. In such case exceptions break the timer and interval is reset when it changes.</param>
+	internal DispatcherQueueTimer(bool simulateDispatcherTimer = false)
 	{
 		InitializePlatform();
+		_simulateDispatcherTimer = simulateDispatcherTimer;
 	}
 
 	partial void InitializePlatform();
@@ -53,6 +58,10 @@ public partial class DispatcherQueueTimer
 			}
 
 			_interval = value;
+			if (_simulateDispatcherTimer && IsRunning)
+			{
+				Restart(value);
+			}
 		}
 	}
 
@@ -140,7 +149,6 @@ public partial class DispatcherQueueTimer
 
 	private void RaiseTick(bool isTickForRestart = false)
 	{
-
 		var isRunning = IsRunning;
 
 		if (isRunning && !isTickForRestart && !IsRepeating)
@@ -148,6 +156,7 @@ public partial class DispatcherQueueTimer
 			Stop();
 		}
 
+		bool exceptionOcurred = false;
 		try
 		{
 			if (isRunning)
@@ -163,9 +172,16 @@ public partial class DispatcherQueueTimer
 			{
 				this.Log().Error($"Unhandled exception in {nameof(DispatcherQueueTimer)}.{nameof(Tick)}", ex);
 			}
+			exceptionOcurred = true;
 		}
 
-		OnTickFinished(!isTickForRestart && IsRepeating);
+		var ignoreExceptions = !_simulateDispatcherTimer;
+		var shouldContinueTicking =
+			(ignoreExceptions || !exceptionOcurred) &&
+			isRunning &&
+			IsRepeating;
+
+		OnTickFinished(shouldContinueTicking);
 	}
 
 	partial void OnTickFinished(bool continueTicking);
