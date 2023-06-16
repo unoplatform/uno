@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
@@ -34,7 +36,7 @@ namespace Uno.UI.Skia.Platform
 		private readonly long _fakePointerId = Pointer.CreateUniqueIdForUnknownPointer();
 		private readonly DragDropManager _manager;
 
-		private static WpfControl _rootControl;
+		private static WpfControl? _rootControl;
 
 		public WpfDragDropExtension(object owner)
 		{
@@ -43,7 +45,7 @@ namespace Uno.UI.Skia.Platform
 			WpfManager.XamlRootMap.Registered += XamlRootMap_Registered;
 		}
 
-		private void XamlRootMap_Registered(object sender, XamlRoot xamlRoot)
+		private void XamlRootMap_Registered(object? sender, XamlRoot xamlRoot)
 		{
 			// TODO:MZ: Multi-window support
 			var host = WpfManager.XamlRootMap.GetHostForRoot(xamlRoot) as WpfControl;
@@ -82,7 +84,17 @@ namespace Uno.UI.Skia.Platform
 			=> e.Effects = ToDropEffects(_manager.ProcessDropped(new DragEventSource(_fakePointerId, e)));
 
 		public void StartNativeDrag(CoreDragInfo info)
-			=> _rootControl.Dispatcher.InvokeAsync(async () =>
+		{
+			if (_rootControl is null)
+			{
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().LogError("Can't start dragging until root element is initialized");
+				}
+				return;
+			}
+
+			_rootControl.Dispatcher.InvokeAsync(async () =>
 			{
 				try
 				{
@@ -96,6 +108,7 @@ namespace Uno.UI.Skia.Platform
 					this.Log().Error("Failed to start native Drag and Drop.", e);
 				}
 			});
+		}
 
 		private static DataPackageOperation ToDataPackageOperation(DragDropEffects wpfOp)
 			=> (DataPackageOperation)((int)wpfOp) & (DataPackageOperation.Copy | DataPackageOperation.Move | DataPackageOperation.Link);
@@ -117,15 +130,15 @@ namespace Uno.UI.Skia.Platform
 				{
 					DataPackage.SeparateUri(
 						text,
-						out string webLink,
-						out string applicationLink);
+						out string? webLink,
+						out string? applicationLink);
 
-					if (webLink != null)
+					if (webLink is not null)
 					{
 						dst.SetWebLink(new Uri(webLink));
 					}
 
-					if (applicationLink != null)
+					if (applicationLink is not null)
 					{
 						dst.SetApplicationLink(new Uri(applicationLink));
 					}
@@ -291,7 +304,7 @@ namespace Uno.UI.Skia.Platform
 			}
 
 			/// <inheritdoc />
-			public Point GetPosition(object relativeTo)
+			public Point GetPosition(object? relativeTo)
 			{
 				var rawWpfPosition = _wpfArgs.GetPosition(_rootControl);
 				var rawPosition = new Point(rawWpfPosition.X, rawWpfPosition.Y);
