@@ -320,7 +320,7 @@ namespace Windows.UI.Xaml.Controls
 		private void OnPointerExited(object sender, PointerRoutedEventArgs e)
 		{
 			_isScrubbing = false;
-			if (_wasPlaying && _mediaPlayer != null && !_mediaPlayer.PlaybackSession.IsPlaying)
+			if (_wasPlaying)
 			{
 				_mediaPlayer?.Play();
 			}
