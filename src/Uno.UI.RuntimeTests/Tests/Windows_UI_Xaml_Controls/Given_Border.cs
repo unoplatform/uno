@@ -352,7 +352,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var root = new Border { Child = sut };
 			await UITestHelper.Load(root);
 			var snapshot = await UITestHelper.ScreenShot(root);
-			await UITestHelper.Show(snapshot);
 
 			ImageAssert.HasPixels(
 				snapshot,
