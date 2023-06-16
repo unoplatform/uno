@@ -27,7 +27,7 @@ namespace SamplesApp.Droid
 		new[] { Android.Content.Intent.ActionMain },
 		Categories = new[] {
 			Android.Content.Intent.CategoryLauncher,
-			Android.Content.Intent.CategoryLeanbackLauncher 
+			Android.Content.Intent.CategoryLeanbackLauncher
 		})]
 	public class MainActivity : Windows.UI.Xaml.ApplicationActivity
 	{
