@@ -106,19 +106,21 @@ namespace Windows.UI.Xaml.Controls
 
 				m_isBuffering = currentState == MediaPlaybackState.Buffering;
 
+#if !HAS_UNO
 				// If playing state changed, toggle position timer
 				// to avoid ticking if position is not updating
-				//if (previousIsPlaying != m_isPlaying)
-				//{
-				//	if (m_isPlaying)
-				//	{
-				//		StartPositionUpdateTimer();
-				//	}
-				//	else
-				//	{
-				//		StopPositionUpdateTimer();
-				//	}
-				//}
+				if (previousIsPlaying != m_isPlaying)
+				{
+					if (m_isPlaying)
+					{
+						StartPositionUpdateTimer();
+					}
+					else
+					{
+						StopPositionUpdateTimer();
+					}
+				}
+#endif
 				if ((previousIsPlaying != m_isPlaying || previousIsBuffering != m_isBuffering) && !m_isInScrubMode)
 				{
 					if ((m_isPlaying && !m_isBuffering || m_shouldDismissControlPanel) /*&& !m_isthruScrubber*/)
@@ -131,17 +133,19 @@ namespace Windows.UI.Xaml.Controls
 						ShowControlPanel();
 					}
 				}
-				//if (!m_isPlaying)
-				//{
-				//	IFC(ResetTrickMode());
-				//}
-				//// Timing issues still Natural duration values zero even after source loaded.
-				//if (m_sourceLoaded && m_naturalDuration.TimeSpan.Duration == 0)
-				//{
-				//	wf::TimeSpan value;
-				//	IFC(spPlaybackSession->get_NaturalDuration(&value));
-				//	m_naturalDuration.TimeSpan = value;
-				//}
+#if !HAS_UNO
+				if (!m_isPlaying)
+				{
+					IFC(ResetTrickMode());
+				}
+				// Timing issues still Natural duration values zero even after source loaded.
+				if (m_sourceLoaded && m_naturalDuration.TimeSpan.Duration == 0)
+				{
+					wf::TimeSpan value;
+					IFC(spPlaybackSession->get_NaturalDuration(&value));
+					m_naturalDuration.TimeSpan = value;
+				}
+#endif
 				UpdateVisualState();
 			}
 		}
@@ -413,13 +417,18 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (m_transportControlsEnabled && _mediaPlayer is { })
 			{
-				if (//!m_isAudioOnly &&
-					//!IsLiveContent() &&
+				if (
+#if !HAS_UNO
+					!m_isAudioOnly &&
+					!IsLiveContent() &&
+#endif
 					!m_isInScrubMode)
 				{
 					m_currentPlaybackRate = _mediaPlayer.PlaybackSession.PlaybackRate;
 					_mediaPlayer.PlaybackSession.PlaybackRate = 0;
-					//IFC(EnableValueChangedEventThrottlingOnSliderAutomation(false));
+#if !HAS_UNO
+					EnableValueChangedEventThrottlingOnSliderAutomation(false);
+#endif
 					m_isInScrubMode = true;
 				}
 			}
@@ -429,12 +438,17 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (m_transportControlsEnabled && _mediaPlayer is { })
 			{
-				if (//!m_isAudioOnly &&
-					//!IsLiveContent() &&
+				if (
+#if !HAS_UNO
+					!m_isAudioOnly &&
+					!IsLiveContent() &&
+#endif
 					m_isInScrubMode)
 				{
 					_mediaPlayer.PlaybackSession.PlaybackRate = m_currentPlaybackRate;
-					//EnableValueChangedEventThrottlingOnSliderAutomation(true);
+#if !HAS_UNO
+					EnableValueChangedEventThrottlingOnSliderAutomation(true);
+#endif
 					m_isInScrubMode = false;
 				}
 			}

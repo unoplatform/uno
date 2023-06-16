@@ -246,8 +246,10 @@ namespace Windows.UI.Xaml.Controls
 			Bind(m_tpControlPanelGrid, x => x.PointerEntered += OnControlPanelEntered, x => x.PointerExited -= OnControlPanelEntered);
 			Bind(m_tpControlPanelGrid, x => x.PointerExited += OnControlPanelExited, x => x.PointerExited -= OnControlPanelExited);
 			Bind(m_tpControlPanelGrid, x => x.PointerCaptureLost += OnControlPanelCaptureLost, x => x.PointerCaptureLost -= OnControlPanelCaptureLost);
-			//Bind(m_tpControlPanelGrid, x => x.GotFocus += OnControlPanelGotFocus, x => x.GotFocus -= OnControlPanelGotFocus);
-			//Bind(m_tpControlPanelGrid, x => x.LostFocus += OnControlPanelLostFocus, x => x.LostFocus -= OnControlPanelLostFocus);
+#if !HAS_UNO
+			Bind(m_tpControlPanelGrid, x => x.GotFocus += OnControlPanelGotFocus, x => x.GotFocus -= OnControlPanelGotFocus);
+			Bind(m_tpControlPanelGrid, x => x.LostFocus += OnControlPanelLostFocus, x => x.LostFocus -= OnControlPanelLostFocus);
+#endif
 			BindSizeChanged(_controlPanelBorder, ControlPanelBorderSizeChanged);
 
 			// Interactive parts of MTC, but outside of MediaControlsCommandBar:
@@ -257,8 +259,10 @@ namespace Windows.UI.Xaml.Controls
 			BindButtonClick(m_tpTHLeftSidePlayPauseButton, PlayPause);
 
 			// MediaControlsCommandBar\PrimaryCommands:
-			//BindButtonClick(m_tpCCSelectionButton, null);
-			//BindButtonClick(m_tpTHAudioTrackSelectionButton, null);
+#if !HAS_UNO
+			BindButtonClick(m_tpCCSelectionButton, null);
+			BindButtonClick(m_tpTHAudioTrackSelectionButton, null);
+#endif
 			// --- LeftSeparator ---
 			BindButtonClick(m_tpStopButton, Stop);
 			BindButtonClick(m_tpSkipBackwardButton, SkipBackward);
@@ -271,7 +275,9 @@ namespace Windows.UI.Xaml.Controls
 			// --- RightSeparator ---
 			BindButtonClick(m_tpRepeatButton, RepeatButtonTapped);
 			BindButtonClick(m_tpZoomButton, ZoomButtonTapped);
-			//BindButtonClick(m_tpCastButton, null);
+#if !HAS_UNO
+			BindButtonClick(m_tpCastButton, null);
+#endif
 			BindButtonClick(m_tpCompactOverlayButton, UpdateCompactOverlayMode);
 			BindButtonClick(m_tpFullWindowButton, FullWindowButtonTapped);
 
@@ -431,23 +437,29 @@ namespace Windows.UI.Xaml.Controls
 				if (!m_controlPanelIsVisible)
 				{
 					m_controlPanelIsVisible = true;
-					//if (!m_isVSStateChangeExternal) // Skip if Visual State already happen through external
-					//{
-					//	m_controlPanelVisibilityChanged = TRUE;
-					//}
+#if !HAS_UNO
+					if (!m_isVSStateChangeExternal) // Skip if Visual State already happen through external
+					{
+						m_controlPanelVisibilityChanged = TRUE;
+					}
+#endif
 				}
 
-				//ShowControlPanelFromMPE();
+#if !HAS_UNO
+				ShowControlPanelFromMPE();
 
 				// Resume position updates now that CP is visible
-				//IFC(StartPositionUpdateTimer());
+				StartPositionUpdateTimer();
+#endif
 
 				// Immediately start the timer to hide control panel
 				StartControlPanelHideTimer();
 
 				UpdateVisualState();
 
-				//m_isVSStateChangeExternal = FALSE;
+#if !HAS_UNO
+				m_isVSStateChangeExternal = FALSE;
+#endif
 
 #if HAS_UNO
 				// Adjust layout bounds immediately
@@ -465,6 +477,8 @@ namespace Windows.UI.Xaml.Controls
 					{
 						// Both CP and Vertical Volume will be hiddden, so stop their hide timers.
 						StopControlPanelHideTimer();
+
+#if !HAS_UNO
 						//IFC(StopVerticalVolumeHideTimer());
 
 						// Stop position updates now that CP is not visible
@@ -477,23 +491,28 @@ namespace Windows.UI.Xaml.Controls
 						//	m_verticalVolumeIsVisible = FALSE;
 						//	m_verticalVolumeVisibilityChanged = TRUE;
 						//}
+#endif
 
 						// Flag control panel itself to hide
 						m_controlPanelIsVisible = false;
+#if !HAS_UNO
 						//if (!m_isVSStateChangeExternal) // Skip if Visual State already happen through external
 						//{
 						//	m_controlPanelVisibilityChanged = TRUE;
 						//}
 
 						//HideControlPanelFromMPE();
+#endif
 
 						UpdateVisualState();
 					}
 				}
 
 				m_shouldDismissControlPanel = false;
+#if !HAS_UNO
 				//m_isthruScrubber = false;
 				//m_isVSStateChangeExternal = false;
+#endif
 			}
 		}
 		public void Show() => ShowControlPanel();
@@ -523,7 +542,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (m_tpCastButton is { })
 			{
-#if false // not implemented
+#if !HAS_UNO
 				var deviceSelector = CastingDevice.GetDeviceSelector(
 					CastingPlaybackTypes.Audio |
 					CastingPlaybackTypes.Video |
@@ -590,10 +609,15 @@ namespace Windows.UI.Xaml.Controls
 			if (m_transportControlsEnabled)
 			{
 				// Check flags to minimize work in this frquently called handler
-				if (//!m_isAudioOnly &&
+				if (
+#if !HAS_UNO
+					!m_isAudioOnly &&
+#endif
 					!m_controlPanelIsVisible &&
 					ShowAndHideAutomatically /* ignore if when auto hide/show is disabled */
-					// && !m_hasError
+#if !HAS_UNO
+					&& !m_hasError
+#endif
 					)
 				{
 					ShowControlPanel();
@@ -964,43 +988,45 @@ namespace Windows.UI.Xaml.Controls
 		// visual states
 		private void InitializeVisualState()
 		{
-			//if (MTCParent_MediaElement == m_parentType)
-			//{
-			//	IFC(InitializeVisualStateFromME());
-			//}
-			//else if (MTCParent_MediaPlayerElement == m_parentType)
-			//{
-			//	IFC(InitializeVisualStateFromMPE());
-			//}
+#if !HAS_UNO
+			if (MTCParent_MediaElement == m_parentType)
+			{
+				IFC(InitializeVisualStateFromME());
+			}
+			else if (MTCParent_MediaPlayerElement == m_parentType)
+			{
+				IFC(InitializeVisualStateFromMPE());
+			}
 
-			//IFC(InitializeVolume());
+			IFC(InitializeVolume());
 
-			//if (MTCParent_MediaElement == m_parentType)
-			//{
-			//	// Make sure we have the latest playback item
-			//	IFC(UpdatePlaybackItemReference());
-			//}
+			if (MTCParent_MediaElement == m_parentType)
+			{
+				// Make sure we have the latest playback item
+				IFC(UpdatePlaybackItemReference());
+			}
 
-			//IFC(UpdateRepeatButtonUI());
+			IFC(UpdateRepeatButtonUI());
 
-			// Update UI
-			//IFC(UpdatePlayPauseUI());
-			//IFC(UpdateFullWindowUI());
-			//IFC(UpdatePositionUI());
-			//IFC(UpdateDownloadProgressUI());
-			//IFC(UpdateErrorUI());
+			Update UI
+			IFC(UpdatePlayPauseUI());
+			IFC(UpdateFullWindowUI());
+			IFC(UpdatePositionUI());
+			IFC(UpdateDownloadProgressUI());
+			IFC(UpdateErrorUI());
 
-			//if (m_tpMediaPositionSlider)
-			//{
-			//	IFC(m_tpMediaPositionSlider.Cast<Slider>()->get_Minimum(&m_positionSliderMinimum));
-			//	IFC(m_tpMediaPositionSlider.Cast<Slider>()->get_Maximum(&m_positionSliderMaximum));
-			//}
+			if (m_tpMediaPositionSlider)
+			{
+				IFC(m_tpMediaPositionSlider.Cast<Slider>()->get_Minimum(&m_positionSliderMinimum));
+				IFC(m_tpMediaPositionSlider.Cast<Slider>()->get_Maximum(&m_positionSliderMaximum));
+			}
 
-			//// We could have switched into or out of audio mode, which changes the controls that are displayed.
-			//IFC(UpdateAudioSelectionUI());
-			//IFC(UpdateIsMutedUI());
-			//IFC(UpdateVolumeUI());
-			//IFC(CalculateDropOutLevel());
+			// We could have switched into or out of audio mode, which changes the controls that are displayed.
+			IFC(UpdateAudioSelectionUI());
+			IFC(UpdateIsMutedUI());
+			IFC(UpdateVolumeUI());
+			IFC(CalculateDropOutLevel());
+#endif
 
 			// ShowControlPanel() calls UpdateVisualState()
 			ShowControlPanel();
@@ -1172,15 +1198,18 @@ namespace Windows.UI.Xaml.Controls
 			var isAutoShowHide = ShowAndHideAutomatically;
 			var result =
 				m_controlPanelIsVisible &&
-				//!m_isAudioOnly &&
-				//!m_hasError &&
+#if !HAS_UNO
+				!m_isAudioOnly &&
+				!m_hasError &&
+#endif
 				(m_shouldDismissControlPanel || !m_controlPanelHasPointerOver) &&
 				!m_rootHasPointerPressed &&
+#if !HAS_UNO
+				// Do not need to check this on the Xbox only if commandbar should exist in the template.
+				(!m_controlsHaveKeyOrProgFocus || (XboxUtility::IsOnXbox() && m_tpCommandBar.Get())) &&
 
-				//// Do not need to check this on the Xbox only if commandbar should exist in the template.
-				//(!m_controlsHaveKeyOrProgFocus || (XboxUtility::IsOnXbox() && m_tpCommandBar.Get())) &&
-
-				//!m_verticalVolumeHasKeyOrProgFocus &&
+				!m_verticalVolumeHasKeyOrProgFocus &&
+#endif
 				ShouldHideControlPanelWhilePlaying() &&
 				!m_isFlyoutOpen &&
 				!m_isPointerMove &&
@@ -1204,7 +1233,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// Helper to hit test pElement against point.
 		/// </summary>
-		bool HitTestHelper(Point point, UIElement? pElement)
+		private bool HitTestHelper(Point point, UIElement? pElement)
 		{
 			if (pElement is { })
 			{
