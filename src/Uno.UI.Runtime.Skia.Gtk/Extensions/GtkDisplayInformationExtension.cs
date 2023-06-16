@@ -1,5 +1,6 @@
 ﻿#nullable enable
 using System;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using Gtk;
 using Uno.UI.Runtime.Skia.Helpers.Dpi;
@@ -44,7 +45,23 @@ internal class GtkDisplayInformationExtension : IDisplayInformationExtension
 	public uint ScreenWidthInRawPixels => (uint)GetWindow().Display.GetMonitorAtWindow(GetWindow().Window).Workarea.Width;
 
 	public float LogicalDpi
-		=> _dpi ??= GetWindow().Display.GetMonitorAtWindow(GetWindow().Window).ScaleFactor * DisplayInformation.BaseDpi;
+	{
+		get
+		{
+			if (_dpi is null)
+			{
+				var window = GetWindow();
+				var nativeWindow = window.Window;
+				if (nativeWindow is not null)
+				{
+					_dpi = window.Display.GetMonitorAtWindow(nativeWindow).ScaleFactor * DisplayInformation.BaseDpi;
+				}
+			}
+
+			// Native window is not available yet, default to base DPI.
+			return _dpi ?? DisplayInformation.BaseDpi;
+		}
+	}
 
 	public double RawPixelsPerViewPixel => LogicalDpi / DisplayInformation.BaseDpi;
 

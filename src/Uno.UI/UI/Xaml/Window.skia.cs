@@ -2,6 +2,7 @@
 
 using System;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Core;
@@ -18,6 +19,8 @@ public sealed partial class Window
 {
 	// private ScrollViewer _rootScrollViewer;
 	private Border? _rootBorder;
+
+	private bool _shown;
 
 	partial void InitPlatform()
 	{
@@ -59,22 +62,18 @@ public sealed partial class Window
 			CoreServices.Instance.PutVisualRoot(_rootBorder);
 			_rootVisual = CoreServices.Instance.MainRootVisual;
 
-			if (_rootVisual?.XamlRoot == null)
+			if (_rootVisual?.XamlRoot is null)
 			{
-				throw new InvalidOperationException("The root visual could not be created.");
+				throw new InvalidOperationException("The root visual was not created.");
 			}
-
-			UIElement.LoadingRootElement(_rootVisual);
-
-			_rootVisual?.XamlRoot.InvalidateMeasure();
-
-			UIElement.RootElementLoaded(_rootVisual);
 		}
 
 		if (_rootBorder != null)
 		{
 			_rootBorder.Child = _content = content;
 		}
+
+		TryLoadRootVisual();
 	}
 
 	internal void DisplayFullscreen(UIElement content)
@@ -99,5 +98,25 @@ public sealed partial class Window
 		}
 	}
 
-	partial void ShowPartial() => Shown?.Invoke(this, EventArgs.Empty);
+	partial void ShowPartial()
+	{
+		_shown = true;
+		Shown?.Invoke(this, EventArgs.Empty);
+
+		TryLoadRootVisual();
+	}
+
+	private void TryLoadRootVisual()
+	{
+		if (!_shown)
+		{
+			return;
+		}
+
+		UIElement.LoadingRootElement(_rootVisual);
+
+		_rootVisual.XamlRoot!.InvalidateMeasure();
+
+		UIElement.RootElementLoaded(_rootVisual);
+	}
 }
