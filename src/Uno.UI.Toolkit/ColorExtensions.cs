@@ -15,7 +15,7 @@ internal static class ColorExtensions
 	/// <param name="background">The background color to use. This is assumed to be opaque (not checked for perf reason when used on pixel buffer).</param>
 	/// <returns>The color that results from blending the color with the given background color.</returns>
 	internal static Color ToOpaque(this Color color, Color background)
-		=> new(
+		=> Color.FromArgb(
 			255,
 			(byte)(((byte.MaxValue - color.A) * background.R + color.A * color.R) / 255),
 			(byte)(((byte.MaxValue - color.A) * background.G + color.A * color.G) / 255),
