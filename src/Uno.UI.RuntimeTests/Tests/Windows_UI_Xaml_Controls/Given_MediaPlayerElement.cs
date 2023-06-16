@@ -39,6 +39,8 @@ public partial class Given_MediaPlayerElement
 			timeoutMS: 5000,
 			message: "Timeout waiting for the media player to enter Paused state."
 		);
+
+		WindowHelper.WindowContent = null;
 	}
 
 	[TestMethod]
@@ -98,6 +100,7 @@ public partial class Given_MediaPlayerElement
 
 		var mediaPlayer = sut.MediaPlayer as Windows.Media.Playback.MediaPlayer;
 		Assert.IsNotNull(mediaPlayer);
+		WindowHelper.WindowContent = null;
 	}
 
 	[TestMethod]
@@ -129,6 +132,7 @@ public partial class Given_MediaPlayerElement
 		finally
 		{
 			sut.IsFullWindow = false;
+			WindowHelper.WindowContent = null;
 		}
 	}
 
@@ -150,6 +154,7 @@ public partial class Given_MediaPlayerElement
 				timeoutMS: 3000,
 				message: "Timeout waiting for the playback session state changing to Play."
 			);
+		WindowHelper.WindowContent = null;
 	}
 
 	[TestMethod]
@@ -198,6 +203,7 @@ public partial class Given_MediaPlayerElement
 			timeoutMS: 3000,
 			message: "Timeout waiting for the playback session state changing to Pause on Check_PausePlayStop."
 		);
+		WindowHelper.WindowContent = null;
 	}
 
 	[TestMethod]
@@ -220,6 +226,7 @@ public partial class Given_MediaPlayerElement
 		Assert.AreEqual(tcp.Visibility, Visibility.Visible);
 		sut.AreTransportControlsEnabled = false;
 		Assert.AreEqual(tcp.Visibility, Visibility.Collapsed);
+		WindowHelper.WindowContent = null;
 	}
 
 	public void Test_Setup()
