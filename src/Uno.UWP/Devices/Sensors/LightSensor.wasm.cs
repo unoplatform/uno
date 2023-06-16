@@ -4,6 +4,8 @@ using System;
 using Uno;
 
 #if NET7_0_OR_GREATER
+using System.Runtime.InteropServices.JavaScript;
+
 using NativeMethods = __Windows.Devices.Sensors.LightSensor.NativeMethods;
 #endif
 
@@ -50,6 +52,9 @@ namespace Windows.Devices.Sensors
 #endif
 		}
 
+#if NET7_0_OR_GREATER
+		[JSExport]
+#endif
 		public static int DispatchReading(float lux)
 		{
 			var reading = new LightSensorReading(lux, DateTimeOffset.UtcNow);

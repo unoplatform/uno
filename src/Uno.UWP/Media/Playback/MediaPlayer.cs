@@ -9,6 +9,13 @@ namespace Windows.Media.Playback
 {
 	public sealed partial class MediaPlayer
 	{
+		internal const bool ImplementedByExtensions =
+#if __ANDROID__ || __IOS__ || __MACOS__
+			false;
+#else
+			true;
+#endif
+
 		#region Properties
 
 		private IMediaPlaybackSource _source;

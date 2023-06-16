@@ -8,13 +8,20 @@ using Uno.Devices.Midi.Internal;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Windows.Devices.Enumeration;
+
+#if NET7_0_OR_GREATER
+using System.Runtime.InteropServices.JavaScript;
+#else
 using static Uno.Foundation.WebAssemblyRuntime;
+#endif
 
 namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 {
-	internal abstract class MidiDeviceClassProviderBase : IDeviceClassProvider
+	internal abstract partial class MidiDeviceClassProviderBase : IDeviceClassProvider
 	{
+#if !NET7_0_OR_GREATER
 		private const string JsType = "Uno.Devices.Enumeration.Internal.Providers.Midi.MidiDeviceClassProvider";
+#endif
 
 		private readonly bool _isInput;
 
@@ -104,8 +111,12 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 
 		private IEnumerable<DeviceInformation> GetMidiDevices()
 		{
+#if NET7_0_OR_GREATER
+			var result = NativeMethods.FindDevices(_isInput);
+#else
 			var command = $"{JsType}.findDevices({_isInput.ToString().ToLowerInvariant()})";
 			var result = InvokeJS(command);
+#endif
 
 			var devices = result.Split(new[] { '&' }, StringSplitOptions.RemoveEmptyEntries);
 			foreach (var device in devices)
@@ -135,6 +146,14 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 				_isInput ? DeviceClassGuids.MidiIn : DeviceClassGuids.MidiOut);
 			return new DeviceInformationUpdate(deviceIdentifier);
 		}
+
+#if NET7_0_OR_GREATER
+		internal static partial class NativeMethods
+		{
+			[JSImport($"globalThis.Uno.Devices.Enumeration.Internal.Providers.Midi.MidiDeviceClassProvider.findDevices")]
+			internal static partial string FindDevices(bool isInput);
+		}
+#endif
 	}
 }
 #endif

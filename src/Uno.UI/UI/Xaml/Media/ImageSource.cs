@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.IO;
 using System.Net.Http;
@@ -115,14 +115,19 @@ namespace Windows.UI.Xaml.Media
 
 		internal void InitFromUri(Uri uri)
 		{
+			CleanupResource();
+			FilePath = null;
+			AbsoluteUri = null;
+
+			if (uri is null)
+			{
+				return;
+			}
+
 			if (!uri.IsAbsoluteUri || uri.Scheme == "")
 			{
 				uri = new Uri(MsAppXScheme + ":///" + uri.OriginalString.TrimStart("/"));
 			}
-
-			CleanupResource();
-			FilePath = null;
-			AbsoluteUri = null;
 
 			if (uri.IsLocalResource())
 			{
