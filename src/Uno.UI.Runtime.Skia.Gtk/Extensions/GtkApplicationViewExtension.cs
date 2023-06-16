@@ -1,33 +1,60 @@
 ﻿#nullable enable
+using Uno.Foundation.Logging;
 using Windows.Foundation;
 using Windows.UI.ViewManagement;
 
-namespace Uno.UI.Runtime.Skia
+namespace Uno.UI.Runtime.Skia;
+
+internal class GtkApplicationViewExtension : IApplicationViewExtension
 {
-	internal class GtkApplicationViewExtension : IApplicationViewExtension
+	private readonly ApplicationView _owner;
+
+	public GtkApplicationViewExtension(object owner)
 	{
-		private readonly ApplicationView _owner;
+		_owner = (ApplicationView)owner;
+	}
 
-		public GtkApplicationViewExtension(object owner)
+	public void ExitFullScreenMode()
+	{
+		if (GtkHost.Current?.MainWindow is not { } window)
 		{
-			_owner = (ApplicationView)owner;
+			if (this.Log().IsEnabled(LogLevel.Warning))
+			{
+				this.Log().LogWarning("There is no main window set.");
+			}
+			return;
 		}
 
-		public void ExitFullScreenMode()
+		window.Unfullscreen();
+	}
+
+	public bool TryEnterFullScreenMode()
+	{
+		if (GtkHost.Current?.MainWindow is not { } window)
 		{
-			GtkHost.Current!.MainWindow!.Unfullscreen();
+			if (this.Log().IsEnabled(LogLevel.Warning))
+			{
+				this.Log().LogWarning("There is no main window set.");
+			}
+			return false;
 		}
 
-		public bool TryEnterFullScreenMode()
+		window.Fullscreen();
+		return true;
+	}
+
+	public bool TryResizeView(Size size)
+	{
+		if (GtkHost.Current?.MainWindow is not { } window)
 		{
-			GtkHost.Current!.MainWindow!.Fullscreen();
-			return true;
+			if (this.Log().IsEnabled(LogLevel.Warning))
+			{
+				this.Log().LogWarning("There is no main window set.");
+			}
+			return false;
 		}
 
-		public bool TryResizeView(Size size)
-		{
-			GtkHost.Current!.MainWindow!.Resize((int)size.Width, (int)size.Height);
-			return true;
-		}
+		window.Resize((int)size.Width, (int)size.Height);
+		return true;
 	}
 }

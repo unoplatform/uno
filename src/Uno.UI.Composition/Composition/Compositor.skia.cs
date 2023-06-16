@@ -169,6 +169,7 @@ namespace Windows.UI.Composition
 			if (!_isDirty)
 			{
 				_isDirty = true;
+				// TODO: Adjust for multi window #8341 
 				CoreApplication.QueueInvalidateRender();
 			}
 		}

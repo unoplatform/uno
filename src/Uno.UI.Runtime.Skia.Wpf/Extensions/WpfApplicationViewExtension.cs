@@ -1,67 +1,84 @@
 ﻿using System;
 using System.Windows;
+using Uno.Foundation.Logging;
 using Windows.UI.ViewManagement;
 
 using WpfApplication = System.Windows.Application;
 using WpfWindow = System.Windows.Window;
 
-namespace Uno.UI.Skia.Platform
+namespace Uno.UI.Skia.Platform;
+
+internal class WpfApplicationViewExtension : IApplicationViewExtension
 {
-	internal class WpfApplicationViewExtension : IApplicationViewExtension
+	private readonly ApplicationView _owner;
+
+	public WpfApplicationViewExtension(object owner)
 	{
-		private readonly ApplicationView _owner;
+		_owner = (ApplicationView)owner;
+	}
 
-		public WpfApplicationViewExtension(object owner)
+	private bool _isFullScreen;
+	private (WindowStyle WindowStyle, WindowState WindowState) _previousModes;
+
+	public bool TryResizeView(Windows.Foundation.Size size)
+	{
+		if (WpfApplication.Current.MainWindow is not { } wpfMainWindow)
 		{
-			_owner = (ApplicationView)owner;
+			if (this.Log().IsEnabled(LogLevel.Warning))
+			{
+				this.Log().LogWarning("There is no main window set.");
+			}
+			return false;
 		}
 
-		private bool _isFullScreen;
-		private (WindowStyle WindowStyle, WindowState WindowState) _previousModes;
+		wpfMainWindow.Width = size.Width;
+		wpfMainWindow.Height = size.Height;
+		return true;
+	}
 
-		public bool TryResizeView(Windows.Foundation.Size size)
+	public bool TryEnterFullScreenMode()
+	{
+		if (WpfApplication.Current.MainWindow is not { } wpfMainWindow)
 		{
-			if (WpfApplication.Current.MainWindow is not { } wpfMainWindow)
+			if (this.Log().IsEnabled(LogLevel.Warning))
 			{
-				return false;
+				this.Log().LogWarning("There is no main window set.");
 			}
-
-			wpfMainWindow.Width = size.Width;
-			wpfMainWindow.Height = size.Height;
-			return true;
+			return false;
 		}
 
-		public bool TryEnterFullScreenMode()
+		if (_isFullScreen || wpfMainWindow.WindowStyle == WindowStyle.None)
 		{
-			if (WpfApplication.Current.MainWindow is not { } wpfMainWindow)
-			{
-				return false;
-			}
-
-			if (_isFullScreen || wpfMainWindow.WindowStyle == WindowStyle.None)
-			{
-				return false;
-			}
-
-			_previousModes = (wpfMainWindow.WindowStyle, wpfMainWindow.WindowState);
-
-			wpfMainWindow.WindowStyle = WindowStyle.None;
-			wpfMainWindow.WindowState = WindowState.Maximized;
-			_isFullScreen = true;
-
-			return true;
+			return false;
 		}
 
-		public void ExitFullScreenMode()
-		{
-			if (WpfApplication.Current.MainWindow is not { } wpfMainWindow || !_isFullScreen)
-			{
-				return;
-			}
+		_previousModes = (wpfMainWindow.WindowStyle, wpfMainWindow.WindowState);
 
-			_isFullScreen = false;
-			wpfMainWindow.WindowStyle = _previousModes.WindowStyle;
-			wpfMainWindow.WindowState = _previousModes.WindowState;
+		wpfMainWindow.WindowStyle = WindowStyle.None;
+		wpfMainWindow.WindowState = WindowState.Maximized;
+		_isFullScreen = true;
+
+		return true;
+	}
+
+	public void ExitFullScreenMode()
+	{
+		if (WpfApplication.Current.MainWindow is not { } wpfMainWindow)
+		{
+			if (this.Log().IsEnabled(LogLevel.Warning))
+			{
+				this.Log().LogWarning("There is no main window set.");
+			}
+			return;
 		}
+
+		if (!_isFullScreen)
+		{
+			return;
+		}
+
+		_isFullScreen = false;
+		wpfMainWindow.WindowStyle = _previousModes.WindowStyle;
+		wpfMainWindow.WindowState = _previousModes.WindowState;
 	}
 }
