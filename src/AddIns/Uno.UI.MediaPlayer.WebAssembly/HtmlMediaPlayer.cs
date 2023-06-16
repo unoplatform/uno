@@ -69,7 +69,6 @@ internal partial class HtmlMediaPlayer : Border
 		StatusPlayChanged += OnHtmlStatusPlayChanged;
 		StatusPauseChanged += OnHtmlStatusPauseChanged;
 		SourceFailed += OnHtmlSourceFailed;
-		SourceSuspend += OnHtmlSourceSuspend;
 		SourceEnded += OnHtmlSourceEnded;
 		MetadataLoaded += OnHtmlMetadataLoaded;
 
@@ -86,7 +85,6 @@ internal partial class HtmlMediaPlayer : Border
 		StatusPlayChanged -= OnHtmlStatusPlayChanged;
 		StatusPauseChanged -= OnHtmlStatusPauseChanged;
 		SourceFailed -= OnHtmlSourceFailed;
-		SourceSuspend -= OnHtmlSourceSuspend;
 		SourceEnded -= OnHtmlSourceEnded;
 		MetadataLoaded -= OnHtmlMetadataLoaded;
 		TimeUpdated -= OnHtmlTimeUpdated;
@@ -300,23 +298,6 @@ internal partial class HtmlMediaPlayer : Border
 		}
 	}
 
-	/// <summary>
-	/// Occurs when there is an Suspend associated with video. To fix the autoplay validation
-	/// </summary>		
-	event EventHandler<HtmlCustomEventArgs> SourceSuspend
-	{
-		add
-		{
-			_htmlVideo.RegisterHtmlCustomEventHandler("suspend", value, isDetailJson: false);
-			_htmlAudio.RegisterHtmlCustomEventHandler("suspend", value, isDetailJson: false);
-		}
-		remove
-		{
-			_htmlVideo.UnregisterHtmlCustomEventHandler("suspend", value);
-			_htmlAudio.UnregisterHtmlCustomEventHandler("suspend", value);
-		}
-	}
-
 	private void OnHtmlTimeUpdated(object sender, EventArgs e)
 	{
 		OnTimeUpdate?.Invoke(this, EventArgs.Empty);
@@ -365,6 +346,9 @@ internal partial class HtmlMediaPlayer : Border
 			Duration = NativeMethods.GetDuration(_activeElement.HtmlId);
 		}
 		OnSourceLoaded?.Invoke(this, EventArgs.Empty);
+
+		IsPause = NativeMethods.GetPaused(_activeElement.HtmlId);
+		_isPlaying = !IsPause;
 		OnStatusChanged?.Invoke(this, EventArgs.Empty);
 	}
 
@@ -387,24 +371,6 @@ internal partial class HtmlMediaPlayer : Border
 
 		IsPause = true;
 		OnStatusChanged?.Invoke(this, EventArgs.Empty);
-	}
-
-	private void OnHtmlSourceSuspend(object sender, HtmlCustomEventArgs e)
-	{
-		if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
-		{
-			this.Log().Error($"{_activeElementName} source Suspend: [{Source}]");
-		}
-		if (_activeElement != null)
-		{
-			IsPause = NativeMethods.GetPaused(_activeElement.HtmlId);
-		}
-		if (IsPause)
-		{
-			IsPause = true;
-			_isPlaying = false;
-			OnStatusChanged?.Invoke(this, EventArgs.Empty);
-		}
 	}
 
 	private void OnHtmlSourceFailed(object sender, HtmlCustomEventArgs e)
