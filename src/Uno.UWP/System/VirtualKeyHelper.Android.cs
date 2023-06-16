@@ -148,13 +148,8 @@ internal static class VirtualKeyHelper
 			case Keycode.MediaPlay: return (VirtualKey)250;
 
 			case Keycode.CapsLock: return VirtualKey.CapitalLock;
-#if __ANDROID_16__
 			case Keycode.Kana: return VirtualKey.Kana;
-#endif
-#if __ANDROID_20__
 			case Keycode.Sleep: return VirtualKey.Sleep;
-
-#endif
 			default:
 				{
 					if (typeof(CoreWindow).Log().IsEnabled(LogLevel.Warning))
