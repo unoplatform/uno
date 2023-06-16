@@ -12,6 +12,7 @@ using System.Globalization;
 using Windows.UI.Xaml.Controls.Maps;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Notifications;
+using System.Numerics;
 
 namespace Uno.UI.Media;
 
@@ -68,6 +69,7 @@ internal partial class HtmlMediaPlayer : Border
 		StatusPlayChanged += OnHtmlStatusPlayChanged;
 		StatusPauseChanged += OnHtmlStatusPauseChanged;
 		SourceFailed += OnHtmlSourceFailed;
+		SourceSuspend += OnHtmlSourceSuspend;
 		SourceEnded += OnHtmlSourceEnded;
 		MetadataLoaded += OnHtmlMetadataLoaded;
 
@@ -84,6 +86,7 @@ internal partial class HtmlMediaPlayer : Border
 		StatusPlayChanged -= OnHtmlStatusPlayChanged;
 		StatusPauseChanged -= OnHtmlStatusPauseChanged;
 		SourceFailed -= OnHtmlSourceFailed;
+		SourceSuspend -= OnHtmlSourceSuspend;
 		SourceEnded -= OnHtmlSourceEnded;
 		MetadataLoaded -= OnHtmlMetadataLoaded;
 		TimeUpdated -= OnHtmlTimeUpdated;
@@ -297,6 +300,23 @@ internal partial class HtmlMediaPlayer : Border
 		}
 	}
 
+	/// <summary>
+	/// Occurs when there is an Suspend associated with video. To fix the autoplay validation
+	/// </summary>		
+	event EventHandler<HtmlCustomEventArgs> SourceSuspend
+	{
+		add
+		{
+			_htmlVideo.RegisterHtmlCustomEventHandler("suspend", value, isDetailJson: false);
+			_htmlAudio.RegisterHtmlCustomEventHandler("suspend", value, isDetailJson: false);
+		}
+		remove
+		{
+			_htmlVideo.UnregisterHtmlCustomEventHandler("suspend", value);
+			_htmlAudio.UnregisterHtmlCustomEventHandler("suspend", value);
+		}
+	}
+
 	private void OnHtmlTimeUpdated(object sender, EventArgs e)
 	{
 		OnTimeUpdate?.Invoke(this, EventArgs.Empty);
@@ -345,6 +365,7 @@ internal partial class HtmlMediaPlayer : Border
 			Duration = NativeMethods.GetDuration(_activeElement.HtmlId);
 		}
 		OnSourceLoaded?.Invoke(this, EventArgs.Empty);
+		OnStatusChanged?.Invoke(this, EventArgs.Empty);
 	}
 
 	private void OnHtmlStatusPlayChanged(object sender, EventArgs e)
@@ -368,9 +389,27 @@ internal partial class HtmlMediaPlayer : Border
 		OnStatusChanged?.Invoke(this, EventArgs.Empty);
 	}
 
+	private void OnHtmlSourceSuspend(object sender, HtmlCustomEventArgs e)
+	{
+		if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
+		{
+			this.Log().Error($"{_activeElementName} source Suspend: [{Source}]");
+		}
+		if (_activeElement != null)
+		{
+			IsPause = NativeMethods.GetPaused(_activeElement.HtmlId);
+		}
+		if (IsPause)
+		{
+			IsPause = true;
+			_isPlaying = false;
+			OnStatusChanged?.Invoke(this, EventArgs.Empty);
+		}
+	}
+
 	private void OnHtmlSourceFailed(object sender, HtmlCustomEventArgs e)
 	{
-		TimeUpdated += OnHtmlTimeUpdated;
+		TimeUpdated -= OnHtmlTimeUpdated;
 		if (_activeElement != null)
 		{
 			_activeElement.SetCssStyle("visibility", "hidden");
@@ -379,6 +418,7 @@ internal partial class HtmlMediaPlayer : Border
 		{
 			this.Log().Error($"{_activeElementName} source failed: [{Source}]");
 		}
+		IsPause = true;
 		OnSourceFailed?.Invoke(this, e.Detail);
 	}
 
