@@ -50,6 +50,7 @@ internal partial class HtmlMediaPlayer : Border
 
 		AddChild(_htmlVideo);
 		AddChild(_htmlAudio);
+		IsPause = true;
 
 		_activeElement = IsVideo ? _htmlVideo : IsAudio ? _htmlAudio : default;
 		_activeElementName = IsVideo ? "Video" : IsAudio ? "Audio" : "";
@@ -351,6 +352,10 @@ internal partial class HtmlMediaPlayer : Border
 		OnSourceLoaded?.Invoke(this, EventArgs.Empty);
 
 		IsAutoPlayRequested = false;
+
+		IsPause = NativeMethods.GetPaused(_activeElement.HtmlId);
+		_isPlaying = !IsPause;
+		OnStatusChanged?.Invoke(this, EventArgs.Empty);
 	}
 
 	private void OnHtmlStatusPlayChanged(object sender, EventArgs e)

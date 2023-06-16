@@ -17,6 +17,10 @@ namespace Uno.UI.Media {
 			document.getElementById(htmlId.toString()).currentTime = currentTime;
 		}
 
+		public static getPaused(htmlId: number): number {
+			return document.getElementById(htmlId.toString()).paused;
+		}
+
 		public static setAttribute(htmlId: number, name: string, value: string) {
 			document.getElementById(htmlId.toString()).setAttribute(name, value);
 		}
