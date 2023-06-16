@@ -22,13 +22,15 @@ public partial class Given_MediaPlayerElement
 	private static readonly Uri TestVideoUrl = new Uri("https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/720/Big_Buck_Bunny_720_10s_5MB.mp4");
 
 	[TestMethod]
-	public async void When_NotAutoPlay_Source()
+	public async Task When_NotAutoPlay_Source()
 	{
 		Test_Setup();
 		var sut = new MediaPlayerElement()
 		{
 			AutoPlay = false,
 			Source = MediaSource.CreateFromUri(TestVideoUrl),
+			Name = "When_NotAutoPlay_Source",
+			Width = 100,
 		};
 		WindowHelper.WindowContent = sut;
 		await WindowHelper.WaitForLoaded(sut);
@@ -39,18 +41,18 @@ public partial class Given_MediaPlayerElement
 			timeoutMS: 5000,
 			message: "Timeout waiting for the media player to enter Paused state."
 		);
-
 		WindowHelper.WindowContent = null;
 	}
 
 	[TestMethod]
-	public async void When_MediaPlayerElement_AutoPlay_Source()
+	public async Task When_MediaPlayerElement_AutoPlay_Source()
 	{
 		Test_Setup();
 		var sut = new MediaPlayerElement()
 		{
 			AutoPlay = true,
 			Source = MediaSource.CreateFromUri(TestVideoUrl),
+			Name = "When_MediaPlayerElement_AutoPlay_Source",
 		};
 		WindowHelper.WindowContent = sut;
 		await WindowHelper.WaitForLoaded(sut);
@@ -70,6 +72,7 @@ public partial class Given_MediaPlayerElement
 			message: "Timeout waiting for the media player to enter Playing state on Auto Play."
 		);
 #endif
+		WindowHelper.WindowContent = null;
 	}
 
 	[TestMethod]
@@ -85,9 +88,12 @@ public partial class Given_MediaPlayerElement
 	public async Task When_MediaPlayerElement_Added_In_Opening()
 	{
 		Test_Setup();
-		var sut = new MediaPlayerElement();
-		sut.Source = Windows.Media.Core.MediaSource.CreateFromUri(TestVideoUrl);
-		sut.AutoPlay = true;
+		var sut = new MediaPlayerElement()
+		{
+			AutoPlay = true,
+			Source = MediaSource.CreateFromUri(TestVideoUrl),
+			Name = "When_MediaPlayerElement_Added_In_Opening",
+		};
 
 		//Load Player
 		WindowHelper.WindowContent = sut;
@@ -107,9 +113,12 @@ public partial class Given_MediaPlayerElement
 	public async Task When_MediaPlayerElement_SetIsFullWindow_Check_Fullscreen()
 	{
 		Test_Setup();
-		var sut = new MediaPlayerElement();
-		sut.Source = Windows.Media.Core.MediaSource.CreateFromUri(TestVideoUrl);
-		sut.AutoPlay = true;
+		var sut = new MediaPlayerElement()
+		{
+			AutoPlay = true,
+			Source = MediaSource.CreateFromUri(TestVideoUrl),
+			Name = "When_MediaPlayerElement_SetIsFullWindow_Check_Fullscreen",
+		};
 
 		//Load Player
 		WindowHelper.WindowContent = sut;
@@ -140,9 +149,12 @@ public partial class Given_MediaPlayerElement
 	public async Task When_MediaPlayerElement_SetSource_Check_Play()
 	{
 		Test_Setup();
-		var sut = new MediaPlayerElement();
-		sut.Source = Windows.Media.Core.MediaSource.CreateFromUri(TestVideoUrl);
-		sut.AutoPlay = true;
+		var sut = new MediaPlayerElement()
+		{
+			AutoPlay = true,
+			Source = MediaSource.CreateFromUri(TestVideoUrl),
+			Name = "When_MediaPlayerElement_SetSource_Check_Play",
+		};
 
 		//Load Player
 		WindowHelper.WindowContent = sut;
@@ -161,9 +173,12 @@ public partial class Given_MediaPlayerElement
 	public async Task When_MediaPlayerElement_SetSource_Check_PausePlayStop()
 	{
 		Test_Setup();
-		var sut = new MediaPlayerElement();
-		sut.Source = Windows.Media.Core.MediaSource.CreateFromUri(TestVideoUrl);
-		sut.AutoPlay = true;
+		var sut = new MediaPlayerElement()
+		{
+			AutoPlay = true,
+			Source = MediaSource.CreateFromUri(TestVideoUrl),
+			Name = "When_MediaPlayerElement_SetSource_Check_PausePlayStop",
+		};
 
 		//Load Player
 		WindowHelper.WindowContent = sut;
@@ -210,9 +225,12 @@ public partial class Given_MediaPlayerElement
 	public async Task When_MediaPlayerElement_Check_TransportControlvisibility()
 	{
 		Test_Setup();
-		var sut = new MediaPlayerElement();
-		sut.Source = Windows.Media.Core.MediaSource.CreateFromUri(TestVideoUrl);
-		sut.AutoPlay = true;
+		var sut = new MediaPlayerElement()
+		{
+			AutoPlay = true,
+			Source = MediaSource.CreateFromUri(TestVideoUrl),
+			Name = "When_MediaPlayerElement_Check_TransportControlvisibility",
+		};
 
 		//Load Player
 		WindowHelper.WindowContent = sut;
