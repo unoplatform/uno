@@ -20,16 +20,19 @@ namespace Windows.UI.Composition
 {
 	internal class TextVisual : Visual
 	{
-		private readonly TextBlock _owner;
+		private readonly WeakReference<TextBlock> _owner;
 
 		public TextVisual(Compositor compositor, TextBlock owner) : base(compositor)
 		{
-			_owner = owner;
+			_owner = new WeakReference<TextBlock>(owner);
 		}
 
 		private protected override void Draw(in DrawingSession session)
 		{
-			_owner.Inlines.Draw(in session);
+			if (_owner.TryGetTarget(out var owner))
+			{
+				owner.Inlines.Draw(in session);
+			}
 		}
 	}
 }
