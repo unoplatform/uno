@@ -9,6 +9,7 @@ using Uno.UI;
 namespace SamplesApp.Droid
 {
 	[Activity(
+			Exported = true,
 			MainLauncher = true,
 			ConfigurationChanges = ActivityHelper.AllConfigChanges,
 			WindowSoftInputMode = SoftInput.AdjustPan | SoftInput.StateHidden
