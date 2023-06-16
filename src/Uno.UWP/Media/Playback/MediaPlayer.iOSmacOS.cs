@@ -364,7 +364,8 @@ namespace Windows.Media.Playback
 					return;
 				}
 
-				if (_player.Status == AVPlayerStatus.ReadyToPlay && PlaybackSession.PlaybackState == MediaPlaybackState.Buffering)
+				if (_player.Status == AVPlayerStatus.ReadyToPlay &&
+					PlaybackSession.PlaybackState is MediaPlaybackState.Opening or MediaPlaybackState.Buffering)
 				{
 					if (_player.Rate == 0.0)
 					{

@@ -289,6 +289,7 @@ namespace Windows.Media.Playback
 					_player.Start();
 					_player.Pause();
 					_player.SeekTo(0);
+					PlaybackSession.PlaybackState = MediaPlaybackState.Paused;
 				}
 			}
 

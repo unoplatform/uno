@@ -15,6 +15,7 @@ using Windows.UI.Xaml.Shapes;
 using Windows.UI.ViewManagement;
 using static Private.Infrastructure.TestServices;
 using Uno.Disposables;
+using Uno.Extensions;
 using Uno.UI.RuntimeTests.Tests.Uno_UI_Xaml_Core;
 using Uno.UI.Toolkit.Extensions;
 
@@ -750,6 +751,53 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			finger.Drag(sutLocation.Offset(5, 480), sutLocation.Offset(5, 5));
 
 			events.Should().BeEquivalentTo("enter", "pressed", "release", "exited");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if !__SKIA__
+		[Ignore("Pointer injection supported only on skia for now.")]
+#endif
+		public async Task When_ReversedMouseWheel_Then_ScrollInReversedDirection()
+		{
+#if WINDOWS_UWP
+			Assert.Inconclusive("Mouse pointer helper not supported on UWP.");
+#else
+			var sut = new ScrollViewer
+			{
+				Height = 512,
+				Width = 256,
+				Content = new Border
+				{
+					Height = 4192,
+					Width = 256,
+					Background = new SolidColorBrush(Colors.DeepPink)
+				}
+			};
+
+			var sutBounds = await UITestHelper.Load(sut);
+
+			Uno.UI.Xaml.Controls.ScrollContentPresenter.SetIsPointerWheelReversed(sut.Presenter, isReversed: true);
+			await WindowHelper.WaitForIdle();
+
+			var input = InputInjector.TryCreate() ?? throw new InvalidOperationException("Pointer injection not available on this platform.");
+			using var mouse = input.GetMouse();
+
+			sut.VerticalOffset.Should().Be(0);
+
+			mouse.MoveTo(sutBounds.GetCenter());
+			mouse.WheelDown();
+
+			sut.VerticalOffset.Should().Be(0);
+
+			mouse.WheelUp();
+
+			sut.VerticalOffset.Should().BeGreaterThan(0);
+
+			mouse.WheelDown();
+
+			sut.VerticalOffset.Should().Be(0);
+#endif
 		}
 	}
 }

@@ -11,6 +11,7 @@ using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.UI.Core;
 using Windows.UI.Input;
+using Windows.UI.Xaml.Controls;
 using Uno.UI.Runtime.Skia.Native;
 using static Uno.UI.Runtime.Skia.Native.LibInput;
 using static Windows.UI.Input.PointerUpdateKind;
@@ -52,13 +53,13 @@ unsafe internal partial class FrameBufferPointerInputSource
 			if (libinput_event_pointer_has_axis(rawPointerEvent, libinput_pointer_axis.ScrollHorizontal) != 0)
 			{
 				properties.IsHorizontalMouseWheel = true;
-				properties.MouseWheelDelta = (int)GetAxisValue(libinput_pointer_axis.ScrollHorizontal);
+				properties.MouseWheelDelta = (int)(GetAxisValue(libinput_pointer_axis.ScrollHorizontal) * ScrollContentPresenter.ScrollViewerDefaultMouseWheelDelta);
 				raisePointerEvent = RaisePointerWheelChanged;
 			}
 			else if (libinput_event_pointer_has_axis(rawPointerEvent, libinput_pointer_axis.ScrollVertical) != 0)
 			{
 				properties.IsHorizontalMouseWheel = false;
-				properties.MouseWheelDelta = (int)GetAxisValue(libinput_pointer_axis.ScrollVertical);
+				properties.MouseWheelDelta = (int)(GetAxisValue(libinput_pointer_axis.ScrollVertical) * ScrollContentPresenter.ScrollViewerDefaultMouseWheelDelta);
 				raisePointerEvent = RaisePointerWheelChanged;
 			}
 		}
