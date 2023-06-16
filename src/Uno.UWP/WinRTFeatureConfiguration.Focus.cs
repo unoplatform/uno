@@ -1,18 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace Uno;
 
-namespace Uno
+partial class WinRTFeatureConfiguration
 {
-	partial class WinRTFeatureConfiguration
+	public static class Focus
 	{
-		public static class Focus
-		{
 #if __IOS__ || __ANDROID__
-			public static bool EnableExperimentalKeyboardFocus { get; set; }
+		/// <summary>
+		/// This value only has effect applies on iOS, keybopard focus is now always enabled on Android.
+		/// </summary>
+		public static bool EnableExperimentalKeyboardFocus { get; set; }
 #endif
-		}
 	}
 }
