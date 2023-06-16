@@ -843,7 +843,9 @@
 			<!-- BEGIN Skia lifecycle -->
 			<Member fullName="System.Boolean Uno.UI.Skia.Platform.WpfHost::IsIsland()" reason="Not needed" />
 			<Member fullName="Windows.UI.Xaml.UIElement Uno.UI.Skia.Platform.WpfHost::RootElement()" reason="Not needed" />
-			<Member fullName="Uno.UI.Skia.Platform.WpfHost Uno.UI.Skia.Platform.WpfHost::Current()" reason="Not needed" />	
+			<Member fullName="Uno.UI.Skia.Platform.WpfHost Uno.UI.Skia.Platform.WpfHost::Current()" reason="Not needed" />
+			<Member fullName="System.Boolean Uno.UI.XamlHost.Skia.Wpf.UnoXamlHostBase::IsIsland()" reason="Not needed" />
+			<Member fullName="Windows.UI.Xaml.UIElement Uno.UI.XamlHost.Skia.Wpf.UnoXamlHostBase::RootElement()" reason="Not needed" />			
 			<!-- End Skia lifecycle -->
 		</Properties>
 		<Methods>
@@ -1542,6 +1544,9 @@
 			<!-- BEGIN Skia lifecycle -->
 			<Member fullName="System.Boolean Uno.UI.Skia.Platform.WpfHost.get_IsIsland()" reason="Not needed" />
 			<Member fullName="Windows.UI.Xaml.UIElement Uno.UI.Skia.Platform.WpfHost.get_RootElement()" reason="Not needed" />
+			<Member fullName="Uno.UI.Skia.Platform.WpfHost Uno.UI.Skia.Platform.WpfHost.get_Current()" reason="Not needed" />
+			<Member fullName="System.Boolean Uno.UI.XamlHost.Skia.Wpf.UnoXamlHostBase.get_IsIsland()" reason="Not needed" />
+			<Member fullName="Windows.UI.Xaml.UIElement Uno.UI.XamlHost.Skia.Wpf.UnoXamlHostBase.get_RootElement()" reason="Not needed" />
 			<Member fullName="Uno.UI.Skia.Platform.WpfHost Uno.UI.Skia.Platform.WpfHost.get_Current()" reason="Not needed" />	
 			<!-- End Skia lifecycle -->
 		</Methods>
