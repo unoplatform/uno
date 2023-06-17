@@ -482,7 +482,7 @@ namespace Windows.UI.Xaml.Media
 		/// Now available outside in Uno library with <see cref="DrawableHelper"/>.
 		/// </summary>
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		public static Type Drawables
+		public static Type? Drawables
 		{
 			get => Uno.Helpers.DrawableHelper.Drawables;
 			set => Uno.Helpers.DrawableHelper.Drawables = value;
