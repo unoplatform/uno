@@ -634,6 +634,10 @@
 			<Member fullName="Microsoft.Toolkit.Uwp.UI.Lottie.LottieVisualSourceBase" reason="Api alignments" />
 			<Member fullName="Microsoft.Toolkit.Uwp.UI.Lottie.ThemableLottieVisualSource" reason="Api alignments" />
 			<Member fullName="Windows.UI.Xaml.Controls.BackButton" reason="Api alignments" />
+
+			<!-- BEGIN OnWindowCreated -->
+			<Member fullName="Microsoft.UI.Xaml.WindowCreatedEventArgs" reason="Does not exist in WinAppSDK" />
+			<!-- END OnWindowCreated -->
 		</Types>
 		<Events>
 			<Member fullName="Windows.Foundation.TypedEventHandler`2&lt;Microsoft.UI.Xaml.Controls.IInputValidationControl,Microsoft.UI.Xaml.Controls.HasValidationErrorsChangedEventArgs&gt; Microsoft.UI.Xaml.Controls.AutoSuggestBox::HasValidationErrorsChanged" reason="Not present in WinAppSDK 1.2" />
@@ -1532,6 +1536,10 @@
 			<Member fullName="System.Void Windows.Devices.Sensors.ProximitySensorReading..ctor()" reason="Does not exist in Windows" />
 			<Member fullName="System.Void Windows.Devices.Sensors.ProximitySensorReadingChangedEventArgs..ctor()" reason="Does not exist in Windows" />
 			<!-- END Proximity sensor -->
+
+			<!-- BEGIN OnWindowCreated -->
+			<Member fullName="System.Void Microsoft.UI.Xaml.Application.OnWindowCreated(Microsoft.UI.Xaml.WindowCreatedEventArgs args)" reason="Does not exist in WinAppSDK" />
+			<!-- END OnWindowCreated -->
 		</Methods>
 	</IgnoreSet>
 	  <!--
