@@ -1,5 +1,4 @@
-﻿#if __ANDROID__
-using AndroidX.Core.Graphics.Drawable;
+﻿using AndroidX.Core.Graphics.Drawable;
 using Android.Views;
 using System;
 using System.Collections.Generic;
@@ -208,4 +207,3 @@ namespace Uno.UI.Controls
 		}
 	}
 }
-#endif
