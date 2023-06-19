@@ -29,7 +29,13 @@ namespace Windows.Storage.Pickers
 			switch (SuggestedStartLocation)
 			{
 				case PickerLocationId.PicturesLibrary:
-					return new UIImagePickerController();
+					return new UIImagePickerController()
+					{
+						SourceType = UIImagePickerControllerSourceType.PhotoLibrary,
+						MediaTypes = UIImagePickerController.AvailableMediaTypes(UIImagePickerControllerSourceType.PhotoLibrary),
+						ImagePickerControllerDelegate = new ImageOpenPickerDelegate(completionSource)
+					};
+
 				default:
 					var documentTypes = UTTypeMapper.GetDocumentTypes(FileTypeFilter);
 					return new UIDocumentPickerViewController(documentTypes, UIDocumentPickerMode.Open)
@@ -64,6 +70,9 @@ namespace Windows.Storage.Pickers
 			await rootController.PresentViewControllerAsync(viewController, true);
 
 			var nsUrls = await completionSource.Task;
+
+			rootController.DismissViewController(true, null);
+
 			if (nsUrls == null || nsUrls.Length == 0)
 			{
 				return FilePickerSelectedFilesArray.Empty;
@@ -75,6 +84,28 @@ namespace Windows.Storage.Pickers
 			return new FilePickerSelectedFilesArray(files);
 		}
 
+		private class ImageOpenPickerDelegate : UIImagePickerControllerDelegate
+		{
+			private readonly TaskCompletionSource<NSUrl?[]> _taskCompletionSource;
+
+			public ImageOpenPickerDelegate(TaskCompletionSource<NSUrl?[]> taskCompletionSource) =>
+				_taskCompletionSource = taskCompletionSource;
+
+			public override void Canceled(UIImagePickerController picker) =>
+				_taskCompletionSource.SetResult(Array.Empty<NSUrl?>());
+
+			public override void FinishedPickingMedia(UIImagePickerController picker, NSDictionary info)
+			{
+				if (info.ValueForKey(new NSString("UIImagePickerControllerImageURL")) is NSUrl nSUrl)
+				{
+					_taskCompletionSource.SetResult(new[] { nSUrl });
+				}
+				else
+				{
+					_taskCompletionSource.SetResult(Array.Empty<NSUrl?>());
+				}
+			}
+		}
 
 		private class FileOpenPickerDelegate : UIDocumentPickerDelegate
 		{
