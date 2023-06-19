@@ -6,6 +6,9 @@ dotnet_diagnostic.RS0030.severity = error
 
 dotnet_analyzer_diagnostic.category-Performance.severity = error
 
+# CA1041: Provide ObsoleteAttribute message
+dotnet_diagnostic.CA1041.severity = error
+
 # CA1044: Properties should not be write only
 dotnet_diagnostic.CA1044.severity = error
 
