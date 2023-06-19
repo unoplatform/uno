@@ -12,6 +12,7 @@ using System.Globalization;
 using Windows.UI.Xaml.Controls.Maps;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Notifications;
+using System.Numerics;
 
 namespace Uno.UI.Media;
 
@@ -345,6 +346,13 @@ internal partial class HtmlMediaPlayer : Border
 			Duration = NativeMethods.GetDuration(_activeElement.HtmlId);
 		}
 		OnSourceLoaded?.Invoke(this, EventArgs.Empty);
+
+		if (_activeElement != null)
+		{
+			IsPause = NativeMethods.GetPaused(_activeElement.HtmlId);
+		}
+		_isPlaying = !IsPause;
+		OnStatusChanged?.Invoke(this, EventArgs.Empty);
 	}
 
 	private void OnHtmlStatusPlayChanged(object sender, EventArgs e)
@@ -370,7 +378,7 @@ internal partial class HtmlMediaPlayer : Border
 
 	private void OnHtmlSourceFailed(object sender, HtmlCustomEventArgs e)
 	{
-		TimeUpdated += OnHtmlTimeUpdated;
+		TimeUpdated -= OnHtmlTimeUpdated;
 		if (_activeElement != null)
 		{
 			_activeElement.SetCssStyle("visibility", "hidden");
@@ -379,6 +387,7 @@ internal partial class HtmlMediaPlayer : Border
 		{
 			this.Log().Error($"{_activeElementName} source failed: [{Source}]");
 		}
+		IsPause = true;
 		OnSourceFailed?.Invoke(this, e.Detail);
 	}
 
