@@ -22,7 +22,7 @@ public partial class Given_MediaPlayerElement
 	private static readonly Uri TestVideoUrl = new Uri("https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/720/Big_Buck_Bunny_720_10s_5MB.mp4");
 
 	[TestMethod]
-	public async Task When_NotAutoPlay_Source()
+	public async void When_NotAutoPlay_Source()
 	{
 		Test_Setup();
 		var sut = new MediaPlayerElement()
@@ -45,7 +45,7 @@ public partial class Given_MediaPlayerElement
 	}
 
 	[TestMethod]
-	public async Task When_MediaPlayerElement_AutoPlay_Source()
+	public async void When_MediaPlayerElement_AutoPlay_Source()
 	{
 		Test_Setup();
 		var sut = new MediaPlayerElement()
@@ -85,7 +85,7 @@ public partial class Given_MediaPlayerElement
 	}
 
 	[TestMethod]
-	public async Task When_MediaPlayerElement_Added_In_Opening()
+	public async void When_MediaPlayerElement_Added_In_Opening()
 	{
 		Test_Setup();
 		var sut = new MediaPlayerElement()
@@ -110,7 +110,7 @@ public partial class Given_MediaPlayerElement
 	}
 
 	[TestMethod]
-	public async Task When_MediaPlayerElement_SetIsFullWindow_Check_Fullscreen()
+	public async void When_MediaPlayerElement_SetIsFullWindow_Check_Fullscreen()
 	{
 		Test_Setup();
 		var sut = new MediaPlayerElement()
@@ -146,7 +146,7 @@ public partial class Given_MediaPlayerElement
 	}
 
 	[TestMethod]
-	public async Task When_MediaPlayerElement_SetSource_Check_Play()
+	public async void When_MediaPlayerElement_SetSource_Check_Play()
 	{
 		Test_Setup();
 		var sut = new MediaPlayerElement()
@@ -170,7 +170,7 @@ public partial class Given_MediaPlayerElement
 	}
 
 	[TestMethod]
-	public async Task When_MediaPlayerElement_SetSource_Check_PausePlayStop()
+	public async void When_MediaPlayerElement_SetSource_Check_PausePlayStop()
 	{
 		Test_Setup();
 		var sut = new MediaPlayerElement()
@@ -222,7 +222,7 @@ public partial class Given_MediaPlayerElement
 	}
 
 	[TestMethod]
-	public async Task When_MediaPlayerElement_Check_TransportControlvisibility()
+	public async void When_MediaPlayerElement_Check_TransportControlvisibility()
 	{
 		Test_Setup();
 		var sut = new MediaPlayerElement()
