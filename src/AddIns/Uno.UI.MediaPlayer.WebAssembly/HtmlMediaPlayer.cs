@@ -347,7 +347,10 @@ internal partial class HtmlMediaPlayer : Border
 		}
 		OnSourceLoaded?.Invoke(this, EventArgs.Empty);
 
-		IsPause = NativeMethods.GetPaused(_activeElement.HtmlId);
+		if (_activeElement != null)
+		{
+			IsPause = NativeMethods.GetPaused(_activeElement.HtmlId);
+		}
 		_isPlaying = !IsPause;
 		OnStatusChanged?.Invoke(this, EventArgs.Empty);
 	}
