@@ -25,6 +25,13 @@ class MediaPlayerElementTests : SampleControlUITestBase
 
 		TakeScreenshot("Initial MpeOriginal");
 
+		// step 0: Pause && Play
+		// Due a browser validation the auto play do not works at first.
+		// Then for now, set pause and then play.
+		_app.Tap(_app.Marked("PlayPauseButton"));
+		_app.Tap(_app.Marked("PlayPauseButton"));
+		TakeScreenshot("Pause And Play Tapped");
+
 		// step 1: Test Auto Play
 		var itemQuery = _app.Marked("TimeElapsedElement");
 		_app.WaitForTextGreaterThanTimeSpan(itemQuery, TimeSpan.FromSeconds(4));
@@ -55,6 +62,13 @@ class MediaPlayerElementTests : SampleControlUITestBase
 		_app.WaitForElement(_app.Marked("MpeOriginal"));
 		TakeScreenshot("Initial MpeOriginal");
 
+		// step 0: Pause && Play
+		// Due a browser validation the auto play do not works at first.
+		// Then for now, set pause and then play.
+		_app.Tap(_app.Marked("PlayPauseButton"));
+		_app.Tap(_app.Marked("PlayPauseButton"));
+		TakeScreenshot("Pause And Play Tapped");
+
 		// step 1: Pause
 		_app.Tap(_app.Marked("PlayPauseButton"));
 		TakeScreenshot("Pause Tapped");
@@ -62,6 +76,7 @@ class MediaPlayerElementTests : SampleControlUITestBase
 		// step 2: Move Progress
 		var progressSlider = _app.Marked("ProgressSlider");
 
+		//Just works when in the same window/monitor.
 		var rect = _app.Query(progressSlider).First().Rect;
 		float middleX = rect.X + rect.Width / 2;
 		float middleY = rect.Y + rect.Height / 2;
