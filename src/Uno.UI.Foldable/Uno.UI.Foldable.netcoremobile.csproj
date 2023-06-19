@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
+<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
 	<PropertyGroup>
 		<TargetFrameworks>net6.0-android;net6.0-ios</TargetFrameworks>
 		<TargetFrameworks>$(TargetFrameworks);net6.0-maccatalyst;net6.0-macos</TargetFrameworks>
@@ -42,7 +42,7 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetPlatformIdentifier)'=='android'">
-		<PackageReference Include="Xamarin.AndroidX.Window.WindowJava" Version="1.0.0.8" />
+		<PackageReference Include="Xamarin.AndroidX.Window.WindowJava" Version="1.1.0" />
 	</ItemGroup>
 
 	<Import Project="..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
