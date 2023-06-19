@@ -4,7 +4,9 @@ using System.Threading;
 using Uno.Extensions.ApplicationModel.Core;
 using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
+using Uno.UI.Hosting;
 using Uno.UI.Xaml.Core;
+using Uno.WinUI.Runtime.Skia.Linux.FrameBuffer;
 using Uno.WinUI.Runtime.Skia.LinuxFB;
 using Windows.Graphics.Display;
 using Windows.UI.Xaml;
@@ -12,7 +14,7 @@ using WUX = Windows.UI.Xaml;
 
 namespace Uno.UI.Runtime.Skia
 {
-	public class FrameBufferHost : ISkiaHost
+	public class FrameBufferHost : ISkiaApplicationHost, IXamlRootHost
 	{
 		[ThreadStatic]
 		private static bool _isDispatcherThread = false;
@@ -119,7 +121,7 @@ namespace Uno.UI.Runtime.Skia
 			Windows.UI.Core.CoreDispatcher.DispatchOverride = Dispatch;
 			Windows.UI.Core.CoreDispatcher.HasThreadAccessOverride = () => _isDispatcherThread;
 
-			_renderer = new Renderer();
+			_renderer = new Renderer(this);
 			_displayInformationExtension!.Renderer = _renderer;
 
 			CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRootSet += OnCoreWindowContentRootSet;
@@ -140,9 +142,13 @@ namespace Uno.UI.Runtime.Skia
 			}
 
 			contentRoot!.SetHost(this);
-			xamlRoot.InvalidateRender += _renderer!.InvalidateRender;
+			FrameBufferManager.XamlRootMap.Register(xamlRoot, this);
 
 			CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRootSet -= OnCoreWindowContentRootSet;
 		}
+
+		void IXamlRootHost.InvalidateRender() => _renderer?.InvalidateRender();
+
+		WUX.UIElement? IXamlRootHost.RootElement => WUX.Window.Current.RootElement;
 	}
 }

@@ -71,7 +71,7 @@ namespace Windows.UI.Xaml
 			RaiseNativeSizeChanged(new CGSize(_window.Frame.Width, _window.Frame.Height));
 		}
 
-		partial void ActivatingPartial()
+		partial void ShowPartial()
 		{
 			_window.ContentViewController = _mainController;
 			_window.Display();

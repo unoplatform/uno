@@ -5,7 +5,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
 using Uno.Foundation.Logging;
-using Uno.UI.Runtime.Skia.Wpf;
+using Uno.UI.Hosting;
 using Uno.UI.Runtime.Skia.Wpf.Constants;
 using Uno.UI.Runtime.Skia.Wpf.Input;
 using Windows.Devices.Input;
@@ -36,7 +36,7 @@ internal sealed class WpfCorePointerInputSource : IUnoCorePointerInputSource
 	private HwndSource? _hwndSource;
 	private PointerEventArgs? _previous;
 
-	public WpfCorePointerInputSource(IWpfHost host)
+	public WpfCorePointerInputSource(IXamlRootHost host)
 	{
 		if (host is null) return;
 

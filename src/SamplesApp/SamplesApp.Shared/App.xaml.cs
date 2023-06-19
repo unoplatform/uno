@@ -83,6 +83,10 @@ namespace SamplesApp
 			Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
 			Thread.CurrentThread.CurrentUICulture = new CultureInfo("en-US");
 
+#if __SKIA__
+			ApplicationView.PreferredLaunchViewSize = new Windows.Foundation.Size(1024, 768);
+#endif
+
 			ConfigureFeatureFlags();
 
 			AssertIssue1790ApplicationSettingsUsable();

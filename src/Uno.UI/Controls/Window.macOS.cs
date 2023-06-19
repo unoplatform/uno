@@ -367,26 +367,26 @@ namespace Uno.UI.Controls
 
 			public override void DidMiniaturize(NSNotification notification)
 			{
-				Windows.UI.Xaml.Window.Current?.OnVisibilityChanged(false);
-				Windows.UI.Xaml.Window.Current?.OnActivated(CoreWindowActivationState.Deactivated);
+				Windows.UI.Xaml.Window.Current?.OnNativeVisibilityChanged(false);
+				Windows.UI.Xaml.Window.Current?.OnNativeActivated(CoreWindowActivationState.Deactivated);
 				Windows.UI.Xaml.Application.Current?.RaiseEnteredBackground(null);
 			}
 
 			public override void DidDeminiaturize(NSNotification notification)
 			{
 				Windows.UI.Xaml.Application.Current?.RaiseLeavingBackground(null);
-				Windows.UI.Xaml.Window.Current?.OnVisibilityChanged(true);
-				Windows.UI.Xaml.Window.Current?.OnActivated(CoreWindowActivationState.CodeActivated);
+				Windows.UI.Xaml.Window.Current?.OnNativeVisibilityChanged(true);
+				Windows.UI.Xaml.Window.Current?.OnNativeActivated(CoreWindowActivationState.CodeActivated);
 			}
 
 			public override void DidBecomeKey(NSNotification notification)
 			{
-				Windows.UI.Xaml.Window.Current?.OnActivated(CoreWindowActivationState.CodeActivated);
+				Windows.UI.Xaml.Window.Current?.OnNativeActivated(CoreWindowActivationState.CodeActivated);
 			}
 
 			public override void DidResignKey(NSNotification notification)
 			{
-				Windows.UI.Xaml.Window.Current?.OnActivated(CoreWindowActivationState.Deactivated);
+				Windows.UI.Xaml.Window.Current?.OnNativeActivated(CoreWindowActivationState.Deactivated);
 			}
 
 			public override async void DidBecomeMain(NSNotification notification)
