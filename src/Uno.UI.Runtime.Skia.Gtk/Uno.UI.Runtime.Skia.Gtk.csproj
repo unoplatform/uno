@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<TargetFrameworks>net7.0;net8.0</TargetFrameworks>
@@ -16,7 +16,7 @@
 
 		<PackageId Condition="'$(UNO_UWP_BUILD)'!='true'">Uno.WinUI.Runtime.Skia.Gtk</PackageId>
 
-		<RootNamespace>Uno.UI.Runtime.Skia</RootNamespace>
+		<RootNamespace>Uno.UI.Runtime.Skia.GTK</RootNamespace>
 
 		<UseCommonOverridePackage>true</UseCommonOverridePackage>
 

@@ -138,10 +138,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		partial void ActivatingPartial()
-		{
-			WindowManagerInterop.WindowActivate();
-		}
+		partial void ShowPartial() => WindowManagerInterop.WindowActivate();
 
 		private void InternalSetContent(UIElement content)
 		{

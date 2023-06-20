@@ -843,6 +843,14 @@
 			<!-- BEGIN Skia Adjustments -->
 			<Member fullName="SkiaSharp.SKSize Uno.UI.Skia.Platform.WpfHost::CanvasSize()" reason="Incorrect type" />
 			<!-- END Skia Adjustments -->
+			
+			<!-- BEGIN Skia lifecycle -->
+			<Member fullName="System.Boolean Uno.UI.Skia.Platform.WpfHost::IsIsland()" reason="Not needed" />
+			<Member fullName="Windows.UI.Xaml.UIElement Uno.UI.Skia.Platform.WpfHost::RootElement()" reason="Not needed" />
+			<Member fullName="Uno.UI.Skia.Platform.WpfHost Uno.UI.Skia.Platform.WpfHost::Current()" reason="Not needed" />
+			<Member fullName="System.Boolean Uno.UI.XamlHost.Skia.Wpf.UnoXamlHostBase::IsIsland()" reason="Not needed" />
+			<Member fullName="Windows.UI.Xaml.UIElement Uno.UI.XamlHost.Skia.Wpf.UnoXamlHostBase::RootElement()" reason="Not needed" />			
+			<!-- End Skia lifecycle -->
 		</Properties>
 		<Methods>
 			<Member fullName="System.Void Windows.UI.Core.CoreWindow.RaisePointerCancelled(Windows.UI.Core.PointerEventArgs args)" reason="Not present in WInUI" />
@@ -1506,9 +1514,9 @@
 			<Member fullName="AppKit.NSView Windows.UI.Xaml.Controls.ItemsPanelTemplate.LoadContent()" reason="Api alignments" />
 			<Member fullName=".+?ApplyCompiledBindings\(\)" isRegex="true" reason="Api alignments" />
 
-      <Member fullName="System.Void Windows.UI.Xaml.Controls.Image.OnImageOpened(Windows.UI.Xaml.Media.ImageSource imageSource)" reason="Api alignments" />
+      		<Member fullName="System.Void Windows.UI.Xaml.Controls.Image.OnImageOpened(Windows.UI.Xaml.Media.ImageSource imageSource)" reason="Api alignments" />
 
-      <Member fullName="System.Boolean Uno.UI.ResourceResolver.ResolveResourceStatic(System.Object key, System.Object&amp; value, System.Object context)" reason="Api alignments" />
+      		<Member fullName="System.Boolean Uno.UI.ResourceResolver.ResolveResourceStatic(System.Object key, System.Object&amp; value, System.Object context)" reason="Api alignments" />
 			<Member fullName="System.Void Uno.UI.ResourceResolver.ApplyResource(Windows.UI.Xaml.DependencyObject owner, Windows.UI.Xaml.DependencyProperty property, System.Object resourceKey, System.Boolean isThemeResourceExtension, System.Object context)" reason="Api alignments" />
 			<Member fullName="System.Boolean Uno.UI.ResourceResolverSingleton.ResolveResourceStatic(System.Object key, System.Object&amp; value, System.Object context)" reason="Api alignments" />
 			<Member fullName="System.Void Uno.UI.ResourceResolverSingleton.ApplyResource(Windows.UI.Xaml.DependencyObject owner, Windows.UI.Xaml.DependencyProperty property, System.Object resourceKey, System.Boolean isThemeResourceExtension, System.Object context)" reason="Api alignments" />
@@ -1540,6 +1548,15 @@
 			<!-- BEGIN OnWindowCreated -->
 			<Member fullName="System.Void Microsoft.UI.Xaml.Application.OnWindowCreated(Microsoft.UI.Xaml.WindowCreatedEventArgs args)" reason="Does not exist in WinAppSDK" />
 			<!-- END OnWindowCreated -->
+
+			<!-- BEGIN Skia lifecycle -->
+			<Member fullName="System.Boolean Uno.UI.Skia.Platform.WpfHost.get_IsIsland()" reason="Not needed" />
+			<Member fullName="Windows.UI.Xaml.UIElement Uno.UI.Skia.Platform.WpfHost.get_RootElement()" reason="Not needed" />
+			<Member fullName="Uno.UI.Skia.Platform.WpfHost Uno.UI.Skia.Platform.WpfHost.get_Current()" reason="Not needed" />
+			<Member fullName="System.Boolean Uno.UI.XamlHost.Skia.Wpf.UnoXamlHostBase.get_IsIsland()" reason="Not needed" />
+			<Member fullName="Windows.UI.Xaml.UIElement Uno.UI.XamlHost.Skia.Wpf.UnoXamlHostBase.get_RootElement()" reason="Not needed" />
+			<Member fullName="Uno.UI.Skia.Platform.WpfHost Uno.UI.Skia.Platform.WpfHost.get_Current()" reason="Not needed" />	
+			<!-- End Skia lifecycle -->
 		</Methods>
 	</IgnoreSet>
 	  <!--

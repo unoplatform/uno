@@ -14,17 +14,20 @@ using Uno.Foundation.Logging;
 using Windows.Devices.Enumeration;
 using Windows.Foundation;
 using Windows.Storage.Streams;
-using static Uno.Foundation.WebAssemblyRuntime;
 
 #if NET7_0_OR_GREATER
 using NativeMethods = __Windows.Devices.Midi.MidiOutPort.NativeMethods;
+#else
+using static Uno.Foundation.WebAssemblyRuntime;
 #endif
 
 namespace Windows.Devices.Midi
 {
 	public partial class MidiOutPort
 	{
+#if !NET7_0_OR_GREATER
 		private const string JsType = "Windows.Devices.Midi.MidiOutPort";
+#endif
 		private readonly string _wasmId;
 
 		private MidiOutPort(string deviceId, string wasmId)
@@ -40,9 +43,14 @@ namespace Windows.Devices.Midi
 		public void SendBufferInternal(IBuffer midiBuffer, TimeSpan timestamp)
 		{
 			var data = midiBuffer.ToArray();
+
+#if NET7_0_OR_GREATER
+			NativeMethods.SendBuffer(Uri.EscapeDataString(_wasmId), timestamp.TotalMilliseconds, data);
+#else
 			var byteString = string.Join(",", data);
-			var command = $"{JsType}.sendBuffer(\"{Uri.EscapeDataString(_wasmId)}\",{timestamp.TotalMilliseconds},{byteString})";
+			var command = $"{JsType}.sendBuffer(\"{Uri.EscapeDataString(_wasmId)}\",{timestamp.TotalMilliseconds},[{byteString}])";
 			InvokeJS(command);
+#endif
 		}
 
 		private static Task<IMidiOutPort> FromIdInternalAsync(DeviceIdentifier identifier)

@@ -2,7 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using Uno.Disposables;
-using Uno.UI.Runtime.Skia.Wpf.Controls;
+using Uno.UI.Runtime.Skia.Wpf.UI.Controls;
 using Windows.UI.Xaml.Controls;
 using static Uno.UI.FeatureConfiguration;
 using PasswordBox = Windows.UI.Xaml.Controls.PasswordBox;

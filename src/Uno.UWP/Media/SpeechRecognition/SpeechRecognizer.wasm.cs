@@ -10,6 +10,8 @@ using Uno.Foundation.Logging;
 using Windows.Foundation;
 
 #if NET7_0_OR_GREATER
+using System.Runtime.InteropServices.JavaScript;
+
 using NativeMethods = __Windows.Media.SpeechRecognition.SpeechRecognizer.NativeMethods;
 #endif
 
@@ -17,7 +19,9 @@ namespace Windows.Media.SpeechRecognition
 {
 	public partial class SpeechRecognizer
 	{
+#if !NET7_0_OR_GREATER
 		private const string JsType = "Windows.Media.SpeechRecognizer";
+#endif
 
 		private readonly static ConcurrentDictionary<string, SpeechRecognizer> _instances =
 			new ConcurrentDictionary<string, SpeechRecognizer>();
@@ -26,6 +30,9 @@ namespace Windows.Media.SpeechRecognition
 
 		private TaskCompletionSource<SpeechRecognitionResult> _currentCompletionSource;
 
+#if NET7_0_OR_GREATER
+		[JSExport]
+#endif
 		public static int DispatchStatus(string instanceId, string state)
 		{
 			if (_instances.TryGetValue(instanceId, out var speechRecognizer))
@@ -38,6 +45,9 @@ namespace Windows.Media.SpeechRecognition
 			return 0;
 		}
 
+#if NET7_0_OR_GREATER
+		[JSExport]
+#endif
 		public static int DispatchError(string instanceId, string error)
 		{
 			if (_instances.TryGetValue(instanceId, out var speechRecognizer))
@@ -58,6 +68,9 @@ namespace Windows.Media.SpeechRecognition
 			return 0;
 		}
 
+#if NET7_0_OR_GREATER
+		[JSExport]
+#endif
 		public static int DispatchHypothesis(string instanceId, string hypothesis)
 		{
 			if (_instances.TryGetValue(instanceId, out var speechRecognizer))
@@ -67,6 +80,9 @@ namespace Windows.Media.SpeechRecognition
 			return 0;
 		}
 
+#if NET7_0_OR_GREATER
+		[JSExport]
+#endif
 		public static int DispatchResult(string instanceId, string result, double confidence)
 		{
 			if (_instances.TryGetValue(instanceId, out var speechRecognizer))
@@ -95,9 +111,14 @@ namespace Windows.Media.SpeechRecognition
 
 			_currentCompletionSource = new TaskCompletionSource<SpeechRecognitionResult>();
 
+#if NET7_0_OR_GREATER
+			var recognizeResult = NativeMethods.Recognize(_instanceId.ToString());
+#else
 			var command = $"{JsType}.recognize('{_instanceId}')";
-			var recognizeResult = WebAssemblyRuntime.InvokeJS(command);
-			if (!bool.TryParse(recognizeResult, out var canRecognize) || !canRecognize)
+			var recognizeResult = bool.Parse(WebAssemblyRuntime.InvokeJS(command));
+#endif
+
+			if (!recognizeResult)
 			{
 				throw new InvalidOperationException(
 					"Speech recognizer is not available on this device.");
@@ -111,14 +132,24 @@ namespace Windows.Media.SpeechRecognition
 		public void Dispose()
 		{
 			_currentCompletionSource?.SetCanceled();
+
+#if NET7_0_OR_GREATER
+			NativeMethods.RemoveInstance(_instanceId.ToString());
+#else
 			var removeInstanceCommand = $"{JsType}.removeInstance('{_instanceId}')";
 			WebAssemblyRuntime.InvokeJS(removeInstanceCommand);
+#endif
 		}
 
 		private void InitializeSpeechRecognizer()
 		{
+#if NET7_0_OR_GREATER
+			NativeMethods.Initialize(_instanceId.ToString(), CurrentLanguage.LanguageTag);
+#else
 			var command = $"{JsType}.initialize('{_instanceId}','{CurrentLanguage.LanguageTag}')";
 			WebAssemblyRuntime.InvokeJS(command);
+#endif
+
 			_instances.GetOrAdd(_instanceId.ToString(), this);
 		}
 	}

@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 
 namespace Uno.UI.Runtime.Skia
 {
-	public partial class GtkHost : ISkiaHost
+	public partial class GtkHost : ISkiaApplicationHost
 	{
 		private void PreloadHarfBuzz()
 		{

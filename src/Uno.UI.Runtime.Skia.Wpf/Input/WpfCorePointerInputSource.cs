@@ -5,7 +5,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
 using Uno.Foundation.Logging;
-using Uno.UI.Runtime.Skia.Wpf;
+using Uno.UI.Hosting;
 using Uno.UI.Runtime.Skia.Wpf.Constants;
 using Uno.UI.Runtime.Skia.Wpf.Input;
 using Windows.Devices.Input;
@@ -13,6 +13,7 @@ using Windows.Foundation;
 using Windows.System;
 using Windows.UI.Core;
 using Windows.UI.Input;
+using Windows.UI.Xaml.Controls;
 using WpfControl = System.Windows.Controls.Control;
 using WpfMouseEventArgs = System.Windows.Input.MouseEventArgs;
 
@@ -35,7 +36,7 @@ internal sealed class WpfCorePointerInputSource : IUnoCorePointerInputSource
 	private HwndSource? _hwndSource;
 	private PointerEventArgs? _previous;
 
-	public WpfCorePointerInputSource(IWpfHost host)
+	public WpfCorePointerInputSource(IXamlRootHost host)
 	{
 		if (host is null) return;
 
@@ -216,7 +217,7 @@ internal sealed class WpfCorePointerInputSource : IUnoCorePointerInputSource
 						IsHorizontalMouseWheel = msg == Win32Messages.WM_MOUSEHWHEEL,
 						IsPrimary = true,
 						IsInRange = true,
-						MouseWheelDelta = -((int)wparam >> 16) / 40
+						MouseWheelDelta = (int)wparam >> 16
 					}.SetUpdateKindFromPrevious(_previous?.CurrentPoint.Properties);
 
 					var modifiers = VirtualKeyModifiers.None;

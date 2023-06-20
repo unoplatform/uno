@@ -501,6 +501,10 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 					_player.Play();
 					_owner.PlaybackSession.PlaybackState = MediaPlaybackState.Playing;
 				}
+				else
+				{
+					_owner.PlaybackSession.PlaybackState = MediaPlaybackState.Paused;
+				}
 			}
 
 			_isPlayerPrepared = true;
