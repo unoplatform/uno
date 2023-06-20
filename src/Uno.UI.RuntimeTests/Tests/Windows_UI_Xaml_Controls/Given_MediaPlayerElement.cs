@@ -29,7 +29,6 @@ public partial class Given_MediaPlayerElement
 		{
 			AutoPlay = false,
 			Source = MediaSource.CreateFromUri(TestVideoUrl),
-			Name = "When_NotAutoPlay_Source",
 			Width = 100,
 		};
 		WindowHelper.WindowContent = sut;
@@ -41,7 +40,6 @@ public partial class Given_MediaPlayerElement
 			timeoutMS: 5000,
 			message: "Timeout waiting for the media player to enter Paused state."
 		);
-		WindowHelper.WindowContent = null;
 	}
 
 	[TestMethod]
@@ -52,7 +50,6 @@ public partial class Given_MediaPlayerElement
 		{
 			AutoPlay = true,
 			Source = MediaSource.CreateFromUri(TestVideoUrl),
-			Name = "When_MediaPlayerElement_AutoPlay_Source",
 		};
 		WindowHelper.WindowContent = sut;
 		await WindowHelper.WaitForLoaded(sut);
@@ -72,7 +69,6 @@ public partial class Given_MediaPlayerElement
 			message: "Timeout waiting for the media player to enter Playing state on Auto Play."
 		);
 #endif
-		WindowHelper.WindowContent = null;
 	}
 
 	[TestMethod]
@@ -92,7 +88,6 @@ public partial class Given_MediaPlayerElement
 		{
 			AutoPlay = true,
 			Source = MediaSource.CreateFromUri(TestVideoUrl),
-			Name = "When_MediaPlayerElement_Added_In_Opening",
 		};
 
 		//Load Player
@@ -106,7 +101,6 @@ public partial class Given_MediaPlayerElement
 
 		var mediaPlayer = sut.MediaPlayer as Windows.Media.Playback.MediaPlayer;
 		Assert.IsNotNull(mediaPlayer);
-		WindowHelper.WindowContent = null;
 	}
 
 	[TestMethod]
@@ -117,7 +111,6 @@ public partial class Given_MediaPlayerElement
 		{
 			AutoPlay = true,
 			Source = MediaSource.CreateFromUri(TestVideoUrl),
-			Name = "When_MediaPlayerElement_SetIsFullWindow_Check_Fullscreen",
 		};
 
 		//Load Player
@@ -141,7 +134,6 @@ public partial class Given_MediaPlayerElement
 		finally
 		{
 			sut.IsFullWindow = false;
-			WindowHelper.WindowContent = null;
 		}
 	}
 
@@ -153,7 +145,6 @@ public partial class Given_MediaPlayerElement
 		{
 			AutoPlay = true,
 			Source = MediaSource.CreateFromUri(TestVideoUrl),
-			Name = "When_MediaPlayerElement_SetSource_Check_Play",
 		};
 
 		//Load Player
@@ -166,7 +157,6 @@ public partial class Given_MediaPlayerElement
 				timeoutMS: 3000,
 				message: "Timeout waiting for the playback session state changing to Play."
 			);
-		WindowHelper.WindowContent = null;
 	}
 
 	[TestMethod]
@@ -177,7 +167,6 @@ public partial class Given_MediaPlayerElement
 		{
 			AutoPlay = true,
 			Source = MediaSource.CreateFromUri(TestVideoUrl),
-			Name = "When_MediaPlayerElement_SetSource_Check_PausePlayStop",
 		};
 
 		//Load Player
@@ -218,18 +207,16 @@ public partial class Given_MediaPlayerElement
 			timeoutMS: 3000,
 			message: "Timeout waiting for the playback session state changing to Pause on Check_PausePlayStop."
 		);
-		WindowHelper.WindowContent = null;
 	}
 
 	[TestMethod]
-	public async void When_MediaPlayerElement_Check_TransportControlvisibility()
+	public async void When_MediaPlayerElement_Check_TransportControlVisibility()
 	{
 		Test_Setup();
 		var sut = new MediaPlayerElement()
 		{
 			AutoPlay = true,
 			Source = MediaSource.CreateFromUri(TestVideoUrl),
-			Name = "When_MediaPlayerElement_Check_TransportControlvisibility",
 		};
 
 		//Load Player
@@ -244,8 +231,274 @@ public partial class Given_MediaPlayerElement
 		Assert.AreEqual(tcp.Visibility, Visibility.Visible);
 		sut.AreTransportControlsEnabled = false;
 		Assert.AreEqual(tcp.Visibility, Visibility.Collapsed);
-		WindowHelper.WindowContent = null;
 	}
+
+	[TestMethod]
+	public async void When_MediaPlayerElement_Check_TransportControlButonsVisibility()
+	{
+		Test_Setup();
+		var sut = new MediaPlayerElement()
+		{
+			AutoPlay = true,
+			Source = MediaSource.CreateFromUri(TestVideoUrl),
+			AreTransportControlsEnabled = true
+		};
+
+		//Load Player
+		WindowHelper.WindowContent = sut;
+		await WindowHelper.WaitForLoaded(sut);
+
+		// step 1: disalbe ShowAndHideAutomatically
+		var root = (WindowHelper.XamlRoot?.Content as FrameworkElement)!;
+		sut.TransportControls.ShowAndHideAutomatically = false;
+
+		//// step 2: Make sure all buttons are enabled
+		sut.TransportControls.IsFastForwardEnabled = true;
+		sut.TransportControls.IsFastRewindEnabled = true;
+		sut.TransportControls.IsPlaybackRateEnabled = true;
+		sut.TransportControls.IsFullWindowEnabled = true;
+		sut.TransportControls.IsRepeatEnabled = true;
+		sut.TransportControls.IsSeekEnabled = true;
+		sut.TransportControls.IsSkipBackwardEnabled = true;
+		sut.TransportControls.IsStopEnabled = true;
+		sut.TransportControls.IsVolumeEnabled = true;
+		sut.TransportControls.IsZoomEnabled = true;
+		sut.TransportControls.IsCompactOverlayEnabled = true;
+		sut.TransportControls.IsSkipForwardEnabled = true;
+
+		//// step 3: Collapsed Visibility from all to make sure that we have space
+		sut.TransportControls.IsFastForwardButtonVisible = false;
+		sut.TransportControls.IsFastRewindButtonVisible = false;
+		sut.TransportControls.IsFullWindowButtonVisible = false;
+		sut.TransportControls.IsNextTrackButtonVisible = false;
+		sut.TransportControls.IsPlaybackRateButtonVisible = false;
+		sut.TransportControls.IsPreviousTrackButtonVisible = false;
+		sut.TransportControls.IsRepeatButtonVisible = false;
+		sut.TransportControls.IsSeekBarVisible = false;
+		sut.TransportControls.IsSkipBackwardButtonVisible = false;
+		sut.TransportControls.IsSkipForwardButtonVisible = false;
+		sut.TransportControls.IsStopButtonVisible = false;
+		sut.TransportControls.IsVolumeButtonVisible = false;
+		sut.TransportControls.IsZoomButtonVisible = false;
+		sut.TransportControls.IsCompactOverlayButtonVisible = false;
+
+		// step 4: Start to validate one by one.
+		sut.TransportControls.IsFastForwardButtonVisible = false;
+		var esut = (FrameworkElement)root.FindName("FastForwardButton");
+		await WindowHelper.WaitFor(
+					condition: () => esut.Visibility == Visibility.Collapsed,
+					timeoutMS: 3000,
+					message: "Timeout waiting for TransportControls FastForwardButton Visibility Collapsed when Auto Hide."
+				);
+		sut.TransportControls.IsFastForwardButtonVisible = true;
+		esut = (FrameworkElement)root.FindName("FastForwardButton");
+		await WindowHelper.WaitFor(
+					condition: () => esut.Visibility == Visibility.Visible,
+					timeoutMS: 3000,
+					message: "Timeout waiting for TransportControls FastForwardButton Visibility Collapsed when Auto Hide."
+				);
+
+		sut.TransportControls.IsFastRewindButtonVisible = false;
+		esut = (FrameworkElement)root.FindName("RewindButton");
+		await WindowHelper.WaitFor(
+					condition: () => esut.Visibility == Visibility.Collapsed,
+					timeoutMS: 3000,
+					message: "Timeout waiting for TransportControls FastRewindButton Visibility Collapsed when Auto Hide."
+				);
+		sut.TransportControls.IsFastRewindButtonVisible = true;
+		esut = (FrameworkElement)root.FindName("RewindButton");
+		await WindowHelper.WaitFor(
+					condition: () => esut.Visibility == Visibility.Visible,
+					timeoutMS: 3000,
+					message: "Timeout waiting for TransportControls FastRewindButton Visibility Collapsed when Auto Hide."
+				);
+
+		sut.TransportControls.IsFullWindowButtonVisible = false;
+		esut = (FrameworkElement)root.FindName("FullWindowButton");
+		await WindowHelper.WaitFor(
+					condition: () => esut.Visibility == Visibility.Collapsed,
+					timeoutMS: 3000,
+					message: "Timeout waiting for TransportControls IsFullWindowButtonVisible Visibility Collapsed when Auto Hide."
+				);
+		sut.TransportControls.IsFullWindowButtonVisible = true;
+		esut = (FrameworkElement)root.FindName("FullWindowButton");
+		await WindowHelper.WaitFor(
+					condition: () => esut.Visibility == Visibility.Visible,
+					timeoutMS: 3000,
+					message: "Timeout waiting for TransportControls IsFullWindowButtonVisible Visibility Collapsed when Auto Hide."
+				);
+
+		sut.TransportControls.IsNextTrackButtonVisible = false;
+		esut = (FrameworkElement)root.FindName("NextTrackButton");
+		await WindowHelper.WaitFor(
+					condition: () => esut.Visibility == Visibility.Collapsed,
+					timeoutMS: 3000,
+					message: "Timeout waiting for TransportControls IsNextTrackButtonVisible Visibility Collapsed when Auto Hide."
+				);
+		sut.TransportControls.IsNextTrackButtonVisible = true;
+		esut = (FrameworkElement)root.FindName("NextTrackButton");
+		await WindowHelper.WaitFor(
+					condition: () => esut.Visibility == Visibility.Visible,
+					timeoutMS: 3000,
+					message: "Timeout waiting for TransportControls IsNextTrackButtonVisible Visibility Collapsed when Auto Hide."
+				);
+
+		sut.TransportControls.IsPlaybackRateButtonVisible = false;
+		esut = (FrameworkElement)root.FindName("PlaybackRateButton");
+		await WindowHelper.WaitFor(
+					condition: () => esut.Visibility == Visibility.Collapsed,
+					timeoutMS: 3000,
+					message: "Timeout waiting for TransportControls IsPlaybackRateButtonVisible Visibility Collapsed when Auto Hide."
+				);
+		sut.TransportControls.IsPlaybackRateButtonVisible = true;
+		esut = (FrameworkElement)root.FindName("PlaybackRateButton");
+		await WindowHelper.WaitFor(
+					condition: () => esut.Visibility == Visibility.Visible,
+					timeoutMS: 3000,
+					message: "Timeout waiting for TransportControls IsPlaybackRateButtonVisible Visibility Collapsed when Auto Hide."
+				);
+
+		sut.TransportControls.IsPreviousTrackButtonVisible = false;
+		esut = (FrameworkElement)root.FindName("PreviousTrackButton");
+		await WindowHelper.WaitFor(
+					condition: () => esut.Visibility == Visibility.Collapsed,
+					timeoutMS: 3000,
+					message: "Timeout waiting for TransportControls IsPreviousTrackButtonVisible Visibility Collapsed when Auto Hide."
+				);
+		sut.TransportControls.IsPreviousTrackButtonVisible = true;
+		esut = (FrameworkElement)root.FindName("PreviousTrackButton");
+		await WindowHelper.WaitFor(
+					condition: () => esut.Visibility == Visibility.Visible,
+					timeoutMS: 3000,
+					message: "Timeout waiting for TransportControls IsPreviousTrackButtonVisible Visibility Collapsed when Auto Hide."
+				);
+
+		//sut.TransportControls.IsRepeatButtonVisible = false;
+		//esut = (FrameworkElement)root.FindName("RepeatButton");
+		//await WindowHelper.WaitFor(
+		//			condition: () => esut.Visibility == Visibility.Collapsed,
+		//			timeoutMS: 3000,
+		//			message: "Timeout waiting for TransportControls IsRepeatButtonVisible Visibility Collapsed when Auto Hide."
+		//		);
+		//sut.TransportControls.IsRepeatButtonVisible = true;
+		//esut = (FrameworkElement)root.FindName("RepeatButton");
+		//await WindowHelper.WaitFor(
+		//			condition: () => esut.Visibility == Visibility.Visible,
+		//			timeoutMS: 3000,
+		//			message: "Timeout waiting for TransportControls IsRepeatButtonVisible Visibility Collapsed when Auto Hide."
+		//		);
+
+		sut.TransportControls.IsSkipBackwardButtonVisible = false;
+		esut = (FrameworkElement)root.FindName("SkipBackwardButton");
+		await WindowHelper.WaitFor(
+					condition: () => esut.Visibility == Visibility.Collapsed,
+					timeoutMS: 3000,
+					message: "Timeout waiting for TransportControls IsSkipBackwardButtonVisible Visibility Collapsed when Auto Hide."
+				);
+		sut.TransportControls.IsSkipBackwardButtonVisible = true;
+		esut = (FrameworkElement)root.FindName("SkipBackwardButton");
+		await WindowHelper.WaitFor(
+					condition: () => esut.Visibility == Visibility.Visible,
+					timeoutMS: 3000,
+					message: "Timeout waiting for TransportControls IsSkipBackwardButtonVisible Visibility Collapsed when Auto Hide."
+				);
+
+		sut.TransportControls.IsSkipForwardButtonVisible = false;
+		esut = (FrameworkElement)root.FindName("SkipForwardButton");
+		await WindowHelper.WaitFor(
+					condition: () => esut.Visibility == Visibility.Collapsed,
+					timeoutMS: 3000,
+					message: "Timeout waiting for TransportControls IsSkipForwardButtonVisible Visibility Collapsed when Auto Hide."
+				);
+		sut.TransportControls.IsSkipForwardButtonVisible = true;
+		esut = (FrameworkElement)root.FindName("SkipForwardButton");
+		await WindowHelper.WaitFor(
+					condition: () => esut.Visibility == Visibility.Visible,
+					timeoutMS: 3000,
+					message: "Timeout waiting for TransportControls IsSkipForwardButtonVisible Visibility Collapsed when Auto Hide."
+				);
+
+		sut.TransportControls.IsStopButtonVisible = false;
+		esut = (FrameworkElement)root.FindName("StopButton");
+		await WindowHelper.WaitFor(
+					condition: () => esut.Visibility == Visibility.Collapsed,
+					timeoutMS: 3000,
+					message: "Timeout waiting for TransportControls IsStopButtonVisible Visibility Collapsed when Auto Hide."
+				);
+		sut.TransportControls.IsStopButtonVisible = true;
+		esut = (FrameworkElement)root.FindName("StopButton");
+		await WindowHelper.WaitFor(
+					condition: () => esut.Visibility == Visibility.Visible,
+					timeoutMS: 3000,
+					message: "Timeout waiting for TransportControls IsStopButtonVisible Visibility Collapsed when Auto Hide."
+				);
+
+		sut.TransportControls.IsVolumeButtonVisible = false;
+		esut = (FrameworkElement)root.FindName("VolumeMuteButton");
+		await WindowHelper.WaitFor(
+					condition: () => esut.Visibility == Visibility.Collapsed,
+					timeoutMS: 3000,
+					message: "Timeout waiting for TransportControls IsVolumeButtonVisible Visibility Collapsed when Auto Hide."
+				);
+		sut.TransportControls.IsVolumeButtonVisible = true;
+		esut = (FrameworkElement)root.FindName("VolumeMuteButton");
+		await WindowHelper.WaitFor(
+					condition: () => esut.Visibility == Visibility.Visible,
+					timeoutMS: 3000,
+					message: "Timeout waiting for TransportControls IsVolumeButtonVisible Visibility Collapsed when Auto Hide."
+				);
+
+		sut.TransportControls.IsZoomButtonVisible = false;
+		esut = (FrameworkElement)root.FindName("ZoomButton");
+		await WindowHelper.WaitFor(
+					condition: () => esut.Visibility == Visibility.Collapsed,
+					timeoutMS: 3000,
+					message: "Timeout waiting for TransportControls IsZoomButtonVisible Visibility Collapsed when Auto Hide."
+				);
+		sut.TransportControls.IsZoomButtonVisible = true;
+		esut = (FrameworkElement)root.FindName("ZoomButton");
+		await WindowHelper.WaitFor(
+					condition: () => esut.Visibility == Visibility.Visible,
+					timeoutMS: 3000,
+					message: "Timeout waiting for TransportControls IsZoomButtonVisible Visibility Collapsed when Auto Hide."
+				);
+
+		sut.TransportControls.IsCompactOverlayButtonVisible = false;
+		esut = (FrameworkElement)root.FindName("CompactOverlayButton");
+		await WindowHelper.WaitFor(
+					condition: () => esut.Visibility == Visibility.Collapsed,
+					timeoutMS: 3000,
+					message: "Timeout waiting for TransportControls IsCompactOverlayButtonVisible Visibility Collapsed when Auto Hide."
+				);
+		sut.TransportControls.IsCompactOverlayButtonVisible = true;
+		esut = (FrameworkElement)root.FindName("CompactOverlayButton");
+		await WindowHelper.WaitFor(
+					condition: () => esut.Visibility == Visibility.Visible,
+					timeoutMS: 3000,
+					message: "Timeout waiting for TransportControls IsCompactOverlayButtonVisible Visibility Collapsed when Auto Hide."
+				);
+
+		sut.TransportControls.IsSeekBarVisible = false;
+		esut = (FrameworkElement)root.FindName("MediaTransportControls_Timeline_Border");
+		await WindowHelper.WaitFor(
+					condition: () => esut.Visibility == Visibility.Collapsed,
+					timeoutMS: 3000,
+					message: "Timeout waiting for TransportControls IsSeekBarVisible Visibility Collapsed when Auto Hide."
+				);
+		sut.TransportControls.IsSeekBarVisible = true;
+		esut = (FrameworkElement)root.FindName("MediaTransportControls_Timeline_Border");
+		await WindowHelper.WaitFor(
+					condition: () => esut.Visibility == Visibility.Visible,
+					timeoutMS: 3000,
+					message: "Timeout waiting for TransportControls IsSeekBarVisible Visibility Collapsed when Auto Hide."
+				);
+
+
+	}
+
+
+
+
 
 	public void Test_Setup()
 	{
