@@ -21,6 +21,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 [RunsOnUIThread]
 public partial class Given_MediaPlayerElement
 {
+	//Currently failing on WASM, due headless Chrome on CI
+#if !__WASM__
 	private static readonly Uri TestVideoUrl = new Uri("https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/720/Big_Buck_Bunny_720_10s_5MB.mp4");
 
 	[TestMethod]
@@ -518,4 +520,5 @@ public partial class Given_MediaPlayerElement
 		}
 #endif
 	}
+#endif
 }
