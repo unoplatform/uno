@@ -22,13 +22,9 @@ namespace Windows.UI.Xaml
 		private static bool _startInvoked;
 		private static string _arguments = "";
 
-		public Application()
+		partial void InitializePartial()
 		{
-			Current = this;
-			Package.SetEntryAssembly(this.GetType().Assembly);
-			ApplicationLanguages.ApplyCulture();
 			SetCurrentLanguage();
-			InitializeSystemTheme();
 
 			if (!_startInvoked)
 			{

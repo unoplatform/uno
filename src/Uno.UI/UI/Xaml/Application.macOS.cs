@@ -37,12 +37,9 @@ namespace Windows.UI.Xaml
 			ApiExtensibility.Register(typeof(IUnoCorePointerInputSource), host => new MacOSPointerInputSource((Uno.UI.Controls.Window)((Windows.UI.Xaml.Window)host).NativeWindow));
 		}
 
-		public Application()
+		partial void InitializePartial()
 		{
-			Current = this;
-			ApplicationLanguages.ApplyCulture();
 			SetCurrentLanguage();
-			InitializeSystemTheme();
 
 			SubscribeBackgroundNotifications();
 		}

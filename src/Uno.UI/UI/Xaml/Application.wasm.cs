@@ -37,17 +37,12 @@ namespace Windows.UI.Xaml
 	{
 		private static bool _startInvoked;
 
-		public Application()
+		partial void InitializePartial()
 		{
 			if (!_startInvoked)
 			{
 				throw new InvalidOperationException("The application must be started using Application.Start first, e.g. Windows.UI.Xaml.Application.Start(_ => new App());");
 			}
-
-			Current = this;
-			InitializeSystemTheme();
-			Package.SetEntryAssembly(this.GetType().Assembly);
-			ApplicationLanguages.ApplyCulture();
 
 			global::Uno.Foundation.Extensibility.ApiExtensibility.Register(
 				typeof(global::Windows.ApplicationModel.DataTransfer.DragDrop.Core.IDragDropExtension),
