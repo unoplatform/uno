@@ -63,22 +63,6 @@ namespace SamplesApp.UITests
 
 			return app.WaitForElement(elementName, timeoutMessage: timeoutMessage);
 		}
-		public static void WaitForTextGreaterThanTimeSpan(this IApp app, QueryEx element, TimeSpan expectedTimeSpan)
-		{
-			app.WaitFor(() =>
-			{
-				var textValue = element.GetText();
-				TimeSpan timeSpan;
-				if (TimeSpan.TryParse(textValue, out timeSpan) && timeSpan > expectedTimeSpan)
-				{
-					return true;
-				}
-				else
-				{
-					return false;
-				}
-			});
-		}
 #endif
 
 		/// <summary>
