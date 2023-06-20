@@ -3313,6 +3313,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									writer.AppendLineIndented($"{closureName}.Add(");
 									using (writer.Indent())
 									{
+										if (objectDefinitionType?.AllInterfaces.Any(i => i.OriginalDefinition.Equals(Generation.IDictionaryOfTKeySymbol.Value, SymbolEqualityComparer.Default)) == true &&
+											GetDictionaryResourceKey(item) is string dictionaryKey)
+										{
+											writer.AppendLineIndented($"\"{dictionaryKey}\",");
+										}
 										BuildChild(writer, member, item);
 									}
 									writer.AppendLineIndented(");");
