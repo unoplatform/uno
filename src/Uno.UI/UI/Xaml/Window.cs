@@ -29,7 +29,6 @@ namespace Windows.UI.Xaml
 
 		private UIElement _content;
 		private RootVisual _rootVisual;
-		private bool _windowCreatedRaised;
 
 		private CoreWindowActivationState? _lastActivationState;
 		private Brush _background;
@@ -38,16 +37,6 @@ namespace Windows.UI.Xaml
 
 		private List<WeakEventHelper.GenericEventHandler> _sizeChangedHandlers = new List<WeakEventHelper.GenericEventHandler>();
 		private List<WeakEventHelper.GenericEventHandler> _backgroundChangedHandlers;
-
-#if HAS_UNO_WINUI
-		public global::Microsoft.UI.Dispatching.DispatcherQueue DispatcherQueue { get; } = global::Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();
-#endif
-
-#if HAS_UNO_WINUI
-		public Window() : this(false)
-		{
-		}
-#endif
 
 		internal Window(bool internalUse)
 		{
@@ -94,7 +83,9 @@ namespace Windows.UI.Xaml
 		{
 			InitDragAndDrop();
 
+#if !HAS_UNO_WINUI
 			RaiseCreated();
+#endif
 
 			Background = SolidColorBrushHelper.White;
 		}
@@ -271,15 +262,6 @@ namespace Windows.UI.Xaml
 				(h, s, e) =>
 					(h as Windows.UI.Xaml.WindowSizeChangedEventHandler)?.Invoke(s, (WindowSizeChangedEventArgs)e)
 			);
-		}
-
-		internal void RaiseCreated()
-		{
-			if (Application.Current is not null && !_windowCreatedRaised)
-			{
-				_windowCreatedRaised = true;
-				Application.Current.RaiseWindowCreated(this);
-			}
 		}
 
 		internal void OnNativeActivated(CoreWindowActivationState state)
