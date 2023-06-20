@@ -6,6 +6,7 @@ using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
+using Windows.Globalization;
 using Windows.UI.Xaml.Controls.Primitives;
 
 #if HAS_UNO_WINUI
@@ -22,6 +23,7 @@ namespace Windows.UI.Xaml
 		{
 			Window.Current.ToString();
 			Current = this;
+			ApplicationLanguages.ApplyCulture();
 			InitializeSystemTheme();
 			PermissionsHelper.Initialize();
 		}
