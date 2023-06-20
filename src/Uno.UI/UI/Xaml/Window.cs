@@ -264,15 +264,6 @@ namespace Windows.UI.Xaml
 			);
 		}
 
-		internal void RaiseCreated()
-		{
-			if (Application.Current is not null && !_windowCreatedRaised)
-			{
-				_windowCreatedRaised = true;
-				Application.Current.RaiseWindowCreated(this);
-			}
-		}
-
 		internal void OnNativeActivated(CoreWindowActivationState state)
 		{
 			if (!_wasActivated)
