@@ -500,7 +500,7 @@ public partial class Given_MediaPlayerElement
 
 
 
-	public void Test_Setup()
+	public void CheckMediaPlayerExtensionAvailability()
 	{
 #if HAS_UNO
 		if (_MediaPlayer.ImplementedByExtensions && !ApiExtensibility.IsRegistered<IMediaPlayerExtension>())
