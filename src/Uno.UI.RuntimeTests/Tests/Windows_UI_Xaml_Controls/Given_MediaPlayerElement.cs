@@ -5,6 +5,8 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml;
 using static Private.Infrastructure.TestServices;
 using System.Threading.Tasks;
+using SamplesApp.UITests.TestFramework;
+using Uno.UITest.Helpers.Queries;
 
 #if HAS_UNO
 using Uno.Foundation.Extensibility;
@@ -22,7 +24,8 @@ public partial class Given_MediaPlayerElement
 	private static readonly Uri TestVideoUrl = new Uri("https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/720/Big_Buck_Bunny_720_10s_5MB.mp4");
 
 	[TestMethod]
-	public async void When_NotAutoPlay_Source()
+	[ActivePlatforms(Platform.Android, Platform.iOS)]
+	public async Task When_MediaPlayerElement_NotAutoPlay_Source()
 	{
 		CheckMediaPlayerExtensionAvailability();
 		var sut = new MediaPlayerElement()
@@ -43,7 +46,8 @@ public partial class Given_MediaPlayerElement
 	}
 
 	[TestMethod]
-	public async void When_MediaPlayerElement_AutoPlay_Source()
+	[ActivePlatforms(Platform.Android, Platform.iOS)]
+	public async Task When_MediaPlayerElement_AutoPlay_Source()
 	{
 		CheckMediaPlayerExtensionAvailability();
 		var sut = new MediaPlayerElement()
@@ -72,6 +76,7 @@ public partial class Given_MediaPlayerElement
 	}
 
 	[TestMethod]
+	[ActivePlatforms(Platform.Android, Platform.iOS)]
 	public void When_MediaPlayerElement_Not_SetSource_Property_Value()
 	{
 		CheckMediaPlayerExtensionAvailability();
@@ -81,7 +86,8 @@ public partial class Given_MediaPlayerElement
 	}
 
 	[TestMethod]
-	public async void When_MediaPlayerElement_Added_In_Opening()
+	[ActivePlatforms(Platform.Android, Platform.iOS)]
+	public async Task When_MediaPlayerElement_Added_In_Opening()
 	{
 		CheckMediaPlayerExtensionAvailability();
 		var sut = new MediaPlayerElement()
@@ -104,7 +110,8 @@ public partial class Given_MediaPlayerElement
 	}
 
 	[TestMethod]
-	public async void When_MediaPlayerElement_SetIsFullWindow_Check_Fullscreen()
+	[ActivePlatforms(Platform.Android, Platform.iOS)]
+	public async Task When_MediaPlayerElement_SetIsFullWindow_Check_Fullscreen()
 	{
 		CheckMediaPlayerExtensionAvailability();
 		var sut = new MediaPlayerElement()
@@ -138,7 +145,8 @@ public partial class Given_MediaPlayerElement
 	}
 
 	[TestMethod]
-	public async void When_MediaPlayerElement_SetSource_Check_Play()
+	[ActivePlatforms(Platform.Android, Platform.iOS)]
+	public async Task When_MediaPlayerElement_SetSource_Check_Play()
 	{
 		CheckMediaPlayerExtensionAvailability();
 		var sut = new MediaPlayerElement()
@@ -160,7 +168,8 @@ public partial class Given_MediaPlayerElement
 	}
 
 	[TestMethod]
-	public async void When_MediaPlayerElement_SetSource_Check_PausePlayStop()
+	[ActivePlatforms(Platform.Android, Platform.iOS)]
+	public async Task When_MediaPlayerElement_SetSource_Check_PausePlayStop()
 	{
 		CheckMediaPlayerExtensionAvailability();
 		var sut = new MediaPlayerElement()
@@ -210,7 +219,8 @@ public partial class Given_MediaPlayerElement
 	}
 
 	[TestMethod]
-	public async void When_MediaPlayerElement_Check_TransportControlVisibility()
+	[ActivePlatforms(Platform.Android, Platform.iOS)]
+	public async Task When_MediaPlayerElement_Check_TransportControlVisibility()
 	{
 		CheckMediaPlayerExtensionAvailability();
 		var sut = new MediaPlayerElement()
@@ -234,7 +244,8 @@ public partial class Given_MediaPlayerElement
 	}
 
 	[TestMethod]
-	public async void When_MediaPlayerElement_Check_TransportControlButonsVisibility()
+	[ActivePlatforms(Platform.Android, Platform.iOS)]
+	public async Task When_MediaPlayerElement_Check_TransportControlButonsVisibility()
 	{
 		CheckMediaPlayerExtensionAvailability();
 		var sut = new MediaPlayerElement()
