@@ -393,7 +393,7 @@
 
 	<Target Name="Roslyn51768Workaround"
 			BeforeTargets="BeforeBuild"
-					Condition="'$(DisableRoslyn51768Workaround)'=='' and '$(DesignTimeBuild)'!='true'">
+					Condition="'$(DisableRoslyn51768Workaround)'=='' and '$(DesignTimeBuild)'=='true'">
 		<!-- Workaround for https://github.com/dotnet/roslyn/issues/51768 -->
 		<CreateProperty Value="$(IntermediateOutputPath)$(MSBuildProjectName).d$(DesignTimeBuild)-b$(BuildingProject).GeneratedMSBuildEditorConfig.editorconfig">
 			<Output
