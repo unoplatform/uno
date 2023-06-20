@@ -3,6 +3,7 @@ using System;
 using AppKit;
 using Windows.ApplicationModel.Activation;
 using Windows.ApplicationModel;
+using Windows.Globalization;
 using System.Globalization;
 using Uno.Foundation.Logging;
 using System.Linq;
@@ -39,6 +40,7 @@ namespace Windows.UI.Xaml
 		public Application()
 		{
 			Current = this;
+			ApplicationLanguages.ApplyCulture();
 			SetCurrentLanguage();
 			InitializeSystemTheme();
 

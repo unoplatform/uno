@@ -7,6 +7,7 @@ using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.ApplicationModel;
+using Windows.Globalization;
 using Windows.Graphics.Display;
 using Windows.UI.Core;
 using Uno.Foundation;
@@ -46,6 +47,7 @@ namespace Windows.UI.Xaml
 			Current = this;
 			InitializeSystemTheme();
 			Package.SetEntryAssembly(this.GetType().Assembly);
+			ApplicationLanguages.ApplyCulture();
 
 			global::Uno.Foundation.Extensibility.ApiExtensibility.Register(
 				typeof(global::Windows.ApplicationModel.DataTransfer.DragDrop.Core.IDragDropExtension),

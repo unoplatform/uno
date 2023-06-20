@@ -231,7 +231,6 @@ namespace Windows.UI.Xaml
 
 		public static void Start(global::Windows.UI.Xaml.ApplicationInitializationCallback callback)
 		{
-			ApplicationLanguages.ApplyCulture();
 			StartPartial(callback);
 		}
 

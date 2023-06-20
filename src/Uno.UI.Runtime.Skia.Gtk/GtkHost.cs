@@ -20,7 +20,7 @@ namespace Uno.UI.Runtime.Skia
 	{
 		private const int UnoThemePriority = 800;
 
-		private readonly Func<WUX.Application> _appBuilder;
+		private readonly Func<WinUIApplication> _appBuilder;
 
 		[ThreadStatic] private static bool _isDispatcherThread;
 		[ThreadStatic] private static GtkHost? _current;
