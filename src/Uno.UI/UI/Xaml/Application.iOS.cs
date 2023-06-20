@@ -29,12 +29,9 @@ namespace Windows.UI.Xaml
 
 		private bool _preventSecondaryActivationHandling;
 
-		public Application()
+		partial void InitializePartial()
 		{
-			Current = this;
-			ApplicationLanguages.ApplyCulture();
 			SetCurrentLanguage();
-			InitializeSystemTheme();
 
 			SubscribeBackgroundNotifications();
 		}

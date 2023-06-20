@@ -48,6 +48,9 @@ using ViewGroup = Windows.UI.Xaml.UIElement;
 
 namespace Windows.UI.Xaml
 {
+	/// <summary>
+	/// Encapsulates the app and its available services.
+	/// </summary>
 	public partial class Application
 	{
 		private bool _initializationComplete;
@@ -76,6 +79,23 @@ namespace Windows.UI.Xaml
 
 			InitializePartialStatic();
 		}
+
+		/// <summary>
+		/// Initializes a new instance of the Application class.
+		/// </summary>
+		public Application()
+		{
+#if __SKIA__ || __WASM__
+			Package.SetEntryAssembly(this.GetType().Assembly);
+#endif
+			Current = this;
+			ApplicationLanguages.ApplyCulture();
+			InitializeSystemTheme();
+
+			InitializePartial();
+		}
+
+		partial void InitializePartial();
 
 		private static void RegisterExtensions()
 		{
