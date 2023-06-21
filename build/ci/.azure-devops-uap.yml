@@ -32,8 +32,7 @@ jobs:
   # Required until Uno.Xaml can build without all targets enabled
   - template: templates/jdk-setup.yml
 
-  - powershell: .\build\Install-WindowsSdkISO.ps1 19041
-    displayName: Insider SDK
+  - template: templates/install-windows-sdk.yml
 
   - task: MSBuild@1
     inputs:
