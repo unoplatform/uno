@@ -235,14 +235,14 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 	{
 		if (this.Log().IsEnabled(LogLevel.Debug))
 		{
-			this.Log().Debug($"MediaPlayerExtension.OnStatusMediaChanged Paused ({_player?.IsPause.ToString()})");
+			this.Log().Debug($"MediaPlayerExtension.OnStatusMediaChanged to state {_player?.PlayerState.ToString()}");
 		}
 
-		if (_player?.IsPause == true && _owner.PlaybackSession.PlaybackState == MediaPlaybackState.Playing)
+		if (_player?.PlayerState == HtmlMediaPlayerState.Paused && _owner.PlaybackSession.PlaybackState == MediaPlaybackState.Playing)
 		{
 			_owner.PlaybackSession.PlaybackState = MediaPlaybackState.Paused;
 		}
-		else if (_player?.IsPause == false && _owner.PlaybackSession.PlaybackState == MediaPlaybackState.Paused)
+		else if (_player?.PlayerState == HtmlMediaPlayerState.Playing && _owner.PlaybackSession.PlaybackState == MediaPlaybackState.Paused)
 		{
 			_owner.PlaybackSession.PlaybackState = MediaPlaybackState.Playing;
 		}
