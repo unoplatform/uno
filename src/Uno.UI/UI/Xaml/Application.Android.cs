@@ -19,12 +19,9 @@ namespace Windows.UI.Xaml
 {
 	public partial class Application
 	{
-		public Application()
+		partial void InitializePartial()
 		{
 			Window.Current.ToString();
-			Current = this;
-			ApplicationLanguages.ApplyCulture();
-			InitializeSystemTheme();
 			PermissionsHelper.Initialize();
 		}
 
