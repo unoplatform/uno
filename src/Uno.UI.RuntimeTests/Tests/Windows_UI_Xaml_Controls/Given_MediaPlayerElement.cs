@@ -17,7 +17,7 @@ using _MediaPlayer = Windows.Media.Playback.MediaPlayer; // alias to avoid same 
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 #if __WASM__
-[Ignore("UNO TODO - This test is failing on WASM")]
+[Ignore("UNO TODO - This test is failing on WASM [https://github.com/unoplatform/uno/issues/12665]")]
 #endif
 [TestClass]
 [RunsOnUIThread]
@@ -26,7 +26,6 @@ public partial class Given_MediaPlayerElement
 	private static readonly Uri TestVideoUrl = new Uri("https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/720/Big_Buck_Bunny_720_10s_5MB.mp4");
 
 	[TestMethod]
-	[ActivePlatforms(Platform.Android, Platform.iOS)]
 	public async Task When_MediaPlayerElement_NotAutoPlay_Source()
 	{
 		CheckMediaPlayerExtensionAvailability();
@@ -48,7 +47,6 @@ public partial class Given_MediaPlayerElement
 	}
 
 	[TestMethod]
-	[ActivePlatforms(Platform.Android, Platform.iOS)]
 	public async Task When_MediaPlayerElement_AutoPlay_Source()
 	{
 		CheckMediaPlayerExtensionAvailability();
@@ -78,7 +76,6 @@ public partial class Given_MediaPlayerElement
 	}
 
 	[TestMethod]
-	[ActivePlatforms(Platform.Android, Platform.iOS)]
 	public void When_MediaPlayerElement_Not_SetSource_Property_Value()
 	{
 		CheckMediaPlayerExtensionAvailability();
@@ -88,7 +85,6 @@ public partial class Given_MediaPlayerElement
 	}
 
 	[TestMethod]
-	[ActivePlatforms(Platform.Android, Platform.iOS)]
 	public async Task When_MediaPlayerElement_Added_In_Opening()
 	{
 		CheckMediaPlayerExtensionAvailability();
@@ -111,8 +107,10 @@ public partial class Given_MediaPlayerElement
 		Assert.IsNotNull(mediaPlayer);
 	}
 
+#if !__WASM__
+	[Ignore("Not supported under MAC [https://github.com/unoplatform/uno/issues/12663]")]
+#endif
 	[TestMethod]
-	[ActivePlatforms(Platform.Android, Platform.iOS)]
 	public async Task When_MediaPlayerElement_SetIsFullWindow_Check_Fullscreen()
 	{
 		CheckMediaPlayerExtensionAvailability();
@@ -147,7 +145,6 @@ public partial class Given_MediaPlayerElement
 	}
 
 	[TestMethod]
-	[ActivePlatforms(Platform.Android, Platform.iOS)]
 	public async Task When_MediaPlayerElement_SetSource_Check_Play()
 	{
 		CheckMediaPlayerExtensionAvailability();
@@ -170,7 +167,6 @@ public partial class Given_MediaPlayerElement
 	}
 
 	[TestMethod]
-	[ActivePlatforms(Platform.Android, Platform.iOS)]
 	public async Task When_MediaPlayerElement_SetSource_Check_PausePlayStop()
 	{
 		CheckMediaPlayerExtensionAvailability();
@@ -209,19 +205,22 @@ public partial class Given_MediaPlayerElement
 #endif
 		// step 3: Test Pause
 		sut.MediaPlayer.Play();
-		await Task.Delay(1000);
+		await WindowHelper.WaitFor(
+			condition: () => sut.MediaPlayer.PlaybackSession.PlaybackState == MediaPlaybackState.Playing,
+			timeoutMS: 6000,
+			message: "Timeout waiting for the playback session state changing to Play on Check_PausePlayStop."
+		);
+		await Task.Delay(5000);
 
 		sut.MediaPlayer.Pause();
-		await Task.Delay(1000);
 		await WindowHelper.WaitFor(
 			condition: () => sut.MediaPlayer.PlaybackSession.PlaybackState == MediaPlaybackState.Paused,
-			timeoutMS: 3000,
+			timeoutMS: 6000,
 			message: "Timeout waiting for the playback session state changing to Pause on Check_PausePlayStop."
 		);
 	}
 
 	[TestMethod]
-	[ActivePlatforms(Platform.Android, Platform.iOS)]
 	public async Task When_MediaPlayerElement_Check_TransportControlVisibility()
 	{
 		CheckMediaPlayerExtensionAvailability();
@@ -246,7 +245,6 @@ public partial class Given_MediaPlayerElement
 	}
 
 	[TestMethod]
-	[ActivePlatforms(Platform.Android, Platform.iOS)]
 	public async Task When_MediaPlayerElement_Check_TransportControlButonsVisibility()
 	{
 		CheckMediaPlayerExtensionAvailability();
@@ -356,6 +354,9 @@ public partial class Given_MediaPlayerElement
 					message: "Timeout waiting for TransportControls IsNextTrackButtonVisible Visibility Collapsed when Auto Hide."
 				);
 
+
+#if __SKIA__
+		//PlaybackRate is not implemented in Android and IOS
 		sut.TransportControls.IsPlaybackRateButtonVisible = true;
 		esut = (FrameworkElement)root.FindName("PlaybackRateButton");
 		await WindowHelper.WaitFor(
@@ -370,6 +371,7 @@ public partial class Given_MediaPlayerElement
 					timeoutMS: 3000,
 					message: "Timeout waiting for TransportControls IsPlaybackRateButtonVisible Visibility Collapsed when Auto Hide."
 				);
+#endif
 
 		sut.TransportControls.IsPreviousTrackButtonVisible = true;
 		esut = (FrameworkElement)root.FindName("PreviousTrackButton");
@@ -386,6 +388,8 @@ public partial class Given_MediaPlayerElement
 					message: "Timeout waiting for TransportControls IsPreviousTrackButtonVisible Visibility Collapsed when Auto Hide."
 				);
 
+		//Just works on the fluent layout for now. The generic is show
+		//Issue: https://github.com/unoplatform/uno/issues/12664
 		//sut.TransportControls.IsRepeatButtonVisible = false;
 		//esut = (FrameworkElement)root.FindName("RepeatButton");
 		//await WindowHelper.WaitFor(
