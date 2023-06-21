@@ -10,6 +10,7 @@ using Windows.UI.Xaml.Data;
 using DirectUI;
 using DateTime = System.DateTimeOffset;
 using ControlFocusEngagedEventCallback = Windows.Foundation.TypedEventHandler<Windows.UI.Xaml.Controls.Control, Windows.UI.Xaml.Controls.FocusEngagedEventArgs>;
+using Uno.UI.Helpers;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -385,7 +386,7 @@ namespace Windows.UI.Xaml.Controls
 #if DEBUG
 				if (estimationCount++ > maxEstimationRetryCount)
 				{
-					global::System.Diagnostics.Debug.WriteLine("CalendarViewGeneartorHost.CalculateOffsetFromMinDate[{0}]:  estimationCount = {1}.", this, estimationCount);
+					global::System.Diagnostics.Debug.WriteLine("CalendarViewGeneartorHost.CalculateOffsetFromMinDate[{0}]:  estimationCount = {1}.", this, Boxes.Box(estimationCount));
 					global::System.Diagnostics.Debug.Assert(false);
 				}
 #endif
@@ -407,7 +408,7 @@ namespace Windows.UI.Xaml.Controls
 #if DEBUG
 					if (retryCount++ > maxReboundCount)
 					{
-						global::System.Diagnostics.Debug.WriteLine("CalendarViewGeneartorHost.CalculateOffsetFromMinDate[{0}]: over boundary, retryCount = {1}.", this, retryCount);
+						global::System.Diagnostics.Debug.WriteLine("CalendarViewGeneartorHost.CalculateOffsetFromMinDate[{0}]: over boundary, retryCount = {1}.", this, Boxes.Box(retryCount));
 						global::System.Diagnostics.Debug.Assert(false);
 					}
 #endif

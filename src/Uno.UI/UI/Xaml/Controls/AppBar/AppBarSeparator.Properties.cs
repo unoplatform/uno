@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Uno.UI.Helpers;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
@@ -39,7 +40,7 @@ namespace Windows.UI.Xaml.Controls
 				"DynamicOverflowOrder",
 				typeof(int),
 				typeof(AppBarSeparator),
-				new FrameworkPropertyMetadata(default(int))
+				new FrameworkPropertyMetadata(Boxes.DefaultBox<int>.Value)
 			);
 
 		#endregion

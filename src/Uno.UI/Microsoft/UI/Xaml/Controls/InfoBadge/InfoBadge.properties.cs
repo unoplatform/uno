@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Uno.UI.Helpers;
 using Windows.UI.Xaml;
 
 namespace Microsoft.UI.Xaml.Controls
@@ -20,7 +21,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty ValueProperty { get; } =
-			DependencyProperty.Register(nameof(Value), typeof(int), typeof(InfoBadge), new FrameworkPropertyMetadata(-1, OnPropertyChanged));
+			DependencyProperty.Register(nameof(Value), typeof(int), typeof(InfoBadge), new FrameworkPropertyMetadata(Boxes.Box(-1), OnPropertyChanged));
 
 		public InfoBadgeTemplateSettings TemplateSettings
 		{

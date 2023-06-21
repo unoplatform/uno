@@ -8,6 +8,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Uno.Extensions;
 using static Microsoft.UI.Xaml.Controls._Tracing;
+using Uno.UI.Helpers;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -239,12 +240,12 @@ namespace Microsoft.UI.Xaml.Controls
 								0,
 								Math.Max(0.0f, (float)((Minor(flowState.SpecialElementDesiredSize) + minItemSpacing) * itemsCount - minItemSpacing)),
 								Math.Max(0.0f, (float)(averageLineSize - lineSpacing)));
-					REPEATER_TRACE_INFO("%*s: \tEstimating extent with no realized elements. \n", context.Indent, LayoutId);
+					REPEATER_TRACE_INFO("%*s: \tEstimating extent with no realized elements. \n", Boxes.Box(context.Indent), LayoutId);
 				}
 
 				REPEATER_TRACE_INFO(
 					"%*s: \tExtent is {%.0f,%.0f}. Based on average line size {%.0f} and average items per line {%.0f}. \n",
-					context.Indent, LayoutId, extent.Width, extent.Height, averageLineSize, averageItemsPerLine);
+Boxes.Box(context.Indent), LayoutId, extent.Width, extent.Height, averageLineSize, averageItemsPerLine);
 			}
 			else
 			{
@@ -252,7 +253,7 @@ namespace Microsoft.UI.Xaml.Controls
 				MUX_ASSERT(lastRealizedItemIndex == -1);
 
 				REPEATER_TRACE_INFO("%*s: \tExtent is {%.0f,%.0f}. ItemCount is 0 \n",
-					context.Indent, LayoutId, extent.Width, extent.Height);
+Boxes.Box(context.Indent), LayoutId, extent.Width, extent.Height);
 			}
 
 			return extent;
@@ -277,7 +278,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 
 			REPEATER_TRACE_INFO("%*s: \tOnLineArranged startIndex:%d Count:%d LineHeight:%d \n",
-				context.Indent, LayoutId, startIndex, countInLine, lineSize);
+Boxes.Box(context.Indent), LayoutId, Boxes.Box(startIndex), Boxes.Box(countInLine), lineSize);
 
 			var flowState = GetAsFlowState(context.LayoutState);
 			flowState.OnLineArranged(startIndex, countInLine, lineSize, context);

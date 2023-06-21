@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Uno.UI.Helpers;
 
 namespace Windows.UI.Xaml.Controls.Primitives
 {
@@ -59,7 +60,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			DependencyProperty.Register(
 				nameof(ItemHeight), typeof(int),
 				typeof(Primitives.LoopingSelector),
-				new FrameworkPropertyMetadata(default(int)));
+				new FrameworkPropertyMetadata(Boxes.DefaultBox<int>.Value));
 
 
 		public static DependencyProperty ItemTemplateProperty { get; } =
@@ -73,7 +74,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			DependencyProperty.Register(
 				nameof(ItemWidth), typeof(int),
 				typeof(Primitives.LoopingSelector),
-				new FrameworkPropertyMetadata(default(int)));
+				new FrameworkPropertyMetadata(Boxes.DefaultBox<int>.Value));
 
 
 		public static DependencyProperty ItemsProperty { get; } =
@@ -87,7 +88,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			DependencyProperty.Register(
 				nameof(SelectedIndex), typeof(int),
 				typeof(Primitives.LoopingSelector),
-				new FrameworkPropertyMetadata(default(int)));
+				new FrameworkPropertyMetadata(Boxes.DefaultBox<int>.Value));
 
 
 		public static DependencyProperty SelectedItemProperty { get; } =

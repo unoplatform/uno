@@ -8,6 +8,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Uno.Extensions;
 using static Microsoft.UI.Xaml.Controls._Tracing;
+using Uno.UI.Helpers;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -183,7 +184,7 @@ namespace Microsoft.UI.Xaml.Controls
 				else
 				{
 					REPEATER_TRACE_INFO("%*s: \tEstimating extent with no realized elements.  \n",
-						context.Indent,
+Boxes.Box(context.Indent),
 						LayoutId);
 				}
 			}
@@ -194,7 +195,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			REPEATER_TRACE_INFO("%*s: \tExtent is (%.0f,%.0f). Based on average %.0f. \n",
-				context.Indent,
+Boxes.Box(context.Indent),
 				LayoutId, extent.Width, extent.Height, averageElementSize);
 			return extent;
 		}

@@ -2,6 +2,7 @@
 using Windows.Foundation;
 using Uno.Extensions;
 using System;
+using Uno.UI.Helpers;
 
 namespace Windows.UI.Xaml.Media
 {
@@ -31,7 +32,7 @@ namespace Windows.UI.Xaml.Media
 			nameof(StartPoint),
 			typeof(Point),
 			typeof(LinearGradientBrush),
-			new FrameworkPropertyMetadata(default(Point))
+			new FrameworkPropertyMetadata(Boxes.DefaultBox<Point>.Value)
 		);
 
 		public Point EndPoint

@@ -1,4 +1,5 @@
-﻿using Windows.UI.Xaml.Data;
+﻿using Uno.UI.Helpers;
+using Windows.UI.Xaml.Data;
 
 namespace Windows.UI.Xaml
 {
@@ -22,12 +23,22 @@ namespace Windows.UI.Xaml
 		{
 		}
 
+		public FrameworkPropertyMetadata(bool defaultValue)
+			: this(Boxes.Box(defaultValue))
+		{
+		}
+
 		public FrameworkPropertyMetadata(
 			object defaultValue,
 			FrameworkPropertyMetadataOptions options
 		) : base(defaultValue)
 		{
 			Options = options.WithDefault();
+		}
+
+		public FrameworkPropertyMetadata(bool defaultValue, FrameworkPropertyMetadataOptions options)
+			: this(Boxes.Box(defaultValue), options)
+		{
 		}
 
 		internal FrameworkPropertyMetadata(
@@ -38,6 +49,11 @@ namespace Windows.UI.Xaml
 			CoerceValueCallback = coerceValueCallback;
 		}
 
+		internal FrameworkPropertyMetadata(bool defaultValue, CoerceValueCallback coerceValueCallback)
+			: this(Boxes.Box(defaultValue), coerceValueCallback)
+		{
+		}
+
 		public FrameworkPropertyMetadata(
 			object defaultValue,
 			FrameworkPropertyMetadataOptions options,
@@ -45,6 +61,11 @@ namespace Windows.UI.Xaml
 		) : base(defaultValue, propertyChangedCallback)
 		{
 			Options = options.WithDefault();
+		}
+
+		public FrameworkPropertyMetadata(bool defaultValue, FrameworkPropertyMetadataOptions options, PropertyChangedCallback propertyChangedCallback)
+			: this(Boxes.Box(defaultValue), options, propertyChangedCallback)
+		{
 		}
 
 		internal FrameworkPropertyMetadata(PropertyChangedCallback propertyChangedCallback)
@@ -62,10 +83,20 @@ namespace Windows.UI.Xaml
 			Options = options.WithDefault();
 		}
 
+		internal FrameworkPropertyMetadata(bool defaultValue, FrameworkPropertyMetadataOptions options, PropertyChangedCallback propertyChangedCallback, BackingFieldUpdateCallback backingFieldUpdateCallback)
+			: this(Boxes.Box(defaultValue), options, propertyChangedCallback, backingFieldUpdateCallback)
+		{
+		}
+
 		internal FrameworkPropertyMetadata(
 			object defaultValue,
 			BackingFieldUpdateCallback backingFieldUpdateCallback
 		) : base(defaultValue, null, backingFieldUpdateCallback)
+		{
+		}
+
+		internal FrameworkPropertyMetadata(bool defaultValue, BackingFieldUpdateCallback backingFieldUpdateCallback)
+			: this(Boxes.Box(defaultValue), backingFieldUpdateCallback)
 		{
 		}
 
@@ -76,6 +107,11 @@ namespace Windows.UI.Xaml
 		) : base(defaultValue, null, backingFieldUpdateCallback)
 		{
 			Options = options.WithDefault();
+		}
+
+		internal FrameworkPropertyMetadata(bool defaultValue, FrameworkPropertyMetadataOptions options, BackingFieldUpdateCallback backingFieldUpdateCallback)
+			: this(Boxes.Box(defaultValue), options, backingFieldUpdateCallback)
+		{
 		}
 
 		internal FrameworkPropertyMetadata(
@@ -86,6 +122,11 @@ namespace Windows.UI.Xaml
 		) : base(defaultValue, propertyChangedCallback, coerceValueCallback, null)
 		{
 			Options = options.WithDefault();
+		}
+
+		internal FrameworkPropertyMetadata(bool defaultValue, FrameworkPropertyMetadataOptions options, PropertyChangedCallback propertyChangedCallback, CoerceValueCallback coerceValueCallback)
+			: this(Boxes.Box(defaultValue), options, propertyChangedCallback, coerceValueCallback)
+		{
 		}
 
 		internal FrameworkPropertyMetadata(
@@ -99,10 +140,20 @@ namespace Windows.UI.Xaml
 			Options = options.WithDefault();
 		}
 
+		internal FrameworkPropertyMetadata(bool defaultValue, FrameworkPropertyMetadataOptions options, PropertyChangedCallback propertyChangedCallback, CoerceValueCallback coerceValueCallback, BackingFieldUpdateCallback backingFieldUpdateCallback)
+			: this(Boxes.Box(defaultValue), options, propertyChangedCallback, coerceValueCallback, backingFieldUpdateCallback)
+		{
+		}
+
 		internal FrameworkPropertyMetadata(
 			object defaultValue,
 			PropertyChangedCallback propertyChangedCallback
 		) : base(defaultValue, propertyChangedCallback)
+		{
+		}
+
+		internal FrameworkPropertyMetadata(bool defaultValue, PropertyChangedCallback propertyChangedCallback)
+			: this(Boxes.Box(defaultValue), propertyChangedCallback)
 		{
 		}
 
@@ -114,11 +165,21 @@ namespace Windows.UI.Xaml
 		{
 		}
 
+		internal FrameworkPropertyMetadata(bool defaultValue, PropertyChangedCallback propertyChangedCallback, BackingFieldUpdateCallback backingFieldUpdateCallback)
+			: this(Boxes.Box(defaultValue), propertyChangedCallback, backingFieldUpdateCallback)
+		{
+		}
+
 		internal FrameworkPropertyMetadata(
 			object defaultValue,
 			PropertyChangedCallback propertyChangedCallback,
 			CoerceValueCallback coerceValueCallback
 		) : base(defaultValue, propertyChangedCallback, coerceValueCallback, null)
+		{
+		}
+
+		internal FrameworkPropertyMetadata(bool defaultValue, PropertyChangedCallback propertyChangedCallback, CoerceValueCallback coerceValueCallback)
+			: this(Boxes.Box(defaultValue), propertyChangedCallback, coerceValueCallback)
 		{
 		}
 
@@ -139,6 +200,11 @@ namespace Windows.UI.Xaml
 			Options = options.WithDefault();
 		}
 
+		internal FrameworkPropertyMetadata(bool defaultValue, FrameworkPropertyMetadataOptions options, BackingFieldUpdateCallback backingFieldUpdateCallback, CoerceValueCallback coerceValueCallback)
+			: this(Boxes.Box(defaultValue), options, backingFieldUpdateCallback, coerceValueCallback)
+		{
+		}
+
 		internal FrameworkPropertyMetadata(
 			object defaultValue,
 			FrameworkPropertyMetadataOptions options,
@@ -149,6 +215,11 @@ namespace Windows.UI.Xaml
 		{
 			Options = options.WithDefault();
 			DefaultUpdateSourceTrigger = defaultUpdateSourceTrigger;
+		}
+
+		internal FrameworkPropertyMetadata(bool defaultValue, FrameworkPropertyMetadataOptions options, PropertyChangedCallback propertyChangedCallback, CoerceValueCallback coerceValueCallback, UpdateSourceTrigger defaultUpdateSourceTrigger)
+			: this(Boxes.Box(defaultValue), options, propertyChangedCallback, coerceValueCallback, defaultUpdateSourceTrigger)
+		{
 		}
 
 		public FrameworkPropertyMetadataOptions Options { get; set; } = FrameworkPropertyMetadataOptions.Default;

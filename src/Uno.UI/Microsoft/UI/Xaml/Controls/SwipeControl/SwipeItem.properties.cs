@@ -7,6 +7,7 @@
 // https://github.com/microsoft/microsoft-ui-xaml/blob/307bd99682cccaa128483036b764c0b7c862d666/dev/Generated/SwipeItem.properties.cpp
 
 using System.Windows.Input;
+using Uno.UI.Helpers;
 using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media;
@@ -200,7 +201,7 @@ namespace Microsoft.UI.Xaml.Controls
 		//}
 
 		public static DependencyProperty BehaviorOnInvokedProperty { get; } = DependencyProperty.Register(
-			"BehaviorOnInvoked", typeof(SwipeBehaviorOnInvoked), typeof(SwipeItem), new FrameworkPropertyMetadata(default(SwipeBehaviorOnInvoked), OnBehaviorOnInvokedPropertyChanged));
+			"BehaviorOnInvoked", typeof(SwipeBehaviorOnInvoked), typeof(SwipeItem), new FrameworkPropertyMetadata(Boxes.DefaultBox<SwipeBehaviorOnInvoked>.Value, OnBehaviorOnInvokedPropertyChanged));
 
 		public SwipeBehaviorOnInvoked BehaviorOnInvoked
 		{

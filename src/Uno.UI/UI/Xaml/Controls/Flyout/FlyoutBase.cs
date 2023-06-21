@@ -16,6 +16,7 @@ using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
+using Uno.UI.Helpers;
 
 #if XAMARIN_IOS
 using View = UIKit.UIView;
@@ -86,8 +87,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				InitializePopupPanel();
 
 				SynchronizePropertyToPopup(Popup.DataContextProperty, DataContext);
-				SynchronizePropertyToPopup(Popup.AllowFocusOnInteractionProperty, AllowFocusOnInteraction);
-				SynchronizePropertyToPopup(Popup.AllowFocusWhenDisabledProperty, AllowFocusWhenDisabled);
+				SynchronizePropertyToPopup(Popup.AllowFocusOnInteractionProperty, Boxes.Box(AllowFocusOnInteraction));
+				SynchronizePropertyToPopup(Popup.AllowFocusWhenDisabledProperty, Boxes.Box(AllowFocusWhenDisabled));
 			}
 		}
 
@@ -162,7 +163,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				"Placement",
 				typeof(FlyoutPlacementMode),
 				typeof(FlyoutBase),
-				new FrameworkPropertyMetadata(default(FlyoutPlacementMode))
+				new FrameworkPropertyMetadata(Boxes.DefaultBox<FlyoutPlacementMode>.Value)
 			);
 
 		#endregion
@@ -183,7 +184,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"LightDismissOverlayMode", typeof(LightDismissOverlayMode),
 			typeof(FlyoutBase),
-			new FrameworkPropertyMetadata(default(LightDismissOverlayMode)));
+			new FrameworkPropertyMetadata(Boxes.DefaultBox<LightDismissOverlayMode>.Value));
 
 
 		/// <summary>
@@ -214,7 +215,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		public static DependencyProperty AllowFocusWhenDisabledProperty { get; } = CreateAllowFocusWhenDisabledProperty();
 
 		private void OnAllowFocusWhenDisabledChanged(bool oldValue, bool newValue) =>
-			SynchronizePropertyToPopup(Popup.AllowFocusWhenDisabledProperty, AllowFocusWhenDisabled);
+			SynchronizePropertyToPopup(Popup.AllowFocusWhenDisabledProperty, Boxes.Box(AllowFocusWhenDisabled));
 
 		/// <summary>
 		/// Gets or sets a value that indicates whether the element automatically gets focus when the user interacts with it.
@@ -232,7 +233,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		public static DependencyProperty AllowFocusOnInteractionProperty { get; } = CreateAllowFocusOnInteractionProperty();
 
 		private void OnAllowFocusOnInteractionChanged(bool oldValue, bool newValue) =>
-			SynchronizePropertyToPopup(Popup.AllowFocusOnInteractionProperty, AllowFocusOnInteraction);
+			SynchronizePropertyToPopup(Popup.AllowFocusOnInteractionProperty, Boxes.Box(AllowFocusOnInteraction));
 
 		public FrameworkElement Target { get; private set; }
 

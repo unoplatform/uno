@@ -1,4 +1,5 @@
-﻿using Windows.UI.Xaml;
+﻿using Uno.UI.Helpers;
+using Windows.UI.Xaml;
 
 namespace Microsoft.UI.Xaml.Controls.Primitives
 {
@@ -50,7 +51,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			owner.ValidateGreaterThanZero(coercedValue);
 			if (value != coercedValue)
 			{
-				sender.SetValue(args.Property, coercedValue);
+				sender.SetValue(args.Property, Boxes.Box(coercedValue));
 				return;
 			}
 

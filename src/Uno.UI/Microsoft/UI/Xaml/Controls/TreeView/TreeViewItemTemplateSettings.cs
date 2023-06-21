@@ -3,6 +3,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+using Uno.UI.Helpers;
 using Windows.UI.Xaml;
 
 namespace Microsoft.UI.Xaml.Controls
@@ -58,7 +59,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Identifies the DragItemsCount dependency property.
 		/// </summary>
 		public static DependencyProperty DragItemsCountProperty { get; } =
-			DependencyProperty.Register(nameof(DragItemsCount), typeof(int), typeof(TreeViewItemTemplateSettings), new FrameworkPropertyMetadata(0));
+			DependencyProperty.Register(nameof(DragItemsCount), typeof(int), typeof(TreeViewItemTemplateSettings), new FrameworkPropertyMetadata(Boxes.Box(0)));
 
 		/// <summary>
 		/// Identifies the ExpandedGlyphVisibility dependency property.
@@ -70,6 +71,6 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Identifies the Indentation dependency property.
 		/// </summary>
 		public static DependencyProperty IndentationProperty { get; } =
-			DependencyProperty.Register(nameof(Indentation), typeof(Thickness), typeof(TreeViewItemTemplateSettings), new FrameworkPropertyMetadata(default(Thickness)));
+			DependencyProperty.Register(nameof(Indentation), typeof(Thickness), typeof(TreeViewItemTemplateSettings), new FrameworkPropertyMetadata(Boxes.DefaultBox<Thickness>.Value));
 	}
 }

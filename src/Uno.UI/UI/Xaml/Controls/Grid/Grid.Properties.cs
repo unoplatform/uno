@@ -7,6 +7,7 @@ using Uno.UI;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml;
 using Windows.UI.Xaml.Media;
+using Uno.UI.Helpers;
 
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
@@ -226,7 +227,7 @@ namespace Windows.UI.Xaml.Controls
 			"RowSpacing", typeof(double),
 			typeof(Grid),
 			new FrameworkPropertyMetadata(
-				default(double),
+				Boxes.DefaultBox<double>.Value,
 				FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange));
 
 		public double ColumnSpacing
@@ -240,7 +241,7 @@ namespace Windows.UI.Xaml.Controls
 			"ColumnSpacing", typeof(double),
 			typeof(Grid),
 			new FrameworkPropertyMetadata(
-				default(double),
+				Boxes.DefaultBox<double>.Value,
 				FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange));
 	}
 }

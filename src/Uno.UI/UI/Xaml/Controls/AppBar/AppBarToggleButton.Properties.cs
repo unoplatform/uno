@@ -4,6 +4,7 @@ using System.Text;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Uno.UI.Helpers;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -90,7 +91,7 @@ namespace Windows.UI.Xaml.Controls
 				"LabelPosition",
 				typeof(CommandBarLabelPosition),
 				typeof(AppBarToggleButton),
-				new FrameworkPropertyMetadata(default(CommandBarLabelPosition))
+				new FrameworkPropertyMetadata(Boxes.DefaultBox<CommandBarLabelPosition>.Value)
 			);
 
 		#endregion
@@ -126,7 +127,7 @@ namespace Windows.UI.Xaml.Controls
 				"DynamicOverflowOrder",
 				typeof(int),
 				typeof(AppBarToggleButton),
-				new FrameworkPropertyMetadata(default(int))
+				new FrameworkPropertyMetadata(Boxes.DefaultBox<int>.Value)
 			);
 
 		#endregion

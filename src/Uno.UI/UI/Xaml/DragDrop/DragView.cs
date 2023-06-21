@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Uno.UI.Helpers;
 using Uno.UI.Helpers.WinUI;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.ApplicationModel.DataTransfer.DragDrop.Core;
@@ -27,7 +28,7 @@ namespace Windows.UI.Xaml
 
 		#region GlyphVisibility
 		public static readonly DependencyProperty GlyphVisibilityProperty = DependencyProperty.Register(
-			"GlyphVisibility", typeof(Visibility), typeof(DragView), new FrameworkPropertyMetadata(default(Visibility)));
+			"GlyphVisibility", typeof(Visibility), typeof(DragView), new FrameworkPropertyMetadata(Boxes.DefaultBox<Visibility>.Value));
 
 		public Visibility GlyphVisibility
 		{
@@ -49,7 +50,7 @@ namespace Windows.UI.Xaml
 
 		#region CaptionVisibility
 		public static readonly DependencyProperty CaptionVisibilityProperty = DependencyProperty.Register(
-			"CaptionVisibility", typeof(Visibility), typeof(DragView), new FrameworkPropertyMetadata(default(Visibility)));
+			"CaptionVisibility", typeof(Visibility), typeof(DragView), new FrameworkPropertyMetadata(Boxes.DefaultBox<Visibility>.Value));
 
 		public Visibility CaptionVisibility
 		{
@@ -71,7 +72,7 @@ namespace Windows.UI.Xaml
 
 		#region ContentAnchor
 		public static readonly DependencyProperty ContentAnchorProperty = DependencyProperty.Register(
-			"ContentAnchor", typeof(Point), typeof(DragView), new FrameworkPropertyMetadata(default(Point)));
+			"ContentAnchor", typeof(Point), typeof(DragView), new FrameworkPropertyMetadata(Boxes.DefaultBox<Point>.Value));
 
 		public Point ContentAnchor
 		{
@@ -82,7 +83,7 @@ namespace Windows.UI.Xaml
 
 		#region ContentVisibility
 		public static readonly DependencyProperty ContentVisibilityProperty = DependencyProperty.Register(
-			"ContentVisibility", typeof(Visibility), typeof(DragView), new FrameworkPropertyMetadata(default(Visibility)));
+			"ContentVisibility", typeof(Visibility), typeof(DragView), new FrameworkPropertyMetadata(Boxes.DefaultBox<Visibility>.Value));
 
 		public Visibility ContentVisibility
 		{
@@ -93,7 +94,7 @@ namespace Windows.UI.Xaml
 
 		#region TooltipVisibility
 		public static readonly DependencyProperty TooltipVisibilityProperty = DependencyProperty.Register(
-			"TooltipVisibility", typeof(Visibility), typeof(DragView), new FrameworkPropertyMetadata(default(Visibility)));
+			"TooltipVisibility", typeof(Visibility), typeof(DragView), new FrameworkPropertyMetadata(Boxes.DefaultBox<Visibility>.Value));
 
 		public Visibility TooltipVisibility
 		{

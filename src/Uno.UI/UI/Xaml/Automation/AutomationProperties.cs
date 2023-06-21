@@ -2,6 +2,7 @@
 using Uno.UI;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Automation.Peers;
+using Uno.UI.Helpers;
 
 namespace Windows.UI.Xaml.Automation
 {
@@ -171,23 +172,23 @@ namespace Windows.UI.Xaml.Automation
 
 		public static int GetPositionInSet(global::Windows.UI.Xaml.DependencyObject element) => (int)element.GetValue(PositionInSetProperty);
 
-		public static void SetPositionInSet(DependencyObject element, int value) => element.SetValue(PositionInSetProperty, value);
+		public static void SetPositionInSet(DependencyObject element, int value) => element.SetValue(PositionInSetProperty, Boxes.Box(value));
 
 		public static DependencyProperty PositionInSetProperty { get; } =
 			DependencyProperty.RegisterAttached(
 				"PositionInSet", typeof(int),
 				typeof(AutomationProperties),
-				new FrameworkPropertyMetadata(default(int)));
+				new FrameworkPropertyMetadata(Boxes.DefaultBox<int>.Value));
 
 		public static int GetSizeOfSet(DependencyObject element) => (int)element.GetValue(SizeOfSetProperty);
 
-		public static void SetSizeOfSet(DependencyObject element, int value) => element.SetValue(SizeOfSetProperty, value);
+		public static void SetSizeOfSet(DependencyObject element, int value) => element.SetValue(SizeOfSetProperty, Boxes.Box(value));
 
 		public static DependencyProperty SizeOfSetProperty { get; } =
 			DependencyProperty.RegisterAttached(
 				"SizeOfSet", typeof(int),
 				typeof(AutomationProperties),
-				new FrameworkPropertyMetadata(default(int)));
+				new FrameworkPropertyMetadata(Boxes.DefaultBox<int>.Value));
 
 		public static AutomationLandmarkType GetLandmarkType(DependencyObject element) => (AutomationLandmarkType)element.GetValue(LandmarkTypeProperty);
 

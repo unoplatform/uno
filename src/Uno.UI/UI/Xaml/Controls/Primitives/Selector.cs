@@ -15,6 +15,7 @@ using Uno.UI.DataBinding;
 using Windows.Foundation.Collections;
 using Uno.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
+using Uno.UI.Helpers;
 
 namespace Windows.UI.Xaml.Controls.Primitives
 {
@@ -239,7 +240,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				nameof(SelectedIndex),
 				typeof(int),
 				typeof(Selector),
-				new FrameworkPropertyMetadata(-1, coerceValueCallback: CoerceSelectedIndex));
+				new FrameworkPropertyMetadata(Boxes.Box(-1), coerceValueCallback: CoerceSelectedIndex));
 
 		private int _uncoercedSelectedIndex = -1;
 
@@ -247,14 +248,14 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		{
 			if (baseValue is not int desiredIndex)
 			{
-				return -1;
+				return Boxes.Box(-1);
 			}
 
 			var owner = (Selector)dependencyObject;
 			if (desiredIndex == -1)
 			{
 				owner._uncoercedSelectedIndex = -1;
-				return -1;
+				return Boxes.Box(-1);
 			}
 
 			var itemCount = owner.NumberOfItems;
@@ -273,17 +274,17 @@ namespace Windows.UI.Xaml.Controls.Primitives
 					else
 					{
 						// Ignore change.
-						return -1;
+						return Boxes.Box(-1);
 					}
 				}
 				owner._uncoercedSelectedIndex = -1;
-				return desiredIndex;
+				return Boxes.Box(desiredIndex);
 			}
 			else
 			{
 				// No items exist, store uncoerced and set to -1;
 				owner._uncoercedSelectedIndex = desiredIndex;
-				return -1;
+				return Boxes.Box(-1);
 			}
 		}
 

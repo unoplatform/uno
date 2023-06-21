@@ -12,6 +12,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Markup;
 using Uno.Disposables;
 using static Microsoft.UI.Xaml.Controls._Tracing;
+using Uno.UI.Helpers;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -110,13 +111,13 @@ namespace Microsoft.UI.Xaml.Controls
 			if (suppressAutoRecycle)
 			{
 				virtInfo.AutoRecycleCandidate = false;
-				REPEATER_TRACE_INFO("%* GetElement: %d Not AutoRecycleCandidate: \n", m_owner.Indent(), virtInfo.Index);
+				REPEATER_TRACE_INFO("%* GetElement: %d Not AutoRecycleCandidate: \n", Boxes.Box(m_owner.Indent()), Boxes.Box(virtInfo.Index));
 			}
 			else
 			{
 				virtInfo.AutoRecycleCandidate = true;
 				virtInfo.KeepAlive = true;
-				REPEATER_TRACE_INFO("%* GetElement: %d AutoRecycleCandidate: \n", m_owner.Indent(), virtInfo.Index);
+				REPEATER_TRACE_INFO("%* GetElement: %d AutoRecycleCandidate: \n", Boxes.Box(m_owner.Indent()), Boxes.Box(virtInfo.Index));
 			}
 
 			return element;

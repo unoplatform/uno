@@ -1,4 +1,5 @@
-﻿using Windows.UI;
+﻿using Uno.UI.Helpers;
+using Windows.UI;
 using Windows.UI.Xaml;
 
 namespace Microsoft.UI.Xaml.Controls.Primitives
@@ -16,7 +17,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				nameof(ReplacementColor),
 				typeof(Color),
 				typeof(MonochromaticOverlayPresenter),
-				new FrameworkPropertyMetadata(default(Color), OnPropertyChanged));
+				new FrameworkPropertyMetadata(Boxes.DefaultBox<Color>.Value, OnPropertyChanged));
 
 		public UIElement SourceElement
 		{

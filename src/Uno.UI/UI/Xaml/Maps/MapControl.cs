@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using Uno;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
+using Uno.UI.Helpers;
 using Windows.Devices.Geolocation;
 
 namespace Windows.UI.Xaml.Controls.Maps
@@ -220,12 +221,12 @@ namespace Windows.UI.Xaml.Controls.Maps
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"ColorScheme", typeof(MapColorScheme),
 			typeof(MapControl),
-			new FrameworkPropertyMetadata(default(MapColorScheme)));
+			new FrameworkPropertyMetadata(Boxes.DefaultBox<MapColorScheme>.Value));
 		public static DependencyProperty DesiredPitchProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"DesiredPitch", typeof(double),
 			typeof(MapControl),
-			new FrameworkPropertyMetadata(default(double)));
+			new FrameworkPropertyMetadata(Boxes.DefaultBox<double>.Value));
 		public static DependencyProperty HeadingProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"Heading", typeof(double),

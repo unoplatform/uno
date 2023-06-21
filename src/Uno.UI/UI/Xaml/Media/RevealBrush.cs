@@ -1,4 +1,5 @@
-﻿
+﻿using Uno.UI.Helpers;
+
 namespace Windows.UI.Xaml.Media
 {
 	public partial class RevealBrush : XamlCompositionBrushBase
@@ -26,6 +27,6 @@ namespace Windows.UI.Xaml.Media
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(Color), typeof(global::Windows.UI.Color),
 			typeof(global::Windows.UI.Xaml.Media.RevealBrush),
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Color)));
+			new FrameworkPropertyMetadata(Boxes.DefaultBox<Color>.Value));
 	}
 }

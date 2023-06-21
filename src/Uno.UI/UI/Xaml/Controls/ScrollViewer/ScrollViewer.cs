@@ -22,6 +22,7 @@ using Uno;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
+using Uno.UI.Helpers;
 
 
 #if __ANDROID__
@@ -273,7 +274,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 #endif
 		public static void SetBringIntoViewOnFocusChange(global::Windows.UI.Xaml.DependencyObject element, bool bringIntoViewOnFocusChange)
-			=> element.SetValue(BringIntoViewOnFocusChangeProperty, bringIntoViewOnFocusChange);
+			=> element.SetValue(BringIntoViewOnFocusChangeProperty, Boxes.Box(bringIntoViewOnFocusChange));
 
 #if __IOS__
 		[global::Uno.NotImplemented]
@@ -392,7 +393,7 @@ namespace Windows.UI.Xaml.Controls
 				"HorizontalSnapPointsType",
 				typeof(SnapPointsType),
 				typeof(ScrollViewer),
-				new FrameworkPropertyMetadata(default(SnapPointsType)));
+				new FrameworkPropertyMetadata(Boxes.DefaultBox<SnapPointsType>.Value));
 		#endregion
 
 		#region HorizontalSnapPointsAlignment (DP)
@@ -407,7 +408,7 @@ namespace Windows.UI.Xaml.Controls
 				"HorizontalSnapPointsAlignment",
 				typeof(SnapPointsAlignment),
 				typeof(ScrollViewer),
-				new FrameworkPropertyMetadata(default(SnapPointsAlignment)));
+				new FrameworkPropertyMetadata(Boxes.DefaultBox<SnapPointsAlignment>.Value));
 		#endregion
 
 		#region VerticalSnapPointsType (DP)
@@ -573,7 +574,7 @@ namespace Windows.UI.Xaml.Controls
 				typeof(double),
 				typeof(ScrollViewer),
 				new FrameworkPropertyMetadata(
-					defaultValue: (double)0,
+					defaultValue: 0.0d,
 					propertyChangedCallback: null
 				)
 			);
@@ -593,7 +594,7 @@ namespace Windows.UI.Xaml.Controls
 				typeof(double),
 				typeof(ScrollViewer),
 				new FrameworkPropertyMetadata(
-					defaultValue: (double)0,
+					defaultValue: 0.0d,
 					propertyChangedCallback: null
 				)
 			);

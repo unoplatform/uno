@@ -3,6 +3,7 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System.Windows.Input;
+using Uno.UI.Helpers;
 using Windows.Foundation;
 using Windows.UI.Xaml;
 
@@ -26,7 +27,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty DisplayModeProperty { get; } =
-			DependencyProperty.Register(nameof(DisplayMode), typeof(PagerControlDisplayMode), typeof(PagerControl), new FrameworkPropertyMetadata(default(PagerControlDisplayMode), OnPropertyChanged));
+			DependencyProperty.Register(nameof(DisplayMode), typeof(PagerControlDisplayMode), typeof(PagerControl), new FrameworkPropertyMetadata(Boxes.DefaultBox<PagerControlDisplayMode>.Value, OnPropertyChanged));
 
 		public ICommand FirstButtonCommand
 		{
@@ -51,7 +52,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty FirstButtonVisibilityProperty { get; } =
-			DependencyProperty.Register(nameof(FirstButtonVisibility), typeof(PagerControlButtonVisibility), typeof(PagerControl), new FrameworkPropertyMetadata(default(PagerControlButtonVisibility), OnPropertyChanged));
+			DependencyProperty.Register(nameof(FirstButtonVisibility), typeof(PagerControlButtonVisibility), typeof(PagerControl), new FrameworkPropertyMetadata(Boxes.DefaultBox<PagerControlButtonVisibility>.Value, OnPropertyChanged));
 
 		public ICommand LastButtonCommand
 		{
@@ -78,7 +79,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty LastButtonVisibilityProperty { get; } =
-			DependencyProperty.Register(nameof(LastButtonVisibility), typeof(PagerControlButtonVisibility), typeof(PagerControl), new FrameworkPropertyMetadata(default(PagerControlButtonVisibility), OnPropertyChanged));
+			DependencyProperty.Register(nameof(LastButtonVisibility), typeof(PagerControlButtonVisibility), typeof(PagerControl), new FrameworkPropertyMetadata(Boxes.DefaultBox<PagerControlButtonVisibility>.Value, OnPropertyChanged));
 
 		public ICommand NextButtonCommand
 		{
@@ -105,7 +106,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty NextButtonVisibilityProperty { get; } =
-			DependencyProperty.Register(nameof(NextButtonVisibility), typeof(PagerControlButtonVisibility), typeof(PagerControl), new FrameworkPropertyMetadata(default(PagerControlButtonVisibility), OnPropertyChanged));
+			DependencyProperty.Register(nameof(NextButtonVisibility), typeof(PagerControlButtonVisibility), typeof(PagerControl), new FrameworkPropertyMetadata(Boxes.DefaultBox<PagerControlButtonVisibility>.Value, OnPropertyChanged));
 
 		public int NumberOfPages
 		{
@@ -114,7 +115,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty NumberOfPagesProperty { get; } =
-			DependencyProperty.Register(nameof(NumberOfPages), typeof(int), typeof(PagerControl), new FrameworkPropertyMetadata(0, OnPropertyChanged));
+			DependencyProperty.Register(nameof(NumberOfPages), typeof(int), typeof(PagerControl), new FrameworkPropertyMetadata(Boxes.Box(0), OnPropertyChanged));
 
 		public string PrefixText
 		{
@@ -150,7 +151,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty PreviousButtonVisibilityProperty { get; } =
-			DependencyProperty.Register(nameof(PreviousButtonVisibility), typeof(PagerControlButtonVisibility), typeof(PagerControl), new FrameworkPropertyMetadata(default(PagerControlButtonVisibility), OnPropertyChanged));
+			DependencyProperty.Register(nameof(PreviousButtonVisibility), typeof(PagerControlButtonVisibility), typeof(PagerControl), new FrameworkPropertyMetadata(Boxes.DefaultBox<PagerControlButtonVisibility>.Value, OnPropertyChanged));
 
 		public int SelectedPageIndex
 		{
@@ -159,7 +160,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty SelectedPageIndexProperty { get; } =
-			DependencyProperty.Register(nameof(SelectedPageIndex), typeof(int), typeof(PagerControl), new FrameworkPropertyMetadata(0, OnPropertyChanged));
+			DependencyProperty.Register(nameof(SelectedPageIndex), typeof(int), typeof(PagerControl), new FrameworkPropertyMetadata(Boxes.Box(0), OnPropertyChanged));
 
 		public string SuffixText
 		{

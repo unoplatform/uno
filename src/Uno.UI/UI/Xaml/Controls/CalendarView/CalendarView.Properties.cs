@@ -1,4 +1,5 @@
 using System;
+using Uno.UI.Helpers;
 using Windows.Globalization;
 using Windows.UI.Text;
 using DateTime = System.DateTimeOffset;
@@ -773,13 +774,13 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(DisplayMode), typeof(global::Windows.UI.Xaml.Controls.CalendarViewDisplayMode),
 			typeof(global::Windows.UI.Xaml.Controls.CalendarView),
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.CalendarViewDisplayMode)));
+			new FrameworkPropertyMetadata(Boxes.DefaultBox<global::Windows.UI.Xaml.Controls.CalendarViewDisplayMode>.Value));
 
 		public static global::Windows.UI.Xaml.DependencyProperty FirstDayOfWeekProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(FirstDayOfWeek), typeof(global::Windows.Globalization.DayOfWeek),
 			typeof(global::Windows.UI.Xaml.Controls.CalendarView),
-			new FrameworkPropertyMetadata(default(global::Windows.Globalization.DayOfWeek)));
+			new FrameworkPropertyMetadata(Boxes.DefaultBox<global::Windows.Globalization.DayOfWeek>.Value));
 
 		public static global::Windows.UI.Xaml.DependencyProperty FirstOfMonthLabelFontFamilyProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(

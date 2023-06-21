@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Uno.UI.Helpers;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -92,7 +93,7 @@ namespace Windows.UI.Xaml.Controls
 				"LabelPosition",
 				typeof(CommandBarLabelPosition),
 				typeof(AppBarButton),
-				new FrameworkPropertyMetadata(default(CommandBarLabelPosition))
+				new FrameworkPropertyMetadata(Boxes.DefaultBox<CommandBarLabelPosition>.Value)
 			);
 
 		#endregion
@@ -128,7 +129,7 @@ namespace Windows.UI.Xaml.Controls
 				"DynamicOverflowOrder",
 				typeof(int),
 				typeof(AppBarButton),
-				new FrameworkPropertyMetadata(default(int))
+				new FrameworkPropertyMetadata(Boxes.DefaultBox<int>.Value)
 			);
 
 		#endregion

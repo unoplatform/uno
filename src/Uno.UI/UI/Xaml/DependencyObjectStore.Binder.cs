@@ -16,6 +16,7 @@ using System.Threading;
 using Uno.Diagnostics.Eventing;
 using System.Collections;
 using Uno.Collections;
+using Uno.UI.Helpers;
 
 #if !IS_UNIT_TESTS
 using Uno.UI.Controls;
@@ -605,7 +606,7 @@ namespace Windows.UI.Xaml
 
 			if (!_childrenBindableMap.TryGetValue(property, out var indexRaw))
 			{
-				_childrenBindableMap[property] = index = _childrenBindableMap.Count;
+				_childrenBindableMap[property] = Boxes.Box(index = _childrenBindableMap.Count);
 				_childrenBindable.Add(null);
 			}
 			else

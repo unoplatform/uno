@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using Uno.Extensions;
 using System.Globalization;
+using Uno.UI.Helpers;
 
 namespace Windows.UI.Xaml.Media.Animation
 {
@@ -105,7 +106,7 @@ namespace Windows.UI.Xaml.Media.Animation
 
 			if (tokens.Count != 4)
 			{
-				throw new ArgumentOutOfRangeException("A KeySpline must have 4 tokens: x1, y1, x2, y2. Yours had {0} (input: \"{1}\").".InvariantCultureFormat(tokens.Count, input));
+				throw new ArgumentOutOfRangeException("A KeySpline must have 4 tokens: x1, y1, x2, y2. Yours had {0} (input: \"{1}\").".InvariantCultureFormat(Boxes.Box(tokens.Count), input));
 			}
 
 			return new KeySpline(

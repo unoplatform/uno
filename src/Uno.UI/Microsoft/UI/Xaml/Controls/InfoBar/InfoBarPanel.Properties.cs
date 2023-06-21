@@ -2,6 +2,7 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX reference InfoBarPanel.properties.cpp, commit 533c6b1
 
+using Uno.UI.Helpers;
 using Windows.UI.Xaml;
 
 namespace Microsoft.UI.Xaml.Controls.Primitives
@@ -26,7 +27,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		/// Gets the identifier for the HorizontalOrientationMargin dependency property.
 		/// </summary>
 		public static DependencyProperty HorizontalOrientationMarginProperty { get; } =
-			DependencyProperty.RegisterAttached("HorizontalOrientationMargin", typeof(Thickness), typeof(InfoBarPanel), new FrameworkPropertyMetadata(default(Thickness)));
+			DependencyProperty.RegisterAttached("HorizontalOrientationMargin", typeof(Thickness), typeof(InfoBarPanel), new FrameworkPropertyMetadata(Boxes.DefaultBox<Thickness>.Value));
 
 		/// <summary>
 		/// Gets and sets the distance between the edges of the InfoBarPanel
@@ -42,7 +43,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		/// Gets the identifier for the HorizontalOrientationPadding dependency property.
 		/// </summary>
 		public static DependencyProperty HorizontalOrientationPaddingProperty { get; } =
-			DependencyProperty.Register(nameof(HorizontalOrientationPadding), typeof(Thickness), typeof(InfoBarPanel), new FrameworkPropertyMetadata(default(Thickness)));
+			DependencyProperty.Register(nameof(HorizontalOrientationPadding), typeof(Thickness), typeof(InfoBarPanel), new FrameworkPropertyMetadata(Boxes.DefaultBox<Thickness>.Value));
 
 		/// <summary>
 		/// Gets the VerticalOrientationMargin from an object.
@@ -62,7 +63,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		/// Gets the identifier for the VerticalOrientationMargin dependency property.
 		/// </summary>
 		public static DependencyProperty VerticalOrientationMarginProperty { get; } =
-			DependencyProperty.RegisterAttached("VerticalOrientationMargin", typeof(Thickness), typeof(InfoBarPanel), new FrameworkPropertyMetadata(default(Thickness)));
+			DependencyProperty.RegisterAttached("VerticalOrientationMargin", typeof(Thickness), typeof(InfoBarPanel), new FrameworkPropertyMetadata(Boxes.DefaultBox<Thickness>.Value));
 
 		/// <summary>
 		/// Gets and sets the distance between the edges of the InfoBarPanel
@@ -78,6 +79,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		/// Gets the identifier for the VerticalOrientationPadding dependency property.
 		/// </summary>
 		public static DependencyProperty VerticalOrientationPaddingProperty { get; } =
-			DependencyProperty.Register(nameof(VerticalOrientationPadding), typeof(Thickness), typeof(InfoBarPanel), new FrameworkPropertyMetadata(default(Thickness)));
+			DependencyProperty.Register(nameof(VerticalOrientationPadding), typeof(Thickness), typeof(InfoBarPanel), new FrameworkPropertyMetadata(Boxes.DefaultBox<Thickness>.Value));
 	}
 }

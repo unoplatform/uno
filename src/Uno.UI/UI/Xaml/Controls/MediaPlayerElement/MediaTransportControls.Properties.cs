@@ -1,4 +1,5 @@
 using System;
+using Uno.UI.Helpers;
 using Windows.Media.Playback;
 
 namespace Windows.UI.Xaml.Controls
@@ -341,7 +342,7 @@ namespace Windows.UI.Xaml.Controls
 				nameof(FastPlayFallbackBehaviour),
 				typeof(Media.FastPlayFallbackBehaviour),
 				typeof(MediaTransportControls),
-				new FrameworkPropertyMetadata(default(Media.FastPlayFallbackBehaviour)));
+				new FrameworkPropertyMetadata(Boxes.DefaultBox<Media.FastPlayFallbackBehaviour>.Value));
 
 		#endregion
 

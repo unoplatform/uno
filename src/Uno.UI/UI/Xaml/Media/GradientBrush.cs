@@ -1,5 +1,6 @@
 ﻿using Windows.UI.Xaml.Markup;
 using Windows.UI;
+using Uno.UI.Helpers;
 
 namespace Windows.UI.Xaml.Media
 {
@@ -12,7 +13,7 @@ namespace Windows.UI.Xaml.Media
 		}
 
 		public static DependencyProperty FallbackColorProperty { get; } = DependencyProperty.Register(
-			"FallbackColor", typeof(Color), typeof(GradientBrush), new FrameworkPropertyMetadata(default(Color)));
+			"FallbackColor", typeof(Color), typeof(GradientBrush), new FrameworkPropertyMetadata(Boxes.DefaultBox<Color>.Value));
 
 		public Color FallbackColor
 		{

@@ -14,6 +14,7 @@ using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Media;
 using Buffer = Windows.Storage.Streams.Buffer;
 using System.Buffers;
+using Uno.UI.Helpers;
 
 namespace Windows.UI.Xaml.Media.Imaging
 {
@@ -33,7 +34,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
 #endif
 		public static DependencyProperty PixelWidthProperty { get; } = DependencyProperty.Register(
-			"PixelWidth", typeof(int), typeof(RenderTargetBitmap), new FrameworkPropertyMetadata(default(int)));
+			"PixelWidth", typeof(int), typeof(RenderTargetBitmap), new FrameworkPropertyMetadata(Boxes.DefaultBox<int>.Value));
 
 #if NOT_IMPLEMENTED
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
@@ -51,7 +52,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
 #endif
 		public static DependencyProperty PixelHeightProperty { get; } = DependencyProperty.Register(
-			"PixelHeight", typeof(int), typeof(RenderTargetBitmap), new FrameworkPropertyMetadata(default(int)));
+			"PixelHeight", typeof(int), typeof(RenderTargetBitmap), new FrameworkPropertyMetadata(Boxes.DefaultBox<int>.Value));
 
 #if NOT_IMPLEMENTED
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]

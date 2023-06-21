@@ -38,7 +38,7 @@ namespace Windows.UI.Xaml
 			}
 
 			internal void Add(Type key, bool isNullable)
-				=> _entries.Add(key, isNullable);
+				=> _entries.Add(key, Boxes.Box(isNullable));
 
 			internal void Clear()
 				=> _entries.Clear();

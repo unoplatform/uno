@@ -2,6 +2,7 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX reference PipsPager.properties.cpp, commit 43a110c
 
+using Uno.UI.Helpers;
 using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -103,7 +104,7 @@ public partial class PipsPager
 			nameof(NumberOfPages),
 			typeof(int),
 			typeof(PipsPager),
-			new FrameworkPropertyMetadata(-1, OnPropertyChanged));
+			new FrameworkPropertyMetadata(Boxes.Box(-1), OnPropertyChanged));
 
 	/// <summary>
 	/// Gets or sets the orientation of the pips and navigation buttons in the PipsPager.
@@ -179,7 +180,7 @@ public partial class PipsPager
 			nameof(SelectedPageIndex),
 			typeof(int),
 			typeof(PipsPager),
-			new FrameworkPropertyMetadata(0, OnPropertyChanged));
+			new FrameworkPropertyMetadata(Boxes.Box(0), OnPropertyChanged));
 
 	/// <summary>
 	/// Gets or sets the style to apply to the selected pip in the PipsPager.

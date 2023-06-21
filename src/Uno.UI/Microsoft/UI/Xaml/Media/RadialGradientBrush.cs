@@ -81,7 +81,7 @@ namespace Microsoft.UI.Xaml.Media
 		}
 
 		public static DependencyProperty InterpolationSpaceProperty { get; } = DependencyProperty.Register(
-			nameof(InterpolationSpace), typeof(CompositionColorSpace), typeof(RadialGradientBrush), new FrameworkPropertyMetadata(default(CompositionColorSpace)));
+			nameof(InterpolationSpace), typeof(CompositionColorSpace), typeof(RadialGradientBrush), new FrameworkPropertyMetadata(Boxes.DefaultBox<CompositionColorSpace>.Value));
 
 		[NotImplemented]
 		public CompositionColorSpace InterpolationSpace

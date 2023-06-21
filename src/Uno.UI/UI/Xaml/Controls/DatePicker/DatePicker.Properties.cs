@@ -1,4 +1,5 @@
 ﻿using System;
+using Uno.UI.Helpers;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -151,7 +152,7 @@ namespace Windows.UI.Xaml.Controls
 			name: "Orientation",
 			propertyType: typeof(Orientation),
 			ownerType: typeof(DatePicker),
-			typeMetadata: new FrameworkPropertyMetadata(default(Orientation)));
+			typeMetadata: new FrameworkPropertyMetadata(Boxes.DefaultBox<Orientation>.Value));
 
 		public string MonthFormat
 		{
@@ -241,6 +242,6 @@ namespace Windows.UI.Xaml.Controls
 			name: "LightDismissOverlayMode",
 			propertyType: typeof(LightDismissOverlayMode),
 			ownerType: typeof(DatePicker),
-			typeMetadata: new FrameworkPropertyMetadata(default(LightDismissOverlayMode)));
+			typeMetadata: new FrameworkPropertyMetadata(Boxes.DefaultBox<LightDismissOverlayMode>.Value));
 	}
 }

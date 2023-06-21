@@ -16,6 +16,7 @@ using Uno.UI.Xaml;
 using Uno.UI.Xaml.Input;
 using Windows.Foundation;
 using Windows.UI.Xaml.Input;
+using Uno.UI.Helpers;
 
 #if __IOS__
 using UIKit;
@@ -535,7 +536,7 @@ namespace Windows.UI.Xaml
 			{
 				var matchingHandler = handlers.FirstOrDefault(handlerInfo => (handlerInfo.Handler as Delegate).Equals(handler as Delegate));
 
-				if (!matchingHandler.Equals(default(RoutedEventHandlerInfo)))
+				if (!matchingHandler.Equals(Boxes.DefaultBox<RoutedEventHandlerInfo>.Value))
 				{
 					handlers.Remove(matchingHandler);
 

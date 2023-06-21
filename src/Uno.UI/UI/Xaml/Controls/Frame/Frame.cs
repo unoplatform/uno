@@ -14,6 +14,7 @@ using Uno.UI;
 using System.Runtime.CompilerServices;
 using Windows.UI.Xaml.Input;
 using Uno.UI.Xaml.Core;
+using Uno.UI.Helpers;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -67,7 +68,7 @@ namespace Windows.UI.Xaml.Controls
 
 		// Using a DependencyProperty as the backing store for BackStackDepth.  This enables animation, styling, binding, etc...
 		public static DependencyProperty BackStackDepthProperty { get; } =
-			DependencyProperty.Register("BackStackDepth", typeof(int), typeof(Frame), new FrameworkPropertyMetadata(0, (s, e) => ((Frame)s)?.OnBackStackDepthChanged(e)));
+			DependencyProperty.Register("BackStackDepth", typeof(int), typeof(Frame), new FrameworkPropertyMetadata(Boxes.Box(0), (s, e) => ((Frame)s)?.OnBackStackDepthChanged(e)));
 
 
 		protected virtual void OnBackStackDepthChanged(DependencyPropertyChangedEventArgs e)
@@ -105,7 +106,7 @@ namespace Windows.UI.Xaml.Controls
 
 		// Using a DependencyProperty as the backing store for CacheSize.  This enables animation, styling, binding, etc...
 		public static DependencyProperty CacheSizeProperty { get; } =
-			DependencyProperty.Register("CacheSize", typeof(int), typeof(Frame), new FrameworkPropertyMetadata(0, (s, e) => ((Frame)s)?.OnCacheSizeChanged(e)));
+			DependencyProperty.Register("CacheSize", typeof(int), typeof(Frame), new FrameworkPropertyMetadata(Boxes.Box(0), (s, e) => ((Frame)s)?.OnCacheSizeChanged(e)));
 
 
 		private void OnCacheSizeChanged(DependencyPropertyChangedEventArgs e)

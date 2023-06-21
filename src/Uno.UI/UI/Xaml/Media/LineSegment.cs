@@ -1,3 +1,4 @@
+using Uno.UI.Helpers;
 using Windows.Foundation;
 
 namespace Windows.UI.Xaml.Media
@@ -22,7 +23,7 @@ namespace Windows.UI.Xaml.Media
 				typeof(Point),
 				typeof(LineSegment),
 				new FrameworkPropertyMetadata(
-					defaultValue: default(Point),
+					defaultValue: Boxes.DefaultBox<Point>.Value,
 					options: FrameworkPropertyMetadataOptions.AffectsMeasure
 				)
 			);

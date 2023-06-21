@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Uno.UI.Helpers;
 using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -140,7 +141,7 @@ namespace Windows.UI.Xaml.Controls
 			"SelectedIndex", typeof(int),
 			typeof(Pivot),
 			new FrameworkPropertyMetadata(
-				defaultValue: -1,
+				defaultValue: Boxes.Box(-1),
 				options: FrameworkPropertyMetadataOptions.None,
 				propertyChangedCallback: (s, e) => (s as Pivot)?.OnSelectedIndexChanged((int)e.OldValue, (int)e.NewValue)
 			)

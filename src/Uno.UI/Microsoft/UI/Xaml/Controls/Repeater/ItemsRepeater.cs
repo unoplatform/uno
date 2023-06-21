@@ -11,6 +11,7 @@ using Microsoft.UI.Xaml.Automation.Peers;
 using Uno;
 using Uno.Disposables;
 using Uno.UI;
+using Uno.UI.Helpers;
 using Uno.UI.Helpers.WinUI;
 using Windows.Foundation;
 using Windows.UI.Xaml;
@@ -262,7 +263,7 @@ namespace Microsoft.UI.Xaml.Controls
 						virtInfo.AutoRecycleCandidate &&
 						!virtInfo.KeepAlive)
 					{
-						REPEATER_TRACE_INFO("AutoClear - %d \n", virtInfo.Index);
+						REPEATER_TRACE_INFO("AutoClear - %d \n", Boxes.Box(virtInfo.Index));
 						ClearElementImpl(element);
 					}
 				}

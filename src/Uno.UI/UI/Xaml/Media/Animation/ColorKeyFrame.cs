@@ -1,5 +1,6 @@
 ﻿using Uno;
 using Uno.Extensions;
+using Uno.UI.Helpers;
 using Windows.UI;
 using NotImplementedException = System.NotImplementedException;
 
@@ -17,7 +18,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			"Value",
 			typeof(Color),
 			typeof(ColorKeyFrame),
-			new FrameworkPropertyMetadata(default(Color)));
+			new FrameworkPropertyMetadata(Boxes.DefaultBox<Color>.Value));
 
 		public Color Value
 		{
@@ -29,7 +30,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			"KeyTime",
 			typeof(KeyTime),
 			typeof(ColorKeyFrame),
-			new FrameworkPropertyMetadata(default(KeyTime)));
+			new FrameworkPropertyMetadata(Boxes.DefaultBox<KeyTime>.Value));
 
 		public KeyTime KeyTime
 		{

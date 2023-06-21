@@ -27,6 +27,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using Uno.UI.Helpers;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -421,7 +422,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (index < 0 || index > sourceLength)
 			{
-				throw new ArgumentOutOfRangeException(nameof(index), "Invalid new index " + index + " for source length " + sourceLength);
+				throw new ArgumentOutOfRangeException(nameof(index), "Invalid new index " + Boxes.Box(index) + " for source length " + Boxes.Box(sourceLength));
 			}
 		}
 
@@ -435,7 +436,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (index < 0 || index >= sourceLength)
 			{
-				throw new ArgumentOutOfRangeException(nameof(index), "Invalid existing index " + index + " for source length " + sourceLength);
+				throw new ArgumentOutOfRangeException(nameof(index), "Invalid existing index " + Boxes.Box(index) + " for source length " + Boxes.Box(sourceLength));
 			}
 		}
 
@@ -451,17 +452,17 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (offset < 0)
 			{
-				throw new ArgumentOutOfRangeException(nameof(offset), "Invalid offset " + offset);
+				throw new ArgumentOutOfRangeException(nameof(offset), "Invalid offset " + Boxes.Box(offset));
 			}
 
 			if (count < 0)
 			{
-				throw new ArgumentOutOfRangeException(nameof(count), "Invalid count " + count);
+				throw new ArgumentOutOfRangeException(nameof(count), "Invalid count " + Boxes.Box(count));
 			}
 
 			if (sourceLength - offset < count)
 			{
-				throw new ArgumentException("Invalid offset (" + offset + ") or count + (" + count + ") for source length " + sourceLength);
+				throw new ArgumentException("Invalid offset (" + Boxes.Box(offset) + ") or count + (" + Boxes.Box(count) + ") for source length " + Boxes.Box(sourceLength));
 			}
 		}
 

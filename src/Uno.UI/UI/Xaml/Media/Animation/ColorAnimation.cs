@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Uno;
+using Uno.UI.Helpers;
 using Windows.UI;
 
 namespace Windows.UI.Xaml.Media.Animation

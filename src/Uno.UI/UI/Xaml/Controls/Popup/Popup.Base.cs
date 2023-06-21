@@ -1,6 +1,7 @@
 ﻿using System;
 using Uno.UI;
 using Uno.UI.DataBinding;
+using Uno.UI.Helpers;
 using Uno.UI.Xaml.Core;
 using Windows.Foundation;
 using Windows.UI.Xaml.Input;
@@ -105,7 +106,7 @@ public partial class Popup : FrameworkElement, IPopup
 				}
 			}
 
-			Opened?.Invoke(this, newIsOpen);
+			Opened?.Invoke(this, Boxes.Box(newIsOpen));
 		}
 		else
 		{
@@ -119,7 +120,7 @@ public partial class Popup : FrameworkElement, IPopup
 				}
 			}
 
-			Closed?.Invoke(this, newIsOpen);
+			Closed?.Invoke(this, Boxes.Box(newIsOpen));
 		}
 	}
 
@@ -190,8 +191,8 @@ public partial class Popup : FrameworkElement, IPopup
 	{
 		if (Child is IDependencyObjectStoreProvider provider)
 		{
-			provider.Store.SetValue(AllowFocusOnInteractionProperty, AllowFocusOnInteraction, DependencyPropertyValuePrecedences.Local);
-			provider.Store.SetValue(AllowFocusWhenDisabledProperty, AllowFocusWhenDisabled, DependencyPropertyValuePrecedences.Local);
+			provider.Store.SetValue(AllowFocusOnInteractionProperty, Boxes.Box(AllowFocusOnInteraction), DependencyPropertyValuePrecedences.Local);
+			provider.Store.SetValue(AllowFocusWhenDisabledProperty, Boxes.Box(AllowFocusWhenDisabled), DependencyPropertyValuePrecedences.Local);
 		}
 	}
 

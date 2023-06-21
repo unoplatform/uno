@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using Uno.UI.Helpers;
 using Uno.UI.Helpers.WinUI;
 using Windows.Foundation.Metadata;
 using Windows.UI;
@@ -111,7 +112,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 				return StringUtil.FormatString(
 					resourceStringWithName,
-					value,
+Boxes.Box(value),
 					ColorHelper.ToDisplayName(color));
 			}
 			else
@@ -134,7 +135,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 				return StringUtil.FormatString(
 					resourceStringWithoutName,
-					value);
+Boxes.Box(value));
 			}
 		}
 	}

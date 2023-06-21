@@ -8,6 +8,7 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using Windows.ApplicationModel.Contacts;
 using System;
+using Uno.UI.Helpers;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -98,7 +99,7 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(BadgeNumber),
 				typeof(int),
 				typeof(PersonPicture),
-				new FrameworkPropertyMetadata(0, OnPropertyChanged));
+				new FrameworkPropertyMetadata(Boxes.Box(0), OnPropertyChanged));
 
 		public static DependencyProperty BadgeTextProperty { get; } =
 			DependencyProperty.Register(

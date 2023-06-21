@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using Uno.UI.Helpers;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
@@ -12,7 +13,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#region LineAlignment - DP with common callback
 		public static DependencyProperty LineAlignmentProperty { get; } = DependencyProperty.Register(
-			"LineAlignment", typeof(FlowLayoutLineAlignment), typeof(FlowLayout), new FrameworkPropertyMetadata(default(FlowLayoutLineAlignment), OnDependencyPropertyChanged));
+			"LineAlignment", typeof(FlowLayoutLineAlignment), typeof(FlowLayout), new FrameworkPropertyMetadata(Boxes.DefaultBox<FlowLayoutLineAlignment>.Value, OnDependencyPropertyChanged));
 
 		public FlowLayoutLineAlignment LineAlignment
 		{
@@ -23,7 +24,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#region MinColumnSpacing - DP with common callback
 		public static DependencyProperty MinColumnSpacingProperty { get; } = DependencyProperty.Register(
-			"MinColumnSpacing", typeof(double), typeof(FlowLayout), new FrameworkPropertyMetadata(default(double), OnDependencyPropertyChanged));
+			"MinColumnSpacing", typeof(double), typeof(FlowLayout), new FrameworkPropertyMetadata(Boxes.DefaultBox<double>.Value, OnDependencyPropertyChanged));
 
 		public double MinColumnSpacing
 		{
@@ -34,7 +35,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#region MinRowSpacing - DP with common callback
 		public static DependencyProperty MinRowSpacingProperty { get; } = DependencyProperty.Register(
-			"MinRowSpacing", typeof(double), typeof(FlowLayout), new FrameworkPropertyMetadata(default(double), OnDependencyPropertyChanged));
+			"MinRowSpacing", typeof(double), typeof(FlowLayout), new FrameworkPropertyMetadata(Boxes.DefaultBox<double>.Value, OnDependencyPropertyChanged));
 
 		public double MinRowSpacing
 		{
@@ -45,7 +46,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#region Orientation - DP with common callback
 		public static DependencyProperty OrientationProperty { get; } = DependencyProperty.Register(
-			"Orientation", typeof(Orientation), typeof(FlowLayout), new FrameworkPropertyMetadata(default(Orientation), OnDependencyPropertyChanged));
+			"Orientation", typeof(Orientation), typeof(FlowLayout), new FrameworkPropertyMetadata(Boxes.DefaultBox<Orientation>.Value, OnDependencyPropertyChanged));
 
 		public Orientation Orientation
 		{

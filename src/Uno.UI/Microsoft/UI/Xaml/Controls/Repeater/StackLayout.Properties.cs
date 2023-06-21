@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using Uno.UI.Helpers;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
@@ -12,7 +13,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#region Orientation - DP with common callback
 		public static DependencyProperty OrientationProperty { get; } = DependencyProperty.Register(
-			"Orientation", typeof(Orientation), typeof(StackLayout), new FrameworkPropertyMetadata(default(Orientation), OnDependencyPropertyChanged));
+			"Orientation", typeof(Orientation), typeof(StackLayout), new FrameworkPropertyMetadata(Boxes.DefaultBox<Orientation>.Value, OnDependencyPropertyChanged));
 
 		public Orientation Orientation
 		{

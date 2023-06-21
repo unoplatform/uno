@@ -1,3 +1,4 @@
+using Uno.UI.Helpers;
 using Color = Windows.UI.Color;
 
 namespace Windows.UI.Xaml.Media
@@ -74,7 +75,7 @@ namespace Windows.UI.Xaml.Media
 				nameof(TintColor),
 				typeof(Color),
 				typeof(AcrylicBrush),
-				new FrameworkPropertyMetadata(default(Color)));
+				new FrameworkPropertyMetadata(Boxes.DefaultBox<Color>.Value));
 
 		/// <summary>
 		/// Identifies the TintOpacity dependency property.

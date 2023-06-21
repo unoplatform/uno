@@ -13,7 +13,7 @@ namespace Microsoft.UI.Xaml.Controls
 	public partial class SwipeItems
 	{
 		public static DependencyProperty ModeProperty { get; } = DependencyProperty.Register(
-			"Mode", typeof(SwipeMode), typeof(SwipeItems), new FrameworkPropertyMetadata(default(SwipeMode), OnModePropertyChanged));
+			"Mode", typeof(SwipeMode), typeof(SwipeItems), new FrameworkPropertyMetadata(Boxes.DefaultBox<SwipeMode>.Value, OnModePropertyChanged));
 
 		public SwipeMode Mode
 		{

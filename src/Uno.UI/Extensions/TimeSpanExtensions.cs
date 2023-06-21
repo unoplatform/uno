@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Uno.UI.Helpers;
 
 namespace Uno.UI.Extensions
 {
@@ -12,14 +13,14 @@ namespace Uno.UI.Extensions
 
 			if (timeSpan.Days > 0)
 			{
-				builder.AppendFormat(provider, "{0}.", timeSpan.Days);
+				builder.AppendFormat(provider, "{0}.", Boxes.Box(timeSpan.Days));
 			}
 
-			builder.AppendFormat(provider, "{0:D2}:{1:D2}:{2:d2}", timeSpan.Hours, timeSpan.Minutes, timeSpan.Seconds);
+			builder.AppendFormat(provider, "{0:D2}:{1:D2}:{2:d2}", Boxes.Box(timeSpan.Hours), Boxes.Box(timeSpan.Minutes), Boxes.Box(timeSpan.Seconds));
 
 			if (timeSpan.Milliseconds > 0)
 			{
-				builder.AppendFormat(provider, ".{0:D3}", timeSpan.Milliseconds);
+				builder.AppendFormat(provider, ".{0:D3}", Boxes.Box(timeSpan.Milliseconds));
 			}
 
 			return builder.ToString();

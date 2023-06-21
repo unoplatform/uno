@@ -14,6 +14,7 @@ using Uno.UI;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Text;
 using Uno.UI.Xaml;
+using Uno.UI.Helpers;
 
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
@@ -336,7 +337,7 @@ namespace Windows.UI.Xaml.Controls
 				typeof(int),
 				typeof(ContentPresenter),
 				new FrameworkPropertyMetadata(
-					defaultValue: 0,
+					defaultValue: Boxes.Box(0),
 					propertyChangedCallback: (s, e) => ((ContentPresenter)s).OnMaxLinesChanged()
 				)
 			);

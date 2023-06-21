@@ -32,6 +32,7 @@ using FontWeight = Windows.UI.Text.FontWeight;
 using Windows.UI.Text;
 using FontWeights = Windows.UI.Text.FontWeights;
 using FontWeight = Windows.UI.Text.FontWeight;
+using Uno.UI.Helpers;
 #endif
 
 namespace Uno.UI.DataBinding
@@ -821,7 +822,7 @@ namespace Uno.UI.DataBinding
 					var c = input[0];
 					if (c >= '0' && c <= '9')
 					{
-						output = (int)(c - '0');
+						output = Boxes.Box((int)(c - '0'));
 						return true;
 					}
 				}
@@ -830,13 +831,13 @@ namespace Uno.UI.DataBinding
 
 				if (trimmed == "0" || trimmed.Length == 0) // Fast path for zero / empty values (means zero in XAML)
 				{
-					output = 0;
+					output = Boxes.Box(0);
 					return true;
 				}
 
 				if (int.TryParse(trimmed, numberStyles, NumberFormatInfo.InvariantInfo, out var i))
 				{
-					output = i;
+					output = Boxes.Box(i);
 					return true;
 				}
 			}

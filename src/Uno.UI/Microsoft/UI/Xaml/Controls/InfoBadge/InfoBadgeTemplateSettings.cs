@@ -2,6 +2,7 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX reference InfoBadgeTemplateSettings.properties.cpp, commit 76bd573
 
+using Uno.UI.Helpers;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
@@ -29,6 +30,6 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty InfoBadgeCornerRadiusProperty { get; } =
-			DependencyProperty.Register(nameof(InfoBadgeCornerRadius), typeof(CornerRadius), typeof(InfoBadgeTemplateSettings), new FrameworkPropertyMetadata(default(CornerRadius)));
+			DependencyProperty.Register(nameof(InfoBadgeCornerRadius), typeof(CornerRadius), typeof(InfoBadgeTemplateSettings), new FrameworkPropertyMetadata(Boxes.DefaultBox<CornerRadius>.Value));
 	}
 }

@@ -24,6 +24,7 @@ using AppKit;
 using _View = AppKit.NSView;
 #else
 using _View = Windows.UI.Xaml.FrameworkElement;
+using Uno.UI.Helpers;
 #endif
 
 #if HAS_UNO_WINUI
@@ -724,7 +725,7 @@ namespace Windows.UI.Xaml.Controls
 		DependencyProperty.Register(
 			"LightDismissOverlayMode", typeof(LightDismissOverlayMode),
 			typeof(ComboBox),
-			new FrameworkPropertyMetadata(default(LightDismissOverlayMode)));
+			new FrameworkPropertyMetadata(Boxes.DefaultBox<LightDismissOverlayMode>.Value));
 
 		/// <summary>
 		/// Sets the light-dismiss colour, if the overlay is enabled. The external API for modifying this is to override the PopupLightDismissOverlayBackground, etc, static resource values.

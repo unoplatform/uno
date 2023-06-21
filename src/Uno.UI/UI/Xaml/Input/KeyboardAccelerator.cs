@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Globalization;
+using Uno.UI.Helpers;
 using Windows.System;
 
 namespace Windows.UI.Xaml.Input
@@ -33,10 +34,10 @@ namespace Windows.UI.Xaml.Input
 			DependencyProperty.Register(nameof(ScopeOwner), typeof(DependencyObject), typeof(KeyboardAccelerator), new FrameworkPropertyMetadata(default(DependencyObject), FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext));
 
 		public static DependencyProperty ModifiersProperty { get; } =
-			DependencyProperty.Register(nameof(Modifiers), typeof(VirtualKeyModifiers), typeof(KeyboardAccelerator), new FrameworkPropertyMetadata(default(VirtualKeyModifiers)));
+			DependencyProperty.Register(nameof(Modifiers), typeof(VirtualKeyModifiers), typeof(KeyboardAccelerator), new FrameworkPropertyMetadata(Boxes.DefaultBox<VirtualKeyModifiers>.Value));
 
 		public static DependencyProperty KeyProperty { get; } =
-			DependencyProperty.Register(nameof(Key), typeof(VirtualKey), typeof(KeyboardAccelerator), new FrameworkPropertyMetadata(default(VirtualKey)));
+			DependencyProperty.Register(nameof(Key), typeof(VirtualKey), typeof(KeyboardAccelerator), new FrameworkPropertyMetadata(Boxes.DefaultBox<VirtualKey>.Value));
 
 		public static DependencyProperty IsEnabledProperty { get; } =
 			DependencyProperty.Register(nameof(IsEnabled), typeof(bool), typeof(KeyboardAccelerator), new FrameworkPropertyMetadata(default(bool)));

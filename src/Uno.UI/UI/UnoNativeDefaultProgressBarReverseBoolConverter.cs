@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Text;
+using Uno.UI.Helpers;
 
 namespace Uno.UI.Converters
 {
@@ -26,7 +27,7 @@ namespace Uno.UI.Converters
 
 			var valueToConvert = value != null && System.Convert.ToBoolean(value, CultureInfo.InvariantCulture);
 
-			return !valueToConvert;
+			return Boxes.Box(!valueToConvert);
 		}
 
 		protected override object ConvertBack(object value, Type targetType, object parameter)

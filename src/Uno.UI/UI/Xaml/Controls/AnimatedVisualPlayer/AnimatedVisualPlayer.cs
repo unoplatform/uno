@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Uno;
+using Uno.UI.Helpers;
 using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Markup;
@@ -33,7 +34,7 @@ namespace Microsoft.UI.Xaml.Controls
 			"Stretch", typeof(Stretch), typeof(AnimatedVisualPlayer), new FrameworkPropertyMetadata(Stretch.Uniform, FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange, UpdateSourceOnChanged));
 
 		public static DependencyProperty DurationProperty { get; } = DependencyProperty.Register(
-			"Duration", typeof(TimeSpan), typeof(AnimatedVisualPlayer), new FrameworkPropertyMetadata(default(TimeSpan), UpdateSourceOnChanged));
+			"Duration", typeof(TimeSpan), typeof(AnimatedVisualPlayer), new FrameworkPropertyMetadata(Boxes.DefaultBox<TimeSpan>.Value, UpdateSourceOnChanged));
 
 		public bool AutoPlay
 		{

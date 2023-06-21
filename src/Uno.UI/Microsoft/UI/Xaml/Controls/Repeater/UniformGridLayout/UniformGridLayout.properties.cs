@@ -4,6 +4,7 @@
 #nullable enable
 
 
+using Uno.UI.Helpers;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
@@ -32,7 +33,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty MaximumRowsOrColumnsProperty { get; } = DependencyProperty.Register(
-			"MaximumRowsOrColumns", typeof(int), typeof(UniformGridLayout), new FrameworkPropertyMetadata(-1));
+			"MaximumRowsOrColumns", typeof(int), typeof(UniformGridLayout), new FrameworkPropertyMetadata(Boxes.Box(-1)));
 
 		public int MaximumRowsOrColumns
 		{

@@ -6,6 +6,7 @@
 
 using Microsoft.UI.Xaml.Automation.Peers;
 using Uno.Disposables;
+using Uno.UI.Helpers;
 using Uno.UI.Helpers.WinUI;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -454,7 +455,7 @@ namespace Microsoft.UI.Xaml.Controls
 				// We are increasing the number of pages, so add the missing numbers.
 				for (int i = currentComboBoxItemsCount; i < numberOfPages; i++)
 				{
-					m_comboBoxEntries.Add(i + 1);
+					m_comboBoxEntries.Add(Boxes.Box(i + 1));
 				}
 			}
 			else
@@ -747,7 +748,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private void AppendButtonToNumberPanelList(int pageNumber, int numberOfPages)
 		{
 			Button button = new Button();
-			button.Content = pageNumber;
+			button.Content = Boxes.Box(pageNumber);
 			button.Click += (sender, args) =>
 			{
 				var button = sender as Button;
@@ -759,7 +760,7 @@ namespace Microsoft.UI.Xaml.Controls
 			};
 			// Set the default style of buttons
 			button.Style = (Style)ResourceAccessor.ResourceLookup(this, c_numberPanelButtonStyleName);
-			AutomationProperties.SetName(button, ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_PagerControlPageTextName) + " " + pageNumber);
+			AutomationProperties.SetName(button, ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_PagerControlPageTextName) + " " + Boxes.Box(pageNumber));
 			AutomationProperties.SetPositionInSet(button, pageNumber);
 			AutomationProperties.SetSizeOfSet(button, numberOfPages);
 			m_numberPanelElements.Add(button);

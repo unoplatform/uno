@@ -1,4 +1,5 @@
-﻿using Windows.Foundation;
+﻿using Uno.UI.Helpers;
+using Windows.Foundation;
 using Windows.UI.Xaml;
 
 namespace Windows.UI.Xaml.Controls.Primitives
@@ -26,7 +27,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		}
 
 		internal static DependencyProperty EffectiveOverflowButtonVisibilityProperty { get; } =
-			DependencyProperty.Register(nameof(EffectiveOverflowButtonVisibility), typeof(Visibility), typeof(CommandBarTemplateSettings), new FrameworkPropertyMetadata(default(Visibility)));
+			DependencyProperty.Register(nameof(EffectiveOverflowButtonVisibility), typeof(Visibility), typeof(CommandBarTemplateSettings), new FrameworkPropertyMetadata(Boxes.DefaultBox<Visibility>.Value));
 
 		public double NegativeOverflowContentHeight
 		{

@@ -30,6 +30,7 @@ using Uno.UI;
 using Windows.UI.Xaml.Input;
 using Windows.System;
 using Uno.UI.Xaml.Input;
+using Uno.UI.Helpers;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -635,13 +636,13 @@ namespace Windows.UI.Xaml.Controls
 					var offset = addedItems.IndexOf(ctrl.Content);
 					if (offset >= 0)
 					{
-						_containersForIndexRepair.Add(container, startingIndex + offset);
+						_containersForIndexRepair.Add(container, Boxes.Box(startingIndex + offset));
 					}
 				}
 				else if (currentIndex >= startingIndex)
 				{
 					// we store the index, that should be set after the collection change
-					_containersForIndexRepair.Add(container, currentIndex + indexChange);
+					_containersForIndexRepair.Add(container, Boxes.Box(currentIndex + indexChange));
 				}
 			}
 		}
@@ -667,12 +668,12 @@ namespace Windows.UI.Xaml.Controls
 
 				if (currentIndex < firstRemainingIndex)
 				{
-					_containersForIndexRepair.Add(container, -1);
+					_containersForIndexRepair.Add(container, Boxes.Box(-1));
 				}
 				else
 				{
 					// we store the index, that should be set after the collection change
-					_containersForIndexRepair.Add(container, currentIndex - indexChange);
+					_containersForIndexRepair.Add(container, Boxes.Box(currentIndex - indexChange));
 				}
 			}
 		}

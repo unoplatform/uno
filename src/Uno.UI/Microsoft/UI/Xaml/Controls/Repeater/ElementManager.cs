@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using Uno.UI.Helpers;
 using Windows.Foundation;
 using Windows.UI.Xaml;
 using static Microsoft.UI.Xaml.Controls._Tracing;
@@ -111,7 +112,7 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					// Sentinel. Create the element now since we need it.
 					int dataIndex = GetDataIndexFromRealizedRangeIndex(realizedIndex);
-					REPEATER_TRACE_INFO("Creating element for sentinal with data index %d. \n", dataIndex);
+					REPEATER_TRACE_INFO("Creating element for sentinal with data index %d. \n", Boxes.Box(dataIndex));
 					element = m_context.GetOrCreateElementAt(dataIndex, ElementRealizationOptions.ForceCreate | ElementRealizationOptions.SuppressAutoRecycle);
 					m_realizedElements[realizedIndex] = element;
 				}
@@ -270,7 +271,7 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 
 				MUX_ASSERT(IsDataIndexRealized(dataIndex));
-				REPEATER_TRACE_INFO("%ls: \tCreated element for index %d. \n", layoutId, dataIndex);
+				REPEATER_TRACE_INFO("%ls: \tCreated element for index %d. \n", layoutId, Boxes.Box(dataIndex));
 			}
 		}
 

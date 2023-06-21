@@ -3,6 +3,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+using Uno.UI.Helpers;
 using Windows.UI.Xaml;
 
 namespace Microsoft.UI.Xaml.Controls
@@ -37,7 +38,7 @@ namespace Microsoft.UI.Xaml.Controls
 			DependencyProperty.Register(nameof(Content), typeof(object), typeof(TreeViewNode), new FrameworkPropertyMetadata(null));
 
 		public static DependencyProperty DepthProperty { get; } =
-			DependencyProperty.Register(nameof(Depth), typeof(int), typeof(TreeViewNode), new FrameworkPropertyMetadata(-1));
+			DependencyProperty.Register(nameof(Depth), typeof(int), typeof(TreeViewNode), new FrameworkPropertyMetadata(Boxes.Box(-1)));
 
 		public static DependencyProperty HasChildrenProperty { get; } =
 			DependencyProperty.Register(nameof(HasChildren), typeof(bool), typeof(TreeViewNode), new FrameworkPropertyMetadata(false, OnHasChildrenPropertyChanged));

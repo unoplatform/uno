@@ -15,6 +15,7 @@ using Uno.UI;
 using Uno.UI.Helpers.WinUI;
 using static Microsoft.UI.Xaml.Controls._Tracing;
 using Windows.UI.Xaml.Markup;
+using Uno.UI.Helpers;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -307,7 +308,7 @@ namespace Microsoft.UI.Xaml.Controls
 			var it = m_candidates.FindIndex(c => c.Element == elem);
 			if (it != -1)
 			{
-				REPEATER_TRACE_INFO("Unregistered candidate %d\n", it);
+				REPEATER_TRACE_INFO("Unregistered candidate %d\n", Boxes.Box(it));
 				m_candidates.RemoveAt(it);
 				m_isAnchorElementDirty = true;
 			}
@@ -376,7 +377,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			bringIntoView.ChangeViewOffset = changeViewOffset;
 
-			REPEATER_TRACE_INFO("ItemsRepeaterScrollHost scroll to absolute offset (%.0f, %.0f), animate=%d \n", changeViewOffset.X, changeViewOffset.Y, bringIntoView.Animate);
+			REPEATER_TRACE_INFO("ItemsRepeaterScrollHost scroll to absolute offset (%.0f, %.0f), animate=%d \n", changeViewOffset.X, changeViewOffset.Y, Boxes.Box(bringIntoView.Animate));
 			scrollViewer.ChangeView(
 				changeViewOffset.X,
 				changeViewOffset.Y,

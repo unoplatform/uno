@@ -1454,7 +1454,8 @@ namespace Uno.UWPSyncGenerator
 							if (getLocal != null || getAttached != null)
 							{
 								var attachedModifier = getAttached != null ? "Attached" : "";
-								var propertyDisplayType = MapUWPTypes((getAttached?.ReturnType ?? getLocal?.Type).ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat));
+								var propertyType = (getAttached?.ReturnType ?? getLocal?.Type);
+								var propertyDisplayType = MapUWPTypes(propertyType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat));
 
 								b.AppendLineInvariant($"public {staticQualifier} {SanitizeType(property.Type)} {property.Name} {{{{ get; }}}} = ");
 
@@ -1471,7 +1472,15 @@ namespace Uno.UWPSyncGenerator
 								}
 
 								b.AppendLineInvariant($"\ttypeof({property.ContainingType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}), ");
-								b.AppendLineInvariant($"\tnew {BaseXamlNamespace}.FrameworkPropertyMetadata(default({propertyDisplayType})));");
+
+								if (propertyType.IsValueType)
+								{
+									b.AppendLineInvariant($"\tnew {BaseXamlNamespace}.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.DefaultBox<{propertyDisplayType}>.Value));");
+								}
+								else
+								{
+									b.AppendLineInvariant($"\tnew {BaseXamlNamespace}.FrameworkPropertyMetadata(default({propertyDisplayType})));");
+								}
 							}
 							else
 							{

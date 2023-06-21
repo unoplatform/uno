@@ -1,3 +1,4 @@
+using Uno.UI.Helpers;
 using Color = Windows.UI.Color;
 
 namespace Windows.UI.Xaml.Media
@@ -24,7 +25,7 @@ namespace Windows.UI.Xaml.Media
 			DependencyProperty.Register(
 				nameof(FallbackColor), typeof(Color),
 				typeof(XamlCompositionBrushBase),
-				new FrameworkPropertyMetadata(default(Color)));
+				new FrameworkPropertyMetadata(Boxes.DefaultBox<Color>.Value));
 
 		/// <summary>
 		/// Returns the fallback color mixed with opacity value.

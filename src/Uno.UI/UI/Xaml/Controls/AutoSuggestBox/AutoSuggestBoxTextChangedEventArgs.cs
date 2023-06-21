@@ -1,5 +1,7 @@
 #pragma warning disable 108 // new keyword hiding
 #pragma warning disable 114 // new keyword hiding
+using Uno.UI.Helpers;
+
 namespace Windows.UI.Xaml.Controls
 {
 	public partial class AutoSuggestBoxTextChangedEventArgs : global::Windows.UI.Xaml.DependencyObject
@@ -17,7 +19,7 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"Reason", typeof(AutoSuggestionBoxTextChangeReason),
 			typeof(global::Windows.UI.Xaml.Controls.AutoSuggestBoxTextChangedEventArgs),
-			new FrameworkPropertyMetadata(default(AutoSuggestionBoxTextChangeReason)));
+			new FrameworkPropertyMetadata(Boxes.DefaultBox<AutoSuggestionBoxTextChangeReason>.Value));
 
 		internal AutoSuggestBox Owner
 		{

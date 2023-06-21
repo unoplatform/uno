@@ -15,6 +15,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Automation.Peers;
 using TreeViewItemAutomationPeer = Microsoft.UI.Xaml.Automation.Peers.TreeViewItemAutomationPeer;
+using Uno.UI.Helpers;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -480,7 +481,7 @@ namespace Microsoft.UI.Xaml.Controls
 				treeViewItemPeer.RaiseAutomationEvent(selectionEvent);
 
 				var isSelectedProperty = SelectionItemPatternIdentifiers.IsSelectedProperty;
-				treeViewItemPeer.RaisePropertyChangedEvent(isSelectedProperty, !isSelected, isSelected);
+				treeViewItemPeer.RaisePropertyChangedEvent(isSelectedProperty, Boxes.Box(!isSelected), Boxes.Box(isSelected));
 			}
 		}
 

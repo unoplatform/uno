@@ -36,6 +36,7 @@ using View = Windows.UI.Xaml.UIElement;
 using Color = Windows.UI.Color;
 #else
 using Color = System.Drawing.Color;
+using Uno.UI.Helpers;
 #endif
 
 #if __WASM__
@@ -221,7 +222,7 @@ namespace Windows.UI.Xaml.Documents
 				typeof(int),
 				typeof(TextElement),
 				new FrameworkPropertyMetadata(
-					defaultValue: 0,
+					defaultValue: Boxes.Box(0),
 					options: FrameworkPropertyMetadataOptions.Inherits,
 					propertyChangedCallback: (s, e) => ((TextElement)s).OnCharacterSpacingChanged()
 				)

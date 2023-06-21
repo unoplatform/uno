@@ -9,6 +9,7 @@ using Windows.UI.Xaml.Media;
 using Uno.UI;
 using Uno;
 using Uno.UI.DataBinding;
+using Uno.UI.Helpers;
 
 namespace Windows.UI.Xaml.Controls.Primitives;
 
@@ -69,7 +70,7 @@ public partial class Popup
 	{
 		if (property == IsLightDismissEnabledProperty)
 		{
-			defaultValue = FeatureConfiguration.Popup.EnableLightDismissByDefault;
+			defaultValue = Boxes.Box(FeatureConfiguration.Popup.EnableLightDismissByDefault);
 			return true;
 		}
 		return base.GetDefaultValue2(property, out defaultValue);
@@ -137,7 +138,7 @@ public partial class Popup
 	DependencyProperty.Register(
 		"LightDismissOverlayMode", typeof(LightDismissOverlayMode),
 		typeof(Popup),
-		new FrameworkPropertyMetadata(defaultValue: default(LightDismissOverlayMode), propertyChangedCallback: (o, e) => ((Popup)o).ApplyLightDismissOverlayMode()));
+		new FrameworkPropertyMetadata(defaultValue: Boxes.DefaultBox<LightDismissOverlayMode>.Value, propertyChangedCallback: (o, e) => ((Popup)o).ApplyLightDismissOverlayMode()));
 
 	/// <summary>
 	/// Gets or sets the element to use as the popup's placement target.

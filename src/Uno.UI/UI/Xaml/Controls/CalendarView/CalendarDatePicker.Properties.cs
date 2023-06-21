@@ -3,6 +3,7 @@ using System;
 using DateTime = System.DateTimeOffset;
 using Calendar = Windows.Globalization.Calendar;
 using DayOfWeek = Windows.Globalization.DayOfWeek;
+using Uno.UI.Helpers;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -68,7 +69,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty DisplayModeProperty { get; } = DependencyProperty.Register(
-			"DisplayMode", typeof(CalendarViewDisplayMode), typeof(CalendarDatePicker), new FrameworkPropertyMetadata(default(CalendarViewDisplayMode)));
+			"DisplayMode", typeof(CalendarViewDisplayMode), typeof(CalendarDatePicker), new FrameworkPropertyMetadata(Boxes.DefaultBox<CalendarViewDisplayMode>.Value));
 
 		public CalendarViewDisplayMode DisplayMode
 		{
@@ -77,7 +78,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty FirstDayOfWeekProperty { get; } = DependencyProperty.Register(
-			"FirstDayOfWeek", typeof(DayOfWeek), typeof(CalendarDatePicker), new FrameworkPropertyMetadata(default(DayOfWeek)));
+			"FirstDayOfWeek", typeof(DayOfWeek), typeof(CalendarDatePicker), new FrameworkPropertyMetadata(Boxes.DefaultBox<DayOfWeek>.Value));
 
 		public DayOfWeek FirstDayOfWeek
 		{

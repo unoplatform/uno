@@ -3,6 +3,7 @@
 using System;
 using System.Globalization;
 using System.Threading.Tasks;
+using Uno.UI.Helpers;
 using Uno.UI.Helpers.WinUI;
 using Windows.ApplicationModel.Contacts;
 using Windows.ApplicationModel.Resources;
@@ -393,7 +394,7 @@ namespace Microsoft.UI.Xaml.Controls
 					automationName = StringUtil.FormatString(
 						ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_BadgeItemTextOverride),
 						contactName,
-						BadgeNumber,
+Boxes.Box(BadgeNumber),
 						BadgeText);
 				}
 				else
@@ -401,7 +402,7 @@ namespace Microsoft.UI.Xaml.Controls
 					automationName = StringUtil.FormatString(
 						GetLocalizedPluralBadgeItemStringResource(BadgeNumber),
 						contactName,
-						BadgeNumber);
+Boxes.Box(BadgeNumber));
 				}
 			}
 			else if (!string.IsNullOrEmpty(BadgeGlyph) || BadgeImageSource != null)

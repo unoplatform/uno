@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Uno.UI.Converters;
+using Uno.UI.Helpers;
 using Windows.UI.Xaml;
 
 namespace Uno.UI.Xaml.Controls.MediaPlayer.Internal
@@ -61,7 +62,7 @@ namespace Uno.UI.Xaml.Controls.MediaPlayer.Internal
 
 			var visibility = (Visibility)value;
 
-			return visibilityOnTrue.Equals(visibility);
+			return Boxes.Box(visibilityOnTrue.Equals(visibility));
 		}
 	}
 

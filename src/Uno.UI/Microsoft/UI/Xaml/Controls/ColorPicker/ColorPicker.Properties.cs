@@ -1,3 +1,4 @@
+using Uno.UI.Helpers;
 using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -243,7 +244,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(int),
 				typeof(ColorPicker),
 				new FrameworkPropertyMetadata(
-					0,
+Boxes.Box(0),
 					(s, e) => (s as ColorPicker)?.OnPropertyChanged(e)));
 
 		public int MinSaturation
@@ -258,7 +259,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(int),
 				typeof(ColorPicker),
 				new FrameworkPropertyMetadata(
-					0,
+Boxes.Box(0),
 					(s, e) => (s as ColorPicker)?.OnPropertyChanged(e)));
 
 		public int MinValue
@@ -273,7 +274,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(int),
 				typeof(ColorPicker),
 				new FrameworkPropertyMetadata(
-					0,
+Boxes.Box(0),
 					(s, e) => (s as ColorPicker)?.OnPropertyChanged(e)));
 
 		public Color? PreviousColor

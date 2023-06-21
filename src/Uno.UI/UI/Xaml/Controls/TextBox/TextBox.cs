@@ -27,6 +27,7 @@ using Microsoft.UI.Input;
 using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
 #else
 using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
+using Uno.UI.Helpers;
 #endif
 
 namespace Windows.UI.Xaml.Controls
@@ -569,7 +570,7 @@ namespace Windows.UI.Xaml.Controls
 				typeof(int),
 				typeof(TextBox),
 				new FrameworkPropertyMetadata(
-					defaultValue: 0,
+					defaultValue: Boxes.Box(0),
 					propertyChangedCallback: (s, e) => ((TextBox)s)?.OnMaxLengthChanged((int)e.NewValue)
 				)
 			);

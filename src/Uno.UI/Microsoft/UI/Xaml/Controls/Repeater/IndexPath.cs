@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using Uno.UI.Helpers;
 using Windows.Foundation;
 
 namespace Microsoft.UI.Xaml.Controls
@@ -95,7 +96,7 @@ namespace Microsoft.UI.Xaml.Controls
 			foreach (int index in m_path)
 			{
 				result += ".";
-				result = result + index;
+				result = result + Boxes.Box(index);
 			}
 
 			return result;

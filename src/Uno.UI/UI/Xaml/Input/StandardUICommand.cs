@@ -1,3 +1,5 @@
+using Uno.UI.Helpers;
+
 namespace Windows.UI.Xaml.Input
 {
 	/// <summary>
@@ -36,6 +38,6 @@ namespace Windows.UI.Xaml.Input
 				nameof(Kind),
 				typeof(StandardUICommandKind),
 				typeof(StandardUICommand),
-				new FrameworkPropertyMetadata(default(StandardUICommandKind)));
+				new FrameworkPropertyMetadata(Boxes.DefaultBox<StandardUICommandKind>.Value));
 	}
 }

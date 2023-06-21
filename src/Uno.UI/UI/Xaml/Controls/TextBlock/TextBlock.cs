@@ -21,6 +21,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Automation.Peers;
 using Uno;
 using Uno.Foundation.Logging;
+using Uno.UI.Helpers;
 
 using RadialGradientBrush = Microsoft.UI.Xaml.Media.RadialGradientBrush;
 
@@ -331,7 +332,7 @@ namespace Windows.UI.Xaml.Controls
 				typeof(int),
 				typeof(TextBlock),
 				new FrameworkPropertyMetadata(
-					defaultValue: 0,
+					defaultValue: Boxes.Box(0),
 					propertyChangedCallback: (s, e) => ((TextBlock)s).OnMaxLinesChanged()
 				)
 			);
@@ -629,7 +630,7 @@ namespace Windows.UI.Xaml.Controls
 				typeof(int),
 				typeof(TextBlock),
 				new FrameworkPropertyMetadata(
-					defaultValue: 0,
+					defaultValue: Boxes.Box(0),
 					options: FrameworkPropertyMetadataOptions.Inherits,
 					propertyChangedCallback: (s, e) => ((TextBlock)s).OnCharacterSpacingChanged()
 				)

@@ -33,6 +33,7 @@ using Uno.UI.Extensions;
 using Windows.UI.Xaml.Documents;
 using Windows.ApplicationModel.Core;
 using Uno.UI.Xaml.Media;
+using Uno.UI.Helpers;
 
 #if __IOS__
 using UIKit;
@@ -178,7 +179,7 @@ namespace Windows.UI.Xaml
 			}
 			else if (property == IsTabStopProperty)
 			{
-				defaultValue = IsTabStopDefaultValue;
+				defaultValue = Boxes.Box(IsTabStopDefaultValue);
 				return true;
 			}
 
@@ -411,7 +412,7 @@ namespace Windows.UI.Xaml
 
 		[GeneratedDependencyProperty(ChangedCallback = true)]
 		public static DependencyProperty RenderTransformOriginProperty { get; } = CreateRenderTransformOriginProperty();
-		private static object GetRenderTransformOriginDefaultValue() => default(Point);
+		private static object GetRenderTransformOriginDefaultValue() => Boxes.DefaultBox<Point>.Value;
 
 		private void OnRenderTransformOriginChanged(Point _, Point origin)
 			=> _renderTransform?.UpdateOrigin(origin);

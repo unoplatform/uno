@@ -20,6 +20,7 @@ using System.Dynamic;
 using System.Runtime.CompilerServices;
 using System.Diagnostics.CodeAnalysis;
 using System.ComponentModel;
+using Uno.UI.Helpers;
 
 namespace Uno.UI.DataBinding
 {
@@ -562,7 +563,7 @@ namespace Uno.UI.DataBinding
 							}
 							else
 							{
-								_log.ErrorFormat($"The index [{0}] was outside of the bounds of the [{1}]", index, type);
+								_log.ErrorFormat($"The index [{0}] was outside of the bounds of the [{1}]", Boxes.Box(index), type);
 								return DependencyProperty.UnsetValue;
 							}
 						};
@@ -586,7 +587,7 @@ namespace Uno.UI.DataBinding
 							}
 							else
 							{
-								_log.ErrorFormat($"The index [{0}] was outside of the bounds of the [{1}]", index, type);
+								_log.ErrorFormat($"The index [{0}] was outside of the bounds of the [{1}]", Boxes.Box(index), type);
 								return DependencyProperty.UnsetValue;
 							}
 						};
@@ -811,7 +812,7 @@ namespace Uno.UI.DataBinding
 								Type.GetType("Uno.UI.DataBinding.BindingPropertyHelper+UnoGetMemberBinder, " + typeof(BindingPropertyHelper).Assembly.FullName)
 								?? throw new InvalidOperationException();
 
-							var binder = (GetMemberBinder?)Activator.CreateInstance(_unoGetMemberBindingType, property, true);
+							var binder = (GetMemberBinder?)Activator.CreateInstance(_unoGetMemberBindingType, property, Boxes.Box(true));
 
 							if (binder is not null)
 							{
@@ -885,8 +886,8 @@ namespace Uno.UI.DataBinding
 				var indexerRawParameter = property.Substring(1, property.Length - 2);
 				object indexerParameter =
 					int.TryParse(indexerRawParameter, NumberStyles.Integer, CultureInfo.InvariantCulture, out var indexerIndex)
-						? indexerIndex
-						: indexerRawParameter;
+						? Boxes.Box(indexerIndex
+) : indexerRawParameter;
 
 				// The fastest path uses the generated bindable metadata, which does not require
 				// the property info, unless there is an actual conversion to perform.
@@ -1086,7 +1087,7 @@ namespace Uno.UI.DataBinding
 								Type.GetType("Uno.UI.DataBinding.BindingPropertyHelper+UnoSetMemberBinder, " + typeof(BindingPropertyHelper).Assembly.FullName)
 								?? throw new InvalidOperationException();
 
-							var binder = (SetMemberBinder?)Activator.CreateInstance(_unoSetMemberBindingType, property, true);
+							var binder = (SetMemberBinder?)Activator.CreateInstance(_unoSetMemberBindingType, property, Boxes.Box(true));
 
 							if (binder is not null)
 							{
