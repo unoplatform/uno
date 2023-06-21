@@ -4,7 +4,7 @@ using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
+using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.MSBuild;
 using Uno.Extensions;
@@ -99,7 +99,7 @@ namespace Uno.UWPSyncGenerator
 		private INamedTypeSymbol _iOSBaseSymbol;
 		private INamedTypeSymbol _androidBaseSymbol;
 		private INamedTypeSymbol _macOSBaseSymbol;
-		private Compilation _referenceCompilation;
+		private static Compilation s_referenceCompilation;
 		private Compilation _unitTestsCompilation;
 
 		private Compilation _netstdReferenceCompilation;
@@ -136,36 +136,35 @@ namespace Uno.UWPSyncGenerator
 		static Generator()
 		{
 			RegisterAssemblyLoader();
-		}
-
-		public virtual void Build(string basePath, string baseName, string sourceAssembly)
-		{
 			Directory.SetCurrentDirectory(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
 			InitializeRoslyn();
+		}
 
+		public virtual async Task Build(string basePath, string baseName, string sourceAssembly)
+		{
 			Console.WriteLine($"Generating for {baseName} {sourceAssembly}");
 
-			_referenceCompilation = LoadUWPReferenceProject(@"..\..\..\Uno.UWPSyncGenerator.Reference\references.txt");
+			s_referenceCompilation ??= await LoadUWPReferenceProject(@"..\..\..\Uno.UWPSyncGenerator.Reference\references.txt");
 
-			_dependencyPropertySymbol = _referenceCompilation.GetTypeByMetadataName(BaseXamlNamespace + ".DependencyProperty");
+			_dependencyPropertySymbol = s_referenceCompilation.GetTypeByMetadataName(BaseXamlNamespace + ".DependencyProperty");
 
-			_iOSCompilation = LoadProject($@"{basePath}\{baseName}.netcoremobile.csproj", "net7.0-ios");
-			_androidCompilation = LoadProject($@"{basePath}\{baseName}.netcoremobile.csproj", "net7.0-android");
-			_unitTestsCompilation = LoadProject($@"{basePath}\{baseName}.Tests.csproj", "net7.0");
-			_macCompilation = LoadProject($@"{basePath}\{baseName}.netcoremobile.csproj", "net7.0-macos");
+			_iOSCompilation = await LoadProject($@"{basePath}\{baseName}.netcoremobile.csproj", "net7.0-ios");
+			_androidCompilation = await LoadProject($@"{basePath}\{baseName}.netcoremobile.csproj", "net7.0-android");
+			_unitTestsCompilation = await LoadProject($@"{basePath}\{baseName}.Tests.csproj", "net7.0");
+			_macCompilation = await LoadProject($@"{basePath}\{baseName}.netcoremobile.csproj", "net7.0-macos");
 
-			_netstdReferenceCompilation = LoadProject($@"{basePath}\{baseName}.Reference.csproj", "net7.0");
-			_wasmCompilation = LoadProject($@"{basePath}\{baseName}.Wasm.csproj", "net7.0");
-			_skiaCompilation = LoadProject($@"{basePath}\{baseName}.Skia.csproj", "net7.0");
+			_netstdReferenceCompilation = await LoadProject($@"{basePath}\{baseName}.Reference.csproj", "net7.0");
+			_wasmCompilation = await LoadProject($@"{basePath}\{baseName}.Wasm.csproj", "net7.0");
+			_skiaCompilation = await LoadProject($@"{basePath}\{baseName}.Skia.csproj", "net7.0");
 
 			_iOSBaseSymbol = _iOSCompilation.GetTypeByMetadataName("UIKit.UIView");
 			_androidBaseSymbol = _androidCompilation.GetTypeByMetadataName("Android.Views.View");
 			_macOSBaseSymbol = _macCompilation.GetTypeByMetadataName("AppKit.NSView");
 
-			FlagsAttributeSymbol = _referenceCompilation.GetTypeByMetadataName("System.FlagsAttribute");
-			UIElementSymbol = _referenceCompilation.GetTypeByMetadataName(BaseXamlNamespace + ".UIElement");
+			FlagsAttributeSymbol = s_referenceCompilation.GetTypeByMetadataName("System.FlagsAttribute");
+			UIElementSymbol = s_referenceCompilation.GetTypeByMetadataName(BaseXamlNamespace + ".UIElement");
 
-			var origins = from externalRedfs in _referenceCompilation.ExternalReferences
+			var origins = from externalRedfs in s_referenceCompilation.ExternalReferences
 						  let fileNameWithoutExtension = Path.GetFileNameWithoutExtension(externalRedfs.Display)
 						  where fileNameWithoutExtension.StartsWith("Windows.Foundation", StringComparison.Ordinal)
 						  || fileNameWithoutExtension.StartsWith("Microsoft.WinUI", StringComparison.Ordinal)
@@ -178,12 +177,12 @@ namespace Uno.UWPSyncGenerator
 						  || fileNameWithoutExtension.StartsWith("Windows.ApplicationModel.Calls.CallsPhoneContract", StringComparison.Ordinal)
 						  || fileNameWithoutExtension.StartsWith("Windows.UI.Xaml.Hosting.HostingContract", StringComparison.Ordinal)
 						  || fileNameWithoutExtension.StartsWith("Microsoft.Web.WebView2.Core", StringComparison.Ordinal)
-						  let asm = _referenceCompilation.GetAssemblyOrModuleSymbol(externalRedfs) as IAssemblySymbol
+						  let asm = s_referenceCompilation.GetAssemblyOrModuleSymbol(externalRedfs) as IAssemblySymbol
 						  where asm != null
 						  select asm;
 
-			List<string> excludeNamespaces = new List<string>();
-			List<string> includeNamespaces = new List<string>();
+			var excludeNamespaces = new List<string>();
+			var includeNamespaces = new List<string>();
 
 #if !HAS_UNO_WINUI
 			// For UWP compilation we need to ignore these namespaces when not explicitly generating
@@ -1311,7 +1310,7 @@ namespace Uno.UWPSyncGenerator
 					}
 					else
 					{
-						var type2 = _referenceCompilation.GetTypeByMetadataName(uwpIface);
+						var type2 = s_referenceCompilation.GetTypeByMetadataName(uwpIface);
 
 						INamedTypeSymbol build()
 						{
@@ -1348,7 +1347,7 @@ namespace Uno.UWPSyncGenerator
 
 				if (uwpIface != null)
 				{
-					var type2 = _referenceCompilation.GetTypeByMetadataName(uwpIface);
+					var type2 = s_referenceCompilation.GetTypeByMetadataName(uwpIface);
 
 					var t3 = type2.Construct(iface.TypeArguments.ToArray());
 
@@ -1736,7 +1735,7 @@ namespace Uno.UWPSyncGenerator
 		static Dictionary<(string projectFile, string targetFramework), Compilation> _projects
 			= new();
 
-		private static Compilation LoadProject(string projectFile, string targetFramework = null)
+		private static async Task<Compilation> LoadProject(string projectFile, string targetFramework = null)
 		{
 			var key = (projectFile, targetFramework);
 
@@ -1746,40 +1745,36 @@ namespace Uno.UWPSyncGenerator
 				return compilation;
 			}
 
-			return _projects[key] = InnerLoadProject(projectFile, targetFramework);
+			return _projects[key] = await InnerLoadProject(projectFile, targetFramework);
 		}
 
-		private static Compilation LoadUWPReferenceProject(string referencesFile)
+		private static async Task<Compilation> LoadUWPReferenceProject(string referencesFile)
 		{
 			var ws = new AdhocWorkspace();
 
 			var p = ws.AddProject("uwpref", LanguageNames.CSharp);
-
-			foreach (var reference in File.ReadAllLines(referencesFile))
-			{
-				p = p.AddMetadataReference(MetadataReference.CreateFromFile(reference));
-			}
-
-			return p.GetCompilationAsync().Result;
+			p = p.AddMetadataReferences(File.ReadAllLines(referencesFile).Select(reference => MetadataReference.CreateFromFile(reference)));
+			return await p.GetCompilationAsync();
 		}
 
-		private static Compilation InnerLoadProject(string projectFile, string targetFramework = null)
+		private static async Task<Compilation> InnerLoadProject(string projectFile, string targetFramework = null)
 		{
 			Console.WriteLine($"Loading for {targetFramework}: {Path.GetFileName(projectFile)}");
 
 			var properties = new Dictionary<string, string>
-							{
-								// { "VisualStudioVersion", "15.0" },
-								// { "Configuration", "Debug" },
-								//{ "BuildingInsideVisualStudio", "true" },
-								{ "SkipUnoResourceGeneration", "true" }, // Required to avoid loading a non-existent task
-								{ "DocsGeneration", "true" }, // Detect that source generation is running
-								{ "LangVersion", CSharpLangVersion },
-								{ "NoBuild", "True" },
-								//{ "DesignTimeBuild", "true" },
-								//{ "UseHostCompilerIfAvailable", "false" },
-								//{ "UseSharedCompilation", "false" },
-							};
+			{
+				// { "VisualStudioVersion", "15.0" },
+				// { "Configuration", "Debug" },
+				//{ "BuildingInsideVisualStudio", "true" },
+				{ "SkipUnoResourceGeneration", "true" }, // Required to avoid loading a non-existent task
+				{ "DocsGeneration", "true" }, // Detect that source generation is running
+				{ "LangVersion", CSharpLangVersion },
+				{ "NoBuild", "True" },
+				{ "RunAnalyzers", "false" }
+				//{ "DesignTimeBuild", "true" },
+				//{ "UseHostCompilerIfAvailable", "false" },
+				//{ "UseSharedCompilation", "false" },
+			};
 
 			if (targetFramework != null)
 			{
@@ -1793,7 +1788,7 @@ namespace Uno.UWPSyncGenerator
 			ws.WorkspaceFailed +=
 				(s, e) => Console.WriteLine(e.Diagnostic.ToString());
 
-			var project = ws.OpenProjectAsync(projectFile).Result;
+			var project = await ws.OpenProjectAsync(projectFile);
 
 			var generatedDocs = project.Documents
 				.Where(d => d.FilePath.Contains("\\Generated\\"))
@@ -1808,7 +1803,7 @@ namespace Uno.UWPSyncGenerator
 				.Where(p => p.MetadataReferences.None())
 				.ToArray();
 
-			if (metadataLessProjects.Any())
+			if (metadataLessProjects.Length > 0)
 			{
 				// In this case, this may mean that Rolsyn failed to execute some msbuild task that loads the
 				// references in a UWA project (or NuGet 3.0+ with project.json, more specifically). For these
@@ -1829,8 +1824,7 @@ namespace Uno.UWPSyncGenerator
 				);
 			}
 
-			return project
-					.GetCompilationAsync().Result;
+			return await project.GetCompilationAsync();
 		}
 
 		public static IEnumerable<INamedTypeSymbol> GetNamespaceTypes(INamespaceSymbol sym)
