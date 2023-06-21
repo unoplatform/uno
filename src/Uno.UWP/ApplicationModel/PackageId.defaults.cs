@@ -29,16 +29,16 @@ partial class PackageId
 	public string FullName => "Unknown";
 #endif
 
-#if !__ANDROID__ && !__IOS__ && !__MACOS__ && !__WASM__ && !__SKIA__ && !__NETSTD_REFERENCE__
+#if IS_UNIT_TESTS
 	[global::Uno.NotImplemented("IS_UNIT_TESTS")]
 	public string Name { get; internal set; } = "Unknown";
 
 	[global::Uno.NotImplemented("IS_UNIT_TESTS")]
-	public PackageVersion Version => new PackageVersion(Assembly.GetExecutingAssembly().GetVersionNumber());
+	public PackageVersion Version { get; internal set; } = new PackageVersion(Assembly.GetExecutingAssembly().GetVersionNumber());
 #endif
 
 #if !__WASM__ && !__SKIA__ && !__NETSTD_REFERENCE__
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__MACOS__")]
-	public string Publisher => "Unknown";
+	public string Publisher { get; internal set; } = "Unknown";
 #endif
 }
