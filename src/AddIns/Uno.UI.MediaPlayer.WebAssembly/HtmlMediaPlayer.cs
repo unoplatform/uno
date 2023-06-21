@@ -65,6 +65,7 @@ internal partial class HtmlMediaPlayer : Border
 		}
 		_activeElement = IsVideo ? _htmlVideo : IsAudio ? _htmlAudio : default;
 		_activeElementName = IsVideo ? "Video" : IsAudio ? "Audio" : "";
+		Suspended += OnHtmlSuspended;
 		SourceLoaded += OnHtmlSourceLoaded;
 		StatusPlayChanged += OnHtmlStatusPlayChanged;
 		StatusPauseChanged += OnHtmlStatusPauseChanged;
@@ -80,7 +81,7 @@ internal partial class HtmlMediaPlayer : Border
 		{
 			this.Log().Debug($"HtmlMediaPlayer Unloaded");
 		}
-
+		Suspended -= OnHtmlSuspended;
 		SourceLoaded -= OnHtmlSourceLoaded;
 		StatusPlayChanged -= OnHtmlStatusPlayChanged;
 		StatusPauseChanged -= OnHtmlStatusPauseChanged;
@@ -230,6 +231,23 @@ internal partial class HtmlMediaPlayer : Border
 	}
 
 	/// <summary>
+	/// The suspend event is fired when media data loading has been suspended.
+	/// </summary>
+	event EventHandler Suspended
+	{
+		add
+		{
+			_htmlVideo.RegisterHtmlEventHandler("suspend", value);
+			_htmlAudio.RegisterHtmlEventHandler("suspend", value);
+		}
+		remove
+		{
+			_htmlVideo.UnregisterHtmlEventHandler("suspend", value);
+			_htmlAudio.UnregisterHtmlEventHandler("suspend", value);
+		}
+	}
+
+	/// <summary>
 	/// Occurs when the video source is downloaded and decoded with no
 	/// failure. You can use this event to determine the natural size
 	/// of the image source.
@@ -247,7 +265,6 @@ internal partial class HtmlMediaPlayer : Border
 			_htmlAudio.UnregisterHtmlEventHandler("loadeddata", value);
 		}
 	}
-
 	/// <summary>
 	/// Occurs when the video source change the status to Pause
 	/// </summary>
@@ -320,6 +337,24 @@ internal partial class HtmlMediaPlayer : Border
 			Duration = NativeMethods.GetDuration(_activeElement.HtmlId);
 		}
 		OnMetadataLoaded?.Invoke(this, Duration);
+	}
+
+	private void OnHtmlSuspended(object sender, EventArgs e)
+	{
+		if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
+		{
+			this.Log().Debug($"Media Suspended [{Source}]");
+		}
+
+		_activeElement = IsVideo ? _htmlVideo : IsAudio ? _htmlAudio : default;
+		_activeElementName = IsVideo ? "Video" : IsAudio ? "Audio" : "";
+		if (_activeElement != null)
+		{
+			_activeElement.SetCssStyle("visibility", "visible");
+			IsPause = NativeMethods.GetPaused(_activeElement.HtmlId);
+		}
+		_isPlaying = !IsPause;
+		OnStatusChanged?.Invoke(this, EventArgs.Empty);
 	}
 
 	private void OnHtmlSourceLoaded(object sender, EventArgs e)
