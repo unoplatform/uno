@@ -8,7 +8,7 @@ This article details the  migration steps required to migrate from one version t
 
 ### Uno Platform 5.0
 
-Uno Platform 5.0 contains many binary breaking changes in order to align the API surface with the Windows App SDK. Most of these changes are binary breaking change, but are not behavior breaking changes. You can find a list of these changes below.
+Uno Platform 5.0 contains many binary breaking changes in order to align the API surface with the Windows App SDK. Most of these changes are binary breaking changes, but are not introducing behavior changes. You can find a list of these changes below.
 
 #### `ShouldWriteErrorOnInvalidXaml` now defaults to true.
 Invalid XAML, such as unknown properties or unknown x:Bind targets will generate a compiler error. Those errors must now be fixed as they are no longer ignored.
