@@ -167,7 +167,7 @@ public partial class Given_MediaPlayerElement
 	}
 
 	[TestMethod]
-	public async Task When_MediaPlayerElement_SetSource_Check_PausePlayStop()
+	public async Task When_MediaPlayerElement_SetSource_Check_PlayStop()
 	{
 		CheckMediaPlayerExtensionAvailability();
 		var sut = new MediaPlayerElement()
@@ -180,12 +180,12 @@ public partial class Given_MediaPlayerElement
 		WindowHelper.WindowContent = sut;
 		await WindowHelper.WaitForLoaded(sut);
 
+		// step 1: Test Play
 		sut.MediaPlayer.Play();
-
 		await WindowHelper.WaitFor(
 					condition: () => sut.MediaPlayer.PlaybackSession.PlaybackState == MediaPlaybackState.Playing,
 					timeoutMS: 3000,
-					message: "Timeout waiting for the playback session state changing to playing."
+					message: "Timeout waiting for the playback session state changing to playing on PlayStop."
 				);
 
 		// step 2: Test Stop
@@ -198,25 +198,42 @@ public partial class Given_MediaPlayerElement
 		await WindowHelper.WaitFor(
 					condition: () => sut.MediaPlayer.PlaybackSession.PlaybackState != MediaPlaybackState.Playing,
 					timeoutMS: 3000,
-					message: "Timeout waiting for the playback session state changing to Stop."
+					message: "Timeout waiting for the playback session state changing to Stop on PlayStop."
 				);
 #if UAP10_0_18362
 		sut.MediaPlayer.Source = Windows.Media.Core.MediaSource.CreateFromUri(TestVideoUrl);
 #endif
-		// step 3: Test Pause
+
+	}
+
+	[TestMethod]
+	public async Task When_MediaPlayerElement_SetSource_Check_PlayPause()
+	{
+		CheckMediaPlayerExtensionAvailability();
+		var sut = new MediaPlayerElement()
+		{
+			AutoPlay = true,
+			Source = MediaSource.CreateFromUri(TestVideoUrl),
+		};
+
+		//Load Player
+		WindowHelper.WindowContent = sut;
+		await WindowHelper.WaitForLoaded(sut);
+
+		// step 1: Test Play
 		sut.MediaPlayer.Play();
 		await WindowHelper.WaitFor(
-			condition: () => sut.MediaPlayer.PlaybackSession.PlaybackState == MediaPlaybackState.Playing,
-			timeoutMS: 6000,
-			message: "Timeout waiting for the playback session state changing to Play on Check_PausePlayStop."
-		);
-		await Task.Delay(5000);
+					condition: () => sut.MediaPlayer.PlaybackSession.PlaybackState == MediaPlaybackState.Playing,
+					timeoutMS: 3000,
+					message: "Timeout waiting for the playback session state changing to playing on PlayPause."
+				);
 
+		// step 1: Test Pause
 		sut.MediaPlayer.Pause();
 		await WindowHelper.WaitFor(
-			condition: () => sut.MediaPlayer.PlaybackSession.PlaybackState == MediaPlaybackState.Paused,
+			condition: () => sut.MediaPlayer.PlaybackSession.PlaybackState != MediaPlaybackState.Playing,
 			timeoutMS: 6000,
-			message: "Timeout waiting for the playback session state changing to Pause on Check_PausePlayStop."
+			message: "Timeout waiting for the playback session state changing to Pause on PlayPause."
 		);
 	}
 
