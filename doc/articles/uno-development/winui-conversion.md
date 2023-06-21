@@ -28,7 +28,7 @@ To ease the adjustments when conversion issues arise:
 
 ## Converting a local source tree
 The conversion process can be run locally as follows:
-- cd `uno-repo\build`
+- cd `uno-repo\build\scripts`
 - `convert-sourcetree-to-winui.cmd`
 
 You'll need to ensure that the `crosstargeting_override.props` file is not defining `UnoTargetFrameworkOverride` otherwise the UWPSyncGenerator will generate an invalid API set.

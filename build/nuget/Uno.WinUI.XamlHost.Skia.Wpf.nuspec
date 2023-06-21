@@ -27,11 +27,11 @@
 	</metadata>
 
 	<files>
-		<file src="..\src\Common\uno.png" target="/" />
+		<file src="..\..\src\Common\uno.png" target="/" />
 
-		<file src="..\src\Uno.UI.XamlHost.Skia.Wpf\Bin\Release\net7.0-windows\Uno.UI.XamlHost.Skia.Wpf.*" target="lib\net7.0-windows" />
+		<file src="..\..\src\Uno.UI.XamlHost.Skia.Wpf\Bin\Release\net7.0-windows\Uno.UI.XamlHost.Skia.Wpf.*" target="lib\net7.0-windows" />
 		
-		<file src="..\src\Uno.UI.XamlHost.Skia.Wpf\Bin\Release\net8.0-windows\Uno.UI.XamlHost.Skia.Wpf.*" target="lib\net8.0-windows" />
+		<file src="..\..\src\Uno.UI.XamlHost.Skia.Wpf\Bin\Release\net8.0-windows\Uno.UI.XamlHost.Skia.Wpf.*" target="lib\net8.0-windows" />
 	</files>
 
 </package>

@@ -178,6 +178,6 @@
   <Import Project="..\UITests.Shared\UITests.Shared.projitems" Label="Shared" />
 	<Import Project="..\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.targets" />
 
-	<Import Project="..\..\..\build\uno.winui.single-project.targets" />
+	<Import Project="..\..\..\build\nuget\uno.winui.single-project.targets" />
 
 </Project>

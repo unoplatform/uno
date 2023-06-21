@@ -120,8 +120,8 @@
 	<Import Project="..\UITests.Shared\UITests.Shared.projitems" Label="Shared" />
 	<Import Project="..\Benchmarks.Shared\Benchmarks.Shared.projitems" Label="Shared" />
 
-	<Import Project="..\..\..\build\*.WebAssembly.props" />
-	<Import Project="..\..\..\build\*.WebAssembly.targets" />
+	<Import Project="..\..\..\build\nuget\*.WebAssembly.props" />
+	<Import Project="..\..\..\build\nuget\*.WebAssembly.targets" />
 
 	<Import Project="..\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.targets" />
 </Project>

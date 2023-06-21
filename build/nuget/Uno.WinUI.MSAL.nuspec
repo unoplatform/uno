@@ -58,37 +58,37 @@
 	</metadata>
 
 	<files>
-		<file src="..\src\Common\uno.png" target="/" />
+		<file src="..\..\src\Common\uno.png" target="/" />
 
-		<file src="..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.Reference\Release\net8.0\Uno.UI.MSAL.*" target="lib\net8.0" />
-		<file src="..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.Reference\Release\net7.0\Uno.UI.MSAL.*" target="lib\net7.0" />
+		<file src="..\..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.Reference\Release\net8.0\Uno.UI.MSAL.*" target="lib\net8.0" />
+		<file src="..\..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.Reference\Release\net7.0\Uno.UI.MSAL.*" target="lib\net7.0" />
 
-		<file src="..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.Windows\Release\uap10.0.19041\Uno.UI.MSAL.*" target="lib\uap10.0.19041" />
+		<file src="..\..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.Windows\Release\uap10.0.19041\Uno.UI.MSAL.*" target="lib\uap10.0.19041" />
 
-		<file src="..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.netcoremobile\Release\net8.0-android\Uno.UI.MSAL.*" target="lib\net8.0-android" />
-		<file src="..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.netcoremobile\Release\net8.0-ios\Uno.UI.MSAL.*" target="lib\net8.0-ios" />
-		<file src="..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.netcoremobile\Release\net8.0-maccatalyst\Uno.UI.MSAL.*" target="lib\net8.0-maccatalyst" />
-		<file src="..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.netcoremobile\Release\net8.0-macos\Uno.UI.MSAL.*" target="lib\net8.0-macos" />
+		<file src="..\..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.netcoremobile\Release\net8.0-android\Uno.UI.MSAL.*" target="lib\net8.0-android" />
+		<file src="..\..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.netcoremobile\Release\net8.0-ios\Uno.UI.MSAL.*" target="lib\net8.0-ios" />
+		<file src="..\..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.netcoremobile\Release\net8.0-maccatalyst\Uno.UI.MSAL.*" target="lib\net8.0-maccatalyst" />
+		<file src="..\..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.netcoremobile\Release\net8.0-macos\Uno.UI.MSAL.*" target="lib\net8.0-macos" />
 
-		<file src="..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.netcoremobile\Release\net7.0-android\Uno.UI.MSAL.*" target="lib\net7.0-android" />
-		<file src="..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.netcoremobile\Release\net7.0-ios\Uno.UI.MSAL.*" target="lib\net7.0-ios" />
-		<file src="..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.netcoremobile\Release\net7.0-maccatalyst\Uno.UI.MSAL.*" target="lib\net7.0-maccatalyst" />
-		<file src="..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.netcoremobile\Release\net7.0-macos\Uno.UI.MSAL.*" target="lib\net7.0-macos" />
+		<file src="..\..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.netcoremobile\Release\net7.0-android\Uno.UI.MSAL.*" target="lib\net7.0-android" />
+		<file src="..\..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.netcoremobile\Release\net7.0-ios\Uno.UI.MSAL.*" target="lib\net7.0-ios" />
+		<file src="..\..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.netcoremobile\Release\net7.0-maccatalyst\Uno.UI.MSAL.*" target="lib\net7.0-maccatalyst" />
+		<file src="..\..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.netcoremobile\Release\net7.0-macos\Uno.UI.MSAL.*" target="lib\net7.0-macos" />
 
 		<!-- Build targets -->
-		<file src="..\src\AddIns\Uno.UI.MSAL\buildTransitive\*" target="buildTransitive" />
+		<file src="..\..\src\AddIns\Uno.UI.MSAL\buildTransitive\*" target="buildTransitive" />
 
 		<!-- net8.0 WebAssembly -->
-		<file src="..\src\AddIns\Uno.UI.MSAL\Bin\Uno.UI.MSAL.Wasm\Release\net8.0\Uno.UI.MSAL.*" target="uno-runtime\net8.0\webassembly" />
+		<file src="..\..\src\AddIns\Uno.UI.MSAL\Bin\Uno.UI.MSAL.Wasm\Release\net8.0\Uno.UI.MSAL.*" target="uno-runtime\net8.0\webassembly" />
 
 		<!-- net8.0 Skia -->
-		<file src="..\src\AddIns\Uno.UI.MSAL\Bin\Uno.UI.MSAL.Skia\Release\net8.0\Uno.UI.MSAL.*" target="uno-runtime\net8.0\skia" />
+		<file src="..\..\src\AddIns\Uno.UI.MSAL\Bin\Uno.UI.MSAL.Skia\Release\net8.0\Uno.UI.MSAL.*" target="uno-runtime\net8.0\skia" />
 
 		<!-- net7.0 WebAssembly -->
-		<file src="..\src\AddIns\Uno.UI.MSAL\Bin\Uno.UI.MSAL.Wasm\Release\net7.0\Uno.UI.MSAL.*" target="uno-runtime\net7.0\webassembly" />
+		<file src="..\..\src\AddIns\Uno.UI.MSAL\Bin\Uno.UI.MSAL.Wasm\Release\net7.0\Uno.UI.MSAL.*" target="uno-runtime\net7.0\webassembly" />
 
 		<!-- net7.0 Skia -->
-		<file src="..\src\AddIns\Uno.UI.MSAL\Bin\Uno.UI.MSAL.Skia\Release\net7.0\Uno.UI.MSAL.*" target="uno-runtime\net7.0\skia" />
+		<file src="..\..\src\AddIns\Uno.UI.MSAL\Bin\Uno.UI.MSAL.Skia\Release\net7.0\Uno.UI.MSAL.*" target="uno-runtime\net7.0\skia" />
 
 	</files>
 

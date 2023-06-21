@@ -32,8 +32,8 @@
 	  <Compile Update="Program.cs" />
 	</ItemGroup>
 
-	<Import Project="..\..\..\build\*.Skia.Gtk.props" />
-	<Import Project="..\..\..\build\*.Skia.Gtk.targets" />
+	<Import Project="..\..\..\build\nuget\*.Skia.Gtk.props" />
+	<Import Project="..\..\..\build\nuget\*.Skia.Gtk.targets" />
 
 	<Target Name="_ValidatePublishedItems" AfterTargets="Publish">
 		<ItemGroup>
