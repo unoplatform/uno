@@ -25,7 +25,7 @@ uid: Uno.ReleaseNotes.Legacy
 
 ### Features
 - Added new `ElevatedView` in the `Uno.Toolkit` to provide elevation & rounded corners on all platforms
-  (not supported on Windows yet, because Uno needs to target framework `10.0.18362.0`)
+  (not supported on Windows yet, because Uno needs to target framework `10.0.19041.0`)
 - Added CornerRadius support to more default styles to match UWP (for list of updated styles see PR [#2713])
 - Support for `FontIcon` on macOS
 - Support for `PhoneCallManager.ShowPhoneCallUI` on macOS
@@ -578,7 +578,7 @@ uid: Uno.ReleaseNotes.Legacy
  * [Wasm] Fix `ListView` recycling when the `XamlParent` is not available for `AutoSuggestBox`
  * 147405 Fix NRE on some MediaTransportControl controls
  * #139 Update Uno.SourceGenerationTasks to improve build performance
- * Update `Uno.UI.Toolkit` base UWP sdk to 18362
+ * Update `Uno.UI.Toolkit` base UWP sdk to 19041
  * [Wasm] Fixes items measured after being removed from their parent appear in the visual tree, on top of every other items.
  * [Wasm] Fixes elements may not be removed form the global active DOM elements tracking map
  * [Wasm] Disable the root element scrolling (bounce) on touch devices

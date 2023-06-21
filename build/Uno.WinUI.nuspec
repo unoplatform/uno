@@ -18,7 +18,7 @@
 
 			<!-- References from Uno.UI.Toolkit -->
 			<!-- BEGIN WinUI-specific
-			<group targetFramework="net7.0-windows10.0.18362.0">
+			<group targetFramework="net7.0-windows10.0.19041.0">
 				<dependency id="Microsoft.WindowsAppSDK" version="1.0.0" />
 				<dependency id="Microsoft.Windows.SDK.BuildTools" version="10.0.22000.196" />
 			</group>
@@ -266,14 +266,14 @@
 				<reference file="Uno.UI.FluentTheme.v2.dll" />
 			</group>
 			<!-- Windows -->
-			<group targetFramework="uap10.0.18362">
+			<group targetFramework="uap10.0.19041">
 				<reference file="Uno.UI.Toolkit.dll" />
 			</group>
 
 			<!--
 	  This group must not be present for nuget to fallback on net7.0 target when running on Skia+Wpf.
 	  The references list is adjusted only when WinAppSDK is detected.
-	  <group targetFramework="net7.0-windows10.0.18362.0">
+	  <group targetFramework="net7.0-windows10.0.19041.0">
 	  </group>-->
 		</references>
 	</metadata>
@@ -683,8 +683,8 @@
 		<file src="uno.winui.win.targets" target="buildTransitive\uap10.0.17763\uno.winui.targets" />
 		<file src="uno.winui.runtime-replace.targets" target="buildTransitive\uap10.0.17763" />
 
-		<file src="uno.winui.win.targets" target="buildTransitive\uap10.0.18362\uno.winui.targets" />
-		<file src="uno.winui.runtime-replace.targets" target="buildTransitive\uap10.0.18362" />
+		<file src="uno.winui.win.targets" target="buildTransitive\uap10.0.19041\uno.winui.targets" />
+		<file src="uno.winui.runtime-replace.targets" target="buildTransitive\uap10.0.19041" />
 
 		<file src="..\src\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" target="buildTransitive" />
 	</files>

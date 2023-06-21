@@ -11,7 +11,7 @@
 		<copyright>Uno Platform</copyright>
 		<repository type="git" url="https://github.com/unoplatform/uno.git" branch="$branch$" commit="$commitid$" />
 		<dependencies>
-			<group targetFramework="UAP10.0.18362">
+			<group targetFramework="UAP10.0.19041">
 			</group>
 			<group targetFramework="net8.0-android30.0">
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />

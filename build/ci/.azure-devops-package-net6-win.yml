@@ -75,7 +75,7 @@ jobs:
 
   - template: templates/install-windows-sdk.yml
 
-  - powershell: .\build\Install-WindowsSdkISO.ps1 18362
+  - powershell: .\build\Install-WindowsSdkISO.ps1 19041
     displayName: Insider SDK
 
   # This task is required to run in separately to avoid hitting targets file
