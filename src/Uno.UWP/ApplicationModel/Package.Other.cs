@@ -56,53 +56,51 @@ public partial class Package
 			return;
 		}
 
-		var manifest = _entryAssembly.GetManifestResourceStream(PackageManifestName);
-
-		if (manifest is not null)
-		{
-			try
-			{
-				var doc = new XmlDocument();
-				doc.Load(manifest);
-
-				var nsmgr = new XmlNamespaceManager(doc.NameTable);
-				nsmgr.AddNamespace("d", "http://schemas.microsoft.com/appx/manifest/foundation/windows10");
-
-				DisplayName = doc.SelectSingleNode("/d:Package/d:Properties/d:DisplayName", nsmgr)?.InnerText ?? "";
-
-				var logoUri = doc.SelectSingleNode("/d:Package/d:Properties/d:Logo", nsmgr)?.InnerText ?? "";
-				if (Uri.TryCreate(logoUri, UriKind.RelativeOrAbsolute, out var logo))
-				{
-					Logo = logo;
-				}
-
-				var idNode = doc.SelectSingleNode("/d:Package/d:Identity", nsmgr);
-				if (idNode is not null)
-				{
-					Id.Name = idNode.Attributes?.GetNamedItem("Name")?.Value ?? "";
-
-					var versionString = idNode.Attributes?.GetNamedItem("Version")?.Value ?? "";
-					if (Version.TryParse(versionString, out var version))
-					{
-						Id.Version = new PackageVersion(version);
-					}
-
-					Id.Publisher = idNode.Attributes?.GetNamedItem("Publisher")?.Value ?? "";
-				}
-			}
-			catch (Exception ex)
-			{
-				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Error))
-				{
-					this.Log().Error($"Failed to read manifest [{PackageManifestName}]", ex);
-				}
-			}
-		}
-		else
+		if (_entryAssembly.GetManifestResourceStream(PackageManifestName) is not { } manifest)
 		{
 			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				this.Log().Debug($"Skipping manifest reading, unable to find [{PackageManifestName}]");
+			}
+
+			return;
+		}
+
+		try
+		{
+			var doc = new XmlDocument();
+			doc.Load(manifest);
+
+			var nsmgr = new XmlNamespaceManager(doc.NameTable);
+			nsmgr.AddNamespace("d", "http://schemas.microsoft.com/appx/manifest/foundation/windows10");
+
+			DisplayName = doc.SelectSingleNode("/d:Package/d:Properties/d:DisplayName", nsmgr)?.InnerText ?? "";
+
+			var logoUri = doc.SelectSingleNode("/d:Package/d:Properties/d:Logo", nsmgr)?.InnerText ?? "";
+			if (Uri.TryCreate(logoUri, UriKind.RelativeOrAbsolute, out var logo))
+			{
+				Logo = logo;
+			}
+
+			var idNode = doc.SelectSingleNode("/d:Package/d:Identity", nsmgr);
+			if (idNode is not null)
+			{
+				Id.Name = idNode.Attributes?.GetNamedItem("Name")?.Value ?? "";
+
+				var versionString = idNode.Attributes?.GetNamedItem("Version")?.Value ?? "";
+				if (Version.TryParse(versionString, out var version))
+				{
+					Id.Version = new PackageVersion(version);
+				}
+
+				Id.Publisher = idNode.Attributes?.GetNamedItem("Publisher")?.Value ?? "";
+			}
+		}
+		catch (Exception ex)
+		{
+			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Error))
+			{
+				this.Log().Error($"Failed to read manifest [{PackageManifestName}]", ex);
 			}
 		}
 	}
