@@ -99,7 +99,7 @@
 		<SupportedOSPlatformVersion>21.0</SupportedOSPlatformVersion>
 	</PropertyGroup>
 
-	<PropertyGroup Condition=" '$(TargetFramework)' != 'uap10.0.18362' and '$(TargetFramework)'!='net5.0-windows10.0.18362.0' and '$(TargetPlatformIdentifier)' != 'UAP'">
+	<PropertyGroup Condition=" '$(TargetFramework)' != 'uap10.0.18362' and '$(TargetFramework)'!='net7.0-windows10.0.18362.0' and '$(TargetPlatformIdentifier)' != 'UAP'">
 		<DefineConstants>$(DefineConstants);HAS_UNO</DefineConstants>
 	</PropertyGroup>
 

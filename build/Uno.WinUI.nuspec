@@ -18,7 +18,7 @@
 
 			<!-- References from Uno.UI.Toolkit -->
 			<!-- BEGIN WinUI-specific
-			<group targetFramework="net5.0-windows10.0.18362.0">
+			<group targetFramework="net7.0-windows10.0.18362.0">
 				<dependency id="Microsoft.WindowsAppSDK" version="1.0.0" />
 				<dependency id="Microsoft.Windows.SDK.BuildTools" version="10.0.22000.196" />
 			</group>
@@ -273,7 +273,7 @@
 			<!--
 	  This group must not be present for nuget to fallback on net7.0 target when running on Skia+Wpf.
 	  The references list is adjusted only when WinAppSDK is detected.
-	  <group targetFramework="net5.0-windows10.0.18362.0">
+	  <group targetFramework="net7.0-windows10.0.18362.0">
 	  </group>-->
 		</references>
 	</metadata>
@@ -655,7 +655,7 @@
 		<file src="Uno.WinUI.targets" target="buildTransitive\net7.0-ios" />
 		<file src="Uno.WinUI.targets" target="buildTransitive\net7.0-maccatalyst" />
 		<file src="Uno.WinUI.targets" target="buildTransitive\net7.0-macos" />
-		<file src="Uno.WinUI.targets" target="buildTransitive\net5.0-windows" />
+		<file src="Uno.WinUI.targets" target="buildTransitive\net7.0-windows" />
 
 		<file src="Uno.WinUI.props" target="buildTransitive\net7.0" />
 		<file src="Uno.WinUI.props" target="buildTransitive\net8.0-android30.0" />
@@ -666,7 +666,7 @@
 		<file src="Uno.WinUI.props" target="buildTransitive\net7.0-ios" />
 		<file src="Uno.WinUI.props" target="buildTransitive\net7.0-maccatalyst" />
 		<file src="Uno.WinUI.props" target="buildTransitive\net7.0-macos" />
-		<file src="Uno.WinUI.props" target="buildTransitive\net5.0-windows" />
+		<file src="Uno.WinUI.props" target="buildTransitive\net7.0-windows" />
 
 		<file src="uno.winui.cross-runtime.targets" target="buildTransitive" />
 		<file src="uno.winui.common.targets" target="buildTransitive" />

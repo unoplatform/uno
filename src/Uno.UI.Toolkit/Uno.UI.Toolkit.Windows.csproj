@@ -1,7 +1,7 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
 	<PropertyGroup>
 		<TargetFrameworks Condition="'$(UNO_UWP_BUILD)'=='true'">uap10.0.18362</TargetFrameworks>
-		<TargetFrameworks Condition="'$(UNO_UWP_BUILD)'!='true'">net5.0-windows10.0.18362.0</TargetFrameworks>
+		<TargetFrameworks Condition="'$(UNO_UWP_BUILD)'!='true'">net7.0-windows10.0.18362.0</TargetFrameworks>
 	</PropertyGroup>
 
 	<Import Project="../targetframework-override.props" />
@@ -18,7 +18,7 @@
 		<CommonOverridePackageId>Uno.UI</CommonOverridePackageId>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(TargetFramework)'=='net5.0-windows10.0.18362.0'">
+	<PropertyGroup Condition="'$(TargetFramework)'=='net7.0-windows10.0.18362.0'">
 		<DefineConstants>$(DefineConstants);WINUI</DefineConstants>
 	</PropertyGroup>
 
@@ -50,7 +50,7 @@
 		</ProjectReference>
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)'=='net5.0-windows10.0.18362.0' or '$(TargetFramework)'=='uap10.0.18362'">
+	<ItemGroup Condition="'$(TargetFramework)'=='net7.0-windows10.0.18362.0' or '$(TargetFramework)'=='uap10.0.18362'">
 		<PackageReference Include="Microsoft.WindowsAppSDK" Version="1.0.0" Condition="'$(UNO_UWP_BUILD)'!='true'" />
 		<PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22000.196" Condition="'$(UNO_UWP_BUILD)'!='true'" />
 
