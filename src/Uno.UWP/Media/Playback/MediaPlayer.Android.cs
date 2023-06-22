@@ -280,20 +280,20 @@ namespace Windows.Media.Playback
 				{
 					UpdateVideoStretch(_currentStretch);
 
-				if (_isPlayRequested)
-				{
-					_player.Start();
-					PlaybackSession.PlaybackState = MediaPlaybackState.Playing;
+					if (_isPlayRequested)
+					{
+						_player.Start();
+						PlaybackSession.PlaybackState = MediaPlaybackState.Playing;
+					}
+					else
+					{
+						// To display first image of media when setting a new source. Otherwise, last image of previous source remains visible
+						_player.Start();
+						_player.Pause();
+						_player.SeekTo(0);
+						PlaybackSession.PlaybackState = MediaPlaybackState.Paused;
+					}
 				}
-				else
-				{
-					// To display first image of media when setting a new source. Otherwise, last image of previous source remains visible
-					_player.Start();
-					_player.Pause();
-					_player.SeekTo(0);
-					PlaybackSession.PlaybackState = MediaPlaybackState.Paused;
-				}
-			}
 
 				_isPlayerPrepared = true;
 
