@@ -32,7 +32,7 @@ namespace Windows.UI.Xaml.Media
 			nameof(StartPoint),
 			typeof(Point),
 			typeof(LinearGradientBrush),
-			new FrameworkPropertyMetadata(Boxes.DefaultBox<Point>.Value)
+			new FrameworkPropertyMetadata(default(Point))
 		);
 
 		public Point EndPoint

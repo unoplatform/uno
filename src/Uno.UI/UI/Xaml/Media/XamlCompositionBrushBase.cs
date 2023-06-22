@@ -25,7 +25,7 @@ namespace Windows.UI.Xaml.Media
 			DependencyProperty.Register(
 				nameof(FallbackColor), typeof(Color),
 				typeof(XamlCompositionBrushBase),
-				new FrameworkPropertyMetadata(Boxes.DefaultBox<Color>.Value));
+				new FrameworkPropertyMetadata(default(Color)));
 
 		/// <summary>
 		/// Returns the fallback color mixed with opacity value.

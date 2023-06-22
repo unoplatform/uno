@@ -138,7 +138,7 @@ public partial class Popup
 	DependencyProperty.Register(
 		"LightDismissOverlayMode", typeof(LightDismissOverlayMode),
 		typeof(Popup),
-		new FrameworkPropertyMetadata(defaultValue: Boxes.DefaultBox<LightDismissOverlayMode>.Value, propertyChangedCallback: (o, e) => ((Popup)o).ApplyLightDismissOverlayMode()));
+		new FrameworkPropertyMetadata(defaultValue: default(LightDismissOverlayMode), propertyChangedCallback: (o, e) => ((Popup)o).ApplyLightDismissOverlayMode()));
 
 	/// <summary>
 	/// Gets or sets the element to use as the popup's placement target.

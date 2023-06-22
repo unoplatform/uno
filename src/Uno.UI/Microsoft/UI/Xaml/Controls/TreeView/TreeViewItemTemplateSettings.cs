@@ -71,6 +71,6 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Identifies the Indentation dependency property.
 		/// </summary>
 		public static DependencyProperty IndentationProperty { get; } =
-			DependencyProperty.Register(nameof(Indentation), typeof(Thickness), typeof(TreeViewItemTemplateSettings), new FrameworkPropertyMetadata(Boxes.DefaultBox<Thickness>.Value));
+			DependencyProperty.Register(nameof(Indentation), typeof(Thickness), typeof(TreeViewItemTemplateSettings), new FrameworkPropertyMetadata(default(Thickness)));
 	}
 }

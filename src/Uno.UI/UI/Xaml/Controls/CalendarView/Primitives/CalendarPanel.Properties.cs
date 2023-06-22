@@ -20,7 +20,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		private void CheckThread() => CoreDispatcher.CheckThreadAccess();
 
 		internal static readonly DependencyProperty CacheLengthProperty = DependencyProperty.Register(
-			"CacheLength", typeof(double), typeof(CalendarPanel), new FrameworkPropertyMetadata(Boxes.DefaultBox<double>.Value));
+			"CacheLength", typeof(double), typeof(CalendarPanel), new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero));
 
 		internal double CacheLength
 		{
@@ -29,7 +29,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		}
 
 		internal static readonly DependencyProperty ColsProperty = DependencyProperty.Register(
-			"Cols", typeof(int), typeof(CalendarPanel), new FrameworkPropertyMetadata(Boxes.DefaultBox<int>.Value));
+			"Cols", typeof(int), typeof(CalendarPanel), new FrameworkPropertyMetadata(Boxes.IntegerBoxes.Zero));
 
 		internal int Cols
 		{
@@ -106,7 +106,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		}
 
 		internal static readonly DependencyProperty RowsProperty = DependencyProperty.Register(
-			"Rows", typeof(int), typeof(CalendarPanel), new FrameworkPropertyMetadata(Boxes.DefaultBox<int>.Value));
+			"Rows", typeof(int), typeof(CalendarPanel), new FrameworkPropertyMetadata(Boxes.IntegerBoxes.Zero));
 
 		internal int Rows
 		{
@@ -127,7 +127,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 #endif
 
 		internal static readonly DependencyProperty StartIndexProperty = DependencyProperty.Register(
-			"StartIndex", typeof(int), typeof(CalendarPanel), new FrameworkPropertyMetadata(Boxes.DefaultBox<int>.Value));
+			"StartIndex", typeof(int), typeof(CalendarPanel), new FrameworkPropertyMetadata(Boxes.IntegerBoxes.Zero));
 
 		internal int StartIndex
 		{

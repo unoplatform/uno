@@ -377,7 +377,7 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(MaxHue), typeof(int), 
 			typeof(global::Windows.UI.Xaml.Controls.ColorPicker), 
-			new Windows.UI.Xaml.FrameworkPropertyMetadata(Boxes.DefaultBox<int>.Value));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(Boxes.IntegerBoxes.Zero));
 		#endif
 		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -385,7 +385,7 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(MaxSaturation), typeof(int), 
 			typeof(global::Windows.UI.Xaml.Controls.ColorPicker), 
-			new Windows.UI.Xaml.FrameworkPropertyMetadata(Boxes.DefaultBox<int>.Value));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(Boxes.IntegerBoxes.Zero));
 		#endif
 		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -393,7 +393,7 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(MaxValue), typeof(int), 
 			typeof(global::Windows.UI.Xaml.Controls.ColorPicker), 
-			new Windows.UI.Xaml.FrameworkPropertyMetadata(Boxes.DefaultBox<int>.Value));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(Boxes.IntegerBoxes.Zero));
 		#endif
 		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -401,7 +401,7 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(MinHue), typeof(int), 
 			typeof(global::Windows.UI.Xaml.Controls.ColorPicker), 
-			new Windows.UI.Xaml.FrameworkPropertyMetadata(Boxes.DefaultBox<int>.Value));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(Boxes.IntegerBoxes.Zero));
 		#endif
 		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -409,7 +409,7 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(MinSaturation), typeof(int), 
 			typeof(global::Windows.UI.Xaml.Controls.ColorPicker), 
-			new Windows.UI.Xaml.FrameworkPropertyMetadata(Boxes.DefaultBox<int>.Value));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(Boxes.IntegerBoxes.Zero));
 		#endif
 		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -417,7 +417,7 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(MinValue), typeof(int), 
 			typeof(global::Windows.UI.Xaml.Controls.ColorPicker), 
-			new Windows.UI.Xaml.FrameworkPropertyMetadata(Boxes.DefaultBox<int>.Value));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(Boxes.IntegerBoxes.Zero));
 		#endif
 		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]

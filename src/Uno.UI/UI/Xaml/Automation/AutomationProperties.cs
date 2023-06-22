@@ -178,7 +178,7 @@ namespace Windows.UI.Xaml.Automation
 			DependencyProperty.RegisterAttached(
 				"PositionInSet", typeof(int),
 				typeof(AutomationProperties),
-				new FrameworkPropertyMetadata(Boxes.DefaultBox<int>.Value));
+				new FrameworkPropertyMetadata(Boxes.IntegerBoxes.Zero));
 
 		public static int GetSizeOfSet(DependencyObject element) => (int)element.GetValue(SizeOfSetProperty);
 
@@ -188,7 +188,7 @@ namespace Windows.UI.Xaml.Automation
 			DependencyProperty.RegisterAttached(
 				"SizeOfSet", typeof(int),
 				typeof(AutomationProperties),
-				new FrameworkPropertyMetadata(Boxes.DefaultBox<int>.Value));
+				new FrameworkPropertyMetadata(Boxes.IntegerBoxes.Zero));
 
 		public static AutomationLandmarkType GetLandmarkType(DependencyObject element) => (AutomationLandmarkType)element.GetValue(LandmarkTypeProperty);
 

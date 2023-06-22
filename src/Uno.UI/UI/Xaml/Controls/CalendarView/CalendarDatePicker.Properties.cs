@@ -69,7 +69,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty DisplayModeProperty { get; } = DependencyProperty.Register(
-			"DisplayMode", typeof(CalendarViewDisplayMode), typeof(CalendarDatePicker), new FrameworkPropertyMetadata(Boxes.DefaultBox<CalendarViewDisplayMode>.Value));
+			"DisplayMode", typeof(CalendarViewDisplayMode), typeof(CalendarDatePicker), new FrameworkPropertyMetadata(default(CalendarViewDisplayMode)));
 
 		public CalendarViewDisplayMode DisplayMode
 		{
@@ -78,7 +78,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty FirstDayOfWeekProperty { get; } = DependencyProperty.Register(
-			"FirstDayOfWeek", typeof(DayOfWeek), typeof(CalendarDatePicker), new FrameworkPropertyMetadata(Boxes.DefaultBox<DayOfWeek>.Value));
+			"FirstDayOfWeek", typeof(DayOfWeek), typeof(CalendarDatePicker), new FrameworkPropertyMetadata(default(DayOfWeek)));
 
 		public DayOfWeek FirstDayOfWeek
 		{

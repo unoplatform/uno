@@ -11,8 +11,8 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			set => SetValue(ColumnSpacingProperty, value);
 		}
 
-		public static DependencyProperty ColumnSpacingProperty { get; } =
-			DependencyProperty.Register(nameof(ColumnSpacing), typeof(double), typeof(ColumnMajorUniformToLargestGridLayout), new FrameworkPropertyMetadata(default(double), OnColumnSpacingPropertyChanged));
+		public static readonly DependencyProperty ColumnSpacingProperty =
+			DependencyProperty.Register(nameof(ColumnSpacing), typeof(double), typeof(ColumnMajorUniformToLargestGridLayout), new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero, OnColumnSpacingPropertyChanged));
 
 		public int MaxColumns
 		{
@@ -20,8 +20,8 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			set => SetValue(MaxColumnsProperty, value);
 		}
 
-		public static DependencyProperty MaxColumnsProperty { get; } =
-			DependencyProperty.Register(nameof(MaxColumns), typeof(int), typeof(ColumnMajorUniformToLargestGridLayout), new FrameworkPropertyMetadata(default(int), OnMaxColumnsPropertyChanged));
+		public static readonly DependencyProperty MaxColumnsProperty =
+			DependencyProperty.Register(nameof(MaxColumns), typeof(int), typeof(ColumnMajorUniformToLargestGridLayout), new FrameworkPropertyMetadata(Boxes.IntegerBoxes.Zero, OnMaxColumnsPropertyChanged));
 
 		public double RowSpacing
 		{
@@ -29,8 +29,8 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			set => SetValue(RowSpacingProperty, value);
 		}
 
-		public static DependencyProperty RowSpacingProperty { get; } =
-			DependencyProperty.Register(nameof(RowSpacing), typeof(double), typeof(ColumnMajorUniformToLargestGridLayout), new FrameworkPropertyMetadata(default(double), OnRowSpacingPropertyChanged));
+		public static readonly DependencyProperty RowSpacingProperty =
+			DependencyProperty.Register(nameof(RowSpacing), typeof(double), typeof(ColumnMajorUniformToLargestGridLayout), new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero, OnRowSpacingPropertyChanged));
 
 		private static void OnColumnSpacingPropertyChanged(
 			DependencyObject sender,

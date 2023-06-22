@@ -99,7 +99,7 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.RegisterAttached(
 			"ColumnSpan", typeof(int), 
 			typeof(global::Windows.UI.Xaml.Controls.VariableSizedWrapGrid), 
-			new Windows.UI.Xaml.FrameworkPropertyMetadata(Boxes.DefaultBox<int>.Value));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(Boxes.IntegerBoxes.Zero));
 		#endif
 		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -131,7 +131,7 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(MaximumRowsOrColumns), typeof(int), 
 			typeof(global::Windows.UI.Xaml.Controls.VariableSizedWrapGrid), 
-			new Windows.UI.Xaml.FrameworkPropertyMetadata(Boxes.DefaultBox<int>.Value));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(Boxes.IntegerBoxes.Zero));
 		#endif
 		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -147,7 +147,7 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.RegisterAttached(
 			"RowSpan", typeof(int), 
 			typeof(global::Windows.UI.Xaml.Controls.VariableSizedWrapGrid), 
-			new Windows.UI.Xaml.FrameworkPropertyMetadata(Boxes.DefaultBox<int>.Value));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(Boxes.IntegerBoxes.Zero));
 		#endif
 		#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]

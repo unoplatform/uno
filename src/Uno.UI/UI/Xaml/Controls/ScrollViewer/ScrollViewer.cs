@@ -393,7 +393,7 @@ namespace Windows.UI.Xaml.Controls
 				"HorizontalSnapPointsType",
 				typeof(SnapPointsType),
 				typeof(ScrollViewer),
-				new FrameworkPropertyMetadata(Boxes.DefaultBox<SnapPointsType>.Value));
+				new FrameworkPropertyMetadata(default(SnapPointsType)));
 		#endregion
 
 		#region HorizontalSnapPointsAlignment (DP)
@@ -408,7 +408,7 @@ namespace Windows.UI.Xaml.Controls
 				"HorizontalSnapPointsAlignment",
 				typeof(SnapPointsAlignment),
 				typeof(ScrollViewer),
-				new FrameworkPropertyMetadata(Boxes.DefaultBox<SnapPointsAlignment>.Value));
+				new FrameworkPropertyMetadata(default(SnapPointsAlignment)));
 		#endregion
 
 		#region VerticalSnapPointsType (DP)

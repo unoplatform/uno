@@ -342,7 +342,7 @@ namespace Windows.UI.Xaml.Controls
 				nameof(FastPlayFallbackBehaviour),
 				typeof(Media.FastPlayFallbackBehaviour),
 				typeof(MediaTransportControls),
-				new FrameworkPropertyMetadata(Boxes.DefaultBox<Media.FastPlayFallbackBehaviour>.Value));
+				new FrameworkPropertyMetadata(default(Media.FastPlayFallbackBehaviour)));
 
 		#endregion
 

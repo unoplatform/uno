@@ -38,6 +38,6 @@ namespace Windows.UI.Xaml.Input
 				nameof(Kind),
 				typeof(StandardUICommandKind),
 				typeof(StandardUICommand),
-				new FrameworkPropertyMetadata(Boxes.DefaultBox<StandardUICommandKind>.Value));
+				new FrameworkPropertyMetadata(default(StandardUICommandKind)));
 	}
 }

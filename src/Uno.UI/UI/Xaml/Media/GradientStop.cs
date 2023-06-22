@@ -56,7 +56,7 @@ namespace Windows.UI.Xaml.Media
 				"Offset",
 				typeof(double),
 				typeof(GradientStop),
-				new FrameworkPropertyMetadata(Boxes.DefaultBox<double>.Value)
+				new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero)
 			);
 	}
 }

@@ -46,7 +46,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			set { this.SetValue(KeyTimeProperty, value); }
 		}
 		public static DependencyProperty KeyTimeProperty { get; } =
-			DependencyProperty.Register("KeyTime", typeof(KeyTime), typeof(DoubleKeyFrame), new FrameworkPropertyMetadata(Boxes.DefaultBox<KeyTime>.Value));
+			DependencyProperty.Register("KeyTime", typeof(KeyTime), typeof(DoubleKeyFrame), new FrameworkPropertyMetadata(default(KeyTime).Value));
 
 
 		internal abstract IEasingFunction GetEasingFunction();

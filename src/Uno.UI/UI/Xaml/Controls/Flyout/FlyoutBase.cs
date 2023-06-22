@@ -163,7 +163,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				"Placement",
 				typeof(FlyoutPlacementMode),
 				typeof(FlyoutBase),
-				new FrameworkPropertyMetadata(Boxes.DefaultBox<FlyoutPlacementMode>.Value)
+				new FrameworkPropertyMetadata(default(FlyoutPlacementMode))
 			);
 
 		#endregion
@@ -184,7 +184,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"LightDismissOverlayMode", typeof(LightDismissOverlayMode),
 			typeof(FlyoutBase),
-			new FrameworkPropertyMetadata(Boxes.DefaultBox<LightDismissOverlayMode>.Value));
+			new FrameworkPropertyMetadata(default(LightDismissOverlayMode)));
 
 
 		/// <summary>

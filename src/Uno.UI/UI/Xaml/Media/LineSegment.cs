@@ -23,7 +23,7 @@ namespace Windows.UI.Xaml.Media
 				typeof(Point),
 				typeof(LineSegment),
 				new FrameworkPropertyMetadata(
-					defaultValue: Boxes.DefaultBox<Point>.Value,
+					defaultValue: default(Point),
 					options: FrameworkPropertyMetadataOptions.AffectsMeasure
 				)
 			);

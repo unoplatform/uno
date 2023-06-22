@@ -27,6 +27,6 @@ namespace Windows.UI.Xaml.Media
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(Color), typeof(global::Windows.UI.Color),
 			typeof(global::Windows.UI.Xaml.Media.RevealBrush),
-			new FrameworkPropertyMetadata(Boxes.DefaultBox<Color>.Value));
+			new FrameworkPropertyMetadata(default(Color)));
 	}
 }

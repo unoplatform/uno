@@ -21,7 +21,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			"MinViewWidth",
 			typeof(double),
 			typeof(CalendarViewTemplateSettings),
-			new FrameworkPropertyMetadata(Boxes.DefaultBox<double>.Value));
+			new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero));
 
 		/// <summary>Gets the text of the header.</summary>
 		/// <returns>The text of the header.</returns>
@@ -189,7 +189,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			"ClipRect",
 			typeof(Rect),
 			typeof(CalendarViewTemplateSettings),
-			new FrameworkPropertyMetadata(Boxes.DefaultBox<Rect>.Value));
+			new FrameworkPropertyMetadata(default(Rect)));
 
 		/// <summary>Gets the X coordinate of the CalendarView 's center point.</summary>
 		/// <returns>The X coordinate of the CalendarView 's center point.</returns>

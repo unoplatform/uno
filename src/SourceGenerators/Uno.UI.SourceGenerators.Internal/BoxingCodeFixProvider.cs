@@ -32,25 +32,7 @@ internal sealed class BoxingCodeFixProvider : CodeFixProvider
 				var generator = SyntaxGenerator.GetGenerator(document);
 				var boxesIdentifier = (ExpressionSyntax)generator.TypeExpression(model.Compilation.GetTypeByMetadataName("Uno.UI.Helpers.Boxes")).WithAdditionalAnnotations(Simplifier.AddImportsAnnotation);
 
-				// default(type) => Uno.UI.Helpers.Boxes.DefaultBox<type>.Value
-				if (node is DefaultExpressionSyntax defaultExpressionSyntax)
-				{
-					var newNode = SyntaxFactory.MemberAccessExpression(
-						SyntaxKind.SimpleMemberAccessExpression,
-						SyntaxFactory.MemberAccessExpression(
-							SyntaxKind.SimpleMemberAccessExpression,
-							boxesIdentifier,
-							SyntaxFactory.GenericName(
-								SyntaxFactory.Identifier("DefaultBox"))
-							.WithTypeArgumentList(
-								SyntaxFactory.TypeArgumentList(
-									SyntaxFactory.SingletonSeparatedList(
-										defaultExpressionSyntax.Type)))),
-						SyntaxFactory.IdentifierName("Value"));
-					var newRoot = root.ReplaceNode(node, newNode);
-					return document.WithSyntaxRoot(newRoot);
-				}
-				else if (node is ExpressionSyntax expressionSyntax)
+				if (node is ExpressionSyntax expressionSyntax)
 				{
 					var typeInfo = model.GetTypeInfo(node);
 					if (typeInfo.Type.SpecialType is SpecialType.System_Int32 or SpecialType.System_Boolean)

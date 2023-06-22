@@ -7,7 +7,7 @@ namespace Microsoft.UI.Xaml.Controls
 	public partial class ProgressBarTemplateSettings : DependencyObject
 	{
 		public static DependencyProperty ContainerAnimationStartPositionProperty { get; } = DependencyProperty.Register(
-			nameof(ContainerAnimationStartPosition), typeof(double), typeof(ProgressBarTemplateSettings), new FrameworkPropertyMetadata(Boxes.DefaultBox<double>.Value));
+			nameof(ContainerAnimationStartPosition), typeof(double), typeof(ProgressBarTemplateSettings), new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero));
 
 		public double ContainerAnimationStartPosition
 		{
@@ -16,7 +16,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty ContainerAnimationEndPositionProperty { get; } = DependencyProperty.Register(
-			nameof(ContainerAnimationEndPosition), typeof(double), typeof(ProgressBarTemplateSettings), new FrameworkPropertyMetadata(Boxes.DefaultBox<double>.Value));
+			nameof(ContainerAnimationEndPosition), typeof(double), typeof(ProgressBarTemplateSettings), new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero));
 
 		public double ContainerAnimationEndPosition
 		{
@@ -25,7 +25,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty ContainerAnimationStartPosition2Property { get; } = DependencyProperty.Register(
-			nameof(ContainerAnimationStartPosition2), typeof(double), typeof(ProgressBarTemplateSettings), new FrameworkPropertyMetadata(Boxes.DefaultBox<double>.Value));
+			nameof(ContainerAnimationStartPosition2), typeof(double), typeof(ProgressBarTemplateSettings), new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero));
 
 		public double ContainerAnimationStartPosition2
 		{
@@ -34,7 +34,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty ContainerAnimationEndPosition2Property { get; } = DependencyProperty.Register(
-			nameof(ContainerAnimationEndPosition2), typeof(double), typeof(ProgressBarTemplateSettings), new FrameworkPropertyMetadata(Boxes.DefaultBox<double>.Value));
+			nameof(ContainerAnimationEndPosition2), typeof(double), typeof(ProgressBarTemplateSettings), new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero));
 
 		public double ContainerAnimationEndPosition2
 		{
@@ -43,7 +43,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty ContainerAnimationMidPositionProperty { get; } = DependencyProperty.Register(
-			nameof(ContainerAnimationMidPosition), typeof(double), typeof(ProgressBarTemplateSettings), new FrameworkPropertyMetadata(Boxes.DefaultBox<double>.Value));
+			nameof(ContainerAnimationMidPosition), typeof(double), typeof(ProgressBarTemplateSettings), new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero));
 
 		public double ContainerAnimationMidPosition
 		{
@@ -52,7 +52,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty IndicatorLengthDeltaProperty { get; } = DependencyProperty.Register(
-			nameof(IndicatorLengthDelta), typeof(double), typeof(ProgressBarTemplateSettings), new FrameworkPropertyMetadata(Boxes.DefaultBox<double>.Value));
+			nameof(IndicatorLengthDelta), typeof(double), typeof(ProgressBarTemplateSettings), new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero));
 
 		public double IndicatorLengthDelta
 		{

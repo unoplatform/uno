@@ -536,7 +536,7 @@ namespace Windows.UI.Xaml
 			{
 				var matchingHandler = handlers.FirstOrDefault(handlerInfo => (handlerInfo.Handler as Delegate).Equals(handler as Delegate));
 
-				if (!matchingHandler.Equals(Boxes.DefaultBox<RoutedEventHandlerInfo>.Value))
+				if (!matchingHandler.Equals(default(RoutedEventHandlerInfo)))
 				{
 					handlers.Remove(matchingHandler);
 

@@ -201,7 +201,7 @@ namespace Microsoft.UI.Xaml.Controls
 		//}
 
 		public static DependencyProperty BehaviorOnInvokedProperty { get; } = DependencyProperty.Register(
-			"BehaviorOnInvoked", typeof(SwipeBehaviorOnInvoked), typeof(SwipeItem), new FrameworkPropertyMetadata(Boxes.DefaultBox<SwipeBehaviorOnInvoked>.Value, OnBehaviorOnInvokedPropertyChanged));
+			"BehaviorOnInvoked", typeof(SwipeBehaviorOnInvoked), typeof(SwipeItem), new FrameworkPropertyMetadata(default(SwipeBehaviorOnInvoked), OnBehaviorOnInvokedPropertyChanged));
 
 		public SwipeBehaviorOnInvoked BehaviorOnInvoked
 		{

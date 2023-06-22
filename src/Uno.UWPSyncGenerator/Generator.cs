@@ -1473,9 +1473,17 @@ namespace Uno.UWPSyncGenerator
 
 								b.AppendLineInvariant($"\ttypeof({property.ContainingType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}), ");
 
-								if (propertyType.IsValueType)
+								if (propertyType.SpecialType == SpecialType.System_Int32)
 								{
-									b.AppendLineInvariant($"\tnew {BaseXamlNamespace}.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.DefaultBox<{propertyDisplayType}>.Value));");
+									b.AppendLineInvariant($"\tnew {BaseXamlNamespace}.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.IntegerBoxes.Zero));");
+								}
+								else if (propertyType.SpecialType == SpecialType.System_Boolean)
+								{
+									b.AppendLineInvariant($"\tnew {BaseXamlNamespace}.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BooleanBoxes.BoxedFalse));");
+								}
+								else  (propertyType.SpecialType == SpecialType.System_Double)
+								{
+									b.AppendLineInvariant($"\tnew {BaseXamlNamespace}.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.DoubleBoxes.Zero));");
 								}
 								else
 								{

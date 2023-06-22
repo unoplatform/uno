@@ -19,7 +19,7 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"Reason", typeof(AutoSuggestionBoxTextChangeReason),
 			typeof(global::Windows.UI.Xaml.Controls.AutoSuggestBoxTextChangedEventArgs),
-			new FrameworkPropertyMetadata(Boxes.DefaultBox<AutoSuggestionBoxTextChangeReason>.Value));
+			new FrameworkPropertyMetadata(default(AutoSuggestionBoxTextChangeReason)));
 
 		internal AutoSuggestBox Owner
 		{

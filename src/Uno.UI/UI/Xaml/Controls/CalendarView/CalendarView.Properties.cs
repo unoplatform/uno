@@ -774,13 +774,13 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(DisplayMode), typeof(global::Windows.UI.Xaml.Controls.CalendarViewDisplayMode),
 			typeof(global::Windows.UI.Xaml.Controls.CalendarView),
-			new FrameworkPropertyMetadata(Boxes.DefaultBox<global::Windows.UI.Xaml.Controls.CalendarViewDisplayMode>.Value));
+			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.CalendarViewDisplayMode)));
 
 		public static global::Windows.UI.Xaml.DependencyProperty FirstDayOfWeekProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(FirstDayOfWeek), typeof(global::Windows.Globalization.DayOfWeek),
 			typeof(global::Windows.UI.Xaml.Controls.CalendarView),
-			new FrameworkPropertyMetadata(Boxes.DefaultBox<global::Windows.Globalization.DayOfWeek>.Value));
+			new FrameworkPropertyMetadata(default(global::Windows.Globalization.DayOfWeek)));
 
 		public static global::Windows.UI.Xaml.DependencyProperty FirstOfMonthLabelFontFamilyProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(

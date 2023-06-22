@@ -27,7 +27,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty DisplayModeProperty { get; } =
-			DependencyProperty.Register(nameof(DisplayMode), typeof(PagerControlDisplayMode), typeof(PagerControl), new FrameworkPropertyMetadata(Boxes.DefaultBox<PagerControlDisplayMode>.Value, OnPropertyChanged));
+			DependencyProperty.Register(nameof(DisplayMode), typeof(PagerControlDisplayMode), typeof(PagerControl), new FrameworkPropertyMetadata(default(PagerControlDisplayMode), OnPropertyChanged));
 
 		public ICommand FirstButtonCommand
 		{
@@ -52,7 +52,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty FirstButtonVisibilityProperty { get; } =
-			DependencyProperty.Register(nameof(FirstButtonVisibility), typeof(PagerControlButtonVisibility), typeof(PagerControl), new FrameworkPropertyMetadata(Boxes.DefaultBox<PagerControlButtonVisibility>.Value, OnPropertyChanged));
+			DependencyProperty.Register(nameof(FirstButtonVisibility), typeof(PagerControlButtonVisibility), typeof(PagerControl), new FrameworkPropertyMetadata(default(PagerControlButtonVisibility), OnPropertyChanged));
 
 		public ICommand LastButtonCommand
 		{
@@ -79,7 +79,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty LastButtonVisibilityProperty { get; } =
-			DependencyProperty.Register(nameof(LastButtonVisibility), typeof(PagerControlButtonVisibility), typeof(PagerControl), new FrameworkPropertyMetadata(Boxes.DefaultBox<PagerControlButtonVisibility>.Value, OnPropertyChanged));
+			DependencyProperty.Register(nameof(LastButtonVisibility), typeof(PagerControlButtonVisibility), typeof(PagerControl), new FrameworkPropertyMetadata(default(PagerControlButtonVisibility), OnPropertyChanged));
 
 		public ICommand NextButtonCommand
 		{
@@ -106,7 +106,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty NextButtonVisibilityProperty { get; } =
-			DependencyProperty.Register(nameof(NextButtonVisibility), typeof(PagerControlButtonVisibility), typeof(PagerControl), new FrameworkPropertyMetadata(Boxes.DefaultBox<PagerControlButtonVisibility>.Value, OnPropertyChanged));
+			DependencyProperty.Register(nameof(NextButtonVisibility), typeof(PagerControlButtonVisibility), typeof(PagerControl), new FrameworkPropertyMetadata(default(PagerControlButtonVisibility), OnPropertyChanged));
 
 		public int NumberOfPages
 		{
@@ -151,7 +151,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty PreviousButtonVisibilityProperty { get; } =
-			DependencyProperty.Register(nameof(PreviousButtonVisibility), typeof(PagerControlButtonVisibility), typeof(PagerControl), new FrameworkPropertyMetadata(Boxes.DefaultBox<PagerControlButtonVisibility>.Value, OnPropertyChanged));
+			DependencyProperty.Register(nameof(PreviousButtonVisibility), typeof(PagerControlButtonVisibility), typeof(PagerControl), new FrameworkPropertyMetadata(default(PagerControlButtonVisibility), OnPropertyChanged));
 
 		public int SelectedPageIndex
 		{

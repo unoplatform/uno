@@ -91,7 +91,7 @@ namespace Windows.UI.Xaml.Controls
 				"LabelPosition",
 				typeof(CommandBarLabelPosition),
 				typeof(AppBarToggleButton),
-				new FrameworkPropertyMetadata(Boxes.DefaultBox<CommandBarLabelPosition>.Value)
+				new FrameworkPropertyMetadata(default(CommandBarLabelPosition))
 			);
 
 		#endregion
@@ -127,7 +127,7 @@ namespace Windows.UI.Xaml.Controls
 				"DynamicOverflowOrder",
 				typeof(int),
 				typeof(AppBarToggleButton),
-				new FrameworkPropertyMetadata(Boxes.DefaultBox<int>.Value)
+				new FrameworkPropertyMetadata(Boxes.IntegerBoxes.Zero)
 			);
 
 		#endregion

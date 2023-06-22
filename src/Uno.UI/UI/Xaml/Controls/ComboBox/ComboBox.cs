@@ -725,7 +725,7 @@ namespace Windows.UI.Xaml.Controls
 		DependencyProperty.Register(
 			"LightDismissOverlayMode", typeof(LightDismissOverlayMode),
 			typeof(ComboBox),
-			new FrameworkPropertyMetadata(Boxes.DefaultBox<LightDismissOverlayMode>.Value));
+			new FrameworkPropertyMetadata(default(LightDismissOverlayMode)));
 
 		/// <summary>
 		/// Sets the light-dismiss colour, if the overlay is enabled. The external API for modifying this is to override the PopupLightDismissOverlayBackground, etc, static resource values.

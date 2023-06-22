@@ -81,7 +81,7 @@ namespace Windows.UI.Xaml.Controls
 				nameof(LightDismissOverlayMode),
 				typeof(LightDismissOverlayMode),
 				typeof(AppBar),
-				new FrameworkPropertyMetadata(Boxes.DefaultBox<LightDismissOverlayMode>.Value)
+				new FrameworkPropertyMetadata(default(LightDismissOverlayMode))
 			);
 
 		#endregion

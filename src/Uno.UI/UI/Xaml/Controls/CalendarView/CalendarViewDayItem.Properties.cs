@@ -38,7 +38,7 @@ namespace Windows.UI.Xaml.Controls
 			Windows.UI.Xaml.DependencyProperty.Register(
 				nameof(Date), typeof(global::System.DateTimeOffset),
 				typeof(global::Windows.UI.Xaml.Controls.CalendarViewDayItem),
-				new FrameworkPropertyMetadata(Boxes.DefaultBox<global::System.DateTimeOffset>.Value));
+				new FrameworkPropertyMetadata(default(global::System.DateTimeOffset)));
 
 		public static global::Windows.UI.Xaml.DependencyProperty IsBlackoutProperty { get; } =
 			Windows.UI.Xaml.DependencyProperty.Register(

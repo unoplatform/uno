@@ -221,12 +221,12 @@ namespace Windows.UI.Xaml.Controls.Maps
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"ColorScheme", typeof(MapColorScheme),
 			typeof(MapControl),
-			new FrameworkPropertyMetadata(Boxes.DefaultBox<MapColorScheme>.Value));
+			new FrameworkPropertyMetadata(default(MapColorScheme)));
 		public static DependencyProperty DesiredPitchProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"DesiredPitch", typeof(double),
 			typeof(MapControl),
-			new FrameworkPropertyMetadata(Boxes.DefaultBox<double>.Value));
+			new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero));
 		public static DependencyProperty HeadingProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"Heading", typeof(double),

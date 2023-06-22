@@ -227,7 +227,7 @@ namespace Windows.UI.Xaml.Controls
 			"RowSpacing", typeof(double),
 			typeof(Grid),
 			new FrameworkPropertyMetadata(
-				Boxes.DefaultBox<double>.Value,
+				Boxes.DoubleBoxes.Zero,
 				FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange));
 
 		public double ColumnSpacing
@@ -241,7 +241,7 @@ namespace Windows.UI.Xaml.Controls
 			"ColumnSpacing", typeof(double),
 			typeof(Grid),
 			new FrameworkPropertyMetadata(
-				Boxes.DefaultBox<double>.Value,
+				Boxes.DoubleBoxes.Zero,
 				FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange));
 	}
 }

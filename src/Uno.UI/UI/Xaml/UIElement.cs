@@ -412,7 +412,7 @@ namespace Windows.UI.Xaml
 
 		[GeneratedDependencyProperty(ChangedCallback = true)]
 		public static DependencyProperty RenderTransformOriginProperty { get; } = CreateRenderTransformOriginProperty();
-		private static object GetRenderTransformOriginDefaultValue() => Boxes.DefaultBox<Point>.Value;
+		private static object GetRenderTransformOriginDefaultValue() => default(Point);
 
 		private void OnRenderTransformOriginChanged(Point _, Point origin)
 			=> _renderTransform?.UpdateOrigin(origin);

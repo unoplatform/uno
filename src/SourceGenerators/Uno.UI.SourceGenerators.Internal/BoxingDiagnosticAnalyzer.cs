@@ -59,19 +59,6 @@ internal sealed class BoxingDiagnosticAnalyzer : DiagnosticAnalyzer
 			return false; // TODO: Confirm when this happens.
 		}
 
-		// Boxes.DefaultBox<int?> produces a compile-time error.
-		// Boxing nullable value types is rare anyway.
-		if (operandType.OriginalDefinition.SpecialType == SpecialType.System_Nullable_T ||
-			!operandType.IsValueType)
-		{
-			return false;
-		}
-
-		if (operation.Kind == OperationKind.DefaultValue)
-		{
-			return true;
-		}
-
 		var operandSpecialType = operandType.SpecialType;
 		if (operandSpecialType == SpecialType.System_Boolean)
 		{
@@ -81,6 +68,11 @@ internal sealed class BoxingDiagnosticAnalyzer : DiagnosticAnalyzer
 		{
 			// Keep the values to check against (ie, -1, 0, 1) synchronized with Boxes.Box(int).
 			return !operation.Operand.ConstantValue.HasValue || operation.Operand.ConstantValue.Value is -1 or 0 or 1;
+		}
+		else if (operandSpecialType == SpecialType.System_Double)
+		{
+			// Keep the values to check against synchronized with Boxes.Box(double).
+			return !operation.Operand.ConstantValue.HasValue || operation.Operand.ConstantValue.Value == 0.0;
 		}
 		else if (operandType.Name == "RoutedEventFlag" && !IsOptimizedHasFlagCall(operation, hasFlagMethod))
 		{

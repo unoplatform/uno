@@ -75,7 +75,7 @@ namespace Windows.UI.Xaml.Media
 				nameof(TintColor),
 				typeof(Color),
 				typeof(AcrylicBrush),
-				new FrameworkPropertyMetadata(Boxes.DefaultBox<Color>.Value));
+				new FrameworkPropertyMetadata(default(Color)));
 
 		/// <summary>
 		/// Identifies the TintOpacity dependency property.

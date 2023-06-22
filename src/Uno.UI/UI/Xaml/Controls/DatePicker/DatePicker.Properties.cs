@@ -152,7 +152,7 @@ namespace Windows.UI.Xaml.Controls
 			name: "Orientation",
 			propertyType: typeof(Orientation),
 			ownerType: typeof(DatePicker),
-			typeMetadata: new FrameworkPropertyMetadata(Boxes.DefaultBox<Orientation>.Value));
+			typeMetadata: new FrameworkPropertyMetadata(default(Orientation)));
 
 		public string MonthFormat
 		{
@@ -242,6 +242,6 @@ namespace Windows.UI.Xaml.Controls
 			name: "LightDismissOverlayMode",
 			propertyType: typeof(LightDismissOverlayMode),
 			ownerType: typeof(DatePicker),
-			typeMetadata: new FrameworkPropertyMetadata(Boxes.DefaultBox<LightDismissOverlayMode>.Value));
+			typeMetadata: new FrameworkPropertyMetadata(default(LightDismissOverlayMode)));
 	}
 }

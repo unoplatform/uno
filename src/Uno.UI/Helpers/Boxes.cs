@@ -9,26 +9,27 @@ namespace Uno.UI.Helpers;
 // Note: More Boxes can be added here, e.g, for commonly used enums.
 // In this case, make sure to update the BoxingDiagnosticAnalyzer.
 
-/// <summary>
-/// This class is intended to be used by code generated from DependencyObjectGenerator.
-/// </summary>
-[EditorBrowsable(EditorBrowsableState.Never)]
-public static class Boxes
+internal static class Boxes
 {
-	private static class BooleanBoxes
+	public static class BooleanBoxes
 	{
 		public static readonly object BoxedTrue = true;
 		public static readonly object BoxedFalse = false;
 	}
 
-	private static class IntegerBoxes
+	public static class IntegerBoxes
 	{
 		public static readonly object NegativeOne = -1;
 		public static readonly object Zero = 0;
 		public static readonly object One = 1;
 	}
 
-	private static class RoutedEventFlagBoxes
+	public static class DoubleBoxes
+	{
+		public static readonly object Zero = 0.0;
+	}
+
+	public static class RoutedEventFlagBoxes
 	{
 		public static readonly object None = RoutedEventFlag.None;
 
@@ -70,18 +71,13 @@ public static class Boxes
 		public static readonly object Holding = RoutedEventFlag.Holding;
 	}
 
-	internal static class DefaultBox<T> where T : struct
-	{
-		public static readonly object Value = default(T);
-	}
-
 	public static object Box(bool value) => value ? BooleanBoxes.BoxedTrue : BooleanBoxes.BoxedFalse;
 
 	public static object Box(int value) => value switch
 	{
 		// Keep the specialized integers in sync with BoxingDiagnosticAnalyzer
 		-1 => IntegerBoxes.NegativeOne,
-		0 => DefaultBox<int>.Value,
+		0 => IntegerBoxes.Zero,
 		1 => IntegerBoxes.One,
 		_ => value,
 	};

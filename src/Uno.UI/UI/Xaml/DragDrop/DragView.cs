@@ -28,7 +28,7 @@ namespace Windows.UI.Xaml
 
 		#region GlyphVisibility
 		public static readonly DependencyProperty GlyphVisibilityProperty = DependencyProperty.Register(
-			"GlyphVisibility", typeof(Visibility), typeof(DragView), new FrameworkPropertyMetadata(Boxes.DefaultBox<Visibility>.Value));
+			"GlyphVisibility", typeof(Visibility), typeof(DragView), new FrameworkPropertyMetadata(default(Visibility)));
 
 		public Visibility GlyphVisibility
 		{
@@ -50,7 +50,7 @@ namespace Windows.UI.Xaml
 
 		#region CaptionVisibility
 		public static readonly DependencyProperty CaptionVisibilityProperty = DependencyProperty.Register(
-			"CaptionVisibility", typeof(Visibility), typeof(DragView), new FrameworkPropertyMetadata(Boxes.DefaultBox<Visibility>.Value));
+			"CaptionVisibility", typeof(Visibility), typeof(DragView), new FrameworkPropertyMetadata(default(Visibility)));
 
 		public Visibility CaptionVisibility
 		{
@@ -72,7 +72,7 @@ namespace Windows.UI.Xaml
 
 		#region ContentAnchor
 		public static readonly DependencyProperty ContentAnchorProperty = DependencyProperty.Register(
-			"ContentAnchor", typeof(Point), typeof(DragView), new FrameworkPropertyMetadata(Boxes.DefaultBox<Point>.Value));
+			"ContentAnchor", typeof(Point), typeof(DragView), new FrameworkPropertyMetadata(default(Point)));
 
 		public Point ContentAnchor
 		{
@@ -83,7 +83,7 @@ namespace Windows.UI.Xaml
 
 		#region ContentVisibility
 		public static readonly DependencyProperty ContentVisibilityProperty = DependencyProperty.Register(
-			"ContentVisibility", typeof(Visibility), typeof(DragView), new FrameworkPropertyMetadata(Boxes.DefaultBox<Visibility>.Value));
+			"ContentVisibility", typeof(Visibility), typeof(DragView), new FrameworkPropertyMetadata(default(Visibility)));
 
 		public Visibility ContentVisibility
 		{
@@ -94,7 +94,7 @@ namespace Windows.UI.Xaml
 
 		#region TooltipVisibility
 		public static readonly DependencyProperty TooltipVisibilityProperty = DependencyProperty.Register(
-			"TooltipVisibility", typeof(Visibility), typeof(DragView), new FrameworkPropertyMetadata(Boxes.DefaultBox<Visibility>.Value));
+			"TooltipVisibility", typeof(Visibility), typeof(DragView), new FrameworkPropertyMetadata(default(Visibility)));
 
 		public Visibility TooltipVisibility
 		{

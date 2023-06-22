@@ -13,7 +13,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#region Orientation - DP with common callback
 		public static DependencyProperty OrientationProperty { get; } = DependencyProperty.Register(
-			"Orientation", typeof(Orientation), typeof(StackLayout), new FrameworkPropertyMetadata(Boxes.DefaultBox<Orientation>.Value, OnDependencyPropertyChanged));
+			"Orientation", typeof(Orientation), typeof(StackLayout), new FrameworkPropertyMetadata(default(Orientation), OnDependencyPropertyChanged));
 
 		public Orientation Orientation
 		{
@@ -23,8 +23,8 @@ namespace Microsoft.UI.Xaml.Controls
 		#endregion
 
 		#region Spacing - DP with common callback
-		public static DependencyProperty SpacingProperty { get; } = DependencyProperty.Register(
-			"Spacing", typeof(double), typeof(StackLayout), new FrameworkPropertyMetadata(default(double), OnDependencyPropertyChanged));
+		public static DependencyProperty SpacingProperty = DependencyProperty.Register(
+			"Spacing", typeof(double), typeof(StackLayout), new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero, OnDependencyPropertyChanged));
 
 		public double Spacing
 		{
