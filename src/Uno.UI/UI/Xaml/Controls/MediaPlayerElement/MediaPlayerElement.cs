@@ -239,7 +239,7 @@ namespace Windows.UI.Xaml.Controls
 			};
 		}
 
-		private void OnVideoRatioChanged(MediaPlayer sender, double args)
+		private void OnVideoRatioChanged(Windows.Media.Playback.MediaPlayer sender, double args)
 		{
 			_ = Dispatcher.RunAsync(
 				CoreDispatcherPriority.Normal,
