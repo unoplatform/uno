@@ -1,5 +1,7 @@
 #pragma warning disable 108 // new keyword hiding
 #pragma warning disable 114 // new keyword hiding
+using Uno.UI.Helpers;
+
 namespace Windows.UI.Xaml.Controls.Primitives
 {
 	#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -177,7 +179,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(MaxHue), typeof(int), 
 			typeof(global::Windows.UI.Xaml.Controls.Primitives.ColorSpectrum), 
-			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(int)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(Boxes.DefaultBox<int>.Value));
 		#endif
 		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -185,7 +187,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(MaxSaturation), typeof(int), 
 			typeof(global::Windows.UI.Xaml.Controls.Primitives.ColorSpectrum), 
-			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(int)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(Boxes.DefaultBox<int>.Value));
 		#endif
 		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -193,7 +195,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(MaxValue), typeof(int), 
 			typeof(global::Windows.UI.Xaml.Controls.Primitives.ColorSpectrum), 
-			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(int)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(Boxes.DefaultBox<int>.Value));
 		#endif
 		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -201,7 +203,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(MinHue), typeof(int), 
 			typeof(global::Windows.UI.Xaml.Controls.Primitives.ColorSpectrum), 
-			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(int)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(Boxes.DefaultBox<int>.Value));
 		#endif
 		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -209,7 +211,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(MinSaturation), typeof(int), 
 			typeof(global::Windows.UI.Xaml.Controls.Primitives.ColorSpectrum), 
-			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(int)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(Boxes.DefaultBox<int>.Value));
 		#endif
 		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -217,7 +219,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(MinValue), typeof(int), 
 			typeof(global::Windows.UI.Xaml.Controls.Primitives.ColorSpectrum), 
-			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(int)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(Boxes.DefaultBox<int>.Value));
 		#endif
 		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]

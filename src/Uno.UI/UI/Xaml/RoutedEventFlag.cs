@@ -4,6 +4,7 @@ using System.Runtime.CompilerServices;
 
 namespace Uno.UI.Xaml
 {
+	// NOTE: Keep this enum in sync with RoutedEventFlagBoxes
 	[Flags]
 	public enum RoutedEventFlag : ulong
 	{

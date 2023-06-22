@@ -1,7 +1,7 @@
 ﻿#nullable enable
 
 using System.Collections.Immutable;
-using System.Diagnostics;
+using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
@@ -25,24 +25,31 @@ internal sealed class BoxingDiagnosticAnalyzer : DiagnosticAnalyzer
 	public override void Initialize(AnalysisContext context)
 	{
 		context.EnableConcurrentExecution();
-		// TODO: Report even in generated code.
-		context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.Analyze /*| GeneratedCodeAnalysisFlags.ReportDiagnostics*/);
-		context.RegisterOperationAction(context =>
-		{
-			var conversionOperation = (IConversionOperation)context.Operation;
-			var conversion = conversionOperation.GetConversion();
-			if (!conversion.IsBoxing ||
-				!HasSpecialBox(conversionOperation) ||
-				conversionOperation.Syntax.Parent.IsKind(SyntaxKind.AttributeArgument))
-			{
-				return;
-			}
+		context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.Analyze | GeneratedCodeAnalysisFlags.ReportDiagnostics);
 
-			context.ReportDiagnostic(Diagnostic.Create(s_descriptor, conversionOperation.Syntax.GetLocation()));
-		}, OperationKind.Conversion);
+		context.RegisterCompilationStartAction(context =>
+		{
+			// HasFlag no longer have boxing allocations starting with .NET Core 2.1, when both operands are of the same enum type.
+			// So we need to special case that in the analyzer.
+			var hasFlagMethod = (IMethodSymbol)context.Compilation.GetSpecialType(SpecialType.System_Enum).GetMembers("HasFlag").Single();
+
+			context.RegisterOperationAction(context =>
+			{
+				var conversionOperation = (IConversionOperation)context.Operation;
+				var conversion = conversionOperation.GetConversion();
+				if (!conversion.IsBoxing ||
+					!HasSpecialBox(conversionOperation, hasFlagMethod) ||
+					conversionOperation.Syntax.Parent.IsKind(SyntaxKind.AttributeArgument))
+				{
+					return;
+				}
+
+				context.ReportDiagnostic(Diagnostic.Create(s_descriptor, conversionOperation.Syntax.GetLocation()));
+			}, OperationKind.Conversion);
+		});
 	}
 
-	private static bool HasSpecialBox(IConversionOperation operation)
+	private static bool HasSpecialBox(IConversionOperation operation, IMethodSymbol hasFlagMethod)
 	{
 		var operandType = operation.Operand.Type;
 		if (operandType is null)
@@ -72,6 +79,23 @@ internal sealed class BoxingDiagnosticAnalyzer : DiagnosticAnalyzer
 		{
 			// Keep the values to check against (ie, -1, 0, 1) synchronized with Boxes.Box(int).
 			return !operation.Operand.ConstantValue.HasValue || operation.Operand.ConstantValue.Value is -1 or 0 or 1;
+		}
+		else if (operandType.Name == "RoutedEventFlag" && !IsOptimizedHasFlagCall(operation, hasFlagMethod))
+		{
+			return true;
+		}
+
+		return false;
+	}
+
+	private static bool IsOptimizedHasFlagCall(IConversionOperation operation, IMethodSymbol hasFlagSymbol)
+	{
+		if (operation.Parent is IArgumentOperation argument &&
+			argument.Parent is IInvocationOperation invocation &&
+			invocation.TargetMethod.Equals(hasFlagSymbol, SymbolEqualityComparer.Default) &&
+			operation.Operand.Type!.Equals(invocation.Instance?.Type, SymbolEqualityComparer.Default))
+		{
+			return true;
 		}
 
 		return false;

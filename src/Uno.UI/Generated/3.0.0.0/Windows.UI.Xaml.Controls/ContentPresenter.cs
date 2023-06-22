@@ -1,5 +1,7 @@
 #pragma warning disable 108 // new keyword hiding
 #pragma warning disable 114 // new keyword hiding
+using Uno.UI.Helpers;
+
 namespace Windows.UI.Xaml.Controls
 {
 	#if false || false || false || false || false || false || false
@@ -144,7 +146,7 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(CharacterSpacing), typeof(int), 
 			typeof(global::Windows.UI.Xaml.Controls.ContentPresenter), 
-			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(int)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(Boxes.DefaultBox<int>.Value));
 		#endif
 		// Skipping already declared property ContentProperty
 		// Skipping already declared property ContentTemplateProperty

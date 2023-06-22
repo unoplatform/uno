@@ -187,7 +187,7 @@ namespace Windows.UI.Xaml
 			typeof(RoutedEventFlag),
 			typeof(UIElement),
 			new FrameworkPropertyMetadata(
-				RoutedEventFlag.None,
+				Boxes.Box(RoutedEventFlag.None),
 				FrameworkPropertyMetadataOptions.Inherits)
 			{
 				CoerceValueCallback = CoerceRoutedEventFlag
@@ -197,7 +197,7 @@ namespace Windows.UI.Xaml
 		public RoutedEventFlag EventsBubblingInManagedCode
 		{
 			get => (RoutedEventFlag)GetValue(EventsBubblingInManagedCodeProperty);
-			set => SetValue(EventsBubblingInManagedCodeProperty, value);
+			set => SetValue(EventsBubblingInManagedCodeProperty, Boxes.Box(value));
 		}
 
 		#endregion
@@ -210,7 +210,7 @@ namespace Windows.UI.Xaml
 				typeof(RoutedEventFlag),
 				typeof(UIElement),
 				new FrameworkPropertyMetadata(
-					RoutedEventFlag.None,
+					Boxes.Box(RoutedEventFlag.None),
 					FrameworkPropertyMetadataOptions.Inherits)
 				{
 					CoerceValueCallback = CoerceRoutedEventFlag
@@ -246,7 +246,7 @@ namespace Windows.UI.Xaml
 
 			if (inheritedValue is RoutedEventFlag inherited)
 			{
-				return local | inherited; // coerced value is a merge between local and inherited
+				return Boxes.Box(local | inherited); // coerced value is a merge between local and inherited
 			}
 
 			return baseValue; // no inherited value, nothing to do

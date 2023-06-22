@@ -1,5 +1,7 @@
 #pragma warning disable 108 // new keyword hiding
 #pragma warning disable 114 // new keyword hiding
+using Uno.UI.Helpers;
+
 namespace Windows.UI.Xaml.Controls
 {
 	#if false || false || false || false || false || false || false
@@ -552,7 +554,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static void SetCanContentRenderOutsideBounds( global::Windows.UI.Xaml.DependencyObject element,  bool canContentRenderOutsideBounds)
 		{
-			element.SetValue(CanContentRenderOutsideBoundsProperty, canContentRenderOutsideBounds);
+			element.SetValue(CanContentRenderOutsideBoundsProperty, Boxes.Box(canContentRenderOutsideBounds));
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Controls.ScrollViewer.TopLeftHeaderProperty.get
@@ -595,7 +597,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static void SetIsHorizontalRailEnabled( global::Windows.UI.Xaml.DependencyObject element,  bool isHorizontalRailEnabled)
 		{
-			element.SetValue(IsHorizontalRailEnabledProperty, isHorizontalRailEnabled);
+			element.SetValue(IsHorizontalRailEnabledProperty, Boxes.Box(isHorizontalRailEnabled));
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Controls.ScrollViewer.IsVerticalRailEnabledProperty.get
@@ -610,7 +612,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static void SetIsVerticalRailEnabled( global::Windows.UI.Xaml.DependencyObject element,  bool isVerticalRailEnabled)
 		{
-			element.SetValue(IsVerticalRailEnabledProperty, isVerticalRailEnabled);
+			element.SetValue(IsVerticalRailEnabledProperty, Boxes.Box(isVerticalRailEnabled));
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Controls.ScrollViewer.IsHorizontalScrollChainingEnabledProperty.get
@@ -625,7 +627,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static void SetIsHorizontalScrollChainingEnabled( global::Windows.UI.Xaml.DependencyObject element,  bool isHorizontalScrollChainingEnabled)
 		{
-			element.SetValue(IsHorizontalScrollChainingEnabledProperty, isHorizontalScrollChainingEnabled);
+			element.SetValue(IsHorizontalScrollChainingEnabledProperty, Boxes.Box(isHorizontalScrollChainingEnabled));
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Controls.ScrollViewer.IsVerticalScrollChainingEnabledProperty.get
@@ -640,7 +642,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static void SetIsVerticalScrollChainingEnabled( global::Windows.UI.Xaml.DependencyObject element,  bool isVerticalScrollChainingEnabled)
 		{
-			element.SetValue(IsVerticalScrollChainingEnabledProperty, isVerticalScrollChainingEnabled);
+			element.SetValue(IsVerticalScrollChainingEnabledProperty, Boxes.Box(isVerticalScrollChainingEnabled));
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Controls.ScrollViewer.IsZoomChainingEnabledProperty.get
@@ -655,7 +657,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static void SetIsZoomChainingEnabled( global::Windows.UI.Xaml.DependencyObject element,  bool isZoomChainingEnabled)
 		{
-			element.SetValue(IsZoomChainingEnabledProperty, isZoomChainingEnabled);
+			element.SetValue(IsZoomChainingEnabledProperty, Boxes.Box(isZoomChainingEnabled));
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Controls.ScrollViewer.IsScrollInertiaEnabledProperty.get
@@ -670,7 +672,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static void SetIsScrollInertiaEnabled( global::Windows.UI.Xaml.DependencyObject element,  bool isScrollInertiaEnabled)
 		{
-			element.SetValue(IsScrollInertiaEnabledProperty, isScrollInertiaEnabled);
+			element.SetValue(IsScrollInertiaEnabledProperty, Boxes.Box(isScrollInertiaEnabled));
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Controls.ScrollViewer.IsZoomInertiaEnabledProperty.get
@@ -685,7 +687,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static void SetIsZoomInertiaEnabled( global::Windows.UI.Xaml.DependencyObject element,  bool isZoomInertiaEnabled)
 		{
-			element.SetValue(IsZoomInertiaEnabledProperty, isZoomInertiaEnabled);
+			element.SetValue(IsZoomInertiaEnabledProperty, Boxes.Box(isZoomInertiaEnabled));
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Controls.ScrollViewer.HorizontalScrollModeProperty.get
@@ -709,7 +711,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static void SetIsDeferredScrollingEnabled( global::Windows.UI.Xaml.DependencyObject element,  bool isDeferredScrollingEnabled)
 		{
-			element.SetValue(IsDeferredScrollingEnabledProperty, isDeferredScrollingEnabled);
+			element.SetValue(IsDeferredScrollingEnabledProperty, Boxes.Box(isDeferredScrollingEnabled));
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Controls.ScrollViewer.BringIntoViewOnFocusChangeProperty.get
