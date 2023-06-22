@@ -57,7 +57,8 @@ variables:
   XamarinSDKVersion_iOS_UITests: 6_12_24
 
   # https://github.com/microsoft/azure-pipelines-tasks/issues/11864
-  #enable_package_cache: true
+  enable_package_cache: true
+  VSO_DEDUP_REDIRECT_TIMEOUT_IN_SEC: 5
 
 stages:
 - template: build/ci/.azure-devops-stages.yml
