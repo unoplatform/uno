@@ -80,7 +80,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly bool _isInsideMainAssembly;
 		private readonly bool _isDesignTimeBuild;
 		private readonly string _relativePath;
-		private readonly bool _useXamlReaderHotReload;
 
 		/// <summary>
 		/// x:Name cache for the lookups performed in the document.
@@ -200,7 +199,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			bool isWasm,
 			bool isDebug,
 			bool isHotReloadEnabled,
-			bool useXamlReaderHotReload,
 			bool isDesignTimeBuild,
 			bool isInsideMainAssembly,
 			bool skipUserControlsInVisualTree,
@@ -228,7 +226,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_isDebug = isDebug;
 			_isHotReloadEnabled = isHotReloadEnabled;
 			_isInsideMainAssembly = isInsideMainAssembly;
-			_useXamlReaderHotReload = useXamlReaderHotReload;
 			_isDesignTimeBuild = isDesignTimeBuild;
 			_skipUserControlsInVisualTree = skipUserControlsInVisualTree;
 			_shouldAnnotateGeneratedXaml = shouldAnnotateGeneratedXaml;
@@ -354,16 +351,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				_isTopLevelDictionary = true;
 
-				var componentBuilder = new IndentedStringBuilder();
-
-				using (componentBuilder.Indent(writer.CurrentLevel))
-				{
-					BuildResourceDictionaryBackingClass(componentBuilder, topLevelControl);
-					BuildTopLevelResourceDictionary(componentBuilder, topLevelControl);
-				}
-
-				var componentCode = componentBuilder.ToString();
-				writer.AppendLineIndented(componentCode);
+				BuildResourceDictionaryBackingClass(writer, topLevelControl);
+				BuildTopLevelResourceDictionary(writer, topLevelControl);
 			}
 			else
 			{
@@ -384,33 +373,25 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 						using (Scope(_xClassName.Namespace, _xClassName.ClassName))
 						{
-							var componentBuilder = new IndentedStringBuilder();
-
-							using (componentBuilder.Indent(writer.CurrentLevel))
+							BuildInitializeComponent(writer, topLevelControl, controlBaseType);
+							if (IsApplication(controlBaseType) && PlatformHelper.IsAndroid(_generatorContext))
 							{
-								BuildInitializeComponent(componentBuilder, topLevelControl, controlBaseType);
-								if (IsApplication(controlBaseType) && PlatformHelper.IsAndroid(_generatorContext))
-								{
-									BuildDrawableResourcesIdResolver(componentBuilder);
-								}
-
-								TryBuildElementStubHolders(componentBuilder);
-
-								BuildPartials(componentBuilder);
-
-								BuildBackingFields(componentBuilder);
-
-								BuildChildSubclasses(componentBuilder);
-
-								BuildComponentFields(componentBuilder);
-
-								BuildCompiledBindings(componentBuilder);
-
-								BuildXBindTryGetDeclarations(componentBuilder);
+								BuildDrawableResourcesIdResolver(writer);
 							}
 
-							var componentCode = componentBuilder.ToString();
-							writer.AppendLineIndented(componentCode);
+							TryBuildElementStubHolders(writer);
+
+							BuildPartials(writer);
+
+							BuildBackingFields(writer);
+
+							BuildChildSubclasses(writer);
+
+							BuildComponentFields(writer);
+
+							BuildCompiledBindings(writer);
+
+							BuildXBindTryGetDeclarations(writer);
 						}
 					}
 				}
@@ -1162,8 +1143,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				using (writer.BlockInvariant("namespace {0}", _defaultNamespace))
 				{
-					WriteMetadataNewTypeAttribute(writer);
-
 					AnalyzerSuppressionsGenerator.Generate(writer, _analyzerSuppressions);
 					using (writer.BlockInvariant("public sealed partial class GlobalStaticResources"))
 					{

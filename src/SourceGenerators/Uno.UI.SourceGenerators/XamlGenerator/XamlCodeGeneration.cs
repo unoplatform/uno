@@ -47,7 +47,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly Dictionary<string, string[]> _uiAutomationMappings;
 		private readonly string _configuration;
 		private readonly bool _isDebug;
-		private readonly bool _useXamlReaderHotReload;
+
 		/// <summary>
 		/// Should hot reload-related calls be generated? By default this is true iff building in debug, but it can be forced to always true or false using the "UnoForceHotReloadCodeGen" project flag.
 		/// </summary>
@@ -217,11 +217,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			if (bool.TryParse(context.GetMSBuildPropertyValue("IsUnoHead"), out var isUnoHead))
 			{
 				_isUnoHead = isUnoHead;
-			}
-
-			if (bool.TryParse(context.GetMSBuildPropertyValue("UnoUseXamlReaderHotReload"), out var useXamlReaderHotReload))
-			{
-				_useXamlReaderHotReload = useXamlReaderHotReload;
 			}
 
 			if (bool.TryParse(context.GetMSBuildPropertyValue("UnoForceHotReloadCodeGen"), out var isHotReloadEnabled))
@@ -445,7 +440,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						isDebug: _isDebug,
 						isHotReloadEnabled: _isHotReloadEnabled,
 						isInsideMainAssembly: isInsideMainAssembly,
-						useXamlReaderHotReload: _useXamlReaderHotReload,
 						isDesignTimeBuild: _isDesignTimeBuild,
 						skipUserControlsInVisualTree: _skipUserControlsInVisualTree,
 						shouldAnnotateGeneratedXaml: _shouldAnnotateGeneratedXaml,

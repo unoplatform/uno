@@ -30,9 +30,6 @@
 									)
 								  )">false</UnoForceHotReloadCodeGen>
 
-		<!-- Use Application.LoadComponent for Hot Reload scenarios -->
-		<UnoUseXamlReaderHotReload>true</UnoUseXamlReaderHotReload>
-
 		<XamarinProjectType Condition="
 							'$(TargetPlatformIdentifier)' == 'ios'
 							or '$(TargetPlatformIdentifier)' == 'maccatalyst'
@@ -68,7 +65,6 @@
 		<CompilerVisibleProperty Include="UnoUISourceGeneratorDebuggerBreak" />
 		<CompilerVisibleProperty Include="BuildingInsideVisualStudio" />
 		<CompilerVisibleProperty Include="IsHotReloadHost" />
-		<CompilerVisibleProperty Include="UnoUseXamlReaderHotReload" />
 		<CompilerVisibleProperty Include="IsUnoHead" />
 
 		<CompilerVisibleProperty Include="UseWPF" />
