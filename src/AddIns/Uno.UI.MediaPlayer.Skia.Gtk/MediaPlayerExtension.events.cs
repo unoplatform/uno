@@ -120,6 +120,7 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 			&& _player.IsVideo
 			&& Events is not null)
 		{
+			IsVideo = _player.IsVideo;
 			Events?.RaiseVideoRatioChanged(Math.Max(1, (double)_player.VideoRatio));
 		}
 	}
