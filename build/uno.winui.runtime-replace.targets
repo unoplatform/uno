@@ -33,10 +33,10 @@
 			<!-- Add the files for the current selected runtime identifier -->
 			<RuntimeCopyLocalItemsMerged
 				Include="%(UnoRuntimeEnabledPackage.PackageBasePath)/uno-runtime/$(UnoRuntimeIdentifier.ToLowerInvariant())/*.dll"
-				NuGetPackageId="%(Identity)" />
+				NuGetPackageId="%(UnoRuntimeEnabledPackage.Identity)" />
 			<RuntimeCopyLocalItemsMerged
 				Include="%(UnoRuntimeEnabledPackage.PackageBasePath)/../uno-runtime/$(UnoRuntimeIdentifier.ToLowerInvariant())/*.dll"
-				NuGetPackageId="%(Identity)" />
+				NuGetPackageId="%(UnoRuntimeEnabledPackage.Identity)" />
 
 			<!-- Add metadata so the .deps.json file is generated properly (.NET 5+) -->
 			<RuntimeCopyLocalItemsToUpdate
@@ -57,10 +57,10 @@
 			<!-- Add the files for the current selected runtime identifier -->
 			<RuntimeCopyLocalItemsMerged
 				Include="%(UnoRuntimeEnabledPackage.PackageBasePath)/uno-runtime/$(_UnoRuntimeTargetFramework)/$(UnoRuntimeIdentifier.ToLowerInvariant())/*.dll"
-				NuGetPackageId="%(Identity)" />
+				NuGetPackageId="%(UnoRuntimeEnabledPackage.Identity)" />
 			<RuntimeCopyLocalItemsMerged
 				Include="%(UnoRuntimeEnabledPackage.PackageBasePath)/../uno-runtime/$(_UnoRuntimeTargetFramework)/$(UnoRuntimeIdentifier.ToLowerInvariant())/*.dll"
-				NuGetPackageId="%(Identity)" />
+				NuGetPackageId="%(UnoRuntimeEnabledPackage.Identity)" />
 
 			<!-- Add metadata so the .deps.json file is generated properly (.NET 5+) -->
 			<RuntimeCopyLocalItemsToUpdate
