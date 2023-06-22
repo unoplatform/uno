@@ -352,7 +352,6 @@ internal partial class HtmlMediaPlayer : Border
 		if (_activeElement != null)
 		{
 			PlayerState = NativeMethods.GetPaused(_activeElement.HtmlId) ? HtmlMediaPlayerState.Paused : HtmlMediaPlayerState.Playing;
-			_activeElement.SetCssStyle("visibility", "visible");
 		}
 
 		OnStatusChanged?.Invoke(this, EventArgs.Empty);

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Uno.UI.Media;
 
-public enum HtmlMediaPlayerState
+internal enum HtmlMediaPlayerState
 {
 	None = 0,
 	Opening = 1,
