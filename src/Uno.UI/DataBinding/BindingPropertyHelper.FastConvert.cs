@@ -12,6 +12,7 @@ using Windows.Foundation;
 using Windows.UI.Xaml.Media.Animation;
 using Windows.UI;
 using Uno.UI.Extensions;
+using Uno.UI.Helpers;
 using System.Text.RegularExpressions;
 
 #if XAMARIN_ANDROID
@@ -32,7 +33,6 @@ using FontWeight = Windows.UI.Text.FontWeight;
 using Windows.UI.Text;
 using FontWeights = Windows.UI.Text.FontWeights;
 using FontWeight = Windows.UI.Text.FontWeight;
-using Uno.UI.Helpers;
 #endif
 
 namespace Uno.UI.DataBinding
