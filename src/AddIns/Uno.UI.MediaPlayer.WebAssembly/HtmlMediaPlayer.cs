@@ -20,7 +20,6 @@ internal partial class HtmlMediaPlayer : Border
 {
 	private HtmlVideo _htmlVideo = new HtmlVideo();
 	private HtmlAudio _htmlAudio = new HtmlAudio();
-	private bool _isPlaying;
 
 	private readonly ImmutableArray<string> audioTagAllowedFormats =
 		ImmutableArray.Create(new string[] { ".MP3", ".WAV" });
@@ -28,7 +27,7 @@ internal partial class HtmlMediaPlayer : Border
 		ImmutableArray.Create(new string[] { ".MP4", ".WEBM", ".OGG" });
 	private UIElement _activeElement;
 	private string _activeElementName;
-	public bool IsPause;
+	public HtmlMediaPlayerState PlayerState;
 
 	public event EventHandler<object> OnSourceLoaded;
 	public event EventHandler<object> OnStatusChanged;
@@ -45,6 +44,7 @@ internal partial class HtmlMediaPlayer : Border
 		}
 		_htmlVideo.SetCssStyle("visibility", "hidden");
 		_htmlAudio.SetCssStyle("visibility", "hidden");
+		PlayerState = HtmlMediaPlayerState.None;
 
 		AddChild(_htmlVideo);
 		AddChild(_htmlAudio);
@@ -65,6 +65,7 @@ internal partial class HtmlMediaPlayer : Border
 		}
 		_activeElement = IsVideo ? _htmlVideo : IsAudio ? _htmlAudio : default;
 		_activeElementName = IsVideo ? "Video" : IsAudio ? "Audio" : "";
+		Suspended += OnHtmlSuspended;
 		SourceLoaded += OnHtmlSourceLoaded;
 		StatusPlayChanged += OnHtmlStatusPlayChanged;
 		StatusPauseChanged += OnHtmlStatusPauseChanged;
@@ -80,7 +81,7 @@ internal partial class HtmlMediaPlayer : Border
 		{
 			this.Log().Debug($"HtmlMediaPlayer Unloaded");
 		}
-
+		Suspended -= OnHtmlSuspended;
 		SourceLoaded -= OnHtmlSourceLoaded;
 		StatusPlayChanged -= OnHtmlStatusPlayChanged;
 		StatusPauseChanged -= OnHtmlStatusPauseChanged;
@@ -230,6 +231,23 @@ internal partial class HtmlMediaPlayer : Border
 	}
 
 	/// <summary>
+	/// The suspend event is fired when media data loading has been suspended.
+	/// </summary>
+	event EventHandler Suspended
+	{
+		add
+		{
+			_htmlVideo.RegisterHtmlEventHandler("suspend", value);
+			_htmlAudio.RegisterHtmlEventHandler("suspend", value);
+		}
+		remove
+		{
+			_htmlVideo.UnregisterHtmlEventHandler("suspend", value);
+			_htmlAudio.UnregisterHtmlEventHandler("suspend", value);
+		}
+	}
+
+	/// <summary>
 	/// Occurs when the video source is downloaded and decoded with no
 	/// failure. You can use this event to determine the natural size
 	/// of the image source.
@@ -247,7 +265,6 @@ internal partial class HtmlMediaPlayer : Border
 			_htmlAudio.UnregisterHtmlEventHandler("loadeddata", value);
 		}
 	}
-
 	/// <summary>
 	/// Occurs when the video source change the status to Pause
 	/// </summary>
@@ -309,7 +326,7 @@ internal partial class HtmlMediaPlayer : Border
 		{
 			this.Log().Debug($"Media ended [{Source}]");
 		}
-		_isPlaying = false;
+		PlayerState = HtmlMediaPlayerState.None;
 		OnSourceEnded?.Invoke(this, EventArgs.Empty);
 	}
 
@@ -319,7 +336,25 @@ internal partial class HtmlMediaPlayer : Border
 		{
 			Duration = NativeMethods.GetDuration(_activeElement.HtmlId);
 		}
+		PlayerState = HtmlMediaPlayerState.Opening;
 		OnMetadataLoaded?.Invoke(this, Duration);
+	}
+
+	private void OnHtmlSuspended(object sender, EventArgs e)
+	{
+		if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
+		{
+			this.Log().Debug($"Media Suspended [{Source}]");
+		}
+
+		_activeElement = IsVideo ? _htmlVideo : IsAudio ? _htmlAudio : default;
+		_activeElementName = IsVideo ? "Video" : IsAudio ? "Audio" : "";
+		if (_activeElement != null)
+		{
+			PlayerState = NativeMethods.GetPaused(_activeElement.HtmlId) ? HtmlMediaPlayerState.Paused : HtmlMediaPlayerState.Playing;
+		}
+
+		OnStatusChanged?.Invoke(this, EventArgs.Empty);
 	}
 
 	private void OnHtmlSourceLoaded(object sender, EventArgs e)
@@ -349,9 +384,8 @@ internal partial class HtmlMediaPlayer : Border
 
 		if (_activeElement != null)
 		{
-			IsPause = NativeMethods.GetPaused(_activeElement.HtmlId);
+			PlayerState = NativeMethods.GetPaused(_activeElement.HtmlId) ? HtmlMediaPlayerState.Paused : HtmlMediaPlayerState.Playing;
 		}
-		_isPlaying = !IsPause;
 		OnStatusChanged?.Invoke(this, EventArgs.Empty);
 	}
 
@@ -361,7 +395,7 @@ internal partial class HtmlMediaPlayer : Border
 		{
 			this.Log().Debug($"Media Changed Status Play [{Source}]");
 		}
-		IsPause = false;
+		PlayerState = HtmlMediaPlayerState.Playing;
 		OnStatusChanged?.Invoke(this, EventArgs.Empty);
 	}
 
@@ -371,8 +405,7 @@ internal partial class HtmlMediaPlayer : Border
 		{
 			this.Log().Debug($"Media Changed Status Pause [{Source}]");
 		}
-
-		IsPause = true;
+		PlayerState = HtmlMediaPlayerState.Paused;
 		OnStatusChanged?.Invoke(this, EventArgs.Empty);
 	}
 
@@ -387,7 +420,7 @@ internal partial class HtmlMediaPlayer : Border
 		{
 			this.Log().Error($"{_activeElementName} source failed: [{Source}]");
 		}
-		IsPause = true;
+		PlayerState = HtmlMediaPlayerState.None;
 		OnSourceFailed?.Invoke(this, e.Detail);
 	}
 
@@ -422,6 +455,7 @@ internal partial class HtmlMediaPlayer : Border
 				player._activeElement.SetHtmlAttribute("src", encodedSource);
 				player._activeElement.SetCssStyle("visibility", "visible");
 
+				player.PlayerState = HtmlMediaPlayerState.Opening;
 				if (player.Log().IsEnabled(LogLevel.Debug))
 				{
 					player.Log().Debug($"{player._activeElementName} source changed: [{player.Source}]");
@@ -581,10 +615,9 @@ internal partial class HtmlMediaPlayer : Border
 		{
 			this.Log().Debug($"Play()");
 		}
-		if (_activeElement != null && !_isPlaying)
+		if (_activeElement != null && PlayerState != HtmlMediaPlayerState.Playing)
 		{
-			IsPause = false;
-			_isPlaying = true;
+			PlayerState = HtmlMediaPlayerState.Playing;
 			NativeMethods.Play(_activeElement.HtmlId);
 		}
 	}
@@ -596,10 +629,9 @@ internal partial class HtmlMediaPlayer : Border
 		{
 			this.Log().Debug($"Pause()");
 		}
-		if (_activeElement != null && _isPlaying)
+		if (_activeElement != null && PlayerState == HtmlMediaPlayerState.Playing)
 		{
-			_isPlaying = false;
-			IsPause = true;
+			PlayerState = HtmlMediaPlayerState.Paused;
 			NativeMethods.Pause(_activeElement.HtmlId);
 		}
 	}
@@ -614,8 +646,7 @@ internal partial class HtmlMediaPlayer : Border
 		if (_activeElement != null)
 		{
 			NativeMethods.Stop(_activeElement.HtmlId);
-			_isPlaying = false;
-			IsPause = true;
+			PlayerState = HtmlMediaPlayerState.None;
 		}
 	}
 
