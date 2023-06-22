@@ -434,7 +434,7 @@
 		<!-- XamlHost move file -->
 		<Move SourceFiles="..\src\Uno.UI.XamlHost\buildTransitive\Uno.UI.XamlHost.props" DestinationFiles="..\src\Uno.UI.XamlHost\buildTransitive\$(PackageNamePrefix).XamlHost.props" />
 
-		<XmlPoke XmlInputPath=".\nuget\Uno.WinUI.XamlHost.nuspec" Query="/x:package/x:files/x:file[@src='..\src\Uno.UI.XamlHost\buildTransitive\Uno.WinUI.XamlHost.props']/@src" Value="..\src\Uno.UI.XamlHost\buildTransitive\$(PackageNamePrefix).XamlHost.props" Namespaces="$(NugetNamespace)" Condition="'$(UNO_UWP_BUILD)'=='true'"/>
+		<XmlPoke XmlInputPath=".\nuget\Uno.WinUI.XamlHost.nuspec" Query="/x:package/x:files/x:file[@src='..\..\src\Uno.UI.XamlHost\buildTransitive\Uno.WinUI.XamlHost.props']/@src" Value="..\..\src\Uno.UI.XamlHost\buildTransitive\$(PackageNamePrefix).XamlHost.props" Namespaces="$(NugetNamespace)" Condition="'$(UNO_UWP_BUILD)'=='true'"/>
 
 		<!-- Runtime package move files -->
 		<Move SourceFiles="..\src\Uno.UI.Runtime.Skia.Gtk\buildTransitive\Uno.UI.Runtime.Skia.Gtk.props" DestinationFiles="..\src\Uno.UI.Runtime.Skia.Gtk\buildTransitive\$(PackageNamePrefix).Runtime.Skia.Gtk.props" />
