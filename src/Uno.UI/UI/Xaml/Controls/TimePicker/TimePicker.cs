@@ -151,12 +151,12 @@ namespace Windows.UI.Xaml.Controls
 						var value = (int)e;
 
 						if (value < 1)
-							return 1;
+							return Boxes.Box(1);
 
 						if (value > 30)
 							return 30;
 
-						return value;
+						return Boxes.Box(value);
 					})
 				);
 
