@@ -7,6 +7,7 @@ using static Private.Infrastructure.TestServices;
 using System.Threading.Tasks;
 using SamplesApp.UITests.TestFramework;
 using Uno.UITest.Helpers.Queries;
+using System.Threading;
 
 #if HAS_UNO
 using Uno.Foundation.Extensibility;
@@ -229,6 +230,8 @@ public partial class Given_MediaPlayerElement
 				);
 
 		// step 1: Test Pause
+		//Needed to GTK change State from Opening to Playing
+		await Task.Delay(3000);
 		sut.MediaPlayer.Pause();
 		await WindowHelper.WaitFor(
 			condition: () => sut.MediaPlayer.PlaybackSession.PlaybackState != MediaPlaybackState.Playing,
