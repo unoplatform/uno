@@ -371,7 +371,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return link;
 		}
 
-		public List<KeyValuePair<string, SourceText>> Generate(GenerationRunInfo generationRunInfo)
+		public List<KeyValuePair<string, SourceText>> Generate()
 		{
 			var stopwatch = Stopwatch.StartNew();
 
@@ -455,7 +455,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						enableFuzzyMatching: _enableFuzzyMatching,
 						generatorContext: _generatorContext,
 						xamlResourcesTrimming: _xamlResourcesTrimming,
-						generationRunFileInfo: generationRunInfo.GetRunFileInfo(file.UniqueID),
 						xamlTypeToXamlTypeBaseMap: xamlTypeToXamlTypeBaseMap,
 						includeXamlNamespaces: includeXamlNamespaces
 					).GenerateFile()
@@ -701,9 +700,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				if (_isDebug)
 				{
-					writer.AppendLineIndented("#if NET6_0_OR_GREATER");
 					writer.AppendLineIndented("[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]");
-					writer.AppendLineIndented("#endif");
 				}
 
 				AnalyzerSuppressionsGenerator.Generate(writer, _analyzerSuppressions);
