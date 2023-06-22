@@ -668,7 +668,7 @@ namespace Windows.UI.Xaml.Controls
 
 				if (currentIndex < firstRemainingIndex)
 				{
-					_containersForIndexRepair.Add(container, Boxes.Box(-1));
+					_containersForIndexRepair.Add(container, Boxes.IntegerBoxes.NegativeOne);
 				}
 				else
 				{

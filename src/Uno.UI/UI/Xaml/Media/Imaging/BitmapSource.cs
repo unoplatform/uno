@@ -22,7 +22,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 
 		// Using a DependencyProperty as the backing store for PixelHeight.  This enables animation, styling, binding, etc...
 		public static DependencyProperty PixelHeightProperty { get; } =
-			DependencyProperty.Register("PixelHeight", typeof(int), typeof(BitmapSource), new FrameworkPropertyMetadata(Boxes.Box(0)));
+			DependencyProperty.Register("PixelHeight", typeof(int), typeof(BitmapSource), new FrameworkPropertyMetadata(Boxes.IntegerBoxes.Zero));
 
 		#endregion
 
@@ -36,7 +36,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 
 		// Using a DependencyProperty as the backing store for PixelWidth.  This enables animation, styling, binding, etc...
 		public static DependencyProperty PixelWidthProperty { get; } =
-			DependencyProperty.Register("PixelWidth", typeof(int), typeof(BitmapSource), new FrameworkPropertyMetadata(Boxes.Box(0)));
+			DependencyProperty.Register("PixelWidth", typeof(int), typeof(BitmapSource), new FrameworkPropertyMetadata(Boxes.IntegerBoxes.Zero));
 
 		#endregion
 

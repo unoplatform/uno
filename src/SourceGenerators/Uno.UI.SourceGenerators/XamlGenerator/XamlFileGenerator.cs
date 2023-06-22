@@ -1817,11 +1817,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					string propertyValue;
 					if (propertyType.SpecialType == SpecialType.System_Int32)
 					{
-						propertyValue = "global::Uno.UI.Helpers.Boxes.Box(0)";
+						propertyValue = "global::Uno.UI.Helpers.Boxes.IntegerBoxes.Zero";
 					}
 					else if (propertyType.SpecialType == SpecialType.System_Boolean)
 					{
-						propertyValue = "global::Uno.UI.Helpers.Boxes.Box(false)";
+						propertyValue = "global::Uno.UI.Helpers.Boxes.BooleanBoxes.BoxedFalse";
 					}
 					else
 					{

@@ -59,7 +59,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Identifies the DragItemsCount dependency property.
 		/// </summary>
 		public static DependencyProperty DragItemsCountProperty { get; } =
-			DependencyProperty.Register(nameof(DragItemsCount), typeof(int), typeof(TreeViewItemTemplateSettings), new FrameworkPropertyMetadata(Boxes.Box(0)));
+			DependencyProperty.Register(nameof(DragItemsCount), typeof(int), typeof(TreeViewItemTemplateSettings), new FrameworkPropertyMetadata(Boxes.IntegerBoxes.Zero));
 
 		/// <summary>
 		/// Identifies the ExpandedGlyphVisibility dependency property.

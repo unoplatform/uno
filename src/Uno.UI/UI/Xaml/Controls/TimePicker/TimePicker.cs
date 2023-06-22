@@ -143,7 +143,7 @@ namespace Windows.UI.Xaml.Controls
 				typeof(int),
 				typeof(TimePicker),
 				new FrameworkPropertyMetadata(
-					defaultValue: Boxes.Box(1),
+					defaultValue: Boxes.IntegerBoxes.One,
 					options: FrameworkPropertyMetadataOptions.None,
 					propertyChangedCallback: (s, e) => ((TimePicker)s)?.OnMinuteIncrementChanged((int)e.OldValue, (int)e.NewValue),
 					coerceValueCallback: (s, e) =>
@@ -151,7 +151,7 @@ namespace Windows.UI.Xaml.Controls
 						var value = (int)e;
 
 						if (value < 1)
-							return Boxes.Box(1);
+							return Boxes.IntegerBoxes.One;
 
 						if (value > 30)
 							return 30;

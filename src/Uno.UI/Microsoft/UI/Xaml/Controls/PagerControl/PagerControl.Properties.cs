@@ -115,7 +115,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty NumberOfPagesProperty { get; } =
-			DependencyProperty.Register(nameof(NumberOfPages), typeof(int), typeof(PagerControl), new FrameworkPropertyMetadata(Boxes.Box(0), OnPropertyChanged));
+			DependencyProperty.Register(nameof(NumberOfPages), typeof(int), typeof(PagerControl), new FrameworkPropertyMetadata(Boxes.IntegerBoxes.Zero, OnPropertyChanged));
 
 		public string PrefixText
 		{
@@ -160,7 +160,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty SelectedPageIndexProperty { get; } =
-			DependencyProperty.Register(nameof(SelectedPageIndex), typeof(int), typeof(PagerControl), new FrameworkPropertyMetadata(Boxes.Box(0), OnPropertyChanged));
+			DependencyProperty.Register(nameof(SelectedPageIndex), typeof(int), typeof(PagerControl), new FrameworkPropertyMetadata(Boxes.IntegerBoxes.Zero, OnPropertyChanged));
 
 		public string SuffixText
 		{

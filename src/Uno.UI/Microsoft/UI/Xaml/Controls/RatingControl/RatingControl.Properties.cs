@@ -39,7 +39,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Identifies the InitialSetValue dependency property.
 		/// </summary>
 		public static DependencyProperty InitialSetValueProperty { get; } =
-			DependencyProperty.Register(nameof(InitialSetValue), typeof(int), typeof(RatingControl), new FrameworkPropertyMetadata(Boxes.Box(1), OnPropertyChanged));
+			DependencyProperty.Register(nameof(InitialSetValue), typeof(int), typeof(RatingControl), new FrameworkPropertyMetadata(Boxes.IntegerBoxes.One, OnPropertyChanged));
 
 		/// <summary>
 		/// Gets or sets the value that determines if the user can remove the rating.

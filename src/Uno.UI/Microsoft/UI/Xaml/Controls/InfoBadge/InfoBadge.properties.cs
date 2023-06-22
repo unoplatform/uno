@@ -21,7 +21,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty ValueProperty { get; } =
-			DependencyProperty.Register(nameof(Value), typeof(int), typeof(InfoBadge), new FrameworkPropertyMetadata(Boxes.Box(-1), OnPropertyChanged));
+			DependencyProperty.Register(nameof(Value), typeof(int), typeof(InfoBadge), new FrameworkPropertyMetadata(Boxes.IntegerBoxes.NegativeOne, OnPropertyChanged));
 
 		public InfoBadgeTemplateSettings TemplateSettings
 		{

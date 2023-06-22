@@ -831,7 +831,7 @@ namespace Uno.UI.DataBinding
 
 				if (trimmed == "0" || trimmed.Length == 0) // Fast path for zero / empty values (means zero in XAML)
 				{
-					output = Boxes.Box(0);
+					output = Boxes.IntegerBoxes.Zero;
 					return true;
 				}
 

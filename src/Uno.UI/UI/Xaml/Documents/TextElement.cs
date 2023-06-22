@@ -222,7 +222,7 @@ namespace Windows.UI.Xaml.Documents
 				typeof(int),
 				typeof(TextElement),
 				new FrameworkPropertyMetadata(
-					defaultValue: Boxes.Box(0),
+					defaultValue: Boxes.IntegerBoxes.Zero,
 					options: FrameworkPropertyMetadataOptions.Inherits,
 					propertyChangedCallback: (s, e) => ((TextElement)s).OnCharacterSpacingChanged()
 				)

@@ -337,7 +337,7 @@ namespace Windows.UI.Xaml.Controls
 				typeof(int),
 				typeof(ContentPresenter),
 				new FrameworkPropertyMetadata(
-					defaultValue: Boxes.Box(0),
+					defaultValue: Boxes.IntegerBoxes.Zero,
 					propertyChangedCallback: (s, e) => ((ContentPresenter)s).OnMaxLinesChanged()
 				)
 			);

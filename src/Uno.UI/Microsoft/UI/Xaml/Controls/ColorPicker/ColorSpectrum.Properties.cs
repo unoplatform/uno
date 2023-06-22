@@ -109,7 +109,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				typeof(int),
 				typeof(ColorSpectrum),
 				new FrameworkPropertyMetadata(
-					Boxes.Box(0),
+					Boxes.IntegerBoxes.Zero,
 					(s, e) => (s as ColorSpectrum)?.OnPropertyChanged(e)));
 
 		public int MinSaturation
@@ -124,7 +124,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				typeof(int),
 				typeof(ColorSpectrum),
 				new FrameworkPropertyMetadata(
-					Boxes.Box(0),
+					Boxes.IntegerBoxes.Zero,
 					(s, e) => (s as ColorSpectrum)?.OnPropertyChanged(e)));
 
 		public int MinValue
@@ -139,7 +139,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				typeof(int),
 				typeof(ColorSpectrum),
 				new FrameworkPropertyMetadata(
-					Boxes.Box(0),
+					Boxes.IntegerBoxes.Zero,
 					(s, e) => (s as ColorSpectrum)?.OnPropertyChanged(e)));
 
 		public ColorSpectrumShape Shape

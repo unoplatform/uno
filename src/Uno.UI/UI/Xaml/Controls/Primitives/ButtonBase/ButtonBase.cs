@@ -169,7 +169,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				&& buttonBase.Command != null
 				&& !buttonBase.Command.CanExecute(buttonBase.CommandParameter))
 			{
-				return Boxes.Box(false);
+				return Boxes.BooleanBoxes.BoxedFalse;
 			}
 
 			return baseValue;

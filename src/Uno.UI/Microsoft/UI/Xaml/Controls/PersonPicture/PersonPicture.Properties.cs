@@ -99,7 +99,7 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(BadgeNumber),
 				typeof(int),
 				typeof(PersonPicture),
-				new FrameworkPropertyMetadata(Boxes.Box(0), OnPropertyChanged));
+				new FrameworkPropertyMetadata(Boxes.IntegerBoxes.Zero, OnPropertyChanged));
 
 		public static DependencyProperty BadgeTextProperty { get; } =
 			DependencyProperty.Register(

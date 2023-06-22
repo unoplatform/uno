@@ -812,7 +812,7 @@ namespace Uno.UI.DataBinding
 								Type.GetType("Uno.UI.DataBinding.BindingPropertyHelper+UnoGetMemberBinder, " + typeof(BindingPropertyHelper).Assembly.FullName)
 								?? throw new InvalidOperationException();
 
-							var binder = (GetMemberBinder?)Activator.CreateInstance(_unoGetMemberBindingType, property, Boxes.Box(true));
+							var binder = (GetMemberBinder?)Activator.CreateInstance(_unoGetMemberBindingType, property, Boxes.BooleanBoxes.BoxedTrue);
 
 							if (binder is not null)
 							{
@@ -1087,7 +1087,7 @@ namespace Uno.UI.DataBinding
 								Type.GetType("Uno.UI.DataBinding.BindingPropertyHelper+UnoSetMemberBinder, " + typeof(BindingPropertyHelper).Assembly.FullName)
 								?? throw new InvalidOperationException();
 
-							var binder = (SetMemberBinder?)Activator.CreateInstance(_unoSetMemberBindingType, property, Boxes.Box(true));
+							var binder = (SetMemberBinder?)Activator.CreateInstance(_unoSetMemberBindingType, property, Boxes.BooleanBoxes.BoxedTrue);
 
 							if (binder is not null)
 							{

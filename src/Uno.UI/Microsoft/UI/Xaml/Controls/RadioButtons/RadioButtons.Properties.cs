@@ -59,7 +59,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty MaxColumnsProperty { get; } =
-			DependencyProperty.Register(nameof(MaxColumns), typeof(int), typeof(RadioButtons), new FrameworkPropertyMetadata(Boxes.Box(1), OnPropertyChanged));
+			DependencyProperty.Register(nameof(MaxColumns), typeof(int), typeof(RadioButtons), new FrameworkPropertyMetadata(Boxes.IntegerBoxes.One, OnPropertyChanged));
 
 		public int SelectedIndex
 		{
@@ -68,7 +68,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty SelectedIndexProperty { get; } =
-			DependencyProperty.Register(nameof(SelectedIndex), typeof(int), typeof(RadioButtons), new FrameworkPropertyMetadata(Boxes.Box(-1), OnPropertyChanged));
+			DependencyProperty.Register(nameof(SelectedIndex), typeof(int), typeof(RadioButtons), new FrameworkPropertyMetadata(Boxes.IntegerBoxes.NegativeOne, OnPropertyChanged));
 
 		public object SelectedItem
 		{

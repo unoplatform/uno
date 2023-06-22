@@ -383,7 +383,7 @@ namespace Windows.UI.Xaml.Controls
 				"IndexForItemContainer",
 				typeof(int),
 				typeof(ItemsControl),
-				new FrameworkPropertyMetadata(Boxes.Box(-1))
+				new FrameworkPropertyMetadata(Boxes.IntegerBoxes.NegativeOne)
 			);
 
 		internal static DependencyProperty ItemsControlForItemContainerProperty { get; } =

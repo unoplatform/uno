@@ -38,7 +38,7 @@ namespace Microsoft.UI.Xaml.Controls
 			DependencyProperty.Register(nameof(Content), typeof(object), typeof(TreeViewNode), new FrameworkPropertyMetadata(null));
 
 		public static DependencyProperty DepthProperty { get; } =
-			DependencyProperty.Register(nameof(Depth), typeof(int), typeof(TreeViewNode), new FrameworkPropertyMetadata(Boxes.Box(-1)));
+			DependencyProperty.Register(nameof(Depth), typeof(int), typeof(TreeViewNode), new FrameworkPropertyMetadata(Boxes.IntegerBoxes.NegativeOne));
 
 		public static DependencyProperty HasChildrenProperty { get; } =
 			DependencyProperty.Register(nameof(HasChildren), typeof(bool), typeof(TreeViewNode), new FrameworkPropertyMetadata(false, OnHasChildrenPropertyChanged));

@@ -132,7 +132,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Identifies the SelectedIndex dependency property.
 		/// </summary>
 		public static DependencyProperty SelectedIndexProperty { get; } =
-			DependencyProperty.Register(nameof(SelectedIndex), typeof(int), typeof(TabView), new FrameworkPropertyMetadata(Boxes.Box(0), OnSelectedIndexPropertyChanged));
+			DependencyProperty.Register(nameof(SelectedIndex), typeof(int), typeof(TabView), new FrameworkPropertyMetadata(Boxes.IntegerBoxes.Zero, OnSelectedIndexPropertyChanged));
 
 		/// <summary>
 		/// Gets or sets the selected item.
