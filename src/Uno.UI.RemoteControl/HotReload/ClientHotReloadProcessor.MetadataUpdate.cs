@@ -90,6 +90,7 @@ namespace Uno.UI.RemoteControl.HotReload
 			return Array.Empty<string>();
 		}
 
+#if __WASM__ || __SKIA__
 		private void AssemblyReload(AssemblyDeltaReload assemblyDeltaReload)
 		{
 			if (assemblyDeltaReload.IsValid())
@@ -121,6 +122,7 @@ namespace Uno.UI.RemoteControl.HotReload
 				}
 			}
 		}
+#endif
 
 		static int[] ReadIntArray(BinaryReader binaryReader)
 		{
