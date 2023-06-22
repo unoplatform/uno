@@ -1812,14 +1812,30 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					{
 						GenerateError(writer, "Resource markup did not define a key.");
 					}
+
 					// Call helper to avoid unnecessary AOT binary footprint of creating a lambda, etc
-					writer.AppendLineInvariantIndented("global::Uno.UI.Helpers.Xaml.SetterHelper.GetPropertySetterWithResourceValue({0}.{1}Property, \"{2}\", {3}, default({4}))",
+					string propertyValue;
+					if (propertyType.SpecialType == SpecialType.System_Int32)
+					{
+						propertyValue = "global::Uno.UI.Helpers.Boxes.Box(0)";
+					}
+					else if (propertyType.SpecialType == SpecialType.System_Boolean)
+					{
+						propertyValue = "global::Uno.UI.Helpers.Boxes.Box(false)";
+					}
+					else
+					{
+						propertyValue = $"default({propertyType.GetFullyQualifiedTypeIncludingGlobal()})";
+					}
+
+					writer.AppendLineInvariantIndented("global::Uno.UI.Helpers.Xaml.SetterHelper.GetPropertySetterWithResourceValue({0}.{1}Property, \"{2}\", {3}, {4})",
 						GetGlobalizedTypeName(fullTargetType),
 						property,
 						key,
 						ParseContextPropertyAccess,
-						propertyType
+						propertyValue
 					);
+
 					var isThemeResource = valueObject?.Type.Name == "ThemeResource";
 					var isStaticResourceForHotReload = _isHotReloadEnabled && valueObject?.Type.Name == "StaticResource";
 					if (valueObject != null && (isThemeResource || isStaticResourceForHotReload))

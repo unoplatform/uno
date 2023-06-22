@@ -343,7 +343,9 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				}
 			}
 
-			builder.AppendLineIndented($"private static void Set{propertyName}Value({propertyTargetName} instance, {propertyTypeName} value) => instance.SetValue({propertyOwnerTypeName}.{propertyName}Property, value);");
+			var useBoxHelper = propertyTypeName == "int"; // extend this as appropriate.
+			var valueArgument = useBoxHelper ? $"global::Uno.UI.Helpers.Boxes.Box(value)" : "value";
+			builder.AppendLineIndented($"private static void Set{propertyName}Value({propertyTargetName} instance, {propertyTypeName} value) => instance.SetValue({propertyOwnerTypeName}.{propertyName}Property, {valueArgument});");
 
 			GeneratePropertyStorage(builder, propertyName);
 

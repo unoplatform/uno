@@ -220,7 +220,7 @@ namespace Windows.UI.Xaml
 		private RoutedEventFlag SubscribedToHandledEventsToo
 		{
 			get => (RoutedEventFlag)GetValue(SubscribedToHandledEventsTooProperty);
-			set => SetValue(SubscribedToHandledEventsTooProperty, value);
+			set => SetValue(SubscribedToHandledEventsTooProperty, Boxes.Box(value));
 		}
 
 		#endregion

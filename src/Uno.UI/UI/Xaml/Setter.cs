@@ -9,6 +9,7 @@ using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.DataBinding;
+using Uno.UI.Helpers;
 using Uno.UI.Xaml;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
@@ -97,6 +98,12 @@ namespace Windows.UI.Xaml
 		{
 			Property = targetProperty;
 			_value = value;
+		}
+
+		internal Setter(DependencyProperty targetProperty, bool value)
+		{
+			Property = targetProperty;
+			_value = Boxes.Box(value);
 		}
 
 		public Setter(DependencyProperty targetProperty, SetterValueProviderHandler valueProvider)
