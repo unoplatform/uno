@@ -63,7 +63,7 @@ namespace Windows.UI.Xaml.Controls
 
 				if (source == null)
 				{
-					mpe.TogglePosterImage(true);
+					mpe.ShowPosterImage(true);
 				}
 			}
 		}
@@ -91,7 +91,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				if (mpe.MediaPlayer == null || mpe.MediaPlayer.PlaybackSession.PlaybackState == MediaPlaybackState.None)
 				{
-					mpe.TogglePosterImage(true);
+					mpe.ShowPosterImage(true);
 				}
 			});
 		}
@@ -222,7 +222,8 @@ namespace Windows.UI.Xaml.Controls
 				if (args.OldValue is Windows.Media.Playback.MediaPlayer oldMediaPlayer)
 				{
 					oldMediaPlayer.MediaFailed -= mpe.OnMediaFailed;
-					oldMediaPlayer.MediaFailed -= mpe.OnMediaOpened;
+					oldMediaPlayer.MediaOpened -= mpe.OnMediaOpened;
+					oldMediaPlayer.VideoRatioChanged -= mpe.OnVideoRatioChanged;
 					oldMediaPlayer.Dispose();
 				}
 
@@ -231,30 +232,32 @@ namespace Windows.UI.Xaml.Controls
 					newMediaPlayer.Source = mpe.Source;
 					newMediaPlayer.MediaFailed += mpe.OnMediaFailed;
 					newMediaPlayer.MediaOpened += mpe.OnMediaOpened;
+					newMediaPlayer.VideoRatioChanged -= mpe.OnVideoRatioChanged;
 					mpe.TransportControls?.SetMediaPlayer(newMediaPlayer);
 					mpe._isTransportControlsBound = true;
 				}
 			};
 		}
 
-		private void OnMediaFailed(Windows.Media.Playback.MediaPlayer session, object args)
+		private void OnVideoRatioChanged(MediaPlayer sender, double args)
 		{
-			_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-			{
-				TogglePosterImage(true);
-			});
+			_ = Dispatcher.RunAsync(
+				CoreDispatcherPriority.Normal,
+				() => ShowPosterImage(!sender.IsVideo));
 		}
 
-		private void OnMediaOpened(Windows.Media.Playback.MediaPlayer session, object args)
+		private void OnMediaFailed(Windows.Media.Playback.MediaPlayer sender, object args)
 		{
-			_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-			{
-				// Always show the poster source for audio content.
-				if (session.IsVideo)
-				{
-					TogglePosterImage(false);
-				}
-			});
+			_ = Dispatcher.RunAsync(
+				CoreDispatcherPriority.Normal,
+				() => ShowPosterImage(true));
+		}
+
+		private void OnMediaOpened(Windows.Media.Playback.MediaPlayer sender, object args)
+		{
+			_ = Dispatcher.RunAsync(
+				CoreDispatcherPriority.Normal,
+				() => ShowPosterImage(!sender.IsVideo));
 		}
 
 		#endregion
@@ -339,7 +342,7 @@ namespace Windows.UI.Xaml.Controls
 		//  - While media is loading. For example, a valid source is set, but the MediaOpened event has not fired yet.
 		//  - When media is streaming to another device.
 		//  - When the media is audio only.
-		private void TogglePosterImage(bool showPoster)
+		private void ShowPosterImage(bool showPoster)
 		{
 			if (PosterSource != null)
 			{
@@ -374,7 +377,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			// For video content, show the poster source until it is ready to be displayed.
-			TogglePosterImage(true);
+			ShowPosterImage(true);
 
 			if (!_isTransportControlsBound)
 			{

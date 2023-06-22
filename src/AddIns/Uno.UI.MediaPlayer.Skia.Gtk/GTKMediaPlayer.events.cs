@@ -27,6 +27,7 @@ public partial class GtkMediaPlayer
 	public event EventHandler<object>? OnMetadataLoaded;
 	public event EventHandler<object>? OnTimeUpdate;
 	public event EventHandler<object>? OnSourceLoaded;
+	public event EventHandler<object?>? OnVideoRatioChanged;
 
 	private bool _updateVideoSizeOnFirstTimeStamp = true;
 

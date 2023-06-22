@@ -101,6 +101,7 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 		_player.OnSourceLoaded += OnPrepared;
 		_player.OnSourceEnded += OnCompletion;
 		_player.OnTimeUpdate += OnTimeUpdate;
+		_player.OnVideoRatioChanged += OnVideoRatioChanged;
 
 		_owner.PlaybackSession.PlaybackStateChanged -= OnStatusChanged;
 		_owner.PlaybackSession.PlaybackStateChanged += OnStatusChanged;
