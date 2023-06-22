@@ -197,7 +197,7 @@
 
 		<!-- Force UAP/netx-win to ignore netstandard 2.0 -->
 		<file src="_._" target="build\uap10.0.16299" />
-		<file src="_._" target="build\uap10.0.18362" />
-		<file src="_._" target="build\net5.0-windows" />
+		<file src="_._" target="build\uap10.0.19041" />
+		<file src="_._" target="build\net7.0-windows" />
 	</files>
 </package>

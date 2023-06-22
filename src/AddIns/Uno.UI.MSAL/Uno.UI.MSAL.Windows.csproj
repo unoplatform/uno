@@ -1,7 +1,7 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras">
 
 	<PropertyGroup>
-		<TargetFrameworks>uap10.0.18362</TargetFrameworks>
+		<TargetFrameworks>uap10.0.19041</TargetFrameworks>
 		<NoWarn>$(NoWarn);NU5100;NU5118;NU5128</NoWarn>
 		<Deterministic>true</Deterministic>
 		
@@ -41,7 +41,7 @@
 		<PackageReference Include="Microsoft.Identity.Client" Version="4.47.0" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)' != 'uap10.0.18362'">
+	<ItemGroup Condition="'$(TargetFramework)' != 'uap10.0.19041'">
 		<ProjectReference Include="..\..\Uno.UI\Uno.UI.csproj" />
 	</ItemGroup>
 
@@ -82,7 +82,7 @@
 	</Target>
 
 	<!-- Run on windows only to get the nuget package built properly (Mono 6.10 crashes with this on OSX) -->
-	<ItemGroup Condition="'$(CI_Build)'=='true' and $([MSBuild]::IsOsPlatform('Windows')) and '$(TargetFramework)' != 'uap10.0.18362'">
+	<ItemGroup Condition="'$(CI_Build)'=='true' and $([MSBuild]::IsOsPlatform('Windows')) and '$(TargetFramework)' != 'uap10.0.19041'">
 		<ProjectReference Include="..\Uno.UI.MSAL\Uno.UI.MSAL.Skia.csproj">
 			<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
 			<SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>

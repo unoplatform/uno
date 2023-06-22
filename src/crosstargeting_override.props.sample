@@ -28,7 +28,7 @@
         ┌───────────────────────────────────────────┬─────────────────────────┬────────────────────────────────────────────────────────────────────────────────────┐
         │ UnoTargetFrameworkOverride                │ Platform                │ Solution filter file                                                               │
         ├───────────────────────────────────────────┼─────────────────────────┼────────────────────────────────────────────────────────────────────────────────────┤
-        │ uap10.0.18362                             │ Windows                 │ Uno.UI-Windows-only.slnf                                                           │
+        │ uap10.0.19041                             │ Windows                 │ Uno.UI-Windows-only.slnf                                                           │
         │ net7.0 or net8.0                          │ WebAssembly, Skia       │ Uno.UI-Wasm-only.slnf, Uno.UI-Skia-only.slnf                                       │
         │ net7.0-ios or net8.0-ios                  │ .NET 7/8 iOS            │ Uno.UI-netcore-mobile-only.slnf                                                    │
         │ net7.0-android or net8.0-android          │ .NET 7/8 Android        │ Uno.UI-netcore-mobile-only.slnf                                                    │

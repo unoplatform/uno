@@ -76,7 +76,7 @@ jobs:
 
   - template: templates/install-windows-sdk.yml
     parameters:
-      sdkVersion: '18362' # Align with TargetPlatformVersion in templates
+      sdkVersion: '19041' # Align with TargetPlatformVersion in templates
 
   - script: copy $(System.ArtifactsDirectory)\NugetPackages\vslatest\*.nupkg $(Build.SourcesDirectory)\src\PackageCache
     displayName: Copy Artifacts to PackageCache
