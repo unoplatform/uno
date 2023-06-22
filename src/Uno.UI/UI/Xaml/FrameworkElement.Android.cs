@@ -3,6 +3,7 @@ using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.Controls;
+using Uno.UI.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -161,7 +162,7 @@ namespace Windows.UI.Xaml
 			// see StretchAffectsMeasure for details.
 			this.SetValue(
 				StretchAffectsMeasureProperty,
-				!(NativeVisualParent is DependencyObject),
+				Boxes.Box(NativeVisualParent is not DependencyObject),
 				DependencyPropertyValuePrecedences.DefaultValue
 			);
 		}
@@ -231,9 +232,9 @@ namespace Windows.UI.Xaml
 						"[{0}/{1}] OnLayoutCore({2}, {3}, {4}, {5}) (parent: {5},{6})",
 						GetType(),
 						Name,
-						left, top, right, bottom,
-						MeasuredWidth,
-						MeasuredHeight
+						Boxes.Box(left), Boxes.Box(top), Boxes.Box(right), Boxes.Box(bottom),
+						Boxes.Box(MeasuredWidth),
+						Boxes.Box(MeasuredHeight)
 					);
 				}
 

@@ -8,6 +8,7 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.Foundation;
 using Uno.UI;
+using Uno.UI.Helpers;
 using Windows.UI.Xaml.Data;
 using Windows.System;
 using Uno.UI.DataBinding;
@@ -24,7 +25,6 @@ using AppKit;
 using _View = AppKit.NSView;
 #else
 using _View = Windows.UI.Xaml.FrameworkElement;
-using Uno.UI.Helpers;
 #endif
 
 #if HAS_UNO_WINUI

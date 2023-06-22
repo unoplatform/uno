@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using Uno.Extensions;
 using Uno.UI;
+using Uno.UI.Helpers;
 using Windows.Foundation;
 using Windows.Globalization;
 using Windows.UI.Xaml.Automation.Peers;
@@ -142,7 +143,7 @@ namespace Windows.UI.Xaml.Controls
 				typeof(int),
 				typeof(TimePicker),
 				new FrameworkPropertyMetadata(
-					defaultValue: 1,
+					defaultValue: Boxes.Box(1),
 					options: FrameworkPropertyMetadataOptions.None,
 					propertyChangedCallback: (s, e) => ((TimePicker)s)?.OnMinuteIncrementChanged((int)e.OldValue, (int)e.NewValue),
 					coerceValueCallback: (s, e) =>

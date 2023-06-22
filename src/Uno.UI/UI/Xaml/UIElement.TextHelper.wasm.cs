@@ -109,17 +109,10 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		internal void SetMaxLines(object localValue)
+		internal void SetMaxLines(int localValue)
 		{
-			if (localValue is UnsetValue)
-			{
-				this.ResetStyle("display", "-webkit-line-clamp", "webkit-box-orient");
-			}
-			else
-			{
-				var value = (int)localValue;
-				this.SetStyle(("display", "-webkit-box"), ("-webkit-line-clamp", value.ToStringInvariant()), ("-webkit-box-orient", "vertical"));
-			}
+			var value = (int)localValue;
+			this.SetStyle(("display", "-webkit-box"), ("-webkit-line-clamp", value.ToStringInvariant()), ("-webkit-box-orient", "vertical"));
 		}
 
 		private void SetTextTrimming(object localValue)
@@ -224,17 +217,10 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		internal void SetCharacterSpacing(object localValue)
+		internal void SetCharacterSpacing(int localValue)
 		{
-			if (localValue is UnsetValue)
-			{
-				this.ResetStyle("letter-spacing");
-			}
-			else
-			{
-				var value = (int)localValue;
-				this.SetStyle("letter-spacing", (value / 1000.0).ToStringInvariant() + "em");
-			}
+			var value = (int)localValue;
+			this.SetStyle("letter-spacing", (value / 1000.0).ToStringInvariant() + "em");
 		}
 
 		internal void SetLineHeight(object localValue)

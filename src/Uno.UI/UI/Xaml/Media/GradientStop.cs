@@ -1,4 +1,6 @@
-﻿#if XAMARIN_ANDROID
+﻿using Uno.UI.Helpers;
+
+#if XAMARIN_ANDROID
 using Android.Views;
 using Android.Graphics;
 using View = Android.Views.View;
@@ -17,7 +19,6 @@ using MonoTouch.UIKit;
 #elif __MACOS__
 using Color = Windows.UI.Color;
 #else
-using Uno.UI.Helpers;
 using Windows.UI;
 #endif
 using Windows.UI.Xaml.Markup;

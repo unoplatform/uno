@@ -6,6 +6,7 @@ using System.Linq;
 using Uno.Diagnostics.Eventing;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
+using Uno.UI.Helpers;
 using Windows.Foundation;
 using Windows.UI.Xaml.Controls.Primitives;
 
@@ -266,7 +267,7 @@ namespace Windows.UI.Xaml
 #if __WASM__
 			if (FeatureConfiguration.UIElement.AssignDOMXamlProperties)
 			{
-				UpdateDOMXamlProperty(nameof(NeedsClipToSlot), NeedsClipToSlot);
+				UpdateDOMXamlProperty(nameof(NeedsClipToSlot), Boxes.Box(NeedsClipToSlot));
 			}
 #endif
 

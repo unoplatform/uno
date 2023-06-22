@@ -311,7 +311,7 @@ namespace Uno.UI
 
 				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
-					this.Log().DebugFormat("Disposing {0}", disposing);
+					this.Log().DebugFormat($"Disposing {disposing}");
 				}
 
 				NotifyDestroyingInstance(isFinalizer: !disposing);

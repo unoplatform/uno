@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
+using Uno.UI.Helpers;
 
 namespace Windows.UI.Xaml.Controls;
+
 public static class MediaPlayerElementExtensions
 {
 	public static DependencyProperty AnonymousCORSProperty { get; } =
@@ -21,7 +23,8 @@ public static class MediaPlayerElementExtensions
 		{
 			var anonymousCORSEnabled = (bool)e.NewValue;
 
-			mediaPlayer?.MediaPlayer?.SetOption("AnonymousCORSEnabled", anonymousCORSEnabled);
+			// TODO: Rename "SetOption" to "SetAnonymousCORSEnabled" and let it take a single boolean.
+			mediaPlayer?.MediaPlayer?.SetOption("AnonymousCORSEnabled", Boxes.Box(anonymousCORSEnabled));
 		}
 	}
 }

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Uno.Extensions;
 using Uno;
 using Uno.Foundation.Logging;
+using Uno.UI.Helpers;
 using Windows.UI.Xaml.Controls;
 using Windows.Foundation;
 using View = Windows.UI.Xaml.UIElement;
@@ -444,7 +445,7 @@ namespace Windows.UI.Xaml
 
 				if (this is Control control)
 				{
-					UpdateDOMXamlProperty(nameof(Control.IsEnabled), control.IsEnabled);
+					UpdateDOMXamlProperty(nameof(Control.IsEnabled), Boxes.Box(control.IsEnabled));
 				}
 
 				if (this.TryGetPadding(out var padding))

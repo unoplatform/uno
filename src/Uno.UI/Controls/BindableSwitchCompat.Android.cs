@@ -8,6 +8,7 @@ using Android.Graphics;
 using Android.Text;
 using Android.Util;
 using Android.Widget;
+using Uno.UI.Helpers;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media;
 
@@ -120,7 +121,7 @@ namespace Uno.UI.Controls
 
 		private void OnCheckedChange(object sender, CheckedChangeEventArgs e)
 		{
-			SetBindingValue(Checked, "Checked");
+			SetBindingValue(Boxes.Box(Checked), "Checked");
 		}
 
 		private void OnTextChange(object sender, TextChangedEventArgs e)

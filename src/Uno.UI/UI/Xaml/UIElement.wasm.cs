@@ -12,6 +12,7 @@ using Uno.Foundation;
 using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.Extensions;
+using Uno.UI.Helpers;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Core;
 using Windows.UI.Xaml.Controls;
@@ -649,7 +650,7 @@ namespace Windows.UI.Xaml
 			if (FeatureConfiguration.UIElement.AssignDOMXamlProperties)
 			{
 				UpdateDOMXamlProperty(nameof(Visibility), Visibility);
-				UpdateDOMXamlProperty(nameof(IsHitTestVisible), IsHitTestVisible);
+				UpdateDOMXamlProperty(nameof(IsHitTestVisible), Boxes.Box(IsHitTestVisible));
 			}
 		}
 

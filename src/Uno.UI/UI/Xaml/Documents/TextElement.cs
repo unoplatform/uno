@@ -16,6 +16,7 @@ using System.Runtime.CompilerServices;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Text;
 using Uno.UI;
+using Uno.UI.Helpers;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Media;
 
@@ -36,7 +37,6 @@ using View = Windows.UI.Xaml.UIElement;
 using Color = Windows.UI.Color;
 #else
 using Color = System.Drawing.Color;
-using Uno.UI.Helpers;
 #endif
 
 #if __WASM__

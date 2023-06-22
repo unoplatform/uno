@@ -1,6 +1,7 @@
 ﻿using Android.Util;
 using Android.Widget;
 using Uno.UI.DataBinding;
+using Uno.UI.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -25,7 +26,7 @@ namespace Uno.UI.Controls
 		{
 			//override Checked doesn't work so
 			//update binding with the last Checked value
-			SetBindingValue(Checked, "Checked");
+			SetBindingValue(Boxes.Box(Checked), "Checked");
 		}
 
 		public BindableToggleButton(Android.Content.Context context, IAttributeSet attrs)

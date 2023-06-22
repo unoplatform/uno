@@ -1,4 +1,5 @@
 ﻿using System;
+using Uno.UI.Helpers;
 
 namespace Windows.UI.Xaml
 {
@@ -55,7 +56,7 @@ namespace Windows.UI.Xaml
 			{
 				if (d is RoutedEventHandlerWithHandled handler)
 				{
-					return handler(sender, args as RoutedEventArgs);
+					return Boxes.Box(handler(sender, args as RoutedEventArgs));
 				}
 				return null;
 			}

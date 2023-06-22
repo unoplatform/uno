@@ -6,6 +6,7 @@ using Uno.Extensions;
 using Uno;
 using Uno.Foundation.Logging;
 using Uno.Collections;
+using Uno.UI.Helpers;
 using Windows.Foundation;
 
 using View = Android.Views.View;
@@ -19,7 +20,7 @@ namespace Windows.UI.Xaml.Controls
 	{
 		public static void SetMeasuredDimensions(View view, int width, int height)
 		{
-			LayouterHelper.SetMeasuredDimensions(view, new object[] { width, height });
+			LayouterHelper.SetMeasuredDimensions(view, new object[] { Boxes.Box(width), Boxes.Box(height) });
 		}
 
 		protected Size MeasureChildOverride(View view, Size slotSize)
