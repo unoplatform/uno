@@ -8,7 +8,17 @@ This article details the  migration steps required to migrate from one version t
 
 ### Uno Platform 5.0
 
-Uno Platform 5.0 contains many binary breaking changes in order to align the API surface with the Windows App SDK. Most of these changes are binary breaking changes, but are not introducing behavior changes. You can find a list of these changes below.
+Uno Platform 5.0 contains binary breaking changes in order to further align our API surface with the Windows App SDK. Most of these changes are binary breaking changes, but are not introducing behavior changes. You can find a list of these changes below.
+
+Additionally, this version:
+- Adds support for .NET 8 for iOS, Android, Mac Catalyst and macOS.
+- Removes the support for Xamarin.iOS, Xamarin.Android, Xamarin.Mac, and netstandard2.0 for WebAssembly.
+- .NET 7.0 support for iOS, Android, Mac Catalyst and macOS remains unchanged.
+
+Uno Platform 5.0 continues to supports both UWP and WinUI API sets.
+
+#### Migrating from Xamarin to net7.0-* targets
+If your current project is built on Xamarin.* targets, you can upgrade by [following this guide](xref:Uno.Development.MigratingFromXamarinToNet6).
 
 #### `ShouldWriteErrorOnInvalidXaml` now defaults to true.
 Invalid XAML, such as unknown properties or unknown x:Bind targets will generate a compiler error. Those errors must now be fixed as they are no longer ignored.
