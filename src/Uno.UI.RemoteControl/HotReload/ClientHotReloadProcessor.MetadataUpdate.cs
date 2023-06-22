@@ -122,7 +122,6 @@ namespace Uno.UI.RemoteControl.HotReload
 				}
 			}
 		}
-#endif
 
 		static int[] ReadIntArray(BinaryReader binaryReader)
 		{
@@ -141,6 +140,7 @@ namespace Uno.UI.RemoteControl.HotReload
 
 			return values;
 		}
+#endif
 
 		private static void ReloadWithUpdatedTypes(Type[] updatedTypes)
 		{
