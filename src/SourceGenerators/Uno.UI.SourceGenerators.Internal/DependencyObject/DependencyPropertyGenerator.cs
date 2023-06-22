@@ -343,9 +343,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				}
 			}
 
-			var useBoxHelper = propertyTypeName == "int"; // extend this as appropriate.
-			var valueArgument = useBoxHelper ? $"global::Uno.UI.Helpers.Boxes.Box(value)" : "value";
-			builder.AppendLineIndented($"private static void Set{propertyName}Value({propertyTargetName} instance, {propertyTypeName} value) => instance.SetValue({propertyOwnerTypeName}.{propertyName}Property, {valueArgument});");
+			builder.AppendLineIndented($"private static void Set{propertyName}Value({propertyTargetName} instance, {propertyTypeName} value) => instance.SetValue({propertyOwnerTypeName}.{propertyName}Property, value);");
 
 			GeneratePropertyStorage(builder, propertyName);
 
@@ -564,7 +562,10 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 					var o => o?.ToString() ?? "null",
 				};
 
-				builder.AppendLineIndented($"\t\tdefaultValue: ({propertyTypeName}){defaultValueString} /* {defaultValueMethodName}, {data.ContainingTypeFullyQualifiedName} */");
+				var useBoxHelper = propertyTypeName == "int"; // extend this as appropriate.
+				defaultValueString = useBoxHelper ? $"global::Uno.UI.Helpers.Boxes.Box({defaultValueString})" : $"({propertyTypeName}){defaultValueString}";
+
+				builder.AppendLineIndented($"\t\tdefaultValue: {defaultValueString} /* {defaultValueMethodName}, {data.ContainingTypeFullyQualifiedName} */");
 			}
 			else
 			{
