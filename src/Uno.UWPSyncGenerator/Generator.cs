@@ -1481,7 +1481,7 @@ namespace Uno.UWPSyncGenerator
 								{
 									b.AppendLineInvariant($"\tnew {BaseXamlNamespace}.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BooleanBoxes.BoxedFalse));");
 								}
-								else  (propertyType.SpecialType == SpecialType.System_Double)
+								else if (propertyType.SpecialType == SpecialType.System_Double)
 								{
 									b.AppendLineInvariant($"\tnew {BaseXamlNamespace}.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.DoubleBoxes.Zero));");
 								}
