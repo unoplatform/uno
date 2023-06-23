@@ -9,6 +9,8 @@ using Private.Infrastructure;
 using Windows.UI.Xaml.Controls;
 using System.Runtime.CompilerServices;
 using Uno.UI.RuntimeTests.Helpers;
+using FluentAssertions;
+
 #if HAS_UNO
 using Uno.UI.Xaml.Controls;
 #endif
@@ -16,7 +18,6 @@ using Uno.UI.Xaml.Controls;
 #if __IOS__
 using UIKit;
 using _View = UIKit.UIView;
-using FluentAssertions;
 #endif
 
 namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls;
