@@ -28,18 +28,15 @@ For this guide, we'll install all of the requirements to build and run the appli
 
 There will be a series of steps involved in this;
 
-- [Getting Started with Uno Platform and the Raspberry Pi](#getting-started-with-uno-platform-and-the-raspberry-pi)
-  - [Prerequisites](#prerequisites)
-  - [What we'll be doing](#what-well-be-doing)
-  - [Connect to your Raspberry Pi](#connect-to-your-raspberry-pi)
-  - [Update Raspberry Pi OS](#update-raspberry-pi-os)
-  - [Install .NET 7](#install-net-7)
-  - [Install Uno Platform Templates](#install-uno-platform-templates)
-  - [Create a new Uno Solution](#create-a-new-uno-solution)
-  - [Give the SSH Session access to use the display](#give-the-ssh-session-access-to-use-the-display)
-  - [Build and run the application](#build-and-run-the-application)
-  - [Creating and Building on a PC](#creating-and-building-on-a-pc)
-  - [Wrap Up](#wrap-up)
+1. [Connect to your Raspberry Pi](#connect-to-your-raspberry-pi)
+2. [Update Raspberry Pi OS](#update-raspberry-pi-os)
+3. [Install .NET Framework](#install-dot-net-framework)
+4. [Install Uno Platform Templates](#install-uno-platform-templates)
+5. [Create a new Uno Solution](#create-a-new-uno-solution)
+6. [Give the SSH Session access to use the display](#give-the-ssh-session-access-to-use-the-display)
+7. [Build and run the application](#build-and-run-the-application)
+8. [Creating and Building on a PC](#creating-and-building-on-a-pc)
+9. [Wrap Up](#wrap-up)
 
 ## Connect to your Raspberry Pi
 
