@@ -1078,7 +1078,8 @@ namespace Uno.UWPSyncGenerator
 
 								if (isAttachedPropertyMethod)
 								{
-									var instanceParamName = SanitizeParameter(method.Parameters.First().Name);
+									var firstParameter = method.Parameters[0];
+									var instanceParamName = SanitizeParameter(firstParameter.Name);
 
 									if (method.Name.StartsWith("Get", StringComparison.Ordinal))
 									{
@@ -1087,8 +1088,9 @@ namespace Uno.UWPSyncGenerator
 									}
 									else if (method.Name.StartsWith("Set", StringComparison.Ordinal))
 									{
-										var valueParamName = SanitizeParameter(method.Parameters.ElementAt(1).Name);
-										if (method.ReturnType.SpecialType is SpecialType.System_Int32 or SpecialType.System_Double or SpecialType.System_Boolean)
+										var secondParameter = method.Parameters[1];
+										var valueParamName = SanitizeParameter(secondParameter.Name);
+										if (secondParameter.Type.SpecialType is SpecialType.System_Int32 or SpecialType.System_Double or SpecialType.System_Boolean)
 										{
 											valueParamName = $"global::Uno.UI.Helpers.Boxes.Box({valueParamName})";
 										}
