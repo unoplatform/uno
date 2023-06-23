@@ -1,6 +1,5 @@
 
 using System;
-using Uno.UI.Helpers;
 using Windows.Foundation;
 
 namespace Windows.UI.Xaml.Controls

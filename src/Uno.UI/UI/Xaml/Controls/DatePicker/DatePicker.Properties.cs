@@ -1,5 +1,4 @@
 ﻿using System;
-using Uno.UI.Helpers;
 
 namespace Windows.UI.Xaml.Controls
 {

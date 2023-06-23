@@ -394,7 +394,7 @@ namespace Microsoft.UI.Xaml.Controls
 					automationName = StringUtil.FormatString(
 						ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_BadgeItemTextOverride),
 						contactName,
-Boxes.Box(BadgeNumber),
+						Boxes.Box(BadgeNumber),
 						BadgeText);
 				}
 				else
@@ -402,7 +402,7 @@ Boxes.Box(BadgeNumber),
 					automationName = StringUtil.FormatString(
 						GetLocalizedPluralBadgeItemStringResource(BadgeNumber),
 						contactName,
-Boxes.Box(BadgeNumber));
+						Boxes.Box(BadgeNumber));
 				}
 			}
 			else if (!string.IsNullOrEmpty(BadgeGlyph) || BadgeImageSource != null)

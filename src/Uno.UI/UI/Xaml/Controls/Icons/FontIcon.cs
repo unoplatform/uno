@@ -6,7 +6,6 @@ using Windows.UI.Text;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Automation;
 using Windows.UI.Xaml.Automation.Peers;
-using Uno.UI.Helpers;
 
 namespace Windows.UI.Xaml.Controls;
 

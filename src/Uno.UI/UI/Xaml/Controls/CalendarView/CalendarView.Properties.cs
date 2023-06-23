@@ -1,5 +1,4 @@
 using System;
-using Uno.UI.Helpers;
 using Windows.Globalization;
 using Windows.UI.Text;
 using DateTime = System.DateTimeOffset;

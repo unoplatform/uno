@@ -2,7 +2,6 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference TwoPaneView.properties.cpp, commit de78834
 
-using Uno.UI.Helpers;
 using Windows.Foundation;
 using Windows.UI.Xaml;
 

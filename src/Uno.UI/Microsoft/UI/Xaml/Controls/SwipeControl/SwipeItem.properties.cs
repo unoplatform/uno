@@ -7,7 +7,6 @@
 // https://github.com/microsoft/microsoft-ui-xaml/blob/307bd99682cccaa128483036b764c0b7c862d666/dev/Generated/SwipeItem.properties.cpp
 
 using System.Windows.Input;
-using Uno.UI.Helpers;
 using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media;

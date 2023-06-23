@@ -3,7 +3,6 @@ using System;
 using DateTime = System.DateTimeOffset;
 using Calendar = Windows.Globalization.Calendar;
 using DayOfWeek = Windows.Globalization.DayOfWeek;
-using Uno.UI.Helpers;
 
 namespace Windows.UI.Xaml.Controls
 {

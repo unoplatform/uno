@@ -1,6 +1,4 @@
-﻿using Uno.UI.Helpers;
-
-namespace Windows.UI.Xaml.Media.Animation
+﻿namespace Windows.UI.Xaml.Media.Animation
 {
 	public partial class DoubleAnimationUsingKeyFrames
 	{
@@ -8,7 +6,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		{
 			if (currentAnimator.AnimatedValue is Java.Lang.Float javaFloat)
 			{
-				SetValue(Boxes.Box(javaFloat.DoubleValue()));
+				SetValue(javaFloat.DoubleValue());
 			}
 			else
 			{

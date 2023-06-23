@@ -1,5 +1,4 @@
 using System;
-using Uno.UI.Helpers;
 using Windows.Media.Playback;
 
 namespace Windows.UI.Xaml.Controls

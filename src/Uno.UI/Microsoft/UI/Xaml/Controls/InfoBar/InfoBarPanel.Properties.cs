@@ -2,7 +2,6 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX reference InfoBarPanel.properties.cpp, commit 533c6b1
 
-using Uno.UI.Helpers;
 using Windows.UI.Xaml;
 
 namespace Microsoft.UI.Xaml.Controls.Primitives

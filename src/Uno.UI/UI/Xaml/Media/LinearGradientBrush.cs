@@ -2,7 +2,6 @@
 using Windows.Foundation;
 using Uno.Extensions;
 using System;
-using Uno.UI.Helpers;
 
 namespace Windows.UI.Xaml.Media
 {

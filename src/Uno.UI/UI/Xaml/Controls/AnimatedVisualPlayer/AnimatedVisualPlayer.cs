@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Uno;
-using Uno.UI.Helpers;
 using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Markup;

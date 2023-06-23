@@ -89,7 +89,7 @@ namespace Uno.UI.Controls
 		public double CacheLength
 		{
 			get { return (double)this.GetValue(CacheLengthProperty); }
-			set { this.SetValue(CacheLengthProperty, Boxes.Box(value)); }
+			set { this.SetValue(CacheLengthProperty, value); }
 		}
 
 		public static DependencyProperty CacheLengthProperty { get; } =

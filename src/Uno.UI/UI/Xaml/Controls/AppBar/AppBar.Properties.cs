@@ -8,7 +8,6 @@ using System.Text;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Controls;
-using Uno.UI.Helpers;
 
 namespace Windows.UI.Xaml.Controls
 {

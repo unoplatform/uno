@@ -9,7 +9,6 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Markup;
 using Uno.UI.DataBinding;
 using Windows.UI.Xaml.Input;
-using Uno.UI.Helpers;
 
 namespace Windows.UI.Xaml.Controls
 {

@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Globalization;
-using Uno.UI.Helpers;
 using Windows.System;
 
 namespace Windows.UI.Xaml.Input

@@ -55,7 +55,7 @@ namespace <#= @namespace.Name #>
         <#= dp.Modifier #> public <#= dp.PropertyType #> <#= dp.Name #>
         {
             get { return (<#= dp.PropertyType #>)this.GetValue(<#= dp.Name #>Property); }
-			set { this.SetValue(<#= dp.Name #>Property, value); }
+            set { this.SetValue(<#= dp.Name #>Property, value); }
         }
 
         public static DependencyProperty <#= dp.Name #>Property { get ; } =
@@ -67,7 +67,7 @@ namespace <#= @namespace.Name #>
 #if <#= dp.UseBoxHelper #>
                     defaultValue: global::Uno.UI.Helpers.Boxes.Box((<#= dp.PropertyType #>)<#= dp.DefaultValue #>),
 #else
-					defaultValue: (<#= dp.PropertyType #>)<#= dp.DefaultValue #>,
+                    defaultValue: (<#= dp.PropertyType #>)<#= dp.DefaultValue #>,
 #endif
 					options: FrameworkPropertyMetadataOptions.<#= dp.FrameworkPropertyOption #>,
                     propertyChangedCallback: (s, e) => ((<#= @class.Name #>)s)?.On<#= dp.Name #>Changed((<#= dp.PropertyType #>)e.OldValue, (<#= dp.PropertyType #>)e.NewValue)

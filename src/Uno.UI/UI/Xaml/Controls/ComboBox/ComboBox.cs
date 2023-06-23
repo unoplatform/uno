@@ -8,7 +8,6 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.Foundation;
 using Uno.UI;
-using Uno.UI.Helpers;
 using Windows.UI.Xaml.Data;
 using Windows.System;
 using Uno.UI.DataBinding;

@@ -3,7 +3,6 @@
 // MUX reference NavigationViewItem.properties.cpp, commit fd22d7f
 
 using System.Collections.Generic;
-using Uno.UI.Helpers;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 

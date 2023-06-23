@@ -53,7 +53,7 @@ namespace Windows.UI.Xaml.Media.Animation
 
 		public override string ToString()
 		{
-			return "KeyTime: {0}, Value: {1}".InvariantCultureFormat(KeyTime, value);
+			return "KeyTime: {0}, Value: {1}".InvariantCultureFormat(KeyTime, Value);
 		}
 	}
 }

@@ -26,7 +26,7 @@ public partial class RangeBase : Control
 
 	private void SetMaximum(double max)
 	{
-		SetValue(MaximumProperty, Boxes.Box(max));
+		SetValue(MaximumProperty, max);
 	}
 
 	private object SetRangeBaseValue(DependencyProperty property, object baseValue)
@@ -67,7 +67,7 @@ public partial class RangeBase : Control
 				var newValue = CoerceValueBetween(m_uncoercedValue, newMin, max);
 				if (newValue != Value)
 				{
-					SetValue(ValueProperty, Boxes.Box(newValue));
+					SetValue(ValueProperty, newValue);
 				}
 			}
 			else
@@ -85,7 +85,7 @@ public partial class RangeBase : Control
 				var newValue = CoerceValueBetween(m_uncoercedValue, newMin, max);
 				if (newValue != Value)
 				{
-					SetValue(ValueProperty, Boxes.Box(newValue));
+					SetValue(ValueProperty, newValue);
 				}
 
 				// set minimum
@@ -112,7 +112,7 @@ public partial class RangeBase : Control
 				var newValue = CoerceValueBetween(m_uncoercedValue, min, newMax);
 				if (newValue != Value)
 				{
-					SetValue(ValueProperty, Boxes.Box(newValue));
+					SetValue(ValueProperty, newValue);
 				}
 			}
 			else
@@ -126,7 +126,7 @@ public partial class RangeBase : Control
 				var newValue = CoerceValueBetween(m_uncoercedValue, min, newMax);
 				if (newValue != Value)
 				{
-					SetValue(ValueProperty, Boxes.Box(newValue));
+					SetValue(ValueProperty, newValue);
 				}
 
 				// set maximum
