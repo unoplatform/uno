@@ -216,7 +216,7 @@ public partial class Popup
 			typeof(double),
 			typeof(Popup),
 			new FrameworkPropertyMetadata(
-				0.0,
+				Boxes.DoubleBoxes.Zero,
 				FrameworkPropertyMetadataOptions.AffectsMeasure,
 				propertyChangedCallback: (s, e) => ((Popup)s)?.OnHorizontalOffsetChanged((double)e.OldValue, (double)e.NewValue)
 			)
@@ -249,7 +249,7 @@ public partial class Popup
 			typeof(double),
 			typeof(Popup),
 			new FrameworkPropertyMetadata(
-				0.0,
+				Boxes.DoubleBoxes.Zero,
 				FrameworkPropertyMetadataOptions.AffectsMeasure,
 				propertyChangedCallback: (s, e) => ((Popup)s)?.OnVerticalOffsetChanged((double)e.OldValue, (double)e.NewValue)
 			)

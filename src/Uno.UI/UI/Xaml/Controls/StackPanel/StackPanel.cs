@@ -9,6 +9,7 @@ using Uno.Extensions;
 using Uno.UI.Xaml;
 using Windows.Foundation;
 using Windows.UI.Xaml.Media;
+using Uno.UI.Helpers;
 #if XAMARIN_ANDROID
 using Android.Views;
 #elif XAMARIN_IOS
@@ -177,7 +178,7 @@ namespace Windows.UI.Xaml.Controls
 				propertyType: typeof(double),
 				ownerType: typeof(StackPanel),
 				typeMetadata: new FrameworkPropertyMetadata(
-					defaultValue: 0.0,
+					defaultValue: Boxes.DoubleBoxes.Zero,
 					options: FrameworkPropertyMetadataOptions.AffectsMeasure
 				));
 

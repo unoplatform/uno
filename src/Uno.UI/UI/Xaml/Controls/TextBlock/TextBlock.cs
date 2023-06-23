@@ -551,7 +551,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty LineHeightProperty { get; } =
-			DependencyProperty.Register("LineHeight", typeof(double), typeof(TextBlock), new FrameworkPropertyMetadata(0d,
+			DependencyProperty.Register("LineHeight", typeof(double), typeof(TextBlock), new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero,
 				propertyChangedCallback: (s, e) => ((TextBlock)s).OnLineHeightChanged())
 			);
 

@@ -70,7 +70,7 @@ namespace Uno.UI.Controls.Legacy
 
 		// Using a DependencyProperty as the backing store for ItemMaxWidth.  This enables animation, styling, binding, etc...
 		public static DependencyProperty ItemMaxWidthProperty { get; } =
-			DependencyProperty.Register("ItemMaxWidth", typeof(double), typeof(GridViewWrapGridLayout), new FrameworkPropertyMetadata(0.0, (s, e) => ((GridViewWrapGridLayout)s)?.OnItemMaxWidthChanged(e)));
+			DependencyProperty.Register("ItemMaxWidth", typeof(double), typeof(GridViewWrapGridLayout), new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero, (s, e) => ((GridViewWrapGridLayout)s)?.OnItemMaxWidthChanged(e)));
 
 		private void OnItemMaxWidthChanged(DependencyPropertyChangedEventArgs e)
 		{

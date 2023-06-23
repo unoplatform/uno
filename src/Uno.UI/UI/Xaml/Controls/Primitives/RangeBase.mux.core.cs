@@ -1,4 +1,5 @@
 ﻿using System;
+using Uno.UI.Helpers;
 
 namespace Windows.UI.Xaml.Controls.Primitives;
 
@@ -25,7 +26,7 @@ public partial class RangeBase : Control
 
 	private void SetMaximum(double max)
 	{
-		SetValue(MaximumProperty, max);
+		SetValue(MaximumProperty, Boxes.Box(max));
 	}
 
 	private object SetRangeBaseValue(DependencyProperty property, object baseValue)
@@ -45,7 +46,7 @@ public partial class RangeBase : Control
 			double max = GetDoubleValueHelper(MaximumProperty);
 
 			var newValue = CoerceValueBetween(m_uncoercedValue, min, max);
-			return newValue;
+			return Boxes.Box(newValue);
 
 			//wasHandled = true;
 		}
@@ -66,7 +67,7 @@ public partial class RangeBase : Control
 				var newValue = CoerceValueBetween(m_uncoercedValue, newMin, max);
 				if (newValue != Value)
 				{
-					SetValue(ValueProperty, newValue);
+					SetValue(ValueProperty, Boxes.Box(newValue));
 				}
 			}
 			else
@@ -84,14 +85,14 @@ public partial class RangeBase : Control
 				var newValue = CoerceValueBetween(m_uncoercedValue, newMin, max);
 				if (newValue != Value)
 				{
-					SetValue(ValueProperty, newValue);
+					SetValue(ValueProperty, Boxes.Box(newValue));
 				}
 
 				// set minimum
 				// CControl::SetValue(args));
 			}
 
-			return newMin;
+			return Boxes.Box(newMin);
 			//wasHandled = true;
 		}
 		else if (property == MaximumProperty)
@@ -111,7 +112,7 @@ public partial class RangeBase : Control
 				var newValue = CoerceValueBetween(m_uncoercedValue, min, newMax);
 				if (newValue != Value)
 				{
-					SetValue(ValueProperty, newValue);
+					SetValue(ValueProperty, Boxes.Box(newValue));
 				}
 			}
 			else
@@ -125,14 +126,14 @@ public partial class RangeBase : Control
 				var newValue = CoerceValueBetween(m_uncoercedValue, min, newMax);
 				if (newValue != Value)
 				{
-					SetValue(ValueProperty, newValue);
+					SetValue(ValueProperty, Boxes.Box(newValue));
 				}
 
 				// set maximum
 				// SetMaximum(newMax);
 			}
 
-			return newMax;
+			return Boxes.Box(newMax);
 			//wasHandled = true;
 		}
 

@@ -2,6 +2,7 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX reference ExpanderTemplateSettings.properties.cpp, commit 8d20a91
 
+using Uno.UI.Helpers;
 using Windows.UI.Xaml;
 
 namespace Microsoft.UI.Xaml.Controls;
@@ -30,7 +31,7 @@ public sealed partial class ExpanderTemplateSettings : DependencyObject
 			nameof(ContentHeight),
 			typeof(double),
 			typeof(ExpanderTemplateSettings),
-			new FrameworkPropertyMetadata(0.0));
+			new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero));
 
 	/// <summary>
 	/// Gets the height of the Expander content when the expand direction is negative.
@@ -46,5 +47,5 @@ public sealed partial class ExpanderTemplateSettings : DependencyObject
 			nameof(NegativeContentHeight),
 			typeof(double),
 			typeof(ExpanderTemplateSettings),
-			new FrameworkPropertyMetadata(0.0));
+			new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero));
 }

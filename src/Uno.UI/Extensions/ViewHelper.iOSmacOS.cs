@@ -40,7 +40,7 @@ namespace Uno.UI
 		{
 			if (typeof(ViewHelper).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
-				typeof(ViewHelper).Log().DebugFormat("Display scale is {0}", DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel);
+				typeof(ViewHelper).Log().DebugFormat("Display scale is {0}", Boxes.Box(DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel));
 			}
 		}
 

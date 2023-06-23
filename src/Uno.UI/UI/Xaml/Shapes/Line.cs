@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Uno.UI.Helpers;
 
 namespace Windows.UI.Xaml.Shapes
 {
@@ -33,7 +34,7 @@ namespace Windows.UI.Xaml.Shapes
 			typeof(double),
 			typeof(Line),
 			new FrameworkPropertyMetadata(
-				defaultValue: 0.0,
+				defaultValue: Boxes.DoubleBoxes.Zero,
 				options: FrameworkPropertyMetadataOptions.AffectsMeasure
 #if LEGACY_SHAPE_MEASURE
 				, propertyChangedCallback: OnX1PropertyChanged
@@ -54,7 +55,7 @@ namespace Windows.UI.Xaml.Shapes
 			typeof(double),
 			typeof(Line),
 			new FrameworkPropertyMetadata(
-				defaultValue: 0.0,
+				defaultValue: Boxes.DoubleBoxes.Zero,
 				options: FrameworkPropertyMetadataOptions.AffectsMeasure
 #if LEGACY_SHAPE_MEASURE
 				, propertyChangedCallback: OnX2PropertyChanged
@@ -75,7 +76,7 @@ namespace Windows.UI.Xaml.Shapes
 			typeof(double),
 			typeof(Line),
 			new FrameworkPropertyMetadata(
-				defaultValue: 0.0,
+				defaultValue: Boxes.DoubleBoxes.Zero,
 				options: FrameworkPropertyMetadataOptions.AffectsMeasure
 #if LEGACY_SHAPE_MEASURE
 				, propertyChangedCallback: OnY1PropertyChanged
@@ -96,7 +97,7 @@ namespace Windows.UI.Xaml.Shapes
 			typeof(double),
 			typeof(Line),
 			new FrameworkPropertyMetadata(
-				defaultValue: 0.0,
+				defaultValue: Boxes.DoubleBoxes.Zero,
 				options: FrameworkPropertyMetadataOptions.AffectsMeasure
 #if LEGACY_SHAPE_MEASURE
 				, propertyChangedCallback: OnY2PropertyChanged

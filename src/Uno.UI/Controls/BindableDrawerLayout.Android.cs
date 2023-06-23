@@ -14,6 +14,7 @@ using Uno.Extensions;
 using Windows.UI.Xaml.Media;
 using Size = Windows.Foundation.Size;
 using AndroidX.DrawerLayout.Widget;
+using Uno.UI.Helpers;
 
 namespace Uno.UI.Controls
 {
@@ -269,7 +270,7 @@ namespace Uno.UI.Controls
 				typeof(double),
 				typeof(BindableDrawerLayout),
 				new FrameworkPropertyMetadata(
-					(double)0,
+					Boxes.DoubleBoxes.Zero,
 					(s, e) => ((BindableDrawerLayout)s)?.OnRightPaneOpenLengthChanged((double)e.OldValue, (double)e.NewValue)
 				)
 			);
@@ -393,7 +394,7 @@ namespace Uno.UI.Controls
 				typeof(double),
 				typeof(BindableDrawerLayout),
 				new FrameworkPropertyMetadata(
-					(double)0,
+					Boxes.DoubleBoxes.Zero,
 					(s, e) => ((BindableDrawerLayout)s)?.OnLeftPaneOpenLengthChanged((double)e.OldValue, (double)e.NewValue)
 				)
 			);

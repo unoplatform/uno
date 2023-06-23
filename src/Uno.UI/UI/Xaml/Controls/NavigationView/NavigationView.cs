@@ -21,6 +21,7 @@ using Windows.System;
 using Windows.UI.ViewManagement;
 using Uno.UI;
 using Windows.UI.Core;
+using Uno.UI.Helpers;
 #if HAS_UNO_WINUI
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml;
@@ -2749,7 +2750,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				var coercedValue = value;
 				CoerceToGreaterThanZero(ref coercedValue);
-				SetValue(args.Property, coercedValue);
+				SetValue(args.Property, Boxes.Box(coercedValue));
 
 				OnPropertyChanged(args);
 			}

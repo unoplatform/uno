@@ -2,6 +2,7 @@
 
 using System;
 using Microsoft.UI.Xaml.Controls;
+using Uno.UI.Helpers;
 using Uno.UI.Helpers.WinUI;
 using Windows.UI.Xaml.Automation;
 using Windows.UI.Xaml.Automation.Peers;
@@ -85,8 +86,8 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 			if (AutomationPeer.ListenerExists(AutomationEvents.PropertyChanged))
 			{
 				RaisePropertyChangedEvent(SelectionPatternIdentifiers.SelectionProperty,
-					oldIndex,
-					newIndex);
+					Boxes.Box(oldIndex),
+					Boxes.Box(newIndex));
 			}
 		}
 	}

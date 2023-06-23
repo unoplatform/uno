@@ -11,6 +11,7 @@ using Uno.Extensions;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using Uno.Foundation.Logging;
+using Uno.UI.Helpers;
 
 namespace Windows.UI.Xaml.Shapes
 {

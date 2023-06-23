@@ -7,6 +7,7 @@ using System.Globalization;
 using DirectUI;
 using Uno.Disposables;
 using Uno.UI;
+using Uno.UI.Helpers;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
 using Windows.Devices.Input;
@@ -1535,7 +1536,7 @@ public partial class Slider
 
 			roundedValue = DoubleUtil.Round(originalValue, numPlacesPastDecimalPoint);
 
-			return string.Format(CultureInfo.CurrentCulture, szFormat, roundedValue);
+			return string.Format(CultureInfo.CurrentCulture, szFormat, Boxes.Box(roundedValue));
 		}
 
 		public object ConvertBack(object value, Type targetType, object parameter, string language) => throw new NotImplementedException();

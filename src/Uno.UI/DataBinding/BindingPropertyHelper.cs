@@ -886,8 +886,8 @@ namespace Uno.UI.DataBinding
 				var indexerRawParameter = property.Substring(1, property.Length - 2);
 				object indexerParameter =
 					int.TryParse(indexerRawParameter, NumberStyles.Integer, CultureInfo.InvariantCulture, out var indexerIndex)
-						? Boxes.Box(indexerIndex
-) : indexerRawParameter;
+						? Boxes.Box(indexerIndex)
+						: indexerRawParameter;
 
 				// The fastest path uses the generated bindable metadata, which does not require
 				// the property info, unless there is an actual conversion to perform.

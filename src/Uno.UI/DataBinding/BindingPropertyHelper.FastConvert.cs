@@ -139,7 +139,7 @@ namespace Uno.UI.DataBinding
 			{
 				if (thickness.IsUniform())
 				{
-					output = thickness.Left;
+					output = Boxes.Box(thickness.Left);
 					return true;
 				}
 
@@ -706,7 +706,7 @@ namespace Uno.UI.DataBinding
 					var c = input[0];
 					if (c >= '0' && c <= '9')
 					{
-						output = (double)(c - '0');
+						output = Boxes.Box((double)(c - '0'));
 						return true;
 					}
 				}
@@ -715,7 +715,7 @@ namespace Uno.UI.DataBinding
 
 				if (trimmed == "0" || trimmed.Length == 0) // Fast path for zero / empty values (means zero in XAML)
 				{
-					output = 0d;
+					output = Boxes.DoubleBoxes.Zero;
 					return true;
 				}
 
@@ -741,7 +741,7 @@ namespace Uno.UI.DataBinding
 
 				if (double.TryParse(trimmed, numberStyles, NumberFormatInfo.InvariantInfo, out var d))
 				{
-					output = d;
+					output = Boxes.Box(d);
 					return true;
 				}
 			}

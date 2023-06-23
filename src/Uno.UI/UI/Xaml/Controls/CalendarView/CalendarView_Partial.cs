@@ -19,6 +19,7 @@ using DirectUI;
 using Uno.Extensions;
 using DayOfWeek = Windows.Globalization.DayOfWeek;
 using DateTime = System.DateTimeOffset;
+using Uno.UI.Helpers;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -1728,7 +1729,7 @@ namespace Windows.UI.Xaml.Controls
 					var offset = bounds.Y + verticalDistance * bounds.Height;
 
 					// 4. scroll to target item's offset (with animation)
-					spVerticalOffset = offset;
+					spVerticalOffset = Boxes.Box(offset);
 					spVerticalOffsetReference = offset; // (double)spVerticalOffset;
 
 					handled = pScrollViewer.ChangeView(

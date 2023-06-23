@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Uno.UI.Helpers;
 
 namespace Windows.UI.Xaml.Media.Animation
 {

@@ -1,3 +1,4 @@
+using Uno.UI.Helpers;
 using Windows.UI.Xaml.Markup;
 
 namespace Windows.UI.Xaml.Documents;
@@ -18,7 +19,7 @@ public partial class Paragraph : Block
 			name: nameof(TextIndent),
 			propertyType: typeof(double),
 			ownerType: typeof(global::Windows.UI.Xaml.Documents.Paragraph),
-			typeMetadata: new FrameworkPropertyMetadata(0.0)
+			typeMetadata: new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero)
 		);
 
 	public Paragraph() : base()

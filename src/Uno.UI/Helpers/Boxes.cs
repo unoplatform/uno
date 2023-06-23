@@ -73,6 +73,14 @@ internal static class Boxes
 
 	public static object Box(bool value) => value ? BooleanBoxes.BoxedTrue : BooleanBoxes.BoxedFalse;
 
+	public static object Box(double value)
+	{
+		// https://github.com/dotnet/roslyn/blob/17dcec138afd78a265be020ef8ca0e22a254aa88/src/Compilers/Core/Portable/Collections/Boxes.cs#L87
+		// There are many representations of zero in floating point.
+		// Use the boxed value only if the bit pattern is all zeros.
+		return BitConverter.DoubleToInt64Bits(value) == 0 ? Boxes.DoubleBoxes.Zero : value;
+	}
+
 	public static object Box(int value) => value switch
 	{
 		// Keep the specialized integers in sync with BoxingDiagnosticAnalyzer

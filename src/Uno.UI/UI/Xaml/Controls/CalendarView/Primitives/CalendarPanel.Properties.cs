@@ -59,7 +59,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 
 		internal static readonly DependencyProperty ItemMinHeightProperty = DependencyProperty.Register(
-			"ItemMinHeight", typeof(double), typeof(CalendarPanel), new FrameworkPropertyMetadata(default(double)));
+			"ItemMinHeight", typeof(double), typeof(CalendarPanel), new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero));
 
 		internal double ItemMinHeight
 		{
@@ -68,7 +68,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		}
 
 		internal static readonly DependencyProperty ItemMinWidthProperty = DependencyProperty.Register(
-			"ItemMinWidth", typeof(double), typeof(CalendarPanel), new FrameworkPropertyMetadata(default(double)));
+			"ItemMinWidth", typeof(double), typeof(CalendarPanel), new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero));
 
 		internal double ItemMinWidth
 		{

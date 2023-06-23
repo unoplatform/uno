@@ -5,6 +5,7 @@ using System.Text;
 using Windows.Foundation;
 using Uno.Extensions;
 using Uno.UI;
+using Uno.UI.Helpers;
 
 namespace Windows.UI.Xaml.Media
 {
@@ -33,7 +34,7 @@ namespace Windows.UI.Xaml.Media
 		}
 
 		public static DependencyProperty CenterYProperty { get; } =
-			DependencyProperty.Register("CenterY", typeof(double), typeof(SkewTransform), new FrameworkPropertyMetadata(0.0, NotifyChangedCallback));
+			DependencyProperty.Register("CenterY", typeof(double), typeof(SkewTransform), new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero, NotifyChangedCallback));
 
 		public double CenterX
 		{
@@ -42,7 +43,7 @@ namespace Windows.UI.Xaml.Media
 		}
 
 		public static DependencyProperty CenterXProperty { get; } =
-			DependencyProperty.Register("CenterX", typeof(double), typeof(SkewTransform), new FrameworkPropertyMetadata(0.0, NotifyChangedCallback));
+			DependencyProperty.Register("CenterX", typeof(double), typeof(SkewTransform), new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero, NotifyChangedCallback));
 
 		public double AngleX
 		{
@@ -51,7 +52,7 @@ namespace Windows.UI.Xaml.Media
 		}
 
 		public static DependencyProperty AngleXProperty { get; } =
-			DependencyProperty.Register("AngleX", typeof(double), typeof(SkewTransform), new FrameworkPropertyMetadata(0.0, NotifyChangedCallback));
+			DependencyProperty.Register("AngleX", typeof(double), typeof(SkewTransform), new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero, NotifyChangedCallback));
 
 
 		public double AngleY
@@ -61,6 +62,6 @@ namespace Windows.UI.Xaml.Media
 		}
 
 		public static DependencyProperty AngleYProperty { get; } =
-			DependencyProperty.Register("AngleY", typeof(double), typeof(SkewTransform), new FrameworkPropertyMetadata(0.0, NotifyChangedCallback));
+			DependencyProperty.Register("AngleY", typeof(double), typeof(SkewTransform), new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero, NotifyChangedCallback));
 	}
 }

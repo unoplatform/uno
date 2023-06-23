@@ -7,6 +7,7 @@
 
 using System;
 using System.Collections.Generic;
+using Uno.UI.Helpers;
 #if HAS_UNO_WINUI
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;

@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Specialized;
 using Uno.Extensions;
+using Uno.UI.Helpers;
 using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -243,7 +244,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			_Tracing.REPEATER_TRACE_INFO("%ls: \tExtent is (%.0f,%.0f). Based on lineSize %.0f and items per line %.0f. \n",
-				LayoutId, extent.Width, extent.Height, lineSize, itemsPerLine);
+				LayoutId, Boxes.Box(extent.Width), Boxes.Box(extent.Height), lineSize, itemsPerLine);
 			return extent;
 		}
 

@@ -4,6 +4,7 @@
 
 using System;
 using Uno.Disposables;
+using Uno.UI.Helpers;
 using Uno.UI.Helpers.WinUI;
 using Windows.Foundation;
 using Windows.UI.Xaml;
@@ -314,7 +315,7 @@ namespace Microsoft.UI.Xaml.Controls
 				var clampedValue = Math.Max(0.0, value);
 				if (clampedValue != value)
 				{
-					SetValue(property, clampedValue);
+					SetValue(property, Boxes.Box(clampedValue));
 					return;
 				}
 			}

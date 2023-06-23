@@ -203,7 +203,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			"CenterX",
 			typeof(double),
 			typeof(CalendarViewTemplateSettings),
-			new FrameworkPropertyMetadata(default(double)));
+			new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero));
 
 		/// <summary>Gets the Y coordinate of the CalendarView 's center point.</summary>
 		/// <returns>The Y coordinate of the CalendarView 's center point.</returns>
@@ -217,6 +217,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			"CenterY",
 			typeof(double),
 			typeof(CalendarViewTemplateSettings),
-			new FrameworkPropertyMetadata(default(double)));
+			new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero));
 	}
 }

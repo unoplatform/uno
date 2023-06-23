@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using Windows.UI.Xaml.Shapes;
 using Windows.Foundation;
+using Uno.UI.Helpers;
 
 namespace Windows.UI.Xaml.Media
 {
@@ -67,7 +68,7 @@ namespace Windows.UI.Xaml.Media
 				typeof(double),
 				typeof(ArcSegment),
 				new FrameworkPropertyMetadata(
-					defaultValue: 0.0,
+					defaultValue: Boxes.DoubleBoxes.Zero,
 					options: FrameworkPropertyMetadataOptions.AffectsMeasure
 				)
 			);

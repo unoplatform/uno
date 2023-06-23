@@ -112,7 +112,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 				return StringUtil.FormatString(
 					resourceStringWithName,
-Boxes.Box(value),
+					Boxes.Box(value),
 					ColorHelper.ToDisplayName(color));
 			}
 			else
@@ -135,7 +135,7 @@ Boxes.Box(value),
 
 				return StringUtil.FormatString(
 					resourceStringWithoutName,
-Boxes.Box(value));
+					Boxes.Box(value));
 			}
 		}
 	}

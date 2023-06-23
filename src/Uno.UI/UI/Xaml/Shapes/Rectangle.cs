@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Uno.UI.Helpers;
 
 namespace Windows.UI.Xaml.Shapes
 {
@@ -17,7 +18,7 @@ namespace Windows.UI.Xaml.Shapes
 			typeof(double),
 			typeof(Rectangle),
 			new FrameworkPropertyMetadata(
-				defaultValue: 0.0,
+				defaultValue: Boxes.DoubleBoxes.Zero,
 #if LEGACY_SHAPE_MEASURE
 				propertyChangedCallback: (s, e) => ((Rectangle)s).OnRadiusYChangedPartial()
 #else
@@ -39,7 +40,7 @@ namespace Windows.UI.Xaml.Shapes
 			typeof(double),
 			typeof(Rectangle),
 			new FrameworkPropertyMetadata(
-				defaultValue: 0.0,
+				defaultValue: Boxes.DoubleBoxes.Zero,
 #if LEGACY_SHAPE_MEASURE
 				propertyChangedCallback: (s, e) => ((Rectangle)s).OnRadiusXChangedPartial()
 #else

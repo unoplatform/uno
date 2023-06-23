@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel;
 using System.Globalization;
+using Uno.UI.Helpers;
 
 namespace Windows.UI.Xaml
 {
@@ -65,7 +66,7 @@ namespace Windows.UI.Xaml
 
 		public override string ToString()
 		{
-			return string.Format(CultureInfo.InvariantCulture, "[Thickness: {0}-{1}-{2}-{3}]", Left, Top, Right, Bottom);
+			return string.Format(CultureInfo.InvariantCulture, "[Thickness: {0}-{1}-{2}-{3}]", Boxes.Box(Left), Boxes.Box(Top), Boxes.Box(Right), Boxes.Box(Bottom));
 		}
 
 		public static bool operator ==(Thickness t1, Thickness t2)

@@ -453,7 +453,7 @@ namespace Windows.UI.Xaml.Controls
 				"ExtentHeight",
 				typeof(double),
 				typeof(ScrollViewer),
-				new FrameworkPropertyMetadata(default(double)));
+				new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero));
 		#endregion
 
 		#region ExtentWidth (DP - readonly)
@@ -468,7 +468,7 @@ namespace Windows.UI.Xaml.Controls
 				"ExtentWidth",
 				typeof(double),
 				typeof(ScrollViewer),
-				new FrameworkPropertyMetadata(default(double)));
+				new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero));
 		#endregion
 
 		#region ViewportHeight (DP - readonly)
@@ -483,7 +483,7 @@ namespace Windows.UI.Xaml.Controls
 				"ViewportHeight",
 				typeof(double),
 				typeof(ScrollViewer),
-				new FrameworkPropertyMetadata(default(double)));
+				new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero));
 		#endregion
 
 		#region ViewportWidth (DP - readonly)
@@ -498,7 +498,7 @@ namespace Windows.UI.Xaml.Controls
 				"ViewportWidth",
 				typeof(double),
 				typeof(ScrollViewer),
-				new FrameworkPropertyMetadata(default(double)));
+				new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero));
 		#endregion
 
 		#region ComputedHorizontalScrollBarVisibility (DP - readonly)
@@ -543,7 +543,7 @@ namespace Windows.UI.Xaml.Controls
 				"ScrollableHeight",
 				typeof(double),
 				typeof(ScrollViewer),
-				new FrameworkPropertyMetadata(default(double)));
+				new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero));
 		#endregion
 
 		#region ScrollableWidth (DP - readonly)
@@ -558,7 +558,7 @@ namespace Windows.UI.Xaml.Controls
 				"ScrollableWidth",
 				typeof(double),
 				typeof(ScrollViewer),
-				new FrameworkPropertyMetadata(default(double)));
+				new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero));
 		#endregion
 
 		#region VerticalOffset (DP - readonly)
@@ -574,7 +574,7 @@ namespace Windows.UI.Xaml.Controls
 				typeof(double),
 				typeof(ScrollViewer),
 				new FrameworkPropertyMetadata(
-					defaultValue: 0.0d,
+					defaultValue: Boxes.DoubleBoxes.Zero,
 					propertyChangedCallback: null
 				)
 			);
@@ -594,7 +594,7 @@ namespace Windows.UI.Xaml.Controls
 				typeof(double),
 				typeof(ScrollViewer),
 				new FrameworkPropertyMetadata(
-					defaultValue: 0.0d,
+					defaultValue: Boxes.DoubleBoxes.Zero,
 					propertyChangedCallback: null
 				)
 			);

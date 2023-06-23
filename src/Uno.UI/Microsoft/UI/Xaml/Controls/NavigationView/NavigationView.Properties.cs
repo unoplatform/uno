@@ -3,6 +3,7 @@
 // MUX reference NavigationView.properties.cpp, commit 2ec9b1c
 
 using System.Collections.Generic;
+using Uno.UI.Helpers;
 using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -52,7 +53,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				var coercedValue = value;
 				CoerceToGreaterThanZero(ref coercedValue);
-				SetValue(CompactModeThresholdWidthProperty, coercedValue);
+				SetValue(CompactModeThresholdWidthProperty, Boxes.Box(coercedValue));
 			}
 		}
 
@@ -72,7 +73,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				var coercedValue = value;
 				CoerceToGreaterThanZero(ref coercedValue);
-				SetValue(CompactPaneLengthProperty, coercedValue);
+				SetValue(CompactPaneLengthProperty, Boxes.Box(coercedValue));
 			}
 		}
 
@@ -394,7 +395,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				var coercedValue = value;
 				CoerceToGreaterThanZero(ref coercedValue);
-				SetValue(OpenPaneLengthProperty, coercedValue);
+				SetValue(OpenPaneLengthProperty, Boxes.Box(coercedValue));
 			}
 		}
 
@@ -601,7 +602,7 @@ namespace Microsoft.UI.Xaml.Controls
 			owner.CoerceToGreaterThanZero(ref coercedValue);
 			if (Math.Abs(coercedValue - value) > 0.1)
 			{
-				sender.SetValue(args.Property, coercedValue);
+				sender.SetValue(args.Property, Boxes.Box(coercedValue));
 				return;
 			}
 
@@ -619,7 +620,7 @@ namespace Microsoft.UI.Xaml.Controls
 			owner.CoerceToGreaterThanZero(ref coercedValue);
 			if (Math.Abs(coercedValue - value) > 0.1)
 			{
-				sender.SetValue(args.Property, coercedValue);
+				sender.SetValue(args.Property, Boxes.Box(coercedValue));
 				return;
 			}
 
@@ -637,7 +638,7 @@ namespace Microsoft.UI.Xaml.Controls
 			owner.CoerceToGreaterThanZero(ref coercedValue);
 			if (Math.Abs(coercedValue - value) > 0.1)
 			{
-				sender.SetValue(args.Property, coercedValue);
+				sender.SetValue(args.Property, Boxes.Box(coercedValue));
 				return;
 			}
 
@@ -655,7 +656,7 @@ namespace Microsoft.UI.Xaml.Controls
 			owner.CoerceToGreaterThanZero(ref coercedValue);
 			if (Math.Abs(coercedValue - value) > 0.1)
 			{
-				sender.SetValue(args.Property, coercedValue);
+				sender.SetValue(args.Property, Boxes.Box(coercedValue));
 				return;
 			}
 

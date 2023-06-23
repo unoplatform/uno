@@ -33,6 +33,7 @@ using Microsoft.UI.Input;
 #else
 using Windows.UI.Input;
 using Windows.Devices.Input;
+using Uno.UI.Helpers;
 #endif
 
 namespace Microsoft.UI.Xaml.Controls
@@ -254,7 +255,7 @@ namespace Microsoft.UI.Xaml.Controls
 			var splitView = GetSplitView();
 			if (splitView != null)
 			{
-				SetValue(CompactPaneLengthProperty, splitView.CompactPaneLength); //PropertyValue.CreateDouble(splitView.CompactPaneLength));
+				SetValue(CompactPaneLengthProperty, Boxes.Box(splitView.CompactPaneLength)); //PropertyValue.CreateDouble(splitView.CompactPaneLength));
 
 				// Only update when on left
 				var presenter = GetPresenter();

@@ -1,4 +1,5 @@
-﻿using Windows.UI.Xaml.Controls.Primitives;
+﻿using Uno.UI.Helpers;
+using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
 
 namespace Windows.UI.Xaml.Controls;
@@ -62,7 +63,7 @@ public partial class Slider
 			nameof(IntermediateValue),
 			typeof(double),
 			typeof(Slider),
-			new FrameworkPropertyMetadata(0.0));
+			new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero));
 
 	/// <summary>
 	/// Gets or sets a value that indicates the direction of increasing value.
@@ -206,7 +207,7 @@ public partial class Slider
 			nameof(TickFrequency),
 			typeof(double),
 			typeof(Slider),
-			new FrameworkPropertyMetadata(0.0));
+			new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero));
 
 	/// <summary>
 	/// Gets or sets a value that indicates where to draw tick marks in relation to the track.

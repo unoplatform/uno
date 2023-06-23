@@ -30,7 +30,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			"KeyTime",
 			typeof(KeyTime),
 			typeof(ColorKeyFrame),
-			new FrameworkPropertyMetadata(default(KeyTime).Value));
+			new FrameworkPropertyMetadata(default(KeyTime)));
 
 		public KeyTime KeyTime
 		{

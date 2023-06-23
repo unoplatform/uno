@@ -82,9 +82,9 @@ namespace Microsoft.UI.Xaml.Controls
 			m_scrollOrientationSameAsFlow = Minor(availableSize) == double.PositiveInfinity;
 			var realizationRect = RealizationRect;
 			REPEATER_TRACE_INFO("%*s: \tMeasureLayout Realization(%.0f,%.0f,%.0f,%.0f)\n",
-Boxes.Box(context.Indent),
+				Boxes.Box(context.Indent),
 				layoutId,
-				realizationRect.X, realizationRect.Y, realizationRect.Width, realizationRect.Height);
+				Boxes.Box(realizationRect.X), Boxes.Box(realizationRect.Y), Boxes.Box(realizationRect.Width), Boxes.Box(realizationRect.Height));
 
 			var suggestedAnchorIndex = m_context.RecommendedAnchorIndex;
 			if (m_elementManager.IsIndexValidInData(suggestedAnchorIndex))
@@ -286,10 +286,10 @@ Boxes.Box(context.Indent),
 				m_elementManager.SetLayoutBoundsForDataIndex(anchorIndex, layoutBounds);
 
 				REPEATER_TRACE_INFO("%*s: \tLayout bounds of anchor %d are (%.0f,%.0f,%.0f,%.0f). \n",
-Boxes.Box(context.Indent),
+					Boxes.Box(context.Indent),
 					layoutId,
-Boxes.Box(anchorIndex),
-					layoutBounds.X, layoutBounds.Y, layoutBounds.Width, layoutBounds.Height);
+					Boxes.Box(anchorIndex),
+					Boxes.Box(layoutBounds.X), Boxes.Box(layoutBounds.Y), Boxes.Box(layoutBounds.Width), Boxes.Box(layoutBounds.Height));
 			}
 			else
 			{
@@ -413,10 +413,10 @@ Boxes.Box(anchorIndex));
 										SetMajorSize(ref bounds, lineMajorSize);
 										m_elementManager.SetLayoutBoundsForDataIndex(dataIndex, bounds);
 										REPEATER_TRACE_INFO("%*s: \t Corrected Layout bounds of element %d are (%.0f,%.0f,%.0f,%.0f). \n",
-Boxes.Box(m_context.Indent),
+											Boxes.Box(m_context.Indent),
 											layoutId,
-Boxes.Box(dataIndex),
-											bounds.X, bounds.Y, bounds.Width, bounds.Height);
+											Boxes.Box(dataIndex),
+											Boxes.Box(bounds.X), Boxes.Box(bounds.Y), Boxes.Box(bounds.Width), Boxes.Box(bounds.Height));
 									}
 								}
 							}
@@ -441,10 +441,10 @@ Boxes.Box(dataIndex),
 					m_elementManager.SetLayoutBoundsForDataIndex(currentIndex, currentBounds);
 
 					REPEATER_TRACE_INFO("%*s: \tLayout bounds of element %d are (%.0f,%.0f,%.0f,%.0f). \n",
-Boxes.Box(m_context.Indent),
+						Boxes.Box(m_context.Indent),
 						layoutId,
-Boxes.Box(currentIndex),
-						currentBounds.X, currentBounds.Y, currentBounds.Width, currentBounds.Height);
+						Boxes.Box(currentIndex),
+						Boxes.Box(currentBounds.X), Boxes.Box(currentBounds.Y), Boxes.Box(currentBounds.Width), Boxes.Box(currentBounds.Height));
 					previousIndex = currentIndex;
 					currentIndex += step;
 				}
@@ -544,7 +544,7 @@ Boxes.Box(currentIndex),
 				lastDataIndex,
 				lastBounds);
 
-			REPEATER_TRACE_INFO("%*s Extent: (%.0f,%.0f,%.0f,%.0f). \n", Boxes.Box(m_context.Indent), layoutId, extent.X, extent.Y, extent.Width, extent.Height);
+			REPEATER_TRACE_INFO("%*s Extent: (%.0f,%.0f,%.0f,%.0f). \n", Boxes.Box(m_context.Indent), layoutId, Boxes.Box(extent.X), Boxes.Box(extent.Y), Boxes.Box(extent.Width), Boxes.Box(extent.Height));
 			return extent;
 		}
 
@@ -717,10 +717,10 @@ Boxes.Box(currentIndex),
 				var element = m_elementManager.GetAt(rangeIndex);
 
 				REPEATER_TRACE_INFO("%*s: \tArranging element %d at (%.0f,%.0f,%.0f,%.0f). \n",
-Boxes.Box(m_context.Indent),
+					Boxes.Box(m_context.Indent),
 					layoutId,
-Boxes.Box(m_elementManager.GetDataIndexFromRealizedRangeIndex(rangeIndex)),
-					bounds.X, bounds.Y, bounds.Width, bounds.Height);
+					Boxes.Box(m_elementManager.GetDataIndexFromRealizedRangeIndex(rangeIndex)),
+					Boxes.Box(bounds.X), Boxes.Box(bounds.Y), Boxes.Box(bounds.Width), Boxes.Box(bounds.Height));
 				element.Arrange(bounds);
 			}
 		}

@@ -16,6 +16,7 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Automation.Peers;
 using System.Numerics;
 using RatingControlAutomationPeer = Microsoft.UI.Xaml.Automation.Peers.RatingControlAutomationPeer;
+using Uno.UI.Helpers;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
@@ -625,7 +626,7 @@ namespace Microsoft.UI.Xaml.Controls
 				var coercedValue = CoerceValueBetweenMinAndMax(value);
 				if (value != coercedValue)
 				{
-					SetValue(property, coercedValue);
+					SetValue(property, Boxes.Box(coercedValue));
 					// early return, we'll come back to handle the change to the corced value.
 					return;
 				}

@@ -5,6 +5,7 @@
 #nullable enable
 
 using System;
+using Uno.UI.Helpers;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Data;
 
@@ -115,7 +116,7 @@ public partial class CornerRadiusFilterConverter : DependencyObject, IValueConve
 			if (filterType == CornerRadiusFilterKind.TopLeftValue ||
 				filterType == CornerRadiusFilterKind.BottomRightValue)
 			{
-				return GetDoubleValue(cornerRadius, filterType);
+				return Boxes.Box(GetDoubleValue(cornerRadius, filterType));
 			}
 
 			return Convert(cornerRadius, filterType);

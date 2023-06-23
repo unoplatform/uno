@@ -184,7 +184,7 @@ namespace Microsoft.UI.Xaml.Controls
 				else
 				{
 					REPEATER_TRACE_INFO("%*s: \tEstimating extent with no realized elements.  \n",
-Boxes.Box(context.Indent),
+						Boxes.Box(context.Indent),
 						LayoutId);
 				}
 			}
@@ -195,8 +195,8 @@ Boxes.Box(context.Indent),
 			}
 
 			REPEATER_TRACE_INFO("%*s: \tExtent is (%.0f,%.0f). Based on average %.0f. \n",
-Boxes.Box(context.Indent),
-				LayoutId, extent.Width, extent.Height, averageElementSize);
+				Boxes.Box(context.Indent),
+				LayoutId, Boxes.Box(extent.Width), Boxes.Box(extent.Height), Boxes.Box(averageElementSize));
 			return extent;
 		}
 

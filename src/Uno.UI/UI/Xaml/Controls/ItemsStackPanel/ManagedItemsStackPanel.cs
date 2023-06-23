@@ -4,6 +4,7 @@ using System.Text;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using System.ComponentModel;
+using Uno.UI.Helpers;
 
 namespace Uno.UI.Controls
 {
@@ -88,7 +89,7 @@ namespace Uno.UI.Controls
 		public double CacheLength
 		{
 			get { return (double)this.GetValue(CacheLengthProperty); }
-			set { this.SetValue(CacheLengthProperty, value); }
+			set { this.SetValue(CacheLengthProperty, Boxes.Box(value)); }
 		}
 
 		public static DependencyProperty CacheLengthProperty { get; } =

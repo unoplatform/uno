@@ -7,6 +7,7 @@
 
 using System;
 using Uno.Disposables;
+using Uno.UI.Helpers;
 #if HAS_UNO_WINUI
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml;
@@ -136,7 +137,7 @@ namespace Windows.UI.Xaml.Controls
 			var splitView = GetSplitView();
 			if (splitView != null)
 			{
-				SetValue(CompactPaneLengthProperty, splitView.CompactPaneLength);
+				SetValue(CompactPaneLengthProperty, Boxes.Box(splitView.CompactPaneLength));
 			}
 		}
 

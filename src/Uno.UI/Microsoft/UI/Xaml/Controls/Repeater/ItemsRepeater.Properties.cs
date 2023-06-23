@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using Uno.UI.Helpers;
 using Windows.UI.Xaml;
 
 namespace Microsoft.UI.Xaml.Controls

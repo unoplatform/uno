@@ -231,7 +231,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"Heading", typeof(double),
 			typeof(MapControl),
-			new FrameworkPropertyMetadata(default(double)));
+			new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero));
 		public static DependencyProperty LandmarksVisibleProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"LandmarksVisible", typeof(bool),
@@ -266,7 +266,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"Pitch", typeof(double),
 			typeof(MapControl),
-			new FrameworkPropertyMetadata(default(double)));
+			new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero));
 		public static DependencyProperty RoutesProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"Routes", typeof(IList<MapRouteView>),
@@ -301,7 +301,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"ZoomLevel", typeof(double),
 			typeof(MapControl),
-			new FrameworkPropertyMetadata(default(double)));
+			new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero));
 		public static DependencyProperty LoadingStatusProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"LoadingStatus", typeof(MapLoadingStatus),

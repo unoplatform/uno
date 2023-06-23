@@ -11,6 +11,7 @@ using System.Linq;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
+using Uno.UI.Helpers;
 using Uno.UI.Helpers.WinUI;
 using Uno.UI.Xaml.Core;
 using Windows.Foundation;
@@ -235,11 +236,11 @@ namespace Uno.UI.Xaml.Input
 					{
 						this.Log().LogDebug("Candidate: {0} {1},{2} {3},{4} rank {5}",
 							it.Element,
-							it.Bounds.Left,
-							it.Bounds.Top,
-							it.Bounds.Right,
-							it.Bounds.Bottom,
-							it.Score);
+							Boxes.Box(it.Bounds.Left),
+							Boxes.Box(it.Bounds.Top),
+							Boxes.Box(it.Bounds.Right),
+							Boxes.Box(it.Bounds.Bottom),
+							Boxes.Box(it.Score));
 					}
 				}
 

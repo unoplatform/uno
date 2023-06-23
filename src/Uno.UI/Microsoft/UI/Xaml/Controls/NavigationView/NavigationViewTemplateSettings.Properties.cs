@@ -2,6 +2,7 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference NavigationViewTemplateSettings.properties.cpp, commit 991c831
 
+using Uno.UI.Helpers;
 using Windows.UI.Xaml;
 
 namespace Microsoft.UI.Xaml.Controls
@@ -107,7 +108,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Identifies the PaneToggleButtonWidth dependency property.
 		/// </summary>
 		public static DependencyProperty PaneToggleButtonWidthProperty { get; } =
-			DependencyProperty.Register(nameof(PaneToggleButtonWidth), typeof(double), typeof(NavigationViewTemplateSettings), new FrameworkPropertyMetadata(0.0));
+			DependencyProperty.Register(nameof(PaneToggleButtonWidth), typeof(double), typeof(NavigationViewTemplateSettings), new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero));
 
 		/// <summary>
 		/// Gets the SelectionFollowsFocus value.
@@ -137,7 +138,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Identifies the SmallerPaneToggleButtonWidth dependency property.
 		/// </summary>
 		public static DependencyProperty SmallerPaneToggleButtonWidthProperty { get; } =
-			DependencyProperty.Register(nameof(SmallerPaneToggleButtonWidth), typeof(double), typeof(NavigationViewTemplateSettings), new FrameworkPropertyMetadata(0.0));
+			DependencyProperty.Register(nameof(SmallerPaneToggleButtonWidth), typeof(double), typeof(NavigationViewTemplateSettings), new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero));
 
 
 		/// <summary>
@@ -153,7 +154,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Identifies the TopPadding dependency property.
 		/// </summary>
 		public static DependencyProperty TopPaddingProperty { get; } =
-			DependencyProperty.Register(nameof(TopPadding), typeof(double), typeof(NavigationViewTemplateSettings), new FrameworkPropertyMetadata(0.0));
+			DependencyProperty.Register(nameof(TopPadding), typeof(double), typeof(NavigationViewTemplateSettings), new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero));
 
 		/// <summary>
 		/// Gets the visibility of the top pane.

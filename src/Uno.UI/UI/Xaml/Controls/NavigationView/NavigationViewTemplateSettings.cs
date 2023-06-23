@@ -10,6 +10,8 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml;
 #endif
 
+using Uno.UI.Helpers;
+
 namespace Windows.UI.Xaml.Controls
 {
 	public partial class NavigationViewTemplateSettings : DependencyObject
@@ -108,7 +110,7 @@ namespace Windows.UI.Xaml.Controls
 		DependencyProperty.Register(
 			"TopPadding", typeof(double),
 			typeof(NavigationViewTemplateSettings),
-			new FrameworkPropertyMetadata(0.0));
+			new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero));
 
 		public static DependencyProperty TopPaneVisibilityProperty { get; } =
 		DependencyProperty.Register(

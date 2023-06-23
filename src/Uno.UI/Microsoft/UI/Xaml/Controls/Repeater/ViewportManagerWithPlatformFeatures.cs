@@ -13,6 +13,7 @@ using Windows.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls;
 using Uno.Disposables;
 using static Microsoft.UI.Xaml.Controls._Tracing;
+using Uno.UI.Helpers;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -224,7 +225,7 @@ namespace Microsoft.UI.Xaml.Controls
 			// We tolerate viewport imprecisions up to 1 pixel to avoid invaliding layout too much.
 			if (Math.Abs(m_expectedViewportShift.X) > 1 || Math.Abs(m_expectedViewportShift.Y) > 1)
 			{
-				REPEATER_TRACE_INFO("%ls: \tExpecting viewport shift of (%.0f,%.0f) \n", GetLayoutId(), m_expectedViewportShift.X, m_expectedViewportShift.Y);
+				REPEATER_TRACE_INFO("%ls: \tExpecting viewport shift of (%.0f,%.0f) \n", GetLayoutId(), Boxes.Box(m_expectedViewportShift.X), Boxes.Box(m_expectedViewportShift.Y));
 
 				// There are cases where we might be expecting a shift but not get it. We will
 				// be waiting for the effective viewport event but if the scroll viewer is not able
@@ -361,8 +362,8 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				REPEATER_TRACE_INFO("%ls: \tLayout Updated with pending shift %.0f %.0f- invalidating measure \n",
 					GetLayoutId(),
-					m_pendingViewportShift.X,
-					m_pendingViewportShift.Y);
+					Boxes.Box(m_pendingViewportShift.X),
+					Boxes.Box(m_pendingViewportShift.Y));
 
 				// Assume this is never going to come.
 				m_unshiftableShift.X += m_pendingViewportShift.X;
@@ -561,8 +562,8 @@ namespace Microsoft.UI.Xaml.Controls
 			var previousVisibleWindow = m_visibleWindow;
 			REPEATER_TRACE_INFO("%ls: \tEffective Viewport: (%.0f,%.0f,%.0f,%.0f).(%.0f,%.0f,%.0f,%.0f). \n",
 				GetLayoutId(),
-				previousVisibleWindow.X, previousVisibleWindow.Y, previousVisibleWindow.Width, previousVisibleWindow.Height,
-				viewport.X, viewport.Y, viewport.Width, viewport.Height);
+				Boxes.Box(previousVisibleWindow.X), Boxes.Box(previousVisibleWindow.Y), Boxes.Box(previousVisibleWindow.Width), Boxes.Box(previousVisibleWindow.Height),
+				Boxes.Box(viewport.X), Boxes.Box(viewport.Y), Boxes.Box(viewport.Width), Boxes.Box(viewport.Height));
 
 			var currentVisibleWindow = viewport;
 
@@ -577,8 +578,8 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				REPEATER_TRACE_INFO("%ls: \tUsed Viewport: (%.0f,%.0f,%.0f,%.0f).(%.0f,%.0f,%.0f,%.0f). \n",
 					GetLayoutId(),
-					previousVisibleWindow.X, previousVisibleWindow.Y, previousVisibleWindow.Width, previousVisibleWindow.Height,
-					currentVisibleWindow.X, currentVisibleWindow.Y, currentVisibleWindow.Width, currentVisibleWindow.Height);
+					Boxes.Box(previousVisibleWindow.X), Boxes.Box(previousVisibleWindow.Y), Boxes.Box(previousVisibleWindow.Width), Boxes.Box(previousVisibleWindow.Height),
+					Boxes.Box(currentVisibleWindow.X), Boxes.Box(currentVisibleWindow.Y), Boxes.Box(currentVisibleWindow.Width), Boxes.Box(currentVisibleWindow.Height));
 				m_visibleWindow = currentVisibleWindow;
 			}
 

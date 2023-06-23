@@ -2,6 +2,7 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference NavigationViewItemPresenterTemplateSettings.properties.cpp, commit 465f0d7
 
+using Uno.UI.Helpers;
 using Windows.UI.Xaml;
 
 namespace Microsoft.UI.Xaml.Controls.Primitives
@@ -21,7 +22,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		/// Identifies the IconWidth dependency property.
 		/// </summary>
 		public static DependencyProperty IconWidthProperty { get; } =
-			DependencyProperty.Register(nameof(IconWidth), typeof(double), typeof(NavigationViewItemPresenterTemplateSettings), new FrameworkPropertyMetadata(0.0));
+			DependencyProperty.Register(nameof(IconWidth), typeof(double), typeof(NavigationViewItemPresenterTemplateSettings), new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero));
 
 		/// <summary>
 		/// Gets the width of the smaller icon.
@@ -36,6 +37,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		/// Identifies the SmallerIconWidth dependency property.
 		/// </summary>
 		public static DependencyProperty SmallerIconWidthProperty { get; } =
-			DependencyProperty.Register(nameof(SmallerIconWidth), typeof(double), typeof(NavigationViewItemPresenterTemplateSettings), new FrameworkPropertyMetadata(0.0));
+			DependencyProperty.Register(nameof(SmallerIconWidth), typeof(double), typeof(NavigationViewItemPresenterTemplateSettings), new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero));
 	}
 }

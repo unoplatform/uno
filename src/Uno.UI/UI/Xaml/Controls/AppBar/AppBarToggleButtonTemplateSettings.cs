@@ -1,4 +1,5 @@
 using Uno;
+using Uno.UI.Helpers;
 using Windows.UI.Xaml;
 
 namespace Windows.UI.Xaml.Controls.Primitives
@@ -12,6 +13,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		}
 
 		internal static DependencyProperty KeyboardAcceleratorTextMinWidthProperty { get; } =
-			DependencyProperty.Register("KeyboardAcceleratorTextMinWidth", typeof(double), typeof(AppBarToggleButtonTemplateSettings), new FrameworkPropertyMetadata(0.0));
+			DependencyProperty.Register("KeyboardAcceleratorTextMinWidth", typeof(double), typeof(AppBarToggleButtonTemplateSettings), new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero));
 	}
 }

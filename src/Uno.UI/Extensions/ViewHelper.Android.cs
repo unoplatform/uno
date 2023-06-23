@@ -13,6 +13,7 @@ using System.Numerics;
 using Android.Graphics;
 using Point = Windows.Foundation.Point;
 using Rect = Windows.Foundation.Rect;
+using Uno.UI.Helpers;
 
 namespace Uno.UI
 {
@@ -92,7 +93,7 @@ namespace Uno.UI
 
 			if (typeof(ViewHelper).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
-				typeof(ViewHelper).Log().DebugFormat("Display Scale is {0}", Scale);
+				typeof(ViewHelper).Log().DebugFormat("Display Scale is {0}", Boxes.Box(Scale));
 			}
 
 			Architecture = Java.Lang.JavaSystem.GetProperty("os.arch");

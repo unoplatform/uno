@@ -245,7 +245,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 				REPEATER_TRACE_INFO(
 					"%*s: \tExtent is {%.0f,%.0f}. Based on average line size {%.0f} and average items per line {%.0f}. \n",
-Boxes.Box(context.Indent), LayoutId, extent.Width, extent.Height, averageLineSize, averageItemsPerLine);
+					Boxes.Box(context.Indent), LayoutId, Boxes.Box(extent.Width), Boxes.Box(extent.Height), Boxes.Box(averageLineSize), Boxes.Box(averageItemsPerLine));
 			}
 			else
 			{
@@ -253,7 +253,7 @@ Boxes.Box(context.Indent), LayoutId, extent.Width, extent.Height, averageLineSiz
 				MUX_ASSERT(lastRealizedItemIndex == -1);
 
 				REPEATER_TRACE_INFO("%*s: \tExtent is {%.0f,%.0f}. ItemCount is 0 \n",
-Boxes.Box(context.Indent), LayoutId, extent.Width, extent.Height);
+					Boxes.Box(context.Indent), LayoutId, Boxes.Box(extent.Width), Boxes.Box(extent.Height));
 			}
 
 			return extent;
@@ -278,7 +278,7 @@ Boxes.Box(context.Indent), LayoutId, extent.Width, extent.Height);
 		{
 
 			REPEATER_TRACE_INFO("%*s: \tOnLineArranged startIndex:%d Count:%d LineHeight:%d \n",
-Boxes.Box(context.Indent), LayoutId, Boxes.Box(startIndex), Boxes.Box(countInLine), lineSize);
+				Boxes.Box(context.Indent), LayoutId, Boxes.Box(startIndex), Boxes.Box(countInLine), Boxes.Box(lineSize));
 
 			var flowState = GetAsFlowState(context.LayoutState);
 			flowState.OnLineArranged(startIndex, countInLine, lineSize, context);

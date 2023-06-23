@@ -1,4 +1,5 @@
 ﻿using System;
+using Uno.UI.Helpers;
 using Windows.UI.Xaml.Automation.Peers;
 
 namespace Windows.UI.Xaml.Controls.Primitives;
@@ -55,21 +56,21 @@ public partial class RangeBase : Control
 		{
 			HandlePropertyChanged(
 			args,
-			(automationPeer, oldValue, newValue) => automationPeer.RaiseMinimumPropertyChangedEvent(oldValue, newValue),
+			(automationPeer, oldValue, newValue) => automationPeer.RaiseMinimumPropertyChangedEvent(Boxes.Box(oldValue), Boxes.Box(newValue)),
 			(rangeBase, oldValue, newValue) => rangeBase.OnMinimumChanged(oldValue, newValue));
 		}
 		else if (args.Property == MaximumProperty)
 		{
 			HandlePropertyChanged(
 			args,
-			(automationPeer, oldValue, newValue) => automationPeer.RaiseMaximumPropertyChangedEvent(oldValue, newValue),
+			(automationPeer, oldValue, newValue) => automationPeer.RaiseMaximumPropertyChangedEvent(Boxes.Box(oldValue), Boxes.Box(newValue)),
 			(rangeBase, oldValue, newValue) => rangeBase.OnMaximumChanged(oldValue, newValue));
 		}
 		else if (args.Property == ValueProperty)
 		{
 			HandlePropertyChanged(
 			args,
-			(automationPeer, oldValue, newValue) => automationPeer.RaiseValuePropertyChangedEvent(oldValue, newValue),
+			(automationPeer, oldValue, newValue) => automationPeer.RaiseValuePropertyChangedEvent(Boxes.Box(oldValue), Boxes.Box(newValue)),
 			(rangeBase, oldValue, newValue) => rangeBase.OnValueChanged(oldValue, newValue));
 		}
 	}

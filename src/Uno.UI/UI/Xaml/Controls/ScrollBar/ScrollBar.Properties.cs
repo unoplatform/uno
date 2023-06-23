@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Uno.Disposables;
+using Uno.UI.Helpers;
 using Windows.UI.Input;
 using Windows.UI.Xaml.Automation;
 using Windows.UI.Xaml.Automation.Peers;
@@ -49,7 +50,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			nameof(ViewportSize),
 			typeof(double),
 			typeof(ScrollBar),
-			new FrameworkPropertyMetadata(0.0));
+			new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero));
 
 		public event ScrollEventHandler Scroll;
 	}

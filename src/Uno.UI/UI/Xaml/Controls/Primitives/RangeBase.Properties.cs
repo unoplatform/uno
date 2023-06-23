@@ -1,4 +1,5 @@
 ﻿using System;
+using Uno.UI.Helpers;
 
 namespace Windows.UI.Xaml.Controls.Primitives;
 
@@ -71,7 +72,7 @@ public partial class RangeBase
 			nameof(Minimum),
 			typeof(double),
 			typeof(RangeBase),
-			new FrameworkPropertyMetadata(0.0, null, CoerceMinimum));
+			new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero, null, CoerceMinimum));
 
 	/// <summary>
 	/// Gets or sets a Value to be added to or subtracted from the Value of a RangeBase control.
@@ -117,7 +118,7 @@ public partial class RangeBase
 			nameof(Value),
 			typeof(double),
 			typeof(RangeBase),
-			new FrameworkPropertyMetadata(0.0, null, CoerceValue));
+			new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero, null, CoerceValue));
 
 	/// <summary>
 	/// Occurs when the range value changes.

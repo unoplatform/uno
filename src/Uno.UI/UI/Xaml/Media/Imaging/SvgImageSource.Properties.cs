@@ -1,5 +1,6 @@
 ﻿#pragma warning disable 67
 using System;
+using Uno.UI.Helpers;
 using Windows.Foundation;
 
 namespace Windows.UI.Xaml.Media.Imaging;

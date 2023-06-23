@@ -55,11 +55,7 @@ namespace <#= @namespace.Name #>
         <#= dp.Modifier #> public <#= dp.PropertyType #> <#= dp.Name #>
         {
             get { return (<#= dp.PropertyType #>)this.GetValue(<#= dp.Name #>Property); }
-#if <#= dp.UseBoxHelper #>
-            set { this.SetValue(<#= dp.Name #>Property, global::Uno.UI.Helpers.Boxes.Box(value)); }
-#else
 			set { this.SetValue(<#= dp.Name #>Property, value); }
-#endif
         }
 
         public static DependencyProperty <#= dp.Name #>Property { get ; } =

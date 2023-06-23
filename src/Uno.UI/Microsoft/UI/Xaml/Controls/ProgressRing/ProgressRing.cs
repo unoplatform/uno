@@ -7,6 +7,7 @@ using Uno.Extensions;
 using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
 using Uno.UI;
+using Uno.UI.Helpers;
 
 #nullable enable
 
@@ -62,7 +63,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty ValueProperty { get; } = DependencyProperty.Register(
-			nameof(Value), typeof(double), typeof(ProgressRing), new FrameworkPropertyMetadata(0d, (s, e) => (s as ProgressRing)?.OnValuePropertyChanged(e)));
+			nameof(Value), typeof(double), typeof(ProgressRing), new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero, (s, e) => (s as ProgressRing)?.OnValuePropertyChanged(e)));
 
 		public double Maximum
 		{
@@ -80,7 +81,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty MinimumProperty { get; } = DependencyProperty.Register(
-			nameof(Minimum), typeof(double), typeof(ProgressRing), new FrameworkPropertyMetadata(0d, (s, e) => (s as ProgressRing)?.OnMinimumPropertyChanged(e)));
+			nameof(Minimum), typeof(double), typeof(ProgressRing), new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero, (s, e) => (s as ProgressRing)?.OnMinimumPropertyChanged(e)));
 
 
 

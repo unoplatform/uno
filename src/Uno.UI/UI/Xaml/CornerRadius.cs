@@ -6,6 +6,7 @@ using System.Text;
 using System.Globalization;
 using Uno.UI.Helpers.WinUI;
 using Windows.Foundation;
+using Uno.UI.Helpers;
 
 namespace Windows.UI.Xaml;
 
@@ -68,10 +69,10 @@ public partial struct CornerRadius : IEquatable<CornerRadius>
 
 	/// <inheritdoc />
 	public override string ToString()
-		=> "TopLeft: {0}, TopRight: {1}, BottomRight: {2}, BottomLeft: {3}".InvariantCultureFormat(TopLeft, TopRight, BottomRight, BottomLeft);
+		=> "TopLeft: {0}, TopRight: {1}, BottomRight: {2}, BottomLeft: {3}".InvariantCultureFormat(Boxes.Box(TopLeft), Boxes.Box(TopRight), Boxes.Box(BottomRight), Boxes.Box(BottomLeft));
 
 	internal string ToStringCompact()
-		=> string.Format(CultureInfo.InvariantCulture, "[CornerRadius: {0}-{1}-{2}-{3}]", TopLeft, TopRight, BottomRight, BottomLeft);
+		=> string.Format(CultureInfo.InvariantCulture, "[CornerRadius: {0}-{1}-{2}-{3}]", Boxes.Box(TopLeft), Boxes.Box(TopRight), Boxes.Box(BottomRight), Boxes.Box(BottomLeft));
 
 	/// <summary>
 	/// Provides a Zero-valued corner radius.
