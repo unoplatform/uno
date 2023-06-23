@@ -87,7 +87,7 @@ namespace Uno.UI.Controls
 			var element = Element;
 
 			var iconOrContent = element.Icon ?? element.Content;
-			switch (element.Icon)
+			switch (iconOrContent)
 			{
 				case BitmapIcon bitmap:
 					native.Image = UIImageHelper.FromUri(bitmap.UriSource);
