@@ -16,9 +16,9 @@ public class Given_Grid
 			ExpectedDiagnostics =
 			{
 				// Uno.UI.SourceGenerators\Uno.UI.SourceGenerators.XamlGenerator.XamlCodeGenerator\Grid_Uses_Both_Syntaxes_794c1760299b374d12fe38ba3b633206.cs(105,5): error CS1912: Duplicate initialization of member 'ColumnDefinitions'
-				DiagnosticResult.CompilerError("CS1912").WithSpan(Path.Combine("Uno.UI.SourceGenerators","Uno.UI.SourceGenerators.XamlGenerator.XamlCodeGenerator","Grid_Uses_Both_Syntaxes_794c1760299b374d12fe38ba3b633206.cs"), 116, 5, 116, 22).WithArguments("ColumnDefinitions"),
+				DiagnosticResult.CompilerError("CS1912").WithSpan(Path.Combine("Uno.UI.SourceGenerators","Uno.UI.SourceGenerators.XamlGenerator.XamlCodeGenerator","Grid_Uses_Both_Syntaxes_794c1760299b374d12fe38ba3b633206.cs"), 112, 5, 112, 22).WithArguments("ColumnDefinitions"),
 				// Uno.UI.SourceGenerators\Uno.UI.SourceGenerators.XamlGenerator.XamlCodeGenerator\Grid_Uses_Both_Syntaxes_794c1760299b374d12fe38ba3b633206.cs(139,5): error CS1912: Duplicate initialization of member 'RowDefinitions'
-				DiagnosticResult.CompilerError("CS1912").WithSpan(Path.Combine("Uno.UI.SourceGenerators","Uno.UI.SourceGenerators.XamlGenerator.XamlCodeGenerator","Grid_Uses_Both_Syntaxes_794c1760299b374d12fe38ba3b633206.cs"), 150, 5, 150, 19).WithArguments("RowDefinitions"),
+				DiagnosticResult.CompilerError("CS1912").WithSpan(Path.Combine("Uno.UI.SourceGenerators","Uno.UI.SourceGenerators.XamlGenerator.XamlCodeGenerator","Grid_Uses_Both_Syntaxes_794c1760299b374d12fe38ba3b633206.cs"), 146, 5, 146, 19).WithArguments("RowDefinitions"),
 			},
 		};
 
