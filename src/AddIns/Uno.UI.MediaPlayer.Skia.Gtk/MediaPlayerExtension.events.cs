@@ -37,10 +37,7 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 		{
 			if (_player is not null)
 			{
-				if (mp.IsVideo && Events is not null)
-				{
-					Events?.RaiseVideoRatioChanged(global::System.Math.Max(1, (double)mp.VideoRatio));
-				}
+				IsVideo = _player.IsVideo;
 
 				if (_owner.PlaybackSession.PlaybackState == MediaPlaybackState.Opening)
 				{
@@ -65,6 +62,16 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 					this.Log().Error($"The media player is not available yet");
 				}
 			}
+		}
+
+		if (Events is not null)
+		{
+			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			{
+				this.Log().Debug($"Raising MediaOpened");
+			}
+
+			Events?.RaiseMediaOpened();
 		}
 	}
 
@@ -105,6 +112,17 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 	{
 		var volume = (int)_owner.Volume;
 		_player?.SetVolume(volume);
+	}
+
+	private void OnVideoRatioChanged(object? sender, object? e)
+	{
+		if (_player is not null
+			&& _player.IsVideo
+			&& Events is not null)
+		{
+			IsVideo = _player.IsVideo;
+			Events?.RaiseVideoRatioChanged(Math.Max(1, (double)_player.VideoRatio));
+		}
 	}
 
 	private void OnTimeUpdate(object? sender, object o)

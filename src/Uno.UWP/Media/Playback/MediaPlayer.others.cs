@@ -160,6 +160,8 @@ namespace Windows.Media.Playback
 			}
 		}
 
+		public bool IsVideo => _extension?.IsVideo ?? false;
+
 		public void SetUriSource(global::System.Uri value)
 			=> _extension?.SetUriSource(value);
 
