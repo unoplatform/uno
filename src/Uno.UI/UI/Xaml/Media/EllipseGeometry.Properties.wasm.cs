@@ -1,5 +1,6 @@
 ﻿using System;
 using Windows.Foundation;
+using Uno.UI.Helpers;
 
 namespace Windows.UI.Xaml.Media
 {
@@ -18,14 +19,14 @@ namespace Windows.UI.Xaml.Media
 				nameof(RadiusX), typeof(double),
 				typeof(EllipseGeometry),
 				new FrameworkPropertyMetadata(
-					default(double),
+					Boxes.DoubleBoxes.Zero,
 					options: FrameworkPropertyMetadataOptions.AffectsMeasure));
 		public static DependencyProperty RadiusYProperty { get; } =
 			DependencyProperty.Register(
 				nameof(RadiusY), typeof(double),
 				typeof(EllipseGeometry),
 				new FrameworkPropertyMetadata(
-					default(double),
+					Boxes.DoubleBoxes.Zero,
 					options: FrameworkPropertyMetadataOptions.AffectsMeasure));
 
 		public Point Center

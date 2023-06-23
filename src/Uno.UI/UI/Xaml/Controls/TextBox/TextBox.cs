@@ -7,6 +7,7 @@ using System;
 using Uno.Extensions;
 using Uno.UI.Common;
 using Uno.UI.DataBinding;
+using Uno.UI.Helpers;
 using Uno.UI.Xaml.Input;
 using Windows.Foundation;
 using Windows.System;
@@ -27,7 +28,6 @@ using Microsoft.UI.Input;
 using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
 #else
 using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
-using Uno.UI.Helpers;
 #endif
 
 namespace Windows.UI.Xaml.Controls

@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Uno.Disposables;
+using Uno.UI.Helpers;
 using Windows.Foundation;
 
 namespace Windows.UI.Xaml.Shapes
@@ -124,11 +125,11 @@ namespace Windows.UI.Xaml.Shapes
 			yield return GetActualSize();
 			yield return Fill;
 			yield return Stroke;
-			yield return StrokeThickness;
+			yield return Boxes.Box(StrokeThickness);
 			yield return Stretch;
 			yield return StrokeDashArray;
-			yield return _scaleX;
-			yield return _scaleY;
+			yield return Boxes.Box(_scaleX);
+			yield return Boxes.Box(_scaleY);
 		}
 
 		/// <summary>

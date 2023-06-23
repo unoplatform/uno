@@ -1,4 +1,5 @@
 ﻿using Uno.Extensions;
+using Uno.UI.Helpers;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
@@ -76,7 +77,7 @@ namespace Windows.UI.Xaml.Controls
 				return;
 			}
 
-			_textBoxView.SetFontSize(FontSize);
+			_textBoxView.SetFontSize(Boxes.Box(FontSize));
 			_textBoxView.SetFontStyle(FontStyle);
 			_textBoxView.SetFontWeight(FontWeight);
 			_textBoxView.SetFontFamily(FontFamily);

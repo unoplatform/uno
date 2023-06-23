@@ -217,10 +217,17 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		internal void SetCharacterSpacing(int localValue)
+		internal void SetCharacterSpacing(object localValue)
 		{
-			var value = (int)localValue;
-			this.SetStyle("letter-spacing", (value / 1000.0).ToStringInvariant() + "em");
+			if (localValue is UnsetValue)
+			{
+				this.ResetStyle("letter-spacing");
+			}
+			else
+			{
+				var value = (int)localValue;
+				this.SetStyle("letter-spacing", (value / 1000.0).ToStringInvariant() + "em");
+			}
 		}
 
 		internal void SetLineHeight(object localValue)

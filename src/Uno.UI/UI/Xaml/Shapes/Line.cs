@@ -148,10 +148,10 @@ namespace Windows.UI.Xaml.Shapes
 
 		protected internal override IEnumerable<object> GetShapeParameters()
 		{
-			yield return X1;
-			yield return X2;
-			yield return Y1;
-			yield return Y2;
+			yield return Boxes.Box(X1);
+			yield return Boxes.Box(X2);
+			yield return Boxes.Box(Y1);
+			yield return Boxes.Box(Y2);
 
 			foreach (var p in base.GetShapeParameters())
 			{

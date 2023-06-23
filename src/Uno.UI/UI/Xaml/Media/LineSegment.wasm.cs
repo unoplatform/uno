@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 
+#pragma warning disable UnoInternal0001
+
 namespace Windows.UI.Xaml.Media
 {
 	partial class LineSegment

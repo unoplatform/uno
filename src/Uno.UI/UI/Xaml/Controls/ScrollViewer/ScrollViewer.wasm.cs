@@ -5,6 +5,7 @@ using Windows.Foundation;
 using Uno.Foundation.Logging;
 using Uno.UI.Xaml;
 using Uno.UI;
+using Uno.UI.Helpers;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -44,8 +45,8 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (FeatureConfiguration.UIElement.AssignDOMXamlProperties)
 			{
-				UpdateDOMXamlProperty(nameof(HorizontalOffset), HorizontalOffset);
-				UpdateDOMXamlProperty(nameof(VerticalOffset), VerticalOffset);
+				UpdateDOMXamlProperty(nameof(HorizontalOffset), Boxes.Box(HorizontalOffset));
+				UpdateDOMXamlProperty(nameof(VerticalOffset), Boxes.Box(VerticalOffset));
 			}
 		}
 

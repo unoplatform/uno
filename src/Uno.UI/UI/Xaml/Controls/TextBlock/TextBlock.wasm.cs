@@ -5,6 +5,7 @@ using Windows.Foundation;
 using Windows.UI.Xaml.Documents;
 using Uno.Extensions;
 using Uno.Foundation;
+using Uno.UI.Helpers;
 using System.Linq;
 
 using Windows.UI.Text;
@@ -74,7 +75,7 @@ namespace Windows.UI.Xaml.Controls
 			ConditionalUpdate(ref _maxLinesChanged, () => this.SetMaxLines(MaxLines));
 			ConditionalUpdate(ref _textAlignmentChanged, () => this.SetTextAlignment(TextAlignment));
 			ConditionalUpdate(ref _lineHeightChanged, () => this.SetLineHeight(LineHeight));
-			ConditionalUpdate(ref _characterSpacingChanged, () => this.SetCharacterSpacing(CharacterSpacing));
+			ConditionalUpdate(ref _characterSpacingChanged, () => this.SetCharacterSpacing(Boxes.Box(CharacterSpacing)));
 			ConditionalUpdate(ref _textDecorationsChanged, () => this.SetTextDecorations(TextDecorations));
 			ConditionalUpdate(ref _paddingChangedChanged, () => this.SetTextPadding(Padding));
 

@@ -39,7 +39,7 @@ namespace Windows.UI.Xaml.Media
 				if (TryGetExternalUri(sourceParts[0], out var externalUri) && externalUri is { })
 				{
 					ExternalSource = externalUri.OriginalString;
-					CssFontName = "font" + ExternalSource.GetHashCode();
+					CssFontName = $"font{ExternalSource.GetHashCode()}";
 				}
 				else
 				{
