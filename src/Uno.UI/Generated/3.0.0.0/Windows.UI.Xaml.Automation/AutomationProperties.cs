@@ -205,7 +205,7 @@ namespace Windows.UI.Xaml.Automation
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static void SetIsDialog( global::Windows.UI.Xaml.DependencyObject element,  bool value)
 		{
-			element.SetValue(IsDialogProperty, value);
+			element.SetValue(IsDialogProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Automation.AutomationProperties.HeadingLevelProperty.get
@@ -235,7 +235,7 @@ namespace Windows.UI.Xaml.Automation
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static void SetCulture( global::Windows.UI.Xaml.DependencyObject element,  int value)
 		{
-			element.SetValue(CultureProperty, value);
+			element.SetValue(CultureProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Automation.AutomationProperties.IsPeripheralProperty.get
@@ -250,7 +250,7 @@ namespace Windows.UI.Xaml.Automation
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static void SetIsPeripheral( global::Windows.UI.Xaml.DependencyObject element,  bool value)
 		{
-			element.SetValue(IsPeripheralProperty, value);
+			element.SetValue(IsPeripheralProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Automation.AutomationProperties.IsDataValidForFormProperty.get
@@ -265,7 +265,7 @@ namespace Windows.UI.Xaml.Automation
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static void SetIsDataValidForForm( global::Windows.UI.Xaml.DependencyObject element,  bool value)
 		{
-			element.SetValue(IsDataValidForFormProperty, value);
+			element.SetValue(IsDataValidForFormProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Automation.AutomationProperties.FullDescriptionProperty.get
@@ -340,7 +340,7 @@ namespace Windows.UI.Xaml.Automation
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static void SetLevel( global::Windows.UI.Xaml.DependencyObject element,  int value)
 		{
-			element.SetValue(LevelProperty, value);
+			element.SetValue(LevelProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Automation.AutomationProperties.AnnotationsProperty.get
@@ -428,7 +428,7 @@ namespace Windows.UI.Xaml.Automation
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static void SetIsRequiredForForm( global::Windows.UI.Xaml.DependencyObject element,  bool value)
 		{
-			element.SetValue(IsRequiredForFormProperty, value);
+			element.SetValue(IsRequiredForFormProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Automation.AutomationProperties.ItemStatusProperty.get

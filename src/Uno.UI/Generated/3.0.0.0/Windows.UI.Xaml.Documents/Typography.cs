@@ -365,7 +365,7 @@ namespace Windows.UI.Xaml.Documents
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static void SetAnnotationAlternates( global::Windows.UI.Xaml.DependencyObject element,  int value)
 		{
-			element.SetValue(AnnotationAlternatesProperty, value);
+			element.SetValue(AnnotationAlternatesProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Documents.Typography.EastAsianExpertFormsProperty.get
@@ -380,7 +380,7 @@ namespace Windows.UI.Xaml.Documents
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static void SetEastAsianExpertForms( global::Windows.UI.Xaml.DependencyObject element,  bool value)
 		{
-			element.SetValue(EastAsianExpertFormsProperty, value);
+			element.SetValue(EastAsianExpertFormsProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Documents.Typography.EastAsianLanguageProperty.get
@@ -425,7 +425,7 @@ namespace Windows.UI.Xaml.Documents
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static void SetStandardLigatures( global::Windows.UI.Xaml.DependencyObject element,  bool value)
 		{
-			element.SetValue(StandardLigaturesProperty, value);
+			element.SetValue(StandardLigaturesProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Documents.Typography.ContextualLigaturesProperty.get
@@ -440,7 +440,7 @@ namespace Windows.UI.Xaml.Documents
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static void SetContextualLigatures( global::Windows.UI.Xaml.DependencyObject element,  bool value)
 		{
-			element.SetValue(ContextualLigaturesProperty, value);
+			element.SetValue(ContextualLigaturesProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Documents.Typography.DiscretionaryLigaturesProperty.get
@@ -455,7 +455,7 @@ namespace Windows.UI.Xaml.Documents
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static void SetDiscretionaryLigatures( global::Windows.UI.Xaml.DependencyObject element,  bool value)
 		{
-			element.SetValue(DiscretionaryLigaturesProperty, value);
+			element.SetValue(DiscretionaryLigaturesProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Documents.Typography.HistoricalLigaturesProperty.get
@@ -470,7 +470,7 @@ namespace Windows.UI.Xaml.Documents
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static void SetHistoricalLigatures( global::Windows.UI.Xaml.DependencyObject element,  bool value)
 		{
-			element.SetValue(HistoricalLigaturesProperty, value);
+			element.SetValue(HistoricalLigaturesProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Documents.Typography.StandardSwashesProperty.get
@@ -485,7 +485,7 @@ namespace Windows.UI.Xaml.Documents
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static void SetStandardSwashes( global::Windows.UI.Xaml.DependencyObject element,  int value)
 		{
-			element.SetValue(StandardSwashesProperty, value);
+			element.SetValue(StandardSwashesProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Documents.Typography.ContextualSwashesProperty.get
@@ -500,7 +500,7 @@ namespace Windows.UI.Xaml.Documents
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static void SetContextualSwashes( global::Windows.UI.Xaml.DependencyObject element,  int value)
 		{
-			element.SetValue(ContextualSwashesProperty, value);
+			element.SetValue(ContextualSwashesProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Documents.Typography.ContextualAlternatesProperty.get
@@ -515,7 +515,7 @@ namespace Windows.UI.Xaml.Documents
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static void SetContextualAlternates( global::Windows.UI.Xaml.DependencyObject element,  bool value)
 		{
-			element.SetValue(ContextualAlternatesProperty, value);
+			element.SetValue(ContextualAlternatesProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Documents.Typography.StylisticAlternatesProperty.get
@@ -530,7 +530,7 @@ namespace Windows.UI.Xaml.Documents
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static void SetStylisticAlternates( global::Windows.UI.Xaml.DependencyObject element,  int value)
 		{
-			element.SetValue(StylisticAlternatesProperty, value);
+			element.SetValue(StylisticAlternatesProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Documents.Typography.StylisticSet1Property.get
@@ -545,7 +545,7 @@ namespace Windows.UI.Xaml.Documents
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static void SetStylisticSet1( global::Windows.UI.Xaml.DependencyObject element,  bool value)
 		{
-			element.SetValue(StylisticSet1Property, value);
+			element.SetValue(StylisticSet1Property, global::Uno.UI.Helpers.Boxes.Box(value));
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Documents.Typography.StylisticSet2Property.get
@@ -560,7 +560,7 @@ namespace Windows.UI.Xaml.Documents
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static void SetStylisticSet2( global::Windows.UI.Xaml.DependencyObject element,  bool value)
 		{
-			element.SetValue(StylisticSet2Property, value);
+			element.SetValue(StylisticSet2Property, global::Uno.UI.Helpers.Boxes.Box(value));
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Documents.Typography.StylisticSet3Property.get
@@ -575,7 +575,7 @@ namespace Windows.UI.Xaml.Documents
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static void SetStylisticSet3( global::Windows.UI.Xaml.DependencyObject element,  bool value)
 		{
-			element.SetValue(StylisticSet3Property, value);
+			element.SetValue(StylisticSet3Property, global::Uno.UI.Helpers.Boxes.Box(value));
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Documents.Typography.StylisticSet4Property.get
@@ -590,7 +590,7 @@ namespace Windows.UI.Xaml.Documents
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static void SetStylisticSet4( global::Windows.UI.Xaml.DependencyObject element,  bool value)
 		{
-			element.SetValue(StylisticSet4Property, value);
+			element.SetValue(StylisticSet4Property, global::Uno.UI.Helpers.Boxes.Box(value));
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Documents.Typography.StylisticSet5Property.get
@@ -605,7 +605,7 @@ namespace Windows.UI.Xaml.Documents
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static void SetStylisticSet5( global::Windows.UI.Xaml.DependencyObject element,  bool value)
 		{
-			element.SetValue(StylisticSet5Property, value);
+			element.SetValue(StylisticSet5Property, global::Uno.UI.Helpers.Boxes.Box(value));
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Documents.Typography.StylisticSet6Property.get
@@ -620,7 +620,7 @@ namespace Windows.UI.Xaml.Documents
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static void SetStylisticSet6( global::Windows.UI.Xaml.DependencyObject element,  bool value)
 		{
-			element.SetValue(StylisticSet6Property, value);
+			element.SetValue(StylisticSet6Property, global::Uno.UI.Helpers.Boxes.Box(value));
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Documents.Typography.StylisticSet7Property.get
@@ -635,7 +635,7 @@ namespace Windows.UI.Xaml.Documents
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static void SetStylisticSet7( global::Windows.UI.Xaml.DependencyObject element,  bool value)
 		{
-			element.SetValue(StylisticSet7Property, value);
+			element.SetValue(StylisticSet7Property, global::Uno.UI.Helpers.Boxes.Box(value));
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Documents.Typography.StylisticSet8Property.get
@@ -650,7 +650,7 @@ namespace Windows.UI.Xaml.Documents
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static void SetStylisticSet8( global::Windows.UI.Xaml.DependencyObject element,  bool value)
 		{
-			element.SetValue(StylisticSet8Property, value);
+			element.SetValue(StylisticSet8Property, global::Uno.UI.Helpers.Boxes.Box(value));
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Documents.Typography.StylisticSet9Property.get
@@ -665,7 +665,7 @@ namespace Windows.UI.Xaml.Documents
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static void SetStylisticSet9( global::Windows.UI.Xaml.DependencyObject element,  bool value)
 		{
-			element.SetValue(StylisticSet9Property, value);
+			element.SetValue(StylisticSet9Property, global::Uno.UI.Helpers.Boxes.Box(value));
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Documents.Typography.StylisticSet10Property.get
@@ -680,7 +680,7 @@ namespace Windows.UI.Xaml.Documents
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static void SetStylisticSet10( global::Windows.UI.Xaml.DependencyObject element,  bool value)
 		{
-			element.SetValue(StylisticSet10Property, value);
+			element.SetValue(StylisticSet10Property, global::Uno.UI.Helpers.Boxes.Box(value));
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Documents.Typography.StylisticSet11Property.get
@@ -695,7 +695,7 @@ namespace Windows.UI.Xaml.Documents
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static void SetStylisticSet11( global::Windows.UI.Xaml.DependencyObject element,  bool value)
 		{
-			element.SetValue(StylisticSet11Property, value);
+			element.SetValue(StylisticSet11Property, global::Uno.UI.Helpers.Boxes.Box(value));
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Documents.Typography.StylisticSet12Property.get
@@ -710,7 +710,7 @@ namespace Windows.UI.Xaml.Documents
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static void SetStylisticSet12( global::Windows.UI.Xaml.DependencyObject element,  bool value)
 		{
-			element.SetValue(StylisticSet12Property, value);
+			element.SetValue(StylisticSet12Property, global::Uno.UI.Helpers.Boxes.Box(value));
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Documents.Typography.StylisticSet13Property.get
@@ -725,7 +725,7 @@ namespace Windows.UI.Xaml.Documents
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static void SetStylisticSet13( global::Windows.UI.Xaml.DependencyObject element,  bool value)
 		{
-			element.SetValue(StylisticSet13Property, value);
+			element.SetValue(StylisticSet13Property, global::Uno.UI.Helpers.Boxes.Box(value));
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Documents.Typography.StylisticSet14Property.get
@@ -740,7 +740,7 @@ namespace Windows.UI.Xaml.Documents
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static void SetStylisticSet14( global::Windows.UI.Xaml.DependencyObject element,  bool value)
 		{
-			element.SetValue(StylisticSet14Property, value);
+			element.SetValue(StylisticSet14Property, global::Uno.UI.Helpers.Boxes.Box(value));
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Documents.Typography.StylisticSet15Property.get
@@ -755,7 +755,7 @@ namespace Windows.UI.Xaml.Documents
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static void SetStylisticSet15( global::Windows.UI.Xaml.DependencyObject element,  bool value)
 		{
-			element.SetValue(StylisticSet15Property, value);
+			element.SetValue(StylisticSet15Property, global::Uno.UI.Helpers.Boxes.Box(value));
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Documents.Typography.StylisticSet16Property.get
@@ -770,7 +770,7 @@ namespace Windows.UI.Xaml.Documents
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static void SetStylisticSet16( global::Windows.UI.Xaml.DependencyObject element,  bool value)
 		{
-			element.SetValue(StylisticSet16Property, value);
+			element.SetValue(StylisticSet16Property, global::Uno.UI.Helpers.Boxes.Box(value));
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Documents.Typography.StylisticSet17Property.get
@@ -785,7 +785,7 @@ namespace Windows.UI.Xaml.Documents
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static void SetStylisticSet17( global::Windows.UI.Xaml.DependencyObject element,  bool value)
 		{
-			element.SetValue(StylisticSet17Property, value);
+			element.SetValue(StylisticSet17Property, global::Uno.UI.Helpers.Boxes.Box(value));
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Documents.Typography.StylisticSet18Property.get
@@ -800,7 +800,7 @@ namespace Windows.UI.Xaml.Documents
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static void SetStylisticSet18( global::Windows.UI.Xaml.DependencyObject element,  bool value)
 		{
-			element.SetValue(StylisticSet18Property, value);
+			element.SetValue(StylisticSet18Property, global::Uno.UI.Helpers.Boxes.Box(value));
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Documents.Typography.StylisticSet19Property.get
@@ -815,7 +815,7 @@ namespace Windows.UI.Xaml.Documents
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static void SetStylisticSet19( global::Windows.UI.Xaml.DependencyObject element,  bool value)
 		{
-			element.SetValue(StylisticSet19Property, value);
+			element.SetValue(StylisticSet19Property, global::Uno.UI.Helpers.Boxes.Box(value));
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Documents.Typography.StylisticSet20Property.get
@@ -830,7 +830,7 @@ namespace Windows.UI.Xaml.Documents
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static void SetStylisticSet20( global::Windows.UI.Xaml.DependencyObject element,  bool value)
 		{
-			element.SetValue(StylisticSet20Property, value);
+			element.SetValue(StylisticSet20Property, global::Uno.UI.Helpers.Boxes.Box(value));
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Documents.Typography.CapitalsProperty.get
@@ -860,7 +860,7 @@ namespace Windows.UI.Xaml.Documents
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static void SetCapitalSpacing( global::Windows.UI.Xaml.DependencyObject element,  bool value)
 		{
-			element.SetValue(CapitalSpacingProperty, value);
+			element.SetValue(CapitalSpacingProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Documents.Typography.KerningProperty.get
@@ -875,7 +875,7 @@ namespace Windows.UI.Xaml.Documents
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static void SetKerning( global::Windows.UI.Xaml.DependencyObject element,  bool value)
 		{
-			element.SetValue(KerningProperty, value);
+			element.SetValue(KerningProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Documents.Typography.CaseSensitiveFormsProperty.get
@@ -890,7 +890,7 @@ namespace Windows.UI.Xaml.Documents
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static void SetCaseSensitiveForms( global::Windows.UI.Xaml.DependencyObject element,  bool value)
 		{
-			element.SetValue(CaseSensitiveFormsProperty, value);
+			element.SetValue(CaseSensitiveFormsProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Documents.Typography.HistoricalFormsProperty.get
@@ -905,7 +905,7 @@ namespace Windows.UI.Xaml.Documents
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static void SetHistoricalForms( global::Windows.UI.Xaml.DependencyObject element,  bool value)
 		{
-			element.SetValue(HistoricalFormsProperty, value);
+			element.SetValue(HistoricalFormsProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Documents.Typography.FractionProperty.get
@@ -965,7 +965,7 @@ namespace Windows.UI.Xaml.Documents
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static void SetSlashedZero( global::Windows.UI.Xaml.DependencyObject element,  bool value)
 		{
-			element.SetValue(SlashedZeroProperty, value);
+			element.SetValue(SlashedZeroProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Documents.Typography.MathematicalGreekProperty.get
@@ -980,7 +980,7 @@ namespace Windows.UI.Xaml.Documents
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static void SetMathematicalGreek( global::Windows.UI.Xaml.DependencyObject element,  bool value)
 		{
-			element.SetValue(MathematicalGreekProperty, value);
+			element.SetValue(MathematicalGreekProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Documents.Typography.VariantsProperty.get

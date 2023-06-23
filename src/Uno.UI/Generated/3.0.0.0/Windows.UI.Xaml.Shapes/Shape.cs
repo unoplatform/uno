@@ -123,7 +123,7 @@ namespace Windows.UI.Xaml.Shapes
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(StrokeDashOffset), typeof(double), 
 			typeof(global::Windows.UI.Xaml.Shapes.Shape), 
-			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.DoubleBoxes.Zero));
 		#endif
 		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -147,7 +147,7 @@ namespace Windows.UI.Xaml.Shapes
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(StrokeMiterLimit), typeof(double), 
 			typeof(global::Windows.UI.Xaml.Shapes.Shape), 
-			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.DoubleBoxes.Zero));
 		#endif
 		// Skipping already declared property StrokeProperty
 		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

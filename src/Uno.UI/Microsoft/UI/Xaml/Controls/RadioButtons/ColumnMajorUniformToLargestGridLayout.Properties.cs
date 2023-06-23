@@ -51,7 +51,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			owner.ValidateGreaterThanZero(coercedValue);
 			if (value != coercedValue)
 			{
-				sender.SetValue(args.Property, coercedValue);
+				sender.SetValue(args.Property, Boxes.Box(coercedValue));
 				return;
 			}
 

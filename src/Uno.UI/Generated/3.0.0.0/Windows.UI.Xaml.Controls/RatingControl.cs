@@ -175,7 +175,7 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(PlaceholderValue), typeof(double), 
 			typeof(global::Windows.UI.Xaml.Controls.RatingControl), 
-			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.DoubleBoxes.Zero));
 		#endif
 		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -183,7 +183,7 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(Value), typeof(double), 
 			typeof(global::Windows.UI.Xaml.Controls.RatingControl), 
-			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.DoubleBoxes.Zero));
 		#endif
 		// Skipping already declared method Windows.UI.Xaml.Controls.RatingControl.RatingControl()
 		// Forced skipping of method Windows.UI.Xaml.Controls.RatingControl.RatingControl()

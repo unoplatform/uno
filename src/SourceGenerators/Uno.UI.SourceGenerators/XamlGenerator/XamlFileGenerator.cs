@@ -310,6 +310,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			writer.AppendLineIndented("#pragma warning disable CS0114");
 			writer.AppendLineIndented("#pragma warning disable CS0108");
+			if (_generatorContext.GetMSBuildPropertyValue("_IsUnoUISolution") == "true")
+			{
+				writer.AppendLineIndented("#pragma warning disable UnoInternal0001");
+			}
+
 			writer.AppendLineIndented("using System;");
 			writer.AppendLineIndented("using System.Collections.Generic;");
 			writer.AppendLineIndented("using System.Diagnostics;");

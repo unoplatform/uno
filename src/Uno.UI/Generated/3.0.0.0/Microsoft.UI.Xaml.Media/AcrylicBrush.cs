@@ -121,7 +121,7 @@ namespace Microsoft.UI.Xaml.Media
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(TintOpacity), typeof(double), 
 			typeof(global::Microsoft.UI.Xaml.Media.AcrylicBrush), 
-			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.DoubleBoxes.Zero));
 		#endif
 		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]

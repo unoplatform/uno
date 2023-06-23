@@ -123,7 +123,7 @@ namespace <#= @namespace.Name #>
 		public string Condition { get; set; }
 		public string Modifier { get; set; }
 		public string FrameworkPropertyOption { get; set; }
-		public bool UseBoxHelper => PropertyType == "int";
+		public bool UseBoxHelper => PropertyType is "int" or "double" or "bool";
     }
 
     public class NamespacesBuilder

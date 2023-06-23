@@ -193,17 +193,17 @@ namespace Windows.UI.Xaml
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.DependencyProperty ActualHeightProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(ActualHeight), typeof(double),
-			typeof(global::Windows.UI.Xaml.FrameworkElement),
-			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
+			nameof(ActualHeight), typeof(double), 
+			typeof(global::Windows.UI.Xaml.FrameworkElement), 
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.DoubleBoxes.Zero));
 		#endif
 		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.DependencyProperty ActualWidthProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(ActualWidth), typeof(double),
-			typeof(global::Windows.UI.Xaml.FrameworkElement),
-			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
+			nameof(ActualWidth), typeof(double), 
+			typeof(global::Windows.UI.Xaml.FrameworkElement), 
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.DoubleBoxes.Zero));
 		#endif
 		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]

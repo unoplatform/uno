@@ -172,7 +172,7 @@ namespace Windows.UI.Xaml.Automation
 
 		public static int GetPositionInSet(global::Windows.UI.Xaml.DependencyObject element) => (int)element.GetValue(PositionInSetProperty);
 
-		public static void SetPositionInSet(DependencyObject element, int value) => element.SetValue(PositionInSetProperty, value);
+		public static void SetPositionInSet(DependencyObject element, int value) => element.SetValue(PositionInSetProperty, Boxes.Box(value));
 
 		public static DependencyProperty PositionInSetProperty { get; } =
 			DependencyProperty.RegisterAttached(
@@ -182,7 +182,7 @@ namespace Windows.UI.Xaml.Automation
 
 		public static int GetSizeOfSet(DependencyObject element) => (int)element.GetValue(SizeOfSetProperty);
 
-		public static void SetSizeOfSet(DependencyObject element, int value) => element.SetValue(SizeOfSetProperty, value);
+		public static void SetSizeOfSet(DependencyObject element, int value) => element.SetValue(SizeOfSetProperty, Boxes.Box(value));
 
 		public static DependencyProperty SizeOfSetProperty { get; } =
 			DependencyProperty.RegisterAttached(

@@ -54,7 +54,7 @@ namespace Windows.UI.Xaml.Markup
 		}
 
 		public static void SetPropertyFromBoolean(object dependencyObject, DependencyProperty propertyToSet, bool value) =>
-			(dependencyObject as DependencyObject).SetValue(propertyToSet, value);
+			(dependencyObject as DependencyObject).SetValue(propertyToSet, global::Uno.UI.Helpers.Boxes.Box(value));
 
 		public static void SetPropertyFromByte(object dependencyObject, DependencyProperty propertyToSet, byte value) =>
 			(dependencyObject as DependencyObject).SetValue(propertyToSet, value);
@@ -66,10 +66,10 @@ namespace Windows.UI.Xaml.Markup
 			(dependencyObject as DependencyObject).SetValue(propertyToSet, value);
 
 		public static void SetPropertyFromDouble(object dependencyObject, DependencyProperty propertyToSet, double value) =>
-			(dependencyObject as DependencyObject).SetValue(propertyToSet, value);
+			(dependencyObject as DependencyObject).SetValue(propertyToSet, global::Uno.UI.Helpers.Boxes.Box(value));
 
 		public static void SetPropertyFromInt32(object dependencyObject, DependencyProperty propertyToSet, int value) =>
-			(dependencyObject as DependencyObject).SetValue(propertyToSet, value);
+			(dependencyObject as DependencyObject).SetValue(propertyToSet, global::Uno.UI.Helpers.Boxes.Box(value));
 
 		public static void SetPropertyFromInt64(object dependencyObject, DependencyProperty propertyToSet, long value) =>
 			(dependencyObject as DependencyObject).SetValue(propertyToSet, value);

@@ -343,7 +343,17 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				}
 			}
 
-			builder.AppendLineIndented($"private static void Set{propertyName}Value({propertyTargetName} instance, {propertyTypeName} value) => instance.SetValue({propertyOwnerTypeName}.{propertyName}Property, value);");
+			string propertyValue;
+			if (propertyTypeName is "int" or "bool" or "double")
+			{
+				propertyValue = "global::Uno.UI.Helpers.Boxes.Box(value)";
+			}
+			else
+			{
+				propertyValue = "value";
+			}
+
+			builder.AppendLineIndented($"private static void Set{propertyName}Value({propertyTargetName} instance, {propertyTypeName} value) => instance.SetValue({propertyOwnerTypeName}.{propertyName}Property, {propertyValue});");
 
 			GeneratePropertyStorage(builder, propertyName);
 
@@ -562,8 +572,52 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 					var o => o?.ToString() ?? "null",
 				};
 
-				var useBoxHelper = propertyTypeName == "int"; // extend this as appropriate.
-				defaultValueString = useBoxHelper ? $"global::Uno.UI.Helpers.Boxes.Box({defaultValueString})" : $"({propertyTypeName}){defaultValueString}";
+				var useBoxHelper = false;
+				// Extend this as appropriate
+				if (propertyTypeName == "int")
+				{
+					if (defaultValueString is "0")
+					{
+						defaultValueString = "global::Uno.UI.Helpers.Boxes.IntegerBoxes.Zero";
+						useBoxHelper = true;
+					}
+					else if (defaultValueString is "-1")
+					{
+						defaultValueString = "global::Uno.UI.Helpers.Boxes.IntegerBoxes.NegativeOne";
+						useBoxHelper = true;
+					}
+					else if (defaultValueString is "1")
+					{
+						defaultValueString = "global::Uno.UI.Helpers.Boxes.IntegerBoxes.One";
+						useBoxHelper = true;
+					}
+				}
+				else if (propertyTypeName == "bool")
+				{
+					if (defaultValueString == "false")
+					{
+						defaultValueString = "global::Uno.UI.Helpers.Boxes.BooleanBoxes.BoxedFalse";
+						useBoxHelper = true;
+					}
+					else if (defaultValueString is "true")
+					{
+						defaultValueString = "global::Uno.UI.Helpers.Boxes.BooleanBoxes.BoxedTrue";
+						useBoxHelper = true;
+					}
+				}
+				else if (propertyTypeName == "double")
+				{
+					if (defaultValueString is "0.0" or "0.0d")
+					{
+						defaultValueString = "global::Uno.UI.Helpers.Boxes.DoubleBoxes.Zero";
+						useBoxHelper = true;
+					}
+				}
+
+				if (!useBoxHelper)
+				{
+					defaultValueString = $"({propertyTypeName}){defaultValueString}";
+				}
 
 				builder.AppendLineIndented($"\t\tdefaultValue: {defaultValueString} /* {defaultValueMethodName}, {data.ContainingTypeFullyQualifiedName} */");
 			}

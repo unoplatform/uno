@@ -1088,6 +1088,11 @@ namespace Uno.UWPSyncGenerator
 									else if (method.Name.StartsWith("Set", StringComparison.Ordinal))
 									{
 										var valueParamName = SanitizeParameter(method.Parameters.ElementAt(1).Name);
+										if (method.ReturnType.SpecialType is SpecialType.System_Int32 or SpecialType.System_Double or SpecialType.System_Boolean)
+										{
+											valueParamName = $"global::Uno.UI.Helpers.Boxes.Box({valueParamName})";
+										}
+
 										b.AppendLineInvariant($"{instanceParamName}.SetValue({filteredName}Property, {valueParamName});");
 									}
 								}

@@ -71,7 +71,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(SpeedRatio), typeof(double), 
 			typeof(global::Windows.UI.Xaml.Media.Animation.Timeline), 
-			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.DoubleBoxes.Zero));
 		#endif
 		// Skipping already declared method Windows.UI.Xaml.Media.Animation.Timeline.Timeline()
 		// Forced skipping of method Windows.UI.Xaml.Media.Animation.Timeline.Timeline()
