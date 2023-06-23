@@ -497,6 +497,23 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		public async Task When_ImageFailed()
+		{
+			var image = new Image() { Width = 100, Height = 100 };
+			TestServices.WindowHelper.WindowContent = image;
+			await WindowHelper.WaitForLoaded(image);
+			bool imageFailedRaised = false;
+			image.ImageFailed += (s, e) =>
+			{
+				imageFailedRaised = true;
+			};
+			image.Source = new BitmapImage(new Uri("ms-appx:///image/definitely/does/not/exist.png"));
+
+			Assert.IsTrue(imageFailedRaised);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
 #if __MACOS__
 		[Ignore("Currently fails on macOS, part of #9282 epic")]
 #endif
