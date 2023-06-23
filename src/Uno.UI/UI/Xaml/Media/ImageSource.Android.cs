@@ -91,6 +91,8 @@ namespace Windows.UI.Xaml.Media
 				|| ResourceId != null;
 		}
 
+		internal bool ResourceFailed => ResourceString is not null && ResourceId is null;
+
 		internal BitmapDrawable? BitmapDrawable { get; private set; }
 
 		internal int? ResourceId

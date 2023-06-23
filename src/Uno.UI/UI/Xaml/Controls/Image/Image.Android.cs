@@ -146,6 +146,13 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 
+			if (imageSource.ResourceFailed)
+			{
+				// Currently resource-based images are evaluated immediately
+				// in the constructor - so we have to raise ImageFailed late.				
+				OnImageFailed(imageSource, new InvalidOperationException("Resource could not be found"));
+			}
+
 			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
 				this.Log().Debug(this.ToString() + " TryOpenImage - proceeding");
