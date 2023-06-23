@@ -116,7 +116,7 @@ Once the templates are installed, you can scroll back up and see the list of Uno
 
 Now we have the moving parts installed on our Pi, we can spin up a brand new Uno solution with the following command;
 
-`dotnet new unoapp -o HelloPi --preset=blank --platforms=gtk --platforms=linux-fb && cd unoapp1`
+`dotnet new unoapp -o HelloPi --preset=blank --platforms=gtk --platforms="linux-fb" && cd unoapp1`
 
 You should now find yourself in the solution directory for your new Uno App. If we have a look at the folder contents with;
 
