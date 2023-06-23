@@ -9,6 +9,8 @@ using Private.Infrastructure;
 using Windows.UI.Xaml.Controls;
 using System.Runtime.CompilerServices;
 using Uno.UI.RuntimeTests.Helpers;
+using FluentAssertions;
+
 #if HAS_UNO
 using Uno.UI.Xaml.Controls;
 #endif
@@ -115,6 +117,31 @@ public class Given_WebView2
 
 	}
 #endif
+
+	[TestMethod]
+	public async Task When_ExecuteScriptAsync_Has_No_Result()
+	{
+		async Task Do()
+		{
+			var border = new Border();
+			var webView = new WebView2();
+			webView.Width = 200;
+			webView.Height = 200;
+			border.Child = webView;
+			TestServices.WindowHelper.WindowContent = border;
+			bool navigated = false;
+			await TestServices.WindowHelper.WaitForLoaded(border);
+			await webView.EnsureCoreWebView2Async();
+			webView.NavigationCompleted += (sender, e) => navigated = true;
+			webView.NavigateToString("<html><body><script>function testMe(){ }</script><div id='test' style='width: 100px; height: 100px; background-color: blue;' /></body></html>");
+			await TestServices.WindowHelper.WaitFor(() => navigated);
+
+			Func<Task> act = async () => await webView.ExecuteScriptAsync("testMe()");
+			await act.Should().NotThrowAsync();
+		}
+
+		await TestHelper.RetryAssert(Do, 3);
+	}
 
 #if !__IOS__ // Temporarily disabled due to #11997
 	[TestMethod]
