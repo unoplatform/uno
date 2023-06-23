@@ -349,7 +349,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static void SetIsTemplateKeyTipTarget( global::Windows.UI.Xaml.DependencyObject element,  bool value)
 		{
-			element.SetValue(IsTemplateKeyTipTargetProperty, value);
+			element.SetValue(IsTemplateKeyTipTargetProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Controls.Control.IsFocusEngagementEnabledProperty.get

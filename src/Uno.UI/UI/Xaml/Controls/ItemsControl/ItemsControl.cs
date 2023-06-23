@@ -1324,7 +1324,7 @@ namespace Windows.UI.Xaml.Controls
 			_containerBeingPrepared = container;
 
 			// This must be set before calling PrepareContainerForItemOverride
-			container.SetValue(IndexForItemContainerProperty, index);
+			container.SetValue(IndexForItemContainerProperty, Boxes.Box(index));
 
 			var item = ItemFromIndex(index);
 			PrepareContainerForItemOverride(container, item);

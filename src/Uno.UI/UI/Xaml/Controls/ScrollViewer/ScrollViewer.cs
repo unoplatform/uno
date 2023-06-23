@@ -274,7 +274,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 #endif
 		public static void SetBringIntoViewOnFocusChange(global::Windows.UI.Xaml.DependencyObject element, bool bringIntoViewOnFocusChange)
-			=> element.SetValue(BringIntoViewOnFocusChangeProperty, bringIntoViewOnFocusChange);
+			=> element.SetValue(BringIntoViewOnFocusChangeProperty, global::Uno.UI.Helpers.Boxes.Box(bringIntoViewOnFocusChange));
 
 #if __IOS__
 		[global::Uno.NotImplemented]

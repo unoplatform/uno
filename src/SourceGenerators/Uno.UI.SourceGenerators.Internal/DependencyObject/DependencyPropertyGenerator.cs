@@ -576,17 +576,17 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				// Extend this as appropriate
 				if (propertyTypeName == "int")
 				{
-					if (defaultValueString is "0")
+					if (defaultValue.Value.Value.Value is 0)
 					{
 						defaultValueString = "global::Uno.UI.Helpers.Boxes.IntegerBoxes.Zero";
 						useBoxHelper = true;
 					}
-					else if (defaultValueString is "-1")
+					else if (defaultValue.Value.Value.Value is -1)
 					{
 						defaultValueString = "global::Uno.UI.Helpers.Boxes.IntegerBoxes.NegativeOne";
 						useBoxHelper = true;
 					}
-					else if (defaultValueString is "1")
+					else if (defaultValue.Value.Value.Value is 1)
 					{
 						defaultValueString = "global::Uno.UI.Helpers.Boxes.IntegerBoxes.One";
 						useBoxHelper = true;
@@ -594,12 +594,12 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				}
 				else if (propertyTypeName == "bool")
 				{
-					if (defaultValueString == "false")
+					if (defaultValue.Value.Value.Value is false)
 					{
 						defaultValueString = "global::Uno.UI.Helpers.Boxes.BooleanBoxes.BoxedFalse";
 						useBoxHelper = true;
 					}
-					else if (defaultValueString is "true")
+					else if (defaultValue.Value.Value.Value is true)
 					{
 						defaultValueString = "global::Uno.UI.Helpers.Boxes.BooleanBoxes.BoxedTrue";
 						useBoxHelper = true;
@@ -607,7 +607,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				}
 				else if (propertyTypeName == "double")
 				{
-					if (defaultValueString is "0.0" or "0.0d")
+					if (defaultValue.Value.Value.Value is 0.0d)
 					{
 						defaultValueString = "global::Uno.UI.Helpers.Boxes.DoubleBoxes.Zero";
 						useBoxHelper = true;
