@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Uno.UI.Helpers;
 
 namespace Windows.UI.Xaml.Media.Animation
 {
@@ -42,7 +43,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			{
 				// ClearValue in order to make sure the value is considered to be changed
 				ClearValue();
-				SetValue(_finalValue);
+				SetValue(Boxes.Box(_finalValue));
 			}
 		}
 	}

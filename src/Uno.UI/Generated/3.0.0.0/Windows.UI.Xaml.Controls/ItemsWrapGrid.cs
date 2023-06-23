@@ -84,7 +84,7 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(CacheLength), typeof(double), 
 			typeof(global::Windows.UI.Xaml.Controls.ItemsWrapGrid), 
-			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
+			new Windows.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.DoubleBoxes.Zero));
 		#endif
 		// Skipping already declared property GroupHeaderPlacementProperty
 		// Skipping already declared property GroupPaddingProperty

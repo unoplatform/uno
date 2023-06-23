@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Runtime.CompilerServices;
 using Uno.UI.Extensions;
+using Uno.UI.Helpers;
 using Uno.Foundation.Logging;
 using Uno.Extensions;
 using Windows.Graphics.Display;

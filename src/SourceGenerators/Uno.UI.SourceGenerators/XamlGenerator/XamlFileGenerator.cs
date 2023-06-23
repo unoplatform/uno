@@ -1820,11 +1820,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 					// Call helper to avoid unnecessary AOT binary footprint of creating a lambda, etc
 					string propertyValue;
-					if (propertyType.SpecialType == SpecialType.System_Int32)
+					if (_isUnoAssembly && propertyType.SpecialType == SpecialType.System_Int32)
 					{
 						propertyValue = "global::Uno.UI.Helpers.Boxes.IntegerBoxes.Zero";
 					}
-					else if (propertyType.SpecialType == SpecialType.System_Boolean)
+					else if (_isUnoAssembly && propertyType.SpecialType == SpecialType.System_Boolean)
 					{
 						propertyValue = "global::Uno.UI.Helpers.Boxes.BooleanBoxes.BoxedFalse";
 					}
