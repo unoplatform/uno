@@ -509,7 +509,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			};
 			image.Source = new BitmapImage(new Uri("ms-appx:///image/definitely/does/not/exist.png"));
 
-			Assert.IsTrue(imageFailedRaised);
+			await WindowHelper.WaitFor(() => imageFailedRaised);
 		}
 
 		[TestMethod]
