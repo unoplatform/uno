@@ -255,7 +255,7 @@ namespace Microsoft.UI.Xaml.Controls
 			var splitView = GetSplitView();
 			if (splitView != null)
 			{
-				SetValue(CompactPaneLengthProperty, Boxes.Box(splitView.CompactPaneLength)); //PropertyValue.CreateDouble(splitView.CompactPaneLength));
+				SetValue(CompactPaneLengthProperty, splitView.CompactPaneLength); //PropertyValue.CreateDouble(splitView.CompactPaneLength));
 
 				// Only update when on left
 				var presenter = GetPresenter();

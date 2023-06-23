@@ -889,7 +889,7 @@ namespace Windows.UI.Xaml.Controls
 				opacity = 0.0f;
 			}
 
-			pTextBlock.SetValue(UIElement.OpacityProperty, Boxes.Box(opacity));
+			pTextBlock.SetValue(UIElement.OpacityProperty, opacity);
 
 		}
 
@@ -905,7 +905,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				object value;
 
-				pTextBlock.SetValue(TextBlock.FontSizeProperty, Boxes.Box((double)properties.fontSize));
+				pTextBlock.SetValue(TextBlock.FontSizeProperty, (double)properties.fontSize);
 
 				value = properties.fontStyle;
 				pTextBlock.SetValue(TextBlock.FontStyleProperty, (FontStyle)value);

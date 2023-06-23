@@ -315,7 +315,7 @@ namespace Microsoft.UI.Xaml.Controls
 				var clampedValue = Math.Max(0.0, value);
 				if (clampedValue != value)
 				{
-					SetValue(property, Boxes.Box(clampedValue));
+					SetValue(property, clampedValue);
 					return;
 				}
 			}

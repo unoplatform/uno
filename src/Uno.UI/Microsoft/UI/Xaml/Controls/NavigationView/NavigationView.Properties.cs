@@ -53,7 +53,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				var coercedValue = value;
 				CoerceToGreaterThanZero(ref coercedValue);
-				SetValue(CompactModeThresholdWidthProperty, Boxes.Box(coercedValue));
+				SetValue(CompactModeThresholdWidthProperty, coercedValue);
 			}
 		}
 
@@ -73,7 +73,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				var coercedValue = value;
 				CoerceToGreaterThanZero(ref coercedValue);
-				SetValue(CompactPaneLengthProperty, Boxes.Box(coercedValue));
+				SetValue(CompactPaneLengthProperty, coercedValue);
 			}
 		}
 
@@ -395,7 +395,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				var coercedValue = value;
 				CoerceToGreaterThanZero(ref coercedValue);
-				SetValue(OpenPaneLengthProperty, Boxes.Box(coercedValue));
+				SetValue(OpenPaneLengthProperty, coercedValue);
 			}
 		}
 
@@ -602,7 +602,7 @@ namespace Microsoft.UI.Xaml.Controls
 			owner.CoerceToGreaterThanZero(ref coercedValue);
 			if (Math.Abs(coercedValue - value) > 0.1)
 			{
-				sender.SetValue(args.Property, Boxes.Box(coercedValue));
+				sender.SetValue(args.Property, coercedValue);
 				return;
 			}
 
@@ -620,7 +620,7 @@ namespace Microsoft.UI.Xaml.Controls
 			owner.CoerceToGreaterThanZero(ref coercedValue);
 			if (Math.Abs(coercedValue - value) > 0.1)
 			{
-				sender.SetValue(args.Property, Boxes.Box(coercedValue));
+				sender.SetValue(args.Property, coercedValue);
 				return;
 			}
 
@@ -638,7 +638,7 @@ namespace Microsoft.UI.Xaml.Controls
 			owner.CoerceToGreaterThanZero(ref coercedValue);
 			if (Math.Abs(coercedValue - value) > 0.1)
 			{
-				sender.SetValue(args.Property, Boxes.Box(coercedValue));
+				sender.SetValue(args.Property, coercedValue);
 				return;
 			}
 
@@ -656,7 +656,7 @@ namespace Microsoft.UI.Xaml.Controls
 			owner.CoerceToGreaterThanZero(ref coercedValue);
 			if (Math.Abs(coercedValue - value) > 0.1)
 			{
-				sender.SetValue(args.Property, Boxes.Box(coercedValue));
+				sender.SetValue(args.Property, coercedValue);
 				return;
 			}
 

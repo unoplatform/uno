@@ -19,11 +19,11 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (args.Property == AllowFocusOnInteractionProperty)
 			{
-				Content?.SetValue(AllowFocusOnInteractionProperty, Boxes.Box(AllowFocusOnInteraction));
+				Content?.SetValue(AllowFocusOnInteractionProperty, AllowFocusOnInteraction);
 			}
 			else if (args.Property == AllowFocusWhenDisabledProperty)
 			{
-				Content?.SetValue(AllowFocusWhenDisabledProperty, Boxes.Box(AllowFocusWhenDisabled));
+				Content?.SetValue(AllowFocusWhenDisabledProperty, AllowFocusWhenDisabled);
 			}
 
 			base.OnPropertyChanged2(args);
@@ -33,8 +33,8 @@ namespace Windows.UI.Xaml.Controls
 		{
 			base.OnContentChanged(oldValue, newValue);
 
-			Content?.SetValue(AllowFocusOnInteractionProperty, Boxes.Box(AllowFocusOnInteraction));
-			Content?.SetValue(AllowFocusWhenDisabledProperty, Boxes.Box(AllowFocusWhenDisabled));
+			Content?.SetValue(AllowFocusOnInteractionProperty, AllowFocusOnInteraction);
+			Content?.SetValue(AllowFocusWhenDisabledProperty, AllowFocusWhenDisabled);
 		}
 
 		protected override bool CanCreateTemplateWithoutParent { get; } = true;

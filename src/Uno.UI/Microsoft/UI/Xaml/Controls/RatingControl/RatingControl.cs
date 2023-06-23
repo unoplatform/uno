@@ -626,7 +626,7 @@ namespace Microsoft.UI.Xaml.Controls
 				var coercedValue = CoerceValueBetweenMinAndMax(value);
 				if (value != coercedValue)
 				{
-					SetValue(property, Boxes.Box(coercedValue));
+					SetValue(property, coercedValue);
 					// early return, we'll come back to handle the change to the corced value.
 					return;
 				}
