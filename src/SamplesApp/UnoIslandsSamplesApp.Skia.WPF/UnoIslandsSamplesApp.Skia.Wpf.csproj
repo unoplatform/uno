@@ -1,12 +1,16 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras">
 	<PropertyGroup>
-		<TargetFrameworks>net472;netcoreapp3.1</TargetFrameworks>
+		<TargetFrameworks>net6.0-windows</TargetFrameworks>
 
 		<!--
 		Enable implicit dotnet runtime forward rolling, as the specifed target framework
 		project may run with only a later version of the .NET runtime installed.
 		-->
 		<RollForward>Major</RollForward>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(MSBuildRuntimeType)'=='Core' or '$(BuildingInsideVisualStudio)'=='true'">
+		<TargetFrameworks>net7.0-windows</TargetFrameworks>
 	</PropertyGroup>
 
 	<Import Project="../../targetframework-override.props" />
@@ -34,6 +38,7 @@
 		<Reference Include="WindowsBase" />
 		<Reference Include="PresentationCore" />
 		<Reference Include="PresentationFramework" />
+		<Manifest Include="$(ApplicationManifest)" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -46,7 +51,15 @@
 
 	<ItemGroup>
 		<PackageReference Include="MSTest.TestFramework" Version="2.1.2" />
-		<PackageReference Include="SkiaSharp.Views.WPF" Version="2.80.3" />
+		<PackageReference Include="SkiaSharp.Views.WPF" Version="2.88.3" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)'=='net6.0-windows'">
+		<PackageReference Include="System.Drawing.Common" Version="6.0.0" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)'=='net7.0-windows'">
+		<PackageReference Include="System.Drawing.Common" Version="7.0.0-rc.1.22426.10" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -93,7 +106,8 @@
 		</None>
 	</ItemGroup>
 
-	<Import Project="..\..\build\*.Skia.Wpf.props" />
-	<Import Project="..\..\build\*.Skia.Wpf.targets" />
-
+	<Import Project="..\..\..\build\*.Skia.Wpf.props" />
+	<Import Project="..\..\..\build\*.Skia.Wpf.targets" />
+	<Import Project="..\..\..\build\uno.winui.runtime-replace.targets" />
+	
 </Project>
