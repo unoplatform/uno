@@ -453,7 +453,12 @@ namespace Uno.Xaml
 
 		IEnumerable<XamlXmlNodeInfo> ReadMembers (XamlType parentType, XamlType xt)
 		{
-			for (r.MoveToContent (); r.NodeType != XmlNodeType.EndElement; r.MoveToContent ()) {
+			if (r.NodeType != XmlNodeType.SignificantWhitespace)
+			{
+				r.MoveToContent ();
+			}
+			while (r.NodeType != XmlNodeType.EndElement) 
+			{
 				switch (r.NodeType) {
 				case XmlNodeType.Element:
 					// FIXME: parse type arguments etc.
@@ -462,11 +467,15 @@ namespace Uno.Xaml
 							yield break;
 						yield return x;
 					}
-					continue;
+					break;
 				default:
 					foreach (var x in ReadMemberText (xt))
 						yield return x;
-					continue;
+					break;
+				}
+				if (r.NodeType != XmlNodeType.SignificantWhitespace)
+				{
+					r.MoveToContent();
 				}
 			}
 		}
@@ -669,7 +678,15 @@ namespace Uno.Xaml
 
 		private string ReadCurrentContentString(bool isFirstElementString)
 		{
-			var value = r.ReadContentAsString();
+			string value;
+			if (r.NodeType == XmlNodeType.SignificantWhitespace)
+			{
+				value = r.Value;
+				r.Read();
+				return value;
+			}
+
+			value = r.ReadContentAsString();
 
 			if (r.XmlSpace == XmlSpace.None)
 			{
