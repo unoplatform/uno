@@ -17,7 +17,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 			set
 			{
-				this.SetValue(IsDefaultShadowEnabledProperty, value);
+				this.SetValue(IsDefaultShadowEnabledProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 			}
 		}
 		#endif
