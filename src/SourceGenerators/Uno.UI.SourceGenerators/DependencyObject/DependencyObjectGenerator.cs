@@ -812,11 +812,11 @@ public override bool Equals(object other)
 
 				if (_isUnoSolution)
 				{
-					builder.AppendLineIndented("public void SetValue(DependencyProperty dp, bool value) => SetValue(dp, global::Uno.UI.Helpers.Boxes.Box(value));");
+					builder.AppendLineIndented("internal void SetValue(DependencyProperty dp, bool value) => SetValue(dp, global::Uno.UI.Helpers.Boxes.Box(value));");
 
-					builder.AppendLineIndented("public void SetValue(DependencyProperty dp, int value) => SetValue(dp, global::Uno.UI.Helpers.Boxes.Box(value));");
+					builder.AppendLineIndented("internal void SetValue(DependencyProperty dp, int value) => SetValue(dp, global::Uno.UI.Helpers.Boxes.Box(value));");
 
-					builder.AppendLineIndented("public void SetValue(DependencyProperty dp, double value) => SetValue(dp, global::Uno.UI.Helpers.Boxes.Box(value));");
+					builder.AppendLineIndented("internal void SetValue(DependencyProperty dp, double value) => SetValue(dp, global::Uno.UI.Helpers.Boxes.Box(value));");
 				}
 
 				builder.AppendLineIndented("public void ClearValue(DependencyProperty dp) => __Store.ClearValue(dp);");
