@@ -473,6 +473,29 @@ namespace Uno.UI {
 			}
 		}
 
+		public setSinglePropertyNative(pParams: number): boolean {
+
+			const params = WindowManagerSetSinglePropertyParams.unmarshal(pParams);
+
+			this.setSinglePropertyNativeFast(params.HtmlId, params.Name, params.Value);
+
+			return true;
+		}
+
+		public setSinglePropertyNativeFast(htmlId: number, name: string, value: string) {
+
+			const element = this.getView(htmlId);
+			if (value === "true") {
+				(element as any)[name] = true;
+			}
+			else if (value === "false") {
+				(element as any)[name] = false;
+			}
+			else {
+				(element as any)[name] = value;
+			}
+		}
+
 		/**
 			* Get a property for an element.
 			*/
