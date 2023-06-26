@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net.WebSockets;
 using System.Runtime.Loader;
-using System.Runtime.Remoting.Messaging;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
@@ -36,37 +35,44 @@ namespace Uno.UI.RemoteControl.Host
 					this.Log().LogDebug("Unloading assembly context");
 				}
 			};
-			//_loadContext.Resolving += (context, assemblyName) =>
-			//{
-			//	if (_loopAssembly is not null)
-			//	{
-			//		try
-			//		{
-			//			var loc = _loopAssembly.Location;
 
-			//			if (!string.IsNullOrWhiteSpace(loc))
-			//			{
-			//				var dir = Path.GetDirectoryName(loc);
+			// Add custom resolving so we can find dependencies even when the processor assembly
+			// is built for a different .net version than the host process.
+			_loadContext.Resolving += (context, assemblyName) =>
+			{
+				if (_loopAssembly is not null)
+				{
+					try
+					{
+						var loc = _loopAssembly.Location;
 
-			//				if (!string.IsNullOrEmpty(dir))
-			//				{
-			//					var relPath = Path.Combine(dir, assemblyName.Name + ".dll");
+						if (!string.IsNullOrWhiteSpace(loc))
+						{
+							var dir = Path.GetDirectoryName(loc);
 
-			//					if (File.Exists(relPath))
-			//					{
-			//						return context.LoadFromAssemblyPath(relPath);
-			//					}
-			//				}
-			//			}
-			//		}
-			//		catch (Exception exc)
-			//		{
-			//			System.Diagnostics.Debug.WriteLine(exc);
-			//		}
-			//	}
+							if (!string.IsNullOrEmpty(dir))
+							{
+								var relPath = Path.Combine(dir, assemblyName.Name + ".dll");
 
-			//	return context.LoadFromAssemblyName(assemblyName);
-			//};
+								if (File.Exists(relPath))
+								{
+									return context.LoadFromAssemblyPath(relPath);
+								}
+							}
+						}
+					}
+					catch (Exception exc)
+					{
+						if (this.Log().IsEnabled(LogLevel.Error))
+						{
+							System.Diagnostics.Debug.WriteLine(exc);
+							this.Log().LogError(exc, "Failed for load dependency: {assemblyName}", assemblyName);
+						}
+					}
+				}
+
+				return context.LoadFromAssemblyName(assemblyName);
+			};
 
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
@@ -77,15 +83,25 @@ namespace Uno.UI.RemoteControl.Host
 		string IRemoteControlServer.GetServerConfiguration(string key)
 			=> _configuration[key] ?? "";
 
-		private void RegisterProcessor(IServerProcessor hotReloadProcessor)
+		private void RegisterProcessor(IServerProcessor processor)
 		{
-			if (SharedProcessorPool.Instance.Processors.ContainsKey(hotReloadProcessor.Scope))
+			if (SharedProcessorPool.Instance.Processors.ContainsKey(processor.Scope))
 			{
-				SharedProcessorPool.Instance.Processors[hotReloadProcessor.Scope].Add(hotReloadProcessor);
+				// Remove any exising processor instances from the same source
+				foreach (var registeredProcessor in SharedProcessorPool.Instance.Processors[processor.Scope])
+				{
+					if (registeredProcessor.GetType().FullName == processor.GetType().FullName)
+					{
+						SharedProcessorPool.Instance.Processors[processor.Scope].Remove(registeredProcessor);
+						break;
+					}
+				}
+
+				SharedProcessorPool.Instance.Processors[processor.Scope].Add(processor);
 			}
 			else
 			{
-				SharedProcessorPool.Instance.Processors.Add(hotReloadProcessor.Scope, new List<IServerProcessor>() { hotReloadProcessor });
+				SharedProcessorPool.Instance.Processors.Add(processor.Scope, new List<IServerProcessor>() { processor });
 			}
 		}
 
@@ -97,19 +113,24 @@ namespace Uno.UI.RemoteControl.Host
 			{
 				if (frame.Scope == "RemoteControlServer")
 				{
-					if (frame.Name == ProcessorsDiscovery.Name)
+					switch (frame.Name)
 					{
-						ProcessDiscoveryFrame(frame);
-					}
+						case ProcessorsDiscovery.Name:
+							ProcessDiscoveryFrame(frame);
+							break;
 
-					if (frame.Name == KeepAliveMessage.Name)
-					{
-						if (this.Log().IsEnabled(LogLevel.Trace))
-						{
-							this.Log().LogTrace($"Client Keepalive frame");
-						}
+						case ProcessorRemoval.Name:
+							ProcessRemovalFrame(frame);
+							break;
 
-						await SendFrame(new KeepAliveMessage());
+						case KeepAliveMessage.Name:
+							if (this.Log().IsEnabled(LogLevel.Trace))
+							{
+								this.Log().LogTrace($"Client Keepalive frame");
+							}
+
+							await SendFrame(new KeepAliveMessage());
+							break;
 					}
 				}
 
@@ -238,8 +259,22 @@ namespace Uno.UI.RemoteControl.Host
 				{
 					if (this.Log().IsEnabled(LogLevel.Debug))
 					{
-						this.Log().LogDebug($"Failed to create instace of server processor in  {asm} : {exc}");
+						this.Log().LogDebug($"Failed to create instance of server processor in  {asm} : {exc}");
 					}
+				}
+			}
+		}
+
+		private void ProcessRemovalFrame(Frame frame)
+		{
+			var msg = JsonConvert.DeserializeObject<ProcessorRemoval>(frame.Content)!;
+
+			foreach (var processor in SharedProcessorPool.Instance.Processors[msg.ProcessorScope])
+			{
+				if (processor.GetType().Assembly.Location == msg.Path)
+				{
+					SharedProcessorPool.Instance.Processors[msg.ProcessorScope].Remove(processor);
+					break;
 				}
 			}
 		}
