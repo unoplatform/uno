@@ -1252,7 +1252,7 @@ namespace Uno.UI.DataBinding
 					{
 						var valueString = value.ToString();
 #if NET7_0_OR_GREATER
-						if (Enum.TryParse(t, valueString, ignoreCase: true, out object enumValue))
+						if (Enum.TryParse(t, valueString, ignoreCase: true, out object? enumValue))
 						{
 							return enumValue;
 						}
