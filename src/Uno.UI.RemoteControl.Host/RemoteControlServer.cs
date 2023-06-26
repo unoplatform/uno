@@ -17,8 +17,6 @@ namespace Uno.UI.RemoteControl.Host
 {
 	internal class RemoteControlServer : IRemoteControlServer, IDisposable
 	{
-		////private readonly Dictionary<string, IServerProcessor> _processors = new();
-
 		private System.Reflection.Assembly? _loopAssembly;
 		private WebSocket? _socket;
 		private readonly IConfiguration _configuration;
@@ -65,7 +63,6 @@ namespace Uno.UI.RemoteControl.Host
 					{
 						if (this.Log().IsEnabled(LogLevel.Error))
 						{
-							System.Diagnostics.Debug.WriteLine(exc);
 							this.Log().LogError(exc, "Failed for load dependency: {assemblyName}", assemblyName);
 						}
 					}
