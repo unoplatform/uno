@@ -261,7 +261,7 @@ public class Given_DependencyPropertyGenerator
 										return (int)instance.GetValue(global::Mynamespace.C.MyValueProperty);
 									}
 								}
-								private static void SetMyValueValue(global::Windows.UI.Xaml.DependencyObject instance, int value) => instance.SetValue(global::Mynamespace.C.MyValueProperty, value);
+								private static void SetMyValueValue(global::Windows.UI.Xaml.DependencyObject instance, int value) => instance.SetValue(global::Mynamespace.C.MyValueProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 								/// <summary>
 								/// Generated method used to create the <see cref="MyValueProperty" /> member value
 								/// </summary>
@@ -385,7 +385,7 @@ public class Given_DependencyPropertyGenerator
 										return (int)instance.GetValue(global::Mynamespace.C.MyValueProperty);
 									}
 								}
-								private static void SetMyValueValue(global::Windows.UI.Xaml.DependencyObject instance, int value) => instance.SetValue(global::Mynamespace.C.MyValueProperty, value);
+								private static void SetMyValueValue(global::Windows.UI.Xaml.DependencyObject instance, int value) => instance.SetValue(global::Mynamespace.C.MyValueProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 								/// <summary>
 								/// Generated method used to create the <see cref="MyValueProperty" /> member value
 								/// </summary>
@@ -504,7 +504,7 @@ public class Given_DependencyPropertyGenerator
 									}
 									return _MyValuePropertyBackingField;
 								}
-								private void SetMyValueValue(int value) => SetValue(MyValueProperty, value);
+								private void SetMyValueValue(int value) => SetValue(MyValueProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 								private bool _MyValuePropertyBackingFieldSet = false;
 								private int _MyValuePropertyBackingField;
 								/// <summary>
