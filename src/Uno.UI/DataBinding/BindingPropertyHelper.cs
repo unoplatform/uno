@@ -1251,26 +1251,15 @@ namespace Uno.UI.DataBinding
 					else if (t.IsEnum)
 					{
 						var valueString = value.ToString();
-#if NET7_0_OR_GREATER
-						if (Enum.TryParse(t, valueString, ignoreCase: true, out object? enumValue))
-						{
-							return enumValue;
-						}
-#else
-						try
-						{
-							if (valueString is not null)
-							{
-								return Enum.Parse(t, valueString, ignoreCase: true);
-							}
-						}
-						catch (Exception)
-						{
-						}
-#endif
+
 						FieldInfo? defaultValue = null;
 						foreach (var field in t.GetFields())
 						{
+							if (field.Name.Equals(valueString, StringComparison.OrdinalIgnoreCase))
+							{
+								return Enum.Parse(t, field.Name);
+							}
+
 							var descriptionAttribute = field.GetCustomAttributes<DescriptionAttribute>().FirstOrDefault();
 							if (descriptionAttribute is not null)
 							{
@@ -1318,7 +1307,7 @@ namespace Uno.UI.DataBinding
 #endif
 						}
 
-						return value;
+						return DependencyProperty.UnsetValue;
 					}
 					else if ((Nullable.GetUnderlyingType(t) ?? t) is { IsPrimitive: true } toTypeUnwrapped && IsPrimitive(value))
 					{
