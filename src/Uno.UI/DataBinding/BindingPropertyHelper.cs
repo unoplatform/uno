@@ -1251,16 +1251,18 @@ namespace Uno.UI.DataBinding
 					else if (t.IsEnum)
 					{
 						var valueString = value.ToString();
-						object enumValue;
 #if NET7_0_OR_GREATER
-						if (Enum.TryParse(t, valueString, ignoreCase: true, out enumValue))
+						if (Enum.TryParse(t, valueString, ignoreCase: true, out object enumValue))
 						{
 							return enumValue;
 						}
 #else
 						try
 						{
-							return Enum.Parse(t, valueString, ignoreCase: true);
+							if (valueString is not null)
+							{
+								return Enum.Parse(t, valueString, ignoreCase: true);
+							}
 						}
 						catch (Exception)
 						{
