@@ -1,4 +1,4 @@
-﻿<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
+<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
   <PropertyGroup>
 		<TargetFrameworks>MonoAndroid12.0</TargetFrameworks>
 		<TargetFrameworksCI>MonoAndroid13.0;MonoAndroid12.0</TargetFrameworksCI>
@@ -36,7 +36,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Uno.SourceGenerationTasks" />
-		<PackageReference Include="Xamarin.AndroidX.Window.WindowJava" Version="1.0.0.8" />
+		<PackageReference Include="Xamarin.AndroidX.Window.WindowJava" Version="1.0.0.13" />
 	</ItemGroup>
 
 	<ItemGroup Condition="$(IsAndroid) or $(IsIOS) or $(IsMacOS)">
