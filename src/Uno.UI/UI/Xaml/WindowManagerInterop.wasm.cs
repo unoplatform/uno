@@ -716,11 +716,11 @@ namespace Uno.UI.Xaml
 #if NET7_0_OR_GREATER
 			NativeMethods.SetProperty(htmlId, name, value);
 #else
-			var parms = new WindowManagerSetPropertyParams()
+			var parms = new WindowManagerSetSinglePropertyParams()
 			{
 				HtmlId = htmlId,
-				Pairs_Length = pairs.Length,
-				Pairs = pairs,
+				Name = name,
+				Value = value,
 			};
 
 			TSInteropMarshaller.InvokeJS("Uno:setSinglePropertyNative", parms);
