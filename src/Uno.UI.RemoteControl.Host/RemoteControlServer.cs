@@ -312,14 +312,14 @@ namespace Uno.UI.RemoteControl.Host
 				}
 			}
 		}
-	}
 
-	public class SharedProcessorPool
-	{
-		private readonly Dictionary<string, List<IServerProcessor>> _processors = new();
+		private class SharedProcessorPool
+		{
+			private readonly Dictionary<string, List<IServerProcessor>> _processors = new();
 
-		internal static SharedProcessorPool Instance { get; } = new SharedProcessorPool();
+			internal static SharedProcessorPool Instance { get; } = new SharedProcessorPool();
 
-		public Dictionary<string, List<IServerProcessor>> Processors => _processors;
+			public Dictionary<string, List<IServerProcessor>> Processors => _processors;
+		}
 	}
 }
