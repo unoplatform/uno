@@ -20,6 +20,7 @@ using Windows.UI.Xaml.Data;
 using System.Dynamic;
 using System.Runtime.CompilerServices;
 using System.Diagnostics.CodeAnalysis;
+using System.ComponentModel;
 
 namespace Uno.UI.DataBinding
 {
@@ -62,7 +63,6 @@ namespace Uno.UI.DataBinding
 		static BindingPropertyHelper()
 		{
 			MethodInvokerBuilder = DefaultInvokerBuilder;
-			Conversion = new DefaultConversionExtensions();
 		}
 
 		internal static void ClearCaches()
@@ -91,8 +91,6 @@ namespace Uno.UI.DataBinding
 		/// Sets an external metadata provider.
 		/// </summary>
 		public static IBindableMetadataProvider? BindableMetadataProvider { get; set; }
-
-		public static DefaultConversionExtensions Conversion { get; private set; }
 
 		public static bool IsEvent(Type type, string property)
 		{
@@ -1242,37 +1240,134 @@ namespace Uno.UI.DataBinding
 					{
 						return fastConvertResult;
 					}
-					else if (t != typeof(object))
+					else if (t is null || t == typeof(object))
 					{
-						value = ConvertWithConvertionExtension(value, t);
+						return value;
+					}
+					else if (t == typeof(string))
+					{
+						return value?.ToString();
+					}
+					else if (t.IsEnum)
+					{
+						var valueString = value.ToString();
+						if (Enum.TryParse(t, valueString, ignoreCase: true, out var enumValue))
+						{
+							return enumValue;
+						}
+
+						FieldInfo? defaultValue = null;
+						foreach (var field in t.GetFields())
+						{
+							var descriptionAttribute = field.GetCustomAttributes<DescriptionAttribute>().FirstOrDefault();
+							if (descriptionAttribute is not null)
+							{
+								if ((
+									descriptionAttribute.Description.Equals(valueString, StringComparison.CurrentCultureIgnoreCase) ||
+									descriptionAttribute.Description.Equals(valueString, StringComparison.InvariantCultureIgnoreCase)
+									) &&
+									Enum.TryParse(t, field.Name, ignoreCase: true, out enumValue))
+								{
+									return enumValue;
+								}
+								else if (descriptionAttribute.Description == "?")
+								{
+									defaultValue = field;
+								}
+							}
+						}
+
+						if (defaultValue is not null && Enum.TryParse(t, defaultValue.Name, ignoreCase: true, out enumValue))
+						{
+							return enumValue;
+						}
+
+						return value;
+					}
+					else if ((Nullable.GetUnderlyingType(t) ?? t) is { IsPrimitive: true } toTypeUnwrapped && IsPrimitive(value))
+					{
+						try
+						{
+							return System.Convert.ChangeType(value, toTypeUnwrapped, CultureInfo.CurrentCulture);
+						}
+						catch (Exception)
+						{
+							// This is a temporary fallback solution.
+							// The problem is that we don't actually know which culture we must use in advance.
+							// Values can come from the xaml (invariant culture) or from a two way binding (current culture).
+							// The real solution would be to pass a culture or source when setting a value in a Dependency Property.
+							return System.Convert.ChangeType(value, toTypeUnwrapped, CultureInfo.InvariantCulture);
+						}
+					}
+					else
+					{
+						var valueTypeConverter = TypeDescriptor.GetConverter(value.GetType());
+						if (valueTypeConverter.CanConvertTo(t))
+						{
+							try
+							{
+								return valueTypeConverter.ConvertTo(null, CultureInfo.CurrentCulture, value, t);
+							}
+							catch (Exception)
+							{
+								return valueTypeConverter.ConvertTo(null, CultureInfo.InvariantCulture, value, t);
+							}
+						}
+
+						if (t == typeof(float))
+						{
+							float fValue;
+							if (float.TryParse(value.ToString(), NumberStyles.Float, CultureInfo.CurrentCulture, out fValue))
+							{
+								return fValue;
+							}
+
+							if (float.TryParse(value.ToString(), NumberStyles.Float, CultureInfo.InvariantCulture, out fValue))
+							{
+								return fValue;
+							}
+						}
+
+						if (t == typeof(decimal))
+						{
+							decimal dValue;
+							if (decimal.TryParse(value.ToString(), NumberStyles.AllowDecimalPoint, CultureInfo.CurrentCulture, out dValue))
+							{
+								return dValue;
+							}
+							if (decimal.TryParse(value.ToString(), NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out dValue))
+							{
+								return dValue;
+							}
+						}
+
+						try
+						{
+							return TypeDescriptor.GetConverter(t).ConvertFrom(null, CultureInfo.CurrentCulture, value);
+						}
+						catch (Exception)
+						{
+							return TypeDescriptor.GetConverter(t).ConvertFrom(null, CultureInfo.InvariantCulture, value);
+						}
 					}
 				}
 			}
+
 			return value;
 		}
 
-		/// <remarks>
-		/// This method contains or is called by a try/catch containing method and
-		/// can be significantly slower than other methods as a result on WebAssembly.
-		/// See https://github.com/dotnet/runtime/issues/56309
-		/// </remarks>
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		private static object ConvertWithConvertionExtension(object? value, Type? t)
+		private static bool IsPrimitive(object value)
 		{
-			try
-			{
-				value = Conversion.To(value, t, CultureInfo.CurrentCulture);
-			}
-			catch (Exception)
-			{
-				// This is a temporary fallback solution.
-				// The problem is that we don't actually know which culture we must use in advance.
-				// Values can come from the xaml (invariant culture) or from a two way binding (current culture).
-				// The real solution would be to pass a culture or source when setting a value in a Dependency Property.
-				value = Conversion.To(value, t, CultureInfo.InvariantCulture);
-			}
-
-			return value;
+			return value.GetType().IsPrimitive
+				|| value is string
+#if __IOS__
+				// Those are platform primitives provided for 64 bits compatibility
+				// with iOS 8.0 and later
+				|| value is nfloat
+				|| value is nint
+				|| value is nuint
+#endif
+									;
 		}
 
 		private static object UnsetValueGetter(object unused)
