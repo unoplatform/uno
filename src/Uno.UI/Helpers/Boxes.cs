@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel;
 using Uno.UI.Xaml;
 
 namespace Uno.UI.Helpers;
@@ -92,6 +91,7 @@ internal static class Boxes
 
 	public static object Box(RoutedEventFlag value) => value switch
 	{
+		RoutedEventFlag.None => RoutedEventFlagBoxes.None,
 		RoutedEventFlag.PointerPressed => RoutedEventFlagBoxes.PointerPressed,
 		RoutedEventFlag.PointerReleased => RoutedEventFlagBoxes.PointerReleased,
 		RoutedEventFlag.PointerEntered => RoutedEventFlagBoxes.PointerEntered,
