@@ -268,8 +268,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-		[DataRow("ms-appx:///Assets/Images/dotnet_bot_assets.png", false)]
-		[DataRow("ms-appx:///Uno.UI.RuntimeTests/Assets/Images/dotnet_bot_assets.png", true)]
+		[DataRow("ms-appx:///Assets/Images/dotnet_bot_assets_images.png", false)]
+		[DataRow("ms-appx:///Uno.UI.RuntimeTests/Assets/Images/dotnet_bot_assets_images.png", true)]
 		[DataRow("ms-appx:///Assets/Images/dotnet_bot_link_assets_images.png", false)]
 		[DataRow("ms-appx:///Uno.UI.RuntimeTests/Assets/Images/dotnet_bot_link_assets_images.png", true)]
 		[DataRow("ms-appx:///Assets/Images/dotnet_bot_targetpath_assets_images.png", false)]
@@ -286,13 +286,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		[RunsOnUIThread]
 		[DataRow("ms-appx:///Images/dotnet_bot_images.png", false)]
-		[DataRow("ms-appx:///Uno.UI.RuntimeTests/Assets/Images/dotnet_bot_images.png", true)]
+		[DataRow("ms-appx:///Uno.UI.RuntimeTests/Images/dotnet_bot_images.png", true)]
 		[DataRow("ms-appx:///Images/dotnet_bot_link_images.png", false)]
-		[DataRow("ms-appx:///Uno.UI.RuntimeTests/Assets/Images/dotnet_bot_link_images.png", true)]
+		[DataRow("ms-appx:///Uno.UI.RuntimeTests/Images/dotnet_bot_link_images.png", true)]
 		[DataRow("ms-appx:///Images/dotnet_bot_targetpath_images.png", false)]
-		[DataRow("ms-appx:///Uno.UI.RuntimeTests/Assets/Images/dotnet_bot_targetpath_images.png", true)]
+		[DataRow("ms-appx:///Uno.UI.RuntimeTests/Images/dotnet_bot_targetpath_images.png", true)]
 		[DataRow("ms-appx:///Images/dotnet_bot_link_targetpath_images.png", false)]
-		[DataRow("ms-appx:///Uno.UI.RuntimeTests/Assets/Images/dotnet_bot_link_targetpath_images.png", true)]
+		[DataRow("ms-appx:///Uno.UI.RuntimeTests/Images/dotnet_bot_link_targetpath_images.png", true)]
 		public Task Check_Images_When_Is_On_Folder_At_The_Root(string url, bool shouldBeVisible)
 		{
 			return CheckIfTheImageIsShowingForGivenPath(url, shouldBeVisible);
@@ -301,23 +301,18 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		async Task CheckIfTheImageIsShowingForGivenPath(string url, bool shouldBeVisible)
 		{
 			var img = new Image();
+			var completion = new TaskCompletionSource<bool>();
+			img.ImageOpened += (_, _) => completion.TrySetResult(true);
+			img.ImageFailed += (_, _) => completion.TrySetResult(false);
 			var SUT = new BitmapImage(new Uri(url));
 			img.Source = SUT;
 
 			WindowHelper.WindowContent = img;
 
 			await WindowHelper.WaitForIdle();
-			await WindowHelper.WaitFor(() => IsWorking(shouldBeVisible, img.ActualHeight), 3000);
 
-			var assert = IsWorking(shouldBeVisible, img.ActualHeight) || IsWorking(shouldBeVisible, img.ActualWidth);
-
-			Assert.IsTrue(img.IsLoaded);
-			Assert.IsTrue(assert);
-
-			static bool IsWorking(bool shouldBeVisible, double actualHeight)
-			{
-				return shouldBeVisible ? actualHeight > 0 : actualHeight <= 0;
-			}
+			var loaded = await completion.Task;
+			Assert.AreEqual(shouldBeVisible, loaded);
 		}
 
 
