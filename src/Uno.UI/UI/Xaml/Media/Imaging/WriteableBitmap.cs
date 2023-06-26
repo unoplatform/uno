@@ -1,6 +1,5 @@
 using System;
-using System.IO;
-using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Windows.Storage.Streams;
 using UwpBuffer = Windows.Storage.Streams.Buffer;
 
@@ -38,14 +37,16 @@ namespace Windows.UI.Xaml.Media.Imaging
 			Invalidated?.Invoke(this, EventArgs.Empty);
 		}
 
-		private protected override void OnSetSource()
+		private protected
+#if __SKIA__
+			unsafe
+#endif
+			override void OnSetSource()
 		{
 			UpdateBuffer();
-#if __NETSTD__
-			_stream.AsStream().CopyTo(_buffer.AsStream());
-#else
-			Stream.CopyTo(_buffer.AsStream());
-			Stream.Position = 0;
+
+#if __ANDROID__ || __SKIA__ // TODO: Other platforms.
+			DecodeStreamIntoBuffer();
 #endif
 		}
 	}

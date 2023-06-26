@@ -207,6 +207,30 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 
 			Assert.AreEqual(147, writeableBitmap.PixelWidth);
 			Assert.AreEqual(147, writeableBitmap.PixelHeight);
+
+			var parent = new Border()
+			{
+				Width = 147,
+				Height = 147,
+			};
+
+			var rect = new Rectangle
+			{
+				Width = 147,
+				Height = 147,
+			};
+
+			parent.Child = rect;
+
+			WindowHelper.WindowContent = parent;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(rect);
+
+			rect.Fill = new ImageBrush
+			{
+				ImageSource = writeableBitmap
+			};
 		}
 
 		[TestMethod]
