@@ -15,7 +15,7 @@ pr:
       - feature/*
 
 variables:
-  windowsScaledPool: 'Windows2022-20220925-1'
+  windowsScaledPool: 'Windows2022-20230613'
   linuxVMImage: 'ubuntu-latest'
 
 jobs:

@@ -5,7 +5,11 @@
 
 		public static observeVisibility() {
 			if (!Application.dispatchVisibilityChange) {
-				Application.dispatchVisibilityChange = (<any>Module).mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.Application:DispatchVisibilityChange");
+				if ((<any>globalThis).DotnetExports !== undefined) {
+					Application.dispatchVisibilityChange = (<any>globalThis).DotnetExports.UnoUI.Windows.UI.Xaml.Application.DispatchVisibilityChange;
+				} else {
+					Application.dispatchVisibilityChange = (<any>Module).mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.Application:DispatchVisibilityChange");
+				}
 			}
 
 			if (document.onvisibilitychange !== undefined) {

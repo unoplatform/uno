@@ -13,6 +13,7 @@ using Windows.Foundation;
 using Windows.System;
 using Windows.UI.Core;
 using Windows.UI.Input;
+using Windows.UI.Xaml.Controls;
 using WpfControl = System.Windows.Controls.Control;
 using WpfMouseEventArgs = System.Windows.Input.MouseEventArgs;
 
@@ -216,7 +217,7 @@ internal sealed class WpfCorePointerInputSource : IUnoCorePointerInputSource
 						IsHorizontalMouseWheel = msg == Win32Messages.WM_MOUSEHWHEEL,
 						IsPrimary = true,
 						IsInRange = true,
-						MouseWheelDelta = -((int)wparam >> 16) / 40
+						MouseWheelDelta = (int)wparam >> 16
 					}.SetUpdateKindFromPrevious(_previous?.CurrentPoint.Properties);
 
 					var modifiers = VirtualKeyModifiers.None;

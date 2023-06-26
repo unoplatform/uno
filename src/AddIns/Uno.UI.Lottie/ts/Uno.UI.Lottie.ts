@@ -43,6 +43,24 @@ namespace Uno.UI {
 			return "ok";
 		}
 
+		public static setAnimationPropertiesNative(
+			id: number,
+			path: string,
+			autoplay: boolean,
+			stretch: string,
+			rate: number,
+			cacheKey: string,
+			data?: string) {
+
+			if (data === undefined) {
+				Lottie.setAnimationProperties({ elementId: id, jsonPath: path, autoplay: autoplay, stretch: stretch, rate: rate, cacheKey: cacheKey });
+			} else {
+				const animationData = data !== null ? <AnimationData>JSON.parse(data) : null;
+
+				Lottie.setAnimationProperties({ elementId: id, jsonPath: path, autoplay: autoplay, stretch: stretch, rate: rate, cacheKey: cacheKey }, animationData);
+			}
+		}
+
 		public static stop(elementId: number): string {
 			Lottie.withPlayer(p => {
 				const a = Lottie._runningAnimations[elementId].animation;

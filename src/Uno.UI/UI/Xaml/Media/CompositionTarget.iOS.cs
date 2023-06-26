@@ -36,8 +36,10 @@ namespace Windows.UI.Xaml.Media
 					_displayLink.RemoveFromRunLoop(NSRunLoop.Main, NSRunLoopMode.Default);
 					_displayLink.RemoveFromRunLoop(NSRunLoop.Main, NSRunLoopMode.UITracking);
 #else
+#pragma warning disable CS0618
 					_displayLink.RemoveFromRunLoop(NSRunLoop.Main, NSRunLoop.NSDefaultRunLoopMode);
 					_displayLink.RemoveFromRunLoop(NSRunLoop.Main, NSRunLoop.UITrackingRunLoopMode);
+#pragma warning restore CS0618
 #endif
 					_displayLink = null;
 				}

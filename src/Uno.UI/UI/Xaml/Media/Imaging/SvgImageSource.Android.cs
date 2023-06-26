@@ -1,4 +1,5 @@
-﻿using System;
+#nullable enable
+using System;
 using System.IO;
 using System.Net.Http;
 using System.Security.Cryptography;
@@ -42,7 +43,7 @@ partial class SvgImageSource
 				return await FetchSvgAssetAsync(ct, ResourceString);
 			}
 
-			if (Stream != null)
+			if (Stream is not null)
 			{
 				return await ReadFromStreamAsync(Stream, ct);
 			}
@@ -53,12 +54,16 @@ partial class SvgImageSource
 				return await ReadFromStreamAsync(fileStream, ct);
 			}
 
-			if (AbsoluteUri != null)
+			if (AbsoluteUri is not null)
 			{
 				// The ContactsService returns the contact uri for compatibility with UniversalImageLoader - in order to obtain the corresponding photo we resolve using the service below.
 				if (IsContactUri(AbsoluteUri))
 				{
-					var stream = ContactsContract.Contacts.OpenContactPhotoInputStream(ContextHelper.Current.ContentResolver, Android.Net.Uri.Parse(AbsoluteUri.OriginalString));
+					if (ContactsContract.Contacts.OpenContactPhotoInputStream(ContextHelper.Current.ContentResolver, Android.Net.Uri.Parse(AbsoluteUri.OriginalString)) is not { } stream)
+					{
+						return ImageData.Empty;
+					}
+
 					return await ReadFromStreamAsync(stream, ct);
 				}
 
@@ -66,12 +71,12 @@ partial class SvgImageSource
 				{
 					var filePath = await Download(ct, AbsoluteUri);
 
-					if (filePath == null)
+					if (filePath is null)
 					{
 						return ImageData.Empty;
 					}
 
-					using var fileStream = File.OpenRead(FilePath);
+					using var fileStream = File.OpenRead(filePath.LocalPath);
 					return await ReadFromStreamAsync(fileStream, ct);
 				}
 				else
@@ -91,13 +96,21 @@ partial class SvgImageSource
 
 	private async Task<ImageData> FetchSvgResource(CancellationToken ct, int resourceId)
 	{
-		var rawResourceStream = ContextHelper.Current.Resources.OpenRawResource(resourceId);
+		if (ContextHelper.Current.Resources?.OpenRawResource(resourceId) is not { } rawResourceStream)
+		{
+			return ImageData.Empty;
+		}
+
 		return await ReadFromStreamAsync(rawResourceStream, ct);
 	}
 
 	private async Task<ImageData> FetchSvgAssetAsync(CancellationToken ct, string assetPath)
 	{
-		AssetManager assets = ContextHelper.Current.Assets;
+		if (ContextHelper.Current.Assets is not AssetManager assets)
+		{
+			return ImageData.Empty;
+		}
+
 		using var stream = assets.Open(assetPath);
 		return await ReadFromStreamAsync(stream, ct);
 	}

@@ -7,6 +7,8 @@ namespace __Windows.Devices.Midi
 	{
 		internal static partial class NativeMethods
 		{
+			[JSImport("globalThis.Windows.Devices.Midi.MidiOutPort.sendBuffer")]
+			internal static partial void SendBuffer(string id, double timestamp, byte[] data);
 		}
 	}
 }

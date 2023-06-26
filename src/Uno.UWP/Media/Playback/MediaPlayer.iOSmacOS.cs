@@ -246,9 +246,6 @@ namespace Windows.Media.Playback
 
 				// Adapt pitch to prevent "metallic echo" when changing playback rate
 				_player.CurrentItem.AudioTimePitchAlgorithm = AVAudioTimePitchAlgorithm.TimeDomain;
-
-				MediaOpened?.Invoke(this, null);
-
 			}
 			catch (Exception ex)
 			{
@@ -358,13 +355,16 @@ namespace Windows.Media.Playback
 		{
 			if (_player?.CurrentItem != null)
 			{
+				IsVideo = _player.CurrentItem.Tracks?.Any(x => x.AssetTrack.FormatDescriptions.Any(x => x.MediaType == CMMediaType.Video)) == true;
+
 				if (_player.CurrentItem.Status == AVPlayerItemStatus.Failed || _player.Status == AVPlayerStatus.Failed)
 				{
 					OnMediaFailed();
 					return;
 				}
 
-				if (_player.Status == AVPlayerStatus.ReadyToPlay && PlaybackSession.PlaybackState == MediaPlaybackState.Buffering)
+				if (_player.Status == AVPlayerStatus.ReadyToPlay &&
+					PlaybackSession.PlaybackState is MediaPlaybackState.Opening or MediaPlaybackState.Buffering)
 				{
 					if (_player.Rate == 0.0)
 					{
@@ -375,6 +375,11 @@ namespace Windows.Media.Playback
 						PlaybackSession.PlaybackState = MediaPlaybackState.Playing;
 						_player.Play();
 					}
+				}
+
+				if (_player.Status == AVPlayerStatus.ReadyToPlay)
+				{
+					MediaOpened?.Invoke(this, null);
 				}
 			}
 		}
@@ -471,6 +476,8 @@ namespace Windows.Media.Playback
 				}
 			}
 		}
+
+		public bool IsVideo { get; set; }
 
 		private void OnSeekCompleted(bool finished)
 		{

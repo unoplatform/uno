@@ -32,6 +32,12 @@ namespace Uno.UI.RuntimeTests.Helpers;
 public static partial class ImageAssert
 {
 	#region HasColorAt
+	public static void HasColorAt(RawBitmap screenshot, Windows.Foundation.Point location, string expectedColorCode, byte tolerance = 0, [CallerLineNumber] int line = 0)
+		=> HasColorAtImpl(screenshot, (int)location.X, (int)location.Y, (Color)XamlBindingHelper.ConvertValue(typeof(Color), expectedColorCode), tolerance, line);
+
+	public static void HasColorAt(RawBitmap screenshot, Windows.Foundation.Point location, Color expectedColor, byte tolerance = 0, [CallerLineNumber] int line = 0)
+		=> HasColorAtImpl(screenshot, (int)location.X, (int)location.Y, expectedColor, tolerance, line);
+
 	public static void HasColorAt(RawBitmap screenshot, float x, float y, string expectedColorCode, byte tolerance = 0, [CallerLineNumber] int line = 0)
 		=> HasColorAtImpl(screenshot, (int)x, (int)y, (Color)XamlBindingHelper.ConvertValue(typeof(Color), expectedColorCode), tolerance, line);
 

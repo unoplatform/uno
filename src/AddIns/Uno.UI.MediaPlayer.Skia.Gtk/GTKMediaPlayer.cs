@@ -33,8 +33,7 @@ public partial class GtkMediaPlayer : FrameworkElement
 	private double _playbackRate;
 	private Rect _transportControlsBounds;
 	private Windows.UI.Xaml.Media.Stretch _stretch = Windows.UI.Xaml.Media.Stretch.Uniform;
-	private readonly ImmutableArray<string> audioTagAllowedFormats = ImmutableArray.Create(".MP3", ".WAV");
-	private readonly ImmutableArray<string> videoTagAllowedFormats = ImmutableArray.Create(".MP4", ".WEBM", ".OGG");
+	private double _videoRatio;
 	private readonly MediaPlayerPresenter _owner;
 
 	public GtkMediaPlayer(MediaPlayerPresenter owner)
@@ -74,13 +73,25 @@ public partial class GtkMediaPlayer : FrameworkElement
 
 	public double Duration { get; set; }
 
-	public double VideoRatio { get; set; }
+	public double VideoRatio
+	{
+		get => _videoRatio;
+		set
+		{
+			if (_videoRatio != value)
+			{
+				_videoRatio = value;
+
+				OnVideoRatioChanged?.Invoke(this, EventArgs.Empty);
+			}
+		}
+	}
 
 	public bool IsVideo
-		=> videoTagAllowedFormats.Contains(Path.GetExtension(Source), StringComparer.OrdinalIgnoreCase);
+		=> _mediaPlayer?.Media?.Tracks?.Any(x => x.TrackType == TrackType.Video) == true;
 
 	public bool IsAudio
-		=> audioTagAllowedFormats.Contains(Path.GetExtension(Source), StringComparer.OrdinalIgnoreCase);
+		=> _mediaPlayer?.Media?.Tracks?.Any(x => x.TrackType == TrackType.Video) == true;
 
 	public void Play()
 	{
@@ -283,75 +294,99 @@ public partial class GtkMediaPlayer : FrameworkElement
 	private void GtkMediaPlayer_LayoutUpdated(object? sender, object e)
 		=> UpdateVideoStretch();
 
+	private bool TryGetVideoDetails(
+		[NotNullWhen(true)] out uint? videoWidth,
+		[NotNullWhen(true)] out uint? videoHeight,
+		[NotNullWhen(true)] out VideoTrack? videoTrack)
+	{
+		if (_mediaPlayer is not null
+			&& _mediaPlayer.Media is not null)
+		{
+			var mediaTrack = _mediaPlayer
+				.Media
+				.Tracks
+				.FirstOrDefault(track => track.TrackType == TrackType.Video);
+
+			if (mediaTrack is { })
+			{
+				videoTrack = mediaTrack.Data.Video;
+				videoWidth = videoTrack.Value.Width;
+				videoHeight = videoTrack.Value.Height;
+
+				if (videoTrack.Value.SarDen != 0)
+				{
+					return true;
+				}
+			}
+		}
+
+		videoWidth = null;
+		videoHeight = null;
+		videoTrack = null;
+
+		return false;
+	}
+
 	private void UpdateVideoStretch(bool forceVideoViewVisibility = false)
 	{
-		_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+		_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
 		{
-			if (_videoView != null &&
-					_mediaPlayer != null &&
-					_mediaPlayer.Media != null &&
-					_mediaPlayer.Media.Mrl != null &&
-					_videoContainer is not null)
+			if (_videoView != null
+				&& _mediaPlayer?.Media?.Mrl is not null
+				&& _videoContainer is not null)
 			{
-				var currentSize = new Size(ActualWidth, ActualHeight);
 
-				if (currentSize.Height <= 0 || currentSize.Width <= 0)
+				await _mediaPlayer.Media.Parse(MediaParseOptions.ParseNetwork);
+
+				if (TryGetVideoDetails(out var videoWidth, out var videoHeight, out var videoSettings))
 				{
-					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
-					{
-						this.Log().Debug($"Skipping layout update for empty layout slot");
-					}
+					// From: https://github.com/videolan/libvlcsharp/blob/bca0a53fe921e6f1f745e4e3ac83a7bd3b2e4a9d/src/LibVLCSharp/Shared/MediaPlayerElement/AspectRatioManager.cs#L188
+					videoWidth = videoWidth * videoSettings.Value.SarNum / videoSettings.Value.SarDen;
 
-					return;
-				}
-
-				var playerHeight = (double)currentSize.Height - _transportControlsBounds.Height;
-				var playerWidth = (double)currentSize.Width;
-
-				_mediaPlayer.Media.Parse(MediaParseOptions.ParseNetwork);
-
-				if (_mediaPlayer != null && _mediaPlayer.Media != null)
-				{
-					var videoTrack = _mediaPlayer.Media.Tracks.FirstOrDefault(track => track.TrackType == TrackType.Video);
-
-					if (_mediaPlayer.Media.Tracks.Any(track => track.TrackType == TrackType.Video))
-					{
-						var videoSettings = videoTrack.Data.Video;
-						var videoWidth = videoSettings.Width;
-						var videoHeight = videoSettings.Height;
-
-						if (videoSettings.SarDen != 0)
-						{
-							// From: https://github.com/videolan/libvlcsharp/blob/bca0a53fe921e6f1f745e4e3ac83a7bd3b2e4a9d/src/LibVLCSharp/Shared/MediaPlayerElement/AspectRatioManager.cs#L188
-							videoWidth = videoWidth * videoSettings.SarNum / videoSettings.SarDen;
-							UpdateVideoSizeAllocate(playerHeight, playerWidth, videoHeight, videoWidth);
-
-							if (forceVideoViewVisibility)
-							{
-								_videoView?.SetVisible(true);
-							}
-						}
-						else
-						{
-							if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
-							{
-								this.Log().Debug($"SarDen is zero, skipping layout");
-							}
-						}
-					}
-					else
+					// Update video ratio first, so that the cover can be
+					// removed properly without the mediaplayerpresenter to be
+					// visible.
+					if (videoWidth == 0 || videoHeight == 0)
 					{
 						if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 						{
-							this.Log().Debug($"Skipping layout update because no tracks could be found");
+							this.Log().Debug($"Source video size is not valid ({videoWidth}x{videoHeight})");
 						}
+
+						return;
+					}
+
+					VideoRatio = (double)videoHeight / (double)videoWidth;
+
+					var currentSize = new Size(ActualWidth, ActualHeight);
+
+					// If the control is not visible, or not sized properly
+					// we cannot display the video window.
+					if (currentSize.Height <= 0 || currentSize.Width <= 0)
+					{
+						if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+						{
+							this.Log().Debug($"Skipping layout update for empty layout slot");
+						}
+
+						return;
+					}
+
+					var playerHeight = (double)currentSize.Height - _transportControlsBounds.Height;
+					var playerWidth = (double)currentSize.Width;
+
+					UpdateVideoSizeAllocate(playerHeight, playerWidth, videoHeight.Value, videoWidth.Value);
+
+					if (forceVideoViewVisibility)
+					{
+						_videoView?.SetVisible(true);
 					}
 				}
 				else
 				{
 					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 					{
-						this.Log().Debug($"Skipping layout update because the player is not available");
+						this.Log().Debug($"Skipping layout update because video details are not available");
 					}
 				}
 			}
