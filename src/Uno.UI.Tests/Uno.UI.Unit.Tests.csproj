@@ -9,6 +9,8 @@
 		<UnoForceHotReloadCodeGen>true</UnoForceHotReloadCodeGen>
 		<AssemblyName>Uno.UI.Tests</AssemblyName>
 		<RootNamespace>Uno.UI.Tests</RootNamespace>
+		<!-- We don't care about boxing allocations in tests -->
+		<NoWarn>$(NoWarn);UnoInternal0001</NoWarn>
 	</PropertyGroup>
 	<!--
 	Uncomment to troubleshoot source generation
