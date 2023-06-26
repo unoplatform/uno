@@ -283,9 +283,17 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (_mediaPlayer is not null)
 			{
+				var _isRFRequested = _isRewindForewardRequested;
+
+				ResetRewindForewardRequested();
 				if (_mediaPlayer.PlaybackSession.IsPlaying)
 				{
 					_mediaPlayer.Pause();
+					//if RewindForewardRequested, keep playing
+					if (_isRFRequested)
+					{
+						_mediaPlayer.Play();
+					}
 				}
 				else
 				{
@@ -298,6 +306,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			m_isInScrubMode = false;
 
+			ResetRewindForewardRequested();
 			ResetProgressSlider();
 			_mediaPlayer?.Pause();
 			_mediaPlayer?.Stop();
@@ -329,15 +338,43 @@ namespace Windows.UI.Xaml.Controls
 			{
 				return;
 			}
+			_isRewindForewardRequested = true;
+			if (_isVolumeRewindRequestedAndAudioIsPlaying != null && _mediaPlayer.IsMuted)
+			{
+				//ToggleMute();
+				_isVolumeRewindRequestedAndAudioIsPlaying = null;
+			}
 
 #if __SKIA__ || __WASM__
-			_mediaPlayer.PlaybackRate = (_mediaPlayer.PlaybackRate < 0 ? 0 : _mediaPlayer.PlaybackRate) + 0.25;
-			_mediaPlayer.PlaybackSession.UpdateTimePositionRate = 0;
+			//For wasm use the PlaybackRate instead the UpdateTimePositionRate
+			_mediaPlayer.PlaybackRate =
+									_mediaPlayer.PlaybackRate <= 1 ? 2 : /*To stop the Rewind*/
+									_mediaPlayer.PlaybackRate > 8 ? _mediaPlayer.PlaybackRate : /*Set limit to x4 Forward*/
+									_mediaPlayer.PlaybackRate * 2; /*Keep current Forward*/
+			_mediaPlayer.PlaybackSession.UpdateTimePositionRate = 1;
 #else
 			_mediaPlayer.PlaybackSession.UpdateTimePositionRate =
 				_mediaPlayer.PlaybackSession.UpdateTimePositionRate < 1 ? 1 : /*To stop the Rewind*/
-				_mediaPlayer.PlaybackSession.UpdateTimePositionRate * 2; /*To start the Forward*/
+				_mediaPlayer.PlaybackSession.UpdateTimePositionRate < 4 ? _mediaPlayer.PlaybackSession.UpdateTimePositionRate * 2 : /*Set limit to x4 Forward*/
+				_mediaPlayer.PlaybackSession.UpdateTimePositionRate; /*Keep current Forward*/
 #endif
+		}
+
+		private void ResetRewindForewardRequested()
+		{
+			if (_mediaPlayer is null)
+			{
+				return;
+			}
+			_mediaPlayer.PlaybackSession.UpdateTimePositionRate = 1;
+			_mediaPlayer.PlaybackRate = 1;
+
+			if (_isVolumeRewindRequestedAndAudioIsPlaying != null)
+			{
+				_mediaPlayer.Volume = (double)_isVolumeRewindRequestedAndAudioIsPlaying;
+			}
+			_isVolumeRewindRequestedAndAudioIsPlaying = null;
+			_isRewindForewardRequested = false;
 		}
 
 		private void RewindButton(object sender, RoutedEventArgs e)
@@ -347,10 +384,21 @@ namespace Windows.UI.Xaml.Controls
 				return;
 			}
 
+			_isRewindForewardRequested = true;
+			if (_isVolumeRewindRequestedAndAudioIsPlaying == null && _mediaPlayer.Volume != 0)
+			{
+				_isVolumeRewindRequestedAndAudioIsPlaying = _mediaPlayer.Volume == 1d ? 100 : _mediaPlayer.Volume;
+				_mediaPlayer.Volume = 0;
+			}
+#if __SKIA__ || __WASM__
+			if (_mediaPlayer.PlaybackRate != 1)
+			{
+				_mediaPlayer.PlaybackRate = 1;
+			}
+#endif
 			_mediaPlayer.PlaybackSession.UpdateTimePositionRate =
-				_mediaPlayer.PlaybackSession.UpdateTimePositionRate > 1 ? 1 : /*To stop the Forward*/
-				_mediaPlayer.PlaybackSession.UpdateTimePositionRate == 1 ? -1 : /*To start the Rewind*/
-				_mediaPlayer.PlaybackSession.UpdateTimePositionRate == 0 ? -1 : /*To start the Rewind*/
+				_mediaPlayer.PlaybackSession.UpdateTimePositionRate >= 0 ? -1 : /*To start the Rewind*/
+				_mediaPlayer.PlaybackSession.UpdateTimePositionRate < -8 ? _mediaPlayer.PlaybackSession.UpdateTimePositionRate : /*Set limit to x4 Rewind*/
 				_mediaPlayer.PlaybackSession.UpdateTimePositionRate * 2;
 		}
 
@@ -366,6 +414,10 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		private void ToggleMute(object sender, RoutedEventArgs e)
+		{
+			ToggleMute();
+		}
+		private void ToggleMute()
 		{
 			if (_mediaPlayer is not null)
 			{
