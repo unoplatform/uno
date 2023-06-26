@@ -249,6 +249,11 @@ namespace Uno.UI.DataBinding
 				return null;
 			}
 
+			if (property.Equals("''", StringComparison.Ordinal))
+			{
+				return type;
+			}
+
 			property = SanitizePropertyName(type, property);
 
 #if PROFILE
@@ -533,6 +538,11 @@ namespace Uno.UI.DataBinding
 			if (type == typeof(UnsetValue))
 			{
 				return UnsetValueGetter;
+			}
+
+			if (property.Equals("''", StringComparison.Ordinal))
+			{
+				return value => value;
 			}
 
 			property = SanitizePropertyName(type, property);
