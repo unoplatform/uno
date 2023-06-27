@@ -279,10 +279,10 @@ namespace Windows.Media.Playback
 
 			if (uri.IsLocalResource())
 			{
-				var file = uri.PathAndQuery.TrimStart(new[] { '/' });
-				var fileName = Path.GetFileNameWithoutExtension(file);
-				var fileExtension = Path.GetExtension(file)?.Replace(".", "");
-				return NSBundle.MainBundle.GetUrlForResource(fileName, fileExtension);
+				var filePath = uri.PathAndQuery.TrimStart(new[] { '/' })
+				// UWP supports backward slash in path for directory separators
+				.Replace("\\", "/");
+				return NSUrl.CreateFileUrl(filePath, relativeToUrl: null);
 			}
 
 			if (uri.IsAppData())

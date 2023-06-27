@@ -11,6 +11,8 @@ using System.Threading.Tasks;
 using System.Runtime.CompilerServices;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
+using Uno.Helpers;
+using System.IO;
 
 namespace Uno.UI.Media;
 
@@ -30,6 +32,9 @@ public partial class GtkMediaPlayer
 	public event EventHandler<object?>? OnVideoRatioChanged;
 
 	private bool _updateVideoSizeOnFirstTimeStamp = true;
+	private bool _isParsedLocalFile;
+
+	const string MsAppXScheme = "ms-appx";
 
 	private async Task Initialize()
 	{
@@ -289,31 +294,78 @@ public partial class GtkMediaPlayer
 	{
 		if (source is GtkMediaPlayer player && args.NewValue is string encodedSource)
 		{
-			player._updateVideoSizeOnFirstTimeStamp = true;
-
-			if (typeof(GtkMediaPlayer).Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
-			{
-				typeof(GtkMediaPlayer).Log().Debug($"Using source {encodedSource}");
-			}
-
-			if (Uri.TryCreate(encodedSource, UriKind.RelativeOrAbsolute, out var sourceUri))
-			{
-				player._mediaPath = sourceUri;
-				player.UpdateMedia();
-			}
-			else
-			{
-				if (typeof(GtkMediaPlayer).Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Error))
-				{
-					typeof(GtkMediaPlayer).Log().Error($"Unable to parse source [{args.NewValue}]");
-				}
-			}
+			player.SetSource(encodedSource);
 		}
 		else
 		{
 			if (typeof(GtkMediaPlayer).Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Error))
 			{
 				typeof(GtkMediaPlayer).Log().Error($"Invalid source [{args.NewValue}]");
+			}
+		}
+	}
+
+	private void SetSource(string encodedSource)
+	{
+		_updateVideoSizeOnFirstTimeStamp = true;
+		_isParsedLocalFile = false;
+
+		if (typeof(GtkMediaPlayer).Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+		{
+			typeof(GtkMediaPlayer).Log().Debug($"Using source {encodedSource}");
+		}
+
+		if (Uri.TryCreate(encodedSource, UriKind.RelativeOrAbsolute, out var sourceUri))
+		{
+			if (!sourceUri.IsAbsoluteUri || sourceUri.Scheme == "")
+			{
+				sourceUri = new Uri(MsAppXScheme + ":///" + sourceUri.OriginalString.TrimStart(new char[] { '/' }));
+			}
+
+			if (sourceUri.IsLocalResource())
+			{
+				var filePath = sourceUri.PathAndQuery;
+
+				if (sourceUri.Host is { Length: > 0 } host)
+				{
+					filePath = host + "/" + filePath.TrimStart('/');
+				}
+
+				var originalLocalPath =
+				Path.Combine(Windows.ApplicationModel.Package.Current.InstalledPath,
+					 filePath.TrimStart('/').Replace('/', global::System.IO.Path.DirectorySeparatorChar)
+				);
+				_isParsedLocalFile = true;
+				_mediaPath = new Uri(originalLocalPath);
+				UpdateMedia();
+				return;
+			}
+
+			if (sourceUri.IsAppData())
+			{
+				var filePath = AppDataUriEvaluator.ToPath(sourceUri);
+				_mediaPath = new Uri(filePath);
+				_isParsedLocalFile = true;
+				UpdateMedia();
+				return;
+			}
+
+			if (sourceUri.IsFile)
+			{
+				_mediaPath = sourceUri;
+				_isParsedLocalFile = true;
+				UpdateMedia();
+				return;
+			}
+
+			_mediaPath = sourceUri;
+			UpdateMedia();
+		}
+		else
+		{
+			if (typeof(GtkMediaPlayer).Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Error))
+			{
+				typeof(GtkMediaPlayer).Log().Error($"Unable to parse source [{encodedSource}]");
 			}
 		}
 	}
@@ -325,7 +377,7 @@ public partial class GtkMediaPlayer
 			string[] options = new string[1];
 			var media = new LibVLCSharp.Shared.Media(_libvlc, _mediaPath, options);
 
-			media.Parse(MediaParseOptions.ParseNetwork);
+			media.Parse(_isParsedLocalFile ? MediaParseOptions.ParseLocal : MediaParseOptions.ParseNetwork);
 			_mediaPlayer.Media = media;
 			AddMediaEvents();
 			Duration = (double)(_videoView?.MediaPlayer?.Media?.Duration / 1000 ?? 0);
