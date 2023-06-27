@@ -108,7 +108,7 @@ public partial class Given_MediaPlayerElement
 		Assert.IsNotNull(mediaPlayer);
 	}
 
-#if !__WASM__
+#if !__WASM__ && !__ANDROID__
 	[Ignore("Not supported under MAC [https://github.com/unoplatform/uno/issues/12663]")]
 #endif
 	[TestMethod]
