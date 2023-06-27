@@ -37,7 +37,11 @@ public partial class Given_MediaPlayerElement
 			Width = 100,
 		};
 		WindowHelper.WindowContent = sut;
-		await WindowHelper.WaitForLoaded(sut);
+		await WindowHelper.WaitFor(
+			condition: () => sut.ActualHeight > 0,
+			timeoutMS: 5000,
+			message: "Timeout waiting for the media player element be loaded."
+		);
 
 		// PlaybackState should transition out of Opening state when the video is ready to play.
 		await WindowHelper.WaitFor(
@@ -57,7 +61,11 @@ public partial class Given_MediaPlayerElement
 			Source = MediaSource.CreateFromUri(TestVideoUrl),
 		};
 		WindowHelper.WindowContent = sut;
-		await WindowHelper.WaitForLoaded(sut);
+		await WindowHelper.WaitFor(
+			condition: () => sut.ActualHeight > 0,
+			timeoutMS: 5000,
+			message: "Timeout waiting for the media player element be loaded."
+		);
 
 #if __SKIA__
 		// AutoPlay is not working on Skia for now.
@@ -97,7 +105,11 @@ public partial class Given_MediaPlayerElement
 
 		//Load Player
 		WindowHelper.WindowContent = sut;
-		await WindowHelper.WaitForLoaded(sut);
+		await WindowHelper.WaitFor(
+			condition: () => sut.ActualHeight > 0,
+			timeoutMS: 5000,
+			message: "Timeout waiting for the media player element be loaded."
+		);
 
 		sut.MediaPlayer.Play();
 
@@ -123,7 +135,11 @@ public partial class Given_MediaPlayerElement
 
 		//Load Player
 		WindowHelper.WindowContent = sut;
-		await WindowHelper.WaitForLoaded(sut);
+		await WindowHelper.WaitFor(
+			condition: () => sut.ActualHeight > 0,
+			timeoutMS: 5000,
+			message: "Timeout waiting for the media player element be loaded."
+		);
 
 		try
 		{
@@ -157,7 +173,11 @@ public partial class Given_MediaPlayerElement
 
 		//Load Player
 		WindowHelper.WindowContent = sut;
-		await WindowHelper.WaitForLoaded(sut);
+		await WindowHelper.WaitFor(
+			condition: () => sut.ActualHeight > 0,
+			timeoutMS: 5000,
+			message: "Timeout waiting for the media player element be loaded."
+		);
 
 		sut.MediaPlayer.Play();
 		await WindowHelper.WaitFor(
@@ -179,7 +199,11 @@ public partial class Given_MediaPlayerElement
 
 		//Load Player
 		WindowHelper.WindowContent = sut;
-		await WindowHelper.WaitForLoaded(sut);
+		await WindowHelper.WaitFor(
+			condition: () => sut.ActualHeight > 0,
+			timeoutMS: 5000,
+			message: "Timeout waiting for the media player element be loaded."
+		);
 
 		// step 1: Test Play
 		sut.MediaPlayer.Play();
@@ -222,7 +246,11 @@ public partial class Given_MediaPlayerElement
 
 		//Load Player
 		WindowHelper.WindowContent = sut;
-		await WindowHelper.WaitForLoaded(sut);
+		await WindowHelper.WaitFor(
+			condition: () => sut.ActualHeight > 0,
+			timeoutMS: 5000,
+			message: "Timeout waiting for the media player element be loaded."
+		);
 
 		// step 1: Test Play
 		sut.MediaPlayer.Play();
@@ -255,7 +283,11 @@ public partial class Given_MediaPlayerElement
 
 		//Load Player
 		WindowHelper.WindowContent = sut;
-		await WindowHelper.WaitForLoaded(sut);
+		await WindowHelper.WaitFor(
+			condition: () => sut.ActualHeight > 0,
+			timeoutMS: 5000,
+			message: "Timeout waiting for the media player element be loaded."
+		);
 
 		var root = (WindowHelper.XamlRoot?.Content as FrameworkElement)!;
 		var tcp = (FrameworkElement)root.FindName("TransportControlsPresenter");
@@ -280,7 +312,11 @@ public partial class Given_MediaPlayerElement
 
 		//Load Player
 		WindowHelper.WindowContent = sut;
-		await WindowHelper.WaitForLoaded(sut);
+		await WindowHelper.WaitFor(
+			condition: () => sut.ActualHeight > 0,
+			timeoutMS: 5000,
+			message: "Timeout waiting for the media player element be loaded."
+		);
 
 		// step 1: disalbe ShowAndHideAutomatically
 		var root = (WindowHelper.XamlRoot?.Content as FrameworkElement)!;
