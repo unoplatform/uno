@@ -281,7 +281,7 @@ namespace Windows.UI.Xaml
 		}
 
 		protected internal void SetProperty(string name, string value)
-			=> SetProperty((name, value));
+			=> Uno.UI.Xaml.WindowManagerInterop.SetProperty(HtmlId, name, value);
 
 		protected internal void SetProperty(params (string name, string value)[] properties)
 		{
