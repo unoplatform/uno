@@ -17,8 +17,13 @@ namespace Windows.Media.Playback
 			}
 		}
 		#endif
+<<<<<<< HEAD
 		#if false || false || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+		#if false || false || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__ || false
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
+>>>>>>> 8bc4223730 (chore: changes from rebase)
 		public  global::Windows.Media.Core.MediaSource Source
 		{
 			get
@@ -145,9 +150,15 @@ namespace Windows.Media.Playback
 		}
 		#endif
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackItem.MediaPlaybackItem(Windows.Media.Core.MediaSource, System.TimeSpan, System.TimeSpan)
+<<<<<<< HEAD
 		#if false || false || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public MediaPlaybackItem( global::Windows.Media.Core.MediaSource source) 
+=======
+#if false || false || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__ || false
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public MediaPlaybackItem(global::Windows.Media.Core.MediaSource source) 
+>>>>>>> 8bc4223730 (chore: changes from rebase)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackItem", "MediaPlaybackItem.MediaPlaybackItem(MediaSource source)");
 		}
@@ -168,8 +179,13 @@ namespace Windows.Media.Playback
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackItem.DurationLimit.get
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackItem.CanSkip.get
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackItem.CanSkip.set
+<<<<<<< HEAD
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+=======
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__NETSTD_REFERENCE__", "__MACOS__")]
+>>>>>>> 8bc4223730 (chore: changes from rebase)
 		public  global::Windows.Media.Playback.MediaItemDisplayProperties GetDisplayProperties()
 		{
 			throw new global::System.NotImplementedException("The member MediaItemDisplayProperties MediaPlaybackItem.GetDisplayProperties() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaItemDisplayProperties%20MediaPlaybackItem.GetDisplayProperties%28%29");

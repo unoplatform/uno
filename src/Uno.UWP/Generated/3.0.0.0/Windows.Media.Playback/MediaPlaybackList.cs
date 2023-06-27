@@ -55,8 +55,13 @@ namespace Windows.Media.Playback
 			}
 		}
 		#endif
+<<<<<<< HEAD
 		#if false || false || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+		#if false || false || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__ || false
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
+>>>>>>> 8bc4223730 (chore: changes from rebase)
 		public  global::Windows.Foundation.Collections.IObservableVector<global::Windows.Media.Playback.MediaPlaybackItem> Items
 		{
 			get
