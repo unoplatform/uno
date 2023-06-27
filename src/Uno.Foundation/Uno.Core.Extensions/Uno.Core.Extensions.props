@@ -16,15 +16,6 @@
 
   <ItemGroup>
 	<Compile Include="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Compatibility\Collections\ImmutableList.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
-	<Compile Include="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Compatibility\Conversion\ConversionExtensionPoint.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
-	<Compile Include="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Compatibility\Conversion\CustomConversionStrategy.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
-	<Compile Include="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Compatibility\Conversion\CustomCulturelessConversionStrategy.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
-	<Compile Include="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Compatibility\Conversion\DefaultConversionExtensions.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
-	<Compile Include="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Compatibility\Conversion\EnumConversionStrategy.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
-	<Compile Include="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Compatibility\Conversion\IConversionExtensions.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
-	<Compile Include="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Compatibility\Conversion\IConversionStrategy.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
-	<Compile Include="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Compatibility\Conversion\PrimitiveConversionStrategy.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
-	<Compile Include="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Compatibility\Conversion\TypeConverterConversionStrategy.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
 	<Compile Include="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Compatibility\Extensions\DateTimeExtensions.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
 	<Compile Include="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Compatibility\Extensions\ExtensionPoint.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />
 	<Compile Include="$(MSBuildThisFileDirectory)Uno.Core.Extensions.Compatibility\Extensions\FormattableExtensions.cs" Link="Uno.Core.Extensions\%(RecursiveDir)%(FileName)%(Extension)" />

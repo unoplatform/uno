@@ -14,7 +14,6 @@ using Uno.UI.DataBinding;
 using Uno;
 using Windows.UI.Xaml;
 using System.Collections;
-using Uno.Conversion;
 
 using Windows.UI.Xaml.Data;
 using System.Dynamic;
