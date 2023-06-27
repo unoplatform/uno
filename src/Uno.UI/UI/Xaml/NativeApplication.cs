@@ -64,15 +64,22 @@ namespace Windows.UI.Xaml
 
 				_app.InitializationCompleted();
 
-				var handled = TryHandleIntent(activity.Intent);
-
-				// default to normal launch
-				if (!handled && !_isRunning)
+				if (activity.Intent?.GetDoubleExtra("Uno.internal.IntentType", 0) == (int)ActivationKind.ToastNotification)
 				{
-					_app.OnLaunched(new LaunchActivatedEventArgs());
+					var toastActivated = new ToastNotificationActivatedEventArgs(activity.Intent.GetStringExtra("Uno.internal.ToastArgument"));
+					_app.OnActivated(toastActivated as IActivatedEventArgs);
 				}
+				else
+				{
+					var handled = TryHandleIntent(activity.Intent);
 
-				_isRunning = true;
+					// default to normal launch
+					if (!handled && !_isRunning)
+					{
+						_app.OnLaunched(new LaunchActivatedEventArgs());
+					}
+					_isRunning = true;
+				}
 			}
 		}
 

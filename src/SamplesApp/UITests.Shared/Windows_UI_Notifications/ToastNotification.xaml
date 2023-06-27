@@ -1,0 +1,19 @@
+﻿<Page
+    x:Class="UITests.Windows_UI_Notifications.ToastNotification"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:UITests.Windows_UI_Notifications"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
+
+	<StackPanel Padding="20">
+		<TextBlock Text="This would work only if app has icon defined" />
+		<TextBox x:Name="uiToastLine1" Header="Toast message line 1" />
+		<TextBox x:Name="uiToastLine2" Header="Toast message line 2"/>
+		<TextBox x:Name="uiToastLaunchArg" Header="Toast launch argument"/>
+		<Button Click="sendToast_Click">Send toast</Button>
+		<TextBlock Text="" Foreground="Red" Name="uiErrorMsg" TextWrapping="Wrap"/>
+	</StackPanel>
+</Page>
