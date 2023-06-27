@@ -1228,6 +1228,135 @@ namespace Uno.UI.DataBinding
 				.FirstOrDefault();
 		}
 
+		private static object? ConvertToEnum(Type enumType, object value)
+		{
+			var valueString = value.ToString();
+
+			FieldInfo? defaultValue = null;
+			foreach (var field in enumType.GetFields())
+			{
+				if (field.Name.Equals(valueString, StringComparison.OrdinalIgnoreCase))
+				{
+					return Enum.Parse(enumType, field.Name);
+				}
+
+				var descriptionAttribute = field.GetCustomAttributes<DescriptionAttribute>().FirstOrDefault();
+				if (descriptionAttribute is not null)
+				{
+					if (descriptionAttribute.Description.Equals(valueString, StringComparison.CurrentCultureIgnoreCase) ||
+						descriptionAttribute.Description.Equals(valueString, StringComparison.InvariantCultureIgnoreCase))
+					{
+#if NET7_0_OR_GREATER
+						if (Enum.TryParse(enumType, field.Name, ignoreCase: true, out var enumValue))
+						{
+							return enumValue;
+						}
+#else
+						try
+						{
+							return Enum.Parse(enumType, field.Name, ignoreCase: true);
+						}
+						catch (Exception)
+						{
+						}
+#endif
+					}
+
+					if (descriptionAttribute.Description == "?")
+					{
+						defaultValue = field;
+					}
+				}
+			}
+
+			if (defaultValue is not null)
+			{
+#if NET7_0_OR_GREATER
+				if (Enum.TryParse(enumType, defaultValue.Name, ignoreCase: true, out var enumValue))
+				{
+					return enumValue;
+				}
+#else
+				try
+				{
+					return Enum.Parse(enumType, defaultValue.Name, ignoreCase: true);
+				}
+				catch (Exception)
+				{
+				}
+#endif
+			}
+
+			return DependencyProperty.UnsetValue;
+		}
+
+		private static object? ConvertPrimitiveToPrimitive(Type type, object value)
+		{
+			try
+			{
+				return System.Convert.ChangeType(value, type, CultureInfo.CurrentCulture);
+			}
+			catch (Exception)
+			{
+				// This is a temporary fallback solution.
+				// The problem is that we don't actually know which culture we must use in advance.
+				// Values can come from the xaml (invariant culture) or from a two way binding (current culture).
+				// The real solution would be to pass a culture or source when setting a value in a Dependency Property.
+				return System.Convert.ChangeType(value, type, CultureInfo.InvariantCulture);
+			}
+		}
+
+		private static object? ConvertUsingTypeDescriptor(Type type, object value)
+		{
+			var valueTypeConverter = TypeDescriptor.GetConverter(value.GetType());
+			if (valueTypeConverter.CanConvertTo(type))
+			{
+				try
+				{
+					return valueTypeConverter.ConvertTo(null, CultureInfo.CurrentCulture, value, type);
+				}
+				catch (Exception)
+				{
+					return valueTypeConverter.ConvertTo(null, CultureInfo.InvariantCulture, value, type);
+				}
+			}
+
+			if (type == typeof(float))
+			{
+				var valueToString = value.ToString();
+				if (float.TryParse(valueToString, NumberStyles.Float, CultureInfo.CurrentCulture, out var fValue))
+				{
+					return fValue;
+				}
+
+				if (float.TryParse(valueToString, NumberStyles.Float, CultureInfo.InvariantCulture, out fValue))
+				{
+					return fValue;
+				}
+			}
+			else if (type == typeof(decimal))
+			{
+				var valueToString = value.ToString();
+				if (decimal.TryParse(valueToString, NumberStyles.AllowDecimalPoint, CultureInfo.CurrentCulture, out var dValue))
+				{
+					return dValue;
+				}
+				if (decimal.TryParse(valueToString, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out dValue))
+				{
+					return dValue;
+				}
+			}
+
+			try
+			{
+				return TypeDescriptor.GetConverter(type).ConvertFrom(null, CultureInfo.CurrentCulture, value);
+			}
+			catch (Exception)
+			{
+				return TypeDescriptor.GetConverter(type).ConvertFrom(null, CultureInfo.InvariantCulture, value);
+			}
+		}
+
 		internal static object? Convert(Func<Type?>? propertyType, object? value)
 		{
 			if (value != null && propertyType != null)
@@ -1250,130 +1379,15 @@ namespace Uno.UI.DataBinding
 					}
 					else if (t.IsEnum)
 					{
-						var valueString = value.ToString();
-
-						FieldInfo? defaultValue = null;
-						foreach (var field in t.GetFields())
-						{
-							if (field.Name.Equals(valueString, StringComparison.OrdinalIgnoreCase))
-							{
-								return Enum.Parse(t, field.Name);
-							}
-
-							var descriptionAttribute = field.GetCustomAttributes<DescriptionAttribute>().FirstOrDefault();
-							if (descriptionAttribute is not null)
-							{
-								if (descriptionAttribute.Description.Equals(valueString, StringComparison.CurrentCultureIgnoreCase) ||
-									descriptionAttribute.Description.Equals(valueString, StringComparison.InvariantCultureIgnoreCase))
-								{
-#if NET7_0_OR_GREATER
-									if (Enum.TryParse(t, field.Name, ignoreCase: true, out enumValue))
-									{
-										return enumValue;
-									}
-#else
-									try
-									{
-										return Enum.Parse(t, field.Name, ignoreCase: true);
-									}
-									catch (Exception)
-									{
-									}
-#endif
-								}
-
-								if (descriptionAttribute.Description == "?")
-								{
-									defaultValue = field;
-								}
-							}
-						}
-
-						if (defaultValue is not null)
-						{
-#if NET7_0_OR_GREATER
-							if (Enum.TryParse(t, defaultValue.Name, ignoreCase: true, out enumValue))
-							{
-								return enumValue;
-							}
-#else
-							try
-							{
-								return Enum.Parse(t, defaultValue.Name, ignoreCase: true);
-							}
-							catch (Exception)
-							{
-							}
-#endif
-						}
-
-						return DependencyProperty.UnsetValue;
+						return ConvertToEnum(t, value);
 					}
 					else if ((Nullable.GetUnderlyingType(t) ?? t) is { IsPrimitive: true } toTypeUnwrapped && IsPrimitive(value))
 					{
-						try
-						{
-							return System.Convert.ChangeType(value, toTypeUnwrapped, CultureInfo.CurrentCulture);
-						}
-						catch (Exception)
-						{
-							// This is a temporary fallback solution.
-							// The problem is that we don't actually know which culture we must use in advance.
-							// Values can come from the xaml (invariant culture) or from a two way binding (current culture).
-							// The real solution would be to pass a culture or source when setting a value in a Dependency Property.
-							return System.Convert.ChangeType(value, toTypeUnwrapped, CultureInfo.InvariantCulture);
-						}
+						return ConvertPrimitiveToPrimitive(toTypeUnwrapped, value);
 					}
 					else
 					{
-						var valueTypeConverter = TypeDescriptor.GetConverter(value.GetType());
-						if (valueTypeConverter.CanConvertTo(t))
-						{
-							try
-							{
-								return valueTypeConverter.ConvertTo(null, CultureInfo.CurrentCulture, value, t);
-							}
-							catch (Exception)
-							{
-								return valueTypeConverter.ConvertTo(null, CultureInfo.InvariantCulture, value, t);
-							}
-						}
-
-						if (t == typeof(float))
-						{
-							float fValue;
-							if (float.TryParse(value.ToString(), NumberStyles.Float, CultureInfo.CurrentCulture, out fValue))
-							{
-								return fValue;
-							}
-
-							if (float.TryParse(value.ToString(), NumberStyles.Float, CultureInfo.InvariantCulture, out fValue))
-							{
-								return fValue;
-							}
-						}
-
-						if (t == typeof(decimal))
-						{
-							decimal dValue;
-							if (decimal.TryParse(value.ToString(), NumberStyles.AllowDecimalPoint, CultureInfo.CurrentCulture, out dValue))
-							{
-								return dValue;
-							}
-							if (decimal.TryParse(value.ToString(), NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out dValue))
-							{
-								return dValue;
-							}
-						}
-
-						try
-						{
-							return TypeDescriptor.GetConverter(t).ConvertFrom(null, CultureInfo.CurrentCulture, value);
-						}
-						catch (Exception)
-						{
-							return TypeDescriptor.GetConverter(t).ConvertFrom(null, CultureInfo.InvariantCulture, value);
-						}
+						return ConvertUsingTypeDescriptor(t, value);
 					}
 				}
 			}
