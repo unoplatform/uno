@@ -37,7 +37,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.MediaPlayerElement
 			mediaPlaybackList.Items.Add(new MediaPlaybackItem(MediaSource.CreateFromUri(new Uri("https://uno-assets.platform.uno/tests/videos/Getting_Started_with_Uno_Platform_and_Visual_Studio_Code.mp4"))));
 			if (mpe.MediaPlayer == null)
 			{
-				mpe.MediaPlayer = new MediaPlayer();
+				mpe.SetMediaPlayer(new Windows.Media.Playback.MediaPlayer());
 			}
 			mpe.MediaPlayer.Source = mediaPlaybackList;
 		}
