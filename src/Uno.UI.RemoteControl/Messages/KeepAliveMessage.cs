@@ -8,7 +8,7 @@
 		{
 		}
 
-		public string Scope => "RemoteControlServer";
+		public string Scope => RemoteControlServerMessages.Scope;
 
 		string IMessage.Name => Name;
 	}

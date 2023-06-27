@@ -118,7 +118,7 @@ namespace Uno.UI.RemoteControl.Host
 
 			while (await WebSocketHelper.ReadFrame(socket, ct) is Frame frame)
 			{
-				if (frame.Scope == "RemoteControlServer")
+				if (frame.Scope == RemoteControlServerMessages.Scope)
 				{
 					switch (frame.Name)
 					{
@@ -155,7 +155,7 @@ namespace Uno.UI.RemoteControl.Host
 				}
 				else
 				{
-					if (this.Log().IsEnabled(LogLevel.Trace) && frame.Scope != "RemoteControlServer")
+					if (this.Log().IsEnabled(LogLevel.Trace) && frame.Scope != RemoteControlServerMessages.Scope)
 					{
 						this.Log().LogTrace($"Unknown Frame [{frame.Scope} / {frame.Name}]");
 					}

@@ -10,7 +10,7 @@ namespace Uno.UI.RemoteControl.Messages
 			ProcessorScope = processorScope;
 		}
 
-		public string Scope => "RemoteControlServer";
+		public string Scope => RemoteControlServerMessages.Scope;
 
 		string IMessage.Name => Name;
 

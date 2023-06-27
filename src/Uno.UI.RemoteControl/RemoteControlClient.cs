@@ -283,7 +283,7 @@ namespace Uno.UI.RemoteControl
 			while (_webSocket != null
 				&& await WebSocketHelper.ReadFrame(_webSocket, CancellationToken.None) is HotReload.Messages.Frame frame)
 			{
-				if (frame.Scope == "RemoteControlServer")
+				if (frame.Scope == RemoteControlServerMessages.Scope)
 				{
 					if (frame.Name == KeepAliveMessage.Name)
 					{

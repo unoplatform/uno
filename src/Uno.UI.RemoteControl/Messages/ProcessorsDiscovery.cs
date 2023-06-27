@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 namespace Uno.UI.RemoteControl.Messages
 {
 	public class ProcessorsDiscovery : IMessage
@@ -13,7 +9,7 @@ namespace Uno.UI.RemoteControl.Messages
 			BasePath = basePath;
 		}
 
-		public string Scope => "RemoteControlServer";
+		public string Scope => RemoteControlServerMessages.Scope;
 
 		string IMessage.Name => Name;
 
