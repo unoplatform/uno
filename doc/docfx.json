@@ -79,6 +79,9 @@
               "branch": "main"
             }
           }
+        },
+        "sitemap": {
+          "baseUrl": "https://platform.uno/docs/"
         }
     }
 }
