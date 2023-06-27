@@ -19,6 +19,7 @@ branches:
     regex: legacy/.*
     tag: dev
     increment: Minor
+    source-branches: ['master']
     is-source-branch-for: ['beta', 'stable']
 
   pull-request:
