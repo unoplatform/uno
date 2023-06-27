@@ -292,9 +292,16 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 
 			switch (_owner.Source)
 			{
-				case MediaPlaybackList playlist when playlist.Items.Count > 0 && _playlistItems is not null:
+				case MediaPlaybackList playlist when playlist.Items.Count > 0:
 					SetPlaylistItems(playlist);
-					_uri = _playlistItems[0];
+					if (_playlistItems is not null)
+					{
+						_uri = _playlistItems[0];
+					}
+					else
+					{
+						throw new InvalidOperationException("Playlist Items could not be set");
+					}
 					break;
 
 				case MediaPlaybackItem item:
