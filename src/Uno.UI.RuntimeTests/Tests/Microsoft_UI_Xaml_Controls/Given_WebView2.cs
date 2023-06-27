@@ -7,13 +7,10 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.Web.WebView2.Core;
 using Private.Infrastructure;
 using Windows.UI.Xaml.Controls;
-<<<<<<< HEAD
-=======
 using System.Runtime.CompilerServices;
 using Uno.UI.RuntimeTests.Helpers;
 using FluentAssertions;
 
->>>>>>> 2f61d365ce (chore: Adjust usings)
 #if HAS_UNO
 using Uno.UI.Xaml.Controls;
 #endif
