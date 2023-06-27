@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata;
 using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
 using Uno.Media.Playback;
@@ -10,7 +11,11 @@ using Windows.Foundation;
 using Windows.Media.Core;
 using Windows.Media.Playback;
 using Windows.Storage;
+using Windows.Storage.Helpers;
 using Windows.Storage.Streams;
+using Windows.UI.Xaml;
+using Uno.Extensions;
+using Uno.Helpers;
 
 [assembly: ApiExtension(typeof(IMediaPlayerExtension), typeof(Uno.UI.Media.MediaPlayerExtension))]
 
@@ -31,6 +36,8 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 	private TimeSpan _naturalDuration;
 	private Uri? _uri;
 	private bool _anonymousCors = FeatureConfiguration.AnonymousCorsDefault;
+
+	const string MsAppXScheme = "ms-appx";
 
 	public MediaPlayerExtension(object owner)
 	{
@@ -322,6 +329,30 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 
 		if (_player is not null && _uri is not null)
 		{
+			if (!_uri.IsAbsoluteUri || _uri.Scheme == "")
+			{
+				_uri = new Uri(MsAppXScheme + ":///" + _uri.OriginalString.TrimStart(new char[] { '/' }));
+			}
+
+			if (_uri.IsLocalResource())
+			{
+				_player.Source = AssetsPathBuilder.BuildAssetUri(_uri?.PathAndQuery);
+				return;
+			}
+
+			if (_uri.IsAppData())
+			{
+				var filePath = AppDataUriEvaluator.ToPath(_uri);
+				_player.Source = filePath;
+				return;
+			}
+
+			if (_uri.IsFile)
+			{
+				_player.Source = _uri.OriginalString;
+				return;
+			}
+
 			_player.Source = _uri.OriginalString;
 		}
 		else
