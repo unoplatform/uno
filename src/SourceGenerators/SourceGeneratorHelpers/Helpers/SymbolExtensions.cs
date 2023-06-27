@@ -257,7 +257,7 @@ namespace Microsoft.CodeAnalysis
 				return symbol.GetMembers(memberName).FirstOrDefault();
 			}
 
-			var typeSymbol = (INamedTypeSymbol?)symbol;
+			var typeSymbol = (ITypeSymbol?)symbol;
 			while (typeSymbol is not null)
 			{
 				if (typeSymbol.GetMembers(memberName).FirstOrDefault() is { } member)
@@ -286,7 +286,7 @@ namespace Microsoft.CodeAnalysis
 				return null;
 			}
 
-			var typeSymbol = (INamedTypeSymbol?)symbol;
+			var typeSymbol = (ITypeSymbol?)symbol;
 			while (typeSymbol is not null)
 			{
 				foreach (var candidate in typeSymbol.GetMembers())
