@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿namespace Windows.UI.Xaml.Controls;
 
-namespace Windows.UI.Xaml.Controls
+internal interface ICommandBarElement3
 {
-	internal interface ICommandBarElement3
-	{
-		bool IsInOverflow { get; set; }
-	}
+	bool IsInOverflow { get; set; }
 }
