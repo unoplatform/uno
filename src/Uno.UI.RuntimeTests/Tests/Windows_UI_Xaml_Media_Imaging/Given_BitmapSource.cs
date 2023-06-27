@@ -198,6 +198,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 #endif
 		public async Task When_WriteableBitmap_SetSource_Should_Update_PixelWidth_And_PixelHeight()
 		{
+			if (!ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			{
+				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
+			}
+
 			var writeableBitmap = new WriteableBitmap(1, 1);
 			var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/ingredient3.png"));
 			using (var stream = await file.OpenReadAsync())

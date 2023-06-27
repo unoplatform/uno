@@ -26,9 +26,10 @@ namespace Windows.UI.Xaml.Media.Imaging
 		{
 			using var img = SKImage.FromEncodedData(_stream.AsStream());
 			var info = img.Info;
+
 			fixed (byte* data = &MemoryMarshal.GetReference(_buffer.Span))
 			{
-				img.ReadPixels(info, (nint)data, PixelWidth * 4);
+				img.ReadPixels(info.WithColorType(SKColorType.Bgra8888), (nint)data, PixelWidth * 4);
 			}
 		}
 	}
