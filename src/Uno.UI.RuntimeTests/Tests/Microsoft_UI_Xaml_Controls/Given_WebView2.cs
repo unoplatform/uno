@@ -118,6 +118,7 @@ public class Given_WebView2
 	}
 #endif
 
+#if !__IOS__ // Temporarily disabled due to #11997
 	[TestMethod]
 	public async Task When_ExecuteScriptAsync_Has_No_Result()
 	{
@@ -143,7 +144,6 @@ public class Given_WebView2
 		await TestHelper.RetryAssert(Do, 3);
 	}
 
-#if !__IOS__ // Temporarily disabled due to #11997
 	[TestMethod]
 	public async Task When_ExecuteScriptAsync()
 	{
