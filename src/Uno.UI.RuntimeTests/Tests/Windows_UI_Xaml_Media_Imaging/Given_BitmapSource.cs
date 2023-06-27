@@ -231,6 +231,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 			{
 				ImageSource = writeableBitmap
 			};
+
+			await WindowHelper.WaitForIdle();
+
+			var renderer = new RenderTargetBitmap();
+
+			await renderer.RenderAsync(parent);
+			var snapshot = await RawBitmap.From(renderer, rect);
+			ImageAssert.HasColorAt(snapshot, 1, 1, Color.FromArgb(0xFF, 0xFA, 0xB8, 0x63), tolerance: 5);
 		}
 
 		[TestMethod]
