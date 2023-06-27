@@ -14,6 +14,7 @@ using Uno.UI;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Text;
 using Uno.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
@@ -53,6 +54,7 @@ namespace Windows.UI.Xaml.Controls
 		private void InitializeContentPresenter()
 		{
 			SetDefaultForeground(ForegroundProperty);
+			//SetImplicitContent2();
 		}
 
 		/// <summary>
@@ -659,13 +661,6 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		protected internal override void OnTemplatedParentChanged(DependencyPropertyChangedEventArgs e)
-		{
-			base.OnTemplatedParentChanged(e);
-
-			SetImplicitContent();
-		}
-
 		protected virtual void OnContentTemplateChanged(DataTemplate oldContentTemplate, DataTemplate newContentTemplate)
 		{
 			if (ContentTemplateRoot != null)
@@ -715,47 +710,58 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+		private void SynchronizeContentTemplatedParent_Legacy() // fixme@xy
+		{
+			//if (IsNativeHost)
+			//{
+			//	// In this case, the ContentPresenter is not used as part of the child of a
+			//	// templated control, and we must not take the outer templated parent, but rather
+			//	// the immediate template parent (as if the native view was not wrapped).
+			//	// Needs to be reevaluated with https://github.com/unoplatform/uno/issues/1621
+			//	if (_contentTemplateRoot is IFrameworkElement binder)
+			//	{
+			//		binder.TemplatedParent = this.TemplatedParent;
+			//	}
+			//}
+			//else
+			//{
+			//	if (_contentTemplateRoot is IFrameworkElement binder)
+			//	{
+			//		binder.TemplatedParent = FindTemplatedParent();
+
+			//		DependencyObject FindTemplatedParent()
+			//		{
+			//			// ImplicitTextBlock is a special case that requires its TemplatedParent to be the ContentPresenter
+			//			if (_contentTemplateRoot is ImplicitTextBlock) return this;
+
+			//			// Sometimes when content is a child view defined in the xaml, the direct TemplatedParent should be used,
+			//			// but only if the content hasnt been overwritten yet. If the content has been overwritten,
+			//			// either ImplicitTextBlock or the DataTemplate (requiring the outter TemplatedParent) would has been used.
+			//			if (!SynchronizeContentWithOuterTemplatedParent && _dataTemplateUsedLastUpdate == null)
+			//			{
+			//				return this.TemplatedParent;
+			//			}
+
+			//			return (this.TemplatedParent as IFrameworkElement)?.TemplatedParent;
+			//		}
+			//	}
+			//	else if (_contentTemplateRoot is DependencyObject dependencyObject)
+			//	{
+			//		// Propagate binding context correctly
+			//		dependencyObject.SetParent(this);
+			//	}
+			//}
+		}
 		private void SynchronizeContentTemplatedParent()
 		{
-			if (IsNativeHost)
-			{
-				// In this case, the ContentPresenter is not used as part of the child of a
-				// templated control, and we must not take the outer templated parent, but rather
-				// the immediate template parent (as if the native view was not wrapped).
-				// Needs to be reevaluated with https://github.com/unoplatform/uno/issues/1621
-				if (_contentTemplateRoot is IFrameworkElement binder)
-				{
-					binder.TemplatedParent = this.TemplatedParent;
-				}
-			}
-			else
-			{
-				if (_contentTemplateRoot is IFrameworkElement binder)
-				{
-					binder.TemplatedParent = FindTemplatedParent();
+			// fixme@xy: rename this method to something more appropriate
+			// fixme@xy: can CP be used outside the scope of a ContentControl template?
+			//		^ what do?
+			// fixme@xy: given a generic/common template-parent type like ContentControl,
+			//		we are almost guaranteed to get false positives with naive FindFirstAncestor<ContentControl>...
+			//		ex: ContentControl\.Template\ScrollViewer\ContentPresenter;  CP here should associate with the CC, and not SV which is also a CC...
 
-					DependencyObject FindTemplatedParent()
-					{
-						// ImplicitTextBlock is a special case that requires its TemplatedParent to be the ContentPresenter
-						if (_contentTemplateRoot is ImplicitTextBlock) return this;
-
-						// Sometimes when content is a child view defined in the xaml, the direct TemplatedParent should be used,
-						// but only if the content hasnt been overwritten yet. If the content has been overwritten,
-						// either ImplicitTextBlock or the DataTemplate (requiring the outter TemplatedParent) would has been used.
-						if (!SynchronizeContentWithOuterTemplatedParent && _dataTemplateUsedLastUpdate == null)
-						{
-							return this.TemplatedParent;
-						}
-
-						return (this.TemplatedParent as IFrameworkElement)?.TemplatedParent;
-					}
-				}
-				else if (_contentTemplateRoot is DependencyObject dependencyObject)
-				{
-					// Propagate binding context correctly
-					dependencyObject.SetParent(this);
-				}
-			}
+			SetImplicitContent();
 		}
 
 		private void UpdateContentTransitions(TransitionCollection oldValue, TransitionCollection newValue)
@@ -946,18 +952,28 @@ namespace Windows.UI.Xaml.Controls
 
 		private bool _isBoundImplicitelyToContent;
 
-		private void SetImplicitContent()
+		private void SetImplicitContent2()
+		{
+			var binding = new Binding(new PropertyPath("Content"), null)
+			{
+				RelativeSource = RelativeSource.TemplatedParent,
+			};
+			SetBinding(ContentProperty, binding);
+			_isBoundImplicitelyToContent = true;
+		}
+
+		private void SetImplicitContent() // todo@xy: only called by OnTemplatedParentChanged; verify this is still needed?
 		{
 			if (!FeatureConfiguration.ContentPresenter.UseImplicitContentFromTemplatedParent)
 			{
 				return;
 			}
 
-			if (!(TemplatedParent is ContentControl))
-			{
-				ClearImplicitBindinds();
-				return; // Not applicable: no TemplatedParent or it's not a ContentControl
-			}
+			//if (!(TemplatedParent is ContentControl))
+			//{
+			//	ClearImplicitBindinds();
+			//	return; // Not applicable: no TemplatedParent or it's not a ContentControl
+			//}
 
 			// Check if the Content is set to something
 			var v = this.GetValueUnderPrecedence(ContentProperty, DependencyPropertyValuePrecedences.DefaultValue);

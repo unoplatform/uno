@@ -2105,11 +2105,11 @@ _Check_return_ HRESULT CommandBar::NotifyDeferredElementStateChanged(
 
 			CommandBar? parentCommandBar = null;
 			var itemsControl = ItemsControl.ItemsControlFromItemContainer(elementDO);
-			if (itemsControl is { })
-			{
-				var templatedParent = itemsControl.TemplatedParent;
-				parentCommandBar = templatedParent as CommandBar;
-			}
+			//if (itemsControl is { }) // fixme@xy
+			//{
+			//	var templatedParent = itemsControl.TemplatedParent;
+			//	parentCommandBar = templatedParent as CommandBar;
+			//}
 
 			// If an element is collapsed initially, it isn't placed in the visual tree of its ItemsControl,
 			// meaning that its parent will instead be its logical parent.  To account for that circumstance,

@@ -146,6 +146,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Collections;
+using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using Uno.Disposables;
 using System.Runtime.CompilerServices;
@@ -659,7 +660,7 @@ public object DataContext
 	set => SetValue(DataContextProperty, value);
 }}
 
-// Using a DependencyProperty as the backing store for DataContext.  This enables animation, styling, binding, etc...
+// Using a DependencyProperty as the backing store for DataContext. This enables animation, styling, binding, etc...
 public static DependencyProperty DataContextProperty {{ get ; }} =
 	DependencyProperty.Register(
 		name: nameof(DataContext),
@@ -676,36 +677,6 @@ public static DependencyProperty DataContextProperty {{ get ; }} =
 {{
 	OnDataContextChangedPartial(e);
 	DataContextChanged?.Invoke({dataContextChangedInvokeArgument}, new DataContextChangedEventArgs(DataContext));
-}}
-
-#endregion
-
-#region TemplatedParent DependencyProperty
-
-public DependencyObject TemplatedParent
-{{
-	get => (DependencyObject)GetValue(TemplatedParentProperty);
-	set => SetValue(TemplatedParentProperty, value);
-}}
-
-// Using a DependencyProperty as the backing store for TemplatedParent.  This enables animation, styling, binding, etc...
-public static DependencyProperty TemplatedParentProperty {{ get ; }} =
-	DependencyProperty.Register(
-		name: nameof(TemplatedParent),
-		propertyType: typeof(DependencyObject),
-		ownerType: typeof({typeSymbol.Name}),
-		typeMetadata: new FrameworkPropertyMetadata(
-			defaultValue: null,
-			options: FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext | FrameworkPropertyMetadataOptions.WeakStorage,
-			propertyChangedCallback: (s, e) => (({typeSymbol.Name})s).OnTemplatedParentChanged(e)
-		)
-	);
-
-
-{protectedModifier} {virtualModifier} void OnTemplatedParentChanged(DependencyPropertyChangedEventArgs e)
-{{
-	__Store.SetTemplatedParent(e.NewValue as FrameworkElement);
-	OnTemplatedParentChangedPartial(e);
 }}
 
 #endregion
@@ -734,8 +705,6 @@ public void SetBindingValue(object value, [CallerMemberName] string propertyName
 internal bool IsAutoPropertyInheritanceEnabled {{ get => __Store.IsAutoPropertyInheritanceEnabled; set => __Store.IsAutoPropertyInheritanceEnabled = value; }}
 
 partial void OnDataContextChangedPartial(DependencyPropertyChangedEventArgs e);
-
-partial void OnTemplatedParentChangedPartial(DependencyPropertyChangedEventArgs e);
 
 public global::Windows.UI.Xaml.Data.BindingExpression GetBindingExpression(DependencyProperty dependencyProperty)
 	=>  __Store.GetBindingExpression(dependencyProperty);
@@ -795,7 +764,7 @@ public override bool Equals(object other)
 					{
 						using (builder.BlockInvariant($"if(__storeBackingField == null)"))
 						{
-							builder.AppendLineIndented("__storeBackingField = new DependencyObjectStore(this, DataContextProperty, TemplatedParentProperty);");
+							builder.AppendLineIndented("__storeBackingField = new DependencyObjectStore(this, DataContextProperty);");
 							builder.AppendLineIndented("__InitializeBinder();");
 						}
 
@@ -829,6 +798,34 @@ public override bool Equals(object other)
 						builder.AppendLineIndented("internal virtual void OnPropertyChanged2(global::Windows.UI.Xaml.DependencyPropertyChangedEventArgs args) { }");
 					}
 				}
+
+				//builder.AppendLineIndented("[EditorBrowsable(EditorBrowsableState.Never)]");
+				//using (builder.BlockInvariant($"DependencyObject IDependencyObjectInternal.TemplatedParent"))
+				//{
+				//	builder.AppendLineIndented("get => GetTemplatedParent();");
+				//	builder.AppendLineIndented("set => SetTemplatedParent(value);");
+				//}
+
+				builder.AppendLineIndented($"public {(typeSymbol.IsSealed ? "" : "virtual")} DependencyObject GetTemplatedParent() => null;");
+
+				builder.AppendMultiLineIndented("""
+					[EditorBrowsable(EditorBrowsableState.Never)]
+					public void SetTemplatedParent(DependencyObject parent)
+					{
+						if (parent != null)
+						{
+							//global::System.Diagnostics.Debug.Assert(parent
+							//	is global::Windows.UI.Xaml.Controls.Control
+							//	or global::Windows.UI.Xaml.Controls.ContentPresenter
+							//	or global::Windows.UI.Xaml.Controls.ItemsPresenter);
+							//global::System.Diagnostics.Debug.Assert(GetTemplatedParent() == null);
+						}
+					
+						SetTemplatedParentImpl(parent);
+					}
+					""");
+
+				builder.AppendLineIndented($"{(typeSymbol.IsSealed ? "private" : "private protected virtual")} void SetTemplatedParentImpl(DependencyObject parent) {{ }}");
 			}
 		}
 	}

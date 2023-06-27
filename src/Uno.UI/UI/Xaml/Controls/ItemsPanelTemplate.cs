@@ -38,12 +38,6 @@ namespace Windows.UI.Xaml.Controls
 			: base(owner, factory)
 		{
 		}
-
-		public static implicit operator ItemsPanelTemplate(Func<View?>? obj)
-			=> new ItemsPanelTemplate(obj);
-
-		public static implicit operator Func<View?>(ItemsPanelTemplate? obj)
-			=> () => (obj as IFrameworkTemplateInternal)?.LoadContent();
 	}
 }
 

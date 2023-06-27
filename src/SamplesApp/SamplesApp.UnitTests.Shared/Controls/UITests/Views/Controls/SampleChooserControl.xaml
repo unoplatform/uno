@@ -537,7 +537,7 @@
 					</Button>
 
 					<!-- Log Dump Button -->
-					<Button Style="{StaticResource IconButtonStyle}"
+					<!--<Button Style="{StaticResource IconButtonStyle}"
 							VerticalAlignment="Center"
 							Grid.Column="7"
 							Command="{Binding LogViewDumpCommand}"
@@ -546,6 +546,11 @@
 									   VerticalContentAlignment="Center"
 									   HorizontalContentAlignment="Center"
 									   Margin="0,4,10,0" />
+					</Button>-->
+					<Button Grid.Column="7"
+							Content="VT"
+							Click="DebugVT"
+							Style="{StaticResource IconButtonStyle}">
 					</Button>
 
 					<!-- Fluent styles check box -->
@@ -561,7 +566,8 @@
 				</Grid>
 
 				<!-- Sample Content -->
-				<ContentControl Content="{Binding ContentPhone}"
+				<ContentControl x:Name="SampleContentControl"
+								Content="{Binding ContentPhone}"
 								HorizontalAlignment="Stretch"
 								HorizontalContentAlignment="Stretch"
 								VerticalContentAlignment="Stretch"

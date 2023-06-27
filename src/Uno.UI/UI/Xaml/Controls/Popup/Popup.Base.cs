@@ -128,13 +128,11 @@ public partial class Popup : FrameworkElement, IPopup
 		if (oldChild is IDependencyObjectStoreProvider provider && !_childHasOwnDataContext)
 		{
 			provider.Store.ClearValue(provider.Store.DataContextProperty, DependencyPropertyValuePrecedences.Local);
-			provider.Store.ClearValue(provider.Store.TemplatedParentProperty, DependencyPropertyValuePrecedences.Local);
 			provider.Store.ClearValue(AllowFocusOnInteractionProperty, DependencyPropertyValuePrecedences.Local);
 			provider.Store.ClearValue(AllowFocusWhenDisabledProperty, DependencyPropertyValuePrecedences.Local);
 		}
 
 		UpdateDataContext(null);
-		UpdateTemplatedParent();
 		PropagateFocusProperties();
 	}
 
@@ -143,13 +141,6 @@ public partial class Popup : FrameworkElement, IPopup
 		base.OnDataContextChanged(e);
 
 		UpdateDataContext(e);
-	}
-
-	protected internal override void OnTemplatedParentChanged(DependencyPropertyChangedEventArgs e)
-	{
-		base.OnTemplatedParentChanged(e);
-
-		UpdateTemplatedParent();
 	}
 
 	private void UpdateDataContext(DependencyPropertyChangedEventArgs e)
@@ -175,14 +166,6 @@ public partial class Popup : FrameworkElement, IPopup
 			{
 				provider.Store.SetValue(provider.Store.DataContextProperty, this.DataContext, DependencyPropertyValuePrecedences.Local);
 			}
-		}
-	}
-
-	private void UpdateTemplatedParent()
-	{
-		if (Child is IDependencyObjectStoreProvider provider)
-		{
-			provider.Store.SetValue(provider.Store.TemplatedParentProperty, this.TemplatedParent, DependencyPropertyValuePrecedences.Local);
 		}
 	}
 

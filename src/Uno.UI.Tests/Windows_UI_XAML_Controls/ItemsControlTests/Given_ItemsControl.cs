@@ -27,9 +27,10 @@ namespace Uno.UI.Tests.ItemsControlTests
 		{
 			var style = new Style(typeof(Windows.UI.Xaml.Controls.ItemsControl))
 			{
-				Setters =  {
+				Setters =
+				{
 					new Setter<ItemsControl>("Template", t =>
-						t.Template = Funcs.Create(() =>
+						t.Template = new ControlTemplate(() =>
 							new ItemsPresenter()
 						)
 					)
@@ -576,7 +577,7 @@ namespace Uno.UI.Tests.ItemsControlTests
 			{
 				Setters =  {
 					new Setter<ListViewItem>("Template", t =>
-						t.Template = Funcs.Create(() =>
+						t.Template = new ControlTemplate(() =>
 							new Grid
 							{
 								Children = {

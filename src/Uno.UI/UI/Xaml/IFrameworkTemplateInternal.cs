@@ -15,5 +15,5 @@ namespace Windows.UI.Xaml;
 
 internal interface IFrameworkTemplateInternal
 {
-	View? LoadContent();
+	View? LoadContent(DependencyObject? templatedParent);
 }

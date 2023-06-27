@@ -40,18 +40,8 @@ namespace Windows.UI.Xaml
 		{
 		}
 
-		public static implicit operator DataTemplate?(Func<View?>? obj)
-		{
-			if (obj == null)
-			{
-				return null;
-			}
+		public View? LoadContent() => ((IFrameworkTemplateInternal)this).LoadContent(templatedParent: null);
 
-			return new DataTemplate(obj);
-		}
-
-		public View? LoadContent()
-			=> ((IFrameworkTemplateInternal)this).LoadContent();
+		internal View? LoadContentCached() => base.LoadContentCachedCore(templatedParent: null);
 	}
 }
-

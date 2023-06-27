@@ -75,8 +75,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 					AssociatedFlyout = this,
 				};
 
-				SynchronizePropertyToPopup(Popup.TemplatedParentProperty, TemplatedParent);
-
 				_popup.Opened += OnPopupOpened;
 				_popup.Closed += OnPopupClosed;
 
@@ -378,7 +376,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			}
 
 			Open();
-			SynchronizeContentTemplatedParent();
 			IsOpen = true;
 
 			// **************************************************************************************
@@ -396,14 +393,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			});
 		}
 
-		private void SynchronizeContentTemplatedParent()
+		private void SynchronizeContentTemplatedParent() // todo@xy: remove
 		{
-			// Manual propagation of the templated parent to the content property
-			// until we get the propagation running properly
-			if (_popup.Child is FrameworkElement content)
-			{
-				content.TemplatedParent = TemplatedParent;
-			}
 		}
 
 		private void SetTargetPosition(Point targetPoint)
@@ -494,9 +485,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			// since it is not directly a child in the visual tree of the flyout.
 			_popup?.SetValue(property, value, precedence: DependencyPropertyValuePrecedences.Local);
 		}
-
-		partial void OnTemplatedParentChangedPartial(DependencyPropertyChangedEventArgs e) =>
-			SynchronizePropertyToPopup(Popup.TemplatedParentProperty, TemplatedParent);
 
 		public static FlyoutBase GetAttachedFlyout(FrameworkElement element)
 		{

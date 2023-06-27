@@ -52,11 +52,12 @@ public sealed partial class TickBar
 		Trace(L"BEGIN TickBar::ArrangeOverride()");
 #endif // TICKBAR_DBG
 
-		if (TemplatedParent == null)
-		{
-			throw new InvalidOperationException("Templated parent must be set");
-		}
-		var spParentSlider = TemplatedParent as Slider;
+		//if (TemplatedParent == null)
+		//{
+		//	throw new InvalidOperationException("Templated parent must be set");
+		//}
+		//var spParentSlider = TemplatedParent as Slider;
+		var spParentSlider = default(Slider); // fixme@xy
 		if (spParentSlider != null)
 		{
 			// If tickFrequency <= 0, do nothing.

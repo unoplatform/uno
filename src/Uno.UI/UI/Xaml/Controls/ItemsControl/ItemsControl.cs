@@ -971,7 +971,7 @@ namespace Windows.UI.Xaml.Controls
 				CleanUpInternalItemsPanel(InternalItemsPanelRoot);
 			}
 
-			var itemsPanel = (ItemsPanel as IFrameworkTemplateInternal)?.LoadContent() ?? new StackPanel();
+			var itemsPanel = (ItemsPanel as IFrameworkTemplateInternal)?.LoadContent(default) ?? new StackPanel(); // fixme@xy: probably ok
 			InternalItemsPanelRoot = ResolveInternalItemsPanel(itemsPanel);
 			ItemsPanelRoot = itemsPanel as Panel;
 
@@ -1665,9 +1665,6 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// Sets the ItemsPresenter that should be used by ItemsControl.
 		/// </summary>
-		/// <remarks>
-		/// This is usually called from ItemsPresenter when its TemplatedParent (an ItemsControl) gets set.
-		/// </remarks>
 		internal void SetItemsPresenter(ItemsPresenter itemsPresenter)
 		{
 			if (_itemsPresenter != itemsPresenter)

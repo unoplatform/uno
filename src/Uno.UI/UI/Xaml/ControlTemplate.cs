@@ -1,19 +1,14 @@
 ﻿#nullable enable
 
 using System;
+using Uno.UI;
 
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
-using Font = Android.Graphics.Typeface;
-using Android.Graphics;
 #elif XAMARIN_IOS_UNIFIED
 using View = UIKit.UIView;
-using Color = UIKit.UIColor;
-using Font = UIKit.UIFont;
 #elif __MACOS__
 using View = AppKit.NSView;
-using Color = AppKit.NSColor;
-using Font = AppKit.NSFont;
 #else
 using View = Windows.UI.Xaml.UIElement;
 #endif
@@ -22,11 +17,14 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class ControlTemplate : FrameworkTemplate
 	{
-		public ControlTemplate() : this(null) { }
+		private readonly bool _shouldInjectTemplatedParent;
+
+		public ControlTemplate() : base(null) { }
 
 		public ControlTemplate(Func<View?>? factory)
 			: base(factory)
 		{
+			_shouldInjectTemplatedParent = true;
 		}
 
 		/// <summary>
@@ -39,13 +37,20 @@ namespace Windows.UI.Xaml.Controls
 		{
 		}
 
-		public static implicit operator ControlTemplate(Func<View>? obj)
-			=> new ControlTemplate(obj);
+		public Type? TargetType { get; set; }
 
-		public Type? TargetType
+		internal View? LoadContentCached(Control templatedParent)
 		{
-			get;
-			set;
+			var root = base.LoadContentCachedCore(templatedParent);
+			if (_shouldInjectTemplatedParent)
+			{
+				// here we are in an alternative path,
+				// where custom factory method is provided possibly without TemplatedParent propagation
+				// so we have to correct here.
+				// todo@xy: ^
+			}
+
+			return root;
 		}
 	}
 }

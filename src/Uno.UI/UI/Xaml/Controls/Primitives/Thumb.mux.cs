@@ -232,7 +232,8 @@ public sealed partial class Thumb
 
 				var pointerDeviceType = pointerPoint.PointerDevice.PointerDeviceType;
 
-				var templatedParentAsSlider = TemplatedParent as Slider;
+				//var templatedParentAsSlider = TemplatedParent as Slider;
+				var templatedParentAsSlider = default(Slider); // fixme@xy
 				if (templatedParentAsSlider != null)
 				{
 					// Since we are marking the event as handled, Slider never sees it because of this bug:
@@ -253,7 +254,8 @@ public sealed partial class Thumb
 					templatedParentAsSlider.SetIsPressed(true);
 				}
 
-				var templatedParentAsScrollViewer = TemplatedParent as ScrollBar;
+				//var templatedParentAsScrollViewer = TemplatedParent as ScrollBar;
+				var templatedParentAsScrollViewer = default(ScrollBar); // fixme@xy
 				if (templatedParentAsScrollViewer != null)
 				{
 					var isIgnoringUserInput = templatedParentAsScrollViewer.IsIgnoringUserInput;

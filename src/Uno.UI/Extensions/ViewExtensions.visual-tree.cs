@@ -6,8 +6,11 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Shapes;
 
 #if __IOS__
 using UIKit;
@@ -21,9 +24,11 @@ using _View = Android.Views.View;
 using _View = Windows.UI.Xaml.DependencyObject;
 #endif
 
+using static Uno.UI.Extensions.PrettyPrint;
+
 namespace Uno.UI.Extensions;
 
-public static partial class ViewExtensions
+public static partial class ViewExtensions // tree-graph
 {
 	/// <summary>
 	/// Produces a text representation of the visual tree.
@@ -68,47 +73,101 @@ public static partial class ViewExtensions
 			.Append($" // {string.Join(", ", GetDetails())}")
 			.ToString();
 
-		bool TryGetDpValue<T>(object owner, string property, [NotNullWhen(true)] out T? value)
-		{
-			if (owner is DependencyObject @do &&
-				owner.GetType().GetProperty($"{property}Property", BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)?.GetValue(null, null) is DependencyProperty dp)
-			{
-				value = (T)@do.GetValue(dp);
-				return true;
-			}
-
-			value = default;
-			return false;
-		}
-		string FormatCornerRadius(CornerRadius x)
-		{
-			// format: uniform, [left,top,right,bottom]
-			if (x.TopLeft == x.TopRight && x.TopRight == x.BottomRight && x.BottomRight == x.BottomLeft) return $"{x.TopLeft}";
-			return $"[{x.TopLeft},{x.TopRight},{x.BottomRight},{x.BottomLeft}]";
-		}
-		string FormatThickness(Thickness x)
-		{
-			// format: uniform, [same-left-right,same-top-bottom], [left,top,right,bottom]
-			if (x.Left == x.Top && x.Top == x.Right && x.Right == x.Bottom) return $"{x.Left}";
-			if (x.Left == x.Right && x.Top == x.Bottom) return $"[{x.Left},{x.Top}]";
-			return $"[{x.Left},{x.Top},{x.Right},{x.Bottom}]";
-		}
 		IEnumerable<string> GetDetails()
 		{
+#if __IOS__
+			if (x is _View view)
+			{
+				var abs = view.Superview.ConvertPointToView(view.Frame.Location, toView: null);
+				yield return $"Abs=[Rect {view.Frame.Width:0.#}x{view.Frame.Height:0.#}@{abs.X:0.#},{abs.Y:0.#}]";
+			}
+#elif __ANDROID__
+			if (x is _View view)
+			{
+				yield return $"Rect={FormatViewRect(view)}";
+			}
+#endif
 			if (x is FrameworkElement fe)
 			{
-				yield return $"Actual={fe.ActualWidth}x{fe.ActualHeight}";
+				yield return $"Actual={fe.ActualWidth:0.#}x{fe.ActualHeight:0.#}";
+				// yield return $"Constraints=[{fe.MinWidth:0.#},{fe.Width:0.#},{fe.MaxWidth:0.#}]x[{fe.MinHeight:0.#},{fe.Height:0.#},{fe.MaxHeight:0.#}]";
 				yield return $"HV={fe.HorizontalAlignment}/{fe.VerticalAlignment}";
 			}
-			if (TryGetDpValue<CornerRadius>(x, "CornerRadius", out var cr)) yield return $"CornerRadius={FormatCornerRadius(cr)}";
-			if (TryGetDpValue<Thickness>(x, "Margin", out var margin)) yield return $"Margin={FormatThickness(margin)}";
-			if (TryGetDpValue<Thickness>(x, "Padding", out var padding)) yield return $"Padding={FormatThickness(padding)}";
-
-			if (TryGetDpValue<double>(x, "Opacity", out var opacity)) yield return $"Opacity={opacity}";
-			if (TryGetDpValue<Visibility>(x, "Visibility", out var visibility)) yield return $"Visibility={visibility}";
+			if (x is ContentControl cc)
+			{
+				yield return $"Content={(cc.Content is string text ? $"\"{Regex.Escape(text)}\"" : $"<{cc.Content?.GetType().Name}>")}";
+			}
+			if (x is ContentPresenter cp)
+			{
+				yield return $"Content={(cp.Content is string text ? $"\"{Regex.Escape(text)}\"" : $"<{cp.Content?.GetType().Name}>")}";
+				yield return $"Content.IsBound={(cp.GetBindingExpression(ContentPresenter.ContentProperty) is { })}";
+			}
+			if (x is UIElement uie)
+			{
+				//yield return $"Desired={FormatSize(uie.DesiredSize)}";
+				//yield return $"LAS={FormatSize(uie.LastAvailableSize)}";
+			}
+			if (x is ScrollViewer sv)
+			{
+				yield return $"Offset={sv.HorizontalOffset:0.#},{sv.VerticalOffset:0.#}";
+				yield return $"Viewport={sv.ViewportWidth:0.#}x{sv.ViewportHeight:0.#}";
+				yield return $"Extent={sv.ExtentWidth:0.#}x{sv.ExtentHeight:0.#}";
+			}
+			if (x is ListViewItem lvi)
+			{
+				yield return $"Index={ItemsControl.ItemsControlFromItemContainer(lvi)?.IndexFromContainer(lvi) ?? -1}";
+			}
+			if (x is TextBlock txt && !string.IsNullOrEmpty(txt.Text))
+			{
+				yield return $"Text=\"{Regex.Escape(txt.Text)}\"";
+			}
+			if (x is Shape shape)
+			{
+				if (shape.Fill is not null) yield return $"Fill={FormatBrush(shape.Fill)}";
+				if (shape.Stroke is not null) yield return $"Stroke={FormatBrush(shape.Stroke)}*{shape.StrokeThickness}px";
+			}
+			//if (TryGetDpValue<CornerRadius>(x, "CornerRadius", out var cr)) yield return $"CornerRadius={FormatCornerRadius(cr)}";
+			//if (TryGetDpValue<Thickness>(x, "Margin", out var margin)) yield return $"Margin={FormatThickness(margin)}";
+			//if (TryGetDpValue<Thickness>(x, "Padding", out var padding)) yield return $"Padding={FormatThickness(padding)}";
+			//if (TryGetDpValue<double>(x, "Opacity", out var opacity)) yield return $"Opacity={opacity}";
+			//if (TryGetDpValue<Visibility>(x, "Visibility", out var visibility)) yield return $"Visibility={visibility}";
+			//if (GetActiveVisualStates(x as Control) is { } states) yield return $"VisualStates={states}";
 		}
 	}
 
+	internal static string? GetActiveVisualStates(Control? control)
+	{
+		if (control?.GetTemplateRoot() is FrameworkElement root)
+		{
+			if (VisualStateManager.GetVisualStateGroups(root) is { Count: > 0 } vsgs)
+			{
+				return string.Join("|", vsgs.Select(x => x.CurrentState?.Name));
+			}
+		}
+
+		return null;
+	}
+
+#if !NULLABLE_ATTRIBUTE_NOT_SUPPORTED
+	private static bool TryGetDpValue<T>(object owner, string property, [NotNullWhen(true)] out T? value)
+#else
+	private static bool TryGetDpValue<T>(object owner, string property, out T? value)
+#endif
+	{
+		if (owner is DependencyObject @do &&
+			owner.GetType().GetProperty($"{property}Property", BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)?.GetValue(null, null) is DependencyProperty dp)
+		{
+			value = (T)@do.GetValue(dp);
+			return true;
+		}
+
+		value = default;
+		return false;
+	}
+}
+
+public static partial class ViewExtensions
+{
 	/// <summary>
 	/// Returns the first ancestor of a specified type.
 	/// </summary>

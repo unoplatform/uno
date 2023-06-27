@@ -186,7 +186,7 @@ namespace Windows.UI.Xaml
 		/// normally you shouldn't need to call this method. It may be useful in advanced memory management scenarios.</remarks>
 		public static void Scavenge() => Instance.Scavenge(true);
 
-		internal View? DequeueTemplate(FrameworkTemplate template)
+		internal View? DequeueTemplate(FrameworkTemplate template, DependencyObject? templatedParent)
 		{
 			var list = GetTemplatePool(template);
 
@@ -196,7 +196,7 @@ namespace Windows.UI.Xaml
 			{
 				if (_trace.IsEnabled)
 				{
-					_trace.WriteEventActivity(TraceProvider.CreateTemplate, EventOpcode.Send, new[] { ((Func<View>)template).Method.DeclaringType?.ToString() });
+					_trace.WriteEventActivity(TraceProvider.CreateTemplate, EventOpcode.Send, new[] { template._viewFactory?.Method.DeclaringType?.FullName });
 				}
 
 				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
@@ -204,7 +204,7 @@ namespace Windows.UI.Xaml
 					this.Log().Debug($"Creating new template, id={GetTemplateDebugId(template)} IsPoolingEnabled:{IsPoolingEnabled}");
 				}
 
-				instance = ((IFrameworkTemplateInternal)template).LoadContent();
+				instance = ((IFrameworkTemplateInternal)template).LoadContent(templatedParent);
 
 				if (IsPoolingEnabled && instance is IFrameworkElement)
 				{
@@ -263,6 +263,7 @@ namespace Windows.UI.Xaml
 
 		private void TryReuseTemplateRoot(object instance, object? key, object? newParent, bool shouldCleanUpTemplateRoot)
 		{
+			// fixme@xy: add handling for TemplatedParentScope here ?if needed?
 			if (!IsPoolingEnabled)
 			{
 				return;
@@ -291,7 +292,6 @@ namespace Windows.UI.Xaml
 				{
 					// Make sure the TemplatedParent is disconnected
 					provider.Store.Parent = null;
-					provider.Store.ClearValue(provider.Store.TemplatedParentProperty, DependencyPropertyValuePrecedences.Local);
 				}
 				if (shouldCleanUpTemplateRoot)
 				{

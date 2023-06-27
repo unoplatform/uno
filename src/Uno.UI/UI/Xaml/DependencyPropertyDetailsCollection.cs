@@ -28,10 +28,8 @@ namespace Windows.UI.Xaml
 		private readonly ManagedWeakReference _ownerReference;
 		private object? _hardOwnerReference;
 		private readonly DependencyProperty _dataContextProperty;
-		private readonly DependencyProperty _templatedParentProperty;
 
 		private DependencyPropertyDetails? _dataContextPropertyDetails;
-		private DependencyPropertyDetails? _templatedParentPropertyDetails;
 
 		private readonly static ArrayPool<DependencyPropertyDetails?> _pool = ArrayPool<DependencyPropertyDetails?>.Shared;
 
@@ -46,13 +44,12 @@ namespace Windows.UI.Xaml
 		/// Creates an instance using the specified DependencyObject <see cref="Type"/>
 		/// </summary>
 		/// <param name="ownerType">The owner type</param>
-		public DependencyPropertyDetailsCollection(Type ownerType, ManagedWeakReference ownerReference, DependencyProperty dataContextProperty, DependencyProperty templatedParentProperty)
+		public DependencyPropertyDetailsCollection(Type ownerType, ManagedWeakReference ownerReference, DependencyProperty dataContextProperty)
 		{
 			_ownerType = ownerType;
 			_ownerReference = ownerReference;
 
 			_dataContextProperty = dataContextProperty;
-			_templatedParentProperty = templatedParentProperty;
 		}
 
 		private DependencyPropertyDetails?[] Entries
@@ -100,9 +97,6 @@ namespace Windows.UI.Xaml
 
 		public DependencyPropertyDetails DataContextPropertyDetails
 			=> _dataContextPropertyDetails ??= GetPropertyDetails(_dataContextProperty);
-
-		public DependencyPropertyDetails TemplatedParentPropertyDetails
-			=> _templatedParentPropertyDetails ??= GetPropertyDetails(_templatedParentProperty);
 
 		/// <summary>
 		/// Gets the <see cref="DependencyPropertyDetails"/> for a specific <see cref="DependencyProperty"/>
@@ -203,8 +197,7 @@ namespace Windows.UI.Xaml
 			out bool hasValueInherits,
 			out bool hasValueDoesNotInherit)
 		{
-			if (property == _templatedParentProperty
-				|| property == _dataContextProperty)
+			if (property == _dataContextProperty)
 			{
 				// TemplatedParent is a DependencyObject but does not propagate datacontext
 				hasValueInherits = false;
