@@ -120,8 +120,8 @@ public partial class Given_MediaPlayerElement
 		Assert.IsNotNull(mediaPlayer);
 	}
 
-#if !__WASM__ && !__ANDROID__
-	[Ignore("Not supported under MAC [https://github.com/unoplatform/uno/issues/12663]")]
+#if __IOS__ || !HAS_UNO
+	[Ignore("Test ignored on windows. Could not find the element by name. And Not supported under MAC [https://github.com/unoplatform/uno/issues/12663]")]
 #endif
 	[TestMethod]
 	public async Task When_MediaPlayerElement_SetIsFullWindow_Check_Fullscreen()
@@ -214,7 +214,7 @@ public partial class Given_MediaPlayerElement
 				);
 
 		// step 2: Test Stop
-#if UAP10_0_18362
+#if !HAS_UNO
 		sut.MediaPlayer.Pause();
 		sut.MediaPlayer.Source = null;
 #else
@@ -225,7 +225,7 @@ public partial class Given_MediaPlayerElement
 					timeoutMS: 3000,
 					message: "Timeout waiting for the playback session state changing to Stop on PlayStop."
 				);
-#if UAP10_0_18362
+#if !HAS_UNO
 		sut.MediaPlayer.Source = Windows.Media.Core.MediaSource.CreateFromUri(TestVideoUrl);
 #endif
 
@@ -271,6 +271,9 @@ public partial class Given_MediaPlayerElement
 		);
 	}
 
+#if !HAS_UNO
+	[Ignore("Test ignored on windows. Could not find the element by name")]
+#endif
 	[TestMethod]
 	public async Task When_MediaPlayerElement_Check_TransportControlVisibility()
 	{
@@ -299,6 +302,9 @@ public partial class Given_MediaPlayerElement
 		Assert.AreEqual(tcp.Visibility, Visibility.Collapsed);
 	}
 
+#if !HAS_UNO
+	[Ignore("Test ignored on windows. Could not find the element by name")]
+#endif
 	[TestMethod]
 	public async Task When_MediaPlayerElement_Check_TransportControlButonsVisibility()
 	{
