@@ -17,6 +17,8 @@ namespace Uno.UI.RemoteControl.Host
 {
 	internal class RemoteControlServer : IRemoteControlServer, IDisposable
 	{
+		private static readonly Dictionary<string, List<IServerProcessor>> _processors = new();
+
 		private System.Reflection.Assembly? _loopAssembly;
 		private WebSocket? _socket;
 		private readonly IConfiguration _configuration;
@@ -58,6 +60,13 @@ namespace Uno.UI.RemoteControl.Host
 								}
 							}
 						}
+						else
+						{
+							if (this.Log().IsEnabled(LogLevel.Trace))
+							{
+								this.Log().LogTrace("Failed for identify location of dependency: {assemblyName}", assemblyName);
+							}
+						}
 					}
 					catch (Exception exc)
 					{
@@ -82,23 +91,24 @@ namespace Uno.UI.RemoteControl.Host
 
 		private void RegisterProcessor(IServerProcessor processor)
 		{
-			if (SharedProcessorPool.Instance.Processors.ContainsKey(processor.Scope))
+			if (_processors.TryGetValue(processor.Scope, out var processors))
 			{
 				// Remove any exising processor instances from the same source
-				foreach (var registeredProcessor in SharedProcessorPool.Instance.Processors[processor.Scope])
+				foreach (var registeredProcessor in processors)
 				{
+					// Compare FullName as `GetType` may not match because of how the processor instances are created
 					if (registeredProcessor.GetType().FullName == processor.GetType().FullName)
 					{
-						SharedProcessorPool.Instance.Processors[processor.Scope].Remove(registeredProcessor);
+						processors.Remove(registeredProcessor);
 						break;
 					}
 				}
 
-				SharedProcessorPool.Instance.Processors[processor.Scope].Add(processor);
+				_processors[processor.Scope].Add(processor);
 			}
 			else
 			{
-				SharedProcessorPool.Instance.Processors.Add(processor.Scope, new List<IServerProcessor>() { processor });
+				_processors.Add(processor.Scope, new List<IServerProcessor>() { processor });
 			}
 		}
 
@@ -131,7 +141,7 @@ namespace Uno.UI.RemoteControl.Host
 					}
 				}
 
-				if (SharedProcessorPool.Instance.Processors.TryGetValue(frame.Scope, out var processors))
+				if (_processors.TryGetValue(frame.Scope, out var processors))
 				{
 					if (this.Log().IsEnabled(LogLevel.Trace))
 					{
@@ -244,9 +254,9 @@ namespace Uno.UI.RemoteControl.Host
 							}
 							else
 							{
-								if (this.Log().IsEnabled(LogLevel.Debug))
+								if (this.Log().IsEnabled(LogLevel.Error))
 								{
-									this.Log().LogDebug($"Failed to create server processor {processor.ProcessorType}");
+									this.Log().LogError($"Failed to create server processor {processor.ProcessorType}");
 								}
 							}
 						}
@@ -254,9 +264,9 @@ namespace Uno.UI.RemoteControl.Host
 				}
 				catch (Exception exc)
 				{
-					if (this.Log().IsEnabled(LogLevel.Debug))
+					if (this.Log().IsEnabled(LogLevel.Error))
 					{
-						this.Log().LogDebug($"Failed to create instance of server processor in  {asm} : {exc}");
+						this.Log().LogError($"Failed to create instance of server processor in  {asm} : {exc}");
 					}
 				}
 			}
@@ -266,11 +276,16 @@ namespace Uno.UI.RemoteControl.Host
 		{
 			var msg = JsonConvert.DeserializeObject<ProcessorRemoval>(frame.Content)!;
 
-			foreach (var processor in SharedProcessorPool.Instance.Processors[msg.ProcessorScope])
+			foreach (var processor in _processors[msg.ProcessorScope])
 			{
 				if (processor.GetType().Assembly.Location == msg.Path)
 				{
-					SharedProcessorPool.Instance.Processors[msg.ProcessorScope].Remove(processor);
+					if (this.Log().IsEnabled(LogLevel.Debug))
+					{
+						this.Log().LogDebug($"Removing processor [{msg.ProcessorScope}] from {msg.Path}");
+					}
+
+					_processors[msg.ProcessorScope].Remove(processor);
 					break;
 				}
 			}
@@ -301,22 +316,13 @@ namespace Uno.UI.RemoteControl.Host
 
 		public void Dispose()
 		{
-			foreach (var processors in SharedProcessorPool.Instance.Processors.Values)
+			foreach (var processors in _processors.Values)
 			{
 				foreach (var processor in processors)
 				{
 					processor.Dispose();
 				}
 			}
-		}
-
-		private class SharedProcessorPool
-		{
-			private readonly Dictionary<string, List<IServerProcessor>> _processors = new();
-
-			internal static SharedProcessorPool Instance { get; } = new SharedProcessorPool();
-
-			public Dictionary<string, List<IServerProcessor>> Processors => _processors;
 		}
 	}
 }
