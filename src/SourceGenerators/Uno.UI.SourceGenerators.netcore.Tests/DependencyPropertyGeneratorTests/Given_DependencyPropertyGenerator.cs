@@ -300,6 +300,11 @@ public class Given_DependencyPropertyGenerator
 			ReferenceAssemblies = ReferenceAssemblies.Default.AddPackages(ImmutableArray.Create(new PackageIdentity("Uno.UI", "4.4.20"))),
 		};
 
+		// TODO: Update Uno.UI PackageIdentity above to remove this diagnostic.
+		test.ExpectedDiagnostics.Add(
+			// Uno.UI.SourceGenerators.Internal\Uno.UI.SourceGenerators.DependencyObject.DependencyPropertyGenerator\Mynamespace.C_ff60ac57d15aac47cd3b269d3b6ab7ad.cs(43,161): error CS0234: The type or namespace name 'Boxes' does not exist in the namespace 'Uno.UI.Helpers' (are you missing an assembly reference?)
+			DiagnosticResult.CompilerError("CS0234").WithSpan(@"Uno.UI.SourceGenerators.Internal\Uno.UI.SourceGenerators.DependencyObject.DependencyPropertyGenerator\Mynamespace.C_ff60ac57d15aac47cd3b269d3b6ab7ad.cs", 43, 161, 43, 189).WithArguments("Boxes", "Uno.UI.Helpers")
+		);
 		await test.RunAsync();
 	}
 
@@ -424,6 +429,11 @@ public class Given_DependencyPropertyGenerator
 			ReferenceAssemblies = ReferenceAssemblies.Default.AddPackages(ImmutableArray.Create(new PackageIdentity("Uno.UI", "4.4.20"))),
 		};
 
+		// TODO: Update Uno.UI PackageIdentity above to remove this diagnostic.
+		test.ExpectedDiagnostics.Add(
+			// Uno.UI.SourceGenerators.Internal\Uno.UI.SourceGenerators.DependencyObject.DependencyPropertyGenerator\Mynamespace.C_ff60ac57d15aac47cd3b269d3b6ab7ad.cs(43,161): error CS0234: The type or namespace name 'Boxes' does not exist in the namespace 'Uno.UI.Helpers' (are you missing an assembly reference?)
+			DiagnosticResult.CompilerError("CS0234").WithSpan(@"Uno.UI.SourceGenerators.Internal\Uno.UI.SourceGenerators.DependencyObject.DependencyPropertyGenerator\Mynamespace.C_ff60ac57d15aac47cd3b269d3b6ab7ad.cs", 43, 161, 43, 189).WithArguments("Boxes", "Uno.UI.Helpers")
+		);
 		await test.RunAsync();
 	}
 
@@ -504,7 +514,7 @@ public class Given_DependencyPropertyGenerator
 									}
 									return _MyValuePropertyBackingField;
 								}
-								private void SetMyValueValue(int value) => SetValue(MyValueProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+								private void SetMyValueValue(int value) => SetValue(MyValueProperty, value);
 								private bool _MyValuePropertyBackingFieldSet = false;
 								private int _MyValuePropertyBackingField;
 								/// <summary>
