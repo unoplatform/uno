@@ -341,7 +341,6 @@ namespace Windows.UI.Xaml.Controls
 			_isRewindForewardRequested = true;
 			if (_isVolumeRewindRequestedAndAudioIsPlaying != null && _mediaPlayer.IsMuted)
 			{
-				//ToggleMute();
 				_isVolumeRewindRequestedAndAudioIsPlaying = null;
 			}
 
@@ -414,10 +413,6 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		private void ToggleMute(object sender, RoutedEventArgs e)
-		{
-			ToggleMute();
-		}
-		private void ToggleMute()
 		{
 			if (_mediaPlayer is not null)
 			{
