@@ -39,12 +39,8 @@ namespace TestRepro
 		private const string __baseUri_prefix_MainPage_d6cd66944958ced0c513e0a04797b51d = "ms-appx:///TestProject/";
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		private const string __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d = "ms-appx:///TestProject/";
-				global::Windows.UI.Xaml.NameScope __nameScope = new global::Windows.UI.Xaml.NameScope();
+		global::Windows.UI.Xaml.NameScope __nameScope = new global::Windows.UI.Xaml.NameScope();
 		private void InitializeComponent()
-		{
-			InitializeComponent_59289A66();
-		}
-		private void InitializeComponent_59289A66()
 		{
 			NameScope.SetNameScope(this, __nameScope);
 			var __that = this;
@@ -240,7 +236,6 @@ namespace TestRepro
 			{
 			}
 		}
-
 	}
 }
 namespace MyProject

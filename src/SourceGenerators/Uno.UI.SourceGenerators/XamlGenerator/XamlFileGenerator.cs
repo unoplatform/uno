@@ -80,7 +80,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly bool _isInsideMainAssembly;
 		private readonly bool _isDesignTimeBuild;
 		private readonly string _relativePath;
-		private readonly bool _useXamlReaderHotReload;
 
 		/// <summary>
 		/// x:Name cache for the lookups performed in the document.
@@ -128,11 +127,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		// Determines if the source generator will skip the inclusion of UseControls in the
 		// visual tree. See https://github.com/unoplatform/uno/issues/61
 		private readonly bool _skipUserControlsInVisualTree;
-
-		/// <summary>
-		/// Holds information about multiple generator runs
-		/// </summary>
-		private readonly GenerationRunFileInfo _generationRunFileInfo;
 
 		private readonly IDictionary<INamedTypeSymbol, XamlType> _xamlTypeToXamlTypeBaseMap;
 
@@ -205,7 +199,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			bool isWasm,
 			bool isDebug,
 			bool isHotReloadEnabled,
-			bool useXamlReaderHotReload,
 			bool isDesignTimeBuild,
 			bool isInsideMainAssembly,
 			bool skipUserControlsInVisualTree,
@@ -216,7 +209,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			bool enableFuzzyMatching,
 			GeneratorExecutionContext generatorContext,
 			bool xamlResourcesTrimming,
-			GenerationRunFileInfo generationRunFileInfo,
 			IDictionary<INamedTypeSymbol, XamlType> xamlTypeToXamlTypeBaseMap,
 			string[] includeXamlNamespaces)
 		{
@@ -234,7 +226,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_isDebug = isDebug;
 			_isHotReloadEnabled = isHotReloadEnabled;
 			_isInsideMainAssembly = isInsideMainAssembly;
-			_useXamlReaderHotReload = useXamlReaderHotReload;
 			_isDesignTimeBuild = isDesignTimeBuild;
 			_skipUserControlsInVisualTree = skipUserControlsInVisualTree;
 			_shouldAnnotateGeneratedXaml = shouldAnnotateGeneratedXaml;
@@ -242,7 +233,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_enableFuzzyMatching = enableFuzzyMatching;
 			_generatorContext = generatorContext;
 			_xamlResourcesTrimming = xamlResourcesTrimming;
-			_generationRunFileInfo = generationRunFileInfo;
 			_xamlTypeToXamlTypeBaseMap = xamlTypeToXamlTypeBaseMap;
 			_includeXamlNamespaces = includeXamlNamespaces;
 
@@ -361,42 +351,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				_isTopLevelDictionary = true;
 
-				if (_generationRunFileInfo.RunInfo.Manager.IsFirstRun(_generationRunFileInfo) || !_useXamlReaderHotReload)
-				{
-					// On the first run, or if XamlReader hot reload is disabled, generate the full code.
-
-					var componentBuilder = new IndentedStringBuilder();
-
-					using (componentBuilder.Indent(writer.CurrentLevel))
-					{
-						BuildResourceDictionaryBackingClass(componentBuilder, topLevelControl);
-						BuildTopLevelResourceDictionary(componentBuilder, topLevelControl);
-					}
-
-					var componentCode = componentBuilder.ToString();
-					if (_useXamlReaderHotReload)
-					{
-						_generationRunFileInfo.SetAppliedTypes(_xamlAppliedTypes);
-						_generationRunFileInfo.ComponentCode = componentCode;
-					}
-
-					writer.AppendLineIndented(componentCode);
-				}
-				else
-				{
-					// if XamlReader hot reload is enabled, generate partial code
-					if (_generationRunFileInfo.RunInfo.Manager.GetFirstValidRun(_generationRunFileInfo, _fileUniqueId) is { } runFileInfo)
-					{
-						var generationRunFileInfo = runFileInfo.GetRunFileInfo(_fileUniqueId);
-
-						writer.AppendLineIndented(generationRunFileInfo.ComponentCode);
-
-						foreach (var type in generationRunFileInfo.AppliedTypes)
-						{
-							_xamlAppliedTypes.Add(type.Key, type.Value);
-						}
-					}
-				}
+				BuildResourceDictionaryBackingClass(writer, topLevelControl);
+				BuildTopLevelResourceDictionary(writer, topLevelControl);
 			}
 			else
 			{
@@ -409,63 +365,33 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 					var controlBaseType = GetType(topLevelControl.Type);
 
+					WriteMetadataNewTypeAttribute(writer);
+
 					using (writer.BlockInvariant("partial class {0} : {1}", _xClassName.ClassName, controlBaseType.GetFullyQualifiedTypeIncludingGlobal()))
 					{
 						BuildBaseUri(writer);
 
 						using (Scope(_xClassName.Namespace, _xClassName.ClassName))
 						{
-							if (_generationRunFileInfo.RunInfo.Manager.IsFirstRun(_generationRunFileInfo) || !_useXamlReaderHotReload)
+							BuildInitializeComponent(writer, topLevelControl, controlBaseType);
+							if (IsApplication(controlBaseType) && PlatformHelper.IsAndroid(_generatorContext))
 							{
-								var componentBuilder = new IndentedStringBuilder();
-
-								using (componentBuilder.Indent(writer.CurrentLevel))
-								{
-									BuildInitializeComponent(componentBuilder, topLevelControl, controlBaseType);
-									if (IsApplication(controlBaseType) && PlatformHelper.IsAndroid(_generatorContext))
-									{
-										BuildDrawableResourcesIdResolver(componentBuilder);
-									}
-
-									TryBuildElementStubHolders(componentBuilder);
-
-									BuildPartials(componentBuilder);
-
-									BuildBackingFields(componentBuilder);
-
-									BuildChildSubclasses(componentBuilder);
-
-									BuildComponentFields(componentBuilder);
-
-									BuildCompiledBindings(componentBuilder);
-
-									BuildXBindTryGetDeclarations(componentBuilder);
-								}
-
-								var componentCode = componentBuilder.ToString();
-
-								if (_useXamlReaderHotReload)
-								{
-									_generationRunFileInfo.SetAppliedTypes(_xamlAppliedTypes);
-									_generationRunFileInfo.ComponentCode = componentCode;
-								}
-
-								writer.AppendLineIndented(componentCode);
+								BuildDrawableResourcesIdResolver(writer);
 							}
-							else
-							{
-								if (_generationRunFileInfo.RunInfo.Manager.GetFirstValidRun(_generationRunFileInfo, _fileUniqueId) is { } runFileInfo)
-								{
-									var generationRunFileInfo = runFileInfo.GetRunFileInfo(_fileUniqueId);
 
-									writer.AppendLineInvariantIndented("{0}", generationRunFileInfo.ComponentCode);
+							TryBuildElementStubHolders(writer);
 
-									foreach (var type in generationRunFileInfo.AppliedTypes)
-									{
-										_xamlAppliedTypes.Add(type.Key, type.Value);
-									}
-								}
-							}
+							BuildPartials(writer);
+
+							BuildBackingFields(writer);
+
+							BuildChildSubclasses(writer);
+
+							BuildComponentFields(writer);
+
+							BuildCompiledBindings(writer);
+
+							BuildXBindTryGetDeclarations(writer);
 						}
 					}
 				}
@@ -496,29 +422,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			writer.AppendLineIndented("global::Windows.UI.Xaml.NameScope __nameScope = new global::Windows.UI.Xaml.NameScope();");
 
 			using (writer.BlockInvariant($"private void InitializeComponent()"))
-			{
-				writer.AppendLineIndented($"InitializeComponent_{_generationRunFileInfo.RunInfo.ToRunIdentifierString()}();");
-			}
-
-			if (_isHotReloadEnabled)
-			{
-				foreach (var previousRun in _generationRunFileInfo.RunInfo.Manager.GetAllRunsWithoutSelf(_generationRunFileInfo))
-				{
-					using (writer.BlockInvariant($"private void InitializeComponent_{previousRun.ToRunIdentifierString()}()"))
-					{
-						if (!IsApplication(controlBaseType))
-						{
-							// Error ENC0049 Ceasing to capture variable 'this' requires restarting the application.
-							// Error ENC0050 Deleting captured variable 'nameScope' requires restarting the application.
-
-							writer.AppendLineIndented("NameScope.SetNameScope(this, __nameScope);");
-							writer.AppendLineIndented("var __that = this;");
-						}
-					}
-				}
-			}
-
-			using (writer.BlockInvariant($"private void InitializeComponent_{_generationRunFileInfo.RunInfo.ToRunIdentifierString()}()"))
 			{
 				if (IsApplication(controlBaseType))
 				{
@@ -555,6 +458,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				using (writer.BlockInvariant("namespace {0}", _defaultNamespace))
 				{
+					WriteMetadataNewTypeAttribute(writer);
+
 					using (writer.BlockInvariant("static class {0}XamlApplyExtensions", _fileUniqueId))
 					{
 						foreach (var typeInfo in _xamlAppliedTypes)
@@ -955,6 +860,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						{
 							var classAccessibility = isTopLevel ? "" : "private";
 
+							WriteMetadataNewTypeAttribute(writer);
+
 							using (writer.BlockInvariant($"{classAccessibility} class {className}"))
 							{
 								BuildBaseUri(writer);
@@ -1168,6 +1075,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				writer.AppendLineIndented($"private {bindingsInterfaceName} Bindings;");
 				writer.AppendLineIndented($"#pragma warning restore 0169");
 
+				WriteMetadataNewTypeAttribute(writer);
+
 				writer.AppendLineIndented($"[global::System.Diagnostics.DebuggerNonUserCodeAttribute()]");
 				using (writer.BlockInvariant($"private class {bindingsClassName} : {bindingsInterfaceName}"))
 				{
@@ -1242,6 +1151,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						IDisposable WrapSingleton()
 						{
 							writer.AppendLineIndented("// This non-static inner class is a means of reducing size of AOT compilations by avoiding many accesses to static members from a static callsite, which adds costly class initializer checks each time.");
+
+							WriteMetadataNewTypeAttribute(writer);
+
 							var block = writer.BlockInvariant("internal sealed class {0} : {1}", SingletonClassName, DictionaryProviderInterfaceName);
 							_isInSingletonInstance = true;
 							return new DisposableAction(() =>
@@ -1331,6 +1243,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 
 				BuildChildSubclasses(writer, isTopLevel: true);
+			}
+		}
+
+		private void WriteMetadataNewTypeAttribute(IIndentedStringBuilder writer)
+		{
+			if (_isDebug)
+			{
+				writer.AppendLineIndented("[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]");
 			}
 		}
 
@@ -1619,6 +1539,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				using (writer.BlockInvariant("namespace {0}", className.Namespace))
 				{
 					AnalyzerSuppressionsGenerator.Generate(writer, _analyzerSuppressions);
+
+					WriteMetadataNewTypeAttribute(writer);
+
 					using (writer.BlockInvariant("public sealed partial class {0} : {1}", className.ClassName, controlBaseType.GetFullyQualifiedTypeIncludingGlobal()))
 					{
 						BuildBaseUri(writer);

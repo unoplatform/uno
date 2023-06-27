@@ -47,7 +47,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly Dictionary<string, string[]> _uiAutomationMappings;
 		private readonly string _configuration;
 		private readonly bool _isDebug;
-		private readonly bool _useXamlReaderHotReload;
+
 		/// <summary>
 		/// Should hot reload-related calls be generated? By default this is true iff building in debug, but it can be forced to always true or false using the "UnoForceHotReloadCodeGen" project flag.
 		/// </summary>
@@ -219,11 +219,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				_isUnoHead = isUnoHead;
 			}
 
-			if (bool.TryParse(context.GetMSBuildPropertyValue("UnoUseXamlReaderHotReload"), out var useXamlReaderHotReload))
-			{
-				_useXamlReaderHotReload = useXamlReaderHotReload;
-			}
-
 			if (bool.TryParse(context.GetMSBuildPropertyValue("UnoForceHotReloadCodeGen"), out var isHotReloadEnabled))
 			{
 				_isHotReloadEnabled = isHotReloadEnabled;
@@ -371,7 +366,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return link;
 		}
 
-		public List<KeyValuePair<string, SourceText>> Generate(GenerationRunInfo generationRunInfo)
+		public List<KeyValuePair<string, SourceText>> Generate()
 		{
 			var stopwatch = Stopwatch.StartNew();
 
@@ -445,7 +440,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						isDebug: _isDebug,
 						isHotReloadEnabled: _isHotReloadEnabled,
 						isInsideMainAssembly: isInsideMainAssembly,
-						useXamlReaderHotReload: _useXamlReaderHotReload,
 						isDesignTimeBuild: _isDesignTimeBuild,
 						skipUserControlsInVisualTree: _skipUserControlsInVisualTree,
 						shouldAnnotateGeneratedXaml: _shouldAnnotateGeneratedXaml,
@@ -455,7 +449,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						enableFuzzyMatching: _enableFuzzyMatching,
 						generatorContext: _generatorContext,
 						xamlResourcesTrimming: _xamlResourcesTrimming,
-						generationRunFileInfo: generationRunInfo.GetRunFileInfo(file.UniqueID),
 						xamlTypeToXamlTypeBaseMap: xamlTypeToXamlTypeBaseMap,
 						includeXamlNamespaces: includeXamlNamespaces
 					).GenerateFile()
@@ -698,6 +691,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				writer.AppendLineIndented("/// <summary>");
 				writer.AppendLineIndented("/// Contains all the static resources defined for the application");
 				writer.AppendLineIndented("/// </summary>");
+
+				if (_isDebug)
+				{
+					writer.AppendLineIndented("[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]");
+				}
 
 				AnalyzerSuppressionsGenerator.Generate(writer, _analyzerSuppressions);
 				using (writer.BlockInvariant("public sealed partial class GlobalStaticResources"))
