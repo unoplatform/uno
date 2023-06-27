@@ -27,7 +27,6 @@ namespace Windows.UI.Xaml
 		private protected sealed override void OnFwEltLoading()
 		{
 			OnLoadingPartial();
-			ApplyCompiledBindings();
 
 			void InvokeLoading()
 			{

@@ -1,4 +1,4 @@
-﻿#if !NET461
+﻿#if !IS_UNIT_TESTS
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -19,7 +19,7 @@ namespace Windows.UI.Xaml.Controls
 		public override Orientation ScrollOrientation => Orientation;
 #endif
 
-		protected override Line CreateLine(GeneratorDirection fillDirection, double extentOffset, double availableBreadth, Uno.UI.IndexPath nextVisibleItem)
+		private protected override Line CreateLine(GeneratorDirection fillDirection, double extentOffset, double availableBreadth, Uno.UI.IndexPath nextVisibleItem)
 		{
 			if (ShouldInsertReorderingView(extentOffset) && GetAndUpdateReorderingIndex() is { } reorderingIndex)
 			{
@@ -39,7 +39,7 @@ namespace Windows.UI.Xaml.Controls
 		protected override Rect GetElementArrangeBounds(int elementIndex, Rect containerBounds, Size windowConstraint, Size finalSize)
 		{
 			// we will give the container what it requested if bigger than the constraint, and let the clipping occur by the scrollviewer
-			// we will give the container the constraint of the window (the viewport really) so that it can be laid out inside of the 
+			// we will give the container the constraint of the window (the viewport really) so that it can be laid out inside of the
 			// viewport. Basically this means that a bigger container does not influence the alignment of smaller elements.
 			// we do not use the finalsize, because that will represent the largest element in the viewport.
 			var breadth = Max(GetBreadth(containerBounds), GetBreadth(windowConstraint));

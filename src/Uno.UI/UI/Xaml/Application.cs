@@ -214,7 +214,7 @@ namespace Windows.UI.Xaml
 		public event UnhandledExceptionEventHandler UnhandledException;
 
 #if !__ANDROID__ && !__MACOS__ && !__SKIA__
-		[NotImplemented("__IOS__", "NET461", "__WASM__", "__NETSTD_REFERENCE__")]
+		[NotImplemented("__IOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
 		public void Exit()
 		{
 			if (this.Log().IsEnabled(LogLevel.Warning))
@@ -375,15 +375,6 @@ namespace Windows.UI.Xaml
 		private SuspendingOperation CreateSuspendingOperation() =>
 			new SuspendingOperation(DateTimeOffset.Now.AddSeconds(0), null);
 #endif
-
-		protected virtual void OnWindowCreated(global::Windows.UI.Xaml.WindowCreatedEventArgs args)
-		{
-		}
-
-		internal void RaiseWindowCreated(Windows.UI.Xaml.Window window)
-		{
-			OnWindowCreated(new WindowCreatedEventArgs(window));
-		}
 
 		private void SetRequestedTheme(ApplicationTheme requestedTheme)
 		{

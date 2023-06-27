@@ -62,7 +62,7 @@ Considering that during development, it is common to work on a single platform a
     ```xml
     <Project Sdk="Microsoft.NET.Sdk">
         <PropertyGroup>
-            <TargetFrameworks>net7.0-windows10.0.18362;net7.0;net7.0-ios;net7.0-android</TargetFrameworks>
+            <TargetFrameworks>net7.0-windows10.0.19041;net7.0;net7.0-ios;net7.0-android</TargetFrameworks>
         </PropertyGroup>
     </Project>
     <!-- Import the TargetFramework override configuration -->

@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.RuntimeTests.Extensions;
+using Uno.UI.RuntimeTests.Helpers;
 using Windows.UI;
 using Windows.UI.Composition;
 using Windows.UI.Xaml;
@@ -124,66 +125,71 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 #endif
 		public async Task When_RepeatForever_ShouldLoop()
 		{
-			// On CI, the measurement at 100ms seem to be too unreliable on Android & MacOS.
-			// Stretch the test by 5x greatly improve the stability. When testing locally, we can used 1x to save time (5s vs 25s).
-			const int TimeResolutionScaling =
+			async void Do()
+			{
+				// On CI, the measurement at 100ms seem to be too unreliable on Android & MacOS.
+				// Stretch the test by 5x greatly improve the stability. When testing locally, we can used 1x to save time (5s vs 25s).
+				const int TimeResolutionScaling =
 #if !DEBUG && (__ANDROID__ || __MACOS__)
 				5;
 #else
-				1;
+					1;
 #endif
 
-			var target = new Windows.UI.Xaml.Shapes.Rectangle
-			{
-				Stretch = Stretch.Fill,
-				Fill = new SolidColorBrush(Colors.SkyBlue),
-				Width = 50,
-				Height = 50,
-			};
-			WindowHelper.WindowContent = target;
-			await WindowHelper.WaitForLoaded(target);
-			await WindowHelper.WaitForIdle();
+				var target = new Windows.UI.Xaml.Shapes.Rectangle
+				{
+					Stretch = Stretch.Fill,
+					Fill = new SolidColorBrush(Colors.SkyBlue),
+					Width = 50,
+					Height = 50,
+				};
+				WindowHelper.WindowContent = target;
+				await WindowHelper.WaitForLoaded(target);
+				await WindowHelper.WaitForIdle();
 
-			var animation = new DoubleAnimation
-			{
-				EnableDependentAnimation = true,
-				From = 0,
-				To = 50,
-				RepeatBehavior = RepeatBehavior.Forever,
-				Duration = TimeSpan.FromMilliseconds(500 * TimeResolutionScaling),
-			}.BindTo(target, nameof(Rectangle.Width));
-			animation.ToStoryboard().Begin();
+				var animation = new DoubleAnimation
+				{
+					EnableDependentAnimation = true,
+					From = 0,
+					To = 50,
+					RepeatBehavior = RepeatBehavior.Forever,
+					Duration = TimeSpan.FromMilliseconds(500 * TimeResolutionScaling),
+				}.BindTo(target, nameof(Rectangle.Width));
+				animation.ToStoryboard().Begin();
 
-			// In an ideal world, the measurements would be [0 or 50,10,20,30,40] repeated 10 times.
-			var list = new List<double>();
-			for (int i = 0; i < 50; i++)
-			{
-				list.Add(NanToZero(target.Width));
-				await Task.Delay(100 * TimeResolutionScaling);
+				// In an ideal world, the measurements would be [0 or 50,10,20,30,40] repeated 10 times.
+				var list = new List<double>();
+				for (int i = 0; i < 50; i++)
+				{
+					list.Add(NanToZero(target.Width));
+					await Task.Delay(100 * TimeResolutionScaling);
+				}
+
+				var delta = list.Zip(list.Skip(1), (a, b) => b - a).ToArray();
+				var averageIncrement = delta.Where(x => x > 0).Average();
+				var drops = delta.Select((x, i) => new { Delta = x, Index = i })
+					.Where(x => x.Delta < 0)
+					.Select(x => x.Index)
+					.ToArray();
+				var incrementSizes = drops.Zip(drops.Skip(1), (a, b) => b - a - 1).ToArray(); // -1 to exclude the drop itself
+
+				var context = new StringBuilder()
+					.AppendLine("list: " + string.Join(", ", list.Select(x => x.ToString("0.#"))))
+					.AppendLine("delta: " + string.Join(", ", delta.Select(x => x.ToString("+0.#;-0.#;0"))))
+					.AppendLine("averageIncrement: " + averageIncrement)
+					.AppendLine("drops: " + string.Join(", ", drops.Select(x => x.ToString("0.#"))))
+					.AppendLine("incrementSizes: " + string.Join(", ", incrementSizes.Select(x => x.ToString("0.#"))))
+					.ToString();
+
+				// This 500ms animation is expected to climb from 0 to 50, reset to 0 instantly, and repeat forever.
+				// Given that we are taking 5measurements per cycle, we can expect the followings:
+				Assert.AreEqual(10d, averageIncrement, 2.5, $"Expected an rough average of increment (excluding the drop) of 10 (+-25% error margin).\n" + context);
+				Assert.IsTrue(incrementSizes.Count(x => x >= 3) >= 8, $"Expected at least 10sets (-2 error margin: might miss first and/or last) of continuous increments in size of 4 (+-1 error margin: sliding slot).\n" + context);
+
+				double NanToZero(double value) => double.IsNaN(value) ? 0 : value;
 			}
 
-			var delta = list.Zip(list.Skip(1), (a, b) => b - a).ToArray();
-			var averageIncrement = delta.Where(x => x > 0).Average();
-			var drops = delta.Select((x, i) => new { Delta = x, Index = i })
-				.Where(x => x.Delta < 0)
-				.Select(x => x.Index)
-				.ToArray();
-			var incrementSizes = drops.Zip(drops.Skip(1), (a, b) => b - a - 1).ToArray(); // -1 to exclude the drop itself
-
-			var context = new StringBuilder()
-				.AppendLine("list: " + string.Join(", ", list.Select(x => x.ToString("0.#"))))
-				.AppendLine("delta: " + string.Join(", ", delta.Select(x => x.ToString("+0.#;-0.#;0"))))
-				.AppendLine("averageIncrement: " + averageIncrement)
-				.AppendLine("drops: " + string.Join(", ", drops.Select(x => x.ToString("0.#"))))
-				.AppendLine("incrementSizes: " + string.Join(", ", incrementSizes.Select(x => x.ToString("0.#"))))
-				.ToString();
-
-			// This 500ms animation is expected to climb from 0 to 50, reset to 0 instantly, and repeat forever.
-			// Given that we are taking 5measurements per cycle, we can expect the followings:
-			Assert.AreEqual(10d, averageIncrement, 2.5, $"Expected an rough average of increment (excluding the drop) of 10 (+-25% error margin).\n" + context);
-			Assert.IsTrue(incrementSizes.Count(x => x >= 3) >= 8, $"Expected at least 10sets (-2 error margin: might miss first and/or last) of continuous increments in size of 4 (+-1 error margin: sliding slot).\n" + context);
-
-			double NanToZero(double value) => double.IsNaN(value) ? 0 : value;
+			await TestHelper.RetryAssert(Do, 3);
 		}
 
 		[TestMethod]

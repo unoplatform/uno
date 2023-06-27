@@ -16,8 +16,8 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property SmallerPaneToggleButtonWidth
 		// Skipping already declared property TopPadding
 		// Skipping already declared property TopPaneVisibility
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  double OpenPaneLength
 		{
 			get
@@ -35,8 +35,8 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property SmallerPaneToggleButtonWidthProperty
 		// Skipping already declared property TopPaddingProperty
 		// Skipping already declared property TopPaneVisibilityProperty
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.DependencyProperty OpenPaneLengthProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(OpenPaneLength), typeof(double), 

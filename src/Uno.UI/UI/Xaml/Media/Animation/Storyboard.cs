@@ -44,9 +44,9 @@ namespace Windows.UI.Xaml.Media.Animation
 		public TimelineCollection Children { get; }
 
 		#region TargetName Attached Property
-		public static string GetTargetName(Timeline timeline) => (string)timeline.GetValue(TargetNameProperty);
+		public static string GetTargetName(Timeline element) => (string)element.GetValue(TargetNameProperty);
 
-		public static void SetTargetName(Timeline timeline, string value) => timeline.SetValue(TargetNameProperty, value);
+		public static void SetTargetName(Timeline element, string name) => element.SetValue(TargetNameProperty, name);
 
 		// Using a DependencyProperty as the backing store for TargetName.  This enables animation, styling, binding, etc...
 		public static DependencyProperty TargetNameProperty { get; } =
@@ -54,9 +54,9 @@ namespace Windows.UI.Xaml.Media.Animation
 		#endregion
 
 		#region TargetProperty Attached Property
-		public static string GetTargetProperty(Timeline timeline) => (string)timeline.GetValue(TargetPropertyProperty);
+		public static string GetTargetProperty(Timeline element) => (string)element.GetValue(TargetPropertyProperty);
 
-		public static void SetTargetProperty(Timeline timeline, string value) => timeline.SetValue(TargetPropertyProperty, value);
+		public static void SetTargetProperty(Timeline element, string path) => element.SetValue(TargetPropertyProperty, path);
 
 		// Using a DependencyProperty as the backing store for TargetProperty.  This enables animation, styling, binding, etc...
 		public static DependencyProperty TargetPropertyProperty { get; } =
@@ -66,7 +66,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		public static void SetTarget(Timeline timeline, DependencyObject target) => timeline.Target = target;
 
 		/// <summary>
-		/// Explicitly sets the target using an ElementNameSubject, in case of lazy 
+		/// Explicitly sets the target using an ElementNameSubject, in case of lazy
 		/// evaluation of the target element.
 		/// </summary>
 		public static void SetTarget(Timeline timeline, ElementNameSubject target) => timeline.SetElementNameTarget(target);
@@ -351,7 +351,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			}
 		}
 
-		protected override void Dispose(bool disposing)
+		private protected override void Dispose(bool disposing)
 		{
 			base.Dispose(disposing);
 

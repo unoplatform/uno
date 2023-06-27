@@ -1,6 +1,7 @@
 using System;
 using Uno.UI;
 using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Markup;
 
 #if __IOS__
 using UIKit;
@@ -11,6 +12,7 @@ namespace Windows.UI.Xaml.Controls
 	/// <summary>
 	/// Represents a switch that can be toggled between two states.
 	/// </summary>
+	[ContentProperty(Name = nameof(Header))]
 	public partial class ToggleSwitch : Control, IFrameworkTemplatePoolAware
 	{
 		/// <summary>

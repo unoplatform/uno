@@ -6,6 +6,7 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("Uno.UI.Wasm")]
 [assembly: InternalsVisibleTo("Uno.UI.RuntimeTests")]
 [assembly: InternalsVisibleTo("Uno.UI.Tests")]
+[assembly: InternalsVisibleTo("Uno.UI.Unit.Tests")]
 [assembly: InternalsVisibleTo("Uno.UI.Toolkit")]
 [assembly: InternalsVisibleTo("Uno.UI.Composition")]
 

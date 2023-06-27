@@ -40,7 +40,7 @@ namespace Windows.UI.Xaml
 
 		internal void OnActivityCreated() => AddPreDrawListener();
 
-		partial void ActivatingPartial() => RemovePreDrawListener();
+		partial void ShowPartial() => RemovePreDrawListener();
 
 		internal int SystemUiVisibility { get; set; }
 

@@ -42,7 +42,7 @@ namespace Windows.Storage.Helpers
 				WebAssemblyRuntime.InvokeAsync($"Windows.Storage.AssetManager.DownloadAssetsManifest(\'{assetsUri}\')");
 #endif
 
-			return new HashSet<string>(Regex.Split(assets, "\r\n|\r|\n"), StringComparer.OrdinalIgnoreCase);
+			return new HashSet<string>(SplitMatch().Split(assets), StringComparer.OrdinalIgnoreCase);
 		}
 
 		public static async Task<string> DownloadAsset(CancellationToken ct, string assetPath)
@@ -102,5 +102,15 @@ namespace Windows.Storage.Helpers
 				throw new FileNotFoundException($"The file [{assetPath}] cannot be found");
 			}
 		}
+
+#if !DISABLE_GENERATED_REGEX
+		[GeneratedRegex("\r\n|\r|\n")]
+#endif
+		private static partial Regex SplitMatch();
+
+#if DISABLE_GENERATED_REGEX
+		private static partial Regex SplitMatch()
+			=> new Regex("\r\n|\r|\n");
+#endif
 	}
 }

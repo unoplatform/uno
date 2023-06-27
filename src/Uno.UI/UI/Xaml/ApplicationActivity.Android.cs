@@ -19,6 +19,7 @@ using Windows.Graphics.Display;
 using Windows.Security.Authentication.Web;
 using Windows.Storage.Pickers;
 using Windows.System;
+using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml.Media;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
@@ -74,7 +75,7 @@ namespace Windows.UI.Xaml
 
 		private void OnSensorOrientationChanged(SimpleOrientationSensor sender, SimpleOrientationSensorOrientationChangedEventArgs args)
 		{
-			RaiseConfigurationChanges();
+			_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, RaiseConfigurationChanges);
 		}
 
 		private void OnInputPaneVisibilityChanged(InputPane sender, InputPaneVisibilityEventArgs args)

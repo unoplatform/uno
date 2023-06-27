@@ -44,6 +44,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+#if __ANDROID__
+		[Ignore("Currently fails on Android https://github.com/unoplatform/uno/issues/9080")]
+#endif
 		[RequiresFullWindow]
 		public async Task When_Verify_Canvas_With_Outer_Clip()
 		{
@@ -82,6 +85,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 #if __ANDROID__
 			Assert.Inconclusive(); // Android doesn't support Canvas.ZIndex on any panel
+#endif
+#if __IOS__
+			Assert.Inconclusive(); // iOS doesn't support Canvas.ZIndex on any panel
 #endif
 			if (!ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
 			{

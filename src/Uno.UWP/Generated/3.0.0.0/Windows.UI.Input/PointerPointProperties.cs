@@ -8,8 +8,8 @@ namespace Windows.UI.Input
 	public  partial class PointerPointProperties 
 	{
 		// Skipping already declared property ContactRect
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.Rect ContactRectRaw
 		{
 			get
@@ -23,8 +23,8 @@ namespace Windows.UI.Input
 		// Skipping already declared property IsEraser
 		// Skipping already declared property IsHorizontalMouseWheel
 		// Skipping already declared property IsInRange
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool IsInverted
 		{
 			get
@@ -44,8 +44,8 @@ namespace Windows.UI.Input
 		// Skipping already declared property PointerUpdateKind
 		// Skipping already declared property Pressure
 		// Skipping already declared property TouchConfidence
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  float Twist
 		{
 			get
@@ -56,8 +56,8 @@ namespace Windows.UI.Input
 		#endif
 		// Skipping already declared property XTilt
 		// Skipping already declared property YTilt
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  float? ZDistance
 		{
 			get
@@ -88,15 +88,15 @@ namespace Windows.UI.Input
 		// Forced skipping of method Windows.UI.Input.PointerPointProperties.IsXButton1Pressed.get
 		// Forced skipping of method Windows.UI.Input.PointerPointProperties.IsXButton2Pressed.get
 		// Forced skipping of method Windows.UI.Input.PointerPointProperties.PointerUpdateKind.get
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool HasUsage( uint usagePage,  uint usageId)
 		{
 			throw new global::System.NotImplementedException("The member bool PointerPointProperties.HasUsage(uint usagePage, uint usageId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20PointerPointProperties.HasUsage%28uint%20usagePage%2C%20uint%20usageId%29");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  int GetUsageValue( uint usagePage,  uint usageId)
 		{
 			throw new global::System.NotImplementedException("The member int PointerPointProperties.GetUsageValue(uint usagePage, uint usageId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20PointerPointProperties.GetUsageValue%28uint%20usagePage%2C%20uint%20usageId%29");

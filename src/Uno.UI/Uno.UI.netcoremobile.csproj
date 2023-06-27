@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
 
 	<PropertyGroup>
-		<TargetFrameworks>net6.0-android;net6.0-ios</TargetFrameworks>
-		<TargetFrameworks>$(TargetFrameworks);net6.0-maccatalyst;net6.0-macos</TargetFrameworks>
+		<TargetFrameworks>net8.0-android;net8.0-ios</TargetFrameworks>
+		<TargetFrameworks>$(TargetFrameworks);net8.0-maccatalyst;net8.0-macos</TargetFrameworks>
 
 		<TargetFrameworks>$(TargetFrameworks);net7.0-android;net7.0-ios</TargetFrameworks>
 		<TargetFrameworks>$(TargetFrameworks);net7.0-maccatalyst;net7.0-macos</TargetFrameworks>
@@ -26,8 +26,6 @@
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>
 
-		<UnoRuntimeIdentifier Condition="'$(TargetFramework)'=='netstandard2.0'">Reference</UnoRuntimeIdentifier>
-
 		<!-- Force the generation of upri files for Uno.UI self localization -->
 		<UnoForceProcessPRIResource>true</UnoForceProcessPRIResource>
 
@@ -48,10 +46,6 @@
 		<UpToDateCheckInput Include="**\*.cs" Exclude="bin\**\*.cs;obj\**\*.cs;" Visible="False" />
 		<UpToDateCheckInput Include="**\*.tt" Exclude="bin\**\*.tt;obj\**\*.tt;" Visible="False" />
 	</ItemGroup>
-
-	<PropertyGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
-		<EnableAutomaticXamlPageInclusion>false</EnableAutomaticXamlPageInclusion>
-	</PropertyGroup>
 
 	<ItemGroup>
 		<None Include="Extensions\CGSizeExtensions.iOSmacOS.cs" />
@@ -76,7 +70,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Uno.SourceGenerationTasks" />
 		<PackageReference Include="System.Memory" Version="4.5.2" />
 	</ItemGroup>
 
@@ -110,7 +103,7 @@
 		<EmbeddedResource Include="Microsoft\UI\Xaml\Controls\ProgressRing\*.json" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)'=='net461'">
+	<ItemGroup Condition="'$(TargetFramework)'=='IS_UNIT_TESTS'">
 		<!-- Remove the reference added automatically by msbuild extras -->
 		<Reference Remove="PresentationFramework" />
 		<Reference Remove="PresentationCore" />
@@ -167,14 +160,6 @@
 	    <LastGenOutput>FrameworkElementMixins.g.cs</LastGenOutput>
 	  </None>
 	</ItemGroup>
-
-	<Target Name="GetPackagingOutputs" Condition=" '$(TargetFramework)' == 'uap10.0' " />
-
-	<Target Name="GetBuiltProjectOutputRecursive" Condition=" '$(TargetFramework)' == 'xamarinios10' " />
-	<Target Name="GetTargetPath" Condition=" '$(TargetFramework)' == 'xamarinios10' " />
-	<Target Name="GetNativeManifest" Condition=" '$(TargetFramework)' == 'xamarinios10' " />
-
-	<Target Name="GetBuiltProjectOutputRecursive" Condition=" '$(TargetFramework)' == 'xamarinios10' " />
 
 	<Target Name="VS16Mac_RemoveSystemMemory" BeforeTargets="ResolveAssemblyReferences" Condition="$([MSBuild]::IsOsPlatform('OSX'))">
 		<!--

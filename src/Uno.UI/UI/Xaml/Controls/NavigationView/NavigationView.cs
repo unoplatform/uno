@@ -1652,8 +1652,7 @@ namespace Windows.UI.Xaml.Controls
 			return false;
 		}
 
-#if false
-		object MenuItemFromContainer(DependencyObject container)
+		public object MenuItemFromContainer(DependencyObject container)
 		{
 			var nvi = container;
 			if (nvi != null)
@@ -1693,7 +1692,7 @@ namespace Windows.UI.Xaml.Controls
 			return null;
 		}
 
-		DependencyObject ContainerFromMenuItem(object item)
+		public DependencyObject ContainerFromMenuItem(object item)
 		{
 			var data = item;
 			if (data != null)
@@ -1703,7 +1702,6 @@ namespace Windows.UI.Xaml.Controls
 
 			return null;
 		}
-#endif
 
 		void OnTopNavDataSourceChanged(NotifyCollectionChangedEventArgs args)
 		{

@@ -1,4 +1,4 @@
-﻿#if NET461 || __WASM__
+﻿#if IS_UNIT_TESTS || __WASM__
 #pragma warning disable CS0067
 #endif
 
@@ -52,7 +52,7 @@ namespace Windows.UI.Xaml
 
 		private Vector3 _translation = Vector3.Zero;
 
-		//private protected virtual void PrepareState() 
+		//private protected virtual void PrepareState()
 		//{
 		//	// This is part of the WinUI internal API and is invoked at the end of DXamlCore.GetPeerPrivate
 		//	// but to avoid invoking a virtual method in ctor ** THIS IS NOT INVOKED BY DEFAULT IN UNO **.
@@ -924,12 +924,61 @@ namespace Windows.UI.Xaml
 		internal Rect? ClippedFrame;
 #endif
 
-		public virtual void Measure(Size availableSize)
+		/// <summary>
+		/// Updates the DesiredSize of a UIElement. Typically, objects that implement custom layout for their
+		/// layout children call this method from their own MeasureOverride implementations to form a recursive layout update.
+		/// </summary>
+		/// <param name="availableSize">
+		/// The available space that a parent can allocate to a child object. A child object can request a larger
+		/// space than what is available; the provided size might be accommodated if scrolling or other resize behavior is
+		/// possible in that particular container.
+		/// </param>
+		/// <returns>The measured size.</returns>
+		/// <remarks>
+		/// Under Uno.UI, this method should not be called during the normal layouting phase. Instead, use the
+		/// <see cref="MeasureElement(View, Size)"/> methods, which handles native view properly.
+		/// </remarks>
+		public void Measure(Size availableSize)
 		{
+#if !UNO_REFERENCE_API
+			if (this is not FrameworkElement fwe)
+			{
+				return;
+			}
+
+			if (double.IsNaN(availableSize.Width) || double.IsNaN(availableSize.Height))
+			{
+				throw new InvalidOperationException($"Cannot measure [{GetType()}] with NaN");
+			}
+
+			((ILayouterElement)fwe).Layouter.Measure(availableSize);
+#if IS_UNIT_TESTS
+			OnMeasurePartial(availableSize);
+#endif
+#endif
 		}
 
-		public virtual void Arrange(Rect finalRect)
+#if IS_UNIT_TESTS
+		partial void OnMeasurePartial(Size slotSize);
+#endif
+
+		/// <summary>
+		/// Positions child objects and determines a size for a UIElement. Parent objects that implement custom layout
+		/// for their child elements should call this method from their layout override implementations to form a recursive layout update.
+		/// </summary>
+		/// <param name="finalRect">The final size that the parent computes for the child in layout, provided as a <see cref="Windows.Foundation.Rect"/> value.</param>
+		public void Arrange(Rect finalRect)
 		{
+#if !UNO_REFERENCE_API
+			if (this is not FrameworkElement fwe)
+			{
+				return;
+			}
+
+			var layouter = ((ILayouterElement)fwe).Layouter;
+			layouter.Arrange(finalRect);
+			layouter.ArrangeChild(fwe, finalRect);
+#endif
 		}
 
 		public void InvalidateMeasure()
@@ -1182,7 +1231,7 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Gets or sets the cursor that displays when the pointer is over this element. Defaults to null, indicating no change to the cursor.
 		/// </summary>
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 #if HAS_UNO_WINUI
 		protected Microsoft.UI.Input.InputCursor ProtectedCursor
 #else

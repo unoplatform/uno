@@ -10,7 +10,7 @@ namespace Windows.UI.Xaml.Media
 	public partial class MatrixTransform : Transform
 	{
 		internal override Matrix3x2 ToMatrix(Point absoluteOrigin)
-			=> Matrix.Inner.CenterOn(absoluteOrigin);
+			=> Matrix.ToMatrix3x2().CenterOn(absoluteOrigin);
 
 		public Matrix Matrix
 		{

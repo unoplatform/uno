@@ -22,6 +22,7 @@ using Windows.UI.Xaml.Automation.Peers;
 using Uno;
 using Uno.Foundation.Logging;
 
+using RadialGradientBrush = Microsoft.UI.Xaml.Media.RadialGradientBrush;
 
 #if XAMARIN_IOS
 using UIKit;
@@ -29,7 +30,7 @@ using UIKit;
 
 namespace Windows.UI.Xaml.Controls
 {
-	[ContentProperty(Name = "Text")]
+	[ContentProperty(Name = nameof(Inlines))]
 	public partial class TextBlock : DependencyObject
 	{
 		private InlineCollection _inlines;
@@ -386,7 +387,7 @@ namespace Windows.UI.Xaml.Controls
 			set
 			{
 #if !__WASM__
-				if (value is SolidColorBrush || value is GradientBrush || value is null)
+				if (value is SolidColorBrush || value is GradientBrush || value is RadialGradientBrush || value is null)
 				{
 					SetValue(ForegroundProperty, value);
 				}
@@ -458,7 +459,7 @@ namespace Windows.UI.Xaml.Controls
 		#region IsTextSelectionEnabled Dependency Property
 
 #if !__WASM__
-		[NotImplemented("__ANDROID__", "__IOS__", "NET461", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		[NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 #endif
 		public bool IsTextSelectionEnabled
 		{
@@ -467,7 +468,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 #if !__WASM__
-		[NotImplemented("__ANDROID__", "__IOS__", "NET461", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		[NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 #endif
 		public static DependencyProperty IsTextSelectionEnabledProperty { get; } =
 			DependencyProperty.Register(

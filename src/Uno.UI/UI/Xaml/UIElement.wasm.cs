@@ -352,32 +352,6 @@ namespace Windows.UI.Xaml
 
 		private Rect _arranged;
 
-		#region Name Dependency Property
-
-		private void OnNameChanged(string oldValue, string newValue)
-		{
-			if (FrameworkElementHelper.IsUiAutomationMappingEnabled)
-			{
-				Windows.UI.Xaml.Automation.AutomationProperties.SetAutomationId(this, newValue);
-			}
-
-			if (FeatureConfiguration.UIElement.AssignDOMXamlName)
-			{
-				Uno.UI.Xaml.WindowManagerInterop.SetName(HtmlId, newValue);
-			}
-		}
-
-		[GeneratedDependencyProperty(DefaultValue = "", ChangedCallback = true)]
-		public static DependencyProperty NameProperty { get; } = CreateNameProperty();
-
-		public string Name
-		{
-			get => GetNameValue();
-			set => SetNameValue(value);
-		}
-
-		#endregion
-
 		partial void OnUidChangedPartial()
 		{
 			if (FeatureConfiguration.UIElement.AssignDOMXamlName)

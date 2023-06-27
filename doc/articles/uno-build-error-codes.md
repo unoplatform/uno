@@ -13,7 +13,7 @@ For instance, if your project references `Uno.WinUI`, and you try to reference `
 
 ## UNOB0002: Project XX contains a reference to Uno Platform but does not contain a WinAppSDK compatible target framework.
 
-This error code means that a WinAppSDK project is referencing a project in your solution which is not providing a `net6.0-windows10.xx` TargetFramework.
+This error code means that a WinAppSDK project is referencing a project in your solution which is not providing a `net7.0-windows10.xx` TargetFramework.
 
 This can happen if a project contains only a `net7.0` TargetFramework and has a NuGet reference to `Uno.WinUI`.
 

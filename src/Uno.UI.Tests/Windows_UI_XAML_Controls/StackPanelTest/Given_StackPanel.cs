@@ -4,18 +4,17 @@ using Windows.UI.Xaml.Controls;
 using System.Linq;
 using Windows.Foundation;
 using FluentAssertions;
-#if NETFX_CORE
-using View = Uno.UI.Tests.Views.TestView;
-#else
-using View = Windows.UI.Xaml.FrameworkElement;
-#endif
 using FluentAssertions.Execution;
 
 namespace Uno.UI.Tests.StackPanelTest
 {
 	[TestClass]
-	public class Given_StackPanel : Context
+	public partial class Given_StackPanel : Context
 	{
+		private partial class View : FrameworkElement
+		{
+		}
+
 		[TestMethod]
 		public void When_Vertical_And_SimpleLayout()
 		{

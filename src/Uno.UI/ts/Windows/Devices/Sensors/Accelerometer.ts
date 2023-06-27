@@ -10,13 +10,13 @@ namespace Windows.Devices.Sensors {
 
 		public static initialize(): boolean {
 			if (window.DeviceMotionEvent) {
-				const exports = (<any>globalThis).DotnetExports?.Uno?.Windows?.Devices?.Sensors?.Accelerometer;
+				const exports = (<any>globalThis).DotnetExports?.Uno?.Uno?.Devices?.Sensors?.Accelerometer;
 
 				if (exports !== undefined) {
 					Accelerometer.dispatchReading = exports.DispatchReading;
 				}
 				else {
-					this.dispatchReading = (<any>Module).mono_bind_static_method("[Uno] Windows.Devices.Sensors.Accelerometer:DispatchReading");
+					this.dispatchReading = (<any>Module).mono_bind_static_method("[Uno] Uno.Devices.Sensors.Accelerometer:DispatchReading");
 				}
 
 				return true;

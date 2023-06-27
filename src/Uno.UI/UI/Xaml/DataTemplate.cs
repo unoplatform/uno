@@ -49,6 +49,9 @@ namespace Windows.UI.Xaml
 
 			return new DataTemplate(obj);
 		}
+
+		public View? LoadContent()
+			=> ((IFrameworkTemplateInternal)this).LoadContent();
 	}
 }
 

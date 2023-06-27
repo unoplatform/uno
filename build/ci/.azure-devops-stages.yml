@@ -1,0 +1,165 @@
+
+stages:
+- stage: Setup
+  displayName: Setup
+  jobs:
+  - template: .azure-devops-commitsar.yml
+    parameters:
+      vmImage: '$(linuxVMImage)'
+
+  - template: .azure-devops-spell-check.yml
+    parameters:
+      vmImage: '$(linuxVMImage)'
+
+  - template: .azure-devops-pipeline-validations.yml
+    parameters:
+      vmImage: '$(linuxVMImage)'
+
+- stage: convert_tree
+  displayName: WinUI Tree Conversion
+  dependsOn:
+    - Setup
+  jobs:
+  - template: .azure-devops-winui-convert.yml
+    parameters:
+      poolName: '$(windowsScaledPool)'
+
+- stage: binaries_build
+  displayName: Build Binaries
+  dependsOn:
+    - Setup
+    - convert_tree
+
+  jobs: 
+  - template: .azure-devops-package-net6-win.yml
+    parameters:
+      poolName: '$(windowsScaledPool)'
+  
+  - template: .azure-devops-package-wasm.yml
+    parameters:
+      vmImage: '$(linuxVMImage)'
+  
+  - template: .azure-devops-package-reference.yml
+    parameters:
+      vmImage: '$(linuxVMImage)'
+      
+  - template: .azure-devops-package-skia.yml
+    parameters:
+      vmImage: '$(linuxVMImage)'
+
+- stage: packages_build
+  displayName: Generate Packages
+  dependsOn:
+    - binaries_build
+
+  jobs: 
+  - template: .azure-devops-package.yml
+    parameters:
+      poolName: '$(windowsScaledPool)'
+
+  - template: .azure-devops-project-template-tests.yml
+    parameters:
+      poolName: '$(windowsScaledPool)'
+      vmImageWindows: $(windows2022HostedVMImage)
+      vmImageLinux: '$(linuxVMImage)'
+
+- stage: unit_tests
+  displayName: Tests - Unit
+  dependsOn:
+    - binaries_build
+    - convert_tree
+
+  jobs:
+
+  - template: .azure-devops-unit-tests.yml
+    parameters:
+      vmImage: '$(windows2022HostedVMImage)'
+
+- stage: wasm_tests
+  displayName: Tests - WebAssembly
+  dependsOn:
+    - convert_tree
+
+  jobs:
+  
+  - template: .azure-devops-wasm-uitests.yml
+    parameters:
+      vmImage: '$(linuxVMImage)'
+
+- stage: skia_tests
+  displayName: Tests - Skia
+  dependsOn:
+    - Setup
+
+  jobs:
+  - template: .azure-devops-skia-tests.yml
+    parameters:
+      vmImage: '$(windows2022HostedVMImage)'
+      vmMacImage: '$(macOSVMImage)'
+      poolName: '$(windows2022HostedVMImage)'
+  
+- stage: macos_tests
+  displayName: Tests - macOS
+  dependsOn:
+    - Setup
+
+  jobs:
+  - template: .azure-devops-macos.yml
+    parameters:
+      vmImage: '$(macOSVMImage)'
+      xCodeRoot: '$(xCodeRoot)'
+      XamarinSDKVersion: '$(XamarinSDKVersion)'
+  
+- stage: android_tests
+  displayName: Tests - Android
+  dependsOn:
+    - Setup
+
+  jobs:
+  - template: .azure-devops-android-tests.yml
+    parameters:
+      vmWindowsImage: '$(windows2019HostedVMImage)'
+      vmMacOSImage: '$(macOSVMImage)'
+      xCodeRoot: '$(xCodeRoot)'
+      XamarinSDKVersion: '$(XamarinSDKVersion)'
+  
+- stage: ios_tests
+  displayName: Tests - iOS
+  dependsOn:
+    - Setup
+
+  jobs:
+  - template: .azure-devops-ios-tests.yml
+    parameters:
+      vmImage: '$(macOSVMImage)'
+      vmImageTest: '$(macOSVMImage_UITests)'
+      xCodeRootBuild: '$(xCodeRoot)'
+      XamarinSDKVersionBuild: '$(XamarinSDKVersion)'
+      xCodeRootTest: '$(xCodeRoot_iOS_UITests)'
+      XamarinSDKVersionTest: '$(XamarinSDKVersion_iOS_UITests)'
+
+- stage: uap_tests
+  displayName: Tests - UAP
+  dependsOn:
+    - Setup
+
+  jobs:
+  - template: .azure-devops-uap.yml
+    parameters:
+      vmImage: '$(windows2022HostedVMImage)'
+
+- stage: test_finalization
+  displayName: Tests - Results
+  dependsOn:
+    - unit_tests
+    - wasm_tests
+    - uap_tests
+    - ios_tests
+    - android_tests
+    - macos_tests
+    - skia_tests
+
+  jobs:
+  - template: .azure-devops-screenshot-compare.yml
+    parameters:
+      poolName: '$(windowsScaledPool)'

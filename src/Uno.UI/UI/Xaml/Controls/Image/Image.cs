@@ -1,4 +1,4 @@
-﻿#if !NET461 && !UNO_REFERENCE_API
+﻿#if !IS_UNIT_TESTS && !UNO_REFERENCE_API
 using System;
 using System.Numerics;
 using System.Threading;
@@ -87,7 +87,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		protected virtual void OnImageOpened(ImageSource imageSource)
+		private void OnImageOpened(ImageSource imageSource)
 		{
 			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{

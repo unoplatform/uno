@@ -229,7 +229,6 @@ internal class HotReloadWorkspace
 						build_property.RootNamespace = {project.Name}
 						build_property.XamlSourceGeneratorTracingFolder = {_baseWorkFolder}
 						build_property.Configuration = {(_isDebugCompilation ? "Debug" : "Release")}
-						build_property.UnoUseXamlReaderHotReload = {(_useXamlReaderReload ? "True" : "False")}
 						
 						"""); ;
 

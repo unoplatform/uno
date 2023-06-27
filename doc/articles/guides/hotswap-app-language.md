@@ -17,7 +17,7 @@ This guide will walk you through the necessary steps for changing app language a
   * **Universal Windows Platform** workload installed
   * **Mobile Development with .NET (Xamarin)** workload installed
   * **ASP**.**NET and web** workload installed
-  * [Uno Platform Extension](https://marketplace.visualstudio.com/items?itemName=nventivecorp.uno-platform-addin) installed
+  * [Uno Platform Extension](https://marketplace.visualstudio.com/items?itemName=unoplatform.uno-platform-addin-2022) installed
 
 # [VS Code](#tab/tabid-vscode)
 

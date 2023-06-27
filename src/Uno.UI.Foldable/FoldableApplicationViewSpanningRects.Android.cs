@@ -212,18 +212,6 @@ namespace Uno.UI.Foldable
 			}
 		}
 
-		/// <summary>
-		/// Legacy property - previously used to detect Surface Duo (only) via hardcoding. Currently synonymous with IsSpanned.
-		/// </summary>
-		[Obsolete("Prefer IsSpanned, since it provides a better experience on non-occluding folding features")]
-		public bool IsDualScreen
-		{
-			get
-			{
-				return IsSeparating;
-			}
-		}
-
 		public bool SupportsSpanning => HasFoldFeature || FoldableHingeAngleSensor.HasHinge;
 
 		public Rect Bounds

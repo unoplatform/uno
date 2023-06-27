@@ -12,8 +12,8 @@ using System.Threading;
 
 namespace Windows.UI.Xaml.Controls;
 
-#if NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-[Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+[Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 #endif
 public partial class WebView : Control, IWebView
 {
@@ -57,12 +57,9 @@ public partial class WebView : Control, IWebView
 	public void Stop() => CoreWebView2.Stop();
 
 	public IAsyncOperation<string?> InvokeScriptAsync(string scriptName, IEnumerable<string> arguments) =>
-		AsyncOperation.FromTask(ct => InvokeScriptAsync(ct, scriptName, arguments?.ToArray()));
+		AsyncOperation.FromTask(ct => CoreWebView2.InvokeScriptAsync(scriptName, arguments?.ToArray(), ct));
 
-	public async Task<string?> InvokeScriptAsync(CancellationToken ct, string script, string[]? arguments) =>
-		await CoreWebView2.InvokeScriptAsync(script, arguments, ct);
-
-	public void NavigateWithHttpRequestMessage(global::System.Net.Http.HttpRequestMessage requestMessage) =>
+	public void NavigateWithHttpRequestMessage(global::Windows.Web.Http.HttpRequestMessage requestMessage) =>
 		CoreWebView2.NavigateWithHttpRequestMessage(requestMessage);
 
 	internal static string ConcatenateJavascriptArguments(string[]? arguments)

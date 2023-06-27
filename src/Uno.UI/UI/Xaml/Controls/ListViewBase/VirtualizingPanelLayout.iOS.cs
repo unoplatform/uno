@@ -1627,7 +1627,7 @@ namespace Windows.UI.Xaml.Controls
 			return layoutAttributes.Frame.Contains(adjustedPoint);
 		}
 
-		protected Uno.UI.IndexPath? GetAndUpdateReorderingIndex() => throw new NotSupportedException("Not used on iOS");
+		private protected Uno.UI.IndexPath? GetAndUpdateReorderingIndex() => throw new NotSupportedException("Not used on iOS");
 
 		protected CGRect AdjustExtentOffset(CGRect frame, nfloat adjustment)
 		{

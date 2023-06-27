@@ -1,4 +1,4 @@
-﻿#if NET461 || __WASM__
+﻿#if IS_UNIT_TESTS || __WASM__
 #pragma warning disable CS0067
 #endif
 

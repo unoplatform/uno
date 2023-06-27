@@ -24,12 +24,10 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Shapes;
 using static Private.Infrastructure.TestServices;
-#if NETFX_CORE
-// Use the MUX MenuBar on Window for consistency, since Uno is using the MUX styles. (However Uno.UI only defines WUXC.MenuBar, not MUXC.MenuBar)
+
 using MenuBar = Microsoft.UI.Xaml.Controls.MenuBar;
 using MenuBarItem = Microsoft.UI.Xaml.Controls.MenuBarItem;
 using MenuBarItemAutomationPeer = Microsoft.UI.Xaml.Automation.Peers.MenuBarItemAutomationPeer;
-#endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {

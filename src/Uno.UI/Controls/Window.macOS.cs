@@ -39,9 +39,6 @@ namespace Uno.UI.Controls
 		internal delegate void DraggingStage2Handler(NSDraggingInfo draggingInfo);
 		internal delegate bool PerformDragOperationHandler(NSDraggingInfo draggingInfo);
 
-		private static readonly WeakAttachedDictionary<NSView, string> _attachedProperties = new WeakAttachedDictionary<NSView, string>();
-		private const string NeedsKeyboardAttachedPropertyKey = "NeedsKeyboard";
-
 		private readonly InputPane _inputPane;
 		private WeakReference<NSScrollView> _scrollViewModifiedForKeyboard;
 
@@ -296,16 +293,6 @@ namespace Uno.UI.Controls
 			};
 		#endregion
 
-		#region Keyboard
-		public static void SetNeedsKeyboard(NSView view, bool needsKeyboard)
-		{
-			if (view != null)
-			{
-				_attachedProperties.SetValue(view, NeedsKeyboardAttachedPropertyKey, (bool?)needsKeyboard);
-			}
-		}
-		#endregion
-
 		public BringIntoViewMode? FocusedViewBringIntoViewOnKeyboardOpensMode { get; set; }
 
 		internal void MakeVisible(NSView view, BringIntoViewMode? bringIntoViewMode, bool useForcedAnimation = false)
@@ -380,26 +367,26 @@ namespace Uno.UI.Controls
 
 			public override void DidMiniaturize(NSNotification notification)
 			{
-				Windows.UI.Xaml.Window.Current?.OnVisibilityChanged(false);
-				Windows.UI.Xaml.Window.Current?.OnActivated(CoreWindowActivationState.Deactivated);
+				Windows.UI.Xaml.Window.Current?.OnNativeVisibilityChanged(false);
+				Windows.UI.Xaml.Window.Current?.OnNativeActivated(CoreWindowActivationState.Deactivated);
 				Windows.UI.Xaml.Application.Current?.RaiseEnteredBackground(null);
 			}
 
 			public override void DidDeminiaturize(NSNotification notification)
 			{
 				Windows.UI.Xaml.Application.Current?.RaiseLeavingBackground(null);
-				Windows.UI.Xaml.Window.Current?.OnVisibilityChanged(true);
-				Windows.UI.Xaml.Window.Current?.OnActivated(CoreWindowActivationState.CodeActivated);
+				Windows.UI.Xaml.Window.Current?.OnNativeVisibilityChanged(true);
+				Windows.UI.Xaml.Window.Current?.OnNativeActivated(CoreWindowActivationState.CodeActivated);
 			}
 
 			public override void DidBecomeKey(NSNotification notification)
 			{
-				Windows.UI.Xaml.Window.Current?.OnActivated(CoreWindowActivationState.CodeActivated);
+				Windows.UI.Xaml.Window.Current?.OnNativeActivated(CoreWindowActivationState.CodeActivated);
 			}
 
 			public override void DidResignKey(NSNotification notification)
 			{
-				Windows.UI.Xaml.Window.Current?.OnActivated(CoreWindowActivationState.Deactivated);
+				Windows.UI.Xaml.Window.Current?.OnNativeActivated(CoreWindowActivationState.Deactivated);
 			}
 
 			public override async void DidBecomeMain(NSNotification notification)

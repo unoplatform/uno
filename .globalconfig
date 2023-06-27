@@ -46,6 +46,9 @@ dotnet_diagnostic.CA1829.severity = error
 # CA2200: Rethrow to preserve stack details
 dotnet_diagnostic.CA2200.severity = error
 
+# CA2211: Non-constant fields should not be visible
+dotnet_diagnostic.CA2211.severity = error
+
 # CA2218: Override GetHashCode on overriding Equals
 dotnet_diagnostic.CA2218.severity = error
 
@@ -96,6 +99,24 @@ dotnet_diagnostic.CA1848.severity = none
 
 # CA1849: Call async methods when in an async method
 dotnet_diagnostic.CA1849.severity = none
+
+# CA1850: Prefer static 'System.Security.Cryptography.SHA256.HashData' method over 'ComputeHash'
+dotnet_diagnostic.CA1850.severity = none
+
+# CA1851: Possible multiple enumerations of 'IEnumerable' collection.
+dotnet_diagnostic.CA1851.severity = none
+
+# CA1854: Prefer a 'TryGetValue' call over a Dictionary indexer access guarded by a 'ContainsKey'
+dotnet_diagnostic.CA1854.severity = none
+
+# CA1852: Type 'XX' can be sealed because
+dotnet_diagnostic.CA1852.severity = none
+
+# CA1859: Change return type of method 'XX' from 'XX' to 'XX' for improved performance
+dotnet_diagnostic.CA1859.severity = none
+
+# CA1860: Prefer comparing 'Count' to 0 rather than using 'Any()', both for clarity and for performance
+dotnet_diagnostic.CA1860.severity = none
 
 dotnet_code_quality.CA1822.api_surface = private, internal
 

@@ -3,12 +3,12 @@
   <metadata minClientVersion="5.0">
     <id>Uno.UI.Adapter.Microsoft.Extensions.Logging</id>
     <version>0.0.1</version>
-    <authors>nventive</authors>
+    <authors>Uno Platform</authors>
     <icon>uno.png</icon>
     <projectUrl>https://github.com/unoplatform/uno</projectUrl>
     <license type="expression">Apache-2.0</license>
     <description>This package provides internal logging utilities for Uno.UI packages</description>
-    <copyright>nventive</copyright>
+    <copyright>Uno Platform</copyright>
     <repository type="git" url="https://github.com/unoplatform/uno.git" branch="$branch$" commit="$commitid$" />
     <dependencies>
       <dependency id="Uno.Foundation.Logging" version="0.0.0" />
@@ -20,6 +20,7 @@
   <files>
     <file src="..\src\Common\uno.png" target="/" />
 
-    <file src="..\src\Uno.UI.Adapter.Microsoft.Extensions.Logging\bin\Uno.UI.Adapter.Microsoft.Extensions.Logging\Release\netstandard2.0\*.*" target="lib\netstandard2.0" />
+	  <file src="..\src\Uno.UI.Adapter.Microsoft.Extensions.Logging\bin\Uno.UI.Adapter.Microsoft.Extensions.Logging\Release\net7.0\*.*" target="lib\net7.0" />
+	  <file src="..\src\Uno.UI.Adapter.Microsoft.Extensions.Logging\bin\Uno.UI.Adapter.Microsoft.Extensions.Logging\Release\net8.0\*.*" target="lib\net8.0" />
   </files>
 </package>

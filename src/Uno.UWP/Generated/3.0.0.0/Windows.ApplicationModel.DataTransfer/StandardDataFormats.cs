@@ -2,13 +2,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.DataTransfer
 {
-	#if false || false || NET461 || false || false || false || false
-	[global::Uno.NotImplemented("NET461")]
+	#if false || false || IS_UNIT_TESTS || false || false || false || false
+	[global::Uno.NotImplemented("IS_UNIT_TESTS")]
 	#endif
 	public static partial class StandardDataFormats 
 	{
-		#if false || false || NET461 || false || false || false || false
-		[global::Uno.NotImplemented("NET461")]
+		#if false || false || IS_UNIT_TESTS || false || false || false || false
+		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
 		public static string Bitmap
 		{
 			get
@@ -17,8 +17,8 @@ namespace Windows.ApplicationModel.DataTransfer
 			}
 		}
 		#endif
-		#if false || false || NET461 || false || false || false || false
-		[global::Uno.NotImplemented("NET461")]
+		#if false || false || IS_UNIT_TESTS || false || false || false || false
+		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
 		public static string Html
 		{
 			get
@@ -27,8 +27,8 @@ namespace Windows.ApplicationModel.DataTransfer
 			}
 		}
 		#endif
-		#if false || false || NET461 || false || false || false || false
-		[global::Uno.NotImplemented("NET461")]
+		#if false || false || IS_UNIT_TESTS || false || false || false || false
+		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
 		public static string Rtf
 		{
 			get
@@ -37,8 +37,8 @@ namespace Windows.ApplicationModel.DataTransfer
 			}
 		}
 		#endif
-		#if false || false || NET461 || false || false || false || false
-		[global::Uno.NotImplemented("NET461")]
+		#if false || false || IS_UNIT_TESTS || false || false || false || false
+		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
 		public static string StorageItems
 		{
 			get
@@ -47,8 +47,8 @@ namespace Windows.ApplicationModel.DataTransfer
 			}
 		}
 		#endif
-		#if false || false || NET461 || false || false || false || false
-		[global::Uno.NotImplemented("NET461")]
+		#if false || false || IS_UNIT_TESTS || false || false || false || false
+		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
 		public static string Text
 		{
 			get
@@ -57,8 +57,8 @@ namespace Windows.ApplicationModel.DataTransfer
 			}
 		}
 		#endif
-		#if false || false || NET461 || false || false || false || false
-		[global::Uno.NotImplemented("NET461")]
+		#if false || false || IS_UNIT_TESTS || false || false || false || false
+		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
 		public static string Uri
 		{
 			get
@@ -67,8 +67,8 @@ namespace Windows.ApplicationModel.DataTransfer
 			}
 		}
 		#endif
-		#if false || false || NET461 || false || false || false || false
-		[global::Uno.NotImplemented("NET461")]
+		#if false || false || IS_UNIT_TESTS || false || false || false || false
+		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
 		public static string ApplicationLink
 		{
 			get
@@ -77,8 +77,8 @@ namespace Windows.ApplicationModel.DataTransfer
 			}
 		}
 		#endif
-		#if false || false || NET461 || false || false || false || false
-		[global::Uno.NotImplemented("NET461")]
+		#if false || false || IS_UNIT_TESTS || false || false || false || false
+		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
 		public static string WebLink
 		{
 			get
@@ -87,8 +87,8 @@ namespace Windows.ApplicationModel.DataTransfer
 			}
 		}
 		#endif
-		#if false || false || NET461 || false || false || false || false
-		[global::Uno.NotImplemented("NET461")]
+		#if false || false || IS_UNIT_TESTS || false || false || false || false
+		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
 		public static string UserActivityJsonArray
 		{
 			get

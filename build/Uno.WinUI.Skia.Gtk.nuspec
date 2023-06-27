@@ -4,14 +4,14 @@
 	<id>Uno.WinUI.Skia.Gtk</id>
 	<version>1.0.0.0</version>
 	<title>Uno.UI</title>
-	<authors>nventive</authors>
-	<owners>nventive</owners>
+	<authors>Uno Platform</authors>
+	<owners>unoplatform</owners>
 	<requireLicenseAcceptance>false</requireLicenseAcceptance>
 	<projectUrl>https://platform.uno/</projectUrl>
 	<license type="expression">Apache-2.0</license>
 	<icon>uno.png</icon>
 	<description>Build Mobile, Desktop and WebAssembly apps with C# and XAML. Today. Open source and professionally supported.</description>
-	<copyright>Copyright (C) 2015-2020 nventive inc. - all rights reserved</copyright>
+	<copyright>Copyright (C) 2015-2020 Uno Platform Inc. - all rights reserved</copyright>
 	<repository type="git" url="https://github.com/unoplatform/uno.git" branch="$branch$" commit="$commitid$" />
 
 	<dependencies>

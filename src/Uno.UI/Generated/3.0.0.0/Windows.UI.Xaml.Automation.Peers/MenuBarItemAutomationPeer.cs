@@ -7,8 +7,8 @@ namespace Windows.UI.Xaml.Automation.Peers
 	#endif
 	public  partial class MenuBarItemAutomationPeer : global::Windows.UI.Xaml.Automation.Peers.FrameworkElementAutomationPeer,global::Windows.UI.Xaml.Automation.Provider.IExpandCollapseProvider,global::Windows.UI.Xaml.Automation.Provider.IInvokeProvider
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Xaml.Automation.ExpandCollapseState ExpandCollapseState
 		{
 			get
@@ -17,12 +17,36 @@ namespace Windows.UI.Xaml.Automation.Peers
 			}
 		}
 		#endif
-		// Skipping already declared method Windows.UI.Xaml.Automation.Peers.MenuBarItemAutomationPeer.MenuBarItemAutomationPeer(Windows.UI.Xaml.Controls.MenuBarItem)
+		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public MenuBarItemAutomationPeer( global::Windows.UI.Xaml.Controls.MenuBarItem owner) : base(owner)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Automation.Peers.MenuBarItemAutomationPeer", "MenuBarItemAutomationPeer.MenuBarItemAutomationPeer(MenuBarItem owner)");
+		}
+		#endif
 		// Forced skipping of method Windows.UI.Xaml.Automation.Peers.MenuBarItemAutomationPeer.MenuBarItemAutomationPeer(Windows.UI.Xaml.Controls.MenuBarItem)
 		// Forced skipping of method Windows.UI.Xaml.Automation.Peers.MenuBarItemAutomationPeer.ExpandCollapseState.get
-		// Skipping already declared method Windows.UI.Xaml.Automation.Peers.MenuBarItemAutomationPeer.Collapse()
-		// Skipping already declared method Windows.UI.Xaml.Automation.Peers.MenuBarItemAutomationPeer.Expand()
-		// Skipping already declared method Windows.UI.Xaml.Automation.Peers.MenuBarItemAutomationPeer.Invoke()
+		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  void Collapse()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Automation.Peers.MenuBarItemAutomationPeer", "void MenuBarItemAutomationPeer.Collapse()");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  void Expand()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Automation.Peers.MenuBarItemAutomationPeer", "void MenuBarItemAutomationPeer.Expand()");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  void Invoke()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Automation.Peers.MenuBarItemAutomationPeer", "void MenuBarItemAutomationPeer.Invoke()");
+		}
+		#endif
 		// Processing: Windows.UI.Xaml.Automation.Provider.IExpandCollapseProvider
 		// Processing: Windows.UI.Xaml.Automation.Provider.IInvokeProvider
 	}

@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Uno
 {
-	internal static class AndroidResourceNameEncoder
+	internal static partial class AndroidResourceNameEncoder
 	{
 		private const string NumberPrefix = "__";
 

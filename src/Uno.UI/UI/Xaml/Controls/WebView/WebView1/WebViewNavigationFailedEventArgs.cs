@@ -1,5 +1,5 @@
 ﻿using System;
-using Uno.UI.Web;
+using Windows.Web;
 
 namespace Windows.UI.Xaml.Controls;
 

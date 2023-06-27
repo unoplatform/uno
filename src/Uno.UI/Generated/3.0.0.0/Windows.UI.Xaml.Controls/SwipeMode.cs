@@ -2,15 +2,11 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+	#if false || false || false || false || false || false || false
 	public   enum SwipeMode 
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Reveal = 0,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Execute = 1,
-		#endif
+		// Skipping already declared field Windows.UI.Xaml.Controls.SwipeMode.Reveal
+		// Skipping already declared field Windows.UI.Xaml.Controls.SwipeMode.Execute
 	}
 	#endif
 }

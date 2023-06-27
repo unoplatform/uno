@@ -7,7 +7,7 @@ using Windows.Foundation;
 
 namespace Windows.Media.Playback
 {
-	public partial class MediaPlayer
+	public sealed partial class MediaPlayer
 	{
 		internal const bool ImplementedByExtensions =
 #if __ANDROID__ || __IOS__ || __MACOS__

@@ -1,23 +1,20 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFrameworks>net47;netcoreapp3.1</TargetFrameworks>
-  </PropertyGroup>
-
-	<PropertyGroup Condition="'$(MSBuildRuntimeType)'=='Core' or '$(BuildingInsideVisualStudio)'=='true'">
-		<TargetFrameworks>$(TargetFrameworks);net7.0-windows</TargetFrameworks>
+	<PropertyGroup>
+		<TargetFrameworks>net7.0-windows</TargetFrameworks>
+		<TargetFrameworks Condition="'$(UnoDisableNet8)'!='true'">$(TargetFrameworks);net8.0-windows</TargetFrameworks>
 	</PropertyGroup>
 
-	<Import Project="../netcore-build-windows.props" />
+	<Import Project="../targetframework-override-windows.props" />
 
 	<PropertyGroup>
 		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
-		<Authors>nventive</Authors>
+		<authors>Uno Platform</authors>
 		<PackageProjectUrl>https://github.com/unoplatform/uno</PackageProjectUrl>
 		<PackageIcon>uno.png</PackageIcon>
 		<RepositoryUrl>https://github.com/unoplatform/uno</RepositoryUrl>
 		<Description>This package provides the platform support for Skia in Uno Platform projects.</Description>
-		<Copyright>Copyright (C) 2015-2020 nventive inc. - all rights reserved</Copyright>
+		<Copyright>Copyright (C) 2015-$([System.DateTime]::Now.ToString(`yyyy`)) Uno Platform Inc. - all rights reserved</Copyright>
 
 		<PackageId Condition="'$(UNO_UWP_BUILD)'!='true'">Uno.WinUI.Runtime.Skia.Wpf</PackageId>
 
@@ -41,14 +38,10 @@
 		<PackageReference Include="System.Drawing.Common" Version="7.0.0-rc.1.22426.10" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)'=='netcoreapp3.1'">
-		<PackageReference Include="System.Drawing.Common" Version="4.7.3" />
-	</ItemGroup>
-
 	<ItemGroup>
-	  <ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Skia.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
-	  <ProjectReference Include="..\Uno.UI\Uno.UI.Skia.csproj" />
-	  <ProjectReference Include="..\Uno.UWP\Uno.Skia.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
+		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Skia.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
+		<ProjectReference Include="..\Uno.UI\Uno.UI.Skia.csproj" />
+		<ProjectReference Include="..\Uno.UWP\Uno.Skia.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
 	</ItemGroup>
 
 	<ItemGroup>

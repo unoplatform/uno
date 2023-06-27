@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Globalization;
 using System.Threading;
+using Microsoft.UI.Xaml.Controls;
 using Uno.Foundation;
 using Windows.Foundation;
 using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
 using Uno.Extensions;
 using System.Threading.Tasks;
 using Uno.Disposables;
@@ -15,7 +15,11 @@ using System.Runtime.InteropServices.JavaScript;
 
 #pragma warning disable CA1305 // Specify IFormatProvider
 
+#if HAS_UNO_WINUI
+namespace CommunityToolkit.WinUI.Lottie
+#else
 namespace Microsoft.Toolkit.Uwp.UI.Lottie
+#endif
 {
 	partial class LottieVisualSourceBase
 	{
@@ -315,7 +319,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			{
 				"Uno.UI.Lottie.resume(",
 				_player.HtmlId.ToString(),
-				");" 
+				");"
 			};
 
 			InvokeJs(js);

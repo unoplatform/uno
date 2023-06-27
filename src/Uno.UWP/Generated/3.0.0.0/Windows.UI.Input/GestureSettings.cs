@@ -3,7 +3,6 @@
 namespace Windows.UI.Input
 {
 	#if false || false || false || false || false || false || false
-	[global::System.FlagsAttribute]
 	public   enum GestureSettings : uint
 	{
 		// Skipping already declared field Windows.UI.Input.GestureSettings.None

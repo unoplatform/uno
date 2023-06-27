@@ -15,6 +15,8 @@ using Windows.UI.Xaml.Automation;
 using Windows.UI.Xaml.Automation.Provider;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Controls;
+using Private.Infrastructure;
+using System.Threading.Tasks;
 
 #if USING_TAEF
 using WEX.TestExecution;
@@ -29,6 +31,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 {
 
 	[TestClass]
+	[Uno.UI.RuntimeTests.RunsOnUIThread]
 	public class PagerControlTests : MUXApiTestBase
 	{
 
@@ -63,8 +66,10 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 
 			IdleSynchronizer.Wait();
 
-			RunOnUIThread.Execute(() =>
+			RunOnUIThread.Execute(async () =>
 			{
+				await Task.Delay(500);
+
 				var rootGrid = VisualTreeHelper.GetChild(Content, 0) as Grid;
 				var repeater = VisualTreeHelper.GetChild(rootGrid, 2) as ItemsRepeater;
 

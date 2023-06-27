@@ -11,8 +11,8 @@ namespace Windows.Storage.Pickers
 		// Skipping already declared property SuggestedSaveFile
 		// Skipping already declared property SuggestedFileName
 		// Skipping already declared property SettingsIdentifier
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  string DefaultFileExtension
 		{
 			get
@@ -27,8 +27,8 @@ namespace Windows.Storage.Pickers
 		#endif
 		// Skipping already declared property CommitButtonText
 		// Skipping already declared property FileTypeChoices
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.Collections.ValueSet ContinuationData
 		{
 			get
@@ -37,8 +37,8 @@ namespace Windows.Storage.Pickers
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  string EnterpriseId
 		{
 			get
@@ -51,8 +51,8 @@ namespace Windows.Storage.Pickers
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.System.User User
 		{
 			get
@@ -64,8 +64,8 @@ namespace Windows.Storage.Pickers
 		// Skipping already declared method Windows.Storage.Pickers.FileSavePicker.FileSavePicker()
 		// Forced skipping of method Windows.Storage.Pickers.FileSavePicker.FileSavePicker()
 		// Forced skipping of method Windows.Storage.Pickers.FileSavePicker.ContinuationData.get
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  void PickSaveFileAndContinue()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Pickers.FileSavePicker", "void FileSavePicker.PickSaveFileAndContinue()");
@@ -86,16 +86,16 @@ namespace Windows.Storage.Pickers
 		// Forced skipping of method Windows.Storage.Pickers.FileSavePicker.SuggestedSaveFile.set
 		// Forced skipping of method Windows.Storage.Pickers.FileSavePicker.SuggestedFileName.get
 		// Forced skipping of method Windows.Storage.Pickers.FileSavePicker.SuggestedFileName.set
-		#if false || false || NET461 || false || false || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("NET461", "__NETSTD_REFERENCE__")]
+		#if false || false || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__ || false
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFile> PickSaveFileAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageFile> FileSavePicker.PickSaveFileAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CStorageFile%3E%20FileSavePicker.PickSaveFileAsync%28%29");
 		}
 		#endif
 		// Forced skipping of method Windows.Storage.Pickers.FileSavePicker.User.get
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Storage.Pickers.FileSavePicker CreateForUser( global::Windows.System.User user)
 		{
 			throw new global::System.NotImplementedException("The member FileSavePicker FileSavePicker.CreateForUser(User user) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=FileSavePicker%20FileSavePicker.CreateForUser%28User%20user%29");

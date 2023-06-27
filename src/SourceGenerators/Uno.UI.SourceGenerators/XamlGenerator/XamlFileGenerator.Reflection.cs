@@ -14,7 +14,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 	internal partial class XamlFileGenerator
 	{
 		private Func<string, INamedTypeSymbol?>? _findType;
-		private Func<XamlType, bool, INamedTypeSymbol?>? _findTypeByXamlType;
+		private Func<XamlType, INamedTypeSymbol?>? _findTypeByXamlType;
 		private Func<XamlMember, INamedTypeSymbol?>? _findPropertyTypeByXamlMember;
 		private XClassName? _xClassName;
 		private string[]? _clrNamespaces;
@@ -29,7 +29,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		{
 			_findType = Funcs.Create<string, INamedTypeSymbol?>(SourceFindType).AsMemoized();
 			_findPropertyTypeByXamlMember = Funcs.Create<XamlMember, INamedTypeSymbol?>(SourceFindPropertyType).AsMemoized();
-			_findTypeByXamlType = Funcs.Create<XamlType, bool, INamedTypeSymbol?>(SourceFindTypeByXamlType).AsMemoized();
+			_findTypeByXamlType = Funcs.Create<XamlType, INamedTypeSymbol?>(SourceFindTypeByXamlType).AsMemoized();
 
 			var defaultXmlNamespace = _fileDefinition
 				.Namespaces
@@ -463,10 +463,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private INamedTypeSymbol? FindType(string name)
 			=> _findType!(name);
 
-		private INamedTypeSymbol? FindType(XamlType? type, bool strictSearch = false)
-			=> type != null ? _findTypeByXamlType!(type, strictSearch) : null;
+		private INamedTypeSymbol? FindType(XamlType? type)
+			=> type != null ? _findTypeByXamlType!(type) : null;
 
-		private INamedTypeSymbol? SourceFindTypeByXamlType(XamlType type, bool strictSearch)
+		private INamedTypeSymbol? SourceFindTypeByXamlType(XamlType type)
 		{
 			if (type != null)
 			{
@@ -514,18 +514,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					return namedType;
 				}
 
-				if (!strictSearch)
+				var ns = _fileDefinition
+					.Namespaces
+					// Ensure that prefixless declaration (generally xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation") is considered first, otherwise PreferredXamlNamespace matching can go awry
+					.OrderByDescending(n => n.Prefix.IsNullOrEmpty())
+					.FirstOrDefault(n => n.Namespace == type.PreferredXamlNamespace);
+				if (ns?.Prefix is { Length: > 0 } nsPrefix)
 				{
-					// Then use fuzzy lookup
-					var ns = _fileDefinition
-						.Namespaces
-						// Ensure that prefixless declaration (generally xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation") is considered first, otherwise PreferredXamlNamespace matching can go awry
-						.OrderByDescending(n => n.Prefix.IsNullOrEmpty())
-						.FirstOrDefault(n => n.Namespace == type.PreferredXamlNamespace);
-					var isKnownNamespace = ns?.Prefix is { Length: > 0 };
-					var fullName = isKnownNamespace && ns != null ? ns.Prefix + ":" + type.Name : type.Name;
-
-					return _findType!(fullName);
+					return _findType!($"{nsPrefix}:{type.Name}");
 				}
 			}
 

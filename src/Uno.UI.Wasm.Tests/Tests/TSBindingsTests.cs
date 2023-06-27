@@ -10,9 +10,7 @@ using Uno.Foundation.Interop;
 using System.Net.WebSockets;
 using System.Diagnostics;
 
-#if NET7_0_OR_GREATER
 using System.Runtime.InteropServices.JavaScript;
-#endif
 
 namespace SamplesApp.UnitTests.TSBindings
 {
@@ -21,7 +19,6 @@ namespace SamplesApp.UnitTests.TSBindings
 
 	public class TSBindingsTests
 	{
-#if NET7_0_OR_GREATER
 		[TestMethod]
 		public void When_TestPerf()
 		{
@@ -47,7 +44,6 @@ namespace SamplesApp.UnitTests.TSBindings
 
 			Console.WriteLine($"uno ts interop: {sw2.Elapsed}");
 		}
-#endif
 
 		[TestMethod]
 		public void When_IntPtr()
@@ -199,13 +195,11 @@ namespace SamplesApp.UnitTests.TSBindings
 		}
 	}
 
-#if NET7_0_OR_GREATER
 	partial class TestImport
 	{
 		[JSImport("globalThis.When_SingleStringNet7")]
 		internal static partial string When_SingleStringNet7(string value);
 	}
-#endif
 
 	[TSInteropMessage]
 	[StructLayout(LayoutKind.Sequential, Pack = 4)]

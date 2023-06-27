@@ -24,11 +24,13 @@ using _Bitmap = Uno.UI.RuntimeTests.Helpers.RawBitmap;
 using SamplesApp.UITests;
 using Windows.UI.Xaml;
 using SamplesApp.UITests.TestFramework;
+using _Color = Windows.UI.Color;
 
 namespace Uno.UI.RuntimeTests.Helpers;
 #else
 using System.Drawing;
-using _Bitmap = System.Drawing.Bitmap;
+using _Bitmap = SamplesApp.UITests.PlatformBitmap;
+using _Color = System.Drawing.Color;
 using SamplesApp.UITests._Utils;
 namespace SamplesApp.UITests.TestFramework;
 #endif
@@ -173,7 +175,7 @@ public static partial class ImageAssert
 			Math.Min(rect.Width, size.Width),
 			Math.Min(rect.Height, size.Height));
 
-	private static bool AreSameColor(Color a, Color b, byte tolerance, out int currentDifference, ColorToleranceKind kind = ColorToleranceKind.Exclusive)
+	private static bool AreSameColor(_Color a, _Color b, byte tolerance, out int currentDifference, ColorToleranceKind kind = ColorToleranceKind.Exclusive)
 	{
 		switch (kind)
 		{

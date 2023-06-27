@@ -1,4 +1,4 @@
-#if !NET461
+#if !IS_UNIT_TESTS
 #pragma warning disable 108 // new keyword hiding
 #pragma warning disable 114 // new keyword hiding
 #pragma warning disable 67 // new keyword hiding

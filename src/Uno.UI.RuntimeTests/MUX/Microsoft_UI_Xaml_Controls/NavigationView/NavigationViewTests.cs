@@ -44,6 +44,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 {
 	[TestClass]
 	[RequiresFullWindow]
+	[RunsOnUIThread]
 	public class NavigationViewTests : MUXApiTestBase
 	{
 		private NavigationView SetupNavigationView(NavigationViewPaneDisplayMode paneDisplayMode = NavigationViewPaneDisplayMode.Auto, bool wrapInScrollViewer = false)
@@ -1254,6 +1255,9 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 		[TestMethod]
 #if __MACOS__
 		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
+#if __ANDROID__
+		[Ignore("Currently fails on Android https://github.com/unoplatform/uno/issues/9080")]
 #endif
 		public async Task VerifyNavigationViewItemToolTipPaneDisplayMode()
 		{

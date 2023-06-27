@@ -8,7 +8,7 @@ namespace Windows.ApplicationModel.Activation
 	public  partial interface IToastNotificationActivatedEventArgs : global::Windows.ApplicationModel.Activation.IActivatedEventArgs
 	{
 		// Skipping already declared property Argument
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		global::Windows.Foundation.Collections.ValueSet UserInput
 		{
 			get;

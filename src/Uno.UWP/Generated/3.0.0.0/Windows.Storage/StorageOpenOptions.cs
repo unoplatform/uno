@@ -3,7 +3,6 @@
 namespace Windows.Storage
 {
 	#if false || false || false || false || false || false || false
-	[global::System.FlagsAttribute]
 	public   enum StorageOpenOptions : uint
 	{
 		// Skipping already declared field Windows.Storage.StorageOpenOptions.None

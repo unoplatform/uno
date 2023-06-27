@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using Uno.Extensions;
 using Uno.Client;
-using Uno.UI.Services;
 using UIKit;
 using Uno.Disposables;
 using Windows.UI.Core;

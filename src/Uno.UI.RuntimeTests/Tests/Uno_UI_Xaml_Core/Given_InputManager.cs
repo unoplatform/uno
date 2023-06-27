@@ -40,10 +40,13 @@ public class Given_InputManager
 			},
 			Children =
 			{
-				(col1 = new Border { Background = new SolidColorBrush(Colors.DeepPink) }.GridColumn(0)),
-				(col2 = new Border { Background = new SolidColorBrush(Colors.DeepSkyBlue) }.GridColumn(1)),
+				(col1 = new Border { Background = new SolidColorBrush(Colors.DeepPink) }),
+				(col2 = new Border { Background = new SolidColorBrush(Colors.DeepSkyBlue) }),
 			}
 		};
+
+		Grid.SetColumn(col1, 0);
+		Grid.SetColumn(col2, 1);
 
 		var position = await UITestHelper.Load(ui);
 

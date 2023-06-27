@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
 
 	<PropertyGroup>
-		<TargetFrameworks>net6.0-android;net6.0-ios</TargetFrameworks>
-		<TargetFrameworks>$(TargetFrameworks);net6.0-maccatalyst;net6.0-macos</TargetFrameworks>
+		<TargetFrameworks>net8.0-android;net8.0-ios</TargetFrameworks>
+		<TargetFrameworks>$(TargetFrameworks);net8.0-maccatalyst;net8.0-macos</TargetFrameworks>
 
 		<TargetFrameworks>$(TargetFrameworks);net7.0-android;net7.0-ios</TargetFrameworks>
 		<TargetFrameworks>$(TargetFrameworks);net7.0-maccatalyst;net7.0-macos</TargetFrameworks>
@@ -30,7 +30,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Uno.SourceGenerationTasks" />
 
 		<PackageReference Include="Svg.Skia" />
 		<PackageReference Include="SkiaSharp.Views.Uno" Condition="'$(UNO_UWP_BUILD)'=='true'" />

@@ -26,6 +26,10 @@ using System.IO;
 using Uno.UI;
 using Windows.Graphics.Display;
 
+#if !WINDOWS_UWP
+using Uno.UI.Controls.Legacy;
+#endif
+
 #if __IOS__
 using UIKit;
 #endif
@@ -410,7 +414,9 @@ namespace UITests.Windows_UI_Xaml_Shapes
 
 			FrameworkElement GetElement()
 			{
+#pragma warning disable SYSLIB1045 // Convert to 'GeneratedRegexAttribute'.
 				var parsedId = Regex.Match(id, @"(?<shape>[a-zA-Z]+)(_(?<alteratorId>[a-zA-Z]+))+");
+#pragma warning restore SYSLIB1045 // Convert to 'GeneratedRegexAttribute'.
 				if (!parsedId.Success)
 				{
 					return new TextBlock { Text = $"Failed to parse {parsedId}", Foreground = new SolidColorBrush(Colors.Red) };
@@ -578,7 +584,9 @@ namespace UITests.Windows_UI_Xaml_Shapes
 			{
 				_alter = alter;
 				Name = name;
+#pragma warning disable SYSLIB1045 // Convert to 'GeneratedRegexAttribute'.
 				Id = Regex.Replace(name, @"([^\w]|[ ])(?<first>[a-z])", m => m.Groups["first"].Value.ToUpperInvariant());
+#pragma warning restore SYSLIB1045 // Convert to 'GeneratedRegexAttribute'.
 
 				var desc = !details.IsNullOrEmpty() ? $"{name} ({details})" : name;
 				Option = new ToggleSwitch { OnContent = desc, OffContent = desc, IsOn = isEnabled };
