@@ -11,6 +11,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
 using Uno.UI;
+using Uno.UI.Helpers;
 using Uno.UI.Xaml.Core;
 using Windows.UI.Xaml;
 
