@@ -47,6 +47,17 @@ partial class HtmlMediaPlayer
 			=> throw new NotSupportedException();
 #endif
 
+
+#if USE_JSIMPORT
+		[JSImport("globalThis.Uno.UI.Media.HtmlMediaPlayer.getPaused")]
+#endif
+		internal static partial bool GetPaused(nint htmlId);
+
+#if !USE_JSIMPORT
+		internal static partial bool GetPaused(nint htmlId)
+			=> throw new NotSupportedException();
+#endif
+
 #if USE_JSIMPORT
 		[JSImport("globalThis.Uno.UI.Media.HtmlMediaPlayer.setCurrentPosition")]
 #endif

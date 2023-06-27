@@ -25,7 +25,7 @@ partial class SvgImageSource
 
 	private ISvgProvider? _svgProvider;
 
-	internal event EventHandler SourceLoaded;
+	internal event EventHandler? SourceLoaded;
 
 	private void InitSvgProvider()
 	{

@@ -1539,6 +1539,10 @@
 			<Member fullName="System.Void Windows.UI.Core.CoreWindow.RaisePointerCancelled(Windows.UI.Core.PointerEventArgs args)" reason="Does not exist in Windows" />
 			<!-- End Pointers update -->
 
+      <!-- BEGIN MPE -->
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.MediaTransportControls.TappedProgressSlider(System.Object sender, Windows.UI.Xaml.RoutedEventArgs e)" reason="Should not be public" />
+      <!-- END MPE -->
+
 			<!-- BEGIN Proximity sensor -->
 			<Member fullName="System.Void Windows.Devices.Sensors.ProximitySensor..ctor()" reason="Does not exist in Windows" />
 			<Member fullName="System.Void Windows.Devices.Sensors.ProximitySensorReading..ctor()" reason="Does not exist in Windows" />

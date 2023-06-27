@@ -561,6 +561,33 @@ namespace Uno.UI.Xaml
 			NativeMethods.SetProperties(htmlId, pairs);
 		}
 
+		internal static void SetProperty(IntPtr htmlId, string name, string value)
+		{
+#if NET7_0_OR_GREATER
+			NativeMethods.SetProperty(htmlId, name, value);
+#else
+			var parms = new WindowManagerSetSinglePropertyParams()
+			{
+				HtmlId = htmlId,
+				Name = name,
+				Value = value,
+			};
+
+			TSInteropMarshaller.InvokeJS("Uno:setSinglePropertyNative", parms);
+#endif
+		}
+
+		[TSInteropMessage]
+		[StructLayout(LayoutKind.Sequential, Pack = 4)]
+		private struct WindowManagerSetSinglePropertyParams
+		{
+			public IntPtr HtmlId;
+
+			public string Name;
+
+			public string Value;
+		}
+
 		[TSInteropMessage]
 		[StructLayout(LayoutKind.Sequential, Pack = 4)]
 		private struct WindowManagerSetPropertyParams
@@ -1134,6 +1161,9 @@ namespace Uno.UI.Xaml
 
 			[JSImport("globalThis.Uno.UI.WindowManager.current.setPropertyNativeFast")]
 			internal static partial void SetProperties(IntPtr htmlId, string[] pairs);
+
+			[JSImport("globalThis.Uno.UI.WindowManager.current.setSinglePropertyNativeFast")]
+			internal static partial void SetProperty(IntPtr htmlId, string name, string value);
 
 			[JSImport("globalThis.Uno.UI.WindowManager.current.setRootElement")]
 			internal static partial void SetRootElement(IntPtr htmlId);

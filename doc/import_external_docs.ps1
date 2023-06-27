@@ -77,14 +77,15 @@ foreach ($repoPath in $external_docs.keys)
     pushd $repoPath
 
     echo "Checking out $repoUrl@$repoBranch..."
-    git checkout $repoBranch
+    git fetch
+    git checkout --force $repoBranch
     Assert-ExitCodeIsZero
 
     # if not detached
     if ((git symbolic-ref -q HEAD) -ne $null)
     {
         echo "Pulling $repoUrl@$repoBranch..."
-        git pull
+        git reset --hard
         Assert-ExitCodeIsZero
     }
 

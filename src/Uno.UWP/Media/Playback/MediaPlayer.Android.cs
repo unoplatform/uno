@@ -155,8 +155,6 @@ namespace Windows.Media.Playback
 				SetVideoSource(uri);
 
 				_player.PrepareAsync();
-
-				MediaOpened?.Invoke(this, null);
 			}
 			catch (global::System.Exception ex)
 			{
@@ -270,30 +268,37 @@ namespace Windows.Media.Playback
 
 		public void OnPrepared(AndroidMediaPlayer mp)
 		{
-			PlaybackSession.NaturalDuration = TimeSpan.FromMilliseconds(_player.Duration);
-
-			VideoRatioChanged?.Invoke(this, (double)mp.VideoWidth / global::System.Math.Max(mp.VideoHeight, 1));
-
-			if (PlaybackSession.PlaybackState == MediaPlaybackState.Opening)
+			if (mp is not null)
 			{
-				UpdateVideoStretch(_currentStretch);
+				PlaybackSession.NaturalDuration = TimeSpan.FromMilliseconds(_player.Duration);
 
-				if (_isPlayRequested)
+				VideoRatioChanged?.Invoke(this, (double)mp.VideoWidth / global::System.Math.Max(mp.VideoHeight, 1));
+
+				IsVideo = mp.GetTrackInfo()?.Any(x => x.TrackType == MediaTrackType.Video) == true;
+
+				if (PlaybackSession.PlaybackState == MediaPlaybackState.Opening)
 				{
-					_player.Start();
-					PlaybackSession.PlaybackState = MediaPlaybackState.Playing;
+					UpdateVideoStretch(_currentStretch);
+
+					if (_isPlayRequested)
+					{
+						_player.Start();
+						PlaybackSession.PlaybackState = MediaPlaybackState.Playing;
+					}
+					else
+					{
+						// To display first image of media when setting a new source. Otherwise, last image of previous source remains visible
+						_player.Start();
+						_player.Pause();
+						_player.SeekTo(0);
+						PlaybackSession.PlaybackState = MediaPlaybackState.Paused;
+					}
 				}
-				else
-				{
-					// To display first image of media when setting a new source. Otherwise, last image of previous source remains visible
-					_player.Start();
-					_player.Pause();
-					_player.SeekTo(0);
-					PlaybackSession.PlaybackState = MediaPlaybackState.Paused;
-				}
+
+				_isPlayerPrepared = true;
+
+				MediaOpened?.Invoke(this, null);
 			}
-
-			_isPlayerPrepared = true;
 		}
 
 		public bool OnError(AndroidMediaPlayer mp, MediaError what, int extra)
@@ -382,6 +387,8 @@ namespace Windows.Media.Playback
 				}
 			}
 		}
+
+		public bool IsVideo { get; set; }
 
 		internal void UpdateVideoStretch(VideoStretch stretch)
 		{

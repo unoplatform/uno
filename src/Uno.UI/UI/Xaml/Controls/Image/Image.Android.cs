@@ -132,7 +132,7 @@ namespace Windows.UI.Xaml.Controls
 
 			_imageFetchDisposable.Disposable = null;
 
-			if (imageSource != null && imageSource.UseTargetSize)
+			if (imageSource is not null && imageSource.UseTargetSize)
 			{
 				// If the ImageSource has the UseTargetSize set, the image
 				// must not be loaded until the first layout has been done.
@@ -144,6 +144,13 @@ namespace Windows.UI.Xaml.Controls
 					}
 					return;
 				}
+			}
+
+			if (imageSource?.ResourceFailed == true)
+			{
+				// Currently resource-based images are evaluated immediately
+				// in the constructor - so we have to raise ImageFailed late.				
+				OnImageFailed(imageSource, new InvalidOperationException("Resource could not be found"));
 			}
 
 			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))

@@ -101,6 +101,7 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 		_player.OnSourceLoaded += OnPrepared;
 		_player.OnSourceEnded += OnCompletion;
 		_player.OnTimeUpdate += OnTimeUpdate;
+		_player.OnVideoRatioChanged += OnVideoRatioChanged;
 
 		_owner.PlaybackSession.PlaybackStateChanged -= OnStatusChanged;
 		_owner.PlaybackSession.PlaybackStateChanged += OnStatusChanged;
@@ -193,7 +194,6 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 				throw new InvalidOperationException("Unsupported media source type");
 		}
 		ApplyVideoSource();
-		Events?.RaiseMediaOpened();
 		Events?.RaiseSourceChanged();
 
 		// Set the player back to the paused state, so that the
@@ -336,6 +336,8 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 	public bool RealTimePlayback { get; set; }
 
 	public double AudioBalance { get; set; }
+
+	public bool? IsVideo { get; set; }
 
 	public void SetTransportControlsBounds(Rect bounds)
 	{

@@ -66,7 +66,8 @@
 	  </Compile>
 	</ItemGroup>
 
-	<Import Project="..\..\build\*.Skia.Wpf.props" />
-	<Import Project="..\..\build\*.Skia.Wpf.targets" />
+	<Import Project="..\..\..\build\*.Skia.Wpf.props" />
+	<Import Project="..\..\..\build\*.Skia.Wpf.targets" />
+	<Import Project="..\..\..\build\uno.winui.runtime-replace.targets" />
 
 </Project>
