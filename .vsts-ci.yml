@@ -5,6 +5,7 @@ trigger:
       - release/beta/*
       - release/stable/*
       - feature/*
+      - legacy/*
       
   paths:
     include:
@@ -25,6 +26,7 @@ pr:
       - release/beta/*
       - release/stable/*
       - feature/*
+      - legacy/*
       
   paths:
     include:

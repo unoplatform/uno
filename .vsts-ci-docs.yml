@@ -5,6 +5,7 @@ trigger:
       - release/beta/*
       - release/stable/*
       - feature/*
+      - legacy/*
 
 pr: 
   branches:
@@ -13,6 +14,7 @@ pr:
       - release/beta/*
       - release/stable/*
       - feature/*
+      - legacy/*
 
 variables:
   windowsScaledPool: 'Windows2022-20230613'
