@@ -37,9 +37,6 @@ internal class UnoWpfWindow : WpfWindow
 		Deactivated += OnDeactivated;
 		StateChanged += OnStateChanged;
 
-		UpdateWindowPropertiesFromPackage();
-		UpdateWindowPropertiesFromApplicationView();
-
 		ApplicationView.GetForCurrentView().PropertyChanged += OnApplicationViewPropertyChanged;
 	}
 
@@ -88,7 +85,7 @@ internal class UnoWpfWindow : WpfWindow
 
 	private void OnApplicationViewPropertyChanged(object? sender, PropertyChangedEventArgs e) => UpdateWindowPropertiesFromApplicationView();
 
-	private void UpdateWindowPropertiesFromApplicationView()
+	internal void UpdateWindowPropertiesFromApplicationView()
 	{
 		var appView = ApplicationView.GetForCurrentView();
 		Title = appView.Title;
@@ -96,7 +93,7 @@ internal class UnoWpfWindow : WpfWindow
 		MinHeight = appView.PreferredMinSize.Height;
 	}
 
-	private void UpdateWindowPropertiesFromPackage()
+	internal void UpdateWindowPropertiesFromPackage()
 	{
 		if (Windows.ApplicationModel.Package.Current.Logo is Uri uri)
 		{

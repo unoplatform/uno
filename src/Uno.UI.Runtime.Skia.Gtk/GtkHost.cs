@@ -90,6 +90,8 @@ namespace Uno.UI.Runtime.Skia
 		{
 			MainWindow = new UnoGtkWindow(WinUIWindow.Current);
 			MainWindow.Shown += MainWindow_Shown;
+			MainWindow.UpdateWindowPropertiesFromPackage();
+			MainWindow.UpdateWindowPropertiesFromApplicationView();
 		}
 
 		internal event EventHandler? MainWindowShown;
