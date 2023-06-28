@@ -1250,6 +1250,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\AutoSuggestBoxTests\AutoSuggestBox_SoftKeboard.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\BitmapIconTests\BitmapIcon_Generic.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -5462,7 +5466,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_Devices\LightSensorTests.xaml.cs">
       <DependentUpon>LightSensorTests.xaml</DependentUpon>
     </Compile>
-      <Compile Include="$(MSBuildThisFileDirectory)Windows_Devices\ProximitySensorTests.xaml.cs">
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_Devices\ProximitySensorTests.xaml.cs">
       <DependentUpon>ProximitySensorTests.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_Devices\MagnetometerTests.xaml.cs">
@@ -5696,6 +5700,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\Clipping\Clipping652.xaml.cs">
       <DependentUpon>Clipping652.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\AutoSuggestBoxTests\AutoSuggestBox_SoftKeboard.xaml.cs" >
+      <DependentUpon>AutoSuggestBox_SoftKeboard.xaml</DependentUpon>
+    </Compile>    
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\BitmapIconTests\BitmapIcon_Monochromatic.xaml.cs">
       <DependentUpon>BitmapIcon_Monochromatic.xaml</DependentUpon>
     </Compile>
