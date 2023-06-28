@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices.JavaScript;
 using System.Runtime.Serialization;
 
 using Uno;
@@ -12,9 +13,6 @@ using Uno.Foundation.Logging;
 using Uno.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
-#if NET7_0_OR_GREATER
-using System.Runtime.InteropServices.JavaScript;
-#endif
 
 namespace Windows.UI.Xaml
 {
@@ -273,9 +271,7 @@ namespace Windows.UI.Xaml
 		/// <param name="eventArgs">Serialized event args</param>
 		/// <returns>The HtmlEventDispatchResult of the dispatch.</returns>
 		/// <remarks>The return value is an integer for marshaling consideration, but is actually an HtmlEventDispatchResult.</remarks>
-#if NET7_0_OR_GREATER
 		[JSExport]
-#endif
 		[Preserve]
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static int DispatchEvent(int handle, string eventName, string eventArgs)

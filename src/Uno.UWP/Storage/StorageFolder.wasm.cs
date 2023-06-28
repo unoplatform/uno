@@ -3,15 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Runtime.InteropServices;
+using System.Runtime.InteropServices.JavaScript;
 using Uno.Foundation;
 using Uno.Foundation.Interop;
 using Uno.Extensions;
 using System.Threading.Tasks;
 using Uno.Foundation.Logging;
-
-#if NET7_0_OR_GREATER
-using System.Runtime.InteropServices.JavaScript;
-#endif
 
 namespace Windows.Storage
 {
@@ -58,9 +55,7 @@ namespace Windows.Storage
 			public string[] Paths;
 		}
 
-#if NET7_0_OR_GREATER
 		[JSExport]
-#endif
 		internal static void DispatchStorageInitialized()
 		{
 			if (typeof(StorageFolder).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))

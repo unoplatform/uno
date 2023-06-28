@@ -563,18 +563,7 @@ namespace Uno.UI.Xaml
 
 		internal static void SetProperty(IntPtr htmlId, string name, string value)
 		{
-#if NET7_0_OR_GREATER
 			NativeMethods.SetProperty(htmlId, name, value);
-#else
-			var parms = new WindowManagerSetSinglePropertyParams()
-			{
-				HtmlId = htmlId,
-				Name = name,
-				Value = value,
-			};
-
-			TSInteropMarshaller.InvokeJS("Uno:setSinglePropertyNative", parms);
-#endif
 		}
 
 		[TSInteropMessage]
@@ -1036,12 +1025,7 @@ namespace Uno.UI.Xaml
 		#endregion
 
 		internal static Task<string> GetNaturalImageSizeAsync(string imageUri)
-			=>
-#if NET7_0_OR_GREATER
-				NativeMethods.GetNaturalImageSizeAsync(imageUri);
-#else
-				WebAssemblyRuntime.InvokeAsync($"Uno.UI.WindowManager.current.getNaturalImageSize(\"{imageUri}\")");
-#endif
+			=> NativeMethods.GetNaturalImageSizeAsync(imageUri);
 
 		internal static string RawPixelsToBase64EncodeImage(IntPtr data, int width, int height)
 			=> NativeMethods.RawPixelsToBase64EncodeImage(data, width, height);

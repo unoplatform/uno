@@ -57,9 +57,7 @@ namespace Windows.UI.Xaml
 			ObserveApplicationVisibility();
 		}
 
-#if NET7_0_OR_GREATER
 		[JSExport]
-#endif
 		public static int DispatchVisibilityChange(bool isVisible)
 		{
 			var application = Windows.UI.Xaml.Application.Current;

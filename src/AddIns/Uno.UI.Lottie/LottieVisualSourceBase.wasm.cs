@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Threading;
+using System.Runtime.InteropServices.JavaScript;
 using Microsoft.UI.Xaml.Controls;
 using Uno.Foundation;
 using Windows.Foundation;
@@ -8,10 +9,6 @@ using Windows.UI.Xaml;
 using Uno.Extensions;
 using System.Threading.Tasks;
 using Uno.Disposables;
-
-#if NET7_0_OR_GREATER
-using System.Runtime.InteropServices.JavaScript;
-#endif
 
 #pragma warning disable CA1305 // Specify IFormatProvider
 
@@ -48,10 +45,6 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 				return;
 			}
 
-#if !NET7_0_OR_GREATER
-			string[] js;
-#endif
-
 			var sourceUri = UriSource;
 			if (_lastSource == null || !_lastSource.Equals(sourceUri))
 			{
@@ -82,7 +75,6 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 						firstLoad = false;
 
-#if NET7_0_OR_GREATER
 						_isUpdating = true;
 
 						NativeMethods.SetAnimationProperties(
@@ -95,27 +87,6 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 							updatedJson);
 
 						_isUpdating = false;
-#else
-						js = new[]
-						{
-							"Uno.UI.Lottie.setAnimationProperties({",
-							"elementId:",
-							player.HtmlId.ToString(),
-							",jsonPath: null,autoplay:",
-							play ? "true" : "false",
-							",stretch:\"",
-							player.Stretch.ToString(),
-							"\",rate:",
-							player.PlaybackRate.ToStringInvariant(),
-							",cacheKey:\"",
-							updatedCacheKey,
-							"\"},",
-							updatedJson,
-							");"
-						};
-
-						ExecuteJs(js);
-#endif
 
 						if (_playState != null && _domLoaded)
 						{
@@ -130,7 +101,6 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 					? UriSource.OriginalString
 					: Windows.Storage.Helpers.AssetsPathBuilder.BuildAssetUri(UriSource?.PathAndQuery);
 
-#if NET7_0_OR_GREATER
 					_isUpdating = true;
 
 					NativeMethods.SetAnimationProperties(
@@ -142,26 +112,6 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 						documentPath ?? "-n-");
 
 					_isUpdating = false;
-#else
-					js = new[]
-					{
-						"Uno.UI.Lottie.setAnimationProperties({",
-						"elementId:",
-						player.HtmlId.ToString(),
-						",jsonPath:\"",
-						documentPath ?? "",
-						"\",autoplay:",
-						player.AutoPlay ? "true" : "false",
-						",stretch:\"",
-						player.Stretch.ToString(),
-						"\",rate:",
-						player.PlaybackRate.ToStringInvariant(),
-						",cacheKey:\"",
-						documentPath ?? "-n-",
-						"\"});"
-					};
-					ExecuteJs(js);
-#endif
 
 					if (player.AutoPlay)
 					{
@@ -175,17 +125,6 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 				ApplyPlayState();
 			}
-
-#if !NET7_0_OR_GREATER
-			void ExecuteJs(string[] js)
-			{
-				_isUpdating = true;
-
-				InvokeJs(js);
-
-				_isUpdating = false;
-			}
-#endif
 		}
 
 		private void ApplyPlayState()
@@ -241,24 +180,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 				return;
 			}
 
-#if NET7_0_OR_GREATER
 			NativeMethods.Play(_player.HtmlId, fromProgress, toProgress, looped);
-#else
-			var js = new[]
-			{
-				"Uno.UI.Lottie.play(",
-				_player.HtmlId.ToString(),
-				",",
-				fromProgress.ToStringInvariant(),
-				",",
-				toProgress.ToStringInvariant(),
-				",",
-				looped ? "true" : "false",
-				");"
-			};
-
-			InvokeJs(js);
-#endif
 		}
 
 		void IAnimatedVisualSource.Stop()
@@ -270,18 +192,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 				return;
 			}
 
-#if NET7_0_OR_GREATER
 			NativeMethods.Stop(_player.HtmlId);
-#else
-			var js = new[]
-			{
-				"Uno.UI.Lottie.stop(",
-				_player.HtmlId.ToString(),
-				");"
-			};
-
-			InvokeJs(js);
-#endif
 		}
 
 		void IAnimatedVisualSource.Pause()
@@ -291,18 +202,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 				return;
 			}
 
-#if NET7_0_OR_GREATER
 			NativeMethods.Pause(_player.HtmlId);
-#else
-			var js = new[]
-			{
-				"Uno.UI.Lottie.pause(",
-				_player.HtmlId.ToString(),
-				");"
-			};
-
-			InvokeJs(js);
-#endif
 		}
 
 		void IAnimatedVisualSource.Resume()
@@ -312,18 +212,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 				return;
 			}
 
-#if NET7_0_OR_GREATER
 			NativeMethods.Resume(_player.HtmlId);
-#else
-			var js = new[]
-			{
-				"Uno.UI.Lottie.resume(",
-				_player.HtmlId.ToString(),
-				");"
-			};
-
-			InvokeJs(js);
-#endif
 		}
 
 		public void SetProgress(double progress)
@@ -333,20 +222,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 				return;
 			}
 
-#if NET7_0_OR_GREATER
 			NativeMethods.SetProgress(_player.HtmlId, progress);
-#else
-			var js = new[]
-			{
-				"Uno.UI.Lottie.setProgress(",
-				_player.HtmlId.ToString(),
-				",",
-				progress.ToStringInvariant(),
-				");"
-			};
-
-			InvokeJs(js);
-#endif
 		}
 
 		void IAnimatedVisualSource.Load()
@@ -363,23 +239,8 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 			ApplyPlayState();
 
-#if NET7_0_OR_GREATER
 			NativeMethods.Resume(_player.HtmlId);
-#else
-			var js = new[]
-			{
-					"Uno.UI.Lottie.resume(",
-					_player.HtmlId.ToString(),
-					");"
-				};
-
-			InvokeJs(js);
-#endif
 		}
-
-#if !NET7_0_OR_GREATER
-		private static string InvokeJs(string[] js) => WebAssemblyRuntime.InvokeJS(string.Concat(js));
-#endif
 
 		void IAnimatedVisualSource.Unload()
 		{
@@ -388,23 +249,11 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 				return;
 			}
 
-#if NET7_0_OR_GREATER
 			NativeMethods.Pause(_player.HtmlId);
-#else
-			var js = new[]
-			{
-					"Uno.UI.Lottie.pause(",
-					_player.HtmlId.ToString(),
-					");"
-				};
-
-			InvokeJs(js);
-#endif
 		}
 
 		private Size CompositionSize => _compositionSize;
 
-#if NET7_0_OR_GREATER
 		internal static partial class NativeMethods
 		{
 			private const string JsType = "globalThis.Uno.UI.Lottie";
@@ -430,6 +279,5 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			[JSImport($"{JsType}.stop")]
 			internal static partial void Stop(nint htmlId);
 		}
-#endif
 	}
 }
