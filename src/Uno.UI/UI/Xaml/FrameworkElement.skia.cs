@@ -71,7 +71,7 @@ namespace Windows.UI.Xaml
 		}
 
 		[GeneratedDependencyProperty(DefaultValue = "", ChangedCallback = true)]
-		internal static DependencyProperty NameProperty { get; } = CreateNameProperty();
+		public static DependencyProperty NameProperty { get; } = CreateNameProperty();
 
 		public string Name
 		{
