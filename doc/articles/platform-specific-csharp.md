@@ -68,7 +68,7 @@ Heavy usage of `#if` conditionals makes code hard to read and comprehend. A bett
 
 ### A simple example
 
-Shared code in `PROJECTNAME.Shared/NativeWrapperControl.cs`:
+Shared code in `PROJECTNAME/NativeWrapperControl.cs`:
 
 ```csharp
 public partial class NativeWrapperControl : Control {
