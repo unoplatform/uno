@@ -19,6 +19,7 @@
 			<!-- net8.0-ios -->
 			<group targetFramework="net8.0-ios">
 				<dependency id="Uno.WinUI" version="1.29.0-dev.93" />
+				<dependency id="Uno.WinUI.RemoteControl.Messaging" version="1.29.0-dev.93" />
 
 				<dependency id="Newtonsoft.Json" version="13.0.2" />
 				<dependency id="Microsoft.IO.RecyclableMemoryStream" version="2.3.2" />
@@ -27,6 +28,7 @@
 			<!-- net8.0-maccatalyst -->
 			<group targetFramework="net8.0-maccatalyst">
 				<dependency id="Uno.WinUI" version="1.29.0-dev.93" />
+				<dependency id="Uno.WinUI.RemoteControl.Messaging" version="1.29.0-dev.93" />
 
 				<dependency id="Newtonsoft.Json" version="13.0.2" />
 				<dependency id="Microsoft.IO.RecyclableMemoryStream" version="2.3.2" />
@@ -35,6 +37,7 @@
 			<!-- net8.0-macos -->
 			<group targetFramework="net8.0-macos">
 				<dependency id="Uno.WinUI" version="1.29.0-dev.93" />
+				<dependency id="Uno.WinUI.RemoteControl.Messaging" version="1.29.0-dev.93" />
 
 				<dependency id="Newtonsoft.Json" version="13.0.2" />
 				<dependency id="Microsoft.IO.RecyclableMemoryStream" version="2.3.2" />
@@ -43,6 +46,7 @@
 			<!-- net8.0-android -->
 			<group targetFramework="net8.0-android">
 				<dependency id="Uno.WinUI" version="1.29.0-dev.93" />
+				<dependency id="Uno.WinUI.RemoteControl.Messaging" version="1.29.0-dev.93" />
 
 				<dependency id="Newtonsoft.Json" version="13.0.2" />
 				<dependency id="Microsoft.IO.RecyclableMemoryStream" version="2.3.2" />
@@ -51,6 +55,7 @@
 			<!-- net7.0-ios -->
 			<group targetFramework="net7.0-ios">
 				<dependency id="Uno.WinUI" version="1.29.0-dev.93" />
+				<dependency id="Uno.WinUI.RemoteControl.Messaging" version="1.29.0-dev.93" />
 
 				<dependency id="Newtonsoft.Json" version="13.0.2" />
 				<dependency id="Microsoft.IO.RecyclableMemoryStream" version="2.3.2" />
@@ -59,6 +64,7 @@
 			<!-- net7.0-maccatalyst -->
 			<group targetFramework="net7.0-maccatalyst">
 				<dependency id="Uno.WinUI" version="1.29.0-dev.93" />
+				<dependency id="Uno.WinUI.RemoteControl.Messaging" version="1.29.0-dev.93" />
 
 				<dependency id="Newtonsoft.Json" version="13.0.2" />
 				<dependency id="Microsoft.IO.RecyclableMemoryStream" version="2.3.2" />
@@ -67,6 +73,7 @@
 			<!-- net7.0-macos -->
 			<group targetFramework="net7.0-macos">
 				<dependency id="Uno.WinUI" version="1.29.0-dev.93" />
+				<dependency id="Uno.WinUI.RemoteControl.Messaging" version="1.29.0-dev.93" />
 
 				<dependency id="Newtonsoft.Json" version="13.0.2" />
 				<dependency id="Microsoft.IO.RecyclableMemoryStream" version="2.3.2" />
@@ -75,6 +82,7 @@
 			<!-- net7.0-android -->
 			<group targetFramework="net7.0-android">
 				<dependency id="Uno.WinUI" version="1.29.0-dev.93" />
+				<dependency id="Uno.WinUI.RemoteControl.Messaging" version="1.29.0-dev.93" />
 
 				<dependency id="Newtonsoft.Json" version="13.0.2" />
 				<dependency id="Microsoft.IO.RecyclableMemoryStream" version="2.3.2" />
@@ -83,6 +91,7 @@
 			<!-- .NET 7.0 (Reference API) -->
 			<group targetFramework="net7.0">
 				<dependency id="Uno.WinUI" version="1.29.0-dev.93" />
+				<dependency id="Uno.WinUI.RemoteControl.Messaging" version="1.29.0-dev.93" />
 
 				<dependency id="Newtonsoft.Json" version="13.0.2" />
 				<dependency id="Uno.Wasm.WebSockets" version="1.1.0" />
@@ -92,6 +101,7 @@
 			<!-- .NET 8.0 (Reference API) -->
 			<group targetFramework="net8.0">
 				<dependency id="Uno.WinUI" version="1.29.0-dev.93" />
+				<dependency id="Uno.WinUI.RemoteControl.Messaging" version="1.29.0-dev.93" />
 
 				<dependency id="Newtonsoft.Json" version="13.0.2" />
 				<dependency id="Uno.Wasm.WebSockets" version="1.1.0" />
