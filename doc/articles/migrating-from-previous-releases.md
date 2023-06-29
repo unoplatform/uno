@@ -25,7 +25,7 @@ If your current project is built on Xamarin.* targets, you can upgrade by [follo
 Invalid XAML, such as unknown properties or unknown x:Bind targets will generate a compiler error. Those errors must now be fixed as they are no longer ignored.
 
 #### Updating the Windows SDK from from 18362 to 19041
-If your existing libraries or UWP/WinAppSDK projects are targeting the Windows SDK 18362, you'll need to upgrade to 19041. A simple way of doing so is to replace all occurences of 18362 to 19041 in all your solution's `csproj`, `.targets`, `.props` and `.wapproj` files.
+If your existing libraries or UWP/WinAppSDK projects are targeting the Windows SDK 18362, you'll need to upgrade to 19041. A simple way of doing so is to replace all occurrences of `18362` to `19041` in all your solution's `csproj`, `.targets`, `.props` and `.wapproj` files.
 
 #### Xaml generator now always uses strict search
 This change ensures that the XAML parser will only look for types in an explicit way, and avoids fuzzy matching that could lead to incorrect type resolution.
