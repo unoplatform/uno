@@ -20,7 +20,7 @@ namespace Windows.ApplicationModel
 		private static Assembly? _entryAssembly;
 		private string _displayName = "";
 		private string _logo = "ms-appx://logo";
-		private bool _manifestParsed;
+		private bool? _manifestParsed;
 
 		private bool GetInnerIsDevelopmentMode() => false;
 
@@ -59,50 +59,45 @@ namespace Windows.ApplicationModel
 
 		private bool TryParsePackageManifest()
 		{
-			if (_entryAssembly != null && !_manifestParsed)
+			if (_entryAssembly != null &&
+				!_manifestParsed.HasValue)
 			{
-				try
+				var manifest = _entryAssembly.GetManifestResourceStream(PackageManifestName);
+
+				if (manifest != null)
 				{
-					var manifest = _entryAssembly.GetManifestResourceStream(PackageManifestName);
-
-					if (manifest != null)
+					try
 					{
-						try
-						{
-							var doc = new XmlDocument();
-							doc.Load(manifest);
+						var doc = new XmlDocument();
+						doc.Load(manifest);
 
-							var nsmgr = new XmlNamespaceManager(doc.NameTable);
-							nsmgr.AddNamespace("d", "http://schemas.microsoft.com/appx/manifest/foundation/windows10");
+						var nsmgr = new XmlNamespaceManager(doc.NameTable);
+						nsmgr.AddNamespace("d", "http://schemas.microsoft.com/appx/manifest/foundation/windows10");
 
-							_displayName = doc.SelectSingleNode("/d:Package/d:Properties/d:DisplayName", nsmgr)?.InnerText ?? "";
-							_logo = doc.SelectSingleNode("/d:Package/d:Properties/d:Logo", nsmgr)?.InnerText ?? "";
-							return true;
-						}
-						catch (Exception ex)
-						{
-							if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Error))
-							{
-								this.Log().Error($"Failed to read manifest [{PackageManifestName}]", ex);
-							}
-						}
+						_displayName = doc.SelectSingleNode("/d:Package/d:Properties/d:DisplayName", nsmgr)?.InnerText ?? "";
+						_logo = doc.SelectSingleNode("/d:Package/d:Properties/d:Logo", nsmgr)?.InnerText ?? "";
+						_manifestParsed = true;
 					}
-					else
+					catch (Exception ex)
 					{
-						if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
+						_manifestParsed = false;
+						if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Error))
 						{
-							this.Log().Debug($"Skipping manifest reading, unable to find [{PackageManifestName}]");
+							this.Log().Error($"Failed to read manifest [{PackageManifestName}]", ex);
 						}
 					}
 				}
-				finally
+				else
 				{
-					// Make sure this is set to true even if we failed to read the manifest
-					// to prevent multiple attempts to read the manifest
-					_manifestParsed = true;
+					_manifestParsed = false;
+					if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
+					{
+						this.Log().Debug($"Skipping manifest reading, unable to find [{PackageManifestName}]");
+					}
 				}
 			}
-			return false;
+
+			return _manifestParsed ?? false;
 		}
 	}
 }
