@@ -29,9 +29,7 @@ internal partial class SystemFocusVisual : Control
 		NativeMethods.DetachVisual();
 	}
 
-#if NET7_0_OR_GREATER
 	[JSExport]
-#endif
 	public static int DispatchNativePositionChange(int focusVisualId)
 	{
 		var element = UIElement.GetElementFromHandle(focusVisualId) as SystemFocusVisual;

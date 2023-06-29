@@ -42,10 +42,6 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 	{
 		private const long _textReadTimeoutTicks = 10 * TimeSpan.TicksPerSecond;
 
-#if !NET7_0_OR_GREATER
-		private const string _jsType = "Windows.ApplicationModel.DataTransfer.DragDrop.Core.DragDropExtension";
-#endif
-
 		private static readonly Logger _log = typeof(DragDropExtension).Log();
 
 		private static DragDropExtension? _current;
@@ -320,12 +316,7 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 
 		private static async Task<IReadOnlyList<IStorageItem>> RetrieveFiles(CancellationToken ct, params int[] itemsIds)
 		{
-#if NET7_0_OR_GREATER
 			var infosRaw = await NativeMethods.RetrieveFilesAsync(itemsIds);
-#else
-			var rawItemsIds = string.Join(", ", itemsIds.Select(id => id.ToStringInvariant()));
-			var infosRaw = await WebAssemblyRuntime.InvokeAsync($"{_jsType}.retrieveFiles({rawItemsIds})", ct);
-#endif
 			var infos = JsonHelper.Deserialize<NativeStorageItemInfo[]>(infosRaw);
 			var items = infos.Select(StorageFile.GetFromNativeInfo).ToList();
 
@@ -334,14 +325,7 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 
 		private static async Task<string> RetrieveText(CancellationToken ct, int itemId)
 		{
-#if NET7_0_OR_GREATER
 			return await NativeMethods.RetrieveTextAsync(itemId);
-#else
-			using var cts = CancellationTokenSource.CreateLinkedTokenSource(ct, new CancellationTokenSource(TimeSpan.FromTicks(_textReadTimeoutTicks)).Token);
-			var text = await WebAssemblyRuntime.InvokeAsync($"{_jsType}.retrieveText({itemId.ToStringInvariant()})", cts.Token);
-
-			return text;
-#endif
 		}
 
 		private static DataPackageOperation ToDataPackageOperation(string allowedOperations)

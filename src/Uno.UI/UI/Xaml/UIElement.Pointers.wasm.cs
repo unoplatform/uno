@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Runtime.InteropServices.JavaScript;
 using Uno.Foundation;
 using Windows.Foundation;
 using Windows.UI.Xaml.Input;
@@ -28,10 +29,6 @@ using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
 #else
 using Windows.UI.Input;
 using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
-#endif
-
-#if NET7_0_OR_GREATER
-using System.Runtime.InteropServices.JavaScript;
 #endif
 
 namespace Windows.UI.Xaml;
@@ -140,9 +137,7 @@ public partial class UIElement : DependencyObject
 
 	#region Native event dispatch
 	[EditorBrowsable(EditorBrowsableState.Never)]
-#if NET7_0_OR_GREATER
 	[JSExport]
-#endif
 	public static void OnNativePointerEvent()
 	{
 		var result = new HtmlEventDispatchResultHelper();

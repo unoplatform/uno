@@ -1,14 +1,11 @@
 ﻿#nullable enable
 using System;
+using System.Runtime.InteropServices.JavaScript;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Security.Authentication.Web;
 using Uno.Foundation;
 using System.Globalization;
-
-#if NET7_0_OR_GREATER
-using System.Runtime.InteropServices.JavaScript;
-#endif
 
 namespace Uno.AuthenticationBroker
 {
@@ -16,17 +13,7 @@ namespace Uno.AuthenticationBroker
 	{
 		protected virtual string[] GetApplicationCustomSchemes()
 		{
-#if NET7_0_OR_GREATER
 			var origin = NativeMethods.GetReturnUrl();
-#else
-			var js = $@"Windows.Security.Authentication.Web.WebAuthenticationBroker.getReturnUrl();";
-			var origin = WebAssemblyRuntime.InvokeJS(js);
-
-			// origin will be something line http://localhost:5001
-
-			Console.WriteLine("origin is: " + origin);
-#endif
-
 			return new[] { origin };
 		}
 
@@ -44,34 +31,8 @@ namespace Uno.AuthenticationBroker
 				options.HasFlag(WebAuthenticationOptions.SilentMode) ||
 				!string.IsNullOrEmpty(WinRTFeatureConfiguration.WebAuthenticationBroker.IFrameHtmlId);
 
-#if !NET7_0_OR_GREATER
-			var urlNavigate = WebAssemblyRuntime.EscapeJs(requestUri.OriginalString);
-			var urlRedirect = WebAssemblyRuntime.EscapeJs(callbackUri.OriginalString);
-			string js;
-
-			var timeout = ((long)Timeout.TotalMilliseconds).ToString(CultureInfo.InvariantCulture);
-
-			if (useIframe)
-			{
-				var iframeId = WinRTFeatureConfiguration.WebAuthenticationBroker.IFrameHtmlId;
-				js =
-					$@"Windows.Security.Authentication.Web.WebAuthenticationBroker.authenticateUsingIframe(""{iframeId}"", ""{urlNavigate}"", ""{urlRedirect}"", {timeout});";
-			}
-			else
-			{
-				var title = WebAssemblyRuntime.EscapeJs(WinRTFeatureConfiguration.WebAuthenticationBroker.WindowTitle ??
-														"Sign In");
-
-				var windowWidth = WinRTFeatureConfiguration.WebAuthenticationBroker.WindowWidth;
-				var windowHeight = WinRTFeatureConfiguration.WebAuthenticationBroker.WindowHeight;
-				js =
-					$@"Windows.Security.Authentication.Web.WebAuthenticationBroker.authenticateUsingWindow(""{urlNavigate}"", ""{urlRedirect}"", ""{title}"", {windowWidth}, {windowHeight}, {timeout});";
-			}
-#endif
-
 			try
 			{
-#if NET7_0_OR_GREATER
 				string[] results;
 
 				if (useIframe)
@@ -94,9 +55,6 @@ namespace Uno.AuthenticationBroker
 						Timeout.TotalMilliseconds))
 							.Split('|', 2);
 				}
-#else
-				var results = (await WebAssemblyRuntime.InvokeAsync(js)).Split(new[] { '|' }, 2);
-#endif
 
 				return results[0] switch
 				{
@@ -112,7 +70,6 @@ namespace Uno.AuthenticationBroker
 			}
 		}
 
-#if NET7_0_OR_GREATER
 		internal static partial class NativeMethods
 		{
 			[JSImport("globalThis.Windows.Security.Authentication.Web.WebAuthenticationBroker.authenticateUsingIframe")]
@@ -124,6 +81,5 @@ namespace Uno.AuthenticationBroker
 			[JSImport("globalThis.Windows.Security.Authentication.Web.WebAuthenticationBroker.getReturnUrl")]
 			internal static partial string GetReturnUrl();
 		}
-#endif
 	}
 }

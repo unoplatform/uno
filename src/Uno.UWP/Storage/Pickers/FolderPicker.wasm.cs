@@ -8,30 +8,19 @@ using Uno.Helpers.Serialization;
 using Uno.Storage.Internal;
 using Uno.Storage.Pickers;
 
-#if NET7_0_OR_GREATER
 using NativeMethods = __Windows.Storage.Pickers.FolderPicker.NativeMethods;
-#endif
 
 namespace Windows.Storage.Pickers
 {
 	public partial class FolderPicker
 	{
-#if !NET7_0_OR_GREATER
-		private const string JsType = "Windows.Storage.Pickers.FolderPicker";
-#endif
-
 		private static bool? _fileSystemAccessApiSupported;
 
 		internal static bool IsNativePickerSupported()
 		{
 			if (_fileSystemAccessApiSupported is null)
 			{
-#if NET7_0_OR_GREATER
 				_fileSystemAccessApiSupported = NativeMethods.IsNativeSupported();
-#else
-				var isSupportedString = WebAssemblyRuntime.InvokeJS($"{JsType}.isNativeSupported()");
-				_fileSystemAccessApiSupported = bool.TryParse(isSupportedString, out var isSupported) && isSupported;
-#endif
 			}
 
 			return _fileSystemAccessApiSupported.Value;
@@ -46,12 +35,7 @@ namespace Windows.Storage.Pickers
 
 			var startIn = SuggestedStartLocation.ToStartInDirectory();
 
-#if NET7_0_OR_GREATER
 			var pickedFolderJson = await NativeMethods.PickSingleFolderAsync(SettingsIdentifier, startIn);
-#else
-			var id = WebAssemblyRuntime.EscapeJs(SettingsIdentifier);
-			var pickedFolderJson = await WebAssemblyRuntime.InvokeAsync($"{JsType}.pickSingleFolderAsync('{id}','{startIn}')");
-#endif
 
 			if (pickedFolderJson is null)
 			{
