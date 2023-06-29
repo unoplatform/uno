@@ -1539,9 +1539,9 @@
 			<Member fullName="System.Void Windows.UI.Core.CoreWindow.RaisePointerCancelled(Windows.UI.Core.PointerEventArgs args)" reason="Does not exist in Windows" />
 			<!-- End Pointers update -->
 
-      <!-- BEGIN MPE -->
+			<!-- BEGIN MPE -->
 			<Member fullName="System.Void Windows.UI.Xaml.Controls.MediaTransportControls.TappedProgressSlider(System.Object sender, Windows.UI.Xaml.RoutedEventArgs e)" reason="Should not be public" />
-      <!-- END MPE -->
+			<!-- END MPE -->
 
 			<!-- BEGIN Proximity sensor -->
 			<Member fullName="System.Void Windows.Devices.Sensors.ProximitySensor..ctor()" reason="Does not exist in Windows" />
@@ -1561,6 +1561,18 @@
 			<Member fullName="Windows.UI.Xaml.UIElement Uno.UI.XamlHost.Skia.Wpf.UnoXamlHostBase.get_RootElement()" reason="Not needed" />
 			<Member fullName="Uno.UI.Skia.Platform.WpfHost Uno.UI.Skia.Platform.WpfHost.get_Current()" reason="Not needed" />	
 			<!-- End Skia lifecycle -->
+			
+			<!-- BEGIN Align ref members -->
+			<Member fullName="System.Threading.Tasks.Task`1&lt;Windows.Security.Authentication.Web.WebAuthenticationResult&gt; Uno.AuthenticationBroker.WebAuthenticationBrokerProvider::AuthenticateAsyncCore(Windows.Security.Authentication.Web.WebAuthenticationOptions,System.Uri,System.Uri,System.Threading.CancellationToken)" reason="Does not exist in WinAppSDK" />
+			<Member fullName="System.Void Windows.Devices.Sensors.Accelerometer..ctor()" reason="Does not exist in WinAppSDK" />
+			<Member fullName="System.Void Windows.Phone.Devices.Notification.VibrationDevice..ctor()" reason="Does not exist in WinAppSDK" />
+			<Member fullName="System.Void Windows.Devices.Sensors.Barometer..ctor()" reason="Does not exist in WinAppSDK" />
+			<Member fullName="System.Void Windows.Devices.Sensors.Gyrometer..ctor()" reason="Does not exist in WinAppSDK" />
+			<Member fullName="System.Void Windows.Devices.Sensors.HingeAngleSensor..ctor()" reason="Does not exist in WinAppSDK" />
+			<Member fullName="System.Void Windows.Devices.Sensors.Magnetometer..ctor()" reason="Does not exist in WinAppSDK" />
+			<Member fullName="System.Void Windows.Devices.Sensors.Pedometer..ctor()" reason="Does not exist in WinAppSDK" />
+			<Member fullName="System.Void Windows.UI.Xaml.Media.ImageSource..ctor()" reason="Does not exist in WinAppSDK" />
+			<!-- END Align ref members -->
 		</Methods>
 	</IgnoreSet>
 	  <!--
