@@ -1571,6 +1571,7 @@
 			<Member fullName="System.Void Windows.Devices.Sensors.HingeAngleSensor..ctor()" reason="Does not exist in WinAppSDK" />
 			<Member fullName="System.Void Windows.Devices.Sensors.Magnetometer..ctor()" reason="Does not exist in WinAppSDK" />
 			<Member fullName="System.Void Windows.Devices.Sensors.Pedometer..ctor()" reason="Does not exist in WinAppSDK" />
+			<Member fullName="System.Void Windows.Devices.Haptics.VibrationDevice..ctor()" reason="Does not exist in WinAppSDK" />
 			<Member fullName="System.Void Windows.UI.Xaml.Media.ImageSource..ctor()" reason="Does not exist in WinAppSDK" />
 			<!-- END Align ref members -->
 		</Methods>
