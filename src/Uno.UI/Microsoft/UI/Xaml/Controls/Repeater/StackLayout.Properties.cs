@@ -23,7 +23,7 @@ namespace Microsoft.UI.Xaml.Controls
 		#endregion
 
 		#region Spacing - DP with common callback
-		public static DependencyProperty SpacingProperty = DependencyProperty.Register(
+		public static DependencyProperty SpacingProperty { get; } = DependencyProperty.Register(
 			"Spacing", typeof(double), typeof(StackLayout), new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero, OnDependencyPropertyChanged));
 
 		public double Spacing

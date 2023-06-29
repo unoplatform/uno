@@ -12,7 +12,7 @@ partial class VariableSizedWrapGrid
 			"ColumnSpan",
 			typeof(int),
 			typeof(VariableSizedWrapGrid),
-			new FrameworkPropertyMetadata(1));
+			new FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.IntegerBoxes.One));
 
 	/// <summary>
 	/// Gets the value of the VariableSizedWrapGrid.ColumnSpan XAML attached property from a target element.
@@ -102,7 +102,7 @@ partial class VariableSizedWrapGrid
 			nameof(MaximumRowsOrColumns),
 			typeof(int),
 			typeof(VariableSizedWrapGrid),
-			new FrameworkPropertyMetadata(-1));
+			new FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.IntegerBoxes.NegativeOne));
 
 	/// <summary>
 	/// Gets or sets the direction in which child elements are arranged.
@@ -131,7 +131,7 @@ partial class VariableSizedWrapGrid
 			"RowSpan",
 			typeof(int),
 			typeof(VariableSizedWrapGrid),
-			new FrameworkPropertyMetadata(1));
+			new FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.IntegerBoxes.One));
 
 	/// <summary>
 	/// Gets the value of the VariableSizedWrapGrid.RowSpan XAML attached property from a target element.

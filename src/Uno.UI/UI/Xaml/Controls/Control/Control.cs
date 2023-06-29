@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Uno.UI;
+using Uno.UI.Helpers;
 using System.Linq;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
@@ -168,7 +169,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private object CoerceIsEnabled(object baseValue)
 		{
-			return _suppressIsEnabled ? false : baseValue;
+			return _suppressIsEnabled ? Boxes.BooleanBoxes.BoxedFalse : baseValue;
 		}
 
 
