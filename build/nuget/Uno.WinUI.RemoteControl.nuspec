@@ -144,66 +144,66 @@
 	</metadata>
 
 	<files>
-		<file src="..\src\Common\uno.png" target="/" />
+		<file src="..\..\src\Common\uno.png" target="/" />
 		<!-- Remote Control -->
-		<file src="..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.Reference\Release\net8.0\Uno.UI.RemoteControl.dll" target="lib\net8.0" />
-		<file src="..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.Reference\Release\net8.0\Uno.UI.RemoteControl.pdb" target="lib\net8.0" />
+		<file src="..\..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.Reference\Release\net8.0\Uno.UI.RemoteControl.dll" target="lib\net8.0" />
+		<file src="..\..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.Reference\Release\net8.0\Uno.UI.RemoteControl.pdb" target="lib\net8.0" />
 
-		<file src="..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.Reference\Release\net7.0\Uno.UI.RemoteControl.dll" target="lib\net7.0" />
-		<file src="..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.Reference\Release\net7.0\Uno.UI.RemoteControl.pdb" target="lib\net7.0" />
+		<file src="..\..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.Reference\Release\net7.0\Uno.UI.RemoteControl.dll" target="lib\net7.0" />
+		<file src="..\..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.Reference\Release\net7.0\Uno.UI.RemoteControl.pdb" target="lib\net7.0" />
 
-		<file src="..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.netcoremobile\Release\net8.0-android\Uno.UI.RemoteControl.dll" target="lib\net8.0-android" />
-		<file src="..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.netcoremobile\Release\net8.0-android\Uno.UI.RemoteControl.pdb" target="lib\net8.0-android" />
+		<file src="..\..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.netcoremobile\Release\net8.0-android\Uno.UI.RemoteControl.dll" target="lib\net8.0-android" />
+		<file src="..\..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.netcoremobile\Release\net8.0-android\Uno.UI.RemoteControl.pdb" target="lib\net8.0-android" />
 
-		<file src="..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.netcoremobile\Release\net8.0-ios\Uno.UI.RemoteControl.dll" target="lib\net8.0-ios" />
-		<file src="..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.netcoremobile\Release\net8.0-ios\Uno.UI.RemoteControl.pdb" target="lib\net8.0-ios" />
+		<file src="..\..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.netcoremobile\Release\net8.0-ios\Uno.UI.RemoteControl.dll" target="lib\net8.0-ios" />
+		<file src="..\..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.netcoremobile\Release\net8.0-ios\Uno.UI.RemoteControl.pdb" target="lib\net8.0-ios" />
 
-		<file src="..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.netcoremobile\Release\net8.0-maccatalyst\Uno.UI.RemoteControl.dll" target="lib\net8.0-maccatalyst" />
-		<file src="..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.netcoremobile\Release\net8.0-maccatalyst\Uno.UI.RemoteControl.pdb" target="lib\net8.0-maccatalyst" />
+		<file src="..\..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.netcoremobile\Release\net8.0-maccatalyst\Uno.UI.RemoteControl.dll" target="lib\net8.0-maccatalyst" />
+		<file src="..\..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.netcoremobile\Release\net8.0-maccatalyst\Uno.UI.RemoteControl.pdb" target="lib\net8.0-maccatalyst" />
 
-		<file src="..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.netcoremobile\Release\net8.0-macos\Uno.UI.RemoteControl.dll" target="lib\net8.0-macos" />
-		<file src="..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.netcoremobile\Release\net8.0-macos\Uno.UI.RemoteControl.pdb" target="lib\net8.0-macos" />
+		<file src="..\..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.netcoremobile\Release\net8.0-macos\Uno.UI.RemoteControl.dll" target="lib\net8.0-macos" />
+		<file src="..\..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.netcoremobile\Release\net8.0-macos\Uno.UI.RemoteControl.pdb" target="lib\net8.0-macos" />
 
-		<file src="..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.netcoremobile\Release\net7.0-android\Uno.UI.RemoteControl.dll" target="lib\net7.0-android" />
-		<file src="..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.netcoremobile\Release\net7.0-android\Uno.UI.RemoteControl.pdb" target="lib\net7.0-android" />
+		<file src="..\..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.netcoremobile\Release\net7.0-android\Uno.UI.RemoteControl.dll" target="lib\net7.0-android" />
+		<file src="..\..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.netcoremobile\Release\net7.0-android\Uno.UI.RemoteControl.pdb" target="lib\net7.0-android" />
 
-		<file src="..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.netcoremobile\Release\net7.0-ios\Uno.UI.RemoteControl.dll" target="lib\net7.0-ios" />
-		<file src="..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.netcoremobile\Release\net7.0-ios\Uno.UI.RemoteControl.pdb" target="lib\net7.0-ios" />
+		<file src="..\..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.netcoremobile\Release\net7.0-ios\Uno.UI.RemoteControl.dll" target="lib\net7.0-ios" />
+		<file src="..\..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.netcoremobile\Release\net7.0-ios\Uno.UI.RemoteControl.pdb" target="lib\net7.0-ios" />
 
-		<file src="..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.netcoremobile\Release\net7.0-maccatalyst\Uno.UI.RemoteControl.dll" target="lib\net7.0-maccatalyst" />
-		<file src="..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.netcoremobile\Release\net7.0-maccatalyst\Uno.UI.RemoteControl.pdb" target="lib\net7.0-maccatalyst" />
+		<file src="..\..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.netcoremobile\Release\net7.0-maccatalyst\Uno.UI.RemoteControl.dll" target="lib\net7.0-maccatalyst" />
+		<file src="..\..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.netcoremobile\Release\net7.0-maccatalyst\Uno.UI.RemoteControl.pdb" target="lib\net7.0-maccatalyst" />
 
-		<file src="..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.netcoremobile\Release\net7.0-macos\Uno.UI.RemoteControl.dll" target="lib\net7.0-macos" />
-		<file src="..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.netcoremobile\Release\net7.0-macos\Uno.UI.RemoteControl.pdb" target="lib\net7.0-macos" />
+		<file src="..\..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.netcoremobile\Release\net7.0-macos\Uno.UI.RemoteControl.dll" target="lib\net7.0-macos" />
+		<file src="..\..\src\Uno.UI.RemoteControl\bin\Uno.UI.RemoteControl.netcoremobile\Release\net7.0-macos\Uno.UI.RemoteControl.pdb" target="lib\net7.0-macos" />
 
 		<!-- Processors -->
-		<file src="..\src\Uno.UI.RemoteControl.Server.Processors\bin\Release\net8.0\*.dll" target="tools\rc\processors\net8.0" />
-		<file src="..\src\Uno.UI.RemoteControl.Server.Processors\bin\Release\net8.0\*.pdb" target="tools\rc\processors\net8.0" />
-		<file src="..\src\Uno.UI.RemoteControl.Server.Processors\bin\Release\net7.0\*.dll" target="tools\rc\processors\net7.0" />
-		<file src="..\src\Uno.UI.RemoteControl.Server.Processors\bin\Release\net7.0\*.pdb" target="tools\rc\processors\net7.0" />
+		<file src="..\..\src\Uno.UI.RemoteControl.Server.Processors\bin\Release\net8.0\*.dll" target="tools\rc\processors\net8.0" />
+		<file src="..\..\src\Uno.UI.RemoteControl.Server.Processors\bin\Release\net8.0\*.pdb" target="tools\rc\processors\net8.0" />
+		<file src="..\..\src\Uno.UI.RemoteControl.Server.Processors\bin\Release\net7.0\*.dll" target="tools\rc\processors\net7.0" />
+		<file src="..\..\src\Uno.UI.RemoteControl.Server.Processors\bin\Release\net7.0\*.pdb" target="tools\rc\processors\net7.0" />
 
 		<!-- Build targets -->
-		<file src="..\src\Uno.UI.RemoteControl\buildTransitive\*" target="buildTransitive" />
+		<file src="..\..\src\Uno.UI.RemoteControl\buildTransitive\*" target="buildTransitive" />
 
 		<!-- net8.0 WebAssembly -->
-		<file src="..\src\Uno.UI.RemoteControl\Bin\Uno.UI.RemoteControl.Wasm\Release\net8.0\Uno.UI.RemoteControl.*" target="uno-runtime\net8.0\webassembly" />
+		<file src="..\..\src\Uno.UI.RemoteControl\Bin\Uno.UI.RemoteControl.Wasm\Release\net8.0\Uno.UI.RemoteControl.*" target="uno-runtime\net8.0\webassembly" />
 
 		<!-- net8.0 Skia -->
-		<file src="..\src\Uno.UI.RemoteControl\Bin\Uno.UI.RemoteControl.Skia\Release\net8.0\Uno.UI.RemoteControl.*" target="uno-runtime\net8.0\skia" />
+		<file src="..\..\src\Uno.UI.RemoteControl\Bin\Uno.UI.RemoteControl.Skia\Release\net8.0\Uno.UI.RemoteControl.*" target="uno-runtime\net8.0\skia" />
 
 		<!-- net7.0 WebAssembly -->
-		<file src="..\src\Uno.UI.RemoteControl\Bin\Uno.UI.RemoteControl.Wasm\Release\net7.0\Uno.UI.RemoteControl.*" target="uno-runtime\net7.0\webassembly" />
+		<file src="..\..\src\Uno.UI.RemoteControl\Bin\Uno.UI.RemoteControl.Wasm\Release\net7.0\Uno.UI.RemoteControl.*" target="uno-runtime\net7.0\webassembly" />
 
 		<!-- net7.0 Skia -->
-		<file src="..\src\Uno.UI.RemoteControl\Bin\Uno.UI.RemoteControl.Skia\Release\net7.0\Uno.UI.RemoteControl.*" target="uno-runtime\net7.0\skia" />
+		<file src="..\..\src\Uno.UI.RemoteControl\Bin\Uno.UI.RemoteControl.Skia\Release\net7.0\Uno.UI.RemoteControl.*" target="uno-runtime\net7.0\skia" />
 
 		<!-- Remote Control host and integration -->
-		<file src="..\src\Uno.UI.RemoteControl.Host\bin\Release\net8.0\*.*" target="tools\rc\host\net8.0" />
-		<file src="..\src\Uno.UI.RemoteControl.Host\bin\Release\net7.0\*.*" target="tools\rc\host\net7.0" />
+		<file src="..\..\src\Uno.UI.RemoteControl.Host\bin\Release\net8.0\*.*" target="tools\rc\host\net8.0" />
+		<file src="..\..\src\Uno.UI.RemoteControl.Host\bin\Release\net7.0\*.*" target="tools\rc\host\net7.0" />
 		
-		<file src="..\src\Uno.UI.RemoteControl.VS\bin\Release\net48\*.dll" target="tools\rc\17.0" />
-		<file src="..\src\Uno.UI.RemoteControl.VS\bin\Release\net48\*.pdb" target="tools\rc\17.0" />
-		<file src="..\src\Uno.UI.RemoteControl.VS\bin\Release\net48\Newtonsoft.Json.dll" target="tools\rc\17.0" />
+		<file src="..\..\src\Uno.UI.RemoteControl.VS\bin\Release\net48\*.dll" target="tools\rc\17.0" />
+		<file src="..\..\src\Uno.UI.RemoteControl.VS\bin\Release\net48\*.pdb" target="tools\rc\17.0" />
+		<file src="..\..\src\Uno.UI.RemoteControl.VS\bin\Release\net48\Newtonsoft.Json.dll" target="tools\rc\17.0" />
 
 		<!-- Force UAP/netx-win to ignore netstandard 2.0 -->
 		<file src="_._" target="build\uap10.0.16299" />

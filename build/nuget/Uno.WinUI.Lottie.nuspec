@@ -129,32 +129,32 @@
 		</references>
 	</metadata>
 	<files>
-		<file src="..\src\Common\uno.png" target="/" />
-		<file src="..\src\AddIns\Uno.UI.Lottie\bin\Uno.UI.Lottie.Reference\Release\net8.0\Uno.UI.Lottie.dll" target="lib\net8.0" />
-		<file src="..\src\AddIns\Uno.UI.Lottie\bin\Uno.UI.Lottie.Reference\Release\net7.0\Uno.UI.Lottie.dll" target="lib\net7.0" />
+		<file src="..\..\src\Common\uno.png" target="/" />
+		<file src="..\..\src\AddIns\Uno.UI.Lottie\bin\Uno.UI.Lottie.Reference\Release\net8.0\Uno.UI.Lottie.dll" target="lib\net8.0" />
+		<file src="..\..\src\AddIns\Uno.UI.Lottie\bin\Uno.UI.Lottie.Reference\Release\net7.0\Uno.UI.Lottie.dll" target="lib\net7.0" />
 
-		<file src="..\src\AddIns\Uno.UI.Lottie\bin\Uno.UI.Lottie.netcoremobile\Release\net8.0-android\Uno.UI.Lottie.dll" target="lib\net8.0-android" />
-		<file src="..\src\AddIns\Uno.UI.Lottie\bin\Uno.UI.Lottie.netcoremobile\Release\net8.0-ios\Uno.UI.Lottie.dll" target="lib\net8.0-ios" />
-		<file src="..\src\AddIns\Uno.UI.Lottie\bin\Uno.UI.Lottie.netcoremobile\Release\net8.0-maccatalyst\Uno.UI.Lottie.dll" target="lib\net8.0-maccatalyst" />
+		<file src="..\..\src\AddIns\Uno.UI.Lottie\bin\Uno.UI.Lottie.netcoremobile\Release\net8.0-android\Uno.UI.Lottie.dll" target="lib\net8.0-android" />
+		<file src="..\..\src\AddIns\Uno.UI.Lottie\bin\Uno.UI.Lottie.netcoremobile\Release\net8.0-ios\Uno.UI.Lottie.dll" target="lib\net8.0-ios" />
+		<file src="..\..\src\AddIns\Uno.UI.Lottie\bin\Uno.UI.Lottie.netcoremobile\Release\net8.0-maccatalyst\Uno.UI.Lottie.dll" target="lib\net8.0-maccatalyst" />
 
-		<file src="..\src\AddIns\Uno.UI.Lottie\bin\Uno.UI.Lottie.netcoremobile\Release\net7.0-android\Uno.UI.Lottie.dll" target="lib\net7.0-android" />
-		<file src="..\src\AddIns\Uno.UI.Lottie\bin\Uno.UI.Lottie.netcoremobile\Release\net7.0-ios\Uno.UI.Lottie.dll" target="lib\net7.0-ios" />
-		<file src="..\src\AddIns\Uno.UI.Lottie\bin\Uno.UI.Lottie.netcoremobile\Release\net7.0-maccatalyst\Uno.UI.Lottie.dll" target="lib\net7.0-maccatalyst" />
+		<file src="..\..\src\AddIns\Uno.UI.Lottie\bin\Uno.UI.Lottie.netcoremobile\Release\net7.0-android\Uno.UI.Lottie.dll" target="lib\net7.0-android" />
+		<file src="..\..\src\AddIns\Uno.UI.Lottie\bin\Uno.UI.Lottie.netcoremobile\Release\net7.0-ios\Uno.UI.Lottie.dll" target="lib\net7.0-ios" />
+		<file src="..\..\src\AddIns\Uno.UI.Lottie\bin\Uno.UI.Lottie.netcoremobile\Release\net7.0-maccatalyst\Uno.UI.Lottie.dll" target="lib\net7.0-maccatalyst" />
 
 		<!-- Build targets -->
-		<file src="..\src\AddIns\Uno.UI.Lottie\buildTransitive\*" target="buildTransitive" />
+		<file src="..\..\src\AddIns\Uno.UI.Lottie\buildTransitive\*" target="buildTransitive" />
 
 		<!-- net8.0 WebAssembly -->
-		<file src="..\src\AddIns\Uno.UI.Lottie\Bin\Uno.UI.Lottie.Wasm\Release\net8.0\Uno.UI.Lottie.*" target="uno-runtime\net8.0\webassembly" />
+		<file src="..\..\src\AddIns\Uno.UI.Lottie\Bin\Uno.UI.Lottie.Wasm\Release\net8.0\Uno.UI.Lottie.*" target="uno-runtime\net8.0\webassembly" />
 
 		<!-- net8.0 Skia -->
-		<file src="..\src\AddIns\Uno.UI.Lottie\Bin\Uno.UI.Lottie.Skia\Release\net8.0\Uno.UI.Lottie.*" target="uno-runtime\net8.0\skia" />
+		<file src="..\..\src\AddIns\Uno.UI.Lottie\Bin\Uno.UI.Lottie.Skia\Release\net8.0\Uno.UI.Lottie.*" target="uno-runtime\net8.0\skia" />
 
 		<!-- net7.0 WebAssembly -->
-		<file src="..\src\AddIns\Uno.UI.Lottie\Bin\Uno.UI.Lottie.Wasm\Release\net7.0\Uno.UI.Lottie.*" target="uno-runtime\net7.0\webassembly" />
+		<file src="..\..\src\AddIns\Uno.UI.Lottie\Bin\Uno.UI.Lottie.Wasm\Release\net7.0\Uno.UI.Lottie.*" target="uno-runtime\net7.0\webassembly" />
 
 		<!-- net7.0 Skia -->
-		<file src="..\src\AddIns\Uno.UI.Lottie\Bin\Uno.UI.Lottie.Skia\Release\net7.0\Uno.UI.Lottie.*" target="uno-runtime\net7.0\skia" />
+		<file src="..\..\src\AddIns\Uno.UI.Lottie\Bin\Uno.UI.Lottie.Skia\Release\net7.0\Uno.UI.Lottie.*" target="uno-runtime\net7.0\skia" />
 
 	</files>
 </package>

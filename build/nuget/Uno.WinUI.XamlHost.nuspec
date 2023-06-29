@@ -1,0 +1,92 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+	<metadata minClientVersion="5.0">
+		<id>Uno.WinUI.XamlHost</id>
+		<version>0.0.1</version>
+		<authors>Uno Platform</authors>
+		<icon>uno.png</icon>
+		<projectUrl>https://github.com/unoplatform/uno</projectUrl>
+		<license type="expression">Apache-2.0</license>
+		<description>This package provides the XAML hosting capabilities for an Uno Platform application.</description>
+		<copyright>Uno Platform</copyright>
+		<repository type="git" url="https://github.com/unoplatform/uno.git" branch="$branch$" commit="$commitid$" />
+		<dependencies>
+			<group targetFramework="UAP10.0.19041">
+			</group>
+			<group targetFramework="net8.0-android30.0">
+				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
+			</group>
+			<group targetFramework="net8.0-ios13.6">
+				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
+			</group>
+			<group targetFramework="net8.0-maccatalyst13.5">
+				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
+			</group>
+			<group targetFramework="net8.0-macos10.15">
+				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
+			</group>
+			<group targetFramework="net7.0-android30.0">
+				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
+			</group>
+			<group targetFramework="net7.0-ios13.6">
+				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
+			</group>
+			<group targetFramework="net7.0-maccatalyst13.5">
+				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
+			</group>
+			<group targetFramework="net7.0-macos10.15">
+				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
+			</group>
+		</dependencies>
+	</metadata>
+
+	<files>
+		<file src="..\..\src\Common\uno.png" target="/" />
+
+		<file src="..\..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.netcoremobile\Release\net8.0-ios\Uno.UI.XamlHost.dll" target="lib\net8.0-ios" />
+		<file src="..\..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.netcoremobile\Release\net8.0-ios\Uno.UI.XamlHost.pdb" target="lib\net8.0-ios" />
+
+		<file src="..\..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.netcoremobile\Release\net8.0-maccatalyst\Uno.UI.XamlHost.dll" target="lib\net8.0-maccatalyst" />
+		<file src="..\..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.netcoremobile\Release\net8.0-maccatalyst\Uno.UI.XamlHost.pdb" target="lib\net8.0-maccatalyst" />
+
+		<file src="..\..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.netcoremobile\Release\net8.0-macos\Uno.UI.XamlHost.dll" target="lib\net8.0-macos" />
+		<file src="..\..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.netcoremobile\Release\net8.0-macos\Uno.UI.XamlHost.pdb" target="lib\net8.0-macos" />
+
+		<file src="..\..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.netcoremobile\Release\net8.0-android\Uno.UI.XamlHost.dll" target="lib\net8.0-android30.0" />
+		<file src="..\..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.netcoremobile\Release\net8.0-android\Uno.UI.XamlHost.pdb" target="lib\net8.0-android30.0" />
+
+		<file src="..\..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.netcoremobile\Release\net7.0-ios\Uno.UI.XamlHost.dll" target="lib\net7.0-ios" />
+		<file src="..\..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.netcoremobile\Release\net7.0-ios\Uno.UI.XamlHost.pdb" target="lib\net7.0-ios" />
+
+		<file src="..\..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.netcoremobile\Release\net7.0-maccatalyst\Uno.UI.XamlHost.dll" target="lib\net7.0-maccatalyst" />
+		<file src="..\..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.netcoremobile\Release\net7.0-maccatalyst\Uno.UI.XamlHost.pdb" target="lib\net7.0-maccatalyst" />
+
+		<file src="..\..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.netcoremobile\Release\net7.0-macos\Uno.UI.XamlHost.dll" target="lib\net7.0-macos" />
+		<file src="..\..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.netcoremobile\Release\net7.0-macos\Uno.UI.XamlHost.pdb" target="lib\net7.0-macos" />
+
+		<file src="..\..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.netcoremobile\Release\net7.0-android\Uno.UI.XamlHost.dll" target="lib\net7.0-android30.0" />
+		<file src="..\..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.netcoremobile\Release\net7.0-android\Uno.UI.XamlHost.pdb" target="lib\net7.0-android30.0" />
+
+		<file src="..\..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.Reference\Release\net8.0\Uno.UI.XamlHost.dll" target="lib\net8.0" />
+		<file src="..\..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.Reference\Release\net7.0\Uno.UI.XamlHost.dll" target="lib\net7.0" />
+
+		<!-- net8.0 WebAssembly -->
+		<file src="..\..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.Wasm\Release\net8.0\Uno.UI.XamlHost.dll" target="uno-runtime\net8.0\webassembly" />
+		<file src="..\..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.Wasm\Release\net8.0\Uno.UI.XamlHost.pdb" target="uno-runtime\net8.0\webassembly" />
+
+		<!-- net8.0 Skia -->
+		<file src="..\..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.Skia\Release\net8.0\Uno.UI.XamlHost.dll" target="uno-runtime\net8.0\skia" />
+		<file src="..\..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.Skia\Release\net8.0\Uno.UI.XamlHost.pdb" target="uno-runtime\net8.0\skia" />
+
+		<!-- net7.0 WebAssembly -->
+		<file src="..\..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.Wasm\Release\net7.0\Uno.UI.XamlHost.dll" target="uno-runtime\net7.0\webassembly" />
+		<file src="..\..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.Wasm\Release\net7.0\Uno.UI.XamlHost.pdb" target="uno-runtime\net7.0\webassembly" />
+
+		<!-- net7.0 Skia -->
+		<file src="..\..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.Skia\Release\net7.0\Uno.UI.XamlHost.dll" target="uno-runtime\net7.0\skia" />
+		<file src="..\..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.Skia\Release\net7.0\Uno.UI.XamlHost.pdb" target="uno-runtime\net7.0\skia" />
+
+		<file src="..\..\src\Uno.UI.XamlHost\buildTransitive\Uno.WinUI.XamlHost.props" target="build" />
+	</files>
+
+</package>

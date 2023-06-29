@@ -100,26 +100,26 @@
 		</references>
 	</metadata>
 	<files>
-		<file src="..\src\Common\uno.png" target="/" />
-		<file src="..\src\AddIns\Uno.UI.Svg\bin\Uno.UI.Svg.Reference\Release\net8.0\Uno.UI.Svg.dll" target="lib\net8.0" />
-		<file src="..\src\AddIns\Uno.UI.Svg\bin\Uno.UI.Svg.Reference\Release\net7.0\Uno.UI.Svg.dll" target="lib\net7.0" />
+		<file src="..\..\src\Common\uno.png" target="/" />
+		<file src="..\..\src\AddIns\Uno.UI.Svg\bin\Uno.UI.Svg.Reference\Release\net8.0\Uno.UI.Svg.dll" target="lib\net8.0" />
+		<file src="..\..\src\AddIns\Uno.UI.Svg\bin\Uno.UI.Svg.Reference\Release\net7.0\Uno.UI.Svg.dll" target="lib\net7.0" />
 
-		<file src="..\src\AddIns\Uno.UI.Svg\bin\Uno.UI.Svg.netcoremobile\Release\net8.0-android\Uno.UI.Svg.dll" target="lib\net8.0-android" />
-		<file src="..\src\AddIns\Uno.UI.Svg\bin\Uno.UI.Svg.netcoremobile\Release\net8.0-ios\Uno.UI.Svg.dll" target="lib\net8.0-ios" />
-		<file src="..\src\AddIns\Uno.UI.Svg\bin\Uno.UI.Svg.netcoremobile\Release\net8.0-maccatalyst\Uno.UI.Svg.dll" target="lib\net8.0-maccatalyst" />
+		<file src="..\..\src\AddIns\Uno.UI.Svg\bin\Uno.UI.Svg.netcoremobile\Release\net8.0-android\Uno.UI.Svg.dll" target="lib\net8.0-android" />
+		<file src="..\..\src\AddIns\Uno.UI.Svg\bin\Uno.UI.Svg.netcoremobile\Release\net8.0-ios\Uno.UI.Svg.dll" target="lib\net8.0-ios" />
+		<file src="..\..\src\AddIns\Uno.UI.Svg\bin\Uno.UI.Svg.netcoremobile\Release\net8.0-maccatalyst\Uno.UI.Svg.dll" target="lib\net8.0-maccatalyst" />
 
-		<file src="..\src\AddIns\Uno.UI.Svg\bin\Uno.UI.Svg.netcoremobile\Release\net7.0-android\Uno.UI.Svg.dll" target="lib\net7.0-android" />
-		<file src="..\src\AddIns\Uno.UI.Svg\bin\Uno.UI.Svg.netcoremobile\Release\net7.0-ios\Uno.UI.Svg.dll" target="lib\net7.0-ios" />
-		<file src="..\src\AddIns\Uno.UI.Svg\bin\Uno.UI.Svg.netcoremobile\Release\net7.0-maccatalyst\Uno.UI.Svg.dll" target="lib\net7.0-maccatalyst" />
+		<file src="..\..\src\AddIns\Uno.UI.Svg\bin\Uno.UI.Svg.netcoremobile\Release\net7.0-android\Uno.UI.Svg.dll" target="lib\net7.0-android" />
+		<file src="..\..\src\AddIns\Uno.UI.Svg\bin\Uno.UI.Svg.netcoremobile\Release\net7.0-ios\Uno.UI.Svg.dll" target="lib\net7.0-ios" />
+		<file src="..\..\src\AddIns\Uno.UI.Svg\bin\Uno.UI.Svg.netcoremobile\Release\net7.0-maccatalyst\Uno.UI.Svg.dll" target="lib\net7.0-maccatalyst" />
 
 		<!-- Build targets -->
-		<file src="..\src\AddIns\Uno.UI.Svg\buildTransitive\*" target="buildTransitive" />
+		<file src="..\..\src\AddIns\Uno.UI.Svg\buildTransitive\*" target="buildTransitive" />
 
 		<!-- net8.0 Skia -->
-		<file src="..\src\AddIns\Uno.UI.Svg\Bin\Uno.UI.Svg.Skia\Release\net8.0\Uno.UI.Svg.*" target="uno-runtime\net8.0\skia" />
+		<file src="..\..\src\AddIns\Uno.UI.Svg\Bin\Uno.UI.Svg.Skia\Release\net8.0\Uno.UI.Svg.*" target="uno-runtime\net8.0\skia" />
 
 		<!-- net7.0 Skia -->
-		<file src="..\src\AddIns\Uno.UI.Svg\Bin\Uno.UI.Svg.Skia\Release\net7.0\Uno.UI.Svg.*" target="uno-runtime\net7.0\skia" />
+		<file src="..\..\src\AddIns\Uno.UI.Svg\Bin\Uno.UI.Svg.Skia\Release\net7.0\Uno.UI.Svg.*" target="uno-runtime\net7.0\skia" />
 
 	</files>
 </package>
