@@ -1565,7 +1565,7 @@
 			<!-- BEGIN Align ref members -->
 			<Member fullName="System.Threading.Tasks.Task`1&lt;Windows.Security.Authentication.Web.WebAuthenticationResult&gt; Uno.AuthenticationBroker.WebAuthenticationBrokerProvider::AuthenticateAsyncCore(Windows.Security.Authentication.Web.WebAuthenticationOptions,System.Uri,System.Uri,System.Threading.CancellationToken)" reason="Does not exist in WinAppSDK" />
 			<Member fullName="System.Void Windows.Devices.Sensors.Accelerometer..ctor()" reason="Does not exist in WinAppSDK" />
-			<Member fullName="System.Void Windows.Phone.Devices.Notification.VibrationDevice..ctor()" reason="Does not exist in WinAppSDK" />
+			<Member fullName="System.Void Windows.Phone.Devices.Notification.VibrationDevice::.ctor()" reason="Does not exist in WinAppSDK" />
 			<Member fullName="System.Void Windows.Devices.Sensors.Barometer..ctor()" reason="Does not exist in WinAppSDK" />
 			<Member fullName="System.Void Windows.Devices.Sensors.Gyrometer..ctor()" reason="Does not exist in WinAppSDK" />
 			<Member fullName="System.Void Windows.Devices.Sensors.HingeAngleSensor..ctor()" reason="Does not exist in WinAppSDK" />
