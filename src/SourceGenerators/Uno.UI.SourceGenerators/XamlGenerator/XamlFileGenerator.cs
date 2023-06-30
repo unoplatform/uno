@@ -3502,6 +3502,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						}
 					}
 
+					if (IsNotFrameworkElementButNeedsSourceLocation(objectDefinition) && _isDebug)
+					{
+						writer.AppendLineIndented($"global::Uno.UI.Helpers.MarkupHelper.SetElementProperty({closureName}, \"OriginalSourceLocation\", \"file:///{_fileDefinition.FilePath.Replace("\\", "/")}#L{objectDefinition.LineNumber}:{objectDefinition.LinePosition}\");");
+					}
+
 					if (_isUiAutomationMappingEnabled)
 					{
 						// Prefer using the Uid or the Name if their value has been explicitly assigned
@@ -3539,6 +3544,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					writer.AppendIndented($"{closure}.{member.Member.Name} = {propertyValue};\r\n");
 				}
 			}
+		}
+
+		private bool IsNotFrameworkElementButNeedsSourceLocation(XamlObjectDefinition objectDefinition)
+		{
+			return objectDefinition.Type.Name == "VisualState"
+				|| objectDefinition.Type.Name == "AdaptiveTrigger"
+				|| objectDefinition.Type.Name == "StateTrigger";
 		}
 
 		private void ValidateName(string? value)
