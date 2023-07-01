@@ -972,7 +972,17 @@ namespace Windows.UI.Xaml.Controls
 					}
 					break;
 				case VirtualKey.Left:
+					if (SelectionLength != 0 || SelectionStart != 0)
+					{
+						args.Handled = true;
+					}
+					break;
 				case VirtualKey.Right:
+					if (SelectionLength != 0 || (SelectionStart != Text.Length))
+					{
+						args.Handled = true;
+					}
+					break;
 				case VirtualKey.Home:
 				case VirtualKey.End:
 					args.Handled = true;
