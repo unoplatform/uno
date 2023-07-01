@@ -13,7 +13,7 @@ This guide covers multiple approaches to managing per-platform code in C#. See [
 There are two ways to restrict code or XAML markup to be used only on a specific platform:
 
 * Use [conditionals](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/preprocessor-directives/preprocessor-if) within a shared file
-* Place the code in a file which is only included in the desired platform head.
+* Place the code in a separate file which is only included in the desired platform.
  
 The structure of an Uno app created with the default Visual Studio template is [explained in more detail here](uno-app-solution-structure.md).
  
@@ -64,7 +64,7 @@ public IEnumerable<_View> FindDescendants(FrameworkElement parent) => ...
  
 ## Partial class definitions
 
-Heavy usage of `#if` conditionals makes code hard to read and comprehend. A better approach is to use [partial class definitions](https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/partial-classes-and-methods) to split shared and platform-specific code.
+Heavy usage of `#if` conditionals in shared code makes it hard to read and comprehend. A better approach is to use [partial class definitions](https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/partial-classes-and-methods) to split shared and platform-specific code. These partial classes need to exist in the shared project as it's compiled separately from each project head. Also, `#if` conditionals are still necessary.
 
 ### A simple example
 
@@ -83,9 +83,10 @@ public partial class NativeWrapperControl : Control {
 		}
 ```
 
-Platform-specific code in `PROJECTNAME.Droid/NativeWrapperControl.Android.cs`:
+Platform-specific code in `PROJECTNAME/NativeWrapperControl.Android.cs`:
 
 ```csharp
+#if __ANDROID__
 public partial class NativeWrapperControl : Control {
 
 ...
@@ -95,9 +96,10 @@ public partial class NativeWrapperControl : Control {
 		}
 ```
 
-Platform-specific code in `PROJECTNAME.iOS/NativeWrapperControl.iOS.cs`:
+Platform-specific code in `PROJECTNAME/NativeWrapperControl.iOS.cs`:
 
 ```csharp
+#if __IOS__
 public partial class NativeWrapperControl : Control {
 
 ...
