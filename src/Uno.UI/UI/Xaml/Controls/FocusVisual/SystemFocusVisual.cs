@@ -36,7 +36,7 @@ internal partial class SystemFocusVisual : Control
 			nameof(FocusedElement),
 			typeof(UIElement),
 			typeof(SystemFocusVisual),
-			new FrameworkPropertyMetadata(default, OnFocusedElementChanged));
+			new FrameworkPropertyMetadata(null, OnFocusedElementChanged));
 
 	internal void Redraw() => SetLayoutProperties();
 

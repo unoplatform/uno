@@ -22,7 +22,7 @@ namespace Windows.UI.Xaml.Controls
 				"ToolTip",
 				typeof(object),
 				typeof(ToolTipService),
-				new FrameworkPropertyMetadata(default, OnToolTipChanged));
+				new FrameworkPropertyMetadata(null, OnToolTipChanged));
 
 		public static object GetToolTip(DependencyObject element) => element.GetValue(ToolTipProperty);
 		public static void SetToolTip(DependencyObject element, object value) => element.SetValue(ToolTipProperty, value);
