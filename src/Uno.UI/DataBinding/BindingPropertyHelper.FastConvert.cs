@@ -983,7 +983,7 @@ namespace Uno.UI.DataBinding
 		{
 			if (outputType == typeof(bool) && bool.TryParse(input, out var result))
 			{
-				output = result;
+				output = Boxes.Box(result);
 				return true;
 			}
 
