@@ -140,3 +140,6 @@ dotnet_diagnostic.IDE0055.severity = warning # Will be promoted as an error by T
 
 # IDE0051: Remove unused private member
 dotnet_diagnostic.IDE0051.severity = warning
+
+dotnet_diagnostic.UnoInternal0001.severity = error
+dotnet_diagnostic.UnoInternal0002.severity = error

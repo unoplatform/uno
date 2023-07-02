@@ -12,7 +12,7 @@ namespace Uno.UI.SourceGenerators.Internal;
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
 internal sealed class BoxingDiagnosticAnalyzer : DiagnosticAnalyzer
 {
-	private static readonly DiagnosticDescriptor s_descriptor = new(
+	private static readonly DiagnosticDescriptor s_descriptorBoxing = new(
 		"UnoInternal0001",
 		"Avoid boxing allocation",
 		"Avoid boxing allocation",
@@ -20,7 +20,15 @@ internal sealed class BoxingDiagnosticAnalyzer : DiagnosticAnalyzer
 		DiagnosticSeverity.Warning,
 		isEnabledByDefault: true);
 
-	public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(s_descriptor);
+	private static readonly DiagnosticDescriptor s_descriptorConversion = new(
+		"UnoInternal0002",
+		"Possibly incorrect conversion",
+		"Possibly incorrect conversion",
+		"Correctness",
+		DiagnosticSeverity.Warning,
+		isEnabledByDefault: true);
+
+	public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(s_descriptorBoxing, s_descriptorConversion);
 
 	public override void Initialize(AnalysisContext context)
 	{
@@ -44,8 +52,21 @@ internal sealed class BoxingDiagnosticAnalyzer : DiagnosticAnalyzer
 					return;
 				}
 
-				context.ReportDiagnostic(Diagnostic.Create(s_descriptor, conversionOperation.Syntax.GetLocation()));
+				context.ReportDiagnostic(Diagnostic.Create(s_descriptorBoxing, conversionOperation.Syntax.GetLocation()));
 			}, OperationKind.Conversion);
+
+			context.RegisterOperationAction(context =>
+			{
+				var invocationOperation = (IInvocationOperation)context.Operation;
+				if (invocationOperation.TargetMethod is { Name: "SetValue", Parameters.Length: 2 } targetMethod &&
+					targetMethod.Parameters[1].Type.SpecialType != SpecialType.System_Object)
+				{
+					if (invocationOperation.Arguments[1].Value.Type!.Equals(targetMethod.Parameters[1].Type, SymbolEqualityComparer.Default))
+					{
+						context.ReportDiagnostic(Diagnostic.Create(s_descriptorConversion, invocationOperation.Arguments[1].Syntax.GetLocation()));
+					}
+				}
+			}, OperationKind.Invocation);
 		});
 	}
 
