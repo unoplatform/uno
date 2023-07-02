@@ -12,7 +12,7 @@ using Uno;
 using System.Threading;
 using Uno.Collections;
 
-#if XAMARIN_ANDROID
+#if __ANDROID__
 using _View = Android.Views.View;
 #elif __IOS__
 using _View = UIKit.UIView;

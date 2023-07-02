@@ -19,7 +19,7 @@ using Uno.UI;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Media;
 
-#if XAMARIN_ANDROID
+#if __ANDROID__
 using View = Android.Views.View;
 using Font = Android.Graphics.Typeface;
 using Android.Graphics;

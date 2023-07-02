@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 
-#if XAMARIN_ANDROID
+#if __ANDROID__
 using _Size = Windows.Foundation.Size;
 #elif __IOS__
 using _Size = Windows.Foundation.Size;

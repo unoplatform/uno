@@ -15,7 +15,7 @@ using Windows.Foundation;
 using Windows.UI.Xaml.Controls.Primitives;
 using Uno.Foundation.Logging;
 
-#if XAMARIN_ANDROID
+#if __ANDROID__
 using View = Android.Views.View;
 using Font = Android.Graphics.Typeface;
 using Android.Graphics;
@@ -205,7 +205,7 @@ namespace Windows.UI.Xaml
 					fe.InvalidateMeasure();
 					break;
 				case View view:
-#if XAMARIN_ANDROID
+#if __ANDROID__
 					view.RequestLayout();
 
 					// Invalidate the first "managed" parent to
@@ -310,7 +310,7 @@ namespace Windows.UI.Xaml
 		{
 #if __IOS__ || __MACOS__
 			return ((View)element).SizeThatFits(new CoreGraphics.CGSize(availableSize.Width, availableSize.Height));
-#elif XAMARIN_ANDROID
+#elif __ANDROID__
 			var widthSpec = ViewHelper.SpecFromLogicalSize(availableSize.Width);
 			var heightSpec = ViewHelper.SpecFromLogicalSize(availableSize.Height);
 
@@ -440,7 +440,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-#if XAMARIN_ANDROID
+#if __ANDROID__
 		/// <summary>
 		/// Applies the framework element constraints like the size and max size, using an already measured view.
 		/// </summary>

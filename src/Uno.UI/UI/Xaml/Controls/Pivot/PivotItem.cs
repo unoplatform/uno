@@ -4,7 +4,7 @@ using System.Drawing;
 using System.Text;
 using Uno.UI;
 using Windows.UI.Xaml.Controls.Primitives;
-#if XAMARIN_ANDROID
+#if __ANDROID__
 using Android.Views;
 #endif
 
@@ -50,7 +50,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-#if XAMARIN_ANDROID
+#if __ANDROID__
 		// This allows the PivotItem to fill the whole available space.
 		protected override void OnMeasure(int widthMeasureSpec, int heightMeasureSpec)
 		{

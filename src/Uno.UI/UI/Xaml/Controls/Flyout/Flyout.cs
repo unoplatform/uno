@@ -11,7 +11,7 @@ using Microsoft.UI.Xaml.Controls;
 
 #if __IOS__
 using View = UIKit.UIView;
-#elif XAMARIN_ANDROID
+#elif __ANDROID__
 using Android.Views;
 #else
 using View = Windows.UI.Xaml.UIElement;

@@ -7,7 +7,7 @@ using Uno.UI;
 using Uno.UI.DataBinding;
 using Windows.UI.Xaml.Markup;
 
-#if XAMARIN_ANDROID
+#if __ANDROID__
 using View = Android.Views.View;
 #elif __IOS__
 using View = UIKit.UIView;

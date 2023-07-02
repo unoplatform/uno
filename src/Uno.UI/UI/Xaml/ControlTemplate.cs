@@ -2,7 +2,7 @@
 
 using System;
 
-#if XAMARIN_ANDROID
+#if __ANDROID__
 using View = Android.Views.View;
 using Font = Android.Graphics.Typeface;
 using Android.Graphics;

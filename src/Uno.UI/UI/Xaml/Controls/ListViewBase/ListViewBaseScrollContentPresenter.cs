@@ -5,7 +5,7 @@ using System.Text;
 using Uno.Extensions;
 
 using Uno.Foundation.Logging;
-#if XAMARIN_ANDROID
+#if __ANDROID__
 using View = Android.Views.View;
 using Font = Android.Graphics.Typeface;
 #elif __IOS__

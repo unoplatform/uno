@@ -8,7 +8,7 @@ using Uno;
 using Uno.UI;
 using Windows.Foundation;
 
-#if XAMARIN_ANDROID
+#if __ANDROID__
 using View = Android.Views.View;
 using ViewGroup = Android.Views.ViewGroup;
 using Font = Android.Graphics.Typeface;

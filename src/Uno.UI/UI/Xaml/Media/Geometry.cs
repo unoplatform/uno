@@ -16,7 +16,7 @@ using UIImage = AppKit.NSImage;
 using UIColor = AppKit.NSColor;
 using UIGraphics = AppKit.NSGraphics;
 using Path = AppKit.NSBezierPath;
-#elif XAMARIN_ANDROID
+#elif __ANDROID__
 using Android.Graphics;
 #endif
 
@@ -81,7 +81,7 @@ namespace Windows.UI.Xaml.Media
 
 		public virtual CGPath ToCGPath() { throw new InvalidOperationException(); }
 
-#elif XAMARIN_ANDROID
+#elif __ANDROID__
 		public virtual Path ToPath() { throw new InvalidOperationException(); }
 #endif
 		public virtual void Dispose() { throw new InvalidOperationException(); }

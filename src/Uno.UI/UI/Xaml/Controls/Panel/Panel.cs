@@ -11,7 +11,7 @@ using Windows.UI.Core;
 using Windows.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Xaml;
-#if XAMARIN_ANDROID
+#if __ANDROID__
 using View = Android.Views.View;
 #elif __IOS__
 using View = UIKit.UIView;

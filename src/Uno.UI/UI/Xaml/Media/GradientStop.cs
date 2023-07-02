@@ -1,4 +1,4 @@
-﻿#if XAMARIN_ANDROID
+﻿#if __ANDROID__
 using Android.Views;
 using Android.Graphics;
 using View = Android.Views.View;

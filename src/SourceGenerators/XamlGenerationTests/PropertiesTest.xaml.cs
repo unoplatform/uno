@@ -12,7 +12,7 @@ namespace XamlGenerationTests.Shared
 			iOSUILabel.ToString();
 #endif
 
-#if XAMARIN_ANDROID
+#if __ANDROID__
 			AndroidTextView.ToString();
 #endif
 

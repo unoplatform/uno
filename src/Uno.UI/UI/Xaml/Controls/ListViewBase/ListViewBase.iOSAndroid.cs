@@ -1,10 +1,10 @@
-﻿#if __IOS__ || XAMARIN_ANDROID
+﻿#if __IOS__ || __ANDROID__
 using System;
 using System.Collections.Generic;
 using System.Text;
 using Uno.UI;
 using Uno.UI.Controls;
-#if XAMARIN_ANDROID
+#if __ANDROID__
 using _View = Android.Views.View;
 #elif __IOS__
 using _View = UIKit.UIView;

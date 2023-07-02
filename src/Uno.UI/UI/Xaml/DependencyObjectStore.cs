@@ -18,7 +18,7 @@ using System.Collections;
 using System.Globalization;
 using Windows.ApplicationModel.Calls;
 
-#if XAMARIN_ANDROID
+#if __ANDROID__
 using View = Android.Views.View;
 #elif __IOS__
 using View = UIKit.UIView;

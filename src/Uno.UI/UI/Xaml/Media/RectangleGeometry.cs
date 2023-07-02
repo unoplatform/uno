@@ -35,7 +35,7 @@ namespace Windows.UI.Xaml.Media
 
 		#region Geometry implementation (not implemented)
 
-#if XAMARIN_ANDROID
+#if __ANDROID__
 		public override Android.Graphics.Path ToPath()
 		{
 			throw new NotImplementedException();

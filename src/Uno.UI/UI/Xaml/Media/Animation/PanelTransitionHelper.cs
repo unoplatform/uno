@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.UI.Core;
-#if XAMARIN_ANDROID
+#if __ANDROID__
 using Android.Views;
 using View = Android.Views.View;
 using Point = Android.Graphics.Point;
@@ -50,7 +50,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		private Dictionary<View, Point> GetChildrenPositionsFromSource()
 		{
 			var elements = new Dictionary<View, Point>();
-#if XAMARIN_ANDROID
+#if __ANDROID__
 			foreach (View item in _source.Children)
 			{
 				elements.Add(item, new Point((int)item.GetX(), (int)item.GetY()));
@@ -80,7 +80,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			//Hide the view before animation starts otherwise it will be seen as soon as its laid out
 #if __IOS__
 			((UIKit.UIView)element).Hidden = true;
-#elif XAMARIN_ANDROID
+#elif __ANDROID__
 			((Android.Views.View)element).Visibility = Android.Views.ViewStates.Invisible;
 #endif
 
@@ -120,7 +120,7 @@ namespace Windows.UI.Xaml.Media.Animation
 				//Restore the view before animating
 #if __IOS__
 				((UIKit.UIView)child).Hidden = false;
-#elif XAMARIN_ANDROID
+#elif __ANDROID__
 				((Android.Views.View)child).Visibility = Android.Views.ViewStates.Visible;
 #endif
 

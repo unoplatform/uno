@@ -19,7 +19,7 @@ using Windows.Foundation.Metadata;
 using Color = Windows.UI.Color;
 using Windows.UI.Xaml.Resources;
 
-#if XAMARIN_ANDROID
+#if __ANDROID__
 using _View = Android.Views.View;
 #elif __IOS__
 using _View = UIKit.UIView;

@@ -13,7 +13,7 @@ using Windows.Foundation;
 using Uno;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
-#if XAMARIN_ANDROID
+#if __ANDROID__
 using View = Android.Views.View;
 using ViewGroup = Android.Views.ViewGroup;
 using Font = Android.Graphics.Typeface;
@@ -722,7 +722,7 @@ namespace Windows.UI.Xaml.Controls
 
 		#region BorderBrush Dependency Property
 
-#if XAMARIN_ANDROID
+#if __ANDROID__
 		//This field is never accessed. It just exists to create a reference, because the DP causes issues with ImageBrush of the backing bitmap being prematurely garbage-collected. (Bug with ConditionalWeakTable? https://bugzilla.xamarin.com/show_bug.cgi?id=21620)
 		private Brush _borderBrushStrongReference;
 #endif
@@ -734,7 +734,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				this.SetValue(BorderBrushProperty, value);
 
-#if XAMARIN_ANDROID
+#if __ANDROID__
 				_borderBrushStrongReference = value;
 #endif
 			}

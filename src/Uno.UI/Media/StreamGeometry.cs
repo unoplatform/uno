@@ -24,7 +24,7 @@ using Path = AppKit.NSBezierPath;
 #if NET6_0_OR_GREATER
 using ObjCRuntime;
 #endif
-#elif XAMARIN_ANDROID
+#elif __ANDROID__
 using Android.Graphics;
 #elif __SKIA__
 using Path = Windows.UI.Composition.SkiaGeometrySource2D;

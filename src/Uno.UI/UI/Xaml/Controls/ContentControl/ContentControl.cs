@@ -14,7 +14,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Markup;
 using Uno;
 
-#if XAMARIN_ANDROID
+#if __ANDROID__
 using View = Android.Views.View;
 using ViewGroup = Android.Views.ViewGroup;
 using Font = Android.Graphics.Typeface;
@@ -482,7 +482,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 #nullable disable // Public members should stay nullable-oblivious for now to stay consistent with WinUI
-#if XAMARIN_ANDROID
+#if __ANDROID__
 		// Support for the C# collection initializer style.
 		public void Add(View view)
 		{

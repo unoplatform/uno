@@ -20,7 +20,7 @@ using Uno.UI.Dispatching;
 using Windows.Foundation.Metadata;
 using Windows.System;
 
-#if XAMARIN_ANDROID
+#if __ANDROID__
 using View = Android.Views.View;
 using ViewGroup = Android.Views.ViewGroup;
 using Font = Android.Graphics.Typeface;

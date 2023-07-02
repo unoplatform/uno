@@ -27,7 +27,7 @@ using Windows.UI.Xaml.Data;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Media;
 
-#if XAMARIN_ANDROID
+#if __ANDROID__
 using View = Android.Views.View;
 #elif __IOS__
 using View = UIKit.UIView;
@@ -916,7 +916,7 @@ namespace Windows.UI.Xaml
 
 			protected override Size ArrangeOverride(Size finalSize) => _arrangeOverrideHandler(finalSize);
 
-#if XAMARIN_ANDROID
+#if __ANDROID__
 			protected override void MeasureChild(View view, int widthSpec, int heightSpec) => view.Measure(widthSpec, heightSpec);
 #endif
 

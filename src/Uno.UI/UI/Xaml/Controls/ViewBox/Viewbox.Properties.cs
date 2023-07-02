@@ -3,7 +3,7 @@ using Windows.UI.Xaml.Markup;
 using Uno.UI;
 using Windows.UI.Xaml.Media;
 
-#if XAMARIN_ANDROID
+#if __ANDROID__
 #elif __IOS__
 using UIKit;
 #elif __MACOS__

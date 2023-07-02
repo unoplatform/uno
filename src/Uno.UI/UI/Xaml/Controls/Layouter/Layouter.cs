@@ -20,7 +20,7 @@ using static System.Double;
 using static System.Math;
 using static Uno.UI.LayoutHelper;
 
-#if XAMARIN_ANDROID
+#if __ANDROID__
 using Android.Views;
 using View = Android.Views.View;
 using Font = Android.Graphics.Typeface;

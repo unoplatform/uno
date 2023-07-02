@@ -20,7 +20,7 @@ namespace Windows.UI.Xaml.Controls
 #endif
 		public int LastVisibleIndex => _layout?.LastVisibleIndex ?? -1;
 
-#if XAMARIN_ANDROID
+#if __ANDROID__
 		public int FirstCacheIndex => _layout.XamlParent.NativePanel.ViewCache.FirstCacheIndex;
 		public int LastCacheIndex => _layout.XamlParent.NativePanel.ViewCache.LastCacheIndex;
 #endif

@@ -46,7 +46,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-#elif XAMARIN_ANDROID
+#elif __ANDROID__
 
 		internal static Android.Views.GravityFlags ToGravity(this TextAlignment textAlignment)
 		{

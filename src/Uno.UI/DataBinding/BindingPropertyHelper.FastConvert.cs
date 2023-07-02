@@ -14,7 +14,7 @@ using Windows.UI;
 using Uno.UI.Extensions;
 using System.Text.RegularExpressions;
 
-#if XAMARIN_ANDROID
+#if __ANDROID__
 using View = Android.Views.View;
 using Font = Android.Graphics.Typeface;
 using Android.Graphics;
