@@ -61,7 +61,7 @@ internal sealed class BoxingDiagnosticAnalyzer : DiagnosticAnalyzer
 				if (invocationOperation.TargetMethod is { Name: "SetValue", Parameters.Length: 2 } targetMethod &&
 					targetMethod.Parameters[1].Type.SpecialType != SpecialType.System_Object)
 				{
-					if (invocationOperation.Arguments[1].Value.Type!.Equals(targetMethod.Parameters[1].Type, SymbolEqualityComparer.Default))
+					if (!invocationOperation.Arguments[1].Value.Type!.Equals(targetMethod.Parameters[1].Type, SymbolEqualityComparer.Default))
 					{
 						context.ReportDiagnostic(Diagnostic.Create(s_descriptorConversion, invocationOperation.Arguments[1].Syntax.GetLocation()));
 					}
