@@ -965,20 +965,30 @@ namespace Windows.UI.Xaml.Controls
 			switch (args.Key)
 			{
 				case VirtualKey.Up:
+					if (AcceptsReturn)
+					{
+						args.Handled = true;
+					}
+					break;
 				case VirtualKey.Down:
+					if (SelectionStart != Text.Length)
+					{
+						SelectionStart = Text.Length;
+						args.Handled = true;
+					}
 					if (AcceptsReturn)
 					{
 						args.Handled = true;
 					}
 					break;
 				case VirtualKey.Left:
-					if (SelectionLength != 0 || SelectionStart != 0)
+					if (SelectionStart != 0)
 					{
 						args.Handled = true;
 					}
 					break;
 				case VirtualKey.Right:
-					if (SelectionLength != 0 || (SelectionStart != Text.Length))
+					if (SelectionStart != Text.Length)
 					{
 						args.Handled = true;
 					}
