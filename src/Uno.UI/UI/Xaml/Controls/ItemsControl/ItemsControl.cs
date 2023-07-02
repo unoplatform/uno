@@ -21,7 +21,7 @@ using Uno.UI.Extensions;
 using Android.Graphics;
 
 using View = Android.Views.View;
-#elif XAMARIN_IOS
+#elif __IOS__
 using UIKit;
 
 using View = UIKit.UIView;

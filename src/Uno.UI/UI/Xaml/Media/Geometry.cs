@@ -5,7 +5,7 @@ using System.ComponentModel;
 using Uno.Media;
 using Windows.Foundation;
 
-#if XAMARIN_IOS_UNIFIED
+#if __IOS__
 using Foundation;
 using UIKit;
 using CoreGraphics;
@@ -64,7 +64,7 @@ namespace Windows.UI.Xaml.Media
 
 		#endregion
 
-#if XAMARIN_IOS_UNIFIED || XAMARIN_IOS || __MACOS__
+#if __IOS__ || __MACOS__
 		public static implicit operator UIImage(Geometry g)
 		{
 			return g.ToNativeImage();

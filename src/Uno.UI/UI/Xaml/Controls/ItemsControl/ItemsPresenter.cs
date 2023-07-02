@@ -11,7 +11,7 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Android.Widget;
 using Android.Views;
 using View = Android.Views.View;
-#elif XAMARIN_IOS
+#elif __IOS__
 using UIKit;
 using View = UIKit.UIView;
 #elif __MACOS__
@@ -134,7 +134,7 @@ namespace Windows.UI.Xaml.Controls
 
 			if (_itemsPanel != null)
 			{
-#if XAMARIN_IOS || __MACOS__
+#if __IOS__ || __MACOS__
 				this.AddSubview(_itemsPanel);
 #elif XAMARIN_ANDROID
 				this.AddView(_itemsPanel);
@@ -150,7 +150,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void RemoveChildViews()
 		{
-#if XAMARIN_IOS || __MACOS__
+#if __IOS__ || __MACOS__
 			foreach (var subview in this.Subviews)
 			{
 				subview.RemoveFromSuperview();

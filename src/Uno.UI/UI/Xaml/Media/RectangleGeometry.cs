@@ -1,6 +1,6 @@
 ﻿using System;
 using Windows.Foundation;
-#if XAMARIN_IOS
+#if __IOS__
 using UIKit;
 #endif
 
@@ -47,7 +47,7 @@ namespace Windows.UI.Xaml.Media
 			throw new NotImplementedException();
 		}
 
-#if XAMARIN_IOS
+#if __IOS__
 		public override UIImage ToNativeImage()
 		{
 			throw new NotImplementedException();

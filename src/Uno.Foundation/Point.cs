@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Globalization;
 
-#if XAMARIN_IOS
+#if __IOS__
 using CoreGraphics;
 #endif
 

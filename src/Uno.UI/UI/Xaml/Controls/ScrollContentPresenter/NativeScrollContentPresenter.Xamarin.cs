@@ -13,7 +13,7 @@ using Windows.Foundation;
 
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
-#elif XAMARIN_IOS_UNIFIED
+#elif __IOS__
 using UIKit;
 using View = UIKit.UIView;
 #if NET6_0_OR_GREATER

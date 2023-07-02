@@ -5,10 +5,8 @@ using Uno.Extensions;
 using Uno.Disposables;
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
-#elif XAMARIN_IOS_UNIFIED
+#elif __IOS__
 using View = UIKit.UIView;
-#elif XAMARIN_IOS
-using View = MonoTouch.UIKit.UIView;
 #endif
 
 namespace Windows.UI.Xaml.Media.Animation

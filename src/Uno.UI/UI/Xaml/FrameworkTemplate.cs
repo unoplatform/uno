@@ -9,12 +9,10 @@ using Windows.UI.Xaml.Markup;
 
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
-#elif XAMARIN_IOS_UNIFIED
+#elif __IOS__
 using View = UIKit.UIView;
 #elif __MACOS__
 using View = AppKit.NSView;
-#elif XAMARIN_IOS
-using View = MonoTouch.UIKit.UIView;
 #else
 using View = Windows.UI.Xaml.UIElement;
 #endif

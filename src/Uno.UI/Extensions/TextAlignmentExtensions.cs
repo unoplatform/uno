@@ -7,7 +7,7 @@ namespace Windows.UI.Xaml
 {
 	internal static class TextAlignmentExtensions
 	{
-#if XAMARIN_IOS
+#if __IOS__
 
 		internal static UIKit.UITextAlignment ToNativeTextAlignment(this TextAlignment textAlignment)
 		{

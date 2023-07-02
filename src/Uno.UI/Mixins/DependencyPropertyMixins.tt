@@ -9,7 +9,7 @@
 				.Property("BackgroundSizing", "BackgroundSizing", "default")
 				.Property("HorizontalContentAlignment", "HorizontalAlignment", "(Uno.UI.FeatureConfiguration.Control.UseLegacyContentAlignment ? HorizontalAlignment.Left : HorizontalAlignment.Center)")
 				.Property("VerticalContentAlignment", "VerticalAlignment", "(Uno.UI.FeatureConfiguration.Control.UseLegacyContentAlignment ? VerticalAlignment.Top : VerticalAlignment.Center)")				
-			.Class("Picker", condition: "XAMARIN_IOS")			
+			.Class("Picker", condition: "__IOS__")			
 				.Property("ItemsSource", "object", "null")
 				.Property("SelectedItem", "object", "null")
 				.Property("SelectedIndex", "int", "-1")
@@ -92,7 +92,7 @@
 				//.Property("ChildTransitions", "TransitionCollection", "null")
 
 		.Namespace("Uno.UI.Controls.Legacy")
-			.Class("ListViewBase", condition: "XAMARIN_IOS")
+			.Class("ListViewBase", condition: "__IOS__")
 				.Property("DisplayMemberPath", "string", "string.Empty")
 			.Class("ListView", condition: "XAMARIN_ANDROID")
 				.Property("DisplayMemberPath", "string", "string.Empty")

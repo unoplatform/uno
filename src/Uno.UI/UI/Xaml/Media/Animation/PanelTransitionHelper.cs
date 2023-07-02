@@ -11,7 +11,7 @@ using Windows.UI.Core;
 using Android.Views;
 using View = Android.Views.View;
 using Point = Android.Graphics.Point;
-#elif XAMARIN_IOS
+#elif __IOS__
 using UIKit;
 using View = UIKit.UIView;
 using Point = System.Drawing.PointF;
@@ -55,7 +55,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			{
 				elements.Add(item, new Point((int)item.GetX(), (int)item.GetY()));
 			}
-#elif XAMARIN_IOS
+#elif __IOS__
 			foreach (View item in _source.Children)
 			{
 				var x = (int)item.Frame.X;
@@ -78,7 +78,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			_previouslyAddedElements.Add(element);
 
 			//Hide the view before animation starts otherwise it will be seen as soon as its laid out
-#if XAMARIN_IOS
+#if __IOS__
 			((UIKit.UIView)element).Hidden = true;
 #elif XAMARIN_ANDROID
 			((Android.Views.View)element).Visibility = Android.Views.ViewStates.Invisible;
@@ -118,7 +118,7 @@ namespace Windows.UI.Xaml.Media.Animation
 
 
 				//Restore the view before animating
-#if XAMARIN_IOS
+#if __IOS__
 				((UIKit.UIView)child).Hidden = false;
 #elif XAMARIN_ANDROID
 				((Android.Views.View)child).Visibility = Android.Views.ViewStates.Visible;

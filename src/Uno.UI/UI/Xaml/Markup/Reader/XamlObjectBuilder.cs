@@ -21,7 +21,7 @@ using Windows.UI.Xaml.Resources;
 
 #if XAMARIN_ANDROID
 using _View = Android.Views.View;
-#elif XAMARIN_IOS_UNIFIED
+#elif __IOS__
 using _View = UIKit.UIView;
 #else
 using _View = Windows.UI.Xaml.UIElement;

@@ -53,7 +53,7 @@ namespace Windows.UI.Xaml.Controls
 				_layout.BindToEquivalentProperty(this, nameof(AreStickyGroupHeadersEnabled));
 				_layout.BindToEquivalentProperty(this, nameof(GroupHeaderPlacement));
 				_layout.BindToEquivalentProperty(this, nameof(GroupPadding));
-#if !XAMARIN_IOS
+#if !__IOS__
 				_layout.BindToEquivalentProperty(this, nameof(CacheLength));
 #endif
 			}
