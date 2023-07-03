@@ -31,7 +31,6 @@ internal class PasswordTextBoxView : WpfTextBoxView
 		_grid.Children.Add(_passwordBox);
 		_grid.Children.Add(_textBox);
 
-		_textBox.PreviewKeyDown += OnPreviewKeyDown;
 		_passwordBox.PreviewKeyDown += OnPreviewKeyDown;
 	}
 
@@ -132,7 +131,17 @@ internal class PasswordTextBoxView : WpfTextBoxView
 	
 	private void OnPreviewKeyDown(object sender, KeyEventArgs e)
 	{
-		// On WPF, KeyDown is fired AFTER Selection is already changed to the new value
-		SelectionBeforeKeyDown = Selection;
+		// WpfTextBox's cursor/selection position isn't accessible even with reflection
+		// for security reasons. This prevents TextBox keyboard navigation from working
+		// correctly. So at least we just set SelectionBeforeKeyDown to any fake value
+		// that prevents keyboard navigation from triggering all together.
+		if (e.Key == Key.Left || e.Key == Key.LeftShift || e.Key == Key.LeftCtrl || e.Key == Key.LeftAlt)
+		{
+			SelectionBeforeKeyDown = (_passwordBox.Password.Length, 0);
+		}
+		else
+		{
+			SelectionBeforeKeyDown = (0, 0);
+		}
 	}
 }
