@@ -971,7 +971,7 @@ namespace Windows.UI.Xaml.Controls
 					}
 					break;
 				case VirtualKey.Down:
-					if (SelectionStart != Text.Length)
+					if (TextBoxView.SelectionBeforeKeyDown.start != Text.Length)
 					{
 						SelectionStart = Text.Length;
 						args.Handled = true;
@@ -982,13 +982,13 @@ namespace Windows.UI.Xaml.Controls
 					}
 					break;
 				case VirtualKey.Left:
-					if (SelectionStart != 0)
+					if (TextBoxView.SelectionBeforeKeyDown.start != 0)
 					{
 						args.Handled = true;
 					}
 					break;
 				case VirtualKey.Right:
-					if (SelectionStart != Text.Length)
+					if (TextBoxView.SelectionBeforeKeyDown.start != Text.Length)
 					{
 						args.Handled = true;
 					}

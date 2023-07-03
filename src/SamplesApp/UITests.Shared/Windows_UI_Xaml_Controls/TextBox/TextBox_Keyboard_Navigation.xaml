@@ -19,11 +19,11 @@
             <ColumnDefinition Width="350"/>
             <ColumnDefinition Width="350"/>
         </Grid.ColumnDefinitions>
-        <TextBox Grid.Column="0" Grid.Row="0" Text="Lorem"/>
+        <PasswordBox Grid.Column="0" Grid.Row="0" Password="Lorem"/>
         <TextBox Grid.Column="1" Grid.Row="0" Text="ipsum"/>
         <TextBox Grid.Column="2" Grid.Row="0" Text="dolor"/>
         <TextBox Grid.Column="0" Grid.Row="1" Text="sit"/>
-        <TextBox Grid.Column="1" Grid.Row="1" Text="amet"/>
+        <PasswordBox Grid.Column="1" Grid.Row="1" Password="amet"/>
         <TextBox Grid.Column="2" Grid.Row="1" Text="consectetur"/>
         <Button Grid.Column="0" Grid.Row="2" Width="80" Height="30" Content="Clear" Click="Button_OnClick"/>
         <Button Grid.Column="1" Grid.Row="2"  Width="80" Height="30" Content="Clear" Click="Button_OnClick"/>
