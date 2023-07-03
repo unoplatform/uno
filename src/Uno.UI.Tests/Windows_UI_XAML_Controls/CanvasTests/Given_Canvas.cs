@@ -77,7 +77,7 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.CanvasTests
 			SUT.SetValue(Canvas.LeftProperty, 43);
 			Assert.AreEqual(43d, SUT.GetValue(Canvas.LeftProperty));
 
-			SUT.SetValue(Canvas.LeftProperty, 44f);
+			SUT.SetValue(Canvas.LeftProperty, (object)44f);
 			Assert.AreEqual(44d, SUT.GetValue(Canvas.LeftProperty));
 
 			SUT.SetValue(Canvas.TopProperty, "42");
