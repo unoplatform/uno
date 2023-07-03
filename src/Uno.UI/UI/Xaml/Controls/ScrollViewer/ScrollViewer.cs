@@ -342,7 +342,7 @@ namespace Windows.UI.Xaml.Controls
 		public float MinZoomFactor
 		{
 			get => (float)GetValue(MinZoomFactorProperty);
-			set => SetValue(MinZoomFactorProperty, value);
+			set => SetValue(MinZoomFactorProperty, (object)value);
 		}
 
 		public static DependencyProperty MinZoomFactorProperty { get; } =
@@ -358,7 +358,7 @@ namespace Windows.UI.Xaml.Controls
 		public float MaxZoomFactor
 		{
 			get => (float)GetValue(MaxZoomFactorProperty);
-			set => SetValue(MaxZoomFactorProperty, value);
+			set => SetValue(MaxZoomFactorProperty, (object)value);
 		}
 
 		public static DependencyProperty MaxZoomFactorProperty { get; } =
@@ -374,7 +374,7 @@ namespace Windows.UI.Xaml.Controls
 		public float ZoomFactor
 		{
 			get => (float)GetValue(ZoomFactorProperty);
-			private set { SetValue(ZoomFactorProperty, value); }
+			private set { SetValue(ZoomFactorProperty, (object)value); }
 		}
 
 		public static DependencyProperty ZoomFactorProperty { get; } =

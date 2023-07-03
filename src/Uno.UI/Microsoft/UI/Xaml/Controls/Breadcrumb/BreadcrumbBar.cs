@@ -432,7 +432,7 @@ public partial class BreadcrumbBar : Control
 				if (itemsRepeater.TryGetElement(itemToIndex) is { } element)
 				{
 					element.SetValue(AutomationProperties.PositionInSetProperty, accessibilityIndex);
-					element.SetValue(AutomationProperties.SizeOfSetProperty, visibleItemsCount);
+					element.SetValue(AutomationProperties.SizeOfSetProperty, (object)visibleItemsCount);
 				}
 			}
 		}
