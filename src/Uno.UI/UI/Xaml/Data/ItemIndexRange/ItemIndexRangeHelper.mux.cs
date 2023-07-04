@@ -7,7 +7,7 @@ namespace DirectUI.Components;
 internal static partial class ItemIndexRangeHelper
 {
 	#region helper functions
-	// used to check if an index is within range defined by a start and an end
+	// used to check if an index is within a range defined by a start and an end
 	internal static bool IndexInRange(
 		int startIndex,
 		int endIndex,
@@ -222,7 +222,7 @@ internal static partial class ItemIndexRangeHelper
 				return;
 			}
 
-			// probability of new range being completely inside an existing a range
+			// probability of new range being completely inside an existing range
 			if (firstRangeIndex == lastRangeIndex)
 			{
 				Range currentRange = m_selectedRanges[firstRangeIndex];
@@ -477,7 +477,7 @@ internal static partial class ItemIndexRangeHelper
 
 			if (front)
 			{
-				// special case when the returned range index is -1, this means that index is either before the first range or the ranges list is empty
+				// particular case when the returned range index is -1, this means that the index is either before the first range or the ranges list is empty
 				// no need to do the other tests
 				if (rangeIndex == -1)
 				{
@@ -551,7 +551,7 @@ internal static partial class ItemIndexRangeHelper
 			removedRanges.Add(new Range(firstIndex, length));
 		}
 
-		// a helper if the deselected range is interesecting with the current range from the front or end
+		// a helper if the deselected range is intersecting with the current range from the front or end
 		private void DeselectRangeIntersectionHelper(
 			int firstIndex,
 			uint length,

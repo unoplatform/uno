@@ -66,7 +66,7 @@ public partial class ItemIndexRange
 		return ItemIndexRangeHelper.AreRangesEqual(firstIndex1, length1, firstIndex2, length2);
 	}
 
-	// return true if the two collection are identical (even in order of items)
+	// return true if the two collections are identical (even in order of items)
 	// for example, {{5,1},{7,3}} is NOT equal to {{7,3},{5,1}}
 	private static bool AreItemIndexRangeCollectionsEqual(
 		IList<ItemIndexRange> pCollection1,
@@ -125,7 +125,7 @@ public partial class ItemIndexRange
 		return pCollection;
 	}
 
-	// Used to create and ItemIndexRange and append it to the provided collection
+	// Used to create an ItemIndexRange and append it to the provided collection
 	private static void AppendItemIndexRangeToItemIndexRangeCollection(
 		int startIndex,
 		uint length,
