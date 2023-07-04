@@ -3546,12 +3546,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
-		private bool IsNotFrameworkElementButNeedsSourceLocation(XamlObjectDefinition objectDefinition)
-		{
-			return objectDefinition.Type.Name == "VisualState"
-				|| objectDefinition.Type.Name == "AdaptiveTrigger"
-				|| objectDefinition.Type.Name == "StateTrigger";
-		}
+		private static bool IsNotFrameworkElementButNeedsSourceLocation(XamlObjectDefinition objectDefinition)
+			=> objectDefinition.Type.Name is "VisualState" or "AdaptiveTrigger" or "StateTrigger";
 
 		private void ValidateName(string? value)
 		{
