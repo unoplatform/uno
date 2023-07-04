@@ -31,7 +31,7 @@ public partial class ItemIndexRange
 	}
 
 	// returns true if the index is inside a range inside the given collection
-	private bool IndexInItemIndexRangeCollection(
+	internal bool IndexInItemIndexRangeCollection(
 		IList<ItemIndexRange> pCollection,
 		int index)
 	{
@@ -68,7 +68,7 @@ public partial class ItemIndexRange
 
 	// return true if the two collections are identical (even in order of items)
 	// for example, {{5,1},{7,3}} is NOT equal to {{7,3},{5,1}}
-	private static bool AreItemIndexRangeCollectionsEqual(
+	internal static bool AreItemIndexRangeCollectionsEqual(
 		IList<ItemIndexRange> pCollection1,
 		IList<ItemIndexRange> pCollection2)
 	{
@@ -108,7 +108,7 @@ public partial class ItemIndexRange
 	}
 
 	// goes through the vector and creates ranges from continuous indices
-	private IList<ItemIndexRange> AppendItemIndexRangesFromSortedVectorToItemIndexRangeCollection(
+	internal IList<ItemIndexRange> AppendItemIndexRangesFromSortedVectorToItemIndexRangeCollection(
 		IList<uint> indices)
 	{
 		int size = indices.Count;
@@ -138,7 +138,7 @@ public partial class ItemIndexRange
 	}
 
 	// creates an ItemIndexRange collection from a vector of ranges
-	private static IList<ItemIndexRange> GetItemIndexRangeCollectionFromRangesVector(
+	internal static IList<ItemIndexRange> GetItemIndexRangeCollectionFromRangesVector(
 		IList<ItemIndexRangeHelper.Range> source,
 		int beginIndex,
 		int endIndex)
