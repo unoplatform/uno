@@ -70,17 +70,24 @@ namespace Uno.UI.RuntimeTests.Images
 
 		private void HandleImageEvent(Image sender, RoutedEventArgs e, bool success)
 		{
-			var tagBits = (sender.Tag as string).Split(',');
-			var originalSource = tagBits[0];
-			var shouldLoad = bool.Parse(tagBits[1]);
-
-			Assert.AreEqual(shouldLoad, success, $"Image {(shouldLoad ? "SHOULD" : "should NOT")} load but {(success ? "DID" : "did NOT")} load - " +
-					$"Original Source '{originalSource}' Actual Source '{((sender as Image)!.Source as BitmapImage)?.UriSource}'");
-
-			imageLoadCount++;
-			if (totalImages > 0 && imageLoadCount == totalImages)
+			try
 			{
-				_tcs.SetResult(true);
+				var tagBits = (sender.Tag as string).Split(',');
+				var originalSource = tagBits[0];
+				var shouldLoad = bool.Parse(tagBits[1]);
+
+				Assert.AreEqual(shouldLoad, success, $"Image {(shouldLoad ? "SHOULD" : "should NOT")} load but {(success ? "DID" : "did NOT")} load - " +
+						$"Original Source '{originalSource}' Actual Source '{((sender as Image)!.Source as BitmapImage)?.UriSource}'");
+
+				imageLoadCount++;
+				if (totalImages > 0 && imageLoadCount == totalImages)
+				{
+					_tcs.TrySetResult(true);
+				}
+			}
+			catch (Exception ex)
+			{
+				_tcs.TrySetException(ex);
 			}
 		}
 

@@ -228,9 +228,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				await page.WaitForImagesToLoad();
 			}
-			catch (TaskCanceledException)
+			catch (Exception ex)
 			{
-				Assert.Fail("Not all images raised Loaded or Failed events");
+				Assert.Fail("Not all images raised Loaded or Failed events: " + ex);
 			}
 		}
 
