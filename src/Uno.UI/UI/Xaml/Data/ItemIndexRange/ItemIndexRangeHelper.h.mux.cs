@@ -13,7 +13,7 @@ internal static partial class ItemIndexRangeHelper
 		Inside
 	}
 
-	internal struct Range //TODO:MZ:WinUI uses struct here
+	internal struct Range
 	{
 		public Range(int firstIndex, uint length)
 		{
