@@ -20,9 +20,9 @@ namespace Uno.UI.Xaml
 		PointerWheelChanged = 1UL << 7,
 
 		// Keyboard
-		// PreviewKeyDown = 1UL << 12 => Reserved for future usage
+		PreviewKeyDown = 1UL << 12,
 		KeyDown = 1UL << 13,
-		// PreviewKeyUp = 1 >> 14, => Reserved for future usage
+		PreviewKeyUp = 1UL << 14,
 		KeyUp = 1UL << 15,
 		// CharacterReceived = 1UL << 16,
 		// ProcessKeyboardAccelerators = 1UL << 17, => Reserved for future use (even if it is not an actual standard RoutedEvent)
@@ -77,7 +77,9 @@ namespace Uno.UI.Xaml
 			| RoutedEventFlag.PointerWheelChanged;
 
 		private const RoutedEventFlag _isKey = // 0b0000_0000_0000_0000___0000_0000_0000_0000___0000_0000_0001_1111___1111_0000_0000_0000
-			  RoutedEventFlag.KeyDown
+			  RoutedEventFlag.PreviewKeyDown
+			| RoutedEventFlag.PreviewKeyUp
+			| RoutedEventFlag.KeyDown
 			| RoutedEventFlag.KeyUp;
 
 		private const RoutedEventFlag _isFocus = // 0b0000_0000_0000_0000___0000_0000_0000_0000___0111_1111_0000_0000___0000_0000_0000_0000

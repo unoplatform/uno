@@ -203,9 +203,9 @@ namespace Windows.UI.Xaml
 				this.Log().Debug($"Registering {eventName} on {this}.");
 			}
 
-			if (!_eventHandlers.TryGetValue(eventName, out var registration))
+			if (!_eventHandlers.TryGetValue((eventName, onCapturePhase), out var registration))
 			{
-				_eventHandlers[eventName] = registration = new EventRegistration(
+				_eventHandlers[(eventName, onCapturePhase)] = registration = new EventRegistration(
 					this,
 					eventName,
 					onCapturePhase,
@@ -216,9 +216,9 @@ namespace Windows.UI.Xaml
 			registration.Add(handler, invoker);
 		}
 
-		internal void UnregisterEventHandler(string eventName, Delegate handler, GenericEventHandler invoker)
+		internal void UnregisterEventHandler(string eventName, Delegate handler, GenericEventHandler invoker, bool onCapturePhase = false)
 		{
-			if (_eventHandlers.TryGetValue(eventName, out var registration))
+			if (_eventHandlers.TryGetValue((eventName, onCapturePhase), out var registration))
 			{
 				registration.Remove(handler, invoker);
 			}
@@ -228,12 +228,12 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		internal HtmlEventDispatchResult InternalDispatchEvent(string eventName, EventArgs eventArgs = null, string nativeEventPayload = null)
+		internal HtmlEventDispatchResult InternalDispatchEvent(string eventName, EventArgs eventArgs = null, string nativeEventPayload = null, bool onCapturePhase = false)
 		{
 			var n = eventName;
 			try
 			{
-				return InternalInnerDispatchEvent(eventArgs, nativeEventPayload, n);
+				return InternalInnerDispatchEvent(eventArgs, nativeEventPayload, n, onCapturePhase);
 			}
 			catch (Exception e)
 			{
@@ -250,9 +250,9 @@ namespace Windows.UI.Xaml
 		/// See https://github.com/dotnet/runtime/issues/56309
 		/// </remarks>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		private HtmlEventDispatchResult InternalInnerDispatchEvent(EventArgs eventArgs, string nativeEventPayload, string n)
+		private HtmlEventDispatchResult InternalInnerDispatchEvent(EventArgs eventArgs, string nativeEventPayload, string n, bool onCapturePhase = false)
 		{
-			if (_eventHandlers.TryGetValue(n, out var registration))
+			if (_eventHandlers.TryGetValue((n, onCapturePhase), out var registration))
 			{
 				return registration.Dispatch(eventArgs, nativeEventPayload);
 			}
@@ -278,7 +278,7 @@ namespace Windows.UI.Xaml
 #endif
 		[Preserve]
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		public static int DispatchEvent(int handle, string eventName, string eventArgs)
+		public static int DispatchEvent(int handle, string eventName, string eventArgs, bool onCapturePhase)
 		{
 #if DEBUG
 			try
@@ -287,7 +287,7 @@ namespace Windows.UI.Xaml
 				// Dispatch to right object, if we can find it
 				if (GetElementFromHandle(handle) is UIElement element)
 				{
-					return (int)element.InternalDispatchEvent(eventName, nativeEventPayload: eventArgs);
+					return (int)element.InternalDispatchEvent(eventName, nativeEventPayload: eventArgs, onCapturePhase: onCapturePhase);
 				}
 				else
 				{
@@ -305,7 +305,20 @@ namespace Windows.UI.Xaml
 #endif
 		}
 
-		private readonly Dictionary<string, EventRegistration> _eventHandlers = new Dictionary<string, EventRegistration>(StringComparer.OrdinalIgnoreCase);
+		public class TupleComparer : IEqualityComparer<(string, bool)>
+		{
+			public bool Equals((string, bool) x, (string, bool) y)
+			{
+				return StringComparer.OrdinalIgnoreCase.Equals(x.Item1, y.Item1) && x.Item2 == y.Item2;
+			}
+
+			public int GetHashCode((string, bool) obj)
+			{
+				return StringComparer.OrdinalIgnoreCase.GetHashCode(obj.Item1) ^ obj.Item2.GetHashCode();
+			}
+		}
+
+		private readonly Dictionary<(string, bool), EventRegistration> _eventHandlers = new Dictionary<(string, bool), EventRegistration>(new TupleComparer());
 
 		internal delegate EventArgs EventArgsParser(object sender, string payload);
 

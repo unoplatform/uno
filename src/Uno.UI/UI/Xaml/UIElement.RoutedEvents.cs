@@ -146,7 +146,11 @@ namespace Windows.UI.Xaml
 
 		/* ** */
 		internal /* ** */  static RoutedEvent DropCompletedEvent { get; } = new RoutedEvent(RoutedEventFlag.DropCompleted);
+#if __WASM__
+		public static RoutedEvent PreviewKeyDownEvent { get; } = new RoutedEvent(RoutedEventFlag.PreviewKeyDown);
 
+		public static RoutedEvent PreviewKeyUpEvent { get; } = new RoutedEvent(RoutedEventFlag.PreviewKeyUp);
+#endif
 		public static RoutedEvent KeyDownEvent { get; } = new RoutedEvent(RoutedEventFlag.KeyDown);
 
 		public static RoutedEvent KeyUpEvent { get; } = new RoutedEvent(RoutedEventFlag.KeyUp);
@@ -433,6 +437,20 @@ namespace Windows.UI.Xaml
 			add => AddHandler(DropCompletedEvent, value, false);
 			remove => RemoveHandler(DropCompletedEvent, value);
 		}
+
+#if __WASM__
+		public event KeyEventHandler PreviewKeyDown
+		{
+			add => AddHandler(PreviewKeyDownEvent, value, false);
+			remove => RemoveHandler(PreviewKeyDownEvent, value);
+		}
+
+		public event KeyEventHandler PreviewKeyUp
+		{
+			add => AddHandler(PreviewKeyUpEvent, value, false);
+			remove => RemoveHandler(PreviewKeyUpEvent, value);
+		}
+#endif
 
 #if __MACOS__
 		public new event KeyEventHandler KeyDown
@@ -748,6 +766,16 @@ namespace Windows.UI.Xaml
 				{
 					KeyboardStateTracker.OnKeyUp(keyArgs.OriginalKey);
 				}
+#if __WASM__
+				else if (routedEvent == PreviewKeyDownEvent)
+				{
+					KeyboardStateTracker.OnKeyDown(keyArgs.OriginalKey);
+				}
+				else if (routedEvent == PreviewKeyUpEvent)
+				{
+					KeyboardStateTracker.OnKeyUp(keyArgs.OriginalKey);
+				}
+#endif
 			}
 		}
 
