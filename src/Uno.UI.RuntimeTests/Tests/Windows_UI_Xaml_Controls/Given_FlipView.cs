@@ -9,6 +9,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.RuntimeTests.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.FlipViewPages;
+using Windows.Foundation.Metadata;
 using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -59,6 +60,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 #if __MACOS__
 		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#elif __IOS__
+		[Ignore("Currently fails on iOS, will be handled on #12780")]
 #endif
 		public async Task When_Background_Color()
 		{
