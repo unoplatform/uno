@@ -113,7 +113,7 @@ partial class StackPanel
 		{
 			SetSnapPointsChangeNotificationsRequirement(true, true);
 		}
-		
+
 		_horizontalSnapPointsChanged += value;
 	}
 
