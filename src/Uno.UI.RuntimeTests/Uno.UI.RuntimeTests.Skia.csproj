@@ -87,11 +87,6 @@
 		<PRIResource Include="Resources\**\*.resw" />
 	</ItemGroup>
 
-	<ItemGroup>
-		<Content Include="Assets\**" />
-		<Content Include="Images\**" />
-	</ItemGroup>
-
 	<Target Name="ValidateLocalAssets" AfterTargets="Build" Condition="'$(TargetFramework)'!=''">
 		<Message Text="Validating local assets" Importance="high" />
 		<Error Condition="!Exists('$(OutputPath)Uno.UI.RuntimeTests\Assets\TransientAsset01.txt')" Text="$(OutputPath)uno.ui.runtimetests\Assets\TransientAsset01.txt" />
@@ -123,20 +118,5 @@
 		</Page>
 	</ItemGroup>
 
-	<ItemGroup>
-		<Content Include="..\ReferenceImages\dotnet_bot_link.png" Link="dotnet_bot_link.png" />
-		<Content Include="..\ReferenceImages\dotnet_bot_targetpath.png" Link="dotnet_bot_targetpath.png" TargetPath="dotnet_bot_targetpath.png" />
-		<Content Include="..\ReferenceImages\dotnet_bot_link_targetpath.png" TargetPath="dotnet_bot_link_targetpath.png" />
-		<Content Include="..\ReferenceImages\Assets\dotnet_bot_link_assets.png" Link="Assets\dotnet_bot_link_assets.png" />
-		<Content Include="..\ReferenceImages\Assets\dotnet_bot_targetpath_assets.png" Link="Assets\dotnet_bot_targetpath_assets.png" TargetPath="Assets\dotnet_bot_targetpath_assets.png" />
-		<Content Include="..\ReferenceImages\Assets\dotnet_bot_link_targetpath_assets.png" TargetPath="Assets\dotnet_bot_link_targetpath_assets.png" />
-		<Content Include="..\ReferenceImages\Assets\Images\dotnet_bot_link_assets_images.png" Link="Assets\Images\dotnet_bot_link_assets_images.png" />
-		<Content Include="..\ReferenceImages\Assets\Images\dotnet_bot_targetpath_assets_images.png" Link="Assets\Images\dotnet_bot_targetpath_assets_images.png" TargetPath="Assets\Images\dotnet_bot_targetpath_assets_images.png" />
-		<Content Include="..\ReferenceImages\Assets\Images\dotnet_bot_link_targetpath_assets_images.png" TargetPath="Assets\Images\dotnet_bot_link_targetpath_assets_images.png" />
-		<Content Include="..\ReferenceImages\Images\dotnet_bot_link_images.png" Link="Images\dotnet_bot_link_images.png" />
-		<Content Include="..\ReferenceImages\Images\dotnet_bot_targetpath_images.png" Link="Images\dotnet_bot_targetpath_images.png" TargetPath="Images\dotnet_bot_targetpath_images.png" />
-		<Content Include="..\ReferenceImages\Images\dotnet_bot_link_targetpath_images.png" TargetPath="Images\dotnet_bot_link_targetpath_images.png" />
-		<Content Include="dotnet_bot.png" />
-	</ItemGroup>
-
+	<Import Project="ImageImport.props" />
 </Project>
