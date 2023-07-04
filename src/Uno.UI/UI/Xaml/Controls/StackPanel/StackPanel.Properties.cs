@@ -1,8 +1,9 @@
 ﻿using System;
+using Uno.UI.Xaml;
 using Windows.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml.Controls;
-//TODO:MZ: Use generated DPs
+
 partial class StackPanel
 {
 	/// <summary>
@@ -17,19 +18,12 @@ partial class StackPanel
 	/// </summary>
 	public bool AreScrollSnapPointsRegular
 	{
-		get => (bool)GetValue(AreScrollSnapPointsRegularProperty);
-		set => SetValue(AreScrollSnapPointsRegularProperty, value);
+		get => GetAreScrollSnapPointsRegularValue();
+		set => SetAreScrollSnapPointsRegularValue(value);
 	}
 
-	/// <summary>
-	/// Identifies the AreScrollSnapPointsRegular dependency property.
-	/// </summary>
-	public static DependencyProperty AreScrollSnapPointsRegularProperty { get; } =
-		DependencyProperty.Register(
-			nameof(AreScrollSnapPointsRegular),
-			typeof(bool),
-			typeof(StackPanel),
-			new FrameworkPropertyMetadata(false));
+	[GeneratedDependencyProperty(DefaultValue = false)]
+	public static DependencyProperty AreScrollSnapPointsRegularProperty { get; } = CreateAreScrollSnapPointsRegularProperty();
 
 	/// <summary>
 	/// Gets a value that indicates whether the vertical snap points
@@ -43,38 +37,30 @@ partial class StackPanel
 	/// </summary>
 	public BackgroundSizing BackgroundSizing
 	{
-		get => (BackgroundSizing)GetValue(BackgroundSizingProperty);
-		set => SetValue(BackgroundSizingProperty, value);
+		get => GetBackgroundSizingValue();
+		set => SetBackgroundSizingValue(value);
 	}
 
 	/// <summary>
 	/// Identifies the BackgroundSizing dependency property.
 	/// </summary>
-	public static DependencyProperty BackgroundSizingProperty { get; } =
-		DependencyProperty.Register(
-			nameof(BackgroundSizing),
-			typeof(BackgroundSizing),
-			typeof(StackPanel),
-			new FrameworkPropertyMetadata(default(BackgroundSizing)));
+	[GeneratedDependencyProperty(DefaultValue = default(BackgroundSizing))]
+	public static DependencyProperty BackgroundSizingProperty { get; } = CreateBackgroundSizingProperty();
 
 	/// <summary>
 	/// Gets or sets a brush that describes the border fill of the panel.
 	/// </summary>
 	public Brush BorderBrush
 	{
-		get => (Brush)GetValue(BorderBrushProperty);
-		set => SetValue(BorderBrushProperty, value);
+		get => GetBorderBrushValue();
+		set => SetBorderBrushValue(value);
 	}
 
 	/// <summary>
 	/// Identifies the BorderBrush dependency property.
 	/// </summary>
-	public static DependencyProperty BorderBrushProperty { get; } =
-		DependencyProperty.Register(
-			nameof(BorderBrush),
-			typeof(Brush),
-			typeof(StackPanel),
-			new FrameworkPropertyMetadata(default(Brush)));
+	[GeneratedDependencyProperty(DefaultValue = default(Brush))]
+	public static DependencyProperty BorderBrushProperty { get; } = CreateBorderBrushProperty();
 
 	/// <summary>
 	/// Gets or sets the border thickness of the panel.
@@ -88,12 +74,10 @@ partial class StackPanel
 	/// <summary>
 	/// Identifies the BorderThickness dependency property.
 	/// </summary>
-	public static DependencyProperty BorderThicknessProperty { get; } =
-		DependencyProperty.Register(
-			nameof(BorderThickness),
-			typeof(Thickness),
-			typeof(StackPanel),
-			new FrameworkPropertyMetadata(default(Thickness)));
+	[GeneratedDependencyProperty]
+	public static DependencyProperty BorderThicknessProperty { get; } = CreateBorderThicknessProperty();
+
+	private static Thickness GetBorderThicknessDefaultValue() => default;
 
 	/// <summary>
 	/// Gets or sets the radius for the corners of the panel's border.
@@ -107,52 +91,42 @@ partial class StackPanel
 	/// <summary>
 	/// Identifies the CornerRadius dependency property.
 	/// </summary>
-	public static DependencyProperty CornerRadiusProperty { get; } =
-		DependencyProperty.Register(
-			nameof(CornerRadius),
-			typeof(CornerRadius),
-			typeof(StackPanel),
-			new FrameworkPropertyMetadata(default(CornerRadius)));
+	[GeneratedDependencyProperty]
+	public static DependencyProperty CornerRadiusProperty { get; } = CreateCornerRadiusProperty();
+
+	private static CornerRadius GetCornerRadiusDefaultValue() => default;
 
 	/// <summary>
 	/// Gets or sets the dimension by which child elements are stacked.
 	/// </summary>
 	public Orientation Orientation
 	{
-		get => (Orientation)GetValue(OrientationProperty);
-		set => SetValue(OrientationProperty, value);
+		get => GetOrientationValue();
+		set => SetOrientationValue(value);
 	}
 
 	/// <summary>
 	/// Identifies the Orientation  dependency property.
 	/// </summary>
-	public static DependencyProperty OrientationProperty { get; } =
-		DependencyProperty.Register(
-			nameof(Orientation),
-			typeof(Orientation),
-			typeof(StackPanel),
-			new FrameworkPropertyMetadata(
-				default(Orientation),
-				FrameworkPropertyMetadataOptions.AffectsMeasure));
+	[GeneratedDependencyProperty(Options = FrameworkPropertyMetadataOptions.AffectsMeasure)]
+	public static DependencyProperty OrientationProperty { get; } = CreateOrientationProperty();
 
 	/// <summary>
 	/// Gets or sets the distance between the border and its child object.
 	/// </summary>
 	public Thickness Padding
 	{
-		get => (Thickness)GetValue(PaddingProperty);
-		set => SetValue(PaddingProperty, value);
+		get => GetPaddingValue();
+		set => SetPaddingValue(value);
 	}
 
 	/// <summary>
 	/// Identifies the Padding dependency property.
 	/// </summary>
-	public static DependencyProperty PaddingProperty { get; } =
-		DependencyProperty.Register(
-			nameof(Padding),
-			typeof(Thickness),
-			typeof(StackPanel),
-			new FrameworkPropertyMetadata(default(Thickness)));
+	[GeneratedDependencyProperty]
+	public static DependencyProperty PaddingProperty { get; } = CreatePaddingProperty();
+
+	private static Thickness GetPaddingDefaultValue() => default;
 
 	/// <summary>
 	/// Gets or sets a uniform distance (in pixels) between stacked items.
@@ -160,22 +134,18 @@ partial class StackPanel
 	/// </summary>
 	public double Spacing
 	{
-		get => (double)GetValue(SpacingProperty);
-		set => SetValue(SpacingProperty, value);
+		get => GetSpacingValue();
+		set => SetSpacingValue(value);
 	}
 
 	/// <summary>
 	/// Identifies the Spacing dependency property.
 	/// </summary>
-	public static DependencyProperty SpacingProperty { get; } =
-		DependencyProperty.Register(
-			nameof(Spacing),
-			typeof(double),
-			typeof(StackPanel),
-			new FrameworkPropertyMetadata(0.0, FrameworkPropertyMetadataOptions.AffectsMeasure));
+	[GeneratedDependencyProperty(DefaultValue = 0.0, Options = FrameworkPropertyMetadataOptions.AffectsMeasure)]
+	public static DependencyProperty SpacingProperty { get; } = CreateSpacingProperty();
 
 	private EventHandler<object> _horizontalSnapPointsChanged;
-	
+
 	/// <summary>
 	/// Occurs when the measurements for horizontal snap points change.
 	/// </summary>
@@ -184,7 +154,7 @@ partial class StackPanel
 		add => AddHorizontalSnapPointsChanged(value);
 		remove => RemoveHorizontalSnapPointsChanged(value);
 	}
-	
+
 	private EventHandler<object> _verticalSnapPointsChanged;
 
 	/// <summary>

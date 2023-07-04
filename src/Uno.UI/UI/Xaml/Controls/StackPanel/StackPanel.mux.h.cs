@@ -1,7 +1,5 @@
 ﻿// MUX Reference StackPanel.h
 
-using System.Collections.Generic;
-
 namespace Windows.UI.Xaml.Controls;
 
 partial class StackPanel
