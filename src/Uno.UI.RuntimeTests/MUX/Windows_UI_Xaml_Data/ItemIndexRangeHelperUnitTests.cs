@@ -1,4 +1,5 @@
-﻿using DirectUI.Components;
+﻿#if HAS_UNO
+using DirectUI.Components;
 using Windows.UI.Xaml.Data;
 
 using Windows.UI.Xaml.Tests.Enterprise;
@@ -15,3 +16,4 @@ public partial class ItemIndexRangeHelperUnitTests : BaseDxamlTestClass
 		VERIFY_ARE_EQUAL(range.Length, length);
 	}
 }
+#endif

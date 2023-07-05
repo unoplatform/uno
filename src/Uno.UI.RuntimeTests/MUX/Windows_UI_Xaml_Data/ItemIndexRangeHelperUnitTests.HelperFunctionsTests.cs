@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿#if HAS_UNO
+using System.Collections.Generic;
 using DirectUI.Components;
 
 namespace Uno.UI.RuntimeTests.MUX.Windows_UI_Xaml_Data;
@@ -80,3 +81,4 @@ public partial class ItemIndexRangeHelperUnitTests
 		VERIFY_IS_FALSE(ItemIndexRangeHelper.IsFirstRangeAdjacentToSecondRange(1, 5, 7));
 	}
 }
+#endif

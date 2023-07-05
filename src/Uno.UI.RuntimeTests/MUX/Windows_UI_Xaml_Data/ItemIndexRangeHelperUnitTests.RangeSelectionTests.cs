@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿#if HAS_UNO
+using System.Collections.Generic;
 using DirectUI.Components;
 
 namespace Uno.UI.RuntimeTests.MUX.Windows_UI_Xaml_Data;
@@ -748,3 +749,4 @@ public partial class ItemIndexRangeHelperUnitTests
 		VerifyRange(removedRanges[1], 10, 3);
 	}
 }
+#endif
