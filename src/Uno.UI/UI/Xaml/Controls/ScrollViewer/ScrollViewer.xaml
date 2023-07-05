@@ -277,7 +277,8 @@
 								HorizontalAlignment="Right"
 								skia:SmallChange="16"
 								skia:Width="16"
-								macos:Width="16"/>
+								skia:SmallChange="16"
+								macos:Width="16" />
 
 							<ScrollBar
 								x:Name="HorizontalScrollBar"
@@ -290,7 +291,8 @@
 								Value="{TemplateBinding HorizontalOffset}"
 								ViewportSize="{TemplateBinding ViewportWidth}"
 								skia:Height="16"
-								macos:Height="16"/>
+								skia:SmallChange="16"
+								macos:Height="16" />
 
 							<Border
 								x:Name="ScrollBarSeparator"

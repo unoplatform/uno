@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Text;
 using Windows.Foundation;
 using Uno.Disposables;
@@ -7,6 +8,8 @@ using Windows.UI.Xaml.Automation;
 using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
+using Pointer = Windows.UI.Xaml.Input.Pointer;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
@@ -969,6 +972,20 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		{
 			var value = Value;
 			var change = LargeChange;
+			if (VisualTreeHelper.GetParent(VisualTreeHelper.GetParent(VisualTreeHelper.GetParent(this))) is ScrollViewer
+			    sv)
+			{
+				if (this == typeof(ScrollViewer)
+					    .GetField("_verticalScrollbar", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(sv))
+				{
+					change = sv.ActualHeight;
+				}
+				else if (this == typeof(ScrollViewer)
+					         .GetField("_horizontalScrollbar", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(sv))
+				{
+					change = sv.ActualWidth;
+				}
+			}
 			var edge = Maximum;
 			var newValue = Math.Min(value + change, edge);
 			if (newValue != value)
