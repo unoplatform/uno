@@ -13,7 +13,6 @@
 
 		<UnoRuntimeIdentifier>Skia</UnoRuntimeIdentifier>
 		<PlatformItemsBasePath>.\</PlatformItemsBasePath>
-		<Nullable>enable</Nullable>
 	</PropertyGroup>
 
 	<ItemGroup>

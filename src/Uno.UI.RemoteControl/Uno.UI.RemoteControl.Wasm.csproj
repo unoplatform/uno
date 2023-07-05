@@ -15,8 +15,6 @@
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>
 
-		<Nullable>enable</Nullable>
-
 		<UnoRuntimeIdentifier>WebAssembly</UnoRuntimeIdentifier>
 		<PlatformItemsBasePath>..\Uno.UI.RemoteControl\</PlatformItemsBasePath>
 

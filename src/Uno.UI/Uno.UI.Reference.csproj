@@ -14,8 +14,6 @@
 		<BuildForLiveUnitTesting>false</BuildForLiveUnitTesting>
 		<NoWarn>$(NoWarn);NU1701;1572;1587;419;1574;1711;1734;CS0105</NoWarn>
 
-		<Nullable>disable</Nullable>
-
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>
 
