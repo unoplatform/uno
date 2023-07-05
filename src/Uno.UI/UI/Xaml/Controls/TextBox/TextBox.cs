@@ -959,6 +959,15 @@ namespace Windows.UI.Xaml.Controls
 		protected override void OnKeyDown(KeyRoutedEventArgs args)
 		{
 			base.OnKeyDown(args);
+			
+			
+			// On skia, sometimes SelectionStart is updated to a new value before KeyDown is fired, so
+			// we need to get selectionStart from another source on Skia. 
+#if __SKIA__
+			var selectionStart = TextBoxView.SelectionBeforeKeyDown.start;
+#else
+			var selectionStart = SelectionStart;
+#endif
 
 			// Note: On windows only keys that are "moving the cursor" are handled
 			//		 AND ** only KeyDown ** is handled (not KeyUp)
@@ -971,7 +980,7 @@ namespace Windows.UI.Xaml.Controls
 					}
 					break;
 				case VirtualKey.Down:
-					if (TextBoxView.SelectionBeforeKeyDown.start != Text.Length)
+					if (selectionStart != Text.Length)
 					{
 						SelectionStart = Text.Length;
 						args.Handled = true;
@@ -982,13 +991,13 @@ namespace Windows.UI.Xaml.Controls
 					}
 					break;
 				case VirtualKey.Left:
-					if (TextBoxView.SelectionBeforeKeyDown.start != 0)
+					if (selectionStart != 0)
 					{
 						args.Handled = true;
 					}
 					break;
 				case VirtualKey.Right:
-					if (TextBoxView.SelectionBeforeKeyDown.start != Text.Length)
+					if (selectionStart != Text.Length)
 					{
 						args.Handled = true;
 					}
