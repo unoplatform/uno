@@ -21,6 +21,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 	public partial class Selector : ItemsControl
 	{
 		private protected ScrollViewer m_tpScrollViewer;
+		protected bool _changingSelectedIndex;
 
 		private protected IVirtualizingPanel VirtualizingPanel => ItemsPanelRoot as IVirtualizingPanel;
 
@@ -62,7 +63,10 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 			if (args.Property == SelectedItemProperty)
 			{
-				OnSelectedItemChanged(args.OldValue, args.NewValue, updateItemSelectedState: true);
+				if (!_changingSelectedIndex)
+				{
+					OnSelectedItemChanged(args.OldValue, args.NewValue, updateItemSelectedState: true);
+				}
 			}
 			else if (args.Property == SelectedIndexProperty)
 			{
@@ -289,19 +293,27 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		internal virtual void OnSelectedIndexChanged(int oldSelectedIndex, int newSelectedIndex)
 		{
-			var newSelectedItem = ItemFromIndex(newSelectedIndex);
-
-			if (ItemsSource is ICollectionView collectionView)
+			try
 			{
-				collectionView.MoveCurrentToPosition(newSelectedIndex);
-				//TODO: we should check if CurrentPosition actually changes, and set SelectedIndex back if not.
-			}
-			if (!object.Equals(SelectedItem, newSelectedItem))
-			{
-				SelectedItem = newSelectedItem;
-			}
+				_changingSelectedIndex = true;
+				var newSelectedItem = ItemFromIndex(newSelectedIndex);
 
-			SelectedIndexPath = GetIndexPathFromIndex(SelectedIndex);
+				if (ItemsSource is ICollectionView collectionView)
+				{
+					collectionView.MoveCurrentToPosition(newSelectedIndex);
+					//TODO: we should check if CurrentPosition actually changes, and set SelectedIndex back if not.
+				}
+				if (!object.Equals(SelectedItem, newSelectedItem))
+				{
+					SelectedItem = newSelectedItem;
+				}
+
+				SelectedIndexPath = GetIndexPathFromIndex(SelectedIndex);
+			}
+			finally
+			{
+				_changingSelectedIndex = false;
+			}
 		}
 
 		public string SelectedValuePath
