@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if __IOS__
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Linq;
@@ -54,3 +55,4 @@ namespace SampleControl.Presentation
 			=> (400, 400, 1024, 1024);
 	}
 }
+#endif

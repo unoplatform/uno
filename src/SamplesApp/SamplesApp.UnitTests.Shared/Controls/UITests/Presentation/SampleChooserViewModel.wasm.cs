@@ -1,4 +1,5 @@
-﻿using SampleControl.Entities;
+﻿#if __WASM__
+using SampleControl.Entities;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -40,3 +41,4 @@ namespace SampleControl.Presentation
 			=> (400, 400, 1200, 800);
 	}
 }
+#endif

@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if __SKIA__
+using System;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -53,3 +54,4 @@ namespace SampleControl.Presentation
 			=> (400, 400, 1200, 800);
 	}
 }
+#endif

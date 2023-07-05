@@ -1,4 +1,5 @@
-﻿using Android.Graphics;
+﻿#if __ANDROID__
+using Android.Graphics;
 using Android.Views;
 using SampleControl.Entities;
 using System;
@@ -64,3 +65,4 @@ namespace SampleControl.Presentation
 
 	}
 }
+#endif
