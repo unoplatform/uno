@@ -1,4 +1,6 @@
-﻿namespace Windows.Networking
+#nullable disable
+
+namespace Windows.Networking
 {
 	/// <summary>
 	/// The type of a HostName object.	

@@ -1,3 +1,5 @@
+#nullable disable
+
 using SamplesApp.UITests.TestFramework;
 using System;
 using System.Collections.Generic;

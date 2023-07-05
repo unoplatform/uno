@@ -1,4 +1,6 @@
-﻿using System;
+#nullable disable
+
+using System;
 using WebKit;
 using Uno.Foundation.Logging;
 using Uno.UI.Extensions;

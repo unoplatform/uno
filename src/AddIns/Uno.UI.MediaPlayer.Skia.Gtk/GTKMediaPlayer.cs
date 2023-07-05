@@ -1,4 +1,4 @@
-#nullable enable
+#nullable disable
 
 using Windows.UI.Core;
 using LibVLCSharp.Shared;

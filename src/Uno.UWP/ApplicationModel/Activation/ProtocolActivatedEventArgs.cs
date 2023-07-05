@@ -1,4 +1,6 @@
-﻿using System;
+#nullable disable
+
+using System;
 using Uno;
 
 namespace Windows.ApplicationModel.Activation

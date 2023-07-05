@@ -1,9 +1,10 @@
-﻿#if !__IOS__ && !__MACOS__ && !__SKIA__ && !__ANDROID__
+#nullable disable
+
+#if !__IOS__ && !__MACOS__ && !__SKIA__ && !__ANDROID__
 #define LEGACY_SHAPE_MEASURE
 #endif
 
 #if LEGACY_SHAPE_MEASURE
-#nullable enable
 using Windows.UI.Xaml.Media;
 using System;
 using System.Collections.Generic;

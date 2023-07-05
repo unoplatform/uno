@@ -1,8 +1,8 @@
-﻿#if IS_UNIT_TESTS
+#nullable disable
+
+#if IS_UNIT_TESTS
 #pragma warning disable CS0067
 #endif
-
-#nullable enable
 
 using System;
 using System.Collections.Generic;

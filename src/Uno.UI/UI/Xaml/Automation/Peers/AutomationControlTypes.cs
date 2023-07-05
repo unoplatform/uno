@@ -1,4 +1,6 @@
-﻿namespace Windows.UI.Xaml.Automation.Peers
+#nullable disable
+
+namespace Windows.UI.Xaml.Automation.Peers
 {
 	public enum AutomationControlType
 	{

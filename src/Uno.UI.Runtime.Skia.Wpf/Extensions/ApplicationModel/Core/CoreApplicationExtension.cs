@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable disable
 
 using System.Windows;
 using Uno.ApplicationModel.Core;

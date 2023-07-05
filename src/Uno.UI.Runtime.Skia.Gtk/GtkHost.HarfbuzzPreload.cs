@@ -1,4 +1,6 @@
-﻿using System;
+#nullable disable
+
+using System;
 using System.IO;
 using Uno.Foundation.Logging;
 using Windows.UI.Xaml;

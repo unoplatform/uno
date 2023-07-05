@@ -1,3 +1,5 @@
+#nullable disable
+
 using SamplesApp.Microsoft_UI_Xaml_Controls.WebView2Tests;
 using Uno.UI.Samples.Controls;
 using Windows.UI.Xaml.Controls;

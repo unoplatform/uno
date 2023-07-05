@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable disable
 
 using Uno.UI.Xaml.Core;
 using Windows.System;

@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable disable
 
 using Windows.ApplicationModel.Core;
 using Windows.UI;

@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable disable
 
 using Uno.UI.Xaml.Controls.Extensions;
 using Windows.UI.Xaml;

@@ -1,4 +1,5 @@
-﻿#nullable enable
+#nullable disable
+
 #pragma warning disable CS0618 // obsolete members
 
 using System;

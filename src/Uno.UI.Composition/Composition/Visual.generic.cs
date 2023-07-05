@@ -1,4 +1,4 @@
-#nullable enable
+#nullable disable
 
 #if !__IOS__ && !__SKIA__ && !__WASM__ && !__ANDROID__ && !__MACOS__ && !NETFRAMEWORK
 using System.Numerics;

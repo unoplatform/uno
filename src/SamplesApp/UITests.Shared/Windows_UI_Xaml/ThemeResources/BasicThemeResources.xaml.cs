@@ -1,4 +1,6 @@
-﻿using Windows.UI.Core;
+#nullable disable
+
+using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;

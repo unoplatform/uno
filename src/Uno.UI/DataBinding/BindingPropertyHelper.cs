@@ -1,4 +1,4 @@
-#nullable enable
+#nullable disable
 
 #if !NETFX_CORE
 using System;

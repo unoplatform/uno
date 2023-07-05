@@ -1,3 +1,5 @@
+#nullable disable
+
 using Android.Graphics;
 using Android.Media;
 

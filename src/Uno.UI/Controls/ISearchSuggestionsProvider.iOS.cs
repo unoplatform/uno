@@ -1,4 +1,6 @@
-﻿using Uno;
+#nullable disable
+
+using Uno;
 using System.Threading.Tasks;
 using System;
 using CT = System.Threading.CancellationToken;

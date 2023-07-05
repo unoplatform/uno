@@ -1,5 +1,3 @@
-﻿#nullable enable
-
 #if HAS_SKOTTIE
 
 // SkiaSharp.Views.Uno uses the underlying canvas for hardware acceleration.

@@ -1,4 +1,5 @@
-﻿#nullable enable
+#nullable disable
+
 using System;
 
 namespace Uno.Foundation.Logging

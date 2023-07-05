@@ -1,6 +1,6 @@
-﻿#if !__ANDROID__ && !__IOS__ && !__WASM__ && !__SKIA__
-#nullable enable
+#nullable disable
 
+#if !__ANDROID__ && !__IOS__ && !__WASM__ && !__SKIA__
 using System;
 using System.Threading;
 using System.Threading.Tasks;

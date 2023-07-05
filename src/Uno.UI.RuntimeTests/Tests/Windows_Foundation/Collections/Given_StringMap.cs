@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable disable
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;

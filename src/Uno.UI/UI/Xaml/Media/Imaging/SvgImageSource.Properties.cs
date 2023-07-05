@@ -1,4 +1,6 @@
-﻿#pragma warning disable 67
+#nullable disable
+
+#pragma warning disable 67
 using System;
 using Windows.Foundation;
 

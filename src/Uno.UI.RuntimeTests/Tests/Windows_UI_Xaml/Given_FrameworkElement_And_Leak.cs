@@ -1,7 +1,7 @@
-﻿// Uncomment to get additional reference tracking
-// #define TRACK_REFS
-#nullable enable
+#nullable disable
 
+// Uncomment to get additional reference tracking
+// #define TRACK_REFS
 #if !WINDOWS_UWP
 using System;
 using System.Collections.Generic;

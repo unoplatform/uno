@@ -1,4 +1,6 @@
-﻿namespace Windows.Foundation;
+#nullable disable
+
+namespace Windows.Foundation;
 
 /// <summary>
 /// Provides a way to represent the current object as a string.

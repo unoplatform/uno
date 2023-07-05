@@ -1,4 +1,4 @@
-#nullable enable
+#nullable disable
 
 #if !IS_UNIT_TESTS
 namespace Windows.ApplicationModel.DataTransfer

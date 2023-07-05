@@ -1,4 +1,6 @@
-﻿namespace Uno.ApplicationModel.Core;
+#nullable disable
+
+namespace Uno.ApplicationModel.Core;
 
 internal interface ICoreApplicationExtension
 {

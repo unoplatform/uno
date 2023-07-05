@@ -1,3 +1,5 @@
+#nullable disable
+
 using Uno.UITest;
 
 namespace SamplesApp.UITests

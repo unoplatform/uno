@@ -1,6 +1,6 @@
-#if !HAS_UNO_WINUI
-#nullable enable
+#nullable disable
 
+#if !HAS_UNO_WINUI
 using System;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;

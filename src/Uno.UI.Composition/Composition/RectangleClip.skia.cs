@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-#nullable enable
+#nullable disable
 
 using SkiaSharp;
 

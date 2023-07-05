@@ -1,4 +1,6 @@
-﻿#if !NETFX_CORE
+#nullable disable
+
+#if !NETFX_CORE
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;

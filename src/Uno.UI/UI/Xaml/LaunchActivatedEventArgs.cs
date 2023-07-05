@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable disable
 
 #if HAS_UNO_WINUI
 using Windows.ApplicationModel.Activation;

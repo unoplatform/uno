@@ -1,4 +1,6 @@
-﻿using System;
+#nullable disable
+
+using System;
 using System.Runtime.InteropServices.JavaScript;
 
 namespace __Windows.UI.Xaml.Media.Animation

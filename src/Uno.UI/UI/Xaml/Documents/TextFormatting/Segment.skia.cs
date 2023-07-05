@@ -1,9 +1,9 @@
-﻿using System;
+#nullable disable
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using SkiaSharp;
-
-#nullable enable
 
 namespace Windows.UI.Xaml.Documents.TextFormatting
 {

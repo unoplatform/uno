@@ -1,4 +1,6 @@
-﻿using System.Collections.Specialized;
+#nullable disable
+
+using System.Collections.Specialized;
 using Windows.Foundation.Collections;
 
 namespace Uno.Extensions;

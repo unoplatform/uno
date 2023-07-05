@@ -1,8 +1,8 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+#nullable disable
+
+// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX reference NavigationViewItemExpandingEventArgs.cpp, commit 5ebf958
-
-#nullable enable
 
 namespace Microsoft.UI.Xaml.Controls
 {

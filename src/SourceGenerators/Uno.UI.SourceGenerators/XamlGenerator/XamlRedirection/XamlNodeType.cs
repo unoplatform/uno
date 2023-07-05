@@ -1,4 +1,6 @@
-﻿namespace Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection
+#nullable disable
+
+namespace Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection
 {
 	internal enum XamlNodeType
 	{

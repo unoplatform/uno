@@ -1,4 +1,6 @@
-﻿#if __NETSTD__
+#nullable disable
+
+#if __NETSTD__
 #define MEASURE_DIRTY_PATH_AVAILABLE
 #define ARRANGE_DIRTY_PATH_AVAILABLE
 #elif __ANDROID__

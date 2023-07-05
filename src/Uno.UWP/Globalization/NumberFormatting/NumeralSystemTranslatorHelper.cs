@@ -1,4 +1,6 @@
-﻿namespace Uno.Globalization.NumberFormatting;
+#nullable disable
+
+namespace Uno.Globalization.NumberFormatting;
 
 internal static class NumeralSystemTranslatorHelper
 {

@@ -1,3 +1,5 @@
+#nullable disable
+
 using Uno;
 
 namespace Windows.UI.Xaml.Automation

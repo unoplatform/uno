@@ -1,3 +1,5 @@
+#nullable disable
+
 // net6.0-macos uses CoreCLR (not mono) and the notification mechanism is different
 #pragma warning disable CS0169
 #if __IOS__ || (__MACOS__ && !NET6_0_OR_GREATER)

@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable disable
 
 using System;
 using Windows.ApplicationModel.Activation;

@@ -1,4 +1,6 @@
-﻿using Foundation;
+#nullable disable
+
+using Foundation;
 using Selector = ObjCRuntime.Selector;
 
 namespace Uno.Helpers.Theming;

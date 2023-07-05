@@ -1,4 +1,6 @@
-﻿namespace Uno.Foundation.Diagnostics.CodeAnalysis;
+#nullable disable
+
+namespace Uno.Foundation.Diagnostics.CodeAnalysis;
 
 /// <summary>
 /// Provide the ability to include an additional type to the linker hints generator.

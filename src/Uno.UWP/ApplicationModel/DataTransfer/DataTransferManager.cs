@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable disable
 
 #if __WASM__ || __IOS__ || __ANDROID__ || __MACOS__ || __SKIA__
 using System;

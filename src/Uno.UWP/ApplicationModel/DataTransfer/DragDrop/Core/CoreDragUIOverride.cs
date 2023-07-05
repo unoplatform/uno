@@ -1,6 +1,6 @@
-using Windows.Foundation;
+#nullable disable
 
-#nullable enable
+using Windows.Foundation;
 
 namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 {

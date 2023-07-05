@@ -1,4 +1,6 @@
-﻿namespace Windows.Media.Playback;
+#nullable disable
+
+namespace Windows.Media.Playback;
 
 public partial class PlaybackMediaMarkerReachedEventArgs
 {

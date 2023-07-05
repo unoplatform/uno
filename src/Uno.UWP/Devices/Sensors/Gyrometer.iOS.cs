@@ -1,3 +1,5 @@
+#nullable disable
+
 #if __IOS__
 using CoreMotion;
 using Foundation;

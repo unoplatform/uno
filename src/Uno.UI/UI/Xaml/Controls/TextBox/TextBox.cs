@@ -1,4 +1,6 @@
-﻿#if IS_UNIT_TESTS || UNO_REFERENCE_API || __MACOS__
+#nullable disable
+
+#if IS_UNIT_TESTS || UNO_REFERENCE_API || __MACOS__
 #pragma warning disable CS0067, CS649
 #endif
 

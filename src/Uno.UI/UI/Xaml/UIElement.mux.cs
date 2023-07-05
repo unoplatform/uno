@@ -1,6 +1,6 @@
-﻿//UIElement.cpp, UIElement_Partial.cpp
+#nullable disable
 
-#nullable enable
+//UIElement.cpp, UIElement_Partial.cpp
 
 using System;
 using System.Collections.Generic;

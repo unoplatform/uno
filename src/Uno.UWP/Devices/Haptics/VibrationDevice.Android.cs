@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable disable
 
 using System.Threading.Tasks;
 using Android.App;

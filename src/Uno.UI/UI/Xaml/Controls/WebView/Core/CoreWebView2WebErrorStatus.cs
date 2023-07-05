@@ -1,4 +1,6 @@
-﻿namespace Microsoft.Web.WebView2.Core;
+#nullable disable
+
+namespace Microsoft.Web.WebView2.Core;
 
 /// <summary>
 /// Indicates the error status values for web navigations.

@@ -1,6 +1,6 @@
-﻿#if IS_UNIT_TESTS || __NETSTD_REFERENCE__
-#nullable enable
+#nullable disable
 
+#if IS_UNIT_TESTS || __NETSTD_REFERENCE__
 using System.Threading.Tasks;
 
 namespace Windows.Devices.Haptics

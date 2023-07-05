@@ -1,4 +1,4 @@
-#nullable enable
+#nullable disable
 
 // ******************************************************************
 // Copyright � 2015-2018 Uno Platform Inc. All rights reserved.

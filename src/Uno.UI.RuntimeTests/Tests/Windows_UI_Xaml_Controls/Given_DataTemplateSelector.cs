@@ -1,4 +1,6 @@
-﻿using System;
+#nullable disable
+
+using System;
 using FluentAssertions;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;

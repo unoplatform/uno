@@ -1,4 +1,6 @@
-﻿using Uno;
+#nullable disable
+
+using Uno;
 using Uno.Extensions;
 using Windows.UI;
 using NotImplementedException = System.NotImplementedException;

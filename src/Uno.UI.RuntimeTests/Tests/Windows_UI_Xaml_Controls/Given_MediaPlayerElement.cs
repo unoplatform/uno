@@ -1,3 +1,5 @@
+#nullable disable
+
 using System;
 using Windows.Media.Core;
 using Windows.Media.Playback;

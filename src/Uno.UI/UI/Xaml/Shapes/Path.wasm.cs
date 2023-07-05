@@ -1,4 +1,5 @@
-﻿#nullable enable
+#nullable disable
+
 using Windows.UI.Xaml.Wasm;
 
 namespace Windows.UI.Xaml.Shapes

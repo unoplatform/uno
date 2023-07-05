@@ -1,4 +1,6 @@
-﻿using System.IO;
+#nullable disable
+
+using System.IO;
 using Windows.Storage.Streams;
 using System.Linq;
 using UwpBuffer = Windows.Storage.Streams.Buffer;

@@ -1,4 +1,6 @@
-﻿using Windows.UI.Core;
+#nullable disable
+
+using Windows.UI.Core;
 using System;
 using System.Collections.Generic;
 using System.Text;

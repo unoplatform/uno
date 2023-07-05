@@ -1,6 +1,6 @@
-﻿#if !(__ANDROID__ || __IOS__ || __MACOS__)
-#nullable enable
+#nullable disable
 
+#if !(__ANDROID__ || __IOS__ || __MACOS__)
 using System;
 using System.Collections.Generic;
 using System.Text;

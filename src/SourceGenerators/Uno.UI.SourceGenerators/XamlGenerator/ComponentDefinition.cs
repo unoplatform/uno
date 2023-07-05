@@ -1,5 +1,4 @@
-﻿#nullable enable
-
+#nullable disable
 
 namespace Uno.UI.SourceGenerators.XamlGenerator
 {

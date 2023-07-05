@@ -1,4 +1,6 @@
-﻿using System;
+#nullable disable
+
+using System;
 using System.Collections.Generic;
 using Microsoft.UI.Xaml.Controls;
 using static Microsoft.UI.Xaml.Controls._Tracing;

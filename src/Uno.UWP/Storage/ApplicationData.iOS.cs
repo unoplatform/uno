@@ -1,3 +1,5 @@
+#nullable disable
+
 #if __IOS__
 using System;
 using Foundation;

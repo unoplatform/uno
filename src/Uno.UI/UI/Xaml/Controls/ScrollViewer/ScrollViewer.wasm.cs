@@ -1,4 +1,5 @@
-﻿#nullable enable
+#nullable disable
+
 using System.Collections.Generic;
 using Windows.Foundation;
 

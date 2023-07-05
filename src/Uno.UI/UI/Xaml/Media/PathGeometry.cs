@@ -1,3 +1,5 @@
+#nullable disable
+
 using Uno.Media;
 using Windows.UI.Xaml.Markup;
 

@@ -1,3 +1,5 @@
+#nullable disable
+
 #pragma warning disable CS0168 // Disable for unused TestCleanupWrapper
 
 using System;

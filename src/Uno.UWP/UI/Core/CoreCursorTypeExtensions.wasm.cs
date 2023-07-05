@@ -1,4 +1,6 @@
-﻿using Uno.Extensions;
+#nullable disable
+
+using Uno.Extensions;
 using Uno.Foundation.Logging;
 
 namespace Windows.UI.Core;

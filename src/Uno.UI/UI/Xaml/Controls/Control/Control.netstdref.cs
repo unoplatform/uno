@@ -1,4 +1,6 @@
-﻿using Uno.UI.Controls;
+#nullable disable
+
+using Uno.UI.Controls;
 using Uno.Extensions;
 using System;
 using System.Collections.Generic;

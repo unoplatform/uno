@@ -1,4 +1,6 @@
-﻿using System.Drawing;
+#nullable disable
+
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;

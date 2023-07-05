@@ -1,4 +1,4 @@
-#nullable enable
+#nullable disable
 
 using Windows.ApplicationModel.DataTransfer.DragDrop.Core;
 using Windows.Foundation;

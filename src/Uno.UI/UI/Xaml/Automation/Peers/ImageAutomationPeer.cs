@@ -1,3 +1,5 @@
+#nullable disable
+
 namespace Windows.UI.Xaml.Automation.Peers
 {
 	public partial class ImageAutomationPeer : FrameworkElementAutomationPeer

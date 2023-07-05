@@ -1,6 +1,7 @@
-﻿#pragma warning disable CS8981
+#nullable disable
 
-#nullable enable
+#pragma warning disable CS8981
+
 // Based on https://github.com/dotnet/runtime/commit/bdc8e420aa75999021e06b85e2e1869962730a0f
 
 // Licensed to the .NET Foundation under one or more agreements.

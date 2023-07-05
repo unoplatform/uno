@@ -1,4 +1,6 @@
-﻿using System;
+#nullable disable
+
+using System;
 using System.Collections.Concurrent;
 using Uno;
 using Windows.Foundation;

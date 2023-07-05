@@ -1,4 +1,6 @@
-﻿using Uno.UI.DataBinding;
+#nullable disable
+
+using Uno.UI.DataBinding;
 
 namespace Windows.UI.Xaml
 {

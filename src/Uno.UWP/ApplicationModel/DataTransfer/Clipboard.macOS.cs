@@ -1,6 +1,6 @@
-﻿#if __MACOS__
-#nullable enable
+#nullable disable
 
+#if __MACOS__
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;

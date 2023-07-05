@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable disable
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 #if HAS_UNO || IS_UNIT_TESTS

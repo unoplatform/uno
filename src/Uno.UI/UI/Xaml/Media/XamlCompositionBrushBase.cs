@@ -1,3 +1,5 @@
+#nullable disable
+
 using Color = Windows.UI.Color;
 
 namespace Windows.UI.Xaml.Media

@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable disable
 
 using System.IO;
 using System.Runtime.InteropServices;

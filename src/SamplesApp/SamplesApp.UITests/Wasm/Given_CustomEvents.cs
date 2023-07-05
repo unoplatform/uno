@@ -1,4 +1,6 @@
-﻿using System.Threading;
+#nullable disable
+
+using System.Threading;
 using FluentAssertions;
 using NUnit.Framework;
 using SamplesApp.UITests.TestFramework;

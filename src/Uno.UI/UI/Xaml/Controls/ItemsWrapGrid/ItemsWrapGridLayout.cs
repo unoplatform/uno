@@ -1,4 +1,6 @@
-﻿#if !IS_UNIT_TESTS && !UNO_REFERENCE_API && !__MACOS__
+#nullable disable
+
+#if !IS_UNIT_TESTS && !UNO_REFERENCE_API && !__MACOS__
 using System;
 using System.Collections.Generic;
 using System.Text;

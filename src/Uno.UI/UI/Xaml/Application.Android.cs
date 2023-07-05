@@ -1,4 +1,6 @@
-﻿#if XAMARIN_ANDROID
+#nullable disable
+
+#if XAMARIN_ANDROID
 using System;
 using Android.Content.Res;
 using Android.OS;

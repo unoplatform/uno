@@ -1,4 +1,6 @@
-﻿using System.Drawing;
+#nullable disable
+
+using System.Drawing;
 using FluentAssertions.Execution;
 using NUnit.Framework;
 using SamplesApp.UITests.TestFramework;

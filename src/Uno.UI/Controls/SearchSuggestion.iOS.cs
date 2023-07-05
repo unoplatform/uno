@@ -1,4 +1,6 @@
-﻿using Uno.Extensions;
+#nullable disable
+
+using Uno.Extensions;
 using System;
 
 namespace Uno.UI.Controls

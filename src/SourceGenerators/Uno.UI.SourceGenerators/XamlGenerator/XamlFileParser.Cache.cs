@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable disable
 
 extern alias __uno;
 

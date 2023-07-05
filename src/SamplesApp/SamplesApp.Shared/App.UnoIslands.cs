@@ -1,3 +1,5 @@
+#nullable disable
+
 #if UNO_ISLANDS
 using System;
 using System.Collections.Generic;

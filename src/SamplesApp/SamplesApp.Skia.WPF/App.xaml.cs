@@ -1,4 +1,6 @@
-﻿using Uno.UI.Skia.Platform;
+#nullable disable
+
+using Uno.UI.Skia.Platform;
 
 namespace SamplesApp.WPF
 {

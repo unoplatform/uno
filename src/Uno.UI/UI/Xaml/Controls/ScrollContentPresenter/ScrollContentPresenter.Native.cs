@@ -1,4 +1,6 @@
-﻿using Windows.Foundation;
+#nullable disable
+
+using Windows.Foundation;
 using Uno.UI.Extensions;
 
 #if __IOS__ || __ANDROID__

@@ -1,4 +1,6 @@
-﻿using System;
+#nullable disable
+
+using System;
 using System.Drawing;
 
 #if NET6_0_OR_GREATER

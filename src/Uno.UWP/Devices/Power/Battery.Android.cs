@@ -1,5 +1,5 @@
-﻿
-#nullable enable
+#nullable disable
+
 
 namespace Windows.Devices.Power
 {

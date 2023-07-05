@@ -1,4 +1,6 @@
-﻿using Uno.UI.Rendering;
+#nullable disable
+
+using Uno.UI.Rendering;
 
 namespace Uno.UI.Runtime.Skia;
 

@@ -1,3 +1,5 @@
+#nullable disable
+
 using System;
 using Uno.Devices.Midi.Internal;
 using Windows.Devices.Bluetooth.Advertisement;

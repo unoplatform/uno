@@ -1,4 +1,4 @@
-#nullable enable
+#nullable disable
 
 using UIKit;
 using Windows.Data.Xml.Dom;

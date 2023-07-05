@@ -1,6 +1,7 @@
+#nullable disable
+
 #if UNO_HAS_MANAGED_SCROLL_PRESENTER
 #if __SKIA__
-#nullable enable
 using System.Numerics;
 
 namespace Windows.UI.Xaml.Controls

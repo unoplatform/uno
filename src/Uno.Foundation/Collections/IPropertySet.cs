@@ -1,4 +1,6 @@
-﻿namespace Windows.Foundation.Collections;
+#nullable disable
+
+namespace Windows.Foundation.Collections;
 
 /// <summary>
 /// Represents a collection of key-value pairs, correlating several other collection interfaces.

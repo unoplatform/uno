@@ -1,6 +1,6 @@
-﻿#if DEBUG
-#nullable enable
+#nullable disable
 
+#if DEBUG
 using Uno.Collections;
 using System;
 using System.Collections.Generic;

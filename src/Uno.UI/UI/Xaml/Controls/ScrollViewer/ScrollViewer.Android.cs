@@ -1,4 +1,5 @@
-﻿#nullable enable
+#nullable disable
+
 using Android.Views;
 using Android.Widget;
 using Uno.Extensions;

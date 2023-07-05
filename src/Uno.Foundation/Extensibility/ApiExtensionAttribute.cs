@@ -1,4 +1,6 @@
-﻿namespace Uno.Foundation.Extensibility;
+#nullable disable
+
+namespace Uno.Foundation.Extensibility;
 
 /// <summary>
 /// ApiExtension registration for the <see cref="ApiExtensibility"/> class.

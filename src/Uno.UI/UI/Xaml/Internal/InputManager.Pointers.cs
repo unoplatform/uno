@@ -1,4 +1,5 @@
-﻿#nullable enable
+#nullable disable
+
 using System;
 using System.Linq;
 using Windows.UI.Core;

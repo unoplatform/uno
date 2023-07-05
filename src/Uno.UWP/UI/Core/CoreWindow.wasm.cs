@@ -1,4 +1,6 @@
-﻿using Uno.Foundation;
+#nullable disable
+
+using Uno.Foundation;
 
 using NativeMethods = __Windows.UI.Core.CoreWindow.NativeMethods;
 

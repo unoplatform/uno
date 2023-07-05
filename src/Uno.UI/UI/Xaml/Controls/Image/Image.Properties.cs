@@ -1,4 +1,6 @@
-﻿#pragma warning disable 67
+#nullable disable
+
+#pragma warning disable 67
 
 using Windows.UI.Xaml.Media;
 

@@ -1,4 +1,6 @@
-﻿#if XAMARIN_IOS
+#nullable disable
+
+#if XAMARIN_IOS
 using Uno.UI.DataBinding;
 using System;
 using System.Collections.Generic;

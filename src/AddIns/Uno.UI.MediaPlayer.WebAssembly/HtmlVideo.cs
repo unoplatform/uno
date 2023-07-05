@@ -1,4 +1,5 @@
-﻿#nullable enable
+#nullable disable
+
 using Windows.UI.Xaml;
 
 namespace Uno.UI.Media;

@@ -1,4 +1,6 @@
-﻿extern alias __uno;
+#nullable disable
+
+extern alias __uno;
 
 namespace Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection
 {

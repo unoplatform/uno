@@ -1,4 +1,4 @@
-#nullable enable
+#nullable disable
 
 using Windows.Devices.Enumeration;
 using Windows.Security.Cryptography.Certificates;

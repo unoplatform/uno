@@ -1,3 +1,5 @@
+#nullable disable
+
 using Uno.UI.Xaml.Input;
 
 namespace Windows.UI.Xaml.Input

@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable disable
 
 #if __WASM__
 using System;

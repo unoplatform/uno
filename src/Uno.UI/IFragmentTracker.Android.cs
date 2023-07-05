@@ -1,4 +1,6 @@
-﻿using Android.App;
+#nullable disable
+
+using Android.App;
 using System;
 using System.Threading;
 using System.Threading.Tasks;

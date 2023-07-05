@@ -1,8 +1,8 @@
+#nullable disable
+
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // LosingFocusEventArgs.h, LosingFocusEventArgs.cpp
-
-#nullable enable
 
 using System;
 using Uno.UI.Xaml.Input;

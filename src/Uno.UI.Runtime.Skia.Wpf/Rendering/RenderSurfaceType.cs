@@ -1,4 +1,6 @@
-﻿namespace Uno.UI.Skia;
+#nullable disable
+
+namespace Uno.UI.Skia;
 
 public enum RenderSurfaceType
 {

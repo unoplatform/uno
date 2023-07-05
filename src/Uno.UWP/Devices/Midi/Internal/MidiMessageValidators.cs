@@ -1,4 +1,6 @@
-﻿using System;
+#nullable disable
+
+using System;
 using Windows.Devices.Midi;
 
 namespace Uno.Devices.Midi.Internal

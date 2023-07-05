@@ -1,4 +1,6 @@
-﻿using System;
+#nullable disable
+
+using System;
 using Android.Content;
 using Android.Graphics;
 using Android.Opengl;

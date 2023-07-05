@@ -1,3 +1,5 @@
+#nullable disable
+
 using System.Runtime.Serialization.Formatters;
 
 namespace Windows.Devices.Input

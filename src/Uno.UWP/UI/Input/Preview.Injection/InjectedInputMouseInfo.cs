@@ -1,4 +1,4 @@
-#nullable enable
+#nullable disable
 
 using Windows.Devices.Input;
 using Windows.Foundation;

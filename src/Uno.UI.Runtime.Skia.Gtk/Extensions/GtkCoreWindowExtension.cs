@@ -1,4 +1,5 @@
-﻿#nullable enable
+#nullable disable
+
 //#define TRACE_NATIVE_POINTER_EVENTS
 
 using System.Linq;

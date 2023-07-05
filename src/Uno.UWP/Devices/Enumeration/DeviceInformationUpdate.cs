@@ -1,4 +1,6 @@
-﻿using Uno.Devices.Enumeration.Internal;
+#nullable disable
+
+using Uno.Devices.Enumeration.Internal;
 
 namespace Windows.Devices.Enumeration
 {

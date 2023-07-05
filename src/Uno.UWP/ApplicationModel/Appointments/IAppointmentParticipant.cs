@@ -1,4 +1,6 @@
-﻿namespace Windows.ApplicationModel.Appointments;
+#nullable disable
+
+namespace Windows.ApplicationModel.Appointments;
 
 /// <summary>
 /// Provides info about a participant of an appointment in a calendar.

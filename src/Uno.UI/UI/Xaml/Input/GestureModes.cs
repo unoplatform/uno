@@ -1,4 +1,6 @@
-﻿namespace Windows.UI.Xaml.Input
+#nullable disable
+
+namespace Windows.UI.Xaml.Input
 {
 	internal enum GestureModes : byte
 	{

@@ -1,8 +1,8 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+#nullable disable
+
+// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference TwoPaneView.h, commit b3a2e45
-
-#nullable enable
 
 using Uno.Disposables;
 using Windows.UI.Xaml;

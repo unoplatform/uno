@@ -1,4 +1,4 @@
-#nullable enable
+#nullable disable
 
 using CoreGraphics;
 using Uno.UI.Xaml.Media;

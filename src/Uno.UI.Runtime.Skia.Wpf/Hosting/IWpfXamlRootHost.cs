@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable disable
 
 using Uno.UI.Hosting;
 using Uno.UI.Skia;

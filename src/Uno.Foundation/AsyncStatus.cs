@@ -1,4 +1,6 @@
-﻿namespace Windows.Foundation;
+#nullable disable
+
+namespace Windows.Foundation;
 
 /// <summary>
 /// Specifies the status of an asynchronous operation.

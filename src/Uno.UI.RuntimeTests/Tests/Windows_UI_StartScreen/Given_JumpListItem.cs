@@ -1,4 +1,6 @@
-﻿#if __ANDROID__ || __IOS__ || NETFX_CORE
+#nullable disable
+
+#if __ANDROID__ || __IOS__ || NETFX_CORE
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable disable
 
 #if __ANDROID__
 using View = Android.Views.View;

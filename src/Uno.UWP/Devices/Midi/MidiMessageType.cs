@@ -1,4 +1,6 @@
-﻿namespace Windows.Devices.Midi
+#nullable disable
+
+namespace Windows.Devices.Midi
 {
 	/// <summary>
 	/// Provides constants used to map MIDI message types

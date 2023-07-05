@@ -1,4 +1,6 @@
-﻿#if !__IOS__ && !__MACOS__ && !__ANDROID__
+#nullable disable
+
+#if !__IOS__ && !__MACOS__ && !__ANDROID__
 using System;
 using System.Threading;
 using Uno.UI.Dispatching;

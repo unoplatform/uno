@@ -1,3 +1,5 @@
+#nullable disable
+
 using System.Drawing;
 using CoreGraphics;
 using System;

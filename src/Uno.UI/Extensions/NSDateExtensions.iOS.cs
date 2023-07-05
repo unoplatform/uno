@@ -1,4 +1,6 @@
-﻿using Foundation;
+#nullable disable
+
+using Foundation;
 using System;
 
 namespace Uno.UI.Extensions

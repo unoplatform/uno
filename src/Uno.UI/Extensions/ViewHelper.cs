@@ -1,4 +1,6 @@
-﻿#if IS_UNIT_TESTS || UNO_REFERENCE_API
+#nullable disable
+
+#if IS_UNIT_TESTS || UNO_REFERENCE_API
 using System;
 using System.Linq;
 using System.Runtime.CompilerServices;

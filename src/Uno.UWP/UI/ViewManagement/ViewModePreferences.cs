@@ -1,3 +1,5 @@
+#nullable disable
+
 namespace Windows.UI.ViewManagement
 {
 	public partial class ViewModePreferences

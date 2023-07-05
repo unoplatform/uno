@@ -1,3 +1,5 @@
+#nullable disable
+
 #if !__ANDROID__
 using Windows.Data.Xml.Dom;
 

@@ -1,4 +1,6 @@
-﻿using Uno.Extensions;
+#nullable disable
+
+using Uno.Extensions;
 
 namespace Windows.UI.Text
 {

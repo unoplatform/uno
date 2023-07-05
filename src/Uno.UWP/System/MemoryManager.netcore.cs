@@ -1,6 +1,6 @@
-﻿#if __SKIA__
-#nullable enable
+#nullable disable
 
+#if __SKIA__
 using System;
 using System.Globalization;
 using System.Reflection;

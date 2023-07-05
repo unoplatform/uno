@@ -1,4 +1,6 @@
-﻿#pragma warning disable CA1848 // Use LoggerMessage 
+#nullable disable
+
+#pragma warning disable CA1848 // Use LoggerMessage 
 
 using System;
 using System.IO;

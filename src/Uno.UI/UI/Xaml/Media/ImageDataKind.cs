@@ -1,4 +1,6 @@
-﻿namespace Uno.UI.Xaml.Media;
+#nullable disable
+
+namespace Uno.UI.Xaml.Media;
 
 internal enum ImageDataKind
 {

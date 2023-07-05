@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable disable
 
 #if !__NETSTD_REFERENCE__
 using System;

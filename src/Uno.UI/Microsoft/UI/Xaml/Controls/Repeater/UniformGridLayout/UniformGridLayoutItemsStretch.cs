@@ -1,5 +1,3 @@
-#nullable enable
-
 namespace Microsoft.UI.Xaml.Controls
 {
 	public enum UniformGridLayoutItemsStretch

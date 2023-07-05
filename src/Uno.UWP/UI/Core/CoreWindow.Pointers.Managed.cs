@@ -1,6 +1,6 @@
-#if UNO_HAS_MANAGED_POINTERS
-#nullable enable
+#nullable disable
 
+#if UNO_HAS_MANAGED_POINTERS
 using System;
 using System.Runtime.CompilerServices;
 using Windows.Devices.Input;

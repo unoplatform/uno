@@ -1,6 +1,6 @@
-﻿#if __IOS__ || __SKIA__
-#nullable enable
+#nullable disable
 
+#if __IOS__ || __SKIA__
 using System;
 using System.Threading;
 using System.Threading.Tasks;

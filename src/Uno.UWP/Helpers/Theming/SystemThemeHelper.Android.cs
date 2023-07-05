@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable disable
 
 using Android.Content.Res;
 using Android.OS;

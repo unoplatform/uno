@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable disable
 
 using Uno.Diagnostics.Eventing;
 using Uno.Extensions;

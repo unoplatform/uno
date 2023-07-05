@@ -1,4 +1,6 @@
-﻿using Uno;
+#nullable disable
+
+using Uno;
 using Uno.Client;
 using Uno.Extensions;
 using Uno.Foundation.Logging;

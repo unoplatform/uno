@@ -1,3 +1,5 @@
+#nullable disable
+
 using Windows.UI.Xaml;
 
 namespace Windows.UI.Xaml.Controls.Primitives;

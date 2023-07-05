@@ -1,3 +1,5 @@
+#nullable disable
+
 namespace Microsoft.Web.WebView2.Core;
 
 /// <summary>

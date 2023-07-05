@@ -1,4 +1,6 @@
-﻿using System;
+#nullable disable
+
+using System;
 using System.Text;
 using Windows.UI.Xaml.Markup;
 using Windows.Foundation.Collections;

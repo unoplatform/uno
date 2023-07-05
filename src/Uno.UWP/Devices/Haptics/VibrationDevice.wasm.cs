@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable disable
 
 using System.Threading.Tasks;
 using PhoneVibrationDevice = Windows.Phone.Devices.Notification.VibrationDevice;

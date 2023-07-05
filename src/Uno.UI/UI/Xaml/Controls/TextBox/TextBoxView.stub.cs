@@ -1,4 +1,6 @@
-﻿#if IS_UNIT_TESTS || __NETSTD_REFERENCE__
+#nullable disable
+
+#if IS_UNIT_TESTS || __NETSTD_REFERENCE__
 using System;
 using System.Collections.Generic;
 using System.Text;

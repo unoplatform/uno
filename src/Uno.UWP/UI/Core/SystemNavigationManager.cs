@@ -1,4 +1,6 @@
-﻿using System;
+#nullable disable
+
+using System;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 

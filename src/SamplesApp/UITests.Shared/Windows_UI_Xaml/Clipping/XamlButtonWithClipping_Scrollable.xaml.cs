@@ -1,3 +1,5 @@
+#nullable disable
+
 using System.Threading.Tasks;
 using Uno.UI.Samples.Controls;
 using Uno.UI.Samples.Presentation.SamplePages;

@@ -1,3 +1,5 @@
+#nullable disable
+
 namespace Windows.UI.Xaml.Controls
 {
 	public partial interface IItemContainerMapping

@@ -1,3 +1,5 @@
+#nullable disable
+
 namespace Windows.UI.Xaml
 {
 	public partial class CornerRadiusHelper

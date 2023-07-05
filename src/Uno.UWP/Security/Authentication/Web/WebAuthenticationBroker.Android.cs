@@ -1,4 +1,5 @@
-﻿#nullable enable
+#nullable disable
+
 using Android.Content;
 using Uno.AuthenticationBroker;
 

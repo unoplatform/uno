@@ -1,4 +1,5 @@
-﻿#nullable enable
+#nullable disable
+
 // #define TRACE_MEMORY_LAYOUT
 
 using System;

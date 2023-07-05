@@ -1,4 +1,6 @@
-﻿namespace Microsoft.UI.Input;
+#nullable disable
+
+namespace Microsoft.UI.Input;
 
 internal static class InputSystemCursorShapeExtensions
 {

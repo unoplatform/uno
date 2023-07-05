@@ -1,4 +1,4 @@
-#nullable enable
+#nullable disable
 
 namespace Windows.ApplicationModel.Contacts
 {

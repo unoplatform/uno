@@ -1,6 +1,6 @@
-﻿#if UNO_HAS_MANAGED_SCROLL_PRESENTER
-#nullable enable
+#nullable disable
 
+#if UNO_HAS_MANAGED_SCROLL_PRESENTER
 using System;
 using System.Linq;
 using Windows.UI.Xaml.Media;

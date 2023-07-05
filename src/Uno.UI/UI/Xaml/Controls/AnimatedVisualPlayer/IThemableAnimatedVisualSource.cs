@@ -1,4 +1,5 @@
-#nullable enable
+#nullable disable
+
 namespace Microsoft.UI.Xaml.Controls
 {
 	public partial interface IThemableAnimatedVisualSource : IAnimatedVisualSource

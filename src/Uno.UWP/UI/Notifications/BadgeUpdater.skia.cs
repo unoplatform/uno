@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable disable
 
 using Uno.Foundation.Extensibility;
 using Uno.UI.Notifications;

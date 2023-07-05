@@ -1,4 +1,6 @@
-﻿// Imported from Nito.Collections.Deque - https://github.com/StephenCleary/Deque
+#nullable disable
+
+// Imported from Nito.Collections.Deque - https://github.com/StephenCleary/Deque
 
 //The MIT License(MIT)
 

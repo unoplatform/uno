@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable disable
 
 using Windows.Storage.Pickers;
 using static System.Environment;

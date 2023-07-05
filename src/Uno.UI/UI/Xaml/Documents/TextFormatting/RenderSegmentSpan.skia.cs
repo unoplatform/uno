@@ -1,4 +1,6 @@
-﻿namespace Windows.UI.Xaml.Documents.TextFormatting
+#nullable disable
+
+namespace Windows.UI.Xaml.Documents.TextFormatting
 {
 	/// <summary>
 	/// Represents a span of a segment that is rendered on a render line.

@@ -1,4 +1,6 @@
-﻿namespace Microsoft.UI.Xaml.Controls;
+#nullable disable
+
+namespace Microsoft.UI.Xaml.Controls;
 
 /// <summary>
 /// Defines constants that specify in which direction a control should expand.

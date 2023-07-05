@@ -1,6 +1,6 @@
-#if UNO_HAS_MANAGED_SCROLL_PRESENTER
-#nullable enable
+#nullable disable
 
+#if UNO_HAS_MANAGED_SCROLL_PRESENTER
 namespace Windows.UI.Xaml.Controls
 {
 	internal interface IScrollStrategy

@@ -1,4 +1,6 @@
-﻿namespace Windows.Foundation;
+#nullable disable
+
+namespace Windows.Foundation;
 
 internal static class RectExtensions
 {

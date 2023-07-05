@@ -1,3 +1,5 @@
+#nullable disable
+
 using NUnit.Framework;
 using SamplesApp.UITests.TestFramework;
 using System;

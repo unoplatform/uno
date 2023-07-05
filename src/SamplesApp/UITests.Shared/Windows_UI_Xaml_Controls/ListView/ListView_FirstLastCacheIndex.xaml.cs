@@ -1,3 +1,5 @@
+#nullable disable
+
 using Uno;
 using Uno.UI.Samples.Controls;
 using System.Linq;

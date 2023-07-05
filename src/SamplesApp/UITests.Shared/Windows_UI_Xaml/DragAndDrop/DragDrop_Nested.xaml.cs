@@ -1,4 +1,6 @@
-﻿using System;
+#nullable disable
+
+using System;
 using System.Linq;
 using System.Threading;
 using Windows.UI.Xaml.Controls;

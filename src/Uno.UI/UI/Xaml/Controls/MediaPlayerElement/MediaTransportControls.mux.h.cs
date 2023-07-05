@@ -1,4 +1,4 @@
-#nullable enable
+#nullable disable
 
 using System.Collections.Generic;
 using Windows.UI.Xaml.Controls.Primitives;

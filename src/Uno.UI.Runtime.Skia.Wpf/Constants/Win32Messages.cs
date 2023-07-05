@@ -1,4 +1,6 @@
-﻿namespace Uno.UI.Runtime.Skia.Wpf.Constants
+#nullable disable
+
+namespace Uno.UI.Runtime.Skia.Wpf.Constants
 {
 	internal static class Win32Messages
 	{

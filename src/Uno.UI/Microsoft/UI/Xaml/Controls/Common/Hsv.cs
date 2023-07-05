@@ -1,3 +1,5 @@
+#nullable disable
+
 using System.Numerics;
 
 namespace Microsoft.UI.Xaml.Controls

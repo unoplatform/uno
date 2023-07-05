@@ -1,4 +1,6 @@
-﻿using System.Collections;
+#nullable disable
+
+using System.Collections;
 using System.Collections.Specialized;
 using Uno.Extensions;
 

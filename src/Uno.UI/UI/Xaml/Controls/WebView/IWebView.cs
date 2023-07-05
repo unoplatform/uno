@@ -1,4 +1,6 @@
-﻿namespace Uno.UI.Xaml.Controls;
+#nullable disable
+
+namespace Uno.UI.Xaml.Controls;
 
 internal interface IWebView
 {

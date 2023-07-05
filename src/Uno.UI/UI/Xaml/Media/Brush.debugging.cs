@@ -1,6 +1,6 @@
-﻿#if DEBUG
-#nullable enable
+#nullable disable
 
+#if DEBUG
 using System;
 using System.Collections.Generic;
 using System.Text;

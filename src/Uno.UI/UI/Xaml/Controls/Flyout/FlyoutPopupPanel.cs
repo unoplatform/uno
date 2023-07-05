@@ -1,3 +1,5 @@
+#nullable disable
+
 #if !__UWP__
 using System;
 using System.Collections.Generic;

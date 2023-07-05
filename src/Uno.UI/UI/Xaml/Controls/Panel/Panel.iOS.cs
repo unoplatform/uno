@@ -1,3 +1,5 @@
+#nullable disable
+
 using CoreGraphics;
 using UIKit;
 using Uno.UI.Xaml.Media;

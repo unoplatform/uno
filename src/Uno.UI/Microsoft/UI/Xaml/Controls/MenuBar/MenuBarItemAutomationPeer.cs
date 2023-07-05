@@ -1,3 +1,5 @@
+#nullable disable
+
 using Microsoft.UI.Xaml.Controls;
 using Windows.UI.Xaml.Automation.Peers;
 

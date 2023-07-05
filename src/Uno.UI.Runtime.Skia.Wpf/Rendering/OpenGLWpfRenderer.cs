@@ -1,5 +1,5 @@
-﻿
-#nullable enable
+#nullable disable
+
 
 using System;
 using System.Runtime.InteropServices;

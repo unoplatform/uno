@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+#nullable disable
+
+using System.Collections.Generic;
 using Windows.Foundation;
 
 namespace Uno.UI.Xaml.Controls;

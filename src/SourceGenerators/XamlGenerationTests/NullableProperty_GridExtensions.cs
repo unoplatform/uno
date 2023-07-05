@@ -1,4 +1,6 @@
-﻿using System;
+#nullable disable
+
+using System;
 using System.Globalization;
 using System.Linq;
 #if WPF_APP
@@ -8,8 +10,6 @@ using System.Windows.Controls;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 #endif
-
-#nullable enable
 
 namespace XamlGenerationTests.Dedoose.Extensions
 {

@@ -1,6 +1,6 @@
-﻿#if __WASM__ || __ANDROID__
-#nullable enable
+#nullable disable
 
+#if __WASM__ || __ANDROID__
 using System;
 using Uno.Helpers;
 using Windows.Foundation;

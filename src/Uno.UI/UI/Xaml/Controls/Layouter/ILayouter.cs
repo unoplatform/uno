@@ -1,3 +1,5 @@
+#nullable disable
+
 using Windows.Foundation;
 
 #if XAMARIN_ANDROID

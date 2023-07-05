@@ -1,4 +1,4 @@
-#nullable enable
+#nullable disable
 
 using System.Reflection;
 using Uno.Foundation.Logging;

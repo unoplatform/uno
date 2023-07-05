@@ -1,4 +1,6 @@
-﻿using System.Security;
+#nullable disable
+
+using System.Security;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Foundation;

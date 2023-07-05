@@ -1,4 +1,6 @@
-﻿using System;
+#nullable disable
+
+using System;
 using CoreGraphics;
 
 namespace Windows.Graphics.Imaging

@@ -1,4 +1,6 @@
-﻿namespace Windows.UI.Xaml.Automation.Provider
+#nullable disable
+
+namespace Windows.UI.Xaml.Automation.Provider
 {
 	public partial interface IExpandCollapseProvider
 	{

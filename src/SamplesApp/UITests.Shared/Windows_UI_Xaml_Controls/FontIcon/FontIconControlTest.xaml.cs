@@ -1,4 +1,6 @@
-﻿using Uno.UI.Samples.Controls;
+#nullable disable
+
+using Uno.UI.Samples.Controls;
 using Windows.UI.Xaml.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.FontIconTests

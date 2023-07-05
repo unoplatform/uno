@@ -1,3 +1,5 @@
+#nullable disable
+
 #if __SKIA__
 
 using System.Collections.Generic;

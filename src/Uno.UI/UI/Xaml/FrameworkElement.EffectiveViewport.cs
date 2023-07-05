@@ -1,4 +1,5 @@
-﻿#nullable enable
+#nullable disable
+
 // #define TRACE_EFFECTIVE_VIEWPORT
 
 #if !(IS_NATIVE_ELEMENT && __IOS__)

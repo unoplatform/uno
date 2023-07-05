@@ -1,4 +1,6 @@
-﻿#if __WASM__
+#nullable disable
+
+#if __WASM__
 
 namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 {

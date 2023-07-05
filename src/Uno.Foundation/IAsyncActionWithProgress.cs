@@ -1,4 +1,6 @@
-﻿namespace Windows.Foundation;
+#nullable disable
+
+namespace Windows.Foundation;
 
 /// <summary>
 /// Represents an asynchronous action that can report progress updates to callers. This is the return type
