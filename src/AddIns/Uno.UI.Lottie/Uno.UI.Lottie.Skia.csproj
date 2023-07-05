@@ -13,7 +13,6 @@
 
 		<UnoRuntimeIdentifier>Skia</UnoRuntimeIdentifier>
 		<PlatformItemsBasePath>.\</PlatformItemsBasePath>
-		<Nullable>enable</Nullable>
 
 		<DefineConstants>$(DefineConstants);HAS_SKOTTIE</DefineConstants>
 	</PropertyGroup>

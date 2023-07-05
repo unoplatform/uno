@@ -8,7 +8,6 @@
 
 	<PropertyGroup>
 		<Deterministic>true</Deterministic>
-		<Nullable>enable</Nullable>
 		<LangVersion>10.0</LangVersion>
 
 		<AssemblyName>Uno.UI.Svg</AssemblyName>

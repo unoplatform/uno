@@ -5,7 +5,6 @@
 		<TargetFrameworks>net7.0;net8.0</TargetFrameworks>
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 		<RollForward>Major</RollForward>
-		<Nullable>enable</Nullable>
 	</PropertyGroup>
 
 	<Import Project="../targetframework-override-noplatform.props" />
