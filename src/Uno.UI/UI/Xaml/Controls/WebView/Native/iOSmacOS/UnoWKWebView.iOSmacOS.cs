@@ -423,6 +423,7 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 	private void RaiseNavigationCompleted(Uri uri, bool isSuccess, int httpStatusCode, CoreWebView2WebErrorStatus errorStatus)
 	{
 		_coreWebView.SetHistoryProperties(CanGoBack, CanGoForward);
+		_coreWebView.RaiseHistoryChanged();
 		_coreWebView.RaiseNavigationCompleted(uri, isSuccess, httpStatusCode, errorStatus);
 	}
 
