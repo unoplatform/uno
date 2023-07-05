@@ -30,4 +30,15 @@ public partial class ItemIndexRange
 	/// Gets the number of items in the instance of the ItemIndexRange class.
 	/// </summary>
 	public uint Length { get; }
+
+#if HAS_UNO // Equality is only implemented in Uno Platform, not in WinUI and UWP.
+	public override bool Equals(object obj)
+	{
+		return obj is ItemIndexRange other &&
+			other.FirstIndex == FirstIndex &&
+			other.Length == Length;
+	}
+
+	public override int GetHashCode() => (FirstIndex, Length).GetHashCode();
+#endif
 }
