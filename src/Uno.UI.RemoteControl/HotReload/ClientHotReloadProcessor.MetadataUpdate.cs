@@ -208,6 +208,16 @@ namespace Uno.UI.RemoteControl.HotReload
 
 		public static void UpdateApplication(Type[] types)
 		{
+			var meta = (from t in types
+						let update = t.GetCustomAttribute<System.Runtime.CompilerServices.MetadataUpdateOriginalTypeAttribute>()
+						where update is not null
+						select (Type: t, OriginalType: update.OriginalType)).ToArray();
+
+			foreach (var t in meta)
+			{
+				TypeMappingHelper.RegisterMapping(t.Type, t.OriginalType);
+			}
+
 			if (_log.IsEnabled(LogLevel.Trace))
 			{
 				_log.Trace($"UpdateApplication (changed types: {string.Join(", ", types.Select(s => s.ToString()))})");
