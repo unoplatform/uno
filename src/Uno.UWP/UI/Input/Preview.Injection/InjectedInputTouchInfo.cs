@@ -1,5 +1,3 @@
-#nullable enable
-
 using System;
 using Windows.Foundation;
 using Windows.System;

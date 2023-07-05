@@ -1,4 +1,6 @@
-﻿using AppKit;
+#nullable disable
+
+using AppKit;
 
 namespace Windows.ApplicationModel.Core;
 

@@ -1,5 +1,3 @@
-#nullable enable
-
 // ******************************************************************
 // Copyright � 2015-2018 Uno Platform Inc. All rights reserved.
 //

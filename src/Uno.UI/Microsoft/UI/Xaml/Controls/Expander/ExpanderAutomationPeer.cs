@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+#nullable disable
+
+using System.Collections.Generic;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.UI.Xaml;

@@ -1,5 +1,3 @@
-﻿#nullable enable
-
 #if __ANDROID__
 using View = Android.Views.View;
 #elif __IOS__

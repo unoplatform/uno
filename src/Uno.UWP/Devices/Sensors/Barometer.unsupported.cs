@@ -1,4 +1,6 @@
-﻿#if __MACOS__ || IS_UNIT_TESTS || __WASM__
+#nullable disable
+
+#if __MACOS__ || IS_UNIT_TESTS || __WASM__
 namespace Windows.Devices.Sensors
 {
 	public partial class Barometer

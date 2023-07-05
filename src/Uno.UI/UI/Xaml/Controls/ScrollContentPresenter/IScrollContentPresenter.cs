@@ -1,4 +1,6 @@
-﻿#if !UNO_HAS_MANAGED_SCROLL_PRESENTER
+#nullable disable
+
+#if !UNO_HAS_MANAGED_SCROLL_PRESENTER
 using System;
 using System.Collections.Generic;
 using System.Text;

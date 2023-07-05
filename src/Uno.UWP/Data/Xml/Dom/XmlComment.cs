@@ -1,3 +1,5 @@
+#nullable disable
+
 using SystemXmlComment = System.Xml.XmlComment;
 using SystemXmlNode = System.Xml.XmlNode;
 

@@ -1,4 +1,6 @@
-﻿using Uno.Media;
+#nullable disable
+
+using Uno.Media;
 using Windows.Foundation;
 
 namespace Windows.UI.Xaml.Shapes

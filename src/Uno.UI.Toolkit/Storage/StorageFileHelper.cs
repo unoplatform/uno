@@ -1,4 +1,3 @@
-﻿#nullable enable
 using System.Threading;
 using System;
 using System.Threading.Tasks;

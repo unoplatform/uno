@@ -1,6 +1,4 @@
-﻿#if !__WASM__ && !__ANDROID__
-#nullable enable
-
+#if !__WASM__ && !__ANDROID__
 namespace Windows.Devices.Sensors
 {
 	public partial class LightSensor

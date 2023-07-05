@@ -1,5 +1,3 @@
-﻿#nullable enable
-
 using System;
 using Uno.Foundation.Extensibility;
 using Windows.System.Profile.Internal;

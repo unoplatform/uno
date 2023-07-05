@@ -2,8 +2,6 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference IconSource.cpp, commit 083796a
 
-#nullable enable
-
 using System;
 using System.Collections.Generic;
 using Windows.UI.Xaml;

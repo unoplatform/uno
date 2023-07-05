@@ -1,4 +1,3 @@
-﻿#nullable enable
 using CoreGraphics;
 using System;
 using System.Linq;

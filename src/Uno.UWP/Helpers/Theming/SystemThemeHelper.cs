@@ -1,5 +1,3 @@
-﻿#nullable enable
-
 using System;
 using Windows.ApplicationModel.Core;
 using Windows.UI.Core;

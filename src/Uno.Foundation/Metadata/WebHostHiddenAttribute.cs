@@ -1,4 +1,6 @@
-﻿namespace Windows.Foundation.Metadata;
+#nullable disable
+
+namespace Windows.Foundation.Metadata;
 
 /// <summary>
 /// Identifies the type as one whose functionality is not projected into the specified target language.

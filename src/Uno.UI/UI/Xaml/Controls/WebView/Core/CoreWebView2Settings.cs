@@ -1,4 +1,6 @@
-﻿namespace Microsoft.Web.WebView2.Core;
+#nullable disable
+
+namespace Microsoft.Web.WebView2.Core;
 
 /// <summary>
 /// Defines properties that enable, disable, or modify WebView features.

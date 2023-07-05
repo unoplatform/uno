@@ -1,5 +1,3 @@
-﻿#nullable enable
-
 #if HAS_UNO_WINUI
 using Windows.ApplicationModel.Activation;
 

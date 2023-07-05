@@ -1,3 +1,5 @@
+#nullable disable
+
 using System;
 using Android.Graphics;
 using Uno.UI;

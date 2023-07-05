@@ -1,6 +1,3 @@
-﻿#nullable enable
-
-
 namespace Uno.UI.Media;
 
 public static class FeatureConfiguration

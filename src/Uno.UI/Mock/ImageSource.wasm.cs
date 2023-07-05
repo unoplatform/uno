@@ -1,4 +1,6 @@
-﻿namespace Windows.UI.Xaml.Media;
+#nullable disable
+
+namespace Windows.UI.Xaml.Media;
 
 public partial class ImageSource
 {

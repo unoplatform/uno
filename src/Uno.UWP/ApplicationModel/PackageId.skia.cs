@@ -1,5 +1,3 @@
-﻿#nullable enable
-
 using System.Reflection;
 using Uno.ApplicationModel;
 using Uno.Extensions;

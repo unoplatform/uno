@@ -1,4 +1,6 @@
-﻿using System.Globalization;
+#nullable disable
+
+using System.Globalization;
 using System.Threading;
 using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

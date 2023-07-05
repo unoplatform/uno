@@ -1,5 +1,3 @@
-﻿#nullable enable
-
 using System;
 using System.Windows;
 using Uno.Disposables;

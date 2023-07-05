@@ -1,3 +1,5 @@
+#nullable disable
+
 namespace Windows.Devices.Geolocation
 {
 	public enum PositionStatus

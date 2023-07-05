@@ -1,3 +1,5 @@
+#nullable disable
+
 namespace Windows.Data.Xml.Dom
 {
 	public partial interface IXmlNodeSelector

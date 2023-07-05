@@ -1,3 +1,5 @@
+#nullable disable
+
 using Uno.Extensions;
 using Windows.UI.Xaml;
 using System;

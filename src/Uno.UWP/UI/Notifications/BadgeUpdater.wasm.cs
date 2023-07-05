@@ -1,5 +1,3 @@
-﻿#nullable enable
-
 using Uno.Foundation;
 
 using NativeMethods = __Windows.UI.Notifications.BadgeUpdater.NativeMethods;

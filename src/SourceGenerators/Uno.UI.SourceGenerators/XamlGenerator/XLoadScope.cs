@@ -1,5 +1,3 @@
-﻿#nullable enable
-
 using System.Collections.Generic;
 
 namespace Uno.UI.SourceGenerators.XamlGenerator

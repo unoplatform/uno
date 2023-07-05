@@ -1,4 +1,6 @@
-﻿#if __WASM__
+#nullable disable
+
+#if __WASM__
 using System.Linq;
 using System.Threading.Tasks;
 using Private.Infrastructure;

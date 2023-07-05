@@ -1,4 +1,6 @@
-﻿using Foundation;
+#nullable disable
+
+using Foundation;
 
 namespace Uno.UI;
 

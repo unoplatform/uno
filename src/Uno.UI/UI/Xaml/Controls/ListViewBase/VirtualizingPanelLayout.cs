@@ -1,6 +1,4 @@
-﻿#if !IS_UNIT_TESTS
-#nullable enable
-
+#if !IS_UNIT_TESTS
 using System;
 using System.Collections.Generic;
 using System.Text;

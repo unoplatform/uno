@@ -1,6 +1,4 @@
-﻿#if !__ANDROID__ && !__IOS__ && !__MACOS__ && !__MACCATALYST__
-#nullable enable
-
+#if !__ANDROID__ && !__IOS__ && !__MACOS__ && !__MACCATALYST__
 using Uno.UI.Xaml.Controls;
 
 namespace Microsoft.Web.WebView2.Core;

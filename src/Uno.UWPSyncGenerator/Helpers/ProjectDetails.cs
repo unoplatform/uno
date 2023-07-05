@@ -1,4 +1,6 @@
-﻿using System;
+#nullable disable
+
+using System;
 using System.IO;
 using Microsoft.Build.Execution;
 using System.Linq;

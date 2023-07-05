@@ -1,4 +1,6 @@
-﻿namespace Microsoft.UI.Xaml.Controls;
+#nullable disable
+
+namespace Microsoft.UI.Xaml.Controls;
 
 /// <summary>
 /// Provides data for the Expander.Collapsed event.

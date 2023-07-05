@@ -1,3 +1,5 @@
+#nullable disable
+
 namespace Windows.ApplicationModel.Activation
 {
 	public partial class ToastNotificationActivatedEventArgs : IToastNotificationActivatedEventArgs, IActivatedEventArgs, IActivatedEventArgsWithUser, IApplicationViewActivatedEventArgs

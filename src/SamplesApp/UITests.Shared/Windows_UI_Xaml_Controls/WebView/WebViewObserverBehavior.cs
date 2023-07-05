@@ -1,4 +1,6 @@
-﻿#if HAS_UNO
+#nullable disable
+
+#if HAS_UNO
 using Uno.Foundation.Logging;
 using Windows.UI.Xaml;
 

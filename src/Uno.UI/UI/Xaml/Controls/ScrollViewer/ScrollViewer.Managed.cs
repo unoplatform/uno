@@ -1,4 +1,3 @@
-﻿#nullable enable
 #if UNO_HAS_MANAGED_SCROLL_PRESENTER
 using Windows.UI.Xaml.Controls;
 using System;

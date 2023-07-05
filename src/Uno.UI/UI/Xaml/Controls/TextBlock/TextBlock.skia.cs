@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using Windows.Foundation;
@@ -14,8 +14,6 @@ using Uno.Disposables;
 using Windows.UI.Xaml.Media;
 using Uno.UI;
 using Windows.UI.Xaml.Documents.TextFormatting;
-
-#nullable enable
 
 namespace Windows.UI.Xaml.Controls
 {

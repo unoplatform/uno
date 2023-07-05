@@ -1,5 +1,3 @@
-﻿#nullable enable
-
 using System.Windows.Input;
 using Uno.Foundation.Logging;
 using Uno.UI.Runtime.Skia.Wpf;

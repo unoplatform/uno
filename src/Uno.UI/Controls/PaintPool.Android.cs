@@ -1,4 +1,6 @@
-﻿using Android.Graphics;
+#nullable disable
+
+using Android.Graphics;
 using Android.Text;
 using System;
 using System.Diagnostics;

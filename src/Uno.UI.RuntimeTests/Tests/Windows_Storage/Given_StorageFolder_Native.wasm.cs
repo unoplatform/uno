@@ -1,5 +1,3 @@
-﻿#nullable enable
-
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Threading.Tasks;
 using Windows.Storage;

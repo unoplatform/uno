@@ -4,8 +4,6 @@ using HarfBuzzSharp;
 using SkiaSharp;
 using Windows.UI.Xaml.Documents.TextFormatting;
 
-#nullable enable
-
 namespace Windows.UI.Xaml.Documents
 {
 	partial class Run

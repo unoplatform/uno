@@ -1,5 +1,3 @@
-﻿#nullable enable
-
 using Android.App;
 using Android.Graphics;
 using System;

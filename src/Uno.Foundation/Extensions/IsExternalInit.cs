@@ -1,4 +1,6 @@
-﻿#if !NET5_0
+#nullable disable
+
+#if !NET5_0
 namespace System.Runtime.CompilerServices;
 
 internal static class IsExternalInit

@@ -1,4 +1,6 @@
-﻿#if __IOS__ || __MACOS__ || __SKIA__
+#nullable disable
+
+#if __IOS__ || __MACOS__ || __SKIA__
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;

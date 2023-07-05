@@ -1,4 +1,6 @@
-﻿#if __MACOS__ || IS_UNIT_TESTS
+#nullable disable
+
+#if __MACOS__ || IS_UNIT_TESTS
 namespace Windows.Devices.Sensors
 {
 	public partial class Magnetometer

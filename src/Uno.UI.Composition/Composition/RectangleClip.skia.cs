@@ -1,7 +1,3 @@
-﻿#nullable enable
-
-#nullable enable
-
 using SkiaSharp;
 
 namespace Windows.UI.Composition;

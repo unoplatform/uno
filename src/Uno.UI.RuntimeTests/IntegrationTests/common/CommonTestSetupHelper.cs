@@ -1,4 +1,6 @@
-﻿namespace Private.Infrastructure
+#nullable disable
+
+namespace Private.Infrastructure
 {
 	internal static class CommonTestSetupHelper
 	{

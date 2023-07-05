@@ -1,8 +1,7 @@
-﻿// This file is imported from dotnet/runtime
+// This file is imported from dotnet/runtime
 // Source Link: https://github.com/dotnet/runtime/blob/e63d21947e734db2da5093510a6636b5b7fb45b5/src/libraries/Common/src/System/Text/StringBuilderCache.cs
 // Commit: a9c5ead on Feb 10, 2021, https://github.com/dotnet/runtime/commit/a9c5eadd951dcba73167f72cc624eb790573663a
 // 
-#nullable enable
 //
 
 // Licensed to the .NET Foundation under one or more agreements.

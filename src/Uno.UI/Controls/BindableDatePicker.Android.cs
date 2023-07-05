@@ -1,4 +1,6 @@
-﻿using Android.Content;
+#nullable disable
+
+using Android.Content;
 using Android.Views;
 using Android.Widget;
 using Java.Lang;

@@ -1,4 +1,6 @@
-﻿using System.Windows;
+#nullable disable
+
+using System.Windows;
 
 namespace UnoIslandsSamplesApp.Skia.Wpf
 {

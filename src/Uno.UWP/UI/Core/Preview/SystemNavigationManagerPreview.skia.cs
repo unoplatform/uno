@@ -1,5 +1,3 @@
-﻿#nullable enable
-
 using Uno.Foundation.Extensibility;
 using Uno.UI.Core.Preview;
 

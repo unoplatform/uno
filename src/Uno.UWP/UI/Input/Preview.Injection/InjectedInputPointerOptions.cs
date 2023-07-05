@@ -1,5 +1,3 @@
-#nullable enable
-
 using System;
 
 namespace Windows.UI.Input.Preview.Injection;

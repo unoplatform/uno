@@ -1,4 +1,6 @@
-﻿#if __ANDROID__ || __IOS__
+#nullable disable
+
+#if __ANDROID__ || __IOS__
 namespace Windows.System
 {
 	public enum LaunchQuerySupportStatus

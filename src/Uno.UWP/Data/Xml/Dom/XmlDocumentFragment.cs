@@ -1,3 +1,5 @@
+#nullable disable
+
 using SystemXmlDocumentFragment = System.Xml.XmlDocumentFragment;
 using SystemXmlNode = System.Xml.XmlNode;
 

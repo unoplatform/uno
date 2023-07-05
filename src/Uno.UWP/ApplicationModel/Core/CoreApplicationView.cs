@@ -1,3 +1,5 @@
+#nullable disable
+
 using Windows.System;
 using Windows.UI.Core;
 

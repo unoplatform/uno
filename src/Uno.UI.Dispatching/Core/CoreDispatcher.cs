@@ -1,5 +1,3 @@
-﻿#nullable enable
-
 using Uno.Diagnostics.Eventing;
 using Uno.Extensions;
 using System;

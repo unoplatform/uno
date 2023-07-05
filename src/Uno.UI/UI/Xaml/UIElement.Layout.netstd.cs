@@ -1,4 +1,6 @@
-﻿#if !__NETSTD_REFERENCE__
+#nullable disable
+
+#if !__NETSTD_REFERENCE__
 using System;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;

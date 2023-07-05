@@ -1,4 +1,6 @@
-﻿#if HAS_UNO_WINUI
+#nullable disable
+
+#if HAS_UNO_WINUI
 
 namespace Microsoft.UI.Input
 {

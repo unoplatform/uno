@@ -1,4 +1,6 @@
-﻿using System;
+#nullable disable
+
+using System;
 using Windows.Web;
 
 namespace Windows.UI.Xaml.Controls;

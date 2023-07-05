@@ -1,4 +1,6 @@
-﻿using Uno.UI;
+#nullable disable
+
+using Uno.UI;
 using Windows.Foundation;
 
 namespace Windows.UI.Xaml;

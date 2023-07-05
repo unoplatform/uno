@@ -1,4 +1,6 @@
-﻿#if !IS_UNIT_TESTS
+#nullable disable
+
+#if !IS_UNIT_TESTS
 
 namespace Windows.Networking.Connectivity
 {

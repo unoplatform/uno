@@ -1,3 +1,5 @@
+#nullable disable
+
 using CoreGraphics;
 using ObjCRuntime;
 using Uno.UI.DataBinding;

@@ -1,4 +1,3 @@
-﻿#nullable enable
 using Android.Views;
 using Android.Widget;
 using Uno.Extensions;

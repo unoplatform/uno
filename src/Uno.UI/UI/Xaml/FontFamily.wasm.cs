@@ -1,6 +1,4 @@
-﻿#if __WASM__
-#nullable enable
-
+#if __WASM__
 using System;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;

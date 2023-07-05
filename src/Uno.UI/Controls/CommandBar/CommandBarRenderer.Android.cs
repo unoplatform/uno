@@ -1,4 +1,3 @@
-﻿#nullable enable
 using Android.Graphics.Drawables;
 using Android.Views;
 using System;

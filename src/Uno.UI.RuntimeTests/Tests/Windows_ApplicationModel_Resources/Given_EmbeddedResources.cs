@@ -1,4 +1,6 @@
-﻿using FluentAssertions.Execution;
+#nullable disable
+
+using FluentAssertions.Execution;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;

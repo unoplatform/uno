@@ -1,4 +1,6 @@
-﻿using Android.Views;
+#nullable disable
+
+using Android.Views;
 using Uno.UI.DataBinding;
 using Uno.UI.Controls;
 using Uno.Extensions;

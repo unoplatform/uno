@@ -1,5 +1,3 @@
-﻿#nullable enable
-
 using System;
 using Android.Hardware;
 using Android.Runtime;

@@ -1,5 +1,3 @@
-﻿#nullable enable
-
 using System;
 using Windows.Foundation;
 using static Microsoft.UI.Xaml.Controls._Tracing;

@@ -1,5 +1,3 @@
-#nullable enable
-
 using CoreGraphics;
 using Uno.UI.Xaml.Media;
 

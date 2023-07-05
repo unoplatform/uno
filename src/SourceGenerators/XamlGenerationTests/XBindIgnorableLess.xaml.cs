@@ -1,4 +1,6 @@
-﻿using System.Runtime.InteropServices.WindowsRuntime;
+#nullable disable
+
+using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Markup;

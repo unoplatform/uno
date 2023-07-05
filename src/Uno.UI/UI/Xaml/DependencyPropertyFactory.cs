@@ -1,4 +1,6 @@
-﻿using NotImplementedException = System.NotImplementedException;
+#nullable disable
+
+using NotImplementedException = System.NotImplementedException;
 
 namespace Windows.UI.Xaml
 {

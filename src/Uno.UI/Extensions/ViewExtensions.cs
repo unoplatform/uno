@@ -1,4 +1,3 @@
-#nullable enable
 #if __IOS__
 using UIKit;
 using _View = UIKit.UIView;

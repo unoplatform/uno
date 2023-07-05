@@ -1,5 +1,3 @@
-﻿#nullable enable
-
 using Windows.Graphics;
 
 namespace Windows.UI.Composition

@@ -1,3 +1,5 @@
+#nullable disable
+
 using SystemXmlImplementation = System.Xml.XmlImplementation;
 
 namespace Windows.Data.Xml.Dom

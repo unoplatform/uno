@@ -1,4 +1,6 @@
-﻿namespace Uno.UI.Dispatching
+#nullable disable
+
+namespace Uno.UI.Dispatching
 {
 	internal enum CoreDispatcherPriority : int
 	{

@@ -1,3 +1,5 @@
+#nullable disable
+
 namespace Windows.ApplicationModel.Contacts
 {
 	public enum ContactStoreAccessType

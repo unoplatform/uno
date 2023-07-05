@@ -1,3 +1,5 @@
+#nullable disable
+
 #if XAMARIN_ANDROID
 using System;
 using Android.App;

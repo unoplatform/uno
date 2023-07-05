@@ -1,9 +1,7 @@
-﻿// Licensed to the .NET Foundation under one or more agreements.
+// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
 // Based on https://github.com/dotnet/runtime/blob/f53c8dcd130e7591079e9475fb0a3a22c3f21adc/src/libraries/System.Private.CoreLib/src/System/Gen2GcCallback.cs
-
-#nullable enable
 
 using System.Diagnostics;
 using System.Runtime.InteropServices;

@@ -1,5 +1,3 @@
-#nullable enable
-
 using Uno;
 
 namespace Windows.UI.Input.Preview.Injection;

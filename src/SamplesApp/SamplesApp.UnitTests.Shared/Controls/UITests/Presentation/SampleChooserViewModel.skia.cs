@@ -1,4 +1,6 @@
-﻿#if __SKIA__
+#nullable disable
+
+#if __SKIA__
 using System;
 using System.Text;
 using System.Threading;

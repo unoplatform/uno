@@ -1,4 +1,6 @@
-﻿namespace Windows.Storage.Provider
+#nullable disable
+
+namespace Windows.Storage.Provider
 {
 	/// <summary>
 	/// Describes the status of a file update request.

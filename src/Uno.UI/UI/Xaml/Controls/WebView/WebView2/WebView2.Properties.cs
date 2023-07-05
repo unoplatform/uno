@@ -1,4 +1,6 @@
-﻿using System;
+#nullable disable
+
+using System;
 using Microsoft.Web.WebView2.Core;
 using Windows.Foundation;
 using Windows.UI.Xaml;

@@ -1,4 +1,3 @@
-﻿#nullable enable
 #if !WINDOWS_UWP
 using System;
 using System.Diagnostics;

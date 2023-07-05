@@ -1,4 +1,4 @@
-﻿using SkiaSharp;
+using SkiaSharp;
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
@@ -12,8 +12,6 @@ using Windows.Storage;
 using Windows.UI.Text;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
-
-#nullable enable
 
 namespace Windows.UI.Composition
 {

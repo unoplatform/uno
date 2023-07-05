@@ -1,5 +1,3 @@
-﻿#nullable enable
-
 using Uno.UI.Xaml.Core;
 using Windows.System;
 using Windows.UI.Xaml;

@@ -1,6 +1,4 @@
-﻿#if WINDOWS_UWP
-#nullable enable
-
+#if WINDOWS_UWP
 using System;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

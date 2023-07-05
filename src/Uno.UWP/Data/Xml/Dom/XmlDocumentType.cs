@@ -1,3 +1,5 @@
+#nullable disable
+
 using SystemXmlDocumentType = System.Xml.XmlDocumentType;
 using SystemXmlNode = System.Xml.XmlNode;
 

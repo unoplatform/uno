@@ -1,4 +1,6 @@
-﻿#if IS_UNIT_TESTS || __WASM__
+#nullable disable
+
+#if IS_UNIT_TESTS || __WASM__
 #pragma warning disable CS0067
 #endif
 

@@ -1,3 +1,5 @@
+#nullable disable
+
 using Uno.UI.Samples.Controls;
 using System.Threading.Tasks;
 using Windows.UI.Xaml.Controls;

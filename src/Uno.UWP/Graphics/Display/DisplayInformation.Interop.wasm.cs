@@ -1,4 +1,6 @@
-﻿using System.Runtime.InteropServices.JavaScript;
+#nullable disable
+
+using System.Runtime.InteropServices.JavaScript;
 using System.Threading.Tasks;
 
 namespace __Windows.Graphics.Display

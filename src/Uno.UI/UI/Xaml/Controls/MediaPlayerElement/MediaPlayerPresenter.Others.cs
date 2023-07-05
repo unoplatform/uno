@@ -1,5 +1,3 @@
-#nullable enable
-
 #if !__ANDROID__ && !__IOS__ && !__MACOS__
 using System;
 using Windows.Foundation;

@@ -1,4 +1,6 @@
-﻿using Windows.UI.Core;
+#nullable disable
+
+using Windows.UI.Core;
 using Uno.UI.Samples.UITests.Helpers;
 
 namespace SamplesApp.Microsoft_UI_Xaml_Controls.WebView2Tests

@@ -1,5 +1,3 @@
-﻿#nullable enable
-
 using Gtk;
 using System;
 using System.IO;

@@ -1,4 +1,6 @@
-﻿using Windows.Foundation;
+#nullable disable
+
+using Windows.Foundation;
 
 #if XAMARIN_ANDROID
 using View = Android.Views.View;

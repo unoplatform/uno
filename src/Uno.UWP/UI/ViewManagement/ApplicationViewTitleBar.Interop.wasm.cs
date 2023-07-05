@@ -1,4 +1,6 @@
-﻿using System.Runtime.InteropServices.JavaScript;
+#nullable disable
+
+using System.Runtime.InteropServices.JavaScript;
 
 namespace __Windows.UI.ViewManagement
 {

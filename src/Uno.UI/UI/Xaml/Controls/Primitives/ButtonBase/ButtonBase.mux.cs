@@ -1,8 +1,6 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // ButtonBase_Partial.h, ButtonBase_Partial.cpp
-
-#nullable enable
 
 using System;
 using System.Windows.Input;

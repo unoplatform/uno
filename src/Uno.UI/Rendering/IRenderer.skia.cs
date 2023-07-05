@@ -1,5 +1,3 @@
-﻿#nullable enable
-
 using SkiaSharp;
 
 namespace Uno.UI.Rendering;

@@ -1,5 +1,3 @@
-﻿#nullable enable
-
 using System;
 using Uno.UI.Hosting;
 using Uno.UI.Runtime.Skia.Wpf.Hosting;

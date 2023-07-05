@@ -1,4 +1,6 @@
-﻿using System;
+#nullable disable
+
+using System;
 using Windows.Storage.Streams;
 
 namespace Windows.Devices.Midi

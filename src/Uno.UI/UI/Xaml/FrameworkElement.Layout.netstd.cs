@@ -1,5 +1,4 @@
 #if !__NETSTD_REFERENCE__
-#nullable enable
 using System;
 using System.Globalization;
 using System.Linq;

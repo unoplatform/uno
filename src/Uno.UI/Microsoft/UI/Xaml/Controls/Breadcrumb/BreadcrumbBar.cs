@@ -2,8 +2,6 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference BreadcrumbBar.cpp, commit 9aedb00
 
-#nullable enable
-
 using System.Collections.ObjectModel;
 using Uno.Disposables;
 using Uno.UI.Helpers.WinUI;

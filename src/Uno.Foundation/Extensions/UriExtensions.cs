@@ -1,4 +1,6 @@
-﻿namespace Uno.Extensions;
+#nullable disable
+
+namespace Uno.Extensions;
 
 public static class UriExtensions
 {

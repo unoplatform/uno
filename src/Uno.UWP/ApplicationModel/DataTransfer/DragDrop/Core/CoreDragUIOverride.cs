@@ -1,7 +1,5 @@
 using Windows.Foundation;
 
-#nullable enable
-
 namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 {
 	public partial class CoreDragUIOverride

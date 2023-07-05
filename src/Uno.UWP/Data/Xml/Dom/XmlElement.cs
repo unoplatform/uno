@@ -1,3 +1,5 @@
+#nullable disable
+
 using System.Xml;
 using SystemXmlElement = System.Xml.XmlElement;
 using SystemXmlAttribute = System.Xml.XmlAttribute;

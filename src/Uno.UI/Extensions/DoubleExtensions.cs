@@ -1,4 +1,6 @@
-﻿using System.Diagnostics.Contracts;
+#nullable disable
+
+using System.Diagnostics.Contracts;
 using System.Runtime.CompilerServices;
 
 namespace Uno.Extensions

@@ -1,5 +1,3 @@
-﻿#nullable enable
-
 using System.Threading.Tasks;
 using Gtk;
 using Uno.UI.Hosting;

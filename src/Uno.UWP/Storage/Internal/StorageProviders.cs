@@ -1,4 +1,6 @@
-﻿using Windows.Storage;
+#nullable disable
+
+using Windows.Storage;
 
 namespace Uno.Storage.Internal
 {

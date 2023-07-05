@@ -1,4 +1,6 @@
-﻿using CoreLocation;
+#nullable disable
+
+using CoreLocation;
 
 namespace Windows.Devices.Geolocation
 {

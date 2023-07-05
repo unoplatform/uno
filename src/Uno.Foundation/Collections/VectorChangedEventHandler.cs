@@ -1,4 +1,6 @@
-﻿namespace Windows.Foundation.Collections;
+#nullable disable
+
+namespace Windows.Foundation.Collections;
 
 /// <summary>
 /// Represents the method that handles the changed event of an observable vector.

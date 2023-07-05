@@ -1,5 +1,3 @@
-﻿#nullable enable
-
 #if UNO_REFERENCE_API
 #define USE_HARD_REFERENCES
 #endif

@@ -1,4 +1,6 @@
-﻿using System;
+#nullable disable
+
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using SamplesApp.Microsoft_UI_Xaml_Controls.WebView2Tests;

@@ -1,4 +1,6 @@
-﻿using System;
+#nullable disable
+
+using System;
 using System.Drawing;
 using Uno.UI.Views;
 using Uno.UI;

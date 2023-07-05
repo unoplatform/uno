@@ -1,3 +1,5 @@
+#nullable disable
+
 namespace Windows.Storage
 {
 	public enum StorageDeleteOption

@@ -1,5 +1,3 @@
-#nullable enable
-
 namespace Windows.Globalization.NumberFormatting;
 
 public partial interface INumberFormatter

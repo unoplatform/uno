@@ -1,3 +1,5 @@
+#nullable disable
+
 using System;
 using AVFoundation;
 using Uno.Extensions;

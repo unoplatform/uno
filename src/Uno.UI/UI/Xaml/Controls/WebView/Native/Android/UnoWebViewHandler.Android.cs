@@ -1,4 +1,6 @@
-﻿using Android.Webkit;
+#nullable disable
+
+using Android.Webkit;
 using Java.Interop;
 
 namespace Uno.UI.Xaml.Controls;

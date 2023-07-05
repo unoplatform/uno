@@ -1,5 +1,3 @@
-﻿#nullable enable
-
 namespace Windows.Globalization;
 
 public static partial class CurrencyIdentifiers

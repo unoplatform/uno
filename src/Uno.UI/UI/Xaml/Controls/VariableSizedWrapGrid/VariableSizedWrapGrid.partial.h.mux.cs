@@ -1,5 +1,3 @@
-﻿#nullable enable
-
 using Windows.Foundation;
 
 // Copyright (c) Microsoft Corporation. All rights reserved.

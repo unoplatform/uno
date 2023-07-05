@@ -1,4 +1,6 @@
-﻿using CoreGraphics;
+#nullable disable
+
+using CoreGraphics;
 using Foundation;
 using System;
 using WebKit;

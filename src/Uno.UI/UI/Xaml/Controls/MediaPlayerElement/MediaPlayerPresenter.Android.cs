@@ -1,3 +1,5 @@
+#nullable disable
+
 using System;
 using Android.Views;
 using Uno.Media.Playback;

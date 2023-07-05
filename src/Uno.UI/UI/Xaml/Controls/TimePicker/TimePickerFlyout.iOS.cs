@@ -1,5 +1,3 @@
-﻿#nullable enable
-
 using CoreGraphics;
 using UIKit;
 using Uno.Disposables;

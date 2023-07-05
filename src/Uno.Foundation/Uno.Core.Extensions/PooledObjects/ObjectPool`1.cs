@@ -14,8 +14,6 @@
 // #define DETECT_LEAKS  //for now always enable DETECT_LEAKS in debug.
 // #endif
 
-#nullable enable
-
 using System;
 using System.Diagnostics;
 using System.Threading;

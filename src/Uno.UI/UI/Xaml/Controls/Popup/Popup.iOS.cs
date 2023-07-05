@@ -1,3 +1,5 @@
+#nullable disable
+
 using UIKit;
 
 namespace Windows.UI.Xaml.Controls.Primitives;

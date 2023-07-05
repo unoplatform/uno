@@ -1,4 +1,3 @@
-﻿#nullable enable
 using Uno.Foundation.Logging;
 using Windows.Foundation;
 using Windows.UI.ViewManagement;

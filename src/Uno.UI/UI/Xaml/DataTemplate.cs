@@ -1,5 +1,3 @@
-﻿#nullable enable
-
 using System;
 
 #if XAMARIN_ANDROID

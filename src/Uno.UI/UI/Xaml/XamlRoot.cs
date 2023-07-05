@@ -1,5 +1,3 @@
-#nullable enable
-
 using System;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Islands;

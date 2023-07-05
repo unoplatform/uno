@@ -3,8 +3,6 @@
 // See the LICENSE file in the project root for more information.
 // https://github.com/CommunityToolkit/Microsoft.Toolkit.Win32/blob/master/Microsoft.Toolkit.Wpf.UI.XamlHost/UwpUIElementExtensions.cs
 
-#nullable enable
-
 using System;
 
 namespace Uno.UI.XamlHost.Skia.Wpf

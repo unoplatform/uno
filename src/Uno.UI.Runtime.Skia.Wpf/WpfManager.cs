@@ -1,4 +1,6 @@
-﻿using Uno.UI.Hosting;
+#nullable disable
+
+using Uno.UI.Hosting;
 using Uno.UI.Runtime.Skia.Wpf.Hosting;
 
 namespace Uno.UI.Runtime.Skia.Wpf;

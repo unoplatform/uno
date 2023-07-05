@@ -1,5 +1,3 @@
-﻿#nullable enable
-
 using System;
 using Uno.Foundation.Logging;
 using Uno.ApplicationModel.Core;

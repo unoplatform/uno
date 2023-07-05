@@ -1,4 +1,6 @@
-﻿using System.Threading;
+#nullable disable
+
+using System.Threading;
 
 namespace Windows.Foundation;
 

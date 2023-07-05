@@ -1,5 +1,3 @@
-﻿#nullable enable
-
 using Windows.Foundation;
 using Windows.UI.Xaml.Controls;
 using System;

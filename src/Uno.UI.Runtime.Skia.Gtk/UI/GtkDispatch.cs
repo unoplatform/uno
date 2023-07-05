@@ -1,4 +1,6 @@
-﻿using System;
+#nullable disable
+
+using System;
 using Uno.Foundation.Logging;
 
 namespace Uno.UI.Runtime.Skia.GTK.UI;

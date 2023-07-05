@@ -1,5 +1,3 @@
-﻿#nullable enable
-
 using Silk.NET.OpenGL;
 
 namespace Uno.UI.Runtime.Skia.GTK.Extensions;

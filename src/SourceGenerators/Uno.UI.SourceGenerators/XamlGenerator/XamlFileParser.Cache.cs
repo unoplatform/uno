@@ -1,5 +1,3 @@
-﻿#nullable enable
-
 extern alias __uno;
 
 using System;

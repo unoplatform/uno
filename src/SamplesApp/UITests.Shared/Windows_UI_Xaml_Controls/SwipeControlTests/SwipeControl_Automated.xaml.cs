@@ -1,4 +1,6 @@
-﻿using System;
+#nullable disable
+
+using System;
 using System.Linq;
 using Uno.UI.Samples.Controls;
 using Windows.UI.Xaml.Controls;

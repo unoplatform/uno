@@ -1,5 +1,3 @@
-﻿#nullable enable
-
 using SkiaSharp;
 using System;
 using Windows.Graphics;

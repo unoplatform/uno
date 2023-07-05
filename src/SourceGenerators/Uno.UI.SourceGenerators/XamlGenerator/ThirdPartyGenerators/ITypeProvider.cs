@@ -1,5 +1,3 @@
-﻿#nullable enable
-
 using Microsoft.CodeAnalysis;
 
 namespace Uno.UI.SourceGenerators.XamlGenerator.ThirdPartyGenerators;

@@ -1,6 +1,3 @@
-﻿#nullable enable
-
-
 namespace Windows.Foundation;
 
 /// <summary>

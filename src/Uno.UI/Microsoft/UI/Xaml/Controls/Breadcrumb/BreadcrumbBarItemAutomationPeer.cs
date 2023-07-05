@@ -2,8 +2,6 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference BreadcrumbBarItemAutomationPeer.cpp, commit f4a2812
 
-#nullable enable
-
 using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Helpers.WinUI;
 using Windows.UI.Xaml.Automation.Peers;

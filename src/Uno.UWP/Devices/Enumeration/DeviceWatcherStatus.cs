@@ -1,4 +1,6 @@
-﻿namespace Windows.Devices.Enumeration
+#nullable disable
+
+namespace Windows.Devices.Enumeration
 {
 	/// <summary>
 	/// Describes the state of a DeviceWatcher object.

@@ -1,4 +1,6 @@
-﻿#if __MACOS__ || __WASM__ || IS_UNIT_TESTS
+#nullable disable
+
+#if __MACOS__ || __WASM__ || IS_UNIT_TESTS
 using System;
 using System.Threading.Tasks;
 using Windows.Foundation;

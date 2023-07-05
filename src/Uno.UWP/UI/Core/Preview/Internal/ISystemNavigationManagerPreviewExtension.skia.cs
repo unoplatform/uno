@@ -1,4 +1,6 @@
-﻿namespace Uno.UI.Core.Preview;
+#nullable disable
+
+namespace Uno.UI.Core.Preview;
 
 internal interface ISystemNavigationManagerPreviewExtension
 {

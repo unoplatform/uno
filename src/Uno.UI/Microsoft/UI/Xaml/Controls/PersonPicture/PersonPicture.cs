@@ -1,3 +1,5 @@
+#nullable disable
+
 // MUX Reference PersonPicture.cpp, commit de78834
 
 using System;

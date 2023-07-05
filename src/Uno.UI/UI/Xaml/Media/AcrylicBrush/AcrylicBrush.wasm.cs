@@ -1,4 +1,6 @@
-﻿using System;
+#nullable disable
+
+using System;
 using Uno.Disposables;
 using Uno.UI.Xaml;
 

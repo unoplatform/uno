@@ -1,4 +1,6 @@
-﻿using System.Numerics;
+#nullable disable
+
+using System.Numerics;
 using SkiaSharp;
 using Windows.UI.Composition;
 

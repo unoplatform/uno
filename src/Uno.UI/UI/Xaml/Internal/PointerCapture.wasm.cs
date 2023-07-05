@@ -1,5 +1,3 @@
-﻿#nullable enable
-
 using System;
 using System.Linq;
 using Windows.Devices.Input;

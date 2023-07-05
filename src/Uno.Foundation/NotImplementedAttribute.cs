@@ -1,6 +1,3 @@
-﻿#nullable enable
-
-
 namespace Uno;
 
 /// <summary>

@@ -1,4 +1,6 @@
-﻿using System.Numerics;
+#nullable disable
+
+using System.Numerics;
 using Uno.Disposables;
 using Windows.Foundation;
 using Windows.UI.Xaml;

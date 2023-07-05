@@ -1,4 +1,6 @@
-﻿using Uno.Disposables;
+#nullable disable
+
+using Uno.Disposables;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 

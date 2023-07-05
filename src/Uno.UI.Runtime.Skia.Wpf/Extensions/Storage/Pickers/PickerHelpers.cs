@@ -1,5 +1,3 @@
-﻿#nullable enable
-
 using Windows.Storage.Pickers;
 using static System.Environment;
 

@@ -1,4 +1,6 @@
-﻿using DirectUI;
+#nullable disable
+
+using DirectUI;
 using static Microsoft.UI.Xaml.Controls._Tracing;
 
 namespace Windows.UI.Xaml.Controls;

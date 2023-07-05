@@ -1,5 +1,3 @@
-﻿#nullable enable
-
 using System;
 using Uno.Media.Playback;
 using Windows.Media.Core;

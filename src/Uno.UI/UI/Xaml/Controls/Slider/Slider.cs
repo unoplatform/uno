@@ -1,3 +1,5 @@
+#nullable disable
+
 using Windows.UI.Xaml.Controls.Primitives;
 
 #if XAMARIN_IOS

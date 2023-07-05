@@ -1,4 +1,6 @@
-﻿namespace Windows.ApplicationModel.Appointments;
+#nullable disable
+
+namespace Windows.ApplicationModel.Appointments;
 
 /// <summary>
 /// Represents the organizer of an appointment in a calendar.

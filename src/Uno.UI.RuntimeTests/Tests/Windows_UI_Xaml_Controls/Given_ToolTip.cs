@@ -1,4 +1,6 @@
-﻿using System;
+#nullable disable
+
+using System;
 using Windows.UI;
 using System.Threading.Tasks;
 using Private.Infrastructure;

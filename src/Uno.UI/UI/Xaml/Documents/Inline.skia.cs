@@ -1,9 +1,7 @@
-﻿using HarfBuzzSharp;
+using HarfBuzzSharp;
 using SkiaSharp;
 using Windows.UI.Text;
 using Windows.UI.Xaml.Documents.TextFormatting;
-
-#nullable enable
 
 namespace Windows.UI.Xaml.Documents
 {

@@ -1,5 +1,3 @@
-﻿#nullable enable
-
 using System;
 using Windows.UI.Composition;
 using Windows.UI.Xaml.Media;

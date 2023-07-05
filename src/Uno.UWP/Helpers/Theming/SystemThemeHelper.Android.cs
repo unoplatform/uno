@@ -1,5 +1,3 @@
-﻿#nullable enable
-
 using Android.Content.Res;
 using Android.OS;
 

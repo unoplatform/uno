@@ -1,4 +1,6 @@
-﻿#if IS_UNIT_TESTS || __SKIA__ || __NETSTD_REFERENCE__
+#nullable disable
+
+#if IS_UNIT_TESTS || __SKIA__ || __NETSTD_REFERENCE__
 namespace Windows.Devices.Midi
 {
 	public partial class MidiOutPort

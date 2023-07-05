@@ -1,4 +1,6 @@
-﻿using Android.Views;
+#nullable disable
+
+using Android.Views;
 using Windows.UI.Xaml.Input;
 using System;
 using System.Collections.Generic;

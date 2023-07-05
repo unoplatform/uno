@@ -1,5 +1,3 @@
-﻿#nullable enable
-
 using Uno;
 using Windows.Foundation;
 using Windows.UI.Text;

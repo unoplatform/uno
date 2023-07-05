@@ -1,5 +1,3 @@
-﻿#nullable enable
-
 using System;
 using System.Windows.Threading;
 using Uno.UI.Runtime.Skia.Wpf.Extensions;

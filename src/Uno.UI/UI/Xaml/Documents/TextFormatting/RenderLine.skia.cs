@@ -1,9 +1,7 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
-#nullable enable
 
 namespace Windows.UI.Xaml.Documents.TextFormatting
 {

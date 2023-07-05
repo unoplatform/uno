@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,8 +8,6 @@ using Windows.UI.Composition;
 using Windows.UI.Text;
 using Windows.UI.Xaml.Documents.TextFormatting;
 using Windows.UI.Xaml.Media;
-
-#nullable enable
 
 namespace Windows.UI.Xaml.Documents
 {

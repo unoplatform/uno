@@ -1,3 +1,5 @@
+#nullable disable
+
 using System.Drawing;
 using Uno.UITest;
 

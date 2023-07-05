@@ -1,6 +1,4 @@
-﻿#if IS_UNIT_TESTS || __NETSTD_REFERENCE__
-#nullable enable
-
+#if IS_UNIT_TESTS || __NETSTD_REFERENCE__
 using System;
 using Windows.ApplicationModel.Core;
 

@@ -1,4 +1,6 @@
-﻿using System;
+#nullable disable
+
+using System;
 using Uno.Foundation.Extensibility;
 
 namespace Windows.Graphics.Display;

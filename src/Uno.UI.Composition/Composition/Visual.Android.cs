@@ -1,5 +1,3 @@
-#nullable enable
-
 #if __ANDROID__
 using System.Numerics;
 using System;

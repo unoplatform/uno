@@ -1,3 +1,5 @@
+#nullable disable
+
 #if !IS_UNIT_TESTS && !__SKIA__ && !__NETSTD_REFERENCE__
 using Windows.Storage.Streams;
 

@@ -1,6 +1,4 @@
-﻿extern alias __uno;
-#nullable enable
-
+extern alias __uno;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;

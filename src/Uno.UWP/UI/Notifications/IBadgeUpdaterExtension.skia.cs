@@ -1,5 +1,3 @@
-﻿#nullable enable
-
 namespace Uno.UI.Notifications
 {
 	internal interface IBadgeUpdaterExtension

@@ -1,3 +1,5 @@
+#nullable disable
+
 #if IS_UNIT_TESTS || UNO_REFERENCE_API
 using System;
 using System.Collections.Generic;

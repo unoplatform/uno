@@ -1,4 +1,6 @@
-﻿namespace Windows.UI.Xaml.Media.Animation
+#nullable disable
+
+namespace Windows.UI.Xaml.Media.Animation
 {
 	public partial class CubicEase : EasingFunctionBase
 	{

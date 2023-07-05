@@ -1,4 +1,6 @@
-﻿namespace Uno.UI.Helpers.WinUI
+#nullable disable
+
+namespace Uno.UI.Helpers.WinUI
 {
 	//This will hold Uno related keys
 	internal partial class ResourceAccessor

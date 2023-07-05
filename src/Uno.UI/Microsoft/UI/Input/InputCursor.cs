@@ -1,4 +1,6 @@
-﻿namespace Microsoft.UI.Input;
+#nullable disable
+
+namespace Microsoft.UI.Input;
 
 #if HAS_UNO_WINUI
 public partial class InputCursor

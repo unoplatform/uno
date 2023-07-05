@@ -1,5 +1,3 @@
-#nullable enable
-
 using System;
 using Uno.Foundation;
 using Uno.Foundation.Extensibility;

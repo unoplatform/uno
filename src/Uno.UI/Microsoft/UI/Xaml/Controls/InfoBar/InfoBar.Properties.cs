@@ -1,6 +1,4 @@
-﻿// MUX reference InfoBar.properties.cpp, commit 3125489
-
-#nullable enable
+// MUX reference InfoBar.properties.cpp, commit 3125489
 
 using System.Windows.Input;
 using Windows.Foundation;

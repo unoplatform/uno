@@ -1,4 +1,6 @@
-﻿using Android.Text;
+#nullable disable
+
+using Android.Text;
 
 namespace Uno.UI.Extensions
 {

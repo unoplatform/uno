@@ -1,5 +1,3 @@
-﻿#nullable enable
-
 using System;
 using Uno.UI.DataBinding;
 using Uno.UI.Extensions;

@@ -1,4 +1,6 @@
-﻿using Uno.ApplicationModel.DataTransfer;
+#nullable disable
+
+using Uno.ApplicationModel.DataTransfer;
 using Uno.Extensions.ApplicationModel.Core;
 using Uno.Extensions.ApplicationModel.DataTransfer;
 using Uno.Extensions.Networking.Connectivity;

@@ -1,5 +1,3 @@
-﻿#nullable enable
-
 using System;
 using Windows.ApplicationModel.Activation;
 using Windows.Foundation;

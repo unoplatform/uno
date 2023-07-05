@@ -1,4 +1,6 @@
-﻿using Android.Graphics;
+#nullable disable
+
+using Android.Graphics;
 using Windows.UI.Xaml.Media;
 using Android.Views;
 

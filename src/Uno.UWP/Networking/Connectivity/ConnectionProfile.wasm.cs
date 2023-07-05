@@ -1,4 +1,6 @@
-﻿#if __WASM__
+#nullable disable
+
+#if __WASM__
 
 using NativeMethods = __Windows.Networking.Connectivity.ConnectionProfile.NativeMethods;
 

@@ -1,4 +1,6 @@
-﻿using Color = global::Windows.UI.Color;
+#nullable disable
+
+using Color = global::Windows.UI.Color;
 
 namespace Windows.UI.Xaml;
 

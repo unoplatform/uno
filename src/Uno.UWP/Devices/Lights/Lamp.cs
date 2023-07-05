@@ -1,3 +1,5 @@
+#nullable disable
+
 #if __ANDROID__ || __IOS__
 using System;
 using System.Threading.Tasks;

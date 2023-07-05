@@ -1,5 +1,3 @@
-﻿#nullable enable
-
 using System.Diagnostics.CodeAnalysis;
 
 namespace Uno.Foundation.Extensibility;

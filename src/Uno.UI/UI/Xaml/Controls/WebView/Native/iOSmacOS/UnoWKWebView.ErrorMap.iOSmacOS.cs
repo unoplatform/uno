@@ -1,4 +1,6 @@
-﻿using Foundation;
+#nullable disable
+
+using Foundation;
 using System.Collections.Generic;
 using Windows.Web;
 using Microsoft.Web.WebView2.Core;

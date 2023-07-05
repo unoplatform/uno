@@ -1,4 +1,6 @@
-﻿namespace Uno.UI.TestComparer.Comparer
+#nullable disable
+
+namespace Uno.UI.TestComparer.Comparer
 {
 	internal class CompareResultFileRun
 	{

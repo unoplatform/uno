@@ -1,4 +1,6 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+#nullable disable
+
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.Extensions;
 using System;
 using System.Collections.Generic;

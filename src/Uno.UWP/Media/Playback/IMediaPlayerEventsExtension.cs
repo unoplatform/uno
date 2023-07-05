@@ -1,5 +1,3 @@
-﻿#nullable enable
-
 using System;
 using Windows.Media.Playback;
 

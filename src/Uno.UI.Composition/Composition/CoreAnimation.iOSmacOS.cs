@@ -1,5 +1,3 @@
-﻿#nullable enable
-
 using CoreAnimation;
 using Foundation;
 using Uno.Extensions;

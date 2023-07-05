@@ -1,5 +1,3 @@
-﻿#nullable enable
-
 namespace Windows.UI.Xaml.Controls;
 
 partial class Image

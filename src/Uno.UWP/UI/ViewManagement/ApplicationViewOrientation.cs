@@ -1,4 +1,6 @@
-﻿namespace Windows.UI.ViewManagement
+#nullable disable
+
+namespace Windows.UI.ViewManagement
 {
 	public enum ApplicationViewOrientation
 	{

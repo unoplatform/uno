@@ -1,4 +1,6 @@
-﻿namespace Windows.Web;
+#nullable disable
+
+namespace Windows.Web;
 
 /// <summary>
 /// Defines errors encountered during operations involving web services, 

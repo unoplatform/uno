@@ -1,5 +1,3 @@
-﻿#nullable enable
-
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using Windows.Foundation.Collections;

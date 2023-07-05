@@ -1,4 +1,6 @@
-﻿using System;
+#nullable disable
+
+using System;
 
 namespace UITests.Windows_UI_Xaml_Controls.ImageTests;
 

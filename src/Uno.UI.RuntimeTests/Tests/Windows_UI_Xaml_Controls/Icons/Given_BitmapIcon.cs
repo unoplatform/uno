@@ -1,4 +1,6 @@
-﻿using Private.Infrastructure;
+#nullable disable
+
+using Private.Infrastructure;
 using System.Threading.Tasks;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.UI.Xaml.Controls;

@@ -1,4 +1,6 @@
-﻿namespace Windows.Foundation.Collections;
+#nullable disable
+
+namespace Windows.Foundation.Collections;
 
 /// <summary>
 /// Notifies listeners of changes to the vector.

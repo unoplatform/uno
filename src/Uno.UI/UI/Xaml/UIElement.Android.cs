@@ -1,3 +1,5 @@
+#nullable disable
+
 using Uno.UI;
 using Uno.UI.Controls;
 using Uno.UI.Extensions;

@@ -1,4 +1,6 @@
-﻿using System.ComponentModel;
+#nullable disable
+
+using System.ComponentModel;
 using System.IO;
 using System.Runtime.CompilerServices;
 using Newtonsoft.Json;

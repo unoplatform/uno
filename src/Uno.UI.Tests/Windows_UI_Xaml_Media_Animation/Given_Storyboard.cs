@@ -1,4 +1,6 @@
-﻿using Windows.UI.Xaml.Media.Animation;
+#nullable disable
+
+using Windows.UI.Xaml.Media.Animation;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Threading.Tasks;

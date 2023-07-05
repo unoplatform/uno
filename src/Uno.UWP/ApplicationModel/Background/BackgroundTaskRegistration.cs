@@ -1,5 +1,3 @@
-﻿#nullable enable
-
 namespace Windows.ApplicationModel.Background;
 
 

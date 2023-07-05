@@ -1,6 +1,4 @@
 #if !HAS_UNO_WINUI
-#nullable enable
-
 using System;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;

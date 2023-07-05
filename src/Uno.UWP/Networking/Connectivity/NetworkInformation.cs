@@ -1,6 +1,4 @@
 #if !IS_UNIT_TESTS
-#nullable enable
-
 using Uno.Helpers;
 
 namespace Windows.Networking.Connectivity;

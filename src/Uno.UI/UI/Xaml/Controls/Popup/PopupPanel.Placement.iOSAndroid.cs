@@ -14,8 +14,6 @@ using View = UIKit.UIView;
 using Android.Views;
 #endif
 
-#nullable enable
-
 namespace Windows.UI.Xaml.Controls.Primitives;
 
 partial class PopupPanel

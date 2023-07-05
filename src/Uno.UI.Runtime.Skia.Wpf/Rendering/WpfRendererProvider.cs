@@ -1,4 +1,6 @@
-﻿using System;
+#nullable disable
+
+using System;
 using Uno.Foundation.Logging;
 using Uno.UI.Runtime.Skia.Wpf.Hosting;
 using Uno.UI.Skia;

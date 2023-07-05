@@ -1,5 +1,3 @@
-#nullable enable
-
 namespace Windows.UI.Composition
 {
 	public partial class CompositionGeometricClip : CompositionClip

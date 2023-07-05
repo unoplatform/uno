@@ -1,3 +1,5 @@
+#nullable disable
+
 using Gdk;
 using System;
 using Uno.Extensions;

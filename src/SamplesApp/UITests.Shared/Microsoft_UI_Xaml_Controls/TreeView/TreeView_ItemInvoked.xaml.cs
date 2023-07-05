@@ -1,4 +1,6 @@
-﻿#pragma warning disable CS0105 // duplicate namespace because of WinUI source conversion
+#nullable disable
+
+#pragma warning disable CS0105 // duplicate namespace because of WinUI source conversion
 
 using System;
 using System.Collections.Generic;

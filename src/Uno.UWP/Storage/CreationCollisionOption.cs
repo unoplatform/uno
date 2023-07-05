@@ -1,4 +1,6 @@
-﻿namespace Windows.Storage;
+#nullable disable
+
+namespace Windows.Storage;
 
 /// <summary>
 /// Specifies what to do if a file or folder with the specified name already exists in the current folder when you create a new file or folder.

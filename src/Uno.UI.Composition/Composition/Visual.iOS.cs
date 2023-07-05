@@ -1,5 +1,3 @@
-#nullable enable
-
 #if __IOS__
 using CoreAnimation;
 using System.Numerics;

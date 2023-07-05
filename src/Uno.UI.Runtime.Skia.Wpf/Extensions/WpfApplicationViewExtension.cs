@@ -1,4 +1,6 @@
-﻿using System;
+#nullable disable
+
+using System;
 using System.Windows;
 using Uno.Foundation.Logging;
 using Windows.UI.ViewManagement;

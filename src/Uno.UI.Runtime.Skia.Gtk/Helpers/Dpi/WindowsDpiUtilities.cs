@@ -1,4 +1,6 @@
-﻿// Borrowed from https://stackoverflow.com/a/29516189.
+#nullable disable
+
+// Borrowed from https://stackoverflow.com/a/29516189.
 
 using System;
 using System.Runtime.InteropServices;

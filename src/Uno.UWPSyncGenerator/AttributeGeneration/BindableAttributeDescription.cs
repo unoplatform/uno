@@ -1,5 +1,3 @@
-﻿#nullable enable
-
 using Microsoft.CodeAnalysis;
 
 namespace Uno.UWPSyncGenerator.AttributeGeneration;

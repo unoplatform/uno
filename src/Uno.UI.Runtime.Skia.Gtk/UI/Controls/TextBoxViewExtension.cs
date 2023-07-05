@@ -1,5 +1,3 @@
-﻿#nullable enable
-
 using Uno.UI.Runtime.Skia.UI.Xaml.Controls;
 using Uno.UI.Xaml.Controls.Extensions;
 using Windows.UI.Xaml;

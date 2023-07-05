@@ -1,5 +1,3 @@
-﻿#nullable enable
-
 using System.Collections.Specialized;
 
 namespace Windows.Foundation.Collections;

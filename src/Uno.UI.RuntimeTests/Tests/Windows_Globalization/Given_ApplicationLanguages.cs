@@ -1,4 +1,6 @@
-﻿using Windows.Globalization;
+#nullable disable
+
+using Windows.Globalization;
 using FluentAssertions;
 using Windows.Storage;
 

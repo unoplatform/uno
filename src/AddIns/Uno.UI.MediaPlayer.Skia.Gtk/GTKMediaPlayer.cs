@@ -1,5 +1,3 @@
-#nullable enable
-
 using Windows.UI.Core;
 using LibVLCSharp.Shared;
 using Windows.UI.Xaml.Controls;

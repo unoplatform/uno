@@ -1,3 +1,5 @@
+#nullable disable
+
 #if __IOS__ || __MACOS__
 using System;
 using System.Collections;

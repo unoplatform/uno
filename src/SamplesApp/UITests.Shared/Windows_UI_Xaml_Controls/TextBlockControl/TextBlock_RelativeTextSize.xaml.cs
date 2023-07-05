@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+#nullable disable
+
+using System.Threading.Tasks;
 using Uno.UI.Samples.Controls;
 using Windows.UI.Xaml.Controls;
 

@@ -1,4 +1,6 @@
-﻿using System;
+#nullable disable
+
+using System;
 using Uno.UI;
 using System.Collections.Generic;
 using System.Linq;

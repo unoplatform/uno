@@ -1,4 +1,6 @@
-﻿namespace Windows.UI.Popups;
+#nullable disable
+
+namespace Windows.UI.Popups;
 
 /// <summary>
 /// Represents a command in a context menu or message dialog box.

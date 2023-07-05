@@ -1,5 +1,3 @@
-﻿#nullable enable
-
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 #if HAS_UNO || IS_UNIT_TESTS
 using Uno.Globalization.NumberFormatting;

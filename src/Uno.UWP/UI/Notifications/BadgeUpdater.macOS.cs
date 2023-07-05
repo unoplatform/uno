@@ -1,5 +1,3 @@
-#nullable enable
-
 using AppKit;
 using Windows.Data.Xml.Dom;
 

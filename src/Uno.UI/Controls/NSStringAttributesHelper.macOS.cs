@@ -1,4 +1,3 @@
-﻿#nullable enable
 using System;
 using Foundation;
 using Windows.UI;

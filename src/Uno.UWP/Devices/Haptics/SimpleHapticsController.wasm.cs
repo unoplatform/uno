@@ -1,5 +1,3 @@
-﻿#nullable enable
-
 using System;
 using System.Collections.Generic;
 using PhoneVibrationDevice = Windows.Phone.Devices.Notification.VibrationDevice;

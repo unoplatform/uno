@@ -1,4 +1,6 @@
-﻿namespace Windows.Foundation.Collections;
+#nullable disable
+
+namespace Windows.Foundation.Collections;
 
 /// <summary>
 /// Provides data for the changed event of a map collection.

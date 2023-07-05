@@ -1,4 +1,6 @@
-﻿namespace Uno;
+#nullable disable
+
+namespace Uno;
 
 /// <summary>
 /// This member is only available in Uno Platform and not part of the UWP/WinUI contract.

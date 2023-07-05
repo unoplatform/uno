@@ -1,4 +1,6 @@
-﻿namespace Windows.ApplicationModel.Core;
+#nullable disable
+
+namespace Windows.ApplicationModel.Core;
 
 partial class CoreApplication
 {

@@ -1,5 +1,3 @@
-﻿#nullable enable
-
 using Gtk;
 using Uno.UI.Core.Preview;
 using Uno.UI.Runtime.Skia;

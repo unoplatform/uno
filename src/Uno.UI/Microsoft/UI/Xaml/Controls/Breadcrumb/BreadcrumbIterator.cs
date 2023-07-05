@@ -2,8 +2,6 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference BreadcrumbIterator.cpp, commit 2abfc83
 
-#nullable enable
-
 using System;
 using System.Collections;
 using System.Collections.Generic;

@@ -1,4 +1,6 @@
-﻿
+#nullable disable
+
+
 namespace Windows.Devices.Bluetooth
 {
 	// using order/valus from

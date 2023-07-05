@@ -1,4 +1,6 @@
-﻿using Microsoft.Web.WebView2.Core;
+#nullable disable
+
+using Microsoft.Web.WebView2.Core;
 using Windows.Web;
 
 namespace Windows.UI.Xaml.Controls;

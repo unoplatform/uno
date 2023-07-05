@@ -1,5 +1,3 @@
-﻿#nullable enable
-
 using System;
 using System.Diagnostics;
 using Silk.NET.OpenGLES;

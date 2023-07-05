@@ -1,4 +1,6 @@
-﻿#if __ANDROID__
+#nullable disable
+
+#if __ANDROID__
 using Android.Media.Midi;
 
 namespace Uno.Devices.Enumeration.Internal.Providers.Midi

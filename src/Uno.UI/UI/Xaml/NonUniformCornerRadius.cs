@@ -1,4 +1,6 @@
-﻿using System.Numerics;
+#nullable disable
+
+using System.Numerics;
 using Windows.Foundation;
 
 namespace Windows.UI.Xaml;

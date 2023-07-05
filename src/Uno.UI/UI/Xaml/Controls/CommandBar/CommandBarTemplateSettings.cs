@@ -1,4 +1,6 @@
-﻿using Windows.Foundation;
+#nullable disable
+
+using Windows.Foundation;
 using Windows.UI.Xaml;
 
 namespace Windows.UI.Xaml.Controls.Primitives

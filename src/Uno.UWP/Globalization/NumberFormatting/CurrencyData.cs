@@ -1,5 +1,3 @@
-﻿#nullable enable
-
 using Windows.Globalization;
 
 namespace Uno.Globalization.NumberFormatting;

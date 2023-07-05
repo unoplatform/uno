@@ -1,4 +1,6 @@
-﻿using Android.Runtime;
+#nullable disable
+
+using Android.Runtime;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using System;

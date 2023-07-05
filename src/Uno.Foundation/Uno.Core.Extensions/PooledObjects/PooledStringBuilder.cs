@@ -4,8 +4,6 @@
 
 // https://github.com/dotnet/roslyn/blob/cd5e6895d3dc8dfad270505b37d28be70077a645/src/Dependencies/PooledObjects/PooledStringBuilder.cs
 
-#nullable enable
-
 using System.Diagnostics;
 using System.Text;
 

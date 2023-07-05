@@ -1,4 +1,3 @@
-#nullable enable
 #pragma warning disable CS0169
 #pragma warning disable CS8601
 

@@ -1,5 +1,3 @@
-﻿#nullable enable
-
 using System.Collections.Generic;
 using Uno;
 using Uno.Globalization.NumberFormatting;

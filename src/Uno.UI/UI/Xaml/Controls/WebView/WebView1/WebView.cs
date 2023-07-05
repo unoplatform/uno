@@ -1,5 +1,3 @@
-﻿#nullable enable
-
 using System;
 using Microsoft.Web.WebView2.Core;
 using Uno.UI.Xaml.Controls;

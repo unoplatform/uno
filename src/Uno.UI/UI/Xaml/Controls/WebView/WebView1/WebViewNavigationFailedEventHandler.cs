@@ -1,4 +1,6 @@
-﻿namespace Windows.UI.Xaml.Controls;
+#nullable disable
+
+namespace Windows.UI.Xaml.Controls;
 
 /// <summary>
 /// Represents the method that will handle the WebView.NavigationFailed event.

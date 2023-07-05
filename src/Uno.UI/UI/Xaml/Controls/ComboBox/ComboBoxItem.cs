@@ -1,4 +1,6 @@
-﻿using Windows.System;
+#nullable disable
+
+using Windows.System;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
 

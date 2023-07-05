@@ -1,4 +1,6 @@
-﻿using AndroidX.Core.Graphics.Drawable;
+#nullable disable
+
+using AndroidX.Core.Graphics.Drawable;
 using Android.Views;
 using System;
 using System.Collections.Generic;

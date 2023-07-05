@@ -1,5 +1,3 @@
-#nullable enable
-
 using System.Numerics;
 using System;
 

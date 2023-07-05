@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+#nullable disable
+
+using System.Threading.Tasks;
 using Microsoft.UI.Xaml.Controls;
 using Private.Infrastructure;
 using Windows.Foundation;
