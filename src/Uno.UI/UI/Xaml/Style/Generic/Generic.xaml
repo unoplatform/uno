@@ -7614,7 +7614,7 @@
 		<Setter Property="ItemsPanel">
 			<Setter.Value>
 				<ItemsPanelTemplate>
-					<NativeFlipView />
+					<NativeFlipView Background="{TemplateBinding Background}" />
 				</ItemsPanelTemplate>
 			</Setter.Value>
 		</Setter>
