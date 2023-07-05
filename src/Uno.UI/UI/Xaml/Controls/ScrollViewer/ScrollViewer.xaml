@@ -275,6 +275,7 @@
 								Value="{TemplateBinding VerticalOffset}"
 								ViewportSize="{TemplateBinding ViewportHeight}"
 								HorizontalAlignment="Right"
+								skia:SmallChange="16"
 								skia:Width="16"
 								macos:Width="16"/>
 
