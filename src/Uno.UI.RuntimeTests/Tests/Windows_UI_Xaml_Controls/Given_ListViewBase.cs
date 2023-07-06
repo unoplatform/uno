@@ -2843,9 +2843,19 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		public async Task When_Items_Have_Duplicates()
+		public async Task When_Items_Have_Duplicates_ListView() => await When_Items_Have_Duplicates_Common(new ListView());
+
+		[TestMethod]
+		public async Task When_Items_Have_Duplicates_GridView() => await When_Items_Have_Duplicates_Common(new GridView());
+
+		[TestMethod]
+		public async Task When_Items_Have_Duplicates_ComboBox() => await When_Items_Have_Duplicates_Common(new ComboBox());
+
+		[TestMethod]
+		public async Task When_Items_Have_Duplicates_FlipView() => await When_Items_Have_Duplicates_Common(new FlipView());
+
+		private async Task When_Items_Have_Duplicates_Common(ListViewBase sut)
 		{
-			var sut = new ListView();
 			var items = new ObservableCollection<string>(new[]
 			{
 				"String 1",
@@ -2904,11 +2914,21 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		public async Task When_Items_Are_Equal_But_Different_References()
+		public async Task When_Items_Are_Equal_But_Different_References_ListView() => await When_Items_Are_Equal_But_Different_References_Common(new ListView());
+
+		[TestMethod]
+		public async Task When_Items_Are_Equal_But_Different_References_GridView() => await When_Items_Are_Equal_But_Different_References_Common(new GridView());
+
+		[TestMethod]
+		public async Task When_Items_Are_Equal_But_Different_References_ComboBox() => await When_Items_Are_Equal_But_Different_References_Common(new ComboBox());
+
+		[TestMethod]
+		public async Task When_Items_Are_Equal_But_Different_References_FlipView() => await When_Items_Are_Equal_But_Different_References_Common(new FlipView());
+
+		private async Task When_Items_Are_Equal_But_Different_References_Common(ListViewBase sut)
 		{
 			var obj1 = new AlwaysEqualClass();
 			var obj2 = new AlwaysEqualClass();
-			var sut = new ListView();
 			var items = new ObservableCollection<AlwaysEqualClass>(new[]
 			{
 				obj1, obj2
