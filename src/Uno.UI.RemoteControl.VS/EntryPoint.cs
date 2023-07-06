@@ -428,7 +428,7 @@ namespace Uno.UI.RemoteControl.VS
 			try
 			{
 				_dte.Events.BuildEvents.OnBuildDone -= _onBuildDoneHandler;
-				_dte.Events.BuildEvents.OnBuildProjConfigBegin += _onBuildProjConfigBeginHandler;
+				_dte.Events.BuildEvents.OnBuildProjConfigBegin -= _onBuildProjConfigBeginHandler;
 			}
 			catch (Exception e)
 			{
