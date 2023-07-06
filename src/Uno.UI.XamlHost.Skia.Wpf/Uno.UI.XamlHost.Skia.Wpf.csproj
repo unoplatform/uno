@@ -1,14 +1,10 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras">
 
 	<PropertyGroup>
-		<TargetFrameworks>net47;netcoreapp3.1</TargetFrameworks>
+		<TargetFrameworks>net7.0-windows;net8.0-windows</TargetFrameworks>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(MSBuildRuntimeType)'=='Core' or '$(BuildingInsideVisualStudio)'=='true'">
-		<TargetFrameworks>$(TargetFrameworks);net7.0-windows</TargetFrameworks>
-	</PropertyGroup>
-
-	<Import Project="../netcore-build-windows.props" />
+	<Import Project="../targetframework-override-windows.props"/>
 
 	<PropertyGroup>
 		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>

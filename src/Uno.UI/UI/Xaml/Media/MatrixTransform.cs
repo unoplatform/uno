@@ -10,15 +10,7 @@ namespace Windows.UI.Xaml.Media
 	public partial class MatrixTransform : Transform
 	{
 		internal override Matrix3x2 ToMatrix(Point absoluteOrigin)
-		{
-			if ((absoluteOrigin.X != 0 || absoluteOrigin.Y != 0)
-				&& this.Log().IsEnabled(LogLevel.Error))
-			{
-				this.Log().Error("The matrix transform does not support absolute origin");
-			}
-
-			return Matrix.Inner;
-		}
+			=> Matrix.ToMatrix3x2().CenterOn(absoluteOrigin);
 
 		public Matrix Matrix
 		{

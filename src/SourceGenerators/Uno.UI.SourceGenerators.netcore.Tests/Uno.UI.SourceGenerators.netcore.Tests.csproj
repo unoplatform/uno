@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<TargetFramework>net7.0</TargetFramework>
@@ -29,10 +29,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.4.1" />
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.6.2" />
 		<PackageReference Include="MSTest.TestAdapter" Version="2.2.10" />
 		<PackageReference Include="MSTest.TestFramework" Version="2.1.2" />
-		<PackageReference Include="coverlet.collector" Version="3.2.0" />
+		<PackageReference Include="coverlet.collector" Version="6.0.0" />
 		<PackageReference Include="FluentAssertions" />
 		<PackageReference Include="CommunityToolkit.Mvvm" />
 		<Reference Include="$(NuGetPackageRoot)\communitytoolkit.mvvm\$(CommunityToolkitMvvmVersion)\analyzers\dotnet\roslyn4.3\cs\CommunityToolkit.Mvvm.SourceGenerators.dll" />
@@ -42,7 +42,7 @@
 		<PackageReference Include="Microsoft.CodeAnalysis" Version="4.5.0" />
 		<PackageReference Include="Microsoft.CodeAnalysis.Features" Version="4.5.0" />
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Features" Version="4.5.0" />
-		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.SourceGenerators.Testing.MSTest" Version="1.1.2-beta1.23163.2" />
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.SourceGenerators.Testing.MSTest" Version="1.1.2-beta1.23251.2" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -22,11 +22,18 @@ namespace Windows.UI.Xaml.Media
 {
 	/// <summary>
 	/// Transform :  Based on the WinRT Transform
-	/// 
+	///
 	/// https://msdn.microsoft.com/en-us/library/system.windows.media.transform(v=vs.110).aspx
 	/// </summary>
+	// Transform isn't supposed to be abstract, but since the constructor is private protected, it
+	// cannot be subclassed outside of Uno. So it doesn't matter much whether it's abstract or not.
+	// We keep it abstract for now to force subclasses to implement the abstract method ToMatrix.
 	public abstract partial class Transform : GeneralTransform
 	{
+		private protected Transform()
+		{
+		}
+
 		protected static PropertyChangedCallback NotifyChangedCallback { get; } = (snd, args) =>
 		{
 			if (snd is Transform transform)

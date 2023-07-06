@@ -23,10 +23,7 @@ namespace Windows.UI.Xaml.Controls
 		private double _sourceImageScale = 1;
 		private SerialDisposable _childViewDisposable = new SerialDisposable();
 		private Windows.Foundation.Size _sourceImageSize;
-		private Windows.Foundation.Size SourceImageSize
-		{
-			get { return _sourceImageSize; }
-		}
+		private Windows.Foundation.Size SourceImageSize => _sourceImageSize;
 
 		/// <summary>
 		/// Updates the size of the image source (drawable, bitmap, etc.)
@@ -50,10 +47,10 @@ namespace Windows.UI.Xaml.Controls
 
 			UpdateMatrix(_lastLayoutSize);
 
-			if (Source is BitmapSource bitmapSource)
+			if (Source is BitmapImage bitmapImage)
 			{
-				bitmapSource.PixelWidth = (int)_sourceImageSize.Width;
-				bitmapSource.PixelHeight = (int)_sourceImageSize.Height;
+				bitmapImage.PixelWidth = (int)_sourceImageSize.Width;
+				bitmapImage.PixelHeight = (int)_sourceImageSize.Height;
 			}
 		}
 
@@ -135,7 +132,7 @@ namespace Windows.UI.Xaml.Controls
 
 			_imageFetchDisposable.Disposable = null;
 
-			if (imageSource != null && imageSource.UseTargetSize)
+			if (imageSource is not null && imageSource.UseTargetSize)
 			{
 				// If the ImageSource has the UseTargetSize set, the image
 				// must not be loaded until the first layout has been done.
@@ -147,6 +144,13 @@ namespace Windows.UI.Xaml.Controls
 					}
 					return;
 				}
+			}
+
+			if (imageSource?.ResourceFailed == true)
+			{
+				// Currently resource-based images are evaluated immediately
+				// in the constructor - so we have to raise ImageFailed late.				
+				OnImageFailed(imageSource, new InvalidOperationException("Resource could not be found"));
 			}
 
 			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))

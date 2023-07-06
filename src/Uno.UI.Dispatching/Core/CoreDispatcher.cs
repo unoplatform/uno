@@ -266,7 +266,7 @@ namespace Uno.UI.Dispatching
 			return Interlocked.Decrement(ref _globalCount);
 		}
 
-#if __ANDROID__ || __WASM__ || __SKIA__ || __MACOS__ || __IOS__ || NET461
+#if __ANDROID__ || __WASM__ || __SKIA__ || __MACOS__ || __IOS__ || IS_UNIT_TESTS
 		private void DispatchItems()
 		{
 			UIAsyncOperation? operation = null;

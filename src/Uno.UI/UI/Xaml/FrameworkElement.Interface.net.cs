@@ -31,7 +31,7 @@ namespace Windows.UI.Xaml
 		partial void Initialize();
 		partial void OnUnloadedPartial();
 
-		public FrameworkElement()
+		protected FrameworkElement()
 		{
 			Initialize();
 		}

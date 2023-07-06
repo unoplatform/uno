@@ -71,8 +71,6 @@ namespace Windows.UI.Xaml
 		private readonly static IEventProvider _trace = Tracing.Get(FrameworkElement.TraceProvider.Id);
 #endif
 
-		private bool _suppressIsEnabled;
-
 		private bool _defaultStyleApplied;
 
 		private static readonly Uri DefaultBaseUri = new Uri("ms-appx://local");
@@ -269,50 +267,6 @@ namespace Windows.UI.Xaml
 				return finalSize;
 			}
 		}
-
-#if !UNO_REFERENCE_API
-		/// <summary>
-		/// Updates the DesiredSize of a UIElement. Typically, objects that implement custom layout for their
-		/// layout children call this method from their own MeasureOverride implementations to form a recursive layout update.
-		/// </summary>
-		/// <param name="availableSize">
-		/// The available space that a parent can allocate to a child object. A child object can request a larger
-		/// space than what is available; the provided size might be accommodated if scrolling or other resize behavior is
-		/// possible in that particular container.
-		/// </param>
-		/// <returns>The measured size.</returns>
-		/// <remarks>
-		/// Under Uno.UI, this method should not be called during the normal layouting phase. Instead, use the
-		/// <see cref="MeasureElement(View, Size)"/> methods, which handles native view properly.
-		/// </remarks>
-		public override void Measure(Size availableSize)
-		{
-			if (double.IsNaN(availableSize.Width) || double.IsNaN(availableSize.Height))
-			{
-				throw new InvalidOperationException($"Cannot measure [{GetType()}] with NaN");
-			}
-
-			_layouter.Measure(availableSize);
-#if NET461
-			OnMeasurePartial(availableSize);
-#endif
-		}
-
-		/// <summary>
-		/// Positions child objects and determines a size for a UIElement. Parent objects that implement custom layout
-		/// for their child elements should call this method from their layout override implementations to form a recursive layout update.
-		/// </summary>
-		/// <param name="finalRect">The final size that the parent computes for the child in layout, provided as a <see cref="Windows.Foundation.Rect"/> value.</param>
-		public override void Arrange(Rect finalRect)
-		{
-			_layouter.Arrange(finalRect);
-			_layouter.ArrangeChild(this, finalRect);
-		}
-#endif
-
-#if NET461
-		partial void OnMeasurePartial(Size slotSize);
-#endif
 
 		/// <summary>
 		/// Measures an native element, in the same way <see cref="Measure"/> would do.
@@ -708,71 +662,6 @@ namespace Windows.UI.Xaml
 
 		protected virtual void OnApplyTemplate()
 		{
-		}
-
-		#region IsEnabled DependencyProperty
-
-#if !(__ANDROID__ || __IOS__ || __MACOS__) // On those platforms, this code is generated through mixins
-		// Note: we keep the event args as a private field for perf consideration: This avoids to create a new instance each time.
-		//		 As it's used only internally it's safe to do so.
-		[ThreadStatic]
-		private static IsEnabledChangedEventArgs _isEnabledChangedEventArgs;
-
-		public event DependencyPropertyChangedEventHandler IsEnabledChanged;
-
-		[GeneratedDependencyProperty(DefaultValue = true, ChangedCallback = true, CoerceCallback = true, Options = FrameworkPropertyMetadataOptions.Inherits)]
-		public static DependencyProperty IsEnabledProperty { get; } = CreateIsEnabledProperty();
-
-		public bool IsEnabled
-		{
-			get => GetIsEnabledValue();
-			set => SetIsEnabledValue(value);
-		}
-
-		private void OnIsEnabledChanged(DependencyPropertyChangedEventArgs args)
-		{
-			UpdateHitTest();
-
-			_isEnabledChangedEventArgs ??= new IsEnabledChangedEventArgs();
-			_isEnabledChangedEventArgs.SourceEvent = args;
-
-			OnIsEnabledChanged(_isEnabledChangedEventArgs);
-			IsEnabledChanged?.Invoke(this, args);
-
-			// TODO: move focus elsewhere if control.FocusState != FocusState.Unfocused
-
-#if __WASM__
-			if (FeatureConfiguration.UIElement.AssignDOMXamlProperties)
-			{
-				UpdateDOMProperties();
-			}
-#endif
-		}
-#endif
-
-		private protected virtual void OnIsEnabledChanged(IsEnabledChangedEventArgs pArgs)
-		{
-		}
-		#endregion
-
-		internal bool IsEnabledSuppressed => _suppressIsEnabled;
-
-		/// <summary>
-		/// Provides the ability to disable <see cref="IsEnabled"/> value changes, e.g. in the context of ICommand CanExecute.
-		/// </summary>
-		/// <param name="suppress">If true, <see cref="IsEnabled"/> will always be false</param>
-		private protected void SuppressIsEnabled(bool suppress)
-		{
-			if (_suppressIsEnabled != suppress)
-			{
-				_suppressIsEnabled = suppress;
-				this.CoerceValue(IsEnabledProperty);
-			}
-		}
-
-		private object CoerceIsEnabled(object baseValue)
-		{
-			return _suppressIsEnabled ? false : baseValue;
 		}
 
 		bool ILayoutConstraints.IsWidthConstrained(View requester) => IsWidthConstrained(requester);

@@ -15,6 +15,7 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Input;
 
+using PointerIdentifierPool = Windows.Devices.Input.PointerIdentifierPool; // internal type (should be in Uno namespace)
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
 #else
@@ -147,9 +148,7 @@ namespace Uno.UI.Xaml.Core
 
 #if __WASM__
 		private static void ProcessPointerCancelledWasm(PointerRoutedEventArgs args)
-		{
-			RemoveActivePointer(args.Pointer.UniqueId);
-		}
+			=> PointerIdentifierPool.ReleaseManaged(args.Pointer.UniqueId);
 #endif
 
 		internal void ProcessPointerUp(PointerRoutedEventArgs args, bool isAfterHandledUp = false)
@@ -200,7 +199,7 @@ namespace Uno.UI.Xaml.Core
 			ReleaseCaptures(args.Reset(canBubbleNatively: false));
 
 #if __WASM__
-			RemoveActivePointer(args.Pointer.UniqueId);
+			PointerIdentifierPool.ReleaseManaged(args.Pointer.UniqueId);
 #endif
 		}
 

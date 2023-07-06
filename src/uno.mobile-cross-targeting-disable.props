@@ -1,7 +1,7 @@
 <Project ToolsVersion="15.0">
-	<!-- CI helper to split net6 and net7 builds and actually build on net6 the net6.0-* targets -->
-	<PropertyGroup Condition="'$(UnoDisableNet6Mobile)'=='true'">
-		<_UnoFilteredTargetFrameworks>$(TargetFrameworks.Replace('net6.0-ios','').Replace('net6.0-android','').Replace('net6.0-maccatalyst','').Replace('net6.0-macos','').Trim(';'))</_UnoFilteredTargetFrameworks>
+	<!-- CI helper to split net8 and net7 builds and actually build on net6 the net6.0-* targets -->
+	<PropertyGroup Condition="'$(UnoDisableNet7Mobile)'=='true'">
+		<_UnoFilteredTargetFrameworks>$(TargetFrameworks.Replace('net7.0-ios','').Replace('net7.0-android','').Replace('net7.0-maccatalyst','').Replace('net7.0-macos','').Trim(';'))</_UnoFilteredTargetFrameworks>
 
 		<!--
 		Results from property functions are escaped, causing itemgroup inclusion to be
@@ -10,8 +10,18 @@
 		<TargetFrameworks>$([MSBuild]::Unescape($(_UnoFilteredTargetFrameworks)))</TargetFrameworks>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(UnoDisableNet7Mobile)'=='true'">
-		<_UnoFilteredTargetFrameworks>$(TargetFrameworks.Replace('net7.0-ios','').Replace('net7.0-android','').Replace('net7.0-maccatalyst','').Replace('net7.0-macos','').Trim(';'))</_UnoFilteredTargetFrameworks>
+	<PropertyGroup Condition="'$(UnoDisableNet8Mobile)'=='true'">
+		<_UnoFilteredTargetFrameworks>$(TargetFrameworks.Replace('net8.0-ios','').Replace('net8.0-android','').Replace('net8.0-maccatalyst','').Replace('net8.0-macos','').Trim(';'))</_UnoFilteredTargetFrameworks>
+
+		<!--
+		Results from property functions are escaped, causing itemgroup inclusion to be
+		done as a single string. Unescape restores `;` as a proper separator.
+		-->
+		<TargetFrameworks>$([MSBuild]::Unescape($(_UnoFilteredTargetFrameworks)))</TargetFrameworks>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(UnoDisableNet8)'=='true'">
+		<_UnoFilteredTargetFrameworks>$(TargetFrameworks.Replace('net8.0-windows','').Replace('net8.0','').Trim(';'))</_UnoFilteredTargetFrameworks>
 
 		<!--
 		Results from property functions are escaped, causing itemgroup inclusion to be

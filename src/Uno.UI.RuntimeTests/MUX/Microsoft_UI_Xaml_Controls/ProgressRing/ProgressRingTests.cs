@@ -13,6 +13,9 @@ public class ProgressRingTests
 	[RunsOnUIThread]
 	[DataRow(true)]
 	[DataRow(false)]
+#if !(__WASM__ || (__ANDROID__ && !NET6_0_OR_GREATER) || (__IOS__ && !NET6_0_OR_GREATER) || __MACOS__ || HAS_SKOTTIE)
+	[Ignore("Skottie is not supported on net6+ UWP targets")]
+#endif
 	public async Task ProgressRingDefaultHeightShouldBe32(bool useFluent)
 	{
 		using (useFluent ? StyleHelper.UseFluentStyles() : null)

@@ -69,7 +69,7 @@ namespace Windows.ApplicationModel.DataTransfer
 				var html = await data.GetHtmlFormatAsync();
 
 				// Matches all tags
-				Regex regex = new Regex("(<.*?>\\s*)+", RegexOptions.Singleline);
+				Regex regex = TagMatch();
 				// Replace tags by spaces and trim
 				var plainText = regex.Replace(html, " ").Trim();
 
@@ -219,6 +219,9 @@ namespace Windows.ApplicationModel.DataTransfer
 		{
 			OnContentChanged();
 		}
+
+		[GeneratedRegex("(<.*?>\\s*)+", RegexOptions.Singleline)]
+		private static partial Regex TagMatch();
 	}
 }
 #endif

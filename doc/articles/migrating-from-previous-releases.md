@@ -4,7 +4,117 @@ uid: Uno.Development.MigratingFromPreviousReleases
 
 ## Migrating from Previous Releases of Uno Platform
 
-This article details the migration steps required to migrate from one version to the next.
+This article details the  migration steps required to migrate from one version to the next when breaking changes are being introduced.
+
+### Uno Platform 5.0
+
+Uno Platform 5.0 contains binary breaking changes in order to further align our API surface with the Windows App SDK. Most of these changes are binary breaking changes, but are not introducing behavior changes. You can find a list of these changes below.
+
+Additionally, this version:
+- Adds support for .NET 8 for iOS, Android, Mac Catalyst and macOS.
+- Removes the support for Xamarin.iOS, Xamarin.Android, Xamarin.Mac, and netstandard2.0 for WebAssembly.
+- .NET 7.0 support for iOS, Android, Mac Catalyst and macOS remains unchanged.
+- Updates the base Windows SDK version from 18362 to 19041.
+
+Uno Platform 5.0 continues to supports both UWP and WinUI API sets.
+
+#### Migrating from Xamarin to net7.0-* targets
+If your current project is built on Xamarin.* targets, you can upgrade by [following this guide](xref:Uno.Development.MigratingFromXamarinToNet6).
+
+#### `ShouldWriteErrorOnInvalidXaml` now defaults to true.
+Invalid XAML, such as unknown properties or unknown x:Bind targets will generate a compiler error. Those errors must now be fixed as they are no longer ignored.
+
+#### Updating the Windows SDK from from 18362 to 19041
+If your existing libraries or UWP/WinAppSDK projects are targeting the Windows SDK 18362, you'll need to upgrade to 19041. A simple way of doing so is to replace all occurrences of `18362` to `19041` in all your solution's `csproj`, `.targets`, `.props` and `.wapproj` files.
+
+#### Xaml generator now always uses strict search
+This change ensures that the XAML parser will only look for types in an explicit way, and avoids fuzzy matching that could lead to incorrect type resolution.
+
+#### `IsEnabled` property is moved from `FrameworkElement` to `Control`
+This property was incorrectly located on `FrameworkElement` but its behavior has not changed.
+
+In order to resolve types properly in a conditional XAML namespace, make use to use the [new syntax introduced in Uno 4.8](https://platform.uno/docs/articles/platform-specific-xaml.html?q=condition#specifying-namespaces).
+
+#### Move `SwipeControl`, `SwipeItem`, `SwipeItemInvokedEventArgs`, `SwipeMode`, `SwipeItems`, `SwipeBehaviorOnInvoked`, `MenuBar`, `MenuBarItem`, and `MenuBarItemFlyout` implementation from WUX namespace to MUX namespace.
+These controls were present in both the `Windows.UI.Xaml` and `Microsoft.UI.Xaml`. Those are now located in the `Microsoft.UI.Xaml` namespace for the UWP version of Uno (Uno.UI).
+
+#### Move `AnimatedVisualPlayer`, `IAnimatedVisualSource `, and `IThemableAnimatedVisualSource` from WUX to MUX and `Microsoft.Toolkit.Uwp.UI.Lottie` namespace to `CommunityToolkit.WinUI.Lottie`
+This change moves the `AnimatedVisualPlayer` to the appropriate namespace for WinUI, aligned with the WinAppSDK version of the Windows Community Toolkit.
+
+#### `SimpleOrientationSensor` should not schedule on `Dispatcher`
+`SimpleOrientationSensor` on Android now raises events from a background thread and need to be explicitly dispatched to the UI thread as needed.
+
+#### The following types are removed from public API: `DelegateCommand`, `DelegateCommand<T>`, `IResourceService`, `IndexPath`, and `SizeConverter`.
+These legacy classes have been removed. Use the [`CommunityToolkit.Mvvm`](https://learn.microsoft.com/en-us/dotnet/communitytoolkit/mvvm/) package instead.
+
+#### `SolidColorBrushHelper` isn't available in UWP, so we are making it internal.
+This type is not present in WinUI, use `new SolidColorBrush(xxx)` instead.
+
+#### Application.OnWindowCreated does not exist in WinAppSDK
+The method has been removed.
+
+#### `DependencyObjectGenerator` no longer generated an empty ApplyCompiledBindings method.
+These methods were unused since Uno 3.0 and have been removed.
+
+#### `EasingFunctionBase` API is now aligned with WinUI
+The easing functions classes are now inheriting properly from `EasingFunctionBase`.
+
+#### Remove `ResourcesService` and `ResourceHelper`
+The legacy `ResourcesService` and `ResourceHelper` have been removed.
+
+#### Implicit conversion from string to `Point` is removed.
+The implicit conversion has been removed but a conversion can be performed using the `XamlBindingHelper` class.
+
+#### Rename `CreateTheamableFromLottieAsset` to `CreateThemableFromLottieAsset`
+This change is a rename for an identifier typo. Renaming the invocation to the new name is enough.
+
+#### Timeline shouldn't implement IDisposable
+Timeline does not implement `IDisposable` anymore. This class was not supposed be disposable and has been removed.
+
+#### `GridExtensions` and `PanelExtensions` are removed
+These legacy class have been removed.
+
+#### `GetLeft`, `GetTop`, `SetLeft`, `SetTop`, `GetZIndex`, and `SetZIndex` overloads that take DependencyObject are now removed. 
+Those legacy overloads are now removed and the UIElement overloads should be used instead.
+
+#### BaseFragment is not needed and is now removed.
+The legacy BaseFragment class has been removed. Use `Page` navigation instead.
+
+#### `ViewHelper.GetScreenSize` method on iOS/macOS is now internal.
+Use the `DisplayInformation` class instead.
+
+#### `FrameworkElement` constructors are now protected instead of public
+Use the `Control` class instead.
+
+#### `ViewHelper.MainScreenScale` and `ViewHelper.IsRetinaDisplay` are removed in iOS and macOS
+Use the `DisplayInformation` class instead.
+
+#### WebView.NavigateWithHttpRequestMessage parameter type is now `Windows.Web.Http.HttpRequestMessage` instead of `System.Net.Http.HttpRequestMessage`
+Use the new types instead.
+
+#### `OnVerticalOffsetChanged` and `OnHorizontalOffsetChanged` are now private instead of virtual protected.
+Use the related events instead.
+
+#### `FrameBufferHost` and `GtkHost` constructors that takes `args` are now removed. `args` were already unused.
+You can remove the last argument of the constructor invocation. The parameters are read by the host directly.
+
+#### `RegisterDefaultStyleForType` methods were removed.
+This legacy method was deprecated in Uno 3.x
+
+#### Xaml code generator was generating an always-null-returning FindResource method. This method is no longer generated.
+This legacy method was deprecated in Uno 3.x
+
+#### The type `Windows.Storage.Streams.InMemoryBuffer` is removed
+Use `Windows.Storage.Streams.Buffer` instead.
+
+#### `ContentPropertyAttribute.Name` is now a field to match UWP.
+This change has no effect on Controls behavior.
+
+### Uno Platform 4.9
+This release does not require upgrade steps.
+
+### Uno Platform 4.8
+This release does not require upgrade steps.
 
 ### Uno Platform 4.7
 

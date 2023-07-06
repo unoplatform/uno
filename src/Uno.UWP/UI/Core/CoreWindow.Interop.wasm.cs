@@ -1,5 +1,4 @@
-﻿#if NET7_0_OR_GREATER
-using System.Runtime.InteropServices.JavaScript;
+﻿using System.Runtime.InteropServices.JavaScript;
 
 namespace __Windows.UI.Core
 {
@@ -7,7 +6,8 @@ namespace __Windows.UI.Core
 	{
 		internal static partial class NativeMethods
 		{
+			[JSImport("globalThis.Uno.UI.WindowManager.current.setCursor")]
+			internal static partial void SetCursor(string type);
 		}
 	}
 }
-#endif

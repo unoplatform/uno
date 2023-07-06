@@ -2,22 +2,19 @@
 
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices.JavaScript;
 using System.Threading.Tasks;
 using Windows.UI.Core;
 using Uno.Extensions.Specialized;
 using Uno.Foundation;
 using System.Threading;
 
-#if NET7_0_OR_GREATER
 using NativeMethods = __Windows.ApplicationModel.DataTransfer.Clipboard.NativeMethods;
-#endif
 
 namespace Windows.ApplicationModel.DataTransfer
 {
 	public static partial class Clipboard
 	{
-		private const string JsType = "Uno.Utils.Clipboard";
-
 		public static void Clear() => SetClipboardText(string.Empty);
 
 		public static void SetContent(DataPackage/* ? */ content)
@@ -48,31 +45,25 @@ namespace Windows.ApplicationModel.DataTransfer
 
 		private static async Task<string> GetClipboardText(CancellationToken ct)
 		{
-			var command = $"{JsType}.getText();";
-			var text = await WebAssemblyRuntime.InvokeAsync(command, ct);
-
-			return text;
+			return await NativeMethods.GetTextAsync();
 		}
 
 		private static void SetClipboardText(string text)
 		{
-			var escapedText = WebAssemblyRuntime.EscapeJs(text);
-			var command = $"{JsType}.setText(\"{escapedText}\");";
-			WebAssemblyRuntime.InvokeJS(command);
+			NativeMethods.SetText(text);
 		}
 
 		private static void StartContentChanged()
 		{
-			var command = $"{JsType}.startContentChanged()";
-			WebAssemblyRuntime.InvokeJS(command);
+			NativeMethods.StartContentChanged();
 		}
 
 		private static void StopContentChanged()
 		{
-			var command = $"{JsType}.stopContentChanged()";
-			WebAssemblyRuntime.InvokeJS(command);
+			NativeMethods.StopContentChanged();
 		}
 
+		[JSExport]
 		public static int DispatchContentChanged()
 		{
 			OnContentChanged();

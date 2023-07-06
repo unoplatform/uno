@@ -1,5 +1,4 @@
-﻿#if NET7_0_OR_GREATER
-using System.Runtime.InteropServices.JavaScript;
+﻿using System.Runtime.InteropServices.JavaScript;
 
 namespace __Windows.UI.ViewManagement
 {
@@ -7,7 +6,8 @@ namespace __Windows.UI.ViewManagement
 	{
 		internal static partial class NativeMethods
 		{
+			[JSImport("globalThis.Windows.UI.ViewManagement.ApplicationViewTitleBar.setBackgroundColor")]
+			internal static partial void SetBackgroundColor(string color);
 		}
 	}
 }
-#endif

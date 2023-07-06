@@ -36,7 +36,10 @@ namespace Microsoft.UI.Xaml.Controls
 		public static DependencyProperty SourceProperty { get; } =
 			DependencyProperty.Register(nameof(Source), typeof(IAnimatedVisualSource2), typeof(AnimatedIconSource), new FrameworkPropertyMetadata(null, OnPropertyChanged));
 
-		private protected override IconElement CreateIconElementCore()
+#if !HAS_UNO_WINUI
+		private
+#endif
+		protected override IconElement CreateIconElementCore()
 		{
 			AnimatedIcon animatedIcon = new AnimatedIcon();
 			if (Source is { } source)
@@ -56,22 +59,25 @@ namespace Microsoft.UI.Xaml.Controls
 			return animatedIcon;
 		}
 
-		private protected override DependencyProperty GetIconElementPropertyCore(DependencyProperty sourceProperty)
+#if !HAS_UNO_WINUI
+		private
+#endif
+		protected override DependencyProperty GetIconElementPropertyCore(DependencyProperty iconSourceProperty)
 		{
-			if (sourceProperty == SourceProperty)
+			if (iconSourceProperty == SourceProperty)
 			{
 				return AnimatedIcon.SourceProperty;
 			}
-			else if (sourceProperty == FallbackIconSourceProperty)
+			else if (iconSourceProperty == FallbackIconSourceProperty)
 			{
 				return AnimatedIcon.FallbackIconSourceProperty;
 			}
-			else if (sourceProperty == MirroredWhenRightToLeftProperty)
+			else if (iconSourceProperty == MirroredWhenRightToLeftProperty)
 			{
 				return AnimatedIcon.MirroredWhenRightToLeftProperty;
 			}
 
-			return base.GetIconElementPropertyCore(sourceProperty);
+			return base.GetIconElementPropertyCore(iconSourceProperty);
 		}
 
 	}

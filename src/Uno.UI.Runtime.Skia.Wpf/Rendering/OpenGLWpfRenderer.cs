@@ -9,9 +9,10 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using SkiaSharp;
 using Uno.Foundation.Logging;
+using Uno.UI.Runtime.Skia.Wpf.Hosting;
 using Windows.Graphics.Display;
-using WpfControl = global::System.Windows.Controls.Control;
 using WinUI = Windows.UI.Xaml;
+using WpfControl = global::System.Windows.Controls.Control;
 
 namespace Uno.UI.Runtime.Skia.Wpf.Rendering;
 
@@ -21,7 +22,7 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 	private const GRSurfaceOrigin surfaceOrigin = GRSurfaceOrigin.TopLeft;
 
 	private readonly WpfControl _hostControl;
-	private readonly IWpfHost _host;
+	private readonly IWpfXamlRootHost _host;
 	private DisplayInformation? _displayInformation;
 	private nint _hwnd;
 	private nint _hdc;
@@ -31,13 +32,15 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 	private GRBackendRenderTarget? _renderTarget;
 	private WriteableBitmap? _backBuffer;
 
-	public OpenGLWpfRenderer(IWpfHost host)
+	public OpenGLWpfRenderer(IWpfXamlRootHost host)
 	{
 		_hostControl = host as WpfControl ?? throw new InvalidOperationException("Host should be a WPF control");
 		_host = host;
 	}
 
-	public bool Initialize()
+	public SKColor BackgroundColor { get; set; }
+
+	public bool TryInitialize()
 	{
 		// Get the window from the wpf control
 		var hwnd = new WindowInteropHelper(Window.GetWindow(_hostControl)).Handle;
@@ -130,15 +133,15 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 	public void Render(DrawingContext drawingContext)
 	{
 		if (_hostControl.ActualWidth == 0
-				|| _hostControl.ActualHeight == 0
-				|| double.IsNaN(_hostControl.ActualWidth)
-				|| double.IsNaN(_hostControl.ActualHeight)
-				|| double.IsInfinity(_hostControl.ActualWidth)
-				|| double.IsInfinity(_hostControl.ActualHeight)
-				|| _hostControl.Visibility != Visibility.Visible
-				|| _hdc == 0
-				|| _glContext == 0
-				|| _grContext is null)
+			|| _hostControl.ActualHeight == 0
+			|| double.IsNaN(_hostControl.ActualWidth)
+			|| double.IsNaN(_hostControl.ActualHeight)
+			|| double.IsInfinity(_hostControl.ActualWidth)
+			|| double.IsInfinity(_hostControl.ActualHeight)
+			|| _hostControl.Visibility != Visibility.Visible
+			|| _hdc == 0
+			|| _glContext == 0
+			|| _grContext is null)
 		{
 			return;
 		}
@@ -204,16 +207,9 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 			canvas.Clear(BackgroundColor);
 			_surface.Canvas.SetMatrix(SKMatrix.CreateScale((float)dpiScaleX, (float)dpiScaleY));
 
-			if (!_host.IsIsland)
+			if (_host.RootElement?.Visual is { } rootVisual)
 			{
-				WinUI.Window.Current.Compositor.Render(_surface);
-			}
-			else
-			{
-				if (_host.RootElement?.Visual != null)
-				{
-					WinUI.Window.Current.Compositor.RenderVisual(_surface, _host.RootElement?.Visual!);
-				}
+				WinUI.Window.Current.Compositor.RenderRootVisual(_surface, rootVisual);
 			}
 		}
 
@@ -232,6 +228,8 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 		}
 	}
 
+	public void Dispose() => Release();
+
 	private (int framebuffer, int stencil, int samples) GetGLBuffers()
 	{
 		NativeMethods.glGetIntegerv(NativeMethods.GL_FRAMEBUFFER_BINDING, out var framebuffer);
@@ -241,7 +239,7 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 		return (framebuffer, stencil, samples);
 	}
 
-	internal bool TryCreateGRGLContext(out GRContext? context)
+	private bool TryCreateGRGLContext(out GRContext? context)
 	{
 		context = null;
 
@@ -272,11 +270,6 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 		return true;
 	}
 
-	public void Dispose()
-	{
-		Release();
-	}
-
 	private void Release()
 	{
 		// Cleanup resources
@@ -298,9 +291,4 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 
 		_backBuffer = null;
 	}
-
-	public SKSize CanvasSize
-		=> _backBuffer == null ? SKSize.Empty : new SKSize(_backBuffer.PixelWidth, _backBuffer.PixelHeight);
-
-	public SKColor BackgroundColor { get; set; }
 }

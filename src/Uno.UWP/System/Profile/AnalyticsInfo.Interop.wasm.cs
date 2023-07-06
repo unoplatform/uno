@@ -1,5 +1,4 @@
-﻿#if NET7_0_OR_GREATER
-using System.Runtime.InteropServices.JavaScript;
+﻿using System.Runtime.InteropServices.JavaScript;
 
 namespace __Windows.__System.Profile
 {
@@ -7,7 +6,10 @@ namespace __Windows.__System.Profile
 	{
 		internal static partial class NativeMethods
 		{
+			private const string JsType = "globalThis.Windows.System.Profile.AnalyticsInfo";
+
+			[JSImport($"{JsType}.getDeviceType")]
+			internal static partial string GetDeviceType();
 		}
 	}
 }
-#endif

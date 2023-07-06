@@ -137,6 +137,17 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.TextBlockTests
 			Assert.AreEqual("Middle Space", tbFrontTextPreserve.Inlines[11].GetText());
 			Assert.AreEqual("Word7 ", tbFrontTextPreserve.Inlines[12].GetText());
 			Assert.AreEqual("  DoubleSpace  ", tbFrontTextPreserve.Inlines[13].GetText());
+
+
+			var tbInnerSpace = page.tbInnerSpace;
+			Assert.AreEqual("Word0", tbInnerSpace.Inlines[0].GetText());
+			Assert.AreEqual("", tbInnerSpace.Inlines[1].GetText());
+			Assert.AreEqual("Word1", tbInnerSpace.Inlines[2].GetText());
+
+			var tbInnerSpacePreserve = page.tbInnerSpacePreserve;
+			Assert.AreEqual("Word0", tbInnerSpacePreserve.Inlines[0].GetText());
+			Assert.AreEqual("   ", tbInnerSpacePreserve.Inlines[1].GetText());
+			Assert.AreEqual("Word1", tbInnerSpacePreserve.Inlines[2].GetText());
 		}
 	}
 

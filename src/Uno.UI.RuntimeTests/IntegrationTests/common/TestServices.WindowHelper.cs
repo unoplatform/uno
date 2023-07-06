@@ -152,7 +152,7 @@ namespace Private.Infrastructure
 			/// This method assumes that the control will have a non-zero size once loaded, so it's not appropriate for elements that are
 			/// collapsed, empty, etc.
 			/// </remarks>
-			internal static async Task WaitForLoaded(FrameworkElement element)
+			internal static async Task WaitForLoaded(FrameworkElement element, int timeoutMS = 1000)
 			{
 				async Task Do()
 				{
@@ -177,7 +177,7 @@ namespace Private.Infrastructure
 						return true;
 					}
 
-					await WaitFor(IsLoaded, message: $"{element} loaded");
+					await WaitFor(IsLoaded, message: $"{element} loaded", timeoutMS: timeoutMS);
 				}
 #if __WASM__   // Adjust for re-layout failures in When_Inline_Items_SelectedIndex, When_Observable_ItemsSource_And_Added, When_Presenter_Doesnt_Take_Up_All_Space
 				await Do();

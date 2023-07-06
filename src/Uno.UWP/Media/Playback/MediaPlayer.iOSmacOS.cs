@@ -117,7 +117,7 @@ namespace Windows.Media.Playback
 		private NSObject _playbackStalledNotification;
 		private NSObject _didPlayToEndTimeNotification;
 
-		public static NSString RateObservationContext = new NSString("AVCustomEditPlayerViewControllerRateObservationContext");
+		private static readonly NSString _rateObservationContext = new NSString("AVCustomEditPlayerViewControllerRateObservationContext");
 
 		const string MsAppXScheme = "ms-appx";
 
@@ -142,7 +142,7 @@ namespace Windows.Media.Playback
 					_player.CurrentItem?.RemoveObserver(_observer, new NSString("loadedTimeRanges"), _player.Handle);
 					_player.CurrentItem?.RemoveObserver(_observer, new NSString("status"), _player.Handle);
 					_player.CurrentItem?.RemoveObserver(_observer, new NSString("duration"), _player.Handle);
-					_player.RemoveObserver(_observer, new NSString("rate"), RateObservationContext.Handle);
+					_player.RemoveObserver(_observer, new NSString("rate"), _rateObservationContext.Handle);
 					_player.RemoveTimeObserver(_periodicTimeObserverObject);
 					_player.RemoveAllItems();
 				}
@@ -180,7 +180,7 @@ namespace Windows.Media.Playback
 			}
 #endif
 			_videoLayer.AddObserver(_observer, new NSString("videoRect"), NSKeyValueObservingOptions.New | NSKeyValueObservingOptions.Initial, _videoLayer.Handle);
-			_player.AddObserver(_observer, new NSString("rate"), NSKeyValueObservingOptions.New | NSKeyValueObservingOptions.Initial, RateObservationContext.Handle);
+			_player.AddObserver(_observer, new NSString("rate"), NSKeyValueObservingOptions.New | NSKeyValueObservingOptions.Initial, _rateObservationContext.Handle);
 
 			_itemFailedToPlayToEndTimeNotification = AVPlayerItem.Notifications.ObserveItemFailedToPlayToEndTime(_observer.OnMediaFailed);
 			_playbackStalledNotification = AVPlayerItem.Notifications.ObservePlaybackStalled(_observer.OnMediaStalled);
@@ -200,7 +200,7 @@ namespace Windows.Media.Playback
 			});
 		}
 
-		protected virtual void InitializeSource()
+		private void InitializeSource()
 		{
 			PlaybackSession.NaturalDuration = TimeSpan.Zero;
 			PlaybackSession.PositionFromPlayer = TimeSpan.Zero;
@@ -246,9 +246,6 @@ namespace Windows.Media.Playback
 
 				// Adapt pitch to prevent "metallic echo" when changing playback rate
 				_player.CurrentItem.AudioTimePitchAlgorithm = AVAudioTimePitchAlgorithm.TimeDomain;
-
-				MediaOpened?.Invoke(this, null);
-
 			}
 			catch (Exception ex)
 			{
@@ -282,10 +279,10 @@ namespace Windows.Media.Playback
 
 			if (uri.IsLocalResource())
 			{
-				var file = uri.PathAndQuery.TrimStart(new[] { '/' });
-				var fileName = Path.GetFileNameWithoutExtension(file);
-				var fileExtension = Path.GetExtension(file)?.Replace(".", "");
-				return NSBundle.MainBundle.GetUrlForResource(fileName, fileExtension);
+				var filePath = uri.PathAndQuery.TrimStart(new[] { '/' })
+				// UWP supports backward slash in path for directory separators
+				.Replace("\\", "/");
+				return NSUrl.CreateFileUrl(filePath, relativeToUrl: null);
 			}
 
 			if (uri.IsAppData())
@@ -358,13 +355,16 @@ namespace Windows.Media.Playback
 		{
 			if (_player?.CurrentItem != null)
 			{
+				IsVideo = _player.CurrentItem.Tracks?.Any(x => x.AssetTrack.FormatDescriptions.Any(x => x.MediaType == CMMediaType.Video)) == true;
+
 				if (_player.CurrentItem.Status == AVPlayerItemStatus.Failed || _player.Status == AVPlayerStatus.Failed)
 				{
 					OnMediaFailed();
 					return;
 				}
 
-				if (_player.Status == AVPlayerStatus.ReadyToPlay && PlaybackSession.PlaybackState == MediaPlaybackState.Buffering)
+				if (_player.Status == AVPlayerStatus.ReadyToPlay &&
+					PlaybackSession.PlaybackState is MediaPlaybackState.Opening or MediaPlaybackState.Buffering)
 				{
 					if (_player.Rate == 0.0)
 					{
@@ -375,6 +375,11 @@ namespace Windows.Media.Playback
 						PlaybackSession.PlaybackState = MediaPlaybackState.Playing;
 						_player.Play();
 					}
+				}
+
+				if (_player.Status == AVPlayerStatus.ReadyToPlay)
+				{
+					MediaOpened?.Invoke(this, null);
 				}
 			}
 		}
@@ -471,6 +476,8 @@ namespace Windows.Media.Playback
 				}
 			}
 		}
+
+		public bool IsVideo { get; set; }
 
 		private void OnSeekCompleted(bool finished)
 		{

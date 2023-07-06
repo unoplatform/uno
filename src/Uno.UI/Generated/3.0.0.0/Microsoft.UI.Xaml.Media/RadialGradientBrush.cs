@@ -5,7 +5,7 @@ namespace Microsoft.UI.Xaml.Media
 	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
-	public  partial class RadialGradientBrush 
+	public  partial class RadialGradientBrush : global::Windows.UI.Xaml.Media.XamlCompositionBrushBase
 	{
 		// Skipping already declared property SpreadMethod
 		// Skipping already declared property RadiusY

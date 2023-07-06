@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Runtime.InteropServices.JavaScript;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -22,6 +23,7 @@ namespace Uno.UI.Dispatching
 		/// Method invoked from 
 		/// </summary>
 #pragma warning disable IDE0051 // Remove unused private members - called by MonoSupport.ts
+		[JSExport]
 		private static int DispatcherCallback()
 #pragma warning restore IDE0051 // Remove unused private members
 		{

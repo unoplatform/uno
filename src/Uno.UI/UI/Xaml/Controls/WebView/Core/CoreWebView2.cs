@@ -21,7 +21,7 @@ public partial class CoreWebView2
 
 	private readonly IWebView _owner;
 
-	private bool _scrollEnabled;
+	private bool _scrollEnabled = true;
 	private INativeWebView? _nativeWebView;
 	internal long _navigationId;
 	private object? _processedSource;
@@ -64,7 +64,7 @@ public partial class CoreWebView2
 		UpdateFromInternalSource();
 	}
 
-	internal void NavigateWithHttpRequestMessage(global::System.Net.Http.HttpRequestMessage requestMessage)
+	internal void NavigateWithHttpRequestMessage(global::Windows.Web.Http.HttpRequestMessage requestMessage)
 	{
 		if (requestMessage?.RequestUri is null)
 		{

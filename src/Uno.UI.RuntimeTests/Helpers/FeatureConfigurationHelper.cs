@@ -9,6 +9,13 @@ namespace Uno.UI.RuntimeTests.Helpers
 {
 	public static class FeatureConfigurationHelper
 	{
+#if !NETFX_CORE
+		private class MockProvider : FrameworkTemplatePoolDefaultPlatformProvider
+		{
+			public override bool CanUseMemoryManager => false;
+		}
+#endif
+
 		/// <summary>
 		/// Enable <see cref="FrameworkTemplate"/> pooling (Uno only) for the duration of a single test.
 		/// </summary>
@@ -19,7 +26,12 @@ namespace Uno.UI.RuntimeTests.Helpers
 #else
 			var originallyEnabled = FrameworkTemplatePool.IsPoolingEnabled;
 			FrameworkTemplatePool.IsPoolingEnabled = true;
-			return Disposable.Create(() => FrameworkTemplatePool.IsPoolingEnabled = originallyEnabled);
+			FrameworkTemplatePool.Instance.SetPlatformProvider(new MockProvider());
+			return Disposable.Create(() =>
+			{
+				FrameworkTemplatePool.IsPoolingEnabled = originallyEnabled;
+				FrameworkTemplatePool.Instance.SetPlatformProvider(null);
+			});
 #endif
 		}
 

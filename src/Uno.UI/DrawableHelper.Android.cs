@@ -1,4 +1,5 @@
-﻿using Android.Graphics.Drawables;
+﻿#nullable enable
+using Android.Graphics.Drawables;
 using System;
 using System.ComponentModel;
 using Windows.UI.Xaml.Media;
@@ -14,7 +15,7 @@ namespace Uno.UI
 		/// </summary>
 		/// <param name="uri">URI</param>
 		/// <returns>Drawable</returns>
-		public static Drawable FromUri(Uri uri) =>
+		public static Drawable? FromUri(Uri uri) =>
 			Uno.Helpers.DrawableHelper.FromUri(uri);
 	}
 }

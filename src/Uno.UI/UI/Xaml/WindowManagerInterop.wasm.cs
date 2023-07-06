@@ -13,9 +13,7 @@ using Windows.Foundation;
 using Windows.UI;
 using Windows.UI.Xaml;
 
-#if NET7_0_OR_GREATER
 using System.Runtime.InteropServices.JavaScript;
-#endif
 
 namespace Uno.UI.Xaml
 {
@@ -28,47 +26,19 @@ namespace Uno.UI.Xaml
 		private const double MAX_SCROLLING_OFFSET = 1_000_000_000_000_000_000;
 
 		internal static Task InitAsync(bool isLoadEventsEnabled)
-			=>
-#if NET7_0_OR_GREATER
-				NativeMethods.InitAsync(isLoadEventsEnabled);
-#else
-				WebAssemblyRuntime.InvokeAsync($"Uno.UI.WindowManager.init({(isLoadEventsEnabled ? "true" : "false")})");
-#endif
+			=> NativeMethods.InitAsync(isLoadEventsEnabled);
 
 		internal static string FindLaunchArguments()
-			=>
-#if NET7_0_OR_GREATER
-				NativeMethods.FindLaunchArguments();
-#else
-				WebAssemblyRuntime.InvokeJS("Uno.UI.WindowManager.findLaunchArguments()");
-#endif
+			=> NativeMethods.FindLaunchArguments();
+
 
 		internal static double GetBootTime()
-			=>
-#if NET7_0_OR_GREATER
-				NativeMethods.GetBootTime();
-#else
-				double.Parse(WebAssemblyRuntime.InvokeJS("Date.now() - performance.now()"), CultureInfo.InvariantCulture);
-#endif
+			=> NativeMethods.GetBootTime();
 
 		#region CreateContent
 		internal static void CreateContent(IntPtr htmlId, string htmlTag, IntPtr handle, int uiElementRegistrationId, bool htmlTagIsSvg, bool isFocusable)
 		{
-#if NET7_0_OR_GREATER
 			NativeMethods.CreateContent(htmlId, htmlTag, uiElementRegistrationId, isFocusable, htmlTagIsSvg);
-#else
-			var parms = new WindowManagerCreateContentParams
-			{
-				HtmlId = htmlId,
-				TagName = htmlTag,
-				Handle = handle,
-				UIElementRegistrationId = uiElementRegistrationId,
-				IsSvg = htmlTagIsSvg,
-				IsFocusable = isFocusable
-			};
-
-			TSInteropMarshaller.InvokeJS("Uno:createContentNative", parms);
-#endif
 		}
 
 		[TSInteropMessage]
@@ -134,22 +104,7 @@ namespace Uno.UI.Xaml
 
 		internal static void SetElementTransform(IntPtr htmlId, Matrix3x2 matrix)
 		{
-#if NET7_0_OR_GREATER
 			NativeMethods.SetElementTransform(htmlId, matrix.M11, matrix.M12, matrix.M21, matrix.M22, matrix.M31, matrix.M32);
-#else
-			var parms = new WindowManagerSetElementTransformParams
-			{
-				HtmlId = htmlId,
-				M11 = matrix.M11,
-				M12 = matrix.M12,
-				M21 = matrix.M21,
-				M22 = matrix.M22,
-				M31 = matrix.M31,
-				M32 = matrix.M32,
-			};
-
-			TSInteropMarshaller.InvokeJS("Uno:setElementTransformNative", parms);
-#endif
 		}
 
 		[TSInteropMessage]
@@ -172,17 +127,7 @@ namespace Uno.UI.Xaml
 
 		internal static void SetPointerEvents(IntPtr htmlId, bool enabled)
 		{
-#if NET7_0_OR_GREATER
 			NativeMethods.SetPointerEvents(htmlId, enabled);
-#else
-			var parms = new WindowManagerSetPointerEventsParams
-			{
-				HtmlId = htmlId,
-				Enabled = enabled
-			};
-
-			TSInteropMarshaller.InvokeJS("Uno:setPointerEventsNative", parms);
-#endif
 		}
 
 		[TSInteropMessage]
@@ -198,28 +143,17 @@ namespace Uno.UI.Xaml
 
 		internal static void SetPointerCapture(IntPtr htmlId, uint pointerId)
 		{
-#if NET7_0_OR_GREATER
 			NativeMethods.SetPointerCapture(htmlId, pointerId);
-#else
-			var command = "Uno.UI.WindowManager.current.setPointerCapture(" + htmlId + ", " + pointerId + ");";
-			WebAssemblyRuntime.InvokeJS(command);
-#endif
 		}
 
 		internal static void ReleasePointerCapture(IntPtr htmlId, uint pointerId)
 		{
-#if NET7_0_OR_GREATER
 			NativeMethods.ReleasePointerCapture(htmlId, pointerId);
-#else
-			var command = "Uno.UI.WindowManager.current.releasePointerCapture(" + htmlId + ", " + pointerId + ");";
-			WebAssemblyRuntime.InvokeJS(command);
-#endif
 		}
 
 		#region MeasureView
 		internal static Size MeasureView(IntPtr htmlId, Size availableSize, bool measureContent)
 		{
-#if NET7_0_OR_GREATER
 			using var pReturn = TSInteropMarshaller.AllocateBlittableStructure(typeof(WindowManagerMeasureViewReturn));
 
 			NativeMethods.MeasureView(htmlId, availableSize.Width, availableSize.Height, measureContent, pReturn);
@@ -227,19 +161,6 @@ namespace Uno.UI.Xaml
 			var result = TSInteropMarshaller.UnmarshalStructure<WindowManagerMeasureViewReturn>(pReturn);
 
 			return new Size(result.DesiredWidth, result.DesiredHeight);
-#else
-			var parms = new WindowManagerMeasureViewParams
-			{
-				HtmlId = htmlId,
-				AvailableWidth = availableSize.Width,
-				AvailableHeight = availableSize.Height,
-				MeasureContent = measureContent
-			};
-
-			var ret = (WindowManagerMeasureViewReturn)TSInteropMarshaller.InvokeJS("Uno:measureViewNative", parms, typeof(WindowManagerMeasureViewReturn));
-
-			return new Size(ret.DesiredWidth, ret.DesiredHeight);
-#endif
 		}
 
 		[TSInteropMessage]
@@ -294,18 +215,7 @@ namespace Uno.UI.Xaml
 
 		internal static void SetStyleString(IntPtr htmlId, string name, string value)
 		{
-#if NET7_0_OR_GREATER
 			NativeMethods.SetStyleString(htmlId, name, value);
-#else
-			var parms = new WindowManagerSetStyleStringParams
-			{
-				HtmlId = htmlId,
-				Name = name,
-				Value = value
-			};
-
-			TSInteropMarshaller.InvokeJS("Uno:setStyleStringNative", parms);
-#endif
 		}
 
 		[TSInteropMessage]
@@ -363,18 +273,7 @@ namespace Uno.UI.Xaml
 				pairs[i * 2 + 1] = styles[i].value;
 			}
 
-#if NET7_0_OR_GREATER
 			NativeMethods.SetStyles(htmlId, pairs);
-#else
-			var parms = new WindowManagerSetStylesParams
-			{
-				HtmlId = htmlId,
-				Pairs_Length = pairs.Length,
-				Pairs = pairs,
-			};
-
-			TSInteropMarshaller.InvokeJS("Uno:setStyleNative", parms);
-#endif
 		}
 
 		[TSInteropMessage]
@@ -395,13 +294,7 @@ namespace Uno.UI.Xaml
 
 		internal static bool IsCssFeatureSupported(string supportCondition)
 		{
-#if NET7_0_OR_GREATER
 			return NativeMethods.CssSupports(supportCondition);
-#else
-			var command = $"Uno.UI.WindowManager.current.isCssConditionSupported(\"{WebAssemblyRuntime.EscapeJs(supportCondition)}\")";
-			var result = WebAssemblyRuntime.InvokeJS(command);
-			return bool.Parse(result);
-#endif
 		}
 
 		#endregion
@@ -507,18 +400,7 @@ namespace Uno.UI.Xaml
 				pairs[i * 2 + 1] = attributes[i].value;
 			}
 
-#if NET7_0_OR_GREATER
 			NativeMethods.SetAttributes(htmlId, pairs);
-#else
-			var parms = new WindowManagerSetAttributesParams()
-			{
-				HtmlId = htmlId,
-				Pairs_Length = pairs.Length,
-				Pairs = pairs,
-			};
-
-			TSInteropMarshaller.InvokeJS("Uno:setAttributesNative", parms);
-#endif
 		}
 
 		[TSInteropMessage]
@@ -566,13 +448,7 @@ namespace Uno.UI.Xaml
 		#region GetAttribute
 		internal static string GetAttribute(IntPtr htmlId, string name)
 		{
-#if NET7_0_OR_GREATER
 			return NativeMethods.GetAttribute(htmlId, name);
-#else
-			var command = "Uno.UI.WindowManager.current.getAttribute(\"" + htmlId + "\", \"" + name + "\");";
-
-			return WebAssemblyRuntime.InvokeJS(command);
-#endif
 		}
 		#endregion
 
@@ -652,17 +528,7 @@ namespace Uno.UI.Xaml
 
 		internal static void SetVisibility(IntPtr htmlId, bool visible)
 		{
-#if NET7_0_OR_GREATER
 			NativeMethods.SetVisibility(htmlId, visible);
-#else
-			var parms = new WindowManagerSetVisibilityParams()
-			{
-				HtmlId = htmlId,
-				Visible = visible,
-			};
-
-			TSInteropMarshaller.InvokeJS("Uno:setVisibilityNative", parms);
-#endif
 		}
 
 		[TSInteropMessage]
@@ -677,12 +543,7 @@ namespace Uno.UI.Xaml
 
 		internal static string GetProperty(IntPtr htmlId, string name)
 		{
-#if NET7_0_OR_GREATER
 			return NativeMethods.GetProperty(htmlId, name);
-#else
-			var command = "Uno.UI.WindowManager.current.getProperty(" + htmlId + ", \"" + name + "\");";
-			return WebAssemblyRuntime.InvokeJS(command);
-#endif
 		}
 
 		#region SetProperty
@@ -697,18 +558,23 @@ namespace Uno.UI.Xaml
 				pairs[i * 2 + 1] = properties[i].value;
 			}
 
-#if NET7_0_OR_GREATER
 			NativeMethods.SetProperties(htmlId, pairs);
-#else
-			var parms = new WindowManagerSetPropertyParams()
-			{
-				HtmlId = htmlId,
-				Pairs_Length = pairs.Length,
-				Pairs = pairs,
-			};
+		}
 
-			TSInteropMarshaller.InvokeJS("Uno:setPropertyNative", parms);
-#endif
+		internal static void SetProperty(IntPtr htmlId, string name, string value)
+		{
+			NativeMethods.SetProperty(htmlId, name, value);
+		}
+
+		[TSInteropMessage]
+		[StructLayout(LayoutKind.Sequential, Pack = 4)]
+		private struct WindowManagerSetSinglePropertyParams
+		{
+			public IntPtr HtmlId;
+
+			public string Name;
+
+			public string Value;
 		}
 
 		[TSInteropMessage]
@@ -830,16 +696,7 @@ namespace Uno.UI.Xaml
 		#region DestroyView
 		internal static void DestroyView(IntPtr htmlId)
 		{
-#if NET7_0_OR_GREATER
 			NativeMethods.DestroyView(htmlId);
-#else
-			var parms = new WindowManagerDestroyViewParams
-			{
-				HtmlId = htmlId
-			};
-
-			TSInteropMarshaller.InvokeJS("Uno:destroyViewNative", parms);
-#endif
 		}
 
 		[TSInteropMessage]
@@ -993,7 +850,6 @@ namespace Uno.UI.Xaml
 
 		internal static void ArrangeElement(IntPtr htmlId, Rect rect, Rect? clipRect)
 		{
-#if NET7_0_OR_GREATER
 			var clipRectValue = clipRect ?? default;
 
 			NativeMethods.ArrangeElement(
@@ -1007,27 +863,6 @@ namespace Uno.UI.Xaml
 				clipRectValue.Left,
 				clipRectValue.Bottom,
 				clipRectValue.Right);
-#else
-			var parms = new WindowManagerArrangeElementParams()
-			{
-				HtmlId = htmlId,
-				Top = rect.Top,
-				Left = rect.Left,
-				Width = rect.Width,
-				Height = rect.Height,
-			};
-
-			if (clipRect != null)
-			{
-				parms.Clip = true;
-				parms.ClipTop = clipRect.Value.Top;
-				parms.ClipLeft = clipRect.Value.Left;
-				parms.ClipBottom = clipRect.Value.Bottom;
-				parms.ClipRight = clipRect.Value.Right;
-			}
-
-			TSInteropMarshaller.InvokeJS("Uno:arrangeElementNative", parms);
-#endif
 		}
 
 		[TSInteropMessage]
@@ -1089,12 +924,7 @@ namespace Uno.UI.Xaml
 		#endregion
 
 		internal static void FocusView(IntPtr htmlId)
-			=>
-#if NET7_0_OR_GREATER
-				NativeMethods.FocusView(htmlId);
-#else
-				WebAssemblyRuntime.InvokeJS($"Uno.UI.WindowManager.current.focusView({htmlId});");
-#endif
+			=> NativeMethods.FocusView(htmlId);
 
 		#region ScrollTo
 		internal static void ScrollTo(IntPtr htmlId, double? left, double? top, bool disableAnimation)
@@ -1194,45 +1024,25 @@ namespace Uno.UI.Xaml
 		}
 		#endregion
 
+		internal static Task<string> GetNaturalImageSizeAsync(string imageUri)
+			=> NativeMethods.GetNaturalImageSizeAsync(imageUri);
+
 		internal static string RawPixelsToBase64EncodeImage(IntPtr data, int width, int height)
-			=>
-#if NET7_0_OR_GREATER
-				NativeMethods.RawPixelsToBase64EncodeImage(data, width, height);
-#else
-				WebAssemblyRuntime.InvokeJS("Uno.UI.WindowManager.current.rawPixelsToBase64EncodeImage(" + data + ", " + width + ", " + height + ");");
-#endif
+			=> NativeMethods.RawPixelsToBase64EncodeImage(data, width, height);
 
 		internal static void SelectInputRange(IntPtr htmlId, int start, int length)
-			=>
-#if NET7_0_OR_GREATER
-				NativeMethods.SelectInputRange(htmlId, start, length);
-#else
-				WebAssemblyRuntime.InvokeJS($"Uno.UI.WindowManager.current.selectInputRange({htmlId}, {start}, {length})");
-#endif
+			=> NativeMethods.SelectInputRange(htmlId, start, length);
 
 		internal static void SetImageAsMonochrome(IntPtr htmlId, string url, string color)
-			=>
-#if NET7_0_OR_GREATER
-				NativeMethods.SetImageAsMonochrome(htmlId, url, color);
-#else
-				WebAssemblyRuntime.InvokeJS($"Uno.UI.WindowManager.current.setImageAsMonochrome({htmlId}, \"{url}\", \"{color}\");");
-#endif
+			=> NativeMethods.SetImageAsMonochrome(htmlId, url, color);
 		internal static void SetRootElement(IntPtr htmlId)
 		{
-#if NET7_0_OR_GREATER
 			NativeMethods.SetRootElement(htmlId);
-#else
-			WebAssemblyRuntime.InvokeJS($"Uno.UI.WindowManager.current.setRootElement({htmlId});");
-#endif
 		}
 
 		internal static void WindowActivate()
 		{
-#if NET7_0_OR_GREATER
 			NativeMethods.WindowActivate();
-#else
-			WebAssemblyRuntime.InvokeJS("Uno.UI.WindowManager.current.activate();");
-#endif
 		}
 
 		#region Pointers
@@ -1261,8 +1071,6 @@ namespace Uno.UI.Xaml
 			Eraser = 5
 		}
 		#endregion
-
-#if NET7_0_OR_GREATER
 		internal static partial class NativeMethods
 		{
 			[JSImport("globalThis.Uno.UI.WindowManager.current.arrangeElementNativeFast")]
@@ -1292,6 +1100,9 @@ namespace Uno.UI.Xaml
 
 			[JSImport("globalThis.Uno.UI.WindowManager.getBootTime")]
 			internal static partial double GetBootTime();
+
+			[JSImport("globalThis.Uno.UI.WindowManager.current.getNaturalImageSize")]
+			internal static partial Task<string> GetNaturalImageSizeAsync(string imageUri);
 
 			[JSImport("globalThis.Uno.UI.WindowManager.current.focusView")]
 			internal static partial void FocusView(IntPtr htmlId);
@@ -1335,6 +1146,9 @@ namespace Uno.UI.Xaml
 			[JSImport("globalThis.Uno.UI.WindowManager.current.setPropertyNativeFast")]
 			internal static partial void SetProperties(IntPtr htmlId, string[] pairs);
 
+			[JSImport("globalThis.Uno.UI.WindowManager.current.setSinglePropertyNativeFast")]
+			internal static partial void SetProperty(IntPtr htmlId, string name, string value);
+
 			[JSImport("globalThis.Uno.UI.WindowManager.current.setRootElement")]
 			internal static partial void SetRootElement(IntPtr htmlId);
 
@@ -1350,6 +1164,5 @@ namespace Uno.UI.Xaml
 			[JSImport("globalThis.Uno.UI.WindowManager.current.activate")]
 			internal static partial void WindowActivate();
 		}
-#endif
 	}
 }

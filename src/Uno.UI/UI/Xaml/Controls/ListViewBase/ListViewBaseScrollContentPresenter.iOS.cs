@@ -63,16 +63,6 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		public void SetContentOffset(CGPoint contentOffset, bool animated)
-		{
-			NativePanel?.SetContentOffset(contentOffset, animated);
-		}
-
-		public void SetZoomScale(nfloat scale, bool animated)
-		{
-			NativePanel?.SetZoomScale(scale, animated);
-		}
-
 		bool INativeScrollContentPresenter.Set(
 			double? horizontalOffset,
 			double? verticalOffset,

@@ -8,8 +8,8 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 	public  partial class TreeViewItemDataAutomationPeer : global::Windows.UI.Xaml.Automation.Peers.ItemAutomationPeer,global::Windows.UI.Xaml.Automation.Provider.IExpandCollapseProvider
 	{
 		// Skipping already declared property ExpandCollapseState
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public TreeViewItemDataAutomationPeer( object item,  global::Microsoft.UI.Xaml.Automation.Peers.TreeViewListAutomationPeer parent) : base(item, parent)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.TreeViewItemDataAutomationPeer", "TreeViewItemDataAutomationPeer.TreeViewItemDataAutomationPeer(object item, TreeViewListAutomationPeer parent)");

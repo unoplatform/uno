@@ -9,10 +9,6 @@ jobs:
   pool:
     vmImage: ${{ parameters.vmImage }}
 
-  dependsOn:
-    - winui_convert_tree
-    - reference_package_build
-
   strategy:
     matrix:
       UWP:
@@ -27,10 +23,10 @@ jobs:
 
       # Keep for future previews
       # Preview:
-      #   ADDITIONAL_FLAGS: '/p:LangVersion=preview /p:UnoUIUseRoslynSourceGenerators=true /p:MicrosoftNetCompilerVersionOverride=3.8.0-3.final'
+      #   ADDITIONAL_FLAGS: '/p:LangVersion=preview /p:MicrosoftNetCompilerVersionOverride=3.8.0-3.final'
 
       #CSharp9:
-      #  ADDITIONAL_FLAGS: '/p:LangVersion=9.0 /p:UnoUIUseRoslynSourceGenerators=true'
+      #  ADDITIONAL_FLAGS: '/p:LangVersion=9.0'
 
   variables:
     CombinedConfiguration: Release|Any CPU
@@ -39,6 +35,9 @@ jobs:
     # This is required to be able to use hard links as much as possible
     NUGET_PACKAGES: $(Agent.WorkFolder)\.nuget
 
+    # Only build for net7
+    UnoDisableNet8Mobile: true
+    UnoDisableNet8: true
 
   steps:
   - checkout: self
@@ -57,7 +56,7 @@ jobs:
   - task: MSBuild@1
     inputs:
       solution: src/Uno.UI-UnitTests-only.slnf
-      msbuildArguments: /r /v:m /p:CheckExclusions=True /p:Configuration=Release /nodeReuse:true /p:TargetFrameworksCI=net461 /detailedsummary /m $(ADDITIONAL_FLAGS) /bl:$(build.artifactstagingdirectory)\unit-tests-build.binlog
+      msbuildArguments: /r /v:m /p:CheckExclusions=True /p:Configuration=Release /nodeReuse:true /detailedsummary /m $(ADDITIONAL_FLAGS) /bl:$(build.artifactstagingdirectory)\unit-tests-build-$(XAML_FLAVOR_BUILD).binlog
 
   - task: PublishBuildArtifacts@1
     condition: always()
@@ -69,7 +68,8 @@ jobs:
 
   - task: VisualStudioTestPlatformInstaller@1
     inputs:
-      versionSelector: latestStable
+      versionSelector: specificVersion
+      testPlatformVersion: 17.6.0
 
   - task: VSTest@2
     inputs:
@@ -98,8 +98,6 @@ jobs:
   pool:
     vmImage: ${{ parameters.vmImage }}
 
-  dependsOn: reference_package_build
-
   strategy:
     matrix:
       UWP:
@@ -118,6 +116,10 @@ jobs:
 
     # This is required to be able to use hard links as much as possible
     NUGET_PACKAGES: $(Agent.WorkFolder)\.nuget
+
+    # Only build for net7
+    UnoDisableNet8Mobile: true
+    UnoDisableNet8: true
 
   steps:
   - checkout: self

@@ -60,8 +60,6 @@ internal record UnitTestMethodInfo
 
 	public bool RunsOnUIThread { get; }
 
-	public bool UsesPointerInjection => _injectedPointerTypes.Count > 0;
-
 	private bool HasCustomAttribute<T>(MemberInfo? testMethod)
 		=> testMethod?.GetCustomAttribute(typeof(T)) != null;
 

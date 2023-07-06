@@ -13,6 +13,7 @@ using Uno.UI.RuntimeTests.Helpers;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.Graphics.Display;
+using Windows.Storage;
 using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -140,6 +141,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+#if __MACOS__
+		[Ignore("Fails on macOS for resising and assets locations https://github.com/unoplatform/uno/issues/6261")]
+#endif
 		public async Task When_Transitive_Asset_Loaded()
 		{
 			string url = "ms-appx:///Uno.UI.RuntimeTests/Assets/Transitive-ingredient01.png";
@@ -157,7 +161,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		[RunsOnUIThread]
 #if __MACOS__
-		[Ignore("Randomly fails on macOS")]
+		[Ignore("Fails on macOS for resising and assets locations https://github.com/unoplatform/uno/issues/6261")]
 #endif
 		public async Task When_Transitive_Asset_With_Link_Loaded()
 		{
@@ -262,7 +266,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 		public async Task When_Image_Is_Loaded_From_URL()
 		{
-			string decoded_url = "https://nv-assets.azurewebsites.net/tests/images/image with spaces.jpg";
+			string decoded_url = "https://uno-assets.platform.uno/tests/images/image with spaces.jpg";
 			var img = new Image();
 			var SUT = new BitmapImage(new Uri(decoded_url));
 			img.Source = SUT;
@@ -306,7 +310,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForLoaded(parent);
 			var result = await TakeScreenshot(parent);
 
-			var sample = SUT.GetRelativeCoords(parent);
+			var sample = parent.GetRelativeCoords(SUT);
 			var centerX = sample.X + sample.Width / 2;
 			var centerY = sample.Y + sample.Height / 2;
 
@@ -326,8 +330,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if !WINDOWS_UWP
 		[TestMethod]
 		[RunsOnUIThread]
-#if NET461 || __MACOS__ || __SKIA__
-		[Ignore("Currently fails on macOS, part of #9282! epic and Monochromatic Image not supported for NET461 and SKIA")]
+#if IS_UNIT_TESTS || __MACOS__ || __SKIA__
+		[Ignore("Currently fails on macOS, part of #9282! epic and Monochromatic Image not supported for IS_UNIT_TESTS and SKIA")]
 #endif
 		public async Task When_Image_Is_Monochromatic()
 		{
@@ -361,7 +365,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var snapshot = await TakeScreenshot(parent);
 
-			var sample = SUT.GetRelativeCoords(parent);
+			var sample = parent.GetRelativeCoords(SUT);
 			var centerX = sample.X + sample.Width / 2;
 			var centerY = sample.Y + sample.Height / 2;
 
@@ -429,6 +433,176 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(2, logs.Count, string.Join(Environment.NewLine, logs));
 			Assert.AreEqual("BitmapImage_ImageOpened", logs[0]);
 			Assert.AreEqual("Image_ImageOpened", logs[1]);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Loaded_From_AppData_LocalFolder()
+		{
+			var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/test_image_100_150.png"));
+			await file.CopyAsync(ApplicationData.Current.LocalFolder, "newfile.png", NameCollisionOption.ReplaceExisting);
+			var uri = new Uri($"ms-appdata:///Local/newfile.png");
+			var bitmapImage = new BitmapImage(uri);
+			var image = new Image() { Source = bitmapImage };
+			TestServices.WindowHelper.WindowContent = image;
+			await WindowHelper.WaitForLoaded(image);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_SVGImageSource()
+		{
+			if (!ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			{
+				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
+			}
+
+			var svgImageSource = new SvgImageSource(new Uri("ms-appx:///Assets/couch.svg"));
+			var image = new Image() { Source = svgImageSource, Width = 100, Height = 100 };
+			TestServices.WindowHelper.WindowContent = image;
+			await WindowHelper.WaitForLoaded(image);
+		}
+
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_SVGImageSource_Uri_Is_Null()
+		{
+			if (!ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			{
+				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
+			}
+
+			var svgImageSource = new SvgImageSource(null);
+			var image = new Image() { Source = svgImageSource, Width = 100, Height = 100 };
+			TestServices.WindowHelper.WindowContent = image;
+			await WindowHelper.WaitForLoaded(image);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_SVGImageSource_Uri_Is_Set_Null()
+		{
+			if (!ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			{
+				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
+			}
+
+			var svgImageSource = new SvgImageSource(new Uri("ms-appx:///Assets/couch.svg"));
+			svgImageSource.UriSource = null;
+			var image = new Image() { Source = svgImageSource, Width = 100, Height = 100 };
+			TestServices.WindowHelper.WindowContent = image;
+			await WindowHelper.WaitForLoaded(image);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_ImageFailed()
+		{
+			var image = new Image() { Width = 100, Height = 100 };
+			TestServices.WindowHelper.WindowContent = image;
+			await WindowHelper.WaitForLoaded(image);
+			bool imageFailedRaised = false;
+			image.ImageFailed += (s, e) =>
+			{
+				imageFailedRaised = true;
+			};
+			image.Source = new BitmapImage(new Uri("ms-appx:///image/definitely/does/not/exist.png"));
+
+			await WindowHelper.WaitFor(() => imageFailedRaised);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
+		public async Task When_Exif_Rotated_MsAppx()
+		{
+			if (!ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			{
+				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
+			}
+
+			await When_Exif_Rotated_Common(new Uri("ms-appx:///Assets/testimage_exif_rotated.jpg"));
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
+		public async Task When_Exif_Rotated_MsAppData()
+		{
+			if (!ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			{
+				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
+			}
+
+			var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/testimage_exif_rotated.jpg"));
+			var fileName = $"{Guid.NewGuid()}.jpg";
+			await file.CopyAsync(ApplicationData.Current.LocalFolder, fileName);
+			var uri = new Uri($"ms-appdata:///Local/{fileName}");
+			await When_Exif_Rotated_Common(uri);
+		}
+
+#if __ANDROID__
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Exif_Rotated_Target_Is_Saf()
+		{
+			var directory = new Java.IO.File(ApplicationData.Current.LocalCacheFolder.Path);
+			var documentFile = AndroidX.DocumentFile.Provider.DocumentFile.FromFile(directory);
+			var safFolder = StorageFolder.GetFromSafDocument(documentFile);
+
+			var file1 = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/testimage_exif_rotated.jpg"));
+			var file2 = await file1.CopyAsync(safFolder, "testimage_exif_rotated.jpg", NameCollisionOption.ReplaceExisting);
+			await file2.CopyAsync(ApplicationData.Current.LocalFolder, "testimage_exif_rotated.jpg", NameCollisionOption.ReplaceExisting);
+			await When_Exif_Rotated_Common(new Uri($"ms-appdata:///Local/testimage_exif_rotated.jpg"));
+		}
+#endif
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
+		public async Task When_Exif_Rotated_From_Stream()
+		{
+			if (!ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			{
+				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
+			}
+
+			var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/testimage_exif_rotated.jpg"));
+			var image = new Image();
+			var bitmapImage = new BitmapImage();
+			await bitmapImage.SetSourceAsync(await file.OpenReadAsync());
+
+			var imageOpened = false;
+			image.ImageOpened += (_, _) => imageOpened = true;
+			image.Source = bitmapImage;
+			WindowHelper.WindowContent = image;
+			await WindowHelper.WaitForLoaded(image);
+			await WindowHelper.WaitFor(() => imageOpened);
+			var screenshot = await TakeScreenshot(image);
+			ImageAssert.HasColorAt(screenshot, screenshot.Width / 2, 5, Color.FromArgb(0xFF, 0x23, 0xB1, 0x4D), tolerance: 5);
+			ImageAssert.HasColorAt(screenshot, screenshot.Width / 2, screenshot.Height - 5, Color.FromArgb(0xFF, 0xED, 0x1B, 0x24), tolerance: 5);
+		}
+
+		private async Task When_Exif_Rotated_Common(Uri uri)
+		{
+			var image = new Image();
+			var bitmapImage = new BitmapImage(uri);
+			var imageOpened = false;
+			image.ImageOpened += (_, _) => imageOpened = true;
+			image.Source = bitmapImage;
+			WindowHelper.WindowContent = image;
+			await WindowHelper.WaitForLoaded(image);
+			await WindowHelper.WaitFor(() => imageOpened);
+			var screenshot = await TakeScreenshot(image);
+			ImageAssert.HasColorAt(screenshot, screenshot.Width / 2, 5, Color.FromArgb(0xFF, 0x23, 0xB1, 0x4D), tolerance: 5);
+			ImageAssert.HasColorAt(screenshot, screenshot.Width / 2, screenshot.Height - 5, Color.FromArgb(0xFF, 0xED, 0x1B, 0x24), tolerance: 5);
 		}
 
 		private async Task<RawBitmap> TakeScreenshot(FrameworkElement SUT)

@@ -27,7 +27,7 @@ using _View = Android.Views.View;
 using _View = UIKit.UIView;
 #elif __MACOS__
 using _View = AppKit.NSView;
-#elif UNO_REFERENCE_API || NET461
+#elif UNO_REFERENCE_API || IS_UNIT_TESTS
 using _View = Windows.UI.Xaml.UIElement;
 #endif
 
@@ -39,12 +39,8 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 		private const string __baseUri_prefix_Binding_Xaml_Object_With_Xaml_Object_Properties_5147419e44d1bc3e3f86860ad528476f = "ms-appx:///TestProject/";
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		private const string __baseUri_Binding_Xaml_Object_With_Xaml_Object_Properties_5147419e44d1bc3e3f86860ad528476f = "ms-appx:///TestProject/";
-				global::Windows.UI.Xaml.NameScope __nameScope = new global::Windows.UI.Xaml.NameScope();
+		global::Windows.UI.Xaml.NameScope __nameScope = new global::Windows.UI.Xaml.NameScope();
 		private void InitializeComponent()
-		{
-			InitializeComponent_0E898994();
-		}
-		private void InitializeComponent_0E898994()
 		{
 			NameScope.SetNameScope(this, __nameScope);
 			var __that = this;
@@ -192,7 +188,6 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 			{
 			}
 		}
-
 	}
 }
 namespace MyProject

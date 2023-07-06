@@ -15,3 +15,27 @@ startOnLoad: false
 });
 mermaid.init(undefined, ".lang-mermaid");
 </script>
+<!-- Algolia DocSearch -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3" />
+<script src="https://cdn.jsdelivr.net/npm/@docsearch/js@3"></script>
+<script>
+    function handleCreateSearchBox(){
+      if (document.getElementById("docsearch")){
+        if (document.getElementById("docsearch").children.length>0)
+        {
+          document.removeEventListener('DOMNodeInserted', handleCreateSearchBox);
+        }
+        else {
+          docsearch({
+            container: '#docsearch',
+            appId: 'PHB9D8WS99',
+            indexName: 'platform',
+            apiKey: '7877394996f96cde1a9b795dce3f7787',
+            placeholder: 'Search Docs...'
+          });
+          console.log(docsearch);
+        }
+      }
+    }
+    window.addEventListener('DOMNodeInserted', handleCreateSearchBox);
+</script>

@@ -13,10 +13,7 @@ using Windows.Storage.Helpers;
 using Windows.Storage.Streams;
 using Uno.UI.Xaml.Media;
 using Path = global::System.IO.Path;
-
-#if NET7_0_OR_GREATER
-using NativeMethods = __Windows.UI.Xaml.Media.Imaging.BitmapImage.NativeMethods;
-#endif
+using NativeMethods = __Windows.Storage.Helpers.AssetsManager.NativeMethods;
 
 namespace Windows.UI.Xaml.Media.Imaging
 {
@@ -24,7 +21,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 	{
 		internal ResolutionScale? ScaleOverride { get; set; }
 
-		internal string ContentType { get; set; } = "application/octet-stream";
+		internal override string ContentType { get; } = "application/octet-stream";
 
 		private protected override bool TryOpenSourceAsync(
 			CancellationToken ct,
@@ -43,7 +40,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 					_ => uri
 				};
 
-				asyncImage = AssetResolver.ResolveImageAsync(this, newUri, ScaleOverride);
+				asyncImage = AssetResolver.ResolveImageAsync(this, newUri, ScaleOverride, ct);
 
 				return true;
 			}
@@ -78,7 +75,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 			}
 		}
 
-		internal static class AssetResolver
+		internal static partial class AssetResolver
 		{
 			private static readonly Lazy<Task<HashSet<string>>> _assets = new Lazy<Task<HashSet<string>>>(GetAssets);
 
@@ -86,12 +83,12 @@ namespace Windows.UI.Xaml.Media.Imaging
 			{
 				var assetsUri = AssetsPathBuilder.BuildAssetUri("uno-assets.txt");
 
-				var assets = await WebAssemblyRuntime.InvokeAsync($"fetch('{assetsUri}').then(r => r.text())");
+				var assets = await NativeMethods.DownloadAssetsManifestAsync(assetsUri);
 
-				return new HashSet<string>(Regex.Split(assets, "\r\n|\r|\n"));
+				return new HashSet<string>(LineMatch().Split(assets));
 			}
 
-			internal static async Task<ImageData> ResolveImageAsync(ImageSource source, Uri uri, ResolutionScale? scaleOverride)
+			internal static async Task<ImageData> ResolveImageAsync(ImageSource source, Uri uri, ResolutionScale? scaleOverride, CancellationToken ct)
 			{
 				try
 				{
@@ -104,7 +101,11 @@ namespace Windows.UI.Xaml.Media.Imaging
 							return ImageData.FromUrl(uri, source);
 						}
 
-						// TODO: Implement ms-appdata
+						if (uri.IsAppData())
+						{
+							return await source.OpenMsAppData(uri, ct);
+						}
+
 						return ImageData.Empty;
 					}
 
@@ -178,6 +179,16 @@ namespace Windows.UI.Xaml.Media.Imaging
 				(int)ResolutionScale.Scale450Percent,
 				(int)ResolutionScale.Scale500Percent
 			};
+
+#if !DISABLE_GENERATED_REGEX
+			[GeneratedRegex("\r\n|\r|\n")]
+#endif
+			private static partial Regex LineMatch();
+
+#if DISABLE_GENERATED_REGEX
+			private static partial Regex LineMatch()
+				=> new Regex("\r\n|\r|\n");
+#endif
 		}
 
 		internal override void ReportImageLoaded()

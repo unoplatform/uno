@@ -5,6 +5,8 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using System.Text;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
@@ -238,6 +240,48 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 				_builder.Append(node.ToString());
 			}
 
+			public override void VisitElementAccessExpression(ElementAccessExpressionSyntax node)
+			{
+				if (Failed)
+				{
+					return;
+				}
+
+				if (node.ArgumentList.Arguments.Count != 1 ||
+					node.ArgumentList.Arguments[0].Expression is not LiteralExpressionSyntax index)
+				{
+					throw new Exception("x:Bind indexing expects a single literal argument");
+				}
+
+				Visit(node.Expression);
+
+				var lastType = _lastAccessed.Symbol switch
+				{
+					IPropertySymbol property => property.Type,
+					IFieldSymbol field => field.Type,
+					_ => throw new Exception("Only properties and fields can be indexed.")
+				};
+
+				var expectedIndexerParameterType = index is LiteralExpressionSyntax indexLiteral && indexLiteral.IsKind(SyntaxKind.StringLiteralExpression)
+					? SpecialType.System_String
+					: SpecialType.System_Int32;
+				var indexer = lastType.GetMemberInlcudingBaseTypes(expectedIndexerParameterType, (m, arg) => m is IPropertySymbol { IsIndexer: true } p && p.Parameters[0].Type.SpecialType == arg);
+				if (indexer is not null)
+				{
+					_lastAccessed = (indexer, IsTopLevelContext: false);
+				}
+				else
+				{
+					throw new Exception("Type is unsupported for indexing.");
+				}
+
+				_builder.Append('[');
+
+				VisitLiteralExpression(index);
+
+				_builder.Append(']');
+			}
+
 			public override void VisitArgumentList(ArgumentListSyntax node)
 			{
 				if (Failed)
@@ -422,7 +466,16 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 
 				if (isValidParent)
 				{
-					IdentifierNames.Add(node.ToString());
+					// For {x:Bind A.B[0]}, we get here with A.B, but we want to include A.B[0]
+					// We special case it this way for now. This will be removed once we have an x:Bind parser.
+					if (node.Parent is ElementAccessExpressionSyntax)
+					{
+						IdentifierNames.Add(node.Parent.ToString());
+					}
+					else
+					{
+						IdentifierNames.Add(node.ToString());
+					}
 				}
 			}
 

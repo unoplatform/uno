@@ -30,7 +30,6 @@ public class MediaPlayerPresenterExtension : IMediaPlayerPresenterExtension
 		_owner.Child = _htmlPlayer = new HtmlMediaPlayer();
 	}
 
-	public void ExitFullScreen() => throw new NotImplementedException();
 
 	public void MediaPlayerChanged()
 	{
@@ -51,8 +50,24 @@ public class MediaPlayerPresenterExtension : IMediaPlayerPresenterExtension
 			}
 		}
 	}
+	public void ExitFullScreen()
+	{
+		_htmlPlayer.ExitFullScreen();
+	}
 
-	public void RequestFullScreen() => throw new NotImplementedException();
+	public void RequestFullScreen()
+	{
+		_htmlPlayer.RequestFullScreen();
+	}
+	public void ExitCompactOverlay()
+	{
+		_htmlPlayer.ExitCompactOverlay();
+	}
+
+	public void RequestCompactOverlay()
+	{
+		_htmlPlayer.RequestCompactOverlay();
+	}
 	public void StretchChanged()
 	{
 		if (_owner is not null)

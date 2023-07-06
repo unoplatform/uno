@@ -15,6 +15,9 @@ var Uno;
                 static getCurrentPosition(htmlId) {
                     return document.getElementById(htmlId.toString()).currentTime;
                 }
+                static getPaused(htmlId) {
+                    return document.getElementById(htmlId.toString()).paused;
+                }
                 static setCurrentPosition(htmlId, currentTime) {
                     document.getElementById(htmlId.toString()).currentTime = currentTime;
                 }
@@ -56,6 +59,23 @@ var Uno;
                         || document.webkitExitFullscreen
                         || document.msExitFullscreen;
                     closeFullScreen.call(document);
+                }
+                static requestPictureInPicture(htmlId) {
+                    var elem = Uno.UI.WindowManager.current.getView(htmlId.toString());
+                    if (elem !== null && document.pictureInPictureEnabled) {
+                        var fullscreen = elem.requestPictureInPicture
+                            || elem.webkitRequestPictureInPicture
+                            || elem.mozRequestPictureInPicture;
+                        fullscreen.call(elem);
+                    }
+                }
+                static exitPictureInPicture() {
+                    if (document.pictureInPictureEnabled) {
+                        const closePictureInPicture = document.exitPictureInPicture
+                            || document.mozCancelPictureInPicture
+                            || document.webkitExitPictureInPicture;
+                        closePictureInPicture.call(document);
+                    }
                 }
                 static pause(htmlId) {
                     var element = Uno.UI.WindowManager.current.getView(htmlId.toString());

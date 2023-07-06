@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Numerics;
 using System.Runtime.CompilerServices;
 using CoreAnimation;
 using CoreGraphics;
@@ -161,7 +162,7 @@ namespace Windows.UI.Xaml
 		/// Note: Offsets are only an approximation which does not take in consideration possible transformations
 		///	applied by a 'UIView' between this element and its parent UIElement.
 		/// </summary>
-		private bool TryGetParentUIElementForTransformToVisual(out UIElement parentElement, ref double offsetX, ref double offsetY)
+		private bool TryGetParentUIElementForTransformToVisual(out UIElement parentElement, ref Matrix3x2 matrix, ref TransformToVisualContext context)
 		{
 			var parent = this.GetVisualTreeParent();
 			switch (parent)
@@ -192,8 +193,8 @@ namespace Windows.UI.Xaml
 									container.LayoutSlot.Left == container.Margin.Left &&
 									container.LayoutSlot.Top == container.Margin.Top)
 								{
-									offsetX += parent.Frame.X;
-									offsetY += parent.Frame.Y;
+									matrix.M31 += (float)parent.Frame.X;
+									matrix.M32 += (float)parent.Frame.Y;
 								}
 								return true;
 
@@ -215,23 +216,33 @@ namespace Windows.UI.Xaml
 								var offset = view?.ConvertPointToCoordinateSpace(default, eltParent) ?? default;
 
 								parentElement = eltParent;
-								offsetX += offset.X;
-								offsetY += offset.Y;
+								matrix.M31 += (float)offset.X;
+								matrix.M32 += (float)offset.Y;
 								return true;
 
 							case null:
 								// We reached the top of the window without any UIElement in the hierarchy,
 								// so we adjust offsets using the X/Y position of the original 'view' in the window.
-
 								offset = view.ConvertRectToView(default, null).Location;
 
 								parentElement = null;
-								offsetX += offset.X;
-								offsetY += offset.Y;
+								matrix.M31 += (float)offset.X;
+								matrix.M32 += (float)offset.Y;
+
+								if (this.FindViewController() is { } vc)
+								{
+									context.ViewController = vc;
+								}
+
 								return false;
 						}
 					} while (true);
 			}
+		}
+
+		partial struct TransformToVisualContext
+		{
+			public UIViewController ViewController { get; set; }
 		}
 
 #if DEBUG

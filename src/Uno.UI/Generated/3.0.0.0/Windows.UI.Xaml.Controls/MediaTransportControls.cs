@@ -2,656 +2,70 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-#if false || false || false || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false
-	[global::Uno.NotImplemented("__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-#endif
-	public partial class MediaTransportControls : global::Windows.UI.Xaml.Controls.Control
+	#if false || false || false || false || false || false || false
+	[global::Uno.NotImplemented]
+	#endif
+	public  partial class MediaTransportControls : global::Windows.UI.Xaml.Controls.Control
 	{
-#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public  bool IsZoomEnabled
-		{
-			get
-			{
-				return (bool)this.GetValue(IsZoomEnabledProperty);
-			}
-			set
-			{
-				this.SetValue(IsZoomEnabledProperty, value);
-			}
-		}
-#endif
-#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public  bool IsZoomButtonVisible
-		{
-			get
-			{
-				return (bool)this.GetValue(IsZoomButtonVisibleProperty);
-			}
-			set
-			{
-				this.SetValue(IsZoomButtonVisibleProperty, value);
-			}
-		}
-#endif
-#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public  bool IsVolumeEnabled
-		{
-			get
-			{
-				return (bool)this.GetValue(IsVolumeEnabledProperty);
-			}
-			set
-			{
-				this.SetValue(IsVolumeEnabledProperty, value);
-			}
-		}
-#endif
-#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public  bool IsVolumeButtonVisible
-		{
-			get
-			{
-				return (bool)this.GetValue(IsVolumeButtonVisibleProperty);
-			}
-			set
-			{
-				this.SetValue(IsVolumeButtonVisibleProperty, value);
-			}
-		}
-#endif
-#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public  bool IsStopEnabled
-		{
-			get
-			{
-				return (bool)this.GetValue(IsStopEnabledProperty);
-			}
-			set
-			{
-				this.SetValue(IsStopEnabledProperty, value);
-			}
-		}
-#endif
-#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public  bool IsStopButtonVisible
-		{
-			get
-			{
-				return (bool)this.GetValue(IsStopButtonVisibleProperty);
-			}
-			set
-			{
-				this.SetValue(IsStopButtonVisibleProperty, value);
-			}
-		}
-#endif
-#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public  bool IsSeekEnabled
-		{
-			get
-			{
-				return (bool)this.GetValue(IsSeekEnabledProperty);
-			}
-			set
-			{
-				this.SetValue(IsSeekEnabledProperty, value);
-			}
-		}
-#endif
-#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public  bool IsSeekBarVisible
-		{
-			get
-			{
-				return (bool)this.GetValue(IsSeekBarVisibleProperty);
-			}
-			set
-			{
-				this.SetValue(IsSeekBarVisibleProperty, value);
-			}
-		}
-#endif
-#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public  bool IsPlaybackRateEnabled
-		{
-			get
-			{
-				return (bool)this.GetValue(IsPlaybackRateEnabledProperty);
-			}
-			set
-			{
-				this.SetValue(IsPlaybackRateEnabledProperty, value);
-			}
-		}
-#endif
-#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public  bool IsPlaybackRateButtonVisible
-		{
-			get
-			{
-				return (bool)this.GetValue(IsPlaybackRateButtonVisibleProperty);
-			}
-			set
-			{
-				this.SetValue(IsPlaybackRateButtonVisibleProperty, value);
-			}
-		}
-#endif
-#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public  bool IsFullWindowEnabled
-		{
-			get
-			{
-				return (bool)this.GetValue(IsFullWindowEnabledProperty);
-			}
-			set
-			{
-				this.SetValue(IsFullWindowEnabledProperty, value);
-			}
-		}
-#endif
-#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public  bool IsFullWindowButtonVisible
-		{
-			get
-			{
-				return (bool)this.GetValue(IsFullWindowButtonVisibleProperty);
-			}
-			set
-			{
-				this.SetValue(IsFullWindowButtonVisibleProperty, value);
-			}
-		}
-#endif
-#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public  bool IsFastRewindEnabled
-		{
-			get
-			{
-				return (bool)this.GetValue(IsFastRewindEnabledProperty);
-			}
-			set
-			{
-				this.SetValue(IsFastRewindEnabledProperty, value);
-			}
-		}
-#endif
-#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public  bool IsFastRewindButtonVisible
-		{
-			get
-			{
-				return (bool)this.GetValue(IsFastRewindButtonVisibleProperty);
-			}
-			set
-			{
-				this.SetValue(IsFastRewindButtonVisibleProperty, value);
-			}
-		}
-#endif
-#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public  bool IsFastForwardEnabled
-		{
-			get
-			{
-				return (bool)this.GetValue(IsFastForwardEnabledProperty);
-			}
-			set
-			{
-				this.SetValue(IsFastForwardEnabledProperty, value);
-			}
-		}
-#endif
-#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public  bool IsFastForwardButtonVisible
-		{
-			get
-			{
-				return (bool)this.GetValue(IsFastForwardButtonVisibleProperty);
-			}
-			set
-			{
-				this.SetValue(IsFastForwardButtonVisibleProperty, value);
-			}
-		}
-#endif
-#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public  bool IsCompact
-		{
-			get
-			{
-				return (bool)this.GetValue(IsCompactProperty);
-			}
-			set
-			{
-				this.SetValue(IsCompactProperty, value);
-			}
-		}
-#endif
-#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public  bool IsSkipForwardEnabled
-		{
-			get
-			{
-				return (bool)this.GetValue(IsSkipForwardEnabledProperty);
-			}
-			set
-			{
-				this.SetValue(IsSkipForwardEnabledProperty, value);
-			}
-		}
-#endif
-#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public  bool IsSkipForwardButtonVisible
-		{
-			get
-			{
-				return (bool)this.GetValue(IsSkipForwardButtonVisibleProperty);
-			}
-			set
-			{
-				this.SetValue(IsSkipForwardButtonVisibleProperty, value);
-			}
-		}
-#endif
-#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public  bool IsSkipBackwardEnabled
-		{
-			get
-			{
-				return (bool)this.GetValue(IsSkipBackwardEnabledProperty);
-			}
-			set
-			{
-				this.SetValue(IsSkipBackwardEnabledProperty, value);
-			}
-		}
-#endif
-#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public  bool IsSkipBackwardButtonVisible
-		{
-			get
-			{
-				return (bool)this.GetValue(IsSkipBackwardButtonVisibleProperty);
-			}
-			set
-			{
-				this.SetValue(IsSkipBackwardButtonVisibleProperty, value);
-			}
-		}
-#endif
-#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public  bool IsPreviousTrackButtonVisible
-		{
-			get
-			{
-				return (bool)this.GetValue(IsPreviousTrackButtonVisibleProperty);
-			}
-			set
-			{
-				this.SetValue(IsPreviousTrackButtonVisibleProperty, value);
-			}
-		}
-#endif
-#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public  bool IsNextTrackButtonVisible
-		{
-			get
-			{
-				return (bool)this.GetValue(IsNextTrackButtonVisibleProperty);
-			}
-			set
-			{
-				this.SetValue(IsNextTrackButtonVisibleProperty, value);
-			}
-		}
-#endif
-#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public  global::Windows.UI.Xaml.Media.FastPlayFallbackBehaviour FastPlayFallbackBehaviour
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Media.FastPlayFallbackBehaviour)this.GetValue(FastPlayFallbackBehaviourProperty);
-			}
-			set
-			{
-				this.SetValue(FastPlayFallbackBehaviourProperty, value);
-			}
-		}
-#endif
-#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public  bool ShowAndHideAutomatically
-		{
-			get
-			{
-				return (bool)this.GetValue(ShowAndHideAutomaticallyProperty);
-			}
-			set
-			{
-				this.SetValue(ShowAndHideAutomaticallyProperty, value);
-			}
-		}
-#endif
-#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public  bool IsRepeatEnabled
-		{
-			get
-			{
-				return (bool)this.GetValue(IsRepeatEnabledProperty);
-			}
-			set
-			{
-				this.SetValue(IsRepeatEnabledProperty, value);
-			}
-		}
-#endif
-#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public  bool IsRepeatButtonVisible
-		{
-			get
-			{
-				return (bool)this.GetValue(IsRepeatButtonVisibleProperty);
-			}
-			set
-			{
-				this.SetValue(IsRepeatButtonVisibleProperty, value);
-			}
-		}
-#endif
-#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public  bool IsCompactOverlayEnabled
-		{
-			get
-			{
-				return (bool)this.GetValue(IsCompactOverlayEnabledProperty);
-			}
-			set
-			{
-				this.SetValue(IsCompactOverlayEnabledProperty, value);
-			}
-		}
-#endif
-#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public  bool IsCompactOverlayButtonVisible
-		{
-			get
-			{
-				return (bool)this.GetValue(IsCompactOverlayButtonVisibleProperty);
-			}
-			set
-			{
-				this.SetValue(IsCompactOverlayButtonVisibleProperty, value);
-			}
-		}
-#endif
-#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsCompactProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsCompact), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.MediaTransportControls), 
-			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
-#endif
-#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsFastForwardButtonVisibleProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsFastForwardButtonVisible), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.MediaTransportControls), 
-			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
-#endif
-#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsFastForwardEnabledProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsFastForwardEnabled), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.MediaTransportControls), 
-			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
-#endif
-#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsFastRewindButtonVisibleProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsFastRewindButtonVisible), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.MediaTransportControls), 
-			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
-#endif
-#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsFastRewindEnabledProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsFastRewindEnabled), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.MediaTransportControls), 
-			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
-#endif
-#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsFullWindowButtonVisibleProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsFullWindowButtonVisible), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.MediaTransportControls), 
-			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
-#endif
-#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsFullWindowEnabledProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsFullWindowEnabled), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.MediaTransportControls), 
-			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
-#endif
-#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsPlaybackRateButtonVisibleProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsPlaybackRateButtonVisible), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.MediaTransportControls), 
-			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
-#endif
-#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsPlaybackRateEnabledProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsPlaybackRateEnabled), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.MediaTransportControls), 
-			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
-#endif
-#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsSeekBarVisibleProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsSeekBarVisible), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.MediaTransportControls), 
-			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
-#endif
-#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsSeekEnabledProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsSeekEnabled), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.MediaTransportControls), 
-			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
-#endif
-#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsStopButtonVisibleProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsStopButtonVisible), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.MediaTransportControls), 
-			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
-#endif
-#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsStopEnabledProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsStopEnabled), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.MediaTransportControls), 
-			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
-#endif
-#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsVolumeButtonVisibleProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsVolumeButtonVisible), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.MediaTransportControls), 
-			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
-#endif
-#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsVolumeEnabledProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsVolumeEnabled), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.MediaTransportControls), 
-			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
-#endif
-#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsZoomButtonVisibleProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsZoomButtonVisible), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.MediaTransportControls), 
-			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
-#endif
-#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsZoomEnabledProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsZoomEnabled), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.MediaTransportControls), 
-			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
-#endif
-#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.UI.Xaml.DependencyProperty FastPlayFallbackBehaviourProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(FastPlayFallbackBehaviour), typeof(global::Windows.UI.Xaml.Media.FastPlayFallbackBehaviour), 
-			typeof(global::Windows.UI.Xaml.Controls.MediaTransportControls), 
-			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.FastPlayFallbackBehaviour)));
-#endif
-#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsNextTrackButtonVisibleProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsNextTrackButtonVisible), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.MediaTransportControls), 
-			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
-#endif
-#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsPreviousTrackButtonVisibleProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsPreviousTrackButtonVisible), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.MediaTransportControls), 
-			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
-#endif
-#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsSkipBackwardButtonVisibleProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsSkipBackwardButtonVisible), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.MediaTransportControls), 
-			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
-#endif
-#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsSkipBackwardEnabledProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsSkipBackwardEnabled), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.MediaTransportControls), 
-			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
-#endif
-#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsSkipForwardButtonVisibleProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsSkipForwardButtonVisible), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.MediaTransportControls), 
-			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
-#endif
-#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsSkipForwardEnabledProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsSkipForwardEnabled), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.MediaTransportControls), 
-			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
-#endif
-#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsRepeatButtonVisibleProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsRepeatButtonVisible), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.MediaTransportControls), 
-			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
-#endif
-#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsRepeatEnabledProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsRepeatEnabled), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.MediaTransportControls), 
-			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
-#endif
-#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.UI.Xaml.DependencyProperty ShowAndHideAutomaticallyProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(ShowAndHideAutomatically), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.MediaTransportControls), 
-			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
-#endif
-#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsCompactOverlayButtonVisibleProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsCompactOverlayButtonVisible), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.MediaTransportControls), 
-			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
-#endif
-#if false || false || false || false || false || false || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsCompactOverlayEnabledProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsCompactOverlayEnabled), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.MediaTransportControls), 
-			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
-#endif
-#if false || false || false || false || false
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
-		public MediaTransportControls() : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.MediaTransportControls", "MediaTransportControls.MediaTransportControls()");
-		}
-#endif
+		// Skipping already declared property IsZoomEnabled
+		// Skipping already declared property IsZoomButtonVisible
+		// Skipping already declared property IsVolumeEnabled
+		// Skipping already declared property IsVolumeButtonVisible
+		// Skipping already declared property IsStopEnabled
+		// Skipping already declared property IsStopButtonVisible
+		// Skipping already declared property IsSeekEnabled
+		// Skipping already declared property IsSeekBarVisible
+		// Skipping already declared property IsPlaybackRateEnabled
+		// Skipping already declared property IsPlaybackRateButtonVisible
+		// Skipping already declared property IsFullWindowEnabled
+		// Skipping already declared property IsFullWindowButtonVisible
+		// Skipping already declared property IsFastRewindEnabled
+		// Skipping already declared property IsFastRewindButtonVisible
+		// Skipping already declared property IsFastForwardEnabled
+		// Skipping already declared property IsFastForwardButtonVisible
+		// Skipping already declared property IsCompact
+		// Skipping already declared property IsSkipForwardEnabled
+		// Skipping already declared property IsSkipForwardButtonVisible
+		// Skipping already declared property IsSkipBackwardEnabled
+		// Skipping already declared property IsSkipBackwardButtonVisible
+		// Skipping already declared property IsPreviousTrackButtonVisible
+		// Skipping already declared property IsNextTrackButtonVisible
+		// Skipping already declared property FastPlayFallbackBehaviour
+		// Skipping already declared property ShowAndHideAutomatically
+		// Skipping already declared property IsRepeatEnabled
+		// Skipping already declared property IsRepeatButtonVisible
+		// Skipping already declared property IsCompactOverlayEnabled
+		// Skipping already declared property IsCompactOverlayButtonVisible
+		// Skipping already declared property IsCompactProperty
+		// Skipping already declared property IsFastForwardButtonVisibleProperty
+		// Skipping already declared property IsFastForwardEnabledProperty
+		// Skipping already declared property IsFastRewindButtonVisibleProperty
+		// Skipping already declared property IsFastRewindEnabledProperty
+		// Skipping already declared property IsFullWindowButtonVisibleProperty
+		// Skipping already declared property IsFullWindowEnabledProperty
+		// Skipping already declared property IsPlaybackRateButtonVisibleProperty
+		// Skipping already declared property IsPlaybackRateEnabledProperty
+		// Skipping already declared property IsSeekBarVisibleProperty
+		// Skipping already declared property IsSeekEnabledProperty
+		// Skipping already declared property IsStopButtonVisibleProperty
+		// Skipping already declared property IsStopEnabledProperty
+		// Skipping already declared property IsVolumeButtonVisibleProperty
+		// Skipping already declared property IsVolumeEnabledProperty
+		// Skipping already declared property IsZoomButtonVisibleProperty
+		// Skipping already declared property IsZoomEnabledProperty
+		// Skipping already declared property FastPlayFallbackBehaviourProperty
+		// Skipping already declared property IsNextTrackButtonVisibleProperty
+		// Skipping already declared property IsPreviousTrackButtonVisibleProperty
+		// Skipping already declared property IsSkipBackwardButtonVisibleProperty
+		// Skipping already declared property IsSkipBackwardEnabledProperty
+		// Skipping already declared property IsSkipForwardButtonVisibleProperty
+		// Skipping already declared property IsSkipForwardEnabledProperty
+		// Skipping already declared property IsRepeatButtonVisibleProperty
+		// Skipping already declared property IsRepeatEnabledProperty
+		// Skipping already declared property ShowAndHideAutomaticallyProperty
+		// Skipping already declared property IsCompactOverlayButtonVisibleProperty
+		// Skipping already declared property IsCompactOverlayEnabledProperty
+		// Skipping already declared method Windows.UI.Xaml.Controls.MediaTransportControls.MediaTransportControls()
 		// Forced skipping of method Windows.UI.Xaml.Controls.MediaTransportControls.MediaTransportControls()
 		// Forced skipping of method Windows.UI.Xaml.Controls.MediaTransportControls.IsFullWindowButtonVisible.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.MediaTransportControls.IsFullWindowButtonVisible.set
@@ -709,20 +123,8 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.MediaTransportControls.IsRepeatEnabled.set
 		// Forced skipping of method Windows.UI.Xaml.Controls.MediaTransportControls.IsRepeatButtonVisible.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.MediaTransportControls.IsRepeatButtonVisible.set
-#if false || false || false || false || false
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
-		public  void Show()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.MediaTransportControls", "void MediaTransportControls.Show()");
-		}
-#endif
-#if false || false || false || false || false
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
-		public  void Hide()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.MediaTransportControls", "void MediaTransportControls.Hide()");
-		}
-#endif
+		// Skipping already declared method Windows.UI.Xaml.Controls.MediaTransportControls.Show()
+		// Skipping already declared method Windows.UI.Xaml.Controls.MediaTransportControls.Hide()
 		// Forced skipping of method Windows.UI.Xaml.Controls.MediaTransportControls.IsCompactOverlayButtonVisible.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.MediaTransportControls.IsCompactOverlayButtonVisible.set
 		// Forced skipping of method Windows.UI.Xaml.Controls.MediaTransportControls.IsCompactOverlayEnabled.get
@@ -756,21 +158,21 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.MediaTransportControls.IsSeekBarVisibleProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.MediaTransportControls.IsSeekEnabledProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.MediaTransportControls.IsCompactProperty.get
-#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.Controls.MediaTransportControls, global::Windows.UI.Xaml.Media.MediaTransportControlsThumbnailRequestedEventArgs> ThumbnailRequested
+		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.Controls.MediaTransportControls, global::Windows.UI.Xaml.Media.MediaTransportControlsThumbnailRequestedEventArgs> ThumbnailRequested
 		{
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.MediaTransportControls", "event TypedEventHandler<MediaTransportControls, MediaTransportControlsThumbnailRequestedEventArgs> MediaTransportControls.ThumbnailRequested");
 			}
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			remove
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.MediaTransportControls", "event TypedEventHandler<MediaTransportControls, MediaTransportControlsThumbnailRequestedEventArgs> MediaTransportControls.ThumbnailRequested");
 			}
 		}
-#endif
+		#endif
 	}
 }

@@ -1,4 +1,4 @@
-﻿#if NET461 || UNO_REFERENCE_API || __MACOS__
+﻿#if IS_UNIT_TESTS || UNO_REFERENCE_API || __MACOS__
 #pragma warning disable CS0067, CS649
 #endif
 
@@ -43,6 +43,13 @@ namespace Windows.UI.Xaml.Controls
 
 	public partial class TextBox : Control, IFrameworkTemplatePoolAware
 	{
+		/// <summary>
+		/// This is a workaround for the template pooling issue where we change IsChecked when the template is recycled.
+		/// This prevents incorrect event raising but is not a "real" solution. Pooling could still cause issues.
+		/// This workaround can be removed if pooling is removed. See https://github.com/unoplatform/uno/issues/12189
+		/// </summary>
+		private bool _suppressTextChanged;
+
 #pragma warning disable CS0067, CS0649
 		private IFrameworkElement _placeHolder;
 		private ContentControl _contentElement;
@@ -304,13 +311,17 @@ namespace Windows.UI.Xaml.Controls
 			{
 				_isInvokingTextChanged = true;
 				_isTextChangedPending = false;
-				TextChanged?.Invoke(this, new TextChangedEventArgs(this));
+				if (!_suppressTextChanged) // This workaround can be removed if pooling is removed. See https://github.com/unoplatform/uno/issues/12189
+				{
+					TextChanged?.Invoke(this, new TextChangedEventArgs(this));
+				}
 			}
 #if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
 			finally
 #endif
 			{
 				_isInvokingTextChanged = false;
+				_suppressTextChanged = false;
 			}
 		}
 
@@ -635,8 +646,8 @@ namespace Windows.UI.Xaml.Controls
 
 		#endregion
 
-#if __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[Uno.NotImplemented("__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+#if __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[Uno.NotImplemented("__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 #endif
 		public CharacterCasing CharacterCasing
 		{
@@ -644,8 +655,8 @@ namespace Windows.UI.Xaml.Controls
 			set => this.SetValue(CharacterCasingProperty, value);
 		}
 
-#if __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[Uno.NotImplemented("__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+#if __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[Uno.NotImplemented("__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 #endif
 		public static DependencyProperty CharacterCasingProperty { get; } =
 			DependencyProperty.Register(
@@ -971,10 +982,9 @@ namespace Windows.UI.Xaml.Controls
 #if __WASM__
 			if (args.Handled)
 			{
-				// Marking the routed event as Handled makes the browser call
-				// preventDefault() for key events. This is a problem as it
-				// breaks the browser caret navigation within the input.
-				((IPreventDefaultHandling)args).DoNotPreventDefault = true;
+				// Marking the routed event as Handled makes the browser call preventDefault() for key events.
+				// This is a problem as it breaks the browser caret navigation within the input.
+				((IHtmlHandleableRoutedEventArgs)args).HandledResult &= ~HtmlEventDispatchResult.PreventDefault;
 			}
 #endif
 		}
@@ -1050,6 +1060,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public void OnTemplateRecycled()
 		{
+			_suppressTextChanged = true;
 			Text = string.Empty;
 		}
 

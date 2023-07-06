@@ -53,8 +53,6 @@ namespace Windows.UI.Xaml
 
 			Dispatcher = CoreDispatcher.Main;
 			CoreWindow = new CoreWindow(_window);
-
-			_window.CoreWindowEvents = CoreWindow;
 		}
 
 		internal NSWindow NativeWindow => _window;
@@ -73,7 +71,7 @@ namespace Windows.UI.Xaml
 			RaiseNativeSizeChanged(new CGSize(_window.Frame.Width, _window.Frame.Height));
 		}
 
-		partial void ActivatingPartial()
+		partial void ShowPartial()
 		{
 			_window.ContentViewController = _mainController;
 			_window.Display();
@@ -89,9 +87,18 @@ namespace Windows.UI.Xaml
 				coreServices.PutVisualRoot(_rootBorder);
 				_rootVisual = coreServices.MainRootVisual;
 
-				if (_rootVisual == null)
+				if (_rootVisual is null)
 				{
 					throw new InvalidOperationException("The root visual could not be created.");
+				}
+
+				if (coreServices.ContentRootCoordinator.CoreWindowContentRoot is { } contentRoot)
+				{
+					contentRoot.SetHost(this); // Enables input manager
+				}
+				else
+				{
+					throw new InvalidOperationException("The content root could not be created.");
 				}
 
 				UIElement.LoadingRootElement(_rootVisual);

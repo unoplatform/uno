@@ -4,7 +4,6 @@ parameters:
 jobs:
 - job: Documentation
   displayName: 'Build Documentation WebSite'
-  dependsOn: Pipeline_Validations
 
   pool: ${{ parameters.poolName }}
 
@@ -26,18 +25,13 @@ jobs:
   - template: templates/gitversion.yml
   - template: templates/jdk-setup.yml
 
-  - task: NuGetToolInstaller@0
-    inputs:
-      versionSpec: 4.9.1
-      checkLatest: false
-
   - task: MSBuild@1
     inputs:
       solution: Build/Uno.UI.Build.csproj
       msbuildLocationMethod: version
       msbuildVersion: latest
       msbuildArchitecture: x86
-      msbuildArguments: /r /t:GenerateDoc /p:CheckExclusions=True "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary
+      msbuildArguments: /r /t:GenerateDoc /p:CheckExclusions=True /p:UnoTargetFrameworkOverride=net7.0 "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary
       clean: false
       maximumCpuCount: true
       restoreNugetPackages: false

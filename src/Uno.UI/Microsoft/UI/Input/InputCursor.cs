@@ -1,12 +1,12 @@
-﻿#if HAS_UNO_WINUI
+﻿namespace Microsoft.UI.Input;
 
-namespace Microsoft.UI.Input
+#if HAS_UNO_WINUI
+public partial class InputCursor
+#else
+internal partial class InputCursor
+#endif
 {
-	public partial class InputCursor
+	protected InputCursor()
 	{
-		protected InputCursor()
-		{
-		}
 	}
 }
-#endif

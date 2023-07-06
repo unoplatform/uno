@@ -1,5 +1,4 @@
-﻿#if NET7_0_OR_GREATER
-using System.Runtime.InteropServices.JavaScript;
+﻿using System.Runtime.InteropServices.JavaScript;
 
 namespace __Windows.Networking.Connectivity
 {
@@ -7,7 +6,8 @@ namespace __Windows.Networking.Connectivity
 	{
 		internal static partial class NativeMethods
 		{
+			[JSImport("globalThis.Windows.Networking.Connectivity.ConnectionProfile.hasInternetAccess")]
+			internal static partial bool HasInternetAccess();
 		}
 	}
 }
-#endif

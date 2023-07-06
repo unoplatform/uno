@@ -1,17 +1,12 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>netcoreapp3.1;net6.0;net7.0</TargetFrameworks>
+		<TargetFrameworks>net7.0;net8.0</TargetFrameworks>
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 		<Nullable>enable</Nullable>
 	</PropertyGroup>
 
-
-	<PropertyGroup Condition="'$(CI_Build)'=='true' or '$(TF_BUILD)' == 'true'">
-		<TargetFrameworks Condition="'$(IS_NET6_BUILD)'=='' and '$(IS_NET7_BUILD)'==''">netcoreapp3.1</TargetFrameworks>
-		<TargetFrameworks Condition="'$(IS_NET6_BUILD)'=='true'">net6.0</TargetFrameworks>
-		<TargetFrameworks Condition="'$(IS_NET7_BUILD)'=='true'">net6.0;net7.0</TargetFrameworks>
-	</PropertyGroup>
+	<Import Project="../targetframework-override-noplatform.props" />
 
 	<ItemGroup>
 		<Compile Include="..\Uno.UI.RemoteControl\HotReload\Messages\**\*.cs" Link="HotReload/Messages/%(Filename)" />
@@ -22,18 +17,18 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="System.Reactive" Version="5.0.0" />
+		<PackageReference Include="System.Reactive" Version="6.0.0" />
 		<PackageReference Include="Newtonsoft.Json" />
 		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" />
 		<PackageReference Include="Uno.Core.Extensions" />
 		<PackageReference Include="Uno.Core.Extensions.Disposables" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)'=='net6.0'">
-		<PackageReference Include="Microsoft.CodeAnalysis" Version="4.0.1" />
-		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Features" Version="4.0.1" />
-		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.0.1" />
-		<PackageReference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="4.0.1" />
+	<ItemGroup Condition="'$(TargetFramework)'=='net8.0'">
+		<PackageReference Include="Microsoft.CodeAnalysis" Version="4.4.0-4.final" />
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Features" Version="4.4.0-4.final" />
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.4.0-4.final" />
+		<PackageReference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="4.4.0-4.final" />
 		<PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
 		<PackageReference Include="Microsoft.Build" Version="16.5.0" ExcludeAssets="runtime" />
 		<PackageReference Include="Microsoft.Build.Framework" Version="16.5.0" ExcludeAssets="runtime" />

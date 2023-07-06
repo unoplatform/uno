@@ -94,13 +94,9 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override void OnItemsSourceChanged(DependencyPropertyChangedEventArgs e)
 		{
-			// Calling this method before base.OnItemsSourceChanged() ensures that, in the case of an ObservableCollection, the list
-			// subscribes to CollectionChanged before AutoSuggestBox does. This is important for Android because the list needs to
-			// notify RecyclerView of collection changes before UpdateSuggestionList() measures it, otherwise we get errors like
-			// "Inconsistency detected. Invalid view holder adapter position"
-			UpdateSuggestionList();
-
 			base.OnItemsSourceChanged(e);
+
+			UpdateSuggestionList();
 		}
 
 		internal override void OnItemsSourceSingleCollectionChanged(object sender, NotifyCollectionChangedEventArgs args, int section)
@@ -108,6 +104,11 @@ namespace Windows.UI.Xaml.Controls
 			base.OnItemsSourceSingleCollectionChanged(sender, args, section);
 
 			UpdateSuggestionList();
+		}
+
+		protected override DependencyObject GetContainerForItemOverride()
+		{
+			return new ListViewItem() { IsGeneratedContainer = true };
 		}
 
 		internal override void OnItemsSourceGroupsChanged(object sender, NotifyCollectionChangedEventArgs args)
@@ -364,14 +365,12 @@ namespace Windows.UI.Xaml.Controls
 				this.Log().Debug($"Query button clicked");
 			}
 
-			SubmitSearch(_suggestionsList.SelectedItem);
+			SubmitSearch(null);
 		}
 
 		private void SubmitSearch(object item)
 		{
-			var finalResult = item ?? GetObjectText(Text);
-
-			QuerySubmitted?.Invoke(this, new AutoSuggestBoxQuerySubmittedEventArgs(finalResult is "" ? null : finalResult, userInput));
+			QuerySubmitted?.Invoke(this, new AutoSuggestBoxQuerySubmittedEventArgs(item, _textBox.Text));
 
 			IsSuggestionListOpen = false;
 		}
@@ -385,7 +384,7 @@ namespace Windows.UI.Xaml.Controls
 					this.Log().Debug($"Enter key pressed");
 				}
 
-				SubmitSearch(_suggestionsList.SelectedItem);
+				SubmitSearch(IsSuggestionListOpen ? _suggestionsList.SelectedItem : null);
 			}
 			else if ((e.Key == Windows.System.VirtualKey.Up || e.Key == Windows.System.VirtualKey.Down) && IsSuggestionListOpen)
 			{

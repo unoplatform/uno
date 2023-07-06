@@ -10,7 +10,7 @@ using Windows.Foundation;
 
 namespace SamplesApp.Wasm.Windows_UI_Core
 {
-	[SampleControlInfo("Windows.UI.Core", "SetCursor")]
+	[SampleControlInfo("Windows.UI.Core", "SetCursor", isManualTest: true, description: "Demonstrates use of CoreWindow.PointerCursor / CoreCursor / CoreCursorType")]
 	public sealed partial class SetCursor : Page
 	{
 		public SetCursor()
@@ -29,7 +29,7 @@ namespace SamplesApp.Wasm.Windows_UI_Core
 
 		private void OnUnLoaded(object sender, RoutedEventArgs e)
 		{
-#if NET461 || __WASM__ || __MACOS__
+#if IS_UNIT_TESTS || __WASM__ || __MACOS__
 			Box.SelectionChanged -= HandleSelection;
 			Windows.UI.Xaml.Window.Current.CoreWindow.PointerCursor = new Windows.UI.Core.CoreCursor(Windows.UI.Core.CoreCursorType.Arrow, 0);
 #endif
@@ -37,7 +37,7 @@ namespace SamplesApp.Wasm.Windows_UI_Core
 
 		private void InitList()
 		{
-#if NET461 || __WASM__ || __MACOS__
+#if IS_UNIT_TESTS || __WASM__ || __MACOS__
 			var _enumval = Enum.GetValues(typeof(Windows.UI.Core.CoreCursorType));
 			Box.ItemsSource = _enumval;
 			Box.SelectedIndex = 0;
@@ -57,7 +57,7 @@ namespace SamplesApp.Wasm.Windows_UI_Core
 
 		private void ResetTapped(object sender, TappedRoutedEventArgs e)
 		{
-#if NET461 || __WASM__ || __MACOS__
+#if IS_UNIT_TESTS || __WASM__ || __MACOS__
 			Txt.Text = "";
 
 			Windows.UI.Xaml.Window.Current.CoreWindow.PointerCursor = new Windows.UI.Core.CoreCursor(Windows.UI.Core.CoreCursorType.Arrow, 0);

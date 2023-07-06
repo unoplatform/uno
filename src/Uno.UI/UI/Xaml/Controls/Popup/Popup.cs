@@ -12,7 +12,7 @@ using Uno.UI.DataBinding;
 
 namespace Windows.UI.Xaml.Controls.Primitives;
 
-[ContentProperty(Name = "Child")]
+[ContentProperty(Name = nameof(Child))]
 public partial class Popup
 {
 	private PopupPlacementMode _actualPlacement;
@@ -156,7 +156,10 @@ public partial class Popup
 			nameof(PlacementTarget),
 			typeof(FrameworkElement),
 			typeof(Popup),
-			new FrameworkPropertyMetadata(default(FrameworkElement), FrameworkPropertyMetadataOptions.AffectsArrange));
+			new FrameworkPropertyMetadata(
+				default(FrameworkElement),
+				FrameworkPropertyMetadataOptions.AffectsArrange | FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext
+			));
 
 	/// <summary>
 	/// Gets or sets the preferred placement to be used for the popup, in relation to its placement target.
@@ -218,7 +221,7 @@ public partial class Popup
 			)
 		);
 
-	protected virtual void OnHorizontalOffsetChanged(double oldHorizontalOffset, double newHorizontalOffset)
+	private void OnHorizontalOffsetChanged(double oldHorizontalOffset, double newHorizontalOffset)
 	{
 		OnHorizontalOffsetChangedPartial(oldHorizontalOffset, newHorizontalOffset);
 		OnHorizontalOffsetChangedPartialNative(oldHorizontalOffset, newHorizontalOffset);
@@ -251,7 +254,7 @@ public partial class Popup
 			)
 		);
 
-	protected virtual void OnVerticalOffsetChanged(double oldVerticalOffset, double newVerticalOffset)
+	private void OnVerticalOffsetChanged(double oldVerticalOffset, double newVerticalOffset)
 	{
 		OnVerticalOffsetChangedPartial(oldVerticalOffset, newVerticalOffset);
 		OnVerticalOffsetChangedPartialNative(oldVerticalOffset, newVerticalOffset);

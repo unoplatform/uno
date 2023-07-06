@@ -1,7 +1,6 @@
 parameters:
   poolName: ''
   artifactsToDownload:
-    - "NugetPackages-Artifacts-generic"
     - "NugetPackages-Artifacts-netcoremobile"
     - "NugetPackages-Artifacts-reference"
     - "NugetPackages-Artifacts-skia"
@@ -11,14 +10,10 @@ jobs:
 - job: Generate_Packages
   displayName: 'Pack NuGet'
 
-  dependsOn:
-  - generic_win_build
-  - netcoremobile_win_build
-  - skia_package_build
-  - wasm_package_build
-  - reference_package_build
-
   pool: ${{ parameters.poolName }}
+
+  dependsOn:
+  - templates_package_build
 
   strategy:
     matrix:

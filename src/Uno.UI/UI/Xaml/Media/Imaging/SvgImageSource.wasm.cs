@@ -2,6 +2,7 @@
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using Windows.Storage;
 using Windows.Foundation;
 using Windows.Graphics.Display;
 using Windows.Storage.Streams;
@@ -10,12 +11,13 @@ using Uno.Foundation.Logging;
 using static Windows.UI.Xaml.Media.Imaging.BitmapImage;
 using Windows.Storage.Helpers;
 using Uno.UI.Xaml.Media;
+using Uno.Helpers;
 
 namespace Windows.UI.Xaml.Media.Imaging
 {
 	partial class SvgImageSource
 	{
-		internal string ContentType { get; set; } = "image/svg+xml";
+		internal override string ContentType { get; } = "image/svg+xml";
 
 		partial void InitPartial()
 		{
@@ -43,8 +45,6 @@ namespace Windows.UI.Xaml.Media.Imaging
 					{
 						image = ImageData.FromUrl(uri.AbsoluteUri, this);
 					}
-
-					// TODO: Implement ms-appdata
 				}
 				else
 				{
@@ -74,9 +74,18 @@ namespace Windows.UI.Xaml.Media.Imaging
 				return true;
 			}
 
+			if (AbsoluteUri is { } absoluteUri)
+			{
+				if (absoluteUri.IsAppData())
+				{
+					asyncImage = OpenMsAppData(absoluteUri, ct);
+
+					return true;
+				}
+			}
+
 			asyncImage = default;
 			return false;
-
 		}
 
 		internal override void ReportImageLoaded() => RaiseImageOpened();

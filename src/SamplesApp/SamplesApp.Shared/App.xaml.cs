@@ -83,6 +83,10 @@ namespace SamplesApp
 			Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
 			Thread.CurrentThread.CurrentUICulture = new CultureInfo("en-US");
 
+#if __SKIA__
+			ApplicationView.PreferredLaunchViewSize = new Windows.Foundation.Size(1024, 768);
+#endif
+
 			ConfigureFeatureFlags();
 
 			AssertIssue1790ApplicationSettingsUsable();
@@ -102,7 +106,7 @@ namespace SamplesApp
 #endif
 			override void OnLaunched(LaunchActivatedEventArgs e)
 		{
-#if __IOS__ && !NET6_0_OR_GREATER
+#if __IOS__ && !__MACCATALYST__
 			// requires Xamarin Test Cloud Agent
 			Xamarin.Calabash.Start();
 
@@ -297,6 +301,16 @@ namespace SamplesApp
 			}
 		}
 
+#if !HAS_UNO_WINUI
+		protected override void OnWindowCreated(global::Windows.UI.Xaml.WindowCreatedEventArgs args)
+		{
+			if (Current is null)
+			{
+				throw new InvalidOperationException("The Window should be created later in the application lifecycle.");
+			}
+		}
+#endif
+
 		private void InitializeFrame(string arguments = null)
 		{
 			Frame rootFrame = Windows.UI.Xaml.Window.Current.Content as Frame;
@@ -431,7 +445,6 @@ namespace SamplesApp
 				builder.AddConsole();
 #endif
 
-
 #if !DEBUG
 				// Exclude logs below this level
 				builder.SetMinimumLevel(LogLevel.Information);
@@ -521,11 +534,6 @@ namespace SamplesApp
 #endif
 #if __SKIA__
 			Uno.UI.FeatureConfiguration.ToolTip.UseToolTips = true;
-#endif
-
-#if HAS_UNO
-			// Allow template pool to work under higher memory load for CI.
-			FrameworkTemplatePool.HighMemoryThreshold = 0.9f;
 #endif
 		}
 

@@ -39,7 +39,7 @@ using CoreGraphics;
 using View = MonoTouch.UIKit.UIView;
 using Color = MonoTouch.UIKit.UIColor;
 using Font = MonoTouch.UIKit.UIFont;
-#elif NET461 || __WASM__
+#elif IS_UNIT_TESTS || __WASM__
 using View = Windows.UI.Xaml.UIElement;
 #endif
 

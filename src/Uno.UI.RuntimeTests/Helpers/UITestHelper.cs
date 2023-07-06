@@ -7,7 +7,10 @@ using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.UI.Input.Preview.Injection;
 using Windows.UI.Xaml;
+using Windows.UI.Xaml.Media.Imaging;
+using Windows.UI.Xaml.Controls;
 using Private.Infrastructure;
+using Uno.UI.RuntimeTests.Helpers;
 
 namespace Uno.UI.RuntimeTests.Tests.Uno_UI_Xaml_Core;
 
@@ -24,12 +27,28 @@ public static class UITestHelper
 
 		return element.GetAbsoluteBounds();
 	}
+
+	public static async Task<RawBitmap> ScreenShot(FrameworkElement element, bool opaque = true)
+	{
+		var renderer = new RenderTargetBitmap();
+		element.UpdateLayout();
+		await TestServices.WindowHelper.WaitForIdle();
+		await renderer.RenderAsync(element);
+		var bitmap = await RawBitmap.From(renderer, element);
+
+		return bitmap;
+	}
 }
 
 public static class InputInjectorExtensions
 {
 	public static Finger GetFinger(this InputInjector injector, uint id = 42)
 		=> new(injector, id);
+
+#if !WINDOWS_UWP
+	public static Mouse GetMouse(this InputInjector injector)
+		=> new(injector);
+#endif
 }
 
 public interface IInjectedPointer
@@ -76,7 +95,7 @@ public static class InjectedPointerExtensions
 
 public class Finger : IInjectedPointer, IDisposable
 {
-	private const int _defaultMoveSteps = 10;
+	private const uint _defaultMoveSteps = 10;
 
 	private readonly InputInjector _injector;
 	private readonly uint _id;
@@ -101,7 +120,7 @@ public class Finger : IInjectedPointer, IDisposable
 	}
 
 	void IInjectedPointer.MoveTo(Point position) => MoveTo(position);
-	public void MoveTo(Point position, int steps = _defaultMoveSteps)
+	public void MoveTo(Point position, uint steps = _defaultMoveSteps)
 	{
 		if (_currentPosition is { } current)
 		{
@@ -111,7 +130,7 @@ public class Finger : IInjectedPointer, IDisposable
 	}
 
 	void IInjectedPointer.MoveBy(double deltaX, double deltaY) => MoveBy(deltaX, deltaY);
-	public void MoveBy(double deltaX, double deltaY, int steps = _defaultMoveSteps)
+	public void MoveBy(double deltaX, double deltaY, uint steps = _defaultMoveSteps)
 	{
 		if (_currentPosition is { } current)
 		{
@@ -140,11 +159,7 @@ public class Finger : IInjectedPointer, IDisposable
 			PointerInfo = new()
 			{
 				PointerId = id,
-				PixelLocation = new()
-				{
-					PositionX = (int)position.X,
-					PositionY = (int)position.Y
-				},
+				PixelLocation = At(position),
 				PointerOptions = InjectedInputPointerOptions.New
 					| InjectedInputPointerOptions.FirstButton
 					| InjectedInputPointerOptions.PointerDown
@@ -152,21 +167,19 @@ public class Finger : IInjectedPointer, IDisposable
 			}
 		};
 
-	public static IEnumerable<InjectedInputTouchInfo> GetMove(Point fromPosition, Point toPosition, int steps = _defaultMoveSteps)
+	public static IEnumerable<InjectedInputTouchInfo> GetMove(Point fromPosition, Point toPosition, uint steps = _defaultMoveSteps)
 	{
+		steps += 1; // We need to send at least the final location, but steps refers to the number of intermediate points
+
 		var stepX = (toPosition.X - fromPosition.X) / steps;
 		var stepY = (toPosition.Y - fromPosition.Y) / steps;
-		for (var step = 0; step <= steps; step++)
+		for (var step = 1; step <= steps; step++)
 		{
 			yield return new()
 			{
 				PointerInfo = new()
 				{
-					PixelLocation = new()
-					{
-						PositionX = (int)(fromPosition.X + step * stepX),
-						PositionY = (int)(fromPosition.Y + step * stepY)
-					},
+					PixelLocation = At(fromPosition.X + step * stepX, fromPosition.Y + step * stepY),
 					PointerOptions = InjectedInputPointerOptions.Update
 						| InjectedInputPointerOptions.FirstButton
 						| InjectedInputPointerOptions.InContact
@@ -181,20 +194,178 @@ public class Finger : IInjectedPointer, IDisposable
 		{
 			PointerInfo = new()
 			{
-				PixelLocation =
-				{
-					PositionX = (int)position.X,
-					PositionY = (int)position.Y
-				},
+				PixelLocation = At(position),
 				PointerOptions = InjectedInputPointerOptions.FirstButton
 					| InjectedInputPointerOptions.PointerUp
 			}
 		};
 
 	private void Inject(IEnumerable<InjectedInputTouchInfo> infos)
-		=> _injector.InjectTouchInput(infos);
+		=> _injector.InjectTouchInput(infos.ToArray());
 
 	private void Inject(params InjectedInputTouchInfo[] infos)
 		=> _injector.InjectTouchInput(infos);
+
+	// Note: This a patch until Uno's pointer injection is being relative to the screen
+	private static InjectedInputPoint At(Point position)
+		=> At(position.X, position.Y);
+
+	private static InjectedInputPoint At(double x, double y)
+#if HAS_UNO
+		=> new() { PositionX = (int)x, PositionY = (int)y };
+#else
+	{
+		var bounds = Windows.UI.ViewManagement.ApplicationView.GetForCurrentView().VisibleBounds;
+		var scale = Windows.Graphics.Display.DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel;
+
+		return new()
+		{
+			PositionX = (int)((bounds.X + x) * scale),
+			PositionY = (int)((bounds.Y + y) * scale),
+		};
+	}
+#endif
 }
 
+#if !WINDOWS_UWP
+public class Mouse : IInjectedPointer, IDisposable
+{
+	private readonly InputInjector _input;
+
+	public Mouse(InputInjector input)
+	{
+		_input = input;
+	}
+
+	private Point Current => _input.Mouse.Position;
+
+	public void Press(Point position)
+		=> Inject(GetMoveTo(position.X, position.Y, null).Concat(new[] { GetPress() }));
+
+	public void Press()
+		=> Inject(GetPress());
+
+	public void Release()
+		=> Inject(GetRelease());
+
+	public void ReleaseAny()
+	{
+		var options = default(InjectedInputMouseOptions);
+
+		var current = _input.Mouse;
+		if (current.Properties.IsLeftButtonPressed)
+		{
+			options |= InjectedInputMouseOptions.LeftUp;
+		}
+
+		if (current.Properties.IsMiddleButtonPressed)
+		{
+			options |= InjectedInputMouseOptions.MiddleUp;
+		}
+
+		if (current.Properties.IsRightButtonPressed)
+		{
+			options |= InjectedInputMouseOptions.RightUp;
+		}
+
+		if (current.Properties.IsXButton1Pressed)
+		{
+			options |= InjectedInputMouseOptions.XUp;
+		}
+
+		if (options != default)
+		{
+			Inject(new InjectedInputMouseInfo
+			{
+				TimeOffsetInMilliseconds = 1,
+				MouseOptions = options
+			});
+		}
+	}
+
+	public void MoveBy(double deltaX, double deltaY)
+		=> Inject(GetMoveBy(deltaX, deltaY));
+
+	void IInjectedPointer.MoveTo(Point position) => MoveTo(position);
+	public void MoveTo(Point position, uint? steps = null)
+		=> Inject(GetMoveTo(position.X, position.Y, steps));
+
+	public void WheelUp() => Wheel(ScrollContentPresenter.ScrollViewerDefaultMouseWheelDelta);
+	public void WheelDown() => Wheel(-ScrollContentPresenter.ScrollViewerDefaultMouseWheelDelta);
+	public void WheelRight() => Wheel(ScrollContentPresenter.ScrollViewerDefaultMouseWheelDelta, isHorizontal: true);
+	public void WheelLeft() => Wheel(-ScrollContentPresenter.ScrollViewerDefaultMouseWheelDelta, isHorizontal: true);
+
+	public void Wheel(double delta, bool isHorizontal = false)
+		=> Inject(GetWheel(delta, isHorizontal));
+
+	private IEnumerable<InjectedInputMouseInfo> GetMoveTo(double x, double y, uint? steps)
+	{
+		var deltaX = x - Current.X;
+		var deltaY = y - Current.Y;
+
+		steps ??= (uint)Math.Min(Math.Max(Math.Abs(deltaX), Math.Abs(deltaY)), 512);
+		if (steps is 0)
+		{
+			yield break;
+		}
+
+		var stepX = deltaX / steps.Value;
+		var stepY = deltaY / steps.Value;
+
+		stepX = stepX is > 0 ? Math.Ceiling(stepX) : Math.Floor(stepX);
+		stepY = stepY is > 0 ? Math.Ceiling(stepY) : Math.Floor(stepY);
+
+		for (var step = 0; step <= steps && (stepX is not 0 || stepY is not 0); step++)
+		{
+			yield return GetMoveBy((int)stepX, (int)stepY);
+
+			if (Math.Abs(Current.X - x) < stepX)
+			{
+				stepX = 0;
+			}
+
+			if (Math.Abs(Current.Y - y) < stepY)
+			{
+				stepY = 0;
+			}
+		}
+	}
+
+	private void Inject(IEnumerable<InjectedInputMouseInfo> infos)
+		=> _input.InjectMouseInput(infos);
+
+	private void Inject(params InjectedInputMouseInfo[] infos)
+		=> _input.InjectMouseInput(infos);
+
+	public void Dispose()
+		=> ReleaseAny();
+
+	private static InjectedInputMouseInfo GetPress()
+		=> new()
+		{
+			TimeOffsetInMilliseconds = 1,
+			MouseOptions = InjectedInputMouseOptions.LeftDown,
+		};
+
+	private static InjectedInputMouseInfo GetMoveBy(double deltaX, double deltaY)
+		=> new()
+		{
+			DeltaX = (int)deltaX,
+			DeltaY = (int)deltaY,
+			TimeOffsetInMilliseconds = 1,
+			MouseOptions = InjectedInputMouseOptions.MoveNoCoalesce,
+		};
+
+	private static InjectedInputMouseInfo GetRelease()
+		=> new()
+		{
+			TimeOffsetInMilliseconds = 1,
+			MouseOptions = InjectedInputMouseOptions.LeftUp,
+		};
+
+	public static InjectedInputMouseInfo GetWheel(double delta, bool isHorizontal)
+		=> isHorizontal
+			? new() { TimeOffsetInMilliseconds = 1, DeltaX = (int)delta, MouseOptions = InjectedInputMouseOptions.HWheel }
+			: new() { TimeOffsetInMilliseconds = 1, DeltaY = (int)delta, MouseOptions = InjectedInputMouseOptions.Wheel };
+}
+#endif

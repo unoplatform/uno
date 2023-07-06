@@ -18,7 +18,7 @@ using System.Buffers;
 namespace Windows.UI.Xaml.Media.Imaging
 {
 #if NOT_IMPLEMENTED
-	[global::Uno.NotImplemented("NET461", "__WASM__", "__NETSTD_REFERENCE__")]
+	[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
 #endif
 	public partial class RenderTargetBitmap : ImageSource, IDisposable
 	{
@@ -30,13 +30,13 @@ namespace Windows.UI.Xaml.Media.Imaging
 
 		#region PixelWidth
 #if NOT_IMPLEMENTED
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__NETSTD_REFERENCE__")]
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
 #endif
 		public static DependencyProperty PixelWidthProperty { get; } = DependencyProperty.Register(
 			"PixelWidth", typeof(int), typeof(RenderTargetBitmap), new FrameworkPropertyMetadata(default(int)));
 
 #if NOT_IMPLEMENTED
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__NETSTD_REFERENCE__")]
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
 #endif
 		public int PixelWidth
 		{
@@ -48,13 +48,13 @@ namespace Windows.UI.Xaml.Media.Imaging
 		#region PixelHeight
 
 #if NOT_IMPLEMENTED
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__NETSTD_REFERENCE__")]
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
 #endif
 		public static DependencyProperty PixelHeightProperty { get; } = DependencyProperty.Register(
 			"PixelHeight", typeof(int), typeof(RenderTargetBitmap), new FrameworkPropertyMetadata(default(int)));
 
 #if NOT_IMPLEMENTED
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__NETSTD_REFERENCE__")]
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
 #endif
 		public int PixelHeight
 		{
@@ -88,7 +88,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 #endif
 
 #if NOT_IMPLEMENTED
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__NETSTD_REFERENCE__")]
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
 #endif
 		public IAsyncAction RenderAsync(UIElement? element, int scaledWidth, int scaledHeight)
 			=> AsyncAction.FromTask(ct =>
@@ -110,7 +110,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 			});
 
 #if NOT_IMPLEMENTED
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__NETSTD_REFERENCE__")]
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
 #endif
 		public IAsyncAction RenderAsync(UIElement? element)
 			=> AsyncAction.FromTask(ct =>
@@ -132,7 +132,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 			});
 
 #if NOT_IMPLEMENTED
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__NETSTD_REFERENCE__")]
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
 #endif
 		public IAsyncOperation<IBuffer> GetPixelsAsync()
 			=> AsyncOperation.FromTask(ct =>

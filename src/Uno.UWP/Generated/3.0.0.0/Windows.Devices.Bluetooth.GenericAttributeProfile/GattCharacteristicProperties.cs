@@ -3,7 +3,6 @@
 namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 {
 	#if false || false || false || false || false || false || false
-	[global::System.FlagsAttribute]
 	public   enum GattCharacteristicProperties : uint
 	{
 		// Skipping already declared field Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristicProperties.None

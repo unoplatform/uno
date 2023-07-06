@@ -1,4 +1,4 @@
-﻿#if __MACOS__ || __WASM__ || NET461
+﻿#if __MACOS__ || __WASM__ || IS_UNIT_TESTS
 using System;
 using System.Threading.Tasks;
 using Windows.Foundation;

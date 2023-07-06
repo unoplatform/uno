@@ -100,6 +100,12 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+		internal void OnFontFamilyChanged(FontFamily fontFamily)
+		{
+			DisplayBlock.FontFamily = fontFamily;
+			// TODO: Propagate font family to the native InputWidget via _textBoxExtension.
+		}
+
 		internal void SetPasswordRevealState(PasswordRevealState revealState)
 		{
 			_isPasswordRevealed = revealState == PasswordRevealState.Revealed;

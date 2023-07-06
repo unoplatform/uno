@@ -21,6 +21,11 @@ namespace Uno.UI.SourceGenerators.Tests
 		[DataRow("SingleTypeProperty", false, "SingleTypeProperty")]
 		[DataRow("SingleTypeProperty.Nested", false, "SingleTypeProperty.Nested")]
 		[DataRow("Max(TypeProperty1, TypeProperty2)", true, "TypeProperty1", "TypeProperty2")]
+		[DataRow("A.B[0]", false, "A.B[0]")]
+		[DataRow("A.B[0].C", false, "A.B[0].C")]
+		[DataRow("A.B[0].C.D", false, "A.B[0].C.D")]
+		[DataRow("A.B[0].C.D(A.B[0])", true, "A.B[0]", "A.B[0].C")]
+		[DataRow("A.B[0].C.D(A.B[0].C.D)", true, "A.B[0].C.D", "A.B[0].C")]
 		public void When_PathParse(string inputExpression, bool hasFunction, params string[] output)
 		{
 			bool IsStaticMethod(string name)
@@ -42,7 +47,7 @@ namespace Uno.UI.SourceGenerators.Tests
 			var props = XBindExpressionParser.ParseProperties(inputExpression, IsStaticMethod);
 
 			Assert.AreEqual(props.hasFunction, hasFunction, $"Expected hasFunction=true for [{inputExpression}]");
-			Assert.IsTrue(output.SequenceEqual(props.properties), $"Expected [{string.Join(";", output)}], got [{string.Join(";", props)}]");
+			Assert.IsTrue(output.SequenceEqual(props.properties), $"Expected [{string.Join(";", output)}], got [{string.Join(";", props.properties)}]");
 		}
 	}
 }

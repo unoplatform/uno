@@ -2468,7 +2468,7 @@ namespace Windows.UI.Xaml.Input
 			// don't draw focus rect for disabled FE(Got focus because of AllowFocusWhenDisabled is set)
 			if (candidate is FrameworkElement candidateAsFrameworkElement
 				&& candidateAsFrameworkElement.AllowFocusWhenDisabled
-				&& !candidateAsFrameworkElement.IsEnabled)
+				&& candidateAsFrameworkElement is Control { IsEnabled: false })
 			{
 				return null;
 			}

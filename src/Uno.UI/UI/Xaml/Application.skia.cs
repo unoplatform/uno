@@ -11,6 +11,8 @@ using Windows.UI.Core;
 using Uno.Foundation.Logging;
 using System.Threading;
 using System.Globalization;
+using Windows.ApplicationModel.Core;
+using Uno.UI.Xaml.Core;
 
 namespace Windows.UI.Xaml
 {
@@ -23,6 +25,7 @@ namespace Windows.UI.Xaml
 		{
 			Current = this;
 			SetCurrentLanguage();
+			InitializeSystemTheme();
 
 			Package.SetEntryAssembly(this.GetType().Assembly);
 
@@ -32,9 +35,18 @@ namespace Windows.UI.Xaml
 			}
 
 			_ = CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, Initialize);
+
+			CoreApplication.SetInvalidateRender(() =>
+			{
+				var roots = CoreServices.Instance.ContentRootCoordinator.ContentRoots;
+				for (int i = 0; i < roots.Count; i++)
+				{
+					roots[i].XamlRoot?.QueueInvalidateRender();
+				}
+			});
 		}
 
-		internal ISkiaHost? Host { get; set; }
+		internal ISkiaApplicationHost? Host { get; set; }
 
 		private void SetCurrentLanguage()
 		{

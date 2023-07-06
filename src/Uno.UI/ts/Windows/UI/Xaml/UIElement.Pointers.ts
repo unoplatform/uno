@@ -23,14 +23,22 @@
 
 		public static setPointerEventArgs(pArgs: number): void {
 			if (!UIElement._dispatchPointerEventMethod) {
-				UIElement._dispatchPointerEventMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.UIElement:OnNativePointerEvent");
+				if ((<any>globalThis).DotnetExports !== undefined) {
+					UIElement._dispatchPointerEventMethod = (<any>globalThis).DotnetExports.UnoUI.Windows.UI.Xaml.UIElement.OnNativePointerEvent;
+				} else {
+					UIElement._dispatchPointerEventMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.UIElement:OnNativePointerEvent");
+				}
 			}
 			UIElement._dispatchPointerEventArgs = pArgs;
 		}
 
 		public static setPointerEventResult(pArgs: number): void {
 			if (!UIElement._dispatchPointerEventMethod) {
-				UIElement._dispatchPointerEventMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.UIElement:OnNativePointerEvent");
+				if ((<any>globalThis).DotnetExports !== undefined) {
+					UIElement._dispatchPointerEventMethod = (<any>globalThis).DotnetExports.UnoUI.Windows.UI.Xaml.UIElement.OnNativePointerEvent;
+				} else {
+					UIElement._dispatchPointerEventMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.UIElement:OnNativePointerEvent");
+				}
 			}
 			UIElement._dispatchPointerEventResult = pArgs;
 		}

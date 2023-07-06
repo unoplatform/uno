@@ -1,26 +1,21 @@
 ﻿#nullable enable
 
 using System;
-using Uno.Media.Playback;
-using Windows.Media.Core;
-using Uno.Extensions;
-using System.IO;
-using Uno.Foundation.Logging;
 using System.Collections.Generic;
-using Uno;
-using Uno.Helpers;
 using System.Linq;
-using System.Threading.Tasks;
+using System.Reflection.Metadata;
+using Uno.Foundation.Extensibility;
+using Uno.Foundation.Logging;
+using Uno.Media.Playback;
+using Windows.Foundation;
+using Windows.Media.Core;
 using Windows.Media.Playback;
 using Windows.Storage;
+using Windows.Storage.Helpers;
 using Windows.Storage.Streams;
-using Windows.Foundation;
-using Windows.UI.Xaml.Controls;
-using System.Diagnostics.CodeAnalysis;
-using Windows.ApplicationModel.Background;
-using Uno.Foundation.Extensibility;
-using Windows.UI.Xaml.Controls.Maps;
-using System.Numerics;
+using Windows.UI.Xaml;
+using Uno.Extensions;
+using Uno.Helpers;
 
 [assembly: ApiExtension(typeof(IMediaPlayerExtension), typeof(Uno.UI.Media.MediaPlayerExtension))]
 
@@ -41,6 +36,8 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 	private TimeSpan _naturalDuration;
 	private Uri? _uri;
 	private bool _anonymousCors = FeatureConfiguration.AnonymousCorsDefault;
+
+	const string MsAppXScheme = "ms-appx";
 
 	public MediaPlayerExtension(object owner)
 	{
@@ -157,6 +154,8 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 	public bool CanSeek
 		=> true;
 
+	public bool? IsVideo { get; set; }
+
 	public MediaPlayerAudioDeviceType AudioDeviceType { get; set; }
 
 	public MediaPlayerAudioCategory AudioCategory { get; set; }
@@ -184,6 +183,10 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 				{
 					if (_owner.PlaybackSession.PlaybackState != MediaPlaybackState.None && _player is not null && _player.Source is not null)
 					{
+						if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
+						{
+							this.Log().Debug($"Position {value.TotalSeconds}");
+						}
 						_player.CurrentPosition = (int)value.TotalSeconds;
 						OnSeekComplete();
 					}
@@ -227,11 +230,31 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 		_player.OnSourceEnded += OnCompletion;
 		_player.OnTimeUpdate += OnTimeUpdate;
 
+		_player.OnStatusChanged -= OnStatusMediaChanged;
+		_player.OnStatusChanged += OnStatusMediaChanged;
+
 		_owner.PlaybackSession.PlaybackStateChanged -= OnStatusChanged;
 		_owner.PlaybackSession.PlaybackStateChanged += OnStatusChanged;
 
 		ApplyAnonymousCors();
 		ApplyVideoSource();
+	}
+
+	private void OnStatusMediaChanged(object? sender, object e)
+	{
+		if (this.Log().IsEnabled(LogLevel.Debug))
+		{
+			this.Log().Debug($"MediaPlayerExtension.OnStatusMediaChanged to state {_player?.PlayerState.ToString()}");
+		}
+
+		if (_player?.PlayerState == HtmlMediaPlayerState.Paused && _owner.PlaybackSession.PlaybackState == MediaPlaybackState.Playing)
+		{
+			_owner.PlaybackSession.PlaybackState = MediaPlaybackState.Paused;
+		}
+		else if (_player?.PlayerState == HtmlMediaPlayerState.Playing && _owner.PlaybackSession.PlaybackState == MediaPlaybackState.Paused)
+		{
+			_owner.PlaybackSession.PlaybackState = MediaPlaybackState.Playing;
+		}
 	}
 
 	private void SetPlaylistItems(MediaPlaybackList playlist)
@@ -287,7 +310,6 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 			}
 
 			ApplyVideoSource();
-			Events?.RaiseMediaOpened();
 			Events?.RaiseSourceChanged();
 		}
 		catch (global::System.Exception ex)
@@ -307,6 +329,30 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 
 		if (_player is not null && _uri is not null)
 		{
+			if (!_uri.IsAbsoluteUri || _uri.Scheme == "")
+			{
+				_uri = new Uri(MsAppXScheme + ":///" + _uri.OriginalString.TrimStart(new char[] { '/' }));
+			}
+
+			if (_uri.IsLocalResource())
+			{
+				_player.Source = AssetsPathBuilder.BuildAssetUri(_uri?.PathAndQuery);
+				return;
+			}
+
+			if (_uri.IsAppData())
+			{
+				var filePath = AppDataUriEvaluator.ToPath(_uri);
+				_player.Source = filePath;
+				return;
+			}
+
+			if (_uri.IsFile)
+			{
+				_player.Source = _uri.OriginalString;
+				return;
+			}
+
 			_player.Source = _uri.OriginalString;
 		}
 		else
@@ -466,6 +512,8 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 
 			NaturalDuration = TimeSpan.FromSeconds(_player.Duration);
 
+			IsVideo = _player.IsVideo;
+
 			if (mp.IsVideo && Events is not null)
 			{
 				try
@@ -489,13 +537,16 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 				}
 				else
 				{
-					// To display first image of media when setting a new source. Otherwise, last image of previous source remains visible
-					_player.Play();
-					_player.Stop();
+					_owner.PlaybackSession.PlaybackState = MediaPlaybackState.Paused;
 				}
 			}
 
 			_isPlayerPrepared = true;
+		}
+
+		if (Events is not null)
+		{
+			Events?.RaiseMediaOpened();
 		}
 	}
 
@@ -588,5 +639,10 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 			_isPlayRequested = false;
 			_isPlayerPrepared = false;
 		}
+	}
+
+	public void SetTransportControlsBounds(Rect bounds)
+	{
+		// No effect on WebAssembly.
 	}
 }

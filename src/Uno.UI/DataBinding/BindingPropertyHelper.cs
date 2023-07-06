@@ -14,12 +14,12 @@ using Uno.UI.DataBinding;
 using Uno;
 using Windows.UI.Xaml;
 using System.Collections;
-using Uno.Conversion;
 
 using Windows.UI.Xaml.Data;
 using System.Dynamic;
 using System.Runtime.CompilerServices;
 using System.Diagnostics.CodeAnalysis;
+using System.ComponentModel;
 
 namespace Uno.UI.DataBinding
 {
@@ -62,7 +62,6 @@ namespace Uno.UI.DataBinding
 		static BindingPropertyHelper()
 		{
 			MethodInvokerBuilder = DefaultInvokerBuilder;
-			Conversion = new DefaultConversionExtensions();
 		}
 
 		internal static void ClearCaches()
@@ -91,8 +90,6 @@ namespace Uno.UI.DataBinding
 		/// Sets an external metadata provider.
 		/// </summary>
 		public static IBindableMetadataProvider? BindableMetadataProvider { get; set; }
-
-		public static DefaultConversionExtensions Conversion { get; private set; }
 
 		public static bool IsEvent(Type type, string property)
 		{
@@ -249,6 +246,11 @@ namespace Uno.UI.DataBinding
 				return null;
 			}
 
+			if (property.Equals("''", StringComparison.Ordinal))
+			{
+				return type;
+			}
+
 			property = SanitizePropertyName(type, property);
 
 #if PROFILE
@@ -298,7 +300,21 @@ namespace Uno.UI.DataBinding
 					if (IsIndexerFormat(property))
 					{
 						// Fallback on reflection-based lookup
-						var indexerInfo = GetIndexerInfo(type, null, allowPrivateMembers: false);
+
+						// In some cases, there are multiple indexers, in which case GetIndexerInfo fails due to multiple matches when not given an explicit parameter type.
+						// If we know this parses as an integer, then use typeof(int) to reduce the cases of failure.
+						Type? indexerParameterType = null;
+						if (int.TryParse(property.Substring(1, property.Length - 2), NumberStyles.Number, NumberFormatInfo.InvariantInfo, out _))
+						{
+							indexerParameterType = typeof(int);
+						}
+						else
+						{
+							indexerParameterType = typeof(string);
+						}
+
+						var indexerInfo = GetIndexerInfo(type, indexerParameterType, allowPrivateMembers: false);
+						indexerInfo ??= GetIndexerInfo(type, null, allowPrivateMembers: false);
 
 						if (indexerInfo != null)
 						{
@@ -521,6 +537,11 @@ namespace Uno.UI.DataBinding
 				return UnsetValueGetter;
 			}
 
+			if (property.Equals("''", StringComparison.Ordinal))
+			{
+				return value => value;
+			}
+
 			property = SanitizePropertyName(type, property);
 
 			if (IsIndexerFormat(property))
@@ -591,6 +612,7 @@ namespace Uno.UI.DataBinding
 
 							if (indexerMethod != null)
 							{
+								indexerString = CoerceIndexerParameter(indexerString, optionalParameterType: null);
 								return instance => indexerMethod(instance, indexerString);
 							}
 						}
@@ -633,11 +655,13 @@ namespace Uno.UI.DataBinding
 						}
 
 						var handler = MethodInvokerBuilder(method);
+						var indexerParameterType = indexerInfo.GetIndexParameters()[0].ParameterType;
+						indexerString = CoerceIndexerParameter(indexerString, indexerParameterType);
 
 						return instance => handler(
 							instance,
 							new object?[] {
-								Convert(() => indexerInfo.GetIndexParameters()[0].ParameterType, indexerString)
+								Convert(() => indexerParameterType, indexerString)
 							}
 						);
 					}
@@ -826,6 +850,19 @@ namespace Uno.UI.DataBinding
 
 				return instance => empty();
 			}
+		}
+
+		private static string CoerceIndexerParameter(string indexerParameter, Type? optionalParameterType)
+		{
+			if (optionalParameterType is null || optionalParameterType == typeof(string))
+			{
+				if (indexerParameter.Length >= 2 && indexerParameter[0] == '"' && indexerParameter[indexerParameter.Length - 1] == '"')
+				{
+					return indexerParameter.Substring(1, indexerParameter.Length - 2);
+				}
+			}
+
+			return indexerParameter;
 		}
 
 		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1506:AvoidExcessiveClassCoupling", Justification = "To be refactored"),
@@ -1200,6 +1237,135 @@ namespace Uno.UI.DataBinding
 				.FirstOrDefault();
 		}
 
+		private static object? ConvertToEnum(Type enumType, object value)
+		{
+			var valueString = value.ToString();
+
+			FieldInfo? defaultValue = null;
+			foreach (var field in enumType.GetFields())
+			{
+				if (field.Name.Equals(valueString, StringComparison.OrdinalIgnoreCase))
+				{
+					return Enum.Parse(enumType, field.Name);
+				}
+
+				var descriptionAttribute = field.GetCustomAttributes<DescriptionAttribute>().FirstOrDefault();
+				if (descriptionAttribute is not null)
+				{
+					if (descriptionAttribute.Description.Equals(valueString, StringComparison.CurrentCultureIgnoreCase) ||
+						descriptionAttribute.Description.Equals(valueString, StringComparison.InvariantCultureIgnoreCase))
+					{
+#if NET7_0_OR_GREATER
+						if (Enum.TryParse(enumType, field.Name, ignoreCase: true, out var enumValue))
+						{
+							return enumValue;
+						}
+#else
+						try
+						{
+							return Enum.Parse(enumType, field.Name, ignoreCase: true);
+						}
+						catch (Exception)
+						{
+						}
+#endif
+					}
+
+					if (descriptionAttribute.Description == "?")
+					{
+						defaultValue = field;
+					}
+				}
+			}
+
+			if (defaultValue is not null)
+			{
+#if NET7_0_OR_GREATER
+				if (Enum.TryParse(enumType, defaultValue.Name, ignoreCase: true, out var enumValue))
+				{
+					return enumValue;
+				}
+#else
+				try
+				{
+					return Enum.Parse(enumType, defaultValue.Name, ignoreCase: true);
+				}
+				catch (Exception)
+				{
+				}
+#endif
+			}
+
+			return DependencyProperty.UnsetValue;
+		}
+
+		private static object? ConvertPrimitiveToPrimitive(Type type, object value)
+		{
+			try
+			{
+				return System.Convert.ChangeType(value, type, CultureInfo.CurrentCulture);
+			}
+			catch (Exception)
+			{
+				// This is a temporary fallback solution.
+				// The problem is that we don't actually know which culture we must use in advance.
+				// Values can come from the xaml (invariant culture) or from a two way binding (current culture).
+				// The real solution would be to pass a culture or source when setting a value in a Dependency Property.
+				return System.Convert.ChangeType(value, type, CultureInfo.InvariantCulture);
+			}
+		}
+
+		private static object? ConvertUsingTypeDescriptor(Type type, object value)
+		{
+			var valueTypeConverter = TypeDescriptor.GetConverter(value.GetType());
+			if (valueTypeConverter.CanConvertTo(type))
+			{
+				try
+				{
+					return valueTypeConverter.ConvertTo(null, CultureInfo.CurrentCulture, value, type);
+				}
+				catch (Exception)
+				{
+					return valueTypeConverter.ConvertTo(null, CultureInfo.InvariantCulture, value, type);
+				}
+			}
+
+			if (type == typeof(float))
+			{
+				var valueToString = value.ToString();
+				if (float.TryParse(valueToString, NumberStyles.Float, CultureInfo.CurrentCulture, out var fValue))
+				{
+					return fValue;
+				}
+
+				if (float.TryParse(valueToString, NumberStyles.Float, CultureInfo.InvariantCulture, out fValue))
+				{
+					return fValue;
+				}
+			}
+			else if (type == typeof(decimal))
+			{
+				var valueToString = value.ToString();
+				if (decimal.TryParse(valueToString, NumberStyles.AllowDecimalPoint, CultureInfo.CurrentCulture, out var dValue))
+				{
+					return dValue;
+				}
+				if (decimal.TryParse(valueToString, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out dValue))
+				{
+					return dValue;
+				}
+			}
+
+			try
+			{
+				return TypeDescriptor.GetConverter(type).ConvertFrom(null, CultureInfo.CurrentCulture, value);
+			}
+			catch (Exception)
+			{
+				return TypeDescriptor.GetConverter(type).ConvertFrom(null, CultureInfo.InvariantCulture, value);
+			}
+		}
+
 		internal static object? Convert(Func<Type?>? propertyType, object? value)
 		{
 			if (value != null && propertyType != null)
@@ -1212,37 +1378,44 @@ namespace Uno.UI.DataBinding
 					{
 						return fastConvertResult;
 					}
-					else if (t != typeof(object))
+					else if (t is null || t == typeof(object))
 					{
-						value = ConvertWithConvertionExtension(value, t);
+						return value;
+					}
+					else if (t == typeof(string))
+					{
+						return value?.ToString();
+					}
+					else if (t.IsEnum)
+					{
+						return ConvertToEnum(t, value);
+					}
+					else if ((Nullable.GetUnderlyingType(t) ?? t) is { IsPrimitive: true } toTypeUnwrapped && IsPrimitive(value))
+					{
+						return ConvertPrimitiveToPrimitive(toTypeUnwrapped, value);
+					}
+					else
+					{
+						return ConvertUsingTypeDescriptor(t, value);
 					}
 				}
 			}
+
 			return value;
 		}
 
-		/// <remarks>
-		/// This method contains or is called by a try/catch containing method and
-		/// can be significantly slower than other methods as a result on WebAssembly.
-		/// See https://github.com/dotnet/runtime/issues/56309
-		/// </remarks>
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		private static object ConvertWithConvertionExtension(object? value, Type? t)
+		private static bool IsPrimitive(object value)
 		{
-			try
-			{
-				value = Conversion.To(value, t, CultureInfo.CurrentCulture);
-			}
-			catch (Exception)
-			{
-				// This is a temporary fallback solution.
-				// The problem is that we don't actually know which culture we must use in advance.
-				// Values can come from the xaml (invariant culture) or from a two way binding (current culture).
-				// The real solution would be to pass a culture or source when setting a value in a Dependency Property.
-				value = Conversion.To(value, t, CultureInfo.InvariantCulture);
-			}
-
-			return value;
+			return value.GetType().IsPrimitive
+				|| value is string
+#if __IOS__
+				// Those are platform primitives provided for 64 bits compatibility
+				// with iOS 8.0 and later
+				|| value is nfloat
+				|| value is nint
+				|| value is nuint
+#endif
+									;
 		}
 
 		private static object UnsetValueGetter(object unused)

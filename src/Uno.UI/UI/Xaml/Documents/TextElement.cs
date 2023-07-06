@@ -1,4 +1,4 @@
-﻿#if NET461
+﻿#if IS_UNIT_TESTS
 #pragma warning disable CS0067
 #endif
 
@@ -273,7 +273,7 @@ namespace Windows.UI.Xaml.Documents
 			set => SetValue(BaseLineAlignmentProperty, value);
 		}
 
-		public static DependencyProperty BaseLineAlignmentProperty =
+		public static DependencyProperty BaseLineAlignmentProperty { get; } =
 			DependencyProperty.Register(
 				"BaseLineAlignment",
 				typeof(BaseLineAlignment),
@@ -313,11 +313,24 @@ namespace Windows.UI.Xaml.Documents
 
 		#endregion
 
-#if !__WASM__ // WASM version is inheriting from UIElement, so it's already implementing it.
-		public string Name { get; set; }
-#endif
+		private string _name;
 
-		/// <summary>	
+		public string Name
+		{
+			get => _name;
+			set
+			{
+				if (_name != value)
+				{
+					_name = value;
+					OnNameChangedPartial(value);
+				}
+			}
+		}
+
+		partial void OnNameChangedPartial(string newValue);
+
+		/// <summary>
 		/// Retrieves the parent RichTextBox/CRichTextBlock/TextBlock.
 		/// </summary>
 		/// <returns>FrameworkElement or <see langword="null"/>.</returns>
@@ -342,6 +355,7 @@ namespace Windows.UI.Xaml.Documents
 		private void SetDefaultForeground(DependencyProperty foregroundProperty)
 		{
 			this.SetValue(foregroundProperty, DefaultBrushes.TextForegroundBrush, DependencyPropertyValuePrecedences.DefaultValue);
+			((IDependencyObjectStoreProvider)this).Store.SetLastUsedTheme(Application.Current?.RequestedThemeForResources);
 		}
 #endif
 	}

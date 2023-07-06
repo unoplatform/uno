@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Runtime.InteropServices.JavaScript;
 using System.Threading;
 using Uno;
 using Uno.Disposables;
@@ -94,6 +95,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
+		[JSExport]
 		[Preserve]
 		public static void Resize(double width, double height)
 		{
@@ -131,10 +133,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		partial void ActivatingPartial()
-		{
-			WindowManagerInterop.WindowActivate();
-		}
+		partial void ShowPartial() => WindowManagerInterop.WindowActivate();
 
 		private void InternalSetContent(UIElement content)
 		{

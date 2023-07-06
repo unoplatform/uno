@@ -1,5 +1,4 @@
-﻿#if NET7_0_OR_GREATER
-using System.Runtime.InteropServices.JavaScript;
+﻿using System.Runtime.InteropServices.JavaScript;
 
 namespace __Windows.Phone.Devices.Notification
 {
@@ -7,7 +6,13 @@ namespace __Windows.Phone.Devices.Notification
 	{
 		internal static partial class NativeMethods
 		{
+			private const string JsType = "globalThis.Windows.Phone.Devices.Notification.VibrationDevice";
+
+			[JSImport($"{JsType}.initialize")]
+			internal static partial bool Initialize();
+
+			[JSImport($"{JsType}.vibrate")]
+			internal static partial void Vibrate(string duration);
 		}
 	}
 }
-#endif

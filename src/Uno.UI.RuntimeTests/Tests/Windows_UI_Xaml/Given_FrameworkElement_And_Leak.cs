@@ -63,7 +63,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[DataRow(typeof(Slider), 15)]
 		[DataRow(typeof(SymbolIcon), 15)]
 		[DataRow(typeof(Viewbox), 15)]
-		[DataRow(typeof(Windows.UI.Xaml.Controls.MenuBar), 15)]
+		[DataRow(typeof(Microsoft.UI.Xaml.Controls.MenuBar), 15)]
 		[DataRow(typeof(ComboBox), 15)]
 		[DataRow(typeof(Canvas), 15)]
 		[DataRow(typeof(AutoSuggestBox), 15)]
@@ -75,16 +75,20 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[DataRow(typeof(RelativePanel), 15)]
 		[DataRow(typeof(FlipView), 15)]
 		[DataRow(typeof(DatePicker), 15)]
+#if !__IOS__ // Disabled https://github.com/unoplatform/uno/issues/9080
 		[DataRow(typeof(CalendarView), 15)]
+#endif
 		[DataRow(typeof(Page), 15)]
 		[DataRow(typeof(Image), 15)]
 		[DataRow(typeof(ToggleSwitch), 15)]
-		[DataRow(typeof(Windows.UI.Xaml.Controls.SwipeControl), 15)]
+		[DataRow(typeof(Microsoft.UI.Xaml.Controls.SwipeControl), 15)]
 		[DataRow(typeof(SplitView), 15)]
 		[DataRow(typeof(Microsoft.UI.Xaml.Controls.AnimatedIcon), 15)]
 		[DataRow(typeof(Microsoft.UI.Xaml.Controls.BreadcrumbBar), 15)]
 		[DataRow(typeof(Microsoft.UI.Xaml.Controls.BreadcrumbBarItem), 15)]
+#if !__IOS__ // Disabled https://github.com/unoplatform/uno/issues/9080
 		[DataRow(typeof(Microsoft.UI.Xaml.Controls.ColorPicker), 15)]
+#endif
 		[DataRow(typeof(Microsoft.UI.Xaml.Controls.Primitives.ColorPickerSlider), 15)]
 		[DataRow(typeof(Microsoft.UI.Xaml.Controls.Primitives.ColorSpectrum), 15)]
 		[DataRow(typeof(Microsoft.UI.Xaml.Controls.Expander), 15)]

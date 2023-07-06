@@ -1,10 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFrameworks>netstandard2.0;net5.0</TargetFrameworks>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(MSBuildRuntimeType)'=='Core'">
-		<TargetFrameworks>$(TargetFrameworks);net7.0</TargetFrameworks>
+		<TargetFrameworks>net7.0;net8.0</TargetFrameworks>
 	</PropertyGroup>
 
 	<Import Project="../../targetframework-override.props" />
@@ -37,7 +33,6 @@
 	<ItemGroup>
 		<PackageReference Include="Uno.BenchmarkDotNet" Version="0.11.7-develop" />
 		<PackageReference Include="Uno.BenchmarkDotNet.Annotations" Version="0.11.7-develop" />
-		<PackageReference Include="Uno.SourceGenerationTasks" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="5.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Filter" Version="1.1.2" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="5.0.0" />

@@ -352,8 +352,8 @@ namespace Uno.UI.RuntimeTests.Tests
 		}
 
 		[TestMethod]
-#if __MACOS__ && !NET6_0_OR_GREATER
-		[Ignore] // Not supported for Xamarin.mac target
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
 #endif
 		public async Task When_Project_Transitive_Asset()
 		{
@@ -382,6 +382,21 @@ namespace Uno.UI.RuntimeTests.Tests
 			var bytes2 = (await file2.OpenStreamForReadAsync()).ReadAllBytes();
 			Assert.IsTrue(bytes1.SequenceEqual(bytes2));
 		}
+
+#if __ANDROID__
+		[TestMethod]
+		public async Task When_Copy_Saf()
+		{
+			var file1 = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/ingredient3.png"));
+			await file1.CopyAsync(ApplicationData.Current.LocalCacheFolder, "ingredient3.png", NameCollisionOption.ReplaceExisting);
+
+			var directory = new Java.IO.File(ApplicationData.Current.LocalCacheFolder.Path);
+			var documentFile = AndroidX.DocumentFile.Provider.DocumentFile.FromFile(directory).CreateFile("image/png", "ingredient3.png");
+
+			var file2 = StorageFile.GetFromSafDocument(documentFile);
+			await file2.CopyAsync(ApplicationData.Current.LocalFolder, "When_Copy_Saf_uno_logo.png", NameCollisionOption.ReplaceExisting);
+		}
+#endif
 
 		private string GetRandomFilePath()
 			=> Path.Combine(ApplicationData.Current.LocalFolder.Path, $"{Guid.NewGuid()}.txt");

@@ -4,14 +4,15 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices.JavaScript;
 using System.Runtime.Serialization;
 
 using Uno;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.Xaml;
-using Uno.UI.Xaml.Input;
 using Windows.UI.Xaml.Controls;
+
 
 namespace Windows.UI.Xaml
 {
@@ -162,45 +163,24 @@ namespace Windows.UI.Xaml
 					args = _payloadConverter(_owner, nativeEventPayload);
 				}
 
-				var result = HtmlEventDispatchResult.Ok;
+				var result = new HtmlEventDispatchResultHelper();
 				foreach (var invocationItem in _invocationList)
 				{
 					if (invocationItem.Handler is RawEventHandler rawHandler)
 					{
 						var handlerResult = rawHandler(_owner, nativeEventPayload);
-
-						if (handlerResult.HasFlag(HtmlEventDispatchResult.StopPropagation))
-						{
-							// We stop on first handler that requires to stop propagation (same behavior has Handled on UWP)
-							return result | HtmlEventDispatchResult.StopPropagation;
-						}
-						else
-						{
-							result |= handlerResult;
-						}
+						result.Add(handlerResult);
 					}
 					else
 					{
 						var handlerResult = invocationItem.Invoker(invocationItem.Handler, _owner, args);
+						result.Add(args, handlerResult);
+					}
 
-						switch (handlerResult)
-						{
-							case bool isHandledInManaged when isHandledInManaged:
-								if (args is IPreventDefaultHandling preventDefaultHandling &&
-									preventDefaultHandling.DoNotPreventDefault)
-								{
-									return HtmlEventDispatchResult.StopPropagation;
-								}
-								return HtmlEventDispatchResult.StopPropagation | HtmlEventDispatchResult.PreventDefault;
-
-							case HtmlEventDispatchResult dispatchResult when dispatchResult.HasFlag(HtmlEventDispatchResult.StopPropagation):
-								// We stop on first handler that requires to stop propagation (same behavior has Handled on UWP)
-								return result | HtmlEventDispatchResult.StopPropagation;
-
-							case HtmlEventDispatchResult dispatchResult:
-								result |= dispatchResult;
-								break;
-						}
+					if (result.ShouldStop)
+					{
+						// We stop on first handler that requires to stop propagation (same behavior has Handled on UWP)
+						return result.Value;
 					}
 				}
 
@@ -291,6 +271,7 @@ namespace Windows.UI.Xaml
 		/// <param name="eventArgs">Serialized event args</param>
 		/// <returns>The HtmlEventDispatchResult of the dispatch.</returns>
 		/// <remarks>The return value is an integer for marshaling consideration, but is actually an HtmlEventDispatchResult.</remarks>
+		[JSExport]
 		[Preserve]
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static int DispatchEvent(int handle, string eventName, string eventArgs)
@@ -332,40 +313,6 @@ namespace Windows.UI.Xaml
 			FocusEventExtractor = 4,
 			CustomEventDetailStringExtractor = 5, // For use with CustomEvent("name", {detail:{string detail here}})
 			CustomEventDetailJsonExtractor = 6, // For use with CustomEvent("name", {detail:{detail here}}) - will be JSON.stringify
-		}
-
-		[Flags]
-		internal enum HtmlEventDispatchResult : byte
-		{
-			/// <summary>
-			/// Event has been dispatched properly, but there is no specific action to take.
-			/// </summary>
-			Ok = 0,
-
-			/// <summary>
-			/// Stops **native** propagation of the event to parent elements (a.k.a. Handled).
-			/// </summary>
-			StopPropagation = 1, // a.k.a. Handled
-
-			/// <summary>
-			/// This prevents the default native behavior of the event.
-			/// For instance mouse wheel to scroll the view, tab to changed focus, etc.
-			/// WARNING: Cf. remarks
-			/// </summary>
-			/// <remarks>
-			/// The "default behavior" is applied only once the event as reached the root element.
-			/// This means that if a parent element requires to prevent the default behavior, it will also prevent the default for all its children.
-			/// For instance preventing the default behavior for the wheel event on a `Popup`, will also disable the mouse wheel scrolling for its content.
-			/// </remarks>
-			PreventDefault = 2,
-
-			/// <summary>
-			/// The event has not been dispatch.
-			/// WARNING: This must not be used by application.
-			/// It only indicates that there is no active listener for that event and it should not be raised anymore.
-			/// It should not in anyway indicates an error in event processing.
-			/// </summary>
-			NotDispatched = 128
 		}
 	}
 }

@@ -38,9 +38,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Data
 
 			Assert.AreEqual(true, source.IsSelected(3), "source.IsSelected(3) == true");
 			Assert.AreEqual(1, selectionRanges.Count, "selectionRanges.Count == 1");
-			Assert.AreEqual(new ItemIndexRange(3, 1), selectionRanges[0], "selectionRanges[0] == { 3..3, count = 1 }");
+			var expectedRange = new ItemIndexRange(3, 1);
+			Assert.AreEqual(expectedRange.FirstIndex, selectionRanges[0].FirstIndex, "selectionRanges[0] == { 3..3, count = 1 }");
+			Assert.AreEqual(expectedRange.LastIndex, selectionRanges[0].LastIndex, "selectionRanges[0] == { 3..3, count = 1 }");
+			Assert.AreEqual(expectedRange.Length, selectionRanges[0].Length, "selectionRanges[0] == { 3..3, count = 1 }");
 		}
 
+#if HAS_UNO // On Windows this test fails, because the SelectedIndex remains -1, even though visually the item is selected
 		[TestMethod]
 		[RunsOnUIThread]
 		public async Task When_PreselectOne()
@@ -53,6 +57,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Data
 
 			Assert.AreEqual(3, lv.SelectedIndex, "SelectedIndex should be 3");
 		}
+#endif
 
 		[TestMethod]
 		[RunsOnUIThread]

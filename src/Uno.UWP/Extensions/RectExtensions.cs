@@ -19,6 +19,14 @@ namespace Uno.Extensions
 			=> Matrix3x2Extensions.Transform(m, rect);
 
 		/// <summary>
+		/// Gets the center of the rectangle.
+		/// </summary>
+		/// <param name="rect">A rectangle.</param>
+		/// <returns>The center of the rectangle.</returns>
+		internal static Point GetCenter(this Rect rect)
+			=> new(rect.Left + rect.Width / 2, rect.Top + rect.Height / 2);
+
+		/// <summary>
 		/// Returns the orientation of the rectangle.
 		/// </summary>
 		/// <param name="rect">A rectangle.</param>

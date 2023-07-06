@@ -26,12 +26,6 @@ using Uno.UI.SourceGenerators.Utils;
 using Uno.UI.SourceGenerators.XamlGenerator.ThirdPartyGenerators;
 using Uno.UI.SourceGenerators.XamlGenerator.ThirdPartyGenerators.CommunityToolkitMvvm;
 
-#if NETFRAMEWORK
-using Microsoft.Build.Execution;
-using Uno.SourceGeneration;
-using GeneratorExecutionContext = Uno.SourceGeneration.GeneratorExecutionContext;
-#endif
-
 namespace Uno.UI.SourceGenerators.XamlGenerator
 {
 	internal partial class XamlCodeGeneration
@@ -46,7 +40,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly bool _isWasm;
 		private readonly bool _isDesignTimeBuild;
 		private readonly string _defaultNamespace;
-		private readonly string[] _assemblySearchPaths;
 		private readonly string _excludeXamlNamespaces;
 		private readonly string _includeXamlNamespaces;
 		private readonly string[] _analyzerSuppressions;
@@ -54,7 +47,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly Dictionary<string, string[]> _uiAutomationMappings;
 		private readonly string _configuration;
 		private readonly bool _isDebug;
-		private readonly bool _useXamlReaderHotReload;
+
 		/// <summary>
 		/// Should hot reload-related calls be generated? By default this is true iff building in debug, but it can be forced to always true or false using the "UnoForceHotReloadCodeGen" project flag.
 		/// </summary>
@@ -76,7 +69,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// </summary>
 		private readonly bool _isLazyVisualStateManagerEnabled = true;
 
-		private static DateTime _buildTasksBuildDate = File.GetLastWriteTime(new Uri(typeof(XamlFileGenerator).Assembly.Location).LocalPath);
 		private INamedTypeSymbol[]? _ambientGlobalResources;
 		private readonly bool _isUiAutomationMappingEnabled;
 
@@ -162,7 +154,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			InitTelemetry(context);
 
 			_metadataHelper = new RoslynMetadataHelper(context);
-			_assemblySearchPaths = Array.Empty<string>();
 
 			_configuration = context.GetMSBuildPropertyValue("Configuration")
 				?? throw new InvalidOperationException("The configuration property must be provided");
@@ -198,9 +189,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				_skipUserControlsInVisualTree = skipUserControlsInVisualTree;
 			}
 
-			if (bool.TryParse(context.GetMSBuildPropertyValue("ShouldWriteErrorOnInvalidXaml"), out var shouldWriteErrorOnInvalidXaml))
+			if (!bool.TryParse(context.GetMSBuildPropertyValue("ShouldWriteErrorOnInvalidXaml"), out _shouldWriteErrorOnInvalidXaml))
 			{
-				_shouldWriteErrorOnInvalidXaml = shouldWriteErrorOnInvalidXaml;
+				_shouldWriteErrorOnInvalidXaml = true;
 			}
 
 			if (!bool.TryParse(context.GetMSBuildPropertyValue("IsUiAutomationMappingEnabled") ?? "", out _isUiAutomationMappingEnabled))
@@ -226,11 +217,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			if (bool.TryParse(context.GetMSBuildPropertyValue("IsUnoHead"), out var isUnoHead))
 			{
 				_isUnoHead = isUnoHead;
-			}
-
-			if (bool.TryParse(context.GetMSBuildPropertyValue("UnoUseXamlReaderHotReload"), out var useXamlReaderHotReload))
-			{
-				_useXamlReaderHotReload = useXamlReaderHotReload;
 			}
 
 			if (bool.TryParse(context.GetMSBuildPropertyValue("UnoForceHotReloadCodeGen"), out var isHotReloadEnabled))
@@ -380,20 +366,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return link;
 		}
 
-		public List<KeyValuePair<string, SourceText>> Generate(GenerationRunInfo generationRunInfo)
+		public List<KeyValuePair<string, SourceText>> Generate()
 		{
 			var stopwatch = Stopwatch.StartNew();
 
 			try
 			{
-				var lastBinaryUpdateTime = GetLastBinaryUpdateTime();
-				var isInsideMainAssembly =
-					_isUnoHead
-
-					// Handle legacy Xamarin targets which do not define IsUnoHead.
-					|| PlatformHelper.IsXamariniOS(_generatorContext)
-					|| PlatformHelper.IsXamarinMacOs(_generatorContext)
-					|| PlatformHelper.IsAndroid(_generatorContext);
+				var isInsideMainAssembly = _isUnoHead || PlatformHelper.IsAndroid(_generatorContext);
 
 				var resourceDetailsCollection = BuildResourceDetails(_generatorContext.CancellationToken);
 				TryGenerateUnoResourcesKeyAttribute(resourceDetailsCollection);
@@ -450,7 +429,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						defaultNamespace: _defaultNamespace,
 						metadataHelper: _metadataHelper,
 						fileUniqueId: file.UniqueID,
-						lastReferenceUpdateTime: lastBinaryUpdateTime,
 						analyzerSuppressions: _analyzerSuppressions,
 						globalStaticResourcesMap: globalStaticResourcesMap,
 						resourceDetailsCollection: resourceDetailsCollection,
@@ -462,7 +440,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						isDebug: _isDebug,
 						isHotReloadEnabled: _isHotReloadEnabled,
 						isInsideMainAssembly: isInsideMainAssembly,
-						useXamlReaderHotReload: _useXamlReaderHotReload,
 						isDesignTimeBuild: _isDesignTimeBuild,
 						skipUserControlsInVisualTree: _skipUserControlsInVisualTree,
 						shouldAnnotateGeneratedXaml: _shouldAnnotateGeneratedXaml,
@@ -472,7 +449,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						enableFuzzyMatching: _enableFuzzyMatching,
 						generatorContext: _generatorContext,
 						xamlResourcesTrimming: _xamlResourcesTrimming,
-						generationRunFileInfo: generationRunInfo.GetRunFileInfo(file.UniqueID),
 						xamlTypeToXamlTypeBaseMap: xamlTypeToXamlTypeBaseMap,
 						includeXamlNamespaces: includeXamlNamespaces
 					).GenerateFile()
@@ -492,11 +468,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				TrackGenerationFailed(e, stopwatch.Elapsed);
 
-#if NETFRAMEWORK
-				throw;
-#else
 				return ProcessParsingException(e);
-#endif
 			}
 			finally
 			{
@@ -517,7 +489,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				""");
 		}
 
-#if !NETFRAMEWORK
 		private List<KeyValuePair<string, SourceText>> ProcessParsingException(Exception e)
 		{
 			IEnumerable<Exception> Flatten(Exception ex)
@@ -585,7 +556,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			return null;
 		}
-#endif
 
 		private XamlGlobalStaticResourcesMap BuildAssemblyGlobalStaticResourcesMap(XamlFileDefinition[] filesFull, string[] links)
 		{
@@ -680,7 +650,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					{
 						var message = $"Unable to parse resource file [{file.Identity}], make sure it is a valid resw file. ({e.Message})";
 
-#if NETSTANDARD
 						var diagnostic = Diagnostic.Create(
 							XamlCodeGenerationDiagnostics.ResourceParsingFailureRule,
 							null,
@@ -689,9 +658,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						_generatorContext.ReportDiagnostic(diagnostic);
 
 						return Array.Empty<ResourceDetails>();
-#else
-						throw new InvalidOperationException(message, e);
-#endif
 					}
 				})
 				.Distinct()
@@ -701,17 +667,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			Console.WriteLine(resourceKeys.Length + " localization keys found");
 #endif
 			return resourceKeys;
-		}
-
-		private DateTime GetLastBinaryUpdateTime()
-		{
-			// Determine the last update time, to allow for the re-generation of the files.
-			// Include the current assembly, as it might have been updated since the last generation.
-
-			return _assemblySearchPaths
-				.Select(File.GetLastWriteTime)
-				.Concat(_buildTasksBuildDate)
-				.Max();
 		}
 
 		private SourceText GenerateGlobalResources(IEnumerable<XamlFileDefinition> files, XamlGlobalStaticResourcesMap map)
@@ -736,6 +691,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				writer.AppendLineIndented("/// <summary>");
 				writer.AppendLineIndented("/// Contains all the static resources defined for the application");
 				writer.AppendLineIndented("/// </summary>");
+
+				if (_isDebug)
+				{
+					writer.AppendLineIndented("[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]");
+				}
 
 				AnalyzerSuppressionsGenerator.Generate(writer, _analyzerSuppressions);
 				using (writer.BlockInvariant("public sealed partial class GlobalStaticResources"))
@@ -892,10 +852,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					{
 						writer.AppendLineIndented($"static partial void RegisterDefaultStyles_{file}();");
 					}
-
-					writer.AppendLineIndented("[global::System.Obsolete(\"This method is provided for binary backward compatibility. It will always return null.\")]");
-					writer.AppendLineIndented("[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]");
-					writer.AppendLineIndented("public static object FindResource(string name) => null;");
 
 					writer.AppendLineIndented("");
 				}

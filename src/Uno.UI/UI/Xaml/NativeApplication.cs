@@ -44,8 +44,6 @@ namespace Windows.UI.Xaml
 			// Android.App.Application.Context to be populated properly. This enables
 			// APIs such as Windows.Storage.ApplicationData.Current.LocalSettings to function properly.
 			_app = appBuilder();
-
-			ResourceHelper.ResourcesService = new ResourcesService(this);
 		}
 
 		public override void OnCreate()
@@ -124,7 +122,7 @@ namespace Windows.UI.Xaml
 		}
 
 		/// <summary>
-		/// This method is used by UI Test frameworks to get 
+		/// This method is used by UI Test frameworks to get
 		/// the Xamarin compatible name for a control in Java.
 		/// </summary>
 		/// <param name="type">A type full name</param>

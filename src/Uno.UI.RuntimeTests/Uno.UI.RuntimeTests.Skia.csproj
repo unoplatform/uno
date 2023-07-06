@@ -1,11 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFrameworks>netstandard2.0</TargetFrameworks>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(MSBuildRuntimeType)'=='Core' or '$(IsRunningInsideVisualStudio)'=='true'">
-		<TargetFrameworks>$(TargetFrameworks);net7.0</TargetFrameworks>
+		<TargetFrameworks>net7.0;net8.0</TargetFrameworks>
 	</PropertyGroup>
 
 	<Import Project="../targetframework-override.props" />
@@ -16,12 +12,12 @@
 		<UnoRuntimeIdentifier>Skia</UnoRuntimeIdentifier>
 		<PlatformItemsBasePath>.\</PlatformItemsBasePath>
 		<DefineConstants>$(DefineConstants);IS_RUNTIME_UI_TESTS</DefineConstants>
+		<NoWarn>$(NoWarn);CS1998</NoWarn>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<PackageReference Include="FluentAssertions" />
 		<PackageReference Include="MSTest.TestFramework" />
-		<PackageReference Include="Uno.SourceGenerationTasks" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -84,5 +80,11 @@
 		<Message Text="Validating local assets" Importance="high" />
 		<Error Condition="!Exists('$(OutputPath)Uno.UI.RuntimeTests\Assets\TransientAsset01.txt')" Text="$(OutputPath)uno.ui.runtimetests\Assets\TransientAsset01.txt" />
 	</Target>
+
+	<ItemGroup>
+	  <Page Update="Tests\Windows_UI_Xaml_Controls\FlyoutPages\When_PlacementTarget_Binding.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </Page>
+	</ItemGroup>
 
 </Project>

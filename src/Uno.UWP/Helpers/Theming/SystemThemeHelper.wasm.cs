@@ -1,13 +1,12 @@
 ﻿#nullable enable
 
 using System;
+using System.Runtime.InteropServices.JavaScript;
 using Uno.Extensions;
 using Uno.Foundation;
 using Uno.Foundation.Logging;
 
-#if NET7_0_OR_GREATER
 using NativeMethods = __Uno.Helpers.Theming.SystemThemeHelper.NativeMethods;
-#endif
 
 namespace Uno.Helpers.Theming;
 
@@ -15,11 +14,7 @@ internal static partial class SystemThemeHelper
 {
 	private static SystemTheme GetSystemTheme()
 	{
-#if NET7_0_OR_GREATER
 		var serializedTheme = NativeMethods.GetSystemTheme();
-#else
-		var serializedTheme = WebAssemblyRuntime.InvokeJS("Uno.Helpers.Theming.SystemThemeHelper.getSystemTheme()");
-#endif
 
 		if (serializedTheme != null)
 		{
@@ -47,13 +42,10 @@ internal static partial class SystemThemeHelper
 
 	static partial void ObserveThemeChangesPlatform()
 	{
-#if NET7_0_OR_GREATER
 		NativeMethods.ObserveSystemTheme();
-#else
-		WebAssemblyRuntime.InvokeJS("Uno.Helpers.Theming.SystemThemeHelper.observeSystemTheme()");
-#endif
 	}
 
+	[JSExport]
 	public static int DispatchSystemThemeChange()
 	{
 		RefreshSystemTheme();

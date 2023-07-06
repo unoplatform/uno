@@ -8,7 +8,7 @@ using Windows.UI.Xaml.Markup;
 
 namespace Windows.UI.Xaml.Documents
 {
-	[ContentProperty(Name = "Inlines")]
+	[ContentProperty(Name = nameof(Inlines))]
 	public partial class Span : Inline
 	{
 #if !__WASM__

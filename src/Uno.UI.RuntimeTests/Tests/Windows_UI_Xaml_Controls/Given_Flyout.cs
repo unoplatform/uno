@@ -7,6 +7,8 @@ using Private.Infrastructure;
 using Uno.Extensions;
 using Uno.UI.Extensions;
 using Uno.UI.RuntimeTests.Extensions;
+using Uno.UI.RuntimeTests.FlyoutPages;
+using Uno.UI.RuntimeTests.FramePages;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.UI;
 using Windows.UI.ViewManagement;
@@ -17,6 +19,10 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Shapes;
+using Uno.UI.Toolkit.Extensions;
+
+using MenuBar = Microsoft.UI.Xaml.Controls.MenuBar;
+using MenuBarItem = Microsoft.UI.Xaml.Controls.MenuBarItem;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -622,6 +628,37 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		public async Task When_PlacementTarget_Binding()
+		{
+			if (TestServices.WindowHelper.IsXamlIsland)
+			{
+				Assert.Inconclusive($"Not supported under XAML islands yet https://github.com/unoplatform/uno/issues/8978");
+			}
+
+			var SUT = new When_PlacementTarget_Binding();
+
+			try
+			{
+				SUT.DataContext = 42;
+
+				Assert.AreEqual(SUT.DataContext, SUT.myButton.Content);
+
+				SUT.contextFlyout.ShowAt(SUT.myButton);
+
+				await TestServices.WindowHelper.WaitForIdle();
+
+				Assert.AreEqual(SUT.DataContext, SUT.myButton.Content);
+			}
+			finally
+			{
+#if HAS_UNO
+				SUT.contextFlyout.Close();
+#endif
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
 #if __MACOS__
 		[Ignore("Currently fails on macOS, part of #9282 epic")]
 #endif
@@ -642,6 +679,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 		public async Task When_Opening_Canceled()
 		{
+
 			Flyout flyout = new Flyout();
 			try
 			{

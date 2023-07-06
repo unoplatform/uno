@@ -47,7 +47,7 @@ public static class UriExtensions
 		return String.Empty;
 	}
 
-	internal static bool IsAppData(this Uri uri)
+	public static bool IsAppData(this Uri uri)
 	{
 		if (uri is null)
 		{

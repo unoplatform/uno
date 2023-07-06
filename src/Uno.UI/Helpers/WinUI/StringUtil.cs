@@ -7,10 +7,8 @@ using System.Text.RegularExpressions;
 
 namespace Uno.UI.Helpers.WinUI
 {
-	internal static class StringUtil
+	internal static partial class StringUtil
 	{
-		private static Regex _cppFormat = new Regex(@"\%(\d+)!.*?!", RegexOptions.Singleline);
-
 		/// <summary>
 		/// Format string using C++ formatted resources, used for compatibility with WinUI C++ code base.
 		/// </summary>
@@ -20,7 +18,7 @@ namespace Uno.UI.Helpers.WinUI
 		/// <remarks>Do not use this method in another context.</remarks>
 		internal static string FormatString(string format, params object[] parms)
 		{
-			var dotnetFormat = _cppFormat.Replace(format, "{$1}");
+			var dotnetFormat = CppFormat().Replace(format, "{$1}");
 
 			var list = parms.ToList();
 
@@ -30,5 +28,16 @@ namespace Uno.UI.Helpers.WinUI
 
 			return string.Format(CultureInfo.CurrentCulture, dotnetFormat, list.ToArray());
 		}
+
+#if !DISABLE_GENERATED_REGEX
+		[GeneratedRegex(@"\%(\d+)!.*?!", RegexOptions.Singleline)]
+#endif
+
+		private static partial Regex CppFormat();
+
+#if DISABLE_GENERATED_REGEX
+		private static partial Regex CppFormat()
+			=> new Regex(@"\%(\d+)!.*?!", RegexOptions.Singleline);
+#endif
 	}
 }

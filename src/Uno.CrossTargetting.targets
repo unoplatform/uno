@@ -30,8 +30,8 @@
 		<None Include="**\*.Xamarin.cs" Exclude="bin\**\*.Xamarin.cs;obj\**\*.Xamarin.cs" Condition="!$(IsAndroid) and !$(IsIOSOrCatalyst) and !$(IsMacOS)" />
 		<Compile Remove="**\*.Xamarin.cs" Condition="!$(IsAndroid) and !$(IsIOSOrCatalyst) and !$(IsMacOS)" />
 
-		<None Include="**\*.net.cs" Exclude="bin\**\*.net.cs;obj\**\*.net.cs" Condition="'$(TargetFramework)'!='net461'" />
-		<Compile Remove="**\*.net.cs" Condition="'$(TargetFramework)'!='net461'" />
+		<None Include="**\*.net.cs" Exclude="bin\**\*.net.cs;obj\**\*.net.cs" Condition="!$(_IsUnitTests)" />
+		<Compile Remove="**\*.net.cs" Condition="!$(_IsUnitTests)" />
 	</ItemGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='Release'">
@@ -75,6 +75,10 @@
 		<DefineConstants>$(DefineConstants);__NETSTD_REFERENCE__;UNO_REFERENCE_API</DefineConstants>
 	</PropertyGroup>
 
+	<PropertyGroup Condition="$(_IsUnitTests)">
+		<DefineConstants>$(DefineConstants);IS_UNIT_TESTS</DefineConstants>
+	</PropertyGroup>
+
 	<PropertyGroup Condition="$(IsIOS)">
 		<DefineConstants>$(DefineConstants);XAMARIN;XAMARIN_IOS;XAMARIN_IOS_UNIFIED;UNO_HAS_UIELEMENT_IMPLICIT_PINNING</DefineConstants>
 		<SupportedOSPlatformVersion>10.0</SupportedOSPlatformVersion>
@@ -86,7 +90,7 @@
 	</PropertyGroup>
 
 	<PropertyGroup Condition="$(IsMacOS)">
-		<DefineConstants>$(DefineConstants);XAMARIN;UNO_HAS_UIELEMENT_IMPLICIT_PINNING;UNO_HAS_MANAGED_SCROLL_PRESENTER;UNO_HAS_MANAGED_POINTERS</DefineConstants>
+		<DefineConstants>$(DefineConstants);__MACOS__;XAMARIN;UNO_HAS_UIELEMENT_IMPLICIT_PINNING;UNO_HAS_MANAGED_SCROLL_PRESENTER;UNO_HAS_MANAGED_POINTERS</DefineConstants>
 		<SupportedOSPlatformVersion>10.14</SupportedOSPlatformVersion>
 	</PropertyGroup>
 
@@ -95,21 +99,25 @@
 		<SupportedOSPlatformVersion>21.0</SupportedOSPlatformVersion>
 	</PropertyGroup>
 
-	<PropertyGroup Condition=" '$(TargetFramework)' != 'uap10.0.18362' and '$(TargetFramework)'!='net5.0-windows10.0.18362.0' and '$(TargetPlatformIdentifier)' != 'UAP'">
+	<PropertyGroup Condition=" '$(TargetFramework)' != 'uap10.0.19041' and '$(TargetFramework)'!='net7.0-windows10.0.19041.0' and '$(TargetPlatformIdentifier)' != 'UAP'">
 		<DefineConstants>$(DefineConstants);HAS_UNO</DefineConstants>
 	</PropertyGroup>
 
-	<PropertyGroup Condition=" '$(TargetFramework)' == 'uap10.0.18362' ">
-		<TargetPlatformVersion>10.0.18362.0</TargetPlatformVersion>
-		<TargetPlatformMinVersion>10.0.18362.0</TargetPlatformMinVersion>
+	<PropertyGroup Condition=" '$(TargetFramework)' == 'uap10.0.19041' ">
+		<TargetPlatformVersion>10.0.19041.0</TargetPlatformVersion>
+		<TargetPlatformMinVersion>10.0.19041.0</TargetPlatformMinVersion>
 		<DefineConstants>$(DefineConstants);NETFX_CORE</DefineConstants>
 	</PropertyGroup>
 
-	<Target Name="GetBuiltProjectOutputRecursive" Condition=" '$(TargetFramework)' == 'xamarinios10' " />
+	<PropertyGroup Condition=" '$(TargetFramework)'=='net8.0' and '$(UnoRuntimeIdentifier)'=='WebAssembly' ">
 
-	<Target Name="_DisplayTargets" BeforeTargets="BeforeBuild">
-		<Message Text="Building target framework: $(TargetFramework)" Importance="high" Condition="'$(TargetFramework)'!=''" />
-	</Target>
+		<!--
+		Generated regex does not yet work with missing member on
+		bootstrapper 7.0, remove when bootstrapper is updated.
+		-->
+		<DefineConstants>$(DefineConstants);DISABLE_GENERATED_REGEX</DefineConstants>
+		<NoWarn>$(NoWarn);SYSLIB1045</NoWarn>
+	</PropertyGroup>
 
 	<Target Name="_UnoOverrideNuget"
 		  AfterTargets="AfterBuild"

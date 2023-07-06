@@ -200,10 +200,12 @@ namespace Uno.Foundation
 			return res != IntPtr.Zero;
 		}
 
+#pragma warning disable CA2211
 		/// <summary>
 		/// Provides an override for javascript invokes.
 		/// </summary>
 		public static Func<string, string>? InvokeJSOverride;
+#pragma warning restore CA2211
 
 		public static string InvokeJS(string str)
 		{

@@ -1,26 +1,22 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>netcoreapp3.1</TargetFrameworks>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(MSBuildRuntimeType)'=='Core' or '$(BuildingInsideVisualStudio)'=='true'">
-		<TargetFrameworks>$(TargetFrameworks);net7.0</TargetFrameworks>
+		<TargetFrameworks>net7.0;net8.0</TargetFrameworks>
 	</PropertyGroup>
 
 	<Import Project="../targetframework-override.props" />
 
 	<PropertyGroup>
 		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
-		<Authors>nventive</Authors>
+		<authors>Uno Platform</authors>
 		<PackageIcon>uno.png</PackageIcon>
 		<RepositoryUrl>https://github.com/unoplatform/uno</RepositoryUrl>
 		<Description>This package provides the platform support for Skia in Uno Platform projects.</Description>
-		<Copyright>Copyright (C) 2015-2020 nventive inc. - all rights reserved</Copyright>
+		<Copyright>Copyright (C) 2015-2020 Uno Platform Inc. - all rights reserved</Copyright>
 
 		<PackageId Condition="'$(UNO_UWP_BUILD)'!='true'">Uno.WinUI.Runtime.Skia.Gtk</PackageId>
 
-		<RootNamespace>Uno.UI.Runtime.Skia</RootNamespace>
+		<RootNamespace>Uno.UI.Runtime.Skia.GTK</RootNamespace>
 
 		<UseCommonOverridePackage>true</UseCommonOverridePackage>
 
@@ -33,7 +29,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Win32.Registry" Version="4.7.0" />
-		<PackageReference Include="Microsoft.Win32.SystemEvents" Version="4.7.0" />
+		<PackageReference Include="Microsoft.Win32.SystemEvents" Version="6.0.1" />
 		<PackageReference Include="Silk.NET.OpenGL" Version="2.16.0" />
 		<PackageReference Include="Silk.NET.OpenGLES" Version="2.16.0" />
 	</ItemGroup>

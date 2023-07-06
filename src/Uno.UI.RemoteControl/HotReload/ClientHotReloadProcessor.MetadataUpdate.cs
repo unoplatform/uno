@@ -10,11 +10,13 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
+using Uno.UI.Helpers;
 using Uno.UI.RemoteControl.HotReload.Messages;
 using Uno.UI.RemoteControl.HotReload.MetadataUpdater;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Markup;
+using Windows.UI.Xaml.Media;
 
 namespace Uno.UI.RemoteControl.HotReload
 {
@@ -89,6 +91,7 @@ namespace Uno.UI.RemoteControl.HotReload
 			return Array.Empty<string>();
 		}
 
+#if __WASM__ || __SKIA__
 		private void AssemblyReload(AssemblyDeltaReload assemblyDeltaReload)
 		{
 			if (assemblyDeltaReload.IsValid())
@@ -138,16 +141,10 @@ namespace Uno.UI.RemoteControl.HotReload
 
 			return values;
 		}
-
+#endif
 
 		private static void ReloadWithUpdatedTypes(Type[] updatedTypes)
 		{
-			if (updatedTypes.Length == 0)
-			{
-				ReloadWithLastChangedFile();
-				return;
-			}
-
 			foreach (var updatedType in updatedTypes)
 			{
 				if (_log.IsEnabled(LogLevel.Debug))
@@ -167,38 +164,6 @@ namespace Uno.UI.RemoteControl.HotReload
 					}
 				}
 			}
-		}
-
-		/// <summary>
-		/// Reload with the last updated file after metadata was updated
-		/// </summary>
-		/// <remarks>
-		/// This scenario can happen when using WebAssembly from VisualStudio 2022, where changed types are not provided by browserlink.
-		/// </remarks>
-		private static void ReloadWithLastChangedFile()
-		{
-			var lastUpdated = _instance?._lastUpdatedFilePath;
-
-			if (lastUpdated is null)
-			{
-				if (_log.IsEnabled(LogLevel.Debug))
-				{
-					_log.LogDebug($"Last changed filed is not available, skipping");
-				}
-
-				return;
-			}
-
-			if (_log.IsEnabled(LogLevel.Debug))
-			{
-				_log.LogDebug($"Processing last changed file [{lastUpdated}]");
-			}
-
-			var uri = new Uri("file:///" + lastUpdated.Replace('\\', '/'));
-
-			// Search for all types in the main window's tree that
-			// match the last modified uri.
-			ReplaceViewInstances(i => uri.OriginalString == i.DebugParseContext?.LocalFileUri);
 		}
 
 		private static void ReplaceViewInstances(Func<FrameworkElement, bool> predicate)
@@ -244,6 +209,14 @@ namespace Uno.UI.RemoteControl.HotReload
 
 		public static void UpdateApplication(Type[] types)
 		{
+			foreach (var t in types)
+			{
+				if (t.GetCustomAttribute<System.Runtime.CompilerServices.MetadataUpdateOriginalTypeAttribute>() is { } update)
+				{
+					TypeMappingHelper.RegisterMapping(t, update.OriginalType);
+				}
+			}
+
 			if (_log.IsEnabled(LogLevel.Trace))
 			{
 				_log.Trace($"UpdateApplication (changed types: {string.Join(", ", types.Select(s => s.ToString()))})");

@@ -7,8 +7,8 @@ namespace Windows.UI.Core.Preview
 	#endif
 	public  partial class SystemNavigationCloseRequestedPreviewEventArgs 
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || false || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__NETSTD_REFERENCE__")]
+		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__ || false
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
 		public  bool Handled
 		{
 			get
@@ -23,8 +23,8 @@ namespace Windows.UI.Core.Preview
 		#endif
 		// Forced skipping of method Windows.UI.Core.Preview.SystemNavigationCloseRequestedPreviewEventArgs.Handled.get
 		// Forced skipping of method Windows.UI.Core.Preview.SystemNavigationCloseRequestedPreviewEventArgs.Handled.set
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || false || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__NETSTD_REFERENCE__")]
+		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__ || false
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
 		public  global::Windows.Foundation.Deferral GetDeferral()
 		{
 			throw new global::System.NotImplementedException("The member Deferral SystemNavigationCloseRequestedPreviewEventArgs.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Deferral%20SystemNavigationCloseRequestedPreviewEventArgs.GetDeferral%28%29");

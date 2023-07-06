@@ -1,5 +1,4 @@
-﻿#if NET7_0_OR_GREATER
-using System;
+﻿using System;
 using System.Runtime.InteropServices.JavaScript;
 
 namespace __Windows.UI.Xaml.Media.Animation
@@ -28,4 +27,3 @@ namespace __Windows.UI.Xaml.Media.Animation
 		}
 	}
 }
-#endif

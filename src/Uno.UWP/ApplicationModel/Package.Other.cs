@@ -20,7 +20,7 @@ namespace Windows.ApplicationModel
 		private static Assembly? _entryAssembly;
 		private string _displayName = "";
 		private string _logo = "ms-appx://logo";
-		private bool _manifestParsed;
+		private bool? _manifestParsed;
 
 		private bool GetInnerIsDevelopmentMode() => false;
 
@@ -49,23 +49,18 @@ namespace Windows.ApplicationModel
 			}
 		}
 
-		public Uri Logo
-		{
-			get
-			{
-				TryParsePackageManifest();
-				return new Uri(_logo, UriKind.RelativeOrAbsolute);
-			}
-		}
+		public Uri? Logo =>
+				TryParsePackageManifest() && !string.IsNullOrWhiteSpace(_logo) ? new Uri(_logo, UriKind.RelativeOrAbsolute) : default;
 
 		internal static void SetEntryAssembly(Assembly entryAssembly)
 		{
 			_entryAssembly = entryAssembly;
 		}
 
-		private void TryParsePackageManifest()
+		private bool TryParsePackageManifest()
 		{
-			if (_entryAssembly != null && !_manifestParsed)
+			if (_entryAssembly != null &&
+				!_manifestParsed.HasValue)
 			{
 				var manifest = _entryAssembly.GetManifestResourceStream(PackageManifestName);
 
@@ -81,11 +76,11 @@ namespace Windows.ApplicationModel
 
 						_displayName = doc.SelectSingleNode("/d:Package/d:Properties/d:DisplayName", nsmgr)?.InnerText ?? "";
 						_logo = doc.SelectSingleNode("/d:Package/d:Properties/d:Logo", nsmgr)?.InnerText ?? "";
-
 						_manifestParsed = true;
 					}
 					catch (Exception ex)
 					{
+						_manifestParsed = false;
 						if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Error))
 						{
 							this.Log().Error($"Failed to read manifest [{PackageManifestName}]", ex);
@@ -94,12 +89,15 @@ namespace Windows.ApplicationModel
 				}
 				else
 				{
+					_manifestParsed = false;
 					if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 					{
 						this.Log().Debug($"Skipping manifest reading, unable to find [{PackageManifestName}]");
 					}
 				}
 			}
+
+			return _manifestParsed ?? false;
 		}
 	}
 }

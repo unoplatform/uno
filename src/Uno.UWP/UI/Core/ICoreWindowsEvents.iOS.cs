@@ -1,11 +1,10 @@
 ﻿using System;
 
-namespace Windows.UI.Core
+namespace Windows.UI.Core;
+
+internal interface ICoreWindowEvents
 {
-	public interface ICoreWindowEvents
-	{
-		void RaiseKeyUp(KeyEventArgs args);
-		void RaiseKeyDown(KeyEventArgs args);
-	}
+	void RaiseKeyUp(KeyEventArgs args);
+	void RaiseKeyDown(KeyEventArgs args);
 }
 

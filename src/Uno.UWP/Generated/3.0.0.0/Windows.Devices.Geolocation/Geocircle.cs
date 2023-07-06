@@ -14,16 +14,16 @@ namespace Windows.Devices.Geolocation
 		// Skipping already declared property SpatialReferenceId
 		// Skipping already declared method Windows.Devices.Geolocation.Geocircle.Geocircle(Windows.Devices.Geolocation.BasicGeoposition, double)
 		// Forced skipping of method Windows.Devices.Geolocation.Geocircle.Geocircle(Windows.Devices.Geolocation.BasicGeoposition, double)
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public Geocircle( global::Windows.Devices.Geolocation.BasicGeoposition position,  double radius,  global::Windows.Devices.Geolocation.AltitudeReferenceSystem altitudeReferenceSystem) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Geolocation.Geocircle", "Geocircle.Geocircle(BasicGeoposition position, double radius, AltitudeReferenceSystem altitudeReferenceSystem)");
 		}
 		#endif
 		// Forced skipping of method Windows.Devices.Geolocation.Geocircle.Geocircle(Windows.Devices.Geolocation.BasicGeoposition, double, Windows.Devices.Geolocation.AltitudeReferenceSystem)
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public Geocircle( global::Windows.Devices.Geolocation.BasicGeoposition position,  double radius,  global::Windows.Devices.Geolocation.AltitudeReferenceSystem altitudeReferenceSystem,  uint spatialReferenceId) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Geolocation.Geocircle", "Geocircle.Geocircle(BasicGeoposition position, double radius, AltitudeReferenceSystem altitudeReferenceSystem, uint spatialReferenceId)");

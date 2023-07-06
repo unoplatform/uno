@@ -1,5 +1,6 @@
 ﻿#nullable enable
 using System;
+using System.Runtime.InteropServices.JavaScript;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Security.Authentication.Web;
@@ -12,13 +13,7 @@ namespace Uno.AuthenticationBroker
 	{
 		protected virtual string[] GetApplicationCustomSchemes()
 		{
-			var js = $@"Windows.Security.Authentication.Web.WebAuthenticationBroker.getReturnUrl();";
-			var origin = WebAssemblyRuntime.InvokeJS(js);
-
-			// origin will be something line http://localhost:5001
-
-			Console.WriteLine("origin is: " + origin);
-
+			var origin = NativeMethods.GetReturnUrl();
 			return new[] { origin };
 		}
 
@@ -32,36 +27,34 @@ namespace Uno.AuthenticationBroker
 
 			// TODO: support ct
 
-			var urlNavigate = WebAssemblyRuntime.EscapeJs(requestUri.OriginalString);
-			var urlRedirect = WebAssemblyRuntime.EscapeJs(callbackUri.OriginalString);
-			string js;
-
-			var timeout = ((long)Timeout.TotalMilliseconds).ToString(CultureInfo.InvariantCulture);
-
 			var useIframe =
 				options.HasFlag(WebAuthenticationOptions.SilentMode) ||
 				!string.IsNullOrEmpty(WinRTFeatureConfiguration.WebAuthenticationBroker.IFrameHtmlId);
 
-			if (useIframe)
-			{
-				var iframeId = WinRTFeatureConfiguration.WebAuthenticationBroker.IFrameHtmlId;
-				js =
-					$@"Windows.Security.Authentication.Web.WebAuthenticationBroker.authenticateUsingIframe(""{iframeId}"", ""{urlNavigate}"", ""{urlRedirect}"", {timeout});";
-			}
-			else
-			{
-				var title = WebAssemblyRuntime.EscapeJs(WinRTFeatureConfiguration.WebAuthenticationBroker.WindowTitle ??
-														"Sign In");
-
-				var windowWidth = WinRTFeatureConfiguration.WebAuthenticationBroker.WindowWidth;
-				var windowHeight = WinRTFeatureConfiguration.WebAuthenticationBroker.WindowHeight;
-				js =
-					$@"Windows.Security.Authentication.Web.WebAuthenticationBroker.authenticateUsingWindow(""{urlNavigate}"", ""{urlRedirect}"", ""{title}"", {windowWidth}, {windowHeight}, {timeout});";
-			}
-
 			try
 			{
-				var results = (await WebAssemblyRuntime.InvokeAsync(js)).Split(new[] { '|' }, 2);
+				string[] results;
+
+				if (useIframe)
+				{
+					results = (await NativeMethods.AuthenticateUsingIframeAsync(
+						WinRTFeatureConfiguration.WebAuthenticationBroker.IFrameHtmlId!,
+						requestUri.OriginalString,
+						callbackUri.OriginalString,
+						Timeout.TotalMilliseconds))
+							.Split('|', 2);
+				}
+				else
+				{
+					results = (await NativeMethods.AuthenticateUsingWindowAsync(
+						requestUri.OriginalString,
+						callbackUri.OriginalString,
+						WinRTFeatureConfiguration.WebAuthenticationBroker.WindowTitle ?? "Sign In",
+						WinRTFeatureConfiguration.WebAuthenticationBroker.WindowWidth,
+						WinRTFeatureConfiguration.WebAuthenticationBroker.WindowHeight,
+						Timeout.TotalMilliseconds))
+							.Split('|', 2);
+				}
 
 				return results[0] switch
 				{
@@ -75,6 +68,18 @@ namespace Uno.AuthenticationBroker
 			{
 				return new WebAuthenticationResult(aex.Message, 0, WebAuthenticationStatus.ErrorHttp);
 			}
+		}
+
+		internal static partial class NativeMethods
+		{
+			[JSImport("globalThis.Windows.Security.Authentication.Web.WebAuthenticationBroker.authenticateUsingIframe")]
+			internal static partial Task<string> AuthenticateUsingIframeAsync(string iframe, string urlNavigate, string urlRedirect, double timeout);
+
+			[JSImport("globalThis.Windows.Security.Authentication.Web.WebAuthenticationBroker.authenticateUsingWindow")]
+			internal static partial Task<string> AuthenticateUsingWindowAsync(string urlNavigate, string urlRedirect, string title, int windowWidth, int windowHeight, double timeout);
+
+			[JSImport("globalThis.Windows.Security.Authentication.Web.WebAuthenticationBroker.getReturnUrl")]
+			internal static partial string GetReturnUrl();
 		}
 	}
 }

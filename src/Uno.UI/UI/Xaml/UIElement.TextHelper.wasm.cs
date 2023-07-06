@@ -12,6 +12,8 @@ using Uno.Extensions;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Media;
 
+using RadialGradientBrush = Microsoft.UI.Xaml.Media.RadialGradientBrush;
+
 namespace Windows.UI.Xaml
 {
 	partial class UIElement
@@ -160,6 +162,14 @@ namespace Windows.UI.Xaml
 				case GradientBrush gradient:
 					this.SetStyle(
 						("background", gradient.ToCssString(this.RenderSize)),
+						("color", "transparent"),
+						("background-clip", "text")
+					);
+					break;
+
+				case RadialGradientBrush radialGradient:
+					this.SetStyle(
+						("background", radialGradient.ToCssString(this.RenderSize)),
 						("color", "transparent"),
 						("background-clip", "text")
 					);

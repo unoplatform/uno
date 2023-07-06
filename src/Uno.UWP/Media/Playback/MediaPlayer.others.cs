@@ -9,6 +9,7 @@ using Uno.Foundation.Logging;
 using Windows.Foundation;
 using Uno.Media.Playback;
 using Windows.ApplicationModel.Email;
+using System.Drawing;
 
 namespace Windows.Media.Playback
 {
@@ -27,7 +28,7 @@ namespace Windows.Media.Playback
 			{
 				if (this.Log().IsEnabled(LogLevel.Error))
 				{
-					this.Log().Error("Unable to create an instance of IMediaPlayerExtension. MediaPlayer will not work.");
+					this.Log().Error("The MediaPlayer extension is not installed. For more information aka.platform.uno/mediaplayerelement");
 				}
 
 				return;
@@ -38,6 +39,9 @@ namespace Windows.Media.Playback
 
 		partial void OnOptionChanged(string name, object value)
 			=> _extension?.OnOptionChanged(name, value);
+
+		partial void OnTransportControlBoundsChanged(Rect bounds)
+			=> _extension?.SetTransportControlsBounds(bounds);
 
 		public void Dispose()
 			=> _extension?.Dispose();
@@ -155,6 +159,8 @@ namespace Windows.Media.Playback
 				}
 			}
 		}
+
+		public bool IsVideo => _extension?.IsVideo ?? false;
 
 		public void SetUriSource(global::System.Uri value)
 			=> _extension?.SetUriSource(value);

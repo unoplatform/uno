@@ -7,44 +7,50 @@
 using System;
 using Uno.UI.Xaml.Input;
 using Windows.Devices.Input;
+using Windows.UI.Input.Preview.Injection;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Input;
 
-namespace Uno.UI.Xaml.Core
+namespace Uno.UI.Xaml.Core;
+
+internal partial class InputManager : IInputInjectorTarget
 {
-	internal partial class InputManager
+	private ContentRoot _contentRoot;
+
+	public InputManager(ContentRoot contentRoot)
 	{
-		private ContentRoot _contentRoot;
+		_contentRoot = contentRoot;
 
-		public InputManager(ContentRoot contentRoot)
-		{
-			_contentRoot = contentRoot;
+		ConstructManagedPointers();
+	}
+	partial void ConstructManagedPointers();
 
-			InitializeManagedPointers();
-		}
+	/// <summary>
+	/// Initialize the InputManager.
+	/// </summary>
+	internal void Initialize(object host) => InitializeManagedPointers(host);
 
-		partial void InitializeManagedPointers();
+	partial void InitializeManagedPointers(object host);
 
-		//TODO Uno: Set along with user input - this needs to be adjusted soon
-		internal InputDeviceType LastInputDeviceType { get; set; } = InputDeviceType.None;
+	//TODO Uno: Set along with user input - this needs to be adjusted soon
+	internal InputDeviceType LastInputDeviceType { get; set; } = InputDeviceType.None;
 
-		internal FocusInputDeviceKind LastFocusInputDeviceKind { get; set; }
+	internal FocusInputDeviceKind LastFocusInputDeviceKind { get; set; }
 
-		internal bool ShouldRequestFocusSound()
-		{
-			//TODO Uno: Implement
-			return false;
-		}
+	internal bool ShouldRequestFocusSound()
+	{
+		//TODO Uno: Implement
+		return false;
+	}
 
-		internal void NotifyFocusChanged(DependencyObject? focusedElement, bool bringIntoView, bool animateIfBringIntoView)
-		{
-			//TODO Uno: Implement
-		}
+	internal void NotifyFocusChanged(DependencyObject? focusedElement, bool bringIntoView, bool animateIfBringIntoView)
+	{
+		//TODO Uno: Implement
+	}
 
-		internal bool LastInputWasNonFocusNavigationKeyFromSIP()
-		{
-			//TODO Uno: Implement
-			return false;
-		}
+	internal bool LastInputWasNonFocusNavigationKeyFromSIP()
+	{
+		//TODO Uno: Implement
+		return false;
 	}
 }

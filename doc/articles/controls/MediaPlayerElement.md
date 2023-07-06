@@ -8,20 +8,20 @@ See [MediaPlayerElement](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xam
 
 ## Media formats
 
-| Supported Formats    									| iOS	| Android	| Remarks							|
-|-------------------------------------------------------|-------|-----------|-----------------------------------|
-| Local/Remote MP3 Support								| X     | X  		|									|
-| Local/Remote MPEG4 Support							| X     | X  		|									|
-| HLSv3	Support											| X     | X  		| 									|
-| HLSv4	Support											| X     | X  		|									|
-| 3GP Support											| X     | X  		| 3GP with AMR Narrow Band (SAMR) audio codec does not work on iOS (See notes) |
-| FLV Support											| -     | X  		|									|
-| MOV Support											| X     | -  		|									|
-| MKV Support											| -     | X  		|									|
-| AVI Support											| -     | X  		| 									|
-| OGG Support											| -     | -  		|									|
-| MPEG-Dash	Support										| -     | -  		| 									|
-| Smooth Streaming Support								| -     | -  		| 									|
+| Supported Formats    									| iOS		| Android	| Wasm		| Skia GTK	| Remarks							|
+|-------------------------------------------------------|:-----------:|:-----------:|:-----------:|:-----------:|-----------------------------------|
+| Local/Remote MP3 Support								| ✅  		| ✅  		| ✅  		| ✅  		|									|
+| Local/Remote MPEG4 Support							| ✅  		| ✅  		| ✅  		| ✅  		|									|
+| HLSv3	Support											| ✅ 		| ✅  		| ✅  		| ✅  		| 									|
+| HLSv4	Support											| ✅ 		| ✅  		| ✅  		| ✅  		|									|
+| 3GP Support											| ✅ 		| ✅  		| ✅  		| ✅		| 3GP with AMR Narrow Band (SAMR) audio codec does not work on iOS (See notes) |
+| FLV Support											| -  		| ✅  		| ✅  		| ✅  		|									|
+| MOV Support											| ✅  		| -  		| -  		| -  		|									|
+| MKV Support											| -  		| ✅ 		| ✅  		| ✅  		|									|
+| AVI Support											| -  		| ✅  		| ✅  		| ✅  		| 									|
+| OGG Support											| -  		| -  		| ✅  		| ✅  		|									|
+| MPEG-Dash	Support										| -  		| -  		| -  		| -  		| 									|
+| Smooth Streaming Support								| -  		| -  		| -  		| -  		| 									|
 
 #### Notes
 
@@ -30,35 +30,35 @@ See [MediaPlayerElement](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xam
 
 ## Features
 
-| Section				| Feature    											| iOS	| Android	| Remarks										|
-|-----------------------|-------------------------------------------------------|-------|-----------|-----------------------------------------------|
-| MediaPlayerElement	| AutoPlay  											| X     | X  		|												|
-|						| Poster image											| X     | X  		| Does not show when playing music				|
-|						| Enable/Disable MediaTransportControls			  		| X     | X  		|												|
-|						| Stretch										  		| X     | X  		| Stretch.None behave like Stretch.Fill on iOS	|
-|						| Pause media when headphones unplugged			  		| X     | X  		| 												|
-| TransportControls		| Transport controls custom style						| X     | X  		|												|
-| 			    		| Play/Pause 											| X     | X  		|												|
-|						| Stop  												| X     | X  		|												|
-| 						| Seek  												| X     | X  		|												|
-|						| Volume change											| X     | X  		|												|
-|						| Mute													| X     | X  		|												|
-|						| Show elapsed time										| X     | X  		|												|
-|						| Show remaining time									| X     | X  		|												|
-|						| Show/Hide MediaTransportControls automatically		| X     | X  		|												|
-|						| MediaTransportControls compact mode					| X     | X  		|												|
-|						| Show/Hide MediaTransportControls commands  			| X     | X  		|												|
-|						| Enable/Disable MediaTransportControls commands  		| X     | X  		|												|
-|						| Skip forward											| X     | X  		|												|
-|						| Skip backward											| X     | X  		|												|
-|						| Show buffering progress						  		| X     | X  		|												|
-|						| Zoom mode												| X     | X  		| 												|
-|						| Full-screen mode								  		| X     | X  		|												|
-|						| Playlists support		  								| X     | X  		|												|
-|						| Change playback rate									| -     | -  		|												|
-|						| Player controls on locked screen support  			| -     | -  		|												|
-|						| Subtitles	support			  							| -     | -  		|												|
-|						| Languages	support			  							| -     | -  		|												|
+| Section				| Feature    											| iOS		| Android	| Wasm		| Skia GTK	| Remarks										|
+|-----------------------|-------------------------------------------------------|:-----------:|:-----------:|:-----------:|:-----------:|-----------------------------------------------|
+| MediaPlayerElement	| AutoPlay  											| ✅  		| ✅  		| ✅  		| ✅  		|												|
+|						| Poster image											| ✅  		| ✅  		| ✅  		| ✅  		| Does not show when playing music				|
+|						| Enable/Disable MediaTransportControls			  		| ✅  		| ✅  		| ✅  		| ✅  		|												|
+|						| Stretch										  		| ✅  		| ✅  		| ✅  		| ✅  		| Stretch.None behave like Stretch.Fill on iOS	|
+|						| Pause media when headphones unplugged			  		| ✅  		| ✅  		| -  		| -  		| 												|
+| TransportControls		| Transport controls custom style						| ✅  		| ✅  		| ✅  		| ✅  		|												|
+| 			    		| Play/Pause 											| ✅  		| ✅  		| ✅  		| ✅  		|												|
+|						| Stop  												| ✅  		| ✅  		| ✅  		| ✅  		|												|
+| 						| Seek  												| ✅  		| ✅  		| ✅  		| ✅  		|												|
+|						| Volume change											| ✅  		| ✅  		| ✅  		| ✅  		|												|
+|						| Mute													| ✅  		| ✅  		| ✅  		| ✅  		|												|
+|						| Show elapsed time										| ✅  		| ✅  		| ✅  		| ✅  		|												|
+|						| Show remaining time									| ✅  		| ✅  		| ✅  		| ✅  		|												|
+|						| Show/Hide MediaTransportControls automatically		| ✅  		| ✅  		| ✅  		| ✅  		|												|
+|						| MediaTransportControls compact mode					| ✅  		| ✅  		| ✅  		| ✅  		|												|
+|						| Show/Hide MediaTransportControls commands  			| ✅  		| ✅  		| ✅  		| ✅  		|												|
+|						| Enable/Disable MediaTransportControls commands  		| ✅  		| ✅  		| ✅  		| ✅  		|												|
+|						| Skip forward											| ✅ 		| ✅  		| ✅  		| ✅  		|												|
+|						| Skip backward											| ✅ 		| ✅  		| ✅  		| ✅  		|												|
+|						| Show buffering progress						  		| ✅  		| ✅ 		| ✅  		| ✅  		|												|
+|						| Zoom mode												| ✅ 		| ✅ 		| ✅  		| ✅  		| 												|
+|						| Full-screen mode								  		| ✅ 		| ✅  		| ✅  		| ✅  		|												|
+|						| Playlists support		  								| ✅ 		| ✅  		| -  		| -  		|												|
+|						| Change playback rate									| -  		| -  		| ✅  		| ✅  		|												|
+|						| Player controls on locked screen support  			| -  		| -  		| -  		| -  		|												|
+|						| Subtitles	support			  							| -  		| -  		| -  		| -  		|												|
+|						| Languages	support			  							| -  		| -  		| -  		| -  		|												|
 
 ## Requirement
 
@@ -89,14 +89,45 @@ Add the following to your AndroidManifest.xml
 <uses-permission android:name="android.permission.WAKE_LOCK" />
 ```
 
+### WebAssembly
+Using the `MediaPlayerElement` on WebAssembly head requires adding the [`Uno.WinUI.MediaPlayer.WebAssembly`](https://www.nuget.org/packages/Uno.WinUI.MediaPlayer.WebAssembly) package to the `MyApp.Wasm` project. 
+
+> [!IMPORTANT]
+> The `Uno.WinUI.MediaPlayer.WebAssembly` package version must use the same version as the other `Uno.WinUI.*` packages in your project.
+
+> [!NOTE]
+> When using UWP APIs and the `Uno.UI.*` packages, you'll need to install the [`Uno.UI.MediaPlayer.WebAssembly`](https://www.nuget.org/packages/Uno.UI.MediaPlayer.WebAssembly) package instead.
+
+### Skia.GTK
+Using the `MediaPlayerElement` on the Skia+GTK head requires adding the [`Uno.WinUI.MediaPlayer.Skia.Gtk`](https://www.nuget.org/packages/Uno.WinUI.MediaPlayer.Skia.Gtk) package to the `MyApp.Skia.Gtk` project. 
+
+> [!IMPORTANT]
+> The `Uno.WinUI.MediaPlayer.Skia.Gtk` package version must use the same version as the other `Uno.WinUI.*` packages in your project.
+
+> [!NOTE]
+> When using UWP APIs and the `Uno.UI.*` packages, you'll need to install the [`Uno.UI.MediaPlayer.Skia.Gtk`](https://www.nuget.org/packages/Uno.UI.MediaPlayer.Skia.Gtk) package instead.
+
+#### Skia+GTK on Linux
+The `MediaPlayerElement` support is based on libVLC, and needs the system to provide the appropriate libraries to work properly.
+
+You'll need to install the following packages (Debian based distros):
+
+```
+sudo apt-get install libvlc-dev libx11-dev vlc libgtk2.0-0 libx11dev
+```
+
+#### Skia+GTK on Windows
+Running the `MediaPlayerElement` requires adding the [`VideoLAN.LibVLC.Windows`](https://www.nuget.org/packages/VideoLAN.LibVLC.Windows) package to your application.
+
 ## Future improvement
 
-- Playback rate support
 - React to audio focus changes (pause/stop playback or reduce audio volume)
 - Subtitles support
 - Languages support
-- Display poster for audio media
 - Buffering of next playlist element when using MediaPlaybackList
+- Cast to device
+- Playlist for Wasm
+- Download option
 
 ## Known issues
 

@@ -29,6 +29,7 @@ using Windows.Foundation;
 using Uno.UI;
 using Windows.UI.Xaml.Input;
 using Windows.System;
+using Uno.UI.Xaml.Input;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -130,7 +131,8 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			// If selection mode is single, moving focus also selects the item
-			if (SelectionMode == ListViewSelectionMode.Single)
+			if (SelectionMode == ListViewSelectionMode.Single &&
+				SingleSelectionFollowsFocus)
 			{
 				SelectedIndex = index;
 			}
@@ -699,6 +701,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				CleanUpContainer(container);
 			}
+			ItemsPanelRoot?.Children?.Clear();
 		}
 
 		private ICollection<DependencyObject> CaptureContainers(int startingIndex, int length)

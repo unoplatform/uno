@@ -2,6 +2,7 @@
 
 #if __WASM__
 using System;
+using System.Runtime.InteropServices.JavaScript;
 using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
@@ -28,9 +29,7 @@ using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
 using LaunchActivatedEventArgs = Windows.ApplicationModel.Activation.LaunchActivatedEventArgs;
 #endif
 
-#if NET7_0_OR_GREATER
 using NativeMethods = __Windows.UI.Xaml.Application.NativeMethods;
-#endif
 
 namespace Windows.UI.Xaml
 {
@@ -46,6 +45,7 @@ namespace Windows.UI.Xaml
 			}
 
 			Current = this;
+			InitializeSystemTheme();
 			Package.SetEntryAssembly(this.GetType().Assembly);
 
 			global::Uno.Foundation.Extensibility.ApiExtensibility.Register(
@@ -57,6 +57,7 @@ namespace Windows.UI.Xaml
 			ObserveApplicationVisibility();
 		}
 
+		[JSExport]
 		public static int DispatchVisibilityChange(bool isVisible)
 		{
 			var application = Windows.UI.Xaml.Application.Current;
@@ -65,14 +66,14 @@ namespace Windows.UI.Xaml
 			{
 				application?.RaiseLeavingBackground(() =>
 				{
-					window?.OnVisibilityChanged(true);
-					window?.OnActivated(CoreWindowActivationState.CodeActivated);
+					window?.OnNativeVisibilityChanged(true);
+					window?.OnNativeActivated(CoreWindowActivationState.CodeActivated);
 				});
 			}
 			else
 			{
-				window?.OnActivated(CoreWindowActivationState.Deactivated);
-				window?.OnVisibilityChanged(false);
+				window?.OnNativeActivated(CoreWindowActivationState.Deactivated);
+				window?.OnNativeVisibilityChanged(false);
 				application?.RaiseEnteredBackground(null);
 			}
 
@@ -137,6 +138,7 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Dispatch method from Javascript
 		/// </summary>
+		[JSExport]
 		internal static void DispatchSuspending()
 		{
 			Current?.RaiseSuspending();
@@ -144,11 +146,7 @@ namespace Windows.UI.Xaml
 
 		private void ObserveApplicationVisibility()
 		{
-#if NET7_0_OR_GREATER
 			NativeMethods.ObserveVisibility();
-#else
-			WebAssemblyRuntime.InvokeJS("Windows.UI.Xaml.Application.observeVisibility()");
-#endif
 		}
 	}
 }

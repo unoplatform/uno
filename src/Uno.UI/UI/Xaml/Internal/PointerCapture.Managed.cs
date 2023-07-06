@@ -11,9 +11,9 @@ namespace Uno.UI.Xaml.Core;
 internal partial class PointerCapture
 {
 	partial void CaptureNative(UIElement target, Pointer pointer)
-		=> target.XamlRoot?.VisualTree.ContentRoot.InputManager!.SetPointerCapture(pointer.UniqueId);
+		=> target.XamlRoot?.VisualTree.ContentRoot.InputManager.Pointers.SetPointerCapture(pointer.UniqueId);
 
 	partial void ReleaseNative(UIElement target, Pointer pointer)
-		=> target.XamlRoot?.VisualTree.ContentRoot.InputManager!.ReleasePointerCapture(pointer.UniqueId);
+		=> target.XamlRoot?.VisualTree.ContentRoot.InputManager.Pointers.ReleasePointerCapture(pointer.UniqueId);
 }
 #endif

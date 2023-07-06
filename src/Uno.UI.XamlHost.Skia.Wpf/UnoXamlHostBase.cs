@@ -5,10 +5,8 @@
 
 using System;
 using Uno.UI.Runtime.Skia.Wpf;
-using Uno.UI.XamlHost.Skia.Wpf;
-using Uno.UI.XamlHost.Skia.Wpf.Hosting;
+using Uno.UI.Runtime.Skia.Wpf.Hosting;
 using Windows.UI.Xaml;
-using WinUI = Windows.UI.Xaml;
 using WpfControl = global::System.Windows.Controls.Control;
 using WUX = Windows.UI.Xaml;
 
@@ -17,7 +15,7 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 	/// <summary>
 	/// UnoXamlHost control hosts UWP XAML content inside the Windows Presentation Foundation
 	/// </summary>
-	public abstract partial class UnoXamlHostBase : WpfControl, IWpfHost
+	public abstract partial class UnoXamlHostBase : WpfControl, IWpfApplicationHost
 	{
 		/// <summary>
 		/// An instance of <seealso cref="IXamlMetadataContainer"/>. Required to
@@ -221,14 +219,14 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 				if (currentRoot != null)
 				{
 					currentRoot.SizeChanged -= XamlContentSizeChanged;
-					XamlRootMap.Unregister(currentRoot.XamlRoot);
+					WpfManager.XamlRootMap.Unregister(currentRoot.XamlRoot);
 				}
 
 				_childInternal = value;
 
 				if (_childInternal.XamlRoot is not null)
 				{
-					XamlRootMap.Register(_childInternal.XamlRoot, this);
+					WpfManager.XamlRootMap.Register(_childInternal.XamlRoot, this);
 				}
 				else if (_childInternal is FrameworkElement element)
 				{
@@ -238,12 +236,12 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 				SetContent();
 
 				var frameworkElement = ChildInternal as WUX.FrameworkElement;
-				if (frameworkElement != null)
+				if (frameworkElement is not null)
 				{
 					// If XAML content has changed, check XAML size
 					// to determine if UnoXamlHost needs to re-run layout.
 					frameworkElement.SizeChanged += XamlContentSizeChanged;
-					XamlRootMap.Register(frameworkElement.XamlRoot, this);
+					WpfManager.XamlRootMap.Register(frameworkElement.XamlRoot, this);
 				}
 
 				OnChildChanged();
@@ -255,17 +253,10 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 			}
 		}
 
-
-		void IWpfHost.InvalidateRender()
-		{
-			//InvalidateOverlays();
-			InvalidateVisual();
-		}
-
 		private void OnChildLoading(FrameworkElement sender, object args)
 		{
 			// Ensure the XamlRoot is registered early.
-			XamlRootMap.Register(sender.XamlRoot, this);
+			WpfManager.XamlRootMap.Register(sender.XamlRoot, this);
 		}
 
 		/// <summary>

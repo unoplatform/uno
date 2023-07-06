@@ -5,6 +5,7 @@ trigger:
       - release/beta/*
       - release/stable/*
       - feature/*
+      - legacy/*
 
 pr: 
   branches:
@@ -13,24 +14,11 @@ pr:
       - release/beta/*
       - release/stable/*
       - feature/*
+      - legacy/*
 
 variables:
-  windowsScaledPool: 'Windows2022-20220925-1'
+  windowsScaledPool: 'Windows2022-20230613'
   linuxVMImage: 'ubuntu-latest'
 
-jobs:
-- template: build/ci/.azure-devops-commitsar.yml
-  parameters:
-    vmImage: '$(linuxVMImage)'
-
-- template: build/ci/.azure-devops-spell-check.yml
-  parameters:
-    vmImage: '$(linuxVMImage)'
-
-- template: build/ci/.azure-devops-pipeline-validations.yml
-  parameters:
-    vmImage: '$(linuxVMImage)'
-
-- template: build/ci/.azure-devops-docs.yml
-  parameters:
-    poolName: '$(windowsScaledPool)'
+stages:
+- template: build/ci/.azure-devops-stages-docs.yml

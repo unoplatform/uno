@@ -31,6 +31,8 @@ using _Color = AppKit.NSColor;
 using _Image = AppKit.NSImage;
 #endif
 
+using RadialGradientBrush = Microsoft.UI.Xaml.Media.RadialGradientBrush;
+
 namespace Windows.UI.Xaml.Shapes
 {
 	partial class BorderLayerRenderer
@@ -170,7 +172,14 @@ namespace Windows.UI.Xaml.Shapes
 
 				var insertionIndex = 0;
 
-				if (background is GradientBrush gradientBackground)
+				var caLayer = background switch
+				{
+					GradientBrush gradientBackground => gradientBackground.GetLayer(backgroundArea.Size),
+					RadialGradientBrush radialBackground => radialBackground.GetLayer(backgroundArea.Size),
+					_ => null,
+				};
+
+				if (caLayer is not null)
 				{
 					var fillMask = new CAShapeLayer()
 					{
@@ -180,7 +189,7 @@ namespace Windows.UI.Xaml.Shapes
 						FillColor = _Color.White.CGColor,
 					};
 
-					CreateGradientBrushLayers(area, backgroundArea, parent, sublayers, ref insertionIndex, gradientBackground, fillMask);
+					CreateGradientBrushLayers(area, backgroundArea, parent, sublayers, ref insertionIndex, caLayer, fillMask);
 				}
 				else if (background is SolidColorBrush scbBackground)
 				{
@@ -237,7 +246,27 @@ namespace Windows.UI.Xaml.Shapes
 				parent.AddSublayer(outerLayer);
 				parent.InsertSublayer(backgroundLayer, insertionIndex);
 
-				if (borderBrush is SolidColorBrush scbBorder || borderBrush == null)
+				var borderCALayer = borderBrush switch
+				{
+					GradientBrush gradientBorder => gradientBorder.GetLayer(area.Size),
+					RadialGradientBrush radialBorder => radialBorder.GetLayer(area.Size),
+					_ => null,
+				};
+
+				if (borderCALayer is not null)
+				{
+					var fillMask = new CAShapeLayer()
+					{
+						Path = path,
+						Frame = area,
+						// We only use the fill color to create the mask area
+						FillColor = _Color.White.CGColor,
+					};
+
+					var borderLayerIndex = parent.Sublayers.Length;
+					CreateGradientBrushLayers(area, area, parent, sublayers, ref borderLayerIndex, borderCALayer, fillMask);
+				}
+				else if (borderBrush is SolidColorBrush scbBorder || borderBrush == null)
 				{
 					Brush.AssignAndObserveBrush(borderBrush, color =>
 					{
@@ -249,19 +278,6 @@ namespace Windows.UI.Xaml.Shapes
 						GC.KeepAlive(color);
 					})
 					.DisposeWith(disposables);
-				}
-				else if (borderBrush is GradientBrush gradientBorder)
-				{
-					var fillMask = new CAShapeLayer()
-					{
-						Path = path,
-						Frame = area,
-						// We only use the fill color to create the mask area
-						FillColor = _Color.White.CGColor,
-					};
-
-					var borderLayerIndex = parent.Sublayers.Length;
-					CreateGradientBrushLayers(area, area, parent, sublayers, ref borderLayerIndex, gradientBorder, fillMask);
 				}
 
 				parent.Mask = new CAShapeLayer()
@@ -293,9 +309,16 @@ namespace Windows.UI.Xaml.Shapes
 
 				var insertionIndex = 0;
 
-				if (background is GradientBrush gradientBackground)
+				var caLayer = background switch
 				{
-					CreateGradientBrushLayers(area, backgroundArea, parent, sublayers, ref insertionIndex, gradientBackground, fillMask: null);
+					GradientBrush gradientBackground => gradientBackground.GetLayer(backgroundArea.Size),
+					RadialGradientBrush radialBackground => radialBackground.GetLayer(backgroundArea.Size),
+					_ => null,
+				};
+
+				if (caLayer is not null)
+				{
+					CreateGradientBrushLayers(area, backgroundArea, parent, sublayers, ref insertionIndex, caLayer, fillMask: null);
 				}
 				else if (background is SolidColorBrush scbBackground)
 				{
@@ -353,13 +376,14 @@ namespace Windows.UI.Xaml.Shapes
 					sublayers.Add(layer);
 					parent.AddSublayer(layer);
 
-					if (borderBrush is SolidColorBrush scbBorder)
+					var borderCALayer = borderBrush switch
 					{
-						Brush.AssignAndObserveBrush(borderBrush, c => layer.FillColor = c)
-							.DisposeWith(disposables);
+						GradientBrush gradientBorder => gradientBorder.GetLayer(area.Size),
+						RadialGradientBrush radialBorder => radialBorder.GetLayer(area.Size),
+						_ => null,
+					};
 
-					}
-					else if (borderBrush is GradientBrush gradientBorder)
+					if (borderCALayer is not null)
 					{
 						var fillMask = new CAShapeLayer()
 						{
@@ -370,9 +394,13 @@ namespace Windows.UI.Xaml.Shapes
 						};
 
 						var borderLayerIndex = parent.Sublayers.Length;
-						CreateGradientBrushLayers(area, area, parent, sublayers, ref borderLayerIndex, gradientBorder, fillMask);
+						CreateGradientBrushLayers(area, area, parent, sublayers, ref borderLayerIndex, borderCALayer, fillMask);
 					}
-
+					else if (borderBrush is SolidColorBrush scbBorder)
+					{
+						Brush.AssignAndObserveBrush(borderBrush, c => layer.FillColor = c)
+							.DisposeWith(disposables);
+					}
 				}
 
 				backgroundLayer.Path = backgroundPath;
@@ -591,9 +619,9 @@ namespace Windows.UI.Xaml.Shapes
 		/// <param name="layer">The layer in which the gradient layers will be added</param>
 		/// <param name="sublayers">List of layers to keep all references</param>
 		/// <param name="insertionIndex">Where in the layer the new layers will be added</param>
-		/// <param name="gradientBrush">The xxGradientBrush</param>
+		/// <param name="gradientLayer">The CALayer retrieved by brush.GetLayer(insideArea.Size)</param>
 		/// <param name="fillMask">Optional mask layer (for when we use rounded corners)</param>
-		private static void CreateGradientBrushLayers(CGRect fullArea, CGRect insideArea, CALayer layer, List<CALayer> sublayers, ref int insertionIndex, GradientBrush gradientBrush, CAShapeLayer fillMask)
+		private static void CreateGradientBrushLayers(CGRect fullArea, CGRect insideArea, CALayer layer, List<CALayer> sublayers, ref int insertionIndex, CALayer gradientLayer, CAShapeLayer fillMask)
 		{
 			// This layer is the one we apply the mask on. It's the full size of the shape because the mask is as well.
 			var gradientContainerLayer = new CALayer
@@ -607,7 +635,6 @@ namespace Windows.UI.Xaml.Shapes
 			var gradientFrame = new CGRect(new CGPoint(insideArea.X, insideArea.Y), insideArea.Size);
 
 			// This is the layer with the actual gradient in it. Its frame is the inside of the border.
-			var gradientLayer = gradientBrush.GetLayer(insideArea.Size);
 			gradientLayer.Frame = gradientFrame;
 			gradientLayer.MasksToBounds = true;
 

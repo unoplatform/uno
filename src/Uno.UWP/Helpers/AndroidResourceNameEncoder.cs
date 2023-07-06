@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Uno
 {
-	internal static class AndroidResourceNameEncoder
+	internal static partial class AndroidResourceNameEncoder
 	{
 		private const string NumberPrefix = "__";
 
@@ -16,6 +16,8 @@ namespace Uno
 		/// <returns>The encoded resource name for the Android Strings.xml file.</returns>
 		public static string Encode(string key)
 		{
+			key ??= string.Empty;
+
 			var charArray = key.ToCharArray();
 			for (int i = 0; i < charArray.Length; i++)
 			{
@@ -31,7 +33,7 @@ namespace Uno
 			key = new string(charArray);
 
 			//Checks if the keys are starting by a number because they are invalid in C#
-			if (int.TryParse(key.Substring(0, 1), out _))
+			if (key.Length > 0 && int.TryParse(key.Substring(0, 1), out _))
 			{
 				key = $"{NumberPrefix}{key}";
 			}

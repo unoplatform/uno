@@ -1,19 +1,16 @@
 ﻿#if __WASM__
 using System;
 using System.Diagnostics;
+using System.Runtime.InteropServices.JavaScript;
 using Uno;
 using Uno.Devices.Sensors.Helpers;
 
-#if NET7_0_OR_GREATER
 using NativeMethods = __Windows.Devices.Sensors.Gyrometer.NativeMethods;
-#endif
 
 namespace Windows.Devices.Sensors
 {
 	public partial class Gyrometer
 	{
-		private const string JsType = "Windows.Devices.Sensors.Gyrometer";
-
 		private DateTimeOffset _lastReading = DateTimeOffset.MinValue;
 
 		private Gyrometer()
@@ -24,25 +21,17 @@ namespace Windows.Devices.Sensors
 
 		private static Gyrometer TryCreateInstance()
 		{
-			var command = $"{JsType}.initialize()";
-			var initialized = Uno.Foundation.WebAssemblyRuntime.InvokeJS(command);
-			if (bool.Parse(initialized) == true)
-			{
-				return new Gyrometer();
-			}
-			return null;
+			return NativeMethods.Initialize() ? new() : null;
 		}
 
 		private void StartReading()
 		{
-			var command = $"{JsType}.startReading()";
-			Uno.Foundation.WebAssemblyRuntime.InvokeJS(command);
+			NativeMethods.StartReading();
 		}
 
 		private void StopReading()
 		{
-			var command = $"{JsType}.stopReading()";
-			Uno.Foundation.WebAssemblyRuntime.InvokeJS(command);
+			NativeMethods.StopReading();
 		}
 
 		/// <summary>
@@ -56,6 +45,7 @@ namespace Windows.Devices.Sensors
 		/// <param name="y">AngularVelocity Y in radians/s</param>
 		/// <param name="z">AngularVelocity Z in radians/s</param>
 		/// <returns>0 - needed to bind method from WASM</returns>
+		[JSExport]
 		public static int DispatchReading(float x, float y, float z)
 		{
 			if (_instance == null)

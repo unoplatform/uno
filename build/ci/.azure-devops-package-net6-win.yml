@@ -3,37 +3,37 @@ parameters:
 
 jobs:
 - job: netcoremobile_win_build
-  displayName: 'Build .NET Mobile Package Binaries'
+  displayName: '.NET Mobile Package Binaries'
   timeoutInMinutes: 90
 
   pool: ${{ parameters.poolName }}
 
-  dependsOn: winui_convert_tree
-
   strategy:
     matrix:
-      UWP_NET6:
+      UWP_NET8:
         UNO_UWP_BUILD: true
         XAML_FLAVOR_BUILD: UWP
         UnoDisableNet7Mobile: true
-        ZipFileTargetFramework: net6
+        ZipFileTargetFramework: net8
 
-      WinUI_NET6:
+      WinUI_NET8:
         UNO_UWP_BUILD: false
         XAML_FLAVOR_BUILD: WinUI
         UnoDisableNet7Mobile: true
-        ZipFileTargetFramework: net6
+        ZipFileTargetFramework: net8
 
       UWP_NET7:
         UNO_UWP_BUILD: true
         XAML_FLAVOR_BUILD: UWP
-        UnoDisableNet6Mobile: true
+        UnoDisableNet8Mobile: true
+        UnoDisableNet8: true
         ZipFileTargetFramework: net7
 
       WinUI_NET7:
         UNO_UWP_BUILD: false
         XAML_FLAVOR_BUILD: WinUI
-        UnoDisableNet6Mobile: true
+        UnoDisableNet8Mobile: true
+        UnoDisableNet8: true
         ZipFileTargetFramework: net7
 
   variables:
@@ -67,8 +67,8 @@ jobs:
 
   - script: |
       cp global.json global-net7.json
-      cp global-net6.json global.json
-    displayName: Replace global.json with .NET 6
+      cp global-net8.json global.json
+    displayName: Replace global.json with .NET 8
     condition: and(succeeded(), eq(variables.UnoDisableNet7Mobile, 'true'))
 
   - template: templates/dotnet-mobile-install-windows.yml
@@ -81,11 +81,27 @@ jobs:
     inputs:
       workingDirectory: Build
       arguments: Uno.UI.Build.csproj /nr:false /r /m /t:PrepareBuildAssets "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)\build-$(GitVersion.FullSemVer)-netcoremobile-$(ZipFileTargetFramework)-prepare-$(XAML_FLAVOR_BUILD).binlog
+    displayName: Preparing assets
 
   - task: DotNetCoreCLI@2
     inputs:
       workingDirectory: Build
-      arguments: Uno.UI.Build.csproj /r /m /t:BuildCINet6 "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)\build-$(GitVersion.FullSemVer)-netcoremobile-$(ZipFileTargetFramework)-$(XAML_FLAVOR_BUILD).binlog
+      arguments: Uno.UI.Build.csproj /r /m /t:BuildCIMobile "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)\build-$(GitVersion.FullSemVer)-netcoremobile-$(ZipFileTargetFramework)-$(XAML_FLAVOR_BUILD).binlog
+    displayName: Building package binaries
+
+  - task: MSBuild@1
+    inputs:
+      solution: build/filters/Uno.UI-packages-windows.slnf
+      msbuildLocationMethod: version
+      msbuildVersion: latest
+      msbuildArchitecture: x86
+      msbuildArguments: /r /m /v:m /p:Configuration=Release /detailedsummary /bl:$(build.artifactstagingdirectory)/build-$(GitVersion.FullSemVer)-windows-binaries.binlog
+      clean: false
+      restoreNugetPackages: false
+      logProjectEvents: false
+      createLogFile: false
+    condition: and(succeeded(), eq(variables['ZipFileTargetFramework'], 'net7'))
+    displayName: Building WinAppSDK/UWP package binaries
 
   - template: templates/copy-package-assets.yml
 

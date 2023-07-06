@@ -20,7 +20,6 @@ namespace Windows.UI.Core
 	{
 		[ThreadStatic]
 		private static CoreWindow? _current;
-		private static Action? _invalidateRender;
 
 		private Point? _pointerPosition;
 		private CoreWindowActivationState _lastActivationState;
@@ -35,6 +34,7 @@ namespace Windows.UI.Core
 
 			InitializePartial();
 		}
+		partial void InitializePartial();
 
 		/// <summary>
 		/// Occurs when the window size is changed.
@@ -77,7 +77,7 @@ namespace Windows.UI.Core
 		/// <summary>
 		/// Gets or sets the cursor used by the app.
 		/// </summary>
-		[Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__NETSTD_REFERENCE__")]
+		[Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
 		public CoreCursor PointerCursor { get; set; } = new CoreCursor(CoreCursorType.Arrow, 0);
 #endif
 
@@ -105,15 +105,6 @@ namespace Windows.UI.Core
 
 		public CoreVirtualKeyStates GetKeyState(System.VirtualKey virtualKey)
 			=> KeyboardStateTracker.GetKeyState(virtualKey);
-
-		internal static void SetInvalidateRender(Action invalidateRender)
-			// Currently we don't support multi-windowing, so only the first window can set the InvalidateRender
-			=> _invalidateRender ??= invalidateRender;
-
-		internal static void QueueInvalidateRender()
-			=> _invalidateRender?.Invoke();
-
-		partial void InitializePartial();
 
 		internal void OnActivated(WindowActivatedEventArgs args)
 		{

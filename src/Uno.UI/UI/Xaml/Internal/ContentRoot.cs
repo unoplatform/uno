@@ -46,7 +46,7 @@ namespace Uno.UI.Xaml.Core
 	/// <summary>
 	/// Represents the content root of an application window.
 	/// </summary>
-	internal class ContentRoot
+	internal partial class ContentRoot
 	{
 		private readonly CoreServices _coreServices;
 

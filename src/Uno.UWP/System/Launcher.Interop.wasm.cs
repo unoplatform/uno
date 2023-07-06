@@ -1,5 +1,4 @@
-﻿#if NET7_0_OR_GREATER
-using System.Runtime.InteropServices.JavaScript;
+﻿using System.Runtime.InteropServices.JavaScript;
 
 namespace __Windows.__System
 {
@@ -7,7 +6,8 @@ namespace __Windows.__System
 	{
 		internal static partial class NativeMethods
 		{
+			[JSImport("globalThis.Uno.UI.WindowManager.current.open")]
+			internal static partial string Open(string url);
 		}
 	}
 }
-#endif
