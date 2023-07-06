@@ -1113,6 +1113,9 @@ namespace Windows.UI.Xaml.Controls
 		private ScrollBar? _horizontalScrollbar;
 		private bool _isVerticalScrollBarMaterialized;
 		private bool _isHorizontalScrollBarMaterialized;
+		
+		internal ScrollBar? VerticalScrollbar => _verticalScrollbar;
+		internal ScrollBar? HorizontalScrollbar => _verticalScrollbar;
 
 		private void MaterializeVerticalScrollBarIfNeeded(Visibility computedVisibility)
 		{

@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 using System.Text;
 using Windows.Foundation;
 using Uno.Disposables;
@@ -9,6 +8,7 @@ using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
+using Uno.UI.Extensions;
 using Pointer = Windows.UI.Xaml.Input.Pointer;
 
 #if HAS_UNO_WINUI
@@ -923,7 +923,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			RoutedEventArgs pArgs)
 		{
 			var value = Value;
-			var change = SmallChange;
+			var change = GetAdjustedChange().smallChange;
 			var edge = Minimum;
 			var newValue = Math.Max(value - change, edge);
 			if (newValue != value)
@@ -939,7 +939,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			RoutedEventArgs pArgs)
 		{
 			var value = Value;
-			var change = SmallChange;
+			var change = GetAdjustedChange().smallChange;
 			var edge = Maximum;
 			var newValue = Math.Min(value + change, edge);
 			if (newValue != value)
@@ -955,7 +955,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			RoutedEventArgs pArgs)
 		{
 			var value = Value;
-			var change = LargeChange;
+			var change = GetAdjustedChange().largeChange;
 			var edge = Minimum;
 			var newValue = Math.Max(value - change, edge);
 			if (newValue != value)
@@ -971,21 +971,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			RoutedEventArgs pArgs)
 		{
 			var value = Value;
-			var change = LargeChange;
-			if (VisualTreeHelper.GetParent(VisualTreeHelper.GetParent(VisualTreeHelper.GetParent(this))) is ScrollViewer
-			    sv)
-			{
-				if (this == typeof(ScrollViewer)
-					    .GetField("_verticalScrollbar", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(sv))
-				{
-					change = sv.ActualHeight;
-				}
-				else if (this == typeof(ScrollViewer)
-					         .GetField("_horizontalScrollbar", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(sv))
-				{
-					change = sv.ActualWidth;
-				}
-			}
+			var change = GetAdjustedChange().largeChange;
 			var edge = Maximum;
 			var newValue = Math.Min(value + change, edge);
 			if (newValue != value)
@@ -993,6 +979,27 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				Value = newValue;
 				RaiseScrollEvent(ScrollEventType.LargeIncrement);
 			}
+		}
+
+		// Workaround for ScrollViewer. On Windows, ScrollViewer ignores ScrollBar's SmallChange/LargeChange values.
+		// No matter how SmallChange/LargeChange are set, ScrollViewer will always scroll by 16 (SmallChange) or
+		// ScrollViewer's Width/Height (depending on scrolling orientation).
+		private (double smallChange, double largeChange) GetAdjustedChange()
+		{
+			if (this.FindFirstAncestor<ScrollViewer>() is { } sv)
+			{
+				if (ReferenceEquals(this, sv.VerticalScrollbar))
+				{
+					return (16, sv.ActualHeight);
+				}
+
+				if (ReferenceEquals(this, sv.HorizontalScrollbar))
+				{
+					return (16, sv.ActualWidth);
+				}
+			}
+			
+			return (SmallChange, LargeChange);
 		}
 
 		// This raises the Scroll event, passing in the scrollEventType as a parameter
