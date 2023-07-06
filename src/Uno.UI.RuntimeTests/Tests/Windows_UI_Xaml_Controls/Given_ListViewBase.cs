@@ -2841,6 +2841,101 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Assert.Fail("DataTemplateSelector.SelectTemplateCore is invoked during an INCC reset.");
 			}
 		}
+
+		[TestMethod]
+		public async Task When_Items_Have_Duplicates()
+		{
+			var sut = new ListView();
+			var items = new ObservableCollection<string>(new[]
+			{
+				"String 1",
+				"String 1",
+				"String 1",
+				"String 2",
+				"String 2",
+				"String 2",
+				"String 3",
+				"String 3",
+				"String 3",
+				"String 1",
+				"String 1",
+				"String 1",
+				"String 2",
+				"String 2",
+				"String 2",
+				"String 3",
+				"String 3",
+				"String 3",
+			});
+			sut.ItemsSource = items;
+			var list = new List<SelectionChangedEventArgs>();
+			sut.SelectionChanged += (_, e) => list.Add(e);
+			sut.SelectedIndex = 2;
+			Assert.AreEqual(2, sut.SelectedIndex);
+			sut.SelectedIndex = 0;
+			Assert.AreEqual(0, sut.SelectedIndex);
+			sut.SelectedIndex = 1;
+			Assert.AreEqual(1, sut.SelectedIndex);
+
+			Assert.AreEqual(3, list.Count);
+			var removed1 = list[0].RemovedItems;
+			var removed2 = list[1].RemovedItems;
+			var removed3 = list[2].RemovedItems;
+
+			var added1 = list[0].AddedItems;
+			var added2 = list[1].AddedItems;
+			var added3 = list[2].AddedItems;
+
+			Assert.AreEqual(0, removed1.Count);
+			Assert.AreEqual("String 1", (string)added1.Single());
+
+			Assert.AreEqual("String 1", (string)removed2.Single());
+			Assert.AreEqual("String 1", (string)added2.Single());
+
+			Assert.AreEqual("String 1", (string)removed3.Single());
+			Assert.AreEqual("String 1", (string)added3.Single());
+		}
+
+		private sealed class AlwaysEqualClass : IEquatable<AlwaysEqualClass>
+		{
+			public bool Equals(AlwaysEqualClass obj) => true;
+			public override bool Equals(object obj) => true;
+			public override int GetHashCode() => 0;
+		}
+
+		[TestMethod]
+		public async Task When_Items_Are_Equal_But_Different_References()
+		{
+			var obj1 = new AlwaysEqualClass();
+			var obj2 = new AlwaysEqualClass();
+			var sut = new ListView();
+			var items = new ObservableCollection<AlwaysEqualClass>(new[]
+			{
+				obj1, obj2
+			});
+			sut.ItemsSource = items;
+			var list = new List<SelectionChangedEventArgs>();
+			sut.SelectionChanged += (_, e) => list.Add(e);
+			sut.SelectedIndex = 1;
+			Assert.AreEqual(1, sut.SelectedIndex);
+			Assert.AreSame(obj2, sut.SelectedItem);
+			sut.SelectedIndex = 0;
+			Assert.AreEqual(0, sut.SelectedIndex);
+			Assert.AreSame(obj1, sut.SelectedItem);
+
+			Assert.AreEqual(2, list.Count);
+			var removed1 = list[0].RemovedItems;
+			var removed2 = list[1].RemovedItems;
+
+			var added1 = list[0].AddedItems;
+			var added2 = list[1].AddedItems;
+
+			Assert.AreEqual(0, removed1.Count);
+			Assert.AreSame(obj2, added1.Single());
+
+			Assert.AreSame(obj2, removed2.Single());
+			Assert.AreSame(obj1, added2.Single());
+		}
 	}
 
 	public partial class Given_ListViewBase // data class, data-context, view-model, template-selector

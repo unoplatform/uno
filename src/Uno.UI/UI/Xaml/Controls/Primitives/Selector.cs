@@ -303,9 +303,13 @@ namespace Windows.UI.Xaml.Controls.Primitives
 					collectionView.MoveCurrentToPosition(newSelectedIndex);
 					//TODO: we should check if CurrentPosition actually changes, and set SelectedIndex back if not.
 				}
-				if (!object.Equals(SelectedItem, newSelectedItem))
+				if (!object.ReferenceEquals(SelectedItem, newSelectedItem))
 				{
 					SelectedItem = newSelectedItem;
+				}
+				else
+				{
+					InvokeSelectionChanged(new[] { SelectedItem }, new[] { newSelectedItem });
 				}
 
 				SelectedIndexPath = GetIndexPathFromIndex(SelectedIndex);
