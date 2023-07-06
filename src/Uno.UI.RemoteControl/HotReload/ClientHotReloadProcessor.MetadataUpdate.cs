@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
+using Uno.UI.Helpers;
 using Uno.UI.RemoteControl.HotReload.Messages;
 using Uno.UI.RemoteControl.HotReload.MetadataUpdater;
 using Windows.UI.Xaml;
