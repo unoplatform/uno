@@ -1,6 +1,7 @@
 ﻿#if NET6_0_OR_GREATER || __WASM__ || __SKIA__
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
@@ -17,6 +18,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Markup;
 using Windows.UI.Xaml.Media;
+using System.Threading;
 
 namespace Uno.UI.RemoteControl.HotReload
 {
@@ -145,64 +147,63 @@ namespace Uno.UI.RemoteControl.HotReload
 
 		private static void ReloadWithUpdatedTypes(Type[] updatedTypes)
 		{
-			foreach (var updatedType in updatedTypes)
+			if (updatedTypes.Length == 0)
 			{
-				if (_log.IsEnabled(LogLevel.Debug))
-				{
-					_log.LogDebug($"Processing changed type [{updatedType}]");
-				}
+				return;
+			}
 
-				if (updatedType.Is<UIElement>())
+			foreach (var (element, elementMappedType) in EnumerateHotReloadInstances(Window.Current.Content,
+				fe =>
 				{
-					ReplaceViewInstances(i => updatedType.IsInstanceOfType(i));
-				}
-				else
+					var originalType = fe.GetType().GetOriginalType() ?? fe.GetType();
+
+					var mappedType = originalType.GetMappedType();
+					return (mappedType is not null) ? (fe, mappedType) : default;
+				}, enumerateChildrenAfterMatch: true))
+			{
+
+				if (elementMappedType is not null)
 				{
-					if (_log.IsEnabled(LogLevel.Debug))
-					{
-						_log.LogDebug($"Type [{updatedType}] is not a UIElement, skipping");
-					}
+					ReplaceViewInstance(element, elementMappedType);
 				}
 			}
 		}
 
-		private static void ReplaceViewInstances(Func<FrameworkElement, bool> predicate)
+		private static void ReplaceViewInstance(UIElement instance, Type replacementType, Type[]? updatedTypes = default)
 		{
-			foreach (var instance in EnumerateInstances(Window.Current.Content, predicate))
+			if (replacementType.GetConstructor(Array.Empty<Type>()) is { } creator)
 			{
-				if (instance.GetType().GetConstructor(Array.Empty<Type>()) is { })
+				if (_log.IsEnabled(LogLevel.Trace))
 				{
-					if (_log.IsEnabled(LogLevel.Trace))
-					{
-						_log.Trace($"Creating instance of type {instance.GetType()}");
-					}
-
-					var newInstance = Activator.CreateInstance(instance.GetType());
-
-					switch (instance)
-					{
-#if __IOS__
-						case UserControl userControl:
-							if (newInstance is UIKit.UIView newUIViewContent)
-							{
-								SwapViews(userControl, newUIViewContent);
-							}
-							break;
-#endif
-						case ContentControl content:
-							if (newInstance is ContentControl newContent)
-							{
-								SwapViews(content, newContent);
-							}
-							break;
-					}
+					_log.Trace($"Creating instance of type {instance.GetType()}");
 				}
-				else
+
+				var newInstance = Activator.CreateInstance(replacementType);
+				var instanceFE = instance as FrameworkElement;
+				var newInstanceFE = newInstance as FrameworkElement;
+				switch (instance)
 				{
-					if (_log.IsEnabled(LogLevel.Debug))
-					{
-						_log.LogDebug($"Type [{instance.GetType()}] has no parameterless constructor, skipping reload");
-					}
+#if __IOS__
+					case UserControl userControl:
+						if (newInstance is UIKit.UIView newUIViewContent)
+						{
+							SwapViews(userControl, newUIViewContent);
+						}
+						break;
+#endif
+					case ContentControl content:
+						if (newInstance is ContentControl newContent)
+						{
+							SwapViews(content, newContent);
+						}
+						break;
+				}
+			}
+			else
+			{
+				if (_log.IsEnabled(LogLevel.Debug))
+				{
+					_log.LogDebug($"Type [{instance.GetType()}] has no parameterless constructor, skipping reload");
 				}
 			}
 		}
