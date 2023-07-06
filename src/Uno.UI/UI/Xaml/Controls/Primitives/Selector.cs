@@ -21,7 +21,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 	public partial class Selector : ItemsControl
 	{
 		private protected ScrollViewer m_tpScrollViewer;
-		protected bool _changingSelectedIndex;
+		private protected bool _changingSelectedIndex;
 
 		private protected IVirtualizingPanel VirtualizingPanel => ItemsPanelRoot as IVirtualizingPanel;
 
