@@ -63,10 +63,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 			if (args.Property == SelectedItemProperty)
 			{
-				if (!_changingSelectedIndex)
-				{
-					OnSelectedItemChanged(args.OldValue, args.NewValue, updateItemSelectedState: true);
-				}
+				OnSelectedItemChanged(args.OldValue, args.NewValue, updateItemSelectedState: true);
 			}
 			else if (args.Property == SelectedIndexProperty)
 			{
@@ -156,17 +153,20 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				isSelectionUnset = true;
 			}
 
-			var newIndex = IndexFromItem(selectedItem);
-			if (SelectedIndex != newIndex)
+			if (!_changingSelectedIndex)
 			{
-				SelectedIndex = newIndex;
+				var newIndex = IndexFromItem(selectedItem);
+				if (SelectedIndex != newIndex)
+				{
+					SelectedIndex = newIndex;
+				}
 			}
 
 			OnSelectedItemChangedPartial(oldSelectedItem, selectedItem);
 
 			UpdateSelectedValue();
 
-			if (updateItemSelectedState)
+			if (updateItemSelectedState && !_changingSelectedIndex)
 			{
 				TryUpdateSelectorItemIsSelected(oldSelectedItem, false);
 				TryUpdateSelectorItemIsSelected(selectedItem, true);
@@ -346,6 +346,10 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		private void OnSelectedValueChanged(object oldValue, object newValue)
 		{
+			if (_changingSelectedIndex)
+			{
+				return;
+			}
 
 			var (indexOfItemWithValue, itemWithValue) = FindIndexOfItemWithValue(newValue);
 			SelectedIndex = indexOfItemWithValue;
