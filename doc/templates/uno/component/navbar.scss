@@ -14,7 +14,7 @@
  */
 
 .visibility-opacity-transition {
-  @include media-breakpoint-up(lg) {
+  @media (min-width: 1112px) {
     visibility: hidden;
     opacity: 0;
     transition: visibility 100ms, opacity 100ms ease-in-out;
@@ -45,15 +45,16 @@
   #menu-menu-principal {
     float: right;
     list-style: none;
+    padding-left: 0;
 
-    @include media-breakpoint-down(lg) {
+    @media (max-width: 1112px) {
       width: 100%;
       // 70vh is a magic value found by trial and error.
       max-height: 70vh;
       overflow-y: auto;
     }
 
-    @include media-breakpoint-up(lg) {
+    @media (min-width: 1112px) {
       display: flex;
     }
   }
@@ -69,7 +70,7 @@
       width: 100%;
     }
 
-    @include media-breakpoint-up(lg) {
+    @media (min-width: 1113px) {
       min-width: 120px;
     }
   }
@@ -89,7 +90,7 @@
       margin-top: 3px;
     }
 
-    @media (max-width: 979px) {
+    @media (max-width: 1112px) {
       display: block !important;
     }
   }
@@ -115,7 +116,7 @@
         color: $purple;
       }
 
-      @include media-breakpoint-up(lg) {
+      @media (min-width: 1113px) {
         font-size: 19px;
         line-height: 17px;
       }
@@ -126,7 +127,7 @@
      */
     & > ul > li {
 
-      @include media-breakpoint-up(lg) {
+      @media (min-width: 1113px) {
         margin: 0 16px;
         align-self: center;
         min-width: max-content;
@@ -152,7 +153,7 @@
             margin-left: 12px;
             vertical-align: top;
 
-            @include media-breakpoint-up(lg) {
+            @media (min-width: 1113px) {
               line-height: 21px;
               font: normal normal normal 15px/1 FontAwesome;
             }
@@ -163,7 +164,7 @@
           @extend .visibility-opacity-transition;
           width: 100%;
 
-          @include media-breakpoint-up(lg) {
+          @media (min-width: 1113px) {
             width: max-content;
             display: flex;
             position: absolute;
@@ -183,7 +184,7 @@
             border-bottom: 1px solid $lightblue;
             background: $white;
 
-            @include media-breakpoint-up(lg) {
+            @media (min-width: 1113px) {
               border: none;
             }
 
@@ -290,7 +291,7 @@
 }
 
 #navbar {
-  @media (max-width: 979px) {
+  @media (max-width: 1112px) {
 
     overflow: auto !important;
 
