@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
+using Uno.UI.Helpers;
 using Uno.UI.RemoteControl.HotReload.Messages;
 using Uno.UI.RemoteControl.HotReload.MetadataUpdater;
 using Windows.UI.Xaml;
@@ -208,6 +209,14 @@ namespace Uno.UI.RemoteControl.HotReload
 
 		public static void UpdateApplication(Type[] types)
 		{
+			foreach (var t in types)
+			{
+				if (t.GetCustomAttribute<System.Runtime.CompilerServices.MetadataUpdateOriginalTypeAttribute>() is { } update)
+				{
+					TypeMappingHelper.RegisterMapping(t, update.OriginalType);
+				}
+			}
+
 			if (_log.IsEnabled(LogLevel.Trace))
 			{
 				_log.Trace($"UpdateApplication (changed types: {string.Join(", ", types.Select(s => s.ToString()))})");
