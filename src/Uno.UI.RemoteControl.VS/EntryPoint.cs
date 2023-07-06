@@ -404,5 +404,28 @@ namespace Uno.UI.RemoteControl.VS
 				|| (ismacOSApp && isExe)
 				|| isWasm;
 		}
+<<<<<<< HEAD
+=======
+
+		public void Dispose()
+		{
+			if (_isDisposed)
+			{
+				return;
+			}
+			_isDisposed = true;
+
+			try
+			{
+				_dte.Events.BuildEvents.OnBuildDone -= _onBuildDoneHandler;
+				_dte.Events.BuildEvents.OnBuildProjConfigBegin -= _onBuildProjConfigBeginHandler;
+			}
+			catch (Exception e)
+			{
+				_debugAction($"Failed to dispose Remote Control server: {e}");
+			}
+		}
+
+>>>>>>> 8d11d44f7d (fix: Correcting event handler removal)
 	}
 }
