@@ -2854,7 +2854,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task When_Items_Have_Duplicates_FlipView() => await When_Items_Have_Duplicates_Common(new FlipView());
 
-		private async Task When_Items_Have_Duplicates_Common(ListViewBase sut)
+		private async Task When_Items_Have_Duplicates_Common(Selector sut)
 		{
 			var items = new ObservableCollection<string>(new[]
 			{
@@ -2925,7 +2925,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task When_Items_Are_Equal_But_Different_References_FlipView() => await When_Items_Are_Equal_But_Different_References_Common(new FlipView());
 
-		private async Task When_Items_Are_Equal_But_Different_References_Common(ListViewBase sut)
+		private async Task When_Items_Are_Equal_But_Different_References_Common(Selector sut)
 		{
 			var obj1 = new AlwaysEqualClass();
 			var obj2 = new AlwaysEqualClass();
