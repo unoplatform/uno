@@ -1113,9 +1113,6 @@ namespace Windows.UI.Xaml.Controls
 		private ScrollBar? _horizontalScrollbar;
 		private bool _isVerticalScrollBarMaterialized;
 		private bool _isHorizontalScrollBarMaterialized;
-		
-		internal ScrollBar? VerticalScrollbar => _verticalScrollbar;
-		internal ScrollBar? HorizontalScrollbar => _verticalScrollbar;
 
 		private void MaterializeVerticalScrollBarIfNeeded(Visibility computedVisibility)
 		{
@@ -1238,18 +1235,22 @@ namespace Windows.UI.Xaml.Controls
 		{
 			// We animate only if the user clicked in the scroll bar, and disable otherwise
 			// (especially, we disable animation when dragging the thumb)
-			var immediate = e.ScrollEventType switch
+			
+			// On Windows, ScrollViewer ignores ScrollBar's SmallChange/LargeChange values.
+			// No matter how SmallChange/LargeChange are set, ScrollViewer will always scroll by 16 (instead of SmallChange)
+			// or ScrollViewer's Height (instead of LargeChange).
+			var (immediate, offset) = e.ScrollEventType switch
 			{
-				ScrollEventType.LargeIncrement => false,
-				ScrollEventType.LargeDecrement => false,
-				ScrollEventType.SmallIncrement => false,
-				ScrollEventType.SmallDecrement => false,
-				_ => true
+				ScrollEventType.LargeIncrement => (false, VerticalOffset + ActualHeight),
+				ScrollEventType.LargeDecrement => (false, VerticalOffset - ActualHeight),
+				ScrollEventType.SmallIncrement => (false, VerticalOffset + 16),
+				ScrollEventType.SmallDecrement => (false, VerticalOffset - 16),
+				_ => (true, e.NewValue)
 			};
 
 			ChangeViewCore(
 				horizontalOffset: null,
-				verticalOffset: e.NewValue,
+				verticalOffset: offset,
 				zoomFactor: null,
 				disableAnimation: immediate,
 				shouldSnap: true);
@@ -1259,17 +1260,21 @@ namespace Windows.UI.Xaml.Controls
 		{
 			// We animate only if the user clicked in the scroll bar, and disable otherwise
 			// (especially, we disable animation when dragging the thumb)
-			var immediate = e.ScrollEventType switch
+			
+			// On Windows, ScrollViewer ignores ScrollBar's SmallChange/LargeChange values.
+			// No matter how SmallChange/LargeChange are set, ScrollViewer will always scroll by 16 (instead of SmallChange)
+			// or ScrollViewer's Width (instead of LargeChange).
+			var (immediate, offset) = e.ScrollEventType switch
 			{
-				ScrollEventType.LargeIncrement => false,
-				ScrollEventType.LargeDecrement => false,
-				ScrollEventType.SmallIncrement => false,
-				ScrollEventType.SmallDecrement => false,
-				_ => true
+				ScrollEventType.LargeIncrement => (false, HorizontalOffset + ActualWidth),
+				ScrollEventType.LargeDecrement => (false, HorizontalOffset - ActualWidth),
+				ScrollEventType.SmallIncrement => (false, HorizontalOffset + 16),
+				ScrollEventType.SmallDecrement => (false, HorizontalOffset - 16),
+				_ => (true, e.NewValue)
 			};
 
 			ChangeViewCore(
-				horizontalOffset: e.NewValue,
+				horizontalOffset: offset,
 				verticalOffset: null,
 				zoomFactor: null,
 				disableAnimation: immediate,
