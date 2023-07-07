@@ -22,7 +22,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 	{
 		private protected ScrollViewer m_tpScrollViewer;
 		private protected bool _changingSelectedIndex;
-		private protected bool _isSelectionActive;
+		private protected bool _isUpdatingSelection;
 
 		private protected IVirtualizingPanel VirtualizingPanel => ItemsPanelRoot as IVirtualizingPanel;
 
@@ -146,8 +146,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				}
 			}
 
-			var shouldRaiseSelectionChanged = !_isSelectionActive;
-			_isSelectionActive = true;
+			var shouldRaiseSelectionChanged = !_isUpdatingSelection;
+			_isUpdatingSelection = true;
 
 			// If SelectedIndex is -1 and SelectedItem is being changed from non-null to null, this indicates that we're desetting
 			// SelectedItem, not setting a null inside the collection as selected. Little edge case there. (Note that this relies
@@ -176,12 +176,13 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				TryUpdateSelectorItemIsSelected(selectedItem, true);
 			}
 
-			_isSelectionActive = false;
+			_isUpdatingSelection = false;
 
 			if (shouldRaiseSelectionChanged)
 			{
 				// Setting SelectedIndex above will have already invoked the SelectionChanged.
-				InvokeSelectionChanged(wasSelectionUnset ? Array.Empty<object>() : new[] { oldSelectedItem },
+				InvokeSelectionChanged(
+					wasSelectionUnset ? Array.Empty<object>() : new[] { oldSelectedItem },
 					isSelectionUnset ? Array.Empty<object>() : new[] { selectedItem }
 				);
 			}
@@ -306,8 +307,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			try
 			{
 				_changingSelectedIndex = true;
-				var shouldRaiseSelectionChanged = !_isSelectionActive;
-				_isSelectionActive = true;
+				var shouldRaiseSelectionChanged = !_isUpdatingSelection;
+				_isUpdatingSelection = true;
 				var oldSelectedItem = SelectedItem;
 				var newSelectedItem = ItemFromIndex(newSelectedIndex);
 
@@ -322,7 +323,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				}
 
 				SelectedIndexPath = GetIndexPathFromIndex(SelectedIndex);
-				_isSelectionActive = false;
+				_isUpdatingSelection = false;
 				if (shouldRaiseSelectionChanged)
 				{
 					InvokeSelectionChanged(

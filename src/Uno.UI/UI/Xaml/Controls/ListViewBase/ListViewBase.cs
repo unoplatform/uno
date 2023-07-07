@@ -200,7 +200,7 @@ namespace Windows.UI.Xaml.Controls
 			try
 			{
 				_modifyingSelectionInternally = true;
-				_isSelectionActive = true;
+				_isUpdatingSelection = true;
 				var itemIndex = SelectedItems.Select(item => (int?)items.IndexOf(item)).FirstOrDefault(index => index > -1);
 				if (itemIndex != null)
 				{
@@ -219,7 +219,7 @@ namespace Windows.UI.Xaml.Controls
 			finally
 			{
 				_modifyingSelectionInternally = false;
-				_isSelectionActive = false;
+				_isUpdatingSelection = false;
 			}
 			if (validAdditions.Any() || validRemovals.Any())
 			{
