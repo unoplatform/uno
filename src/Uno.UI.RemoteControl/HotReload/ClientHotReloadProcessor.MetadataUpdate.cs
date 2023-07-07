@@ -175,19 +175,29 @@ namespace Uno.UI.RemoteControl.HotReload
 			// This is called before the visual tree is updated
 			handlerActions?.Do(h => h.Value.BeforeVisualTreeUpdate(updatedTypes));
 
-			foreach (var (element, elementHandler, elementMappedType) in EnumerateHotReloadInstances(Window.Current.Content,
-				fe =>
-				{
-					var originalType = fe.GetType().GetOriginalType() ?? fe.GetType();
+			// Iterate through the visual tree and either invole ElementUpdate, 
+			// or replace the element with a new one
+			foreach (
+				var (element, elementHandler, elementMappedType) in
+				EnumerateHotReloadInstances(
+					Window.Current.Content,
+					fe =>
+						{
+							// Get the original type of the element, in case it's been replaced
+							var originalType = fe.GetType().GetOriginalType() ?? fe.GetType();
 
-					var handler = (from h in handlerActions
-								   where originalType == h.Key ||
-										originalType.IsSubclassOf(h.Key)
-								   select h.Value).FirstOrDefault();
+							// Get the handler for the type specified
+							var handler = (from h in handlerActions
+										   where originalType == h.Key ||
+												originalType.IsSubclassOf(h.Key)
+										   select h.Value).FirstOrDefault();
 
-					var mappedType = originalType.GetMappedType();
-					return (handler is not null || mappedType is not null) ? (fe, handler, mappedType) : default;
-				}, enumerateChildrenAfterMatch: true))
+							// Get the replacement type, or null if not replaced
+							var mappedType = originalType.GetMappedType();
+
+							return (handler is not null || mappedType is not null) ? (fe, handler, mappedType) : default;
+						},
+					enumerateChildrenAfterMatch: true))
 			{
 
 				// Action: ElementUpdate

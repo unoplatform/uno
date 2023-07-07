@@ -1,4 +1,9 @@
-﻿#if NET6_0_OR_GREATER || __WASM__ || __SKIA__
+﻿// The structure of the ElementUpdaterAgent has been kept similar to the HotReloadAgent, 
+// which is based on the implementation in https://github.com/dotnet/aspnetcore/blob/26e3dfc7f3f3a91ba445ec0f8b1598d12542fb9f/src/Components/WebAssembly/WebAssembly/src/HotReload/HotReloadAgent.cs
+
+
+
+#if NET6_0_OR_GREATER || __WASM__ || __SKIA__
 #nullable enable
 
 using System;
@@ -36,23 +41,59 @@ internal sealed class ElementUpdateAgent : IDisposable
 
 	public ImmutableDictionary<Type, ElementUpdateHandlerActions> ElementHandlerActions => _elementHandlerActions.ToImmutableDictionary();
 
-	private void OnAssemblyLoad(object? _, AssemblyLoadEventArgs __)
-	{
+	private void OnAssemblyLoad(object? _, AssemblyLoadEventArgs eventArgs) =>
 		// This should only be invoked on the (rare) occasion that assemblies
 		// haven't been loaded when the agent is initialized. Since the agent 
-		// is initialized when the first hot reload message is received, this
-		// should mean that all assemblies are already loaded.
+		// is initialized when the first UpdateApplication call is invoked on
+		// the ClientHotReloadProcessor, most assemblies should already be loaded.
 		// For this reason, we don't worry about incrementally loading handlers
 		// we just reload from all assemblies
 		LoadElementUpdateHandlerActions();
-	}
 
 	internal sealed class ElementUpdateHandlerActions
 	{
+		/// <summary>
+		/// This will get invoked whenever UpdateApplication is invoked 
+		/// but before any updates are applied to the visual tree. 
+		/// This is only invoked once per UpdateApplication, 
+		/// irrespective of the number of types the handler is registered for
+		/// </summary>
 		public Action<Type[]?> BeforeVisualTreeUpdate { get; set; } = _ => { };
+
+		/// <summary>
+		/// This will get invoked whenever UpdateApplication is invoked 
+		/// after all updates have been applied to the visual tree. 
+		/// This is only invoked once per UpdateApplication, 
+		/// irrespective of the number of types the handler is registered for
+		/// </summary>
 		public Action<Type[]?> AfterVisualTreeUpdate { get; set; } = _ => { };
+
+		/// <summary>
+		/// This is invoked when a specific element is found in the tree. 
+		/// This would be useful if the element holds references to controls 
+		/// that aren't in the visual tree and need to be updated 
+		/// (eg pages in the backstack of a frame)
+		/// </summary>
 		public Action<FrameworkElement, Type[]?> ElementUpdate { get; set; } = (_, _) => { };
+
+		/// <summary>
+		/// This is invoked whenever UpdateApplication is invoked, 
+		/// before an element is replaced in the visual three. 
+		/// This is invoked for each element in the visual tree that 
+		/// matches a type that has been updated. 
+		/// The oldElement is attached to the visual tree and existing datacontext. 
+		/// The newElement is not attached to the visual tree and won't yet have a data context
+		/// </summary>
 		public Action<FrameworkElement, FrameworkElement, Type[]?> BeforeElementReplaced { get; set; } = (_, _, _) => { };
+
+		/// <summary>
+		/// This is invoked whenever UpdateApplication is invoked,
+		/// after an element is replaced in the visual three. 
+		/// This is invoked for each element in the visual tree that 
+		/// matches a type that has been updated. 
+		/// The oldElement is no longer attached to the visual tree and datacontext will be null. 
+		/// The newElement is attached to the visual tree and will have data context update, either inherited from parent or copies from the oldElement.
+		/// </summary>
 		public Action<FrameworkElement, FrameworkElement, Type[]?> AfterElementReplaced { get; set; } = (_, _, _) => { };
 	}
 
