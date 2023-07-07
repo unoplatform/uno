@@ -27,7 +27,7 @@ namespace Uno.UI.Controls
 		private static readonly TimeSpan _defaultTextChangedMinDelay = TimeSpan.FromMilliseconds(250);
 		private const bool _defaultIsAutoLostFocusEnabled = true;
 
-		private readonly SerialDisposable _textChangedSubscription = new SerialDisposable();
+		//private readonly SerialDisposable _textChangedSubscription = new SerialDisposable();
 
 		private ICommand _submitCommand;
 		private TimeSpan _textUpdateMinDelay = _defaultTextChangedMinDelay;
@@ -184,7 +184,7 @@ namespace Uno.UI.Controls
 			//		h => TextChanged += h,
 			//		h => TextChanged -= h,
 			//		this,
-			//		FrameworkElementExtensions.UiEventSubscriptionsOptions.Default) 
+			//		FrameworkElementExtensions.UiEventSubscriptionsOptions.Default)
 			//	.Throttle(TextUpdateMinDelay, this.GetDispatcherScheduler())
 			//	.Subscribe(
 			//		args =>

@@ -15,6 +15,9 @@ namespace Windows.UI.Xaml.Shapes
 {
 	public abstract partial class ArbitraryShapeBase : Shape
 	{
+		private const double _scaleX = 0;
+		private const double _scaleY = 0;
+
 		private readonly SerialDisposable _layer = new SerialDisposable();
 		private object?[]? _layerState;
 

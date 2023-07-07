@@ -19,7 +19,6 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class Border
 	{
-		private SerialDisposable _brushChanged = new SerialDisposable();
 		private BorderLayerRenderer _borderRenderer = new BorderLayerRenderer();
 
 		public Border()

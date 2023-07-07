@@ -16,4 +16,3 @@ namespace DirectUI
 		//long m_endFrameTime;
 	}
 }
-

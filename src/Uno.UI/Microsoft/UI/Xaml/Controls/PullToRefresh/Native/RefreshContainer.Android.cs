@@ -13,9 +13,7 @@ namespace Microsoft.UI.Xaml.Controls;
 
 public partial class RefreshContainer : ContentControl
 {
-	private const int IndicatorHeight = 64;
 	private readonly SerialDisposable _refreshSubscription = new SerialDisposable();
-	private readonly SerialDisposable _nativeScrollViewAttachment = new SerialDisposable();
 	private readonly SerialDisposable _refreshVisualizerSubscriptions = new SerialDisposable();
 	private NativeRefreshControl? _refreshControl = null;
 

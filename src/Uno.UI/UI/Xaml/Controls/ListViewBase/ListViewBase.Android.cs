@@ -20,7 +20,6 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class ListViewBase
 	{
-		private readonly SerialDisposable _collectionChangedSubscription = new SerialDisposable();
 		private readonly SerialDisposable _headerFooterSubscription = new SerialDisposable();
 
 		private void InitializeNativePanel(NativeListViewBase panel)
@@ -97,7 +96,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// Add a group using the native in-place modifier.
 		/// </summary>
-		/// <param name="groupIndexInView">The index of the group from the native collection view's perspective, ie ignoring empty groups 
+		/// <param name="groupIndexInView">The index of the group from the native collection view's perspective, ie ignoring empty groups
 		/// if HidesIfEmpty=true.</param>
 		private void AddGroup(int groupIndexInView)
 		{
