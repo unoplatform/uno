@@ -50,8 +50,9 @@ namespace Windows.UI.Xaml
 			return new DataTemplate(obj);
 		}
 
-		public View? LoadContent()
-			=> ((IFrameworkTemplateInternal)this).LoadContent();
+		public View? LoadContent() => ((IFrameworkTemplateInternal)this).LoadContent();
+
+		internal View? LoadContentCached() => base.LoadContentCachedCore();
 	}
 }
 

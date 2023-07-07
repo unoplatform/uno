@@ -263,6 +263,7 @@ namespace Windows.UI.Xaml
 
 		private void TryReuseTemplateRoot(object instance, object? key, object? newParent, bool shouldCleanUpTemplateRoot)
 		{
+			// fixme@xy: add handling for TemplatedParentScope here ?if needed?
 			if (!IsPoolingEnabled)
 			{
 				return;
@@ -291,7 +292,6 @@ namespace Windows.UI.Xaml
 				{
 					// Make sure the TemplatedParent is disconnected
 					provider.Store.Parent = null;
-					provider.Store.ClearValue(provider.Store.TemplatedParentProperty, DependencyPropertyValuePrecedences.Local);
 				}
 				if (shouldCleanUpTemplateRoot)
 				{

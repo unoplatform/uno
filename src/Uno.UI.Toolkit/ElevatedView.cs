@@ -58,7 +58,6 @@ namespace Uno.UI.Toolkit
 			DefaultStyleKey = typeof(ElevatedView);
 
 #if HAS_UNO
-			Loaded += (snd, evt) => SynchronizeContentTemplatedParent();
 #if __ANDROID__
 			Unloaded += (snd, evt) => DisposeShadow();
 #endif
@@ -136,25 +135,6 @@ namespace Uno.UI.Toolkit
 #if !__IOS__ && !__MACOS__
 		private protected override void OnCornerRadiousChanged(DependencyPropertyChangedEventArgs args) => OnChanged(this, args);
 #endif
-
-		protected internal override void OnTemplatedParentChanged(DependencyPropertyChangedEventArgs e)
-		{
-			base.OnTemplatedParentChanged(e);
-
-			// This is required to ensure that FrameworkElement.FindName can dig through the tree after
-			// the control has been created.
-			SynchronizeContentTemplatedParent();
-		}
-
-		private void SynchronizeContentTemplatedParent()
-		{
-			// Manual propagation of the templated parent to the content property
-			// until we get the propagation running properly
-			if (ElevatedContent is FrameworkElement content)
-			{
-				content.TemplatedParent = this.TemplatedParent;
-			}
-		}
 #endif
 
 		private static void OnChanged(DependencyObject snd, DependencyPropertyChangedEventArgs evt) => ((ElevatedView)snd).UpdateElevation();
@@ -165,10 +145,6 @@ namespace Uno.UI.Toolkit
 			{
 				return; // not initialized yet
 			}
-
-#if HAS_UNO
-			SynchronizeContentTemplatedParent();
-#endif
 
 			if (Background == null)
 			{

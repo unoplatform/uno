@@ -1,19 +1,14 @@
 ﻿#nullable enable
 
 using System;
+using Uno.UI;
 
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
-using Font = Android.Graphics.Typeface;
-using Android.Graphics;
 #elif XAMARIN_IOS_UNIFIED
 using View = UIKit.UIView;
-using Color = UIKit.UIColor;
-using Font = UIKit.UIFont;
 #elif __MACOS__
 using View = AppKit.NSView;
-using Color = AppKit.NSColor;
-using Font = AppKit.NSFont;
 #else
 using View = Windows.UI.Xaml.UIElement;
 #endif
@@ -46,6 +41,16 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get;
 			set;
+		}
+
+		internal View? LoadContentCached(Control templatedParent)
+		{
+			using (TemplateParentResolver.RentScope(this, templatedParent, out var scope))
+			{
+				var root = base.LoadContentCachedCore();
+
+				return root;
+			}
 		}
 	}
 }

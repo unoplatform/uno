@@ -27,57 +27,57 @@ namespace Windows.UI.Xaml.Controls
 			spOwner = Owner;
 			spOwnerAsFrameworkElement = (FrameworkElement)spOwner;
 
-			DependencyObject spTemplatedParent;
-			spTemplatedParent = (spOwnerAsFrameworkElement as FrameworkElement).TemplatedParent;
+			//DependencyObject spTemplatedParent;
+			//spTemplatedParent = (spOwnerAsFrameworkElement as FrameworkElement).TemplatedParent;
 
-			if (spTemplatedParent is { })
-			{
-				CalendarView spCalendarView = spTemplatedParent as CalendarView;
+			//if (spTemplatedParent is { }) // fixme@xy
+			//{
+			//	CalendarView spCalendarView = spTemplatedParent as CalendarView;
 
-				if (spCalendarView is { })
-				{
-					CalendarViewGeneratorHost spGeneratorHost;
-					(spCalendarView as CalendarView).GetActiveGeneratorHost(out spGeneratorHost);
-					var pCalendarPanel = spGeneratorHost.Panel;
+			//	if (spCalendarView is { })
+			//	{
+			//		CalendarViewGeneratorHost spGeneratorHost;
+			//		(spCalendarView as CalendarView).GetActiveGeneratorHost(out spGeneratorHost);
+			//		var pCalendarPanel = spGeneratorHost.Panel;
 
-					if (pCalendarPanel is { })
-					{
-						int firstIndex = -1;
-						int lastIndex = -1;
+			//		if (pCalendarPanel is { })
+			//		{
+			//			int firstIndex = -1;
+			//			int lastIndex = -1;
 
-						firstIndex = pCalendarPanel.FirstVisibleIndex;
-						lastIndex = pCalendarPanel.LastVisibleIndex;
+			//			firstIndex = pCalendarPanel.FirstVisibleIndex;
+			//			lastIndex = pCalendarPanel.LastVisibleIndex;
 
-						// This ScrollViewer automation peer ensures that for CalendarViews, accessible Items are restricted
-						// to visible Items. To go to next unit view, user scenario is to utilize next and previous button.
-						// Utilizing realized Items has a side effect due to bufferring, the first Item is a few months
-						// back then current Item leading to an awkward state.
-						if (firstIndex != -1 && lastIndex != -1)
-						{
-							List<AutomationPeer> spAPChildren;
-							spAPChildren = new List<AutomationPeer>();
+			//			// This ScrollViewer automation peer ensures that for CalendarViews, accessible Items are restricted
+			//			// to visible Items. To go to next unit view, user scenario is to utilize next and previous button.
+			//			// Utilizing realized Items has a side effect due to bufferring, the first Item is a few months
+			//			// back then current Item leading to an awkward state.
+			//			if (firstIndex != -1 && lastIndex != -1)
+			//			{
+			//				List<AutomationPeer> spAPChildren;
+			//				spAPChildren = new List<AutomationPeer>();
 
-							for (int index = firstIndex; index <= lastIndex; ++index)
-							{
-								DependencyObject spChildAsIDO;
-								CalendarViewBaseItem spChildAsItem;
-								spChildAsIDO = pCalendarPanel.ContainerFromIndex(index);
-								spChildAsItem = (CalendarViewBaseItem)spChildAsIDO;
+			//				for (int index = firstIndex; index <= lastIndex; ++index)
+			//				{
+			//					DependencyObject spChildAsIDO;
+			//					CalendarViewBaseItem spChildAsItem;
+			//					spChildAsIDO = pCalendarPanel.ContainerFromIndex(index);
+			//					spChildAsItem = (CalendarViewBaseItem)spChildAsIDO;
 
-								AutomationPeer spAutomationPeer;
-								spAutomationPeer = (spChildAsItem as CalendarViewBaseItem).GetAutomationPeer();
+			//					AutomationPeer spAutomationPeer;
+			//					spAutomationPeer = (spChildAsItem as CalendarViewBaseItem).GetAutomationPeer();
 
-								if (spAutomationPeer is { })
-								{
-									spAPChildren.Add(spAutomationPeer);
-								}
-							}
+			//					if (spAutomationPeer is { })
+			//					{
+			//						spAPChildren.Add(spAutomationPeer);
+			//					}
+			//				}
 
-							ppReturnValue = spAPChildren;
-						}
-					}
-				}
-			}
+			//				ppReturnValue = spAPChildren;
+			//			}
+			//		}
+			//	}
+			//}
 
 			return ppReturnValue;
 		}

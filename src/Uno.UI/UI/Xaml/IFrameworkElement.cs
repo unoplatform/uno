@@ -124,8 +124,6 @@ namespace Windows.UI.Xaml
 
 		int? RenderPhase { get; set; }
 
-		DependencyObject TemplatedParent { get; set; }
-
 		void ApplyBindingPhase(int phase);
 
 		// void OnLoaded ();

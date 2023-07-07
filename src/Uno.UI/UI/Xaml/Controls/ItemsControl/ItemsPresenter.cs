@@ -25,21 +25,11 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class ItemsPresenter : FrameworkElement, IScrollSnapPointsInfo
 	{
-		protected internal override void OnTemplatedParentChanged(DependencyPropertyChangedEventArgs e)
-		{
-			base.OnTemplatedParentChanged(e);
-
-			if (TemplatedParent is ItemsControl itemsControl && IsLoaded)
-			{
-				itemsControl.SetItemsPresenter(this);
-			}
-		}
-
 		private protected override void OnLoaded()
 		{
 			base.OnLoaded();
 
-			if (TemplatedParent is ItemsControl itemsControl && IsLoaded)
+			if (IsLoaded && this.FindFirstParent<ItemsControl>() is { } itemsControl)
 			{
 				itemsControl.SetItemsPresenter(this);
 			}

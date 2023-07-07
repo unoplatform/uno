@@ -17,6 +17,7 @@ using Uno.UI.Converters;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Data;
 using System.Runtime.CompilerServices;
+using TemplatedParentScope = Uno.UI.TemplateParentResolver.TemplatedParentScope;
 
 namespace Windows.UI.Xaml.Data
 {
@@ -31,6 +32,7 @@ namespace Windows.UI.Xaml.Data
 
 		private BindingPath _bindingPath;
 		private bool _disposed;
+		private TemplatedParentScope _templatedParentScope;
 		private ManagedWeakReference _explicitSourceStore;
 		private readonly bool _isCompiledSource;
 		private readonly bool _isElementNameSource;
@@ -45,6 +47,7 @@ namespace Windows.UI.Xaml.Data
 		public Binding ParentBinding { get; }
 
 		internal DependencyPropertyDetails TargetPropertyDetails { get; }
+		internal TemplatedParentScope TemplatedParentScopeDebug => _templatedParentScope;
 
 		private object ExplicitSource
 		{
@@ -58,10 +61,25 @@ namespace Windows.UI.Xaml.Data
 
 		public object DataContext
 		{
-			get => _isElementNameSource || ExplicitSource != null ? ExplicitSource : _dataContext?.Target;
+			get
+			{
+				if (_templatedParentScope != null)
+				{
+					return _templatedParentScope.TemplatedParent;
+				}
+				if (_isElementNameSource || ExplicitSource != null)
+				{
+					return ExplicitSource;
+				}
+
+				return _dataContext?.Target;
+			}
 			set
 			{
-				if (ExplicitSource == null && !_disposed && DependencyObjectStore.AreDifferent(_dataContext?.Target, value))
+				if (!_disposed &&
+					_templatedParentScope == null &&
+					ExplicitSource == null &&
+					DependencyObjectStore.AreDifferent(_dataContext?.Target, value))
 				{
 					var previousContext = _dataContext;
 
@@ -111,6 +129,11 @@ namespace Windows.UI.Xaml.Data
 
 			TryGetSource(binding);
 
+			if (ParentBinding.IsTemplateBinding)
+			{
+				_templatedParentScope = TemplateParentResolver.CurrentScope;
+			}
+
 			if (ParentBinding.CompiledSource != null)
 			{
 				_isCompiledSource = true;
@@ -137,12 +160,24 @@ namespace Windows.UI.Xaml.Data
 				ApplyFallbackValue();
 			}
 
+			ApplyTemplateBindingParent();
 			ApplyExplicitSource();
 			ApplyElementName();
 		}
 
 		private ManagedWeakReference GetWeakDataContext()
-			=> _isElementNameSource || (_explicitSourceStore?.IsAlive ?? false) ? _explicitSourceStore : _dataContext;
+		{
+			if (_templatedParentScope?.TemplatedParentRef.IsAlive ?? false)
+			{
+				return _templatedParentScope.TemplatedParentRef;
+			}
+			if (_isElementNameSource || (_explicitSourceStore?.IsAlive ?? false))
+			{
+				return _explicitSourceStore;
+			}
+
+			return _dataContext;
+		}
 
 		/// <summary>
 		/// Sends the current binding target value to the binding source property in TwoWay bindings.
@@ -366,6 +401,19 @@ namespace Windows.UI.Xaml.Data
 				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().DebugFormat("Applying compiled source {0} on {1}", ExplicitSource.GetType(), _view.Target?.GetType());
+				}
+
+				ApplyBinding();
+			}
+		}
+
+		internal void ApplyTemplateBindingParent()
+		{
+			if (_templatedParentScope != null)
+			{
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
+				{
+					this.Log().DebugFormat("Applying template binding parent {0} on {1}", _templatedParentScope?.TemplatedParent?.GetType(), _view.Target?.GetType());
 				}
 
 				ApplyBinding();

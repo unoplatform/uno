@@ -231,11 +231,6 @@ namespace Windows.UI.Xaml.Controls
 
 				if (value != null)
 				{
-					if (_templatedRoot is IDependencyObjectStoreProvider provider)
-					{
-						provider.Store.SetValue(provider.Store.TemplatedParentProperty, this, DependencyPropertyValuePrecedences.Local);
-					}
-
 					RegisterSubView(value);
 
 					if (_templatedRoot != null)
@@ -499,7 +494,6 @@ namespace Windows.UI.Xaml.Controls
 			if (view is IDependencyObjectStoreProvider provider)
 			{
 				provider.Store.Parent = null;
-				provider.Store.ClearValue(provider.Store.TemplatedParentProperty, DependencyPropertyValuePrecedences.Local);
 			}
 		}
 
@@ -543,7 +537,7 @@ namespace Windows.UI.Xaml.Controls
 
 				if (Template != null)
 				{
-					TemplatedRoot = Template.LoadContentCached();
+					TemplatedRoot = Template.LoadContentCached(this);
 				}
 				else
 				{

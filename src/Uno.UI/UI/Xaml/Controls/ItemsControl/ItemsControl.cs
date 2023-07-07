@@ -1665,9 +1665,6 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// Sets the ItemsPresenter that should be used by ItemsControl.
 		/// </summary>
-		/// <remarks>
-		/// This is usually called from ItemsPresenter when its TemplatedParent (an ItemsControl) gets set.
-		/// </remarks>
 		internal void SetItemsPresenter(ItemsPresenter itemsPresenter)
 		{
 			if (_itemsPresenter != itemsPresenter)
