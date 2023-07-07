@@ -2896,7 +2896,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var added2 = list[1].AddedItems;
 			var added3 = list[2].AddedItems;
 
-			Assert.AreEqual(0, removed1.Count);
+			if (sut is FlipView)
+			{
+				Assert.AreEqual("String 1", (string)removed1.Single());
+			}
+			else
+			{
+				Assert.AreEqual(0, removed1.Count);
+			}
+
 			Assert.AreEqual("String 1", (string)added1.Single());
 
 			Assert.AreEqual("String 1", (string)removed2.Single());
@@ -2950,7 +2958,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var added1 = list[0].AddedItems;
 			var added2 = list[1].AddedItems;
 
-			Assert.AreEqual(0, removed1.Count);
+			if (sut is FlipView)
+			{
+				Assert.AreSame(obj1, removed1.Single());
+			}
+			else
+			{
+				Assert.AreEqual(0, removed1.Count);
+			}
 			Assert.AreSame(obj2, added1.Single());
 
 			Assert.AreSame(obj2, removed2.Single());
