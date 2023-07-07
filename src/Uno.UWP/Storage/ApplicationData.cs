@@ -12,8 +12,6 @@ namespace Windows.Storage
 
 		private ApplicationData()
 		{
-			PartialCtor();
-
 			LocalFolder = new StorageFolder(GetLocalFolder());
 			RoamingFolder = new StorageFolder(GetRoamingFolder());
 			SharedLocalFolder = new StorageFolder(".shared", GetSharedLocalFolder());
@@ -22,9 +20,11 @@ namespace Windows.Storage
 
 			LocalSettings = new ApplicationDataContainer(this, "Local", ApplicationDataLocality.Local);
 			RoamingSettings = new ApplicationDataContainer(this, "Roaming", ApplicationDataLocality.Roaming);
+
+			InitializePartial();
 		}
 
-		partial void PartialCtor();
+		partial void InitializePartial();
 
 		public StorageFolder LocalFolder { get; }
 
