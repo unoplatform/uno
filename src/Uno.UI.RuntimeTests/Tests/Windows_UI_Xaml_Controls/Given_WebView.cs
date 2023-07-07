@@ -121,14 +121,14 @@ public class Given_WebView
 		Assert.IsFalse(webView.CanGoForward);
 
 		webView.NavigationCompleted += (sender, e) => navigated = true;
-		webView.Navigate(new Uri("https://www.google.com/"));
+		webView.Navigate(new Uri("https://example.com/1"));
 		await TestServices.WindowHelper.WaitFor(() => navigated, 3000);
 
 		Assert.IsFalse(webView.CanGoBack);
 		Assert.IsFalse(webView.CanGoForward);
 
 		navigated = false;
-		webView.Navigate(new Uri("https://www.bing.com/"));
+		webView.Navigate(new Uri("https://example.com/2"));
 		await TestServices.WindowHelper.WaitFor(() => navigated, 3000);
 
 		Assert.IsTrue(webView.CanGoBack);
