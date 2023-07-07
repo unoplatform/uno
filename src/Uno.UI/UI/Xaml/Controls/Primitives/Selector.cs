@@ -22,6 +22,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 	{
 		private protected ScrollViewer m_tpScrollViewer;
 		private protected bool _changingSelectedIndex;
+		private protected bool _isSelectionActive;
 
 		private protected IVirtualizingPanel VirtualizingPanel => ItemsPanelRoot as IVirtualizingPanel;
 
@@ -145,6 +146,9 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				}
 			}
 
+			var shouldRaiseSelectionChanged = !_isSelectionActive;
+			_isSelectionActive = true;
+
 			// If SelectedIndex is -1 and SelectedItem is being changed from non-null to null, this indicates that we're desetting
 			// SelectedItem, not setting a null inside the collection as selected. Little edge case there. (Note that this relies
 			// on user interactions setting SelectedIndex which then sets SelectedItem.)
@@ -172,9 +176,15 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				TryUpdateSelectorItemIsSelected(selectedItem, true);
 			}
 
-			InvokeSelectionChanged(wasSelectionUnset ? Array.Empty<object>() : new[] { oldSelectedItem },
-				isSelectionUnset ? Array.Empty<object>() : new[] { selectedItem }
-			);
+			_isSelectionActive = false;
+
+			if (shouldRaiseSelectionChanged)
+			{
+				// Setting SelectedIndex above will have already invoked the SelectionChanged.
+				InvokeSelectionChanged(wasSelectionUnset ? Array.Empty<object>() : new[] { oldSelectedItem },
+					isSelectionUnset ? Array.Empty<object>() : new[] { selectedItem }
+				);
+			}
 		}
 
 		internal void TryUpdateSelectorItemIsSelected(object item, bool isSelected)
@@ -296,6 +306,9 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			try
 			{
 				_changingSelectedIndex = true;
+				var shouldRaiseSelectionChanged = !_isSelectionActive;
+				_isSelectionActive = true;
+				var oldSelectedItem = SelectedItem;
 				var newSelectedItem = ItemFromIndex(newSelectedIndex);
 
 				if (ItemsSource is ICollectionView collectionView)
@@ -303,16 +316,19 @@ namespace Windows.UI.Xaml.Controls.Primitives
 					collectionView.MoveCurrentToPosition(newSelectedIndex);
 					//TODO: we should check if CurrentPosition actually changes, and set SelectedIndex back if not.
 				}
-				if (!object.ReferenceEquals(SelectedItem, newSelectedItem))
+				if (!object.ReferenceEquals(oldSelectedItem, newSelectedItem))
 				{
 					SelectedItem = newSelectedItem;
 				}
-				else
-				{
-					InvokeSelectionChanged(new[] { SelectedItem }, new[] { newSelectedItem });
-				}
 
 				SelectedIndexPath = GetIndexPathFromIndex(SelectedIndex);
+				_isSelectionActive = false;
+				if (shouldRaiseSelectionChanged)
+				{
+					InvokeSelectionChanged(
+						oldSelectedIndex == -1 ? Array.Empty<object>() : new[] { oldSelectedItem },
+						newSelectedIndex == -1 ? Array.Empty<object>() : new[] { newSelectedItem });
+				}
 			}
 			finally
 			{
