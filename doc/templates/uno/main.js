@@ -11,7 +11,7 @@ document.addEventListener(
             function (e) {
                 const t = e.target;
                 if (
-                    window.innerWidth >= 1112 ||
+                    window.innerWidth >= 1113 ||
                     !t.matches("#navbar .has-children a")
                 )
                     return;

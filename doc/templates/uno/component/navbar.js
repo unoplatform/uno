@@ -67,7 +67,7 @@ function initializeNavbar() {
 function updateLogo() {
     const curWidth = window.innerWidth;
     const headerLogo = document.getElementById('logo');
-    if (curWidth < 1112) {
+    if (curWidth < 1113) {
         const mobileLogo = new URL('UnoLogoSmall.png', headerLogo.src).href;
         headerLogo.src = mobileLogo;
     } else {
