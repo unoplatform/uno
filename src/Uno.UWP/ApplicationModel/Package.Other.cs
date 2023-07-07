@@ -39,7 +39,7 @@ public partial class Package
 
 	public string DisplayName { get; private set; } = "";
 
-	public Uri Logo { get; private set; } = new Uri("ms-appx://logo", UriKind.RelativeOrAbsolute);
+	public Uri? Logo { get; set; } = null;
 
 	internal static void SetEntryAssembly(Assembly entryAssembly)
 	{
