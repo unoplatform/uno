@@ -62,6 +62,7 @@ internal class InternalClient : Android.Webkit.WebViewClient
 	{
 		_coreWebView.DocumentTitle = view.Title;
 
+		_nativeWebViewWrapper.RefreshHistoryProperties();
 		_coreWebView.RaiseHistoryChanged();
 
 		var uri = !_nativeWebViewWrapper._wasLoadedFromString && !string.IsNullOrEmpty(url) ? new Uri(url) : null;
