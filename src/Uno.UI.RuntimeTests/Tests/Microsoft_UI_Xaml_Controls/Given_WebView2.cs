@@ -91,7 +91,7 @@ public class Given_WebView2
 
 		webView.NavigationCompleted += (sender, e) => navigated = true;
 		webView.CoreWebView2.Navigate("https://example.com/1");
-		await TestServices.WindowHelper.WaitFor(() => navigated);
+		await TestServices.WindowHelper.WaitFor(() => navigated, 3000);
 
 		Assert.IsFalse(webView.CoreWebView2.CanGoBack);
 		Assert.IsFalse(webView.CanGoBack);
@@ -100,14 +100,14 @@ public class Given_WebView2
 
 		navigated = false;
 		webView.CoreWebView2.Navigate("https://example.com/2");
-		await TestServices.WindowHelper.WaitFor(() => navigated);
+		await TestServices.WindowHelper.WaitFor(() => navigated, 3000);
 
 		Assert.IsTrue(webView.CoreWebView2.CanGoBack);
 		Assert.IsTrue(webView.CanGoBack);
 
 		navigated = false;
 		webView.GoBack();
-		await TestServices.WindowHelper.WaitFor(() => navigated);
+		await TestServices.WindowHelper.WaitFor(() => navigated, 3000);
 
 		Assert.IsFalse(webView.CoreWebView2.CanGoBack);
 		Assert.IsFalse(webView.CanGoBack);
