@@ -24,7 +24,7 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Core;
 using System.Text;
 
-#if XAMARIN_ANDROID
+#if __ANDROID__
 using View = Android.Views.View;
 using ViewGroup = Android.Views.ViewGroup;
 using Font = Android.Graphics.Typeface;

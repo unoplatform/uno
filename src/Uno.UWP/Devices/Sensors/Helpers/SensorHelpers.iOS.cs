@@ -1,5 +1,4 @@
-﻿#if __IOS__
-using Foundation;
+﻿using Foundation;
 using System;
 
 namespace Uno.Devices.Sensors.Helpers
@@ -51,4 +50,3 @@ namespace Uno.Devices.Sensors.Helpers
 		}
 	}
 }
-#endif

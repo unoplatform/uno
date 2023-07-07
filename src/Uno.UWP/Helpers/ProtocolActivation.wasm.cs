@@ -1,5 +1,4 @@
-﻿#if __WASM__
-using System;
+﻿using System;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Runtime.InteropServices.JavaScript;
@@ -114,4 +113,3 @@ namespace Uno.Helpers
 		}
 	}
 }
-#endif

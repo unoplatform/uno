@@ -1,9 +1,9 @@
 using System;
 using System.Linq;
 
-#if XAMARIN_ANDROID
+#if __ANDROID__
 using _Size = Windows.Foundation.Size;
-#elif XAMARIN_IOS_UNIFIED
+#elif __IOS__
 using _Size = Windows.Foundation.Size;
 #else
 using _Size = Windows.Foundation.Size;

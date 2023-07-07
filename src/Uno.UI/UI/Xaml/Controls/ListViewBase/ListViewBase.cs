@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
 using System.Windows.Input;
-#if XAMARIN_ANDROID
+#if __ANDROID__
 using _View = Android.Views.View;
-#elif XAMARIN_IOS
+#elif __IOS__
 using _View = UIKit.UIView;
 #else
 using View = Windows.UI.Xaml.FrameworkElement;

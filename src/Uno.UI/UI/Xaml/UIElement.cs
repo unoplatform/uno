@@ -983,11 +983,11 @@ namespace Windows.UI.Xaml
 
 		public void InvalidateMeasure()
 		{
-#if XAMARIN_ANDROID
+#if __ANDROID__
 			// Use a non-virtual version of the RequestLayout method, for performance.
 			base.RequestLayout();
 			SetLayoutFlags(LayoutFlag.MeasureDirty);
-#elif XAMARIN_IOS
+#elif __IOS__
 			SetNeedsLayout();
 			SetLayoutFlags(LayoutFlag.MeasureDirty);
 #elif __MACOS__

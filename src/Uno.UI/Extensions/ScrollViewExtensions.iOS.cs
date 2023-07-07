@@ -5,15 +5,8 @@ using System.Drawing;
 using ObjCRuntime;
 #endif
 
-#if XAMARIN_IOS_UNIFIED
 using UIKit;
 using CoreGraphics;
-#elif XAMARIN_IOS
-using MonoTouch.UIKit;
-using CGRect = System.Drawing.RectangleF;
-using nfloat = System.Single;
-using CGPoint = System.Drawing.PointF;
-#endif
 
 namespace Uno.UI.Extensions
 {

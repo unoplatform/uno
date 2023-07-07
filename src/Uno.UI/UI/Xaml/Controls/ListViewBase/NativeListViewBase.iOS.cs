@@ -19,12 +19,10 @@ using Uno.UI;
 using Windows.UI.Xaml.Data;
 using Uno.UI.Extensions;
 
-#if XAMARIN_IOS_UNIFIED
 using Foundation;
 using UIKit;
 using CoreGraphics;
 using CoreAnimation;
-#endif
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;

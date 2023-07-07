@@ -26,13 +26,13 @@ using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
 using LaunchActivatedEventArgs = Windows.ApplicationModel.Activation.LaunchActivatedEventArgs;
 #endif
 
-#if XAMARIN_ANDROID
+#if __ANDROID__
 using View = Android.Views.View;
 using ViewGroup = Android.Views.ViewGroup;
 using Font = Android.Graphics.Typeface;
 using Android.Graphics;
 using DependencyObject = System.Object;
-#elif XAMARIN_IOS
+#elif __IOS__
 using View = UIKit.UIView;
 using ViewGroup = UIKit.UIView;
 using UIKit;

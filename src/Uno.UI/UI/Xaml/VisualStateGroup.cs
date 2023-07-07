@@ -16,7 +16,7 @@ using Windows.Foundation.Collections;
 
 using static Windows.UI.Xaml.Media.Animation.Timeline.TimelineState;
 
-#if XAMARIN_IOS
+#if __IOS__
 using UIKit;
 #elif __MACOS__
 using AppKit;

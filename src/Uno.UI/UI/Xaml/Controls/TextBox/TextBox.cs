@@ -804,7 +804,7 @@ namespace Windows.UI.Xaml.Controls
 
 		#region TextAlignment DependencyProperty
 
-#if XAMARIN_ANDROID
+#if __ANDROID__
 		public new TextAlignment TextAlignment
 #else
 		public TextAlignment TextAlignment

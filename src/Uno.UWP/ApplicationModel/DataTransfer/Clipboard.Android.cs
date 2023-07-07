@@ -1,5 +1,4 @@
-﻿#if __ANDROID__
-#nullable disable // Not supported by WinUI yet
+﻿#nullable disable // Not supported by WinUI yet
 
 using Android.Content;
 using System;
@@ -224,4 +223,3 @@ namespace Windows.ApplicationModel.DataTransfer
 		private static partial Regex TagMatch();
 	}
 }
-#endif

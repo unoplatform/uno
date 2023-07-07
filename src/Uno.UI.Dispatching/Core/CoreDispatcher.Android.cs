@@ -1,5 +1,4 @@
-﻿#if __ANDROID__
-using Android.OS;
+﻿using Android.OS;
 using Android.Runtime;
 using Android.Views;
 using Java.Lang;
@@ -161,4 +160,3 @@ namespace Uno.UI.Dispatching
 		}
 	}
 }
-#endif

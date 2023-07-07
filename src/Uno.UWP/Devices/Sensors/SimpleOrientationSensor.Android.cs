@@ -1,6 +1,5 @@
 ﻿#nullable enable
 
-#if __ANDROID__
 using System;
 using Android.App;
 using Android.Content;
@@ -265,4 +264,3 @@ namespace Windows.Devices.Sensors
 		#endregion
 	}
 }
-#endif

@@ -296,7 +296,7 @@ namespace Windows.UI.Xaml.Controls
 				throw new NotSupportedException($"{nameof(VirtualizingPanelLayouter)} is only used for measuring and arranging child views.");
 			}
 
-#if XAMARIN_ANDROID
+#if __ANDROID__
 			protected override void MeasureChild(Android.Views.View view, int widthSpec, int heightSpec)
 			{
 				view.Measure(widthSpec, heightSpec);

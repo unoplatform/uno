@@ -119,11 +119,7 @@ namespace Windows.UI.Xaml
 
 		internal Windows.Foundation.Point GetPosition(Point position, global::Windows.UI.Xaml.UIElement relativeTo)
 		{
-#if __IOS__
-			return relativeTo.ConvertPointToCoordinateSpace(position, relativeTo);
-#elif __MACOS__
 			throw new NotImplementedException();
-#endif
 		}
 
 		/// <inheritdoc />

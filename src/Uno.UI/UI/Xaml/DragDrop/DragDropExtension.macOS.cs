@@ -1,4 +1,3 @@
-#if __MACOS__
 #nullable enable
 
 using System;
@@ -327,5 +326,3 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 		}
 	}
 }
-
-#endif

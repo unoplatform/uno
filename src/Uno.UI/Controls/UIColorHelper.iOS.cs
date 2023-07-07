@@ -1,11 +1,5 @@
 ﻿using System;
-
-#if XAMARIN_IOS_UNIFIED
 using UIKit;
-#elif XAMARIN_IOS
-using MonoTouch.UIKit;
-using nfloat = System.Single;
-#endif
 
 #if NET6_0_OR_GREATER
 using ObjCRuntime;

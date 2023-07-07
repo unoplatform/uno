@@ -1,5 +1,4 @@
-﻿#if __WASM__
-using Uno;
+﻿using Uno;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -115,5 +114,3 @@ namespace Uno.Devices.Sensors
 			=> global::Windows.Devices.Sensors.Accelerometer.DispatchReading(x, y, z);
 	}
 }
-
-#endif

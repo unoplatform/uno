@@ -7,10 +7,10 @@ using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.UI.Xaml.Media.Animation;
 
-#if XAMARIN_ANDROID
+#if __ANDROID__
 using Android.Views;
 using NativeView = Android.Views.View;
-#elif XAMARIN_IOS
+#elif __IOS__
 using NativeView = UIKit.UIView;
 #else
 using NativeView = System.Object;

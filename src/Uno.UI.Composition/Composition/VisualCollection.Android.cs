@@ -1,6 +1,5 @@
 #nullable enable
 
-#if __ANDROID__
 using System;
 
 namespace Windows.UI.Composition
@@ -32,4 +31,3 @@ namespace Windows.UI.Composition
 		}
 	}
 }
-#endif

@@ -5,9 +5,9 @@ using System.Text;
 using Uno.Extensions;
 using Windows.UI.Xaml.Controls;
 
-#if XAMARIN_ANDROID
+#if __ANDROID__
 using _View = Android.Views.View;
-#elif XAMARIN_IOS_UNIFIED
+#elif __IOS__
 using _View = UIKit.UIView;
 using UIKit;
 #elif __MACOS__
