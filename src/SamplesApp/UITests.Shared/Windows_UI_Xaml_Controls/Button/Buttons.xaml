@@ -92,6 +92,14 @@
 			<Button Content="Clear"
 					Command="{Binding ClearCommand}" />
 			<ItemsControl ItemsSource="{Binding Output}" x:Name="myItemsControl" />
+			<Button Content="This button changes color when hovered">
+				<Button.Resources>
+					<ResourceDictionary>
+								<SolidColorBrush x:Key="ButtonForeground" Color="Yellow"/>
+								<SolidColorBrush x:Key="ButtonForegroundPointerOver" Color="Red"/>
+					</ResourceDictionary>
+				</Button.Resources>
+			</Button>
 		</StackPanel>
 	</Grid>
 </UserControl>
