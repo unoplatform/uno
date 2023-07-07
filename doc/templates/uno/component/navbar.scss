@@ -13,8 +13,10 @@
  * This causes relative units (em, rem) to behave differently.
  */
 
+ $navbar-breakpoint: 1113px;
+
 .visibility-opacity-transition {
-  @include media-breakpoint-up(lg) {
+  @media (min-width: $navbar-breakpoint) {
     visibility: hidden;
     opacity: 0;
     transition: visibility 100ms, opacity 100ms ease-in-out;
@@ -45,15 +47,16 @@
   #menu-menu-principal {
     float: right;
     list-style: none;
+    padding-left: 0;
 
-    @include media-breakpoint-down(lg) {
+    @media (max-width: $navbar-breakpoint) {
       width: 100%;
       // 70vh is a magic value found by trial and error.
       max-height: 70vh;
       overflow-y: auto;
     }
 
-    @include media-breakpoint-up(lg) {
+    @media (min-width: $navbar-breakpoint) {
       display: flex;
     }
   }
@@ -69,7 +72,7 @@
       width: 100%;
     }
 
-    @include media-breakpoint-up(lg) {
+    @media (min-width: $navbar-breakpoint) {
       min-width: 120px;
     }
   }
@@ -89,7 +92,7 @@
       margin-top: 3px;
     }
 
-    @media (max-width: 979px) {
+    @media (max-width: $navbar-breakpoint) {
       display: block !important;
     }
   }
@@ -115,7 +118,7 @@
         color: $purple;
       }
 
-      @include media-breakpoint-up(lg) {
+      @media (min-width: $navbar-breakpoint) {
         font-size: 19px;
         line-height: 17px;
       }
@@ -126,7 +129,7 @@
      */
     & > ul > li {
 
-      @include media-breakpoint-up(lg) {
+      @media (min-width: $navbar-breakpoint) {
         margin: 0 16px;
         align-self: center;
         min-width: max-content;
@@ -152,7 +155,7 @@
             margin-left: 12px;
             vertical-align: top;
 
-            @include media-breakpoint-up(lg) {
+            @media (min-width: $navbar-breakpoint) {
               line-height: 21px;
               font: normal normal normal 15px/1 FontAwesome;
             }
@@ -163,7 +166,7 @@
           @extend .visibility-opacity-transition;
           width: 100%;
 
-          @include media-breakpoint-up(lg) {
+          @media (min-width: $navbar-breakpoint) {
             width: max-content;
             display: flex;
             position: absolute;
@@ -183,7 +186,7 @@
             border-bottom: 1px solid $lightblue;
             background: $white;
 
-            @include media-breakpoint-up(lg) {
+            @media (min-width: $navbar-breakpoint) {
               border: none;
             }
 
@@ -290,7 +293,7 @@
 }
 
 #navbar {
-  @media (max-width: 979px) {
+  @media (max-width: $navbar-breakpoint) {
 
     overflow: auto !important;
 
