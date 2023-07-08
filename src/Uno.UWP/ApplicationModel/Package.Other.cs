@@ -39,7 +39,7 @@ public partial class Package
 
 	public string DisplayName { get; private set; } = "";
 
-	public Uri? Logo { get; set; } = null;
+	public Uri? Logo { get; set; }
 
 	internal static void SetEntryAssembly(Assembly entryAssembly)
 	{
