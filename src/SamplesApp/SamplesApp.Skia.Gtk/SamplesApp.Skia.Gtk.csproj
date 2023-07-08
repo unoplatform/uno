@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFrameworks>net7.0;net8.0</TargetFrameworks>
+		<TargetFrameworks>$(NetSkiaPreviousAndLatest)</TargetFrameworks>
 		<RollForward>Major</RollForward>
 		<ApplicationManifest>app.manifest</ApplicationManifest>
 	</PropertyGroup>

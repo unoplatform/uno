@@ -1,7 +1,7 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras">
 
 	<PropertyGroup>
-		<TargetFrameworks>uap10.0.19041</TargetFrameworks>
+		<TargetFrameworks>$(NetUWPOrWinUI)</TargetFrameworks>
 		<NoWarn>$(NoWarn);NU5100;NU5118;NU5128</NoWarn>
 		<Deterministic>true</Deterministic>
 		
@@ -41,10 +41,6 @@
 		<PackageReference Include="Microsoft.Identity.Client" Version="4.47.0" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)' != 'uap10.0.19041'">
-		<ProjectReference Include="..\..\Uno.UI\Uno.UI.csproj" />
-	</ItemGroup>
-
 	<Import Project="..\..\..\build\nuget\uno.winui.cross-runtime.targets"/>
 
 	<Target Name="_UnoToolkitOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">
@@ -80,20 +76,6 @@
 		</ItemGroup>
 
 	</Target>
-
-	<!-- Run on windows only to get the nuget package built properly (Mono 6.10 crashes with this on OSX) -->
-	<ItemGroup Condition="'$(CI_Build)'=='true' and $([MSBuild]::IsOsPlatform('Windows')) and '$(TargetFramework)' != 'uap10.0.19041'">
-		<ProjectReference Include="..\Uno.UI.MSAL\Uno.UI.MSAL.Skia.csproj">
-			<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-			<SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
-			<UndefineProperties>TargetFramework</UndefineProperties>
-		</ProjectReference>
-		<ProjectReference Include="..\Uno.UI.MSAL\Uno.UI.MSAL.Wasm.csproj">
-			<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-			<SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
-			<UndefineProperties>TargetFramework</UndefineProperties>
-		</ProjectReference>
-	</ItemGroup>
 
 	<!-- Workaround for missing target running on .NET 5 -->
 	<Target Name="GetTargetPath" />

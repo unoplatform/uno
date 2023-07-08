@@ -53,6 +53,20 @@
 		<ExtrasEnableDefaultPageItems>false</ExtrasEnableDefaultPageItems>
 		<EnableDefaultPageItems>false</EnableDefaultPageItems>
 		<EnableAutomaticXamlPageInclusion>true</EnableAutomaticXamlPageInclusion>
+
+		<NetLatest>net8.0</NetLatest>
+		<NetPrevious>net7.0</NetPrevious>
+
+		<NetLatestNetCoreMobile>$(NetLatest)-android;$(NetLatest)-ios;$(NetLatest)-maccatalyst;$(NetLatest)-macos</NetLatestNetCoreMobile>
+		<NetPreviousNetCoreMobile>$(NetPrevious)-android;$(NetPrevious)-ios;$(NetPrevious)-maccatalyst;$(NetPrevious)-macos</NetPreviousNetCoreMobile>
+
+		<NetWasmPreviousAndLatest>net7.0;net8.0</NetWasmPreviousAndLatest>
+		<NetSkiaPreviousAndLatest>net7.0;net8.0</NetSkiaPreviousAndLatest>
+		<NetReferencePreviousAndLatest>net7.0;net8.0</NetReferencePreviousAndLatest>
+		<NetUnitTests>net7.0</NetUnitTests>
+
+		<NetUWPOrWinUI>uap10.0.19041</NetUWPOrWinUI>
+		<NetUWPOrWinUI Condition="'$(UNO_UWP_BUILD)'!='true'">net7.0-windows10.0.19041.0</NetUWPOrWinUI>
 	</PropertyGroup>
 
 	<PropertyGroup>

@@ -42,13 +42,6 @@
 		</Otherwise>
 	</Choose>
 
-	<Target Name="AndroidResourceGenWorkaround"
-			BeforeTargets="Build"
-			Condition="'$(AndroidUseIntermediateDesignerFile)'=='True' and $(IsAndroid) and '$(TargetFramework)'!='net8.0-android' and '$(TargetFramework)'!='net7.0-android'">
-		<MakeDir Directories="obj\$(TargetFramework)\Resources" />
-		<WriteLinesToFile File="$(AndroidResgenFile)" Lines="// Empty Content from uno.ui Directory.Build.targets." />
-	</Target>
-
 	<Target Name="AndroidResourceGenWorkaround_16_2" AfterTargets="_UpdateAndroidResgen" Condition="'$(AndroidUseIntermediateDesignerFile)'=='True' and !Exists($(_AndroidResourceDesignerFile))">
 		<WriteLinesToFile File="$(_AndroidResourceDesignerFile)" Lines="// Empty Content from uno.ui Directory.Build.targets." />
 	</Target>
