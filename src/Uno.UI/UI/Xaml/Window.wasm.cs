@@ -32,7 +32,6 @@ namespace Windows.UI.Xaml
 
 		partial void InitPlatform()
 		{
-			Dispatcher = CoreDispatcher.Main;
 			CoreWindow = CoreWindow.GetOrCreateForCurrentThread();
 		}
 
