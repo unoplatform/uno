@@ -3,6 +3,8 @@
 		<TargetFrameworks>$(NetWasmPreviousAndLatest)</TargetFrameworks>
 	</PropertyGroup>
 
+	<Import Project="../../targetframework-override.props" />
+
 	<PropertyGroup>
 		<Deterministic>true</Deterministic>
 		<AssemblyName>Uno.UI.MediaPlayer.WebAssembly</AssemblyName>
