@@ -91,39 +91,28 @@
 		<PackageReference Update="SkiaSharp.NativeAssets.macos" Version="2.88.3" />
 		<PackageReference Update="Svg.Skia" Version="0.5.18" />
 
-	<PackageReference Update="HarfBuzzSharp.NativeAssets.Linux" Version="2.8.2.3" />
-	<PackageReference Update="SkiaSharp.HarfBuzz" Version="2.88.3" />
-	<PackageReference Update="GtkSharp" Version="3.24.24.38" />
-	<PackageReference Update="System.Json" Version="4.7.1" />
-	<PackageReference Update="FluentAssertions" Version="5.10.3" />
-	<PackageReference Update="Microsoft.Extensions.Logging.Console" Version="5.0.0" />
-	<PackageReference Update="Microsoft.Extensions.Logging.Debug" Version="5.0.0" />
-	<PackageReference Update="Microsoft.Extensions.Logging.Filter" Version="1.1.2" />
-	<PackageReference Update="Uno.Extensions.Logging.WebAssembly.Console" Version="1.4.0" />
-	<PackageReference Update="Uno.Extensions.Logging.WebAssembly.OSLog" Version="1.4.0" />
-	<PackageReference Update="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" />
-	<PackageReference Update="Microsoft.NETFramework.ReferenceAssemblies.net48" Version="1.0.3" />
-	<PackageReference Update="Microsoft.NETFramework.ReferenceAssemblies.net472" Version="1.0.3" />
-	<PackageReference Update="Microsoft.NETFramework.ReferenceAssemblies.net461" Version="1.0.3" />
-	<PackageReference Update="Newtonsoft.Json" Version="13.0.2" />
+		<PackageReference Update="HarfBuzzSharp.NativeAssets.Linux" Version="2.8.2.3" />
+		<PackageReference Update="SkiaSharp.HarfBuzz" Version="2.88.3" />
+		<PackageReference Update="GtkSharp" Version="3.24.24.38" />
+		<PackageReference Update="System.Json" Version="4.7.1" />
+		<PackageReference Update="FluentAssertions" Version="5.10.3" />
+		<PackageReference Update="Microsoft.Extensions.Logging.Console" Version="5.0.0" />
+		<PackageReference Update="Microsoft.Extensions.Logging.Debug" Version="5.0.0" />
+		<PackageReference Update="Microsoft.Extensions.Logging.Filter" Version="1.1.2" />
+		<PackageReference Update="Uno.Extensions.Logging.WebAssembly.Console" Version="1.4.0" />
+		<PackageReference Update="Uno.Extensions.Logging.WebAssembly.OSLog" Version="1.4.0" />
+		<PackageReference Update="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" />
+		<PackageReference Update="Microsoft.NETFramework.ReferenceAssemblies.net48" Version="1.0.3" />
+		<PackageReference Update="Microsoft.NETFramework.ReferenceAssemblies.net472" Version="1.0.3" />
+		<PackageReference Update="Microsoft.NETFramework.ReferenceAssemblies.net461" Version="1.0.3" />
+		<PackageReference Update="Newtonsoft.Json" Version="13.0.2" />
 		<PackageReference Update="CommunityToolkit.Mvvm" Version="$(CommunityToolkitMvvmVersion)" />
-  </ItemGroup>
-
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net8.0-android'">
-	<PackageReference Update="Xamarin.AndroidX.Legacy.Support.v4" Version="1.0.0.10" />
-	  <PackageReference Update="Xamarin.AndroidX.AppCompat" Version="1.3.1.3" />
-	  <PackageReference Update="Xamarin.AndroidX.RecyclerView" Version="1.2.1.3" />
-	  <PackageReference Update="Xamarin.AndroidX.Lifecycle.LiveData" Version="2.3.1.3" />
-	  <PackageReference Update="Xamarin.AndroidX.Fragment" Version="1.3.6.3" />
-  </ItemGroup>
-
-	<ItemGroup Condition=" '$(TargetFramework)' == 'net7.0-android'">
 		<PackageReference Update="Xamarin.AndroidX.Legacy.Support.v4" Version="1.0.0.10" />
 		<PackageReference Update="Xamarin.AndroidX.AppCompat" Version="1.3.1.3" />
 		<PackageReference Update="Xamarin.AndroidX.RecyclerView" Version="1.2.1.3" />
 		<PackageReference Update="Xamarin.AndroidX.Lifecycle.LiveData" Version="2.3.1.3" />
 		<PackageReference Update="Xamarin.AndroidX.Fragment" Version="1.3.6.3" />
-	</ItemGroup>
+  </ItemGroup>
 
 	<Target Name="ValidateSolutionPath" BeforeTargets="Build">
 		<Error Condition="$(MSBuildThisFileDirectory.Contains(' '))"
