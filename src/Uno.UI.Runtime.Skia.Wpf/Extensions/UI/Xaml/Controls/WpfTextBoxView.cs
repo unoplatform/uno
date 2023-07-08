@@ -25,7 +25,7 @@ internal abstract class WpfTextBoxView : IOverlayTextBoxView
 	public bool IsDisplayed => RootElement.Parent is not null;
 
 	public abstract (int start, int length) Selection { get; set; }
-	
+
 	public abstract (int start, int length) SelectionBeforeKeyDown { get; protected set; }
 
 	/// <summary>

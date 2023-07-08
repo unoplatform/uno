@@ -51,7 +51,7 @@ internal class PasswordTextBoxView : WpfTextBoxView
 		get => (_textBox.SelectionStart, _textBox.SelectionLength);
 		set => (_textBox.SelectionStart, _textBox.SelectionLength) = value;
 	}
-	
+
 	public override (int start, int length) SelectionBeforeKeyDown
 	{
 		get => (_selectionBeforeKeyDown.start, _selectionBeforeKeyDown.length);
@@ -128,7 +128,7 @@ internal class PasswordTextBoxView : WpfTextBoxView
 	private void OnCommonTextChanged() => _textChangedWatcher?.Invoke(this, EventArgs.Empty);
 
 	private WpfElement GetDisplayedElement() => _textBox.Visibility == Visibility.Visible ? _textBox : _passwordBox;
-	
+
 	private void OnPreviewKeyDown(object sender, KeyEventArgs e)
 	{
 		// WpfTextBox's cursor/selection position isn't accessible even with reflection

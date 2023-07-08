@@ -19,9 +19,9 @@ public sealed partial class TextBox_Keyboard_Navigation : UserControl
 	public void Grid_KeyDown(object sender, KeyRoutedEventArgs keyRoutedEventArgs)
 	{
 		if (keyRoutedEventArgs.Key == VirtualKey.Left ||
-		    keyRoutedEventArgs.Key == VirtualKey.Up ||
-		    keyRoutedEventArgs.Key == VirtualKey.Right ||
-		    keyRoutedEventArgs.Key == VirtualKey.Down)
+			keyRoutedEventArgs.Key == VirtualKey.Up ||
+			keyRoutedEventArgs.Key == VirtualKey.Right ||
+			keyRoutedEventArgs.Key == VirtualKey.Down)
 		{
 			myContent.Text += $"{keyRoutedEventArgs.Key} bubbled up to outer grid\n";
 		}

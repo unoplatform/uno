@@ -959,10 +959,10 @@ namespace Windows.UI.Xaml.Controls
 		protected override void OnKeyDown(KeyRoutedEventArgs args)
 		{
 			base.OnKeyDown(args);
-			
-			
+
+
 			// On skia, sometimes SelectionStart is updated to a new value before KeyDown is fired, so
-			// we need to get selectionStart from another source on Skia. 
+			// we need to get selectionStart from another source on Skia.
 #if __SKIA__
 			var selectionStart = TextBoxView.SelectionBeforeKeyDown.start;
 #else
