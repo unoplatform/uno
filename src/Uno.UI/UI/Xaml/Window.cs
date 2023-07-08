@@ -16,6 +16,7 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Markup;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 using Uno.Helpers.Theming;
+using Uno.UI.Xaml;
 
 namespace Microsoft.UI.Xaml
 {
@@ -38,9 +39,12 @@ namespace Microsoft.UI.Xaml
 		private List<WeakEventHelper.GenericEventHandler> _sizeChangedHandlers = new List<WeakEventHelper.GenericEventHandler>();
 		private List<WeakEventHelper.GenericEventHandler> _backgroundChangedHandlers;
 
-		internal Window(bool internalUse)
+		internal Window(WindowType windowType)
 		{
-			if (!internalUse)
+			_windowType = windowType;
+
+#if !__SKIA__
+			if (windowType != WindowType.CoreWindow)
 			{
 				if (this.Log().IsEnabled(LogLevel.Warning))
 				{
@@ -50,6 +54,10 @@ namespace Microsoft.UI.Xaml
 						"between Uno Platform targets and Windows App SDK).");
 				}
 			}
+#endif
+
+			Dispatcher = CoreDispatcher.Main;
+			CoreWindow = CoreWindow.GetOrCreateForCurrentThread();
 
 			InitPlatform();
 
@@ -108,7 +116,7 @@ namespace Microsoft.UI.Xaml
 				if (oldContent != null)
 				{
 					oldContent.IsWindowRoot = false;
-
+					
 					if (oldContent is FrameworkElement oldRoot)
 					{
 						oldRoot.SizeChanged -= RootSizeChanged;
