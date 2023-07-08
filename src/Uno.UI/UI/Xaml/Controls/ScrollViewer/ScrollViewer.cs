@@ -1235,7 +1235,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			// We animate only if the user clicked in the scroll bar, and disable otherwise
 			// (especially, we disable animation when dragging the thumb)
-			
+
 			// On Windows, ScrollViewer ignores ScrollBar's SmallChange/LargeChange values.
 			// No matter how SmallChange/LargeChange are set, ScrollViewer will always scroll by 16 (instead of SmallChange)
 			// or ScrollViewer's Height (instead of LargeChange).
@@ -1260,7 +1260,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			// We animate only if the user clicked in the scroll bar, and disable otherwise
 			// (especially, we disable animation when dragging the thumb)
-			
+
 			// On Windows, ScrollViewer ignores ScrollBar's SmallChange/LargeChange values.
 			// No matter how SmallChange/LargeChange are set, ScrollViewer will always scroll by 16 (instead of SmallChange)
 			// or ScrollViewer's Width (instead of LargeChange).
