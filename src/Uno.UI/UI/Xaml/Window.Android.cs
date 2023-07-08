@@ -30,9 +30,6 @@ namespace Microsoft.UI.Xaml
 
 		partial void InitPlatform()
 		{
-			Dispatcher = CoreDispatcher.Main;
-			CoreWindow = CoreWindow.GetOrCreateForCurrentThread();
-
 			CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBarChanged
 				+= RaiseNativeSizeChanged;
 		}
