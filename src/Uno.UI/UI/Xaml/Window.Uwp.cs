@@ -9,13 +9,10 @@ partial class Window
 {
 	private bool _windowCreatedRaised;
 
-#if !HAS_UNO_WINUI
-#pragma warning disable CS0067
-	/// <summary>
-	/// Occurs when the window has closed.
-	/// </summary>
-	public event WindowClosedEventHandler? Closed;
-#pragma warning restore CS0067
+#if DEBUG
+	internal Window() : this(Uno.UI.Xaml.WindowType.ContentRoot)
+	{
+	}
 #endif
 
 	internal void RaiseCreated()
