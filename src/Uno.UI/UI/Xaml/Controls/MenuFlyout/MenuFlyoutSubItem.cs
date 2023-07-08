@@ -39,7 +39,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public string Text
 		{
-			get => (string)this.GetValue(TextProperty);
+			get => (string)this.GetValue(TextProperty) ?? "";
 			set => SetValue(TextProperty, value);
 		}
 
