@@ -1,6 +1,7 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
 	<PropertyGroup>
-		<TargetFrameworks>$(NetLatestNetCoreMobile);$(NetPreviousNetCoreMobile)</TargetFrameworks>
+		<TargetFrameworks>$(NetLatest)-android;$(NetLatest)-ios;$(NetLatest)-maccatalyst</TargetFrameworks>
+		<TargetFrameworks>$(TargetFrameworks);$(NetPrevious)-android;$(NetPrevious)-ios;$(NetPrevious)-maccatalyst</TargetFrameworks>
 	</PropertyGroup>
 
 	<Import Project="../targetframework-override.props" />
