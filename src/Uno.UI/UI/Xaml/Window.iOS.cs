@@ -41,7 +41,6 @@ namespace Windows.UI.Xaml
 
 			ObserveOrientationAndSize();
 
-			Dispatcher = CoreDispatcher.Main;
 			CoreWindow = new CoreWindow(_nativeWindow);
 
 			_nativeWindow.SetOwner(CoreWindow);
