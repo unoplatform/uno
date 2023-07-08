@@ -18,7 +18,7 @@
 		<_isWindows>$([MSBuild]::IsOsPlatform(Windows))</_isWindows>
 	</PropertyGroup>
 
-	<Import Project="../targetframework-override.props" />
+	<Import Project="../targetframework-override-android.props" />
 
 	<!--Workaround because this variable is missing by default. See https://github.com/xamarin/xamarin-android/issues/2452 -->
 	<PropertyGroup>
