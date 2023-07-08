@@ -24,9 +24,6 @@ public sealed partial class Window
 
 	partial void InitPlatform()
 	{
-		Dispatcher = CoreDispatcher.Main;
-		CoreWindow = CoreWindow.GetOrCreateForCurrentThread();
-
 		Compositor = new Compositor();
 	}
 

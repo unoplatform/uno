@@ -16,6 +16,7 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Markup;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 using Uno.Helpers.Theming;
+using Uno.UI.Xaml;
 
 namespace Windows.UI.Xaml
 {
@@ -38,9 +39,12 @@ namespace Windows.UI.Xaml
 		private List<WeakEventHelper.GenericEventHandler> _sizeChangedHandlers = new List<WeakEventHelper.GenericEventHandler>();
 		private List<WeakEventHelper.GenericEventHandler> _backgroundChangedHandlers;
 
-		internal Window(bool internalUse)
+		internal Window(WindowType windowType)
 		{
-			if (!internalUse)
+			_windowType = windowType;
+
+#if !__SKIA__
+			if (windowType != WindowType.CoreWindow)
 			{
 				if (this.Log().IsEnabled(LogLevel.Warning))
 				{
@@ -50,6 +54,10 @@ namespace Windows.UI.Xaml
 						"between Uno Platform targets and Windows App SDK).");
 				}
 			}
+#endif
+
+			Dispatcher = CoreDispatcher.Main;
+			CoreWindow = CoreWindow.GetOrCreateForCurrentThread();
 
 			InitPlatform();
 
@@ -111,7 +119,7 @@ namespace Windows.UI.Xaml
 				if (oldContent != null)
 				{
 					oldContent.IsWindowRoot = false;
-
+					
 					if (oldContent is FrameworkElement oldRoot)
 					{
 						oldRoot.SizeChanged -= RootSizeChanged;
@@ -356,6 +364,7 @@ namespace Windows.UI.Xaml
 
 		#region Drag and Drop
 		private DragRoot _dragRoot;
+		private readonly WindowType _windowType;
 
 		internal DragDropManager DragDrop { get; private set; }
 
