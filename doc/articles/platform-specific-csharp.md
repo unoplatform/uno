@@ -18,31 +18,55 @@ There are two ways to restrict code or XAML markup to be used only on a specific
 The structure of an Uno app created with the default Visual Studio template is [explained in more detail here](uno-app-solution-structure.md).
  
  
- ## `#if` conditionals
+## `#if` conditionals
  
- The most basic means of authoring platform-specific code is to use `#if` conditionals:
+The most basic means of authoring platform-specific code is to use `#if` conditionals:
  
- ```csharp
- #if MY_SYMBOL
- Console.WriteLine("MY_SYMBOL is defined for this compilation");
- ```
+```csharp
+#if MY_SYMBOL
+Console.WriteLine("MY_SYMBOL is defined for this compilation");
+```
  
- If the supplied condition is not met, e.g. if `MY_SYMBOL` is not defined, then the enclosed code will be ignored by the compiler.
- 
- The following conditional symbols are predefined for each platform:
- 
- | Platform    | Symbol        |
- | ----------- | ------------- |
- | UWP         | `NETFX_CORE`  |
- | Android     | `__ANDROID__` |
- | iOS         | `__IOS__`     |
- | WebAssembly | `HAS_UNO_WASM`|
- | macOS       | `__MACOS__`   |
- | Skia        | `HAS_UNO_SKIA`|
- 
-Note that you can combine conditionals with boolean operators, e.g. `#if __ANDROID__ || __IOS__`. 
+If the supplied condition is not met, e.g. if `MY_SYMBOL` is not defined, then the enclosed code will be ignored by the compiler.
 
-You can define your own conditional compilation symbols per project in the 'Build' tab in the project's properties.
+The following conditional symbols are predefined for each Uno platform:
+
+| Platform        | Symbol        |
+| --------------- | ------------- |
+| Android         | `__ANDROID__` |
+| iOS             | `__IOS__`     |
+| WebAssembly     | `HAS_UNO_WASM`|
+| macOS           | `__MACOS__`   |
+| Skia            | `HAS_UNO_SKIA`|
+| **Non-Windows** | `HAS_UNO`     |
+
+> [!TIP]
+> Conditionals can be combined with boolean operators, e.g. `#if __ANDROID__ || __IOS__`. It is also possible define custom conditional compilation symbols per project in the 'Build' tab in the project's properties.
+
+### Windows-specific code
+
+On Windows (the Windows head project), an Uno Platform application isn't using Uno.UI at all. It's compiled just like a single-platform desktop application, using Microsoft's own tooling. For that reason, the `HAS_UNO` symbol is not defined on Windows. This aspect can optionally be leveraged to write code specifically intended for Uno.
+
+Apps generated with the default `unoapp` solution template only use **Windows App SDK** when targeting Windows. This is the recommended path for new Windows projects. There is no special symbol defined by the Windows project for this case.
+
+Instead, check whether `HAS_UNO` is defined to include code that specifically targets Uno.UI and Windows separately:
+
+```csharp
+#if HAS_UNO
+Console.WriteLine("Uno Platform - Pixel-perfect WinUI apps that run everywhere");
+#else
+Console.WriteLine("Windows - Built with Microsoft's own tooling");
+#endif
+```
+
+Apps containing a **UWP** project that have not yet migrated to the standard **Uno Platform App** template define a conditional compilation symbol when targeting Windows:
+
+| App model   | Symbol        |
+| ----------- | ------------- |
+| UWP         | `NETFX_CORE`  |
+
+> [!TIP]
+> `NETFX_CORE` is used for non-typical scenarios that require building for Windows App SDK and UWP together.
 
 ## Type aliases
 
