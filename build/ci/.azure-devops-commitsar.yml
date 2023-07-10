@@ -14,10 +14,11 @@ jobs:
     fetchDepth: 0
 
   - bash: |
-      curl -L -O https://github.com/aevea/commitsar/releases/download/v0.20.1/commitsar_0.20.1_linux_amd64.tar.gz
+      curl -L -O https://github.com/aevea/commitsar/releases/download/v0.20.2/commitsar_0.20.2_linux_amd64.tar.gz
       tar -xzf commitsar_0.20.1_linux_amd64.tar.gz
       export COMMITSAR_CONFIG_PATH=$(build.sourcesdirectory)/build
-      GIT_DEPTH=0 ./commitsar
+      export GIT_DEPTH=500
+      ./commitsar --verbose
 
     condition: ne(variables['System.PullRequest.PullRequestNumber'], '')
 
