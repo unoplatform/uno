@@ -83,6 +83,14 @@ namespace UITests.Shared.Windows_System
 
 		private async void OpenFolder()
 		{
+			var path = ApplicationData.Current.LocalFolder;
+			await Launcher.LaunchFolderAsync(path);
+		}
+
+		public ICommand OpenFolderPathCommand => GetOrCreateCommand(OpenFolderPath);
+
+		private async void OpenFolderPath()
+		{
 			var path = ApplicationData.Current.LocalFolder.Path;
 			await Launcher.LaunchFolderPathAsync(path);
 		}

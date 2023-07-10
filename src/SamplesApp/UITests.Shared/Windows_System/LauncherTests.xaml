@@ -18,7 +18,8 @@
 		</TextBlock>
 		<Button Command="{Binding LaunchCommand}">Launch</Button>
 		<TextBlock Foreground="Red" Text="{Binding Error}" />
-        <Button Command="{Binding OpenFolderCommand}">Open sample folder</Button>
-        <Button Command="{Binding OpenFileCommand}">Open sample file</Button>
+		<Button Command="{Binding OpenFolderCommand}">Open sample folder</Button>
+		<Button Command="{Binding OpenFolderPathCommand}">Open sample folder path</Button>
+		<Button Command="{Binding OpenFileCommand}">Open sample file</Button>
 	</StackPanel>
 </UserControl>
