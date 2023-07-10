@@ -2,68 +2,92 @@
 
 using System;
 using System.Diagnostics;
+using System.IO;
 using System.Threading.Tasks;
 
-using Uno.Extensions;
 using Uno.Extensions.System;
 using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
+using Windows.Storage;
+using Windows.Web.AtomPub;
 
-namespace Windows.System
+namespace Windows.System;
+
+public static partial class Launcher
 {
-	public static partial class Launcher
+	private static readonly Lazy<ILauncherExtension?> _launcherExtension = new Lazy<ILauncherExtension?>(() =>
 	{
-		private static readonly Lazy<ILauncherExtension?> _launcherExtension = new Lazy<ILauncherExtension?>(() =>
+		if (ApiExtensibility.CreateInstance<ILauncherExtension>(typeof(Launcher), out var launcherExtension))
 		{
-			if (ApiExtensibility.CreateInstance<ILauncherExtension>(typeof(Launcher), out var launcherExtension))
-			{
-				return launcherExtension;
-			}
-			return null;
-		});
+			return launcherExtension;
+		}
+		return null;
+	});
 
-		public static async Task<bool> LaunchUriPlatformAsync(Uri uri)
+	public static async Task<bool> LaunchUriPlatformAsync(Uri uri)
+	{
+		if (_launcherExtension.Value != null)
 		{
-			if (_launcherExtension.Value != null)
-			{
-				return await _launcherExtension.Value.LaunchUriAsync(uri);
-			}
-			return await LaunchUriFallbackAsync(uri);
+			return await _launcherExtension.Value.LaunchUriAsync(uri);
+		}
+		return await LaunchUriFallbackAsync(uri);
+	}
+
+	private static async Task<bool> LaunchFolderPathPlatformAsync(string path)
+	{
+		if (_launcherExtension.Value != null)
+		{
+			return await _launcherExtension.Value.LaunchFolderAsync(path);
 		}
 
-		private static Task<bool> LaunchUriFallbackAsync(Uri uri)
-		{
-			try
-			{
-				var processStartInfo = new ProcessStartInfo(uri.OriginalString)
-				{
-					UseShellExecute = true,
-					Verb = "open"
-				};
+		return false;
+	}
 
-				var process = new Process();
-				process.StartInfo = processStartInfo;
-				return Task.FromResult(process.Start());
-			}
-			catch (Exception ex)
-			{
-				if (typeof(Launcher).Log().IsEnabled(LogLevel.Error))
-				{
-					typeof(Launcher).Log().LogError($"Could not launch URI - {ex}");
-				}
-				return Task.FromResult(false);
-			}
+	private static Task<bool> LaunchFolderPlatformAsync(IStorageFolder folder) =>
+		LaunchFolderPathPlatformAsync(folder.Path);
+
+	private static async Task<bool> LaunchFilePlatformAsync(IStorageFile file)
+	{
+		if (_launcherExtension.Value != null)
+		{
+			return await _launcherExtension.Value.LaunchFolderAsync(file.Path);
 		}
 
-		public static async Task<LaunchQuerySupportStatus> QueryUriSupportPlatformAsync(
-			Uri uri,
-			LaunchQuerySupportType launchQuerySupportType)
+		return false;
+	}
+
+	private static Task<bool> LaunchUriFallbackAsync(Uri uri)
+	{
+		try
 		{
-			if (_launcherExtension.Value != null)
+			var processStartInfo = new ProcessStartInfo(uri.OriginalString)
 			{
-				return await _launcherExtension.Value.QueryUriSupportAsync(uri, launchQuerySupportType);
-			}
-			throw new NotImplementedException("QueryUriSupportAsync is not implemented on this platform");
+				UseShellExecute = true,
+				Verb = "open"
+			};
+
+			var process = new Process();
+			process.StartInfo = processStartInfo;
+			return Task.FromResult(process.Start());
 		}
+		catch (Exception ex)
+		{
+			if (typeof(Launcher).Log().IsEnabled(LogLevel.Error))
+			{
+				typeof(Launcher).Log().LogError($"Could not launch URI - {ex}");
+			}
+			return Task.FromResult(false);
+		}
+	}
+
+	public static async Task<LaunchQuerySupportStatus> QueryUriSupportPlatformAsync(
+		Uri uri,
+		LaunchQuerySupportType launchQuerySupportType)
+	{
+		if (_launcherExtension.Value != null)
+		{
+			return await _launcherExtension.Value.QueryUriSupportAsync(uri, launchQuerySupportType);
+		}
+		throw new NotImplementedException("QueryUriSupportAsync is not implemented on this platform");
 	}
 }

@@ -32,6 +32,18 @@ namespace Uno.Extensions.System
 			return Task.FromResult(process.Start());
 		}
 
+		public Task<bool> LaunchFolderAsync(string storageFolderPath)
+		{
+			var process = Process.Start("explorer.exe", storageFolderPath);
+			return Task.FromResult(process is not null);
+		}
+
+		public Task<bool> LaunchFileAsync(string storageFilePath)
+		{
+			var process = Process.Start(new ProcessStartInfo(storageFilePath) { UseShellExecute = true });
+			return Task.FromResult(process is not null);
+		}
+
 		public Task<LaunchQuerySupportStatus> QueryUriSupportAsync(Uri uri, LaunchQuerySupportType launchQuerySupportType)
 		{
 			var canOpenUri = CheckRegistry(RegistryHive.CurrentUser, uri) || CheckRegistry(RegistryHive.LocalMachine, uri);
@@ -61,5 +73,7 @@ namespace Uno.Extensions.System
 			var view = Environment.Is64BitProcess ? RegistryView.Registry64 : RegistryView.Registry32;
 			return RegistryKey.OpenBaseKey(hive, view).OpenSubKey(name, writable);
 		}
+
+
 	}
 }
