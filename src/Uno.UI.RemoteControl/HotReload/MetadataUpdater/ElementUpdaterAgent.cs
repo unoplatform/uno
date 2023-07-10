@@ -1,9 +1,6 @@
 ﻿// The structure of the ElementUpdaterAgent has been kept similar to the HotReloadAgent, 
 // which is based on the implementation in https://github.com/dotnet/aspnetcore/blob/26e3dfc7f3f3a91ba445ec0f8b1598d12542fb9f/src/Components/WebAssembly/WebAssembly/src/HotReload/HotReloadAgent.cs
 
-
-
-#if NET6_0_OR_GREATER || __WASM__ || __SKIA__
 #nullable enable
 
 using System;
@@ -97,10 +94,8 @@ internal sealed class ElementUpdateAgent : IDisposable
 		public Action<FrameworkElement, FrameworkElement, Type[]?> AfterElementReplaced { get; set; } = (_, _, _) => { };
 	}
 
-#if NET6_0_OR_GREATER
 	[UnconditionalSuppressMessage("Trimmer", "IL2072",
 		Justification = "The handlerType passed to GetHandlerActions is preserved by MetadataUpdateHandlerAttribute with DynamicallyAccessedMemberTypes.All.")]
-#endif
 	private void LoadElementUpdateHandlerActions()
 	{
 		// We need to execute MetadataUpdateHandlers in a well-defined order. For v1, the strategy that is used is to topologically
@@ -198,7 +193,7 @@ internal sealed class ElementUpdateAgent : IDisposable
 			=> GetHandlerMethod(handlerType, name, new[] { typeof(Type[]) });
 
 	private MethodInfo? GetHandlerMethod(
-[DynamicallyAccessedMembers(HotReloadHandlerLinkerFlags)]
+		[DynamicallyAccessedMembers(HotReloadHandlerLinkerFlags)]
 		Type handlerType, string name, Type[] parameterTypes)
 	{
 		if (handlerType.GetMethod(name, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static, null, parameterTypes, null) is MethodInfo updateMethod &&
@@ -280,5 +275,3 @@ internal sealed class ElementUpdateAgent : IDisposable
 		=> AppDomain.CurrentDomain.AssemblyLoad -= _assemblyLoad;
 
 }
-
-#endif
