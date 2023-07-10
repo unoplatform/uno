@@ -9,6 +9,7 @@ using Windows.Foundation.Collections;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Markup;
 using Windows.UI.Xaml.Media.Animation;
+using Uno.UI.Xaml;
 
 namespace Windows.UI.Xaml
 {
@@ -31,7 +32,10 @@ namespace Windows.UI.Xaml
 		{
 			get
 			{
-				EnsureMaterialized();
+				if (EnsureMaterialized())
+				{
+					this.UpdateResourceBindings();
+				}
 				return (Storyboard)this.GetValue(StoryboardProperty);
 			}
 
@@ -76,7 +80,10 @@ namespace Windows.UI.Xaml
 					collection = Setters = new SetterBaseCollection(this, isAutoPropertyInheritanceEnabled: false);
 				}
 
-				EnsureMaterialized();
+				if (EnsureMaterialized())
+				{
+					this.UpdateResourceBindings();
+				}
 
 				return collection;
 			}
@@ -161,7 +168,7 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Ensures that the lazy builder has been invoked
 		/// </summary>
-		internal void EnsureMaterialized()
+		internal bool EnsureMaterialized()
 		{
 			if (LazyBuilder != null)
 			{
@@ -181,7 +188,11 @@ namespace Windows.UI.Xaml
 						setterProvider.Store.UpdateResourceBindings(ResourceUpdateReason.ThemeResource);
 					}
 				}
+
+				return true;
 			}
+
+			return false;
 		}
 
 		private void OnStateTriggerCollectionChanged(IObservableVector<StateTriggerBase> sender, IVectorChangedEventArgs e)
