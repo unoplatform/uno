@@ -2675,17 +2675,17 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			foreach (var resource in (resourcesRoot?.Objects).Safe())
 			{
-				if (_isDebug)
-				{
-					// Track source location of resources by key as they may be lazily initialized
-					writer.AppendLineIndented($"global::Uno.UI.Helpers.MarkupHelper.SetElementProperty(\"RESOURCE::{resource.Members.FirstOrDefault(m => m.Member.Name == "Key").Value}\", \"OriginalSourceLocation\", \"file:///{_fileDefinition.FilePath.Replace("\\", "/")}#L{resource.LineNumber}:{resource.LinePosition}\");");
-				}
-
 				TryAnnotateWithGeneratorSource(writer, suffix: "PerKey");
 				var key = GetDictionaryResourceKey(resource, out var name);
 
 				if (key != null)
 				{
+					if (_isDebug)
+					{
+						// Track source location of resources by key as they may be lazily initialized
+						writer.AppendLineIndented($"global::Uno.UI.Helpers.MarkupHelper.SetElementProperty(\"RESOURCE::{key}\", \"OriginalSourceLocation\", \"file:///{_fileDefinition.FilePath.Replace("\\", "/")}#L{resource.LineNumber}:{resource.LinePosition}\");");
+					}
+
 					var wrappedKey = key;
 					if (!key.StartsWith("typeof(", StringComparison.InvariantCulture))
 					{
