@@ -638,6 +638,9 @@
 			<!-- BEGIN OnWindowCreated -->
 			<Member fullName="Microsoft.UI.Xaml.WindowCreatedEventArgs" reason="Does not exist in WinAppSDK" />
 			<!-- END OnWindowCreated -->
+
+			<Member fullName="Uno.UI.Runtime.Skia.GTK.UI.Text.FontWeightExtensions" reason="Renamed namespace to Gtk instead of GTK" />
+			<Member fullName="Uno.UI.Runtime.Skia.GTK.Extensions.Helpers.CssProviderExtensions" reason="Renamed namespace to Gtk instead of GTK" />
 		</Types>
 		<Events>
 			<Member fullName="Windows.Foundation.TypedEventHandler`2&lt;Microsoft.UI.Xaml.Controls.IInputValidationControl,Microsoft.UI.Xaml.Controls.HasValidationErrorsChangedEventArgs&gt; Microsoft.UI.Xaml.Controls.AutoSuggestBox::HasValidationErrorsChanged" reason="Not present in WinAppSDK 1.2" />
