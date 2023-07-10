@@ -200,7 +200,7 @@ namespace Windows.UI.Xaml.Controls
 			try
 			{
 				_modifyingSelectionInternally = true;
-
+				_isUpdatingSelection = true;
 				var itemIndex = SelectedItems.Select(item => (int?)items.IndexOf(item)).FirstOrDefault(index => index > -1);
 				if (itemIndex != null)
 				{
@@ -219,6 +219,7 @@ namespace Windows.UI.Xaml.Controls
 			finally
 			{
 				_modifyingSelectionInternally = false;
+				_isUpdatingSelection = false;
 			}
 			if (validAdditions.Any() || validRemovals.Any())
 			{
@@ -263,6 +264,11 @@ namespace Windows.UI.Xaml.Controls
 					case ListViewSelectionMode.None:
 						break;
 					case ListViewSelectionMode.Single:
+						if (_changingSelectedIndex)
+						{
+							break;
+						}
+
 						var index = IndexFromItem(item);
 						if (!newIsSelected)
 						{
@@ -381,8 +387,16 @@ namespace Windows.UI.Xaml.Controls
 		{
 			base.OnSelectedIndexChanged(oldSelectedIndex, newSelectedIndex);
 
-			//SetSelectedState(oldSelectedIndex, false);
-			//SetSelectedState(newSelectedIndex, true);
+			try
+			{
+				_changingSelectedIndex = true;
+				SetSelectedState(oldSelectedIndex, false);
+				SetSelectedState(newSelectedIndex, true);
+			}
+			finally
+			{
+				_changingSelectedIndex = false;
+			}
 		}
 
 		public event ItemClickEventHandler ItemClick;

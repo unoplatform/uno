@@ -1432,12 +1432,6 @@ namespace Windows.UI.Xaml.Controls
 				case "Visibility":
 					OnVisibilityChanged();
 					break;
-
-				case "SelectedIndex":
-					{
-						OnSelectedIndexChanged((int)args.OldValue, (int)args.NewValue);
-					}
-					break;
 			}
 
 			base.OnPropertyChanged2(args);

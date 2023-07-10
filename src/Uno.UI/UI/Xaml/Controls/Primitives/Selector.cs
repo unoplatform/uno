@@ -21,6 +21,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 	public partial class Selector : ItemsControl
 	{
 		private protected ScrollViewer m_tpScrollViewer;
+		private protected bool _changingSelectedIndex;
+		private protected bool _isUpdatingSelection;
 
 		private protected IVirtualizingPanel VirtualizingPanel => ItemsPanelRoot as IVirtualizingPanel;
 
@@ -144,6 +146,9 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				}
 			}
 
+			var shouldRaiseSelectionChanged = !_isUpdatingSelection;
+			_isUpdatingSelection = true;
+
 			// If SelectedIndex is -1 and SelectedItem is being changed from non-null to null, this indicates that we're desetting
 			// SelectedItem, not setting a null inside the collection as selected. Little edge case there. (Note that this relies
 			// on user interactions setting SelectedIndex which then sets SelectedItem.)
@@ -152,25 +157,35 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				isSelectionUnset = true;
 			}
 
-			var newIndex = IndexFromItem(selectedItem);
-			if (SelectedIndex != newIndex)
+			if (!_changingSelectedIndex)
 			{
-				SelectedIndex = newIndex;
+				var newIndex = IndexFromItem(selectedItem);
+				if (SelectedIndex != newIndex)
+				{
+					SelectedIndex = newIndex;
+				}
 			}
 
 			OnSelectedItemChangedPartial(oldSelectedItem, selectedItem);
 
 			UpdateSelectedValue();
 
-			if (updateItemSelectedState)
+			if (updateItemSelectedState && !_changingSelectedIndex)
 			{
 				TryUpdateSelectorItemIsSelected(oldSelectedItem, false);
 				TryUpdateSelectorItemIsSelected(selectedItem, true);
 			}
 
-			InvokeSelectionChanged(wasSelectionUnset ? Array.Empty<object>() : new[] { oldSelectedItem },
-				isSelectionUnset ? Array.Empty<object>() : new[] { selectedItem }
-			);
+			_isUpdatingSelection = false;
+
+			if (shouldRaiseSelectionChanged)
+			{
+				// Setting SelectedIndex above will have already invoked the SelectionChanged.
+				InvokeSelectionChanged(
+					wasSelectionUnset ? Array.Empty<object>() : new[] { oldSelectedItem },
+					isSelectionUnset ? Array.Empty<object>() : new[] { selectedItem }
+				);
+			}
 		}
 
 		internal void TryUpdateSelectorItemIsSelected(object item, bool isSelected)
@@ -289,19 +304,37 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		internal virtual void OnSelectedIndexChanged(int oldSelectedIndex, int newSelectedIndex)
 		{
-			var newSelectedItem = ItemFromIndex(newSelectedIndex);
-
-			if (ItemsSource is ICollectionView collectionView)
+			try
 			{
-				collectionView.MoveCurrentToPosition(newSelectedIndex);
-				//TODO: we should check if CurrentPosition actually changes, and set SelectedIndex back if not.
-			}
-			if (!object.Equals(SelectedItem, newSelectedItem))
-			{
-				SelectedItem = newSelectedItem;
-			}
+				_changingSelectedIndex = true;
+				var shouldRaiseSelectionChanged = !_isUpdatingSelection;
+				_isUpdatingSelection = true;
+				var oldSelectedItem = SelectedItem;
+				var newSelectedItem = ItemFromIndex(newSelectedIndex);
 
-			SelectedIndexPath = GetIndexPathFromIndex(SelectedIndex);
+				if (ItemsSource is ICollectionView collectionView)
+				{
+					collectionView.MoveCurrentToPosition(newSelectedIndex);
+					//TODO: we should check if CurrentPosition actually changes, and set SelectedIndex back if not.
+				}
+				if (!object.ReferenceEquals(oldSelectedItem, newSelectedItem))
+				{
+					SelectedItem = newSelectedItem;
+				}
+
+				SelectedIndexPath = GetIndexPathFromIndex(SelectedIndex);
+				_isUpdatingSelection = false;
+				if (shouldRaiseSelectionChanged)
+				{
+					InvokeSelectionChanged(
+						oldSelectedIndex == -1 ? Array.Empty<object>() : new[] { oldSelectedItem },
+						newSelectedIndex == -1 ? Array.Empty<object>() : new[] { newSelectedItem });
+				}
+			}
+			finally
+			{
+				_changingSelectedIndex = false;
+			}
 		}
 
 		public string SelectedValuePath
@@ -334,6 +367,10 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		private void OnSelectedValueChanged(object oldValue, object newValue)
 		{
+			if (_changingSelectedIndex)
+			{
+				return;
+			}
 
 			var (indexOfItemWithValue, itemWithValue) = FindIndexOfItemWithValue(newValue);
 			SelectedIndex = indexOfItemWithValue;
