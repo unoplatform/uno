@@ -371,7 +371,7 @@ namespace Windows.UI.Xaml.Media
 			return default;
 		}
 
-		private static (UIElement? element, Branch? stale) SearchDownForTopMostElementAt(
+		internal static (UIElement? element, Branch? stale) SearchDownForTopMostElementAt(
 			Point posRelToParent,
 			UIElement element,
 			GetHitTestability getVisibility,
@@ -469,7 +469,7 @@ namespace Windows.UI.Xaml.Media
 			var isChildStale = isStale;
 			while (child.MoveNext())
 			{
-				var childResult = SearchDownForTopMostElementAt(posRelToElement, child.Current!, getVisibility, isChildStale);
+				var childResult = SearchDownForTopMostElementAt(posRelToElement, child.Current!, getVisibility, isChildStale, childrenFilter);
 
 				// If we found a stale element in child sub-tree, keep it and stop looking for stale elements
 				if (childResult.stale is not null)
