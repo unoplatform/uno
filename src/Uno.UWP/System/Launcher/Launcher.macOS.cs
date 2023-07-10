@@ -4,40 +4,22 @@ using AppKit;
 using Windows.Foundation;
 using Windows.Storage;
 
-namespace Windows.System
+namespace Windows.System;
+
+public static partial class Launcher
 {
-	public static partial class Launcher
+	private static Task<bool> LaunchFolderPathPlatformAsync(string path)
 	{
-		public static IAsyncOperation<bool> LaunchFolderPathAsync(string path)
-		{
-			if (path is null)
-			{
-				throw new ArgumentNullException(nameof(path));
-			}
-
-			var success = NSWorkspace.SharedWorkspace.OpenFile(path);
-			return Task.FromResult(success).AsAsyncOperation();
-		}
-
-		public static IAsyncOperation<bool> LaunchFileAsync(IStorageFile file)
-		{
-			if (file is null)
-			{
-				throw new ArgumentNullException(nameof(file));
-			}
-
-			var success = NSWorkspace.SharedWorkspace.OpenFile(file.Path);
-			return Task.FromResult(success).AsAsyncOperation();
-		}
-
-		public static IAsyncOperation<bool> LaunchFolderAsync(IStorageFolder folder)
-		{
-			if (folder is null)
-			{
-				throw new ArgumentNullException(nameof(folder));
-			}
-
-			return Launcher.LaunchFolderPathAsync(folder.Path);
-		}
+		var success = NSWorkspace.SharedWorkspace.OpenFile(path);
+		return Task.FromResult(success);
 	}
+
+	private static Task<bool> LaunchFilePlatformAsync(IStorageFile file)
+	{
+		var success = NSWorkspace.SharedWorkspace.OpenFile(file.Path);
+		return Task.FromResult(success);
+	}
+
+	private static Task<bool> LaunchFolderPlatformAsync(IStorageFolder folder) =>
+		LaunchFolderPathPlatformAsync(folder.Path);
 }
