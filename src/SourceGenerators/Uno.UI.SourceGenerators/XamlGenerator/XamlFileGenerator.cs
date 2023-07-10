@@ -2683,7 +2683,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					if (_isDebug)
 					{
 						// Track source location of resources by key as they may be lazily initialized
-						writer.AppendLineIndented($"global::Uno.UI.Helpers.MarkupHelper.SetElementProperty(\"RESOURCE::{key}\", \"OriginalSourceLocation\", \"file:///{_fileDefinition.FilePath.Replace("\\", "/")}#L{resource.LineNumber}:{resource.LinePosition}\");");
+						writer.AppendLineIndented($"global::Uno.UI.Helpers.MarkupHelper.SetElementProperty(\"RESOURCE::{key}\", \"OriginalSourceLocation\", \"file:///{_fileDefinition.FilePath.Replace("\\", "/")}#L{resource.LineNumber}:{resource.LinePosition}\"){closingPunctuation}");
 					}
 
 					var wrappedKey = key;
