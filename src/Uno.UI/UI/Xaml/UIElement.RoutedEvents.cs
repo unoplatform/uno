@@ -766,7 +766,6 @@ namespace Windows.UI.Xaml
 				{
 					KeyboardStateTracker.OnKeyUp(keyArgs.OriginalKey);
 				}
-#if __WASM__
 				else if (routedEvent == PreviewKeyDownEvent)
 				{
 					KeyboardStateTracker.OnKeyDown(keyArgs.OriginalKey);
@@ -775,7 +774,6 @@ namespace Windows.UI.Xaml
 				{
 					KeyboardStateTracker.OnKeyUp(keyArgs.OriginalKey);
 				}
-#endif
 			}
 		}
 
