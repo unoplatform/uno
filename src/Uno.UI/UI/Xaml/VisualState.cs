@@ -161,7 +161,7 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Ensures that the lazy builder has been invoked
 		/// </summary>
-		private void EnsureMaterialized()
+		internal void EnsureMaterialized()
 		{
 			if (LazyBuilder != null)
 			{

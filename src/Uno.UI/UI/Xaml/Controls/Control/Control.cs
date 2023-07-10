@@ -434,6 +434,14 @@ namespace Windows.UI.Xaml.Controls
 
 			base.OnLoaded();
 
+			foreach (var visualStateGroup in VisualStateManager.GetVisualStateGroups(GetTemplateRoot()))
+			{
+				foreach (var visualState in visualStateGroup.States)
+				{
+					visualState.EnsureMaterialized();
+				}
+				visualStateGroup.UpdateResourceBindings();
+			}
 		}
 
 		/// <summary>
