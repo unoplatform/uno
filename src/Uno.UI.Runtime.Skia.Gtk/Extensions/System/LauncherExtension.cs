@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using Uno.Extensions;
 using Uno.Extensions.System;
+using Uno.Foundation.Logging;
 using Uno.UI.Runtime.Skia.GTK.Extensions.System.LauncherHelpers;
 using Windows.System;
-using Uno.Foundation.Logging;
 
 namespace Uno.UI.Runtime.Skia.GTK.Extensions.System
 {
@@ -15,21 +14,14 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.System
 		{
 		}
 
-		public Task<bool> LaunchUriAsync(Uri uri)
-		{
-			var processStartInfo = new ProcessStartInfo(uri.OriginalString)
-			{
-				UseShellExecute = true,
-				Verb = "open"
-			};
+		public Task<bool> LaunchUriAsync(Uri uri) =>
+			Task.FromResult(Launcher.TryStartProcessForPath(uri.OriginalString));
 
-			var process = new Process()
-			{
-				StartInfo = processStartInfo
-			};
+		public Task<bool> LaunchFolderAsync(string storageFolderPath) =>
+			Task.FromResult(Launcher.TryStartProcessForPath(storageFolderPath));
 
-			return Task.FromResult(process.Start());
-		}
+		public Task<bool> LaunchFileAsync(string storageFilePath) =>
+			Task.FromResult(Launcher.TryStartProcessForPath(storageFilePath));
 
 		public Task<LaunchQuerySupportStatus> QueryUriSupportAsync(Uri uri, LaunchQuerySupportType launchQuerySupportType)
 		{

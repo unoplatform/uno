@@ -16,33 +16,14 @@ namespace Uno.Extensions.System
 
 		private const string RegistryPath = @"Software\Classes";
 
-		public Task<bool> LaunchUriAsync(Uri uri)
-		{
-			var processStartInfo = new ProcessStartInfo(uri.OriginalString)
-			{
-				UseShellExecute = true,
-				Verb = "open"
-			};
+		public Task<bool> LaunchUriAsync(Uri uri) =>
+			Task.FromResult(Launcher.TryStartProcessForPath(uri.OriginalString));
 
-			var process = new Process()
-			{
-				StartInfo = processStartInfo
-			};
+		public Task<bool> LaunchFolderAsync(string storageFolderPath) =>
+			Task.FromResult(Launcher.TryStartProcessForPath(storageFolderPath));
 
-			return Task.FromResult(process.Start());
-		}
-
-		public Task<bool> LaunchFolderAsync(string storageFolderPath)
-		{
-			var process = Process.Start("explorer.exe", storageFolderPath);
-			return Task.FromResult(process is not null);
-		}
-
-		public Task<bool> LaunchFileAsync(string storageFilePath)
-		{
-			var process = Process.Start(new ProcessStartInfo(storageFilePath) { UseShellExecute = true });
-			return Task.FromResult(process is not null);
-		}
+		public Task<bool> LaunchFileAsync(string storageFilePath) =>
+			Task.FromResult(Launcher.TryStartProcessForPath(storageFilePath));
 
 		public Task<LaunchQuerySupportStatus> QueryUriSupportAsync(Uri uri, LaunchQuerySupportType launchQuerySupportType)
 		{

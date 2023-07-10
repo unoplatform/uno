@@ -2,14 +2,12 @@
 
 using System;
 using System.Diagnostics;
-using System.IO;
 using System.Threading.Tasks;
 
 using Uno.Extensions.System;
 using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
 using Windows.Storage;
-using Windows.Web.AtomPub;
 
 namespace Windows.System;
 
@@ -30,7 +28,8 @@ public static partial class Launcher
 		{
 			return await _launcherExtension.Value.LaunchUriAsync(uri);
 		}
-		return await LaunchUriFallbackAsync(uri);
+
+		return TryStartProcessForPath(uri.OriginalString);
 	}
 
 	private static async Task<bool> LaunchFolderPathPlatformAsync(string path)
@@ -56,27 +55,31 @@ public static partial class Launcher
 		return false;
 	}
 
-	private static Task<bool> LaunchUriFallbackAsync(Uri uri)
+	internal static bool TryStartProcessForPath(string path)
 	{
 		try
 		{
-			var processStartInfo = new ProcessStartInfo(uri.OriginalString)
+			var processStartInfo = new ProcessStartInfo(path)
 			{
 				UseShellExecute = true,
 				Verb = "open"
 			};
 
-			var process = new Process();
-			process.StartInfo = processStartInfo;
-			return Task.FromResult(process.Start());
+			var process = new Process
+			{
+				StartInfo = processStartInfo
+			};
+
+			return process.Start();
 		}
 		catch (Exception ex)
 		{
 			if (typeof(Launcher).Log().IsEnabled(LogLevel.Error))
 			{
-				typeof(Launcher).Log().LogError($"Could not launch URI - {ex}");
+				typeof(Launcher).Log().LogError($"Could not launch path or URI - {ex}");
 			}
-			return Task.FromResult(false);
+
+			return false;
 		}
 	}
 
