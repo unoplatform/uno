@@ -11,6 +11,7 @@ jobs:
   steps:
   - checkout: self
     clean: true
+    fetchDepth: 0
 
   - bash: |
       curl -L -O https://github.com/aevea/commitsar/releases/download/v0.20.1/commitsar_0.20.1_linux_amd64.tar.gz
