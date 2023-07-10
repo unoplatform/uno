@@ -433,11 +433,6 @@ namespace Windows.UI.Xaml.Controls
 			SetUpdateControlTemplate();
 
 			base.OnLoaded();
-
-			foreach (var visualStateGroup in VisualStateManager.GetVisualStateGroups(GetTemplateRoot()))
-			{
-				visualStateGroup.UpdateResourceBindings();
-			}
 		}
 
 		/// <summary>
