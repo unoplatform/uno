@@ -318,7 +318,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		private readonly Dictionary<(string, bool), EventRegistration> _eventHandlers = new Dictionary<(string, bool), EventRegistration>(new TupleComparer());
+		private readonly Dictionary<(string name, bool onCapturePhase), EventRegistration> _eventHandlers = new Dictionary<(string, bool), EventRegistration>(new TupleComparer());
 
 		internal delegate EventArgs EventArgsParser(object sender, string payload);
 
