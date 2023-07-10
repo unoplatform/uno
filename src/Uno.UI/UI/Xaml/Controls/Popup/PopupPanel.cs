@@ -243,7 +243,7 @@ internal partial class PopupPanel : Panel
 
 	// TODO: pointer handling should really go on PopupRoot. For now it's easier to put here because PopupRoot doesn't track open popups, and also we
 	// need to support native popups on Android that don't use PopupRoot.
-	private void OnPointerPressed(object sender, PointerRoutedEventArgs args)
+	protected virtual void OnPointerPressed(object sender, PointerRoutedEventArgs args)
 	{
 		// Make sure we are the original source.  We do not want to handle PointerPressed on the Popup itself.
 		if (args.OriginalSource == this && Popup is { } popup)
