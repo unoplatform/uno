@@ -3,10 +3,12 @@ using System.Threading.Tasks;
 using Private.Infrastructure;
 using Windows.UI.Xaml.Controls;
 using System.Linq;
+using Microsoft.UI.Xaml.Controls;
+
+
 #if HAS_UNO
 using Uno.UI.Xaml.Controls;
 #endif
-
 #if __IOS__
 using UIKit;
 using _View = UIKit.UIView;
@@ -14,7 +16,7 @@ using _View = UIKit.UIView;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 
-#if !HAS_UNO || __ANDROID__ || __IOS__ || __MACOS__
+#if !HAS_UNO || __ANDROID__ || __IOS__
 [TestClass]
 [RunsOnUIThread]
 public class Given_WebView
@@ -102,6 +104,42 @@ public class Given_WebView
 
 	}
 #endif
+
+	[TestMethod]
+	public async Task When_GoBack()
+	{
+		var border = new Border();
+		var webView = new WebView();
+		webView.Width = 200;
+		webView.Height = 200;
+		border.Child = webView;
+		TestServices.WindowHelper.WindowContent = border;
+		bool navigated = false;
+		await TestServices.WindowHelper.WaitForLoaded(border);
+
+		Assert.IsFalse(webView.CanGoBack);
+		Assert.IsFalse(webView.CanGoForward);
+
+		webView.NavigationCompleted += (sender, e) => navigated = true;
+		webView.Navigate(new Uri("https://example.com/1"));
+		await TestServices.WindowHelper.WaitFor(() => navigated, 3000);
+
+		Assert.IsFalse(webView.CanGoBack);
+		Assert.IsFalse(webView.CanGoForward);
+
+		navigated = false;
+		webView.Navigate(new Uri("https://example.com/2"));
+		await TestServices.WindowHelper.WaitFor(() => navigated, 3000);
+
+		Assert.IsTrue(webView.CanGoBack);
+
+		navigated = false;
+		webView.GoBack();
+		await TestServices.WindowHelper.WaitFor(() => navigated, 3000);
+
+		Assert.IsFalse(webView.CanGoBack);
+		Assert.IsTrue(webView.CanGoForward);
+	}
 
 #if !HAS_UNO
 	[TestMethod]
