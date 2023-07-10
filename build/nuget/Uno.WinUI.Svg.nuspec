@@ -28,21 +28,21 @@
 			</group>
 
 			<group targetFramework="net8.0-android">
-				<dependency id="Svg.Skia" version="0.5.16" />
+				<dependency id="Svg.Skia" version="1.0.0" />
 				<dependency id="SkiaSharp.Views.Uno" version="2.88.3" />
 				<dependency id="SkiaSharp.NativeAssets.android" version="2.88.3" />
 
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 			</group>
 			<group targetFramework="net8.0-ios">
-				<dependency id="Svg.Skia" version="0.5.16" />
+				<dependency id="Svg.Skia" version="1.0.0" />
 				<dependency id="SkiaSharp.Views.Uno" version="2.88.3" />
 				<dependency id="SkiaSharp.NativeAssets.ios" version="2.88.3" />
 
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 			</group>
 			<group targetFramework="net8.0-maccatalyst">
-				<dependency id="Svg.Skia" version="0.5.16" />
+				<dependency id="Svg.Skia" version="1.0.0" />
 				<dependency id="SkiaSharp.Views.Uno" version="2.88.3" />
 				<dependency id="SkiaSharp.NativeAssets.maccatalyst" version="2.88.3" />
 
@@ -50,21 +50,21 @@
 			</group>
 
 			<group targetFramework="net7.0-android">
-				<dependency id="Svg.Skia" version="0.5.16" />
+				<dependency id="Svg.Skia" version="1.0.0" />
 				<dependency id="SkiaSharp.Views.Uno" version="2.88.3" />
 				<dependency id="SkiaSharp.NativeAssets.android" version="2.88.3" />
 
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 			</group>
 			<group targetFramework="net7.0-ios">
-				<dependency id="Svg.Skia" version="0.5.16" />
+				<dependency id="Svg.Skia" version="1.0.0" />
 				<dependency id="SkiaSharp.Views.Uno" version="2.88.3" />
 				<dependency id="SkiaSharp.NativeAssets.ios" version="2.88.3" />
 
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 			</group>
 			<group targetFramework="net7.0-maccatalyst">
-				<dependency id="Svg.Skia" version="0.5.16" />
+				<dependency id="Svg.Skia" version="1.0.0" />
 				<dependency id="SkiaSharp.Views.Uno" version="2.88.3" />
 				<dependency id="SkiaSharp.NativeAssets.maccatalyst" version="2.88.3" />
 
