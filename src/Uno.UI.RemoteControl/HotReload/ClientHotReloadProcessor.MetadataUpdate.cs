@@ -26,7 +26,24 @@ namespace Uno.UI.RemoteControl.HotReload
 	{
 		private bool _linkerEnabled;
 		private HotReloadAgent _agent;
+		private ElementUpdateAgent? _elementAgent;
 		private static ClientHotReloadProcessor? _instance;
+
+		private ElementUpdateAgent ElementAgent
+		{
+			get
+			{
+				_elementAgent ??= new ElementUpdateAgent(s =>
+					{
+						if (this.Log().IsEnabled(LogLevel.Trace))
+						{
+							this.Log().Trace(s);
+						}
+					});
+
+				return _elementAgent;
+			}
+		}
 
 		[MemberNotNull(nameof(_agent))]
 		partial void InitializeMetadataUpdater()
@@ -152,24 +169,52 @@ namespace Uno.UI.RemoteControl.HotReload
 				return;
 			}
 
-			foreach (var (element, elementMappedType) in EnumerateHotReloadInstances(Window.Current.Content,
-				fe =>
-				{
-					var originalType = fe.GetType().GetOriginalType() ?? fe.GetType();
+			var handlerActions = _instance?.ElementAgent?.ElementHandlerActions;
 
-					var mappedType = originalType.GetMappedType();
-					return (mappedType is not null) ? (fe, mappedType) : default;
-				}, enumerateChildrenAfterMatch: true))
+			// Action: BeforeVisualTreeUpdate
+			// This is called before the visual tree is updated
+			handlerActions?.Do(h => h.Value.BeforeVisualTreeUpdate(updatedTypes));
+
+			// Iterate through the visual tree and either invole ElementUpdate, 
+			// or replace the element with a new one
+			foreach (
+				var (element, elementHandler, elementMappedType) in
+				EnumerateHotReloadInstances(
+					Window.Current.Content,
+					fe =>
+						{
+							// Get the original type of the element, in case it's been replaced
+							var originalType = fe.GetType().GetOriginalType() ?? fe.GetType();
+
+							// Get the handler for the type specified
+							var handler = (from h in handlerActions
+										   where originalType == h.Key ||
+												originalType.IsSubclassOf(h.Key)
+										   select h.Value).FirstOrDefault();
+
+							// Get the replacement type, or null if not replaced
+							var mappedType = originalType.GetMappedType();
+
+							return (handler is not null || mappedType is not null) ? (fe, handler, mappedType) : default;
+						},
+					enumerateChildrenAfterMatch: true))
 			{
+
+				// Action: ElementUpdate
+				// This is invoked for each existing element that is in the tree that needs to be replaced
+				elementHandler?.ElementUpdate(element, updatedTypes);
 
 				if (elementMappedType is not null)
 				{
-					ReplaceViewInstance(element, elementMappedType);
+					ReplaceViewInstance(element, elementMappedType, elementHandler);
 				}
 			}
+
+			// Action: AfterVisualTreeUpdate
+			handlerActions?.Do(h => h.Value.AfterVisualTreeUpdate(updatedTypes));
 		}
 
-		private static void ReplaceViewInstance(UIElement instance, Type replacementType, Type[]? updatedTypes = default)
+		private static void ReplaceViewInstance(UIElement instance, Type replacementType, ElementUpdateAgent.ElementUpdateHandlerActions? handler = default, Type[]? updatedTypes = default)
 		{
 			if (replacementType.GetConstructor(Array.Empty<Type>()) is { } creator)
 			{
@@ -181,6 +226,11 @@ namespace Uno.UI.RemoteControl.HotReload
 				var newInstance = Activator.CreateInstance(replacementType);
 				var instanceFE = instance as FrameworkElement;
 				var newInstanceFE = newInstance as FrameworkElement;
+				if (instanceFE is not null &&
+					newInstanceFE is not null)
+				{
+					handler?.BeforeElementReplaced(instanceFE, newInstanceFE, updatedTypes);
+				}
 				switch (instance)
 				{
 #if __IOS__
@@ -197,6 +247,12 @@ namespace Uno.UI.RemoteControl.HotReload
 							SwapViews(content, newContent);
 						}
 						break;
+				}
+
+				if (instanceFE is not null &&
+					newInstanceFE is not null)
+				{
+					handler?.AfterElementReplaced(instanceFE, newInstanceFE, updatedTypes);
 				}
 			}
 			else
