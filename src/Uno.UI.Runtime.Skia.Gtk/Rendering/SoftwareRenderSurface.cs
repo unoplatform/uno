@@ -14,7 +14,7 @@ using Uno.UI.Hosting;
 
 namespace Uno.UI.Runtime.Skia;
 
-internal class SoftwareRenderSurface : Gtk.DrawingArea, IGtkRenderer
+internal class SoftwareRenderSurface : DrawingArea, IGtkRenderer
 {
 	private readonly DisplayInformation _displayInformation;
 	private SKSurface? _surface;

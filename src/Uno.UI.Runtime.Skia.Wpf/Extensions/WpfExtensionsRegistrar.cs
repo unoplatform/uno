@@ -11,7 +11,7 @@ using Uno.Helpers.Theming;
 using Uno.UI.Core.Preview;
 using Uno.UI.Hosting;
 using Uno.UI.Runtime.Skia.Wpf.Extensions.UI.Xaml.Controls;
-using Uno.UI.Runtime.Skia.Wpf.WPF.Extensions.Helpers.Theming;
+using Uno.UI.Runtime.Skia.Wpf.Extensions.Helpers.Theming;
 using Uno.UI.Skia.Platform;
 using Uno.UI.Xaml.Controls.Extensions;
 using Uno.UI.XamlHost.Skia.Wpf;

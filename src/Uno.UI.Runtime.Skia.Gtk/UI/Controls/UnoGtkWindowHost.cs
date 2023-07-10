@@ -6,13 +6,13 @@ using Gtk;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
 using Uno.UI.Hosting;
-using Uno.UI.Runtime.Skia.GTK.Hosting;
-using Uno.UI.Runtime.Skia.GTK.Rendering;
+using Uno.UI.Runtime.Skia.Gtk.Hosting;
+using Uno.UI.Runtime.Skia.Gtk.Rendering;
 using Uno.UI.Xaml.Core;
 using WinUI = Windows.UI.Xaml;
 using WinUIWindow = Windows.UI.Xaml.Window;
 
-namespace Uno.UI.Runtime.Skia.GTK.UI.Controls;
+namespace Uno.UI.Runtime.Skia.Gtk.UI.Controls;
 
 internal class UnoGtkWindowHost : IGtkXamlRootHost
 {
@@ -25,7 +25,7 @@ internal class UnoGtkWindowHost : IGtkXamlRootHost
 	private Widget? _area;
 	private IGtkRenderer? _renderer;
 
-	public UnoGtkWindowHost(Gtk.Window gtkWindow, WinUIWindow winUIWindow)
+	public UnoGtkWindowHost(Window gtkWindow, WinUIWindow winUIWindow)
 	{
 		_gtkWindow = gtkWindow;
 		_winUIWindow = winUIWindow;

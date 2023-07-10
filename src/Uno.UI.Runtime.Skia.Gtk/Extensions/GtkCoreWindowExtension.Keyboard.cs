@@ -13,7 +13,7 @@ namespace Uno.UI.Runtime.Skia
 	{
 		partial void InitializeKeyboard()
 		{
-			Gtk.Key.SnooperInstall(OnKeySnoop);
+			global::Gtk.Key.SnooperInstall(OnKeySnoop);
 		}
 
 		private int OnKeySnoop(Widget grab_widget, EventKey e)

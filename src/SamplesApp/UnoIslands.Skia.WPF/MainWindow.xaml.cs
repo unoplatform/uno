@@ -6,7 +6,7 @@ using Uno.UI.Skia.Platform;
 using Uno.UI.XamlHost.Skia.Wpf;
 using UnoIslands.Skia.Wpf;
 
-namespace UnoIslands.WPF
+namespace UnoIslands.Wpf
 {
 	/// <summary>
 	/// Interaction logic for MainWindow.xaml

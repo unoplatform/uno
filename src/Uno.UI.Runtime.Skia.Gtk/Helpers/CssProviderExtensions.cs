@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using Gtk;
 
-namespace Uno.UI.Runtime.Skia.GTK.Extensions.Helpers
+namespace Uno.UI.Runtime.Skia.Gtk.Extensions.Helpers
 {
 	public static class CssProviderExtensions
 	{

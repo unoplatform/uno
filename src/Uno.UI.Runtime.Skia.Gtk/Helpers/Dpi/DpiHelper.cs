@@ -43,7 +43,7 @@ internal class DpiHelper
 		GetWindow().Screen.SizeChanged -= OnScreenSizeChanged;
 	}
 
-	private Gtk.Window GetWindow() => GtkHost.Current.MainWindow;
+	private Window GetWindow() => GtkHost.Current.MainWindow;
 
 	private void OnWindowConfigure(object o, ConfigureEventArgs args) => CheckDpiUpdate();
 

@@ -5,7 +5,7 @@ using Uno.UI.Xaml.Controls.Extensions;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
-namespace Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls;
+namespace Uno.UI.Runtime.Skia.Gtk.Extensions.UI.Xaml.Controls;
 
 internal class TextBoxViewExtension : OverlayTextBoxViewExtension
 {

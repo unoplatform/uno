@@ -5,13 +5,13 @@ using System.Linq;
 using Gtk;
 using Pango;
 using Uno.Foundation.Logging;
-using Uno.UI.Runtime.Skia.GTK.UI.Text;
+using Uno.UI.Runtime.Skia.Gtk.UI.Text;
 using Uno.UI.Xaml.Controls.Extensions;
 using Windows.UI.Text;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
-using Uno.UI.Runtime.Skia.GTK.Extensions;
+using Uno.UI.Runtime.Skia.Gtk.Extensions;
 using static Windows.UI.Xaml.Shapes.BorderLayerRenderer;
 using GtkWindow = Gtk.Window;
 

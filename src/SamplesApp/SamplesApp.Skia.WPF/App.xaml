@@ -1,7 +1,7 @@
-﻿<Application x:Class="SamplesApp.WPF.App"
+﻿<Application x:Class="SamplesApp.Wpf.App"
 			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-			 xmlns:local="clr-namespace:SamplesApp.WPF">
+			 xmlns:local="clr-namespace:SamplesApp.Wpf">
 	<Application.Resources>
 
 	</Application.Resources>

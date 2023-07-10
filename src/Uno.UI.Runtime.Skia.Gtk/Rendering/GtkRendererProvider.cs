@@ -2,10 +2,10 @@
 using System.Threading.Tasks;
 using Gtk;
 using Uno.Foundation.Logging;
-using Uno.UI.Runtime.Skia.GTK.Hosting;
-using Uno.UI.Runtime.Skia.GTK.UI;
+using Uno.UI.Runtime.Skia.Gtk.Hosting;
+using Uno.UI.Runtime.Skia.Gtk.UI;
 
-namespace Uno.UI.Runtime.Skia.GTK.Rendering;
+namespace Uno.UI.Runtime.Skia.Gtk.Rendering;
 
 internal static class GtkRendererProvider
 {
