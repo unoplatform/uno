@@ -433,6 +433,7 @@ namespace Windows.UI.Xaml.Controls
 			SetUpdateControlTemplate();
 
 			base.OnLoaded();
+
 		}
 
 		/// <summary>
