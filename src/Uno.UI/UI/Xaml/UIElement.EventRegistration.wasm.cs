@@ -305,7 +305,7 @@ namespace Windows.UI.Xaml
 #endif
 		}
 
-		public class TupleComparer : IEqualityComparer<(string, bool)>
+		private class TupleComparer : IEqualityComparer<(string, bool)>
 		{
 			public bool Equals((string, bool) x, (string, bool) y)
 			{
