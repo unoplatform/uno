@@ -2684,8 +2684,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					//  as can't add the `SetElementProperty` call in a getter.
 					if (!isInInitializer && _isDebug)
 					{
-						// Track source location of resources by key as they may be lazily initialized
-						writer.AppendLineIndented($"global::Uno.UI.Helpers.MarkupHelper.SetElementProperty(\"RESOURCE::{key}\", \"OriginalSourceLocation\", \"file:///{_fileDefinition.FilePath.Replace("\\", "/")}#L{resource.LineNumber}:{resource.LinePosition}\"){closingPunctuation}");
+						// Track source location of resources by key as they may be lazily initialized.
+						// Attach the values to the named string for similarity with other places where this informatin is stored.
+						writer.AppendLineIndented($"global::Uno.UI.Helpers.MarkupHelper.SetElementProperty(\"ResourceSourceLocations\", \"{key}\", \"file:///{_fileDefinition.FilePath.Replace("\\", "/")}#L{resource.LineNumber}:{resource.LinePosition}\"){closingPunctuation}");
 					}
 
 					var wrappedKey = key;
