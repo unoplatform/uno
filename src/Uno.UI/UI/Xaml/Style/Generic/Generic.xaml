@@ -2847,7 +2847,7 @@
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
                                             <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ButtonForegroundPointerOver}" />
                                         </ObjectAnimationUsingKeyFrames>
-                                        <PointerUpThemeAnimation Storyboard.TargetName="ContentPresenter" />
+                                        <!-- <PointerUpThemeAnimation Storyboard.TargetName="ContentPresenter" /> -->
                                     </Storyboard>
                                 </VisualState>
 								<VisualState x:Name="Pressed">
