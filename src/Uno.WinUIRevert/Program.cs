@@ -141,11 +141,11 @@ namespace UnoWinUIRevert
 
 			// Replacements for nuspec files
 			string[] nuspecTransformedFiles = new[]{
-				Path.Combine(basePath, "build", "nuget", "Uno.WinUI.nuspec"),				
-				Path.Combine(basePath, "build", "nuget", "Uno.WinUI.MSAL.nuspec"),				
+				Path.Combine(basePath, "build", "nuget", "Uno.WinUI.nuspec"),
+				Path.Combine(basePath, "build", "nuget", "Uno.WinUI.MSAL.nuspec"),
 			};
 
-			foreach(var nuspecTransformedFile in nuspecTransformedFiles)
+			foreach (var nuspecTransformedFile in nuspecTransformedFiles)
 			{
 				UncommentWinUISpecificBlock(nuspecTransformedFile);
 				CommentUWPSpecificBlock(nuspecTransformedFile);
