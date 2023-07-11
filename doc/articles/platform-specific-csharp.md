@@ -12,12 +12,11 @@ This guide covers multiple approaches to managing per-platform code in C#. See [
 
 There are two ways to restrict code or XAML markup to be used only on a specific platform:
 
-* Use [conditionals](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/preprocessor-directives/preprocessor-if) within a shared file
+* Use [conditionals](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/preprocessor-directives/preprocessor-if) in a source file
 * Place the code in a separate file which is only included in the desired platform.
  
 The structure of an Uno app created with the default Visual Studio template is [explained in more detail here](uno-app-solution-structure.md).
- 
- 
+
  ## `#if` conditionals
  
  The most basic means of authoring platform-specific code is to use `#if` conditionals:
@@ -31,18 +30,38 @@ The structure of an Uno app created with the default Visual Studio template is [
  
  The following conditional symbols are predefined for each platform:
  
- | Platform    | Symbol        |
- | ----------- | ------------- |
- | UWP         | `NETFX_CORE`  |
- | Android     | `__ANDROID__` |
- | iOS         | `__IOS__`     |
- | WebAssembly | `HAS_UNO_WASM`|
- | macOS       | `__MACOS__`   |
- | Skia        | `HAS_UNO_SKIA`|
+ | Platform    | Symbol                               | Comments |
+ | ----------- | ------------------------------------ | ------- |
+ | WinAppSDK   | `WINDOWS10_0_18362_0_OR_GREATER` 	  | Depending on your `TargetFramework` value, you may need to adjust the 18362 value |
+ | UWP         | `NETFX_CORE`                         | |
+ | Android     | `__ANDROID__`                        | |
+ | iOS         | `__IOS__`                            | |
+ | WebAssembly | `HAS_UNO_WASM`                       | Only available in the `MyApp.WebAssembly head, see below |
+ | macOS       | `__MACOS__`                          | |
+ | Catalyst    | `__MACCATALYST__`                    | |
+ | Skia        | `HAS_UNO_SKIA`                       | |
  
 Note that you can combine conditionals with boolean operators, e.g. `#if __ANDROID__ || __IOS__`. 
 
 You can define your own conditional compilation symbols per project in the 'Build' tab in the project's properties.
+
+### WebAssembly considerations
+
+The Uno Platform templates use a separate project library to share your code between platforms. As of .NET 7, WebAssembly does not have its own `TargetFramework` and Uno Platform uses the same value (e.g. `net7.0`) for both WebAssembly and Skia-based platforms. This means that `__WASM__` and `HAS_UNO_WASM` are not available in this project, but are available C# code specified directly in the `MyApp.WebAssembly` head.
+
+In order to create platform specific code for WebAssembly, a runtime check needs to included to execute WebAssembly specific code:
+
+```csharp
+if (RuntimeInformation.IsOSPlatform(OSPlatform.Create("BROWSER")))
+{
+   // Do something WebAssembly specific
+}
+```
+
+> [!NOTE]
+> [JSImport/JSExport](xref:Uno.Wasm.Bootstrap.JSInterop) are available on all platforms targeting .NET 7 and later, and this code does not need to be conditionally excluded.
+
+WebAssembly is a currently a `net7.0` target, and cannot yet be discriminated at compile time, at least not until (dotnet/designs#289)[https://github.com/dotnet/designs/pull/289] will be available in .NET 8 with the inclusion of `net8.0-browser`.
 
 ## Type aliases
 
