@@ -82,8 +82,8 @@ namespace Uno.UI.Xaml
 			| RoutedEventFlag.KeyDown
 			| RoutedEventFlag.KeyUp;
 
-		private const RoutedEventFlag _isTunneling = 
-			  RoutedEventFlag.PreviewKeyDown 
+		private const RoutedEventFlag _isTunneling =
+			  RoutedEventFlag.PreviewKeyDown
 			| RoutedEventFlag.PreviewKeyUp;
 
 		private const RoutedEventFlag _isFocus = // 0b0000_0000_0000_0000___0000_0000_0000_0000___0111_1111_0000_0000___0000_0000_0000_0000
