@@ -83,6 +83,14 @@
 						 IsEnabled="{Binding IsEnabled}"
 						 Command="{Binding Command}"
 						 CommandParameter="Windows.UI.Xaml.Controls.RadioButton" />
+
+			<TextBlock Margin="0,20,0,0" Text="Navigation back button:" />
+
+			<Button IsEnabled="{Binding IsEnabled}" 
+					Style="{StaticResource NavigationBackButtonNormalStyle}" />
+
+			<Button IsEnabled="{Binding IsEnabled}" 
+					Style="{StaticResource NavigationBackButtonSmallStyle}" />
 		</StackPanel>
 		<StackPanel Grid.Column="1" x:Name="myStackPanel">
 			<CheckBox Content="IsEnabled"
