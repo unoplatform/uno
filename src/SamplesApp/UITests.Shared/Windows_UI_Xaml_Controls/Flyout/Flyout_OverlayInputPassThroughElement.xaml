@@ -1,0 +1,27 @@
+﻿<Page
+	x:Name="ThePage"
+	x:Class="UITests.Shared.Windows_UI_Xaml_Controls.Flyout.Flyout_OverlayInputPassThroughElement"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	mc:Ignorable="d"
+	Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+	<Grid>
+		<StackPanel x:Name="stackPanel" HorizontalAlignment="Center" VerticalAlignment="Center">
+			<TextBlock x:Name="textBlock" Text="Initial" />
+			<Button Content="Open Flyout">
+				<Button.Flyout>
+					<Flyout OverlayInputPassThroughElement="{x:Bind ThePage}" Closing="FlyoutBase_OnClosing" Closed="FlyoutBase_OnClosed">
+						<TextBlock Text="Flyout Yay" />
+					</Flyout>
+				</Button.Flyout>
+			</Button>
+			<Button
+				Margin="0,100,0,0"
+				Click="Button_Click"
+				Content="Click With Flyout Open" />
+		</StackPanel>
+	</Grid>
+</Page>
