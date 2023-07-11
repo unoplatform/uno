@@ -2680,6 +2680,15 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				if (key != null)
 				{
+					// Some resources (such as material colors) are initialized upon creation and so can't be tracked this way,
+					//  as can't add the `SetElementProperty` call in a getter.
+					if (!isInInitializer && _isDebug)
+					{
+						// Track source location of resources by key as they may be lazily initialized.
+						// Attach the values to the named string for similarity with other places where this informatin is stored.
+						writer.AppendLineIndented($"global::Uno.UI.Helpers.MarkupHelper.SetElementProperty(\"ResourceSourceLocations\", \"{key}\", \"file:///{_fileDefinition.FilePath.Replace("\\", "/")}#L{resource.LineNumber}:{resource.LinePosition}\"){closingPunctuation}");
+					}
+
 					var wrappedKey = key;
 					if (!key.StartsWith("typeof(", StringComparison.InvariantCulture))
 					{
@@ -3502,6 +3511,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						}
 					}
 
+					if (IsNotFrameworkElementButNeedsSourceLocation(objectDefinition) && _isDebug)
+					{
+						writer.AppendLineIndented($"global::Uno.UI.Helpers.MarkupHelper.SetElementProperty({closureName}, \"OriginalSourceLocation\", \"file:///{_fileDefinition.FilePath.Replace("\\", "/")}#L{objectDefinition.LineNumber}:{objectDefinition.LinePosition}\");");
+					}
+
 					if (_isUiAutomationMappingEnabled)
 					{
 						// Prefer using the Uid or the Name if their value has been explicitly assigned
@@ -3540,6 +3554,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 			}
 		}
+
+		private static bool IsNotFrameworkElementButNeedsSourceLocation(XamlObjectDefinition objectDefinition)
+			=> objectDefinition.Type.Name is "VisualState" or "AdaptiveTrigger" or "StateTrigger";
 
 		private void ValidateName(string? value)
 		{
