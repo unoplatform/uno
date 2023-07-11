@@ -12,9 +12,17 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				typeof(PickerFlyoutBase),
 				new FrameworkPropertyMetadata(default(string)));
 
-		public static string GetTitle(DependencyObject element) => (string)element.GetValue(TitleProperty);
+		public static string GetTitle(DependencyObject element) => (string)element.GetValue(TitleProperty) ?? "";
 
-		public static void SetTitle(DependencyObject element, string value) => element.SetValue(TitleProperty, value);
+		public static void SetTitle(DependencyObject element, string value)
+		{
+			if (value == null)
+			{
+				throw new ArgumentNullException(nameof(value));
+			}
+
+			element.SetValue(TitleProperty, value);
+		}
 
 		protected virtual void OnConfirmed() => throw new InvalidOperationException();
 
