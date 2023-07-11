@@ -717,7 +717,7 @@ namespace Windows.UI.Xaml
 				}
 			}
 
-			if (ctx.Mode.HasFlag(BubblingMode.IgnoreParents) || ctx.Root == this)
+			if (routedEvent.IsTunnelingEvent || ctx.Mode.HasFlag(BubblingMode.IgnoreParents) || ctx.Root == this)
 			{
 				return isHandled;
 			}
