@@ -90,7 +90,22 @@ internal partial class InputManager
 			}
 		}
 
+<<<<<<< HEAD
 		internal void OnPointerWheelChanged(Windows.UI.Core.PointerEventArgs args)
+=======
+		private void UpdateLastInputType(PointerEventArgs e)
+		{
+			_inputManager.LastInputDeviceType = e.CurrentPoint?.PointerDeviceType switch
+			{
+				PointerDeviceType.Touch => InputDeviceType.Touch,
+				PointerDeviceType.Pen => InputDeviceType.Pen,
+				PointerDeviceType.Mouse => InputDeviceType.Mouse,
+				_ => _inputManager.LastInputDeviceType
+			};
+		}
+
+		private void OnPointerWheelChanged(Windows.UI.Core.PointerEventArgs args)
+>>>>>>> b9475eddc7 (fix(Input): Properly update last input device type on Skia and WASM)
 		{
 			var (originalSource, _) = HitTest(args);
 
@@ -113,6 +128,8 @@ internal partial class InputManager
 			{
 				Trace($"PointerWheelChanged [{originalSource.GetDebugName()}]");
 			}
+
+			UpdateLastInputType(args);
 
 			var routedArgs = new PointerRoutedEventArgs(args, originalSource);
 
@@ -147,6 +164,8 @@ internal partial class InputManager
 			{
 				Trace($"PointerEntered [{originalSource.GetDebugName()}]");
 			}
+
+			UpdateLastInputType(args);
 
 			var routedArgs = new PointerRoutedEventArgs(args, originalSource);
 
@@ -183,6 +202,8 @@ internal partial class InputManager
 				Trace($"PointerExited [{overBranchLeaf.GetDebugName()}]");
 			}
 
+			UpdateLastInputType(args);
+
 			var routedArgs = new PointerRoutedEventArgs(args, originalSource);
 
 			Raise(Leave, overBranchLeaf, routedArgs);
@@ -218,6 +239,8 @@ internal partial class InputManager
 				Trace($"PointerPressed [{originalSource.GetDebugName()}]");
 			}
 
+			UpdateLastInputType(args);
+
 			var routedArgs = new PointerRoutedEventArgs(args, originalSource);
 
 			_pressedElements[routedArgs.Pointer] = originalSource;
@@ -249,6 +272,8 @@ internal partial class InputManager
 			{
 				Trace($"PointerReleased [{originalSource.GetDebugName()}]");
 			}
+
+			UpdateLastInputType(args);
 
 			var routedArgs = new PointerRoutedEventArgs(args, originalSource);
 
@@ -284,6 +309,8 @@ internal partial class InputManager
 			{
 				Trace($"PointerMoved [{originalSource.GetDebugName()}]");
 			}
+
+			UpdateLastInputType(args);
 
 			var routedArgs = new PointerRoutedEventArgs(args, originalSource);
 
@@ -331,6 +358,8 @@ internal partial class InputManager
 			{
 				Trace($"PointerCancelled [{originalSource.GetDebugName()}]");
 			}
+
+			UpdateLastInputType(args);
 
 			var routedArgs = new PointerRoutedEventArgs(args, originalSource);
 
