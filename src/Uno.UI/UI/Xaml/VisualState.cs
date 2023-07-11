@@ -32,10 +32,7 @@ namespace Windows.UI.Xaml
 		{
 			get
 			{
-				if (EnsureMaterialized())
-				{
-					this.UpdateResourceBindings();
-				}
+				EnsureMaterialized();
 				return (Storyboard)this.GetValue(StoryboardProperty);
 			}
 
@@ -80,10 +77,7 @@ namespace Windows.UI.Xaml
 					collection = Setters = new SetterBaseCollection(this, isAutoPropertyInheritanceEnabled: false);
 				}
 
-				if (EnsureMaterialized())
-				{
-					this.UpdateResourceBindings();
-				}
+				EnsureMaterialized();
 
 				return collection;
 			}
@@ -168,7 +162,7 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Ensures that the lazy builder has been invoked
 		/// </summary>
-		private bool EnsureMaterialized()
+		private void EnsureMaterialized()
 		{
 			if (LazyBuilder != null)
 			{
@@ -176,23 +170,8 @@ namespace Windows.UI.Xaml
 				LazyBuilder = null;
 				builder.Invoke();
 
-				if (Storyboard is IDependencyObjectStoreProvider storyboardProvider)
-				{
-					storyboardProvider.Store.UpdateResourceBindings(ResourceUpdateReason.ThemeResource);
-				}
-
-				foreach (var setter in Setters)
-				{
-					if (setter is IDependencyObjectStoreProvider setterProvider)
-					{
-						setterProvider.Store.UpdateResourceBindings(ResourceUpdateReason.ThemeResource);
-					}
-				}
-
-				return true;
+				this.UpdateResourceBindings();
 			}
-
-			return false;
 		}
 
 		private void OnStateTriggerCollectionChanged(IObservableVector<StateTriggerBase> sender, IVectorChangedEventArgs e)
