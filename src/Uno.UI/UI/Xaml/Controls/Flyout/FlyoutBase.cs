@@ -246,12 +246,12 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			DependencyProperty.Register("LightDismissOverlayBackground", typeof(Brush), typeof(FlyoutBase), new FrameworkPropertyMetadata(null));
 		
 		internal static DependencyProperty OverlayInputPassThroughElementProperty { get; } = 
-			DependencyProperty.Register("OverlayInputPassThroughElement", typeof(DependencyObject), typeof(FlyoutBase), new FrameworkPropertyMetadata(null));
+			DependencyProperty.Register(nameof(OverlayInputPassThroughElement), typeof(DependencyObject), typeof(FlyoutBase), new FrameworkPropertyMetadata(null));
 		
 		public DependencyObject OverlayInputPassThroughElement
 		{
-			get { return (DependencyObject)GetValue(OverlayInputPassThroughElementProperty); }
-			set { SetValue(OverlayInputPassThroughElementProperty, value); }
+			get => (DependencyObject)GetValue(OverlayInputPassThroughElementProperty);
+			set => SetValue(OverlayInputPassThroughElementProperty, value);
 		}
 
 		/// <summary>

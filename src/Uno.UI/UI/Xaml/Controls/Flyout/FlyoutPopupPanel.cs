@@ -39,7 +39,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		protected override int PopupPlacementTargetMargin => 5;
 
-		protected override void OnPointerPressed(object sender, PointerRoutedEventArgs args)
+		private protected override void OnPointerPressed(object sender, PointerRoutedEventArgs args)
 		{
 			base.OnPointerPressed(sender, args);
 
@@ -53,11 +53,11 @@ namespace Microsoft.UI.Xaml.Controls
 						passThroughElement.XamlRoot.VisualTree.RootElement,
 						VisualTreeHelper.DefaultGetTestability,
 						childrenFilter: elements => elements.Where(e => e != this));
-					
+
 					var eventArgs = new PointerRoutedEventArgs(
 						new PointerEventArgs(args.GetCurrentPoint(null), args.KeyModifiers),
 						args.OriginalSource as UIElement);
-					
+
 					elementToBeHit.OnPointerDown(eventArgs);
 				}
 			}
