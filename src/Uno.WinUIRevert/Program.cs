@@ -139,7 +139,17 @@ namespace UnoWinUIRevert
 			//ReplaceInFile(Path.Combine(basePath, @"src\Uno.UI\UI\Xaml\Media\RadialGradientBrush.iOSmacOS.cs"), "namespace Windows.UI.Xaml.Controls", "namespace Windows.UI.Xaml.Controls");
 			//ReplaceInFile(Path.Combine(basePath, @"src\Uno.UI\UI\Xaml\Media\RadialGradientBrush.wasm.cs"), "namespace Windows.UI.Xaml.Controls", "namespace Windows.UI.Xaml.Controls");
 
-			UncommentWinUISpecificBlock(Path.Combine(basePath, "build", "nuget", "Uno.WinUI.nuspec"));
+			// Replacements for nuspec files
+			string[] nuspecTransformedFiles = new[]{
+				Path.Combine(basePath, "build", "nuget", "Uno.WinUI.nuspec"),				
+				Path.Combine(basePath, "build", "nuget", "Uno.WinUI.MSAL.nuspec"),				
+			};
+
+			foreach(var nuspecTransformedFile in nuspecTransformedFiles)
+			{
+				UncommentWinUISpecificBlock(nuspecTransformedFile);
+				CommentUWPSpecificBlock(nuspecTransformedFile);
+			}
 		}
 
 		static string[] _exclusions = new string[] {
@@ -222,6 +232,12 @@ namespace UnoWinUIRevert
 		{
 			ReplaceInFile(nuspecPath, @"<!-- BEGIN WinUI-specific", string.Empty);
 			ReplaceInFile(nuspecPath, @"END WinUI-specific -->", string.Empty);
+		}
+
+		private static void CommentUWPSpecificBlock(string nuspecPath)
+		{
+			ReplaceInFile(nuspecPath, @"<!-- BEGIN UWP-specific -->", "<!--");
+			ReplaceInFile(nuspecPath, @"<!-- END UWP-specific -->", "-->");
 		}
 	}
 }
