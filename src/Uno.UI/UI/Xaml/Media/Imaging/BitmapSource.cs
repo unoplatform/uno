@@ -101,7 +101,6 @@ namespace Windows.UI.Xaml.Media.Imaging
 		}
 
 		partial void UpdatePixelWidthAndHeightPartial(Stream stream);
-
 		private protected virtual void OnSetSource() { }
 
 		private

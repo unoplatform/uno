@@ -75,6 +75,24 @@ if (RuntimeInformation.IsOSPlatform(OSPlatform.Create("BROWSER")))
 
 WebAssembly is a currently a `net7.0` target, and cannot yet be discriminated at compile time until the inclusion of `net8.0-browser` in .NET 8. See the proposed design at [dotnet/designs#289](https://github.com/dotnet/designs/pull/289).
 
+### WebAssembly considerations
+
+The Uno Platform templates use a separate project library to share your code between platforms. As of .NET 7, WebAssembly does not have its own `TargetFramework` and Uno Platform uses the same value (e.g. `net7.0`) for both WebAssembly and Skia-based platforms. This means that `__WASM__` and `HAS_UNO_WASM` are not available in this project, but are available C# code specified directly in the `MyApp.WebAssembly` head.
+
+In order to create platform specific code for WebAssembly, a runtime check needs to included to execute WebAssembly specific code:
+
+```csharp
+if (RuntimeInformation.IsOSPlatform(OSPlatform.Create("BROWSER")))
+{
+   // Do something WebAssembly specific
+}
+```
+
+> [!NOTE]
+> [JSImport/JSExport](xref:Uno.Wasm.Bootstrap.JSInterop) are available on all platforms targeting .NET 7 and later, and this code does not need to be conditionally excluded.
+
+WebAssembly is a currently a `net7.0` target, and cannot yet be discriminated at compile time, at least not until (dotnet/designs#289)[https://github.com/dotnet/designs/pull/289] will be available in .NET 8 with the inclusion of `net8.0-browser`.
+
 ## Type aliases
 
 Defining a [type alias](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/using-directive) with the `using` directive, in combination with `#if` conditionals, can make for cleaner code. For example:

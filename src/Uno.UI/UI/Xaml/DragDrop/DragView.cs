@@ -16,7 +16,7 @@ namespace Windows.UI.Xaml
 	{
 		#region Glyph
 		public static readonly DependencyProperty GlyphProperty = DependencyProperty.Register(
-			"Glyph", typeof(string), typeof(DragView), new FrameworkPropertyMetadata(default(string)));
+			"Glyph", typeof(string), typeof(DragView), new FrameworkPropertyMetadata(string.Empty));
 
 		public string Glyph
 		{
@@ -38,7 +38,7 @@ namespace Windows.UI.Xaml
 
 		#region Caption
 		public static readonly DependencyProperty CaptionProperty = DependencyProperty.Register(
-			"Caption", typeof(string), typeof(DragView), new FrameworkPropertyMetadata(default(string)));
+			"Caption", typeof(string), typeof(DragView), new FrameworkPropertyMetadata(string.Empty));
 
 		public string Caption
 		{

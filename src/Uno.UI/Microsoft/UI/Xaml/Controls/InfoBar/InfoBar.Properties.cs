@@ -189,7 +189,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Identifies the Message dependency property.
 		/// </summary>
 		public static DependencyProperty MessageProperty { get; } =
-			DependencyProperty.Register(nameof(Message), typeof(string), typeof(InfoBar), new FrameworkPropertyMetadata(null));
+			DependencyProperty.Register(nameof(Message), typeof(string), typeof(InfoBar), new FrameworkPropertyMetadata(string.Empty));
 
 		/// <summary>
 		/// Gets or sets the type of the InfoBar to apply consistent status color, icon,
@@ -232,7 +232,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Identifies the Title dependency property.
 		/// </summary>
 		public static DependencyProperty TitleProperty { get; } =
-			DependencyProperty.Register(nameof(Title), typeof(string), typeof(InfoBar), new FrameworkPropertyMetadata(null));
+			DependencyProperty.Register(nameof(Title), typeof(string), typeof(InfoBar), new FrameworkPropertyMetadata(string.Empty));
 
 		private static void OnIconSourcePropertyChanged(
 			DependencyObject sender,

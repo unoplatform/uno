@@ -1,6 +1,4 @@
-﻿#if NET6_0_OR_GREATER || __WASM__ || __SKIA__
-
-// Licensed to the .NET Foundation under one or more agreements.
+﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
 // Based on the implementation in https://github.com/dotnet/aspnetcore/blob/26e3dfc7f3f3a91ba445ec0f8b1598d12542fb9f/src/Components/WebAssembly/WebAssembly/src/HotReload/HotReloadAgent.cs
@@ -20,10 +18,8 @@ namespace Uno.UI.RemoteControl.HotReload.MetadataUpdater;
 
 internal sealed class HotReloadAgent : IDisposable
 {
-#if NET6_0_OR_GREATER
 	/// Flags for hot reload handler Types like MVC's HotReloadService.
 	private const DynamicallyAccessedMemberTypes HotReloadHandlerLinkerFlags = DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods;
-#endif
 
 	private readonly Action<string> _log;
 	private readonly AssemblyLoadEventHandler _assemblyLoad;
@@ -33,37 +29,11 @@ internal sealed class HotReloadAgent : IDisposable
 
 	internal const string MetadataUpdaterType = "System.Reflection.Metadata.MetadataUpdater";
 
-#if !NET6_0_OR_GREATER
-	private delegate void ApplyUpdateHandler(Assembly assembly, ReadOnlySpan<byte> metadataDelta, ReadOnlySpan<byte> ilDelta, ReadOnlySpan<byte> pdbDelta);
-	private static ApplyUpdateHandler? _applyUpdate;
-#endif
-
 	public HotReloadAgent(Action<string> log)
 	{
 		_log = log;
 		_assemblyLoad = OnAssemblyLoad;
 		AppDomain.CurrentDomain.AssemblyLoad += _assemblyLoad;
-
-#if !NET6_0_OR_GREATER
-		if (_applyUpdate == null)
-		{
-			if (Type.GetType(MetadataUpdaterType) is { } type)
-			{
-				if (type.GetMethod("ApplyUpdate") is { } applyUpdateMethod)
-				{
-					_applyUpdate = (ApplyUpdateHandler)applyUpdateMethod.CreateDelegate(typeof(ApplyUpdateHandler));
-				}
-				else
-				{
-					_log($"Metadata updates are not supported with this runtime (Unable to find System.Reflection.Metadata.MetadataUpdater.ApplyUpdate(...))");
-				}
-			}
-			else
-			{
-				_log($"Metadata updates are not supported with this runtime (Unable to find System.Reflection.Metadata.MetadataUpdater)");
-			}
-		}
-#endif
 	}
 
 	private void OnAssemblyLoad(object? _, AssemblyLoadEventArgs eventArgs)
@@ -89,10 +59,8 @@ internal sealed class HotReloadAgent : IDisposable
 		public List<Action<Type[]?>> UpdateApplication { get; } = new();
 	}
 
-#if NET6_0_OR_GREATER
 	[UnconditionalSuppressMessage("Trimmer", "IL2072",
 		Justification = "The handlerType passed to GetHandlerActions is preserved by MetadataUpdateHandlerAttribute with DynamicallyAccessedMemberTypes.All.")]
-#endif
 	private UpdateHandlerActions GetMetadataUpdateHandlerActions()
 	{
 		// We need to execute MetadataUpdateHandlers in a well-defined order. For v1, the strategy that is used is to topologically
@@ -130,9 +98,7 @@ internal sealed class HotReloadAgent : IDisposable
 
 	internal void GetHandlerActions(
 		UpdateHandlerActions handlerActions,
-#if NET6_0_OR_GREATER
 		[DynamicallyAccessedMembers(HotReloadHandlerLinkerFlags)]
-#endif
 		Type handlerType)
 	{
 		bool methodFound = false;
@@ -176,9 +142,7 @@ internal sealed class HotReloadAgent : IDisposable
 		}
 
 		MethodInfo? GetUpdateMethod(
-#if NET6_0_OR_GREATER
 		[DynamicallyAccessedMembers(HotReloadHandlerLinkerFlags)]
-#endif
 		Type handlerType, string name)
 		{
 			if (handlerType.GetMethod(name, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static, null, new[] { typeof(Type[]) }, null) is MethodInfo updateMethod &&
@@ -211,9 +175,7 @@ internal sealed class HotReloadAgent : IDisposable
 			Visit(assemblies, assembly, sortedAssemblies, visited);
 		}
 
-#if NET6_0_OR_GREATER
 		[UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Hot reload is only expected to work when trimming is disabled.")]
-#endif
 		static void Visit(Assembly[] assemblies, Assembly assembly, List<Assembly> sortedAssemblies, HashSet<string> visited)
 		{
 			var assemblyIdentifier = assembly.GetName().Name!;
@@ -279,20 +241,10 @@ internal sealed class HotReloadAgent : IDisposable
 
 	private static void ApplyUpdate(Assembly assembly, UpdateDelta item)
 	{
-#if NET6_0_OR_GREATER
 		System.Reflection.Metadata.MetadataUpdater.ApplyUpdate(assembly, item.MetadataDelta, item.ILDelta, item.PdbBytes ?? ReadOnlySpan<byte>.Empty);
-#else
-
-		if (_applyUpdate is not null)
-		{
-			_applyUpdate(assembly, item.MetadataDelta, item.ILDelta, item.PdbBytes ?? ReadOnlySpan<byte>.Empty);
-		}
-#endif
 	}
 
-#if NET6_0_OR_GREATER
 	[UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Hot reload is only expected to work when trimming is disabled.")]
-#endif
 	private static Type[] GetMetadataUpdateTypes(IReadOnlyList<UpdateDelta> deltas)
 	{
 		List<Type>? types = null;
@@ -355,5 +307,3 @@ internal sealed class HotReloadAgent : IDisposable
 		return default;
 	}
 }
-
-#endif

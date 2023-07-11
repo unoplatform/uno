@@ -29,5 +29,9 @@ internal interface IOverlayTextBoxViewExtension
 
 	int GetSelectionLength();
 
+	int GetSelectionStartBeforeKeyDown();
+
+	int GetSelectionLengthBeforeKeyDown();
+
 	void UpdateProperties();
 }

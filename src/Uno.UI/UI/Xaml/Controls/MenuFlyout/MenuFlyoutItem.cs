@@ -93,7 +93,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public string Text
 		{
-			get { return (string)GetValue(TextProperty); }
+			get { return (string)GetValue(TextProperty) ?? ""; }
 			set { SetValue(TextProperty, value); }
 		}
 
@@ -121,7 +121,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public string KeyboardAcceleratorTextOverride
 		{
-			get => (string)this.GetValue(KeyboardAcceleratorTextOverrideProperty);
+			get => (string)this.GetValue(KeyboardAcceleratorTextOverrideProperty) ?? "";
 			set => this.SetValue(KeyboardAcceleratorTextOverrideProperty, value);
 		}
 
