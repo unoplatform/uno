@@ -14,6 +14,11 @@
 							Or '$(LangVersion)' == 'latestMajor'
 							Or '$(LangVersion)' == 'default'
 							Or (
+								'$(LangVersion)' == ''
+								and '$(BundledNETCoreAppTargetFrameworkVersion)' != ''
+								and '$(BundledNETCoreAppTargetFrameworkVersion)' &gt;= '8.0'
+							)
+							Or (
 								'$(LangVersion)'!=''
 								and '$(LangVersion)' &gt; '9.0'
 							)">true</_canUseRoslynAnalyzer>
