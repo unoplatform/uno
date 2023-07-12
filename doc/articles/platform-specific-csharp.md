@@ -59,7 +59,7 @@ Apps generated with the default `unoapp` solution template use **Windows App SDK
 
 ### WebAssembly considerations
 
-The Uno Platform templates use a separate project library to share code between platforms. As of .NET 7, WebAssembly does not have its own `TargetFramework` and Uno Platform uses the same value (e.g. `net7.0`) for both WebAssembly and Skia-based platforms. This means that `__WASM__` and `HAS_UNO_WASM` are not available in this project, but are available C# code specified directly in the `MyApp.WebAssembly` head.
+The Uno Platform templates use a separate project library to share code between platforms. As of .NET 7, WebAssembly does not have its own `TargetFramework` and Uno Platform uses the same value (e.g. `net7.0`) for both WebAssembly and Skia-based platforms. This means that `__WASM__` and `HAS_UNO_WASM` are not available in this project, but are available in C# code specified directly in the `MyApp.WebAssembly` head.
 
 In order to execute platform specific code for WebAssembly, a runtime check needs to be included:
 
@@ -73,7 +73,7 @@ if (RuntimeInformation.IsOSPlatform(OSPlatform.Create("BROWSER")))
 > [!NOTE]
 > [JSImport/JSExport](xref:Uno.Wasm.Bootstrap.JSInterop) are available on all platforms targeting .NET 7 and later, and this code does not need to be conditionally excluded.
 
-WebAssembly is a currently a `net7.0` target, and cannot yet be discriminated at compile time until the inclusion of `net8.0-browser` in .NET 8. See the proposed design at [dotnet/designs#289](https://github.com/dotnet/designs/pull/289).
+WebAssembly is currently a `net7.0` target, and cannot yet be discriminated at compile time until the inclusion of `net8.0-browser` in .NET 8. See the proposed design at [dotnet/designs#289](https://github.com/dotnet/designs/pull/289).
 
 ## Type aliases
 
