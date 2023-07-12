@@ -4,17 +4,17 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:UITests.Windows_UI_Xaml_Controls.CommandBar"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-	xmlns:xamarin="http://nventive.com/xamarin"
+	xmlns:not_win="http://uno.ui/not_win"
 	xmlns:ios="http://nventive.com/ios"
 	xmlns:android="http://nventive.com/android"	
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d xamarin ios android"
+    mc:Ignorable="d not_win ios android"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
 	<Page.Resources>
 		<Style x:Name="NativeCommandbarStyle"
 			   TargetType="CommandBar"
-			   xamarin:BasedOn="{StaticResource NativeDefaultCommandBar}">
+			   not_win:BasedOn="{StaticResource NativeDefaultCommandBar}">
 			<Setter Property="Background"
 					Value="Blue" />
 			<Setter Property="Foreground"
@@ -27,7 +27,7 @@
 	</Page.Resources>
 
 	<StackPanel Background="White">
-		<xamarin:Grid>
+		<not_win:Grid>
 			<CommandBar Content="CommandBar with DataContext Set"
 						Style="{StaticResource NativeCommandbarStyle}"
 						Grid.Row="0">
@@ -42,6 +42,6 @@
 					</AppBarButton>
 				</CommandBar.PrimaryCommands>
 			</CommandBar>
-		</xamarin:Grid>
+		</not_win:Grid>
 	</StackPanel>
 </Page>

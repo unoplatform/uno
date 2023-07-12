@@ -8,13 +8,13 @@
 					xmlns:localConverters="using:GenericApp.Views.Converters"
 					xmlns:u="using:Uno.UI.Controls"
 					xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-					xmlns:xamarin="http://uno.ui/xamarin"
+					xmlns:not_win="http://uno.ui/not_win"
 					xmlns:android="http://uno.ui/android"
 					xmlns:ios="http://uno.ui/ios"
 					xmlns:wasm="http://uno.ui/wasm"
 					xmlns:macos="http://uno.ui/macos"
 					xmlns:skia="http://uno.ui/skia"
-					mc:Ignorable="d xamarin ios android macos wasm skia">
+					mc:Ignorable="d not_win ios android macos wasm skia">
 
 	<ResourceDictionary.ThemeDictionaries>
 		<ResourceDictionary x:Key="Default">
@@ -1069,64 +1069,64 @@
 
 			<!-- SplitView, NavigationView -->
 			<win:RevealBackgroundBrush x:Key="SystemControlBackgroundBaseLowRevealBackgroundBrush" not_mux:TargetTheme="Light" Color="{StaticResource SystemRevealBaseLowColor}" FallbackColor="{StaticResource SystemBaseLowColor}" />
-			<xamarin:SolidColorBrush x:Key="SystemControlBackgroundBaseLowRevealBackgroundBrush" Color="{StaticResource SystemBaseLowColor}" />
+			<not_win:SolidColorBrush x:Key="SystemControlBackgroundBaseLowRevealBackgroundBrush" Color="{StaticResource SystemBaseLowColor}" />
 
 			<win:RevealBackgroundBrush x:Key="SystemControlBackgroundBaseMediumLowRevealBaseLowBackgroundBrush" not_mux:TargetTheme="Light" Color="{StaticResource SystemRevealBaseLowColor}" FallbackColor="{StaticResource SystemBaseMediumLowColor}" />
-			<xamarin:SolidColorBrush x:Key="SystemControlBackgroundBaseMediumLowRevealBaseLowBackgroundBrush" Color="{StaticResource SystemBaseMediumLowColor}" />
+			<not_win:SolidColorBrush x:Key="SystemControlBackgroundBaseMediumLowRevealBaseLowBackgroundBrush" Color="{StaticResource SystemBaseMediumLowColor}" />
 
 			<win:RevealBorderBrush x:Key="SystemControlBackgroundTransparentRevealBorderBrush" not_mux:TargetTheme="Light" Color="Transparent" FallbackColor="Transparent" />
-			<xamarin:SolidColorBrush x:Key="SystemControlBackgroundTransparentRevealBorderBrush" Color="Transparent" />
+			<not_win:SolidColorBrush x:Key="SystemControlBackgroundTransparentRevealBorderBrush" Color="Transparent" />
 
 			<win:RevealBorderBrush x:Key="SystemControlHighlightBaseMediumLowRevealBorderBrush" not_mux:TargetTheme="Light" Color="{StaticResource SystemRevealBaseMediumLowColor}" FallbackColor="{StaticResource SystemBaseMediumLowColor}" />
-			<xamarin:SolidColorBrush x:Key="SystemControlHighlightBaseMediumLowRevealBorderBrush" Color="{StaticResource SystemBaseMediumLowColor}" />
+			<not_win:SolidColorBrush x:Key="SystemControlHighlightBaseMediumLowRevealBorderBrush" Color="{StaticResource SystemBaseMediumLowColor}" />
 
 			<win:RevealBorderBrush x:Key="SystemControlHighlightTransparentRevealBorderBrush" not_mux:TargetTheme="Light" Color="Transparent" FallbackColor="Transparent" />
-			<xamarin:SolidColorBrush x:Key="SystemControlHighlightTransparentRevealBorderBrush" Color="Transparent" />
+			<not_win:SolidColorBrush x:Key="SystemControlHighlightTransparentRevealBorderBrush" Color="Transparent" />
 
 			<win:RevealBorderBrush x:Key="SystemControlTransparentRevealBorderBrush" not_mux:TargetTheme="Light" Color="Transparent" FallbackColor="Transparent" />
-			<xamarin:SolidColorBrush x:Key="SystemControlTransparentRevealBorderBrush" Color="Transparent" />
+			<not_win:SolidColorBrush x:Key="SystemControlTransparentRevealBorderBrush" Color="Transparent" />
 
 			<win:RevealBorderBrush x:Key="SystemControlHighlightAltTransparentRevealBorderBrush" not_mux:TargetTheme="Light" Color="Transparent" FallbackColor="Transparent" />
-			<xamarin:SolidColorBrush x:Key="SystemControlHighlightAltTransparentRevealBorderBrush" Color="Transparent" />
+			<not_win:SolidColorBrush x:Key="SystemControlHighlightAltTransparentRevealBorderBrush" Color="Transparent" />
 
 			<win:RevealBackgroundBrush x:Key="SystemControlHighlightBaseMediumLowRevealAccentBackgroundBrush" not_mux:TargetTheme="Light" Color="{ThemeResource SystemAccentColor}" FallbackColor="{StaticResource SystemBaseMediumLowColor}" />
-			<xamarin:SolidColorBrush x:Key="SystemControlHighlightBaseMediumLowRevealAccentBackgroundBrush" Color="{StaticResource SystemBaseMediumLowColor}" />
+			<not_win:SolidColorBrush x:Key="SystemControlHighlightBaseMediumLowRevealAccentBackgroundBrush" Color="{StaticResource SystemBaseMediumLowColor}" />
 
 			<win:RevealBackgroundBrush x:Key="SystemControlHighlightAccent3RevealBackgroundBrush" not_mux:TargetTheme="Dark" Color="{ThemeResource SystemAccentColorDark3}" FallbackColor="{ThemeResource SystemAccentColorDark3}" />
-			<xamarin:SolidColorBrush x:Key="SystemControlHighlightAccent3RevealBackgroundBrush" Color="{StaticResource SystemAccentColorDark3}" />
+			<not_win:SolidColorBrush x:Key="SystemControlHighlightAccent3RevealBackgroundBrush" Color="{StaticResource SystemAccentColorDark3}" />
 
 			<win:RevealBackgroundBrush x:Key="SystemControlHighlightAccent2RevealBackgroundBrush" not_mux:TargetTheme="Dark" Color="{ThemeResource SystemAccentColorDark2}" FallbackColor="{ThemeResource SystemAccentColorDark2}" />
-			<xamarin:SolidColorBrush x:Key="SystemControlHighlightAccent2RevealBackgroundBrush" Color="{StaticResource SystemAccentColorDark2}" />
+			<not_win:SolidColorBrush x:Key="SystemControlHighlightAccent2RevealBackgroundBrush" Color="{StaticResource SystemAccentColorDark2}" />
 
 			<win:RevealBackgroundBrush x:Key="SystemControlHighlightAccentRevealBackgroundBrush" not_mux:TargetTheme="Dark" Color="{ThemeResource SystemAccentColor}" FallbackColor="{ThemeResource SystemAccentColor}" />
-			<xamarin:SolidColorBrush x:Key="SystemControlHighlightAccentRevealBackgroundBrush" Color="{StaticResource SystemAccentColor}" />
+			<not_win:SolidColorBrush x:Key="SystemControlHighlightAccentRevealBackgroundBrush" Color="{StaticResource SystemAccentColor}" />
 
 			<win:RevealBackgroundBrush x:Key="SystemControlHighlightAccent3RevealAccent2BackgroundBrush" not_mux:TargetTheme="Dark" Color="{ThemeResource SystemAccentColorDark2}" FallbackColor="{ThemeResource SystemAccentColorDark3}" />
-			<xamarin:SolidColorBrush x:Key="SystemControlHighlightAccent3RevealAccent2BackgroundBrush" Color="{StaticResource SystemAccentColorDark3}" />
+			<not_win:SolidColorBrush x:Key="SystemControlHighlightAccent3RevealAccent2BackgroundBrush" Color="{StaticResource SystemAccentColorDark3}" />
 
 
 			<StaticResource x:Key="SystemControlTransientBorderBrush" ResourceKey="SystemControlForegroundChromeHighBrush" />
 			<win:AcrylicBrush x:Key="SystemControlTransientBackgroundBrush" BackgroundSource="HostBackdrop" TintColor="{StaticResource SystemChromeAltHighColor}" TintOpacity="0.8" FallbackColor="{StaticResource SystemChromeMediumLowColor}" />
-			<xamarin:SolidColorBrush x:Key="SystemControlTransientBackgroundBrush" Color="{StaticResource SystemChromeMediumLowColor}" />
+			<not_win:SolidColorBrush x:Key="SystemControlTransientBackgroundBrush" Color="{StaticResource SystemChromeMediumLowColor}" />
 			<StaticResource x:Key="SystemControlDescriptionTextForegroundBrush" ResourceKey="SystemControlPageTextBaseMediumBrush" />
 
-			<xamarin:SolidColorBrush x:Key="SearchBoxBorderBrush" Color="Transparent" />
-			<xamarin:Thickness x:Key="SearchBoxBorderThickness">0</xamarin:Thickness>
-			<xamarin:SolidColorBrush x:Key="SystemControlAcrylicElementBrush" Color="{ThemeResource SystemChromeMediumColor}" />
+			<not_win:SolidColorBrush x:Key="SearchBoxBorderBrush" Color="Transparent" />
+			<not_win:Thickness x:Key="SearchBoxBorderThickness">0</not_win:Thickness>
+			<not_win:SolidColorBrush x:Key="SystemControlAcrylicElementBrush" Color="{ThemeResource SystemChromeMediumColor}" />
 
 			<!-- Resources for Windows.UI.Xaml.Controls.Primitives.HyperlinkButton -->
-			<xamarin:StaticResource x:Key="HyperlinkButtonForeground" ResourceKey="SystemControlHyperlinkTextBrush" />
-			<xamarin:StaticResource x:Key="HyperlinkButtonForegroundPointerOver" ResourceKey="SystemControlPageTextBaseMediumBrush" />
-			<xamarin:StaticResource x:Key="HyperlinkButtonForegroundPressed" ResourceKey="SystemControlHighlightBaseMediumLowBrush" />
-			<xamarin:StaticResource x:Key="HyperlinkButtonForegroundDisabled" ResourceKey="SystemControlDisabledBaseMediumLowBrush" />
-			<xamarin:StaticResource x:Key="HyperlinkButtonBackground" ResourceKey="SystemControlPageBackgroundTransparentBrush" />
-			<xamarin:StaticResource x:Key="HyperlinkButtonBackgroundPointerOver" ResourceKey="SystemControlPageBackgroundTransparentBrush" />
-			<xamarin:StaticResource x:Key="HyperlinkButtonBackgroundPressed" ResourceKey="SystemControlPageBackgroundTransparentBrush" />
-			<xamarin:StaticResource x:Key="HyperlinkButtonBackgroundDisabled" ResourceKey="SystemControlPageBackgroundTransparentBrush" />
-			<xamarin:StaticResource x:Key="HyperlinkButtonBorderBrush" ResourceKey="SystemControlTransparentBrush" />
-			<xamarin:StaticResource x:Key="HyperlinkButtonBorderBrushPointerOver" ResourceKey="SystemControlTransparentBrush" />
-			<xamarin:StaticResource x:Key="HyperlinkButtonBorderBrushPressed" ResourceKey="SystemControlTransparentBrush" />
-			<xamarin:StaticResource x:Key="HyperlinkButtonBorderBrushDisabled" ResourceKey="SystemControlTransparentBrush" />
+			<not_win:StaticResource x:Key="HyperlinkButtonForeground" ResourceKey="SystemControlHyperlinkTextBrush" />
+			<not_win:StaticResource x:Key="HyperlinkButtonForegroundPointerOver" ResourceKey="SystemControlPageTextBaseMediumBrush" />
+			<not_win:StaticResource x:Key="HyperlinkButtonForegroundPressed" ResourceKey="SystemControlHighlightBaseMediumLowBrush" />
+			<not_win:StaticResource x:Key="HyperlinkButtonForegroundDisabled" ResourceKey="SystemControlDisabledBaseMediumLowBrush" />
+			<not_win:StaticResource x:Key="HyperlinkButtonBackground" ResourceKey="SystemControlPageBackgroundTransparentBrush" />
+			<not_win:StaticResource x:Key="HyperlinkButtonBackgroundPointerOver" ResourceKey="SystemControlPageBackgroundTransparentBrush" />
+			<not_win:StaticResource x:Key="HyperlinkButtonBackgroundPressed" ResourceKey="SystemControlPageBackgroundTransparentBrush" />
+			<not_win:StaticResource x:Key="HyperlinkButtonBackgroundDisabled" ResourceKey="SystemControlPageBackgroundTransparentBrush" />
+			<not_win:StaticResource x:Key="HyperlinkButtonBorderBrush" ResourceKey="SystemControlTransparentBrush" />
+			<not_win:StaticResource x:Key="HyperlinkButtonBorderBrushPointerOver" ResourceKey="SystemControlTransparentBrush" />
+			<not_win:StaticResource x:Key="HyperlinkButtonBorderBrushPressed" ResourceKey="SystemControlTransparentBrush" />
+			<not_win:StaticResource x:Key="HyperlinkButtonBorderBrushDisabled" ResourceKey="SystemControlTransparentBrush" />
 
             <!-- Resources for Windows.UI.Xaml.Controls.Primitives.RepeatButton -->
             <StaticResource x:Key="RepeatButtonBackground" ResourceKey="SystemControlBackgroundBaseLowBrush" />
@@ -1304,11 +1304,11 @@
 			<StaticResource x:Key="ThumbBorderBrushPressed" ResourceKey="SystemControlHighlightTransparentBrush" />
 
 			<win:AcrylicBrush x:Key="SystemControlChromeMediumLowAcrylicElementMediumBrush" BackgroundSource="Backdrop" TintColor="{StaticResource SystemChromeAltHighColor}" TintOpacity="0.6" FallbackColor="{StaticResource SystemChromeMediumLowColor}" />
-			<xamarin:SolidColorBrush x:Key="SystemControlChromeMediumLowAcrylicElementMediumBrush" Color="{StaticResource SystemChromeMediumLowColor}" />
+			<not_win:SolidColorBrush x:Key="SystemControlChromeMediumLowAcrylicElementMediumBrush" Color="{StaticResource SystemChromeMediumLowColor}" />
 			<Color x:Key="SystemChromeMediumHighColor">#FF323232</Color>
 
 			<win:AcrylicBrush x:Key="SystemControlChromeMediumLowAcrylicWindowMediumBrush" BackgroundSource="HostBackdrop" TintColor="{StaticResource SystemChromeAltHighColor}" TintOpacity="0.6" FallbackColor="{StaticResource SystemChromeMediumLowColor}" />
-			<xamarin:SolidColorBrush x:Key="SystemControlChromeMediumLowAcrylicWindowMediumBrush" Color="{StaticResource SystemChromeMediumLowColor}" />
+			<not_win:SolidColorBrush x:Key="SystemControlChromeMediumLowAcrylicWindowMediumBrush" Color="{StaticResource SystemChromeMediumLowColor}" />
 
 			<!--
 			<RevealBackgroundBrush x:Key="SystemControlTransparentRevealBackgroundBrush" not_mux:TargetTheme="Dark" Color="Transparent" FallbackColor="Transparent" />
@@ -2397,26 +2397,26 @@
 
 			<StaticResource x:Key="SystemControlTransientBorderBrush" ResourceKey="SystemControlForegroundChromeHighBrush" />
 			<win:AcrylicBrush x:Key="SystemControlTransientBackgroundBrush" BackgroundSource="HostBackdrop" TintColor="{StaticResource SystemChromeAltHighColor}" TintOpacity="0.8" FallbackColor="{StaticResource SystemChromeMediumLowColor}" />
-			<xamarin:SolidColorBrush x:Key="SystemControlTransientBackgroundBrush" Color="{StaticResource SystemChromeMediumLowColor}" />
+			<not_win:SolidColorBrush x:Key="SystemControlTransientBackgroundBrush" Color="{StaticResource SystemChromeMediumLowColor}" />
 			<StaticResource x:Key="SystemControlDescriptionTextForegroundBrush" ResourceKey="SystemControlPageTextBaseMediumBrush" />
 
-			<xamarin:SolidColorBrush x:Key="SearchBoxBorderBrush" Color="Transparent" />
-			<xamarin:Thickness x:Key="SearchBoxBorderThickness">0</xamarin:Thickness>
-			<xamarin:SolidColorBrush x:Key="SystemControlAcrylicElementBrush" Color="{ThemeResource SystemChromeMediumColor}"></xamarin:SolidColorBrush> <!-- TODO: Uno specific - should fall back to SystemColorWindowColor in HighContrast-->
+			<not_win:SolidColorBrush x:Key="SearchBoxBorderBrush" Color="Transparent" />
+			<not_win:Thickness x:Key="SearchBoxBorderThickness">0</not_win:Thickness>
+			<not_win:SolidColorBrush x:Key="SystemControlAcrylicElementBrush" Color="{ThemeResource SystemChromeMediumColor}"></not_win:SolidColorBrush> <!-- TODO: Uno specific - should fall back to SystemColorWindowColor in HighContrast-->
 
 			<!-- Resources for Windows.UI.Xaml.Controls.Primitives.HyperlinkButton -->
-			<xamarin:StaticResource x:Key="HyperlinkButtonForeground" ResourceKey="SystemControlHyperlinkTextBrush" />
-			<xamarin:StaticResource x:Key="HyperlinkButtonForegroundPointerOver" ResourceKey="SystemControlPageTextBaseMediumBrush" />
-			<xamarin:StaticResource x:Key="HyperlinkButtonForegroundPressed" ResourceKey="SystemControlHighlightBaseMediumLowBrush" />
-			<xamarin:StaticResource x:Key="HyperlinkButtonForegroundDisabled" ResourceKey="SystemControlDisabledBaseMediumLowBrush" />
-			<xamarin:StaticResource x:Key="HyperlinkButtonBackground" ResourceKey="SystemControlPageBackgroundTransparentBrush" />
-			<xamarin:StaticResource x:Key="HyperlinkButtonBackgroundPointerOver" ResourceKey="SystemControlPageBackgroundTransparentBrush" />
-			<xamarin:StaticResource x:Key="HyperlinkButtonBackgroundPressed" ResourceKey="SystemControlPageBackgroundTransparentBrush" />
-			<xamarin:StaticResource x:Key="HyperlinkButtonBackgroundDisabled" ResourceKey="SystemControlPageBackgroundTransparentBrush" />
-			<xamarin:StaticResource x:Key="HyperlinkButtonBorderBrush" ResourceKey="SystemControlTransparentBrush" />
-			<xamarin:StaticResource x:Key="HyperlinkButtonBorderBrushPointerOver" ResourceKey="SystemControlTransparentBrush" />
-			<xamarin:StaticResource x:Key="HyperlinkButtonBorderBrushPressed" ResourceKey="SystemControlTransparentBrush" />
-			<xamarin:StaticResource x:Key="HyperlinkButtonBorderBrushDisabled" ResourceKey="SystemControlTransparentBrush" />
+			<not_win:StaticResource x:Key="HyperlinkButtonForeground" ResourceKey="SystemControlHyperlinkTextBrush" />
+			<not_win:StaticResource x:Key="HyperlinkButtonForegroundPointerOver" ResourceKey="SystemControlPageTextBaseMediumBrush" />
+			<not_win:StaticResource x:Key="HyperlinkButtonForegroundPressed" ResourceKey="SystemControlHighlightBaseMediumLowBrush" />
+			<not_win:StaticResource x:Key="HyperlinkButtonForegroundDisabled" ResourceKey="SystemControlDisabledBaseMediumLowBrush" />
+			<not_win:StaticResource x:Key="HyperlinkButtonBackground" ResourceKey="SystemControlPageBackgroundTransparentBrush" />
+			<not_win:StaticResource x:Key="HyperlinkButtonBackgroundPointerOver" ResourceKey="SystemControlPageBackgroundTransparentBrush" />
+			<not_win:StaticResource x:Key="HyperlinkButtonBackgroundPressed" ResourceKey="SystemControlPageBackgroundTransparentBrush" />
+			<not_win:StaticResource x:Key="HyperlinkButtonBackgroundDisabled" ResourceKey="SystemControlPageBackgroundTransparentBrush" />
+			<not_win:StaticResource x:Key="HyperlinkButtonBorderBrush" ResourceKey="SystemControlTransparentBrush" />
+			<not_win:StaticResource x:Key="HyperlinkButtonBorderBrushPointerOver" ResourceKey="SystemControlTransparentBrush" />
+			<not_win:StaticResource x:Key="HyperlinkButtonBorderBrushPressed" ResourceKey="SystemControlTransparentBrush" />
+			<not_win:StaticResource x:Key="HyperlinkButtonBorderBrushDisabled" ResourceKey="SystemControlTransparentBrush" />
 
 			<!-- Resources for Windows.UI.Xaml.Controls.Primitives.RepeatButton -->
 			<StaticResource x:Key="RepeatButtonBackground" ResourceKey="SystemControlBackgroundBaseLowBrush" />
@@ -2595,11 +2595,11 @@
 			<StaticResource x:Key="ThumbBorderBrushPressed" ResourceKey="SystemControlHighlightTransparentBrush" />
 
 			<win:AcrylicBrush x:Key="SystemControlChromeMediumLowAcrylicElementMediumBrush" BackgroundSource="Backdrop" TintColor="{StaticResource SystemChromeAltHighColor}" TintOpacity="0.6" FallbackColor="{StaticResource SystemChromeMediumLowColor}" />
-			<xamarin:SolidColorBrush x:Key="SystemControlChromeMediumLowAcrylicElementMediumBrush" Color="{StaticResource SystemChromeMediumLowColor}" />
+			<not_win:SolidColorBrush x:Key="SystemControlChromeMediumLowAcrylicElementMediumBrush" Color="{StaticResource SystemChromeMediumLowColor}" />
 			<Color x:Key="SystemChromeMediumHighColor">#FF323232</Color>
 
 			<win:AcrylicBrush x:Key="SystemControlChromeMediumLowAcrylicWindowMediumBrush" BackgroundSource="HostBackdrop" TintColor="{StaticResource SystemChromeAltHighColor}" TintOpacity="0.6" FallbackColor="{StaticResource SystemChromeMediumLowColor}" />
-			<xamarin:SolidColorBrush x:Key="SystemControlChromeMediumLowAcrylicWindowMediumBrush" Color="{StaticResource SystemChromeMediumLowColor}" />
+			<not_win:SolidColorBrush x:Key="SystemControlChromeMediumLowAcrylicWindowMediumBrush" Color="{StaticResource SystemChromeMediumLowColor}" />
 
 			<!--
 			<RevealBackgroundBrush x:Key="SystemControlTransparentRevealBackgroundBrush" not_mux:TargetTheme="Dark" Color="Transparent" FallbackColor="Transparent" />
@@ -3659,64 +3659,64 @@
 
 			<!-- SplitView, NavigationView -->
 			<win:RevealBackgroundBrush x:Key="SystemControlBackgroundBaseLowRevealBackgroundBrush" not_mux:TargetTheme="Light" Color="{StaticResource SystemRevealBaseLowColor}" FallbackColor="{StaticResource SystemBaseLowColor}" />
-			<xamarin:SolidColorBrush x:Key="SystemControlBackgroundBaseLowRevealBackgroundBrush" Color="{StaticResource SystemBaseLowColor}" />
+			<not_win:SolidColorBrush x:Key="SystemControlBackgroundBaseLowRevealBackgroundBrush" Color="{StaticResource SystemBaseLowColor}" />
 
 			<win:RevealBackgroundBrush x:Key="SystemControlBackgroundBaseMediumLowRevealBaseLowBackgroundBrush" not_mux:TargetTheme="Light" Color="{StaticResource SystemRevealBaseLowColor}" FallbackColor="{StaticResource SystemBaseMediumLowColor}" />
-			<xamarin:SolidColorBrush x:Key="SystemControlBackgroundBaseMediumLowRevealBaseLowBackgroundBrush" Color="{StaticResource SystemBaseMediumLowColor}" />
+			<not_win:SolidColorBrush x:Key="SystemControlBackgroundBaseMediumLowRevealBaseLowBackgroundBrush" Color="{StaticResource SystemBaseMediumLowColor}" />
 
 			<win:RevealBorderBrush x:Key="SystemControlBackgroundTransparentRevealBorderBrush" not_mux:TargetTheme="Light" Color="Transparent" FallbackColor="Transparent" />
-			<xamarin:SolidColorBrush x:Key="SystemControlBackgroundTransparentRevealBorderBrush" Color="Transparent" />
+			<not_win:SolidColorBrush x:Key="SystemControlBackgroundTransparentRevealBorderBrush" Color="Transparent" />
 
 			<win:RevealBorderBrush x:Key="SystemControlHighlightBaseMediumLowRevealBorderBrush" not_mux:TargetTheme="Light" Color="{StaticResource SystemRevealBaseMediumLowColor}" FallbackColor="{StaticResource SystemBaseMediumLowColor}" />
-			<xamarin:SolidColorBrush x:Key="SystemControlHighlightBaseMediumLowRevealBorderBrush" Color="{StaticResource SystemBaseMediumLowColor}" />
+			<not_win:SolidColorBrush x:Key="SystemControlHighlightBaseMediumLowRevealBorderBrush" Color="{StaticResource SystemBaseMediumLowColor}" />
 
 			<win:RevealBorderBrush x:Key="SystemControlHighlightTransparentRevealBorderBrush" not_mux:TargetTheme="Light" Color="Transparent" FallbackColor="Transparent" />
-			<xamarin:SolidColorBrush x:Key="SystemControlHighlightTransparentRevealBorderBrush" Color="Transparent" />
+			<not_win:SolidColorBrush x:Key="SystemControlHighlightTransparentRevealBorderBrush" Color="Transparent" />
 
 			<win:RevealBorderBrush x:Key="SystemControlTransparentRevealBorderBrush" not_mux:TargetTheme="Light" Color="Transparent" FallbackColor="Transparent" />
-			<xamarin:SolidColorBrush x:Key="SystemControlTransparentRevealBorderBrush" Color="Transparent" />
+			<not_win:SolidColorBrush x:Key="SystemControlTransparentRevealBorderBrush" Color="Transparent" />
 
 			<win:RevealBorderBrush x:Key="SystemControlHighlightAltTransparentRevealBorderBrush" not_mux:TargetTheme="Light" Color="Transparent" FallbackColor="Transparent" />
-			<xamarin:SolidColorBrush x:Key="SystemControlHighlightAltTransparentRevealBorderBrush" Color="Transparent" />
+			<not_win:SolidColorBrush x:Key="SystemControlHighlightAltTransparentRevealBorderBrush" Color="Transparent" />
 
 			<win:RevealBackgroundBrush x:Key="SystemControlHighlightBaseMediumLowRevealAccentBackgroundBrush" not_mux:TargetTheme="Light" Color="{ThemeResource SystemAccentColor}" FallbackColor="{StaticResource SystemBaseMediumLowColor}" />
-			<xamarin:SolidColorBrush x:Key="SystemControlHighlightBaseMediumLowRevealAccentBackgroundBrush" Color="{StaticResource SystemBaseMediumLowColor}" />
+			<not_win:SolidColorBrush x:Key="SystemControlHighlightBaseMediumLowRevealAccentBackgroundBrush" Color="{StaticResource SystemBaseMediumLowColor}" />
 
 			<win:RevealBackgroundBrush x:Key="SystemControlHighlightAccent3RevealBackgroundBrush" not_mux:TargetTheme="Light" Color="{ThemeResource SystemAccentColorLight3}" FallbackColor="{ThemeResource SystemAccentColorLight3}" />
-			<xamarin:SolidColorBrush x:Key="SystemControlHighlightAccent3RevealBackgroundBrush" Color="{StaticResource SystemAccentColorLight3}" />
+			<not_win:SolidColorBrush x:Key="SystemControlHighlightAccent3RevealBackgroundBrush" Color="{StaticResource SystemAccentColorLight3}" />
 
 			<win:RevealBackgroundBrush x:Key="SystemControlHighlightAccent2RevealBackgroundBrush" not_mux:TargetTheme="Light" Color="{ThemeResource SystemAccentColorLight2}" FallbackColor="{ThemeResource SystemAccentColorLight2}" />
-			<xamarin:SolidColorBrush x:Key="SystemControlHighlightAccent2RevealBackgroundBrush" Color="{StaticResource SystemAccentColorLight2}" />
+			<not_win:SolidColorBrush x:Key="SystemControlHighlightAccent2RevealBackgroundBrush" Color="{StaticResource SystemAccentColorLight2}" />
 
 			<win:RevealBackgroundBrush x:Key="SystemControlHighlightAccentRevealBackgroundBrush" not_mux:TargetTheme="Light" Color="{ThemeResource SystemAccentColor}" FallbackColor="{ThemeResource SystemAccentColor}" />
-			<xamarin:SolidColorBrush x:Key="SystemControlHighlightAccentRevealBackgroundBrush" Color="{StaticResource SystemAccentColor}" />
+			<not_win:SolidColorBrush x:Key="SystemControlHighlightAccentRevealBackgroundBrush" Color="{StaticResource SystemAccentColor}" />
 
 			<win:RevealBackgroundBrush x:Key="SystemControlHighlightAccent3RevealAccent2BackgroundBrush" not_mux:TargetTheme="Light" Color="{ThemeResource SystemAccentColorLight2}" FallbackColor="{ThemeResource SystemAccentColorLight3}" />
-			<xamarin:SolidColorBrush x:Key="SystemControlHighlightAccent3RevealAccent2BackgroundBrush" Color="{StaticResource SystemAccentColorLight3}" />
+			<not_win:SolidColorBrush x:Key="SystemControlHighlightAccent3RevealAccent2BackgroundBrush" Color="{StaticResource SystemAccentColorLight3}" />
 
 
 			<StaticResource x:Key="SystemControlTransientBorderBrush" ResourceKey="SystemControlForegroundChromeHighBrush" />
 			<win:AcrylicBrush x:Key="SystemControlTransientBackgroundBrush" BackgroundSource="HostBackdrop" TintColor="{StaticResource SystemChromeAltHighColor}" TintOpacity="0.8" FallbackColor="{StaticResource SystemChromeMediumLowColor}" />
-			<xamarin:SolidColorBrush x:Key="SystemControlTransientBackgroundBrush" Color="{StaticResource SystemChromeMediumLowColor}" />
+			<not_win:SolidColorBrush x:Key="SystemControlTransientBackgroundBrush" Color="{StaticResource SystemChromeMediumLowColor}" />
 			<StaticResource x:Key="SystemControlDescriptionTextForegroundBrush" ResourceKey="SystemControlPageTextBaseMediumBrush" />
 
-			<xamarin:SolidColorBrush x:Key="SearchBoxBorderBrush" Color="Transparent" />
-			<xamarin:Thickness x:Key="SearchBoxBorderThickness">0</xamarin:Thickness>
-			<xamarin:SolidColorBrush x:Key="SystemControlAcrylicElementBrush" Color="{ThemeResource SystemChromeMediumColor}"></xamarin:SolidColorBrush>
+			<not_win:SolidColorBrush x:Key="SearchBoxBorderBrush" Color="Transparent" />
+			<not_win:Thickness x:Key="SearchBoxBorderThickness">0</not_win:Thickness>
+			<not_win:SolidColorBrush x:Key="SystemControlAcrylicElementBrush" Color="{ThemeResource SystemChromeMediumColor}"></not_win:SolidColorBrush>
 
 			<!-- Resources for Windows.UI.Xaml.Controls.Primitives.HyperlinkButton -->
-			<xamarin:StaticResource x:Key="HyperlinkButtonForeground" ResourceKey="SystemControlHyperlinkTextBrush" />
-			<xamarin:StaticResource x:Key="HyperlinkButtonForegroundPointerOver" ResourceKey="SystemControlPageTextBaseMediumBrush" />
-			<xamarin:StaticResource x:Key="HyperlinkButtonForegroundPressed" ResourceKey="SystemControlHighlightBaseMediumLowBrush" />
-			<xamarin:StaticResource x:Key="HyperlinkButtonForegroundDisabled" ResourceKey="SystemControlDisabledBaseMediumLowBrush" />
-			<xamarin:StaticResource x:Key="HyperlinkButtonBackground" ResourceKey="SystemControlPageBackgroundTransparentBrush" />
-			<xamarin:StaticResource x:Key="HyperlinkButtonBackgroundPointerOver" ResourceKey="SystemControlPageBackgroundTransparentBrush" />
-			<xamarin:StaticResource x:Key="HyperlinkButtonBackgroundPressed" ResourceKey="SystemControlPageBackgroundTransparentBrush" />
-			<xamarin:StaticResource x:Key="HyperlinkButtonBackgroundDisabled" ResourceKey="SystemControlPageBackgroundTransparentBrush" />
-			<xamarin:StaticResource x:Key="HyperlinkButtonBorderBrush" ResourceKey="SystemControlTransparentBrush" />
-			<xamarin:StaticResource x:Key="HyperlinkButtonBorderBrushPointerOver" ResourceKey="SystemControlTransparentBrush" />
-			<xamarin:StaticResource x:Key="HyperlinkButtonBorderBrushPressed" ResourceKey="SystemControlTransparentBrush" />
-			<xamarin:StaticResource x:Key="HyperlinkButtonBorderBrushDisabled" ResourceKey="SystemControlTransparentBrush" />
+			<not_win:StaticResource x:Key="HyperlinkButtonForeground" ResourceKey="SystemControlHyperlinkTextBrush" />
+			<not_win:StaticResource x:Key="HyperlinkButtonForegroundPointerOver" ResourceKey="SystemControlPageTextBaseMediumBrush" />
+			<not_win:StaticResource x:Key="HyperlinkButtonForegroundPressed" ResourceKey="SystemControlHighlightBaseMediumLowBrush" />
+			<not_win:StaticResource x:Key="HyperlinkButtonForegroundDisabled" ResourceKey="SystemControlDisabledBaseMediumLowBrush" />
+			<not_win:StaticResource x:Key="HyperlinkButtonBackground" ResourceKey="SystemControlPageBackgroundTransparentBrush" />
+			<not_win:StaticResource x:Key="HyperlinkButtonBackgroundPointerOver" ResourceKey="SystemControlPageBackgroundTransparentBrush" />
+			<not_win:StaticResource x:Key="HyperlinkButtonBackgroundPressed" ResourceKey="SystemControlPageBackgroundTransparentBrush" />
+			<not_win:StaticResource x:Key="HyperlinkButtonBackgroundDisabled" ResourceKey="SystemControlPageBackgroundTransparentBrush" />
+			<not_win:StaticResource x:Key="HyperlinkButtonBorderBrush" ResourceKey="SystemControlTransparentBrush" />
+			<not_win:StaticResource x:Key="HyperlinkButtonBorderBrushPointerOver" ResourceKey="SystemControlTransparentBrush" />
+			<not_win:StaticResource x:Key="HyperlinkButtonBorderBrushPressed" ResourceKey="SystemControlTransparentBrush" />
+			<not_win:StaticResource x:Key="HyperlinkButtonBorderBrushDisabled" ResourceKey="SystemControlTransparentBrush" />
 
 			<!-- Resources for Windows.UI.Xaml.Controls.Primitives.RepeatButton -->
 			<StaticResource x:Key="RepeatButtonBackground" ResourceKey="SystemControlBackgroundBaseLowBrush" />
@@ -3895,11 +3895,11 @@
 			<StaticResource x:Key="ThumbBorderBrushPressed" ResourceKey="SystemControlHighlightTransparentBrush" />
 
 			<win:AcrylicBrush x:Key="SystemControlChromeMediumLowAcrylicElementMediumBrush" BackgroundSource="Backdrop" TintColor="{StaticResource SystemChromeAltHighColor}" TintOpacity="0.6" FallbackColor="{StaticResource SystemChromeMediumLowColor}" />
-			<xamarin:SolidColorBrush x:Key="SystemControlChromeMediumLowAcrylicElementMediumBrush" Color="{StaticResource SystemChromeMediumLowColor}" />
+			<not_win:SolidColorBrush x:Key="SystemControlChromeMediumLowAcrylicElementMediumBrush" Color="{StaticResource SystemChromeMediumLowColor}" />
 			<Color x:Key="SystemChromeMediumHighColor">#FFE6E6E6</Color>
 
 			<win:AcrylicBrush x:Key="SystemControlChromeMediumLowAcrylicWindowMediumBrush" BackgroundSource="HostBackdrop" TintColor="{StaticResource SystemChromeAltHighColor}" TintOpacity="0.6" FallbackColor="{StaticResource SystemChromeMediumLowColor}" />
-			<xamarin:SolidColorBrush x:Key="SystemControlChromeMediumLowAcrylicWindowMediumBrush" Color="{StaticResource SystemChromeMediumLowColor}" />
+			<not_win:SolidColorBrush x:Key="SystemControlChromeMediumLowAcrylicWindowMediumBrush" Color="{StaticResource SystemChromeMediumLowColor}" />
 
 			<!--
 			<RevealBackgroundBrush x:Key="SystemControlTransparentRevealBackgroundBrush" not_mux:TargetTheme="Dark" Color="Transparent" FallbackColor="Transparent" />
