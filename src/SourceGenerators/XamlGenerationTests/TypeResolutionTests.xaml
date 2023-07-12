@@ -18,7 +18,7 @@
 
 	<Grid>
 						
-		<!-- Framework control with xamarin prefixed property -->
+		<!-- Framework control with not_win prefixed property -->
 		<Border not_win:Background="Red" />
 				
         <u:ControlWithContent />
@@ -33,7 +33,7 @@
 		<!-- Local control with framework property -->
 		<local:Settings Background="Red" />
 		
-		<!-- Local control with xamarin prefixed property -->
+		<!-- Local control with not_win prefixed property -->
 		<!-- This one one used to fail (see #12612) -->
 		<local:Settings not_win:Background="Blue" />
 		
@@ -45,11 +45,11 @@
 		<!-- This one should write lime only in ios -->
 		<local:Settings ios:Background="Lime" />
 		
-		<!-- Local control with ignorable not ios/android/xamarin prefixed property -->
+		<!-- Local control with ignorable not ios/android/not_win prefixed property -->
 		<!-- This one should write no property = Cyan -->
 		<local:Settings test:Background="Cyan" />
 
-		<!-- UWP control with xamarin prefixed property -->
+		<!-- UWP control with not_win prefixed property -->
 		<!-- This one should write Green in ios and android -->
 		<Grid not_win:Background="Green" />
 

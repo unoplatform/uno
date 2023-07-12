@@ -20,7 +20,7 @@ In general, control properties like `Button.Command` and `CheckBox.IsChecked` ar
 The full set of native control styles can be found in [Generic.Native.xaml](https://github.com/unoplatform/uno/blob/master/src/Uno.UI/UI/Xaml/Style/Generic/Generic.Native.xaml).
 
 > [!NOTE]
-> Third-party libraries can define native variants of default styles for custom controls, using the `xamarin:IsNativeStyle="True"` tag in XAML. These will be used if the consuming application is configured to use native styles.
+> Third-party libraries can define native variants of default styles for custom controls, using the `not_win:IsNativeStyle="True"` tag in XAML. These will be used if the consuming application is configured to use native styles.
 
 On WASM, the `NativeDefault[Control]` styles are currently only aliases to the `XamlDefault[Control]`, for code compatibility with other platforms.
 
