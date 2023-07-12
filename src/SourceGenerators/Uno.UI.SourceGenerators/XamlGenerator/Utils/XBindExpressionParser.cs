@@ -59,8 +59,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 				{
 					var propertiesBuilder = ImmutableArray.CreateBuilder<string>();
 					BuildPath(invocation.Path);
-					propertiesBuilder.Add(_builder.ToString());
-
 					_builder.Append('(');
 					for (int i = 0; i < invocation.Arguments.Length; i++)
 					{
@@ -70,7 +68,15 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 						{
 							BuildPath(pathArgument.Path);
 							var newLength = _builder.Length;
-							propertiesBuilder.Add(_builder.ToString(oldLength, newLength - oldLength));
+							var argPath = _builder.ToString(oldLength, newLength - oldLength);
+							if (argPath.StartsWith($"{_contextName}.", StringComparison.Ordinal))
+							{
+								propertiesBuilder.Add(argPath.Substring(_contextName.Length + 1));
+							}
+							else
+							{
+								propertiesBuilder.Add(argPath);
+							}
 						}
 						else if (argument is XBindLiteralArgument literalArgument)
 						{
