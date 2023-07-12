@@ -508,6 +508,39 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task When_ComboBoxItem_DataContext_Cleared()
+		{
+			// Arrange
+			var stackPanel = new StackPanel();
+			stackPanel.DataContext = Guid.NewGuid().ToString();
+			var comboBox = new ComboBox();
+			comboBox.ItemsSource = new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+			comboBox.SelectedIndex = 0;
+			stackPanel.Children.Add(comboBox);
+			WindowHelper.WindowContent = stackPanel;
+			await WindowHelper.WaitForLoaded(stackPanel);
+			bool dataContextChangedRaised = false;
+			FrameworkElement itemContainer = null;
+
+			// Act
+			comboBox.IsDropDownOpen = true;
+			await WindowHelper.WaitFor(() => (itemContainer = comboBox.ContainerFromIndex(0) as ComboBoxItem) is not null);
+			itemContainer.DataContextChanged += (s, e) =>
+			{
+				dataContextChangedRaised = true;
+				// Assert
+				Assert.AreNotEqual(stackPanel.DataContext, itemContainer.DataContext);
+			};
+			comboBox.IsDropDownOpen = false;
+			await WindowHelper.WaitForIdle();
+			comboBox.IsDropDownOpen = true;
+			await WindowHelper.WaitForIdle();
+
+			// Assert
+			Assert.IsTrue(dataContextChangedRaised);
+		}
+
+		[TestMethod]
 		public async Task When_Binding_Change()
 		{
 			var SUT = new ComboBox();
