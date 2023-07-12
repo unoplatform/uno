@@ -1,17 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Windows.UI.Xaml.Controls;
 
-namespace Uno.UI.UI.Xaml.Window;
-public sealed class WindowChrome : Microsoft.UI.Xaml.Controls.ContentControl
+namespace Uno.UI.Xaml.Controls;
+
+internal sealed class WindowChrome : ContentControl
 {
 	private WindowChrome()
 	{
 	}
 
-	public WindowChrome(Microsoft.UI.Xaml.Window parent)
+	public WindowChrome(Windows.UI.Xaml.Window parent)
 	{
 	}
 }
