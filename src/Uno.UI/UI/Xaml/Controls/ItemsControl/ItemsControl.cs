@@ -1200,9 +1200,11 @@ namespace Windows.UI.Xaml.Controls
 					}
 				}
 
-				// We are clearing the DataContext last. Because if there is a binding set on any of the above properties, Content(Template(Selector)?)?,
-				// clearing the DC can cause the data-bound property to be unnecessarily re-evaluated with an inherited DC from the visual parent.
-				contentControl.ClearValue(DataContextProperty);
+				// We are changing the DataContext last. Because if there is a binding set on any of the above properties, Content(Template(Selector)?)?,
+				// changing the DC can cause the data-bound property to be unnecessarily re-evaluated with an inherited DC from the visual parent.
+				// We also need to set value to null explicitly, because just unsetting would cause the DataContext to be inherited from the visual parent,
+				// which then causes issues like #12845.
+				contentControl.SetValue(DataContextProperty, null);
 			}
 		}
 
