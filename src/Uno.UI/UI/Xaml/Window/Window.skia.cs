@@ -55,28 +55,6 @@ public sealed partial class Window
 		}
 	}
 
-	private void InternalSetContent(UIElement content)
-	{
-		if (_rootVisual == null)
-		{
-			_rootBorder = new Border();
-			CoreServices.Instance.PutVisualRoot(_rootBorder);
-			_rootVisual = CoreServices.Instance.MainRootVisual;
-
-			if (_rootVisual?.XamlRoot is null)
-			{
-				throw new InvalidOperationException("The root visual was not created.");
-			}
-		}
-
-		if (_rootBorder != null)
-		{
-			_rootBorder.Child = _content = content;
-		}
-
-		TryLoadRootVisual();
-	}
-
 	internal void DisplayFullscreen(UIElement content)
 	{
 		if (content == null)
