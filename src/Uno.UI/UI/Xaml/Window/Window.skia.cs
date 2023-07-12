@@ -22,11 +22,6 @@ public sealed partial class Window
 
 	private bool _shown;
 
-	partial void InitPlatform()
-	{
-		Compositor = new Compositor();
-	}
-
 	internal event EventHandler Shown;
 
 	public Compositor Compositor { get; private set; }
@@ -49,28 +44,6 @@ public sealed partial class Window
 
 			ApplicationView.GetForCurrentView().SetVisibleBounds(newBounds);
 		}
-	}
-
-	private void InternalSetContent(UIElement content)
-	{
-		if (_rootVisual == null)
-		{
-			_rootBorder = new Border();
-			CoreServices.Instance.PutVisualRoot(_rootBorder);
-			_rootVisual = CoreServices.Instance.MainRootVisual;
-
-			if (_rootVisual?.XamlRoot is null)
-			{
-				throw new InvalidOperationException("The root visual was not created.");
-			}
-		}
-
-		if (_rootBorder != null)
-		{
-			_rootBorder.Child = _content = content;
-		}
-
-		TryLoadRootVisual();
 	}
 
 	internal void DisplayFullscreen(UIElement content)
@@ -101,19 +74,5 @@ public sealed partial class Window
 		Shown?.Invoke(this, EventArgs.Empty);
 
 		TryLoadRootVisual();
-	}
-
-	private void TryLoadRootVisual()
-	{
-		if (!_shown)
-		{
-			return;
-		}
-
-		UIElement.LoadingRootElement(_rootVisual);
-
-		_rootVisual.XamlRoot!.InvalidateMeasure();
-
-		UIElement.RootElementLoaded(_rootVisual);
 	}
 }
