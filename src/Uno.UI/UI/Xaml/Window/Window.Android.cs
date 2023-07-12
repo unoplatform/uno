@@ -40,25 +40,7 @@ namespace Microsoft.UI.Xaml
 
 		partial void ShowPartial() => RemovePreDrawListener();
 
-		internal int SystemUiVisibility { get; set; }
-
-		private void InternalSetContent(UIElement value)
-		{
-			if (_rootVisual == null)
-			{
-				_rootBorder = new Border();
-				CoreServices.Instance.PutVisualRoot(_rootBorder);
-				_rootVisual = CoreServices.Instance.MainRootVisual;
-
-				if (_rootVisual == null)
-				{
-					throw new InvalidOperationException("The root visual could not be created.");
-				}
-
-				ApplicationActivity.Instance?.SetContentView(_rootVisual);
-			}
-			_rootBorder.Child = _content = value;
-		}
+		internal int SystemUiVisibility { get; set; }		
 
 		internal UIElement MainContent => _rootVisual;
 

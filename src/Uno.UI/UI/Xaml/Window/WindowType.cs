@@ -6,5 +6,5 @@
 internal enum WindowType
 {
 	CoreWindow,
-	ContentRoot,
+	DesktopXamlSource,
 }
