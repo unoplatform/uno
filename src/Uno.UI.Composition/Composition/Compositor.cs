@@ -7,6 +7,14 @@ namespace Windows.UI.Composition
 {
 	public partial class Compositor : global::System.IDisposable
 	{
+		private static Compositor? _sharedCompositor;
+
+		public Compositor()
+		{
+		}
+
+		internal static Compositor GetSharedCompositor() => _sharedCompositor ??= new Compositor();
+
 		public ContainerVisual CreateContainerVisual()
 			=> new ContainerVisual(this)
 			{
