@@ -1,22 +1,20 @@
+#nullable enable
+
 using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Runtime.InteropServices;
 using Uno.Disposables;
-using Uno.Extensions;
 using Uno.Foundation.Logging;
+using Uno.UI.Xaml;
+using Uno.UI.Xaml.Controls;
 using Uno.UI.Xaml.Core;
 using Windows.ApplicationModel.DataTransfer.DragDrop.Core;
 using Windows.Foundation;
-using Windows.Foundation.Metadata;
 using Windows.UI.Core;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Markup;
+using Windows.UI.Xaml.Media;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
-using Uno.Helpers.Theming;
-using Uno.UI.Xaml;
 
 namespace Windows.UI.Xaml
 {
@@ -28,8 +26,7 @@ namespace Windows.UI.Xaml
 	{
 		private static Window _current;
 
-		private UIElement _content;
-		private RootVisual _rootVisual;
+		private readonly IWindowImplementation _windowImplementation;
 
 		private CoreWindowActivationState? _lastActivationState;
 		private Brush _background;
@@ -41,8 +38,6 @@ namespace Windows.UI.Xaml
 
 		internal Window(WindowType windowType)
 		{
-			_windowType = windowType;
-
 #if !__SKIA__
 			if (windowType != WindowType.CoreWindow)
 			{
@@ -56,8 +51,21 @@ namespace Windows.UI.Xaml
 			}
 #endif
 
+			_windowImplementation = windowType switch
+			{
+				WindowType.CoreWindow => new CoreWindowWindow(this),
+				WindowType.DesktopXamlSource => new DesktopXamlSourceWindow(this),
+				_ => throw new InvalidOperationException("Unsupported window type")
+			};
+
 			Dispatcher = CoreDispatcher.Main;
-			CoreWindow = CoreWindow.GetOrCreateForCurrentThread();
+
+			if (windowType == WindowType.CoreWindow)
+			{
+				CoreWindow = CoreWindow.GetOrCreateForCurrentThread();
+			}
+
+			Compositor = Windows.UI.Composition.Compositor.GetSharedCompositor();
 
 			InitPlatform();
 
@@ -117,7 +125,7 @@ namespace Windows.UI.Xaml
 				if (oldContent != null)
 				{
 					oldContent.IsWindowRoot = false;
-					
+
 					if (oldContent is FrameworkElement oldRoot)
 					{
 						oldRoot.SizeChanged -= RootSizeChanged;
@@ -354,9 +362,7 @@ namespace Windows.UI.Xaml
 					(h as EventHandler)?.Invoke(s, (EventArgs)e)
 			);
 
-		private static Window InternalGetCurrentWindow() => _current ??= new Window(true);
-
-		private UIElement InternalGetContent() => _content!;
+		private static Window InternalGetCurrentWindow() => _current ??= new Window(WindowType.CoreWindow);
 
 		private UIElement InternalGetRootElement() => _rootVisual!;
 	}
