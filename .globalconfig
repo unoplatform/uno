@@ -28,6 +28,9 @@ dotnet_diagnostic.CA1815.severity = error
 # CA1821: Remove empty Finalizers
 dotnet_diagnostic.CA1821.severity = error
 
+# CA1821: Remove empty Finalizers
+dotnet_diagnostic.CA1823.severity = error
+
 # CA1825: Avoid zero-length array allocations
 dotnet_diagnostic.CA1825.severity = error
 

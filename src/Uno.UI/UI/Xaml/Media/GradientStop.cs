@@ -1,21 +1,16 @@
-﻿using Uno.UI.Helpers;
+using Uno.UI.Helpers;
 
-#if XAMARIN_ANDROID
+#if __ANDROID__
 using Android.Views;
 using Android.Graphics;
 using View = Android.Views.View;
 using Font = Android.Graphics.Typeface;
-#elif XAMARIN_IOS_UNIFIED
+#elif __IOS__
 using View = UIKit.UIView;
 using Color = UIKit.UIColor;
 using Font = UIKit.UIFont;
 using UIKit;
 using Windows.UI;
-#elif XAMARIN_IOS
-using View = MonoTouch.UIKit.UIView;
-using Color = MonoTouch.UIKit.UIColor;
-using Font = MonoTouch.UIKit.UIFont;
-using MonoTouch.UIKit;
 #elif __MACOS__
 using Color = Windows.UI.Color;
 #else

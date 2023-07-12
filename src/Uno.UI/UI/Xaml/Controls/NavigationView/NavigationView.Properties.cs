@@ -530,7 +530,7 @@ namespace Windows.UI.Xaml.Controls
 			nameof(PaneTitle),
 			typeof(string),
 			typeof(NavigationView),
-			new FrameworkPropertyMetadata(default(string),
+			new FrameworkPropertyMetadata(string.Empty,
 				propertyChangedCallback: (s, e) => (s as NavigationView)?.OnPropertyChanged(e)));
 	}
 }

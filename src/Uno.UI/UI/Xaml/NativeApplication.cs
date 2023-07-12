@@ -1,4 +1,4 @@
-﻿#if XAMARIN_ANDROID
+﻿#if __ANDROID__
 using System;
 using System.Collections.Generic;
 using System.Text;

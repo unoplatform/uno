@@ -56,6 +56,13 @@ namespace Windows.UI.Xaml.Controls
 			{
 				CurrentEntry = null;
 			}
+			else if (CurrentEntry is not null)
+			{
+				// This is to support hot reload scenarios - the PageStackEntry 
+				// is used when navigating back to this page as it's maintained in the BackStack
+				CurrentEntry.Instance = newValue as Page;
+				CurrentEntry.SourcePageType = newValue.GetType();
+			}
 		}
 
 		#region BackStackDepth DependencyProperty
@@ -273,7 +280,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public bool Navigate(Type sourcePageType, object parameter, NavigationTransitionInfo infoOverride)
 		{
-			var entry = new PageStackEntry(sourcePageType, parameter, infoOverride);
+			var entry = new PageStackEntry(sourcePageType.GetReplacementType(), parameter, infoOverride);
 			return InnerNavigate(entry, NavigationMode.New);
 		}
 
@@ -433,7 +440,8 @@ namespace Windows.UI.Xaml.Controls
 
 		internal Page EnsurePageInitialized(PageStackEntry entry)
 		{
-			if (entry is { Instance: null } && CreatePageInstanceCached(entry.SourcePageType) is { } page)
+			if (entry is { Instance: null } &&
+				CreatePageInstanceCached(entry.SourcePageType) is { } page)
 			{
 				page.Frame = this;
 				entry.Instance = page;

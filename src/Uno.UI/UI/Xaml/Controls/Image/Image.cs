@@ -13,7 +13,7 @@ using Windows.UI.Core;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
 
-#if XAMARIN_IOS
+#if __IOS__
 using UIKit;
 #endif
 

@@ -24,7 +24,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public string Label
 		{
-			get => (string)GetValue(LabelProperty);
+			get => (string)GetValue(LabelProperty) ?? string.Empty;
 			set => SetValue(LabelProperty, value);
 		}
 

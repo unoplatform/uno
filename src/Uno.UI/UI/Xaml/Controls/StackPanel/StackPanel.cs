@@ -10,9 +10,9 @@ using Uno.UI.Xaml;
 using Windows.Foundation;
 using Windows.UI.Xaml.Media;
 using Uno.UI.Helpers;
-#if XAMARIN_ANDROID
+#if __ANDROID__
 using Android.Views;
-#elif XAMARIN_IOS
+#elif __IOS__
 using View = UIKit.UIView;
 #elif __MACOS__
 using View = AppKit.NSView;

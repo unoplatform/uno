@@ -1,5 +1,4 @@
-﻿#if __WASM__
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -26,4 +25,3 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.HtmlElementAttribut
 
 	}
 }
-#endif

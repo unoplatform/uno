@@ -3,15 +3,9 @@ using System;
 using Uno.Foundation.Logging;
 using Windows.UI.Core;
 
-#if XAMARIN_IOS_UNIFIED
 using Foundation;
 using UIKit;
 using CoreGraphics;
-#elif XAMARIN_IOS
-using MonoTouch.Foundation;
-using MonoTouch.UIKit;
-using MonoTouch.CoreGraphics;
-#endif
 
 namespace Foundation
 {

@@ -15,7 +15,7 @@ using Windows.Foundation;
 using Windows.UI.Xaml.Controls.Primitives;
 using Uno.Foundation.Logging;
 
-#if XAMARIN_ANDROID
+#if __ANDROID__
 using View = Android.Views.View;
 using Font = Android.Graphics.Typeface;
 using Android.Graphics;
@@ -26,7 +26,7 @@ using NMath = System.Math;
 using CGSize = Windows.Foundation.Size;
 using _Size = Windows.Foundation.Size;
 using Point = Windows.Foundation.Point;
-#elif XAMARIN_IOS_UNIFIED
+#elif __IOS__
 using View = UIKit.UIView;
 using Color = UIKit.UIColor;
 using Font = UIKit.UIFont;
@@ -135,7 +135,7 @@ namespace Windows.UI.Xaml
 		// void SetNeedsLayout ();
 		// void SetSuperviewNeedsLayout ();
 
-#if XAMARIN_IOS || __MACOS__
+#if __IOS__ || __MACOS__
 
 		/// <summary>
 		/// The frame applied to this child when last arranged by its parent. This may differ from the current UIView.Frame if a RenderTransform is set.
@@ -205,7 +205,7 @@ namespace Windows.UI.Xaml
 					fe.InvalidateMeasure();
 					break;
 				case View view:
-#if XAMARIN_ANDROID
+#if __ANDROID__
 					view.RequestLayout();
 
 					// Invalidate the first "managed" parent to
@@ -222,7 +222,7 @@ namespace Windows.UI.Xaml
 						parent = parent.Parent;
 					}
 
-#elif XAMARIN_IOS
+#elif __IOS__
 					view.SetNeedsLayout();
 #elif __MACOS__
 					view.NeedsLayout = true;
@@ -308,9 +308,9 @@ namespace Windows.UI.Xaml
 
 		public static CGSize Measure(this IFrameworkElement element, _Size availableSize)
 		{
-#if XAMARIN_IOS || __MACOS__
+#if __IOS__ || __MACOS__
 			return ((View)element).SizeThatFits(new CoreGraphics.CGSize(availableSize.Width, availableSize.Height));
-#elif XAMARIN_ANDROID
+#elif __ANDROID__
 			var widthSpec = ViewHelper.SpecFromLogicalSize(availableSize.Width);
 			var heightSpec = ViewHelper.SpecFromLogicalSize(availableSize.Height);
 
@@ -440,7 +440,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-#if XAMARIN_ANDROID
+#if __ANDROID__
 		/// <summary>
 		/// Applies the framework element constraints like the size and max size, using an already measured view.
 		/// </summary>

@@ -18,11 +18,11 @@ using Uno.UI.DataBinding;
 using Uno.UI.Extensions;
 using Uno.UI.Helpers;
 
-#if XAMARIN_ANDROID
+#if __ANDROID__
 using Android.Graphics;
 
 using View = Android.Views.View;
-#elif XAMARIN_IOS
+#elif __IOS__
 using UIKit;
 
 using View = UIKit.UIView;

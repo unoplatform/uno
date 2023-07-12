@@ -17,12 +17,10 @@ using Uno.UI;
 using System.Collections;
 using Uno.UI.Helpers;
 
-#if XAMARIN_ANDROID
+#if __ANDROID__
 using View = Android.Views.View;
-#elif XAMARIN_IOS_UNIFIED
+#elif __IOS__
 using View = UIKit.UIView;
-#elif XAMARIN_IOS
-using View = MonoTouch.UIKit.UIView;
 #endif
 
 namespace Windows.UI.Xaml

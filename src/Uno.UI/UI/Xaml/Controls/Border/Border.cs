@@ -8,21 +8,16 @@ using Uno.UI.DataBinding;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Markup;
 using Uno.UI.Xaml;
-#if XAMARIN_ANDROID
+#if __ANDROID__
 using Android.Views;
 using Android.Graphics;
 using View = Android.Views.View;
 using Font = Android.Graphics.Typeface;
-#elif XAMARIN_IOS_UNIFIED
+#elif __IOS__
 using View = UIKit.UIView;
 using Color = UIKit.UIColor;
 using Font = UIKit.UIFont;
 using UIKit;
-#elif XAMARIN_IOS
-using View = MonoTouch.UIKit.UIView;
-using Color = MonoTouch.UIKit.UIColor;
-using Font = MonoTouch.UIKit.UIFont;
-using MonoTouch.UIKit;
 #elif __MACOS__
 using View = AppKit.NSView;
 using Color = Windows.UI.Color;
@@ -51,7 +46,7 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		/// <param name="view"></param>
 		public
-#if XAMARIN_IOS
+#if __IOS__
 			new
 #endif
 			void Add(View view)
@@ -230,7 +225,7 @@ namespace Windows.UI.Xaml.Controls
 		private SerialDisposable _borderBrushColorChanged = new SerialDisposable();
 		private SerialDisposable _borderBrushOpacityChanged = new SerialDisposable();
 
-#if XAMARIN_ANDROID
+#if __ANDROID__
 		//This field is never accessed. It just exists to create a reference, because the DP causes issues with ImageBrush of the backing bitmap being prematurely garbage-collected. (Bug with ConditionalWeakTable? https://bugzilla.xamarin.com/show_bug.cgi?id=21620)
 		private Brush _borderBrushStrongReference;
 #endif
@@ -242,7 +237,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				SetBorderBrushValue(value);
 
-#if XAMARIN_ANDROID
+#if __ANDROID__
 				_borderBrushStrongReference = value;
 #endif
 			}

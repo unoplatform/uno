@@ -14,7 +14,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.System;
 using Uno.UI.Helpers;
-#if XAMARIN_IOS
+#if __IOS__
 using View = UIKit.UIView;
 #elif __MACOS__
 using View = AppKit.NSView;
@@ -40,10 +40,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			);
 		}
 
-		private readonly SerialDisposable _commandCanExecute = new SerialDisposable();
-
 		public
-#if XAMARIN_ANDROID
+#if __ANDROID__
 			new
 #endif
 			event RoutedEventHandler Click;

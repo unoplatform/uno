@@ -16,12 +16,12 @@ using Windows.UI.Text;
 using Uno.UI.Xaml;
 using Uno.UI.Helpers;
 
-#if XAMARIN_ANDROID
+#if __ANDROID__
 using View = Android.Views.View;
 using ViewGroup = Android.Views.ViewGroup;
 using Font = Android.Graphics.Typeface;
 using Android.Graphics;
-#elif XAMARIN_IOS_UNIFIED
+#elif __IOS__
 using UIKit;
 using View = UIKit.UIView;
 using ViewGroup = UIKit.UIView;
@@ -382,7 +382,7 @@ namespace Windows.UI.Xaml.Controls
 		#region TextAlignment Dependency Property
 
 		public
-#if XAMARIN_ANDROID
+#if __ANDROID__
 			new
 #endif
 			TextAlignment TextAlignment
@@ -1010,7 +1010,7 @@ namespace Windows.UI.Xaml.Controls
 			SetDefaultForeground(ForegroundProperty);
 		}
 
-#if XAMARIN_ANDROID
+#if __ANDROID__
 		// Support for the C# collection initializer style.
 		public void Add(View view)
 		{

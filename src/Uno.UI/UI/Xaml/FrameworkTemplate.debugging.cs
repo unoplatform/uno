@@ -7,14 +7,12 @@ using Uno.Extensions;
 using Uno.UI;
 using Uno.UI.DataBinding;
 
-#if XAMARIN_ANDROID
+#if __ANDROID__
 using View = Android.Views.View;
-#elif XAMARIN_IOS_UNIFIED
+#elif __IOS__
 using View = UIKit.UIView;
 #elif __MACOS__
 using View = AppKit.NSView;
-#elif XAMARIN_IOS
-using View = MonoTouch.UIKit.UIView;
 #else
 using View = Windows.UI.Xaml.UIElement;
 #endif

@@ -122,8 +122,8 @@ namespace Windows.Devices.Sensors
 			throw new global::System.NotImplementedException("The member IAsyncOperation<Magnetometer> Magnetometer.FromIdAsync(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IAsyncOperation%3CMagnetometer%3E%20Magnetometer.FromIdAsync%28string%20deviceId%29");
 		}
 		#endif
-		#if false || false || false || false || __SKIA__ || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+		#if false || false || false || false || __SKIA__ || false || false
+		[global::Uno.NotImplemented("__SKIA__")]
 		public static global::Windows.Devices.Sensors.Magnetometer GetDefault()
 		{
 			throw new global::System.NotImplementedException("The member Magnetometer Magnetometer.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Magnetometer%20Magnetometer.GetDefault%28%29");

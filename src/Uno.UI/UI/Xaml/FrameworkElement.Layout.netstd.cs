@@ -18,6 +18,8 @@ namespace Windows.UI.Xaml
 {
 	public partial class FrameworkElement
 	{
+		private readonly static IEventProvider _trace = Tracing.Get(FrameworkElement.TraceProvider.Id);
+
 		/// <summary>
 		/// DesiredSize from MeasureOverride, after clamping to min size but before being clipped by max size (from GetMinMax())
 		/// </summary>

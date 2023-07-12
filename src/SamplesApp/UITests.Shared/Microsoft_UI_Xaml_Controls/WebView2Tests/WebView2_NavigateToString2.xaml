@@ -28,6 +28,6 @@
 			<TextBlock Text="waiting for NavigationCompleted" x:Name="WebView2_NavigateToStringResult" />
 		</StackPanel>
 
-		<mux:WebView2 Grid.Row="1" Name="webViewControl" />
+		<mux:WebView2 Grid.Row="1" x:Name="webViewControl" />
 	</Grid>
 </UserControl>

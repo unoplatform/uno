@@ -7,8 +7,6 @@ namespace Windows.UI.Composition
 {
 	public partial class Compositor : global::System.IDisposable
 	{
-		private static object _gate = new object();
-
 		public ContainerVisual CreateContainerVisual()
 			=> new ContainerVisual(this)
 			{

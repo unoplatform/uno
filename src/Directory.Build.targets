@@ -6,7 +6,7 @@
 	<PropertyGroup>
 		<Product>$(AssemblyName) $(TargetFramework)</Product>
 		<Product Condition="'$(UnoRuntimeIdentifier)' != ''">$(AssemblyName) ($(TargetFramework) $(UnoRuntimeIdentifier))</Product>
-		<CommunityToolkitMvvmVersion>8.2.0</CommunityToolkitMvvmVersion>
+		<CommunityToolkitMvvmVersion>8.2.1</CommunityToolkitMvvmVersion>
 	</PropertyGroup>
 
 	<ItemGroup Condition="$(EnableAutomaticXamlPageInclusion)">
@@ -96,7 +96,7 @@
 		<PackageReference Update="SkiaSharp.NativeAssets.iOS" Version="2.88.3" />
 		<PackageReference Update="SkiaSharp.NativeAssets.MacCatalyst" Version="2.88.3" />
 		<PackageReference Update="SkiaSharp.NativeAssets.macos" Version="2.88.3" />
-		<PackageReference Update="Svg.Skia" Version="0.5.18" />
+		<PackageReference Update="Svg.Skia" Version="1.0.0" />
 
 	<PackageReference Update="HarfBuzzSharp.NativeAssets.Linux" Version="2.8.2.3" />
 	<PackageReference Update="SkiaSharp.HarfBuzz" Version="2.88.3" />

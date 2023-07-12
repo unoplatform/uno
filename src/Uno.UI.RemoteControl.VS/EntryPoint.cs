@@ -26,7 +26,7 @@ using Task = System.Threading.Tasks.Task;
 
 namespace Uno.UI.RemoteControl.VS
 {
-	public class EntryPoint
+	public class EntryPoint : IDisposable
 	{
 		private const string UnoPlatformOutputPane = "Uno Platform";
 		private const string FolderKind = "{66A26720-8FB5-11D2-AA7E-00C04F688DDE}";
@@ -44,6 +44,11 @@ namespace Uno.UI.RemoteControl.VS
 
 		private int RemoteControlServerPort;
 		private bool _closing;
+		private bool _isDisposed;
+
+		private readonly _dispSolutionEvents_BeforeClosingEventHandler _closeHandler;
+		private readonly _dispBuildEvents_OnBuildDoneEventHandler _onBuildDoneHandler;
+		private readonly _dispBuildEvents_OnBuildProjConfigBeginEventHandler _onBuildProjConfigBeginHandler;
 
 		public EntryPoint(DTE2 dte2, string toolsPath, AsyncPackage asyncPackage, Action<Func<Task<Dictionary<string, string>>>> globalPropertiesProvider)
 		{
@@ -55,13 +60,14 @@ namespace Uno.UI.RemoteControl.VS
 
 			SetupOutputWindow();
 
-			_dte.Events.SolutionEvents.BeforeClosing += () => SolutionEvents_BeforeClosing();
+			_closeHandler = () => SolutionEvents_BeforeClosing();
+			_dte.Events.SolutionEvents.BeforeClosing += _closeHandler;
 
-			_dte.Events.BuildEvents.OnBuildDone +=
-				(s, a) => BuildEvents_OnBuildDone(s, a);
+			_onBuildDoneHandler = (s, a) => BuildEvents_OnBuildDone(s, a);
+			_dte.Events.BuildEvents.OnBuildDone += _onBuildDoneHandler;
 
-			_dte.Events.BuildEvents.OnBuildProjConfigBegin +=
-				(string project, string projectConfig, string platform, string solutionConfig) => _ = BuildEvents_OnBuildProjConfigBeginAsync(project, projectConfig, platform, solutionConfig);
+			_onBuildProjConfigBeginHandler = (string project, string projectConfig, string platform, string solutionConfig) => _ = BuildEvents_OnBuildProjConfigBeginAsync(project, projectConfig, platform, solutionConfig);
+			_dte.Events.BuildEvents.OnBuildProjConfigBegin += _onBuildProjConfigBeginHandler;
 
 			// Start the RC server early, as iOS and Android projects capture the globals early
 			// and don't recreate it unless out-of-process msbuild.exe instances are terminated.
@@ -202,6 +208,9 @@ namespace Uno.UI.RemoteControl.VS
 
 		private void SolutionEvents_BeforeClosing()
 		{
+			// Detach event handler to avoid this being called multiple times
+			_dte.Events.SolutionEvents.BeforeClosing -= _closeHandler;
+
 			if (_process != null)
 			{
 				try
@@ -218,6 +227,9 @@ namespace Uno.UI.RemoteControl.VS
 				{
 					_closing = true;
 					_process = null;
+
+					// Invoke Dispose to make sure other event handlers are detached
+					Dispose();
 				}
 			}
 		}
@@ -248,7 +260,8 @@ namespace Uno.UI.RemoteControl.VS
 			{
 				RemoteControlServerPort = GetTcpPort();
 
-				var runtimeVersionPath = GetDotnetMajorVersion() > 5 ? "netcoreapp3.1" : "net6.0";
+				var version = GetDotnetMajorVersion();
+				var runtimeVersionPath = version <= 5 ? "netcoreapp3.1" : $"net{version}.0";
 
 				var sb = new StringBuilder();
 
@@ -404,5 +417,25 @@ namespace Uno.UI.RemoteControl.VS
 				|| (ismacOSApp && isExe)
 				|| isWasm;
 		}
+
+		public void Dispose()
+		{
+			if (_isDisposed)
+			{
+				return;
+			}
+			_isDisposed = true;
+
+			try
+			{
+				_dte.Events.BuildEvents.OnBuildDone -= _onBuildDoneHandler;
+				_dte.Events.BuildEvents.OnBuildProjConfigBegin -= _onBuildProjConfigBeginHandler;
+			}
+			catch (Exception e)
+			{
+				_debugAction($"Failed to dispose Remote Control server: {e}");
+			}
+		}
+
 	}
 }

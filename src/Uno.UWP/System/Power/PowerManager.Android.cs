@@ -1,5 +1,4 @@
-﻿#if __ANDROID__
-using Android.Content;
+﻿using Android.Content;
 using Android.OS;
 using AndroidPowerManager = Android.OS.PowerManager;
 using AndroidBatteryStatus = Android.OS.BatteryStatus;
@@ -162,4 +161,3 @@ namespace Windows.System.Power
 		}
 	}
 }
-#endif

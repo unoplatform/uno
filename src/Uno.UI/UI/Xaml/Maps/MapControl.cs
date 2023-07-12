@@ -93,7 +93,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 
 		public string MapServiceToken
 		{
-			get => (string)this.GetValue(MapServiceTokenProperty);
+			get => (string)this.GetValue(MapServiceTokenProperty) ?? "";
 			set => this.SetValue(MapServiceTokenProperty, value);
 		}
 
@@ -204,7 +204,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		}
 		public string Region
 		{
-			get => (string)this.GetValue(RegionProperty);
+			get => (string)this.GetValue(RegionProperty) ?? "";
 			set => this.SetValue(RegionProperty, value);
 		}
 		public static DependencyProperty CenterProperty { get; } =

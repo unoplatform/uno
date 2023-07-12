@@ -175,6 +175,7 @@ namespace Uno.UWPSyncGenerator
 						  || fileNameWithoutExtension.StartsWith("Windows.Phone.PhoneContract", StringComparison.Ordinal)
 						  || fileNameWithoutExtension.StartsWith("Windows.Networking.Connectivity.WwanContract", StringComparison.Ordinal)
 						  || fileNameWithoutExtension.StartsWith("Windows.ApplicationModel.Calls.CallsPhoneContract", StringComparison.Ordinal)
+						  || fileNameWithoutExtension.StartsWith("Windows.Services.Store.StoreContract", StringComparison.Ordinal)
 						  || fileNameWithoutExtension.StartsWith("Windows.UI.Xaml.Hosting.HostingContract", StringComparison.Ordinal)
 						  || fileNameWithoutExtension.StartsWith("Microsoft.Web.WebView2.Core", StringComparison.Ordinal)
 						  let asm = s_referenceCompilation.GetAssemblyOrModuleSymbol(externalRedfs) as IAssemblySymbol

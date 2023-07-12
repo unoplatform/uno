@@ -18,9 +18,9 @@ using Windows.UI.Xaml.Media;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 using Uno.UI.Helpers;
 
-#if XAMARIN_IOS
+#if __IOS__
 using View = UIKit.UIView;
-#elif XAMARIN_ANDROID
+#elif __ANDROID__
 using View = Android.Views.View;
 #else
 using View = Windows.UI.Xaml.UIElement;

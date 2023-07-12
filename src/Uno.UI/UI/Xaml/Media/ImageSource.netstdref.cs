@@ -2,7 +2,7 @@
 
 public partial class ImageSource
 {
-	public ImageSource()
+	protected ImageSource()
 	{
 		InitializeBinder();
 	}

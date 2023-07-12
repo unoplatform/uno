@@ -25,7 +25,7 @@ using Uno.UI.Helpers;
 
 using RadialGradientBrush = Microsoft.UI.Xaml.Media.RadialGradientBrush;
 
-#if XAMARIN_IOS
+#if __IOS__
 using UIKit;
 #endif
 
@@ -214,7 +214,7 @@ namespace Windows.UI.Xaml.Controls
 		#region Text Dependency Property
 
 		public
-#if XAMARIN_IOS
+#if __IOS__
 			new
 #endif
 			string Text
@@ -255,7 +255,7 @@ namespace Windows.UI.Xaml.Controls
 
 		#region FontFamily Dependency Property
 
-#if XAMARIN_IOS
+#if __IOS__
 		/// <summary>
 		/// Supported font families: http://iosfonts.com/
 		/// </summary>

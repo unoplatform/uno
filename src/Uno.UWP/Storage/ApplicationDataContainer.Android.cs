@@ -1,4 +1,3 @@
-#if __ANDROID__
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -153,4 +152,3 @@ namespace Windows.Storage
 		}
 	}
 }
-#endif

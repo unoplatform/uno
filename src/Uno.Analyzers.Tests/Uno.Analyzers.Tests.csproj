@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
+<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
 	<PropertyGroup>
 		<TargetFramework>net7.0</TargetFramework>
 		<IsPackable>false</IsPackable>
@@ -10,7 +10,7 @@
 	<ItemGroup>
 		<PackageReference Include="MSTest.TestAdapter" Version="2.2.10" />
 		<PackageReference Include="MSTest.TestFramework" Version="2.1.2" />
-		<PackageReference Include="Microsoft.NET.Test.SDK" Version="17.4.1" />
+		<PackageReference Include="Microsoft.NET.Test.SDK" Version="17.6.3" />
 		<PackageReference Include="Microsoft.CodeAnalysis" Version="$(CodeAnalysisVersionForAnalyzersTests)" />
 		<PackageReference Include="Microsoft.CodeAnalysis.Common" Version="$(CodeAnalysisVersionForAnalyzersTests)" />
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="$(CodeAnalysisVersionForAnalyzersTests)" />

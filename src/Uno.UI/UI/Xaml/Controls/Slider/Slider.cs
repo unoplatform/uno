@@ -1,6 +1,6 @@
 using Windows.UI.Xaml.Controls.Primitives;
 
-#if XAMARIN_IOS
+#if __IOS__
 using Foundation;
 using UIKit;
 #endif

@@ -11,7 +11,7 @@ using System.ComponentModel;
 using Windows.UI.Xaml;
 using Uno.UI.Helpers;
 
-#if XAMARIN_IOS
+#if __IOS__
 using UIKit;
 using _NativeReference = global::Foundation.NSObject;
 using _NativeView = UIKit.UIView;
@@ -19,7 +19,7 @@ using _NativeView = UIKit.UIView;
 using AppKit;
 using _NativeReference = global::Foundation.NSObject;
 using _NativeView = AppKit.NSView;
-#elif XAMARIN_ANDROID
+#elif __ANDROID__
 using _NativeReference = Android.Views.View;
 using _NativeView = Android.Views.View;
 #else
@@ -314,14 +314,14 @@ namespace Uno.UI.DataBinding
 		{
 			try
 			{
-#if XAMARIN_IOS
+#if __IOS__
 				var uiView = target as UIView;
 
 				if (uiView != null && ObjCRuntime.Runtime.TryGetNSObject(uiView.Handle) != null)
 				{
 					return uiView.Superview == null && uiView.Window == null;
 				}
-#elif XAMARIN_ANDROID
+#elif __ANDROID__
 				var uiView = target as Android.Views.View;
 
 				if (uiView != null)

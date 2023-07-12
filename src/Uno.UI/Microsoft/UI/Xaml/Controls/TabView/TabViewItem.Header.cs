@@ -17,9 +17,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private bool m_firstTimeSettingToolTip = true;
 
-		private readonly SerialDisposable m_closeButtonClickRevoker = new SerialDisposable();
-		private readonly SerialDisposable m_tabDragStartingRevoker = new SerialDisposable();
-		private readonly SerialDisposable m_tabDragCompletedRevoker = new SerialDisposable();
+		//private readonly SerialDisposable m_closeButtonClickRevoker = new SerialDisposable();
+		//private readonly SerialDisposable m_tabDragStartingRevoker = new SerialDisposable();
+		//private readonly SerialDisposable m_tabDragCompletedRevoker = new SerialDisposable();
 
 		private bool m_hasPointerCapture = false;
 		private bool m_isMiddlePointerButtonPressed = false;

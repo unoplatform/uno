@@ -56,7 +56,7 @@ namespace Windows.ApplicationModel
 
 #if (__IOS__ || __ANDROID__ || __MACOS__)
 		[global::Uno.NotImplemented]
-		public global::System.Uri Logo => new Uri("http://example.com");
+		public global::System.Uri Logo => default;
 #endif
 
 		[Uno.NotImplemented]

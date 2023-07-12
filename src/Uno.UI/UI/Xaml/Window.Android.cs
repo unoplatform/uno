@@ -1,4 +1,3 @@
-#if XAMARIN_ANDROID
 using System;
 using Android.App;
 using Android.Runtime;
@@ -230,4 +229,3 @@ namespace Windows.UI.Xaml
 		}
 	}
 }
-#endif

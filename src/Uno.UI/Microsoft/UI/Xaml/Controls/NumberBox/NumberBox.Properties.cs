@@ -120,7 +120,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty PlaceholderTextProperty { get; } =
-			DependencyProperty.Register(nameof(PlaceholderText), typeof(string), typeof(NumberBox), new FrameworkPropertyMetadata(null));
+			DependencyProperty.Register(nameof(PlaceholderText), typeof(string), typeof(NumberBox), new FrameworkPropertyMetadata(string.Empty));
 
 		[Uno.NotImplemented] // TODO:
 		public FlyoutBase SelectionFlyout

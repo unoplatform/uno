@@ -10,14 +10,8 @@ using Uno.UI.DataBinding;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Data;
 
-#if XAMARIN_IOS_UNIFIED
 using Foundation;
 using UIKit;
-#elif XAMARIN_IOS
-using MonoTouch.Foundation;
-using MonoTouch.UIKit;
-using MonoTouch.CoreGraphics;
-#endif
 
 namespace Uno.UI.Controls
 {

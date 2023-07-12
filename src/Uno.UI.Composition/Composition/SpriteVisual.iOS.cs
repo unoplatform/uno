@@ -1,6 +1,5 @@
 #nullable enable
 
-#if __IOS__
 using System;
 using System.Collections.Generic;
 using CoreAnimation;
@@ -83,4 +82,3 @@ namespace Windows.UI.Composition
 		private void FinalizeAnimation(UnoCoreAnimation.CompletedInfo info) { }
 	}
 }
-#endif

@@ -1,5 +1,4 @@
-﻿#if __ANDROID__
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using Android.Content;
@@ -22,4 +21,3 @@ namespace Windows.System.Power
 		}
 	}
 }
-#endif

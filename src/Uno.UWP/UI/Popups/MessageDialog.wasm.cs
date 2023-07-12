@@ -15,8 +15,6 @@ namespace Windows.UI.Popups;
 
 public partial class MessageDialog
 {
-	private static readonly SemaphoreSlim _viewControllerAccess = new SemaphoreSlim(1, 1);
-
 	private IAsyncOperation<IUICommand> ShowNativeAsync(CancellationToken ct)
 	{
 		VisualTreeHelperProxy.CloseAllFlyouts();
