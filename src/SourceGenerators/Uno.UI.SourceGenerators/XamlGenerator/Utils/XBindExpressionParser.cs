@@ -4,7 +4,6 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System;
-using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Text;
 
@@ -94,6 +93,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 				{
 					BuildPath(path);
 					var csharpPath = _builder.ToString();
+					if (csharpPath.StartsWith($"{_contextName}.", StringComparison.Ordinal))
+					{
+						return (csharpPath, ImmutableArray.Create(csharpPath.Substring(_contextName.Length + 1)));
+					}
+
 					return (csharpPath, ImmutableArray.Create(csharpPath));
 				}
 				else if (root is null)
