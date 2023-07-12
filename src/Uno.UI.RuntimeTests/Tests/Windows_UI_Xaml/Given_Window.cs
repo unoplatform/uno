@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.UI.Xaml;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Uno.UI.Xaml;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 {
@@ -15,7 +16,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		public void When_CreateNewWindow()
 		{
 			// This used to crash on wasm which was trying to create a second D&D extension
-			var sut = new Window(true);
+			var sut = new Window(WindowType.CoreWindow);
 		}
 #endif
 	}
