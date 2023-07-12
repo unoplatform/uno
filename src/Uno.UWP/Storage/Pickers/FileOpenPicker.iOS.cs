@@ -24,6 +24,29 @@ namespace Windows.Storage.Pickers
 		private async Task<IReadOnlyList<StorageFile>> PickMultipleFilesTaskAsync(CancellationToken token) =>
 			await PickFilesAsync(true, token);
 
+		private UIViewController GetViewController(bool multiple, TaskCompletionSource<NSUrl?[]> completionSource)
+		{
+			switch (SuggestedStartLocation)
+			{
+				case PickerLocationId.PicturesLibrary:
+					return new UIImagePickerController()
+					{
+						SourceType = UIImagePickerControllerSourceType.PhotoLibrary,
+						MediaTypes = UIImagePickerController.AvailableMediaTypes(UIImagePickerControllerSourceType.PhotoLibrary),
+						ImagePickerControllerDelegate = new ImageOpenPickerDelegate(completionSource)
+					};
+
+				default:
+					var documentTypes = UTTypeMapper.GetDocumentTypes(FileTypeFilter);
+					return new UIDocumentPickerViewController(documentTypes, UIDocumentPickerMode.Open)
+					{
+						AllowsMultipleSelection = multiple,
+						ShouldShowFileExtensions = true,
+						Delegate = new FileOpenPickerDelegate(completionSource)
+					};
+			}
+		}
+
 		private async Task<FilePickerSelectedFilesArray> PickFilesAsync(bool multiple, CancellationToken token)
 		{
 			var rootController = UIApplication.SharedApplication?.KeyWindow?.RootViewController;
@@ -32,26 +55,24 @@ namespace Windows.Storage.Pickers
 				throw new InvalidOperationException("Root controller not initialized yet. FolderPicker invoked too early.");
 			}
 
-			var documentTypes = UTTypeMapper.GetDocumentTypes(FileTypeFilter);
-			using var documentPicker = new UIDocumentPickerViewController(documentTypes, UIDocumentPickerMode.Open);
-			documentPicker.AllowsMultipleSelection = multiple;
-
 			var completionSource = new TaskCompletionSource<NSUrl?[]>();
 
-			documentPicker.OverrideUserInterfaceStyle = CoreApplication.RequestedTheme == SystemTheme.Light ?
+			using var viewController = this.GetViewController(multiple, completionSource);
+
+			viewController.OverrideUserInterfaceStyle = CoreApplication.RequestedTheme == SystemTheme.Light ?
 				UIUserInterfaceStyle.Light : UIUserInterfaceStyle.Dark;
 
-			documentPicker.ShouldShowFileExtensions = true;
-			documentPicker.Delegate = new FileOpenPickerDelegate(completionSource);
-
-			if (documentPicker.PresentationController != null)
+			if (viewController.PresentationController != null)
 			{
-				documentPicker.PresentationController.Delegate = new FileOpenPickerPresentationControllerDelegate(completionSource);
+				viewController.PresentationController.Delegate = new FileOpenPickerPresentationControllerDelegate(completionSource);
 			}
 
-			await rootController.PresentViewControllerAsync(documentPicker, true);
+			await rootController.PresentViewControllerAsync(viewController, true);
 
 			var nsUrls = await completionSource.Task;
+
+			rootController.DismissViewController(true, null);
+
 			if (nsUrls == null || nsUrls.Length == 0)
 			{
 				return FilePickerSelectedFilesArray.Empty;
@@ -63,6 +84,28 @@ namespace Windows.Storage.Pickers
 			return new FilePickerSelectedFilesArray(files);
 		}
 
+		private class ImageOpenPickerDelegate : UIImagePickerControllerDelegate
+		{
+			private readonly TaskCompletionSource<NSUrl?[]> _taskCompletionSource;
+
+			public ImageOpenPickerDelegate(TaskCompletionSource<NSUrl?[]> taskCompletionSource) =>
+				_taskCompletionSource = taskCompletionSource;
+
+			public override void Canceled(UIImagePickerController picker) =>
+				_taskCompletionSource.SetResult(Array.Empty<NSUrl?>());
+
+			public override void FinishedPickingMedia(UIImagePickerController picker, NSDictionary info)
+			{
+				if (info.ValueForKey(new NSString("UIImagePickerControllerImageURL")) is NSUrl nSUrl)
+				{
+					_taskCompletionSource.SetResult(new[] { nSUrl });
+				}
+				else
+				{
+					_taskCompletionSource.SetResult(Array.Empty<NSUrl?>());
+				}
+			}
+		}
 
 		private class FileOpenPickerDelegate : UIDocumentPickerDelegate
 		{
