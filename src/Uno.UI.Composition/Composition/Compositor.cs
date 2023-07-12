@@ -7,9 +7,15 @@ namespace Microsoft.UI.Composition
 {
 	public partial class Compositor : global::System.IDisposable
 	{
-		internal static Compositor? Current;
+		private static Compositor? _sharedCompositor;
 
-		public Compositor() { Current = this; }
+		public Compositor()
+		{
+			Current = this;
+		}
+
+		internal static Compositor GetSharedCompositor() => _sharedCompositor ??= new Compositor();
+		internal static Compositor? Current;
 
 		public ContainerVisual CreateContainerVisual()
 			=> new ContainerVisual(this);
