@@ -10,7 +10,7 @@ partial class Window
 	private bool _windowCreatedRaised;
 
 #if DEBUG
-	internal Window() : this(Uno.UI.Xaml.WindowType.ContentRoot)
+	internal Window() : this(Uno.UI.Xaml.WindowType.DesktopXamlSource)
 	{
 	}
 #endif
