@@ -110,6 +110,9 @@ Use `Windows.Storage.Streams.Buffer` instead.
 #### `ContentPropertyAttribute.Name` is now a field to match UWP.
 This change has no effect on Controls behavior.
 
+#### Remove `FontWeightExtensions` and `CssProviderExtensions`
+`Uno.UI.Runtime.Skia.GTK.UI.Text.FontWeightExtensions` and `Uno.UI.Runtime.Skia.GTK.Extensions.Helpers.CssProviderExtensions` don't exist in UWP/WinUI. So they are made internal.
+
 ### Uno Platform 4.9
 This release does not require upgrade steps.
 
