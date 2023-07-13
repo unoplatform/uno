@@ -1,6 +1,7 @@
 ﻿#nullable enable
 
 using Uno.UI.Xaml.Core;
+using Windows.UI.Core;
 using Windows.UI.Xaml;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
@@ -15,7 +16,15 @@ internal partial class CoreWindowWindow : IWindowImplementation
 	{
 		_window = window;
 		_contentManager = new ContentManager(_window, true);
+		CoreWindow = CoreWindow.GetOrCreateForCurrentThread();
 	}
+
+#pragma warning disable CS0067
+	public event SizeChangedEventHandler? SizeChanged;
+
+	public CoreWindow CoreWindow { get; }
+
+	public bool Visible => CoreWindow.Visible;
 
 	public UIElement? Content
 	{

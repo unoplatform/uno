@@ -120,7 +120,7 @@ namespace Windows.UI.Xaml
 			//		the current app does not receive any pointer event, but instead receive platform specific drag events,
 			//		that are expected to be interpreted by the IDragDropExtension and forwarded to this manager using the Process* methods.
 
-			var root = _window.RootElement;
+			var root = _window.RootElement!; //TODO:MZ:Multi-window
 			root.AddHandler(UIElement.PointerEnteredEvent, new PointerEventHandler(OnPointerMoved), handledEventsToo: true);
 			root.AddHandler(UIElement.PointerExitedEvent, new PointerEventHandler(OnPointerMoved), handledEventsToo: true);
 			root.AddHandler(UIElement.PointerMovedEvent, new PointerEventHandler(OnPointerMoved), handledEventsToo: true);
@@ -131,12 +131,12 @@ namespace Windows.UI.Xaml
 		}
 
 		private static void OnPointerMoved(object snd, PointerRoutedEventArgs e)
-			=> Window.Current.DragDrop.ProcessMoved(e);
+			=> Window.Current.DragDrop?.ProcessMoved(e); //TODO:MZ:Multi-window
 
 		private static void OnPointerReleased(object snd, PointerRoutedEventArgs e)
-			=> Window.Current.DragDrop.ProcessDropped(e);
+			=> Window.Current.DragDrop?.ProcessDropped(e); //TODO:MZ:Multi-window
 
 		private static void OnPointerCanceled(object snd, PointerRoutedEventArgs e)
-			=> Window.Current.DragDrop.ProcessAborted(e);
+			=> Window.Current.DragDrop?.ProcessAborted(e); //TODO:MZ:Multi-window
 	}
 }

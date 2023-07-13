@@ -27,15 +27,18 @@ namespace Windows.UI.Xaml
 		{
 			public KeyboardManager()
 			{
-				Window.Current.CoreWindow.NativeKeyDownReceived += InitiateKeyDownBubblingFlow;
-				Window.Current.CoreWindow.NativeKeyUpReceived += InitiateKeyUpBubblingFlow;
+				if (Window.Current.CoreWindow is not null) //TODO:MZ:Multi-window support
+				{
+					Window.Current.CoreWindow.NativeKeyDownReceived += InitiateKeyDownBubblingFlow;
+					Window.Current.CoreWindow.NativeKeyUpReceived += InitiateKeyUpBubblingFlow;
+				}
 			}
 
 			private void InitiateKeyDownBubblingFlow(CoreWindow sender, KeyEventArgs args)
 			{
 				var originalSource = FocusManager.GetFocusedElement() as UIElement ?? Window.Current.Content;
 
-				originalSource.RaiseEvent(
+				originalSource!.RaiseEvent( //TODO:MZ:Multi-window support
 					KeyDownEvent,
 					new KeyRoutedEventArgs(originalSource, args.VirtualKey, args.KeyStatus)
 					{
@@ -60,7 +63,7 @@ namespace Windows.UI.Xaml
 			{
 				var originalSource = FocusManager.GetFocusedElement() as UIElement ?? Window.Current.Content;
 
-				originalSource.RaiseEvent(
+				originalSource!.RaiseEvent( //TODO:MZ:Multi-window support
 					KeyUpEvent,
 					new KeyRoutedEventArgs(originalSource, args.VirtualKey, args.KeyStatus)
 					{
