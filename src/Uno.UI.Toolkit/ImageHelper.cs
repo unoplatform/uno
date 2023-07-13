@@ -20,7 +20,7 @@ internal static class ImageHelper
 			throw new ArgumentException("The background color must be opaque.", nameof(background));
 		}
 
-		background ??= Colors.White;
+		background ??= new Color { A = 255, R = 255, G = 255, B = 255 }; // White
 
 		var modified = false;
 		for (var i = 0; i < rgba8PixelsBuffer.Length; i += 4)

@@ -13,7 +13,7 @@ namespace Windows.UI.Composition;
 public partial class Compositor
 {
 	private bool _isDirty;
-	
+
 	internal void RenderRootVisual(SKSurface surface, ContainerVisual rootVisual)
 	{
 		if (rootVisual is null)
