@@ -10,11 +10,10 @@ using WUX = Windows.UI.Xaml;
 using GtkApplication = Gtk.Application;
 using WinUIWindow = Windows.UI.Xaml.Window;
 using Uno.UI.Runtime.Skia.Gtk.Extensions;
-using Uno.UI.Runtime.Skia.UI.Xaml.Controls;
 using Uno.UI.Runtime.Skia.Gtk.UI.Controls;
 using Uno.UI.Runtime.Skia.Gtk.UI;
 
-namespace Uno.UI.Runtime.Skia
+namespace Uno.UI.Runtime.Skia.Gtk
 {
 	public partial class GtkHost : ISkiaApplicationHost
 	{

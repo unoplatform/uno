@@ -15,7 +15,7 @@ using Uno.UI.Runtime.Skia.Gtk.Extensions;
 using static Windows.UI.Xaml.Shapes.BorderLayerRenderer;
 using GtkWindow = Gtk.Window;
 
-namespace Uno.UI.Runtime.Skia.UI.Xaml.Controls;
+namespace Uno.UI.Runtime.Skia.Gtk.UI.Xaml.Controls;
 
 internal abstract class GtkTextBoxView : IOverlayTextBoxView
 {

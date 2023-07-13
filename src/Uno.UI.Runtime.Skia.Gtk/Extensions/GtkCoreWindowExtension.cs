@@ -10,7 +10,7 @@ using Uno.UI.Hosting;
 using Uno.UI.Runtime.Skia.Gtk.Hosting;
 using Uno.UI.Runtime.Skia.Gtk;
 
-namespace Uno.UI.Runtime.Skia
+namespace Uno.UI.Runtime.Skia.Gtk
 {
 	internal partial class GtkCoreWindowExtension : ICoreWindowExtension
 	{

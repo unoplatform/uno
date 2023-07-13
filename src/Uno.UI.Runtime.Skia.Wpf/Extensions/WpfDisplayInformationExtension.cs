@@ -5,7 +5,7 @@ using System.Windows.Media;
 using Windows.Graphics.Display;
 using WpfApplication = global::System.Windows.Application;
 
-namespace Uno.UI.Skia.Platform
+namespace Uno.UI.Runtime.Skia.Wpf
 {
 	internal class WpfDisplayInformationExtension : IDisplayInformationExtension
 	{

@@ -18,7 +18,7 @@ using Windows.Foundation;
 using Uno.UI.Runtime.Skia.Gtk.UI.Controls;
 using Windows.UI.Xaml.Controls;
 
-namespace Uno.UI.Runtime.Skia;
+namespace Uno.UI.Runtime.Skia.Gtk;
 
 internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 {

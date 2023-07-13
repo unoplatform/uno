@@ -3,10 +3,10 @@ using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using Gtk;
-using Uno.UI.Runtime.Skia.Helpers.Dpi;
+using Uno.UI.Runtime.Skia.Gtk.Helpers.Dpi;
 using Windows.Graphics.Display;
 
-namespace Uno.UI.Runtime.Skia;
+namespace Uno.UI.Runtime.Skia.Gtk;
 
 internal class GtkDisplayInformationExtension : IDisplayInformationExtension
 {
