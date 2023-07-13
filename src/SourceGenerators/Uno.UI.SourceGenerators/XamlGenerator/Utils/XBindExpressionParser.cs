@@ -23,14 +23,16 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 			var (csharpExpression, properties) = builder.Build(expression);
 			if (isRValue && contextTypeSymbol is not null)
 			{
-				//var nullabilityRewriter = new NullabilityRewriter(contextName, contextTypeSymbol, globalNamespace, xBindCounter);
-				//nullabilityRewriter.Visit(expression);
-				//nullabilityRewriter.SetActiveExpressionPropertiesThenCleanup();
-				//if (!nullabilityRewriter.Failed)
-				//{
-				//	var methodDeclaration = nullabilityRewriter.MainExpression.ToString();
-				//	return (methodDeclaration, $"TryGetInstance_xBind_{xBindCounter}({contextName}, out var bindResult{xBindCounter}) ? (true, bindResult{xBindCounter}) : (false, default)");
-				//}
+				var nullabilityRewriter = new NullabilityRewriter(contextName, contextTypeSymbol, globalNamespace, xBindCounter);
+				// TODO: We should probably avoid using Roslyn at all.
+				// We could combine nullability rewriter into CSharpBuilder.
+				nullabilityRewriter.Visit(SyntaxFactory.ParseExpression(csharpExpression));
+				nullabilityRewriter.SetActiveExpressionPropertiesThenCleanup();
+				if (!nullabilityRewriter.Failed)
+				{
+					var methodDeclaration = nullabilityRewriter.MainExpression.ToString();
+					return (methodDeclaration, $"TryGetInstance_xBind_{xBindCounter}({contextName}, out var bindResult{xBindCounter}) ? (true, bindResult{xBindCounter}) : (false, default)", properties, hasFunction);
+				}
 			}
 
 			if (isRValue)
@@ -53,12 +55,67 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 				_findType = findType;
 			}
 
+			private int FirstIndexOf(char c)
+			{
+				for (int i = 0; i < _builder.Length; i++)
+				{
+					if (_builder[i] == c)
+					{
+						return i;
+					}
+				}
+
+				return -1;
+			}
+
+			private int LastIndexOf(char c)
+			{
+				for (int i = _builder.Length - 1; i >= 0; i--)
+				{
+					if (_builder[i] == c)
+					{
+						return i;
+					}
+				}
+
+				return -1;
+			}
+
+			private bool StartsWith(string s, int startIndexToSearchFrom = 0)
+			{
+				if (startIndexToSearchFrom + s.Length > _builder.Length)
+				{
+					return false;
+				}
+
+				for (int i = 0; i < s.Length; i++)
+				{
+					if (_builder[startIndexToSearchFrom++] != s[i])
+					{
+						return false;
+					}
+				}
+
+				return true;
+			}
+
 			public (string CSharpExpression, ImmutableArray<string> Properties) Build(XBindRoot root)
 			{
 				if (root is XBindInvocation invocation)
 				{
 					var propertiesBuilder = ImmutableArray.CreateBuilder<string>();
+
 					BuildPath(invocation.Path);
+
+					// If we have an invocation on the form of context.SomePath.Method(...)
+					// Then we add "SomePath" to the propertiesBuilder
+					var firstIndexOf = FirstIndexOf('.');
+					var lastIndexOf = LastIndexOf('.');
+					if (firstIndexOf != lastIndexOf && StartsWith(_contextName))
+					{
+						propertiesBuilder.Add(_builder.ToString(firstIndexOf + 1, lastIndexOf - firstIndexOf - 1));
+					}
+
 					_builder.Append('(');
 					for (int i = 0; i < invocation.Arguments.Length; i++)
 					{
