@@ -92,7 +92,9 @@
 			<Button Content="Clear"
 					Command="{Binding ClearCommand}" />
 			<ItemsControl ItemsSource="{Binding Output}" x:Name="myItemsControl" />
-			<Button Content="This button changes foreground when hovered or pressed">
+			<TextBlock Text="This button changes foreground when hovered or pressed when fluent styles are enabled"
+					   Margin="0,20,0,0"/>
+			<Button Content="Change Button Foreground">
 				<Button.Resources>
 					<ResourceDictionary>
 								<SolidColorBrush x:Key="ButtonForeground" Color="Yellow"/>
@@ -101,7 +103,9 @@
 					</ResourceDictionary>
 				</Button.Resources>
 			</Button>
-			<Button Content="This button changes background when hovered or pressed">
+			<TextBlock Text="This button changes background when hovered or pressed when fluent styles are enabled"
+					   Margin="0,20,0,0"/>
+			<Button Content="Change Button Background">
 				<Button.Resources>
 					<ResourceDictionary>
 								<SolidColorBrush x:Key="ButtonBackground" Color="Yellow"/>

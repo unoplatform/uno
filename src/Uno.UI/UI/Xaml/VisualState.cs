@@ -170,6 +170,11 @@ namespace Windows.UI.Xaml
 				LazyBuilder = null;
 				builder.Invoke();
 
+
+				// Resolve all theme resources from storyboard children
+				// and setters values. This step is needed to ensure that
+				// Theme Resources are resolved using the proper visual tree
+				// parents, particularly when resources a locally overriden.
 				this.UpdateResourceBindings();
 			}
 		}
