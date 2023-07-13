@@ -374,7 +374,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (UseCollectionAnimations)
 			{
-				return null;
+				return Disposable.Empty;
 			}
 
 			AnimationsEnabled = false;
