@@ -130,7 +130,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 							{
 								propertiesBuilder.Add(argPath.Substring(_contextName.Length + 1));
 							}
-							else
+							else if (argPath is not ("null" or "true" or "false")) // TODO: Consider special nodes for these.
 							{
 								propertiesBuilder.Add(argPath);
 							}
