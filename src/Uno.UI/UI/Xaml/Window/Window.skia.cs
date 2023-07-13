@@ -12,17 +12,14 @@ using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
+using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
+// TODO:MZ: Avoid MainRootVisual
 namespace Windows.UI.Xaml;
 
 public sealed partial class Window
 {
-	// private ScrollViewer _rootScrollViewer;
-	private Border? _rootBorder;
-
-	private bool _shown;
-
-	internal event EventHandler Shown;
+	internal event EventHandler? Shown;
 
 	public Compositor Compositor { get; private set; }
 
@@ -39,7 +36,7 @@ public sealed partial class Window
 
 			Bounds = newBounds;
 
-			_rootVisual?.XamlRoot?.InvalidateMeasure();
+			WinUICoreServices.Instance.MainRootVisual?.XamlRoot?.InvalidateMeasure();
 			RaiseSizeChanged(new Windows.UI.Core.WindowSizeChangedEventArgs(size));
 
 			ApplicationView.GetForCurrentView().SetVisibleBounds(newBounds);
@@ -48,31 +45,37 @@ public sealed partial class Window
 
 	internal void DisplayFullscreen(UIElement content)
 	{
+		if (FullWindowMediaRoot is null)
+		{
+			throw new InvalidOperationException("The FullWindowMediaRoot is not initialized.");
+		}
+
 		if (content == null)
 		{
 			FullWindowMediaRoot.Child = null;
-			if (_rootBorder != null)
-			{
-				_rootBorder.Visibility = Visibility.Visible;
-			}
+			//TODO:MZ: Restore _rootBorder
+			//if (_rootBorder != null)
+			//{
+			//	_rootBorder.Visibility = Visibility.Visible;
+			//}
 			FullWindowMediaRoot.Visibility = Visibility.Collapsed;
 		}
 		else
 		{
 			FullWindowMediaRoot.Visibility = Visibility.Visible;
-			if (_rootBorder != null)
-			{
-				_rootBorder.Visibility = Visibility.Collapsed;
-			}
+			//TODO:MZ: Restore _rootBorder
+			//if (_rootBorder != null)
+			//{
+			//	_rootBorder.Visibility = Visibility.Collapsed;
+			//}
 			FullWindowMediaRoot.Child = content;
 		}
 	}
 
 	partial void ShowPartial()
 	{
-		_shown = true;
 		Shown?.Invoke(this, EventArgs.Empty);
 
-		TryLoadRootVisual();
+		//TryLoadRootVisual();
 	}
 }

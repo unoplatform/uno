@@ -96,7 +96,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 				try
 				{
 					element ??= Window.Current.Content;
-					(_bufferSize, PixelWidth, PixelHeight) = RenderAsBgra8_Premul(element, ref _buffer, new Size(scaledWidth, scaledHeight));
+					(_bufferSize, PixelWidth, PixelHeight) = RenderAsBgra8_Premul(element!, ref _buffer, new Size(scaledWidth, scaledHeight));
 #if __WASM__ || __SKIA__
 					InvalidateSource();
 #endif
@@ -118,7 +118,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 				try
 				{
 					element ??= Window.Current.Content;
-					(_bufferSize, PixelWidth, PixelHeight) = RenderAsBgra8_Premul(element, ref _buffer);
+					(_bufferSize, PixelWidth, PixelHeight) = RenderAsBgra8_Premul(element!, ref _buffer);
 #if __WASM__ || __SKIA__
 					InvalidateSource();
 #endif

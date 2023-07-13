@@ -31,10 +31,10 @@ partial class ContentManager
 
 	private void TryLoadRootVisual()
 	{
-		if (!_shown)
-		{
-			return;
-		}
+		//if (!_shown)
+		//{
+		//	return;
+		//}
 
 		UIElement.LoadingRootElement(_rootVisual);
 
@@ -42,4 +42,11 @@ partial class ContentManager
 
 		UIElement.RootElementLoaded(_rootVisual);
 	}
+
+	//partial void OnContentChangedPartial(XamlIslandRoot xamlIslandRoot)
+	//{
+	//	// Ensure the root element of the XamlIsland is loaded.
+	//	UIElement.LoadingRootElement(_root);
+	//	UIElement.RootElementLoaded(_root);
+	//}
 }

@@ -152,7 +152,7 @@ namespace Uno.UI.RemoteControl.HotReload
 				return;
 			}
 
-			foreach (var (element, elementMappedType) in EnumerateHotReloadInstances(Window.Current.Content,
+			foreach (var (element, elementMappedType) in EnumerateHotReloadInstances(Window.Current.Content!, // TODO:MZ:Multi-window
 				fe =>
 				{
 					var originalType = fe.GetType().GetOriginalType() ?? fe.GetType();
