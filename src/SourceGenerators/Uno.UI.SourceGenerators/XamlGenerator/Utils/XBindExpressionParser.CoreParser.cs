@@ -60,7 +60,7 @@ public class XBindLiteralArgument : XBindArgument
 /// The base class for different xbind_path subtypes.
 /// </summary>
 /// <remarks>
-/// <c>xbind_path → xbind_member_access | xbind_indexer_access | xbind_identifier | xbind_attached_property_access | xbind_parenthesized_expression</c>
+/// <c>xbind_path → xbind_member_access | xbind_indexer_access | xbind_identifier | xbind_attached_property_access | xbind_parenthesized_expression | xbind_cast</c>
 /// </remarks>
 public abstract class XBindPath : XBindRoot
 {
@@ -103,12 +103,12 @@ public class XBindIdentifier : XBindPath
 /// An XBind attached property access
 /// </summary>
 /// <remarks>
-/// <c>xbind_attached_property_access → xbind_path.(xbind_identifier.xbind_identifier)</c>
+/// <c>xbind_attached_property_access → xbind_path.(xbind_path.xbind_identifier)</c>
 /// </remarks>
 public class XBindAttachedPropertyAccess : XBindPath
 {
 	public XBindPath Member { get; set; }
-	public XBindIdentifier PropertyClass { get; set; }
+	public XBindPath PropertyClass { get; set; }
 	public XBindIdentifier PropertyName { get; set; }
 }
 
@@ -121,6 +121,19 @@ public class XBindAttachedPropertyAccess : XBindPath
 public class XBindParenthesizedExpression : XBindPath
 {
 	public XBindPath Expression { get; set; }
+	public bool IsPathlessCast { get; set; }
+}
+
+/// <summary>
+/// An XBind parenthesized expression.
+/// </summary>
+/// <remarks>
+/// <c>xbind_parenthesized_expression → '(' xbind_path ')'</c>
+/// </remarks>
+public class XBindCast : XBindPath
+{
+	public XBindPath Expression { get; set; }
+	public XBindPath Type { get; set; }
 }
 
 internal partial class XBindExpressionParser
@@ -167,7 +180,6 @@ internal partial class XBindExpressionParser
 
 			if (Current != '(')
 			{
-				Debugger.Launch();
 				throw new Exception("Expected end of x:Bind expression or start of argument list.");
 			}
 
@@ -194,7 +206,6 @@ internal partial class XBindExpressionParser
 
 			if (Current != ')')
 			{
-				Debugger.Launch();
 				throw new Exception("Expected ')' after parsing invocation arguments");
 			}
 
@@ -267,6 +278,7 @@ internal partial class XBindExpressionParser
 
 		private XBindPath ParseXBindPath()
 		{
+			XBindPath path;
 			if (Current == '(')
 			{
 				_position++;
@@ -276,10 +288,21 @@ internal partial class XBindExpressionParser
 					throw new Exception("Missing parenthesis?");
 				}
 
-				return new XBindParenthesizedExpression() { Expression = expression };
-			}
+				_position++;
 
-			XBindPath path = ParseXBindIdentifier();
+				if (char.IsLetter(Current))
+				{
+					var expression2 = ParseXBindPath();
+					return new XBindCast() { Expression = expression2, Type = expression };
+				}
+
+				var isPathlessCast = Current != '.' && Current != '[';
+				path = new XBindParenthesizedExpression() { Expression = expression, IsPathlessCast = isPathlessCast };
+			}
+			else
+			{
+				path = ParseXBindIdentifier();
+			}
 
 			while (true)
 			{
@@ -289,21 +312,20 @@ internal partial class XBindExpressionParser
 					if (Current == '(')
 					{
 						_position++;
-						var className = ParseXBindIdentifier();
-						if (Current != '.')
+
+						var attachedPropertyPath = ParseXBindPath();
+
+						if (attachedPropertyPath is not XBindMemberAccess memberAccess)
 						{
-							throw new Exception("Expected '.' in attached property syntax.");
+							throw new Exception("Expected attached property path to be member access.");
 						}
 
-						_position++;
-
-						var propertyName = ParseXBindIdentifier();
 						if (Current != ')')
 						{
 							throw new Exception("Expected ')' in attached property syntax.");
 						}
 
-						path = new XBindAttachedPropertyAccess() { Member = path, PropertyClass = className, PropertyName = propertyName };
+						path = new XBindAttachedPropertyAccess() { Member = path, PropertyClass = memberAccess.Path, PropertyName = memberAccess.Identifier };
 
 						_position++;
 					}

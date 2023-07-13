@@ -4366,7 +4366,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				var formattedPaths = propertyPaths
 					.Where(p => !p.StartsWith("global::", StringComparison.Ordinal))  // Don't include paths that start with global:: (e.g. Enums)
-					.Select(p => $"\"{p}\"");
+					.Select(p => $"\"{p.Replace("\"", "\\\"")}\"");
 
 				var pathsArray = formattedPaths.Any()
 					? ", new [] {" + string.Join(", ", formattedPaths) + "}"

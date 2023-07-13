@@ -131,7 +131,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 				}
 				else if (path is XBindIdentifier identifier)
 				{
-					if (!identifier.IdentifierText.StartsWith("global::", StringComparison.Ordinal) && identifier.IdentifierText != "null")
+					if (!identifier.IdentifierText.StartsWith("global::", StringComparison.Ordinal) &&
+						identifier.IdentifierText is not ("null" or "true" or "false"))
 					{
 						_builder.Append(_contextName);
 						_builder.Append('.');
@@ -141,8 +142,15 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 				}
 				else if (path is XBindAttachedPropertyAccess attachedPropertyAccess)
 				{
-					var className = GetGlobalizedTypeName(attachedPropertyAccess.PropertyClass.IdentifierText);
-					_builder.Append(className);
+					if (attachedPropertyAccess.PropertyClass is XBindIdentifier attachedClassIdentifier)
+					{
+						_builder.Append(GetGlobalizedTypeName(attachedClassIdentifier.IdentifierText));
+					}
+					else
+					{
+						BuildPath(attachedPropertyAccess.PropertyClass);
+					}
+
 					_builder.Append(".Get");
 					_builder.Append(attachedPropertyAccess.PropertyName.IdentifierText);
 					_builder.Append('(');
@@ -151,19 +159,21 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 				}
 				else if (path is XBindParenthesizedExpression parenthesizedExpression)
 				{
-					if (parenthesizedExpression.Expression is XBindIdentifier pathlessCastIdentifier)
+					_builder.Append('(');
+					BuildPath(parenthesizedExpression.Expression);
+					_builder.Append(')');
+
+					if (parenthesizedExpression.IsPathlessCast)
 					{
-						_builder.Append('(');
-						_builder.Append(pathlessCastIdentifier.IdentifierText);
-						_builder.Append(')');
 						_builder.Append(_contextName);
 					}
-					else
-					{
-						_builder.Append('(');
-						BuildPath(parenthesizedExpression.Expression);
-						_builder.Append(')');
-					}
+				}
+				else if (path is XBindCast xBindCast)
+				{
+					_builder.Append('(');
+					BuildPath(xBindCast.Type);
+					_builder.Append(')');
+					BuildPath(xBindCast.Expression);
 				}
 				else
 				{
