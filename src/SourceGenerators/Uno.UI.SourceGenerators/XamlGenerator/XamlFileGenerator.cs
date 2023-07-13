@@ -2069,7 +2069,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 
 			var ns = GetTrimmedNamespace(xamlType.PreferredXamlNamespace); // No MarkupExtensions are defined in the framework, so we expect a user-defined namespace
-			var baseTypeString = $"{ns}.{xamlType.Name}";
 			INamedTypeSymbol? findType;
 			if (ns != xamlType.PreferredXamlNamespace)
 			{
@@ -2077,6 +2076,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				// or "clr-namespace:"-prefixed namespace. In those cases, we'll have `baseTypeString` as
 				// the fully qualified type name.
 				// In this case, we go through this code path as it's much more efficient than FindType.
+				var baseTypeString = $"{ns}.{xamlType.Name}";
 				findType = _metadataHelper.FindTypeByFullName(baseTypeString) as INamedTypeSymbol;
 				findType ??= _metadataHelper.FindTypeByFullName(baseTypeString + "Extension") as INamedTypeSymbol; // Support shortened syntax
 			}
