@@ -814,7 +814,7 @@ namespace Microsoft.UI.Xaml.Media
 		internal struct Branch
 		{
 			public static Branch ToWindowRoot(UIElement leaf)
-				=> new Branch(Window.Current.RootElement, leaf);
+				=> new Branch(Window.Current.RootElement!, leaf); // TODO:MZ: Multi-window support
 
 			public Branch(UIElement root, UIElement leaf)
 			{

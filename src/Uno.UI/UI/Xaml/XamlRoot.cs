@@ -54,7 +54,7 @@ public sealed partial class XamlRoot
 				// TODO: Support multiple windows! https://github.com/unoplatform/uno/issues/8978[windows]
 				return Window.Current.Bounds.Size;
 			}
-			else if (rootElement is XamlIslandRoot xamlIslandRoot)
+			else if (rootElement is XamlIsland xamlIslandRoot)
 			{
 				var width = !double.IsNaN(xamlIslandRoot.Width) ? xamlIslandRoot.Width : 0;
 				var height = !double.IsNaN(xamlIslandRoot.Height) ? xamlIslandRoot.Height : 0;
@@ -76,7 +76,7 @@ public sealed partial class XamlRoot
 				//TODO: Support multiple windows! https://github.com/unoplatform/uno/issues/8978[windows]
 				return Window.Current.Bounds;
 			}
-			else if (rootElement is XamlIslandRoot xamlIslandRoot)
+			else if (rootElement is XamlIsland xamlIslandRoot)
 			{
 				var width = !double.IsNaN(xamlIslandRoot.Width) ? xamlIslandRoot.Width : 0;
 				var height = !double.IsNaN(xamlIslandRoot.Height) ? xamlIslandRoot.Height : 0;

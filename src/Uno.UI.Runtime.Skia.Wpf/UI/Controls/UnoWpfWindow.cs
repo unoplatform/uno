@@ -4,6 +4,7 @@ using System;
 using System.ComponentModel;
 using System.IO;
 using Uno.Foundation.Logging;
+using Uno.UI.Xaml.Controls;
 using Windows.Foundation;
 using Windows.UI.Core.Preview;
 using Windows.UI.ViewManagement;

@@ -1,11 +1,8 @@
 ﻿#pragma warning disable 67 // TODO: Focus-related members are currently unused https://github.com/unoplatform/uno/issues/8978
 
 using System;
-using System.Diagnostics;
-using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Islands;
 using Windows.Foundation;
-using Uno.Foundation.Logging;
 using WinUICoreServices = global::Uno.UI.Xaml.Core.CoreServices;
 
 namespace Microsoft.UI.Xaml.Hosting;
@@ -18,13 +15,14 @@ namespace Microsoft.UI.Xaml.Hosting;
 /// </summary>
 public partial class DesktopWindowXamlSource : IDisposable
 {
-	private XamlIslandRoot _root;
+	private readonly XamlIsland _xamlIsland;
 
 	/// <summary>
 	/// Initializes a new instance of the DesktopWindowXamlSource class.
 	/// </summary>
 	public DesktopWindowXamlSource()
 	{
+		_xamlIsland = new();
 	}
 
 	/// <summary>
@@ -50,21 +48,9 @@ public partial class DesktopWindowXamlSource : IDisposable
 	/// </summary>
 	public UIElement Content
 	{
-		get => _root?.ContentRoot.VisualTree.PublicRootVisual;
-		set
-		{
-			if (_root is null)
-			{
-				_root = new XamlIslandRoot(WinUICoreServices.Instance);
-			}
-
-			_root.SetPublicRootVisual(value);
-
-			OnContentChangedPartial(_root);
-		}
+		get => _xamlIsland.Content;
+		set => _xamlIsland.Content = value;
 	}
-
-	partial void OnContentChangedPartial(XamlIslandRoot xamlIslandRoot);
 
 	/// <summary>
 	/// Attempts to programmatically give focus to the DesktopWindowXamlSource in the desktop application.

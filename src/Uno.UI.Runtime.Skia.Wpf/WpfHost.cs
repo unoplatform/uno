@@ -3,8 +3,10 @@
 using System;
 using System.Windows.Threading;
 using Uno.UI.Runtime.Skia.Wpf.Extensions;
+using Uno.UI.Runtime.Skia.Wpf.Extensions.UI.Xaml.Controls;
 using Uno.UI.Runtime.Skia.Wpf.Hosting;
 using Uno.UI.Runtime.Skia.Wpf.UI.Controls;
+using Uno.UI.Xaml.Controls;
 using WinUI = Microsoft.UI.Xaml;
 using WinUIApplication = Microsoft.UI.Xaml.Application;
 using WpfApplication = System.Windows.Application;
@@ -69,11 +71,14 @@ public class WpfHost : IWpfApplicationHost
 
 	private void SetupMainWindow()
 	{
-		var unoWpfWindow = new UnoWpfWindow(WinUI.Window.Current);
+		var unoWpfWindow = NativeWindowFactory.CreateWindow(WinUI.Window.Current) as System.Windows.Window;
+		if (unoWpfWindow is null)
+		{
+			throw new InvalidOperationException("Window is not valid");
+		}
+
 		WpfApplication.Current.MainWindow = unoWpfWindow;
 		unoWpfWindow.Activated += MainWindow_Activated;
-		unoWpfWindow.UpdateWindowPropertiesFromPackage();
-		unoWpfWindow.UpdateWindowPropertiesFromApplicationView();
 	}
 
 	internal event EventHandler? MainWindowShown;

@@ -10,11 +10,11 @@ using WinUICoreServices = global::Uno.UI.Xaml.Core.CoreServices;
 
 namespace Uno.UI.Xaml.Islands;
 
-internal partial class XamlIslandRoot : Panel
+internal partial class XamlIsland
 {
-	private readonly ContentRoot _contentRoot;
+	private ContentRoot _contentRoot;
 
-	internal XamlIslandRoot(WinUICoreServices coreServices)
+	internal void InitializeRoot(WinUICoreServices coreServices)
 	{
 		_contentRoot = coreServices.ContentRootCoordinator.CreateContentRoot(ContentRootType.XamlIsland, Colors.Transparent, this);
 
@@ -26,13 +26,11 @@ internal partial class XamlIslandRoot : Panel
 
 	internal ContentRoot ContentRoot => _contentRoot;
 
-	internal void SetPublicRootVisual(UIElement uiElement)
-	{
-		// TODO: Adjust according to WinUI
-		var rootBorder = new Border();
-		_contentRoot.VisualTree.SetPublicRootVisual(rootBorder, null, null);
-		rootBorder.Child = uiElement;
-	}
+	private void SetPublicRootVisual(
+		UIElement rootVisual,
+		ScrollViewer? rootScrollViewer,
+		ContentPresenter? contentPresenter) => 
+		_contentRoot.VisualTree.SetPublicRootVisual(rootVisual, rootScrollViewer, contentPresenter);
 
 	/// <summary>
 	/// Overriding virtual to add specific logic to measure pass.

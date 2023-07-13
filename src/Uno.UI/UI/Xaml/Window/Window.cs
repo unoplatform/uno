@@ -24,17 +24,17 @@ namespace Microsoft.UI.Xaml
 	[ContentProperty(Name = nameof(Content))]
 	public sealed partial class Window
 	{
-		private static Window _current;
+		private static Window? _current;
 
 		private readonly IWindowImplementation _windowImplementation;
 
 		private CoreWindowActivationState? _lastActivationState;
-		private Brush _background;
+		private Brush? _background;
 		private bool _wasActivated;
 		private bool _wasShown;
 
 		private List<WeakEventHelper.GenericEventHandler> _sizeChangedHandlers = new List<WeakEventHelper.GenericEventHandler>();
-		private List<WeakEventHelper.GenericEventHandler> _backgroundChangedHandlers;
+		private List<WeakEventHelper.GenericEventHandler>? _backgroundChangedHandlers;
 
 		internal Window(WindowType windowType)
 		{
@@ -60,11 +60,6 @@ namespace Microsoft.UI.Xaml
 
 			Dispatcher = CoreDispatcher.Main;
 
-			if (windowType == WindowType.CoreWindow)
-			{
-				CoreWindow = CoreWindow.GetOrCreateForCurrentThread();
-			}
-
 			Compositor = Windows.UI.Composition.Compositor.GetSharedCompositor();
 
 			InitPlatform();
@@ -82,17 +77,22 @@ namespace Microsoft.UI.Xaml
 		/// <summary>
 		/// Occurs when the window has successfully been activated.
 		/// </summary>
-		public event WindowActivatedEventHandler Activated;
+		public event WindowActivatedEventHandler? Activated;
+
+		/// <summary>
+		/// Occurs when the window has closed.
+		/// </summary>
+		public event WindowClosedEventHandler? Closed;
 
 		/// <summary>
 		/// Occurs when the app window has first rendered or has changed its rendering size.
 		/// </summary>
-		public event WindowSizeChangedEventHandler SizeChanged;
+		public event WindowSizeChangedEventHandler? SizeChanged;
 
 		/// <summary>
 		/// Occurs when the value of the Visible property changes.
 		/// </summary>
-		public event WindowVisibilityChangedEventHandler VisibilityChanged;
+		public event WindowVisibilityChangedEventHandler? VisibilityChanged;
 
 		private void InitializeCommon()
 		{
@@ -103,54 +103,10 @@ namespace Microsoft.UI.Xaml
 			Background = SolidColorBrushHelper.White;
 		}
 
-		public UIElement Content
+		public UIElement? Content
 		{
-			get => InternalGetContent();
-			set
-			{
-				if (WinUICoreServices.Instance.InitializationType == InitializationType.IslandsOnly)
-				{
-					// Ignore setter, in line with XAML Islands behavior.
-					return;
-				}
-
-				if (Content == value)
-				{
-					// Content already set, ignore.
-					return;
-				}
-
-				var oldContent = Content;
-				if (oldContent != null)
-				{
-					oldContent.IsWindowRoot = false;
-
-					if (oldContent is FrameworkElement oldRoot)
-					{
-						oldRoot.SizeChanged -= RootSizeChanged;
-					}
-				}
-
-				if (value is not null)
-				{
-					value.IsWindowRoot = true;
-				}
-
-				InternalSetContent(value);
-
-				if (value is FrameworkElement newRoot)
-				{
-					newRoot.SizeChanged += RootSizeChanged;
-				}
-
-				oldContent?.XamlRoot?.NotifyChanged();
-				if (value?.XamlRoot != oldContent?.XamlRoot)
-				{
-					value?.XamlRoot?.NotifyChanged();
-				}
-
-				TryShow();
-			}
+			get => _windowImplementation.Content;
+			set => _windowImplementation.Content = value;
 		}
 
 		/// <summary>
@@ -160,13 +116,13 @@ namespace Microsoft.UI.Xaml
 		/// On platforms like iOS and Android, we might still have few native controls above this.
 		/// </summary>
 		/// <remarks>This element is flagged with IsVisualTreeRoot.</remarks>
-		internal UIElement RootElement => InternalGetRootElement();
+		internal UIElement? RootElement => _windowImplementation.Content?.XamlRoot?.VisualTree?.PublicRootVisual;
 
-		internal PopupRoot PopupRoot => Uno.UI.Xaml.Core.CoreServices.Instance.MainPopupRoot;
+		internal PopupRoot? PopupRoot => WinUICoreServices.Instance.MainPopupRoot;
 
-		internal FullWindowMediaRoot FullWindowMediaRoot => Uno.UI.Xaml.Core.CoreServices.Instance.MainFullWindowMediaRoot;
+		internal FullWindowMediaRoot? FullWindowMediaRoot => Uno.UI.Xaml.Core.CoreServices.Instance.MainFullWindowMediaRoot;
 
-		internal Canvas FocusVisualLayer => Uno.UI.Xaml.Core.CoreServices.Instance.MainFocusVisualRoot;
+		internal Canvas? FocusVisualLayer => Uno.UI.Xaml.Core.CoreServices.Instance.MainFocusVisualRoot;
 
 		/// <summary>
 		/// Gets a Rect value containing the height and width of the application window in units of effective (view) pixels.
@@ -176,7 +132,7 @@ namespace Microsoft.UI.Xaml
 		/// <summary>
 		/// Gets an internal core object for the application window.
 		/// </summary>
-		public CoreWindow CoreWindow { get; private set; }
+		public CoreWindow? CoreWindow => _windowImplementation.CoreWindow;
 
 		/// <summary>
 		/// Gets the CoreDispatcher object for the Window, which is generally the CoreDispatcher for the UI thread.
@@ -188,7 +144,7 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		public bool Visible
 		{
-			get => CoreWindow.Visible;
+			get => _windowImplementation.Visible;
 			private set
 			{
 				if (Visible != value)
@@ -198,10 +154,17 @@ namespace Microsoft.UI.Xaml
 						this.Log().LogDebug($"Window visibility changing to {value}");
 					}
 
-					CoreWindow.Visible = value;
+					if (CoreWindow is not null) // TODO:MZ: CoreWindow may be null.
+					{
+						CoreWindow.Visible = value;
+					}
 
 					var args = new VisibilityChangedEventArgs() { Visible = value };
-					CoreWindow.OnVisibilityChanged(args);
+
+					if (CoreWindow is not null) // TODO:MZ: CoreWindow may be null.
+					{
+						CoreWindow.OnVisibilityChanged(args);
+					}
 					VisibilityChanged?.Invoke(this, args);
 				}
 			}
@@ -301,7 +264,7 @@ namespace Microsoft.UI.Xaml
 #else
 				var coreWindowActivatedEventArgs = activatedEventArgs;
 #endif
-				CoreWindow.OnActivated(coreWindowActivatedEventArgs);
+				CoreWindow?.OnActivated(coreWindowActivatedEventArgs);
 				Activated?.Invoke(this, activatedEventArgs);
 			}
 		}
@@ -316,7 +279,7 @@ namespace Microsoft.UI.Xaml
 			Visible = newVisibility;
 		}
 
-		private void RootSizeChanged(object sender, SizeChangedEventArgs args) => _rootVisual.XamlRoot.NotifyChanged();
+		private void RootSizeChanged(object sender, SizeChangedEventArgs args) => _windowImplementation.Content?.XamlRoot?.NotifyChanged();
 
 		private void RaiseSizeChanged(Windows.UI.Core.WindowSizeChangedEventArgs windowSizeChangedEventArgs)
 		{
@@ -336,7 +299,7 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		internal Brush Background
+		internal Brush? Background
 		{
 			get => _background;
 			set
@@ -363,6 +326,5 @@ namespace Microsoft.UI.Xaml
 
 		private static Window InternalGetCurrentWindow() => _current ??= new Window(WindowType.CoreWindow);
 
-		private UIElement InternalGetRootElement() => _rootVisual!;
 	}
 }

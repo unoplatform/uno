@@ -60,16 +60,20 @@ namespace Uno.UI.Xaml.Core
 			//TODO Uno: Does not match WinUI exactly, additional logic can be ported later.
 			_coreServices = coreServices ?? throw new ArgumentNullException(nameof(coreServices));
 			VisualTree = new VisualTree(coreServices, backgroundColor, rootElement, this);
-			FocusManager = new FocusManager(this);
 			InputManager = new InputManager(this);
-			//TODO Uno: We may want to create a custom version of adapter and observer specific to Uno.
+			FocusManager = new FocusManager(this);
+
+			//TODO Uno: We may want to create a custom version of adapter and observer for Island vs CoreWindow.
 			FocusAdapter = new FocusAdapter(this);
 			FocusManager.SetFocusObserver(new FocusObserver(this));
+
 			switch (type)
 			{
 				case ContentRootType.CoreWindow:
 					MUX_ASSERT(coreServices.ContentRootCoordinator.CoreWindowContentRoot == null);
 					coreServices.ContentRootCoordinator.CoreWindowContentRoot = this;
+					break;
+				case ContentRootType.XamlIsland:
 					break;
 			}
 		}
