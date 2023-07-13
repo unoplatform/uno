@@ -2718,6 +2718,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ControlTests\Button_Enabled_Control_Disabled.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Button\Button_IsEnabled_Automated.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -8332,6 +8336,9 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Button\Button_IsEnabled.xaml.cs">
       <DependentUpon>Button_IsEnabled.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ControlTests\Button_Enabled_Control_Disabled.xaml.cs">
+      <DependentUpon>Button_Enabled_Control_Disabled.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Button\CheckBox_Button.xaml.cs">
       <DependentUpon>CheckBox_Button.xaml</DependentUpon>
