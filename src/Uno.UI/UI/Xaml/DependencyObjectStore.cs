@@ -17,6 +17,7 @@ using Uno.UI;
 using System.Collections;
 using System.Globalization;
 using Windows.ApplicationModel.Calls;
+using Windows.UI.Xaml.Controls;
 
 #if __ANDROID__
 using View = Android.Views.View;
@@ -472,6 +473,12 @@ namespace Windows.UI.Xaml
 
 					// Set even if they are different to make sure the value is now set on the right precedence
 					SetValueInternal(value, precedence, propertyDetails);
+					
+					if (property == Control.IsEnabledProperty &&
+						GetValue(propertyDetails, DependencyPropertyValuePrecedences.Inheritance) is false)
+					{
+						SetValueInternal(false, DependencyPropertyValuePrecedences.Coercion, propertyDetails);
+					}
 
 					if (!isPersistentResourceBinding && !_isSettingPersistentResourceBinding)
 					{
