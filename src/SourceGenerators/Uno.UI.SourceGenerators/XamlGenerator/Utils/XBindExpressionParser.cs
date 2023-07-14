@@ -165,7 +165,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 				}
 				else if (root is null)
 				{
-					return (_contextName, ImmutableArray.Create(_contextName));
+					return (_contextName, ImmutableArray<string>.Empty);
 				}
 
 				throw new Exception("Unexpected XBindRoot");
