@@ -9,7 +9,7 @@ namespace UITests.Windows_UI_Xaml_Controls.AutoSuggestBoxTests;
 
 [SampleControlInfo("AutoSuggestBox",
 				   "AutoSuggestBox_SoftKeboard",
-					description: "This test needs the Soft Keyboard",
+					description: "This test needs the Soft Keyboard. To validate the fix, start typing using the Keyboard on the Screen and tapping over one of the options should make the selection.",
 					isManualTest: true)]
 public sealed partial class AutoSuggestBox_SoftKeboard : UserControl
 {
