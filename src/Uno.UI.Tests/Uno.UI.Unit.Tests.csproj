@@ -88,8 +88,6 @@
 		<Compile Include="..\SourceGenerators\Uno.UI.Tasks\ResourceConverters\iOSResourceConverter.cs">
 			<Link>Resources\iOSResourceConverter.cs</Link>
 		</Compile>
-		<Compile Include="..\SourceGenerators\Uno.UI.SourceGenerators\XamlGenerator\Utils\XBindExpressionParser.CoreParser.cs" />
-		<Compile Include="..\SourceGenerators\Uno.UI.SourceGenerators\XamlGenerator\Utils\XBindNodes.cs" />
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\AddIns\Uno.UI.Lottie\Uno.UI.Lottie.Tests.csproj" />
