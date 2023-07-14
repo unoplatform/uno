@@ -520,7 +520,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			stackPanel.Children.Add(comboBox);
 			WindowHelper.WindowContent = stackPanel;
 			await WindowHelper.WaitForLoaded(stackPanel);
-			bool dataContextChangedRaised = false;
 			FrameworkElement itemContainer = null;
 
 			// Act
@@ -528,7 +527,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitFor(() => (itemContainer = comboBox.ContainerFromIndex(0) as ComboBoxItem) is not null);
 			itemContainer.DataContextChanged += (s, e) =>
 			{
-				dataContextChangedRaised = true;
 				// Assert
 				Assert.AreNotEqual(stackPanel.DataContext, itemContainer.DataContext);
 			};
