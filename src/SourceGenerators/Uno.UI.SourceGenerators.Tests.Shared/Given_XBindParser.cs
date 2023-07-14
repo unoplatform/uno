@@ -526,4 +526,68 @@ public class Given_XBindParser
 
 				""", root.PrettyPrint());
 	}
+
+	[TestMethod]
+	public void When_Chained_AttachedProperties()
+	{
+		var root = Parse("instance.(AttachedProps.P1).(AttachedProps.P2)");
+		Assert.AreEqual("""
+			XBindAttachedPropertyAccess
+				Member:
+					XBindAttachedPropertyAccess
+						Member:
+							XBindIdentifier
+								IdentifierText: instance
+						PropertyClass:
+							XBindIdentifier
+								IdentifierText: AttachedProps
+						PropertyName:
+							XBindIdentifier
+								IdentifierText: P1
+				PropertyClass:
+					XBindIdentifier
+						IdentifierText: AttachedProps
+				PropertyName:
+					XBindIdentifier
+						IdentifierText: P2
+
+			""", root.PrettyPrint());
+	}
+
+	[TestMethod]
+	public void When_Chained_AttachedProperties_Globalized()
+	{
+		var root = Parse("instance.(global::NS.AttachedProps.P1).(global::NS.AttachedProps.P2)");
+		Assert.AreEqual("""
+			XBindAttachedPropertyAccess
+				Member:
+					XBindAttachedPropertyAccess
+						Member:
+							XBindIdentifier
+								IdentifierText: instance
+						PropertyClass:
+							XBindMemberAccess
+								Path:
+									XBindIdentifier
+										IdentifierText: global::NS
+								Identifier:
+									XBindIdentifier
+										IdentifierText: AttachedProps
+						PropertyName:
+							XBindIdentifier
+								IdentifierText: P1
+				PropertyClass:
+					XBindMemberAccess
+						Path:
+							XBindIdentifier
+								IdentifierText: global::NS
+						Identifier:
+							XBindIdentifier
+								IdentifierText: AttachedProps
+				PropertyName:
+					XBindIdentifier
+						IdentifierText: P2
+
+			""", root.PrettyPrint());
+	}
 }
