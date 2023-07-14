@@ -42,6 +42,8 @@ namespace Windows.UI.Xaml.Controls
 		private View _templatedRoot;
 		private bool _updateTemplate;
 		private bool _suppressIsEnabled;
+		private bool _IsEnabledPropertyBackingFieldSet;
+		private bool _IsEnabledPropertyBackingField;
 
 		private void InitializeControl()
 		{
@@ -109,8 +111,34 @@ namespace Windows.UI.Xaml.Controls
 
 		public event DependencyPropertyChangedEventHandler IsEnabledChanged;
 
-		[GeneratedDependencyProperty(DefaultValue = true, ChangedCallback = true, CoerceCallback = true, Options = FrameworkPropertyMetadataOptions.Inherits)]
-		public static DependencyProperty IsEnabledProperty { get; } = CreateIsEnabledProperty();
+		public static DependencyProperty IsEnabledProperty { get; } = 
+			DependencyProperty.Register(name: "IsEnabled", propertyType: typeof(bool), ownerType: typeof(Control),
+				typeMetadata: new FrameworkPropertyMetadata(
+					defaultValue: true
+					, options: FrameworkPropertyMetadataOptions.Inherits
+					, backingFieldUpdateCallback: OnIsEnabledBackingFieldUpdate
+					, coerceValueCallback: (instance, baseValue) => ((Control)instance).CoerceIsEnabled(baseValue)
+					, propertyChangedCallback: (instance, args) => ((Control)instance).OnIsEnabledChanged(args)
+					, keepCoercedWhenEquals: true
+				));
+		
+		private static void OnIsEnabledBackingFieldUpdate(object instance, object newValue)
+		{
+			var typedInstance = instance as Control;
+			typedInstance!._IsEnabledPropertyBackingField = (bool)newValue;
+			typedInstance!._IsEnabledPropertyBackingFieldSet = true;
+		}
+		
+		private bool GetIsEnabledValue()
+		{
+			if (!_IsEnabledPropertyBackingFieldSet)
+			{
+				_IsEnabledPropertyBackingField = (bool)GetValue(IsEnabledProperty);
+				_IsEnabledPropertyBackingFieldSet = true;
+			}
+			return _IsEnabledPropertyBackingField;
+		}
+		private void SetIsEnabledValue(bool value) => SetValue(IsEnabledProperty, value);
 
 		public bool IsEnabled
 		{
@@ -166,9 +194,23 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private object CoerceIsEnabled(object baseValue)
+		private protected virtual object CoerceIsEnabled(object baseValue)
 		{
-			return _suppressIsEnabled ? false : baseValue;
+			if (_suppressIsEnabled)
+			{
+				return false;
+			}
+			
+			var (localValue, _) = ((IDependencyObjectStoreProvider)this).Store.GetPropertyDetails(IsEnabledProperty).GetValueUnderPrecedence(DependencyPropertyValuePrecedences.Coercion);
+			var parentValue = ((IDependencyObjectStoreProvider)this).Store.GetPropertyDetails(IsEnabledProperty).GetValue(DependencyPropertyValuePrecedences.Inheritance);
+			
+			// If the parent is disabled, this control must be disabled as well
+			if (parentValue != DependencyProperty.UnsetValue && !(bool)parentValue!)
+			{
+				return false;
+			}
+			
+			return localValue;
 		}
 
 

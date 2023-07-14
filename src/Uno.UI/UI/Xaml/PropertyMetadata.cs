@@ -42,6 +42,14 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		internal bool CoerceWhenUnchanged { get; set; } = true;
 
+		/// <summary>
+		/// Normally, when a property is updated and the coerced value is equal to
+		/// the value being updated to, the coerced value is thrown away. <seealso cref="DependencyObjectStore.ApplyCoercion"/>
+		/// This property is added specifically for Control.IsEnabledProperty in order
+		/// to override this behaviour.
+		/// </summary>
+		internal bool KeepCoercedWhenEquals { get; set; }
+
 		internal PropertyMetadata() { }
 
 		public PropertyMetadata(
@@ -118,6 +126,21 @@ namespace Windows.UI.Xaml
 			PropertyChangedCallback = propertyChangedCallback;
 			CoerceValueCallback = coerceValueCallback;
 			BackingFieldUpdateCallback = backingFieldUpdateCallback;
+		}
+
+		internal PropertyMetadata(
+			object defaultValue,
+			PropertyChangedCallback propertyChangedCallback,
+			CoerceValueCallback coerceValueCallback,
+			BackingFieldUpdateCallback backingFieldUpdateCallback,
+			bool keepCoercedWhenEquals
+		)
+		{
+			DefaultValue = defaultValue;
+			PropertyChangedCallback = propertyChangedCallback;
+			CoerceValueCallback = coerceValueCallback;
+			BackingFieldUpdateCallback = backingFieldUpdateCallback;
+			KeepCoercedWhenEquals = keepCoercedWhenEquals;
 		}
 
 		public object DefaultValue

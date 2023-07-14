@@ -27,18 +27,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 {
 	public partial class ButtonBase : ContentControl
 	{
-		static ButtonBase()
-		{
-			IsEnabledProperty.OverrideMetadata(
-				typeof(ButtonBase),
-				new FrameworkPropertyMetadata(
-					defaultValue: true,
-					propertyChangedCallback: null,
-					coerceValueCallback: CoerceIsEnabled
-				)
-			);
-		}
-
 		public
 #if __ANDROID__
 			new
@@ -160,16 +148,15 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		}
 #endif
 
-		private static object CoerceIsEnabled(DependencyObject dependencyObject, object baseValue)
+		private protected override object CoerceIsEnabled(object baseValue)
 		{
-			if (dependencyObject is ButtonBase buttonBase
-				&& buttonBase.Command != null
-				&& !buttonBase.Command.CanExecute(buttonBase.CommandParameter))
+			if (Command != null
+				&& !Command.CanExecute(CommandParameter))
 			{
 				return false;
 			}
 
-			return baseValue;
+			return base.CoerceIsEnabled(baseValue);
 		}
 
 		private protected override void OnContentTemplateRootSet() => RegisterEvents();
