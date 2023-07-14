@@ -2,7 +2,7 @@
 
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
-		<TargetFrameworks>$(NetPrevious);$(NetLatest)</TargetFrameworks>
+		<TargetFrameworks>$(NetPrevious);$(NetCurrent)</TargetFrameworks>
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 		<RollForward>Major</RollForward>
 		<Nullable>enable</Nullable>

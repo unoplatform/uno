@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk.Web">
 	<PropertyGroup>
-		<TargetFrameworks>$(NetWasmPreviousAndLatest)</TargetFrameworks>
+		<TargetFrameworks>$(NetWasmPreviousAndCurrent)</TargetFrameworks>
 	</PropertyGroup>
 
 	<Import Project="../../targetframework-override.props" />

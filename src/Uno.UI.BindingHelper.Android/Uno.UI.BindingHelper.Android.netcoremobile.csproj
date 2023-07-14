@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
 	<PropertyGroup>
-		<TargetFrameworks>$(NetPrevious)-android;$(NetLatest)-android</TargetFrameworks>
+		<TargetFrameworks>$(NetPrevious)-android;$(NetCurrent)-android</TargetFrameworks>
 
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<NoWarn>1701;1702;1705;109</NoWarn>

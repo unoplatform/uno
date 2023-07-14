@@ -1,7 +1,7 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
 
 	<PropertyGroup>
-		<TargetFrameworks>$(NetReferencePreviousAndLatest)</TargetFrameworks>
+		<TargetFrameworks>$(NetReferencePreviousAndCurrent)</TargetFrameworks>
 	</PropertyGroup>
 
 	<Import Project="../targetframework-override.props" />
