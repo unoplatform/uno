@@ -17,7 +17,6 @@ using Uno.UI;
 using System.Collections;
 using System.Globalization;
 using Windows.ApplicationModel.Calls;
-using Windows.UI.Xaml.Controls;
 
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
@@ -471,16 +470,10 @@ namespace Windows.UI.Xaml
 					var previousValue = GetValue(propertyDetails);
 					var previousPrecedence = GetCurrentHighestValuePrecedence(propertyDetails);
 
-					ApplyCoercion(actualInstanceAlias, propertyDetails, previousValue, value);
-
-					// Set even if they are different to make sure the value is now set on the right precedence
+					// Set at precedence before setting at coercion as some elements use this value to determine how to coerce
 					SetValueInternal(value, precedence, propertyDetails);
-					
-					if (property == Control.IsEnabledProperty &&
-						GetValue(propertyDetails, DependencyPropertyValuePrecedences.Inheritance) is false)
-					{
-						SetValueInternal(false, DependencyPropertyValuePrecedences.Coercion, propertyDetails);
-					}
+
+					ApplyCoercion(actualInstanceAlias, propertyDetails, previousValue, value);
 
 					if (!isPersistentResourceBinding && !_isSettingPersistentResourceBinding)
 					{
@@ -661,7 +654,7 @@ namespace Windows.UI.Xaml
 				// Source: https://msdn.microsoft.com/en-us/library/ms745795%28v=vs.110%29.aspx?f=255&MSPPError=-2147217396
 				SetValueInternal(previousValue, DependencyPropertyValuePrecedences.Coercion, propertyDetails);
 			}
-			else if (!Equals(coercedValue, baseValue))
+			else if (!Equals(coercedValue, baseValue) || propertyDetails.Metadata.KeepCoercedWhenEquals)
 			{
 				// The base value and the coerced value are different, which means that coercion must be applied.
 				// Set value using DependencyPropertyValuePrecedences.Coercion, which has the highest precedence.

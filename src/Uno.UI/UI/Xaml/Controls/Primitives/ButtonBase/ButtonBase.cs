@@ -27,6 +27,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 {
 	public partial class ButtonBase : ContentControl
 	{
+<<<<<<< HEAD
 		static ButtonBase()
 		{
 			IsEnabledProperty.OverrideMetadata(
@@ -41,6 +42,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		private readonly SerialDisposable _commandCanExecute = new SerialDisposable();
 
+=======
+>>>>>>> 86522f24d5 (chore: add explicit metadata property to handle IsEnable inheritance)
 		public
 #if XAMARIN_ANDROID
 			new
@@ -162,16 +165,15 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		}
 #endif
 
-		private static object CoerceIsEnabled(DependencyObject dependencyObject, object baseValue)
+		private protected override object CoerceIsEnabled(object baseValue)
 		{
-			if (dependencyObject is ButtonBase buttonBase
-				&& buttonBase.Command != null
-				&& !buttonBase.Command.CanExecute(buttonBase.CommandParameter))
+			if (Command != null
+				&& !Command.CanExecute(CommandParameter))
 			{
 				return false;
 			}
 
-			return baseValue;
+			return base.CoerceIsEnabled(baseValue);
 		}
 
 		public override View ContentTemplateRoot

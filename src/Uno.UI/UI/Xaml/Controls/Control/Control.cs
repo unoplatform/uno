@@ -41,6 +41,12 @@ namespace Windows.UI.Xaml.Controls
 		private bool _suspendStateChanges;
 		private View _templatedRoot;
 		private bool _updateTemplate;
+<<<<<<< HEAD
+=======
+		private bool _suppressIsEnabled;
+		private bool _IsEnabledPropertyBackingFieldSet;
+		private bool _IsEnabledPropertyBackingField;
+>>>>>>> 86522f24d5 (chore: add explicit metadata property to handle IsEnable inheritance)
 
 		private void InitializeControl()
 		{
@@ -99,6 +105,120 @@ namespace Windows.UI.Xaml.Controls
 		partial void UnregisterSubView();
 		partial void RegisterSubView(View child);
 
+<<<<<<< HEAD
+=======
+		#region IsEnabled DependencyProperty
+
+		// Note: we keep the event args as a private field for perf consideration: This avoids creating a new instance each time.
+		//		 As it's used only internally it's safe to do so.
+		[ThreadStatic]
+		private static IsEnabledChangedEventArgs _isEnabledChangedEventArgs;
+
+		public event DependencyPropertyChangedEventHandler IsEnabledChanged;
+
+		public static DependencyProperty IsEnabledProperty { get; } = 
+			DependencyProperty.Register(name: "IsEnabled", propertyType: typeof(bool), ownerType: typeof(Control),
+				typeMetadata: new FrameworkPropertyMetadata(
+					defaultValue: true
+					, options: FrameworkPropertyMetadataOptions.Inherits
+					, backingFieldUpdateCallback: OnIsEnabledBackingFieldUpdate
+					, coerceValueCallback: (instance, baseValue) => ((Control)instance).CoerceIsEnabled(baseValue)
+					, propertyChangedCallback: (instance, args) => ((Control)instance).OnIsEnabledChanged(args)
+					, keepCoercedWhenEquals: true
+				));
+		
+		private static void OnIsEnabledBackingFieldUpdate(object instance, object newValue)
+		{
+			var typedInstance = instance as Control;
+			typedInstance!._IsEnabledPropertyBackingField = (bool)newValue;
+			typedInstance!._IsEnabledPropertyBackingFieldSet = true;
+		}
+		
+		private bool GetIsEnabledValue()
+		{
+			if (!_IsEnabledPropertyBackingFieldSet)
+			{
+				_IsEnabledPropertyBackingField = (bool)GetValue(IsEnabledProperty);
+				_IsEnabledPropertyBackingFieldSet = true;
+			}
+			return _IsEnabledPropertyBackingField;
+		}
+		private void SetIsEnabledValue(bool value) => SetValue(IsEnabledProperty, value);
+
+		public bool IsEnabled
+		{
+			get => GetIsEnabledValue();
+			set => SetIsEnabledValue(value);
+		}
+
+		private void OnIsEnabledChanged(DependencyPropertyChangedEventArgs args)
+		{
+#if UNO_HAS_MANAGED_POINTERS || __WASM__
+			UpdateHitTest();
+#endif
+
+			_isEnabledChangedEventArgs ??= new IsEnabledChangedEventArgs();
+			_isEnabledChangedEventArgs.SourceEvent = args;
+
+			OnIsEnabledChanged(_isEnabledChangedEventArgs);
+
+#if __ANDROID__
+			var newValue = (bool)args.NewValue;
+			base.SetNativeIsEnabled(newValue);
+			this.Enabled = newValue;
+#elif __IOS__
+			UserInteractionEnabled = (bool)args.NewValue;
+#elif __MACOS__
+			// UserInteractionEnabled = (bool)args.NewValue; // UNO-TODO: Set MacOS native equivalent
+#endif
+
+			IsEnabledChanged?.Invoke(this, args);
+
+			// TODO: move focus elsewhere if control.FocusState != FocusState.Unfocused
+#if __WASM__
+			if (FeatureConfiguration.UIElement.AssignDOMXamlProperties)
+			{
+				UpdateDOMProperties();
+			}
+#endif
+		}
+		#endregion
+
+		internal bool IsEnabledSuppressed => _suppressIsEnabled;
+
+		/// <summary>
+		/// Provides the ability to disable <see cref="IsEnabled"/> value changes, e.g. in the context of ICommand CanExecute.
+		/// </summary>
+		/// <param name="suppress">If true, <see cref="IsEnabled"/> will always be false</param>
+		private protected void SuppressIsEnabled(bool suppress)
+		{
+			if (_suppressIsEnabled != suppress)
+			{
+				_suppressIsEnabled = suppress;
+				this.CoerceValue(IsEnabledProperty);
+			}
+		}
+
+		private protected virtual object CoerceIsEnabled(object baseValue)
+		{
+			if (_suppressIsEnabled)
+			{
+				return false;
+			}
+			
+			var (localValue, _) = ((IDependencyObjectStoreProvider)this).Store.GetPropertyDetails(IsEnabledProperty).GetValueUnderPrecedence(DependencyPropertyValuePrecedences.Coercion);
+			var parentValue = ((IDependencyObjectStoreProvider)this).Store.GetPropertyDetails(IsEnabledProperty).GetValue(DependencyPropertyValuePrecedences.Inheritance);
+			
+			// If the parent is disabled, this control must be disabled as well
+			if (parentValue != DependencyProperty.UnsetValue && !(bool)parentValue!)
+			{
+				return false;
+			}
+			
+			return localValue;
+		}
+
+>>>>>>> 86522f24d5 (chore: add explicit metadata property to handle IsEnable inheritance)
 
 		#region Template DependencyProperty
 
