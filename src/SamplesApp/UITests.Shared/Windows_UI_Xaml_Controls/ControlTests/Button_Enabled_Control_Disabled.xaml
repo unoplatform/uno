@@ -48,12 +48,19 @@
 				<Button x:Name="btn" IsEnabled="true" Content="Try to click me" />
 			</ContentControl>
 			<StackPanel Grid.Row="4" Grid.Column="1">
-				<TextBlock  Text="ContentControl disabled in source, IsEnabled =" />	
-				<TextBlock  Text="{Binding IsEnabled, ElementName=cc1}" />	
-				<TextBlock  Text="Button enabled in source, IsEnabled =" />	
-				<TextBlock  Text="{Binding IsEnabled, ElementName=btn}" />	
+				<StackPanel Orientation="Horizontal">
+					<TextBlock  Text="ContentControl disabled in source, IsEnabled =" />
+					<TextBlock  Text="{Binding IsEnabled, ElementName=cc1}" />
+				</StackPanel>
+				<StackPanel Orientation="Horizontal">
+					<TextBlock  Text="Button enabled in source, IsEnabled =" />
+					<TextBlock  Text="{Binding IsEnabled, ElementName=btn}" />
+				</StackPanel>
 			</StackPanel>
-			<Button Grid.Row="4" Grid.Column="2" Click="ButtonBase_OnClick">Change ContentControl IsEnabled</Button>
+			<StackPanel Grid.Row="4" Grid.Column="2">
+				<Button Click="Button_OnClick">Change ContentControl IsEnabled</Button>
+				<Button Click="Button2_OnClick">Change Button IsEnabled</Button>
+			</StackPanel>
 		</Grid>
 	</StackPanel>
 
