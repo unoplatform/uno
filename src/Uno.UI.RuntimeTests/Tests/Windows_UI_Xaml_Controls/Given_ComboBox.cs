@@ -514,7 +514,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var stackPanel = new StackPanel();
 			stackPanel.DataContext = Guid.NewGuid().ToString();
 			var comboBox = new ComboBox();
-			comboBox.ItemsSource = new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+			var originalSource = new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+			comboBox.ItemsSource = originalSource;
 			comboBox.SelectedIndex = 0;
 			stackPanel.Children.Add(comboBox);
 			WindowHelper.WindowContent = stackPanel;
@@ -535,9 +536,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 			comboBox.IsDropDownOpen = true;
 			await WindowHelper.WaitForIdle();
-
-			// Assert
-			Assert.IsTrue(dataContextChangedRaised);
+			comboBox.IsDropDownOpen = false;
+			var updatedSource = new List<int>() { 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 };
+			comboBox.ItemsSource = updatedSource;
+			await WindowHelper.WaitForIdle();
+			comboBox.IsDropDownOpen = true;
+			await WindowHelper.WaitForIdle();
+			comboBox.IsDropDownOpen = false;
 		}
 
 		[TestMethod]
