@@ -495,6 +495,9 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			//child.Measure(availableSize);
+#if __ANDROID__
+			child.ForceLayout();
+#endif
 			this.MeasureElement(child, availableSize);
 
 			return;
