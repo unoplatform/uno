@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
+﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
 	<PropertyGroup>
 		<TargetFrameworks>net7.0</TargetFrameworks>
 		<IsPackable>false</IsPackable>
@@ -39,7 +39,6 @@
 		<PackageReference Include="MSTest.TestFramework" />
 		<PackageReference Include="FluentAssertions" />
 		<PackageReference Include="Moq" Version="4.17.2" />
-		<PackageReference Include="System.Collections.Immutable" Version="1.7.0" />
 		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" Version="4.0.0-dev.7" PrivateAssets="all" />
 	</ItemGroup>
 
@@ -89,6 +88,8 @@
 		<Compile Include="..\SourceGenerators\Uno.UI.Tasks\ResourceConverters\iOSResourceConverter.cs">
 			<Link>Resources\iOSResourceConverter.cs</Link>
 		</Compile>
+		<Compile Include="..\SourceGenerators\Uno.UI.SourceGenerators\XamlGenerator\Utils\XBindExpressionParser.CoreParser.cs" />
+		<Compile Include="..\SourceGenerators\Uno.UI.SourceGenerators\XamlGenerator\Utils\XBindNodes.cs" />
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\AddIns\Uno.UI.Lottie\Uno.UI.Lottie.Tests.csproj" />
@@ -121,8 +122,7 @@
 	<ItemGroup>
 		<ProjectReference Include="..\SourceGenerators\Uno.UI.SourceGenerators\Uno.UI.SourceGenerators.csproj">
 			<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-			<SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
-			<UndefineProperties>TargetFramework</UndefineProperties>
+			<OutputItemType>Analyzer</OutputItemType>
 		</ProjectReference>
 		<ProjectReference Include="..\SourceGenerators\Uno.UI.SourceGenerators.Internal\Uno.UI.SourceGenerators.Internal.csproj">
 			<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
