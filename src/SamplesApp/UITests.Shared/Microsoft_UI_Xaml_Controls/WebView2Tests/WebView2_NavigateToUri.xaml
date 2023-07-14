@@ -12,8 +12,7 @@
 	xmlns:android="http://nventive.com/android"
 	xmlns:not_win="http://uno.ui/not_win"
 	xmlns:mux="using:Microsoft.UI.Xaml.Controls"
-	xmlns:not_win="http://uno.ui/not_win"
-	mc:Ignorable="d ios android not_win not_win"
+	mc:Ignorable="d ios android not_win"
 	d:DesignHeight="2000"
 	d:DesignWidth="400">
 	

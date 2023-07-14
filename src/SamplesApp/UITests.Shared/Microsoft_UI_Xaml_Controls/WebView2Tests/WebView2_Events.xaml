@@ -8,7 +8,7 @@
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:controls="using:Uno.UI.Samples.Controls"
 	xmlns:mux="using:Microsoft.UI.Xaml.Controls"
-	mc:Ignorable="d not_win not_win"
+	mc:Ignorable="d not_win"
 	d:DesignHeight="300"
 	d:DesignWidth="400">
 

@@ -8,8 +8,7 @@
 	xmlns:u="using:Uno.UI.Samples.Controls"
 	xmlns:not_win="http://uno.ui/not_win"
 	xmlns:mux="using:Microsoft.UI.Xaml.Controls"
-	xmlns:not_win="http://uno.ui/not_win"
-	mc:Ignorable="d not_win not_win"
+	mc:Ignorable="d not_win"
 	d:DesignHeight="300"
 	d:DesignWidth="400">
 
