@@ -19,9 +19,14 @@ namespace Uno.UI.Samples.Content.UITests.ButtonTestsControl
 		{
 			this.InitializeComponent();
 		}
-		private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
+		private void Button_OnClick(object sender, RoutedEventArgs e)
 		{
 			cc1.IsEnabled = !cc1.IsEnabled;
+		}
+
+		private void Button2_OnClick(object sender, RoutedEventArgs e)
+		{
+			btn.IsEnabled = !btn.IsEnabled;
 		}
 	}
 }
