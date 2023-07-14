@@ -115,7 +115,7 @@
                                 <Setter Property="Padding" Value="0" />
                                 <contract7Present:Setter Property="CornerRadius" Value="{ThemeResource OverlayCornerRadius}" />
                             </Style>
-                            
+
                             <Style x:Key="MediaSliderStyle" TargetType="Slider" BasedOn="{StaticResource DefaultSliderStyle}" />
                             <Style x:Key="MediaControlAppBarButtonStyle" TargetType="AppBarButton" BasedOn="{StaticResource DefaultAppBarButtonStyle}" />
                         </Grid.Resources>
@@ -194,12 +194,12 @@
                             <!-- Closed Captioning  visibility states -->
                             <!-- Focus states -->
                             <VisualStateGroup x:Name="FocusStates">
-                                 <VisualState x:Name="Focused">
+                                <VisualState x:Name="Focused">
                                     <Storyboard>
 										<!--UNO TODO: There's no element called 'FocusVisualWhite', which presumably fails silently on Windows, but causes a compile-time error on Uno-->
                                         <!-- <DoubleAnimation Storyboard.TargetName="FocusVisualWhite" Storyboard.TargetProperty="Opacity" To="1" Duration="0" /> -->
                                         <!-- <DoubleAnimation Storyboard.TargetName="FocusVisualBlack" Storyboard.TargetProperty="Opacity" To="1" Duration="0" /> -->
-									</Storyboard>
+                                    </Storyboard>
                                 </VisualState>
                                 <VisualState x:Name="Unfocused" />
                                 <VisualState x:Name="PointerFocused" />
@@ -210,7 +210,6 @@
                                 <VisualState x:Name="CompactMode">
                                     <VisualState.Setters>
                                         <Setter Target="LeftSidePlayBorder.Visibility" Value="Visible" />
-                                        <Setter Target="TimeTextGrid.Visibility" Value="Collapsed" />
                                         <Setter Target="MediaTransportControls_Command_Border.(Grid.Column)" Value="2" />
                                         <Setter Target="MediaTransportControls_Command_Border.(Grid.Row)" Value="1" />
                                         <Setter Target="ControlPanelGrid.Height" Value="48" />
@@ -218,7 +217,7 @@
                                         <Setter Target="PlayPauseButton.Visibility" Value="Collapsed" />
                                         <Setter Target="ProgressSlider.Margin" Value="{ThemeResource MediaTransportControlsProgressSliderCompactMargin}" />
                                         <Setter Target="ControlPanelGrid.Padding" Value="3" />
-                                    </VisualState.Setters> 
+                                    </VisualState.Setters>
                                 </VisualState>
                             </VisualStateGroup>
                             <!-- PlayPause states -->
@@ -414,7 +413,7 @@
                                                     <FontIcon Glyph="&#xED3D;" />
                                                 </AppBarButton.Icon>
                                             </AppBarButton>
-											<AppBarButton x:Name="PlaybackRateButton" Style="{StaticResource AppBarButtonStyle}" MediaTransportControlsHelper.DropoutOrder="10" Visibility="Collapsed">
+                                            <AppBarButton x:Name="PlaybackRateButton" Style="{StaticResource AppBarButtonStyle}" MediaTransportControlsHelper.DropoutOrder="10" Visibility="Collapsed">
                                                 <AppBarButton.Icon>
                                                     <FontIcon Glyph="&#xEC57;" />
                                                 </AppBarButton.Icon>

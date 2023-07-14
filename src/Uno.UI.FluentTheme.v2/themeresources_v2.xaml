@@ -17340,7 +17340,6 @@
                 <VisualState x:Name="CompactMode">
                   <VisualState.Setters>
                     <Setter Target="LeftSidePlayBorder.Visibility" Value="Visible" />
-                    <Setter Target="TimeTextGrid.Visibility" Value="Collapsed" />
                     <Setter Target="MediaTransportControls_Command_Border.(Grid.Column)" Value="2" />
                     <Setter Target="MediaTransportControls_Command_Border.(Grid.Row)" Value="1" />
                     <Setter Target="ControlPanelGrid.Height" Value="48" />

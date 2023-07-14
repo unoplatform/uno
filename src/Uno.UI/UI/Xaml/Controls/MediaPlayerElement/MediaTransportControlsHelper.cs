@@ -1,4 +1,3 @@
-#if __ANDROID__ || __IOS__ || __MACOS__ || __WASM__
 namespace Windows.UI.Xaml.Controls
 {
 	public partial class MediaTransportControlsHelper
@@ -21,4 +20,3 @@ namespace Windows.UI.Xaml.Controls
 		}
 	}
 }
-#endif

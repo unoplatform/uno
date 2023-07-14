@@ -147,6 +147,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <UpToDateCheckInput Remove="UI\Xaml\Controls\MediaPlayerElement\Strings\MediaTransportControls.ChangedSize.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <None Update="Mixins\Android\BaseActivity.Callbacks.tt">
 	    <LastGenOutput>BaseActivity.Callbacks.g.cs</LastGenOutput>
 	  </None>

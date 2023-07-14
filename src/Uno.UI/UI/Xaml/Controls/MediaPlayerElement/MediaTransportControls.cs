@@ -243,6 +243,7 @@ namespace Windows.UI.Xaml.Controls
 
 			BindLoaded(m_tpCommandBar, OnCommandBarLoaded, invokeHandlerIfAlreadyLoaded: true);
 			BindSizeChanged(m_tpControlPanelGrid, ControlPanelGridSizeChanged);
+
 			Bind(m_tpControlPanelGrid, x => x.PointerEntered += OnControlPanelEntered, x => x.PointerExited -= OnControlPanelEntered);
 			Bind(m_tpControlPanelGrid, x => x.PointerExited += OnControlPanelExited, x => x.PointerExited -= OnControlPanelExited);
 			Bind(m_tpControlPanelGrid, x => x.PointerCaptureLost += OnControlPanelCaptureLost, x => x.PointerCaptureLost -= OnControlPanelCaptureLost);
@@ -707,6 +708,7 @@ namespace Windows.UI.Xaml.Controls
 		private void ControlPanelGridSizeChanged(object sender, SizeChangedEventArgs args)
 		{
 			OnControlsBoundsChanged();
+			OnSizeChanged(args);
 		}
 		private static void ControlPanelBorderSizeChanged(object sender, SizeChangedEventArgs args)
 		{
