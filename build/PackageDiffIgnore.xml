@@ -1574,6 +1574,13 @@
 			<Member fullName="System.Void Windows.Devices.Haptics.VibrationDevice..ctor()" reason="Does not exist in WinAppSDK" />
 			<Member fullName="System.Void Windows.UI.Xaml.Media.ImageSource..ctor()" reason="Does not exist in WinAppSDK" />
 			<!-- END Align ref members -->
+
+            <Member fullName="System.Void Windows.UI.Xaml.Shapes.Shape.OnFillChanged(Windows.UI.Xaml.Media.Brush newValue)" reason="Does not exist in WinAppSDK" />
+            <Member fullName="System.Void Windows.UI.Xaml.Shapes.Shape.OnFillUpdated(Windows.UI.Xaml.Media.Brush newValue)" reason="Does not exist in WinAppSDK" />
+            <Member fullName="System.Void Windows.UI.Xaml.Shapes.Shape.OnStrokeUpdated(Windows.UI.Xaml.Media.Brush newValue)" reason="Does not exist in WinAppSDK" />
+            <Member fullName="System.Void Windows.UI.Xaml.Shapes.Shape.OnStrokeThicknessUpdated(System.Double newValue)" reason="Does not exist in WinAppSDK" />
+            <Member fullName="System.Void Windows.UI.Xaml.Shapes.Shape.OnStrokeDashArrayUpdated(Windows.UI.Xaml.Media.DoubleCollection newValue)" reason="Does not exist in WinAppSDK" />
+            <Member fullName="System.Void Windows.UI.Xaml.Shapes.Shape.OnStretchUpdated(Windows.UI.Xaml.Media.Stretch newValue)" reason="Does not exist in WinAppSDK" />
 		</Methods>
 	</IgnoreSet>
 	  <!--

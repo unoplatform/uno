@@ -3,6 +3,10 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Android.Widget;
+using Uno.UI;
+using Uno.UI.Helpers;
+using Java.Lang.Reflect;
 using Android.Content;
 using Android.Graphics;
 using Android.Graphics.Drawables;
@@ -23,6 +27,7 @@ using Uno.UI.DataBinding;
 using Uno.UI.Extensions;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
+using Uno.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -35,7 +40,8 @@ namespace Windows.UI.Xaml.Controls
 		private readonly ManagedWeakReference? _ownerRef;
 		internal TextBox? Owner => _ownerRef?.Target as TextBox;
 
-		private readonly SerialDisposable _foregroundChanged = new SerialDisposable();
+		private WeakBrushChangedProxy? _foregroundChangedProxy;
+		private Action? _foregroundChanged;
 
 		public TextBoxView(TextBox owner)
 			: base(ContextHelper.Current)
@@ -64,6 +70,22 @@ namespace Windows.UI.Xaml.Controls
 			);
 
 			_inputTypes = (InputType, InputType);
+		}
+
+		partial void FinalizerPartial()
+		{
+			_foregroundChangedProxy?.Unsubscribe();
+		}
+
+		protected override void Dispose(bool disposing)
+		{
+			if (disposing)
+			{
+				_brushChangedProxy?.Unsubscribe();
+				_foregroundChangedProxy?.Unsubscribe();
+			}
+
+			base.Dispose(disposing);
 		}
 
 		internal void SetInputTypes(InputTypes inputType, InputTypes rawInputType)
@@ -300,19 +322,28 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnForegroundChanged(Brush oldValue, Brush newValue)
 		{
-			_foregroundChanged.Disposable = null;
-			var scb = newValue as SolidColorBrush;
-
-			if (scb != null)
+			if (this.IsNullOrDisposed())
 			{
-				_foregroundChanged.Disposable = Brush.AssignAndObserveBrush(scb, _ => ApplyColor());
-				ApplyColor();
+				_foregroundChangedProxy?.Unsubscribe();
+				return;
+			}
+
+			_foregroundChangedProxy ??= new();
+			if (newValue is SolidColorBrush scb)
+			{
+				_foregroundChanged = () => ApplyColor();
+				_foregroundChangedProxy.Subscribe(scb, _foregroundChanged);
+
 
 				void ApplyColor()
 				{
 					SetTextColor(scb.Color);
 					SetCursorColor(scb.Color);
 				}
+			}
+			else
+			{
+				_foregroundChangedProxy.Unsubscribe();
 			}
 		}
 	}

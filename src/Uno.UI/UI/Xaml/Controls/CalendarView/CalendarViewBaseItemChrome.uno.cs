@@ -9,7 +9,10 @@ namespace Windows.UI.Xaml.Controls
 {
 	partial class CalendarViewBaseItem
 	{
-		private readonly BorderLayerRenderer _borderRenderer = new BorderLayerRenderer();
+#if __ANDROID__ || __IOS__ || __SKIA__ || __WASM__ || __MACOS__
+		private BorderLayerRenderer _borderRenderer;
+#endif
+
 		private Size _lastSize;
 
 		private void Uno_InvalidateRender()
@@ -109,7 +112,9 @@ namespace Windows.UI.Xaml.Controls
 			}
 #endif
 
-			_borderRenderer.UpdateLayer(this, background, BackgroundSizing.InnerBorderEdge, borderThickness, borderBrush, cornerRadius, default);
+#if __ANDROID__ || __IOS__ || __SKIA__ || __WASM__ || __MACOS__
+			_borderRenderer?.UpdateLayer(this, background, BackgroundSizing.InnerBorderEdge, borderThickness, borderBrush, cornerRadius, default);
+#endif
 		}
 
 

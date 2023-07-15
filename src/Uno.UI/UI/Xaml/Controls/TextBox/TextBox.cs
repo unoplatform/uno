@@ -19,6 +19,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Uno.Foundation.Logging;
 using Uno.Disposables;
+using Uno.UI.Helpers;
 using Uno.UI.Xaml.Media;
 using Windows.ApplicationModel.DataTransfer;
 
@@ -55,8 +56,10 @@ namespace Windows.UI.Xaml.Controls
 		private ContentControl _contentElement;
 		private WeakReference<Button> _deleteButton;
 
-		private readonly SerialDisposable _selectionHighlightColorSubscription = new SerialDisposable();
-		private readonly SerialDisposable _foregroundBrushSubscription = new SerialDisposable();
+		private WeakBrushChangedProxy _selectionHighlightColorSubscription;
+		private WeakBrushChangedProxy _foregroundBrushSubscription;
+		private Action _selectionHighlightColorChanged;
+		private Action _foregroundBrushChanged;
 #pragma warning restore CS0067, CS0649
 
 		private ContentPresenter _header;
@@ -101,31 +104,24 @@ namespace Windows.UI.Xaml.Controls
 
 			DefaultStyleKey = typeof(TextBox);
 			SizeChanged += OnSizeChanged;
-
-			Loaded += TextBox_Loaded;
-			Unloaded += TextBox_Unloaded;
 		}
+
+		~TextBox()
+		{
+			_selectionHighlightColorSubscription?.Unsubscribe();
+			_foregroundBrushSubscription?.Unsubscribe();
+		}
+
+#if __ANDROID__
+		protected override void JavaFinalize()
+		{
+			_selectionHighlightColorSubscription?.Unsubscribe();
+			_foregroundBrushSubscription?.Unsubscribe();
+			base.JavaFinalize();
+		}
+#endif
 
 		internal bool IsUserModifying => _isInputModifyingText || _isInputClearingText;
-
-		private void TextBox_Loaded(object sender, RoutedEventArgs e)
-		{
-			// Brush subscriptions might have been removed during Unloaded
-			if (_foregroundBrushSubscription.Disposable is null)
-			{
-				OnForegroundColorChanged(null, Foreground);
-			}
-			if (_selectionHighlightColorSubscription.Disposable is null)
-			{
-				OnSelectionHighlightColorChanged(SelectionHighlightColor);
-			}
-		}
-
-		private void TextBox_Unloaded(object sender, RoutedEventArgs e)
-		{
-			_foregroundBrushSubscription.Disposable = null;
-			_selectionHighlightColorSubscription.Disposable = null;
-		}
 
 		private void OnSizeChanged(object sender, SizeChangedEventArgs args)
 		{
@@ -429,13 +425,9 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override void OnForegroundColorChanged(Brush oldValue, Brush newValue)
 		{
-			_foregroundBrushSubscription.Disposable = null;
-			if (newValue is SolidColorBrush brush)
-			{
-				OnForegroundColorChangedPartial(brush);
-				_foregroundBrushSubscription.Disposable =
-					Brush.AssignAndObserveBrush(brush, c => OnForegroundColorChangedPartial(brush));
-			}
+			_foregroundBrushSubscription ??= new();
+			_foregroundBrushChanged = () => OnForegroundColorChangedPartial(newValue);
+			_foregroundBrushSubscription.Subscribe(newValue, _foregroundBrushChanged);
 		}
 
 		partial void OnForegroundColorChangedPartial(Brush newValue);
@@ -483,16 +475,10 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnSelectionHighlightColorChanged(SolidColorBrush brush)
 		{
-			_selectionHighlightColorSubscription.Disposable = null;
-			if (brush is not null)
-			{
-				OnSelectionHighlightColorChangedPartial(brush);
-				_selectionHighlightColorSubscription.Disposable = Brush.AssignAndObserveBrush(brush, c => OnSelectionHighlightColorChangedPartial(brush));
-			}
-			else
-			{
-				OnSelectionHighlightColorChangedPartial(DefaultBrushes.SelectionHighlightColor);
-			}
+			_selectionHighlightColorSubscription ??= new();
+			brush ??= DefaultBrushes.SelectionHighlightColor;
+			_selectionHighlightColorChanged = () => OnSelectionHighlightColorChangedPartial(brush);
+			_selectionHighlightColorSubscription.Subscribe(brush, _selectionHighlightColorChanged);
 		}
 
 		partial void OnSelectionHighlightColorChangedPartial(SolidColorBrush brush);

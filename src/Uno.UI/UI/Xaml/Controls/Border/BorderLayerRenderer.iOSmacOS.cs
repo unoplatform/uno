@@ -9,6 +9,7 @@ using CoreAnimation;
 using CoreGraphics;
 using CoreImage;
 using Foundation;
+using Uno;
 using Uno.Disposables;
 using Uno.Extensions;
 using Uno.UI;
@@ -188,11 +189,6 @@ namespace Windows.UI.Xaml.Shapes
 
 					CreateGradientBrushLayers(area, backgroundArea, parent, sublayers, ref insertionIndex, caLayer, fillMask);
 				}
-				else if (background is SolidColorBrush scbBackground)
-				{
-					Brush.AssignAndObserveBrush(scbBackground, color => backgroundLayer.FillColor = color)
-						.DisposeWith(disposables);
-				}
 				else if (background is ImageBrush imgBackground)
 				{
 					var imgSrc = imgBackground.ImageSource;
@@ -225,10 +221,12 @@ namespace Windows.UI.Xaml.Shapes
 					acrylicBrush.Subscribe(owner, area, backgroundArea, parent, sublayers, ref insertionIndex, fillMask)
 						.DisposeWith(disposables);
 				}
-				else if (background is XamlCompositionBrushBase unsupportedCompositionBrush)
+				else if (background is XamlCompositionBrushBase or SolidColorBrush)
 				{
-					Brush.AssignAndObserveBrush(unsupportedCompositionBrush, color => backgroundLayer.FillColor = color)
-						.DisposeWith(disposables);
+					Action onInvalidateRender = () => backgroundLayer.FillColor = Brush.GetFallbackColor(background);
+					onInvalidateRender();
+					background.InvalidateRender += onInvalidateRender;
+					new DisposableAction(() => background.InvalidateRender -= onInvalidateRender).DisposeWith(disposables);
 				}
 				else
 				{
@@ -265,16 +263,27 @@ namespace Windows.UI.Xaml.Shapes
 				}
 				else if (borderBrush is SolidColorBrush scbBorder || borderBrush == null)
 				{
-					Brush.AssignAndObserveBrush(borderBrush, color =>
+					Action onInvalidateRender = () =>
 					{
+						CGColor color = Brush.GetFallbackColor(borderBrush);
 						outerLayer.StrokeColor = color;
 						outerLayer.FillColor = color;
 
 						// Make sure to hold native object ref until it has been retained by native itself
 						// https://github.com/unoplatform/uno/issues/10283
 						GC.KeepAlive(color);
-					})
-					.DisposeWith(disposables);
+					};
+
+					if (borderBrush is null)
+					{
+						onInvalidateRender();
+					}
+					else
+					{
+						onInvalidateRender();
+						borderBrush.InvalidateRender += onInvalidateRender;
+						new DisposableAction(() => borderBrush.InvalidateRender -= onInvalidateRender).DisposeWith(disposables);
+					}
 				}
 
 				parent.Mask = new CAShapeLayer()
@@ -317,9 +326,13 @@ namespace Windows.UI.Xaml.Shapes
 				{
 					CreateGradientBrushLayers(area, backgroundArea, parent, sublayers, ref insertionIndex, caLayer, fillMask: null);
 				}
-				else if (background is SolidColorBrush scbBackground)
+				else if (background is SolidColorBrush)
 				{
-					Brush.AssignAndObserveBrush(scbBackground, c => backgroundLayer.FillColor = c)
+					Action onInvalidateRender = () => backgroundLayer.FillColor = Brush.GetFallbackColor(background);
+
+					onInvalidateRender();
+					background.InvalidateRender += onInvalidateRender;
+					new DisposableAction(() => background.InvalidateRender -= onInvalidateRender)
 						.DisposeWith(disposables);
 
 					// This is required because changing the CornerRadius changes the background drawing
@@ -343,9 +356,12 @@ namespace Windows.UI.Xaml.Shapes
 				{
 					acrylicBrush.Subscribe(owner, area, backgroundArea, parent, sublayers, ref insertionIndex, fillMask: null);
 				}
-				else if (background is XamlCompositionBrushBase unsupportedCompositionBrush)
+				else if (background is XamlCompositionBrushBase)
 				{
-					Brush.AssignAndObserveBrush(unsupportedCompositionBrush, color => backgroundLayer.FillColor = color)
+					Action onInvalidateRender = () => backgroundLayer.FillColor = Brush.GetFallbackColor(background);
+					background.InvalidateRender += onInvalidateRender;
+					onInvalidateRender();
+					new DisposableAction(() => background.InvalidateRender -= onInvalidateRender)
 						.DisposeWith(disposables);
 
 					// This is required because changing the CornerRadius changes the background drawing
@@ -395,8 +411,10 @@ namespace Windows.UI.Xaml.Shapes
 					}
 					else if (borderBrush is SolidColorBrush scbBorder)
 					{
-						Brush.AssignAndObserveBrush(borderBrush, c => layer.FillColor = c)
-							.DisposeWith(disposables);
+						Action onInvalidateRender = () => layer.FillColor = Brush.GetFallbackColor(borderBrush);
+						onInvalidateRender();
+						scbBorder.InvalidateRender += onInvalidateRender;
+						new DisposableAction(() => scbBorder.InvalidateRender -= onInvalidateRender).DisposeWith(disposables);
 					}
 				}
 

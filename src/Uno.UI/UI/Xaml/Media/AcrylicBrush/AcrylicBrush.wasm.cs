@@ -13,49 +13,6 @@ namespace Windows.UI.Xaml.Media
 		private static bool? _isBackdropFilterSupported;
 
 		/// <summary>
-		/// Subscribes to AcrylicBrush for a given UI element and applies it.
-		/// </summary>
-		/// <param name="uiElement">UI element.</param>
-		/// <returns>Disposable.</returns>
-		internal IDisposable Subscribe(UIElement uiElement)
-		{
-			var compositeDisposable = new CompositeDisposable(6);
-
-			this.RegisterDisposablePropertyChangedCallback(
-				AlwaysUseFallbackProperty,
-				(_, __) => Apply(uiElement))
-					.DisposeWith(compositeDisposable);
-
-			this.RegisterDisposablePropertyChangedCallback(
-				FallbackColorProperty,
-				(_, __) => Apply(uiElement))
-					.DisposeWith(compositeDisposable);
-
-			this.RegisterDisposablePropertyChangedCallback(
-				TintColorProperty,
-				(_, __) => Apply(uiElement))
-					.DisposeWith(compositeDisposable);
-
-			this.RegisterDisposablePropertyChangedCallback(
-				TintOpacityProperty,
-				(_, __) => Apply(uiElement))
-					.DisposeWith(compositeDisposable);
-
-			this.RegisterDisposablePropertyChangedCallback(
-				OpacityProperty,
-				(_, __) => Apply(uiElement))
-					.DisposeWith(compositeDisposable);
-
-			// Apply the current state of the brush
-			Apply(uiElement);
-
-			Disposable.Create(() => ResetStyle(uiElement))
-				.DisposeWith(compositeDisposable);
-
-			return compositeDisposable;
-		}
-
-		/// <summary>
 		/// Applies the current state of Acrylic brush to a given UI element
 		/// </summary>
 		/// <param name="uiElement">UI element to set background brush to.</param>

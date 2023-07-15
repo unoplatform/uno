@@ -5,6 +5,7 @@ using Windows.UI.Composition;
 using Windows.UI;
 using Microsoft.UI.Xaml.Media;
 using System.Collections.Generic;
+using Uno;
 
 namespace Windows.UI.Xaml.Media
 {
@@ -12,95 +13,7 @@ namespace Windows.UI.Xaml.Media
 	{
 		internal delegate void BrushSetterHandler(CompositionBrush brush);
 
-		/// <summary>
-		/// Registers observers for property changes on the specified Brush.
-		/// Note that skia implementation of this method should only be used for property observervation.
-		/// </summary>
-		internal static IDisposable AssignAndObserveBrush(Brush brush, Action<Color> colorSetter, Action imageBrushCallback = null)
-		{
-			colorSetter(Colors.Transparent);
-
-			if (brush == null)
-			{
-				return null;
-			}
-
-			var disposables = new CompositeDisposable();
-
-			void UpdateColor(object sender, DependencyPropertyChangedEventArgs e) => colorSetter(Colors.Transparent);
-			void UpdateColorWhenAnyChanged(DependencyObject source, params DependencyProperty[] properties)
-			{
-				foreach (var property in properties)
-				{
-					source
-						.RegisterDisposablePropertyChangedCallback(property, UpdateColor)
-						.DisposeWith(disposables);
-				}
-			}
-
-			if (brush is SolidColorBrush colorBrush)
-			{
-				UpdateColorWhenAnyChanged(colorBrush, new[]
-				{
-					SolidColorBrush.ColorProperty,
-					SolidColorBrush.OpacityProperty
-				});
-			}
-			else if (brush is GradientBrush gradientBrush)
-			{
-				if (gradientBrush is LinearGradientBrush linearGradient)
-				{
-					UpdateColorWhenAnyChanged(linearGradient, new[]
-					{
-						LinearGradientBrush.StartPointProperty,
-						LinearGradientBrush.EndPointProperty,
-					});
-				}
-
-				UpdateColorWhenAnyChanged(gradientBrush, new[]
-				{
-					GradientBrush.GradientStopsProperty,
-					GradientBrush.MappingModeProperty,
-					GradientBrush.OpacityProperty,
-					GradientBrush.SpreadMethodProperty,
-					GradientBrush.RelativeTransformProperty,
-				});
-			}
-			else if (brush is RadialGradientBrush radialGradient)
-			{
-				UpdateColorWhenAnyChanged(radialGradient, new[]
-				{
-					RadialGradientBrush.CenterProperty,
-					RadialGradientBrush.FallbackColorProperty,
-					RadialGradientBrush.GradientOriginProperty,
-					RadialGradientBrush.InterpolationSpaceProperty,
-					RadialGradientBrush.MappingModeProperty,
-					RadialGradientBrush.OpacityProperty,
-					RadialGradientBrush.RadiusXProperty,
-					RadialGradientBrush.RadiusYProperty,
-					RadialGradientBrush.SpreadMethodProperty,
-					GradientBrush.RelativeTransformProperty,
-				});
-			}
-			else if (brush is ImageBrush imageBrush)
-			{
-				imageBrush
-					.Subscribe(_ => colorSetter(Colors.Transparent))
-					.DisposeWith(disposables);
-			}
-			else if (brush is AcrylicBrush acrylicBrush)
-			{
-				UpdateColorWhenAnyChanged(acrylicBrush, new[]
-				{
-					AcrylicBrush.FallbackColorProperty,
-					AcrylicBrush.OpacityProperty,
-				});
-			}
-
-			return disposables;
-		}
-
-		internal static IDisposable AssignAndObserveBrush(Brush brush, Compositor compositor, BrushSetterHandler brushSetter, Action imageBrushCallback = null)
+		internal static IDisposable AssignAndObserveBrush(Brush brush, Compositor compositor, BrushSetterHandler brushSetter)
 		{
 			if (brush == null)
 			{
@@ -230,14 +143,18 @@ namespace Windows.UI.Xaml.Media
 
 			var surfaceBrush = compositor.CreateSurfaceBrush();
 
-			brush.Subscribe(data =>
+			Action onInvalidateRender = () =>
 			{
-				surfaceBrush.Surface = data.CompositionSurface;
-			}).DisposeWith(disposables);
+				if (brush.ImageDataCache is { } data)
+				{
+					surfaceBrush.Surface = data.CompositionSurface;
+				}
+			};
 
+			onInvalidateRender();
+			brush.InvalidateRender += onInvalidateRender;
 			brushSetter(surfaceBrush);
-
-			return disposables;
+			return new DisposableAction(() => brush.InvalidateRender -= onInvalidateRender);
 		}
 
 		private static IDisposable AssignAndObserveRadialGradientBrush(RadialGradientBrush brush, Compositor compositor, BrushSetterHandler brushSetter)
