@@ -28,6 +28,7 @@ namespace Uno.UI.SourceGenerators.HotRestart
 				generator.Run();
 			}
 		}
+
 		private class Generator
 		{
 			private readonly GeneratorExecutionContext _context;
@@ -63,7 +64,7 @@ namespace Uno.UI.SourceGenerators.HotRestart
 				GenerateHotRestartDelegate(builder);
 				builder.AppendLineIndented("#endif");
 
-				_context.AddSource("HotRestartHelper", builder.ToString());
+				_context.AddSource("HotRestartHelper.g.cs", builder.ToString());
 			}
 
 			private bool IsGenerationEnabled()
