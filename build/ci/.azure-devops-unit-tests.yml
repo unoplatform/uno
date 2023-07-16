@@ -87,7 +87,6 @@ jobs:
       testRunTitle: $(Agent.JobName)
       testSelector: testAssemblies
       batchingBasedOnAgentsOption: customBatchSize
-      rerunFailedTests: 'true'
       customBatchSizeValue: 200 # test count / 10 (https://developercommunity.visualstudio.com/content/problem/891803/vstestconsoleadapter-fails-with-outofmemory.html?childToView=896206#comment-896206)
 
 
