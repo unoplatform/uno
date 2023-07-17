@@ -115,11 +115,10 @@ namespace Windows.UI.Xaml.Controls
 			DependencyProperty.Register(name: "IsEnabled", propertyType: typeof(bool), ownerType: typeof(Control),
 				typeMetadata: new FrameworkPropertyMetadata(
 					defaultValue: true
-					, options: FrameworkPropertyMetadataOptions.Inherits
+					, options: FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.KeepCoercedWhenEquals
 					, backingFieldUpdateCallback: OnIsEnabledBackingFieldUpdate
 					, coerceValueCallback: (instance, baseValue) => ((Control)instance).CoerceIsEnabled(baseValue)
 					, propertyChangedCallback: (instance, args) => ((Control)instance).OnIsEnabledChanged(args)
-					, keepCoercedWhenEquals: true
 				));
 		
 		private static void OnIsEnabledBackingFieldUpdate(object instance, object newValue)

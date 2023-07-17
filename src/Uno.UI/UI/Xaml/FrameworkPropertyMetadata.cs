@@ -98,18 +98,6 @@ namespace Windows.UI.Xaml
 		{
 			Options = options.WithDefault();
 		}
-		
-		internal FrameworkPropertyMetadata(
-			object defaultValue,
-			FrameworkPropertyMetadataOptions options,
-			PropertyChangedCallback propertyChangedCallback,
-			CoerceValueCallback coerceValueCallback,
-			BackingFieldUpdateCallback backingFieldUpdateCallback,
-			bool keepCoercedWhenEquals
-		) : base(defaultValue, propertyChangedCallback, coerceValueCallback, backingFieldUpdateCallback, keepCoercedWhenEquals)
-		{
-			Options = options.WithDefault();
-		}
 
 		internal FrameworkPropertyMetadata(
 			object defaultValue,
