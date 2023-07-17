@@ -8,8 +8,8 @@
     xmlns:valueConverters="using:UITests.ValueConverters"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-	<StackPanel >
-		<ScrollViewer>
+	<ScrollViewer>
+		<StackPanel>
 			<!--<MediaPlayerElement x:Name="playbaby"
 		                    Source="https://uno-website-assets.s3.amazonaws.com/wp-content/uploads/2023/07/05160531/DOCS.mp4"
 		                    AreTransportControlsEnabled="True"
@@ -19,12 +19,25 @@
 			<MediaPlayerElement x:Name="MediaPlayerElementSample1"
 									Source="https://uno-assets.platform.uno/tests/videos/Mobile_Development_in_VS_Code_with_Uno_Platform_orDotNetMAUI.mp4"
 									AreTransportControlsEnabled="True"
-									AutoPlay="True"
+									AutoPlay="False"
 									MaxWidth="720">
 				<MediaPlayerElement.TransportControls>
-					<MediaTransportControls IsCompact="True" />
+					<MediaTransportControls IsCompact="False" 
+											ShowAndHideAutomatically="False"/>
 				</MediaPlayerElement.TransportControls>
 			</MediaPlayerElement>
-		</ScrollViewer>
-	</StackPanel>
+
+			<MediaPlayerElement x:Name="MediaPlayerElementSample2"
+									Source="https://uno-assets.platform.uno/tests/videos/Mobile_Development_in_VS_Code_with_Uno_Platform_orDotNetMAUI.mp4"
+									AreTransportControlsEnabled="True"
+									AutoPlay="False"
+									MaxWidth="720">
+				<MediaPlayerElement.TransportControls>
+					<MediaTransportControls IsCompact="True" 
+											ShowAndHideAutomatically="False"/>
+				</MediaPlayerElement.TransportControls>
+			</MediaPlayerElement>
+
+		</StackPanel>
+	</ScrollViewer>
 </Page>
