@@ -21,7 +21,7 @@ public partial class HotRestartGenerator : ISourceGenerator
 	public void Execute(GeneratorExecutionContext context)
 	{
 		if (!DesignTimeHelper.IsDesignTime(context)
-			&& PlatformHelper.IsIOS(context)
+			&& PlatformHelper.IsIOSMobile(context)
 			&& PlatformHelper.IsUnoHead(context))
 		{
 			var generator = new Generator(context);

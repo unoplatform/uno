@@ -32,7 +32,6 @@ namespace Uno.UI.SourceGenerators.Helpers
 		public static bool IsAndroid(GeneratorExecutionContext context)
 			=> context.GetMSBuildPropertyValue("AndroidApplication")?.Equals("true", StringComparison.OrdinalIgnoreCase) ?? false;
 
-<<<<<<< HEAD
 		public static bool IsXamariniOS(GeneratorExecutionContext context)
 			=> context.GetMSBuildPropertyValue("ProjectTypeGuidsProperty")?.Equals("{FEACFBD2-3405-455C-9665-78FE426C6842},{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}", StringComparison.OrdinalIgnoreCase) ?? false;
 
@@ -41,11 +40,10 @@ namespace Uno.UI.SourceGenerators.Helpers
 
 		public static bool IsExe(GeneratorExecutionContext context)
 			=> context.GetMSBuildPropertyValue("OutputType")?.Equals("Exe", StringComparison.OrdinalIgnoreCase) ?? false;
-=======
-		public static bool IsIOS(GeneratorExecutionContext context)
+
+		public static bool IsIOSMobile(GeneratorExecutionContext context)
 			=> context.GetMSBuildPropertyValue("RuntimeIdentifier") is { Length: > 0 } rid
 				&& rid.StartsWith("ios", StringComparison.OrdinalIgnoreCase);
->>>>>>> e69d5071e2 (feat(hotrestart): [iOS] Add support for VS 2022 hot restart)
 
 		public static bool IsUnoHead(GeneratorExecutionContext context)
 			=> context.GetMSBuildPropertyValue("IsUnoHead")?.Equals("true", StringComparison.OrdinalIgnoreCase) ?? false;
