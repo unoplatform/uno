@@ -6,7 +6,7 @@
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:ios="http://uno.ui/ios"
 	xmlns:android="http://uno.ui/android"
-	mc:Ignorable="d android"
+	mc:Ignorable="d ios android"
 	d:DesignHeight="300"
 	d:DesignWidth="400">
 
