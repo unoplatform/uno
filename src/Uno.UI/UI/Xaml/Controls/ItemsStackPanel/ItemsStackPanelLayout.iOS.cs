@@ -1,4 +1,5 @@
-﻿using Uno.Extensions;
+﻿//#define USE_CUSTOM_LAYOUT_ATTRIBUTES (cf. VirtualizingPanelLayout.iOS.cs for more info)
+using Uno.Extensions;
 using Windows.UI.Xaml;
 using System;
 using System.Collections.Generic;
@@ -14,6 +15,12 @@ using Foundation;
 using UIKit;
 using CoreGraphics;
 using LayoutInfo = System.Collections.Generic.Dictionary<Foundation.NSIndexPath, UIKit.UICollectionViewLayoutAttributes>;
+
+#if USE_CUSTOM_LAYOUT_ATTRIBUTES
+using _LayoutAttributes = Windows.UI.Xaml.Controls.UnoUICollectionViewLayoutAttributes;
+#else
+using _LayoutAttributes = UIKit.UICollectionViewLayoutAttributes;
+#endif
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -60,7 +67,7 @@ namespace Windows.UI.Xaml.Controls
 			return measuredBreadth;
 		}
 
-		private protected override void UpdateLayoutAttributesForItem(UICollectionViewLayoutAttributes updatingItem, bool shouldRecurse)
+		private protected override void UpdateLayoutAttributesForItem(_LayoutAttributes updatingItem, bool shouldRecurse)
 		{
 			while (updatingItem != null)
 			{
@@ -69,12 +76,12 @@ namespace Windows.UI.Xaml.Controls
 				var nextIndexInGroup = GetNSIndexPathFromRowSection(currentIndex.Row + 1, currentIndex.Section);
 
 				// Get next item in current group
-				var elementToAdjust = LayoutAttributesForItem(nextIndexInGroup);
+				var elementToAdjust = (_LayoutAttributes)LayoutAttributesForItem(nextIndexInGroup);
 
-				if (elementToAdjust == null)
+				if (elementToAdjust is null)
 				{
 					// No more items in current group, get group header of next group
-					elementToAdjust = LayoutAttributesForSupplementaryView(
+					elementToAdjust = (_LayoutAttributes)LayoutAttributesForSupplementaryView(
 						NativeListViewBase.ListViewSectionHeaderElementKindNS,
 						GetNSIndexPathFromRowSection(0, currentIndex.Section + 1));
 
@@ -82,15 +89,15 @@ namespace Windows.UI.Xaml.Controls
 					_sectionEnd[currentIndex.Section] = GetExtentEnd(updatingItem.Frame);
 				}
 
-				if (elementToAdjust == null)
+				if (elementToAdjust is null)
 				{
 					// No more groups in source, get footer
-					elementToAdjust = LayoutAttributesForSupplementaryView(
+					elementToAdjust = (_LayoutAttributes)LayoutAttributesForSupplementaryView(
 						NativeListViewBase.ListViewFooterElementKindNS,
 						GetNSIndexPathFromRowSection(0, 0));
 				}
 
-				if (elementToAdjust == null)
+				if (elementToAdjust is null)
 				{
 					break;
 				}
