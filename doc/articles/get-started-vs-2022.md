@@ -96,7 +96,9 @@ To create an Uno Platform app:
 
       ![Visual Studio - "Debug toolbar" drop-down selecting the "net7.0-ios" framework](Assets/quick-start/net7-ios-debug.png)
       
-    - Select an active device
+    - Select:
+      - An active device, if your IDE is connected to a macOS Host
+      - A [local device using Hot Restart](https://learn.microsoft.com/en-us/xamarin/xamarin-forms/deploy-test/hot-restart), to debug your application without connecting to a mac
 1. To debug the **Android** platform:
     - Right click on the `MyApp.Mobile` project, select **Set as startup project**
     - In the **Debug toolbar** drop down, select framework `net7.0-android`
