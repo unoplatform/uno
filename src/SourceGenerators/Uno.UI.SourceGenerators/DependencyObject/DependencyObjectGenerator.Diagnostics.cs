@@ -9,7 +9,7 @@ public partial class DependencyObjectGenerator
 {
 	private static readonly DiagnosticDescriptor _descriptor = new(
 #pragma warning disable RS2008 // Enable analyzer release tracking
-		id: "Uno0004",
+		id: "Uno0003",
 #pragma warning restore RS2008 // Enable analyzer release tracking
 		title: "Native view shouldn't implement 'DependencyObject'",
 		messageFormat: "'{0}' shouldn't implement 'DependencyObject'. Inherit 'FrameworkElement' instead.",

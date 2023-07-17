@@ -78,11 +78,7 @@ public partial class HotRestartGenerator : ISourceGenerator
 				{
 					public override bool FinishedLaunching(global::UIKit.UIApplication uiApplication, global::Foundation.NSDictionary launchOptions)
 					{
-						#if HAS_UNO_WINUI
-						Microsoft.UI.Xaml.Application.Start(_ => new {{appType}}());
-						#else
-						Windows.UI.Xaml.Application.Start(_ => new {{appType}}());
-						#endif
+						global::Windows.UI.Xaml.Application.Start(_ => new {{appType}}());
 						return base.FinishedLaunching(uiApplication, launchOptions);
 					}
 				}
