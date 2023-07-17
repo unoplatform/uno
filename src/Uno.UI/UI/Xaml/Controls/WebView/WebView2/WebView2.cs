@@ -1,12 +1,12 @@
 ﻿#nullable enable
 
-using Windows.Foundation;
-using Windows.UI.Xaml.Controls;
 using System;
 using System.Threading.Tasks;
-using Uno;
 using Microsoft.Web.WebView2.Core;
 using Uno.UI.Xaml.Controls;
+using Windows.Foundation;
+using Windows.UI.Core;
+using Windows.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -43,6 +43,8 @@ public partial class WebView2 : Control, IWebView
 	bool IWebView.IsLoaded => IsLoaded;
 
 	bool IWebView.SwitchSourceBeforeNavigating => false; // WebView2 switches source only when navigation completes.
+
+	CoreDispatcher IWebView.Dispatcher => Dispatcher;
 
 	protected override void OnApplyTemplate() => CoreWebView2.OnOwnerApplyTemplate();
 
