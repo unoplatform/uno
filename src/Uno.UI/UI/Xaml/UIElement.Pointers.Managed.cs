@@ -60,10 +60,13 @@ namespace Windows.UI.Xaml
 		/// <returns></returns>
 		private object CoerceHitTestVisibility(object baseValue)
 		{
-			var parentValue = ((IDependencyObjectStoreProvider)this).Store.GetPropertyDetails(HitTestVisibilityProperty).GetValue(DependencyPropertyValuePrecedences.Inheritance);
+			// The HitTestVisibilityProperty is never set directly. This means that baseValue is always the result of the parent's CoerceHitTestVisibility.
+			var parentValue = baseValue == DependencyProperty.UnsetValue 
+				? HitTestability.Collapsed
+				: (HitTestability)baseValue;
 
 			// If the parent is collapsed, we should be collapsed as well. This takes priority over everything else, even if we would be visible otherwise.
-			if (parentValue != DependencyProperty.UnsetValue && (HitTestability)parentValue! == HitTestability.Collapsed)
+			if (parentValue == HitTestability.Collapsed)
 			{
 				return HitTestability.Collapsed;
 			}
