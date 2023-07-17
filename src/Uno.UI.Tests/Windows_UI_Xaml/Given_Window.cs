@@ -8,6 +8,12 @@ namespace Uno.UI.Tests.Windows_UI_Xaml;
 [TestClass]
 public class Given_Window
 {
+	// New_Window_Becomes_Current expects the created Window to be the first window set.
+	// So for it to pass reliably, we need to cleanup current window so that
+	// we guarantee that the new window becomes "Current".
+	[TestCleanup]
+	public void Cleanup() => Window.CleanupCurrentForTestsOnly();
+
 	[TestMethod]
 	public void New_Window_Becomes_Current()
 	{
