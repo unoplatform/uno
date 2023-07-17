@@ -240,14 +240,11 @@ namespace Windows.UI.Xaml.Controls
 				typeof(TextBox),
 				new FrameworkPropertyMetadata(
 					defaultValue: string.Empty,
-					options: FrameworkPropertyMetadataOptions.None,
+					options: FrameworkPropertyMetadataOptions.CoerceWhenUnchanged,
 					propertyChangedCallback: (s, e) => ((TextBox)s)?.OnTextChanged(e),
 					coerceValueCallback: (d, v) => ((TextBox)d)?.CoerceText(v),
 					defaultUpdateSourceTrigger: UpdateSourceTrigger.Explicit
 				)
-				{
-					CoerceWhenUnchanged = false
-				}
 			);
 
 		protected virtual void OnTextChanged(DependencyPropertyChangedEventArgs e)
