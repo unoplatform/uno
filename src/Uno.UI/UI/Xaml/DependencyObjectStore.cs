@@ -639,7 +639,7 @@ namespace Windows.UI.Xaml
 			}
 
 			if (Equals(previousValue, baseValue) &&
-				propertyDetails.Metadata is FrameworkPropertyMetadata fpmd && (fpmd.Options & FrameworkPropertyMetadataOptions.CoerceWhenUnchanged) == 0)
+				propertyDetails.Metadata is FrameworkPropertyMetadata fpmd && !fpmd.Options.HasFlag(FrameworkPropertyMetadataOptions.CoerceWhenUnchanged))
 			{
 				// Value hasn't changed, don't coerce.
 				return;
@@ -656,7 +656,7 @@ namespace Windows.UI.Xaml
 				SetValueInternal(previousValue, DependencyPropertyValuePrecedences.Coercion, propertyDetails);
 			}
 			else if (!Equals(coercedValue, baseValue) ||
-				(propertyDetails.Metadata is FrameworkPropertyMetadata fpmd2 && (fpmd2.Options & FrameworkPropertyMetadataOptions.KeepCoercedWhenEquals) != 0))
+				(propertyDetails.Metadata is FrameworkPropertyMetadata fpmd2 && fpmd2.Options.HasFlag(FrameworkPropertyMetadataOptions.KeepCoercedWhenEquals)))
 			{
 				// The base value and the coerced value are different, which means that coercion must be applied.
 				// Set value using DependencyPropertyValuePrecedences.Coercion, which has the highest precedence.
