@@ -102,27 +102,23 @@ namespace Windows.UI.Xaml.Controls
 				// Invoke focused
 				if (focusedContainer != null)
 				{
-					OnItemClicked(focusedContainer);
+					OnItemClicked(focusedContainer, args.KeyboardModifiers);
 				}
 			}
 			else if (args.Key == VirtualKey.Down)
 			{
-				return TryMoveKeyboardFocusAndSelection(+1, focusedContainer);
+				return TryMoveKeyboardFocusAndSelection(+1, focusedContainer, args.KeyboardModifiers);
 			}
 			else if (args.Key == VirtualKey.Up)
 			{
-				return TryMoveKeyboardFocusAndSelection(-1, focusedContainer);
+				return TryMoveKeyboardFocusAndSelection(-1, focusedContainer, args.KeyboardModifiers);
 			}
 			return false;
 		}
 
-		private bool TryMoveKeyboardFocusAndSelection(int offset, SelectorItem focusedContainer)
+		private bool TryMoveKeyboardFocusAndSelection(int offset, SelectorItem focusedContainer, VirtualKeyModifiers modifiers)
 		{
-			var focusedIndex = SelectedIndex;
-			if (focusedContainer != null)
-			{
-				focusedIndex = IndexFromContainer(focusedContainer);
-			}
+			var focusedIndex = focusedContainer != null ? IndexFromContainer(focusedContainer) : GetFocusedItemIndex();
 
 			var index = focusedIndex + offset;
 			if (!IsIndexValid(index))
@@ -132,7 +128,8 @@ namespace Windows.UI.Xaml.Controls
 
 			// If selection mode is single, moving focus also selects the item
 			if (SelectionMode == ListViewSelectionMode.Single &&
-				SingleSelectionFollowsFocus)
+				SingleSelectionFollowsFocus &&
+				(modifiers & VirtualKeyModifiers.Control) == 0)
 			{
 				SelectedIndex = index;
 			}
