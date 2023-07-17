@@ -16,6 +16,8 @@ using Uno.UI.Xaml;
 using Uno.UI.Xaml.Input;
 using Windows.Foundation;
 using Windows.UI.Xaml.Input;
+using Uno.UI.Xaml.Core;
+using Windows.UI.Xaml.Controls.Primitives;
 
 #if __IOS__
 using UIKit;
@@ -737,15 +739,20 @@ namespace Windows.UI.Xaml
 				args.CanBubbleNatively = false;
 			}
 
-			var parent = this.GetParent() as UIElement;
+			UIElement parent = null;
+			if (this is not PopupPanel)
+			{
+				parent = this.GetParent() as UIElement;
+
 #if __IOS__ || __ANDROID__
-			// This is for safety (legacy support) and should be removed.
-			// A common issue is the managed parent being cleared before unload event raised.
-			parent ??= this.FindFirstParent<UIElement>();
+				// This is for safety (legacy support) and should be removed.
+				// A common issue is the managed parent being cleared before unload event raised.
+				parent ??= this.FindFirstParent<UIElement>();
 #endif
+			}
 
 			// [11] A parent is defined?
-			if (parent == null)
+			if (parent is null)
 			{
 				return isHandled; // [12] processing finished
 			}

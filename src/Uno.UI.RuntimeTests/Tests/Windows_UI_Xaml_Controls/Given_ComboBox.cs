@@ -13,6 +13,10 @@ using Windows.UI.Xaml.Media;
 using static Private.Infrastructure.TestServices;
 using System.Collections.ObjectModel;
 using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Media.Imaging;
+using Uno.UI.RuntimeTests.Tests.Uno_UI_Xaml_Core;
+using Windows.UI.Input.Preview.Injection;
+using Uno.Extensions;
 
 
 #if NETFX_CORE
@@ -760,6 +764,101 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreEqual(3, test[0].SelectedNumber);
 			Assert.AreEqual(3, comboBox.SelectedItem);
+		}
+#endif
+
+#if HAS_UNO
+		[TestMethod]
+		[RequiresFullWindow]
+		[RunsOnUIThread]
+#if !__SKIA__
+		[Ignore("Pointer injection supported only on skia for now.")]
+#endif
+		public async Task When_Mouse_Opened_And_Closed()
+		{
+			// Create a comboBox with some sample items
+			ComboBox comboBox = new ComboBox();
+			for (int i = 0; i < 10; i++)
+			{
+				comboBox.Items.Add(i);
+			}
+			var stackPanel = new StackPanel()
+			{
+				Orientation = Orientation.Horizontal,
+				Spacing = 10,
+				Padding = new Thickness(10),
+				VerticalAlignment = VerticalAlignment.Top
+			};
+
+			var text = new TextBlock() { Text = "Click me", VerticalAlignment = VerticalAlignment.Top };
+			stackPanel.Children.Add(comboBox);
+			stackPanel.Children.Add(text);
+
+			// Set the comboBox as Window content
+			WindowHelper.WindowContent = stackPanel;
+
+			// Wait for it to load
+			await WindowHelper.WaitForLoaded(comboBox);
+
+			comboBox.SelectedItem = 5;
+			await WindowHelper.WaitForIdle();
+
+			// Take a screenshot of the comboBox before opening
+			var screenshotBefore = await TakeScreenshot(stackPanel);
+
+			// Use input injection to tap the comboBox and open the popup
+			var comboBoxCenter = comboBox.GetAbsoluteBounds().GetCenter();
+
+			using var finger = InputInjector.TryCreate().GetFinger();
+			finger.MoveTo(comboBoxCenter);
+			finger.Press(comboBoxCenter);
+			await WindowHelper.WaitForIdle();
+			finger.Release();
+
+			// Wait for the popup to load and render
+			await WindowHelper.WaitFor(() => VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).Count > 0);
+			await WindowHelper.WaitForIdle();
+
+			// Take a screenshot of the UI after opening the comboBox
+			var screenshotOpened = await TakeScreenshot(stackPanel);
+
+			// Verify that the UI changed
+			await ImageAssert.AreNotEqualAsync(screenshotBefore, screenshotOpened);
+
+			var textCenter = text.GetAbsoluteBounds().GetCenter();
+			finger.Press(textCenter.X, textCenter.Y + 100);
+			finger.Release();
+
+			await WindowHelper.WaitForIdle();
+
+			// Wait for the popup to close and the UI to stabilize
+			// Take a screenshot of the UI after closing the comboBox
+			var screenshotAfter = await TakeScreenshot(stackPanel);
+
+			// Verify that the UI looks the same as at the beginning
+			await ImageAssert.AreEqualAsync(screenshotBefore, screenshotAfter);
+		}
+
+		[TestMethod]
+		[RequiresFullWindow]
+		[RunsOnUIThread]
+#if !__SKIA__
+		[Ignore("Pointer injection supported only on skia for now.")]
+#endif
+		public async Task When_Mouse_Opened_And_Closed_Fluent()
+		{
+			using (StyleHelper.UseFluentStyles())
+			{
+				await When_Mouse_Opened_And_Closed();
+			}
+		}
+
+		private async Task<RawBitmap> TakeScreenshot(FrameworkElement SUT)
+		{
+			var renderer = new RenderTargetBitmap();
+			await renderer.RenderAsync(SUT);
+			var result = await RawBitmap.From(renderer, SUT);
+			return result;
 		}
 #endif
 
