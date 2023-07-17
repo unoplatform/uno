@@ -13,6 +13,7 @@ using Uno.Disposables;
 using Windows.UI.Xaml.Data;
 using Uno.UI.DataBinding;
 using Windows.Foundation.Collections;
+using Windows.System;
 using Uno.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 
@@ -592,9 +593,11 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			}
 		}
 
-		internal void OnItemClicked(SelectorItem selectorItem) => OnItemClicked(IndexFromContainer(selectorItem));
+		internal void OnItemClicked(SelectorItem selectorItem, VirtualKeyModifiers modifiers) => OnItemClicked(IndexFromContainer(selectorItem), modifiers);
 
-		internal virtual void OnItemClicked(int clickedIndex)
+		internal virtual void OnItemClicked(int clickedIndex) => OnItemClicked(clickedIndex, VirtualKeyModifiers.None);
+
+		internal virtual void OnItemClicked(int clickedIndex, VirtualKeyModifiers modifiers)
 		{
 			if (ItemsSource is ICollectionView collectionView)
 			{

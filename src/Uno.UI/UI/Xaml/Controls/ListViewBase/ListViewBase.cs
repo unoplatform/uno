@@ -473,7 +473,7 @@ namespace Windows.UI.Xaml.Controls
 
 
 
-		internal override void OnItemClicked(int clickedIndex)
+		internal override void OnItemClicked(int clickedIndex, VirtualKeyModifiers modifiers)
 		{
 			// Note: don't call base.OnItemClicked(), because we override the default single-selection-only handling
 
@@ -501,7 +501,16 @@ namespace Windows.UI.Xaml.Controls
 						// The CollectionView may have intercepted the change
 						clickedIndex = collectionView.CurrentPosition;
 					}
-					SelectedIndex = clickedIndex;
+
+					if ((modifiers & VirtualKeyModifiers.Control) != 0 && clickedIndex == SelectedIndex)
+					{
+						SelectedIndex = -1;
+					}
+					else
+					{
+						SelectedIndex = clickedIndex;
+					}
+
 					break;
 				case ListViewSelectionMode.Multiple:
 				case ListViewSelectionMode.Extended:
