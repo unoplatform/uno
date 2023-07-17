@@ -19,10 +19,17 @@ using static Windows.UI.Input.PointerUpdateKind;
 using Device = Gtk.Device;
 using Exception = System.Exception;
 using Windows.UI.Xaml;
+<<<<<<< HEAD:src/Uno.UI.Runtime.Skia.Gtk/GtkCoreWindowExtension.cs
 using Uno.UI.Xaml.Core;
 using Windows.Foundation;
 using Uno.UI.XamlHost.Skia.Gtk.Hosting;
 using Atk;
+=======
+using Windows.System;
+using Uno.UI.Hosting;
+using Uno.UI.Runtime.Skia.GTK.Hosting;
+using Uno.UI.Runtime.Skia.GTK;
+>>>>>>> ff40a66573 (chore: add keyboard modifier support for skia runtime):src/Uno.UI.Runtime.Skia.Gtk/Extensions/GtkCoreWindowExtension.cs
 
 namespace Uno.UI.Runtime.Skia
 {
@@ -132,6 +139,24 @@ namespace Uno.UI.Runtime.Skia
 			}
 
 			return new(0, 0);
+		}
+
+		public static VirtualKeyModifiers GetKeyModifiers(Gdk.ModifierType state)
+		{
+			var modifiers = VirtualKeyModifiers.None;
+			if (state.HasFlag(Gdk.ModifierType.ShiftMask))
+			{
+				modifiers |= VirtualKeyModifiers.Shift;
+			}
+			if (state.HasFlag(Gdk.ModifierType.ControlMask))
+			{
+				modifiers |= VirtualKeyModifiers.Control;
+			}
+			if (state.HasFlag(Gdk.ModifierType.Mod1Mask))
+			{
+				modifiers |= VirtualKeyModifiers.Menu;
+			}
+			return modifiers;
 		}
 	}
 }

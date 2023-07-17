@@ -1,7 +1,11 @@
 ﻿#nullable enable
 
 using System;
+<<<<<<< HEAD:src/Uno.UI.Runtime.Skia.Wpf/WpfCoreWindowExtension.Keyboard.cs
 using Windows.Devices.Input;
+=======
+using System.Windows.Input;
+>>>>>>> ff40a66573 (chore: add keyboard modifier support for skia runtime):src/Uno.UI.Runtime.Skia.Wpf/Extensions/WpfCoreWindowExtension.Keyboard.cs
 using Windows.UI.Core;
 using Uno.Extensions;
 using MouseEventArgs = System.Windows.Input.MouseEventArgs;
@@ -42,7 +46,7 @@ namespace Uno.UI.Skia.Platform
 						{
 							ScanCode = (uint)args.SystemKey,
 							RepeatCount = 1,
-						}));
+						}), GetKeyModifiers(args.KeyboardDevice.Modifiers));
 			}
 			catch (Exception e)
 			{
@@ -69,12 +73,30 @@ namespace Uno.UI.Skia.Platform
 						{
 							ScanCode = (uint)args.SystemKey,
 							RepeatCount = 1,
-						}));
+						}), GetKeyModifiers(args.KeyboardDevice.Modifiers));
 			}
 			catch (Exception e)
 			{
 				Windows.UI.Xaml.Application.Current.RaiseRecoverableUnhandledException(e);
 			}
+		}
+		
+		private static VirtualKeyModifiers GetKeyModifiers(ModifierKeys modifierKeys)
+		{
+			var modifiers = VirtualKeyModifiers.None;
+			if (modifierKeys.HasFlag(ModifierKeys.Shift))
+			{
+				modifiers |= VirtualKeyModifiers.Shift;
+			}
+			if (modifierKeys.HasFlag(ModifierKeys.Control))
+			{
+				modifiers |= VirtualKeyModifiers.Control;
+			}
+			if (modifierKeys.HasFlag(ModifierKeys.Windows))
+			{
+				modifiers |= VirtualKeyModifiers.Windows;
+			}
+			return modifiers;
 		}
 
 		private VirtualKey ConvertKey(System.Windows.Input.Key key)
