@@ -146,7 +146,11 @@ namespace Windows.UI.Xaml
 
 		/* ** */
 		internal /* ** */  static RoutedEvent DropCompletedEvent { get; } = new RoutedEvent(RoutedEventFlag.DropCompleted);
+#if __WASM__
+		public static RoutedEvent PreviewKeyDownEvent { get; } = new RoutedEvent(RoutedEventFlag.PreviewKeyDown);
 
+		public static RoutedEvent PreviewKeyUpEvent { get; } = new RoutedEvent(RoutedEventFlag.PreviewKeyUp);
+#endif
 		public static RoutedEvent KeyDownEvent { get; } = new RoutedEvent(RoutedEventFlag.KeyDown);
 
 		public static RoutedEvent KeyUpEvent { get; } = new RoutedEvent(RoutedEventFlag.KeyUp);
@@ -434,6 +438,20 @@ namespace Windows.UI.Xaml
 			remove => RemoveHandler(DropCompletedEvent, value);
 		}
 
+#if __WASM__
+		public event KeyEventHandler PreviewKeyDown
+		{
+			add => AddHandler(PreviewKeyDownEvent, value, false);
+			remove => RemoveHandler(PreviewKeyDownEvent, value);
+		}
+
+		public event KeyEventHandler PreviewKeyUp
+		{
+			add => AddHandler(PreviewKeyUpEvent, value, false);
+			remove => RemoveHandler(PreviewKeyUpEvent, value);
+		}
+#endif
+
 #if __MACOS__
 		public new event KeyEventHandler KeyDown
 #else
@@ -699,7 +717,7 @@ namespace Windows.UI.Xaml
 				}
 			}
 
-			if (ctx.Mode.HasFlag(BubblingMode.IgnoreParents) || ctx.Root == this)
+			if (routedEvent.IsTunnelingEvent || ctx.Mode.HasFlag(BubblingMode.IgnoreParents) || ctx.Root == this)
 			{
 				return isHandled;
 			}
@@ -745,6 +763,14 @@ namespace Windows.UI.Xaml
 					KeyboardStateTracker.OnKeyDown(keyArgs.OriginalKey);
 				}
 				else if (routedEvent == KeyUpEvent)
+				{
+					KeyboardStateTracker.OnKeyUp(keyArgs.OriginalKey);
+				}
+				else if (routedEvent == PreviewKeyDownEvent)
+				{
+					KeyboardStateTracker.OnKeyDown(keyArgs.OriginalKey);
+				}
+				else if (routedEvent == PreviewKeyUpEvent)
 				{
 					KeyboardStateTracker.OnKeyUp(keyArgs.OriginalKey);
 				}
