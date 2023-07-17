@@ -1,4 +1,4 @@
-﻿<Project Sdk="MSBuild.Sdk.Extras">
+<Project Sdk="MSBuild.Sdk.Extras">
 	<PropertyGroup>
 		<TargetFrameworks>net7.0-windows</TargetFrameworks>
 		<TargetFrameworks Condition="'$(UnoDisableNet8)'!='true'">$(TargetFrameworks);net8.0-windows</TargetFrameworks>
@@ -40,7 +40,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="MSTest.TestFramework" Version="2.1.2" />
+		<PackageReference Include="MSTest.TestFramework" Version="3.1.1" />
 		<PackageReference Include="SkiaSharp.Views.WPF" Version="2.88.3" />
 	</ItemGroup>
 
