@@ -42,8 +42,6 @@ namespace Windows.UI.Xaml.Controls
 		private View _templatedRoot;
 		private bool _updateTemplate;
 		private bool _suppressIsEnabled;
-		private bool _IsEnabledPropertyBackingFieldSet;
-		private bool _IsEnabledPropertyBackingField;
 
 		private void InitializeControl()
 		{
@@ -111,33 +109,8 @@ namespace Windows.UI.Xaml.Controls
 
 		public event DependencyPropertyChangedEventHandler IsEnabledChanged;
 
-		public static DependencyProperty IsEnabledProperty { get; } = 
-			DependencyProperty.Register(name: "IsEnabled", propertyType: typeof(bool), ownerType: typeof(Control),
-				typeMetadata: new FrameworkPropertyMetadata(
-					defaultValue: true
-					, options: FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.KeepCoercedWhenEquals
-					, backingFieldUpdateCallback: OnIsEnabledBackingFieldUpdate
-					, coerceValueCallback: (instance, baseValue) => ((Control)instance).CoerceIsEnabled(baseValue)
-					, propertyChangedCallback: (instance, args) => ((Control)instance).OnIsEnabledChanged(args)
-				));
-		
-		private static void OnIsEnabledBackingFieldUpdate(object instance, object newValue)
-		{
-			var typedInstance = instance as Control;
-			typedInstance!._IsEnabledPropertyBackingField = (bool)newValue;
-			typedInstance!._IsEnabledPropertyBackingFieldSet = true;
-		}
-		
-		private bool GetIsEnabledValue()
-		{
-			if (!_IsEnabledPropertyBackingFieldSet)
-			{
-				_IsEnabledPropertyBackingField = (bool)GetValue(IsEnabledProperty);
-				_IsEnabledPropertyBackingFieldSet = true;
-			}
-			return _IsEnabledPropertyBackingField;
-		}
-		private void SetIsEnabledValue(bool value) => SetValue(IsEnabledProperty, value);
+		[GeneratedDependencyProperty(DefaultValue = true, ChangedCallback = true, CoerceCallback = true, Options = FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.KeepCoercedWhenEquals)]
+		public static DependencyProperty IsEnabledProperty { get; } = CreateIsEnabledProperty();
 
 		public bool IsEnabled
 		{
