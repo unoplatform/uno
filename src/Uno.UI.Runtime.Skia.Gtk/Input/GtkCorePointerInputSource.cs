@@ -8,7 +8,6 @@ using Gdk;
 using Gtk;
 using Uno.UI.Runtime.Skia.GTK.Extensions;
 using Windows.Devices.Input;
-using Windows.System;
 using Windows.UI.Core;
 using Windows.UI.Input;
 using Uno.Foundation.Logging;
@@ -380,7 +379,7 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 		var pointerDevice = PointerDevice.For(devType);
 		var rawPosition = new Windows.Foundation.Point(rootX, rootY);
 		var position = new Windows.Foundation.Point(x, y);
-		var modifiers = GetKeyModifiers(state);
+		var modifiers = GtkCoreWindowExtension.GetKeyModifiers(state);
 		var properties = new PointerPointProperties();
 
 		switch (evtType)
@@ -484,24 +483,6 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 		UseDevice(pointerPoint, dev);
 
 		return new PointerEventArgs(pointerPoint, modifiers);
-	}
-
-	private static VirtualKeyModifiers GetKeyModifiers(Gdk.ModifierType state)
-	{
-		var modifiers = VirtualKeyModifiers.None;
-		if (state.HasFlag(Gdk.ModifierType.ShiftMask))
-		{
-			modifiers |= VirtualKeyModifiers.Shift;
-		}
-		if (state.HasFlag(Gdk.ModifierType.ControlMask))
-		{
-			modifiers |= VirtualKeyModifiers.Control;
-		}
-		if (state.HasFlag(Gdk.ModifierType.Mod1Mask))
-		{
-			modifiers |= VirtualKeyModifiers.Menu;
-		}
-		return modifiers;
 	}
 
 	private static PointerDeviceType GetDeviceType(Gdk.Device sourceDevice)

@@ -95,11 +95,12 @@ namespace Uno.UI.Runtime.Skia
 			RaiseKeyEvent(_owner.RaiseNativeKeyUpReceived, args);
 		}
 
-		private void RaiseKeyEvent(Action<KeyEventArgs> raisePointerEvent, KeyEventArgs args)
+		private void RaiseKeyEvent(Action<KeyEventArgs, VirtualKeyModifiers> raisePointerEvent, KeyEventArgs args)
 		{
+			var modifiers = GetCurrentModifiersState();
 			_ = _owner.Dispatcher.RunAsync(
 				CoreDispatcherPriority.High,
-				() => raisePointerEvent(args));
+				() => raisePointerEvent(args, modifiers));
 		}
 
 		private VirtualKeyModifiers GetCurrentModifiersState()

@@ -14,6 +14,7 @@ using Uno.UI.DataBinding;
 using Uno.UI.Extensions;
 using Windows.UI.Core;
 using Windows.Foundation;
+using Windows.System;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
@@ -31,15 +32,17 @@ namespace Windows.UI.Xaml
 				Window.Current.CoreWindow.NativeKeyUpReceived += InitiateKeyUpBubblingFlow;
 			}
 
-			private void InitiateKeyDownBubblingFlow(CoreWindow sender, KeyEventArgs args)
+			private void InitiateKeyDownBubblingFlow(CoreWindow sender, (KeyEventArgs, VirtualKeyModifiers) KeyEventPair)
 			{
+				var (args, modifiers) = KeyEventPair;
 				var originalSource = FocusManager.GetFocusedElement() as UIElement ?? Window.Current.Content;
 
 				originalSource.RaiseEvent(
 					KeyDownEvent,
 					new KeyRoutedEventArgs(originalSource, args.VirtualKey, args.KeyStatus)
 					{
-						CanBubbleNatively = false
+						CanBubbleNatively = false,
+						KeyboardModifiers = modifiers
 					}
 				);
 
@@ -56,15 +59,17 @@ namespace Windows.UI.Xaml
 				}
 			}
 
-			private void InitiateKeyUpBubblingFlow(CoreWindow sender, KeyEventArgs args)
+			private void InitiateKeyUpBubblingFlow(CoreWindow sender, (KeyEventArgs, VirtualKeyModifiers) KeyEventPair)
 			{
+				var (args, modifiers) = KeyEventPair;
 				var originalSource = FocusManager.GetFocusedElement() as UIElement ?? Window.Current.Content;
 
 				originalSource.RaiseEvent(
 					KeyUpEvent,
 					new KeyRoutedEventArgs(originalSource, args.VirtualKey, args.KeyStatus)
 					{
-						CanBubbleNatively = false
+						CanBubbleNatively = false,
+						KeyboardModifiers = modifiers
 					}
 				);
 
