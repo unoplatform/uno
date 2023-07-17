@@ -5,8 +5,8 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	xmlns:xamarin="urn:xamarin"
-	mc:Ignorable="d xamarin"
+	xmlns:not_win="http://uno.ui/not_win"
+	mc:Ignorable="d not_win"
 	d:DesignHeight="300"
 	d:DesignWidth="400">
 
@@ -14,7 +14,7 @@
 		<controls:SampleControl.SampleContent>
 			<DataTemplate>
 				<StackPanel >
-					<ComboBox ItemsSource="{Binding [ComboBoxSimple_ItemsSource]}" SelectedItem="{Binding [ComboBoxSimple_SelectedItem]}" xamarin:Command="{Binding [ComboBoxSimple_Command]}"/>
+					<ComboBox ItemsSource="{Binding [ComboBoxSimple_ItemsSource]}" SelectedItem="{Binding [ComboBoxSimple_SelectedItem]}" not_win:Command="{Binding [ComboBoxSimple_Command]}"/>
 					<TextBlock Text="{Binding [ComboBoxSimple_SelectedItem]}" />
 					<Button Content="Generate new list" Command="{Binding [ComboBoxSimple_GenerateNewList]}" />
 				</StackPanel>

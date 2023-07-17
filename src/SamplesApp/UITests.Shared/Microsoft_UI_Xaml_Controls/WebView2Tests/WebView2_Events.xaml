@@ -2,14 +2,13 @@
 	x:Class="SamplesApp.Microsoft_UI_Xaml_Controls.WebView2Tests.WebView2_Events"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:xamarin="http://uno.ui/xamarin"
+	xmlns:not_win="http://uno.ui/not_win"
 	xmlns:local="using:SamplesApp.Microsoft_UI_Xaml_Controls.WebView2Tests"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:controls="using:Uno.UI.Samples.Controls"
 	xmlns:mux="using:Microsoft.UI.Xaml.Controls"
-	xmlns:not_win="http://uno.ui/not_win"
-	mc:Ignorable="d xamarin not_win"
+	mc:Ignorable="d not_win"
 	d:DesignHeight="300"
 	d:DesignWidth="400">
 

@@ -7,9 +7,9 @@
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:ios="http://uno.ui/ios"
 	xmlns:android="http://uno.ui/android"
-	xmlns:xamarin="http://uno.ui/xamarin"
+	xmlns:not_win="http://uno.ui/not_win"
 	xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-	mc:Ignorable="d xamarin ios android"
+	mc:Ignorable="d not_win ios android"
 	d:DesignHeight="300"
 	d:DesignWidth="400">
 

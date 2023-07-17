@@ -7,9 +7,9 @@
 	  xmlns:u="using:Uno.UI.Samples.Controls"
     xmlns:legacy="using:Uno.UI.Controls.Legacy"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	  xmlns:xamarin="http://uno.ui/xamarin"
+	  xmlns:not_win="http://uno.ui/not_win"
 	  xmlns:uloc="http://nventive.com/localization/1.0"
-    mc:Ignorable="d xamarin uloc"
+    mc:Ignorable="d not_win uloc"
     d:DesignHeight="300"
     d:DesignWidth="400">
 
@@ -64,7 +64,7 @@
 					<Rectangle Style="{StaticResource TitleLeftRectangleStyle}"
 								 Fill="Red" />
 
-					<TextBlock xamarin:Phase="0" Text="{Binding}"
+					<TextBlock not_win:Phase="0" Text="{Binding}"
 								 VerticalAlignment="Center"
 								 Grid.Column="1" />
 
@@ -104,7 +104,7 @@
 							<RowDefinition Height="52" />
 						</Grid.RowDefinitions>
 
-						<TextBlock xamarin:Phase="1"
+						<TextBlock not_win:Phase="1"
 									VerticalAlignment="Center"
 									 HorizontalAlignment="Left"
 									 Margin="40,5,0,0">
@@ -112,28 +112,28 @@
 							<Run Text="{Binding}" />
 						</TextBlock>
 
-						<TextBlock xamarin:Phase="1" 
+						<TextBlock not_win:Phase="1" 
 											 Text="{Binding}"
 											 HorizontalAlignment="Right"
 											 VerticalAlignment="Center"
 											 Margin="0,5,35,0" />
 
 						<!-- Row 1 -->
-						<TextBlock  xamarin:Phase="1"
+						<TextBlock  not_win:Phase="1"
 											 Text="{Binding}"
 									 Grid.Row="1"
 									 HorizontalAlignment="Right"
 									 Margin="0,0,10,0" />
 
 						<!-- Row 2 -->
-						<TextBlock xamarin:Phase="2"
+						<TextBlock not_win:Phase="2"
 											 Text="{Binding}"
 									 Grid.Row="2"
 									 Margin="10,0,0,0"
 									 VerticalAlignment="Center"
 									 HorizontalAlignment="Left" />
 
-						<TextBlock xamarin:Phase="2"
+						<TextBlock not_win:Phase="2"
 											 Grid.Row="2"
 									 VerticalAlignment="Center"
 									 HorizontalAlignment="Center">
@@ -143,7 +143,7 @@
 							<Run Text="{Binding}" />
 						</TextBlock>
 
-						<TextBlock  xamarin:Phase="2"
+						<TextBlock  not_win:Phase="2"
 											 Text="{Binding}"
 									 Grid.Row="2"
 									 VerticalAlignment="Center"
@@ -152,20 +152,20 @@
 
 
 						<!-- Row 4 -->
-						<TextBlock  xamarin:Phase="3"
+						<TextBlock  not_win:Phase="3"
 											 Text="{Binding}"
 									 Grid.Row="4"
 									 Margin="10,0,0,0"
 									 VerticalAlignment="Center"
 									 HorizontalAlignment="Left" />
 
-						<TextBlock  xamarin:Phase="3"
+						<TextBlock  not_win:Phase="3"
 											 Text="{Binding}"
 									 Grid.Row="4"
 									 VerticalAlignment="Center"
 									 HorizontalAlignment="Center" />
 
-						<TextBlock  xamarin:Phase="3"
+						<TextBlock  not_win:Phase="3"
 											 Text="{Binding}"
 									 Grid.Row="4"
 									 VerticalAlignment="Center"
@@ -193,26 +193,26 @@
 							</Grid.RowDefinitions>
 
 							<!-- Terminal -->
-							<TextBlock  xamarin:Phase="4"
+							<TextBlock  not_win:Phase="4"
 													Text="TERMINAL"
 										 x:Uid="FlightTemplates_Terminal"
 										 uloc:Localize="Text"
 										 Margin="0,0,5,5" />
 
-							<TextBlock  xamarin:Phase="4"
+							<TextBlock  not_win:Phase="4"
 													Text="{Binding}"
 										 Margin="0,0,0,5"
 										 Grid.Column="1" />
 
 							<!-- Gate -->
-							<TextBlock  xamarin:Phase="4"
+							<TextBlock  not_win:Phase="4"
 													Text="GATE"
 										 x:Uid="FlightTemplates_Gate"
 										 uloc:Localize="Text"
 										 Grid.Row="1"
 										 Margin="0,5,5,0" />
 
-							<TextBlock  xamarin:Phase="4"
+							<TextBlock  not_win:Phase="4"
 													Text="{Binding}"
 										 Margin="0,5,0,0"
 										 Grid.Row="1"
@@ -224,7 +224,7 @@
 									Grid.Row="5"
 									VerticalAlignment="Center"
 									HorizontalAlignment="Center">
-							<TextBlock  xamarin:Phase="5" Text="SEAT"
+							<TextBlock  not_win:Phase="5" Text="SEAT"
 										 VerticalAlignment="Center"
 										 x:Uid="FlightTemplates_Seat"
 										 uloc:Localize="Text"
@@ -232,7 +232,7 @@
 										 HorizontalAlignment="Center" />
 
 							<!--TODO: Task# 1765 Display Cabin info (seat is contained in cabin info)-->
-							<TextBlock  xamarin:Phase="5"
+							<TextBlock  not_win:Phase="5"
 													Text="{Binding}"
 										 Margin="0,5,0,0"
 										 HorizontalAlignment="Center" />
@@ -253,7 +253,7 @@
 							</Grid.RowDefinitions>
 
 							<!-- Terminal -->
-							<TextBlock  xamarin:Phase="6"
+							<TextBlock  not_win:Phase="6"
 													Text="TERMINAL"
 										 x:Uid="FlightTemplates_Terminal"
 										 uloc:Localize="Text"
@@ -261,12 +261,12 @@
 										 Margin="0,0,0,5" />
 
 							<TextBlock Text="{Binding}"
-												  xamarin:Phase="6"
+												  not_win:Phase="6"
 										 Margin="5,0,0,5"
 										 Grid.Column="1" />
 
 							<!-- Gate -->
-							<TextBlock  xamarin:Phase="6"
+							<TextBlock  not_win:Phase="6"
 													Text="GATE"
 										 x:Uid="FlightTemplates_Gate"
 										 uloc:Localize="Text"
@@ -275,7 +275,7 @@
 										 Margin="0,5,0,0" />
 
 							<TextBlock Text="{Binding}"
-												  xamarin:Phase="6"
+												  not_win:Phase="6"
 										 Margin="5,5,0,0"
 										 Grid.Row="1"
 										 Grid.Column="1" />
@@ -284,7 +284,7 @@
 						<!-- Row 6 -->
 						<TextBlock 
 									Grid.Row="6"
-									xamarin:Phase="7"
+									not_win:Phase="7"
 									 HorizontalAlignment="Left"
 									 Margin="10,0,0,0"
 									 VerticalAlignment="Center">
@@ -294,7 +294,7 @@
 							<Run Text="{Binding}" />
 						</TextBlock>
 
-						<TextBlock  xamarin:Phase="7"
+						<TextBlock  not_win:Phase="7"
 									Text="{Binding}"
 									 HorizontalAlignment="Right"
 									 VerticalAlignment="Center"
@@ -302,7 +302,7 @@
 									 Margin="0,0,10,0" />
 
 						<!-- Row 7 -->
-						<u:StarStackPanel  xamarin:Phase="8"
+						<u:StarStackPanel  not_win:Phase="8"
 									Orientation="Horizontal"
 											VerticalAlignment="Top"
 											Grid.Row="7">
@@ -331,7 +331,7 @@
 						<!-- Row 8 -->
 
 						<!-- Is not DCS -->
-						<TextBlock  xamarin:Phase="9"
+						<TextBlock  not_win:Phase="9"
 									Grid.Row="8"
 									 VerticalAlignment="Center">
 							<Run Text="Standby:"
@@ -341,7 +341,7 @@
 						</TextBlock>
 
 						<!-- Is DCS -->
-						<u:StarStackPanel  xamarin:Phase="10"
+						<u:StarStackPanel  not_win:Phase="10"
 									Orientation="Horizontal"
 											Grid.Row="8">
 							<TextBlock>
@@ -381,7 +381,7 @@
 						</u:StarStackPanel>
 					</Grid>
 
-					<ContentControl xamarin:Phase="11"
+					<ContentControl not_win:Phase="11"
 													ContentTemplate="{StaticResource SimilarFlightsCheckInButtonTemplate}"
 									Content="{Binding}"
 									Grid.Row="2"
@@ -395,7 +395,7 @@
 	<ListView ItemTemplate="{StaticResource DirectFlightWithTitleAndButtonTemplate}"
 						ItemsSource="{x:Bind MyItems}">
 		<ListView.ItemContainerStyle>
-				<xamarin:Style TargetType="ListViewItem"
+				<not_win:Style TargetType="ListViewItem"
 					 x:Key="ListViewItemExpanded">
 					<Setter Property="FontFamily"
 							Value="{ThemeResource ContentControlThemeFontFamily}" />
@@ -427,7 +427,7 @@
 										<ContentPresenter x:Name="ContentPresenter"
 															ContentTransitions="{TemplateBinding ContentTransitions}"
 															ContentTemplate="{TemplateBinding ContentTemplate}"
-															xamarin:ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
+															not_win:ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
 															Content="{TemplateBinding Content}"
 															HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
 															VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
@@ -435,7 +435,7 @@
 							</ControlTemplate>
 						</Setter.Value>
 					</Setter>
-				</xamarin:Style>
+				</not_win:Style>
 		</ListView.ItemContainerStyle>
 	</ListView>
 

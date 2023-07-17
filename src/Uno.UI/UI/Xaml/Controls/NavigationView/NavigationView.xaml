@@ -3,7 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:xamarin="http://uno.ui/xamarin"
+	xmlns:not_win="http://uno.ui/not_win"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:uBehaviors="using:Uno.UI.Behaviors"
@@ -104,18 +104,18 @@
 										<Setter Target="MenuItemsHost.HorizontalAlignment" Value="Left" />
 										<!-- This is essentially a TemplateBinding: -->
 										<win:Setter Target="MenuItemsHost.Width" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=CompactPaneLength}" />
-										<xamarin:Setter Target="MenuItemsHost.Width" Value="40" />
+										<not_win:Setter Target="MenuItemsHost.Width" Value="40" />
 										<Setter Target="SettingsNavPaneItem.HorizontalAlignment" Value="Left" />
 										<win:Setter Target="SettingsNavPaneItem.Width" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=CompactPaneLength}" />
-										<xamarin:Setter Target="SettingsNavPaneItem.Width" Value="40" />
+										<not_win:Setter Target="SettingsNavPaneItem.Width" Value="40" />
 										<Setter Target="PaneTitleTextBlock.Visibility" Value="Collapsed" />
 										<Setter Target="PaneHeaderContentBorder.Visibility" Value="Collapsed" />
 										<Setter Target="PaneCustomContentBorder.HorizontalAlignment" Value="Left" />
 										<win:Setter Target="PaneCustomContentBorder.Width" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=CompactPaneLength}" />
-										<xamarin:Setter Target="PaneCustomContentBorder.Width" Value="40" />
+										<not_win:Setter Target="PaneCustomContentBorder.Width" Value="40" />
 										<Setter Target="FooterContentBorder.HorizontalAlignment" Value="Left" />
 										<win:Setter Target="FooterContentBorder.Width" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=CompactPaneLength}" />
-										<xamarin:Setter Target="FooterContentBorder.Width" Value="40" />
+										<not_win:Setter Target="FooterContentBorder.Width" Value="40" />
 									</VisualState.Setters>
 								</VisualState>
 
