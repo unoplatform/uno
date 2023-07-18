@@ -335,7 +335,20 @@ namespace Windows.UI.Xaml
 
 					while (settersEnumerator.MoveNext())
 					{
-						settersEnumerator.Current.ApplyValue(DependencyPropertyValuePrecedences.Animations, element);
+						var current = settersEnumerator.Current;
+
+						if (current is IDependencyObjectStoreProvider provider)
+						{
+							if (provider.Store.GetBindingExpression(Setter.ValueProperty) is { } expression)
+							{
+								// force binding value to re-evaluate the source and use converters
+								expression.RefreshTarget();
+							}
+						}
+
+						current.ApplyValue(DependencyPropertyValuePrecedences.Animations, element);
+
+
 					}
 				}
 #if !HAS_EXPENSIVE_TRYFINALLY
