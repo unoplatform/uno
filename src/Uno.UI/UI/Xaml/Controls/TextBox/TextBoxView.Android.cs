@@ -3,26 +3,26 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Android.Widget;
-using Uno.UI;
-using Java.Lang.Reflect;
 using Android.Content;
 using Android.Graphics;
 using Android.Graphics.Drawables;
-using Uno.Extensions;
-using Windows.UI.Xaml.Media;
-using Uno.Foundation.Logging;
-using Android.Views;
+using Android.OS;
 using Android.Runtime;
 using Android.Text;
+using Android.Views;
 using Android.Views.InputMethods;
-using Android.OS;
-using Windows.UI.Xaml.Input;
-using Uno.UI.Extensions;
-using Uno.UI.DataBinding;
+using Android.Widget;
 using AndroidX.Core.Content;
 using AndroidX.Core.Graphics;
+using Java.Lang.Reflect;
 using Uno.Disposables;
+using Uno.Extensions;
+using Uno.Foundation.Logging;
+using Uno.UI;
+using Uno.UI.DataBinding;
+using Uno.UI.Extensions;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -207,7 +207,10 @@ namespace Windows.UI.Xaml.Controls
 						var drawable = editText.TextCursorDrawable;
 						if (BlendMode.SrcAtop != null)
 						{
-							drawable?.SetColorFilter(new BlendModeColorFilter(color, BlendMode.SrcAtop));
+							var colorFilter = BlendModeColorFilterCompat.CreateBlendModeColorFilterCompat(
+								(Android.Graphics.Color)color,
+								BlendModeCompat.SrcAtop);
+							drawable?.SetColorFilter(colorFilter);
 						}
 					}
 					else if (_cursorDrawableField == null || _cursorDrawableResField == null || _editorField == null || PorterDuff.Mode.SrcIn == null)
@@ -221,41 +224,23 @@ namespace Windows.UI.Xaml.Controls
 						var mCursorDrawableRes = _cursorDrawableResField.GetInt(editText);
 						var editor = _editorField.Get(editText);
 
-#if __ANDROID_28__
-#pragma warning disable 618 // SetColorFilter is deprecated
+						var colorFilter = new PorterDuffColorFilter((Android.Graphics.Color)color, PorterDuff.Mode.SrcIn);
+
 						if ((int)Build.VERSION.SdkInt < 28) // 28 means BuildVersionCodes.P
 						{
 							var drawables = new Drawable[2];
 							drawables[0] = ContextCompat.GetDrawable(editText.Context!, mCursorDrawableRes)!;
 							drawables[1] = ContextCompat.GetDrawable(editText.Context!, mCursorDrawableRes)!;
-							drawables[0].SetColorFilter(color, PorterDuff.Mode.SrcIn);
-							drawables[1].SetColorFilter(color, PorterDuff.Mode.SrcIn);
+							drawables[0].SetColorFilter(colorFilter);
+							drawables[1].SetColorFilter(colorFilter);
 							_cursorDrawableField.Set(editor, drawables);
 						}
 						else
 						{
 							var drawable = ContextCompat.GetDrawable(editText.Context!, mCursorDrawableRes)!;
-							drawable.SetColorFilter(color, PorterDuff.Mode.SrcIn);
+							drawable.SetColorFilter(colorFilter);
 							_cursorDrawableField.Set(editor, drawable);
 						}
-#pragma warning restore 618 // SetColorFilter is deprecated
-#else
-						if ((int)Build.VERSION.SdkInt < 28) // 28 means BuildVersionCodes.P
-						{
-							var drawables = new Drawable[2];
-							drawables[0] = ContextCompat.GetDrawable(editText.Context, mCursorDrawableRes);
-							drawables[1] = ContextCompat.GetDrawable(editText.Context, mCursorDrawableRes);
-							drawables[0].SetColorFilter(new BlendModeColorFilterCompat(color, BlendModeCompat.SrcIn));
-							drawables[1].SetColorFilter(new BlendModeColorFilterCompat(color, BlendModeCompat.SrcIn));
-							_cursorDrawableField.Set(editor, drawables);
-						}
-						else
-						{
-							var drawable = ContextCompat.GetDrawable(editText.Context, mCursorDrawableRes);
-							drawable.SetColorFilter(new BlendModeColorFilterCompat(color, BlendModeCompat.SrcIn));
-							_cursorDrawableField.Set(editor, drawable);
-						}
-#endif
 					}
 				}
 				catch (Exception)
@@ -292,7 +277,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public
-#if __ANDROID_23__
+#if __ANDROID__
 		new
 #endif
 		Brush Foreground
