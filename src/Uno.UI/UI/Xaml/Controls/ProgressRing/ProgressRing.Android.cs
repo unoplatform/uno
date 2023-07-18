@@ -3,6 +3,7 @@ using Windows.UI.Xaml.Media;
 using Android.Views;
 
 using Microsoft/*Intentional space for WinUI upgrade tool*/.UI.Xaml.Controls;
+using AndroidX.Core.Graphics;
 
 namespace Windows.UI.Xaml.Controls;
 
@@ -18,9 +19,8 @@ public partial class ProgressRing
 		//We only support SolidColorBrush for now
 		if (_native != null && Foreground is SolidColorBrush foregroundColor)
 		{
-#pragma warning disable 618 // SetColorFilter is deprecated
-			_native.IndeterminateDrawable?.SetColorFilter(foregroundColor.Color, PorterDuff.Mode.SrcIn);
-#pragma warning restore 618 // SetColorFilter is deprecated
+			var colorFilter = new PorterDuffColorFilter((Color)foregroundColor.Color, PorterDuff.Mode.SrcIn);
+			_native.IndeterminateDrawable?.SetColorFilter(colorFilter);
 		}
 	}
 
