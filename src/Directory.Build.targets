@@ -42,13 +42,6 @@
 		</Otherwise>
 	</Choose>
 
-	<Target Name="AndroidResourceGenWorkaround"
-			BeforeTargets="Build"
-			Condition="'$(AndroidUseIntermediateDesignerFile)'=='True' and $(IsAndroid) and '$(TargetFramework)'!='net8.0-android' and '$(TargetFramework)'!='net7.0-android'">
-		<MakeDir Directories="obj\$(TargetFramework)\Resources" />
-		<WriteLinesToFile File="$(AndroidResgenFile)" Lines="// Empty Content from uno.ui Directory.Build.targets." />
-	</Target>
-
 	<Target Name="AndroidResourceGenWorkaround_16_2" AfterTargets="_UpdateAndroidResgen" Condition="'$(AndroidUseIntermediateDesignerFile)'=='True' and !Exists($(_AndroidResourceDesignerFile))">
 		<WriteLinesToFile File="$(_AndroidResourceDesignerFile)" Lines="// Empty Content from uno.ui Directory.Build.targets." />
 	</Target>
@@ -98,21 +91,21 @@
 		<PackageReference Update="SkiaSharp.NativeAssets.macos" Version="2.88.3" />
 		<PackageReference Update="Svg.Skia" Version="1.0.0" />
 
-	<PackageReference Update="HarfBuzzSharp.NativeAssets.Linux" Version="2.8.2.3" />
-	<PackageReference Update="SkiaSharp.HarfBuzz" Version="2.88.3" />
-	<PackageReference Update="GtkSharp" Version="3.24.24.38" />
-	<PackageReference Update="System.Json" Version="4.7.1" />
-	<PackageReference Update="FluentAssertions" Version="5.10.3" />
-	<PackageReference Update="Microsoft.Extensions.Logging.Console" Version="5.0.0" />
-	<PackageReference Update="Microsoft.Extensions.Logging.Debug" Version="5.0.0" />
-	<PackageReference Update="Microsoft.Extensions.Logging.Filter" Version="1.1.2" />
-	<PackageReference Update="Uno.Extensions.Logging.WebAssembly.Console" Version="1.4.0" />
-	<PackageReference Update="Uno.Extensions.Logging.WebAssembly.OSLog" Version="1.4.0" />
-	<PackageReference Update="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" />
-	<PackageReference Update="Microsoft.NETFramework.ReferenceAssemblies.net48" Version="1.0.3" />
-	<PackageReference Update="Microsoft.NETFramework.ReferenceAssemblies.net472" Version="1.0.3" />
-	<PackageReference Update="Microsoft.NETFramework.ReferenceAssemblies.net461" Version="1.0.3" />
-	<PackageReference Update="Newtonsoft.Json" Version="13.0.2" />
+		<PackageReference Update="HarfBuzzSharp.NativeAssets.Linux" Version="2.8.2.3" />
+		<PackageReference Update="SkiaSharp.HarfBuzz" Version="2.88.3" />
+		<PackageReference Update="GtkSharp" Version="3.24.24.38" />
+		<PackageReference Update="System.Json" Version="4.7.1" />
+		<PackageReference Update="FluentAssertions" Version="5.10.3" />
+		<PackageReference Update="Microsoft.Extensions.Logging.Console" Version="5.0.0" />
+		<PackageReference Update="Microsoft.Extensions.Logging.Debug" Version="5.0.0" />
+		<PackageReference Update="Microsoft.Extensions.Logging.Filter" Version="1.1.2" />
+		<PackageReference Update="Uno.Extensions.Logging.WebAssembly.Console" Version="1.4.0" />
+		<PackageReference Update="Uno.Extensions.Logging.WebAssembly.OSLog" Version="1.4.0" />
+		<PackageReference Update="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" />
+		<PackageReference Update="Microsoft.NETFramework.ReferenceAssemblies.net48" Version="1.0.3" />
+		<PackageReference Update="Microsoft.NETFramework.ReferenceAssemblies.net472" Version="1.0.3" />
+		<PackageReference Update="Microsoft.NETFramework.ReferenceAssemblies.net461" Version="1.0.3" />
+		<PackageReference Update="Newtonsoft.Json" Version="13.0.2" />
 		<PackageReference Update="CommunityToolkit.Mvvm" Version="$(CommunityToolkitMvvmVersion)" />
   </ItemGroup>
 

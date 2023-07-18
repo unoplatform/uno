@@ -1,7 +1,7 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras">
 	<PropertyGroup>
-		<TargetFrameworks>net7.0-windows</TargetFrameworks>
-		<TargetFrameworks Condition="'$(UnoDisableNet8)'!='true'">$(TargetFrameworks);net8.0-windows</TargetFrameworks>
+		<TargetFrameworks>$(NetPrevious)-windows</TargetFrameworks>
+		<TargetFrameworks Condition="'$(UnoDisableNet8)'!='true'">$(TargetFrameworks);$(NetCurrent)-windows</TargetFrameworks>
 	</PropertyGroup>
 
 	<Import Project="../../targetframework-override-windows.props"/>

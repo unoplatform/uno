@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
 	<PropertyGroup>
-		<TargetFrameworks>net7.0</TargetFrameworks>
+		<TargetFrameworks>$(NetUnitTests)</TargetFrameworks>
 		<IsPackable>false</IsPackable>
 		<OutputPath>bin\$(Platform)\$(Configuration)</OutputPath>
 		<UseUnoXamlParser>true</UseUnoXamlParser>
