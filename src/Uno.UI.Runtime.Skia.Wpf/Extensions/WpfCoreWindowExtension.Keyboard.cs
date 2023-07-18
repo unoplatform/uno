@@ -63,7 +63,7 @@ namespace Uno.UI.Skia.Platform
 				Windows.UI.Xaml.Application.Current.RaiseRecoverableUnhandledException(e);
 			}
 		}
-		
+
 		private static VirtualKeyModifiers GetKeyModifiers(ModifierKeys modifierKeys)
 		{
 			var modifiers = VirtualKeyModifiers.None;
