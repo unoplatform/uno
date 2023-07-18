@@ -69,7 +69,7 @@ internal class InternalClient : Android.Webkit.WebViewClient
 	public override void OnPageFinished(Android.Webkit.WebView view, string url)
 	{
 		_coreWebView.DocumentTitle = view.Title;
-		
+
 		var uri = !_nativeWebViewWrapper._wasLoadedFromString && !string.IsNullOrEmpty(url) ? new Uri(url) : null;
 
 		_coreWebView.RaiseNavigationCompleted(uri, true, 200, CoreWebView2WebErrorStatus.Unknown);

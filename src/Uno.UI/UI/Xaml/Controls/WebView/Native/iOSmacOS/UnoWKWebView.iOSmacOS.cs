@@ -595,7 +595,7 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 			_coreWebView.DocumentTitle = Title;
 		}
 		else if (
-			forKey.Equals(nameof(Url), StringComparison.OrdinalIgnoreCase) || 
+			forKey.Equals(nameof(Url), StringComparison.OrdinalIgnoreCase) ||
 			forKey.Equals(nameof(CanGoBack), StringComparison.OrdinalIgnoreCase) ||
 			forKey.Equals(nameof(CanGoForward), StringComparison.OrdinalIgnoreCase))
 		{
