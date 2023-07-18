@@ -3,26 +3,26 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Android.Widget;
-using Uno.UI;
-using Java.Lang.Reflect;
 using Android.Content;
 using Android.Graphics;
 using Android.Graphics.Drawables;
-using Uno.Extensions;
-using Windows.UI.Xaml.Media;
-using Uno.Foundation.Logging;
-using Android.Views;
+using Android.OS;
 using Android.Runtime;
 using Android.Text;
+using Android.Views;
 using Android.Views.InputMethods;
-using Android.OS;
-using Windows.UI.Xaml.Input;
-using Uno.UI.Extensions;
-using Uno.UI.DataBinding;
+using Android.Widget;
 using AndroidX.Core.Content;
 using AndroidX.Core.Graphics;
+using Java.Lang.Reflect;
 using Uno.Disposables;
+using Uno.Extensions;
+using Uno.Foundation.Logging;
+using Uno.UI;
+using Uno.UI.DataBinding;
+using Uno.UI.Extensions;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -208,7 +208,7 @@ namespace Windows.UI.Xaml.Controls
 						if (BlendMode.SrcAtop != null)
 						{
 							var colorFilter = BlendModeColorFilterCompat.CreateBlendModeColorFilterCompat(
-								(Android.Graphics.Color)color, 
+								(Android.Graphics.Color)color,
 								BlendModeCompat.SrcAtop);
 							drawable?.SetColorFilter(colorFilter);
 						}

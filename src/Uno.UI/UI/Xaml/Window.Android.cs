@@ -133,7 +133,7 @@ namespace Windows.UI.Xaml
 			{
 				SetDisplaySizeLegacy();
 			}
-			
+
 			return displaySize;
 
 			void SetDisplaySizeLegacy()
