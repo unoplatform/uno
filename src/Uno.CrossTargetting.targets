@@ -12,8 +12,8 @@
 		<None Include="**\*.skia.cs" Exclude="bin\**\*.skia.cs;obj\**\*.skia.cs" Condition="'$(UnoRuntimeIdentifier)'!='Skia'" />
 		<Compile Remove="**\*.skia.cs" Condition="'$(UnoRuntimeIdentifier)'!='Skia'" />
 
-		<None Include="**\*.netstdref.cs" Exclude="bin\**\*.netstdref.cs;obj\**\*.netstdref.cs" Condition="!$(_IsNetStd) or '$(UnoRuntimeIdentifier)'!='Reference'" />
-		<Compile Remove="**\*.netstdref.cs" Condition="!$(_IsNetStd) or '$(UnoRuntimeIdentifier)'!='Reference'" />
+		<None Include="**\*.reference.cs" Exclude="bin\**\*.reference.cs;obj\**\*.reference.cs" Condition="!$(_IsNetStd) or '$(UnoRuntimeIdentifier)'!='Reference'" />
+		<Compile Remove="**\*.reference.cs" Condition="!$(_IsNetStd) or '$(UnoRuntimeIdentifier)'!='Reference'" />
 
 		<None Include="**\*.iOS.cs" Exclude="bin\**\*.iOS.cs;obj\**\*.iOS.cs" Condition="!$(IsIOSOrCatalyst)" />
 		<Compile Remove="**\*.iOS.cs" Condition="!$(IsIOSOrCatalyst)" />
