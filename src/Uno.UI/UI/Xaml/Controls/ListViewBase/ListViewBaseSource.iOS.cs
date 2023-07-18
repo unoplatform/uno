@@ -851,7 +851,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public override UICollectionViewLayoutAttributes PreferredLayoutAttributesFittingAttributes(UICollectionViewLayoutAttributes nativeLayoutAttributes)
 		{
-			if (((object)nativeLayoutAttributes) is not _LayoutAttributes)
+			if (((object)nativeLayoutAttributes) is not _LayoutAttributes layoutAttributes)
 			{
 				// This case happens for a yet unknown GC issue, where the layoutAttribute instance passed the current
 				// method maps to another object. The repro steps are not clear, and it may be related to ListView/GridView
@@ -860,7 +860,6 @@ namespace Windows.UI.Xaml.Controls
 				return null;
 			}
 
-			var layoutAttributes = (_LayoutAttributes)nativeLayoutAttributes;
 			if (Content == null)
 			{
 				this.Log().Error("Empty ListViewBaseInternalContainer content.");
