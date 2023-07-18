@@ -60,7 +60,7 @@ namespace Windows.UI.Xaml.Media
 		}
 #endif
 
-#if !(__NETSTD__)
+#if !(__CROSSRUNTIME__)
 		internal Stream? Stream { get; set; }
 #endif
 
