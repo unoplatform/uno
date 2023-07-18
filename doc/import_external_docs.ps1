@@ -84,8 +84,8 @@ foreach ($repoPath in $external_docs.keys)
     # if not detached
     if ((git symbolic-ref -q HEAD) -ne $null)
     {
-        echo "Pulling $repoUrl@$repoBranch..."
-        git reset --hard
+        echo "Resetting to $repoUrl@$repoBranch..."
+        git reset --hard origin/$repoBranch
         Assert-ExitCodeIsZero
     }
 
