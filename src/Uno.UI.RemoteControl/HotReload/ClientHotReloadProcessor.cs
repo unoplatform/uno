@@ -92,9 +92,5 @@ namespace Uno.UI.RemoteControl.HotReload
 				}
 			}
 		}
-
-#if !(__WASM__ || __SKIA__)
-		private string[] GetMetadataUpdateCapabilities() => Array.Empty<string>();
-#endif
 	}
 }
