@@ -100,9 +100,6 @@ namespace SamplesApp.Droid
 		protected override void OnActivityResult(int requestCode, Result resultCode, Android.Content.Intent data)
 		{
 			base.OnActivityResult(requestCode, resultCode, data);
-#if !NET6_0_OR_GREATER
-			AuthenticationContinuationHelper.SetAuthenticationContinuationEventArgs(requestCode, resultCode, data);
-#endif
 		}
 
 
@@ -121,22 +118,5 @@ namespace SamplesApp.Droid
 			}
 		}
 	}
-
-#if !NET6_0_OR_GREATER
-	[Activity]
-	[IntentFilter(
-		new[] {
-			Android.Content.Intent.ActionView
-		},
-		Categories = new[] {
-			Android.Content.Intent.CategoryDefault,
-			Android.Content.Intent.CategoryBrowsable
-		},
-		DataScheme = "msauth")]
-	public class MsalActivity : BrowserTabActivity
-	{
-	}
-#endif
-
 }
 

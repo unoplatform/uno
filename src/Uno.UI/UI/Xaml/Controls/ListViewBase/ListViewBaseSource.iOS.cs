@@ -24,10 +24,6 @@ using ObjCRuntime;
 
 using Uno.UI.UI.Xaml.Controls.Layouter;
 
-#if !NET6_0_OR_GREATER
-using NativeHandle = System.IntPtr;
-#endif
-
 using Foundation;
 using UIKit;
 using CoreGraphics;

@@ -612,8 +612,8 @@ global::Uno.UI.DataBinding.ManagedWeakReference IWeakReferenceProvider.WeakRefer
 						{{
 							GC.ReRegisterForFinalize(this);
 
-#if !(NET6_0_OR_GREATER && __MACOS__)
-							// net6.0-macos uses CoreCLR (not mono) and the notification mechanism is different
+#if __MACOS__
+							// net7.0-macos and later uses CoreCLR (not mono) and the notification mechanism is different
 							// workaround for mono's https://github.com/xamarin/xamarin-macios/issues/15089
 							NSObjectMemoryRepresentation.RemoveInFinalizerQueueFlag(this);
 #endif

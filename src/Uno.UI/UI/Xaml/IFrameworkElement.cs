@@ -33,9 +33,7 @@ using Font = UIKit.UIFont;
 using CoreGraphics;
 using _Size = Windows.Foundation.Size;
 using Point = Windows.Foundation.Point;
-#if NET6_0_OR_GREATER
 using ObjCRuntime;
-#endif
 #elif __MACOS__
 using AppKit;
 using View = AppKit.NSView;
@@ -44,9 +42,7 @@ using Font = AppKit.NSFont;
 using CoreGraphics;
 using _Size = Windows.Foundation.Size;
 using Point = Windows.Foundation.Point;
-#if NET6_0_OR_GREATER
 using ObjCRuntime;
-#endif
 #elif __WASM__
 #pragma warning disable CS8981 // The type name 'nint' only contains lower-cased ascii characters. Such names may become reserved for the language
 using nint = System.Int32;

@@ -232,9 +232,6 @@ c.SetClosedState(false);
 		{
 			var generatedCode = Parse("M17.432 11.619c.024.082.04.165.04.247V26.54c0 .37-.271.552-.605.409l-5.339-2.282c-.336-.144-.604-.558-.604-.926V9.066c0-.368.27-.551.604-.409l5.339 2.283a.898.898 0 01.27.188c.09.169.189.333.295.49M9.615 9.07v14.675c0 .368-.27.782-.605.925l-5.339 2.282c-.334.143-.604-.04-.604-.408V11.868c0-.368.269-.782.604-.926l5.34-2.282c.333-.143.604.04.604.41m15.713 4.173V23.74c0 .368-.27.782-.605.926l-5.338 2.282c-.334.143-.604-.04-.604-.41V13.216c1.015 1.231 2.702 3.615 3.136 6.3h.312c.43-2.665 2.087-5.033 3.099-6.272m-3.217-2.39c-2.065 0-3.738-1.705-3.738-3.808 0-2.102 1.673-3.807 3.738-3.807 2.064 0 3.738 1.705 3.738 3.807 0 2.103-1.674 3.808-3.738 3.808M22.054 2c-2.768 0-5.012 2.286-5.012 5.105 0 1.378.531 2.693 1.401 3.611 0 0 2.928 2.912 3.488 6.389h.279c.56-3.477 3.471-6.389 3.471-6.389.873-.918 1.386-2.232 1.386-3.61 0-2.82-2.245-5.106-5.013-5.106");
 
-			// A separate assert for net6.0 has been added because here net6.0 will output numbers as 17.471999999999998 instead of 17.472.
-			// https://github.com/unoplatform/uno/pull/8531#discussion_r851318424
-#if NET6_0_OR_GREATER
 			Assert.AreEqual(@"global::Uno.Media.GeometryHelper.Build(c =>
 {
 c.BeginFigure(new global::Windows.Foundation.Point(17.432, 11.619), true);
@@ -285,58 +282,6 @@ c.BezierTo(new global::Windows.Foundation.Point(26.554, 9.798000000000002), new 
 c.BezierTo(new global::Windows.Foundation.Point(27.066999999999997, 4.286000000000001), new global::Windows.Foundation.Point(24.821999999999996, 2.0000000000000018), new global::Windows.Foundation.Point(22.053999999999995, 2.0000000000000018), true, false);
 c.SetClosedState(false);
 }, global::Windows.UI.Xaml.Media.FillRule.EvenOdd)", generatedCode);
-#else
-			Assert.AreEqual(@"global::Uno.Media.GeometryHelper.Build(c =>
-{
-c.BeginFigure(new global::Windows.Foundation.Point(17.432, 11.619), true);
-c.BezierTo(new global::Windows.Foundation.Point(17.456, 11.701), new global::Windows.Foundation.Point(17.472, 11.784), new global::Windows.Foundation.Point(17.472, 11.866), true, false);
-c.LineTo(new global::Windows.Foundation.Point(17.472, 26.54), true, false);
-c.BezierTo(new global::Windows.Foundation.Point(17.472, 26.91), new global::Windows.Foundation.Point(17.201, 27.092), new global::Windows.Foundation.Point(16.867, 26.949), true, false);
-c.LineTo(new global::Windows.Foundation.Point(11.528, 24.667), true, false);
-c.BezierTo(new global::Windows.Foundation.Point(11.192, 24.523), new global::Windows.Foundation.Point(10.924, 24.109), new global::Windows.Foundation.Point(10.924, 23.741), true, false);
-c.LineTo(new global::Windows.Foundation.Point(10.924, 9.066), true, false);
-c.BezierTo(new global::Windows.Foundation.Point(10.924, 8.698), new global::Windows.Foundation.Point(11.194, 8.515), new global::Windows.Foundation.Point(11.528, 8.657), true, false);
-c.LineTo(new global::Windows.Foundation.Point(16.867, 10.94), true, false);
-c.ArcTo(new global::Windows.Foundation.Point(17.137, 11.128), new global::Windows.Foundation.Size(0.898, 0.898), 0d, false, global::Windows.UI.Xaml.Media.SweepDirection.Clockwise, true, false);
-c.BezierTo(new global::Windows.Foundation.Point(17.227, 11.297), new global::Windows.Foundation.Point(17.326, 11.461), new global::Windows.Foundation.Point(17.432, 11.618), true, false);
-c.SetClosedState(false);
-c.BeginFigure(new global::Windows.Foundation.Point(9.615, 9.07), true);
-c.LineTo(new global::Windows.Foundation.Point(9.615, 23.745), true, false);
-c.BezierTo(new global::Windows.Foundation.Point(9.615, 24.113), new global::Windows.Foundation.Point(9.345, 24.527), new global::Windows.Foundation.Point(9.01, 24.67), true, false);
-c.LineTo(new global::Windows.Foundation.Point(3.671, 26.952), true, false);
-c.BezierTo(new global::Windows.Foundation.Point(3.337, 27.095), new global::Windows.Foundation.Point(3.067, 26.912), new global::Windows.Foundation.Point(3.067, 26.544), true, false);
-c.LineTo(new global::Windows.Foundation.Point(3.067, 11.868), true, false);
-c.BezierTo(new global::Windows.Foundation.Point(3.067, 11.5), new global::Windows.Foundation.Point(3.336, 11.086), new global::Windows.Foundation.Point(3.671, 10.942), true, false);
-c.LineTo(new global::Windows.Foundation.Point(9.011, 8.66), true, false);
-c.BezierTo(new global::Windows.Foundation.Point(9.344, 8.517), new global::Windows.Foundation.Point(9.615, 8.7), new global::Windows.Foundation.Point(9.615, 9.07), true, false);
-c.SetClosedState(false);
-c.BeginFigure(new global::Windows.Foundation.Point(25.328, 13.243), true);
-c.LineTo(new global::Windows.Foundation.Point(25.328, 23.74), true, false);
-c.BezierTo(new global::Windows.Foundation.Point(25.328, 24.108), new global::Windows.Foundation.Point(25.058, 24.522), new global::Windows.Foundation.Point(24.723, 24.666), true, false);
-c.LineTo(new global::Windows.Foundation.Point(19.385, 26.948), true, false);
-c.BezierTo(new global::Windows.Foundation.Point(19.051, 27.091), new global::Windows.Foundation.Point(18.781, 26.908), new global::Windows.Foundation.Point(18.781, 26.538), true, false);
-c.LineTo(new global::Windows.Foundation.Point(18.781, 13.216), true, false);
-c.BezierTo(new global::Windows.Foundation.Point(19.796, 14.447), new global::Windows.Foundation.Point(21.483, 16.831), new global::Windows.Foundation.Point(21.917, 19.516), true, false);
-c.LineTo(new global::Windows.Foundation.Point(22.229, 19.516), true, false);
-c.BezierTo(new global::Windows.Foundation.Point(22.659, 16.851), new global::Windows.Foundation.Point(24.316, 14.483), new global::Windows.Foundation.Point(25.328, 13.244), true, false);
-c.SetClosedState(false);
-c.BeginFigure(new global::Windows.Foundation.Point(22.111, 10.854), true);
-c.BezierTo(new global::Windows.Foundation.Point(20.046, 10.854), new global::Windows.Foundation.Point(18.373, 9.149), new global::Windows.Foundation.Point(18.373, 7.046), true, false);
-c.BezierTo(new global::Windows.Foundation.Point(18.373, 4.944), new global::Windows.Foundation.Point(20.046, 3.239), new global::Windows.Foundation.Point(22.111, 3.239), true, false);
-c.BezierTo(new global::Windows.Foundation.Point(24.175, 3.239), new global::Windows.Foundation.Point(25.849, 4.944), new global::Windows.Foundation.Point(25.849, 7.046), true, false);
-c.BezierTo(new global::Windows.Foundation.Point(25.849, 9.149), new global::Windows.Foundation.Point(24.175, 10.854), new global::Windows.Foundation.Point(22.111, 10.854), true, false);
-c.SetClosedState(false);
-c.BeginFigure(new global::Windows.Foundation.Point(22.054, 2), true);
-c.BezierTo(new global::Windows.Foundation.Point(19.286, 2), new global::Windows.Foundation.Point(17.042, 4.286), new global::Windows.Foundation.Point(17.042, 7.105), true, false);
-c.BezierTo(new global::Windows.Foundation.Point(17.042, 8.483), new global::Windows.Foundation.Point(17.573, 9.798), new global::Windows.Foundation.Point(18.443, 10.716), true, false);
-c.BezierTo(new global::Windows.Foundation.Point(18.443, 10.716), new global::Windows.Foundation.Point(21.371, 13.628), new global::Windows.Foundation.Point(21.931, 17.105), true, false);
-c.LineTo(new global::Windows.Foundation.Point(22.21, 17.105), true, false);
-c.BezierTo(new global::Windows.Foundation.Point(22.77, 13.628), new global::Windows.Foundation.Point(25.681, 10.716), new global::Windows.Foundation.Point(25.681, 10.716), true, false);
-c.BezierTo(new global::Windows.Foundation.Point(26.554, 9.798), new global::Windows.Foundation.Point(27.067, 8.484), new global::Windows.Foundation.Point(27.067, 7.106), true, false);
-c.BezierTo(new global::Windows.Foundation.Point(27.067, 4.286), new global::Windows.Foundation.Point(24.822, 2), new global::Windows.Foundation.Point(22.054, 2), true, false);
-c.SetClosedState(false);
-}, global::Windows.UI.Xaml.Media.FillRule.EvenOdd)", generatedCode);
-#endif
 		}
 	}
 }

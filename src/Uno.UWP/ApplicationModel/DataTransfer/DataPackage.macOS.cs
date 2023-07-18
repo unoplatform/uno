@@ -12,10 +12,7 @@ using Windows.Foundation;
 using Windows.Storage;
 using Windows.Storage.Streams;
 using Windows.UI.Core;
-
-#if NET6_0_OR_GREATER
 using NSDraggingInfo = AppKit.INSDraggingInfo;
-#endif
 
 namespace Windows.ApplicationModel.DataTransfer
 {

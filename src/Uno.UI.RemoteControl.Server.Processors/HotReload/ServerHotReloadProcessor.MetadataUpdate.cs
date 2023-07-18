@@ -1,6 +1,5 @@
 ﻿#nullable enable
 
-#if NET6_0_OR_GREATER
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -131,9 +130,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 					.Buffer(TimeSpan.FromMilliseconds(250))
 					.Subscribe(filePaths =>
 					{
-#if NET6_0_OR_GREATER
 						ProcessMetadataChanges(filePaths.Distinct());
-#endif
 					}, e => Console.WriteLine($"Error {e}"));
 
 				_solutionWatcherEventsDisposable.Add(disposable);
@@ -364,4 +361,3 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 		}
 	}
 }
-#endif

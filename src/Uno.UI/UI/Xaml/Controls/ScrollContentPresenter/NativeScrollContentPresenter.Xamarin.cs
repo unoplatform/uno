@@ -16,17 +16,13 @@ using View = Android.Views.View;
 #elif __IOS__
 using UIKit;
 using View = UIKit.UIView;
-#if NET6_0_OR_GREATER
 using ObjCRuntime;
-#endif
 #elif __MACOS__
 using AppKit;
 using View = AppKit.NSView;
 #else
 using View = Windows.UI.Xaml.UIElement;
-#if NET6_0_OR_GREATER
 using ObjCRuntime;
-#endif
 #endif
 
 namespace Windows.UI.Xaml.Controls

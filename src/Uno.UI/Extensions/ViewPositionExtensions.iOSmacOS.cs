@@ -1,10 +1,7 @@
 using System.Drawing;
 using CoreGraphics;
 using System;
-
-#if NET6_0_OR_GREATER
 using ObjCRuntime;
-#endif
 
 #if __IOS__
 using UIKit;

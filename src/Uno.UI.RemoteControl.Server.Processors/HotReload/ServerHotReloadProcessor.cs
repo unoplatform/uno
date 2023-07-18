@@ -63,9 +63,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				this.Log().LogDebug($"Xaml Search Paths: {string.Join(", ", configureServer.XamlPaths)}");
 			}
 
-#if NET6_0_OR_GREATER
 			InitializeMetadataUpdater(configureServer);
-#endif
 
 			_watchers = configureServer.XamlPaths
 				.Select(p => new FileSystemWatcher
@@ -151,7 +149,6 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				}
 			}
 
-#if NET6_0_OR_GREATER
 			_solutionWatcherEventsDisposable?.Dispose();
 			if (_solutionWatchers != null)
 			{
@@ -160,7 +157,6 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 					watcher.Dispose();
 				}
 			}
-#endif
 		}
 	}
 }

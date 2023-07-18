@@ -6,10 +6,7 @@ using System.Drawing;
 using System.Linq;
 using Uno.Disposables;
 using Windows.UI.Xaml.Controls;
-
-#if NET6_0_OR_GREATER
 using ObjCRuntime;
-#endif
 
 using Foundation;
 using UIKit;
