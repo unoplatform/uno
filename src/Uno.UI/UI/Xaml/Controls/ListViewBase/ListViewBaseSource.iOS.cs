@@ -1,3 +1,4 @@
+//#define USE_CUSTOM_LAYOUT_ATTRIBUTES (cf. VirtualizingPanelLayout.iOS.cs for more info)
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -31,6 +32,12 @@ using NativeHandle = System.IntPtr;
 using Foundation;
 using UIKit;
 using CoreGraphics;
+
+#if USE_CUSTOM_LAYOUT_ATTRIBUTES
+using _LayoutAttributes = Windows.UI.Xaml.Controls.UnoUICollectionViewLayoutAttributes;
+#else
+using _LayoutAttributes = UIKit.UICollectionViewLayoutAttributes;
+#endif
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -842,9 +849,9 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		internal void ClearMeasuredSize() => _measuredContentSize = null;
 
-		public override UICollectionViewLayoutAttributes PreferredLayoutAttributesFittingAttributes(UICollectionViewLayoutAttributes layoutAttributes)
+		public override UICollectionViewLayoutAttributes PreferredLayoutAttributesFittingAttributes(UICollectionViewLayoutAttributes nativeLayoutAttributes)
 		{
-			if (!(((object)layoutAttributes) is UICollectionViewLayoutAttributes))
+			if (((object)nativeLayoutAttributes) is not _LayoutAttributes layoutAttributes)
 			{
 				// This case happens for a yet unknown GC issue, where the layoutAttribute instance passed the current
 				// method maps to another object. The repro steps are not clear, and it may be related to ListView/GridView
@@ -916,6 +923,7 @@ namespace Windows.UI.Xaml.Controls
 							//to use stale layoutAttributes for deciding if items should be visible, leading to them popping out of view mid-viewport.
 							Owner?.NativeLayout?.RefreshLayout();
 						}
+
 						layoutAttributes.Frame = frame;
 						if (sizesAreDifferent)
 						{
