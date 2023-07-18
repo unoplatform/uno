@@ -16,21 +16,14 @@ namespace Uno.Extensions.System
 
 		private const string RegistryPath = @"Software\Classes";
 
-		public Task<bool> LaunchUriAsync(Uri uri)
-		{
-			var processStartInfo = new ProcessStartInfo(uri.OriginalString)
-			{
-				UseShellExecute = true,
-				Verb = "open"
-			};
+		public Task<bool> LaunchUriAsync(Uri uri) =>
+			Task.FromResult(Launcher.TryStartProcessForPath(uri.OriginalString));
 
-			var process = new Process()
-			{
-				StartInfo = processStartInfo
-			};
+		public Task<bool> LaunchFolderAsync(string storageFolderPath) =>
+			Task.FromResult(Launcher.TryStartProcessForPath(storageFolderPath));
 
-			return Task.FromResult(process.Start());
-		}
+		public Task<bool> LaunchFileAsync(string storageFilePath) =>
+			Task.FromResult(Launcher.TryStartProcessForPath(storageFilePath));
 
 		public Task<LaunchQuerySupportStatus> QueryUriSupportAsync(Uri uri, LaunchQuerySupportType launchQuerySupportType)
 		{
@@ -61,5 +54,7 @@ namespace Uno.Extensions.System
 			var view = Environment.Is64BitProcess ? RegistryView.Registry64 : RegistryView.Registry32;
 			return RegistryKey.OpenBaseKey(hive, view).OpenSubKey(name, writable);
 		}
+
+
 	}
 }
