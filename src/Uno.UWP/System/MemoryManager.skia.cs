@@ -1,5 +1,4 @@
-﻿#if __SKIA__
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Globalization;
@@ -98,4 +97,3 @@ namespace Windows.System
 		}
 	}
 }
-#endif

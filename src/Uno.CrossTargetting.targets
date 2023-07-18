@@ -30,8 +30,8 @@
 		<None Include="**\*.Xamarin.cs" Exclude="bin\**\*.Xamarin.cs;obj\**\*.Xamarin.cs" Condition="!$(IsAndroid) and !$(IsIOSOrCatalyst) and !$(IsMacOS)" />
 		<Compile Remove="**\*.Xamarin.cs" Condition="!$(IsAndroid) and !$(IsIOSOrCatalyst) and !$(IsMacOS)" />
 
-		<None Include="**\*.net.cs" Exclude="bin\**\*.net.cs;obj\**\*.net.cs" Condition="!$(_IsUnitTests)" />
-		<Compile Remove="**\*.net.cs" Condition="!$(_IsUnitTests)" />
+		<None Include="**\*.unittests.cs" Exclude="bin\**\*.unittests.cs;obj\**\*.unittests.cs" Condition="!$(_IsUnitTests)" />
+		<Compile Remove="**\*.unittests.cs" Condition="!$(_IsUnitTests)" />
 	</ItemGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='Release'">
