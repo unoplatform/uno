@@ -791,7 +791,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if __NETSTD__
+#if __CROSSRUNTIME__
 		[Ignore("This test is flaky on netstd platforms")]
 #endif
 		[RunsOnUIThread]

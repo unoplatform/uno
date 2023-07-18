@@ -243,7 +243,7 @@ namespace Windows.UI.Xaml.Controls
 						RegisterContentTemplateRoot();
 
 						if (
-#if __NETSTD__
+#if __CROSSRUNTIME__
 							!IsLoading &&
 #endif
 							!IsLoaded && FeatureConfiguration.Control.UseDeferredOnApplyTemplate)

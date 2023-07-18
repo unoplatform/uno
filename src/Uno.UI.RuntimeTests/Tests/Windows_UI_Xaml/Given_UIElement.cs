@@ -1,4 +1,4 @@
-﻿#if __NETSTD__
+﻿#if __CROSSRUNTIME__
 #define MEASURE_DIRTY_PATH_AVAILABLE
 #define ARRANGE_DIRTY_PATH_AVAILABLE
 #elif __ANDROID__
@@ -594,7 +594,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			}
 		}
 
-#if __NETSTD__
+#if __CROSSRUNTIME__
 		[TestMethod]
 		[RunsOnUIThread]
 		public void MeasureDirtyTest()

@@ -169,7 +169,7 @@ namespace Windows.UI.Xaml.Media
 			return location;
 		}
 
-#if __ANDROID__ || __IOS__ || __MACOS__ || __NETSTD__
+#if __ANDROID__ || __IOS__ || __MACOS__ || __CROSSRUNTIME__
 		private void OnImageOpened()
 		{
 			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
