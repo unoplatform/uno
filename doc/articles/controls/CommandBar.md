@@ -629,7 +629,7 @@ Gets or sets a value indicating whether the user can interact with the control.
 
 * > How can I localize CommandBarExtensions.BackButtonTitle?
 
-  _For attached properties, you need a special syntax in the Name column of a `.resw` file._ Ref: [Microsoft documentation](https://docs.microsoft.com/en-us/windows/uwp/app-resources/localize-strings-ui-manifest#refer-to-a-string-resource-identifier-from-xaml).
+  *For attached properties, you need a special syntax in the Name column of a `.resw` file.* Ref: [Microsoft documentation](https://docs.microsoft.com/en-us/windows/uwp/app-resources/localize-strings-ui-manifest#refer-to-a-string-resource-identifier-from-xaml).
 
   More specifically :
 

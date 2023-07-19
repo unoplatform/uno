@@ -16,13 +16,13 @@ uid: Uno.Features.WAB
 
 ## Usage on iOS & macOS
 
-* The *redirect URI* **MUST** use a custom scheme URI and this scheme must be registered in the `Info.plist` of the application.
-* Default *redirect URI* will be `<scheme>:/authentication-callback`. Ex: `my-app-auth:/authentication-callback`
-* The default *redirect URI* will be automatic if there's only one custom scheme defined in the application. If there are more than one scheme, the first one will be used. You may want to set the right one using the `WinRTFeatureConfiguration.WebAuthenticationBroker.DefaultReturnUri` property.
+* The _redirect URI_ **MUST** use a custom scheme URI and this scheme must be registered in the `Info.plist` of the application.
+* Default _redirect URI_ will be `<scheme>:/authentication-callback`. Ex: `my-app-auth:/authentication-callback`
+* The default _redirect URI_ will be automatic if there's only one custom scheme defined in the application. If there are more than one scheme, the first one will be used. You may want to set the right one using the `WinRTFeatureConfiguration.WebAuthenticationBroker.DefaultReturnUri` property.
 
 ## Usage on Android
 
-* The *redirect URI* **MUST** use a custom scheme URI. This one will launch a special *Activity* declared in the application.
+* The _redirect URI_ **MUST** use a custom scheme URI. This one will launch a special _Activity_ declared in the application.
 
 * You **MUST** declare an activity inheriting from `WebAuthenticationBrokerActivityBase` in the Android head. Note the `[Activity]` attribute needs to include `Exported = true` if you are targeting Android 12.
 
