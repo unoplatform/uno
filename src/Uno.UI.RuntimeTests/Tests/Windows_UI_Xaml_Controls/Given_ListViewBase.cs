@@ -2513,6 +2513,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				// up after being removed.
 				Assert.IsNull(container.Content);
 
+				Assert.IsNull(container.GetBindingExpression(ContentControl.ContentProperty));
+
 				Assert.AreEqual(5, SUT.Items.Count);
 			}
 		}
