@@ -84,9 +84,9 @@ To use the map component, you will need an API key for Windows and Android. Here
 
 ### Windows
 
-For the detailed procedure for Windows, please follow this link: https://msdn.microsoft.com/en-us/library/windows/apps/xaml/mt219694.aspx
+For the detailed procedure for Windows, please follow this link: <https://msdn.microsoft.com/en-us/library/windows/apps/xaml/mt219694.aspx>
 
-+ Go to https://www.bingmapsportal.com
++ Go to <https://www.bingmapsportal.com>
 + Login to your account or register if you don't have one
 + Go to MyAccount -> Keys
 + Click on create a new key
@@ -119,7 +119,7 @@ The key will be set as the value for the parameter *MapServiceToken* for the Map
 
 **Note:** For apps in production we suggest restricting the keys to be used only by your Android app. This is possible by using the SHA-1 fingerprint of your app.
 
-*For a detailed procedure on how to retrieve the SHA-1 fingerprint for your Android application, please follow this link: https://developers.google.com/maps/documentation/android-api/signup#release-cert*
+*For a detailed procedure on how to retrieve the SHA-1 fingerprint for your Android application, please follow this link: <https://developers.google.com/maps/documentation/android-api/signup#release-cert>*
 
 ## Configure your application.
 

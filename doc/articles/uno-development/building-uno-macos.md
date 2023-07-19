@@ -32,5 +32,5 @@ Support for building the `Uno.UI` solution is still somewhat unstable, this is a
 
  **Beware: VS for Mac currently makes many unwanted "changes" to the `.csproj` files (like adding package version numbers explicitly, switching attributes to elements and vice-versa). Please do not commit these changes in your Pull Requests.**
 
-* Make sure to apply the workarounds specified in https://github.com/unoplatform/uno/issues/3609, otherwise VS4Mac will fail to load the solution.
+* Make sure to apply the workarounds specified in <https://github.com/unoplatform/uno/issues/3609>, otherwise VS4Mac will fail to load the solution.
 * In order to successfully debug an external application, use [cross-targeting overrides](building-uno-ui.md#building-unoui-for-a-single-target-platform) and make sure to enable "Step into external code" in the "Projects / Debugger" options in VS4mac.

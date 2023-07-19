@@ -8,7 +8,7 @@ Uno can be used to build applications using authentication. A popular mechanism 
 
 > MSAL.NET is the successor of ADAL.NET library which shouldn't be used for new apps. If you are migrating an application to Uno using ADAL.NET, you should first [migrate it to MSAL.NET](https://docs.microsoft.com/azure/active-directory/develop/msal-net-migration).
 
-Quick-start for MSAL: https://docs.microsoft.com/azure/active-directory/develop/quickstart-v2-uwp
+Quick-start for MSAL: <https://docs.microsoft.com/azure/active-directory/develop/quickstart-v2-uwp>
 
 ## General usage
 
@@ -49,7 +49,7 @@ You'll need to setup the return URI following the Microsoft documentation:
 
 * Official documentation <https://docs.microsoft.com/azure/active-directory/develop/msal-net-xamarin-android-considerations>
 
-* Wiki https://github.com/AzureAD/microsoft-authentication-library-for-dotnet/wiki/Xamarin-Android-specifics
+* Wiki <https://github.com/AzureAD/microsoft-authentication-library-for-dotnet/wiki/Xamarin-Android-specifics>
 
 * There is no need to call `.WithParentActivity()` as it is already initialized by `.WithUnoHelpers()`.
 

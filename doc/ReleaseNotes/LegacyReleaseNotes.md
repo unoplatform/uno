@@ -83,7 +83,7 @@ uid: Uno.ReleaseNotes.Legacy
 - `IconElement.AddIconElementView` is now `internal` so it is not accessible from outside.
 - `Thumb.DragStarted.<Horizontal|Vertical>Offset` are now fulfilled (was always 0)
 - `Thumb.Drag<Delta|Completed>.<Horizontal|Vertical>` are now relative to the last event (was cummulative / relative to the started)
-- On iOS, the parent of the `ListViwItem` is now the `NativeListViewBase` (was the `ListView` it self) as described here https://github.com/unoplatform/uno/blob/master/doc/articles/controls/ListViewBase.md#difference-in-the-visual-tree
+- On iOS, the parent of the `ListViwItem` is now the `NativeListViewBase` (was the `ListView` it self) as described here <https://github.com/unoplatform/uno/blob/master/doc/articles/controls/ListViewBase.md#difference-in-the-visual-tree>
 
 ### Bug fixes
 
@@ -117,7 +117,7 @@ uid: Uno.ReleaseNotes.Legacy
 - [WASM] Fix bug where changing a property could remove the required clipping on a view
 - #2294 Fix TextBox text binding is updated by simply un-focusing
 - [Android] Fix unconstrained Image loading issue when contained in a ContentControl template
-- Enable partial `NavigationView.ItemSource` scenario (https://github.com/unoplatform/uno/issues/2477)
+- Enable partial `NavigationView.ItemSource` scenario (<https://github.com/unoplatform/uno/issues/2477>)
 - [Wasm] Fail gracefully if IDBFS is not enabled in emscripten
 - [#2513] Fix `TransformGroup` not working
 - [#1956] Fis iOS invalid final state when switching visual state before current state's animation is completed.
@@ -253,11 +253,11 @@ uid: Uno.ReleaseNotes.Legacy
 
 - `TextBox` no longer raises TextChanged when its template is applied, in line with UWP.
 - `TextBox.TextChanged` is now called asynchronously after the UI is updated, in line with UWP. For most uses `TextChanging` should be preferred.
-- [Android] `TextBox.IsSpellCheckEnabled = false` is now enforced in a way that may cause issues in certain use cases (see https://stackoverflow.com/a/5188119/1902058). The old behavior can be restored by setting `ShouldForceDisableSpellCheck = false`, per `TextBox`.
+- [Android] `TextBox.IsSpellCheckEnabled = false` is now enforced in a way that may cause issues in certain use cases (see <https://stackoverflow.com/a/5188119/1902058>). The old behavior can be restored by setting `ShouldForceDisableSpellCheck = false`, per `TextBox`.
 - `TextBox.Text = null` will now throw an exception, as on UWP. Pushing `null` via a binding is still valid.
 - Projects targeting Android 8 must now use Xamarin.GooglePlayServices.* 60.1142.1 (60.1142.0 has been unlisted)
 - Projects targeting Android 9 must now use Xamarin.GooglePlayServices.* 71.1600.0
-- [iOS] UIWebView is deprecated and replaced with WKWebView (ITMS-90809: Deprecated API Usage - Apple will stop accepting submissions of apps that use UIWebView APIs . See https://developer.apple.com/documentation/uikit/uiwebview for more information.)
+- [iOS] UIWebView is deprecated and replaced with WKWebView (ITMS-90809: Deprecated API Usage - Apple will stop accepting submissions of apps that use UIWebView APIs . See <https://developer.apple.com/documentation/uikit/uiwebview> for more information.)
 - [iOS] If you set the `ManipulationMode` to something else than `System` or `All`, the [DelaysContentTouches](https://developer.apple.com/documentation/uikit/uiscrollview/1619398-delayscontenttouches) is going to be disabled on all parent `ScrollViewer`
 - [#1237] Static resources defined in App.xaml were not processed and registered properly
     > This change might break the compilation for projects that define duplicate resources in other globally accessible resource dictionaries. Adjustments to remove duplicate resources may be necessary.
@@ -703,7 +703,7 @@ uid: Uno.ReleaseNotes.Legacy
 - Adjust Microsoft.CodeAnalysis versions to avoid restore conflicts
 - Fix element name matching existing types fails to compile (e.g. ContentPresenter)
 - 138735 [Android] Fixed broken DatePicker
-- Multi-selection Check Boxes in ListViewItems are appearing briefly (https://github.com/unoplatform/uno/issues/403)
+- Multi-selection Check Boxes in ListViewItems are appearing briefly (<https://github.com/unoplatform/uno/issues/403>)
 - 140721 [Android] FlipView not visible when navigating back to page
 - 138537 [iOS] App freezes after State selection causing infinite load on every subsequent launch
 - Fix invalid Border Content type for macOS

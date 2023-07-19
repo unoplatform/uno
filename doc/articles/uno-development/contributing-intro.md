@@ -40,7 +40,7 @@ The [Samples App](../../../src/SamplesApp) is the development app contained in t
 
 This app is available live at these locations, built from the default branch:
 
-- WebAssembly: https://aka.platform.uno/wasm-samples-app
+- WebAssembly: <https://aka.platform.uno/wasm-samples-app>
 
 ## Adding tests
 

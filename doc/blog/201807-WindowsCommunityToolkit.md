@@ -7,7 +7,7 @@ uid: Uno.Blog.WindowsCommunityToolkit
 Recent updates to the Uno Platform have allowed for the [Windows Community Toolkit](https://github.com/unoplatform/uno.WindowsCommunityToolkit) to run
 on iOS, Android and the Web through WebAssembly.
 
-You can try it live here in your browser: http://windowstoolkit-wasm.platform.uno
+You can try it live here in your browser: <http://windowstoolkit-wasm.platform.uno>
 
 Support for the Windows toolkit is an important part of the UWP development experience, as it provides controls and helpers missing
 from the UWP base API, such as the [WrapPanel](https://github.com/Microsoft/WindowsCommunityToolkit/tree/master/Microsoft.Toolkit.Uwp.UI.Controls/WrapPanel),

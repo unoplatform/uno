@@ -5,7 +5,7 @@ uid: Uno.Features.FileManagement
 # File Management
 
 > [!TIP]
-> This article covers Uno-specific information for file management. For a full description of the feature and instructions on using it, consult the UWP documentation: https://docs.microsoft.com/en-us/windows/uwp/files/
+> This article covers Uno-specific information for file management. For a full description of the feature and instructions on using it, consult the UWP documentation: <https://docs.microsoft.com/en-us/windows/uwp/files/>
 
 * File management allows shared reading and writing of files across all Uno Platform targets
 

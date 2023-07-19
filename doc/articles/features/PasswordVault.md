@@ -9,7 +9,7 @@ uid: Uno.Features.PasswordVault
 <!-- Leave the info tip below in place, and add a link to the UWP documentation for the feature or control you're documenting. If the feature has no UWP equivalent, you should be using the Uno-only feature template: .feature-template-uno-only.md -->
 
 > [!TIP]
-> This article covers Uno-specific information for `Windows.Security.Credentials.PasswordVault` API. For a full description of the feature and instructions on using it, consult the UWP documentation: https://docs.microsoft.com/en-us/uwp/api/windows.security.credentials.passwordvault
+> This article covers Uno-specific information for `Windows.Security.Credentials.PasswordVault` API. For a full description of the feature and instructions on using it, consult the UWP documentation: <https://docs.microsoft.com/en-us/uwp/api/windows.security.credentials.passwordvault>
 
 * The `PasswordVault` is a credentials manager that is persisted using a secured storage.
 * `PasswordCredential` is used to manipulate passwords in the vault.
@@ -37,14 +37,14 @@ The implementation uses the `AndroidKeyStore` which was introduced with API 18 (
 The `KeyStore` is used to generate a symmetric key which is then used to encrypt and decrypt a file persisted in the application directory.
 The key is managed by the `KeyStore` itself, which usually uses the hardware component to persist it. The key is not even accessible to the application.
 
-More info: https://developer.android.com/reference/java/security/KeyStore
+More info: <https://developer.android.com/reference/java/security/KeyStore>
 
 ### [**iOS**](#tab/iOS)
 
 The `PasswordVault` is directly stored in the iOS `KeyChain` which is the recommended way to store secrets on iOS devices.
 It's backed by hardware components that ensure that the data is almost impossible to retrieve if not granted.
 
-More info: https://developer.apple.com/documentation/security/certificate_key_and_trust_services/keys/storing_keys_in_the_keychain
+More info: <https://developer.apple.com/documentation/security/certificate_key_and_trust_services/keys/storing_keys_in_the_keychain>
 
 ### [**WebAssembly**](#tab/WebAssembly)
 

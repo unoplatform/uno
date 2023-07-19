@@ -12,9 +12,9 @@ For the DocFX tool used to build the docs website, see [more info here](docfx.md
 
 #### Key links
 
-* how-to template: https://github.com/unoplatform/uno/blob/master/doc/.howto-template.md
-* WinUI feature template: https://github.com/unoplatform/uno/blob/master/doc/.feature-template.md
-* Uno-only feature template: https://github.com/unoplatform/uno/blob/master/doc/.feature-template-uno-only.md
+* how-to template: <https://github.com/unoplatform/uno/blob/master/doc/.howto-template.md>
+* WinUI feature template: <https://github.com/unoplatform/uno/blob/master/doc/.feature-template.md>
+* Uno-only feature template: <https://github.com/unoplatform/uno/blob/master/doc/.feature-template-uno-only.md>
 
 #### Resources
 
@@ -62,7 +62,7 @@ It's important to document these novel features when you add them, since they ar
 
 ## Updating the documentation from linked repositories
 
-The Uno Platform documentation is aggregated onto https://platform.uno/docs/articles/intro.html, including some repositories that are in the unoplatform GitHub organization.
+The Uno Platform documentation is aggregated onto <https://platform.uno/docs/articles/intro.html>, including some repositories that are in the unoplatform GitHub organization.
 
 ### Updating the documentation for other repositories
 

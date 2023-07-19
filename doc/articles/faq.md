@@ -45,7 +45,7 @@ To be exact, add "Class Library" VB project (not "Class Library (.Net Framework)
 If you want to use this library for UWP app compatible with Windows Phone (e.g. Lumia), now unsupported by Microsoft, you have to change Target Framework to ".NET Standard 1.4" (in Project, Properties), as this is last .NET Standard version which can be used with projects targeting Windows 10 15063.
 To use this library in Uno heads for all platforms, add a reference to this library (the simplest way is to right click on "References" nodes inside these heads).
 You can use same Class Library also in your original, VB project. The same Class Library can also be used in any other .Net Standard compatible projects.
-Additionally, if you’d like to move any of your VB.NET code to C# you may be able to use automated tools such as https://converter.telerik.com
+Additionally, if you’d like to move any of your VB.NET code to C# you may be able to use automated tools such as <https://converter.telerik.com>
 
 The best course of action is to do a POC and our team is happy to assist you in validating Uno Platform’s fit. Please [contact us](https://platform.uno/contact) with any queries.
 
@@ -66,7 +66,7 @@ Read more about [Uno and WinUI 3](uwp-vs-winui3.md).
 
 Universal Windows Platform (UWP) is an API created by Microsoft and first introduced in Windows 10. The purpose of this platform is to help develop universal apps that run on Windows 10, Windows 10 Mobile, Xbox One and HoloLens without the need to be re-written for each. It supports Windows app development using C++, C#, VB.NET, and XAML. The API is implemented in C++, and supported in C++, VB.NET, C#, F# and JavaScript. Designed as an extension to the Windows Runtime platform first introduced in Windows Server 2012 and Windows 8, UWP allows developers to create apps that will potentially run on multiple types of devices.
 
-Visit Microsoft's documentation for a primer on UWP : https://docs.microsoft.com/en-us/windows/uwp/get-started/
+Visit Microsoft's documentation for a primer on UWP : <https://docs.microsoft.com/en-us/windows/uwp/get-started/>
 
 #### How is Uno Platform different from Xamarin.Forms, MAUI or Avalonia?
 

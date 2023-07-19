@@ -36,7 +36,7 @@ To fix this, find or add the following block in your Windows `.csproj` file:
 To find the appropriate version:
 
 - The two `FrameworkReference` packages must be aligned with the "build" version number (`22000` in the example above) of the "Microsoft.Windows.SDK.BuildTools" package defined earlier in the project
-- The "revision" version number (`25` in the example above) must be the highest found in the versions of https://www.nuget.org/packages/Microsoft.Windows.SDK.NET.Ref.
+- The "revision" version number (`25` in the example above) must be the highest found in the versions of <https://www.nuget.org/packages/Microsoft.Windows.SDK.NET.Ref>.
 
 ## Un-packaged application support
 

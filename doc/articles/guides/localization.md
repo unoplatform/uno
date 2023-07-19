@@ -98,7 +98,7 @@ See the completed sample on GitHub: [LocalizationSamples/Localization](https://g
 
 ## Additional Resources
 
-https://docs.microsoft.com/en-us/windows/uwp/design/globalizing/globalizing-portal
+<https://docs.microsoft.com/en-us/windows/uwp/design/globalizing/globalizing-portal>
 
 <br>
 

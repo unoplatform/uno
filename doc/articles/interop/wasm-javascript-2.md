@@ -160,7 +160,7 @@ Let's create an app to integrate a Syntax Highlighter named [`PrismJS`](https://
 
 🎯  In this section, PrismJS files are downloaded from their website and placed as assets in the app.
 
-1. Go to this link: https://prismjs.com/download.html
+1. Go to this link: <https://prismjs.com/download.html>
 2. Choose desired Themes & Languages (`Default` theme + all languages is used for the demo)
 3. Press the `DOWNLOAD JS` button and put the `prism.js` file in the `WasmScripts` folder of the `.Wasm` project.
 
@@ -271,6 +271,6 @@ This sample is a very simple integration as there is no _callback_ from HTML to 
 Some additional improvements can be done to make the code more production ready:
 
 * **Make the control multi-platform**. A simple way would be to use a WebView on other platforms, giving the exact same text-rendering framework everywhere. The code of this sample won't compile on other targets.
-* **Create script files instead of generating dynamic JavaScript**. That would have the advantage of improving performance and make it easier to debug the code. A few projects are also using TypeScript to generate JavaScript. This approach is done by Uno itself for the `Uno.UI.Wasm` project: https://github.com/unoplatform/uno/blob/master/src/Uno.UI/Uno.UI.Wasm.csproj.
+* **Create script files instead of generating dynamic JavaScript**. That would have the advantage of improving performance and make it easier to debug the code. A few projects are also using TypeScript to generate JavaScript. This approach is done by Uno itself for the `Uno.UI.Wasm` project: <https://github.com/unoplatform/uno/blob/master/src/Uno.UI/Uno.UI.Wasm.csproj>.
 * **Support more PrismJS features**. There are many [_plugins_ for PrismJS](https://prismjs.com/#plugins) that can be used. Most of them are very easy to implement.
 * [Continue with Part 3](wasm-javascript-3.md) - an integration of a more complex library with callbacks to application.

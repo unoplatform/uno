@@ -5,7 +5,7 @@ uid: Uno.Features.AppCloseHandler
 # App Close Handler
 
 > [!TIP]
-> This article covers Uno-specific information for YourFeature. For a full description of the feature and instructions on using it, consult the UWP documentation: https://docs.microsoft.com/en-us/uwp/api/windows.ui.core.preview.systemnavigationmanagerpreview.closerequested
+> This article covers Uno-specific information for YourFeature. For a full description of the feature and instructions on using it, consult the UWP documentation: <https://docs.microsoft.com/en-us/uwp/api/windows.ui.core.preview.systemnavigationmanagerpreview.closerequested>
 
 * The `SystemNavigationManagerPreview` API allows your app to handle or prevent users' requests to close it. This only works for standard app closing requests - the user can still kill the application's process by other means.
 

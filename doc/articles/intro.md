@@ -121,7 +121,7 @@ Free support is available via our [GitHub Discussions](https://github.com/unopla
 
 The Uno Platform is free and open source under the Apache 2.0 license. Alongside valued contributions from the Uno community, development by the core team is sustained by paid professional support contracts offered to enterprises who use Uno Platform. [Learn more about our paid professional support.](https://platform.uno/contact/)
 
-More details about sustainability are covered here: https://platform.uno/blog/sustaining-the-open-source-uno-platform/
+More details about sustainability are covered here: <https://platform.uno/blog/sustaining-the-open-source-uno-platform/>
 
 <br>
 

@@ -103,7 +103,7 @@ For each shell you're opening afterwards, you'll have to do the following:
   python3 server.py
   ```
 
-  The application will be available at http://localhost:8000
+  The application will be available at <http://localhost:8000>
 
 You'll notice that the `mono.wasm` is roughly between 20MB and 30MB, depending on the [linker settings you've set](https://github.com/unoplatform/uno.Wasm.Bootstrap#linker-configuration), and using packages like Json.NET can significantly increase the binary size.
 

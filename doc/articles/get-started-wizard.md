@@ -21,7 +21,7 @@ uid: Uno.GetStarted.Wizard
 
 The Uno Platform features and support are constantly evolving, but you may encounter some of the issues below while building your application. Some additional topics may be found in the [GitHub top discussions](https://github.com/unoplatform/uno/discussions).
 
-#### WebAssembly: Access to fetch at 'https://XXXX' from origin 'http://XXXX' has been blocked by CORS policy
+#### WebAssembly: Access to fetch at '<https://XXXX>' from origin '<http://XXXX>' has been blocked by CORS policy
 
 This is a security restriction from the JavaScript `fetch` API, where the endpoint you're calling needs to provide [CORS headers](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) to work properly.
 

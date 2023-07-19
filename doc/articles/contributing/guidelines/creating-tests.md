@@ -22,11 +22,11 @@ These are the main types of tests in Uno:
 
  Test type                   | Location
  --------------------------- | ---------------------------------------------------------------------------------
- UI tests                    | https://github.com/unoplatform/uno/tree/master/src/SamplesApp/SamplesApp.UITests
- .NET Framework unit tests   | https://github.com/unoplatform/uno/tree/master/src/Uno.UI.Tests
- Platform runtime unit tests | https://github.com/unoplatform/uno/tree/master/src/Uno.UI.RuntimeTests
- XAML code generation tests  | https://github.com/unoplatform/uno/tree/master/src/SourceGenerators/XamlGenerationTests
- UI snapshot tests           | (https://github.com/unoplatform/uno/tree/master/src/SamplesApp/UITests.Shared
+ UI tests                    | <https://github.com/unoplatform/uno/tree/master/src/SamplesApp/SamplesApp.UITests>
+ .NET Framework unit tests   | <https://github.com/unoplatform/uno/tree/master/src/Uno.UI.Tests>
+ Platform runtime unit tests | <https://github.com/unoplatform/uno/tree/master/src/Uno.UI.RuntimeTests>
+ XAML code generation tests  | <https://github.com/unoplatform/uno/tree/master/src/SourceGenerators/XamlGenerationTests>
+ UI snapshot tests           | (<https://github.com/unoplatform/uno/tree/master/src/SamplesApp/UITests.Shared>
 
  All these tests are run on each CI build, and all tests must pass before a PR can be merged.
 
