@@ -11,9 +11,9 @@ uid: Uno.Development.HostWebAssemblyApp
 
 Regardless of the web server (or reverse proxy) software used, the support the following Content (MIME) types are always needed:
 
--   `application/wasm`
--   `application/octet-stream`
--   `application/font-woff`
+- `application/wasm`
+- `application/octet-stream`
+- `application/font-woff`
 
 ## Nginx
 

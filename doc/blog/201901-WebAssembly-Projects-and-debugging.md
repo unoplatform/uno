@@ -67,8 +67,8 @@ The Mono team recently added the ability to get the source files from debugging 
 
 ![Debugger - Error message telling you that Chrome has not been opened](Assets/201901-debugger-step-01.png)
 
--  Close all your chrome instances and run Chrome again using the provided command line
--  Once again, once your application is loaded, press **Alt+Shift+D**, a new tab will open.
+- Close all your chrome instances and run Chrome again using the provided command line
+- Once again, once your application is loaded, press **Alt+Shift+D**, a new tab will open.
 - You will now get the Chrome DevTools to open listing all the .NET loaded assemblies on the Sources tab:
 
 ![Debugger - Chrome DevTools listing all the .NET loaded assemblies on the Sources tab](Assets/201901-debugger-step-02.png)

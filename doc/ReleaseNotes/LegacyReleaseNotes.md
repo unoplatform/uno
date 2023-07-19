@@ -162,7 +162,7 @@ uid: Uno.ReleaseNotes.Legacy
   - `ReportInterval`
 - Support for `Launcher.QueryUriSupportAsync` method on Android and iOS
 - [#1493](https://github.com/unoplatform/uno/pull/1493) - Implemented the `Windows.Input.PointerUpdateKind` Enum.
--  [#1428](https://github.com/unoplatform/uno/issues/1428) - Add support for horizontal progress bars to `BindableProgressBar` on Android.
+- [#1428](https://github.com/unoplatform/uno/issues/1428) - Add support for horizontal progress bars to `BindableProgressBar` on Android.
 - Add support for `Windows.Devices.Sensors.Magnetometer` APIs on iOS, Android and WASM
   - `ReadingChanged`
   - `ReportInterval`

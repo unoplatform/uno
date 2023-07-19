@@ -294,7 +294,7 @@ This service will not only provide the means to login and logout a user, it will
     }
     ```
 
-1.  To ensure the service has a private constructor, add the following:
+1. To ensure the service has a private constructor, add the following:
 
     ```csharp
     private AuthenticationService()

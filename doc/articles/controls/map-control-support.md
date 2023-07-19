@@ -103,14 +103,14 @@ The key will be set as the value for the parameter *MapServiceToken* for the Map
 
 + Create a project in the Google Developers Console.
 
-+  Enable Map Service. In case this is your first time using the Google Maps API you will need to enable it before using it.
++ Enable Map Service. In case this is your first time using the Google Maps API you will need to enable it before using it.
 
         1. Go to https://console.developers.google.com
         2. Login with a Google account
         3. Click on "Enable APIs and Services"
         4. Select "Maps SDK for Android" and click on Enable
 
-+  Generate an API key.
++ Generate an API key.
 
         1.  If you are coming from step-2 just navigate back until you are again in the dashboard, otherwise, go to  https://console.developers.google.com and login with a Google account.
         2.  Go to the Credentials section on the left-hand side menu
@@ -124,13 +124,13 @@ The key will be set as the value for the parameter *MapServiceToken* for the Map
 ## Configure your application.
 
 + For **Android**
-    1.  Add the following to AndroidManifest.xml:
+    1. Add the following to AndroidManifest.xml:
 
     ```xml
     <uses-library android:name="com.google.android.maps" />
     ```
 
-    2.  Add the API key to `AssemblyInfo.cs`.
+    2. Add the API key to `AssemblyInfo.cs`.
 
     ```csharp
 	[assembly: MetaData("com.google.android.maps.v2.API_KEY", Value = "YOUR_API_KEY")]
@@ -140,7 +140,7 @@ The key will be set as the value for the parameter *MapServiceToken* for the Map
 
     Note: Since this key might vary depending on the platform and environment we suggest using a constant class where the key could be retrieved from.
 
-    3.  Add the relevant permissions to `AssemblyInfo.cs`. For example, if you wish to access the user location
+    3. Add the relevant permissions to `AssemblyInfo.cs`. For example, if you wish to access the user location
 
 	 ```csharp
 	[assembly: UsesPermission(Android.Manifest.Permission.AccessFineLocation)]
