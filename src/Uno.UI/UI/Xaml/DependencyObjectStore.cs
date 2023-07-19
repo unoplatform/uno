@@ -638,8 +638,9 @@ namespace Windows.UI.Xaml
 				return;
 			}
 
-			if (Equals(previousValue, baseValue) &&
-				propertyDetails.Metadata is FrameworkPropertyMetadata fpmd && !fpmd.Options.HasFlag(FrameworkPropertyMetadataOptions.CoerceWhenUnchanged))
+			var options = (propertyDetails.Metadata as FrameworkPropertyMetadata)?.Options ?? FrameworkPropertyMetadataOptions.Default;
+
+			if (Equals(previousValue, baseValue) && !options.HasFlag(FrameworkPropertyMetadataOptions.CoerceWhenUnchanged))
 			{
 				// Value hasn't changed, don't coerce.
 				return;
@@ -655,8 +656,7 @@ namespace Windows.UI.Xaml
 				// Source: https://msdn.microsoft.com/en-us/library/ms745795%28v=vs.110%29.aspx?f=255&MSPPError=-2147217396
 				SetValueInternal(previousValue, DependencyPropertyValuePrecedences.Coercion, propertyDetails);
 			}
-			else if (!Equals(coercedValue, baseValue) ||
-				(propertyDetails.Metadata is FrameworkPropertyMetadata fpmd2 && fpmd2.Options.HasFlag(FrameworkPropertyMetadataOptions.KeepCoercedWhenEquals)))
+			else if (!Equals(coercedValue, baseValue) || options.HasFlag(FrameworkPropertyMetadataOptions.KeepCoercedWhenEquals))
 			{
 				// The base value and the coerced value are different, which means that coercion must be applied.
 				// Set value using DependencyPropertyValuePrecedences.Coercion, which has the highest precedence.
