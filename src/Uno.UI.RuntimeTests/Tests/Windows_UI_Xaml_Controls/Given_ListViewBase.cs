@@ -2838,6 +2838,233 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Assert.Fail("DataTemplateSelector.SelectTemplateCore is invoked during an INCC reset.");
 			}
 		}
+<<<<<<< HEAD
+=======
+
+		[TestMethod]
+		public async Task When_Items_Have_Duplicates_ListView() => await When_Items_Have_Duplicates_Common(new ListView());
+
+		[TestMethod]
+		public async Task When_Items_Have_Duplicates_GridView() => await When_Items_Have_Duplicates_Common(new GridView());
+
+		[TestMethod]
+		public async Task When_Items_Have_Duplicates_ComboBox() => await When_Items_Have_Duplicates_Common(new ComboBox());
+
+		[TestMethod]
+		public async Task When_Items_Have_Duplicates_FlipView() => await When_Items_Have_Duplicates_Common(new FlipView());
+
+		private async Task When_Items_Have_Duplicates_Common(Selector sut)
+		{
+			var items = new ObservableCollection<string>(new[]
+			{
+				"String 1",
+				"String 1",
+				"String 1",
+				"String 2",
+				"String 2",
+				"String 2",
+				"String 3",
+				"String 3",
+				"String 3",
+				"String 1",
+				"String 1",
+				"String 1",
+				"String 2",
+				"String 2",
+				"String 2",
+				"String 3",
+				"String 3",
+				"String 3",
+			});
+			sut.ItemsSource = items;
+			var list = new List<SelectionChangedEventArgs>();
+			sut.SelectionChanged += (_, e) => list.Add(e);
+			sut.SelectedIndex = 2;
+			Assert.AreEqual(2, sut.SelectedIndex);
+			sut.SelectedIndex = 0;
+			Assert.AreEqual(0, sut.SelectedIndex);
+			sut.SelectedIndex = 1;
+			Assert.AreEqual(1, sut.SelectedIndex);
+
+			Assert.AreEqual(3, list.Count);
+			var removed1 = list[0].RemovedItems;
+			var removed2 = list[1].RemovedItems;
+			var removed3 = list[2].RemovedItems;
+
+			var added1 = list[0].AddedItems;
+			var added2 = list[1].AddedItems;
+			var added3 = list[2].AddedItems;
+
+			if (sut is FlipView)
+			{
+				Assert.AreEqual("String 1", (string)removed1.Single());
+			}
+			else
+			{
+				Assert.AreEqual(0, removed1.Count);
+			}
+
+			Assert.AreEqual("String 1", (string)added1.Single());
+
+			Assert.AreEqual("String 1", (string)removed2.Single());
+			Assert.AreEqual("String 1", (string)added2.Single());
+
+			Assert.AreEqual("String 1", (string)removed3.Single());
+			Assert.AreEqual("String 1", (string)added3.Single());
+		}
+
+		private sealed class AlwaysEqualClass : IEquatable<AlwaysEqualClass>
+		{
+			public bool Equals(AlwaysEqualClass obj) => true;
+			public override bool Equals(object obj) => true;
+			public override int GetHashCode() => 0;
+		}
+
+		[TestMethod]
+		public async Task When_Items_Are_Equal_But_Different_References_ListView() => await When_Items_Are_Equal_But_Different_References_Common(new ListView());
+
+		[TestMethod]
+		public async Task When_Items_Are_Equal_But_Different_References_GridView() => await When_Items_Are_Equal_But_Different_References_Common(new GridView());
+
+		[TestMethod]
+		public async Task When_Items_Are_Equal_But_Different_References_ComboBox() => await When_Items_Are_Equal_But_Different_References_Common(new ComboBox());
+
+		[TestMethod]
+		public async Task When_Items_Are_Equal_But_Different_References_FlipView() => await When_Items_Are_Equal_But_Different_References_Common(new FlipView());
+
+		public record When_Header_DataContext_Model(string MyText);
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Header_DataContext()
+		{
+			TextBlock header = new TextBlock { Text = "empty" };
+			TextBlock header2 = new TextBlock { Text = "empty" };
+
+			header.DataContextChanged += (s, e) => {
+				e.ToString();
+			};
+
+			var SUT = new ListView()
+			{
+				ItemContainerStyle = BasicContainerStyle,
+				Header = new StackPanel
+				{
+					Background = new SolidColorBrush(Colors.Red),
+					Children = {
+						header,
+						header2,
+					}
+				}
+			};
+
+			header.SetBinding(TextBlock.TextProperty, new Binding { Path = new PropertyPath("MyText") });
+			header2.SetBinding(TextBlock.TextProperty, new Binding { Path = new PropertyPath(".") });
+
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForIdle();
+
+			var source = new[] {
+				new ListViewItem(){ Content = "item 1" },
+			};
+
+			SUT.ItemsSource = source;
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsNull(header.DataContext);
+
+			SUT.DataContext = new When_Header_DataContext_Model("test value");
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(SUT.DataContext, header.DataContext);
+			Assert.AreEqual("test value", header.Text);
+			Assert.AreEqual(SUT.DataContext, header2.DataContext);
+			Assert.AreEqual(header2.DataContext.ToString(), header2.Text);
+		}
+
+		[RunsOnUIThread]
+		[TestMethod]
+		public async Task When_Footer_DataContext()
+		{
+			TextBlock header = new TextBlock { Text = "empty" };
+			TextBlock header2 = new TextBlock { Text = "empty" };
+
+			var SUT = new ListView()
+			{
+				ItemContainerStyle = BasicContainerStyle,
+				Footer = new StackPanel
+				{
+					Background = new SolidColorBrush(Colors.Red),
+					Children = {
+						header,
+						header2,
+					}
+				}
+			};
+
+			header.SetBinding(TextBlock.TextProperty, new Binding { Path = new PropertyPath("MyText") });
+			header2.SetBinding(TextBlock.TextProperty, new Binding { Path = new PropertyPath(".") });
+
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForIdle();
+
+			var source = new[] {
+				new ListViewItem(){ Content = "item 1" },
+			};
+
+			SUT.ItemsSource = source;
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsNull(header.DataContext);
+
+			SUT.DataContext = new When_Header_DataContext_Model("test value");
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(SUT.DataContext, header.DataContext);
+			Assert.AreEqual("test value", header.Text);
+			Assert.AreEqual(SUT.DataContext, header2.DataContext);
+			Assert.AreEqual(header2.DataContext.ToString(), header2.Text);
+		}
+
+		private async Task When_Items_Are_Equal_But_Different_References_Common(Selector sut)
+		{
+			var obj1 = new AlwaysEqualClass();
+			var obj2 = new AlwaysEqualClass();
+			var items = new ObservableCollection<AlwaysEqualClass>(new[]
+			{
+				obj1, obj2
+			});
+			sut.ItemsSource = items;
+			var list = new List<SelectionChangedEventArgs>();
+			sut.SelectionChanged += (_, e) => list.Add(e);
+			sut.SelectedIndex = 1;
+			Assert.AreEqual(1, sut.SelectedIndex);
+			Assert.AreSame(obj2, sut.SelectedItem);
+			sut.SelectedIndex = 0;
+			Assert.AreEqual(0, sut.SelectedIndex);
+			Assert.AreSame(obj1, sut.SelectedItem);
+
+			Assert.AreEqual(2, list.Count);
+			var removed1 = list[0].RemovedItems;
+			var removed2 = list[1].RemovedItems;
+
+			var added1 = list[0].AddedItems;
+			var added2 = list[1].AddedItems;
+
+			if (sut is FlipView)
+			{
+				Assert.AreSame(obj1, removed1.Single());
+			}
+			else
+			{
+				Assert.AreEqual(0, removed1.Count);
+			}
+			Assert.AreSame(obj2, added1.Single());
+
+			Assert.AreSame(obj2, removed2.Single());
+			Assert.AreSame(obj1, added2.Single());
+		}
+>>>>>>> d6de22644f (fix(listview): [iOS] Adjust datacontext for header/footer for ListView)
 	}
 
 	public partial class Given_ListViewBase // data class, data-context, view-model, template-selector

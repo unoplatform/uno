@@ -171,6 +171,10 @@ namespace Windows.UI.Xaml.Controls
 			{
 				key.IsDisplayed = false;
 
+				// Reset the parent that may have been set by
+				// GetBindableSupplementaryView for header and footer content
+				key.Content.SetParent(null);
+
 				if (_onRecycled.TryGetValue(key, out var actions))
 				{
 					foreach (var a in actions) { a(); }
@@ -396,8 +400,18 @@ namespace Windows.UI.Xaml.Controls
 					supplementaryView.Content = content
 						.Binding("Content", "");
 				}
-				supplementaryView.Content.ContentTemplate = template;
-				supplementaryView.Content.DataContext = context;
+
+				if (elementKind == NativeListViewBase.ListViewFooterElementKindNS || elementKind == NativeListViewBase.ListViewHeaderElementKindNS)
+				{
+					supplementaryView.Content.SetParent(Owner.XamlParent);
+					supplementaryView.Content.Content = context;
+				}
+				else
+				{
+					supplementaryView.Content.ContentTemplate = template;
+					supplementaryView.Content.DataContext = context;
+				}
+
 				if (style != null)
 				{
 					supplementaryView.Content.Style = style;
