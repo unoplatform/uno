@@ -9,6 +9,7 @@ using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Threading;
+using Windows.UI.Core;
 
 namespace Windows.UI.Xaml.Controls;
 
@@ -41,6 +42,8 @@ public partial class WebView : Control, IWebView
 	bool IWebView.IsLoaded => IsLoaded;
 
 	bool IWebView.SwitchSourceBeforeNavigating => true;
+
+	CoreDispatcher IWebView.Dispatcher => Dispatcher;
 
 	protected override void OnApplyTemplate() => CoreWebView2.OnOwnerApplyTemplate();
 

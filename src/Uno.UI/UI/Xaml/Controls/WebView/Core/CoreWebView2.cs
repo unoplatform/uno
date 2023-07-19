@@ -31,6 +31,8 @@ public partial class CoreWebView2
 		_owner = owner;
 	}
 
+	internal IWebView Owner => _owner;
+
 	/// <summary>
 	/// Gets the CoreWebView2Settings object contains various modifiable
 	/// settings for the running WebView.
