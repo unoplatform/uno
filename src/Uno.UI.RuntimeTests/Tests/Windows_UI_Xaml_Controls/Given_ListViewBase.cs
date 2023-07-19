@@ -2933,6 +2933,100 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task When_Items_Are_Equal_But_Different_References_FlipView() => await When_Items_Are_Equal_But_Different_References_Common(new FlipView());
 
+		public record When_Header_DataContext_Model(string MyText);
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Header_DataContext()
+		{
+			TextBlock header = new TextBlock { Text = "empty" };
+			TextBlock header2 = new TextBlock { Text = "empty" };
+
+			header.DataContextChanged += (s, e) => {
+				e.ToString();
+			};
+
+			var SUT = new ListView()
+			{
+				ItemContainerStyle = BasicContainerStyle,
+				Header = new StackPanel
+				{
+					Background = new SolidColorBrush(Colors.Red),
+					Children = {
+						header,
+						header2,
+					}
+				}
+			};
+
+			header.SetBinding(TextBlock.TextProperty, new Binding { Path = new PropertyPath("MyText") });
+			header2.SetBinding(TextBlock.TextProperty, new Binding { Path = new PropertyPath(".") });
+
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForIdle();
+
+			var source = new[] {
+				new ListViewItem(){ Content = "item 1" },
+			};
+
+			SUT.ItemsSource = source;
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsNull(header.DataContext);
+
+			SUT.DataContext = new When_Header_DataContext_Model("test value");
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(SUT.DataContext, header.DataContext);
+			Assert.AreEqual("test value", header.Text);
+			Assert.AreEqual(SUT.DataContext, header2.DataContext);
+			Assert.AreEqual(header2.DataContext.ToString(), header2.Text);
+		}
+
+		[RunsOnUIThread]
+		[TestMethod]
+		public async Task When_Footer_DataContext()
+		{
+			TextBlock header = new TextBlock { Text = "empty" };
+			TextBlock header2 = new TextBlock { Text = "empty" };
+
+			var SUT = new ListView()
+			{
+				ItemContainerStyle = BasicContainerStyle,
+				Footer = new StackPanel
+				{
+					Background = new SolidColorBrush(Colors.Red),
+					Children = {
+						header,
+						header2,
+					}
+				}
+			};
+
+			header.SetBinding(TextBlock.TextProperty, new Binding { Path = new PropertyPath("MyText") });
+			header2.SetBinding(TextBlock.TextProperty, new Binding { Path = new PropertyPath(".") });
+
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForIdle();
+
+			var source = new[] {
+				new ListViewItem(){ Content = "item 1" },
+			};
+
+			SUT.ItemsSource = source;
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsNull(header.DataContext);
+
+			SUT.DataContext = new When_Header_DataContext_Model("test value");
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(SUT.DataContext, header.DataContext);
+			Assert.AreEqual("test value", header.Text);
+			Assert.AreEqual(SUT.DataContext, header2.DataContext);
+			Assert.AreEqual(header2.DataContext.ToString(), header2.Text);
+		}
+
 		private async Task When_Items_Are_Equal_But_Different_References_Common(Selector sut)
 		{
 			var obj1 = new AlwaysEqualClass();
