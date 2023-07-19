@@ -1,4 +1,5 @@
-﻿#nullable enable
+﻿#if !NETFRAMEWORK
+#nullable enable
 
 using System;
 using System.Globalization;
@@ -31,3 +32,4 @@ public partial class HotRestartGenerator
 		customTags: WellKnownDiagnosticTags.NotConfigurable);
 
 }
+#endif

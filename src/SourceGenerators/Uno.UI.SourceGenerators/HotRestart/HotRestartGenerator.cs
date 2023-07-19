@@ -1,4 +1,5 @@
-﻿#nullable enable
+﻿#if !NETFRAMEWORK
+#nullable enable
 
 using System;
 using System.Linq;
@@ -120,3 +121,4 @@ public partial class HotRestartGenerator : ISourceGenerator
 	}
 }
 
+#endif
