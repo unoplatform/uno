@@ -509,6 +509,9 @@ namespace Windows.UI.Xaml.Controls
 		partial void OnSelectionModeChangedPartial(ListViewSelectionMode oldSelectionMode, ListViewSelectionMode newSelectionMode)
 		{
 			SelectedIndex = -1;
+			ExtendedShiftSelectionStart = 0;
+			FocusedContainerAndIndex = (-1, null);
+			
 			foreach (var item in SelectedItems.ToList())
 			{
 				SetSelectedState(IndexFromItem(item), false);
