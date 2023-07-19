@@ -36,10 +36,10 @@ The steps to enable Dark mode in a browser vary by browser. See the following gu
 
 When you change the theme mode on your device, the system will send a notification to your app. The colors of UI elements in your app will automatically switch over as long as you do _not_ specify a theme in any of the following places:
 
-* `App` constructor
-* `App.xaml` 
-* `AppResources.xaml`
-* The `RequestedTheme` property of a parent `FrameworkElement`
+- `App` constructor
+- `App.xaml` 
+- `AppResources.xaml`
+- The `RequestedTheme` property of a parent `FrameworkElement`
 
 However, your app can still react manually to changes in the theme mode. To do so, you can use the [Uno.CommunityToolkit.WinUI.UI](https://www.nuget.org/packages/Uno.CommunityToolkit.WinUI.UI) NuGet package. This package is not required to change the app color theme, but it contains a `ThemeListener` class that can be used to listen for OS theme changes. To actually change the app color theme at runtime, you need to install the [Uno.Toolkit.UI](https://www.nuget.org/packages/Uno.Toolkit.UI) NuGet package which contains a `SystemThemeHelper` class.
 

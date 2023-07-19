@@ -71,13 +71,13 @@ The history should be squashed to meaningful commits, and the branch should be r
 We typically don't merge pull-requests by hand, instead we rely on automation and a process of the pull-request initiator adding the `ready-for-merge` label. If the person who initiated the pull-request does not have permission to add a label then the reviewers can add it when the contribution is ready to ship:
 
 The automation logic is as follows:
-* When a pull-request to `master`
-* The `continuous integration tests` passes
-* Has `2 or more approvals`
-* There are `no requests for change`
-* Is labelled with `ready-to-merge`
-* Not labelled with `do-not-merge/breaking-changes` or `do-not-merge/work-in-progress`
-* It will be automatically merged.
+- When a pull-request to `master`
+- The `continuous integration tests` passes
+- Has `2 or more approvals`
+- There are `no requests for change`
+- Is labelled with `ready-to-merge`
+- Not labelled with `do-not-merge/breaking-changes` or `do-not-merge/work-in-progress`
+- It will be automatically merged.
 
 This logic is defined in [this file](https://github.com/unoplatform/Uno/blob/master/.mergify.yml).
 

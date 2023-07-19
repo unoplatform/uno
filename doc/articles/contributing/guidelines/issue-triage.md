@@ -78,27 +78,27 @@ After a contributor has successfully completed 1-2 `good first issue`'s, they sh
 
 These items need to ensure that they follow the guidelines for `help wanted` labels (above) in addition to meeting the following criteria:
 
-- **No Barrier to Entry**
+* **No Barrier to Entry**
 
   The task is something that a new contributor can tackle without advanced setup, or domain knowledge.
 
-- **Solution Explained**
+* **Solution Explained**
 
   The recommended solution is clearly described in the issue.
 
-- **Provides Context**
+* **Provides Context**
 
   If background knowledge is required, this should be explicitly mentioned and a list of suggested readings included.
 
-- **Gives Examples**
+* **Gives Examples**
 
   Link to examples of similar implementations so new contributors have a reference guide for their changes.
 
-- **Identifies Relevant Code**
+* **Identifies Relevant Code**
 
   The relevant code and tests to be changed should be linked in the issue.
 
-- **Ready to Test**
+* **Ready to Test**
 
   There should be existing tests that can be modified, or existing test cases fit to be copied. If the area of code doesn't have tests, before labelling the issue, add a test fixture. This prep often makes a great `help wanted` task!
 
@@ -171,4 +171,4 @@ When commenting on an issue or pull request, there's a [feature in GitHub](https
 
 ## Acknowledgements
 
-- This document was based off the [Kubernetes community sig guidelines](https://github.com/kubernetes/community/blob/e4eabb7c3c26ce4463f1ab89e0ad94a7a7671b08/contributors/guide/issue-triage.md).
+* This document was based off the [Kubernetes community sig guidelines](https://github.com/kubernetes/community/blob/e4eabb7c3c26ce4463f1ab89e0ad94a7a7671b08/contributors/guide/issue-triage.md).

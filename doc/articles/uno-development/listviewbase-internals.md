@@ -118,8 +118,8 @@ The measuring logic for iOS' `ListView` makes an initial guess for the size of e
 
 On WASM, Skia, and macOS, `ListViewBase` uses a shared implementation that's dubbed 'managed' because it doesn't rely upon an external native control. The visible implementation details of the managed `ListView` are much closer to UWP. Specifically:
 
- - the items panel is a 'real' panel which hosts the ListViewItems as its children. The size of the panel reflects the estimated total size based on the number of items, as determined by the list.
- - the `ScrollViewer` in the ListView's control template is a 'real' `ScrollViewer`, ie it is in fact responsible for scrolling.
+ * the items panel is a 'real' panel which hosts the ListViewItems as its children. The size of the panel reflects the estimated total size based on the number of items, as determined by the list.
+ * the `ScrollViewer` in the ListView's control template is a 'real' `ScrollViewer`, ie it is in fact responsible for scrolling.
 
 The internals of the managed `ListView` were originally implemented independently of the UWP source, but have been gradually converging on the internals of UWP.
 

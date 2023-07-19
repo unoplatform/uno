@@ -100,5 +100,5 @@ https://docs.microsoft.com/en-us/windows/uwp/design/globalizing/globalizing-port
 > [!TIP]
 > If you ran into difficulties with any part of this guide, you can:
 >
-> * Ask for help on our [Discord channel](https://www.platform.uno/discord) - #uno-platform
-> * Ask a question on [GitHub Discussions](https://github.com/unoplatform/uno/discussions) with the 'uno-platform' tag
+> - Ask for help on our [Discord channel](https://www.platform.uno/discord) - #uno-platform
+> - Ask a question on [GitHub Discussions](https://github.com/unoplatform/uno/discussions) with the 'uno-platform' tag

@@ -15,8 +15,8 @@ uid: Uno.Features.SVG
 
 To use SVG, install the following packages into the iOS, macOS, Mac Catalyst, Android and Skia projects:
 
--  `Uno.WinUI.Svg` (or `Uno.UI.Svg` if you are using UWP-based app template)
--  `SkiaSharp.Views.Uno.WinUI` (or `SkiaSharp.Views.Uno` if you are using UWP-based app template).
+*  `Uno.WinUI.Svg` (or `Uno.UI.Svg` if you are using UWP-based app template)
+*  `SkiaSharp.Views.Uno.WinUI` (or `SkiaSharp.Views.Uno` if you are using UWP-based app template).
 
 > [!NOTE]
 > If the `Uno.[UI|WinUI].Svg` package is not installed, you will get a warning when an `.svg` image is loaded.

@@ -33,8 +33,8 @@ If you already use and love **JetBrains Rider** or **Visual Studio Code**, you c
 | [**JetBrains Rider**](get-started-rider.md)      | ✔️                         | ✔️     | ✔️† | ✔️               | ❌           | ✔️               | ✔️              | ✔️                   |
 
 
-* † You will need to be connected to a Mac to run and debug iOS apps from Windows.
-* †† You will need to be connected to a Mac using [Remote - SSH](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-ssh)
+- † You will need to be connected to a Mac to run and debug iOS apps from Windows.
+- †† You will need to be connected to a Mac using [Remote - SSH](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-ssh)
 
 # [**macOS**](#tab/macos)
 
@@ -76,7 +76,7 @@ You can use **Visual Studio for Mac**, **JetBrains Rider**, or **Visual Studio C
 
 **Notes:**
 
-* † **Android** on Linux: Xamarin.Android does not natively support linux development. Rider has been capable of Android development on Linux in the past, but [previous directions are considered obsolete.](https://rider-support.jetbrains.com/hc/en-us/articles/360000557259--Obsolete-How-to-develop-Xamarin-Android-applications-on-Linux-with-Rider) As of this comment (3 Nov 2021) [Xamarin Android builds on linux fail](https://github.com/xamarin/xamarin-android).
-* †† Using `net6.0-android` (or later) SDK only. Not officially supported by Microsoft.
+- † **Android** on Linux: Xamarin.Android does not natively support linux development. Rider has been capable of Android development on Linux in the past, but [previous directions are considered obsolete.](https://rider-support.jetbrains.com/hc/en-us/articles/360000557259--Obsolete-How-to-develop-Xamarin-Android-applications-on-Linux-with-Rider) As of this comment (3 Nov 2021) [Xamarin Android builds on linux fail](https://github.com/xamarin/xamarin-android).
+- †† Using `net6.0-android` (or later) SDK only. Not officially supported by Microsoft.
 
 ***

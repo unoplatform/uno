@@ -61,7 +61,7 @@ This issue generally happens when referencing a Uno.UI (using UWP APIs) NuGet pa
 For instance, if your application has `<PackageReference Include="Uno.WinUI"` in the `csproj` files, this means that you'll need to reference WinUI versions of NuGet packages.
 
 For instance:
-- `Uno.UI` -> `Uno.WinUI`
+* `Uno.UI` -> `Uno.WinUI`
 
 #### Build error `Failed to generate AOT layout`
 
@@ -71,9 +71,9 @@ Failed to generate AOT layout (More details are available in diagnostics mode or
 ```
 
 To troubleshoot this error, you can change the text output log level:
-  - Go to **Tools**, **Options**, **Projects and Solution**, then **Build and Run**
-  - Set **MSBuild project build output verbosity** to **Normal** or **Detailed**
-  - Build your project again and take a look at the additional output next to the `Failed to generate AOT layout` error
+  * Go to **Tools**, **Options**, **Projects and Solution**, then **Build and Run**
+  * Set **MSBuild project build output verbosity** to **Normal** or **Detailed**
+  * Build your project again and take a look at the additional output next to the `Failed to generate AOT layout` error
 
 You can get additional build [troubleshooting information here](uno-builds-troubleshooting.md).
 
@@ -81,7 +81,7 @@ You can get additional build [troubleshooting information here](uno-builds-troub
 This error is generally caused by some missing [IL Linker](https://github.com/mono/linker/tree/master/docs) configuration on WebAssembly. You may need to add some of your application assemblies in the LinkerConfig.xml file of your project. You can find [additional information in the documentation](features/using-il-linker-webassembly.md).
 
 Similar error messages using various libraries:
-- `Don't know how to detect when XXX is activated/deactivated, you may need to implement IActivationForViewFetcher` (ReactiveUI)
+* `Don't know how to detect when XXX is activated/deactivated, you may need to implement IActivationForViewFetcher` (ReactiveUI)
 
 #### System.DllNotFoundException: Gtk: libgtk-3-0.dll
 
@@ -101,8 +101,8 @@ On macOS, you'll need to follow the [Uno Platform](get-started-vsmac.md) setup i
 The XAML Hot reload provides a Visual Studio for Windows output window name "Uno Platform" with diagnostics messages. You can find additional information there in case XAML Hot Reload does not work properly.
 
 Some common troubleshooting steps:
-- Make sure to rebuild your application if the XAML changes are not applied
-- Ensure that the Uno.UI.RemoteControl package has the same version as the Uno.UI package (Similar step is valid for Uno.WinUI packages)
+* Make sure to rebuild your application if the XAML changes are not applied
+* Ensure that the Uno.UI.RemoteControl package has the same version as the Uno.UI package (Similar step is valid for Uno.WinUI packages)
 
 More troubleshooting information is available [in this section](features/working-with-xaml-hot-reload.md).
 
@@ -110,9 +110,9 @@ More troubleshooting information is available [in this section](features/working
 C# Hot Reload is provided by Visual Studio 2022, and there may be occasions where updates are not applied, or the modified code is incorrectly reported as not compiling.
 
 If that is the case:
-- Make sure that the top left selector in the C# editor is showing the project head being debugged. For instance, if debugging the Skia.Gtk, select the Skia.Gtk project.
-- WebAssembly does not support C# hot reload when debugging the application. You can start the app without the debugger instead.
-- Try recompiling the application completely (with the `Rebuild` command)
+* Make sure that the top left selector in the C# editor is showing the project head being debugged. For instance, if debugging the Skia.Gtk, select the Skia.Gtk project.
+* WebAssembly does not support C# hot reload when debugging the application. You can start the app without the debugger instead.
+* Try recompiling the application completely (with the `Rebuild` command)
 
 #### Abnormally long build times with using WebAssembly and WSL
 When building an application that uses native dependencies (such as Skia, SQLite) or using PG-AOT/AOT, using WSL 2 may cause abnormally long build times.
@@ -141,9 +141,9 @@ In order to fix this, add the following to your csproj (Xamarin, `net6.0-ios`, `
 #### WebAssembly: Hot Reload fails to start with Mixed Content: The page at XXX was loaded over HTTPS, but attempted to connect to the insecure WebSocket endpoint
 
 This issue is caused by visual studio enforcing https connections for local content. You can work around this by either:
-- Removing the https endpoint in the `Properties/launchSettings.json` file
-- Unchecking the `Use SSL` option in the project's Debug launch profiles
-- Selecting the project name instead of IISExpress in the toolbar debug icon drop down list
+* Removing the https endpoint in the `Properties/launchSettings.json` file
+* Unchecking the `Use SSL` option in the project's Debug launch profiles
+* Selecting the project name instead of IISExpress in the toolbar debug icon drop down list
 
 #### Build fails with `error : Error reading response`
 In general, this error happens when the XAML parser detects a syntax error. Fixing the error generally fixes the build.

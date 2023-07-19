@@ -25,8 +25,8 @@ In order to create a new Uno Project, you'll need to install the [`dotnet new` U
     ```
 
 1. Once created, open the `MyApp-vsmac.slnf` file
-    - This `slnf` is called a solution filter, which automatically excludes projects which are not compatible with Visual Studio 2022 for Mac.
-    - If you have a warning symbol on your iOS project, make sure you have the minimum version of Xcode installed.
+    * This `slnf` is called a solution filter, which automatically excludes projects which are not compatible with Visual Studio 2022 for Mac.
+    * If you have a warning symbol on your iOS project, make sure you have the minimum version of Xcode installed.
 ![update-xcode](Assets/quick-start/xcode-version-warning.jpg)\
 
 To update, go to `Visual Studio > Preferences > Projects > SDK Locations > Apple` and select Xcode 13.3 or higher.

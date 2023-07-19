@@ -36,16 +36,16 @@ These are the main types of tests in Uno:
 
 UI tests can mimic the actions of a user:
 
- - tapping buttons and other UI elements
- - entering keyboard input
- - scrolling, swiping, and other gestures
+ * tapping buttons and other UI elements
+ * entering keyboard input
+ * scrolling, swiping, and other gestures
 
  They can verify assertions about the state of the app:
 
-  - text labels
-  - any DependencyProperty value
-  - onscreen bounds of a view element
-  - comparing screenshots at different stages of the app, and asserting equality or inequality
+  * text labels
+  * any DependencyProperty value
+  * onscreen bounds of a view element
+  * comparing screenshots at different stages of the app, and asserting equality or inequality
 
 A complete set of instructions for authoring UI tests is available [here](../../uno-development/working-with-the-samples-apps.md).
 

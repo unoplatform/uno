@@ -288,8 +288,8 @@ This is typically used for burger menus.
 
 On **iOS**, the back gesture can be enabled or disabled using this property.
 
-- When a `CommandBar` (visible or collapsed) is in the visual tree, the back gesture is **enabled**.
-- When a `CommandBar` has a `NavigationCommand`, the back gesture is **disabled**.
+* When a `CommandBar` (visible or collapsed) is in the visual tree, the back gesture is **enabled**.
+* When a `CommandBar` has a `NavigationCommand`, the back gesture is **disabled**.
 
 On **Android**, only icons are supported (`AppBarButton.Icon`). This is due to a platform limitation, which can be explained by the fact that `CommandBar.Content` is left-aligned.
 
@@ -433,27 +433,27 @@ Gets or sets a value indicating whether the user can interact with the control.
 
 ## iOS
 
-- Can't have multiple CommandBars in the same page (e.g., Master/Details, bottom CommandBar).
-- Can't change the title of the back button if the previous page doesn't have a CommandBar.
-- You must define the title of the back button of the current page's CommandBar in the CommandBar of the previous page.
-- Can't have a smooth transition between pages with different CommandBar backgrounds.
-- Can't have a smooth transition between pages with and without a CommandBar.
-- Can't change the position and size of the CommandBar (always top-aligned, horizontally-stretched, height of 44).
-- Can't remove the 1px underline/shadow without making the CommandBar's background transparent.
-- Can't change the height of the CommandBar.
-- Can't use the back gesture on pages without a CommandBar.
-- Can't disable the back gesture without using workarounds (fake back buttons).
-- Can't change the Visibility of a CommandBar.
-- Can't change the Opacity of a CommandBar.
-- Can't superpose views over a CommandBar.
-- Can't animate/translate the CommandBar (i.e., when hiding/showing it based on scroll offset).
-- Can't put your CommandBar inside a ScrollViewer and make it scroll.
-- Can't put your CommandBar inside templates (i.e., AVP).
-- Can't cancel a back navigation using BackRequestedEventArgs.Handled.
+* Can't have multiple CommandBars in the same page (e.g., Master/Details, bottom CommandBar).
+* Can't change the title of the back button if the previous page doesn't have a CommandBar.
+* You must define the title of the back button of the current page's CommandBar in the CommandBar of the previous page.
+* Can't have a smooth transition between pages with different CommandBar backgrounds.
+* Can't have a smooth transition between pages with and without a CommandBar.
+* Can't change the position and size of the CommandBar (always top-aligned, horizontally-stretched, height of 44).
+* Can't remove the 1px underline/shadow without making the CommandBar's background transparent.
+* Can't change the height of the CommandBar.
+* Can't use the back gesture on pages without a CommandBar.
+* Can't disable the back gesture without using workarounds (fake back buttons).
+* Can't change the Visibility of a CommandBar.
+* Can't change the Opacity of a CommandBar.
+* Can't superpose views over a CommandBar.
+* Can't animate/translate the CommandBar (i.e., when hiding/showing it based on scroll offset).
+* Can't put your CommandBar inside a ScrollViewer and make it scroll.
+* Can't put your CommandBar inside templates (i.e., AVP).
+* Can't cancel a back navigation using BackRequestedEventArgs.Handled.
 
 # FAQ
 
-- > Why is my content underneath the `CommandBar` for iOS and the `CommandBar` underneath the StatusBar/Notch for Android ?
+* > Why is my content underneath the `CommandBar` for iOS and the `CommandBar` underneath the StatusBar/Notch for Android ?
 
   You must use `VisibleBoundsPadding.PaddingMask="Top"` on `CommandBar` to properly support the notch or punch-holes on iOS and Android.
 
@@ -466,7 +466,7 @@ Gets or sets a value indicating whether the user can interact with the control.
   </Style>
   ```
 
-- > How can I remove the back button title from all pages on iOS?
+* > How can I remove the back button title from all pages on iOS?
 
   ```xml
   xmlns:toolkit="using:Uno.UI.Toolkit"
@@ -477,7 +477,7 @@ Gets or sets a value indicating whether the user can interact with the control.
   </Style>
   ```
 
-- > How can I change the back button icon/arrow/chevron in my app?
+* > How can I change the back button icon/arrow/chevron in my app?
 
   ```xml
   xmlns:toolkit="using:Uno.UI.Toolkit"
@@ -491,7 +491,7 @@ Gets or sets a value indicating whether the user can interact with the control.
   </Style>
   ```
 
-- > How can I change the color of the back button?
+* > How can I change the color of the back button?
 
   ```xml
   xmlns:toolkit="using:Uno.UI.Toolkit"
@@ -499,7 +499,7 @@ Gets or sets a value indicating whether the user can interact with the control.
   <CommandBar toolkit:CommandBarExtensions.BackButtonForeground="Red" />
   ```
 
-- > Why does my back button display "Back" on iOS?
+* > Why does my back button display "Back" on iOS?
 
   The back button will display "Back" if:
 
@@ -508,23 +508,23 @@ Gets or sets a value indicating whether the user can interact with the control.
   * The previous page's `CommandBar` doesn't have a `CommandBarExtensions.BackButtonTitle`.
   * The previous page's `CommandBar` has a title that's too long (more than 140pt).
 
-- > Why can't I overlap content over the CommandBar on iOS?
+* > Why can't I overlap content over the CommandBar on iOS?
 
   The `CommandBar` is not actually part of the `Page` on **iOS**, and you can't overlap content over it like you would on **UWP** or **Android**. Please refer to the **Placement** section for details.
 
-- > Why doesn't my CommandBar show a back button?
+* > Why doesn't my CommandBar show a back button?
 
   For a `CommandBar` to show a back button, it must first be resolved by `Frame` as soon as it navigates to a `Page`. To ensure that `CommandBar` is available as soon as the navigation starts, make sure it's directly part of a page, and not part of a `DataTemplate` or `ControlTemplate`.
 
-- > Why don't my AppBarButton visual states work?
+* > Why don't my AppBarButton visual states work?
 
   You can't customize the `ControlTemplate` of `AppBarButton` when using `CommandBar` in native mode.
 
-- > How can I change the foreground of the CommandBarExtensions.Subtitle on Android?
+* > How can I change the foreground of the CommandBarExtensions.Subtitle on Android?
 
   You can't currently customize the foreground of the `CommandBarExtensions.Subtitle` on **Android**.
 
-- > Why doesn't CommandBarExtensions.Subtitle work on iOS?
+* > Why doesn't CommandBarExtensions.Subtitle work on iOS?
 
   `CommandBarExtensions.Subtitle` is not currently implemented on iOS.
 
@@ -546,7 +546,7 @@ Gets or sets a value indicating whether the user can interact with the control.
   </CommandBar>
   ```
 
-- > How can I add a badge to an AppBarButton?
+* > How can I add a badge to an AppBarButton?
 
   You can implement your own badge by setting a custom content on `AppBarButton`:
 
@@ -579,7 +579,7 @@ Gets or sets a value indicating whether the user can interact with the control.
   </AppBarButton>
   ```
 
-- > How can I set custom content to an AppBarButton?
+* > How can I set custom content to an AppBarButton?
 
   You can set a custom content to an `AppBarButton` like this:
 
@@ -591,15 +591,15 @@ Gets or sets a value indicating whether the user can interact with the control.
   </AppBarButton>
   ```
 
-- > Why does my CommandBar always appear at the top of the page on iOS?
+* > Why does my CommandBar always appear at the top of the page on iOS?
 
   You can't place your `CommandBar` anywhere other than at the top of the `Page` on **iOS**. See the **Placement** section for details.
 
-- > How can I change the height of my CommandBar?
+* > How can I change the height of my CommandBar?
 
   You can't currently change the height of the `CommandBar`.
 
-- > How can I remove the 1px line displayed below the CommandBar on iOS?
+* > How can I remove the 1px line displayed below the CommandBar on iOS?
 
   To hide the native 1px *shadow* that's displayed below the `CommandBar` on **iOS**, make its background transparent:
 
@@ -607,7 +607,7 @@ Gets or sets a value indicating whether the user can interact with the control.
   <CommandBar Background="Transparent" />
   ```
 
-- > How can I add an elevation shadow to the CommandBar on Android?
+* > How can I add an elevation shadow to the CommandBar on Android?
 
   ```xml
   xmlns:toolkit="using:Uno.UI.Toolkit"
@@ -615,19 +615,19 @@ Gets or sets a value indicating whether the user can interact with the control.
   <CommandBar toolkit:UIElementExtensions.Elevation="4" />
   ```
 
-- > How can I use a Path for the AppBarButton Icon?
+* > How can I use a Path for the AppBarButton Icon?
 
   `AppBarButton` doesn't currently support `PathIcon`. Only `BitmapIcon` with PNGs is supported. Please refer to the **Icon** section.
 
-- > Why doesn't CommandBarExtensions.BackButtonTitle change the title of my back button?
+* > Why doesn't CommandBarExtensions.BackButtonTitle change the title of my back button?
 
   `CommandBarExtensions.BackButtonTitle` must be set on the page to which the back button navigates to. Please refer to the **BackButtonTitle** section.
 
-- > Why doesn't my CommandBarExtensions.NavigationCommand display anything on Android?
+* > Why doesn't my CommandBarExtensions.NavigationCommand display anything on Android?
 
   `CommandBarExtensions.NavigationCommand` only supports `AppBarButton` with `Icon` (not `Content`). Please refer to the **NavigationCommand** section.
 
-- > How can I localize CommandBarExtensions.BackButtonTitle?
+* > How can I localize CommandBarExtensions.BackButtonTitle?
 
   _For attached properties, you need a special syntax in the Name column of a `.resw` file._ Ref: [Microsoft documentation](https://docs.microsoft.com/en-us/windows/uwp/app-resources/localize-strings-ui-manifest#refer-to-a-string-resource-identifier-from-xaml).
 
@@ -641,7 +641,7 @@ Gets or sets a value indicating whether the user can interact with the control.
   ```
   And in the `.resw` file, the name would be: `MyCommandBar.[using:Uno.UI.Toolkit]CommandBarExtensions.BackButtonTitle`
 
-- > How can I put a ComboBox in my CommandBar?
+* > How can I put a ComboBox in my CommandBar?
 
   ```xml
   <CommandBar>
@@ -651,15 +651,15 @@ Gets or sets a value indicating whether the user can interact with the control.
   </CommandBar>
   ```
 
-- > How can I customize the pressed/disabled visual states of my AppBarButton?
+* > How can I customize the pressed/disabled visual states of my AppBarButton?
 
   You can't currently customize the visual states of `AppBarButton` when using `CommandBar` in native mode.
 
-- > Why doesn't the disabled state work on my AppBarButton on Android?
+* > Why doesn't the disabled state work on my AppBarButton on Android?
 
   `AppBarButton` doesn't currently support the disabled state when used with `Content` (of `string`) on **Android**. You can use an `Icon` instead.
 
-- > How can I disable the back swipe/gesture on iOS?
+* > How can I disable the back swipe/gesture on iOS?
 
   To disable the back swipe/gesture on **iOS**, you must remove the `CommandBar` or replace the back button with a custom one:
 
@@ -675,11 +675,11 @@ Gets or sets a value indicating whether the user can interact with the control.
   </CommandBar>
   ```
 
-- > How can I display two CommandBars side by side on iOS (i.e., master-detail)
+* > How can I display two CommandBars side by side on iOS (i.e., master-detail)
 
   `Page` only supports a single `CommandBar` at a time. To display two `CommandBar`s side by side (i.e., master-detail), you should place two `Frame`s side by side and put a `CommandBar` in the `Page` of each `Frame`.
 
-- > How can I add a burger menu to the left of my CommandBar?
+* > How can I add a burger menu to the left of my CommandBar?
 
   ```xml
   <CommandBar>
@@ -693,11 +693,11 @@ Gets or sets a value indicating whether the user can interact with the control.
   </CommandBar>
   ```
 
-- > Why doesn't Flyout work on my AppBarButton?
+* > Why doesn't Flyout work on my AppBarButton?
 
   `AppBarButton` doesn't currently support `Flyout` when using `CommandBar` in native mode. You can use `MenuFlyout` instead.
 
-- > Why can't I change the Foreground of my AppBarButton on Android?
+* > Why can't I change the Foreground of my AppBarButton on Android?
 
   `AppBarButton` doesn't currently support `Foreground` when displaying text (using `Content` of `string`).
 
@@ -730,7 +730,7 @@ Gets or sets a value indicating whether the user can interact with the control.
   <item name="actionMenuTextColor">@color/PrimaryTextColorSelector</item>
   ```
 
-- > How can I customize the font of the CommandBar title/content?
+* > How can I customize the font of the CommandBar title/content?
 
   You can't currently customize the font of the native `CommandBar` title (set with a `string` on `Content`). Only the color can be changed, using the `Foreground` property.
 
@@ -747,11 +747,11 @@ Gets or sets a value indicating whether the user can interact with the control.
   </CommandBar>
   ```
 
-- > Why doesn't my CommandBar scroll when placed inside a ScrollViewer on iOS?
+* > Why doesn't my CommandBar scroll when placed inside a ScrollViewer on iOS?
 
   `CommandBar` can't be placed inside a `ScrollViewer`. It must be anchored to the top of your `Page` at all time. Please refer to the **Placement** section for details.
 
-- > How can I change the color of the ripple effect when pressing on AppBarButtons on Android?
+* > How can I change the color of the ripple effect when pressing on AppBarButtons on Android?
 
   You can change the color of the ripple effect globally using Android styles:
 
@@ -767,7 +767,7 @@ Gets or sets a value indicating whether the user can interact with the control.
   <item name="colorControlHighlight">@color/ripple_material_dark</item>
    ```
 
-- > Why doesn't my AppBarToggleButton work?
+* > Why doesn't my AppBarToggleButton work?
 
   `AppBarToggleButton` is not currently supported.
 
@@ -783,7 +783,7 @@ Gets or sets a value indicating whether the user can interact with the control.
   </CommandBar>
   ```
 
-- > How can I show an image under my CommandBar?
+* > How can I show an image under my CommandBar?
 
   You can show an image under a `CommandBar` by making its background transparent and superposing it over an `Image`:
 
@@ -797,11 +797,11 @@ Gets or sets a value indicating whether the user can interact with the control.
 
   ![CommandBar Example - iOS - Transparent Background](assets/commandbar/ios/transparent.png)
 
-- > What size should my AppBarButton icons be?
+* > What size should my AppBarButton icons be?
 
   Please refer to the **Icon** section for details.
 
-- > Why does my back button icon change when swiping back on iOS?
+* > Why does my back button icon change when swiping back on iOS?
 
   This can happen when navigating between two pages with `CommandBar`s using different `CommandBarExtensions.BackButtonIcon`s.
 

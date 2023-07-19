@@ -90,10 +90,10 @@ For the detailed procedure for Windows, please follow this link: https://msdn.mi
 + Go to MyAccount -> Keys
 + Click on create a new key
 + Enter the following information:
-	- Application name
-	- Application URL (optional)
-	- Key type
-	- Application type
+	+ Application name
+	+ Application URL (optional)
+	+ Key type
+	+ Application type
 + Hit *Create* and get the key
 
 The key will be set as the value for the parameter _MapServiceToken_ for the MapControl object.
@@ -122,7 +122,7 @@ _For a detailed procedure on how to retrieve the SHA-1 fingerprint for your Andr
 
 ## Configure your application.
 
-- For **Android**
++ For **Android**
     1.  Add the following to AndroidManifest.xml:
     ```xml
     <uses-library android:name="com.google.android.maps" />

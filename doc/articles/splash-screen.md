@@ -137,13 +137,13 @@ This article covers how to add a splash screen to your application.
 ## Step 4 - iOS
 
 1. In the `.iOS` project, delete the old splash screen files:
-    - `Resources\SplashScreen@2x.png`
-    - `Resources\SplashScreen@3x.png`
-    - `LaunchScreen.storyboard`
+    * `Resources\SplashScreen@2x.png`
+    * `Resources\SplashScreen@3x.png`
+    * `LaunchScreen.storyboard`
 
 1. Create a new `StoryBoard` named `LaunchScreen.storyboard`:
-    - Right-click the `.iOS` project > Add > New Item ...
-    - Visual C# > Apple > Empty Storyboard
+    * Right-click the `.iOS` project > Add > New Item ...
+    * Visual C# > Apple > Empty Storyboard
 
 1. In the `Toolbox` window, drag and drop a `View Controller` and then an `ImageView` inside the `View Controller`. Enable the `Is initial View Controller`-flag on the `View Controller`.
 

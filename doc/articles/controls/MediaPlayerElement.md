@@ -121,16 +121,16 @@ Running the `MediaPlayerElement` requires adding the [`VideoLAN.LibVLC.Windows`]
 
 ## Future improvement
 
-- React to audio focus changes (pause/stop playback or reduce audio volume)
-- Subtitles support
-- Languages support
-- Buffering of next playlist element when using MediaPlaybackList
-- Cast to device
-- Playlist for Wasm
-- Download option
+* React to audio focus changes (pause/stop playback or reduce audio volume)
+* Subtitles support
+* Languages support
+* Buffering of next playlist element when using MediaPlaybackList
+* Cast to device
+* Playlist for Wasm
+* Download option
 
 ## Known issues
 
-- `[iOS]` Volume flyout does not display (Uno issue)
-- `[All]` Dynamic width/height not supported when playing audio
-- `[All]` Sometimes flickers during resizing when using dynamic width/height
+* `[iOS]` Volume flyout does not display (Uno issue)
+* `[All]` Dynamic width/height not supported when playing audio
+* `[All]` Sometimes flickers during resizing when using dynamic width/height

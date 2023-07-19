@@ -55,16 +55,16 @@ To debug your application:
 ![Debugger - The smaller refresh button location in the preview section of the Chrome DevTools](Assets/quick-start/wasm-debugger-step-03.png)
 
 > ### Tips for debugging in Chrome
-> * You need to launch a new instance of Chrome with right parameters. If Chrome is your main browser
+> - You need to launch a new instance of Chrome with right parameters. If Chrome is your main browser
 > and you don't want to restart it, install another version of Chrome (_Chrome Side-by-Side_).
 > You may simply install _Chrome Beta_ or _Chrome Canary_ and use them instead.
-> * Sometimes, you may have a problem removing a breakpoint from code (it's crashing the debugger).
+> - Sometimes, you may have a problem removing a breakpoint from code (it's crashing the debugger).
 > You can remove them in the _Breakpoints list_ instead.
-> * Once _IIS Express_ is launched, no need to press <kbd>Ctrl</kbd><kbd>F5</kbd> again: you simply need to rebuild your
+> - Once _IIS Express_ is launched, no need to press <kbd>Ctrl</kbd><kbd>F5</kbd> again: you simply need to rebuild your
 > _WASM_ head and refresh it in the browser.
-> * **To refresh an app**, you should use the debugger tab and press the _refresh_ button in the content.
-> * **If you have multiple monitors**, you can detach the _debugger tab_ and put it on another window.
-> * For breakpoints to work properly, you should not open the debugger tools (<kbd>F12</kbd>) in the app's tab.
-> * If you are **debugging a library which is publishing SourceLinks**, you must disable it or you'll
+> - **To refresh an app**, you should use the debugger tab and press the _refresh_ button in the content.
+> - **If you have multiple monitors**, you can detach the _debugger tab_ and put it on another window.
+> - For breakpoints to work properly, you should not open the debugger tools (<kbd>F12</kbd>) in the app's tab.
+> - If you are **debugging a library which is publishing SourceLinks**, you must disable it or you'll
 > always see the SourceLink code in the debugger. SourceLink should be activated only on Release build.
-> * When debugging in Chrome, <kbd>Ctrl</kbd>+<kbd>O</kbd> brings up a file-search field. That way it's a lot easier to find .cs files versus searching through the whole folder hierarchy.
+> - When debugging in Chrome, <kbd>Ctrl</kbd>+<kbd>O</kbd> brings up a file-search field. That way it's a lot easier to find .cs files versus searching through the whole folder hierarchy.

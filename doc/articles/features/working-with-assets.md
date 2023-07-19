@@ -90,13 +90,13 @@ We recommend including assets for each of these scales: `100`, `150`, `200`, `30
 Use it as you would on UWP, but keep in mind that some language/region combinations might not work on all platforms.
 
 The following languages have been verified to work on all platforms:
-- `en`
-- `en-US`
-- `en-CA`
-- `fr`
-- `fr-FR`
-- `fr-CA`
-- `es`
+* `en`
+* `en-US`
+* `en-CA`
+* `fr`
+* `fr-FR`
+* `fr-CA`
+* `es`
 
 #### Examples
 
