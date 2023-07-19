@@ -18,20 +18,20 @@ If your API implementation is for a specific platform:
 
     ```csharp
     #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-	public  global::Windows.Data.Pdf.PdfPageDimensions Dimensions
-	{
-	#endif
+    [global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+    public  global::Windows.Data.Pdf.PdfPageDimensions Dimensions
+    {
+    #endif
     ```
 
     becomes
 
     ```csharp
     #if false || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	[global::Uno.NotImplemented("__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-	public  global::Windows.Data.Pdf.PdfPageDimensions Dimensions
-	{
-	#endif
+    [global::Uno.NotImplemented("__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+    public  global::Windows.Data.Pdf.PdfPageDimensions Dimensions
+    {
+    #endif
     ```
 
     when implemented for Android only.

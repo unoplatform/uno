@@ -86,38 +86,38 @@ In this test we want to check that the item containers inside the list have been
 Finally we assert that the `ActualWidth` of each container is what we expect, and the `ActualWidth` of the list itself for good measure.
 
 ```csharp
-		[TestMethod]
+        [TestMethod]
 #if __IOS__ || __ANDROID__
-		[Ignore("ListView only supports HorizontalAlignment.Stretch - https://github.com/unoplatform/uno/issues/1133")]
+        [Ignore("ListView only supports HorizontalAlignment.Stretch - https://github.com/unoplatform/uno/issues/1133")]
 #endif
-		public async Task When_ListView_Parent_Unstretched()
-		{
-			var source = Enumerable.Range(0, 5).ToArray();
-			var SUT = new ListView
-			{
-				HorizontalAlignment = HorizontalAlignment.Stretch,
-				ItemsSource = source
-			};
+        public async Task When_ListView_Parent_Unstretched()
+        {
+            var source = Enumerable.Range(0, 5).ToArray();
+            var SUT = new ListView
+            {
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                ItemsSource = source
+            };
 
-			const int minWidth = 193;
-			var border = new Border
-			{
-				HorizontalAlignment = HorizontalAlignment.Left,
-				MinWidth = minWidth,
-				Child = SUT
-			};
+            const int minWidth = 193;
+            var border = new Border
+            {
+                HorizontalAlignment = HorizontalAlignment.Left,
+                MinWidth = minWidth,
+                Child = SUT
+            };
 
-			WindowHelper.WindowContent = border;
+            WindowHelper.WindowContent = border;
 
-			await WindowHelper.WaitForIdle();
+            await WindowHelper.WaitForIdle();
 
-			ListViewItem lvi = null;
-			foreach (var item in source)
-			{
-				await WindowHelper.WaitFor(() => (lvi = SUT.ContainerFromItem(item) as ListViewItem) != null);
-				Assert.AreEqual(minWidth, lvi.ActualWidth);
-			}
+            ListViewItem lvi = null;
+            foreach (var item in source)
+            {
+                await WindowHelper.WaitFor(() => (lvi = SUT.ContainerFromItem(item) as ListViewItem) != null);
+                Assert.AreEqual(minWidth, lvi.ActualWidth);
+            }
 
-			Assert.AreEqual(minWidth, SUT.ActualWidth);
-		}
+            Assert.AreEqual(minWidth, SUT.ActualWidth);
+        }
 ```

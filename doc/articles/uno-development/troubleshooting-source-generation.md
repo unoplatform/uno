@@ -43,7 +43,7 @@ To define a pragma, in your csproj add the following:
 
 ```xml
 <ItemGroup>
-	<XamlGeneratorAnalyzerSuppressions Include="csharp-618 // Ignore obsolete members warnings" />
+    <XamlGeneratorAnalyzerSuppressions Include="csharp-618 // Ignore obsolete members warnings" />
 </ItemGroup>
 ```
 

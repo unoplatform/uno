@@ -27,12 +27,12 @@ Uno.UI.FeatureConfiguration.ComboBox.DefaultDropDownPreferredPlacement = DropDow
 
 ```xml
 <Page
-	[...]
-	xmlns:not_win="using:Uno.UI.Xaml.Controls"
+    [...]
+    xmlns:not_win="using:Uno.UI.Xaml.Controls"
     mc:Ignorable="d not_win">
 
-	<ComboBox
-		ItemsSource="12345"
-		not_win:ComboBox.DropDownPreferredPlacement="Below" />
+    <ComboBox
+        ItemsSource="12345"
+        not_win:ComboBox.DropDownPreferredPlacement="Below" />
 
 ```

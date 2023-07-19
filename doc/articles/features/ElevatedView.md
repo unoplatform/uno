@@ -23,11 +23,11 @@ After that, use the `ElevatedView` to host the content you need to be elevated:
 ``` xml
 <StackPanel Orientation="Horizontal" Spacing="20">
 
-	<Button>Non-Elevated Button</Button>
+    <Button>Non-Elevated Button</Button>
 
-	<toolkit:ElevatedView Elevation="10" Background="Gray" ShadowColor="Black">
-		<Button>Elevated Button</Button>
-	</toolkit:ElevatedView>
+    <toolkit:ElevatedView Elevation="10" Background="Gray" ShadowColor="Black">
+        <Button>Elevated Button</Button>
+    </toolkit:ElevatedView>
 
 </StackPanel>
 ```

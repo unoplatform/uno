@@ -14,7 +14,7 @@ Add the following namespaces:
 <Page
     ...
     xmlns:winui="using:Microsoft.UI.Xaml.Controls"
-	xmlns:lottie="using:Microsoft.Toolkit.Uwp.UI.Lottie"
+    xmlns:lottie="using:Microsoft.Toolkit.Uwp.UI.Lottie"
     ...>
 ```
 
@@ -46,7 +46,7 @@ Add the following namespaces:
 <Page
     ...
     xmlns:winui="using:Microsoft.UI.Xaml.Controls"
-	xmlns:lottie="using:Microsoft.Toolkit.Uwp.UI.Lottie"
+    xmlns:lottie="using:Microsoft.Toolkit.Uwp.UI.Lottie"
     ...>
 ```
 
@@ -147,11 +147,11 @@ Here's how to use this feature:
   [Bindable]
   public sealed class CheckBoxAnimation : ThemableLottieVisualSource
   {
-  	public Color MyColor
-  	{
-  		get => GetColorThemeProperty(nameof(MyColor));
-  		set => SetColorThemeProperty(nameof(MyColor), value);
-  	}
+      public Color MyColor
+      {
+          get => GetColorThemeProperty(nameof(MyColor));
+          set => SetColorThemeProperty(nameof(MyColor), value);
+      }
   }
   ```
 

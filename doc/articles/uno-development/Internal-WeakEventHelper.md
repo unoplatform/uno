@@ -23,29 +23,29 @@ raising the event will produce nothing.
 
 Here's a usage example:
 
-	private List<WeakEventHelper.GenericEventHandler> _sizeChangedHandlers = new List<WeakEventHelper.GenericEventHandler>();
+    private List<WeakEventHelper.GenericEventHandler> _sizeChangedHandlers = new List<WeakEventHelper.GenericEventHandler>();
 
-	internal IDisposable RegisterSizeChangedEvent(WindowSizeChangedEventHandler handler)
-	{
-		return WeakEventHelper.RegisterEvent(
-			_sizeChangedHandlers,
-			handler,
-			(h, s, e) => (h as WindowSizeChangedEventHandler)?.Invoke(s, (WindowSizeChangedEventArgs)e)
-		);
-	}
+    internal IDisposable RegisterSizeChangedEvent(WindowSizeChangedEventHandler handler)
+    {
+        return WeakEventHelper.RegisterEvent(
+            _sizeChangedHandlers,
+            handler,
+            (h, s, e) => (h as WindowSizeChangedEventHandler)?.Invoke(s, (WindowSizeChangedEventArgs)e)
+        );
+    }
 
 The RegisterEvent method is intentionally non-generic to avoid the cost related to AOT performance. The
 performance cost is shifted to downcast and upcast checks in the `EventRaiseHandler` handlers.
 
 The returned disposable must be used as follows :
 
-	private SerialDisposable _sizeChangedSubscription = new SerialDisposable();
+    private SerialDisposable _sizeChangedSubscription = new SerialDisposable();
 
-	...
+    ...
 
-	_sizeChangedSubscription.Disposable = null;
+    _sizeChangedSubscription.Disposable = null;
 
-	if (Owner != null)
-	{
-		_sizeChangedSubscription.Disposable = Window.Current.RegisterSizeChangedEvent(OnCurrentWindowSizeChanged);
-	}
+    if (Owner != null)
+    {
+        _sizeChangedSubscription.Disposable = Window.Current.RegisterSizeChangedEvent(OnCurrentWindowSizeChanged);
+    }

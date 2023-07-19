@@ -19,25 +19,25 @@ The step-by-step process to enable Fluent design styles within an existing Uno P
 1. Within the shared project used by all platform heads, add the `XamlControlsResources` resource dictionary to your application resources inside `AppResources.xaml` or `App.xaml`. This step is the same as required for WinUI 2 UWP apps.
 
     ```xml
-    	<Application>
-    		<Application.Resources>
-    			<XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
-    		</Application.Resources>
-    	</Application>
+        <Application>
+            <Application.Resources>
+                <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
+            </Application.Resources>
+        </Application>
     ```
 
     Or, if you have other existing application-scope resources, add `XamlControlsResources` at the top (before other resources) as a merged dictionary:
 
     ```xml
-    	<Application.Resources>
-    		<ResourceDictionary>
-    			<ResourceDictionary.MergedDictionaries>
-    				<XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
-    				<!-- Other merged dictionaries here -->
-    			</ResourceDictionary.MergedDictionaries>
-    			<!-- Other app resources here -->
-    		</ResourceDictionary>
-    	</Application.Resources>
+        <Application.Resources>
+            <ResourceDictionary>
+                <ResourceDictionary.MergedDictionaries>
+                    <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
+                    <!-- Other merged dictionaries here -->
+                </ResourceDictionary.MergedDictionaries>
+                <!-- Other app resources here -->
+            </ResourceDictionary>
+        </Application.Resources>
     ```
 
 1. In all platform head projects except UWP the Fluent control styles require the Uno Fluent Assets icon font to display correctly. [Follow the instructions here](../uno-fluent-assets.md) to upgrade your app to use this font. This step is required because the Uno Platform uses a cross-platform ready default font within its styles different from UWP's *Segoe MDL2 Assets*.

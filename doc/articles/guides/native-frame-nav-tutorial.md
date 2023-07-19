@@ -64,10 +64,10 @@ The complete sample code can be found here: [NativeFrameNav](https://github.com/
               ...>
         <!-- ...  -->
         <CommandBar Grid.Row="0" Content="BlankPage1">
-			<CommandBar.PrimaryCommands>
-				<skia:AppBarButton Content="Back" Click="NavigateBack" />
-			</CommandBar.PrimaryCommands>
-		</CommandBar>
+            <CommandBar.PrimaryCommands>
+                <skia:AppBarButton Content="Back" Click="NavigateBack" />
+            </CommandBar.PrimaryCommands>
+        </CommandBar>
     - `BlankPage1.xaml.cs`, `BlankPage2.xaml.cs`:
 
         ```cs

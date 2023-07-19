@@ -14,18 +14,18 @@ An example:
 
 ```xml
       ...
-	  Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-	  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	  xmlns:android="http://uno.ui/android"
-	  mc:Ignorable="d android">
+      Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:android="http://uno.ui/android"
+      mc:Ignorable="d android">
 
-	<StackPanel Margin="0,30,0,0">
-		<TextBlock Text="Rating" />
-		<android:Grid Background="Beige"
-					  Width="200">
-			<RatingBar />
-		</android:Grid>
-	</StackPanel>
+    <StackPanel Margin="0,30,0,0">
+        <TextBlock Text="Rating" />
+        <android:Grid Background="Beige"
+                      Width="200">
+            <RatingBar />
+        </android:Grid>
+    </StackPanel>
 ```
 
 ## Adding native views in code

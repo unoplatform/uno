@@ -18,11 +18,11 @@ The current implementation uses the native UIKit Map for iOS and the Google Play
 2. Install the [Uno.UI.Maps NuGet package](https://www.nuget.org/packages/Uno.UI.Maps/) in the Android and/or iOS head projects of your app.
 3. Add the `MapResources` resource dictionary to `Application.Resources` in your `AppResources.xaml` or `App.xaml` file:
 
-	```xml
-	<Application.Resources>
-		<MapResources xmlns="using:Uno.UI.Maps"/>
-	</Application.Resources>
-	```
+    ```xml
+    <Application.Resources>
+        <MapResources xmlns="using:Uno.UI.Maps"/>
+    </Application.Resources>
+    ```
 
 4. (Windows and Android) Obtain an API key for your app, following the instructions below.
 5. (Android) Configure permissions in the manifest, following the instructions below.
@@ -34,31 +34,31 @@ Here's a complete sample:
 
 ```xml
 <Page x:Class="MapControlSample.MainPage"
-	  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-	  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	  xmlns:local="using:MapControlSample"
-	  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-	  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	  xmlns:maps="using:Windows.UI.Xaml.Controls.Maps"
-	  mc:Ignorable="d"
-	  Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:local="using:MapControlSample"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:maps="using:Windows.UI.Xaml.Controls.Maps"
+      mc:Ignorable="d"
+      Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-	<Grid>
-		<Grid.RowDefinitions>
-			<RowDefinition Height="auto" />
-			<RowDefinition Height="*" />
-		</Grid.RowDefinitions>
-		<StackPanel>
-			<Slider Minimum="1"
-					Maximum="20"
-					StepFrequency=".5"
-					Header="ZoomLevel"
-					x:Name="zoomSlider"
-					Value="12" />
-		</StackPanel>
-		<maps:MapControl Grid.Row="1"
-			         ZoomLevel="{Binding ElementName=zoomSlider, Path=Value, Mode=TwoWay}" />
-	</Grid>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <StackPanel>
+            <Slider Minimum="1"
+                    Maximum="20"
+                    StepFrequency=".5"
+                    Header="ZoomLevel"
+                    x:Name="zoomSlider"
+                    Value="12" />
+        </StackPanel>
+        <maps:MapControl Grid.Row="1"
+                     ZoomLevel="{Binding ElementName=zoomSlider, Path=Value, Mode=TwoWay}" />
+    </Grid>
 </Page>
 ```
 
@@ -133,7 +133,7 @@ The key will be set as the value for the parameter *MapServiceToken* for the Map
     2. Add the API key to `AssemblyInfo.cs`.
 
     ```csharp
-	[assembly: MetaData("com.google.android.maps.v2.API_KEY", Value = "YOUR_API_KEY")]
+    [assembly: MetaData("com.google.android.maps.v2.API_KEY", Value = "YOUR_API_KEY")]
     ```
 
     Replace the text YOUR_API_KEY with the key generated in previous step.
@@ -142,8 +142,8 @@ The key will be set as the value for the parameter *MapServiceToken* for the Map
 
     3. Add the relevant permissions to `AssemblyInfo.cs`. For example, if you wish to access the user location
 
-	 ```csharp
-	[assembly: UsesPermission(Android.Manifest.Permission.AccessFineLocation)]
-	[assembly: UsesPermission("com.myapp.permission.MAPS_RECEIVE")]
-	[assembly: Permission(Name = "com.myapp.permission.MAPS_RECEIVE", ProtectionLevel = Android.Content.PM.Protection.Signature)]
-	```
+     ```csharp
+    [assembly: UsesPermission(Android.Manifest.Permission.AccessFineLocation)]
+    [assembly: UsesPermission("com.myapp.permission.MAPS_RECEIVE")]
+    [assembly: Permission(Name = "com.myapp.permission.MAPS_RECEIVE", ProtectionLevel = Android.Content.PM.Protection.Signature)]
+    ```

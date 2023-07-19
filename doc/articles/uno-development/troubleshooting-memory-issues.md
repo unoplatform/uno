@@ -26,42 +26,42 @@ using Uno.Logging;
 // ....
 private void EnableViewsMemoryStatistics()
 {
-	//
-	// Call this method to enable Views memory tracking.
-	// Make sure that you've added the following :
-	//
+    //
+    // Call this method to enable Views memory tracking.
+    // Make sure that you've added the following :
+    //
         //  builder.AddFilter("Uno.UI.DataBinding", LogLevel.Information );
-	//
-	// in the logger settings, so that the statistics are showing up.
-	//
+    //
+    // in the logger settings, so that the statistics are showing up.
+    //
 
-	var unused = Windows.UI.Xaml.Window.Current.Dispatcher.RunAsync(
-		CoreDispatcherPriority.Normal,
-		async () =>
-		{
-			BinderReferenceHolder.IsEnabled = true;
+    var unused = Windows.UI.Xaml.Window.Current.Dispatcher.RunAsync(
+        CoreDispatcherPriority.Normal,
+        async () =>
+        {
+            BinderReferenceHolder.IsEnabled = true;
 
-			while (true)
-			{
-				await Task.Delay(1500);
+            while (true)
+            {
+                await Task.Delay(1500);
 
-				try
-				{
-					BinderReferenceHolder.LogReport();
+                try
+                {
+                    BinderReferenceHolder.LogReport();
 
-					var inactiveInstances = BinderReferenceHolder.GetInactiveViewBinders();
+                    var inactiveInstances = BinderReferenceHolder.GetInactiveViewBinders();
 
-					// Force the variable to be kept by the linker so we can see it with the debugger.
-					// Put a breakpoint on this line to dig into the inactive views.
-					inactiveInstances.ToString();
-				}
-				catch (Exception ex)
-				{
-					this.Log().Error("Report generation failed", ex);
-				}
-			}
-		}
-	);
+                    // Force the variable to be kept by the linker so we can see it with the debugger.
+                    // Put a breakpoint on this line to dig into the inactive views.
+                    inactiveInstances.ToString();
+                }
+                catch (Exception ex)
+                {
+                    this.Log().Error("Report generation failed", ex);
+                }
+            }
+        }
+    );
 }
 ```
 

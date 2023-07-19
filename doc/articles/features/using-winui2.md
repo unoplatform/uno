@@ -16,25 +16,25 @@ The [WinUI 2 library](https://docs.microsoft.com/en-us/windows/apps/winui/winui2
 1. Open the `App.xaml` file inside one of the Head project used by all platform heads. Add the `XamlControlsResources` resource dictionary to your application resources inside `App.xaml`.
 
     ```xml
-    	<Application>
-    		<Application.Resources>
-    			<XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
-    		</Application.Resources>
-    	</Application>
+        <Application>
+            <Application.Resources>
+                <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
+            </Application.Resources>
+        </Application>
     ```
 
     Or, if you have other existing application-scope resources, add `XamlControlsResources` at the top (before other resources) as a merged dictionary:
 
     ```xml
-    	<Application.Resources>
-    		<ResourceDictionary>
-    			<ResourceDictionary.MergedDictionaries>
-    				<XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
-    				<!-- Other merged dictionaries here -->
-    			</ResourceDictionary.MergedDictionaries>
-    			<!-- Other app resources here -->
-    		</ResourceDictionary>
-    	</Application.Resources>
+        <Application.Resources>
+            <ResourceDictionary>
+                <ResourceDictionary.MergedDictionaries>
+                    <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
+                    <!-- Other merged dictionaries here -->
+                </ResourceDictionary.MergedDictionaries>
+                <!-- Other app resources here -->
+            </ResourceDictionary>
+        </Application.Resources>
     ```
 
 1. Now you're ready to use WinUI 2 controls in your application. Sample usage for the `NumberBox` control:

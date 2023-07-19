@@ -114,36 +114,36 @@ Since the generator has a full set of semantic information from Roslyn, it can d
 Here's a [small snippet](https://github.com/unoplatform/uno/blob/74ba91756c446107e7394e0423527de273154f5d/src/SourceGenerators/Uno.UI.SourceGenerators/DependencyObject/DependencyObjectGenerator.cs#L218-L250) of code from `DependencyObjectGenerator`:
 
 ```` csharp
-			private void WriteAndroidAttachedToWindow(INamedTypeSymbol typeSymbol, IndentedStringBuilder builder)
-			{
-				var isAndroidView = typeSymbol.Is(_androidViewSymbol);
-				var isAndroidActivity = typeSymbol.Is(_androidActivitySymbol);
-				var isAndroidFragment = typeSymbol.Is(_androidFragmentSymbol);
-				var isUnoViewGroup = typeSymbol.Is(_unoViewgroupSymbol);
-				var implementsIFrameworkElement = typeSymbol.Interfaces.Any(t => t == _iFrameworkElementSymbol);
-				var hasOverridesAttachedToWindowAndroid = isAndroidView &&
-					typeSymbol
-					.GetMethods()
-					.Where(m => IsNotDependencyObjectGeneratorSourceFile(m))
-					.None(m => m.Name == "OnAttachedToWindow");
+            private void WriteAndroidAttachedToWindow(INamedTypeSymbol typeSymbol, IndentedStringBuilder builder)
+            {
+                var isAndroidView = typeSymbol.Is(_androidViewSymbol);
+                var isAndroidActivity = typeSymbol.Is(_androidActivitySymbol);
+                var isAndroidFragment = typeSymbol.Is(_androidFragmentSymbol);
+                var isUnoViewGroup = typeSymbol.Is(_unoViewgroupSymbol);
+                var implementsIFrameworkElement = typeSymbol.Interfaces.Any(t => t == _iFrameworkElementSymbol);
+                var hasOverridesAttachedToWindowAndroid = isAndroidView &&
+                    typeSymbol
+                    .GetMethods()
+                    .Where(m => IsNotDependencyObjectGeneratorSourceFile(m))
+                    .None(m => m.Name == "OnAttachedToWindow");
 
-				if (isAndroidView || isAndroidActivity || isAndroidFragment)
-				{
-					if (!isAndroidActivity && !isAndroidFragment)
-					{
-						WriteRegisterLoadActions(typeSymbol, builder);
-					}
+                if (isAndroidView || isAndroidActivity || isAndroidFragment)
+                {
+                    if (!isAndroidActivity && !isAndroidFragment)
+                    {
+                        WriteRegisterLoadActions(typeSymbol, builder);
+                    }
 
-					builder.AppendLine($@"
+                    builder.AppendLine($@"
 #if {hasOverridesAttachedToWindowAndroid} //Is Android view (that doesn't already override OnAttachedToWindow)
 #if {isUnoViewGroup} //Is UnoViewGroup
-					// Both methods below are implementation of abstract methods
-					// which are called from onAttachedToWindow in Java.
-					protected override void OnNativeLoaded()
-					{{
-						_loadActions.ForEach(a => a.Item1());
-						BinderAttachedToWindow();
-					}}
+                    // Both methods below are implementation of abstract methods
+                    // which are called from onAttachedToWindow in Java.
+                    protected override void OnNativeLoaded()
+                    {{
+                        _loadActions.ForEach(a => a.Item1());
+                        BinderAttachedToWindow();
+                    }}
 ````
 
 In this method we have an [INamedTypeSymbol](https://docs.microsoft.com/en-us/dotnet/api/microsoft.codeanalysis.inamedtypesymbol?view=roslyn-dotnet), an object from Roslyn that encapsulates information about a type. We've already determined that `typeSymbol` implements `DependencyObject`; here we check if it's an Android `View` and, if so override the loaded method. You can notice that we're also checking that the type doesn't _already_ override the same method, so we don't accidentally generate code that clashes with authored code and causes a compiler error. All this goes on under the hood without user intervention, whenever your app compiles.

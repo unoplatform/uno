@@ -40,8 +40,8 @@ When parts of an application fail to work, you can:
 
 ```xml
   <assembly fullname="MyAssembly">
-	<!-- This is required by JSon.NET and any expression.Compile caller -->
-	<type fullname="MyNamespace*" />
+    <!-- This is required by JSon.NET and any expression.Compile caller -->
+    <type fullname="MyNamespace*" />
   </assembly>
 ```
 

@@ -13,9 +13,9 @@ To implement the `BluetoothDevice.GetDeviceSelectorFromClassOfDevice` method, yo
 This method should iterate all `ServiceCapabilities`, and use bits from it to construct part of query, and the method may look like:
 
   ```csharp
-			return _deviceSelectorPrefix +
-			"((System.Devices.Aep.Bluetooth.Cod.Major:=" + classOfDevice.MajorClass +
-			"AND System.Devices.Aep.Bluetooth.Cod.Minor:=" + classOfDevice.MinorClass +
-			"AND  " e.g. "System.Devices.Aep.Bluetooth.Cod.Services.Information:=System.StructuredQueryType.Boolean#True"
-			") OR " + _deviceSelectorIssueInquiry + "#True)";
+            return _deviceSelectorPrefix +
+            "((System.Devices.Aep.Bluetooth.Cod.Major:=" + classOfDevice.MajorClass +
+            "AND System.Devices.Aep.Bluetooth.Cod.Minor:=" + classOfDevice.MinorClass +
+            "AND  " e.g. "System.Devices.Aep.Bluetooth.Cod.Services.Information:=System.StructuredQueryType.Boolean#True"
+            ") OR " + _deviceSelectorIssueInquiry + "#True)";
   ```

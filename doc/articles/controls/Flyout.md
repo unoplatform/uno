@@ -9,6 +9,6 @@ If you want to show a dimmed overlay underneath the flyout, set the `Flyout.Ligh
 If you wish to customize the overlay color, add the following to your top-level `App.Resources`:
 
 ```xml
-		<SolidColorBrush x:Key="FlyoutLightDismissOverlayBackground"
-						 Color="Blue" />
+        <SolidColorBrush x:Key="FlyoutLightDismissOverlayBackground"
+                         Color="Blue" />
 ```

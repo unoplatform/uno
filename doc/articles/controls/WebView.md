@@ -50,21 +50,21 @@ await webView.ExecuteScriptAsync("eval({'test': 1})"); // Returns a string conta
 
 ```javascript
 function postWebViewMessage(message){
-	try{
-		if (window.hasOwnProperty("chrome") && typeof chrome.webview !== undefined) {
-			// Windows
-			chrome.webview.postMessage(message);
-		} else if (window.hasOwnProperty("unoWebView")) {
-			// Android
-			unoWebView.postMessage(JSON.stringify(message));
-		} else if (window.hasOwnProperty("webkit") && typeof webkit.messageHandlers !== undefined) {
-			// iOS and macOS
-			webkit.messageHandlers.unoWebView.postMessage(JSON.stringify(message));
-		}
-	}
-	catch (ex){
-		alert("Error occurred: " + ex);
-	}
+    try{
+        if (window.hasOwnProperty("chrome") && typeof chrome.webview !== undefined) {
+            // Windows
+            chrome.webview.postMessage(message);
+        } else if (window.hasOwnProperty("unoWebView")) {
+            // Android
+            unoWebView.postMessage(JSON.stringify(message));
+        } else if (window.hasOwnProperty("webkit") && typeof webkit.messageHandlers !== undefined) {
+            // iOS and macOS
+            webkit.messageHandlers.unoWebView.postMessage(JSON.stringify(message));
+        }
+    }
+    catch (ex){
+        alert("Error occurred: " + ex);
+    }
 }
 
 // Usage:
@@ -79,7 +79,7 @@ To receive the message in C#, subscribe to the `WebMessageReceived` event:
 ```csharp
 webView.WebMessageReceived += (s, e) =>
 {
-	Debug.WriteLine(e.WebMessageAsJson);
+    Debug.WriteLine(e.WebMessageAsJson);
 };
 ```
 

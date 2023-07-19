@@ -155,12 +155,12 @@ Although all resources can be added to single resource file, it is often conside
 
     | Name | Value |
     | :--- | :---- |
-    | Cancel	| Cancel|
-    | FatalErrorTitle	| Fatal Error|
-    | FatalInitializeError	| Unable to initialize services - application must be restarted|
-    | LoginDialogLoginFailed	| The user name or password is incorrect|
-    | LoginDialogUserNameRequired	| User name and Password are required|
-    | Ok	| OK |
+    | Cancel    | Cancel|
+    | FatalErrorTitle    | Fatal Error|
+    | FatalInitializeError    | Unable to initialize services - application must be restarted|
+    | LoginDialogLoginFailed    | The user name or password is incorrect|
+    | LoginDialogUserNameRequired    | User name and Password are required|
+    | Ok    | OK |
 
 1. Navigate to the **Helpers** folder and add a new class - name it **ErrorMessageHelper**.
 

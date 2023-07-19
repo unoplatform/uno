@@ -8,20 +8,20 @@ See [MediaPlayerElement](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xam
 
 ## Media formats
 
-| Supported Formats    									| iOS		| Android	| Wasm		| Skia GTK	| Remarks							|
+| Supported Formats                                        | iOS        | Android    | Wasm        | Skia GTK    | Remarks                            |
 |-------------------------------------------------------|:-----------:|:-----------:|:-----------:|:-----------:|-----------------------------------|
-| Local/Remote MP3 Support								| ✅  		| ✅  		| ✅  		| ✅  		|									|
-| Local/Remote MPEG4 Support							| ✅  		| ✅  		| ✅  		| ✅  		|									|
-| HLSv3	Support											| ✅ 		| ✅  		| ✅  		| ✅  		| 									|
-| HLSv4	Support											| ✅ 		| ✅  		| ✅  		| ✅  		|									|
-| 3GP Support											| ✅ 		| ✅  		| ✅  		| ✅		| 3GP with AMR Narrow Band (SAMR) audio codec does not work on iOS (See notes) |
-| FLV Support											| -  		| ✅  		| ✅  		| ✅  		|									|
-| MOV Support											| ✅  		| -  		| -  		| -  		|									|
-| MKV Support											| -  		| ✅ 		| ✅  		| ✅  		|									|
-| AVI Support											| -  		| ✅  		| ✅  		| ✅  		| 									|
-| OGG Support											| -  		| -  		| ✅  		| ✅  		|									|
-| MPEG-Dash	Support										| -  		| -  		| -  		| -  		| 									|
-| Smooth Streaming Support								| -  		| -  		| -  		| -  		| 									|
+| Local/Remote MP3 Support                                | ✅          | ✅          | ✅          | ✅          |                                    |
+| Local/Remote MPEG4 Support                            | ✅          | ✅          | ✅          | ✅          |                                    |
+| HLSv3    Support                                            | ✅         | ✅          | ✅          | ✅          |                                     |
+| HLSv4    Support                                            | ✅         | ✅          | ✅          | ✅          |                                    |
+| 3GP Support                                            | ✅         | ✅          | ✅          | ✅        | 3GP with AMR Narrow Band (SAMR) audio codec does not work on iOS (See notes) |
+| FLV Support                                            | -          | ✅          | ✅          | ✅          |                                    |
+| MOV Support                                            | ✅          | -          | -          | -          |                                    |
+| MKV Support                                            | -          | ✅         | ✅          | ✅          |                                    |
+| AVI Support                                            | -          | ✅          | ✅          | ✅          |                                     |
+| OGG Support                                            | -          | -          | ✅          | ✅          |                                    |
+| MPEG-Dash    Support                                        | -          | -          | -          | -          |                                     |
+| Smooth Streaming Support                                | -          | -          | -          | -          |                                     |
 
 #### Notes
 
@@ -30,35 +30,35 @@ See [MediaPlayerElement](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xam
 
 ## Features
 
-| Section				| Feature    											| iOS		| Android	| Wasm		| Skia GTK	| Remarks										|
+| Section                | Feature                                                | iOS        | Android    | Wasm        | Skia GTK    | Remarks                                        |
 |-----------------------|-------------------------------------------------------|:-----------:|:-----------:|:-----------:|:-----------:|-----------------------------------------------|
-| MediaPlayerElement	| AutoPlay  											| ✅  		| ✅  		| ✅  		| ✅  		|												|
-|						| Poster image											| ✅  		| ✅  		| ✅  		| ✅  		| Does not show when playing music				|
-|						| Enable/Disable MediaTransportControls			  		| ✅  		| ✅  		| ✅  		| ✅  		|												|
-|						| Stretch										  		| ✅  		| ✅  		| ✅  		| ✅  		| Stretch.None behave like Stretch.Fill on iOS	|
-|						| Pause media when headphones unplugged			  		| ✅  		| ✅  		| -  		| -  		| 												|
-| TransportControls		| Transport controls custom style						| ✅  		| ✅  		| ✅  		| ✅  		|												|
-| 			    		| Play/Pause 											| ✅  		| ✅  		| ✅  		| ✅  		|												|
-|						| Stop  												| ✅  		| ✅  		| ✅  		| ✅  		|												|
-| 						| Seek  												| ✅  		| ✅  		| ✅  		| ✅  		|												|
-|						| Volume change											| ✅  		| ✅  		| ✅  		| ✅  		|												|
-|						| Mute													| ✅  		| ✅  		| ✅  		| ✅  		|												|
-|						| Show elapsed time										| ✅  		| ✅  		| ✅  		| ✅  		|												|
-|						| Show remaining time									| ✅  		| ✅  		| ✅  		| ✅  		|												|
-|						| Show/Hide MediaTransportControls automatically		| ✅  		| ✅  		| ✅  		| ✅  		|												|
-|						| MediaTransportControls compact mode					| ✅  		| ✅  		| ✅  		| ✅  		|												|
-|						| Show/Hide MediaTransportControls commands  			| ✅  		| ✅  		| ✅  		| ✅  		|												|
-|						| Enable/Disable MediaTransportControls commands  		| ✅  		| ✅  		| ✅  		| ✅  		|												|
-|						| Skip forward											| ✅ 		| ✅  		| ✅  		| ✅  		|												|
-|						| Skip backward											| ✅ 		| ✅  		| ✅  		| ✅  		|												|
-|						| Show buffering progress						  		| ✅  		| ✅ 		| ✅  		| ✅  		|												|
-|						| Zoom mode												| ✅ 		| ✅ 		| ✅  		| ✅  		| 												|
-|						| Full-screen mode								  		| ✅ 		| ✅  		| ✅  		| ✅  		|												|
-|						| Playlists support		  								| ✅ 		| ✅  		| -  		| -  		|												|
-|						| Change playback rate									| -  		| -  		| ✅  		| ✅  		|												|
-|						| Player controls on locked screen support  			| -  		| -  		| -  		| -  		|												|
-|						| Subtitles	support			  							| -  		| -  		| -  		| -  		|												|
-|						| Languages	support			  							| -  		| -  		| -  		| -  		|												|
+| MediaPlayerElement    | AutoPlay                                              | ✅          | ✅          | ✅          | ✅          |                                                |
+|                        | Poster image                                            | ✅          | ✅          | ✅          | ✅          | Does not show when playing music                |
+|                        | Enable/Disable MediaTransportControls                      | ✅          | ✅          | ✅          | ✅          |                                                |
+|                        | Stretch                                                  | ✅          | ✅          | ✅          | ✅          | Stretch.None behave like Stretch.Fill on iOS    |
+|                        | Pause media when headphones unplugged                      | ✅          | ✅          | -          | -          |                                                 |
+| TransportControls        | Transport controls custom style                        | ✅          | ✅          | ✅          | ✅          |                                                |
+|                         | Play/Pause                                             | ✅          | ✅          | ✅          | ✅          |                                                |
+|                        | Stop                                                  | ✅          | ✅          | ✅          | ✅          |                                                |
+|                         | Seek                                                  | ✅          | ✅          | ✅          | ✅          |                                                |
+|                        | Volume change                                            | ✅          | ✅          | ✅          | ✅          |                                                |
+|                        | Mute                                                    | ✅          | ✅          | ✅          | ✅          |                                                |
+|                        | Show elapsed time                                        | ✅          | ✅          | ✅          | ✅          |                                                |
+|                        | Show remaining time                                    | ✅          | ✅          | ✅          | ✅          |                                                |
+|                        | Show/Hide MediaTransportControls automatically        | ✅          | ✅          | ✅          | ✅          |                                                |
+|                        | MediaTransportControls compact mode                    | ✅          | ✅          | ✅          | ✅          |                                                |
+|                        | Show/Hide MediaTransportControls commands              | ✅          | ✅          | ✅          | ✅          |                                                |
+|                        | Enable/Disable MediaTransportControls commands          | ✅          | ✅          | ✅          | ✅          |                                                |
+|                        | Skip forward                                            | ✅         | ✅          | ✅          | ✅          |                                                |
+|                        | Skip backward                                            | ✅         | ✅          | ✅          | ✅          |                                                |
+|                        | Show buffering progress                                  | ✅          | ✅         | ✅          | ✅          |                                                |
+|                        | Zoom mode                                                | ✅         | ✅         | ✅          | ✅          |                                                 |
+|                        | Full-screen mode                                          | ✅         | ✅          | ✅          | ✅          |                                                |
+|                        | Playlists support                                          | ✅         | ✅          | -          | -          |                                                |
+|                        | Change playback rate                                    | -          | -          | ✅          | ✅          |                                                |
+|                        | Player controls on locked screen support              | -          | -          | -          | -          |                                                |
+|                        | Subtitles    support                                          | -          | -          | -          | -          |                                                |
+|                        | Languages    support                                          | -          | -          | -          | -          |                                                |
 
 ## Requirement
 
@@ -69,10 +69,10 @@ Add the following to your info.plist
 ```xml
 <key>NSAppTransportSecurity</key>
 <dict>
-	<key>NSAllowsArbitraryLoads</key>
-	<true/>
-	<key>NSExceptionMinimumTLSVersion</key>
-	<string>TLSv1.2</string>
+    <key>NSAllowsArbitraryLoads</key>
+    <true/>
+    <key>NSExceptionMinimumTLSVersion</key>
+    <string>TLSv1.2</string>
 </dict>
 ```
 

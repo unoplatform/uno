@@ -87,19 +87,19 @@ As those events are tightly coupled to the native events, Uno has to make some c
 * On iOS, when tapping with a mouse or a pen on Android, or in few other specific cases (like `PointerCaptureLost`),
   multiple managed events are raised from a single native event. These have multiple effects:
   * On UWP if you have a control A and a nested control B, you will get:
-		```
-		B.PointerEnter
-		A.PointerEnter
-		B.PointerPressed
-		A.PointerPressed
-		```
-	  but with UNO you will get:
-		```
-		B.PointerEnter
-		B.PointerPressed
-		A.PointerEnter
-		A.PointerPressed
-		```
+        ```
+        B.PointerEnter
+        A.PointerEnter
+        B.PointerPressed
+        A.PointerPressed
+        ```
+      but with UNO you will get:
+        ```
+        B.PointerEnter
+        B.PointerPressed
+        A.PointerEnter
+        A.PointerPressed
+        ```
   * If you handle the `PointerEnter` on **B**, the parent control **A** won't get the `PointerEnter` (as expected) nor the  `PointerPressed`.
 * On Android with a mouse or a pen, the `PointerEnter` and `PointerExit` are going to be raised without taking clipping in consideration.
   This means that you will get the enter earlier and the exit later than on other platform.

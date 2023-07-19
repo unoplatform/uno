@@ -143,7 +143,7 @@ On UWP, you must add the following code to your `App.cs` or `App.xaml.cs` constr
 
 ```csharp
 #if WINDOWS_UWP
-	Windows.ApplicationModel.Resources.Core.ResourceContext.SetGlobalQualifierValue("custom", "uwp");
+    Windows.ApplicationModel.Resources.Core.ResourceContext.SetGlobalQualifierValue("custom", "uwp");
 #endif
 ```
 
@@ -169,14 +169,14 @@ This package is installed by default when using the [Uno Cross-Platform solution
 ```csharp
 private void ConfigureUniversalImageLoader()
 {
-	// Create global configuration and initialize ImageLoader with this config
-	ImageLoaderConfiguration config = new ImageLoaderConfiguration
-		.Builder(Context)
-		.Build();
+    // Create global configuration and initialize ImageLoader with this config
+    ImageLoaderConfiguration config = new ImageLoaderConfiguration
+        .Builder(Context)
+        .Build();
 
-	ImageLoader.Instance.Init(config);
+    ImageLoader.Instance.Init(config);
 
-	ImageSource.DefaultImageLoader = ImageLoader.Instance.LoadImageAsync;
+    ImageSource.DefaultImageLoader = ImageLoader.Instance.LoadImageAsync;
 }
 ```
 

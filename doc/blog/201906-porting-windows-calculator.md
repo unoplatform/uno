@@ -13,7 +13,7 @@ You can use it today on:
 - [Apple App Store](https://bit.ly/calc-ios)
 - [Android Play Store](https://play.google.com/store/apps/details?id=uno.platform.calculator)
 - WebAssembly: https://calculator.platform.uno
--	Windows 10 – well, just open it on Windows 10 😊
+-    Windows 10 – well, just open it on Windows 10 😊
 
 ![Calculator](Assets/20190612-Calculator-01.png)
 

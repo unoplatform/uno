@@ -97,8 +97,8 @@ Skip screenshot for static sample:
 ```csharp
 namespace Uno.UI.Samples.Content.UITests.ButtonTestsControl
 {
-	[SampleControlInfo(ignoreInSnapshotTests: true)]
-	public sealed partial class CheckBox_Button_With_CanExecute_Changing : UserControl
+    [SampleControlInfo(ignoreInSnapshotTests: true)]
+    public sealed partial class CheckBox_Button_With_CanExecute_Changing : UserControl
   {
     ...
   }
@@ -107,15 +107,15 @@ namespace Uno.UI.Samples.Content.UITests.ButtonTestsControl
   Skip screenshot comparison for UI tests:
 
   ```csharp
-		[Test]
-		[AutoRetry]
-		public void TimePicker_Flyout()
-		{
-			Run("UITests.Shared.Windows_UI_Xaml_Controls.TimePicker.TimePicker_Flyout_Automated", skipInitialScreenshot: true);
+        [Test]
+        [AutoRetry]
+        public void TimePicker_Flyout()
+        {
+            Run("UITests.Shared.Windows_UI_Xaml_Controls.TimePicker.TimePicker_Flyout_Automated", skipInitialScreenshot: true);
 
-			...
+            ...
 
-			TakeScreenshot("TimePicker - Flyout", ignoreInSnapshotCompare: true);
+            TakeScreenshot("TimePicker - Flyout", ignoreInSnapshotCompare: true);
 
   ```
 

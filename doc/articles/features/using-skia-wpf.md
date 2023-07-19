@@ -80,11 +80,11 @@ This is not required anymore, but to be able to use a single project, you'll can
 
         ```xml
         <!-- Mark the files from this folder as being part of WinUI -->
-		<Page Update="$(MSBuildThisFileDirectory)**/*.xaml" XamlRuntime="WinUI" />
-		<ApplicationDefinition Update="$(MSBuildThisFileDirectory)**/*.xaml" XamlRuntime="WinUI" />
+        <Page Update="$(MSBuildThisFileDirectory)**/*.xaml" XamlRuntime="WinUI" />
+        <ApplicationDefinition Update="$(MSBuildThisFileDirectory)**/*.xaml" XamlRuntime="WinUI" />
 
-		<!-- Make sure XAML files force reevaluation of up-to-date checks -->
-		<UpToDateCheckInput Include="$(MSBuildThisFileDirectory)**/*.xaml" />
+        <!-- Make sure XAML files force reevaluation of up-to-date checks -->
+        <UpToDateCheckInput Include="$(MSBuildThisFileDirectory)**/*.xaml" />
         ```
 
         You'll need edit this file outside of Visual Studio. You need an example, create a new temporary project, and take a look at the way these lines are defined in the shared project file.

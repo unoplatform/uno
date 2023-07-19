@@ -173,7 +173,7 @@ await WebAssemblyRuntime.InvokeAsync(
 
 // Invoke javascript asynchronously and await returned string
 var str = await WebAssemblyRuntime.InvokeAsync(
-	"(async () => "It works asynchronously!")();");
+    "(async () => "It works asynchronously!")();");
 
 // Escape javascript data to prevent javascript script injection
 var escapedUserId = WebAssemblyRuntime.EscapeJS(userId);

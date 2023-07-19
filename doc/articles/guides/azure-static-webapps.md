@@ -14,7 +14,7 @@ You can review [the Azure documentation](https://docs.microsoft.com/en-us/azure/
 
 Here is how to publish an app from GitHub, using Uno Platform:
 
--	In a new repository, create a Uno Platform app using the following command:
+-    In a new repository, create a Uno Platform app using the following command:
 
     ```
     cd <repository-name>
@@ -22,20 +22,20 @@ Here is how to publish an app from GitHub, using Uno Platform:
     dotnet new unoapp -o MyApp
     ```
 
--	If the <TargetFramework> value in the `MyApp.Wasm.csproj` is not `net5.0`, [follow the upgrading steps provided here](https://github.com/unoplatform/uno/blob/master/doc/articles/migrating-from-previous-releases.md#migrating-webassembly-projects-to-net-5).
--	If in the `MyApp.Wasm\wwwroot`, you find a `web.config` file, delete it. This will enable brotli compression in Azure Static Web Apps.
--	Search for [Static Web Apps](https://portal.azure.com/#create/Microsoft.StaticApp) in the Azure Portal
--	Fill the required fields in the creation form:
+-    If the <TargetFramework> value in the `MyApp.Wasm.csproj` is not `net5.0`, [follow the upgrading steps provided here](https://github.com/unoplatform/uno/blob/master/doc/articles/migrating-from-previous-releases.md#migrating-webassembly-projects-to-net-5).
+-    If in the `MyApp.Wasm\wwwroot`, you find a `web.config` file, delete it. This will enable brotli compression in Azure Static Web Apps.
+-    Search for [Static Web Apps](https://portal.azure.com/#create/Microsoft.StaticApp) in the Azure Portal
+-    Fill the required fields in the creation form:
 
     ![visual-studio-installer-web](../Assets/aswa-create.png)
--	Select your repository using the **Sign in with GitHub** button
--	Select your organization, repository, and branch
--	In the build presets, select **Custom**, and keep the default values
+-    Select your repository using the **Sign in with GitHub** button
+-    Select your organization, repository, and branch
+-    In the build presets, select **Custom**, and keep the default values
 
     ![visual-studio-installer-web](../Assets/aswa-settings.png)
 
--	The click on **Review+Create** button. Azure will automatically create a new **GitHub Actions Workflow** in your repository. The workflow will automatically be started and will fail for this first run, as some parameters need to be adjusted.
--	In your repository’s newly added github workflow (in `.github/workflows`), add the following two steps, after the checkout step:
+-    The click on **Review+Create** button. Azure will automatically create a new **GitHub Actions Workflow** in your repository. The workflow will automatically be started and will fail for this first run, as some parameters need to be adjusted.
+-    In your repository’s newly added github workflow (in `.github/workflows`), add the following two steps, after the checkout step:
 
     ```yaml
     - name: Setup dotnet
@@ -48,13 +48,13 @@ Here is how to publish an app from GitHub, using Uno Platform:
         dotnet build -c Release
     ```
 
--	In the Deploy step that was automatically added, change the `app_location` parameter to the following:
+-    In the Deploy step that was automatically added, change the `app_location` parameter to the following:
 
     ```yaml
     app_location: "src/MyApp.Wasm/bin/Debug/net5.0/dist"
     ```
 
--	Once changed, the application will be built and deployed on your Azure Static Web App instance.
+-    Once changed, the application will be built and deployed on your Azure Static Web App instance.
 
 ## Configuring Deep Linking with Fallback Routes
 

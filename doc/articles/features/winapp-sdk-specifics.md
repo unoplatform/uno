@@ -28,8 +28,8 @@ To fix this, find or add the following block in your Windows `.csproj` file:
 	must be the highest found in https://www.nuget.org/packages/Microsoft.Windows.SDK.NET.Ref.
 	-->
 
-	<FrameworkReference Update="Microsoft.Windows.SDK.NET.Ref" RuntimeFrameworkVersion="10.0.22000.25" />
-	<FrameworkReference Update="Microsoft.Windows.SDK.NET.Ref" TargetingPackVersion="10.0.22000.25" />
+    <FrameworkReference Update="Microsoft.Windows.SDK.NET.Ref" RuntimeFrameworkVersion="10.0.22000.25" />
+    <FrameworkReference Update="Microsoft.Windows.SDK.NET.Ref" TargetingPackVersion="10.0.22000.25" />
 </ItemGroup>
 ```
 
@@ -60,12 +60,12 @@ By default the **Uno Platform App** Visual Studio template creates a packaged ap
 - Add this new set of properties in your `.Windows` csproj:
 
     ```xml
-  	<PropertyGroup>
-		<!-- Bundles the WinAppSDK binaries (Uncomment for unpackaged builds) -->
-		<WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
-		<!-- This bundles the .NET Core libraries (Uncomment for packaged builds)  -->
-		<!-- <SelfContained>true</SelfContained> -->
-	</PropertyGroup>
+      <PropertyGroup>
+        <!-- Bundles the WinAppSDK binaries (Uncomment for unpackaged builds) -->
+        <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
+        <!-- This bundles the .NET Core libraries (Uncomment for packaged builds)  -->
+        <!-- <SelfContained>true</SelfContained> -->
+    </PropertyGroup>
     ```
 
     You will need to adjust which property is enabled based on the deployment target that you are choosing. Both properties are not supported (as of WinAppSDK 1.0.3).

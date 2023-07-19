@@ -32,7 +32,7 @@ The structure of an Uno app created with the default Visual Studio template is [
 
  | Platform    | Symbol                               | Comments |
  | ----------- | ------------------------------------ | ------- |
- | WinAppSDK   | `WINDOWS10_0_18362_0_OR_GREATER` 	  | Depending on your `TargetFramework` value, you may need to adjust the 18362 value |
+ | WinAppSDK   | `WINDOWS10_0_18362_0_OR_GREATER`       | Depending on your `TargetFramework` value, you may need to adjust the 18362 value |
  | UWP         | `NETFX_CORE`                         | |
  | Android     | `__ANDROID__`                        | |
  | iOS         | `__IOS__`                            | |
@@ -94,12 +94,12 @@ public partial class NativeWrapperControl : Control {
 
 ...
 
-		protected override void OnApplyTemplate()
-		{
-			 base.OnApplyTemplate();
+        protected override void OnApplyTemplate()
+        {
+             base.OnApplyTemplate();
    
-  			 _nativeView = CreateNativeView();
-		}
+               _nativeView = CreateNativeView();
+        }
 ```
 
 Platform-specific code in `PROJECTNAME/NativeWrapperControl.Android.cs`:
@@ -110,9 +110,9 @@ public partial class NativeWrapperControl : Control {
 
 ...
 
-		private View CreateNativeView() {
-			... //Android-specific code
-		}
+        private View CreateNativeView() {
+            ... //Android-specific code
+        }
 ```
 
 Platform-specific code in `PROJECTNAME/NativeWrapperControl.iOS.cs`:
@@ -123,9 +123,9 @@ public partial class NativeWrapperControl : Control {
 
 ...
 
-		private UIView CreateNativeView() {
-			... //iOS-specific code
-		}
+        private UIView CreateNativeView() {
+            ... //iOS-specific code
+        }
 ```
 
 You can use [partial methods](https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/partial-classes-and-methods#partial-methods) when only one platform needs specialized logic.

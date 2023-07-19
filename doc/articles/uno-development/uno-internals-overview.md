@@ -41,14 +41,14 @@ WinUI has a very large API surface area, and not all features in it have been im
 [global::Uno.NotImplemented]
 public  bool ExitDisplayModeOnAccessKeyInvoked
 {
-	get
-	{
-		return (bool)this.GetValue(ExitDisplayModeOnAccessKeyInvokedProperty);
-	}
-	set
-	{
-		this.SetValue(ExitDisplayModeOnAccessKeyInvokedProperty, value);
-	}
+    get
+    {
+        return (bool)this.GetValue(ExitDisplayModeOnAccessKeyInvokedProperty);
+    }
+    set
+    {
+        this.SetValue(ExitDisplayModeOnAccessKeyInvokedProperty, value);
+    }
 }
 #endif
 ```

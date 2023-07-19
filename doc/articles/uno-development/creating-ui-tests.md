@@ -60,7 +60,7 @@ The `ActivePlatformsAttribute` allows to specify which platform are active for a
 This attribute is used as follows:
 
 ```
-[ActivePlatforms(Platform.iOS, Platform.Browser)]	// Run on iOS and Browser.
+[ActivePlatforms(Platform.iOS, Platform.Browser)]    // Run on iOS and Browser.
 ```
 
 This attribute can be placed at the test or class level.
@@ -86,33 +86,33 @@ The `_app.WaitForText("ElementName", "ExpectedText")` method waits until the `Te
 Finally, we take another screenshot, and then use the `ImageAssert` class to verify that the onscreen display has changed as expected.
 
 ```csharp
-	[TestFixture]
-	public class LinearGradientBrush_Tests : SampleControlUITestBase
-	{
-		[Test]
-		[AutoRetry]
-		[ActivePlatforms(Platform.Android, Platform.iOS)] // This should be enabled for WASM once it no longer uses the LEGACY_SHAPE_MEASURE code path - https://github.com/unoplatform/uno/issues/2983
-		public void When_GradientStops_Changed()
-		{
-			Run("UITests.Windows_UI_Xaml_Media.GradientBrushTests.LinearGradientBrush_Change_Stops");
+    [TestFixture]
+    public class LinearGradientBrush_Tests : SampleControlUITestBase
+    {
+        [Test]
+        [AutoRetry]
+        [ActivePlatforms(Platform.Android, Platform.iOS)] // This should be enabled for WASM once it no longer uses the LEGACY_SHAPE_MEASURE code path - https://github.com/unoplatform/uno/issues/2983
+        public void When_GradientStops_Changed()
+        {
+            Run("UITests.Windows_UI_Xaml_Media.GradientBrushTests.LinearGradientBrush_Change_Stops");
 
-			var rectangle = _app.Marked("GradientBrushRectangle");
+            var rectangle = _app.Marked("GradientBrushRectangle");
 
-			_app.WaitForElement(rectangle);
+            _app.WaitForElement(rectangle);
 
-			var screenRect = _app.GetRect(rectangle);
+            var screenRect = _app.GetRect(rectangle);
 
-			var before = TakeScreenshot("Before");
+            var before = TakeScreenshot("Before");
 
-			_app.FastTap("ChangeBrushButton");
+            _app.FastTap("ChangeBrushButton");
 
-			_app.WaitForText("StatusTextBlock", "Changed");
+            _app.WaitForText("StatusTextBlock", "Changed");
 
-			var after = TakeScreenshot("After");
+            var after = TakeScreenshot("After");
 
-			ImageAssert.AreNotEqual(before, after, screenRect);
-		}
-	}
+            ImageAssert.AreNotEqual(before, after, screenRect);
+        }
+    }
 ```
 
 ## Running iOS UI Tests in a Simulator on macOS

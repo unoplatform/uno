@@ -214,7 +214,7 @@ To migrate your application to Uno 4.0:
 
     ```csharp
     #if HAS_UNO
-	global::Uno.UI.Adapter.Microsoft.Extensions.Logging.LoggingAdapter.Initialize();
+    global::Uno.UI.Adapter.Microsoft.Extensions.Logging.LoggingAdapter.Initialize();
     #endif
     ```
 
@@ -349,13 +349,13 @@ Migrating from Uno 2.x to Uno 3.0 requires a small set of changes in the code an
 - For Android, you'll need to update the `Main.cs` file from:
 
     ```csharp
-	: base(new App(), javaReference, transfer)
+    : base(new App(), javaReference, transfer)
     ```
 
     to
 
     ```csharp
-	: base(() => new App(), javaReference, transfer)
+    : base(() => new App(), javaReference, transfer)
     ```
 
 - For WebAssembly, in the `YourProject.Wasm.csproj`:

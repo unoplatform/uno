@@ -110,12 +110,12 @@ Another method to change the app theme is to adjust it immediately upon startup.
 ```csharp
 public App()
 {
-	this.InitializeComponent();
+    this.InitializeComponent();
 
 #if HAS_UNO
-	Uno.UI.ApplicationHelper.RequestedCustomTheme = nameof(ApplicationTheme.Dark);
+    Uno.UI.ApplicationHelper.RequestedCustomTheme = nameof(ApplicationTheme.Dark);
 #else
-	this.RequestedTheme = ApplicationTheme.Dark;
+    this.RequestedTheme = ApplicationTheme.Dark;
 #endif
 }
 ```

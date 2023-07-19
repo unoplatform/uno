@@ -221,7 +221,7 @@ Let's create an app to integrate a Syntax Highlighter named [`PrismJS`](https://
                    html = prism.highlight(code, prism.languages[language], language);
                }}
    
-   			// Display result
+               // Display result
                element.innerHTML = html;
                // Set CSS classes, when required
                if(oldLanguageCss) {{

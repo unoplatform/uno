@@ -28,13 +28,13 @@ NuGet references that should be shared by all platforms can be added through the
 If you want to apply NuGet references only to specific platforms, you can do so by manually editing the `csproj` file and putting the `PackageReference` within a conditional `ItemGroup`, eg:
 
 ```xml
-	<ItemGroup Condition="'$(TargetFramework)' == 'net7.0-android'">
-		<PackageReference Include="MyLibraryA" Version="3.0.4" PrivateAssets="none" />
-	</ItemGroup>
+    <ItemGroup Condition="'$(TargetFramework)' == 'net7.0-android'">
+        <PackageReference Include="MyLibraryA" Version="3.0.4" PrivateAssets="none" />
+    </ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)' == 'net7.0-ios' or '$(TargetFramework)' == 'net7.0-maccatalyst'">
-		<PackageReference Include="MyLibraryB" Version="2.5.11" PrivateAssets="none" />
-	</ItemGroup>
+    <ItemGroup Condition="'$(TargetFramework)' == 'net7.0-ios' or '$(TargetFramework)' == 'net7.0-maccatalyst'">
+        <PackageReference Include="MyLibraryB" Version="2.5.11" PrivateAssets="none" />
+    </ItemGroup>
 ```
 
 ### Project references and SDK references
@@ -52,10 +52,10 @@ Example project reference:
 Example SDK reference:
 
 ```xml
-	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid13.0' or '$(TargetFramework)' == 'xamarinios10' or '$(TargetFramework)' == 'xamarinmac20' ">
-		<Reference Include="System.Numerics" />
-		<Reference Include="System.Numerics.Vectors" />
-	</ItemGroup>
+    <ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid13.0' or '$(TargetFramework)' == 'xamarinios10' or '$(TargetFramework)' == 'xamarinmac20' ">
+        <Reference Include="System.Numerics" />
+        <Reference Include="System.Numerics.Vectors" />
+    </ItemGroup>
 ```
 
 ## Adding XAML files

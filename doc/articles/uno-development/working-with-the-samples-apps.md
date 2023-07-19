@@ -48,8 +48,8 @@ In the first example, no parameters are supplied to the `Sample` attribute. The 
 ```csharp
 namespace UITests.Windows_UI_Xaml_Controls.ToolTip
 {
-	[Sample]
-	public sealed partial class ToolTip_Long_Text : UserControl
+    [Sample]
+    public sealed partial class ToolTip_Long_Text : UserControl
 ```
 
 In the second example, the category and name are manually specified, and a view-model type is specified to use as the `DataContext` of the sample.
@@ -57,8 +57,8 @@ In the second example, the category and name are manually specified, and a view-
 ```csharp
 namespace UITests.Windows_Devices.Haptics
 {
-	[Sample("Windows.Devices", Name = "Haptics.VibrationDevice", ViewModelType = typeof(VibrationDeviceTestsViewModel))]
-	public sealed partial class VibrationDeviceTests : Page
+    [Sample("Windows.Devices", Name = "Haptics.VibrationDevice", ViewModelType = typeof(VibrationDeviceTestsViewModel))]
+    public sealed partial class VibrationDeviceTests : Page
 ```
 
 ## Adding a new sample

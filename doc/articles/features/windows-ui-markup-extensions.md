@@ -61,7 +61,7 @@ public class SampleProvideValueTarget : MarkupExtension
 {
     protected override object ProvideValue(IXamlServiceProvider serviceProvider)
     {
-		var provideValueTarget = (IProvideValueTarget)context.GetService(typeof(IProvideValueTarget));
+        var provideValueTarget = (IProvideValueTarget)context.GetService(typeof(IProvideValueTarget));
 
         return $"TargetProperty:{provideValueTarget.TargetProperty}, TargetObject:{provideValueTarget.TargetObject}";
     }

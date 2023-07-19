@@ -96,23 +96,23 @@ To be able to test the imported code, we can create a sample application using [
 
 ```xml
 <controls:TreeView Margin="5">
-	<controls:TreeViewItem Header="Controls">
-	<controls:TreeViewItem Header="AutoCompleteBox">
-		<controls:TreeViewItem Header="Properties" />
-	</controls:TreeViewItem>
-	<controls:TreeViewItem Header="Expander" />
-		<controls:TreeViewItem Header="NumericUpDown" />
-	</controls:TreeViewItem>
-	<controls:TreeViewItem Header="Layout">
-		<controls:TreeViewItem Header="DockPanel" />
-		<controls:TreeViewItem Header="WrapPanel" />
-		<controls:TreeViewItem Header="Viewbox" />
-	</controls:TreeViewItem>
-	<controls:TreeViewItem Header="Charting">
-		<controls:TreeViewItem Header="ColumnSeries" />
-		<controls:TreeViewItem Header="LineSeries" />
-		<controls:TreeViewItem Header="PieSeries" />
-	</controls:TreeViewItem>
+    <controls:TreeViewItem Header="Controls">
+    <controls:TreeViewItem Header="AutoCompleteBox">
+        <controls:TreeViewItem Header="Properties" />
+    </controls:TreeViewItem>
+    <controls:TreeViewItem Header="Expander" />
+        <controls:TreeViewItem Header="NumericUpDown" />
+    </controls:TreeViewItem>
+    <controls:TreeViewItem Header="Layout">
+        <controls:TreeViewItem Header="DockPanel" />
+        <controls:TreeViewItem Header="WrapPanel" />
+        <controls:TreeViewItem Header="Viewbox" />
+    </controls:TreeViewItem>
+    <controls:TreeViewItem Header="Charting">
+        <controls:TreeViewItem Header="ColumnSeries" />
+        <controls:TreeViewItem Header="LineSeries" />
+        <controls:TreeViewItem Header="PieSeries" />
+    </controls:TreeViewItem>
 </controls:TreeView>
 ```
 

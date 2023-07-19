@@ -51,6 +51,6 @@ Clipboard.ContentChanged += Clipboard_ContentChanged;
 
 private void Clipboard_ContentChanged(object sender, object e)
 {
-	// ...
+    // ...
 }
 ```

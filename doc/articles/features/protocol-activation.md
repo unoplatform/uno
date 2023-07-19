@@ -81,9 +81,9 @@ protected override void OnActivated(IActivatedEventArgs e)
     
     if (e.Kind == ActivationKind.Protocol)
     {
-    	var protocolActivatedEventArgs = (ProtocolActivatedEventArgs)e;
-    	var uri = protocolActivatedEventArgs.Uri;
-    	// do something
+        var protocolActivatedEventArgs = (ProtocolActivatedEventArgs)e;
+        var uri = protocolActivatedEventArgs.Uri;
+        // do something
     }
 }
 ```

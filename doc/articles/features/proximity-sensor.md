@@ -32,11 +32,11 @@ if (device is not null)
 
 private async void ProximitySensor_ReadingChanged(ProximitySensor sender, ProximitySensorReadingChangedEventArgs args)
 {
-	await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-	{
-		uint? distanceInMillimeters = args.Reading.DistanceInMillimeters;
-		bool isDetected = args.Reading.IsDetected;
-	});
+    await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+    {
+        uint? distanceInMillimeters = args.Reading.DistanceInMillimeters;
+        bool isDetected = args.Reading.IsDetected;
+    });
 }
 ```
 

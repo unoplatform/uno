@@ -147,7 +147,7 @@ An easy way to achieve this is to add JavaScript code to load the CSS file direc
    
        <StackPanel Spacing="10" Padding="20">
          <TextBlock FontSize="15">
-   		   Is Picker opened: <Run FontSize="20" FontWeight="Bold" Text="{Binding IsPickerOpened, ElementName=picker}" />
+              Is Picker opened: <Run FontSize="20" FontWeight="Bold" Text="{Binding IsPickerOpened, ElementName=picker}" />
             <LineBreak />Picked Date/Time: <Run FontSize="20" FontWeight="Bold" Text="{Binding SelectedDateTime, ElementName=picker}" />
          </TextBlock>
          <TextBlock FontSize="20">Flatpickr control:</TextBlock>

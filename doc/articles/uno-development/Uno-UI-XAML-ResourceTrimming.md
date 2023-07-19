@@ -47,7 +47,7 @@ Then make the code using `ExpandoObject` conditional:
 
 ```csharp
 if (__LinkerHints.Is_System_Dynamic_ExpandoObject_Available
-	&& type == typeof(System.Dynamic.ExpandoObject))
+    && type == typeof(System.Dynamic.ExpandoObject))
 {
     ...
 }
