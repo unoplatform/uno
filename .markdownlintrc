@@ -5,5 +5,9 @@
   "MD026": false,
   "MD028": false,
   "MD033": false,
-  "MD046": false
+  "MD046": false,
+  "MD010": {
+    "code_blocks": true,
+    "spaces_per_tab": 4
+  }
 }
