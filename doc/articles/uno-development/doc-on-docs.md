@@ -61,9 +61,11 @@ Rarely, features are added to Uno Platform that aren't part of WinUI (`VisibleBo
 It's important to document these novel features when you add them, since they aren't covered anywhere else. Again, copy the [Uno-only feature template here](https://github.com/unoplatform/uno/blob/master/doc/.feature-template-uno-only.md) to the [features directory](https://github.com/unoplatform/uno/tree/master/doc/articles/features) and fill in the sections.
 
 ## Updating the documentation from linked repositories
+
 The Uno Platform documentation is aggregated onto https://platform.uno/docs/articles/intro.html, including some repositories that are in the unoplatform GitHub organization.
 
 ### Updating the documentation for other repositories
+
 The CI includes a step to clones repositories at a specified commit or branch, and provides the path to the DocFX table of content.
 
 To include documentation (let's take Uno.Themes as an example):

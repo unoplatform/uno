@@ -46,6 +46,7 @@ Once the application is running, you can exit the application with:
 - `F12`, a key configuration found in the `Program.cs` file of your project which invokes `Application.Current.Exit()`
 
 ## Creating a standalone app
+
 You can create a standalone publication folder using the following:
 
 ```
@@ -58,6 +59,7 @@ dotnet publish -c Release -r linux-x64 --self-contained true
 Documentation on other hardware targets are [available here](https://github.com/dotnet/core/blob/main/release-notes/6.0/supported-os.md).
 
 ## DPI Scaling support
+
 Whenever possible, the `FrameBufferHost` will try to detect the actual DPI scale to use when rendering the UI, based on the physical information provided by the FrameBuffer driver. If the value cannot be determined, a scale of `1.0` is used.
 
 The automatic scaling can be overridden in two ways:

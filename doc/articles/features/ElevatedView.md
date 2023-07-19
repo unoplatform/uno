@@ -3,6 +3,7 @@ uid: Uno.Features.ElevatedView
 ---
 
 # ElevatedView
+
 In many design languages (like [_Material Design_](https://material.io/design)), there's a notion of 'elevation' where a portion of the UI should be presented as being _elevated_ over the rest of the content.
 
 In this case, UWP's native elevation API can't work on all platforms because of technical limitations. To address this problem, Uno provides a control called `ElevatedView`, able to produce a similar elevated effect on all platforms (UWP, Android, iOS, macOS, WebAssembly, and Skia).

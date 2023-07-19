@@ -3,6 +3,7 @@ uid: Uno.Features.VisibleBoundsPadding
 ---
 
 # VisibleBoundsPadding behavior
+
 The `Uno.UI.Toolkit.VisibleBoundsPadding` is a behavior that overrides the `Padding` property of a control to ensure that its inner content is always inside the `ApplicationView.VisibleBounds` rectangle.
 
 The `ApplicationView.VisibleBounds` is the rectangular area of the screen which is completely unobscured by any window decoration, such as the status bar, rounded screen corners or some screen notch (e.g. the iPhone X or Essential Phone top sensors notch).
@@ -13,6 +14,7 @@ In some cases it's acceptable for visible content to be partially obscured (a pa
 > The [`SafeArea`](../external/uno.toolkit.ui/doc/controls/SafeArea.md) control is now preferred to `VisibleBoundsPadding`.
 
 ## Using the behavior
+
 The behavior can be placed on any control that provides a Padding property (e.g. Grid, StackPanel, ListView, ScrollViewer, Control, ContentPresenter or Border), and will be automatically adjusted based on the control's absolute position inside the `ApplicationView.VisibleBounds` rectangle.
 
 ```xml
@@ -59,7 +61,9 @@ Usage is as follows:
 ![image](https://user-images.githubusercontent.com/36631443/68304897-b6205500-0074-11ea-8ec9-b4f02dddd5e6.png)
 
 ### Before
+
 ![image](https://user-images.githubusercontent.com/36631443/68239478-06e27000-ffd9-11e9-956a-c4d954341a5f.png)
 
 ### After
+
 ![image](https://user-images.githubusercontent.com/36631443/68239503-1366c880-ffd9-11e9-9d67-f95050b2e1a7.png)

@@ -21,6 +21,7 @@ Cancel button cancel the new time selection. You can also click outside the time
 Done/OK button save the new selected time.
 
 ### Styles
+
 Time button style: TimePickerFlyoutButtonStyle
 Time picker flyout popup style: default generic TimePickerFlyoutPresenterStyle
 TimePickerSelector is a platform specific wrapper for IOS/Android time pickers

@@ -29,6 +29,7 @@ You can now use C# Hot Reload and XAML HotReload to develop your application.
 See [the VS Code Getting started](../get-started-vscode.md) documentation for additional details about developing with VS Code.
 
 ### Creating your Codespace from scratch
+
 If you want to start from an empty repository, follow these steps:
 
 1. Create an empty repository

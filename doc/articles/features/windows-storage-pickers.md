@@ -320,6 +320,7 @@ The allowed values for the configuration are:
 - `DownloadUpload` - uses download/upload pickers only.
 
 ### Security considerations
+
 Browsers generally treat file opening/saving operations as sensitive operations, and the following message may appear when using this APIs:
 
 ```

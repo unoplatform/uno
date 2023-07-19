@@ -25,6 +25,7 @@ setting a global environment variable `UNO_PLATFORM_TELEMETRY_OPTOUT` set to `1`
 an msbuild property named `UnoPlatformTelemetryOptOut` set to `1` or `true`.
 
 ## Data points
+
 The feature collects the following data:
 
 * Timestamp of invocation

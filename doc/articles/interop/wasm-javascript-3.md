@@ -230,9 +230,11 @@ An easy way to achieve this is to add JavaScript code to load the CSS file direc
    ![Final result](assets/flatpickr-final.gif)
 
 ## Troubleshooting
+
 If your JavaScript integration is not behaving properly, you can troubleshoot with hints below.
 
 ### My JavaScript control does not accept pointer input
+
 In the constructor of your wrapper control, add the following:
 
 ```
@@ -243,6 +245,7 @@ Background = new SolidColorBrush(Colors.Transparent);
 ```
 
 ### `TextBlock` content is not visible in browsers with the dark theme
+
 `TextBlock` defaults the text color as White correctly but `Page` background needs to be set correctly.
 
 ```

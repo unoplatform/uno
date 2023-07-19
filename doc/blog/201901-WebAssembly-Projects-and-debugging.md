@@ -11,6 +11,7 @@ We've added support for a better Visual Studio project integration as well as an
 The next release of the [Uno Visual Studio add-in](https://marketplace.visualstudio.com/items?itemName=unoplatform.uno-platform-addin-2022) will contain the new project format and the debugger, but you can try it today using the [latest experimental release](https://github.com/unoplatform/uno/releases) of the Uno Platform.
 
 ## WebAssembly Project Support for Visual Studio
+
 Originally, the support for WebAssembly was done with Uno through the creation of a .NET Standard 2.0 project, relying on the use of mono-provided python server. The sole purpose of this server is to serve files with the `application/wasm` mime type, which can be done through a normal WebApp project.
 
 As the mono-wasm debugger has progressed a lot, we decided to look into the first step of improving the Visual Studio support for Uno WebAssembly projects. The newer experience is what a developer would expect in terms of integration. It is similar to a normal Web Project: Pressing Ctrl+F5 now starts the WebAssembly project in your preferred browser.
@@ -37,6 +38,7 @@ Using the standard `Microsoft.NET.Sdk.Web` in project definitions gives all the 
 For those of you that are already running WebAssembly Uno projects, there are not many changes to make, aside from adding `Microsoft.NET.Sdk.Web` at the top and add the new `DotNetCliToolReference` to `Uno.Wasm.Bootstrap.Cli`, which enables the Visual Studio integration.
 
 ## Debugging C# in WebAssembly
+
 The Mono team has been working for a while on the debugging experience, and recent improvements have made it easier to work with it. It is still experimental, but still gives significant help in debugging WebAssembly projects.
 
 There is only one important constraint: the debugging only works with Chrome. It is using the [Chrome DevTools Protocol](https://chromedevtools.github.io/devtools-protocol/).

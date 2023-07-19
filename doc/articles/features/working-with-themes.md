@@ -15,15 +15,19 @@ As in WinUI, the possible values `Light`, `Dark`, and `HighContrast` correspond 
 High Contrast mode is often available to enable separately, from a dedicated _Accessibility_ page. For the purpose of this documentation, we will assume the user wants to use Dark mode.
 
 # [**Windows**](#tab/windows)
+
 Windows PCs can enable Dark mode from Windows Settings. See [this guide](https://support.microsoft.com/windows/change-colors-in-windows-d26ef4d6-819a-581c-1581-493cfcc005fe) for more information.
 
 # [**iOS**](#tab/ios)
+
 Devices running iOS or iPadOS can enable Dark mode from Control Center or Settings. See [this guide](https://support.apple.com/HT210332) for more information.
 
 # [**Android**](#tab/android)
+
 Android devices can enable Dark mode from Settings. See [this guide](https://support.google.com/android/answer/9730472) for more information.
 
 # [**Browser**](#tab/browser)
+
 The steps to enable Dark mode in a browser vary by browser. See the following guides for more information:
 
 - [Chrome](https://support.google.com/chrome/answer/9275525)

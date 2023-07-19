@@ -87,4 +87,5 @@ Not supported as of Uno 4.3
 Not supported as of Uno 4.3
 
 ### IXamlTypeResolver
+
 Not supported as of Uno 4.3

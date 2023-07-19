@@ -107,6 +107,7 @@ The AOT-based mode uses emscripten's and [Mono's static linking feature](https:/
 ![Calculator](Assets/20190612-Calculator-06.png)
 
 ### Challenge #7: The C adaptation layer
+
 P/Invoke is only able to call C functions, exposed here through the `extern "C" { }` `cdecl` calling convention. This means that to be able to invoke the C++ part of the Calculation Engine, a [C to C++ translation layer](https://github.com/unoplatform/calculator/blob/uno/src/CalcManager/CCalcManager.h) needed to be created. It exposes a set of methods that can [create C++ instances](https://github.com/unoplatform/calculator/blob/2657413f889ba26f2e3d78e82d384794fdad3aec/src/CalcManager/CCalcManager.h#L86) and returns opaque identifiers that are [passed thereafter explicitly](https://github.com/unoplatform/calculator/blob/2657413f889ba26f2e3d78e82d384794fdad3aec/src/CalcManager/CCalcManager.h#L87) to C++ class instance methods.
 
 This technique requires manual work, but since the Calculation Engine is not particularly complex, adding all the needed methods was easy work.

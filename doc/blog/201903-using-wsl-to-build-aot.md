@@ -19,6 +19,7 @@ For those of you that have yet to experience WSL, Microsoft has added the abilit
 We're going to setup a WSL environment to build an Uno Platform application using Mono WebAssembly AOT.
 
 ## Setting the build environment under WSL
+
 Here's what to do to, only once:
 
 - Install [WSL](https://docs.microsoft.com/en-us/windows/wsl/install-win10) on a Windows 10 box
@@ -66,6 +67,7 @@ Here's what to do to, only once:
     ```
 
 ## Build an Uno Platform WebAssembly head app
+
 For each shell you're opening afterwards, you'll have to do the following:
 
 - Activate emscripten:

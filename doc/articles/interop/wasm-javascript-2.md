@@ -3,11 +3,17 @@ uid: Uno.Interop.WasmJavaScript2
 ---
 
 # Embedding Existing JavaScript Components Into Uno-WASM - Part 2
+
 Let's create an app to integrate a Syntax Highlighter named [`PrismJS`](https://prismjs.com/). This library is simple and is self-contained - there's no external dependencies.
+
 # Integration of PrismJS in a project
+
 ## 0. Before starting
+
 📝 To reproduce the code in this article, you must [prepare development environment using Uno's _Getting Started_ article](https://platform.uno/docs/articles/get-started.html).
+
 ## 1. Create the projects
+
 🎯 This section is very similar to the [Creating an app - Tutorial](https://platform.uno/docs/articles/getting-started-tutorial-1.html) in the official documentation.
 
 1. Start **Visual Studio 2019**
@@ -149,6 +155,7 @@ Let's create an app to integrate a Syntax Highlighter named [`PrismJS`](https://
    The `xamltype="PrismJsDemo.Shared.PrismJsView"`) control is there!
 
 👌 The project is now ready to integrate PrismJS.
+
 ## 3. Add JavaScript & CSS files
 
 🎯  In this section, PrismJS files are downloaded from their website and placed as assets in the app.
@@ -180,6 +187,7 @@ Let's create an app to integrate a Syntax Highlighter named [`PrismJS`](https://
    ![Prism Loaded in browser](assets/image-20200414143931953.png)
 
 ## 4. Invoke JavaScript from Managed Code
+
 🎯  In this section, PrismJS is used from the app.
 
 1. First, there is a requirement for _PrismJS_ to set the  `white-space` style at a specific value, as [documented here](https://github.com/PrismJS/prism/issues/1237#issuecomment-369846817). An easy way to do this is to set in directly in the constructor like this:
@@ -258,6 +266,7 @@ Let's create an app to integrate a Syntax Highlighter named [`PrismJS`](https://
    ![Final browser result](assets/image-20200415135422628.png)
 
 ## 🔬 Going further
+
 This sample is a very simple integration as there is no _callback_ from HTML to managed code and _PrismJS_ is a self-contained framework (it does not download any other JavaScript dependencies).
 Some additional improvements can be done to make the code more production ready:
 

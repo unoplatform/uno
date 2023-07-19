@@ -3,9 +3,11 @@ uid: Uno.Controls.ContentDialog
 ---
 
 # ContentDialog
+
 Represents a dialog box that can be customized to contain checkboxes, hyperlinks, buttons and any other XAML content.
 
 ## Overlay Background (ios/android)
+
 You can override the overlay background by adding the following resources to the application resources:
 
 ```xml

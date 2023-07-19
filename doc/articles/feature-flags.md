@@ -7,6 +7,7 @@ uid: Uno.Development.FeatureFlags
 Uno provides a set of feature flags that can be set early in an app's startup to control its behavior. Some of these flags are for backward compatibility, some of them provide fine-grained customizability of a particular feature, and some of them allow to toggle between more 'WinUI-like' and more 'native-like' behavior in a particular context.
 
 # Legacy Clipping
+
 Historically, Uno has been relying on the default platform's behavior for clipping, which is quite different from UWP compositing behavior.
 
 By default, this mode is enabled for the time being, as it is quite disrupting.

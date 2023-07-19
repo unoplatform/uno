@@ -11,6 +11,7 @@ Depending on the target platform, the UI rendering may be using OpenGL or softwa
 Note that for Linux, the [framebuffer rendering](using-linux-framebuffer.md) head is also available.
 
 ## Get started with the Skia+GTK head
+
 Follow the getting started guide [for Linux](../get-started-with-linux.md) or [Windows](../get-started-vs-2022.md)
 
 You will also need to install the [GTK3 runtime](https://github.com/tschoonj/GTK-for-Windows-Runtime-Environment-Installer/releases) to run a GTK+3 based app on Windows.
@@ -40,12 +41,14 @@ Hosting native GTK controls is supported through `ContentPresenter` and `Content
 See this documentation about [embedding native controls](using-skia-embed-native-controls.md).
 
 ### Linux considerations
+
 When running under Linux, GTK can use OpenGL for the UI rendering but some restrictions can apply depending on the environment and available hardware.
 
 - When running under Wayland, to enable OpenGL acceleration, you may need to set the `GDK_BACKEND` environment variable to `x11` before running your application.
 - When running under Wayland and running with OpenGL ES 3.3 or later (using glxinfo to confirm), you may need to set the `GDK_GL` environment variable to `gles` before running your application.
 
 ### Troubleshooting OpenGL integration
+
 Enabling debug logging messages for the GTK Host can help diagnose the render surface type selection.
 
 In your `App.xaml.cs` file, change the minimum log level to:

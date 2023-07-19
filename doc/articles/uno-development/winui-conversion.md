@@ -7,6 +7,7 @@ uid: Uno.Contributing.WinUIConversion
 The current Uno source tree is based on UWP, and the CI uses a specific step to generate the WinUI 3.0 compatible API set, and the associated packages.
 
 ## Using the auto-generated synchronized branch
+
 The Uno CI automatically maintains a WinUI-converted branch of the tree after every push to tracked branches, in order to get started faster when debugging WinUI related issues.
 
 The branch is maintained as follows:
@@ -18,6 +19,7 @@ generated\[branch]\winui-autoconvert
 You can checkout this branch locally to get started faster.
 
 ## The conversion process
+
 The conversion process is done as follows, from a clean repository:
 
 - The `Uno.WinUIRevert` is removing and moving folders from the UWP structure to adjust to the WinUI structure
@@ -30,6 +32,7 @@ To ease the adjustments when conversion issues arise:
 - The `HAS_UNO_WINUI` C# constant is defined when the tree is built in WinUI mode.
 
 ## Converting a local source tree
+
 The conversion process can be run locally as follows:
 
 - cd `uno-repo\build\scripts`

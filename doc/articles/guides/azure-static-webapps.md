@@ -11,6 +11,7 @@ This Azure service allows the publication of GitHub and Azure DevOps Git reposit
 You can review [the Azure documentation](https://docs.microsoft.com/en-us/azure/static-web-apps/configuration) to configure the server-side behavior of the application.
 
 ## Publishing Uno Platform WebAssembly app on Azure
+
 Here is how to publish an app from GitHub, using Uno Platform:
 
 -	In a new repository, create a Uno Platform app using the following command:

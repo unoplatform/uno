@@ -27,6 +27,7 @@ uid: Uno.Features.StepCounter
 ## Platform-specific requirements
 
 ### [**Android**](#tab/Android)
+
 On Android, the first reading returns the cumulative number of steps since the device was first booted up. The sensor may not correctly respect the requested reporting interval, so the implementation does this manually to make sure the `ReadingChanged` events are triggered only after the `ReportInterval` elapses.
 
 Since Android 10, your application must declare the permission to use the step counter sensor by adding the following `uses-feature` declaration to the `AndroidManifest.xml` in your project:
@@ -36,6 +37,7 @@ Since Android 10, your application must declare the permission to use the step c
 ```
 
 ### [**iOS**](#tab/iOS)
+
 The first reading on iOS returns the cumulative number of steps from 24 hours back to the current moment. Unfortunately, in case the tracking was not enabled before, this will likely return 0 steps. Once the tracking is enabled, `ReadingChanged` will be triggered and the step count will be updated appropriately.
 
 Make sure to add the following capability declaration to your `Info.plist` file, otherwise, the API will crash at runtime.

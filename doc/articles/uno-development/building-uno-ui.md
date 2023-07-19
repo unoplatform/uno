@@ -67,6 +67,7 @@ Once you've built successfully, for the next steps, [consult the guide here](deb
 If you've followed the steps above, you have your environment set up with the listed prerequisites, and you still encounter errors when you try to build the solution, you can reach out to the core team on Uno's [Discord channel #uno-platform](https://discord.gg/eBHZSKG).
 
 ### Windows and long paths issues
+
 If the build tells you that `LongPath` is not enabled, you may enable it on Windows 10 by using :
 
 ```bash
@@ -93,6 +94,7 @@ Inside Visual Studio, the number of platforms is restricted to limit the compila
 See [instructions here](building-uno-macos.md) for building Uno.UI for the macOS platform.
 
 ## Troubleshooting build issues
+
 Here are some tips when building the Uno solution and failures happen:
 
 - Make sure to be on the latest master commit
@@ -116,6 +118,7 @@ In order to update those reference assemblies, set `<UnoTargetFrameworkOverride>
 Refer to the [guidelines for breaking changes](../contributing/guidelines/breaking-changes.md) document.
 
 ### Updating the Nuget packages used by the Uno.UI solution
+
 The versions used are centralized in the [Directory.Build.targets](https://github.com/unoplatform/uno/blob/master/src/Directory.Build.targets) file, and all the
 locations where `<PackageReference />` are used.
 

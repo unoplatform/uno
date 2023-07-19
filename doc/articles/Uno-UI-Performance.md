@@ -109,9 +109,11 @@ Here's what to look for:
 ## Advanced performance Tracing
 
 ### Profiling applications
+
 A profiling guide for Uno Platform apps is [available here](guides/profiling-applications.md).
 
 ### FrameworkTemplatePool
+
 The framework template pool manages the pooling of ControlTemplates and DataTemplates, and in most cases, the recycling of controls should be high.
 
 - `CreateTemplate` is raised when a new instance of a template is created. This is an expensive operation that should be performed as rarely as possible.

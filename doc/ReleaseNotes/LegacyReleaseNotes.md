@@ -359,6 +359,7 @@ uid: Uno.ReleaseNotes.Legacy
 - [iOS] Animation might run twice
 
 ## Release 1.45.0
+
 ### Features
 
 - Add support for `Windows.System.Display.DisplayRequest` API on iOS and Android

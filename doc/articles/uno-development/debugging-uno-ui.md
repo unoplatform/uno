@@ -77,6 +77,7 @@ If this is the case:
 - Make sure that you're debugging the right flavor of Uno (Uno.UI vs. Uno.WinUI). You can debug the WinUI flavor [using this conversion tool](winui-conversion.md).
 
 ## Microsoft Source Link support
+
 Uno.UI supports [SourceLink](https://github.com/dotnet/sourcelink/) and it now possible to
 step into Uno.UI without downloading the repository.
 

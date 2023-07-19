@@ -16,6 +16,7 @@ While it is easier to create apps using Uno Platform on Windows, you can also cr
 [!include[getting-help](use-uno-check-inline-macos.md)]
 
 ## Installing the dotnet new templates
+
 In order to create a new Uno Project, you'll need to install the [`dotnet new` Uno Platform templates](get-started-dotnet-new.md).
 
 ## Create a new project using the IDE

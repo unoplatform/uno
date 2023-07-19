@@ -97,6 +97,7 @@ This guide will walk you through the necessary steps to localize an Uno Platform
 See the completed sample on GitHub: [LocalizationSamples/Localization](https://github.com/unoplatform/Uno.Samples/tree/master/UI/LocalizationSamples/Localization)
 
 ## Additional Resources
+
 https://docs.microsoft.com/en-us/windows/uwp/design/globalizing/globalizing-portal
 
 <br>

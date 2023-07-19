@@ -11,6 +11,7 @@ This class is not exposed to the end-user because its patterns do not fit with t
 original UWP event-based designs of the API.
 
 ## The RegisterEvent method
+
 The bi-directional relation of the weak registration is defined by the fact
 that both the source and the target are weak. The source must be kept alive by
 another longer-lived reference, and the target is kept alive by the

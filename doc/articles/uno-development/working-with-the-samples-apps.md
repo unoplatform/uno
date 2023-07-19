@@ -83,6 +83,7 @@ The content of those tests must describe a scenario to follow, what to expect, a
 Each CI build of Uno.UI records screenshots of each sample in the SamplesApp. A diff tool details screenshots that have changed from the previous master build, allowing unexpected changes in the visual output to be caught.
 
 ### Running the snapshot taker locally on WebAssembly
+
 The WebAssembly head has the ability to be run through puppeteer, and displays all tests in sequence. Puppeteer runs a headless version of Chromium, suited for running tests in a CI environment.
 
 To run the tests:
@@ -101,6 +102,7 @@ for screenshots taken for the past builds. Download this artifact and open the h
 have changed.
 
 ### Troubleshooting the tests
+
 It is possible to enable the chromium head using the configuration parameters in the [app.ts](https://github.com/unoplatform/uno/blob/master/src/SamplesApp/SamplesApp.Wasm.UITests/app.ts) file.
 
 ## Creating performance benchmarks with BenchmarkDotNet

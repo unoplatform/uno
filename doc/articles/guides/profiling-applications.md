@@ -11,6 +11,7 @@ As of Preview 7, .NET 6 provides the ability to do CPU profiling through [`dotne
 ## Profiling Xamarin.Android and Xamarin.iOS applications
 
 ### Pre-requisites
+
 Run the following commands
 
 - `dotnet tool update -g dotnet-dsrouter --add-source=https://aka.ms/dotnet-tools/index.json`

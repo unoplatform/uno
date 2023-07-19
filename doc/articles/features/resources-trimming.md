@@ -21,11 +21,13 @@ In order for an application to enable resources trimming, the following needs to
 ```
 
 ## Enabling XAML Resources trimming for libraries and NuGet Packages
+
 For libraries to be eligible for resources trimming, the `UnoXamlResourcesTrimming` tag must also be added.
 
 ## Troubleshooting
 
 ### Aggressive trimming
+
 The XAML trimming phase may remove controls for which the use cannot be detected statically.
 
 For instance, if your application relies on the `XamlReader` class, trimmed controls will not be available and will fail to load.
@@ -33,6 +35,7 @@ For instance, if your application relies on the `XamlReader` class, trimmed cont
 If XAML trimming is still needed, the [IL Linker configuration](using-il-linker-webassembly.md) can be adjusted to keep controls individually or by namespace.
 
 ### Size is not reduced even if enabled
+
 The IL Linker tool is used to implement this feature, and can be [controlled with its configuration file](using-il-linker-webassembly.md).
 
 For instance, if the linker configuration file contains `<assembly fullname="uno.ui" />`, none of the UI Controls will be excluded, and the final app size will remain close as without trimming.

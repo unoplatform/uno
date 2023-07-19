@@ -39,6 +39,7 @@ To find the appropriate version:
 - The "revision" version number (`25` in the example above) must be the highest found in the versions of https://www.nuget.org/packages/Microsoft.Windows.SDK.NET.Ref.
 
 ## Un-packaged application support
+
 By default the **Uno Platform App** Visual Studio template creates a packaged application. If you want to add un-packaged support, you'll need to do the following:
 
 - Add a new entry in the launchSettings.json file:

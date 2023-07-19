@@ -8,6 +8,7 @@ Uno Platform provides a set of classes aimed at diagnosing memory issues related
 an Uno.UI issue or from an invalid pattern in user code.
 
 ## WebAssembly memory profiling
+
 Starting from [Uno.Wasm.Bootstrap](https://github.com/unoplatform/Uno.Wasm.Bootstrap) 3.2, the Xamarin Profiler can be used to profile memory usage. See [this documentation](https://github.com/unoplatform/Uno.Wasm.Bootstrap#memory-profiling) for additional details.
 
 ## Enable Memory instances counter

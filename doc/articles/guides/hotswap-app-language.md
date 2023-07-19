@@ -54,6 +54,7 @@ This guide will walk you through the necessary steps for changing app language a
 > For a step-by-step guide to installing the prerequisites for your preferred IDE and environment, consult the [Get Started guide](../get-started.md).
 
 ## Step-by-steps
+>
 > [!NOTE]
 > This guide is an extension of ["How to use localization"](localization.md), and will build on top the sample from that guide.
 > Make sure you have completed the previous guide or downloaded the [full localization sample](https://github.com/unoplatform/Uno.Samples/tree/master/UI/LocalizationSamples/Localization), before continuing.
@@ -168,6 +169,7 @@ This guide will walk you through the necessary steps for changing app language a
 See the completed sample on GitHub: [RuntimeCultureSwitching](https://github.com/unoplatform/Uno.Samples/tree/master/UI/LocalizationSamples/RuntimeCultureSwitching)
 
 ## Additional Resources
+
 https://docs.microsoft.com/en-us/windows/uwp/design/globalizing/globalizing-portal
 
 <br>
