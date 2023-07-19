@@ -11,9 +11,7 @@ using Foundation;
 using UIKit;
 using CoreGraphics;
 using Path = UIKit.UIBezierPath;
-#if NET6_0_OR_GREATER
 using ObjCRuntime;
-#endif
 #elif __MACOS__
 using AppKit;
 using CoreGraphics;
@@ -21,9 +19,7 @@ using UIImage = AppKit.NSImage;
 using UIColor = AppKit.NSColor;
 using UIGraphics = AppKit.NSGraphics;
 using Path = AppKit.NSBezierPath;
-#if NET6_0_OR_GREATER
 using ObjCRuntime;
-#endif
 #elif __ANDROID__
 using Android.Graphics;
 #elif __SKIA__
