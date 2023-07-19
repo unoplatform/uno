@@ -16,7 +16,7 @@
   <mp:PhoneIdentity PhoneProductId="1897f84c-689e-44d3-a8b7-c521a62818ae" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
-    <DisplayName>SamplesApp</DisplayName>
+    <DisplayName>ms-resource:ApplicationName</DisplayName>
     <PublisherDisplayName>SamplesApp</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
