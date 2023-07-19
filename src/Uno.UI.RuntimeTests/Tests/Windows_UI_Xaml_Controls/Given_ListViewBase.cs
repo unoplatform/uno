@@ -2942,10 +2942,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			TextBlock header = new TextBlock { Text = "empty" };
 			TextBlock header2 = new TextBlock { Text = "empty" };
 
-			header.DataContextChanged += (s, e) => {
-				e.ToString();
-			};
-
 			var SUT = new ListView()
 			{
 				ItemContainerStyle = BasicContainerStyle,
