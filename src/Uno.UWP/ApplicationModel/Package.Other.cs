@@ -45,6 +45,19 @@ namespace Windows.ApplicationModel
 			get
 			{
 				TryParsePackageManifest();
+
+				if (_displayName.StartsWith("ms-resource:", StringComparison.OrdinalIgnoreCase))
+				{
+					var resourceKey = _displayName["ms-resource:".Length..].Trim();
+
+					var resourceString = Resources.ResourceLoader.GetForViewIndependentUse().GetString(resourceKey);
+
+					if (!string.IsNullOrEmpty(resourceString))
+					{
+						_displayName = resourceString;
+					}
+				}
+
 				return _displayName;
 			}
 		}
