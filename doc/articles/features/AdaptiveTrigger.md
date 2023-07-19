@@ -24,7 +24,6 @@ Each `<VisualState>` block has an adaptive trigger with a `MinWindowWidth` prope
 
 Example:
 
-
 ```xml
 <Page
     x:Class="UnoTutorial1.MainPage"
@@ -89,7 +88,6 @@ The above code might generate an unexpected output in an Uno application.
 This example demonstrates why developers must consider the order of their adaptive triggers, as the ordering may generate unexpected outcomes.
 
 The following demonstrates the same code, but re-written in a sequential order to generate the expected output:
-
 
 ```xml
 <Page

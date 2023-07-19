@@ -6,7 +6,6 @@ uid: Uno.RaspberryPi.Intro
 
 ![Uno Hello World](images/00_uno-hello-world.jpg)
 
-
 ## Prerequisites
 
 For this guide, you'll need various pieces of hardware and an Azure Account;

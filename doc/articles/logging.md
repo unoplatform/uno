@@ -267,4 +267,3 @@ The other option is to add a [custom linker definition file](https://docs.micros
   </assembly>
 </linker>
 ```
-

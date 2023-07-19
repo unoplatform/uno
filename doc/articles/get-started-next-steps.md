@@ -13,7 +13,6 @@ Some additional resources:
 - [Further curated links](winui-doc-links-development.md)
 - [Performance tips and tricks](Uno-UI-Performance.md)
 
-
 ## Free & paid tutorials, courses, and guided pathways for getting started with Uno Platform
 
 #### Syncfusion - Uno Platform Succinctly

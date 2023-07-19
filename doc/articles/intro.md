@@ -65,7 +65,6 @@ Uno Platform lets you write an application once in XAML and C#, and deploy it to
 
 ***
 
-
 ## Top questions about Uno Platform
 
 #### What platforms can I target with Uno Platform?
@@ -93,7 +92,6 @@ Fourth, Uno Platform provides an optional [Figma plugin](https://platform.uno/un
 Finally, by extending the reach of WinUI across all supported platforms, it also allows you to leverage the rich 1st and 3rd party ecosystem and bring rich controls everywhere like DataGrid, TreeView, TabView, NavigationView and many others.
 
 At the practical level, we suggest you try both and see which works the best for your skill set and scenario.
-
 
 #### How is Uno Platform different from Blazor?
 

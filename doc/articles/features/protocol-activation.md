@@ -66,7 +66,6 @@ The first argument is the scheme name, the second is the base URL of your applic
 
 When a link with the custom scheme gets executed, the browser will navigate to a your URL with additional `unoprotocolactivation` query string key, which will contain the custom URI. Uno internally recognizes this query string key and executes `OnActivated` appropriately.
 
-
 ### UWP
 
 Works according to Windows docs, see [Microsoft Docs](https://docs.microsoft.com/en-us/windows/uwp/launch-resume/handle-uri-activation)

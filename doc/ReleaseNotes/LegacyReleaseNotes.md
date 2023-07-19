@@ -527,7 +527,6 @@ uid: Uno.ReleaseNotes.Legacy
 - [Android] A ListView inside another ListView no longer causes an app freeze/crash
 - `Click` on `ButtonBase` was not properly raised.
 
-
 ## Release 1.44.0
 
 ### Features

@@ -13,4 +13,3 @@ The `ScrollViewer` is a more intricate control and it's not always easy to have 
 So here is a more visual diagram to better understand how some of the main ScrollViewer properties are supposed to behave.
 
 ![ScrollViewer Visual Diagram](assets/scrollviewer/scrollviewer-diagram.png)
-

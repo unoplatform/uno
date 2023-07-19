@@ -44,7 +44,6 @@ User inputs are usually propagated using `RoutedEvents`. See Uno's [routed event
 | `Drop`                        | Yes     | Yes     | Yes     | Yes   | Yes      | Yes      | Yes   | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.drop) |
 | `DropCompleted`               | Yes     | Yes     | Yes     | Yes   | Yes      | Yes      | Yes   | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.dropcompleted) |
 
-
 Notes:
 
 1. **Focus** events:

@@ -14,7 +14,6 @@ The Uno Platform is an ongoing effort. Bug reports and feature requests are impo
 
 If you think you've found a bug, the first thing to do is [search the existing issues](https://github.com/unoplatform/Uno/issues?q=is%3Aissue+is%3Aopen+label%3Akind%2Fbug) to check if it's already been reported. If it has been opened, provide additional commentary so we know more users are being affected.
 
-
 The best way to get your bug fixed is to be as detailed as you can be about the problem.
 **Providing a minimal project, stripped off as much code as possible, with steps to reproduce the problem (typed or screen-capture) is ideal.**
 

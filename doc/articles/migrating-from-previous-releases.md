@@ -169,7 +169,6 @@ Additionally, here are some specific hints about the migration to Android 12:
         ```
 - The AndroidX libraries need to be at specific versions to avoid [an upstream android issue](https://docs.microsoft.com/en-us/answers/questions/650236/error-androidattrlstar-not-found-after-upgrading-n.html). The Uno Platform NuGet packages are using those versions automatically, but if you override those packages, make sure to avoid direct or indirect dependencies on `Xamarin.AndroidX.Core(>=1.7.0.1)`. For reference, [view this page](https://github.com/unoplatform/uno/blob/533c5316cbe7537bb2f4a542b46a52b96c75004a/build/Uno.WinUI.nuspec#L66-L69) to get the packages versions used by Uno Platform.
 
-
 ### Uno Platform 4.0
 
 Uno 4.0 introduces a set of binary and source breaking changes required to align with the Windows App SDK 1.0.
@@ -331,4 +330,3 @@ Migrating from Uno 2.x to Uno 3.0 requires a small set of changes in the code an
   - Remove `<WasmHead>true</WasmHead>`
   - You can remove `__WASM__` in `DefineConstants`
 - The symbols font has been updated, and the name needs to be updated. For more information, see [this article](uno-fluent-assets.md).
-

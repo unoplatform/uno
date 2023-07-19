@@ -55,7 +55,6 @@ In case of Android, we support the following nested URIs.
 | `ms-settings:regionlanguage` | `Settings.ActionLocaleSettings` |
 | `ms-settings:developers` | `Settings.ActionApplicationDevelopmentSettings` |
 
-
 In case of macOS, Uno supports the following nested URIs, mapped to Preference Panes (/System/Library/PreferencePanes)
 
 | Settings URI | macOS Mapping |

@@ -159,7 +159,6 @@ Gets or sets a brush that describes the foreground color.
 * Setting this property will not affect any of the `CommandBar's` `AppBarButton` tint Color. If you need to change the `AppBarButton` tint, this is possible by setting the `ShowAsMonochrome` property to true as well as setting the Foreground`SolidColorBrush`on the`BitmapIcon`.
 * On`Android`, you can also enable a feature that will allow that the`SolidColorBrush`set on your `CommandBar` `Foreground` to update your`AppBarButton`s Tint. To enable this, set on your `App.xml.cs` the `FeatureConfiguration.AppBarButton.EnableBitmapIconTint` to **true**.
 
-
 ### PrimaryCommands
 
 Gets the collection of primary command elements for the `CommandBar`.

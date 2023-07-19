@@ -101,7 +101,6 @@ The measuring logic for iOS' `ListView` makes an initial guess for the size of e
     3. Update the positions of subsequent items in the cached layout info, since if an item is larger/smaller than initially estimated, the offsets of the remaining items must be modified accordingly.
 7. Whenever the list is scrolled, `UICollectionView` will call `LayoutAttributesForElementsInRect()` with the new visible viewport. Steps 5. and 6. will occur for each newly-visible item.
 
-
 ### Android and iOS internal classes
 
 | Uno class | Android base class | iOS base class | Description |

@@ -136,4 +136,3 @@ The Uno.UI solution will build, and the UI tests will run. You may need to adjus
 [`Uno.UITest`](https://github.com/unoplatform/Uno.UITest) is a standalone UI testing framework with an API very similar to the [Xamarin.UITest framework](https://docs.microsoft.com/en-us/appcenter/test-cloud/frameworks/uitest/), allowing tests written for 'Xamarin.UITest' to be imported with little or no modifications and additionally run on Uno WebAssembly apps.
 
 On Android and iOS, `Uno.UITest` is actually a thin wrapper over `Xamarin.UITest`, this means for example that you can [use the REPL](https://docs.microsoft.com/en-us/appcenter/test-cloud/frameworks/uitest/#using-the-repl) while authoring a test.
-

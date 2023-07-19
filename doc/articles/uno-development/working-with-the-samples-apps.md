@@ -94,7 +94,6 @@ To run the tests:
 
 Note that the same operation is run during the CI, in a specific job running under Linux. The screen shots are located in the Unit Tests section under `Screenshots Compare Test Run` as well as in the build artifact.
 
-
 ## Validating the WebAssembly UI Tests results
 
 In the CI build, an artifact named `wasm-uitests` is generated and contains an HTML file that shows all the differences

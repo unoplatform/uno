@@ -49,5 +49,3 @@ You can set the following properties:
 ## Particularities
 
 * Make sure to _give room_ for the shadow in the layout (eg. by setting a `Margin` on the `ElevatedView`).  Some platforms like macOS may clip the shadow otherwise. For the same reason, avoid wrapping the `<toolkit:ElevatedView>` directly in a `<ScrollViewer> ` because it's designed to clip its content.
-
-

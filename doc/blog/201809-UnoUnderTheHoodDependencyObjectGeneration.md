@@ -9,14 +9,9 @@ uid: Uno.Blog.UnderTheHoodDependencyObjectGeneration
 ## Wanting it all
 Part of the power of Uno on Android and iOS is the ability to easily mix UWP view types with purely native views. This is possible because, in Uno, all views inherit from the native base view type: [View](https://developer.android.com/reference/android/view/View) on Android, [UIView](https://developer.apple.com/documentation/uikit/uiview) on iOS.
 
-
-
 But as I alluded to in an earlier article, this poses a challenge for reproducing UWP's inheritance hierarchy. UIElement is the primitive view type in UWP, but it in turn derives from the DependencyObject class. `DependencyObject` is the base class for anything that has `DependencyProperties`, that is, anything that supports databinding. That includes all views, as well as some non-view framework types like [Transforms](https://docs.microsoft.com/en-us/windows/uwp/design/layout/transforms) and [Brushes](https://docs.microsoft.com/en-us/windows/uwp/design/style/brushes).
 
-
-
 We want to inherit from `ViewGroup` or `UIView`. We also want to inherit from `DependencyObject.` C# doesn't permit multiple inheritance, so what do we do? Since we can't change the iOS or Android frameworks, we opted instead within Uno to make `DependencyObject` an [interface](https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/interfaces/index). That allows an Uno `FrameworkElement` to be a `UIView` and at the same time to be a `DependencyObject`. But that alone isn't enough.
-
 
 What if you have code like this in your app?
 
@@ -45,7 +40,6 @@ What if you have code like this in your app?
 
     }
 ````
-
 
 We're inheriting from `DependencyObject` and defining a `DependencyProperty` using the standard syntax, which uses the `DependencyObject.GetValue` and `DependencyObject.SetValue` methods. On UWP these are defined in the base class, but if `DependencyObject` is an interface then there _is_ no base class. In fact, if it's just an interface, then the code won't compile, because the interface hasn't been implemented.
 

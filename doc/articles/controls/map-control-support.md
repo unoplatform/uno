@@ -64,7 +64,6 @@ Here's a complete sample:
 
 The above code will display Page with a Map Control and a slider that will be used to change the ZoomLevel.
 
-
 ## Platform support
 
 | Feature                                   | Android | iOS | Wasm |

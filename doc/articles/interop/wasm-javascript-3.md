@@ -132,7 +132,6 @@ An easy way to achieve this is to add JavaScript code to load the CSS file direc
    }
    ```
 
-
 2. Change the `MainPage.xaml` in the `[MyApp]` project like this:
 
    ``` xml

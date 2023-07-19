@@ -19,7 +19,6 @@ Cross-targeted libraries use the 'SDK-style' [project file format](https://docs.
 
 Often you'll want some properties or items to only be defined for specific targets. To do this you put them in a `PropertyGroup` or `ItemGroup` with `Condition=" '$(TargetFramework)' == 'targetname' "` set. You can use the `or` keyword to match multiple targets.
 
-
 ## Adding references
 
 ### NuGet references

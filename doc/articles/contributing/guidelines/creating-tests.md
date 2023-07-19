@@ -119,7 +119,6 @@ namespace Uno.UI.Samples.Content.UITests.ButtonTestsControl
 
   ```
 
-
 ## Which type of test should I create?
 
 The UI tests are in some sense the most powerful means of testing behavior, since they can simulate real user input and verify the state of the running app. However they're also typically more time-consuming to author, and take several orders of magnitude longer to run , which affects both your own personal development loop and also very importantly the running time of the CI build. Sometimes a UI test is a sledgehammer where you only need... some... smaller hammer.

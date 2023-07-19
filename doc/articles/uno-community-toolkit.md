@@ -62,13 +62,11 @@ These package ids are for Uno (non-Windows) projects. For UWP project, you shoul
 
 ## Task 1 - Add Windows Community Toolkit to Uno Projects
   
-  
 1. Install Nuget package for targeted control  
  ![datagrid-nuget](Assets/datagrid-nuget.JPG)  
 
 > [!NOTE]
 > For UWP and WinUI 3 projects, you should use the packages published by Microsoft that are **not** prefixed with `Uno.*`.
-
 
 2. Add a reference to the UWP UI Controls
 

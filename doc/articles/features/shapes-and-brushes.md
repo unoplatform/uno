@@ -124,4 +124,3 @@ Where you can use which brushes
 | `Foreground` (`TextBlock`)                   | Yes             | No                   | Yes (Wasm only) |
 | `Fill` (Shapes)                              | Yes             | Yes (except on Wasm) | Yes             |
 | `Stroke` (Shapes)                            | Yes             | No                   | Yes (Wasm only) |
-

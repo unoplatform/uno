@@ -28,7 +28,6 @@ Add the following namespaces:
 </winui:AnimatedVisualPlayer>
 ```
 
-
 On all Uno Platform targets, you'll need the following packages:
 
 * `Uno.WinUI.Lottie` (for the `LottieVisualSource`)

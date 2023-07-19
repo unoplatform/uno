@@ -44,7 +44,6 @@ Uno Platform supports a number of non-visual APIs from Windows Runtime namespace
 
 [!include[Inline table of contents](inlineTOCs/winrt-features-inline-toc.include)]
 
-
 ## Features unique to Uno
 
 * [VisibleBoundsPadding - manage 'safe' area on notched devices](features/VisibleBoundsPadding.md)

@@ -118,7 +118,6 @@ When using a managed bubbling for a routed event, you'll have a the following li
 Due to serious differences between various platforms, some compromises were done during the
 implementation of RoutedEvents:
 
-
 ### Property `OriginalSource` might not be accurate on _RoutedEventArgs_
 
 In some cases / events, it's possible that the `OriginalSource` property of the _RoutedEventArgs_ is `null`

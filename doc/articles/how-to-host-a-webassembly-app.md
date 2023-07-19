@@ -9,7 +9,6 @@ uid: Uno.Development.HostWebAssemblyApp
   - [Nginx](#nginx)
   - [Apache](#apache)
 
-
 Regardless of the web server (or reverse proxy) software used, the support the following Content (MIME) types are always needed:
 
 -   `application/wasm`

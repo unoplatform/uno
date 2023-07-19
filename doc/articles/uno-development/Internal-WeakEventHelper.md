@@ -48,4 +48,3 @@ The returned disposable must be used as follows :
 	{
 		_sizeChangedSubscription.Disposable = Window.Current.RegisterSizeChangedEvent(OnCurrentWindowSizeChanged);
 	}
-

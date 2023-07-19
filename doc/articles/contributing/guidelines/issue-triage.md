@@ -164,7 +164,6 @@ When commenting on an issue or pull request, there's a [feature in GitHub](https
 
 > @[NAME] please open a new issue and fill out the issue template so that we're better able to help you.
 
-
 ### send in a pull-request
 
 > This would be good to have and we'd love it if you or someone from the community could contribute the implementation. Please let us know if you want to send in the PR and we'll do everything we can to bring you up to speed with becoming a contributor.

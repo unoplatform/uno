@@ -8,7 +8,6 @@ uid: Uno.Tutorials.ProfilingApplications
 
 As of Preview 7, .NET 6 provides the ability to do CPU profiling through [`dotnet-trace`](https://docs.microsoft.com/dotnet/core/diagnostics/dotnet-trace) for android applications.
 
-
 ## Profiling Xamarin.Android and Xamarin.iOS applications
 
 ### Pre-requisites
@@ -91,7 +90,6 @@ This section provides insights into what to look for when analyzing flame charts
 
 Profiling Skia based Uno Platform targets can be done on Windows in Visual Studio 2019 and 2022 using [time and memory profilers](https://docs.microsoft.com/visualstudio/profiling/profiling-feature-tour?view=vs-2019).
 
-
 ## Profiling WebAssembly applications
 
 Profiling WebAssembly applications can be done through the use of AOT compilation, and [browsers' performance tab](https://developer.chrome.com/docs/devtools/evaluate-performance/).
@@ -121,4 +119,3 @@ Profiling WebAssembly applications can be done through the use of AOT compilatio
 ### Troubleshooting
 
 - Deep traces found in large async code patterns or complex UI trees may hit [this chromium issue](https://bugs.chromium.org/p/chromium/issues/detail?id=1206709). This generally makes traces very long to load; you'll need to be patient.
-

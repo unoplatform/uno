@@ -32,7 +32,6 @@ If you already use and love **JetBrains Rider** or **Visual Studio Code**, you c
 | [**Codespaces / Gitpod**](get-started-vscode.md) | ❌                         | ❌     | ❌  | ✔️               | ❌           | ✔️               | ✔️              | ✔️                   |
 | [**JetBrains Rider**](get-started-rider.md)      | ✔️                         | ✔️     | ✔️† | ✔️               | ❌           | ✔️               | ✔️              | ✔️                   |
 
-
 - † You will need to be connected to a Mac to run and debug iOS apps from Windows.
 - †† You will need to be connected to a Mac using [Remote - SSH](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-ssh)
 

@@ -35,7 +35,3 @@ Some of the points of guidance may be specific to Windows 10's [Fluent design la
 ## Writing
 
 * [Writing style](https://docs.microsoft.com/en-us/windows/uwp/design/style/writing-style)
-
-
-
-

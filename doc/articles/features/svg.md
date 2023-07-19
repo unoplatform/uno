@@ -6,7 +6,6 @@ uid: Uno.Features.SVG
 
 * Uno Platform supports using vector SVG graphics inside of your cross-platform applications using the `Uno.UI.Svg` package.
 
-
 ![Uno SVG sample](../Assets/features/svg/heliocentric.png)
 
 <!-- Add any additional information on platform-specific limitations and constraints -->
@@ -75,7 +74,6 @@ For example:
 ```
 
 Will render as:
-
 
 ![Scaled up](../Assets/features/svg/rasterized.png)
 

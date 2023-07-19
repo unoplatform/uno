@@ -39,7 +39,6 @@ For instance, if the linker configuration file contains `<assembly fullname="uno
 
 Note that for libraries, Uno 3.9 or later must be used to build the library, as additional metadata needs to be added at compile time. 3.8 and earlier libraries can be used in any case, but won't be eligible for trimming and may degrade the trimming phase effect.
 
-
 ## Size reduction statistics
 
 As of Uno 3.9, for a `dotnet new unoapp` created app:

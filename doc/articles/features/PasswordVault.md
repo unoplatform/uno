@@ -21,7 +21,6 @@ uid: Uno.Features.PasswordVault
 | `PasswordVault`         | ✔ | ✔ | ✔ | ✖ | ✖ | ✖ | ✖ | ✖ |
 | `PasswordCredential` | ✔ | Partial | Partial | Partial | Partial | ✖ | ✖ | ✖ |
 
-
 <!-- Add any additional information on platform-specific limitations and constraints -->
 
 ## `PasswordVault`
