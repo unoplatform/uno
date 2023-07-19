@@ -235,6 +235,7 @@ If your JavaScript integration is not behaving properly, you can troubleshoot wi
 
 ### My JavaScript control does not accept pointer input
 In the constructor of your wrapper control, add the following:
+
 ```
 // XAML behavior: a non-null background is required on an element to be "visible to pointers".
 // Uno reproduces this behavior, so we must set it here even if we're not using the background.
@@ -244,6 +245,7 @@ Background = new SolidColorBrush(Colors.Transparent);
 
 ### `TextBlock` content is not visible in browsers with the dark theme
 `TextBlock` defaults the text color as White correctly but `Page` background needs to be set correctly.
+
 ```
 <Page 
     ...

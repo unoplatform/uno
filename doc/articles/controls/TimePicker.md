@@ -53,9 +53,11 @@ IOSTimePickerAcceptButtonForegroundBrush  Color="#055bb7"
 IOSTimePickerDismissButtonForegroundBrush  Color="#055bb7"
 IOSTimePickerHeaderBackgroundBrush  Color="{ThemeResource SystemListLowColor}"
 ```
+
 If you want to show a dimmed overlay underneath the picker, set the `TimePicker.LightDismissOverlayMode` property to `On`.
 
 If you wish to customize the overlay color, add the following to your top-level `App.Resources`:
+
 ```xml
 <SolidColorBrush x:Key="TimePickerLightDismissOverlayBackground"
 		Color="Pink" />

@@ -39,6 +39,7 @@ This is just like adding an asset to any UWP project. Just make sure to add the 
 Using the asset is done through the `ms-appx:///` scheme.
 
 Here are a few examples:
+
 ```xml
 <!-- Relative path without a leading '/' uses assets from the library where the XAML is located -->
 <Image Source="Assets/MyImage.png" />

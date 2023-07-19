@@ -9,6 +9,7 @@ Uno Platform supports the `MarkupExtension` class, which gives the ability to en
 ## Support for ProvideValue()
 
 Given the following code:
+
 ```csharp
 using System;
 using System.Collections.Generic;
@@ -30,6 +31,7 @@ public class Simple : Windows.UI.Xaml.Markup.MarkupExtension
 ```
 
 This class can be used as follows in the XAML:
+
 ```xml
 <Grid xmlns:ex="using:MyMarkupExtension">
     <TextBlock Text="{ex:Simple TextValue='Just a simple '}"
@@ -46,6 +48,7 @@ WinUI 3 provides enhanced support for MarkupExtension with the ability to get th
 > While this feature is available on all Uno Platform targets (UWP and WinUI), the UWP head on Windows does not support this feature, only the WinAppSDK head supports it.
 
 ### IProvideValueTarget
+
 ```csharp
 using System;
 using System.Collections.Generic;
@@ -66,6 +69,7 @@ public class SampleProvideValueTarget : MarkupExtension
 ```
 
 This class can be used as follows in the XAML:
+
 ```xml
 <Grid xmlns:ex="using:MyMarkupExtension">
     <TextBlock Text="{ex:SampleProvideValueTarget}"

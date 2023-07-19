@@ -18,6 +18,7 @@ This guide will walk you through the necessary steps to localize an Uno Platform
 1. Modify the content of `MainPage`:
 
     - In `MainPage.xaml`, replace the content of the page:
+
         ```xml
         <Page x:Class="UnoLocalization.MainPage"
               xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -30,6 +31,7 @@ This guide will walk you through the necessary steps to localize an Uno Platform
             </StackPanel>
         </Page>
         ```
+
         > Note:
         >
         > - The [`x:Name`](https://docs.microsoft.com/en-us/windows/uwp/xaml-platform/x-name-attribute) is used to make the element accessible from the code-behind with that same name.
@@ -38,6 +40,7 @@ This guide will walk you through the necessary steps to localize an Uno Platform
         More on this in the resource steps that follow.
 
     - In `MainPage.xaml.cs`, add an `Page.Loaded` handler to change the text for `CodeBehindText`:
+
         ```cs
         public MainPage()
         {
@@ -47,6 +50,7 @@ This guide will walk you through the necessary steps to localize an Uno Platform
                 .GetString("MainPage_CodeBehindString");
         }
         ```
+
 1. Create a new resource file for localization in French in the `UnoLocalization.Shared` project:
     1. Add a new folder `fr` under the `Strings` folder by:
     Right-click on `String` > Add > New Folder
@@ -69,6 +73,7 @@ This guide will walk you through the necessary steps to localize an Uno Platform
 
     You can also set the starting culture to see the result, without having to modify the system language:
     - `App.cs` or `App.xaml.cs`:
+
         ```cs
         public App()
         {

@@ -37,6 +37,7 @@ public void ConfigureServices(IServiceCollection services)
             );
         }
 ```
+
 In your `Configure` method, add your CORS policy and `Hubs` endpoint
 
 ``` csharp

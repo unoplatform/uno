@@ -153,6 +153,7 @@ To fix this, instead of adding the Uno version of the toolkit like the code belo
 # [WinUI / WinAppSDK](#tab/tabid-winui)
 
 Replace:
+
 ```xml
 <ItemGroup>
   <PackageReference Include="Uno.CommunityToolkit.WinUI.UI.Controls" Version="7.1.100" />

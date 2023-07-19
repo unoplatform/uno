@@ -28,10 +28,13 @@ Using VS 2019 16.6 or later:
   - If you have a insider preview of Windows 10, you may [use the wayland server](https://devblogs.microsoft.com/commandline/the-windows-subsystem-for-linux-build-2020-summary/#wsl-gui).
   - If you still want to use WSL 2 anyways, you can try [following those steps](https://skeptric.com/wsl2-xserver).
 - Install the [`dotnet new` templates](get-started-dotnet-new.md):
+
     ```
     dotnet new -i Uno.Templates
     ```
+
 - Then create a new project using:
+
     ```
     dotnet new unoapp -o MyUnoApp
     ```
@@ -57,32 +60,41 @@ Now let's run the application:
 # [**Ubuntu 18.04**](#tab/ubuntu1804)
 
 - Install GTK3:
+
     ```
     sudo apt update
     sudo apt-get install gtk+3.0 mesa-utils libgl1-mesa-glx ttf-mscorefonts-installer
     ```
+
 - [Install .NET 6](https://learn.microsoft.com/en-us/dotnet/core/install/linux#official-package-archives)
 
 # [**Ubuntu 20.04**](#tab/ubuntu2004)
 
 - Install GTK3:
+
     ```
     sudo apt update
     sudo apt install libgtk-3-dev mesa-utils libgl1-mesa-glx ttf-mscorefonts-installer
     ```
+
 - [Install .NET 6](https://learn.microsoft.com/en-us/dotnet/core/install/linux#official-package-archives)
 
 # [**ArchLinux 5.8.14 or later / Manjaro**](#tab/archlinux2004)
 
 - Update system and packages
+
     ```bash
     pacman -Syu
     ```
+
 - Install the necessary dependencies
+
     ```bash
     sudo pacman -S gtk3 dotnet-targeting-pack dotnet-sdk dotnet-host dotnet-runtime mono python mono-msbuild ninja gn aspnet-runtime
     ```
+
 - Install the `dotnet new` templates:
+
     ```bash
     dotnet new -i Uno.Templates
     ```
@@ -95,10 +107,13 @@ You may also need to [install the Microsoft fonts](https://wiki.archlinux.org/ti
 ### Install the templates and create the application
 
 - Install the `dotnet new` templates:
+
     ```bash
     dotnet new -i Uno.Templates
     ```
+
 - Then create a new project using:
+
     ```bash
     dotnet new unoapp -o MyUnoApp
     ```
@@ -107,6 +122,7 @@ Now let's run the GTK based application:
 
 - Open the folder created by `dotnet new`
 - In the terminal, build and run the application:
+
     ```bash
     cd MyUnoApp.Skia.Gtk
     dotnet run

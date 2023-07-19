@@ -25,6 +25,7 @@ xmlns:toolkit="using:Uno.UI.Toolkit"
 ```
 
 #### Cancel button text
+
 ```xml
 xmlns:toolkit="using:Uno.UI.Toolkit"
 

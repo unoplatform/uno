@@ -67,6 +67,7 @@ For instance:
 #### Build error `Failed to generate AOT layout`
 
 When building for WebAssembly with AOT mode enabled, the following error may appear:
+
 ```
 Failed to generate AOT layout (More details are available in diagnostics mode or using the MSBuild /bl switch)
 ```
@@ -137,6 +138,7 @@ It is a good practice to use Roslyn analyzers to validate your code during compi
 [This issue](https://github.com/unoplatform/uno/issues/9430) may happen for Uno.UI 4.4.20 and later when deploying an application using the iOS Simulator or MacCatalyst when the application contains a `TextBox`.
 
 In order to fix this, add the following to your csproj (Xamarin, `net6.0-ios`, `net6.0-maccatalyst`):
+
 ```xml
 <PropertyGroup>
   <MtouchExtraArgs>$(MtouchExtraArgs) --registrar=static</MtouchExtraArgs>

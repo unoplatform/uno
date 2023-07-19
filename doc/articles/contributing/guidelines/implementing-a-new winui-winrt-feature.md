@@ -15,6 +15,7 @@ If your API implementation is for a specific platform:
 
 - You can use a platform suffix in the source file name (`PdfDocument.Android.cs`) so the file is built only for this platform
 - Remove the parts that relate to your platform in the `NotImplemented` attribute:
+
     ```csharp
     #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -22,7 +23,9 @@ If your API implementation is for a specific platform:
 	{
 	#endif
     ```
+
     becomes
+
     ```csharp
     #if false || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented("__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -30,6 +33,7 @@ If your API implementation is for a specific platform:
 	{
 	#endif
     ```
+
     when implemented for Android only.
 
 When implementing a feature, try to place as much code as possible in a common source file (a non-suffixed file), so that it is reused across platforms. Make sure to follow [partial classes coding guidelines](code-style.md).

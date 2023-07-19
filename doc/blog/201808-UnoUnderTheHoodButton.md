@@ -24,6 +24,7 @@ I present the simplest interactive application imaginable, one step above 'Hello
 
 
 XAML:
+
 ```` xml
 <Page x:Class="UnoExtTestbed.MainPage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"

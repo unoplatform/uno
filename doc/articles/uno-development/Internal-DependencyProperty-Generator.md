@@ -91,6 +91,7 @@ Other attribute properties are available on `GeneratedDependencyProperty` to inc
 
 ### WebAssembly, using the interpreter (Uno.Wasm.Bootstrap 1.3.0-dev.42)
 Before DP caching:
+
 ```
 SimpleDPBenchmark.DP_Write: InProcess(Toolchain=InProcessToolchain, IterationCount=5, LaunchCount=1, WarmupCount=1)
 Runtime = ; GC = 

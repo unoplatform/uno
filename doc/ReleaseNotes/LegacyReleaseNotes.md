@@ -13,6 +13,7 @@ uid: Uno.ReleaseNotes.Legacy
 
 - Uno is now built using VS2019 16.4, and does not support building applications with Visual Studio 2017.
   Linker errors may occur such as:
+
   ```
   Java.Interop.Tools.Diagnostics.XamarinAndroidException: error XA2006: Could not resolve reference to 'System.Collections.Generic.Queue`1'
   (defined in assembly 'Uno.UI, Version=255.255.255.255, Culture=neutral, PublicKeyToken=null') with scope 'mscorlib, Version=2.0.5.0,
@@ -188,10 +189,12 @@ uid: Uno.ReleaseNotes.Legacy
   - `Dark` and `Light` are supported.
   - **Custom Themes** are supported. This let you specify `HighContrast` or any other custom themes.
     (this is a feature not supported in UWP)
+
     ``` csharp
     // Put that somewhere during app initialization...
     Uno.UI.ApplicationHelper.RequestedCustomTheme = "MyCustomTheme";
     ```
+
   - `FrameworkElement.RequestedTheme ` is ignored for now.
   - Should be set when the application is starting (before first request to a static resource).
 - Prevent possible crash with `MediaPlayerElement` (tentative)
@@ -205,9 +208,11 @@ uid: Uno.ReleaseNotes.Legacy
 - `<ContentPresenter>` will now - as a fallback when not set - automatically bind to
   `TemplatedParent`'s `Content` when this one is a `ContentControl`.
   You can deactivate this behavior like this:
+
   ```
   FeatureConfiguration.ContentPresenter.UseImplicitContentFromTemplatedParent = false;
   ```
+
 - Add support for `Selector.IsSynchronizedWithCurrentItem`
 - Add support for `CoreApplication.MainView` and `CoreApplication.Views`
 - Add support for resolution of merged and theme resources from `ResourceDictionary` in code

@@ -68,9 +68,11 @@ If you've followed the steps above, you have your environment set up with the li
 
 ### Windows and long paths issues
 If the build tells you that `LongPath` is not enabled, you may enable it on Windows 10 by using :
+
 ```bash
 reg ADD HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\FileSystem /v LongPathsEnabled /t REG_DWORD /d 1
 ```
+
 If for some reason you cannot modify the registry, you can disable this warning by adding `<UnoUIDisableLongPathWarning>false</UnoUIDisableLongPathWarning>` to the project.
 
 Note that long paths may be required when building Uno, and invalid paths errors may arise.

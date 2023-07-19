@@ -13,11 +13,13 @@ To install the templates, type the following:
 ```
 dotnet new install Uno.Templates
 ```
+
 # [**.NET 6**](#tab/net6)
 
 ```
 dotnet new -i Uno.Templates
 ```
+
 ***
 
 To determine all parameters available for a template use `dotnet new [templatename] -h`.
@@ -39,11 +41,13 @@ This template can be used to create a multi-platform application for iOS, Androi
 It comes with the **Blank** and **Recommended** presets.
 
 To create a blank template, using minimal dependencies:
+
 ```
 dotnet new unoapp -preset=blank -o test
 ```
 
 To create from a recommended template, using [Uno.Extensions](xref:Overview.Extensions):
+
 ```
 dotnet new unoapp -preset=recommended -o test
 ```
@@ -61,6 +65,7 @@ More articles on WinUI 3:
 This template can be used to create a blank multi-platform application for iOS, Android, WebAssembly, macOS, Skia/GTK (Windows, Linux, macOS), and Skia/Wpf (Windows 7 and 10), using the UWP
 
 A basic example:
+
 ```
 dotnet new unoapp-uwp -o MyApp
 ```
@@ -78,6 +83,7 @@ This template can be used to create a blank multi-platform application for iOS, 
 This template uses a single project head for iOS, Android, macOS, and Mac Catalyst. It requires Visual Studio 2022.
 
 A basic example:
+
 ```
 dotnet new unoapp-uwp-net6 -o MyApp
 ```
@@ -99,6 +105,7 @@ See [this documentation](xref:Overview.Features) for more information.
 This template can be used to create a blank library. With this type of library, Skia and WebAssembly do not need to be built separately, but cannot be differentiated.
 
 A basic example:
+
 ```
 dotnet new unolib -o MyUnoLib
 ```
@@ -108,6 +115,7 @@ dotnet new unolib -o MyUnoLib
 This template can be used to create a blank cross-runtime library, when platform specific code needs to be created for Skia and WebAssembly.
 
 A basic example:
+
 ```
 dotnet new unolib-crossruntime -o MyCrossRuntimeLibrary
 ```

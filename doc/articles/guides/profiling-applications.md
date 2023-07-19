@@ -40,10 +40,13 @@ Profiling has to first be enabled in the application. Some additional properties
 Then in the `Android` application folder, add the following two files:
 
 - `environment.device.txt`
+
     ```
     DOTNET_DiagnosticPorts=127.0.0.1:9000,suspend
     ```
+
 - `environment.emulator.txt`
+
     ```
     DOTNET_DiagnosticPorts=10.0.2.2:9001,suspend
     ```
@@ -53,19 +56,25 @@ Note that the `suspend` directive means that if `dotnet-trace` is not running, t
 ### Profiling the application
 
 - Start the diagnostics router, in any folder:
+
     ```
     dotnet-dsrouter client-server -tcps 127.0.0.1:9001 -ipcc /tmp/uno-app --verbose debug
     ```
+
 - Start `dotnet-trace`, in the app folder or where you want your traces to be stored:
+
     ```
     dotnet-trace collect --diagnostic-port /tmp/uno-app --format speedscope -o uno-app-trace
     ```
+
 - Start an `x86-64` emulator or `arm64` (`armv8`) device
     > Running on a 32 bits device is not supported and will generate unusable traces in SpeedScope
 - Build the application with profiling enabled
+
     ```
     dotnet build -f net6.0-android -t:run -c Release -p:IsEmulator=true /p:RunAOTCompilation=true /p:AndroidEnableProfiler=true
     ```
+
 - The app will start and the `dotnet-trace` will display a MB number counting up
 - Use the app and once done, stop `dotnet-trace` using the specified method (Likely `Enter` or `Ctr+C`)
 - Open a browser at `https://speedscope.app` and drop the `uno-app-trace.speedscope.json` file on it
@@ -90,12 +99,15 @@ Profiling WebAssembly applications can be done through the use of AOT compilatio
 ### Setup the WebAssembly application for profiling
 
 - Enable emcc profiling:
+
     ```xml
     <PropertyGroup>
         <WasmShellEnableEmccProfiling>true</WasmShellEnableEmccProfiling>
     </PropertyGroup>
     ```
+
 - Enable AOT compilation:
+
     ```xml
     <PropertyGroup>
         <WasmShellMonoRuntimeExecutionMode>InterpreterAndAOT</WasmShellMonoRuntimeExecutionMode>

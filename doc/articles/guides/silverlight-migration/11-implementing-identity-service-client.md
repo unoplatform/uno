@@ -13,6 +13,7 @@ As mentioned earlier, the server-side of this service is out-of-scope for the ar
 * **`/identity/getusers`** - GET
   * No parameters
   * Returns a JSON array containing a list of user names:
+
     ```json
     [
         {
@@ -29,24 +30,30 @@ As mentioned earlier, the server-side of this service is out-of-scope for the ar
         }
     ]
     ```
+
 * **`/identity/validateuser`** - POST
   * Request body:
+
     ```json
     {
         "userName": "string",
         "password": "string"
     }
     ```
+
   * Returns OK
     * "true" or "false"
 * **`/identity/getauthenticateduser`** - POST
   * Request body:
+
     ```json
     {
         "userName": "string"
     }
     ```
+
   * Return OK:
+
     ```json
     {
         "Id": int,

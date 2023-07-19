@@ -38,9 +38,11 @@ UI tests contribute significantly to the CI build time, and for many purposes a 
 ### Troubleshooting
 
 - For Android, ensure that your system-level environment variables `JAVA_HOME` and `ANDROID_HOME` are set to the same values as the ones set in Visual Studio's Xamarin Android options panel. Note that you may need to restart Visual Studio once the variables have been set. You may need to set these values if you get this message when running tests:
+
    ```
    Failed to execute: C:\Program Files\Android\Jdk\microsoft_dist_openjdk_1.8.0.25\bin\keytool.exe -J-Duser.language=en -list -v -alias androiddebugkey -keystore
    ```
+
 - For Android, ensure that you are running hardware accelerated emulators. See [this documentation for details](https://docs.microsoft.com/en-us/xamarin/android/get-started/installation/android-emulator/hardware-acceleration?pivots=windows).
 
 ## Adding a new test
@@ -56,6 +58,7 @@ It may be that some UI Tests are platform specific, or that some tests may not w
 The `ActivePlatformsAttribute` allows to specify which platform are active for a given test.
 
 This attribute is used as follows:
+
 ```
 [ActivePlatforms(Platform.iOS, Platform.Browser)]	// Run on iOS and Browser.
 ```
@@ -117,6 +120,7 @@ Finally, we take another screenshot, and then use the `ImageAssert` class to ver
 Running UI Tests in iOS Simulators on macOS requires, as of VS4Mac 8.4, to build and run the tests from the command line. Editing the Uno.UI solution is not a particularly stable experience yet.
 
 In a terminal, run the following:
+
 ``` bash
 cd build
 ./test-scripts/local-ios-uitest-run.sh

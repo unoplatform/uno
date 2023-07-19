@@ -375,6 +375,7 @@ The tutorial walks you through creating a cross platform application with Uno Pl
     You may need to add missing namespace `usings`, eg the `Windows.UI` namespace for the `Colors` class. Don't worry if `IssueTypeBox` and `IssueTypeIndicator` are marked red - these properties will be created from the XAML when the project builds.
 
 1. Finally, let's add a method to do the `DateTimeOffset` conversion using `x:Bind` functions binding:
+
     ```csharp
     // Provides the conversion for dates in the XAML through x:Bind
     public string FormatDate(string header, DateTimeOffset? dateTime) 

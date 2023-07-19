@@ -70,13 +70,17 @@ To include documentation (let's take Uno.Themes as an example):
 
 * Update your documentation in `Uno.Themes` repository, preferably in a folder named `doc`
 * Include a file named `toc.yml`, using this file as a template:
+
   ```yml
   items:
   - name: Introduction to Uno Themes
     href: ../Readme.md
   ```
+
 * Once you have merged your changes into `Uno.Themes`' `main` (or the default branch), take the commit id and place it in the `doc/import_external_docs.ps1` of the uno repository, as follows:
+
    ```
    @("https://github.com/unoplatform/uno.themes", "uno.themes", "INSERT_COMMIT_HASH_OR_BRANCH_NAME"),
    ```
+
 * Create a PR and validate that the content you added is appearing in the Uno Platform `toc.yml` where `external/uno.themes/` is visible. Ensure href path ends by `toc.yml` for all nodes to be visible.

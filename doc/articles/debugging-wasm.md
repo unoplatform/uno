@@ -17,6 +17,7 @@ Here’s what you need to do to debug an Uno application in Visual Studio (2019 
 - In the NuGet Package Manager, update `Uno.Wasm.Bootstrap` and `Uno.Wasm.Bootstrap.DevServer` 3.0.0 or later
 - Ensure that `<MonoRuntimeDebuggerEnabled>true</MonoRuntimeDebuggerEnabled>` is set in your csproj
 - Ensure that in the `Properties/launchSettings.json` file, the following like below each `launchBrowser` line:
+
     ```json
     "inspectUri": "{wsProtocol}://{url.hostname}:{url.port}/_framework/debug/ws-proxy?browser={browserInspectUri}",
     ```

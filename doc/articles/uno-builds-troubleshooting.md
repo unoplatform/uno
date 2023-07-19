@@ -47,11 +47,15 @@ To generate a binlog file from the command line:
   - A terminal window on Linux or macOS
 - Navigate to the folder of the project head
 - For UWP/iOS/Android/macOS projects, type the following:
+
   ```
   msbuild /r /bl MyProject.csproj
   ```
+
 - For other targets (.NET 5+, WebAssembly, Skia, etc...)
+
   ```
   dotnet build /bl MyProject.csproj
   ```
+
 - Once the build has finished, a file named `msbuild.binlog` is generated next to the `.csproj` file.

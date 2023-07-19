@@ -179,15 +179,19 @@ To migrate your application to Uno 4.0:
 - Update all `Uno.UI.*` nuget packages to 4.0
 - Add a package reference to `Uno.UI.Adapter.Microsoft.Extensions.Logging` to all your project heads (Except `.Desktop` for WinUI projects, and `.Windows` for UWP projects)
 - In your `ConfigureLogging` method, add the following block at the end:
+
     ```csharp
     #if HAS_UNO
 	global::Uno.UI.Adapter.Microsoft.Extensions.Logging.LoggingAdapter.Initialize();
     #endif
     ```
+
 - If you are using `ApiInformation.NotImplementedLogLevel`, use the following code instead:
+
     ```csharp
     global::Uno.UI.FeatureConfiguration.ApiInformation.NotImplementedLogLevel = global::Uno.Foundation.Logging.LogLevel.Debug; // Raise not implemented usages as Debug messages
     ```
+
 - Many other smaller breaking changes that may have previously forced `#if HAS_UNO` conditionals, such as:
   - `FrameworkElement.DataContextChanged` signature
   - `FrameworkElement.Loading` signature
@@ -222,6 +226,7 @@ Here's how to upgrade:
   - Add a reference to `Uno.Extensions.Logging.OSLog` version **1.0.1**
 - In the `App.xaml.cs` file:
   - Replace the `ConfigureFilters()` method with the following:
+
     ```csharp
                 /// <summary>
                 /// Configures global Uno Platform logging
@@ -279,6 +284,7 @@ Here's how to upgrade:
                     global::Uno.Extensions.LogExtensionPoint.AmbientLoggerFactory = factory;
                 }
     ```
+
   - In the constructor, remove this call:
         ```csharp
         ConfigureFilters(global::Uno.Extensions.LogExtensionPoint.AmbientLoggerFactory);
@@ -309,13 +315,17 @@ Migrating from Uno 2.x to Uno 3.0 requires a small set of changes in the code an
 
 - **Android 8.0** is not supported anymore, you'll need to update to **Android 9.0** or **10.0**.
 - For Android, you'll need to update the `Main.cs` file from:
+
     ```csharp
 	: base(new App(), javaReference, transfer)
     ```
+
     to
+
     ```csharp
 	: base(() => new App(), javaReference, transfer)
     ```
+
 - For WebAssembly, in the `YourProject.Wasm.csproj`:
   - Change `<PackageReference Include="Uno.UI" Version="2.4.4" />` to `<PackageReference Include="Uno.UI.WebAssembly" Version="3.0.12" />`
   - Remove `<WasmHead>true</WasmHead>`

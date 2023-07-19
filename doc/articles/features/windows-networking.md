@@ -26,6 +26,7 @@ Android can recognize all values of `NetworkConnectivityLevel`. iOS, macOS and W
 
 
 **Note**: On Android, the `android.permission.ACCESS_NETWORK_STATE` permission is required. It can be added to the application manifest or with the following attribute in the Android platform head:
+
 ```
 [assembly: UsesPermission(\"android.permission.ACCESS_NETWORK_STATE\")]
 ```

@@ -633,6 +633,7 @@ Gets or sets a value indicating whether the user can interact with the control.
   _For attached properties, you need a special syntax in the Name column of a `.resw` file._ Ref: [Microsoft documentation](https://docs.microsoft.com/en-us/windows/uwp/app-resources/localize-strings-ui-manifest#refer-to-a-string-resource-identifier-from-xaml).
 
   More specifically :
+
   ```xml
 
   <CommandBar x:Uid="MyCommandBar"
@@ -640,6 +641,7 @@ Gets or sets a value indicating whether the user can interact with the control.
           ...
   </CommandBar>
   ```
+
   And in the `.resw` file, the name would be: `MyCommandBar.[using:Uno.UI.Toolkit]CommandBarExtensions.BackButtonTitle`
 
 * > How can I put a ComboBox in my CommandBar?
@@ -705,18 +707,22 @@ Gets or sets a value indicating whether the user can interact with the control.
   However, you can change the color of all textual `AppBarButton`s globally using **Android** styles:
 
   **Colors.xml**
+
   ```xml
   <color name="red">#FFFF0000</color>
   ```
 
   **Styles.xml**
+
   ```xml
   <item name="android:actionMenuTextColor">@color/red</item>
   <item name="actionMenuTextColor">@color/red</item>
   ```
+
   If you need the button to display a different color to reflect being in a disabled state, you can add a selector in its own file, under res/color, like so:
 
   **PrimaryTextColorSelector.xml**
+
   ```xml
   <?xml version="1.0" encoding="utf-8"?>
   <selector xmlns:android="http://schemas.android.com/apk/res/android" >
@@ -726,6 +732,7 @@ Gets or sets a value indicating whether the user can interact with the control.
   ```
 
   **Styles.xml**
+
   ```xml
   <item name="android:actionMenuTextColor">@color/PrimaryTextColorSelector</item>
   <item name="actionMenuTextColor">@color/PrimaryTextColorSelector</item>
@@ -757,6 +764,7 @@ Gets or sets a value indicating whether the user can interact with the control.
   You can change the color of the ripple effect globally using Android styles:
 
   **Colors.xml**
+
   ```xml
   <!-- https://android.googlesource.com/platform/frameworks/support/+/415f740/v7/appcompat/res/values/colors_material.xml -->
   <color name="ripple_material_light">#20444444</color>
@@ -764,6 +772,7 @@ Gets or sets a value indicating whether the user can interact with the control.
   ```
 
   **Styles.xml**
+
    ```xml
   <item name="colorControlHighlight">@color/ripple_material_dark</item>
    ```

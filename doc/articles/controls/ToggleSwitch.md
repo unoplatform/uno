@@ -66,6 +66,7 @@ If you need the simple native style :
 		</Setter>
 	</android:Style>
 ```
+
 If you need the native style but you want to change the Text, ThumbTint and TrackTint colors :
 
 ```xml

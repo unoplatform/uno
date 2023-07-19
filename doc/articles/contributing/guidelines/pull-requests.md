@@ -51,11 +51,13 @@ Make sure that:
 - You create only the least possible commits, where each commit details a specific added feature or bug fix.
 - Try using the category feature as frequently as possible. (e.g. `feat(NavigationView): Updated the main panel`, or `fix(ProgressRing): Fix visibility`)
 - Squash your commits, using interactive rebase:
+
    ```
    git fetch uno-origin
    git rebase uno-origin/master -i # Rebase your branch on top of the latest master, squash using fixups
    git push -f
    ```
+
 - If you're fixing a regression introduced by a PR that has not been released in a stable version yet, use the `reg` category. Example: `fix(reg): Fixing issue of previous PR`.
 
 **Commit/Pull Request Format**

@@ -145,6 +145,7 @@ The following demonstrates the same code, but re-written in a sequential order t
 </Page>
 
 ```
+
 ## Correct Output
 
 In the above example, the `VisualState` blocks are sequential, ordered from `LargeScreen` to `MediumScreen` to `SmallScreen`. Because of this, the compiler will execute the first true occurrence in the order written.

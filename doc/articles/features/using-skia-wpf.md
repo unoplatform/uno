@@ -29,6 +29,7 @@ In the `MainWindow.xaml.cs` file, change:
 ```csharp
 root.Content = new global::Uno.UI.Skia.Platform.WpfHost(Dispatcher, () => new MyApp.AppHead());
 ```
+
 to:
 
 ```csharp
@@ -73,6 +74,7 @@ This is not required anymore, but to be able to use a single project, you'll can
     1. Delete the `MyProject.Skia.Wpf.csproj`
     1. Rename `MyProject.Skia.Wpf.Host.csproj` to `MyProject.Skia.Wpf.csproj`
     1. In the `MyProject.Shared.projitems`, add the following code just before the last `</ItemGroup>` line:
+
         ```xml
         <!-- Mark the files from this folder as being part of WinUI -->
 		<Page Update="$(MSBuildThisFileDirectory)**/*.xaml" XamlRuntime="WinUI" />
@@ -81,4 +83,5 @@ This is not required anymore, but to be able to use a single project, you'll can
 		<!-- Make sure XAML files force reevaluation of up-to-date checks -->
 		<UpToDateCheckInput Include="$(MSBuildThisFileDirectory)**/*.xaml" />
         ```
+
         You'll need edit this file outside of Visual Studio. You need an example, create a new temporary project, and take a look at the way these lines are defined in the shared project file.

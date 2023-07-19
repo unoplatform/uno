@@ -68,7 +68,9 @@ Here's how to use it:
 var file = await Windows.Storage.StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///MyPackageFile.xml"));
 var content = await FileIO.ReadTextAsync(file);
 ```
+
 Given than in the project there's the following declaration:
+
 ```xml
 <ItemGroup>
     <Content Include="MyPackageFile.xml" />
@@ -79,12 +81,14 @@ Given than in the project there's the following declaration:
 Since Uno Platform 4.6, the `GetFileFromApplicationUriAsync` method supports reading assets provided by `ProjectReference` or `PackageReference` libraries, using the following syntax:
 
 Given a library or package named `MyLibrary01`, the following format can be used to read assets:
+
 ```csharp
 var file = await Windows.Storage.StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///MyLibrary01/MyPackageFile.xml"));
 var content = await FileIO.ReadTextAsync(file);
 ```
 
 Uno Platform also provides the ability to determine if an asset or resource exists in the application package by using `StorageFileHelper.ExistsInPackage`:
+
 ```csharp
 var fileExists = await StorageFileHelper.ExistsInPackage("Assets/Fonts/uno-fluentui-assets.ttf");
 ```

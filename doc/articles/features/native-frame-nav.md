@@ -20,11 +20,13 @@ On Android and iOS, there is the option to enable native frame navigation. Enabl
 - `Windows.UI.Xaml.Controls.AppBarButton`
 
 This feature can be enabled by calling the method below, typically in the constructor of your `App` class in `App.cs` or `App.xaml.cs`:
+
 ```cs
 #if __IOS__ || __ANDROID__
     Uno.UI.FeatureConfiguration.Style.ConfigureNativeFrameNavigation();
 #endif
 ```
+
 > [!NOTE]
 > It is recommended to enable this feature in order to provide a more native user experience.
 

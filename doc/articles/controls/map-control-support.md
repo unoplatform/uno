@@ -17,11 +17,13 @@ The current implementation uses the native UIKit Map for iOS and the Google Play
 1. Ensure your app is targeting Uno 3.3 or later.
 2. Install the [Uno.UI.Maps NuGet package](https://www.nuget.org/packages/Uno.UI.Maps/) in the Android and/or iOS head projects of your app.
 3. Add the `MapResources` resource dictionary to `Application.Resources` in your `AppResources.xaml` or `App.xaml` file:
+
 	```xml
 	<Application.Resources>
 		<MapResources xmlns="using:Uno.UI.Maps"/>
 	</Application.Resources>
 	```
+
 4. (Windows and Android) Obtain an API key for your app, following the instructions below.
 5. (Android) Configure permissions in the manifest, following the instructions below.
 6. Add `MapControl` to your app (`<MapControl xmlns="using:Windows.UI.Xaml.Controls.Maps" />`).
@@ -124,6 +126,7 @@ _For a detailed procedure on how to retrieve the SHA-1 fingerprint for your Andr
 
 + For **Android**
     1.  Add the following to AndroidManifest.xml:
+
     ```xml
     <uses-library android:name="com.google.android.maps" />
     ```
@@ -133,6 +136,7 @@ _For a detailed procedure on how to retrieve the SHA-1 fingerprint for your Andr
     ```csharp
 	[assembly: MetaData("com.google.android.maps.v2.API_KEY", Value = "YOUR_API_KEY")]
     ```
+
     Replace the text YOUR_API_KEY with the key generated in previous step.
 
     Note: Since this key might vary depending on the platform and environment we suggest using a constant class where the key could be retrieved from.

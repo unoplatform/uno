@@ -9,6 +9,7 @@ uid: Uno.Features.Lottie
 # [**WinUI 3**](#tab/winui)
 
 Add the following namespaces:
+
 ```xml
 <Page
     ...
@@ -41,6 +42,7 @@ On Windows/WinAppSDK, [the support for Lottie is still pending](https://github.c
 # [**UWP**](#tab/uwp)
 
 Add the following namespaces:
+
 ```xml
 <Page
     ...

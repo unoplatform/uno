@@ -30,12 +30,15 @@ Use a node version manager or the version of node specified in the `.nvmrc` file
 ```
 nvs use
 ```
+
 or
+
 ```
 nvm use
 ```
 
 Then install the dependencies
+
 ```
 npm install
 ```

@@ -28,6 +28,7 @@ You can find the [full sample code](https://github.com/unoplatform/Uno.Samples/b
 1. Right click on the `Generic` folder, then **Add**, **New Item**
 1. In the **Uno Platform** section of **C# Items**, select **Resource Dictionary**, name it `Generic.xaml` (case sensitive)
 1. In the new created file, paste the following:
+
    ```xml
    <ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -53,6 +54,7 @@ You can find the [full sample code](https://github.com/unoplatform/Uno.Samples/b
 
 1. In your application's `MainPage.xaml`, add the the following namespace `xmlns:myControlLib="using:XamlControlLibrary"` in the `Page` element
 2. Add the following code in somewhere in the page:
+
    ```xml
    <myControlLib:MyTemplatedControl />
    ```
@@ -67,6 +69,7 @@ Considering the example above:
 1. Right click on the `Styles` folder, then **Add**, **New Item**
 1. In the **Uno Platform** section of **C# Items**, select **Resource Dictionary**, name it `MyControlStyles.xaml` (case sensitive)
 1. Move the contents of the `Generic.xaml` file into `MyControlStyles.xaml` to be:
+
     ```xml
     <ResourceDictionary
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -87,7 +90,9 @@ Considering the example above:
 
     </ResourceDictionary>
     ```
+
 1. Finally, change the `Generic.xaml` file contents to be:
+
     ```xml
     <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
         <ResourceDictionary.MergedDictionaries>

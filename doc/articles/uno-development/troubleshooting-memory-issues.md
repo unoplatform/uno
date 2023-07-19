@@ -63,11 +63,15 @@ private void EnableViewsMemoryStatistics()
 	);
 }
 ```
+
   You'll also need to add the following logger filter:
+
 ```csharp
 builder.AddFilter("Uno.UI.DataBinding.BinderReferenceHolder", LogLevel.Information );
 ```
+
   As well as this package NuGet (you will need to update to the latest Uno.UI nuget version):
+
 ```xaml
 <PackageReference Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Version="4.0.13" />
 ```

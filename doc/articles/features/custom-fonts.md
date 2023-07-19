@@ -106,6 +106,7 @@ The format is the same as Windows:
 ```xml
 <Setter Property="FontFamily" Value="/Assets/Fonts/yourfont.ttf#Your Font Name" />
 ```
+
    or
 
 ```xml
@@ -133,6 +134,7 @@ The format is the same as Windows, as follows:
 ```xml
 <Setter Property="FontFamily" Value="/Assets/Fonts/yourfont.ttf#Your Font Name" />
 ```
+
 or
 
 ```xml

@@ -15,6 +15,7 @@ error NETSDK1148: A referenced assembly was compiled using a newer version of Mi
 This indicates that your application, or current .NET SDK is using a version of the Windows .NET SDK which is lower than the SDKs used to compile any of your projects dependent nuget packages.
 
 To fix this, find or add the following block in your Windows `.csproj` file:
+
 ```xml
 <ItemGroup>
     <!--
@@ -41,6 +42,7 @@ To find the appropriate version:
 By default the **Uno Platform App** Visual Studio template creates a packaged application. If you want to add un-packaged support, you'll need to do the following:
 
 - Add a new entry in the launchSettings.json file:
+
     ```json
     {
         "profiles": {
@@ -53,7 +55,9 @@ By default the **Uno Platform App** Visual Studio template creates a packaged ap
         }
     }
     ```
+
 - Add this new set of properties in your `.Windows` csproj:
+
     ```xml
   	<PropertyGroup>
 		<!-- Bundles the WinAppSDK binaries (Uncomment for unpackaged builds) -->
@@ -62,4 +66,5 @@ By default the **Uno Platform App** Visual Studio template creates a packaged ap
 		<!-- <SelfContained>true</SelfContained> -->
 	</PropertyGroup>
     ```
+
     You will need to adjust which property is enabled based on the deployment target that you are choosing. Both properties are not supported (as of WinAppSDK 1.0.3).

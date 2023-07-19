@@ -16,6 +16,7 @@ Follow the getting started guide [for Linux](../get-started-with-linux.md) or [W
 You will also need to install the [GTK3 runtime](https://github.com/tschoonj/GTK-for-Windows-Runtime-Environment-Installer/releases) to run a GTK+3 based app on Windows.
 
 Once done, you can create a new app using:
+
 ```
 dotnet new unoapp -o MyApp
 ```
@@ -27,6 +28,7 @@ or by using the Visual Studio "project new" templates.
 It may be required, depending on the environment, to use software rendering.
 
 To do so, immediately before the line `host.Run()` in you `main.cs` file, add the following:
+
 ```
 host.RenderSurfaceType = RenderSurfaceType.Software;
 ```
@@ -47,14 +49,19 @@ When running under Linux, GTK can use OpenGL for the UI rendering but some restr
 Enabling debug logging messages for the GTK Host can help diagnose the render surface type selection.
 
 In your `App.xaml.cs` file, change the minimum log level to:
+
 ```csharp
 builder.SetMinimumLevel(LogLevel.Debug);
 ```
+
 Then change the logging level of the GTK Host to `Information` or `Debug`:
+
 ```csharp
 builder.AddFilter("Uno.UI.Runtime.Skia", LogLevel.Information);
 ```
+
 You may also need to initialize the logging system earlier than what is found in Uno.UI's default templates by calling this in `Main`:
+
 ```csharp
 YourAppNamespace.App.ConfigureFilters(); // Enable tracing of the GTK host
 ```
@@ -81,16 +88,21 @@ Building an Uno Platform Skia+GTK app with .NET (7+) Native AOT requires, GtkSha
 To build an app with this feature enabled:
 
 1. Add the following property in your `.csproj`:
+
    ```xml
    <PropertyGroup>
       <PublishAot>true</PublishAot>
    </PropertyGroup>
    ```
+
 1. Upgrade your project to net7.0:
+
    ```xml
    <TargetFramework>net7.0</TargetFramework>
    ```
+
 1. Add the following items in your `.csproj`:
+
    ```xml
    <ItemGroup>
       <TrimmerRootAssembly Include="MyApp.Skia.Gtk" />
@@ -98,10 +110,13 @@ To build an app with this feature enabled:
       <TrimmerRootAssembly Include="GdkSharp" />
    </ItemGroup>
    ```
+
 1. Build your app with:
+
    ```bash
    dotnet publish -c Release
    ```
+
    > [!NOTE]
    > Cross-compilation support is not supported as of .NET 7. To build a Native AOT app for linux or mac, you'll need to build on corresponding host.
 

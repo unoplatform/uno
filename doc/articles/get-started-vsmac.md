@@ -21,6 +21,7 @@ In order to create a new Uno Project, you'll need to install the [`dotnet new` U
 ## Create a new project using the IDE
 
 1. To create a new project, from the command line, where `src` is your own development folder.
+
     ```
     cd src
     dotnet new unoapp -o MyApp01
@@ -59,9 +60,11 @@ Building for WebAssembly takes a few more steps:
 1. Build the project
 1. In the terminal, navigate to your build output path. This will typically be: `MyProject.Wasm > bin > Debug > net7.0 > dist`
 1. Install `dotnet serve`:
+
     ```
     dotnet tool install -g dotnet-serve
     ```
+
 1. Once installed type `dotnet serve` (or `~/.dotnet/tools/dotnet-serve`).
 1. Navigate to the URL presented by the tool to run your application
 

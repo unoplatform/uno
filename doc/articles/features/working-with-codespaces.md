@@ -36,9 +36,11 @@ If you want to start from an empty repository, follow these steps:
 1. Open the command palette (Ctrl+Shift+P) and execute the `Run uno-check` command to install the appropriate .NET SDK
 1. Open the command palette (Ctrl+Shift+P) and run the `Install the dotnet new templates` command to install the dotnet new templates
 1. Open a terminal and create a new project using the following command:
+
     ```
     dotnet new unoapp -o MyApp -ios=false -android=false -macos=false -skia-tizen=false -skia-wpf=false -skia-linux-fb=false --vscode
     ```
+
 1. Using the Codespaces top left menu, open the `MyApp` folder
 
 You're ready to develop for WebAssembly.

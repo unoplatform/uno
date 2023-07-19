@@ -53,10 +53,13 @@ At this time, there isn't a template for the Rider IDE like there is for Visual 
 2. Run these commands:
 
 Installs Uno template:  
+
 ```bash
 dotnet new -i Uno.Templates
 ```
+
 Creates a new project:  
+
 ```bash
 dotnet new unoapp -o MyApp
 ```

@@ -63,6 +63,7 @@ This guide will walk you through the necessary steps for changing app language a
     And, name them `Page1` and `LanguageSettings`
 1. Add some content to the two new pages:
     * `Page1.xaml`:
+
         ```xml
         <Page x:Class="UnoLocalization.Page1"
               xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -76,11 +77,15 @@ This guide will walk you through the necessary steps for changing app language a
             </StackPanel>
         </Page>
         ```
+
     * `Page1.xaml.cs`:
+
         ```cs
         private void GoBack(object sender, RoutedEventArgs e) => Frame.GoBack();
         ```
+
     * `LanguageSettings.xaml`:
+
         ```xml
         <Page x:Class="UnoLocalization.LanguageSettings"
               xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -100,7 +105,9 @@ This guide will walk you through the necessary steps for changing app language a
             </StackPanel>
         </Page>
         ```
+
     * `LanguageSettings.xaml.cs`:
+
         ```cs
         private void SetAppLanguage(object sender, RoutedEventArgs e)
         {
@@ -122,6 +129,7 @@ This guide will walk you through the necessary steps for changing app language a
 
 1. Add two new buttons to `MainPage` for navigation:
     * `MainPage.xaml`:
+
         ```xml
         <StackPanel toolkit:VisibleBoundsPadding.PaddingMask="Top">
             <TextBlock x:Uid="MainPage_IntroText" Text="Hello, world!" Margin="20" FontSize="30" />
@@ -131,11 +139,14 @@ This guide will walk you through the necessary steps for changing app language a
             <Button x:Uid="MainPage_GotoLanguageSettings" Content="Language Settings" Click="GotoLanguageSettings" />
         </StackPanel>
         ```
+
     * `MainPage.xaml.cs`:
+
         ```cs
         private void GotoNextPage(object sender, RoutedEventArgs e) => Frame.Navigate(typeof(Page1));
         private void GotoLanguageSettings(object sender, RoutedEventArgs e) => Frame.Navigate(typeof(LanguageSettings));
         ```
+
 1. Add a new folder fr under the Strings folder by: Right-click on String > Add > New Folder
 
 1. Add a new resource file `Resources.resw` under the fr folder by: Right-click on fr > Add > New Item ... > Visual C# > Xaml > Resources File

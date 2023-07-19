@@ -73,6 +73,7 @@ This scenario is designed for contributors to the Uno platform, to test changes 
 ### Disabling XAML Hot Reload
 
 If you want to disable Uno's XAML Hot Reload support for some reason, you can do so by adding the following code to your `App` constructor:
+
 ```csharp
 #if HAS_UNO
         // This disables hot reload during debugging.

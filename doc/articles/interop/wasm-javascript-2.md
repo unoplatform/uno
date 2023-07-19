@@ -41,6 +41,7 @@ Let's create an app to integrate a Syntax Highlighter named [`PrismJS`](https://
 🎯  In this section, a control named `PrismJsView` is created in code and used in the XAML page (`MainPage.xaml`) to present it.
 
 1. From the `[MyApp]` project, create a new class file named `PrismJsView.cs`. and copy the following code:
+
    ```csharp
    using System;
    using System.Collections.Generic;
@@ -107,8 +108,10 @@ Let's create an app to integrate a Syntax Highlighter named [`PrismJS`](https://
        }
    }
    ```
+
    This will define a control having 2 properties, one code `Code` and another one for `Language`.
 2. Change the `MainPage.xaml` file to the following content:
+
    ```xml
    <Page
        x:Class="PrismJsDemo.MainPage"
@@ -132,6 +135,7 @@ Let's create an app to integrate a Syntax Highlighter named [`PrismJS`](https://
        </Grid>
    </Page>
    ```
+
 3. Press CTRL-F5.  You should see this:
 
    ![Browser image](assets/image-20200414144707425.png)
@@ -159,6 +163,7 @@ Let's create an app to integrate a Syntax Highlighter named [`PrismJS`](https://
    > Putting the `.css` file in this folder will instruct the Uno Wasm Bootstrapper to automatically inject a `<link>` HTML instruction in the resulting `index.html` file to load it with the browser.
 5. Right-click on the `.Wasm` project node in the Solution Explorer, and pick `Edit Project File` (it can also work by just selecting the project, if the `Preview Selected Item` option is activated).
 6. Insert this in the appropriate `<ItemGroup>`:
+
    ```xml
    <ItemGroup>
      <EmbeddedResource Include="WasmCSS\Fonts.css" />
@@ -167,6 +172,7 @@ Let's create an app to integrate a Syntax Highlighter named [`PrismJS`](https://
      <EmbeddedResource Include="WasmScripts\prism.js" /> <!-- This one too -->
    </ItemGroup>
    ```
+
    > For the Uno Wasm Bootstrapper to take those files automatically and load them with the application, they have to be put as embedded resources. A future version of Uno may remove this requirement.
 7. Compile & run
 8. Once loaded, press F12 and go into the `Sources` tab. Both `prism.js` & `prism.css` files should be loaded this time.
@@ -177,6 +183,7 @@ Let's create an app to integrate a Syntax Highlighter named [`PrismJS`](https://
 🎯  In this section, PrismJS is used from the app.
 
 1. First, there is a requirement for _PrismJS_ to set the  `white-space` style at a specific value, as [documented here](https://github.com/PrismJS/prism/issues/1237#issuecomment-369846817). An easy way to do this is to set in directly in the constructor like this:
+
    ``` csharp
    public PrismJsView()
    {
@@ -185,7 +192,9 @@ Let's create an app to integrate a Syntax Highlighter named [`PrismJS`](https://
        this.SetCssStyle("white-space", "pre-wrap");
    }
    ```
+
 2. Now, we need to create an `UpdateDisplay()` method, used to generate HTML each time there's a new version to update. Here's the code for the method to add in the `PrismJsView` class:
+
    ``` csharp
    private void UpdateDisplay(string oldLanguage = null, string newLanguage = null)
    {
@@ -217,7 +226,9 @@ Let's create an app to integrate a Syntax Highlighter named [`PrismJS`](https://
        this.ExecuteJavascript(javascript);
    }
    ```
+
 3. Change `CodeChanged()` and `LanguageChanged()` to call the new `UpdateDisplay()` method:
+
    ``` csharp
    private static void CodeChanged(DependencyObject dependencyobject, DependencyPropertyChangedEventArgs args)
    {
@@ -228,7 +239,9 @@ Let's create an app to integrate a Syntax Highlighter named [`PrismJS`](https://
        (dependencyobject as PrismJsView)?.UpdateDisplay(args.OldValue as string, args.NewValue as string);
    }
    ```
+
 4. We also need to update the result when the control is loaded in the DOM. So we need to change the constructor again like this:
+
    ``` csharp
    public PrismJsView()
    {
@@ -239,6 +252,7 @@ Let's create an app to integrate a Syntax Highlighter named [`PrismJS`](https://
        Loaded += (snd, evt) => UpdateDisplay(newLanguage: Language);
    }
    ```
+
 5. Compile & run. It should work like this:
 
    ![Final browser result](assets/image-20200415135422628.png)

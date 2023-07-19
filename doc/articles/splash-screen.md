@@ -86,19 +86,23 @@ This article covers how to add a splash screen to your application.
 1. Open the `Package.appxmanifest` and navigate to `Visual Assets > SplashScreen`.
 
 1. Make sure the value for `Preview Images > Splash Screen` is set to:
+
     ```
     Assets\SplashScreen.png
     ```
+
     ![uwp-splash-screen](Assets/uwp-splash-screen.JPG)
 
 ## Step 3 - Android
 
 1. In the `.Droid` project, open `Resources/values/Styles.xml`, and add an `<item>` under the `AppTheme` style.
+
     ```xml
     <item name="android:windowBackground">@drawable/splash</item>
     ```
 
 1. Navigate to `Resources/drawable`, and create a XML file named `splash.xml`:
+
     ```xml
     <?xml version="1.0" encoding="utf-8"?>
         <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
@@ -120,6 +124,7 @@ This article covers how to add a splash screen to your application.
 
  1. Make sure `splash.xml` is added as an `AndroidResource` in the Droid project file : `[Project-name].Droid.csproj`.
     This is not always done automatically, especially if `splash.xml` is created and added outside the IDE.
+
     ```xml
     <ItemGroup>
       <AndroidResource Include="Resources\drawable\splash.xml" />
@@ -128,10 +133,12 @@ This article covers how to add a splash screen to your application.
 
     > [!TIP]
     > After modifying `splash.xml`, you may run into errors like these while trying to debug:
+>
     > ```
     > Resources\drawable-mdpi\SplashScreen.png : error APT2126: file not found.
     > Resources\drawable-hdpi\SplashScreen.png : error APT2126: file not found.
     > ```
+>
     > Simply rebuild the `.Droid` project to get rid of these error.
 
 ## Step 4 - iOS

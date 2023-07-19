@@ -74,6 +74,7 @@ Here's what to look for:
   - It is only supported for elements under the `DataTemplate` of a `ListViewItem`. The
 	attribute is ignored for templates of `ContentControl` instances, or any other control.
   - When binding to Brushes with a solid color, prefer binding to the `Color` property like this if the brush type does not change:
+
        ```xml
        <TextBlock Text="My Text">
            <TextBlock.Foreground>
@@ -81,6 +82,7 @@ Here's what to look for:
            </TextBlock.Foreground>
        </TextBlock>
        ```
+
 - Resources
   - Avoid using `x:Name` in `ResourceDictionary` as those force early instantiation of the resource
   - Use [`Uno.XamlMerge.Task`](https://github.com/unoplatform/uno.xamlmerge.task) to merge all top-level `AppResources.xaml` or `App.xaml` resource dictionaries
@@ -92,11 +94,13 @@ Here's what to look for:
 - Enable [AOT or PG-AOT](https://platform.uno/docs/articles/external/uno.wasm.bootstrap/doc/runtime-execution-modes.html) to get the best performance.
 - When [recording a PG-AOT profile](https://platform.uno/docs/articles/external/uno.wasm.bootstrap/doc/runtime-execution-modes.html#profile-guided-aot), make sure to run through most of your application because saving the profile.
 - Adjusting the GC configuration may be useful to limit the collection runs on large allocations. Add the following to your `csproj` file:
+
    	```xml
 	<ItemGroup>
 		<WasmShellMonoEnvironment Include="MONO_GC_PARAMS" Value="soft-heap-limit=512m,nursery-size=64m,evacuation-threshold=66,major=marksweep" />
 	</ItemGroup>
    	```
+
 	You can adjust the `nursery-size` and `soft-heap-limit` based on your application's memory consumption characteristics.
 - The size of the application can be reduced by:
   - Enabling the [IL Linker](features/using-il-linker-webassembly.md)

@@ -49,6 +49,7 @@ If you haven't prepared your dev environment for Uno Platform app development ye
 1. In your `MyApp` Class Library project, open up `MainPage.xaml`
 
 1. Add a `StackPanel` around your `TextBlock`
+
     ```xml
     <Grid>
         <StackPanel>
@@ -58,6 +59,7 @@ If you haven't prepared your dev environment for Uno Platform app development ye
     ```
 
 1. Add a `Slider`
+
     ```xml
     <Grid>
         <StackPanel>
@@ -68,6 +70,7 @@ If you haven't prepared your dev environment for Uno Platform app development ye
     ```
 
 1. Bind the `Text` value of your `TextBlock` to the value of the `Slider`
+
     ```xml
     <Grid>
         <StackPanel>

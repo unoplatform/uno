@@ -26,6 +26,7 @@ The creation of that generated code is performed in two passes:
 - The second pass creates a set of classes and interfaces within the top level class, or a hidden class for Data Templates.
 
 The generated code is accessible through a private member called `Bindings`, which offers the following interface:
+
 ```csharp
 private interface IXBindUserControl_Bindings
 {
@@ -34,6 +35,7 @@ private interface IXBindUserControl_Bindings
     void StopTracking();
 }
 ```
+
 The most commonly used member is `Update` which allows to refresh a `OneTime` binding to a newer value.
 
 ## Implementation in Uno Platform
