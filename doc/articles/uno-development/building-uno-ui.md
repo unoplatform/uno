@@ -9,11 +9,11 @@ This article explains how to build Uno.UI locally, for instance if you wish to c
 ## Prerequisites
 
 - Visual Studio 2022 (17.4.4 or later)
-    - `MAUI`
-    - `Xamarin development` (Under the MAUI optional components)
-    - `ASP.NET and Web Development`
-    - `.NET Core cross-platform development`
-    - `UWP Development`, install all recent UWP SDKs, starting from 10.0.19041 (or above or equal to `TargetPlatformVersion` line [in this file](https://github.com/unoplatform/uno/blob/master/src/Uno.CrossTargetting.props))
+  - `MAUI`
+  - `Xamarin development` (Under the MAUI optional components)
+  - `ASP.NET and Web Development`
+  - `.NET Core cross-platform development`
+  - `UWP Development`, install all recent UWP SDKs, starting from 10.0.19041 (or above or equal to `TargetPlatformVersion` line [in this file](https://github.com/unoplatform/uno/blob/master/src/Uno.CrossTargetting.props))
 - Install (**Tools** / **Android** / **Android SDK manager**) all Android SDKs starting from 7.1 (or the Android versions `TargetFrameworks` [list used here](https://github.com/unoplatform/uno/blob/master/src/Uno.UI.BindingHelper.Android/Uno.UI.BindingHelper.Android.csproj))
 - Run [Uno.Check](https://github.com/unoplatform/uno.check) on your dev machine to setup .NET 6 Android/iOS workloads
 

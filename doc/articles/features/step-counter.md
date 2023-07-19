@@ -7,7 +7,7 @@ uid: Uno.Features.StepCounter
 > [!TIP]
 > This article covers Uno-specific information for Pedometer. For a full description of the feature and instructions on using it, consult the UWP documentation: https://docs.microsoft.com/en-us/uwp/api/windows.devices.sensors.pedometer
 
- * The `Windows.Devices.Sensors.Pedometer` class allows counting steps taken with the device.
+* The `Windows.Devices.Sensors.Pedometer` class allows counting steps taken with the device.
 
 ## Supported features
 
@@ -19,10 +19,10 @@ uid: Uno.Features.StepCounter
 
 ## Using Pedometer with Uno
  
- * The `GetDefault` method is available on all targets and will return `null` on those which do not support `Pedometer` or devices that do not have such a sensor.
- * Ensure to unsubscribe from the `ReadingChanged` event when you no longer need the readings, so that the sensor is no longer active to avoid unnecessary battery consumption.
- * `ReportInterval` property on WASM is currently not supported directly. Uno uses an approximation in the form of raising the `ReadingChanged` event, only when enough time has passed since the last report. The event is raised a bit more often to make sure the gap caused by the filter is not too large, but this is in line with the behavior of Windows' `Pedometer`.
- * `DirectionalAccuracy` is not reported on iOS, so it will always return `Unknown`.
+* The `GetDefault` method is available on all targets and will return `null` on those which do not support `Pedometer` or devices that do not have such a sensor.
+* Ensure to unsubscribe from the `ReadingChanged` event when you no longer need the readings, so that the sensor is no longer active to avoid unnecessary battery consumption.
+* `ReportInterval` property on WASM is currently not supported directly. Uno uses an approximation in the form of raising the `ReadingChanged` event, only when enough time has passed since the last report. The event is raised a bit more often to make sure the gap caused by the filter is not too large, but this is in line with the behavior of Windows' `Pedometer`.
+* `DirectionalAccuracy` is not reported on iOS, so it will always return `Unknown`.
 
 ## Platform-specific requirements
 

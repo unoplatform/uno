@@ -8,13 +8,13 @@ Internally Uno.UI uses automated UI tests using the [Uno.UITest framework](https
 
 UI tests contribute significantly to the CI build time, and for many purposes a test in [Uno.UI.RuntimeTests](creating-runtime-tests.md) could be sufficient. You should write a `Uno.UITest`-based UI test if:
 
- - you need user interaction to put the app in a state that reproduces the bug, and/or
- - you need to verify the final visual output onscreen.
+- you need user interaction to put the app in a state that reproduces the bug, and/or
+- you need to verify the final visual output onscreen.
 
  Conversely, you can use an in-process unit test in Uno.UI.RuntimeTests if:
 
-  - you can put the app in the required state programmatically, and
-  - you can verify the correct behavior programmatically (eg by checking DesiredSize, ActualWidth/ActualHeight etc).
+- you can put the app in the required state programmatically, and
+- you can verify the correct behavior programmatically (eg by checking DesiredSize, ActualWidth/ActualHeight etc).
 
   For more on general testing strategy in Uno.UI, see [Guidelines for creating tests](../contributing/guidelines/creating-tests.md).
 

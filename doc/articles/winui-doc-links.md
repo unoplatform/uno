@@ -8,6 +8,6 @@ Uno Platform's API is derived from the WinUI application framework. Microsoft pr
 
 Note that some instructions may not apply when using Uno Platform. For example: some articles will instruct you to create a new UWP application in Visual Studio - you would in that case [create a new Uno Platform application](get-started.md) instead.
 
- * [Tutorials](winui-doc-links-tutorials.md)
- * [Development](winui-doc-links-development.md)
- * [Design](winui-doc-links-design.md)
+* [Tutorials](winui-doc-links-tutorials.md)
+* [Development](winui-doc-links-development.md)
+* [Design](winui-doc-links-design.md)

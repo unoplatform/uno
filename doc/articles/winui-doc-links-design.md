@@ -12,29 +12,29 @@ Some of the points of guidance may be specific to Windows 10's [Fluent design la
 
 ## Basic design principles
 
- * [Navigation principles](https://docs.microsoft.com/en-us/windows/uwp/design/basics/navigation-basics)
- * [Interactive elements](https://docs.microsoft.com/en-us/windows/uwp/design/basics/commanding-basics)
- * [Content presentation](https://docs.microsoft.com/en-us/windows/uwp/design/basics/content-basics)
- * [Page layout](https://docs.microsoft.com/en-us/windows/uwp/design/layout/page-layout)
+* [Navigation principles](https://docs.microsoft.com/en-us/windows/uwp/design/basics/navigation-basics)
+* [Interactive elements](https://docs.microsoft.com/en-us/windows/uwp/design/basics/commanding-basics)
+* [Content presentation](https://docs.microsoft.com/en-us/windows/uwp/design/basics/content-basics)
+* [Page layout](https://docs.microsoft.com/en-us/windows/uwp/design/layout/page-layout)
 
 ## Responsive design
 
- * [Screen sizes and breakpoints](https://docs.microsoft.com/en-us/windows/uwp/design/layout/screen-sizes-and-breakpoints-for-responsive-design)
- * [Responsive design](https://docs.microsoft.com/en-us/windows/uwp/design/layout/responsive-design)
+* [Screen sizes and breakpoints](https://docs.microsoft.com/en-us/windows/uwp/design/layout/screen-sizes-and-breakpoints-for-responsive-design)
+* [Responsive design](https://docs.microsoft.com/en-us/windows/uwp/design/layout/responsive-design)
 
 ## Individual controls
 
- * [Controls list](https://docs.microsoft.com/en-us/windows/uwp/design/controls-and-patterns/) _(note: not all controls may be implemented on non-Windows platforms - check the [individual control entries](implemented-views.md) in the Uno Platform API reference for details)_
+* [Controls list](https://docs.microsoft.com/en-us/windows/uwp/design/controls-and-patterns/) _(note: not all controls may be implemented on non-Windows platforms - check the [individual control entries](implemented-views.md) in the Uno Platform API reference for details)_
 
 ## Patterns
 
- * [Forms](https://docs.microsoft.com/en-us/windows/uwp/design/controls-and-patterns/forms)
- * [Master/details pattern](https://docs.microsoft.com/en-us/windows/uwp/design/controls-and-patterns/master-details)
- * [Integrating search](https://docs.microsoft.com/en-us/windows/uwp/design/controls-and-patterns/search)
+* [Forms](https://docs.microsoft.com/en-us/windows/uwp/design/controls-and-patterns/forms)
+* [Master/details pattern](https://docs.microsoft.com/en-us/windows/uwp/design/controls-and-patterns/master-details)
+* [Integrating search](https://docs.microsoft.com/en-us/windows/uwp/design/controls-and-patterns/search)
 
 ## Writing
 
- * [Writing style](https://docs.microsoft.com/en-us/windows/uwp/design/style/writing-style)
+* [Writing style](https://docs.microsoft.com/en-us/windows/uwp/design/style/writing-style)
 
 
 

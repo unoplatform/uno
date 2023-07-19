@@ -151,14 +151,14 @@ Uno 4.1 removes the support for the Android SDK 10 and adds support for Android 
 
 Additionally, here are some specific hints about the migration to Android 12:
 - If you are building with Android 12 on Azure Devops Hosted Agents (macOS or Windows), you'll need two updates:
-    - Use the JDK 11, using the following step:
+  - Use the JDK 11, using the following step:
         ```yml
         - pwsh: |
             echo "##vso[task.setvariable variable=JAVA_HOME]$(JAVA_HOME_11_X64)"
             echo "##vso[task.setvariable variable=JavaSdkDirectory]$(JAVA_HOME_11_X64)"
         displayName: Select JDK 11
         ```
-    - You may need to [add the following property](https://github.com/tdevere/AppCenterSupportDocs/blob/main/Build/Could_not_determine_API_level_for_$TargetFrameworkVersion_of_v12.0.md) to your android csproj:
+  - You may need to [add the following property](https://github.com/tdevere/AppCenterSupportDocs/blob/main/Build/Could_not_determine_API_level_for_$TargetFrameworkVersion_of_v12.0.md) to your android csproj:
         ```xml
         <PropertyGroup>
             <AndroidUseLatestPlatformSdk>true</AndroidUseLatestPlatformSdk>
@@ -185,10 +185,10 @@ To migrate your application to Uno 4.0:
     global::Uno.UI.FeatureConfiguration.ApiInformation.NotImplementedLogLevel = global::Uno.Foundation.Logging.LogLevel.Debug; // Raise not implemented usages as Debug messages
     ```
 - Many other smaller breaking changes that may have previously forced `#if HAS_UNO` conditionals, such as:
-    - `FrameworkElement.DataContextChanged` signature
-    - `FrameworkElement.Loading` signature
-    - `Popup` is now correctly in the `Primitives` namespace
-    - `FlyoutBase` event signatures
+  - `FrameworkElement.DataContextChanged` signature
+  - `FrameworkElement.Loading` signature
+  - `Popup` is now correctly in the `Primitives` namespace
+  - `FlyoutBase` event signatures
 - Uno.UI packages no longer depend on `Uno.Core`.
   If you did depend on types or extensions provided by this package, you can take a direct dependency on it, or
   use one of the sub packages created to limit the number of transitive dependencies.
@@ -203,21 +203,21 @@ Uno Platform 3.6 templates provide an updated version of the loggers to allow th
 Here's how to upgrade:
 
 - For all projects:
-    - Remove references to the `Microsoft.Extensions.Logging.Filter` package
-    - Add a reference to the `Microsoft.Extensions.Logging` package version **5.0.0**
-    - Upgrade the `Microsoft.Extensions.Logging.Console` package to version **5.0.0**
+  - Remove references to the `Microsoft.Extensions.Logging.Filter` package
+  - Add a reference to the `Microsoft.Extensions.Logging` package version **5.0.0**
+  - Upgrade the `Microsoft.Extensions.Logging.Console` package to version **5.0.0**
 - For UWP:
-    - Change the reference from `Microsoft.Extensions.Logging.Console` to `Microsoft.Extensions.Logging.Debug`
+  - Change the reference from `Microsoft.Extensions.Logging.Console` to `Microsoft.Extensions.Logging.Debug`
 - For WebAssembly:
-    - Add the following line to the `LinkerConfig.xaml` file:
+  - Add the following line to the `LinkerConfig.xaml` file:
         ```xml
         <assembly fullname="Microsoft.Extensions.Options" />
         ```
-    - Add a reference to `Uno.Extensions.Logging.WebAssembly.Console` version **1.0.1**
+  - Add a reference to `Uno.Extensions.Logging.WebAssembly.Console` version **1.0.1**
 - For iOS:
-    - Add a reference to `Uno.Extensions.Logging.OSLog` version **1.0.1**
+  - Add a reference to `Uno.Extensions.Logging.OSLog` version **1.0.1**
 - In the `App.xaml.cs` file:
-    - Replace the `ConfigureFilters()` method with the following:
+  - Replace the `ConfigureFilters()` method with the following:
     ```csharp
                 /// <summary>
                 /// Configures global Uno Platform logging
@@ -275,7 +275,7 @@ Here's how to upgrade:
                     global::Uno.Extensions.LogExtensionPoint.AmbientLoggerFactory = factory;
                 }
     ```
-    - In the constructor, remove this call:
+  - In the constructor, remove this call:
         ```csharp
         ConfigureFilters(global::Uno.Extensions.LogExtensionPoint.AmbientLoggerFactory);
         ```
@@ -312,8 +312,8 @@ Migrating from Uno 2.x to Uno 3.0 requires a small set of changes in the code an
 	: base(() => new App(), javaReference, transfer)
     ```
 - For WebAssembly, in the `YourProject.Wasm.csproj`:
-    - Change `<PackageReference Include="Uno.UI" Version="2.4.4" />` to `<PackageReference Include="Uno.UI.WebAssembly" Version="3.0.12" />`
-    - Remove `<WasmHead>true</WasmHead>`
-    - You can remove `__WASM__` in `DefineConstants`
+  - Change `<PackageReference Include="Uno.UI" Version="2.4.4" />` to `<PackageReference Include="Uno.UI.WebAssembly" Version="3.0.12" />`
+  - Remove `<WasmHead>true</WasmHead>`
+  - You can remove `__WASM__` in `DefineConstants`
 - The symbols font has been updated, and the name needs to be updated. For more information, see [this article](uno-fluent-assets.md).
 

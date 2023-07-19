@@ -163,4 +163,4 @@ ScrollViewer + ScrollContentPresenter.
 
 ### Other differences from UWP
  
- * The ListView doesn't use XAML animations (AddDeleteThemeTransition, etc) for collection modifications, instead it uses the animations provided by the native collection class. On iOS, these can be disabled by setting the `ListViewBase.UseCollectionAnimations` flag to `false`.
+* The ListView doesn't use XAML animations (AddDeleteThemeTransition, etc) for collection modifications, instead it uses the animations provided by the native collection class. On iOS, these can be disabled by setting the `ListViewBase.UseCollectionAnimations` flag to `false`.

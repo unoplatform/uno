@@ -50,9 +50,9 @@ Assigning a native view directly as the `Content` property of `ContentPresenter`
 
 Uno makes certain assumptions about native views when it displays them, which may not always hold (eg that `SizeThatFits()` is implemented on iOS). Here are some things to try if your view isn't displaying:
 
- - check the documentation and ensure you're configuring the native control correctly.
- - try setting a fixed `Width` and `Height` on the outer XAML container.
- - try setting the dimensions of the native view via code-behind. 
+- check the documentation and ensure you're configuring the native control correctly.
+- try setting a fixed `Width` and `Height` on the outer XAML container.
+- try setting the dimensions of the native view via code-behind. 
 
 ## Adding JavaScript views in WebAssembly
 

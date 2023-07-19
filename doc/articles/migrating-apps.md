@@ -44,11 +44,11 @@ Note: these steps will **destructively modify** your existing UWP-only solution.
 
 If your old UWP app project had dependencies, you will have to add those dependencies to each new target platform project you wish to support. These include:
 
- - .NET Standard projects within the solution: you should be able to add these as dependencies to any target platform project without difficulties.
+- .NET Standard projects within the solution: you should be able to add these as dependencies to any target platform project without difficulties.
 
- - UWP projects within the solution: these will have to be modified to be cross-platform class libraries - follow the instructions [here](migrating-libraries.md).
+- UWP projects within the solution: these will have to be modified to be cross-platform class libraries - follow the instructions [here](migrating-libraries.md).
 
- - external dependencies: [see information here](migrating-before-you-start.md) on finding equivalent dependencies for NuGet packages and framework libraries.
+- external dependencies: [see information here](migrating-before-you-start.md) on finding equivalent dependencies for NuGet packages and framework libraries.
 
 ## Migrating app configuration
 

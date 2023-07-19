@@ -220,12 +220,12 @@ By default, when a member is invoked at runtime that's not implemented by Uno (i
 
 The logging behavior can be configured using feature flags:
 
- * By default, a message is only logged on the first usage of a given member. To log every time the member is invoked:
+* By default, a message is only logged on the first usage of a given member. To log every time the member is invoked:
     ```csharp
     Uno.UI.FeatureConfiguration.ApiInformation.AlwaysLogNotImplementedMessages = true;
     ```
 
- * By default the message is logged as an error. To change the logging level:
+* By default the message is logged as an error. To change the logging level:
     ```csharp
     Uno.UI.FeatureConfiguration.ApiInformation.NotImplementedLogLevel = LogLevel.Debug; // Raise not implemented usages as Debug messages
     ```

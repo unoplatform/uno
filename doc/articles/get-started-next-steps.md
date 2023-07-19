@@ -58,11 +58,11 @@ Any UWP/WinUI/XAML material is a great starting point as all we do is take that 
 
 [Steven Giesel](https://github.com/linkdotnet). recently explored the in’s and out of Uno Platform and in turn documented his experience with a great blog series that dives further into What is Uno Platform and how to build a multi-platform Todo App.
 
-   - [Part 1 –  Introduction and Environment set up](https://steven-giesel.com/blogPost/b2234ada-0978-4c7b-841e-ca6a255247b0)
-   - [Part 2 – Requirements & First Features]( https://steven-giesel.com/blogPost/85814db0-3495-492c-8ce1-5c83d708590b)
-   - [Part 3 – Dialog Component & ViewModel]( https://steven-giesel.com/blogPost/a3179d55-d5be-48ba-b570-ee7d494a8b21)
-   - [Part 4 – Adding Elements to the Swimlane]( https://steven-giesel.com/blogPost/2d96d970-ef11-48f4-a102-9339fc362a75)
-   - [Part 5 – Implementing Drag and Drop Behavior]( https://steven-giesel.com/blogPost/2c025ac6-d67f-45ec-a616-009e0285c999)
+- [Part 1 –  Introduction and Environment set up](https://steven-giesel.com/blogPost/b2234ada-0978-4c7b-841e-ca6a255247b0)
+- [Part 2 – Requirements & First Features]( https://steven-giesel.com/blogPost/85814db0-3495-492c-8ce1-5c83d708590b)
+- [Part 3 – Dialog Component & ViewModel]( https://steven-giesel.com/blogPost/a3179d55-d5be-48ba-b570-ee7d494a8b21)
+- [Part 4 – Adding Elements to the Swimlane]( https://steven-giesel.com/blogPost/2d96d970-ef11-48f4-a102-9339fc362a75)
+- [Part 5 – Implementing Drag and Drop Behavior]( https://steven-giesel.com/blogPost/2c025ac6-d67f-45ec-a616-009e0285c999)
 
 ## Paid Resources
 

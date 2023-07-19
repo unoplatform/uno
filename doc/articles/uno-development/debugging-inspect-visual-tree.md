@@ -65,5 +65,5 @@ The method returns the visual tree from a certain 'height' above the target elem
 
 ## Tips for interpreting runtime view information 
 
- * Look for view types defined in the app's namespace to 'orient yourself' in the visual tree.
- * Expect to see more views in the materialized tree than just those defined by XAML. Some are added by default control templates, some are platform-specific, some may be created by code-behind...
+* Look for view types defined in the app's namespace to 'orient yourself' in the visual tree.
+* Expect to see more views in the materialized tree than just those defined by XAML. Some are added by default control templates, some are platform-specific, some may be created by code-behind...

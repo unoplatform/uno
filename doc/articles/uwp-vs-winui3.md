@@ -57,5 +57,5 @@ If Windows is one of your target platforms, then the [technical differences](#te
 
 ## Further reading
 
- * [Create a new WinUI 3-flavored Uno Platform app with Project Reunion support](get-started-winui3.md)
- * [Migrate an existing Uno Platform app to WinUI 3](updating-to-winui3.md)
+* [Create a new WinUI 3-flavored Uno Platform app with Project Reunion support](get-started-winui3.md)
+* [Migrate an existing Uno Platform app to WinUI 3](updating-to-winui3.md)

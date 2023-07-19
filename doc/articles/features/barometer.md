@@ -7,7 +7,7 @@ uid: Uno.Features.Barometer
 > [!TIP]
 > This article covers Uno-specific information for `Barometer`. For a full description of the feature and instructions on using it, consult the UWP documentation: https://docs.microsoft.com/en-us/uwp/api/windows.devices.sensors.barometer
 
- * The `Windows.Devices.Sensors.Barometer` class allows measuring pressure in hectopascals (hPa).
+* The `Windows.Devices.Sensors.Barometer` class allows measuring pressure in hectopascals (hPa).
 
 ## Supported features
 
@@ -19,8 +19,8 @@ uid: Uno.Features.Barometer
 
 ## Using Barometer with Uno
  
- * The `GetDefault` method is available on all targets and will return `null` on those which do not support `Barometer` or devices that do not have such a sensor.
- * Ensure to unsubscribe from the `ReadingChanged` event when you no longer need the readings, so that the sensor is no longer active to avoid unnecessary battery consumption.
+* The `GetDefault` method is available on all targets and will return `null` on those which do not support `Barometer` or devices that do not have such a sensor.
+* Ensure to unsubscribe from the `ReadingChanged` event when you no longer need the readings, so that the sensor is no longer active to avoid unnecessary battery consumption.
 
 ## Example
 

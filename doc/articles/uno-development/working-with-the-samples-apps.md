@@ -6,10 +6,10 @@ uid: Uno.Contributing.SamplesApp
 
 The SamplesApp in Uno.UI is an Uno application containing a large number of UI and non-UI samples. It serves a few purposes:
 
- * Allow for manually testing new features and investigating bugs,
- * Provide UI for [automated UI tests](creating-ui-tests.md),
- * Allow automated comparison of static snapshots between Uno versions,
- * Document the functionality supported by Uno.
+* Allow for manually testing new features and investigating bugs,
+* Provide UI for [automated UI tests](creating-ui-tests.md),
+* Allow automated comparison of static snapshots between Uno versions,
+* Document the functionality supported by Uno.
 
 This article details how to run SamplesApp and how to add a new sample.
 

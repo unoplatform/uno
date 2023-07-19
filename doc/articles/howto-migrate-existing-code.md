@@ -8,9 +8,9 @@ Uno Platform takes WinUI code and makes it run on almost any target platform. If
 
 The articles in this guide cover:
 
- - Initial [checklist](migrating-before-you-start.md)
- - Steps for [migrating an application](migrating-apps.md)
- - Steps for [migrating a class library](migrating-libraries.md)
- - [General guidance](migrating-guidance.md) for converting WinUI-only code to Uno-compatible code
+- Initial [checklist](migrating-before-you-start.md)
+- Steps for [migrating an application](migrating-apps.md)
+- Steps for [migrating a class library](migrating-libraries.md)
+- [General guidance](migrating-guidance.md) for converting WinUI-only code to Uno-compatible code
 
 See also the [guide to working with cross-targeted class libraries](cross-targeted-libraries.md).

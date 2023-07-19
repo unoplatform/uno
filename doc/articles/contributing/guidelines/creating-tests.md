@@ -12,9 +12,9 @@ This guide offers an overview of the various types of tests used within Uno, and
 
 The 'TLDR' rule of thumb for adding tests is:
 
- * if you're testing platform-independent functionality, like the dependency property system, [use Uno.UI.Tests](../../uno-development/creating-mocked-tests.md);
- * if you're testing platform-dependent functionality that can be verified programmatically in-process, like checking that a control is measured and arranged properly, [use Uno.UI.RuntimeTests](../../uno-development/creating-runtime-tests.md);
- * if your test needs to simulate user interaction or check that the final screen output is correct, [use SamplesApp.UITests](../../uno-development/creating-ui-tests.md).
+* if you're testing platform-independent functionality, like the dependency property system, [use Uno.UI.Tests](../../uno-development/creating-mocked-tests.md);
+* if you're testing platform-dependent functionality that can be verified programmatically in-process, like checking that a control is measured and arranged properly, [use Uno.UI.RuntimeTests](../../uno-development/creating-runtime-tests.md);
+* if your test needs to simulate user interaction or check that the final screen output is correct, [use SamplesApp.UITests](../../uno-development/creating-ui-tests.md).
 
 ## Types of tests
 
@@ -36,16 +36,16 @@ These are the main types of tests in Uno:
 
 UI tests can mimic the actions of a user:
 
- * tapping buttons and other UI elements
- * entering keyboard input
- * scrolling, swiping, and other gestures
+* tapping buttons and other UI elements
+* entering keyboard input
+* scrolling, swiping, and other gestures
 
  They can verify assertions about the state of the app:
 
-  * text labels
-  * any DependencyProperty value
-  * onscreen bounds of a view element
-  * comparing screenshots at different stages of the app, and asserting equality or inequality
+* text labels
+* any DependencyProperty value
+* onscreen bounds of a view element
+* comparing screenshots at different stages of the app, and asserting equality or inequality
 
 A complete set of instructions for authoring UI tests is available [here](../../uno-development/working-with-the-samples-apps.md).
 

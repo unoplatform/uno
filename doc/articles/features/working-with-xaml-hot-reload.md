@@ -34,12 +34,12 @@ The Uno Platform Hot Reload feature provides a way to modify the XAML displayed 
 - The application logs file changes. You should see diagnostics messages in the app when a XAML file is reloaded.
 - The file named `obj\Debug\XXX\g\RemoteControlGenerator\RemoteControl.g.cs` (Xamarin iOS/Android) or the `RemoteControlGenerator\RemoteControl.g.cs` node (Wasm, `net6` or Skia) in the Analyzers node in your project contains the connection information, verify that the information makes sense, particularly the port number.
 - WebAssembly: `Hot Reload fails to start with Mixed Content: The page at XXX was loaded over HTTPS, but attempted to connect to the insecure WebSocket endpoint`. This issue is caused by Visual Studio 2022 enforcing https connections for locally served apps. You can work around this by either:
-    - Removing the https endpoint in the `Properties/launchSettings.json` file
-    - Unchecking the `Use SSL` option in the project's Debug launch profiles (in VS 2022 17.0 or earlier)
-    - Removing the https App URL in the project's Debug launch profiles (in VS 2022 17.1 or later)
-    - Selecting the project name instead of IISExpress in the toolbar debug icon drop down list
+  - Removing the https endpoint in the `Properties/launchSettings.json` file
+  - Unchecking the `Use SSL` option in the project's Debug launch profiles (in VS 2022 17.0 or earlier)
+  - Removing the https App URL in the project's Debug launch profiles (in VS 2022 17.1 or later)
+  - Selecting the project name instead of IISExpress in the toolbar debug icon drop down list
 - WinAppSDK on Windows specific issues
-    - Grid Succinct syntax [is not supported](https://github.com/microsoft/microsoft-ui-xaml/issues/7043#issuecomment-1120061686)
+  - Grid Succinct syntax [is not supported](https://github.com/microsoft/microsoft-ui-xaml/issues/7043#issuecomment-1120061686)
 
 ### Visual Studio 2019/2022
 - The output window in VS has an output named "Uno Platform" in its drop down. Diagnostics messages from the VS integration appear there.
@@ -47,10 +47,10 @@ The Uno Platform Hot Reload feature provides a way to modify the XAML displayed 
 - When a file is reloaded, XAML parsing errors will appear in the application's logs, on device or in browser.
 - If there are multiple versions of the Uno.UI Package present in the solution, the newest will be used, regardless of the started application
 - The reload server may start twice (The VS **Uno Platform** output window shows two "Starting server" messages)
-    - Resolution: Restart visual studio, rebuild the app.
+  - Resolution: Restart visual studio, rebuild the app.
 - The app does not update its XAML, because the port number in `RemoteControl.g.cs` is `0`.
-    - Ensure you have the right version of the _VSIX_ installed.
-    - Resolution: Rebuild the app until the number is different than zero.
+  - Ensure you have the right version of the _VSIX_ installed.
+  - Resolution: Rebuild the app until the number is different than zero.
 
 ### VS Code
 - The output window in Code has an output named "Uno Platform - Hot Reload" in its drop down. Diagnostics messages from the extension appear there.

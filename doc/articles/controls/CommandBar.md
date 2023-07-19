@@ -375,8 +375,8 @@ Gets or sets the content of a `ContentControl`.
 
 * When given a `string`, its text will be displayed instead of the icon.
 * When given a `FrameworkElement`:
-	* it will be displayed instead of the icon
-	* the native pressed state and tooltip (Android only) won't work
+  * it will be displayed instead of the icon
+  * the native pressed state and tooltip (Android only) won't work
 * Make sure to set `Icon` to null, as it takes priority over `Content`.
 
 ### Icon

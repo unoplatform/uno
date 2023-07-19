@@ -59,9 +59,9 @@ We love to see the community grow, and whether you're trying Uno for the first t
 
 You can:
 
- - write a blog post
- - present Uno at a local user group
- - share your open-source Uno projects
+- write a blog post
+- present Uno at a local user group
+- share your open-source Uno projects
 
 Whatever you do, let us know [through Twitter](https://twitter.com/unoplatform) or via info@platform.uno.
 
@@ -84,9 +84,9 @@ In either case, once you're ready, leave a comment on the issue indicating that 
 ### Getting down to work
 
 The [contributor's guide](contributing-intro.md) has the information you need. The most important points are:
- - Work in [your own fork of Uno](https://help.github.com/en/github/getting-started-with-github/fork-a-repo)
- - Be sure to use the [Conventional Commits format](git-conventional-commits.md)
- - Once you're done, you'll probably need to [add a test](../contributing/guidelines/creating-tests.md)
+- Work in [your own fork of Uno](https://help.github.com/en/github/getting-started-with-github/fork-a-repo)
+- Be sure to use the [Conventional Commits format](git-conventional-commits.md)
+- Once you're done, you'll probably need to [add a test](../contributing/guidelines/creating-tests.md)
 
 ### Creating a PR
 

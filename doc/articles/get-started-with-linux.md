@@ -16,15 +16,15 @@ Using VS 2019 16.6 or later:
 - Install [WSL Ubuntu 18.04 or later](https://docs.microsoft.com/en-us/windows/wsl/install-win10)
 - Install the prerequisites for Linux mentioned in the next section, in your installed distribution using the Ubuntu shell
 - On Windows 10, Install [`vcXsrv`](https://sourceforge.net/projects/vcxsrv/), an X11 server for Windows
-    - You'll need to start the server in "Multiple windows" mode, starting with "no client" mode.
+  - You'll need to start the server in "Multiple windows" mode, starting with "no client" mode.
 - On Windows 11, [Wayland](https://github.com/microsoft/wslg) is supported and nothing needs to be installed
 - Install the [GTK3 runtime](https://github.com/tschoonj/GTK-for-Windows-Runtime-Environment-Installer/releases).
 - Using the WSL 1 mode is generally best for performance and ease of use for the X11 server
-    - You can switch between versions of a distribution using `wsl --set-version "Ubuntu-20.04" 1`
-    - You can list your active distributions with `wslconfig /l` and change the default with `wslconfig /s "Ubuntu-20.04"`
-    - You can change the used distribution with the `"distributionName": "Ubuntu-20.04"` launch profile parameter of the VS WSL 2 Extension.
-    - If you have a insider preview of Windows 10, you may [use the wayland server](https://devblogs.microsoft.com/commandline/the-windows-subsystem-for-linux-build-2020-summary/#wsl-gui).
-    - If you still want to use WSL 2 anyways, you can try [following those steps](https://skeptric.com/wsl2-xserver).
+  - You can switch between versions of a distribution using `wsl --set-version "Ubuntu-20.04" 1`
+  - You can list your active distributions with `wslconfig /l` and change the default with `wslconfig /s "Ubuntu-20.04"`
+  - You can change the used distribution with the `"distributionName": "Ubuntu-20.04"` launch profile parameter of the VS WSL 2 Extension.
+  - If you have a insider preview of Windows 10, you may [use the wayland server](https://devblogs.microsoft.com/commandline/the-windows-subsystem-for-linux-build-2020-summary/#wsl-gui).
+  - If you still want to use WSL 2 anyways, you can try [following those steps](https://skeptric.com/wsl2-xserver).
 - Install the [`dotnet new` templates](get-started-dotnet-new.md):
     ```
     dotnet new -i Uno.Templates

@@ -11,8 +11,8 @@ uid: Uno.Features.PasswordVault
 > [!TIP]
 > This article covers Uno-specific information for `Windows.Security.Credentials.PasswordVault` API. For a full description of the feature and instructions on using it, consult the UWP documentation: https://docs.microsoft.com/en-us/uwp/api/windows.security.credentials.passwordvault
 
- * The `PasswordVault` is a credentials manager that is persisted using a secured storage.
- * `PasswordCredential` is used to manipulate passwords in the vault.
+* The `PasswordVault` is a credentials manager that is persisted using a secured storage.
+* `PasswordCredential` is used to manipulate passwords in the vault.
 
 ## Supported features
 

@@ -71,9 +71,9 @@ Failed to generate AOT layout (More details are available in diagnostics mode or
 ```
 
 To troubleshoot this error, you can change the text output log level:
-  * Go to **Tools**, **Options**, **Projects and Solution**, then **Build and Run**
-  * Set **MSBuild project build output verbosity** to **Normal** or **Detailed**
-  * Build your project again and take a look at the additional output next to the `Failed to generate AOT layout` error
+* Go to **Tools**, **Options**, **Projects and Solution**, then **Build and Run**
+* Set **MSBuild project build output verbosity** to **Normal** or **Detailed**
+* Build your project again and take a look at the additional output next to the `Failed to generate AOT layout` error
 
 You can get additional build [troubleshooting information here](uno-builds-troubleshooting.md).
 

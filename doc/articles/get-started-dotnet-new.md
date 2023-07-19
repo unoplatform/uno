@@ -53,8 +53,8 @@ dotnet new unoapp -preset=recommended -o test
 
 More articles on WinUI 3:
 
- * [WinUI 3, UWP, and Uno Platform.](uwp-vs-winui3.md)
- * [Updating from UWP to WinUI 3.](updating-to-winui3.md)
+* [WinUI 3, UWP, and Uno Platform.](uwp-vs-winui3.md)
+* [Updating from UWP to WinUI 3.](updating-to-winui3.md)
 
 ## Uno Platform Blank Application (UWP)
 

@@ -21,9 +21,9 @@ Here’s what you need to do to debug an Uno application in Visual Studio (2019 
     ```
 
 Then you can start debugging with the VS debugger toolbar:
-   - Select **IIS Express** or your application name as the debugging target
-   - Select **Chrome** as the Web Browser
-   - Press <kbd>F5</kbd> or _Debug_ > _Start Debugging_
+- Select **IIS Express** or your application name as the debugging target
+- Select **Chrome** as the Web Browser
+- Press <kbd>F5</kbd> or _Debug_ > _Start Debugging_
 
 You should now be able to set breakpoints or do step by step debugging of your code.
 
@@ -40,9 +40,9 @@ To debug your application:
 - Ensure that `<MonoRuntimeDebuggerEnabled>true</MonoRuntimeDebuggerEnabled>` is set in your csproj
 - In the debugging toolbar:
 
-   - Select **IIS Express** as the debugging target
-   - Select **Chrome** as the Web Browser
-   - Make sure script debugging is disabled<br/>
+  - Select **IIS Express** as the debugging target
+  - Select **Chrome** as the Web Browser
+  - Make sure script debugging is disabled<br/>
    ![IIS express settings](Assets/quick-start/wasm-debugging-iis-express.png)
 
 - Start the debugging session using <kbd>Ctrl</kbd><kbd>F5</kbd> or _Debug_ > _Start Without Debugging_ from the menu, (<kbd>F5</kbd> will work, but the debugging experience won't be in Visual Studio)

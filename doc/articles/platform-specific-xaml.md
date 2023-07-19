@@ -11,8 +11,8 @@ This guide covers multiple approaches to managing per-platform markup in XAML. S
 ## Project structure
 
 There are two ways to restrict code or XAML markup to be used only on a specific platform:
- * Use conditionals within a shared file
- * Place the code in a file which is only included in the desired platform head.
+* Use conditionals within a shared file
+* Place the code in a file which is only included in the desired platform head.
 
  The structure of an Uno app created with the default [Visual Studio template](https://marketplace.visualstudio.com/items?itemName=unoplatform.uno-platform-addin-2022) is [explained in more detail here](uno-app-solution-structure.md). The key point to understand is that files in a shared project referenced from a platform head **are treated in exactly the same way** as files included directly under the head, and are compiled together into a single assembly.
 
@@ -134,8 +134,8 @@ More visually, platform support for the pre-defined prefixes is shown in the bel
 | `not_skia`    | ✔ | ✔ | ✔ | ✔ | ✔ | ✖ |
 
 Where:
- * 'Win' represents Windows, and
- * 'Droid' represents Android
+* 'Win' represents Windows, and
+* 'Droid' represents Android
 
 ### XAML prefixes in cross-targeted libraries
 
@@ -175,17 +175,17 @@ You can use standard WinUI conditional XAML prefixes with Uno Platform, [as docu
 
 Currently the following conditional methods are supported:
 
- * IsApiContractPresent(ContractName, VersionNumber)
- * IsApiContractNotPresent(ContractName, VersionNumber)
- * IsTypePresent(ControlType)
- * IsTypeNotPresent(ControlType)
+* IsApiContractPresent(ContractName, VersionNumber)
+* IsApiContractNotPresent(ContractName, VersionNumber)
+* IsTypePresent(ControlType)
+* IsTypeNotPresent(ControlType)
 
 ### IsApiContractPresent
 
 The following `ContractName` values are currently supported:
 
- * **"Windows.Foundation.UniversalApiContract"**: resolves to `true` if `VersionNumber` is 10 or below, and `false` otherwise.
- * **"Uno.WinUI"**: resolves to `true` if the [`Uno.WinUI` NuGet package](updating-to-winui3.md) (ie the WinUI 3 API mapping) is in use, `false` if the `Uno.UI` NuGet package is in use.
+* **"Windows.Foundation.UniversalApiContract"**: resolves to `true` if `VersionNumber` is 10 or below, and `false` otherwise.
+* **"Uno.WinUI"**: resolves to `true` if the [`Uno.WinUI` NuGet package](updating-to-winui3.md) (ie the WinUI 3 API mapping) is in use, `false` if the `Uno.UI` NuGet package is in use.
 
 All other contract names will resolve to false.
 

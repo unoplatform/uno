@@ -15,9 +15,9 @@ Subsequently, build a specific project and prefer the use of the **Output** tool
 
 ## Troubleshooting build errors using the build Output Window
 To troubleshoot build error, you can change the text output log level:
-  - Go to **Tools**, **Options**, **Projects and Solution**, then **Build and Run**
-  - Set **MSBuild project build output verbosity** to **Normal** or **Detailed**
-  - Build your project again and take a look at the additional output
+- Go to **Tools**, **Options**, **Projects and Solution**, then **Build and Run**
+- Set **MSBuild project build output verbosity** to **Normal** or **Detailed**
+- Build your project again and take a look at the additional output
 
 ## Generating MSBuild Binary Log files
 If you have trouble building your project, you can get additional information using binary log (binlog) files.
@@ -27,13 +27,13 @@ Make sure to review the content of the file for sensitive information before pos
 
 ### From Visual Studio
 To use MSBuild binary logs:
-  - Go to **Tools**, **Options**, **Projects and Solution**, then **Build and Run**
-  - Set **MSBuild project build log verbosity** to **Detailed** or **Diagnostics**
-  - Install the [MSBuild log viewer](http://msbuildlog.com/)
-  - Install the [Project System Tools for VS 2022](https://marketplace.visualstudio.com/items?itemName=VisualStudioProductTeam.ProjectSystemTools2022) or [VS 2019](https://marketplace.visualstudio.com/items?itemName=VisualStudioProductTeam.ProjectSystemTools) add-in
-  - Open **View** > **Other Windows** > **Build Logging**, then click the green play button
-  - Build your project again and right click the **Failed** build entry in the **Build Logging** tool window.
-  - The binlog viewer tool will expand to the detailed build error
+- Go to **Tools**, **Options**, **Projects and Solution**, then **Build and Run**
+- Set **MSBuild project build log verbosity** to **Detailed** or **Diagnostics**
+- Install the [MSBuild log viewer](http://msbuildlog.com/)
+- Install the [Project System Tools for VS 2022](https://marketplace.visualstudio.com/items?itemName=VisualStudioProductTeam.ProjectSystemTools2022) or [VS 2019](https://marketplace.visualstudio.com/items?itemName=VisualStudioProductTeam.ProjectSystemTools) add-in
+- Open **View** > **Other Windows** > **Build Logging**, then click the green play button
+- Build your project again and right click the **Failed** build entry in the **Build Logging** tool window.
+- The binlog viewer tool will expand to the detailed build error
 
 ### From the command line
 You may be asked to generate a binlog from the command line, as it includes more information (the project structure, but not the source files) that can help troubleshoot issues.

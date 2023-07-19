@@ -37,12 +37,12 @@ sourceSets {
 
 * You should now be able to debug and place breakpoints in Uno.UI code. 
 * Android Studio supports a similar feature set to Visual Studio. Here are some of the basics:
-    * Breakpoints: Ctrl-F8 places a breakpoint. You can step over (F8) and step into (F7) code.
-    * Inspect values of local variables and fields.
-    * Add 'watch' values.
-    * Add conditions and logging to breakpoints.
+  * Breakpoints: Ctrl-F8 places a breakpoint. You can step over (F8) and step into (F7) code.
+  * Inspect values of local variables and fields.
+  * Add 'watch' values.
+  * Add conditions and logging to breakpoints.
 
 ![Debugging](assets/debugging-android-studio/Debugging.png)
 
 * One powerful feature of debugging Android code is the level of integration with framework code. You should be able to see not only the native stack trace, but even local variable values in framework methods (e.g. ViewGroup.dispatchTouchEvent().) 
-    * Note that Android Studio may prompt you to download source code and debug symbols: this will fail unless you started Android Studio with Administrator privileges (right-click in Start menu + 'Run as Administrator'). 
+  * Note that Android Studio may prompt you to download source code and debug symbols: this will fail unless you started Android Studio with Administrator privileges (right-click in Start menu + 'Run as Administrator'). 

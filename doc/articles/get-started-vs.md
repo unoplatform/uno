@@ -6,27 +6,27 @@ uid: Uno.GetStarted.vs
 
 ## Prerequisites
 * [**Visual Studio 2019 16.3 or later**](https://visualstudio.microsoft.com/), with:
-    * **Universal Windows Platform** workload installed. 
+  * **Universal Windows Platform** workload installed. 
 
       ![visual-studio-installer-uwp](Assets/quick-start/vs-install-uwp.png)
 
-    * **All Windows SDKS 10.0.17763 or later** must be selected (on the right side of the installer)
+  * **All Windows SDKS 10.0.17763 or later** must be selected (on the right side of the installer)
 
       ![visual-studio-installer-uwp](Assets/quick-start/vs-install-uwp-sdks.png)
 
-	* **Mobile development with .NET (Xamarin)** workload installed.
+  * **Mobile development with .NET (Xamarin)** workload installed.
 
         ![visual-studio-installer-xamarin](Assets/quick-start/vs-install-xamarin.png)
 
-        * The iOS Remote Simulator installed (for iOS development)
-	    * A working Mac with Visual Studio for Mac, Xcode 8.2 or later installed (for iOS development)
-	    * Google's Android x86 emulators or a physical Android device (for Android development)
+    * The iOS Remote Simulator installed (for iOS development)
+    * A working Mac with Visual Studio for Mac, Xcode 8.2 or later installed (for iOS development)
+    * Google's Android x86 emulators or a physical Android device (for Android development)
 
-    * **ASP**.**NET and web** workload installed, along with .NET 5.0 or 6.0 (for WebAssembly development)
+  * **ASP**.**NET and web** workload installed, along with .NET 5.0 or 6.0 (for WebAssembly development)
 
       ![visual-studio-installer-web](Assets/quick-start/vs-install-web.png)
-    * **.NET SDK**
-        * [.NET 5.0 SDK](https://dotnet.microsoft.com/download/dotnet-core/5.0) (SDK 5.0.400 or later)
+  * **.NET SDK**
+    * [.NET 5.0 SDK](https://dotnet.microsoft.com/download/dotnet-core/5.0) (SDK 5.0.400 or later)
 
 > [!NOTE]
 > For more information about these prerequisites, see [Installing Xamarin](https://docs.microsoft.com/en-us/xamarin/get-started/installation/). For information about connecting Visual Studio to a Mac build host, see [Pair to Mac for Xamarin.iOS development](https://docs.microsoft.com/en-us/xamarin/ios/get-started/installation/windows/connecting-to-mac/).
