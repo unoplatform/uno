@@ -63,7 +63,8 @@ namespace Uno.UI.Runtime.Skia
 						{
 							ScanCode = evt.HardwareKeycode,
 							RepeatCount = 1,
-						}), GetKeyModifiers(evt.State));
+						}),
+					GetKeyModifiers(evt.State));
 			}
 			catch (Exception e)
 			{
@@ -90,7 +91,8 @@ namespace Uno.UI.Runtime.Skia
 						{
 							ScanCode = evt.HardwareKeycode,
 							RepeatCount = 1,
-						}), GetKeyModifiers(evt.State));
+						}),
+					GetKeyModifiers(evt.State));
 			}
 			catch (Exception e)
 			{

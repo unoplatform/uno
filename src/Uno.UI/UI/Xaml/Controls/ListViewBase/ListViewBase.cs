@@ -124,7 +124,7 @@ namespace Windows.UI.Xaml.Controls
 			var newContainer = ContainerFromIndex(newIndex) as SelectorItem;
 			var newItem = ItemFromIndex(newIndex);
 
-			if (newItem == null || newContainer == null)
+			if (newContainer == null)
 			{
 				return false;
 			}
@@ -158,61 +158,67 @@ namespace Windows.UI.Xaml.Controls
 					// otherwise just focus, don't select
 					break;
 				case ListViewSelectionMode.Extended:
-					if (modifiers.HasFlag(VirtualKeyModifiers.Control))
-					{
-						// just focus, don't select
-						break;
-					}
-
-					if (modifiers.HasFlag(VirtualKeyModifiers.Shift))
-					{
-						// if shift is held, all items between the clicked item and the "selection
-						// start" are selected. Everything else is unselected.
-						var lowerBound = Math.Min(newIndex, ExtendedShiftSelectionStart);
-						var upperBound = Math.Max(newIndex, ExtendedShiftSelectionStart);
-
-						for (var currentIndex = 0; currentIndex < Items.Count; currentIndex++)
-						{
-							if (currentIndex > upperBound || currentIndex < lowerBound)
-							{
-								UnselectInMultipleSelection(currentIndex);
-							}
-							else
-							{
-								SelectInMultipleSelection(currentIndex);
-							}
-						}
-
-						break;
-					}
-
-					// no modifiers
-
-					// Note: In pointer moves, ctrl-moves also move the ExtendedShiftSelectionStart
-					// but here, only non-modifier moves do
-					ExtendedShiftSelectionStart = newIndex;
-
-					// Act like single selection mode i.e. set one, unset everything else
-					for (var i = 0; i < Items.Count; i++)
-					{
-						if (i != newIndex)
-						{
-							UnselectInMultipleSelection(i);
-						}
-					}
-
-					SelectInMultipleSelection(newIndex);
+					ExtendedSelectionCase();
 					break;
 				default:
 					throw new ArgumentOutOfRangeException();
 			}
 
-			newContainer?.StartBringIntoView(new BringIntoViewOptions()
+			newContainer.StartBringIntoView(new BringIntoViewOptions()
 			{
 				AnimationDesired = false
 			});
-			newContainer?.Focus(FocusState.Keyboard);
+			newContainer.Focus(FocusState.Keyboard);
 			return true;
+
+			void ExtendedSelectionCase()
+			{
+
+				if (modifiers.HasFlag(VirtualKeyModifiers.Control))
+				{
+					// just focus, don't select
+					return;
+				}
+
+				if (modifiers.HasFlag(VirtualKeyModifiers.Shift))
+				{
+					// if shift is held, all items between the clicked item and the "selection
+					// start" are selected. Everything else is unselected.
+					var lowerBound = Math.Min(newIndex, ExtendedShiftSelectionStart);
+					var upperBound = Math.Max(newIndex, ExtendedShiftSelectionStart);
+
+					for (var currentIndex = 0; currentIndex < Items.Count; currentIndex++)
+					{
+						if (currentIndex > upperBound || currentIndex < lowerBound)
+						{
+							UnselectInMultipleSelection(currentIndex);
+						}
+						else
+						{
+							SelectInMultipleSelection(currentIndex);
+						}
+					}
+
+					return;
+				}
+
+				// no modifiers
+
+				// Note: In pointer moves, ctrl-moves also move the ExtendedShiftSelectionStart
+				// but here, only non-modifier moves do
+				ExtendedShiftSelectionStart = newIndex;
+
+				// Act like single selection mode i.e. set one, unset everything else
+				for (var i = 0; i < Items.Count; i++)
+				{
+					if (i != newIndex)
+					{
+						UnselectInMultipleSelection(i);
+					}
+				}
+
+				SelectInMultipleSelection(newIndex);
+			}
 		}
 
 		private (int index, SelectorItem item) GetFocusedItem()
@@ -493,7 +499,7 @@ namespace Windows.UI.Xaml.Controls
 		/// Marks the starting index of a selection when shift is held and (a pointer is clicked
 		/// or Down/Up keys are pressed)
 		/// </summary>
-		internal int ExtendedShiftSelectionStart { get; set; }
+		internal int ExtendedShiftSelectionStart { get; set; } = -1;
 
 		internal bool ShouldShowHeader => Header != null || HeaderTemplate != null;
 		internal bool ShouldShowFooter => Footer != null || FooterTemplate != null;
@@ -509,9 +515,9 @@ namespace Windows.UI.Xaml.Controls
 		partial void OnSelectionModeChangedPartial(ListViewSelectionMode oldSelectionMode, ListViewSelectionMode newSelectionMode)
 		{
 			SelectedIndex = -1;
-			ExtendedShiftSelectionStart = 0;
+			ExtendedShiftSelectionStart = -1;
 			FocusedContainerAndIndex = (-1, null);
-			
+
 			foreach (var item in SelectedItems.ToList())
 			{
 				SetSelectedState(IndexFromItem(item), false);
@@ -539,7 +545,7 @@ namespace Windows.UI.Xaml.Controls
 			var clickedItem = ItemFromIndex(clickedIndex);
 			var clickedContainer = ContainerFromIndex(clickedIndex) as SelectorItem;
 
-			if (clickedItem == null || clickedContainer == null)
+			if (clickedContainer == null)
 			{
 				return;
 			}
@@ -562,101 +568,116 @@ namespace Windows.UI.Xaml.Controls
 				case ListViewSelectionMode.None:
 					break;
 				case ListViewSelectionMode.Single:
-					if (ItemsSource is ICollectionView collectionView)
-					{
-						//NOTE: Windows seems to call MoveCurrentTo(item); we set position instead to have expected behavior when you have duplicate items in the list.
-						collectionView.MoveCurrentToPosition(clickedIndex);
-
-						// The CollectionView may have intercepted the change
-						clickedIndex = collectionView.CurrentPosition;
-					}
-
-					if (modifiers.HasFlag(VirtualKeyModifiers.Control) && clickedIndex == SelectedIndex)
-					{
-						SelectedIndex = -1;
-					}
-					else
-					{
-						SelectedIndex = clickedIndex;
-					}
-
+					SingleSelectionCase();
 					break;
 				case ListViewSelectionMode.Multiple:
-					if (!modifiers.HasFlag(VirtualKeyModifiers.Shift))
-					{
-						FlipSelectionInMultipleSelection(clickedIndex, item: clickedItem, container: clickedContainer);
-						break;
-					}
-
-					// if shift is held, all items between the clicked item and the previously
-					// focused item match the selection of the previously focused item
-					var newSelection = focusedContainer?.IsSelected ?? false;
-
-					var multipleLowerBound = Math.Min(focusedIndex, clickedIndex);
-					var multipleUpperBound = Math.Max(focusedIndex, clickedIndex);
-
-					for (int currentIndex = multipleLowerBound; currentIndex <= multipleUpperBound; currentIndex++)
-					{
-						if (ContainerFromIndex(currentIndex) is SelectorItem container && container.IsSelected != newSelection)
-						{
-							FlipSelectionInMultipleSelection(currentIndex, container: container);
-						}
-					}
-
+					MultipleSelectionCase();
 					break;
 				case ListViewSelectionMode.Extended:
-					if (modifiers.HasFlag(VirtualKeyModifiers.Shift))
-					{
-						// if shift is held, all items between the clicked item and the previously
-						// focused item are selected. Everything else is unselected.
-						var extendedLowerBound = Math.Min(clickedIndex, ExtendedShiftSelectionStart);
-						var extendedUpperBound = Math.Max(clickedIndex, ExtendedShiftSelectionStart);
-
-						for (var currentIndex = 0; currentIndex < Items.Count; currentIndex++)
-						{
-							var currentContainer = ContainerFromIndex(currentIndex) as SelectorItem;
-
-							if (currentContainer == null)
-							{
-								continue;
-							}
-
-							if (currentIndex > extendedUpperBound || currentIndex < extendedLowerBound)
-							{
-								UnselectInMultipleSelection(currentIndex);
-							}
-							else
-							{
-								SelectInMultipleSelection(currentIndex);
-							}
-						}
-
-						break;
-					}
-
-					// any click but a shift-click marks the start of a new selection
-					// even if the click actually unselects an item 
-					ExtendedShiftSelectionStart = clickedIndex;
-
-					if (modifiers.HasFlag(VirtualKeyModifiers.Control))
-					{
-						FlipSelectionInMultipleSelection(clickedIndex, item: clickedItem);
-						break;
-					}
-
-					// no modifiers
-					// Act like single selection mode i.e. set one, unset everything else
-					for (int i = 0; i < Items.Count; i++)
-					{
-						if (i != clickedIndex)
-						{
-							UnselectInMultipleSelection(i);
-						}
-					}
-
-					SelectInMultipleSelection(clickedIndex, item: clickedItem);
-
+					ExtendedSelectionCase();
 					break;
+			}
+
+			void SingleSelectionCase()
+			{
+
+				if (ItemsSource is ICollectionView collectionView)
+				{
+					//NOTE: Windows seems to call MoveCurrentTo(item); we set position instead to have expected behavior when you have duplicate items in the list.
+					collectionView.MoveCurrentToPosition(clickedIndex);
+
+					// The CollectionView may have intercepted the change
+					clickedIndex = collectionView.CurrentPosition;
+				}
+
+				if (modifiers.HasFlag(VirtualKeyModifiers.Control) && clickedIndex == SelectedIndex)
+				{
+					SelectedIndex = -1;
+				}
+				else
+				{
+					SelectedIndex = clickedIndex;
+				}
+			}
+
+			void MultipleSelectionCase()
+			{
+
+				if (!modifiers.HasFlag(VirtualKeyModifiers.Shift))
+				{
+					FlipSelectionInMultipleSelection(clickedIndex, clickedItem, clickedContainer);
+					return;
+				}
+
+				// if shift is held, all items between the clicked item and the previously
+				// focused item match the selection of the previously focused item
+				var newSelection = focusedContainer?.IsSelected ?? false;
+
+				var multipleLowerBound = Math.Min(focusedIndex, clickedIndex);
+				var multipleUpperBound = Math.Max(focusedIndex, clickedIndex);
+
+				for (var currentIndex = multipleLowerBound; currentIndex <= multipleUpperBound; currentIndex++)
+				{
+					if (ContainerFromIndex(currentIndex) is SelectorItem container && container.IsSelected != newSelection)
+					{
+						FlipSelectionInMultipleSelection(currentIndex, container: container);
+					}
+				}
+			}
+
+			void ExtendedSelectionCase()
+			{
+
+				if (modifiers.HasFlag(VirtualKeyModifiers.Shift))
+				{
+					// if shift is held, all items between the clicked item and the previously
+					// focused item are selected. Everything else is unselected.
+					var extendedLowerBound = Math.Min(clickedIndex, ExtendedShiftSelectionStart);
+					var extendedUpperBound = Math.Max(clickedIndex, ExtendedShiftSelectionStart);
+
+					for (var currentIndex = 0; currentIndex < Items.Count; currentIndex++)
+					{
+						var currentContainer = ContainerFromIndex(currentIndex) as SelectorItem;
+
+						if (currentContainer == null)
+						{
+							continue;
+						}
+
+						if (currentIndex > extendedUpperBound || currentIndex < extendedLowerBound)
+						{
+							UnselectInMultipleSelection(currentIndex);
+						}
+						else
+						{
+							SelectInMultipleSelection(currentIndex);
+						}
+					}
+
+					return;
+				}
+
+				// any click but a shift-click marks the start of a new selection
+				// even if the click actually unselects an item
+				ExtendedShiftSelectionStart = clickedIndex;
+
+				if (modifiers.HasFlag(VirtualKeyModifiers.Control))
+				{
+					FlipSelectionInMultipleSelection(clickedIndex, item: clickedItem);
+					return;
+				}
+
+				// no modifiers
+				// Act like single selection mode i.e. set one, unset everything else
+				for (int i = 0; i < Items.Count; i++)
+				{
+					if (i != clickedIndex)
+					{
+						UnselectInMultipleSelection(i);
+					}
+				}
+
+				SelectInMultipleSelection(clickedIndex, item: clickedItem);
 			}
 		}
 
