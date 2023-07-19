@@ -7,6 +7,7 @@ uid: Uno.GetStarted.vsmac
 While it is easier to create apps using Uno Platform on Windows, you can also create all but UWP/WinUI apps on your Mac.
 
 ## Prerequisites
+
 * [**Visual Studio 2022 for Mac Preview**](https://visualstudio.microsoft.com/vs/mac/preview/)
 * [**Xcode**](https://apps.apple.com/us/app/xcode/id497799835?mt=12) 14.1 or higher
 * An [**Apple ID**](https://support.apple.com/en-us/HT204316)
@@ -18,6 +19,7 @@ While it is easier to create apps using Uno Platform on Windows, you can also cr
 In order to create a new Uno Project, you'll need to install the [`dotnet new` Uno Platform templates](get-started-dotnet-new.md).
 
 ## Create a new project using the IDE
+
 1. To create a new project, from the command line, where `src` is your own development folder.
     ```
     cd src
@@ -31,6 +33,7 @@ In order to create a new Uno Project, you'll need to install the [`dotnet new` U
 
 To update, go to `Visual Studio > Preferences > Projects > SDK Locations > Apple` and select Xcode 13.3 or higher.
 Restart Visual Studio.
+
 1. You can now run on iOS, Android, macOS, and Skia.GTK projects by changing your startup project and starting the debugger.
 
 > [!NOTE]

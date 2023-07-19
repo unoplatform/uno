@@ -51,6 +51,7 @@ The Mono team recently added the ability to get the source files from debugging 
 **One bit of a warning**, the debugging experience is very rough on the edges. The debugger may crash frequently (with Chrome saying a WebSocket got disconnected) as there are many non-sunny-path scenarios that have not been tested yet. This means that you may not be able to set breakpoints, step into or step out of some specific code sections (e.g. partial methods).
 
 ## Using the WebAssembly C# Debugger
+
 - Create an **Uno Platform Cross-Targeted application** from the Uno Solution Template (See at the end of this post for more details)
 - Set the Wasm project as a startup project
 - Ensure that
@@ -63,6 +64,7 @@ The Mono team recently added the ability to get the source files from debugging 
 - You will get an error message telling you that Chrome has not been opened
 
 ![Debugger - Error message telling you that Chrome has not been opened](Assets/201901-debugger-step-01.png)
+
 -  Close all your chrome instances and run Chrome again using the provided command line
 -  Once again, once your application is loaded, press **Alt+Shift+D**, a new tab will open.
 - You will now get the Chrome DevTools to open listing all the .NET loaded assemblies on the Sources tab:

@@ -74,6 +74,7 @@ This is a WASM-only sample. It is creating _native_ HTML elements that can be us
 
 ### Localization Samples
 A pair of samples related to localization:
+
 - Localization: A sample showcasing the basics of localization.  
   [Browse source](https://github.com/unoplatform/Uno.Samples/tree/master/UI/LocalizationSamples/Localization)
   [Follow the tutorial](https://platform.uno/docs/articles/guides/localization.html)

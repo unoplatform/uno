@@ -65,6 +65,7 @@ Notes:
 
 These events are the base for all other pointing device related events (i.e. Manipulation, Gesture and drag and dop events).
 They are directly linked to the native events of each platform:
+
 * `Touches[Began|Moved|Ended|Cancelled]` on iOS
 * `dispatchTouchEvent` and `dispatchGenericMotionEvent` on Android
 * `pointer[enter|leave|down|up|move|cancel]` on WebAssembly
@@ -83,6 +84,7 @@ of the scrolling (cf. [documentation](https://developer.apple.com/documentation/
 ### Known limitations for pointer events
 
 As those events are tightly coupled to the native events, Uno has to make some compromises:
+
 * On iOS, when tapping with a mouse or a pen on Android, or in few other specific cases (like `PointerCaptureLost`),
   multiple managed events are raised from a single native event. These have multiple effects:
   * On UWP if you have a control A and a nested control B, you will get:
@@ -190,6 +192,7 @@ The table and sections below describe supported functionality and limitations fo
 * "Link" may refer to WebLink, ApplicationLink or Uri formats
 
 #### Wasm Limitations
+
 1. When dragging content from external app to uno, you cannot retrieve the content from the `DataPackage` before the `Drop` event.
    This a limitations of web browsers.
    Any attempt to read it before the `Drop` will result into a timeout exception after a hard coded delay of 10 seconds.

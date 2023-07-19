@@ -12,6 +12,7 @@ You can review [the Azure documentation](https://docs.microsoft.com/en-us/azure/
 
 ## Publishing Uno Platform WebAssembly app on Azure
 Here is how to publish an app from GitHub, using Uno Platform:
+
 -	In a new repository, create a Uno Platform app using the following command:
     ```
     cd <repository-name>
@@ -55,6 +56,7 @@ Here is how to publish an app from GitHub, using Uno Platform:
 Azure Static Web Apps provides the [ability to configure many parts](https://docs.microsoft.com/en-us/azure/static-web-apps/configuration) of the application's behavior, and one particular feature is very useful to enable deep linking in applications.
 
 You will need to [enable fallback routes](https://docs.microsoft.com/en-us/azure/static-web-apps/configuration#fallback-routes) in your application this way:
+
 - In the `wwwroot` folder, [create a file named `staticwebapp.config.json`](https://docs.microsoft.com/en-us/azure/static-web-apps/configuration#file-location), with the following content:
   ```json
   {

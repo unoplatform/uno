@@ -11,6 +11,7 @@ This guide covers multiple approaches to managing per-platform markup in XAML. S
 ## Project structure
 
 There are two ways to restrict code or XAML markup to be used only on a specific platform:
+
 * Use conditionals within a shared file
 * Place the code in a file which is only included in the desired platform head.
 
@@ -134,6 +135,7 @@ More visually, platform support for the pre-defined prefixes is shown in the bel
 | `not_skia`    | ✔ | ✔ | ✔ | ✔ | ✔ | ✖ |
 
 Where:
+
 * 'Win' represents Windows, and
 * 'Droid' represents Android
 

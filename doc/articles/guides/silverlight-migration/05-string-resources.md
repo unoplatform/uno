@@ -124,6 +124,7 @@ In order to access the string resources in code, the **ResourceLoader** class mu
 
 > [!TIP]
 > You can learn more about the **ResourceLoader** and UWP resources below:
+>
 > * [ResourceLoader](https://docs.microsoft.com/uwp/api/Windows.ApplicationModel.Resources.ResourceLoader)
 > * [App resources and the Resource Management System](https://docs.microsoft.com/windows/uwp/app-resources/)
 

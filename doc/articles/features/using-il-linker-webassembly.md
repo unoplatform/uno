@@ -29,11 +29,15 @@ The linker is generally efficient at removing code but in some cases it may remo
 To handle cases where the default linker behavior removes too much code, the linker can be manually configured using the `LinkerConfig.xml` file in the Uno CrossPlatform project template.
 
 When parts of an application fail to work, you can:
+
 - Add full assembly names to the `LinkerConfig.xml` file:
+
 ```xml
 <assembly fullname="MyAssembly" />
 ```
+
 - Add namespaces for the linker to ignore:
+
 ```xml
   <assembly fullname="MyAssembly">
 	<!-- This is required by JSon.NET and any expression.Compile caller -->

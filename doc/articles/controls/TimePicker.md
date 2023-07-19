@@ -39,6 +39,7 @@ There might be differences in the time picker on different platform since it wra
 - In case clock mode still appear for some reason picked value will be rounded to minute increment intervals..
 
 #### iOS
+
 - Native time picker is wrapped in the flyout.
 - Set 'ios:FlyoutPlacement' property to change flyout docking placement
 - Default 'ios:FlyoutPlacement' is 'Full' and will dock of the flyout at the bottom of the screen

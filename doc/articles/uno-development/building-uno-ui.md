@@ -22,11 +22,13 @@ This article explains how to build Uno.UI locally, for instance if you wish to c
 Loading and building the Uno.UI solution is a resource intensive task. As a result, opening it in Visual Studio 2022 requires a minimum hardware configuration to avoid spending time waiting for builds.
 
 **Minimum configuration:**
+
 - Intel i7 (8th gen) or equivalent
 - 16 GB of RAM
 - 250GB of Fast SSD
 
 **Optimal configuration:**
+
 - Intel i9 or equivalent
 - 32 GB of RAM
 - 500GB M2 SSD
@@ -42,8 +44,10 @@ It involves two things - setting an override for the target framework that will 
 The step by step process is:
 
 1. Clone the Uno.UI repository locally, and ensure using a short target path, e.g. _D:\uno_ etc.
+
 > [!NOTE]
 > This is due to limitations in the legacy .NET versions used by Xamarin projects. This issue has been addressed in .NET 5, and will come to the rest of the projects in the future.
+
 1. By default the Uno.UI solution on the master branch is building using the UWP API set. If you want to build against the WinUI 3 API set, you can checkout the `generated/master/winui-autoconvert` branch. See [this section](winui-conversion.md) for details on this branch.
 1. Make sure you don't have the Uno.UI solution opened in any Visual Studio instances. (Visual Studio may crash or behave inconsistently if it's open when the target override is changed.)
 1. Make a copy of the [`src/crosstargeting_override.props.sample`](https://github.com/unoplatform/uno/blob/master/src/crosstargeting_override.props.sample) file and name this copy `src/crosstargeting_override.props`.
@@ -88,6 +92,7 @@ See [instructions here](building-uno-macos.md) for building Uno.UI for the macOS
 
 ## Troubleshooting build issues
 Here are some tips when building the Uno solution and failures happen:
+
 - Make sure to be on the latest master commit
 - Try to close VS 2022, delete the `src/.vs` folder, then try rebuilding the solution
 - If the `.vs` deletion did not help, run `git clean -fdx` (after having closed visual studio) before building again
@@ -123,6 +128,7 @@ The synchronization process takes the APIs provided by the WinMD files reference
 The tool needs to be run on Windows because of its dependency on the Windows SDK WinMD files.
 
 To run the synchronization tool:
+
 - Open a `Developer Command Prompt for Visual Studio` (2019 or 2022)
 - Go the the `uno\build` folder (not the `uno\src\build` folder)
 - Run the `run-api-sync-tool.cmd` script; make sure to follow the instructions

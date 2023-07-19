@@ -7,6 +7,7 @@ If you have already [completed the tutorial](getting-started-tutorial-1.md)? and
 The Uno Platform brings Microsoft's WinUI framework to Android, iOS, macOS, Mac Catalyst, Linux, and WebAssembly. The wealth of [official Microsoft documentation on the WinUI framework](https://docs.microsoft.com/en-us/windows/apps/winui/winui3/) is a great place to start, particularly if you've never used WinUI or XAML before.
 
 Some additional resources:
+
 - [Get started with Windows 10 apps](https://docs.microsoft.com/en-us/windows/uwp/get-started/)
 - [WinUI 3 documentation](https://docs.microsoft.com/en-us/windows/apps/winui/winui3/)
 - [Further curated links](winui-doc-links-development.md)
@@ -119,6 +120,7 @@ Here are some highlighted articles from the Uno Blog:
 - [How To Build a Single-Page Web App in XAML and C# with WASM]( https://platform.uno/blog/how-to-build-a-single-page-web-app-in-xaml-and-c-with-webassembly-using-uno-platform/)
 
 #### Check out some code examples
+
 - The [Uno Gallery and Playground](https://github.com/unoplatform/uno.Playground) showcases many of the UI controls supported by Uno.
 - For those who wish to learn from real-life code, you can use the [Ch9 sample app]( https://github.com/unoplatform/Uno.Ch9) (source code and real-world app) it uses the publicly available video feed from Microsoft's Channel 9 for content.
 

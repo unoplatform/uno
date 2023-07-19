@@ -50,6 +50,7 @@ Below is a comparison report for Uno.UI **1.45.0** with Uno.UI **1.46.0-PullRequ
 You can find the report within the `NuGetPackages.zip` archive on the build server and attached to the pull-request job. The report uses this convention: `ApiDiff.1.46.0-PullRequest1300.2330.md`
 
 Key things to pay attention to:
+
 - the report is for each TFM and the assemblies for that TFM.
 - breaking changes which have been blessed have been ~~struck out~~.
 - `Windows.UI.Xaml.ResourceDictionary::MergedDictionaries()` is the breaking change which has not been blessed and thus the process failed the build.

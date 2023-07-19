@@ -11,6 +11,7 @@ The easiest way to get started is to visit the [Uno.QuickStart](https://github.c
 ### Creating the environment from scratch
 
 If you want to start from an empty repository, follow these steps:
+
 1. Create an empty repository
 1. Create a file named `.gitpod.yml` at the root of the repository, and set it to the following
     ```yml
@@ -48,6 +49,7 @@ You're ready to develop for WebAssembly or the Linux desktop (Skia+Gtk).
 ## Contributing to Uno using Gitpod
 
 To contribute to Uno using GitPod:
+
 1. [![Open Uno in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/unoplatform/uno)
 1. In the opened shell, type the following to build the Uno solution:
     ```

@@ -5,6 +5,7 @@ uid: Uno.GetStarted.vs
 # Get Started on Visual Studio 2019 for Xamarin
 
 ## Prerequisites
+
 * [**Visual Studio 2019 16.3 or later**](https://visualstudio.microsoft.com/), with:
   * **Universal Windows Platform** workload installed.
 
@@ -46,6 +47,7 @@ uid: Uno.GetStarted.vs
 ## Create an application from the solution template
 
 To easily create a multi-platform application:
+
 * Create a new C# solution using the **Uno Platform App (Xamarin|UWP)** template, from Visual Studio's **Start Page**:
   ![new project](Assets/quick-start/vsix-new-project.png)
 * Right-click on the Solution and select `Manage NuGet Packages for Solution` from the context menu.
@@ -63,6 +65,7 @@ You're all set! You can now head to [our tutorials](getting-started-tutorial-1.m
 ![xaml-intellisense](Assets/quick-start/xaml-intellisense.png)
 
 If XAML Intellisense isn't working on a freshly-created project, try the following steps:
+
 1. Build the UWP head.
 2. Close all XAML documents.
 3. Close and reopen Visual Studio.

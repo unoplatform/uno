@@ -86,6 +86,7 @@ Each CI build of Uno.UI records screenshots of each sample in the SamplesApp. A 
 The WebAssembly head has the ability to be run through puppeteer, and displays all tests in sequence. Puppeteer runs a headless version of Chromium, suited for running tests in a CI environment.
 
 To run the tests:
+
 * Navigate to the `SamplesApp.Wasm.UITests` folder and run `npm i`. This will download Puppeteer and the Chrome driver.
 * Build the `SamplesApp.Wasm.UITests.njsproj` project
 * Press `F5`, node will start and run the tests sequentially
@@ -108,6 +109,7 @@ It is possible to enable the chromium head using the configuration parameters in
 Performance is measured using [BenchmarkDotNet](https://benchmarkdotnet.org/), in the suite located in the `SamplesApp.Benchmarks` shared project.
 
 A few points to consider when adding benchmarks:
+
 * Make a folder using the namespace separated by `_`
 * Avoid putting a large number of benchmarks in a single class. Those tests are run synchronously under
 WebAssembly, and this will allow for progress reporting to be visible.

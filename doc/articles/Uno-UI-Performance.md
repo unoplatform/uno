@@ -7,6 +7,7 @@ uid: Uno.Development.Performance
 This article lists a number of performance tips to optimize your Uno Platform application.
 
 Here's what to look for:
+
 - Make sure to always have the simplest visual tree. There's nothing faster than something you don't draw.
 - Reduce panels in panels depth. Use Grids and relative panels where possible.
 - Force the size of images anywhere possible
@@ -85,6 +86,7 @@ Here's what to look for:
   - Use [`Uno.XamlMerge.Task`](https://github.com/unoplatform/uno.xamlmerge.task) to merge all top-level `AppResources.xaml` or `App.xaml` resource dictionaries
 
 ## WebAssembly specifics
+
 - Building your application in Release configuration is critical to get the best performance.
 - Make sure to use the latest stable release of [Uno.Wasm.Bootstrap packages](https://www.nuget.org/packages/Uno.Wasm.Bootstrap)
 - Enable [AOT or PG-AOT](https://platform.uno/docs/articles/external/uno.wasm.bootstrap/doc/runtime-execution-modes.html) to get the best performance.

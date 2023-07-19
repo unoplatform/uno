@@ -7,12 +7,14 @@ uid: Uno.GetStarted.Linux
 The Uno Platform for Linux current comes with a rendering backend using Skia, and a shell support with Gtk3.
 
 It is possible to develop :
+
 - Using Visual Studio on Windows directly, or using the Windows Subsystem for Linux (WSL).
 - Using VS Code under Linux
 
 ## Setting for Windows and WSL
 
 Using VS 2019 16.6 or later:
+
 - Install [WSL Ubuntu 18.04 or later](https://docs.microsoft.com/en-us/windows/wsl/install-win10)
 - Install the prerequisites for Linux mentioned in the next section, in your installed distribution using the Ubuntu shell
 - On Windows 10, Install [`vcXsrv`](https://sourceforge.net/projects/vcxsrv/), an X11 server for Windows
@@ -35,21 +37,25 @@ Using VS 2019 16.6 or later:
     ```
 
 Now let's run the application:
+
 - Open the solution using Visual Studio
 - In the debugger menu, next to the green arrow, select **WSL**  (or **WSL 2** depending on the visual studio version)
 - In the launch profile file, set:
+
 ```json
 "environmentVariables": {
     "DISPLAY": ":0",
     "GDK_GL": "gles", // use this line when running under WSL on Windows 11
 },
 ```
+
 - Start the debugger session
 - Visual Studio may ask you to install **.NET 6** and the Linux debugger, press OK and let the installation finish, then restart the debugging session.
 
 ## Setting up for Linux
 
 # [**Ubuntu 18.04**](#tab/ubuntu1804)
+
 - Install GTK3:
     ```
     sudo apt update
@@ -58,6 +64,7 @@ Now let's run the application:
 - [Install .NET 6](https://learn.microsoft.com/en-us/dotnet/core/install/linux#official-package-archives)
 
 # [**Ubuntu 20.04**](#tab/ubuntu2004)
+
 - Install GTK3:
     ```
     sudo apt update
@@ -97,12 +104,14 @@ You may also need to [install the Microsoft fonts](https://wiki.archlinux.org/ti
     ```
 
 Now let's run the GTK based application:
+
 - Open the folder created by `dotnet new`
 - In the terminal, build and run the application:
     ```bash
     cd MyUnoApp.Skia.Gtk
     dotnet run
     ```
+
 And run the WebAssembly head with:
     ```bash
     cd ..

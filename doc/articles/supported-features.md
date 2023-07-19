@@ -50,6 +50,7 @@ uid: Uno.Development.SupportedFeatures
 - RelativeSource.Self
 
 ### Design Fidelity
+
 - Text Inlines Binding
 - Text Independent trimming and wrapping
 - Text Character Spacing
@@ -160,6 +161,7 @@ uid: Uno.Development.SupportedFeatures
 - ScrollBar
 
 ## WinUI Specific Controls (Pre 3.0)
+
 - [NumberBox](https://docs.microsoft.com/en-us/uwp/api/microsoft.ui.xaml.controls.numberbox?view=winui-2.3)
 - [TwoPaneView](https://docs.microsoft.com/en-us/uwp/api/microsoft.ui.xaml.controls.twopaneview?view=winui-2.3)
 

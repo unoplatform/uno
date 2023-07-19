@@ -9,6 +9,7 @@ Let's create an app to integrate a Syntax Highlighter named [`PrismJS`](https://
 📝 To reproduce the code in this article, you must [prepare development environment using Uno's _Getting Started_ article](https://platform.uno/docs/articles/get-started.html).
 ## 1. Create the projects
 🎯 This section is very similar to the [Creating an app - Tutorial](https://platform.uno/docs/articles/getting-started-tutorial-1.html) in the official documentation.
+
 1. Start **Visual Studio 2019**
 2. Click `Create a new project`
 
@@ -34,6 +35,7 @@ Let's create an app to integrate a Syntax Highlighter named [`PrismJS`](https://
    ![Run Result](assets/image-20200325114609689.png)
 
    > Note: when compiling using Uno platform the first time, it could take some time to download the latest .NET for WebAssembly SDK into a temporary folder.
+   >
 ## 2. Create a control in managed code
 
 🎯  In this section, a control named `PrismJsView` is created in code and used in the XAML page (`MainPage.xaml`) to present it.
@@ -170,8 +172,10 @@ Let's create an app to integrate a Syntax Highlighter named [`PrismJS`](https://
 8. Once loaded, press F12 and go into the `Sources` tab. Both `prism.js` & `prism.css` files should be loaded this time.
 
    ![Prism Loaded in browser](assets/image-20200414143931953.png)
+
 ## 4. Invoke JavaScript from Managed Code
 🎯  In this section, PrismJS is used from the app.
+
 1. First, there is a requirement for _PrismJS_ to set the  `white-space` style at a specific value, as [documented here](https://github.com/PrismJS/prism/issues/1237#issuecomment-369846817). An easy way to do this is to set in directly in the constructor like this:
    ``` csharp
    public PrismJsView()
@@ -238,9 +242,11 @@ Let's create an app to integrate a Syntax Highlighter named [`PrismJS`](https://
 5. Compile & run. It should work like this:
 
    ![Final browser result](assets/image-20200415135422628.png)
+
 ## 🔬 Going further
 This sample is a very simple integration as there is no _callback_ from HTML to managed code and _PrismJS_ is a self-contained framework (it does not download any other JavaScript dependencies).
 Some additional improvements can be done to make the code more production ready:
+
 * **Make the control multi-platform**. A simple way would be to use a WebView on other platforms, giving the exact same text-rendering framework everywhere. The code of this sample won't compile on other targets.
 * **Create script files instead of generating dynamic JavaScript**. That would have the advantage of improving performance and make it easier to debug the code. A few projects are also using TypeScript to generate JavaScript. This approach is done by Uno itself for the `Uno.UI.Wasm` project: https://github.com/unoplatform/uno/blob/master/src/Uno.UI/Uno.UI.Wasm.csproj.
 * **Support more PrismJS features**. There are many [_plugins_ for PrismJS](https://prismjs.com/#plugins) that can be used. Most of them are very easy to implement.

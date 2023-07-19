@@ -9,6 +9,7 @@ A few months ago, Microsoft [open sourced the Windows Calculator](https://blogs.
 We decided to [port it to C# and the Uno Platform](https://github.com/unoplatform/calculator), so that iOS and Android users could use it, but also use it from the Web using WebAssembly. Why – well that’s what we at Uno Platform do 😊 – enable the same C# and XAML code to run on the Web, Mobile and Desktop.
 
 You can use it today on:
+
 - [Apple App Store](https://bit.ly/calc-ios)
 - [Android Play Store](https://play.google.com/store/apps/details?id=uno.platform.calculator)
 - WebAssembly: https://calculator.platform.uno
@@ -51,6 +52,7 @@ Android's NDK also has its surprises, where the handling of exceptions is not en
 ### Challenge #2: Native code interop specifics
 
 There are multiple subtleties for building and using native code:
+
 - For iOS, it is [required to use the `__Internal`](https://github.com/unoplatform/calculator/blob/2657413f889ba26f2e3d78e82d384794fdad3aec/src/Calculator.Shared/CalcManager/CalculatorManager.Interop.cs#L16) known name, as native libraries are statically linked to main executable.
 - For Android, the integrated VS project does not automatically build for all target platforms (x86, armv7 and arm64), which means that [additional CI builds steps](https://github.com/unoplatform/calculator/blob/2657413f889ba26f2e3d78e82d384794fdad3aec/.vsts-ci.Windows.yml#L37) have to be executed so the proper binaries are used all at once when creating the final APK. Also, standard project dependencies cannot be used (because of the multi ABI builds), and the [`AndroidNativeLibrary`](https://github.com/unoplatform/calculator/blob/2657413f889ba26f2e3d78e82d384794fdad3aec/src/Calculator.Droid/Calculator.Droid.csproj#L101) items must be added in the project.
 - For WebAssembly, the module needs to be built using the `-s SIDE_MODULE=1` support, with additional support for C++ standard library, as it is [not automatically added by emscripten](https://github.com/emscripten-core/emscripten/wiki/Linking#system-libraries) for dynamic modules.

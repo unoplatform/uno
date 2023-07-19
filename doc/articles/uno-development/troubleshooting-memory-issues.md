@@ -75,6 +75,7 @@ builder.AddFilter("Uno.UI.DataBinding.BinderReferenceHolder", LogLevel.Informati
 ## Interpreting the statistics output
 
 The output provides two sets of DependencyObject in memory:
+
 - Active, for which the instances have a parent dependency object (e.g. an item in a Grid)
 - Inactive, for which the instances do not have a parent dependency object
 

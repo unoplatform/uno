@@ -15,6 +15,7 @@ Subsequently, build a specific project and prefer the use of the **Output** tool
 
 ## Troubleshooting build errors using the build Output Window
 To troubleshoot build error, you can change the text output log level:
+
 - Go to **Tools**, **Options**, **Projects and Solution**, then **Build and Run**
 - Set **MSBuild project build output verbosity** to **Normal** or **Detailed**
 - Build your project again and take a look at the additional output
@@ -27,6 +28,7 @@ Make sure to review the content of the file for sensitive information before pos
 
 ### From Visual Studio
 To use MSBuild binary logs:
+
 - Go to **Tools**, **Options**, **Projects and Solution**, then **Build and Run**
 - Set **MSBuild project build log verbosity** to **Detailed** or **Diagnostics**
 - Install the [MSBuild log viewer](http://msbuildlog.com/)
@@ -39,6 +41,7 @@ To use MSBuild binary logs:
 You may be asked to generate a binlog from the command line, as it includes more information (the project structure, but not the source files) that can help troubleshoot issues.
 
 To generate a binlog file from the command line:
+
 - Open a :
   - [Visual Studio Developer command prompt](https://docs.microsoft.com/en-us/visualstudio/ide/reference/command-prompt-powershell) on Windows
   - A terminal window on Linux or macOS

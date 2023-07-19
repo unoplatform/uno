@@ -8,6 +8,7 @@ Uno Platform supports [storyboarded animations](https://docs.microsoft.com/en-us
 
 ## General guidelines
 As of 1.43.1:
+
 1. GPU-bound animations are supported for the following properties:
 	* `Opacity`
 	* `RenderTransform` of type `TranslateTransform`, `RotateTransform`, `ScaleTransform`, or `CompositeTransform`. Transforms cannot be part of a TransformGroup.

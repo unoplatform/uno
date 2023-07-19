@@ -13,6 +13,7 @@ This guide will walk you through the necessary steps to localize an Uno Platform
 > For a step-by-step guide to installing the prerequisites for your preferred IDE and environment, consult the [Get Started guide](../get-started.md).
 
 ## Step-by-steps
+
 1. Create a new Uno Platform application, following the instructions [here](../get-started.md).
 1. Modify the content of `MainPage`:
 
@@ -30,10 +31,12 @@ This guide will walk you through the necessary steps to localize an Uno Platform
         </Page>
         ```
         > Note:
+        >
         > - The [`x:Name`](https://docs.microsoft.com/en-us/windows/uwp/xaml-platform/x-name-attribute) is used to make the element accessible from the code-behind with that same name.
         > - The [`x:Uid`](https://docs.microsoft.com/en-us/windows/uwp/xaml-platform/x-uid-directive) is used for localization.
         To localize a property, you need to add a string resource in each resource file using its `x:Uid` followed by a dot (`.`) and then the property name. eg: `MainPage_IntroText.Text`
         More on this in the resource steps that follow.
+
     - In `MainPage.xaml.cs`, add an `Page.Loaded` handler to change the text for `CodeBehindText`:
         ```cs
         public MainPage()

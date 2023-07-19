@@ -5,6 +5,7 @@ uid: Uno.GetStarted.Rider
 # Get Started on JetBrains Rider
 
 ## Prerequisites
+
 * [**Rider Version 2020.2+**](https://www.jetbrains.com/rider/download/)
 * [**Rider Xamarin Android Support Plugin**](https://plugins.jetbrains.com/plugin/12056-rider-xamarin-android-support/) (you may install it directly from Rider)
 
@@ -64,6 +65,7 @@ You should now have a folder structure that looks like this:
 ![rider-folder-structure](Assets/quick-start/rider-folder-structure.JPG)
 
 ### Android
+
 1. Set Android as your startup project. Run.  
 ![run-android-rider](Assets/quick-start/run-android-rider.JPG)
 
@@ -71,6 +73,7 @@ Note: Whether you're using a physical device or the emulator, the app will insta
 You will have to manually open.
 
 ### Wasm
+
 1. Select Wasm as your startup project. Run.  
 ![run-wasm-rider](Assets/quick-start/run-wasm-rider.JPG)  
 A new browser window will automatically run your application.  

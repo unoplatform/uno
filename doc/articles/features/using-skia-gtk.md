@@ -79,6 +79,7 @@ If you want to upgrade **SkiaSharp** to a later version, you'll need to specify 
 Building an Uno Platform Skia+GTK app with .NET (7+) Native AOT requires, GtkSharp 3.24.24.38 (or later), or Uno Platform 4.7 (or later).
 
 To build an app with this feature enabled:
+
 1. Add the following property in your `.csproj`:
    ```xml
    <PropertyGroup>

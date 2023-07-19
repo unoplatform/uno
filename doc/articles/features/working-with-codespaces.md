@@ -11,6 +11,7 @@ The easiest way to get started is to visit the [Uno.QuickStart](https://github.c
 To create a new Codespace, visit this [GitHub section](https://github.com/codespaces).
 
 ### Developing for WebAssembly
+
 1. Install the suggested [Uno Platform extension](https://marketplace.visualstudio.com/items?itemName=unoplatform.vscode)
 1. Open the command palette (Ctrl+Shift+P) and execute the `Run uno-check` command to install the appropriate .NET SDK
 1. Open the command palette (Ctrl+Shift+P) and run the `Install the dotnet new templates` command to install the dotnet new templates
@@ -29,6 +30,7 @@ See [the VS Code Getting started](../get-started-vscode.md) documentation for ad
 
 ### Creating your Codespace from scratch
 If you want to start from an empty repository, follow these steps:
+
 1. Create an empty repository
 1. Install the [`unoplatform.vscode extension`](https://marketplace.visualstudio.com/items?itemName=unoplatform.vscode) from the Extensions activity
 1. Open the command palette (Ctrl+Shift+P) and execute the `Run uno-check` command to install the appropriate .NET SDK

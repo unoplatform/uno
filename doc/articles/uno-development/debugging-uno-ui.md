@@ -69,6 +69,7 @@ To debug Uno.UI code in the application, follow these steps (using `FrameworkEle
 It may happen that the package cache for the version you're debugging is corrupted, and the override is not working as intended.
 
 If this is the case:
+
 - In your debugged app, select another package version you've never debugged with
 - Make sure to build the app once to populate the nuget cache
 - Rebuild the Uno.UI project (or **Uno.UI.WebAssembly**/**Uno.UI.Skia**) to replace the binaries with your debug ones

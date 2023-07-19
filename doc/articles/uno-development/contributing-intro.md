@@ -39,6 +39,7 @@ See how to implement a new [feature here](../contributing/guidelines/implementin
 The [Samples App](../../../src/SamplesApp) is the development app contained in the Uno.UI solution. It serves as a UI and Runtime Tests host, as well as a playground for validating other API scenarios.
 
 This app is available live at these locations, built from the default branch:
+
 - WebAssembly: https://aka.platform.uno/wasm-samples-app
 
 ## Adding tests

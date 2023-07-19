@@ -11,6 +11,7 @@ This article details the  migration steps required to migrate from one version t
 Uno Platform 5.0 contains binary breaking changes in order to further align our API surface with the Windows App SDK. Most of these changes are binary breaking changes, but are not introducing behavior changes. You can find a list of these changes below.
 
 Additionally, this version:
+
 - Adds support for .NET 8 for iOS, Android, Mac Catalyst and macOS.
 - Removes the support for Xamarin.iOS, Xamarin.Android, Xamarin.Mac, and netstandard2.0 for WebAssembly.
 - .NET 7.0 support for iOS, Android, Mac Catalyst and macOS remains unchanged.
@@ -121,6 +122,7 @@ This release does not require upgrade steps.
 #### Symbol Fonts
 
 Uno Platform 4.7 now brings the Uno Fluent Symbols font implicitly. You can remove:
+
 - The `uno-fluentui-assets.ttf` file from all your project heads,
 - Any reference to `uno-fluentui-assets.ttf` in the `UIAppFonts` sections of the iOS `Info.plist`
 
@@ -150,6 +152,7 @@ The built-in `ElevatedView` control has undergone a visual unification, which me
 Uno 4.1 removes the support for the Android SDK 10 and adds support for Android 12. Note that Android 10  versions and below are still supported at runtime, but you'll need to have Android 11 SDK or later to build an Uno Platform App. You can upgrade to Android 11 or 12 using the `Compile using Android version: (Targer Framework)` option in Visual Studio Android project properties.
 
 Additionally, here are some specific hints about the migration to Android 12:
+
 - If you are building with Android 12 on Azure Devops Hosted Agents (macOS or Windows), you'll need two updates:
   - Use the JDK 11, using the following step:
         ```yml
@@ -172,6 +175,7 @@ Additionally, here are some specific hints about the migration to Android 12:
 Uno 4.0 introduces a set of binary and source breaking changes required to align with the Windows App SDK 1.0.
 
 To migrate your application to Uno 4.0:
+
 - Update all `Uno.UI.*` nuget packages to 4.0
 - Add a package reference to `Uno.UI.Adapter.Microsoft.Extensions.Logging` to all your project heads (Except `.Desktop` for WinUI projects, and `.Windows` for UWP projects)
 - In your `ConfigureLogging` method, add the following block at the end:
@@ -285,6 +289,7 @@ Here's how to upgrade:
         ```
 
 Note that there are two new loggers:
+
 - `Uno.Extensions.Logging.OSLog` which provides the ability to log the the iOS system logs
 - `Uno.Extensions.Logging.WebAssembly.Console` which provides thread safe and colored logging to the browser debugger console
 

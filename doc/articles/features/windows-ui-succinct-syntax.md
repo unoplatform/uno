@@ -38,6 +38,7 @@ The code below has the same functionality as the code shown above with the origi
 ```
 
 # Notes
+
 1. Uno.UI projects in a UWP-based solution also support this feature, but using it in a UWP project will cause a build error because UWP doesn't support it.
 2. Uno currently only supports this syntax for Grid.
   

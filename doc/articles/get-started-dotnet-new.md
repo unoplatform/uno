@@ -116,9 +116,11 @@ dotnet new unolib-crossruntime -o MyCrossRuntimeLibrary
 This templates creates a project for creating and running UI Tests based on [Uno.UITest](https://github.com/unoplatform/Uno.UITest).
 
 Considering you've created an application as follows:
+
 * `dotnet new unoapp -o MyApp`
 
 To create a UI Tests library:
+
 * Create a folder name `MyApp\MyApp.UITests`
 * In that folder, run `dotnet new unoapp-uitest`
 

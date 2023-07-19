@@ -29,6 +29,7 @@ Add the following namespaces:
 
 
 On all Uno Platform targets, you'll need the following packages:
+
 * `Uno.WinUI.Lottie` (for the `LottieVisualSource`)
 
 Additionally, on Skia targets (Gtk, WPF, Framebuffer), you'll need the following packages:
@@ -59,14 +60,17 @@ Add the following namespaces:
 ```
 
 On WebAssembly, Xamarin.Android, Xamarin.iOS and Xamarin.macOS, you'll need the following packages:
+
 * `Uno.WinUI.Lottie` or `Uno.UI.Lottie` (for the `LottieVisualSource`)
 
 On Skia targets (Gtk, WPF, Framebuffer), you'll need the following packages:
+
 * `Uno.WinUI.Lottie` or `Uno.UI.Lottie` (for the `LottieVisualSource`)
 * `SkiaSharp.Views.Uno.WinUI` or `SkiaSharp.Views.Uno` version 2.88.3 or later
 * `SkiaSharp.Skottie` version 2.88.3 or later
 
 On UWP, you'll need to reference the following packages in your head project:
+
 * `Microsoft.Toolkit.Uwp.UI.Lottie` (for the `LottieVisualSource`)
 * `Microsoft.UI.Xaml` (for the `AnimatedVisualPlayer`)
 

@@ -21,11 +21,13 @@ The best way to get your bug fixed is to be as detailed as you can be about the 
 Here are questions you can consider before you file a bug to make sure you're not missing any important information. The bug submission template will also ask for this information.
 
 Pre-Submission check:
+
 1. Did you read the [documentation](https://platform.uno/docs/articles/intro.html)?
 2. Did you check the the latest [pre-release](https://www.nuget.org/packages/Uno.UI/absoluteLatest) of Uno Platform to see if the issue has been fixed?
 3. Does the issue exist on the UWP / WinUI project (in which case it is not an Uno Platform issue)
 
 Issue Filing [via logging a new bug report](https://github.com/unoplatform/uno/issues/new?labels=kind%2Fbug%2C+triage%2Funtriaged&template=bug-report.md).:
+
 1. Did you include the snippet of the broken code in the issue?
 2. What are the *EXACT* steps to reproduce this problem?
 3. What specific Uno Platform version or build are you using?
@@ -84,6 +86,7 @@ In either case, once you're ready, leave a comment on the issue indicating that 
 ### Getting down to work
 
 The [contributor's guide](contributing-intro.md) has the information you need. The most important points are:
+
 - Work in [your own fork of Uno](https://help.github.com/en/github/getting-started-with-github/fork-a-repo)
 - Be sure to use the [Conventional Commits format](git-conventional-commits.md)
 - Once you're done, you'll probably need to [add a test](../contributing/guidelines/creating-tests.md)

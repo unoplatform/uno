@@ -140,6 +140,7 @@ When `Content` is a `FrameworkElement`, it's displayed within the available area
 | Android  | 48px             |
 
 Please note that:
+
 * `HorizontalContentAlignment` and `VerticalContentAlignment` are ignored.
 * On **iOS**, the Content is automatically centered horizontally unless `HorizontalAlignment.Stretch` is used.
 

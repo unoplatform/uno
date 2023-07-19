@@ -156,5 +156,6 @@ The complete sample code can be found here: [StatusBarThemeColor](https://github
 ## Concluding remarks
 
 This is just one way to show how it could be done. Alternatively, depending on the application, the following options can also be considered:
+
 - [Attached Property](https://docs.microsoft.com/en-us/windows/uwp/xaml-platform/attached-properties-overview) on the `CommandBar` (when multiple pages are used)
 - Xaml Grid/Border/Image that goes under the StatusBar (with `WindowManagerFlags.TranslucentStatus` on Android, no additional change on iOS)

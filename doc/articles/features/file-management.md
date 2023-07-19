@@ -34,6 +34,7 @@ Note that for file and folder metadata only `BasicProperties` are partially supp
 WebAssembly file system APIs are built using [emscripten's POSIX file system APIs](https://emscripten.org/docs/api_reference/Filesystem-API.html). The persistence is done through the use of browser APIs, such as IndexedDB through [emscripten's IDBFS](https://emscripten.org/docs/api_reference/Filesystem-API.html#filesystem-api-idbfs).
 
 While it is possible to write files in any paths, only some folders are persisted across browser refreshes:
+
 * `ApplicationData.Current.LocalFolder`
 * `ApplicationData.Current.RoamingFolder`
 * `ApplicationData.Current.SharedLocalFolder`
@@ -57,6 +58,7 @@ Note that you can view the content of the **IndexedDB** in the Application tab o
 Uno Platform supports the ability to get package files using the [`StorageFile.GetFileFromApplicationUriAsync`](https://docs.microsoft.com/en-us/uwp/api/windows.storage.storagefile.getfilefromapplicationuriasync).
 
 Support per platform may vary:
+
 * On non-WebAssembly targets, the file is available directly as it is a part of the installed package.
 * On WebAssembly, the requested file is part of the application package on the remote server and is downloaded on demand to avoid increasing the initial application payload size. After it is requested for the first time, the file is then stored in the browser IndexedDB.
 

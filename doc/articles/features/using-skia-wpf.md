@@ -64,6 +64,7 @@ If you want to upgrade **SkiaSharp** to a later version, you'll need to specify 
 In previous versions of the Uno Platform template, the Skia+WPF support was split in two projects.
 
 This is not required anymore, but to be able to use a single project, you'll can either:
+
 - Recreate your project from the templates and migrate your code to the new project
 - Make some adjustments to your projects:
     1. From the `MyProject.Skia.Wpf.csproj` :

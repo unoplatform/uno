@@ -13,6 +13,7 @@ As of Preview 7, .NET 6 provides the ability to do CPU profiling through [`dotne
 
 ### Pre-requisites
 Run the following commands
+
 - `dotnet tool update -g dotnet-dsrouter --add-source=https://aka.ms/dotnet-tools/index.json`
 - `dotnet tool update -g dotnet-trace --add-source=https://aka.ms/dotnet-tools/index.json`
 
@@ -37,6 +38,7 @@ Profiling has to first be enabled in the application. Some additional properties
 ```
 
 Then in the `Android` application folder, add the following two files:
+
 - `environment.device.txt`
     ```
     DOTNET_DiagnosticPorts=127.0.0.1:9000,suspend
@@ -105,5 +107,6 @@ Profiling WebAssembly applications can be done through the use of AOT compilatio
 - Use your application or restart your application while recording the trace
 
 ### Troubleshooting
+
 - Deep traces found in large async code patterns or complex UI trees may hit [this chromium issue](https://bugs.chromium.org/p/chromium/issues/detail?id=1206709). This generally makes traces very long to load; you'll need to be patient.
 

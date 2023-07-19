@@ -10,6 +10,7 @@ uid: Uno.ReleaseNotes.Legacy
 - Support for `Windows.Storage.FileProperties.BasicProperties.DateModified`
 
 ### Breaking changes
+
 - Uno is now built using VS2019 16.4, and does not support building applications with Visual Studio 2017.
   Linker errors may occur such as:
   ```
@@ -19,11 +20,13 @@ uid: Uno.ReleaseNotes.Legacy
   ```
 
 ### Bug fixes
+
 -
 
 ## Release 2.1
 
 ### Features
+
 - Added new `ElevatedView` in the `Uno.Toolkit` to provide elevation & rounded corners on all platforms
   (not supported on Windows yet, because Uno needs to target framework `10.0.19041.0`)
 - Added CornerRadius support to more default styles to match UWP (for list of updated styles see PR [#2713])
@@ -75,6 +78,7 @@ uid: Uno.ReleaseNotes.Legacy
 - [Android] #2761 Control with AreDimensionsConstrained and Margin set not measured correctly
 
 ### Breaking changes
+
 - `IconElement.AddIconElementView` is now `internal` so it is not accessible from outside.
 - `Thumb.DragStarted.<Horizontal|Vertical>Offset` are now fulfilled (was always 0)
 - `Thumb.Drag<Delta|Completed>.<Horizontal|Vertical>` are now relative to the last event (was cummulative / relative to the started)
@@ -241,6 +245,7 @@ uid: Uno.ReleaseNotes.Legacy
 - A feature flag has been added to change the default preferred placement mode fo the drop down of the `ComboBox` (cf. ../articles/control/ComboBox.md)
 
 ### Breaking changes
+
 - `TextBox` no longer raises TextChanged when its template is applied, in line with UWP.
 - `TextBox.TextChanged` is now called asynchronously after the UI is updated, in line with UWP. For most uses `TextChanging` should be preferred.
 - [Android] `TextBox.IsSpellCheckEnabled = false` is now enforced in a way that may cause issues in certain use cases (see https://stackoverflow.com/a/5188119/1902058). The old behavior can be restored by setting `ShouldForceDisableSpellCheck = false`, per `TextBox`.
@@ -254,6 +259,7 @@ uid: Uno.ReleaseNotes.Legacy
 - [WASM] The transform returned by `UIElement.TransformToVisual` is now including scale, rotation or any custom transformation that was declared on a parent element (transform was only including translate components)
 
 ### Bug fixes
+
 - [#2186](https://github.com/unoplatform/uno/pull/2186) Fix Canvas Measurement to behave like UWP
 - [#2093](https://github.com/unoplatform/uno/pull/2093) Fix missing measurement option for polyline and polygon
 - Font size, used for ComboBoxItems, are same as in ComboBox content (not smaller)
@@ -349,6 +355,7 @@ uid: Uno.ReleaseNotes.Legacy
 
 ## Release 1.45.0
 ### Features
+
 - Add support for `Windows.System.Display.DisplayRequest` API on iOS and Android
 - Add support for the following `Windows.System.Power.PowerManager` APIs on iOS and Android:
   - BatteryStatus
@@ -435,6 +442,7 @@ uid: Uno.ReleaseNotes.Legacy
 - [Wasm] Add UI Testing support through for `Uno.UI.Helpers.Automation.GetDependencyPropertyValue`\
 
 ### Breaking Changes
+
 - The `WebAssemblyRuntime.InvokeJSUnmarshalled` method with three parameters has been removed.
 - `NavigationBarHelper` has been removed.
 - Localized Text, Content etc is now applied even if the Text (etc) property isn't set in Xaml. Nested implicit content (e.g. `<Button><Border>...`) will be overridden by localized values if available.
@@ -443,6 +451,7 @@ uid: Uno.ReleaseNotes.Legacy
 - [Android] `Popup.Anchor` is no longer available
 
 ### Bug fixes
+
 - DatePicker FlyoutPlacement now set to Full by default
 - Semi-transparent borders no longer overlap at the corners on Android
 - The `HAS_UNO` define is now not defined in `uap10.0.x` target frameworks.
@@ -517,6 +526,7 @@ uid: Uno.ReleaseNotes.Legacy
 ## Release 1.44.0
 
 ### Features
+
 - Add support for `ICollectionView.CopyTo`
 - Add support for `ViewBox`
 - Add support for `AutoSuggestBox.ItemsSource`
@@ -559,6 +569,7 @@ uid: Uno.ReleaseNotes.Legacy
 - Fixed Pointer capture issues on sliders on iOS
 
 ### Breaking changes
+
 - Make `UIElement.IsPointerPressed` and `IsPointerOver` internal
 - You will not be able to build projects targeting Android 8.0 locally anymore. Change your Android target to Android 9.0 or replace MonoAndroid90 by MonoAndroid80 in the TargetFrameworks of your projects files.
 - 1.43.1 breaking changes rollback to 1.42.0:
@@ -568,6 +579,7 @@ uid: Uno.ReleaseNotes.Legacy
   - `MediaPlaybackList.Items` is back to an `IObservableVector`
 
 ### Bug fixes
+
 - Transforms are now fully functional
 - [Wasm] Fixed ListView infinite loop when using custom containers
 - [Wasm] Use Uno.UI Assembly for namespace type lookup in `XamlReader`
@@ -593,6 +605,7 @@ uid: Uno.ReleaseNotes.Legacy
 ## Release 1.43.1
 
 ### Features
+
 - [Wasm] Improve general performance and memory pressure by removing Javascript interop evaluations.
 - Add support for Windows 10 SDK 17763 (1809)
 - Improve the Uno.UI solution memory consumption for Android targets
@@ -657,6 +670,7 @@ uid: Uno.ReleaseNotes.Legacy
 - 140564 [Android] Added workaround for inverted ListView fling issue on Android P
 
 ### Breaking changes
+
 - Refactored ToggleSwitch Default Native XAML Styles. (cf. 'NativeDefaultToggleSwitch' styles in Generic.Native.xaml)
   [iOS] For BindableUISwitch : Background property was changed for OnTintColorBrush and Foreground property for ThumbTintColorBrush.
   [Android] BindableSwitch was renamed `BindableSwitchCompat` in order to avoid confusion with the Switch control.
@@ -670,6 +684,7 @@ uid: Uno.ReleaseNotes.Legacy
   If your csproj is using this target explicitly, change it to the new name.
 
 ### Bug fixes
+
 - MediaPlayerElement [iOS] Subtitles are not disable on initial launch anymore
 - MediaPlayerElement [Android]Player status is now properly updated on media end
 - MediaPlayerElement [Android]Fix issue when video metadata reports a width or height of 0
@@ -727,6 +742,7 @@ uid: Uno.ReleaseNotes.Legacy
 ## Release 1.42
 
 ### Features
+
 - Add base infrastructure platform for macOS
 - 136259 Add a behavior so that tap makes controls fade out
 - 135985 [Android], [iOS] ListViewBase Support [MultiSelectStates](https://msdn.microsoft.com/en-us/library/windows/apps/mt299136.aspx?f=255&MSPPError=-2147217396) on ListViewItem. This allows the item container to visually adapt when multiple selection is enabled or disabled.
@@ -744,9 +760,11 @@ uid: Uno.ReleaseNotes.Legacy
 - [WASM] #234 Support virtualization in ListView
 
 ### Breaking changes
+
 - 132002 [Android] The collapsible button bar is now taken into account by visible bounds calculation. Apps which use VisibleBoundsPadding or have command bars will therefore see an adjustment to the height of their windows on Android.
 
 ### Bug fixes
+
 - 135258 [Android] Fixed ImageBrush flash/flickering occurs when transitioning to a new page for the first time.
 - 131768 [iOS] Fixed bug where stale ScrollIntoView() request could overwrite more recent request
 - 136092 [iOS] ScrollIntoView() throws exception for ungrouped lists

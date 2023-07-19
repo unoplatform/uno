@@ -67,6 +67,7 @@ The Uno Platform documentation is aggregated onto https://platform.uno/docs/arti
 The CI includes a step to clones repositories at a specified commit or branch, and provides the path to the DocFX table of content.
 
 To include documentation (let's take Uno.Themes as an example):
+
 * Update your documentation in `Uno.Themes` repository, preferably in a folder named `doc`
 * Include a file named `toc.yml`, using this file as a template:
   ```yml

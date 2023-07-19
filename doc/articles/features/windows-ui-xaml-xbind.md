@@ -5,6 +5,7 @@ uid: Uno.Features.WinUIxBind
 # Uno Support for x:Bind
 
 Uno supports the [`x:Bind`](https://docs.microsoft.com/en-us/windows/uwp/xaml-platform/x-bind-markup-extension) WinUI feature, which gives the ability to:
+
 - bind to normal fields and properties
 - static classes fields
 - functions with multiple parameters
@@ -12,6 +13,7 @@ Uno supports the [`x:Bind`](https://docs.microsoft.com/en-us/windows/uwp/xaml-pl
 - `x:Bind` on _"Plain-old C# Objects"_ (POCO) created in XAML
 
 # Examples
+
 - Properties
   - Page or control property
   ```xml

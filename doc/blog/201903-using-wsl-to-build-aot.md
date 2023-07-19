@@ -20,6 +20,7 @@ We're going to setup a WSL environment to build an Uno Platform application usin
 
 ## Setting the build environment under WSL
 Here's what to do to, only once:
+
 - Install [WSL](https://docs.microsoft.com/en-us/windows/wsl/install-win10) on a Windows 10 box
 - Install [Ubuntu 18.04 or later](https://www.microsoft.com/en-ca/p/ubuntu-1804-lts/9n9tngvndl3q)
 - Install a stable [Mono toolchain](https://www.mono-project.com/download/stable/#download-lin)

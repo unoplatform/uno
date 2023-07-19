@@ -5,6 +5,7 @@ uid: Uno.Development.DebuggingWasm
 # Using the WebAssembly C# Debugger
 
 There are two ways to debug a WebAssembly application:
+
 - Using Visual Studio 2019 or 2022 integrated debugger (preferred)
 - Using the browser's debugger
 
@@ -21,6 +22,7 @@ Here’s what you need to do to debug an Uno application in Visual Studio (2019 
     ```
 
 Then you can start debugging with the VS debugger toolbar:
+
 - Select **IIS Express** or your application name as the debugging target
 - Select **Chrome** as the Web Browser
 - Press <kbd>F5</kbd> or _Debug_ > _Start Debugging_
@@ -28,6 +30,7 @@ Then you can start debugging with the VS debugger toolbar:
 You should now be able to set breakpoints or do step by step debugging of your code.
 
 ### Tips for debugging in visual studio
+
 - Some debugger features may not have yet been implemented by the .NET and Visual Studio team. You can take a look at the [dotnet/runtime](https://github.com/dotnet/runtime) repository for more details.
 - If the breaking does not hit, make sure that the `inspectUri` lines have been added to the `Properties/launchSettings.json` file.
 - Methods with only invocations to generated code (e.g. control constructors with only "InitializeComponent" in it) may not allow placing breakpoints. Add some explicit code in the scope to place breakpoints.
@@ -35,6 +38,7 @@ You should now be able to set breakpoints or do step by step debugging of your c
 ## Using the browser debugger
 
 To debug your application:
+
 - Make your WASM project the startup project (right-click **set as startup** in Solution Explorer)
 - In the NuGet Package Manager, update `Uno.Wasm.Bootstrap` and `Uno.Wasm.Bootstrap.DevServer` to 3.0.0 or later
 - Ensure that `<MonoRuntimeDebuggerEnabled>true</MonoRuntimeDebuggerEnabled>` is set in your csproj
@@ -55,6 +59,7 @@ To debug your application:
 ![Debugger - The smaller refresh button location in the preview section of the Chrome DevTools](Assets/quick-start/wasm-debugger-step-03.png)
 
 > ### Tips for debugging in Chrome
+>
 > - You need to launch a new instance of Chrome with right parameters. If Chrome is your main browser
 > and you don't want to restart it, install another version of Chrome (_Chrome Side-by-Side_).
 > You may simply install _Chrome Beta_ or _Chrome Canary_ and use them instead.

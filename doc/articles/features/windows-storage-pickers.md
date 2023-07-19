@@ -9,6 +9,7 @@ uid: Uno.Features.WSPickers
 File pickers allow the user to pick a folder or a file on the local file system so that the application can work with it. The following table shows which file picker experiences are available across Uno Platform targets. For detailed information see the next sections.
 
 Legend
+
 - ✔️  Supported
 - 💬 Partially supported (see below for more details)
 - ❌ Not supported

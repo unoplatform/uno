@@ -50,6 +50,7 @@ Usage is as follows:
 ```
 
 #### Notes
+
 - This behavior applies the greater of the existing padding or the calculated padding set on the element it is attached to.
 - `VisibleBoundsPadding` on WinAppSDK/Desktop does not have any effect. It is present to allow for same-XAML across platforms.
 

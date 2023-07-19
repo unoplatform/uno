@@ -118,6 +118,7 @@ You can use `dotnet-serve` as a simple command-line HTTP server for example.
 If needed, you can also run a script that will give you a performance summary for the documentation generation.
 
 To run the script on Windows:
+
 1. Make sure `crosstargeting_override.props` is not defining UnoTargetFrameworkOverride
 2. Open a Developer Command Prompt for Visual Studio (2019 or 2022)
 3. Go the the uno\build folder (not the uno\src\build folder)

@@ -79,6 +79,7 @@ Backing fields are automatically generated and maintained current through `Frame
 
 ## GeneratedDependencyProperty options
 Other attribute properties are available on `GeneratedDependencyProperty` to include:
+
 - `PropertyChangedCallback` to force the inclusion of a property changed callback method and fail the build if there is none
 - `CoerceCallback` to force the inclusion of a coerce callback method and fail the build if there is none
 - `Options` to specify which `FrameworkPropertyMetadataOptions` to use

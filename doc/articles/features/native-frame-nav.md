@@ -8,11 +8,13 @@ uid: Uno.Features.NativeFrameNav
 This article discusses the particularities of the native `Frame` navigation in detail.
 
 It is recommended to be familiar with the concept of navigation in UWP, here are some good starting points:
+
 - [Navigation design basics for Windows apps](https://docs.microsoft.com/en-us/windows/uwp/design/basics/navigation-basics)
 - [`Windows.UI.Xaml.Controls.Frame`](https://docs.microsoft.com/en-us/uwp/api/Windows.UI.Xaml.Controls.Frame)
 
 ## Native Frame Navigation
 On Android and iOS, there is the option to enable native frame navigation. Enabling this feature replaces the default styles and templates of the controls below:
+
 - `Windows.UI.Xaml.Controls.Frame`<superscript>*</superscript>
 - `Windows.UI.Xaml.Controls.CommandBar`
 - `Windows.UI.Xaml.Controls.AppBarButton`
@@ -52,6 +54,7 @@ Method|Return Type|Description
 `CreateNavigationEventArgs(...)`|`NavigationEventArgs`|Creates a new instance of `NavigationEventArgs`/>
 
 ## Platform Specifics
+
 - Android: Tapping the CommandBar's back button, system back button, or performing the sweep gesture will trigger `SystemNavigationService.BackRequested`. It's the responsibility of the application's navigation controller to eventually call `Frame.GoBack()`.
 - iOS: Tapping the back button automatically triggers a back navigation on the native `UINavigationController` (which is part of the native `Frame` implementation). The `Frame` will raise the `Navigated` event, and its state will automatically be updated to reflect the navigation. The navigation can't be intercepted or canceled.
 - all non-Windows platforms: `Uno.UI.FeatureConfiguration.Page.IsPoolingEnabled` can be set to enable reuse of `Page` instances. Enabling this allows the pages in the forward stack to be recycled when stack is modified, which can improve performance of `Frame` navigation.
@@ -59,5 +62,6 @@ Method|Return Type|Description
 - WASM: `SystemNavigationManager.AppViewBackButtonVisibility` needs to be set to `Visible` to intercept the browser back navigation. The intercepted event is forwarded to `SystemNavigationService.BackRequested`. It's the responsibility of the application's navigation controller to eventually call `Frame.GoBack()`.
 
 ## Additional Resources
+
 - [Uno-specific documentation](../controls/CommandBar.md) on `CommandBar` and `AppBarButton`
 - [How-to guide](../guides/native-frame-nav-tutorial.md) & [sample](https://github.com/unoplatform/Uno.Samples/tree/master/UI/NativeFrameNav) on native frame navigation
