@@ -66,10 +66,10 @@ These package ids are for Uno (non-Windows) projects. For UWP project, you shoul
  ![datagrid-nuget](Assets/datagrid-nuget.JPG)  
 
 > [!NOTE]
-> For UWP and WinUI 3 projects, you should use the packages published by Microsoft that are **not** prefixed with `Uno.*`. 
-      
+> For UWP and WinUI 3 projects, you should use the packages published by Microsoft that are **not** prefixed with `Uno.*`.
 
-2. Add a reference to the UWP UI Controls 
+
+2. Add a reference to the UWP UI Controls
 
 # [WinUI / WinAppSDK](#tab/tabid-winui)
 
@@ -89,7 +89,7 @@ These package ids are for Uno (non-Windows) projects. For UWP project, you shoul
 
 ***
 
-## Task 2 - Add the DataGrid Control 
+## Task 2 - Add the DataGrid Control
 
 This control will create an easily organized grid that will allow you to create flexible columns and rows.
 

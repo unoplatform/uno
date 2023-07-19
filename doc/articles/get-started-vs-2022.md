@@ -6,10 +6,10 @@ uid: Uno.GetStarted.vs2022
 
 This getting started will guide you through the creation of an Uno Platform App using C# and .NET, based in the WinUI 3 XAML.
 
-> [!TIP] 
+> [!TIP]
 > This guide covers development on Windows using Visual Studio. If you want to use another environment or IDE, see our [general getting started](get-started.md).
 
-> [!IMPORTANT] 
+> [!IMPORTANT]
 > To use Xamarin (as opposed to .NET 7 Mobile) with Visual Studio 2019, [follow this guide](get-started-vs.md).
 
 ## Prerequisites
@@ -25,9 +25,9 @@ To create Uno Platform applications you will need [**Visual Studio 2022 17.4 or 
 
 1. **.NET desktop development** workload installed (for Gtk, Wpf, and Linux Framebuffer development)
 
-    ![Visual Studio Installer - .NET desktop development workload](Assets/quick-start/vs-install-dotnet.png)    
+    ![Visual Studio Installer - .NET desktop development workload](Assets/quick-start/vs-install-dotnet.png)
 
-> [!IMPORTANT] 
+> [!IMPORTANT]
 > To build Xamarin-based projects in Visual Studio 2022, in Visual Studio's installer `Individual components` tab, search for Xamarin and select `Xamarin` and `Xamarin Remoted Simulator`. See [this section on migrating Xamarin projects](migrating-from-xamarin-to-net6.md) to .NET 6.
 
 > [!NOTE]
@@ -58,7 +58,7 @@ To create an Uno Platform app:
     ![Visual Studio - Configure project name and location](Assets/tutorial01/configure-new-unoplatform-app.PNG)
 
 1. Choose the base template to build your application
-   
+
     ![Visual Studio - Configure your new project](Assets/quick-start/vsix-new-project-options.png)
 
 1. You can optionally choose to customize your app based on the sections on the left side:
@@ -71,7 +71,7 @@ To create an Uno Platform app:
     - **Extensions** allows to choose for [additional Uno.Extensions](xref:Overview.Features) to kickstart your app faster
     - **Application** sets the App ID for relevant platforms, used when publishing on various app stores.
     - **Theme** gives the ability to change between [Fluent](xref:uno.themes.fluent.getstarted) and [Material](xref:uno.themes.material.getstarted)
-    
+
 1. Click the create button
 
 1. Wait for the projects to be created, and their dependencies to be restored
@@ -95,7 +95,7 @@ To create an Uno Platform app:
     - In the "Debug toolbar" drop-down, select framework `net7.0-ios`:
 
       ![Visual Studio - "Debug toolbar" drop-down selecting the "net7.0-ios" framework](Assets/quick-start/net7-ios-debug.png)
-      
+
     - Select:
       - An active device, if your IDE is connected to a macOS Host
       - A [local device using Hot Restart](https://learn.microsoft.com/en-us/xamarin/xamarin-forms/deploy-test/hot-restart), to debug your application without connecting to a mac
@@ -106,7 +106,7 @@ To create an Uno Platform app:
 
 You're all set! You can now head to [our tutorials](getting-started-tutorial-1.md) on how to work on your Uno Platform app.
 
-> [!NOTE] 
+> [!NOTE]
 > Debugging either the macOS and macCatalyst targets is not supported from Visual Studio on Windows.
 
 ## Troubleshooting Installation Issues

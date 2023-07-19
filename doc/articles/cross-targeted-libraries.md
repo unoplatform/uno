@@ -12,8 +12,8 @@ Uno Platform provides a template which uses this project format. See [this docum
 
 Cross-targeted libraries use the 'SDK-style' [project file format](https://docs.microsoft.com/en-us/dotnet/core/tools/csproj). This format is considerably cleaner than older-style `.csproj` files.
 
-> [!NOTE] 
-> Visual Studio provides easy edition of new-style `.csproj` files directly without needing to unload the project first. 
+> [!NOTE]
+> Visual Studio provides easy edition of new-style `.csproj` files directly without needing to unload the project first.
 
 ### Platform-conditional settings
 

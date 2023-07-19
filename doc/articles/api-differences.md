@@ -18,7 +18,7 @@ As for WinUI, all visual elements in Uno.UI inherit from `FrameworkElement`, whi
 
 On Android, iOS, and macOS, `UIElement` instead inherits from the native base view type for each platform, as exposed to .NET by Xamarin Native. So, `ViewGroup` for Android, `UIView` for iOS, and `NSView` for macOS.
 
-This allows native views (not defined by Uno.UI or inheriting from `FrameworkElement`) to be directly integrated into the visual tree, [in XAML markup or C# code](native-views.md). 
+This allows native views (not defined by Uno.UI or inheriting from `FrameworkElement`) to be directly integrated into the visual tree, [in XAML markup or C# code](native-views.md).
 
 ### `DependencyObject` type is an interface (all non-Windows platforms)
 

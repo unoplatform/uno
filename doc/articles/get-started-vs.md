@@ -6,7 +6,7 @@ uid: Uno.GetStarted.vs
 
 ## Prerequisites
 * [**Visual Studio 2019 16.3 or later**](https://visualstudio.microsoft.com/), with:
-  * **Universal Windows Platform** workload installed. 
+  * **Universal Windows Platform** workload installed.
 
       ![visual-studio-installer-uwp](Assets/quick-start/vs-install-uwp.png)
 

@@ -46,7 +46,7 @@ See this documentation about [embedding native controls](using-skia-embed-native
 
 ## Upgrading to a later version of SkiaSharp
 
-By default Uno comes with a set of **SkiaSharp** dependencies set by the **[Uno.UI.Runtime.Skia.Gtk](https://nuget.info/packages/Uno.UI.Runtime.Skia.Gtk)** package. 
+By default Uno comes with a set of **SkiaSharp** dependencies set by the **[Uno.UI.Runtime.Skia.Gtk](https://nuget.info/packages/Uno.UI.Runtime.Skia.Gtk)** package.
 
 If you want to upgrade **SkiaSharp** to a later version, you'll need to specify all packages individually in your project as follows:
 

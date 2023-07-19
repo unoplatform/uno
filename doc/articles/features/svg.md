@@ -43,7 +43,7 @@ You can also explicitly use `SvgImageSource`:
 
 ## Supported features by platform
 
-SVG is supported on all Uno Platform targets. 
+SVG is supported on all Uno Platform targets.
 
 On Android, iOS, macOS, Mac Catalyst and Skia we are using SkiaSharp to render the SVG graphics.
 

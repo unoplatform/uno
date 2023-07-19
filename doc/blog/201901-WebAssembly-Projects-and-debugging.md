@@ -13,7 +13,7 @@ The next release of the [Uno Visual Studio add-in](https://marketplace.visualstu
 ## WebAssembly Project Support for Visual Studio
 Originally, the support for WebAssembly was done with Uno through the creation of a .NET Standard 2.0 project, relying on the use of mono-provided python server. The sole purpose of this server is to serve files with the `application/wasm` mime type, which can be done through a normal WebApp project.
 
-As the mono-wasm debugger has progressed a lot, we decided to look into the first step of improving the Visual Studio support for Uno WebAssembly projects. The newer experience is what a developer would expect in terms of integration. It is similar to a normal Web Project: Pressing Ctrl+F5 now starts the WebAssembly project in your preferred browser. 
+As the mono-wasm debugger has progressed a lot, we decided to look into the first step of improving the Visual Studio support for Uno WebAssembly projects. The newer experience is what a developer would expect in terms of integration. It is similar to a normal Web Project: Pressing Ctrl+F5 now starts the WebAssembly project in your preferred browser.
 
 As for most web projects, refreshing the web page is enough for the application to pick up the new changes.
 
@@ -53,7 +53,7 @@ The Mono team recently added the ability to get the source files from debugging 
 ## Using the WebAssembly C# Debugger
 - Create an **Uno Platform Cross-Targeted application** from the Uno Solution Template (See at the end of this post for more details)
 - Set the Wasm project as a startup project
-- Ensure that 
+- Ensure that
   - **IIS Express** is enabled in your debugging toolbar
   - **Chrome** is active WebBrowser
   - ![iis express settings](Assets/201901-debugging-iis-express.png)
@@ -65,7 +65,7 @@ The Mono team recently added the ability to get the source files from debugging 
 ![Debugger - Error message telling you that Chrome has not been opened](Assets/201901-debugger-step-01.png)
 -  Close all your chrome instances and run Chrome again using the provided command line
 -  Once again, once your application is loaded, press **Alt+Shift+D**, a new tab will open.
-- You will now get the Chrome DevTools to open listing all the .NET loaded assemblies on the Sources tab: 
+- You will now get the Chrome DevTools to open listing all the .NET loaded assemblies on the Sources tab:
 
 ![Debugger - Chrome DevTools listing all the .NET loaded assemblies on the Sources tab](Assets/201901-debugger-step-02.png)
 

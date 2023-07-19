@@ -101,7 +101,7 @@ To build an app with this feature enabled:
    ```bash
    dotnet publish -c Release
    ```
-   > [!NOTE] 
+   > [!NOTE]
    > Cross-compilation support is not supported as of .NET 7. To build a Native AOT app for linux or mac, you'll need to build on corresponding host.
 
 See [the runtime documentation](https://github.com/dotnet/runtime/blob/main/src/coreclr/nativeaot/docs/reflection-in-aot-mode.md) for more details, and the [.NET Native AOT documentation](https://learn.microsoft.com/en-us/dotnet/core/deploying/native-aot/).

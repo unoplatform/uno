@@ -10,7 +10,7 @@ These themes affect both the `Background` and `Foreground` colors to accommodate
 
 ## Enable dark mode
 
-As in WinUI, the possible values `Light`, `Dark`, and `HighContrast` correspond to a value users can select in the settings of their respective platforms. 
+As in WinUI, the possible values `Light`, `Dark`, and `HighContrast` correspond to a value users can select in the settings of their respective platforms.
 
 High Contrast mode is often available to enable separately, from a dedicated _Accessibility_ page. For the purpose of this documentation, we will assume the user wants to use Dark mode.
 
@@ -37,7 +37,7 @@ The steps to enable Dark mode in a browser vary by browser. See the following gu
 When you change the theme mode on your device, the system will send a notification to your app. The colors of UI elements in your app will automatically switch over as long as you do _not_ specify a theme in any of the following places:
 
 - `App` constructor
-- `App.xaml` 
+- `App.xaml`
 - `AppResources.xaml`
 - The `RequestedTheme` property of a parent `FrameworkElement`
 

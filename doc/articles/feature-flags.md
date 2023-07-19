@@ -29,7 +29,7 @@ This can be changed using `Uno.UI.FeatureConfiguration.Style.UseUWPDefaultStyles
 
 ## Disabling accessibility text scaling
 
-By default, Uno automatically enables accessibility text scaling on iOS and Android devices however to have more control an option has been added to disable text scaling. 
+By default, Uno automatically enables accessibility text scaling on iOS and Android devices however to have more control an option has been added to disable text scaling.
 
 Use `Uno.UI.FeatureConfiguration.Font.IgnoreTextScaleFactor` to control this.
 
@@ -37,7 +37,7 @@ Use `Uno.UI.FeatureConfiguration.Font.IgnoreTextScaleFactor` to control this.
 
 By default, Android has a limit of 200% for the text scaling which is not the case for iOS.
 
-Use `Uno.UI.FeatureConfiguration.Font.MaximumTextScaleFactor` to control this. 
+Use `Uno.UI.FeatureConfiguration.Font.MaximumTextScaleFactor` to control this.
 
 ## ComboBox
 

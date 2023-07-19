@@ -213,7 +213,7 @@ The Uno platform also provides an extension that simplifies the use of logging b
 
 ## Log output for not implemented member usage
 
-By default, when a member is invoked at runtime that's not implemented by Uno (ie, marked with the `[NotImplemented]` attribute), an error message is logged. 
+By default, when a member is invoked at runtime that's not implemented by Uno (ie, marked with the `[NotImplemented]` attribute), an error message is logged.
 
 > [!IMPORTANT]
 > This feature flag must be set before the `base.InitializeComponent()` call within the `App.xaml.cs` constructor.

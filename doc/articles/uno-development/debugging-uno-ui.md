@@ -5,7 +5,7 @@ uid: Uno.Contributing.DebuggingUno
 # Debugging Uno.UI
 
 > [!Note]
-> [Find instructions for building the Uno.UI solution here.](building-uno-ui.md) 
+> [Find instructions for building the Uno.UI solution here.](building-uno-ui.md)
 
 ## Debugging Uno.UI samples
 
@@ -23,7 +23,7 @@ See [this article](working-with-the-samples-apps.md) for more information on wor
 
 It's also easy to debug Uno.UI code in an application outside the Uno.UI solution. The Uno.UI build process has an opt-in mechanism to overwrite the contents of the NuGet cache, causing the application to use your local build of Uno.
 
-This is useful if you're debugging a problem that can't easily be reproduced outside the context of the app where it was discovered. 
+This is useful if you're debugging a problem that can't easily be reproduced outside the context of the app where it was discovered.
 
 It can even speed up your development loop when working on a new feature or fixing a bug with a standalone repro, because a small 'Hello World' app builds considerably faster than the full SamplesApp.
 
@@ -39,12 +39,12 @@ Then, here are the steps to use a local build of Uno.UI in another application:
 1. Make a copy of `src/crosstargeting_override.props.sample` and name it as `src/crosstargeting_override.props`.
 5. In `src/crosstargeting_override.props`, uncomment the line `<!--<UnoNugetOverrideVersion>xx.xx.xx-dev.xxx</UnoNugetOverrideVersion>-->`.
 6. Replace the version number with the version being used by the application you wish to debug.
-7. Open the appropriate Uno.UI solution filter and build the **Uno.UI** project (or **Uno.UI.WebAssembly**/**Uno.UI.Skia** projects for WebAssembly or Skia). 
+7. Open the appropriate Uno.UI solution filter and build the **Uno.UI** project (or **Uno.UI.WebAssembly**/**Uno.UI.Skia** projects for WebAssembly or Skia).
 
 To debug Uno.UI code in the application, follow these steps (using `FrameworkElement.MeasureOverride()` as an example):
 
 1. Open [`FrameworkElement.cs`](https://github.com/unoplatform/uno/blob/master/src/Uno.UI/UI/Xaml/FrameworkElement.cs) in the Uno.UI solution.
-2. Right-click on the `FrameworkElement.cs` tab header in Visual Studio and choose 'Copy Full Path'. 
+2. Right-click on the `FrameworkElement.cs` tab header in Visual Studio and choose 'Copy Full Path'.
 3. Switch to the Visual Studio instance where your application is open.
 4. In your application solution, choose File->Open->File... or simply `Ctrl+O`, paste the path to `FrameworkElement.cs` into the file open dialog, and open `FrameworkElement.cs` in the application solution.
 5. Put a breakpoint in the `MeasureOverride()` method.

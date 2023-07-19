@@ -44,7 +44,7 @@ using Windows.UI.Xaml.Media
 
 Note that `VisualTreeHelper.AdaptNative()` will throw an exception if it receives a `FrameworkElement`. If you're in a context where you don't know if the view you want to display is actually a purely native view or a managed `FrameworkElement` type, you can use `VisualTreeHelper.TryAdaptNative()` instead.
 
-Assigning a native view directly as the `Content` property of `ContentPresenter` or `ContentControl` is also supported (since `Content` is of type `object`). 
+Assigning a native view directly as the `Content` property of `ContentPresenter` or `ContentControl` is also supported (since `Content` is of type `object`).
 
 ## Troubleshooting
 
@@ -52,7 +52,7 @@ Uno makes certain assumptions about native views when it displays them, which ma
 
 - check the documentation and ensure you're configuring the native control correctly.
 - try setting a fixed `Width` and `Height` on the outer XAML container.
-- try setting the dimensions of the native view via code-behind. 
+- try setting the dimensions of the native view via code-behind.
 
 ## Adding JavaScript views in WebAssembly
 

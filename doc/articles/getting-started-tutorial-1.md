@@ -6,7 +6,7 @@ uid: Uno.GettingStarted.Tutorial1
 
 [Download the complete sample](https://github.com/unoplatform/Uno.GettingStartedTutorial/tree/master/src/Getting-Started-Tutorial-1)  
 
-> [!NOTE] 
+> [!NOTE]
 > Estimated time to complete: 10 minutes
 
 In this tutorial you will learn how to:
@@ -78,7 +78,7 @@ If you haven't prepared your dev environment for Uno Platform app development ye
     ```
 
 1. Select `MyApp.Windows` as the Startup Project, select the `x86` platform, then `Run`  
-   > [!NOTE] 
+   > [!NOTE]
    > To change the startup project from the Solution Explorer, right-click the desired project and choose **Set as StartUp Project** from the context-sensitive menu that is displayed. You can also choose this menu item from the Project menu.
 
     ![build-winui](Assets/build-winui.png)

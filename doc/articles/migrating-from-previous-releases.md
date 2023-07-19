@@ -74,7 +74,7 @@ Timeline does not implement `IDisposable` anymore. This class was not supposed b
 #### `GridExtensions` and `PanelExtensions` are removed
 These legacy class have been removed.
 
-#### `GetLeft`, `GetTop`, `SetLeft`, `SetTop`, `GetZIndex`, and `SetZIndex` overloads that take DependencyObject are now removed. 
+#### `GetLeft`, `GetTop`, `SetLeft`, `SetTop`, `GetZIndex`, and `SetZIndex` overloads that take DependencyObject are now removed.
 Those legacy overloads are now removed and the UIElement overloads should be used instead.
 
 #### BaseFragment is not needed and is now removed.
@@ -194,7 +194,7 @@ To migrate your application to Uno 4.0:
   use one of the sub packages created to limit the number of transitive dependencies.
 - The `Uno.UI.DualScreen` package is now renamed as` Uno.UI.Foldable`
 
-### Uno Platform 3.6 
+### Uno Platform 3.6
 
 #### Optional upgrade for Microsoft.Extension.Logging
 

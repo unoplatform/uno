@@ -4,7 +4,7 @@ uid: Uno.Features.SpeechRecognition
 
 # Speech Recognition in Uno
 
-Uno's implementation currently supports basic native speech recognition. 
+Uno's implementation currently supports basic native speech recognition.
 
 ## Supported Features
 

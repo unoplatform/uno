@@ -22,7 +22,7 @@ The following `Geolocator` APIs are implemented on Android, iOS, macOS and WASM:
 
 `StatusChanged` event is delivered to all `Geolocator` instances which have subscribers as a "broadcast". This is unusual, but in line with the UWP implementation.
 
-#### WASM 
+#### WASM
 
 On WebAssembly, `RequestAccessAsync` requires querying for position info, which triggers the user permission dialog. For the developer, it should behave the same way as in UWP. We recommend showing the user instructions on how to enable geolocation if it is `Denied` via a dialog message for example, if you require the feature for the functionality of your app.
 

@@ -6,13 +6,13 @@ uid: Uno.Features.AdaptiveTrigger
 
 ## AdaptiveTrigger Class
 
-Use the `AdaptiveTrigger` class to trigger a `<VisualState.Setters>` target. The target invokes changes in window properties, such as font size or panel orientation. 
+Use the `AdaptiveTrigger` class to trigger a `<VisualState.Setters>` target. The target invokes changes in window properties, such as font size or panel orientation.
 
 For more information, please refer to Microsoft's documentation on the [AdaptiveTrigger class](https://learn.microsoft.com/en-us/uwp/api/windows.ui.xaml.adaptivetrigger?view=winrt-22621) and the [VisualState class.](https://learn.microsoft.com/en-us/uwp/api/windows.ui.xaml.visualstate?view=winrt-22621)
 
 ## WinUI vs. UNO
 
-In a standard UWP application, the sequential order of the adaptive trigger does not matter. The compiler will execute any `<VisualState.Setters>` target regardless of their order (See [this issue](https://github.com/unoplatform/uno/issues/2662) for more details). 
+In a standard UWP application, the sequential order of the adaptive trigger does not matter. The compiler will execute any `<VisualState.Setters>` target regardless of their order (See [this issue](https://github.com/unoplatform/uno/issues/2662) for more details).
 
 In an Uno Platform application, the sequential order of the adaptive trigger does matter. In this instance, the `VisualState` will execute the `Setters` when it finds the first matching occurrence. Subsequent triggers may be ignored if the first matching property remains true for the life of the program.
 
@@ -20,7 +20,7 @@ In an Uno Platform application, the sequential order of the adaptive trigger doe
 
 Following is an example of three `<VisualState>` blocks. The blocks are non-sequential, ordered from `SmallScreen` to `LargeScreen` to `MediumScreen`. The expected output is to have the font size change as the window size changes.
 
-Each `<VisualState>` block has an adaptive trigger with a `MinWindowWidth` property. The property tells the `VisualState` to execute the `VisualState.Setters` whenever the window width is greater or equal to its integer value. 
+Each `<VisualState>` block has an adaptive trigger with a `MinWindowWidth` property. The property tells the `VisualState` to execute the `VisualState.Setters` whenever the window width is greater or equal to its integer value.
 
 Example:
 
@@ -147,6 +147,6 @@ The following demonstrates the same code, but re-written in a sequential order t
 ```
 ## Correct Output
 
-In the above example, the `VisualState` blocks are sequential, ordered from `LargeScreen` to `MediumScreen` to `SmallScreen`. Because of this, the compiler will execute the first true occurrence in the order written. 
+In the above example, the `VisualState` blocks are sequential, ordered from `LargeScreen` to `MediumScreen` to `SmallScreen`. Because of this, the compiler will execute the first true occurrence in the order written.
 
 The `LargeScreen` setter target is triggered when the window width is `>=` 1000 pixels. When this statement becomes false, the `VisualState` executes the next setter target that matches, i.e. the `MediumScreen` block. When the `MediumScreen` adaptive trigger is false, the `VisualState` finally executes the setter target for the `SmallScreen` block.

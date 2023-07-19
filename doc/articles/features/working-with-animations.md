@@ -7,7 +7,7 @@ uid: Uno.Features.Animations
 Uno Platform supports [storyboarded animations](https://docs.microsoft.com/en-us/windows/uwp/design/motion/storyboarded-animations). A number of animation types are supported, including `DoubleAnimation`, `ColorAnimation`, and key frame-based animations.
 
 ## General guidelines
-As of 1.43.1: 
+As of 1.43.1:
 1. GPU-bound animations are supported for the following properties:
 	* `Opacity`
 	* `RenderTransform` of type `TranslateTransform`, `RotateTransform`, `ScaleTransform`, or `CompositeTransform`. Transforms cannot be part of a TransformGroup.

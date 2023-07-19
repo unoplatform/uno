@@ -6,11 +6,11 @@ uid: Uno.Features.WS
 
 ## `Launcher`
 
-### `LaunchUriAsync` 
+### `LaunchUriAsync`
 
 This API is supported on iOS, Android, WASM and macOS.
 
-On iOS, Android and macOS the `ms-settings:` special URI is supported. 
+On iOS, Android and macOS the `ms-settings:` special URI is supported.
 
 In case of iOS, any such URI opens the main page of system settings (there is no settings deep-linking available on iOS).
 
@@ -103,7 +103,7 @@ In case of macOS, Uno supports the following nested URIs, mapped to Preference P
 
 Exceptions are in line with UWP.
 
-### `QueryUriSupportAsync` 
+### `QueryUriSupportAsync`
 
 This API is supported on iOS, Android and macOS, and the implementation does not respect the `LaunchQuerySupportType` parameter yet. It also reports the aforementioned special `ms-settings` URIs on Android and iOS as supported.
 

@@ -29,7 +29,7 @@ This is relevant if you're targeting Android, iOS, and/or macOS, where Uno views
 
 Some common cases:
 
-- on iOS, inside a control definition, references to [`Window.Current`](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.window.current) will be confused with the [`UIView.Window`](https://docs.microsoft.com/en-us/dotnet/api/uikit.uiview.window) property. The fix is to fully qualify this as `Windows.UI.Xaml.Current`. 
+- on iOS, inside a control definition, references to [`Window.Current`](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.window.current) will be confused with the [`UIView.Window`](https://docs.microsoft.com/en-us/dotnet/api/uikit.uiview.window) property. The fix is to fully qualify this as `Windows.UI.Xaml.Current`.
 - on Android, inside a control definition, references to the [`TextAlignment` enum](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.textalignment) will be confused with the [`View.TextAlignment` property](https://docs.microsoft.com/en-us/dotnet/api/android.views.view.textalignment). The fix, again, is to fully qualify the reference as `Windows.UI.Xaml.TextAlignment`.
 
 #### What do I do if I have a nested namespace with `Windows` in it?

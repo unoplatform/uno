@@ -6,7 +6,7 @@ uid: Uno.GettingStarted.Tutorial2
 
 [Download the complete sample](https://github.com/unoplatform/Uno.GettingStartedTutorial/tree/master/src/Getting-Started-Tutorial-2)  
 
-> [!NOTE] 
+> [!NOTE]
 > Estimated time to complete: 30 minutes
 
 In this tutorial you will learn how to:
@@ -26,7 +26,7 @@ The tutorial walks you through creating a cross platform application with Uno Pl
 
 ## Getting Started
 
-1. Open Visual Studio and click on `Create new project`. 
+1. Open Visual Studio and click on `Create new project`.
 
     ![Visual Studio - Get started - Selecting `create a new project` option](Assets/tutorial01/newproject1.PNG)
 
@@ -400,6 +400,6 @@ In this tutorial, through creating a simple Bug Tracking app you have learned ho
 <div class="NOTE alert alert-info">
 <h5>Next:</h5>
 
-[Got questions? Want to learn more? Looking for production-ready examples? Check out the Next Steps page.](get-started-next-steps.md) 
+[Got questions? Want to learn more? Looking for production-ready examples? Check out the Next Steps page.](get-started-next-steps.md)
 
 </div>

@@ -6,7 +6,7 @@ uid: Uno.Contributing.CreateRuntimeTests
 
 Platform-runtime unit tests are relatively cheap (in terms of developer productivity and CI time) whilst still allowing functionality to be verified across all supported platforms and in a realistic environment. Accordingly they're appropriate for many bugfixes and new features.
 
-Tests in Uno.UI.RuntimeTests are easy to write. There are a few special attributes and environmental helpers to know about, which this guide will cover. 
+Tests in Uno.UI.RuntimeTests are easy to write. There are a few special attributes and environmental helpers to know about, which this guide will cover.
 
 For other types of automated tests used internally by Uno.UI, [see here](../contributing/guidelines/creating-tests.md).
 
@@ -23,7 +23,7 @@ Since the Uno.UI.RuntimeTests tests run in the platform environment using the re
 
 To add a new runtime test:
 
-1. Locate the test class corresponding to the control or class you want to create a test for. Tests are located in `Uno.UI.RuntimeTests/Tests`. If you need to add a new test class, create the file as `Tests/Namespace_In_Snake_Case/Given_ControlName.cs`. The class should be marked with the `[TestClass]` attribute. 
+1. Locate the test class corresponding to the control or class you want to create a test for. Tests are located in `Uno.UI.RuntimeTests/Tests`. If you need to add a new test class, create the file as `Tests/Namespace_In_Snake_Case/Given_ControlName.cs`. The class should be marked with the `[TestClass]` attribute.
 2. Create your test as a method, naming it as `When_Your_Scenario` and marking it with the `[TestMethod]` attribute. (For more information about the 'Given-When-Then' naming style, read <https://martinfowler.com/bliki/GivenWhenThen.html> )
 3. The runtime tests run from a background thread by default, but when testing UI-related scenarios this isn't desirable. You can use the `[RunsOnUIThread]` attribute, either on individual test methods or the whole test class, to configure the test (or suite of tests) to be run on the UI thread.
 4. Use the helpers described below to set up the state required to repro your bug, and use standard `Assert` calls and/or [FluentAssertions](https://fluentassertions.com/introduction) to verify expected state.
@@ -49,8 +49,8 @@ The `Private.Infrastructure.TestServices.WindowHelper` class exposes several sta
 
 #### Useful methods coming from `Uno.UI` itself
 
- The `FindFirstChild<T>` and `FindFirstParent<T>` extension methods are helpful in the common case that you want to retrieve a descendant or ancestor element by traversing the visual tree. They optionally take a condition to be met. 
- 
+ The `FindFirstChild<T>` and `FindFirstParent<T>` extension methods are helpful in the common case that you want to retrieve a descendant or ancestor element by traversing the visual tree. They optionally take a condition to be met.
+
  Note that for Android/iOS/macOS, the versions of the methods that allow native views to be traversed and retrieved are located in different namespaces. The complete set of usings to conditionally include is:
 
  ```csharp

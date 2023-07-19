@@ -11,7 +11,7 @@ uid: Uno.Features.Settings
 
 ## Supported features
 
-| Feature        |  Windows  | Android |  iOS  |  Web (WASM)  | macOS | Linux (Skia)  | Win 7 (Skia) | 
+| Feature        |  Windows  | Android |  iOS  |  Web (WASM)  | macOS | Linux (Skia)  | Win 7 (Skia) |
 |---------------|-------|-------|-------|-------|-------|-------|-|
 | `ApplicationData.Current.LocalSettings`        | ✔ | ✔ | ✔ | ✔ | ✔ | ✔ | ✔ |
 | `ApplicationData.Current.RoamingSettings`     | ✔ | ✔ | ✔ | ✔ | ✔ | ✔ | ✔ |

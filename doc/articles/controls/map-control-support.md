@@ -28,7 +28,7 @@ The current implementation uses the native UIKit Map for iOS and the Google Play
 
 ## Sample XAML
 
-Here's a complete sample: 
+Here's a complete sample:
 
 ```xml
 <Page x:Class="MapControlSample.MainPage"
@@ -83,7 +83,7 @@ To use the map component, you will need an API key for Windows and Android. Here
 
 ### Windows
 
-For the detailed procedure for Windows, please follow this link: https://msdn.microsoft.com/en-us/library/windows/apps/xaml/mt219694.aspx 
+For the detailed procedure for Windows, please follow this link: https://msdn.microsoft.com/en-us/library/windows/apps/xaml/mt219694.aspx
 
 + Go to https://www.bingmapsportal.com
 + Login to your account or register if you don't have one
@@ -108,7 +108,7 @@ The key will be set as the value for the parameter _MapServiceToken_ for the Map
         2. Login with a Google account
         3. Click on "Enable APIs and Services"
         4. Select "Maps SDK for Android" and click on Enable
-    
+
 +  Generate an API key.
 
         1.  If you are coming from step-2 just navigate back until you are again in the dashboard, otherwise, go to  https://console.developers.google.com and login with a Google account.
@@ -127,18 +127,18 @@ _For a detailed procedure on how to retrieve the SHA-1 fingerprint for your Andr
     ```xml
     <uses-library android:name="com.google.android.maps" />
     ```
-                        
+
     2.  Add the API key to `AssemblyInfo.cs`.
-    
+
     ```csharp
 	[assembly: MetaData("com.google.android.maps.v2.API_KEY", Value = "YOUR_API_KEY")]
     ```
     Replace the text YOUR_API_KEY with the key generated in previous step.
-    
+
     Note: Since this key might vary depending on the platform and environment we suggest using a constant class where the key could be retrieved from.
-	
+
     3.  Add the relevant permissions to `AssemblyInfo.cs`. For example, if you wish to access the user location
-    
+
 	 ```csharp
 	[assembly: UsesPermission(Android.Manifest.Permission.AccessFineLocation)]
 	[assembly: UsesPermission("com.myapp.permission.MAPS_RECEIVE")]

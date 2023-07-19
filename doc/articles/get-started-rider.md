@@ -75,7 +75,7 @@ You will have to manually open.
 ![run-wasm-rider](Assets/quick-start/run-wasm-rider.JPG)  
 A new browser window will automatically run your application.  
 
-Note: There is no debugging for Wasm within Rider, but you debug using the built in Chrome tools. 
+Note: There is no debugging for Wasm within Rider, but you debug using the built in Chrome tools.
 
 ### macOS
 You will be able to build the macOS project.  
@@ -83,7 +83,7 @@ You will be able to build the macOS project.
 Alternatively, you can use a tool like VNC to run the simulator on a mac.  
 
 ### UWP
-You will be able to build the UWP project, however, Rider currently does not support debugging or deploying for UWP.   
+You will be able to build the UWP project, however, Rider currently does not support debugging or deploying for UWP.
 ![run-uwp-rider](Assets/quick-start/run-uwp-rider.JPG)  
 
 

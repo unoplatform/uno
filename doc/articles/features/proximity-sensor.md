@@ -10,7 +10,7 @@ uid: Uno.Features.ProximitySensor
 * The `Windows.Devices.Sensors.ProximitySensor` class allows measuring distance of an object in millimeters.
 
 ## Using `ProximitySensor` with Uno
- 
+
 * The sensor is currently only available on Android.
 * To retrieve the available sensors, `DeviceInformation.FindAllAsync` method is used.
 

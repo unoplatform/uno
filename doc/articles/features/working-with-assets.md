@@ -36,7 +36,7 @@ This is just like adding an asset to any UWP project. Just make sure to add the 
 1. Add the image file to the `Assets` directory of a shared project.
 2. Set the build action to `Content`.
 
-Using the asset is done through the `ms-appx:///` scheme. 
+Using the asset is done through the `ms-appx:///` scheme.
 
 Here are a few examples:
 ```xml

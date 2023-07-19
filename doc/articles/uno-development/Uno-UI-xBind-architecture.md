@@ -8,7 +8,7 @@ uid: Uno.Contributing.xBind
 
 > Note that this section is based on observations of the behavior of `x:Bind`
 
-`x:Bind` markup extensions have originally been developed by Microsoft to provide enhanced Data Binding performance, where no reflection is needed to do so. Code is generated along with XAML files that contain controls and DataTemplates, in `.g.cs` and `.g.i.cs` files. 
+`x:Bind` markup extensions have originally been developed by Microsoft to provide enhanced Data Binding performance, where no reflection is needed to do so. Code is generated along with XAML files that contain controls and DataTemplates, in `.g.cs` and `.g.i.cs` files.
 
 Those bindings differ in multiple ways with standard `Binding` markup:
 - The default binding mode is `OneTime` (`OneWay` for `Binding`)

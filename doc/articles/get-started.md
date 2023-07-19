@@ -4,9 +4,9 @@ uid: Uno.GetStarted
 
 ### Select your development environment
 
-Uno Platform allows you to create single-codebase, cross-platform applications which run on iOS, Android, Web, macOS, Linux and Windows. You'll be creating cross-platform .NET applications with XAML and C# in no time. 
+Uno Platform allows you to create single-codebase, cross-platform applications which run on iOS, Android, Web, macOS, Linux and Windows. You'll be creating cross-platform .NET applications with XAML and C# in no time.
 
-The following sections will guide you through your development environment setup, a simple Hello World app, and more advanced tutorials. 
+The following sections will guide you through your development environment setup, a simple Hello World app, and more advanced tutorials.
 
 To set up your development environment, first select the operating system you're developing on.
 
@@ -14,7 +14,7 @@ To set up your development environment, first select the operating system you're
 
 # [**Windows**](#tab/windows)
 
-If you're developing on Windows, we recommend you use [**Visual Studio 2022**](get-started-vs-2022.md), for the richest XAML development experience and broadest platform coverage. 
+If you're developing on Windows, we recommend you use [**Visual Studio 2022**](get-started-vs-2022.md), for the richest XAML development experience and broadest platform coverage.
 
 If you already use and love **JetBrains Rider** or **Visual Studio Code**, you can also use them to develop Uno Platform applications. Check the support matrix below to see which target platforms they support.
 
@@ -58,7 +58,7 @@ You can use **Visual Studio for Mac**, **JetBrains Rider**, or **Visual Studio C
 # [**Linux**](#tab/linux)
 
  You can use either **JetBrains Rider** or **Visual Studio Code** to build Uno Platform applications on Linux. See the support matrix below for supported target platforms.
- 
+
 **Choose the IDE you want to use:**
 
 - [Get started with Visual Studio Code, Codespaces and GitPod](get-started-vscode.md)

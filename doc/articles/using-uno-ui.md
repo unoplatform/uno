@@ -36,11 +36,11 @@ These articles cover general WinUI features in Uno Platform, discussing what's s
 
 ## WinUI controls
 
-Uno Platform provides support for a large number of WinUI controls, panels, and visual primitives - see [a complete list](implemented-views.md) in the Reference documentation. The 'WinUI controls' section in the Table of Contents on the left covers platform-specific constraints and extensions for selected controls. 
+Uno Platform provides support for a large number of WinUI controls, panels, and visual primitives - see [a complete list](implemented-views.md) in the Reference documentation. The 'WinUI controls' section in the Table of Contents on the left covers platform-specific constraints and extensions for selected controls.
 
 ## WinRT features (non-visual APIs)
 
-Uno Platform supports a number of non-visual APIs from Windows Runtime namespaces on non-Windows platforms, like [clipboard management](features/windows-applicationmodel-datatransfer.md) and [sensor access](features/windows-devices-sensors.md). 
+Uno Platform supports a number of non-visual APIs from Windows Runtime namespaces on non-Windows platforms, like [clipboard management](features/windows-applicationmodel-datatransfer.md) and [sensor access](features/windows-devices-sensors.md).
 
 [!include[Inline table of contents](inlineTOCs/winrt-features-inline-toc.include)]
 

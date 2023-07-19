@@ -15,12 +15,12 @@ uid: Uno.QA.RemoteControl
 - Build and launch app [Wasm|iOS|Android]
   - Restart VS if started
   - In MainPage.xaml, change the Text property to something else
-  - Save 
+  - Save
   - Observe a UI change
 
 - Move the iOS project in a solution folder
   - Restart VS if started
   - Build and launch iOS app
   - In MainPage.xaml, change the Text property to something else
-  - Save 
+  - Save
   - Observe a UI change

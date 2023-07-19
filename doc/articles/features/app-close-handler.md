@@ -11,7 +11,7 @@ uid: Uno.Features.AppCloseHandler
 
 ## Supported features
 
-| Feature        |  Windows  | Android |  iOS  |  Web (WASM)  | macOS | Linux (Skia)  | Win 7 (Skia) | 
+| Feature        |  Windows  | Android |  iOS  |  Web (WASM)  | macOS | Linux (Skia)  | Win 7 (Skia) |
 |---------------|-------|-------|-------|-------|-------|-------|-|
 | `CloseRequested`         | ✔ | ✖ | ✖ | ✖ | ✔ | ✔ | ✔ |
 

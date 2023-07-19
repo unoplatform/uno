@@ -11,7 +11,7 @@ uid: Uno.Features.FileManagement
 
 ## Supported features
 
-| Feature        |  Windows  | Android |  iOS  |  Web (WASM)  | macOS | Linux (Skia)  | Win 7 (Skia) | 
+| Feature        |  Windows  | Android |  iOS  |  Web (WASM)  | macOS | Linux (Skia)  | Win 7 (Skia) |
 |---------------|-------|-------|-------|-------|-------|-------|-|
 | `StorageFile` | ✔ | ✔ | ✔| ✔ | ✔| ✔ |✔ |
 | `StorageFolder` | ✔ | ✔ | ✔| ✔ | ✔| ✔ |✔ |
@@ -26,7 +26,7 @@ Uno supports some of the APIs from the `Windows.Storage` namespace, such as `Win
 
 Both `Windows.Storage` and `System.IO` APIs are available, with some platform specifics defined below. In general, it is best to use `Windows.Storage` APIs when available, as their asynchronous nature allows for transparent interactions with the underlying file system implementations. In addition, `System.IO` cannot work with files that are not owned by the application directly (e.g. files picked by a dialog).
 
-Note that for file and folder metadata only `BasicProperties` are partially supported for now. 
+Note that for file and folder metadata only `BasicProperties` are partially supported for now.
 `FileAttributes` and all "advanced properties" (`StorageItemContentProperties`) related to the content of the file, including the thumbnail, are not yet supported.
 
 ## WebAssembly File System
@@ -89,7 +89,7 @@ var fileExists = await StorageFileHelper.ExistsInPackage("Assets/Fonts/uno-fluen
 
 ## Support for `RandomAccessStreamReference.CreateFromUri`
 
-Uno Platform supports the creation of a `RandomAccessStreamReference` from an `Uri` (`RandomAccessStreamReference.CreateFromUri`), but note that on WASM downloading a file from a server often causes issues with [CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS). 
+Uno Platform supports the creation of a `RandomAccessStreamReference` from an `Uri` (`RandomAccessStreamReference.CreateFromUri`), but note that on WASM downloading a file from a server often causes issues with [CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS).
 Make sure the server that hosts the file is configured accordingly.
 
 ## Support for `CachedFileManager`

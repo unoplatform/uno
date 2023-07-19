@@ -4,7 +4,7 @@ uid: Uno.Development.Samples
 
 # Uno.Samples
 
-The [Uno.Samples repository](https://github.com/unoplatform/Uno.Samples) gathers various working examples for Uno Platform, ranging from small single-feature samples to larger showcase applications. 
+The [Uno.Samples repository](https://github.com/unoplatform/Uno.Samples) gathers various working examples for Uno Platform, ranging from small single-feature samples to larger showcase applications.
 
 Browse the complete list below.
 
@@ -24,7 +24,7 @@ This sample application demonstrates the usage  of the `WebAuthenticationBroker`
 [Follow the tutorial](https://platform.uno/docs/articles/guides/open-id-connect.html)
 
 ### Auto-Suggest  
-An implementation of the XAML `AutoSuggest` control, showing how to autofill suggestions for user input. 
+An implementation of the XAML `AutoSuggest` control, showing how to autofill suggestions for user input.
 
 [Browse source](https://github.com/unoplatform/Uno.Samples/tree/master/UI/AutoSuggestSample)
 
@@ -34,13 +34,13 @@ An implementation of the .NET Benchmark Control, a performance comparison tool.
 [Browse source](https://github.com/unoplatform/Uno.Samples/tree/master/UI/Benchmark)
 
 ### Camera Capture UI  
-A cross-platform implementation of the UWP `CameraCaptureUI` class that allows the user to capture audio, video, and photos from the device camera. 
+A cross-platform implementation of the UWP `CameraCaptureUI` class that allows the user to capture audio, video, and photos from the device camera.
 
 [Browse source](https://github.com/unoplatform/Uno.Samples/tree/master/UI/CameraCaptureUI)
 
 ### Chat SignalR
 
-Demonstrates the use of [SignalR](https://docs.microsoft.com/en-us/aspnet/core/signalr/introduction?view=aspnetcore-3.1) in an Uno Platform application. 
+Demonstrates the use of [SignalR](https://docs.microsoft.com/en-us/aspnet/core/signalr/introduction?view=aspnetcore-3.1) in an Uno Platform application.
 
 [Browse source](https://github.com/unoplatform/Uno.Samples/tree/master/UI/ChatSignalR)
 
@@ -50,7 +50,7 @@ An example of creating a custom control library and calling a control from your 
 [Browse source](https://github.com/unoplatform/Uno.Samples/tree/master/UI/ControlLibrary)
 
 ### Dual-Screen
-A simple example using the `TwoPaneView` control spanned across dual screens (such as Neo or Duo dual-screen devices for example). 
+A simple example using the `TwoPaneView` control spanned across dual screens (such as Neo or Duo dual-screen devices for example).
 
 [Browse source](https://github.com/unoplatform/Uno.Samples/tree/master/UI/DualScreenSample)
 
@@ -82,7 +82,7 @@ A pair of samples related to localization:
   [Follow the tutorial](https://platform.uno/docs/articles/guides/hotswap-app-language.html)
 
 ### Map Control  
-An implementation of the UWP `Maps` control with a custom slider that binds the value of the slider to the `ZoomLevel` property of the control. 
+An implementation of the UWP `Maps` control with a custom slider that binds the value of the slider to the `ZoomLevel` property of the control.
 
 [Browse source](https://github.com/unoplatform/Uno.Samples/tree/master/UI/MapControlSample)
 
@@ -94,12 +94,12 @@ An example showcasing how to set up the native frame navigation for iOS and Andr
 [Follow the tutorial](https://platform.uno/docs/articles/guides/native-frame-nav-tutorial.html)
 
 ### Native Style Switch  
-An example of a toggle that allows you to switch between Native UI Controls and UWP UI Controls. The sample includes a checkbox, slider, button, and toggle. 
+An example of a toggle that allows you to switch between Native UI Controls and UWP UI Controls. The sample includes a checkbox, slider, button, and toggle.
 
 [Browse source](https://github.com/unoplatform/Uno.Samples/tree/master/UI/NativeStylesSwitch)
 
 ### Package Resources
-An example that demonstrates the use of package assets and how to read them from your app. 
+An example that demonstrates the use of package assets and how to read them from your app.
 
 Note that for WebAssembly assets are downloaded on demand, as can be seen in the browser's network tab.
 
@@ -177,7 +177,7 @@ An example showing how to set up the [`Uno.Material`](https://github.com/unoplat
 [Follow the tutorial](https://platform.uno/docs/articles/external/uno.themes/doc/material-getting-started.html)
 
 ### WCT DataGrid  
-A dynamic grid view ported from the Windows Community Toolkit that allows for x:Bind. 
+A dynamic grid view ported from the Windows Community Toolkit that allows for x:Bind.
 
 [Browse source](https://github.com/unoplatform/Uno.Samples/tree/master/UI/UnoWCTDataGridSample)
 
