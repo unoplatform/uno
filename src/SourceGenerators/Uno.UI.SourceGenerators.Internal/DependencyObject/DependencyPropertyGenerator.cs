@@ -467,7 +467,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				{
 					builder.AppendLineIndented($"\t\t, coerceValueCallback: (instance, baseValue, precedence) => (({containingTypeName})instance).Coerce{propertyName}(baseValue, precedence)");
 				}
-				else // data.CoerceCallbackMethod.Parameters.Length == 1
+				else
 				{
 					builder.AppendLineIndented($"\t\t, coerceValueCallback: (instance, baseValue, precedence) => (({containingTypeName})instance).Coerce{propertyName}(baseValue)");
 				}
