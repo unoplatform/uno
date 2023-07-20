@@ -183,14 +183,17 @@ namespace Windows.UI.Xaml.Controls
 				return false;
 			}
 
-			// The baseValue hasn't been set yet, so we need to make sure we're not
+			// The baseValue hasn't been set inside PropertyDetails yet, so we need to make sure we're not
 			// reading soon-to-be-outdated values
-			var localValue = precedence < DependencyPropertyValuePrecedences.Inheritance ? // < actually means higher precedence
-				baseValue :
-				((IDependencyObjectStoreProvider)this).Store.GetPropertyDetails(IsEnabledProperty).GetValueUnderPrecedence(DependencyPropertyValuePrecedences.Coercion).value;
-			var parentValue = precedence == DependencyPropertyValuePrecedences.Inheritance ?
-				baseValue :
-				((IDependencyObjectStoreProvider)this).Store.GetPropertyDetails(IsEnabledProperty).GetValue(DependencyPropertyValuePrecedences.Inheritance);
+
+			var parentValue = baseValue;
+			DependencyPropertyDetails propertyDetails = null;
+
+			if (precedence != DependencyPropertyValuePrecedences.Inheritance)
+			{
+				propertyDetails = ((IDependencyObjectStoreProvider)this).Store.GetPropertyDetails(IsEnabledProperty);
+				parentValue = propertyDetails.GetValue(DependencyPropertyValuePrecedences.Inheritance);
+			}
 
 			// If the parent is disabled, this control must be disabled as well
 			if (parentValue != DependencyProperty.UnsetValue && !(bool)parentValue!)
@@ -198,7 +201,10 @@ namespace Windows.UI.Xaml.Controls
 				return false;
 			}
 
-			return localValue;
+			// otherwise use the more local value
+			return precedence < DependencyPropertyValuePrecedences.Inheritance ? // < actually means higher precedence
+				baseValue :
+				(propertyDetails ?? ((IDependencyObjectStoreProvider)this).Store.GetPropertyDetails(IsEnabledProperty)).GetValueUnderPrecedence(DependencyPropertyValuePrecedences.Coercion).value;
 		}
 
 >>>>>>> 86522f24d5 (chore: add explicit metadata property to handle IsEnable inheritance)
