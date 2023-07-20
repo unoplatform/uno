@@ -1239,7 +1239,7 @@ namespace Uno.UI.DataBinding
 
 		private static object? ConvertToEnum(Type enumType, object value)
 		{
-			var valueString = value.ToString();
+			var valueString = Enum.GetName(enumType, value);
 
 			FieldInfo? defaultValue = null;
 			foreach (var field in enumType.GetFields())
@@ -1255,20 +1255,10 @@ namespace Uno.UI.DataBinding
 					if (descriptionAttribute.Description.Equals(valueString, StringComparison.CurrentCultureIgnoreCase) ||
 						descriptionAttribute.Description.Equals(valueString, StringComparison.InvariantCultureIgnoreCase))
 					{
-#if NET7_0_OR_GREATER
 						if (Enum.TryParse(enumType, field.Name, ignoreCase: true, out var enumValue))
 						{
 							return enumValue;
 						}
-#else
-						try
-						{
-							return Enum.Parse(enumType, field.Name, ignoreCase: true);
-						}
-						catch (Exception)
-						{
-						}
-#endif
 					}
 
 					if (descriptionAttribute.Description == "?")
@@ -1280,20 +1270,10 @@ namespace Uno.UI.DataBinding
 
 			if (defaultValue is not null)
 			{
-#if NET7_0_OR_GREATER
 				if (Enum.TryParse(enumType, defaultValue.Name, ignoreCase: true, out var enumValue))
 				{
 					return enumValue;
 				}
-#else
-				try
-				{
-					return Enum.Parse(enumType, defaultValue.Name, ignoreCase: true);
-				}
-				catch (Exception)
-				{
-				}
-#endif
 			}
 
 			return DependencyProperty.UnsetValue;
