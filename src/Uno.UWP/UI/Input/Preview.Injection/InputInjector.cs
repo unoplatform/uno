@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Windows.Devices.Input;
 using Windows.Foundation;
+using Windows.System;
 using Uno.Extensions.Specialized;
 
 namespace Windows.UI.Input.Preview.Injection;
@@ -93,6 +94,18 @@ public partial class InputInjector
 		foreach (var info in input)
 		{
 			var args = info.ToEventArgs(_mouse!);
+			_mouse!.Update(args);
+
+			_target.InjectPointerUpdated(args);
+		}
+	}
+
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__", "__MACOS__")]
+	public void InjectMouseInput(IEnumerable<(InjectedInputMouseInfo, VirtualKeyModifiers)> input)
+	{
+		foreach (var (info, modifiers) in input)
+		{
+			var args = info.ToEventArgs(_mouse!, modifiers);
 			_mouse!.Update(args);
 
 			_target.InjectPointerUpdated(args);
