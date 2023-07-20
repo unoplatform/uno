@@ -110,7 +110,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 			public string PropertyName { get; }
 			public bool HasPropertySuffix { get; }
 
-			public IMethodSymbol? CoerceCallbackMethod { get; }
+			public int? CoerceCallbackMethodParameterLength { get; }
 
 			public bool IsCallbackWithDPChangedArgs { get; }
 			public bool IsCallbackWithDPChangedArgsOnly { get; }
@@ -143,7 +143,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				ContainingTypeFullyQualifiedName = dpSymbol.ContainingType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
 				ContainingTypeHintName = HashBuilder.BuildIDFromSymbol(dpSymbol.ContainingType);
 				ContainingTypeHasGetDefaultValueMethod = dpSymbol.ContainingType.GetFirstMethodWithName($"Get{PropertyName}DefaultValue") is not null;
-				CoerceCallbackMethod = dpSymbol.ContainingType.GetFirstMethodWithName("Coerce" + PropertyName);
+				CoerceCallbackMethodParameterLength = dpSymbol.ContainingType.GetFirstMethodWithName("Coerce" + PropertyName)?.Parameters.Length;
 
 				MemberSymbolNodeContent = SymbolToNodeString(dpSymbol);
 
@@ -363,13 +363,13 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				}
 			}
 
-			if (coerceCallback)
+			if (coerceCallback || data.CoerceCallbackMethodParameterLength is not null)
 			{
-				if (data.CoerceCallbackMethod is { } m && m.Parameters.Length == 2)
+				if (data.CoerceCallbackMethodParameterLength is 2)
 				{
 					builder.AppendLineIndented($"\t\t, coerceValueCallback: (instance, baseValue, precedence) => Coerce{propertyName}(instance, ({propertyTypeName})baseValue, precedence)");
 				}
-				else // data.CoerceCallbackMethod.Parameters.Length == 1
+				else
 				{
 					builder.AppendLineIndented($"\t\t, coerceValueCallback: (instance, baseValue, precedence) => Coerce{propertyName}(instance, ({propertyTypeName})baseValue)");
 				}
@@ -461,9 +461,9 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				builder.AppendLineIndented($"\t\t, backingFieldUpdateCallback: On{propertyName}BackingFieldUpdate");
 			}
 
-			if (coerceCallback)
+			if (coerceCallback || data.CoerceCallbackMethodParameterLength is not null)
 			{
-				if (data.CoerceCallbackMethod is { } m && m.Parameters.Length == 2)
+				if (data.CoerceCallbackMethodParameterLength is 2)
 				{
 					builder.AppendLineIndented($"\t\t, coerceValueCallback: (instance, baseValue, precedence) => (({containingTypeName})instance).Coerce{propertyName}(baseValue, precedence)");
 				}
