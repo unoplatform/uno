@@ -39,10 +39,9 @@ namespace Windows.UI.Xaml
 
 				originalSource.RaiseEvent(
 					KeyDownEvent,
-					new KeyRoutedEventArgs(originalSource, args.VirtualKey, args.KeyStatus)
+					new KeyRoutedEventArgs(originalSource, args.VirtualKey, args.KeyStatus, modifiers)
 					{
-						CanBubbleNatively = false,
-						KeyboardModifiers = modifiers
+						CanBubbleNatively = false
 					}
 				);
 
@@ -66,10 +65,9 @@ namespace Windows.UI.Xaml
 
 				originalSource.RaiseEvent(
 					KeyUpEvent,
-					new KeyRoutedEventArgs(originalSource, args.VirtualKey, args.KeyStatus)
+					new KeyRoutedEventArgs(originalSource, args.VirtualKey, args.KeyStatus, modifiers)
 					{
-						CanBubbleNatively = false,
-						KeyboardModifiers = modifiers
+						CanBubbleNatively = false
 					}
 				);
 
