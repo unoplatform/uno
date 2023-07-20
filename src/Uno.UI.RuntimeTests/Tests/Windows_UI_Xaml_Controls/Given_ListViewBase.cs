@@ -6,7 +6,9 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Windows.Foundation;
+using Windows.System;
 using Windows.UI;
+using Windows.UI.Input.Preview.Injection;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -20,6 +22,7 @@ using Uno.Extensions;
 using Uno.UI.RuntimeTests.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.ListViewPages;
+using Uno.UI.RuntimeTests.Tests.Uno_UI_Xaml_Core;
 
 #if NETFX_CORE
 using Uno.UI.Extensions;
@@ -95,6 +98,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 	public partial class Given_ListViewBase // test cases
 	{
+		private Point Center(FrameworkElement item)
+		{
+			var rect = item.GetAbsoluteBounds();
+			return new Point((rect.Left + rect.Right) / 2, (rect.Top + rect.Bottom) / 2);
+		}
+
 		[TestMethod]
 		[RunsOnUIThread]
 		public void ValidSelectionChange()
@@ -636,6 +645,71 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 
 			Assert.AreEqual(list.SelectedIndex, -1);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Multiple_Selection_Pointer()
+		{
+			var items = Enumerable.Range(0, 10).Select(i => new ListViewItem { Content = i}).ToArray();
+			var list = new ListView
+			{
+				SelectionMode = ListViewSelectionMode.Multiple,
+			};
+
+			items.ForEach((ListViewItem item) => list.Items.Add(item));
+
+			WindowHelper.WindowContent = list;
+			await WindowHelper.WaitForIdle();
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var selected = new List<ListViewItem>();
+			await AssertSelected();
+
+			mouse.Press(Center(items[1]));
+			mouse.Release();
+
+			selected.Add(items[1]);
+			await AssertSelected();
+
+			mouse.Press(Center(items[3]), VirtualKeyModifiers.Shift);
+			mouse.Release(VirtualKeyModifiers.Shift);
+
+			selected.AddRange(items.Where((_, i) => i is > 1 and <= 3).ToList());
+			await AssertSelected();
+
+			mouse.Press(Center(items[6]));
+			mouse.Release();
+
+			selected.Add(items[6]);
+			await AssertSelected();
+
+			mouse.Press(Center(items[8]), VirtualKeyModifiers.Shift);
+			mouse.Release(VirtualKeyModifiers.Shift);
+
+			selected.AddRange(items.Where((_, i) => i is > 6 and <= 8));
+			await AssertSelected();
+
+			mouse.Press(Center(items[8]));
+			mouse.Release();
+
+			selected.Remove(items[8]);
+			await AssertSelected();
+
+			mouse.Press(Center(items[4]), VirtualKeyModifiers.Shift);
+			mouse.Release(VirtualKeyModifiers.Shift);
+
+			items.Where((_, i) => i is >= 4 and < 8).ForEach(item => selected.Remove(item));
+			await AssertSelected();
+
+			async Task AssertSelected()
+			{
+				await WindowHelper.WaitForIdle();
+				selected.ForEach(item => Assert.AreEqual(item.IsSelected, true));
+				items.Except(selected).ForEach(item => Assert.AreEqual(item.IsSelected, false));
+			}
 		}
 
 		[TestMethod]
