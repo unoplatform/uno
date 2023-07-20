@@ -697,13 +697,28 @@ namespace Windows.UI.Xaml.Controls
 
 		private void FlipSelectionInMultipleSelection(int index, object item = null, SelectorItem container = null)
 		{
-			if (!SelectInMultipleSelection(index, item, container))
+			item ??= ItemFromIndex(index);
+			container ??= ContainerFromIndex(index) as SelectorItem;
+
+			if (!SelectedItems.Contains(item))
 			{
-				UnselectInMultipleSelection(index, item, container);
+				SelectedItems.Add(item);
+				if (container is { })
+				{
+					container.IsSelected = true;
+				}
+			}
+			else
+			{
+				SelectedItems.Remove(item);
+				if (container is { })
+				{
+					container.IsSelected = false;
+				}
 			}
 		}
 
-		private bool SelectInMultipleSelection(int index, object item = null, SelectorItem container = null)
+		private void SelectInMultipleSelection(int index, object item = null, SelectorItem container = null)
 		{
 			item ??= ItemFromIndex(index);
 			if (!SelectedItems.Contains(item))
@@ -713,14 +728,10 @@ namespace Windows.UI.Xaml.Controls
 				{
 					selectorItem.IsSelected = true;
 				}
-
-				return true;
 			}
-
-			return false;
 		}
 
-		private bool UnselectInMultipleSelection(int index, object item = null, SelectorItem container = null)
+		private void UnselectInMultipleSelection(int index, object item = null, SelectorItem container = null)
 		{
 			item ??= ItemFromIndex(index);
 			if (SelectedItems.Contains(item))
@@ -730,11 +741,7 @@ namespace Windows.UI.Xaml.Controls
 				{
 					selectorItem.IsSelected = false;
 				}
-
-				return true;
 			}
-
-			return false;
 		}
 
 		private void SetSelectedState(int clickedIndex, bool selected)
