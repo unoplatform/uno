@@ -18,17 +18,17 @@ public abstract partial class RangeBase : Control
 
 	// Uno specific: Coercion for properties to call RangeBase Core
 
-	private static object CoerceValue(DependencyObject dependencyObject, object baseValue)
+	private static object CoerceValue(DependencyObject dependencyObject, object baseValue, DependencyPropertyValuePrecedences _)
 	{
 		return ((RangeBase)dependencyObject).SetRangeBaseValue(ValueProperty, baseValue);
 	}
 
-	private static object CoerceMinimum(DependencyObject dependencyObject, object baseValue)
+	private static object CoerceMinimum(DependencyObject dependencyObject, object baseValue, DependencyPropertyValuePrecedences _)
 	{
 		return ((RangeBase)dependencyObject).SetRangeBaseValue(MinimumProperty, baseValue);
 	}
 
-	private static object CoerceMaximum(DependencyObject dependencyObject, object baseValue)
+	private static object CoerceMaximum(DependencyObject dependencyObject, object baseValue, DependencyPropertyValuePrecedences _)
 	{
 		return ((RangeBase)dependencyObject).SetRangeBaseValue(MaximumProperty, baseValue);
 	}

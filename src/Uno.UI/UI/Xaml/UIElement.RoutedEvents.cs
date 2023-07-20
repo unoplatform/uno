@@ -191,7 +191,7 @@ namespace Windows.UI.Xaml
 				RoutedEventFlag.None,
 				FrameworkPropertyMetadataOptions.Inherits)
 			{
-				CoerceValueCallback = CoerceRoutedEventFlag
+				CoerceValueCallback = (dependencyObject, value, _) => CoerceRoutedEventFlag(dependencyObject, value)
 			}
 		);
 
@@ -214,7 +214,7 @@ namespace Windows.UI.Xaml
 					RoutedEventFlag.None,
 					FrameworkPropertyMetadataOptions.Inherits)
 				{
-					CoerceValueCallback = CoerceRoutedEventFlag
+					CoerceValueCallback = (dependencyObject, value, _) => CoerceRoutedEventFlag(dependencyObject, value)
 				}
 			);
 

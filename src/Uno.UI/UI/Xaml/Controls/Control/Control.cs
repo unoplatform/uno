@@ -176,15 +176,21 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private protected virtual object CoerceIsEnabled(object baseValue)
+		private protected virtual object CoerceIsEnabled(object baseValue, DependencyPropertyValuePrecedences precedence)
 		{
 			if (_suppressIsEnabled)
 			{
 				return false;
 			}
 			
-			var (localValue, _) = ((IDependencyObjectStoreProvider)this).Store.GetPropertyDetails(IsEnabledProperty).GetValueUnderPrecedence(DependencyPropertyValuePrecedences.Coercion);
-			var parentValue = ((IDependencyObjectStoreProvider)this).Store.GetPropertyDetails(IsEnabledProperty).GetValue(DependencyPropertyValuePrecedences.Inheritance);
+			// The baseValue hasn't been set yet, so we need to make sure we're not
+			// reading soon-to-be-outdated values
+			var localValue = precedence < DependencyPropertyValuePrecedences.Inheritance ? // < actually means higher precedence
+				baseValue :
+				((IDependencyObjectStoreProvider)this).Store.GetPropertyDetails(IsEnabledProperty).GetValueUnderPrecedence(DependencyPropertyValuePrecedences.Coercion).value;
+			var parentValue = precedence == DependencyPropertyValuePrecedences.Inheritance ?
+				baseValue :
+				((IDependencyObjectStoreProvider)this).Store.GetPropertyDetails(IsEnabledProperty).GetValue(DependencyPropertyValuePrecedences.Inheritance);
 			
 			// If the parent is disabled, this control must be disabled as well
 			if (parentValue != DependencyProperty.UnsetValue && !(bool)parentValue!)

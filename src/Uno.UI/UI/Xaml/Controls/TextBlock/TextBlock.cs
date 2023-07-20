@@ -234,7 +234,7 @@ namespace Windows.UI.Xaml.Controls
 				)
 			);
 
-		internal static object CoerceText(DependencyObject dependencyObject, object baseValue) =>
+		internal static object CoerceText(DependencyObject dependencyObject, object baseValue, DependencyPropertyValuePrecedences _) =>
 			baseValue is string
 				? baseValue
 				: string.Empty;

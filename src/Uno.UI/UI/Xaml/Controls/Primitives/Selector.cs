@@ -243,7 +243,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		private int _uncoercedSelectedIndex = -1;
 
-		private static object CoerceSelectedIndex(DependencyObject dependencyObject, object baseValue)
+		private static object CoerceSelectedIndex(DependencyObject dependencyObject, object baseValue, DependencyPropertyValuePrecedences _)
 		{
 			if (baseValue is not int desiredIndex)
 			{
@@ -339,7 +339,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			SelectedIndex = indexOfItemWithValue;
 		}
 
-		private static object SelectedValueCoerce(DependencyObject snd, object baseValue)
+		private static object SelectedValueCoerce(DependencyObject snd, object baseValue, DependencyPropertyValuePrecedences _)
 		{
 			var selector = (Selector)snd;
 			if (selector?._selectedValueBindingPath != null)

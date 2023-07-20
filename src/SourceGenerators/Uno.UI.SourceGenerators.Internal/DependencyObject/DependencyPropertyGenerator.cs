@@ -110,7 +110,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 			public string PropertyName { get; }
 			public bool HasPropertySuffix { get; }
 
-			public bool HasCoerceCallback { get; }
+			public IMethodSymbol? CoerceCallbackMethod { get; }
 
 			public bool IsCallbackWithDPChangedArgs { get; }
 			public bool IsCallbackWithDPChangedArgsOnly { get; }
@@ -143,7 +143,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				ContainingTypeFullyQualifiedName = dpSymbol.ContainingType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
 				ContainingTypeHintName = HashBuilder.BuildIDFromSymbol(dpSymbol.ContainingType);
 				ContainingTypeHasGetDefaultValueMethod = dpSymbol.ContainingType.GetFirstMethodWithName($"Get{PropertyName}DefaultValue") is not null;
-				HasCoerceCallback = dpSymbol.ContainingType.GetFirstMethodWithName("Coerce" + PropertyName) is not null;
+				CoerceCallbackMethod = dpSymbol.ContainingType.GetFirstMethodWithName("Coerce" + PropertyName);
 
 				MemberSymbolNodeContent = SymbolToNodeString(dpSymbol);
 
@@ -363,9 +363,16 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				}
 			}
 
-			if (coerceCallback || data.HasCoerceCallback)
+			if (coerceCallback)
 			{
-				builder.AppendLineIndented($"\t\t, coerceValueCallback: (instance, baseValue) => Coerce{propertyName}(instance, ({propertyTypeName})baseValue)");
+				if (data.CoerceCallbackMethod is { } m && m.Parameters.Length == 2)
+				{
+					builder.AppendLineIndented($"\t\t, coerceValueCallback: (instance, baseValue, precedence) => Coerce{propertyName}(instance, ({propertyTypeName})baseValue, precedence)");
+				}
+				else // data.CoerceCallbackMethod.Parameters.Length == 1
+				{
+					builder.AppendLineIndented($"\t\t, coerceValueCallback: (instance, baseValue, precedence) => Coerce{propertyName}(instance, ({propertyTypeName})baseValue)");
+				}
 			}
 
 			if (data.IsCallbackWithDPChangedArgs)
@@ -454,9 +461,16 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				builder.AppendLineIndented($"\t\t, backingFieldUpdateCallback: On{propertyName}BackingFieldUpdate");
 			}
 
-			if (coerceCallback || data.HasCoerceCallback)
+			if (coerceCallback)
 			{
-				builder.AppendLineIndented($"\t\t, coerceValueCallback: (instance, baseValue) => (({containingTypeName})instance).Coerce{propertyName}(baseValue)");
+				if (data.CoerceCallbackMethod is { } m && m.Parameters.Length == 2)
+				{
+					builder.AppendLineIndented($"\t\t, coerceValueCallback: (instance, baseValue, precedence) => (({containingTypeName})instance).Coerce{propertyName}(baseValue, precedence)");
+				}
+				else // data.CoerceCallbackMethod.Parameters.Length == 1
+				{
+					builder.AppendLineIndented($"\t\t, coerceValueCallback: (instance, baseValue, precedence) => (({containingTypeName})instance).Coerce{propertyName}(baseValue)");
+				}
 			}
 
 
