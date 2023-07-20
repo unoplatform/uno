@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.Foundation;
+using Windows.System;
 using Windows.UI.Input.Preview.Injection;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media.Imaging;
@@ -242,8 +243,20 @@ public class Mouse : IInjectedPointer, IDisposable
 	public void Press(Point position)
 		=> Inject(GetMoveTo(position.X, position.Y, null).Concat(new[] { GetPress() }));
 
+	internal void Press(Point position, VirtualKeyModifiers modifiers)
+	{
+		var infos = GetMoveTo(position.X, position.Y, null).Concat(new[] { GetPress() });
+		Inject(infos.Select(info => (info, modifiers)));
+	}
+
 	public void Press()
 		=> Inject(GetPress());
+
+	public void Press(VirtualKeyModifiers modifiers)
+		=> Inject((GetPress(), modifiers));
+
+	public void Release(VirtualKeyModifiers modifiers)
+		=> Inject((GetRelease(), modifiers));
 
 	public void Release()
 		=> Inject(GetRelease());
@@ -333,8 +346,14 @@ public class Mouse : IInjectedPointer, IDisposable
 
 	private void Inject(IEnumerable<InjectedInputMouseInfo> infos)
 		=> _input.InjectMouseInput(infos);
+	
+	private void Inject(IEnumerable<(InjectedInputMouseInfo, VirtualKeyModifiers)> infos)
+		=> _input.InjectMouseInput(infos);
 
 	private void Inject(params InjectedInputMouseInfo[] infos)
+		=> _input.InjectMouseInput(infos);
+	
+	private void Inject(params (InjectedInputMouseInfo, VirtualKeyModifiers)[] infos)
 		=> _input.InjectMouseInput(infos);
 
 	public void Dispose()
