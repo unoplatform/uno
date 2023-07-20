@@ -648,7 +648,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 #if !__SKIA__
-		[Ignore("InputInjector is only support on skia")]
+		[Ignore("InputInjector is only supported on skia")]
 #else
 		[TestMethod]
 		[RunsOnUIThread]
@@ -720,7 +720,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 #if !__SKIA__
-		[Ignore("InputInjector is only support on skia")]
+		[Ignore("InputInjector is only supported on skia")]
 #else
 		[TestMethod]
 		[RunsOnUIThread]
@@ -785,7 +785,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 #if !__SKIA__
-		[Ignore("InputInjector is only support on skia")]
+		[Ignore("InputInjector is only supported on skia")]
 #else
 		[TestMethod]
 		[RunsOnUIThread]
