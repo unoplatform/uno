@@ -3023,6 +3023,52 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(header2.DataContext.ToString(), header2.Text);
 		}
 
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_HeaderTemplate_DataContext()
+		{
+			TextBlock header = null;
+
+			var SUT = new ListView()
+			{
+				ItemContainerStyle = BasicContainerStyle,
+				HeaderTemplate = new DataTemplate(() =>
+				{
+					var s = new StackPanel
+					{
+						Background = new SolidColorBrush(Colors.Red),
+						Children = {
+							(header = new TextBlock { Text = "empty" }),
+						}
+					};
+
+					header.SetBinding(TextBlock.TextProperty, new Binding { Path = new PropertyPath("MyText") });
+
+					return s;
+				})
+			};
+
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForIdle();
+
+			var container = header.FindFirstParent<ContentControl>();
+
+			var source = new[] {
+				new ListViewItem(){ Content = "item 1" },
+			};
+
+			SUT.ItemsSource = source;
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsNull(header.DataContext);
+
+			SUT.DataContext = new When_Header_DataContext_Model("test value");
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(SUT.DataContext, header.DataContext);
+			Assert.AreEqual("test value", header.Text);
+		}
+
 		private async Task When_Items_Are_Equal_But_Different_References_Common(Selector sut)
 		{
 			var obj1 = new AlwaysEqualClass();

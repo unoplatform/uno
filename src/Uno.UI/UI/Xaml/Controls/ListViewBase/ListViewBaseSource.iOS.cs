@@ -393,14 +393,24 @@ namespace Windows.UI.Xaml.Controls
 						.Binding("Content", "");
 				}
 
+				supplementaryView.Content.ContentTemplate = template;
+
 				if (elementKind == NativeListViewBase.ListViewFooterElementKindNS || elementKind == NativeListViewBase.ListViewHeaderElementKindNS)
 				{
 					supplementaryView.Content.SetParent(Owner.XamlParent);
-					supplementaryView.Content.Content = context;
+
+					if (context is not null)
+					{
+						supplementaryView.Content.Content = context;
+					}
+
+					// We need to reset the DataContext as it may have been forced to null as a local value
+					// during ItemsControl.CleanUpContainer
+					// See https://github.com/unoplatform/uno/blob/54041db0bd6d5049d8efab90b097eaca936bfca1/src/Uno.UI/UI/Xaml/Controls/ItemsControl/ItemsControl.cs#L1200
+					supplementaryView.Content.ClearValue(ContentControl.DataContextProperty);
 				}
 				else
 				{
-					supplementaryView.Content.ContentTemplate = template;
 					supplementaryView.Content.DataContext = context;
 				}
 
