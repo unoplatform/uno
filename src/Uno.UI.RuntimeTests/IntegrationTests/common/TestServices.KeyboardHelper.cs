@@ -175,8 +175,9 @@ namespace Private.Infrastructure
 
 							if (m_vKeyMapping.TryGetValue(key, out var vKey))
 							{
-								element.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(element, vKey));
-								element.SafeRaiseEvent(UIElement.KeyUpEvent, new KeyRoutedEventArgs(element, vKey));
+								var modifiers = shouldShift ? VirtualKeyModifiers.Shift : VirtualKeyModifiers.None;
+								element.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(element, vKey, modifiers: modifiers));
+								element.SafeRaiseEvent(UIElement.KeyUpEvent, new KeyRoutedEventArgs(element, vKey, modifiers: modifiers));
 							}
 
 							if (shouldShift)
