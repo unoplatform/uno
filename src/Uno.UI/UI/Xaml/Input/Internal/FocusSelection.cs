@@ -91,19 +91,19 @@ namespace Uno.UI.Xaml.Input
 
 		internal static FocusNavigationDirection GetNavigationDirectionForKeyboardArrow(VirtualKey key)
 		{
-			if (key is VirtualKey.Up or VirtualKey.GamepadDPadUp)
+			if (key is VirtualKey.Up)
 			{
 				return FocusNavigationDirection.Up;
 			}
-			else if (key is VirtualKey.Down or VirtualKey.GamepadDPadDown)
+			else if (key is VirtualKey.Down)
 			{
 				return FocusNavigationDirection.Down;
 			}
-			else if (key is VirtualKey.Left or VirtualKey.GamepadDPadLeft)
+			else if (key is VirtualKey.Left)
 			{
 				return FocusNavigationDirection.Left;
 			}
-			else if (key is VirtualKey.Right or VirtualKey.GamepadDPadRight)
+			else if (key is VirtualKey.Right)
 			{
 				return FocusNavigationDirection.Right;
 			}

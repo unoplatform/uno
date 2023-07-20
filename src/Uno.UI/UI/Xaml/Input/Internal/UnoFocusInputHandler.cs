@@ -92,14 +92,16 @@ internal class UnoFocusInputHandler
 		contentRoot.InputManager.LastInputDeviceType = InputDeviceType.Keyboard;
 
 		var focusManager = VisualTree.GetFocusManagerForElement(_rootElement);
-		var focusDirection = FocusSelection.GetNavigationDirectionForKeyboardArrow(originalKey);
+		// Uno specific: We are handling Gamepad input along with keyboard here.
+		var focusDirection = FocusSelection.GetNavigationDirection(originalKey);
 
 		if (focusManager == null || focusDirection == FocusNavigationDirection.None)
 		{
 			return false;
 		}
 
-		var source = focusManager.FocusedElement; // Uno specific: This should actually bubble up with the event from the source element to the root visual.
+		// Uno specific: This should actually bubble up with the event from the source element to the root visual.
+		var source = focusManager.FocusedElement;
 
 		var directionalFocusEnabled = false;
 		var focusCandidateFound = false;
