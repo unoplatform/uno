@@ -3054,8 +3054,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			WindowHelper.WindowContent = SUT;
 			await WindowHelper.WaitForIdle();
 
-			var container = header.FindFirstParent<ContentControl>();
-
 			var source = new[] {
 				new ListViewItem(){ Content = "item 1" },
 			};
