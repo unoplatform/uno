@@ -148,7 +148,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		}
 #endif
 
-		private protected override object CoerceIsEnabled(object baseValue)
+		private protected override object CoerceIsEnabled(object baseValue, DependencyPropertyValuePrecedences precedence)
 		{
 			if (Command != null
 				&& !Command.CanExecute(CommandParameter))
@@ -156,7 +156,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				return false;
 			}
 
-			return base.CoerceIsEnabled(baseValue);
+			return base.CoerceIsEnabled(baseValue, precedence);
 		}
 
 		private protected override void OnContentTemplateRootSet() => RegisterEvents();

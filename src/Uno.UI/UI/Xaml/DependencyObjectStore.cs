@@ -468,10 +468,11 @@ namespace Windows.UI.Xaml
 					var previousValue = GetValue(propertyDetails);
 					var previousPrecedence = GetCurrentHighestValuePrecedence(propertyDetails);
 
-					// Set at precedence before setting at coercion as some elements use this value to determine how to coerce
-					SetValueInternal(value, precedence, propertyDetails);
+					// Coercion must be applied before we set the new value
+					// see https://github.com/unoplatform/uno/pull/12884
+					ApplyCoercion(actualInstanceAlias, propertyDetails, previousValue, value, precedence);
 
-					ApplyCoercion(actualInstanceAlias, propertyDetails, previousValue, value);
+					SetValueInternal(value, precedence, propertyDetails);
 
 					if (!isPersistentResourceBinding && !_isSettingPersistentResourceBinding)
 					{
@@ -618,7 +619,8 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		private void ApplyCoercion(DependencyObject actualInstanceAlias, DependencyPropertyDetails propertyDetails, object? previousValue, object? baseValue)
+		private void ApplyCoercion(DependencyObject actualInstanceAlias, DependencyPropertyDetails propertyDetails,
+			object? previousValue, object? baseValue, DependencyPropertyValuePrecedences precedence)
 		{
 			if (baseValue is UnsetValue)
 			{
@@ -644,7 +646,7 @@ namespace Windows.UI.Xaml
 				return;
 			}
 
-			var coercedValue = coerceValueCallback(actualInstanceAlias, baseValue);
+			var coercedValue = coerceValueCallback(actualInstanceAlias, baseValue, precedence);
 			if (coercedValue is UnsetValue)
 			{
 				// The property system will treat any CoerceValueCallback that returns the value UnsetValue as a special case.
