@@ -271,4 +271,6 @@ You can use both the Uno Platform and C# Dev Kit extensions but not simultaneous
 
 You can then switch between both profiles according to the type of dotnet project you are developing.
 
+You're all set! You can now head to [our tutorials](getting-started-tutorial-1.md) on how to work on your Uno Platform app.
+
 [!include[getting-help](getting-help.md)]
