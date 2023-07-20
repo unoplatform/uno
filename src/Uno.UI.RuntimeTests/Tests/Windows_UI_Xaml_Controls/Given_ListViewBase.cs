@@ -3022,8 +3022,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(header2.DataContext.ToString(), header2.Text);
 		}
 
+#if HAS_UNO
 		[TestMethod]
 		[RunsOnUIThread]
+#if __WASM__ || __SKIA__
+		[Ignore("https://github.com/unoplatform/uno/issues/234")]
+#endif
 		public async Task When_HeaderTemplate_DataContext()
 		{
 			TextBlock header = null;
@@ -3067,6 +3071,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(SUT.DataContext, header.DataContext);
 			Assert.AreEqual("test value", header.Text);
 		}
+#endif
 
 		private async Task When_Items_Are_Equal_But_Different_References_Common(Selector sut)
 		{
