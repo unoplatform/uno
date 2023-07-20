@@ -291,13 +291,13 @@ namespace Windows.UI.Xaml.Controls
 				typeof(TextBox),
 				new FrameworkPropertyMetadata(
 					UIReturnKeyType.Default,
-					(s, e) => ((TextBox)s)?.OnReturnKeyTypeChanged((UIReturnKeyType)e.NewValue),
+					(s, e, _) => ((TextBox)s)?.OnReturnKeyTypeChanged((UIReturnKeyType)e.NewValue),
 					coerceValueCallback: CoerceReturnKeyType
 				)
 			);
 
 
-		private static object CoerceReturnKeyType(DependencyObject dependencyObject, object baseValue)
+		private static object CoerceReturnKeyType(DependencyObject dependencyObject, object baseValue, DependencyPropertyValuePrecedences _)
 		{
 			return dependencyObject is TextBox textBox && textBox.InputScope.GetFirstInputScopeNameValue() == InputScopeNameValue.Search
 				? UIReturnKeyType.Search
