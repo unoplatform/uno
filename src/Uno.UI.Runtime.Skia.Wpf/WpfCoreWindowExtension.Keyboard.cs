@@ -46,7 +46,8 @@ namespace Uno.UI.Skia.Platform
 						{
 							ScanCode = (uint)args.SystemKey,
 							RepeatCount = 1,
-						}), GetKeyModifiers(args.KeyboardDevice.Modifiers));
+						}),
+					GetKeyModifiers(args.KeyboardDevice.Modifiers));
 			}
 			catch (Exception e)
 			{
@@ -73,7 +74,8 @@ namespace Uno.UI.Skia.Platform
 						{
 							ScanCode = (uint)args.SystemKey,
 							RepeatCount = 1,
-						}), GetKeyModifiers(args.KeyboardDevice.Modifiers));
+						}),
+					GetKeyModifiers(args.KeyboardDevice.Modifiers));
 			}
 			catch (Exception e)
 			{

@@ -43,6 +43,6 @@ namespace Windows.UI.Xaml.Input
 
 		public global::Windows.System.VirtualKey OriginalKey { get; }
 
-		internal VirtualKeyModifiers KeyboardModifiers { get; init; }
+		internal VirtualKeyModifiers KeyboardModifiers { get; }
 	}
 }

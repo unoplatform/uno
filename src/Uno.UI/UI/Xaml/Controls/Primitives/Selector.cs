@@ -558,8 +558,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		internal void OnItemClicked(SelectorItem selectorItem, VirtualKeyModifiers modifiers) => OnItemClicked(IndexFromContainer(selectorItem), modifiers);
 
-		internal virtual void OnItemClicked(int clickedIndex) => OnItemClicked(clickedIndex, VirtualKeyModifiers.None);
-
 		internal virtual void OnItemClicked(int clickedIndex, VirtualKeyModifiers modifiers)
 		{
 			if (ItemsSource is ICollectionView collectionView)
