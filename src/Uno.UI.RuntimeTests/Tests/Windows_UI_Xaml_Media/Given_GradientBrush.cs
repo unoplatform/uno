@@ -1,6 +1,10 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
+using Uno.UI.RuntimeTests.Helpers;
+using Windows.Foundation.Metadata;
 using Windows.UI;
 using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Shapes;
 using static Private.Infrastructure.TestServices;
 
@@ -12,6 +16,11 @@ public class Given_GradientBrush
 	[TestMethod]
 	public async Task When_GradientStop_Color_Changes()
 	{
+		if (!ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+		{
+			Assert.Inconclusive(); // "System.NotImplementedException: RenderTargetBitmap is not supported on this platform.";
+		}
+
 		var rect = new Rectangle();
 		rect.Width = 100;
 		rect.Height = 100;
@@ -26,5 +35,12 @@ public class Given_GradientBrush
 		await WindowHelper.WaitForLoaded(rect);
 
 		gradientStop1.Color = Colors.Blue;
+
+		var renderer = new RenderTargetBitmap();
+		await WindowHelper.WaitForIdle();
+		await renderer.RenderAsync(rect);
+
+		var bitmap = await RawBitmap.From(renderer, rect);
+		ImageAssert.HasColorAt(bitmap, 0, 0, Colors.Blue, tolerance: 5);
 	}
 }
