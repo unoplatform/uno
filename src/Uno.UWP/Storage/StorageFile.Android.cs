@@ -1,4 +1,4 @@
-#nullable enable
+	#nullable enable
 
 using System;
 using System.Globalization;
@@ -18,6 +18,7 @@ using Windows.Storage.Streams;
 using Windows.Storage.Helpers;
 using Uno.Helpers;
 using Windows.ApplicationModel.Background;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Windows.Storage
 {
@@ -80,6 +81,7 @@ namespace Windows.Storage
 			return await StorageFile.GetFileFromPathAsync(outputCachePath);
 		}
 
+		[MemberNotNull(nameof(_currentAppID))]
 		private static void EnsureAppID()
 		{
 			if (_currentAppID is null)
