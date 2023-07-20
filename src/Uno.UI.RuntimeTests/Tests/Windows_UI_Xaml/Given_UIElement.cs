@@ -24,6 +24,8 @@ using UIKit;
 using AppKit;
 #else
 using Uno.UI;
+using Windows.UI;
+using Windows.ApplicationModel.Appointments;
 #endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
@@ -644,6 +646,24 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				sut.IsArrangeDirty.Should().BeFalse("IsArrangeDirty");
 				sut.IsArrangeDirtyPath.Should().BeFalse("IsArrangeDirtyPath");
 			}
+		}
+#endif
+
+#if __SKIA__
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Explicit_Size_Clip_Changes()
+		{
+			var sut = new UIElement();
+
+			var rect = new Rect(0, 0, 100, 100);
+			var clip = new Rect(0, 0, 50, 50);
+
+			sut.ArrangeVisual(rect, clip);
+			Assert.IsNotNull(sut.Visual.Clip);
+
+			sut.ArrangeVisual(rect, null);
+			Assert.IsNull(sut.Visual.Clip);
 		}
 #endif
 	}
