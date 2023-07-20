@@ -450,19 +450,29 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-		public async Task When_SVGImageSource()
+		[DataRow("ms-appx:///Assets/couch.svg")]
+		[DataRow("ms-appx:///Uno.UI.RuntimeTests/Assets/couch.svg")]
+		[DataRow("ms-appx:///Uno.UI.RuntimeTests/Assets/help.svg")]
+		public async Task When_SVGImageSource(string imagePath)
 		{
 			if (!ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
 			{
-				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
+				Assert.Inconclusive("RenderTargetBitmap is not supported on this platform");
 			}
 
+<<<<<<< HEAD
 			var svgImageSource = new SvgImageSource(new Uri("ms-appx:///Assets/couch.svg"));
+=======
+			var svgImageSource = new SvgImageSource(new Uri(imagePath));
+>>>>>>> 57a48eb8f6 (fix(assets): Adjust assets caching by including assembly and package versions)
 			var image = new Image() { Source = svgImageSource, Width = 100, Height = 100 };
 			TestServices.WindowHelper.WindowContent = image;
 			await WindowHelper.WaitForLoaded(image);
 		}
+<<<<<<< HEAD
 
+=======
+>>>>>>> 57a48eb8f6 (fix(assets): Adjust assets caching by including assembly and package versions)
 
 		[TestMethod]
 		[RunsOnUIThread]
