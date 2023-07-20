@@ -291,7 +291,7 @@ namespace Windows.UI.Xaml.Controls
 				typeof(TextBox),
 				new FrameworkPropertyMetadata(
 					UIReturnKeyType.Default,
-					(s, e, _) => ((TextBox)s)?.OnReturnKeyTypeChanged((UIReturnKeyType)e.NewValue),
+					(s, e) => ((TextBox)s)?.OnReturnKeyTypeChanged((UIReturnKeyType)e.NewValue),
 					coerceValueCallback: CoerceReturnKeyType
 				)
 			);
