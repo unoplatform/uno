@@ -91,12 +91,11 @@ namespace Windows.UI.Xaml.Controls
 				}
 
 				var dataTemplate = GetDataTemplateFromItem(parent, item, viewType, isGroupHeader);
-
+				container.ContentTemplate = dataTemplate;
 
 				if (!isHeader && !isFooter)
 				{
 					container.DataContext = item;
-					container.ContentTemplate = dataTemplate;
 					if (container.GetBindingExpression(ContentControl.ContentProperty) == null)
 					{
 						container.SetBinding(ContentControl.ContentProperty, new Binding());
