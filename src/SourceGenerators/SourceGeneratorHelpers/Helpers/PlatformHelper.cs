@@ -41,6 +41,10 @@ namespace Uno.UI.SourceGenerators.Helpers
 		public static bool IsExe(GeneratorExecutionContext context)
 			=> context.GetMSBuildPropertyValue("OutputType")?.Equals("Exe", StringComparison.OrdinalIgnoreCase) ?? false;
 
+		public static bool IsIOSMobile(GeneratorExecutionContext context)
+			=> context.GetMSBuildPropertyValue("RuntimeIdentifier") is { Length: > 0 } rid
+				&& rid.StartsWith("ios", StringComparison.OrdinalIgnoreCase);
+
 		public static bool IsUnoHead(GeneratorExecutionContext context)
 			=> context.GetMSBuildPropertyValue("IsUnoHead")?.Equals("true", StringComparison.OrdinalIgnoreCase) ?? false;
 

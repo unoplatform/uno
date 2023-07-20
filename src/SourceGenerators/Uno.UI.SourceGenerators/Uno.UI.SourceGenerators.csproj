@@ -23,6 +23,12 @@
 		<PackageReference Include="Microsoft.CodeAnalysis.Common" Version="3.3.1" ExcludeAssets="runtime" />
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.3.1" ExcludeAssets="runtime" />
 		<PackageReference Include="Uno.SourceGeneration" />
+
+		<!-- 
+		Conditional compilation for net4x not supporting 
+		invalid #if statements in a raw literal string
+		-->
+		<Compile Remove="HotRestart\*.cs" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0'">

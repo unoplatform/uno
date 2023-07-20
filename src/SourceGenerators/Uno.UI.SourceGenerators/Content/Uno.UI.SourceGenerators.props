@@ -97,6 +97,8 @@
 		<CompilerVisibleProperty Include="IsHotReloadHost" />
 		<CompilerVisibleProperty Include="UnoUseXamlReaderHotReload" />
 		<CompilerVisibleProperty Include="IsUnoHead" />
+		<CompilerVisibleProperty Include="UnoDisableHotRestartHelperGeneration" />
+		<CompilerVisibleProperty Include="RuntimeIdentifier" />
 
 		<CompilerVisibleProperty Include="UseWPF" />
 		<CompilerVisibleProperty Include="IsUnoHead" />
