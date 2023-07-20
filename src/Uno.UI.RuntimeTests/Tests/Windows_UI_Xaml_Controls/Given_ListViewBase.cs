@@ -647,6 +647,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(list.SelectedIndex, -1);
 		}
 
+#if HAS_UNO
 #if !__SKIA__
 		[Ignore("InputInjector is only supported on skia")]
 #else
@@ -718,7 +719,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				items.Except(selected).ForEach(item => Assert.AreEqual(item.IsSelected, false));
 			}
 		}
+#endif
 
+#if HAS_UNO
 #if !__SKIA__
 		[Ignore("InputInjector is only supported on skia")]
 #else
@@ -783,7 +786,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				items.Except(selected).ForEach(item => Assert.AreEqual(item.IsSelected, false));
 			}
 		}
+#endif
 
+#if HAS_UNO
 #if !__SKIA__
 		[Ignore("InputInjector is only supported on skia")]
 #else
@@ -861,6 +866,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				items.Except(selected).ForEach(item => Assert.AreEqual(item.IsSelected, false));
 			}
 		}
+#endif
 
 		[TestMethod]
 		public async Task When_IsItsOwnItemContainer_Recycling()
