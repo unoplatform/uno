@@ -5,6 +5,8 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Uno.UI.Helpers;
 
+// Original source: https://github.com/dotnet/maui/blob/fe4bc5b8258f4abe037f0d3c3f54de1facfef853/src/Controls/src/Core/Internals/WeakEventProxy.cs
+
 /// <summary>
 /// An abstract base class for subscribing to an event via WeakReference.
 /// See WeakNotifyCollectionChangedProxy below for sublcass usage.
@@ -15,8 +17,8 @@ internal abstract class WeakEventProxy<TSource, TEventHandler>
 	where TSource : class
 	where TEventHandler : Delegate
 {
-	WeakReference<TSource>? _source;
-	WeakReference<TEventHandler>? _handler;
+	private WeakReference<TSource>? _source;
+	private WeakReference<TEventHandler>? _handler;
 
 	public bool TryGetSource([MaybeNullWhen(false)] out TSource source)
 	{

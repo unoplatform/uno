@@ -129,6 +129,11 @@ namespace Windows.UI.Xaml.Shapes
 
 		public static void SetAndObserveBackgroundBrush(FrameworkElement element, Brush brush, WeakBrushChangedProxy brushChangedProxy, ref Action brushChanged)
 		{
+			if (brushChangedProxy.TryGetSource(out var oldValue) && oldValue is AcrylicBrush oldAcrylic)
+			{
+				AcrylicBrush.ResetStyle(element);
+			}
+
 			if (brush is ImageBrush imgBrush)
 			{
 				SetBackgroundBrush(element, brush);
@@ -168,10 +173,8 @@ namespace Windows.UI.Xaml.Shapes
 			{
 				SetBackgroundBrush(element, brush);
 
-				// TODO: additionalDisposeAction might be better served with something like `if (oldValue is AcrylicBrush oldAcrlyic) { AcrylicBrush.ResetStyle(element) }` ?
-				// TODO: additionalDisposeAction currently is problematic as it will be GC'ed when we still need it. We should store it in a field.
 				brushChanged = () => acrylicBrush.Apply(element);
-				brushChangedProxy.Subscribe(acrylicBrush, brushChanged, additionalDisposeAction: () => AcrylicBrush.ResetStyle(element));
+				brushChangedProxy.Subscribe(acrylicBrush, brushChanged);
 			}
 			else
 			{
