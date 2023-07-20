@@ -346,13 +346,13 @@ public class Mouse : IInjectedPointer, IDisposable
 
 	private void Inject(IEnumerable<InjectedInputMouseInfo> infos)
 		=> _input.InjectMouseInput(infos);
-	
+
 	private void Inject(IEnumerable<(InjectedInputMouseInfo, VirtualKeyModifiers)> infos)
 		=> _input.InjectMouseInput(infos);
 
 	private void Inject(params InjectedInputMouseInfo[] infos)
 		=> _input.InjectMouseInput(infos);
-	
+
 	private void Inject(params (InjectedInputMouseInfo, VirtualKeyModifiers)[] infos)
 		=> _input.InjectMouseInput(infos);
 
