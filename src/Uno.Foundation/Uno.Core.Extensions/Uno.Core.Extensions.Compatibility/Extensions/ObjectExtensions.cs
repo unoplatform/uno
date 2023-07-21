@@ -22,13 +22,18 @@ namespace Uno.Extensions
 {
 	internal static class ObjectExtensions
 	{
+		public static void Maybe<TInstance>(this TInstance instance, Action<TInstance> action)
+		{
+			if (instance != null)
+			{
+				action(instance);
+			}
+		}
+
 		public static void Maybe<TInstance>(this object instance, Action<TInstance> action)
 			where TInstance : class
 		{
-			if (instance is TInstance tInstance)
-			{
-				action(tInstance);
-			}
+			Maybe<TInstance>(instance as TInstance, action);
 		}
 
 		public static TResult SelectOrDefault<TInstance, TResult>(this TInstance instance, Func<TInstance, TResult> selector)
