@@ -6,13 +6,13 @@ uid: Uno.Interop.WasmJavaScript2
 
 Let's create an app to integrate a Syntax Highlighter named [`PrismJS`](https://prismjs.com/). This library is simple and is self-contained - there's no external dependencies.
 
-# Integration of PrismJS in a project
+## Integration of PrismJS in a project
 
-## 0. Before starting
+### 0. Before starting
 
 📝 To reproduce the code in this article, you must [prepare development environment using Uno's _Getting Started_ article](https://platform.uno/docs/articles/get-started.html).
 
-## 1. Create the projects
+### 1. Create the projects
 
 🎯 This section is very similar to the [Creating an app - Tutorial](https://platform.uno/docs/articles/getting-started-tutorial-1.html) in the official documentation.
 
@@ -42,7 +42,7 @@ Let's create an app to integrate a Syntax Highlighter named [`PrismJS`](https://
 
    > Note: when compiling using Uno platform the first time, it could take some time to download the latest .NET for WebAssembly SDK into a temporary folder.
    >
-## 2. Create a control in managed code
+### 2. Create a control in managed code
 
 🎯  In this section, a control named `PrismJsView` is created in code and used in the XAML page (`MainPage.xaml`) to present it.
 
@@ -156,7 +156,7 @@ Let's create an app to integrate a Syntax Highlighter named [`PrismJS`](https://
 
 👌 The project is now ready to integrate PrismJS.
 
-## 3. Add JavaScript & CSS files
+### 3. Add JavaScript & CSS files
 
 🎯  In this section, PrismJS files are downloaded from their website and placed as assets in the app.
 
@@ -186,7 +186,7 @@ Let's create an app to integrate a Syntax Highlighter named [`PrismJS`](https://
 
    ![Prism Loaded in browser](assets/image-20200414143931953.png)
 
-## 4. Invoke JavaScript from Managed Code
+### 4. Invoke JavaScript from Managed Code
 
 🎯  In this section, PrismJS is used from the app.
 

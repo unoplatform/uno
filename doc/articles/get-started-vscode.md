@@ -137,7 +137,7 @@ The Uno Platform extension provides support for debugging:
 
 It is also possible to use [Remote - SSH](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-ssh) addin to connect to a macOS machine from a Windows or Linux machine to debug iOS and Mac Catalyst apps remotely.
 
-# [**Android**](#tab/androiddebug)
+#### [**Android**](#tab/androiddebug)
 
 #### Debugging for Android
 
@@ -153,7 +153,7 @@ It is also possible to use [Remote - SSH](https://marketplace.visualstudio.com/i
 - Finally, in the debugger side menu, select the `Uno Plaform Mobile` profile
 - Either press `F5` or press the green arrow to start the debugging session.
 
-# [**iOS**](#tab/iosdebug)
+#### [**iOS**](#tab/iosdebug)
 
 > [!NOTE]
 > Debugging for iOS is only possible when running locally (or remotely through SSH) on a macOS machine.
@@ -170,7 +170,7 @@ It is also possible to use [Remote - SSH](https://marketplace.visualstudio.com/i
 - Finally, in the debugger side menu, select the `Uno Plaform Mobile` profile
 - Either press `F5` or press the green arrow
 
-# [**Mac Catalyst**](#tab/catalystdebug)
+#### [**Mac Catalyst**](#tab/catalystdebug)
 
 > [!NOTE]
 > Debugging for Mac Catalyst is only possible when running locally (or remotely through SSH) on a macOS machine.

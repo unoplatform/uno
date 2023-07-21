@@ -57,7 +57,7 @@ Now let's run the application:
 
 ## Setting up for Linux
 
-# [**Ubuntu 18.04**](#tab/ubuntu1804)
+### [**Ubuntu 18.04**](#tab/ubuntu1804)
 
 - Install GTK3:
 
@@ -68,7 +68,7 @@ Now let's run the application:
 
 - [Install .NET 6](https://learn.microsoft.com/en-us/dotnet/core/install/linux#official-package-archives)
 
-# [**Ubuntu 20.04**](#tab/ubuntu2004)
+### [**Ubuntu 20.04**](#tab/ubuntu2004)
 
 - Install GTK3:
 
@@ -79,7 +79,7 @@ Now let's run the application:
 
 - [Install .NET 6](https://learn.microsoft.com/en-us/dotnet/core/install/linux#official-package-archives)
 
-# [**ArchLinux 5.8.14 or later / Manjaro**](#tab/archlinux2004)
+### [**ArchLinux 5.8.14 or later / Manjaro**](#tab/archlinux2004)
 
 - Update system and packages
 

@@ -21,7 +21,7 @@ Android, iOS, macOS, mac Catalyst, Linux, and WebAssembly.
 
 The following packages are available:
 
-# [WinUI / WinAppSDK](#tab/tabid-winui)
+### [WinUI / WinAppSDK](#tab/tabid-winui)
 
 - [Uno.CommunityToolkit.WinUI](https://www.nuget.org/packages/Uno.CommunityToolkit.WinUI)
 - [Uno.CommunityToolkit.WinUI.Connectivity](https://www.nuget.org/packages/Uno.CommunityToolkit.WinUI.Connectivity)
@@ -41,7 +41,7 @@ The following packages are available:
 
 These package ids are for Uno Platform (non-Windows) projects. For WinUI 3 projects, you should use the equivalent packages published by Microsoft (`CommunityToolkit.WinUI`, `CommunityToolkit.WinUI.UI.Controls` etc).
 
-# [UWP](#tab/tabid-uwp)
+### [UWP](#tab/tabid-uwp)
 
 - [Uno.Microsoft.Toolkit](https://www.nuget.org/packages/Uno.Microsoft.Toolkit )
 - [Uno.Microsoft.Toolkit.Parsers](https://www.nuget.org/packages/Uno.Microsoft.Toolkit.Parsers)
@@ -70,7 +70,7 @@ These package ids are for Uno (non-Windows) projects. For UWP project, you shoul
 
 2. Add a reference to the UWP UI Controls
 
-# [WinUI / WinAppSDK](#tab/tabid-winui)
+### [WinUI / WinAppSDK](#tab/tabid-winui)
 
    In XAML:  
     ```xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"```  
@@ -78,7 +78,7 @@ These package ids are for Uno (non-Windows) projects. For UWP project, you shoul
    In C#:  
     ```using CommunityToolkit.WinUI.UI.Controls;```
 
-# [UWP](#tab/tabid-uwp)
+### [UWP](#tab/tabid-uwp)
 
    In XAML:  
     ```xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"```  
@@ -148,7 +148,7 @@ Culture=neutral, PublicKeyToken=null.
 
 To fix this, instead of adding the Uno version of the toolkit like the code below.
 
-# [WinUI / WinAppSDK](#tab/tabid-winui)
+### [WinUI / WinAppSDK](#tab/tabid-winui)
 
 Replace:
 
@@ -169,7 +169,7 @@ With a conditional reference:
 </ItemGroup>
 ```
 
-# [UWP](#tab/tabid-uwp)
+### [UWP](#tab/tabid-uwp)
 
 Replace:
 

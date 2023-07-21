@@ -8,13 +8,13 @@ The Uno Platform provides a set of command-line templates to create cross-platfo
 
 To install the templates, type the following:
 
-# [**.NET 7**](#tab/net7)
+## [**.NET 7**](#tab/net7)
 
 ```cmd
 dotnet new install Uno.Templates
 ```
 
-# [**.NET 6**](#tab/net6)
+## [**.NET 6**](#tab/net6)
 
 ```cmd
 dotnet new -i Uno.Templates

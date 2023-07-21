@@ -8,15 +8,15 @@ In the previous article, a simple _syntax highlighter_ was used to enhance the d
 
 Let's create an application illustrating how to use this feature.
 
-# Integration of Flatpickr - Callback to app from JavaScript
+## Integration of Flatpickr - Callback to app from JavaScript
 
 📝 [Flatpickr](https://flatpickr.js.org/) is a lightweight, self-contained date and time picker. It is an easy way to explore how JavaScript-side code can call back to the managed application using a `CustomEvent`. In this case, this will be used to report when the picker is opened and a date and time was picked.
 
-## 0. Before starting
+### 0. Before starting
 
 📝 To reproduce the code in this article, you must [prepare development environment using Uno's _Getting Started_ article](https://platform.uno/docs/articles/get-started.html).
 
-## 1. Create the solution in Visual Studio
+### 1. Create the solution in Visual Studio
 
 📝 This part is very short because it is similar to the previous article ([part 2](wasm-javascript-2.md)):
 
@@ -25,7 +25,7 @@ Let's create an application illustrating how to use this feature.
 3. Update to latest _stable_ version of `Uno.*` dependencies.
 4. Compile & Run to make sure everything works.
 
-## 2. Inject Flatpickr from CDN
+### 2. Inject Flatpickr from CDN
 
 🎯 This section is using a CDN to get Flatpickr instead of hosting the JavaScript directly in the application. It is not always the best solution as it creates a dependency on the Internet availability. Any change made server-side could break the application.
 
@@ -57,7 +57,7 @@ An easy way to achieve this is to add JavaScript code to load the CSS file direc
    </ItemGroup>
    ```
 
-## 3. Uno controls and XAML
+### 3. Uno controls and XAML
 
 🎯 This section is creating a control used in the XAML. It will activate `Flatpickr` on the control's `<input>` element.
 
@@ -163,7 +163,7 @@ An easy way to achieve this is to add JavaScript code to load the CSS file direc
 
 📝 Almost there, still need to _call back_ to the managed code portion of the application.
 
-## 4. Add a way to call managed code from JavaScript
+### 4. Add a way to call managed code from JavaScript
 
 🎯 This section will use `CustomEvent` to route Flatpickr's events to managed code.
 
