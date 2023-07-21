@@ -23,7 +23,7 @@ If you already use and love **JetBrains Rider** or **Visual Studio Code**, you c
 - [Get started with VS Code, Codespaces and GitPod](get-started-vscode.md)
 - [Get started with Rider](get-started-rider.md)
 
- #### Target platform coverage by IDE on Windows
+#### Target platform coverage by IDE on Windows
 
 |                                                  | Windows 10/11 (UWP/WinUI)  | Android | iOS | Web (WebAssembly) | mac Catalyst | macOS (Skia-Gtk) | Linux (Skia-Gtk) | Windows 7+ (Skia-WPF) |
 |--------------------------------------------------|----------------------------|---------|-----|-------------------|--------------|------------------|------------------|-----------------------|
@@ -45,7 +45,7 @@ You can use **Visual Studio for Mac**, **JetBrains Rider**, or **Visual Studio C
 - [Get started with VS Code, Codespaces and GitPod](get-started-vscode.md)
 - [Get started with Rider](get-started-rider.md)
 
- #### Target platform coverage by IDE on macOS
+#### Target platform coverage by IDE on macOS
 
 |                                                   | Windows 10/11(UWP/WinUI)| Android | iOS | Web (WebAssembly) | mac Catalyst | macOS (Skia-Gtk) | Linux (Skia-Gtk) | Windows 7+ (Skia-WPF) |
 |---------------------------------------------------|-------------------------|---------|-----|-------------------|-------|--------|-------------------|-----------------------|
@@ -65,7 +65,7 @@ You can use **Visual Studio for Mac**, **JetBrains Rider**, or **Visual Studio C
 
  There's [additional information here](get-started-with-linux.md) about developing from, and for, Linux with Uno Platform.
 
- #### Target platform coverage by IDE on Linux
+#### Target platform coverage by IDE on Linux
 
 |                                                   | Windows 10/11(UWP/WinUI)| Android | iOS | Web (WebAssembly) | mac Catalyst | macOS (Skia-Gtk) | Linux (Skia-Gtk) | Windows 7+ (Skia-WPF) |
 |---------------------------------------------------|------------------------|---------|-----|--------------------|-------|-------|------------------|-----------------------|

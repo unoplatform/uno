@@ -17,7 +17,7 @@ There are two ways to restrict code or XAML markup to be used only on a specific
 
 The structure of an Uno app created with the default Visual Studio template is [explained in more detail here](uno-app-solution-structure.md).
 
- ## `#if` conditionals
+## `#if` conditionals
 
  The most basic means of authoring platform-specific code is to use `#if` conditionals:
 

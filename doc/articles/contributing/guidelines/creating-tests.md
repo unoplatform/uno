@@ -30,7 +30,7 @@ These are the main types of tests in Uno:
 
  All these tests are run on each CI build, and all tests must pass before a PR can be merged.
 
- ### UI tests
+### UI tests
 
  Uno's UI tests use the [Uno.UITest](https://github.com/unoplatform/Uno.UITest) testing harness, which mimics the [`Xamarin.UITest` API](https://docs.microsoft.com/en-us/appcenter/test-cloud/uitest/) and extends it to WebAssembly. These tests run out-of-process and interact with a running app (the [SamplesApp](https://github.com/unoplatform/uno/tree/master/src/SamplesApp/UITests.Shared)) to confirm that it behaves correctly on each supported platform.
 

@@ -48,6 +48,6 @@ Sometimes so much freedom can be paralyzing. To help you get started, we've crea
 * [**Ch9**](https://github.com/unoplatform/Uno.Ch9): browse content from Microsoft's publicly-available Channel 9 video feed.
 * [**UADO**](https://github.com/unoplatform/uado): Universal Azure DevOps Organizer
 
- ## Performance
+## Performance
 
  See a checklist of performance-related best practices [here](Uno-UI-Performance.md).
