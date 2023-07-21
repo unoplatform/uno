@@ -642,7 +642,7 @@ namespace Windows.UI.Xaml
 
 			var options = (propertyDetails.Metadata as FrameworkPropertyMetadata)?.Options ?? FrameworkPropertyMetadataOptions.Default;
 
-			if (Equals(previousValue, baseValue) && !options.HasFlag(FrameworkPropertyMetadataOptions.CoerceWhenUnchanged))
+			if (Equals(previousValue, baseValue) && options.HasFlag(FrameworkPropertyMetadataOptions.CoerceOnlyWhenChanged))
 			{
 				// Value hasn't changed, don't coerce.
 				return;
