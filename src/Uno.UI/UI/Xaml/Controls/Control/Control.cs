@@ -186,14 +186,9 @@ namespace Windows.UI.Xaml.Controls
 			// The baseValue hasn't been set inside PropertyDetails yet, so we need to make sure we're not
 			// reading soon-to-be-outdated values
 
-			var parentValue = baseValue;
-			DependencyPropertyDetails propertyDetails = null;
-
-			if (precedence != DependencyPropertyValuePrecedences.Inheritance)
-			{
-				propertyDetails = ((IDependencyObjectStoreProvider)this).Store.GetPropertyDetails(IsEnabledProperty);
-				parentValue = propertyDetails.GetValue(DependencyPropertyValuePrecedences.Inheritance);
-			}
+			var parentValue = precedence == DependencyPropertyValuePrecedences.Inheritance ?
+				baseValue :
+				this.GetValue(IsEnabledProperty, DependencyPropertyValuePrecedences.Inheritance);
 
 			// If the parent is disabled, this control must be disabled as well
 			if (parentValue != DependencyProperty.UnsetValue && !(bool)parentValue!)
@@ -204,7 +199,7 @@ namespace Windows.UI.Xaml.Controls
 			// otherwise use the more local value
 			return precedence < DependencyPropertyValuePrecedences.Inheritance ? // < actually means higher precedence
 				baseValue :
-				(propertyDetails ?? ((IDependencyObjectStoreProvider)this).Store.GetPropertyDetails(IsEnabledProperty)).GetValueUnderPrecedence(DependencyPropertyValuePrecedences.Coercion).value;
+				this.GetValueUnderPrecedence(IsEnabledProperty, DependencyPropertyValuePrecedences.Coercion).value;
 		}
 
 >>>>>>> 86522f24d5 (chore: add explicit metadata property to handle IsEnable inheritance)
