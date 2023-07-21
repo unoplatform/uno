@@ -393,6 +393,14 @@ namespace Windows.UI.Xaml.Controls
 				new FrameworkPropertyMetadata(DependencyProperty.UnsetValue)
 			);
 
+		internal static DependencyProperty ItemHasManualBindingExpressionProperty { get; } =
+			DependencyProperty.RegisterAttached(
+				"ItemHasManualBindingExpression",
+				typeof(bool),
+				typeof(ItemsControl),
+				new FrameworkPropertyMetadata(false)
+			);
+
 		#endregion
 
 		internal bool AreEmptyGroupsHidden => CollectionGroups != null && (GroupStyle.FirstOrDefault()?.HidesIfEmpty ?? false);
@@ -1178,7 +1186,7 @@ namespace Windows.UI.Xaml.Controls
 						// We must not clear the properties of the container if a binding expression
 						// is defined. This is a use-case present for TreeView, which generally uses TreeViewItem
 						// at the root of hierarchical templates.
-						if (target.GetBindingExpression(property) is null)
+						if (target.GetBindingExpression(property) is null || (bool)target.GetValue(ItemHasManualBindingExpressionProperty) == true)
 						{
 							target.ClearValue(property);
 						}
@@ -1253,6 +1261,8 @@ namespace Windows.UI.Xaml.Controls
 						Path = displayMemberPath,
 						Source = item
 					});
+
+					container.SetValue(ItemHasManualBindingExpressionProperty, true);
 				}
 			}
 
@@ -1291,6 +1301,7 @@ namespace Windows.UI.Xaml.Controls
 					if (!containerAsContentControl.IsContainerFromTemplateRoot && containerAsContentControl.GetBindingExpression(ContentControl.ContentProperty) == null)
 					{
 						containerAsContentControl.SetBinding(ContentControl.ContentProperty, new Binding());
+						containerAsContentControl.SetValue(ItemHasManualBindingExpressionProperty, true);
 					}
 				}
 			}
