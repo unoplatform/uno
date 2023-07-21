@@ -103,14 +103,14 @@ public partial class SkiaApp
 			{
 				yield break;
 			}
-			
+
 			// Could probably use Bresenham's algorithm if performance issues appear
 			var stepX = deltaX / steps.Value;
 			var stepY = deltaY / steps.Value;
 
 			var prevPositionX = (int)Math.Round(x0);
 			var prevPositionY = (int)Math.Round(y0);
-		
+
 			for (var i = 1; i <= steps; i++)
 			{
 				var newPositionX = (int)Math.Round(x0 + i * stepX);

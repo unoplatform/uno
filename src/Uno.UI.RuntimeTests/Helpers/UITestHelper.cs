@@ -330,7 +330,7 @@ public class Mouse : IInjectedPointer, IDisposable
 
 		var prevPositionX = (int)Math.Round(x0);
 		var prevPositionY = (int)Math.Round(y0);
-		
+
 		for (var i = 1; i <= steps; i++)
 		{
 			var newPositionX = (int)Math.Round(x0 + i * stepX);
