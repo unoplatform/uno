@@ -187,9 +187,16 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			// otherwise use the more local value
-			return precedence < DependencyPropertyValuePrecedences.Inheritance ? // < actually means higher precedence
-				baseValue :
-				this.GetValueUnderPrecedence(IsEnabledProperty, DependencyPropertyValuePrecedences.Coercion).value;
+			var (localValue, localPrecedence) = this.GetValueUnderPrecedence(IsEnabledProperty, DependencyPropertyValuePrecedences.Coercion);
+
+			if (localPrecedence == precedence)
+			{
+				// The baseValue hasn't been set inside PropertyDetails yet, so we need to make sure we're not
+				// reading soon-to-be-outdated values
+				localValue = baseValue;
+			}
+
+			return localValue;
 		}
 
 
