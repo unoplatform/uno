@@ -1186,6 +1186,13 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 		}
 
 		[TestMethod]
+		public void When_ResourceDictionary_Nested_Colors()
+		{
+			var s = GetContent(nameof(When_ResourceDictionary_Nested_Colors));
+			var r = Windows.UI.Xaml.Markup.XamlReader.Load(s) as TestCustomResourceClass;
+		}
+
+		[TestMethod]
 		public void When_xBind_Simple()
 		{
 			var s = GetContent(nameof(When_xBind_Simple));

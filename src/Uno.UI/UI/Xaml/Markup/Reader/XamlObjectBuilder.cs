@@ -628,16 +628,18 @@ namespace Windows.UI.Xaml.Markup.Reader
 					)
 				)
 				{
-					var methods = propertyInfo.PropertyType.GetMethods();
+					var methods = propertyInfo.PropertyType.GetMethods(BindingFlags.Instance | BindingFlags.FlattenHierarchy | BindingFlags.Public);
+					var addMethod2 = propertyInfo.PropertyType.GetMethod("Add", BindingFlags.Instance | BindingFlags.FlattenHierarchy | BindingFlags.Public);
 					var addMethod = propertyInfo.PropertyType.GetMethod("Add", new[] { typeof(object), typeof(object) })
 						?? throw new InvalidOperationException($"The property {propertyInfo} type does not provide an Add method (Line {member.LineNumber}:{member.LinePosition}");
 
-					if (propertyInfo.GetMethod == null)
-					{
-						throw new InvalidOperationException($"The property {propertyInfo} does not provide a getter (Line {member.LineNumber}:{member.LinePosition}");
-					}
+					var getterDict = propertyInfo.GetMethod?.Invoke(instance, null) as ResourceDictionary;
+					var targetDictionary = getterDict ?? new ResourceDictionary();
 
-					var targetDictionary = (ResourceDictionary)propertyInfo.GetMethod.Invoke(instance, null)!;
+					if (getterDict == null)
+					{
+						GetPropertySetter(propertyInfo).Invoke(instance, new[] { targetDictionary });
+					}
 
 					var dictionaryObjects = member.Objects;
 
