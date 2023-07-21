@@ -63,7 +63,7 @@ namespace Uno.Xaml
 		public static bool operator !=(IsIncludedResult left, IsIncludedResult right) => !(left == right);
 	}
 
-	public delegate IsIncludedResult IsIncluded(string localName, string namespaceUri);
+	public delegate IsIncludedResult IsIncluded(string localName, ref string namespaceUri);
 
 	public class XamlXmlReader : XamlReader, IXamlLineInfo
 	{
@@ -149,7 +149,7 @@ namespace Uno.Xaml
 		// Uno specific: includeXamlNamespaces and excludeXamlNamespaces are Uno specific.
 		public XamlXmlReader (XmlReader xmlReader, XamlSchemaContext schemaContext, XamlXmlReaderSettings settings, IsIncluded isIncluded = null)
 		{
-			parser = new XamlXmlParser (xmlReader, schemaContext, settings, isIncluded ?? ((_, _) => IsIncludedResult.Default));
+			parser = new XamlXmlParser (xmlReader, schemaContext, settings, isIncluded ?? ((string _, ref string _) => IsIncludedResult.Default));
 		}
 
 		#endregion
@@ -320,7 +320,7 @@ namespace Uno.Xaml
 			var sti = GetStartTagInfo ();
 			using (PushIgnorables(sti.Members))
 			{
-				if (IsIgnored(r.Prefix, r.NamespaceURI))
+				if (IsIgnored(r.Prefix, r.NamespaceURI, out _))
 				{
 					r.Skip();
 					yield break;
@@ -561,12 +561,12 @@ namespace Uno.Xaml
 						break;
 
 					default:
-						if (IsIgnored(r.Prefix, r.NamespaceURI))
+						if (IsIgnored(r.Prefix, r.NamespaceURI, out var shouldTreatAsDefaultNamespace))
 						{
 							continue;
 						}
 
-						if (r.NamespaceURI == string.Empty  || r.NamespaceURI == r.LookupNamespace("")) {
+						if (r.NamespaceURI == string.Empty  || r.NamespaceURI == r.LookupNamespace("") || shouldTreatAsDefaultNamespace) {
 							atts.Add (r.LocalName, r.Value);
 							continue;
 						}
@@ -741,7 +741,7 @@ namespace Uno.Xaml
 		// member element, implicit member, children via content property, or value
 		IEnumerable<XamlXmlNodeInfo> ReadMemberElement (XamlType parentType, XamlType xt)
 		{
-			if (IsIgnored(r.Prefix, r.NamespaceURI))
+			if (IsIgnored(r.Prefix, r.NamespaceURI, out _))
 			{
 				r.Skip();
 				yield break;
@@ -963,16 +963,18 @@ namespace Uno.Xaml
 			return null;
 		}
 
-		private bool IsIgnored(string localName, string namespaceUri)
+		private bool IsIgnored(string localName, string namespaceUri, out bool shouldTreatAsDefaultNamespace)
 		{
-			var result = _isIncluded(localName, namespaceUri);
+			var result = _isIncluded(localName, ref namespaceUri);
 			var isIncluded = result.IsIncluded;
 			DisableCaching |= result.DisableCaching;
 			if (isIncluded == true)
 			{
+				shouldTreatAsDefaultNamespace = namespaceUri == r.LookupNamespace("");
 				return false;
 			}
 
+			shouldTreatAsDefaultNamespace = false;
 			if (isIncluded == false)
 			{
 				return true;

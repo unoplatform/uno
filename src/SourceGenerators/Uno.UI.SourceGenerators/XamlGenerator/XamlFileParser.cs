@@ -169,7 +169,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return XmlReader.Create(new StringReader(adjusted));
 		}
 
-		private __uno::Uno.Xaml.IsIncludedResult IsIncluded(string localName, string namespaceUri)
+		private __uno::Uno.Xaml.IsIncludedResult IsIncluded(string localName, ref string namespaceUri)
 		{
 			if (_includeXamlNamespaces.Contains(localName))
 			{
@@ -187,6 +187,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				return __uno::Uno.Xaml.IsIncludedResult.Default;
 			}
 
+			namespaceUri = valueSplit[0];
 			var elements = valueSplit[1].Split('(', ',', ')');
 
 			var methodName = elements[0];
