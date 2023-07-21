@@ -1,18 +1,15 @@
 ﻿using System;
+using System.Threading;
 using Android.App;
-using Android.Content.PM;
+using Android.OS;
 using Android.Views;
 using Java.Interop;
-using Windows.UI.Core;
-using Windows.UI.ViewManagement;
-using Microsoft.Identity.Client;
 using Uno.UI;
-using System.Threading;
-using Android.OS;
 
 namespace SamplesApp.Droid
 {
 	[Activity(
+			Exported = true,
 			MainLauncher = true,
 			ConfigurationChanges = ActivityHelper.AllConfigChanges,
 			WindowSoftInputMode = SoftInput.AdjustPan | SoftInput.StateHidden
@@ -23,9 +20,16 @@ namespace SamplesApp.Droid
 		},
 		Categories = new[] {
 			Android.Content.Intent.CategoryDefault,
-			Android.Content.Intent.CategoryBrowsable
+			Android.Content.Intent.CategoryBrowsable,
+			Android.Content.Intent.CategoryLeanbackLauncher
 		},
 		DataScheme = "uno-samples-test")]
+	[IntentFilter(
+		new[] { Android.Content.Intent.ActionMain },
+		Categories = new[] {
+			Android.Content.Intent.CategoryLauncher,
+			Android.Content.Intent.CategoryLeanbackLauncher
+		})]
 	public class MainActivity : Windows.UI.Xaml.ApplicationActivity
 	{
 		private HandlerThread _pixelCopyHandlerThread;

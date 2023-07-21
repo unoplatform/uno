@@ -1,4 +1,8 @@
-﻿using System;
+﻿// Some mappings based on
+// https://learn.microsoft.com/en-us/windows/win32/inputdev/virtual-key-codes
+// https://lists.w3.org/Archives/Public/www-dom/2010JulSep/att-0182/keyCode-spec.html
+
+using System;
 using System.Collections.Generic;
 using System.Text;
 using AppKit;
@@ -81,7 +85,7 @@ namespace Windows.System
 				69 => VirtualKey.Add,
 				75 => VirtualKey.Divide,
 				78 => VirtualKey.Subtract,
-				81 => VirtualKey.Enter, // =
+				81 => (VirtualKey)187,
 				71 => VirtualKey.Clear,
 				76 => VirtualKey.Enter,
 
