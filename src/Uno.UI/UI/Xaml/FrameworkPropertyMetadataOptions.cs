@@ -60,9 +60,9 @@ namespace Windows.UI.Xaml
 		AffectsRender = 1 << 8, // 256
 
 		/// <summary>
-		/// Should <see cref="CoerceValueCallback"/> be raised even if value has not changed?
+		/// Should <see cref="CoerceValueCallback"/> be raised only when value has changed?
 		/// </summary>
-		CoerceWhenUnchanged = 1 << 9, // 512
+		CoerceOnlyWhenChanged = 1 << 9, // 512
 
 		/// <summary>
 		/// Normally, when a property is updated and the coerced value is equal to
