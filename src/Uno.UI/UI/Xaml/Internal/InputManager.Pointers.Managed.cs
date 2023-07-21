@@ -90,9 +90,6 @@ internal partial class InputManager
 			}
 		}
 
-<<<<<<< HEAD
-		internal void OnPointerWheelChanged(Windows.UI.Core.PointerEventArgs args)
-=======
 		private void UpdateLastInputType(PointerEventArgs e)
 		{
 			_inputManager.LastInputDeviceType = e.CurrentPoint?.PointerDeviceType switch
@@ -104,8 +101,7 @@ internal partial class InputManager
 			};
 		}
 
-		private void OnPointerWheelChanged(Windows.UI.Core.PointerEventArgs args)
->>>>>>> b9475eddc7 (fix(Input): Properly update last input device type on Skia and WASM)
+		internal void OnPointerWheelChanged(Windows.UI.Core.PointerEventArgs args)
 		{
 			var (originalSource, _) = HitTest(args);
 
