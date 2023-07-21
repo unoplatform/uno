@@ -76,15 +76,12 @@ We recommend including assets for each of these scales: `100`, `150`, `200`, `30
 
 #### Examples
 
-```
-\Assets\Images\logo.scale-100.png
-\Assets\Images\logo.scale-200.png
-\Assets\Images\logo.scale-400.png
-
-\Assets\Images\scale-100\logo.png
-\Assets\Images\scale-200\logo.png
-\Assets\Images\scale-400\logo.png
-```
+* `\Assets\Images\logo.scale-100.png`
+* `\Assets\Images\logo.scale-200.png`
+* `\Assets\Images\logo.scale-400.png`
+* `\Assets\Images\scale-100\logo.png`
+* `\Assets\Images\scale-200\logo.png`
+* `\Assets\Images\scale-400\logo.png`
 
 ### Language
 
@@ -102,15 +99,12 @@ The following languages have been verified to work on all platforms:
 
 #### Examples
 
-```
-\Assets\Images\en\logo.png
-\Assets\Images\fr\logo.png
-\Assets\Images\es\logo.png
-
-\Assets\Images\logo.language-en.png
-\Assets\Images\logo.language-fr.png
-\Assets\Images\logo.language-es.png
-```
+* `\Assets\Images\en\logo.png`
+* `\Assets\Images\fr\logo.png`
+* `\Assets\Images\es\logo.png`
+* `\Assets\Images\logo.language-en.png`
+* `\Assets\Images\logo.language-fr.png`
+* `\Assets\Images\logo.language-es.png`
 
 ### Dark theme support
 
@@ -120,10 +114,8 @@ A theme qualifier can be specified for the image loader to use an asset based on
 
 #### Examples
 
-```
-/Assets/theme-light/ThemeTestImage.png
-/Assets/theme-dark/ThemeTestImage.png
-```
+* `/Assets/theme-light/ThemeTestImage.png`
+* `/Assets/theme-dark/ThemeTestImage.png`
 
 ### Custom (platform)
 
@@ -149,15 +141,12 @@ On UWP, you must add the following code to your `App.cs` or `App.xaml.cs` constr
 
 #### Examples
 
-```
-\Assets\Images\custom-uwp\logo.png
-\Assets\Images\custom-ios\logo.png
-\Assets\Images\custom-android\logo.png
-
-\Assets\Images\logo.custom-uwp.png
-\Assets\Images\logo.custom-ios.png
-\Assets\Images\logo.custom-android.png
-```
+* `\Assets\Images\custom-uwp\logo.png`
+* `\Assets\Images\custom-ios\logo.png`
+* `\Assets\Images\custom-android\logo.png`
+* `\Assets\Images\logo.custom-uwp.png`
+* `\Assets\Images\logo.custom-ios.png`
+* `\Assets\Images\logo.custom-android.png`
 
 ## Android: setting a custom image handler
 

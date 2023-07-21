@@ -65,7 +65,7 @@ Uno supports the [`x:Bind`](https://docs.microsoft.com/en-us/windows/uwp/xaml-pl
 
   - Literal numeric value
 
-  ```
+  ```xml
   <TextBlock Text="{x:Bind Add(InstanceProperty, 42.42)}" />
   ```
 

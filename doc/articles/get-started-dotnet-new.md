@@ -10,13 +10,13 @@ To install the templates, type the following:
 
 # [**.NET 7**](#tab/net7)
 
-```
+```cmd
 dotnet new install Uno.Templates
 ```
 
 # [**.NET 6**](#tab/net6)
 
-```
+```cmd
 dotnet new -i Uno.Templates
 ```
 
@@ -42,13 +42,13 @@ It comes with the **Blank** and **Recommended** presets.
 
 To create a blank template, using minimal dependencies:
 
-```
+```cmd
 dotnet new unoapp -preset=blank -o test
 ```
 
 To create from a recommended template, using [Uno.Extensions](xref:Overview.Extensions):
 
-```
+```cmd
 dotnet new unoapp -preset=recommended -o test
 ```
 
@@ -66,13 +66,13 @@ This template can be used to create a blank multi-platform application for iOS, 
 
 A basic example:
 
-```
+```cmd
 dotnet new unoapp-uwp -o MyApp
 ```
 
 A more advanced example that will not generate the android and macOS heads:
 
-```
+```cmd
 dotnet new unoapp-uwp -o MyApp -android=false -macos=false
 ```
 
@@ -84,13 +84,13 @@ This template uses a single project head for iOS, Android, macOS, and Mac Cataly
 
 A basic example:
 
-```
+```cmd
 dotnet new unoapp-uwp-net6 -o MyApp
 ```
 
 A more advanced example that will not generate the android and macOS heads:
 
-```
+```cmd
 dotnet new unoapp-uwp-net6 -o MyApp --Mobile=false
 ```
 
@@ -106,7 +106,7 @@ This template can be used to create a blank library. With this type of library, 
 
 A basic example:
 
-```
+```cmd
 dotnet new unolib -o MyUnoLib
 ```
 
@@ -116,7 +116,7 @@ This template can be used to create a blank cross-runtime library, when platform
 
 A basic example:
 
-```
+```cmd
 dotnet new unolib-crossruntime -o MyCrossRuntimeLibrary
 ```
 
