@@ -320,7 +320,7 @@ namespace Uno.Xaml
 			var sti = GetStartTagInfo ();
 			using (PushIgnorables(sti.Members))
 			{
-				if (IsIgnored(r.Prefix, r.NamespaceURI, out _))
+				if (IsIgnored(r.Prefix, r.NamespaceURI))
 				{
 					r.Skip();
 					yield break;
@@ -561,12 +561,12 @@ namespace Uno.Xaml
 						break;
 
 					default:
-						if (IsIgnored(r.Prefix, r.NamespaceURI, out var shouldTreatAsDefaultNamespace))
+						if (IsIgnored(r.Prefix, r.NamespaceURI))
 						{
 							continue;
 						}
 
-						if (r.NamespaceURI == string.Empty  || r.NamespaceURI == r.LookupNamespace("") || shouldTreatAsDefaultNamespace) {
+						if (r.NamespaceURI == string.Empty  || r.NamespaceURI == r.LookupNamespace("")) {
 							atts.Add (r.LocalName, r.Value);
 							continue;
 						}
@@ -741,7 +741,7 @@ namespace Uno.Xaml
 		// member element, implicit member, children via content property, or value
 		IEnumerable<XamlXmlNodeInfo> ReadMemberElement (XamlType parentType, XamlType xt)
 		{
-			if (IsIgnored(r.Prefix, r.NamespaceURI, out _))
+			if (IsIgnored(r.Prefix, r.NamespaceURI))
 			{
 				r.Skip();
 				yield break;
@@ -963,18 +963,16 @@ namespace Uno.Xaml
 			return null;
 		}
 
-		private bool IsIgnored(string localName, string namespaceUri, out bool shouldTreatAsDefaultNamespace)
+		private bool IsIgnored(string localName, string namespaceUri)
 		{
 			var result = _isIncluded(localName, namespaceUri);
 			var isIncluded = result.IsIncluded;
 			DisableCaching |= result.DisableCaching;
 			if (isIncluded == true)
 			{
-				shouldTreatAsDefaultNamespace = true;
 				return false;
 			}
 
-			shouldTreatAsDefaultNamespace = false;
 			if (isIncluded == false)
 			{
 				return true;
