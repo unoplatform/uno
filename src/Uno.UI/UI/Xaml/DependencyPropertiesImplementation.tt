@@ -22,13 +22,13 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
-#if XAMARIN_IOS
+#if __IOS__
 using Color = UIKit.UIColor;
 using View = UIKit.UIView;
 #elif __MACOS__
 using Color = AppKit.NSColor;
 using View = AppKit.NSView;
-#elif XAMARIN_ANDROID
+#elif __ANDROID__
 using Color = Android.Resource.Color;
 using View = Android.Views.View;
 #elif IS_UNIT_TESTS || UNO_REFERENCE_API

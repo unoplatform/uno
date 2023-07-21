@@ -1,5 +1,4 @@
-﻿#if __IOS__
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using Foundation;
@@ -11,4 +10,3 @@ namespace Windows.System.UserProfile
 		public static IReadOnlyList<string> Languages => NSLocale.PreferredLanguages;
 	}
 }
-#endif

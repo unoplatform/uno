@@ -804,7 +804,7 @@ namespace Windows.UI.Xaml.Controls
 
 		#region TextAlignment DependencyProperty
 
-#if XAMARIN_ANDROID
+#if __ANDROID__
 		public new TextAlignment TextAlignment
 #else
 		public TextAlignment TextAlignment
@@ -960,19 +960,48 @@ namespace Windows.UI.Xaml.Controls
 		{
 			base.OnKeyDown(args);
 
+
+			// On skia, sometimes SelectionStart is updated to a new value before KeyDown is fired, so
+			// we need to get selectionStart from another source on Skia.
+#if __SKIA__
+			var selectionStart = TextBoxView.SelectionBeforeKeyDown.start;
+#else
+			var selectionStart = SelectionStart;
+#endif
+
 			// Note: On windows only keys that are "moving the cursor" are handled
 			//		 AND ** only KeyDown ** is handled (not KeyUp)
 			switch (args.Key)
 			{
 				case VirtualKey.Up:
+					if (AcceptsReturn)
+					{
+						args.Handled = true;
+					}
+					break;
 				case VirtualKey.Down:
+					if (selectionStart != Text.Length)
+					{
+						SelectionStart = Text.Length;
+						args.Handled = true;
+					}
 					if (AcceptsReturn)
 					{
 						args.Handled = true;
 					}
 					break;
 				case VirtualKey.Left:
+					if (selectionStart != 0)
+					{
+						args.Handled = true;
+					}
+					break;
 				case VirtualKey.Right:
+					if (selectionStart != Text.Length)
+					{
+						args.Handled = true;
+					}
+					break;
 				case VirtualKey.Home:
 				case VirtualKey.End:
 					args.Handled = true;

@@ -1,6 +1,6 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras">
 	<PropertyGroup>
-		<TargetFrameworks>net7.0;net8.0</TargetFrameworks>
+		<TargetFrameworks>$(NetSkiaPreviousAndCurrent)</TargetFrameworks>
 	</PropertyGroup>
 
 	<Import Project="../../targetframework-override.props"/>

@@ -114,9 +114,19 @@ namespace Windows.UI.Xaml.Media
 
 		partial void InitFromResource(Uri uri)
 		{
-			ResourceString = uri.PathAndQuery.TrimStart(new[] { '/' });
+			if (
+				uri.OriginalString.EndsWith(".svg", StringComparison.OrdinalIgnoreCase)
+				|| uri.OriginalString.EndsWith(".svgz", StringComparison.OrdinalIgnoreCase))
+			{
+				// SVGs do not support direct assets reading so we use uri based loading
+				AbsoluteUri = uri;
+			}
+			else
+			{
+				ResourceString = uri.PathAndQuery.TrimStart(new[] { '/' });
 
-			ResourceId = Uno.Helpers.DrawableHelper.FindResourceIdFromPath(ResourceString);
+				ResourceId = Uno.Helpers.DrawableHelper.FindResourceIdFromPath(ResourceString);
+			}
 		}
 
 		partial void CleanupResource()

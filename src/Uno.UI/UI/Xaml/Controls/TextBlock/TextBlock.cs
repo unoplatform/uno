@@ -24,7 +24,7 @@ using Uno.Foundation.Logging;
 
 using RadialGradientBrush = Microsoft.UI.Xaml.Media.RadialGradientBrush;
 
-#if XAMARIN_IOS
+#if __IOS__
 using UIKit;
 #endif
 
@@ -213,7 +213,7 @@ namespace Windows.UI.Xaml.Controls
 		#region Text Dependency Property
 
 		public
-#if XAMARIN_IOS
+#if __IOS__
 			new
 #endif
 			string Text
@@ -254,7 +254,7 @@ namespace Windows.UI.Xaml.Controls
 
 		#region FontFamily Dependency Property
 
-#if XAMARIN_IOS
+#if __IOS__
 		/// <summary>
 		/// Supported font families: http://iosfonts.com/
 		/// </summary>
@@ -378,7 +378,7 @@ namespace Windows.UI.Xaml.Controls
 		#region Foreground Dependency Property
 
 		public
-#if __ANDROID_23__
+#if __ANDROID__
 		new
 #endif
 			Brush Foreground
@@ -655,8 +655,8 @@ namespace Windows.UI.Xaml.Controls
 
 		public static DependencyProperty TextDecorationsProperty { get; } =
 			DependencyProperty.Register(
-				"TextDecorations",
-				typeof(uint),
+				nameof(TextDecorations),
+				typeof(TextDecorations),
 				typeof(TextBlock),
 				new FrameworkPropertyMetadata(
 					defaultValue: TextDecorations.None,

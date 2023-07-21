@@ -14,7 +14,7 @@ using Uno.Foundation.Logging;
 using Windows.UI.Xaml.Input;
 using Uno.UI.Xaml.Core;
 
-#if XAMARIN_IOS
+#if __IOS__
 using UIKit;
 #elif __MACOS__
 using AppKit;

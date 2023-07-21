@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using Uno.UI;
 using Uno.UI.Xaml.Core;
 using Windows.Devices.Input;
-#if XAMARIN_IOS
+#if __IOS__
 using UIKit;
 #endif
 

@@ -281,6 +281,28 @@ namespace Windows.UI.Xaml.Data
 		}
 
 		/// <summary>
+		/// Refreshes the value to the target, as the bound source may not be observable
+		/// </summary>
+		internal void RefreshTarget()
+		{
+			ApplyElementName();
+
+			if (
+				// If a listener is set, ApplyBindings has been invoked
+				_bindingPath.ValueChangedListener is not null
+
+				// If this is not an x:Bind
+				&& _updateSources is null
+
+				// If there's a valid DataContext
+				&& GetWeakDataContext() is { IsAlive: true } weakDataContext)
+			{
+				// Apply the source on the target again (e.g. to reevaluate converters)
+				_bindingPath.SetWeakDataContext(weakDataContext);
+			}
+		}
+
+		/// <summary>
 		/// Turns UpdateSourceTrigger.Default to DependencyProperty's FrameworkPropertyMetadata.DefaultUpdateSourceTrigger
 		/// </summary>
 		/// <returns></returns>

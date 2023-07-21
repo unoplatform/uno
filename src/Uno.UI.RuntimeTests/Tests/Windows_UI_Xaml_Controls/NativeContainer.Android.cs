@@ -1,5 +1,4 @@
-﻿#if __ANDROID__
-using Android.Views;
+﻿using Android.Views;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -43,5 +42,3 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 	}
 }
-
-#endif

@@ -1,5 +1,4 @@
-﻿#if XAMARIN
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using Uno.Extensions;
@@ -9,18 +8,10 @@ using Uno.Disposables;
 using Windows.UI.Xaml.Media;
 using Uno.UI;
 
-#if XAMARIN_ANDROID
 using View = Android.Views.View;
 using Font = Android.Graphics.Typeface;
 using Android.Graphics;
 using Android.Views;
-#elif XAMARIN_IOS
-using View = MonoTouch.UIKit.UIView;
-using Color = MonoTouch.UIKit.UIColor;
-using Font = MonoTouch.UIKit.UIFont;
-#else
-using Color = System.Drawing.Color;
-#endif
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -131,4 +122,3 @@ namespace Windows.UI.Xaml.Controls
 		bool ICustomClippingElement.ForceClippingToLayoutSlot => CornerRadius != CornerRadius.None;
 	}
 }
-#endif

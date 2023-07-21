@@ -14,10 +14,7 @@ using Uno.Extensions;
 using Uno.UI;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml.Media;
-
-#if NET6_0_OR_GREATER
 using ObjCRuntime;
-#endif
 
 #if __IOS__
 using UIKit;

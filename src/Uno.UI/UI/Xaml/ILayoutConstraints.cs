@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-#if XAMARIN_ANDROID
+#if __ANDROID__
 using _View = Android.Views.View;
-#elif XAMARIN_IOS
+#elif __IOS__
 using _View = UIKit.UIView;
 #elif __MACOS__
 using _View = AppKit.NSView;

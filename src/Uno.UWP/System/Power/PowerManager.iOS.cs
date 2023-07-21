@@ -1,5 +1,4 @@
-﻿#if __IOS__
-using System;
+﻿using System;
 using UwpBatteryStatus = Windows.System.Power.BatteryStatus;
 using UwpEnergySaverStatus = Windows.System.Power.EnergySaverStatus;
 using UwpPowerSupplyStatus = Windows.System.Power.PowerSupplyStatus;
@@ -150,4 +149,3 @@ namespace Windows.System.Power
 		}
 	}
 }
-#endif

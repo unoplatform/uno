@@ -26,6 +26,7 @@ namespace Uno.UWPSyncGenerator
 				await new SyncGenerator().Build(@"..\..\..\Uno.UWP", "Uno", "Windows.Phone.PhoneContract");
 				await new SyncGenerator().Build(@"..\..\..\Uno.UWP", "Uno", "Windows.Networking.Connectivity.WwanContract");
 				await new SyncGenerator().Build(@"..\..\..\Uno.UWP", "Uno", "Windows.ApplicationModel.Calls.CallsPhoneContract");
+				await new SyncGenerator().Build(@"..\..\..\Uno.UWP", "Uno", "Windows.Services.Store.StoreContract");
 
 				// When adding support for a new WinRT contract here, ensure to add it to the list of origins in Generator.cs
 				// and to the list of supported contracts in ApiInformation.shared.cs

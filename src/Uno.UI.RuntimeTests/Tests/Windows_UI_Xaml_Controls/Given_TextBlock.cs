@@ -6,6 +6,7 @@ using Uno.UI.RuntimeTests.Helpers;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.UI;
+using Windows.UI.Text;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Documents;
@@ -18,6 +19,21 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	[TestClass]
 	public class Given_TextBlock
 	{
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task Check_TextDecorations_Binding()
+		{
+			var SUT = new TextDecorationsBinding();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(TextDecorations.Strikethrough, SUT.textBlock1.TextDecorations);
+			Assert.AreEqual(TextDecorations.Underline, SUT.textBlock2.TextDecorations);
+			Assert.AreEqual(TextDecorations.Strikethrough, SUT.textBlock3.TextDecorations);
+			Assert.AreEqual(TextDecorations.None, SUT.textBlock4.TextDecorations);
+			Assert.AreEqual(TextDecorations.Strikethrough, SUT.textBlock5.TextDecorations);
+			Assert.AreEqual(TextDecorations.None, SUT.textBlock6.TextDecorations);
+		}
+
 		[TestMethod]
 		[RunsOnUIThread]
 		public void Check_ActualWidth_After_Measure()

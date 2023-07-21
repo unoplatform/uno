@@ -1,4 +1,8 @@
-﻿using System;
+﻿// Some mappings based on
+// https://learn.microsoft.com/en-us/windows/win32/inputdev/virtual-key-codes
+// https://lists.w3.org/Archives/Public/www-dom/2010JulSep/att-0182/keyCode-spec.html
+
+using System;
 using Foundation;
 using UIKit;
 
@@ -48,7 +52,7 @@ namespace Windows.System
 				UIKeyboardHidUsage.KeyboardZ => VirtualKey.Z,
 
 				UIKeyboardHidUsage.KeyboardPeriod => VirtualKey.Decimal,
-				UIKeyboardHidUsage.KeyboardEqualSign => VirtualKey.Enter,
+				UIKeyboardHidUsage.KeyboardEqualSign => (VirtualKey)187,
 				UIKeyboardHidUsage.KeyboardSlash => VirtualKey.Divide,
 				UIKeyboardHidUsage.KeyboardHyphen => VirtualKey.Subtract,
 

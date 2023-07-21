@@ -116,4 +116,56 @@ public class Given_Binding
 		);
 		await test.RunAsync();
 	}
+
+	[TestMethod]
+	public async Task TestAccessingArray()
+	{
+		var xamlFiles = new[]
+		{
+			new XamlFile("MainPage.xaml", """
+	<Page
+		x:Class="TestRepro.MainPage"
+		xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:local="using:TestRepro"
+		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		mc:Ignorable="d"
+		Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+		<Grid>
+			<TextBlock Text="{x:Bind MyArray.Length}" />
+		</Grid>
+	</Page>
+	"""),
+		};
+
+		var test = new Verify.Test(xamlFiles)
+		{
+			TestState =
+			{
+				Sources =
+				{
+					"""
+					using Windows.UI.Xaml.Controls;
+
+					namespace TestRepro
+					{
+						public sealed partial class MainPage : Page
+						{
+							public string[] MyArray { get; set; }
+
+							public MainPage()
+							{
+								this.InitializeComponent();
+							}
+						}
+					}
+					"""
+				}
+			}
+		}.AddGeneratedSources();
+
+		await test.RunAsync();
+	}
 }

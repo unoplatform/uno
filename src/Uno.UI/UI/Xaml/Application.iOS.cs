@@ -1,5 +1,4 @@
-﻿#if XAMARIN_IOS
-using Foundation;
+﻿using Foundation;
 using System;
 using System.Linq;
 using UIKit;
@@ -17,10 +16,6 @@ using System.Threading;
 using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
 #else
 using LaunchActivatedEventArgs = Windows.ApplicationModel.Activation.LaunchActivatedEventArgs;
-#endif
-
-#if !NET6_0_OR_GREATER
-using NativeHandle = System.IntPtr;
 #endif
 
 namespace Windows.UI.Xaml
@@ -251,7 +246,6 @@ namespace Windows.UI.Xaml
 
 		private void SetCurrentLanguage()
 		{
-#if NET6_0_OR_GREATER
 			// net6.0-iOS does not automatically set the thread and culture info
 			// https://github.com/xamarin/xamarin-macios/issues/14740
 			var language = NSLocale.PreferredLanguages.ElementAtOrDefault(0);
@@ -268,8 +262,6 @@ namespace Windows.UI.Xaml
 			{
 				this.Log().Error($"Failed to set current culture for language: {language}", ex);
 			}
-#endif
 		}
 	}
 }
-#endif

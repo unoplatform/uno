@@ -20,7 +20,6 @@ namespace Windows.UI.Xaml.Input
 	public sealed partial class FocusManager
 	{
 		private static readonly Lazy<Logger> _log = new Lazy<Logger>(() => typeof(FocusManager).Log());
-		private static readonly Dictionary<XamlRoot, object> _focusedElements = new Dictionary<XamlRoot, object>(1);
 
 		/// <summary>
 		/// Occurs when an element within a container element (a focus scope) receives focus.

@@ -19,12 +19,10 @@ using Uno.UI;
 using Windows.UI.Xaml.Data;
 using Uno.UI.Extensions;
 
-#if XAMARIN_IOS_UNIFIED
 using Foundation;
 using UIKit;
 using CoreGraphics;
 using CoreAnimation;
-#endif
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
@@ -217,11 +215,7 @@ namespace Windows.UI.Xaml.Controls
 					{
 						base.InsertItems(indexPaths);
 					}
-#if NET6_0_OR_GREATER
 					catch (Exception e)
-#else
-					catch (MonoTouchException e)
-#endif
 					{
 						this.Log().Error("Error when updating collection", e);
 					}
@@ -249,11 +243,7 @@ namespace Windows.UI.Xaml.Controls
 					{
 						base.InsertSections(sections);
 					}
-#if NET6_0_OR_GREATER
 					catch (Exception e)
-#else
-					catch (MonoTouchException e)
-#endif
 					{
 						this.Log().Error("Error when updating collection", e);
 					}
@@ -277,11 +267,7 @@ namespace Windows.UI.Xaml.Controls
 					{
 						base.DeleteItems(indexPaths);
 					}
-#if NET6_0_OR_GREATER
 					catch (Exception e)
-#else
-					catch (MonoTouchException e)
-#endif
 					{
 						this.Log().Error("Error when updating collection", e);
 					}
@@ -305,11 +291,7 @@ namespace Windows.UI.Xaml.Controls
 					{
 						base.DeleteSections(sections);
 					}
-#if NET6_0_OR_GREATER
 					catch (Exception e)
-#else
-					catch (MonoTouchException e)
-#endif
 					{
 						this.Log().Error("Error when updating collection", e);
 					}
@@ -374,7 +356,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (UseCollectionAnimations)
 			{
-				return null;
+				return Disposable.Empty;
 			}
 
 			AnimationsEnabled = false;

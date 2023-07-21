@@ -24,7 +24,6 @@ namespace Windows.UI.Xaml.Controls
 		public const string DismissButtonPartName = "DismissButton";
 		#endregion
 
-		private readonly SerialDisposable _presenterCommandsDisposable = new SerialDisposable();
 		private readonly SerialDisposable _presenterLoadedDisposable = new SerialDisposable();
 		private readonly SerialDisposable _presenterUnloadedDisposable = new SerialDisposable();
 		private bool _isInitialized;

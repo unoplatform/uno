@@ -1,4 +1,3 @@
-#if XAMARIN_ANDROID
 using System;
 using Android.App;
 using Android.Runtime;
@@ -125,7 +124,6 @@ namespace Windows.UI.Xaml
 
 			Size displaySize = default;
 
-#if __ANDROID_30__
 			if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.R)
 			{
 				var windowMetrics = (ContextHelper.Current as Activity)?.WindowManager?.CurrentWindowMetrics;
@@ -135,9 +133,7 @@ namespace Windows.UI.Xaml
 			{
 				SetDisplaySizeLegacy();
 			}
-#else
-			SetDisplaySizeLegacy();
-#endif
+
 			return displaySize;
 
 			void SetDisplaySizeLegacy()
@@ -230,4 +226,3 @@ namespace Windows.UI.Xaml
 		}
 	}
 }
-#endif

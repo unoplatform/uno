@@ -1,5 +1,4 @@
-﻿#if __WASM__
-using System;
+﻿using System;
 using System.Threading.Tasks;
 using Uno.Foundation;
 
@@ -16,4 +15,3 @@ namespace Windows.System
 		}
 	}
 }
-#endif

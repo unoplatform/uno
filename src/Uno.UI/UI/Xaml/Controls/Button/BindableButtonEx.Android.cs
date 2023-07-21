@@ -49,11 +49,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		public
-#if __ANDROID_23__
-		new
-#endif
-		Brush Foreground
+		public new Brush Foreground
 		{
 			get
 			{

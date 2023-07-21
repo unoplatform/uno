@@ -5,8 +5,8 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:xamarin="http://uno.ui/xamarin"
-    mc:Ignorable="d xamarin" 
+    xmlns:not_win="http://uno.ui/not_win"
+    mc:Ignorable="d not_win" 
     d:DesignHeight="300"
     d:DesignWidth="400">
 
@@ -34,7 +34,7 @@
 		<controls:SampleControl.SampleContent>
 			<DataTemplate>
 				<Border Background="Aqua" Height="400" Width="400">
-					<xamarin:Pivot Background="Red">
+					<not_win:Pivot Background="Red">
 						<Pivot.Items>
 							<PivotItem Header="First"
 									   Content="First Content"/>
@@ -48,7 +48,7 @@
 							<PivotItem Header="Fourth"
 									   Content="Fourth Content"/>
 						</Pivot.Items>
-					</xamarin:Pivot>
+					</not_win:Pivot>
 				</Border>
 			</DataTemplate>
 		</controls:SampleControl.SampleContent>

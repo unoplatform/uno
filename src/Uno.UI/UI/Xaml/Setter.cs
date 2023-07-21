@@ -34,6 +34,15 @@ namespace Windows.UI.Xaml
 		private DependencyProperty? _property;
 		private TargetPropertyPath? _target;
 
+		// This property is not part of the WinUI API, but is 
+		// required to determine if the value has a binding set
+		private static DependencyProperty InternalValueProperty { get; }
+			= DependencyProperty.Register(
+				nameof(Value),
+				typeof(object),
+				typeof(Setter),
+				new FrameworkPropertyMetadata(default(object)));
+
 		public object? Value
 		{
 			get
@@ -145,6 +154,8 @@ namespace Windows.UI.Xaml
 
 			if (path != null)
 			{
+				RefreshBindingPath();
+
 				if (ThemeResourceKey.HasValue && ResourceResolver.ApplyVisualStateSetter(ThemeResourceKey.Value, ThemeResourceContext, path, precedence, ResourceBindingUpdateReason))
 				{
 					// Applied as theme binding, no need to do more
@@ -156,6 +167,10 @@ namespace Windows.UI.Xaml
 				}
 			}
 		}
+
+		private void RefreshBindingPath()
+			// force binding value to re-evaluate the source and use converters
+			=> GetBindingExpression(InternalValueProperty)?.RefreshTarget();
 
 		private BindingPath? TryGetOrCreateBindingPath(DependencyPropertyValuePrecedences precedence, IFrameworkElement owner)
 		{

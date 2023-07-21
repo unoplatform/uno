@@ -1,5 +1,4 @@
-﻿#if __IOS__ || __MACOS__
-using System;
+﻿using System;
 using System.Threading.Tasks;
 #if __IOS__
 using UIKit;
@@ -57,4 +56,3 @@ namespace Windows.System
 		}
 	}
 }
-#endif

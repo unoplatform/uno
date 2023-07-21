@@ -26,7 +26,7 @@ namespace Uno.UI.Controls
 		private IOnGridViewItemClickListener _itemClickListener;
 		private Color _dividerColor;
 
-		private readonly List<View> _createdRows = new List<View>();
+		//private readonly List<View> _createdRows = new List<View>();
 
 		public GridViewAdapter(Android.Content.Context context)
 			: base(context)

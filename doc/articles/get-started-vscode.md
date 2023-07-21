@@ -15,7 +15,7 @@ See these sections for information about using Uno Platform with:
 
 - [**Visual Studio Code**](https://code.visualstudio.com/)
 - **.NET SDK**
-  - [.NET 7.0 SDK](https://dotnet.microsoft.com/download/dotnet-core/6.0) (**version 7.0 (SDK 7.0.102)** or later)
+  - [.NET 7.0 SDK](https://dotnet.microsoft.com/download/dotnet-core/7.0) (**version 7.0 (SDK 7.0.102)** or later)
   > Use `dotnet --version` from the terminal to get the version installed.
 - The [Uno Platform Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=unoplatform.vscode) Extension
 - For Windows, install the [GTK+ 3 runtime](https://github.com/tschoonj/GTK-for-Windows-Runtime-Environment-Installer/releases) (See [this uno-check issue](https://github.com/unoplatform/uno.check/issues/12))
@@ -28,16 +28,8 @@ See these sections for information about using Uno Platform with:
 
 Let's start by installing the Uno project templates. In a terminal, type the following command:
 
-# [**.NET 7**](#tab/net7)
-
 ```bash
 dotnet new install Uno.Templates
-```
-
-# [**.NET 6**](#tab/net6)
-
-```bash
-dotnet new -i Uno.Templates
 ```
 
 Then inside the same terminal, type the following to create a new project:
@@ -278,5 +270,7 @@ You can use both the Uno Platform and C# Dev Kit extensions but not simultaneous
 7. Disable the Uno Platform extension
 
 You can then switch between both profiles according to the type of dotnet project you are developing.
+
+You're all set! You can now head to [our tutorials](getting-started-tutorial-1.md) on how to work on your Uno Platform app.
 
 [!include[getting-help](getting-help.md)]

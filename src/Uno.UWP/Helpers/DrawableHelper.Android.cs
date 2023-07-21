@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 using Android.Graphics.Drawables;
 using AndroidX.Core.Content;
 using AndroidX.Core.Graphics.Drawable;

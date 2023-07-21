@@ -1,5 +1,4 @@
-﻿#if __WASM__
-using System;
+﻿using System;
 using System.Globalization;
 using System.Runtime.InteropServices.JavaScript;
 using System.Threading;
@@ -234,4 +233,3 @@ namespace Windows.Graphics.Display
 		}
 	}
 }
-#endif

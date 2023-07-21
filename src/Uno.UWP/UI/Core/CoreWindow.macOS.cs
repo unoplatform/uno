@@ -1,4 +1,3 @@
-#if __MACOS__
 using System;
 using AppKit;
 
@@ -20,4 +19,3 @@ namespace Windows.UI.Core
 		internal NSWindow NativeWindow => _window;
 	}
 }
-#endif

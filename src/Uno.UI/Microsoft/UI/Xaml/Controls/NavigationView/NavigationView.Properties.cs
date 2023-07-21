@@ -492,7 +492,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Identifies the PaneTitle dependency property.
 		/// </summary>
 		public static DependencyProperty PaneTitleProperty { get; } =
-			DependencyProperty.Register(nameof(PaneTitle), typeof(string), typeof(NavigationView), new FrameworkPropertyMetadata(string.Empty, OnPropertyChanged)); //TODO: Empty string or null?
+			DependencyProperty.Register(nameof(PaneTitle), typeof(string), typeof(NavigationView), new FrameworkPropertyMetadata(string.Empty, OnPropertyChanged));
 
 		/// <summary>
 		/// Gets or sets the Style that defines the look of the menu toggle button.

@@ -21,7 +21,6 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class Panel : IEnumerable
 	{
-		private SerialDisposable _brushChanged = new SerialDisposable();
 		private readonly BorderLayerRenderer _borderRenderer = new BorderLayerRenderer();
 
 		public Panel()

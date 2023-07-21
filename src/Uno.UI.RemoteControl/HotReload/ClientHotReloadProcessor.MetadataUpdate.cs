@@ -1,6 +1,6 @@
-﻿#if NET6_0_OR_GREATER || __WASM__ || __SKIA__
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
@@ -10,12 +10,14 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
+using Uno.UI.Helpers;
 using Uno.UI.RemoteControl.HotReload.Messages;
 using Uno.UI.RemoteControl.HotReload.MetadataUpdater;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Markup;
 using Windows.UI.Xaml.Media;
+using System.Threading;
 
 namespace Uno.UI.RemoteControl.HotReload
 {
@@ -23,7 +25,24 @@ namespace Uno.UI.RemoteControl.HotReload
 	{
 		private bool _linkerEnabled;
 		private HotReloadAgent _agent;
+		private ElementUpdateAgent? _elementAgent;
 		private static ClientHotReloadProcessor? _instance;
+
+		private ElementUpdateAgent ElementAgent
+		{
+			get
+			{
+				_elementAgent ??= new ElementUpdateAgent(s =>
+					{
+						if (this.Log().IsEnabled(LogLevel.Trace))
+						{
+							this.Log().Trace(s);
+						}
+					});
+
+				return _elementAgent;
+			}
+		}
 
 		[MemberNotNull(nameof(_agent))]
 		partial void InitializeMetadataUpdater()
@@ -144,70 +163,116 @@ namespace Uno.UI.RemoteControl.HotReload
 
 		private static void ReloadWithUpdatedTypes(Type[] updatedTypes)
 		{
-			foreach (var updatedType in updatedTypes)
+			if (updatedTypes.Length == 0)
+			{
+				return;
+			}
+
+			var handlerActions = _instance?.ElementAgent?.ElementHandlerActions;
+
+			// Action: BeforeVisualTreeUpdate
+			// This is called before the visual tree is updated
+			handlerActions?.Do(h => h.Value.BeforeVisualTreeUpdate(updatedTypes));
+
+			// Iterate through the visual tree and either invole ElementUpdate, 
+			// or replace the element with a new one
+			foreach (
+				var (element, elementHandler, elementMappedType) in
+				EnumerateHotReloadInstances(
+					Window.Current.Content,
+					fe =>
+						{
+							// Get the original type of the element, in case it's been replaced
+							var originalType = fe.GetType().GetOriginalType() ?? fe.GetType();
+
+							// Get the handler for the type specified
+							var handler = (from h in handlerActions
+										   where originalType == h.Key ||
+												originalType.IsSubclassOf(h.Key)
+										   select h.Value).FirstOrDefault();
+
+							// Get the replacement type, or null if not replaced
+							var mappedType = originalType.GetMappedType();
+
+							return (handler is not null || mappedType is not null) ? (fe, handler, mappedType) : default;
+						},
+					enumerateChildrenAfterMatch: true))
+			{
+
+				// Action: ElementUpdate
+				// This is invoked for each existing element that is in the tree that needs to be replaced
+				elementHandler?.ElementUpdate(element, updatedTypes);
+
+				if (elementMappedType is not null)
+				{
+					ReplaceViewInstance(element, elementMappedType, elementHandler);
+				}
+			}
+
+			// Action: AfterVisualTreeUpdate
+			handlerActions?.Do(h => h.Value.AfterVisualTreeUpdate(updatedTypes));
+		}
+
+		private static void ReplaceViewInstance(UIElement instance, Type replacementType, ElementUpdateAgent.ElementUpdateHandlerActions? handler = default, Type[]? updatedTypes = default)
+		{
+			if (replacementType.GetConstructor(Array.Empty<Type>()) is { } creator)
+			{
+				if (_log.IsEnabled(LogLevel.Trace))
+				{
+					_log.Trace($"Creating instance of type {instance.GetType()}");
+				}
+
+				var newInstance = Activator.CreateInstance(replacementType);
+				var instanceFE = instance as FrameworkElement;
+				var newInstanceFE = newInstance as FrameworkElement;
+				if (instanceFE is not null &&
+					newInstanceFE is not null)
+				{
+					handler?.BeforeElementReplaced(instanceFE, newInstanceFE, updatedTypes);
+				}
+				switch (instance)
+				{
+#if __IOS__
+					case UserControl userControl:
+						if (newInstance is UIKit.UIView newUIViewContent)
+						{
+							SwapViews(userControl, newUIViewContent);
+						}
+						break;
+#endif
+					case ContentControl content:
+						if (newInstance is ContentControl newContent)
+						{
+							SwapViews(content, newContent);
+						}
+						break;
+				}
+
+				if (instanceFE is not null &&
+					newInstanceFE is not null)
+				{
+					handler?.AfterElementReplaced(instanceFE, newInstanceFE, updatedTypes);
+				}
+			}
+			else
 			{
 				if (_log.IsEnabled(LogLevel.Debug))
 				{
-					_log.LogDebug($"Processing changed type [{updatedType}]");
-				}
-
-				if (updatedType.Is<UIElement>())
-				{
-					ReplaceViewInstances(i => updatedType.IsInstanceOfType(i));
-				}
-				else
-				{
-					if (_log.IsEnabled(LogLevel.Debug))
-					{
-						_log.LogDebug($"Type [{updatedType}] is not a UIElement, skipping");
-					}
-				}
-			}
-		}
-
-		private static void ReplaceViewInstances(Func<FrameworkElement, bool> predicate)
-		{
-			foreach (var instance in EnumerateInstances(Window.Current.Content, predicate))
-			{
-				if (instance.GetType().GetConstructor(Array.Empty<Type>()) is { })
-				{
-					if (_log.IsEnabled(LogLevel.Trace))
-					{
-						_log.Trace($"Creating instance of type {instance.GetType()}");
-					}
-
-					var newInstance = Activator.CreateInstance(instance.GetType());
-
-					switch (instance)
-					{
-#if __IOS__
-						case UserControl userControl:
-							if (newInstance is UIKit.UIView newUIViewContent)
-							{
-								SwapViews(userControl, newUIViewContent);
-							}
-							break;
-#endif
-						case ContentControl content:
-							if (newInstance is ContentControl newContent)
-							{
-								SwapViews(content, newContent);
-							}
-							break;
-					}
-				}
-				else
-				{
-					if (_log.IsEnabled(LogLevel.Debug))
-					{
-						_log.LogDebug($"Type [{instance.GetType()}] has no parameterless constructor, skipping reload");
-					}
+					_log.LogDebug($"Type [{instance.GetType()}] has no parameterless constructor, skipping reload");
 				}
 			}
 		}
 
 		public static void UpdateApplication(Type[] types)
 		{
+			foreach (var t in types)
+			{
+				if (t.GetCustomAttribute<System.Runtime.CompilerServices.MetadataUpdateOriginalTypeAttribute>() is { } update)
+				{
+					TypeMappingHelper.RegisterMapping(t, update.OriginalType);
+				}
+			}
+
 			if (_log.IsEnabled(LogLevel.Trace))
 			{
 				_log.Trace($"UpdateApplication (changed types: {string.Join(", ", types.Select(s => s.ToString()))})");
@@ -219,4 +284,3 @@ namespace Uno.UI.RemoteControl.HotReload
 		}
 	}
 }
-#endif

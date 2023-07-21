@@ -13,12 +13,12 @@ using Windows.Foundation;
 using Uno;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
-#if XAMARIN_ANDROID
+#if __ANDROID__
 using View = Android.Views.View;
 using ViewGroup = Android.Views.ViewGroup;
 using Font = Android.Graphics.Typeface;
 using Android.Graphics;
-#elif XAMARIN_IOS
+#elif __IOS__
 using View = UIKit.UIView;
 using ViewGroup = UIKit.UIView;
 using Color = UIKit.UIColor;
@@ -243,7 +243,7 @@ namespace Windows.UI.Xaml.Controls
 						RegisterContentTemplateRoot();
 
 						if (
-#if __NETSTD__
+#if __CROSSRUNTIME__
 							!IsLoading &&
 #endif
 							!IsLoaded && FeatureConfiguration.Control.UseDeferredOnApplyTemplate)
@@ -565,7 +565,7 @@ namespace Windows.UI.Xaml.Controls
 		#region Foreground Dependency Property
 
 		public
-#if __ANDROID_23__
+#if __ANDROID__
 		new
 #endif
 		Brush Foreground
@@ -722,7 +722,7 @@ namespace Windows.UI.Xaml.Controls
 
 		#region BorderBrush Dependency Property
 
-#if XAMARIN_ANDROID
+#if __ANDROID__
 		//This field is never accessed. It just exists to create a reference, because the DP causes issues with ImageBrush of the backing bitmap being prematurely garbage-collected. (Bug with ConditionalWeakTable? https://bugzilla.xamarin.com/show_bug.cgi?id=21620)
 		private Brush _borderBrushStrongReference;
 #endif
@@ -734,7 +734,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				this.SetValue(BorderBrushProperty, value);
 
-#if XAMARIN_ANDROID
+#if __ANDROID__
 				_borderBrushStrongReference = value;
 #endif
 			}
@@ -980,6 +980,10 @@ namespace Windows.UI.Xaml.Controls
 		protected virtual void OnDragOver(global::Windows.UI.Xaml.DragEventArgs e) { }
 		protected virtual void OnDragLeave(global::Windows.UI.Xaml.DragEventArgs e) { }
 		protected virtual void OnDrop(global::Windows.UI.Xaml.DragEventArgs e) { }
+#if __WASM__
+		protected virtual void OnPreviewKeyDown(KeyRoutedEventArgs e) { }
+		protected virtual void OnPreviewKeyUp(KeyRoutedEventArgs e) { }
+#endif
 		protected virtual void OnKeyDown(KeyRoutedEventArgs e) { }
 		protected virtual void OnKeyUp(KeyRoutedEventArgs e) { }
 		protected virtual void OnGotFocus(RoutedEventArgs e) { }
@@ -1047,6 +1051,13 @@ namespace Windows.UI.Xaml.Controls
 
 		private static readonly DragEventHandler OnDropHandler =
 			(object sender, global::Windows.UI.Xaml.DragEventArgs args) => ((Control)sender).OnDrop(args);
+#if __WASM__
+		private static readonly KeyEventHandler OnPreviewKeyDownHandler =
+			(object sender, KeyRoutedEventArgs args) => ((Control)sender).OnPreviewKeyDown(args);
+
+		private static readonly KeyEventHandler OnPreviewKeyUpHandler =
+			(object sender, KeyRoutedEventArgs args) => ((Control)sender).OnPreviewKeyUp(args);
+#endif
 
 		private static readonly KeyEventHandler OnKeyDownHandler =
 			(object sender, KeyRoutedEventArgs args) => ((Control)sender).OnKeyDown(args);
@@ -1182,7 +1193,17 @@ namespace Windows.UI.Xaml.Controls
 			{
 				result |= RoutedEventFlag.Drop;
 			}
+#if __WASM__
+			if (GetIsEventOverrideImplemented(type, nameof(OnPreviewKeyDown), _keyArgsType))
+			{
+				result |= RoutedEventFlag.PreviewKeyDown;
+			}
 
+			if (GetIsEventOverrideImplemented(type, nameof(OnPreviewKeyUp), _keyArgsType))
+			{
+				result |= RoutedEventFlag.PreviewKeyUp;
+			}
+#endif
 			if (GetIsEventOverrideImplemented(type, nameof(OnKeyDown), _keyArgsType))
 			{
 				result |= RoutedEventFlag.KeyDown;

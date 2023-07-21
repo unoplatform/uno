@@ -15,10 +15,7 @@ using AppKit;
 using CoreGraphics;
 using Uno.Disposables;
 using CoreAnimation;
-
-#if NET6_0_OR_GREATER
 using ObjCRuntime;
-#endif
 
 namespace Windows.UI.Xaml.Controls
 {

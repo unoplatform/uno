@@ -63,6 +63,13 @@ namespace Windows.UI.Xaml.Controls
 			_popup.DisableFocus();
 #endif
 
+#if __IOS__
+			if (_textBox is { } textbox)
+			{
+				textbox.IsKeepingFocusOnEndEditing = true;
+			}
+#endif
+
 			UpdateQueryButton();
 			UpdateTextBox();
 			UpdateDescriptionVisibility(true);

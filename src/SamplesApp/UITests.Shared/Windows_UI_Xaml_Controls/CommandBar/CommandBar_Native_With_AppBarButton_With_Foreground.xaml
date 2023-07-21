@@ -4,8 +4,8 @@
 	  xmlns:local="using:UITests.Windows_UI_Xaml_Controls.CommandBar"
 	  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	  mc:Ignorable="d xamarin ios android"
-	  xmlns:xamarin="http://nventive.com/xamarin"
+	  mc:Ignorable="d not_win ios android"
+	  xmlns:not_win="http://uno.ui/not_win"
 	  xmlns:ios="http://nventive.com/ios"
 	  xmlns:android="http://nventive.com/android"
 	  Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
@@ -13,7 +13,7 @@
 	<Page.Resources>
 		<Style x:Name="NativeCommandbarStyle"
 			   TargetType="CommandBar"
-			   xamarin:BasedOn="{StaticResource NativeDefaultCommandBar}" />
+			   not_win:BasedOn="{StaticResource NativeDefaultCommandBar}" />
 	</Page.Resources>
 
 	<Grid>

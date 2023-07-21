@@ -1,4 +1,3 @@
-#if __MACOS__
 using System;
 using CoreGraphics;
 
@@ -66,4 +65,3 @@ namespace Windows.UI
 		}
 	}
 }
-#endif

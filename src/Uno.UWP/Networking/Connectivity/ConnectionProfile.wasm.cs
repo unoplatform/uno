@@ -1,5 +1,3 @@
-﻿#if __WASM__
-
 using NativeMethods = __Windows.Networking.Connectivity.ConnectionProfile.NativeMethods;
 
 namespace Windows.Networking.Connectivity
@@ -19,4 +17,3 @@ namespace Windows.Networking.Connectivity
 		}
 	}
 }
-#endif

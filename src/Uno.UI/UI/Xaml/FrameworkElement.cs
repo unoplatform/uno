@@ -27,9 +27,9 @@ using Windows.UI.Xaml.Data;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Media;
 
-#if XAMARIN_ANDROID
+#if __ANDROID__
 using View = Android.Views.View;
-#elif XAMARIN_IOS_UNIFIED
+#elif __IOS__
 using View = UIKit.UIView;
 using UIKit;
 #elif __MACOS__
@@ -67,8 +67,6 @@ namespace Windows.UI.Xaml
 		bool ILayouterElement.IsMeasureDirty => IsMeasureDirty;
 		bool ILayouterElement.IsFirstMeasureDoneAndManagedElement => IsFirstMeasureDone;
 		bool ILayouterElement.IsMeasureDirtyPathDisabled => IsMeasureDirtyPathDisabled;
-#else
-		private readonly static IEventProvider _trace = Tracing.Get(FrameworkElement.TraceProvider.Id);
 #endif
 
 		private bool _defaultStyleApplied;
@@ -916,7 +914,7 @@ namespace Windows.UI.Xaml
 
 			protected override Size ArrangeOverride(Size finalSize) => _arrangeOverrideHandler(finalSize);
 
-#if XAMARIN_ANDROID
+#if __ANDROID__
 			protected override void MeasureChild(View view, int widthSpec, int heightSpec) => view.Measure(widthSpec, heightSpec);
 #endif
 

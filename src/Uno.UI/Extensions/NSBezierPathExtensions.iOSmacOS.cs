@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-#if XAMARIN_IOS_UNIFIED
+#if __IOS__
 using UIKit;
 using CoreAnimation;
 using CoreGraphics;

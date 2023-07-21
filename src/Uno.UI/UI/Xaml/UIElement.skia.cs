@@ -27,6 +27,7 @@ namespace Windows.UI.Xaml
 		internal double _canvasTop;
 		internal double _canvasLeft;
 		private Rect _currentFinalRect;
+		private Rect? _currentClippedFrame;
 
 		public UIElement()
 		{
@@ -263,11 +264,16 @@ namespace Windows.UI.Xaml
 			LayoutSlotWithMarginsAndAlignments = finalRect;
 
 			var oldFinalRect = _currentFinalRect;
+			var oldClippedFrame = _currentClippedFrame;
 			_currentFinalRect = finalRect;
+			_currentClippedFrame = clippedFrame;
 
 			var oldRect = oldFinalRect;
 			var newRect = finalRect;
-			if (oldRect != newRect)
+
+			var oldClip = oldClippedFrame;
+			var newClip = clippedFrame;
+			if (oldRect != newRect || oldClip != newClip)
 			{
 				if (
 					newRect.Width < 0

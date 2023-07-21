@@ -73,6 +73,9 @@ internal abstract class GtkTextBoxView : IOverlayTextBoxView
 
 	public abstract (int start, int length) Selection { get; set; }
 
+	// On Gtk, KeyDown is fired before Selection is updated, so nothing special needs to be done.
+	public (int start, int length) SelectionBeforeKeyDown => Selection;
+
 	public abstract bool IsCompatible(TextBox textBox);
 
 	public abstract IDisposable ObserveTextChanges(EventHandler onChanged);

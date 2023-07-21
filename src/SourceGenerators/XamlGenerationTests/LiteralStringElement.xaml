@@ -4,8 +4,8 @@
 			 xmlns:local="using:XamlGenerationTests.Shared"
 			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-			 xmlns:xamarin="http://uno.ui/xamarin"
-			 mc:Ignorable="d xamarin"
+			 xmlns:not_win="http://uno.ui/not_win"
+			 mc:Ignorable="d not_win"
 			 d:DesignHeight="300"
 			 d:DesignWidth="400">
 

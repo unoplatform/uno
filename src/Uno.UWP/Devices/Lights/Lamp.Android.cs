@@ -1,5 +1,4 @@
-﻿#if __ANDROID__
-using System;
+﻿using System;
 using System.Linq;
 using Android.Graphics;
 using Android.Hardware.Camera2;
@@ -185,4 +184,3 @@ namespace Windows.Devices.Lights
 		}
 	}
 }
-#endif

@@ -31,6 +31,8 @@ public partial class CoreWebView2
 		_owner = owner;
 	}
 
+	internal IWebView Owner => _owner;
+
 	/// <summary>
 	/// Gets the CoreWebView2Settings object contains various modifiable
 	/// settings for the running WebView.
@@ -163,6 +165,12 @@ public partial class CoreWebView2
 
 	internal void RaiseHistoryChanged() => HistoryChanged?.Invoke(this, null);
 
+	internal void SetHistoryProperties(bool canGoBack, bool canGoForward)
+	{
+		CanGoBack = canGoBack;
+		CanGoForward = canGoForward;
+	}
+
 	internal void RaiseWebMessageReceived(string message) => WebMessageReceived?.Invoke(this, new(message));
 
 	internal void RaiseUnsupportedUriSchemeIdentified(Uri targetUri, out bool handled)
@@ -171,13 +179,6 @@ public partial class CoreWebView2
 		UnsupportedUriSchemeIdentified?.Invoke(this, args);
 
 		handled = args.Handled;
-	}
-
-	internal void SetHistoryProperties(bool canGoBack, bool canGoForward)
-	{
-		CanGoBack = canGoBack;
-		CanGoForward = canGoForward;
-		RaiseHistoryChanged();
 	}
 
 	internal static bool GetIsHistoryEntryValid(string url) =>

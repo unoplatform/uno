@@ -14,8 +14,6 @@ public partial class ApiInformation
 	private static HashSet<string> _notImplementedOnce = new HashSet<string>();
 	private static readonly object _gate = new object();
 	private static Dictionary<string, bool> _isTypePresent = new Dictionary<string, bool>();
-	private static Dictionary<(string typeName, string methodName, uint inputParameterCount), bool> _isMethodPresent
-		= new Dictionary<(string typeName, string methodName, uint inputParameterCount), bool>();
 
 	private readonly static Dictionary<string, Type> _typeCache = new Dictionary<string, Type>();
 	private readonly static List<Assembly> _assemblies = new List<Assembly>(3 /* All three uno assemblies */) {

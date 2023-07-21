@@ -60,19 +60,6 @@ namespace Uno.UI.Controls
 			SetupItemClickListeners();
 		}
 
-#if !__ANDROID_16__
-		public override void SetColumnWidth(int columnWidth)
-		{
-			base.SetColumnWidth(columnWidth);
-			ColumnWidth = columnWidth;
-		}
-
-		public int ColumnWidth
-		{
-			get; private set;
-		}
-#endif
-
 		public IEnumerable ItemsSource
 		{
 			get { return (IEnumerable)this.GetValue(ItemsSourceProperty); }

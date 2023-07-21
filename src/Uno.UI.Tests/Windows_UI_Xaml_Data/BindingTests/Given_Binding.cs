@@ -198,5 +198,13 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests
 			binding.RelativeSource.Mode.Should().Be(RelativeSourceMode.None);
 			binding.Source.Should().Be("Source");
 		}
+
+		[TestMethod]
+		public void When_Binding_Empty_Quotes()
+		{
+			var SUT = new Binding_Empty_Quotes();
+			SUT.ForceLoaded();
+			SUT.sut.Text.Should().Be("Current DataContext: MyDataContext");
+		}
 	}
 }

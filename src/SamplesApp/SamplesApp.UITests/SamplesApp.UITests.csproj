@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net7.0</TargetFramework>
+		<TargetFramework>$(NetPrevious)</TargetFramework>
 
 		<DefineConstants Condition="$(UnoTargetFrameworkOverride.ToLowerInvariant().EndsWith('-android'))">$(DefineConstants);TARGET_FRAMEWORK_OVERRIDE_ANDROID</DefineConstants>
 
@@ -10,8 +10,8 @@
 
 	<ItemGroup>
 		<PackageReference Include="FluentAssertions" />
-		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.6.2" />
-		<PackageReference Include="NunitXml.TestLogger" Version="3.0.131" />
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.6.3" />
+		<PackageReference Include="NunitXml.TestLogger" Version="3.1.15" />
 		<PackageReference Include="NUnit" />
 		<PackageReference Include="NUnit3TestAdapter" />
 		<PackageReference Include="Xamarin.UITest" />

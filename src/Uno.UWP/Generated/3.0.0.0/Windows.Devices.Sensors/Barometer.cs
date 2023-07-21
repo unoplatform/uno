@@ -106,8 +106,8 @@ namespace Windows.Devices.Sensors
 			throw new global::System.NotImplementedException("The member string Barometer.GetDeviceSelector() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20Barometer.GetDeviceSelector%28%29");
 		}
 		#endif
-		#if false || false || false || false || __SKIA__ || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+		#if false || false || false || false || __SKIA__ || false || false
+		[global::Uno.NotImplemented("__SKIA__")]
 		public static global::Windows.Devices.Sensors.Barometer GetDefault()
 		{
 			throw new global::System.NotImplementedException("The member Barometer Barometer.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Barometer%20Barometer.GetDefault%28%29");

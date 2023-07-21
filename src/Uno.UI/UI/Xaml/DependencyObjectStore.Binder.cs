@@ -21,7 +21,7 @@ using Uno.Collections;
 using Uno.UI.Controls;
 #endif
 
-#if XAMARIN_IOS
+#if __IOS__
 using UIKit;
 #endif
 

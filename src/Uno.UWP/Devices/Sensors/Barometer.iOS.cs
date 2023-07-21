@@ -1,5 +1,4 @@
-﻿#if __IOS__
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using CoreMotion;
@@ -49,4 +48,3 @@ namespace Windows.Devices.Sensors
 		private double KPaToHPa(double pressureInKPa) => pressureInKPa * 10;
 	}
 }
-#endif
