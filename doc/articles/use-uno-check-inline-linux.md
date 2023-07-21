@@ -2,7 +2,7 @@
 uid: Uno.Development.UnoCheckLinux
 ---
 
-## Finalize your environment
+# Finalize your environment
 
 [!include[getting-help](use-uno-check-inline-linux-noheader.md)]
 

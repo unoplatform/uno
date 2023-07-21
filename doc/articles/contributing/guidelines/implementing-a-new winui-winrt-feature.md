@@ -2,7 +2,7 @@
 uid: Uno.Contributing.ImplementWinUIWinRTAPI
 ---
 
-## Guidelines for implementing a new WinUI/WinRT API
+# Guidelines for implementing a new WinUI/WinRT API
 
 Implementing a new WinUI/WinRT API generally requires to:
 

@@ -2,7 +2,7 @@
 uid: Uno.Tutorials.CommunityTutorials
 ---
 
-## Community Tutorials
+# Community Tutorials
 
 This page lists links to our community provided tutorials.
 
