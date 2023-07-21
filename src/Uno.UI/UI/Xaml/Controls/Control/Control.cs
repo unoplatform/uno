@@ -181,7 +181,7 @@ namespace Windows.UI.Xaml.Controls
 				this.GetValue(IsEnabledProperty, DependencyPropertyValuePrecedences.Inheritance);
 
 			// If the parent is disabled, this control must be disabled as well
-			if (parentValue != DependencyProperty.UnsetValue && !(bool)parentValue!)
+			if (parentValue is false)
 			{
 				return false;
 			}
