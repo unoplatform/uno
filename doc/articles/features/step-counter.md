@@ -42,7 +42,7 @@ The first reading on iOS returns the cumulative number of steps from 24 hours ba
 
 Make sure to add the following capability declaration to your `Info.plist` file, otherwise, the API will crash at runtime.
 
-```
+```xml
 <key>NSMotionUsageDescription</key>
 <string>Some reason why your app wants to track motion.</string>
 ```

@@ -94,9 +94,7 @@ To reference the animations in XAML, use the `ms-appx:` URI, in this case `ms-ap
 
 You can put the file as `<EmbeddedResource>` in your assembly and retrieve it using the following url format as `UriSource`:
 
-```
-embedded://<assemblyname>/<resource name>
-```
+`embedded://<assemblyname>/<resource name>`
 
 * You can specify `.` in assembly name to use the Application's assembly.
 * You can specify `(assembly)` in path: will be replaced by assembly name.

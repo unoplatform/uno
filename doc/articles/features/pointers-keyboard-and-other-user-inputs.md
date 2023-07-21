@@ -135,7 +135,7 @@ but Uno does not rely on native `[got|lost]pointercapture` events.
 
 To differentiate between mouse and touch device type for pointer events, include the following in your app's `Info.plist`:
 
-```
+```xml
 <key>UIApplicationSupportsIndirectInputEvents</key>
 <true/>
 ```
@@ -162,7 +162,7 @@ While the browser context menu enabled on `TextBox` and `PasswordBox` by default
 
 To manually disable the context menu on a `UIElement` which represents a HTML `<input>`, you can manually set the `context-menu-disabled` CSS class:
 
-```
+```csharp
 #if __WASM__
 
 MyInputElement.SetCssClasses("context-menu-disabled");

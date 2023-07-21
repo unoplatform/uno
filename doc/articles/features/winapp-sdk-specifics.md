@@ -8,9 +8,7 @@ uid: Uno.Features.WinAppSDK
 
 When building a WinUI3 app, you may encounter the following error message:
 
-```
-error NETSDK1148: A referenced assembly was compiled using a newer version of Microsoft.Windows.SDK.NET.dll. Please update to a newer .NET SDK in order to reference this assembly.
-```
+`error NETSDK1148: A referenced assembly was compiled using a newer version of Microsoft.Windows.SDK.NET.dll. Please update to a newer .NET SDK in order to reference this assembly.`
 
 This indicates that your application, or current .NET SDK is using a version of the Windows .NET SDK which is lower than the SDKs used to compile any of your projects dependent nuget packages.
 

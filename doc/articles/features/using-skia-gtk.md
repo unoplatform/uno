@@ -18,7 +18,7 @@ You will also need to install the [GTK3 runtime](https://github.com/tschoonj/GTK
 
 Once done, you can create a new app using:
 
-```
+```cmd
 dotnet new unoapp -o MyApp
 ```
 
@@ -30,7 +30,7 @@ It may be required, depending on the environment, to use software rendering.
 
 To do so, immediately before the line `host.Run()` in you `main.cs` file, add the following:
 
-```
+```csharp
 host.RenderSurfaceType = RenderSurfaceType.Software;
 ```
 
