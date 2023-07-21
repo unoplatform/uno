@@ -14,6 +14,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media;
 public class Given_GradientBrush
 {
 	[TestMethod]
+	[RunsOnUIThread]
 	public async Task When_GradientStop_Color_Changes()
 	{
 		if (!ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap"))

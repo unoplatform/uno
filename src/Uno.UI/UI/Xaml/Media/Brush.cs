@@ -83,7 +83,6 @@ namespace Windows.UI.Xaml.Media
 
 		#endregion
 
-		// TODO: InvalidateRender when Transform/RelativeTransform changes, or their inner properties.
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		[GeneratedDependencyProperty(DefaultValue = null)]
 		public static DependencyProperty TransformProperty { get; } = CreateTransformProperty();
