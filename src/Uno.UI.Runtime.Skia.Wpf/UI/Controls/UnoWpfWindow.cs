@@ -21,7 +21,7 @@ internal class UnoWpfWindow : WpfWindow
 	public UnoWpfWindow(WinUI.Window winUIWindow)
 	{
 		_winUIWindow = winUIWindow ?? throw new ArgumentNullException(nameof(winUIWindow));
-		_winUIWindow.Shown += OnShown;
+		_winUIWindow.Showing += OnShowing;
 
 		Windows.Foundation.Size preferredWindowSize = ApplicationView.PreferredLaunchViewSize;
 		if (preferredWindowSize != Windows.Foundation.Size.Empty)
@@ -38,9 +38,11 @@ internal class UnoWpfWindow : WpfWindow
 		StateChanged += OnStateChanged;
 
 		ApplicationView.GetForCurrentView().PropertyChanged += OnApplicationViewPropertyChanged;
+
+		winUIWindow.OnNativeWindowCreated();
 	}
 
-	private void OnShown(object? sender, EventArgs e) => Show();
+	private void OnShowing(object? sender, EventArgs e) => Show();
 
 	private void OnClosing(object? sender, CancelEventArgs e)
 	{

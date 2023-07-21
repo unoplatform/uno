@@ -21,6 +21,7 @@ namespace Uno.UI.Runtime.Skia
 		private bool _needsScanlineCopy;
 		private int renderCount;
 		private DisplayInformation? _displayInformation;
+		private bool _isWindowInitialized;
 
 		public Renderer(IXamlRootHost host)
 		{
@@ -61,6 +62,12 @@ namespace Uno.UI.Runtime.Skia
 				_needsScanlineCopy = _fbDev.RowBytes != _bitmap.BytesPerPixel * width;
 
 				WUX.Window.Current.OnNativeSizeChanged(new Size(rawScreenSize.Width / scale, rawScreenSize.Height / scale));
+
+				if (!_isWindowInitialized)
+				{
+					_isWindowInitialized = true;
+					WUX.Window.Current.OnNativeWindowCreated();
+				}
 			}
 
 			using (var surface = SKSurface.Create(info, _bitmap.GetPixels(out _)))

@@ -24,6 +24,7 @@ internal class UnoGtkWindowHost : IGtkXamlRootHost
 
 	private Widget? _area;
 	private IGtkRenderer? _renderer;
+	private bool _firstSizeAllocated;
 
 	public UnoGtkWindowHost(Gtk.Window gtkWindow, WinUIWindow winUIWindow)
 	{
@@ -63,6 +64,11 @@ internal class UnoGtkWindowHost : IGtkXamlRootHost
 		_area.SizeAllocated += (s, e) =>
 		{
 			_winUIWindow.OnNativeSizeChanged(new Windows.Foundation.Size(e.Allocation.Width, e.Allocation.Height));
+			if (!_firstSizeAllocated)
+			{
+				_firstSizeAllocated = true;
+				_winUIWindow.OnNativeWindowCreated();
+			}
 		};
 
 		overlay.Add(_area);
