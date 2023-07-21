@@ -323,7 +323,7 @@ On **iOS** a `CommandBarHelper` is available for this purpose, you only have to 
 
 # AppBarButton
 
-The `AppBarButton` in **Uno** is designed to be used the same way you would use the `AppBarButton` on **UWP**. In most cases, you should refer to the [official `CommandBar` documentation](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.controls.appbarbutton).
+The `AppBarButton` in **Uno** is designed to be used the same way you would use the `AppBarButton` on **UWP**. In most cases, you should refer to the [official `AppBarButton` documentation](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.controls.appbarbutton).
 
 When `AppBarButton` is used within a native `CommandBar`, its control template is completely ignored and can't be customized.
 
