@@ -735,9 +735,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		[RequiresFullWindow]
 		[RunsOnUIThread]
-#if !__SKIA__
-		[Ignore("Pointer injection supported only on skia for now.")]
-#endif
+		[Ignore("Islands are not supported for skia")]
 		public async Task When_Mouse_Opened_And_Closed()
 		{
 			// Create a comboBox with some sample items
@@ -806,9 +804,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		[RequiresFullWindow]
 		[RunsOnUIThread]
-#if !__SKIA__
-		[Ignore("Pointer injection supported only on skia for now.")]
-#endif
+		[Ignore("Islands are not supported for skia")]
 		public async Task When_Mouse_Opened_And_Closed_Fluent()
 		{
 			using (StyleHelper.UseFluentStyles())
