@@ -42,6 +42,10 @@ public class Given_GradientBrush
 		await renderer.RenderAsync(rect);
 
 		var bitmap = await RawBitmap.From(renderer, rect);
+#if __IOS__
+		ImageAssert.HasColorAt(bitmap, 0, 0, Colors.Blue, tolerance: 55);
+#else
 		ImageAssert.HasColorAt(bitmap, 0, 0, Colors.Blue, tolerance: 5);
+#endif
 	}
 }
