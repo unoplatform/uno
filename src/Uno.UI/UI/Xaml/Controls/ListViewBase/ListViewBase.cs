@@ -118,18 +118,13 @@ namespace Windows.UI.Xaml.Controls
 
 		private bool TryMoveKeyboardFocusAndSelection(int offset, VirtualKeyModifiers modifiers)
 		{
-			var prevIndex = FocusedContainerAndIndex.index;
+			var (prevIndex, prevContainer, prevItem) = FocusedIndexContainerItem;
 
 			var newIndex = prevIndex + offset;
 			var newContainer = ContainerFromIndex(newIndex) as SelectorItem;
 			var newItem = ItemFromIndex(newIndex);
 
-			if (newContainer == null)
-			{
-				return false;
-			}
-
-			FocusedContainerAndIndex = (newIndex, newContainer);
+			FocusedIndexContainerItem = (newIndex, newContainer, newItem);
 
 			switch (SelectionMode)
 			{
@@ -146,12 +141,13 @@ namespace Windows.UI.Xaml.Controls
 					{
 						// if shift is held, the newly-focused item matches the selection
 						// of the previously-focused item
-						if (ContainerFromIndex(prevIndex) is SelectorItem prevContainer)
+						if (IsSelected(prevContainer, prevItem))
 						{
-							if (prevContainer.IsSelected != newContainer.IsSelected)
-							{
-								FlipSelectionInMultipleSelection(newIndex, item: newItem, container: newContainer);
-							}
+							SelectInMultipleSelection(newItem, newContainer);
+						}
+						else
+						{
+							UnselectInMultipleSelection(newItem, newContainer);
 						}
 					}
 
@@ -164,11 +160,11 @@ namespace Windows.UI.Xaml.Controls
 					throw new ArgumentOutOfRangeException();
 			}
 
-			newContainer.StartBringIntoView(new BringIntoViewOptions()
+			newContainer?.StartBringIntoView(new BringIntoViewOptions()
 			{
 				AnimationDesired = false
 			});
-			newContainer.Focus(FocusState.Keyboard);
+			newContainer?.Focus(FocusState.Keyboard);
 			return true;
 
 			void ExtendedSelectionCase()
@@ -189,13 +185,16 @@ namespace Windows.UI.Xaml.Controls
 
 					for (var currentIndex = 0; currentIndex < Items.Count; currentIndex++)
 					{
+						var currentItem = ItemFromIndex(currentIndex);
+						var currentContainer = ContainerFromItem(currentItem) as SelectorItem;
+
 						if (currentIndex > upperBound || currentIndex < lowerBound)
 						{
-							UnselectInMultipleSelection(currentIndex);
+							UnselectInMultipleSelection(currentItem, currentContainer);
 						}
 						else
 						{
-							SelectInMultipleSelection(currentIndex);
+							SelectInMultipleSelection(currentItem, currentContainer);
 						}
 					}
 
@@ -209,31 +208,22 @@ namespace Windows.UI.Xaml.Controls
 				ExtendedShiftSelectionStart = newIndex;
 
 				// Act like single selection mode i.e. set one, unset everything else
-				for (var i = 0; i < Items.Count; i++)
+				for (var currentIndex = 0; currentIndex < Items.Count; currentIndex++)
 				{
-					if (i != newIndex)
+					if (currentIndex != newIndex)
 					{
-						UnselectInMultipleSelection(i);
+						var currentItem = ItemFromIndex(currentIndex);
+						var currentContainer = ContainerFromItem(currentItem) as SelectorItem;
+
+						UnselectInMultipleSelection(currentItem, currentContainer);
 					}
 				}
 
-				SelectInMultipleSelection(newIndex);
+				SelectInMultipleSelection(newItem, newContainer);
 			}
 		}
 
-		private (int index, SelectorItem item) GetFocusedItem()
-		{
-			var focusedElement = XamlRoot is null ?
-				FocusManager.GetFocusedElement() :
-				FocusManager.GetFocusedElement(XamlRoot);
-			var focusedItem = focusedElement as SelectorItem;
-			if (focusedItem != null)
-			{
-				return (IndexFromContainer(focusedItem), focusedItem);
-			}
-
-			return (-1, null);
-		}
+		private bool IsSelected(SelectorItem container, object item) => container?.IsSelected ?? SelectedItems.Contains(item);
 
 		private void OnSelectedItemsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
 		{
@@ -507,7 +497,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public IList<object> SelectedItems { get; }
 
-		internal (int index, SelectorItem container) FocusedContainerAndIndex { get; set; } = (-1, null);
+		internal (int index, SelectorItem container, object item) FocusedIndexContainerItem { get; set; } = (-1, null, null);
 
 		/// <summary>
 		/// Marks the starting index of a selection when shift is held and (a pointer is clicked
@@ -530,7 +520,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			SelectedIndex = -1;
 			ExtendedShiftSelectionStart = -1;
-			FocusedContainerAndIndex = (-1, null);
+			FocusedIndexContainerItem = (-1, null, null);
 
 			foreach (var item in SelectedItems.ToList())
 			{
@@ -559,13 +549,8 @@ namespace Windows.UI.Xaml.Controls
 			var clickedItem = ItemFromIndex(clickedIndex);
 			var clickedContainer = ContainerFromIndex(clickedIndex) as SelectorItem;
 
-			if (clickedContainer == null)
-			{
-				return;
-			}
-
-			var (focusedIndex, focusedContainer) = FocusedContainerAndIndex;
-			FocusedContainerAndIndex = (clickedIndex, clickedContainer);
+			var (focusedIndex, focusedContainer, focusedItem) = FocusedIndexContainerItem;
+			FocusedIndexContainerItem = (clickedIndex, clickedContainer, clickedItem);
 
 			if (IsItemClickEnabled)
 			{
@@ -619,22 +604,25 @@ namespace Windows.UI.Xaml.Controls
 
 				if (!modifiers.HasFlag(VirtualKeyModifiers.Shift))
 				{
-					FlipSelectionInMultipleSelection(clickedIndex, clickedItem, clickedContainer);
+					FlipSelectionInMultipleSelection(clickedItem, clickedContainer);
 					return;
 				}
 
 				// if shift is held, all items between the clicked item and the previously
 				// focused item match the selection of the previously focused item
-				var newSelection = focusedContainer?.IsSelected ?? false;
+				var newSelection = IsSelected(focusedContainer, focusedItem);
 
 				var multipleLowerBound = Math.Min(focusedIndex, clickedIndex);
 				var multipleUpperBound = Math.Max(focusedIndex, clickedIndex);
 
 				for (var currentIndex = multipleLowerBound; currentIndex <= multipleUpperBound; currentIndex++)
 				{
-					if (ContainerFromIndex(currentIndex) is SelectorItem container && container.IsSelected != newSelection)
+					var currentItem = ItemFromIndex(currentIndex);
+					var currentContainer = ContainerFromItem(currentItem) as SelectorItem;
+
+					if (IsSelected(currentContainer, currentItem) != newSelection)
 					{
-						FlipSelectionInMultipleSelection(currentIndex, container: container);
+						FlipSelectionInMultipleSelection(currentItem, currentContainer);
 					}
 				}
 			}
@@ -651,20 +639,16 @@ namespace Windows.UI.Xaml.Controls
 
 					for (var currentIndex = 0; currentIndex < Items.Count; currentIndex++)
 					{
-						var currentContainer = ContainerFromIndex(currentIndex) as SelectorItem;
-
-						if (currentContainer == null)
-						{
-							continue;
-						}
+						var currentItem = ItemFromIndex(currentIndex);
+						var currentContainer = ContainerFromItem(currentItem) as SelectorItem;
 
 						if (currentIndex > extendedUpperBound || currentIndex < extendedLowerBound)
 						{
-							UnselectInMultipleSelection(currentIndex);
+							UnselectInMultipleSelection(currentItem, currentContainer);
 						}
 						else
 						{
-							SelectInMultipleSelection(currentIndex);
+							SelectInMultipleSelection(currentItem, currentContainer);
 						}
 					}
 
@@ -677,29 +661,29 @@ namespace Windows.UI.Xaml.Controls
 
 				if (modifiers.HasFlag(VirtualKeyModifiers.Control))
 				{
-					FlipSelectionInMultipleSelection(clickedIndex, item: clickedItem);
+					FlipSelectionInMultipleSelection(clickedItem, clickedContainer);
 					return;
 				}
 
 				// no modifiers
 				// Act like single selection mode i.e. set one, unset everything else
-				for (int i = 0; i < Items.Count; i++)
+				for (var currentIndex = 0; currentIndex < Items.Count; currentIndex++)
 				{
-					if (i != clickedIndex)
+					if (currentIndex != clickedIndex)
 					{
-						UnselectInMultipleSelection(i);
+						var currentItem = ItemFromIndex(currentIndex);
+						var currentContainer = ContainerFromItem(currentItem) as SelectorItem;
+
+						UnselectInMultipleSelection(currentItem, currentContainer);
 					}
 				}
 
-				SelectInMultipleSelection(clickedIndex, item: clickedItem);
+				SelectInMultipleSelection(clickedItem, clickedContainer);
 			}
 		}
 
-		private void FlipSelectionInMultipleSelection(int index, object item = null, SelectorItem container = null)
+		private void FlipSelectionInMultipleSelection(object item, SelectorItem container)
 		{
-			item ??= ItemFromIndex(index);
-			container ??= ContainerFromIndex(index) as SelectorItem;
-
 			if (!SelectedItems.Contains(item))
 			{
 				SelectedItems.Add(item);
@@ -718,26 +702,24 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private void SelectInMultipleSelection(int index, object item = null, SelectorItem container = null)
+		private void SelectInMultipleSelection(object item, SelectorItem container)
 		{
-			item ??= ItemFromIndex(index);
 			if (!SelectedItems.Contains(item))
 			{
 				SelectedItems.Add(item);
-				if ((container ?? ContainerFromIndex(index)) is SelectorItem selectorItem)
+				if (container is { } selectorItem)
 				{
 					selectorItem.IsSelected = true;
 				}
 			}
 		}
 
-		private void UnselectInMultipleSelection(int index, object item = null, SelectorItem container = null)
+		private void UnselectInMultipleSelection(object item, SelectorItem container)
 		{
-			item ??= ItemFromIndex(index);
 			if (SelectedItems.Contains(item))
 			{
 				SelectedItems.Remove(item);
-				if ((container ?? ContainerFromIndex(index)) is SelectorItem selectorItem)
+				if (container is { } selectorItem)
 				{
 					selectorItem.IsSelected = false;
 				}
