@@ -4,15 +4,15 @@ uid: Uno.Development.UnoCheck
 
 # Verify your developer environment
 
-# [**Windows**](#tab/windows)
+## [**Windows**](#tab/windows)
 
 [!include[getting-help](use-uno-check-inline-windows-noheader.md)]
 
-# [**macOS**](#tab/macos)
+## [**macOS**](#tab/macos)
 
 [!include[getting-help](use-uno-check-inline-macos-noheader.md)]
 
-# [**Linux**](#tab/linux)
+## [**Linux**](#tab/linux)
 
 [!include[getting-help](use-uno-check-inline-linux-noheader.md)]
 

@@ -12,7 +12,7 @@ Uno supports the [`x:Bind`](https://docs.microsoft.com/en-us/windows/uwp/xaml-pl
 - events
 - `x:Bind` on _"Plain-old C# Objects"_ (POCO) created in XAML
 
-# Examples
+## Examples
 
 - Properties
   - Page or control property

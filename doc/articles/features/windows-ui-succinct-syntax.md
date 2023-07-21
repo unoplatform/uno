@@ -7,7 +7,7 @@ uid: Uno.Features.WinUISuccinctSyntax
 Uno supports the [succinct syntax](https://github.com/microsoft/microsoft-ui-xaml-specs/blob/master/active/gridsyntax/GridSyntaxSpec.md) WinUI XAML language feature
 that allows the initialization of collection-type properties (including read-only properties) using element attribute syntax
 
-# Examples
+## Examples
 
 ### New succinct syntax
 
@@ -42,7 +42,7 @@ The code below has the same functionality as the code shown above with the origi
 </Grid>
 ```
 
-# Notes
+## Notes
 
 1. Uno.UI projects in a UWP-based solution also support this feature, but using it in a UWP project will cause a build error because UWP doesn't support it.
 2. Uno currently only supports this syntax for Grid.

@@ -5,25 +5,25 @@ This folder contains source code for the generation of uno's documentation
 > [!IMPORTANT]
 > It's very important that you read the deploy section before committing anything to the repo.
 
-# Running a local environment
+## Running a local environment
 
-## Install dependencies
+### Install dependencies
 
 Download and install docfx on your computer.
 
-### macOS
+#### macOS
 
 ```cmd
 brew install docfx
 ```
 
-### Windows
+#### Windows
 
 ```cmd
 choco install docfx
 ```
 
-### Node
+#### Node
 
 Use a node version manager or the version of node specified in the `.nvmrc` file nvm or nvs
 
@@ -43,14 +43,14 @@ Then install the dependencies
 npm install
 ```
 
-# Generated Implemented views
+## Generated Implemented views
 
 The process of generating implemented views is documented on this page. [Building docs website locally with DocFX](https://platform.uno/docs/articles/uno-development/docfx.html?tabs=tabid-1#building-docs-website-locally-with-docfx).
 As stated in the documentation, it will probably fail, but it will create stub files and let DocFx build without errors.
 By default, the build swallows DocFx errors (it prints them in the console), that is for simplicity since you don't need
 the implemented views. To test DocFx and break on error run the `npm run strict` command.
 
-# Deploy
+## Deploy
 
 DocFx will use the content of the `styles` folder when building. When working locally, source-maps are generated to help
 debugging the site; the javascript and css are not minified for the same reason. It's very important that the
@@ -58,9 +58,9 @@ build command is ran just before committing your work; this will minify the code
 folders and build the DocFx according to the `docfx.json`. The CI only runs the DocFx command, it will not regenerate
 the `styles` folder.
 
-# Commands
+### Commands
 
-## Start
+#### Start
 
 With browsersync and gulp watch, any changes in the sass, js and Docfx templates should be rebuilt automatically.
 This command starts the project with the debug flag. This prevents the js from being minified and generates source-maps
@@ -70,7 +70,7 @@ This command starts the project with the debug flag. This prevents the js from b
 npm start
 ```
 
-## Build
+#### Build
 
 Will build the docfx documentation according to the `docfx.json` file, will minify and concatenate all javascript
 everything in the `docfx.js` file (except`main.js`) and will compile and minify the sass. This command needs to be run
@@ -80,7 +80,7 @@ before committing any changes to the repos.
 npm run build
 ```
 
-## Prod
+#### Prod
 
 This command is similar to start, but it will minify the js and the sass and won't generate any source-maps.
 
@@ -88,7 +88,7 @@ This command is similar to start, but it will minify the js and the sass and won
 npm run prod
 ```
 
-## Strict
+#### Strict
 
 The reference pages are generate by the CI and are not there locally. This causes errors when building docfx. You can
 generate stub pages (see in the **Generate Implemented Views** section). Since generating those is often unnecessary, it's
@@ -99,7 +99,7 @@ command but the errors won't be ignored.
 npm run strict
 ```
 
-## Clean
+#### Clean
 
 This command will erase the content of the `styles` and `_site/styles` folders.
 
@@ -107,7 +107,7 @@ This command will erase the content of the `styles` and `_site/styles` folders.
 npm run clean
 ```
 
-# Basic structure
+## Basic structure
 
 The templating files are in the folder `layout` and `partial`. The javascript and scss files associated to a component
 are in the `component` directory. The javascript functions and utilities are in the `service` folder. The shared constant
@@ -129,7 +129,7 @@ If you'd like to perform the same check locally, you can run:
 * `npm install -g cspell` to install the cSpell CLI
 * `cspell --config ./cSpell.json "doc/**/*.md" --no-progress` to check all the markdown files in the `doc` folder.
 
-# Notes
+## Notes
 
 The local environment is usually located on port `3000` unless another process is already using it.
 

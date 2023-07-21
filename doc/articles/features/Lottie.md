@@ -6,7 +6,7 @@ uid: Uno.Features.Lottie
 
 ## Using the `LottieVisualSource`:
 
-# [**WinUI 3**](#tab/winui)
+### [**WinUI 3**](#tab/winui)
 
 Add the following namespaces:
 
@@ -38,7 +38,7 @@ Additionally, on Skia targets (Gtk, WPF, Framebuffer), you'll need the following
 
 On Windows/WinAppSDK, [the support for Lottie is still pending](https://github.com/CommunityToolkit/Lottie-Windows/issues/478).
 
-# [**UWP**](#tab/uwp)
+### [**UWP**](#tab/uwp)
 
 Add the following namespaces:
 

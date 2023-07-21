@@ -59,11 +59,11 @@ DocFX can generate tabs. Make sure to follow the [syntax specification](https://
 Markdown:
 
 ```md
-# [WinUI](#tab/tabid-1)
+## [WinUI](#tab/tabid-1)
 
 `Microsoft.UI.Xaml.FrameworkElement`
 
-# [UWP](#tab/tabid-2)
+## [UWP](#tab/tabid-2)
 
 `Windows.UI.Xaml.FrameworkElement`
 
@@ -72,11 +72,11 @@ Markdown:
 
 Html output:
 
-# [WinUI](#tab/tabid-1)
+## [WinUI](#tab/tabid-1)
 
 `Microsoft.UI.Xaml.FrameworkElement`
 
-# [UWP](#tab/tabid-2)
+## [UWP](#tab/tabid-2)
 
 `Windows.UI.Xaml.FrameworkElement`
 

@@ -6,7 +6,7 @@ uid: Uno.Development.FeatureFlags
 
 Uno provides a set of feature flags that can be set early in an app's startup to control its behavior. Some of these flags are for backward compatibility, some of them provide fine-grained customizability of a particular feature, and some of them allow to toggle between more 'WinUI-like' and more 'native-like' behavior in a particular context.
 
-# Legacy Clipping
+## Legacy Clipping
 
 Historically, Uno has been relying on the default platform's behavior for clipping, which is quite different from UWP compositing behavior.
 
@@ -22,7 +22,7 @@ On iOS and Android platforms specifically, `ListView.ScrollIntoView` performs an
 This feature can be toggled with: `Uno.UI.FeatureConfiguration.ListViewBase.AnimateScrollIntoView`.
 Alternatively, `Uno.UI.Helpers.ListViewHelper` offer two extension methods, `InstantScrollToIndex` and `SmoothScrollToIndex`, to perform a specific type of scrolling irrespective of the flag set.
 
-# UWP Styles default
+## UWP Styles default
 
 By default, Uno favors the default UWP XAML styles over the native styles for Button, Slider, ComboBox, etc...
 
