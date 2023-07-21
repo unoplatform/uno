@@ -14,7 +14,7 @@ This control is very useful to create cards with both rounded corners and an ele
 
 First you need to add the `toolkit` namespace in your XAML file:
 
-```
+```xaml
 xmlns:toolkit="using:Uno.UI.Toolkit"
 ```
 

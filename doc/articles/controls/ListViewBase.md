@@ -119,7 +119,7 @@ ScrollViewer + ScrollContentPresenter.
 
 ### Difference in the visual tree
 
-```
+```diagram
  UWP                                                      Uno
 +--ListView------------------------------------------+   +--ListView------------------------------------------+
 |                                                    |   |                                                    |

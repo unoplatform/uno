@@ -12,9 +12,7 @@ The Uno CI automatically maintains a WinUI-converted branch of the tree after ev
 
 The branch is maintained as follows:
 
-```
-generated\[branch]\winui-autoconvert
-```
+`generated\[branch]\winui-autoconvert`
 
 You can checkout this branch locally to get started faster.
 

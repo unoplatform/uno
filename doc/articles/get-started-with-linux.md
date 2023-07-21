@@ -29,13 +29,13 @@ Using VS 2019 16.6 or later:
   - If you still want to use WSL 2 anyways, you can try [following those steps](https://skeptric.com/wsl2-xserver).
 - Install the [`dotnet new` templates](get-started-dotnet-new.md):
 
-    ```
+    ```cmd
     dotnet new -i Uno.Templates
     ```
 
 - Then create a new project using:
 
-    ```
+    ```cmd
     dotnet new unoapp -o MyUnoApp
     ```
 
@@ -61,7 +61,7 @@ Now let's run the application:
 
 - Install GTK3:
 
-    ```
+    ```bash
     sudo apt update
     sudo apt-get install gtk+3.0 mesa-utils libgl1-mesa-glx ttf-mscorefonts-installer
     ```
@@ -72,7 +72,7 @@ Now let's run the application:
 
 - Install GTK3:
 
-    ```
+    ```bash
     sudo apt update
     sudo apt install libgtk-3-dev mesa-utils libgl1-mesa-glx ttf-mscorefonts-installer
     ```

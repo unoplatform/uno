@@ -13,13 +13,13 @@ Download and install docfx on your computer.
 
 ### macOS
 
-```
+```cmd
 brew install docfx
 ```
 
 ### Windows
 
-```
+```cmd
 choco install docfx
 ```
 
@@ -27,19 +27,19 @@ choco install docfx
 
 Use a node version manager or the version of node specified in the `.nvmrc` file nvm or nvs
 
-```
+```cmd
 nvs use
 ```
 
 or
 
-```
+```cmd
 nvm use
 ```
 
 Then install the dependencies
 
-```
+```cmd
 npm install
 ```
 
@@ -66,7 +66,7 @@ With browsersync and gulp watch, any changes in the sass, js and Docfx templates
 This command starts the project with the debug flag. This prevents the js from being minified and generates source-maps
 (easier debugging). It will concatenate all the js into one `docfx.js` file.
 
-```
+```cmd
 npm start
 ```
 
@@ -76,7 +76,7 @@ Will build the docfx documentation according to the `docfx.json` file, will mini
 everything in the `docfx.js` file (except`main.js`) and will compile and minify the sass. This command needs to be run
 before committing any changes to the repos.
 
-```
+```cmd
 npm run build
 ```
 
@@ -84,7 +84,7 @@ npm run build
 
 This command is similar to start, but it will minify the js and the sass and won't generate any source-maps.
 
-```
+```cmd
 npm run prod
 ```
 
@@ -95,7 +95,7 @@ generate stub pages (see in the **Generate Implemented Views** section). Since g
 faster to generate them only if they are needed. When running the command strict, it is the same as running the Prod
 command but the errors won't be ignored.
 
-```
+```cmd
 npm run strict
 ```
 
@@ -103,7 +103,7 @@ npm run strict
 
 This command will erase the content of the `styles` and `_site/styles` folders.
 
-```
+```cmd
 npm run clean
 ```
 

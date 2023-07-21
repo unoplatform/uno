@@ -39,9 +39,7 @@ UI tests contribute significantly to the CI build time, and for many purposes a 
 
 - For Android, ensure that your system-level environment variables `JAVA_HOME` and `ANDROID_HOME` are set to the same values as the ones set in Visual Studio's Xamarin Android options panel. Note that you may need to restart Visual Studio once the variables have been set. You may need to set these values if you get this message when running tests:
 
-   ```
-   Failed to execute: C:\Program Files\Android\Jdk\microsoft_dist_openjdk_1.8.0.25\bin\keytool.exe -J-Duser.language=en -list -v -alias androiddebugkey -keystore
-   ```
+> `Failed to execute: C:\Program Files\Android\Jdk\microsoft_dist_openjdk_1.8.0.25\bin\keytool.exe -J-Duser.language=en -list -v -alias androiddebugkey -keystore`
 
 - For Android, ensure that you are running hardware accelerated emulators. See [this documentation for details](https://docs.microsoft.com/en-us/xamarin/android/get-started/installation/android-emulator/hardware-acceleration?pivots=windows).
 
@@ -59,7 +57,7 @@ The `ActivePlatformsAttribute` allows to specify which platform are active for a
 
 This attribute is used as follows:
 
-```
+```csharp
 [ActivePlatforms(Platform.iOS, Platform.Browser)]    // Run on iOS and Browser.
 ```
 

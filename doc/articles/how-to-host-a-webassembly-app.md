@@ -156,7 +156,7 @@ http {
 
 In order to enable the fallback routes in Nginx, you can use the following location rule in the configuration file:
 
-```
+```nginx
 location ~ ^\/(?!(package_)) {
     try_files $uri $uri/ /index.html;
 }
@@ -164,7 +164,7 @@ location ~ ^\/(?!(package_)) {
 
 Additionally, in order to properly handle the caching of the WASM application by the browser, the Cache-control header should be set as follow:
 
-```
+```nginx
 location ~ ^\/(?!(package_)) {
     try_files $uri $uri/ /index.html;
     add_header Cache-Control "must-revalidate, max-age=3600";

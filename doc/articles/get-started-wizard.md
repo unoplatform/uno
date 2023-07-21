@@ -69,9 +69,7 @@ For instance:
 
 When building for WebAssembly with AOT mode enabled, the following error may appear:
 
-```
-Failed to generate AOT layout (More details are available in diagnostics mode or using the MSBuild /bl switch)
-```
+`Failed to generate AOT layout (More details are available in diagnostics mode or using the MSBuild /bl switch)`
 
 To troubleshoot this error, you can change the text output log level:
 
@@ -93,7 +91,7 @@ Similar error messages using various libraries:
 
 When running the Skia.GTK project head, the following error may happen:
 
-```
+```console
 Unhandled exception. System.TypeInitializationException: The type initializer for 'Gtk.Application' threw an exception.
 ---> System.DllNotFoundException: Gtk: libgtk-3-0.dll, libgtk-3.so.0, libgtk-3.0.dylib, gtk-3.dll
 ```

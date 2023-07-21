@@ -12,7 +12,7 @@ Support for programmatic focus is fully implemented on all Uno Platform targets 
 
 Keyboard focus handling support is generally available on all targets except iOS and Android. On iOS and Android you can opt-in to enable experimental support by setting the related flag:
 
-```
+```csharp
 #if __IOS__ || __ANDROID__
 WinRTFeatureConfiguration.Focus.EnableExperimentalKeyboardFocus = true;
 #endif

@@ -246,14 +246,14 @@ See [Linking Xamarin.iOS Apps](https://docs.microsoft.com/en-us/xamarin/ios/depl
 One option is to use `linkskip` file to exclude the assemblies causing issues.
 Add the following to your `mtouch` arguments:
 
-```
+```console
 --linkskip=Uno.Extensions.Logging.OSLog 
 --linkskip=Microsoft.Extensions.Options
 ```
 
 The other option is to add a [custom linker definition file](https://docs.microsoft.com/en-us/xamarin/cross-platform/deploy-test/linker)
 
-```
+```xml
 <linker> 
   <assembly fullname="YOUR PROJECT ASSEMBLIES" />
   

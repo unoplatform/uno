@@ -41,13 +41,13 @@ Then in the `Android` application folder, add the following two files:
 
 - `environment.device.txt`
 
-    ```
+    ```ini
     DOTNET_DiagnosticPorts=127.0.0.1:9000,suspend
     ```
 
 - `environment.emulator.txt`
 
-    ```
+    ```ini
     DOTNET_DiagnosticPorts=10.0.2.2:9001,suspend
     ```
 
@@ -57,13 +57,13 @@ Note that the `suspend` directive means that if `dotnet-trace` is not running, t
 
 - Start the diagnostics router, in any folder:
 
-    ```
+    ```cmd
     dotnet-dsrouter client-server -tcps 127.0.0.1:9001 -ipcc /tmp/uno-app --verbose debug
     ```
 
 - Start `dotnet-trace`, in the app folder or where you want your traces to be stored:
 
-    ```
+    ```cmd
     dotnet-trace collect --diagnostic-port /tmp/uno-app --format speedscope -o uno-app-trace
     ```
 
@@ -71,7 +71,7 @@ Note that the `suspend` directive means that if `dotnet-trace` is not running, t
     > Running on a 32 bits device is not supported and will generate unusable traces in SpeedScope
 - Build the application with profiling enabled
 
-    ```
+    ```cmd
     dotnet build -f net6.0-android -t:run -c Release -p:IsEmulator=true /p:RunAOTCompilation=true /p:AndroidEnableProfiler=true
     ```
 

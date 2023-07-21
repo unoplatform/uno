@@ -52,7 +52,7 @@ Make sure that:
 - Try using the category feature as frequently as possible. (e.g. `feat(NavigationView): Updated the main panel`, or `fix(ProgressRing): Fix visibility`)
 - Squash your commits, using interactive rebase:
 
-   ```
+   ```cmd
    git fetch uno-origin
    git rebase uno-origin/master -i # Rebase your branch on top of the latest master, squash using fixups
    git push -f
@@ -62,7 +62,7 @@ Make sure that:
 
 **Commit/Pull Request Format**
 
-```
+```console
 Summary of the changes (Less than 80 chars)
  - Detail 1
  - Detail 2

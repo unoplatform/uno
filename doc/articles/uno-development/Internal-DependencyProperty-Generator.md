@@ -94,7 +94,7 @@ Other attribute properties are available on `GeneratedDependencyProperty` to inc
 
 Before DP caching:
 
-```
+```console
 SimpleDPBenchmark.DP_Write: InProcess(Toolchain=InProcessToolchain, IterationCount=5, LaunchCount=1, WarmupCount=1)
 Runtime = ; GC = 
 Mean = 885.7123 us, StdErr = 12.2709 us (1.39%); N = 5, StdDev = 27.4385 us
@@ -124,7 +124,7 @@ Skewness = 0.6, Kurtosis = 1.39, MValue = 2
 
 After DP caching:
 
-````
+````console
 // * Detailed results *
 SimpleDPBenchmark.DP_Write: InProcess(Toolchain=InProcessToolchain, IterationCount=5, LaunchCount=1, WarmupCount=1)
 Runtime = ; GC = 

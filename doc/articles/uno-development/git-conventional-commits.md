@@ -8,7 +8,7 @@ Uno uses the [Conventional Commits format](https://www.conventionalcommits.org/e
 
 The Conventional Commits format is as follows:
 
-```
+```console
 <type>([optional scope]): <description>
 
 [optional body]

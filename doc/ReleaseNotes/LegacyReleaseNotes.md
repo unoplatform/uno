@@ -14,7 +14,7 @@ uid: Uno.ReleaseNotes.Legacy
 - Uno is now built using VS2019 16.4, and does not support building applications with Visual Studio 2017.
   Linker errors may occur such as:
 
-  ```
+  ```console
   Java.Interop.Tools.Diagnostics.XamarinAndroidException: error XA2006: Could not resolve reference to 'System.Collections.Generic.Queue`1'
   (defined in assembly 'Uno.UI, Version=255.255.255.255, Culture=neutral, PublicKeyToken=null') with scope 'mscorlib, Version=2.0.5.0,
   Culture=neutral, PublicKeyToken=7cec85d7bea7798e'.
@@ -209,7 +209,7 @@ uid: Uno.ReleaseNotes.Legacy
   `TemplatedParent`'s `Content` when this one is a `ContentControl`.
   You can deactivate this behavior like this:
 
-  ```
+  ```csharp
   FeatureConfiguration.ContentPresenter.UseImplicitContentFromTemplatedParent = false;
   ```
 

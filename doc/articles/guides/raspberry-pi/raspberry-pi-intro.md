@@ -61,7 +61,7 @@ Before we can do anything, assuming you've gotten your Raspberry Pi all set up, 
 
 Run the following two commands;
 
-```
+```bash
 sudo apt update
 sudo apt full-upgrade
 ```
@@ -143,7 +143,7 @@ Before we can launch our application, we need to give our SSH session access to 
 
 If we don't do this, we'll get an error like;
 
-```
+```console
 Unable to init server: Could not connect: Connection refused
 
 (unoapp1.Skia.Gtk:18530): Gtk-WARNING **: 19:40:51.384: cannot open display:

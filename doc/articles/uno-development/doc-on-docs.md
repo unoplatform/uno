@@ -81,7 +81,7 @@ To include documentation (let's take Uno.Themes as an example):
 
 * Once you have merged your changes into `Uno.Themes`' `main` (or the default branch), take the commit id and place it in the `doc/import_external_docs.ps1` of the uno repository, as follows:
 
-   ```
+   ```powershell
    @("https://github.com/unoplatform/uno.themes", "uno.themes", "INSERT_COMMIT_HASH_OR_BRANCH_NAME"),
    ```
 

@@ -86,9 +86,7 @@ This article covers how to add a splash screen to your application.
 
 1. Make sure the value for `Preview Images > Splash Screen` is set to:
 
-    ```
-    Assets\SplashScreen.png
-    ```
+    `Assets\SplashScreen.png`
 
     ![uwp-splash-screen](Assets/uwp-splash-screen.JPG)
 
@@ -132,12 +130,10 @@ This article covers how to add a splash screen to your application.
 
     > [!TIP]
     > After modifying `splash.xml`, you may run into errors like these while trying to debug:
->
-    > ```
-    > Resources\drawable-mdpi\SplashScreen.png : error APT2126: file not found.
-    > Resources\drawable-hdpi\SplashScreen.png : error APT2126: file not found.
-    > ```
->
+    >
+    > `Resources\drawable-mdpi\SplashScreen.png : error APT2126: file not found.`
+    > `Resources\drawable-hdpi\SplashScreen.png : error APT2126: file not found.`
+    >
     > Simply rebuild the `.Droid` project to get rid of these error.
 
 ## Step 4 - iOS

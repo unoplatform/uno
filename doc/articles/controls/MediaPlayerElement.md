@@ -115,7 +115,7 @@ The `MediaPlayerElement` support is based on libVLC, and needs the system to pro
 
 You'll need to install the following packages (Debian based distros):
 
-```
+```bash
 sudo apt-get install libvlc-dev libx11-dev vlc libgtk2.0-0 libx11dev
 ```
 

@@ -140,7 +140,7 @@ The Uno Platform build of the Windows Community toolkit is not needed when runni
 
 Adding the Uno version of the community toolkit to a Uno Platform cross-targeted library can cause build errors like this one:
 
-```
+```console
 Controls\TextBox\Themes\Generic.xaml : Xaml Internal Error error WMC9999: 
 Type universe cannot resolve assembly: Uno.UI, Version=255.255.255.255, 
 Culture=neutral, PublicKeyToken=null.
